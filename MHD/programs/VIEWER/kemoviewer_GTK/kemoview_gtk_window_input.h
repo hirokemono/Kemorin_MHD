@@ -32,7 +32,6 @@ void set_num_isoline_gtk();
 void set_psf_vector_increment_gtk();
 void set_psf_vector_scale_gtk();
 void set_psf_vector_thickness_gtk();
-void set_psf_opacity_gtk();
 void set_domain_opacity_gtk();
 void set_ele_group_opacity_gtk();
 void set_surf_group_opacity_gtk();

@@ -38,15 +38,29 @@ static void load_colormap_file_panel(GtkButton *loadButton, gpointer user_data){
 	return;
 };
 
+static void set_psf_opacity_CB(GtkWidget *entry, gpointer user_data)
+{
+	struct colormap_view *color_vws = (struct colormap_view *) user_data;
+	float gtk_min = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
+	kemoview_set_PSF_constant_opacity(gtk_min);
+	printf("gtk_min %d\n", gtk_min);
+	return;
+}
+
 void gtk_psf_colormap_menu(struct kv_string *title, 
 			struct kemoviewer_type *kemoviewer_data){
 	struct colormap_view *color_vws;
-	GtkWidget *box, *vbox_1, *hbox_1;
+	GtkWidget *box, *vbox_1, *hbox_1, *hbox_2, *hbox_3;
 	GtkButton *closeButton, *saveButton, *loadButton;
 	
 	GtkWidget *Frame_1;
 	GtkWidget *expander;
 	GtkWidget *scrolled_window;
+	
+	GtkWidget *spin1;
+	GtkAdjustment *adj;
+	char current_text[30];
+	double current_value;
 	
 	
 	window_cmap = gtk_window_new(GTK_WINDOW_TOPLEVEL);
@@ -54,6 +68,17 @@ void gtk_psf_colormap_menu(struct kv_string *title,
 	
 	g_signal_connect(window_cmap, "destroy", G_CALLBACK(gtk_main_quit), NULL);
 	gtk_container_set_border_width(GTK_CONTAINER(window_cmap), 5);
+	
+	closeButton = gtk_button_new_with_label("Update");
+	g_signal_connect(G_OBJECT(closeButton), "clicked", 
+				G_CALLBACK(cb_close_window), window_cmap);
+	
+	current_value = kemoview_get_PSF_max_opacity();
+	sprintf(current_text, "    %e    ", current_value);
+	adj = gtk_adjustment_new(current_value, 0.0, 1.0, 0.01, 0.01, 0.0);
+	spin1 = gtk_spin_button_new(GTK_ADJUSTMENT(adj), 0, 2);
+	g_signal_connect(spin1, "value-changed", G_CALLBACK(set_psf_opacity_CB), color_vws);
+	
 	
 	color_vws = (struct colormap_view *) malloc(sizeof(struct colormap_view));
 	init_colormap_views_4_viewer(kemoviewer_data->psf_current_menu, color_vws);
@@ -65,10 +90,6 @@ void gtk_psf_colormap_menu(struct kv_string *title,
 	loadButton = gtk_button_new_with_label("Load colormap...");
 	g_signal_connect(G_OBJECT(loadButton), "clicked", 
 				G_CALLBACK(load_colormap_file_panel), G_OBJECT(color_vws));
-	
-	closeButton = gtk_button_new_with_label("Update");
-	g_signal_connect(G_OBJECT(closeButton), "clicked", 
-				G_CALLBACK(cb_close_window), window_cmap);
 	
 	vbox_1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
 	add_colormp_list_box(color_vws, vbox_1);
@@ -92,8 +113,17 @@ void gtk_psf_colormap_menu(struct kv_string *title,
 	expander = gtk_expander_new_with_mnemonic("Color map editor");
 	gtk_container_add(GTK_CONTAINER(expander), scrolled_window);
 	
+	hbox_3 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
+	gtk_box_pack_start(GTK_BOX(hbox_3), gtk_label_new("Current opacity: "), TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_3), gtk_label_new(current_text), TRUE, TRUE, 0);
+	hbox_2 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
+	gtk_box_pack_start(GTK_BOX(hbox_2), gtk_label_new("Opacity: "), TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_2), spin1, TRUE, TRUE, 0);
+	
 	box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
 	gtk_container_add(GTK_CONTAINER(window_cmap), box);
+	gtk_box_pack_start(GTK_BOX(box), hbox_3, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(box), hbox_2, TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(box), expander, TRUE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(box), closeButton, FALSE, FALSE, 0);
 	

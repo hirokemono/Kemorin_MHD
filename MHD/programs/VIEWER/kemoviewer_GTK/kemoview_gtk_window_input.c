@@ -503,17 +503,6 @@ void set_psf_vector_thickness_gtk(){
 	return;
 }
 
-void set_psf_opacity_gtk(){
-	double opacity;
-	
-	opacity = kemoview_get_PSF_max_opacity();
-	gtk_opacity_menu(opacity, "Set opacity");
-	if(iflag_set == IZERO) return; 
-	
-	kemoview_set_PSF_constant_opacity(gtk_min);
-	return;
-}
-
 void set_domain_opacity_gtk(){
 	double opacity;
 	

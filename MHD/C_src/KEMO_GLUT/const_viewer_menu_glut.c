@@ -297,7 +297,7 @@ void glut_PSF_range_menu(){
 
 	glutAddMenuEntry("Set range",              ISET_RANGE);
 	glutAddMenuEntry("Set number of isolines", ISET_NLINE);
-	glutAddMenuEntry("Set Opacity",            ISET_PSF_OPACITY);
+//	glutAddMenuEntry("Set Opacity",            ISET_PSF_OPACITY);
 	
 	
 	if(iflag_vect != IZERO && ncomp == 3){

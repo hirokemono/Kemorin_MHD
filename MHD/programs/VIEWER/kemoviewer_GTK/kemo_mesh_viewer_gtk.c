@@ -124,9 +124,6 @@ static void kemoview_psf_draw_input_setting(int selected){
 	else if (selected == ISET_NLINE)       {
 		set_num_isoline_gtk();
 	}
-	else if (selected == ISET_PSF_OPACITY) {
-		set_psf_opacity_gtk();
-	}
 	else if (selected == ISET_PSF_VEC_INC) {
 		set_psf_vector_increment_gtk();
 	}
