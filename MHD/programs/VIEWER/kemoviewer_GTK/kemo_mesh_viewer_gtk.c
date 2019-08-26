@@ -283,16 +283,13 @@ static void psf_handler(int sel){
         set_viewtype_mode_glut(VIEW_3D, viewtype_title);
 		nload_psf = kemoview_close_PSF_view();
 		draw_mesh_w_menu();
+	} else if(sel == ADD_PSF_COLOR){
+		edit_psf_colormap_gtk(single_kemoview);
 	} else {
 		toggle = kemoview_select_PSF_draw_switch(sel);
 		kemoview_psf_draw_input_setting(sel);
 		draw_mesh_w_menu();
 	};
-	return;
-};
-
-static void psf_colormap_handler(int sel){
-	if(sel == ADD_PSF_COLOR) {edit_psf_colormap_gtk(single_kemoview);}
 	return;
 };
 
@@ -556,11 +553,6 @@ static void make_3rd_level_psf_menu(){
 		glut_menu_id->ichoose_psf_linecolor_menu =  glutCreateMenu(set_psf_linecolor_handler);
 		glut_PSF_linecolor_select();
 	};
-
-    if (iflag_solid > 0 || iflag_grid > 0) {
-        glut_menu_id->ichoose_psf_color_menu = glutCreateMenu(psf_colormap_handler);
-		glutAddMenuEntry("Edit Color map",  ADD_PSF_COLOR);
-    };
 	return;
 };
 
@@ -632,8 +624,9 @@ static void make_2nd_level_psf_menu(){
 	
 	glut_PSF_range_menu();
 	
+
     if(iflag_solid > 0 || iflag_grid > 0){
-        glutAddSubMenu("Color and Opacity", glut_menu_id->ichoose_psf_color_menu);
+		glutAddMenuEntry("Edit Color map",  ADD_PSF_COLOR);
 	};
 	
 	glutAddMenuEntry("Close Current PSF data", PSF_OFF);
