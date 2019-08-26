@@ -599,9 +599,6 @@ static void make_2nd_level_psf_menu(){
 	if(iflag_solid > 0){glutAddSubMenu("Surface  color", glut_menu_id->ichoose_psf_patchcolor_menu);};
 	if(iflag_grid > 0) {glutAddSubMenu("Line color", glut_menu_id->ichoose_psf_linecolor_menu);};
 	
-	glut_PSF_range_menu();
-	
-
     if(iflag_solid > 0 || iflag_grid > 0){
 		glutAddMenuEntry("Edit Color map",  ADD_PSF_COLOR);
 	};

@@ -99,7 +99,6 @@ extern "C" {
     void glut_PSF_colormode_select();
 	void glut_fline_color_comp_select();
 	void glut_PSF_draw_menu();
-	void glut_PSF_range_menu();
 	void glut_nod_grp_menu_item();
 	void glut_surf_grp_patch_menu();
 	void glut_surf_grp_edge_menu();

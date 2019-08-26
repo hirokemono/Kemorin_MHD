@@ -270,7 +270,11 @@ void gtk_psf_colormap_menu(struct kv_string *title,
 	add_gtk_isoline_menu(color_vws, box);
 	add_gtk_psf_surface_menu(color_vws, box);
 	add_gtk_psf_colormap_menu(color_vws, box);
-	add_gtk_psf_vector_menu(color_vws, box);
+	int if_psf = kemoview_get_PSF_field_id();
+	int ncomp = kemoview_get_PSF_num_component(if_psf);
+	if(ncomp == 3){
+		add_gtk_psf_vector_menu(color_vws, box);
+	};
 	gtk_box_pack_start(GTK_BOX(box), closeButton, FALSE, FALSE, 0);
 	
 	gtk_widget_show_all(window_cmap);

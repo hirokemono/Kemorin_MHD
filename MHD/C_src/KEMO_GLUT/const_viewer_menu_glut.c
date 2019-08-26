@@ -226,7 +226,6 @@ void glut_PSF_draw_menu(){
 	int iflag_grid =        kemoview_get_PSF_draw_flags(PSFGRID_TOGGLE);
 	int iflag_zero =        kemoview_get_PSF_draw_flags(ZEROGRID_TOGGLE);
 	int iflag_cbar =        kemoview_get_PSF_draw_flags(COLORBAR_TOGGLE);
-	int iflag_vect =        kemoview_get_PSF_draw_flags(PSFVECT_TOGGLE);
 	int iflag_PSF_polygon = kemoview_get_PSF_draw_flags(PSF_POLYGON_SWITCH);
 	int if_psf =            kemoview_get_PSF_field_id();
 	int ncomp =             kemoview_get_PSF_num_component(if_psf);
@@ -261,42 +260,6 @@ void glut_PSF_draw_menu(){
 	return;
 }
 	
-void glut_PSF_range_menu(){
-	int if_psf =        kemoview_get_PSF_field_id();
-	int ncomp =         kemoview_get_PSF_num_component(if_psf);
-	int iflag_vect =    kemoview_get_PSF_draw_flags(PSFVECT_TOGGLE);
-	int iflag_v_color = kemoview_get_PSF_vector_color_mode();
-/*	int iflag_refv =  kemoview_get_PSF_draw_refv();*/
-
-//	glutAddMenuEntry("Set range",              ISET_RANGE);
-//	glutAddMenuEntry("Set number of isolines", ISET_NLINE);
-//	glutAddMenuEntry("Set Opacity",            ISET_PSF_OPACITY);
-	
-	
-	if(iflag_vect != IZERO && ncomp == 3){
-		/*
-		if(iflag_refv != IZERO ){
-			glutAddMenuEntry("hide Vector Reference",PSFREFV_TOGGLE);
-		}
-		else{
-			glutAddMenuEntry("show Vector Reference",PSFREFV_TOGGLE);
-		};
-		*/
-		if (iflag_v_color == RAINBOW_SURFACE) {
-			glutAddMenuEntry("Black Vector",          WHITE_PSF_VECT);
-		}else{
-			glutAddMenuEntry("Rainbow Vector",        RAINBOW_PSF_VECT);
-		};
-	
-//		glutAddMenuEntry("Set Increment for Vector", ISET_PSF_VEC_INC);
-//		glutAddMenuEntry("Set Reference Vector",     ISET_PSF_REFVECT);
-//		glutAddMenuEntry("Set Vector Thickness",     ISET_PSF_V_THICK);
-	};
-	
-	return;
-};
-
-
 static void glut_add_each_grp_menu_item(int i_item, int iflag_draw, char *grp_name){
 	char tmp_menu[80];
 	
