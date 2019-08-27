@@ -12,7 +12,16 @@
 GtkWidget *window_cmap;
 GtkWidget *window_pref;
 
-static void cb_close_window(GtkButton *button, gpointer user_data){
+static char viewtype_title[80] = "3D-View";
+
+static void close_psf_CB(GtkButton *button, gpointer user_data){
+	int nload_psf;
+	GtkWidget *window = (GtkWidget *) user_data;
+	set_viewtype_mode_glut(VIEW_3D, viewtype_title);
+	nload_psf = kemoview_close_PSF_view();
+};
+
+static void close_window_CB(GtkButton *button, gpointer user_data){
     GtkWidget *window = (GtkWidget *) user_data;
     gtk_widget_destroy(window);
 };
@@ -159,11 +168,10 @@ void add_gtk_psf_colormap_menu(struct colormap_view *color_vws, GtkWidget *box){
 	return;
 }
 
-void gtk_psf_colormap_menu(struct kv_string *title, 
-			struct kemoviewer_type *kemoviewer_data){
+void gtk_psf_colormap_menu(struct kemoviewer_type *kemoviewer_data){
 	GtkWidget *box;
 	GtkWidget *hbox_psfs, *hbox_field, *hbox_comp;
-	GtkButton *closeButton;
+	GtkButton *closeButton, *updateButton;
 	
 	GtkWidget *combobox_psfs;
 	GtkWidget *label_tree_psfs;
@@ -193,14 +201,18 @@ void gtk_psf_colormap_menu(struct kv_string *title,
 	
 	
 	window_cmap = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-	gtk_window_set_title(GTK_WINDOW(window_cmap), title->string);
+	gtk_window_set_title(GTK_WINDOW(window_cmap), "PSF data");
 	
 	g_signal_connect(window_cmap, "destroy", G_CALLBACK(gtk_main_quit), NULL);
 	gtk_container_set_border_width(GTK_CONTAINER(window_cmap), 5);
 	
-	closeButton = gtk_button_new_with_label("Update");
+	closeButton = gtk_button_new_with_label("Close Current PSF");
 	g_signal_connect(G_OBJECT(closeButton), "clicked", 
-				G_CALLBACK(cb_close_window), window_cmap);
+				G_CALLBACK(close_psf_CB), window_cmap);
+	
+	updateButton = gtk_button_new_with_label("Update");
+	g_signal_connect(G_OBJECT(updateButton), "clicked", 
+				G_CALLBACK(close_window_CB), window_cmap);
 	
     struct kv_string *colorname = kemoview_alloc_kvstring();
 	char comp_name[1024];
@@ -318,6 +330,7 @@ void gtk_psf_colormap_menu(struct kv_string *title,
 		add_gtk_psf_vector_menu(color_vws, box);
 	};
 	gtk_box_pack_start(GTK_BOX(box), closeButton, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(box), updateButton, FALSE, FALSE, 0);
 	
 	gtk_widget_show_all(window_cmap);
 	gtk_main();

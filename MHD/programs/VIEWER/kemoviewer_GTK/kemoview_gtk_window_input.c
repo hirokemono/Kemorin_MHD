@@ -376,16 +376,7 @@ void set_psf_single_color_gtk(){
 }
 
 void edit_psf_colormap_gtk(struct kemoviewer_type *single_kemoview){
-    struct kv_string *colorname;
-	
-	int ifield = kemoview_get_PSF_field_id();
-	int icomp = kemoview_get_PSF_draw_data_address();
-	
-    colorname = kemoview_alloc_kvstring();
-	kemoview_get_PSF_field_name(colorname, ifield);
-	gtk_psf_colormap_menu(colorname, single_kemoview);
-    kemoview_free_kvstring(colorname);
-	draw_mesh_keep_menu();
+	gtk_psf_colormap_menu(single_kemoview);
 	return;
 }
 

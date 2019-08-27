@@ -26,8 +26,7 @@
 
 /*  prototypes */
 
-void gtk_psf_colormap_menu(struct kv_string *title, 
-			struct kemoviewer_type *kemoviewer_data);
+void gtk_psf_colormap_menu(struct kemoviewer_type *kemoviewer_data);
 
 void gtk_BGcolorselect(const char *title, struct kemoviewer_type *kemoviewer_data);
 	
