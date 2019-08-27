@@ -130,6 +130,10 @@ static void kemoview_fline_draw_setting(int sel){
 static void main_menu_handler(int sel){
 	if (sel == QUIT_SELECTED)   { exit(EXIT_SUCCESS); }
 	else if(sel == FILE_OPEN)  { read_draw_kemoview_data_gtk(); }
+	else if(sel == ADD_PSF_COLOR)  {
+		edit_psf_colormap_gtk(single_kemoview);
+		draw_mesh_w_menu();
+	}
 	else if(sel == SAVE_SNAPSHOT)  { save_image_handler(); }
 	else if(sel == SAVE_EVOLUTION) { save_evolution_handler(); }
 	else if(sel == SAVE_ROTATION) { save_rot_image_handler_gtk(); }
@@ -252,19 +256,6 @@ static void nod_4_surf_grp_handler(int sel){
 static void nod_grp_handler(int sel){
 	kemoview_nod_grp_toggle(sel);
 	draw_mesh_w_menu();
-};
-
-static void psf_handler(int sel){
-    int nload_psf, toggle;
-    
-	if (sel == PSF_OFF) {
-        set_viewtype_mode_glut(VIEW_3D, viewtype_title);
-		nload_psf = kemoview_close_PSF_view();
-		draw_mesh_w_menu();
-	} else if(sel == ADD_PSF_COLOR){
-		edit_psf_colormap_gtk(single_kemoview);
-	};
-	return;
 };
 
 static void fline_handler(int sel){
@@ -475,30 +466,6 @@ static void make_3rd_level_fline_menu(){
 
 /* 2nd level menues*/
 
-static void make_2nd_level_psf_menu(){
-	char tmp_menu[1024];
-    int istep;
-    struct kv_string *stripped_filehead;
-    struct kv_string *colorname;
-	
-	int num_psf =     kemoview_get_PSF_num_loaded();
-	int num_fld =     kemoview_get_PSF_num_field();
-	int if_psf =      kemoview_get_PSF_field_id();
-	int ic_psf =      kemoview_get_PSF_component_id();
-	int num_comp =    kemoview_get_PSF_num_component(if_psf);
-	int iflag_solid = kemoview_get_PSF_draw_flags(PSFSOLID_TOGGLE);
-	int iflag_grid =  kemoview_get_PSF_draw_flags(PSFGRID_TOGGLE);
-	
-	glut_menu_id->psf_root_menu = glutCreateMenu(psf_handler);
-	
-    if(iflag_solid > 0 || iflag_grid > 0){
-		glutAddMenuEntry("Edit Color map",  ADD_PSF_COLOR);
-	};
-	
-	glutAddMenuEntry("Close Current PSF data", PSF_OFF);
-    return;
-};
-
 static void make_2nd_level_fline_menu(){
 	char tmp_menu[1024];
 	
@@ -601,10 +568,6 @@ static void make_1st_level_menu(){
 		make_2nd_level_mesh_menu();
 	};
 	
-	if( iflag_draw_p > 0){
-		make_2nd_level_psf_menu();
-	};
-	
 	if( iflag_draw_f > 0){
 		make_3rd_level_fline_menu();
 		make_2nd_level_fline_menu();
@@ -612,7 +575,7 @@ static void make_1st_level_menu(){
 	
 	
 	if (iflag_any_objects_on > 0) {
-	make_2nd_level_image_menu();
+		make_2nd_level_image_menu();
 	};
 	
 	glut_menu_id->submenu_id = menu_init();
@@ -624,6 +587,10 @@ static void make_1st_level_menu(){
 		/*glutAddSubMenu("View Modifier",glut_menu_id->submenu_id);*/
 		glutAddSubMenu(viewtype_title,glut_menu_id->viewtype_id);
 	}
+	if( iflag_draw_p > 0){
+		glutAddMenuEntry("PSF",  ADD_PSF_COLOR);
+	};
+	
 	
 	if( iflag_draw_m > 0){
 		glutAddSubMenu("Domain informations",glut_menu_id->domain_id);
