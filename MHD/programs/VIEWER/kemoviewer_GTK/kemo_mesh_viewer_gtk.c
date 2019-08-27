@@ -263,9 +263,6 @@ static void psf_handler(int sel){
 		draw_mesh_w_menu();
 	} else if(sel == ADD_PSF_COLOR){
 		edit_psf_colormap_gtk(single_kemoview);
-	} else {
-		toggle = kemoview_select_PSF_draw_switch(sel);
-		draw_mesh_w_menu();
 	};
 	return;
 };
@@ -454,35 +451,7 @@ static void make_2nd_level_mesh_menu(){
 };
 
 /* 4th level menues*/
-static void make_4th_level_psf_menu(){
-	int iflag_solid = kemoview_get_PSF_draw_flags(PSFSOLID_TOGGLE);
-	int iflag_grid =  kemoview_get_PSF_draw_flags(PSFGRID_TOGGLE);
-	
-	if (iflag_solid > 0 || iflag_grid > 0) {
-		glut_menu_id->ichoose_psf_colormode_menu = glutCreateMenu(set_psf_colormode_handler);
-		glut_PSF_colormode_select();
-	};
-	return;
-}
-
 /* 3rd level menues*/
-static void make_3rd_level_psf_menu(){
-	
-	int num_psf =     kemoview_get_PSF_num_loaded();
-	int num_fld =     kemoview_get_PSF_num_field();
-	int if_psf =      kemoview_get_PSF_field_id();
-	int num_comp =    kemoview_get_PSF_num_component(if_psf);
-	int iflag_solid = kemoview_get_PSF_draw_flags(PSFSOLID_TOGGLE);
-	int iflag_grid =  kemoview_get_PSF_draw_flags(PSFGRID_TOGGLE);
-	
-	if(num_psf > 1){
-		glut_menu_id->ichoose_current_psf_menu = glutCreateMenu(set_current_psf_handler);
-		glut_current_PSF_select();
-	};
-	return;
-};
-
-
 static void make_3rd_level_fline_menu(){
 	
 	int num_fld =  kemoview_get_fline_color_num_field();
@@ -521,28 +490,6 @@ static void make_2nd_level_psf_menu(){
 	int iflag_grid =  kemoview_get_PSF_draw_flags(PSFGRID_TOGGLE);
 	
 	glut_menu_id->psf_root_menu = glutCreateMenu(psf_handler);
-	
-	if(num_psf > 1){
-        stripped_filehead = kemoview_alloc_kvstring();
-		istep = kemoview_get_PSF_file_prefix(stripped_filehead);
-		sprintf(tmp_menu, "Current: %s", stripped_filehead->string);
-		glutAddSubMenu(tmp_menu, glut_menu_id->ichoose_current_psf_menu);
-        kemoview_free_kvstring(stripped_filehead);
-	}
-    
-    colorname = kemoview_alloc_kvstring();
-	kemoview_get_PSF_field_name(colorname, if_psf);
-	if (num_fld > 1) {
-		glutAddSubMenu(colorname->string, glut_menu_id->ichoose_field_menu);
-	} else {
-		glutAddMenuEntry(colorname->string, PSF_NOTHING_TODO);
-	};
-    kemoview_free_kvstring(colorname);
-	
-	if (num_comp > 1) {
-		set_PSF_component_name(num_comp,ic_psf,tmp_menu); 
-		glutAddSubMenu(tmp_menu, glut_menu_id->ichoose_comp_menu);
-	};
 	
     if(iflag_solid > 0 || iflag_grid > 0){
 		glutAddMenuEntry("Edit Color map",  ADD_PSF_COLOR);
@@ -655,8 +602,6 @@ static void make_1st_level_menu(){
 	};
 	
 	if( iflag_draw_p > 0){
-		make_4th_level_psf_menu();
-		make_3rd_level_psf_menu();
 		make_2nd_level_psf_menu();
 	};
 	
