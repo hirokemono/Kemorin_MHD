@@ -15,6 +15,7 @@ static void psf_surface_switch_CB(GObject *switch_1, GParamSpec *pspec, gpointer
 	kemoview_select_PSF_draw_switch(PSFSOLID_TOGGLE);
 	return;
 };
+
 static void psf_colorbar_switch_CB(GObject *switch_1, GParamSpec *pspec, gpointer data){
 	kemoview_select_PSF_draw_switch(COLORBAR_TOGGLE);
 	return;
@@ -94,9 +95,9 @@ static void load_texture_handler(gpointer user_data){
 	return;
 };
 
-static void psf_surf_colormode_CB(GtkComboBox *combobox_cmap, gpointer user_data)
+static void psf_surf_colormode_CB(GtkComboBox *combobox_sfcolor, gpointer user_data)
 {
-    GtkTreeModel *model_cmap = gtk_combo_box_get_model(combobox_cmap);
+    GtkTreeModel *model_cmap = gtk_combo_box_get_model(combobox_sfcolor);
     GtkTreeIter iter;
     cairo_t *cr;
     
@@ -104,7 +105,7 @@ static void psf_surf_colormode_CB(GtkComboBox *combobox_cmap, gpointer user_data
     int index_field;
     int index_mode;
     
-    gint idx = gtk_combo_box_get_active(combobox_cmap);
+    gint idx = gtk_combo_box_get_active(combobox_sfcolor);
     if(idx < 0) return;
     
     GtkTreePath *path = gtk_tree_path_new_from_indices(idx, -1);

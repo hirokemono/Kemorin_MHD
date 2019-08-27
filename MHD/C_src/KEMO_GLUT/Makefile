@@ -9,6 +9,7 @@ view_modifier_glut.o \
 \
 kemoview_fileselector_gtk.o \
 kemoview_gtk_PSF_surface_menu.o \
+kemoview_gtk_PSF_isoline_menu.o \
 kemoview_gtk_PSF_vector_menu.o \
 kemoview_gtk_colormap_menu.o
 
@@ -79,6 +80,17 @@ module:
 	m_kemoviewer_data.h.o \
 	tree_view_4_pvr_colormap.o \
 	kemoview_fileselector_gtk.o \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS) $$<' \
+	>> $(MAKENAME)
+	
+	@echo \
+	kemoview_gtk_PSF_isoline_menu.o: \
+	'$$(KEMO_C_GLUTDIR)'/kemoview_gtk_PSF_isoline_menu.c \
+	kemoview_gtk_PSF_isoline_menu.h \
+	kemoviewer.h \
+	m_kemoviewer_data.h.o \
+	tree_view_4_pvr_colormap.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS) $$<' \
 	>> $(MAKENAME)

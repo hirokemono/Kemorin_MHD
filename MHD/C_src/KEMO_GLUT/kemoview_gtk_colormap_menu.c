@@ -38,62 +38,6 @@ static void load_colormap_file_panel(GtkButton *loadButton, gpointer user_data){
 	return;
 };
 
-static void set_nline_CB(GtkWidget *entry, gpointer user_data)
-{
-	struct colormap_view *color_vws = (struct colormap_view *) user_data;
-	int gtk_intvalue = (int) gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(entry));
-	kemoview_set_PSF_num_isoline(gtk_intvalue);
-	return;
-}
-
-void add_gtk_isoline_menu(struct colormap_view *color_vws, GtkWidget *box){
-	GtkWidget *hbox_22, *hbox_23;
-	
-	GtkWidget *expander_iso,  *scroll_iso, *Frame_iso;
-	GtkWidget *hbox_iso,  *vbox_iso;
-	
-	GtkWidget *spin_nline;
-	GtkAdjustment *adj_nline;
-	char current_nline_txt[30];
-	
-	int current_nline = kemoview_get_PSF_num_isoline();
-	sprintf(current_nline_txt, "    %d    ", current_nline);
-	adj_nline = gtk_adjustment_new ((double) current_nline, 0, 200, 1, 1, 0.0);
-	spin_nline = gtk_spin_button_new(GTK_ADJUSTMENT(adj_nline), 0, 2);
-	g_signal_connect(spin_nline, "value-changed", G_CALLBACK(set_nline_CB), (gpointer) color_vws);
-	
-	hbox_23 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
-	gtk_box_pack_start(GTK_BOX(hbox_23), gtk_label_new("Current num. of lines: "), TRUE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox_23), gtk_label_new(current_nline_txt), TRUE, TRUE, 0);
-	hbox_22 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
-	gtk_box_pack_start(GTK_BOX(hbox_22), gtk_label_new("Num. of lines: "), TRUE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox_22), spin_nline, TRUE, TRUE, 0);
-	
-	vbox_iso = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
-	gtk_box_pack_start(GTK_BOX(vbox_iso), hbox_23, TRUE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_iso), hbox_22, TRUE, TRUE, 0);
-	
-	Frame_iso = gtk_frame_new("");
-	gtk_frame_set_shadow_type(GTK_FRAME(Frame_iso), GTK_SHADOW_IN);
-	gtk_container_add(GTK_CONTAINER(Frame_iso), vbox_iso);
-	
-	hbox_iso = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
-	gtk_box_pack_start(GTK_BOX(hbox_iso), gtk_label_new("  "), FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox_iso), Frame_iso, TRUE, TRUE, 0);
-	
-	scroll_iso = gtk_scrolled_window_new(NULL, NULL);
-	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scroll_iso),
-				GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-	gtk_widget_set_size_request(scroll_iso, 400, 300);
-	gtk_container_add(GTK_CONTAINER(scroll_iso), hbox_iso);
-	
-	expander_iso = gtk_expander_new_with_mnemonic("Isolines");
-	gtk_container_add(GTK_CONTAINER(expander_iso), scroll_iso);
-	
-	gtk_box_pack_start(GTK_BOX(box), expander_iso, TRUE, FALSE, 0);
-	return;
-}
-
 void add_gtk_psf_colormap_menu(struct colormap_view *color_vws, GtkWidget *box){
 	GtkButton *saveButton, *loadButton;
 	
@@ -157,7 +101,7 @@ void gtk_psf_colormap_menu(struct kv_string *title,
 	
 	box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
 	gtk_container_add(GTK_CONTAINER(window_cmap), box);
-	add_gtk_isoline_menu(color_vws, box);
+	add_gtk_isoline_menu(color_vws, window_cmap, box);
 	add_gtk_psf_surface_menu(color_vws, window_cmap, box);
 	add_gtk_psf_colormap_menu(color_vws, box);
 	int if_psf = kemoview_get_PSF_field_id();

@@ -298,15 +298,6 @@ static void set_psf_comp_handler(int sel){
 	return;
 };
 
-static void set_psf_linecolor_handler(int sel){
-	if (sel == BLACK_PSF_LINE)       {kemoview_set_PSF_isoline_color_mode(BLACK_LINE);}
-	else if (sel == RAINBOW_PSF_LINE){kemoview_set_PSF_isoline_color_mode(RAINBOW_LINE);}
-	else if (sel == WHITE_PSF_LINE)  {kemoview_set_PSF_isoline_color_mode(WHITE_LINE);};
-	
-	draw_mesh_w_menu();
-	return;
-};
-
 static void set_psf_colormode_handler(int sel){
     kemoview_set_PSF_color_mode(sel);
     draw_mesh_w_menu();
@@ -511,10 +502,6 @@ static void make_3rd_level_psf_menu(){
 		glut_PSF_comps_select();
 	};
     
-	if (iflag_grid > 0) {
-		glut_menu_id->ichoose_psf_linecolor_menu =  glutCreateMenu(set_psf_linecolor_handler);
-		glut_PSF_linecolor_select();
-	};
 	return;
 };
 
@@ -579,10 +566,6 @@ static void make_2nd_level_psf_menu(){
 		set_PSF_component_name(num_comp,ic_psf,tmp_menu); 
 		glutAddSubMenu(tmp_menu, glut_menu_id->ichoose_comp_menu);
 	};
-	
-	glut_PSF_draw_menu();
-	if(iflag_solid > 0){glutAddSubMenu("Surface  color", glut_menu_id->ichoose_psf_patchcolor_menu);};
-	if(iflag_grid > 0) {glutAddSubMenu("Line color", glut_menu_id->ichoose_psf_linecolor_menu);};
 	
     if(iflag_solid > 0 || iflag_grid > 0){
 		glutAddMenuEntry("Edit Color map",  ADD_PSF_COLOR);

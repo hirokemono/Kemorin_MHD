@@ -172,7 +172,7 @@ void glut_PSF_linecolor_select(){
 		glutAddMenuEntry("Rainbow lines", RAINBOW_PSF_LINE);
 	};
 	if (iflag_l_color != BLACK_PSF_LINE) {
-		glutAddMenuEntry("Black lines", RAINBOW_PSF_LINE);
+		glutAddMenuEntry("Black lines", BLACK_PSF_LINE);
 	};
 	if (iflag_l_color != WHITE_PSF_LINE) {
 		glutAddMenuEntry("White lines", WHITE_PSF_LINE);
