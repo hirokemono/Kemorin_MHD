@@ -286,18 +286,6 @@ static void set_current_psf_handler(int sel){
 	return;
 };
 
-static void set_psf_field_handler(int sel){
-	kemoview_set_PSF_field(sel);
-	draw_mesh_w_menu();
-	return;
-};
-
-static void set_psf_comp_handler(int sel){
-	kemoview_set_PSF_component(sel);
-	draw_mesh_w_menu();
-	return;
-};
-
 static void set_psf_colormode_handler(int sel){
     kemoview_set_PSF_color_mode(sel);
     draw_mesh_w_menu();
@@ -491,17 +479,6 @@ static void make_3rd_level_psf_menu(){
 		glut_menu_id->ichoose_current_psf_menu = glutCreateMenu(set_current_psf_handler);
 		glut_current_PSF_select();
 	};
-	
-	if (num_fld > 1) {
-		glut_menu_id->ichoose_field_menu = glutCreateMenu(set_psf_field_handler);
-		glut_PSF_field_select();
-	};
-	
-	if (num_comp > 1) {
-		glut_menu_id->ichoose_comp_menu = glutCreateMenu(set_psf_comp_handler);
-		glut_PSF_comps_select();
-	};
-    
 	return;
 };
 
