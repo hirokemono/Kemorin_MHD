@@ -141,7 +141,14 @@ static GtkWidget *make_control_file_block_vbox(const char *label_hd, int *iflag_
 	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(combo_b), child_model, TRUE);
 	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combo_b), child_model,
 				"text", COLUMN_FIELD_NAME, NULL);
-	gtk_combo_box_set_active(combo_b, iflag_use_file);
+	
+	if(iflag_use_file == TYPE_MODE){
+		gtk_combo_box_set_active(combo_b, 2);
+	} else if(iflag_use_file == FILE_MODE){
+		gtk_combo_box_set_active(combo_b, 1);
+	} else {
+		gtk_combo_box_set_active(combo_b, 0);
+	};
 	g_signal_connect(G_OBJECT(combo_b), "changed", G_CALLBACK(cb_file_block_select),
 				(gpointer) iflag_use_file);
 	

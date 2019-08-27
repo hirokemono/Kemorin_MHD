@@ -323,7 +323,7 @@ static void gtk_evolution_image_menu(int istep){
 	fmtw = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title(GTK_WINDOW(fmtw), "Select File Format");
 
-	g_signal_connect(fmtw, "destroy", G_CALLBACK(destroy), &fmtw);
+	g_signal_connect(fmtw, "destroy", G_CALLBACK(destroy), (gpointer) &fmtw);
 
 	gtk_container_set_border_width(GTK_CONTAINER(fmtw), 5);
 

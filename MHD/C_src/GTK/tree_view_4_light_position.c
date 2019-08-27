@@ -131,11 +131,11 @@ void add_lightposition_list_box(struct lightparams_view *light_vws, GtkWidget *v
                            renderer_spin1, renderer_spin2, renderer_spin3);
 	
     g_signal_connect(G_OBJECT(renderer_spin1), "edited", 
-                     G_CALLBACK(light_radius_edited_cb), light_vws);
+                     G_CALLBACK(light_radius_edited_cb), (gpointer) light_vws);
     g_signal_connect(G_OBJECT(renderer_spin2), "edited", 
-                     G_CALLBACK(light_theta_edited_cb), light_vws);
+                     G_CALLBACK(light_theta_edited_cb), (gpointer) light_vws);
     g_signal_connect(G_OBJECT(renderer_spin3), "edited", 
-                     G_CALLBACK(light_phi_edited_cb), light_vws);
+                     G_CALLBACK(light_phi_edited_cb), (gpointer) light_vws);
 	
 	light_vws->light_rtp_vws->index_bc
 			= append_r3_list_from_ctl(light_vws->light_rtp_vws->index_bc,
@@ -150,9 +150,9 @@ void add_lightposition_list_box(struct lightparams_view *light_vws, GtkWidget *v
 				button_add, button_delete, vbox);
 	
     g_signal_connect(G_OBJECT(button_add), "clicked", 
-                     G_CALLBACK(add_lightposition_list_items_cb), light_vws);
+                     G_CALLBACK(add_lightposition_list_items_cb), (gpointer) light_vws);
     g_signal_connect(G_OBJECT(button_delete), "clicked", 
-                     G_CALLBACK(delete_lightposition_list_items_cb), light_vws);
+                     G_CALLBACK(delete_lightposition_list_items_cb), (gpointer) light_vws);
 };
 
 void add_light_list_box(struct lightparams_view *light_vws, GtkWidget *vbox){

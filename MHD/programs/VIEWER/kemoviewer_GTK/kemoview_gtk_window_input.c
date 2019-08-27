@@ -260,8 +260,6 @@ static void set_PSFcolor_GTK(GtkColorChooser *colordialog)
 	
 	gtk_color_chooser_get_rgba(colordialog, &gcolor);
 	gtk_widget_destroy(rangew);
-	gtk_widget_destroy(ftmpw_w);
-	gtk_main_quit();
 	
 	dcolor[0] = gcolor.red;
 	dcolor[1] = gcolor.green;
@@ -292,6 +290,7 @@ static void kemoview_gtk_PSFcolorsel(GtkButton *button, gpointer data){
 	}
 	else if( response == GTK_RESPONSE_CANCEL ){
 		g_print( "Cancel button was pressed.\n" );
+		iflag_set = IZERO;
 		gtk_widget_destroy(rangew);
 	}
 	return;
@@ -305,22 +304,11 @@ static void gtk_PSFcolorselect(const char *title){
 	ftmpw_w = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	
 	gtk_window_set_title(GTK_WINDOW(ftmpw_w), title);
-	gtk_widget_set_size_request(ftmpw_w, 150, -1);
-	gtk_container_set_border_width(GTK_CONTAINER(ftmpw_w), 5);
-	g_signal_connect(G_OBJECT(ftmpw_w), "destroy", G_CALLBACK(gtk_main_quit), NULL);
-	
-	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
-	
-	gtk_container_add(GTK_CONTAINER(ftmpw_w), hbox);
-	
 	/* Set button   */
 	entry = gtk_entry_new();
 	button = gtk_button_new_with_label("_select");
 	g_signal_connect(G_OBJECT(button), "clicked", 
 				G_CALLBACK(kemoview_gtk_PSFcolorsel), (gpointer)entry);
-	gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 0);
-	gtk_widget_show_all(ftmpw_w);
-	gtk_main();
 	return;
 }
 

@@ -298,16 +298,6 @@ static void set_psf_comp_handler(int sel){
 	return;
 };
 
-static void set_psf_patchcolor_handler(int sel){
-	if (sel == WHITE_PSF_SURF)          {kemoview_set_PSF_patch_color_mode(WHITE_SURFACE);}
-	else if (sel == SGL_COLOR_PSF_SURF) {set_psf_single_color_gtk();}
-    else if (sel == RAINBOW_PSF_SURF)   {kemoview_set_PSF_patch_color_mode(RAINBOW_SURFACE);}
-	else if (sel == TEXTURE_PSF_SURF) {load_texture_handler();};
-	
-	draw_mesh_w_menu();
-	return;
-};
-
 static void set_psf_linecolor_handler(int sel){
 	if (sel == BLACK_PSF_LINE)       {kemoview_set_PSF_isoline_color_mode(BLACK_LINE);}
 	else if (sel == RAINBOW_PSF_LINE){kemoview_set_PSF_isoline_color_mode(RAINBOW_LINE);}
@@ -521,11 +511,6 @@ static void make_3rd_level_psf_menu(){
 		glut_PSF_comps_select();
 	};
     
-	if (iflag_solid > 0) {
-		glut_menu_id->ichoose_psf_patchcolor_menu = glutCreateMenu(set_psf_patchcolor_handler);
-		glut_PSF_patchcolor_select();
-	};
-
 	if (iflag_grid > 0) {
 		glut_menu_id->ichoose_psf_linecolor_menu =  glutCreateMenu(set_psf_linecolor_handler);
 		glut_PSF_linecolor_select();

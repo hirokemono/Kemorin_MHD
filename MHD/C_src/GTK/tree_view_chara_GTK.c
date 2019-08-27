@@ -314,7 +314,7 @@ void create_text_tree_view(GtkTreeView *c_tree_view,
     gtk_tree_view_column_set_clickable(column, TRUE);
     g_object_set_data(G_OBJECT(column), "column_id", GINT_TO_POINTER(COLUMN_FIELD_INDEX));
     g_signal_connect(G_OBJECT(column), "clicked", 
-                     G_CALLBACK(column_clicked), c_tree_view);
+                     G_CALLBACK(column_clicked), (gpointer) c_tree_view);
     
     
     /* 選択モード */

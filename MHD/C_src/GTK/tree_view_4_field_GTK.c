@@ -146,7 +146,7 @@ static GtkTreeViewColumn * create_each_field_column(GtkWidget *tree_view,
     gtk_tree_view_column_set_resizable(column, TRUE);
     gtk_tree_view_column_set_clickable(column, TRUE);
     g_object_set_data(G_OBJECT(column), "column_id", GINT_TO_POINTER(column_index));
-	g_signal_connect(G_OBJECT(column), "clicked", G_CALLBACK(column_clicked), tree_view);
+	g_signal_connect(G_OBJECT(column), "clicked", G_CALLBACK(column_clicked), (gpointer) tree_view);
 	return column;
 };
 
@@ -191,13 +191,13 @@ void create_field_tree_columns(struct field_views *fields_vws)
 	column = create_each_field_column(fields_vws->used_tree_view,
 				"Field output", COLUMN_VIZ_FLAG);
 	renderer = create_each_toggle_renderer(column, 60, COLUMN_VIZ_FLAG, fields_vws);
-    g_signal_connect(G_OBJECT(renderer), "toggled", G_CALLBACK(toggle_viz_switch), fields_vws);
+    g_signal_connect(G_OBJECT(renderer), "toggled", G_CALLBACK(toggle_viz_switch), (gpointer) fields_vws);
     
     /* Fifth row */
 	column = create_each_field_column(fields_vws->used_tree_view,
 				"Monitor output", COLUMN_MONITOR_FLAG);
 	renderer = create_each_toggle_renderer(column, 60, COLUMN_MONITOR_FLAG, fields_vws);
-    g_signal_connect(G_OBJECT(renderer), "toggled", G_CALLBACK(toggle_monitor_switch), fields_vws);
+    g_signal_connect(G_OBJECT(renderer), "toggled", G_CALLBACK(toggle_monitor_switch), (gpointer) fields_vws);
 };
 
 void create_field_tree_view(struct field_views *fields_vws)

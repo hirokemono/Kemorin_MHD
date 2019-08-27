@@ -92,11 +92,11 @@ void init_bc_temp_tree_view(struct boundary_condition_view *bc_vws){
                 renderer_cbox, renderer_text, renderer_spin);
     
     g_signal_connect(G_OBJECT(renderer_cbox), "edited", 
-                     G_CALLBACK(thermal_bc_type_edited_cb), bc_vws);
+                     G_CALLBACK(thermal_bc_type_edited_cb), (gpointer) bc_vws);
     g_signal_connect(G_OBJECT(renderer_text), "edited", 
-                     G_CALLBACK(thermal_bc_position_edited_cb), bc_vws);
+                     G_CALLBACK(thermal_bc_position_edited_cb), (gpointer) bc_vws);
     g_signal_connect(G_OBJECT(renderer_spin), "edited", 
-                     G_CALLBACK(thermal_bc_value_edited_cb), bc_vws);
+                     G_CALLBACK(thermal_bc_value_edited_cb), (gpointer) bc_vws);
 
     bc_vws->index_bc = append_c2r_list_from_ctl(bc_vws->index_bc, bc_vws->bc_T_gtk,
                                                 bc_vws->bc_tree_view);
@@ -117,10 +117,10 @@ void add_bc_temp_selection_box(struct boundary_condition_view *bc_vws, GtkWidget
 	
     /* Add callbacks */
     g_signal_connect(G_OBJECT(button_add), "clicked", 
-                     G_CALLBACK(cb_add_thermal_bc), bc_vws);
+                     G_CALLBACK(cb_add_thermal_bc), (gpointer) bc_vws);
     g_signal_connect(G_OBJECT(combobox_add), "changed", 
-                     G_CALLBACK(cb_add_thermal_bc_by_list), bc_vws);
+                     G_CALLBACK(cb_add_thermal_bc_by_list), (gpointer) bc_vws);
     g_signal_connect(G_OBJECT(button_delete), "clicked", 
-                     G_CALLBACK(cb_delete_thermal_bc_by_list), bc_vws);
+                     G_CALLBACK(cb_delete_thermal_bc_by_list), (gpointer) bc_vws);
 };
 

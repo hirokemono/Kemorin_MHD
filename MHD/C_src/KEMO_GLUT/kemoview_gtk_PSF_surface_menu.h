@@ -22,6 +22,7 @@
 
 /*  prototypes */
 
-void add_gtk_psf_surface_menu(struct colormap_view *color_vws, GtkWidget *box);
+void add_gtk_psf_surface_menu(struct colormap_view *color_vws, 
+							  GtkWidget *window_cmap, GtkWidget *box);
 
 #endif

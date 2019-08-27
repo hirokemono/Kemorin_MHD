@@ -59,6 +59,7 @@ GtkWidget * make_inner_decomp_hbox(int iflag_fix_on, const char *label, struct c
 	
 	struct entry_and_flag *tbox_flag = (struct entry_and_flag *) malloc(sizeof(struct entry_and_flag));
 	int index = 0;
+	int iflag;
 	
     GtkWidget *label_tree = create_fixed_label_w_index_tree();
     GtkTreeModel *model = gtk_tree_view_get_model(label_tree);
@@ -72,7 +73,13 @@ GtkWidget * make_inner_decomp_hbox(int iflag_fix_on, const char *label, struct c
 	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(tbox_flag->entry), child_model, TRUE);
 	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(tbox_flag->entry), child_model,
 				"text", COLUMN_FIELD_NAME, NULL);
-	gtk_combo_box_set_active(tbox_flag->entry, find_inner_decomp_index(ctl_item));
+	
+	iflag = find_inner_decomp_index(ctl_item);
+	if(iflag == HORIZONTAL_MODE){
+		gtk_combo_box_set_active(tbox_flag->entry, 1);
+	} else {
+		gtk_combo_box_set_active(tbox_flag->entry, 0);		
+	};
 	g_signal_connect(G_OBJECT(tbox_flag->entry), "changed", G_CALLBACK(set_inner_decomp_cb),
 				(gpointer) ctl_item);
 	

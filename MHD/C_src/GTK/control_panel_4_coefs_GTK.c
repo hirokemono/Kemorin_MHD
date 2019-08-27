@@ -170,12 +170,12 @@ void add_coefs_selection_box(struct momentum_coefs_view *coefs_vw, GtkWidget *vb
     gtk_box_pack_start(GTK_BOX(hbox), gtk_label_new("Add: "), TRUE, TRUE, 0);
     combobox_add = gtk_combo_box_new_with_model(model_comp);
     g_signal_connect(G_OBJECT(combobox_add), "changed", 
-                     G_CALLBACK(cb_add_dimless_name), coefs_vw);
+                     G_CALLBACK(cb_add_dimless_name), (gpointer) coefs_vw);
     gtk_box_pack_start(GTK_BOX(hbox), combobox_add, FALSE, FALSE, 0);
     /* Delete data bottun */
     button = gtk_button_new_from_stock(GTK_STOCK_REMOVE);
     g_signal_connect(G_OBJECT(button), "clicked", 
-                     G_CALLBACK(remove_field_to_use), coefs_vw);
+                     G_CALLBACK(remove_field_to_use), (gpointer) coefs_vw);
     gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 0);
     
     column_add = gtk_cell_renderer_text_new();

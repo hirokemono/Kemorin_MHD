@@ -285,7 +285,7 @@ void create_real2_tree_view(GtkTreeView *r2_tree_view, struct real2_clist *r2_cl
     gtk_tree_view_column_set_clickable(column, TRUE);
     g_object_set_data(G_OBJECT(column), "column_id", GINT_TO_POINTER(COLUMN_FIELD_INDEX));
     g_signal_connect(G_OBJECT(column), "clicked", 
-                     G_CALLBACK(column_clicked), r2_tree_view);
+                     G_CALLBACK(column_clicked), (gpointer) r2_tree_view);
     
     /* Second row */
     column = gtk_tree_view_column_new();
@@ -309,7 +309,7 @@ void create_real2_tree_view(GtkTreeView *r2_tree_view, struct real2_clist *r2_cl
     gtk_tree_view_column_set_clickable(column, TRUE);
     g_object_set_data(G_OBJECT(column), "column_id", GINT_TO_POINTER(COLUMN_FIELD_NAME));
     g_signal_connect(G_OBJECT(column), "clicked", 
-                     G_CALLBACK(column_clicked), r2_tree_view);
+                     G_CALLBACK(column_clicked), (gpointer) r2_tree_view);
     
     /* 選択モード */
     selection = gtk_tree_view_get_selection(r2_tree_view);
@@ -424,9 +424,9 @@ void init_real2_tree_view(struct r2_clist_view *r2_vws){
                            renderer_spin1, renderer_spin2);
 	
     g_signal_connect(G_OBJECT(renderer_spin1), "edited", 
-                     G_CALLBACK(r2_tree_value1_edited_cb), r2_vws);
+                     G_CALLBACK(r2_tree_value1_edited_cb), (gpointer) r2_vws);
     g_signal_connect(G_OBJECT(renderer_spin2), "edited", 
-                     G_CALLBACK(r2_tree_value2_edited_cb), r2_vws);
+                     G_CALLBACK(r2_tree_value2_edited_cb), (gpointer) r2_vws);
 	
 	r2_vws->index_bc = append_r2_list_from_ctl(r2_vws->index_bc,
 				&r2_vws->r2_clist_gtk->r2_item_head, r2_vws->tree_view);
@@ -440,9 +440,9 @@ void add_real2_list_box_w_addbottun(struct r2_clist_view *r2_vws, GtkWidget *vbo
 				button_add, button_delete, vbox);
 	
     g_signal_connect(G_OBJECT(button_add), "clicked", 
-                     G_CALLBACK(add_r2_list_items_cb), r2_vws);
+                     G_CALLBACK(add_r2_list_items_cb), (gpointer) r2_vws);
     g_signal_connect(G_OBJECT(button_delete), "clicked", 
-                     G_CALLBACK(delete_r2_list_items_cb), r2_vws);
+                     G_CALLBACK(delete_r2_list_items_cb), (gpointer) r2_vws);
     
 };
 

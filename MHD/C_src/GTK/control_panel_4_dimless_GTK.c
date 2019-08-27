@@ -86,11 +86,11 @@ void add_dimless_selection_box(struct dimless_views *dless_vws, GtkWidget *vbox)
 	
     /* Add callbacks */
     g_signal_connect(G_OBJECT(button_add), "clicked", 
-                     G_CALLBACK(cb_add_dimless_new), dless_vws);
+                     G_CALLBACK(cb_add_dimless_new), (gpointer) dless_vws);
     g_signal_connect(G_OBJECT(combobox_add), "changed", 
-                     G_CALLBACK(cb_add_dimless_name), dless_vws);
+                     G_CALLBACK(cb_add_dimless_name), (gpointer) dless_vws);
     g_signal_connect(G_OBJECT(button_delete), "clicked", 
-                     G_CALLBACK(cb_deleta_dimless_lists), dless_vws);
+                     G_CALLBACK(cb_deleta_dimless_lists), (gpointer) dless_vws);
 };
 
 void add_dimless_combobox_vbox(struct dimless_views *dless_vws, GtkWidget *vbox)
@@ -105,7 +105,7 @@ void add_dimless_combobox_vbox(struct dimless_views *dless_vws, GtkWidget *vbox)
     hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
     combobox_field = gtk_combo_box_new_with_model(model_field);
     g_signal_connect(G_OBJECT(combobox_field), "changed", 
-                     G_CALLBACK(cb_set_dimless_name), dless_vws);
+                     G_CALLBACK(cb_set_dimless_name), (gpointer) dless_vws);
     column_field = gtk_cell_renderer_text_new();
     gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(combobox_field), column_field, TRUE);
     gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combobox_field), column_field,

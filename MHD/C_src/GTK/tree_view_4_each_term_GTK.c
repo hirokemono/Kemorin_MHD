@@ -91,9 +91,9 @@ void init_momentum_tree_view(struct momentum_coefs_view *mom_vws){
                                renderer_text, renderer_spin);
     
     g_signal_connect(G_OBJECT(renderer_text), "edited", 
-                     G_CALLBACK(thermal_buo_name_edited_cb), mom_vws);
+                     G_CALLBACK(thermal_buo_name_edited_cb), (gpointer) mom_vws);
     g_signal_connect(G_OBJECT(renderer_spin), "edited", 
-                     G_CALLBACK(thermal_buo_value_edited_cb), mom_vws);
+                     G_CALLBACK(thermal_buo_value_edited_cb), (gpointer) mom_vws);
 
     mom_vws->index_coefs = append_cr_list_from_ctl(mom_vws->index_coefs, 
                                                 mom_vws->mom_ctl_gtk, mom_vws->coefs_tree_view);
@@ -111,10 +111,10 @@ void add_thermal_buo_selection_box(struct momentum_coefs_view *mom_vws, GtkWidge
 	
     /* Add callbacks */
     g_signal_connect(G_OBJECT(button_add), "clicked", 
-                     G_CALLBACK(cb_add_thermal_buo_coef_new), mom_vws);
+                     G_CALLBACK(cb_add_thermal_buo_coef_new), (gpointer) mom_vws);
     g_signal_connect(G_OBJECT(combobox_add), "changed", 
-                     G_CALLBACK(cb_add_thermal_buo_coef), mom_vws);
+                     G_CALLBACK(cb_add_thermal_buo_coef), (gpointer) mom_vws);
     g_signal_connect(G_OBJECT(button_delete), "clicked", 
-                     G_CALLBACK(cb_delete_thermal_buo_coef_new), mom_vws);
+                     G_CALLBACK(cb_delete_thermal_buo_coef_new), (gpointer) mom_vws);
 };
 

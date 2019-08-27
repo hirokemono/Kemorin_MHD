@@ -400,9 +400,9 @@ void add_colormap_list_box(struct colormap_view *color_vws, GtkWidget *vbox){
                            renderer_spin1, renderer_spin2);
 	
     g_signal_connect(G_OBJECT(renderer_spin1), "edited", 
-                     G_CALLBACK(colormap_data_edited_cb), color_vws);
+                     G_CALLBACK(colormap_data_edited_cb), (gpointer) color_vws);
     g_signal_connect(G_OBJECT(renderer_spin2), "edited", 
-                     G_CALLBACK(colormap_color_edited_cb), color_vws);
+                     G_CALLBACK(colormap_color_edited_cb), (gpointer) color_vws);
 	
 	color_vws->cmap_vws->index_bc = append_r2_list_from_ctl(color_vws->cmap_vws->index_bc,
 				&color_vws->cmap_vws->r2_clist_gtk->r2_item_head, color_vws->cmap_vws->tree_view);
@@ -414,9 +414,9 @@ void add_colormap_list_box(struct colormap_view *color_vws, GtkWidget *vbox){
 				button_add, button_delete, vbox);
 	
     g_signal_connect(G_OBJECT(button_add), "clicked", 
-                     G_CALLBACK(add_colormap_list_items_cb), color_vws);
+                     G_CALLBACK(add_colormap_list_items_cb), (gpointer) color_vws);
     g_signal_connect(G_OBJECT(button_delete), "clicked", 
-                     G_CALLBACK(delete_colormap_list_items_cb), color_vws);
+                     G_CALLBACK(delete_colormap_list_items_cb), (gpointer) color_vws);
 };
 
 void add_opacity_list_box(struct colormap_view *color_vws, GtkWidget *vbox){
@@ -434,9 +434,9 @@ void add_opacity_list_box(struct colormap_view *color_vws, GtkWidget *vbox){
                            renderer_spin1, renderer_spin2);
 	
     g_signal_connect(G_OBJECT(renderer_spin1), "edited", 
-                     G_CALLBACK(opacity_data_edited_cb), color_vws);
+                     G_CALLBACK(opacity_data_edited_cb), (gpointer) color_vws);
     g_signal_connect(G_OBJECT(renderer_spin2), "edited", 
-                     G_CALLBACK(opacity_color_edited_cb), color_vws);
+                     G_CALLBACK(opacity_color_edited_cb), (gpointer) color_vws);
 	
 	color_vws->opacity_vws->index_bc = append_r2_list_from_ctl(color_vws->opacity_vws->index_bc,
 				&color_vws->opacity_vws->r2_clist_gtk->r2_item_head, color_vws->opacity_vws->tree_view);
@@ -447,9 +447,9 @@ void add_opacity_list_box(struct colormap_view *color_vws, GtkWidget *vbox){
 				button_add, button_delete, vbox);
 	
     g_signal_connect(G_OBJECT(button_add), "clicked", 
-                     G_CALLBACK(add_opacity_list_items_cb), color_vws);
+                     G_CALLBACK(add_opacity_list_items_cb), (gpointer) color_vws);
     g_signal_connect(G_OBJECT(button_delete), "clicked", 
-                     G_CALLBACK(delete_opacity_list_items_cb), color_vws);
+                     G_CALLBACK(delete_opacity_list_items_cb), (gpointer) color_vws);
 };
 
 void add_colormp_list_box(struct colormap_view *color_vws, GtkWidget *vbox){
@@ -461,6 +461,7 @@ void add_colormp_list_box(struct colormap_view *color_vws, GtkWidget *vbox){
     GtkTreeModel *model;
     GtkTreeModel *child_model;
     int index = 0;
+	int iflag;
 
     init_real2_tree_view(color_vws->cmap_vws);
     init_real2_tree_view(color_vws->opacity_vws);
@@ -475,12 +476,21 @@ void add_colormp_list_box(struct colormap_view *color_vws, GtkWidget *vbox){
 	
 	combobox_cmap = gtk_combo_box_new_with_model(child_model);
 	child_model = gtk_cell_renderer_text_new();
-	gtk_combo_box_set_active(combobox_cmap, color_vws->cmap_param->id_color_mode);
+	iflag = color_vws->cmap_param->id_color_mode;
+	if(iflag == SYM_GRAY_MODE){
+		gtk_combo_box_set_active(combobox_cmap, 3);
+	} else if(iflag == RED_BLUE_MODE){
+		gtk_combo_box_set_active(combobox_cmap, 2);
+	} else if(iflag == GRAYSCALE_MODE){
+		gtk_combo_box_set_active(combobox_cmap, 1);
+	} else {
+		gtk_combo_box_set_active(combobox_cmap, 0);
+	};
 	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(combobox_cmap), child_model, TRUE);
 	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combobox_cmap), child_model,
 				"text", COLUMN_FIELD_NAME, NULL);
     g_signal_connect(G_OBJECT(combobox_cmap), "changed", 
-                     G_CALLBACK(set_color_mode_cb), color_vws);
+                     G_CALLBACK(set_color_mode_cb), (gpointer) color_vws);
 	
 	
 	vbox_1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
@@ -499,7 +509,7 @@ void add_colormp_list_box(struct colormap_view *color_vws, GtkWidget *vbox){
     gtk_widget_set_app_paintable(color_vws->scrolled_window, TRUE);
     gtk_widget_add_events (color_vws->scrolled_window, GDK_BUTTON_PRESS_MASK);
 	g_signal_connect(G_OBJECT(color_vws->scrolled_window), "draw", 
-				G_CALLBACK(cb_expose_event), color_vws);
+				G_CALLBACK(cb_expose_event), (gpointer) color_vws);
     gtk_box_pack_start(GTK_BOX(hbox_1), color_vws->scrolled_window, TRUE, TRUE, 0);
 	
     

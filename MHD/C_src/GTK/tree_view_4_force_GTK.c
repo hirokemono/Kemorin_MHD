@@ -64,9 +64,9 @@ static void create_dimless_tree_view(struct dimless_views *dless_vws)
                                renderer_text, renderer_spin);
 	
 	g_signal_connect(G_OBJECT(renderer_text), "edited", 
-				G_CALLBACK(dimless_name_edited_cb), dless_vws);
+				G_CALLBACK(dimless_name_edited_cb), (gpointer) dless_vws);
 	g_signal_connect(G_OBJECT(renderer_spin), "edited", 
-				G_CALLBACK(dimless_value_edited_cb), dless_vws);
+				G_CALLBACK(dimless_value_edited_cb), (gpointer) dless_vws);
 };
 void init_dimless_tree_view(struct dimless_views *dless_vws){
     create_dimless_tree_view(dless_vws);

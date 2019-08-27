@@ -207,7 +207,7 @@ void add_field_selection_box(struct field_views *fields_vws, GtkWidget *vbox)
 	/* Delete data bottun */
 	button = gtk_button_new_from_stock(GTK_STOCK_REMOVE);
     g_signal_connect(G_OBJECT(button), "clicked", 
-                     G_CALLBACK(remove_field_to_use), fields_vws);
+                     G_CALLBACK(remove_field_to_use), (gpointer) fields_vws);
 	gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 0);
 
 	scrolled_window = gtk_scrolled_window_new(NULL, NULL);
@@ -242,7 +242,7 @@ void add_field_selection_box(struct field_views *fields_vws, GtkWidget *vbox)
 	hbox_1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	button_1 = gtk_button_new_from_stock(GTK_STOCK_ADD);
 	g_signal_connect(G_OBJECT(button_1), "clicked", 
-				G_CALLBACK(add_field_to_use), fields_vws);
+				G_CALLBACK(add_field_to_use), (gpointer) fields_vws);
     gtk_box_pack_start(GTK_BOX(hbox_1), button_1, FALSE, TRUE, 0);
 
 	gtk_box_pack_start(GTK_BOX(hbox_1), gtk_label_new("  "), FALSE, FALSE, 0);
@@ -273,7 +273,7 @@ void add_field_combobox_vbox(struct field_views *fields_vws, GtkWidget *vbox)
 	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	combobox_field = gtk_combo_box_new_with_model(model_field);
 	g_signal_connect(G_OBJECT(combobox_field), "changed", 
-				G_CALLBACK(cb_set_field_name), fields_vws);
+				G_CALLBACK(cb_set_field_name), (gpointer) fields_vws);
 	column_field = gtk_cell_renderer_text_new();
 	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(combobox_field), column_field, TRUE);
 	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combobox_field), column_field,

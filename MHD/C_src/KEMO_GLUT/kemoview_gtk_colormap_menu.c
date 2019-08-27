@@ -60,7 +60,7 @@ void add_gtk_isoline_menu(struct colormap_view *color_vws, GtkWidget *box){
 	sprintf(current_nline_txt, "    %d    ", current_nline);
 	adj_nline = gtk_adjustment_new ((double) current_nline, 0, 200, 1, 1, 0.0);
 	spin_nline = gtk_spin_button_new(GTK_ADJUSTMENT(adj_nline), 0, 2);
-	g_signal_connect(spin_nline, "value-changed", G_CALLBACK(set_nline_CB), color_vws);
+	g_signal_connect(spin_nline, "value-changed", G_CALLBACK(set_nline_CB), (gpointer) color_vws);
 	
 	hbox_23 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
 	gtk_box_pack_start(GTK_BOX(hbox_23), gtk_label_new("Current num. of lines: "), TRUE, TRUE, 0);
@@ -158,7 +158,7 @@ void gtk_psf_colormap_menu(struct kv_string *title,
 	box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
 	gtk_container_add(GTK_CONTAINER(window_cmap), box);
 	add_gtk_isoline_menu(color_vws, box);
-	add_gtk_psf_surface_menu(color_vws, box);
+	add_gtk_psf_surface_menu(color_vws, window_cmap, box);
 	add_gtk_psf_colormap_menu(color_vws, box);
 	int if_psf = kemoview_get_PSF_field_id();
 	int ncomp = kemoview_get_PSF_num_component(if_psf);
