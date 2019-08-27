@@ -11,6 +11,15 @@
 
 GtkWidget *window_csel;
 
+static void psf_surface_switch_CB(GObject *switch_1, GParamSpec *pspec, gpointer data){
+	kemoview_select_PSF_draw_switch(PSFSOLID_TOGGLE);
+	return;
+};
+static void psf_colorbar_switch_CB(GObject *switch_1, GParamSpec *pspec, gpointer data){
+	kemoview_select_PSF_draw_switch(COLORBAR_TOGGLE);
+	return;
+};
+
 static void set_PSFcolor_GTK(GtkColorChooser *colordialog)
 {
 	GdkRGBA gcolor;
@@ -142,14 +151,14 @@ static void MaxChange(GtkWidget *entry, gpointer data)
 
 void add_gtk_psf_surface_menu(struct colormap_view *color_vws, 
 							  GtkWidget *window_cmap, GtkWidget *box){
-	GtkWidget *hbox_color;
+	GtkWidget *hbox_draw, *hbox_bar, *hbox_color;
 	GtkWidget *hbox_one_opacity, *hbox_org_opacity;
 	GtkWidget *hbox_range, *hbox_org_range;
 	
 	GtkWidget *expander_psf,  *scroll_psf, *Frame_psf;
 	GtkWidget *hbox_psf,  *vbox_psf;
 	
-	GtkWidget *switch_1;
+	GtkWidget *switch_1, *switch_bar;
 	int iflag_vect;
 	
 	GtkWidget *combobox_sfcolor;
@@ -177,6 +186,25 @@ void add_gtk_psf_surface_menu(struct colormap_view *color_vws,
 	GtkAdjustment *adj_vect_width;
 	double current_vec_width;
 	char current_vec_width_txt[30];
+	
+	switch_1 = gtk_switch_new();
+	if(kemoview_get_PSF_draw_flags(PSFSOLID_TOGGLE) == 0){
+		gtk_switch_set_active(GTK_SWITCH(switch_1), FALSE);
+	} else {
+		gtk_switch_set_active(GTK_SWITCH(switch_1), TRUE);
+	};
+	g_signal_connect(G_OBJECT(switch_1), "notify::active",
+				G_CALLBACK(psf_surface_switch_CB), NULL);
+	
+	switch_bar = gtk_switch_new();
+	if(kemoview_get_PSF_draw_flags(COLORBAR_TOGGLE) == 0){
+		gtk_switch_set_active(GTK_SWITCH(switch_bar), FALSE);
+	} else {
+		gtk_switch_set_active(GTK_SWITCH(switch_bar), TRUE);
+	};
+	g_signal_connect(G_OBJECT(switch_bar), "notify::active",
+				G_CALLBACK(psf_colorbar_switch_CB), NULL);
+	
 	
 	label_tree_sfcolor = create_fixed_label_w_index_tree();
 	model_sfcolor = gtk_tree_view_get_model (label_tree_sfcolor);  
@@ -229,6 +257,14 @@ void add_gtk_psf_surface_menu(struct colormap_view *color_vws,
 	g_signal_connect(spin_max, "value-changed", G_CALLBACK(MaxChange), NULL);
 	
 	
+	hbox_draw = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
+	gtk_box_pack_start(GTK_BOX(hbox_draw), gtk_label_new("Draw surface: "), FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_draw), switch_1, FALSE, FALSE, 0);
+	
+	hbox_bar = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
+	gtk_box_pack_start(GTK_BOX(hbox_bar), gtk_label_new("Draw color bar: "), FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_bar), switch_bar, FALSE, FALSE, 0);
+	
 	hbox_color = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
 	gtk_box_pack_start(GTK_BOX(hbox_color), gtk_label_new("Color mode: "), FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_color), combobox_sfcolor, FALSE, FALSE, 0);
@@ -248,6 +284,8 @@ void add_gtk_psf_surface_menu(struct colormap_view *color_vws,
 	gtk_box_pack_start(GTK_BOX(hbox_range), spin_max, TRUE, TRUE, 0);
 	
 	vbox_psf = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
+	gtk_box_pack_start(GTK_BOX(vbox_psf), hbox_draw, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_psf), hbox_bar, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox_psf), hbox_color, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox_psf), hbox_org_opacity, TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox_psf), hbox_one_opacity, TRUE, TRUE, 0);

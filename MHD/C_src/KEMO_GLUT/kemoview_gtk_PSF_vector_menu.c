@@ -202,6 +202,10 @@ void add_gtk_psf_vector_menu(struct colormap_view *color_vws, GtkWidget *box){
 	g_signal_connect(spin_vect_width, "value-changed", G_CALLBACK(set_vector_width_CB), (gpointer) color_vws);
 	
 	
+	hbox_draw = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
+	gtk_box_pack_start(GTK_BOX(hbox_draw), gtk_label_new("Draw vector: "), FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_draw), switch_1, FALSE, FALSE, 0);
+	
 	hbox_vecmode = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
 	gtk_box_pack_start(GTK_BOX(hbox_vecmode), gtk_label_new("Direction: "), FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_vecmode), combobox_vecmode, FALSE, FALSE, 0);
@@ -209,10 +213,6 @@ void add_gtk_psf_vector_menu(struct colormap_view *color_vws, GtkWidget *box){
 	hbox_veccolor = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
 	gtk_box_pack_start(GTK_BOX(hbox_veccolor), gtk_label_new("Color: "), FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_veccolor), combobox_veccolor, FALSE, FALSE, 0);
-	
-	hbox_draw = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
-	gtk_box_pack_start(GTK_BOX(hbox_draw), gtk_label_new("Draw vector: "), FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox_draw), switch_1, FALSE, FALSE, 0);
 	
 	hbox_13 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
 	gtk_box_pack_start(GTK_BOX(hbox_13), gtk_label_new("Current Vector ref.: "), TRUE, TRUE, 0);

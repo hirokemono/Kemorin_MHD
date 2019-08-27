@@ -222,20 +222,11 @@ void glut_fline_color_comp_select() {
 };
 
 void glut_PSF_draw_menu(){
-	int iflag_solid =       kemoview_get_PSF_draw_flags(PSFSOLID_TOGGLE);
 	int iflag_grid =        kemoview_get_PSF_draw_flags(PSFGRID_TOGGLE);
 	int iflag_zero =        kemoview_get_PSF_draw_flags(ZEROGRID_TOGGLE);
-	int iflag_cbar =        kemoview_get_PSF_draw_flags(COLORBAR_TOGGLE);
 	int iflag_PSF_polygon = kemoview_get_PSF_draw_flags(PSF_POLYGON_SWITCH);
 	int if_psf =            kemoview_get_PSF_field_id();
 	int ncomp =             kemoview_get_PSF_num_component(if_psf);
-	
-	if(iflag_solid != IZERO ){
-		glutAddMenuEntry("hide PSF surface",PSFSOLID_TOGGLE);
-	}
-	else{
-		glutAddMenuEntry("show PSF surface",PSFSOLID_TOGGLE);
-	};
 	
 	if(iflag_grid != IZERO ){
 		glutAddMenuEntry("hide PSF isolines",PSFGRID_TOGGLE);
@@ -250,14 +241,6 @@ void glut_PSF_draw_menu(){
 	else{
 		glutAddMenuEntry("show zero lines",ZEROGRID_TOGGLE);
 	};
-	
-	if(iflag_cbar != IZERO ){
-		glutAddMenuEntry("hide colorbar",COLORBAR_TOGGLE);
-	}
-	else{
-		glutAddMenuEntry("show colorbar",COLORBAR_TOGGLE);
-	};
-	return;
 }
 	
 static void glut_add_each_grp_menu_item(int i_item, int iflag_draw, char *grp_name){
