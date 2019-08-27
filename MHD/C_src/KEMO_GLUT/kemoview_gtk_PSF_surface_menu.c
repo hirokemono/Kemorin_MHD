@@ -52,13 +52,29 @@ static void kemoview_gtk_surfcolorsel(gpointer user_data){
 	return;
 }
 
-static void load_texture_handler(){
+static int load_texture_file_gtk(GtkWidget*parent, struct kv_string *file_prefix){
+    struct kv_string *stripped_ext;
+	int id_img;
+	struct kv_string *filename= kemoview_read_file_panel(parent);
+	
+	if(filename->string[0] == '\0') return 0;
+	
+    stripped_ext = kemoview_alloc_kvstring();
+	kemoview_get_ext_from_file_name(filename, file_prefix, stripped_ext);
+	
+	id_img = kemoview_set_image_file_format_id(stripped_ext);
+    kemoview_free_kvstring(stripped_ext);
+    kemoview_free_kvstring(filename);
+	return id_img;
+}
+
+static void load_texture_handler(gpointer user_data){
 	int id_image;
     struct kv_string *image_prefix = kemoview_alloc_kvstring();
-	id_image = input_texture_file_gtk(image_prefix);
+	GtkWidget  *parent = (GtkWidget *) user_data;
+	id_image = load_texture_file_gtk(parent, image_prefix);
 	
 	if(id_image == SAVE_PNG || id_image == SAVE_BMP){
-        image_prefix = kemoview_alloc_kvstring();
 		kemoview_set_texture_to_PSF(id_image, image_prefix);
 		kemoview_set_PSF_patch_color_mode(TEXTURED_SURFACE);
         kemoview_free_kvstring(image_prefix);
@@ -93,7 +109,7 @@ static void psf_surf_colormode_CB(GtkComboBox *combobox_cmap, gpointer user_data
 	if (index_mode == WHITE_SURFACE)     {kemoview_set_PSF_patch_color_mode(WHITE_SURFACE);}
 	else if (index_mode == SINGLE_COLOR) {kemoview_gtk_surfcolorsel(user_data);}
     else if (index_mode == RAINBOW_PSF_SURF) {kemoview_set_PSF_patch_color_mode(RAINBOW_SURFACE);}
-	else if (index_mode == TEXTURE_PSF_SURF) {load_texture_handler();};
+	else if (index_mode == TEXTURE_PSF_SURF) {load_texture_handler(user_data);};
 	
 //	draw_mesh_w_menu();
 	return;
