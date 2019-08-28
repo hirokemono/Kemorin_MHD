@@ -159,7 +159,7 @@ static GtkCellRenderer * create_each_text_renderer(GtkTreeViewColumn *column,
 	return renderer;
 };
 static GtkCellRenderer * create_each_toggle_renderer(GtkTreeViewColumn *column, 
-			int iwidth, int column_index, struct field_views *fields_vws){
+			int iwidth, int column_index){
 	GtkCellRenderer *renderer = gtk_cell_renderer_toggle_new();
     gtk_tree_view_column_pack_start(column, renderer, TRUE);
     gtk_tree_view_column_set_attributes(column, renderer, "active", column_index, NULL);
@@ -190,13 +190,13 @@ void create_field_tree_columns(struct field_views *fields_vws)
     /* Forth row */
 	column = create_each_field_column(fields_vws->used_tree_view,
 				"Field output", COLUMN_VIZ_FLAG);
-	renderer = create_each_toggle_renderer(column, 60, COLUMN_VIZ_FLAG, fields_vws);
+	renderer = create_each_toggle_renderer(column, 60, COLUMN_VIZ_FLAG);
     g_signal_connect(G_OBJECT(renderer), "toggled", G_CALLBACK(toggle_viz_switch), (gpointer) fields_vws);
     
     /* Fifth row */
 	column = create_each_field_column(fields_vws->used_tree_view,
 				"Monitor output", COLUMN_MONITOR_FLAG);
-	renderer = create_each_toggle_renderer(column, 60, COLUMN_MONITOR_FLAG, fields_vws);
+	renderer = create_each_toggle_renderer(column, 60, COLUMN_MONITOR_FLAG);
     g_signal_connect(G_OBJECT(renderer), "toggled", G_CALLBACK(toggle_monitor_switch), (gpointer) fields_vws);
 };
 

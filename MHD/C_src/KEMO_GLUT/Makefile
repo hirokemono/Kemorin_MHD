@@ -8,6 +8,7 @@ const_viewer_menu_glut.o \
 view_modifier_glut.o \
 \
 kemoview_fileselector_gtk.o \
+kemoview_gtk_psf_selectors.o \
 kemoview_gtk_PSF_surface_menu.o \
 kemoview_gtk_PSF_isoline_menu.o \
 kemoview_gtk_PSF_vector_menu.o \
@@ -73,6 +74,16 @@ module:
 	>> $(MAKENAME)
 	
 	@echo \
+	kemoview_gtk_psf_selectors.o: \
+	'$$(KEMO_C_GLUTDIR)'/kemoview_gtk_psf_selectors.c \
+	kemoview_gtk_psf_selectors.h \
+	kemoviewer.h \
+	m_kemoviewer_data.h.o \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS) $$<' \
+	>> $(MAKENAME)
+	
+	@echo \
 	kemoview_gtk_PSF_surface_menu.o: \
 	'$$(KEMO_C_GLUTDIR)'/kemoview_gtk_PSF_surface_menu.c \
 	kemoview_gtk_PSF_surface_menu.h \
@@ -115,6 +126,7 @@ module:
 	tree_view_4_pvr_colormap.o \
 	tree_view_4_light_position.o \
 	kemoview_fileselector_gtk.o \
+	kemoview_gtk_psf_selectors.o \
 	kemoview_gtk_PSF_surface_menu.o \
 	kemoview_gtk_PSF_vector_menu.o \
 	>> $(MAKENAME)
