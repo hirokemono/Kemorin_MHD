@@ -257,7 +257,7 @@ int add_cr_list_items_GTK(int index, GtkTreeView *tree_view_to_add,
 	gtk_tree_path_free(tree_path);
     g_list_free(reference_list);
 	
-	gtk_list_store_clear(child_model_to_add);
+	gtk_list_store_clear(GTK_LIST_STORE(child_model_to_add));
 	append_cr_list_from_ctl(index, &cr_clist->cr_item_head, tree_view_to_add);
     /* changedシグナルのブロックを解除する */
 	unblock_changed_signal(G_OBJECT(child_model_to_add));

@@ -41,7 +41,7 @@ static void create_tree_view_window(GtkButton *button, gpointer user_data)
 	
     vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	/* Close window bottun */
-	button = gtk_button_new_from_stock(GTK_STOCK_CLOSE);
+	button = gtk_button_new_with_label("Close");
     gtk_box_pack_start(GTK_BOX(vbox), button, FALSE, FALSE, 0);
     g_signal_connect(G_OBJECT(button), "clicked", 
                      G_CALLBACK(cb_close_window), window);

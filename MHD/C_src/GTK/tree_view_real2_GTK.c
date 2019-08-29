@@ -182,7 +182,7 @@ int add_r2_list_items(int index, GtkTreeView *r2_tree_view,
 	gtk_tree_path_free(tree_path);
     g_list_free(reference_list);
 	
-	gtk_list_store_clear(child_model_to_add);
+	gtk_list_store_clear(GTK_LIST_STORE(child_model_to_add));
 	index = append_r2_list_from_ctl(index, &r2_clist->r2_item_head, r2_tree_view);
 	return index;
 }
