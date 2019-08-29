@@ -46,7 +46,7 @@ void ci_tree_name_edited(gchar *path_str, gchar *new_text,
     GtkTreeIter iter;
 
     gchar *old_text;
-    double old_value, new_value;
+    int old_value, new_value;
 
     gtk_tree_model_get_iter(child_model, &iter, child_path);  
     gtk_tree_model_get(child_model, &iter, COLUMN_FIELD_NAME, &old_text, -1);
@@ -72,17 +72,17 @@ void ci_tree_value_edited(gchar *path_str, gchar *new_text,
     GtkTreeIter iter;
     
     gchar *old_text;
-    double old_value, new_value;
+    int old_value, new_value;
     
-    sscanf(new_text, "%lf", &new_value);
+    sscanf(new_text, "%d", &new_value);
     gtk_tree_model_get_iter(child_model, &iter, child_path);  
     gtk_tree_model_get(child_model, &iter, COLUMN_FIELD_NAME, &old_text, -1);
-    gtk_tree_model_get(child_model, &iter, COLUMN_FIELD_MATH,  &old_value, -1);
+    gtk_tree_model_get(child_model, &iter, COLUMN_FIELD_MATH, &old_value, -1);
     
-    printf("Change %lf to %lf\n", old_value, new_value);
+    printf("Change %d to %d\n", old_value, new_value);
     
     gtk_list_store_set(GTK_LIST_STORE(child_model), &iter,
-                       COLUMN_FIELD_VALUE, new_value, -1);
+                       COLUMN_FIELD_MATH, new_value, -1);
     gtk_tree_path_free(child_path);  
     gtk_tree_path_free(path);  
     
@@ -132,7 +132,7 @@ int add_ci_list_by_bottun_GTK(int index, GtkTreeView *tree_view_to_add,
     GtkTreeModel *child_model_to_add = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_to_add));
         
     gchar row_string[30] = "new_number";
-    int ivalue = 0.0;
+    int ivalue = 0;
     
     index = append_ci_item_to_tree(index, row_string, ivalue, child_model_to_add);
 	append_chara_int_clist(row_string, ivalue, ci_clist);
@@ -314,7 +314,7 @@ void delete_ci_list_items_GTK(GtkTreeView *tree_view_to_del,
         gtk_tree_row_reference_free((GtkTreeRowReference *)cur->data);
         
         /* Update control data */
-        del_chara_real_clist_by_c_tbl(field_name, ci_clist);
+        del_chara_int_clist_by_c_tbl(field_name, ci_clist);
     }
     g_list_free(reference_list);
     
@@ -340,8 +340,7 @@ void create_text_int_tree_view(struct chara_int_clist *ci_clist, GtkTreeView *ci
     int i;
     
 	/* Construct empty list storage */
-    child_model = gtk_list_store_new(4, G_TYPE_INT, G_TYPE_STRING, G_TYPE_STRING,
-                                     G_TYPE_DOUBLE);
+    child_model = gtk_list_store_new(3, G_TYPE_INT, G_TYPE_STRING, G_TYPE_INT);
     g_object_set_data(G_OBJECT(child_model), "selection_list", NULL);
     
     /* Construct model for sorting and set to tree view */
@@ -380,20 +379,20 @@ void create_text_int_tree_view(struct chara_int_clist *ci_clist, GtkTreeView *ci
     column = gtk_tree_view_column_new();
     gtk_tree_view_append_column(ci_tree_view, column);
     gtk_tree_view_column_set_title(column, ci_clist->i1_name);
-    adjust = gtk_adjustment_new(2.5, -1.0e30, 1.0e30, 0.1,
+    adjust = gtk_adjustment_new(10, -32768, 32768, 1,
                                 100, 21474836);
     g_object_set(G_OBJECT(renderer_spin), 
                  "adjustment", adjust,
-                 "climb-rate", 0.5,
-                 "digits", 3, 
+                 "climb-rate", 1,
+                 "digits", 0, 
                  "editable", TRUE, 
                  "width", (gint)150, NULL);
 
     gtk_tree_view_column_pack_start(column, renderer_spin, TRUE);
-    gtk_tree_view_column_set_attributes(column, renderer_spin, "text", COLUMN_FIELD_VALUE, NULL);
+    gtk_tree_view_column_set_attributes(column, renderer_spin, "text", COLUMN_FIELD_MATH, NULL);
     gtk_tree_view_column_set_resizable(column, TRUE);
     gtk_tree_view_column_set_clickable(column, TRUE);
-    g_object_set_data(G_OBJECT(column), "column_id", GINT_TO_POINTER(COLUMN_FIELD_VALUE));
+    g_object_set_data(G_OBJECT(column), "column_id", GINT_TO_POINTER(COLUMN_FIELD_MATH));
     g_signal_connect(G_OBJECT(column), "clicked", 
                      G_CALLBACK(column_clicked), (gpointer) ci_tree_view);
     
@@ -476,3 +475,4 @@ void add_chara_int_list_box_w_combobox(GtkTreeView *ci_tree_view,
     
     add_sorting_signal_w_label(ci_tree_view, hbox);
 };
+

@@ -407,8 +407,8 @@ void add_colormap_list_box(struct colormap_view *color_vws, GtkWidget *vbox){
 	color_vws->cmap_vws->index_bc = append_r2_list_from_ctl(color_vws->cmap_vws->index_bc,
 				&color_vws->cmap_vws->r2_clist_gtk->r2_item_head, color_vws->cmap_vws->tree_view);
 	
-	button_add = gtk_button_new_from_stock(GTK_STOCK_ADD);
-    button_delete = gtk_button_new_from_stock(GTK_STOCK_REMOVE);
+	button_add = gtk_button_new_with_label("ADD");
+    button_delete = gtk_button_new_with_label("Remove");
 	
 	add_real2_list_box(color_vws->cmap_vws->tree_view, color_vws->cmap_vws->r2_clist_gtk,
 				button_add, button_delete, vbox);
@@ -441,8 +441,8 @@ void add_opacity_list_box(struct colormap_view *color_vws, GtkWidget *vbox){
 	color_vws->opacity_vws->index_bc = append_r2_list_from_ctl(color_vws->opacity_vws->index_bc,
 				&color_vws->opacity_vws->r2_clist_gtk->r2_item_head, color_vws->opacity_vws->tree_view);
 	
-	button_add = gtk_button_new_from_stock(GTK_STOCK_ADD);
-    button_delete = gtk_button_new_from_stock(GTK_STOCK_REMOVE);
+	button_add = gtk_button_new_with_label("ADD");
+    button_delete = gtk_button_new_with_label("Remove");
 	add_real2_list_box(color_vws->opacity_vws->tree_view, color_vws->opacity_vws->r2_clist_gtk,
 				button_add, button_delete, vbox);
 	

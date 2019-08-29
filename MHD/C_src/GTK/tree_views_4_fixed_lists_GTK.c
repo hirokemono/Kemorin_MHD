@@ -137,8 +137,6 @@ void create_fixed_constant_tree(GtkWidget *label_tree)
     
     GtkListStore *child_model;
     
-    int i;
-    
     /* Construct empty list storage */
     child_model = gtk_list_store_new(4, G_TYPE_INT, G_TYPE_STRING, G_TYPE_STRING,
                                      G_TYPE_DOUBLE);
@@ -197,7 +195,7 @@ void create_fixed_constant_tree(GtkWidget *label_tree)
 }
 
 void append_scalar_componnet_label(GtkWidget *label_tree){
-    GtkTreeModel *model = gtk_tree_view_get_model (label_tree);  
+    GtkTreeModel *model = gtk_tree_view_get_model(GTK_TREE_VIEW(label_tree));  
     GtkTreeModel *child_model = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model));
     int i;
     GtkTreeIter iter;
@@ -213,7 +211,7 @@ void append_scalar_componnet_label(GtkWidget *label_tree){
 }
 
 void append_vector_componnet_label(GtkWidget *label_tree){
-    GtkTreeModel *model = gtk_tree_view_get_model (label_tree);  
+    GtkTreeModel *model = gtk_tree_view_get_model(GTK_TREE_VIEW(label_tree));  
     GtkTreeModel *child_model = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model));
     int i;
     GtkTreeIter iter;
@@ -229,7 +227,7 @@ void append_vector_componnet_label(GtkWidget *label_tree){
 }
 
 void append_sym_tensor_componnet_label(GtkWidget *label_tree){
-    GtkTreeModel *model = gtk_tree_view_get_model (label_tree);  
+    GtkTreeModel *model = gtk_tree_view_get_model(GTK_TREE_VIEW(label_tree));  
     GtkTreeModel *child_model = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model));
     int i;
     GtkTreeIter iter;
@@ -244,7 +242,7 @@ void append_sym_tensor_componnet_label(GtkWidget *label_tree){
     
 }
 void append_xyz_componnet_label(GtkWidget *label_tree){
-    GtkTreeModel *model = gtk_tree_view_get_model (label_tree);  
+    GtkTreeModel *model = gtk_tree_view_get_model(GTK_TREE_VIEW(label_tree));  
     GtkTreeModel *child_model = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model));
     int i;
     GtkTreeIter iter;
@@ -260,7 +258,7 @@ void append_xyz_componnet_label(GtkWidget *label_tree){
 }
 
 void append_surface_equation_label(GtkWidget *label_tree){
-    GtkTreeModel *model = gtk_tree_view_get_model (label_tree);  
+    GtkTreeModel *model = gtk_tree_view_get_model(GTK_TREE_VIEW(label_tree));  
     GtkTreeModel *child_model = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model));
     int i;
     GtkTreeIter iter;
@@ -276,7 +274,7 @@ void append_surface_equation_label(GtkWidget *label_tree){
 }
 
 void append_force_label(GtkWidget *label_tree){
-    GtkTreeModel *model = gtk_tree_view_get_model (label_tree);  
+    GtkTreeModel *model = gtk_tree_view_get_model(GTK_TREE_VIEW(label_tree));  
     GtkTreeModel *child_model = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model));
     int i;
     GtkTreeIter iter;
@@ -292,7 +290,7 @@ void append_force_label(GtkWidget *label_tree){
 }
 
 void append_basic_force_label(GtkWidget *label_tree){
-    GtkTreeModel *model = gtk_tree_view_get_model (label_tree);  
+    GtkTreeModel *model = gtk_tree_view_get_model(GTK_TREE_VIEW(label_tree));  
     GtkTreeModel *child_model = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model));
     int i;
     GtkTreeIter iter;
@@ -308,7 +306,7 @@ void append_basic_force_label(GtkWidget *label_tree){
 }
 
 void append_gravity_type_label(GtkWidget *label_tree){
-    GtkTreeModel *model = gtk_tree_view_get_model (label_tree);  
+    GtkTreeModel *model = gtk_tree_view_get_model(GTK_TREE_VIEW(label_tree));  
     GtkTreeModel *child_model = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model));
     int i;
     GtkTreeIter iter;

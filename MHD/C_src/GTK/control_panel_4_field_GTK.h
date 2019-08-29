@@ -11,6 +11,7 @@
 #include <stdlib.h>
 #include <gtk/gtk.h>
 
+#include "t_SGS_MHD_control_c.h"
 #include "t_ctl_data_4_fields_c.h"
 #include "tree_view_4_field_GTK.h"
 #include "tree_views_4_fixed_lists_GTK.h"

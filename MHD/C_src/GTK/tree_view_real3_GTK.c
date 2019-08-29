@@ -283,7 +283,10 @@ void create_real3_tree_view(GtkTreeView *r3_tree_view, struct real3_clist *r3_cl
     /*    GtkTreeModel *child_model = GTK_TREE_MODEL(user_data);*/
     
     GtkTreeModel *model;
-    GtkTreeViewColumn *column;
+    GtkTreeViewColumn *column_1st;
+    GtkTreeViewColumn *column_2nd;
+    GtkTreeViewColumn *column_3rd;
+    GtkTreeViewColumn *column_4th;
     GtkTreeSelection *selection;
     
     GtkListStore *child_model;
@@ -298,9 +301,9 @@ void create_real3_tree_view(GtkTreeView *r3_tree_view, struct real3_clist *r3_cl
     gtk_tree_view_set_model(GTK_TREE_VIEW(r3_tree_view), model);
     
     /* First raw */
-    column = gtk_tree_view_column_new();
-    gtk_tree_view_append_column(r3_tree_view, column);
-    gtk_tree_view_column_set_title(column, r3_clist->r1_name);
+    column_1st = gtk_tree_view_column_new();
+    gtk_tree_view_append_column(r3_tree_view, column_1st);
+    gtk_tree_view_column_set_title(column_1st, r3_clist->r1_name);
     adjust = gtk_adjustment_new(2.5, -1.0e30, 1.0e30, 0.1,
                                 100, 21474836);
     
@@ -311,18 +314,20 @@ void create_real3_tree_view(GtkTreeView *r3_tree_view, struct real3_clist *r3_cl
                  "editable", TRUE, 
                  "width", (gint)100, NULL);
     
-    gtk_tree_view_column_pack_start(column, renderer_spin1, TRUE);
-    gtk_tree_view_column_set_attributes(column, renderer_spin1, "text", COLUMN_FIELD_INDEX, NULL);
-    gtk_tree_view_column_set_resizable(column, TRUE);
-    gtk_tree_view_column_set_clickable(column, TRUE);
-    g_object_set_data(G_OBJECT(column), "column_id", GINT_TO_POINTER(COLUMN_FIELD_INDEX));
-    g_signal_connect(G_OBJECT(column), "clicked", 
-                     G_CALLBACK(column_clicked), (gpointer) r3_tree_view);
+    gtk_tree_view_column_pack_start(column_1st, renderer_spin1, TRUE);
+	gtk_tree_view_column_set_attributes(column_1st, renderer_spin1, "text",
+				COLUMN_FIELD_INDEX, NULL);
+    gtk_tree_view_column_set_resizable(column_1st, TRUE);
+    gtk_tree_view_column_set_clickable(column_1st, TRUE);
+	g_object_set_data(G_OBJECT(column_1st), "column_id", 
+				GINT_TO_POINTER(COLUMN_FIELD_INDEX));
+    g_signal_connect(G_OBJECT(column_1st), "clicked", 
+				G_CALLBACK(column_clicked), (gpointer) r3_tree_view);
     
     /* Second row */
-    column = gtk_tree_view_column_new();
-    gtk_tree_view_append_column(r3_tree_view, column);
-    gtk_tree_view_column_set_title(column, r3_clist->r2_name);
+    column_2nd = gtk_tree_view_column_new();
+    gtk_tree_view_append_column(r3_tree_view, column_2nd);
+    gtk_tree_view_column_set_title(column_2nd, r3_clist->r2_name);
     //    adjust = gtk_adjustment_new(0.5, 0.0, 1.0, 0.01,
     //                                100, 21474836);
     adjust = gtk_adjustment_new(0.5, -1.0e30, 1.0e30, 0.1,
@@ -335,18 +340,20 @@ void create_real3_tree_view(GtkTreeView *r3_tree_view, struct real3_clist *r3_cl
                  "editable", TRUE, 
                  "width", (gint)100, NULL);
     
-    gtk_tree_view_column_pack_start(column, renderer_spin2, TRUE);
-    gtk_tree_view_column_set_attributes(column, renderer_spin2, "text", COLUMN_FIELD_NAME, NULL);
-    gtk_tree_view_column_set_resizable(column, TRUE);
-    gtk_tree_view_column_set_clickable(column, TRUE);
-    g_object_set_data(G_OBJECT(column), "column_id", GINT_TO_POINTER(COLUMN_FIELD_NAME));
-    g_signal_connect(G_OBJECT(column), "clicked", 
+    gtk_tree_view_column_pack_start(column_2nd, renderer_spin2, TRUE);
+	gtk_tree_view_column_set_attributes(column_2nd, renderer_spin2, "text",
+				COLUMN_FIELD_NAME, NULL);
+    gtk_tree_view_column_set_resizable(column_2nd, TRUE);
+    gtk_tree_view_column_set_clickable(column_2nd, TRUE);
+	g_object_set_data(G_OBJECT(column_2nd), "column_id", 
+				GINT_TO_POINTER(COLUMN_FIELD_NAME));
+    g_signal_connect(G_OBJECT(column_2nd), "clicked", 
                      G_CALLBACK(column_clicked), (gpointer) r3_tree_view);
     
     /* Third row */
-    column = gtk_tree_view_column_new();
-    gtk_tree_view_append_column(r3_tree_view, column);
-    gtk_tree_view_column_set_title(column, r3_clist->r3_name);
+    column_3rd = gtk_tree_view_column_new();
+    gtk_tree_view_append_column(r3_tree_view, column_3rd);
+    gtk_tree_view_column_set_title(column_3rd, r3_clist->r3_name);
     //    adjust = gtk_adjustment_new(0.5, 0.0, 1.0, 0.01,
     //                                100, 21474836);
     adjust = gtk_adjustment_new(0.5, -1.0e30, 1.0e30, 0.1,
@@ -359,13 +366,15 @@ void create_real3_tree_view(GtkTreeView *r3_tree_view, struct real3_clist *r3_cl
                  "editable", TRUE, 
                  "width", (gint)150, NULL);
     
-    gtk_tree_view_column_pack_start(column, renderer_spin3, TRUE);
-    gtk_tree_view_column_set_attributes(column, renderer_spin3, "text", COLUMN_FIELD_MATH, NULL);
-    gtk_tree_view_column_set_resizable(column, TRUE);
-    gtk_tree_view_column_set_clickable(column, TRUE);
-    g_object_set_data(G_OBJECT(column), "column_id", GINT_TO_POINTER(COLUMN_FIELD_MATH));
-    g_signal_connect(G_OBJECT(column), "clicked", 
-                     G_CALLBACK(column_clicked), (gpointer) r3_tree_view);
+    gtk_tree_view_column_pack_start(column_3rd, renderer_spin3, TRUE);
+	gtk_tree_view_column_set_attributes(column_3rd, renderer_spin3, "text", 
+				COLUMN_FIELD_MATH, NULL);
+    gtk_tree_view_column_set_resizable(column_3rd, TRUE);
+    gtk_tree_view_column_set_clickable(column_3rd, TRUE);
+	g_object_set_data(G_OBJECT(column_3rd), "column_id", 
+				GINT_TO_POINTER(COLUMN_FIELD_MATH));
+    g_signal_connect(G_OBJECT(column_3rd), "clicked", 
+				G_CALLBACK(column_clicked), (gpointer) r3_tree_view);
     
     /* 選択モード */
     selection = gtk_tree_view_get_selection(r3_tree_view);
@@ -375,7 +384,8 @@ void create_real3_tree_view(GtkTreeView *r3_tree_view, struct real3_clist *r3_cl
     column = gtk_tree_view_get_column(r3_tree_view, COLUMN_FIELD_INDEX);
     gtk_tree_view_column_set_sort_order(column, GTK_SORT_ASCENDING);
     gtk_tree_view_column_set_sort_indicator(column, TRUE);
-    gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(model), COLUMN_FIELD_INDEX, GTK_SORT_ASCENDING);
+	gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(model), 
+				COLUMN_FIELD_INDEX, GTK_SORT_ASCENDING);
 }
 
 void add_real3_list_box(GtkTreeView *r3_tree_view, struct real3_clist *r3_clist, 
@@ -501,8 +511,8 @@ void init_real3_tree_view(struct r3_clist_view *r3_vws){
 };
 
 void add_real3_list_box_w_addbottun(struct r3_clist_view *r3_vws, GtkWidget *vbox){
-    GtkWidget *button_add = gtk_button_new_from_stock(GTK_STOCK_ADD);
-    GtkWidget *button_delete = gtk_button_new_from_stock(GTK_STOCK_REMOVE);
+    GtkWidget *button_add = gtk_button_new_with_label("Add");
+    GtkWidget *button_delete = gtk_button_new_with_label("Remove");
     
     add_real3_list_box(r3_vws->tree_view, r3_vws->r3_clist_gtk,
                        button_add, button_delete, vbox);

@@ -108,9 +108,9 @@ void init_bc_temp_tree_view(struct boundary_condition_view *bc_vws){
 void add_bc_temp_selection_box(struct boundary_condition_view *bc_vws, GtkWidget *vbox)
 {
     GtkTreeModel *model_default =  gtk_tree_view_get_model(bc_vws->bc_tree_view);
-    GtkWidget *button_add = gtk_button_new_from_stock(GTK_STOCK_ADD);
+    GtkWidget *button_add = gtk_button_new_with_label("Add");
     GtkWidget *combobox_add = gtk_combo_box_new_with_model(model_default);
-    GtkWidget *button_delete = gtk_button_new_from_stock(GTK_STOCK_REMOVE);
+    GtkWidget *button_delete = gtk_button_new_with_label("Remove");
 	
 	add_chara2_real_list_box_w_addbottun(bc_vws->bc_tree_view,
 				button_add, button_delete, vbox);

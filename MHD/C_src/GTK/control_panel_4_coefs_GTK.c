@@ -161,7 +161,7 @@ void add_coefs_selection_box(struct momentum_coefs_view *coefs_vw, GtkWidget *vb
     
     c_label = (char *)calloc(KCHARA_C, sizeof(char));
     
-    model_comp =  gtk_tree_view_get_model(GTK_TREE_VIEW(coefs_vw->dimless_tree_view));
+    model_comp =  gtk_tree_view_get_model(coefs_vw->dimless_tree_view);
     
     hbox = gtk_hbox_new(FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
@@ -173,7 +173,7 @@ void add_coefs_selection_box(struct momentum_coefs_view *coefs_vw, GtkWidget *vb
                      G_CALLBACK(cb_add_dimless_name), (gpointer) coefs_vw);
     gtk_box_pack_start(GTK_BOX(hbox), combobox_add, FALSE, FALSE, 0);
     /* Delete data bottun */
-    button = gtk_button_new_from_stock(GTK_STOCK_REMOVE);
+    button = gtk_button_new_with_label("Remove");
     g_signal_connect(G_OBJECT(button), "clicked", 
                      G_CALLBACK(remove_field_to_use), (gpointer) coefs_vw);
     gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 0);

@@ -78,7 +78,8 @@ static void transfer_model_data(int iflag_if_add, struct all_field_ctl_c **all_f
 		gtk_list_store_remove(GTK_LIST_STORE(child_model_to_del), &iter);
 		
 		/* Add */
-		append_model_data(index_field, all_fld_tbl[index_field], child_model_to_add);
+		append_field_model_data(index_field, all_fld_tbl[index_field], 
+								GTK_LIST_STORE(child_model_to_add));
 		
 		gtk_tree_path_free(tree_path);
 		gtk_tree_row_reference_free((GtkTreeRowReference *)cur->data);
@@ -105,7 +106,8 @@ static void remove_field_to_use(GtkButton *button, gpointer user_data)
 	struct field_views *fields_vws = (struct field_views *) user_data;
 	
 	transfer_model_data(0, fields_vws->all_fld_tbl, fields_vws->fld_ctl_gtk,
-				fields_vws->used_tree_view, fields_vws->unused_field_tree_view);
+				GTK_TREE_VIEW(fields_vws->used_tree_view), 
+				GTK_TREE_VIEW(fields_vws->unused_field_tree_view));
     /*
     check_field_ctl_list(fields_vws->fld_ctl_gtk);
      */
@@ -116,7 +118,8 @@ static void add_field_to_use(GtkButton *button, gpointer user_data)
 	struct field_views *fields_vws = (struct field_views *) user_data;
 	
 	transfer_model_data(1, fields_vws->all_fld_tbl, fields_vws->fld_ctl_gtk,
-				fields_vws->unused_field_tree_view, fields_vws->used_tree_view);
+				GTK_TREE_VIEW(fields_vws->unused_field_tree_view),
+				GTK_TREE_VIEW(fields_vws->used_tree_view));
     /*
     check_field_ctl_list(fields_vws->fld_ctl_gtk);
      */
@@ -134,7 +137,6 @@ static void cb_set_field_name(GtkComboBox *combobox_field, gpointer user_data)
     int iflag_quad;
 	
 	GtkWidget *combobox_comp;
-	GtkCellRenderer *column_comp;
 	GtkTreeModel *model_comp;
 	
 	gint idx = gtk_combo_box_get_active(combobox_field);
@@ -159,7 +161,7 @@ static void cb_set_field_name(GtkComboBox *combobox_field, gpointer user_data)
 	};
 	
 	combobox_comp = g_object_get_data(G_OBJECT(combobox_field), "cbox_comp");
-	gtk_combo_box_set_model(combobox_comp, model_comp);
+	gtk_combo_box_set_model(GTK_COMBO_BOX(combobox_comp), model_comp);
 	
 	return;
 }
@@ -171,7 +173,6 @@ static void cb_set_component_name(GtkComboBox *combobox_comp, gpointer user_data
 	
 	gchar *row_string;
 	int index_comp;
-	int num_comp;
 	
 	gint idx = gtk_combo_box_get_active(combobox_comp);
     if(idx < 0) return;
@@ -205,7 +206,7 @@ void add_field_selection_box(struct field_views *fields_vws, GtkWidget *vbox)
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 
 	/* Delete data bottun */
-	button = gtk_button_new_from_stock(GTK_STOCK_REMOVE);
+	button = gtk_button_new_with_label("Remove");
     g_signal_connect(G_OBJECT(button), "clicked", 
                      G_CALLBACK(remove_field_to_use), (gpointer) fields_vws);
 	gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 0);
@@ -218,7 +219,7 @@ void add_field_selection_box(struct field_views *fields_vws, GtkWidget *vbox)
 	gtk_box_pack_start(GTK_BOX(vbox), scrolled_window, TRUE, TRUE, 0);
 	
 	/* Set signals for sorting */
-	add_sorting_signal_w_label(fields_vws->used_tree_view, hbox);
+	add_sorting_signal_w_label(GTK_TREE_VIEW(fields_vws->used_tree_view), hbox);
 	
 	get_label_MHD_control_head(c_label);
 	
@@ -240,7 +241,7 @@ void add_field_selection_box(struct field_views *fields_vws, GtkWidget *vbox)
 	
 	/* Add data bottun */
 	hbox_1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
-	button_1 = gtk_button_new_from_stock(GTK_STOCK_ADD);
+	button_1 = gtk_button_new_with_label("Add");
 	g_signal_connect(G_OBJECT(button_1), "clicked", 
 				G_CALLBACK(add_field_to_use), (gpointer) fields_vws);
     gtk_box_pack_start(GTK_BOX(hbox_1), button_1, FALSE, TRUE, 0);
@@ -253,7 +254,7 @@ void add_field_selection_box(struct field_views *fields_vws, GtkWidget *vbox)
 	gtk_box_pack_start(GTK_BOX(vbox), expander, TRUE, TRUE, 0);
 	
 	/* Set signals for sorting */
-	add_sorting_signal_w_label(fields_vws->unused_field_tree_view, hbox);
+	add_sorting_signal_w_label(GTK_TREE_VIEW(fields_vws->unused_field_tree_view), hbox);
 	
 };
 

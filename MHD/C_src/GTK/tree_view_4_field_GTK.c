@@ -25,12 +25,13 @@ void dealloc_field_views_GTK(struct field_views *fields_vws){
 
 
 /* Append new data at the end of list */
-void append_model_data(int index_field, struct all_field_ctl_c *all_fld_tbl, GtkTreeModel *child_model)
+void append_field_model_data(int index_field, struct all_field_ctl_c *all_fld_tbl, 
+			GtkListStore *child_model)
 {
     GtkTreeIter iter;
     
-    gtk_list_store_append(GTK_LIST_STORE(child_model), &iter);
-    gtk_list_store_set(GTK_LIST_STORE(child_model), &iter,
+    gtk_list_store_append(child_model, &iter);
+    gtk_list_store_set(child_model, &iter,
                        COLUMN_FIELD_INDEX, index_field,
                        COLUMN_FIELD_NAME, all_fld_tbl->field_name,
                        COLUMN_FIELD_MATH, all_fld_tbl->field_math,
@@ -41,45 +42,10 @@ void append_model_data(int index_field, struct all_field_ctl_c *all_fld_tbl, Gtk
                        -1);
 }
 
-static void column_clicked(GtkTreeViewColumn *column, gpointer user_data)
-{
-	GtkTreeView *tree_view = GTK_TREE_VIEW(user_data);
-	GtkTreeModel *model;
-	gint column_id;
-	gint cur_id;
-	GtkSortType order;
-	GtkTreeViewColumn *cur_column;
-	
-	GtkTreeViewColumn *button;
-	
-	if (gtk_widget_is_focus(GTK_WIDGET(tree_view)) == FALSE) {
-		gtk_widget_grab_focus(GTK_WIDGET(tree_view));
-	}
-	
-	column_id = GPOINTER_TO_INT(g_object_get_data(G_OBJECT(column), "column_id"));
-	model = gtk_tree_view_get_model(tree_view);
-	
-	/* 現在のソート列と同じときは昇順／降順を反転する、違うときはクリックした列で昇順ソートする */
-	if (gtk_tree_sortable_get_sort_column_id(GTK_TREE_SORTABLE(model), &cur_id, &order) == TRUE) {
-		if (cur_id == column_id) {
-			order = (order == GTK_SORT_ASCENDING) ? GTK_SORT_DESCENDING : GTK_SORT_ASCENDING;
-		} else {
-			order = GTK_SORT_ASCENDING;
-		}
-		cur_column = gtk_tree_view_get_column(tree_view, cur_id);
-		gtk_tree_view_column_set_sort_indicator(cur_column, FALSE);
-	} else {
-		order = GTK_SORT_ASCENDING;
-	}
-	gtk_tree_view_column_set_sort_order(column, order);
-	gtk_tree_view_column_set_sort_indicator(column, TRUE);
-	gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(model), column_id, order);
-}
-
 static void toggle_viz_switch(GtkTreeViewColumn *renderer, 
 			gchar *path_str, gpointer user_data){
 	struct field_views *fields_vws = (struct field_views *) user_data;
-    GtkTreeModel *model = gtk_tree_view_get_model (fields_vws->used_tree_view);  
+    GtkTreeModel *model = gtk_tree_view_get_model(GTK_TREE_VIEW(GTK_TREE_VIEW(fields_vws->used_tree_view)));  
 	GtkTreeModel *child_model = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model));
     GtkTreePath *path = gtk_tree_path_new_from_string (path_str);  
     GtkTreePath *child_path = gtk_tree_model_sort_convert_path_to_child_path(GTK_TREE_MODEL_SORT(model), path);
@@ -107,9 +73,10 @@ static void toggle_viz_switch(GtkTreeViewColumn *renderer,
 	update_field_flag_wqflag_in_ctl(fields_vws->all_fld_tbl[index_field],
 				fields_vws->fld_ctl_gtk);
 }
+
 static void toggle_monitor_switch(GtkTreeViewColumn *renderer, gchar *path_str, gpointer user_data){
 	struct field_views *fields_vws = (struct field_views *) user_data;
-    GtkTreeModel *model = gtk_tree_view_get_model (fields_vws->used_tree_view);  
+    GtkTreeModel *model = gtk_tree_view_get_model(GTK_TREE_VIEW(fields_vws->used_tree_view));  
 	GtkTreeModel *child_model = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model));
     GtkTreePath *path = gtk_tree_path_new_from_string (path_str);  
     GtkTreePath *child_path = gtk_tree_model_sort_convert_path_to_child_path(GTK_TREE_MODEL_SORT(model), path);
@@ -137,67 +104,49 @@ static void toggle_monitor_switch(GtkTreeViewColumn *renderer, gchar *path_str, 
 				fields_vws->fld_ctl_gtk);
 }
 
-static GtkTreeViewColumn * create_each_field_column(GtkWidget *tree_view,
-			const char *label, int column_index)
-{
-    GtkTreeViewColumn *column = gtk_tree_view_column_new();
-    gtk_tree_view_append_column(GTK_TREE_VIEW(tree_view), column);
-    gtk_tree_view_column_set_title(column, label);
-    gtk_tree_view_column_set_resizable(column, TRUE);
-    gtk_tree_view_column_set_clickable(column, TRUE);
-    g_object_set_data(G_OBJECT(column), "column_id", GINT_TO_POINTER(column_index));
-	g_signal_connect(G_OBJECT(column), "clicked", G_CALLBACK(column_clicked), (gpointer) tree_view);
-	return column;
-};
-
-static GtkCellRenderer * create_each_text_renderer(GtkTreeViewColumn *column,
-			int iwidth, int column_index){
-	GtkCellRenderer *renderer = gtk_cell_renderer_text_new();
-	gtk_tree_view_column_pack_start(column, renderer, TRUE);
-	gtk_tree_view_column_set_attributes(column, renderer, "text", column_index, NULL);
-	g_object_set(renderer, "width", (gint) iwidth, NULL);
-	return renderer;
-};
-static GtkCellRenderer * create_each_toggle_renderer(GtkTreeViewColumn *column, 
-			int iwidth, int column_index){
-	GtkCellRenderer *renderer = gtk_cell_renderer_toggle_new();
-    gtk_tree_view_column_pack_start(column, renderer, TRUE);
-    gtk_tree_view_column_set_attributes(column, renderer, "active", column_index, NULL);
-    g_object_set(renderer, "width", iwidth, NULL);
-	return renderer;
-};
 
 void create_field_tree_columns(struct field_views *fields_vws)
 {
-    GtkCellRenderer *renderer;
-    GtkTreeViewColumn *column;
+    GtkCellRenderer *textRenderer1;
+    GtkCellRenderer *textRenderer2;
+    GtkCellRenderer *textRenderer3;
+    GtkCellRenderer *toggleRenderer1;
+    GtkCellRenderer *toggleRenderer2;
+	
+	GtkTreeViewColumn *column_1st;
+    GtkTreeViewColumn *column_2nd;
+    GtkTreeViewColumn *column_3rd;
+    GtkTreeViewColumn *column_4th;
+    GtkTreeViewColumn *column_5th;
 	
     /* First raw */
-	column = create_each_field_column(fields_vws->used_tree_view, 
+	column_1st = create_each_field_column(fields_vws->used_tree_view, 
 				"Index", COLUMN_FIELD_INDEX);
-	renderer = create_each_text_renderer(column, 60, COLUMN_FIELD_INDEX);
+	textRenderer1 = create_each_text_renderer(column_1st, 60, COLUMN_FIELD_INDEX);
     
     /* Second row */
-	column = create_each_field_column(fields_vws->used_tree_view, 
+	column_2nd = create_each_field_column(fields_vws->used_tree_view, 
 				"Field name", COLUMN_FIELD_NAME);
-	renderer = create_each_text_renderer(column, 180, COLUMN_FIELD_NAME);
+	textRenderer2 = create_each_text_renderer(column_2nd, 180, COLUMN_FIELD_NAME);
    
     /* Third row */
-	column = create_each_field_column(fields_vws->used_tree_view,
+	column_3rd = create_each_field_column(fields_vws->used_tree_view,
 				"Component", COLUMN_NUM_COMP);
-	renderer = create_each_text_renderer(column, 60, COLUMN_NUM_COMP);
+	textRenderer3 = create_each_text_renderer(column_3rd, 60, COLUMN_NUM_COMP);
     
     /* Forth row */
-	column = create_each_field_column(fields_vws->used_tree_view,
+	column_4th = create_each_field_column(fields_vws->used_tree_view,
 				"Field output", COLUMN_VIZ_FLAG);
-	renderer = create_each_toggle_renderer(column, 60, COLUMN_VIZ_FLAG);
-    g_signal_connect(G_OBJECT(renderer), "toggled", G_CALLBACK(toggle_viz_switch), (gpointer) fields_vws);
+	toggleRenderer1 = create_each_toggle_renderer(column_4th, 60, COLUMN_VIZ_FLAG);
+	g_signal_connect(G_OBJECT(toggleRenderer1), "toggled", 
+				G_CALLBACK(toggle_viz_switch), (gpointer) fields_vws);
     
     /* Fifth row */
-	column = create_each_field_column(fields_vws->used_tree_view,
+	column_5th = create_each_field_column(fields_vws->used_tree_view,
 				"Monitor output", COLUMN_MONITOR_FLAG);
-	renderer = create_each_toggle_renderer(column, 60, COLUMN_MONITOR_FLAG);
-    g_signal_connect(G_OBJECT(renderer), "toggled", G_CALLBACK(toggle_monitor_switch), (gpointer) fields_vws);
+	toggleRenderer2 = create_each_toggle_renderer(column_5th, 60, COLUMN_MONITOR_FLAG);
+	g_signal_connect(G_OBJECT(toggleRenderer2), "toggled",
+				G_CALLBACK(toggle_monitor_switch), (gpointer) fields_vws);
 };
 
 void create_field_tree_view(struct field_views *fields_vws)
@@ -231,7 +180,7 @@ void create_field_tree_view(struct field_views *fields_vws)
     
     for(i=0;i<NUM_FIELD;i++){
 		if(fields_vws->all_fld_tbl[i]->iflag_use > 0) {
-			append_model_data(i, fields_vws->all_fld_tbl[i], child_model);
+			append_field_model_data(i, fields_vws->all_fld_tbl[i], child_model);
 		};
     }
     
@@ -241,11 +190,16 @@ void create_unused_field_tree_view(struct field_views *fields_vws)
 {
     /*    GtkTreeModel *child_model = GTK_TREE_MODEL(user_data);*/
     GtkTreeModel *model;
-    GtkCellRenderer *renderer;
     GtkTreeViewColumn *column;
     GtkTreeSelection *selection;
     
-    GtkListStore *child_model;
+    GtkCellRenderer *textRenderer1;
+    GtkCellRenderer *textRenderer2;
+	
+	GtkTreeViewColumn *column_1st;
+	GtkTreeViewColumn *column_2nd;
+	
+	GtkListStore *child_model;
     
     int i;
     
@@ -260,12 +214,12 @@ void create_unused_field_tree_view(struct field_views *fields_vws)
     gtk_tree_view_set_model(GTK_TREE_VIEW(fields_vws->unused_field_tree_view), model);
     
     /* First raw */
-	create_each_field_column(fields_vws->unused_field_tree_view, "Index name", COLUMN_FIELD_INDEX);
-	create_each_text_renderer(column, 60, COLUMN_FIELD_INDEX);
+	column_1st = create_each_field_column(fields_vws->unused_field_tree_view, "Index name", COLUMN_FIELD_INDEX);
+	textRenderer1 = create_each_text_renderer(column_1st, 60, COLUMN_FIELD_INDEX);
 	
 	/* Second row */
-	create_each_field_column(fields_vws->unused_field_tree_view, "Field name", COLUMN_FIELD_NAME);
-	create_each_text_renderer(column, 180, COLUMN_FIELD_NAME);
+	column_2nd = create_each_field_column(fields_vws->unused_field_tree_view, "Field name", COLUMN_FIELD_NAME);
+	textRenderer2 = create_each_text_renderer(column_2nd, 180, COLUMN_FIELD_NAME);
     
     /* 選択モード */
     selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(fields_vws->unused_field_tree_view));
@@ -279,7 +233,7 @@ void create_unused_field_tree_view(struct field_views *fields_vws)
     
     for(i=0;i<NUM_FIELD;i++){
 		if(fields_vws->all_fld_tbl[i]->iflag_use == 0) {
-			append_model_data(i, fields_vws->all_fld_tbl[i], child_model);
+			append_field_model_data(i, fields_vws->all_fld_tbl[i], child_model);
 		};
     }
     

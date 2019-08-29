@@ -102,9 +102,9 @@ void init_momentum_tree_view(struct momentum_coefs_view *mom_vws){
 void add_thermal_buo_selection_box(struct momentum_coefs_view *mom_vws, GtkWidget *vbox)
 {
     GtkTreeModel *model_default =  gtk_tree_view_get_model(GTK_TREE_VIEW(mom_vws->dimless_tree_view));
-    GtkWidget *button_add = gtk_button_new_from_stock(GTK_STOCK_ADD);
+    GtkWidget *button_add = gtk_button_new_with_label("Add");
     GtkWidget *combobox_add = gtk_combo_box_new_with_model(model_default);
-    GtkWidget *button_delete = gtk_button_new_from_stock(GTK_STOCK_REMOVE);
+    GtkWidget *button_delete = gtk_button_new_with_label("Remove");
 	
 	add_chara_real_list_box_w_combobox(mom_vws->coefs_tree_view,
 				button_add, combobox_add, button_delete, vbox);

@@ -433,8 +433,8 @@ void init_real2_tree_view(struct r2_clist_view *r2_vws){
 };
 
 void add_real2_list_box_w_addbottun(struct r2_clist_view *r2_vws, GtkWidget *vbox){
-    GtkWidget *button_add = gtk_button_new_from_stock(GTK_STOCK_ADD);
-    GtkWidget *button_delete = gtk_button_new_from_stock(GTK_STOCK_REMOVE);
+    GtkWidget *button_add = gtk_button_new_with_label("Add");
+    GtkWidget *button_delete = gtk_button_new_with_label("Remove");
 	
 	add_real2_list_box(r2_vws->tree_view, r2_vws->r2_clist_gtk,
 				button_add, button_delete, vbox);

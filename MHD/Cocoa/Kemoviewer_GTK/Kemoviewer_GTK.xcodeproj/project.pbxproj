@@ -218,6 +218,7 @@
 		187B5CCA2313D07D00D8DA1E /* kemoview_gtk_PSF_vector_menu.c in Sources */ = {isa = PBXBuildFile; fileRef = 187B5CC82313D07C00D8DA1E /* kemoview_gtk_PSF_vector_menu.c */; };
 		187B5CCD2313F7EB00D8DA1E /* kemoview_gtk_PSF_surface_menu.c in Sources */ = {isa = PBXBuildFile; fileRef = 187B5CCC2313F7EB00D8DA1E /* kemoview_gtk_PSF_surface_menu.c */; };
 		18D560DD23165AE000599F5F /* kemoview_gtk_psf_selectors.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D560DB23165AE000599F5F /* kemoview_gtk_psf_selectors.c */; };
+		18D560E023166B3100599F5F /* t_control_chara_int3_IO.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D560DE23166B3100599F5F /* t_control_chara_int3_IO.c */; };
 		18EC49A72314C65E00567DD8 /* kemoview_gtk_PSF_isoline_menu.c in Sources */ = {isa = PBXBuildFile; fileRef = 18EC49A62314C65E00567DD8 /* kemoview_gtk_PSF_isoline_menu.c */; };
 /* End PBXBuildFile section */
 
@@ -652,6 +653,8 @@
 		187B5CCC2313F7EB00D8DA1E /* kemoview_gtk_PSF_surface_menu.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = kemoview_gtk_PSF_surface_menu.c; path = ../../../C_src/KEMO_GLUT/kemoview_gtk_PSF_surface_menu.c; sourceTree = "<group>"; };
 		18D560DB23165AE000599F5F /* kemoview_gtk_psf_selectors.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = kemoview_gtk_psf_selectors.c; path = ../../../C_src/KEMO_GLUT/kemoview_gtk_psf_selectors.c; sourceTree = "<group>"; };
 		18D560DC23165AE000599F5F /* kemoview_gtk_psf_selectors.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = kemoview_gtk_psf_selectors.h; path = ../../../C_src/KEMO_GLUT/kemoview_gtk_psf_selectors.h; sourceTree = "<group>"; };
+		18D560DE23166B3100599F5F /* t_control_chara_int3_IO.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_control_chara_int3_IO.c; path = ../../../C_src/CONTROLS/t_control_chara_int3_IO.c; sourceTree = "<group>"; };
+		18D560DF23166B3100599F5F /* t_control_chara_int3_IO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_control_chara_int3_IO.h; path = ../../../C_src/CONTROLS/t_control_chara_int3_IO.h; sourceTree = "<group>"; };
 		18EC49A52314C65E00567DD8 /* kemoview_gtk_PSF_isoline_menu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = kemoview_gtk_PSF_isoline_menu.h; path = ../../../C_src/KEMO_GLUT/kemoview_gtk_PSF_isoline_menu.h; sourceTree = "<group>"; };
 		18EC49A62314C65E00567DD8 /* kemoview_gtk_PSF_isoline_menu.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = kemoview_gtk_PSF_isoline_menu.c; path = ../../../C_src/KEMO_GLUT/kemoview_gtk_PSF_isoline_menu.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -981,6 +984,8 @@
 				1862C50F2311BD28000306E6 /* t_control_chara_int_IO.h */,
 				1862C4D22311BD20000306E6 /* t_control_chara_int2_IO.c */,
 				1862C5072311BD27000306E6 /* t_control_chara_int2_IO.h */,
+				18D560DE23166B3100599F5F /* t_control_chara_int3_IO.c */,
+				18D560DF23166B3100599F5F /* t_control_chara_int3_IO.h */,
 				1862C4E22311BD22000306E6 /* t_control_chara_IO.c */,
 				1862C4BF2311BD1F000306E6 /* t_control_chara_IO.h */,
 				1862C4DE2311BD21000306E6 /* t_control_chara_real_IO.c */,
@@ -1367,6 +1372,7 @@
 				1862C3ED2311BA93000306E6 /* delete_file_c.c in Sources */,
 				1862C58D2311BE3B000306E6 /* kemoview_glut_routines.c in Sources */,
 				1862C58E2311BE3B000306E6 /* view_modifier_glut.c in Sources */,
+				18D560E023166B3100599F5F /* t_control_chara_int3_IO.c in Sources */,
 				1862C49D2311BCC9000306E6 /* glsl.c in Sources */,
 				1862C5BE2311BE6D000306E6 /* control_panel_4_coefs_GTK.c in Sources */,
 				1862C54F2311BD2C000306E6 /* t_SGS_MHD_control_c.c in Sources */,

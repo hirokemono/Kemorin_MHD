@@ -16,6 +16,7 @@
 #define COLUMN_FIELD_NAME     1
 #define COLUMN_FIELD_MATH     2
 #define COLUMN_FIELD_VALUE    3
+#define COLUMN_FIELD_NODE     4
 
 void set_last_field_to_label(GtkTreeSelection *selection, gpointer user_data);
 void block_changed_signal(GObject *instance);

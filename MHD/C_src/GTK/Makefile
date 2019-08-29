@@ -7,11 +7,13 @@ KEMO_GTK_DIR = $$(C_SRCDIR)/GTK
 OBJ_KEMO_GTK_C = \
 control_elements_IO_GTK.o \
 \
+create_tree_view_columns_GTK.o \
 tree_views_4_fixed_lists_GTK.o \
 tree_view_real2_GTK.o \
 tree_view_real3_GTK.o \
 tree_view_chara_GTK.o \
 tree_view_chara_int_GTK.o \
+tree_view_chara_int3_GTK.o \
 tree_view_chara_real_GTK.o \
 tree_view_chara2_real_GTK.o \
 \
@@ -62,6 +64,14 @@ module:
 	>> $(MAKENAME)
 	
 	@echo \
+	create_tree_view_columns_GTK.o: \
+	'$$(KEMO_GTK_DIR)'/create_tree_view_columns_GTK.c \
+	create_tree_view_columns_GTK.h \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(GTK3_CFLAGS) $$(C_INCLUDE) $$<' \
+	>> $(MAKENAME)
+	
+	@echo \
 	tree_view_real2_GTK.o: \
 	'$$(KEMO_GTK_DIR)'/tree_view_real2_GTK.c \
 	tree_view_real2_GTK.h \
@@ -96,6 +106,16 @@ module:
 	'$$(KEMO_GTK_DIR)'/tree_view_chara_int_GTK.c \
 	tree_view_chara_int_GTK.h \
 	t_control_chara_int_IO.o \
+	tree_views_4_fixed_lists_GTK.o \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(GTK3_CFLAGS) $$(C_INCLUDE) $$<' \
+	>> $(MAKENAME)
+	
+	@echo \
+	tree_view_chara_int3_GTK.o: \
+	'$$(KEMO_GTK_DIR)'/tree_view_chara_int3_GTK.c \
+	tree_view_chara_int3_GTK.h \
+	t_control_chara_int3_IO.o \
 	tree_views_4_fixed_lists_GTK.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(GTK3_CFLAGS) $$(C_INCLUDE) $$<' \
@@ -148,6 +168,7 @@ module:
 	tree_view_4_field_GTK.h \
 	t_ctl_data_4_fields_c.o \
 	tree_views_4_fixed_lists_GTK.o \
+	create_tree_view_columns_GTK.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(GTK3_CFLAGS) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)
@@ -172,6 +193,7 @@ module:
 	control_panel_4_field_GTK.o: \
 	'$$(KEMO_GTK_DIR)'/control_panel_4_field_GTK.c \
 	control_panel_4_field_GTK.h \
+	t_SGS_MHD_control_c.o \
 	t_ctl_data_4_fields_c.o \
 	tree_views_4_fixed_lists_GTK.o \
 	tree_view_4_field_GTK.o \

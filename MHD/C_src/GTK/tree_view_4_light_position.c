@@ -142,8 +142,8 @@ void add_lightposition_list_box(struct lightparams_view *light_vws, GtkWidget *v
 				&light_vws->light_rtp_vws->r3_clist_gtk->r3_item_head, 
 				light_vws->light_rtp_vws->tree_view);
 	
-	button_add = gtk_button_new_from_stock(GTK_STOCK_ADD);
-    button_delete = gtk_button_new_from_stock(GTK_STOCK_REMOVE);
+	button_add = gtk_button_new_with_label("Add");
+    button_delete = gtk_button_new_with_label("Remove");
 	
 	add_real3_list_box(light_vws->light_rtp_vws->tree_view,
 				light_vws->light_rtp_vws->r3_clist_gtk,

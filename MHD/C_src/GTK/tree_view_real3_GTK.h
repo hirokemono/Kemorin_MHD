@@ -57,7 +57,7 @@ void delete_r3_list_items_cb(GtkButton *button, gpointer user_data);
 
 
 void init_real3_tree_view(struct r3_clist_view *r3_vws);
-void add_reale_list_box_w_addbottun(struct r3_clist_view *r3_vws, GtkWidget *vbox);
+void add_real3_list_box_w_addbottun(struct r3_clist_view *r3_vws, GtkWidget *vbox);
 
 
 #endif /* tree_view_real3_GTK_h_ */
