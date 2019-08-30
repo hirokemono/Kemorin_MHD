@@ -69,7 +69,7 @@ static void hide_all_domain_patch_CB(GtkButton *button, gpointer user_data)
 static void hide_all_domain_grids_CB(GtkButton *button, gpointer user_data)
 {
 	int i;
-	int num = set_all_draw_flags(IONE, COLUMN_MESH_FORTH, user_data);
+	int num = set_all_draw_flags(IZERO, COLUMN_MESH_FORTH, user_data);
 	for(i=0;i<num;i++){
 		kemoview_set_draw_domain_grid(IZERO, i);
 	};

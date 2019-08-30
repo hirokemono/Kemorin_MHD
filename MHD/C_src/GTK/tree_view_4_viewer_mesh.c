@@ -51,19 +51,29 @@ void init_mesh_views_4_viewer(struct viewer_mesh *mesh_d,
 	
 	for(i=0;i<mesh_d->num_pe_sf;i++){
 		sprintf(tmp_name, "Domain %d", i);
-		append_chara_int3_clist(tmp_name, IONE, IZERO, IZERO, 
+		append_chara_int3_clist(tmp_name, 
+					kemoview_get_draw_mesh_patch(i), 
+					kemoview_get_draw_mesh_grid(i), 
+					kemoview_get_draw_mesh_node(i), 
 					mesh_vws->domain_vws->ci3_clist_gtk);
 	};
 	for(i=0;i<mesh_d->ngrp_nod_sf;i++){
-		append_chara_int_clist(mesh_d->nod_gp_name_sf[i], IZERO,
+		append_chara_int_clist(mesh_d->nod_gp_name_sf[i], 
+					kemoview_get_draw_nodgrp_node(i),
 					mesh_vws->nod_grp_vws->ci_clist_gtk);
 	};
 	for(i=0;i<mesh_d->ngrp_ele_sf;i++){
-		append_chara_int3_clist(mesh_d->ele_gp_name_sf[i], IZERO, IZERO, IZERO, 
+		append_chara_int3_clist(mesh_d->ele_gp_name_sf[i], 
+					kemoview_get_draw_elegrp_patch(i), 
+					kemoview_get_draw_elegrp_grid(i), 
+					kemoview_get_draw_elegrp_node(i), 
 					mesh_vws->ele_grp_vws->ci3_clist_gtk);
 	};
 	for(i=0;i<mesh_d->ngrp_surf_sf;i++){
-		append_chara_int3_clist(mesh_d->surf_gp_name_sf[i], IZERO, IZERO, IZERO, 
+		append_chara_int3_clist(mesh_d->surf_gp_name_sf[i], 
+					kemoview_get_draw_surfgrp_patch(i), 
+					kemoview_get_draw_surfgrp_grid(i), 
+					kemoview_get_draw_surfgrp_node(i), 
 					mesh_vws->surf_grp_vws->ci3_clist_gtk);
 	};
 	return;
@@ -140,11 +150,14 @@ int toggle_draw_patch_switch(gchar *path_str, gpointer user_data,
 
     gchar *row_string;
 	int index;
+	int index2_for_toggle, index3_for_toggle;
 
     gtk_tree_model_get_iter(child_model, &iter, child_path);  
-    gtk_tree_model_get(child_model, &iter, COLUMN_MESH_INDEX,  &index, -1);
-    gtk_tree_model_get(child_model, &iter, COLUMN_MESH_NAME,    &row_string, -1);
-    gtk_tree_model_get(child_model, &iter, COLUMN_MESH_THIRD,   index1_for_toggle, -1);
+    gtk_tree_model_get(child_model, &iter, COLUMN_MESH_INDEX, &index, -1);
+    gtk_tree_model_get(child_model, &iter, COLUMN_MESH_NAME,  &row_string, -1);
+    gtk_tree_model_get(child_model, &iter, COLUMN_MESH_THIRD,  index1_for_toggle, -1);
+	gtk_tree_model_get(child_model, &iter, COLUMN_MESH_FORTH, &index2_for_toggle, -1);
+	gtk_tree_model_get(child_model, &iter, COLUMN_MESH_FIFTH, &index3_for_toggle, -1);
     
     printf("toggle_draw_patch %d, %s: \n", index, row_string);
     
@@ -153,6 +166,10 @@ int toggle_draw_patch_switch(gchar *path_str, gpointer user_data,
                        COLUMN_MESH_THIRD, (gboolean) *index1_for_toggle, -1);
     gtk_tree_path_free(child_path);
 	gtk_tree_path_free(path);
+	
+	update_chara_int3_clist_by_index(index, row_string, 
+				*index1_for_toggle, index2_for_toggle, index3_for_toggle, 
+				grp_vws->ci3_clist_gtk);
 	return index;
 }
 
@@ -167,11 +184,14 @@ int toggle_draw_grid_switch(gchar *path_str, gpointer user_data,
 
     gchar *row_string;
 	int index;
+	int index1_for_toggle, index3_for_toggle;
 
     gtk_tree_model_get_iter(child_model, &iter, child_path);  
     gtk_tree_model_get(child_model, &iter, COLUMN_MESH_INDEX,  &index, -1);
     gtk_tree_model_get(child_model, &iter, COLUMN_MESH_NAME,   &row_string, -1);
-	gtk_tree_model_get(child_model, &iter, COLUMN_MESH_FORTH,   index2_for_toggle, -1);
+    gtk_tree_model_get(child_model, &iter, COLUMN_MESH_THIRD,  &index1_for_toggle, -1);
+	gtk_tree_model_get(child_model, &iter, COLUMN_MESH_FORTH,  index2_for_toggle, -1);
+	gtk_tree_model_get(child_model, &iter, COLUMN_MESH_FIFTH,  &index3_for_toggle, -1);
     
     printf("toggle_draw_grid %d, %s: \n", index, row_string);
     
@@ -179,7 +199,11 @@ int toggle_draw_grid_switch(gchar *path_str, gpointer user_data,
     gtk_list_store_set(GTK_LIST_STORE(child_model), &iter,
                        COLUMN_MESH_FORTH, (gboolean) *index2_for_toggle, -1);
     gtk_tree_path_free(child_path);  
-    gtk_tree_path_free(path);  
+	gtk_tree_path_free(path);  
+	
+	update_chara_int3_clist_by_index(index, row_string, 
+				index1_for_toggle, *index2_for_toggle, index3_for_toggle, 
+				grp_vws->ci3_clist_gtk);
 	return index;
 }
 
@@ -194,11 +218,14 @@ int toggle_draw_node_switch(gchar *path_str, gpointer user_data,
 
     gchar *row_string;
 	int index;
+	int index1_for_toggle, index2_for_toggle;
     
     gtk_tree_model_get_iter(child_model, &iter, child_path);  
     gtk_tree_model_get(child_model, &iter, COLUMN_MESH_INDEX,  &index, -1);
     gtk_tree_model_get(child_model, &iter, COLUMN_MESH_NAME,   &row_string, -1);
-	gtk_tree_model_get(child_model, &iter, COLUMN_MESH_FIFTH, index3_for_toggle, -1);
+    gtk_tree_model_get(child_model, &iter, COLUMN_MESH_THIRD,  &index1_for_toggle, -1);
+	gtk_tree_model_get(child_model, &iter, COLUMN_MESH_FORTH,  &index2_for_toggle, -1);
+	gtk_tree_model_get(child_model, &iter, COLUMN_MESH_FIFTH,  index3_for_toggle, -1);
     
     printf("toggle_draw_node %d, %s: \n", index, row_string);
 	
@@ -207,6 +234,10 @@ int toggle_draw_node_switch(gchar *path_str, gpointer user_data,
                        COLUMN_MESH_FIFTH, (gboolean) *index3_for_toggle, -1);
     gtk_tree_path_free(child_path);  
 	gtk_tree_path_free(path);  
+	
+	update_chara_int3_clist_by_index(index, row_string, 
+				index1_for_toggle, index2_for_toggle, *index3_for_toggle, 
+				grp_vws->ci3_clist_gtk);
 	return index;
 }
 
@@ -234,6 +265,9 @@ int toggle_draw_nod_grp_node_switch(gchar *path_str, gpointer user_data,
                        COLUMN_MESH_THIRD, (gboolean) *index1_for_toggle, -1);
     gtk_tree_path_free(child_path);  
     gtk_tree_path_free(path);  
+
+	update_chara_int_clist_by_index(index, row_string, 
+			*index1_for_toggle, nod_grp_vws->ci_clist_gtk);
 	return index_grp;
 }
 

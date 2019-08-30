@@ -525,7 +525,9 @@ extern "C" {
 	void kemoview_set_node_grp_color_flag(int icolor);
 	void kemoview_set_ele_grp_color_flag(int selected, int icolor);
 	int kemoview_get_ele_grp_color_flag(int selected);
+	
     void kemoview_set_surf_grp_color_flag(int selected, int icolor);
+	int kemoview_get_surf_grp_color_flag(int selected);
     
     void kemoview_set_domain_color_code(int selected, float color_code4[4]);
     void kemoview_set_node_grp_color_code(float color_code4[4]);
@@ -542,9 +544,9 @@ extern "C" {
     double kemoview_get_surf_grp_opacity();
     
     
-    int kemoview_get_draw_mesh_node();
-    int kemoview_get_draw_mesh_grid();
-    int kemoview_get_draw_mesh_patch();
+    int kemoview_get_draw_mesh_node(int i);
+    int kemoview_get_draw_mesh_grid(int i);
+    int kemoview_get_draw_mesh_patch(int i);
     
     void kemoview_set_mesh_draw_flag(int selected, int iflag);
     void kemoview_mesh_draw_toggle(int selected);

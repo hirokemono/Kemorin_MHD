@@ -68,7 +68,7 @@ static void hide_all_ele_grp_patch_CB(GtkButton *button, gpointer user_data)
 static void hide_all_ele_grp_grids_CB(GtkButton *button, gpointer user_data)
 {
 	int i;
-	int num = set_all_draw_flags(IONE, COLUMN_MESH_FORTH, user_data);
+	int num = set_all_draw_flags(IZERO, COLUMN_MESH_FORTH, user_data);
 	for(i=0;i<num;i++){
 		kemoview_set_draw_elegrp_grid(IZERO, i);
 	};
@@ -185,7 +185,7 @@ static void set_ele_grp_opacity_CB(GtkWidget *entry, gpointer user_data)
 	float colorcode4[4];
 	kemoview_get_ele_grp_color_code(SURFSOLID_TOGGLE, colorcode4);
 	colorcode4[3] = (float) gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
-	set_ele_grp_color_code(SURFSOLID_TOGGLE, colorcode4);
+	kemoview_set_ele_grp_color_code(SURFSOLID_TOGGLE, colorcode4);
 	return;
 }
 static void set_single_ele_grp_patch_color_CB(GtkButton *button, gpointer user_data)
@@ -195,7 +195,7 @@ static void set_single_ele_grp_patch_color_CB(GtkButton *button, gpointer user_d
 	
 	kemoview_get_ele_grp_color_code(SURFSOLID_TOGGLE, colorcode4);
 	int iflag_set = kemoview_gtk_colorsel_CB(parent, colorcode4);
-	if(iflag_set > 0) {set_ele_grp_color_code(SURFSOLID_TOGGLE, colorcode4);};
+	if(iflag_set > 0) {kemoview_set_ele_grp_color_code(SURFSOLID_TOGGLE, colorcode4);};
 	return;
 };
 static void set_single_ele_grp_grids_color_CB(GtkButton *button, gpointer user_data)
@@ -205,7 +205,7 @@ static void set_single_ele_grp_grids_color_CB(GtkButton *button, gpointer user_d
 	
 	kemoview_get_ele_grp_color_code(SURFGRID_TOGGLE, colorcode4);
 	int iflag_set = kemoview_gtk_colorsel_CB(parent, colorcode4);
-	if(iflag_set > 0) {set_ele_grp_color_code(SURFGRID_TOGGLE, colorcode4);};
+	if(iflag_set > 0) {kemoview_set_ele_grp_color_code(SURFGRID_TOGGLE, colorcode4);};
 	return;
 };
 static void set_single_ele_grp_nodes_color_CB(GtkButton *button, gpointer user_data)
@@ -215,7 +215,7 @@ static void set_single_ele_grp_nodes_color_CB(GtkButton *button, gpointer user_d
 	
 	kemoview_get_ele_grp_color_code(SURFNOD_TOGGLE, colorcode4);
 	int iflag_set = kemoview_gtk_colorsel_CB(parent, colorcode4);
-	if(iflag_set > 0) {set_ele_grp_color_code(SURFNOD_TOGGLE, colorcode4);};
+	if(iflag_set > 0) {kemoview_set_ele_grp_color_code(SURFNOD_TOGGLE, colorcode4);};
 	return;
 };
 

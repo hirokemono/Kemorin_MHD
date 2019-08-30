@@ -359,10 +359,17 @@ int kemoview_get_ele_grp_color_flag(int selected){
 
 
 void kemoview_set_surf_grp_color_flag(int selected, int icolor){
-    if(selected == SURFSOLID_TOGGLE){kemo_sgl->kemo_mesh->mesh_m->surf_surface_color = icolor;}
-    else if(selected == SURFGRID_TOGGLE){select_surf_grp_grid_color(icolor, kemo_sgl->kemo_mesh->mesh_m);}
+	if(selected == SURFSOLID_TOGGLE){select_surf_grp_patch_color(icolor, kemo_sgl->kemo_mesh->mesh_m);}
+	else if(selected == SURFGRID_TOGGLE){select_surf_grp_grid_color(icolor, kemo_sgl->kemo_mesh->mesh_m);}
     else if(selected == SURFNOD_TOGGLE){select_surf_grp_node_color(icolor, kemo_sgl->kemo_mesh->mesh_m);};
     return;
+}
+int kemoview_get_surf_grp_color_flag(int selected){
+	int icolor = 0;
+    if(selected == SURFSOLID_TOGGLE){icolor = get_surf_grp_patch_color(kemo_sgl->kemo_mesh->mesh_m);}
+    else if(selected == SURFGRID_TOGGLE){icolor = get_surf_grp_grid_color(kemo_sgl->kemo_mesh->mesh_m);}
+    else if(selected == SURFNOD_TOGGLE){icolor = get_surf_grp_node_color(kemo_sgl->kemo_mesh->mesh_m);};
+    return icolor;
 }
 
 void kemoview_set_domain_color_code(int selected, float color_code4[4]){
@@ -402,9 +409,9 @@ double kemoview_get_ele_grp_opacity(){return kemo_sgl->kemo_mesh->mesh_m->ele_gr
 double kemoview_get_surf_grp_opacity(){return kemo_sgl->kemo_mesh->mesh_m->surf_grp_opacity;};
 
 
-int kemoview_get_draw_mesh_node() {return kemo_sgl->kemo_mesh->mesh_m->draw_surface_nod;};
-int kemoview_get_draw_mesh_grid() {return kemo_sgl->kemo_mesh->mesh_m->draw_surface_grid;};
-int kemoview_get_draw_mesh_patch(){return kemo_sgl->kemo_mesh->mesh_m->draw_surface_solid;};
+int kemoview_get_draw_mesh_node(int i) {return kemo_sgl->kemo_mesh->mesh_m->draw_domains_nod[i];};
+int kemoview_get_draw_mesh_grid(int i) {return kemo_sgl->kemo_mesh->mesh_m->draw_domains_grid[i];};
+int kemoview_get_draw_mesh_patch(int i){return kemo_sgl->kemo_mesh->mesh_m->draw_domains_solid[i];};
 
 void kemoview_set_mesh_draw_flag(int selected, int iflag){
 	int num_pe = kemoview_get_num_subdomain();

@@ -397,9 +397,9 @@ void glut_viewtype_menu(){
 }
 
 void glut_mesh_display_menu(){
-	int iflag_nod =   kemoview_get_draw_mesh_node();
-	int iflag_grid =  kemoview_get_draw_mesh_grid();
-	int iflag_solid = kemoview_get_draw_mesh_patch();
+	int iflag_nod =   kemoview_get_draw_mesh_node(0);
+	int iflag_grid =  kemoview_get_draw_mesh_grid(0);
+	int iflag_solid = kemoview_get_draw_mesh_patch(0);
 	
 	if( iflag_solid != IZERO ){
 		glutAddMenuEntry("Hide solid surface",SURFSOLID_TOGGLE);

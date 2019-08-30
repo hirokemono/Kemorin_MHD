@@ -19,7 +19,7 @@ static void draw_all_nod_grp_nodes_CB(GtkButton *button, gpointer user_data)
 	int i;
 	int num = set_all_node_draw_flags(IONE, user_data);
 	for(i=0;i<num;i++){
-		kemoview_set_draw_domain_nod(IONE, i);
+		kemoview_set_draw_nodgrp_node(IONE, i);
 	};
 }
 
@@ -28,7 +28,7 @@ static void hide_all_nod_grp_nodes_CB(GtkButton *button, gpointer user_data)
 	int i;
 	int num = set_all_node_draw_flags(IZERO, user_data);
 	for(i=0;i<num;i++){
-		kemoview_set_draw_domain_nod(IZERO, i);
+		kemoview_set_draw_nodgrp_node(IZERO, i);
 	};
 }
 

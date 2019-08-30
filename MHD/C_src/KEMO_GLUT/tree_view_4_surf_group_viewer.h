@@ -20,6 +20,7 @@
 
 /* prototypes */
 
-void add_surf_group_draw_box(struct ci3_clist_view *surf_grp_vws, GtkWidget *vbox);
+void add_surf_group_draw_box(struct ci3_clist_view *surf_grp_vws, 
+							 GtkWidget *window_mesh, GtkWidget *vbox);
 
 #endif /* tree_view_4_surf_group_viewer */
