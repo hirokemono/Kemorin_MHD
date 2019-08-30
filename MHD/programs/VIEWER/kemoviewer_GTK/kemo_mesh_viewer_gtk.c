@@ -133,15 +133,19 @@ static void main_menu_handler(int sel){
 	} else if(sel == FILE_OPEN)  { 
 		read_draw_kemoview_data_gtk();
 	} else if(sel == ADD_PSF_COLOR)  {
-		edit_psf_colormap_gtk(single_kemoview);
+		gtk_psf_colormap_menu(single_kemoview);
 		draw_mesh_w_menu();
 	} else if(sel == MESH_OFF){
 		gtk_mesh_menu(single_kemoview);
+		draw_mesh_w_menu();
 	}
 	else if(sel == SAVE_SNAPSHOT)  { save_image_handler(); }
 	else if(sel == SAVE_EVOLUTION) { save_evolution_handler(); }
 	else if(sel == SAVE_ROTATION) { save_rot_image_handler_gtk(); }
-    else if(sel == SET_BACKGROUND) { set_background_color_gtk(single_kemoview); };
+    else if(sel == SET_BACKGROUND) {
+		gtk_BGcolorselect(single_kemoview);
+		draw_mesh_keep_menu();
+	};
     return;
 };
 
@@ -152,30 +156,6 @@ static void viewtype_handler(int sel){
 }
 
 
-
-static void node_node_color_handler(int sel){
-	kemoview_set_node_grp_color_flag(sel);
-	draw_mesh_keep_menu();
-};
-
-
-
-static void surf_surf_color_handler(int sel){
-	if (sel == SET_OPACITY) {
-		set_surf_group_opacity_gtk();
-	} else {
-		kemoview_set_surf_grp_color_flag(SURFSOLID_TOGGLE, sel);
-	};
-	draw_mesh_keep_menu();
-};
-static void surf_grid_color_handler(int sel){
-	kemoview_set_surf_grp_color_flag(SURFGRID_TOGGLE, sel);
-	draw_mesh_keep_menu();
-};
-static void surf_node_color_handler(int sel){
-	kemoview_set_surf_grp_color_flag(SURFNOD_TOGGLE, sel);
-	draw_mesh_keep_menu();
-};
 
 
 
@@ -262,42 +242,11 @@ static void dummy_handler(int sel){
 }
 
 
-/* 3rd level menues*/
-
-static void make_3rd_level_mesh_menu(){
-	glut_menu_id->node_node_color_menu = glutCreateMenu(node_node_color_handler);
-	glut_grp_color_menu_item();
-	
-	
-	glut_menu_id->surf_surf_color_menu = glutCreateMenu(surf_surf_color_handler);
-	glut_surf_color_menu_item();
-	
-	glut_menu_id->surf_grid_color_menu = glutCreateMenu(surf_grid_color_handler);
-	glut_line_color_menu_item();
-	glutAddMenuEntry("Color by group",GROUP_COLOR);
-	
-	glut_menu_id->surf_node_color_menu = glutCreateMenu(surf_node_color_handler);
-	glut_grp_color_menu_item();
-	
-};
-
 /* 2nd level menues*/
 
 static void make_2nd_level_view_menu(){
 	glut_menu_id->viewtype_id = glutCreateMenu(viewtype_handler);
 	glut_viewtype_menu();
-	
-	return;
-};
-
-static void make_2nd_level_mesh_menu(){
-	glut_menu_id->nod_grp_menu = glutCreateMenu(dummy_handler);
-	glutAddSubMenu("Node color",         glut_menu_id->node_node_color_menu);
-	
-	glut_menu_id->surf_grp_menu = glutCreateMenu(dummy_handler);
-	glutAddSubMenu("Surface color",      glut_menu_id->surf_surf_color_menu);
-	glutAddSubMenu("Wireframe color",    glut_menu_id->surf_grid_color_menu);
-	glutAddSubMenu("Node color",         glut_menu_id->surf_node_color_menu);
 	
 	return;
 };
@@ -424,11 +373,6 @@ static void make_1st_level_menu(){
 		make_2nd_level_view_menu();
 	};
 	
-	if( iflag_draw_m > 0){
-		make_3rd_level_mesh_menu();
-		make_2nd_level_mesh_menu();
-	};
-	
 	if( iflag_draw_f > 0){
 		make_3rd_level_fline_menu();
 		make_2nd_level_fline_menu();
@@ -455,9 +399,6 @@ static void make_1st_level_menu(){
 	
 	if( iflag_draw_m > 0){
 		glutAddMenuEntry("Mesh menu",    MESH_OFF);
-		glutAddSubMenu("Node groups",glut_menu_id->nod_grp_menu);
-		glutAddSubMenu("Element_groups",glut_menu_id->ele_grp_menu);
-		glutAddSubMenu("Surface_groups",glut_menu_id->surf_grp_menu);
 	};
 	
 	if( nload_psf > 0) glutAddSubMenu("Surface rendering", glut_menu_id->psf_root_menu);

@@ -54,7 +54,7 @@ static void ShinenessChange(GtkWidget *entry, gpointer data)
 /*	printf("gtk_min %d\n", gtk_min);*/
 }
 
-void gtk_BGcolorselect(const char *title, struct kemoviewer_type *kemoviewer_data){
+void gtk_BGcolorselect(struct kemoviewer_type *kemoviewer_data){
 	GtkWidget *label01, *label02, *label03, *label04;
 	GtkWidget *label11, *label12, *label13, *label14;
 	GtkWidget *label21, *label22, *label23, *label24;
@@ -76,7 +76,7 @@ void gtk_BGcolorselect(const char *title, struct kemoviewer_type *kemoviewer_dat
 	
 	window_pref = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	
-	gtk_window_set_title(GTK_WINDOW(window_pref), title);
+	gtk_window_set_title(GTK_WINDOW(window_pref), "Preferences");
 	gtk_widget_set_size_request(window_pref, 150, -1);
 	gtk_container_set_border_width(GTK_CONTAINER(window_pref), 5);
 	g_signal_connect(G_OBJECT(window_pref), "destroy", G_CALLBACK(gtk_main_quit), NULL);

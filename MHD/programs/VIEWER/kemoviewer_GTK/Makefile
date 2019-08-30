@@ -65,7 +65,9 @@ module:
 	kemoview_fileselector_gtk.o \
 	kemoview_gtk_window_input.o \
 	kemoview_glut_routines.o \
+	kemoview_gtk_colormap_menu.o \
 	kemoview_gtk_mesh_menu.o \
+	kemoview_gtk_preference_menu.o \
 	const_viewer_menu_glut.o \
 	view_modifier_glut.o \
 	>> $(MAKENAME)

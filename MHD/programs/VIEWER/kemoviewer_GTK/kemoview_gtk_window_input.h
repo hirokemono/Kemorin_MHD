@@ -18,21 +18,11 @@
 #include "kemoviewer.h"
 #include "kemoview_glut_routines.h"
 #include "tree_view_4_pvr_colormap.h"
-#include "tree_view_4_light_position.h"
-#include "kemoview_gtk_colormap_menu.h"
-#include "kemoview_gtk_preference_menu.h"
 
 /*  prototypes */
 
-void set_psf_single_color_gtk();
-void edit_psf_colormap_gtk(struct kemoviewer_type *single_kemoview);
 void set_fline_range_gtk();
-void set_fline_thick_gtk();
-void set_domain_opacity_gtk();
-void set_ele_group_opacity_gtk();
-void set_surf_group_opacity_gtk();
 void set_coastline_radius_gtk();
-void set_background_color_gtk(struct kemoviewer_type *single_kemoview);
 void set_domain_distance_gtk();
 void set_num_color_loop_gtk();
 void set_node_size_gtk();

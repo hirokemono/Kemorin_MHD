@@ -133,7 +133,7 @@ static void set_psf_opacity_CB(GtkWidget *entry, gpointer user_data)
 	return;
 }
 
-static void MinChange(GtkWidget *entry, gpointer data)
+static void MinChange_CB(GtkWidget *entry, gpointer data)
 {
 	int icomp = kemoview_get_PSF_draw_data_address();
 	double data_max = kemoview_get_PSF_max_data(icomp);
@@ -141,7 +141,7 @@ static void MinChange(GtkWidget *entry, gpointer data)
 	double data_min = (double) gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
 	kemoview_set_PSF_linear_colormap(data_min, data_max);
 }
-static void MaxChange(GtkWidget *entry, gpointer data)
+static void MaxChange_CB(GtkWidget *entry, gpointer data)
 {
 	int icomp = kemoview_get_PSF_draw_data_address();
 	double data_min = kemoview_get_PSF_min_data(icomp);
@@ -250,12 +250,12 @@ void add_gtk_psf_surface_menu(struct colormap_view *color_vws,
 	sprintf(max_text, "    %e    ", range_max);
 	adj_min = gtk_adjustment_new (data_min, (range_min-1.0e3*delta), (range_max+1.0e3*delta),
 			(delta*1.0e-2), (delta*1.0e-2), 0.0);
-	adj_max = gtk_adjustment_new (data_max, (range_min*1.0e3),  (range_max+1.0e3*delta),
+	adj_max = gtk_adjustment_new (data_max, (range_min*1.0e3*delta), (range_max+1.0e3*delta),
 			(delta*1.0e-2), (delta*1.0e-2), 0.0);
 	spin_min = gtk_spin_button_new(GTK_ADJUSTMENT(adj_min),0,2);
 	spin_max = gtk_spin_button_new(GTK_ADJUSTMENT(adj_max),0,2);
-	g_signal_connect(spin_min, "value-changed", G_CALLBACK(MinChange), NULL);
-	g_signal_connect(spin_max, "value-changed", G_CALLBACK(MaxChange), NULL);
+	g_signal_connect(spin_min, "value-changed", G_CALLBACK(MinChange_CB), NULL);
+	g_signal_connect(spin_max, "value-changed", G_CALLBACK(MaxChange_CB), NULL);
 	
 	
 	hbox_draw = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);

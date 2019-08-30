@@ -23,6 +23,6 @@
 
 /*  prototypes */
 
-void gtk_BGcolorselect(const char *title, struct kemoviewer_type *kemoviewer_data);
+void gtk_BGcolorselect(struct kemoviewer_type *kemoviewer_data);
 	
 #endif

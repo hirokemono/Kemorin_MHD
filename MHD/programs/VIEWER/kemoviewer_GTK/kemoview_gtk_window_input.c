@@ -375,11 +375,6 @@ void set_psf_single_color_gtk(){
 	return;
 }
 
-void edit_psf_colormap_gtk(struct kemoviewer_type *single_kemoview){
-	gtk_psf_colormap_menu(single_kemoview);
-	return;
-}
-
 void set_fline_range_gtk(){
 	double range_min, range_max;
 	
@@ -397,39 +392,6 @@ void set_fline_range_gtk(){
 	if(iflag_set == IZERO) return; 
 	
 	kemoview_set_fline_linear_colormap(gtk_min, gtk_max);
-	return;
-}
-
-void set_fline_thick_gtk(){
-	double thick;
-	
-	thick = kemoview_get_fline_thickness();
-	gtk_opacity_menu(thick, "Set thickness");
-	if(iflag_set == IZERO) return; 
-	
-	if(gtk_min > 0) kemoview_set_fline_thickness(gtk_min);
-	return;
-}
-
-void set_domain_opacity_gtk(){
-	double opacity;
-	
-	opacity = kemoview_get_domain_opacity();
-	gtk_opacity_menu(opacity, "Set opacity");
-	if(iflag_set == IZERO) return; 
-	
-	kemoview_set_domain_opacity(gtk_min);
-	return;
-}
-
-void set_ele_group_opacity_gtk(){
-	double opacity;
-	
-	opacity = kemoview_get_surf_grp_opacity();
-	gtk_opacity_menu(opacity, "Set opacity");
-	if(iflag_set == IZERO) return; 
-	
-	kemoview_set_ele_grp_opacity(gtk_min);
 	return;
 }
 
@@ -452,12 +414,6 @@ void set_coastline_radius_gtk(){
 	if(iflag_set == IZERO) return; 
 	
 	kemoview_set_coastline_radius(gtk_min);
-	return;
-};
-
-void set_background_color_gtk(struct kemoviewer_type *single_kemoview){
-	gtk_BGcolorselect("Preferences", single_kemoview);
-	draw_mesh_keep_menu();
 	return;
 };
 

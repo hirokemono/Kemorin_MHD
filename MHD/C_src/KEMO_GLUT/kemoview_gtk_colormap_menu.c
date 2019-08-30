@@ -23,6 +23,7 @@ static void close_psf_CB(GtkButton *button, gpointer user_data){
 static void close_window_CB(GtkButton *button, gpointer user_data){
     GtkWidget *window = (GtkWidget *) user_data;
     gtk_widget_destroy(window);
+	gtk_main_quit();
 };
 
 static void save_colormap_file_panel(GtkButton *saveButton, gpointer user_data){

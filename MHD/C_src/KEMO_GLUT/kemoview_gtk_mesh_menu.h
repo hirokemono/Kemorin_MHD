@@ -25,6 +25,6 @@
 
 /*  prototypes */
 
-void gtk_BGcolorselect(const char *title, struct kemoviewer_type *kemoviewer_data);
+void gtk_mesh_menu(struct kemoviewer_type *kemoviewer_data);
 	
 #endif
