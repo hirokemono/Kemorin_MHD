@@ -20,6 +20,7 @@
 #include "tree_view_4_pvr_colormap.h"
 #include "tree_view_4_light_position.h"
 #include "kemoview_gtk_colormap_menu.h"
+#include "kemoview_gtk_preference_menu.h"
 
 /*  prototypes */
 

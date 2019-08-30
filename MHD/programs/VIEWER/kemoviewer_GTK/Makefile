@@ -79,6 +79,7 @@ module:
 	kemoview_gtk_window_input.h \
 	kemoview_gtk_colormap_menu.o \
 	kemoview_glut_routines.o \
+	kemoview_gtk_preference_menu.o \
 	tree_view_4_pvr_colormap.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS)' \

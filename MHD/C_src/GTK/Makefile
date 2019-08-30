@@ -21,7 +21,8 @@ tree_view_4_pvr_colormap.o \
 tree_view_4_field_GTK.o \
 control_panel_4_field_GTK.o \
 \
-tree_view_4_light_position.o
+tree_view_4_light_position.o \
+tree_view_4_viewer_mesh.o
 
 #
 #  ------------------------------------------------------------------
@@ -175,6 +176,19 @@ module:
 	@echo \
 	
 	@echo \
+	control_panel_4_field_GTK.o: \
+	'$$(KEMO_GTK_DIR)'/control_panel_4_field_GTK.c \
+	control_panel_4_field_GTK.h \
+	t_SGS_MHD_control_c.o \
+	t_ctl_data_4_fields_c.o \
+	tree_views_4_fixed_lists_GTK.o \
+	tree_view_4_field_GTK.o \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(GTK3_CFLAGS) $$(C_INCLUDE) $$<' \
+	>> $(MAKENAME)
+	@echo \
+	
+	@echo \
 	tree_view_4_light_position.o: \
 	'$$(KEMO_GTK_DIR)'/tree_view_4_light_position.c \
 	tree_view_4_light_position.h \
@@ -190,13 +204,18 @@ module:
 	@echo \
 	
 	@echo \
-	control_panel_4_field_GTK.o: \
-	'$$(KEMO_GTK_DIR)'/control_panel_4_field_GTK.c \
-	control_panel_4_field_GTK.h \
-	t_SGS_MHD_control_c.o \
-	t_ctl_data_4_fields_c.o \
+	tree_view_4_viewer_mesh.o: \
+	'$$(KEMO_GTK_DIR)'/tree_view_4_viewer_mesh.c \
+	kemoviewer.h \
+	tree_view_4_viewer_mesh.h \
+	t_control_chara_int_IO.o \
+	t_control_chara_int3_IO.o \
+	tree_view_chara_int_GTK.o \
+	tree_view_chara_int3_GTK.o \
 	tree_views_4_fixed_lists_GTK.o \
-	tree_view_4_field_GTK.o \
+	create_tree_view_columns_GTK.o \
+	m_surface_mesh_4_viewer_c.o \
+	quicksort_c.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(GTK3_CFLAGS) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)

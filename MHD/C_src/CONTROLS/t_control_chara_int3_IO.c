@@ -89,7 +89,7 @@ void clear_chara_int3_ctl_list(struct chara_int3_ctl_list *head){
     return;
 };
 
-struct chara_int3_ctl_list *add_chara_int2_ctl_list_before(struct chara_int3_ctl_list *current){
+struct chara_int3_ctl_list *add_chara_int3_ctl_list_before(struct chara_int3_ctl_list *current){
     struct chara_int3_ctl_list *added;
     struct chara_int3_ctl_list *old_prev;
     
@@ -266,7 +266,7 @@ static void add_chara_int3_ctl_list_before_c_tbl(char *ref, char *c_in, int i1_i
 			struct chara_int3_ctl_list *head){
 	head = find_ci3_ctl_list_item_by_c_tbl(ref, head);
 	if(head == NULL) return;
-	head = add_chara_int2_ctl_list_before(head);
+	head = add_chara_int3_ctl_list_before(head);
 	update_chara_int3_ctl_item_c(c_in, i1_in, i2_in, i3_in, head->ci3_item);
 	return;
 };

@@ -298,7 +298,7 @@ void create_real3_tree_view(GtkTreeView *r3_tree_view, struct real3_clist *r3_cl
     
     /* ソート用のモデルを作成してツリービューにセットする */
     model = gtk_tree_model_sort_new_with_model(GTK_TREE_MODEL(child_model));
-    gtk_tree_view_set_model(GTK_TREE_VIEW(r3_tree_view), model);
+    gtk_tree_view_set_model(r3_tree_view, model);
     
     /* First raw */
     column_1st = gtk_tree_view_column_new();
@@ -381,9 +381,9 @@ void create_real3_tree_view(GtkTreeView *r3_tree_view, struct real3_clist *r3_cl
     gtk_tree_selection_set_mode(selection, GTK_SELECTION_MULTIPLE);
     
     /* sort */
-    column = gtk_tree_view_get_column(r3_tree_view, COLUMN_FIELD_INDEX);
-    gtk_tree_view_column_set_sort_order(column, GTK_SORT_ASCENDING);
-    gtk_tree_view_column_set_sort_indicator(column, TRUE);
+    column_4th = gtk_tree_view_get_column(r3_tree_view, COLUMN_FIELD_INDEX);
+    gtk_tree_view_column_set_sort_order(column_4th, GTK_SORT_ASCENDING);
+    gtk_tree_view_column_set_sort_indicator(column_4th, TRUE);
 	gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(model), 
 				COLUMN_FIELD_INDEX, GTK_SORT_ASCENDING);
 }
@@ -423,7 +423,7 @@ void add_real3_list_box(GtkTreeView *r3_tree_view, struct real3_clist *r3_clist,
     gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_window),
                                    GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
     gtk_widget_set_size_request(scrolled_window, 400, 300);
-    gtk_container_add(GTK_CONTAINER(scrolled_window), r3_tree_view);
+    gtk_container_add(GTK_CONTAINER(scrolled_window), GTK_WIDGET(r3_tree_view));
     gtk_box_pack_start(GTK_BOX(vbox_1), scrolled_window, TRUE, TRUE, 0);
     
     Frame_1 = gtk_frame_new("");
@@ -435,10 +435,10 @@ void add_real3_list_box(GtkTreeView *r3_tree_view, struct real3_clist *r3_clist,
     gtk_box_pack_start(GTK_BOX(vbox), expander, TRUE, TRUE, 0);
     
     
-    selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(r3_tree_view));
+    selection = gtk_tree_view_get_selection(r3_tree_view);
     g_object_set_data(G_OBJECT(selection), "label", label);
     
-    model = gtk_tree_view_get_model(GTK_TREE_VIEW(r3_tree_view));
+    model = gtk_tree_view_get_model(r3_tree_view);
     child_model = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model));
     list = g_object_get_data(G_OBJECT(child_model), "selection_list");
     list = g_list_append(list, selection);
@@ -452,7 +452,8 @@ void add_real3_list_box(GtkTreeView *r3_tree_view, struct real3_clist *r3_clist,
 void r3_tree_value1_edited_cb(GtkCellRendererText *cell, gchar *path_str,
                               gchar *new_text, gpointer user_data){
     struct r3_clist_view *r3_vws = (struct r3_clist_view *) user_data;
-    r3_tree_value1_edited(path_str, new_text, r3_vws->tree_view, r3_vws->r3_clist_gtk);
+	r3_tree_value1_edited(path_str, new_text,
+				GTK_TREE_VIEW(r3_vws->tree_view), r3_vws->r3_clist_gtk);
     write_real3_clist(stdout, 0, "value1 changed", r3_vws->r3_clist_gtk);
 };
 
@@ -460,7 +461,8 @@ void r3_tree_value2_edited_cb(GtkCellRendererText *cell, gchar *path_str,
                               gchar *new_text, gpointer user_data)
 {
     struct r3_clist_view *r3_vws = (struct r3_clist_view *) user_data;
-    r3_tree_value2_edited(path_str, new_text, r3_vws->tree_view, r3_vws->r3_clist_gtk);
+	r3_tree_value2_edited(path_str, new_text, 
+				GTK_TREE_VIEW(r3_vws->tree_view), r3_vws->r3_clist_gtk);
     write_real3_clist(stdout, 0, "value2 changed", r3_vws->r3_clist_gtk);
 };
 
@@ -468,20 +470,22 @@ void r3_tree_value3_edited_cb(GtkCellRendererText *cell, gchar *path_str,
                               gchar *new_text, gpointer user_data)
 {
     struct r3_clist_view *r3_vws = (struct r3_clist_view *) user_data;
-    r3_tree_value3_edited(path_str, new_text, r3_vws->tree_view, r3_vws->r3_clist_gtk);
+	r3_tree_value3_edited(path_str, new_text,
+				GTK_TREE_VIEW(r3_vws->tree_view), r3_vws->r3_clist_gtk);
     write_real3_clist(stdout, 0, "value3 changed", r3_vws->r3_clist_gtk);
 };
 
 void add_r3_list_items_cb(GtkButton *button, gpointer user_data){
     struct r3_clist_view *r3_vws = (struct r3_clist_view *) user_data;
     r3_vws->index_bc = add_r3_list_items(r3_vws->index_bc, 
-                                         r3_vws->tree_view, r3_vws->r3_clist_gtk);
+				GTK_TREE_VIEW(r3_vws->tree_view),
+				r3_vws->r3_clist_gtk);
     write_real3_clist(stdout, 0, "columns added", r3_vws->r3_clist_gtk);
 };
 
 void delete_r3_list_items_cb(GtkButton *button, gpointer user_data){
     struct r3_clist_view *r3_vws = (struct r3_clist_view *) user_data;
-    delete_r3_list_items(r3_vws->tree_view, r3_vws->r3_clist_gtk);
+    delete_r3_list_items(GTK_TREE_VIEW(r3_vws->tree_view), r3_vws->r3_clist_gtk);
     write_real3_clist(stdout, 0, "columns deleted", r3_vws->r3_clist_gtk);
 };
 
@@ -496,7 +500,7 @@ void init_real3_tree_view(struct r3_clist_view *r3_vws){
     renderer_spin2 = gtk_cell_renderer_spin_new();
     renderer_spin3 = gtk_cell_renderer_spin_new();
     
-    create_real3_tree_view(r3_vws->tree_view, r3_vws->r3_clist_gtk, 
+    create_real3_tree_view(GTK_TREE_VIEW(r3_vws->tree_view), r3_vws->r3_clist_gtk, 
                            renderer_spin1, renderer_spin2, renderer_spin3);
     
     g_signal_connect(G_OBJECT(renderer_spin1), "edited", 
@@ -507,14 +511,14 @@ void init_real3_tree_view(struct r3_clist_view *r3_vws){
                      G_CALLBACK(r3_tree_value3_edited_cb), (gpointer) r3_vws);
     
     r3_vws->index_bc = append_r3_list_from_ctl(r3_vws->index_bc,
-                                               &r3_vws->r3_clist_gtk->r3_item_head, r3_vws->tree_view);
+				&r3_vws->r3_clist_gtk->r3_item_head, GTK_TREE_VIEW(r3_vws->tree_view));
 };
 
 void add_real3_list_box_w_addbottun(struct r3_clist_view *r3_vws, GtkWidget *vbox){
     GtkWidget *button_add = gtk_button_new_with_label("Add");
     GtkWidget *button_delete = gtk_button_new_with_label("Remove");
     
-    add_real3_list_box(r3_vws->tree_view, r3_vws->r3_clist_gtk,
+    add_real3_list_box(GTK_TREE_VIEW(r3_vws->tree_view), r3_vws->r3_clist_gtk,
                        button_add, button_delete, vbox);
     
     g_signal_connect(G_OBJECT(button_add), "clicked", 

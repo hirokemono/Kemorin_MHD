@@ -12,7 +12,13 @@ kemoview_gtk_psf_selectors.o \
 kemoview_gtk_PSF_surface_menu.o \
 kemoview_gtk_PSF_isoline_menu.o \
 kemoview_gtk_PSF_vector_menu.o \
-kemoview_gtk_colormap_menu.o
+kemoview_gtk_colormap_menu.o \
+kemoview_gtk_preference_menu.o \
+\
+tree_view_4_domain_viewer.o \
+tree_view_4_ele_group_viewer.o \
+tree_view_4_surf_group_viewer.o \
+tree_view_4_nod_group_viewer.o
 
 #
 #  ------------------------------------------------------------------
@@ -78,7 +84,7 @@ module:
 	'$$(KEMO_C_GLUTDIR)'/kemoview_gtk_psf_selectors.c \
 	kemoview_gtk_psf_selectors.h \
 	kemoviewer.h \
-	m_kemoviewer_data.h.o \
+	m_kemoviewer_data.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS) $$<' \
 	>> $(MAKENAME)
@@ -88,7 +94,7 @@ module:
 	'$$(KEMO_C_GLUTDIR)'/kemoview_gtk_PSF_surface_menu.c \
 	kemoview_gtk_PSF_surface_menu.h \
 	kemoviewer.h \
-	m_kemoviewer_data.h.o \
+	m_kemoviewer_data.o \
 	tree_view_4_pvr_colormap.o \
 	kemoview_fileselector_gtk.o \
 	>> $(MAKENAME)
@@ -100,7 +106,7 @@ module:
 	'$$(KEMO_C_GLUTDIR)'/kemoview_gtk_PSF_isoline_menu.c \
 	kemoview_gtk_PSF_isoline_menu.h \
 	kemoviewer.h \
-	m_kemoviewer_data.h.o \
+	m_kemoviewer_data.o \
 	tree_view_4_pvr_colormap.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS) $$<' \
@@ -111,7 +117,7 @@ module:
 	'$$(KEMO_C_GLUTDIR)'/kemoview_gtk_PSF_vector_menu.c \
 	kemoview_gtk_PSF_vector_menu.h \
 	kemoviewer.h \
-	m_kemoviewer_data.h.o \
+	m_kemoviewer_data.o \
 	tree_view_4_pvr_colormap.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS) $$<' \
@@ -122,13 +128,85 @@ module:
 	'$$(KEMO_C_GLUTDIR)'/kemoview_gtk_colormap_menu.c \
 	kemoview_gtk_colormap_menu.h \
 	kemoviewer.h \
-	m_kemoviewer_data.h.o \
+	m_kemoviewer_data.o \
 	tree_view_4_pvr_colormap.o \
 	tree_view_4_light_position.o \
 	kemoview_fileselector_gtk.o \
 	kemoview_gtk_psf_selectors.o \
 	kemoview_gtk_PSF_surface_menu.o \
 	kemoview_gtk_PSF_vector_menu.o \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS) $$<' \
+	>> $(MAKENAME)
+	
+	@echo \
+	kemoview_gtk_preference_menu.o: \
+	'$$(KEMO_C_GLUTDIR)'/kemoview_gtk_preference_menu.c \
+	kemoview_gtk_preference_menu.h \
+	kemoviewer.h \
+	m_kemoviewer_data.o \
+	tree_view_4_pvr_colormap.o \
+	tree_view_4_light_position.o \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS) $$<' \
+	>> $(MAKENAME)
+	
+	@echo \
+	tree_view_4_domain_viewer.o: \
+	'$$(KEMO_C_GLUTDIR)'/tree_view_4_domain_viewer.c \
+	tree_view_4_domain_viewer.h \
+	kemoviewer.h \
+	tree_views_4_fixed_lists_GTK.o \
+	t_control_chara_int3_IO.o \
+	tree_view_chara_int3_GTK.o \
+	tree_view_4_viewer_mesh.o \
+	create_tree_view_columns_GTK.o \
+	quicksort_c.o \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS) $$<' \
+	>> $(MAKENAME)
+	
+	@echo \
+	tree_view_4_ele_group_viewer.o: \
+	'$$(KEMO_C_GLUTDIR)'/tree_view_4_ele_group_viewer.c \
+	tree_view_4_ele_group_viewer.h \
+	kemoviewer.h \
+	tree_views_4_fixed_lists_GTK.o \
+	t_control_chara_int3_IO.o \
+	tree_view_chara_int3_GTK.o \
+	tree_view_4_viewer_mesh.o \
+	create_tree_view_columns_GTK.o \
+	quicksort_c.o \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS) $$<' \
+	>> $(MAKENAME)
+	
+	@echo \
+	tree_view_4_surf_group_viewer.o: \
+	'$$(KEMO_C_GLUTDIR)'/tree_view_4_surf_group_viewer.c \
+	tree_view_4_surf_group_viewer.h \
+	kemoviewer.h \
+	tree_views_4_fixed_lists_GTK.o \
+	t_control_chara_int3_IO.o \
+	tree_view_chara_int3_GTK.o \
+	tree_view_4_viewer_mesh.o \
+	create_tree_view_columns_GTK.o \
+	quicksort_c.o \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS) $$<' \
+	>> $(MAKENAME)
+	
+	@echo \
+	tree_view_4_nod_group_viewer.o: \
+	'$$(KEMO_C_GLUTDIR)'/tree_view_4_nod_group_viewer.c \
+	tree_view_4_nod_group_viewer.h \
+	kemoviewer.h \
+	tree_views_4_fixed_lists_GTK.o \
+	t_control_chara_int_IO.o \
+	tree_view_chara_int_GTK.o \
+	tree_view_4_viewer_mesh.o \
+	create_tree_view_columns_GTK.o \
+	quicksort_c.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS) $$<' \
 	>> $(MAKENAME)
