@@ -85,7 +85,7 @@ static void hide_all_domain_nodes_CB(GtkButton *button, gpointer user_data)
 }
 
 
-static void psf_domain_patch_colormode_CB(GtkComboBox *combobox_sfcolor, gpointer user_data)
+static void domain_patch_colormode_CB(GtkComboBox *combobox_sfcolor, gpointer user_data)
 {
     GtkTreeModel *model_cmap = gtk_combo_box_get_model(combobox_sfcolor);
     GtkTreeIter iter;
@@ -117,7 +117,7 @@ static void psf_domain_patch_colormode_CB(GtkComboBox *combobox_sfcolor, gpointe
 	return;
 };
 
-static void psf_domain_grid_colormode_CB(GtkComboBox *combobox_sfcolor, gpointer user_data)
+static void domain_grid_colormode_CB(GtkComboBox *combobox_sfcolor, gpointer user_data)
 {
     GtkTreeModel *model_cmap = gtk_combo_box_get_model(combobox_sfcolor);
     GtkTreeIter iter;
@@ -149,7 +149,7 @@ static void psf_domain_grid_colormode_CB(GtkComboBox *combobox_sfcolor, gpointer
 	return;
 };
 
-static void psf_domain_node_colormode_CB(GtkComboBox *combobox_sfcolor, gpointer user_data)
+static void domain_node_colormode_CB(GtkComboBox *combobox_sfcolor, gpointer user_data)
 {
     GtkTreeModel *model_cmap = gtk_combo_box_get_model(combobox_sfcolor);
     GtkTreeIter iter;
@@ -194,6 +194,7 @@ static void set_single_domain_patch_color_CB(GtkButton *button, gpointer user_da
 	float colorcode4[4];
 	GtkWindow *parent = GTK_WINDOW(user_data);
 	
+	kemoview_get_domain_color_code(SURFSOLID_TOGGLE, colorcode4);
 	int iflag_set = kemoview_gtk_colorsel_CB(parent, colorcode4);
 	if(iflag_set > 0) {kemoview_set_domain_color_code(SURFSOLID_TOGGLE, colorcode4);};
 	return;
@@ -203,6 +204,7 @@ static void set_single_domain_grids_color_CB(GtkButton *button, gpointer user_da
 	float colorcode4[4];
 	GtkWindow *parent = GTK_WINDOW(user_data);
 	
+	kemoview_get_domain_color_code(SURFGRID_TOGGLE, colorcode4);
 	int iflag_set = kemoview_gtk_colorsel_CB(parent, colorcode4);
 	if(iflag_set > 0) {kemoview_set_domain_color_code(SURFGRID_TOGGLE, colorcode4);};
 	return;
@@ -212,6 +214,7 @@ static void set_single_domain_nodes_color_CB(GtkButton *button, gpointer user_da
 	float colorcode4[4];
 	GtkWindow *parent = GTK_WINDOW(user_data);
 	
+	kemoview_get_domain_color_code(SURFNOD_TOGGLE, colorcode4);
 	int iflag_set = kemoview_gtk_colorsel_CB(parent, colorcode4);
 	if(iflag_set > 0) {kemoview_set_domain_color_code(SURFNOD_TOGGLE, colorcode4);};
 	return;
@@ -404,7 +407,7 @@ void add_domain_draw_box(struct ci3_clist_view *domain_vws,
 	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combobox_patch_color), renderer_patch_color,
 				"text", COLUMN_FIELD_NAME, NULL);
 	g_signal_connect(G_OBJECT(combobox_patch_color), "changed", 
-				G_CALLBACK(psf_domain_patch_colormode_CB), (gpointer) window_mesh);
+				G_CALLBACK(domain_patch_colormode_CB), (gpointer) window_mesh);
 	
 	
 	label_tree_grid_color = create_fixed_label_w_index_tree();
@@ -432,7 +435,7 @@ void add_domain_draw_box(struct ci3_clist_view *domain_vws,
 	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combobox_grid_color), renderer_grid_color,
 				"text", COLUMN_FIELD_NAME, NULL);
 	g_signal_connect(G_OBJECT(combobox_grid_color), "changed", 
-				G_CALLBACK(psf_domain_grid_colormode_CB), (gpointer) window_mesh);
+				G_CALLBACK(domain_grid_colormode_CB), (gpointer) window_mesh);
 	
 	
 	label_tree_node_color = create_fixed_label_w_index_tree();
@@ -460,7 +463,7 @@ void add_domain_draw_box(struct ci3_clist_view *domain_vws,
 	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combobox_node_color), renderer_node_color,
 				"text", COLUMN_FIELD_NAME, NULL);
 	g_signal_connect(G_OBJECT(combobox_node_color), "changed", 
-				G_CALLBACK(psf_domain_node_colormode_CB), (gpointer) window_mesh);
+				G_CALLBACK(domain_node_colormode_CB), (gpointer) window_mesh);
 	
 	kemoview_get_domain_color_code(SURFSOLID_TOGGLE, color4);
 	set_color_to_GTK(color4, &gcolor);

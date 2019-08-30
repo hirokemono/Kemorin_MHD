@@ -58,7 +58,7 @@ void gtk_mesh_menu(struct kemoviewer_type *kemoviewer_data){
 	
 	add_domain_draw_box(mesh_vws->domain_vws, window_mesh, vbox);
 	add_nod_group_draw_box(mesh_vws->nod_grp_vws, vbox);
-	add_ele_group_draw_box(mesh_vws->ele_grp_vws, vbox);
+	add_ele_group_draw_box(mesh_vws->ele_grp_vws, window_mesh, vbox);
 	add_surf_group_draw_box(mesh_vws->surf_grp_vws, vbox);
 	
 	gtk_box_pack_start(GTK_BOX(vbox), closeMeshButton, FALSE, FALSE, 0);

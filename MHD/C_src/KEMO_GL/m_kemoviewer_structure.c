@@ -333,7 +333,6 @@ void kemoview_set_domain_color_flag(int selected, int icolor){
     else if(selected == SURFNOD_TOGGLE){select_domain_node_color(icolor, kemo_sgl->kemo_mesh->mesh_m);};
     return;
 }
-
 int kemoview_get_domain_color_flag(int selected){
 	int icolor = 0;
     if(selected == SURFSOLID_TOGGLE){icolor =     get_domain_node_color_mode(kemo_sgl->kemo_mesh->mesh_m);}
@@ -345,11 +344,19 @@ int kemoview_get_domain_color_flag(int selected){
 void kemoview_set_node_grp_color_flag(int icolor)  {select_node_grp_node_color(icolor, kemo_sgl->kemo_mesh->mesh_m);};
 
 void kemoview_set_ele_grp_color_flag(int selected, int icolor){
-    if(selected == SURFSOLID_TOGGLE){kemo_sgl->kemo_mesh->mesh_m->ele_surface_color = icolor;}
+    if(selected == SURFSOLID_TOGGLE){select_ele_grp_patch_color(icolor, kemo_sgl->kemo_mesh->mesh_m);}
     else if(selected == SURFGRID_TOGGLE){select_ele_grp_grid_color(icolor, kemo_sgl->kemo_mesh->mesh_m);}
     else if(selected == SURFNOD_TOGGLE){select_ele_grp_node_color(icolor, kemo_sgl->kemo_mesh->mesh_m);};
     return;
 }
+int kemoview_get_ele_grp_color_flag(int selected){
+	int icolor = 0;
+    if(selected == SURFSOLID_TOGGLE){icolor = get_ele_grp_patch_color(kemo_sgl->kemo_mesh->mesh_m);}
+    else if(selected == SURFGRID_TOGGLE){icolor = get_ele_grp_grid_color(kemo_sgl->kemo_mesh->mesh_m);}
+    else if(selected == SURFNOD_TOGGLE){icolor = get_ele_grp_node_color(kemo_sgl->kemo_mesh->mesh_m);};
+    return icolor;
+}
+
 
 void kemoview_set_surf_grp_color_flag(int selected, int icolor){
     if(selected == SURFSOLID_TOGGLE){kemo_sgl->kemo_mesh->mesh_m->surf_surface_color = icolor;}

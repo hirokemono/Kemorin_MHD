@@ -132,6 +132,14 @@ void select_ele_grp_grid_color(int selected, struct mesh_menu_val *mesh_m){
 	mesh_m->ele_grid_color = selected;
 	return;
 }
+void select_ele_grp_patch_color(int selected, struct mesh_menu_val *mesh_m){
+	mesh_m->ele_surface_color = selected;
+	return;
+}
+
+int get_ele_grp_node_color(struct mesh_menu_val *mesh_m){return mesh_m->ele_node_color;}
+int get_ele_grp_grid_color(struct mesh_menu_val *mesh_m){return mesh_m->ele_grid_color;}
+int get_ele_grp_patch_color(struct mesh_menu_val *mesh_m){return mesh_m->ele_surface_color;}
 
 void select_surf_grp_node_color(int selected, struct mesh_menu_val *mesh_m){
 	mesh_m->surf_node_color = selected;
