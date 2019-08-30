@@ -342,6 +342,7 @@ int kemoview_get_domain_color_flag(int selected){
 }
 
 void kemoview_set_node_grp_color_flag(int icolor)  {select_node_grp_node_color(icolor, kemo_sgl->kemo_mesh->mesh_m);};
+int kemoview_get_node_grp_color_flag() {return get_node_grp_node_color(kemo_sgl->kemo_mesh->mesh_m);};
 
 void kemoview_set_ele_grp_color_flag(int selected, int icolor){
     if(selected == SURFSOLID_TOGGLE){select_ele_grp_patch_color(icolor, kemo_sgl->kemo_mesh->mesh_m);}

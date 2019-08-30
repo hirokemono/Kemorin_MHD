@@ -163,6 +163,9 @@ void select_node_grp_node_color(int selected, struct mesh_menu_val *mesh_m){
 	mesh_m->node_node_color = selected;
 	return;
 }
+int get_node_grp_node_color(struct mesh_menu_val *mesh_m){
+	return mesh_m->node_node_color;
+};
 
 void set_domain_color_code(int selected, float color_code4[4],
 			struct mesh_menu_val *mesh_m){

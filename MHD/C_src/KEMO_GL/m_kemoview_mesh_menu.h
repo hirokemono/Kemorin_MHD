@@ -126,6 +126,7 @@ int get_surf_grp_grid_color(struct mesh_menu_val *mesh_m);
 int get_surf_grp_patch_color(struct mesh_menu_val *mesh_m);
 
 void select_node_grp_node_color(int selected, struct mesh_menu_val *mesh_m);
+int get_node_grp_node_color(struct mesh_menu_val *mesh_m);
 
 void set_domain_color_code(int selected, float color_code4[4],
 			struct mesh_menu_val *mesh_m);

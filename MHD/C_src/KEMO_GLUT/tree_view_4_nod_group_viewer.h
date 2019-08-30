@@ -20,6 +20,7 @@
 
 /* prototypes */
 
-void add_nod_group_draw_box(struct ci_clist_view *nod_grp_vws, GtkWidget *vbox);
+void add_nod_group_draw_box(struct ci_clist_view *nod_grp_vws,
+			GtkWidget *window_mesh, GtkWidget *vbox);
 
 #endif /* tree_view_4_nod_group_viewer */

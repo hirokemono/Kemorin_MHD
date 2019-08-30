@@ -523,6 +523,8 @@ extern "C" {
 	int kemoview_get_domain_color_flag(int selected);
 	
 	void kemoview_set_node_grp_color_flag(int icolor);
+	int kemoview_get_node_grp_color_flag();
+	
 	void kemoview_set_ele_grp_color_flag(int selected, int icolor);
 	int kemoview_get_ele_grp_color_flag(int selected);
 	
