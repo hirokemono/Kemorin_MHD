@@ -82,8 +82,8 @@ void create_ele_group_view(struct ci3_clist_view *ele_grp_vws)
     GtkTreeSelection *selection;
     
     /* Construct empty list storage */
-    GtkListStore *child_model = gtk_list_store_new(7, G_TYPE_INT, G_TYPE_STRING, G_TYPE_STRING,
-                                     G_TYPE_INT, G_TYPE_INT, G_TYPE_INT, G_TYPE_INT);
+    GtkListStore *child_model = gtk_list_store_new(5, G_TYPE_INT, G_TYPE_STRING,
+                                     G_TYPE_INT, G_TYPE_INT, G_TYPE_INT);
     g_object_set_data(G_OBJECT(child_model), "selection_list", NULL);
     
     /* Construct model for sorting and set to tree view */

@@ -40,6 +40,7 @@ void gtk_mesh_menu(struct kemoviewer_type *kemoviewer_data){
 	gtk_container_set_border_width(GTK_CONTAINER(window_mesh), 5);
 	g_signal_connect(G_OBJECT(window_mesh), "destroy", G_CALLBACK(gtk_main_quit), NULL);
 	
+		
 	/* Set buttons   */
 	entry = gtk_entry_new();
 	closeMeshButton = gtk_button_new_with_label("Close mesh");
@@ -55,13 +56,13 @@ void gtk_mesh_menu(struct kemoviewer_type *kemoviewer_data){
 	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_container_add(GTK_CONTAINER(window_mesh), vbox);
 	
+	add_domain_draw_box(mesh_vws->domain_vws, vbox);
 	gtk_box_pack_start(GTK_BOX(vbox), closeMeshButton, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), cancelButton, FALSE, FALSE, 0);
 	
 	
 	gtk_widget_show_all(window_mesh);
 	gtk_main();
-	printf("Tako  adagfarg\n");
 	dealloc_mesh_views_4_viewer(mesh_vws);
 	return;
 }

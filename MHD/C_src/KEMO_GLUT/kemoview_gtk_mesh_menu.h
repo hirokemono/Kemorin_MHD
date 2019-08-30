@@ -18,6 +18,7 @@
 #include "kemoviewer.h"
 #include "m_kemoviewer_data.h"
 #include "tree_view_4_viewer_mesh.h"
+#include "tree_view_4_domain_viewer.h"
 
 /*  prototypes */
 

@@ -46,31 +46,31 @@ void create_domain_group_columns(struct ci3_clist_view *domain_vws)
     /* First raw */
 	column_1st = create_each_field_column(domain_vws->tree_view, 
 				"Index", COLUMN_MESH_INDEX);
-	textRenderer1 = create_each_text_renderer(column_1st, 60, COLUMN_MESH_INDEX);
+	textRenderer1 = create_each_text_renderer(column_1st, 40, COLUMN_MESH_INDEX);
     
     /* Second row */
 	column_2nd = create_each_field_column(domain_vws->tree_view, 
-				"Field name", COLUMN_MESH_NAME);
+				"Domain", COLUMN_MESH_NAME);
 	textRenderer2 = create_each_text_renderer(column_2nd, 180, COLUMN_MESH_NAME);
    
     /* Third row */
 	column_3rd = create_each_field_column(domain_vws->tree_view,
-				"Field output", COLUMN_MESH_THIRD);
-	toggleRenderer1 = create_each_toggle_renderer(column_3rd, 60, COLUMN_MESH_THIRD);
+				"Patch", COLUMN_MESH_THIRD);
+	toggleRenderer1 = create_each_toggle_renderer(column_3rd, 30, COLUMN_MESH_THIRD);
 	g_signal_connect(G_OBJECT(toggleRenderer1), "toggled", 
 				G_CALLBACK(toggle_draw_domain_patch_switch), (gpointer) domain_vws);
     
     /* Forth row */
 	column_4th = create_each_field_column(domain_vws->tree_view,
-				"Monitor output", COLUMN_MESH_FORTH);
-	toggleRenderer2 = create_each_toggle_renderer(column_4th, 60, COLUMN_MESH_FORTH);
+				"Grid", COLUMN_MESH_FORTH);
+	toggleRenderer2 = create_each_toggle_renderer(column_4th, 30, COLUMN_MESH_FORTH);
 	g_signal_connect(G_OBJECT(toggleRenderer2), "toggled",
 				G_CALLBACK(toggle_draw_domain_grid_switch), (gpointer) domain_vws);
 	
     /* Fifth row */
 	column_5th = create_each_field_column(domain_vws->tree_view,
-				"Monitor output", COLUMN_MESH_FIFTH);
-	toggleRenderer3 = create_each_toggle_renderer(column_5th, 60, COLUMN_MESH_FIFTH);
+				"Node", COLUMN_MESH_FIFTH);
+	toggleRenderer3 = create_each_toggle_renderer(column_5th, 30, COLUMN_MESH_FIFTH);
 	g_signal_connect(G_OBJECT(toggleRenderer3), "toggled",
 				G_CALLBACK(toggle_draw_domain_node_switch), (gpointer) domain_vws);
 };
@@ -81,10 +81,10 @@ void create_domain_group_view(struct ci3_clist_view *domain_vws)
     GtkTreeModel *model;
     GtkTreeViewColumn *column;
     GtkTreeSelection *selection;
-    
+ 
     /* Construct empty list storage */
-    GtkListStore *child_model = gtk_list_store_new(7, G_TYPE_INT, G_TYPE_STRING, G_TYPE_STRING,
-                                     G_TYPE_INT, G_TYPE_INT, G_TYPE_INT, G_TYPE_INT);
+    GtkListStore *child_model = gtk_list_store_new(5, G_TYPE_INT, G_TYPE_STRING,
+                                     G_TYPE_INT, G_TYPE_INT, G_TYPE_INT);
     g_object_set_data(G_OBJECT(child_model), "selection_list", NULL);
     
     /* Construct model for sorting and set to tree view */
@@ -109,4 +109,45 @@ void create_domain_group_view(struct ci3_clist_view *domain_vws)
     }
     
 }
+
+void add_domain_draw_box(struct ci3_clist_view *domain_vws, GtkWidget *vbox)
+{
+	GtkWidget *scrolled_window;
+	
+	GtkWidget *vbox_iso, *hbox_iso;
+	GtkWidget *expander_iso,  *scroll_iso, *Frame_iso;
+	
+	create_domain_group_view(domain_vws);
+	
+	/* Delete data bottun */
+	scrolled_window = gtk_scrolled_window_new(NULL, NULL);
+	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_window),
+				GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+	gtk_widget_set_size_request(scrolled_window, 400, 300);
+	gtk_container_add(GTK_CONTAINER(scrolled_window), domain_vws->tree_view);
+	
+	/* Set signals for sorting */
+	vbox_iso = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
+	gtk_box_pack_start(GTK_BOX(vbox_iso), scrolled_window, TRUE, TRUE, 0);
+	add_sorting_signal_w_label(GTK_TREE_VIEW(domain_vws->tree_view), vbox_iso);
+	
+	Frame_iso = gtk_frame_new("");
+	gtk_frame_set_shadow_type(GTK_FRAME(Frame_iso), GTK_SHADOW_IN);
+	gtk_container_add(GTK_CONTAINER(Frame_iso), vbox_iso);
+	
+	hbox_iso = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
+	gtk_box_pack_start(GTK_BOX(hbox_iso), gtk_label_new("  "), FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_iso), Frame_iso, TRUE, TRUE, 0);
+	
+	scroll_iso = gtk_scrolled_window_new(NULL, NULL);
+	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scroll_iso),
+				GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+	gtk_widget_set_size_request(scroll_iso, 400, 300);
+	gtk_container_add(GTK_CONTAINER(scroll_iso), hbox_iso);
+	
+	expander_iso = gtk_expander_new_with_mnemonic("Domain");
+	gtk_container_add(GTK_CONTAINER(expander_iso), scroll_iso);
+	
+	gtk_box_pack_start(GTK_BOX(vbox), expander_iso, TRUE, FALSE, 0);
+};
 
