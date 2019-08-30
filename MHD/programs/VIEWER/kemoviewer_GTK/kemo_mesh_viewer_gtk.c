@@ -171,12 +171,7 @@ static void object_property_handler(int sel){
 	int toggle;
     toggle = kemoview_toggle_object_properties(sel);
 
-	if		 ( sel == SET_NODE_SIZE) {
-		set_node_size_gtk();
-	} else if( sel == SET_DISTANCE_DOMAIN) {
-		set_domain_distance_gtk();
-		kemoview_draw_with_modified_domain_distance();
-	} else if( sel == SET_COAST_RADIUS) {
+	if( sel == SET_COAST_RADIUS) {
 		set_coastline_radius_gtk();
 	} else if( sel == OUTPUT_V_MATRIX) {
 		save_viewmatrix_file_gtk();
@@ -227,9 +222,6 @@ static void make_2nd_level_image_menu(){
 	};
 	
 	glut_drawing_select();
-	if ( (iflag_draw_m > 0) && (iflag_draw_p == 0) && (iflag_draw_f == 0) ) {
-		glutAddMenuEntry("Object distance",SET_DISTANCE_DOMAIN);
-	};
 
 	glutAddMenuEntry("Output transfer matrices",OUTPUT_V_MATRIX);
 	glutAddMenuEntry("Load transfer matrices", INPUT_V_MATRIX);

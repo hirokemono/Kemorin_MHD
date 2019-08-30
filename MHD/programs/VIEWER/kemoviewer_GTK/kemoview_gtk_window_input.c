@@ -313,17 +313,6 @@ void set_coastline_radius_gtk(){
 	return;
 };
 
-void set_domain_distance_gtk(){
-	double distance;
-	
-	distance = kemoview_get_domain_distance();
-	gtk_opacity_menu(distance, "Set distance");
-	if(iflag_set == IZERO) return; 
-	
-	kemoview_set_domain_distance(gtk_min);
-	return;
-}
-
 void set_num_color_loop_gtk(){
 	int num_cloop;
 	
@@ -332,17 +321,6 @@ void set_num_color_loop_gtk(){
 	if(iflag_set == IZERO) return; 
 	
 	kemoview_set_num_of_color_loop(gtk_intvalue);
-	return;
-}
-
-void set_node_size_gtk(){
-	double nodesize;
-	
-	nodesize = kemoview_get_node_diamater();
-	gtk_opacity_menu(nodesize, "Set size");
-	if(iflag_set == IZERO) return; 
-	
-	kemoview_set_node_diamater(gtk_min);
 	return;
 }
 
