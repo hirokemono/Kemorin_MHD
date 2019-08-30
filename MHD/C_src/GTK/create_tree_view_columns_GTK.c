@@ -22,6 +22,23 @@ static void column_clicked(GtkTreeViewColumn *column, gpointer user_data)
 	
 	column_id = GPOINTER_TO_INT(g_object_get_data(G_OBJECT(column), "column_id"));
 	model = gtk_tree_view_get_model(tree_view);
+}
+
+static void column_clicked_to_sort(GtkTreeViewColumn *column, gpointer user_data)
+{
+	GtkTreeView *tree_view = GTK_TREE_VIEW(user_data);
+	GtkTreeModel *model;
+	gint column_id;
+	gint cur_id;
+	GtkSortType order;
+	GtkTreeViewColumn *cur_column;
+	
+	if (gtk_widget_is_focus(GTK_WIDGET(tree_view)) == FALSE) {
+		gtk_widget_grab_focus(GTK_WIDGET(tree_view));
+	}
+	
+	column_id = GPOINTER_TO_INT(g_object_get_data(G_OBJECT(column), "column_id"));
+	model = gtk_tree_view_get_model(tree_view);
 	
 	/* 現在のソート列と同じときは昇順／降順を反転する、違うときはクリックした列で昇順ソートする */
 	if (gtk_tree_sortable_get_sort_column_id(GTK_TREE_SORTABLE(model), &cur_id, &order) == TRUE) {
@@ -40,6 +57,20 @@ static void column_clicked(GtkTreeViewColumn *column, gpointer user_data)
 	gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(model), column_id, order);
 }
 
+GtkTreeViewColumn * create_each_column_no_sort(GtkWidget *tree_view,
+			const char *label, int column_index)
+{
+    GtkTreeViewColumn *column = gtk_tree_view_column_new();
+    gtk_tree_view_append_column(GTK_TREE_VIEW(tree_view), column);
+    gtk_tree_view_column_set_title(column, label);
+    gtk_tree_view_column_set_resizable(column, TRUE);
+    gtk_tree_view_column_set_clickable(column, TRUE);
+    g_object_set_data(G_OBJECT(column), "column_id", GINT_TO_POINTER(column_index));
+	g_signal_connect(G_OBJECT(column), "clicked", G_CALLBACK(column_clicked),
+				(gpointer) tree_view);
+	return column;
+};
+
 GtkTreeViewColumn * create_each_field_column(GtkWidget *tree_view,
 			const char *label, int column_index)
 {
@@ -49,7 +80,8 @@ GtkTreeViewColumn * create_each_field_column(GtkWidget *tree_view,
     gtk_tree_view_column_set_resizable(column, TRUE);
     gtk_tree_view_column_set_clickable(column, TRUE);
     g_object_set_data(G_OBJECT(column), "column_id", GINT_TO_POINTER(column_index));
-	g_signal_connect(G_OBJECT(column), "clicked", G_CALLBACK(column_clicked), (gpointer) tree_view);
+	g_signal_connect(G_OBJECT(column), "clicked", G_CALLBACK(column_clicked_to_sort),
+				(gpointer) tree_view);
 	return column;
 };
 

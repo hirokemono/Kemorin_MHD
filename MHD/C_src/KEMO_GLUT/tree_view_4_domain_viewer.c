@@ -44,31 +44,31 @@ static void create_domain_group_columns(struct ci3_clist_view *domain_vws)
     GtkTreeViewColumn *column_5th;
 	
     /* First raw */
-	column_1st = create_each_field_column(domain_vws->tree_view, 
+	column_1st = create_each_column_no_sort(domain_vws->tree_view, 
 				"Index", COLUMN_MESH_INDEX);
 	textRenderer1 = create_each_text_renderer(column_1st, 40, COLUMN_MESH_INDEX);
     
     /* Second row */
-	column_2nd = create_each_field_column(domain_vws->tree_view, 
+	column_2nd = create_each_column_no_sort(domain_vws->tree_view, 
 				"Domain", COLUMN_MESH_NAME);
 	textRenderer2 = create_each_text_renderer(column_2nd, 180, COLUMN_MESH_NAME);
    
     /* Third row */
-	column_3rd = create_each_field_column(domain_vws->tree_view,
+	column_3rd = create_each_column_no_sort(domain_vws->tree_view,
 				"Patch", COLUMN_MESH_THIRD);
 	toggleRenderer1 = create_each_toggle_renderer(column_3rd, 30, COLUMN_MESH_THIRD);
 	g_signal_connect(G_OBJECT(toggleRenderer1), "toggled", 
 				G_CALLBACK(toggle_draw_domain_patch_switch), (gpointer) domain_vws);
     
     /* Forth row */
-	column_4th = create_each_field_column(domain_vws->tree_view,
+	column_4th = create_each_column_no_sort(domain_vws->tree_view,
 				"Grid", COLUMN_MESH_FORTH);
 	toggleRenderer2 = create_each_toggle_renderer(column_4th, 30, COLUMN_MESH_FORTH);
 	g_signal_connect(G_OBJECT(toggleRenderer2), "toggled",
 				G_CALLBACK(toggle_draw_domain_grid_switch), (gpointer) domain_vws);
 	
     /* Fifth row */
-	column_5th = create_each_field_column(domain_vws->tree_view,
+	column_5th = create_each_column_no_sort(domain_vws->tree_view,
 				"Node", COLUMN_MESH_FIFTH);
 	toggleRenderer3 = create_each_toggle_renderer(column_5th, 30, COLUMN_MESH_FIFTH);
 	g_signal_connect(G_OBJECT(toggleRenderer3), "toggled",

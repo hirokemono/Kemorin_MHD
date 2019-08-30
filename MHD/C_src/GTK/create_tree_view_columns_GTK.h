@@ -14,6 +14,8 @@
 #include <string.h>
 #include <gtk/gtk.h>
 
+GtkTreeViewColumn * create_each_column_no_sort(GtkWidget *tree_view,
+			const char *label, int column_index);
 GtkTreeViewColumn * create_each_field_column(GtkWidget *tree_view,
 			const char *label, int column_index);
 GtkCellRenderer * create_each_text_renderer(GtkTreeViewColumn *column,

@@ -236,3 +236,37 @@ int toggle_draw_nod_grp_node_switch(gchar *path_str, gpointer user_data,
     gtk_tree_path_free(path);  
 	return index_grp;
 }
+
+
+int set_all_draw_flags(int iflag, int iflag_column, gpointer user_data)
+{
+	struct ci3_clist_view *grp_vws = (struct ci3_clist_view *) user_data;
+    GtkTreeModel *model = gtk_tree_view_get_model(GTK_TREE_VIEW(grp_vws->tree_view));  
+	GtkTreeModel *child_model = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model));
+    GtkTreeIter iter;
+	
+	int i1_out, i2_out, i3_out;
+	char tmp_name[128];
+	int i;
+	int num = count_chara_int3_clist(grp_vws->ci3_clist_gtk);
+	for(i=0;i<num;i++){
+		set_from_chara_int3_clist_at_index(i, grp_vws->ci3_clist_gtk, 
+					tmp_name, &i1_out, &i2_out, &i3_out);
+		if(iflag_column == COLUMN_MESH_THIRD){
+			update_chara_int3_clist_by_index(i, tmp_name, iflag, i2_out, i3_out, 
+						grp_vws->ci3_clist_gtk);
+		} else if(iflag_column == COLUMN_MESH_FORTH) {
+			update_chara_int3_clist_by_index(i, tmp_name, i1_out, iflag, i3_out, 
+						grp_vws->ci3_clist_gtk);
+		} else {
+			update_chara_int3_clist_by_index(i, tmp_name, i1_out, i2_out, iflag, 
+						grp_vws->ci3_clist_gtk);
+		};
+		
+		gtk_tree_model_iter_nth_child(child_model, &iter, NULL, i);
+		gtk_list_store_set(GTK_LIST_STORE(child_model), &iter,
+					iflag_column, (gboolean) iflag, -1);
+	};
+	return num;
+}
+

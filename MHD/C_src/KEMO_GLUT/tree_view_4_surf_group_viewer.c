@@ -42,37 +42,90 @@ static void create_surface_group_columns(struct ci3_clist_view *surf_grp_vws)
     GtkTreeViewColumn *column_5th;
 	
     /* First raw */
-	column_1st = create_each_field_column(surf_grp_vws->tree_view, 
+	column_1st = create_each_column_no_sort(surf_grp_vws->tree_view, 
 				"Index", COLUMN_MESH_INDEX);
 	textRenderer1 = create_each_text_renderer(column_1st, 60, COLUMN_MESH_INDEX);
     
     /* Second row */
-	column_2nd = create_each_field_column(surf_grp_vws->tree_view, 
+	column_2nd = create_each_column_no_sort(surf_grp_vws->tree_view, 
 				"Group name", COLUMN_MESH_NAME);
 	textRenderer2 = create_each_text_renderer(column_2nd, 180, COLUMN_MESH_NAME);
    
     /* Third row */
-	column_3rd = create_each_field_column(surf_grp_vws->tree_view,
+	column_3rd = create_each_column_no_sort(surf_grp_vws->tree_view,
 				"Patch", COLUMN_MESH_THIRD);
 	toggleRenderer1 = create_each_toggle_renderer(column_3rd, 60, COLUMN_MESH_THIRD);
 	g_signal_connect(G_OBJECT(toggleRenderer1), "toggled", 
 				G_CALLBACK(toggle_draw_surf_grp_patch_switch), (gpointer) surf_grp_vws);
     
     /* Forth row */
-	column_4th = create_each_field_column(surf_grp_vws->tree_view,
+	column_4th = create_each_column_no_sort(surf_grp_vws->tree_view,
 				"Grid", COLUMN_MESH_FORTH);
 	toggleRenderer2 = create_each_toggle_renderer(column_4th, 60, COLUMN_MESH_FORTH);
 	g_signal_connect(G_OBJECT(toggleRenderer2), "toggled",
 				G_CALLBACK(toggle_draw_surf_grp_grid_switch), (gpointer) surf_grp_vws);
 	
     /* Fifth row */
-	column_5th = create_each_field_column(surf_grp_vws->tree_view,
+	column_5th = create_each_column_no_sort(surf_grp_vws->tree_view,
 				"Node", COLUMN_MESH_FIFTH);
 	toggleRenderer3 = create_each_toggle_renderer(column_5th, 60, COLUMN_MESH_FIFTH);
 	g_signal_connect(G_OBJECT(toggleRenderer3), "toggled",
 				G_CALLBACK(toggle_draw_surf_grp_node_switch), (gpointer) surf_grp_vws);
 };
 
+static void draw_all_patch_CB(GtkButton *button, gpointer user_data)
+{
+	int i;
+	int num = set_all_draw_flags(IONE, COLUMN_MESH_THIRD, user_data);
+	for(i=0;i<num;i++){
+		kemoview_set_draw_surfgrp_patch(IONE, i);
+	};
+}
+
+static void draw_all_grids_CB(GtkButton *button, gpointer user_data)
+{
+	int i;
+	int num = set_all_draw_flags(IONE, COLUMN_MESH_FORTH, user_data);
+	for(i=0;i<num;i++){
+		kemoview_set_draw_surfgrp_grid(IONE, i);
+	};
+}
+
+static void draw_all_nodes_CB(GtkButton *button, gpointer user_data)
+{
+	int i;
+	int num = set_all_draw_flags(IONE, COLUMN_MESH_FIFTH, user_data);
+	for(i=0;i<num;i++){
+		kemoview_set_draw_surfgrp_node(IONE, i);
+	};
+}
+
+static void hide_all_patch_CB(GtkButton *button, gpointer user_data)
+{
+	int i;
+	int num = set_all_draw_flags(IZERO, COLUMN_MESH_THIRD, user_data);
+	for(i=0;i<num;i++){
+		kemoview_set_draw_surfgrp_patch(IZERO, i);
+	};
+}
+
+static void hide_all_grids_CB(GtkButton *button, gpointer user_data)
+{
+	int i;
+	int num = set_all_draw_flags(IONE, COLUMN_MESH_FORTH, user_data);
+	for(i=0;i<num;i++){
+		kemoview_set_draw_surfgrp_grid(IZERO, i);
+	};
+}
+
+static void hide_all_nodes_CB(GtkButton *button, gpointer user_data)
+{
+	int i;
+	int num = set_all_draw_flags(IZERO, COLUMN_MESH_FIFTH, user_data);
+	for(i=0;i<num;i++){
+		kemoview_set_draw_surfgrp_node(IZERO, i);
+	};
+}
 
 static void create_surface_group_view(struct ci3_clist_view *surf_grp_vws)
 {
@@ -111,41 +164,85 @@ static void create_surface_group_view(struct ci3_clist_view *surf_grp_vws)
 
 void add_surf_group_draw_box(struct ci3_clist_view *surf_grp_vws, GtkWidget *vbox)
 {
-	GtkWidget *scrolled_window;
+	GtkWidget *scrolled_table;
 	
-	GtkWidget *vbox_iso, *hbox_iso;
-	GtkWidget *expander_iso,  *scroll_iso, *Frame_iso;
+	GtkWidget *button_draw_patch, *button_draw_grid, *button_draw_node;
+	GtkWidget *button_hide_patch, *button_hide_grid, *button_hide_node;
+	GtkWidget *hbox_draw, *hbox_hide;
+	GtkWidget *vbox_table, *hbox_table;
+	GtkWidget *vbox_surf;
+	GtkWidget *expander,  *scroll, *Frame;
 	
 	create_surface_group_view(surf_grp_vws);
 	
-	/* Delete data bottun */
-	scrolled_window = gtk_scrolled_window_new(NULL, NULL);
-	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_window),
+	/* Delete dat
+	a bottun */
+	scrolled_table = gtk_scrolled_window_new(NULL, NULL);
+	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_table),
 				GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-	gtk_widget_set_size_request(scrolled_window, 400, 300);
-	gtk_container_add(GTK_CONTAINER(scrolled_window), surf_grp_vws->tree_view);
+	gtk_widget_set_size_request(scrolled_table, 400, 300);
+	gtk_container_add(GTK_CONTAINER(scrolled_table), surf_grp_vws->tree_view);
 	
 	/* Set signals for sorting */
-	vbox_iso = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
-	gtk_box_pack_start(GTK_BOX(vbox_iso), scrolled_window, TRUE, TRUE, 0);
-	add_sorting_signal_w_label(GTK_TREE_VIEW(surf_grp_vws->tree_view), vbox_iso);
+	vbox_table = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
+	gtk_box_pack_start(GTK_BOX(vbox_table), scrolled_table, TRUE, TRUE, 0);
+	add_sorting_signal_w_label(GTK_TREE_VIEW(surf_grp_vws->tree_view), vbox_table);
 	
-	Frame_iso = gtk_frame_new("");
-	gtk_frame_set_shadow_type(GTK_FRAME(Frame_iso), GTK_SHADOW_IN);
-	gtk_container_add(GTK_CONTAINER(Frame_iso), vbox_iso);
 	
-	hbox_iso = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
-	gtk_box_pack_start(GTK_BOX(hbox_iso), gtk_label_new("  "), FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox_iso), Frame_iso, TRUE, TRUE, 0);
+    button_draw_patch = gtk_button_new_with_label("Draw patch");
+    g_signal_connect(G_OBJECT(button_draw_patch), "clicked", 
+                     G_CALLBACK(draw_all_patch_CB), (gpointer) surf_grp_vws);
+    button_draw_grid = gtk_button_new_with_label("Draw grids");
+    g_signal_connect(G_OBJECT(button_draw_grid), "clicked", 
+                     G_CALLBACK(draw_all_grids_CB), (gpointer) surf_grp_vws);
+    button_draw_node = gtk_button_new_with_label("Draw nodes");
+    g_signal_connect(G_OBJECT(button_draw_node), "clicked", 
+                     G_CALLBACK(draw_all_nodes_CB), (gpointer) surf_grp_vws);
 	
-	scroll_iso = gtk_scrolled_window_new(NULL, NULL);
-	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scroll_iso),
+    button_hide_patch = gtk_button_new_with_label("Hide patch");
+    g_signal_connect(G_OBJECT(button_hide_patch), "clicked", 
+                     G_CALLBACK(hide_all_patch_CB), (gpointer) surf_grp_vws);
+    button_hide_grid = gtk_button_new_with_label("Hide grids");
+    g_signal_connect(G_OBJECT(button_hide_grid), "clicked", 
+                     G_CALLBACK(hide_all_grids_CB), (gpointer) surf_grp_vws);
+    button_hide_node = gtk_button_new_with_label("Hide nodes");
+    g_signal_connect(G_OBJECT(button_hide_node), "clicked", 
+                     G_CALLBACK(hide_all_nodes_CB), (gpointer) surf_grp_vws);
+	
+	Frame = gtk_frame_new("");
+	gtk_frame_set_shadow_type(GTK_FRAME(Frame), GTK_SHADOW_IN);
+	gtk_container_add(GTK_CONTAINER(Frame), vbox_table);
+	
+	hbox_table = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
+	gtk_box_pack_start(GTK_BOX(hbox_table), gtk_label_new("  "), FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_table), Frame, TRUE, TRUE, 0);
+	
+	hbox_draw = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
+	gtk_box_pack_start(GTK_BOX(hbox_draw), gtk_label_new("Draw all: "), TRUE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_draw), button_draw_patch, TRUE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_draw), button_draw_grid, TRUE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_draw), button_draw_node, TRUE, FALSE, 0);
+	
+	hbox_hide = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
+	gtk_box_pack_start(GTK_BOX(hbox_hide), gtk_label_new("Hide all: "), TRUE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_hide), button_hide_patch, TRUE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_hide), button_hide_grid, TRUE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_hide), button_hide_node, TRUE, FALSE, 0);
+	
+	
+	vbox_surf = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
+	gtk_box_pack_start(GTK_BOX(vbox_surf), hbox_table, TRUE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_surf), hbox_draw, TRUE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_surf), hbox_hide, TRUE, FALSE, 0);
+	
+	scroll = gtk_scrolled_window_new(NULL, NULL);
+	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scroll),
 				GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-	gtk_widget_set_size_request(scroll_iso, 400, 300);
-	gtk_container_add(GTK_CONTAINER(scroll_iso), hbox_iso);
+	gtk_widget_set_size_request(scroll, 400, 300);
+	gtk_container_add(GTK_CONTAINER(scroll), vbox_surf);
 	
-	expander_iso = gtk_expander_new_with_mnemonic("Surface group");
-	gtk_container_add(GTK_CONTAINER(expander_iso), scroll_iso);
+	expander = gtk_expander_new_with_mnemonic("Surface group");
+	gtk_container_add(GTK_CONTAINER(expander), scroll);
 	
-	gtk_box_pack_start(GTK_BOX(vbox), expander_iso, TRUE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox), expander, TRUE, FALSE, 0);
 };

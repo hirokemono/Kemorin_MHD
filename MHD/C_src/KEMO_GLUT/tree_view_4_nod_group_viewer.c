@@ -25,17 +25,17 @@ static void create_node_group_columns(struct ci_clist_view *nod_grp_vws)
     GtkTreeViewColumn *column_3rd;
 	
     /* First raw */
-	column_1st = create_each_field_column(nod_grp_vws->tree_view, 
+	column_1st = create_each_column_no_sort(nod_grp_vws->tree_view, 
 				"Index", COLUMN_MESH_INDEX);
 	textRenderer1 = create_each_text_renderer(column_1st, 60, COLUMN_MESH_INDEX);
     
     /* Second row */
-	column_2nd = create_each_field_column(nod_grp_vws->tree_view, 
+	column_2nd = create_each_column_no_sort(nod_grp_vws->tree_view, 
 				"Group name", COLUMN_MESH_NAME);
 	textRenderer2 = create_each_text_renderer(column_2nd, 180, COLUMN_MESH_NAME);
    
     /* Third row */
-	column_3rd = create_each_field_column(nod_grp_vws->tree_view,
+	column_3rd = create_each_column_no_sort(nod_grp_vws->tree_view,
 				"Node", COLUMN_MESH_THIRD);
 	toggleRenderer1 = create_each_toggle_renderer(column_3rd, 60, COLUMN_MESH_THIRD);
 	g_signal_connect(G_OBJECT(toggleRenderer1), "toggled", 
