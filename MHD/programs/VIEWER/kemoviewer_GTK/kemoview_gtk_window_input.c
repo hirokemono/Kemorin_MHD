@@ -124,79 +124,6 @@ static void cb_close_window(GtkButton *button, gpointer user_data){
 };
 
 
-static void gtk_range_menu(double range_min, double range_max, 
-            struct kv_string *title){
-	GtkWidget *box;
-	GtkWidget *box1, *box2, *box3, *box5;
-	GtkWidget *lavel0, *lavel1, *lavel2, *lavel3;
-	GtkWidget *bot1, *bot2;
-	GtkAdjustment *adj_min, *adj_max;
-	
-    double delta;
-	char min_text[30], max_text[30];
-	
-	iflag_set = IZERO;
-	sprintf(min_text, "    %e    ", range_min);
-	sprintf(max_text, "    %e    ", range_max);
-	
-	rangew = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-	gtk_window_set_title(GTK_WINDOW(rangew), title->string);
-
-	g_signal_connect(rangew, "destroy", G_CALLBACK(gtk_main_quit), NULL);
-
-	gtk_container_set_border_width(GTK_CONTAINER(rangew), 5);
-
-	
-	box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
-	gtk_container_add(GTK_CONTAINER(rangew), box);
-	
-	box1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
-	gtk_container_add(GTK_CONTAINER(box), box1);
-	box2 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
-	gtk_container_add(GTK_CONTAINER(box), box2);
-	box3 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
-	gtk_container_add(GTK_CONTAINER(box), box3);
-	box5 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
-	gtk_container_add(GTK_CONTAINER(box), box5);
-	
-	
-	lavel0 = gtk_label_new("Minimum");
-	gtk_box_pack_start(GTK_BOX(box1), lavel0, TRUE, TRUE, 0);
-	lavel1 = gtk_label_new("Maximum");
-	gtk_box_pack_start(GTK_BOX(box1), lavel1, TRUE, TRUE, 0);
-	
-	lavel2 = gtk_label_new(min_text);
-	gtk_box_pack_start(GTK_BOX(box2), lavel2, TRUE, TRUE, 0);
-	lavel3 = gtk_label_new(max_text);
-	gtk_box_pack_start(GTK_BOX(box2), lavel3, TRUE, TRUE, 0);
-	
-    delta = range_max - range_min;
-	adj_min = gtk_adjustment_new (range_min, (range_min-1.0e3*delta), (range_max+1.0e3*delta),
-			(delta*1.0e-2), (delta*1.0e-2), 0.0);
-	adj_max = gtk_adjustment_new (range_max, (range_min*1.0e3),  (range_max+1.0e3*delta),
-			(delta*1.0e-2), (delta*1.0e-2), 0.0);
-	spin1 = gtk_spin_button_new( GTK_ADJUSTMENT(adj_min),0,2);
-	gtk_box_pack_start(GTK_BOX(box3), spin1, TRUE, TRUE, 0);
-	spin2 = gtk_spin_button_new( GTK_ADJUSTMENT(adj_max),0,2);
-	gtk_box_pack_start(GTK_BOX(box3), spin2, TRUE, TRUE, 0);
-	
-	bot1 = gtk_button_new_with_label("Cancel");
-	gtk_box_pack_start(GTK_BOX(box5), bot1, FALSE, FALSE, 0);
-	bot2 = gtk_button_new_with_label("Save");
-	gtk_box_pack_start(GTK_BOX(box5), bot2, FALSE, FALSE, 0);
-
-	g_signal_connect(spin1, "value-changed", G_CALLBACK(MinChange), NULL);
-	g_signal_connect(spin2, "value-changed", G_CALLBACK(MaxChange), NULL);
-	g_signal_connect(bot1, "clicked", G_CALLBACK(destroy), NULL);
-	g_signal_connect(bot2, "clicked", G_CALLBACK(OK_clicked), NULL);
-
-	gtk_widget_show_all(rangew);
-
-	gtk_main();
-
-	return;
-}
-
 static void gtk_opacity_menu(double current_value, const char *title){
 	GtkWidget *box;
 	GtkWidget *box1, *box2, *box3, *box5;
@@ -372,37 +299,6 @@ static void gtk_nline_menu(int nline, const char *title){
 
 void set_psf_single_color_gtk(){
 	gtk_PSFcolorselect("Select patch color");
-	return;
-}
-
-void set_fline_range_gtk(){
-	double range_min, range_max;
-	
-	int ifield = kemoview_get_fline_color_field();
-	int icomp = kemoview_get_fline_color_data_adress();
-    struct kv_string *colorname = kemoview_alloc_kvstring();
-
-    range_min = kemoview_get_fline_data_min(icomp);
-	range_max = kemoview_get_fline_data_max(icomp);
-	kemoview_get_fline_color_data_name(colorname, ifield);
-	
-	gtk_range_menu(range_min, range_max, colorname);
-    kemoview_free_kvstring(colorname);
-
-	if(iflag_set == IZERO) return; 
-	
-	kemoview_set_fline_linear_colormap(gtk_min, gtk_max);
-	return;
-}
-
-void set_surf_group_opacity_gtk(){
-	double opacity;
-	
-	opacity = kemoview_get_surf_grp_opacity();
-	gtk_opacity_menu(opacity, "Set opacity");
-	if(iflag_set == IZERO) return; 
-	
-	kemoview_set_surf_grp_opacity(gtk_min);
 	return;
 }
 

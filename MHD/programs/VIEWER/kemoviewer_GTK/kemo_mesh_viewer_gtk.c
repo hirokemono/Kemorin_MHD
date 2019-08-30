@@ -117,16 +117,6 @@ static void read_draw_kemoview_data_gtk(){
 	return;
 };
 
-static void kemoview_fline_draw_setting(int sel){
-	
-	printf("Fieldline menu selected %d \n",sel);
-	if (sel == ISET_RANGE) {set_fline_range_gtk();}
-	else if( sel == ISET_FLINE_THICK) {set_fline_thick_gtk();};
-
-	return;
-};
-
-
 static void main_menu_handler(int sel){
 	if (sel == QUIT_SELECTED)   { 
 		exit(EXIT_SUCCESS);
@@ -161,9 +151,8 @@ static void viewtype_handler(int sel){
 
 static void fline_handler(int sel){
 	int toggle;
-	if (sel == FLINE_OFF) {kemoview_close_fieldline_view();}
-	else if (sel == ISET_FLINE_TYPE) {toggle = kemoview_toggle_fline_type();}
-	else {kemoview_fline_draw_setting(sel);};
+	printf("Fieldline menu selected %d \n",sel);
+	if( sel == ISET_FLINE_THICK) {set_fline_thick_gtk();};
 	
 	draw_mesh_w_menu();
 	return;
@@ -303,17 +292,7 @@ static void make_2nd_level_fline_menu(){
 	
 	glutAddSubMenu("Line color type", glut_menu_id->ichoose_fline_col_type_menu);
 
-	if (itype_fline == IFLAG_PIPE) {
-		glutAddMenuEntry("Draw lines",          ISET_FLINE_TYPE);
-	} else {
-		glutAddMenuEntry("Draw tubes",          ISET_FLINE_TYPE);
-	}
-
 	glutAddMenuEntry("Set line thickness",     ISET_FLINE_THICK);
-	glutAddMenuEntry("Set range",              ISET_RANGE);
-	
-	glutAddMenuEntry("Delete Fieldline data",   FLINE_OFF);
-	
 	return;
 };
 
