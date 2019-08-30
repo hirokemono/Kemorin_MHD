@@ -29,7 +29,7 @@ static void toggle_draw_domain_node_switch(GtkTreeViewColumn *renderer, gchar *p
     kemoview_set_draw_domain_nod(index3_for_toggle, index_grp);
 }
 
-void create_domain_group_columns(struct ci3_clist_view *domain_vws)
+static void create_domain_group_columns(struct ci3_clist_view *domain_vws)
 {
     GtkCellRenderer *textRenderer1;
     GtkCellRenderer *textRenderer2;
@@ -75,7 +75,7 @@ void create_domain_group_columns(struct ci3_clist_view *domain_vws)
 				G_CALLBACK(toggle_draw_domain_node_switch), (gpointer) domain_vws);
 };
 
-void create_domain_group_view(struct ci3_clist_view *domain_vws)
+static void create_domain_group_view(struct ci3_clist_view *domain_vws)
 {
     int i;
     GtkTreeModel *model;

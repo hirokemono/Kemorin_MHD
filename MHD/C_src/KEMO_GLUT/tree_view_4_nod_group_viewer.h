@@ -20,7 +20,6 @@
 
 /* prototypes */
 
-void create_node_group_columns(struct ci_clist_view *nod_grp_vws);
-void create_node_group_view(struct ci_clist_view *nod_grp_vws);
+void add_nod_group_draw_box(struct ci_clist_view *nod_grp_vws, GtkWidget *vbox);
 
 #endif /* tree_view_4_nod_group_viewer */

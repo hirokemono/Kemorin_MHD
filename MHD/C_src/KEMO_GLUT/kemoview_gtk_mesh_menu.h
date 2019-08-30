@@ -19,6 +19,9 @@
 #include "m_kemoviewer_data.h"
 #include "tree_view_4_viewer_mesh.h"
 #include "tree_view_4_domain_viewer.h"
+#include "tree_view_4_nod_group_viewer.h"
+#include "tree_view_4_ele_group_viewer.h"
+#include "tree_view_4_surf_group_viewer.h"
 
 /*  prototypes */
 

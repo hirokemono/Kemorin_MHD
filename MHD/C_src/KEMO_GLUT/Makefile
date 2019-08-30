@@ -148,6 +148,9 @@ module:
 	m_kemoviewer_data.o \
 	tree_view_4_viewer_mesh.o \
 	tree_view_4_domain_viewer.o \
+	tree_view_4_nod_group_viewer.o \
+	tree_view_4_ele_group_viewer.o \
+	tree_view_4_surf_group_viewer.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS) $$<' \
 	>> $(MAKENAME)

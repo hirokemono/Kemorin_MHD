@@ -20,7 +20,6 @@
 
 /* prototypes */
 
-void create_surface_group_columns(struct ci3_clist_view *surf_grp_vws);
-void create_surface_group_view(struct ci3_clist_view *surf_grp_vws);
+void add_surf_group_draw_box(struct ci3_clist_view *surf_grp_vws, GtkWidget *vbox);
 
 #endif /* tree_view_4_surf_group_viewer */

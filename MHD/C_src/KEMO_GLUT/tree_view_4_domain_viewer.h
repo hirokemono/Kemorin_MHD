@@ -20,8 +20,6 @@
 
 /* prototypes */
 
-void create_domain_group_columns(struct ci3_clist_view *domain_vws);
-void create_domain_group_view(struct ci3_clist_view *domain_vws);
 void add_domain_draw_box(struct ci3_clist_view *domain_vws, GtkWidget *vbox);
 
 #endif /* tree_view_4_domain_viewer */

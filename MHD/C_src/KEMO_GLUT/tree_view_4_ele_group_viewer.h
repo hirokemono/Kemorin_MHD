@@ -20,7 +20,6 @@
 
 /* prototypes */
 
-void create_element_group_columns(struct ci3_clist_view *ele_grp_vws);
-void create_ele_group_view(struct ci3_clist_view *ele_grp_vws);
+void add_ele_group_draw_box(struct ci3_clist_view *ele_grp_vws, GtkWidget *vbox);
 
 #endif /* tree_view_4_ele_group_viewer */

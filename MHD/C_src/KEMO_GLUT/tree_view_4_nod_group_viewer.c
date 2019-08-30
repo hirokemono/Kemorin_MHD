@@ -14,7 +14,7 @@ static void toggle_draw_node_group_switch(GtkTreeViewColumn *renderer,
     kemoview_set_draw_nodgrp_node(index1_for_toggle, index_grp);
 }
 
-void create_node_group_columns(struct ci_clist_view *nod_grp_vws)
+static void create_node_group_columns(struct ci_clist_view *nod_grp_vws)
 {
     GtkCellRenderer *textRenderer1;
     GtkCellRenderer *textRenderer2;
@@ -31,18 +31,18 @@ void create_node_group_columns(struct ci_clist_view *nod_grp_vws)
     
     /* Second row */
 	column_2nd = create_each_field_column(nod_grp_vws->tree_view, 
-				"Field name", COLUMN_MESH_NAME);
+				"Group name", COLUMN_MESH_NAME);
 	textRenderer2 = create_each_text_renderer(column_2nd, 180, COLUMN_MESH_NAME);
    
     /* Third row */
 	column_3rd = create_each_field_column(nod_grp_vws->tree_view,
-				"Field output", COLUMN_MESH_THIRD);
+				"Node", COLUMN_MESH_THIRD);
 	toggleRenderer1 = create_each_toggle_renderer(column_3rd, 60, COLUMN_MESH_THIRD);
 	g_signal_connect(G_OBJECT(toggleRenderer1), "toggled", 
 				G_CALLBACK(toggle_draw_node_group_switch), (gpointer) nod_grp_vws);
 };
 
-void create_node_group_view(struct ci_clist_view *nod_grp_vws)
+static void create_node_group_view(struct ci_clist_view *nod_grp_vws)
 {
     int i;
     GtkTreeModel *model;
@@ -76,3 +76,43 @@ void create_node_group_view(struct ci_clist_view *nod_grp_vws)
     
 }
 
+void add_nod_group_draw_box(struct ci_clist_view *nod_grp_vws, GtkWidget *vbox)
+{
+	GtkWidget *scrolled_window;
+	
+	GtkWidget *vbox_iso, *hbox_iso;
+	GtkWidget *expander_iso,  *scroll_iso, *Frame_iso;
+	
+	create_node_group_view(nod_grp_vws);
+	
+	/* Delete data bottun */
+	scrolled_window = gtk_scrolled_window_new(NULL, NULL);
+	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_window),
+				GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+	gtk_widget_set_size_request(scrolled_window, 400, 300);
+	gtk_container_add(GTK_CONTAINER(scrolled_window), nod_grp_vws->tree_view);
+	
+	/* Set signals for sorting */
+	vbox_iso = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
+	gtk_box_pack_start(GTK_BOX(vbox_iso), scrolled_window, TRUE, TRUE, 0);
+	add_sorting_signal_w_label(GTK_TREE_VIEW(nod_grp_vws->tree_view), vbox_iso);
+	
+	Frame_iso = gtk_frame_new("");
+	gtk_frame_set_shadow_type(GTK_FRAME(Frame_iso), GTK_SHADOW_IN);
+	gtk_container_add(GTK_CONTAINER(Frame_iso), vbox_iso);
+	
+	hbox_iso = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
+	gtk_box_pack_start(GTK_BOX(hbox_iso), gtk_label_new("  "), FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_iso), Frame_iso, TRUE, TRUE, 0);
+	
+	scroll_iso = gtk_scrolled_window_new(NULL, NULL);
+	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scroll_iso),
+				GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+	gtk_widget_set_size_request(scroll_iso, 400, 300);
+	gtk_container_add(GTK_CONTAINER(scroll_iso), hbox_iso);
+	
+	expander_iso = gtk_expander_new_with_mnemonic("Node group");
+	gtk_container_add(GTK_CONTAINER(expander_iso), scroll_iso);
+	
+	gtk_box_pack_start(GTK_BOX(vbox), expander_iso, TRUE, FALSE, 0);
+};
