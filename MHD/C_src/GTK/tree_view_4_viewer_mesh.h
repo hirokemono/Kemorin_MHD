@@ -71,5 +71,6 @@ int toggle_draw_nod_grp_node_switch(gchar *path_str, gpointer user_data,
 			int *index1_for_toggle);
 
 int set_all_draw_flags(int iflag, int iflag_column, gpointer user_data);
+int set_all_node_draw_flags(int iflag, gpointer user_data);
 
 #endif /* tree_view_4_pvr_colormap_h_ */

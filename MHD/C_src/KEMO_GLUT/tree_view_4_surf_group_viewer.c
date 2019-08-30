@@ -27,6 +27,62 @@ static void toggle_draw_surf_grp_node_switch(GtkTreeViewColumn *renderer, gchar 
     kemoview_set_draw_surfgrp_node(index3_for_toggle, index_grp);
 }
 
+
+static void draw_all_sf_grp_patch_CB(GtkButton *button, gpointer user_data)
+{
+	int i;
+	int num = set_all_draw_flags(IONE, COLUMN_MESH_THIRD, user_data);
+	for(i=0;i<num;i++){
+		kemoview_set_draw_surfgrp_patch(IONE, i);
+	};
+}
+
+static void draw_all_sf_grp_grids_CB(GtkButton *button, gpointer user_data)
+{
+	int i;
+	int num = set_all_draw_flags(IONE, COLUMN_MESH_FORTH, user_data);
+	for(i=0;i<num;i++){
+		kemoview_set_draw_surfgrp_grid(IONE, i);
+	};
+}
+
+static void draw_all_sf_grp_nodes_CB(GtkButton *button, gpointer user_data)
+{
+	int i;
+	int num = set_all_draw_flags(IONE, COLUMN_MESH_FIFTH, user_data);
+	for(i=0;i<num;i++){
+		kemoview_set_draw_surfgrp_node(IONE, i);
+	};
+}
+
+static void hide_all_sf_grp_patch_CB(GtkButton *button, gpointer user_data)
+{
+	int i;
+	int num = set_all_draw_flags(IZERO, COLUMN_MESH_THIRD, user_data);
+	for(i=0;i<num;i++){
+		kemoview_set_draw_surfgrp_patch(IZERO, i);
+	};
+}
+
+static void hide_all_sf_grp_grids_CB(GtkButton *button, gpointer user_data)
+{
+	int i;
+	int num = set_all_draw_flags(IONE, COLUMN_MESH_FORTH, user_data);
+	for(i=0;i<num;i++){
+		kemoview_set_draw_surfgrp_grid(IZERO, i);
+	};
+}
+
+static void hide_all_sf_grp_nodes_CB(GtkButton *button, gpointer user_data)
+{
+	int i;
+	int num = set_all_draw_flags(IZERO, COLUMN_MESH_FIFTH, user_data);
+	for(i=0;i<num;i++){
+		kemoview_set_draw_surfgrp_node(IZERO, i);
+	};
+}
+
+
 static void create_surface_group_columns(struct ci3_clist_view *surf_grp_vws)
 {
     GtkCellRenderer *textRenderer1;
@@ -73,60 +129,6 @@ static void create_surface_group_columns(struct ci3_clist_view *surf_grp_vws)
 				G_CALLBACK(toggle_draw_surf_grp_node_switch), (gpointer) surf_grp_vws);
 };
 
-static void draw_all_patch_CB(GtkButton *button, gpointer user_data)
-{
-	int i;
-	int num = set_all_draw_flags(IONE, COLUMN_MESH_THIRD, user_data);
-	for(i=0;i<num;i++){
-		kemoview_set_draw_surfgrp_patch(IONE, i);
-	};
-}
-
-static void draw_all_grids_CB(GtkButton *button, gpointer user_data)
-{
-	int i;
-	int num = set_all_draw_flags(IONE, COLUMN_MESH_FORTH, user_data);
-	for(i=0;i<num;i++){
-		kemoview_set_draw_surfgrp_grid(IONE, i);
-	};
-}
-
-static void draw_all_nodes_CB(GtkButton *button, gpointer user_data)
-{
-	int i;
-	int num = set_all_draw_flags(IONE, COLUMN_MESH_FIFTH, user_data);
-	for(i=0;i<num;i++){
-		kemoview_set_draw_surfgrp_node(IONE, i);
-	};
-}
-
-static void hide_all_patch_CB(GtkButton *button, gpointer user_data)
-{
-	int i;
-	int num = set_all_draw_flags(IZERO, COLUMN_MESH_THIRD, user_data);
-	for(i=0;i<num;i++){
-		kemoview_set_draw_surfgrp_patch(IZERO, i);
-	};
-}
-
-static void hide_all_grids_CB(GtkButton *button, gpointer user_data)
-{
-	int i;
-	int num = set_all_draw_flags(IONE, COLUMN_MESH_FORTH, user_data);
-	for(i=0;i<num;i++){
-		kemoview_set_draw_surfgrp_grid(IZERO, i);
-	};
-}
-
-static void hide_all_nodes_CB(GtkButton *button, gpointer user_data)
-{
-	int i;
-	int num = set_all_draw_flags(IZERO, COLUMN_MESH_FIFTH, user_data);
-	for(i=0;i<num;i++){
-		kemoview_set_draw_surfgrp_node(IZERO, i);
-	};
-}
-
 static void create_surface_group_view(struct ci3_clist_view *surf_grp_vws)
 {
     int i;
@@ -170,13 +172,12 @@ void add_surf_group_draw_box(struct ci3_clist_view *surf_grp_vws, GtkWidget *vbo
 	GtkWidget *button_hide_patch, *button_hide_grid, *button_hide_node;
 	GtkWidget *hbox_draw, *hbox_hide;
 	GtkWidget *vbox_table, *hbox_table;
-	GtkWidget *vbox_surf;
+	GtkWidget *vbox_sf_grp;
 	GtkWidget *expander,  *scroll, *Frame;
 	
 	create_surface_group_view(surf_grp_vws);
 	
-	/* Delete dat
-	a bottun */
+	/* Delete data bottun */
 	scrolled_table = gtk_scrolled_window_new(NULL, NULL);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_table),
 				GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
@@ -191,23 +192,23 @@ void add_surf_group_draw_box(struct ci3_clist_view *surf_grp_vws, GtkWidget *vbo
 	
     button_draw_patch = gtk_button_new_with_label("Draw patch");
     g_signal_connect(G_OBJECT(button_draw_patch), "clicked", 
-                     G_CALLBACK(draw_all_patch_CB), (gpointer) surf_grp_vws);
+                     G_CALLBACK(draw_all_sf_grp_patch_CB), (gpointer) surf_grp_vws);
     button_draw_grid = gtk_button_new_with_label("Draw grids");
     g_signal_connect(G_OBJECT(button_draw_grid), "clicked", 
-                     G_CALLBACK(draw_all_grids_CB), (gpointer) surf_grp_vws);
+                     G_CALLBACK(draw_all_sf_grp_grids_CB), (gpointer) surf_grp_vws);
     button_draw_node = gtk_button_new_with_label("Draw nodes");
     g_signal_connect(G_OBJECT(button_draw_node), "clicked", 
-                     G_CALLBACK(draw_all_nodes_CB), (gpointer) surf_grp_vws);
+                     G_CALLBACK(draw_all_sf_grp_nodes_CB), (gpointer) surf_grp_vws);
 	
     button_hide_patch = gtk_button_new_with_label("Hide patch");
     g_signal_connect(G_OBJECT(button_hide_patch), "clicked", 
-                     G_CALLBACK(hide_all_patch_CB), (gpointer) surf_grp_vws);
+                     G_CALLBACK(hide_all_sf_grp_patch_CB), (gpointer) surf_grp_vws);
     button_hide_grid = gtk_button_new_with_label("Hide grids");
     g_signal_connect(G_OBJECT(button_hide_grid), "clicked", 
-                     G_CALLBACK(hide_all_grids_CB), (gpointer) surf_grp_vws);
+                     G_CALLBACK(hide_all_sf_grp_grids_CB), (gpointer) surf_grp_vws);
     button_hide_node = gtk_button_new_with_label("Hide nodes");
     g_signal_connect(G_OBJECT(button_hide_node), "clicked", 
-                     G_CALLBACK(hide_all_nodes_CB), (gpointer) surf_grp_vws);
+                     G_CALLBACK(hide_all_sf_grp_nodes_CB), (gpointer) surf_grp_vws);
 	
 	Frame = gtk_frame_new("");
 	gtk_frame_set_shadow_type(GTK_FRAME(Frame), GTK_SHADOW_IN);
@@ -230,16 +231,16 @@ void add_surf_group_draw_box(struct ci3_clist_view *surf_grp_vws, GtkWidget *vbo
 	gtk_box_pack_start(GTK_BOX(hbox_hide), button_hide_node, TRUE, FALSE, 0);
 	
 	
-	vbox_surf = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
-	gtk_box_pack_start(GTK_BOX(vbox_surf), hbox_table, TRUE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_surf), hbox_draw, TRUE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_surf), hbox_hide, TRUE, FALSE, 0);
+	vbox_sf_grp = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
+	gtk_box_pack_start(GTK_BOX(vbox_sf_grp), hbox_table, TRUE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_sf_grp), hbox_draw, TRUE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_sf_grp), hbox_hide, TRUE, FALSE, 0);
 	
 	scroll = gtk_scrolled_window_new(NULL, NULL);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scroll),
 				GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 	gtk_widget_set_size_request(scroll, 400, 300);
-	gtk_container_add(GTK_CONTAINER(scroll), vbox_surf);
+	gtk_container_add(GTK_CONTAINER(scroll), vbox_sf_grp);
 	
 	expander = gtk_expander_new_with_mnemonic("Surface group");
 	gtk_container_add(GTK_CONTAINER(expander), scroll);

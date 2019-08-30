@@ -270,3 +270,27 @@ int set_all_draw_flags(int iflag, int iflag_column, gpointer user_data)
 	return num;
 }
 
+
+int set_all_node_draw_flags(int iflag, gpointer user_data)
+{
+	struct ci_clist_view *nod_grp_vws = (struct ci_clist_view *) user_data;
+    GtkTreeModel *model = gtk_tree_view_get_model(GTK_TREE_VIEW(nod_grp_vws->tree_view));  
+	GtkTreeModel *child_model = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model));
+    GtkTreeIter iter;
+	
+	int i1_out;
+	char tmp_name[128];
+	int i;
+	int num = count_chara_int_clist(nod_grp_vws->ci_clist_gtk);
+	for(i=0;i<num;i++){
+		set_from_chara_int_clist_at_index(i, nod_grp_vws->ci_clist_gtk, 
+					tmp_name, &i1_out);
+		update_chara_int_clist_by_index(i, tmp_name, iflag, nod_grp_vws->ci_clist_gtk);
+		
+		gtk_tree_model_iter_nth_child(child_model, &iter, NULL, i);
+		gtk_list_store_set(GTK_LIST_STORE(child_model), &iter,
+					COLUMN_MESH_THIRD, (gboolean) iflag, -1);
+	};
+	return num;
+}
+
