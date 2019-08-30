@@ -221,42 +221,6 @@ static void surf_node_color_handler(int sel){
 };
 
 
-static void surf_4_ele_grp_handler(int sel){
-	kemoview_ele_grp_toggle(sel);
-	draw_mesh_w_menu();
-};
-
-static void grid_4_ele_grp_handler(int sel){
-	kemoview_ele_grp_grid_toggle(sel);
-	draw_mesh_w_menu();
-};
-
-static void nod_4_ele_grp_handler(int sel){
-	kemoview_ele_grp_nod_toggle(sel);
-	draw_mesh_w_menu();
-};
-
-
-static void surf_4_surf_grp_handler(int sel){
-	kemoview_surf_grp_toggle(sel);
-	draw_mesh_w_menu();
-};
-
-static void grid_4_surf_grp_handler(int sel){
-	kemoview_surf_grp_grid_toggle(sel);
-	draw_mesh_w_menu();
-};
-
-static void nod_4_surf_grp_handler(int sel){
-	kemoview_surf_grp_nod_toggle(sel);
-	draw_mesh_w_menu();
-};
-
-
-static void nod_grp_handler(int sel){
-	kemoview_nod_grp_toggle(sel);
-	draw_mesh_w_menu();
-};
 
 static void fline_handler(int sel){
 	int toggle;
@@ -357,15 +321,6 @@ static void make_3rd_level_mesh_menu(){
 	glut_grp_color_menu_item();
 	
 	
-	glut_menu_id->surf_4_ele_grp_menu = glutCreateMenu(surf_4_ele_grp_handler);
-	glut_ele_grp_patch_menu();
-	
-	glut_menu_id->grid_4_ele_grp_menu = glutCreateMenu(grid_4_ele_grp_handler);
-	glut_ele_grp_edge_menu();
-	
-	glut_menu_id->nod_4_ele_grp_menu =  glutCreateMenu(nod_4_ele_grp_handler);
-	glut_ele_grp_node_menu();
-	
 	glut_menu_id->ele_surf_color_menu = glutCreateMenu(ele_surf_color_handler);
 	glut_surf_color_menu_item();
 	
@@ -376,15 +331,6 @@ static void make_3rd_level_mesh_menu(){
 	glut_menu_id->ele_node_color_menu = glutCreateMenu(ele_node_color_handler);
 	glut_grp_color_menu_item();
 	
-	
-	glut_menu_id->surf_4_surf_grp_menu = glutCreateMenu(surf_4_surf_grp_handler);
-	glut_surf_grp_patch_menu();
-	
-	glut_menu_id->grid_4_surf_grp_menu = glutCreateMenu(grid_4_surf_grp_handler);
-	glut_surf_grp_edge_menu();
-	
-	glut_menu_id->nod_4_surf_grp_menu =  glutCreateMenu(nod_4_surf_grp_handler);
-	glut_surf_grp_node_menu();
 	
 	glut_menu_id->surf_surf_color_menu = glutCreateMenu(surf_surf_color_handler);
 	glut_surf_color_menu_item();
@@ -410,7 +356,6 @@ static void make_2nd_level_view_menu(){
 static void make_2nd_level_mesh_menu(){
 	
 	glut_menu_id->domain_id =   glutCreateMenu(domain_handler);
-	glut_mesh_display_menu();
 	glutAddSubMenu("Surface color",   glut_menu_id->surface_color_menu);
 	glutAddSubMenu("Wireframe color", glut_menu_id->grid_color_menu);
 	glutAddSubMenu("Node color",      glut_menu_id->node_color_menu);
@@ -418,22 +363,14 @@ static void make_2nd_level_mesh_menu(){
 	glutAddMenuEntry("Mesh menu",    MESH_OFF);
 	
 	
-	glut_menu_id->nod_grp_menu = glutCreateMenu(nod_grp_handler);
-	glut_nod_grp_menu_item();
 	glutAddSubMenu("Node color",         glut_menu_id->node_node_color_menu);
 	
 	glut_menu_id->ele_grp_menu = glutCreateMenu(dummy_handler);
-	glutAddSubMenu("Show/hide surface",  glut_menu_id->surf_4_ele_grp_menu);
-	glutAddSubMenu("Show/hide wireframe",glut_menu_id->grid_4_ele_grp_menu);
-	glutAddSubMenu("Show/hide node",     glut_menu_id->nod_4_ele_grp_menu);
 	glutAddSubMenu("Surface color",      glut_menu_id->ele_surf_color_menu);
 	glutAddSubMenu("Wireframe color",    glut_menu_id->ele_grid_color_menu);
 	glutAddSubMenu("Node color",         glut_menu_id->ele_node_color_menu);
 	
 	glut_menu_id->surf_grp_menu = glutCreateMenu(dummy_handler);
-	glutAddSubMenu("Show/hide surface",  glut_menu_id->surf_4_surf_grp_menu);
-	glutAddSubMenu("Show/hide wireframe",glut_menu_id->grid_4_surf_grp_menu);
-	glutAddSubMenu("Show/hide node",     glut_menu_id->nod_4_surf_grp_menu);
 	glutAddSubMenu("Surface color",      glut_menu_id->surf_surf_color_menu);
 	glutAddSubMenu("Wireframe color",    glut_menu_id->surf_grid_color_menu);
 	glutAddSubMenu("Node color",         glut_menu_id->surf_node_color_menu);
