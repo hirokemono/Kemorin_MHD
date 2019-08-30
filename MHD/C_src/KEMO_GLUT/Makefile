@@ -163,6 +163,7 @@ module:
 	m_kemoviewer_data.o \
 	tree_view_4_pvr_colormap.o \
 	tree_view_4_light_position.o \
+	kemoview_gtk_colorsel.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS) $$<' \
 	>> $(MAKENAME)
@@ -177,6 +178,7 @@ module:
 	tree_view_chara_int3_GTK.o \
 	tree_view_4_viewer_mesh.o \
 	create_tree_view_columns_GTK.o \
+	kemoview_gtk_colorsel.o \
 	quicksort_c.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS) $$<' \

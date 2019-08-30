@@ -7,6 +7,8 @@ KEMO_GTK_DIR = $$(C_SRCDIR)/GTK
 OBJ_KEMO_GTK_C = \
 control_elements_IO_GTK.o \
 \
+kemoview_gtk_colorsel.o \
+\
 create_tree_view_columns_GTK.o \
 tree_views_4_fixed_lists_GTK.o \
 tree_view_real2_GTK.o \
@@ -60,6 +62,14 @@ module:
 	'$$(KEMO_GTK_DIR)'/tree_views_4_fixed_lists_GTK.c \
 	tree_views_4_fixed_lists_GTK.h \
 	m_direction_labels_c.o \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(GTK3_CFLAGS) $$(C_INCLUDE) $$<' \
+	>> $(MAKENAME)
+	
+	@echo \
+	kemoview_gtk_colorsel.o: \
+	'$$(KEMO_GTK_DIR)'/kemoview_gtk_colorsel.c \
+	kemoview_gtk_colorsel.h \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(GTK3_CFLAGS) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)

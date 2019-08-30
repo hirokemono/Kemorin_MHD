@@ -228,13 +228,13 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 - (IBAction)SetSurfGrpPatchColorAction:(id)sender
 {
 	CGFloat redBG, greenBG, blueBG, opacityBG;
-	GLfloat colorcode4[4];
+	float colorcode4[4];
 	nsSurfGrpNodeColor = [surfGrpPatchColorWell color];
 	[nsSurfGrpNodeColor getRed:&redBG green:&greenBG blue:&blueBG alpha:&opacityBG ];
-	colorcode4[0] =  (GLfloat) redBG;
-	colorcode4[1] =  (GLfloat) greenBG;
-	colorcode4[2] =  (GLfloat) blueBG;
-	colorcode4[3] =  (GLfloat) opacityBG;
+	colorcode4[0] =  (float) redBG;
+	colorcode4[1] =  (float) greenBG;
+	colorcode4[2] =  (float) blueBG;
+	colorcode4[3] =  (float) opacityBG;
 	kemoview_set_surf_grp_color_code(SURFSOLID_TOGGLE, colorcode4);
 	
 	[_kemoviewer UpdateImage];
@@ -242,13 +242,13 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 - (IBAction)SetSurfGrpLineColorAction:(id)sender
 {
 	CGFloat redBG, greenBG, blueBG, opacityBG;
-	GLfloat colorcode4[4];
+	float colorcode4[4];
 	nsSurfGrpGridColor = [surfGrpGridColorWell color];
 	[nsSurfGrpGridColor getRed:&redBG green:&greenBG blue:&blueBG alpha:&opacityBG ];
-	colorcode4[0] =  (GLfloat) redBG;
-	colorcode4[1] =  (GLfloat) greenBG;
-	colorcode4[2] =  (GLfloat) blueBG;
-	colorcode4[3] =  (GLfloat) opacityBG;
+	colorcode4[0] =  (float) redBG;
+	colorcode4[1] =  (float) greenBG;
+	colorcode4[2] =  (float) blueBG;
+	colorcode4[3] =  (float) opacityBG;
 	kemoview_set_surf_grp_color_code(SURFGRID_TOGGLE, colorcode4);
 	
 	[_kemoviewer UpdateImage];
@@ -256,13 +256,13 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 - (IBAction)SetSurfGrpNodeColorAction:(id)sender
 {
 	CGFloat redBG, greenBG, blueBG, opacityBG;
-	GLfloat colorcode4[4];
+	float colorcode4[4];
 	nsSurfGrpNodeColor = [surfGrpNodeColorWell color];
 	[nsSurfGrpNodeColor getRed:&redBG green:&greenBG blue:&blueBG alpha:&opacityBG ];
-	colorcode4[0] =  (GLfloat) redBG;
-	colorcode4[1] =  (GLfloat) greenBG;
-	colorcode4[2] =  (GLfloat) blueBG;
-	colorcode4[3] =  (GLfloat) opacityBG;
+	colorcode4[0] =  (float) redBG;
+	colorcode4[1] =  (float) greenBG;
+	colorcode4[2] =  (float) blueBG;
+	colorcode4[3] =  (float) opacityBG;
 	kemoview_set_surf_grp_color_code(SURFNOD_TOGGLE, colorcode4);
 	
 	[_kemoviewer UpdateImage];

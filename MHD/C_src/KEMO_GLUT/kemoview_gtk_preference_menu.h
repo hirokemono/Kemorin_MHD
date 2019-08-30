@@ -19,6 +19,7 @@
 #include "m_kemoviewer_data.h"
 #include "tree_view_4_pvr_colormap.h"
 #include "tree_view_4_light_position.h"
+#include "kemoview_gtk_colorsel.h"
 
 /*  prototypes */
 

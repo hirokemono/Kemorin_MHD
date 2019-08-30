@@ -106,11 +106,32 @@ void init_viewer_parameters(struct mesh_menu_val *mesh_m);
 
 void select_domain_node_color(int selected, struct mesh_menu_val *mesh_m);
 void select_domain_grid_color(int selected, struct mesh_menu_val *mesh_m);
+void select_domain_patch_color(int selected, struct mesh_menu_val *mesh_m);
+int get_domain_node_color_mode(struct mesh_menu_val *mesh_m);
+int get_domain_grid_color_mode(struct mesh_menu_val *mesh_m);
+int get_domain_patch_color_mode(struct mesh_menu_val *mesh_m);
+
 void select_ele_grp_node_color(int selected, struct mesh_menu_val *mesh_m);
 void select_ele_grp_grid_color(int selected, struct mesh_menu_val *mesh_m);
 void select_surf_grp_node_color(int selected, struct mesh_menu_val *mesh_m);
 void select_surf_grp_grid_color(int selected, struct mesh_menu_val *mesh_m);
 void select_node_grp_node_color(int selected, struct mesh_menu_val *mesh_m);
+
+void set_domain_color_code(int selected, float color_code4[4],
+			struct mesh_menu_val *mesh_m);
+void set_node_grp_color_code(GLfloat color_code4[4], struct mesh_menu_val *mesh_m);
+void set_ele_grp_color_code(int selected, GLfloat color_code4[4],
+			struct mesh_menu_val *mesh_m);
+void set_surf_grp_color_code(int selected, GLfloat color_code4[4], 
+			struct mesh_menu_val *mesh_m);
+
+void send_domain_color_code(struct mesh_menu_val *mesh_m, int selected,
+			float color_code4[4]);
+void send_node_grp_color_code(struct mesh_menu_val *mesh_m, GLfloat color_code4[4]);
+void send_ele_grp_color_code(struct mesh_menu_val *mesh_m, int selected,
+			float color_code4[4]);
+void send_surf_grp_color_code(struct mesh_menu_val *mesh_m, int selected,
+			float color_code4[4]);
 
 void set_polygon_mode(int iflag, struct mesh_menu_val *mesh_m);
 void set_axis_flag(int iflag, struct mesh_menu_val *mesh_m);

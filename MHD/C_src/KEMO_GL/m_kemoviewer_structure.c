@@ -328,10 +328,18 @@ void kemoview_set_domain_distance(double dist){kemo_sgl->kemo_mesh->mesh_m->dist
 
 
 void kemoview_set_domain_color_flag(int selected, int icolor){
-    if(selected == SURFSOLID_TOGGLE){kemo_sgl->kemo_mesh->mesh_m->domain_surface_color = icolor;}
+    if(selected == SURFSOLID_TOGGLE){select_domain_patch_color(icolor, kemo_sgl->kemo_mesh->mesh_m);}
     else if(selected == SURFGRID_TOGGLE){select_domain_grid_color(icolor, kemo_sgl->kemo_mesh->mesh_m);}
     else if(selected == SURFNOD_TOGGLE){select_domain_node_color(icolor, kemo_sgl->kemo_mesh->mesh_m);};
     return;
+}
+
+int kemoview_get_domain_color_flag(int selected){
+	int icolor = 0;
+    if(selected == SURFSOLID_TOGGLE){icolor =     get_domain_node_color_mode(kemo_sgl->kemo_mesh->mesh_m);}
+    else if(selected == SURFGRID_TOGGLE){icolor = get_domain_grid_color_mode(kemo_sgl->kemo_mesh->mesh_m);}
+    else if(selected == SURFNOD_TOGGLE){icolor =  get_domain_patch_color_mode(kemo_sgl->kemo_mesh->mesh_m);};
+    return icolor;
 }
 
 void kemoview_set_node_grp_color_flag(int icolor)  {select_node_grp_node_color(icolor, kemo_sgl->kemo_mesh->mesh_m);};
@@ -350,45 +358,32 @@ void kemoview_set_surf_grp_color_flag(int selected, int icolor){
     return;
 }
 
-void kemoview_set_domain_color_code(int selected, GLfloat color_code4[4]){
-    if(selected == SURFSOLID_TOGGLE){
-        copy_rgba_color_c(color_code4, kemo_sgl->kemo_mesh->mesh_m->domain_surface_color_code);
-        kemoview_set_domain_opacity((double) color_code4[3]);
-    } else if(selected == SURFGRID_TOGGLE){
-        copy_rgba_color_c(color_code4, kemo_sgl->kemo_mesh->mesh_m->domain_grid_color_code);
-    } else if(selected == SURFNOD_TOGGLE){
-        copy_rgba_color_c(color_code4, kemo_sgl->kemo_mesh->mesh_m->domain_node_color_code);
-    };
+void kemoview_set_domain_color_code(int selected, float color_code4[4]){
+	set_domain_color_code(selected, color_code4, kemo_sgl->kemo_mesh->mesh_m);
+};
+void kemoview_set_node_grp_color_code(float color_code4[4]){
+	set_node_grp_color_code(color_code4, kemo_sgl->kemo_mesh->mesh_m);
+};
+void kemoview_set_ele_grp_color_code(int selected, float color_code4[4]){
+	set_ele_grp_color_code(selected, color_code4, kemo_sgl->kemo_mesh->mesh_m);
+};
+void kemoview_set_surf_grp_color_code(int selected, float color_code4[4]){
+	set_surf_grp_color_code(selected, color_code4, kemo_sgl->kemo_mesh->mesh_m);
 };
 
-void kemoview_set_node_grp_color_code(GLfloat color_code4[4]){
-    copy_rgba_color_c(color_code4, kemo_sgl->kemo_mesh->mesh_m->node_node_color_code);
-    return;
-}
+void kemoview_get_domain_color_code(int selected, float color_code4[4]){
+	send_domain_color_code(kemo_sgl->kemo_mesh->mesh_m, selected, color_code4);
+};
+void kemoview_get_node_grp_color_code(float color_code4[4]){
+	send_node_grp_color_code(kemo_sgl->kemo_mesh->mesh_m, color_code4);
+};
+void kemoview_get_ele_grp_color_code(int selected, float color_code4[4]){
+	send_ele_grp_color_code(kemo_sgl->kemo_mesh->mesh_m, selected, color_code4);
+};
+void kemoview_get_surf_grp_color_code(int selected, float color_code4[4]){
+	send_surf_grp_color_code(kemo_sgl->kemo_mesh->mesh_m, selected, color_code4);
+};
 
-void kemoview_set_ele_grp_color_code(int selected, GLfloat color_code4[4]){
-    if(selected == SURFSOLID_TOGGLE){
-        copy_rgba_color_c(color_code4, kemo_sgl->kemo_mesh->mesh_m->ele_surface_color_code);
-        kemoview_set_ele_grp_opacity((double) color_code4[3]);
-    } else if(selected == SURFGRID_TOGGLE){
-        copy_rgba_color_c(color_code4, kemo_sgl->kemo_mesh->mesh_m->ele_grid_color_code);
-    } else if(selected == SURFNOD_TOGGLE){
-        copy_rgba_color_c(color_code4, kemo_sgl->kemo_mesh->mesh_m->ele_node_color_code);
-    };
-    return;
-}
-
-void kemoview_set_surf_grp_color_code(int selected, GLfloat color_code4[4]){
-    if(selected == SURFSOLID_TOGGLE){
-        copy_rgba_color_c(color_code4, kemo_sgl->kemo_mesh->mesh_m->surf_surface_color_code);
-        kemoview_set_surf_grp_opacity((double) color_code4[3]);
-    } else if(selected == SURFGRID_TOGGLE){
-        copy_rgba_color_c(color_code4, kemo_sgl->kemo_mesh->mesh_m->surf_grid_color_code);
-    } else if(selected == SURFNOD_TOGGLE){
-        copy_rgba_color_c(color_code4, kemo_sgl->kemo_mesh->mesh_m->surf_node_color_code);
-    };
-    return;
-}
 
 
 void kemoview_set_domain_opacity(double opacity_in){kemo_sgl->kemo_mesh->mesh_m->domain_opacity = opacity_in;};

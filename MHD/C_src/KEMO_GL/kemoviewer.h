@@ -520,15 +520,22 @@ extern "C" {
     void kemoview_set_surf_grp_opacity(double opacity_in);
     
     void kemoview_set_domain_color_flag(int selected, int icolor);
-    void kemoview_set_node_grp_color_flag(int icolor);
+	int kemoview_get_domain_color_flag(int selected);
+	
+	void kemoview_set_node_grp_color_flag(int icolor);
     void kemoview_set_ele_grp_color_flag(int selected, int icolor);
     void kemoview_set_surf_grp_color_flag(int selected, int icolor);
     
-    void kemoview_set_domain_color_code(int selected, GLfloat color_code4[4]);
-    void kemoview_set_node_grp_color_code(GLfloat color_code4[4]);
-    void kemoview_set_ele_grp_color_code(int selected, GLfloat color_code4[4]);
-    void kemoview_set_surf_grp_color_code(int selected, GLfloat color_code4[4]);
+    void kemoview_set_domain_color_code(int selected, float color_code4[4]);
+    void kemoview_set_node_grp_color_code(float color_code4[4]);
+    void kemoview_set_ele_grp_color_code(int selected, float color_code4[4]);
+    void kemoview_set_surf_grp_color_code(int selected, float color_code4[4]);
     
+	void kemoview_get_domain_color_code(int selected, float color_code4[4]);
+	void kemoview_get_node_grp_color_code(float color_code4[4]);
+	void kemoview_get_ele_grp_color_code(int selected, float color_code4[4]);
+	void kemoview_get_surf_grp_color_code(int selected, float color_code4[4]);
+	
     double kemoview_get_domain_opacity();
     double kemoview_get_ele_grp_opacity();
     double kemoview_get_surf_grp_opacity();

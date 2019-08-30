@@ -12,24 +12,6 @@
 GtkWidget *window_BGCmap;
 GtkWidget *window_pref;
 
-static void set_background_GTK(GtkColorChooser *colordialog)
-{
-	GdkRGBA gcolor;
-	GLfloat color[4];
-	
-	gtk_color_chooser_get_rgba(colordialog, &gcolor);
-	gtk_widget_destroy(window_BGCmap);
-	
-    color[0] = (GLfloat) gcolor.red;
-    color[1] = (GLfloat) gcolor.green;
-    color[2] = (GLfloat) gcolor.blue;
-	/*printf("New background Color (R,G,B): %.7e %.7e %.7e \n", color[0], color[1], color[2]);*/
-	
-	kemoview_set_background_color(color);
-	
-	return;
-}
-
 static void kemoview_BG_close(GtkButton *button, gpointer data){
 	gtk_widget_destroy(window_pref);
 	gtk_main_quit();
@@ -37,25 +19,11 @@ static void kemoview_BG_close(GtkButton *button, gpointer data){
 };
 
 static void kemoview_gtk_BGcolorsel(GtkButton *button, gpointer data){
-	int response;
-	GtkColorChooser *chooser;
-	GtkWindow *parent;
+	float color[4];
+	GtkWindow *parent = GTK_WINDOW(g_object_get_data(G_OBJECT(data), "parent"));
 	
-	parent = GTK_WINDOW(g_object_get_data(G_OBJECT(data), "parent"));
-	
-	window_BGCmap = gtk_color_chooser_dialog_new("Choose color", parent);
-	gtk_widget_show_all(window_BGCmap);
-	
-	response = gtk_dialog_run(GTK_DIALOG(window_BGCmap));
-	if (response == GTK_RESPONSE_OK){
-		chooser = GTK_COLOR_CHOOSER(window_BGCmap);
-		set_background_GTK(chooser);
-		g_print ("color selected \n");
-	}
-	else if( response == GTK_RESPONSE_CANCEL ){
-		g_print( "Cancel button was pressed.\n" );
-		gtk_widget_destroy(window_BGCmap);
-	}
+	int iflag_set = kemoview_gtk_colorsel_CB(parent, color);
+	if(iflag_set > 0){kemoview_set_background_color(color);};
 	return;
 }
 

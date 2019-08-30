@@ -115,6 +115,14 @@ void select_domain_grid_color(int selected, struct mesh_menu_val *mesh_m){
 	mesh_m->domain_grid_color = selected;
 	return;
 }
+void select_domain_patch_color(int selected, struct mesh_menu_val *mesh_m){
+	mesh_m->domain_surface_color = selected;
+	return;
+}
+
+int get_domain_node_color_mode(struct mesh_menu_val *mesh_m){return mesh_m->domain_node_color;};
+int get_domain_grid_color_mode(struct mesh_menu_val *mesh_m){return mesh_m->domain_grid_color;};
+int get_domain_patch_color_mode(struct mesh_menu_val *mesh_m){return mesh_m->domain_surface_color;};
 
 void select_ele_grp_node_color(int selected, struct mesh_menu_val *mesh_m){
 	mesh_m->ele_node_color = selected;
@@ -138,6 +146,90 @@ void select_node_grp_node_color(int selected, struct mesh_menu_val *mesh_m){
 	mesh_m->node_node_color = selected;
 	return;
 }
+
+void set_domain_color_code(int selected, float color_code4[4],
+			struct mesh_menu_val *mesh_m){
+    if(selected == SURFSOLID_TOGGLE){
+        copy_rgba_color_c(color_code4, mesh_m->domain_surface_color_code);
+        kemoview_set_domain_opacity((double) color_code4[3]);
+    } else if(selected == SURFGRID_TOGGLE){
+        copy_rgba_color_c(color_code4, mesh_m->domain_grid_color_code);
+    } else if(selected == SURFNOD_TOGGLE){
+        copy_rgba_color_c(color_code4, mesh_m->domain_node_color_code);
+    };
+};
+
+void set_node_grp_color_code(float color_code4[4], struct mesh_menu_val *mesh_m){
+    copy_rgba_color_c(color_code4, mesh_m->node_node_color_code);
+    return;
+}
+
+void set_ele_grp_color_code(int selected, float color_code4[4],
+			struct mesh_menu_val *mesh_m){
+    if(selected == SURFSOLID_TOGGLE){
+        copy_rgba_color_c(color_code4, mesh_m->ele_surface_color_code);
+        kemoview_set_ele_grp_opacity((double) color_code4[3]);
+    } else if(selected == SURFGRID_TOGGLE){
+        copy_rgba_color_c(color_code4, mesh_m->ele_grid_color_code);
+    } else if(selected == SURFNOD_TOGGLE){
+        copy_rgba_color_c(color_code4, mesh_m->ele_node_color_code);
+    };
+    return;
+}
+
+void set_surf_grp_color_code(int selected, float color_code4[4], 
+			struct mesh_menu_val *mesh_m){
+    if(selected == SURFSOLID_TOGGLE){
+        copy_rgba_color_c(color_code4, mesh_m->surf_surface_color_code);
+        kemoview_set_surf_grp_opacity((double) color_code4[3]);
+    } else if(selected == SURFGRID_TOGGLE){
+        copy_rgba_color_c(color_code4, mesh_m->surf_grid_color_code);
+    } else if(selected == SURFNOD_TOGGLE){
+        copy_rgba_color_c(color_code4, mesh_m->surf_node_color_code);
+    };
+    return;
+}
+
+void send_domain_color_code(struct mesh_menu_val *mesh_m, int selected,
+			float color_code4[4]){
+    if(selected == SURFSOLID_TOGGLE){
+        copy_rgba_color_c(mesh_m->domain_surface_color_code, color_code4);
+    } else if(selected == SURFGRID_TOGGLE){
+        copy_rgba_color_c(mesh_m->domain_grid_color_code, color_code4);
+    } else if(selected == SURFNOD_TOGGLE){
+        copy_rgba_color_c(mesh_m->domain_node_color_code, color_code4);
+    };
+};
+
+void send_node_grp_color_code(struct mesh_menu_val *mesh_m, float color_code4[4]){
+    copy_rgba_color_c(mesh_m->node_node_color_code, color_code4);
+    return;
+}
+
+void send_ele_grp_color_code(struct mesh_menu_val *mesh_m, int selected,
+			float color_code4[4]){
+    if(selected == SURFSOLID_TOGGLE){
+        copy_rgba_color_c(mesh_m->ele_surface_color_code, color_code4);
+    } else if(selected == SURFGRID_TOGGLE){
+        copy_rgba_color_c(mesh_m->ele_grid_color_code, color_code4);
+    } else if(selected == SURFNOD_TOGGLE){
+        copy_rgba_color_c(mesh_m->ele_node_color_code, color_code4);
+    };
+    return;
+}
+
+void send_surf_grp_color_code(struct mesh_menu_val *mesh_m, int selected,
+			float color_code4[4]){
+    if(selected == SURFSOLID_TOGGLE){
+        copy_rgba_color_c(mesh_m->surf_surface_color_code, color_code4);
+    } else if(selected == SURFGRID_TOGGLE){
+        copy_rgba_color_c(mesh_m->surf_grid_color_code, color_code4);
+    } else if(selected == SURFNOD_TOGGLE){
+        copy_rgba_color_c(mesh_m->surf_node_color_code, color_code4);
+    };
+    return;
+}
+
 
 void set_polygon_mode(int iflag, struct mesh_menu_val *mesh_m){mesh_m->polygon_mode = iflag;};
 void set_axis_flag(int iflag, struct mesh_menu_val *mesh_m){mesh_m->iflag_draw_axis = iflag;};

@@ -138,13 +138,13 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 - (IBAction)SetNodeGrpNodeColorAction:(id)sender
 {
 	CGFloat redBG, greenBG, blueBG, opacityBG;
-	GLfloat colorcode4[4];
+	float colorcode4[4];
 	nsNodeGrpNodeColor = [nodeGrpNodeColorWell color];
 	[nsNodeGrpNodeColor getRed:&redBG green:&greenBG blue:&blueBG alpha:&opacityBG ];
-	colorcode4[0] =  (GLfloat) redBG;
-	colorcode4[1] =  (GLfloat) greenBG;
-	colorcode4[2] =  (GLfloat) blueBG;
-	colorcode4[3] =  (GLfloat) opacityBG;
+	colorcode4[0] =  (float) redBG;
+	colorcode4[1] =  (float) greenBG;
+	colorcode4[2] =  (float) blueBG;
+	colorcode4[3] =  (float) opacityBG;
 	kemoview_set_node_grp_color_code(colorcode4);
 	
 	[_kemoviewer UpdateImage];
