@@ -17,6 +17,7 @@
 
 #include "kemoviewer.h"
 #include "m_kemoviewer_data.h"
+#include "tree_views_4_fixed_lists_GTK.h"
 #include "tree_view_4_pvr_colormap.h"
 
 /*  prototypes */

@@ -128,6 +128,8 @@ static void main_menu_handler(int sel){
 	} else if(sel == MESH_OFF){
 		gtk_mesh_menu(single_kemoview);
 		draw_mesh_w_menu();
+	} else if(sel == ISET_FLINE_THICK){
+		set_fline_thick_gtk();
 	}
 	else if(sel == SAVE_SNAPSHOT)  { save_image_handler(); }
 	else if(sel == SAVE_EVOLUTION) { save_evolution_handler(); }
@@ -145,46 +147,8 @@ static void viewtype_handler(int sel){
 	return;
 }
 
-
-
-
-
-static void fline_handler(int sel){
-	int toggle;
-	printf("Fieldline menu selected %d \n",sel);
-	if( sel == ISET_FLINE_THICK) {set_fline_thick_gtk();};
-	
-	draw_mesh_w_menu();
-	return;
-};
-
 static void set_current_psf_handler(int sel){
 	kemoview_set_current_PSF(sel);
-	draw_mesh_w_menu();
-	return;
-};
-
-static void set_psf_colormode_handler(int sel){
-    kemoview_set_PSF_color_mode(sel);
-    draw_mesh_w_menu();
-    return;
-};
-
-
-static void set_fline_color_handler(int sel){
-	kemoview_set_fline_color_field(sel);
-	draw_mesh_w_menu();
-	return;
-};
-
-static void set_fline_c_comp_handler(int sel){
-	kemoview_set_fline_color_component(sel);
-	draw_mesh_w_menu();
-	return;
-};
-
-static void set_fline_col_type_handler(int sel){
-	kemoview_set_fline_color_type(sel);
 	draw_mesh_w_menu();
 	return;
 };
@@ -239,63 +203,6 @@ static void make_2nd_level_view_menu(){
 	
 	return;
 };
-
-/* 4th level menues*/
-/* 3rd level menues*/
-static void make_3rd_level_fline_menu(){
-	
-	int num_fld =  kemoview_get_fline_color_num_field();
-	int if_fline = kemoview_get_fline_color_field();
-	int num_comp = kemoview_get_fline_color_num_comps(if_fline);
-	
-	if (num_fld > 1) {
-		glut_menu_id->ichoose_fline_c_menu = glutCreateMenu(set_fline_color_handler);
-		glut_fline_color_select();
-	};
-	
-	if (num_comp > 1) {
-		glut_menu_id->ichoose_comp_menu = glutCreateMenu(set_fline_c_comp_handler);
-		glut_fline_color_comp_select();
-	};
-	
-	glut_menu_id->ichoose_fline_col_type_menu = glutCreateMenu(set_fline_col_type_handler);
-	glut_fline_col_type_menu();
-	return;
-};
-
-/* 2nd level menues*/
-
-static void make_2nd_level_fline_menu(){
-	char tmp_menu[1024];
-	
-	int num_fld =  kemoview_get_fline_color_num_field();
-	int if_fline = kemoview_get_fline_color_field();
-	int ic_fline = kemoview_get_fline_color_component();
-	int num_comp = kemoview_get_fline_color_num_comps(if_fline);
-	int itype_fline = kemoview_get_fline_type();
-    struct kv_string *colorname = kemoview_alloc_kvstring();
-	
-	glut_menu_id->fline_root_menu = glutCreateMenu(fline_handler);
-	
-	kemoview_get_fline_color_data_name(colorname, if_fline);
-	if(num_fld > 1){
-		glutAddSubMenu(colorname->string, glut_menu_id->ichoose_fline_c_menu);
-	} else {
-		glutAddMenuEntry(colorname->string, PSF_NOTHING_TODO);
-	};
-    kemoview_free_kvstring(colorname);
-	
-	if (num_comp > 1) {
-		sprintf(tmp_menu, "Current component: %d", (ic_fline+1) ); 
-		glutAddSubMenu(tmp_menu, glut_menu_id->ichoose_comp_menu);
-	};
-	
-	glutAddSubMenu("Line color type", glut_menu_id->ichoose_fline_col_type_menu);
-
-	glutAddMenuEntry("Set line thickness",     ISET_FLINE_THICK);
-	return;
-};
-
 
 /* 2nd level menues*/
 
@@ -352,10 +259,6 @@ static void make_1st_level_menu(){
 		make_2nd_level_view_menu();
 	};
 	
-	if( iflag_draw_f > 0){
-		make_3rd_level_fline_menu();
-		make_2nd_level_fline_menu();
-	};
 	
 	
 	if (iflag_any_objects_on > 0) {
@@ -373,6 +276,9 @@ static void make_1st_level_menu(){
 	}
 	if( iflag_draw_p > 0){
 		glutAddMenuEntry("PSF",  ADD_PSF_COLOR);
+	};
+	if( iflag_draw_f > 0){
+		glutAddMenuEntry("Field lines",     ISET_FLINE_THICK);
 	};
 	
 	

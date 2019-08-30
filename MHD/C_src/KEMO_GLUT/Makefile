@@ -14,6 +14,7 @@ kemoview_gtk_PSF_isoline_menu.o \
 kemoview_gtk_PSF_vector_menu.o \
 kemoview_gtk_colormap_menu.o \
 kemoview_gtk_mesh_menu.o \
+kemoview_gtk_fline_selectors.o \
 kemoview_gtk_fieldline_menu.o \
 kemoview_gtk_preference_menu.o \
 \
@@ -87,6 +88,7 @@ module:
 	kemoview_gtk_psf_selectors.h \
 	kemoviewer.h \
 	m_kemoviewer_data.o \
+	tree_views_4_fixed_lists_GTK.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS) $$<' \
 	>> $(MAKENAME)
@@ -157,10 +159,23 @@ module:
 	>> $(MAKENAME)
 	
 	@echo \
+	kemoview_gtk_fline_selectors.o: \
+	'$$(KEMO_C_GLUTDIR)'/kemoview_gtk_fline_selectors.c \
+	kemoview_gtk_fline_selectors.h \
+	kemoviewer.h \
+	m_kemoviewer_data.o \
+	tree_views_4_fixed_lists_GTK.o \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS) $$<' \
+	>> $(MAKENAME)
+	
+	@echo \
 	kemoview_gtk_fieldline_menu.o: \
 	'$$(KEMO_C_GLUTDIR)'/kemoview_gtk_fieldline_menu.c \
 	kemoview_gtk_fieldline_menu.h \
 	kemoviewer.h \
+	tree_views_4_fixed_lists_GTK.o \
+	kemoview_gtk_fline_selectors.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS) $$<' \
 	>> $(MAKENAME)

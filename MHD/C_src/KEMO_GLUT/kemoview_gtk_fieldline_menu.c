@@ -53,6 +53,34 @@ static void psf_fieldtube_switch_CB(GObject *switch_1, GParamSpec *pspec, gpoint
 	return;
 };
 
+static void psf_fline_colormode_CB(GtkComboBox *combobox_sfcolor, gpointer user_data)
+{
+    GtkTreeModel *model_cmap = gtk_combo_box_get_model(combobox_sfcolor);
+    GtkTreeIter iter;
+    cairo_t *cr;
+    
+    gchar *row_string;
+    int index_field;
+    int index_mode;
+    
+    gint idx = gtk_combo_box_get_active(combobox_sfcolor);
+    if(idx < 0) return;
+    
+    GtkTreePath *path = gtk_tree_path_new_from_indices(idx, -1);
+    
+    gtk_tree_model_get_iter(model_cmap, &iter, path);  
+    gtk_tree_model_get(model_cmap, &iter, COLUMN_FIELD_INDEX, &index_field, -1);
+    gtk_tree_model_get(model_cmap, &iter, COLUMN_FIELD_NAME, &row_string, -1);
+    gtk_tree_model_get(model_cmap, &iter, COLUMN_FIELD_MATH, &index_mode, -1);
+    
+	printf("Selected mode %d, %s\n", index_mode, row_string);
+	kemoview_set_fline_color_type(index_mode);
+	
+	//	draw_mesh_w_menu();
+	return;
+};
+
+
 void set_fline_thick_gtk(){
 	GtkWidget *box;
 	GtkButton *closeButton, *updateButton;
@@ -60,6 +88,15 @@ void set_fline_thick_gtk(){
 	GtkWidget *hbox_tube, *hbox_color;
 	GtkWidget *hbox_thickness, *hbox_org_thick;
 	GtkWidget *hbox_range, *hbox_org_range;
+	
+	GtkWidget *combobox_color;
+	GtkWidget *label_tree_color;
+	GtkCellRenderer *renderer_color;
+	GtkTreeModel *model_color;
+	GtkTreeModel *child_model_color;
+	
+	int index = 0;
+	int iflag_sfcolor;
 	
 	GtkWidget *switch_tube;
 	
@@ -70,7 +107,7 @@ void set_fline_thick_gtk(){
 	
 	GtkWidget *spin_min, *spin_max;
 	GtkAdjustment *adj_min, *adj_max;
-	int ifield, icomp;
+	int num_fld, num_comp, ifield, icomp, itype_fline, icolor_mode;
 	double data_min, data_max;
 	double range_min, range_max, delta;
 	char min_text[30], max_text[30];
@@ -91,8 +128,47 @@ void set_fline_thick_gtk(){
 				G_CALLBACK(close_window_CB), window_fline);
 	
 	
+	num_fld =  kemoview_get_fline_color_num_field();
+	ifield = kemoview_get_fline_color_field();
+	icomp = kemoview_get_fline_color_data_adress();
+	num_comp = kemoview_get_fline_color_num_comps(ifield);
+	itype_fline = kemoview_get_fline_type();
+	icolor_mode = kemoview_get_fline_colormode();
+	
+    range_min = kemoview_get_fline_data_min(icomp);
+	range_max = kemoview_get_fline_data_max(icomp);
+	data_min = kemoview_get_fline_min_color();
+	data_max = kemoview_get_fline_max_color();
+	
+	label_tree_color = create_fixed_label_w_index_tree();
+	model_color = gtk_tree_view_get_model (label_tree_color);  
+	child_model_color = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_color));
+	index = 0;
+	index = append_ci_item_to_tree(index, "Rainbow lines", RAINBOW_LINE, child_model_color);
+	index = append_ci_item_to_tree(index, "Two colord linees", TWO_COLOR_LINE, child_model_color);
+	index = append_ci_item_to_tree(index, "Two grayscale linees", TWO_GRAY_LINE, child_model_color);
+	index = append_ci_item_to_tree(index, "Black lines", BLACK_LINE, child_model_color);
+	
+	combobox_color = gtk_combo_box_new_with_model(child_model_color);
+	renderer_color = gtk_cell_renderer_text_new();
+	if(icolor_mode == BLACK_LINE){
+		gtk_combo_box_set_active(combobox_color, 3);
+	} else 	if(icolor_mode == TWO_GRAY_LINE){
+		gtk_combo_box_set_active(combobox_color, 2);
+	} else 	if(icolor_mode == TWO_COLOR_LINE){
+		gtk_combo_box_set_active(combobox_color, 1);
+	} else {
+		gtk_combo_box_set_active(combobox_color, 0);
+	};
+	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(combobox_color), renderer_color, TRUE);
+	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combobox_color), renderer_color,
+				"text", COLUMN_FIELD_NAME, NULL);
+	g_signal_connect(G_OBJECT(combobox_color), "changed", 
+				G_CALLBACK(psf_fline_colormode_CB), NULL);
+	
+	
 	switch_tube = gtk_switch_new();
-	if(kemoview_get_fline_type() == 0){
+	if(itype_fline == 0){
 		gtk_switch_set_active(GTK_SWITCH(switch_tube), FALSE);
 	} else {
 		gtk_switch_set_active(GTK_SWITCH(switch_tube), TRUE);
@@ -107,17 +183,6 @@ void set_fline_thick_gtk(){
 	spin_thick = gtk_spin_button_new(GTK_ADJUSTMENT(adj_thick), 0, 3);
 	g_signal_connect(spin_thick, "value-changed", G_CALLBACK(fline_thickness_CB),NULL);
 	
-	ifield = kemoview_get_fline_color_field();
-	icomp = kemoview_get_fline_color_data_adress();
-	
-	struct kv_string *colorname = kemoview_alloc_kvstring();
-	kemoview_get_fline_color_data_name(colorname, ifield);
-	
-    range_min = kemoview_get_fline_data_min(icomp);
-	range_max = kemoview_get_fline_data_max(icomp);
-	data_min = kemoview_get_fline_min_color();
-	data_max = kemoview_get_fline_max_color();
-	
 	delta = range_max - range_min;
 	sprintf(min_text, "    %e    ", range_min);
 	sprintf(max_text, "    %e    ", range_max);
@@ -130,6 +195,10 @@ void set_fline_thick_gtk(){
 	g_signal_connect(spin_min, "value-changed", G_CALLBACK(MinChange_CB), NULL);
 	g_signal_connect(spin_max, "value-changed", G_CALLBACK(MaxChange_CB), NULL);
 	
+	
+	hbox_color = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
+	gtk_box_pack_start(GTK_BOX(hbox_color), gtk_label_new("Color mode: "), FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_color), combobox_color, FALSE, FALSE, 0);
 	
 	hbox_tube = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
 	gtk_box_pack_start(GTK_BOX(hbox_tube), gtk_label_new("Draw tube: "), FALSE, FALSE, 0);
@@ -152,6 +221,10 @@ void set_fline_thick_gtk(){
 	
 	box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
 	gtk_container_add(GTK_CONTAINER(window_fline), box);
+	
+	add_fline_draw_field_box(window_fline, box);
+	add_fline_draw_component_box(window_fline, box);
+	gtk_box_pack_start(GTK_BOX(box), hbox_color, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(box), hbox_tube, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(box), hbox_org_thick, TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(box), hbox_thickness, TRUE, TRUE, 0);
