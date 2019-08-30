@@ -149,7 +149,7 @@ static void viewtype_handler(int sel){
 
 static void domain_handler(int sel){
 	if(sel == MESH_OFF){
-		kemoview_close_mesh_view();
+		gtk_mesh_menu(single_kemoview);
 	} else{
 		kemoview_mesh_draw_toggle(sel);
 	};
@@ -415,7 +415,7 @@ static void make_2nd_level_mesh_menu(){
 	glutAddSubMenu("Wireframe color", glut_menu_id->grid_color_menu);
 	glutAddSubMenu("Node color",      glut_menu_id->node_color_menu);
 	
-	glutAddMenuEntry("Close mesh",    MESH_OFF);
+	glutAddMenuEntry("Mesh menu",    MESH_OFF);
 	
 	
 	glut_menu_id->nod_grp_menu = glutCreateMenu(nod_grp_handler);

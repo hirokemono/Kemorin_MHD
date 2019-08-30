@@ -17,6 +17,11 @@ void init_mesh_views_4_viewer(struct viewer_mesh *mesh_d,
     mesh_vws->ele_grp_vws =  (struct ci3_clist_view *) malloc(sizeof(struct ci3_clist_view));
     mesh_vws->surf_grp_vws = (struct ci3_clist_view *) malloc(sizeof(struct ci3_clist_view));
 	
+    mesh_vws->domain_vws->ci3_clist_gtk =  (struct chara_int3_clist *)  malloc(sizeof(struct chara_int3_clist));
+    mesh_vws->nod_grp_vws->ci_clist_gtk =  (struct chara_int_clist *)  malloc(sizeof(struct chara_int_clist));
+    mesh_vws->ele_grp_vws->ci3_clist_gtk =  (struct chara_int3_clist *) malloc(sizeof(struct chara_int3_clist));
+    mesh_vws->surf_grp_vws->ci3_clist_gtk = (struct chara_int3_clist *) malloc(sizeof(struct chara_int3_clist));
+	
 	init_chara_int3_clist(mesh_vws->domain_vws->ci3_clist_gtk);
 	init_chara_int_clist(mesh_vws->nod_grp_vws->ci_clist_gtk);
 	init_chara_int3_clist(mesh_vws->ele_grp_vws->ci3_clist_gtk);

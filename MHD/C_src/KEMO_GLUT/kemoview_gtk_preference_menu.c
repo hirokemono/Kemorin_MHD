@@ -99,7 +99,7 @@ void gtk_BGcolorselect(const char *title, struct kemoviewer_type *kemoviewer_dat
 	GtkWidget *spin1, *spin2, *spin3, *spin4;
 	GtkAdjustment *adj1, *adj2, *adj3, *adj4;
 	
-    struct lightparams_view *lightparams_view;
+    struct lightparams_view *lightparams_vws;
 	char current_text[30];
 	float current_value;
 	
@@ -113,9 +113,6 @@ void gtk_BGcolorselect(const char *title, struct kemoviewer_type *kemoviewer_dat
 	gtk_container_set_border_width(GTK_CONTAINER(window_pref), 5);
 	g_signal_connect(G_OBJECT(window_pref), "destroy", G_CALLBACK(gtk_main_quit), NULL);
 	
-	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-	gtk_container_add(GTK_CONTAINER(window_pref), vbox);
-	
 	/* Set buttons   */
 	entry = gtk_entry_new();
 	BGselButton = gtk_button_new_with_label("Set Background");
@@ -125,8 +122,8 @@ void gtk_BGcolorselect(const char *title, struct kemoviewer_type *kemoviewer_dat
 	g_signal_connect(G_OBJECT(CloseButton), "clicked", 
 				G_CALLBACK(kemoview_BG_close), (gpointer)entry);
 	
-	lightparams_view = (struct lightparams_view *) malloc(sizeof(struct lightparams_view));
-    init_light_views_4_viewer(kemoviewer_data->kemo_shaders->lights, lightparams_view);
+	lightparams_vws = (struct lightparams_view *) malloc(sizeof(struct lightparams_view));
+    init_light_views_4_viewer(kemoviewer_data->kemo_shaders->lights, lightparams_vws);
 	
 	
 	label01 = gtk_label_new("Current ambient");
@@ -186,8 +183,11 @@ void gtk_BGcolorselect(const char *title, struct kemoviewer_type *kemoviewer_dat
 	gtk_box_pack_start(GTK_BOX(hbox14), spin4, FALSE, FALSE, 0);
 	
 	
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+	gtk_container_add(GTK_CONTAINER(window_pref), vbox);
+	
 	gtk_box_pack_start(GTK_BOX(vbox), BGselButton, FALSE, FALSE, 0);
-	add_light_list_box(lightparams_view, vbox);
+	add_light_list_box(lightparams_vws, vbox);
 	
 	gtk_box_pack_start(GTK_BOX(vbox), label01, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), label11, FALSE, FALSE, 0);
@@ -206,6 +206,6 @@ void gtk_BGcolorselect(const char *title, struct kemoviewer_type *kemoviewer_dat
 	
 	gtk_widget_show_all(window_pref);
 	gtk_main();
-	dealloc_light_views_4_viewer(lightparams_view);
+	dealloc_light_views_4_viewer(lightparams_vws);
 	return;
 }

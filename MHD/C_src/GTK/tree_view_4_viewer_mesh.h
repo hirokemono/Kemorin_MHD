@@ -54,7 +54,7 @@ struct kemoview_mesh_view{
 
 void init_mesh_views_4_viewer(struct viewer_mesh *mesh_d, 
 			struct kemoview_mesh_view *mesh_vws);
-void dealloc_light_views_4_viewer(struct kemoview_mesh_view *mesh_vws);
+void dealloc_mesh_views_4_viewer(struct kemoview_mesh_view *mesh_vws);
 
 void append_grp_model_data(int index, struct ci3_clist_view *grp_vws, 
 			GtkListStore *child_model);
