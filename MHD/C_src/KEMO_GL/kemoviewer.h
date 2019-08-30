@@ -267,7 +267,7 @@
 #define SPHEREGRID_SWITCH    8
 #define SET_COAST_RADIUS     9
 
-#define MESH_OFF          0
+#define MESH_OFF          10
 #define SURFNOD_TOGGLE    1
 #define SURFSOLID_TOGGLE  2
 #define SURFGRID_TOGGLE   3

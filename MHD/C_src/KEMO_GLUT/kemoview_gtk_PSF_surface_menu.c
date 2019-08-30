@@ -174,7 +174,7 @@ void add_gtk_psf_surface_menu(struct colormap_view *color_vws,
 	GtkWidget *spin_opacity1;
 	GtkAdjustment *adj_opacity1;
 	double current_value;
-	char current_text[30];
+	char current_opacity_text[30];
 	
 	GtkWidget *spin_min, *spin_max;
 	GtkAdjustment *adj_min, *adj_max;
@@ -235,7 +235,7 @@ void add_gtk_psf_surface_menu(struct colormap_view *color_vws,
 				G_CALLBACK(psf_surf_colormode_CB), (gpointer) window_cmap);
 	
 	current_value = kemoview_get_PSF_max_opacity();
-	sprintf(current_text, "    %e    ", current_value);
+	sprintf(current_opacity_text, "    %e    ", current_value);
 	adj_opacity1 = gtk_adjustment_new(current_value, 0.0, 1.0, 0.01, 0.01, 0.0);
 	spin_opacity1 = gtk_spin_button_new(GTK_ADJUSTMENT(adj_opacity1), 0, 2);
 	g_signal_connect(spin_opacity1, "value-changed", G_CALLBACK(set_psf_opacity_CB), (gpointer) color_vws);
@@ -272,7 +272,7 @@ void add_gtk_psf_surface_menu(struct colormap_view *color_vws,
 	
 	hbox_org_opacity = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
 	gtk_box_pack_start(GTK_BOX(hbox_org_opacity), gtk_label_new("Current opacity: "), TRUE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox_org_opacity), gtk_label_new(current_text), TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_org_opacity), gtk_label_new(current_opacity_text), TRUE, TRUE, 0);
 	hbox_one_opacity = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
 	gtk_box_pack_start(GTK_BOX(hbox_one_opacity), gtk_label_new("Opacity: "), TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_one_opacity), spin_opacity1, TRUE, TRUE, 0);

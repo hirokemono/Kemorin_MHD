@@ -181,6 +181,14 @@ static void psf_domain_node_colormode_CB(GtkComboBox *combobox_sfcolor, gpointer
 	return;
 };
 
+static void set_domain_opacity_CB(GtkWidget *entry, gpointer user_data)
+{
+	float colorcode4[4];
+	kemoview_get_domain_color_code(SURFSOLID_TOGGLE, colorcode4);
+	colorcode4[3] = (float) gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
+	kemoview_set_domain_color_code(SURFSOLID_TOGGLE, colorcode4);
+	return;
+}
 static void set_single_domain_patch_color_CB(GtkButton *button, gpointer user_data)
 {
 	float colorcode4[4];
@@ -300,10 +308,15 @@ void add_domain_draw_box(struct ci3_clist_view *domain_vws,
 	GtkWidget *button_hide_patch, *button_hide_grid, *button_hide_node;
 	GtkWidget *hbox_draw, *hbox_hide;
 	
+	GtkWidget *hbox_one_opacity, *hbox_org_opacity;
 	GtkWidget *hbox_patch_color, *hbox_grid_color, *hbox_node_color;
 	GtkWidget *button_patch_color, *button_grid_color, *button_node_color;
 	GdkRGBA gcolor;
 	float color4[4];
+	
+	GtkWidget *spin_opacity;
+	GtkAdjustment *adj_opacity;
+	char current_opacity_text[30];
 	
 	GtkWidget *combobox_patch_color;
 	GtkWidget *label_tree_patch_color;
@@ -451,6 +464,12 @@ void add_domain_draw_box(struct ci3_clist_view *domain_vws,
 	
 	kemoview_get_domain_color_code(SURFSOLID_TOGGLE, color4);
 	set_color_to_GTK(color4, &gcolor);
+	sprintf(current_opacity_text, "    %f    ", color4[3]);
+	adj_opacity = gtk_adjustment_new(color4[3], 0.0, 1.0, 0.01, 0.01, 0.0);
+	spin_opacity = gtk_spin_button_new(GTK_ADJUSTMENT(adj_opacity), 0, 2);
+	g_signal_connect(spin_opacity, "value-changed", 
+				G_CALLBACK(set_domain_opacity_CB), NULL);
+	
 	button_patch_color = gtk_color_button_new_with_rgba(&gcolor);
     g_signal_connect(G_OBJECT(button_patch_color), "clicked", 
                      G_CALLBACK(set_single_domain_patch_color_CB), (gpointer) window_mesh);
@@ -459,13 +478,13 @@ void add_domain_draw_box(struct ci3_clist_view *domain_vws,
 	set_color_to_GTK(color4, &gcolor);
 	button_grid_color = gtk_color_button_new_with_rgba(&gcolor);
     g_signal_connect(G_OBJECT(button_grid_color), "clicked", 
-                     G_CALLBACK(set_single_domain_grids_color_CB), (gpointer) window_mesh);
+				G_CALLBACK(set_single_domain_grids_color_CB), (gpointer) window_mesh);
 	
 	kemoview_get_domain_color_code(SURFNOD_TOGGLE, color4);
 	set_color_to_GTK(color4, &gcolor);
 	button_node_color = gtk_color_button_new_with_rgba(&gcolor);
     g_signal_connect(G_OBJECT(button_node_color), "clicked", 
-                     G_CALLBACK(set_single_domain_nodes_color_CB), (gpointer) window_mesh);
+				G_CALLBACK(set_single_domain_nodes_color_CB), (gpointer) window_mesh);
 	
 	Frame = gtk_frame_new("");
 	gtk_frame_set_shadow_type(GTK_FRAME(Frame), GTK_SHADOW_IN);
@@ -487,6 +506,13 @@ void add_domain_draw_box(struct ci3_clist_view *domain_vws,
 	gtk_box_pack_start(GTK_BOX(hbox_hide), button_hide_grid, TRUE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_hide), button_hide_node, TRUE, FALSE, 0);
 	
+	hbox_org_opacity = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
+	gtk_box_pack_start(GTK_BOX(hbox_org_opacity), gtk_label_new("Current opacity: "), TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_org_opacity), gtk_label_new(current_opacity_text), TRUE, TRUE, 0);
+	hbox_one_opacity = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
+	gtk_box_pack_start(GTK_BOX(hbox_one_opacity), gtk_label_new("Opacity: "), TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_one_opacity), spin_opacity, TRUE, TRUE, 0);
+	
 	hbox_patch_color = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
 	gtk_box_pack_start(GTK_BOX(hbox_patch_color), gtk_label_new("Patch color: "), TRUE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_patch_color), combobox_patch_color, TRUE, FALSE, 0);
@@ -504,6 +530,8 @@ void add_domain_draw_box(struct ci3_clist_view *domain_vws,
 	gtk_box_pack_start(GTK_BOX(vbox_domain), hbox_table, TRUE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox_domain), hbox_draw, TRUE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox_domain), hbox_hide, TRUE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_domain), hbox_org_opacity, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_domain), hbox_one_opacity, TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox_domain), hbox_patch_color, TRUE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox_domain), hbox_grid_color, TRUE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox_domain), hbox_node_color, TRUE, FALSE, 0);

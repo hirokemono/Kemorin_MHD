@@ -128,11 +128,15 @@ static void kemoview_fline_draw_setting(int sel){
 
 
 static void main_menu_handler(int sel){
-	if (sel == QUIT_SELECTED)   { exit(EXIT_SUCCESS); }
-	else if(sel == FILE_OPEN)  { read_draw_kemoview_data_gtk(); }
-	else if(sel == ADD_PSF_COLOR)  {
+	if (sel == QUIT_SELECTED)   { 
+		exit(EXIT_SUCCESS);
+	} else if(sel == FILE_OPEN)  { 
+		read_draw_kemoview_data_gtk();
+	} else if(sel == ADD_PSF_COLOR)  {
 		edit_psf_colormap_gtk(single_kemoview);
 		draw_mesh_w_menu();
+	} else if(sel == MESH_OFF){
+		gtk_mesh_menu(single_kemoview);
 	}
 	else if(sel == SAVE_SNAPSHOT)  { save_image_handler(); }
 	else if(sel == SAVE_EVOLUTION) { save_evolution_handler(); }
@@ -147,35 +151,6 @@ static void viewtype_handler(int sel){
 	return;
 }
 
-static void domain_handler(int sel){
-	if(sel == MESH_OFF){
-		gtk_mesh_menu(single_kemoview);
-	} else{
-		kemoview_mesh_draw_toggle(sel);
-	};
-	draw_mesh_w_menu();
-	return;
-}
-
-
-static void domain_color_handler(int sel){
-	if (sel == SET_OPACITY) {
-		set_domain_opacity_gtk();
-	} else {
-		kemoview_set_domain_color_flag(SURFSOLID_TOGGLE, sel);
-	};
-	draw_mesh_keep_menu();
-	return;
-;
-};
-static void domain_grid_color_handler(int sel){
-	kemoview_set_domain_color_flag(SURFGRID_TOGGLE, sel);
-	draw_mesh_keep_menu();
-};
-static void domain_node_color_handler(int sel){
-	kemoview_set_domain_color_flag(SURFNOD_TOGGLE, sel);
-	draw_mesh_keep_menu();
-};
 
 
 static void node_node_color_handler(int sel){
@@ -308,15 +283,6 @@ static void dummy_handler(int sel){
 /* 3rd level menues*/
 
 static void make_3rd_level_mesh_menu(){
-	
-	glut_menu_id->surface_color_menu = glutCreateMenu(domain_color_handler);
-	glut_surf_color_menu_item();
-	glut_menu_id->grid_color_menu = glutCreateMenu(domain_grid_color_handler);
-	glut_line_color_menu_item();
-	glut_menu_id->node_color_menu = glutCreateMenu(domain_node_color_handler);
-	glut_color_menu_item();
-	
-	
 	glut_menu_id->node_node_color_menu = glutCreateMenu(node_node_color_handler);
 	glut_grp_color_menu_item();
 	
@@ -354,15 +320,7 @@ static void make_2nd_level_view_menu(){
 };
 
 static void make_2nd_level_mesh_menu(){
-	
-	glut_menu_id->domain_id =   glutCreateMenu(domain_handler);
-	glutAddSubMenu("Surface color",   glut_menu_id->surface_color_menu);
-	glutAddSubMenu("Wireframe color", glut_menu_id->grid_color_menu);
-	glutAddSubMenu("Node color",      glut_menu_id->node_color_menu);
-	
-	glutAddMenuEntry("Mesh menu",    MESH_OFF);
-	
-	
+	glut_menu_id->nod_grp_menu = glutCreateMenu(dummy_handler);
 	glutAddSubMenu("Node color",         glut_menu_id->node_node_color_menu);
 	
 	glut_menu_id->ele_grp_menu = glutCreateMenu(dummy_handler);
@@ -530,7 +488,7 @@ static void make_1st_level_menu(){
 	
 	
 	if( iflag_draw_m > 0){
-		glutAddSubMenu("Domain informations",glut_menu_id->domain_id);
+		glutAddMenuEntry("Mesh menu",    MESH_OFF);
 		glutAddSubMenu("Node groups",glut_menu_id->nod_grp_menu);
 		glutAddSubMenu("Element_groups",glut_menu_id->ele_grp_menu);
 		glutAddSubMenu("Surface_groups",glut_menu_id->surf_grp_menu);

@@ -43,7 +43,7 @@ void quicksort_double_c(double *dvec, int *list, int lo, int hi) {
 	int i, j, itmp;
 	double rtmp, pivot;
 	
-	if(lo == hi) return; 
+	if(lo >= hi) return; 
 	i=lo; 
 	j=hi;
 	pivot= dvec[(lo+hi)/2]; 
