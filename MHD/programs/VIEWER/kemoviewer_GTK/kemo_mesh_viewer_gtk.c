@@ -159,24 +159,6 @@ static void node_node_color_handler(int sel){
 };
 
 
-static void ele_surf_color_handler(int sel){
-	if(sel == SET_OPACITY){
-		set_ele_group_opacity_gtk();
-	} else {
-		kemoview_set_ele_grp_color_flag(SURFSOLID_TOGGLE, sel);
-	};
-	draw_mesh_keep_menu();
-	return;
-};
-static void ele_grid_color_handler(int sel){
-	kemoview_set_ele_grp_color_flag(SURFGRID_TOGGLE, sel);
-	draw_mesh_keep_menu();
-};
-static void ele_node_color_handler(int sel){
-	kemoview_set_ele_grp_color_flag(SURFNOD_TOGGLE, sel);
-	draw_mesh_keep_menu();
-};
-
 
 static void surf_surf_color_handler(int sel){
 	if (sel == SET_OPACITY) {
@@ -287,17 +269,6 @@ static void make_3rd_level_mesh_menu(){
 	glut_grp_color_menu_item();
 	
 	
-	glut_menu_id->ele_surf_color_menu = glutCreateMenu(ele_surf_color_handler);
-	glut_surf_color_menu_item();
-	
-	glut_menu_id->ele_grid_color_menu = glutCreateMenu(ele_grid_color_handler);
-	glut_line_color_menu_item();
-	glutAddMenuEntry("Color by group",GROUP_COLOR);
-	
-	glut_menu_id->ele_node_color_menu = glutCreateMenu(ele_node_color_handler);
-	glut_grp_color_menu_item();
-	
-	
 	glut_menu_id->surf_surf_color_menu = glutCreateMenu(surf_surf_color_handler);
 	glut_surf_color_menu_item();
 	
@@ -322,11 +293,6 @@ static void make_2nd_level_view_menu(){
 static void make_2nd_level_mesh_menu(){
 	glut_menu_id->nod_grp_menu = glutCreateMenu(dummy_handler);
 	glutAddSubMenu("Node color",         glut_menu_id->node_node_color_menu);
-	
-	glut_menu_id->ele_grp_menu = glutCreateMenu(dummy_handler);
-	glutAddSubMenu("Surface color",      glut_menu_id->ele_surf_color_menu);
-	glutAddSubMenu("Wireframe color",    glut_menu_id->ele_grid_color_menu);
-	glutAddSubMenu("Node color",         glut_menu_id->ele_node_color_menu);
 	
 	glut_menu_id->surf_grp_menu = glutCreateMenu(dummy_handler);
 	glutAddSubMenu("Surface color",      glut_menu_id->surf_surf_color_menu);
