@@ -402,96 +402,7 @@ static void gtk_evolution_image_menu(int istep){
 	return;
 }
 
-static void gtk_rotation_image_menu(){
-	GtkWidget *box;
-	GtkWidget *box0, *box1, *box2, *box4, *box5;
-	GtkWidget *spin3;
-	GtkWidget *label_file, *label_fmt;
-	GtkWidget *label_rot, *lavel3;
-	GtkWidget *bot1, *bot2, *bot3;
-	GtkWidget *combox1, *combox2;
-	
-	GtkWidget *entry;
-	
-	iflag_set = IZERO;
-	fmtw = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-	gtk_window_set_title(GTK_WINDOW(fmtw), "Select File Format");
 
-	g_signal_connect(fmtw, "destroy", G_CALLBACK(destroy), &fmtw);
-
-	gtk_container_set_border_width(GTK_CONTAINER(fmtw), 5);
-
-	
-	box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
-	gtk_container_add(GTK_CONTAINER(fmtw), box);
-	
-	box0 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 100);
-	gtk_container_add(GTK_CONTAINER(box), box0);
-	box1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
-	gtk_container_add(GTK_CONTAINER(box), box1);
-	box2 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
-	gtk_container_add(GTK_CONTAINER(box), box2);
-	box4 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
-	gtk_container_add(GTK_CONTAINER(box), box4);
-	box5 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 100);
-	gtk_container_add(GTK_CONTAINER(box), box5);
-	
-	/* File name box */
-	label_file = gtk_label_new("Image file: ");
-	gtk_box_pack_start(GTK_BOX(box0), label_file, FALSE, FALSE, 0);
-	
-	entry = gtk_entry_new();
-	gtk_box_pack_start(GTK_BOX(box0), entry, TRUE, TRUE, 0);
-	g_object_set_data(G_OBJECT(entry), "parent", (gpointer)ftmpw_f);
-	
-	/* File format box */
-	label_fmt = gtk_label_new("Image format");
-	gtk_box_pack_start(GTK_BOX(box1), label_fmt, TRUE, TRUE, 0);
-	
-	combox1 = gtk_combo_box_text_new();
-	gtk_image_format_box(combox1);
-	gtk_combo_box_set_active(GTK_COMBO_BOX_TEXT(combox1), 0);
-	fmt_changed(combox1, NULL);
-	gtk_box_pack_start(GTK_BOX(box1), combox1, FALSE, FALSE, 0);
-	
-	/* Rotatin axis combo box */
-	label_rot = gtk_label_new("Rotation axis");
-	gtk_box_pack_start(GTK_BOX(box2), label_rot, TRUE, TRUE, 0);
-	
-	combox2 = gtk_combo_box_text_new();
-	gtk_rotatin_axis_box(combox2);
-	gtk_combo_box_set_active(GTK_COMBO_BOX_TEXT(combox2), 0);
-	rot_changed(combox2, NULL);
-	gtk_box_pack_start(GTK_BOX(box2), combox2, FALSE, FALSE, 0);
-	
-	/* Rotatin increment combo box */
-	lavel3 = gtk_label_new("Step (Deg.)");
-	gtk_box_pack_start(GTK_BOX(box4), lavel3, TRUE, TRUE, 0);
-	spin3 = gtk_spin_button_new_with_range(IONE, 360, IONE);
-	IncChange(spin3, NULL);
-	gtk_box_pack_start(GTK_BOX(box4), spin3, TRUE, TRUE, 0);
-	
-	bot1 = gtk_button_new_with_label("Cancel");
-	gtk_box_pack_start(GTK_BOX(box5), bot1, FALSE, FALSE, 0);
-	bot2 = gtk_button_new_with_label("Select...");
-	gtk_box_pack_start(GTK_BOX(box5), bot2, FALSE, FALSE, 0);
-	bot3 = gtk_button_new_with_label("Save");
-	gtk_box_pack_start(GTK_BOX(box5), bot3, FALSE, FALSE, 0);
-
-	g_signal_connect(combox1, "changed", G_CALLBACK(fmt_changed), NULL);
-	g_signal_connect(combox2, "changed", G_CALLBACK(rot_changed), NULL);
-	g_signal_connect(spin3, "value-changed", G_CALLBACK(IncChange), NULL);
-	g_signal_connect(bot1, "clicked", G_CALLBACK(destroy), NULL);
-	g_signal_connect(bot2, "clicked", G_CALLBACK(kemoview_gtk_save_file_select),
-				(gpointer)entry);
-	g_signal_connect(bot3, "clicked", G_CALLBACK(fmt_clicked), NULL);
-
-	gtk_widget_show_all(fmtw);
-
-	gtk_main();
-
-	return;
-}
 /*
    GLUT callback routines for file IO
 */
@@ -613,28 +524,6 @@ int output_evolution_file_gtk(struct kv_string *file_prefix,
 	};
     kemoview_free_kvstring(stripped_ext);
 	
-	return id_img;
-}
-
-int output_rotation_file_gtk(struct kv_string *file_prefix, int *axis_ID, int *inc_rot){
-    struct kv_string *filename;
-    struct kv_string *stripped_ext;
-	int id_img;
-	
-	gtk_rotation_image_menu();
-	if(iflag_set == IZERO) return 0;
-	
-	*axis_ID = id_rotation;
-	*inc_rot = gtk_inc;
-    stripped_ext = kemoview_init_kvstring_by_string(gtk_selected_filefmt);
-	id_img = kemoview_set_image_file_format_id(stripped_ext);
-	
-	if(id_img != 0){
-        filename =     kemoview_init_kvstring_by_string(gtk_selected_filename);
-		kemoview_get_ext_from_file_name(filename, file_prefix, stripped_ext);
-        kemoview_free_kvstring(filename);
-	};
-    kemoview_free_kvstring(stripped_ext);
 	return id_img;
 }
 

@@ -89,28 +89,6 @@ static void save_evolution_handler(){
 	return;
 };
 
-void draw_rot_image_handler(int id_rot){
-    int inc_deg = 2;
-    struct kv_string *image_prefix = kemoview_init_kvstring_by_string("Kemoviewer");
-    
-    write_rotate_views_glut(NO_SAVE_FILE, image_prefix, id_rot, inc_deg);
-    kemoview_free_kvstring(image_prefix);
-};
-
-void save_rot_image_handler_gtk(){
-	int id_image;
-	int idir_rot = 2;
-	int inc_rot;
-    struct kv_string *image_prefix = kemoview_alloc_kvstring();
-	
-	id_image = output_rotation_file_gtk(image_prefix, &idir_rot, &inc_rot);
-	write_rotate_views_glut(id_image, image_prefix, idir_rot, inc_rot);
-	if(id_image == 0) return;
-	
-    kemoview_free_kvstring(image_prefix);
-};
-
-
 /* ---------  Action for selected menu -----------   */ 
 
 static void read_draw_kemoview_data_gtk(){
@@ -135,7 +113,7 @@ static void main_menu_handler(int sel){
 	}
 	else if(sel == SAVE_SNAPSHOT)  { save_image_handler(); }
 	else if(sel == SAVE_EVOLUTION) { save_evolution_handler(); }
-	else if(sel == SAVE_ROTATION) { save_rot_image_handler_gtk(); }
+	else if(sel == SET_COAST_RADIUS){gtk_main_menu(single_kemoview);}
     else if(sel == SET_BACKGROUND) {
 		gtk_BGcolorselect(single_kemoview);
 		draw_mesh_keep_menu();
@@ -154,9 +132,7 @@ static void object_property_handler(int sel){
 	int toggle;
     toggle = kemoview_toggle_object_properties(sel);
 
-	if( sel == SET_COAST_RADIUS) {
-		gtk_main_menu(single_kemoview);
-	} else if( sel == OUTPUT_V_MATRIX) {
+	if( sel == OUTPUT_V_MATRIX) {
 		save_viewmatrix_file_gtk();
 	} else if( sel == INPUT_V_MATRIX) {
 		load_viewmatrix_file_gtk();
@@ -184,16 +160,9 @@ static void make_2nd_level_image_menu(){
 	int iflag_draw_sph =   kemoview_get_object_property_flags(SPHEREGRID_SWITCH);
 	
 	glut_menu_id->polygon_id_menu = glutCreateMenu(object_property_handler);
-	
-	glutAddMenuEntry("Set objects",SET_COAST_RADIUS);
-	
+		
 	glutAddMenuEntry("Output transfer matrices",OUTPUT_V_MATRIX);
 	glutAddMenuEntry("Load transfer matrices", INPUT_V_MATRIX);
-	
-	glut_menu_id->draw_rot_image_menu = glutCreateMenu(draw_rot_image_handler);
-	glutAddMenuEntry("x-axis",ROTATE_X);
-	glutAddMenuEntry("y-axis",ROTATE_Y);
-	glutAddMenuEntry("z-axis",ROTATE_Z);
 	return;
 };
 
@@ -254,10 +223,7 @@ static void make_1st_level_menu(){
 		glutAddMenuEntry("Save evolution images", SAVE_EVOLUTION);
 	};
 	
-	if (iflag_any_objects_on > 0) {
-		glutAddMenuEntry("Save rotate images", SAVE_ROTATION);
-		glutAddSubMenu("Rotate on Window",   glut_menu_id->draw_rot_image_menu);
-	};
+	glutAddMenuEntry("Set objects",SET_COAST_RADIUS);
     glutAddMenuEntry("Preferences...",SET_BACKGROUND);
 	
 	glutAddMenuEntry("Quit",QUIT_SELECTED);

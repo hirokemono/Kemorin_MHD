@@ -265,7 +265,7 @@
 #define INPUT_V_MATRIX      16
 #define COASTLINE_SWITCH     7
 #define SPHEREGRID_SWITCH    8
-#define SET_COAST_RADIUS     9
+#define SET_COAST_RADIUS   300
 
 #define MESH_OFF          100
 #define SURFNOD_TOGGLE    1

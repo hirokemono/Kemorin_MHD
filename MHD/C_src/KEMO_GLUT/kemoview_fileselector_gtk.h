@@ -33,8 +33,6 @@ int input_texture_file_gtk(struct kv_string *file_prefix);
 int output_image_file_gtk(struct kv_string *file_prefix);
 int output_evolution_file_gtk(struct kv_string *file_prefix,
 			int *ist_udt, int *ied_udt, int *inc_udt);
-int output_rotation_file_gtk(struct kv_string *file_prefix,
-			int *axis_ID, int *inc_rot);
 
 void save_viewmatrix_file_gtk();
 void load_viewmatrix_file_gtk();
