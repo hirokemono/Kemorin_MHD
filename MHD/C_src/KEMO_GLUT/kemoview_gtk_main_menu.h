@@ -18,6 +18,7 @@
 #include "kemoviewer.h"
 #include "m_kemoviewer_data.h"
 #include "tree_views_4_fixed_lists_GTK.h"
+#include "kemoview_fileselector_gtk.h"
 
 /*  prototypes */
 

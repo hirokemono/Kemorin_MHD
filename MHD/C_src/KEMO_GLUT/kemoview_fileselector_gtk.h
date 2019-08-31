@@ -22,7 +22,7 @@
 /* Routines for inout from console */
 
 void kemoview_gtk_read_file_select(gpointer data);
-void kemoview_gtk_save_file_select(gpointer data);
+void kemoview_gtk_save_file_select(GtkButton *button, gpointer data);
 
 struct kv_string * kemoview_read_file_panel(GtkWidget *window_cmap);
 struct kv_string * kemoview_save_file_panel(GtkWidget *window_cmap);

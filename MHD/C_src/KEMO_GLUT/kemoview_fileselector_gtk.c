@@ -137,10 +137,10 @@ void kemoview_gtk_read_file_select(gpointer data){
 	return;
 }
 
-void kemoview_gtk_save_file_select(gpointer data){
+void kemoview_gtk_save_file_select(GtkButton *button, gpointer data){
 	int response;
 	GtkWidget *parent;
-	GtkEntry *entry;
+	GtkEntry *entry = GTK_ENTRY(data);
 	GtkFileChooser *chooser;
 	
 	GtkFileChooserAction action = GTK_FILE_CHOOSER_ACTION_SAVE;
@@ -189,7 +189,7 @@ struct kv_string * kemoview_read_file_panel(GtkWidget *window_cmap){
 struct kv_string * kemoview_save_file_panel(GtkWidget *window_cmap){
 	GtkWidget *entry = gtk_entry_new();
 	g_object_set_data(G_OBJECT(entry), "parent", (gpointer) window_cmap);
-	kemoview_gtk_save_file_select(G_OBJECT(entry));
+	kemoview_gtk_save_file_select(NULL, G_OBJECT(entry));
 	struct kv_string *filename = kemoview_init_kvstring_by_string(gtk_selected_filename);
 	if(iflag_set == IZERO){
 		filename->string[0] = '\0';
@@ -222,7 +222,7 @@ static void gtk_save_file_window(const char *title){
 	entry = gtk_entry_new();
 	g_object_set_data(G_OBJECT(entry), "parent", (gpointer)ftmpw_f);
 	
-	kemoview_gtk_save_file_select((gpointer)entry);
+	kemoview_gtk_save_file_select(NULL, (gpointer)entry);
 	
 	return;
 	

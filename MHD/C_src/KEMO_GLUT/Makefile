@@ -188,6 +188,7 @@ module:
 	kemoviewer.h \
 	m_kemoviewer_data.o \
 	tree_views_4_fixed_lists_GTK.o \
+	kemoview_fileselector_gtk.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS) $$<' \
 	>> $(MAKENAME)
