@@ -26,6 +26,37 @@ static void kemoview_update_CB(GtkButton *button, gpointer data){
 	return;
 };
 
+static void save_viewmatrix_CB(GtkButton *button, gpointer data){
+	int iflag_set = kemoview_gtk_save_file_select(button, data);
+	if(iflag_set == IZERO) return;
+	
+	GtkEntry *entry = GTK_ENTRY(data);
+	struct kv_string *filename = kemoview_init_kvstring_by_string(gtk_entry_get_text(entry));
+	
+	gtk_widget_destroy(window_main);
+	gtk_main_quit();
+	
+	kemoview_write_modelview_file(filename);
+	kemoview_free_kvstring(filename);
+	
+	return;
+};
+static void load_viewmatrix_CB(GtkButton *button, gpointer data){
+	
+	int iflag_set = kemoview_gtk_read_file_select(data);
+	
+	if(iflag_set == IZERO) return;
+	gtk_widget_destroy(window_main);
+	gtk_main_quit();
+	
+	GtkEntry *entry = GTK_ENTRY(data);
+	struct kv_string *filename = kemoview_init_kvstring_by_string(gtk_entry_get_text(entry));
+	kemoview_load_modelview_file(filename);
+	kemoview_free_kvstring(filename);
+	
+	return;
+};
+
 static void draw_axis_switch_CB(GObject *switch_bar, GParamSpec *pspec, gpointer data){
 	int toggle = kemoview_toggle_object_properties(AXIS_TOGGLE);
 	return;
@@ -243,6 +274,10 @@ void gtk_main_menu(struct kemoviewer_type *kemoviewer_data){
 	GtkTreeModel *model_viewtype;
 	GtkTreeModel *child_model_viewtype;
 	
+	GtkWidget *hbox_viewmatrix_save;
+	GtkWidget *entry_viewmatrix_file;
+	GtkWidget *saveView_Button, *loadView_Button;
+	
 	GtkWidget *hbox_shading;
 	GtkWidget *combobox_shading;
 	GtkWidget *label_tree_shading;
@@ -336,6 +371,17 @@ void gtk_main_menu(struct kemoviewer_type *kemoviewer_data){
 				"text", COLUMN_FIELD_NAME, NULL);
 	g_signal_connect(G_OBJECT(combobox_viewtype), "changed", 
 				G_CALLBACK(set_viewtype_CB), NULL);
+	
+	
+	entry_viewmatrix_file = gtk_entry_new();
+	g_object_set_data(G_OBJECT(entry_viewmatrix_file), "parent", (gpointer) window_main);
+	saveView_Button = gtk_button_new_with_label("Save View...");
+	g_signal_connect(G_OBJECT(saveView_Button), "clicked", 
+					 G_CALLBACK(save_viewmatrix_CB), (gpointer)entry_viewmatrix_file);
+	loadView_Button = gtk_button_new_with_label("Load View...");
+	g_signal_connect(G_OBJECT(loadView_Button), "clicked", 
+					 G_CALLBACK(load_viewmatrix_CB), (gpointer)entry_viewmatrix_file);
+	
 	
 	
 	label_tree_shading = create_fixed_label_w_index_tree();
@@ -490,6 +536,11 @@ void gtk_main_menu(struct kemoviewer_type *kemoviewer_data){
 	gtk_box_pack_start(GTK_BOX(hbox_viewtype), gtk_label_new("View type: "), FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_viewtype), combobox_viewtype, FALSE, FALSE, 0);
 	
+	hbox_viewmatrix_save = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
+	gtk_box_pack_start(GTK_BOX(hbox_viewmatrix_save), saveView_Button, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_viewmatrix_save), loadView_Button, FALSE, FALSE, 0);
+	
+	
 	hbox_shading = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
 	gtk_box_pack_start(GTK_BOX(hbox_shading), gtk_label_new("Shading mode: "), FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_shading), combobox_shading, FALSE, FALSE, 0);
@@ -529,7 +580,7 @@ void gtk_main_menu(struct kemoviewer_type *kemoviewer_data){
 	gtk_box_pack_start(GTK_BOX(hbox_org_rot_increment), gtk_label_new("Current increment: "), TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_org_rot_increment), gtk_label_new(current_rot_inc_text), TRUE, TRUE, 0);
 	hbox_rot_increment = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
-	gtk_box_pack_start(GTK_BOX(hbox_rot_increment), gtk_label_new("Radius: "), TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_rot_increment), gtk_label_new("Step (Deg.): "), TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_rot_increment), spin_rot_increment, TRUE, TRUE, 0);
 	
 	hbox_rotation_filename = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
@@ -545,6 +596,8 @@ void gtk_main_menu(struct kemoviewer_type *kemoviewer_data){
 	gtk_container_add(GTK_CONTAINER(window_main), vbox);
 	
 	gtk_box_pack_start(GTK_BOX(vbox), hbox_viewtype, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox), hbox_viewmatrix_save, FALSE, FALSE, 0);
+	
 	gtk_box_pack_start(GTK_BOX(vbox), hbox_axis, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox_coastline, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox_sph_grid, FALSE, FALSE, 0);

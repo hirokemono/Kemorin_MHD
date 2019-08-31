@@ -98,7 +98,7 @@ static void IncChange(GtkWidget *entry, gpointer data)
    Constract input windows
 */
 
-void kemoview_gtk_read_file_select(gpointer data){
+int kemoview_gtk_read_file_select(gpointer data){
 	int response;
 	GtkWidget *parent;
 	GtkEntry *entry;
@@ -134,10 +134,10 @@ void kemoview_gtk_read_file_select(gpointer data){
     g_print( "Another response was received.\n" );
 	}
  	gtk_widget_destroy(filew);
-	return;
+	return iflag_set;
 }
 
-void kemoview_gtk_save_file_select(GtkButton *button, gpointer data){
+int kemoview_gtk_save_file_select(GtkButton *button, gpointer data){
 	int response;
 	GtkWidget *parent;
 	GtkEntry *entry = GTK_ENTRY(data);
@@ -173,13 +173,13 @@ void kemoview_gtk_save_file_select(GtkButton *button, gpointer data){
 		g_print( "Another response was received.\n" );
 	}
  	gtk_widget_destroy(filew);
-	return;
+	return iflag_set;
 }
 
 struct kv_string * kemoview_read_file_panel(GtkWidget *window_cmap){
 	GtkWidget *entry = gtk_entry_new();
 	g_object_set_data(G_OBJECT(entry), "parent", (gpointer) window_cmap);
-	kemoview_gtk_read_file_select(G_OBJECT(entry));
+	int iflag_set = kemoview_gtk_read_file_select(G_OBJECT(entry));
 	struct kv_string *filename = kemoview_init_kvstring_by_string(gtk_selected_filename);
 	if(iflag_set == IZERO){
 		filename->string[0] = '\0';
@@ -189,7 +189,7 @@ struct kv_string * kemoview_read_file_panel(GtkWidget *window_cmap){
 struct kv_string * kemoview_save_file_panel(GtkWidget *window_cmap){
 	GtkWidget *entry = gtk_entry_new();
 	g_object_set_data(G_OBJECT(entry), "parent", (gpointer) window_cmap);
-	kemoview_gtk_save_file_select(NULL, G_OBJECT(entry));
+	int iflag_set = kemoview_gtk_save_file_select(NULL, G_OBJECT(entry));
 	struct kv_string *filename = kemoview_init_kvstring_by_string(gtk_selected_filename);
 	if(iflag_set == IZERO){
 		filename->string[0] = '\0';
@@ -208,7 +208,7 @@ static void gtk_read_file_window(const char *title){
 	entry = gtk_entry_new();
 	g_object_set_data(G_OBJECT(entry), "parent", (gpointer)ftmpw_f);
 	
-	kemoview_gtk_read_file_select(entry);
+	int iflag_set = kemoview_gtk_read_file_select(entry);
 	return;
 	
 }
@@ -222,7 +222,7 @@ static void gtk_save_file_window(const char *title){
 	entry = gtk_entry_new();
 	g_object_set_data(G_OBJECT(entry), "parent", (gpointer)ftmpw_f);
 	
-	kemoview_gtk_save_file_select(NULL, (gpointer)entry);
+	int iflag_set = kemoview_gtk_save_file_select(NULL, (gpointer)entry);
 	
 	return;
 	

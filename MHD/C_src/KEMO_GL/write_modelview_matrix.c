@@ -77,6 +77,8 @@ void copy_GL_modelview_params_to_ctl(struct view_element *view, struct modeview_
 	double lookat_in_view[3];
     double drotation[3];
 	
+	mat_c->iflag_use = 1;
+	
 	for (i = 0; i < 3; i++) viewpt_in_view[i] = -view->shift[i];
 	for (i = 0; i < 3; i++) lookat_in_view[i] = -view->shift[i];
     for (i = 0; i < 3; i++) drotation[i] = view->rotation[i+1];
