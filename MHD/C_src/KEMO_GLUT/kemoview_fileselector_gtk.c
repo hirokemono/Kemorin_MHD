@@ -60,24 +60,6 @@ static void fmt_changed(GtkWidget *combo, gpointer data)
 	
 }
 
-static void rot_changed(GtkWidget *combo, gpointer data)
-{
-	gchar *gtk_selected_rotaxis;
-	gtk_selected_rotaxis = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(combo));
-	
-	if(gtk_selected_rotaxis[0] == X_label[0]){
-		id_rotation = 1;
-	} else if(gtk_selected_rotaxis[0] == Y_label[0]){
-		id_rotation = 2;
-	} else if(gtk_selected_rotaxis[0] == Z_label[0]){
-		id_rotation = 3;
-	};
-	
-	printf("rotation: %s\n", gtk_selected_rotaxis);
-	printf("id_rotation: %d\n",id_rotation);
-	
-}
-
 static void StartChange(GtkWidget *entry, gpointer data)
 {
 	gtk_istart = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(entry));
@@ -213,21 +195,6 @@ static void gtk_read_file_window(const char *title){
 	
 }
 
-static void gtk_save_file_window(const char *title){
-	GtkWidget *entry;
-	
-	ftmpw_f = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-	
-	/*  Generate entry  */
-	entry = gtk_entry_new();
-	g_object_set_data(G_OBJECT(entry), "parent", (gpointer)ftmpw_f);
-	
-	int iflag_set = kemoview_gtk_save_file_select(NULL, (gpointer)entry);
-	
-	return;
-	
-}
-
 static void gtk_image_format_box(GtkWidget *combox){
 	gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(combox), "No Image");
 	gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(combox), "PNG");
@@ -235,13 +202,6 @@ static void gtk_image_format_box(GtkWidget *combox){
 	gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(combox), "EPS");
 	gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(combox), "PDF");
 	gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(combox), "PS");
-	return;
-}
-
-static void gtk_rotatin_axis_box(GtkWidget *combox){
-	gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(combox), "X");
-	gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(combox), "Y");
-	gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(combox), "Z");
 	return;
 }
 
@@ -526,29 +486,3 @@ int output_evolution_file_gtk(struct kv_string *file_prefix,
 	
 	return id_img;
 }
-
-void save_viewmatrix_file_gtk(){
-    struct kv_string *filename;
-	
-	gtk_save_file_window("Save view matrix file");
-	if(iflag_set == IZERO) return;
-	
-    filename = kemoview_init_kvstring_by_string(gtk_selected_filename);
-	kemoview_write_modelview_file(filename);
-    kemoview_free_kvstring(filename);
-	return;
-};
-
-void load_viewmatrix_file_gtk(){
-    struct kv_string *filename;
-    
-	gtk_read_file_window("Load view matrix file");
-	if(iflag_set == IZERO) return;
-	
-    filename = kemoview_init_kvstring_by_string(gtk_selected_filename);
-	kemoview_load_modelview_file(filename);
-    kemoview_free_kvstring(filename);
-	
-	return;
-};
-

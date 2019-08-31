@@ -128,43 +128,11 @@ static void set_current_psf_handler(int sel){
 };
 
 
-static void object_property_handler(int sel){
-	int toggle;
-    toggle = kemoview_toggle_object_properties(sel);
-
-	if( sel == OUTPUT_V_MATRIX) {
-		save_viewmatrix_file_gtk();
-	} else if( sel == INPUT_V_MATRIX) {
-		load_viewmatrix_file_gtk();
-	};
-	draw_mesh_w_menu();
-	return;
-}
-
-
 static void dummy_handler(int sel){
 	int itmp;
 	itmp = sel;
 	return;
 }
-
-
-/* 2nd level menues*/
-
-static void make_2nd_level_image_menu(){
-	int iflag_draw_m = kemoview_get_draw_mesh_flag();
-	int iflag_draw_p = kemoview_get_PSF_draw_switch();
-	int iflag_draw_f = kemoview_get_fline_switch();
-	int iflag_axis =       kemoview_get_object_property_flags(AXIS_TOGGLE);
-	int iflag_draw_coast = kemoview_get_object_property_flags(COASTLINE_SWITCH);
-	int iflag_draw_sph =   kemoview_get_object_property_flags(SPHEREGRID_SWITCH);
-	
-	glut_menu_id->polygon_id_menu = glutCreateMenu(object_property_handler);
-		
-	glutAddMenuEntry("Output transfer matrices",OUTPUT_V_MATRIX);
-	glutAddMenuEntry("Load transfer matrices", INPUT_V_MATRIX);
-	return;
-};
 
 /* Create 1st level menu() */
 
@@ -179,10 +147,6 @@ static void make_1st_level_menu(){
 	int nload_psf = kemoview_get_PSF_num_loaded();
 	
 	glutSetWindow(menu_win);
-	
-	if (iflag_any_objects_on > 0) {
-		make_2nd_level_image_menu();
-	};
 	
 	glut_menu_id->submenu_id = menu_init();
 	
@@ -214,8 +178,6 @@ static void make_1st_level_menu(){
 	};
 	
 	if (iflag_any_objects_on > 0) {
-		/*printf("polygon_id_menu \n");*/
-		glutAddSubMenu("Object propaties",   glut_menu_id->polygon_id_menu);
 		glutAddMenuEntry("Save image", SAVE_SNAPSHOT);
 	};
 	
