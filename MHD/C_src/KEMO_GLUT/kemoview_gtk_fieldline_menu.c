@@ -81,7 +81,7 @@ static void psf_fline_colormode_CB(GtkComboBox *combobox_sfcolor, gpointer user_
 };
 
 
-void set_fline_thick_gtk(){
+void gtk_fieldline_menu(){
 	GtkWidget *box;
 	GtkButton *closeButton, *updateButton;
 	

@@ -235,7 +235,7 @@ static void rotation_save_CB(GtkButton *button, gpointer data){
 	int id_image;
 	GtkEntry *entry = GTK_ENTRY(data);
 	struct kv_string *filename = kemoview_init_kvstring_by_string(gtk_entry_get_text(entry));
-    struct kv_string *stripped_ext;
+    struct kv_string *stripped_ext = kemoview_alloc_kvstring();
 	struct kv_string *file_prefix = kemoview_alloc_kvstring();
 	
 	gtk_widget_destroy(window_main);
@@ -248,8 +248,8 @@ static void rotation_save_CB(GtkButton *button, gpointer data){
 		id_image = id_fmt;
 	};
 	if(id_image == 0) return;
+	kemoview_free_kvstring(stripped_ext);
 	kemoview_free_kvstring(filename);
-    kemoview_free_kvstring(stripped_ext);
 	
 	write_rotate_views_glut(id_fmt, file_prefix, iaxis_rot, inc_deg);
 	
@@ -270,7 +270,7 @@ static void evolution_save_CB(GtkButton *button, gpointer data){
 	int id_image;
 	GtkEntry *entry = GTK_ENTRY(data);
 	struct kv_string *filename = kemoview_init_kvstring_by_string(gtk_entry_get_text(entry));
-    struct kv_string *stripped_ext;
+    struct kv_string *stripped_ext = kemoview_alloc_kvstring();
 	struct kv_string *file_prefix = kemoview_alloc_kvstring();
 	
 	gtk_widget_destroy(window_main);
@@ -284,7 +284,7 @@ static void evolution_save_CB(GtkButton *button, gpointer data){
 	};
 	if(id_image == 0) return;
 	kemoview_free_kvstring(filename);
-    kemoview_free_kvstring(stripped_ext);
+	kemoview_free_kvstring(stripped_ext);
 	
 	printf("header: %s\n", file_prefix->string);
 	printf("steps: %d %d %d\n", istart_evo, iend_evo, inc_evo);
@@ -337,11 +337,79 @@ static void set_evo_fileformat_CB(GtkComboBox *combobox_filefmt, gpointer user_d
 	return;
 };
 
+static void set_image_fileformat_CB(GtkComboBox *combobox_filefmt, gpointer user_data)
+{
+    GtkTreeModel *model_cmap = gtk_combo_box_get_model(combobox_filefmt);
+    GtkTreeIter iter;
+    cairo_t *cr;
+    
+    gchar *row_string;
+    int index_field;
+    int index_mode;
+    
+    gint idx = gtk_combo_box_get_active(combobox_filefmt);
+    if(idx < 0) return;
+    
+    GtkTreePath *path = gtk_tree_path_new_from_indices(idx, -1);
+    
+    gtk_tree_model_get_iter(model_cmap, &iter, path);  
+    gtk_tree_model_get(model_cmap, &iter, COLUMN_FIELD_INDEX, &index_field, -1);
+    gtk_tree_model_get(model_cmap, &iter, COLUMN_FIELD_NAME, &row_string, -1);
+    gtk_tree_model_get(model_cmap, &iter, COLUMN_FIELD_MATH, &index_mode, -1);
+    
+    printf("Selected mode %d, %s\n", index_mode, row_string);
+	id_fmt = index_mode;
+	
+//	draw_mesh_w_menu();
+	return;
+};
+
+static void image_save_CB(GtkButton *button, gpointer data){
+	int id_image;
+	
+	int iflag_set = kemoview_gtk_save_file_select(button, data);
+	if(iflag_set == IZERO) return;
+	
+	GtkEntry *entry = GTK_ENTRY(data);
+	struct kv_string *filename = kemoview_init_kvstring_by_string(gtk_entry_get_text(entry));
+    struct kv_string *stripped_ext = kemoview_alloc_kvstring();
+	struct kv_string *file_prefix = kemoview_alloc_kvstring();
+	
+	gtk_widget_destroy(window_main);
+	gtk_main_quit();
+	
+	
+	kemoview_get_ext_from_file_name(filename, file_prefix, stripped_ext);
+	id_image = kemoview_set_image_file_format_id(stripped_ext);
+	if(id_image < 0) {
+		id_image = id_fmt;
+	};
+	if(id_image == 0) return;
+	kemoview_free_kvstring(filename);
+	kemoview_free_kvstring(stripped_ext);
+	
+	printf("header: %s\n", file_prefix->string);
+    kemoview_write_window_to_file(id_image, file_prefix);
+    kemoview_free_kvstring(file_prefix);
+	
+	return;
+};
+
 void gtk_main_menu(struct kemoviewer_type *kemoviewer_data){
 	GtkWidget *hbox, *vbox;
 	
 	GtkWidget *entry;
 	GtkWidget *updateButton;
+	
+	GtkWidget *hbox_image_save;
+	GtkWidget *entry_image_file;
+	GtkWidget *imageSave_Button;
+	
+	GtkWidget *combobox_image_fileformat;
+	GtkWidget *label_tree_image_fileformat;
+	GtkCellRenderer *renderer_image_fileformat;
+	GtkTreeModel *model_image_fileformat;
+	GtkTreeModel *child_model_image_fileformat;
 	
 	GtkWidget *hbox_axis, *hbox_sph_grid, *hbox_coastline;
 	GtkWidget *switch_axis, *switch_sph_grid, *switch_coastline;
@@ -457,6 +525,13 @@ void gtk_main_menu(struct kemoviewer_type *kemoviewer_data){
 				G_CALLBACK(kemoview_update_CB), (gpointer)entry);
 	
 	
+	entry_image_file = gtk_entry_new();
+	g_object_set_data(G_OBJECT(entry_image_file), "parent", (gpointer) window_main);
+	imageSave_Button = gtk_button_new_with_label("Save Image...");
+	g_signal_connect(G_OBJECT(imageSave_Button), "clicked", 
+					 G_CALLBACK(image_save_CB), (gpointer)entry_image_file);
+	
+	
 	label_tree_viewtype = create_fixed_label_w_index_tree();
 	model_viewtype = gtk_tree_view_get_model (label_tree_viewtype);  
 	child_model_viewtype = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_viewtype));
@@ -569,6 +644,30 @@ void gtk_main_menu(struct kemoviewer_type *kemoviewer_data){
 	g_signal_connect(G_OBJECT(combobox_rotation_dir), "changed", 
 				G_CALLBACK(set_rotation_direction_CB), NULL);
 	
+	
+	label_tree_image_fileformat = create_fixed_label_w_index_tree();
+	model_image_fileformat = gtk_tree_view_get_model (label_tree_image_fileformat);  
+	child_model_image_fileformat = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_image_fileformat));
+	index = 0;
+	index = append_ci_item_to_tree(index, "No Image", NO_SAVE_FILE, child_model_image_fileformat);
+	index = append_ci_item_to_tree(index, "PNG", SAVE_PNG, child_model_image_fileformat);
+	index = append_ci_item_to_tree(index, "BMP", SAVE_BMP, child_model_image_fileformat);
+	
+	combobox_image_fileformat = gtk_combo_box_new_with_model(child_model_image_fileformat);
+	renderer_image_fileformat = gtk_cell_renderer_text_new();
+	id_fmt = NO_SAVE_FILE;
+	if(id_fmt == SAVE_BMP){
+		gtk_combo_box_set_active(combobox_image_fileformat, 2);
+	} else if(id_fmt == SAVE_PNG){
+		gtk_combo_box_set_active(combobox_image_fileformat, 1);
+	} else {
+		gtk_combo_box_set_active(combobox_image_fileformat, 0);
+	};
+	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(combobox_image_fileformat), renderer_image_fileformat, TRUE);
+	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combobox_image_fileformat), renderer_image_fileformat,
+				"text", COLUMN_FIELD_NAME, NULL);
+	g_signal_connect(G_OBJECT(combobox_image_fileformat), "changed", 
+				G_CALLBACK(set_image_fileformat_CB), NULL);
 	
 	label_tree_evo_fileformat = create_fixed_label_w_index_tree();
 	model_rotation_fileformat = gtk_tree_view_get_model (label_tree_evo_fileformat);  
@@ -714,6 +813,11 @@ void gtk_main_menu(struct kemoviewer_type *kemoviewer_data){
 	g_signal_connect(spin_evo_increment, "value-changed", G_CALLBACK(evo_increment_CB),NULL);
 	
 	
+	hbox_image_save = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
+	gtk_box_pack_start(GTK_BOX(hbox_image_save), gtk_label_new("Image file: "), FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_image_save), combobox_image_fileformat, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_image_save), imageSave_Button, FALSE, FALSE, 0);
+	
 	hbox_viewtype = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
 	gtk_box_pack_start(GTK_BOX(hbox_viewtype), gtk_label_new("View type: "), FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_viewtype), combobox_viewtype, FALSE, FALSE, 0);
@@ -800,6 +904,8 @@ void gtk_main_menu(struct kemoviewer_type *kemoviewer_data){
 	
 	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_container_add(GTK_CONTAINER(window_main), vbox);
+	
+	gtk_box_pack_start(GTK_BOX(vbox), hbox_image_save, FALSE, FALSE, 0);
 	
 	gtk_box_pack_start(GTK_BOX(vbox), hbox_viewtype, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox_viewmatrix_save, FALSE, FALSE, 0);

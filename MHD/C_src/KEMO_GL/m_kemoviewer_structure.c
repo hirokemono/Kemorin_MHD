@@ -548,13 +548,13 @@ double kemoview_get_domain_distance(){return kemo_sgl->kemo_mesh->mesh_m->dist_d
 
 void kemoview_get_ext_from_file_name(struct kv_string *filename,
                                      struct kv_string *stripped_prefix, struct kv_string *stripped_ext){
-    alloc_kvstringitem(strlen(filename->string), stripped_prefix);
-    alloc_kvstringitem(strlen(filename->string), stripped_ext);
+    alloc_kvstringitem((int) strlen(filename->string), stripped_prefix);
+    alloc_kvstringitem((int) strlen(filename->string), stripped_ext);
 	get_ext_from_file_name_c(filename->string, stripped_prefix->string, stripped_ext->string);
 }
 void kemoview_add_ext_to_file_name(struct kv_string *file_prefix, struct kv_string *added_ext,
                                    struct kv_string *file_name){
-    int lentgh = strlen(file_prefix->string) + strlen(added_ext->string);
+    int lentgh = (int) strlen(file_prefix->string) + (int) strlen(added_ext->string);
     alloc_kvstringitem(lentgh+2, file_name);
     add_ext_to_file_name_c(file_prefix->string, added_ext->string, file_name->string);
 }

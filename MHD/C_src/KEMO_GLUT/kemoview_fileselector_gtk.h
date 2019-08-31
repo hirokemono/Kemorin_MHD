@@ -29,9 +29,5 @@ struct kv_string * kemoview_save_file_panel(GtkWidget *window_cmap);
 
 
 void read_kemoview_data_gtk();
-int input_texture_file_gtk(struct kv_string *file_prefix);
-int output_image_file_gtk(struct kv_string *file_prefix);
-int output_evolution_file_gtk(struct kv_string *file_prefix,
-			int *ist_udt, int *ied_udt, int *inc_udt);
 
 #endif

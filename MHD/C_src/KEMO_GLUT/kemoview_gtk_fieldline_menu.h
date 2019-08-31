@@ -21,6 +21,6 @@
 
 /*  prototypes */
 
-void set_fline_thick_gtk();
+void gtk_fieldline_menu();
 
 #endif

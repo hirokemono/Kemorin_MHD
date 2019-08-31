@@ -20,11 +20,6 @@ struct kemoviewer_type *single_kemoview;
 /* subroutine for reading mesh */
 
 
-static void enter_leave(int state){
-	printf("enter/leave %d = %s\n", glutGetWindow(), state == GLUT_LEFT ? "left" : "entered");
-	return;
-}
-
 static void link_glut_menu_address(){
 	glut_menu_id = &glut_menu_id_struct;
 	return;
@@ -36,56 +31,6 @@ static void link_glut_menu_address(){
 static void draw_mesh_w_menu(){
 	make_1st_level_menu();
 	draw_mesh_keep_menu();
-	return;
-};
-
-static void save_image_handler(){
-	int id_image;
-    struct kv_string *image_prefix = kemoview_alloc_kvstring();
-    
-	id_image = output_image_file_gtk(image_prefix);
-	
-	glutSetWindow(winid);
-	draw_mesh_keep_menu();
-	
-	if(id_image == 0) return;
-    kemoview_write_window_to_file(id_image, image_prefix);
-    kemoview_free_kvstring(image_prefix);
-	return;
-};
-
-static void load_texture_handler(){
-	int id_image;
-    struct kv_string *image_prefix;
-	id_image = input_texture_file_gtk(image_prefix);
-	
-	if(id_image == SAVE_PNG || id_image == SAVE_BMP){
-        image_prefix = kemoview_alloc_kvstring();
-		kemoview_set_texture_to_PSF(id_image, image_prefix);
-		kemoview_set_PSF_patch_color_mode(TEXTURED_SURFACE);
-        kemoview_free_kvstring(image_prefix);
-	};
-	
-	
-	glutSetWindow(winid);
-	draw_mesh_w_menu();
-	return;
-};
-
-static void save_evolution_handler(){
-	int id_image;
-	int ist_udt, ied_udt, inc_udt;
-	int iflag;
-    struct kv_string *image_prefix = kemoview_alloc_kvstring();
-	
-	ist_udt = kemoview_get_PSF_full_path_file_prefix(image_prefix, &iflag);
-	id_image = output_evolution_file_gtk(image_prefix, &ist_udt, &ied_udt, &inc_udt);
-	if(id_image == 0) return;
-	
-	printf("header: %s\n", image_prefix->string);
-	printf("steps: %d %d %d\n", ist_udt, ied_udt, inc_udt);
-	write_evolution_views_glut(id_image, image_prefix, ist_udt, ied_udt, inc_udt);
-    kemoview_free_kvstring(image_prefix);
 	return;
 };
 
@@ -109,10 +54,8 @@ static void main_menu_handler(int sel){
 		gtk_mesh_menu(single_kemoview);
 		draw_mesh_w_menu();
 	} else if(sel == ISET_FLINE_THICK){
-		set_fline_thick_gtk();
+		gtk_fieldline_menu();
 	}
-	else if(sel == SAVE_SNAPSHOT)  { save_image_handler(); }
-	else if(sel == SAVE_EVOLUTION) { save_evolution_handler(); }
 	else if(sel == SET_COAST_RADIUS){gtk_main_menu(single_kemoview);}
     else if(sel == SET_BACKGROUND) {
 		gtk_BGcolorselect(single_kemoview);
@@ -120,13 +63,6 @@ static void main_menu_handler(int sel){
 	};
     return;
 };
-
-static void set_current_psf_handler(int sel){
-	kemoview_set_current_PSF(sel);
-	draw_mesh_w_menu();
-	return;
-};
-
 
 static void dummy_handler(int sel){
 	int itmp;
@@ -153,10 +89,6 @@ static void make_1st_level_menu(){
 	menu_id = glutCreateMenu(main_menu_handler);
 	
 	glutAddMenuEntry("Open...",FILE_OPEN);
-	if(iflag_any_objects_on > 0){
-		/*glutAddSubMenu("View Modifier",glut_menu_id->submenu_id);*/
-		glutAddSubMenu(viewtype_title,glut_menu_id->viewtype_id);
-	}
 	if( iflag_draw_p > 0){
 		glutAddMenuEntry("PSF",  ADD_PSF_COLOR);
 	};
@@ -172,18 +104,6 @@ static void make_1st_level_menu(){
 	if( nload_psf > 0) glutAddSubMenu("Surface rendering", glut_menu_id->psf_root_menu);
 	if( iflag_draw_f > 0) glutAddSubMenu("Field Lines", glut_menu_id->fline_root_menu);
 	
-	
-	if ( iflag_draw_m > 0) {
-		glutAddSubMenu("Color mode",         glut_menu_id->color_mode_menu);
-	};
-	
-	if (iflag_any_objects_on > 0) {
-		glutAddMenuEntry("Save image", SAVE_SNAPSHOT);
-	};
-	
-	if( iflag_draw_p+iflag_draw_f > 0){
-		glutAddMenuEntry("Save evolution images", SAVE_EVOLUTION);
-	};
 	
 	glutAddMenuEntry("Set objects",SET_COAST_RADIUS);
     glutAddMenuEntry("Preferences...",SET_BACKGROUND);
