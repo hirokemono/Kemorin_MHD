@@ -65,32 +65,26 @@ void write_evolution_views_glut(int iflag_img, struct kv_string *image_prefix,
 
 /* ---------  Action for selected menu -----------   */ 
 
-void set_viewtype_mode_glut(int selected, char *viewtype_title){
+void set_viewtype_mode_glut(int selected){
 	
 	if(selected == RESET) selected = VIEW_3D;
 
 	if(selected == VIEW_3D){
-		sprintf(viewtype_title,"%s", "3D-View");
 		set_left_button(ROTATE);
 	}
 	else if(selected == VIEW_STEREO){
-		sprintf(viewtype_title,"%s", "Stereo-View");
 		set_left_button(ROTATE);
 	}
 	else if(selected == VIEW_MAP) {
-		sprintf(viewtype_title,"%s", "Map-projection");
 		set_left_button(PAN);
 	}
 	else if(selected == VIEW_XY) {
-		sprintf(viewtype_title,"%s",  "XY-View");
 		set_left_button(PAN);
 	}
 	else if(selected == VIEW_XZ) {
-		sprintf(viewtype_title,"%s",  "XZ-View");
 		set_left_button(PAN);
 	}
 	else if(selected == VIEW_YZ) {
-		sprintf(viewtype_title,"%s",  "YZ-View");
 		set_left_button(PAN);
 	};
 	

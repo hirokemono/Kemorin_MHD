@@ -375,7 +375,7 @@ static void main_menu_handler(int sel){
 /* Actions by selection */
 
 static void viewtype_handler(int sel){
-	set_viewtype_mode_glut(sel, viewtype_title);
+	set_viewtype_mode_glut(sel);
 	draw_mesh_w_menu();
 	return;
 }
@@ -496,7 +496,7 @@ static void psf_handler(int sel){
     int nload_psf, toggle;
     
 	if (sel == PSF_OFF) {
-        set_viewtype_mode_glut(VIEW_3D, viewtype_title);
+        set_viewtype_mode_glut(VIEW_3D);
 		nload_psf = kemoview_close_PSF_view();
 		draw_mesh_w_menu();
 	} else {

@@ -36,6 +36,32 @@ static void coastline_radius_CB(GtkWidget *entry, gpointer data)
 /*	printf("radius %d\n", radius);*/
 }
 
+static void set_viewtype_CB(GtkComboBox *combobox_sfcolor, gpointer user_data)
+{
+    GtkTreeModel *model_cmap = gtk_combo_box_get_model(combobox_sfcolor);
+    GtkTreeIter iter;
+    cairo_t *cr;
+    
+    gchar *row_string;
+    int index_field;
+    int index_mode;
+    
+    gint idx = gtk_combo_box_get_active(combobox_sfcolor);
+    if(idx < 0) return;
+    
+    GtkTreePath *path = gtk_tree_path_new_from_indices(idx, -1);
+    
+    gtk_tree_model_get_iter(model_cmap, &iter, path);  
+    gtk_tree_model_get(model_cmap, &iter, COLUMN_FIELD_INDEX, &index_field, -1);
+    gtk_tree_model_get(model_cmap, &iter, COLUMN_FIELD_NAME, &row_string, -1);
+    gtk_tree_model_get(model_cmap, &iter, COLUMN_FIELD_MATH, &index_mode, -1);
+    
+    printf("Selected mode %d, %s\n", index_mode, row_string);
+	set_viewtype_mode_glut(index_mode);
+//	draw_mesh_w_menu();
+	return;
+};
+
 static void set_shading_mode_CB(GtkComboBox *combobox_sfcolor, gpointer user_data)
 {
     GtkTreeModel *model_cmap = gtk_combo_box_get_model(combobox_sfcolor);
@@ -105,6 +131,13 @@ void gtk_main_menu(struct kemoviewer_type *kemoviewer_data){
 	double current_radius;
 	char current_radius_text[30];
 	
+	GtkWidget *hbox_viewtype;
+	GtkWidget *combobox_viewtype;
+	GtkWidget *label_tree_viewtype;
+	GtkCellRenderer *renderer_viewtype;
+	GtkTreeModel *model_viewtype;
+	GtkTreeModel *child_model_viewtype;
+	
 	GtkWidget *hbox_shading;
 	GtkWidget *combobox_shading;
 	GtkWidget *label_tree_shading;
@@ -136,7 +169,41 @@ void gtk_main_menu(struct kemoviewer_type *kemoviewer_data){
 	updateButton = gtk_button_new_with_label("Update");
 	g_signal_connect(G_OBJECT(updateButton), "clicked", 
 				G_CALLBACK(kemoview_update_CB), (gpointer)entry);
-		
+	
+	
+	label_tree_viewtype = create_fixed_label_w_index_tree();
+	model_viewtype = gtk_tree_view_get_model (label_tree_viewtype);  
+	child_model_viewtype = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_viewtype));
+	index = 0;
+	index = append_ci_item_to_tree(index, "3D-Viewer", VIEW_3D, child_model_viewtype);
+	index = append_ci_item_to_tree(index, "Stereo-Viewer", VIEW_STEREO, child_model_viewtype);
+	index = append_ci_item_to_tree(index, "Map-Viewer", VIEW_MAP, child_model_viewtype);
+	index = append_ci_item_to_tree(index, "XY-Viewer", VIEW_XY, child_model_viewtype);
+	index = append_ci_item_to_tree(index, "XZ-Viewer", VIEW_XZ, child_model_viewtype);
+	index = append_ci_item_to_tree(index, "YZ-Viewer", VIEW_YZ, child_model_viewtype);
+	
+	combobox_viewtype = gtk_combo_box_new_with_model(child_model_viewtype);
+	renderer_viewtype = gtk_cell_renderer_text_new();
+	iflag_mode = kemoview_get_view_type_flag();
+	if(iflag_mode == VIEW_YZ){
+		gtk_combo_box_set_active(combobox_viewtype, 5);
+	}else if(iflag_mode == VIEW_XZ){
+		gtk_combo_box_set_active(combobox_viewtype, 4);
+	}else if(iflag_mode == VIEW_XY){
+		gtk_combo_box_set_active(combobox_viewtype, 3);
+	}else if(iflag_mode == VIEW_MAP){
+		gtk_combo_box_set_active(combobox_viewtype, 2);
+	}else if(iflag_mode == VIEW_STEREO){
+		gtk_combo_box_set_active(combobox_viewtype, 1);
+	} else {
+		gtk_combo_box_set_active(combobox_viewtype, 0);
+	};
+	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(combobox_viewtype), renderer_viewtype, TRUE);
+	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combobox_viewtype), renderer_viewtype,
+				"text", COLUMN_FIELD_NAME, NULL);
+	g_signal_connect(G_OBJECT(combobox_viewtype), "changed", 
+				G_CALLBACK(set_viewtype_CB), NULL);
+	
 	
 	label_tree_shading = create_fixed_label_w_index_tree();
 	model_shading = gtk_tree_view_get_model (label_tree_shading);  
@@ -215,6 +282,10 @@ void gtk_main_menu(struct kemoviewer_type *kemoviewer_data){
 	spin_coast_radius = gtk_spin_button_new(GTK_ADJUSTMENT(adj_coast_radius), 0, 3);
 	g_signal_connect(spin_coast_radius, "value-changed", G_CALLBACK(coastline_radius_CB),NULL);
 	
+	hbox_viewtype = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
+	gtk_box_pack_start(GTK_BOX(hbox_viewtype), gtk_label_new("View type: "), FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_viewtype), combobox_viewtype, FALSE, FALSE, 0);
+	
 	hbox_shading = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
 	gtk_box_pack_start(GTK_BOX(hbox_shading), gtk_label_new("Shading mode: "), FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_shading), combobox_shading, FALSE, FALSE, 0);
@@ -245,6 +316,7 @@ void gtk_main_menu(struct kemoviewer_type *kemoviewer_data){
 	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_container_add(GTK_CONTAINER(window_main), vbox);
 	
+	gtk_box_pack_start(GTK_BOX(vbox), hbox_viewtype, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox_axis, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox_coastline, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox_sph_grid, FALSE, FALSE, 0);

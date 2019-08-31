@@ -11,12 +11,10 @@
 
 GtkWidget *window_cmap;
 
-static char viewtype_title[80] = "3D-View";
-
 static void close_psf_CB(GtkButton *button, gpointer user_data){
 	int nload_psf;
 	GtkWidget *window = (GtkWidget *) user_data;
-	set_viewtype_mode_glut(VIEW_3D, viewtype_title);
+	set_viewtype_mode_glut(VIEW_3D);
 	nload_psf = kemoview_close_PSF_view();
 };
 

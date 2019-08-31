@@ -143,12 +143,6 @@ static void main_menu_handler(int sel){
     return;
 };
 
-static void viewtype_handler(int sel){
-	set_viewtype_mode_glut(sel, viewtype_title);
-	draw_mesh_w_menu();
-	return;
-}
-
 static void set_current_psf_handler(int sel){
 	kemoview_set_current_PSF(sel);
 	draw_mesh_w_menu();
@@ -178,15 +172,6 @@ static void dummy_handler(int sel){
 	return;
 }
 
-
-/* 2nd level menues*/
-
-static void make_2nd_level_view_menu(){
-	glut_menu_id->viewtype_id = glutCreateMenu(viewtype_handler);
-	glut_viewtype_menu();
-	
-	return;
-};
 
 /* 2nd level menues*/
 
@@ -225,12 +210,6 @@ static void make_1st_level_menu(){
 	int nload_psf = kemoview_get_PSF_num_loaded();
 	
 	glutSetWindow(menu_win);
-	
-	if (iflag_any_objects_on > 0) {
-		make_2nd_level_view_menu();
-	};
-	
-	
 	
 	if (iflag_any_objects_on > 0) {
 		make_2nd_level_image_menu();
