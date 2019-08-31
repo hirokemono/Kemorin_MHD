@@ -16,6 +16,7 @@ kemoview_gtk_colormap_menu.o \
 kemoview_gtk_mesh_menu.o \
 kemoview_gtk_fline_selectors.o \
 kemoview_gtk_fieldline_menu.o \
+kemoview_gtk_main_menu.o \
 kemoview_gtk_preference_menu.o \
 \
 tree_view_4_domain_viewer.o \
@@ -176,6 +177,17 @@ module:
 	kemoviewer.h \
 	tree_views_4_fixed_lists_GTK.o \
 	kemoview_gtk_fline_selectors.o \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS) $$<' \
+	>> $(MAKENAME)
+	
+	@echo \
+	kemoview_gtk_main_menu.o: \
+	'$$(KEMO_C_GLUTDIR)'/kemoview_gtk_main_menu.c \
+	kemoview_gtk_main_menu.h \
+	kemoviewer.h \
+	m_kemoviewer_data.o \
+	tree_views_4_fixed_lists_GTK.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS) $$<' \
 	>> $(MAKENAME)

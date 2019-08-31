@@ -33,7 +33,7 @@
 #define SURFGRID_TOGGLE   3
 
 #define ISET_FLINE_TYPE   11
-#define ISET_FLINE_THICK  12
+#define ISET_FLINE_THICK  200
 #define FLINE_OFF         50
 
 #define SAVE_EPS      10

@@ -98,7 +98,9 @@ void draw_rot_image_handler(int id_rot){
 };
 
 void save_rot_image_handler_gtk(){
-	int id_image, idir_rot, inc_rot;
+	int id_image;
+	int idir_rot = 2;
+	int inc_rot;
     struct kv_string *image_prefix = kemoview_alloc_kvstring();
 	
 	id_image = output_rotation_file_gtk(image_prefix, &idir_rot, &inc_rot);
@@ -172,7 +174,7 @@ static void object_property_handler(int sel){
     toggle = kemoview_toggle_object_properties(sel);
 
 	if( sel == SET_COAST_RADIUS) {
-		set_coastline_radius_gtk();
+		gtk_main_menu(single_kemoview);
 	} else if( sel == OUTPUT_V_MATRIX) {
 		save_viewmatrix_file_gtk();
 	} else if( sel == INPUT_V_MATRIX) {
@@ -214,12 +216,7 @@ static void make_2nd_level_image_menu(){
 	
 	glut_menu_id->polygon_id_menu = glutCreateMenu(object_property_handler);
 	
-	glut_draw_axis_menu_item(iflag_axis);
-	glut_draw_coast_menu_item(iflag_draw_coast);
-	glut_draw_sph_grid_menu_item(iflag_draw_sph);
-	if ( (iflag_draw_coast != 0) || (iflag_draw_sph != 0)) {
-		glutAddMenuEntry("Set Coastline radius",SET_COAST_RADIUS);
-	};
+	glutAddMenuEntry("Set objects",SET_COAST_RADIUS);
 	
 	glut_drawing_select();
 

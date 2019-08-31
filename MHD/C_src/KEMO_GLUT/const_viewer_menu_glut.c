@@ -19,8 +19,6 @@ void glut_drawing_select() {
 	else{
 		glutAddMenuEntry("reverse => normal",POLYGON_SWITCH);
 	};
-	glutAddMenuEntry("size of node", SET_NODE_SIZE);
-	
 	return;
 }
 

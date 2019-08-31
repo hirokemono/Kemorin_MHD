@@ -232,6 +232,7 @@
 		18D561012319C3F600599F5F /* kemoview_gtk_fieldline_menu.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D560FF2319C3F600599F5F /* kemoview_gtk_fieldline_menu.c */; };
 		18D561042319D7F800599F5F /* kemoview_gtk_fline_selectors.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D561032319D7F800599F5F /* kemoview_gtk_fline_selectors.c */; };
 		18EC49A72314C65E00567DD8 /* kemoview_gtk_PSF_isoline_menu.c in Sources */ = {isa = PBXBuildFile; fileRef = 18EC49A62314C65E00567DD8 /* kemoview_gtk_PSF_isoline_menu.c */; };
+		18F1E8D62319F31D0080FCFE /* kemoview_gtk_main_menu.c in Sources */ = {isa = PBXBuildFile; fileRef = 18F1E8D52319F31D0080FCFE /* kemoview_gtk_main_menu.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -693,6 +694,9 @@
 		18D561032319D7F800599F5F /* kemoview_gtk_fline_selectors.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = kemoview_gtk_fline_selectors.c; path = ../../../C_src/KEMO_GLUT/kemoview_gtk_fline_selectors.c; sourceTree = "<group>"; };
 		18EC49A52314C65E00567DD8 /* kemoview_gtk_PSF_isoline_menu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = kemoview_gtk_PSF_isoline_menu.h; path = ../../../C_src/KEMO_GLUT/kemoview_gtk_PSF_isoline_menu.h; sourceTree = "<group>"; };
 		18EC49A62314C65E00567DD8 /* kemoview_gtk_PSF_isoline_menu.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = kemoview_gtk_PSF_isoline_menu.c; path = ../../../C_src/KEMO_GLUT/kemoview_gtk_PSF_isoline_menu.c; sourceTree = "<group>"; };
+		18F1E8D32319F3150080FCFE /* kemoview_gtk_mesh_menu.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = kemoview_gtk_mesh_menu.h; path = ../../../C_src/KEMO_GLUT/kemoview_gtk_mesh_menu.h; sourceTree = "<group>"; };
+		18F1E8D42319F31D0080FCFE /* kemoview_gtk_main_menu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = kemoview_gtk_main_menu.h; path = ../../../C_src/KEMO_GLUT/kemoview_gtk_main_menu.h; sourceTree = "<group>"; };
+		18F1E8D52319F31D0080FCFE /* kemoview_gtk_main_menu.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = kemoview_gtk_main_menu.c; path = ../../../C_src/KEMO_GLUT/kemoview_gtk_main_menu.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1175,6 +1179,9 @@
 				18D560E12318A4E700599F5F /* kemoview_gtk_preference_menu.c */,
 				18D560E22318A4E700599F5F /* kemoview_gtk_preference_menu.h */,
 				18D560E82318ABD900599F5F /* kemoview_gtk_mesh_menu.c */,
+				18F1E8D32319F3150080FCFE /* kemoview_gtk_mesh_menu.h */,
+				18F1E8D52319F31D0080FCFE /* kemoview_gtk_main_menu.c */,
+				18F1E8D42319F31D0080FCFE /* kemoview_gtk_main_menu.h */,
 				18D560FF2319C3F600599F5F /* kemoview_gtk_fieldline_menu.c */,
 				18D561002319C3F600599F5F /* kemoview_gtk_fieldline_menu.h */,
 				18D561032319D7F800599F5F /* kemoview_gtk_fline_selectors.c */,
@@ -1430,6 +1437,7 @@
 				1862C48C2311BCC9000306E6 /* set_coastline_to_buf.c in Sources */,
 				1862C4882311BCC9000306E6 /* psf_data_array_manager.c in Sources */,
 				1862C55F2311BD2C000306E6 /* t_ctl_data_4_platforms_c.c in Sources */,
+				18F1E8D62319F31D0080FCFE /* kemoview_gtk_main_menu.c in Sources */,
 				1862C3F82311BA93000306E6 /* m_read_text_to_character.c in Sources */,
 				1862C5C72311BE6D000306E6 /* tree_view_chara_GTK.c in Sources */,
 				1862C4852311BCC9000306E6 /* psf_patch_buffer.c in Sources */,

@@ -11,12 +11,12 @@
 
 GtkWidget *window_csel;
 
-static void psf_surface_switch_CB(GObject *switch_1, GParamSpec *pspec, gpointer data){
+static void psf_surface_switch_CB(GObject *switch_draw, GParamSpec *pspec, gpointer data){
 	kemoview_select_PSF_draw_switch(PSFSOLID_TOGGLE);
 	return;
 };
 
-static void psf_colorbar_switch_CB(GObject *switch_1, GParamSpec *pspec, gpointer data){
+static void psf_colorbar_switch_CB(GObject *switch_bar, GParamSpec *pspec, gpointer data){
 	kemoview_select_PSF_draw_switch(COLORBAR_TOGGLE);
 	return;
 };
@@ -159,7 +159,7 @@ void add_gtk_psf_surface_menu(struct colormap_view *color_vws,
 	GtkWidget *expander_psf,  *scroll_psf, *Frame_psf;
 	GtkWidget *hbox_psf,  *vbox_psf;
 	
-	GtkWidget *switch_1, *switch_bar;
+	GtkWidget *switch_draw, *switch_bar;
 	int iflag_vect;
 	
 	GtkWidget *combobox_sfcolor;
@@ -188,13 +188,13 @@ void add_gtk_psf_surface_menu(struct colormap_view *color_vws,
 	double current_vec_width;
 	char current_vec_width_txt[30];
 	
-	switch_1 = gtk_switch_new();
+	switch_draw = gtk_switch_new();
 	if(kemoview_get_PSF_draw_flags(PSFSOLID_TOGGLE) == 0){
-		gtk_switch_set_active(GTK_SWITCH(switch_1), FALSE);
+		gtk_switch_set_active(GTK_SWITCH(switch_draw), FALSE);
 	} else {
-		gtk_switch_set_active(GTK_SWITCH(switch_1), TRUE);
+		gtk_switch_set_active(GTK_SWITCH(switch_draw), TRUE);
 	};
-	g_signal_connect(G_OBJECT(switch_1), "notify::active",
+	g_signal_connect(G_OBJECT(switch_draw), "notify::active",
 				G_CALLBACK(psf_surface_switch_CB), NULL);
 	
 	switch_bar = gtk_switch_new();
@@ -260,7 +260,7 @@ void add_gtk_psf_surface_menu(struct colormap_view *color_vws,
 	
 	hbox_draw = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
 	gtk_box_pack_start(GTK_BOX(hbox_draw), gtk_label_new("Draw surface: "), FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox_draw), switch_1, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_draw), switch_draw, FALSE, FALSE, 0);
 	
 	hbox_bar = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
 	gtk_box_pack_start(GTK_BOX(hbox_bar), gtk_label_new("Draw color bar: "), FALSE, FALSE, 0);

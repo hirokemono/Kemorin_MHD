@@ -39,6 +39,13 @@ static void node_size_CB(GtkWidget *entry, gpointer data)
 /*	printf("size %d\n", size);*/
 }
 
+static void num_color_loop_CB(GtkWidget *entry, gpointer data)
+{
+	int nloop = (int) gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(entry));
+	kemoview_set_num_of_color_loop(nloop);
+/*	printf("size %d\n", size);*/
+}
+
 void gtk_mesh_menu(struct kemoviewer_type *kemoviewer_data){
 	GtkWidget *hbox, *vbox;
 	
@@ -56,6 +63,12 @@ void gtk_mesh_menu(struct kemoviewer_type *kemoviewer_data){
 	GtkAdjustment *adj_node_size;
 	double current_size;
 	char current_size_text[30];
+	
+	GtkWidget *hbox_num_loop, *hbox_org_loop;
+	GtkWidget *spin_num_loop;
+	GtkAdjustment *adj_num_loop;
+	int current_num_loop;
+	char current_num_loop_text[30];
 	
 	
 	struct kemoview_mesh_view *mesh_vws;
@@ -93,6 +106,12 @@ void gtk_mesh_menu(struct kemoviewer_type *kemoviewer_data){
 	spin_node_size = gtk_spin_button_new(GTK_ADJUSTMENT(adj_node_size), 0, 3);
 	g_signal_connect(spin_node_size, "value-changed", G_CALLBACK(node_size_CB),NULL);
 	
+	current_num_loop = kemoview_get_num_of_color_loop();
+	sprintf(current_num_loop_text, "    %d    ", current_num_loop);
+	adj_num_loop = gtk_adjustment_new(current_num_loop, 0, 100, 1, 1, 0.0);
+	spin_num_loop = gtk_spin_button_new(GTK_ADJUSTMENT(adj_num_loop), 0, 3);
+	g_signal_connect(spin_num_loop, "value-changed", G_CALLBACK(num_color_loop_CB),NULL);
+	
 	
 	hbox_org_dist = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
 	gtk_box_pack_start(GTK_BOX(hbox_org_dist), gtk_label_new("Current distance: "), TRUE, TRUE, 0);
@@ -108,6 +127,13 @@ void gtk_mesh_menu(struct kemoviewer_type *kemoviewer_data){
 	gtk_box_pack_start(GTK_BOX(hbox_node_size), gtk_label_new("Node size: "), TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_node_size), spin_node_size, TRUE, TRUE, 0);
 	
+	hbox_org_loop = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
+	gtk_box_pack_start(GTK_BOX(hbox_org_loop), gtk_label_new("Current distance: "), TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_org_loop), gtk_label_new(current_num_loop_text), TRUE, TRUE, 0);
+	hbox_num_loop = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
+	gtk_box_pack_start(GTK_BOX(hbox_num_loop), gtk_label_new("# of color loop: "), TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_num_loop), spin_num_loop, TRUE, TRUE, 0);
+	
 	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_container_add(GTK_CONTAINER(window_mesh), vbox);
 	
@@ -115,6 +141,8 @@ void gtk_mesh_menu(struct kemoviewer_type *kemoviewer_data){
 	gtk_box_pack_start(GTK_BOX(vbox), hbox_distance, TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox_org_size, TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox_node_size, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox), hbox_org_loop, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox), hbox_num_loop, TRUE, TRUE, 0);
 	
 	add_domain_draw_box(mesh_vws->domain_vws, window_mesh, vbox);
 	add_nod_group_draw_box(mesh_vws->nod_grp_vws, window_mesh, vbox);

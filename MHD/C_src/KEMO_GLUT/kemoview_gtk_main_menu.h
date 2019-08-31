@@ -1,13 +1,13 @@
 /*
- *  kemoview_gtk_window_input.h
+ *  kemoview_gtk_main_menu.h
  *  Kemoview_Cocoa
  *
  *  Created by Hiroaki Matsui on 12/03/04.
  *  Copyright 2012 Dept. of Earth and Planetary Science, UC Berkeley. All rights reserved.
  *
  */
-#ifndef KEMOVIEW_GTK_WINDOW_INPUT__
-#define KEMOVIEW_GTK_WINDOW_INPUT__
+#ifndef KEMOVIEW_GTK_MAIN_MENU_
+#define KEMOVIEW_GTK_MAIN_MENU_
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -16,13 +16,11 @@
 #include "gtk/gtk.h"
 
 #include "kemoviewer.h"
-#include "kemoview_glut_routines.h"
-#include "tree_view_4_pvr_colormap.h"
-#include "kemoview_gtk_main_menu.h"
+#include "m_kemoviewer_data.h"
+#include "tree_views_4_fixed_lists_GTK.h"
 
 /*  prototypes */
 
-void set_coastline_radius_gtk();
-void set_num_color_loop_gtk();
-
+void gtk_main_menu(struct kemoviewer_type *kemoviewer_data);
+	
 #endif

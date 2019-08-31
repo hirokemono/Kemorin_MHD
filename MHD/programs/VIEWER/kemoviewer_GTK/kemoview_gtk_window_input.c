@@ -48,82 +48,16 @@ static void MinChange(GtkWidget *entry, gpointer data)
 	gtk_min = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
 /*	printf("gtk_min %d\n", gtk_min);*/
 }
-static void MaxChange(GtkWidget *entry, gpointer data)
-{
-	gtk_max = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
-/*	printf("gtk_max %d\n", gtk_max);*/
-}
+
 static void NlineChange(GtkWidget *entry, gpointer data)
 {
 	gtk_intvalue = (int) gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(entry));
 /*	printf("gtk_intvalue %d\n", gtk_min);*/
 }
 
-static void set_opacitymap_gtk(GtkWidget *treeview)
-{
-	GtkListStore *store;
-	GtkTreeIter iter;
-	int i;
-	double dvalue, dopacity;
-	
-	/* Get model in treeview and flash all deta */
-	store = GTK_LIST_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(treeview)));
-	gtk_list_store_clear(store);
-	
-	
-	/* Make new record */
-	for(i = 0; i < kemoview_get_PSF_opacity_table_num(); i++) {
-		kemoview_get_PSF_opacity_items(i, &dvalue, &dopacity);
-		gtk_list_store_append(store, &iter);
-		gtk_list_store_set(store, &iter,
-					DATA_COL, (float) dvalue,  COLOR_COL, (float) dopacity,
-					INDEX_COL,  i, -1); /* End of record */
-	};
-	return;
-}
-
-/* Add one more line in trtwwview */
-static void append_column_to_treeview(GtkWidget *treeview,
-			const char *title, const int order){
-	GtkCellRenderer *renderer;
-	GtkTreeViewColumn *column;
-	
-	/* Construct CellRenderer */
-	renderer = gtk_cell_renderer_text_new();
-	
-	//Make columns and add CellRenderer. And connect to model
-	column = gtk_tree_view_column_new_with_attributes(
-				/* Title for header */
-				title,
-				/* CEll recndrer */
-				renderer,
-				/* Connect orders data to "text" */
-				"text", order,
-				/* end */
-				NULL);
-	
-	/* Add line to treeview */
-	gtk_tree_view_append_column(GTK_TREE_VIEW(treeview), column);
-	return;
-}
-
-static void create_opacity_view(GtkWidget *treeview)
-{
-  append_column_to_treeview(treeview, "Value", 0);
-  append_column_to_treeview(treeview, "Opasity", 1);
-/*  append_column_to_treeview(treeview, "Index", 2);*/
-	return;
-}
-
 /*
    Constract input windows
 */
-static void cb_close_window(GtkButton *button, gpointer user_data){
-    GtkWidget *window = (GtkWidget *) user_data;
-    gtk_widget_destroy(window);
-};
-
-
 static void gtk_opacity_menu(double current_value, const char *title){
 	GtkWidget *box;
 	GtkWidget *box1, *box2, *box3, *box5;
@@ -177,65 +111,6 @@ static void gtk_opacity_menu(double current_value, const char *title){
 
 	gtk_main();
 
-	return;
-}
-
-static void set_PSFcolor_GTK(GtkColorChooser *colordialog)
-{
-	GdkRGBA gcolor;
-	gdouble dcolor[4];
-	
-	gtk_color_chooser_get_rgba(colordialog, &gcolor);
-	gtk_widget_destroy(rangew);
-	
-	dcolor[0] = gcolor.red;
-	dcolor[1] = gcolor.green;
-	dcolor[2] = gcolor.blue;
-	dcolor[3] = (gdouble) kemoview_get_PSF_max_opacity();
-	kemoview_set_PSF_single_color(dcolor);
-	kemoview_set_PSF_patch_color_mode(SINGLE_COLOR);
-	draw_mesh_keep_menu();
-	return;
-}
-
-static void kemoview_gtk_PSFcolorsel(GtkButton *button, gpointer data){
-	int response;
-	GtkColorChooser *chooser;
-	GtkWindow *parent;
-	
-	parent = GTK_WINDOW(g_object_get_data(G_OBJECT(data), "parent"));
-	
-	rangew = gtk_color_chooser_dialog_new("Choose color", parent);
-	gtk_widget_show_all(rangew);
-	
-	response = gtk_dialog_run(GTK_DIALOG(rangew));
-	if (response == GTK_RESPONSE_OK){
-		chooser = GTK_COLOR_CHOOSER(rangew);
-		set_PSFcolor_GTK(chooser);
-		g_print ("color selected \n");
-		iflag_set = IONE;
-	}
-	else if( response == GTK_RESPONSE_CANCEL ){
-		g_print( "Cancel button was pressed.\n" );
-		iflag_set = IZERO;
-		gtk_widget_destroy(rangew);
-	}
-	return;
-}
-
-static void gtk_PSFcolorselect(const char *title){
-	GtkWidget *hbox;
-	GtkWidget *entry;
-	GtkWidget *button;
-	
-	ftmpw_w = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-	
-	gtk_window_set_title(GTK_WINDOW(ftmpw_w), title);
-	/* Set button   */
-	entry = gtk_entry_new();
-	button = gtk_button_new_with_label("_select");
-	g_signal_connect(G_OBJECT(button), "clicked", 
-				G_CALLBACK(kemoview_gtk_PSFcolorsel), (gpointer)entry);
 	return;
 }
 
@@ -296,11 +171,6 @@ static void gtk_nline_menu(int nline, const char *title){
 }
 
 /* Routines for values from console input */
-
-void set_psf_single_color_gtk(){
-	gtk_PSFcolorselect("Select patch color");
-	return;
-}
 
 void set_coastline_radius_gtk(){
 	double radius;

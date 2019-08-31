@@ -312,7 +312,7 @@
 #define PSF_NOTHING_TODO    99
 
 #define ISET_FLINE_TYPE   11
-#define ISET_FLINE_THICK  12
+#define ISET_FLINE_THICK  200
 #define FLINE_OFF         50
 
 #define SAVE_EPS      10
