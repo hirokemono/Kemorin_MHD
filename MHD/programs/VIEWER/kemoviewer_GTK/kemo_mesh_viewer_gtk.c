@@ -156,19 +156,6 @@ static void set_current_psf_handler(int sel){
 };
 
 
-static void color_mode_handler(int sel){
-	if (sel == GRAYSCALE) {
-		kemoview_set_mesh_color_mode(GRAYSCALE);
-	} else if( sel == RAINBOW_COLOR) {
-		kemoview_set_mesh_color_mode(RAINBOW_COLOR);
-	} else if( sel == SET_NUM_COLORS) {
-		set_num_color_loop_gtk();
-	};
-
-	draw_mesh_w_menu();
-	return;
-}
-
 static void object_property_handler(int sel){
 	int toggle;
     toggle = kemoview_toggle_object_properties(sel);
@@ -211,15 +198,10 @@ static void make_2nd_level_image_menu(){
 	int iflag_draw_coast = kemoview_get_object_property_flags(COASTLINE_SWITCH);
 	int iflag_draw_sph =   kemoview_get_object_property_flags(SPHEREGRID_SWITCH);
 	
-	glut_menu_id->color_mode_menu = glutCreateMenu(color_mode_handler);
-	glut_color_mode_menu_item();
-	
 	glut_menu_id->polygon_id_menu = glutCreateMenu(object_property_handler);
 	
 	glutAddMenuEntry("Set objects",SET_COAST_RADIUS);
 	
-	glut_drawing_select();
-
 	glutAddMenuEntry("Output transfer matrices",OUTPUT_V_MATRIX);
 	glutAddMenuEntry("Load transfer matrices", INPUT_V_MATRIX);
 	

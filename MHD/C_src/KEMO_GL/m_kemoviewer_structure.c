@@ -539,6 +539,7 @@ void kemoview_get_surf_grp_name(struct kv_string *groupname, int i){
 
 int kemoview_get_view_type_flag(){return kemo_sgl->view_s->iflag_view_type;};
 
+int kemoview_get_mesh_color_mode(){return kemo_sgl->kemo_mesh->mesh_m->mesh_color_mode;};
 int kemoview_get_num_of_color_loop(){return kemo_sgl->kemo_mesh->mesh_m->num_of_color_loop;};
 
 double kemoview_get_node_diamater()   {return kemo_sgl->kemo_mesh->mesh_m->node_diam;};

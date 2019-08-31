@@ -19,7 +19,6 @@
 #include "kemoview_gtk_colormap_menu.h"
 #include "kemoview_gtk_mesh_menu.h"
 #include "kemoview_gtk_preference_menu.h"
-#include "kemoview_gtk_window_input.h"
 #include "kemoview_fileselector_gtk.h"
 
 /* prototypes */

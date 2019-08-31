@@ -120,7 +120,7 @@ void gtk_main_menu(struct kemoviewer_type *kemoviewer_data){
 	GtkTreeModel *child_model_surf_dir;
 	
 	int index = 0;
-	int iflag_sfcolor;
+	int iflag_mode;
 	
 	
 	window_main = gtk_window_new(GTK_WINDOW_TOPLEVEL);
@@ -147,8 +147,8 @@ void gtk_main_menu(struct kemoviewer_type *kemoviewer_data){
 	
 	combobox_shading = gtk_combo_box_new_with_model(child_model_shading);
 	renderer_shading = gtk_cell_renderer_text_new();
-	iflag_sfcolor = kemoview_get_object_property_flags(SHADING_SWITCH);
-	if(iflag_sfcolor == FLAT_SHADE){
+	iflag_mode = kemoview_get_object_property_flags(SHADING_SWITCH);
+	if(iflag_mode == FLAT_SHADE){
 		gtk_combo_box_set_active(combobox_shading, 1);
 	} else {
 		gtk_combo_box_set_active(combobox_shading, 0);
@@ -169,8 +169,8 @@ void gtk_main_menu(struct kemoviewer_type *kemoviewer_data){
 	
 	combobox_surf_dir = gtk_combo_box_new_with_model(child_model_surf_dir);
 	renderer_surf_dir = gtk_cell_renderer_text_new();
-	iflag_sfcolor = kemoview_get_object_property_flags(POLYGON_SWITCH);
-	if(iflag_sfcolor == REVERSE_POLYGON){
+	iflag_mode = kemoview_get_object_property_flags(POLYGON_SWITCH);
+	if(iflag_mode == REVERSE_POLYGON){
 		gtk_combo_box_set_active(combobox_surf_dir, 1);
 	} else {
 		gtk_combo_box_set_active(combobox_surf_dir, 0);

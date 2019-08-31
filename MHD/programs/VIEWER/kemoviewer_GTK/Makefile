@@ -10,7 +10,6 @@ tree_view_real2_GTK.o \
 tree_view_4_pvr_colormap.o \
 \
 kemo_mesh_viewer_gtk.o \
-kemoview_gtk_window_input.o \
 kemoviewer_gtk.o \
 \
 '$$(OBJ_KEMOVIEW_GLUT)'
@@ -63,7 +62,6 @@ module:
 	kemoviewer.h \
 	kemo_mesh_viewer_gtk.h \
 	kemoview_fileselector_gtk.o \
-	kemoview_gtk_window_input.o \
 	kemoview_glut_routines.o \
 	kemoview_gtk_colormap_menu.o \
 	kemoview_gtk_mesh_menu.o \
@@ -73,20 +71,6 @@ module:
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS)' \
 	'$$(KEMOVIEW_GTKDIR)'/kemo_mesh_viewer_gtk.c \
-	>> $(MAKENAME)
-	
-	@echo \
-	kemoview_gtk_window_input.o:  \
-	'$$(KEMOVIEW_GTKDIR)'/kemoview_gtk_window_input.c  \
-	kemoviewer.h \
-	kemoview_gtk_window_input.h \
-	kemoview_gtk_colormap_menu.o \
-	kemoview_glut_routines.o \
-	kemoview_gtk_preference_menu.o \
-	tree_view_4_pvr_colormap.o \
-	>> $(MAKENAME)
-	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS)' \
-	'$$(KEMOVIEW_GTKDIR)'/kemoview_gtk_window_input.c \
 	>> $(MAKENAME)
 
 includes:

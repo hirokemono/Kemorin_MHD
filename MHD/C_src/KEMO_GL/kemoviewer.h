@@ -603,7 +603,8 @@ extern "C" {
     
     int kemoview_get_view_type_flag();
     
-    int kemoview_get_num_of_color_loop();
+	int kemoview_get_mesh_color_mode();
+	int kemoview_get_num_of_color_loop();
     
     
     double kemoview_get_node_diamater();
