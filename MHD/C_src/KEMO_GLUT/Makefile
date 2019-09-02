@@ -234,6 +234,10 @@ module:
 	kemoview_gtk_evolution_menu.o \
 	kemoview_gtk_rotation_menu.o \
 	kemoview_gtk_axis_menu.o \
+	tree_view_4_light_position.o \
+	kemoview_gtk_preference_menu.o \
+	kemoview_gtk_colormap_menu.o \
+	kemoview_gtk_fieldline_menu.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS) $$<' \
 	>> $(MAKENAME)

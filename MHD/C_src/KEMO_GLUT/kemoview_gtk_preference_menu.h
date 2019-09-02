@@ -23,6 +23,6 @@
 
 /*  prototypes */
 
-void gtk_BGcolorselect(struct kemoviewer_type *kemoviewer_data);
+void kemoview_preference_GTK(struct kemoviewer_type *kemoviewer_data);
 	
 #endif

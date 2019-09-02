@@ -13,7 +13,39 @@ GtkWidget *window_main;
 
 int id_fmt = 0;
 
-static void kemoview_update_CB(GtkButton *button, gpointer data){
+static void kemoview_update_CB(GtkButton *button, gpointer user_data){
+	gtk_widget_destroy(window_main);
+	gtk_main_quit();
+	return;
+};
+
+static void kemoview_pref_menu_CB(GtkButton *button, gpointer user_data){
+	struct kemoviewer_type *kemoviewer_data = (struct kemoviewer_type *) user_data;
+	kemoview_preference_GTK(kemoviewer_data);
+	gtk_widget_destroy(window_main);
+	gtk_main_quit();
+	return;
+};
+
+static void kemoview_PSF_menu_CB(GtkButton *button, gpointer user_data){
+	struct kemoviewer_type *kemoviewer_data = (struct kemoviewer_type *) user_data;
+	gtk_psf_colormap_menu(kemoviewer_data);
+	gtk_widget_destroy(window_main);
+	gtk_main_quit();
+	return;
+};
+
+static void kemoview_fline_menu_CB(GtkButton *button, gpointer user_data){
+	struct kemoviewer_type *kemoviewer_data = (struct kemoviewer_type *) user_data;
+	gtk_fieldline_menu();
+	gtk_widget_destroy(window_main);
+	gtk_main_quit();
+	return;
+};
+
+static void kemoview_mesh_menu_CB(GtkButton *button, gpointer user_data){
+	struct kemoviewer_type *kemoviewer_data = (struct kemoviewer_type *) user_data;
+	gtk_mesh_menu(kemoviewer_data);
 	gtk_widget_destroy(window_main);
 	gtk_main_quit();
 	return;
@@ -188,7 +220,8 @@ void gtk_main_menu(struct kemoviewer_type *kemoviewer_data){
 	GtkWidget *hbox, *vbox;
 	
 	GtkWidget *entry;
-	GtkWidget *updateButton;
+	GtkWidget *updateButton, *prefButton;
+	GtkWidget *psfButton, *flineButton, *meshButton;
 	
 	GtkWidget *hbox_open;
 	GtkWidget *entry_file;
@@ -239,6 +272,22 @@ void gtk_main_menu(struct kemoviewer_type *kemoviewer_data){
 	updateButton = gtk_button_new_with_label("Update");
 	g_signal_connect(G_OBJECT(updateButton), "clicked", 
 				G_CALLBACK(kemoview_update_CB), (gpointer)entry);
+	
+	prefButton = gtk_button_new_with_label("Preferences...");
+	g_signal_connect(G_OBJECT(prefButton), "clicked", 
+				G_CALLBACK(kemoview_pref_menu_CB), (gpointer) kemoviewer_data);
+	
+	psfButton = gtk_button_new_with_label("Surfaces");
+	g_signal_connect(G_OBJECT(psfButton), "clicked", 
+				G_CALLBACK(kemoview_PSF_menu_CB), (gpointer) kemoviewer_data);
+	
+	flineButton = gtk_button_new_with_label("Field line");
+	g_signal_connect(G_OBJECT(flineButton), "clicked", 
+				G_CALLBACK(kemoview_fline_menu_CB), (gpointer) kemoviewer_data);
+	
+	meshButton = gtk_button_new_with_label("Mesh");
+	g_signal_connect(G_OBJECT(meshButton), "clicked", 
+				G_CALLBACK(kemoview_mesh_menu_CB), (gpointer) kemoviewer_data);
 	
 	
 	entry_file = gtk_entry_new();
@@ -357,6 +406,10 @@ void gtk_main_menu(struct kemoviewer_type *kemoviewer_data){
 	if(nload_psf > 0 || iflag_draw_f){
 		add_evoluaiton_menu_box(kemoviewer_data, window_main, vbox);
 	};
+	if(nload_psf > 0){gtk_box_pack_start(GTK_BOX(vbox), psfButton, FALSE, FALSE, 0);};
+	if(iflag_draw_f > 0){gtk_box_pack_start(GTK_BOX(vbox), flineButton, FALSE, FALSE, 0);};
+	if(iflag_draw_m > 0){gtk_box_pack_start(GTK_BOX(vbox), meshButton, FALSE, FALSE, 0);};
+	gtk_box_pack_start(GTK_BOX(vbox), prefButton, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), updateButton, FALSE, FALSE, 0);
 	
 	

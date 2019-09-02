@@ -22,6 +22,9 @@
 #include "kemoview_gtk_evolution_menu.h"
 #include "kemoview_gtk_rotation_menu.h"
 #include "kemoview_gtk_axis_menu.h"
+#include "kemoview_gtk_preference_menu.h"
+#include "kemoview_gtk_colormap_menu.h"
+#include "kemoview_gtk_fieldline_menu.h"
 
 /*  prototypes */
 

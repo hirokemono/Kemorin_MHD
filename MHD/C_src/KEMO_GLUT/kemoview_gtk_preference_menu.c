@@ -14,7 +14,6 @@ GtkWidget *window_pref;
 
 static void kemoview_BG_close(GtkButton *button, gpointer data){
 	gtk_widget_destroy(window_pref);
-	gtk_main_quit();
 	return;
 };
 
@@ -54,7 +53,7 @@ static void ShinenessChange(GtkWidget *entry, gpointer data)
 /*	printf("gtk_min %d\n", gtk_min);*/
 }
 
-void gtk_BGcolorselect(struct kemoviewer_type *kemoviewer_data){
+void kemoview_preference_GTK(struct kemoviewer_type *kemoviewer_data){
 	GtkWidget *label01, *label02, *label03, *label04;
 	GtkWidget *label11, *label12, *label13, *label14;
 	GtkWidget *label21, *label22, *label23, *label24;

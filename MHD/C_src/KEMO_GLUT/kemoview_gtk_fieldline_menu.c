@@ -21,7 +21,6 @@ static void close_fline_CB(GtkButton *button, gpointer user_data){
 static void close_window_CB(GtkButton *button, gpointer user_data){
     GtkWidget *window = (GtkWidget *) user_data;
     gtk_widget_destroy(window);
-	gtk_main_quit();
 };
 
 static void fline_thickness_CB(GtkWidget *entry, gpointer data)

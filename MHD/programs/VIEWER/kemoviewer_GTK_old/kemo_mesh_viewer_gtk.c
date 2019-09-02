@@ -10,7 +10,6 @@ struct glut_menu_address  glut_menu_id_struct;
 struct glut_menu_address *glut_menu_id;
 
 static int winid, menu_win;
-static char viewtype_title[80] = "3D-View";
 
 static void make_1st_level_menu();
 
@@ -39,22 +38,8 @@ static void draw_mesh_w_menu(){
 static void main_menu_handler(int sel){
 	if (sel == QUIT_SELECTED)   { 
 		exit(EXIT_SUCCESS);
-	} else if(sel == FILE_OPEN)  { 
-		read_kemoview_data_gtk();
-		draw_mesh_w_menu();
-	} else if(sel == ADD_PSF_COLOR)  {
-		gtk_psf_colormap_menu(single_kemoview);
-		draw_mesh_w_menu();
-	} else if(sel == MESH_OFF){
-		gtk_mesh_menu(single_kemoview);
-		draw_mesh_w_menu();
-	} else if(sel == ISET_FLINE_THICK){
-		gtk_fieldline_menu();
-	}
-	else if(sel == SET_COAST_RADIUS){gtk_main_menu(single_kemoview);}
-    else if(sel == SET_BACKGROUND) {
-		gtk_BGcolorselect(single_kemoview);
-		draw_mesh_keep_menu();
+	}else if(sel == SET_COAST_RADIUS){
+		gtk_main_menu(single_kemoview);
 	};
     return;
 };
@@ -83,26 +68,7 @@ static void make_1st_level_menu(){
 	
 	menu_id = glutCreateMenu(main_menu_handler);
 	
-	glutAddMenuEntry("Open...",FILE_OPEN);
-	if( iflag_draw_p > 0){
-		glutAddMenuEntry("PSF",  ADD_PSF_COLOR);
-	};
-	if( iflag_draw_f > 0){
-		glutAddMenuEntry("Field lines",     ISET_FLINE_THICK);
-	};
-	
-	
-	if( iflag_draw_m > 0){
-		glutAddMenuEntry("Mesh menu",    MESH_OFF);
-	};
-	
-	if( nload_psf > 0) glutAddSubMenu("Surface rendering", glut_menu_id->psf_root_menu);
-	if( iflag_draw_f > 0) glutAddSubMenu("Field Lines", glut_menu_id->fline_root_menu);
-	
-	
-	glutAddMenuEntry("Set objects",SET_COAST_RADIUS);
-    glutAddMenuEntry("Preferences...",SET_BACKGROUND);
-	
+	glutAddMenuEntry("Main menu",SET_COAST_RADIUS);
 	glutAddMenuEntry("Quit",QUIT_SELECTED);
 	glutAttachMenu(GLUT_LEFT_BUTTON);
 	return;
