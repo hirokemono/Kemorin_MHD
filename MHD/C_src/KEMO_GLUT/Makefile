@@ -16,6 +16,9 @@ kemoview_gtk_colormap_menu.o \
 kemoview_gtk_mesh_menu.o \
 kemoview_gtk_fline_selectors.o \
 kemoview_gtk_fieldline_menu.o \
+kemoview_gtk_axis_menu.o \
+kemoview_gtk_rotation_menu.o \
+kemoview_gtk_evolution_menu.o \
 kemoview_gtk_main_menu.o \
 kemoview_gtk_preference_menu.o \
 \
@@ -182,6 +185,45 @@ module:
 	>> $(MAKENAME)
 	
 	@echo \
+	kemoview_gtk_axis_menu.o: \
+	'$$(KEMO_C_GLUTDIR)'/kemoview_gtk_axis_menu.c \
+	kemoview_gtk_axis_menu.h \
+	kemoviewer.h \
+	m_kemoviewer_data.o \
+	tree_views_4_fixed_lists_GTK.o \
+	kemoview_fileselector_gtk.o \
+	kemoview_gtk_routines.o \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS) $$<' \
+	>> $(MAKENAME)
+	
+	@echo \
+	kemoview_gtk_rotation_menu.o: \
+	'$$(KEMO_C_GLUTDIR)'/kemoview_gtk_rotation_menu.c \
+	kemoview_gtk_rotation_menu.h \
+	kemoviewer.h \
+	m_kemoviewer_data.o \
+	tree_views_4_fixed_lists_GTK.o \
+	kemoview_fileselector_gtk.o \
+	kemoview_gtk_routines.o \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS) $$<' \
+	>> $(MAKENAME)
+	
+	@echo \
+	kemoview_gtk_evolution_menu.o: \
+	'$$(KEMO_C_GLUTDIR)'/kemoview_gtk_evolution_menu.c \
+	kemoview_gtk_evolution_menu.h \
+	kemoviewer.h \
+	m_kemoviewer_data.o \
+	tree_views_4_fixed_lists_GTK.o \
+	kemoview_fileselector_gtk.o \
+	kemoview_gtk_routines.o \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS) $$<' \
+	>> $(MAKENAME)
+	
+	@echo \
 	kemoview_gtk_main_menu.o: \
 	'$$(KEMO_C_GLUTDIR)'/kemoview_gtk_main_menu.c \
 	kemoview_gtk_main_menu.h \
@@ -189,6 +231,9 @@ module:
 	m_kemoviewer_data.o \
 	tree_views_4_fixed_lists_GTK.o \
 	kemoview_fileselector_gtk.o \
+	kemoview_gtk_evolution_menu.o \
+	kemoview_gtk_rotation_menu.o \
+	kemoview_gtk_axis_menu.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS) $$<' \
 	>> $(MAKENAME)
