@@ -21,13 +21,13 @@
 /*  prototypes */
 /* Routines for inout from console */
 
-int kemoview_gtk_read_file_select(gpointer data);
+int kemoview_gtk_read_file_select(GtkButton *button, gpointer data);
 int kemoview_gtk_save_file_select(GtkButton *button, gpointer data);
 
 struct kv_string * kemoview_read_file_panel(GtkWidget *window_cmap);
 struct kv_string * kemoview_save_file_panel(GtkWidget *window_cmap);
 
 
-void read_kemoview_data_gtk();
+void set_pickup_command_gtk(struct kv_string *filename);
 
 #endif

@@ -39,9 +39,6 @@ static void draw_mesh_w_menu(){
 static void main_menu_handler(int sel){
 	if (sel == QUIT_SELECTED)   { 
 		exit(EXIT_SUCCESS);
-	} else if(sel == FILE_OPEN)  { 
-		read_kemoview_data_gtk();
-		draw_mesh_w_menu();
 	} else if(sel == ADD_PSF_COLOR)  {
 		gtk_psf_colormap_menu(single_kemoview);
 		draw_mesh_w_menu();
@@ -83,7 +80,6 @@ static void make_1st_level_menu(){
 	
 	menu_id = glutCreateMenu(main_menu_handler);
 	
-	glutAddMenuEntry("Open...",FILE_OPEN);
 	if( iflag_draw_p > 0){
 		glutAddMenuEntry("PSF",  ADD_PSF_COLOR);
 	};

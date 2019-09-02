@@ -62,7 +62,7 @@ static void save_viewmatrix_CB(GtkButton *button, gpointer data){
 };
 static void load_viewmatrix_CB(GtkButton *button, gpointer data){
 	
-	int iflag_set = kemoview_gtk_read_file_select(data);
+	int iflag_set = kemoview_gtk_read_file_select(button, data);
 	
 	if(iflag_set == IZERO) return;
 	gtk_widget_destroy(window_main);
@@ -134,11 +134,65 @@ static void image_save_CB(GtkButton *button, gpointer data){
 	return;
 };
 
+static void open_file_CB(GtkButton *button, gpointer data){
+	int iflag_datatype;
+    struct kv_string *filename;
+    struct kv_string *file_prefix;
+    struct kv_string *stripped_ext;
+    struct kv_string *command;
+	
+	int iflag_set = kemoview_gtk_read_file_select(button, data);
+	if(iflag_set == IZERO) return;
+	GtkEntry *entry = GTK_ENTRY(data);
+	filename = kemoview_init_kvstring_by_string(gtk_entry_get_text(entry));
+	
+	gtk_widget_destroy(window_main);
+	gtk_main_quit();
+	
+    stripped_ext = kemoview_alloc_kvstring();
+    file_prefix = kemoview_alloc_kvstring();
+	iflag_datatype = kemoview_set_data_format_flag(filename, file_prefix, stripped_ext);
+	printf("file name: %s\n", filename->string);
+	printf("file_prefix %s\n", file_prefix->string);
+	printf("stripped_ext %s\n", stripped_ext->string);
+    kemoview_free_kvstring(stripped_ext);
+    
+    if(iflag_datatype == IFLAG_FULL_MESH_GZ || iflag_datatype == IFLAG_FULL_MESH){
+        command = kemoview_alloc_kvstring();
+        set_pickup_command_gtk(command);
+        if(iflag_set == IZERO){
+            kemoview_free_kvstring(file_prefix);
+            kemoview_free_kvstring(filename);
+            kemoview_free_kvstring(command);
+            return;
+        };
+        kemoview_set_pick_surface_command(command);
+        kemoview_free_kvstring(command);
+        kemoview_free_kvstring(filename);
+        
+        filename = kemoview_alloc_kvstring();
+        kemoview_alloc_kvstringitem(strlen(stripped_ext->string)+10, filename);
+        strcpy(filename->string, file_prefix->string);
+        strcat(filename->string, ".ksm");
+        if(iflag_datatype == IFLAG_FULL_MESH_GZ){strcat(filename->string, ".gz");};
+    };
+
+	iflag_datatype = kemoview_open_data(filename);
+    kemoview_free_kvstring(file_prefix);
+    kemoview_free_kvstring(filename);
+	return;
+	return;
+};
+
 void gtk_main_menu(struct kemoviewer_type *kemoviewer_data){
 	GtkWidget *hbox, *vbox;
 	
 	GtkWidget *entry;
 	GtkWidget *updateButton;
+	
+	GtkWidget *hbox_open;
+	GtkWidget *entry_file;
+	GtkWidget *open_Button;
 	
 	GtkWidget *hbox_image_save;
 	GtkWidget *entry_image_file;
@@ -186,6 +240,12 @@ void gtk_main_menu(struct kemoviewer_type *kemoviewer_data){
 	g_signal_connect(G_OBJECT(updateButton), "clicked", 
 				G_CALLBACK(kemoview_update_CB), (gpointer)entry);
 	
+	
+	entry_file = gtk_entry_new();
+	g_object_set_data(G_OBJECT(entry_file), "parent", (gpointer) window_main);
+	open_Button = gtk_button_new_with_label("Open...");
+	g_signal_connect(G_OBJECT(open_Button), "clicked", 
+					 G_CALLBACK(open_file_CB), (gpointer)entry_file);
 	
 	entry_image_file = gtk_entry_new();
 	g_object_set_data(G_OBJECT(entry_image_file), "parent", (gpointer) window_main);
@@ -264,6 +324,11 @@ void gtk_main_menu(struct kemoviewer_type *kemoviewer_data){
 				G_CALLBACK(set_image_fileformat_CB), NULL);
 	
 	
+	hbox_open = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
+	gtk_box_pack_start(GTK_BOX(hbox_open), gtk_label_new("File: "), FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_open), entry_file, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_open), open_Button, FALSE, FALSE, 0);
+	
 	hbox_image_save = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
 	gtk_box_pack_start(GTK_BOX(hbox_image_save), gtk_label_new("Image file: "), FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_image_save), combobox_image_fileformat, FALSE, FALSE, 0);
@@ -281,6 +346,7 @@ void gtk_main_menu(struct kemoviewer_type *kemoviewer_data){
 	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_container_add(GTK_CONTAINER(window_main), vbox);
 	
+	gtk_box_pack_start(GTK_BOX(vbox), hbox_open, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox_image_save, FALSE, FALSE, 0);
 	
 	gtk_box_pack_start(GTK_BOX(vbox), hbox_viewtype, FALSE, FALSE, 0);
