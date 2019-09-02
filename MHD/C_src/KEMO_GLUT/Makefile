@@ -51,7 +51,7 @@ module:
 	const_viewer_menu_glut.h \
 	kemoviewer.h \
 	view_modifier_glut.o \
-	view_modifier_glut.o \
+	m_kemoview_psf_menu.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)
@@ -92,6 +92,7 @@ module:
 	kemoview_gtk_psf_selectors.h \
 	kemoviewer.h \
 	m_kemoviewer_data.o \
+	m_kemoview_psf_menu.o \
 	tree_views_4_fixed_lists_GTK.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS) $$<' \
@@ -168,6 +169,7 @@ module:
 	kemoview_gtk_fline_selectors.h \
 	kemoviewer.h \
 	m_kemoviewer_data.o \
+	m_kemoview_psf_menu.o \
 	tree_views_4_fixed_lists_GTK.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS) $$<' \

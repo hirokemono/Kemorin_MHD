@@ -128,6 +128,7 @@ module:
 	const_viewer_menu_glut.o \
 	kemoview_glut_routines.o \
 	kemoview_glut_console_input.o \
+	m_kemoview_psf_menu.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)

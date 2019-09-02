@@ -8,6 +8,7 @@
 
 #include "kemoviewer.h"
 #include "view_modifier_glut.h"
+#include "m_kemoview_psf_menu.h"
 
 #define QUIT_SELECTED  0
 #define FILE_OPEN      1
@@ -92,7 +93,6 @@ extern "C" {
 	void glut_current_PSF_select();
 	void glut_PSF_field_select();
 	void glut_fline_color_select();
-	void set_PSF_component_name(int ncomp, int icomp, char *comp_name);
 	void glut_PSF_comps_select();
 	void glut_PSF_patchcolor_select();
 	void glut_PSF_linecolor_select();

@@ -17,6 +17,7 @@
 
 #include "kemoviewer.h"
 #include "m_kemoviewer_data.h"
+#include "m_kemoview_psf_menu.h"
 #include "tree_views_4_fixed_lists_GTK.h"
 
 /*  prototypes */

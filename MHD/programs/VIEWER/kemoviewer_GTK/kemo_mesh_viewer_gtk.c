@@ -6,10 +6,8 @@
 #define NPIX_X  800
 #define NPIX_Y  640
 
-struct glut_menu_address  glut_menu_id_struct;
-struct glut_menu_address *glut_menu_id;
-
 static int winid, menu_win;
+int submenu_id;
 
 static void make_1st_level_menu();
 
@@ -18,11 +16,6 @@ struct kemoviewer_type *single_kemoview;
 
 /* subroutine for reading mesh */
 
-
-static void link_glut_menu_address(){
-	glut_menu_id = &glut_menu_id_struct;
-	return;
-}
 
 
 /* draw object using GLUT */
@@ -36,9 +29,7 @@ static void draw_mesh_w_menu(){
 /* ---------  Action for selected menu -----------   */ 
 
 static void main_menu_handler(int sel){
-	if (sel == QUIT_SELECTED)   { 
-		exit(EXIT_SUCCESS);
-	}else if(sel == SET_COAST_RADIUS){
+	if(sel == SET_COAST_RADIUS){
 		gtk_main_menu(single_kemoview);
 	};
     return;
@@ -64,12 +55,11 @@ static void make_1st_level_menu(){
 	
 	glutSetWindow(menu_win);
 	
-	glut_menu_id->submenu_id = menu_init();
+	submenu_id = menu_init();
 	
 	menu_id = glutCreateMenu(main_menu_handler);
 	
 	glutAddMenuEntry("Main menu",SET_COAST_RADIUS);
-	glutAddMenuEntry("Quit",QUIT_SELECTED);
 	glutAttachMenu(GLUT_LEFT_BUTTON);
 	return;
 };
@@ -92,7 +82,6 @@ void draw_mesh_kemo(int iflag_streo_shutter, int iflag_dmesh) {
 		kemoview_set_anaglyph_flag(ANAGLYPH_ON);
 	};
 	
-	link_glut_menu_address();
 	glutInit(&narg_glut, arg_glut);
 	
 	/*! GTK Initialization*/

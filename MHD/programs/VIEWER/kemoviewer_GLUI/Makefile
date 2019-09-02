@@ -78,6 +78,7 @@ module:
 	kemo_mesh_viewer_glui.o: \
 	'$$(KEMOVIEW_GLUIDIR)'/kemo_mesh_viewer_glui.cpp \
 	kemo_mesh_viewer_glui.h \
+	m_kemoview_psf_menu.o \
 	view_modifier_glut.o \
 	kemoview_fileselector_glui.o \
 	kemoview_glui_window_input.o \

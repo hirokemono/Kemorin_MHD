@@ -11,6 +11,7 @@
 #include <string.h>
 
 #include "kemoviewer.h"
+#include "m_kemoview_psf_menu.h"
 #include "view_modifier_glut.h"
 #include "const_viewer_menu_glut.h"
 #include "kemoview_glut_console_input.h"

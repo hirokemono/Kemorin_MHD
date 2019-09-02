@@ -81,6 +81,8 @@ struct psf_menu_val{
 
 /* Prototypes */
 
+void set_PSF_component_name(int ncomp, int icomp, char *comp_name);
+
 void alloc_psfs_sorting_list(struct kemo_array_control *psf_a);
 void dealloc_psfs_sorting_list(struct kemo_array_control *psf_a);
 
