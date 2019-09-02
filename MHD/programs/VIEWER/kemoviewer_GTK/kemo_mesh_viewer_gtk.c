@@ -10,7 +10,6 @@ struct glut_menu_address  glut_menu_id_struct;
 struct glut_menu_address *glut_menu_id;
 
 static int winid, menu_win;
-static char viewtype_title[80] = "3D-View";
 
 static void make_1st_level_menu();
 
@@ -86,15 +85,9 @@ static void make_1st_level_menu(){
 	if( iflag_draw_f > 0){
 		glutAddMenuEntry("Field lines",     ISET_FLINE_THICK);
 	};
-	
-	
 	if( iflag_draw_m > 0){
 		glutAddMenuEntry("Mesh menu",    MESH_OFF);
 	};
-	
-	if( nload_psf > 0) glutAddSubMenu("Surface rendering", glut_menu_id->psf_root_menu);
-	if( iflag_draw_f > 0) glutAddSubMenu("Field Lines", glut_menu_id->fline_root_menu);
-	
 	
 	glutAddMenuEntry("Set objects",SET_COAST_RADIUS);
     glutAddMenuEntry("Preferences...",SET_BACKGROUND);
