@@ -21,7 +21,7 @@ void dealloc_dimless_views_GTK(struct dimless_views *dless_vws){
 /* Append new data at the end of list */
 
 void append_default_coefs_label(GtkWidget *label_tree){
-    GtkTreeModel *model = gtk_tree_view_get_model (label_tree);  
+    GtkTreeModel *model = gtk_tree_view_get_model(GTK_TREE_VIEW(label_tree));  
     GtkTreeModel *child_model = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model));
     int i, j;
     GtkTreeIter iter;

@@ -115,7 +115,7 @@ void add_current_psf_set_box(struct kemoviewer_type *kemoviewer_data,
 	
 	if(num_psf > 1){
 		label_tree_psfs = create_fixed_label_w_index_tree();
-		model_psfs = gtk_tree_view_get_model (label_tree_psfs);  
+		model_psfs = gtk_tree_view_get_model(GTK_TREE_VIEW(label_tree_psfs));  
 		child_model_psfs = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_psfs));
 		index = 0;
 		for (ipsf=0; ipsf< kemoview_get_PSF_max_loaded(); ipsf++){
@@ -169,7 +169,7 @@ void add_psf_draw_field_box(struct kemoviewer_type *kemoviewer_data,
 	int ifld;
 	
 	label_tree_field = create_fixed_label_w_index_tree();
-	model_field = gtk_tree_view_get_model (label_tree_field);  
+	model_field = gtk_tree_view_get_model(GTK_TREE_VIEW(label_tree_field));  
 	child_model_field = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_field));
 	index = 0;
 	for(ifld=0;ifld<num_field;ifld++){
@@ -214,7 +214,7 @@ void add_psf_draw_component_box(struct kemoviewer_type *kemoviewer_data,
 	
 	if(ncomp > 1){
 		label_tree_comp = create_fixed_label_w_index_tree();
-		model_comp = gtk_tree_view_get_model (label_tree_comp);  
+		model_comp = gtk_tree_view_get_model(GTK_TREE_VIEW(label_tree_comp));  
 		child_model_comp = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_comp));
 		index = 0;
 		for(icomp=0;icomp<ncomp;icomp++){

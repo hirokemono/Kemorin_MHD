@@ -383,7 +383,7 @@ void add_domain_draw_box(struct ci3_clist_view *domain_vws,
 	
 	
 	label_tree_patch_color = create_fixed_label_w_index_tree();
-	model_patch_color = gtk_tree_view_get_model (label_tree_patch_color);  
+	model_patch_color = gtk_tree_view_get_model(GTK_TREE_VIEW(label_tree_patch_color));  
 	child_model_patch_color = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_patch_color));
 	index = 0;
 	index = append_ci_item_to_tree(index, "White",           WHITE_SURFACE, child_model_patch_color);
@@ -411,7 +411,7 @@ void add_domain_draw_box(struct ci3_clist_view *domain_vws,
 	
 	
 	label_tree_grid_color = create_fixed_label_w_index_tree();
-	model_grid_color = gtk_tree_view_get_model (label_tree_grid_color);  
+	model_grid_color = gtk_tree_view_get_model(GTK_TREE_VIEW(label_tree_grid_color));  
 	child_model_grid_color = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_grid_color));
 	index = 0;
 	index = append_ci_item_to_tree(index, "Black",           BLACK_LINE, child_model_grid_color);
@@ -439,7 +439,7 @@ void add_domain_draw_box(struct ci3_clist_view *domain_vws,
 	
 	
 	label_tree_node_color = create_fixed_label_w_index_tree();
-	model_node_color = gtk_tree_view_get_model (label_tree_node_color);  
+	model_node_color = gtk_tree_view_get_model(GTK_TREE_VIEW(label_tree_node_color));  
 	child_model_node_color = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_node_color));
 	index = 0;
 	index = append_ci_item_to_tree(index, "White",           WHITE_SURFACE, child_model_node_color);

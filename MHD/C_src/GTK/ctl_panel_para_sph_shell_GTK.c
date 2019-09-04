@@ -62,7 +62,7 @@ GtkWidget * make_inner_decomp_hbox(int iflag_fix_on, const char *label, struct c
 	int iflag;
 	
     GtkWidget *label_tree = create_fixed_label_w_index_tree();
-    GtkTreeModel *model = gtk_tree_view_get_model(label_tree);
+    GtkTreeModel *model = gtk_tree_view_get_model(GTK_TREE_VIEW(label_tree));
     GtkTreeModel *child_model = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model));
     
 	index = append_ci_item_to_tree(index, &inner_docomp_labels[RADIAL_MODE][0], RADIAL_MODE, child_model);

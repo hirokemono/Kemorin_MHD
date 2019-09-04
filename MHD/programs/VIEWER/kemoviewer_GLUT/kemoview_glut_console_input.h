@@ -12,7 +12,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "kemoviewer.h"
-#include "kemoview_glut_routines.h"
+#include "view_modifier_glut.h"
 
 /*  prototypes */
 /* Routines for inout from console */

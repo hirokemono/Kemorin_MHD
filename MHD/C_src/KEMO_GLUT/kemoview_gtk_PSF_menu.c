@@ -1,5 +1,5 @@
 /*
- *  kemoview_gtk_colormap_menu.c
+ *  kemoview_gtk_PSF_menu.c
  *  Kemoview_Cocoa
  *
  *  Created by Hiroaki Matsui on 12/03/04.
@@ -7,14 +7,14 @@
  *
  */
 
-#include "kemoview_gtk_colormap_menu.h"
+#include "kemoview_gtk_PSF_menu.h"
 
 GtkWidget *window_cmap;
 
 static void close_psf_CB(GtkButton *button, gpointer user_data){
 	int nload_psf;
 	GtkWidget *window = (GtkWidget *) user_data;
-	set_viewtype_mode_glut(VIEW_3D);
+	set_viewtype_mode_glfw(VIEW_3D);
 	nload_psf = kemoview_close_PSF_view();
 };
 
@@ -45,7 +45,7 @@ static void load_colormap_file_panel(GtkButton *loadButton, gpointer user_data){
 };
 
 void add_gtk_psf_colormap_menu(struct colormap_view *color_vws, GtkWidget *box){
-	GtkButton *saveButton, *loadButton;
+	GtkWidget *saveButton, *loadButton;
 	
 	GtkWidget *expander_cmap, *scroll_cmap, *Frame_cmap;
 	GtkWidget *hbox_cmap, *vbox_cmap;
@@ -87,10 +87,6 @@ void add_gtk_psf_colormap_menu(struct colormap_view *color_vws, GtkWidget *box){
 void gtk_psf_colormap_menu(struct kemoviewer_type *kemoviewer_data){
 	GtkWidget *box;
 	GtkButton *closeButton, *updateButton;
-	
-	int index = 0;
-	int iflag_sfcolor;
-	
 	
 	struct colormap_view *color_vws
 			= (struct colormap_view *) malloc(sizeof(struct colormap_view));

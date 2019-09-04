@@ -208,7 +208,7 @@ void add_gtk_psf_surface_menu(struct colormap_view *color_vws,
 	
 	
 	label_tree_sfcolor = create_fixed_label_w_index_tree();
-	model_sfcolor = gtk_tree_view_get_model (label_tree_sfcolor);  
+	model_sfcolor = gtk_tree_view_get_model(GTK_TREE_VIEW(label_tree_sfcolor));  
 	child_model_sfcolor = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_sfcolor));
 	index = 0;
 	index = append_ci_item_to_tree(index, "Contour", RAINBOW_PSF_SURF, child_model_sfcolor);

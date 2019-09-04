@@ -3,7 +3,6 @@
 #
 
 OBJ_KEMOVIEW_GLUT = \
-kemoview_glut_routines.o \
 const_viewer_menu_glut.o \
 view_modifier_glut.o \
 \
@@ -12,7 +11,7 @@ kemoview_gtk_psf_selectors.o \
 kemoview_gtk_PSF_surface_menu.o \
 kemoview_gtk_PSF_isoline_menu.o \
 kemoview_gtk_PSF_vector_menu.o \
-kemoview_gtk_colormap_menu.o \
+kemoview_gtk_PSF_menu.o \
 kemoview_gtk_mesh_menu.o \
 kemoview_gtk_fline_selectors.o \
 kemoview_gtk_fieldline_menu.o \
@@ -66,22 +65,11 @@ module:
 	>> $(MAKENAME)
 	
 	@echo \
-	kemoview_glut_routines.o: \
-	'$$(KEMO_C_GLUTDIR)'/kemoview_glut_routines.c \
-	kemoview_glut_routines.h \
-	kemoviewer.h \
-	view_modifier_glut.o \
-	view_modifier_glut.o \
-	>> $(MAKENAME)
-	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
-	>> $(MAKENAME)
-	
-	@echo \
 	kemoview_fileselector_gtk.o:  \
 	'$$(KEMO_C_GLUTDIR)'/kemoview_fileselector_gtk.c  \
 	kemoview_fileselector_gtk.h \
 	kemoviewer.h \
-	kemoview_glut_routines.o \
+	view_modifier_glut.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS) $$<' \
 	>> $(MAKENAME)
@@ -133,9 +121,9 @@ module:
 	>> $(MAKENAME)
 	
 	@echo \
-	kemoview_gtk_colormap_menu.o: \
-	'$$(KEMO_C_GLUTDIR)'/kemoview_gtk_colormap_menu.c \
-	kemoview_gtk_colormap_menu.h \
+	kemoview_gtk_PSF_menu.o: \
+	'$$(KEMO_C_GLUTDIR)'/kemoview_gtk_PSF_menu.c \
+	kemoview_gtk_PSF_menu.h \
 	kemoviewer.h \
 	m_kemoviewer_data.o \
 	tree_view_4_pvr_colormap.o \
@@ -144,6 +132,7 @@ module:
 	kemoview_gtk_psf_selectors.o \
 	kemoview_gtk_PSF_surface_menu.o \
 	kemoview_gtk_PSF_vector_menu.o \
+	view_modifier_glfw.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS) $$<' \
 	>> $(MAKENAME)
@@ -232,14 +221,16 @@ module:
 	kemoviewer.h \
 	m_kemoviewer_data.o \
 	tree_views_4_fixed_lists_GTK.o \
+	tree_view_chara_int_GTK.o \
 	kemoview_fileselector_gtk.o \
 	kemoview_gtk_evolution_menu.o \
 	kemoview_gtk_rotation_menu.o \
 	kemoview_gtk_axis_menu.o \
 	tree_view_4_light_position.o \
 	kemoview_gtk_preference_menu.o \
-	kemoview_gtk_colormap_menu.o \
+	kemoview_gtk_PSF_menu.o \
 	kemoview_gtk_fieldline_menu.o \
+	view_modifier_glfw.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS) $$<' \
 	>> $(MAKENAME)

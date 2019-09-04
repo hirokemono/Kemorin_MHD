@@ -152,7 +152,7 @@ void gtk_mesh_menu(struct kemoviewer_type *kemoviewer_data){
 	
 	
 	label_tree_color_mode = create_fixed_label_w_index_tree();
-	model_color_mode = gtk_tree_view_get_model (label_tree_color_mode);  
+	model_color_mode = gtk_tree_view_get_model(GTK_TREE_VIEW(label_tree_color_mode));  
 	child_model_color_mode = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_color_mode));
 	index = 0;
 	index = append_ci_item_to_tree(index, "Rainbow",   RAINBOW_COLOR, child_model_color_mode);
@@ -163,9 +163,9 @@ void gtk_mesh_menu(struct kemoviewer_type *kemoviewer_data){
 	renderer_color_mode = gtk_cell_renderer_text_new();
 	iflag_mode = kemoview_get_mesh_color_mode();
 	if(iflag_mode == GRAYSCALE){
-		gtk_combo_box_set_active(combobox_color_mode, 1);
+		gtk_combo_box_set_active(GTK_SPIN_BUTTON(combobox_color_mode), 1);
 	} else {
-		gtk_combo_box_set_active(combobox_color_mode, 0);
+		gtk_combo_box_set_active(GTK_SPIN_BUTTON(combobox_color_mode), 0);
 	};
 	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(combobox_color_mode), renderer_color_mode, TRUE);
 	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combobox_color_mode), renderer_color_mode,

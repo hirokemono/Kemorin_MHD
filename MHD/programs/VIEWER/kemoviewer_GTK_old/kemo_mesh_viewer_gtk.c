@@ -15,6 +15,34 @@ static void make_1st_level_menu();
 
 struct kemoviewer_type *single_kemoview;
 
+GtkWidget *window_main;
+
+
+/* Main GTK window */
+
+void kemoview_main_window(struct kemoviewer_type *kemoviewer_data){
+	GtkWidget *vbox;
+	
+	GtkWidget *quitButton;
+	
+	quitButton = gtk_button_new_with_label("Quit");
+	g_signal_connect(G_OBJECT(quitButton), "clicked", G_CALLBACK(gtk_main_quit), NULL);
+	
+	window_main = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	
+	gtk_window_set_title(GTK_WINDOW(window_main), "Mesh viewer");
+	gtk_widget_set_size_request(window_main, 150, -1);
+	gtk_container_set_border_width(GTK_CONTAINER(window_main), 5);
+	g_signal_connect(G_OBJECT(window_main), "destroy", G_CALLBACK(gtk_main_quit), NULL);
+	
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+	gtk_box_pack_start(GTK_BOX(vbox), quitButton, FALSE, FALSE, 0);
+	add_gtk_main_menu(kemoviewer_data, window_main, vbox);
+	
+	gtk_widget_show_all(window_main);
+	gtk_main();
+	return;
+}
 
 /* subroutine for reading mesh */
 
@@ -39,7 +67,7 @@ static void main_menu_handler(int sel){
 	if (sel == QUIT_SELECTED)   { 
 		exit(EXIT_SUCCESS);
 	}else if(sel == SET_COAST_RADIUS){
-		gtk_main_menu(single_kemoview);
+		kemoview_main_window(single_kemoview);
 	};
     return;
 };

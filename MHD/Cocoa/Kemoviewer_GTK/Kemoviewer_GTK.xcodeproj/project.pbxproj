@@ -235,6 +235,7 @@
 		18F1E8DC231C96890080FCFE /* kemoview_gtk_evolution_menu.c in Sources */ = {isa = PBXBuildFile; fileRef = 18F1E8DB231C96890080FCFE /* kemoview_gtk_evolution_menu.c */; };
 		18F1E8DF231CA1080080FCFE /* kemoview_gtk_rotation_menu.c in Sources */ = {isa = PBXBuildFile; fileRef = 18F1E8DE231CA1080080FCFE /* kemoview_gtk_rotation_menu.c */; };
 		18F1E8E1231CA8520080FCFE /* kemoview_gtk_axis_menu.c in Sources */ = {isa = PBXBuildFile; fileRef = 18F1E8E0231CA8520080FCFE /* kemoview_gtk_axis_menu.c */; };
+		18F1EBF3231DFAE50080FCFE /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 18F1EBF2231DFAE40080FCFE /* libz.tbd */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -703,6 +704,7 @@
 		18F1E8DE231CA1080080FCFE /* kemoview_gtk_rotation_menu.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = kemoview_gtk_rotation_menu.c; path = ../../../C_src/KEMO_GLUT/kemoview_gtk_rotation_menu.c; sourceTree = "<group>"; };
 		18F1E8E0231CA8520080FCFE /* kemoview_gtk_axis_menu.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = kemoview_gtk_axis_menu.c; path = ../../../C_src/KEMO_GLUT/kemoview_gtk_axis_menu.c; sourceTree = "<group>"; };
 		18F1E8E2231CA85F0080FCFE /* kemoview_gtk_axis_menu.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = kemoview_gtk_axis_menu.h; path = ../../../C_src/KEMO_GLUT/kemoview_gtk_axis_menu.h; sourceTree = "<group>"; };
+		18F1EBF2231DFAE40080FCFE /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -710,6 +712,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				18F1EBF3231DFAE50080FCFE /* libz.tbd in Frameworks */,
 				1862C2672311B28B000306E6 /* libpng.a in Frameworks */,
 				1862C38C2311B39D000306E6 /* libgobject-2.0.a in Frameworks */,
 				1862C38D2311B39D000306E6 /* libfribidi.dylib in Frameworks */,
@@ -764,6 +767,7 @@
 		1862C2652311B28B000306E6 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				18F1EBF2231DFAE40080FCFE /* libz.tbd */,
 				1862C2662311B28B000306E6 /* libpng.a */,
 				1862C3812311B39D000306E6 /* libgtk-3.a */,
 				1862C3762311B39D000306E6 /* libgdk-3.a */,

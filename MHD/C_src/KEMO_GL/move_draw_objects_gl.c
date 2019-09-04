@@ -105,24 +105,24 @@ void assign_kemoview_VAOs(struct kemoview_VAOs *kemo_VAOs){
 };
 
 void clear_kemoview_VAOs(struct kemoview_VAOs *kemo_VAOs){
-	Destroy_VAO(kemo_VAOs->grid_VAO[0]->id_VAO);
-	Destroy_VAO(kemo_VAOs->grid_VAO[1]->id_VAO);
-	Destroy_VAO(kemo_VAOs->grid_VAO[2]->id_VAO);
-	Destroy_VAO(kemo_VAOs->fline_VAO[0]->id_VAO);
-	Destroy_VAO(kemo_VAOs->fline_VAO[1]->id_VAO);
-	Destroy_VAO(kemo_VAOs->psf_solid_VAO[1]->id_VAO);
-	Destroy_VAO(kemo_VAOs->psf_solid_VAO[0]->id_VAO);
-	Destroy_VAO(kemo_VAOs->psf_solid_VAO[3]->id_VAO);
-	Destroy_VAO(kemo_VAOs->psf_solid_VAO[2]->id_VAO);
-	Destroy_VAO(kemo_VAOs->mesh_solid_VAO[1]->id_VAO);
-	Destroy_VAO(kemo_VAOs->mesh_solid_VAO[2]->id_VAO);
-	Destroy_VAO(kemo_VAOs->mesh_solid_VAO[0]->id_VAO);
-	Destroy_VAO(kemo_VAOs->psf_trans_VAO[1]->id_VAO);
-	Destroy_VAO(kemo_VAOs->psf_trans_VAO[0]->id_VAO);
-	Destroy_VAO(kemo_VAOs->mesh_trans_VAO->id_VAO);
-	Destroy_VAO(kemo_VAOs->cbar_VAO[0]->id_VAO);
-	Destroy_VAO(kemo_VAOs->cbar_VAO[1]->id_VAO);
-	Destroy_VAO(kemo_VAOs->cube_VAO->id_VAO);
+	Destroy_VAO(kemo_VAOs->grid_VAO[0]);
+	Destroy_VAO(kemo_VAOs->grid_VAO[1]);
+	Destroy_VAO(kemo_VAOs->grid_VAO[2]);
+	Destroy_VAO(kemo_VAOs->fline_VAO[0]);
+	Destroy_VAO(kemo_VAOs->fline_VAO[1]);
+	Destroy_VAO(kemo_VAOs->psf_solid_VAO[1]);
+	Destroy_VAO(kemo_VAOs->psf_solid_VAO[0]);
+	Destroy_VAO(kemo_VAOs->psf_solid_VAO[3]);
+	Destroy_VAO(kemo_VAOs->psf_solid_VAO[2]);
+	Destroy_VAO(kemo_VAOs->mesh_solid_VAO[1]);
+	Destroy_VAO(kemo_VAOs->mesh_solid_VAO[2]);
+	Destroy_VAO(kemo_VAOs->mesh_solid_VAO[0]);
+	Destroy_VAO(kemo_VAOs->psf_trans_VAO[1]);
+	Destroy_VAO(kemo_VAOs->psf_trans_VAO[0]);
+	Destroy_VAO(kemo_VAOs->mesh_trans_VAO);
+	Destroy_VAO(kemo_VAOs->cbar_VAO[0]);
+	Destroy_VAO(kemo_VAOs->cbar_VAO[1]);
+	Destroy_VAO(kemo_VAOs->cube_VAO);
 };
 
 void get_gl_buffer_to_bmp(int num_x, int num_y, unsigned char *glimage){
@@ -136,8 +136,6 @@ void get_gl_buffer_to_bmp(int num_x, int num_y, unsigned char *glimage){
 void quick_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_fline *kemo_fline, 
 			struct kemoview_mesh *kemo_mesh, struct view_element *view_s,
 			struct kemoview_VAOs *kemo_VAOs, struct kemoview_shaders *kemo_shaders){
-	int i;
-	int iflag;
 	int iflag_psf = 0;
 	
     /* Draw Solid Objects */

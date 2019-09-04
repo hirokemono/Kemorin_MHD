@@ -467,7 +467,7 @@ void add_colormp_list_box(struct colormap_view *color_vws, GtkWidget *vbox){
     init_real2_tree_view(color_vws->opacity_vws);
     
 	label_tree = create_fixed_label_w_index_tree();
-    model = gtk_tree_view_get_model (label_tree);  
+    model = gtk_tree_view_get_model(GTK_TREE_VIEW(label_tree));  
     child_model = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model));
     index = append_ci_item_to_tree(index, &color_labels[RAINBOW_MODE][0], RAINBOW_MODE, child_model);
 	index = append_ci_item_to_tree(index, &color_labels[GRAYSCALE_MODE][0], GRAYSCALE_MODE, child_model);

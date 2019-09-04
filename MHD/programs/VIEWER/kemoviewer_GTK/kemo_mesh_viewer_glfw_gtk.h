@@ -1,8 +1,8 @@
 
 /* kemo_mesh_viewer_gtk.h */
 
-#ifndef KEMO_MESH_VIEWER_GLUT_
-#define KEMO_MESH_VIEWER_GLUT_
+#ifndef KEMO_MESH_VIEWER_GLFW_GTK_
+#define KEMO_MESH_VIEWER_GLFW_GTK_
 
 
 #include <stdio.h>
@@ -10,17 +10,19 @@
 #include <math.h>
 #include <string.h>
 
-#include "gtk/gtk.h"
+#include <gtk/gtk.h>
+#include <GLFW/glfw3.h>
 
 #include "kemoviewer.h"
-#include "view_modifier_glut.h"
-#include "kemoview_gtk_colormap_menu.h"
+#include "view_modifier_glfw.h"
+#include "kemoview_gtk_PSF_menu.h"
 #include "kemoview_gtk_mesh_menu.h"
 #include "kemoview_gtk_preference_menu.h"
 #include "kemoview_fileselector_gtk.h"
+#include "kemoview_gtk_main_menu.h"
 
 /* prototypes */
 
-void draw_mesh_kemo(int iflag_streo_shutter, int iflag_dmesh);
+int draw_mesh_kemo(int iflag_streo_shutter, int iflag_dmesh);
 
 #endif

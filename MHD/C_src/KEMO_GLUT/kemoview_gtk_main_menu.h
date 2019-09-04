@@ -13,7 +13,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "gtk/gtk.h"
+#include <gtk/gtk.h>
 
 #include "kemoviewer.h"
 #include "m_kemoviewer_data.h"
@@ -23,11 +23,14 @@
 #include "kemoview_gtk_rotation_menu.h"
 #include "kemoview_gtk_axis_menu.h"
 #include "kemoview_gtk_preference_menu.h"
-#include "kemoview_gtk_colormap_menu.h"
+#include "kemoview_gtk_PSF_menu.h"
 #include "kemoview_gtk_fieldline_menu.h"
+
+#include "view_modifier_glfw.h"
 
 /*  prototypes */
 
-void gtk_main_menu(struct kemoviewer_type *kemoviewer_data);
+void add_gtk_main_menu(struct kemoviewer_type *kemoviewer_data,
+					   GtkWidget *window_main, GtkWidget *box);
 	
 #endif

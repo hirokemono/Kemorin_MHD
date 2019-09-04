@@ -1,16 +1,12 @@
 
-/* view_modifier_glut.h */
+/* view_modifier_glfw.h */
 
-#ifndef VIEW_MODIFIER_GLUT_
-#define VIEW_MODIFIER_GLUT_
+#ifndef VIEW_MODIFIER_GLFW_
+#define VIEW_MODIFIER_GLFW_
 
 #include <math.h>
-
-#ifdef __APPLE__ 
-#include <GLUT/glut.h>
-#else
-#include<GL/glut.h>
-#endif
+#include <stdio.h>
+#include <GLFW/glfw3.h>
 
 #include "kemoviewer.h"
 
@@ -26,26 +22,19 @@
 extern "C" {
 #endif
 
-void view_modifier_init() ;
-int  menu_init() ;
-void display_menu();
-void display();
+GLFWwindow * open_kemoviwer_window(int npixel_x, int npixel_y);
+
+void glfw_view_modifier_init(GLFWwindow* window);
+void display(GLFWwindow* window);
 void modifywindow(int width, int height);
 
-void set_left_button(GLint value);
-
-int create_kemoview_window();
-int create_kemoview_menu();
-
-void set_main_window_id_glut(int winid);
-
-void draw_mesh_keep_menu();
+void draw_mesh_keep_menu(void);
 void write_rotate_views_glut(int iflag_img, struct kv_string *image_prefix, 
                              int i_axis, int inc_deg);
 void write_evolution_views_glut(int iflag_img, struct kv_string *image_prefix, 
 								int ist_udt, int ied_udt, int inc_udt);
 
-void set_viewtype_mode_glut(int selected);
+void set_viewtype_mode_glfw(int selected);
 
 #ifdef __cplusplus
 }

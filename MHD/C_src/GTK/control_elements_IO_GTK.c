@@ -129,7 +129,7 @@ static GtkWidget *make_control_file_block_vbox(const char *label_hd, int *iflag_
 	
 	index = 0;
 	label_tree = create_fixed_label_w_index_tree();
-	model = gtk_tree_view_get_model(label_tree);  
+	model = gtk_tree_view_get_model(GTK_TREE_VIEW(label_tree));  
 	child_model = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model));
 	index = append_ci_item_to_tree(index, &input_mode_labels[0][0], NONE_MODE, child_model);
 	index = append_ci_item_to_tree(index, &input_mode_labels[1][0], FILE_MODE, child_model);
@@ -422,11 +422,11 @@ GtkWidget *make_integer_hbox(int iflag_fix_on, const char *label, struct int_ctl
 
 static void cb_real_ctl_item(GtkEntry *spinner, gpointer data)
 {
-	struct real_ctl_item *ctl_item = (struct chara_ctl_item *) data;
+	struct real_ctl_item *ctl_item = (struct real_ctl_item *) data;
 	
 	if(data != NULL) {
 		ctl_item->iflag = 1;
-		ctl_item->r_data = gtk_spin_button_get_value(spinner);
+		ctl_item->r_data = gtk_spin_button_get_value(GTK_SPIN_BUTTON(spinner));
 	};
 	return;
 }

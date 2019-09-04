@@ -11,12 +11,11 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-
-#include "gtk/gtk.h"
-
 #include <string.h>
+
+#include <gtk/gtk.h>
+
 #include "kemoviewer.h"
-#include "kemoview_glut_routines.h"
 
 /*  prototypes */
 /* Routines for inout from console */

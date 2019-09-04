@@ -95,17 +95,6 @@ void add_axis_menu_box(struct kemoviewer_type *kemoviewer_data, GtkWidget *box_o
 	double current_radius;
 	char current_radius_text[30];
 	
-	GtkWidget *hbox_viewtype;
-	GtkWidget *combobox_viewtype;
-	GtkWidget *label_tree_viewtype;
-	GtkCellRenderer *renderer_viewtype;
-	GtkTreeModel *model_viewtype;
-	GtkTreeModel *child_model_viewtype;
-	
-	GtkWidget *hbox_viewmatrix_save;
-	GtkWidget *entry_viewmatrix_file;
-	GtkWidget *saveView_Button, *loadView_Button;
-	
 	GtkWidget *hbox_shading;
 	GtkWidget *combobox_shading;
 	GtkWidget *label_tree_shading;
@@ -126,7 +115,7 @@ void add_axis_menu_box(struct kemoviewer_type *kemoviewer_data, GtkWidget *box_o
 		
 	/* Set buttons   */
 	label_tree_shading = create_fixed_label_w_index_tree();
-	model_shading = gtk_tree_view_get_model (label_tree_shading);  
+	model_shading = gtk_tree_view_get_model(GTK_TREE_VIEW(label_tree_shading));  
 	child_model_shading = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_shading));
 	index = 0;
 	index = append_ci_item_to_tree(index, "Smooth surface", SMOOTH_SHADE, child_model_shading);
@@ -148,7 +137,7 @@ void add_axis_menu_box(struct kemoviewer_type *kemoviewer_data, GtkWidget *box_o
 	
 	
 	label_tree_surf_dir = create_fixed_label_w_index_tree();
-	model_surf_dir = gtk_tree_view_get_model (label_tree_surf_dir);  
+	model_surf_dir = gtk_tree_view_get_model(GTK_TREE_VIEW(label_tree_surf_dir));  
 	child_model_surf_dir = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_surf_dir));
 	index = 0;
 	index = append_ci_item_to_tree(index, "Normal surface", NORMAL_POLYGON, child_model_surf_dir);

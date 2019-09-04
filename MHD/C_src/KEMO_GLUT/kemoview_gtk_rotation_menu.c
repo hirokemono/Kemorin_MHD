@@ -152,7 +152,7 @@ void add_rotation_menu_box(struct kemoviewer_type *kemoviewer_data,
 	int index = 0;
 	
 	label_tree_rotation_dir = create_fixed_label_w_index_tree();
-	model_rotation_dir = gtk_tree_view_get_model (label_tree_rotation_dir);  
+	model_rotation_dir = gtk_tree_view_get_model(GTK_TREE_VIEW(label_tree_rotation_dir));  
 	child_model_rotation_dir = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_rotation_dir));
 	index = 0;
 	index = append_ci_item_to_tree(index, "X-axis", X_AXIS, child_model_rotation_dir);
@@ -176,7 +176,7 @@ void add_rotation_menu_box(struct kemoviewer_type *kemoviewer_data,
 	
 	
 	label_tree_rotation_fileformat = create_fixed_label_w_index_tree();
-	model_rotation_fileformat = gtk_tree_view_get_model (label_tree_rotation_fileformat);  
+	model_rotation_fileformat = gtk_tree_view_get_model(GTK_TREE_VIEW(label_tree_rotation_fileformat));  
 	child_model_rotation_fileformat = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_rotation_fileformat));
 	index = 0;
 	index = append_ci_item_to_tree(index, "No Image", NO_SAVE_FILE, child_model_rotation_fileformat);

@@ -56,7 +56,7 @@ module:
 	kemoview_glui_window_input.o: \
 	'$$(KEMOVIEW_GLUIDIR)'/kemoview_glui_window_input.cpp \
 	kemoview_glui_window_input.h \
-	kemoview_glut_routines.o \
+	view_modifier_glut.o \
 	kemoviewer.h \
 	>> $(MAKENAME)
 	@echo '	''$$(CXX)' -c '$$(CXXFLAGS) $$(C_INCLUDE) $$(GLUI_INC)' \
@@ -67,7 +67,7 @@ module:
 	kemoview_fileselector_glui.o: \
 	'$$(KEMOVIEW_GLUIDIR)'/kemoview_fileselector_glui.cpp \
 	kemoview_fileselector_glui.h \
-	kemoview_glut_routines.o \
+	view_modifier_glut.o \
 	kemoviewer.h \
 	>> $(MAKENAME)
 	@echo '	''$$(CXX)' -c '$$(CXXFLAGS) $$(C_INCLUDE) $$(GLUI_INC)' \
@@ -83,7 +83,7 @@ module:
 	kemoview_fileselector_glui.o \
 	kemoview_glui_window_input.o \
 	const_viewer_menu_glut.o \
-	kemoview_glut_routines.o \
+	view_modifier_glut.o \
 	kemoviewer.h \
 	>> $(MAKENAME)
 	@echo '	''$$(CXX)' -c '$$(CXXFLAGS) $$(C_INCLUDE) $$(GLUI_INC)' \

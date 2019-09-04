@@ -141,7 +141,7 @@ void add_gtk_psf_vector_menu(struct colormap_view *color_vws, GtkWidget *box){
 				G_CALLBACK(psf_vector_switch_CB), NULL);
 	
 	label_tree_vmode = create_fixed_label_w_index_tree();
-	model_vmode = gtk_tree_view_get_model (label_tree_vmode);  
+	model_vmode = gtk_tree_view_get_model(GTK_TREE_VIEW(label_tree_vmode));  
 	child_model_vmode = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_vmode));
 	index = 0;
 	index = append_ci_item_to_tree(index, "Full", FULL_COMPONENT, child_model_vmode);
@@ -162,7 +162,7 @@ void add_gtk_psf_vector_menu(struct colormap_view *color_vws, GtkWidget *box){
 				G_CALLBACK(set_vector_mode_cb), NULL);
 	
 	label_tree_veccolor = create_fixed_label_w_index_tree();
-	model_veccolor = gtk_tree_view_get_model (label_tree_veccolor);  
+	model_veccolor = gtk_tree_view_get_model(GTK_TREE_VIEW(label_tree_veccolor));  
 	child_model_veccolor = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_veccolor));
 	index = 0;
 	index = append_ci_item_to_tree(index, "Colored", RAINBOW_PSF_VECT, child_model_veccolor);

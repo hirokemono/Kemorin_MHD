@@ -30,7 +30,7 @@ static void draw_mesh_w_menu(){
 
 static void main_menu_handler(int sel){
 	if(sel == SET_COAST_RADIUS){
-		gtk_main_menu(single_kemoview);
+		kemoview_main_window(single_kemoview);
 	};
     return;
 };

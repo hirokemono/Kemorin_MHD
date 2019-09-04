@@ -62,7 +62,6 @@ module:
 	kemoviewer.h \
 	kemo_mesh_viewer_gtk.h \
 	kemoview_fileselector_gtk.o \
-	kemoview_glut_routines.o \
 	kemoview_gtk_colormap_menu.o \
 	kemoview_gtk_mesh_menu.o \
 	kemoview_gtk_preference_menu.o \

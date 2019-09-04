@@ -13,7 +13,7 @@
 #include <GL/glui.h>
 
 #include "kemoviewer.h"
-#include "kemoview_glut_routines.h"
+#include "view_modifier_glut.h"
 
 /* prototypes */
 

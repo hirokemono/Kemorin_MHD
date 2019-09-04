@@ -13,7 +13,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "gtk/gtk.h"
+#include <gtk/gtk.h>
 
 #include "kemoviewer.h"
 #include "tree_views_4_fixed_lists_GTK.h"
