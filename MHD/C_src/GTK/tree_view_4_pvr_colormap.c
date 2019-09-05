@@ -478,13 +478,13 @@ void add_colormp_list_box(struct colormap_view *color_vws, GtkWidget *vbox){
 	child_model = gtk_cell_renderer_text_new();
 	iflag = color_vws->cmap_param->id_color_mode;
 	if(iflag == SYM_GRAY_MODE){
-		gtk_combo_box_set_active(combobox_cmap, 3);
+		gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_cmap), 3);
 	} else if(iflag == RED_BLUE_MODE){
-		gtk_combo_box_set_active(combobox_cmap, 2);
+		gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_cmap), 2);
 	} else if(iflag == GRAYSCALE_MODE){
-		gtk_combo_box_set_active(combobox_cmap, 1);
+		gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_cmap), 1);
 	} else {
-		gtk_combo_box_set_active(combobox_cmap, 0);
+		gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_cmap), 0);
 	};
 	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(combobox_cmap), child_model, TRUE);
 	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combobox_cmap), child_model,

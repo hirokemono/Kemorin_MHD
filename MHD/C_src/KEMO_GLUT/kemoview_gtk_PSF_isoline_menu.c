@@ -109,11 +109,11 @@ void add_gtk_isoline_menu(struct colormap_view *color_vws,
 	renderer_gdcolor = gtk_cell_renderer_text_new();
 	iflag_sfcolor = kemoview_get_PSF_patch_color_mode();
 	if(iflag_sfcolor == BLACK_PSF_LINE){
-		gtk_combo_box_set_active(combobox_gdcolor, 2);
+		gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_gdcolor), 2);
 	} else 	if(iflag_sfcolor == WHITE_PSF_LINE){
-		gtk_combo_box_set_active(combobox_gdcolor, 1);
+		gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_gdcolor), 1);
 	} else {
-		gtk_combo_box_set_active(combobox_gdcolor, 0);
+		gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_gdcolor), 0);
 	};
 	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(combobox_gdcolor), renderer_gdcolor, TRUE);
 	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combobox_gdcolor), renderer_gdcolor,

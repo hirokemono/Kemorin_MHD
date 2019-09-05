@@ -298,14 +298,6 @@ void glfw_view_modifier_init(GLFWwindow* window){
 }
 
 
-void draw_mesh_for_glfw(GLFWwindow* window){
-	kemoview_draw_objects_gl3();
-	kemoview_update_distance();
-	kemoview_modify_view();
-	glfwSwapBuffers(window);
-	return;
-};
-
 void display(GLFWwindow* window){
 	kemoview_draw_objects_gl3();
 	kemoview_modify_view();
@@ -314,7 +306,14 @@ void display(GLFWwindow* window){
 };
 
 
-void draw_mesh_keep_menu(){
+void draw_fast_glfw(){
+	kemoview_draw_fast_gl3();
+	kemoview_modify_view();
+	glfwSwapBuffers(glfw_window);
+	return;
+};
+
+void draw_mesh_glfw(){
 	kemoview_draw_objects_gl3();
 	kemoview_update_distance();
 	kemoview_modify_view();
@@ -329,6 +328,7 @@ void write_rotate_views_glut(int iflag_img, struct kv_string *image_prefix,
     ied_deg = 360/inc_deg;
 	
 	kemoview_set_animation_rot_axis(i_axis);
+	glfwFocusWindow(glfw_window);
 	for (i = 0; i< ied_deg; i++) {
 		glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 		int_degree =  i*inc_deg;
@@ -340,7 +340,7 @@ void write_rotate_views_glut(int iflag_img, struct kv_string *image_prefix,
 		
         kemoview_write_window_to_file_w_step(iflag_img, i, image_prefix);
 	};
-	draw_mesh_keep_menu();
+	draw_mesh_glfw();
 	return;
 }
 
@@ -348,6 +348,7 @@ void write_evolution_views_glut(int iflag_img, struct kv_string *image_prefix,
 								int ist_udt, int ied_udt, int inc_udt){
 	int i;
 
+	glfwFocusWindow(glfw_window);
 	glfwSwapBuffers(glfw_window);
 	for (i=ist_udt; i<(ied_udt+1); i++) {
 		if( ((i-ist_udt)%inc_udt) == 0) {
@@ -355,7 +356,7 @@ void write_evolution_views_glut(int iflag_img, struct kv_string *image_prefix,
 			kemoview_viewer_evolution(i);
 			
 			glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-			draw_mesh_keep_menu();
+			draw_mesh_glfw();
 			glfwSwapBuffers(glfw_window);
             
             kemoview_write_window_to_file_w_step(iflag_img, i, image_prefix);

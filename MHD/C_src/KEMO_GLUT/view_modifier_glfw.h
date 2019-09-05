@@ -28,7 +28,8 @@ void glfw_view_modifier_init(GLFWwindow* window);
 void display(GLFWwindow* window);
 void modifywindow(int width, int height);
 
-void draw_mesh_keep_menu(void);
+void draw_fast_glfw(void);
+void draw_mesh_glfw(void);
 void write_rotate_views_glut(int iflag_img, struct kv_string *image_prefix, 
                              int i_axis, int inc_deg);
 void write_evolution_views_glut(int iflag_img, struct kv_string *image_prefix, 

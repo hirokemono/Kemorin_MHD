@@ -86,7 +86,7 @@ void add_gtk_psf_colormap_menu(struct colormap_view *color_vws, GtkWidget *box){
 
 void gtk_psf_colormap_menu(struct kemoviewer_type *kemoviewer_data){
 	GtkWidget *box;
-	GtkButton *closeButton, *updateButton;
+	GtkWidget *closeButton, *updateButton;
 	
 	struct colormap_view *color_vws
 			= (struct colormap_view *) malloc(sizeof(struct colormap_view));

@@ -134,7 +134,7 @@ void add_current_psf_set_box(struct kemoviewer_type *kemoviewer_data,
 		
 		combobox_psfs = gtk_combo_box_new_with_model(child_model_psfs);
 		renderer_psfs = gtk_cell_renderer_text_new();
-		gtk_combo_box_set_active(combobox_psfs, index_current);
+		gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_psfs), index_current);
 		gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(combobox_psfs), renderer_psfs, TRUE);
 		gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combobox_psfs), renderer_psfs,
 					"text", COLUMN_FIELD_NAME, NULL);
@@ -179,7 +179,7 @@ void add_psf_draw_field_box(struct kemoviewer_type *kemoviewer_data,
 	
 	combobox_field = gtk_combo_box_new_with_model(child_model_field);
 	renderer_field = gtk_cell_renderer_text_new();
-	gtk_combo_box_set_active(combobox_field, if_psf);
+	gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_field), if_psf);
 	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(combobox_field), renderer_field, TRUE);
 	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combobox_field), renderer_field,
 				"text", COLUMN_FIELD_NAME, NULL);
@@ -225,7 +225,7 @@ void add_psf_draw_component_box(struct kemoviewer_type *kemoviewer_data,
 		combobox_comp = gtk_combo_box_new_with_model(child_model_comp);
 		renderer_comp = gtk_cell_renderer_text_new();
 		icomp = kemoview_get_PSF_component_id();
-		gtk_combo_box_set_active(combobox_comp, icomp);
+		gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_comp), icomp);
 		gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(combobox_comp), renderer_comp, TRUE);
 		gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combobox_comp), renderer_comp,
 					"text", COLUMN_FIELD_NAME, NULL);

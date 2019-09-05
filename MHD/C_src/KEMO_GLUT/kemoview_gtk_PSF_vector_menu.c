@@ -151,9 +151,9 @@ void add_gtk_psf_vector_menu(struct colormap_view *color_vws, GtkWidget *box){
 	renderer_vmode = gtk_cell_renderer_text_new();
 	iflag = kemoview_get_PSF_draw_flags(PSFTANVEC_TOGGLE);
 	if(iflag == TANGENTIAL_COMPONENT){
-		gtk_combo_box_set_active(combobox_vecmode, 1);
+		gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_vecmode), 1);
 	} else {
-		gtk_combo_box_set_active(combobox_vecmode, 0);
+		gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_vecmode), 0);
 	}
 	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(combobox_vecmode), renderer_vmode, TRUE);
 	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combobox_vecmode), renderer_vmode,
@@ -172,9 +172,9 @@ void add_gtk_psf_vector_menu(struct colormap_view *color_vws, GtkWidget *box){
 	renderer_veccolor = gtk_cell_renderer_text_new();
 	iflag = kemoview_get_PSF_vector_color_mode();
 	if(iflag == WHITE_PSF_VECT){
-		gtk_combo_box_set_active(combobox_veccolor, 1);
+		gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_veccolor), 1);
 	} else {
-		gtk_combo_box_set_active(combobox_veccolor, 0);
+		gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_veccolor), 0);
 	};
 	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(combobox_veccolor), renderer_veccolor, TRUE);
 	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combobox_veccolor), renderer_veccolor,

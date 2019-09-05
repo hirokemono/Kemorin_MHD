@@ -151,13 +151,13 @@ void gtk_fieldline_menu(){
 	combobox_color = gtk_combo_box_new_with_model(child_model_color);
 	renderer_color = gtk_cell_renderer_text_new();
 	if(icolor_mode == BLACK_LINE){
-		gtk_combo_box_set_active(GTK_SPIN_BUTTON(combobox_color), 3);
+		gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_color), 3);
 	} else 	if(icolor_mode == TWO_GRAY_LINE){
-		gtk_combo_box_set_active(GTK_SPIN_BUTTON(combobox_color), 2);
+		gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_color), 2);
 	} else 	if(icolor_mode == TWO_COLOR_LINE){
-		gtk_combo_box_set_active(GTK_SPIN_BUTTON(combobox_color), 1);
+		gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_color), 1);
 	} else {
-		gtk_combo_box_set_active(GTK_SPIN_BUTTON(combobox_color), 0);
+		gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_color), 0);
 	};
 	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(combobox_color), renderer_color, TRUE);
 	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combobox_color), renderer_color,

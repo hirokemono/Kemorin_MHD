@@ -11,21 +11,28 @@
 
 static void draw_axis_switch_CB(GObject *switch_bar, GParamSpec *pspec, gpointer data){
 	int toggle = kemoview_toggle_object_properties(AXIS_TOGGLE);
+	
+	draw_mesh_glfw();
 	return;
 };
 static void draw_coastline_switch_CB(GObject *switch_bar, GParamSpec *pspec, gpointer data){
 	int toggle = kemoview_toggle_object_properties(COASTLINE_SWITCH);
+	
+	draw_mesh_glfw();
 	return;
 };
 static void draw_sph_grid_switch_CB(GObject *switch_bar, GParamSpec *pspec, gpointer data){
 	int toggle = kemoview_toggle_object_properties(SPHEREGRID_SWITCH);
+	
+	draw_mesh_glfw();
 	return;
 };
 static void coastline_radius_CB(GtkWidget *entry, gpointer data)
 {
 	double radius = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
 	kemoview_set_coastline_radius(radius);
-/*	printf("radius %d\n", radius);*/
+	
+	draw_mesh_glfw();
 }
 
 static void set_shading_mode_CB(GtkComboBox *combobox_shading, gpointer user_data)
@@ -51,7 +58,7 @@ static void set_shading_mode_CB(GtkComboBox *combobox_shading, gpointer user_dat
     printf("Selected mode %d, %s\n", index_mode, row_string);
 	kemoview_set_object_property_flags(SHADING_SWITCH, index_mode);
 	
-//	draw_mesh_w_menu();
+	draw_mesh_glfw();
 	return;
 };
 
@@ -78,7 +85,8 @@ static void set_surface_direction_CB(GtkComboBox *combobox_surfdir, gpointer use
     printf("Selected mode %d, %s\n", index_mode, row_string);
 	kemoview_set_object_property_flags(POLYGON_SWITCH, index_mode);
 	
-//	draw_mesh_w_menu();
+	
+	draw_mesh_glfw();
 	return;
 };
 
@@ -125,9 +133,9 @@ void add_axis_menu_box(struct kemoviewer_type *kemoviewer_data, GtkWidget *box_o
 	renderer_shading = gtk_cell_renderer_text_new();
 	iflag_mode = kemoview_get_object_property_flags(SHADING_SWITCH);
 	if(iflag_mode == FLAT_SHADE){
-		gtk_combo_box_set_active(combobox_shading, 1);
+		gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_shading), 1);
 	} else {
-		gtk_combo_box_set_active(combobox_shading, 0);
+		gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_shading), 0);
 	};
 	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(combobox_shading), renderer_shading, TRUE);
 	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combobox_shading), renderer_shading,
@@ -147,9 +155,9 @@ void add_axis_menu_box(struct kemoviewer_type *kemoviewer_data, GtkWidget *box_o
 	renderer_surf_dir = gtk_cell_renderer_text_new();
 	iflag_mode = kemoview_get_object_property_flags(POLYGON_SWITCH);
 	if(iflag_mode == REVERSE_POLYGON){
-		gtk_combo_box_set_active(combobox_surf_dir, 1);
+		gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_surf_dir), 1);
 	} else {
-		gtk_combo_box_set_active(combobox_surf_dir, 0);
+		gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_surf_dir), 0);
 	};
 	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(combobox_surf_dir), renderer_surf_dir, TRUE);
 	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combobox_surf_dir), renderer_surf_dir,

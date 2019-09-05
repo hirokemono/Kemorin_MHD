@@ -394,13 +394,13 @@ void add_surf_group_draw_box(struct ci3_clist_view *surf_grp_vws,
 	renderer_patch_color = gtk_cell_renderer_text_new();
 	iflag_color = kemoview_get_surf_grp_color_flag(SURFSOLID_TOGGLE);
 	if(iflag_color == GROUP_COLOR){
-		gtk_combo_box_set_active(combobox_patch_color, 3);
+		gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_patch_color), 3);
 	} else 	if(iflag_color == DOMAIN_COLOR){
-		gtk_combo_box_set_active(combobox_patch_color, 2);
+		gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_patch_color), 2);
 	} else 	if(iflag_color == SINGLE_COLOR){
-		gtk_combo_box_set_active(combobox_patch_color, 1);
+		gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_patch_color), 1);
 	} else {
-		gtk_combo_box_set_active(combobox_patch_color, 0);
+		gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_patch_color), 0);
 	};
 	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(combobox_patch_color), renderer_patch_color, TRUE);
 	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combobox_patch_color), renderer_patch_color,
@@ -422,13 +422,13 @@ void add_surf_group_draw_box(struct ci3_clist_view *surf_grp_vws,
 	renderer_grid_color = gtk_cell_renderer_text_new();
 	iflag_color = kemoview_get_surf_grp_color_flag(SURFGRID_TOGGLE);
 	if(iflag_color == GROUP_COLOR){
-		gtk_combo_box_set_active(combobox_grid_color, 3);
+		gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_grid_color), 3);
 	} else 	if(iflag_color == DOMAIN_COLOR){
-		gtk_combo_box_set_active(combobox_grid_color, 2);
+		gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_grid_color), 2);
 	} else 	if(iflag_color == SINGLE_COLOR){
-		gtk_combo_box_set_active(combobox_grid_color, 1);
+		gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_grid_color), 1);
 	} else {
-		gtk_combo_box_set_active(combobox_grid_color, 0);
+		gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_grid_color), 0);
 	};
 	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(combobox_grid_color), renderer_grid_color, TRUE);
 	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combobox_grid_color), renderer_grid_color,
@@ -450,13 +450,13 @@ void add_surf_group_draw_box(struct ci3_clist_view *surf_grp_vws,
 	renderer_node_color = gtk_cell_renderer_text_new();
 	iflag_color = kemoview_get_surf_grp_color_flag(SURFNOD_TOGGLE);
 	if(iflag_color == GROUP_COLOR){
-		gtk_combo_box_set_active(combobox_node_color, 3);
+		gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_node_color), 3);
 	} else 	if(iflag_color == DOMAIN_COLOR){
-		gtk_combo_box_set_active(combobox_node_color, 2);
+		gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_node_color), 2);
 	} else 	if(iflag_color == SINGLE_COLOR){
-		gtk_combo_box_set_active(combobox_node_color, 1);
+		gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_node_color), 1);
 	} else {
-		gtk_combo_box_set_active(combobox_node_color, 0);
+		gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_node_color), 0);
 	};
 	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(combobox_node_color), renderer_node_color, TRUE);
 	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combobox_node_color), renderer_node_color,

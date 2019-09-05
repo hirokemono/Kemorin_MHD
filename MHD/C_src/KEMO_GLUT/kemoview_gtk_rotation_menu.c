@@ -86,6 +86,7 @@ static void rotation_view_CB(GtkButton *button, gpointer user_data){
 	
 	struct kv_string *image_prefix = kemoview_init_kvstring_by_string("Kemoviewer");
 	
+	gtk_window_set_focus(GTK_WINDOW(window_main), NULL);
 	write_rotate_views_glut(NO_SAVE_FILE, image_prefix, iaxis_rot, inc_deg);
 	kemoview_free_kvstring(image_prefix);
 	return;
@@ -111,6 +112,7 @@ static void rotation_save_CB(GtkButton *button, gpointer user_data){
 	kemoview_free_kvstring(stripped_ext);
 	kemoview_free_kvstring(filename);
 	
+	gtk_window_set_focus(GTK_WINDOW(window_main), NULL);
 	write_rotate_views_glut(id_fmt_rot, file_prefix, iaxis_rot, inc_deg);
 	
 	return;
@@ -162,11 +164,11 @@ void add_rotation_menu_box(struct kemoviewer_type *kemoviewer_data,
 	combobox_rotation_dir = gtk_combo_box_new_with_model(child_model_rotation_dir);
 	renderer_rotation_dir = gtk_cell_renderer_text_new();
 	if(iaxis_rot == Z_AXIS){
-		gtk_combo_box_set_active(combobox_rotation_dir, 2);
+		gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_rotation_dir), 2);
 	} else if(iaxis_rot == Y_AXIS){
-		gtk_combo_box_set_active(combobox_rotation_dir, 1);
+		gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_rotation_dir), 1);
 	} else {
-		gtk_combo_box_set_active(combobox_rotation_dir, 0);
+		gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_rotation_dir), 0);
 	};
 	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(combobox_rotation_dir), renderer_rotation_dir, TRUE);
 	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combobox_rotation_dir), renderer_rotation_dir,
@@ -187,11 +189,11 @@ void add_rotation_menu_box(struct kemoviewer_type *kemoviewer_data,
 	renderer_rotation_fileformat = gtk_cell_renderer_text_new();
 	id_fmt_rot = NO_SAVE_FILE;
 	if(id_fmt_rot == SAVE_BMP){
-		gtk_combo_box_set_active(combobox_rotation_fileformat, 2);
+		gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_rotation_fileformat), 2);
 	} else if(id_fmt_rot == SAVE_PNG){
-		gtk_combo_box_set_active(combobox_rotation_fileformat, 1);
+		gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_rotation_fileformat), 1);
 	} else {
-		gtk_combo_box_set_active(combobox_rotation_fileformat, 0);
+		gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_rotation_fileformat), 0);
 	};
 	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(combobox_rotation_fileformat), renderer_rotation_fileformat, TRUE);
 	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combobox_rotation_fileformat), renderer_rotation_fileformat,

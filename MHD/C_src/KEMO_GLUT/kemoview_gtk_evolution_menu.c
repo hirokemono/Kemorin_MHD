@@ -157,11 +157,11 @@ void add_evoluaiton_menu_box(struct kemoviewer_type *kemoviewer_data,
 	renderer_evo_fileformat = gtk_cell_renderer_text_new();
 	id_fmt_evo = NO_SAVE_FILE;
 	if(id_fmt_evo == SAVE_BMP){
-		gtk_combo_box_set_active(combobox_evo_fileformat, 2);
+		gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_evo_fileformat), 2);
 	} else if(id_fmt_evo == SAVE_PNG){
-		gtk_combo_box_set_active(combobox_evo_fileformat, 1);
+		gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_evo_fileformat), 1);
 	} else {
-		gtk_combo_box_set_active(combobox_evo_fileformat, 0);
+		gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_evo_fileformat), 0);
 	};
 	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(combobox_evo_fileformat), renderer_evo_fileformat, TRUE);
 	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combobox_evo_fileformat), renderer_evo_fileformat,

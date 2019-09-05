@@ -35,7 +35,7 @@ static void set_PSFcolor_GTK(GtkColorChooser *colordialog)
 	dcolor[3] = (gdouble) kemoview_get_PSF_max_opacity();
 	kemoview_set_PSF_single_color(dcolor);
 	kemoview_set_PSF_patch_color_mode(SINGLE_COLOR);
-	draw_mesh_keep_menu();
+	draw_mesh_glfw();
 	return;
 }
 
@@ -220,13 +220,13 @@ void add_gtk_psf_surface_menu(struct colormap_view *color_vws,
 	renderer_sfcolor = gtk_cell_renderer_text_new();
 	iflag_sfcolor = kemoview_get_PSF_patch_color_mode();
 	if(iflag_sfcolor == TEXTURE_PSF_SURF){
-		gtk_combo_box_set_active(combobox_sfcolor, 3);
+		gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_sfcolor), 3);
 	} else 	if(iflag_sfcolor == SINGLE_COLOR){
-		gtk_combo_box_set_active(combobox_sfcolor, 2);
+		gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_sfcolor), 2);
 	} else 	if(iflag_sfcolor == WHITE_SURFACE){
-		gtk_combo_box_set_active(combobox_sfcolor, 1);
+		gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_sfcolor), 1);
 	} else {
-		gtk_combo_box_set_active(combobox_sfcolor, 0);
+		gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_sfcolor), 0);
 	};
 	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(combobox_sfcolor), renderer_sfcolor, TRUE);
 	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combobox_sfcolor), renderer_sfcolor,

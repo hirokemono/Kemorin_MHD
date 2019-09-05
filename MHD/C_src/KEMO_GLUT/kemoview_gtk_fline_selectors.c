@@ -91,7 +91,7 @@ void add_fline_draw_field_box(GtkWidget *window_fline, GtkWidget *box){
 	
 	combobox_field = gtk_combo_box_new_with_model(child_model_field);
 	renderer_field = gtk_cell_renderer_text_new();
-	gtk_combo_box_set_active(combobox_field, if_fline);
+	gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_field), if_fline);
 	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(combobox_field), renderer_field, TRUE);
 	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combobox_field), renderer_field,
 				"text", COLUMN_FIELD_NAME, NULL);
@@ -136,7 +136,7 @@ void add_fline_draw_component_box(GtkWidget *window_fline, GtkWidget *box){
 		
 		combobox_comp = gtk_combo_box_new_with_model(child_model_comp);
 		renderer_comp = gtk_cell_renderer_text_new();
-		gtk_combo_box_set_active(combobox_comp, ic_fline);
+		gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_comp), ic_fline);
 		gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(combobox_comp), renderer_comp, TRUE);
 		gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combobox_comp), renderer_comp,
 					"text", COLUMN_FIELD_NAME, NULL);

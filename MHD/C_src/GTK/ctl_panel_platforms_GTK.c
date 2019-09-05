@@ -97,21 +97,21 @@ GtkWidget * make_file_format_hbox(int iflag_fix_on, const char *label, struct ch
 	
 	iflag = find_file_fmt_index(ctl_item);
 	if(iflag == MERGED_BIN_GZ_MODE){
-		gtk_combo_box_set_active(tbox_flag->entry, 7);
+		gtk_combo_box_set_active(GTK_COMBO_BOX(tbox_flag->entry), 7);
 	} else if(iflag == MERGED_GZ_MODE){
-		gtk_combo_box_set_active(tbox_flag->entry, 6);
+		gtk_combo_box_set_active(GTK_COMBO_BOX(tbox_flag->entry), 6);
 	} else if(iflag == MERGED_BIN_MODE){
-		gtk_combo_box_set_active(tbox_flag->entry, 5);
+		gtk_combo_box_set_active(GTK_COMBO_BOX(tbox_flag->entry), 5);
 	} else if(iflag == MERGED_MODE){
-		gtk_combo_box_set_active(tbox_flag->entry, 4);
+		gtk_combo_box_set_active(GTK_COMBO_BOX(tbox_flag->entry), 4);
 	} else if(iflag == BIN_GZ_MODE){
-		gtk_combo_box_set_active(tbox_flag->entry, 3);
+		gtk_combo_box_set_active(GTK_COMBO_BOX(tbox_flag->entry), 3);
 	} else if(iflag == GZIP_MODE){
-		gtk_combo_box_set_active(tbox_flag->entry, 2);
+		gtk_combo_box_set_active(GTK_COMBO_BOX(tbox_flag->entry), 2);
 	} else if(iflag == BINARY_MODE){
-		gtk_combo_box_set_active(tbox_flag->entry, 1);
+		gtk_combo_box_set_active(GTK_COMBO_BOX(tbox_flag->entry), 1);
 	} else {
-		gtk_combo_box_set_active(tbox_flag->entry, 0);
+		gtk_combo_box_set_active(GTK_COMBO_BOX(tbox_flag->entry), 0);
 	};
 	g_signal_connect(G_OBJECT(tbox_flag->entry), "changed", G_CALLBACK(set_file_fmt_cb),
 				(gpointer) ctl_item);

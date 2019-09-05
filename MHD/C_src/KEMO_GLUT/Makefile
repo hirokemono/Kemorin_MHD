@@ -184,6 +184,7 @@ module:
 	tree_views_4_fixed_lists_GTK.o \
 	kemoview_fileselector_gtk.o \
 	kemoview_gtk_routines.o \
+	view_modifier_glfw.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS) $$<' \
 	>> $(MAKENAME)
