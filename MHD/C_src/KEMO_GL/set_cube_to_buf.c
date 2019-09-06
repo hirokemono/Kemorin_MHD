@@ -176,9 +176,10 @@ void cube_surf_VBO(GLfloat fSize, struct VAO_ids *VAO_quad, struct gl_strided_bu
 	
 	GLenum ErrorCheckValue = glGetError();
 	
-	
 	Const_VAO_4_Phong(VAO_quad, gl_buf);
 	
+	
+	glDeleteBuffers(1, &VAO_quad->id_index);
 	/* Create index buffer on GPU, and then copy from CPU */
 	glGenBuffers(1, &VAO_quad->id_index);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VAO_quad->id_index);
@@ -186,6 +187,8 @@ void cube_surf_VBO(GLfloat fSize, struct VAO_ids *VAO_quad, struct gl_strided_bu
 	
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	
 	/*
 	ErrorCheckValue = glGetError();
 	if (ErrorCheckValue != GL_NO_ERROR)
@@ -208,6 +211,8 @@ void cube_edge_VBO(GLfloat fSize, struct VAO_ids *VAO_quad, struct gl_strided_bu
 	
 	GLenum ErrorCheckValue = glGetError();
 	
+	glDeleteBuffers(1, &VAO_quad->id_vertex);
+	
 	glGenBuffers(1, &VAO_quad->id_vertex);
 	glBindBuffer(GL_ARRAY_BUFFER, VAO_quad->id_vertex);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * gl_buf->num_nod_buf*gl_buf->ncomp_buf,
@@ -223,6 +228,8 @@ void cube_edge_VBO(GLfloat fSize, struct VAO_ids *VAO_quad, struct gl_strided_bu
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(2);
 	glEnableVertexAttribArray(3);
+	
+	glDeleteBuffers(1, &VAO_quad->id_index);
 	
 	/* Create index buffer on GPU, and then copy from CPU */
 	glGenBuffers(1, &VAO_quad->id_index);
@@ -257,6 +264,8 @@ void cube_flat_VBO(GLfloat fSize, struct VAO_ids *VAO_quad, struct gl_strided_bu
 	glGenVertexArrays(1, &VAO_quad->id_VAO);
 	glBindVertexArray(VAO_quad->id_VAO);
 	
+	glDeleteBuffers(1, &VAO_quad->id_vertex);
+
 	glGenBuffers(1, &VAO_quad->id_vertex);
 	glBindBuffer(GL_ARRAY_BUFFER, VAO_quad->id_vertex);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * gl_buf->num_nod_buf*gl_buf->ncomp_buf,
@@ -322,6 +331,8 @@ void set_quadVBO(struct VAO_ids *VAO_quad, struct gl_strided_buffer *gl_buf)
 	
 	GLenum ErrorCheckValue = glGetError();
 	
+	glDeleteBuffers(1, &VAO_quad->id_vertex);
+
 	glGenBuffers(1, &VAO_quad->id_vertex);
 	glBindBuffer(GL_ARRAY_BUFFER, VAO_quad->id_vertex);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * gl_buf->num_nod_buf*gl_buf->ncomp_buf,
@@ -335,6 +346,7 @@ void set_quadVBO(struct VAO_ids *VAO_quad, struct gl_strided_buffer *gl_buf)
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
 	
+	glDeleteBuffers(1, &VAO_quad->id_index);
 	/* Create index buffer on GPU, and then copy from CPU */
 	glGenBuffers(1, &VAO_quad->id_index);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VAO_quad->id_index);

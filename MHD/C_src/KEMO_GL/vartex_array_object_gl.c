@@ -114,6 +114,8 @@ void select_stride_VBO(int inum, struct gl_strided_buffer *strided_buf){
 }
 
 void Const_VAO_4_Simple(struct VAO_ids *VAO, struct gl_strided_buffer *strided_buf){
+	glDeleteBuffers(1, &VAO->id_vertex);
+	
 	glGenBuffers(1, &VAO->id_vertex);
 	glBindBuffer(GL_ARRAY_BUFFER, VAO->id_vertex);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * strided_buf->num_nod_buf*strided_buf->ncomp_buf,
@@ -129,6 +131,8 @@ void Const_VAO_4_Simple(struct VAO_ids *VAO, struct gl_strided_buffer *strided_b
 };
 
 void Const_VAO_4_Texture(struct VAO_ids *VAO, struct gl_strided_buffer *strided_buf){
+	glDeleteBuffers(1, &VAO->id_vertex);
+	
 	glGenBuffers(1, &VAO->id_vertex);
 	glBindBuffer(GL_ARRAY_BUFFER, VAO->id_vertex);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * strided_buf->num_nod_buf*strided_buf->ncomp_buf,
@@ -144,6 +148,8 @@ void Const_VAO_4_Texture(struct VAO_ids *VAO, struct gl_strided_buffer *strided_
 };
 
 void Const_VAO_4_Phong(struct VAO_ids *VAO, struct gl_strided_buffer *strided_buf){
+	glDeleteBuffers(1, &VAO->id_vertex);
+
 	glGenBuffers(1, &VAO->id_vertex);
 	glBindBuffer(GL_ARRAY_BUFFER, VAO->id_vertex);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * strided_buf->num_nod_buf*strided_buf->ncomp_buf,

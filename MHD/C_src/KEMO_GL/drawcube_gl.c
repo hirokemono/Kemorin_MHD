@@ -45,6 +45,7 @@ void set_initial_cube_VAO(struct view_element *view_s, struct VAO_ids *cube_VAO)
 	cube_VAO->npoint_draw = 36;
 	cube_surf_VBO(0.5f, cube_VAO, cube_buf);
 	glBindVertexArray(0);
+	
 	free(cube_buf->v_buf);
 	free(cube_buf);
 	return;
