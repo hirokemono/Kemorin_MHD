@@ -356,27 +356,10 @@ void delete_opacity_list_items_cb(GtkButton *button, gpointer user_data){
 static void set_color_mode_cb(GtkComboBox *combobox_cmap, gpointer user_data)
 {
     struct colormap_view *color_vws = (struct colormap_view *) user_data;
-    GtkTreeModel *model_cmap = gtk_combo_box_get_model(combobox_cmap);
-    GtkTreeIter iter;
     cairo_t *cr;
     
-    gchar *row_string;
-    int index_field;
-    int index_mode;
-    
-    gint idx = gtk_combo_box_get_active(combobox_cmap);
-    if(idx < 0) return;
-    
-    GtkTreePath *path = gtk_tree_path_new_from_indices(idx, -1);
-    
-    gtk_tree_model_get_iter(model_cmap, &iter, path);  
-    gtk_tree_model_get(model_cmap, &iter, COLUMN_FIELD_INDEX, &index_field, -1);
-    gtk_tree_model_get(model_cmap, &iter, COLUMN_FIELD_NAME, &row_string, -1);
-    gtk_tree_model_get(model_cmap, &iter, COLUMN_FIELD_MATH, &index_mode, -1);
-    
-    /*printf("Selected mode %d, %s\n", index_mode, row_string); */
-    sprintf(color_vws->colormap_mode_gtk->c_tbl, "%s", row_string);
-    
+    int index_mode = gtk_selected_combobox_index(combobox_cmap);
+	
 	copy_colormap_from_ctl(color_vws->colormap_mode_gtk, color_vws->cmap_vws->r2_clist_gtk,
 				color_vws->cmap_param);
     draw_colormap(color_vws->cmap_param, cr, gtk_widget_get_window(color_vws->scrolled_window));

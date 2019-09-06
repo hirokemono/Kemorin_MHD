@@ -30,7 +30,7 @@
 
 /*  prototypes */
 
-void add_gtk_main_menu(struct kemoviewer_type *kemoviewer_data,
+void make_gtk_main_menu_box(struct kemoviewer_type *kemoviewer_data,
 					   GtkWidget *window_main, GtkWidget *box);
 	
 #endif

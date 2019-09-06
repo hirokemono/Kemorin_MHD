@@ -7,6 +7,7 @@
 #include <math.h>
 #include <stdio.h>
 #include <GLFW/glfw3.h>
+#include <gtk/gtk.h>
 
 #include "kemoviewer.h"
 
@@ -15,6 +16,14 @@
 #define ROTATE  3
 #define SCALE   4
 #define WALKTO  5
+
+struct window_pointers{
+	GLFWwindow *glfw_window;
+	
+	GtkWidget *window_main;
+	
+	int iflag_menu_update;
+};
 
 /* prototypes */
 

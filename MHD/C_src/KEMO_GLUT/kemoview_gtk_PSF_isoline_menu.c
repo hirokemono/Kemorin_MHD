@@ -20,25 +20,8 @@ static void psf_zero_switch_CB(GObject *switch_1, GParamSpec *pspec, gpointer da
 
 static void psf_surf_colormode_CB(GtkComboBox *combobox_gdcolor, gpointer user_data)
 {
-    GtkTreeModel *model_cmap = gtk_combo_box_get_model(combobox_gdcolor);
-    GtkTreeIter iter;
-    cairo_t *cr;
-    
-    gchar *row_string;
-    int index_field;
-    int index_mode;
-    
-    gint idx = gtk_combo_box_get_active(combobox_gdcolor);
-    if(idx < 0) return;
-    
-    GtkTreePath *path = gtk_tree_path_new_from_indices(idx, -1);
-    
-    gtk_tree_model_get_iter(model_cmap, &iter, path);  
-    gtk_tree_model_get(model_cmap, &iter, COLUMN_FIELD_INDEX, &index_field, -1);
-    gtk_tree_model_get(model_cmap, &iter, COLUMN_FIELD_NAME, &row_string, -1);
-    gtk_tree_model_get(model_cmap, &iter, COLUMN_FIELD_MATH, &index_mode, -1);
-    
-    printf("Selected mode %d, %s\n", index_mode, row_string);
+    int index_mode = gtk_selected_combobox_index(combobox_gdcolor);
+	
 	if (index_mode == RAINBOW_PSF_LINE)    {kemoview_set_PSF_isoline_color_mode(WHITE_LINE);}
 	else if (index_mode == WHITE_PSF_LINE) {kemoview_set_PSF_isoline_color_mode(WHITE_LINE);}
     else if (index_mode == BLACK_PSF_LINE) {kemoview_set_PSF_isoline_color_mode(RAINBOW_LINE);}

@@ -15,11 +15,16 @@
 
 #include <gtk/gtk.h>
 
+#include "tree_views_4_fixed_lists_GTK.h"
+
 /*  prototypes */
 
 void wrap_into_frame_gtk(const char *title, 
 			GtkWidget *box_in, GtkWidget *box_out);
 void wrap_into_expanded_frame_gtk(const char *title, 
 			GtkWidget *box_in, GtkWidget *box_out);
+
+int gtk_selected_combobox_index(GtkComboBox *combobox);
+
 
 #endif

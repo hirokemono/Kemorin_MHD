@@ -11,52 +11,15 @@
 
 static void fline_field_select_CB(GtkComboBox *combobox_field, gpointer user_data)
 {
-    GtkTreeModel *model_cmap = gtk_combo_box_get_model(combobox_field);
-    GtkTreeIter iter;
-    cairo_t *cr;
-    
-    gchar *row_string;
-    int index_field;
-    int index_mode;
-    
-    gint idx = gtk_combo_box_get_active(combobox_field);
-    if(idx < 0) return;
-    
-    GtkTreePath *path = gtk_tree_path_new_from_indices(idx, -1);
-    
-    gtk_tree_model_get_iter(model_cmap, &iter, path);  
-    gtk_tree_model_get(model_cmap, &iter, COLUMN_FIELD_INDEX, &index_field, -1);
-    gtk_tree_model_get(model_cmap, &iter, COLUMN_FIELD_NAME, &row_string, -1);
-    gtk_tree_model_get(model_cmap, &iter, COLUMN_FIELD_MATH, &index_mode, -1);
-    
-    printf("Selected mode %d, %s\n", index_mode, row_string);
-	kemoview_set_fline_color_field(index_mode);
+    int index_mode = gtk_selected_combobox_index(combobox_field);
 	
-//	draw_mesh_w_menu();
+	kemoview_set_fline_color_field(index_mode);
 	return;
 };
 
 static void fline_component_select_CB(GtkComboBox *combobox_comp, gpointer user_data)
 {
-    GtkTreeModel *model_cmap = gtk_combo_box_get_model(combobox_comp);
-    GtkTreeIter iter;
-    cairo_t *cr;
-    
-    gchar *row_string;
-    int index_field;
-    int index_mode;
-    
-    gint idx = gtk_combo_box_get_active(combobox_comp);
-    if(idx < 0) return;
-    
-    GtkTreePath *path = gtk_tree_path_new_from_indices(idx, -1);
-    
-    gtk_tree_model_get_iter(model_cmap, &iter, path);  
-    gtk_tree_model_get(model_cmap, &iter, COLUMN_FIELD_INDEX, &index_field, -1);
-    gtk_tree_model_get(model_cmap, &iter, COLUMN_FIELD_NAME, &row_string, -1);
-    gtk_tree_model_get(model_cmap, &iter, COLUMN_FIELD_MATH, &index_mode, -1);
-    
-    printf("Selected mode %d, %s\n", index_mode, row_string);
+    int index_mode = gtk_selected_combobox_index(combobox_comp);
 	kemoview_set_fline_color_component(index_mode);
 	
 //	draw_mesh_w_menu();

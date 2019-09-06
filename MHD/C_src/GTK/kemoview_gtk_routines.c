@@ -51,3 +51,26 @@ void wrap_into_expanded_frame_gtk(const char *title,
 	gtk_box_pack_start(GTK_BOX(box_out), expander, TRUE, FALSE, 0);
 	return;
 }
+
+int gtk_selected_combobox_index(GtkComboBox *combobox){
+    GtkTreeModel *model_cmap = gtk_combo_box_get_model(combobox);
+    GtkTreeIter iter;
+    
+    gchar *row_string;
+    int index_field;
+    int index_mode;
+    
+    gint idx = gtk_combo_box_get_active(combobox);
+    if(idx < 0) return -1;
+    
+    GtkTreePath *path = gtk_tree_path_new_from_indices(idx, -1);
+    
+    gtk_tree_model_get_iter(model_cmap, &iter, path);  
+    gtk_tree_model_get(model_cmap, &iter, COLUMN_FIELD_INDEX, &index_field, -1);
+    gtk_tree_model_get(model_cmap, &iter, COLUMN_FIELD_NAME, &row_string, -1);
+    gtk_tree_model_get(model_cmap, &iter, COLUMN_FIELD_MATH, &index_mode, -1);
+    
+	printf("Selected mode %d, %s\n", index_mode, row_string);
+	return index_mode;
+};
+

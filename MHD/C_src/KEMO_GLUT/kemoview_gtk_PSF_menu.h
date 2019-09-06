@@ -17,10 +17,11 @@
 
 #include "kemoviewer.h"
 #include "m_kemoviewer_data.h"
+#include "m_kemoview_psf_menu.h"
+#include "tree_views_4_fixed_lists_GTK.h"
 #include "tree_view_4_pvr_colormap.h"
 #include "tree_view_4_light_position.h"
 #include "kemoview_fileselector_gtk.h"
-#include "kemoview_gtk_psf_selectors.h"
 #include "kemoview_gtk_PSF_surface_menu.h"
 #include "kemoview_gtk_PSF_isoline_menu.h"
 #include "kemoview_gtk_PSF_vector_menu.h"
@@ -29,6 +30,19 @@
 
 /*  prototypes */
 
-void gtk_psf_colormap_menu(struct kemoviewer_type *kemoviewer_data);
+void add_current_psf_set_box(struct kemoviewer_type *kemoviewer_data, struct colormap_view *color_vws,
+			GtkWidget *window_cmap, GtkWidget *box);
+void add_psf_draw_field_box(struct kemoviewer_type *kemoviewer_data, struct colormap_view *color_vws, 
+			GtkWidget *window_cmap, GtkWidget *box);
+void add_psf_draw_component_box(struct kemoviewer_type *kemoviewer_data, struct colormap_view *color_vws,
+			GtkWidget *window_cmap, GtkWidget *box);
+
+void add_gtk_psf_colormap_menu(struct colormap_view *color_vws,
+			GtkWidget *window, GtkWidget *box);
+
+void make_psf_menu_box(struct kemoviewer_type *kemoviewer_data, struct colormap_view *color_vws,
+			GtkWidget *window);
+void gtk_psf_menu_box(struct kemoviewer_type *kemoviewer_data, struct colormap_view *color_vws,
+						   GtkWidget *window, GtkWidget *box_out);
 
 #endif

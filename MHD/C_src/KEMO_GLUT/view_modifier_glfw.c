@@ -24,7 +24,7 @@ void mouseButtonCB(GLFWwindow *window, int button, int action, int mods) {
 	double xpos;
 	double ypos;
 	glfwGetCursorPos(window, &xpos, &ypos);
-	printf("mouseButtonCB %d %d %d %lf, %lf\n", button, action, mods, xpos, ypos);
+/*	printf("mouseButtonCB %d %d %d %lf, %lf\n", button, action, mods, xpos, ypos);*/
 
 	if(button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
 		moving_left = 1;

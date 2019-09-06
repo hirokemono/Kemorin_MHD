@@ -78,6 +78,7 @@ void glfwWindowclose_CB(GLFWwindow *window) {
 
 void kemoview_main_window(struct kemoviewer_type *kemoviewer_data){
 	GtkWidget *vbox;
+	GtkWidget *vbox_menu;
 	
 	GtkWidget *quitButton;
 	
@@ -95,7 +96,9 @@ void kemoview_main_window(struct kemoviewer_type *kemoviewer_data){
 	
 	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), quitButton, FALSE, FALSE, 0);
-	add_gtk_main_menu(kemoviewer_data, window_main, vbox);
+	vbox_menu = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+	make_gtk_main_menu_box(kemoviewer_data, window_main, vbox_menu);
+	gtk_box_pack_start(GTK_BOX(vbox), vbox_menu, FALSE, FALSE, 0);
 
 	gtk_widget_show(quitButton);
 	gtk_widget_show(vbox);

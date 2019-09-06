@@ -21,6 +21,6 @@
 
 /*  prototypes */
 
-void add_gtk_psf_vector_menu(struct colormap_view *color_vws, GtkWidget *box);
+void make_gtk_psf_vector_menu(struct colormap_view *color_vws);
 
 #endif

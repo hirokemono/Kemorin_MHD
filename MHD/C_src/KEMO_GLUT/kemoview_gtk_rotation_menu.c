@@ -20,53 +20,15 @@ int id_fmt_rot = 0;
 
 static void set_rotation_direction_CB(GtkComboBox *combobox_rotdir, gpointer user_data)
 {
-    GtkTreeModel *model_cmap = gtk_combo_box_get_model(combobox_rotdir);
-    GtkTreeIter iter;
-    cairo_t *cr;
-    
-    gchar *row_string;
-    int index_field;
-    int index_mode;
-    
-    gint idx = gtk_combo_box_get_active(combobox_rotdir);
-    if(idx < 0) return;
-    
-    GtkTreePath *path = gtk_tree_path_new_from_indices(idx, -1);
-    
-    gtk_tree_model_get_iter(model_cmap, &iter, path);  
-    gtk_tree_model_get(model_cmap, &iter, COLUMN_FIELD_INDEX, &index_field, -1);
-    gtk_tree_model_get(model_cmap, &iter, COLUMN_FIELD_NAME, &row_string, -1);
-    gtk_tree_model_get(model_cmap, &iter, COLUMN_FIELD_MATH, &index_mode, -1);
-    
-    printf("Selected mode %d, %s\n", index_mode, row_string);
-	iaxis_rot = index_mode;
-	
+    iaxis_rot = gtk_selected_combobox_index(combobox_rotdir);
+   	
 //	draw_mesh_w_menu();
 	return;
 };
 
 static void set_rotation_fileformat_CB(GtkComboBox *combobox_filefmt, gpointer user_data)
 {
-    GtkTreeModel *model_cmap = gtk_combo_box_get_model(combobox_filefmt);
-    GtkTreeIter iter;
-    cairo_t *cr;
-    
-    gchar *row_string;
-    int index_field;
-    int index_mode;
-    
-    gint idx = gtk_combo_box_get_active(combobox_filefmt);
-    if(idx < 0) return;
-    
-    GtkTreePath *path = gtk_tree_path_new_from_indices(idx, -1);
-    
-    gtk_tree_model_get_iter(model_cmap, &iter, path);  
-    gtk_tree_model_get(model_cmap, &iter, COLUMN_FIELD_INDEX, &index_field, -1);
-    gtk_tree_model_get(model_cmap, &iter, COLUMN_FIELD_NAME, &row_string, -1);
-    gtk_tree_model_get(model_cmap, &iter, COLUMN_FIELD_MATH, &index_mode, -1);
-    
-    printf("Selected mode %d, %s\n", index_mode, row_string);
-	id_fmt_rot = index_mode;
+    id_fmt_rot = gtk_selected_combobox_index(combobox_filefmt);
 	
 //	draw_mesh_w_menu();
 	return;

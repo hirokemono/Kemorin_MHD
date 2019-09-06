@@ -71,6 +71,7 @@ module:
 	kemoview_gtk_routines.o: \
 	'$$(KEMO_GTK_DIR)'/kemoview_gtk_routines.c \
 	kemoview_gtk_routines.h \
+	tree_views_4_fixed_lists_GTK.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(GTK3_CFLAGS) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)

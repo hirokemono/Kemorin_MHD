@@ -16,50 +16,16 @@ static void psf_vector_switch_CB(GObject *switch_1, GParamSpec *pspec, gpointer 
 
 static void set_vector_mode_cb(GtkComboBox *combobox_cmap, gpointer user_data)
 {
-    GtkTreeModel *model_cmap = gtk_combo_box_get_model(combobox_cmap);
-    GtkTreeIter iter;
-    cairo_t *cr;
+    int index_mode = gtk_selected_combobox_index(combobox_cmap);
     
-    gchar *row_string;
-    int index_field;
-    int index_mode;
-    
-    gint idx = gtk_combo_box_get_active(combobox_cmap);
-    if(idx < 0) return;
-    
-    GtkTreePath *path = gtk_tree_path_new_from_indices(idx, -1);
-    
-    gtk_tree_model_get_iter(model_cmap, &iter, path);  
-    gtk_tree_model_get(model_cmap, &iter, COLUMN_FIELD_INDEX, &index_field, -1);
-    gtk_tree_model_get(model_cmap, &iter, COLUMN_FIELD_NAME, &row_string, -1);
-    gtk_tree_model_get(model_cmap, &iter, COLUMN_FIELD_MATH, &index_mode, -1);
-    
-    printf("Selected mode %d, %s\n", index_mode, row_string);
 	kemoview_set_PSF_tangential_vec_mode(index_mode);
     return;
 }
 
 static void set_vector_color_cb(GtkComboBox *combobox_cmap, gpointer user_data)
 {
-    GtkTreeModel *model_cmap = gtk_combo_box_get_model(combobox_cmap);
-    GtkTreeIter iter;
-    cairo_t *cr;
+    int index_mode = gtk_selected_combobox_index(combobox_cmap);
     
-    gchar *row_string;
-    int index_field;
-    int index_mode;
-    
-    gint idx = gtk_combo_box_get_active(combobox_cmap);
-    if(idx < 0) return;
-    
-    GtkTreePath *path = gtk_tree_path_new_from_indices(idx, -1);
-    
-    gtk_tree_model_get_iter(model_cmap, &iter, path);  
-    gtk_tree_model_get(model_cmap, &iter, COLUMN_FIELD_INDEX, &index_field, -1);
-    gtk_tree_model_get(model_cmap, &iter, COLUMN_FIELD_NAME, &row_string, -1);
-    gtk_tree_model_get(model_cmap, &iter, COLUMN_FIELD_MATH, &index_mode, -1);
-    
-    printf("Selected mode %d, %s\n", index_mode, row_string);
 	kemoview_select_PSF_draw_switch(index_mode);
     return;
 }
@@ -89,7 +55,7 @@ static void set_vector_width_CB(GtkWidget *entry, gpointer user_data)
 }
 
 
-void add_gtk_psf_vector_menu(struct colormap_view *color_vws, GtkWidget *box){
+void make_gtk_psf_vector_menu(struct colormap_view *color_vws){
 	GtkWidget *hbox_draw;
 	GtkWidget *hbox_vecmode, *hbox_veccolor;
 	GtkWidget *hbox_12, *hbox_13;
@@ -246,23 +212,6 @@ void add_gtk_psf_vector_menu(struct colormap_view *color_vws, GtkWidget *box){
 	gtk_box_pack_start(GTK_BOX(vbox_vec), hbox_33, TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox_vec), hbox_32, TRUE, TRUE, 0);
 	
-	Frame_vec = gtk_frame_new("");
-	gtk_frame_set_shadow_type(GTK_FRAME(Frame_vec), GTK_SHADOW_IN);
-	gtk_container_add(GTK_CONTAINER(Frame_vec), vbox_vec);
-	
-	hbox_vec = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
-	gtk_box_pack_start(GTK_BOX(hbox_vec), gtk_label_new("  "), FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox_vec), Frame_vec, TRUE, TRUE, 0);
-	
-	scroll_vec = gtk_scrolled_window_new(NULL, NULL);
-	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scroll_vec),
-				GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-	gtk_widget_set_size_request(scroll_vec, 400, 300);
-	gtk_container_add(GTK_CONTAINER(scroll_vec), hbox_vec);
-	
-	expander_vec = gtk_expander_new_with_mnemonic("Vector");
-	gtk_container_add(GTK_CONTAINER(expander_vec), scroll_vec);
-	
-	gtk_box_pack_start(GTK_BOX(box), expander_vec, TRUE, FALSE, 0);
+	wrap_into_expanded_frame_gtk("Vector", vbox_vec, color_vws->psfVectorBox);
 	return;
 }
