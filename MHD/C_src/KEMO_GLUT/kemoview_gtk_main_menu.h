@@ -28,7 +28,21 @@
 
 #include "view_modifier_glfw.h"
 
+struct main_buttons{
+	GtkWidget *prefButton;
+	GtkWidget *flineButton;
+	GtkWidget *meshButton;
+	
+	GtkWidget *psfBox;
+	GtkWidget *rotationBox;
+	GtkWidget *evolutionBox;
+};
+
+
 /*  prototypes */
+
+void gtk_psf_menu_box(struct kemoviewer_type *kemoviewer_data, struct colormap_view *color_vws,
+			struct main_buttons *mbot, GtkWidget *window, GtkWidget *box_out);
 
 void make_gtk_main_menu_box(struct kemoviewer_type *kemoviewer_data,
 					   GtkWidget *window_main, GtkWidget *box);

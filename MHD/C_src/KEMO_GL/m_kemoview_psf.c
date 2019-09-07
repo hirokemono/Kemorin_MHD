@@ -59,7 +59,7 @@ void init_draw_psf(struct kemoview_psf *kemo_psf, struct psf_data *ucd_tmp,
 };
 
 void close_PSF_view(struct kemoview_psf *kemo_psf, 
-			struct psf_data *psf_current_data, struct psf_menu_val*psf_current_menu){
+			struct psf_data *psf_current_data, struct psf_menu_val  *psf_current_menu){
 	dealloc_draw_psf_flags(kemo_psf->psf_d[kemo_psf->psf_a->id_current],
                            kemo_psf->psf_m[kemo_psf->psf_a->id_current]);
 	deallc_all_psf_data(kemo_psf->psf_d[kemo_psf->psf_a->id_current]);

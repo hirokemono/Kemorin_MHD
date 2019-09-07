@@ -9,26 +9,6 @@
 
 #include "kemoview_gtk_PSF_menu.h"
 
-GtkWidget *window_cmap;
-
-static void close_psf_CB(GtkButton *button, gpointer user_data){
-	int nload_psf;
-	GtkWidget *window = (GtkWidget *) user_data;
-	set_viewtype_mode_glfw(VIEW_3D);
-	nload_psf = kemoview_close_PSF_view();
-	
-	gtk_widget_queue_draw(window);
-	draw_mesh_glfw();
-};
-
-static void close_window_CB(GtkButton *button, gpointer user_data){
-    GtkWidget *window = (GtkWidget *) user_data;
-    gtk_widget_destroy(window);
-	
-	gtk_widget_queue_draw(window);
-	draw_mesh_glfw();
-};
-
 static void current_psf_select_CB(GtkComboBox *combobox_sfcolor, gpointer user_data)
 {
 	GtkWidget *window = (GtkWidget *) user_data;
@@ -50,11 +30,7 @@ static void psf_field_select_CB(GtkComboBox *combobox_field, gpointer user_data)
     int index_mode = gtk_selected_combobox_index(combobox_field);
     
 	kemoview_set_PSF_field(index_mode);
-	
-	gtk_widget_destroy(color_vws->psfBox);
-	color_vws->psfBox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
-	make_psf_menu_box(kemoviewer_data, color_vws, window);
-	
+		
 	gtk_widget_queue_draw(window);
 	draw_mesh_glfw();
 	return;
@@ -336,7 +312,6 @@ void make_psf_menu_box(struct kemoviewer_type *kemoviewer_data, struct colormap_
 	color_vws->psfVectorBox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	if(ncomp == 3) make_gtk_psf_vector_menu(color_vws);
 	gtk_box_pack_start(GTK_BOX(color_vws->psfBox), color_vws->psfVectorBox, FALSE, TRUE, 0);
-	dealloc_colormap_views_4_viewer(color_vws);
 	
 	gtk_widget_show_all(color_vws->psfBox);
 	if(ncomp == 3){
@@ -347,44 +322,3 @@ void make_psf_menu_box(struct kemoviewer_type *kemoviewer_data, struct colormap_
 	return;
 }
 
-void gtk_psf_menu_box(struct kemoviewer_type *kemoviewer_data, struct colormap_view *color_vws,
-			GtkWidget *window, GtkWidget *box_out){
-	
-	color_vws->psfBox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
-	make_psf_menu_box(kemoviewer_data, color_vws, window);
-	wrap_into_frame_gtk("Surfaces", color_vws->psfBox, box_out);
-	gtk_widget_show(box_out);
-	return;
-}
-
-
-void gtk_psf_menu_window(struct kemoviewer_type *kemoviewer_data){
-	struct colormap_view *color_vws = (struct colormap_view *) malloc(sizeof(struct colormap_view));
-	GtkWidget *box;
-	GtkWidget *closeButton, *updateButton;
-	
-	window_cmap = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-	gtk_window_set_title(GTK_WINDOW(window_cmap), "PSF data");
-	
-	g_signal_connect(window_cmap, "destroy", G_CALLBACK(gtk_main_quit), NULL);
-	gtk_container_set_border_width(GTK_CONTAINER(window_cmap), 5);
-	
-	closeButton = gtk_button_new_with_label("Close Current PSF");
-	g_signal_connect(G_OBJECT(closeButton), "clicked", 
-				G_CALLBACK(close_psf_CB), window_cmap);
-	
-	updateButton = gtk_button_new_with_label("Update");
-	g_signal_connect(G_OBJECT(updateButton), "clicked", 
-				G_CALLBACK(close_window_CB), window_cmap);
-	
-	box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
-	gtk_psf_menu_box(kemoviewer_data, color_vws, window_cmap, box);
-	
-	gtk_box_pack_start(GTK_BOX(box), closeButton, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(box), updateButton, FALSE, FALSE, 0);
-	
-	gtk_widget_show_all(window_cmap);
-	gtk_main();
-	free(color_vws);
-	return;
-}

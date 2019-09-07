@@ -69,15 +69,15 @@ void load_color_opacity_map_from_list(struct psf_menu_val *psf_current_menu,
 	realloc_color_index_list_s(psf_current_menu->cmap_psf, num);
 	for(i=0;i<num;i++){
 		copy_from_real2_clist(color_vws->cmap_vws->r2_clist_gtk, 
-			i, &value, &opacity);
-		set_each_PSF_color_point(psf_current_menu->cmap_psf, i, value, color);
+			i, &value, &color);
+		kemoview_set_PSF_color_data(i, value, color);
 	}
 	num = count_real2_clist(color_vws->opacity_vws->r2_clist_gtk);
 	realloc_opacity_index_list_s(psf_current_menu->cmap_psf, num);
 	for(i=0;i<num;i++){
 		copy_from_real2_clist(color_vws->opacity_vws->r2_clist_gtk, 
 			i, &value, &opacity);
-		set_each_PSF_opacity_point(psf_current_menu->cmap_psf, i, value, opacity);
+		set_each_PSF_opacity_point(psf_current_menu, i, value, opacity);
 	}
 	
 	return;
@@ -102,7 +102,7 @@ static void draw_colormap(struct colormap_params *cmap_param, cairo_t *cr, GdkWi
     int *i_point;
 	double *d_point;
 	double c_point, o_point;
-    struct real2_ctl_list *head_ctl, *head_cmap;
+    struct real2_ctl_list *head_ctl;
     double d_bottom = 0.0;
     double d_top = 0.0;
     double d_current = 0.0;
@@ -438,10 +438,11 @@ void add_opacity_list_box(struct colormap_view *color_vws, GtkWidget *vbox){
 void add_colormp_list_box(struct colormap_view *color_vws, GtkWidget *vbox){
 	GtkWidget *Frame_1;
     GtkWidget *vbox_1, *hbox_1;
-	GtkWidget *combobox_cmap;
 	
+	GtkWidget *combobox_cmap;
 	GtkWidget *label_tree;
-    GtkTreeModel *model;
+	GtkCellRenderer *renderer;
+	GtkTreeModel *model;
     GtkTreeModel *child_model;
     int index = 0;
 	int iflag;
@@ -458,7 +459,7 @@ void add_colormp_list_box(struct colormap_view *color_vws, GtkWidget *vbox){
 	index = append_ci_item_to_tree(index, &color_labels[SYM_GRAY_MODE][0], SYM_GRAY_MODE, child_model);
 	
 	combobox_cmap = gtk_combo_box_new_with_model(child_model);
-	child_model = gtk_cell_renderer_text_new();
+	renderer = gtk_cell_renderer_text_new();
 	iflag = color_vws->cmap_param->id_color_mode;
 	if(iflag == SYM_GRAY_MODE){
 		gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_cmap), 3);
@@ -469,8 +470,8 @@ void add_colormp_list_box(struct colormap_view *color_vws, GtkWidget *vbox){
 	} else {
 		gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_cmap), 0);
 	};
-	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(combobox_cmap), child_model, TRUE);
-	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combobox_cmap), child_model,
+	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(combobox_cmap), renderer, TRUE);
+	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combobox_cmap), renderer,
 				"text", COLUMN_FIELD_NAME, NULL);
     g_signal_connect(G_OBJECT(combobox_cmap), "changed", 
                      G_CALLBACK(set_color_mode_cb), (gpointer) color_vws);
