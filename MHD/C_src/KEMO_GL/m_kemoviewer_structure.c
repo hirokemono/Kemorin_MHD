@@ -159,7 +159,6 @@ int kemoview_open_data(struct kv_string *filename){
 				kemo_sgl->psf_ucd_tmp,kemo_sgl->view_s);
     
 	if (kemo_sgl->kemo_psf->psf_a->id_current >= IZERO) {
-		kemo_sgl->psf_current_data = kemo_sgl->kemo_psf->psf_d[kemo_sgl->kemo_psf->psf_a->id_current];
 		kemo_sgl->psf_current_menu = kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current];
 	};
     
@@ -172,7 +171,7 @@ void kemoview_close_mesh_view(){
 }
 
 int kemoview_close_PSF_view(){
-	close_PSF_view(kemo_sgl->kemo_psf, kemo_sgl->psf_current_data, kemo_sgl->psf_current_menu);
+	close_PSF_view(kemo_sgl->kemo_psf, kemo_sgl->psf_current_menu);
 	return kemoview_get_PSF_num_loaded();
 }
 
@@ -708,7 +707,6 @@ void kemoview_set_loaded_PSF_flag(int id_psf, int iflag){
 };
 void kemoview_set_current_PSF(int id_psf){
 	set_current_PSF_to_menu(id_psf, kemo_sgl->kemo_psf->psf_a);
-    kemo_sgl->psf_current_data = kemo_sgl->kemo_psf->psf_d[kemo_sgl->kemo_psf->psf_a->id_current];
     kemo_sgl->psf_current_menu = kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current];
 }
 
@@ -740,17 +738,25 @@ int kemoview_get_PSF_file_prefix(struct kv_string *stripped_filehead){
 }
 
 void kemoview_set_PSF_field(int sel){
-	set_PSF_field(sel, kemo_sgl->psf_current_data, kemo_sgl->psf_current_menu);
+	set_PSF_field(sel, kemo_sgl->kemo_psf->psf_d[kemo_sgl->kemo_psf->psf_a->id_current],
+				  kemo_sgl->psf_current_menu);
 };
 void kemoview_set_PSF_component(int sel){
-	set_PSF_component(sel, kemo_sgl->psf_current_data, kemo_sgl->psf_current_menu);
+	set_PSF_component(sel, kemo_sgl->kemo_psf->psf_d[kemo_sgl->kemo_psf->psf_a->id_current],
+					  kemo_sgl->psf_current_menu);
 };
 
-int kemoview_get_PSF_num_field()         {return send_nfield_each_psf(kemo_sgl->psf_current_data);};
-int kemoview_get_PSF_ncomptot()          {return send_ncomptot_each_psf(kemo_sgl->psf_current_data);};
-int kemoview_get_PSF_num_component(int i){return send_ncomp_each_psf(kemo_sgl->psf_current_data, i);};
+int kemoview_get_PSF_num_field(){
+	return send_nfield_each_psf(kemo_sgl->kemo_psf->psf_d[kemo_sgl->kemo_psf->psf_a->id_current]);
+};
+int kemoview_get_PSF_ncomptot(){
+	return send_ncomptot_each_psf(kemo_sgl->kemo_psf->psf_d[kemo_sgl->kemo_psf->psf_a->id_current]);
+};
+int kemoview_get_PSF_num_component(int i){
+	return send_ncomp_each_psf(kemo_sgl->kemo_psf->psf_d[kemo_sgl->kemo_psf->psf_a->id_current], i);
+};
 void kemoview_get_PSF_field_name(struct kv_string *colorname, int i){
-    send_each_psf_data_name(kemo_sgl->psf_current_data, colorname, i);
+    send_each_psf_data_name(kemo_sgl->kemo_psf->psf_d[kemo_sgl->kemo_psf->psf_a->id_current], colorname, i);
 };
 
 int kemoview_get_PSF_draw_switch(){return get_PSF_draw_switch(kemo_sgl->kemo_psf->psf_a);};
@@ -759,7 +765,8 @@ int kemoview_get_PSF_field_id()    {return send_field_draw_each_psf(kemo_sgl->ps
 int kemoview_get_PSF_component_id(){return send_draw_comp_id_psf(kemo_sgl->psf_current_menu);};
 int kemoview_get_PSF_draw_data_address(){return send_draw_component_psf(kemo_sgl->psf_current_menu);};
 int kemoview_get_PSF_coordinate_id(){
-    return send_coordinate_id_psf(kemo_sgl->psf_current_data, kemo_sgl->psf_current_menu);
+    return send_coordinate_id_psf(kemo_sgl->kemo_psf->psf_d[kemo_sgl->kemo_psf->psf_a->id_current],
+								  kemo_sgl->psf_current_menu);
 };
 
 
@@ -817,8 +824,12 @@ int kemoview_select_PSF_draw_switch(int selected){
 void kemoview_set_PSF_color_mode(int isel){set_PSF_color_mode_id(kemo_sgl->psf_current_menu, isel);}
 int kemoview_get_PSF_color_mode(){return send_PSF_color_mode_id(kemo_sgl->psf_current_menu);}
 
-double kemoview_get_PSF_min_data(int i){return send_psf_data_min(kemo_sgl->psf_current_data, i);};
-double kemoview_get_PSF_max_data(int i){return send_psf_data_max(kemo_sgl->psf_current_data, i);};
+double kemoview_get_PSF_min_data(int i){
+	return send_psf_data_min(kemo_sgl->kemo_psf->psf_d[kemo_sgl->kemo_psf->psf_a->id_current], i);
+};
+double kemoview_get_PSF_max_data(int i){
+	return send_psf_data_max(kemo_sgl->kemo_psf->psf_d[kemo_sgl->kemo_psf->psf_a->id_current], i);
+};
 
 
 
@@ -841,11 +852,13 @@ void kemoview_set_PSF_linear_colormap(double minvalue, double maxvalue){
 }
 
 void kemoview_set_PSF_single_color(double *rgba){
-    set_PSF_fixed_color(kemo_sgl->psf_current_data, kemo_sgl->psf_current_menu, rgba);
+    set_PSF_fixed_color(kemo_sgl->kemo_psf->psf_d[kemo_sgl->kemo_psf->psf_a->id_current],
+						kemo_sgl->psf_current_menu, rgba);
 }
 
 void kemoview_set_PSF_constant_opacity(double opacity){
-    set_PSF_constant_opacity(kemo_sgl->psf_current_data, kemo_sgl->psf_current_menu, opacity);
+    set_PSF_constant_opacity(kemo_sgl->kemo_psf->psf_d[kemo_sgl->kemo_psf->psf_a->id_current],
+							 kemo_sgl->psf_current_menu, opacity);
 }
 
 void kemoview_get_PSF_rgb_at_value(double value, double *red, double *green, double *blue){

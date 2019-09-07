@@ -33,7 +33,6 @@ struct kemoviewer_type{
 	struct VAO_ids            *menu_VAO;
 	
 	struct psf_menu_val       *psf_current_menu;
-	struct psf_data           *psf_current_data;
 	struct psf_data           *psf_ucd_tmp;
 	
 	struct kemoviewer_type    *next;
