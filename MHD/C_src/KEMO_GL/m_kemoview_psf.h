@@ -24,7 +24,7 @@ void dealloc_kemoview_psf(struct kemoview_psf *kemo_psf);
 
 void init_draw_psf(struct kemoview_psf *kemo_psf, struct psf_data *ucd_tmp,
 			int iflag_fileformat, int istep, const char *ucd_header);
-void close_PSF_view(struct kemoview_psf *kemo_psf, struct psf_menu_val*psf_current_menu);
+void close_PSF_view(struct kemoview_psf *kemo_psf);
 
 void evolution_psf_viewer(struct psf_data *psf_ucd_tmp, struct kemoview_psf *kemo_psf);
 #endif

@@ -296,7 +296,8 @@ void add_gtk_psf_colormap_menu(struct colormap_view *color_vws,
 
 void make_psf_menu_box(struct kemoviewer_type *kemoviewer_data, struct colormap_view *color_vws,
 			GtkWidget *window){
-	init_colormap_views_4_viewer(kemoviewer_data->psf_current_menu, color_vws);
+	init_colormap_views_4_viewer(kemoviewer_data->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current],
+								 color_vws);
 	
 	int if_psf = kemoview_get_PSF_field_id();
 	int ic_psf = kemoview_get_PSF_component_id();

@@ -32,7 +32,6 @@ struct kemoviewer_type{
 	struct kemoview_VAOs      *kemo_VAOs;
 	struct VAO_ids            *menu_VAO;
 	
-	struct psf_menu_val       *psf_current_menu;
 	struct psf_data           *psf_ucd_tmp;
 	
 	struct kemoviewer_type    *next;
