@@ -157,7 +157,7 @@ int set_psf_arrows_to_buf(int ist_patch, int ncorner, struct psf_data *psf_s, st
 				
 				d_mag = sqrt(v_xyz[0]*v_xyz[0]+v_xyz[1]*v_xyz[1]+v_xyz[2]*v_xyz[2]);
 				if(psf_m->vector_patch_color == RAINBOW_SURFACE){
-					set_rainbow_color_code(psf_m->cmap_psf, d_mag, dcolor);
+					set_rainbow_color_code(psf_m->cmap_psf_comp[psf_m->icomp_draw_psf], d_mag, dcolor);
 				} else {
 					for(nd=0;nd<4;nd++){dcolor[nd] = arrow_c[nd];};
 				}

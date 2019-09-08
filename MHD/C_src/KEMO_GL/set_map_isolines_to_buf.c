@@ -115,7 +115,7 @@ static int set_map_isolines_to_buf(int ist_patch, int ist, int ied, double radiu
 		v_line = cal_isoline_value(j, psf_m);
 		
 		if (psf_m->isoline_color == RAINBOW_LINE){	
-			set_rainbow_color_code(psf_m->cmap_psf, v_line, f_color);
+			set_rainbow_color_code(psf_m->cmap_psf_comp[psf_m->icomp_draw_psf], v_line, f_color);
 		};
 		inum_patch = set_map_isoline_to_buf(inum_patch, ncorner, radius, 
 					v_line, psf_m->icomp_draw_psf, f_color, psf_s, psf_buf);

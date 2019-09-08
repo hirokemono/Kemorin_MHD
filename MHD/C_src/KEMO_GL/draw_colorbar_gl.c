@@ -56,6 +56,7 @@ void set_colorbar_VAO(int iflag_retina, GLint nx_win, GLint ny_win,
 			struct psf_menu_val **psf_m, struct kemo_array_control *psf_a, 
 			struct VAO_ids **cbar_VAO){
 	int i;
+	int icomp;
 	struct gl_strided_buffer *cbar_buf 
 		= (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
 	set_buffer_address_4_patch(16, cbar_buf);
@@ -65,16 +66,17 @@ void set_colorbar_VAO(int iflag_retina, GLint nx_win, GLint ny_win,
 	clear_colorbar_text_image(psf_a->cbar_wk);
 	for(i=0; i<psf_a->nmax_loaded; i++){
 		if(psf_a->iflag_loaded[i] != 0 && psf_m[i]->draw_psf_cbar > 0) {
+			icomp = psf_m[i]->icomp_draw_psf;
 			set_colorbar_position(iflag_retina, (int) nx_win, (int) ny_win, 
-						psf_m[i]->cmap_psf, psf_a->cbar_wk);
+						psf_m[i]->cmap_psf_comp[icomp], psf_a->cbar_wk);
 			set_colorbar_text_image(text_color, psf_a->cbar_wk);
 	
 			count_colorbar_box_VAO(psf_a->cbar_wk, cbar_VAO[0]);
 			count_colorbar_text_VAO(psf_a->cbar_wk, cbar_VAO[1]);
 			set_colorbar_box_VAO(iflag_retina, text_color, bg_color, 
-						psf_m[i]->cmap_psf, psf_a->cbar_wk, cbar_VAO[0], cbar_buf);
+						psf_m[i]->cmap_psf_comp[icomp], psf_a->cbar_wk, cbar_VAO[0], cbar_buf);
 			set_colorbar_text_VAO(iflag_retina, text_color, bg_color, 
-						psf_m[i]->cmap_psf, psf_a->cbar_wk, cbar_VAO[1], cbar_buf);
+						psf_m[i]->cmap_psf_comp[icomp], psf_a->cbar_wk, cbar_VAO[1], cbar_buf);
 		};
 	};
 	free(cbar_buf->v_buf);

@@ -9,8 +9,9 @@ static double white[4] =   {WHITE_R,WHITE_G,WHITE_B,WHITE_A};
 
 double cal_isoline_value(int j, struct psf_menu_val *psf_m){
 	double v_line, range_min, range_max;
-	range_min = psf_m->cmap_psf->color_data[0];
-	range_max = psf_m->cmap_psf->color_data[psf_m->cmap_psf->n_color_point-1];
+	int i_end = psf_m->cmap_psf_comp[psf_m->icomp_draw_psf]->n_color_point - 1;
+	range_min = psf_m->cmap_psf_comp[psf_m->icomp_draw_psf]->color_data[0];
+	range_max = psf_m->cmap_psf_comp[psf_m->icomp_draw_psf]->color_data[i_end];
 	
 	v_line = range_min + (range_max - range_min)
 			* ((double) j) / ((double) psf_m->n_isoline-1);
@@ -21,8 +22,9 @@ double cal_isoline_value(int j, struct psf_menu_val *psf_m){
 void find_start_positive_lines(struct psf_menu_val *psf_m){
     int j;
     double pre_value, current_value, range_min, range_max;
-    range_min = psf_m->cmap_psf->color_data[0];
-    range_max = psf_m->cmap_psf->color_data[psf_m->cmap_psf->n_color_point-1];
+	int i_end = psf_m->cmap_psf_comp[psf_m->icomp_draw_psf]->n_color_point - 1;
+    range_min = psf_m->cmap_psf_comp[psf_m->icomp_draw_psf]->color_data[0];
+    range_max = psf_m->cmap_psf_comp[psf_m->icomp_draw_psf]->color_data[i_end];
     
     if(range_min >= ZERO) psf_m->ist_positive_line = 0;
     else if(range_max <= ZERO){
@@ -150,7 +152,7 @@ static int set_PSF_isolines_to_buf(int ist_patch, int ist, int ied, double radiu
 		v_line = cal_isoline_value(j, psf_m);
 		
 		if (psf_m->isoline_color == RAINBOW_LINE){
-			set_rainbow_color_code(psf_m->cmap_psf, v_line, f_color);
+			set_rainbow_color_code(psf_m->cmap_psf_comp[psf_m->icomp_draw_psf], v_line, f_color);
 		};
 		inum_patch = set_isoline_to_buf(inum_patch, ncorner, radius, 
 					v_line, psf_m->icomp_draw_psf, f_color, psf_s, psf_buf);

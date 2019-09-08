@@ -20,10 +20,11 @@ void init_colormap_views_4_ctl(struct colormap_ctl_c *cmap_c,
 
 void init_colormap_views_4_viewer(struct psf_menu_val *psf_current_menu, 
 			struct colormap_view *color_vws){
+	int icomp = psf_current_menu->icomp_draw_psf;
 	color_vws->colormap_mode_gtk = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
 	alloc_chara_ctl_item_c(color_vws->colormap_mode_gtk);
 
-	color_vws->cmap_param = psf_current_menu->cmap_psf;
+	color_vws->cmap_param = psf_current_menu->cmap_psf_comp[icomp];
 	
 	color_vws->cmap_vws = (struct r2_clist_view *) malloc(sizeof(struct r2_clist_view));
 	color_vws->opacity_vws = (struct r2_clist_view *) malloc(sizeof(struct r2_clist_view));
@@ -63,17 +64,18 @@ void init_colormap_views_4_viewer(struct psf_menu_val *psf_current_menu,
 
 void load_color_opacity_map_from_list(struct psf_menu_val *psf_current_menu, 
 			struct colormap_view *color_vws){
-	int i, num;
 	double value, color, opacity;
+	int i, num;
+	int icomp = psf_current_menu->icomp_draw_psf;
 	num = count_real2_clist(color_vws->cmap_vws->r2_clist_gtk);
-	realloc_color_index_list_s(psf_current_menu->cmap_psf, num);
+	realloc_color_index_list_s(psf_current_menu->cmap_psf_comp[icomp], num);
 	for(i=0;i<num;i++){
 		copy_from_real2_clist(color_vws->cmap_vws->r2_clist_gtk, 
 			i, &value, &color);
 		kemoview_set_PSF_color_data(i, value, color);
 	}
 	num = count_real2_clist(color_vws->opacity_vws->r2_clist_gtk);
-	realloc_opacity_index_list_s(psf_current_menu->cmap_psf, num);
+	realloc_opacity_index_list_s(psf_current_menu->cmap_psf_comp[icomp], num);
 	for(i=0;i<num;i++){
 		copy_from_real2_clist(color_vws->opacity_vws->r2_clist_gtk, 
 			i, &value, &opacity);

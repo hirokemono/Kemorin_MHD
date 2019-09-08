@@ -130,7 +130,6 @@ static void close_psf_CB(GtkButton *button, gpointer user_data){
 		gtk_psf_menu_box(kemoviewer_data, color_vws, mbot, window_main, box);
 	};
 	gtk_box_pack_start(GTK_BOX(box), mbot->psfBox, FALSE, FALSE, 0);
-	return;
 	
 	mbot->rotationBox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	add_rotation_menu_box(kemoviewer_data, window_main, mbot->rotationBox);

@@ -107,7 +107,7 @@ void alloc_draw_psf_flags(struct psf_data *psf_s, struct psf_menu_val *psf_m){
 		set_color_mode_by_id(psf_m->cmap_psf_fld[i], RAINBOW_MODE);
 	}
 	
-	psf_m->cmap_psf = psf_m->cmap_psf_comp[0];
+	psf_m->icomp_draw_psf = 0;
 	return;
 }
 
@@ -213,7 +213,6 @@ void set_PSF_field(int selected, struct psf_data *psf_s, struct psf_menu_val *ps
 	psf_m->ic_draw_psf = IZERO;
 	if(psf_s->ncomp[selected] != 3) psf_m->draw_psf_vect = IZERO;
 	psf_m->icomp_draw_psf = psf_s->istack_comp[psf_m->if_draw_psf];
-    psf_m->cmap_psf = psf_m->cmap_psf_comp[psf_m->icomp_draw_psf];
 	printf("selected 1st component of %s, %d \n", 
 			psf_s->data_name[psf_m->if_draw_psf], psf_m->if_draw_psf);
 	return;
@@ -222,7 +221,6 @@ void set_PSF_field(int selected, struct psf_data *psf_s, struct psf_menu_val *ps
 void set_PSF_component(int selected, struct psf_data *psf_s, struct psf_menu_val *psf_m){
 	psf_m->ic_draw_psf = selected;
 	psf_m->icomp_draw_psf = psf_s->istack_comp[psf_m->if_draw_psf] + psf_m->ic_draw_psf;
-    psf_m->cmap_psf = psf_m->cmap_psf_comp[psf_m->icomp_draw_psf];
 	printf("component %d  of %s, %d \n", (psf_m->ic_draw_psf+1),
 			psf_s->data_name[psf_m->if_draw_psf], psf_m->icomp_draw_psf);
 	return;
