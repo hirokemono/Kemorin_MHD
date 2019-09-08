@@ -30,8 +30,6 @@
 
 /*  prototypes */
 
-void add_psf_draw_field_box(struct kemoviewer_type *kemoviewer_data, struct colormap_view *color_vws, 
-			GtkWidget *window_cmap, GtkWidget *box);
 void add_psf_draw_component_box(struct kemoviewer_type *kemoviewer_data, struct colormap_view *color_vws,
 			GtkWidget *window_cmap, GtkWidget *box);
 
