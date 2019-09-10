@@ -11,12 +11,6 @@
 
 int id_fmt = 0;
 
-static void kemoview_fline_menu_CB(GtkButton *button, gpointer user_data){
-	struct kemoviewer_type *kemoviewer_data = (struct kemoviewer_type *) user_data;
-	gtk_fieldline_menu();
-	return;
-};
-
 static void kemoview_mesh_menu_CB(GtkButton *button, gpointer user_data){
 	struct kemoviewer_type *kemoviewer_data = (struct kemoviewer_type *) user_data;
 	gtk_mesh_menu(kemoviewer_data);
@@ -37,14 +31,11 @@ static void delete_kemoview_menu(struct main_buttons *mbot){
 };
 
 static void update_kemoview_menu(struct kemoviewer_type *kemoviewer_data, 
-			struct main_buttons *mbot, GtkWidget *window, GtkWidget *box){
+			struct main_buttons *mbot, GtkWidget *window){
 	int iflag_draw_m = kemoview_get_draw_mesh_flag();
 	int iflag_draw_f = kemoview_get_fline_switch();
 	int nload_psf = kemoview_get_PSF_num_loaded();
 	
-	mbot->flineButton = gtk_button_new_with_label("Field line");
-	g_signal_connect(G_OBJECT(mbot->flineButton), "clicked", 
-				G_CALLBACK(kemoview_fline_menu_CB), (gpointer) kemoviewer_data);
 	mbot->meshButton = gtk_button_new_with_label("Mesh");
 	g_signal_connect(G_OBJECT(mbot->meshButton), "clicked", 
 				G_CALLBACK(kemoview_mesh_menu_CB), (gpointer) kemoviewer_data);
@@ -52,33 +43,46 @@ static void update_kemoview_menu(struct kemoviewer_type *kemoviewer_data,
 	
 	mbot->psfBox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	if(nload_psf > 0){
-		gtk_psf_menu_box(kemoviewer_data, mbot, window, box);
+		gtk_psf_menu_box(kemoviewer_data, mbot, window);
 	};
-	gtk_box_pack_start(GTK_BOX(box), mbot->psfBox, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(mbot->vbox_menu), mbot->psfBox, FALSE, FALSE, 0);
+	
+	mbot->flineButton = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+	if(iflag_draw_f > 0){
+		gtk_fieldline_menu_box(kemoviewer_data, mbot, window);
+	};
+	gtk_box_pack_start(GTK_BOX(mbot->vbox_menu), mbot->flineButton, FALSE, FALSE, 0);
 	
 	mbot->rotationBox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	add_rotation_menu_box(kemoviewer_data, window, mbot->rotationBox);
-	gtk_box_pack_start(GTK_BOX(box), mbot->rotationBox, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(mbot->vbox_menu), mbot->rotationBox, FALSE, FALSE, 0);
 	
 	mbot->evolutionBox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-	if(nload_psf > 0 || iflag_draw_f){
-		add_evoluaiton_menu_box(kemoviewer_data, window, mbot->evolutionBox);
+	if(nload_psf > 0 || iflag_draw_f > 0){
+		int istep, iflag;
+		struct kv_string *file_prefix = kemoview_alloc_kvstring();
+		if(nload_psf > 0){
+			istep = kemoview_get_PSF_full_path_file_prefix(file_prefix, &iflag);
+		} else {
+			istep = kemoview_get_fline_file_step_prefix(file_prefix);
+		};
+		kemoview_free_kvstring(file_prefix);
+		
+		add_evoluaiton_menu_box(istep, kemoviewer_data, window, mbot->evolutionBox);
 	};
-	gtk_box_pack_start(GTK_BOX(box), mbot->evolutionBox, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(mbot->vbox_menu), mbot->evolutionBox, FALSE, FALSE, 0);
 	
-	
-	gtk_box_pack_start(GTK_BOX(box), mbot->flineButton, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(box), mbot->meshButton, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(mbot->vbox_menu), mbot->meshButton, FALSE, FALSE, 0);
 	
 	mbot->viewBox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_viewmatrix_menu_box(mbot->view_menu, window, mbot->viewBox);
-	gtk_box_pack_start(GTK_BOX(box), mbot->viewBox, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(mbot->vbox_menu), mbot->viewBox, FALSE, FALSE, 0);
 	
 	mbot->prefBox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	kemoview_preference_GTK(kemoviewer_data, mbot->lightparams_vws, mbot->prefBox);
-	gtk_box_pack_start(GTK_BOX(box), mbot->prefBox, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(mbot->vbox_menu), mbot->prefBox, FALSE, FALSE, 0);
 	
-	gtk_widget_show_all(box);
+	gtk_widget_show_all(mbot->vbox_menu);
 	if(nload_psf == 0) gtk_widget_hide(mbot->psfBox);
 	if(iflag_draw_f == 0) gtk_widget_hide(mbot->flineButton);
 	if(iflag_draw_m == 0) gtk_widget_hide(mbot->meshButton);
@@ -91,7 +95,6 @@ static void set_viewtype_CB(GtkComboBox *combobox_viewtype, gpointer user_data)
 	GtkEntry *entry = GTK_ENTRY(user_data);
 	struct kemoviewer_type *kemoviewer_data = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(user_data), "kemoview");
 	GtkWidget *window_main = GTK_WIDGET(g_object_get_data(G_OBJECT(user_data), "parent"));
-	GtkWidget *box = GTK_WIDGET(g_object_get_data(G_OBJECT(user_data), "box"));
 	struct main_buttons *mbot = (struct main_buttons *) g_object_get_data(G_OBJECT(user_data), "buttons");
 	
 	int index_mode = gtk_selected_combobox_index(combobox_viewtype);
@@ -99,7 +102,7 @@ static void set_viewtype_CB(GtkComboBox *combobox_viewtype, gpointer user_data)
 	set_viewtype_mode_glfw(index_mode);
 	
 	delete_kemoview_menu(mbot);
-	update_kemoview_menu(kemoviewer_data, mbot, window_main, box);
+	update_kemoview_menu(kemoviewer_data, mbot, window_main);
 	
 	gtk_widget_queue_draw(window_main);
 	draw_mesh_glfw();
@@ -141,31 +144,11 @@ static void image_save_CB(GtkButton *button, gpointer user_data){
 	return;
 };
 
-static void close_psf_CB(GtkButton *button, gpointer user_data){
-	GtkEntry *entry = GTK_ENTRY(user_data);
-	struct kemoviewer_type *kemoviewer_data = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(user_data), "kemoview");
-	GtkWidget *window_main = GTK_WIDGET(g_object_get_data(G_OBJECT(user_data), "parent"));
-	GtkWidget *box = GTK_WIDGET(g_object_get_data(G_OBJECT(user_data), "box"));
-	struct main_buttons *mbot = (struct main_buttons *) g_object_get_data(G_OBJECT(user_data), "buttons");
-	
-	int nload_psf = kemoview_close_PSF_view();
-	
-	set_viewtype_mode_glfw(VIEW_3D);
-	dealloc_colormap_views_4_viewer(mbot->color_vws);
-	
-	delete_kemoview_menu(mbot);
-	update_kemoview_menu(kemoviewer_data, mbot, window_main, box);
-	
-	gtk_widget_queue_draw(window_main);
-	draw_mesh_glfw();
-};
-
 static void current_psf_select_CB(GtkComboBox *combobox_sfcolor, gpointer user_data)
 {
 	GtkEntry *entry = GTK_ENTRY(user_data);
 	struct kemoviewer_type *kemoviewer_data = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(user_data), "kemoview");
 	GtkWidget *window_main = GTK_WIDGET(g_object_get_data(G_OBJECT(user_data), "parent"));
-	GtkWidget *box = GTK_WIDGET(g_object_get_data(G_OBJECT(user_data), "box"));
 	struct main_buttons *mbot = (struct main_buttons *) g_object_get_data(G_OBJECT(user_data), "buttons");
 
     int index_mode = gtk_selected_combobox_index(combobox_sfcolor);
@@ -175,7 +158,7 @@ static void current_psf_select_CB(GtkComboBox *combobox_sfcolor, gpointer user_d
 	dealloc_colormap_views_4_viewer(mbot->color_vws);
 	
 	delete_kemoview_menu(mbot);
-	update_kemoview_menu(kemoviewer_data, mbot, window_main, box);
+	update_kemoview_menu(kemoviewer_data, mbot, window_main);
 	
 	
 	gtk_widget_queue_draw(window_main);
@@ -183,12 +166,42 @@ static void current_psf_select_CB(GtkComboBox *combobox_sfcolor, gpointer user_d
 	return;
 };
 
+static void close_psf_CB(GtkButton *button, gpointer user_data){
+	GtkEntry *entry = GTK_ENTRY(user_data);
+	struct kemoviewer_type *kemoviewer_data = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(user_data), "kemoview");
+	GtkWidget *window_main = GTK_WIDGET(g_object_get_data(G_OBJECT(user_data), "parent"));
+	struct main_buttons *mbot = (struct main_buttons *) g_object_get_data(G_OBJECT(user_data), "buttons");
+	
+	int nload_psf = kemoview_close_PSF_view();
+	
+	set_viewtype_mode_glfw(VIEW_3D);
+	dealloc_colormap_views_4_viewer(mbot->color_vws);
+	
+	delete_kemoview_menu(mbot);
+	update_kemoview_menu(kemoviewer_data, mbot, window_main);
+	
+	gtk_widget_queue_draw(window_main);
+	draw_mesh_glfw();
+};
+
+static void close_fline_CB(GtkButton *button, gpointer user_data){
+	GtkEntry *entry = GTK_ENTRY(user_data);
+	struct kemoviewer_type *kemoviewer_data = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(user_data), "kemoview");
+	GtkWidget *window_main = GTK_WIDGET(g_object_get_data(G_OBJECT(user_data), "parent"));
+	struct main_buttons *mbot = (struct main_buttons *) g_object_get_data(G_OBJECT(user_data), "buttons");
+	
+	delete_kemoview_menu(mbot);
+	update_kemoview_menu(kemoviewer_data, mbot, window_main);
+	
+	gtk_widget_queue_draw(window_main);
+	draw_mesh_glfw();
+};
+
 static void psf_field_select_CB(GtkComboBox *combobox_field, gpointer user_data)
 {
 	GtkEntry *entry = GTK_ENTRY(user_data);
 	struct kemoviewer_type *kemoviewer_data = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(user_data), "kemoview");
 	GtkWidget *window_main = GTK_WIDGET(g_object_get_data(G_OBJECT(user_data), "parent"));
-	GtkWidget *box = GTK_WIDGET(g_object_get_data(G_OBJECT(user_data), "box"));
 	struct main_buttons *mbot = (struct main_buttons *) g_object_get_data(G_OBJECT(user_data), "buttons");
 	
     int index_mode = gtk_selected_combobox_index(combobox_field);
@@ -198,7 +211,7 @@ static void psf_field_select_CB(GtkComboBox *combobox_field, gpointer user_data)
 	dealloc_colormap_views_4_viewer(mbot->color_vws);
 	
 	delete_kemoview_menu(mbot);
-	update_kemoview_menu(kemoviewer_data, mbot, window_main, box);
+	update_kemoview_menu(kemoviewer_data, mbot, window_main);
 	
 	
 	gtk_widget_queue_draw(window_main);
@@ -219,7 +232,6 @@ static void open_file_CB(GtkButton *button, gpointer user_data){
 	GtkEntry *entry = GTK_ENTRY(user_data);
 	struct kemoviewer_type *kemoviewer_data = (struct kemoviewer_type *) g_object_get_data(G_OBJECT(user_data), "kemoview");
 	GtkWidget *window_main = GTK_WIDGET(g_object_get_data(G_OBJECT(user_data), "parent"));
-	GtkWidget *box = GTK_WIDGET(g_object_get_data(G_OBJECT(user_data), "box"));
 	struct main_buttons *mbot = (struct main_buttons *) g_object_get_data(G_OBJECT(user_data), "buttons");
 	filename = kemoview_init_kvstring_by_string(gtk_entry_get_text(entry));
 	
@@ -256,7 +268,7 @@ static void open_file_CB(GtkButton *button, gpointer user_data){
     kemoview_free_kvstring(filename);
 	
 	delete_kemoview_menu(mbot);
-	update_kemoview_menu(kemoviewer_data, mbot, window_main, box);
+	update_kemoview_menu(kemoviewer_data, mbot, window_main);
 	
 	gtk_main_iteration();
 	gtk_widget_queue_draw(window_main);
@@ -266,7 +278,7 @@ static void open_file_CB(GtkButton *button, gpointer user_data){
 
 
 void add_current_psf_set_box(struct kemoviewer_type *kemoviewer_data,
-			struct main_buttons *mbot, GtkWidget *box, GtkWidget *window){
+			struct main_buttons *mbot, GtkWidget *window, GtkWidget *box_out){
 	GtkWidget *hbox_psfs;
 	
 	GtkWidget *combobox_psfs;
@@ -313,10 +325,8 @@ void add_current_psf_set_box(struct kemoviewer_type *kemoviewer_data,
 		
 		GtkWidget *entry_file = gtk_entry_new();
 		g_object_set_data(G_OBJECT(entry_file), "kemoview", (gpointer) kemoviewer_data);
-		g_object_set_data(G_OBJECT(entry_file), "colorview", (gpointer) mbot->color_vws);
 		g_object_set_data(G_OBJECT(entry_file), "parent", (gpointer) window);
 		g_object_set_data(G_OBJECT(entry_file), "buttons", (gpointer) mbot);
-		g_object_set_data(G_OBJECT(entry_file), "box", (gpointer) box);
 		
 		combobox_psfs = gtk_combo_box_new_with_model(child_model_psfs);
 		renderer_psfs = gtk_cell_renderer_text_new();
@@ -331,14 +341,15 @@ void add_current_psf_set_box(struct kemoviewer_type *kemoviewer_data,
 		gtk_box_pack_start(GTK_BOX(hbox_psfs), gtk_label_new("Current PSF: "), FALSE, FALSE, 0);
 		gtk_box_pack_start(GTK_BOX(hbox_psfs), combobox_psfs, FALSE, FALSE, 0);
 		
-		gtk_box_pack_start(GTK_BOX(mbot->color_vws->psfBox), hbox_psfs, TRUE, TRUE, 0);
+		gtk_box_pack_start(GTK_BOX(box_out), hbox_psfs, TRUE, TRUE, 0);
 	}
 	
 	return;
 }
 
+
 void add_psf_draw_field_box(struct kemoviewer_type *kemoviewer_data, 
-			struct main_buttons *mbot, GtkWidget *box, GtkWidget *window){
+			struct main_buttons *mbot, GtkWidget *window, GtkWidget *box_out){
 	GtkWidget *hbox_field;
 	
 	GtkWidget *combobox_field;
@@ -376,7 +387,6 @@ void add_psf_draw_field_box(struct kemoviewer_type *kemoviewer_data,
 	g_object_set_data(G_OBJECT(entry_file), "colorview", (gpointer) mbot->color_vws);
 	g_object_set_data(G_OBJECT(entry_file), "parent", (gpointer) window);
 	g_object_set_data(G_OBJECT(entry_file), "buttons", (gpointer) mbot);
-	g_object_set_data(G_OBJECT(entry_file), "box", (gpointer) box);
 		
 	combobox_field = gtk_combo_box_new_with_model(child_model_field);
 	renderer_field = gtk_cell_renderer_text_new();
@@ -391,37 +401,61 @@ void add_psf_draw_field_box(struct kemoviewer_type *kemoviewer_data,
 	gtk_box_pack_start(GTK_BOX(hbox_field), gtk_label_new("Field: "), FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_field), combobox_field, FALSE, FALSE, 0);
 	
-	gtk_box_pack_start(GTK_BOX(mbot->color_vws->psfBox), hbox_field, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(box_out), hbox_field, TRUE, TRUE, 0);
 	return;
 }
 
 
 void gtk_psf_menu_box(struct kemoviewer_type *kemoviewer_data, 
-			struct main_buttons *mbot, GtkWidget *window, GtkWidget *box){
+			struct main_buttons *mbot, GtkWidget *window){
 	GtkWidget *closeButton;
+	GtkWidget *vbox;
 	
 	GtkWidget *entry_file = gtk_entry_new();
 	g_object_set_data(G_OBJECT(entry_file), "kemoview", (gpointer) kemoviewer_data);
-	g_object_set_data(G_OBJECT(entry_file), "colorview", (gpointer) mbot->color_vws);
 	g_object_set_data(G_OBJECT(entry_file), "parent", (gpointer) window);
 	g_object_set_data(G_OBJECT(entry_file), "buttons", (gpointer) mbot);
-	g_object_set_data(G_OBJECT(entry_file), "box", (gpointer) box);
 	
 	closeButton = gtk_button_new_with_label("Close Current PSF");
 	g_signal_connect(G_OBJECT(closeButton), "clicked", 
 				G_CALLBACK(close_psf_CB), entry_file);
 	
 	
-	mbot->color_vws->psfBox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
-	gtk_box_pack_start(GTK_BOX(mbot->color_vws->psfBox), closeButton, FALSE, FALSE, 0);
-	add_current_psf_set_box(kemoviewer_data, mbot, box, window);
-	add_psf_draw_field_box(kemoviewer_data, mbot, box, window);
-	make_psf_menu_box(kemoviewer_data, mbot->color_vws, window);
-	wrap_into_frame_gtk("Surfaces", mbot->color_vws->psfBox, mbot->psfBox);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
+	gtk_box_pack_start(GTK_BOX(vbox), closeButton, FALSE, FALSE, 0);
+	add_current_psf_set_box(kemoviewer_data, mbot, window, vbox);
+	add_psf_draw_field_box(kemoviewer_data, mbot, window, vbox);
+	make_psf_menu_box(kemoviewer_data, mbot->color_vws, window, vbox);
+	wrap_into_frame_gtk("Surfaces", vbox, mbot->psfBox);
+	
 	gtk_widget_show(mbot->psfBox);
 	return;
 }
 
+
+void gtk_fieldline_menu_box(struct kemoviewer_type *kemoviewer_data,
+			struct main_buttons *mbot, GtkWidget *window){
+	GtkButton *closeButton;
+	GtkWidget *vbox;
+	
+	GtkWidget *entry_file = gtk_entry_new();
+	g_object_set_data(G_OBJECT(entry_file), "kemoview", (gpointer) kemoviewer_data);
+	g_object_set_data(G_OBJECT(entry_file), "parent", (gpointer) window);
+	g_object_set_data(G_OBJECT(entry_file), "buttons", (gpointer) mbot);
+		
+	closeButton = gtk_button_new_with_label("Close Current PSF");
+	g_signal_connect(G_OBJECT(closeButton), "clicked", 
+				G_CALLBACK(close_fline_CB), entry_file);
+	
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
+	gtk_box_pack_start(GTK_BOX(vbox), closeButton, FALSE, FALSE, 0);
+	add_gtk_fieldline_menu(vbox);
+	wrap_into_frame_gtk("Fieldline", vbox, mbot->flineButton);
+	
+	gtk_widget_show(mbot->flineButton);
+	
+	return;
+}
 
 
 void make_gtk_main_menu_box(struct kemoviewer_type *kemoviewer_data,
@@ -461,7 +495,6 @@ void make_gtk_main_menu_box(struct kemoviewer_type *kemoviewer_data,
 	g_object_set_data(G_OBJECT(entry_file), "kemoview", (gpointer) kemoviewer_data);
 	g_object_set_data(G_OBJECT(entry_file), "parent", (gpointer) window_main);
 	g_object_set_data(G_OBJECT(entry_file), "buttons", (gpointer) mbot);
-	g_object_set_data(G_OBJECT(entry_file), "box", (gpointer) mbot->vbox_menu);
 	
 	open_Button = gtk_button_new_with_label("Open...");
 	g_signal_connect(G_OBJECT(open_Button), "clicked", 
@@ -557,5 +590,5 @@ void make_gtk_main_menu_box(struct kemoviewer_type *kemoviewer_data,
 	
 	add_axis_menu_box(kemoviewer_data, mbot->vbox_menu);
 	
-	update_kemoview_menu(kemoviewer_data, mbot, window_main, mbot->vbox_menu);
+	update_kemoview_menu(kemoviewer_data, mbot, window_main);
 }

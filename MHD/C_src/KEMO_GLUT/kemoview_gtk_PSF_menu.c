@@ -152,7 +152,7 @@ void add_gtk_psf_colormap_menu(struct colormap_view *color_vws,
 }
 
 void make_psf_menu_box(struct kemoviewer_type *kemoviewer_data, struct colormap_view *color_vws,
-			GtkWidget *window){
+			GtkWidget *window, GtkWidget *box_out){
 	int i_current = kemoviewer_data->kemo_psf->psf_a->id_current;
 	init_colormap_views_4_viewer(kemoviewer_data->kemo_psf->psf_m[i_current], color_vws);
 	
@@ -160,16 +160,16 @@ void make_psf_menu_box(struct kemoviewer_type *kemoviewer_data, struct colormap_
 	int ic_psf = kemoview_get_PSF_component_id();
 	int ncomp = kemoview_get_PSF_num_component(if_psf);
 	
-	add_psf_draw_component_box(kemoviewer_data, color_vws, window, color_vws->psfBox);
-	add_gtk_isoline_menu(color_vws, window, color_vws->psfBox);
-	add_gtk_psf_surface_menu(color_vws, window, color_vws->psfBox);
-	add_gtk_psf_colormap_menu(color_vws, window, color_vws->psfBox);
+	add_psf_draw_component_box(kemoviewer_data, color_vws, window, box_out);
+	add_gtk_isoline_menu(color_vws, window, box_out);
+	add_gtk_psf_surface_menu(color_vws, window, box_out);
+	add_gtk_psf_colormap_menu(color_vws, window, box_out);
 	
 	color_vws->psfVectorBox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	if(ncomp == 3) make_gtk_psf_vector_menu(color_vws);
-	gtk_box_pack_start(GTK_BOX(color_vws->psfBox), color_vws->psfVectorBox, FALSE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(box_out), color_vws->psfVectorBox, FALSE, TRUE, 0);
 	
-	gtk_widget_show_all(color_vws->psfBox);
+	gtk_widget_show_all(box_out);
 	if(ncomp == 3){
 		gtk_widget_show(color_vws->psfVectorBox);
 	} else {

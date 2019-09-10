@@ -84,7 +84,7 @@ static void set_evo_fileformat_CB(GtkComboBox *combobox_filefmt, gpointer user_d
 
 
 
-void add_evoluaiton_menu_box(struct kemoviewer_type *kemoviewer_data, 
+void add_evoluaiton_menu_box(int istep, struct kemoviewer_type *kemoviewer_data, 
 			GtkWidget *window_main, GtkWidget *box_out){
 	GtkWidget *vbox;
 	
@@ -164,11 +164,6 @@ void add_evoluaiton_menu_box(struct kemoviewer_type *kemoviewer_data,
 	g_signal_connect(G_OBJECT(evoSave_Button), "clicked", 
 					 G_CALLBACK(evolution_save_CB), (gpointer)entry_evo_file);
 	
-	
-	int iflag;
-    struct kv_string *image_prefix = kemoview_alloc_kvstring();
-	int istep = kemoview_get_PSF_full_path_file_prefix(image_prefix, &iflag);
-    kemoview_free_kvstring(image_prefix);
 	
 	current_evo_start = istep;
 	sprintf(current_evo_start_text, "    %d    ", current_evo_start);

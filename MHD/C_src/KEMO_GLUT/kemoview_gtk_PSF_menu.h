@@ -37,6 +37,6 @@ void add_gtk_psf_colormap_menu(struct colormap_view *color_vws,
 			GtkWidget *window, GtkWidget *box);
 
 void make_psf_menu_box(struct kemoviewer_type *kemoviewer_data, struct colormap_view *color_vws,
-			GtkWidget *window);
+					   GtkWidget *window, GtkWidget *box_out);
 
 #endif

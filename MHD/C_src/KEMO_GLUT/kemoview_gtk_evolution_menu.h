@@ -23,7 +23,7 @@
 
 /*  prototypes */
 
-void add_evoluaiton_menu_box(struct kemoviewer_type *kemoviewer_data, 
+void add_evoluaiton_menu_box(int istep, struct kemoviewer_type *kemoviewer_data, 
 			GtkWidget *window_main, GtkWidget *box_out);
 	
 #endif

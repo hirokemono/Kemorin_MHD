@@ -22,6 +22,6 @@
 
 /*  prototypes */
 
-void add_fline_draw_field_box(GtkWidget *window_fline, GtkWidget *box);
-void add_fline_draw_component_box(GtkWidget *window_fline, GtkWidget *box);
+void add_fline_draw_field_box(GtkWidget *box);
+void add_fline_draw_component_box(GtkWidget *box);
 #endif

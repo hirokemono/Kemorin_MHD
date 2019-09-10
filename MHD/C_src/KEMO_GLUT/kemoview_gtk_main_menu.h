@@ -53,7 +53,9 @@ struct main_buttons{
 /*  prototypes */
 
 void gtk_psf_menu_box(struct kemoviewer_type *kemoviewer_data,
-			struct main_buttons *mbot, GtkWidget *window, GtkWidget *box_out);
+			struct main_buttons *mbot, GtkWidget *window);
+void gtk_fieldline_menu_box(struct kemoviewer_type *kemoviewer_data,
+			struct main_buttons *mbot, GtkWidget *window);
 
 void make_gtk_main_menu_box(struct kemoviewer_type *kemoviewer_data,
 					   struct main_buttons *mbot, GtkWidget *window_main);

@@ -21,6 +21,6 @@
 
 /*  prototypes */
 
-void gtk_fieldline_menu();
+void add_gtk_fieldline_menu(GtkWidget *box_out);
 
 #endif

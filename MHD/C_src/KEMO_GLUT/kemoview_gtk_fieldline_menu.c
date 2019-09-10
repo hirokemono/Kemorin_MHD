@@ -9,25 +9,13 @@
 
 #include "kemoview_gtk_fieldline_menu.h"
 
-GtkWidget *window_fline;
-
-
-static void close_fline_CB(GtkButton *button, gpointer user_data){
-	int nload_psf;
-	GtkWidget *window = (GtkWidget *) user_data;
-	kemoview_close_fieldline_view();
-};
-
-static void close_window_CB(GtkButton *button, gpointer user_data){
-    GtkWidget *window = (GtkWidget *) user_data;
-    gtk_widget_destroy(window);
-};
-
 static void fline_thickness_CB(GtkWidget *entry, gpointer data)
 {
 	double thick_in = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
 	if(thick_in > 0) kemoview_set_fline_thickness(thick_in);
 /*	printf("thick_in %d\n", thick_in);*/
+	
+	draw_mesh_glfw();
 }
 
 static void MinChange_CB(GtkWidget *entry, gpointer data)
@@ -37,7 +25,10 @@ static void MinChange_CB(GtkWidget *entry, gpointer data)
 	
 	double data_min = (double) gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
 	kemoview_set_fline_linear_colormap(data_min, data_max);
+	
+	draw_mesh_glfw();
 }
+
 static void MaxChange_CB(GtkWidget *entry, gpointer data)
 {
 	int icomp = kemoview_get_fline_color_data_adress();
@@ -45,10 +36,14 @@ static void MaxChange_CB(GtkWidget *entry, gpointer data)
 	
 	double data_max = (double) gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
 	kemoview_set_fline_linear_colormap(data_min, data_max);
+	
+	draw_mesh_glfw();
 }
 
 static void psf_fieldtube_switch_CB(GObject *switch_1, GParamSpec *pspec, gpointer data){
 	kemoview_toggle_fline_type();
+	
+	draw_mesh_glfw();
 	return;
 };
 
@@ -58,13 +53,14 @@ static void psf_fline_colormode_CB(GtkComboBox *combobox_sfcolor, gpointer user_
 	
 	kemoview_set_fline_color_type(index_mode);
 	//	draw_mesh_w_menu();
+	
+	draw_mesh_glfw();
 	return;
 };
 
 
-void gtk_fieldline_menu(){
-	GtkWidget *box;
-	GtkButton *closeButton, *updateButton;
+void add_gtk_fieldline_menu(GtkWidget *box_out){
+	GtkButton *closeButton;
 	
 	GtkWidget *hbox_tube, *hbox_color;
 	GtkWidget *hbox_thickness, *hbox_org_thick;
@@ -92,22 +88,6 @@ void gtk_fieldline_menu(){
 	double data_min, data_max;
 	double range_min, range_max, delta;
 	char min_text[30], max_text[30];
-	
-	
-	window_fline = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-	gtk_window_set_title(GTK_WINDOW(window_fline), "Field lines");
-
-	g_signal_connect(window_fline, "destroy", G_CALLBACK(gtk_main_quit), NULL);
-	gtk_container_set_border_width(GTK_CONTAINER(window_fline), 5);
-
-	closeButton = gtk_button_new_with_label("Close Current PSF");
-	g_signal_connect(G_OBJECT(closeButton), "clicked", 
-				G_CALLBACK(close_fline_CB), window_fline);
-	
-	updateButton = gtk_button_new_with_label("Update");
-	g_signal_connect(G_OBJECT(updateButton), "clicked", 
-				G_CALLBACK(close_window_CB), window_fline);
-	
 	
 	num_fld =  kemoview_get_fline_color_num_field();
 	ifield = kemoview_get_fline_color_field();
@@ -200,25 +180,15 @@ void gtk_fieldline_menu(){
 	gtk_box_pack_start(GTK_BOX(hbox_range), spin_max, TRUE, TRUE, 0);
 	
 	
-	box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
-	gtk_container_add(GTK_CONTAINER(window_fline), box);
+	add_fline_draw_field_box(box_out);
+	add_fline_draw_component_box(box_out);
+	gtk_box_pack_start(GTK_BOX(box_out), hbox_color, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(box_out), hbox_tube, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(box_out), hbox_org_thick, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(box_out), hbox_thickness, TRUE, TRUE, 0);
 	
-	add_fline_draw_field_box(window_fline, box);
-	add_fline_draw_component_box(window_fline, box);
-	gtk_box_pack_start(GTK_BOX(box), hbox_color, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(box), hbox_tube, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(box), hbox_org_thick, TRUE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(box), hbox_thickness, TRUE, TRUE, 0);
-	
-	gtk_box_pack_start(GTK_BOX(box), gtk_label_new("Range"), TRUE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(box), hbox_org_range, TRUE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(box), hbox_range, TRUE, TRUE, 0);
-	
-	gtk_box_pack_start(GTK_BOX(box), closeButton, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(box), updateButton, FALSE, FALSE, 0);
-	
-	gtk_widget_show_all(window_fline);
-	gtk_main();
-
+	gtk_box_pack_start(GTK_BOX(box_out), gtk_label_new("Range"), TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(box_out), hbox_org_range, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(box_out), hbox_range, TRUE, TRUE, 0);
 	return;
 }

@@ -14,6 +14,8 @@ static void fline_field_select_CB(GtkComboBox *combobox_field, gpointer user_dat
     int index_mode = gtk_selected_combobox_index(combobox_field);
 	
 	kemoview_set_fline_color_field(index_mode);
+	
+	draw_mesh_glfw();
 	return;
 };
 
@@ -22,12 +24,12 @@ static void fline_component_select_CB(GtkComboBox *combobox_comp, gpointer user_
     int index_mode = gtk_selected_combobox_index(combobox_comp);
 	kemoview_set_fline_color_component(index_mode);
 	
-//	draw_mesh_w_menu();
+	draw_mesh_glfw();
 	return;
 };
 
 
-void add_fline_draw_field_box(GtkWidget *window_fline, GtkWidget *box){
+void add_fline_draw_field_box(GtkWidget *box){
 	GtkWidget *hbox_field;
 	
 	GtkWidget *combobox_field;
@@ -59,7 +61,7 @@ void add_fline_draw_field_box(GtkWidget *window_fline, GtkWidget *box){
 	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combobox_field), renderer_field,
 				"text", COLUMN_FIELD_NAME, NULL);
 	g_signal_connect(G_OBJECT(combobox_field), "changed", 
-				G_CALLBACK(fline_field_select_CB), (gpointer) window_fline);
+				G_CALLBACK(fline_field_select_CB), NULL);
 	
 	hbox_field = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
 	gtk_box_pack_start(GTK_BOX(hbox_field), gtk_label_new("Field: "), FALSE, FALSE, 0);
@@ -70,7 +72,7 @@ void add_fline_draw_field_box(GtkWidget *window_fline, GtkWidget *box){
 }
 
 
-void add_fline_draw_component_box(GtkWidget *window_fline, GtkWidget *box){
+void add_fline_draw_component_box(GtkWidget *box){
 	GtkWidget *hbox_comp;
 	
 	GtkWidget *combobox_comp;
@@ -104,7 +106,7 @@ void add_fline_draw_component_box(GtkWidget *window_fline, GtkWidget *box){
 		gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combobox_comp), renderer_comp,
 					"text", COLUMN_FIELD_NAME, NULL);
 		g_signal_connect(G_OBJECT(combobox_comp), "changed", 
-					G_CALLBACK(fline_component_select_CB), (gpointer) window_fline);
+					G_CALLBACK(fline_component_select_CB), NULL);
 		
 		hbox_comp = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
 		gtk_box_pack_start(GTK_BOX(hbox_comp), gtk_label_new("Component: "), FALSE, FALSE, 0);

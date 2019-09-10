@@ -206,7 +206,7 @@ int draw_mesh_kemo(int iflag_streo_shutter, int iflag_dmesh) {
 	glfwTerminate();
 	
 	dealloc_light_views_4_viewer(mbot->lightparams_vws);
-	free(mbot->lightparams_vws);
+//	free(mbot->lightparams_vws);
 	free(mbot->color_vws);
 	free(mbot->view_menu);
 	free(mbot);
