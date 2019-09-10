@@ -41,7 +41,7 @@ struct main_buttons{
 	GtkWidget *psfBox;
 	
 	GtkWidget *prefBox;
-	GtkWidget *flineButton;
+	GtkWidget *flineBox;
 	GtkWidget *meshButton;
 	
 	GtkWidget *viewBox;

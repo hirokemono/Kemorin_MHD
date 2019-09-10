@@ -20,7 +20,7 @@ static void kemoview_mesh_menu_CB(GtkButton *button, gpointer user_data){
 static void delete_kemoview_menu(struct main_buttons *mbot){
 	gtk_widget_destroy(mbot->prefBox);
 	gtk_widget_destroy(mbot->meshButton);
-	gtk_widget_destroy(mbot->flineButton);
+	gtk_widget_destroy(mbot->flineBox);
 	
 	gtk_widget_destroy(mbot->viewBox);
 	gtk_widget_destroy(mbot->evolutionBox);
@@ -47,11 +47,11 @@ static void update_kemoview_menu(struct kemoviewer_type *kemoviewer_data,
 	};
 	gtk_box_pack_start(GTK_BOX(mbot->vbox_menu), mbot->psfBox, FALSE, FALSE, 0);
 	
-	mbot->flineButton = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+	mbot->flineBox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	if(iflag_draw_f > 0){
 		gtk_fieldline_menu_box(kemoviewer_data, mbot, window);
 	};
-	gtk_box_pack_start(GTK_BOX(mbot->vbox_menu), mbot->flineButton, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(mbot->vbox_menu), mbot->flineBox, FALSE, FALSE, 0);
 	
 	mbot->rotationBox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	add_rotation_menu_box(kemoviewer_data, window, mbot->rotationBox);
@@ -84,7 +84,7 @@ static void update_kemoview_menu(struct kemoviewer_type *kemoviewer_data,
 	
 	gtk_widget_show_all(mbot->vbox_menu);
 	if(nload_psf == 0) gtk_widget_hide(mbot->psfBox);
-	if(iflag_draw_f == 0) gtk_widget_hide(mbot->flineButton);
+	if(iflag_draw_f == 0) gtk_widget_hide(mbot->flineBox);
 	if(iflag_draw_m == 0) gtk_widget_hide(mbot->meshButton);
 	return;
 };
@@ -450,9 +450,9 @@ void gtk_fieldline_menu_box(struct kemoviewer_type *kemoviewer_data,
 	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
 	gtk_box_pack_start(GTK_BOX(vbox), closeButton, FALSE, FALSE, 0);
 	add_gtk_fieldline_menu(vbox);
-	wrap_into_frame_gtk("Fieldline", vbox, mbot->flineButton);
+	wrap_into_frame_gtk("Fieldline", vbox, mbot->flineBox);
 	
-	gtk_widget_show(mbot->flineButton);
+	gtk_widget_show(mbot->flineBox);
 	
 	return;
 }
