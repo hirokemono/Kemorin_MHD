@@ -36,12 +36,12 @@ static void set_color_from_GTK(GtkColorChooser *colordialog, float color[4])
 	return;
 }
 
-int kemoview_gtk_colorsel_CB(GtkWindow *parent, float color[4]){
+int kemoview_gtk_colorsel_CB(GtkWindow *parent_win, float color[4]){
 	int response;
 	GtkColorChooser *chooser;
 	int iflag_set = 0;
 	
-	window_Cmap = gtk_color_chooser_dialog_new("Choose color", parent);
+	window_Cmap = gtk_color_chooser_dialog_new("Choose color", parent_win);
 	gtk_widget_show_all(window_Cmap);
 	
 	response = gtk_dialog_run(GTK_DIALOG(window_Cmap));

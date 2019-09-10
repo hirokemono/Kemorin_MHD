@@ -95,8 +95,6 @@ void dealloc_mesh_views_4_viewer(struct kemoview_mesh_view *mesh_vws){
 	free(mesh_vws->ele_grp_vws);
 	free(mesh_vws->nod_grp_vws);
 	free(mesh_vws->domain_vws);
-	
-	free(mesh_vws);
     return;
 }
 

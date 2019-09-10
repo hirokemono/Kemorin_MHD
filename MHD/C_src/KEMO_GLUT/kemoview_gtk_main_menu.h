@@ -34,6 +34,7 @@ struct main_buttons{
 	struct view_widgets *view_menu;
 	struct colormap_view *color_vws;
 	struct lightparams_view *lightparams_vws;
+	struct kemoview_mesh_view *mesh_vws;
 	
 	GtkWidget *mainHbox;
 	
@@ -42,7 +43,7 @@ struct main_buttons{
 	
 	GtkWidget *prefBox;
 	GtkWidget *flineBox;
-	GtkWidget *meshButton;
+	GtkWidget *meshBox;
 	
 	GtkWidget *viewBox;
 	GtkWidget *rotationBox;
@@ -55,6 +56,8 @@ struct main_buttons{
 void gtk_psf_menu_box(struct kemoviewer_type *kemoviewer_data,
 			struct main_buttons *mbot, GtkWidget *window);
 void gtk_fieldline_menu_box(struct kemoviewer_type *kemoviewer_data,
+			struct main_buttons *mbot, GtkWidget *window);
+void gtk_mesh_menu_box(struct kemoviewer_type *kemoviewer_data, 
 			struct main_buttons *mbot, GtkWidget *window);
 
 void make_gtk_main_menu_box(struct kemoviewer_type *kemoviewer_data,

@@ -18,6 +18,6 @@
 /*  prototypes */
 
 void set_color_to_GTK(float color[4], GdkRGBA *gcolor);
-int kemoview_gtk_colorsel_CB(GtkWindow *parent, float color[4]);
+int kemoview_gtk_colorsel_CB(GtkWindow *parent_win, float color[4]);
 
 #endif

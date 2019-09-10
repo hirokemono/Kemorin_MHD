@@ -8,24 +8,30 @@
 #include "tree_view_4_ele_group_viewer.h"
 
 
-static void toggle_draw_ele_grp_patch_switch(GtkTreeViewColumn *renderer, 
+static void toggle_draw_ele_grp_patch_CB(GtkTreeViewColumn *renderer, 
 			gchar *path_str, gpointer user_data){
 	int index1_for_toggle;
 	int index_grp = toggle_draw_patch_switch(path_str, user_data, &index1_for_toggle);
     kemoview_set_draw_elegrp_patch(index1_for_toggle, index_grp);
+	
+	draw_mesh_glfw();
 }
 
-static void toggle_draw_ele_grp_grid_switch(GtkTreeViewColumn *renderer, 
+static void toggle_draw_ele_grp_grid_CB(GtkTreeViewColumn *renderer, 
 			gchar *path_str, gpointer user_data){
 	int index2_for_toggle;
 	int index_grp = toggle_draw_grid_switch(path_str, user_data, &index2_for_toggle);
     kemoview_set_draw_elegrp_grid(index2_for_toggle, index_grp);
+	
+	draw_mesh_glfw();
 }
 
-static void toggle_draw_ele_grp_node_switch(GtkTreeViewColumn *renderer, gchar *path_str, gpointer user_data){
+static void toggle_draw_ele_grp_node_CB(GtkTreeViewColumn *renderer, gchar *path_str, gpointer user_data){
 	int index3_for_toggle;
 	int index_grp = toggle_draw_node_switch(path_str, user_data, &index3_for_toggle);
     kemoview_set_draw_elegrp_node(index3_for_toggle, index_grp);
+	
+	draw_mesh_glfw();
 }
 
 
@@ -36,6 +42,8 @@ static void draw_all_ele_grp_patch_CB(GtkButton *button, gpointer user_data)
 	for(i=0;i<num;i++){
 		kemoview_set_draw_elegrp_patch(IONE, i);
 	};
+	
+	draw_mesh_glfw();
 }
 
 static void draw_all_ele_grp_grids_CB(GtkButton *button, gpointer user_data)
@@ -45,6 +53,8 @@ static void draw_all_ele_grp_grids_CB(GtkButton *button, gpointer user_data)
 	for(i=0;i<num;i++){
 		kemoview_set_draw_elegrp_grid(IONE, i);
 	};
+	
+	draw_mesh_glfw();
 }
 
 static void draw_all_ele_grp_nodes_CB(GtkButton *button, gpointer user_data)
@@ -54,6 +64,8 @@ static void draw_all_ele_grp_nodes_CB(GtkButton *button, gpointer user_data)
 	for(i=0;i<num;i++){
 		kemoview_set_draw_elegrp_node(IONE, i);
 	};
+	
+	draw_mesh_glfw();
 }
 
 static void hide_all_ele_grp_patch_CB(GtkButton *button, gpointer user_data)
@@ -63,6 +75,8 @@ static void hide_all_ele_grp_patch_CB(GtkButton *button, gpointer user_data)
 	for(i=0;i<num;i++){
 		kemoview_set_draw_elegrp_patch(IZERO, i);
 	};
+	
+	draw_mesh_glfw();
 }
 
 static void hide_all_ele_grp_grids_CB(GtkButton *button, gpointer user_data)
@@ -72,6 +86,8 @@ static void hide_all_ele_grp_grids_CB(GtkButton *button, gpointer user_data)
 	for(i=0;i<num;i++){
 		kemoview_set_draw_elegrp_grid(IZERO, i);
 	};
+	
+	draw_mesh_glfw();
 }
 
 static void hide_all_ele_grp_nodes_CB(GtkButton *button, gpointer user_data)
@@ -81,6 +97,8 @@ static void hide_all_ele_grp_nodes_CB(GtkButton *button, gpointer user_data)
 	for(i=0;i<num;i++){
 		kemoview_set_draw_elegrp_node(IZERO, i);
 	};
+	
+	draw_mesh_glfw();
 }
 
 
@@ -95,7 +113,7 @@ static void ele_grp_patch_colormode_CB(GtkComboBox *combobox_sfcolor, gpointer u
 		kemoview_set_ele_grp_color_flag(SURFSOLID_TOGGLE, index_mode);
 	};
 	
-//	draw_mesh_w_menu();
+	draw_mesh_glfw();
 	return;
 };
 
@@ -110,7 +128,7 @@ static void ele_grp_grid_colormode_CB(GtkComboBox *combobox_sfcolor, gpointer us
 		kemoview_set_ele_grp_color_flag(SURFGRID_TOGGLE, index_mode);
 	};
 	
-//	draw_mesh_w_menu();
+	draw_mesh_glfw();
 	return;
 };
 
@@ -125,7 +143,7 @@ static void ele_grp_node_colormode_CB(GtkComboBox *combobox_sfcolor, gpointer us
 		kemoview_set_ele_grp_color_flag(SURFNOD_TOGGLE, index_mode);
 	};
 	
-//	draw_mesh_w_menu();
+	draw_mesh_glfw();
 	return;
 };
 
@@ -135,6 +153,8 @@ static void set_ele_grp_opacity_CB(GtkWidget *entry, gpointer user_data)
 	kemoview_get_ele_grp_color_code(SURFSOLID_TOGGLE, colorcode4);
 	colorcode4[3] = (float) gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
 	kemoview_set_ele_grp_color_code(SURFSOLID_TOGGLE, colorcode4);
+	
+	draw_mesh_glfw();
 	return;
 }
 static void set_single_ele_grp_patch_color_CB(GtkButton *button, gpointer user_data)
@@ -145,6 +165,8 @@ static void set_single_ele_grp_patch_color_CB(GtkButton *button, gpointer user_d
 	kemoview_get_ele_grp_color_code(SURFSOLID_TOGGLE, colorcode4);
 	int iflag_set = kemoview_gtk_colorsel_CB(parent, colorcode4);
 	if(iflag_set > 0) {kemoview_set_ele_grp_color_code(SURFSOLID_TOGGLE, colorcode4);};
+	
+	draw_mesh_glfw();
 	return;
 };
 static void set_single_ele_grp_grids_color_CB(GtkButton *button, gpointer user_data)
@@ -155,6 +177,8 @@ static void set_single_ele_grp_grids_color_CB(GtkButton *button, gpointer user_d
 	kemoview_get_ele_grp_color_code(SURFGRID_TOGGLE, colorcode4);
 	int iflag_set = kemoview_gtk_colorsel_CB(parent, colorcode4);
 	if(iflag_set > 0) {kemoview_set_ele_grp_color_code(SURFGRID_TOGGLE, colorcode4);};
+	
+	draw_mesh_glfw();
 	return;
 };
 static void set_single_ele_grp_nodes_color_CB(GtkButton *button, gpointer user_data)
@@ -165,6 +189,8 @@ static void set_single_ele_grp_nodes_color_CB(GtkButton *button, gpointer user_d
 	kemoview_get_ele_grp_color_code(SURFNOD_TOGGLE, colorcode4);
 	int iflag_set = kemoview_gtk_colorsel_CB(parent, colorcode4);
 	if(iflag_set > 0) {kemoview_set_ele_grp_color_code(SURFNOD_TOGGLE, colorcode4);};
+	
+	draw_mesh_glfw();
 	return;
 };
 
@@ -199,21 +225,21 @@ static void create_element_group_columns(struct ci3_clist_view *ele_grp_vws)
 				"Patch", COLUMN_MESH_THIRD);
 	toggleRenderer1 = create_each_toggle_renderer(column_3rd, 60, COLUMN_MESH_THIRD);
 	g_signal_connect(G_OBJECT(toggleRenderer1), "toggled", 
-				G_CALLBACK(toggle_draw_ele_grp_patch_switch), (gpointer) ele_grp_vws);
+				G_CALLBACK(toggle_draw_ele_grp_patch_CB), (gpointer) ele_grp_vws);
     
     /* Forth row */
 	column_4th = create_each_column_no_sort(ele_grp_vws->tree_view,
 				"Grid", COLUMN_MESH_FORTH);
 	toggleRenderer2 = create_each_toggle_renderer(column_4th, 60, COLUMN_MESH_FORTH);
 	g_signal_connect(G_OBJECT(toggleRenderer2), "toggled",
-				G_CALLBACK(toggle_draw_ele_grp_grid_switch), (gpointer) ele_grp_vws);
+				G_CALLBACK(toggle_draw_ele_grp_grid_CB), (gpointer) ele_grp_vws);
 	
     /* Fifth row */
 	column_5th = create_each_column_no_sort(ele_grp_vws->tree_view,
 				"Node", COLUMN_MESH_FIFTH);
 	toggleRenderer3 = create_each_toggle_renderer(column_5th, 60, COLUMN_MESH_FIFTH);
 	g_signal_connect(G_OBJECT(toggleRenderer3), "toggled",
-				G_CALLBACK(toggle_draw_ele_grp_node_switch), (gpointer) ele_grp_vws);
+				G_CALLBACK(toggle_draw_ele_grp_node_CB), (gpointer) ele_grp_vws);
 };
 
 static void create_ele_group_view(struct ci3_clist_view *ele_grp_vws)

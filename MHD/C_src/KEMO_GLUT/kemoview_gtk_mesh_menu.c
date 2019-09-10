@@ -9,41 +9,29 @@
 
 #include "kemoview_gtk_mesh_menu.h"
 
-GtkWidget *window_mesh;
-
-static void kemoview_BG_cancel(GtkButton *button, gpointer data){
-	gtk_widget_destroy(window_mesh);
-	gtk_main_quit();
-	return;
-};
-
-static void kemoview_BG_close(GtkButton *button, gpointer data){
-	kemoview_close_mesh_view();
-	gtk_widget_destroy(window_mesh);
-	gtk_main_quit();
-	return;
-};
-
 static void subdoain_distance_CB(GtkWidget *entry, gpointer data)
 {
 	double dist = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
 	if(dist >= 0.0) kemoview_set_domain_distance(dist);
 	kemoview_draw_with_modified_domain_distance();
-/*	printf("dist %d\n", dist);*/
+	
+	draw_mesh_glfw();
 }
 
 static void node_size_CB(GtkWidget *entry, gpointer data)
 {
 	double size = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
 	if(size >= 0.0) kemoview_set_node_diamater(size);
-/*	printf("size %d\n", size);*/
+	
+	draw_mesh_glfw();
 }
 
 static void num_color_loop_CB(GtkWidget *entry, gpointer data)
 {
 	int nloop = (int) gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(entry));
 	kemoview_set_num_of_color_loop(nloop);
-/*	printf("size %d\n", size);*/
+	
+	draw_mesh_glfw();
 }
 
 static void set_mesh_color_mode_CB(GtkComboBox *combobox_sfcolor, gpointer user_data)
@@ -69,16 +57,14 @@ static void set_mesh_color_mode_CB(GtkComboBox *combobox_sfcolor, gpointer user_
     printf("Selected mode %d, %s\n", index_mode, row_string);
 	kemoview_set_mesh_color_mode(index_mode);
 	
-//	draw_mesh_w_menu();
+	draw_mesh_glfw();
 	return;
 };
 
 
-void gtk_mesh_menu(struct kemoviewer_type *kemoviewer_data){
-	GtkWidget *hbox, *vbox;
-	
-	GtkWidget *entry;
-	GtkWidget *closeMeshButton, *cancelButton;
+void add_gtk_mesh_menu(struct kemoviewer_type *kemoviewer_data, 
+			struct kemoview_mesh_view *mesh_vws, GtkWidget *window, GtkWidget *box_out){
+	GtkWidget *hbox;
 	
 	GtkWidget *hbox_distance, *hbox_org_dist;
 	GtkWidget *spin_dist;
@@ -108,29 +94,7 @@ void gtk_mesh_menu(struct kemoviewer_type *kemoviewer_data){
 	int index = 0;
 	int iflag_mode;
 	
-	
-	struct kemoview_mesh_view *mesh_vws;
-	
-	
-	window_mesh = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-	
-	gtk_window_set_title(GTK_WINDOW(window_mesh), "Mesh viewer");
-	gtk_widget_set_size_request(window_mesh, 150, -1);
-	gtk_container_set_border_width(GTK_CONTAINER(window_mesh), 5);
-	g_signal_connect(G_OBJECT(window_mesh), "destroy", G_CALLBACK(gtk_main_quit), NULL);
-	
-		
 	/* Set buttons   */
-	entry = gtk_entry_new();
-	closeMeshButton = gtk_button_new_with_label("Close mesh");
-	g_signal_connect(G_OBJECT(closeMeshButton), "clicked", 
-				G_CALLBACK(kemoview_BG_close), (gpointer)entry);
-	cancelButton = gtk_button_new_with_label("Update");
-	g_signal_connect(G_OBJECT(cancelButton), "clicked", 
-				G_CALLBACK(kemoview_BG_cancel), (gpointer)entry);
-	
-	mesh_vws = (struct kemoview_mesh_view *) malloc(sizeof(struct kemoview_mesh_view));
-    init_mesh_views_4_viewer(kemoviewer_data->kemo_mesh->mesh_d, mesh_vws);
 	
 	current_distance = kemoview_get_domain_distance();
 	sprintf(current_dist_text, "    %e    ", current_distance);
@@ -199,28 +163,19 @@ void gtk_mesh_menu(struct kemoviewer_type *kemoviewer_data){
 	gtk_box_pack_start(GTK_BOX(hbox_num_loop), gtk_label_new("# of color loop: "), TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_num_loop), spin_num_loop, TRUE, TRUE, 0);
 	
-	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-	gtk_container_add(GTK_CONTAINER(window_mesh), vbox);
+	gtk_container_add(GTK_CONTAINER(window), box_out);
 	
-	gtk_box_pack_start(GTK_BOX(vbox), hbox_org_dist, TRUE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox), hbox_distance, TRUE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox), hbox_org_size, TRUE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox), hbox_node_size, TRUE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox), hbox_color_mode, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox), hbox_org_loop, TRUE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox), hbox_num_loop, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(box_out), hbox_org_dist, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(box_out), hbox_distance, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(box_out), hbox_org_size, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(box_out), hbox_node_size, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(box_out), hbox_color_mode, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(box_out), hbox_org_loop, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(box_out), hbox_num_loop, TRUE, TRUE, 0);
 	
-	add_domain_draw_box(mesh_vws->domain_vws, window_mesh, vbox);
-	add_nod_group_draw_box(mesh_vws->nod_grp_vws, window_mesh, vbox);
-	add_ele_group_draw_box(mesh_vws->ele_grp_vws, window_mesh, vbox);
-	add_surf_group_draw_box(mesh_vws->surf_grp_vws, window_mesh, vbox);
-	
-	gtk_box_pack_start(GTK_BOX(vbox), closeMeshButton, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox), cancelButton, FALSE, FALSE, 0);
-	
-	
-	gtk_widget_show_all(window_mesh);
-	gtk_main();
-	dealloc_mesh_views_4_viewer(mesh_vws);
+	add_domain_draw_box(mesh_vws->domain_vws, window, box_out);
+	add_nod_group_draw_box(mesh_vws->nod_grp_vws, window, box_out);
+	add_ele_group_draw_box(mesh_vws->ele_grp_vws, window, box_out);
+	add_surf_group_draw_box(mesh_vws->surf_grp_vws, window, box_out);
 	return;
 }
