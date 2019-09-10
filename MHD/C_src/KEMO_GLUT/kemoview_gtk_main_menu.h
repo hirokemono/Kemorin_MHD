@@ -36,7 +36,7 @@ struct main_buttons{
 	struct lightparams_view *lightparams_vws;
 	struct kemoview_mesh_view *mesh_vws;
 	
-	GtkWidget *mainHbox;
+	GtkWidget *menuHbox;
 	
 	GtkWidget *BaseBox;
 	GtkWidget *psfBox;

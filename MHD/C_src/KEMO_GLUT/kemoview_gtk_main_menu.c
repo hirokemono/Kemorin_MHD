@@ -12,14 +12,9 @@
 int id_fmt = 0;
 
 static void delete_kemoview_menu(struct main_buttons *mbot){
-	gtk_widget_destroy(mbot->prefBox);
 	gtk_widget_destroy(mbot->meshBox);
-	gtk_widget_destroy(mbot->flineBox);
-	
-	gtk_widget_destroy(mbot->viewBox);
 	gtk_widget_destroy(mbot->evolutionBox);
-	gtk_widget_destroy(mbot->rotationBox);
-	
+	gtk_widget_destroy(mbot->flineBox);
 	gtk_widget_destroy(mbot->psfBox);
 	return;
 };
@@ -30,28 +25,15 @@ static void update_kemoview_menu(struct kemoviewer_type *kemoviewer_data,
 	int iflag_draw_f = kemoview_get_fline_switch();
 	int nload_psf = kemoview_get_PSF_num_loaded();
 	
-	
 	mbot->psfBox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	if(nload_psf > 0){
 		gtk_psf_menu_box(kemoviewer_data, mbot, window);
 	};
-	gtk_box_pack_start(GTK_BOX(mbot->vbox_menu), mbot->psfBox, FALSE, FALSE, 0);
 	
 	mbot->flineBox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	if(iflag_draw_f > 0){
 		gtk_fieldline_menu_box(kemoviewer_data, mbot, window);
 	};
-	gtk_box_pack_start(GTK_BOX(mbot->vbox_menu), mbot->flineBox, FALSE, FALSE, 0);
-	
-	mbot->meshBox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-	if(iflag_draw_m > 0){
-		gtk_mesh_menu_box(kemoviewer_data, mbot, window);
-	};
-	gtk_box_pack_start(GTK_BOX(mbot->vbox_menu), mbot->meshBox, FALSE, FALSE, 0);
-	
-	mbot->rotationBox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-	add_rotation_menu_box(kemoviewer_data, window, mbot->rotationBox);
-	gtk_box_pack_start(GTK_BOX(mbot->vbox_menu), mbot->rotationBox, FALSE, FALSE, 0);
 	
 	mbot->evolutionBox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	if(nload_psf > 0 || iflag_draw_f > 0){
@@ -59,26 +41,26 @@ static void update_kemoview_menu(struct kemoviewer_type *kemoviewer_data,
 		struct kv_string *file_prefix = kemoview_alloc_kvstring();
 		if(nload_psf > 0){
 			istep = kemoview_get_PSF_full_path_file_prefix(file_prefix, &iflag);
+			add_evoluaiton_menu_box(istep, kemoviewer_data, window, mbot->evolutionBox);
+			gtk_box_pack_start(GTK_BOX(mbot->psfBox), mbot->evolutionBox, FALSE, FALSE, 0);
 		} else {
 			istep = kemoview_get_fline_file_step_prefix(file_prefix);
+			add_evoluaiton_menu_box(istep, kemoviewer_data, window, mbot->evolutionBox);
+			gtk_box_pack_start(GTK_BOX(mbot->flineBox), mbot->evolutionBox, FALSE, FALSE, 0);
 		};
 		kemoview_free_kvstring(file_prefix);
-		
-		add_evoluaiton_menu_box(istep, kemoviewer_data, window, mbot->evolutionBox);
 	};
-	gtk_box_pack_start(GTK_BOX(mbot->vbox_menu), mbot->evolutionBox, FALSE, FALSE, 0);
 	
-	gtk_box_pack_start(GTK_BOX(mbot->vbox_menu), mbot->meshBox, FALSE, FALSE, 0);
+	mbot->meshBox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+	if(iflag_draw_m > 0){
+		gtk_mesh_menu_box(kemoviewer_data, mbot, window);
+	};
 	
-	mbot->viewBox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-	gtk_viewmatrix_menu_box(mbot->view_menu, window, mbot->viewBox);
-	gtk_box_pack_start(GTK_BOX(mbot->vbox_menu), mbot->viewBox, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(mbot->menuHbox), mbot->psfBox, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(mbot->menuHbox), mbot->flineBox, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(mbot->menuHbox), mbot->meshBox, FALSE, FALSE, 0);
 	
-	mbot->prefBox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-	kemoview_preference_GTK(kemoviewer_data, mbot->lightparams_vws, mbot->prefBox);
-	gtk_box_pack_start(GTK_BOX(mbot->vbox_menu), mbot->prefBox, FALSE, FALSE, 0);
-	
-	gtk_widget_show_all(mbot->vbox_menu);
+	gtk_widget_show_all(mbot->menuHbox);
 	if(nload_psf == 0) gtk_widget_hide(mbot->psfBox);
 	if(iflag_draw_f == 0) gtk_widget_hide(mbot->flineBox);
 	if(iflag_draw_m == 0) gtk_widget_hide(mbot->meshBox);
@@ -623,6 +605,7 @@ void make_gtk_main_menu_box(struct kemoviewer_type *kemoviewer_data,
 	gtk_box_pack_start(GTK_BOX(hbox_viewtype), gtk_label_new("View type: "), FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_viewtype), combobox_viewtype, FALSE, FALSE, 0);
 	
+	mbot->vbox_menu = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 //	gtk_container_add(GTK_CONTAINER(window_main), mbot->vbox_menu);
 	
 	gtk_box_pack_start(GTK_BOX(mbot->vbox_menu), hbox_open, FALSE, FALSE, 0);
@@ -632,6 +615,21 @@ void make_gtk_main_menu_box(struct kemoviewer_type *kemoviewer_data,
 
 	
 	add_axis_menu_box(kemoviewer_data, mbot->vbox_menu);
+	
+	mbot->rotationBox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+	add_rotation_menu_box(kemoviewer_data, window_main, mbot->rotationBox);
+	gtk_box_pack_start(GTK_BOX(mbot->vbox_menu), mbot->rotationBox, FALSE, FALSE, 0);
+		
+	mbot->viewBox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+	gtk_viewmatrix_menu_box(mbot->view_menu, window_main, mbot->viewBox);
+	gtk_box_pack_start(GTK_BOX(mbot->vbox_menu), mbot->viewBox, FALSE, FALSE, 0);
+	
+	mbot->prefBox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+	kemoview_preference_GTK(kemoviewer_data, mbot->lightparams_vws, mbot->prefBox);
+	gtk_box_pack_start(GTK_BOX(mbot->vbox_menu), mbot->prefBox, FALSE, FALSE, 0);
+	
+	gtk_box_pack_start(GTK_BOX(mbot->menuHbox), mbot->vbox_menu, FALSE, FALSE, 0);
+	gtk_widget_show_all(mbot->vbox_menu);
 	
 	update_kemoview_menu(kemoviewer_data, mbot, window_main);
 }
