@@ -35,32 +35,34 @@
 @synthesize eyeRatio;
 - (void) SetViewByInpit;
 {
-	GLdouble tmpShift[3], tmpRotation[4];
+	double tmpShift[3], tmpRotation[4];
 	
-	tmpShift[0] = -(GLdouble) self.ViewPointX;
-	tmpShift[1] = -(GLdouble) self.ViewPointY;
-	tmpShift[2] = -(GLdouble) self.ViewPointZ;
+	tmpShift[0] = -(double) self.ViewPointX;
+	tmpShift[1] = -(double) self.ViewPointY;
+	tmpShift[2] = -(double) self.ViewPointZ;
 	
-	tmpRotation[1] = (GLdouble) self.RotationAxisX;
-	tmpRotation[2] = (GLdouble) self.RotationAxisY;
-	tmpRotation[3] = (GLdouble) self.RotationAxisZ;
-	tmpRotation[0] = (GLdouble) self.RotationAngle;	
+	tmpRotation[1] = (double) self.RotationAxisX;
+	tmpRotation[2] = (double) self.RotationAxisY;
+	tmpRotation[3] = (double) self.RotationAxisZ;
+	tmpRotation[0] = (double) self.RotationAngle;	
     
 	kemoview_set_rotation_parameter(tmpRotation);
 	kemoview_set_shift_vector(tmpShift);
-	kemoview_set_scale_factor((GLdouble) self.ScaleFactor);
-	kemoview_set_projection_aperture((GLdouble) self.ProjentionAperture);
+	kemoview_set_scale_factor((double) self.ScaleFactor);
+	kemoview_set_projection_aperture((double) self.ProjentionAperture);
     
-	kemoview_set_stereo_parameter((GLdouble) self.FocusPoint, (GLdouble) self.eyeRatio);
+	kemoview_set_stereo_parameter((double) self.FocusPoint, (double) self.eyeRatio);
 }
 
 - (void) UpdateParameters
 {
-	GLdouble tmpShift[3], tmpLookPoint[3];
-	GLdouble tmpScale, tmpRotation[4];
-	GLdouble tmpAperture, tmpNear;
-	GLdouble tmpFar, tmpAspect;
-	GLdouble tmpFocus, tmpEyeRatio;
+	double tmpLookPoint[3];
+	double tmpShift[3];
+	double tmpRotation[4];
+	double tmpScale;
+	double tmpAperture, tmpNear;
+	double tmpFar, tmpAspect;
+	double tmpFocus, tmpEyeRatio;
 	
 	kemoview_get_rotation_parameter(tmpRotation);
 	kemoview_get_shift_vector(tmpShift);
@@ -68,7 +70,7 @@
 	tmpScale = kemoview_get_scale_factor();
 	kemoview_get_projection_parameters(&tmpAperture, &tmpNear,
                                        &tmpFar, &tmpAspect);
-	tmpFocus = kemoview_get_stereo_parameters();
+	tmpFocus = kemoview_get_stereo_focus();
 	tmpEyeRatio = kemoview_get_stereo_eyeseparation();
 	
 	self.ViewPointX = -tmpShift[0];

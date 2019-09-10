@@ -12,7 +12,8 @@ GLFWwindow *glfw_win;
 int iflag_glfw_focus = 0;
 int iflag_gtk_focus = 0;
 
-GtkWidget *window_main;
+GtkWidget *gtk_win;
+struct view_widgets *view_menu;
 
 static void mainloop_4_glfw(){
 	int iflag;
@@ -27,6 +28,7 @@ static void mainloop_4_glfw(){
 		glfwPollEvents();
 		
 		/* Collect GTK ivents */
+		update_viewmatrix_menu(view_menu, gtk_win);
 		while (gtk_events_pending()) gtk_main_iteration();
 	};
 	return;
@@ -35,7 +37,7 @@ static void mainloop_4_glfw(){
 /* Callback functions for GTK */
 
 static void gtkWindowclose_CB(GtkButton *button, gpointer user_data){
-	gtk_widget_destroy(window_main);
+	gtk_widget_destroy(gtk_win);
 	glfwSetWindowShouldClose(glfw_win, GLFW_TRUE);
 	iflag_glfw_focus = 0;
 	iflag_gtk_focus = 0;
@@ -68,7 +70,7 @@ void glfwWindowFocus_CB(GLFWwindow *window, int focused) {
 }
 
 void glfwWindowclose_CB(GLFWwindow *window) {
-	gtk_widget_destroy(window_main);
+	gtk_widget_destroy(gtk_win);
 	glfwSetWindowShouldClose(window, GLFW_TRUE);
 	iflag_glfw_focus = 0;
 	return;
@@ -81,28 +83,32 @@ void kemoview_main_window(struct kemoviewer_type *kemoviewer_data){
 	GtkWidget *vbox_menu;
 	
 	GtkWidget *quitButton;
+	view_menu = (struct view_widgets *) malloc(sizeof(struct view_widgets));
+	
+	gtk_win = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	
+	gtk_window_set_title(GTK_WINDOW(gtk_win), "Mesh viewer");
+	gtk_widget_set_size_request(gtk_win, 150, -1);
+	gtk_container_set_border_width(GTK_CONTAINER(gtk_win), 5);
+	g_signal_connect(G_OBJECT(gtk_win), "destroy", G_CALLBACK(gtkWindowclose_CB), NULL);
+	g_signal_connect(G_OBJECT(gtk_win), "focus-in-event", G_CALLBACK(gtkFocus_in_CB), NULL);
+	g_signal_connect(G_OBJECT(gtk_win), "focus-out-event", G_CALLBACK(gtkFocus_out_CB), NULL);
 	
 	quitButton = gtk_button_new_with_label("Quit");
 	g_signal_connect(G_OBJECT(quitButton), "clicked", G_CALLBACK(gtkWindowclose_CB), NULL);
 	
-	window_main = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-	
-	gtk_window_set_title(GTK_WINDOW(window_main), "Mesh viewer");
-	gtk_widget_set_size_request(window_main, 150, -1);
-	gtk_container_set_border_width(GTK_CONTAINER(window_main), 5);
-	g_signal_connect(G_OBJECT(window_main), "destroy", G_CALLBACK(gtkWindowclose_CB), NULL);
-	g_signal_connect(G_OBJECT(window_main), "focus-in-event", G_CALLBACK(gtkFocus_in_CB), NULL);
-	g_signal_connect(G_OBJECT(window_main), "focus-out-event", G_CALLBACK(gtkFocus_out_CB), NULL);
-	
 	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-	gtk_box_pack_start(GTK_BOX(vbox), quitButton, FALSE, FALSE, 0);
+	gtk_container_add(GTK_CONTAINER(gtk_win), vbox);
+	
 	vbox_menu = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-	make_gtk_main_menu_box(kemoviewer_data, window_main, vbox_menu);
+	
+	gtk_box_pack_start(GTK_BOX(vbox), quitButton, FALSE, FALSE, 0);
+	make_gtk_main_menu_box(kemoviewer_data, view_menu, gtk_win, vbox_menu);
 	gtk_box_pack_start(GTK_BOX(vbox), vbox_menu, FALSE, FALSE, 0);
 
 	gtk_widget_show(quitButton);
 	gtk_widget_show(vbox);
-	gtk_widget_show(window_main);
+	gtk_widget_show(gtk_win);
 	return;
 }
 
@@ -193,6 +199,8 @@ int draw_mesh_kemo(int iflag_streo_shutter, int iflag_dmesh) {
 	kemoview_main_window(single_kemoview);
 	mainloop_4_glfw();
 	glfwTerminate();
+	
+	free(view_menu);
 	return 0;
 };
 

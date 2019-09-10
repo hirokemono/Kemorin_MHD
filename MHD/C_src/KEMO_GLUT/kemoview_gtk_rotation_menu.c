@@ -43,8 +43,6 @@ static void rotation_increment_CB(GtkWidget *entry, gpointer user_data)
 static void rotation_view_CB(GtkButton *button, gpointer user_data){
 	GtkEntry *entry = GTK_ENTRY(user_data);
 	GtkWidget *window_main = GTK_WIDGET(g_object_get_data(G_OBJECT(user_data), "parent"));
-	gtk_widget_destroy(window_main);
-	gtk_main_quit();
 	
 	struct kv_string *image_prefix = kemoview_init_kvstring_by_string("Kemoviewer");
 	
@@ -60,9 +58,6 @@ static void rotation_save_CB(GtkButton *button, gpointer user_data){
 	struct kv_string *filename = kemoview_init_kvstring_by_string(gtk_entry_get_text(entry));
     struct kv_string *stripped_ext = kemoview_alloc_kvstring();
 	struct kv_string *file_prefix = kemoview_alloc_kvstring();
-	
-	gtk_widget_destroy(window_main);
-	gtk_main_quit();
 	
 	
 	kemoview_get_ext_from_file_name(filename, file_prefix, stripped_ext);

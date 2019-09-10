@@ -104,7 +104,7 @@ void mousePosCB(GLFWwindow *window, double xpos, double ypos) {
 		kemoview_drugging_addToRotationTrackball();
 	}
 	else if (button_function == SCALE){
-		GLdouble current_scale;
+		double current_scale;
         current_scale = kemoview_get_scale_factor();
         
 		if (ypos < begin[1]) {
@@ -243,7 +243,7 @@ void keyFunCB(GLFWwindow* window, int key, int scancode, int action, int mods) {
 	}
 	
 	else if (arrow_key_func == SCALE){
-		GLdouble current_scale;
+		double current_scale;
         current_scale = kemoview_get_scale_factor();
         
 		if (key == GLFW_KEY_DOWN && action == GLFW_PRESS)
@@ -299,7 +299,7 @@ void glfw_view_modifier_init(GLFWwindow* window){
 
 
 void display(GLFWwindow* window){
-	kemoview_draw_objects_gl3();
+	kemoview_draw_fast_gl3();
 	kemoview_modify_view();
 	glfwSwapBuffers(window);
 	return;

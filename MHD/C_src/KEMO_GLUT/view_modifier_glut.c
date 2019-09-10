@@ -102,7 +102,7 @@ static void motion(GLint x, GLint y){
 		kemoview_drugging_addToRotationTrackball();
 	}
 	else if (button_function == SCALE){
-		GLdouble current_scale;
+		double current_scale;
         current_scale = kemoview_get_scale_factor();
         
 		y_dbl = (GLdouble) y;
@@ -221,7 +221,7 @@ static void arrows_c(int key, int x, int y){
 	}
 	
 	else if (arrow_key_func == SCALE){
-		GLdouble current_scale;
+		double current_scale;
         current_scale = kemoview_get_scale_factor();
         
 		if (key == GLUT_KEY_DOWN)

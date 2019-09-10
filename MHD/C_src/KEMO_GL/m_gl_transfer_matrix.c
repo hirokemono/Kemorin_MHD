@@ -608,10 +608,10 @@ void set_gl_windowsize(struct view_element *view, GLint npixel_x, GLint npixel_y
 	view->ny_window = npixel_y;
 	return;
 }
-void send_gl_windowsize(struct view_element *view, GLint *npixel_x, GLint *npixel_y)
+void send_gl_windowsize(struct view_element *view, int *npixel_x, int *npixel_y)
 {
-	*npixel_x = view->nx_window;
-	*npixel_y = view->ny_window;
+	*npixel_x = (int) view->nx_window;
+	*npixel_y = (int) view->ny_window;
 	return;
 }
 void update_projection_by_windowsize(struct view_element *view,
@@ -630,10 +630,10 @@ void set_gl_retinamode(struct view_element *view, int i_retina)
 }
 
 
-void set_gl_rotation_parameter(struct view_element *view, GLdouble rot_vect[4])
+void set_gl_rotation_parameter(struct view_element *view, double rot_vect[4])
 {
 	int i;
-	for (i=0;i<4;i++) {view->rotation[i] = rot_vect[i];};
+	for (i=0;i<4;i++) {view->rotation[i] = (GLdouble) rot_vect[i];};
 	return;
 }
 
@@ -660,39 +660,39 @@ void set_gl_animation_rot_angle(struct view_element *view, int int_degree){
 	view->rotate_animation[0] = (GLdouble) int_degree;
 }
 
-void set_gl_shift_vector(struct view_element *view, GLdouble position[3])
+void set_gl_shift_vector(struct view_element *view, double position[3])
 {
 	int i;
-	for (i=0;i<3;i++) {view->shift[i] =      position[i];};
-	for (i=0;i<3;i++) {view->x_lookfrom[i] =-position[i];};
+	for (i=0;i<3;i++) {view->shift[i] =      (GLdouble)  position[i];};
+	for (i=0;i<3;i++) {view->x_lookfrom[i] = (GLdouble) -position[i];};
 	return;
 }
 
-void set_gl_scalar_scale_factor(struct view_element *view, GLdouble scale_s)
+void set_gl_scalar_scale_factor(struct view_element *view, double scale_s)
 {
-	view->iso_scale = scale_s;
+	view->iso_scale = (GLdouble) scale_s;
 	return;
 };
 
-void set_gl_projection_aperture(struct view_element *view, GLdouble aperture_s)
+void set_gl_projection_aperture(struct view_element *view, double aperture_s)
 {
-	view->aperture = aperture_s;
+	view->aperture = (GLdouble) aperture_s;
 	return;
 };
 
-void set_gl_stereo_parameter(struct view_element *view, GLdouble focus, GLdouble eye_sep)
+void set_gl_stereo_parameter(struct view_element *view, double focus, double eye_sep)
 {
-	view->focal_length =   focus;
-	view->eye_separation = eye_sep;
+	view->focal_length =   (GLdouble) focus;
+	view->eye_separation = (GLdouble) eye_sep;
 	view->eye_to_focal =  view->eye_separation / view->focal_length;
 	return;
 };
 
 
-void send_gl_rotation_parameter(struct view_element *view, GLdouble rot_vect[4])
+void send_gl_rotation_parameter(struct view_element *view, double rot_vect[4])
 {
 	int i;
-	for (i=0;i<4;i++) {rot_vect[i] = view->rotation[i];};
+	for (i=0;i<4;i++) {rot_vect[i] = (double) view->rotation[i];};
 	return;
 }
 
@@ -710,39 +710,39 @@ void send_gl_animation_rotation(struct view_element *view, GLdouble rot_vect[4])
 	return;
 }
 
-void send_gl_shift_vector(struct view_element *view, GLdouble position[3])
+void send_gl_shift_vector(struct view_element *view, double position[3])
 {
 	int i;
-	for (i=0;i<3;i++) {position[i] = view->shift[i];};
+	for (i=0;i<3;i++) {position[i] = (double) view->shift[i];};
 	return;
 }
 
-void send_gl_lookat_vector(struct view_element *view, GLdouble position[3])
+void send_gl_lookat_vector(struct view_element *view, double position[3])
 {
 	int i;
-	for (i=0;i<3;i++) {position[i] = view->x_lookat[i];};
+	for (i=0;i<3;i++) {position[i] = (double) view->x_lookat[i];};
 	return;
 }
 
-GLdouble send_scalar_scale_factor(struct view_element *view){return view->iso_scale;};
+double send_scalar_scale_factor(struct view_element *view){return (double) view->iso_scale;};
 
-GLdouble send_gl_projection_aperture(struct view_element *view){return view->aperture;};
+double send_gl_projection_aperture(struct view_element *view){return (double) view->aperture;};
 
-void send_gl_projection_parameters(struct view_element *view, GLdouble *aperture_s,
-								   GLdouble *near_s, GLdouble *far_s, GLdouble *aspect_s)
+void send_gl_projection_parameters(struct view_element *view, double *aperture_s,
+								   double *near_s, double *far_s, double *aspect_s)
 {
-	*aperture_s = view->aperture;
-	*near_s =     view->near;
-	*far_s =      view->far;
-	*aspect_s =   view->aspect;
+	*aperture_s = (double) view->aperture;
+	*near_s =     (double) view->near;
+	*far_s =      (double) view->far;
+	*aspect_s =   (double) view->aspect;
 	return;
 };
 
-GLdouble send_gl_stereo_parameters(struct view_element *view){
-	return view->focal_length;
+double send_gl_stereo_focus(struct view_element *view){
+	return (double) view->focal_length;
 };
-GLdouble send_gl_stereo_eyeseparation(struct view_element *view){
-	return view->eye_separation;
+double send_gl_stereo_eyeseparation(struct view_element *view){
+	return (double) view->eye_separation;
 };
 
 

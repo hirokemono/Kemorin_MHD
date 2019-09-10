@@ -17,6 +17,7 @@ kemoview_gtk_fieldline_menu.o \
 kemoview_gtk_axis_menu.o \
 kemoview_gtk_rotation_menu.o \
 kemoview_gtk_evolution_menu.o \
+kemoview_gtk_viewmatrix_menu.o \
 kemoview_gtk_main_menu.o \
 kemoview_gtk_preference_menu.o \
 \
@@ -205,6 +206,16 @@ module:
 	>> $(MAKENAME)
 	
 	@echo \
+	kemoview_gtk_viewmatrix_menu.o: \
+	'$$(KEMO_C_GLUTDIR)'/kemoview_gtk_viewmatrix_menu.c \
+	kemoview_gtk_viewmatrix_menu.h \
+	kemoviewer.h \
+	m_kemoviewer_data.o \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS) $$<' \
+	>> $(MAKENAME)
+	
+	@echo \
 	kemoview_gtk_main_menu.o: \
 	'$$(KEMO_C_GLUTDIR)'/kemoview_gtk_main_menu.c \
 	kemoview_gtk_main_menu.h \
@@ -220,6 +231,7 @@ module:
 	kemoview_gtk_preference_menu.o \
 	kemoview_gtk_PSF_menu.o \
 	kemoview_gtk_fieldline_menu.o \
+	kemoview_gtk_viewmatrix_menu.o \
 	view_modifier_glfw.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS) $$<' \

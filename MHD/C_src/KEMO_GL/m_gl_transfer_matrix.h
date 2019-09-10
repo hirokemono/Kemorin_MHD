@@ -106,34 +106,34 @@ void set_3d_position_to_window(int point_screen[2], double xx[3],
 void init_kemoview_perspective(struct view_element *view);
 
 void set_gl_windowsize(struct view_element *view, GLint npixel_x, GLint npixel_y);
-void send_gl_windowsize(struct view_element *view, GLint *npixel_x, GLint *npixel_y);
+void send_gl_windowsize(struct view_element *view, int *npixel_x, int *npixel_y);
 void update_projection_by_windowsize(struct view_element *view,
                                      GLint npixel_x, GLint npixel_y);
 
 void set_gl_retinamode(struct view_element *view, int i_retina);
 
 
-void set_gl_rotation_parameter(struct view_element *view, GLdouble rot_vect[4]);
+void set_gl_rotation_parameter(struct view_element *view, double rot_vect[4]);
 void set_gl_dragging_rotation(struct view_element *view, GLdouble rot_vect[4]);
 void set_gl_animation_rotation(struct view_element *view, GLdouble rot_vect[4]);
 void set_gl_animation_rot_axis(struct view_element *view, int iaxis);
 void set_gl_animation_rot_angle(struct view_element *view, int int_degree);
-void set_gl_shift_vector(struct view_element *view, GLdouble position[3]);
-void set_gl_scalar_scale_factor(struct view_element *view, GLdouble scale_s);
-void set_gl_projection_aperture(struct view_element *view, GLdouble aperture_s);
-void set_gl_stereo_parameter(struct view_element *view, GLdouble focus, GLdouble eye_sep);
+void set_gl_shift_vector(struct view_element *view, double position[3]);
+void set_gl_scalar_scale_factor(struct view_element *view, double scale_s);
+void set_gl_projection_aperture(struct view_element *view, double aperture_s);
+void set_gl_stereo_parameter(struct view_element *view, double focus, double eye_sep);
 
-void send_gl_rotation_parameter(struct view_element *view, GLdouble rot_vect[4]);
+void send_gl_rotation_parameter(struct view_element *view, double rot_vect[4]);
 void send_gl_dragging_rotation(struct view_element *view, GLdouble rot_vect[4]);
 void send_gl_animation_rotation(struct view_element *view, GLdouble rot_vect[4]);
-void send_gl_shift_vector(struct view_element *view, GLdouble position[3]);
-void send_gl_lookat_vector(struct view_element *view, GLdouble position[3]);
-GLdouble send_scalar_scale_factor(struct view_element *view);
-GLdouble send_gl_projection_aperture(struct view_element *view);
-void send_gl_projection_parameters(struct view_element *view, GLdouble *aperture_s,
-								   GLdouble *near_s, GLdouble *far_s, GLdouble *aspect_s);
+void send_gl_shift_vector(struct view_element *view, double position[3]);
+void send_gl_lookat_vector(struct view_element *view, double position[3]);
+double send_scalar_scale_factor(struct view_element *view);
+double send_gl_projection_aperture(struct view_element *view);
+void send_gl_projection_parameters(struct view_element *view, double *aperture_s,
+								   double *near_s, double *far_s, double *aspect_s);
 
-GLdouble send_gl_stereo_parameters(struct view_element *view);
+double send_gl_stereo_focus(struct view_element *view);
 GLdouble send_gl_stereo_eyeseparation(struct view_element *view);
 
 

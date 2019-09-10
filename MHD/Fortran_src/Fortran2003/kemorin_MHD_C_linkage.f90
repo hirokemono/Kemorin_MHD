@@ -256,25 +256,25 @@
 !    
 !    void kemoview_update_distance();
 !    
-!    void kemoview_set_rotation_parameter(GLdouble rot_vect[4]);
+!    void kemoview_set_rotation_parameter(double rot_vect[4]);
 !    void kemoview_set_dragging_rotation(GLdouble rot_vect[4]);
 !    void kemoview_set_animation_rot_axis(int iaxis);
 !    void kemoview_set_animation_rot_angle(int int_degree);
-!    void kemoview_set_shift_vector(GLdouble position[3]);
-!    void kemoview_set_scale_factor(GLdouble scale_s);
-!    void kemoview_set_projection_aperture(GLdouble aperture_s);
-!    void kemoview_set_stereo_parameter(GLdouble focus, GLdouble eye_sep);
+!    void kemoview_set_shift_vector(double position[3]);
+!    void kemoview_set_scale_factor(double scale_s);
+!    void kemoview_set_projection_aperture(double aperture_s);
+!    void kemoview_set_stereo_parameter(double focus, double eye_sep);
 !    
-!    void kemoview_get_windowsize(GLint *npixel_x, GLint *npixel_y);
-!    void kemoview_get_rotation_parameter(GLdouble rot_vect[4]);
-!    void kemoview_get_shift_vector(GLdouble position[3]);
-!    void kemoview_get_lookat_vector(GLdouble position[3]);
-!    GLdouble kemoview_get_scale_factor();
-!    GLdouble kemoview_get_projection_aperture();
-!    void kemoview_get_projection_parameters(GLdouble *aperture_s, GLdouble *near_s,
-!                                            GLdouble *far_s, GLdouble *aspect_s);
-!    GLdouble kemoview_get_stereo_parameters();
-!    GLdouble kemoview_get_stereo_eyeseparation();
+!    void kemoview_get_windowsize(int *npixel_x, int *npixel_y);
+!    void kemoview_get_rotation_parameter(double rot_vect[4]);
+!    void kemoview_get_shift_vector(double position[3]);
+!    void kemoview_get_lookat_vector(double position[3]);
+!    double kemoview_get_scale_factor();
+!    double kemoview_get_projection_aperture();
+!    void kemoview_get_projection_parameters(double *aperture_s, double *near_s,
+!                                            double *far_s, double *aspect_s);
+!    double kemoview_get_stereo_focus();
+!    double kemoview_get_stereo_eyeseparation();
 !    
 !    void kemoview_mousedolly(GLdouble start[2], GLdouble x_dolly, GLdouble y_dolly);
 !    void kemoview_mousepan(GLdouble start[2], GLdouble x_pan, GLdouble y_pan);

@@ -602,7 +602,7 @@ void kemoview_update_distance(){
 	update_projection_struct(kemo_sgl->view_s);
 };
 
-void kemoview_set_rotation_parameter(GLdouble rot_vect[4]){
+void kemoview_set_rotation_parameter(double rot_vect[4]){
 	set_gl_rotation_parameter(kemo_sgl->view_s, rot_vect);
 };
 void kemoview_set_dragging_rotation(GLdouble rot_vect[4]){
@@ -614,49 +614,49 @@ void kemoview_set_animation_rot_axis(int iaxis){
 void kemoview_set_animation_rot_angle(int int_degree){
 	set_gl_animation_rot_angle(kemo_sgl->view_s, int_degree);
 }
-void kemoview_set_shift_vector(GLdouble position[3]){
+void kemoview_set_shift_vector(double position[3]){
 	set_gl_shift_vector(kemo_sgl->view_s, position);
 };
-void kemoview_set_scale_factor(GLdouble scale_s){
+void kemoview_set_scale_factor(double scale_s){
 	set_gl_scalar_scale_factor(kemo_sgl->view_s, scale_s);
 };
-void kemoview_set_projection_aperture(GLdouble aperture_s){
+void kemoview_set_projection_aperture(double aperture_s){
 	set_gl_projection_aperture(kemo_sgl->view_s, aperture_s);
 };
-void kemoview_set_stereo_parameter(GLdouble focus, GLdouble eye_sep){
+void kemoview_set_stereo_parameter(double focus, double eye_sep){
 	set_gl_stereo_parameter(kemo_sgl->view_s, focus, eye_sep);
 };
 
 
-void kemoview_get_windowsize(GLint *npixel_x, GLint *npixel_y){
+void kemoview_get_windowsize(int *npixel_x, int *npixel_y){
 	send_gl_windowsize(kemo_sgl->view_s, npixel_x, npixel_y);
 }
-void kemoview_get_rotation_parameter(GLdouble rot_vect[4]){
+void kemoview_get_rotation_parameter(double rot_vect[4]){
 	send_gl_rotation_parameter(kemo_sgl->view_s, rot_vect);
 }
 
-void kemoview_get_shift_vector(GLdouble position[3]){
+void kemoview_get_shift_vector(double position[3]){
 	send_gl_shift_vector(kemo_sgl->view_s, position);
 }
 
-void kemoview_get_lookat_vector(GLdouble position[3]){
+void kemoview_get_lookat_vector(double position[3]){
 	send_gl_lookat_vector(kemo_sgl->view_s, position);
 }
 
-GLdouble kemoview_get_scale_factor(){
+double kemoview_get_scale_factor(){
     return send_scalar_scale_factor(kemo_sgl->view_s);
 }
 
-GLdouble kemoview_get_projection_aperture(){
+double kemoview_get_projection_aperture(){
 	return send_gl_projection_aperture(kemo_sgl->view_s);
 }
-void kemoview_get_projection_parameters(GLdouble *aperture_s, GLdouble *near_s,
-                                        GLdouble *far_s, GLdouble *aspect_s){
+void kemoview_get_projection_parameters(double *aperture_s, double *near_s,
+                                        double *far_s, double *aspect_s){
 	send_gl_projection_parameters(kemo_sgl->view_s, aperture_s, near_s, far_s, aspect_s);
 }
 
-GLdouble kemoview_get_stereo_parameters(){return send_gl_stereo_parameters(kemo_sgl->view_s);};
-GLdouble kemoview_get_stereo_eyeseparation(){return send_gl_stereo_eyeseparation(kemo_sgl->view_s);};
+double kemoview_get_stereo_focus(){return send_gl_stereo_focus(kemo_sgl->view_s);};
+double kemoview_get_stereo_eyeseparation(){return send_gl_stereo_eyeseparation(kemo_sgl->view_s);};
 
 void kemoview_mousedolly(GLdouble start[2], GLdouble x_dolly, GLdouble y_dolly){
 	gl_mousedolly_struct(kemo_sgl->view_s, start, x_dolly, y_dolly);

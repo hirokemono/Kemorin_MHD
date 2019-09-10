@@ -25,15 +25,20 @@
 #include "kemoview_gtk_preference_menu.h"
 #include "kemoview_gtk_PSF_menu.h"
 #include "kemoview_gtk_fieldline_menu.h"
+#include "kemoview_gtk_viewmatrix_menu.h"
 
 #include "view_modifier_glfw.h"
 
 struct main_buttons{
+	GtkWidget *mainHbox;
+	
+	GtkWidget *BaseBox;
+	GtkWidget *psfBox;
+	
 	GtkWidget *prefButton;
 	GtkWidget *flineButton;
 	GtkWidget *meshButton;
 	
-	GtkWidget *psfBox;
 	GtkWidget *rotationBox;
 	GtkWidget *evolutionBox;
 };
@@ -45,6 +50,6 @@ void gtk_psf_menu_box(struct kemoviewer_type *kemoviewer_data, struct colormap_v
 			struct main_buttons *mbot, GtkWidget *window, GtkWidget *box_out);
 
 void make_gtk_main_menu_box(struct kemoviewer_type *kemoviewer_data,
-					   GtkWidget *window_main, GtkWidget *box);
+					   struct view_widgets *view_menu, GtkWidget *window_main, GtkWidget *box);
 	
 #endif
