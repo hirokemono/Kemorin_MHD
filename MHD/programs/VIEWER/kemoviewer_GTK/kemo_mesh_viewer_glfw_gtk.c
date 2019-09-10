@@ -13,7 +13,7 @@ int iflag_glfw_focus = 0;
 int iflag_gtk_focus = 0;
 
 GtkWidget *gtk_win;
-struct view_widgets *view_menu;
+struct main_buttons *mbot;
 
 static void mainloop_4_glfw(){
 	int iflag;
@@ -28,7 +28,7 @@ static void mainloop_4_glfw(){
 		glfwPollEvents();
 		
 		/* Collect GTK ivents */
-		update_viewmatrix_menu(view_menu, gtk_win);
+		update_viewmatrix_menu(mbot->view_menu, gtk_win);
 		while (gtk_events_pending()) gtk_main_iteration();
 	};
 	return;
@@ -80,10 +80,12 @@ void glfwWindowclose_CB(GLFWwindow *window) {
 
 void kemoview_main_window(struct kemoviewer_type *kemoviewer_data){
 	GtkWidget *vbox;
-	GtkWidget *vbox_menu;
 	
 	GtkWidget *quitButton;
-	view_menu = (struct view_widgets *) malloc(sizeof(struct view_widgets));
+	
+	mbot = (struct main_buttons *) malloc(sizeof(struct main_buttons));
+	mbot->view_menu = (struct view_widgets *) malloc(sizeof(struct view_widgets));
+	mbot->color_vws = (struct colormap_view *) malloc(sizeof(struct colormap_view));
 	
 	gtk_win = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	
@@ -97,14 +99,15 @@ void kemoview_main_window(struct kemoviewer_type *kemoviewer_data){
 	quitButton = gtk_button_new_with_label("Quit");
 	g_signal_connect(G_OBJECT(quitButton), "clicked", G_CALLBACK(gtkWindowclose_CB), NULL);
 	
+	
 	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_container_add(GTK_CONTAINER(gtk_win), vbox);
 	
-	vbox_menu = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+	mbot->vbox_menu = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	
 	gtk_box_pack_start(GTK_BOX(vbox), quitButton, FALSE, FALSE, 0);
-	make_gtk_main_menu_box(kemoviewer_data, view_menu, gtk_win, vbox_menu);
-	gtk_box_pack_start(GTK_BOX(vbox), vbox_menu, FALSE, FALSE, 0);
+	make_gtk_main_menu_box(kemoviewer_data, mbot, gtk_win);
+	gtk_box_pack_start(GTK_BOX(vbox), mbot->vbox_menu, FALSE, FALSE, 0);
 
 	gtk_widget_show(quitButton);
 	gtk_widget_show(vbox);
@@ -200,7 +203,9 @@ int draw_mesh_kemo(int iflag_streo_shutter, int iflag_dmesh) {
 	mainloop_4_glfw();
 	glfwTerminate();
 	
-	free(view_menu);
+	free(mbot->color_vws);
+	free(mbot->view_menu);
+	free(mbot);
 	return 0;
 };
 

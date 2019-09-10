@@ -77,8 +77,6 @@ struct view_widgets{
 	GtkWidget *hbox_viewmatrix_save;
 	GtkWidget *entry_viewmatrix_file;
 	GtkWidget *saveView_Button, *loadView_Button;
-	
-	GtkWidget *vbox_view;
 };
 
 /*  prototypes */

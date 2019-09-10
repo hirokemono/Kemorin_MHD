@@ -30,6 +30,10 @@
 #include "view_modifier_glfw.h"
 
 struct main_buttons{
+	GtkWidget *vbox_menu;
+	struct view_widgets *view_menu;
+	struct colormap_view *color_vws;
+	
 	GtkWidget *mainHbox;
 	
 	GtkWidget *BaseBox;
@@ -39,6 +43,7 @@ struct main_buttons{
 	GtkWidget *flineButton;
 	GtkWidget *meshButton;
 	
+	GtkWidget *viewBox;
 	GtkWidget *rotationBox;
 	GtkWidget *evolutionBox;
 };
@@ -46,10 +51,10 @@ struct main_buttons{
 
 /*  prototypes */
 
-void gtk_psf_menu_box(struct kemoviewer_type *kemoviewer_data, struct colormap_view *color_vws,
+void gtk_psf_menu_box(struct kemoviewer_type *kemoviewer_data,
 			struct main_buttons *mbot, GtkWidget *window, GtkWidget *box_out);
 
 void make_gtk_main_menu_box(struct kemoviewer_type *kemoviewer_data,
-					   struct view_widgets *view_menu, GtkWidget *window_main, GtkWidget *box);
+					   struct main_buttons *mbot, GtkWidget *window_main);
 	
 #endif
