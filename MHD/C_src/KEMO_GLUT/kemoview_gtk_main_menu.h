@@ -33,13 +33,14 @@ struct main_buttons{
 	GtkWidget *vbox_menu;
 	struct view_widgets *view_menu;
 	struct colormap_view *color_vws;
+	struct lightparams_view *lightparams_vws;
 	
 	GtkWidget *mainHbox;
 	
 	GtkWidget *BaseBox;
 	GtkWidget *psfBox;
 	
-	GtkWidget *prefButton;
+	GtkWidget *prefBox;
 	GtkWidget *flineButton;
 	GtkWidget *meshButton;
 	

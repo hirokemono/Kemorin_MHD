@@ -11,12 +11,6 @@
 
 int id_fmt = 0;
 
-static void kemoview_pref_menu_CB(GtkButton *button, gpointer user_data){
-	struct kemoviewer_type *kemoviewer_data = (struct kemoviewer_type *) user_data;
-	kemoview_preference_GTK(kemoviewer_data);
-	return;
-};
-
 static void kemoview_fline_menu_CB(GtkButton *button, gpointer user_data){
 	struct kemoviewer_type *kemoviewer_data = (struct kemoviewer_type *) user_data;
 	gtk_fieldline_menu();
@@ -30,7 +24,7 @@ static void kemoview_mesh_menu_CB(GtkButton *button, gpointer user_data){
 };
 
 static void delete_kemoview_menu(struct main_buttons *mbot){
-	gtk_widget_destroy(mbot->prefButton);
+	gtk_widget_destroy(mbot->prefBox);
 	gtk_widget_destroy(mbot->meshButton);
 	gtk_widget_destroy(mbot->flineButton);
 	
@@ -48,9 +42,6 @@ static void update_kemoview_menu(struct kemoviewer_type *kemoviewer_data,
 	int iflag_draw_f = kemoview_get_fline_switch();
 	int nload_psf = kemoview_get_PSF_num_loaded();
 	
-	mbot->prefButton = gtk_button_new_with_label("Preferences...");
-	g_signal_connect(G_OBJECT(mbot->prefButton), "clicked", 
-				G_CALLBACK(kemoview_pref_menu_CB), (gpointer) kemoviewer_data);
 	mbot->flineButton = gtk_button_new_with_label("Field line");
 	g_signal_connect(G_OBJECT(mbot->flineButton), "clicked", 
 				G_CALLBACK(kemoview_fline_menu_CB), (gpointer) kemoviewer_data);
@@ -83,7 +74,9 @@ static void update_kemoview_menu(struct kemoviewer_type *kemoviewer_data,
 	gtk_viewmatrix_menu_box(mbot->view_menu, window, mbot->viewBox);
 	gtk_box_pack_start(GTK_BOX(box), mbot->viewBox, FALSE, FALSE, 0);
 	
-	gtk_box_pack_start(GTK_BOX(box), mbot->prefButton, FALSE, FALSE, 0);
+	mbot->prefBox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+	kemoview_preference_GTK(kemoviewer_data, mbot->lightparams_vws, mbot->prefBox);
+	gtk_box_pack_start(GTK_BOX(box), mbot->prefBox, FALSE, FALSE, 0);
 	
 	gtk_widget_show_all(box);
 	if(nload_psf == 0) gtk_widget_hide(mbot->psfBox);
