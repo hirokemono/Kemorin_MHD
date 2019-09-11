@@ -3,8 +3,7 @@
 #
 
 OBJ_KEMOVIEW_GLUT = \
-const_viewer_menu_glut.o \
-view_modifier_glut.o \
+view_modifier_glfw.o \
 \
 kemoview_fileselector_gtk.o \
 kemoview_gtk_PSF_surface_menu.o \
@@ -45,23 +44,12 @@ mod_list:
 
 module:
 	@echo \
-	const_viewer_menu_glut.o: \
-	'$$(KEMO_C_GLUTDIR)'/const_viewer_menu_glut.c \
-	const_viewer_menu_glut.h \
-	kemoviewer.h \
-	view_modifier_glut.o \
-	m_kemoview_psf_menu.o \
-	>> $(MAKENAME)
-	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
-	>> $(MAKENAME)
-	
-	@echo \
-	view_modifier_glut.o: \
-	'$$(KEMO_C_GLUTDIR)'/view_modifier_glut.c \
-	view_modifier_glut.h \
+	view_modifier_glfw.o:  \
+	'$$(KEMO_C_GLUTDIR)'/view_modifier_glfw.c  \
+	view_modifier_glfw.h \
 	kemoviewer.h \
 	>> $(MAKENAME)
-	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS) $$<' \
 	>> $(MAKENAME)
 	
 	@echo \
@@ -69,7 +57,6 @@ module:
 	'$$(KEMO_C_GLUTDIR)'/kemoview_fileselector_gtk.c  \
 	kemoview_fileselector_gtk.h \
 	kemoviewer.h \
-	view_modifier_glut.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS) $$<' \
 	>> $(MAKENAME)

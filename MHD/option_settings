@@ -2,6 +2,17 @@ Settings for Makefiles
 
 #
 # -------------------------------------------------------------------------------
+# MacBook Pro
+# -------------------------------------------------------------------------------
+#
+ ./configure --prefix=/Users/matsui/local FC=mpif90 CC=mpicc \
+CFLAGS="-O3 -Wall -g" FCFLAGS="-O3 -Wall -g" --with-blas \
+--enable-fftw3 --enable-cocoa --enable-libpng \
+--enable-gl --enable-gtk --enable-glfw --with-zlib \
+--with-hdf5=/opt/local/bin/h5pcc \
+PKG_CONFIG_PATH=/Users/matsui/local/lib/pkgconfig:/usr/lib/pkgconfig
+#
+# -------------------------------------------------------------------------------
 # Intel XEON Icelake (TACC Frontera)
 # -------------------------------------------------------------------------------
 #

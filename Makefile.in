@@ -80,7 +80,7 @@ HDF5_FFLAGS=    @HDF5_FFLAGS@
 HDF5_LDFLAGS=   @HDF5_LDFLAGS@
 HDF5_FLIBS=     @HDF5_PFLIBS@
 #
-#   GLUT settings (Requirement: OpenGL, GLUT, libpng)
+#   OpenGL settings (Requirement: OpenGL, GLUT, libpng)
 #
 OPENGL_INC = @GL_INC@
 OPENGL_LIBS= @GL_LIBS@
@@ -89,12 +89,13 @@ OPENGL_LIBS= @GL_LIBS@
 #
 PGPLOT_LIBS= @PGPLOT_LIBS@
 #
-#   GTK+ settings (Requirement: OpenGL, GLUT, libpng)
+#   GTK+ settings (Requirement: OpenGL, libpng)
 GTK3_CFLAGS= @GTK3_CFLAGS@
 GTK3_LIBS= @GTK3_LIBS@
 #
-#   GLUI settings (Requirement: OpenGL, GLUT, libpng)
-#     It Turns on if C++ compiler is defined
+#   GLFW settings (Requirement: OpenGL, libpng)
+GLFW_CFLAGS= @GLFW_CFLAGS@
+GLFW_LIBS=   @GLFW_LIBS@
 #
 #  --- Please do not chenge the following ---
 #
@@ -143,6 +144,8 @@ makemake: $(MAKE_MOD_DEP)
 		PGPLOT_LIBS="$(PGPLOT_LIBS)" \
 		GTK3_CFLAGS="$(GTK3_CFLAGS)" \
 		GTK3_LIBS="$(GTK3_LIBS)" \
+		GLFW_CFLAGS="$(GLFW_CFLAGS)" \
+		GLFW_LIBS="$(GLFW_LIBS)" \
 		HDF5_FFLAGS="$(HDF5_FFLAGS)" \
 		HDF5_LDFLAGS="$(HDF5_LDFLAGS)" \
 		HDF5_FLIBS="$(HDF5_FLIBS)" \

@@ -195,7 +195,6 @@ module:
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(GTK3_CFLAGS) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)
-	@echo \
 	
 	@echo \
 	control_panel_4_field_GTK.o: \
@@ -208,7 +207,6 @@ module:
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(GTK3_CFLAGS) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)
-	@echo \
 	
 	@echo \
 	ctl_panel_platforms_GTK.o: \
@@ -221,7 +219,6 @@ module:
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(GTK3_CFLAGS) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)
-	@echo \
 	
 	@echo \
 	tree_view_4_light_position.o: \
@@ -236,7 +233,6 @@ module:
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(GTK3_CFLAGS) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)
-	@echo \
 	
 	@echo \
 	tree_view_4_viewer_mesh.o: \
@@ -254,7 +250,6 @@ module:
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(GTK3_CFLAGS) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)
-	@echo \
 
 
 includes:

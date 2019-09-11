@@ -13,7 +13,6 @@
 #include "gtk/gtk.h"
 
 #include "kemoviewer.h"
-#include "view_modifier_glut.h"
 #include "kemoview_gtk_colormap_menu.h"
 #include "kemoview_gtk_mesh_menu.h"
 #include "kemoview_gtk_preference_menu.h"

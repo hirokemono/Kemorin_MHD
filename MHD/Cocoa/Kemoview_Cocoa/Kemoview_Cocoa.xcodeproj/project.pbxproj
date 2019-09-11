@@ -348,8 +348,6 @@
 		185CB9A6212F593D00BB3C0B /* t_ctl_data_zonal_means_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = t_ctl_data_zonal_means_c.h; sourceTree = "<group>"; };
 		185CB9A7212F593D00BB3C0B /* t_SGS_MHD_control_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = t_SGS_MHD_control_c.c; sourceTree = "<group>"; };
 		185CB9A8212F593D00BB3C0B /* t_SGS_MHD_control_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = t_SGS_MHD_control_c.h; sourceTree = "<group>"; };
-		18601A6115D9B0D20015F6B0 /* kemoviewer_GLUI */ = {isa = PBXFileReference; lastKnownFileType = folder; name = kemoviewer_GLUI; path = ../../programs/VIEWER/kemoviewer_GLUI; sourceTree = "<group>"; };
-		18601A6215D9B0D20015F6B0 /* kemoviewer_GLUT */ = {isa = PBXFileReference; lastKnownFileType = folder; name = kemoviewer_GLUT; path = ../../programs/VIEWER/kemoviewer_GLUT; sourceTree = "<group>"; };
 		18601A6315D9B0D20015F6B0 /* kemoviewer_GTK */ = {isa = PBXFileReference; lastKnownFileType = folder; name = kemoviewer_GTK; path = ../../programs/VIEWER/kemoviewer_GTK; sourceTree = "<group>"; };
 		1862C40E2311BC69000306E6 /* set_rgba_table_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = set_rgba_table_c.h; sourceTree = "<group>"; };
 		1862C40F2311BC6A000306E6 /* set_rgba_table_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = set_rgba_table_c.c; sourceTree = "<group>"; };
@@ -637,8 +635,6 @@
 				18D7E64D1562D359009B05FF /* C_src */,
 				256AC3D80F4B6AC300CF3369 /* Kemoview_CocoaAppDelegate.h */,
 				256AC3D90F4B6AC300CF3369 /* Kemoview_CocoaAppDelegate.m */,
-				18601A6115D9B0D20015F6B0 /* kemoviewer_GLUI */,
-				18601A6215D9B0D20015F6B0 /* kemoviewer_GLUT */,
 				18601A6315D9B0D20015F6B0 /* kemoviewer_GTK */,
 			);
 			name = Classes;

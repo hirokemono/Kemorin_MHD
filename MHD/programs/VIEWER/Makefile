@@ -3,8 +3,6 @@
 #
 
 SUBDIRS = \
-kemoviewer_GLUT \
-kemoviewer_GLUI \
 kemoviewer_GTK
 
 #
