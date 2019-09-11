@@ -74,7 +74,7 @@ void orthogonal_glmat_c(GLdouble left, GLdouble right, GLdouble bottom, GLdouble
 void orthogonalGL(GLdouble left, GLdouble right, GLdouble bottom, GLdouble top,
 			GLdouble near, GLdouble far);
 
-void set_view_by_identity();
+void set_view_by_identity(void);
 void modify_view_by_struct(struct view_element *view);
 void modify_left_view_by_struct(struct view_element *view);
 void modify_right_view_by_struct(struct view_element *view);
@@ -85,7 +85,7 @@ void rotate_right_view_by_struct(struct view_element *view);
 
 void set_view_for_message(struct view_element *view);
 
-void set_projection_by_identity();
+void set_projection_by_identity(void);
 void init_projection_struct(struct view_element *view);
 void update_projection_struct(struct view_element *view);
 void update_left_projection_struct(struct view_element *view);

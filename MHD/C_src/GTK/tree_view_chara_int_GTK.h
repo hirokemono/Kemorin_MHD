@@ -13,7 +13,7 @@
 
 /* prototypes */
 
-int append_ci_item_to_tree(int index, char *c_tbl, int i_data, GtkTreeModel *child_model);
+int append_ci_item_to_tree(const int index, const char *c_tbl, const int i_data, GtkTreeModel *child_model);
 int append_ci_list_from_ctl(int index, struct chara_int_ctl_list *head, 
 			GtkTreeView *ci_tree_view);
 

@@ -8,7 +8,7 @@
 #include "tree_view_chara_int_GTK.h"
 
 /* Append new data at the end of list */
-int append_ci_item_to_tree(int index, char *c_tbl, int i_data, GtkTreeModel *child_model)
+int append_ci_item_to_tree(const int index, const char *c_tbl, const int i_data, GtkTreeModel *child_model)
 {
     GtkTreeIter iter;
     

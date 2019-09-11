@@ -5,7 +5,7 @@
 #include "m_colorbar_work.h"
 
 
-struct cbar_work * alloc_colorbar_position(){
+struct cbar_work * alloc_colorbar_position(void){
 	struct cbar_work *cbar_wk = (struct cbar_work *) malloc(sizeof(struct cbar_work));
 	if(cbar_wk == NULL){
 		printf("malloc error for cbar_work\n");

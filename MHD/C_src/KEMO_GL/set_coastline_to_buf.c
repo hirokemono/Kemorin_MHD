@@ -13,7 +13,7 @@ double theta_t_grid[NUM_T+1];
 double phi_t_grid[N_CURVE+1];
 
 
-void init_mapgrid_position(){
+void init_mapgrid_position(void){
 	int i, j;
 	double pi;
 	
@@ -27,7 +27,7 @@ void init_mapgrid_position(){
 	return;
 }
 
-int count_sph_flame(){
+int count_sph_flame(void){
 	int num_edge = (NUM_P+1) * N_CURVE + (NUM_T-1) * N_CURVE;
 	return num_edge;
 }
@@ -151,7 +151,7 @@ int set_map_flame_to_buf(struct gl_strided_buffer *strided_buf){
 
 
 
-int count_coastline_buf(){
+int count_coastline_buf(void){
 	return get_nedge_coastline();
 };
 

@@ -23,7 +23,7 @@ struct kemoview_fline{
 };
 
 /* prototypes */ 
-struct kemoview_fline * init_kemoview_fline();
+struct kemoview_fline * init_kemoview_fline(void);
 void dealloc_kemoview_fline(struct kemoview_fline *kemo_fline);
 
 void init_draw_fline(struct kemoview_fline *kemo_fline, struct psf_data *ucd_tmp,

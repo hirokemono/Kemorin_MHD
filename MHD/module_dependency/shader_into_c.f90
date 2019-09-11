@@ -111,8 +111,8 @@
       full_path = trim(dirname) // '/' // trim(shader_file)
       open(12, file = full_path, recl=max_line_len)
 !
-      write(13,'(3a)') 'char * ', trim(func_name), '();'
-      write(15,'(3a)') 'char * ', trim(func_name), '(){'
+      write(13,'(3a)') 'char * ', trim(func_name), '(void);'
+      write(15,'(3a)') 'char * ', trim(func_name), '(void){'
       close(13)
 
       write(15,'(3a)') '    const char  ', trim(shader_src), '[]'

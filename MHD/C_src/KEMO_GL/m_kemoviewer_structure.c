@@ -66,7 +66,7 @@ void kemoview_deallocate_pointers(struct kemoviewer_type *kemoviewer_data){
 	return;
 }
 
-int kemoview_get_PSF_maximum_load(){
+int kemoview_get_PSF_maximum_load(void){
 	return get_PSF_maximum_load(kemo_sgl->kemo_psf->psf_a);
 };
 
@@ -74,7 +74,7 @@ void kemoview_alloc_kvstringitem(int length, struct kv_string *kvstring){
 	alloc_kvstringitem(length, kvstring);
 	return;
 };
-struct kv_string* kemoview_alloc_kvstring(){return alloc_kvstring();};
+struct kv_string* kemoview_alloc_kvstring(void){return alloc_kvstring();};
 struct kv_string* kemoview_init_kvstring_by_string(const char *org_string){
 	return init_kvstring_by_string(org_string);
 };
@@ -101,11 +101,11 @@ void kemoview_set_current_viewer_id(int id_window, struct mul_kemoviewer_type *k
 	kemoview_array->id_current = id_window;
 	return;
 }
-int kemoview_get_current_viewer_id(){return kemo_sgl->window_ID;};
+int kemoview_get_current_viewer_id(void){return kemo_sgl->window_ID;};
 
 /* Routines for draw by OpenGL */
 
-void kemoview_draw_fast_gl3(){
+void kemoview_draw_fast_gl3(void){
 	/*    printf("Draw objects to ID: %d\n", kemo_sgl->view_s->gl_drawID);*/
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 	glDrawBuffer(GL_BACK);
@@ -113,7 +113,7 @@ void kemoview_draw_fast_gl3(){
 	
 	return;
 };
-void kemoview_draw_objects_gl3(){
+void kemoview_draw_objects_gl3(void){
 	/*    printf("Draw objects to ID: %d\n", kemo_sgl->view_s->gl_drawID);*/
 //	update_draw_objects_gl3(kemo_sgl);
 	return;
@@ -124,9 +124,9 @@ void kemoview_orthogonalGL(GLdouble left, GLdouble right, GLdouble bottom, GLdou
 	orthogonalGL(left, right, bottom, top, near, far);
 	return;
 };
-void kemoview_indentity_projectionmatrix(){set_projection_by_identity();};
-void kemoview_indentity_viewmatrix(){set_view_by_identity();};
-void kemoview_message_viewmatrix(){set_view_for_message(kemo_sgl->view_s);};
+void kemoview_indentity_projectionmatrix(void){set_projection_by_identity();};
+void kemoview_indentity_viewmatrix(void){set_view_by_identity();};
+void kemoview_message_viewmatrix(void){set_view_for_message(kemo_sgl->view_s);};
 
 void kemoview_init_lighting(int iflag_core_profile){
 	kemo_sgl->view_s->iflag_core_profile = iflag_core_profile;
@@ -136,7 +136,7 @@ void kemoview_init_lighting(int iflag_core_profile){
 	assign_kemoview_VAOs(kemo_sgl->kemo_VAOs);
 }
 
-void kemoview_init_background_color(){init_bg_color_kemoview(kemo_sgl->kemo_mesh->mesh_m);}
+void kemoview_init_background_color(void){init_bg_color_kemoview(kemo_sgl->kemo_mesh->mesh_m);}
 void kemoview_set_background_color(GLfloat color[4]) {
     copy_rgba_color_c(color, kemo_sgl->kemo_mesh->mesh_m->bg_color);
     set_bg_color_kemoview(kemo_sgl->kemo_mesh->mesh_m);
@@ -160,17 +160,17 @@ int kemoview_open_data(struct kv_string *filename){
 	return iflag_datatype;
 }
 
-void kemoview_close_mesh_view(){
+void kemoview_close_mesh_view(void){
 	close_mesh_view(kemo_sgl->kemo_mesh);
 	return;
 }
 
-int kemoview_close_PSF_view(){
+int kemoview_close_PSF_view(void){
 	close_PSF_view(kemo_sgl->kemo_psf);
 	return kemoview_get_PSF_num_loaded();
 }
 
-void kemoview_close_fieldline_view(){
+void kemoview_close_fieldline_view(void){
 	close_fieldline_view(kemo_sgl->kemo_fline);
 	return;
 }
@@ -205,7 +205,7 @@ void kemoview_viewer_evolution(int istep){
 }
 
 
-void kemoview_draw_with_modified_domain_distance(){
+void kemoview_draw_with_modified_domain_distance(void){
 	cal_range_4_mesh_c(kemo_sgl->kemo_mesh->mesh_d, kemo_sgl->view_s);
 	modify_object_multi_viewer_c(kemo_sgl->kemo_mesh->mesh_m->dist_domains, kemo_sgl->kemo_mesh->mesh_d);
 	return;
@@ -216,7 +216,7 @@ void kemoview_set_viewtype(int sel){
 }
 
 void kemoview_set_coastline_radius(double radius){kemo_sgl->kemo_mesh->mesh_m->radius_coast = radius;};
-double kemoview_get_coastline_radius(){return kemo_sgl->kemo_mesh->mesh_m->radius_coast;};
+double kemoview_get_coastline_radius(void){return kemo_sgl->kemo_mesh->mesh_m->radius_coast;};
 
 void kemoview_set_object_property_flags(int selected, int iflag){
 	if (selected == AXIS_TOGGLE) {set_axis_flag(iflag, kemo_sgl->kemo_mesh->mesh_m);}
@@ -257,7 +257,7 @@ int kemoview_toggle_object_properties(int selected){
 void kemoview_alloc_phong_light_list(int num){
 	alloc_phong_light_list(kemo_sgl->kemo_shaders->lights, num);
 };
-void kemoview_dealloc_phong_light_list(){
+void kemoview_dealloc_phong_light_list(void){
 	dealloc_phong_light_list(kemo_sgl->kemo_shaders->lights);
 };
 void kemoview_realloc_phong_light_list(int num){
@@ -271,7 +271,7 @@ void kemoview_add_phong_light_list(int i_add, float r, float t, float p){
 	add_phong_light_list(kemo_sgl->kemo_shaders->lights, i_add, r, t, p);
 };
 
-void kemoview_init_phong_light_list(){
+void kemoview_init_phong_light_list(void){
 	init_phong_light_list(kemo_sgl->kemo_shaders->lights);
 };
 
@@ -279,7 +279,7 @@ void kemoview_init_phong_light_list(){
 void kemoview_set_each_light_position(int i_point, float r, float t, float p){
 	set_each_light_position(kemo_sgl->kemo_shaders->lights, i_point, r, t, p);
 };
-int kemoview_get_num_light_position(){
+int kemoview_get_num_light_position(void){
 	return send_num_light_position(kemo_sgl->kemo_shaders->lights);
 };
 void kemoview_get_each_light_rtp(int i_point, float *r, float *t, float *p){
@@ -299,16 +299,16 @@ void kemoview_set_material_shineness(float shiness_in){
 	set_material_shineness(kemo_sgl->kemo_shaders->lights, shiness_in);
 };
 
-float kemoview_send_material_ambient(){
+float kemoview_send_material_ambient(void){
 	return send_material_ambient(kemo_sgl->kemo_shaders->lights);
 };
-float kemoview_send_material_diffuse(){
+float kemoview_send_material_diffuse(void){
 	return send_material_diffuse(kemo_sgl->kemo_shaders->lights);
 };
-float kemoview_send_material_specular(){
+float kemoview_send_material_specular(void){
 	return send_material_specular(kemo_sgl->kemo_shaders->lights);
 };
-float kemoview_send_material_shiness(){
+float kemoview_send_material_shiness(void){
 	return send_material_shiness(kemo_sgl->kemo_shaders->lights);
 };
 
@@ -336,7 +336,7 @@ int kemoview_get_domain_color_flag(int selected){
 }
 
 void kemoview_set_node_grp_color_flag(int icolor)  {select_node_grp_node_color(icolor, kemo_sgl->kemo_mesh->mesh_m);};
-int kemoview_get_node_grp_color_flag() {return get_node_grp_node_color(kemo_sgl->kemo_mesh->mesh_m);};
+int kemoview_get_node_grp_color_flag(void) {return get_node_grp_node_color(kemo_sgl->kemo_mesh->mesh_m);};
 
 void kemoview_set_ele_grp_color_flag(int selected, int icolor){
     if(selected == SURFSOLID_TOGGLE){select_ele_grp_patch_color(icolor, kemo_sgl->kemo_mesh->mesh_m);}
@@ -399,9 +399,9 @@ void kemoview_set_domain_opacity(double opacity_in){kemo_sgl->kemo_mesh->mesh_m-
 void kemoview_set_ele_grp_opacity(double opacity_in)   {kemo_sgl->kemo_mesh->mesh_m->ele_grp_opacity = opacity_in;};
 void kemoview_set_surf_grp_opacity(double opacity_in)  {kemo_sgl->kemo_mesh->mesh_m->surf_grp_opacity = opacity_in;};
 
-double kemoview_get_domain_opacity(){return kemo_sgl->kemo_mesh->mesh_m->domain_opacity;};
-double kemoview_get_ele_grp_opacity(){return kemo_sgl->kemo_mesh->mesh_m->ele_grp_opacity;};
-double kemoview_get_surf_grp_opacity(){return kemo_sgl->kemo_mesh->mesh_m->surf_grp_opacity;};
+double kemoview_get_domain_opacity(void){return kemo_sgl->kemo_mesh->mesh_m->domain_opacity;};
+double kemoview_get_ele_grp_opacity(void){return kemo_sgl->kemo_mesh->mesh_m->ele_grp_opacity;};
+double kemoview_get_surf_grp_opacity(void){return kemo_sgl->kemo_mesh->mesh_m->surf_grp_opacity;};
 
 
 int kemoview_get_draw_mesh_node(int i) {return kemo_sgl->kemo_mesh->mesh_m->draw_domains_nod[i];};
@@ -513,12 +513,12 @@ void kemoview_surf_grp_grid_toggle(int selected){
 	return;
 }
 
-int kemoview_get_draw_mesh_flag(){return kemo_sgl->kemo_mesh->mesh_m->iflag_draw_mesh;};
+int kemoview_get_draw_mesh_flag(void){return kemo_sgl->kemo_mesh->mesh_m->iflag_draw_mesh;};
 
-int kemoview_get_num_subdomain()    {return kemo_sgl->kemo_mesh->mesh_d->num_pe_sf;};
-int kemoview_get_num_node_grp() {return kemo_sgl->kemo_mesh->mesh_d->ngrp_nod_sf;};
-int kemoview_get_num_ele_grp() {return kemo_sgl->kemo_mesh->mesh_d->ngrp_ele_sf;};
-int kemoview_get_num_surf_grp(){return kemo_sgl->kemo_mesh->mesh_d->ngrp_surf_sf;};
+int kemoview_get_num_subdomain(void){return kemo_sgl->kemo_mesh->mesh_d->num_pe_sf;};
+int kemoview_get_num_node_grp(void) {return kemo_sgl->kemo_mesh->mesh_d->ngrp_nod_sf;};
+int kemoview_get_num_ele_grp(void)  {return kemo_sgl->kemo_mesh->mesh_d->ngrp_ele_sf;};
+int kemoview_get_num_surf_grp(void) {return kemo_sgl->kemo_mesh->mesh_d->ngrp_surf_sf;};
 
 
 void kemoview_get_node_grp_name(struct kv_string *groupname, int i){
@@ -531,13 +531,13 @@ void kemoview_get_surf_grp_name(struct kv_string *groupname, int i){
     alloc_copy_string(kemo_sgl->kemo_mesh->mesh_d->surf_gp_name_sf[i], groupname); 
 };
 
-int kemoview_get_view_type_flag(){return kemo_sgl->view_s->iflag_view_type;};
+int kemoview_get_view_type_flag(void){return kemo_sgl->view_s->iflag_view_type;};
 
-int kemoview_get_mesh_color_mode(){return kemo_sgl->kemo_mesh->mesh_m->mesh_color_mode;};
-int kemoview_get_num_of_color_loop(){return kemo_sgl->kemo_mesh->mesh_m->num_of_color_loop;};
+int kemoview_get_mesh_color_mode(void){return kemo_sgl->kemo_mesh->mesh_m->mesh_color_mode;};
+int kemoview_get_num_of_color_loop(void){return kemo_sgl->kemo_mesh->mesh_m->num_of_color_loop;};
 
-double kemoview_get_node_diamater()   {return kemo_sgl->kemo_mesh->mesh_m->node_diam;};
-double kemoview_get_domain_distance(){return kemo_sgl->kemo_mesh->mesh_m->dist_domains;};
+double kemoview_get_node_diamater(void)   {return kemo_sgl->kemo_mesh->mesh_m->node_diam;};
+double kemoview_get_domain_distance(void){return kemo_sgl->kemo_mesh->mesh_m->dist_domains;};
 
 
 void kemoview_get_ext_from_file_name(struct kv_string *filename,
@@ -571,15 +571,15 @@ void kemoview_set_PSF_by_rgba_texture(int width, int height, const unsigned char
 							  width, height, bgra_in);
 };
 
-void kemoview_quick_view(){
+void kemoview_quick_view(void){
 	quick_mono_kemoview(kemo_sgl);
 };
-void kemoview_modify_view(){
+void kemoview_modify_view(void){
 	modify_stereo_kemoview(kemo_sgl);
 };
-void kemoview_rotate(){rotate_stereo_kemoview(kemo_sgl);};
+void kemoview_rotate(void){rotate_stereo_kemoview(kemo_sgl);};
 
-void kemoviewer_reset_to_init_angle(){
+void kemoviewer_reset_to_init_angle(void){
     reset_all_view_parameter(kemo_sgl->view_s);
     init_rot_animation(kemo_sgl->view_s);
 };
@@ -598,7 +598,7 @@ void kemoview_update_projection_by_viewer_size(GLint npixel_x, GLint npixel_y){
 };
 
 
-void kemoview_update_distance(){
+void kemoview_update_distance(void){
 	update_projection_struct(kemo_sgl->view_s);
 };
 
@@ -643,11 +643,11 @@ void kemoview_get_lookat_vector(double position[3]){
 	send_gl_lookat_vector(kemo_sgl->view_s, position);
 }
 
-double kemoview_get_scale_factor(){
+double kemoview_get_scale_factor(void){
     return send_scalar_scale_factor(kemo_sgl->view_s);
 }
 
-double kemoview_get_projection_aperture(){
+double kemoview_get_projection_aperture(void){
 	return send_gl_projection_aperture(kemo_sgl->view_s);
 }
 void kemoview_get_projection_parameters(double *aperture_s, double *near_s,
@@ -655,8 +655,8 @@ void kemoview_get_projection_parameters(double *aperture_s, double *near_s,
 	send_gl_projection_parameters(kemo_sgl->view_s, aperture_s, near_s, far_s, aspect_s);
 }
 
-double kemoview_get_stereo_focus(){return send_gl_stereo_focus(kemo_sgl->view_s);};
-double kemoview_get_stereo_eyeseparation(){return send_gl_stereo_eyeseparation(kemo_sgl->view_s);};
+double kemoview_get_stereo_focus(void){return send_gl_stereo_focus(kemo_sgl->view_s);};
+double kemoview_get_stereo_eyeseparation(void){return send_gl_stereo_eyeseparation(kemo_sgl->view_s);};
 
 void kemoview_mousedolly(GLdouble start[2], GLdouble x_dolly, GLdouble y_dolly){
 	gl_mousedolly_struct(kemo_sgl->view_s, start, x_dolly, y_dolly);
@@ -673,23 +673,23 @@ void kemoview_startTrackball(GLdouble x, GLdouble y){gl_startTrackball(x, y, kem
 /* calculated rotation based on current mouse position */
 void kemoview_rollToTrackball(GLdouble x, GLdouble y){ gl_rollToTrackball (x, y, kemo_sgl->view_s);};
 /* add a GL rotation (dA) to an existing GL rotation (A) */
-void kemoview_drugging_addToRotationTrackball(){
+void kemoview_drugging_addToRotationTrackball(void){
     gl_drag_addToRotationTrackball(kemo_sgl->view_s);
 }
 
 void kemoview_animation_add_rotation(GLdouble dt){add_animation_rotation(kemo_sgl->view_s, dt);}
-void kemoview_reset_animation(){reset_rot_animation(kemo_sgl->view_s);};
+void kemoview_reset_animation(void){reset_rot_animation(kemo_sgl->view_s);};
 
 
 void kemoview_set_stereo_shutter(int iflag){kemo_sgl->view_s->iflag_streo_stutter = iflag;}
 void kemoview_set_anaglyph_flag(int iflag){kemo_sgl->view_s->iflag_streo_anaglyph = iflag;}
-int kemoview_get_stereo_shutter(){return kemo_sgl->view_s->iflag_streo_stutter;}
-int kemoview_get_anaglyph_flag(){return kemo_sgl->view_s->iflag_streo_anaglyph;}
+int kemoview_get_stereo_shutter(void){return kemo_sgl->view_s->iflag_streo_stutter;}
+int kemoview_get_anaglyph_flag(void){return kemo_sgl->view_s->iflag_streo_anaglyph;}
 
-void kemoview_draw_glut_menubottun(){
+void kemoview_draw_glut_menubottun(void){
 	draw_menu_by_VAO(kemo_sgl->menu_VAO, kemo_sgl->kemo_shaders);	
 };
-//void kemoview_draw_glut_menubottun3(){draw_menubottun_gl3();}
+//void kemoview_draw_glut_menubottun3(void){draw_menubottun_gl3();}
 
 /* Subroutines for surface rendering */
 void kemoview_set_PSF_num_loaded(int num){
@@ -705,13 +705,13 @@ void kemoview_set_current_PSF(int id_psf){
 	set_current_PSF_to_menu(id_psf, kemo_sgl->kemo_psf->psf_a);
 }
 
-int kemoview_get_PSF_num_loaded(){return get_PSF_num_loaded(kemo_sgl->kemo_psf->psf_a);};
-int kemoview_get_PSF_max_loaded(){return get_PSF_max_loaded(kemo_sgl->kemo_psf->psf_a);};
+int kemoview_get_PSF_num_loaded(void){return get_PSF_num_loaded(kemo_sgl->kemo_psf->psf_a);};
+int kemoview_get_PSF_max_loaded(void){return get_PSF_max_loaded(kemo_sgl->kemo_psf->psf_a);};
 int kemoview_get_PSF_loaded_flag(int id_psf){
 	return get_PSF_loaded_flag(id_psf, kemo_sgl->kemo_psf->psf_a);
 };
-int kemoview_get_curent_PSF_ID(){return get_curent_PSF_ID(kemo_sgl->kemo_psf->psf_a);};
-int kemoview_get_curent_PSF_filename(){
+int kemoview_get_curent_PSF_ID(void){return get_curent_PSF_ID(kemo_sgl->kemo_psf->psf_a);};
+int kemoview_get_curent_PSF_filename(void){
 	return get_curent_PSF_filename(kemo_sgl->kemo_psf->psf_a);
 };
 
@@ -742,10 +742,10 @@ void kemoview_set_PSF_component(int sel){
 					  kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current]);
 };
 
-int kemoview_get_PSF_num_field(){
+int kemoview_get_PSF_num_field(void){
 	return send_nfield_each_psf(kemo_sgl->kemo_psf->psf_d[kemo_sgl->kemo_psf->psf_a->id_current]);
 };
-int kemoview_get_PSF_ncomptot(){
+int kemoview_get_PSF_ncomptot(void){
 	return send_ncomptot_each_psf(kemo_sgl->kemo_psf->psf_d[kemo_sgl->kemo_psf->psf_a->id_current]);
 };
 int kemoview_get_PSF_num_component(int i){
@@ -755,18 +755,18 @@ void kemoview_get_PSF_field_name(struct kv_string *colorname, int i){
     send_each_psf_data_name(kemo_sgl->kemo_psf->psf_d[kemo_sgl->kemo_psf->psf_a->id_current], colorname, i);
 };
 
-int kemoview_get_PSF_draw_switch(){return get_PSF_draw_switch(kemo_sgl->kemo_psf->psf_a);};
+int kemoview_get_PSF_draw_switch(void){return get_PSF_draw_switch(kemo_sgl->kemo_psf->psf_a);};
 
-int kemoview_get_PSF_field_id(){
+int kemoview_get_PSF_field_id(void){
 	return send_field_draw_each_psf(kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current]);
 };
-int kemoview_get_PSF_component_id(){
+int kemoview_get_PSF_component_id(void){
 	return send_draw_comp_id_psf(kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current]);
 };
-int kemoview_get_PSF_draw_data_address(){
+int kemoview_get_PSF_draw_data_address(void){
 	return send_draw_component_psf(kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current]);
 };
-int kemoview_get_PSF_coordinate_id(){
+int kemoview_get_PSF_coordinate_id(void){
     return send_coordinate_id_psf(kemo_sgl->kemo_psf->psf_d[kemo_sgl->kemo_psf->psf_a->id_current],
 								  kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current]);
 };
@@ -780,10 +780,10 @@ void kemoview_set_PSF_tangential_vec_mode(int iflag){
 	set_psf_vector_mode(kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current], iflag);
 };
 
-int kemoview_get_PSF_draw_refv(){
+int kemoview_get_PSF_draw_refv(void){
 	return send_draw_psf_refv(kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current]);
 };
-int kemoview_toggle_PSF_draw_refv(){
+int kemoview_toggle_PSF_draw_refv(void){
 	return toggle_draw_psf_refv(kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current]);
 };
 
@@ -807,25 +807,25 @@ void kemoview_set_PSF_vector_thickness(double size){
 	set_each_vector_thick(kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current], size);
 };
 
-int kemoview_get_PSF_patch_color_mode(){
+int kemoview_get_PSF_patch_color_mode(void){
 	return send_each_psf_patch_color(kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current]);
 };
-int kemoview_get_PSF_isoline_color_mode(){
+int kemoview_get_PSF_isoline_color_mode(void){
 	return send_each_isoline_color(kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current]);
 };
-int kemoview_get_PSF_num_isoline(){
+int kemoview_get_PSF_num_isoline(void){
 	return send_num_isoline(kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current]);
 };
-int kemoview_get_PSF_vector_color_mode(){
+int kemoview_get_PSF_vector_color_mode(void){
 	return send_each_vector_patch_color(kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current]);
 };
-int kemoview_get_PSF_vector_increment(){
+int kemoview_get_PSF_vector_increment(void){
 	return send_increment_vector(kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current]);
 };
-double kemoview_get_PSF_vector_scale(){
+double kemoview_get_PSF_vector_scale(void){
 	return send_scale_vector(kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current]);
 };
-double kemoview_get_PSF_vector_thickness(){
+double kemoview_get_PSF_vector_thickness(void){
 	return send_vector_thick(kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current]);
 };
 
@@ -879,7 +879,7 @@ int kemoview_select_PSF_draw_switch(int selected){
 void kemoview_set_PSF_color_mode(int isel){
 	set_PSF_color_mode_id(kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current], isel);
 };
-int kemoview_get_PSF_color_mode(){
+int kemoview_get_PSF_color_mode(void){
 	return send_PSF_color_mode_id(kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current]);
 };
 
@@ -939,22 +939,22 @@ void kemoview_set_PSF_opacity_data(int i_point, double value, double opacity){
 							   i_point, value, opacity);
 }
 
-double kemoview_get_PSF_color_table_min(){
+double kemoview_get_PSF_color_table_min(void){
 	return send_each_PSF_color_table_min(kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current]);
 };
-double kemoview_get_PSF_color_table_max(){
+double kemoview_get_PSF_color_table_max(void){
 	return send_each_PSF_color_table_max(kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current]);
 };
-double kemoview_get_PSF_min_opacity(){
+double kemoview_get_PSF_min_opacity(void){
 	return send_each_PSF_minimum_opacity(kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current]);
 };
-double kemoview_get_PSF_max_opacity(){
+double kemoview_get_PSF_max_opacity(void){
 	return send_each_PSF_maximum_opacity(kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current]);
 };
-int kemoview_get_PSF_color_table_num(){
+int kemoview_get_PSF_color_table_num(void){
 	return send_each_PSF_color_table_num(kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current]);
 };
-int kemoview_get_PSF_opacity_table_num(){
+int kemoview_get_PSF_opacity_table_num(void){
 	return send_each_PSF_opacity_table_num(kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current]);
 };
 
@@ -975,7 +975,7 @@ void kemoview_read_PSF_colormap_file(struct kv_string *filename){
     read_each_PSF_colormap_control_file(kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current],
 										filename->string);
 }
-void kemoview_check_PSF_colormap_control(){
+void kemoview_check_PSF_colormap_control(void){
     check_each_PSF_colormap_control(kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current]);
 }
 
@@ -1007,11 +1007,11 @@ void kemoview_set_fline_color_component(int sel){
 };
 
 
-int kemoview_get_fline_switch(){return get_fline_switch(kemo_sgl->kemo_fline->fline_m);};
-int kemoview_get_fline_color_num_field(){
+int kemoview_get_fline_switch(void){return get_fline_switch(kemo_sgl->kemo_fline->fline_m);};
+int kemoview_get_fline_color_num_field(void){
 	return get_fline_color_num_field(kemo_sgl->kemo_fline->fline_d);
 };
-int kemoview_get_fline_color_ncomptot(){
+int kemoview_get_fline_color_ncomptot(void){
 	return get_fline_color_ncomptot(kemo_sgl->kemo_fline->fline_d);
 };
 int kemoview_get_fline_color_num_comps(int i){
@@ -1023,27 +1023,27 @@ int kemoview_get_fline_color_istack(int i){
 void kemoview_get_fline_color_data_name(struct kv_string *colorname, int i){
 	get_fline_color_data_name(kemo_sgl->kemo_fline->fline_d, colorname, i);
 };
-int kemoview_get_fline_color_field(){
+int kemoview_get_fline_color_field(void){
 	return get_fline_color_field(kemo_sgl->kemo_fline->fline_m);
 };
-int kemoview_get_fline_color_component(){
+int kemoview_get_fline_color_component(void){
 	return get_fline_color_component(kemo_sgl->kemo_fline->fline_m);
 };
-int kemoview_get_fline_color_data_adress(){
+int kemoview_get_fline_color_data_adress(void){
 	return get_fline_color_data_adress(kemo_sgl->kemo_fline->fline_m);
 };
-int kemoview_get_fline_colormode() {return get_fline_colormode(kemo_sgl->kemo_fline->fline_m);};
+int kemoview_get_fline_colormode(void){return get_fline_colormode(kemo_sgl->kemo_fline->fline_m);};
 
 
 void kemoview_set_fline_type(int iflag) {set_fline_type(kemo_sgl->kemo_fline->fline_m, iflag);};
-int kemoview_get_fline_type() {return get_fline_type(kemo_sgl->kemo_fline->fline_m);};
-int kemoview_toggle_fline_type(){return toggle_fline_type(kemo_sgl->kemo_fline->fline_m);};
+int kemoview_get_fline_type(void) {return get_fline_type(kemo_sgl->kemo_fline->fline_m);};
+int kemoview_toggle_fline_type(void){return toggle_fline_type(kemo_sgl->kemo_fline->fline_m);};
 
 
 void kemoview_set_fline_thickness(double thick) {
 	set_fline_thickness(kemo_sgl->kemo_fline->fline_m, thick);
 };
-double kemoview_get_fline_thickness() {return get_fline_thickness(kemo_sgl->kemo_fline->fline_m);};
+double kemoview_get_fline_thickness(void) {return get_fline_thickness(kemo_sgl->kemo_fline->fline_m);};
 
 double kemoview_get_fline_data_min(int i){
 	return get_fline_data_min(kemo_sgl->kemo_fline->fline_d, i);
@@ -1078,13 +1078,13 @@ void kemoview_set_fline_color_mode_id(int isel){
 	set_fline_color_mode_id(kemo_sgl->kemo_fline->fline_m, isel);
 }
 
-double kemoview_get_fline_min_color(){return get_fline_min_color(kemo_sgl->kemo_fline->fline_m);};
-double kemoview_get_fline_max_color(){return get_fline_max_color(kemo_sgl->kemo_fline->fline_m);};
-double kemoview_get_fline_min_opacity(){return get_fline_min_opacity(kemo_sgl->kemo_fline->fline_m);};
-double kemoview_get_fline_max_opacity(){return get_fline_max_opacity(kemo_sgl->kemo_fline->fline_m);};
+double kemoview_get_fline_min_color(void){return get_fline_min_color(kemo_sgl->kemo_fline->fline_m);};
+double kemoview_get_fline_max_color(void){return get_fline_max_color(kemo_sgl->kemo_fline->fline_m);};
+double kemoview_get_fline_min_opacity(void){return get_fline_min_opacity(kemo_sgl->kemo_fline->fline_m);};
+double kemoview_get_fline_max_opacity(void){return get_fline_max_opacity(kemo_sgl->kemo_fline->fline_m);};
 
-int kemoview_get_fline_color_num()  {return get_fline_color_num(kemo_sgl->kemo_fline->fline_m);};
-int kemoview_get_fline_opacity_num(){return get_fline_opacity_num(kemo_sgl->kemo_fline->fline_m);};
+int kemoview_get_fline_color_num(void)  {return get_fline_color_num(kemo_sgl->kemo_fline->fline_m);};
+int kemoview_get_fline_opacity_num(void){return get_fline_opacity_num(kemo_sgl->kemo_fline->fline_m);};
 
 
 void kemoview_get_fline_color_item(int i_point, double *value, double *color){
@@ -1105,11 +1105,11 @@ void kemoview_read_fline_colormap_file(struct kv_string *filename){
 
 struct shader_ids sampleShader;
 
-void kemoview_draw_menu_setup(){
+void kemoview_draw_menu_setup(void){
 	LoadShaderFromStrings(kemo_sgl->kemo_shaders->menu, load_menu_vert(), load_menu_frag());
 }
 
-void kemo_Cleanup()
+void kemo_Cleanup(void)
 {
   destory_shaders(kemo_sgl->kemo_shaders->test);
   destory_shaders(kemo_sgl->kemo_shaders->test);

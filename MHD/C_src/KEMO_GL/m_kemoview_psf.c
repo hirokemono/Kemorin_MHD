@@ -3,7 +3,7 @@
 
 #include "m_kemoview_psf.h"
 
-struct kemoview_psf * init_kemoview_psf(){
+struct kemoview_psf * init_kemoview_psf(void){
 	int i;
 	struct kemoview_psf *kemo_psf
 			= (struct kemoview_psf *) malloc(sizeof(struct kemoview_psf));

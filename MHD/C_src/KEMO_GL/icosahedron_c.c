@@ -6,7 +6,7 @@
 static int ifac_poi[20][3];
 static double xyz_ico[12][3];
 
-void init_icosahedron_c(){
+void init_icosahedron_c(void){
 	int icosa_connect[60]
 		= { 1,  3,  2,     1,  4,  3,     1,  5,  4,    1,  6,  5,
 			1,  2,  6,     2,  3, 11,     3, 12, 11,    3,  4, 12,

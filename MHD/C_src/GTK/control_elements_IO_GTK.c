@@ -183,7 +183,7 @@ GtkWidget *make_expand_ctl_hbox(const char *label_hd, int *iflag_use, int vsize_
 	
 	gtk_widget_set_size_request(scrolled_window, 450, vsize_scroll);
     gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(scrolled_window), GTK_SHADOW_IN);
-	gtk_scrolled_window_set_max_content_height(scrolled_window, vsize_scroll);
+	gtk_scrolled_window_set_max_content_height(GTK_SCROLLED_WINDOW(scrolled_window), vsize_scroll);
 	gtk_container_set_border_width(GTK_CONTAINER(scrolled_window), 5);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_window),
 				GTK_POLICY_AUTOMATIC, GTK_POLICY_ALWAYS);
@@ -214,7 +214,7 @@ GtkWidget *make_expand_ctl_file_hbox(const char *label_hd, int *iflag_use_file, 
 	
 	gtk_widget_set_size_request(scrolled_window, 300, vsize_scroll);
     gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(scrolled_window), GTK_SHADOW_IN);
-	gtk_scrolled_window_set_max_content_height(scrolled_window, vsize_scroll);
+	gtk_scrolled_window_set_max_content_height(GTK_SCROLLED_WINDOW(scrolled_window), vsize_scroll);
 	gtk_container_set_border_width(GTK_CONTAINER(scrolled_window), 5);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_window),
 				GTK_POLICY_AUTOMATIC, GTK_POLICY_ALWAYS);

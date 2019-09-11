@@ -20,6 +20,8 @@
 #include "tree_view_4_pvr_colormap.h"
 #include "tree_view_4_light_position.h"
 #include "kemoview_gtk_colorsel.h"
+#include "kemoview_gtk_routines.h"
+#include "view_modifier_glfw.h"
 
 /*  prototypes */
 

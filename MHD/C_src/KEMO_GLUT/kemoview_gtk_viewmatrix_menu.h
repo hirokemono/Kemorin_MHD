@@ -18,6 +18,7 @@
 #include "kemoviewer.h"
 #include "m_kemoviewer_data.h"
 
+#include "kemoview_gtk_routines.h"
 #include "view_modifier_glfw.h"
 
 

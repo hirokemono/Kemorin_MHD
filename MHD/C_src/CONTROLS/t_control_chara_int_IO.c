@@ -49,7 +49,7 @@ int write_chara_int_ctl_item_c(FILE *fp, int level, int maxlen[2],
     return level;
 };
 
-void update_chara_int_ctl_item_c(char *c_in, int i1_in,
+void update_chara_int_ctl_item_c(const char *c_in, const int i1_in,
                               struct chara_int_ctl_item *ci_item){
 	ci_item->iflag = 1;
 	sprintf(ci_item->c_tbl,"%s", c_in);
@@ -171,7 +171,7 @@ static int count_chara_int_ctl_list(struct chara_int_ctl_list *head){
     return num;
 };
 
-static struct chara_int_ctl_list *find_ci_ctl_list_item_by_index(int index, struct chara_int_ctl_list *head){
+static struct chara_int_ctl_list *find_ci_ctl_list_item_by_index(const int index, struct chara_int_ctl_list *head){
     int i;
     if(index < 0 || index > count_chara_int_ctl_list(head)) return NULL;
     for(i=0;i<index+1;i++){head = head->_next;};
@@ -224,7 +224,7 @@ static int write_chara_int_ctl_list(FILE *fp, int level, const char *label,
 };
 
 
-static void append_chara_int_ctl_list(char *c_in, int i1_in,
+static void append_chara_int_ctl_list(const char *c_in, const int i1_in,
                       struct chara_int_ctl_list *head){
 	int num = count_chara_int_ctl_list(head);
     if(num > 0) head = find_ci_ctl_list_item_by_index(num-1, head);
@@ -335,7 +335,7 @@ int write_chara_int_clist(FILE *fp, int level, const char *label,
     return write_chara_int_ctl_list(fp, level, label, &ci_clst->ci_item_head);
 };
 
-void append_chara_int_clist(char *c_in, int i1_in,
+void append_chara_int_clist(const char *c_in, const int i1_in,
                       struct chara_int_clist *ci_clst){
     append_chara_int_ctl_list(c_in, i1_in, &ci_clst->ci_item_head);
     return;

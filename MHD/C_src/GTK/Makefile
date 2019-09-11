@@ -23,6 +23,7 @@ tree_view_chara2_real_GTK.o \
 tree_view_4_pvr_colormap.o \
 tree_view_4_field_GTK.o \
 control_panel_4_field_GTK.o \
+ctl_panel_platforms_GTK.o \
 \
 tree_view_4_light_position.o \
 tree_view_4_viewer_mesh.o
@@ -171,6 +172,7 @@ module:
 	t_control_real2_IO.o \
 	t_ctl_data_pvr_colormap_c.o \
 	tree_view_real2_GTK.o \
+	tree_view_chara_int_GTK.o \
 	tree_views_4_fixed_lists_GTK.o \
 	quicksort_c.o \
 	set_rgb_colors_c.o \
@@ -203,6 +205,19 @@ module:
 	t_ctl_data_4_fields_c.o \
 	tree_views_4_fixed_lists_GTK.o \
 	tree_view_4_field_GTK.o \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(GTK3_CFLAGS) $$(C_INCLUDE) $$<' \
+	>> $(MAKENAME)
+	@echo \
+	
+	@echo \
+	ctl_panel_platforms_GTK.o: \
+	'$$(KEMO_GTK_DIR)'/ctl_panel_platforms_GTK.c \
+	ctl_panel_platforms_GTK.h \
+	t_ctl_data_4_platforms_c.o \
+	tree_views_4_fixed_lists_GTK.o \
+	tree_view_chara_int_GTK.o \
+	control_elements_IO_GTK.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(GTK3_CFLAGS) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)

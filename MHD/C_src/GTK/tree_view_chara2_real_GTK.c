@@ -523,7 +523,7 @@ void add_chara2_real_list_box_w_addbottun(GtkTreeView *c2r_tree_view,
     
     c_label = (char *)calloc(KCHARA_C, sizeof(char));
     
-    hbox = gtk_hbox_new(GTK_ORIENTATION_HORIZONTAL, 5);
+    hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
     gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
     
     /* Pack bottuns */

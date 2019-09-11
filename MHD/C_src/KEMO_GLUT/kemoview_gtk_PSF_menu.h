@@ -19,6 +19,7 @@
 #include "m_kemoviewer_data.h"
 #include "m_kemoview_psf_menu.h"
 #include "tree_views_4_fixed_lists_GTK.h"
+#include "tree_view_chara_int_GTK.h"
 #include "tree_view_4_pvr_colormap.h"
 #include "tree_view_4_light_position.h"
 #include "kemoview_fileselector_gtk.h"

@@ -19,7 +19,7 @@ struct kemoview_psf{
 };
 
 /* prototypes */ 
-struct kemoview_psf * init_kemoview_psf();
+struct kemoview_psf * init_kemoview_psf(void);
 void dealloc_kemoview_psf(struct kemoview_psf *kemo_psf);
 
 void init_draw_psf(struct kemoview_psf *kemo_psf, struct psf_data *ucd_tmp,

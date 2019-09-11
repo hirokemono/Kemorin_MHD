@@ -346,7 +346,7 @@ static void update_projection_right(GLdouble x_lookfrom[2], GLint nx_window, GLi
 }
 
 
-void set_view_by_identity(){
+void set_view_by_identity(void){
 	GLdouble modelview[16];
 	
 	identity_glmat_c(modelview);
@@ -456,7 +456,7 @@ void set_view_for_message(struct view_element *view){
 };
 
 
-void set_projection_by_identity(){
+void set_projection_by_identity(void){
 	GLdouble projection[16];
 	
 	identity_glmat_c(projection);

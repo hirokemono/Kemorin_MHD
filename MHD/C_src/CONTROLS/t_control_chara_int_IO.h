@@ -48,7 +48,7 @@ int read_chara_int_ctl_item_c(char buf[LENGTHBUF], const char *label, struct cha
 int write_chara_int_ctl_item_c(FILE *fp, int level, int maxlen[2], 
 			const char *label, struct chara_int_ctl_item *ci_item);
 
-void update_chara_int_ctl_item_c(char *c_in, int i1_in,
+void update_chara_int_ctl_item_c(const char *c_in, const int i1_in,
                               struct chara_int_ctl_item *ci_item);
 void set_from_chara_int_ctl_item_c( struct chara_int_ctl_item *ci_item,
                               char *c_out, int *i1_out);
@@ -62,7 +62,7 @@ void read_chara_int_clist(FILE *fp, char buf[LENGTHBUF], const char *label,
 int write_chara_int_clist(FILE *fp, int level, const char *label, 
                        struct chara_int_clist *ci_clst);
 
-void append_chara_int_clist(char *c_in, int i1_in,
+void append_chara_int_clist(const char *c_in, const int i1_in,
                       struct chara_int_clist *ci_clst);
 void del_chara_int_clist_by_index(int index, struct chara_int_clist *ci_clst);
 void update_chara_int_clist_by_index(int index, char *c_in, int i1_in,

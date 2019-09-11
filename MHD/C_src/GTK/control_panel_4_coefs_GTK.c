@@ -163,7 +163,7 @@ void add_coefs_selection_box(struct momentum_coefs_view *coefs_vw, GtkWidget *vb
     
     model_comp =  gtk_tree_view_get_model(coefs_vw->dimless_tree_view);
     
-    hbox = gtk_hbox_new(FALSE, 0);
+    hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
     gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
     
     /* Add data combocox */

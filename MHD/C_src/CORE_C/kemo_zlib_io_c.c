@@ -55,7 +55,7 @@ void open_rd_rawfile(const char *file_name, int *ierr){
     return;
 }
 
-void close_rawfile(){
+void close_rawfile(void){
     fclose(fp_z);
     return;
 }
@@ -134,7 +134,7 @@ void open_rd_gzfile(const char *gz_file_name){
 	return;
 }
 
-void close_gzfile(){
+void close_gzfile(void){
 	int iret;
 	
 	if ((iret = gzclose(file_gz)) != Z_OK){
@@ -154,7 +154,7 @@ int open_rd_gzfile_w_flag(const char *gz_file_name){
 	return 0;
 }
 
-int check_gzfile_eof(){
+int check_gzfile_eof(void){
     return gzeof(file_gz);
 }
 

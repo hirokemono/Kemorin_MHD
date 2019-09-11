@@ -5,7 +5,7 @@
 
 #include "shaders.h"
 
-char * load_dash_lines_3D_frag(){
+char * load_dash_lines_3D_frag(void){
     const char  dash_lines_3D_frag_src[]
     = {
         "// -----------------------------------------------------------------------------\n"\
@@ -177,7 +177,7 @@ char * load_dash_lines_3D_frag(){
     return src;
 };
 
-char * load_dash_lines_3D_vert(){
+char * load_dash_lines_3D_vert(void){
     const char  dash_lines_3D_vert_src[]
     = {
         "// -----------------------------------------------------------------------------\n"\
@@ -350,7 +350,7 @@ char * load_dash_lines_3D_vert(){
     return src;
 };
 
-char * load_gouraud_frag(){
+char * load_gouraud_frag(void){
     const char  gouraud_frag_src[]
     = {
         "#version 400\n"\
@@ -375,7 +375,7 @@ char * load_gouraud_frag(){
     return src;
 };
 
-char * load_gouraud_vert(){
+char * load_gouraud_vert(void){
     const char  gouraud_vert_src[]
     = {
         "#version 400\n"\
@@ -460,7 +460,7 @@ char * load_gouraud_vert(){
     return src;
 };
 
-char * load_menu_frag(){
+char * load_menu_frag(void){
     const char  menu_frag_src[]
     = {
         "#version 400\n"\
@@ -482,7 +482,7 @@ char * load_menu_frag(){
     return src;
 };
 
-char * load_menu_vert(){
+char * load_menu_vert(void){
     const char  menu_vert_src[]
     = {
         "#version 400\n"\
@@ -506,7 +506,7 @@ char * load_menu_vert(){
     return src;
 };
 
-char * load_phong_frag(){
+char * load_phong_frag(void){
     const char  phong_frag_src[]
     = {
         "#version 400\n"\
@@ -580,7 +580,7 @@ char * load_phong_frag(){
     return src;
 };
 
-char * load_phong_vert(){
+char * load_phong_vert(void){
     const char  phong_vert_src[]
     = {
         "#version 400\n"\
@@ -620,7 +620,7 @@ char * load_phong_vert(){
     return src;
 };
 
-char * load_phong_1color_frag(){
+char * load_phong_1color_frag(void){
     const char  phong_1color_frag_src[]
     = {
         "#version 400\n"\
@@ -695,7 +695,7 @@ char * load_phong_1color_frag(){
     return src;
 };
 
-char * load_phong_1color_vert(){
+char * load_phong_1color_vert(void){
     const char  phong_1color_vert_src[]
     = {
         "#version 400\n"\
@@ -731,7 +731,7 @@ char * load_phong_1color_vert(){
     return src;
 };
 
-char * load_phong_texture_frag(){
+char * load_phong_texture_frag(void){
     const char  phong_texture_frag_src[]
     = {
         "#version 400\n"\
@@ -810,7 +810,7 @@ char * load_phong_texture_frag(){
     return src;
 };
 
-char * load_phong_texture_vert(){
+char * load_phong_texture_vert(void){
     const char  phong_texture_vert_src[]
     = {
         "#version 400\n"\
@@ -852,7 +852,7 @@ char * load_phong_texture_vert(){
     return src;
 };
 
-char * load_simple_texture_frag(){
+char * load_simple_texture_frag(void){
     const char  simple_texture_frag_src[]
     = {
         "#version 400\n"\
@@ -879,7 +879,7 @@ char * load_simple_texture_frag(){
     return src;
 };
 
-char * load_simple_texture_vert(){
+char * load_simple_texture_vert(void){
     const char  simple_texture_vert_src[]
     = {
         "#version 400\n"\
@@ -912,7 +912,7 @@ char * load_simple_texture_vert(){
     return src;
 };
 
-char * load_test_frag(){
+char * load_test_frag(void){
     const char  test_frag_src[]
     = {
         "#version 400\n"\
@@ -933,7 +933,7 @@ char * load_test_frag(){
     return src;
 };
 
-char * load_test_vert(){
+char * load_test_vert(void){
     const char  test_vert_src[]
     = {
         "#version 400\n"\

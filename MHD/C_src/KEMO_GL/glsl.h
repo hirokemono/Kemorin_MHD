@@ -43,7 +43,7 @@ void transfer_matrix_to_shader(struct shader_ids *Shader, struct view_element *v
 void map_matrix_to_shader(struct shader_ids *Shader, const GLdouble *orthogonal);
 void identity_matrix_to_shader(struct shader_ids *Shader);
 
-struct kemoview_shaders * init_kemoview_shaders();
+struct kemoview_shaders * init_kemoview_shaders(void);
 void dealloc_kemoview_shaders(struct kemoview_shaders *sds);
 
 void set_phong_light_list(struct shader_ids *phong, struct phong_lights *lights);

@@ -19,7 +19,7 @@ void alloc_copy_string(const char *org_string, struct kv_string *ucd_copied){
 	return;
 };
 
-struct kv_string* alloc_kvstring(){
+struct kv_string* alloc_kvstring(void){
 	struct kv_string *kvstring;
 	
     if ((kvstring = (struct kv_string *) malloc(sizeof(struct kv_string))) == NULL) {

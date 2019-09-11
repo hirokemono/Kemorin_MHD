@@ -20,7 +20,7 @@ static void fline_thickness_CB(GtkWidget *entry, gpointer data)
 
 static void MinChange_CB(GtkWidget *entry, gpointer data)
 {
-	int icomp = kemoview_get_fline_color_data_adress();
+/*	int icomp = kemoview_get_fline_color_data_adress(); */
 	double data_max = kemoview_get_fline_max_color();
 	
 	double data_min = (double) gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
@@ -31,7 +31,7 @@ static void MinChange_CB(GtkWidget *entry, gpointer data)
 
 static void MaxChange_CB(GtkWidget *entry, gpointer data)
 {
-	int icomp = kemoview_get_fline_color_data_adress();
+/*	int icomp = kemoview_get_fline_color_data_adress(); */
 	double data_min = kemoview_get_fline_min_color();
 	
 	double data_max = (double) gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
@@ -60,8 +60,6 @@ static void psf_fline_colormode_CB(GtkComboBox *combobox_sfcolor, gpointer user_
 
 
 void add_gtk_fieldline_menu(GtkWidget *box_out){
-	GtkButton *closeButton;
-	
 	GtkWidget *hbox_tube, *hbox_color;
 	GtkWidget *hbox_thickness, *hbox_org_thick;
 	GtkWidget *hbox_range, *hbox_org_range;
@@ -73,7 +71,6 @@ void add_gtk_fieldline_menu(GtkWidget *box_out){
 	GtkTreeModel *child_model_color;
 	
 	int index = 0;
-	int iflag_sfcolor;
 	
 	GtkWidget *switch_tube;
 	

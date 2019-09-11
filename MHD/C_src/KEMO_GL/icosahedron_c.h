@@ -10,7 +10,7 @@
 #include "vartex_array_object_gl.h"
 
 /* prototypes */
-void init_icosahedron_c();
+void init_icosahedron_c(void);
 int set_icosahedron_patch(double size, double x_draw[3], 
 						  double *xyz_draw, double *norm_draw);
 

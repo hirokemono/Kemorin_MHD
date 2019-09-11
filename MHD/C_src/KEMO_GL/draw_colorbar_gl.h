@@ -22,7 +22,7 @@
 
 /* prototypes */
 
-void init_colorbar_fonts();
+void init_colorbar_fonts(void);
 void set_colorbar_VAO(int iflag_retina, GLint nx_win, GLint ny_win,
 			GLfloat text_color[4], GLfloat bg_color[4], 
 			struct psf_menu_val **psf_m, struct kemo_array_control *psf_a, 

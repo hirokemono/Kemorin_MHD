@@ -13,7 +13,7 @@
 /* Prototypes */
 
 void alloc_kvstringitem(int length, struct kv_string *ucd_m);
-struct kv_string* alloc_kvstring();
+struct kv_string* alloc_kvstring(void);
 struct kv_string* init_kvstring_by_string(const char *org_string);
 void dealloc_kvstring(struct kv_string *kvstring);
 

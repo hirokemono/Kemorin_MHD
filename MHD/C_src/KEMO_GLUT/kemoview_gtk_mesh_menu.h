@@ -22,6 +22,7 @@
 #include "tree_view_4_nod_group_viewer.h"
 #include "tree_view_4_ele_group_viewer.h"
 #include "tree_view_4_surf_group_viewer.h"
+#include "view_modifier_glfw.h"
 
 /*  prototypes */
 

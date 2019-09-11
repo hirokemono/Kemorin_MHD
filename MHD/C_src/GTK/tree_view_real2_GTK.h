@@ -16,7 +16,7 @@
 
 struct r2_clist_view{
     int index_bc;
-    GtkTreeView *tree_view;
+    GtkWidget *tree_view;
     
     struct real2_clist *r2_clist_gtk;
 };

@@ -308,7 +308,7 @@ static struct shader_ids * init_shader_ids(){
     return s_id;
 };
 
-struct kemoview_shaders * init_kemoview_shaders(){
+struct kemoview_shaders * init_kemoview_shaders(void){
 	struct kemoview_shaders *sds;
 	if((sds = (struct kemoview_shaders *) malloc(sizeof(struct kemoview_shaders))) == NULL){
 		printf("malloc error in shaders \n");

@@ -33,7 +33,7 @@
 void open_wt_rawfile(const char *file_name, int *ierr);
 void open_ad_rawfile(const char *file_name, int *ierr);
 void open_rd_rawfile(const char *file_name, int *ierr);
-void close_rawfile();
+void close_rawfile(void);
 
 void rawseek_go_fwd_f(int *ioffset, int *ierr);
 void rawread_32bit_f(int *iflag_swap, int *ilength, char *textbuf, int *lenchara);
@@ -43,10 +43,10 @@ void rawwrite_f(int *ilength, char *textbuf, int *lenchara);
 void open_wt_gzfile(const char *gz_file_name);
 void open_ad_gzfile(const char *gz_file_name);
 void open_rd_gzfile(const char *gz_file_name);
-void close_gzfile();
+void close_gzfile(void);
 
 int open_rd_gzfile_w_flag(const char *gz_file_name);
-int check_gzfile_eof();
+int check_gzfile_eof(void);
 
 void write_compress_txt(int *num_buffer, char *input_txt);
 void write_compress_txt_nolf(int *num_buffer, char *input_txt);

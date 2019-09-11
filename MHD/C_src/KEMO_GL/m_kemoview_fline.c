@@ -8,7 +8,7 @@
 
 #include "m_kemoview_fline.h"
 
-struct kemoview_fline * init_kemoview_fline(){
+struct kemoview_fline * init_kemoview_fline(void){
 	struct kemoview_fline *kemo_fline
 			= (struct kemoview_fline *) malloc(sizeof(struct kemoview_fline));
 	if(kemo_fline == NULL){

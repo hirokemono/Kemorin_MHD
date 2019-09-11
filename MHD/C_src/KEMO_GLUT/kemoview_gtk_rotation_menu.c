@@ -22,7 +22,7 @@ static void set_rotation_direction_CB(GtkComboBox *combobox_rotdir, gpointer use
 {
     iaxis_rot = gtk_selected_combobox_index(combobox_rotdir);
    	
-//	draw_mesh_w_menu();
+	draw_mesh_glfw();
 	return;
 };
 
@@ -30,7 +30,7 @@ static void set_rotation_fileformat_CB(GtkComboBox *combobox_filefmt, gpointer u
 {
     id_fmt_rot = gtk_selected_combobox_index(combobox_filefmt);
 	
-//	draw_mesh_w_menu();
+	draw_mesh_glfw();
 	return;
 };
 
