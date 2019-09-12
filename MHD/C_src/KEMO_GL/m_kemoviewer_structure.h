@@ -30,7 +30,6 @@
 #include "set_each_fline_parameters.h"
 #include "set_texture_4_psf.h"
 #include "numbers_to_bin_c.h"
-#include "set_psf_texture_by_png.h"
 
 #include "glsl.h"
 #include "shaders.h"

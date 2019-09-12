@@ -110,8 +110,8 @@ void draw_map_objects_VAO(struct mesh_menu_val *mesh_m, struct view_element *vie
 	/* set shading mode */
 	glDisable(GL_CULL_FACE);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		glUseProgram(kemo_shaders->test->programId);
-		map_matrix_to_shader(kemo_shaders->test, orthogonal);
+	glUseProgram(kemo_shaders->test->programId);
+	map_matrix_to_shader(kemo_shaders->test, orthogonal);
 		
 	if(psf_VAO[0]->npoint_draw > 0){
 		glBindVertexArray(psf_VAO[0]->id_VAO);
