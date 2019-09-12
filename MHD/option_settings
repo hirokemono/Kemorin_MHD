@@ -22,7 +22,7 @@ PKG_CONFIG=/usr/bin/pkg-config \
 CFLAGS="-xCORE-AVX512 -O3 -Wall -g" \
 FCFLAGS="-xCORE-AVX512 -O3 -warn all -g -nogen-interfaces -qopt-zmm-usage=high -qopt-report-file=stderr -qopt-report=3" \
 FFTW3_CFLAGS="$$(TACC_FFTW3_INC)" FFTW3_LIBS="-L$$(TACC_FFTW3_LIB) -lfftw3_omp -lfftw3 -lm" \
---with-blas="-mkl=sequential" --enable-fftw3 --enable-libpng  --enable-gl --enable-gtk \
+--with-blas="-mkl=sequential" --enable-fftw3 --enable-libpng \
 --with-hdf5 --with-zlib=/usr/lib64 --without-pgplot --without-aquaterm \
 PKG_CONFIG_PATH=/usr/lib64/pkgconfig:/home/hmatsui/local/lib/pkgconfig
 #
