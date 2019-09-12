@@ -41,7 +41,7 @@ static void cb_file_block_select(GtkComboBox *combobox_cmap, gpointer data)
 
 static void cb_file_name_input(GtkEntry *entry, gpointer data)
 {
-    char *file_name = (char *) data;
+    const char *file_name = (char *) data;
     file_name = gtk_entry_get_text(entry);
     return;
 };
@@ -57,7 +57,7 @@ static void cb_expander_toggle(GObject *check, gpointer data){
 };
 
 void cb_expander_action(GObject *switch_3, gpointer data){
-    struct GtkWidget *expender = (GtkWidget *) switch_3;
+	GtkWidget *expender = GTK_WIDGET(switch_3);
     int *iflag = (int *) data;
 	
 	if(*iflag == 0){
@@ -108,7 +108,7 @@ static GtkWidget *make_block_switch_vbox(const char *label_hd, int *iflag_use){
 	g_signal_connect(G_OBJECT(check), "toggled", G_CALLBACK(cb_expander_toggle), 
 				(gpointer) iflag_use);
 	
-    gtk_box_set_baseline_position(vbox, GTK_BASELINE_POSITION_TOP);
+    gtk_box_set_baseline_position(GTK_BOX(vbox), GTK_BASELINE_POSITION_TOP);
 	gtk_box_pack_start(GTK_BOX(vbox), check, FALSE, FALSE, 0);
 	
 	return vbox;
@@ -120,6 +120,7 @@ static GtkWidget *make_control_file_block_vbox(const char *label_hd, int *iflag_
     GtkWidget *label_tree;
     GtkTreeModel *model;
 	GtkTreeModel *child_model;
+	GtkCellRenderer *renderer;
 	GtkWidget *entry_3 = gtk_entry_new();
     GtkWidget *hbox_y = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
     GtkWidget *hbox_z = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
@@ -137,14 +138,14 @@ static GtkWidget *make_control_file_block_vbox(const char *label_hd, int *iflag_
 	
 	
 	combo_b = gtk_combo_box_new_with_model(child_model);
-	child_model = gtk_cell_renderer_text_new();
-	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(combo_b), child_model, TRUE);
-	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combo_b), child_model,
+	renderer = gtk_cell_renderer_text_new();
+	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(combo_b), renderer, TRUE);
+	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combo_b), renderer,
 				"text", COLUMN_FIELD_NAME, NULL);
 	
-	if(iflag_use_file == TYPE_MODE){
+	if(*iflag_use_file == TYPE_MODE){
 		gtk_combo_box_set_active(GTK_COMBO_BOX(combo_b), 2);
-	} else if(iflag_use_file == FILE_MODE){
+	} else if(*iflag_use_file == FILE_MODE){
 		gtk_combo_box_set_active(GTK_COMBO_BOX(combo_b), 1);
 	} else {
 		gtk_combo_box_set_active(GTK_COMBO_BOX(combo_b), 0);
@@ -152,8 +153,8 @@ static GtkWidget *make_control_file_block_vbox(const char *label_hd, int *iflag_
 	g_signal_connect(G_OBJECT(combo_b), "changed", G_CALLBACK(cb_file_block_select),
 				(gpointer) iflag_use_file);
 	
-	gtk_entry_set_text(entry_3, file_name);
-    gtk_entry_set_width_chars(entry_3, 20);
+	gtk_entry_set_text(GTK_ENTRY(entry_3), file_name);
+    gtk_entry_set_width_chars(GTK_ENTRY(entry_3), 20);
 	g_signal_connect(G_OBJECT(entry_3), "activate", G_CALLBACK(cb_file_name_input), (gpointer) file_name);
 	
     gtk_box_pack_start(GTK_BOX(hbox_y), combo_b, FALSE, FALSE, 0);
@@ -188,9 +189,7 @@ GtkWidget *make_expand_ctl_hbox(const char *label_hd, int *iflag_use, int vsize_
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_window),
 				GTK_POLICY_AUTOMATIC, GTK_POLICY_ALWAYS);
     
-	gtk_scrolled_window_add_with_viewport(
-		GTK_SCROLLED_WINDOW(scrolled_window), vbox_1);
-	
+	gtk_container_add(GTK_CONTAINER(scrolled_window), vbox_1);
 	gtk_container_add(GTK_CONTAINER(expander), scrolled_window);
 	
 	gtk_box_pack_start(GTK_BOX(hbox), vbox_2, FALSE, FALSE, 0);
@@ -219,9 +218,7 @@ GtkWidget *make_expand_ctl_file_hbox(const char *label_hd, int *iflag_use_file, 
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_window),
 				GTK_POLICY_AUTOMATIC, GTK_POLICY_ALWAYS);
     
-	gtk_scrolled_window_add_with_viewport(
-		GTK_SCROLLED_WINDOW(scrolled_window), vbox_1);
-	
+	gtk_container_add(GTK_CONTAINER(scrolled_window), vbox_1);
 	gtk_container_add(GTK_CONTAINER(expander), scrolled_window);
 	
 	gtk_box_pack_start(GTK_BOX(hbox), vbox_2, FALSE, FALSE, 0);
@@ -235,7 +232,7 @@ GtkWidget *make_empty_ctl_hbox(const char *label_hd, int *iflag_use){
 	return hbox;
 }
 
-static void cb_switch_chara(GObject *switch_3, GParamSpec *pspec, gpointer data){
+static void cb_switch_chara(GtkSwitch *switch_3, GParamSpec *pspec, gpointer data){
 	struct chara_ctl_item *ctl_item = (struct chara_ctl_item *) data;
 	
 	if(ctl_item->iflag == 0 && gtk_switch_get_state(switch_3) == TRUE){
@@ -267,7 +264,7 @@ static void cb_toggle_ctl_item(GtkToggleButton *toggle, gpointer data)
 	if(ctl_item->c_tbl != NULL) {
         ctl_item->iflag = 1;
         set_boolean_by_chara_ctl_item((int) status, ctl_item);
-		gtk_button_set_label(toggle, ctl_item->c_tbl);
+		gtk_button_set_label(GTK_BUTTON(toggle), ctl_item->c_tbl);
         printf("New value: %s\n", ctl_item->c_tbl);
     };
     return;
@@ -348,7 +345,7 @@ GtkWidget *make_chara_ctl_switch_hbox(int iflag_fix_on, const char *label, struc
 GtkWidget *make_toggle_hbox (const char *label, struct chara_ctl_item *ctl_item,
 			gboolean is_on, gboolean is_sensitive){
 	GtkWidget *hbox;
-	GtkToggleButton *toggle;
+	GtkWidget *toggle;
     int iflag=0;
 
 	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
@@ -356,13 +353,13 @@ GtkWidget *make_toggle_hbox (const char *label, struct chara_ctl_item *ctl_item,
 
 	toggle = gtk_toggle_button_new ();
     iflag = find_boolean_from_chara_ctl_item(ctl_item);
-    gtk_toggle_button_set_active(toggle, (gboolean) iflag);
-    gtk_button_set_label(toggle, ctl_item->c_tbl);
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(toggle), (gboolean) iflag);
+    gtk_button_set_label(GTK_BUTTON(toggle), ctl_item->c_tbl);
     g_signal_connect(G_OBJECT(toggle), "toggled", G_CALLBACK(cb_toggle_ctl_item), 
                      (gpointer) ctl_item);
 
-    gtk_box_pack_start (GTK_BOX (hbox), toggle, FALSE, FALSE, 0);
-	gtk_widget_set_sensitive (toggle, is_sensitive);
+    gtk_box_pack_start (GTK_BOX(hbox), toggle, FALSE, FALSE, 0);
+	gtk_widget_set_sensitive(toggle, is_sensitive);
 	gtk_widget_show (toggle);
   return hbox;
 }
@@ -393,9 +390,9 @@ GtkWidget *make_text_hbox(int iflag_fix_on, const char *label, struct chara_ctl_
 }
 
 
-static void cb_int_ctl_item(GtkEntry *spinner, gpointer data)
+static void cb_int_ctl_item(GtkSpinButton *spinner, gpointer data)
 {
-	struct int_ctl_item *ctl_item = (struct chara_ctl_item *) data;
+	struct int_ctl_item *ctl_item = (struct int_ctl_item *) data;
 	
 	if(data != NULL) {
 		ctl_item->iflag = 1;
@@ -485,20 +482,20 @@ static void cb_SelectFile(GtkButton *button, gpointer data)
 
 GtkWidget *make_filename_hbox (const char *label, struct chara_ctl_item *ctl_item){
 	GtkWidget *hbox;
-	GtkWidget *tbox;
+	GtkWidget *entry;
     GtkWidget *button_S;
 
 	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
 	gtk_box_pack_start (GTK_BOX (hbox), gtk_label_new(label), FALSE, FALSE, 0);
 	
-	tbox = gtk_entry_new();
-    gtk_entry_set_text(tbox, ctl_item->c_tbl);
-	g_signal_connect(G_OBJECT(tbox), "activate", G_CALLBACK(cb_chara_ctl_item), 
+	entry = gtk_entry_new();
+    gtk_entry_set_text(GTK_ENTRY(entry), ctl_item->c_tbl);
+	g_signal_connect(G_OBJECT(entry), "activate", G_CALLBACK(cb_chara_ctl_item), 
 				(gpointer) ctl_item);
-	gtk_box_pack_start(GTK_BOX(hbox), tbox, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), entry, TRUE, TRUE, 0);
 	
 	button_S = gtk_button_new_with_label("Select");
-	g_signal_connect(G_OBJECT(button_S), "clicked", G_CALLBACK(cb_SelectFile), (gpointer)tbox);
+	g_signal_connect(G_OBJECT(button_S), "clicked", G_CALLBACK(cb_SelectFile), (gpointer) entry);
 	gtk_box_pack_start(GTK_BOX(hbox), button_S, FALSE, FALSE, 0);
 	
 	return hbox;

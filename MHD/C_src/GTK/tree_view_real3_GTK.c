@@ -312,7 +312,7 @@ void create_real3_tree_view(GtkTreeView *r3_tree_view, struct real3_clist *r3_cl
                  "climb-rate", 0.5,
                  "digits", 3, 
                  "editable", TRUE, 
-                 "width", (gint)100, NULL);
+                 "width", (gint)70, NULL);
     
     gtk_tree_view_column_pack_start(column_1st, renderer_spin1, TRUE);
 	gtk_tree_view_column_set_attributes(column_1st, renderer_spin1, "text",
@@ -331,14 +331,14 @@ void create_real3_tree_view(GtkTreeView *r3_tree_view, struct real3_clist *r3_cl
     //    adjust = gtk_adjustment_new(0.5, 0.0, 1.0, 0.01,
     //                                100, 21474836);
     adjust = gtk_adjustment_new(0.5, -1.0e30, 1.0e30, 0.1,
-                                100, 21474836);
+                                70, 21474836);
     
     g_object_set(G_OBJECT(renderer_spin2), 
                  "adjustment", adjust,
                  "climb-rate", 0.1,
                  "digits", 3, 
                  "editable", TRUE, 
-                 "width", (gint)100, NULL);
+                 "width", (gint)70, NULL);
     
     gtk_tree_view_column_pack_start(column_2nd, renderer_spin2, TRUE);
 	gtk_tree_view_column_set_attributes(column_2nd, renderer_spin2, "text",
@@ -357,14 +357,14 @@ void create_real3_tree_view(GtkTreeView *r3_tree_view, struct real3_clist *r3_cl
     //    adjust = gtk_adjustment_new(0.5, 0.0, 1.0, 0.01,
     //                                100, 21474836);
     adjust = gtk_adjustment_new(0.5, -1.0e30, 1.0e30, 0.1,
-                                100, 21474836);
+                                70, 21474836);
     
     g_object_set(G_OBJECT(renderer_spin3), 
                  "adjustment", adjust,
                  "climb-rate", 0.1,
                  "digits", 3, 
                  "editable", TRUE, 
-                 "width", (gint)150, NULL);
+                 "width", (gint)70, NULL);
     
     gtk_tree_view_column_pack_start(column_3rd, renderer_spin3, TRUE);
 	gtk_tree_view_column_set_attributes(column_3rd, renderer_spin3, "text", 
@@ -422,7 +422,7 @@ void add_real3_list_box(GtkTreeView *r3_tree_view, struct real3_clist *r3_clist,
     scrolled_window = gtk_scrolled_window_new(NULL, NULL);
     gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_window),
                                    GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-    gtk_widget_set_size_request(scrolled_window, 400, 300);
+    gtk_widget_set_size_request(scrolled_window, 210, 160);
     gtk_container_add(GTK_CONTAINER(scrolled_window), GTK_WIDGET(r3_tree_view));
     gtk_box_pack_start(GTK_BOX(vbox_1), scrolled_window, TRUE, TRUE, 0);
     

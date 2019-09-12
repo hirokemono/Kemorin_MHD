@@ -355,7 +355,7 @@ void add_real2_list_box(GtkTreeView *r2_tree_view, struct real2_clist *r2_clist,
     gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_window),
                                    GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
     gtk_widget_set_size_request(scrolled_window, 160, 160);
-    gtk_container_add(GTK_CONTAINER(scrolled_window), r2_tree_view);
+    gtk_container_add(GTK_CONTAINER(scrolled_window), GTK_WIDGET(r2_tree_view));
     gtk_box_pack_start(GTK_BOX(vbox_1), scrolled_window, TRUE, TRUE, 0);
     
 	Frame_1 = gtk_frame_new("");
@@ -384,7 +384,7 @@ void add_real2_list_box(GtkTreeView *r2_tree_view, struct real2_clist *r2_clist,
 void r2_tree_value1_edited_cb(GtkCellRendererText *cell, gchar *path_str,
 			gchar *new_text, gpointer user_data){
     struct r2_clist_view *r2_vws = (struct r2_clist_view *) user_data;
-    r2_tree_value1_edited(path_str, new_text, r2_vws->tree_view, r2_vws->r2_clist_gtk);
+    r2_tree_value1_edited(path_str, new_text, GTK_TREE_VIEW(r2_vws->tree_view), r2_vws->r2_clist_gtk);
     write_real2_clist(stdout, 0, "value1 changed", r2_vws->r2_clist_gtk);
 };
 

@@ -36,7 +36,7 @@ static int readShaderSource(GLuint shader, const char *file)
 	
 	/* Get file size */
 	fseek(fp, 0L, SEEK_END);
-	length = ftell(fp);
+	length = (GLsizei) ftell(fp);
 	
 	/* Allocate memory for source */
 	source = (GLchar *)malloc(length);

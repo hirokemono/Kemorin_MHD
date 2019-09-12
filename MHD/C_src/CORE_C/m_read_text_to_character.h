@@ -14,8 +14,8 @@
 #include "skip_comment_c.h"
 
 struct file_text{
-	int len_chara;
-	int len_line;
+	long len_chara;
+	long len_line;
 	char *file_name;
 	
 	char *text;

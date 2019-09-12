@@ -4,7 +4,7 @@
 #include "skip_comment_c.h"
 
 /* Allocate string with lengthchara */
-char* alloc_string(int lengthchara){
+char* alloc_string(long lengthchara){
     char *string;
     if((string = (char *)calloc(lengthchara+1, sizeof(char))) == NULL){
         printf("malloc error for string\n");

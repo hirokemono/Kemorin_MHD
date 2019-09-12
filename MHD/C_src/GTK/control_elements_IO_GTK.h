@@ -14,6 +14,7 @@
 #include "t_control_int_IO.h"
 #include "t_control_real_IO.h"
 #include "t_control_chara_IO.h"
+#include "tree_view_chara_int_GTK.h"
 #include "tree_views_4_fixed_lists_GTK.h"
 
 #define NONE_MODE   0

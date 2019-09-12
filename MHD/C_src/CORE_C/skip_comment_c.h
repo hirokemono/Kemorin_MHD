@@ -12,7 +12,7 @@
 #include "kemosrc_param_c.h"
 
 /* Prototypes */ 
-char* alloc_string(int lengthchara);
+char* alloc_string(long lengthchara);
 
 char *ltrim(char *s);
 char *trim(char *s);

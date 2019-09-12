@@ -84,7 +84,7 @@ void rawread_32bit_f(int *iflag_swap, int *ilength, char *textbuf, int *lenchara
 }
 
 void rawread_64bit_f(int *iflag_swap, int *ilength, char *textbuf, int *lenchara){
-    *lenchara =  fread(textbuf, sizeof(char), *ilength, fp_z);
+    *lenchara = (int) fread(textbuf, sizeof(char), *ilength, fp_z);
     /*
      int i;
     printf("iflag_swap %d\n", *iflag_swap);
@@ -102,7 +102,7 @@ void rawread_64bit_f(int *iflag_swap, int *ilength, char *textbuf, int *lenchara
 }
 
 void rawwrite_f(int *ilength, char *textbuf, int *lenchara){
-    *lenchara =  fwrite(textbuf, sizeof(char), *ilength, fp_z);
+    *lenchara = (int) fwrite(textbuf, sizeof(char), *ilength, fp_z);
     return;
 }
 

@@ -163,7 +163,7 @@ void add_rotation_menu_box(struct kemoviewer_type *kemoviewer_data,
 	current_rot_increment = inc_deg;
 	sprintf(current_rot_inc_text, "    %d    ", current_rot_increment);
 	adj_rot_increment = gtk_adjustment_new(current_rot_increment, 0.0, 180.0, 1, 1, 0.0);
-	spin_rot_increment = gtk_spin_button_new(GTK_ADJUSTMENT(adj_rot_increment), 0, 3);
+	spin_rot_increment = gtk_spin_button_new(GTK_ADJUSTMENT(adj_rot_increment), 0, 1);
 	g_signal_connect(spin_rot_increment, "value-changed", G_CALLBACK(rotation_increment_CB),NULL);
 	
 	entry_rotation_file = gtk_entry_new();

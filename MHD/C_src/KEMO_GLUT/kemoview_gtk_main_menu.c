@@ -284,7 +284,7 @@ void add_current_psf_set_box(struct kemoviewer_type *kemoviewer_data,
 	struct kv_string *stripped_filehead;
 	char label_tmp[512];
 	int id_current = kemoview_get_curent_PSF_ID();
-	int index_current;
+	int index_current = 0;
 	int num_psf = 0;
 	for (ipsf=0; ipsf< kemoview_get_PSF_max_loaded(); ipsf++){
 		if(kemoview_get_PSF_loaded_flag(ipsf) > 0) {num_psf = num_psf + 1;};
@@ -425,7 +425,7 @@ void gtk_psf_menu_box(struct kemoviewer_type *kemoviewer_data,
 
 void gtk_fieldline_menu_box(struct kemoviewer_type *kemoviewer_data,
 			struct main_buttons *mbot, GtkWidget *window){
-	GtkButton *closeButton;
+	GtkWidget *closeButton;
 	GtkWidget *vbox;
 	
 	GtkWidget *entry_file = gtk_entry_new();

@@ -128,7 +128,7 @@
       write(15,'(a)')  '    };'
       write(15,'(a)')  '    '
       write(15,'(3a)') '    long n = strlen(', trim(shader_src), ');'
-      write(15,'(a)')  '    char * src = alloc_string((int) n+1);'
+      write(15,'(a)')  '    char * src = alloc_string((long) n+1);'
       write(15,'(a)')  '    '
       write(15,'(3a)') '    strcpy(src, ', trim(shader_src), ');'
       write(15,'(a)')  '    return src;'

@@ -168,19 +168,19 @@ void add_evoluaiton_menu_box(int istep, struct kemoviewer_type *kemoviewer_data,
 	current_evo_start = istep;
 	sprintf(current_evo_start_text, "    %d    ", current_evo_start);
 	adj_evo_start = gtk_adjustment_new(current_evo_start, 0, istep*1000, 1, 1, 0.0);
-	spin_evo_start = gtk_spin_button_new(GTK_ADJUSTMENT(adj_evo_start), 0, 3);
+	spin_evo_start = gtk_spin_button_new(GTK_ADJUSTMENT(adj_evo_start), 0, 0);
 	g_signal_connect(spin_evo_start, "value-changed", G_CALLBACK(evo_start_step_CB),NULL);
 	
 	current_evo_end = istep;
 	sprintf(current_evo_end_text, "    %d    ", current_evo_end);
 	adj_evo_end = gtk_adjustment_new(current_evo_end, 0.00, istep*1000, 1, 1, 0.0);
-	spin_evo_end = gtk_spin_button_new(GTK_ADJUSTMENT(adj_evo_end), 0, 3);
+	spin_evo_end = gtk_spin_button_new(GTK_ADJUSTMENT(adj_evo_end), 0, 0);
 	g_signal_connect(spin_evo_end, "value-changed", G_CALLBACK(evo_end_step_CB),NULL);
 	
 	current_evo_increment = inc_evo;
 	sprintf(current_evo_inc_text, "    %d    ", current_evo_increment);
 	adj_evo_increment = gtk_adjustment_new(current_evo_increment, 0, istep*100, 1, 1, 0.0);
-	spin_evo_increment = gtk_spin_button_new(GTK_ADJUSTMENT(adj_evo_increment), 0, 3);
+	spin_evo_increment = gtk_spin_button_new(GTK_ADJUSTMENT(adj_evo_increment), 0, 0);
 	g_signal_connect(spin_evo_increment, "value-changed", G_CALLBACK(evo_increment_CB),NULL);
 	
 	

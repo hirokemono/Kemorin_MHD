@@ -71,7 +71,7 @@ static void delete_dless_data(gpointer user_data)
         gtk_tree_row_reference_free((GtkTreeRowReference *)cur->data);
         
         /* Update control data */
-        del_chara_real_ctl_list_by_c_tbl(field_name, &coefs_vw->mom_ctl_gtk->coef_4_termal_buo_list);
+        del_chara_real_clist_by_c_tbl(field_name, coefs_vw->mom_ctl_gtk->coef_4_termal_buo_list);
     }
     g_list_free(reference_list);
     
@@ -137,8 +137,8 @@ static void cb_add_dimless_name(GtkComboBox *combobox_add, gpointer user_data)
     gtk_tree_model_get(model_comp, &iter, COLUMN_FIELD_MATH, &math_string, -1);
     gtk_tree_model_get(model_comp, &iter, COLUMN_FIELD_VALUE, &value, -1);
     
-    append_chara_real_ctl_list(row_string, value, 
-                               &coefs_vw->mom_ctl_gtk->coef_4_termal_buo_list);
+    append_chara_real_clist(row_string, value, 
+							coefs_vw->mom_ctl_gtk->coef_4_termal_buo_list);
     /*
      write_chara_real_ctl_list(stdout, 0, "Added list", &
      coefs_vw->mom_ctl_gtk->coef_4_termal_buo_list);
@@ -187,7 +187,7 @@ void add_coefs_selection_box(struct momentum_coefs_view *coefs_vw, GtkWidget *vb
     gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_window),
                                    GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
     gtk_widget_set_size_request(scrolled_window, 400, 300);
-    gtk_container_add(GTK_CONTAINER(scrolled_window), coefs_vw->coefs_tree_view);
+    gtk_container_add(GTK_CONTAINER(scrolled_window), GTK_WIDGET(coefs_vw->coefs_tree_view));
     gtk_box_pack_start(GTK_BOX(vbox), scrolled_window, TRUE, TRUE, 0);
 	
 	add_sorting_signal_w_label(coefs_vw->coefs_tree_view, hbox);

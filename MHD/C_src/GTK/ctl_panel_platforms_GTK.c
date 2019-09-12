@@ -48,13 +48,13 @@ static int find_file_fmt_index(struct chara_ctl_item *file_fmt_c){
 
 static void set_file_fmt_cb(GtkComboBox *combobox_cmap, gpointer data)
 {
-    struct chara_ctl_item *file_fmt = (struct colormap_view *) data;
+    struct chara_ctl_item *file_fmt = (struct chara_ctl_item *) data;
     GtkTreeModel *model_cmap = gtk_combo_box_get_model(combobox_cmap);
     GtkTreeIter iter;
     
     gint idx;
     gchar *row_string;
-    int index_field, index_mode;
+    int index_field;
 	
 	if(file_fmt->iflag == 0) gtk_combo_box_set_active(combobox_cmap, -1);
 	idx = gtk_combo_box_get_active(combobox_cmap);
@@ -79,6 +79,7 @@ GtkWidget * make_file_format_hbox(int iflag_fix_on, const char *label, struct ch
     GtkWidget *label_tree = create_fixed_label_w_index_tree();
     GtkTreeModel *model = gtk_tree_view_get_model(GTK_TREE_VIEW(label_tree));  
     GtkTreeModel *child_model = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model));
+	GtkCellRenderer *renderer;
     
 	index = append_ci_item_to_tree(index, &file_fmt_labels[ASCII_MODE][0], ASCII_MODE, child_model);
 	index = append_ci_item_to_tree(index, &file_fmt_labels[BINARY_MODE][0], BINARY_MODE, child_model);
@@ -90,9 +91,9 @@ GtkWidget * make_file_format_hbox(int iflag_fix_on, const char *label, struct ch
 	index = append_ci_item_to_tree(index, &file_fmt_labels[MERGED_BIN_GZ_MODE][0], MERGED_BIN_GZ_MODE, child_model);
 	
 	tbox_flag->entry = gtk_combo_box_new_with_model(child_model);
-	child_model = gtk_cell_renderer_text_new();
-	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(tbox_flag->entry), child_model, TRUE);
-	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(tbox_flag->entry), child_model,
+	renderer = gtk_cell_renderer_text_new();
+	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(tbox_flag->entry), renderer, TRUE);
+	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(tbox_flag->entry), renderer,
 				"text", COLUMN_FIELD_NAME, NULL);
 	
 	iflag = find_file_fmt_index(ctl_item);

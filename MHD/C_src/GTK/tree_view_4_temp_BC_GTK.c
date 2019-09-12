@@ -55,7 +55,7 @@ static void cb_delete_thermal_bc_by_list(GtkButton *button, gpointer user_data)
 
 static void cb_add_thermal_bc_by_list(GtkComboBox *combobox_add, gpointer user_data)
 {
-    struct boundary_condition_view *bc_vws = (struct dimless_views *) user_data;
+    struct boundary_condition_view *bc_vws = (struct boundary_condition_view *) user_data;
     GtkTreeModel *model_comp = gtk_combo_box_get_model(combobox_add);  
     
     gint idx = gtk_combo_box_get_active(combobox_add);

@@ -17,12 +17,12 @@ struct file_text * init_file_text(const char *file_name){
 		exit(0);
 	}
 	
-	contents->file_name = alloc_string((int) strlen(file_name)+1);
+	contents->file_name = alloc_string(strlen(file_name)+1);
 	strcpy(contents->file_name, file_name);
 	
 	contents->len_line = 0;
 	contents->len_chara = 1;
-	contents->text = alloc_string((int) contents->len_chara);
+	contents->text = alloc_string(contents->len_chara);
 	contents->text[0] = '\0';
 	
 	return contents;
@@ -36,7 +36,7 @@ void dealloc_file_text(struct file_text *contents){
 void read_text_to_carray(struct file_text *contents){
 	char *tmpchara;
 	char buf[LENGTHBUF]; /* Text buffer */
-	int len_buf;
+	long len_buf;
 	
 	if ((fp_txt = fopen(contents->file_name, "r")) == NULL) {
 		fprintf(stderr, "Cannot open file!: %s\n", contents->file_name);
@@ -44,14 +44,14 @@ void read_text_to_carray(struct file_text *contents){
 	};
 	
 	while ((fgets(buf, LENGTHBUF-1, fp_txt)) != NULL){
-		tmpchara = alloc_string((int) contents->len_chara);
+		tmpchara = alloc_string(contents->len_chara);
 		strcpy(tmpchara, contents->text);
 		free(contents->text);
 		
 		len_buf = strlen(buf);
 		contents->len_line = contents->len_line + 1;
 		contents->len_chara = contents->len_chara + len_buf;
-		contents->text = alloc_string((int) contents->len_chara);
+		contents->text = alloc_string(contents->len_chara);
 		strcpy(contents->text, tmpchara);
 		strcat(contents->text, buf);
 		free(tmpchara);
@@ -64,7 +64,7 @@ void read_text_to_carray(struct file_text *contents){
 void check_file_contents(struct file_text *contents){
 	printf("%s", contents->text);
 	printf("file name:  %s\n", contents->file_name);
-	printf("Number of line: %d\n", contents->len_line);
-	printf("Size of file:  %d\n", contents->len_chara);
+	printf("Number of line: %d\n", (int) contents->len_line);
+	printf("Size of file:  %d\n", (int) contents->len_chara);
 };
 

@@ -102,7 +102,7 @@ void kemoview_preference_GTK(struct kemoviewer_type *kemoviewer_data,
 	current_value = kemoview_send_material_shiness();
 	label24 = gtk_label_new("Shineness: ");
 	adj4 = gtk_adjustment_new(current_value, 0.0, 100.0, 0.1, 0.1, 0.0);
-	spin4 = gtk_spin_button_new( GTK_ADJUSTMENT(adj4),0,10.0);
+	spin4 = gtk_spin_button_new( GTK_ADJUSTMENT(adj4),0,2);
 	
 	g_signal_connect(spin1, "value-changed", G_CALLBACK(AmbientChange), NULL);
 	g_signal_connect(spin2, "value-changed", G_CALLBACK(DiffuseChange), NULL);

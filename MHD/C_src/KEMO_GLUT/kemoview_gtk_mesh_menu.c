@@ -109,7 +109,7 @@ void add_gtk_mesh_menu(struct kemoviewer_type *kemoviewer_data,
 	current_num_loop = kemoview_get_num_of_color_loop();
 	sprintf(current_num_loop_text, "    %d    ", current_num_loop);
 	adj_num_loop = gtk_adjustment_new(current_num_loop, 0, 100, 1, 1, 0.0);
-	spin_num_loop = gtk_spin_button_new(GTK_ADJUSTMENT(adj_num_loop), 0, 3);
+	spin_num_loop = gtk_spin_button_new(GTK_ADJUSTMENT(adj_num_loop), 0, 0);
 	g_signal_connect(spin_num_loop, "value-changed", G_CALLBACK(num_color_loop_CB),NULL);
 	
 	

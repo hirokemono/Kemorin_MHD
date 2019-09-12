@@ -25,7 +25,7 @@ static void read_group_stack_4_viewer(int npe, int ngrp, int *stack_sf){
 	return;
 };
 
-static long read_group_item_4_viewer(int sum_o, int npe, int ngrp, int *stack_sf,
+static long read_group_item_4_viewer(long sum_o, int npe, int ngrp, int *stack_sf,
 									char **name, int *item){
 	int i, j, jst, jed;
 	long sum_offset=0;

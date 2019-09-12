@@ -20,10 +20,12 @@ kemoview_gtk_viewmatrix_menu.o \
 kemoview_gtk_main_menu.o \
 kemoview_gtk_preference_menu.o \
 \
+tree_view_4_light_position.o \
 tree_view_4_domain_viewer.o \
 tree_view_4_ele_group_viewer.o \
 tree_view_4_surf_group_viewer.o \
-tree_view_4_nod_group_viewer.o
+tree_view_4_nod_group_viewer.o \
+tree_view_4_viewer_mesh.o
 
 #
 #  ------------------------------------------------------------------
@@ -205,6 +207,7 @@ module:
 	tree_views_4_fixed_lists_GTK.o \
 	kemoview_fileselector_gtk.o \
 	kemoview_gtk_routines.o \
+	view_modifier_glfw.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS) $$<' \
 	>> $(MAKENAME)
@@ -330,6 +333,37 @@ module:
 	view_modifier_glfw.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS) $$<' \
+	>> $(MAKENAME)
+	
+	@echo \
+	tree_view_4_light_position.o: \
+	'$$(KEMO_C_GLUTDIR)'/tree_view_4_light_position.c \
+	tree_view_4_light_position.h \
+	t_control_real_IO.o \
+	t_control_real3_IO.o \
+	m_phong_light_table_c.o \
+	tree_views_4_fixed_lists_GTK.o \
+	tree_view_real3_GTK.o \
+	quicksort_c.o \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(GTK3_CFLAGS) $$(C_INCLUDE) $$<' \
+	>> $(MAKENAME)
+	
+	@echo \
+	tree_view_4_viewer_mesh.o: \
+	'$$(KEMO_C_GLUTDIR)'/tree_view_4_viewer_mesh.c \
+	kemoviewer.h \
+	tree_view_4_viewer_mesh.h \
+	t_control_chara_int_IO.o \
+	t_control_chara_int3_IO.o \
+	tree_view_chara_int_GTK.o \
+	tree_view_chara_int3_GTK.o \
+	tree_views_4_fixed_lists_GTK.o \
+	create_tree_view_columns_GTK.o \
+	m_surface_mesh_4_viewer_c.o \
+	quicksort_c.o \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(GTK3_CFLAGS) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)
 
 includes:

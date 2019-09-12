@@ -104,8 +104,7 @@ static void draw_colormap(struct colormap_params *cmap_param, cairo_t *cr, GdkWi
     
     int *i_point;
 	double *d_point;
-	double c_point, o_point;
-    struct real2_ctl_list *head_ctl;
+	double o_point;
     double d_bottom = 0.0;
     double d_top = 0.0;
     double d_current = 0.0;
@@ -206,7 +205,7 @@ static void draw_colormap(struct colormap_params *cmap_param, cairo_t *cr, GdkWi
         cairo_set_font_size(cr, 12);
         cairo_set_source_rgb(cr, 0.0, 0.0, 0.0);
         top_s = top;
-        char *c_txt[10];
+        char *c_txt = (char *) calloc(30, sizeof(char));
         cairo_move_to(cr, left-70, top_s-20);
         cairo_show_text(cr, "Color point");
         for(i=0;i<num_cmap;i++){
@@ -264,7 +263,7 @@ void colormap_color_edited_cb(GtkCellRendererText *cell, gchar *path_str,
     struct colormap_view *color_vws = (struct colormap_view *) user_data;
 	
 	r2_tree_value2_edited(path_str, new_text, 
-				color_vws->cmap_vws->tree_view, color_vws->cmap_vws->r2_clist_gtk);
+				GTK_TREE_VIEW(color_vws->cmap_vws->tree_view), color_vws->cmap_vws->r2_clist_gtk);
 	write_real2_clist(stdout, 0, "value2 changed", color_vws->cmap_vws->r2_clist_gtk);
 	
 	copy_colormap_from_ctl(color_vws->colormap_mode_gtk, color_vws->cmap_vws->r2_clist_gtk,
@@ -276,7 +275,7 @@ void add_colormap_list_items_cb(GtkButton *button, gpointer user_data){
     struct colormap_view *color_vws = (struct colormap_view *) user_data;
 	
 	color_vws->cmap_vws->index_bc = add_r2_list_items(color_vws->cmap_vws->index_bc, 
-				color_vws->cmap_vws->tree_view, color_vws->cmap_vws->r2_clist_gtk);
+				GTK_TREE_VIEW(color_vws->cmap_vws->tree_view), color_vws->cmap_vws->r2_clist_gtk);
     write_real2_clist(stdout, 0, "columns added", color_vws->cmap_vws->r2_clist_gtk);
 	
 	copy_colormap_from_ctl(color_vws->colormap_mode_gtk, color_vws->cmap_vws->r2_clist_gtk,
@@ -286,7 +285,7 @@ void add_colormap_list_items_cb(GtkButton *button, gpointer user_data){
 void delete_colormap_list_items_cb(GtkButton *button, gpointer user_data){
     struct colormap_view *color_vws = (struct colormap_view *) user_data;
 	
-	delete_r2_list_items(color_vws->cmap_vws->tree_view, color_vws->cmap_vws->r2_clist_gtk);
+	delete_r2_list_items(GTK_TREE_VIEW(color_vws->cmap_vws->tree_view), color_vws->cmap_vws->r2_clist_gtk);
     write_real2_clist(stdout, 0, "columns deleted", color_vws->cmap_vws->r2_clist_gtk);
 	
 	copy_colormap_from_ctl(color_vws->colormap_mode_gtk, color_vws->cmap_vws->r2_clist_gtk,
@@ -312,7 +311,7 @@ void opacity_color_edited_cb(GtkCellRendererText *cell, gchar *path_str,
     struct colormap_view *color_vws = (struct colormap_view *) user_data;
 	
 	r2_tree_value2_edited(path_str, new_text, 
-				color_vws->opacity_vws->tree_view, color_vws->opacity_vws->r2_clist_gtk);
+				GTK_TREE_VIEW(color_vws->opacity_vws->tree_view), color_vws->opacity_vws->r2_clist_gtk);
     write_real2_clist(stdout, 0, "value2 changed", color_vws->opacity_vws->r2_clist_gtk);
 	
 	copy_opacity_from_ctl(color_vws->opacity_vws->r2_clist_gtk, color_vws->cmap_param);
@@ -323,7 +322,7 @@ void add_opacity_list_items_cb(GtkButton *button, gpointer user_data){
     struct colormap_view *color_vws = (struct colormap_view *) user_data;
 	
 	color_vws->opacity_vws->index_bc = add_r2_list_items(color_vws->opacity_vws->index_bc, 
-				color_vws->opacity_vws->tree_view, color_vws->opacity_vws->r2_clist_gtk);
+				GTK_TREE_VIEW(color_vws->opacity_vws->tree_view), color_vws->opacity_vws->r2_clist_gtk);
     write_real2_clist(stdout, 0, "columns added", color_vws->opacity_vws->r2_clist_gtk);
 	
 	copy_opacity_from_ctl(color_vws->opacity_vws->r2_clist_gtk, color_vws->cmap_param);
@@ -332,7 +331,7 @@ void add_opacity_list_items_cb(GtkButton *button, gpointer user_data){
 void delete_opacity_list_items_cb(GtkButton *button, gpointer user_data){
     struct colormap_view *color_vws = (struct colormap_view *) user_data;
 	
-	delete_r2_list_items(color_vws->opacity_vws->tree_view, color_vws->opacity_vws->r2_clist_gtk);
+	delete_r2_list_items(GTK_TREE_VIEW(color_vws->opacity_vws->tree_view), color_vws->opacity_vws->r2_clist_gtk);
     write_real2_clist(stdout, 0, "columns deleted", color_vws->opacity_vws->r2_clist_gtk);
 	
 	copy_opacity_from_ctl(color_vws->opacity_vws->r2_clist_gtk, color_vws->cmap_param);
@@ -362,7 +361,7 @@ void add_colormap_list_box(struct colormap_view *color_vws, GtkWidget *vbox){
 	renderer_spin1 = gtk_cell_renderer_spin_new();
 	renderer_spin2 = gtk_cell_renderer_spin_new();
 	
-	create_real2_tree_view(color_vws->cmap_vws->tree_view, 
+	create_real2_tree_view(GTK_TREE_VIEW(color_vws->cmap_vws->tree_view), 
                            color_vws->cmap_vws->r2_clist_gtk, 
                            renderer_spin1, renderer_spin2);
 	
@@ -372,12 +371,14 @@ void add_colormap_list_box(struct colormap_view *color_vws, GtkWidget *vbox){
                      G_CALLBACK(colormap_color_edited_cb), (gpointer) color_vws);
 	
 	color_vws->cmap_vws->index_bc = append_r2_list_from_ctl(color_vws->cmap_vws->index_bc,
-				&color_vws->cmap_vws->r2_clist_gtk->r2_item_head, color_vws->cmap_vws->tree_view);
+				&color_vws->cmap_vws->r2_clist_gtk->r2_item_head, 
+				GTK_TREE_VIEW(color_vws->cmap_vws->tree_view));
 	
 	button_add = gtk_button_new_with_label("ADD");
     button_delete = gtk_button_new_with_label("Remove");
 	
-	add_real2_list_box(color_vws->cmap_vws->tree_view, color_vws->cmap_vws->r2_clist_gtk,
+	add_real2_list_box(GTK_TREE_VIEW(color_vws->cmap_vws->tree_view),
+				color_vws->cmap_vws->r2_clist_gtk,
 				button_add, button_delete, vbox);
 	
     g_signal_connect(G_OBJECT(button_add), "clicked", 
@@ -396,7 +397,7 @@ void add_opacity_list_box(struct colormap_view *color_vws, GtkWidget *vbox){
 	renderer_spin1 = gtk_cell_renderer_spin_new();
 	renderer_spin2 = gtk_cell_renderer_spin_new();
 	
-	create_real2_tree_view(color_vws->opacity_vws->tree_view, 
+	create_real2_tree_view(GTK_TREE_VIEW(color_vws->opacity_vws->tree_view), 
                            color_vws->opacity_vws->r2_clist_gtk, 
                            renderer_spin1, renderer_spin2);
 	
@@ -406,11 +407,13 @@ void add_opacity_list_box(struct colormap_view *color_vws, GtkWidget *vbox){
                      G_CALLBACK(opacity_color_edited_cb), (gpointer) color_vws);
 	
 	color_vws->opacity_vws->index_bc = append_r2_list_from_ctl(color_vws->opacity_vws->index_bc,
-				&color_vws->opacity_vws->r2_clist_gtk->r2_item_head, color_vws->opacity_vws->tree_view);
+				&color_vws->opacity_vws->r2_clist_gtk->r2_item_head, 
+				GTK_TREE_VIEW(color_vws->opacity_vws->tree_view));
 	
 	button_add = gtk_button_new_with_label("ADD");
     button_delete = gtk_button_new_with_label("Remove");
-	add_real2_list_box(color_vws->opacity_vws->tree_view, color_vws->opacity_vws->r2_clist_gtk,
+	add_real2_list_box(GTK_TREE_VIEW(color_vws->opacity_vws->tree_view),
+				color_vws->opacity_vws->r2_clist_gtk,
 				button_add, button_delete, vbox);
 	
     g_signal_connect(G_OBJECT(button_add), "clicked", 

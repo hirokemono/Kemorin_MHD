@@ -113,7 +113,7 @@ void add_gtk_isoline_menu(struct colormap_view *color_vws,
 	int current_nline = kemoview_get_PSF_num_isoline();
 	sprintf(current_nline_txt, "    %d    ", current_nline);
 	adj_nline = gtk_adjustment_new ((double) current_nline, 0, 200, 1, 1, 0.0);
-	spin_nline = gtk_spin_button_new(GTK_ADJUSTMENT(adj_nline), 0, 2);
+	spin_nline = gtk_spin_button_new(GTK_ADJUSTMENT(adj_nline), 0, 0);
 	g_signal_connect(spin_nline, "value-changed", G_CALLBACK(set_nline_CB), (gpointer) color_vws);
 	
 	hbox_draw = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);

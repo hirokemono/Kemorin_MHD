@@ -71,11 +71,9 @@ void make_gtk_psf_vector_menu(struct colormap_view *color_vws){
 	GtkWidget *hbox_12, *hbox_13;
 	GtkWidget *hbox_22, *hbox_23;
 	GtkWidget *hbox_32, *hbox_33;
-	GtkWidget *expander_vec,  *scroll_vec, *Frame_vec;
-	GtkWidget *hbox_vec,  *vbox_vec;
+	GtkWidget *vbox_vec;
 	
 	GtkWidget *switch_1;
-	int iflag_vect;
 	
 	GtkWidget *combobox_vecmode;
 	GtkWidget *label_tree_vmode;
@@ -168,13 +166,13 @@ void make_gtk_psf_vector_menu(struct colormap_view *color_vws){
 	current_vec_increment = kemoview_get_PSF_vector_increment();
 	sprintf(current_vec_inc_txt, "    %d    ", current_vec_increment);
 	adj_vect_inc = gtk_adjustment_new((double) current_vec_increment, 0, 500, 1, 1, 0.0);
-	spin_vect_inc = gtk_spin_button_new(GTK_ADJUSTMENT(adj_vect_inc), 0, 2);
+	spin_vect_inc = gtk_spin_button_new(GTK_ADJUSTMENT(adj_vect_inc), 0, 0);
 	g_signal_connect(spin_vect_inc, "value-changed", G_CALLBACK(set_vect_increment_CB), (gpointer) color_vws);
 	
 	current_vec_width = kemoview_get_PSF_vector_thickness();
 	sprintf(current_vec_width_txt, "    %e    ", current_vec_width);
 	adj_vect_width = gtk_adjustment_new(current_vec_width, 0.0, 1.0, 0.01, 0.01, 0.0);
-	spin_vect_width = gtk_spin_button_new(GTK_ADJUSTMENT(adj_vect_width), 0, 2);
+	spin_vect_width = gtk_spin_button_new(GTK_ADJUSTMENT(adj_vect_width), 0, 4);
 	g_signal_connect(spin_vect_width, "value-changed", G_CALLBACK(set_vector_width_CB), (gpointer) color_vws);
 	
 	

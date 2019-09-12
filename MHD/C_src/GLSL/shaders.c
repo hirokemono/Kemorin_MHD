@@ -171,7 +171,7 @@ char * load_dash_lines_3D_frag(void){
     };
     
     long n = strlen(dash_lines_3D_frag_src);
-    char * src = alloc_string((int) n+1);
+    char * src = alloc_string((long) n+1);
     
     strcpy(src, dash_lines_3D_frag_src);
     return src;
@@ -344,7 +344,7 @@ char * load_dash_lines_3D_vert(void){
     };
     
     long n = strlen(dash_lines_3D_vert_src);
-    char * src = alloc_string((int) n+1);
+    char * src = alloc_string((long) n+1);
     
     strcpy(src, dash_lines_3D_vert_src);
     return src;
@@ -369,7 +369,7 @@ char * load_gouraud_frag(void){
     };
     
     long n = strlen(gouraud_frag_src);
-    char * src = alloc_string((int) n+1);
+    char * src = alloc_string((long) n+1);
     
     strcpy(src, gouraud_frag_src);
     return src;
@@ -454,7 +454,7 @@ char * load_gouraud_vert(void){
     };
     
     long n = strlen(gouraud_vert_src);
-    char * src = alloc_string((int) n+1);
+    char * src = alloc_string((long) n+1);
     
     strcpy(src, gouraud_vert_src);
     return src;
@@ -476,7 +476,7 @@ char * load_menu_frag(void){
     };
     
     long n = strlen(menu_frag_src);
-    char * src = alloc_string((int) n+1);
+    char * src = alloc_string((long) n+1);
     
     strcpy(src, menu_frag_src);
     return src;
@@ -500,7 +500,7 @@ char * load_menu_vert(void){
     };
     
     long n = strlen(menu_vert_src);
-    char * src = alloc_string((int) n+1);
+    char * src = alloc_string((long) n+1);
     
     strcpy(src, menu_vert_src);
     return src;
@@ -574,7 +574,7 @@ char * load_phong_frag(void){
     };
     
     long n = strlen(phong_frag_src);
-    char * src = alloc_string((int) n+1);
+    char * src = alloc_string((long) n+1);
     
     strcpy(src, phong_frag_src);
     return src;
@@ -614,7 +614,7 @@ char * load_phong_vert(void){
     };
     
     long n = strlen(phong_vert_src);
-    char * src = alloc_string((int) n+1);
+    char * src = alloc_string((long) n+1);
     
     strcpy(src, phong_vert_src);
     return src;
@@ -689,7 +689,7 @@ char * load_phong_1color_frag(void){
     };
     
     long n = strlen(phong_1color_frag_src);
-    char * src = alloc_string((int) n+1);
+    char * src = alloc_string((long) n+1);
     
     strcpy(src, phong_1color_frag_src);
     return src;
@@ -725,7 +725,7 @@ char * load_phong_1color_vert(void){
     };
     
     long n = strlen(phong_1color_vert_src);
-    char * src = alloc_string((int) n+1);
+    char * src = alloc_string((long) n+1);
     
     strcpy(src, phong_1color_vert_src);
     return src;
@@ -804,7 +804,7 @@ char * load_phong_texture_frag(void){
     };
     
     long n = strlen(phong_texture_frag_src);
-    char * src = alloc_string((int) n+1);
+    char * src = alloc_string((long) n+1);
     
     strcpy(src, phong_texture_frag_src);
     return src;
@@ -846,7 +846,7 @@ char * load_phong_texture_vert(void){
     };
     
     long n = strlen(phong_texture_vert_src);
-    char * src = alloc_string((int) n+1);
+    char * src = alloc_string((long) n+1);
     
     strcpy(src, phong_texture_vert_src);
     return src;
@@ -873,7 +873,7 @@ char * load_simple_texture_frag(void){
     };
     
     long n = strlen(simple_texture_frag_src);
-    char * src = alloc_string((int) n+1);
+    char * src = alloc_string((long) n+1);
     
     strcpy(src, simple_texture_frag_src);
     return src;
@@ -906,7 +906,7 @@ char * load_simple_texture_vert(void){
     };
     
     long n = strlen(simple_texture_vert_src);
-    char * src = alloc_string((int) n+1);
+    char * src = alloc_string((long) n+1);
     
     strcpy(src, simple_texture_vert_src);
     return src;
@@ -927,7 +927,7 @@ char * load_test_frag(void){
     };
     
     long n = strlen(test_frag_src);
-    char * src = alloc_string((int) n+1);
+    char * src = alloc_string((long) n+1);
     
     strcpy(src, test_frag_src);
     return src;
@@ -960,7 +960,7 @@ char * load_test_vert(void){
     };
     
     long n = strlen(test_vert_src);
-    char * src = alloc_string((int) n+1);
+    char * src = alloc_string((long) n+1);
     
     strcpy(src, test_vert_src);
     return src;

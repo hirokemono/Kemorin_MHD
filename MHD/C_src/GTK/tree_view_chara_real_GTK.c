@@ -49,7 +49,7 @@ void cr_tree_name_edited(gchar *path_str, gchar *new_text,
 
     gchar *old_text;
     gchar *math_string;
-    double old_value, new_value;
+    double old_value;
 
     gtk_tree_model_get_iter(child_model, &iter, child_path);  
     gtk_tree_model_get(child_model, &iter, COLUMN_FIELD_NAME, &old_text, -1);
@@ -199,9 +199,6 @@ int add_cr_list_items_GTK(int index, GtkTreeView *tree_view_to_add,
     GList *cur;
     
     gchar *field_name;
-    gchar *field_math;
-    int index_field;
-    double value;
     
     /* 選択されている行のパスを取得する */
     /* パスはツリーモデルソートのもの */
@@ -244,7 +241,6 @@ int add_cr_list_items_GTK(int index, GtkTreeView *tree_view_to_add,
         
         /* Add */
 		gchar row_string[30] = "new_number";
-		gchar math_string[30] = "$$    $$";
 		double value = 0.0;
 		add_chara_real_clist_before_c_tbl(field_name, row_string, value, cr_clist);
 		
@@ -348,8 +344,6 @@ void create_text_real_tree_view(struct chara_real_clist *cr_clist, GtkTreeView *
 
     GtkAdjustment *adjust;
 
-    int i;
-    
 	/* Construct empty list storage */
     child_model = gtk_list_store_new(4, G_TYPE_INT, G_TYPE_STRING, G_TYPE_STRING,
                                      G_TYPE_DOUBLE);
@@ -444,7 +438,7 @@ void add_chara_real_list_box_w_addbottun(GtkTreeView *cr_tree_view,
     gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_window),
                                    GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
     gtk_widget_set_size_request(scrolled_window, 400, 300);
-    gtk_container_add(GTK_CONTAINER(scrolled_window), cr_tree_view);
+    gtk_container_add(GTK_CONTAINER(scrolled_window), GTK_WIDGET(cr_tree_view));
     gtk_box_pack_start(GTK_BOX(vbox), scrolled_window, TRUE, TRUE, 0);
     
     add_sorting_signal_w_label(cr_tree_view, hbox);
@@ -482,7 +476,7 @@ void add_chara_real_list_box_w_combobox(GtkTreeView *cr_tree_view,
     gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_window),
                                    GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
     gtk_widget_set_size_request(scrolled_window, 400, 300);
-    gtk_container_add(GTK_CONTAINER(scrolled_window), cr_tree_view);
+    gtk_container_add(GTK_CONTAINER(scrolled_window), GTK_WIDGET(cr_tree_view));
     gtk_box_pack_start(GTK_BOX(vbox), scrolled_window, TRUE, TRUE, 0);
     
     add_sorting_signal_w_label(cr_tree_view, hbox);

@@ -331,8 +331,6 @@ void create_text_int_tree_view(struct chara_int_clist *ci_clist, GtkTreeView *ci
     GtkListStore *child_model;
 
     GtkAdjustment *adjust;
-
-    int i;
     
 	/* Construct empty list storage */
     child_model = gtk_list_store_new(3, G_TYPE_INT, G_TYPE_STRING, G_TYPE_INT);

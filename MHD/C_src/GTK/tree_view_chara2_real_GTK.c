@@ -170,7 +170,7 @@ int add_c2r_list_by_bottun_GTK(int index, GtkTreeView *tree_view_to_add,
     gchar second_string[30] = "      ";
     double value = 0.0;
     
-    index = append_cr_item_to_tree(index, row_string, second_string, value, child_model_to_add);
+    index = append_c2r_item_to_tree(index, row_string, second_string, value, child_model_to_add);
     append_chara2_real_clist(row_string, second_string, value, c2r_clst);
     
     return index;
@@ -193,7 +193,7 @@ int add_c2r_list_from_combobox_GTK(int index, GtkTreePath *path, GtkTreeModel *t
     gtk_tree_model_get(tree_model, &iter, COLUMN_FIELD_MATH, &second_string, -1);
     gtk_tree_model_get(tree_model, &iter, COLUMN_FIELD_VALUE, &value, -1);
     
-    index = append_cr_item_to_tree(index, row_string, second_string, value, child_model_to_add);
+    index = append_c2r_item_to_tree(index, row_string, second_string, value, child_model_to_add);
     append_chara2_real_clist(row_string, second_string, value, c2r_clst);
     return index;
 }
@@ -214,7 +214,7 @@ int add_c2r_list_from_combobox_GTK_w_one(int index, GtkTreePath *path, GtkTreeMo
     gtk_tree_model_get(tree_model, &iter, COLUMN_FIELD_NAME, &row_string, -1);
     gtk_tree_model_get(tree_model, &iter, COLUMN_FIELD_MATH, &second_string, -1);
     
-    index = append_cr_item_to_tree(index, row_string, second_string, value, child_model_to_add);
+    index = append_c2r_item_to_tree(index, row_string, second_string, value, child_model_to_add);
     append_chara2_real_clist(row_string, second_string, value, c2r_clst);
     return index;
 }
@@ -305,10 +305,6 @@ void create_text2_real_tree_view(GtkListStore *cbox_child_model, GtkTreeView *c2
     GtkListStore *child_model;
     GtkAdjustment *adjust;
 
-    int i;
-    GtkTreeIter iter;
-    
-    
 	/* Construct empty list storage */
     child_model = gtk_list_store_new(4, G_TYPE_INT, G_TYPE_STRING, G_TYPE_STRING,
                                      G_TYPE_DOUBLE);

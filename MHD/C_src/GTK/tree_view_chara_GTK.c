@@ -262,7 +262,7 @@ void delete_c_list_items_GTK(GtkTreeView *tree_view_to_del,
         gtk_tree_model_get_iter(child_model_to_del, &iter, tree_path);
         gtk_tree_model_get(child_model_to_del, &iter, COLUMN_FIELD_INDEX, &old_strng, -1);
         
-        printf("To be moved: %d, %s\n", index_field, old_strng);
+/*        printf("To be moved: %d, %s\n", index_field, old_strng); */
         /* Delete */
         gtk_list_store_remove(GTK_LIST_STORE(child_model_to_del), &iter);
 
@@ -270,7 +270,7 @@ void delete_c_list_items_GTK(GtkTreeView *tree_view_to_del,
         gtk_tree_row_reference_free((GtkTreeRowReference *)cur->data);
         
         /* Update control data */
-        del_chara_real_clist_by_c_tbl(old_strng, c_clist);
+        del_chara_clist_by_c_tbl(old_strng, c_clist);
     }
     g_list_free(reference_list);
     
@@ -348,7 +348,7 @@ void add_chara_list_box_w_addbottun(GtkTreeView *c_tree_view,
     gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_window),
                                    GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
     gtk_widget_set_size_request(scrolled_window, 400, 300);
-    gtk_container_add(GTK_CONTAINER(scrolled_window), c_tree_view);
+    gtk_container_add(GTK_CONTAINER(scrolled_window), GTK_WIDGET(c_tree_view));
     gtk_box_pack_start(GTK_BOX(vbox), scrolled_window, TRUE, TRUE, 0);
     
 	add_sorting_signal_w_label(c_tree_view, hbox);

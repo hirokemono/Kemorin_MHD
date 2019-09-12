@@ -69,9 +69,9 @@ GtkWidget * make_inner_decomp_hbox(int iflag_fix_on, const char *label, struct c
 	index = append_ci_item_to_tree(index, &inner_docomp_labels[HORIZONTAL_MODE][0], HORIZONTAL_MODE, child_model);
 	
 	tbox_flag->entry = gtk_combo_box_new_with_model(child_model);
-	child_model = gtk_cell_renderer_text_new();
-	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(tbox_flag->entry), child_model, TRUE);
-	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(tbox_flag->entry), child_model,
+	GtkCellRenderer *renderer = gtk_cell_renderer_text_new();
+	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(tbox_flag->entry), renderer, TRUE);
+	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(tbox_flag->entry), renderer,
 				"text", COLUMN_FIELD_NAME, NULL);
 	
 	iflag = find_inner_decomp_index(ctl_item);
