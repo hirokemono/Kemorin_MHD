@@ -25,9 +25,9 @@ char * load_phong_1color_frag(void);
 char * load_phong_1color_vert(void);
 char * load_phong_texture_frag(void);
 char * load_phong_texture_vert(void);
+char * load_simple_frag(void);
+char * load_simple_vert(void);
 char * load_simple_texture_frag(void);
 char * load_simple_texture_vert(void);
-char * load_test_frag(void);
-char * load_test_vert(void);
 
 #endif

@@ -78,8 +78,8 @@ void draw_cube_edge_gl3(struct view_element *view_s,
 	update_projection_struct(view_s);
 	modify_view_by_struct(view_s);
 	
-	glUseProgram(kemo_shaders->test->programId);
-	transfer_matrix_to_shader(kemo_shaders->test, view_s);
+	glUseProgram(kemo_shaders->simple->programId);
+	transfer_matrix_to_shader(kemo_shaders->simple, view_s);
 	
 	glBindVertexArray(cube_VAO->id_VAO);
 	glDrawElements(GL_LINES, 24, GL_UNSIGNED_INT, 0);
@@ -104,8 +104,8 @@ void draw_quad_gl3(struct view_element *view_s,
 	update_projection_struct(view_s);
 	modify_view_by_struct(view_s);
 	
-	glUseProgram(kemo_shaders->test->programId);
-	identity_matrix_to_shader(kemo_shaders->test);
+	glUseProgram(kemo_shaders->simple->programId);
+	identity_matrix_to_shader(kemo_shaders->simple);
 	
 	glBindVertexArray(quad_VAO->id_VAO);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, quad_VAO->id_index);

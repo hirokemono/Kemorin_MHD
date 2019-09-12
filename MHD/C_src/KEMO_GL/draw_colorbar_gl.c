@@ -96,8 +96,8 @@ void draw_colorbar_VAO(struct cbar_work *cbar_wk,
 	glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
 	glEnable(GL_MULTISAMPLE);
 	
-	glUseProgram(kemo_shaders->test->programId);
-	map_matrix_to_shader(kemo_shaders->test, orthogonal);
+	glUseProgram(kemo_shaders->simple->programId);
+	map_matrix_to_shader(kemo_shaders->simple, orthogonal);
 	
 	glBindVertexArray(cbar_VAO[0]->id_VAO);
 	glDrawArrays(GL_TRIANGLES, IZERO, cbar_VAO[0]->npoint_draw);

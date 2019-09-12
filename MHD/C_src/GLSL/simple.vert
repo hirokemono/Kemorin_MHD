@@ -1,5 +1,5 @@
 #version 400
-// test.vert
+// simple.vert
 
 layout (location = 0) in vec3  xyz;
 // layout (location = 1) in vec3  norm;

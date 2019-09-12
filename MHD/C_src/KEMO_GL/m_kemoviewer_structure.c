@@ -1110,8 +1110,8 @@ void kemoview_draw_menu_setup(void){
 
 void kemo_Cleanup(void)
 {
-  destory_shaders(kemo_sgl->kemo_shaders->test);
-  destory_shaders(kemo_sgl->kemo_shaders->test);
+  destory_shaders(kemo_sgl->kemo_shaders->simple);
+  destory_shaders(kemo_sgl->kemo_shaders->simple);
 }
 
 /*  Routines using libpng */

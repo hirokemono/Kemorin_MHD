@@ -852,6 +852,61 @@ char * load_phong_texture_vert(void){
     return src;
 };
 
+char * load_simple_frag(void){
+    const char  simple_frag_src[]
+    = {
+        "#version 400\n"\
+        "// simple.frag\n"\
+        "\n"\
+        "in vec4 ex_Color;\n"\
+        "out vec4 out_Color;\n"\
+        "\n"\
+        "void main(){\n"\
+        "    out_Color = ex_Color;\n"\
+        "}\n"\
+        "\n"
+    };
+    
+    long n = strlen(simple_frag_src);
+    char * src = alloc_string((long) n+1);
+    
+    strcpy(src, simple_frag_src);
+    return src;
+};
+
+char * load_simple_vert(void){
+    const char  simple_vert_src[]
+    = {
+        "#version 400\n"\
+        "// simple.vert\n"\
+        "\n"\
+        "layout (location = 0) in vec3  xyz;\n"\
+        "// layout (location = 1) in vec3  norm;\n"\
+        "// layout (location = 2) in vec2  txur;\n"\
+        "layout (location = 1) in vec4  color;\n"\
+        "\n"\
+        "out vec4 ex_Color;\n"\
+        "\n"\
+        "uniform mat4 projectionMat;\n"\
+        "uniform mat4 viewMatrix;\n"\
+        "uniform mat4 modelViewMat;\n"\
+        "\n"\
+        "\n"\
+        "void main(void)\n"\
+        "{\n"\
+        "	gl_Position = vec4(projectionMat *  modelViewMat * vec4(xyz, 1.0));\n"\
+        "	ex_Color = color;\n"\
+        "}\n"\
+        "\n"
+    };
+    
+    long n = strlen(simple_vert_src);
+    char * src = alloc_string((long) n+1);
+    
+    strcpy(src, simple_vert_src);
+    return src;
+};
+
 char * load_simple_texture_frag(void){
     const char  simple_texture_frag_src[]
     = {
@@ -909,60 +964,6 @@ char * load_simple_texture_vert(void){
     char * src = alloc_string((long) n+1);
     
     strcpy(src, simple_texture_vert_src);
-    return src;
-};
-
-char * load_test_frag(void){
-    const char  test_frag_src[]
-    = {
-        "#version 400\n"\
-        "\n"\
-        "in vec4 ex_Color;\n"\
-        "out vec4 out_Color;\n"\
-        "\n"\
-        "void main(){\n"\
-        "    out_Color = ex_Color;\n"\
-        "}\n"\
-        "\n"
-    };
-    
-    long n = strlen(test_frag_src);
-    char * src = alloc_string((long) n+1);
-    
-    strcpy(src, test_frag_src);
-    return src;
-};
-
-char * load_test_vert(void){
-    const char  test_vert_src[]
-    = {
-        "#version 400\n"\
-        "// test.vert\n"\
-        "\n"\
-        "layout (location = 0) in vec3  xyz;\n"\
-        "// layout (location = 1) in vec3  norm;\n"\
-        "// layout (location = 2) in vec2  txur;\n"\
-        "layout (location = 1) in vec4  color;\n"\
-        "\n"\
-        "out vec4 ex_Color;\n"\
-        "\n"\
-        "uniform mat4 projectionMat;\n"\
-        "uniform mat4 viewMatrix;\n"\
-        "uniform mat4 modelViewMat;\n"\
-        "\n"\
-        "\n"\
-        "void main(void)\n"\
-        "{\n"\
-        "	gl_Position = vec4(projectionMat *  modelViewMat * vec4(xyz, 1.0));\n"\
-        "	ex_Color = color;\n"\
-        "}\n"\
-        "\n"
-    };
-    
-    long n = strlen(test_vert_src);
-    char * src = alloc_string((long) n+1);
-    
-    strcpy(src, test_vert_src);
     return src;
 };
 

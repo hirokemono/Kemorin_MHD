@@ -321,7 +321,7 @@ struct kemoview_shaders * init_kemoview_shaders(void){
 	sds->phong_texure = init_shader_ids();
 	sds->phong_1color = init_shader_ids();
 	sds->simple_texure = init_shader_ids();
-	sds->test = init_shader_ids();
+	sds->simple = init_shader_ids();
 	
 	if((sds->lights = (struct phong_lights *) malloc(sizeof(struct phong_lights))) == NULL){
 		printf("malloc error in phong_lights \n");
@@ -333,7 +333,7 @@ struct kemoview_shaders * init_kemoview_shaders(void){
 	LoadShaderFromStrings(sds->gouraud, load_gouraud_vert(), load_gouraud_frag());
 	LoadShaderFromStrings(sds->phong, load_phong_vert(), load_phong_frag());
 	LoadShaderFromStrings(sds->menu, load_menu_vert(), load_menu_frag());
-	LoadShaderFromStrings(sds->test, load_test_vert(), load_test_frag());
+	LoadShaderFromStrings(sds->simple, load_simple_vert(), load_simple_frag());
 	*/
 	return sds;
 };
@@ -345,12 +345,12 @@ void dealloc_kemoview_shaders(struct kemoview_shaders *sds){
 	destory_shaders(sds->gouraud);
 	destory_shaders(sds->phong);
 	destory_shaders(sds->menu);
-	destory_shaders(sds->test);
+	destory_shaders(sds->simple);
 		
 	free(sds->gouraud);
 	free(sds->menu);
 	free(sds->phong);
-	free(sds->test);
+	free(sds->simple);
 	
 	free(sds);
 	return;

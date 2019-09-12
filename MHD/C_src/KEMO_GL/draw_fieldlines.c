@@ -91,8 +91,8 @@ void draw_fieldlines_VAO(struct view_element *view_s,
 	
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	
-	glUseProgram(kemo_shaders->test->programId);
-	transfer_matrix_to_shader(kemo_shaders->test, view_s);
+	glUseProgram(kemo_shaders->simple->programId);
+	transfer_matrix_to_shader(kemo_shaders->simple, view_s);
 	
 	glBindVertexArray(fline_VAO->id_VAO);
 	glDrawArrays(GL_LINES, IZERO, fline_VAO->npoint_draw);
