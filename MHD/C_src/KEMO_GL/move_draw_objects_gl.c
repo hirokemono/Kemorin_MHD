@@ -33,17 +33,21 @@ struct kemoview_VAOs * init_kemoview_VAOs(void){
 	for(i=0;i<2;i++){
 		kemo_VAOs->psf_trans_VAO[i] = (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
 	};
-
+	
 	kemo_VAOs->grid_VAO = (struct VAO_ids **) malloc(5*sizeof(struct VAO_ids));
 	for(i=0;i<5;i++){
 		kemo_VAOs->grid_VAO[i] = (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
 	};
-
-	kemo_VAOs->cbar_VAO = (struct VAO_ids **) malloc(5*sizeof(struct VAO_ids));
+	
+	kemo_VAOs->cbar_VAO = (struct VAO_ids **) malloc(2*sizeof(struct VAO_ids));
 	for(i=0;i<2;i++){
 		kemo_VAOs->cbar_VAO[i] = (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
 	};
 	
+	kemo_VAOs->map_VAO = (struct VAO_ids **) malloc(4*sizeof(struct VAO_ids));
+	for(i=0;i<4;i++){
+		kemo_VAOs->map_VAO[i] = (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
+	};
 	return kemo_VAOs;
 };
 
@@ -80,6 +84,11 @@ void dealloc_kemoview_VAOs(struct kemoview_VAOs *kemo_VAOs){
 		free(kemo_VAOs->cbar_VAO[i]);
 	};
 	free(kemo_VAOs->cbar_VAO);
+
+	for(i=0;i<4;i++){
+		free(kemo_VAOs->map_VAO[i]);
+	};
+	free(kemo_VAOs->map_VAO);
 	return;
 };
 
@@ -102,6 +111,10 @@ void assign_kemoview_VAOs(struct kemoview_VAOs *kemo_VAOs){
 	glGenVertexArrays(1, &kemo_VAOs->cbar_VAO[0]->id_VAO);
 	glGenVertexArrays(1, &kemo_VAOs->cbar_VAO[1]->id_VAO);
 	glGenVertexArrays(1, &kemo_VAOs->cube_VAO->id_VAO);
+	glGenVertexArrays(1, &kemo_VAOs->map_VAO[0]->id_VAO);
+	glGenVertexArrays(1, &kemo_VAOs->map_VAO[1]->id_VAO);
+	glGenVertexArrays(1, &kemo_VAOs->map_VAO[2]->id_VAO);
+	glGenVertexArrays(1, &kemo_VAOs->map_VAO[3]->id_VAO);
 };
 
 void clear_kemoview_VAOs(struct kemoview_VAOs *kemo_VAOs){
@@ -123,6 +136,10 @@ void clear_kemoview_VAOs(struct kemoview_VAOs *kemo_VAOs){
 	Destroy_VAO(kemo_VAOs->cbar_VAO[0]);
 	Destroy_VAO(kemo_VAOs->cbar_VAO[1]);
 	Destroy_VAO(kemo_VAOs->cube_VAO);
+	Destroy_VAO(kemo_VAOs->map_VAO[0]);
+	Destroy_VAO(kemo_VAOs->map_VAO[1]);
+	Destroy_VAO(kemo_VAOs->map_VAO[2]);
+	Destroy_VAO(kemo_VAOs->map_VAO[3]);
 };
 
 void get_gl_buffer_to_bmp(int num_x, int num_y, unsigned char *glimage){
@@ -142,7 +159,7 @@ void quick_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_fline *ke
 	if(view_s->iflag_view_type == VIEW_MAP) {
 		iflag_psf = sort_by_patch_distance_psfs(kemo_psf->psf_d, kemo_psf->psf_m, kemo_psf->psf_a, view_s);
 		draw_map_objects_VAO(kemo_mesh->mesh_m, view_s, 
-					kemo_VAOs->psf_solid_VAO, kemo_VAOs->grid_VAO, kemo_shaders);
+					&kemo_VAOs->map_VAO[0], &kemo_VAOs->map_VAO[2], kemo_shaders);
 	} else {
 		draw_axis_VAO(view_s, kemo_VAOs->grid_VAO[2], kemo_shaders);
 		draw_fieldlines_VAO(view_s, kemo_VAOs->fline_VAO[1], kemo_shaders);
@@ -190,9 +207,9 @@ void update_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_fline *k
 		iflag_psf = check_draw_map(kemo_psf->psf_a);
 		set_map_objects_VAO(view_s, kemo_psf->psf_d, 
 					kemo_mesh->mesh_m, kemo_psf->psf_m, kemo_psf->psf_a, 
-					kemo_VAOs->psf_solid_VAO, kemo_VAOs->grid_VAO);
+					&kemo_VAOs->map_VAO[0], &kemo_VAOs->map_VAO[2]);
 		draw_map_objects_VAO(kemo_mesh->mesh_m, view_s,
-					kemo_VAOs->psf_solid_VAO, kemo_VAOs->grid_VAO, kemo_shaders);
+					&kemo_VAOs->map_VAO[0], &kemo_VAOs->map_VAO[2], kemo_shaders);
 	} else {
 		set_axis_VAO(kemo_mesh->mesh_m, view_s, kemo_VAOs->grid_VAO[2]);
 		draw_axis_VAO(view_s, kemo_VAOs->grid_VAO[2], kemo_shaders);
