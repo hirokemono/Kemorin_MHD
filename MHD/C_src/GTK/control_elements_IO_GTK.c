@@ -1,5 +1,5 @@
 /*
-//  control_elements_IO_GTK.h
+//  control_elements_IO_GTK.c
 //  
 //
 //  Created by Hiroaki Matsui on 2018/08/03.
@@ -371,7 +371,7 @@ static void cb_chara_ctl_item(GtkEntry *entry, gpointer data)
 	
 	if(ctl_item->c_tbl != NULL) {
 		ctl_item->iflag = 1;
-		ctl_item->c_tbl = gtk_entry_get_text(entry);
+		ctl_item->c_tbl = (char *) gtk_entry_get_text(entry);
 	};
 	return;
 }
@@ -381,7 +381,7 @@ GtkWidget *make_text_hbox(int iflag_fix_on, const char *label, struct chara_ctl_
 	struct entry_and_flag *tbox_flag = (struct entry_and_flag *) malloc(sizeof(struct entry_and_flag));
 	
 	tbox_flag->entry = gtk_entry_new();
-	gtk_entry_set_text(tbox_flag->entry, ctl_item->c_tbl);
+	gtk_entry_set_text(GTK_ENTRY(tbox_flag->entry), ctl_item->c_tbl);
 	g_signal_connect(G_OBJECT(tbox_flag->entry), "activate",
 				G_CALLBACK(cb_chara_ctl_item), (gpointer) ctl_item);
 	

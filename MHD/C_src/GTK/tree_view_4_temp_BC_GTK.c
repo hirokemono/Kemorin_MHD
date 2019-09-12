@@ -98,10 +98,10 @@ void init_bc_temp_tree_view(struct boundary_condition_view *bc_vws){
     g_signal_connect(G_OBJECT(renderer_spin), "edited", 
                      G_CALLBACK(thermal_bc_value_edited_cb), (gpointer) bc_vws);
 
-    bc_vws->index_bc = append_c2r_list_from_ctl(bc_vws->index_bc, bc_vws->bc_T_gtk,
+    bc_vws->index_bc = append_c2r_list_from_ctl(bc_vws->index_bc, &bc_vws->bc_T_gtk->c2r_item_head,
                                                 bc_vws->bc_tree_view);
     for(i=0;i<NUM_BASIC_BC_TYPE_DEF;i++){
-        index = append_c_item_to_tree(index, boundary_type_def[i], cbox_child_model);
+        index = append_c2r_item_to_tree(index, boundary_type_def[i], " ", ZERO, cbox_child_model);
     };
 }
 

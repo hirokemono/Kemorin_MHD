@@ -59,7 +59,7 @@ void mousePosCB(GLFWwindow *window, double xpos, double ypos) {
 	/*! This gets called when the mouse moves */
 	
 	GLdouble factor;
-	int button_function;
+	int button_function = left_button_func;
 	
 	/*printf("mousePosCB %.1lf %.1lf\n", xpos, ypos); */
 	if (moving_left == 0 && moving_middle == 0 && moving_right == 0) return;

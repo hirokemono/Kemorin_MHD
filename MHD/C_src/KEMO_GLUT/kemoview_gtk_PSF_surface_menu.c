@@ -42,11 +42,9 @@ static void set_PSFcolor_GTK(GtkColorChooser *colordialog)
 static void kemoview_gtk_surfcolorsel(gpointer user_data){
 	int response;
 	GtkColorChooser *chooser;
-	GtkWidget  *parent;
+	GtkWindow  *parent_window = (GtkWindow *) user_data;
 	
-	parent = (GtkWidget *) user_data;
-	
-	window_csel = gtk_color_chooser_dialog_new("Choose surface color", parent);
+	window_csel = gtk_color_chooser_dialog_new("Choose surface color", parent_window);
 	gtk_widget_show_all(window_csel);
 	
 	response = gtk_dialog_run(GTK_DIALOG(window_csel));

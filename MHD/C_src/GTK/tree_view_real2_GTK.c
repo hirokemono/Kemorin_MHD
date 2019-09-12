@@ -392,20 +392,20 @@ void r2_tree_value2_edited_cb(GtkCellRendererText *cell, gchar *path_str,
 			gchar *new_text, gpointer user_data)
 {
     struct r2_clist_view *r2_vws = (struct r2_clist_view *) user_data;
-    r2_tree_value2_edited(path_str, new_text, r2_vws->tree_view, r2_vws->r2_clist_gtk);
+    r2_tree_value2_edited(path_str, new_text, GTK_TREE_VIEW(r2_vws->tree_view), r2_vws->r2_clist_gtk);
     write_real2_clist(stdout, 0, "value2 changed", r2_vws->r2_clist_gtk);
 };
 
 void add_r2_list_items_cb(GtkButton *button, gpointer user_data){
     struct r2_clist_view *r2_vws = (struct r2_clist_view *) user_data;
 	r2_vws->index_bc = add_r2_list_items(r2_vws->index_bc, 
-				r2_vws->tree_view, r2_vws->r2_clist_gtk);
+				GTK_TREE_VIEW(r2_vws->tree_view), r2_vws->r2_clist_gtk);
     write_real2_clist(stdout, 0, "columns added", r2_vws->r2_clist_gtk);
 };
 
 void delete_r2_list_items_cb(GtkButton *button, gpointer user_data){
     struct r2_clist_view *r2_vws = (struct r2_clist_view *) user_data;
-	delete_r2_list_items(r2_vws->tree_view, r2_vws->r2_clist_gtk);
+	delete_r2_list_items(GTK_TREE_VIEW(r2_vws->tree_view), r2_vws->r2_clist_gtk);
     write_real2_clist(stdout, 0, "columns deleted", r2_vws->r2_clist_gtk);
 };
 
@@ -418,7 +418,7 @@ void init_real2_tree_view(struct r2_clist_view *r2_vws){
 	renderer_spin1 = gtk_cell_renderer_spin_new();
 	renderer_spin2 = gtk_cell_renderer_spin_new();
 	
-	create_real2_tree_view(r2_vws->tree_view, r2_vws->r2_clist_gtk, 
+	create_real2_tree_view(GTK_TREE_VIEW(r2_vws->tree_view), r2_vws->r2_clist_gtk, 
                            renderer_spin1, renderer_spin2);
 	
     g_signal_connect(G_OBJECT(renderer_spin1), "edited", 
@@ -427,14 +427,14 @@ void init_real2_tree_view(struct r2_clist_view *r2_vws){
                      G_CALLBACK(r2_tree_value2_edited_cb), (gpointer) r2_vws);
 	
 	r2_vws->index_bc = append_r2_list_from_ctl(r2_vws->index_bc,
-				&r2_vws->r2_clist_gtk->r2_item_head, r2_vws->tree_view);
+				&r2_vws->r2_clist_gtk->r2_item_head, GTK_TREE_VIEW(r2_vws->tree_view));
 };
 
 void add_real2_list_box_w_addbottun(struct r2_clist_view *r2_vws, GtkWidget *vbox){
     GtkWidget *button_add = gtk_button_new_with_label("Add");
     GtkWidget *button_delete = gtk_button_new_with_label("Remove");
 	
-	add_real2_list_box(r2_vws->tree_view, r2_vws->r2_clist_gtk,
+	add_real2_list_box(GTK_TREE_VIEW(r2_vws->tree_view), r2_vws->r2_clist_gtk,
 				button_add, button_delete, vbox);
 	
     g_signal_connect(G_OBJECT(button_add), "clicked", 

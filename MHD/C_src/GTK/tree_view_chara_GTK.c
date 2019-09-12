@@ -387,7 +387,7 @@ void add_chara_list_box_w_combobox(GtkTreeView *c_tree_view,
     gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_window),
                                    GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
     gtk_widget_set_size_request(scrolled_window, 400, 300);
-    gtk_container_add(GTK_CONTAINER(scrolled_window), c_tree_view);
+    gtk_container_add(GTK_CONTAINER(scrolled_window), GTK_WIDGET(c_tree_view));
     gtk_box_pack_start(GTK_BOX(vbox), scrolled_window, TRUE, TRUE, 0);
     
 	add_sorting_signal_w_label(c_tree_view, hbox);

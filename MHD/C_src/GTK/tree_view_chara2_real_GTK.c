@@ -9,12 +9,12 @@
 
 /* Append new data at the end of list */
 int append_c2r_item_to_tree(int index, char *c1_tbl, char *c2_tbl, double r_data, 
-                           GtkTreeModel *child_model)
+                           GtkTreeModel *c2r_tree_model)
 {
     GtkTreeIter iter;
     
-    gtk_list_store_append(GTK_LIST_STORE(child_model), &iter);
-    gtk_list_store_set(GTK_LIST_STORE(child_model), &iter,
+    gtk_list_store_append(GTK_LIST_STORE(c2r_tree_model), &iter);
+    gtk_list_store_set(GTK_LIST_STORE(c2r_tree_model), &iter,
                        COLUMN_FIELD_INDEX, index,
                        COLUMN_FIELD_NAME,  c1_tbl,
                        COLUMN_FIELD_MATH,  c2_tbl,

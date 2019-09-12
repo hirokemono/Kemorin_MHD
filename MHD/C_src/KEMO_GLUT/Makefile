@@ -190,6 +190,7 @@ module:
 	kemoview_gtk_rotation_menu.h \
 	kemoviewer.h \
 	m_kemoviewer_data.o \
+	tree_view_chara_int_GTK.o \
 	tree_views_4_fixed_lists_GTK.o \
 	kemoview_fileselector_gtk.o \
 	kemoview_gtk_routines.o \
@@ -205,6 +206,7 @@ module:
 	kemoviewer.h \
 	m_kemoviewer_data.o \
 	tree_views_4_fixed_lists_GTK.o \
+	tree_view_chara_int_GTK.o \
 	kemoview_fileselector_gtk.o \
 	kemoview_gtk_routines.o \
 	view_modifier_glfw.o \
