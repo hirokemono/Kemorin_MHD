@@ -55,6 +55,7 @@ dir_list:
 		GMAKE='$(GMAKE)' \
 		MAKEDIR='$(MAKEDIR)'     \
 		MAKENAME='$(MAKENAME)'   \
+		F90_LOCAL='$(F90_LOCAL)'   \
 		dir_list; \
 		 ) \
 	done

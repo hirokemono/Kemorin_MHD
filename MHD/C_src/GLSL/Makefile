@@ -2,7 +2,7 @@
 #
 #
 
-F90 = gfortran-mp-8
+F90_LOCAL = gfortran-mp-8
 
 SHADERDIR = $$(C_SRCDIR)/GLSL
 
@@ -23,7 +23,7 @@ CURRENTDIR = $(shell pwd)
 all: $(SHADER_PREFIX).c
 
 $(MAKE_C_SHADER): ../../module_dependency/$(MAKE_C_SHADER).f90
-	$(F90) -o $(MAKE_C_SHADER) $<
+	$(F90_LOCAL) -o $(MAKE_C_SHADER) $<
 
 $(SHADER_PREFIX).c: $(MAKE_C_SHADER) $(SRC_SHADERS)
 	./$(MAKE_C_SHADER) $(SHADER_PREFIX) $(CURRENTDIR) $(SRC_SHADERS)

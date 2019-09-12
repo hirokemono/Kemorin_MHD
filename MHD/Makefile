@@ -231,6 +231,7 @@ makemake:
 		MAKEDIR='$(MAKEDIR)'          \
 		MAKENAME='$(MAKENAME)'        \
 		64BIT_INT='$(64BIT_INT)'   \
+		F90_LOCAL='$(F90_LOCAL)'   \
 		dir_list; \
 		 ) \
 	done
