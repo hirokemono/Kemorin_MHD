@@ -537,9 +537,6 @@
 		18D7E6EA1562D359009B05FF /* trackball.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = trackball.h; sourceTree = "<group>"; };
 		18D7E6ED1562D359009B05FF /* write_modelview_matrix.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = write_modelview_matrix.c; sourceTree = "<group>"; };
 		18D7E6EE1562D359009B05FF /* write_modelview_matrix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = write_modelview_matrix.h; sourceTree = "<group>"; };
-		18D7E6FA1562D359009B05FF /* Makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
-		18D7E6FB1562D359009B05FF /* view_modifier_glut.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = view_modifier_glut.c; sourceTree = "<group>"; };
-		18D7E6FC1562D359009B05FF /* view_modifier_glut.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = view_modifier_glut.h; sourceTree = "<group>"; };
 		18D7E6FD1562D359009B05FF /* Makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
 		18D7E6FF1562D359009B05FF /* ColorMapController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColorMapController.h; sourceTree = "<group>"; };
 		18D7E7001562D359009B05FF /* ColorMapController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ColorMapController.m; sourceTree = "<group>"; };
@@ -807,7 +804,6 @@
 				185CB939212F593C00BB3C0B /* CONTROLS */,
 				18D7E64E1562D359009B05FF /* CORE_C */,
 				18D7E69C1562D359009B05FF /* KEMO_GL */,
-				18D7E6F11562D359009B05FF /* KEMO_GLUT */,
 				18D7E6FD1562D359009B05FF /* Makefile */,
 				18D7E6FE1562D359009B05FF /* Obj_C */,
 			);
@@ -1018,16 +1014,6 @@
 				18CFFEB622FBFDAD005D7739 /* vartex_array_object_gl.h */,
 			);
 			path = KEMO_GL;
-			sourceTree = "<group>";
-		};
-		18D7E6F11562D359009B05FF /* KEMO_GLUT */ = {
-			isa = PBXGroup;
-			children = (
-				18D7E6FA1562D359009B05FF /* Makefile */,
-				18D7E6FB1562D359009B05FF /* view_modifier_glut.c */,
-				18D7E6FC1562D359009B05FF /* view_modifier_glut.h */,
-			);
-			path = KEMO_GLUT;
 			sourceTree = "<group>";
 		};
 		18D7E6FE1562D359009B05FF /* Obj_C */ = {
