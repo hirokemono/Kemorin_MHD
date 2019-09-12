@@ -69,7 +69,7 @@ int check_draw_map(struct kemo_array_control *psf_a){
 void set_map_objects_VAO(struct view_element *view_s, 
 						 struct psf_data **psf_s, struct mesh_menu_val *mesh_m,
 						 struct psf_menu_val **psf_m, struct kemo_array_control *psf_a, 
-						 struct VAO_ids **psf_VAO, struct VAO_ids **grid_VAO){
+						 struct VAO_ids **map_VAO){
 	set_color_code_for_psfs(psf_s, psf_m, psf_a);
 	
 	struct gl_strided_buffer *map_buf
@@ -78,12 +78,12 @@ void set_map_objects_VAO(struct view_element *view_s,
 	alloc_strided_buffer(map_buf->num_nod_buf, map_buf->ncomp_buf, map_buf);
 	
 	set_map_patch_VAO(IZERO, psf_a->istack_solid_psf_patch, 
-					  psf_s, psf_a, psf_VAO[0], map_buf);
+					  psf_s, psf_a, map_VAO[0], map_buf);
 	
 	set_map_PSF_isolines_VAO(psf_s, psf_m, psf_a, view_s,
-							psf_VAO[1], map_buf);
+							map_VAO[1], map_buf);
 	
-	map_coastline_grid_VBO(mesh_m, grid_VAO, map_buf);
+	map_coastline_grid_VBO(mesh_m, &map_VAO[2], map_buf);
 	free(map_buf->v_buf);
 	free(map_buf);
 	
@@ -91,10 +91,10 @@ void set_map_objects_VAO(struct view_element *view_s,
 };
 
 void draw_map_objects_VAO(struct mesh_menu_val *mesh_m, struct view_element *view_s, 
-			struct VAO_ids **psf_VAO, struct VAO_ids **grid_VAO,
-			struct kemoview_shaders *kemo_shaders){
+			struct VAO_ids **map_VAO, struct kemoview_shaders *kemo_shaders){
 	GLdouble xwin, ywin;
 	GLdouble orthogonal[16];
+	int i;
 	
 	if(view_s->ny_window > view_s->nx_window) {
 		xwin = 2.05;
@@ -113,22 +113,17 @@ void draw_map_objects_VAO(struct mesh_menu_val *mesh_m, struct view_element *vie
 	glUseProgram(kemo_shaders->test->programId);
 	map_matrix_to_shader(kemo_shaders->test, orthogonal);
 		
-	if(psf_VAO[0]->npoint_draw > 0){
-		glBindVertexArray(psf_VAO[0]->id_VAO);
-		glDrawArrays(GL_TRIANGLES, IZERO, psf_VAO[0]->npoint_draw);
-	};
-	if(psf_VAO[1]->npoint_draw > 0){
-		glBindVertexArray(psf_VAO[1]->id_VAO);
-		glDrawArrays(GL_TRIANGLES, IZERO, psf_VAO[1]->npoint_draw);
-	};
-	
-	if(grid_VAO[0]->npoint_draw > 0){
-		glBindVertexArray(grid_VAO[0]->id_VAO);
-		glDrawArrays(GL_LINES, IZERO, grid_VAO[0]->npoint_draw);
-	};
-	if(grid_VAO[1]->npoint_draw > 0){
-		glBindVertexArray(grid_VAO[1]->id_VAO);
-		glDrawArrays(GL_LINES, IZERO, grid_VAO[1]->npoint_draw);
+	for(i=0;i<2;i++){
+		if(map_VAO[i]->npoint_draw > 0){
+			glBindVertexArray(map_VAO[i]->id_VAO);
+			glDrawArrays(GL_TRIANGLES, IZERO, map_VAO[i]->npoint_draw);
+		};
+	};	
+	for(i=2;i<4;i++){
+		if(map_VAO[i]->npoint_draw > 0){
+			glBindVertexArray(map_VAO[i]->id_VAO);
+			glDrawArrays(GL_LINES, IZERO, map_VAO[i]->npoint_draw);
+		};
 	};
 	return;
 }

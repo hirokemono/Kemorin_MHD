@@ -158,8 +158,7 @@ void quick_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_fline *ke
     /* Draw Solid Objects */
 	if(view_s->iflag_view_type == VIEW_MAP) {
 		iflag_psf = sort_by_patch_distance_psfs(kemo_psf->psf_d, kemo_psf->psf_m, kemo_psf->psf_a, view_s);
-		draw_map_objects_VAO(kemo_mesh->mesh_m, view_s, 
-					&kemo_VAOs->map_VAO[0], &kemo_VAOs->map_VAO[2], kemo_shaders);
+		draw_map_objects_VAO(kemo_mesh->mesh_m, view_s, kemo_VAOs->map_VAO, kemo_shaders);
 	} else {
 		draw_axis_VAO(view_s, kemo_VAOs->grid_VAO[2], kemo_shaders);
 		draw_fieldlines_VAO(view_s, kemo_VAOs->fline_VAO[1], kemo_shaders);
@@ -206,10 +205,8 @@ void update_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_fline *k
 					kemo_psf->psf_a, view_s);
 		iflag_psf = check_draw_map(kemo_psf->psf_a);
 		set_map_objects_VAO(view_s, kemo_psf->psf_d, 
-					kemo_mesh->mesh_m, kemo_psf->psf_m, kemo_psf->psf_a, 
-					&kemo_VAOs->map_VAO[0], &kemo_VAOs->map_VAO[2]);
-		draw_map_objects_VAO(kemo_mesh->mesh_m, view_s,
-					&kemo_VAOs->map_VAO[0], &kemo_VAOs->map_VAO[2], kemo_shaders);
+					kemo_mesh->mesh_m, kemo_psf->psf_m, kemo_psf->psf_a, kemo_VAOs->map_VAO);
+		draw_map_objects_VAO(kemo_mesh->mesh_m, view_s, kemo_VAOs->map_VAO, kemo_shaders);
 	} else {
 		set_axis_VAO(kemo_mesh->mesh_m, view_s, kemo_VAOs->grid_VAO[2]);
 		draw_axis_VAO(view_s, kemo_VAOs->grid_VAO[2], kemo_shaders);
