@@ -9,7 +9,7 @@
 
 #include "m_kemoview_mesh.h"
 
-struct kemoview_mesh * init_kemoview_mesh(){
+struct kemoview_mesh * init_kemoview_mesh(void){
 	struct kemoview_mesh *kemo_mesh
 			= (struct kemoview_mesh *) malloc(sizeof(struct kemoview_mesh));
 	if(kemo_mesh == NULL){

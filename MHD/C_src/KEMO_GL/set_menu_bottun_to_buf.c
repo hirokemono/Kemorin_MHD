@@ -154,7 +154,6 @@ static int set_menu_to_buf(GLubyte *menubottun_bits, struct gl_strided_buffer *s
 
 void const_menu_bottun_buffer(struct gl_strided_buffer *strided_buf){
 	GLubyte menubottun_bits[3*MENU_HEIGHT*MENU_WIDTH];
-	int icou;
 	int num_dot = count_menu_to_buf();
 	
 	set_buffer_address_4_patch(num_dot, strided_buf);

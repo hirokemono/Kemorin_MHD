@@ -8,7 +8,7 @@
 #include "tree_view_chara_real_GTK.h"
 
 /* Append new data at the end of list */
-int append_cr_item_to_tree(int index, char *c_tbl, char *c_math, double r_data, 
+int append_cr_item_to_tree(const int index, const char *c_tbl, const char *c_math, const double r_data, 
 			GtkTreeModel *child_model)
 {
     GtkTreeIter iter;
@@ -104,9 +104,7 @@ static void column_clicked(GtkTreeViewColumn *column, gpointer user_data)
     gint cur_id;
     GtkSortType order;
     GtkTreeViewColumn *cur_column;
-    
-    GtkTreeViewColumn *button;
-    
+
     if (gtk_widget_is_focus(GTK_WIDGET(tree_view)) == FALSE) {
         gtk_widget_grab_focus(GTK_WIDGET(tree_view));
     }

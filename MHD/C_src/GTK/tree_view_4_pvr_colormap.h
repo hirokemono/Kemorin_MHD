@@ -23,6 +23,7 @@
 #include "m_color_table_c.h"
 #include "m_kemoview_psf_menu.h"
 #include "set_each_psf_parameters.h"
+#include "kemoview_gtk_routines.h"
 
 struct colormap_view{
 	struct chara_ctl_item *colormap_mode_gtk;

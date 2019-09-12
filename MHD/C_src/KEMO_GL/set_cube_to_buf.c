@@ -137,7 +137,7 @@ int flatEdgeCube_VBO(int icou, GLfloat fSize, struct gl_strided_buffer *strided_
 };
 
 int flatNodeCube_VBO(int icou, GLfloat fSize, struct gl_strided_buffer *strided_buf){
-	int i, j, k;
+	int i, j;
 	GLfloat radius;
 	
 	for(j=0;j<8;j++){
@@ -316,9 +316,9 @@ void set_quadVBO(struct VAO_ids *VAO_quad, struct gl_strided_buffer *gl_buf)
 		1.0f, 1.0f, 1.0f, 1.0f
 	};
 	
-	GLuint quad_tri_faces [2][3] = {0, 2, 1,  2, 3, 1};
+	GLuint quad_tri_faces [2][3] = {{0, 2, 1},  {2, 3, 1}};
 	
-	int i,nd,k;
+	int i, nd;
 	
 	for(i=0;i<gl_buf->num_nod_buf;i++){
 		for(nd=0;nd<3;nd++){

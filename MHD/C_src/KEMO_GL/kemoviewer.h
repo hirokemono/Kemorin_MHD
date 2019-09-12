@@ -421,7 +421,7 @@ struct mul_kemoviewer_type;
 #ifdef __cplusplus
 extern "C" {
 #endif
-	void kemoview_alloc_kvstringitem(int length, struct kv_string *kvstring);
+	void kemoview_alloc_kvstringitem(unsigned long length, struct kv_string *kvstring);
 	void kemoview_alloc_copy_string(const char *org_string, struct kv_string *kvstring);
 	struct kv_string* kemoview_alloc_kvstring(void);
 	struct kv_string* kemoview_init_kvstring_by_string(const char *org_string);
@@ -746,9 +746,6 @@ extern "C" {
     void kemoview_set_PSF_single_color(double *rgba);
     void kemoview_set_PSF_constant_opacity(double opacity);
     
-	void kemoview_init_colormap_views_4_viewer(struct kemoviewer_type *kemoviewer_data, 
-											   struct colormap_view *color_vws);
-
 	void kemoview_get_PSF_rgb_at_value(double value, double *red, double *green, double *blue);
     double kemoview_get_PSF_opacity_at_value(double value);
     void kemoview_set_PSF_color_data(int i_point, double value, double color);

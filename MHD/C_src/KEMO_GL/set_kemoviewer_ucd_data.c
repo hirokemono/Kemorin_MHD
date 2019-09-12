@@ -10,7 +10,7 @@
 #include "set_kemoviewer_ucd_data.h"
 
 static void run_pick_surface_c(struct mesh_menu_val *mesh_m){
-	int length = strlen(mesh_m->pick_surface_command->string) 
+	unsigned long length = strlen(mesh_m->pick_surface_command->string) 
 			+ strlen(mesh_m->mesh_file_name->string) + 10;
 	struct kv_string *file_prefix = alloc_kvstring();
 	struct kv_string *file_tmp = alloc_kvstring();

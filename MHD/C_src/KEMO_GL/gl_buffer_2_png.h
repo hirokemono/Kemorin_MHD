@@ -13,6 +13,8 @@
 #include "kemoviewer_param_c.h"
 #include "gl_buffer_2_bmp.h"
 #include "write_image_2_png.h"
+#include "move_draw_objects_gl.h"
+#include "set_texture_4_psf.h"
 
 /* prototypes */
 

@@ -154,6 +154,8 @@ module:
 	kemoviewer_param_c.o \
 	kemosrc_param_c.o \
 	write_image_2_png.o \
+	move_draw_objects_gl.o \
+	set_texture_4_psf.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)
@@ -165,6 +167,7 @@ module:
 	kemoviewer_param_c.o \
 	write_image_2_bmp.o \
     set_texture_4_psf.o \
+	move_draw_objects_gl.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)
@@ -334,6 +337,7 @@ module:
 	m_color_table_c.o \
 	m_colorbar_work.o \
     set_rgba_table_c.o \
+	rainbow_color_code_c.o \
 	skip_comment_c.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \

@@ -70,7 +70,7 @@ int kemoview_get_PSF_maximum_load(void){
 	return get_PSF_maximum_load(kemo_sgl->kemo_psf->psf_a);
 };
 
-void kemoview_alloc_kvstringitem(int length, struct kv_string *kvstring){
+void kemoview_alloc_kvstringitem(unsigned long length, struct kv_string *kvstring){
 	alloc_kvstringitem(length, kvstring);
 	return;
 };
@@ -147,8 +147,8 @@ void kemoview_get_background_color(GLfloat color[4]){copy_rgba_color_c(kemo_sgl-
 /* Routines for menu selection */
 int kemoview_set_data_format_flag(struct kv_string *filename, 
                                   struct kv_string *stripped_prefix, struct kv_string *stripped_ext){
-    alloc_kvstringitem((int)  strlen(filename->string), stripped_prefix);
-    alloc_kvstringitem((int)  strlen(filename->string), stripped_ext);
+    alloc_kvstringitem(strlen(filename->string), stripped_prefix);
+    alloc_kvstringitem(strlen(filename->string), stripped_ext);
     return set_data_format_flag(filename->string, stripped_prefix->string, stripped_ext->string);
 }
 
@@ -176,13 +176,12 @@ void kemoview_close_fieldline_view(void){
 }
 
 void kemoview_set_pick_surface_command(struct kv_string *command){
-	int length = (int) strlen(command->string);
     dealloc_kvstring(kemo_sgl->kemo_mesh->mesh_m->pick_surface_command);
     kemo_sgl->kemo_mesh->mesh_m->pick_surface_command = alloc_kvstring();
-	alloc_kvstringitem(length, kemo_sgl->kemo_mesh->mesh_m->pick_surface_command);
+	alloc_kvstringitem(strlen(command->string), kemo_sgl->kemo_mesh->mesh_m->pick_surface_command);
 };
 void kemoview_get_pick_surface_command(struct kv_string *command){
-	int length = (int) strlen(kemo_sgl->kemo_mesh->mesh_m->pick_surface_command->string);
+	unsigned long length = strlen(kemo_sgl->kemo_mesh->mesh_m->pick_surface_command->string);
 	alloc_kvstringitem(length, command);
 };
 
@@ -1114,7 +1113,6 @@ void kemo_Cleanup(void)
   destory_shaders(kemo_sgl->kemo_shaders->test);
   destory_shaders(kemo_sgl->kemo_shaders->test);
 }
-
 
 /*  Routines using libpng */
 #ifdef PNG_OUTPUT

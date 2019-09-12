@@ -23,7 +23,7 @@ struct kemoview_mesh{
 };
 
 /* prototypes */ 
-struct kemoview_mesh * init_kemoview_mesh();
+struct kemoview_mesh * init_kemoview_mesh(void);
 void dealloc_kemoview_mesh(struct kemoview_mesh *kemo_mesh);
 
 void reset_draw_mesh(struct kemoview_mesh *kemo_mesh);

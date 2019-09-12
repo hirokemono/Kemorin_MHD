@@ -97,9 +97,7 @@ static void column_clicked(GtkTreeViewColumn *column, gpointer user_data){
     gint cur_id;
     GtkSortType order;
     GtkTreeViewColumn *cur_column;
-    
-    GtkTreeViewColumn *button;
-    
+        
     if (gtk_widget_is_focus(GTK_WIDGET(tree_view)) == FALSE) {
         gtk_widget_grab_focus(GTK_WIDGET(tree_view));
     }
@@ -277,7 +275,7 @@ void create_real2_tree_view(GtkTreeView *r2_tree_view, struct real2_clist *r2_cl
                  "climb-rate", 0.5,
                  "digits", 3, 
                  "editable", TRUE, 
-                 "width", (gint)100, NULL);
+                 "width", (gint)80, NULL);
     
     gtk_tree_view_column_pack_start(column, renderer_spin1, TRUE);
     gtk_tree_view_column_set_attributes(column, renderer_spin1, "text", COLUMN_FIELD_INDEX, NULL);
@@ -294,7 +292,7 @@ void create_real2_tree_view(GtkTreeView *r2_tree_view, struct real2_clist *r2_cl
 //    adjust = gtk_adjustment_new(0.5, 0.0, 1.0, 0.01,
 //                                100, 21474836);
 	adjust = gtk_adjustment_new(0.5, -1.0e30, 1.0e30, 0.1,
-                                100, 21474836);
+                                80, 21474836);
 	
     g_object_set(G_OBJECT(renderer_spin2), 
                  "adjustment", adjust,
@@ -356,7 +354,7 @@ void add_real2_list_box(GtkTreeView *r2_tree_view, struct real2_clist *r2_clist,
     scrolled_window = gtk_scrolled_window_new(NULL, NULL);
     gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_window),
                                    GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-    gtk_widget_set_size_request(scrolled_window, 300, 80);
+    gtk_widget_set_size_request(scrolled_window, 160, 160);
     gtk_container_add(GTK_CONTAINER(scrolled_window), r2_tree_view);
     gtk_box_pack_start(GTK_BOX(vbox_1), scrolled_window, TRUE, TRUE, 0);
     

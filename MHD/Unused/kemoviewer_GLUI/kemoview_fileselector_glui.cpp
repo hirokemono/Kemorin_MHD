@@ -40,7 +40,7 @@ static int counter = 0;
 
 
 static void save_psf_colormap_glui(int sel){
-    int length;
+    unsigned long length;
 	char current[LENGTHBUF];
     struct kv_string *filename = kemoview_alloc_kvstring();
 	
@@ -59,7 +59,7 @@ static void save_psf_colormap_glui(int sel){
 };
 
 static void save_viewmatrix_glui(int sel){
-    int length;
+    unsigned long length;
     struct kv_string *filename;
 	char current[LENGTHBUF];
 	

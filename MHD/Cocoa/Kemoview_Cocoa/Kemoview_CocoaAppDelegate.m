@@ -13,7 +13,7 @@ struct kemoviewer_type *single_kemoview;
 @implementation Kemoview_CocoaAppDelegate
 
 - (id) init{
-    kemoview_allocate_single_viwewer_struct(single_kemoview);
+    single_kemoview = kemoview_allocate_single_viwewer_struct();
     return self;
 }
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {

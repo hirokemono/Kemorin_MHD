@@ -74,7 +74,7 @@ static void SetPickSurfaceCB(int val)
 
 static void init_kemoview_data_glui(int val){
 	char current[LENGTHBUF];
-    int length;
+    unsigned long length;
 	int iflag_datatype;
     struct kv_string *filename = kemoview_alloc_kvstring();
     struct kv_string *file_prefix = kemoview_alloc_kvstring();
@@ -112,7 +112,7 @@ static void cancel_open_file_glui(int val){
 
 static void load_psf_texture_glui(int sel){
 	char current[LENGTHBUF];
-    int length;
+    unsigned long length;
 	int ext_fmt;
     struct kv_string *filename = kemoview_alloc_kvstring();
     struct kv_string *file_prefix = kemoview_alloc_kvstring();
@@ -145,7 +145,7 @@ static void load_psf_texture_glui(int sel){
 
 static void load_psf_colormap_glui(int sel){
 	char current[LENGTHBUF];
-    int length;
+    unsigned long length;
     struct kv_string *filename = kemoview_alloc_kvstring();
 	
 	getcwd(current, sizeof(current));
@@ -166,7 +166,7 @@ static void load_psf_colormap_glui(int sel){
 
 static void load_viewmatrix_glui(int sel){
 	char current[LENGTHBUF];
-    int length;
+    unsigned long length;
     struct kv_string *filename;
 	
 	getcwd(current, sizeof(current));

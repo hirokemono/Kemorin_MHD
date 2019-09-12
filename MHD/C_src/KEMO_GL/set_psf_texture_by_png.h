@@ -1,8 +1,8 @@
 
 /* set_psf_texture_by_png.h */
 
-#ifndef SET_TEXTURE_4_PSF_
-#define SET_TEXTURE_4_PSF_
+#ifndef SET_PSF_TEXTURE_BY_PNG_
+#define SET_PSF_TEXTURE_BY_PNG_
 
 #include "m_kemoview_psf_menu.h"
 #include "read_image_2_png.h"

@@ -3,11 +3,10 @@
 
 #include "rainbow_color_code_c.h"
 
-static const GLfloat gray[4] =    {GRAY_R,GRAY_G,GRAY_B,GRAY_A};
 static const GLfloat black[4] =   {BLACK_R,BLACK_G,BLACK_B,BLACK_A};
 static const GLfloat white[4] =   {WHITE_R,WHITE_G,WHITE_B,WHITE_A};
 static const GLfloat l_green[4] = {L_GREEN_R,L_GREEN_G,L_GREEN_B,L_GREEN_A};
-static const GLfloat d_green[4] = {D_GREEN_R,D_GREEN_G,D_GREEN_B,D_GREEN_A};
+/* static const GLfloat d_green[4] = {D_GREEN_R,D_GREEN_G,D_GREEN_B,D_GREEN_A}; */
 
 static GLdouble c_code[4];
 

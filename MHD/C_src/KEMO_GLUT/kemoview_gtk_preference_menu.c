@@ -63,7 +63,7 @@ void kemoview_preference_GTK(struct kemoviewer_type *kemoviewer_data,
 			struct lightparams_view *lightparams_vws, GtkWidget *box_out){
 	GtkWidget *label21, *label22, *label23, *label24;
 	
-	GtkWidget *hbox, *vbox;
+	GtkWidget *vbox;
 	
 	GtkWidget *hbox11, *hbox12, *hbox13, *hbox14;
 	GtkWidget *entry;

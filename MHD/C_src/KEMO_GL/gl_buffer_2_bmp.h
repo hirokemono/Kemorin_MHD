@@ -9,6 +9,7 @@
 
 #include "kemoviewer_param_c.h"
 #include "write_image_2_bmp.h"
+#include "move_draw_objects_gl.h"
 
 /* prototypes */
 

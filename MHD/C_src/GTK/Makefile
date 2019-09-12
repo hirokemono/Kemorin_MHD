@@ -181,6 +181,7 @@ module:
 	m_kemoview_psf_menu.o \
 	set_each_psf_parameters.o \
 	init_gl_lighting_c.o \
+	kemoview_gtk_routines.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(GTK3_CFLAGS) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)

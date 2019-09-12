@@ -194,7 +194,7 @@ void draw_PSF_solid_objects_VAO(struct psf_data **psf_s, struct psf_menu_val **p
 		glBindVertexArray(psf_solid_VAO[1]->id_VAO);
 		
 		int i = psf_a->ipsf_viz_far[IZERO]-1;
-		glBindTexture(GL_TEXTURE_2D, psf_m[i]->texture_name);
+		glBindTexture(GL_TEXTURE_2D, psf_m[i]->texture_name[0]);
 		int id_textureImage = glGetUniformLocation(kemo_shaders->phong_texure->programId, "image");
 		glUniform1i(id_textureImage, 0);
 		
@@ -247,7 +247,7 @@ void draw_PSF_trans_objects_VAO(struct psf_menu_val **psf_m,
 		set_phong_light_list(kemo_shaders->phong_texure, kemo_shaders->lights);
 		
 		int i = psf_a->ipsf_viz_far[IZERO]-1;
-		glBindTexture(GL_TEXTURE_2D, psf_m[i]->texture_name);
+		glBindTexture(GL_TEXTURE_2D, psf_m[i]->texture_name[0]);
 		int id_textureImage = glGetUniformLocation(kemo_shaders->phong_texure->programId, "image");
 		glUniform1i(id_textureImage, 0);
 		

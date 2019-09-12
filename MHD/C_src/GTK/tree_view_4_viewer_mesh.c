@@ -264,7 +264,7 @@ int toggle_draw_nod_grp_node_switch(gchar *path_str, gpointer user_data,
     gtk_tree_path_free(child_path);  
     gtk_tree_path_free(path);  
 
-	update_chara_int_clist_by_index(index, row_string, 
+	update_chara_int_clist_by_index(index_grp, row_string, 
 			*index1_for_toggle, nod_grp_vws->ci_clist_gtk);
 	return index_grp;
 }

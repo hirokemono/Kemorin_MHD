@@ -24,7 +24,6 @@ void append_default_coefs_label(GtkWidget *label_tree){
     GtkTreeModel *model = gtk_tree_view_get_model(GTK_TREE_VIEW(label_tree));  
     GtkTreeModel *child_model = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model));
     int i, j;
-    GtkTreeIter iter;
     for(i=0;i<NUM_DEFAULT_COEF_DEF;i++){
         j = append_cr_item_to_tree(i, default_coefs_def[i].flag_name,
                             default_coefs_def[i].flag_math, 

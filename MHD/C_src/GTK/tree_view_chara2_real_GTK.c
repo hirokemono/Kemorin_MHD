@@ -49,7 +49,7 @@ void c2r_tree_1st_text_edited(gchar *path_str, gchar *new_text,
     
     gchar *first_string;
     gchar *second_string;
-    double old_value, new_value;
+    double old_value;
     
     gtk_tree_model_get_iter(child_model, &iter, child_path);  
     gtk_tree_model_get(child_model, &iter, COLUMN_FIELD_NAME, &first_string, -1);
@@ -78,7 +78,7 @@ void c2r_tree_2nd_text_edited(gchar *path_str, gchar *new_text,
     
     gchar *first_string;
     gchar *second_string;
-    double old_value, new_value;
+    double old_value;
     
     gtk_tree_model_get_iter(child_model, &iter, child_path);  
     gtk_tree_model_get(child_model, &iter, COLUMN_FIELD_NAME, &first_string, -1);
@@ -135,9 +135,7 @@ static void column_clicked(GtkTreeViewColumn *column, gpointer user_data)
     gint cur_id;
     GtkSortType order;
     GtkTreeViewColumn *cur_column;
-    
-    GtkTreeViewColumn *button;
-    
+	
     if (gtk_widget_is_focus(GTK_WIDGET(tree_view)) == FALSE) {
         gtk_widget_grab_focus(GTK_WIDGET(tree_view));
     }
@@ -415,10 +413,6 @@ void create_cbox_text_real_tree_view(GtkListStore *cbox_child_model, GtkTreeView
     GtkListStore *child_model;
     GtkAdjustment *adjust;
 
-    int i;
-    GtkTreeIter iter;
-    
-    
 	/* Construct empty list storage */
     child_model = gtk_list_store_new(4, G_TYPE_INT, G_TYPE_STRING, G_TYPE_STRING,
                                      G_TYPE_DOUBLE);
@@ -551,7 +545,6 @@ void add_chara2_real_list_box_w_combobox(GtkTreeView *c2r_tree_view,
     GtkWidget *hbox;
     GtkCellRenderer *column_add;
     
-    GtkWidget *label;
     GtkWidget *scrolled_window;
     
     char *c_label;

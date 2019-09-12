@@ -40,7 +40,8 @@ static int read_psf_vtk_connect_data_gz(struct psf_data *viz_s){
 	char buf[LENGTHBUF];    /* array for reading line */
 	int num_word, nchara, lbuf = LENGTHBUF;
 	char tmpchara[8];
-    int i, j, num_index, iflag_datatype, itmp;
+    int i, j, num_index, itmp;
+	int iflag_datatype = IFLAG_SURFACES;
     
 	get_one_line_from_gz(&lbuf, &num_word, &nchara, buf);     /* CELLS    nele_viz  nele*nnod_4_ele */
 	sscanf(buf, "%5s %d %d", tmpchara, &viz_s->nele_viz, &num_index);

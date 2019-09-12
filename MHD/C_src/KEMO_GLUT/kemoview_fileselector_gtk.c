@@ -13,7 +13,6 @@ GtkWidget *filew;
 GtkWidget *fmtw;
 GtkWidget *ftmpw_f;
 static const gchar *gtk_selected_filename;
-static const gchar *gtk_selected_filefmt;
 static int iflag_set;
 
 /*

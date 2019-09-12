@@ -20,6 +20,7 @@
 #include "m_kemoview_psf_menu.h"
 #include "tree_views_4_fixed_lists_GTK.h"
 #include "tree_view_chara_int_GTK.h"
+#include "kemoview_gtk_routines.h"
 #include "view_modifier_glfw.h"
 
 /*  prototypes */

@@ -284,16 +284,11 @@ void create_text_tree_view(GtkTreeView *c_tree_view,
     /*    GtkTreeModel *child_model = GTK_TREE_MODEL(user_data);*/
 	
     GtkTreeModel *model;
-    GtkCellRenderer *renderer;
     GtkTreeViewColumn *column;
     GtkTreeSelection *selection;
     
     GtkListStore *child_model;
 
-    GtkAdjustment *adjust;
-
-    int i;
-    
 	/* Construct empty list storage */
     child_model = gtk_list_store_new(1, G_TYPE_STRING);
     g_object_set_data(G_OBJECT(child_model), "selection_list", NULL);

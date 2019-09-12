@@ -3,7 +3,7 @@
 
 #include "move_draw_objects_gl.h"
 
-struct kemoview_VAOs * init_kemoview_VAOs(){
+struct kemoview_VAOs * init_kemoview_VAOs(void){
 	int i;
 	struct kemoview_VAOs *kemo_VAOs
 			= (struct kemoview_VAOs *) malloc(sizeof(struct kemoview_VAOs));

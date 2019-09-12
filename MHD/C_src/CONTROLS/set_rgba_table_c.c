@@ -22,9 +22,7 @@ const char color_labels[4][KCHARA_C] = {
 struct pvr_colormap_bar_ctl_c *cmap_cbar_c0;
 
 void copy_colormap_name_to_ctl(struct colormap_params *cmap_s, 
-			struct chara_ctl_item *colormap_mode){
-	int i;
-	
+			struct chara_ctl_item *colormap_mode){	
 	if(cmap_s->id_color_mode == RED_BLUE_MODE){
 		copy_to_chara_ctl_item(label_bluered, colormap_mode);
 	} else if(cmap_s->id_color_mode == GRAYSCALE_MODE){

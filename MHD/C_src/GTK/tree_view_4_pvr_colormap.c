@@ -7,6 +7,8 @@
 
 #include "tree_view_4_pvr_colormap.h"
 
+// static cairo_t *cr;
+
 void init_colormap_views_4_ctl(struct colormap_ctl_c *cmap_c, 
 			struct colormap_view *color_vws){
 	color_vws->colormap_mode_gtk = cmap_c->colormap_mode_ctl;
@@ -41,7 +43,7 @@ void init_colormap_views_4_viewer(struct psf_menu_val *psf_current_menu,
     sprintf(color_vws->cmap_vws->r2_clist_gtk->r2_name, "color");
     sprintf(color_vws->opacity_vws->r2_clist_gtk->clist_name, "opacity map");
     sprintf(color_vws->opacity_vws->r2_clist_gtk->r1_name, "data");
-    sprintf(color_vws->opacity_vws->r2_clist_gtk->r1_name, "opacity");
+    sprintf(color_vws->opacity_vws->r2_clist_gtk->r2_name, "opacity");
     
 	int i, num;
 	double value, color;
@@ -98,7 +100,6 @@ static void draw_colormap(struct colormap_params *cmap_param, cairo_t *cr, GdkWi
     float left =   100.0;
     float width =   25.0;
     float height = 200.0;
-    float middle = 125.0;
     float top_s, height_s;
     
     int *i_point;
@@ -132,14 +133,13 @@ static void draw_colormap(struct colormap_params *cmap_param, cairo_t *cr, GdkWi
     quicksort_double_c(d_point, i_point, 0, (ntot-1));
 	
     
-    cr = gdk_cairo_create(window);
+//    cr = gdk_cairo_create(window);
     
 	/* Set colorbar */
 	{        
         cairo_pattern_t *pattern1;
         cairo_pattern_t *pattern2;
         double red1, green1, blue1;
-        double red2, green2, blue2;
         
         /* Make colormap */
         pattern1 = cairo_pattern_create_linear((left+width), top, (left+width), (top+height));
@@ -229,7 +229,7 @@ static void draw_colormap(struct colormap_params *cmap_param, cairo_t *cr, GdkWi
         }
     };
 
-    cairo_destroy(cr);
+//    cairo_destroy(cr);
     free(d_point);
     free(i_point);
     return;
@@ -249,22 +249,19 @@ static gboolean cb_expose_event(GtkWidget *widget, cairo_t *cr, gpointer user_da
 void colormap_data_edited_cb(GtkCellRendererText *cell, gchar *path_str,
 			gchar *new_text, gpointer user_data){
     struct colormap_view *color_vws = (struct colormap_view *) user_data;
-	cairo_t *cr;
 	
 	r2_tree_value1_edited(path_str, new_text, 
-				color_vws->cmap_vws->tree_view, color_vws->cmap_vws->r2_clist_gtk);
+				GTK_TREE_VIEW(color_vws->cmap_vws->tree_view), color_vws->cmap_vws->r2_clist_gtk);
     write_real2_clist(stdout, 0, "value1 changed", color_vws->cmap_vws->r2_clist_gtk);
 	
 	copy_colormap_from_ctl(color_vws->colormap_mode_gtk, color_vws->cmap_vws->r2_clist_gtk,
 				color_vws->cmap_param);
-	draw_colormap(color_vws->cmap_param, cr, gtk_widget_get_window(color_vws->scrolled_window));
 	gtk_widget_queue_draw(color_vws->scrolled_window);
 };
 
 void colormap_color_edited_cb(GtkCellRendererText *cell, gchar *path_str,
 			gchar *new_text, gpointer user_data){
     struct colormap_view *color_vws = (struct colormap_view *) user_data;
-	cairo_t *cr;
 	
 	r2_tree_value2_edited(path_str, new_text, 
 				color_vws->cmap_vws->tree_view, color_vws->cmap_vws->r2_clist_gtk);
@@ -272,13 +269,11 @@ void colormap_color_edited_cb(GtkCellRendererText *cell, gchar *path_str,
 	
 	copy_colormap_from_ctl(color_vws->colormap_mode_gtk, color_vws->cmap_vws->r2_clist_gtk,
 				color_vws->cmap_param);
-	draw_colormap(color_vws->cmap_param, cr, gtk_widget_get_window(color_vws->scrolled_window));
 	gtk_widget_queue_draw(color_vws->scrolled_window);
 };
 
 void add_colormap_list_items_cb(GtkButton *button, gpointer user_data){
     struct colormap_view *color_vws = (struct colormap_view *) user_data;
-	cairo_t *cr;
 	
 	color_vws->cmap_vws->index_bc = add_r2_list_items(color_vws->cmap_vws->index_bc, 
 				color_vws->cmap_vws->tree_view, color_vws->cmap_vws->r2_clist_gtk);
@@ -286,12 +281,10 @@ void add_colormap_list_items_cb(GtkButton *button, gpointer user_data){
 	
 	copy_colormap_from_ctl(color_vws->colormap_mode_gtk, color_vws->cmap_vws->r2_clist_gtk,
 				color_vws->cmap_param);
-	draw_colormap(color_vws->cmap_param, cr, gtk_widget_get_window(color_vws->scrolled_window));
 	gtk_widget_queue_draw(color_vws->scrolled_window);
 };
 void delete_colormap_list_items_cb(GtkButton *button, gpointer user_data){
     struct colormap_view *color_vws = (struct colormap_view *) user_data;
-	cairo_t *cr;
 	
 	delete_r2_list_items(color_vws->cmap_vws->tree_view, color_vws->cmap_vws->r2_clist_gtk);
     write_real2_clist(stdout, 0, "columns deleted", color_vws->cmap_vws->r2_clist_gtk);
@@ -299,72 +292,61 @@ void delete_colormap_list_items_cb(GtkButton *button, gpointer user_data){
 	copy_colormap_from_ctl(color_vws->colormap_mode_gtk, color_vws->cmap_vws->r2_clist_gtk,
 				color_vws->cmap_param);
 	copy_opacity_from_ctl(color_vws->opacity_vws->r2_clist_gtk, color_vws->cmap_param);
-	draw_colormap(color_vws->cmap_param, cr, gtk_widget_get_window(color_vws->scrolled_window));
 	gtk_widget_queue_draw(color_vws->scrolled_window);
 };
 
 void opacity_data_edited_cb(GtkCellRendererText *cell, gchar *path_str,
 			gchar *new_text, gpointer user_data){
     struct colormap_view *color_vws = (struct colormap_view *) user_data;
-	cairo_t *cr;
 	
 	r2_tree_value1_edited(path_str, new_text, 
-				color_vws->opacity_vws->tree_view, color_vws->opacity_vws->r2_clist_gtk);
+				GTK_TREE_VIEW(color_vws->opacity_vws->tree_view), color_vws->opacity_vws->r2_clist_gtk);
     write_real2_clist(stdout, 0, "value1 changed", color_vws->opacity_vws->r2_clist_gtk);
 	
 	copy_opacity_from_ctl(color_vws->opacity_vws->r2_clist_gtk, color_vws->cmap_param);
-	draw_colormap(color_vws->cmap_param, cr, gtk_widget_get_window(color_vws->scrolled_window));
 	gtk_widget_queue_draw(color_vws->scrolled_window);
 };
 
 void opacity_color_edited_cb(GtkCellRendererText *cell, gchar *path_str,
 			gchar *new_text, gpointer user_data){
     struct colormap_view *color_vws = (struct colormap_view *) user_data;
-	cairo_t *cr;
 	
 	r2_tree_value2_edited(path_str, new_text, 
 				color_vws->opacity_vws->tree_view, color_vws->opacity_vws->r2_clist_gtk);
     write_real2_clist(stdout, 0, "value2 changed", color_vws->opacity_vws->r2_clist_gtk);
 	
 	copy_opacity_from_ctl(color_vws->opacity_vws->r2_clist_gtk, color_vws->cmap_param);
-	draw_colormap(color_vws->cmap_param, cr, gtk_widget_get_window(color_vws->scrolled_window));
 	gtk_widget_queue_draw(color_vws->scrolled_window);
 };
 
 void add_opacity_list_items_cb(GtkButton *button, gpointer user_data){
     struct colormap_view *color_vws = (struct colormap_view *) user_data;
-	cairo_t *cr;
 	
 	color_vws->opacity_vws->index_bc = add_r2_list_items(color_vws->opacity_vws->index_bc, 
 				color_vws->opacity_vws->tree_view, color_vws->opacity_vws->r2_clist_gtk);
     write_real2_clist(stdout, 0, "columns added", color_vws->opacity_vws->r2_clist_gtk);
 	
 	copy_opacity_from_ctl(color_vws->opacity_vws->r2_clist_gtk, color_vws->cmap_param);
-	draw_colormap(color_vws->cmap_param, cr, gtk_widget_get_window(color_vws->scrolled_window));
 	gtk_widget_queue_draw(color_vws->scrolled_window);
 };
 void delete_opacity_list_items_cb(GtkButton *button, gpointer user_data){
     struct colormap_view *color_vws = (struct colormap_view *) user_data;
-	cairo_t *cr;
 	
 	delete_r2_list_items(color_vws->opacity_vws->tree_view, color_vws->opacity_vws->r2_clist_gtk);
     write_real2_clist(stdout, 0, "columns deleted", color_vws->opacity_vws->r2_clist_gtk);
 	
 	copy_opacity_from_ctl(color_vws->opacity_vws->r2_clist_gtk, color_vws->cmap_param);
-	draw_colormap(color_vws->cmap_param, cr, gtk_widget_get_window(color_vws->scrolled_window));
 	gtk_widget_queue_draw(color_vws->scrolled_window);
 };
 
 static void set_color_mode_cb(GtkComboBox *combobox_cmap, gpointer user_data)
 {
     struct colormap_view *color_vws = (struct colormap_view *) user_data;
-    cairo_t *cr;
     
     int index_mode = gtk_selected_combobox_index(combobox_cmap);
 	
 	copy_colormap_from_ctl(color_vws->colormap_mode_gtk, color_vws->cmap_vws->r2_clist_gtk,
 				color_vws->cmap_param);
-    draw_colormap(color_vws->cmap_param, cr, gtk_widget_get_window(color_vws->scrolled_window));
     gtk_widget_queue_draw(color_vws->scrolled_window);
     return;
 }
@@ -491,7 +473,7 @@ void add_colormp_list_box(struct colormap_view *color_vws, GtkWidget *vbox){
 	color_vws->scrolled_window = gtk_scrolled_window_new(NULL, NULL);
     gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(color_vws->scrolled_window),
                                    GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-    gtk_widget_set_size_request(color_vws->scrolled_window, 200, 200);
+    gtk_widget_set_size_request(color_vws->scrolled_window, 300, 300);
     gtk_widget_set_app_paintable(color_vws->scrolled_window, TRUE);
     gtk_widget_add_events (color_vws->scrolled_window, GDK_BUTTON_PRESS_MASK);
 	g_signal_connect(G_OBJECT(color_vws->scrolled_window), "draw", 

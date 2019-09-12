@@ -19,6 +19,8 @@
 #include "m_kemoviewer_data.h"
 #include "tree_view_4_pvr_colormap.h"
 #include "tree_view_chara_int_GTK.h"
+#include "kemoview_gtk_routines.h"
+#include "view_modifier_glfw.h"
 
 /*  prototypes */
 void add_gtk_isoline_menu(struct colormap_view *color_vws, 

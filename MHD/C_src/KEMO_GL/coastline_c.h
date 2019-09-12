@@ -10,7 +10,7 @@ extern "C" {
 
 /* prototypes */
 
-int get_nedge_coastline();
+int get_nedge_coastline(void);
 void get_coastline
 		(int iedge, double *tp_coast, double *lake);
 #ifdef __cplusplus

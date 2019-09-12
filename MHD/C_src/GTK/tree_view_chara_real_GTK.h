@@ -17,7 +17,7 @@
 /* prototypes */
 
 
-int append_cr_item_to_tree(int index, char *c_tbl, char *c_math, double r_data, 
+int append_cr_item_to_tree(const int index, const char *c_tbl, const char *c_math, const double r_data, 
 			GtkTreeModel *child_model);
 int append_cr_list_from_ctl(int index, struct chara_real_ctl_list *head, 
 			GtkTreeView *cr_tree_view);

@@ -11,10 +11,14 @@
 
 static void psf_grid_switch_CB(GObject *switch_1, GParamSpec *pspec, gpointer data){
 	kemoview_select_PSF_draw_switch(PSFGRID_TOGGLE);
+	
+	draw_mesh_glfw();
 	return;
 };
 static void psf_zero_switch_CB(GObject *switch_1, GParamSpec *pspec, gpointer data){
 	kemoview_select_PSF_draw_switch(ZEROGRID_TOGGLE);
+	
+	draw_mesh_glfw();
 	return;
 };
 
@@ -26,15 +30,16 @@ static void psf_surf_colormode_CB(GtkComboBox *combobox_gdcolor, gpointer user_d
 	else if (index_mode == WHITE_PSF_LINE) {kemoview_set_PSF_isoline_color_mode(WHITE_LINE);}
     else if (index_mode == BLACK_PSF_LINE) {kemoview_set_PSF_isoline_color_mode(RAINBOW_LINE);}
 	
-//	draw_mesh_w_menu();
+	draw_mesh_glfw();
 	return;
 };
 
 static void set_nline_CB(GtkWidget *entry, gpointer user_data)
 {
-	struct colormap_view *color_vws = (struct colormap_view *) user_data;
 	int gtk_intvalue = (int) gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(entry));
 	kemoview_set_PSF_num_isoline(gtk_intvalue);
+	
+	draw_mesh_glfw();
 	return;
 }
 

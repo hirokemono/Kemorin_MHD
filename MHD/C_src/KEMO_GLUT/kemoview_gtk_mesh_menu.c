@@ -38,7 +38,6 @@ static void set_mesh_color_mode_CB(GtkComboBox *combobox_sfcolor, gpointer user_
 {
     GtkTreeModel *model_cmap = gtk_combo_box_get_model(combobox_sfcolor);
     GtkTreeIter iter;
-    cairo_t *cr;
     
     gchar *row_string;
     int index_field;
@@ -64,7 +63,6 @@ static void set_mesh_color_mode_CB(GtkComboBox *combobox_sfcolor, gpointer user_
 
 void add_gtk_mesh_menu(struct kemoviewer_type *kemoviewer_data, 
 			struct kemoview_mesh_view *mesh_vws, GtkWidget *window, GtkWidget *box_out){
-	GtkWidget *hbox;
 	
 	GtkWidget *hbox_distance, *hbox_org_dist;
 	GtkWidget *spin_dist;

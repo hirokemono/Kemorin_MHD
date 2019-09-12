@@ -54,7 +54,7 @@ void gl_buffer_2_png(const char *fhead, int num_x, int num_y){
 	
 	sprintf(fname, "%s.png",fhead);
 	printf("PNG file name: %s \n",fname);
-	write_png_rgb(fname,(unsigned long) num_x,(unsigned long) num_y, image);
+	write_png_rgb(fname,(png_uint_32) num_x,(png_uint_32) num_y, image);
 	
 	/* deallocate memory*/
 	dealloc_img_buffer_2_png(num_y);

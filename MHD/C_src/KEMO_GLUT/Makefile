@@ -69,6 +69,7 @@ module:
 	m_kemoviewer_data.o \
 	tree_view_4_pvr_colormap.o \
 	tree_view_chara_int_GTK.o \
+	kemoview_gtk_routines.o \
 	kemoview_fileselector_gtk.o \
 	view_modifier_glfw.o \
 	>> $(MAKENAME)
@@ -83,6 +84,8 @@ module:
 	m_kemoviewer_data.o \
 	tree_view_4_pvr_colormap.o \
 	tree_view_chara_int_GTK.o \
+	kemoview_gtk_routines.o \
+	view_modifier_glfw.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS) $$<' \
 	>> $(MAKENAME)
@@ -147,6 +150,7 @@ module:
 	m_kemoview_psf_menu.o \
 	tree_views_4_fixed_lists_GTK.o \
 	tree_view_chara_int_GTK.o \
+	kemoview_gtk_routines.o \
 	view_modifier_glfw.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS) $$<' \
@@ -212,6 +216,7 @@ module:
 	kemoviewer.h \
 	m_kemoviewer_data.o \
 	kemoview_gtk_routines.o \
+	kemoview_fileselector_gtk.o \
 	view_modifier_glfw.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS) $$<' \
@@ -234,6 +239,7 @@ module:
 	kemoview_gtk_PSF_menu.o \
 	kemoview_gtk_fieldline_menu.o \
 	kemoview_gtk_viewmatrix_menu.o \
+	kemoview_gtk_mesh_menu.o \
 	view_modifier_glfw.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS) $$<' \
@@ -264,6 +270,7 @@ module:
 	tree_view_chara_int3_GTK.o \
 	tree_view_4_viewer_mesh.o \
 	create_tree_view_columns_GTK.o \
+	kemoview_gtk_routines.o \
 	kemoview_gtk_colorsel.o \
 	quicksort_c.o \
 	view_modifier_glfw.o \
@@ -280,6 +287,8 @@ module:
 	t_control_chara_int3_IO.o \
 	tree_view_chara_int3_GTK.o \
 	tree_view_4_viewer_mesh.o \
+	kemoview_gtk_routines.o \
+	kemoview_gtk_colorsel.o \
 	create_tree_view_columns_GTK.o \
 	quicksort_c.o \
 	view_modifier_glfw.o \
@@ -296,6 +305,8 @@ module:
 	t_control_chara_int3_IO.o \
 	tree_view_chara_int3_GTK.o \
 	tree_view_4_viewer_mesh.o \
+	kemoview_gtk_routines.o \
+	kemoview_gtk_colorsel.o \
 	create_tree_view_columns_GTK.o \
 	quicksort_c.o \
 	view_modifier_glfw.o \
@@ -308,11 +319,13 @@ module:
 	'$$(KEMO_C_GLUTDIR)'/tree_view_4_nod_group_viewer.c \
 	tree_view_4_nod_group_viewer.h \
 	kemoviewer.h \
-	tree_views_4_fixed_lists_GTK.o \
 	t_control_chara_int_IO.o \
+	tree_views_4_fixed_lists_GTK.o \
 	tree_view_chara_int_GTK.o \
 	tree_view_4_viewer_mesh.o \
 	create_tree_view_columns_GTK.o \
+	kemoview_gtk_routines.o \
+	kemoview_gtk_colorsel.o \
 	quicksort_c.o \
 	view_modifier_glfw.o \
 	>> $(MAKENAME)

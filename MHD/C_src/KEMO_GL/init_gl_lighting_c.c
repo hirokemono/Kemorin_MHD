@@ -28,9 +28,7 @@ void init_bg_color_kemoview(struct mesh_menu_val *mesh_m){
 }
 
 void kemo_gl_initial_lighting_c(struct view_element *view_s, 
-			struct kemoview_shaders *kemo_shaders){
-	int base;
-	
+			struct kemoview_shaders *kemo_shaders){	
 	if(view_s->iflag_shading_profile == 1){
 		if (glslInit()) exit(1);
 		LoadShaderFromStrings(kemo_shaders->test, load_test_vert(), load_test_frag());

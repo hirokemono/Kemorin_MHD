@@ -5,7 +5,7 @@
 #include "kemoviewer_base.h"
 #include "skip_comment_c.h"
 
-void alloc_kvstringitem(int length, struct kv_string *ucd_m){
+void alloc_kvstringitem(unsigned long length, struct kv_string *ucd_m){
 /*	ucd_m->string = alloc_string(length);*/
     if((ucd_m->string = (char *)calloc(length+1, sizeof(char))) == NULL){
         printf("malloc error for string\n");

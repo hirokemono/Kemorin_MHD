@@ -15,7 +15,7 @@ static double black[4] =   {BLACK_R,BLACK_G,BLACK_B,BLACK_A};
 
 static void set_color_code_for_psf(struct psf_data *psf_s, struct psf_menu_val *psf_m){
 	int inod, nd;
-	double d_patch;
+	double d_patch = 0.0;
 	
 	if (   psf_m->psf_patch_color == WHITE_SURFACE) {
 		for (inod=0; inod< psf_s->nnod_viz; inod++){

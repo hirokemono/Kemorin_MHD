@@ -25,7 +25,6 @@ static void psf_component_select_CB(GtkComboBox *combobox_comp, gpointer user_da
 };
 
 static void save_colormap_file_panel_CB(GtkButton *saveButton, gpointer user_data){
-	GtkEntry *entry = GTK_ENTRY(user_data);
 	GtkWidget *window = GTK_WIDGET(g_object_get_data(G_OBJECT(user_data), "parent"));
 	struct colormap_view *color_vws = (struct colormap_view *) g_object_get_data(G_OBJECT(user_data), "colorview");
 	struct kv_string *filename = kemoview_save_file_panel(window);
@@ -38,7 +37,6 @@ static void save_colormap_file_panel_CB(GtkButton *saveButton, gpointer user_dat
 };
 
 static void load_colormap_file_panel_CB(GtkButton *loadButton, gpointer user_data){
-	GtkEntry *entry = GTK_ENTRY(user_data);
 	GtkWidget *window = GTK_WIDGET(g_object_get_data(G_OBJECT(user_data), "parent"));
 	struct colormap_view *color_vws = (struct colormap_view *) g_object_get_data(G_OBJECT(user_data), "colorview");
 	struct kv_string *filename = kemoview_read_file_panel(window);
@@ -69,7 +67,6 @@ void add_psf_draw_component_box(struct kemoviewer_type *kemoviewer_data, struct 
 	
 	char comp_name[1024];
 	int if_psf = kemoview_get_PSF_field_id();
-	int ic_psf = kemoview_get_PSF_component_id();
 	int ncomp = kemoview_get_PSF_num_component(if_psf);
 	int icomp;
 	
@@ -157,7 +154,6 @@ void make_psf_menu_box(struct kemoviewer_type *kemoviewer_data, struct colormap_
 	init_colormap_views_4_viewer(kemoviewer_data->kemo_psf->psf_m[i_current], color_vws);
 	
 	int if_psf = kemoview_get_PSF_field_id();
-	int ic_psf = kemoview_get_PSF_component_id();
 	int ncomp = kemoview_get_PSF_num_component(if_psf);
 	
 	add_psf_draw_component_box(kemoviewer_data, color_vws, window, box_out);

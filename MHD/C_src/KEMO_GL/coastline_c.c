@@ -23946,7 +23946,8 @@ double d_coast_r1[  7980] = {
 1.00E+00, 
 1.00E+00, 
 };
-int get_nedge_coastline()
+
+int get_nedge_coastline(void)
 {	return nedge_coast;};
 void get_coastline
 		(int iedge, double *tp_coast, double *lake){

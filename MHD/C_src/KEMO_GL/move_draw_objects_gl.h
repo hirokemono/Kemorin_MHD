@@ -31,7 +31,7 @@ struct kemoview_VAOs{
 
 
 /* prototypes */ 
-struct kemoview_VAOs * init_kemoview_VAOs();
+struct kemoview_VAOs * init_kemoview_VAOs(void);
 void assign_kemoview_VAOs(struct kemoview_VAOs *kemo_VAOs);
 void clear_kemoview_VAOs(struct kemoview_VAOs *kemo_VAOs);
 void dealloc_kemoview_VAOs(struct kemoview_VAOs *kemo_VAOs);

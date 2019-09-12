@@ -181,7 +181,7 @@ int set_coastline_buf(double radius, struct gl_strided_buffer *strided_buf){
 }
 
 int set_map_coastline_buf(struct gl_strided_buffer *strided_buf){
-	int iedge, j, k, nd;
+	int iedge, k, nd;
 	int nedge_coast;
 	double tp_coast[4], lake[2], f_color[4];
 	double rtp_flame[6], xy_coast[4];
