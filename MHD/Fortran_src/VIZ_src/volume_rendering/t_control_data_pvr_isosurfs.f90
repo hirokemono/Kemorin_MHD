@@ -247,9 +247,9 @@
       write(*,*) my_rank, 'pvr_iso_ctl%opacity_ctl%realvalue',    &
      &           pvr_iso_ctl%opacity_ctl%iflag,      &
      &           pvr_iso_ctl%opacity_ctl%realvalue
-      write(*,*) my_rank, 'pvr_iso_ctl%isosurf_type_ctl%realvalue',    &
+      write(*,*) my_rank, 'pvr_iso_ctl%isosurf_type_ctl%charavalue',    &
      &           pvr_iso_ctl%isosurf_type_ctl%iflag,      &
-     &           pvr_iso_ctl%isosurf_type_ctl%realvalue
+     &           pvr_iso_ctl%isosurf_type_ctl%charavalue
 !
       end subroutine bcast_pvr_isosurface_ctl
 !
