@@ -146,6 +146,7 @@
       if(pvr_isos_c%num_pvr_iso_ctl .gt. 0 .and. my_rank .gt. 0) then
         call alloc_pvr_isosurfs_ctl(pvr_isos_c)
       end if
+      call calypso_mpi_barrier
 !
       do i = 1, pvr_isos_c%num_pvr_iso_ctl
         call bcast_pvr_isosurface_ctl(pvr_isos_c%pvr_iso_ctl(i))
