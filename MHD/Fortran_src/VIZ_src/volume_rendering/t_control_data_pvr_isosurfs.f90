@@ -101,6 +101,10 @@
         if(check_begin_flag(c_buf, hd_block)) then
           call append_new_pvr_isosurf_ctl(pvr_isos_c)
           inum = pvr_isos_c%num_pvr_iso_ctl
+          pvr_iso_tmp%isosurf_value_ctl%iflag = 0
+          pvr_iso_tmp%isosurf_type_ctl%iflag =  0
+          pvr_iso_tmp%opacity_ctl%iflag =       0
+
           call read_pvr_isosurface_ctl(id_control, hd_block,            &
      &        pvr_iso_tmp, c_buf)
 !
