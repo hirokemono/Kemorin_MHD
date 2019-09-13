@@ -1,5 +1,9 @@
 #version 400
+//
+//
 // phong_1color.frag
+//
+//
 
 in vec4 position;
 in vec3 normal;

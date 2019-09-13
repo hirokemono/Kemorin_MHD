@@ -624,7 +624,11 @@ char * load_phong_1color_frag(void){
     const char  phong_1color_frag_src[]
     = {
         "#version 400\n"\
+        "//\n"\
+        "//\n"\
         "// phong_1color.frag\n"\
+        "//\n"\
+        "//\n"\
         "\n"\
         "in vec4 position;\n"\
         "in vec3 normal;\n"\
