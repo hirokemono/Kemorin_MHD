@@ -11,10 +11,11 @@ SHADER_PREFIX = shaders
 OBJ_SHADERS = \
 $(SHADER_PREFIX).o
 
-SRC_SHADERS = $(shell ls *.vert *.frag)
-
 MAKE_C_SHADER = shader_into_c
 CURRENTDIR = $(shell pwd)
+
+SRC_MAKE_SHADER = ../../module_dependency/$(MAKE_C_SHADER).f90
+SRC_SHADERS = $(shell ls *.vert *.frag)
 
 #
 #  -------------------------------------------------------------------------
@@ -22,10 +23,8 @@ CURRENTDIR = $(shell pwd)
 
 all: $(SHADER_PREFIX).c
 
-$(MAKE_C_SHADER): ../../module_dependency/$(MAKE_C_SHADER).f90
-	$(F90_LOCAL) -o $(MAKE_C_SHADER) $<
-
-$(SHADER_PREFIX).c: $(MAKE_C_SHADER) $(SRC_SHADERS)
+$(SHADER_PREFIX).c: $(SRC_SHADERS) $(SRC_MAKE_SHADER)
+	$(F90_LOCAL) -o $(MAKE_C_SHADER) $(SRC_MAKE_SHADER)
 	./$(MAKE_C_SHADER) $(SHADER_PREFIX) $(CURRENTDIR) $(SRC_SHADERS)
 	rm $(MAKE_C_SHADER) shader_into_c_source.*
 
