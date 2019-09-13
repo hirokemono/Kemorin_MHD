@@ -103,15 +103,6 @@
           inum = pvr_isos_c%num_pvr_iso_ctl
           call read_pvr_isosurface_ctl(id_control, hd_block,            &
      &        pvr_iso_tmp, c_buf)
-       write(*,*) 'pvr_iso_tmp%isosurf_value_ctl%realvalue', &
-     &     pvr_iso_tmp%isosurf_value_ctl%iflag,      &
-     &     pvr_iso_tmp%isosurf_value_ctl%realvalue
-       write(*,*) 'pvr_iso_tmp%isosurf_type_ctl%realvalue', &
-     &     pvr_iso_tmp%isosurf_type_ctl%iflag,      &
-     &     pvr_iso_tmp%isosurf_type_ctl%charavalue
-       write(*,*) 'pvr_iso_tmp%opacity_ctl%realvalue', &
-     &     pvr_iso_tmp%opacity_ctl%iflag,      &
-     &     pvr_iso_tmp%opacity_ctl%realvalue
 !
 		  pvr_isos_c%pvr_iso_ctl(inum)%isosurf_value_ctl%iflag          &
      &       = pvr_iso_tmp%isosurf_value_ctl%iflag
@@ -126,17 +117,6 @@
 		  pvr_isos_c%pvr_iso_ctl(inum)%isosurf_type_ctl%charavalue      &
      &       = pvr_iso_tmp%isosurf_type_ctl%charavalue
 !
-          write(*,*) 'pvr_isos_c%num_pvr_iso_ctl out', pvr_isos_c%num_pvr_iso_ctl
-          write(*,*) 'pvr_iso_ctl%isosurf_value_ctl%realvalue out', &
-     &     pvr_isos_c%pvr_iso_ctl(inum)%isosurf_value_ctl%iflag,      &
-     &     pvr_isos_c%pvr_iso_ctl(inum)%isosurf_value_ctl%realvalue
-          write(*,*) 'pvr_iso_ctl%isosurf_type_ctl%realvalue out', &
-     &     pvr_isos_c%pvr_iso_ctl(inum)%isosurf_type_ctl%iflag,      &
-     &     pvr_isos_c%pvr_iso_ctl(inum)%isosurf_type_ctl%charavalue
-          write(*,*) 'pvr_iso_ctl%opacity_ctl%realvalue out', &
-     &     pvr_isos_c%pvr_iso_ctl(inum)%opacity_ctl%iflag,      &
-     &     pvr_isos_c%pvr_iso_ctl(inum)%opacity_ctl%realvalue
-
         end if
       end do
 !
@@ -170,6 +150,13 @@
       do i = 1, pvr_isos_c%num_pvr_iso_ctl
         call bcast_pvr_isosurface_ctl(pvr_isos_c%pvr_iso_ctl(i))
       end do
+!
+      write(*,*) my_rank, 'pvr_isos_c%num_pvr_iso_ctl', pvr_isos_c%num_pvr_iso_ctl
+      do i = 1, pvr_isos_c%num_pvr_iso_ctl
+        write(*,*) my_rank, 'pvr_isos_c%pvr_iso_ctl(i)%isosurf_value_ctl%realvalue', &
+    &           i, pvr_isos_c%pvr_iso_ctl(i)%isosurf_value_ctl%iflag,      &
+	&              pvr_isos_c%pvr_iso_ctl(i)%isosurf_value_ctl%realvalue
+     end do
 !
       end subroutine bcast_pvr_isosurfs_ctl
 !
