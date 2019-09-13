@@ -237,9 +237,19 @@
       type(pvr_isosurf_ctl), intent(inout) :: pvr_iso_ctl
 !
 !
-        call bcast_ctl_type_c1(pvr_iso_ctl%isosurf_type_ctl)
-        call bcast_ctl_type_r1(pvr_iso_ctl%isosurf_value_ctl)
-        call bcast_ctl_type_r1(pvr_iso_ctl%opacity_ctl)
+      call bcast_ctl_type_c1(pvr_iso_ctl%isosurf_type_ctl)
+      call bcast_ctl_type_r1(pvr_iso_ctl%isosurf_value_ctl)
+      call bcast_ctl_type_r1(pvr_iso_ctl%opacity_ctl)
+!
+      write(*,*) my_rank, 'pvr_iso_ctl%isosurf_value_ctl%realvalue',    &
+     &           pvr_iso_ctl%isosurf_value_ctl%iflag,      &
+     &           pvr_iso_ctl%isosurf_value_ctl%realvalue
+      write(*,*) my_rank, 'pvr_iso_ctl%opacity_ctl%realvalue',    &
+     &           pvr_iso_ctl%opacity_ctl%iflag,      &
+     &           pvr_iso_ctl%opacity_ctl%realvalue
+      write(*,*) my_rank, 'pvr_iso_ctl%isosurf_type_ctl%realvalue',    &
+     &           pvr_iso_ctl%isosurf_type_ctl%iflag,      &
+     &           pvr_iso_ctl%isosurf_type_ctl%realvalue
 !
       end subroutine bcast_pvr_isosurface_ctl
 !
