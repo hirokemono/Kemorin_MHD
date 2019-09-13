@@ -241,7 +241,6 @@
      &             * (c_tgt(1) - field_pvr%iso_value(i_iso))
             if((c_tgt(1) - field_pvr%iso_value(i_iso)) .eq. zero        &
      &        .or. rflag .lt. zero) then
-              write(*,*) 'Tako', my_rank, i_iso, field_pvr%iso_value(i_iso)
               grad_tgt(1:3) = field_pvr%grad_ele(iele,1:3)              &
      &                       * field_pvr%itype_isosurf(i_iso)
               call color_plane_with_light                               &
