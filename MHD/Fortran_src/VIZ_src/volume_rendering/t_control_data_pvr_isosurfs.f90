@@ -102,16 +102,16 @@
           inum = pvr_isos_c%num_pvr_iso_ctl
           call read_pvr_isosurface_ctl(id_control, hd_block,            &
      &        pvr_isos_c%pvr_iso_ctl(inum), c_buf)
-          write(*,*) 'pvr_isos_c%num_pvr_iso_ctl', pvr_isos_c%num_pvr_iso_ctl
-          write(*,*) 'pvr_iso_ctl%isosurf_value_ctl%realvalue', &
-     &     pvr_isos_c%pvr_iso_ctl(pvr_isos_c%num_pvr_iso_ctl)%isosurf_value_ctl%iflag,      &
-     &     pvr_isos_c%pvr_iso_ctl(pvr_isos_c%num_pvr_iso_ctl)%isosurf_value_ctl%realvalue
-          write(*,*) 'pvr_iso_ctl%isosurf_type_ctl%realvalue', &
-     &     pvr_isos_c%pvr_iso_ctl(pvr_isos_c%num_pvr_iso_ctl)%isosurf_type_ctl%iflag,      &
-     &     pvr_isos_c%pvr_iso_ctl(pvr_isos_c%num_pvr_iso_ctl)%isosurf_type_ctl%charavalue
-          write(*,*) 'pvr_iso_ctl%opacity_ctl%realvalue', &
-     &     pvr_isos_c%pvr_iso_ctl(pvr_isos_c%num_pvr_iso_ctl)%opacity_ctl%iflag,      &
-     &     pvr_isos_c%pvr_iso_ctl(pvr_isos_c%num_pvr_iso_ctl)%opacity_ctl%realvalue
+          write(*,*) 'pvr_isos_c%num_pvr_iso_ctl out', pvr_isos_c%num_pvr_iso_ctl
+          write(*,*) 'pvr_iso_ctl%isosurf_value_ctl%realvalue out', &
+     &     pvr_isos_c%pvr_iso_ctl(inum)%isosurf_value_ctl%iflag,      &
+     &     pvr_isos_c%pvr_iso_ctl(inum)%isosurf_value_ctl%realvalue
+          write(*,*) 'pvr_iso_ctl%isosurf_type_ctl%realvalue out', &
+     &     pvr_isos_c%pvr_iso_ctl(inum)%isosurf_type_ctl%iflag,      &
+     &     pvr_isos_c%pvr_iso_ctl(inum)%isosurf_type_ctl%charavalue
+          write(*,*) 'pvr_iso_ctl%opacity_ctl%realvalue out', &
+     &     pvr_isos_c%pvr_iso_ctl(inum)%opacity_ctl%iflag,      &
+     &     pvr_isos_c%pvr_iso_ctl(inum)%opacity_ctl%realvalue
 
         end if
       end do
@@ -203,6 +203,16 @@
         call read_real_ctl_type                                         &
      &     (c_buf, hd_pvr_opacity, pvr_iso_ctl%opacity_ctl)
       end do
+!
+     write(*,*) 'pvr_iso_ctl%isosurf_value_ctl%realvalue', &
+     &     pvr_iso_ctl%isosurf_value_ctl%iflag,      &
+     &     pvr_iso_ctl%isosurf_value_ctl%realvalue
+     write(*,*) 'pvr_iso_ctl%isosurf_type_ctl%realvalue', &
+     &     pvr_iso_ctl%isosurf_type_ctl%iflag,      &
+     &     pvr_iso_ctl%isosurf_type_ctl%charavalue
+     write(*,*) 'pvr_iso_ctl%opacity_ctl%realvalue', &
+     &     pvr_iso_ctl%opacity_ctl%iflag,      &
+     &     pvr_iso_ctl%opacity_ctl%realvalue
 !
       end subroutine read_pvr_isosurface_ctl
 !
