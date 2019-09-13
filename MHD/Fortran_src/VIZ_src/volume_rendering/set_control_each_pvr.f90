@@ -265,6 +265,9 @@
       call alloc_pvr_isosurfaces(field_pvr)
 !
       do i = 1, field_pvr%num_isosurf
+        write(*,*) 'pvr_isos_c%pvr_iso_ctl(i)%isosurf_value_ctl%realvalue', &
+     &           i, pvr_isos_c%pvr_iso_ctl(i)%isosurf_value_ctl%iflag,      &
+     &              pvr_isos_c%pvr_iso_ctl(i)%isosurf_value_ctl%realvalue
         iflag = pvr_isos_c%pvr_iso_ctl(i)%isosurf_value_ctl%iflag
         if(iflag .gt. 0) then
           field_pvr%iso_value(i)                                        &
@@ -289,7 +292,6 @@
             field_pvr%itype_isosurf(i) = IFLAG_SHOW_FORWARD
           end if
         end if
-        write(*,*) 'field_pvr%iso_value', field_pvr%iso_value(i)
       end do
 !
       end subroutine set_control_pvr_isosurf
