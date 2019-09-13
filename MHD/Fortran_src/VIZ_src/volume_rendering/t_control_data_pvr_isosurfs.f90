@@ -86,6 +86,7 @@
       type(pvr_isosurfs_ctl), intent(inout) :: pvr_isos_c
       type(buffer_for_control), intent(inout)  :: c_buf
 !
+      integer(kind = kint) :: inum
       integer :: i
 !
       if(allocated(pvr_isos_c%pvr_iso_ctl)) return
@@ -98,9 +99,9 @@
 !
         if(check_begin_flag(c_buf, hd_block)) then
           call append_new_pvr_isosurf_ctl(pvr_isos_c)
+          inum = pvr_isos_c%num_pvr_iso_ctl
           call read_pvr_isosurface_ctl(id_control, hd_block,            &
-     &        pvr_isos_c%pvr_iso_ctl(pvr_isos_c%num_pvr_iso_ctl),       &
-     &        c_buf)
+     &        pvr_isos_c%pvr_iso_ctl(inum), c_buf)
           write(*,*) 'pvr_isos_c%num_pvr_iso_ctl', pvr_isos_c%num_pvr_iso_ctl
           write(*,*) 'pvr_iso_ctl%isosurf_value_ctl%realvalue', &
      &     pvr_isos_c%pvr_iso_ctl(pvr_isos_c%num_pvr_iso_ctl)%isosurf_value_ctl%iflag,      &
