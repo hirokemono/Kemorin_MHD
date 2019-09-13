@@ -192,6 +192,16 @@
      &     (c_buf, hd_pvr_opacity, pvr_iso_ctl%opacity_ctl)
       end do
 !
+      write(*,*) 'pvr_iso_ctl%isosurf_value_ctl%realvalue', &
+	&            pvr_iso_ctl%isosurf_value_ctl%iflag,      &
+	&              pvr_iso_ctl%isosurf_value_ctl%realvalue
+      write(*,*) 'pvr_iso_ctl%isosurf_type_ctl%realvalue', &
+	&            pvr_iso_ctl%isosurf_type_ctl%iflag,      &
+	&            pvr_iso_ctl%isosurf_type_ctl%charavalue
+      write(*,*) 'pvr_iso_ctl%opacity_ctl%realvalue', &
+     &           pvr_iso_ctl%opacity_ctl%iflag,      &
+     &           pvr_iso_ctl%opacity_ctl%realvalue
+
       end subroutine read_pvr_isosurface_ctl
 !
 !  ---------------------------------------------------------------------
