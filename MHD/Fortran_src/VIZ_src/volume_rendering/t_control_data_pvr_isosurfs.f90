@@ -68,7 +68,7 @@
       private :: hd_isosurf_value, hd_pvr_opacity, hd_iso_direction
 !
       private :: alloc_pvr_isosurfs_ctl, read_pvr_isosurface_ctl
-      private :: bcast_pvr_isosurface_ctl, append_new_pvr_isosurf_ctl
+      private :: append_new_pvr_isosurf_ctl
       private :: copy_pvr_isosurfs_ctl, reset_pvr_isosurfs_ctl
       private :: dup_pvr_isosurface_ctl, reset_pvr_isosurface_ctl
 !
@@ -120,11 +120,17 @@
         end if
       end do
 !
-      write(*,*) 'pvr_isos_c%num_pvr_iso_ctl', pvr_isos_c%num_pvr_iso_ctl
+      write(*,*) my_rank, 'pvr_isos_c%num_pvr_iso_ctl', pvr_isos_c%num_pvr_iso_ctl
       do i = 1, pvr_isos_c%num_pvr_iso_ctl
-        write(*,*) 'pvr_isos_c%pvr_iso_ctl(i)%isosurf_value_ctl%realvalue', &
-    &           i, pvr_isos_c%pvr_iso_ctl(i)%isosurf_value_ctl%iflag,      &
-    &              pvr_isos_c%pvr_iso_ctl(i)%isosurf_value_ctl%realvalue
+		write(*,*) 'pvr_isos_c%pvr_iso_ctl(i)%isosurf_value_ctl%realvalue', &
+     &            pvr_isos_c%pvr_iso_ctl(i)%isosurf_value_ctl%iflag,      &
+     &              pvr_isos_c%pvr_iso_ctl(i)%isosurf_value_ctl%realvalue
+        write(*,*) 'pvr_isos_c%pvr_iso_ctl(i)%opacity_ctl%realvalue', &
+     &            pvr_isos_c%pvr_iso_ctl(i)%opacity_ctl%iflag,      &
+     &              pvr_isos_c%pvr_iso_ctl(i)%opacity_ctl%realvalue
+        write(*,*) 'pvr_isos_c%pvr_iso_ctl(i)%isosurf_type_ctl%realvalue', &
+     &            pvr_isos_c%pvr_iso_ctl(i)%isosurf_type_ctl%iflag,      &
+     &              pvr_isos_c%pvr_iso_ctl(i)%isosurf_type_ctl%charavalue
       end do
 !
       end subroutine read_pvr_isosurfs_ctl
@@ -138,7 +144,6 @@
 !
       type(pvr_isosurfs_ctl), intent(inout) :: pvr_isos_c
 !
-      type(pvr_isosurf_ctl) :: pvr_iso_tmp
       integer(kind = kint) :: i
 !
 !
@@ -150,30 +155,11 @@
       call calypso_mpi_barrier
 !
       do i = 1, pvr_isos_c%num_pvr_iso_ctl
-        call bcast_pvr_isosurface_ctl(pvr_iso_tmp)
-
-        write(*,*) my_rank, 'pvr_iso_tmp%isosurf_value_ctl%realvalue',    &
-     &           pvr_iso_tmp%isosurf_value_ctl%iflag,      &
-     &           pvr_iso_tmp%isosurf_value_ctl%realvalue
-        write(*,*) my_rank, 'pvr_iso_tmp%opacity_ctl%realvalue',    &
-     &           pvr_iso_tmp%opacity_ctl%iflag,      &
-     &           pvr_iso_tmp%opacity_ctl%realvalue
-        write(*,*) my_rank, 'pvr_iso_tmp%isosurf_type_ctl%charavalue',    &
-     &           pvr_iso_tmp%isosurf_type_ctl%iflag,      &
-     &           pvr_iso_tmp%isosurf_type_ctl%charavalue
-
-        pvr_isos_c%pvr_iso_ctl(i)%isosurf_value_ctl%iflag          &
-     &       = pvr_iso_tmp%isosurf_value_ctl%iflag
-        pvr_isos_c%pvr_iso_ctl(i)%isosurf_value_ctl%realvalue      &
-     &       = pvr_iso_tmp%isosurf_value_ctl%realvalue
-        pvr_isos_c%pvr_iso_ctl(i)%opacity_ctl%iflag                &
-     &       = pvr_iso_tmp%opacity_ctl%iflag
-        pvr_isos_c%pvr_iso_ctl(i)%opacity_ctl%realvalue            &
-     &       = pvr_iso_tmp%opacity_ctl%realvalue
-        pvr_isos_c%pvr_iso_ctl(i)%isosurf_type_ctl%iflag           &
-     &       = pvr_iso_tmp%isosurf_type_ctl%iflag
-        pvr_isos_c%pvr_iso_ctl(i)%isosurf_type_ctl%charavalue      &
-     &       = pvr_iso_tmp%isosurf_type_ctl%charavalue
+        call bcast_ctl_type_c1                                          &
+     &     (pvr_isos_c%pvr_iso_ctl(i)%isosurf_type_ctl)
+        call bcast_ctl_type_r1                                          &
+     &     (pvr_isos_c%pvr_iso_ctl(i)%isosurf_value_ctl)
+        call bcast_ctl_type_r1(pvr_isos_c%pvr_iso_ctl(i)%opacity_ctl)
       end do
 !
       write(*,*) my_rank, 'pvr_isos_c%num_pvr_iso_ctl', pvr_isos_c%num_pvr_iso_ctl
@@ -181,6 +167,12 @@
         write(*,*) my_rank, 'pvr_isos_c%pvr_iso_ctl(i)%isosurf_value_ctl%realvalue', &
     &           i, pvr_isos_c%pvr_iso_ctl(i)%isosurf_value_ctl%iflag,      &
 	&              pvr_isos_c%pvr_iso_ctl(i)%isosurf_value_ctl%realvalue
+        write(*,*) my_rank, 'pvr_isos_c%pvr_iso_ctl(i)%opacity_ctl%realvalue', &
+	&           i, pvr_isos_c%pvr_iso_ctl(i)%opacity_ctl%iflag,      &
+    &              pvr_isos_c%pvr_iso_ctl(i)%opacity_ctl%realvalue
+        write(*,*) my_rank, 'pvr_isos_c%pvr_iso_ctl(i)%isosurf_type_ctl%realvalue', &
+	&           i, pvr_isos_c%pvr_iso_ctl(i)%isosurf_type_ctl%iflag,      &
+	&              pvr_isos_c%pvr_iso_ctl(i)%isosurf_type_ctl%charavalue
      end do
 !
       end subroutine bcast_pvr_isosurfs_ctl
@@ -240,32 +232,7 @@
      &     (c_buf, hd_pvr_opacity, pvr_iso_ctl%opacity_ctl)
       end do
 !
-     write(*,*) 'pvr_iso_ctl%isosurf_value_ctl%realvalue', &
-     &     pvr_iso_ctl%isosurf_value_ctl%iflag,      &
-     &     pvr_iso_ctl%isosurf_value_ctl%realvalue
-     write(*,*) 'pvr_iso_ctl%isosurf_type_ctl%realvalue', &
-     &     pvr_iso_ctl%isosurf_type_ctl%iflag,      &
-     &     pvr_iso_ctl%isosurf_type_ctl%charavalue
-     write(*,*) 'pvr_iso_ctl%opacity_ctl%realvalue', &
-     &     pvr_iso_ctl%opacity_ctl%iflag,      &
-     &     pvr_iso_ctl%opacity_ctl%realvalue
-!
       end subroutine read_pvr_isosurface_ctl
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine bcast_pvr_isosurface_ctl(pvr_iso_ctl)
-!
-      use bcast_control_arrays
-!
-      type(pvr_isosurf_ctl), intent(inout) :: pvr_iso_ctl
-!
-!
-      call bcast_ctl_type_c1(pvr_iso_ctl%isosurf_type_ctl)
-      call bcast_ctl_type_r1(pvr_iso_ctl%isosurf_value_ctl)
-      call bcast_ctl_type_r1(pvr_iso_ctl%opacity_ctl)
-!
-      end subroutine bcast_pvr_isosurface_ctl
 !
 !  ---------------------------------------------------------------------
 ! -----------------------------------------------------------------------
