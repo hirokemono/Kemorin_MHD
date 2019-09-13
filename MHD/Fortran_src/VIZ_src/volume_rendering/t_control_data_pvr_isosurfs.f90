@@ -150,7 +150,7 @@
       call calypso_mpi_barrier
 !
       do i = 1, pvr_isos_c%num_pvr_iso_ctl
-        call bcast_pvr_isosurface_ctl(pvr_isos_c%pvr_iso_tmp)
+        call bcast_pvr_isosurface_ctl(pvr_iso_tmp)
 
         write(*,*) my_rank, 'pvr_iso_tmp%isosurf_value_ctl%realvalue',    &
      &           pvr_iso_tmp%isosurf_value_ctl%iflag,      &
