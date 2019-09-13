@@ -112,8 +112,8 @@
      &       = pvr_iso_tmp%opacity_ctl%iflag
 		  pvr_isos_c%pvr_iso_ctl(inum)%opacity_ctl%realvalue            &
      &       = pvr_iso_tmp%opacity_ctl%realvalue
-		  pvr_isos_c%pvr_iso_ctl(inum)%isosurf_value_ctl%iflag          &
-     &       = pvr_iso_tmp%isosurf_value_ctl%iflag
+		  pvr_isos_c%pvr_iso_ctl(inum)%isosurf_type_ctl%iflag           &
+     &       = pvr_iso_tmp%isosurf_type_ctl%iflag
 		  pvr_isos_c%pvr_iso_ctl(inum)%isosurf_type_ctl%charavalue      &
      &       = pvr_iso_tmp%isosurf_type_ctl%charavalue
 !
