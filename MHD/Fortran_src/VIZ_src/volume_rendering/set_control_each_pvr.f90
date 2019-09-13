@@ -259,6 +259,7 @@
 !
 !
       field_pvr%num_isosurf = pvr_isos_c%num_pvr_iso_ctl
+      write(*,*) 'field_pvr%num_isosurf', field_pvr%num_isosurf
       if(field_pvr%num_isosurf .le. 0) return
 !
       call alloc_pvr_isosurfaces(field_pvr)
