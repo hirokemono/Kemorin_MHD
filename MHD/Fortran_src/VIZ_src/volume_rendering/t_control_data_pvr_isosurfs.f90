@@ -86,6 +86,7 @@
       type(pvr_isosurfs_ctl), intent(inout) :: pvr_isos_c
       type(buffer_for_control), intent(inout)  :: c_buf
 !
+      integer :: i
 !
       if(allocated(pvr_isos_c%pvr_iso_ctl)) return
       pvr_isos_c%num_pvr_iso_ctl = 0
@@ -101,6 +102,13 @@
      &        pvr_isos_c%pvr_iso_ctl(pvr_isos_c%num_pvr_iso_ctl),       &
      &        c_buf)
         end if
+      end do
+!
+      write(*,*) 'pvr_isos_c%num_pvr_iso_ctl', pvr_isos_c%num_pvr_iso_ctl
+      do i = 1, pvr_isos_c%num_pvr_iso_ctl
+        write(*,*) 'pvr_isos_c%pvr_iso_ctl(i)%isosurf_value_ctl%realvalue', &
+    &           i, pvr_isos_c%pvr_iso_ctl(i)%isosurf_value_ctl%iflag,      &
+    &              pvr_isos_c%pvr_iso_ctl(i)%isosurf_value_ctl%realvalue
       end do
 !
       end subroutine read_pvr_isosurfs_ctl
