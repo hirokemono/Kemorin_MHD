@@ -20,6 +20,7 @@ tree_view_chara_int3_GTK.o \
 tree_view_chara_real_GTK.o \
 tree_view_chara2_real_GTK.o \
 \
+tree_view_4_colormap.o \
 tree_view_4_pvr_colormap.o \
 tree_view_4_field_GTK.o \
 control_panel_4_field_GTK.o \
@@ -164,6 +165,28 @@ module:
 	>> $(MAKENAME)
 	
 	@echo \
+	tree_view_4_colormap.o:  \
+	'$$(KEMO_GTK_DIR)'/tree_view_4_colormap.c  \
+	tree_view_4_colormap.h \
+	t_control_chara_IO.o \
+	t_control_real_IO.o \
+	t_control_real2_IO.o \
+	t_ctl_data_pvr_colormap_c.o \
+	tree_view_real2_GTK.o \
+	tree_view_chara_int_GTK.o \
+	tree_views_4_fixed_lists_GTK.o \
+	quicksort_c.o \
+	set_rgb_colors_c.o \
+	set_rgba_table_c.o \
+	m_color_table_c.o \
+	set_each_psf_parameters.o \
+	init_gl_lighting_c.o \
+	kemoview_gtk_routines.o \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(GTK3_CFLAGS) $$(C_INCLUDE) $$<' \
+	>> $(MAKENAME)
+	
+	@echo \
 	tree_view_4_pvr_colormap.o:  \
 	'$$(KEMO_GTK_DIR)'/tree_view_4_pvr_colormap.c  \
 	tree_view_4_pvr_colormap.h \
@@ -174,6 +197,7 @@ module:
 	tree_view_real2_GTK.o \
 	tree_view_chara_int_GTK.o \
 	tree_views_4_fixed_lists_GTK.o \
+	tree_view_4_colormap.o \
 	quicksort_c.o \
 	set_rgb_colors_c.o \
 	set_rgba_table_c.o \

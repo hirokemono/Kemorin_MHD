@@ -17,7 +17,7 @@
 #include "tree_views_4_fixed_lists_GTK.h"
 
 
-int append_c2r_item_to_tree(int index, char *c1_tbl, char *c2_tbl, double r_data, 
+int append_c2r_item_to_tree(const int index, const char *c1_tbl, const char *c2_tbl, const double r_data, 
                            GtkTreeModel *c2r_tree_model);
 int append_c2r_list_from_ctl(int index, struct chara2_real_ctl_list *head, 
                             GtkTreeView *c2r_tree_view);

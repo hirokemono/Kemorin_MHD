@@ -32,13 +32,13 @@ static int find_inner_decomp_index(struct chara_ctl_item *inner_decomp_c){
 
 static void set_inner_decomp_cb(GtkComboBox *combobox_cmap, gpointer data)
 {
-    struct chara_ctl_item *inner_decomp_c = (struct colormap_view *) data;
+    struct chara_ctl_item *inner_decomp_c = (struct chara_ctl_item *) data;
     GtkTreeModel *model_cmap = gtk_combo_box_get_model(combobox_cmap);
     GtkTreeIter iter;
     
     gint idx;
     gchar *row_string;
-    int index_field, index_mode;
+    int index_field;
 	
 	if(inner_decomp_c->iflag == 0) gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_cmap), -1);
 	idx = gtk_combo_box_get_active(combobox_cmap);

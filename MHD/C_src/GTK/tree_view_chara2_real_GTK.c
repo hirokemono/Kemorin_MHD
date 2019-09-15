@@ -8,7 +8,7 @@
 #include "tree_view_chara2_real_GTK.h"
 
 /* Append new data at the end of list */
-int append_c2r_item_to_tree(int index, char *c1_tbl, char *c2_tbl, double r_data, 
+int append_c2r_item_to_tree(const int index, const char *c1_tbl, const char *c2_tbl, const double r_data, 
                            GtkTreeModel *c2r_tree_model)
 {
     GtkTreeIter iter;
@@ -526,7 +526,7 @@ void add_chara2_real_list_box_w_addbottun(GtkTreeView *c2r_tree_view,
     gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_window),
                                    GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
     gtk_widget_set_size_request(scrolled_window, 400, 300);
-    gtk_container_add(GTK_CONTAINER(scrolled_window), c2r_tree_view);
+    gtk_container_add(GTK_CONTAINER(scrolled_window), GTK_WIDGET(c2r_tree_view));
     gtk_box_pack_start(GTK_BOX(vbox), scrolled_window, TRUE, TRUE, 0);
     
 	
@@ -566,7 +566,7 @@ void add_chara2_real_list_box_w_combobox(GtkTreeView *c2r_tree_view,
     gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_window),
                                    GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
     gtk_widget_set_size_request(scrolled_window, 400, 300);
-    gtk_container_add(GTK_CONTAINER(scrolled_window), c2r_tree_view);
+    gtk_container_add(GTK_CONTAINER(scrolled_window), GTK_WIDGET(c2r_tree_view));
     gtk_box_pack_start(GTK_BOX(vbox), scrolled_window, TRUE, TRUE, 0);
     
     add_sorting_signal_w_label(c2r_tree_view, hbox);

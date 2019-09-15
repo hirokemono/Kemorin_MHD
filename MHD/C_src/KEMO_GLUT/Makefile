@@ -25,7 +25,8 @@ tree_view_4_domain_viewer.o \
 tree_view_4_ele_group_viewer.o \
 tree_view_4_surf_group_viewer.o \
 tree_view_4_nod_group_viewer.o \
-tree_view_4_viewer_mesh.o
+tree_view_4_viewer_mesh.o \
+tree_view_kemoview_colormap.o
 
 #
 #  ------------------------------------------------------------------
@@ -116,7 +117,8 @@ module:
 	m_kemoview_psf_menu.o \
 	tree_views_4_fixed_lists_GTK.o \
 	tree_view_chara_int_GTK.o \
-	tree_view_4_pvr_colormap.o \
+	tree_view_4_colormap.o \
+	tree_view_kemoview_colormap.o \
 	tree_view_4_light_position.o \
 	kemoview_fileselector_gtk.o \
 	kemoview_gtk_PSF_surface_menu.o \
@@ -354,8 +356,8 @@ module:
 	@echo \
 	tree_view_4_viewer_mesh.o: \
 	'$$(KEMO_C_GLUTDIR)'/tree_view_4_viewer_mesh.c \
-	kemoviewer.h \
 	tree_view_4_viewer_mesh.h \
+	kemoviewer.h \
 	t_control_chara_int_IO.o \
 	t_control_chara_int3_IO.o \
 	tree_view_chara_int_GTK.o \
@@ -364,6 +366,17 @@ module:
 	create_tree_view_columns_GTK.o \
 	m_surface_mesh_4_viewer_c.o \
 	quicksort_c.o \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(GTK3_CFLAGS) $$(C_INCLUDE) $$<' \
+	>> $(MAKENAME)
+	
+	@echo \
+	tree_view_kemoview_colormap.o: \
+	'$$(KEMO_C_GLUTDIR)'/tree_view_kemoview_colormap.c \
+	tree_view_kemoview_colormap.h \
+	kemoviewer.h \
+	tree_view_4_colormap.o \
+	view_modifier_glfw.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(GTK3_CFLAGS) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)

@@ -47,7 +47,7 @@ static void create_tree_view_window(GtkButton *button, gpointer user_data)
                      G_CALLBACK(cb_close_window), window);
 	
     vbox_1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-	add_colormp_list_box(color_vws, vbox_1);
+	add_pvr_colormap_list_box(color_vws, vbox_1);
 	
 	expander = gtk_expander_new_with_mnemonic("Tako");
 	gtk_container_add(GTK_CONTAINER(expander), vbox_1);

@@ -123,7 +123,7 @@ void add_gtk_psf_colormap_menu(struct colormap_view *color_vws,
 				G_CALLBACK(load_colormap_file_panel_CB), G_OBJECT(entry));
 	
 	vbox_cmap = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
-	add_colormp_list_box(color_vws, vbox_cmap);
+	add_kemoview_colormap_list_box(color_vws, vbox_cmap);
 	gtk_box_pack_start(GTK_BOX(vbox_cmap), saveButton, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox_cmap), loadButton, FALSE, FALSE, 0);
 	

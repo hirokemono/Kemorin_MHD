@@ -26,9 +26,9 @@ static void psf_surf_colormode_CB(GtkComboBox *combobox_gdcolor, gpointer user_d
 {
     int index_mode = gtk_selected_combobox_index(combobox_gdcolor);
 	
-	if (index_mode == RAINBOW_PSF_LINE)    {kemoview_set_PSF_isoline_color_mode(WHITE_LINE);}
+	if (index_mode == RAINBOW_PSF_LINE)    {kemoview_set_PSF_isoline_color_mode(RAINBOW_LINE);}
 	else if (index_mode == WHITE_PSF_LINE) {kemoview_set_PSF_isoline_color_mode(WHITE_LINE);}
-    else if (index_mode == BLACK_PSF_LINE) {kemoview_set_PSF_isoline_color_mode(RAINBOW_LINE);}
+    else if (index_mode == BLACK_PSF_LINE) {kemoview_set_PSF_isoline_color_mode(BLACK_LINE);}
 	
 	draw_mesh_glfw();
 	return;
@@ -129,18 +129,18 @@ void add_gtk_isoline_menu(struct colormap_view *color_vws,
 	gtk_box_pack_start(GTK_BOX(hbox_color), combobox_gdcolor, FALSE, FALSE, 0);
 	
 	hbox_23 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
-	gtk_box_pack_start(GTK_BOX(hbox_23), gtk_label_new("Current num. of lines: "), TRUE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox_23), gtk_label_new(current_nline_txt), TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_23), gtk_label_new("Current num. of lines: "), FALSE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_23), gtk_label_new(current_nline_txt), FALSE, TRUE, 0);
 	hbox_22 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
-	gtk_box_pack_start(GTK_BOX(hbox_22), gtk_label_new("Num. of lines: "), TRUE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox_22), spin_nline, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_22), gtk_label_new("Num. of lines: "), FALSE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_22), spin_nline, FALSE, TRUE, 0);
 	
 	vbox_iso = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
-	gtk_box_pack_start(GTK_BOX(vbox_iso), hbox_draw, TRUE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_iso), hbox_zero, TRUE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_iso), hbox_color, TRUE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_iso), hbox_23, TRUE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_iso), hbox_22, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_iso), hbox_draw, FALSE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_iso), hbox_zero, FALSE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_iso), hbox_color, FALSE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_iso), hbox_23, FALSE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_iso), hbox_22, FALSE, TRUE, 0);
 	
 	Frame_iso = gtk_frame_new("");
 	gtk_frame_set_shadow_type(GTK_FRAME(Frame_iso), GTK_SHADOW_IN);
@@ -148,7 +148,7 @@ void add_gtk_isoline_menu(struct colormap_view *color_vws,
 	
 	hbox_iso = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
 	gtk_box_pack_start(GTK_BOX(hbox_iso), gtk_label_new("  "), FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox_iso), Frame_iso, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_iso), Frame_iso, FALSE, TRUE, 0);
 	
 	scroll_iso = gtk_scrolled_window_new(NULL, NULL);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scroll_iso),
@@ -159,6 +159,6 @@ void add_gtk_isoline_menu(struct colormap_view *color_vws,
 	expander_iso = gtk_expander_new_with_mnemonic("Isolines");
 	gtk_container_add(GTK_CONTAINER(expander_iso), scroll_iso);
 	
-	gtk_box_pack_start(GTK_BOX(box), expander_iso, TRUE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(box), expander_iso, FALSE, TRUE, 0);
 	return;
 }
