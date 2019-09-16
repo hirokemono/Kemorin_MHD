@@ -38,7 +38,7 @@
 	double value2, color2;
 	int isel = [idColorTableView selectedRow];
 	
-	if ([idColorTableView selectedRow] > 0 && isel > 0) {
+	if(isel > 0) {
 		value1 = [[self.ColorTableField objectAtIndex:isel-1] doubleValue];
 		color1 = [[self.ColorTableColor objectAtIndex:isel-1] doubleValue];
 		value2 = [[self.ColorTableField objectAtIndex:isel] doubleValue];

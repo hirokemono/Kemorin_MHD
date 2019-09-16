@@ -251,3 +251,47 @@ void add_opacity_index_list_s(struct colormap_params *cmap_s, double add_value, 
 	free(opacity_value_tmp);
 	return;
 }
+
+
+
+
+static struct colormap_array * alloc_colormap_array(int num){
+	struct colormap_array *cmap = (struct colormap_array *) malloc(sizeof(struct colormap_array));
+    if (cmap  == NULL){
+        printf("malloc error for colormap_array\n");
+        exit(1);
+	};
+	
+	cmap->num = num;
+	cmap->data = (double *) calloc(cmap->num,sizeof(double));
+    if (cmap->data == NULL){
+        printf("malloc error for cmap->data\n");
+        exit(1);
+	};
+	
+	cmap->value = (double *)calloc(cmap->num,sizeof(double));
+    if (cmap->value == NULL){
+        printf("malloc error for cmap->value\n");
+        exit(1);
+	};
+	
+	return cmap;
+}
+
+struct colormap_array * init_colormap_from_list(struct real2_clist *colortbl_list){
+	int i;
+	struct colormap_array *cmap = alloc_colormap_array(count_real2_clist(colortbl_list));
+	
+	for(i=0;i<cmap->num;i++){
+		set_from_real2_clist_at_index(i, colortbl_list, &cmap->data[i], &cmap->value[i]);
+	};
+	return cmap;
+};
+
+void dealloc_colormap_array(struct colormap_array *cmap){
+	free(cmap->data);
+	free(cmap->value);
+	free(cmap);
+	return;
+};
+
