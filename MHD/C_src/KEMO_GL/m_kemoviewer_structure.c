@@ -1059,10 +1059,6 @@ void kemoview_set_fline_constant_opacity(double opacity){
 	set_fline_constant_opacity(kemo_sgl->kemo_fline->fline_d, kemo_sgl->kemo_fline->fline_m, opacity);
 }
 
-void kemoview_get_fline_rgb_at_value(double value, double *red, double *green, double *blue){
-	get_fline_rgb_at_value(kemo_sgl->kemo_fline->fline_m, value, red, green, blue);
-}
-
 double kemoview_get_fline_opacity_at_value(double value){
 	return get_fline_opacity_at_value(kemo_sgl->kemo_fline->fline_m, value);
 }

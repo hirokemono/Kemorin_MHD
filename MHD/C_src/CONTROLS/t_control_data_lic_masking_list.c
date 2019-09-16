@@ -36,8 +36,7 @@ void alloc_lic_masking_ctl_c(struct lic_masking_ctl_c *mask_ctl){
 	alloc_chara_ctl_item_c(mask_ctl->field_name_ctl);
 	alloc_chara_ctl_item_c(mask_ctl->component_ctl);
 	
-    mask_ctl->mask_range_list = (struct real2_clist *) malloc(sizeof(struct real2_clist));
-	init_real2_clist(mask_ctl->mask_range_list);
+	mask_ctl->mask_range_list = init_real2_clist();
     sprintf(mask_ctl->mask_range_list->r1_name, "data");
     sprintf(mask_ctl->mask_range_list->r2_name, "mask_value");
 	
@@ -52,8 +51,6 @@ void dealloc_lic_masking_ctl_c(struct lic_masking_ctl_c *mask_ctl){
 	free(mask_ctl->component_ctl);
 	
 	clear_real2_clist(mask_ctl->mask_range_list);
-    free(mask_ctl->mask_range_list);
-	
 	return;
 };
 

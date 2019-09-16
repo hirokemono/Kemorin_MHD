@@ -93,11 +93,6 @@ void set_fline_constant_opacity(struct psf_data *fline_d, struct fline_menu_val 
                             fline_d->d_max[fline_m->icomp_draw_fline], opacity);
 }
 
-void get_fline_rgb_at_value(struct fline_menu_val *fline_m, 
-			double value, double *red, double *green, double *blue){
-	set_rgb_from_value_s(fline_m->cmap_fline, value, red, green, blue);
-}
-
 double get_fline_opacity_at_value(struct fline_menu_val *fline_m, double value){
 	return set_opacity_from_value_s(fline_m->cmap_fline, value);
 }

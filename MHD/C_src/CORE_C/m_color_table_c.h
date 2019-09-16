@@ -6,6 +6,7 @@
 #define M_COLOR_TABLE_C_
 
 #include "set_rgb_colors_c.h"
+#include "t_control_real2_IO.h"
 
 #define RAINBOW_MODE    0
 #define GRAYSCALE_MODE  1
@@ -22,8 +23,11 @@ struct colormap_params{
 	double min_opacity, max_opacity;
 	double *opacity_data;
 	double *opacity_value;
-    
-    double *single_color;
+	
+	double *single_color;
+	
+	struct real2_clist *colormap;
+	struct real2_clist *opacitymap;
 };
 
 /* prototypes */

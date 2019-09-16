@@ -62,9 +62,6 @@ void set_fline_linear_colormap(struct fline_menu_val *fline_m,
 void set_fline_constant_opacity(struct psf_data *fline_d, struct fline_menu_val *fline_m,
 			double opacity);
 
-void get_fline_rgb_at_value(struct fline_menu_val *fline_m, 
-			double value, double *red, double *green, double *blue);
-
 double get_fline_opacity_at_value(struct fline_menu_val *fline_m, double value);
 void set_fline_color_data(struct fline_menu_val *fline_m, 
 			int i_point, double value, double color);

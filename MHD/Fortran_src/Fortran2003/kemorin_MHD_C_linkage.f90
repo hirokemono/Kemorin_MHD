@@ -419,7 +419,6 @@
 !    void kemoview_set_fline_linear_colormap(double minvalue, double maxvalue);
 !    void kemoview_set_fline_constant_opacity(double opacity);
 !    
-!    void kemoview_get_fline_rgb_at_value(double value, double *red, double *green, double *blue);
 !    double kemoview_get_fline_opacity_at_value(double value);
 !    
 !    void kemoview_set_fline_color_data(int i_point, double value, double color);

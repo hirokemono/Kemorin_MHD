@@ -29,12 +29,8 @@ void init_colormap_views_4_viewer(struct psf_menu_val *psf_current_menu,
 	color_vws->cmap_vws = (struct r2_clist_view *) malloc(sizeof(struct r2_clist_view));
 	color_vws->opacity_vws = (struct r2_clist_view *) malloc(sizeof(struct r2_clist_view));
 	
-	color_vws->cmap_vws->r2_clist_gtk 
-		= (struct real2_clist *) malloc(sizeof(struct real2_clist));
-	color_vws->opacity_vws->r2_clist_gtk 
-		= (struct real2_clist *) malloc(sizeof(struct real2_clist));
-	init_real2_clist(color_vws->cmap_vws->r2_clist_gtk);
-	init_real2_clist(color_vws->opacity_vws->r2_clist_gtk );
+	color_vws->cmap_vws->r2_clist_gtk =   init_real2_clist();
+	color_vws->opacity_vws->r2_clist_gtk = init_real2_clist();
 
 	sprintf(color_vws->cmap_vws->r2_clist_gtk->clist_name, "color map");
     sprintf(color_vws->cmap_vws->r2_clist_gtk->r1_name, "data");

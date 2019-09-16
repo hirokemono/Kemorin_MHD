@@ -54,7 +54,7 @@ void set_from_real2_ctl_item_c(struct real2_ctl_item *r2_item,
 struct real2_ctl_list *find_r2_between_item_by_value1(double ref_1,
 			struct real2_ctl_list *head);
 
-void init_real2_clist(struct real2_clist *r2_clst);
+struct real2_clist * init_real2_clist(void);
 void clear_real2_clist(struct real2_clist *r2_clst);
 int count_real2_clist(struct real2_clist *r2_clst);
 

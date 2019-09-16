@@ -338,13 +338,14 @@ static void dup_real2_ctl_list(struct real2_ctl_list *head_src,
 
 
 
-void init_real2_clist(struct real2_clist *r2_clst){
+struct real2_clist * init_real2_clist(void){
+	struct real2_clist *r2_clst = (struct real2_clist *) malloc(sizeof(struct real2_clist));
     init_real2_ctl_list(&r2_clst->r2_item_head);
     
     r2_clst->clist_name = (char *)calloc(32,sizeof(char));
     r2_clst->r1_name = (char *)calloc(32,sizeof(char));
     r2_clst->r2_name = (char *)calloc(32,sizeof(char));
-    return;
+    return r2_clst;
 };
 
 void clear_real2_clist(struct real2_clist *r2_clst){
@@ -352,6 +353,7 @@ void clear_real2_clist(struct real2_clist *r2_clst){
     free(r2_clst->clist_name);
     free(r2_clst->r1_name);
     free(r2_clst->r2_name);
+	free(r2_clst);
     return;
 };
 int count_real2_clist(struct real2_clist *r2_clst){

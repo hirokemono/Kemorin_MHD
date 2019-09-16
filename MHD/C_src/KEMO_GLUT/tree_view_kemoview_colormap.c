@@ -23,7 +23,7 @@ static void kemoview_colormap_data_edited_CB(GtkCellRendererText *cell, gchar *p
 	int num = count_real2_clist(color_vws->cmap_vws->r2_clist_gtk);
 	
 	for(i=0;i<num;i++){
-		copy_from_real2_clist(color_vws->cmap_vws->r2_clist_gtk, i, &value, &color);
+		set_from_real2_clist_at_index(i, color_vws->cmap_vws->r2_clist_gtk, &value, &color);
 		kemoview_set_PSF_color_data(i, value, color);
 	};
 	gtk_widget_queue_draw(color_vws->scrolled_window);
@@ -40,7 +40,7 @@ static void kemoview_colormap_color_edited_CB(GtkCellRendererText *cell, gchar *
 	int num = count_real2_clist(color_vws->cmap_vws->r2_clist_gtk);
 	
 	for(i=0;i<num;i++){
-		copy_from_real2_clist(color_vws->cmap_vws->r2_clist_gtk, i, &value, &color);
+		set_from_real2_clist_at_index(i, color_vws->cmap_vws->r2_clist_gtk, &value, &color);
 		kemoview_set_PSF_color_data(i, value, color);
 	};
 	gtk_widget_queue_draw(color_vws->scrolled_window);
@@ -57,7 +57,7 @@ static void add_kemoview_colormap_list_items_CB(GtkButton *button, gpointer user
 	int num = count_real2_clist(color_vws->cmap_vws->r2_clist_gtk);
 	
 	for(i=0;i<num;i++){
-		copy_from_real2_clist(color_vws->cmap_vws->r2_clist_gtk, i, &value, &color);
+		set_from_real2_clist_at_index(i, color_vws->cmap_vws->r2_clist_gtk, &value, &color);
 		kemoview_set_PSF_color_data(i, value, color);
 	};
 	gtk_widget_queue_draw(color_vws->scrolled_window);
@@ -75,7 +75,7 @@ static void delete_kemoview_colormap_list_items_CB(GtkButton *button, gpointer u
 	
 	if(num > 2) kemoview_delete_PSF_color_list(num);
 	for(i=0;i<num;i++){
-		copy_from_real2_clist(color_vws->cmap_vws->r2_clist_gtk, i, &value, &color);
+		set_from_real2_clist_at_index(i, color_vws->cmap_vws->r2_clist_gtk, &value, &color);
 		kemoview_set_PSF_color_data(i, value, color);
 	};
 	gtk_widget_queue_draw(color_vws->scrolled_window);
@@ -96,7 +96,7 @@ static void kemoview_opacity_data_edited_CB(GtkCellRendererText *cell, gchar *pa
 	int num = count_real2_clist(color_vws->opacity_vws->r2_clist_gtk);
 	
 	for(i=0;i<num;i++){
-		copy_from_real2_clist(color_vws->opacity_vws->r2_clist_gtk, i, &value, &opacity);
+		set_from_real2_clist_at_index(i, color_vws->opacity_vws->r2_clist_gtk, &value, &opacity);
 		kemoview_set_PSF_opacity_data(i, value, opacity);
 	};
 	gtk_widget_queue_draw(color_vws->scrolled_window);
@@ -115,7 +115,7 @@ static void kemoview_opacity_color_edited_CB(GtkCellRendererText *cell, gchar *p
 	int num = count_real2_clist(color_vws->opacity_vws->r2_clist_gtk);
 	
 	for(i=0;i<num;i++){
-		copy_from_real2_clist(color_vws->opacity_vws->r2_clist_gtk, i, &value, &opacity);
+		set_from_real2_clist_at_index(i, color_vws->opacity_vws->r2_clist_gtk, &value, &opacity);
 		kemoview_set_PSF_opacity_data(i, value, opacity);
 	};
 	gtk_widget_queue_draw(color_vws->scrolled_window);
@@ -134,7 +134,7 @@ static void add_kemoview_opacity_list_items_CB(GtkButton *button, gpointer user_
 	
 	kemoview_add_PSF_opacity_list(0.0, 0.0);
 	for(i=0;i<num;i++){
-		copy_from_real2_clist(color_vws->opacity_vws->r2_clist_gtk, i, &value, &opacity);
+		set_from_real2_clist_at_index(i, color_vws->opacity_vws->r2_clist_gtk, &value, &opacity);
 		kemoview_set_PSF_opacity_data(i, value, opacity);
 	};
 	gtk_widget_queue_draw(color_vws->scrolled_window);
@@ -152,7 +152,7 @@ static void delete_kemoview_opacity_list_items_CB(GtkButton *button, gpointer us
 	int num = count_real2_clist(color_vws->opacity_vws->r2_clist_gtk);
 	if(num > 2) kemoview_delete_PSF_opacity_list(num);
 	for(i=0;i<num;i++){
-		copy_from_real2_clist(color_vws->opacity_vws->r2_clist_gtk, i, &value, &opacity);
+		set_from_real2_clist_at_index(i, color_vws->opacity_vws->r2_clist_gtk, &value, &opacity);
 		kemoview_set_PSF_opacity_data(i, value, opacity);
 	};
 	gtk_widget_queue_draw(color_vws->scrolled_window);
