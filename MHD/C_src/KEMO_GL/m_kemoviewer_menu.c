@@ -42,16 +42,10 @@ void alloc_draw_fline_flags(struct psf_data *fline_s, struct fline_menu_val *fli
 void dealloc_draw_fline_flags(struct psf_data *fline_s, struct fline_menu_val *fline_m){
 	int i;
 	
-	for (i=0;i<fline_s->nfield;i++){
-		dealloc_color_index_list_s(fline_m->cmap_fline_fld[i]);
-		free(fline_m->cmap_fline_fld[i]);
-	};
+	for (i=0;i<fline_s->nfield;i++){dealloc_color_index_list_s(fline_m->cmap_fline_fld[i]);};
 	free(fline_m->cmap_fline_fld);
 	
-	for (i=0;i<fline_s->ncomptot;i++){
-		dealloc_color_index_list_s(fline_m->cmap_fline_comp[i]);
-		free(fline_m->cmap_fline_comp[i]);
-	};
+	for (i=0;i<fline_s->ncomptot;i++){dealloc_color_index_list_s(fline_m->cmap_fline_comp[i]);};
 	free(fline_m->cmap_fline_comp);
 	
 	dealloc_kvstring(fline_m->fline_header);

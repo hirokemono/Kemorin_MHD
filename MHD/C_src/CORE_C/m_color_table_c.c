@@ -6,26 +6,26 @@
 #include <stdlib.h>
 #include "m_color_table_c.h"
 
-void alloc_single_color_code(struct colormap_params *cmap_s){
-    cmap_s->single_color = (double *)calloc(4,sizeof(double));
-    return;
-}
 void alloc_color_index_list_s(struct colormap_params *cmap_s, int id_cmode){
 	cmap_s->id_color_mode = id_cmode;
 	cmap_s->colormap = init_real2_clist();
 	cmap_s->opacitymap = init_real2_clist();
 	cmap_s->max_opacity = ONE;
 	cmap_s->min_opacity = ZERO;
+	
+    cmap_s->single_color = (double *)calloc(4,sizeof(double));
+    if (cmap_s->single_color == NULL){
+        printf("malloc error for cmap_s->single_color\n");
+        exit(1);
+	};
 	return;
 }
 
-void dealloc_single_color_code(struct colormap_params *cmap_s){
-    free(cmap_s->single_color);
-    return;
-}
 void dealloc_color_index_list_s(struct colormap_params *cmap_s){
 	dealloc_real2_clist(cmap_s->opacitymap);
 	dealloc_real2_clist(cmap_s->colormap);
+	free(cmap_s->single_color);
+	free(cmap_s);
 	return;
 }
 

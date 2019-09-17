@@ -31,10 +31,7 @@ struct colormap_array{
 
 /* prototypes */
 
-void alloc_single_color_code(struct colormap_params *cmap_s);
 void alloc_color_index_list_s(struct colormap_params *cmap_s, int id_cmode);
-
-void dealloc_single_color_code(struct colormap_params *cmap_s);
 void dealloc_color_index_list_s(struct colormap_params *cmap_s);
 
 void delete_color_index_list_s(struct colormap_params *cmap_s, int i_delete);
