@@ -50,7 +50,7 @@ void dealloc_lic_masking_ctl_c(struct lic_masking_ctl_c *mask_ctl){
 	free(mask_ctl->field_name_ctl);
 	free(mask_ctl->component_ctl);
 	
-	clear_real2_clist(mask_ctl->mask_range_list);
+	dealloc_real2_clist(mask_ctl->mask_range_list);
 	return;
 };
 

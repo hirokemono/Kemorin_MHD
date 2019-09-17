@@ -15,19 +15,12 @@
 
 struct colormap_params{
 	int id_color_mode;
-	int n_color_point, nbuf_color_point;
-	double *color_data;
-	double *color_value;
-	
-	int n_opacity_point, nbuf_opacity_point;
-	double min_opacity, max_opacity;
-	double *opacity_data;
-	double *opacity_value;
-	
-	double *single_color;
-	
 	struct real2_clist *colormap;
 	struct real2_clist *opacitymap;
+	
+	double min_opacity, max_opacity;
+	
+	double *single_color;
 };
 
 struct colormap_array{
@@ -39,16 +32,10 @@ struct colormap_array{
 /* prototypes */
 
 void alloc_single_color_code(struct colormap_params *cmap_s);
-void alloc_color_index_list_s(struct colormap_params *cmap_s, int id_cmode, int num);
-void alloc_opacity_index_list_s(struct colormap_params *cmap_s, int num);
+void alloc_color_index_list_s(struct colormap_params *cmap_s, int id_cmode);
 
 void dealloc_single_color_code(struct colormap_params *cmap_s);
 void dealloc_color_index_list_s(struct colormap_params *cmap_s);
-void dealloc_opacity_index_list_s(struct colormap_params *cmap_s);
-
-void realloc_color_index_list_s(struct colormap_params *cmap_s, int num);
-void realloc_opacity_index_list_s(struct colormap_params *cmap_s, int num);
-
 
 void delete_color_index_list_s(struct colormap_params *cmap_s, int i_delete);
 void delete_opacity_index_list_s(struct colormap_params *cmap_s, int i_delete);

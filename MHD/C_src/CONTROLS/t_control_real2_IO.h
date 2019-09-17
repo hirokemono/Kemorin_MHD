@@ -56,6 +56,8 @@ struct real2_ctl_list *find_r2_between_item_by_value1(double ref_1,
 
 struct real2_clist * init_real2_clist(void);
 void clear_real2_clist(struct real2_clist *r2_clst);
+void dealloc_real2_clist(struct real2_clist *r2_clst);
+
 int count_real2_clist(struct real2_clist *r2_clst);
 
 int read_real2_clist(FILE *fp, char buf[LENGTHBUF], const char *label, 

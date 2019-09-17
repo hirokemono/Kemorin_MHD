@@ -16,6 +16,9 @@ struct cbar_work * alloc_colorbar_position(void){
 
 void set_colorbar_position(int iflag_retina, int nx_win, int ny_win,
 			struct colormap_params *cmap_s, struct cbar_work *cbar_wk){
+	int num;
+	double d1, v1, d2, v2;
+
 	cbar_wk->num_quad = 64;
 	
 	cbar_wk->xwin = (float)nx_win;
@@ -34,8 +37,12 @@ void set_colorbar_position(int iflag_retina, int nx_win, int ny_win,
 	
 	cbar_wk->iflag_zero = 0;
 	
-	cbar_wk->psf_min = cmap_s->color_data[IZERO];
-	cbar_wk->psf_max = cmap_s->color_data[cmap_s->n_color_point-1];
+	num = count_real2_clist(cmap_s->colormap);
+	set_from_real2_clist_at_index(0,     cmap_s->colormap, &d1, &v1);
+	set_from_real2_clist_at_index(num-1, cmap_s->colormap, &d2, &v2);
+
+	cbar_wk->psf_min = d1;
+	cbar_wk->psf_max = d2;
 	if( (cbar_wk->psf_min*cbar_wk->psf_max) < ZERO ) cbar_wk->iflag_zero = 1;
 	
 	cbar_wk->yline_zero = cbar_wk->ybar_min 

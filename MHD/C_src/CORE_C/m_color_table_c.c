@@ -10,21 +10,10 @@ void alloc_single_color_code(struct colormap_params *cmap_s){
     cmap_s->single_color = (double *)calloc(4,sizeof(double));
     return;
 }
-
-void alloc_color_index_list_s(struct colormap_params *cmap_s, int id_cmode, int num){
-	cmap_s->n_color_point =    num;
-	cmap_s->nbuf_color_point = num;
-	cmap_s->color_data = (double *)calloc(cmap_s->nbuf_color_point,sizeof(double));
-	cmap_s->color_value = (double *)calloc(cmap_s->nbuf_color_point,sizeof(double));
+void alloc_color_index_list_s(struct colormap_params *cmap_s, int id_cmode){
 	cmap_s->id_color_mode = id_cmode;
-	return;
-}
-
-void alloc_opacity_index_list_s(struct colormap_params *cmap_s, int num){
-	cmap_s->n_opacity_point =    num;
-	cmap_s->nbuf_opacity_point = num;
-	cmap_s->opacity_data =  (double *)calloc(cmap_s->nbuf_opacity_point,sizeof(double));
-	cmap_s->opacity_value = (double *)calloc(cmap_s->nbuf_opacity_point,sizeof(double));
+	cmap_s->colormap = init_real2_clist();
+	cmap_s->opacitymap = init_real2_clist();
 	cmap_s->max_opacity = ONE;
 	cmap_s->min_opacity = ZERO;
 	return;
@@ -34,221 +23,30 @@ void dealloc_single_color_code(struct colormap_params *cmap_s){
     free(cmap_s->single_color);
     return;
 }
-
 void dealloc_color_index_list_s(struct colormap_params *cmap_s){
-	free(cmap_s->color_data);
-	free(cmap_s->color_value);
-	return;
-}
-
-void dealloc_opacity_index_list_s(struct colormap_params *cmap_s){
-	free(cmap_s->opacity_data);
-	free(cmap_s->opacity_value);
-	return;
-}
-
-
-void realloc_color_index_list_s(struct colormap_params *cmap_s, int num){
-	double *tmp = NULL;
-	if(num > cmap_s->nbuf_color_point){
-		tmp = (double *) realloc(cmap_s->color_data, num*sizeof(double));
-		if(tmp == NULL){
-			printf("reallocation error for cmap_s->color_data\n");
-			exit(-1);
-		} else {
-			cmap_s->color_data = tmp;
-		};
-		
-		tmp = (double *) realloc(cmap_s->color_value, num*sizeof(double));
-		if(tmp == NULL){
-			printf("reallocation error for cmap_s->color_value\n");
-			exit(-1);
-		} else {
-			cmap_s->color_value = tmp;
-		};
-		cmap_s->n_color_point = num;
-		cmap_s->nbuf_color_point = num;
-	} else {
-		cmap_s->n_color_point = num;
-	}
-	return;
-}
-
-void realloc_opacity_index_list_s(struct colormap_params *cmap_s, int num){
-	double *tmp = NULL;
-	if(num > cmap_s->nbuf_opacity_point){
-		tmp = (double *) realloc(cmap_s->opacity_data, num*sizeof(double));
-		if(tmp == NULL){
-			printf("reallocation error for cmap_s->opacity_data\n");
-			exit(-1);
-		} else {
-			cmap_s->opacity_data = tmp;
-		};
-		
-		tmp = (double *) realloc(cmap_s->opacity_value, num*sizeof(double));
-		if(tmp == NULL){
-			printf("reallocation error for cmap_s->opacity_value\n");
-			exit(-1);
-		} else {
-			cmap_s->opacity_value = tmp;
-		};
-		cmap_s->n_opacity_point =    num;
-		cmap_s->nbuf_opacity_point = num;
-		cmap_s->max_opacity = ONE;
-		cmap_s->min_opacity = ZERO;
-	} else {
-		cmap_s->n_opacity_point = num;
-	}
-	cmap_s->max_opacity = ONE;
-	cmap_s->min_opacity = ZERO;
+	dealloc_real2_clist(cmap_s->opacitymap);
+	dealloc_real2_clist(cmap_s->colormap);
 	return;
 }
 
 void delete_color_index_list_s(struct colormap_params *cmap_s, int i_delete){
-	double *color_data_tmp;
-	double *color_value_tmp;
-	int num, i;
-	int id_cmode;
-	
-	if(cmap_s->nbuf_color_point <= 2) return;
-	
-	color_data_tmp = (double *)calloc(cmap_s->nbuf_color_point,sizeof(double));
-	color_value_tmp = (double *)calloc(cmap_s->nbuf_color_point,sizeof(double));
-	for(i = 0; i < cmap_s->nbuf_color_point; i++) {
-		color_data_tmp[i] =  cmap_s->color_data[i];
-		color_value_tmp[i] = cmap_s->color_value[i];
-	}
-	dealloc_color_index_list_s(cmap_s);
-	
-	num = cmap_s->nbuf_color_point - 1;
-	id_cmode = cmap_s->id_color_mode;
-	alloc_color_index_list_s(cmap_s, id_cmode, num);
-	
-	for(i = 0; i < i_delete; i++) {
-		cmap_s->color_data[i] = color_data_tmp[i];
-		cmap_s->color_value[i] = color_value_tmp[i];
-	}
-	
-	for(i = i_delete+1; i < num+1; i++) {
-		cmap_s->color_data[i-1] = color_data_tmp[i];
-		cmap_s->color_value[i-1] = color_value_tmp[i];
-	}
-	
-	free(color_data_tmp);
-	free(color_value_tmp);
+	del_real2_clist_by_index(i_delete, cmap_s->colormap);
 	return;
 }
 
 void delete_opacity_index_list_s(struct colormap_params *cmap_s, int i_delete){
-	double *opacity_data_tmp;
-	double *opacity_value_tmp;
-	int num, i;
-	
-	if(cmap_s->nbuf_opacity_point <= 2) return;
-	
-	opacity_data_tmp = (double *)calloc(cmap_s->nbuf_opacity_point,sizeof(double));
-	opacity_value_tmp = (double *)calloc(cmap_s->nbuf_opacity_point,sizeof(double));
-	for(i = 0; i < cmap_s->nbuf_opacity_point; i++) {
-		opacity_data_tmp[i] =  cmap_s->opacity_data[i];
-		opacity_value_tmp[i] = cmap_s->opacity_value[i];
-	}
-	dealloc_opacity_index_list_s(cmap_s);
-	
-	num = cmap_s->nbuf_opacity_point - 1;
-	alloc_opacity_index_list_s(cmap_s, num);
-	
-	for(i = 0; i < i_delete; i++) {
-		cmap_s->opacity_data[i] = opacity_data_tmp[i];
-		cmap_s->opacity_value[i] = opacity_value_tmp[i];
-	}
-	
-	for(i = i_delete+1; i < num+1; i++) {
-		cmap_s->opacity_data[i-1] = opacity_data_tmp[i];
-		cmap_s->opacity_value[i-1] = opacity_value_tmp[i];
-	}
-	
-	free(opacity_data_tmp);
-	free(opacity_value_tmp);
+	del_real2_clist_by_index(i_delete, cmap_s->opacitymap);
 	return;
 }
 
 void add_color_index_list_s(struct colormap_params *cmap_s, double add_value, double add_color){
-	double *color_data_tmp;
-	double *color_value_tmp;
-	int num, i, i_add;
-	int id_cmode;
-	
-	i_add = 0;
-	for(i = 0; i < cmap_s->nbuf_color_point; i++) {
-		if(add_value > cmap_s->color_data[i]) i_add = i+1;
-	}
-	
-	color_data_tmp = (double *)calloc(cmap_s->nbuf_color_point,sizeof(double));
-	color_value_tmp = (double *)calloc(cmap_s->nbuf_color_point,sizeof(double));
-	for(i = 0; i < cmap_s->nbuf_color_point; i++) {
-		color_data_tmp[i] =  cmap_s->color_data[i];
-		color_value_tmp[i] = cmap_s->color_value[i];
-	}
-	dealloc_color_index_list_s(cmap_s);
-	
-	num = cmap_s->nbuf_color_point + 1;
-	id_cmode = cmap_s->id_color_mode;
-	alloc_color_index_list_s(cmap_s, id_cmode, num);
-	
-	for(i = 0; i < i_add; i++) {
-		cmap_s->color_data[i] = color_data_tmp[i];
-		cmap_s->color_value[i] = color_value_tmp[i];
-	}
-	
-	cmap_s->color_data[i_add] = add_value;
-	cmap_s->color_value[i_add] = add_color;
-	
-	for(i = i_add+1; i < num; i++) {
-		cmap_s->color_data[i] = color_data_tmp[i-1];
-		cmap_s->color_value[i] = color_value_tmp[i-1];
-	}
-	
-	free(color_data_tmp);
-	free(color_value_tmp);
+	add_real2_clist_between_value1(add_value, add_color, cmap_s->colormap);
 	return;
 }
 
-void add_opacity_index_list_s(struct colormap_params *cmap_s, double add_value, double add_opacity){
-	double *opacity_data_tmp;
-	double *opacity_value_tmp;
-	int num, i, i_add;
-	
-	i_add = 0;
-	for(i = 0; i < cmap_s->nbuf_opacity_point; i++) {
-		if(add_value > cmap_s->opacity_data[i]) i_add = i+1;
-	}
-	
-	opacity_data_tmp = (double *)calloc(cmap_s->nbuf_opacity_point,sizeof(double));
-	opacity_value_tmp = (double *)calloc(cmap_s->nbuf_opacity_point,sizeof(double));
-	for(i = 0; i < cmap_s->nbuf_opacity_point; i++) {
-		opacity_data_tmp[i] =  cmap_s->opacity_data[i];
-		opacity_value_tmp[i] = cmap_s->opacity_value[i];
-	}
-	dealloc_opacity_index_list_s(cmap_s);
-	
-	num = cmap_s->nbuf_opacity_point + 1;
-	alloc_opacity_index_list_s(cmap_s, num);
-	
-	for(i = 0; i < i_add; i++) {
-		cmap_s->opacity_data[i] = opacity_data_tmp[i];
-		cmap_s->opacity_value[i] = opacity_value_tmp[i];
-	}
-	
-	cmap_s->opacity_data[i_add] = add_value;
-	cmap_s->opacity_value[i_add] = add_opacity;
-	
-	for(i = i_add+1; i < num; i++) {
-		cmap_s->opacity_data[i] = opacity_data_tmp[i-1];
-		cmap_s->opacity_value[i] = opacity_value_tmp[i-1];
-	}
-	
-	free(opacity_data_tmp);
-	free(opacity_value_tmp);
+void add_opacity_index_list_s(struct colormap_params *cmap_s, 
+			double add_value, double add_opacity){
+	add_real2_clist_between_value1(add_value, add_opacity, cmap_s->opacitymap);
 	return;
 }
 

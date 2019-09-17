@@ -141,13 +141,13 @@ void dealloc_colormap_ctl_c(struct colormap_ctl_c *cmap_c){
 	dealloc_chara_ctl_item_c(cmap_c->data_mapping_ctl);
 	free(cmap_c->data_mapping_ctl);
 	
-	clear_real2_clist(cmap_c->colortbl_list);
+	dealloc_real2_clist(cmap_c->colortbl_list);
 	
 	dealloc_chara_ctl_item_c(cmap_c->opacity_style_ctl);
 	free(cmap_c->opacity_style_ctl);
 	free(cmap_c->fix_opacity_ctl);
 	
-	clear_real2_clist(cmap_c->linear_opacity_list);
+	dealloc_real2_clist(cmap_c->linear_opacity_list);
 	clear_real3_clist(cmap_c->step_opacity_list);
     free(cmap_c->step_opacity_list);
 	

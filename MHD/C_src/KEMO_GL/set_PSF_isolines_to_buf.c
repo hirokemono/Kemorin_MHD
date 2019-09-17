@@ -7,42 +7,42 @@
 static double black[4] =   {BLACK_R,BLACK_G,BLACK_B,BLACK_A};
 static double white[4] =   {WHITE_R,WHITE_G,WHITE_B,WHITE_A};
 
-double cal_isoline_value(int j, struct psf_menu_val *psf_m){
+double cal_isoline_value(int j, int n_isoline, struct colormap_params *cmap_s){
 	double v_line, range_min, range_max;
-	int i_end = psf_m->cmap_psf_comp[psf_m->icomp_draw_psf]->n_color_point - 1;
-	range_min = psf_m->cmap_psf_comp[psf_m->icomp_draw_psf]->color_data[0];
-	range_max = psf_m->cmap_psf_comp[psf_m->icomp_draw_psf]->color_data[i_end];
+	double v1, v2;
+	int num = count_real2_clist(cmap_s->colormap);
+	set_from_real2_clist_at_index(0,     cmap_s->colormap, &range_min, &v1);
+	set_from_real2_clist_at_index(num-1, cmap_s->colormap, &range_max, &v2);
 	
 	v_line = range_min + (range_max - range_min)
-			* ((double) j) / ((double) psf_m->n_isoline-1);
+			* ((double) j) / ((double) (n_isoline-1));
 	
 	return v_line;
 }
 
-void find_start_positive_lines(struct psf_menu_val *psf_m){
+int find_start_positive_lines(int n_isoline, struct colormap_params *cmap_s){
+	int ist_positive_line = 0;
     int j;
     double pre_value, current_value, range_min, range_max;
-	int i_end = psf_m->cmap_psf_comp[psf_m->icomp_draw_psf]->n_color_point - 1;
-    range_min = psf_m->cmap_psf_comp[psf_m->icomp_draw_psf]->color_data[0];
-    range_max = psf_m->cmap_psf_comp[psf_m->icomp_draw_psf]->color_data[i_end];
+	double v1, v2;
+	int num = count_real2_clist(cmap_s->colormap);
+	set_from_real2_clist_at_index(0,     cmap_s->colormap, &range_min, &v1);
+	set_from_real2_clist_at_index(num-1, cmap_s->colormap, &range_max, &v2);
     
-    if(range_min >= ZERO) psf_m->ist_positive_line = 0;
+    if(range_min >= ZERO) ist_positive_line = 0;
     else if(range_max <= ZERO){
-        psf_m->ist_positive_line = psf_m->n_isoline;
+        ist_positive_line = n_isoline;
     } else {
-        psf_m->ist_positive_line = 0;
+        ist_positive_line = 0;
         current_value = range_min;
-        for (j = 1; j < psf_m->n_isoline; j++){
+        for (j = 1; j < n_isoline; j++){
             pre_value = current_value;
-            current_value = cal_isoline_value(j, psf_m);
-            if( (current_value*pre_value) <= ZERO){
-                psf_m->ist_positive_line = j;
-                return;
-            };
+            current_value = cal_isoline_value(j, n_isoline, cmap_s);
+            if((current_value*pre_value) <= ZERO){return j;};
         };
     };
     
-    return;
+    return ist_positive_line;
 }
 
 
@@ -115,7 +115,8 @@ static int count_PSF_isolines(int ist, int ied, int ncorner,
 	
 	int num_patch = 0;
 	for (j = ist; j < ied; j++){
-		v_line = cal_isoline_value(j, psf_m);
+		v_line = cal_isoline_value(j, psf_m->n_isoline,
+								   psf_m->cmap_psf_comp[psf_m->icomp_draw_psf]);
 		num_patch = num_patch 
 				+ count_isoline_to_buf(ncorner, v_line, psf_m->icomp_draw_psf, psf_s);
 	};
@@ -149,7 +150,8 @@ static int set_PSF_isolines_to_buf(int ist_patch, int ist, int ied, double radiu
 	
 	inum_patch = ist_patch;
 	for (j = ist; j < ied; j++){
-		v_line = cal_isoline_value(j, psf_m);
+		v_line = cal_isoline_value(j, psf_m->n_isoline, 
+								   psf_m->cmap_psf_comp[psf_m->icomp_draw_psf]);
 		
 		if (psf_m->isoline_color == RAINBOW_LINE){
 			set_rainbow_color_code(psf_m->cmap_psf_comp[psf_m->icomp_draw_psf], v_line, f_color);
@@ -166,7 +168,8 @@ int count_PSF_all_isolines_to_buf(int ncorner,
 			struct psf_data *psf_s, struct psf_menu_val *psf_m){
 	int num_patch = 0;
 	if(psf_m->draw_psf_grid  != 0){
-		find_start_positive_lines(psf_m);
+		psf_m->ist_positive_line = find_start_positive_lines(psf_m->n_isoline,
+								psf_m->cmap_psf_comp[psf_m->icomp_draw_psf]);
 		if(psf_m->ist_positive_line > 1){
 			num_patch = num_patch + count_PSF_isolines(IZERO, psf_m->ist_positive_line,
 						ncorner, psf_s, psf_m);
@@ -188,7 +191,8 @@ int set_PSF_all_isolines_to_buf(int ist_patch, double radius, int ncorner,
 	double dub_r = 2.0 * radius;
 	int inum_patch = ist_patch;
 	if(psf_m->draw_psf_grid  != 0){
-		find_start_positive_lines(psf_m);
+		psf_m->ist_positive_line = find_start_positive_lines(psf_m->n_isoline,
+								psf_m->cmap_psf_comp[psf_m->icomp_draw_psf]);
 		if(psf_m->ist_positive_line > 1){
 			inum_patch = set_PSF_isolines_to_buf(inum_patch, 
 							IZERO, psf_m->ist_positive_line,

@@ -350,12 +350,17 @@ struct real2_clist * init_real2_clist(void){
 
 void clear_real2_clist(struct real2_clist *r2_clst){
     clear_real2_ctl_list(&r2_clst->r2_item_head);
+    return;
+};
+void dealloc_real2_clist(struct real2_clist *r2_clst){
+    clear_real2_clist(r2_clst);
     free(r2_clst->clist_name);
     free(r2_clst->r1_name);
     free(r2_clst->r2_name);
 	free(r2_clst);
     return;
 };
+
 int count_real2_clist(struct real2_clist *r2_clst){
     return count_real2_ctl_list(&r2_clst->r2_item_head);
 };

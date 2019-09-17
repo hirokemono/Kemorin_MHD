@@ -17,8 +17,8 @@
 
 /* prptotypes */
 
-double cal_isoline_value(int j, struct psf_menu_val *psf_m);
-void find_start_positive_lines(struct psf_menu_val *psf_m);
+double cal_isoline_value(int j, int n_isoline, struct colormap_params *cmap_s);
+int find_start_positive_lines(int n_isoline, struct colormap_params *cmap_s);
 
 int count_PSF_all_isolines_to_buf(int ncorner, 
 			struct psf_data *psf_s, struct psf_menu_val *psf_m);

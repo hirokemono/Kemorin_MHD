@@ -60,24 +60,11 @@ void init_colormap_views_4_viewer(struct psf_menu_val *psf_current_menu,
 
 void load_color_opacity_map_from_list(struct psf_menu_val *psf_current_menu, 
 			struct colormap_view *color_vws){
-	double value, color, opacity;
-	int i, num;
 	int icomp = psf_current_menu->icomp_draw_psf;
-	num = count_real2_clist(color_vws->cmap_vws->r2_clist_gtk);
-	realloc_color_index_list_s(psf_current_menu->cmap_psf_comp[icomp], num);
-	for(i=0;i<num;i++){
-		copy_from_real2_clist(color_vws->cmap_vws->r2_clist_gtk, 
-			i, &value, &color);
-		kemoview_set_PSF_color_data(i, value, color);
-	}
-	num = count_real2_clist(color_vws->opacity_vws->r2_clist_gtk);
-	realloc_opacity_index_list_s(psf_current_menu->cmap_psf_comp[icomp], num);
-	for(i=0;i<num;i++){
-		copy_from_real2_clist(color_vws->opacity_vws->r2_clist_gtk, 
-			i, &value, &opacity);
-		set_each_PSF_opacity_point(psf_current_menu, i, value, opacity);
-	}
-	
+	dup_real2_clist(color_vws->cmap_vws->r2_clist_gtk,
+					psf_current_menu->cmap_psf_comp[icomp]->colormap);
+	dup_real2_clist(color_vws->opacity_vws->r2_clist_gtk,
+					psf_current_menu->cmap_psf_comp[icomp]->opacitymap);
 	return;
 }
 
@@ -185,28 +172,25 @@ static void draw_colormap(struct colormap_params *cmap_param, cairo_t *cr, GdkWi
     double d_bottom = 0.0;
     double d_top = 0.0;
     double d_current = 0.0;
-	double max_opacity = 0.0;
     double range;
     int i;
-    int num_cmap = cmap_param->n_color_point;
-	int num_omap = cmap_param->n_opacity_point;
+    int num_cmap = count_real2_clist(cmap_param->colormap);
+	int num_omap = count_real2_clist(cmap_param->opacitymap);
     int ntot = num_cmap + num_omap;
-
-    i_point = (int *) calloc(ntot, sizeof(int));
+	double d1, v1;
+	
+	i_point = (int *) calloc(ntot, sizeof(int));
 	d_point = (double *) calloc(ntot, sizeof(double));
 	for(i=0;i<num_cmap;i++){
+		set_from_real2_clist_at_index(i, cmap_param->colormap, &d_point[i], &v1);
         i_point[i] = i;
-        d_point[i] = cmap_param->color_data[0];
 	}
 	
-    for(i=0;i<num_omap;i++){
-        i_point[i+num_cmap] = i;
-		d_point[i+num_cmap] = cmap_param->opacity_data[i];
-		if(cmap_param->opacity_value[i] > max_opacity){
-			max_opacity = cmap_param->opacity_data[i];
-		};
-    }
-    quicksort_double_c(d_point, i_point, 0, (ntot-1));
+	for(i=0;i<num_omap;i++){
+		set_from_real2_clist_at_index(i, cmap_param->opacitymap, &d_point[i+num_cmap], &v1);
+		i_point[i+num_cmap] = i;
+	}
+	quicksort_double_c(d_point, i_point, 0, (ntot-1));
 	
     
 //    cr = gdk_cairo_create(window);
@@ -223,20 +207,19 @@ static void draw_colormap(struct colormap_params *cmap_param, cairo_t *cr, GdkWi
         top_s = top;
 		height_s = 1.0;
 		
-		d_bottom = cmap_param->color_data[0];
-		d_top = cmap_param->color_data[num_cmap-1];
-		if(cmap_param->opacity_data[0] < d_bottom){
-			d_bottom = cmap_param->opacity_data[0];
-		};
-		if(cmap_param->opacity_data[num_omap-1] < d_bottom){
-			d_top = cmap_param->opacity_data[num_omap-1];
-		};
+		set_from_real2_clist_at_index(0, cmap_param->colormap, &d_bottom, &v1);
+		set_from_real2_clist_at_index(num_cmap-1, cmap_param->colormap, &d_top, &v1);
+
+		set_from_real2_clist_at_index(0, cmap_param->opacitymap, &d1, &v1);
+		if(d1 < d_bottom){d_bottom = d1;};
+		set_from_real2_clist_at_index(num_omap-1, cmap_param->opacitymap, &d1, &v1);
+		if(d1 > d_top){d_top = d1;};
 		range = d_top - d_bottom;
 		
         for(i=0;i<ntot-1;i++){
 			set_rgb_from_value_s(cmap_param,
                                  d_point[i], &red1, &green1, &blue1);
-			o_point = set_opacity_from_value_s(cmap_param, d_point[i]) / max_opacity;
+			o_point = set_opacity_from_value_s(cmap_param, d_point[i]) / cmap_param->max_opacity;
 			
             height_s = 1.0 - (d_point[i] - d_bottom) / range;
             cairo_pattern_add_color_stop_rgb(pattern1, height_s, red1, green1, blue1);
@@ -246,7 +229,7 @@ static void draw_colormap(struct colormap_params *cmap_param, cairo_t *cr, GdkWi
             d_current = d_bottom + (double) i * range / 10.0;
             set_rgb_from_value_s(cmap_param,
                                  d_current, &red1, &green1, &blue1);
-            o_point = set_opacity_from_value_s(cmap_param, d_current) / max_opacity;
+            o_point = set_opacity_from_value_s(cmap_param, d_current) / cmap_param->max_opacity;
             
             height_s = 1.0 - (d_current - d_bottom) / range;
             cairo_pattern_add_color_stop_rgb(pattern1, height_s, red1, green1, blue1);
@@ -286,9 +269,9 @@ static void draw_colormap(struct colormap_params *cmap_param, cairo_t *cr, GdkWi
         cairo_move_to(cr, left-70, top_s-20);
         cairo_show_text(cr, "Color point");
         for(i=0;i<num_cmap;i++){
-			d_current = cmap_param->color_data[i];
+			set_from_real2_clist_at_index(i, cmap_param->colormap, &d_current, &v1);
 			top_s = top + height * (1.0 - (d_current - d_bottom) / range);
-            sprintf(c_txt, "%.4e", cmap_param->color_data[i]);
+            sprintf(c_txt, "%.4e", d_current);
             cairo_move_to(cr, left-70, top_s);
             cairo_show_text(cr, c_txt);
         }
@@ -297,9 +280,9 @@ static void draw_colormap(struct colormap_params *cmap_param, cairo_t *cr, GdkWi
         cairo_move_to(cr, left+width+30, top_s-20);
         cairo_show_text(cr, "Opacity point");
         for(i=0;i<num_omap;i++){
-			d_current = cmap_param->opacity_data[i];
+			set_from_real2_clist_at_index(i, cmap_param->opacitymap, &d_current, &v1);
 			top_s = top + height * (1.0 - (d_current - d_bottom) / range);
-             sprintf(c_txt, "%.4e", cmap_param->opacity_data[i]);
+             sprintf(c_txt, "%.4e", d_current);
             cairo_move_to(cr, left+width+30, top_s);
             cairo_show_text(cr, c_txt);
         }
