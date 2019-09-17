@@ -126,10 +126,8 @@ static void delete_real2_ctl_list(struct real2_ctl_list *current){
 };
 
 static void clear_real2_ctl_list(struct real2_ctl_list *head){
-	head = head->_next;
-	while (head != NULL) {
-		delete_real2_ctl_list(head);
-		head = head->_next;
+	while (head->_next != NULL) {
+		delete_real2_ctl_list(head->_next);
 	}
 	return;
 };

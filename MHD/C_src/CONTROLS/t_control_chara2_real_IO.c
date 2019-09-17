@@ -78,17 +78,6 @@ static void init_c2r_ctl_list(struct chara2_real_ctl_list *head){
     return;
 };
 
-static void clear_c2r_ctl_list(struct chara2_real_ctl_list *head){
-    head = head->_next;
-    while (head != NULL) {
-        dealloc_c2r_ctl_item_c(head->c2r_item);
-        free(head);
-        head = head->_next;
-	}
-	
-    return;
-};
-
 static struct chara2_real_ctl_list *add_c2r_ctl_list_before(struct chara2_real_ctl_list *current){
     struct chara2_real_ctl_list *added;
     struct chara2_real_ctl_list *old_prev;
@@ -147,6 +136,12 @@ static void delete_c2r_ctl_list(struct chara2_real_ctl_list *current){
     
     old_prev->_next = old_next;
     if (old_next != NULL) old_next->_prev = old_prev;
+    return;
+};
+static void clear_c2r_ctl_list(struct chara2_real_ctl_list *head){
+    while (head->_next != NULL) {
+        delete_c2r_ctl_list(head->_next);
+	}
     return;
 };
 

@@ -74,17 +74,6 @@ static void init_chara2_ctl_list(struct chara2_ctl_list *head){
     return;
 };
 
-static void clear_chara2_ctl_list(struct chara2_ctl_list *head){
-    head = head->_next;
-    while (head != NULL) {
-        dealloc_chara2_ctl_item_c(head->c2_item);
-        free(head);
-        head = head->_next;
-	}
-	
-    return;
-};
-
 static struct chara2_ctl_list *add_chara2_ctl_list_before(struct chara2_ctl_list *current){
     struct chara2_ctl_list *added;
     struct chara2_ctl_list *old_prev;
@@ -144,6 +133,13 @@ static void delete_chara2_ctl_list(struct chara2_ctl_list *current){
     if (old_next != NULL) old_next->_prev = old_prev;
     return;
 };
+static void clear_chara2_ctl_list(struct chara2_ctl_list *head){
+	while (head->_next != NULL) {
+		delete_chara2_ctl_list(head->_next);
+	}
+	return;
+};
+
 
 static int count_maxlen_ctl_list(const char *label, 
 			struct chara2_ctl_list *head, int mlen2[2]){

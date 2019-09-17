@@ -72,16 +72,6 @@ static void init_chara_real_ctl_list(struct chara_real_ctl_list *head){
     return;
 };
 
-static void clear_chara_real_ctl_list(struct chara_real_ctl_list *head){
-    head = head->_next;
-    while (head != NULL) {
-        dealloc_chara_real_ctl_item_c(head->cr_item);
-        free(head);
-        head = head->_next;
-	}
-	
-    return;
-};
 
 static struct chara_real_ctl_list *add_chara_real_ctl_list_before(struct chara_real_ctl_list *current){
     struct chara_real_ctl_list *added;
@@ -141,6 +131,12 @@ static void delete_chara_real_ctl_list(struct chara_real_ctl_list *current){
     
     old_prev->_next = old_next;
     if (old_next != NULL) old_next->_prev = old_prev;
+    return;
+};
+static void clear_chara_real_ctl_list(struct chara_real_ctl_list *head){
+    while (head->_next != NULL) {
+        delete_chara_real_ctl_list(head->_next);
+	}
     return;
 };
 

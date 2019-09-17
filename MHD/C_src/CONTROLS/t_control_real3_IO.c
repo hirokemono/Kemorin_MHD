@@ -66,15 +66,6 @@ static void init_real3_ctl_list(struct real3_ctl_list *head){
     return;
 };
 
-static void clear_real3_ctl_list(struct real3_ctl_list *head){
-    head = head->_next;
-    while (head != NULL) {
-        free(head);
-        head = head->_next;
-	}
-    return;
-};
-
 static struct real3_ctl_list *add_real3_ctl_list_before(struct real3_ctl_list *current){
     struct real3_ctl_list *added;
     struct real3_ctl_list *old_prev;
@@ -134,6 +125,13 @@ static void delete_real3_ctl_list(struct real3_ctl_list *current){
     if (old_next != NULL) old_next->_prev = old_prev;
     return;
 };
+static void clear_real3_ctl_list(struct real3_ctl_list *head){
+	while (head->_next != NULL) {
+		delete_real3_ctl_list(head->_next);
+	}
+    return;
+};
+
 
 static int count_real3_ctl_list(struct real3_ctl_list *head){
     int num = 0;

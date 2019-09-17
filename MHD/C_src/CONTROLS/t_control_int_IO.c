@@ -55,17 +55,6 @@ static void init_int_ctl_list(struct int_ctl_list *head){
     return;
 };
 
-static void clear_int_ctl_list(struct int_ctl_list *head){
-    head = head->_next;
-    while (head != NULL) {
-        init_int_ctl_item_c(head->i_item);
-        free(head);
-        head = head->_next;
-	}
-	
-    return;
-};
-
 static struct int_ctl_list *add_int_ctl_list_before(struct int_ctl_list *current){
     struct int_ctl_list *added;
     struct int_ctl_list *old_prev;
@@ -126,6 +115,13 @@ static void delete_int_ctl_list(struct int_ctl_list *current){
     if (old_next != NULL) old_next->_prev = old_prev;
     return;
 };
+static void clear_int_ctl_list(struct int_ctl_list *head){
+    while (head->_next != NULL) {
+        delete_int_ctl_list(head->_next);
+	}
+    return;
+};
+
 
 static int count_int_ctl_list(struct int_ctl_list *head){
     int num = 0;
