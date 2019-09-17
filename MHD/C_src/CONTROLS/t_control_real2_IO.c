@@ -64,17 +64,6 @@ static void init_real2_ctl_list(struct real2_ctl_list *head){
     return;
 };
 
-static void clear_real2_ctl_list(struct real2_ctl_list *head){
-    head = head->_next;
-    while (head != NULL) {
-        init_real2_ctl_item_c(head->r2_item);
-        free(head);
-        head = head->_next;
-	}
-	
-    return;
-};
-
 static struct real2_ctl_list *add_real2_ctl_list_before(struct real2_ctl_list *current){
     struct real2_ctl_list *added;
     struct real2_ctl_list *old_prev;
@@ -135,6 +124,16 @@ static void delete_real2_ctl_list(struct real2_ctl_list *current){
     if (old_next != NULL) old_next->_prev = old_prev;
     return;
 };
+
+static void clear_real2_ctl_list(struct real2_ctl_list *head){
+	head = head->_next;
+	while (head != NULL) {
+		delete_real2_ctl_list(head);
+		head = head->_next;
+	}
+	return;
+};
+
 
 static int count_real2_ctl_list(struct real2_ctl_list *head){
     int num = 0;
