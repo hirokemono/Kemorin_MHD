@@ -439,13 +439,3 @@ void dup_real2_clist(struct real2_clist *r2_src_clst,
     dup_real2_ctl_list(&r2_src_clst->r2_item_head, &r2_tgt_clst->r2_item_head);
     return;
 };
-
-
-
-
-
-
-
-
-
-
