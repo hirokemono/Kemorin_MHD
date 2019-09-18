@@ -49,7 +49,7 @@ void r2_tree_value1_edited(gchar *path_str, gchar *new_text,
     
     double old_value1, old_value2, new_value;
     
-    sscanf(new_text, "%lf", &new_value);
+    if(sscanf(new_text, "%lf", &new_value) < 1) return;
     gtk_tree_model_get_iter(child_model, &iter, child_path);  
 	gtk_tree_model_get(child_model, &iter, COLUMN_FIELD_INDEX, &old_value1, -1);
 	gtk_tree_model_get(child_model, &iter, COLUMN_FIELD_NAME, &old_value2, -1);
@@ -75,7 +75,7 @@ void r2_tree_value2_edited(gchar *path_str, gchar *new_text,
     
     double old_value1, old_value2, new_value;
     
-    sscanf(new_text, "%lf", &new_value);
+    if(sscanf(new_text, "%lf", &new_value) < 1) return;
     gtk_tree_model_get_iter(child_model, &iter, child_path);  
 	gtk_tree_model_get(child_model, &iter, COLUMN_FIELD_INDEX, &old_value1, -1);
 	gtk_tree_model_get(child_model, &iter, COLUMN_FIELD_NAME, &old_value2, -1);
@@ -266,7 +266,7 @@ void create_real2_tree_view(GtkTreeView *r2_tree_view, struct real2_clist *r2_cl
     GtkTreeSelection *selection;
     
     GtkListStore *child_model;
-    GtkAdjustment *adjust;
+    /* GtkAdjustment *adjust; */
     
     /* Construct empty list storage */
     child_model = gtk_list_store_new(2, G_TYPE_DOUBLE, G_TYPE_DOUBLE);
@@ -280,15 +280,17 @@ void create_real2_tree_view(GtkTreeView *r2_tree_view, struct real2_clist *r2_cl
     column = gtk_tree_view_column_new();
     gtk_tree_view_append_column(r2_tree_view, column);
     gtk_tree_view_column_set_title(column, r2_clist->r1_name);
+	/*
     adjust = gtk_adjustment_new(2.5, -1.0e30, 1.0e30, 0.1,
                                 100, 21474836);
-	
     g_object_set(G_OBJECT(renderer_spin1), 
-                 "adjustment", adjust,
-                 "climb-rate", 0.5,
-                 "digits", 3, 
+				"adjustment", adjust,
+				"climb-rate", 0.5,
+				"digits", 3, NULL);
+	*/
+    g_object_set(G_OBJECT(renderer_spin1), 
                  "editable", TRUE, 
-                 "width", (gint)80, NULL);
+                 "width", (gint)70, NULL);
     
     gtk_tree_view_column_pack_start(column, renderer_spin1, TRUE);
     gtk_tree_view_column_set_attributes(column, renderer_spin1, "text", COLUMN_FIELD_INDEX, NULL);
@@ -302,17 +304,9 @@ void create_real2_tree_view(GtkTreeView *r2_tree_view, struct real2_clist *r2_cl
     column = gtk_tree_view_column_new();
     gtk_tree_view_append_column(r2_tree_view, column);
     gtk_tree_view_column_set_title(column, r2_clist->r2_name);
-//    adjust = gtk_adjustment_new(0.5, 0.0, 1.0, 0.01,
-//                                100, 21474836);
-	adjust = gtk_adjustment_new(0.5, -1.0e30, 1.0e30, 0.1,
-                                100, 21474836);
-	
     g_object_set(G_OBJECT(renderer_spin2), 
-                 "adjustment", adjust,
-                 "climb-rate", 0.1,
-                 "digits", 3, 
                  "editable", TRUE, 
-                 "width", (gint)80, NULL);
+                 "width", (gint)70, NULL);
     
     gtk_tree_view_column_pack_start(column, renderer_spin2, TRUE);
     gtk_tree_view_column_set_attributes(column, renderer_spin2, "text", COLUMN_FIELD_NAME, NULL);
@@ -367,7 +361,7 @@ void add_real2_list_box(GtkTreeView *r2_tree_view, struct real2_clist *r2_clist,
     scrolled_window = gtk_scrolled_window_new(NULL, NULL);
     gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_window),
                                    GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-    gtk_widget_set_size_request(scrolled_window, 160, 160);
+    gtk_widget_set_size_request(scrolled_window, 140, 140);
     gtk_container_add(GTK_CONTAINER(scrolled_window), GTK_WIDGET(r2_tree_view));
     gtk_box_pack_start(GTK_BOX(vbox_1), scrolled_window, TRUE, TRUE, 0);
     
@@ -427,16 +421,15 @@ void init_real2_tree_view(struct r2_clist_view *r2_vws){
 	GtkCellRenderer *renderer_spin2;
 	
 	r2_vws->tree_view = gtk_tree_view_new();
-	renderer_spin1 = gtk_cell_renderer_spin_new();
-	renderer_spin2 = gtk_cell_renderer_spin_new();
+	renderer_spin1 = gtk_cell_renderer_text_new();
+	renderer_spin2 = gtk_cell_renderer_text_new();
+	g_signal_connect(G_OBJECT(renderer_spin1), "edited", 
+					 G_CALLBACK(r2_tree_value1_edited_cb), (gpointer) r2_vws);
+	g_signal_connect(G_OBJECT(renderer_spin2), "edited", 
+					 G_CALLBACK(r2_tree_value2_edited_cb), (gpointer) r2_vws);
 	
 	create_real2_tree_view(GTK_TREE_VIEW(r2_vws->tree_view), r2_vws->r2_clist_gtk, 
                            renderer_spin1, renderer_spin2);
-	
-    g_signal_connect(G_OBJECT(renderer_spin1), "edited", 
-                     G_CALLBACK(r2_tree_value1_edited_cb), (gpointer) r2_vws);
-    g_signal_connect(G_OBJECT(renderer_spin2), "edited", 
-                     G_CALLBACK(r2_tree_value2_edited_cb), (gpointer) r2_vws);
 	
 	r2_vws->index_bc = append_r2_list_from_ctl(r2_vws->index_bc,
 				&r2_vws->r2_clist_gtk->r2_item_head, GTK_TREE_VIEW(r2_vws->tree_view));

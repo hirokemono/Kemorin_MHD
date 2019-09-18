@@ -84,17 +84,16 @@ static void add_pvr_cmap_list_box(struct colormap_view *color_vws, GtkWidget *vb
     GtkWidget *button_delete;
 	
 	color_vws->cmap_vws->tree_view = gtk_tree_view_new();
-	renderer_spin1 = gtk_cell_renderer_spin_new();
-	renderer_spin2 = gtk_cell_renderer_spin_new();
-	
+	renderer_spin1 = gtk_cell_renderer_text_new();
+	renderer_spin2 = gtk_cell_renderer_text_new();
+	g_signal_connect(G_OBJECT(renderer_spin1), "edited", 
+					 G_CALLBACK(pvr_colormap_data_edited_CB), (gpointer) color_vws);
+	g_signal_connect(G_OBJECT(renderer_spin2), "edited", 
+					 G_CALLBACK(pvr_colormap_color_edited_CB), (gpointer) color_vws);
+		
 	create_real2_tree_view(GTK_TREE_VIEW(color_vws->cmap_vws->tree_view), 
                            color_vws->cmap_vws->r2_clist_gtk, 
                            renderer_spin1, renderer_spin2);
-	
-    g_signal_connect(G_OBJECT(renderer_spin1), "edited", 
-                     G_CALLBACK(pvr_colormap_data_edited_CB), (gpointer) color_vws);
-    g_signal_connect(G_OBJECT(renderer_spin2), "edited", 
-                     G_CALLBACK(pvr_colormap_color_edited_CB), (gpointer) color_vws);
 	
 	color_vws->cmap_vws->index_bc = append_r2_list_from_ctl(color_vws->cmap_vws->index_bc,
 				&color_vws->cmap_vws->r2_clist_gtk->r2_item_head, 

@@ -75,10 +75,84 @@ void dealloc_colormap_views_4_viewer(struct colormap_view *color_vws){
     return;
 }
 
+static void cmap_tree_value1_edited(gchar *path_str, gchar *new_text,
+			 GtkTreeView *r2_tree_view, struct real2_clist *r2_clist){
+	GtkTreeModel *model = gtk_tree_view_get_model (r2_tree_view);  
+    GtkTreeModel *child_model = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model));
+    GtkTreePath *path = gtk_tree_path_new_from_string (path_str);  
+    GtkTreePath *child_path = gtk_tree_model_sort_convert_path_to_child_path(GTK_TREE_MODEL_SORT(model), path);
+    GtkTreeIter iter, iter_prev, iter_next;
+    
+	double old_value1, old_value2, new_value;
+	double prev_value1 = -1.0e30;
+	double next_value1 =  1.0e30;
+    
+    if(sscanf(new_text, "%lf", &new_value) < 1) return;
+    gtk_tree_model_get_iter(child_model, &iter, child_path);  
+	gtk_tree_model_get(child_model, &iter, COLUMN_FIELD_INDEX, &old_value1, -1);
+	gtk_tree_model_get(child_model, &iter, COLUMN_FIELD_NAME, &old_value2, -1);
+    
+    gtk_tree_model_get_iter(child_model, &iter_prev, child_path);  
+	if(gtk_tree_model_iter_previous(child_model, &iter_prev)){
+		gtk_tree_model_get(child_model, &iter_prev, COLUMN_FIELD_INDEX, &prev_value1, -1);
+	};
+    gtk_tree_model_get_iter(child_model, &iter_next, child_path);  
+	if(gtk_tree_model_iter_next(child_model, &iter_next)){
+		gtk_tree_model_get(child_model, &iter_next, COLUMN_FIELD_INDEX, &next_value1, -1);
+	};
+	if(new_value < prev_value1 || new_value > next_value1) new_value = old_value1;
+	
+	printf("Change %lf to %lf\n", old_value1, new_value);
+    
+    gtk_list_store_set(GTK_LIST_STORE(child_model), &iter,
+                       COLUMN_FIELD_INDEX, new_value, -1);
+    gtk_tree_path_free(child_path);
+    gtk_tree_path_free(path);
+    
+	update_real2_clist_by_c_tbl(old_value1, old_value2, 
+				new_value, old_value2, r2_clist);
+};
+
+static void cmap_tree_value2_edited(gchar *path_str, gchar *new_text,
+			 GtkTreeView *r2_tree_view, struct real2_clist *r2_clist){
+	GtkTreeModel *model = gtk_tree_view_get_model (r2_tree_view);  
+    GtkTreeModel *child_model = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model));
+    GtkTreePath *path = gtk_tree_path_new_from_string (path_str);  
+    GtkTreePath *child_path = gtk_tree_model_sort_convert_path_to_child_path(GTK_TREE_MODEL_SORT(model), path);
+    GtkTreeIter iter, iter_prev, iter_next;
+    
+    double old_value1, old_value2, new_value;
+	double prev_value2 = 0.0;
+	double next_value2 = 1.0;
+    
+    if(sscanf(new_text, "%lf", &new_value) < 1) return;
+    gtk_tree_model_get_iter(child_model, &iter, child_path);  
+	gtk_tree_model_get(child_model, &iter, COLUMN_FIELD_INDEX, &old_value1, -1);
+	gtk_tree_model_get(child_model, &iter, COLUMN_FIELD_NAME, &old_value2, -1);
+    
+    gtk_tree_model_get_iter(child_model, &iter_prev, child_path);
+	if(gtk_tree_model_iter_previous(child_model, &iter_prev)){
+		gtk_tree_model_get(child_model, &iter_prev, COLUMN_FIELD_NAME, &prev_value2, -1);
+	};
+    gtk_tree_model_get_iter(child_model, &iter_next, child_path);
+	if(gtk_tree_model_iter_next(child_model, &iter_next)){
+		gtk_tree_model_get(child_model, &iter_next, COLUMN_FIELD_NAME, &next_value2, -1);
+	};
+	if(new_value < prev_value2 || new_value > next_value2) new_value = old_value2;
+	
+    printf("Change %lf to %lf\n", old_value2, new_value);
+    
+    gtk_list_store_set(GTK_LIST_STORE(child_model), &iter,
+                       COLUMN_FIELD_NAME, new_value, -1);
+    gtk_tree_path_free(child_path);
+    gtk_tree_path_free(path);
+    
+    update_real2_clist_by_c_tbl(old_value1, old_value2, old_value1, new_value, r2_clist);
+}
 
 void colormap_data_edited_CB(gchar *path_str, gchar *new_text,
 			struct colormap_view *color_vws){
-	r2_tree_value1_edited(path_str, new_text, 
+	cmap_tree_value1_edited(path_str, new_text, 
 				GTK_TREE_VIEW(color_vws->cmap_vws->tree_view), color_vws->cmap_vws->r2_clist_gtk);
     write_real2_clist(stdout, 0, "value1 changed", color_vws->cmap_vws->r2_clist_gtk);
 	
@@ -88,7 +162,7 @@ void colormap_data_edited_CB(gchar *path_str, gchar *new_text,
 
 void colormap_color_edited_CB(gchar *path_str, gchar *new_text, 
 			struct colormap_view *color_vws){
-	r2_tree_value2_edited(path_str, new_text, 
+	cmap_tree_value2_edited(path_str, new_text, 
 				GTK_TREE_VIEW(color_vws->cmap_vws->tree_view), color_vws->cmap_vws->r2_clist_gtk);
 	write_real2_clist(stdout, 0, "value2 changed", color_vws->cmap_vws->r2_clist_gtk);
 	
@@ -118,7 +192,7 @@ void delete_colormap_list_items_CB(struct colormap_view *color_vws){
 
 void opacity_data_edited_CB(gchar *path_str, gchar *new_text, 
 			struct colormap_view *color_vws){
-	r2_tree_value1_edited(path_str, new_text, 
+	cmap_tree_value1_edited(path_str, new_text, 
 				GTK_TREE_VIEW(color_vws->opacity_vws->tree_view), color_vws->opacity_vws->r2_clist_gtk);
     write_real2_clist(stdout, 0, "value1 changed", color_vws->opacity_vws->r2_clist_gtk);
 	
@@ -127,7 +201,7 @@ void opacity_data_edited_CB(gchar *path_str, gchar *new_text,
 
 void opacity_color_edited_CB(gchar *path_str, gchar *new_text, 
 			struct colormap_view *color_vws){
-	r2_tree_value2_edited(path_str, new_text, 
+	cmap_tree_value2_edited(path_str, new_text, 
 				GTK_TREE_VIEW(color_vws->opacity_vws->tree_view), color_vws->opacity_vws->r2_clist_gtk);
     write_real2_clist(stdout, 0, "value2 changed", color_vws->opacity_vws->r2_clist_gtk);
 	

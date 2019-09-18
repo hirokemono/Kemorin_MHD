@@ -330,7 +330,7 @@ void create_real3_tree_view(GtkTreeView *r3_tree_view, struct real3_clist *r3_cl
     GtkTreeSelection *selection;
     
     GtkListStore *child_model;
-    GtkAdjustment *adjust;
+    /* GtkAdjustment *adjust; */
     
     /* Construct empty list storage */
     child_model = gtk_list_store_new(3, G_TYPE_DOUBLE, G_TYPE_DOUBLE, G_TYPE_DOUBLE);
