@@ -50,11 +50,11 @@ void r3_tree_value1_edited(gchar *path_str, gchar *new_text,
     
     double old_value1, old_value2, old_value3, new_value;
     
-    sscanf(new_text, "%lf", &new_value);
-    gtk_tree_model_get_iter(child_model, &iter, child_path);  
-    gtk_tree_model_get(child_model, &iter, COLUMN_FIELD_INDEX, &old_value1, -1);
-    gtk_tree_model_get(child_model, &iter, COLUMN_FIELD_NAME, &old_value2, -1);
-    gtk_tree_model_get(child_model, &iter, COLUMN_FIELD_MATH, &old_value3, -1);
+	if(sscanf(new_text, "%lf", &new_value) < 1) return;
+	gtk_tree_model_get_iter(child_model, &iter, child_path);  
+	gtk_tree_model_get(child_model, &iter, COLUMN_FIELD_INDEX, &old_value1, -1);
+	gtk_tree_model_get(child_model, &iter, COLUMN_FIELD_NAME, &old_value2, -1);
+	gtk_tree_model_get(child_model, &iter, COLUMN_FIELD_MATH, &old_value3, -1);
     
     printf("Change %lf to %lf\n", old_value1, new_value);
     
@@ -77,7 +77,7 @@ void r3_tree_value2_edited(gchar *path_str, gchar *new_text,
     
     double old_value1, old_value2, old_value3, new_value;
     
-    sscanf(new_text, "%lf", &new_value);
+	if(sscanf(new_text, "%lf", &new_value) < 1) return;
     gtk_tree_model_get_iter(child_model, &iter, child_path);  
     gtk_tree_model_get(child_model, &iter, COLUMN_FIELD_INDEX, &old_value1, -1);
     gtk_tree_model_get(child_model, &iter, COLUMN_FIELD_NAME, &old_value2, -1);
@@ -104,7 +104,7 @@ void r3_tree_value3_edited(gchar *path_str, gchar *new_text,
     
     double old_value1, old_value2, old_value3, new_value;
     
-    sscanf(new_text, "%lf", &new_value);
+	if(sscanf(new_text, "%lf", &new_value) < 1) return;
     gtk_tree_model_get_iter(child_model, &iter, child_path);  
     gtk_tree_model_get(child_model, &iter, COLUMN_FIELD_INDEX, &old_value1, -1);
     gtk_tree_model_get(child_model, &iter, COLUMN_FIELD_NAME, &old_value2, -1);
@@ -343,14 +343,16 @@ void create_real3_tree_view(GtkTreeView *r3_tree_view, struct real3_clist *r3_cl
     /* First raw */
     column_1st = gtk_tree_view_column_new();
     gtk_tree_view_append_column(r3_tree_view, column_1st);
-    gtk_tree_view_column_set_title(column_1st, r3_clist->r1_name);
+	gtk_tree_view_column_set_title(column_1st, r3_clist->r1_name);
+	/*
     adjust = gtk_adjustment_new(2.5, -1.0e30, 1.0e30, 0.1,
                                 100, 21474836);
-    
     g_object_set(G_OBJECT(renderer_spin1), 
-                 "adjustment", adjust,
-                 "climb-rate", 0.5,
-                 "digits", 3, 
+				"adjustment", adjust,
+				"climb-rate", 0.5,
+				"digits", 3, NULL);
+	*/
+    g_object_set(G_OBJECT(renderer_spin1), 
                  "editable", TRUE, 
                  "width", (gint)70, NULL);
     
@@ -368,15 +370,8 @@ void create_real3_tree_view(GtkTreeView *r3_tree_view, struct real3_clist *r3_cl
     column_2nd = gtk_tree_view_column_new();
     gtk_tree_view_append_column(r3_tree_view, column_2nd);
     gtk_tree_view_column_set_title(column_2nd, r3_clist->r2_name);
-    //    adjust = gtk_adjustment_new(0.5, 0.0, 1.0, 0.01,
-    //                                100, 21474836);
-    adjust = gtk_adjustment_new(0.5, -1.0e30, 1.0e30, 0.1,
-                                70, 21474836);
-    
+	
     g_object_set(G_OBJECT(renderer_spin2), 
-                 "adjustment", adjust,
-                 "climb-rate", 0.1,
-                 "digits", 3, 
                  "editable", TRUE, 
                  "width", (gint)70, NULL);
     
@@ -394,15 +389,7 @@ void create_real3_tree_view(GtkTreeView *r3_tree_view, struct real3_clist *r3_cl
     column_3rd = gtk_tree_view_column_new();
     gtk_tree_view_append_column(r3_tree_view, column_3rd);
     gtk_tree_view_column_set_title(column_3rd, r3_clist->r3_name);
-    //    adjust = gtk_adjustment_new(0.5, 0.0, 1.0, 0.01,
-    //                                100, 21474836);
-    adjust = gtk_adjustment_new(0.5, -1.0e30, 1.0e30, 0.1,
-                                70, 21474836);
-    
     g_object_set(G_OBJECT(renderer_spin3), 
-                 "adjustment", adjust,
-                 "climb-rate", 0.1,
-                 "digits", 3, 
                  "editable", TRUE, 
                  "width", (gint)70, NULL);
     
@@ -420,11 +407,11 @@ void create_real3_tree_view(GtkTreeView *r3_tree_view, struct real3_clist *r3_cl
     selection = gtk_tree_view_get_selection(r3_tree_view);
     gtk_tree_selection_set_mode(selection, GTK_SELECTION_MULTIPLE);
     
-    /* sort */
+	/* sort */
     gtk_tree_view_column_set_sort_order(column_1st, GTK_SORT_ASCENDING);
     gtk_tree_view_column_set_sort_indicator(column_1st, TRUE);
 	gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(model), 
-				COLUMN_FIELD_INDEX, GTK_SORT_ASCENDING);
+					COLUMN_FIELD_INDEX, GTK_SORT_ASCENDING);
 }
 
 void add_real3_list_box(GtkTreeView *r3_tree_view, struct real3_clist *r3_clist, 
@@ -534,9 +521,9 @@ void init_real3_tree_view(struct r3_clist_view *r3_vws){
     GtkCellRenderer *renderer_spin3;
     
     r3_vws->tree_view = gtk_tree_view_new();
-    renderer_spin1 = gtk_cell_renderer_spin_new();
-    renderer_spin2 = gtk_cell_renderer_spin_new();
-    renderer_spin3 = gtk_cell_renderer_spin_new();
+    renderer_spin1 = gtk_cell_renderer_text_new();
+    renderer_spin2 = gtk_cell_renderer_text_new();
+    renderer_spin3 = gtk_cell_renderer_text_new();
     
     create_real3_tree_view(GTK_TREE_VIEW(r3_vws->tree_view), r3_vws->r3_clist_gtk, 
                            renderer_spin1, renderer_spin2, renderer_spin3);

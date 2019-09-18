@@ -135,7 +135,7 @@ void init_phong_light_list(struct phong_lights *lights){
 	
 	lights->light_rtp[6] = 10.0;
 	lights->light_rtp[7] =-75.0;
-	lights->light_rtp[8] = 75.0;
+	lights->light_rtp[8] =-75.0;
 	
 	light_positionfrom_angle(&lights->light_rtp[0], &lights->light_xyz[0]);
 	light_positionfrom_angle(&lights->light_rtp[3], &lights->light_xyz[4]);
