@@ -41,11 +41,11 @@ static void update_kemoview_menu(struct kemoviewer_type *kemoviewer_data,
 		struct kv_string *file_prefix = kemoview_alloc_kvstring();
 		if(nload_psf > 0){
 			istep = kemoview_get_PSF_full_path_file_prefix(file_prefix, &iflag);
-			add_evoluaiton_menu_box(istep, kemoviewer_data, window, mbot->evolutionBox);
+			add_evoluaiton_menu_box(istep, window, mbot->evolutionBox);
 			gtk_box_pack_start(GTK_BOX(mbot->psfBox), mbot->evolutionBox, FALSE, FALSE, 0);
 		} else {
 			istep = kemoview_get_fline_file_step_prefix(file_prefix);
-			add_evoluaiton_menu_box(istep, kemoviewer_data, window, mbot->evolutionBox);
+			add_evoluaiton_menu_box(istep, window, mbot->evolutionBox);
 			gtk_box_pack_start(GTK_BOX(mbot->flineBox), mbot->evolutionBox, FALSE, FALSE, 0);
 		};
 		kemoview_free_kvstring(file_prefix);
@@ -67,6 +67,35 @@ static void update_kemoview_menu(struct kemoviewer_type *kemoviewer_data,
 	return;
 };
 
+void open_kemoviewer_file_glfw(struct kv_string *filename){
+    struct kv_string *file_prefix = kemoview_alloc_kvstring();
+    struct kv_string *stripped_ext = kemoview_alloc_kvstring();
+    struct kv_string *command = kemoview_alloc_kvstring();
+	int iflag_datatype = kemoview_set_data_format_flag(filename, file_prefix, stripped_ext);
+	
+	printf("file name: %s\n", filename->string);
+	printf("file_prefix %s\n", file_prefix->string);
+	printf("stripped_ext %s\n", stripped_ext->string);
+    kemoview_free_kvstring(stripped_ext);
+    
+    if(iflag_datatype == IFLAG_FULL_MESH_GZ || iflag_datatype == IFLAG_FULL_MESH){
+        set_pickup_command_gtk(command);
+        kemoview_set_pick_surface_command(command);
+		kemoview_free_kvstring(filename);
+        
+        filename = kemoview_alloc_kvstring();
+        kemoview_alloc_kvstringitem(strlen(stripped_ext->string)+10, filename);
+        strcpy(filename->string, file_prefix->string);
+        strcat(filename->string, ".ksm");
+        if(iflag_datatype == IFLAG_FULL_MESH_GZ){strcat(filename->string, ".gz");};
+    };
+	kemoview_free_kvstring(command);
+    kemoview_free_kvstring(file_prefix);
+	
+	iflag_datatype = kemoview_open_data(filename);
+    kemoview_free_kvstring(filename);
+	return;
+};
 
 static void set_viewtype_CB(GtkComboBox *combobox_viewtype, gpointer user_data)
 {
@@ -246,42 +275,10 @@ static void open_file_CB(GtkButton *button, gpointer user_data){
 	struct main_buttons *mbot = (struct main_buttons *) g_object_get_data(G_OBJECT(user_data), "buttons");
 	filename = kemoview_init_kvstring_by_string(gtk_entry_get_text(entry));
 	
-    stripped_ext = kemoview_alloc_kvstring();
-    file_prefix = kemoview_alloc_kvstring();
-	iflag_datatype = kemoview_set_data_format_flag(filename, file_prefix, stripped_ext);
-	printf("file name: %s\n", filename->string);
-	printf("file_prefix %s\n", file_prefix->string);
-	printf("stripped_ext %s\n", stripped_ext->string);
-    kemoview_free_kvstring(stripped_ext);
-    
-    if(iflag_datatype == IFLAG_FULL_MESH_GZ || iflag_datatype == IFLAG_FULL_MESH){
-        command = kemoview_alloc_kvstring();
-        set_pickup_command_gtk(command);
-        if(iflag_set == IZERO){
-            kemoview_free_kvstring(file_prefix);
-            kemoview_free_kvstring(filename);
-            kemoview_free_kvstring(command);
-            return;
-        };
-        kemoview_set_pick_surface_command(command);
-        kemoview_free_kvstring(command);
-        kemoview_free_kvstring(filename);
-        
-        filename = kemoview_alloc_kvstring();
-        kemoview_alloc_kvstringitem(strlen(stripped_ext->string)+10, filename);
-        strcpy(filename->string, file_prefix->string);
-        strcat(filename->string, ".ksm");
-        if(iflag_datatype == IFLAG_FULL_MESH_GZ){strcat(filename->string, ".gz");};
-    };
-	
-	iflag_datatype = kemoview_open_data(filename);
-    kemoview_free_kvstring(file_prefix);
-    kemoview_free_kvstring(filename);
+	open_kemoviewer_file_glfw(filename);
 	
 	delete_kemoview_menu(mbot);
 	update_kemoview_menu(kemoviewer_data, mbot, window_main);
-	
-	gtk_main_iteration();
 	gtk_widget_queue_draw(window_main);
 	draw_mesh_glfw();
 	return;
@@ -491,7 +488,7 @@ void gtk_psf_menu_box(struct kemoviewer_type *kemoviewer_data,
 	int i_current = kemoviewer_data->kemo_psf->psf_a->id_current;
 	init_colormap_views_4_viewer(kemoviewer_data->kemo_psf->psf_m[i_current], mbot->color_vws);
 	
-	make_psf_menu_box(kemoviewer_data, mbot->color_vws, window, vbox);
+	make_psf_menu_box(mbot->color_vws, window, vbox);
 	wrap_into_frame_gtk("Surfaces", vbox, mbot->psfBox);
 	
 	gtk_widget_show(mbot->psfBox);
@@ -545,7 +542,7 @@ void gtk_mesh_menu_box(struct kemoviewer_type *kemoviewer_data,
 	
 	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), closeMeshButton, FALSE, FALSE, 0);
-	add_gtk_mesh_menu(kemoviewer_data, mbot->mesh_vws, window, vbox);
+	add_gtk_mesh_menu(mbot->mesh_vws, window, vbox);
 	
 	wrap_into_frame_gtk("Mesh", vbox, mbot->meshBox);
 	
@@ -678,10 +675,10 @@ void make_gtk_main_menu_box(struct kemoviewer_type *kemoviewer_data,
 	gtk_box_pack_start(GTK_BOX(mbot->vbox_menu), hbox_viewtype, FALSE, FALSE, 0);
 
 	
-	add_axis_menu_box(kemoviewer_data, mbot->vbox_menu);
+	add_axis_menu_box(mbot->vbox_menu);
 	
 	mbot->rotationBox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-	add_rotation_menu_box(kemoviewer_data, window_main, mbot->rotationBox);
+	add_rotation_menu_box(window_main, mbot->rotationBox);
 	gtk_box_pack_start(GTK_BOX(mbot->vbox_menu), mbot->rotationBox, FALSE, FALSE, 0);
 		
 	mbot->viewBox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
@@ -689,7 +686,7 @@ void make_gtk_main_menu_box(struct kemoviewer_type *kemoviewer_data,
 	gtk_box_pack_start(GTK_BOX(mbot->vbox_menu), mbot->viewBox, FALSE, FALSE, 0);
 	
 	mbot->prefBox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-	kemoview_preference_GTK(kemoviewer_data, mbot->lightparams_vws, mbot->prefBox);
+	kemoview_preference_GTK(mbot->lightparams_vws, mbot->prefBox);
 	gtk_box_pack_start(GTK_BOX(mbot->vbox_menu), mbot->prefBox, FALSE, FALSE, 0);
 	
 	gtk_box_pack_start(GTK_BOX(mbot->menuHbox), mbot->vbox_menu, FALSE, FALSE, 0);

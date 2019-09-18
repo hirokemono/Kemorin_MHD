@@ -25,7 +25,6 @@
 
 /*  prototypes */
 
-void add_evoluaiton_menu_box(int istep, struct kemoviewer_type *kemoviewer_data, 
-			GtkWidget *window_main, GtkWidget *box_out);
+void add_evoluaiton_menu_box(int istep, GtkWidget *window_main, GtkWidget *box_out);
 	
 #endif

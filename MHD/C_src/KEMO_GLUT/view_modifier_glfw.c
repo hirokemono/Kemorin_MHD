@@ -52,6 +52,10 @@ void mouseButtonCB(GLFWwindow *window, int button, int action, int mods) {
 	if(button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_RELEASE) {
 		moving_right = 0;
 	};
+	
+	if(action == GLFW_RELEASE){
+		draw_mesh_glfw();
+	};
 	return;
 };
 
@@ -151,20 +155,14 @@ void mouseScrollCB(GLFWwindow *window, double x, double y) {
 void charFunCB(GLFWwindow* window, unsigned int charInfo) {
 	printf("charFunCB %d\n", charInfo);
 }
-void dropCB(GLFWwindow *window, int num, const char **paths) {
-	printf("dropCB %d\n", num);
-	for (int i = 0; i < num; i++) {
-		printf("%s\n", paths[i]);
-	}
-}
 
 
 /*! This routine handles the arrow key operations */
-void keyFunCB(GLFWwindow* window, int key, int scancode, int action, int mods) {
+static void keyFuncCB(GLFWwindow* window, int key, int scancode, int action, int mods) {
 	GLdouble x_dbl, y_dbl;
 	GLdouble factor;
 	
-	printf("keyFunCB %d %d %d %d\n", key, scancode, action, mods);	
+/*	printf("keyFuncCB %d %d %d %d\n", key, scancode, action, mods);	*/
 	
 	x_dbl = ZERO;
 	y_dbl = ZERO;
@@ -289,17 +287,15 @@ void glfw_view_modifier_init(GLFWwindow* window){
 	glfwSetScrollCallback(window, mouseScrollCB);
 	
 	/* Set callback for keyboard input */
-	glfwSetKeyCallback(window, keyFunCB);
+	glfwSetKeyCallback(window, keyFuncCB);
 	glfwSetCharCallback(window, charFunCB);
 	
-	/* ファイルをドラッグ&ドロップした時に呼び出す関数を設定 */
-	glfwSetDropCallback(window, dropCB);
 	return;
 }
 
 
 void display(GLFWwindow* window){
-	kemoview_draw_fast_gl3();
+//	kemoview_draw_fast_gl3();
 	kemoview_modify_view();
 	glfwSwapBuffers(window);
 	return;
@@ -308,14 +304,11 @@ void display(GLFWwindow* window){
 
 void draw_fast_glfw(){
 	kemoview_draw_fast_gl3();
-	kemoview_modify_view();
 	glfwSwapBuffers(glfw_window);
 	return;
 };
 
 void draw_mesh_glfw(){
-	kemoview_draw_objects_gl3();
-	kemoview_update_distance();
 	kemoview_modify_view();
 	glfwSwapBuffers(glfw_window);
 	return;
@@ -334,7 +327,6 @@ void write_rotate_views_glut(int iflag_img, struct kv_string *image_prefix,
 		int_degree =  i*inc_deg;
 		
 		kemoview_set_animation_rot_angle(int_degree);
-		kemoview_draw_objects_gl3();
 		kemoview_rotate();
 		glfwSwapBuffers(glfw_window);
 		

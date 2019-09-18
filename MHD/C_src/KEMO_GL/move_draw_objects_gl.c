@@ -150,7 +150,7 @@ void get_gl_buffer_to_bmp(int num_x, int num_y, unsigned char *glimage){
 }
 
 
-void quick_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_fline *kemo_fline, 
+static void quick_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_fline *kemo_fline, 
 			struct kemoview_mesh *kemo_mesh, struct view_element *view_s,
 			struct kemoview_VAOs *kemo_VAOs, struct kemoview_shaders *kemo_shaders){
 	int iflag_psf = 0;
@@ -191,7 +191,7 @@ void quick_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_fline *ke
 	return;
 }
 
-void update_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_fline *kemo_fline, 
+static void update_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_fline *kemo_fline, 
 			struct kemoview_mesh *kemo_mesh, struct view_element *view_s,
 			struct kemoview_VAOs *kemo_VAOs, struct kemoview_shaders *kemo_shaders){
 	int i;

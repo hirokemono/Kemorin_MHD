@@ -84,8 +84,7 @@ static void set_evo_fileformat_CB(GtkComboBox *combobox_filefmt, gpointer user_d
 
 
 
-void add_evoluaiton_menu_box(int istep, struct kemoviewer_type *kemoviewer_data, 
-			GtkWidget *window_main, GtkWidget *box_out){
+void add_evoluaiton_menu_box(int istep, GtkWidget *window_main, GtkWidget *box_out){
 	GtkWidget *vbox;
 	
 	GtkWidget *hbox_evo_start;

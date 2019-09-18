@@ -76,8 +76,7 @@ static void rotation_save_CB(GtkButton *button, gpointer user_data){
 };
 
 
-void add_rotation_menu_box(struct kemoviewer_type *kemoviewer_data, 
-			GtkWidget *window_main, GtkWidget *box_out){
+void add_rotation_menu_box(GtkWidget *window_main, GtkWidget *box_out){
 	GtkWidget *vbox;
 	
 	GtkWidget *hbox_rotation_dir;

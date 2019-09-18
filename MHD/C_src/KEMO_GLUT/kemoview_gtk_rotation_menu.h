@@ -25,7 +25,6 @@
 
 /*  prototypes */
 
-void add_rotation_menu_box(struct kemoviewer_type *kemoviewer_data, 
-			GtkWidget *window_main, GtkWidget *box_out);
+void add_rotation_menu_box(GtkWidget *window_main, GtkWidget *box_out);
 	
 #endif

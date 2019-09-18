@@ -106,16 +106,7 @@ int kemoview_get_current_viewer_id(void){return kemo_sgl->window_ID;};
 /* Routines for draw by OpenGL */
 
 void kemoview_draw_fast_gl3(void){
-	/*    printf("Draw objects to ID: %d\n", kemo_sgl->view_s->gl_drawID);*/
-	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-	glDrawBuffer(GL_BACK);
-	quick_draw_objects_gl3(kemo_sgl);
-	
-	return;
-};
-void kemoview_draw_objects_gl3(void){
-	/*    printf("Draw objects to ID: %d\n", kemo_sgl->view_s->gl_drawID);*/
-//	update_draw_objects_gl3(kemo_sgl);
+	quick_mono_kemoview(kemo_sgl);
 	return;
 };
 

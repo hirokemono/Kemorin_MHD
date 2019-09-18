@@ -20,10 +20,11 @@ static void mainloop_4_glfw(){
 	/* Loop until the user closes the window */
 	while (!glfwWindowShouldClose(glfw_win)){
 		iflag = glfwWindowShouldClose(glfw_win);
-		/* Render here */
+
+		/* Render here
 		glClear(GL_COLOR_BUFFER_BIT);
 		display(glfw_win);
-		
+		*/
 		/* Poll for and process events */
 		glfwPollEvents();
 		
@@ -74,6 +75,16 @@ void glfwWindowclose_CB(GLFWwindow *window) {
 	glfwSetWindowShouldClose(window, GLFW_TRUE);
 	iflag_glfw_focus = 0;
 	return;
+}
+
+void dropFileToGlfw_CB(GLFWwindow *window, int num, const char **paths) {
+	struct kv_string *filename;
+	printf("dropFileToGlfw_CB %d\n", num);
+	for (int i = 0; i < num; i++) {
+		printf("%s\n", paths[i]);
+		filename = kemoview_init_kvstring_by_string(paths[i]);
+		open_kemoviewer_file_glfw(filename);
+	}
 }
 
 /* Main GTK window */
@@ -187,6 +198,10 @@ int draw_mesh_kemo(int iflag_streo_shutter, int iflag_dmesh) {
 	/*! set callback for GLfw*/
 	kemoviewer_reset_to_init_angle();
 	glfw_view_modifier_init(glfw_win);
+	
+	/* Set Cllback for drug and Drop into window */
+	glfwSetDropCallback(glfw_win, dropFileToGlfw_CB);
+	
 	/* set callback for window focus */
 	glfwSetWindowFocusCallback(glfw_win, glfwWindowFocus_CB);
 	/* set callback for window focus */

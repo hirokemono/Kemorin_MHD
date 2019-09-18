@@ -25,7 +25,6 @@
 
 /*  prototypes */
 
-void kemoview_preference_GTK(struct kemoviewer_type *kemoviewer_data, 
-			struct lightparams_view *lightparams_vws, GtkWidget *box_out);
+void kemoview_preference_GTK(struct lightparams_view *lightparams_vws, GtkWidget *box_out);
 
 #endif

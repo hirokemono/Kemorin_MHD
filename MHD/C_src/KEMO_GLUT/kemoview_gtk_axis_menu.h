@@ -26,6 +26,6 @@
 
 /*  prototypes */
 
-void add_axis_menu_box(struct kemoviewer_type *kemoviewer_data, GtkWidget *box_out);
-	
+void add_axis_menu_box(GtkWidget *box_out);
+
 #endif

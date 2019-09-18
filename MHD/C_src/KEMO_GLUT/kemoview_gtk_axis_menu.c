@@ -54,7 +54,7 @@ static void set_surface_direction_CB(GtkComboBox *combobox_surfdir, gpointer use
 };
 
 
-void add_axis_menu_box(struct kemoviewer_type *kemoviewer_data, GtkWidget *box_out){
+void add_axis_menu_box(GtkWidget *box_out){
 	GtkWidget *vbox;
 	
 	GtkWidget *hbox_axis, *hbox_sph_grid, *hbox_coastline;

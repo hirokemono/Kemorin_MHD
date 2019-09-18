@@ -440,7 +440,6 @@ extern "C" {
     int kemoview_get_current_viewer_id(void);
 
 	void kemoview_draw_fast_gl3(void);
-	void kemoview_draw_objects_gl3(void);
 	
     void kemoview_init_lighting(int iflag_core_profile);
     

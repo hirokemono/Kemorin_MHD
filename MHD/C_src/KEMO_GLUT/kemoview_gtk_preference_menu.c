@@ -50,7 +50,6 @@ static void SpecularChange(GtkWidget *entry, gpointer data)
 static void ShinenessChange(GtkWidget *entry, gpointer data)
 {
 	float value = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
-	struct kemoviewer_type *kv_data = (struct kemoviewer_type *) data;
 	
 	kemoview_set_material_shineness(value);
 /*	printf("gtk_min %d\n", gtk_min);*/
@@ -59,8 +58,7 @@ static void ShinenessChange(GtkWidget *entry, gpointer data)
 	return;
 }
 
-void kemoview_preference_GTK(struct kemoviewer_type *kemoviewer_data, 
-			struct lightparams_view *lightparams_vws, GtkWidget *box_out){
+void kemoview_preference_GTK(struct lightparams_view *lightparams_vws, GtkWidget *box_out){
 	GtkWidget *label21, *label22, *label23, *label24;
 	
 	GtkWidget *vbox;
@@ -75,7 +73,6 @@ void kemoview_preference_GTK(struct kemoviewer_type *kemoviewer_data,
 	
     GLfloat color[4];
 	kemoview_get_background_color(color);
-    init_light_views_4_viewer(kemoviewer_data->kemo_shaders->lights, lightparams_vws);
 	
 	/* Set buttons   */
 	entry = gtk_entry_new();
@@ -107,8 +104,7 @@ void kemoview_preference_GTK(struct kemoviewer_type *kemoviewer_data,
 	g_signal_connect(spin1, "value-changed", G_CALLBACK(AmbientChange), NULL);
 	g_signal_connect(spin2, "value-changed", G_CALLBACK(DiffuseChange), NULL);
 	g_signal_connect(spin3, "value-changed", G_CALLBACK(SpecularChange), NULL);
-	g_signal_connect(spin4, "value-changed", G_CALLBACK(ShinenessChange),
-				(gpointer) kemoviewer_data);
+	g_signal_connect(spin4, "value-changed", G_CALLBACK(ShinenessChange), NULL);
 	
 	hbox11 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_box_pack_start(GTK_BOX(hbox11), label21, TRUE, TRUE, 0);
