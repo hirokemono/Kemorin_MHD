@@ -97,9 +97,8 @@ void colormap_color_edited_CB(gchar *path_str, gchar *new_text,
 };
 
 void add_colormap_list_items_CB(struct colormap_view *color_vws){
-	color_vws->cmap_vws->index_bc = add_r2_list_items(color_vws->cmap_vws->index_bc, 
-				GTK_TREE_VIEW(color_vws->cmap_vws->tree_view), 
-				color_vws->cmap_vws->r2_clist_gtk);
+	color_vws->cmap_vws->index_bc = add_r2_list_items(GTK_TREE_VIEW(color_vws->cmap_vws->tree_view), 
+								color_vws->cmap_vws->r2_clist_gtk);
     write_real2_clist(stdout, 0, "columns added", color_vws->cmap_vws->r2_clist_gtk);
 	
 	copy_colormap_from_ctl(color_vws->colormap_mode_gtk, color_vws->cmap_vws->r2_clist_gtk,
@@ -136,8 +135,8 @@ void opacity_color_edited_CB(gchar *path_str, gchar *new_text,
 };
 
 void add_opacity_list_items_CB(struct colormap_view *color_vws){
-	color_vws->opacity_vws->index_bc = add_r2_list_items(color_vws->opacity_vws->index_bc, 
-				GTK_TREE_VIEW(color_vws->opacity_vws->tree_view), color_vws->opacity_vws->r2_clist_gtk);
+	color_vws->opacity_vws->index_bc = add_r2_list_items(GTK_TREE_VIEW(color_vws->opacity_vws->tree_view), 
+									color_vws->opacity_vws->r2_clist_gtk);
     write_real2_clist(stdout, 0, "columns added", color_vws->opacity_vws->r2_clist_gtk);
 	
 	copy_opacity_from_ctl(color_vws->opacity_vws->r2_clist_gtk, color_vws->cmap_param);

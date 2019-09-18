@@ -36,7 +36,9 @@ void r3_tree_value2_edited(gchar *path_str, gchar *new_text,
                            GtkTreeView *r3_tree_view, struct real3_clist *r3_clist);
 void r3_tree_value3_edited(gchar *path_str, gchar *new_text,
                            GtkTreeView *r3_tree_view, struct real3_clist *r3_clist);
-int add_r3_list_items(int index, GtkTreeView *r3_tree_view,
+
+GList * set_selected_r3_list_items(GtkTreeView *r3_tree_view, double org_value[3]);
+int add_r3_list_items(GtkTreeView *r3_tree_view,
                       struct real3_clist *r3_clist);
 void delete_r3_list_items(GtkTreeView *r3_tree_view, struct real3_clist *r3_clist);
 

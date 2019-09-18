@@ -50,8 +50,7 @@ static void cb_add_dimless_new(GtkButton *button, gpointer user_data)
                                                    dless_vws->dimless_tree_view,
                                                    dless_vws->cr_clist);
  */
-    dless_vws->index_dless = add_cr_list_items_GTK(dless_vws->index_dless, 
-                                                   GTK_TREE_VIEW(dless_vws->dimless_tree_view),
+    dless_vws->index_dless = add_cr_list_items_GTK(GTK_TREE_VIEW(dless_vws->dimless_tree_view),
                                                    dless_vws->cr_clist);
     write_chara_real_clist(stdout, 0, "Added list", dless_vws->cr_clist);
     return;

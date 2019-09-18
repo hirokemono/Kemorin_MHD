@@ -29,7 +29,7 @@ int add_c_list_from_combobox_GTK(int index, GtkTreePath *path, GtkTreeModel *tre
 			GtkTreeView *tree_view_to_add, struct chara_clist *c_clist);
 int add_c_list_from_combobox_GTK_w_one(int index, GtkTreePath *path, GtkTreeModel *tree_model,
 			GtkTreeView *tree_view_to_add, struct chara_clist *c_clist);
-int add_c_list_items_GTK(int index, GtkTreeView *tree_view_to_add,
+int add_c_list_items_GTK(GtkTreeView *tree_view_to_add,
 			struct chara_clist *c_clist);
 void delete_c_list_items_GTK(GtkTreeView *tree_view_to_del,
 			struct chara_clist *c_clist);

@@ -37,8 +37,7 @@ void r2_tree_value2_edited(gchar *path_str, gchar *new_text,
 
 /*static void column_clicked(GtkTreeViewColumn *column, gpointer user_data);*/
 
- int add_r2_list_items(int index, GtkTreeView *r2_tree_view,
-			struct real2_clist *r2_clist);
+int add_r2_list_items(GtkTreeView *r2_tree_view, struct real2_clist *r2_clist);
 void delete_r2_list_items(GtkTreeView *r2_tree_view, struct real2_clist *r2_clist);
 
 void create_real2_tree_view(GtkTreeView *r2_tree_view, struct real2_clist *r2_clist, 

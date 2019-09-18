@@ -127,13 +127,13 @@ void init_phong_light_list(struct phong_lights *lights){
 	
 	lights->light_rtp[0] = 10.0;
 	lights->light_rtp[1] = 20.0;
-	lights->light_rtp[2] = 90.0;
+	lights->light_rtp[2] = 30.0;
 	
 	lights->light_rtp[3] = 10.0;
 	lights->light_rtp[4] = 45.0;
 	lights->light_rtp[5] = 90.0;
 	
-	lights->light_rtp[6] =  0.0;
+	lights->light_rtp[6] = 10.0;
 	lights->light_rtp[7] =-75.0;
 	lights->light_rtp[8] = 75.0;
 	

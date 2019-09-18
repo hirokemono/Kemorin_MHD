@@ -23,8 +23,8 @@ static void delete_dless_data(gpointer user_data)
     int index_field;
     double value;
     
-    /* 選択されている行のパスを取得する */
-    /* パスはツリーモデルソートのもの */
+    /* Get path of selected raw */
+    /* The path is for tree_model_sort */
     model_to_del = gtk_tree_view_get_model(coefs_vw->coefs_tree_view);
     child_model_to_del = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_to_del));
     

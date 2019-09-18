@@ -122,8 +122,7 @@ static void column_clicked(GtkTreeViewColumn *column, gpointer user_data){
     gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(model), column_id, order);
 }
 
-int add_r2_list_items(int index, GtkTreeView *r2_tree_view,
-			struct real2_clist *r2_clist){
+int add_r2_list_items(GtkTreeView *r2_tree_view, struct real2_clist *r2_clist){
 	GtkTreeModel *model_to_add;
     GtkTreeModel *child_model_to_add;
     GtkTreeSelection *selection;
@@ -131,9 +130,10 @@ int add_r2_list_items(int index, GtkTreeView *r2_tree_view,
     GList *reference_list;
     GList *cur;
     double value1, value2;
+	int index = 0;
     
-    /* 選択されている行のパスを取得する */
-    /* パスはツリーモデルソートのもの */
+    /* Get path of selected raw */
+    /* The path is for tree_model_sort */
     model_to_add = gtk_tree_view_get_model(r2_tree_view);
     child_model_to_add = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_to_add));
         
@@ -195,8 +195,8 @@ void delete_r2_list_items(GtkTreeView *r2_tree_view, struct real2_clist *r2_clis
     
     double value1, value2;
     
-    /* 選択されている行のパスを取得する */
-    /* パスはツリーモデルソートのもの */
+    /* Get path of selected raw */
+    /* The path is for tree_model_sort */
     model_to_del = gtk_tree_view_get_model(r2_tree_view);
     child_model_to_del = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_to_del));
     
@@ -243,6 +243,19 @@ void delete_r2_list_items(GtkTreeView *r2_tree_view, struct real2_clist *r2_clis
     }
     g_list_free(reference_list);
 }
+
+static void kemoview_colormap_data_edited_CB(GtkCellRendererText *cell, gchar *path_str,
+											 gchar *new_text, gpointer user_data){
+	int i = 0;
+	printf("TAko %d\n", i);
+};
+
+static void kemoview_colormap_color_edited_CB(GtkCellRendererText *cell, gchar *path_str,
+											  gchar *new_text, gpointer user_data){
+	int i = 1;
+	printf("TAko %d\n", i);
+};
+
 
 void create_real2_tree_view(GtkTreeView *r2_tree_view, struct real2_clist *r2_clist, 
 			GtkCellRenderer *renderer_spin1, GtkCellRenderer *renderer_spin2){
@@ -292,14 +305,14 @@ void create_real2_tree_view(GtkTreeView *r2_tree_view, struct real2_clist *r2_cl
 //    adjust = gtk_adjustment_new(0.5, 0.0, 1.0, 0.01,
 //                                100, 21474836);
 	adjust = gtk_adjustment_new(0.5, -1.0e30, 1.0e30, 0.1,
-                                80, 21474836);
+                                100, 21474836);
 	
     g_object_set(G_OBJECT(renderer_spin2), 
                  "adjustment", adjust,
                  "climb-rate", 0.1,
                  "digits", 3, 
                  "editable", TRUE, 
-                 "width", (gint)150, NULL);
+                 "width", (gint)80, NULL);
     
     gtk_tree_view_column_pack_start(column, renderer_spin2, TRUE);
     gtk_tree_view_column_set_attributes(column, renderer_spin2, "text", COLUMN_FIELD_NAME, NULL);
@@ -398,8 +411,7 @@ void r2_tree_value2_edited_cb(GtkCellRendererText *cell, gchar *path_str,
 
 void add_r2_list_items_cb(GtkButton *button, gpointer user_data){
     struct r2_clist_view *r2_vws = (struct r2_clist_view *) user_data;
-	r2_vws->index_bc = add_r2_list_items(r2_vws->index_bc, 
-				GTK_TREE_VIEW(r2_vws->tree_view), r2_vws->r2_clist_gtk);
+	r2_vws->index_bc = add_r2_list_items(GTK_TREE_VIEW(r2_vws->tree_view), r2_vws->r2_clist_gtk);
     write_real2_clist(stdout, 0, "columns added", r2_vws->r2_clist_gtk);
 };
 

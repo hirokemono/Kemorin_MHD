@@ -7,6 +7,7 @@
 
 #include "tree_view_4_light_position.h"
 
+
 void init_light_views_4_ctl(struct real3_clist *light_list, 
 			struct lightparams_view *light_vws){
     light_vws->light_rtp_vws = (struct r3_clist_view *) malloc(sizeof(struct r3_clist_view));
@@ -99,9 +100,8 @@ void add_lightposition_list_items_cb(GtkButton *button, gpointer user_data){
     struct lightparams_view *light_vws = (struct lightparams_view *) user_data;
 	
 	light_vws->light_rtp_vws->index_bc
-			= add_r3_list_items(light_vws->light_rtp_vws->index_bc, 
-				GTK_TREE_VIEW(light_vws->light_rtp_vws->tree_view),
-				light_vws->light_rtp_vws->r3_clist_gtk);
+			= add_r3_list_items(GTK_TREE_VIEW(light_vws->light_rtp_vws->tree_view),
+								light_vws->light_rtp_vws->r3_clist_gtk);
     write_real3_clist(stdout, 0, "columns added", light_vws->light_rtp_vws->r3_clist_gtk);
 	sync_phong_light_position_from_list(light_vws);
 	gtk_widget_queue_draw(light_vws->scrolled_window);
@@ -115,6 +115,14 @@ void delete_lightposition_list_items_cb(GtkButton *button, gpointer user_data){
 	sync_phong_light_position_from_list(light_vws);
 	gtk_widget_queue_draw(light_vws->scrolled_window);
 };
+
+static void cursor_chenge_CB(GtkTreeView *tree_view, gpointer user_data){
+	double org_value[3];
+	struct lightparams_view *light_vws = (struct lightparams_view *) user_data;
+	GList *reference_list = set_selected_r3_list_items(GTK_TREE_VIEW(light_vws->light_rtp_vws->tree_view),
+				org_value);
+	printf("Changed %lf, %lf, %lf\n",org_value[0], org_value[1], org_value[2]);
+}
 
 void add_lightposition_list_box(struct lightparams_view *light_vws, GtkWidget *vbox){
 	GtkCellRenderer *renderer_spin1;
@@ -131,12 +139,21 @@ void add_lightposition_list_box(struct lightparams_view *light_vws, GtkWidget *v
 	create_real3_tree_view(GTK_TREE_VIEW(light_vws->light_rtp_vws->tree_view), 
                            light_vws->light_rtp_vws->r3_clist_gtk, 
                            renderer_spin1, renderer_spin2, renderer_spin3);
+	g_signal_connect(G_OBJECT(light_vws->light_rtp_vws->tree_view), "cursor-changed", 
+					 G_CALLBACK(cursor_chenge_CB), (gpointer) light_vws);
 	
-    g_signal_connect(G_OBJECT(renderer_spin1), "edited", 
+	GtkAdjustment *adjust = gtk_adjustment_new(0.5, 0, 1.0e30, 0.1, 70, 21474836);
+	g_object_set(G_OBJECT(renderer_spin1), 
+                 "adjustment", adjust,
+                 "climb-rate", 0.1,
+                 "digits", 2, 
+                 "editable", TRUE, 
+                 "width", (gint)70, NULL);
+	g_signal_connect(G_OBJECT(renderer_spin1), "edited", 
                      G_CALLBACK(light_radius_edited_cb), (gpointer) light_vws);
-    g_signal_connect(G_OBJECT(renderer_spin2), "edited", 
+	g_signal_connect(G_OBJECT(renderer_spin2), "edited", 
                      G_CALLBACK(light_theta_edited_cb), (gpointer) light_vws);
-    g_signal_connect(G_OBJECT(renderer_spin3), "edited", 
+	g_signal_connect(G_OBJECT(renderer_spin3), "edited", 
                      G_CALLBACK(light_phi_edited_cb), (gpointer) light_vws);
 	
 	light_vws->light_rtp_vws->index_bc
@@ -161,8 +178,6 @@ void add_light_list_box(struct lightparams_view *light_vws, GtkWidget *vbox){
 	GtkWidget *Frame_1;
     GtkWidget *vbox_1, *hbox_1;
 	
-    init_real3_tree_view(light_vws->light_rtp_vws);
-    
 	vbox_1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	add_lightposition_list_box(light_vws, vbox_1);
 	

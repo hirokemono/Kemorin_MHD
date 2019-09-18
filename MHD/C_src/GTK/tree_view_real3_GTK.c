@@ -153,8 +153,49 @@ static void column_clicked(GtkTreeViewColumn *column, gpointer user_data){
     gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(model), column_id, order);
 }
 
-int add_r3_list_items(int index, GtkTreeView *r3_tree_view,
-                      struct real3_clist *r3_clist){
+
+GList * set_selected_r3_list_items(GtkTreeView *r3_tree_view, double org_value[3]){
+	/* Get path of selected raw  */
+    /* The path is for tree_model_sort */
+    GtkTreeModel *model_to_change = gtk_tree_view_get_model(r3_tree_view);;
+    GtkTreeModel *child_model_to_change = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_to_change));;
+    GtkTreeSelection *selection = gtk_tree_view_get_selection(r3_tree_view);;
+    GList *list = gtk_tree_selection_get_selected_rows(selection, NULL);;
+    GList *reference_list = NULL;
+    GList *cur;
+    GtkTreePath *tree_path;
+    GtkTreeIter iter;
+	
+    if(g_list_first(list) == NULL) return reference_list;
+    /* 最初にパスからリファレンスを作成する */
+    /* データの削除を行なうと取得済みのパスが(大抵の場合)無効になる */
+    for (cur = g_list_first(list); cur != NULL; cur = g_list_next(cur)) {
+        GtkTreePath *child_path;
+        GtkTreeRowReference *child_reference;
+        /* ツリーモデルソートのパスをツリーモデルのパスに変換する */
+        child_path = gtk_tree_model_sort_convert_path_to_child_path(GTK_TREE_MODEL_SORT(model_to_change), 
+                                                                    (GtkTreePath *)cur->data);
+        
+        child_reference = gtk_tree_row_reference_new(child_model_to_change, child_path);
+        reference_list = g_list_append(reference_list, child_reference);
+        
+        gtk_tree_path_free(child_path);
+        gtk_tree_path_free((GtkTreePath *)cur->data);
+    }
+    g_list_free(list);
+    
+    cur = g_list_first(reference_list);
+    tree_path = gtk_tree_row_reference_get_path((GtkTreeRowReference *)cur->data);
+    gtk_tree_model_get_iter(child_model_to_change, &iter, tree_path);
+    gtk_tree_model_get(child_model_to_change, &iter, COLUMN_FIELD_INDEX, &org_value[0], -1);
+    gtk_tree_model_get(child_model_to_change, &iter, COLUMN_FIELD_NAME, &org_value[1], -1);
+    gtk_tree_model_get(child_model_to_change, &iter, COLUMN_FIELD_MATH, &org_value[2], -1);
+	
+	gtk_tree_path_free(tree_path);
+	return reference_list;
+}
+
+int add_r3_list_items(GtkTreeView *r3_tree_view, struct real3_clist *r3_clist){
     GtkTreeModel *model_to_add;
     GtkTreeModel *child_model_to_add;
     GtkTreeSelection *selection;
@@ -162,9 +203,9 @@ int add_r3_list_items(int index, GtkTreeView *r3_tree_view,
     GList *reference_list;
     GList *cur;
     double value1, value2, value3;
-    
-    /* 選択されている行のパスを取得する */
-    /* パスはツリーモデルソートのもの */
+	int index = 0;
+    /* Get path of selected raw  */
+    /* The path is for tree_model_sort */
     model_to_add = gtk_tree_view_get_model(r3_tree_view);
     child_model_to_add = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_to_add));
     
@@ -227,8 +268,8 @@ void delete_r3_list_items(GtkTreeView *r3_tree_view, struct real3_clist *r3_clis
     
     double value1, value2, value3;
     
-    /* 選択されている行のパスを取得する */
-    /* パスはツリーモデルソートのもの */
+    /* Get path of selected raw */
+    /* The path is for tree_model_sort */
     model_to_del = gtk_tree_view_get_model(r3_tree_view);
     child_model_to_del = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_to_del));
     
@@ -286,7 +327,6 @@ void create_real3_tree_view(GtkTreeView *r3_tree_view, struct real3_clist *r3_cl
     GtkTreeViewColumn *column_1st;
     GtkTreeViewColumn *column_2nd;
     GtkTreeViewColumn *column_3rd;
-    GtkTreeViewColumn *column_4th;
     GtkTreeSelection *selection;
     
     GtkListStore *child_model;
@@ -381,9 +421,8 @@ void create_real3_tree_view(GtkTreeView *r3_tree_view, struct real3_clist *r3_cl
     gtk_tree_selection_set_mode(selection, GTK_SELECTION_MULTIPLE);
     
     /* sort */
-    column_4th = gtk_tree_view_get_column(r3_tree_view, COLUMN_FIELD_INDEX);
-    gtk_tree_view_column_set_sort_order(column_4th, GTK_SORT_ASCENDING);
-    gtk_tree_view_column_set_sort_indicator(column_4th, TRUE);
+    gtk_tree_view_column_set_sort_order(column_1st, GTK_SORT_ASCENDING);
+    gtk_tree_view_column_set_sort_indicator(column_1st, TRUE);
 	gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(model), 
 				COLUMN_FIELD_INDEX, GTK_SORT_ASCENDING);
 }
@@ -477,9 +516,8 @@ void r3_tree_value3_edited_cb(GtkCellRendererText *cell, gchar *path_str,
 
 void add_r3_list_items_cb(GtkButton *button, gpointer user_data){
     struct r3_clist_view *r3_vws = (struct r3_clist_view *) user_data;
-    r3_vws->index_bc = add_r3_list_items(r3_vws->index_bc, 
-				GTK_TREE_VIEW(r3_vws->tree_view),
-				r3_vws->r3_clist_gtk);
+    r3_vws->index_bc = add_r3_list_items(GTK_TREE_VIEW(r3_vws->tree_view),
+					r3_vws->r3_clist_gtk);
     write_real3_clist(stdout, 0, "columns added", r3_vws->r3_clist_gtk);
 };
 

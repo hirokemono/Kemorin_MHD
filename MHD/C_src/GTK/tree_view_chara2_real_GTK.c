@@ -234,8 +234,8 @@ void delete_c2r_list_items_GTK(GtkTreeView *tree_view_to_del,
     int index_field;
     double value;
     
-    /* 選択されている行のパスを取得する */
-    /* パスはツリーモデルソートのもの */
+    /* Get path of selected raw */
+    /* The path is for tree_model_sort */
     model_to_del = gtk_tree_view_get_model(tree_view_to_del);
     child_model_to_del = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_to_del));
     

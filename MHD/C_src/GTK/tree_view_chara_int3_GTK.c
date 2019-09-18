@@ -257,7 +257,7 @@ int add_ci3_list_from_combobox_GTK_w_one(int index, GtkTreePath *path, GtkTreeMo
     return index;
 }
 
-int add_ci3_list_items_GTK(int index, GtkTreeView *tree_view_to_add,
+int add_ci3_list_items_GTK(GtkTreeView *tree_view_to_add,
 			struct chara_int3_clist *ci3_clist)
 {
     GtkTreeModel *model_to_add;
@@ -269,9 +269,10 @@ int add_ci3_list_items_GTK(int index, GtkTreeView *tree_view_to_add,
     
     gchar *field_name;
     int ivalue;
+	int index = 0;
     
-    /* 選択されている行のパスを取得する */
-    /* パスはツリーモデルソートのもの */
+    /* Get path of selected raw */
+    /* The path is for tree_model_sort */
     model_to_add = gtk_tree_view_get_model(tree_view_to_add);
     child_model_to_add = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_to_add));
         
@@ -343,8 +344,8 @@ void delete_ci3_list_items_GTK(GtkTreeView *tree_view_to_del,
     int index_field;
     int ivalue;
     
-    /* 選択されている行のパスを取得する */
-    /* パスはツリーモデルソートのもの */
+    /* Get path of selected raw */
+    /* The path is for tree_model_sort */
     model_to_del = gtk_tree_view_get_model(tree_view_to_del);
     child_model_to_del = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_to_del));
         

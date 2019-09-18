@@ -179,16 +179,16 @@ static void add_kemoview_cmap_list_box(struct colormap_view *color_vws, GtkWidge
 	color_vws->cmap_vws->tree_view = gtk_tree_view_new();
 	renderer_spin1 = gtk_cell_renderer_spin_new();
 	renderer_spin2 = gtk_cell_renderer_spin_new();
+	g_signal_connect(G_OBJECT(renderer_spin1), "edited", 
+					 G_CALLBACK(kemoview_colormap_data_edited_CB), (gpointer) color_vws);
+	g_signal_connect(G_OBJECT(renderer_spin2), "edited", 
+					 G_CALLBACK(kemoview_colormap_color_edited_CB), (gpointer) color_vws);
 	
 	create_real2_tree_view(GTK_TREE_VIEW(color_vws->cmap_vws->tree_view), 
                            color_vws->cmap_vws->r2_clist_gtk, 
                            renderer_spin1, renderer_spin2);
-	
-    g_signal_connect(G_OBJECT(renderer_spin1), "edited", 
-                     G_CALLBACK(kemoview_colormap_data_edited_CB), (gpointer) color_vws);
-    g_signal_connect(G_OBJECT(renderer_spin2), "edited", 
-                     G_CALLBACK(kemoview_colormap_color_edited_CB), (gpointer) color_vws);
-	
+
+
 	color_vws->cmap_vws->index_bc = append_r2_list_from_ctl(color_vws->cmap_vws->index_bc,
 				&color_vws->cmap_vws->r2_clist_gtk->r2_item_head, 
 				GTK_TREE_VIEW(color_vws->cmap_vws->tree_view));
@@ -199,8 +199,8 @@ static void add_kemoview_cmap_list_box(struct colormap_view *color_vws, GtkWidge
 	add_real2_list_box(GTK_TREE_VIEW(color_vws->cmap_vws->tree_view),
 				color_vws->cmap_vws->r2_clist_gtk,
 				button_add, button_delete, vbox);
-	
-    g_signal_connect(G_OBJECT(button_add), "clicked", 
+
+	g_signal_connect(G_OBJECT(button_add), "clicked", 
                      G_CALLBACK(add_kemoview_colormap_list_items_CB), (gpointer) color_vws);
     g_signal_connect(G_OBJECT(button_delete), "clicked", 
                      G_CALLBACK(delete_kemoview_colormap_list_items_CB), (gpointer) color_vws);
