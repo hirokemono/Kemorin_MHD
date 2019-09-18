@@ -87,11 +87,9 @@ void add_rotation_menu_box(struct kemoviewer_type *kemoviewer_data,
 	GtkTreeModel *model_rotation_dir;
 	GtkTreeModel *child_model_rotation_dir;
 	
-	GtkWidget *hbox_rot_increment, *hbox_org_rot_increment;
+	GtkWidget *hbox_rot_increment;
 	GtkWidget *spin_rot_increment;
 	GtkAdjustment *adj_rot_increment;
-	int current_rot_increment;
-	char current_rot_inc_text[30];
 	
 	GtkWidget *hbox_rotation_fileformat;
 	GtkWidget *combobox_rotation_fileformat;
@@ -160,9 +158,7 @@ void add_rotation_menu_box(struct kemoviewer_type *kemoviewer_data,
 	
 	
 	
-	current_rot_increment = inc_deg;
-	sprintf(current_rot_inc_text, "    %d    ", current_rot_increment);
-	adj_rot_increment = gtk_adjustment_new(current_rot_increment, 0.0, 180.0, 1, 1, 0.0);
+	adj_rot_increment = gtk_adjustment_new(inc_deg, 0.0, 180.0, 1, 1, 0.0);
 	spin_rot_increment = gtk_spin_button_new(GTK_ADJUSTMENT(adj_rot_increment), 0, 1);
 	g_signal_connect(spin_rot_increment, "value-changed", G_CALLBACK(rotation_increment_CB),NULL);
 	
@@ -186,9 +182,6 @@ void add_rotation_menu_box(struct kemoviewer_type *kemoviewer_data,
 	gtk_box_pack_start(GTK_BOX(hbox_rotation_dir), gtk_label_new("Surface direction: "), TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_rotation_dir), combobox_rotation_dir, TRUE, TRUE, 0);
 	
-	hbox_org_rot_increment = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
-	gtk_box_pack_start(GTK_BOX(hbox_org_rot_increment), gtk_label_new("Current increment: "), TRUE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox_org_rot_increment), gtk_label_new(current_rot_inc_text), TRUE, TRUE, 0);
 	hbox_rot_increment = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
 	gtk_box_pack_start(GTK_BOX(hbox_rot_increment), gtk_label_new("Step (Deg.): "), TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_rot_increment), spin_rot_increment, TRUE, TRUE, 0);
@@ -209,12 +202,11 @@ void add_rotation_menu_box(struct kemoviewer_type *kemoviewer_data,
 	
 	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox_rotation_dir, FALSE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox), hbox_org_rot_increment, FALSE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox_rot_increment, FALSE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox_rotation_filename, FALSE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox_rotation_fileformat, FALSE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox_rotation_save, FALSE, TRUE, 0);
 	
-	wrap_into_expanded_frame_gtk("Rotation", vbox, box_out);
+	wrap_into_expanded_frame_gtk("Rotation", 360, 200, vbox, box_out);
 	return;
 }

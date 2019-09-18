@@ -220,6 +220,6 @@ void make_gtk_psf_vector_menu(struct colormap_view *color_vws){
 	gtk_box_pack_start(GTK_BOX(vbox_vec), hbox_33, TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox_vec), hbox_32, TRUE, TRUE, 0);
 	
-	wrap_into_expanded_frame_gtk("Vector", vbox_vec, color_vws->psfVectorBox);
+	wrap_into_expanded_frame_gtk("Vector", 400, 300, vbox_vec, color_vws->psfVectorBox);
 	return;
 }

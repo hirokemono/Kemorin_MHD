@@ -198,7 +198,7 @@ void gtk_viewmatrix_menu_box(struct view_widgets *view_menu,
 	g_object_set_data(G_OBJECT(entry), "menu", (gpointer) view_menu);
 	
 	view_menu->adj_win_x = gtk_adjustment_new(0, 0, 16392, 1, 1, 0);
-	view_menu->adj_win_y = gtk_adjustment_new(0, 0, 8096, 1, 1, 0);
+	view_menu->adj_win_y = gtk_adjustment_new(0, 0, 16392, 1, 1, 0);
 	view_menu->adj_eye_x = gtk_adjustment_new(0.0, -1000.0, 1000.0, 1., 1., 0.0);
 	view_menu->adj_eye_y = gtk_adjustment_new(0.0, -1000.0, 1000.0, 1., 1., 0.0);
 	view_menu->adj_eye_z = gtk_adjustment_new(0.0, -1000.0, 1000.0, 1., 1., 0.0);
@@ -220,8 +220,8 @@ void gtk_viewmatrix_menu_box(struct view_widgets *view_menu,
 	update_windowsize_menu(view_menu, window);
 	update_viewmatrix_menu(view_menu, window);
 	
-	view_menu->spin_win_x = gtk_spin_button_new(GTK_ADJUSTMENT(view_menu->adj_win_x), 0, 3);
-	view_menu->spin_win_y = gtk_spin_button_new(GTK_ADJUSTMENT(view_menu->adj_win_y), 0, 3);
+	view_menu->spin_win_x = gtk_spin_button_new(GTK_ADJUSTMENT(view_menu->adj_win_x), 0, 0);
+	view_menu->spin_win_y = gtk_spin_button_new(GTK_ADJUSTMENT(view_menu->adj_win_y), 0, 0);
 	view_menu->spin_eye_x = gtk_spin_button_new(GTK_ADJUSTMENT(view_menu->adj_eye_x), 0, 3);
 	g_signal_connect(view_menu->spin_eye_x, "value-changed", G_CALLBACK(eye_position_x_CB), entry);
 	view_menu->spin_eye_y = gtk_spin_button_new(GTK_ADJUSTMENT(view_menu->adj_eye_y), 0, 3);
@@ -245,31 +245,31 @@ void gtk_viewmatrix_menu_box(struct view_widgets *view_menu,
 	
 	
 	view_menu->hbox_win_x = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
-	gtk_box_pack_start(GTK_BOX(view_menu->hbox_win_x), gtk_label_new(" X: "), FALSE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(view_menu->hbox_win_x), view_menu->spin_win_x, FALSE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(view_menu->hbox_win_x), gtk_label_new(" X: "), TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(view_menu->hbox_win_x), view_menu->spin_win_x, FALSE, FALSE, 0);
 	
 	view_menu->hbox_win_y = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
-	gtk_box_pack_start(GTK_BOX(view_menu->hbox_win_y), gtk_label_new(" Y: "), FALSE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(view_menu->hbox_win_y), view_menu->spin_win_y, FALSE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(view_menu->hbox_win_y), gtk_label_new(" Y: "), TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(view_menu->hbox_win_y), view_menu->spin_win_y, FALSE, FALSE, 0);
 	
 	view_menu->vbox_win = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-	gtk_box_pack_start(GTK_BOX(view_menu->vbox_win), view_menu->hbox_win_x, FALSE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(view_menu->vbox_win), view_menu->hbox_win_y, FALSE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(view_menu->vbox_win), view_menu->hbox_win_x, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(view_menu->vbox_win), view_menu->hbox_win_y, FALSE, FALSE, 0);
 	view_menu->Frame_win = gtk_frame_new("Number of pixel");
 	gtk_frame_set_shadow_type(GTK_FRAME(view_menu->Frame_win), GTK_SHADOW_IN);
 	gtk_container_add(GTK_CONTAINER(view_menu->Frame_win), view_menu->vbox_win);
 	
 	view_menu->hbox_eye_x = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
-	gtk_box_pack_start(GTK_BOX(view_menu->hbox_eye_x), gtk_label_new(" X: "), FALSE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(view_menu->hbox_eye_x), view_menu->spin_eye_x, FALSE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(view_menu->hbox_eye_x), gtk_label_new(" X: "), TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(view_menu->hbox_eye_x), view_menu->spin_eye_x, FALSE, FALSE, 0);
 	
 	view_menu->hbox_eye_y = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
-	gtk_box_pack_start(GTK_BOX(view_menu->hbox_eye_y), gtk_label_new(" Y: "), FALSE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(view_menu->hbox_eye_y), view_menu->spin_eye_y, FALSE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(view_menu->hbox_eye_y), gtk_label_new(" Y: "), TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(view_menu->hbox_eye_y), view_menu->spin_eye_y, FALSE, FALSE, 0);
 	
 	view_menu->hbox_eye_z = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
-	gtk_box_pack_start(GTK_BOX(view_menu->hbox_eye_z), gtk_label_new(" Z: "), FALSE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(view_menu->hbox_eye_z), view_menu->spin_eye_z, FALSE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(view_menu->hbox_eye_z), gtk_label_new(" Z: "), TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(view_menu->hbox_eye_z), view_menu->spin_eye_z, FALSE, FALSE, 0);
 	
 	view_menu->vbox_eye = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_box_pack_start(GTK_BOX(view_menu->vbox_eye), view_menu->hbox_eye_x, FALSE, TRUE, 0);
@@ -282,32 +282,32 @@ void gtk_viewmatrix_menu_box(struct view_widgets *view_menu,
 	
 	
 	view_menu->hbox_looking_x = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
-	gtk_box_pack_start(GTK_BOX(view_menu->hbox_looking_x), gtk_label_new(" X: "), FALSE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(view_menu->hbox_looking_x), gtk_label_new(current_lookat_x_text), FALSE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(view_menu->hbox_looking_x), gtk_label_new(" X: "), TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(view_menu->hbox_looking_x), gtk_label_new(current_lookat_x_text), FALSE, FALSE, 0);
 	
 	view_menu->hbox_looking_y = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
-	gtk_box_pack_start(GTK_BOX(view_menu->hbox_looking_y), gtk_label_new(" Y: "), FALSE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(view_menu->hbox_looking_y), gtk_label_new(current_lookat_y_text), FALSE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(view_menu->hbox_looking_y), gtk_label_new(" Y: "), TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(view_menu->hbox_looking_y), gtk_label_new(current_lookat_y_text), FALSE, FALSE, 0);
 	
 	view_menu->hbox_looking_z = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
-	gtk_box_pack_start(GTK_BOX(view_menu->hbox_looking_z), gtk_label_new(" Z: "), FALSE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(view_menu->hbox_looking_z), gtk_label_new(current_lookat_z_text), FALSE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(view_menu->hbox_looking_z), gtk_label_new(" Z: "), TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(view_menu->hbox_looking_z), gtk_label_new(current_lookat_z_text), FALSE, FALSE, 0);
 	
 	view_menu->vbox_looking = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-	gtk_box_pack_start(GTK_BOX(view_menu->vbox_looking), view_menu->hbox_looking_x, FALSE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(view_menu->vbox_looking), view_menu->hbox_looking_y, FALSE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(view_menu->vbox_looking), view_menu->hbox_looking_z, FALSE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(view_menu->vbox_looking), view_menu->hbox_looking_x, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(view_menu->vbox_looking), view_menu->hbox_looking_y, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(view_menu->vbox_looking), view_menu->hbox_looking_z, FALSE, FALSE, 0);
 	view_menu->Frame_looking = gtk_frame_new("Look at position");
 	gtk_frame_set_shadow_type(GTK_FRAME(view_menu->Frame_looking), GTK_SHADOW_IN);
 	gtk_container_add(GTK_CONTAINER(view_menu->Frame_looking), view_menu->vbox_looking);
 	
 	
 	view_menu->hbox_scale = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
-	gtk_box_pack_start(GTK_BOX(view_menu->hbox_scale), gtk_label_new("Scale: "), FALSE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(view_menu->hbox_scale), view_menu->spin_scale, FALSE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(view_menu->hbox_scale), gtk_label_new("Scale: "), TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(view_menu->hbox_scale), view_menu->spin_scale, FALSE, FALSE, 0);
 	
 	view_menu->vbox_scale = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-	gtk_box_pack_start(GTK_BOX(view_menu->vbox_scale), view_menu->hbox_scale, FALSE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(view_menu->vbox_scale), view_menu->hbox_scale, FALSE, FALSE, 0);
 	view_menu->Frame_scale = gtk_frame_new("");
 	gtk_frame_set_shadow_type(GTK_FRAME(view_menu->Frame_scale), GTK_SHADOW_IN);
 	gtk_container_add(GTK_CONTAINER(view_menu->Frame_scale), view_menu->vbox_scale);
@@ -315,20 +315,20 @@ void gtk_viewmatrix_menu_box(struct view_widgets *view_menu,
 	
 	
 	view_menu->hbox_rotation_x = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
-	gtk_box_pack_start(GTK_BOX(view_menu->hbox_rotation_x), gtk_label_new(" X: "), FALSE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(view_menu->hbox_rotation_x), view_menu->spin_rotation_x, FALSE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(view_menu->hbox_rotation_x), gtk_label_new(" X: "), TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(view_menu->hbox_rotation_x), view_menu->spin_rotation_x, FALSE, FALSE, 0);
 	
 	view_menu->hbox_rotation_y = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
-	gtk_box_pack_start(GTK_BOX(view_menu->hbox_rotation_y), gtk_label_new(" Y: "), FALSE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(view_menu->hbox_rotation_y), view_menu->spin_rotation_y, FALSE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(view_menu->hbox_rotation_y), gtk_label_new(" Y: "), TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(view_menu->hbox_rotation_y), view_menu->spin_rotation_y, FALSE, FALSE, 0);
 	
 	view_menu->hbox_rotation_z = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
-	gtk_box_pack_start(GTK_BOX(view_menu->hbox_rotation_z), gtk_label_new(" Z: "), FALSE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(view_menu->hbox_rotation_z), view_menu->spin_rotation_z, FALSE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(view_menu->hbox_rotation_z), gtk_label_new(" Z: "), TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(view_menu->hbox_rotation_z), view_menu->spin_rotation_z, FALSE, FALSE, 0);
 	
 	view_menu->hbox_rotation_deg = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
-	gtk_box_pack_start(GTK_BOX(view_menu->hbox_rotation_deg), gtk_label_new(" Angle (Deg.): "), FALSE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(view_menu->hbox_rotation_deg), view_menu->spin_rotation_deg, FALSE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(view_menu->hbox_rotation_deg), gtk_label_new(" Angle (Deg.): "), TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(view_menu->hbox_rotation_deg), view_menu->spin_rotation_deg, FALSE, FALSE, 0);
 	
 	view_menu->vbox_rotation = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_box_pack_start(GTK_BOX(view_menu->vbox_rotation), view_menu->hbox_rotation_x, FALSE, TRUE, 0);
@@ -342,8 +342,8 @@ void gtk_viewmatrix_menu_box(struct view_widgets *view_menu,
 	
 	
 	view_menu->hbox_aperture = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
-	gtk_box_pack_start(GTK_BOX(view_menu->hbox_aperture), gtk_label_new(" Aperture: "), FALSE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(view_menu->hbox_aperture), view_menu->spin_aperture, FALSE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(view_menu->hbox_aperture), gtk_label_new(" Aperture: "), TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(view_menu->hbox_aperture), view_menu->spin_aperture, FALSE, FALSE, 0);
 	
 	view_menu->vbox_aperture = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_box_pack_start(GTK_BOX(view_menu->vbox_aperture), view_menu->hbox_aperture, FALSE, TRUE, 0);
@@ -381,16 +381,16 @@ void gtk_viewmatrix_menu_box(struct view_widgets *view_menu,
 		g_signal_connect(view_menu->spin_eye_sep, "value-changed", G_CALLBACK(eye_sep_CB), entry);
 		
 		view_menu->hbox_focus = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
-		gtk_box_pack_start(GTK_BOX(view_menu->hbox_focus), gtk_label_new(" Focus: "), FALSE, TRUE, 0);
-		gtk_box_pack_start(GTK_BOX(view_menu->hbox_focus), view_menu->spin_focus, FALSE, TRUE, 0);
+		gtk_box_pack_start(GTK_BOX(view_menu->hbox_focus), gtk_label_new(" Focus: "), TRUE, TRUE, 0);
+		gtk_box_pack_start(GTK_BOX(view_menu->hbox_focus), view_menu->spin_focus, FALSE, FALSE, 0);
 		
 		view_menu->hbox_eye_sep = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
-		gtk_box_pack_start(GTK_BOX(view_menu->hbox_eye_sep), gtk_label_new(" Eye separation: "), FALSE, TRUE, 0);
-		gtk_box_pack_start(GTK_BOX(view_menu->hbox_eye_sep), view_menu->spin_eye_sep, FALSE, TRUE, 0);
+		gtk_box_pack_start(GTK_BOX(view_menu->hbox_eye_sep), gtk_label_new(" Eye separation: "), TRUE, TRUE, 0);
+		gtk_box_pack_start(GTK_BOX(view_menu->hbox_eye_sep), view_menu->spin_eye_sep, FALSE, FALSE, 0);
 		
 		view_menu->vbox_streo = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-		gtk_box_pack_start(GTK_BOX(view_menu->vbox_streo), view_menu->hbox_focus, FALSE, TRUE, 0);
-		gtk_box_pack_start(GTK_BOX(view_menu->vbox_streo), view_menu->hbox_eye_sep, FALSE, TRUE, 0);
+		gtk_box_pack_start(GTK_BOX(view_menu->vbox_streo), view_menu->hbox_focus, TRUE, TRUE, 0);
+		gtk_box_pack_start(GTK_BOX(view_menu->vbox_streo), view_menu->hbox_eye_sep, FALSE, FALSE, 0);
 		view_menu->Frame_streo = gtk_frame_new("Stereo parameter");
 		gtk_frame_set_shadow_type(GTK_FRAME(view_menu->Frame_streo), GTK_SHADOW_IN);
 		gtk_container_add(GTK_CONTAINER(view_menu->Frame_streo), view_menu->vbox_streo);
@@ -400,7 +400,7 @@ void gtk_viewmatrix_menu_box(struct view_widgets *view_menu,
 	
 	gtk_box_pack_start(GTK_BOX(vbox), view_menu->hbox_viewmatrix_save, FALSE, FALSE, 0);
 	
-	wrap_into_expanded_frame_gtk("View parameters", vbox, box_out);
+	wrap_into_expanded_frame_gtk("View parameters", 360, 400, vbox, box_out);
 	
 	return;
 }

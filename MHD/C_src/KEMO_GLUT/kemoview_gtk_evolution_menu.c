@@ -216,6 +216,6 @@ void add_evoluaiton_menu_box(int istep, struct kemoviewer_type *kemoviewer_data,
 	gtk_box_pack_start(GTK_BOX(vbox), hbox_evo_fileformat, FALSE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox_evo_save, FALSE, TRUE, 0);
 	
-	wrap_into_expanded_frame_gtk("Evolution", vbox, box_out);
+	wrap_into_expanded_frame_gtk("Evolution", 360, 240, vbox, box_out);
 	return;
 }

@@ -363,7 +363,7 @@ void add_real2_list_box(GtkTreeView *r2_tree_view, struct real2_clist *r2_clist,
                                    GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
     gtk_widget_set_size_request(scrolled_window, 140, 140);
     gtk_container_add(GTK_CONTAINER(scrolled_window), GTK_WIDGET(r2_tree_view));
-    gtk_box_pack_start(GTK_BOX(vbox_1), scrolled_window, TRUE, TRUE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_1), scrolled_window, FALSE, TRUE, 0);
     
 	Frame_1 = gtk_frame_new("");
 	gtk_frame_set_shadow_type(GTK_FRAME(Frame_1), GTK_SHADOW_IN);
@@ -371,7 +371,7 @@ void add_real2_list_box(GtkTreeView *r2_tree_view, struct real2_clist *r2_clist,
 	
 	expander = gtk_expander_new_with_mnemonic(r2_clist->clist_name);
 	gtk_container_add(GTK_CONTAINER(expander), Frame_1);
-	gtk_box_pack_start(GTK_BOX(vbox), expander, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox), expander, FALSE, TRUE, 0);
 	
 	
 	selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(r2_tree_view));

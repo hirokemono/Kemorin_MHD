@@ -111,19 +111,19 @@ void kemoview_preference_GTK(struct kemoviewer_type *kemoviewer_data,
 				(gpointer) kemoviewer_data);
 	
 	hbox11 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
-	gtk_box_pack_start(GTK_BOX(hbox11), label21, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox11), label21, TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox11), spin1, FALSE, FALSE, 0);
 	
 	hbox12 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
-	gtk_box_pack_start(GTK_BOX(hbox12), label22, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox12), label22, TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox12), spin2, FALSE, FALSE, 0);
 	
 	hbox13 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
-	gtk_box_pack_start(GTK_BOX(hbox13), label23, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox13), label23, TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox13), spin3, FALSE, FALSE, 0);
 	
 	hbox14 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
-	gtk_box_pack_start(GTK_BOX(hbox14), label24, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox14), label24, TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox14), spin4, FALSE, FALSE, 0);
 	
 	
@@ -137,7 +137,7 @@ void kemoview_preference_GTK(struct kemoviewer_type *kemoviewer_data,
 	gtk_box_pack_start(GTK_BOX(vbox), hbox13, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox14, FALSE, FALSE, 0);
 	
-	wrap_into_expanded_frame_gtk("Preferences", vbox, box_out);
+	wrap_into_expanded_frame_gtk("Preferences", 360, 400, vbox, box_out);
 	
 	gtk_widget_show_all(vbox);
 	

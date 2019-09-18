@@ -60,11 +60,10 @@ void add_axis_menu_box(struct kemoviewer_type *kemoviewer_data, GtkWidget *box_o
 	GtkWidget *hbox_axis, *hbox_sph_grid, *hbox_coastline;
 	GtkWidget *switch_axis, *switch_sph_grid, *switch_coastline;
 	
-	GtkWidget *hbox_coast_radius, *hbox_org_radius;
+	GtkWidget *hbox_coast_radius;
 	GtkWidget *spin_coast_radius;
 	GtkAdjustment *adj_coast_radius;
 	double current_radius;
-	char current_radius_text[30];
 	
 	GtkWidget *hbox_shading;
 	GtkWidget *combobox_shading;
@@ -157,7 +156,6 @@ void add_axis_menu_box(struct kemoviewer_type *kemoviewer_data, GtkWidget *box_o
 				G_CALLBACK(draw_sph_grid_switch_CB), NULL);
 	
 	current_radius = kemoview_get_coastline_radius();
-	sprintf(current_radius_text, "    %e    ", current_radius);
 	adj_coast_radius = gtk_adjustment_new(current_radius, 0.0, 10.0, 0.02, 0.02, 0.0);
 	spin_coast_radius = gtk_spin_button_new(GTK_ADJUSTMENT(adj_coast_radius), 0, 3);
 	g_signal_connect(spin_coast_radius, "value-changed", G_CALLBACK(coastline_radius_CB),NULL);
@@ -183,9 +181,6 @@ void add_axis_menu_box(struct kemoviewer_type *kemoviewer_data, GtkWidget *box_o
 	gtk_box_pack_start(GTK_BOX(hbox_sph_grid), gtk_label_new("Draw sphere grid: "), TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_sph_grid), switch_sph_grid, FALSE, FALSE, 0);
 	
-	hbox_org_radius = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
-	gtk_box_pack_start(GTK_BOX(hbox_org_radius), gtk_label_new("Current distance: "), TRUE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox_org_radius), gtk_label_new(current_radius_text), TRUE, TRUE, 0);
 	hbox_coast_radius = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
 	gtk_box_pack_start(GTK_BOX(hbox_coast_radius), gtk_label_new("Radius: "), TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_coast_radius), spin_coast_radius, TRUE, TRUE, 0);
@@ -195,7 +190,6 @@ void add_axis_menu_box(struct kemoviewer_type *kemoviewer_data, GtkWidget *box_o
 	gtk_box_pack_start(GTK_BOX(vbox), hbox_axis, TRUE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox_coastline, TRUE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox_sph_grid, TRUE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox), hbox_org_radius, TRUE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox_coast_radius, TRUE, FALSE, 0);
 	
 	gtk_box_pack_start(GTK_BOX(vbox), hbox_shading, TRUE, FALSE, 0);

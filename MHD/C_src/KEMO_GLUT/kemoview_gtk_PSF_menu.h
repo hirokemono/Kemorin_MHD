@@ -32,9 +32,6 @@
 
 /*  prototypes */
 
-void add_psf_draw_component_box(struct kemoviewer_type *kemoviewer_data, struct colormap_view *color_vws,
-			GtkWidget *window_cmap, GtkWidget *box);
-
 void add_gtk_psf_colormap_menu(struct colormap_view *color_vws,
 			GtkWidget *window, GtkWidget *box);
 
