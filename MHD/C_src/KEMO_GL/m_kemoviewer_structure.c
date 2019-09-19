@@ -258,16 +258,16 @@ void kemoview_delete_phong_light_list(int i_delete){
 	delete_phong_light_list(kemo_sgl->kemo_shaders->lights, i_delete);
 };
 void kemoview_add_phong_light_list(int i_add, float r, float t, float p){
-	add_phong_light_list(kemo_sgl->kemo_shaders->lights, i_add, r, t, p);
+	add_phong_light_list(kemo_sgl->view_s, kemo_sgl->kemo_shaders->lights, i_add, r, t, p);
 };
 
 void kemoview_init_phong_light_list(void){
-	init_phong_light_list(kemo_sgl->kemo_shaders->lights);
+	init_phong_light_list(kemo_sgl->view_s, kemo_sgl->kemo_shaders->lights);
 };
 
 
 void kemoview_set_each_light_position(int i_point, float r, float t, float p){
-	set_each_light_position(kemo_sgl->kemo_shaders->lights, i_point, r, t, p);
+	set_each_light_position(kemo_sgl->view_s, kemo_sgl->kemo_shaders->lights, i_point, r, t, p);
 };
 int kemoview_get_num_light_position(void){
 	return send_num_light_position(kemo_sgl->kemo_shaders->lights);

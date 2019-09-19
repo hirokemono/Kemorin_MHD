@@ -6,6 +6,7 @@
 #define M_PHONG_LIGHT_TABLE_C_
 
 #include <math.h>
+#include "m_gl_transfer_matrix.h"
 
 struct phong_lights{
 	int n_light_point, nbuf_light_point;
@@ -20,23 +21,17 @@ struct phong_lights{
 
 /* prototypes */
 
-void light_positionfrom_angle(float *light_rtp, float *light_xyz);
-
-
 void alloc_phong_light_list(struct phong_lights *lights, int num);
 void dealloc_phong_light_list(struct phong_lights *lights);
 void realloc_phong_light_list(struct phong_lights *lights, int num);
 
 void delete_phong_light_list(struct phong_lights *lights, int i_delete);
-void add_phong_light_list(struct phong_lights *lights, int i_add,
+void add_phong_light_list(struct view_element *view_s, struct phong_lights *lights, int i_add,
 						  float r, float t, float p);
-
-void init_phong_light_list(struct phong_lights *lights);
-
-
-
-void set_each_light_position(struct phong_lights *lights, 
+void init_phong_light_list(struct view_element *view_s, struct phong_lights *lights);
+void set_each_light_position(struct view_element *view_s, struct phong_lights *lights, 
 			int i_point, float r, float t, float p);
+
 int send_num_light_position(struct phong_lights *lights);
 void send_each_light_rtp(struct phong_lights *lights, 
 			int i_point, float *r, float *t, float *p);

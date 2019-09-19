@@ -120,6 +120,7 @@ module:
 	m_phong_light_table_c.o: \
 	'$$(KEMO_C_GLDIR)'/m_phong_light_table_c.c \
 	m_phong_light_table_c.h \
+	m_gl_transfer_matrix.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)

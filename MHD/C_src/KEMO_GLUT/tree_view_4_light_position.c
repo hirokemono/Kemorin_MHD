@@ -54,8 +54,7 @@ static void sync_phong_light_position_from_list(struct lightparams_view *light_v
 	for(i=0;i<num;i++){
 		set_from_real3_clist_at_index(i, light_vws->light_rtp_vws->r3_clist_gtk,
 					&r, &t, &p);
-		set_each_light_position(light_vws->lights_gtk,
-					i, (float) r, (float) t, (float) p);
+		kemoview_set_each_light_position(i, (float) r, (float) t, (float) p);
 	};
 	return;
 };
