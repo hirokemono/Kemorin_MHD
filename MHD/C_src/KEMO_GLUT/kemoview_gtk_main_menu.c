@@ -66,7 +66,8 @@ static void update_kemoview_menu(struct main_buttons *mbot, GtkWidget *window){
 	return;
 };
 
-void open_kemoviewer_file_glfw(struct kv_string *filename){
+void open_kemoviewer_file_glfw(struct kv_string *filename, struct main_buttons *mbot,
+			GtkWidget *window_main){
     struct kv_string *file_prefix = kemoview_alloc_kvstring();
     struct kv_string *stripped_ext = kemoview_alloc_kvstring();
     struct kv_string *command = kemoview_alloc_kvstring();
@@ -93,6 +94,11 @@ void open_kemoviewer_file_glfw(struct kv_string *filename){
 	
 	iflag_datatype = kemoview_open_data(filename);
     kemoview_free_kvstring(filename);
+	
+	delete_kemoview_menu(mbot);
+	update_kemoview_menu(mbot, window_main);
+	gtk_widget_queue_draw(window_main);
+	draw_mesh_glfw();
 	return;
 };
 
@@ -266,12 +272,7 @@ static void open_file_CB(GtkButton *button, gpointer user_data){
 	struct main_buttons *mbot = (struct main_buttons *) g_object_get_data(G_OBJECT(user_data), "buttons");
 	filename = kemoview_init_kvstring_by_string(gtk_entry_get_text(entry));
 	
-	open_kemoviewer_file_glfw(filename);
-	
-	delete_kemoview_menu(mbot);
-	update_kemoview_menu(mbot, window_main);
-	gtk_widget_queue_draw(window_main);
-	draw_mesh_glfw();
+	open_kemoviewer_file_glfw(filename, mbot, window_main);
 	return;
 };
 

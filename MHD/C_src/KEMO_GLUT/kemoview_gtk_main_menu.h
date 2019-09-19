@@ -54,7 +54,8 @@ struct main_buttons{
 
 /*  prototypes */
 
-void open_kemoviewer_file_glfw(struct kv_string *filename);
+void open_kemoviewer_file_glfw(struct kv_string *filename, struct main_buttons *mbot,
+							   GtkWidget *window_main);
 
 void gtk_psf_menu_box(struct main_buttons *mbot, GtkWidget *window);
 void gtk_fieldline_menu_box(struct main_buttons *mbot, GtkWidget *window);
