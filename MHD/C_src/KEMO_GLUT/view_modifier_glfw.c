@@ -137,20 +137,22 @@ void mousePosCB(GLFWwindow *window, double xpos, double ypos) {
 		begin_right[0] = (GLdouble) xpos;
 		begin_right[1] = (GLdouble) ypos;
 	};
-	
-	if (moving_left == 1 || moving_middle == 1 || moving_right == 1) {
-//		glfwSwapBuffers(window);
-	};
 	return;
 }
 
+void set_GlfwWindowSize(int width, int height){
+	kemoview_update_projection_by_viewer_size(width, height);
+	glfwSetWindowSize(glfw_window, width, height);
+};
 
 void windowSizeCB(GLFWwindow *window, int width, int height) {
 	printf("windowSizeCB %d %d\n", width, height);
     kemoview_update_projection_by_viewer_size(width, height);
 }
 void mouseScrollCB(GLFWwindow *window, double x, double y) {
-	printf("mouseScrollCB %.1lf %.1lf\n", x, y);
+/*	printf("mouseScrollCB %.1lf %.1lf\n", x, y);*/
+    GLdouble newScale = x + y;
+    kemoview_zooming(newScale);
 }
 void charFunCB(GLFWwindow* window, unsigned int charInfo) {
 	printf("charFunCB %d\n", charInfo);
@@ -295,7 +297,6 @@ void glfw_view_modifier_init(GLFWwindow* window){
 
 
 void display(GLFWwindow* window){
-//	kemoview_draw_fast_gl3();
 	kemoview_modify_view();
 	glfwSwapBuffers(window);
 	return;

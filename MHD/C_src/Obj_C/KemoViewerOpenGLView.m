@@ -108,6 +108,8 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
         [_context makeCurrentContext];
 		[_cocoaGLMessages updateInfoString];
 		[_cocoaGLMessages updateRsolutionString:XpixelGLWindow:YpixelGLWindow];
+		
+		[self swapbuffer_cocoa];
 	}
 }
 
@@ -397,7 +399,7 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 
 - (void)scrollWheel:(NSEvent *)theEvent
 {
-	float wheelDelta = [theEvent deltaX] +[theEvent deltaY] + [theEvent deltaZ];
+	float wheelDelta = [theEvent deltaX] + [theEvent deltaY] + [theEvent deltaZ];
 	if (wheelDelta)
 	{
 		kemoview_zooming((GLdouble) wheelDelta);
@@ -534,4 +536,5 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 	[[NSRunLoop currentRunLoop] addTimer:timer forMode:NSEventTrackingRunLoopMode]; // ensure timer fires during resize
 
  }
+
 @end

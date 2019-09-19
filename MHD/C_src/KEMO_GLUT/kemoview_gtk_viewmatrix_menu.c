@@ -78,6 +78,24 @@ static void load_viewmatrix_CB(GtkButton *button, gpointer user_data){
 	return;
 };
 
+static void windowsize_x_CB(GtkWidget *entry, gpointer user_data){
+	struct view_widgets *view_menu = (struct view_widgets *) g_object_get_data(G_OBJECT(user_data), "menu");
+	kemoview_get_shift_vector(view_menu->tmpShift);
+	view_menu->npixel_x = (int) gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(entry));
+	
+	set_GlfwWindowSize(view_menu->npixel_x, view_menu->npixel_y);
+	draw_mesh_glfw();
+	return;
+};
+static void windowsize_y_CB(GtkWidget *entry, gpointer user_data){
+	struct view_widgets *view_menu = (struct view_widgets *) g_object_get_data(G_OBJECT(user_data), "menu");
+	kemoview_get_shift_vector(view_menu->tmpShift);
+	view_menu->npixel_y = (int) gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(entry));
+	
+	set_GlfwWindowSize(view_menu->npixel_x, view_menu->npixel_y);
+	draw_mesh_glfw();
+	return;
+};
 static void eye_position_x_CB(GtkWidget *entry, gpointer user_data){
 	struct view_widgets *view_menu = (struct view_widgets *) g_object_get_data(G_OBJECT(user_data), "menu");
 	kemoview_get_shift_vector(view_menu->tmpShift);
@@ -221,7 +239,10 @@ void gtk_viewmatrix_menu_box(struct view_widgets *view_menu,
 	update_viewmatrix_menu(view_menu, window);
 	
 	view_menu->spin_win_x = gtk_spin_button_new(GTK_ADJUSTMENT(view_menu->adj_win_x), 0, 0);
+	g_signal_connect(view_menu->spin_win_x, "value-changed", G_CALLBACK(windowsize_x_CB), entry);
 	view_menu->spin_win_y = gtk_spin_button_new(GTK_ADJUSTMENT(view_menu->adj_win_y), 0, 0);
+	g_signal_connect(view_menu->spin_win_y, "value-changed", G_CALLBACK(windowsize_y_CB), entry);
+	
 	view_menu->spin_eye_x = gtk_spin_button_new(GTK_ADJUSTMENT(view_menu->adj_eye_x), 0, 3);
 	g_signal_connect(view_menu->spin_eye_x, "value-changed", G_CALLBACK(eye_position_x_CB), entry);
 	view_menu->spin_eye_y = gtk_spin_button_new(GTK_ADJUSTMENT(view_menu->adj_eye_y), 0, 3);

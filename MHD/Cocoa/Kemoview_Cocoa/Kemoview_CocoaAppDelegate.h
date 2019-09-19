@@ -12,6 +12,7 @@
 
 @interface Kemoview_CocoaAppDelegate : NSObject <NSApplicationDelegate> {
     NSWindow *_window;
+	IBOutlet KemoViewerOpenGLView*  _kemoviewer;
 }
 
 @property (assign) IBOutlet NSWindow *window;

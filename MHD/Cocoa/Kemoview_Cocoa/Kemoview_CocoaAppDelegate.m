@@ -18,10 +18,30 @@ struct kemoviewer_type *single_kemoview;
 }
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
 	// Insert code here to initialize your application 
+
+	// Set windowDidMove as a responder for the NSWindowDidMoveNotification
+	[[NSNotificationCenter defaultCenter]
+	 addObserver:self
+	 selector:@selector(Tako:) name:NSWindowDidResizeNotification
+	 object:nil];
 }
 
 - (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication *)theApplication{
 	return YES;
+}
+
+- (void)Tako:(NSNotification *)notification {
+	[_kemoviewer UpdateImage];
+
+	/*	
+	// show window position in TextField
+	NSString *st = [NSString stringWithFormat:@"(x, y)=(%.1f, %.1f), (h ,w)=(%.1f, %.1f)",
+					self.window.frame.origin.x,      self.window.frame.origin.y,                    self.window.frame.size.width,                  self.window.frame.size.height];
+//	[self.windowPosition　setStringValue: st];
+	// show window position (in Log)
+	NSLog (@"window position: %.1f, %.1f", self.window.frame.origin.x, self.window.frame.origin.y);
+	NSLog (@"window size    : %.1f, %.1f", self.window.frame.size.width, self.window.frame.size.height);    
+*/
 }
 
 - (IBAction)newDocument:(id)sender

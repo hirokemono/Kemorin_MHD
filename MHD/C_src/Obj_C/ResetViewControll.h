@@ -11,7 +11,9 @@
 
 
 @interface ResetViewControll : NSObject {
-
+	NSInteger xPixel;
+	NSInteger yPixel;
+	
 	CGFloat ViewPointX;
 	CGFloat ViewPointY;
 	CGFloat ViewPointZ;
@@ -35,6 +37,9 @@
 	CGFloat FocusPoint;
 	CGFloat eyeRatio;
 }
+@property NSInteger xPixel;
+@property NSInteger yPixel;
+
 @property CGFloat ViewPointX;
 @property CGFloat ViewPointY;
 @property CGFloat ViewPointZ;
@@ -57,7 +62,6 @@
 
 @property CGFloat FocusPoint;
 @property CGFloat eyeRatio;
-
 
 - (void) SetViewByInpit;
 - (void) UpdateParameters;

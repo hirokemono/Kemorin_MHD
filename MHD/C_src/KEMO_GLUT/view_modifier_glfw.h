@@ -34,9 +34,9 @@ extern "C" {
 GLFWwindow * open_kemoviwer_window(int npixel_x, int npixel_y);
 
 void glfw_view_modifier_init(GLFWwindow* window);
-void display(GLFWwindow* window);
-void modifywindow(int width, int height);
+void set_GlfwWindowSize(int width, int height);
 
+void display(GLFWwindow* window);
 void draw_fast_glfw(void);
 void draw_mesh_glfw(void);
 void write_rotate_views_glut(int iflag_img, struct kv_string *image_prefix, 

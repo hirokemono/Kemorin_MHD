@@ -34,6 +34,7 @@ typedef struct {
 	IBOutlet NSUserDefaultsController* _kemoviewGL_defaults_controller;
 	IBOutlet ResetViewControll*  _resetview;
 	IBOutlet SetCocoaGLMessases* _cocoaGLMessages;
+	IBOutlet NSWindow*  mainWindow;
 	
 	NSOpenGLContext * _context;
 	
