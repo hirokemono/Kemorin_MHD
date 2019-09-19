@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>BuildMachineOSBuild</key>
-	<string>15G17023</string>
+	<string>16G2128</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
 	<key>CFBundleDocumentTypes</key>
@@ -112,7 +112,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>2.02</string>
+	<string>3.00</string>
 	<key>CFBundleSignature</key>
 	<string>KMVW</string>
 	<key>CFBundleSupportedPlatforms</key>
@@ -120,23 +120,23 @@
 		<string>MacOSX</string>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>Build 2017, Nov. 30</string>
+	<string>Build 2019, Aug.23</string>
 	<key>DTCompiler</key>
 	<string>com.apple.compilers.llvm.clang.1_0</string>
 	<key>DTPlatformBuild</key>
-	<string>7D1014</string>
+	<string>9C40b</string>
 	<key>DTPlatformVersion</key>
 	<string>GM</string>
 	<key>DTSDKBuild</key>
-	<string>15E60</string>
+	<string>17C76</string>
 	<key>DTSDKName</key>
-	<string>macosx10.11</string>
+	<string>macosx10.13</string>
 	<key>DTXcode</key>
-	<string>0731</string>
+	<string>0920</string>
 	<key>DTXcodeBuild</key>
-	<string>7D1014</string>
+	<string>9C40b</string>
 	<key>LSApplicationCategoryType</key>
-	<string>public.app-category.graphics-design</string>
+	<string>public.app-category.productivity</string>
 	<key>LSMinimumSystemVersion</key>
 	<string>10.11</string>
 	<key>NSMainNibFile</key>
