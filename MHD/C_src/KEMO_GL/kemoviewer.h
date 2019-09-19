@@ -712,7 +712,9 @@ extern "C" {
     int kemoview_get_PSF_draw_refv(void);
     int kemoview_toggle_PSF_draw_refv(void);
     
-    void kemoview_set_PSF_patch_color_mode(int iflag);
+	void * kemoview_link_active_colormap_param(void);
+	
+	void kemoview_set_PSF_patch_color_mode(int iflag);
     void kemoview_set_PSF_isoline_color_mode(int iflag);
     void kemoview_set_PSF_num_isoline(int nlline);
     void kemoview_set_PSF_vector_increment(int increment);

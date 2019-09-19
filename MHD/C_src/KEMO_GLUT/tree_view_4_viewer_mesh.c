@@ -7,10 +7,10 @@
 
 #include "tree_view_4_viewer_mesh.h"
 
-void init_mesh_views_4_viewer(struct viewer_mesh *mesh_d, 
-			struct kemoview_mesh_view *mesh_vws){
+void init_mesh_views_4_viewer(struct kemoview_mesh_view *mesh_vws){
     int i;
 	char tmp_name[128];
+	struct kv_string *groupname;
 	
     mesh_vws->domain_vws =  (struct ci3_clist_view *)  malloc(sizeof(struct ci3_clist_view));
     mesh_vws->nod_grp_vws =  (struct ci_clist_view *)  malloc(sizeof(struct ci_clist_view));
@@ -49,7 +49,7 @@ void init_mesh_views_4_viewer(struct viewer_mesh *mesh_d,
 	sprintf(mesh_vws->surf_grp_vws->ci3_clist_gtk->i2_name,"%s", "Grid");
 	sprintf(mesh_vws->surf_grp_vws->ci3_clist_gtk->i3_name,"%s", "Node");
 	
-	for(i=0;i<mesh_d->num_pe_sf;i++){
+	for(i=0;i<kemoview_get_num_subdomain();i++){
 		sprintf(tmp_name, "Domain %d", i);
 		append_chara_int3_clist(tmp_name, 
 					kemoview_get_draw_mesh_patch(i), 
@@ -57,24 +57,33 @@ void init_mesh_views_4_viewer(struct viewer_mesh *mesh_d,
 					kemoview_get_draw_mesh_node(i), 
 					mesh_vws->domain_vws->ci3_clist_gtk);
 	};
-	for(i=0;i<mesh_d->ngrp_nod_sf;i++){
-		append_chara_int_clist(mesh_d->nod_gp_name_sf[i], 
+	for(i=0;i<kemoview_get_num_node_grp();i++){
+        groupname = kemoview_alloc_kvstring();
+		kemoview_get_node_grp_name(groupname, i);
+		append_chara_int_clist(groupname, 
 					kemoview_get_draw_nodgrp_node(i),
 					mesh_vws->nod_grp_vws->ci_clist_gtk);
+        kemoview_free_kvstring(groupname);
 	};
-	for(i=0;i<mesh_d->ngrp_ele_sf;i++){
-		append_chara_int3_clist(mesh_d->ele_gp_name_sf[i], 
+	for(i=0;i<kemoview_get_num_ele_grp();i++){
+        groupname = kemoview_alloc_kvstring();
+		kemoview_get_ele_grp_name(groupname, i);
+		append_chara_int3_clist(groupname->string, 
 					kemoview_get_draw_elegrp_patch(i), 
 					kemoview_get_draw_elegrp_grid(i), 
 					kemoview_get_draw_elegrp_node(i), 
 					mesh_vws->ele_grp_vws->ci3_clist_gtk);
+        kemoview_free_kvstring(groupname);
 	};
-	for(i=0;i<mesh_d->ngrp_surf_sf;i++){
-		append_chara_int3_clist(mesh_d->surf_gp_name_sf[i], 
+	for(i=0;i<kemoview_get_num_surf_grp();i++){
+        groupname = kemoview_alloc_kvstring();
+		kemoview_get_surf_grp_name(groupname, i);
+		append_chara_int3_clist(groupname->string, 
 					kemoview_get_draw_surfgrp_patch(i), 
 					kemoview_get_draw_surfgrp_grid(i), 
 					kemoview_get_draw_surfgrp_node(i), 
 					mesh_vws->surf_grp_vws->ci3_clist_gtk);
+        kemoview_free_kvstring(groupname);
 	};
 	return;
 }

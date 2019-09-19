@@ -777,6 +777,13 @@ int kemoview_toggle_PSF_draw_refv(void){
 	return toggle_draw_psf_refv(kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current]);
 };
 
+void * kemoview_link_active_colormap_param(void){
+	int i_current = kemoview_get_curent_PSF_ID();
+	int icomp = kemoview_get_PSF_draw_data_address();
+	void *current_cmap = kemo_sgl->kemo_psf->psf_m[i_current]->cmap_psf_comp[icomp];
+	return current_cmap;
+}
+
 void kemoview_set_PSF_patch_color_mode(int iflag){
 	set_psf_patch_color_mode(kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current], iflag);
 };
