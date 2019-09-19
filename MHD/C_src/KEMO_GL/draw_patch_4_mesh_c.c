@@ -41,18 +41,18 @@ void set_trans_mesh_VAO(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m
 	
 	num_patch = count_transparent_mesh_patches(mesh_s, mesh_m);
 	mesh_trans_VAO->npoint_draw = ITHREE * num_patch;
-	if(num_patch <= 0) return;
+
+	if(num_patch > 0){
+		set_buffer_address_4_patch(ITHREE*num_patch, mesh_buf);
+		alloc_strided_buffer(mesh_buf->num_nod_buf, mesh_buf->ncomp_buf, mesh_buf);
 	
-	set_buffer_address_4_patch(ITHREE*num_patch, mesh_buf);
-	alloc_strided_buffer(mesh_buf->num_nod_buf, mesh_buf->ncomp_buf, mesh_buf);
-	
-	icou = 0;
-	icou = set_transparent_mesh_patches_to_buf(view_s->shading_mode, mesh_s, mesh_m, mesh_buf);
-	
-	glBindVertexArray(mesh_trans_VAO->id_VAO);
-	Const_VAO_4_Phong(mesh_trans_VAO, mesh_buf);
-	glBindVertexArray(0);
-	
+		icou = 0;
+		icou = set_transparent_mesh_patches_to_buf(view_s->shading_mode, mesh_s, mesh_m, mesh_buf);
+		
+		glBindVertexArray(mesh_trans_VAO->id_VAO);
+		Const_VAO_4_Phong(mesh_trans_VAO, mesh_buf);
+		glBindVertexArray(0);
+	};
 	free(mesh_buf->v_buf);
 	free(mesh_buf);
 	return;

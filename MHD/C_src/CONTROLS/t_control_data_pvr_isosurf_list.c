@@ -88,16 +88,6 @@ void init_pvr_iso_ctl_list(struct pvr_iso_ctl_list *head){
 	return;
 };
 
-void clear_pvr_iso_ctl_list(struct pvr_iso_ctl_list *head){
-    head = head->_next;
-    while (head != NULL) {
-		dealloc_pvr_isosurf_ctl_c(head->pvr_iso_c);
-		free(head);
-        head = head->_next;
-	}
-	return;
-};
-
 struct pvr_iso_ctl_list *add_pvr_iso_ctl_list_after(struct pvr_iso_ctl_list *current){
 	struct pvr_iso_ctl_list *added;
 	struct pvr_iso_ctl_list *old_next;
@@ -134,6 +124,13 @@ void delete_pvr_iso_ctl_list(struct pvr_iso_ctl_list *current){
     if (old_next != NULL) old_next->_prev = old_prev;
 	return;
 };
+void clear_pvr_iso_ctl_list(struct pvr_iso_ctl_list *head){
+	while (head->_next != NULL) {
+		delete_pvr_iso_ctl_list(head->_next);
+	}
+	return;
+};
+
 
 int count_pvr_iso_ctl_list(struct pvr_iso_ctl_list *head){
 	int num = 0;

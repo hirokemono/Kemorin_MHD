@@ -46,7 +46,7 @@ struct kemoviewer_type *single_kemoview;
 
 - (IBAction)newDocument:(id)sender
 {
-	NSLog(@"newDocument in Kemoview_CocoaAppDelegate:");
+//	NSLog(@"newDocument in Kemoview_CocoaAppDelegate:");
 	
 	// "WinController"インスタンスを生成する。
 	[[KemoviewDragDropWindow alloc] init];

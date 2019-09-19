@@ -91,16 +91,6 @@ void init_lic_masking_ctl_list(struct lic_masking_ctl_list *head){
 	return;
 };
 
-void clear_lic_masking_ctl_list(struct lic_masking_ctl_list *head){
-    head = head->_next;
-    while (head != NULL) {
-		dealloc_lic_masking_ctl_c(head->lic_mask_c);
-		free(head);
-        head = head->_next;
-	}
-	return;
-};
-
 struct lic_masking_ctl_list *add_lic_masking_ctl_list_after(struct lic_masking_ctl_list *current){
 	struct lic_masking_ctl_list *added;
 	struct lic_masking_ctl_list *old_next;
@@ -137,6 +127,13 @@ void delete_lic_masking_ctl_list(struct lic_masking_ctl_list *current){
     if (old_next != NULL) old_next->_prev = old_prev;
 	return;
 };
+void clear_lic_masking_ctl_list(struct lic_masking_ctl_list *head){
+	while (head->_next != NULL) {
+		delete_lic_masking_ctl_list(head->_next);
+	}
+	return;
+};
+
 
 int count_lic_masking_ctl_list(struct lic_masking_ctl_list *head){
 	int num = 0;

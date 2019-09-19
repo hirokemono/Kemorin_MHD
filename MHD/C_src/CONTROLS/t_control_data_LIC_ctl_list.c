@@ -73,16 +73,6 @@ void init_LIC_PVR_ctl_list(struct LIC_PVR_ctl_list *head){
 	return;
 };
 
-void clear_LIC_PVR_ctl_list(struct LIC_PVR_ctl_list *head){
-    head = head->_next;
-    while (head != NULL) {
-		dealloc_LIC_rendering_ctl_c(head->lic_render_c);
-		free(head);
-		head = head->_next;
-	}
-	return;
-};
-
 struct LIC_PVR_ctl_list *add_LIC_PVR_ctl_list_after(struct LIC_PVR_ctl_list *current){
 	struct LIC_PVR_ctl_list *added;
 	struct LIC_PVR_ctl_list *old_next;
@@ -119,6 +109,13 @@ void delete_LIC_PVR_ctl_list(struct LIC_PVR_ctl_list *current){
     if (old_next != NULL) old_next->_prev = old_prev;
 	return;
 };
+void clear_LIC_PVR_ctl_list(struct LIC_PVR_ctl_list *head){
+	while (head->_next != NULL) {
+		delete_LIC_PVR_ctl_list(head->_next);
+	}
+	return;
+};
+
 
 int count_LIC_PVR_ctl_list(struct LIC_PVR_ctl_list *head){
 	int num = 0;

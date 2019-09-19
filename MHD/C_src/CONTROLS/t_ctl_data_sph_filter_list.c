@@ -121,16 +121,6 @@ void init_sph_filter_ctl_list(struct sph_filter_ctl_list *head){
 	return;
 };
 
-void clear_sph_filter_ctl_list(struct sph_filter_ctl_list *head){
-    head = head->_next;
-    while (head != NULL) {
-		dealloc_sph_filter_ctl_c(head->sph_filter_c);
-		free(head);
-        head = head->_next;
-	}
-	return;
-};
-
 struct sph_filter_ctl_list *add_sph_filter_ctl_list_after(struct sph_filter_ctl_list *current){
 	struct sph_filter_ctl_list *added;
 	struct sph_filter_ctl_list *old_next;
@@ -167,6 +157,13 @@ void delete_sph_filter_ctl_list(struct sph_filter_ctl_list *current){
     if (old_next != NULL) old_next->_prev = old_prev;
 	return;
 };
+void clear_sph_filter_ctl_list(struct sph_filter_ctl_list *head){
+	while (head->_next != NULL) {
+		delete_sph_filter_ctl_list(head->_next);
+	}
+	return;
+};
+
 
 int count_sph_filter_ctl_list(struct sph_filter_ctl_list *head){
 	int num = 0;

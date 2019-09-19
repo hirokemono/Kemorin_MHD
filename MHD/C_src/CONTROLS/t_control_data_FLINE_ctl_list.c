@@ -73,16 +73,6 @@ void init_FLINE_ctl_list(struct FLINE_ctl_list *head){
 	return;
 };
 
-void clear_FLINE_ctl_list(struct FLINE_ctl_list *head){
-    head = head->_next;
-    while (head != NULL) {
-		dealloc_fieldline_ctl_c(head->fldlines_c);
-		free(head);
-        head = head->_next;
-	}
-	return;
-};
-
 struct FLINE_ctl_list *add_FLINE_ctl_list_after(struct FLINE_ctl_list *current){
 	struct FLINE_ctl_list *added;
 	struct FLINE_ctl_list *old_next;
@@ -117,6 +107,12 @@ void delete_FLINE_ctl_list(struct FLINE_ctl_list *current){
 	
     old_prev->_next = old_next;
     if (old_next != NULL) old_next->_prev = old_prev;
+	return;
+};
+void clear_FLINE_ctl_list(struct FLINE_ctl_list *head){
+	while (head->_next != NULL) {
+		delete_FLINE_ctl_list(head->_next);
+	}
 	return;
 };
 

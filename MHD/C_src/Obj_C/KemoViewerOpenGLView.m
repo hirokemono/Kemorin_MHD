@@ -456,6 +456,8 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 			NSOpenGLPFADepthSize,    24,
 			NSOpenGLPFAStencilSize,   8,
 			NSOpenGLPFAMultisample,
+//			NSOpenGLPFASampleBuffers, 1,
+//			NSOpenGLPFASamples, 4, 
 			0
 		};
 		NSOpenGLPixelFormat *pixelFormat = [[[NSOpenGLPixelFormat alloc] initWithAttributes:attr] autorelease];

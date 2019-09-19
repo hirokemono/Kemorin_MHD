@@ -176,6 +176,7 @@ void cube_surf_VBO(GLfloat fSize, struct VAO_ids *VAO_quad, struct gl_strided_bu
 	
 	GLenum ErrorCheckValue = glGetError();
 	
+	glBindVertexArray(VAO_quad->id_VAO);
 	Const_VAO_4_Phong(VAO_quad, gl_buf);
 	
 	

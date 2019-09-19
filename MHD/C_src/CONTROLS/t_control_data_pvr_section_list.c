@@ -111,15 +111,6 @@ void init_pvr_section_ctl_list(struct pvr_sect_ctl_list *head){
 	return;
 };
 
-void clear_pvr_section_ctl_list(struct pvr_sect_ctl_list *head){
-    head = head->_next;
-    while (head != NULL) {
-		dealloc_pvr_section_ctl_c(head->pvr_sect_c);
-		free(head);
-        head = head->_next;
-	}
-	return;
-};
 
 struct pvr_sect_ctl_list *add_pvr_section_ctl_list_after(struct pvr_sect_ctl_list *current){
 	struct pvr_sect_ctl_list *added;
@@ -155,6 +146,12 @@ void delete_pvr_section_ctl_list(struct pvr_sect_ctl_list *current){
 	
     old_prev->_next = old_next;
     if (old_next != NULL) old_next->_prev = old_prev;
+	return;
+};
+void clear_pvr_section_ctl_list(struct pvr_sect_ctl_list *head){
+	while (head->_next != NULL) {
+		delete_pvr_section_ctl_list(head->_next);
+	}
 	return;
 };
 

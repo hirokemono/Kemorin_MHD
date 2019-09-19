@@ -71,16 +71,6 @@ void init_PVR_ctl_list(struct PVR_ctl_list *head){
 	return;
 };
 
-void clear_PVR_ctl_list(struct PVR_ctl_list *head){
-    head =  head->_next;
-    while (head != NULL) {
-		dealloc_volume_rendering_ctl_c(head->v_render_c);
-		free(head);
-		head =  head->_next;
-	}
-	return;
-};
-
 struct PVR_ctl_list *add_PVR_ctl_list_after(struct PVR_ctl_list *current){
 	struct PVR_ctl_list *added;
 	struct PVR_ctl_list *old_next;
@@ -117,6 +107,13 @@ void delete_PVR_ctl_list(struct PVR_ctl_list *current){
     if (old_next != NULL) old_next->_prev = old_prev;
 	return;
 };
+void clear_PVR_ctl_list(struct PVR_ctl_list *head){
+	while (head->_next != NULL) {
+		delete_PVR_ctl_list(head->_next);
+	}
+	return;
+};
+
 
 int count_PVR_ctl_list(struct PVR_ctl_list *head){
 	int num = 0;

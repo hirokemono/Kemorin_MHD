@@ -73,16 +73,6 @@ void init_PSF_ctl_list(struct PSF_ctl_list *head){
 	return;
 };
 
-void clear_PSF_ctl_list(struct PSF_ctl_list *head){
-    head = head->_next;
-    while (head != NULL) {
-		dealloc_sectioning_ctl_c(head->sections_c);
-		free(head);
-        head = head->_next;
-	}
-	return;
-};
-
 struct PSF_ctl_list *add_PSF_ctl_list_after(struct PSF_ctl_list *current){
 	struct PSF_ctl_list *added;
 	struct PSF_ctl_list *old_next;
@@ -119,6 +109,13 @@ void delete_PSF_ctl_list(struct PSF_ctl_list *current){
     if (old_next != NULL) old_next->_prev = old_prev;
 	return;
 };
+void clear_PSF_ctl_list(struct PSF_ctl_list *head){
+	while (head->_next != NULL) {
+		delete_PSF_ctl_list(head->_next);
+	}
+	return;
+};
+
 
 int count_PSF_ctl_list(struct PSF_ctl_list *head){
 	int num = 0;

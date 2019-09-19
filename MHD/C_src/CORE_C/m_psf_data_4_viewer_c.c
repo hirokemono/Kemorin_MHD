@@ -245,8 +245,9 @@ void deallc_all_fline_data(struct psf_data *viz_s){
 };
 
 
-void alloc_vtk_fields_list_c(struct vtk_field *vtk_list){
-	vtk_list = (struct vtk_field *)malloc(sizeof(struct vtk_field));
+struct vtk_field *alloc_vtk_fields_list_c(){
+	struct vtk_field *vtk_list = (struct vtk_field *)malloc(sizeof(struct vtk_field));
+	return vtk_list;
 }
 
 void alloc_vtk_field_data_c(vtk_fields_t *vtk_s){
