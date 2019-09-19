@@ -27,7 +27,7 @@
 !
 !
 !>      Structure for boundary velocity spectr
-      type sph_velocity_BC_spectr
+      type sph_vector_BC_spectr
 !>        Fixed poloidal velocity spectrum for ICB
         real(kind= kreal), allocatable :: vp_ICB_bc(:)
 !>        Fixed toroidal velocity spectrum for ICB
@@ -36,7 +36,7 @@
         real(kind= kreal), allocatable :: vp_CMB_bc(:)
 !>        Fixed toroidal velocity spectrum for CMB
         real(kind= kreal), allocatable :: vt_CMB_bc(:)
-      end type sph_velocity_BC_spectr
+      end type sph_vector_BC_spectr
 !
 !>      Structure for boundary conditions
       type sph_MHD_boundary_data
@@ -50,7 +50,7 @@
         type(sph_boundary_type) :: sph_bc_C
 !
 !>        Structure for boundary velocity spectr
-        type(sph_velocity_BC_spectr) :: bc_Uspectr
+        type(sph_vector_BC_spectr) :: bc_Uspectr
 !
 !
 !>        Structure for FDM matrix of center
@@ -80,7 +80,7 @@
       subroutine alloc_vsp_bc_array(jmax, bc_Uspectr)
 !
       integer(kind= kint), intent(in) :: jmax
-      type(sph_velocity_BC_spectr), intent(inout) :: bc_Uspectr
+      type(sph_vector_BC_spectr), intent(inout) :: bc_Uspectr
 !
       allocate(bc_Uspectr%vp_ICB_bc(jmax))
       allocate(bc_Uspectr%vt_ICB_bc(jmax))
@@ -100,7 +100,7 @@
 !
       subroutine dealloc_vsp_bc_array(bc_Uspectr)
 !
-      type(sph_velocity_BC_spectr), intent(inout) :: bc_Uspectr
+      type(sph_vector_BC_spectr), intent(inout) :: bc_Uspectr
 !
       deallocate(bc_Uspectr%vp_ICB_bc, bc_Uspectr%vt_ICB_bc)
       deallocate(bc_Uspectr%vp_CMB_bc, bc_Uspectr%vt_CMB_bc)

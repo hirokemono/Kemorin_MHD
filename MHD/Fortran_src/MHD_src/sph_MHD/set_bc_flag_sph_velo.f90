@@ -15,7 +15,7 @@
 !!        type(boundary_condition_list), intent(in) :: velo_nod
 !!        type(boundary_condition_list), intent(in) :: torque_surf
 !!        type(sph_boundary_type), intent(inout) :: sph_bc_U
-!!        type(sph_velocity_BC_spectr), intent(inout) :: bc_Uspectr
+!!        type(sph_vector_BC_spectr), intent(inout) :: bc_Uspectr
 !!@endverbatim
 !
       module set_bc_flag_sph_velo
@@ -54,7 +54,7 @@
       type(boundary_condition_list), intent(in) :: torque_surf
 !
       type(sph_boundary_type), intent(inout) :: sph_bc_U
-      type(sph_velocity_BC_spectr), intent(inout) :: bc_Uspectr
+      type(sph_vector_BC_spectr), intent(inout) :: bc_Uspectr
 !
       integer(kind = kint) :: i
       integer(kind = kint) :: igrp_icb, igrp_cmb

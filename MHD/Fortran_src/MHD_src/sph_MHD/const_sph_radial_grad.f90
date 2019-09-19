@@ -54,7 +54,7 @@
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(fdm_matrices), intent(in) :: r_2nd
 !!        type(sph_boundary_type), intent(in) :: sph_bc_U
-!!        type(sph_velocity_BC_spectr), intent(in) :: bc_Uspectr
+!!        type(sph_vector_BC_spectr), intent(in) :: bc_Uspectr
 !!        type(phys_data), intent(inout) :: rj_fld
 !!@endverbatim
 !!
@@ -144,7 +144,7 @@
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
       type(sph_boundary_type), intent(in) :: sph_bc_U
-      type(sph_velocity_BC_spectr), intent(in) :: bc_Uspectr
+      type(sph_vector_BC_spectr), intent(in) :: bc_Uspectr
       type(fdm2_free_slip), intent(in) :: fdm2_free_ICB, fdm2_free_CMB
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
       integer(kind = kint), intent(in) :: is_velo, is_vort
@@ -216,7 +216,7 @@
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
       type(sph_boundary_type), intent(in) :: sph_bc_U
-      type(sph_velocity_BC_spectr), intent(in) :: bc_Uspectr
+      type(sph_vector_BC_spectr), intent(in) :: bc_Uspectr
       type(fdm2_free_slip), intent(in) :: fdm2_free_ICB, fdm2_free_CMB
       integer(kind = kint), intent(in) :: is_fld
 !

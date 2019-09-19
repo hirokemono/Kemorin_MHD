@@ -76,7 +76,7 @@
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(sph_boundary_type), intent(in) :: sph_bc_U
-      type(sph_velocity_BC_spectr), intent(in) :: bc_Uspectr
+      type(sph_vector_BC_spectr), intent(in) :: bc_Uspectr
       type(fdm2_free_slip), intent(in) :: fdm2_free_ICB, fdm2_free_CMB
       type(band_matrices_type), intent(in) :: band_vp_evo, band_vt_evo
       type(phys_address), intent(in) :: ipol, itor
@@ -208,7 +208,7 @@
       integer(kind = kint), intent(in) :: is_velo
       type(sph_rj_grid), intent(in) :: sph_rj
       type(sph_boundary_type), intent(in) :: sph_bc_U
-      type(sph_velocity_BC_spectr), intent(in) :: bc_Uspectr
+      type(sph_vector_BC_spectr), intent(in) :: bc_Uspectr
       type(fdm2_free_slip), intent(in) :: fdm2_free_ICB, fdm2_free_CMB
 !
       type(phys_data), intent(inout) :: rj_fld
