@@ -145,10 +145,6 @@ void set_GlfwWindowSize(int width, int height){
 	glfwSetWindowSize(glfw_window, width, height);
 };
 
-void windowSizeCB(GLFWwindow *window, int width, int height) {
-	printf("windowSizeCB %d %d\n", width, height);
-    kemoview_update_projection_by_viewer_size(width, height);
-}
 void mouseScrollCB(GLFWwindow *window, double x, double y) {
 /*	printf("mouseScrollCB %.1lf %.1lf\n", x, y);*/
     GLdouble newScale = x + y;
@@ -278,9 +274,6 @@ GLFWwindow * open_kemoviwer_window(int npixel_x, int npixel_y){
 
 
 void glfw_view_modifier_init(GLFWwindow* window){
-	/* Set callback for window size changing */
-	glfwSetWindowSizeCallback(window, windowSizeCB);
-	
 	/* set callback for mouse button */
 	glfwSetMouseButtonCallback(window, mouseButtonCB);
 	/* set callback for cursor position */

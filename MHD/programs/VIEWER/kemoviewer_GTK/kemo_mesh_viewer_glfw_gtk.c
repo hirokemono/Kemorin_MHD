@@ -3,8 +3,8 @@
 
 #include "kemo_mesh_viewer_glfw_gtk.h"
 
-#define NPIX_X  800
-#define NPIX_Y  640
+#define NPIX_X  960
+#define NPIX_Y  800
 
 struct kemoviewer_type *single_kemoview;
 
@@ -85,6 +85,14 @@ void dropFileToGlfw_CB(GLFWwindow *window, int num, const char **paths) {
 		filename = kemoview_init_kvstring_by_string(paths[i]);
 		open_kemoviewer_file_glfw(filename, mbot, gtk_win);
 	}
+}
+void windowSizeCB(GLFWwindow *window, int width, int height) {
+/*	printf("windowSizeCB %d %d\n", width, height); */
+	kemoview_update_projection_by_viewer_size(width, height);
+	update_windowsize_menu(mbot->view_menu, gtk_win);
+}
+void frameBufferSizeCB(GLFWwindow *window, int nx_buf, int ny_buf){
+	printf("frameBufferSizeCB %d %d\n", nx_buf, ny_buf);
 }
 
 /* Main GTK window */
@@ -188,6 +196,8 @@ int draw_mesh_kemo(int iflag_streo_shutter, int iflag_dmesh) {
     
 	/* Create a windowed mode window and its OpenGL context */
 	glfw_win = open_kemoviwer_window(NPIX_X, NPIX_Y);
+	int nx_buf, ny_buf;
+	glfwGetFramebufferSize(glfw_win, &nx_buf, &ny_buf);
 	
 	fprintf(
 			stdout,
@@ -202,6 +212,11 @@ int draw_mesh_kemo(int iflag_streo_shutter, int iflag_dmesh) {
 	/* Set Cllback for drug and Drop into window */
 	glfwSetDropCallback(glfw_win, dropFileToGlfw_CB);
 	
+	/* Set callback for window size changing */
+	glfwSetWindowSizeCallback(glfw_win, windowSizeCB);
+	/* Set callback for window framebuffer size changing
+	glfwSetFramebufferSizeCallback(glfw_win, frameBufferSizeCB);
+	*/
 	/* set callback for window focus */
 	glfwSetWindowFocusCallback(glfw_win, glfwWindowFocus_CB);
 	/* set callback for window focus */
