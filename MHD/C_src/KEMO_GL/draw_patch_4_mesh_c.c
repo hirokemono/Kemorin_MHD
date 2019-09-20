@@ -48,8 +48,8 @@ void set_trans_mesh_VAO(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m
 		icou = set_transparent_mesh_patches_to_buf(view_s->shading_mode, mesh_s, mesh_m, mesh_buf);
 		
 		Const_VAO_4_Phong(mesh_trans_VAO, mesh_buf);
+		free(mesh_buf->v_buf);
 	};
-	free(mesh_buf->v_buf);
 	free(mesh_buf);
 	return;
 };
