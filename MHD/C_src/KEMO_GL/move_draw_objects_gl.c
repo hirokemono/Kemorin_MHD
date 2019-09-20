@@ -161,6 +161,7 @@ static void quick_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_fl
 		draw_map_objects_VAO(kemo_mesh->mesh_m, view_s, kemo_VAOs->map_VAO, kemo_shaders);
 	} else {
 		drawgl_patch_with_phong(view_s, kemo_VAOs->grid_VAO[2], kemo_shaders);
+		
 		drawgl_lines(view_s, kemo_VAOs->fline_VAO[1], kemo_shaders);
 		
 		iflag_psf = sort_by_patch_distance_psfs(kemo_psf->psf_d, kemo_psf->psf_m,
@@ -218,8 +219,8 @@ static void update_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_f
 		} else {
 			drawgl_lines(view_s, kemo_VAOs->fline_VAO[1], kemo_shaders);
 		};
-		
-		iflag_psf = sort_by_patch_distance_psfs(kemo_psf->psf_d, kemo_psf->psf_m,
+
+ 		iflag_psf = sort_by_patch_distance_psfs(kemo_psf->psf_d, kemo_psf->psf_m,
 					kemo_psf->psf_a, view_s);
 		iflag_psf = iflag_psf + check_draw_psf(kemo_psf->psf_a);
 		set_PSF_solid_objects_VAO(view_s, kemo_psf->psf_d, kemo_psf->psf_m,

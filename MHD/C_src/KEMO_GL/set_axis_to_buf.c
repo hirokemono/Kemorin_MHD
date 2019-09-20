@@ -171,17 +171,15 @@ static void set_vertexs_for_axis(struct view_element *view_s, double dist,
 	x_charaz[ 2] = z_text_z1; x_charaz[ 5] = z_text_z1;
 	x_charaz[ 8] = z_text_z1; x_charaz[11] = z_text_z2;
 	x_charaz[14] = z_text_z2; x_charaz[17] = z_text_z2;
-	
-	/*
+/*
 	 printf("l_axis %e %e %e \n",l_axis[0],l_axis[1],l_axis[2]);
 	 printf("label_ratio %e %e %e \n",label_ratio[0],label_ratio[1],label_ratio[2]);
 	 printf("x_text_x1 %e %e %e %e \n",x_text_x1,x_text_x2,x_text_z1,x_text_z2);
 	 printf("y_text_y1 %e %e %e %e %e %e \n",y_text_y1,y_text_y2,y_text_y3,
 	 y_text_z1,y_text_z2,y_text_z3);
 	 printf("z_text_z1 %e %e %e %e \n",z_text_z1,z_text_z2,z_text_x1,z_text_x2);
-	 */
-	/*  Draw */
-	return;
+*/
+	 return;
 }
 
 static int set_axis_rod_to_buf(int ncorner, float radius, 
