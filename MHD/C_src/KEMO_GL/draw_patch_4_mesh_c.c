@@ -19,9 +19,7 @@ static int set_solid_mesh_patch_VAO(int shading_mode,
 	
 	icou = set_solid_mesh_patches_to_buf(shading_mode, mesh_s, mesh_m, mesh_buf);
 	
-	glBindVertexArray(mesh_VAO->id_VAO);
 	Const_VAO_4_Phong(mesh_VAO, mesh_buf);
-	glBindVertexArray(0);
 	return num_patch;
 }
 
@@ -49,9 +47,7 @@ void set_trans_mesh_VAO(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m
 		icou = 0;
 		icou = set_transparent_mesh_patches_to_buf(view_s->shading_mode, mesh_s, mesh_m, mesh_buf);
 		
-		glBindVertexArray(mesh_trans_VAO->id_VAO);
 		Const_VAO_4_Phong(mesh_trans_VAO, mesh_buf);
-		glBindVertexArray(0);
 	};
 	free(mesh_buf->v_buf);
 	free(mesh_buf);
@@ -76,9 +72,7 @@ static int set_mesh_grids_VAO(struct viewer_mesh *mesh_s, struct mesh_menu_val *
 	icou = 0;
 	icou = set_mesh_grid_to_buf(mesh_s, mesh_m, mesh_buf);
 
-	glBindVertexArray(mesh_VAO->id_VAO);
 	Const_VAO_4_Phong(mesh_VAO, mesh_buf);
-	glBindVertexArray(0);
 	return num_edge;
 }
 
@@ -96,9 +90,7 @@ static int set_mesh_nodes_ico_VAO(struct viewer_mesh *mesh_s, struct mesh_menu_v
 	icou = 0;
 	icou = set_mesh_node_to_buf(mesh_s, mesh_m, mesh_buf);
 	
-	glBindVertexArray(mesh_VAO->id_VAO);
 	Const_VAO_4_Phong(mesh_VAO, mesh_buf);
-	glBindVertexArray(0);
 return num_patch;
 }
 

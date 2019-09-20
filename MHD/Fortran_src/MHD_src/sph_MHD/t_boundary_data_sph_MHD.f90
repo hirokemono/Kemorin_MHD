@@ -8,8 +8,15 @@
 !!
 !!
 !!@verbatim
-!!      subroutine alloc_vsp_bc_array(jmax, sph_MHD_bc)
-!!      subroutine dealloc_vsp_bc_array(sph_MHD_bc)
+!!      subroutine alloc_sph_scalar_bc_array(jmax, bc_Sspectr)
+!!        type(sph_scalar_BC_spectr), intent(inout) :: bc_Sspectr
+!!      subroutine alloc_sph_vector_bc_array(jmax, sph_MHD_bc)
+!!        type(sph_vector_BC_spectr), intent(inout) :: bc_Uspectr
+!!
+!!      subroutine dealloc_sph_scalar_bc_array(bc_Sspectr)
+!!        type(sph_scalar_BC_spectr), intent(inout) :: bc_Sspectr
+!!      subroutine dealloc_sph_vector_bc_array(sph_MHD_bc)
+!!        type(sph_vector_BC_spectr), intent(inout) :: bc_Uspectr
 !!@endverbatim
 !!
 !!@n @param jmax    number of modes for spherical harmonics @f$L*(L+2)@f$
@@ -20,23 +27,12 @@
 !
       use m_precision
       use t_boundary_params_sph_MHD
+      use t_boundary_sph_spectr
       use t_coef_fdm2_MHD_boundaries
       use t_coef_fdm4_MHD_boundaries
 !
       implicit none
 !
-!
-!>      Structure for boundary velocity spectr
-      type sph_vector_BC_spectr
-!>        Fixed poloidal velocity spectrum for ICB
-        real(kind= kreal), allocatable :: vp_ICB_bc(:)
-!>        Fixed toroidal velocity spectrum for ICB
-        real(kind= kreal), allocatable :: vt_ICB_bc(:)
-!>        Fixed poloidal velocity spectrum for CMB
-        real(kind= kreal), allocatable :: vp_CMB_bc(:)
-!>        Fixed toroidal velocity spectrum for CMB
-        real(kind= kreal), allocatable :: vt_CMB_bc(:)
-      end type sph_vector_BC_spectr
 !
 !>      Structure for boundary conditions
       type sph_MHD_boundary_data
@@ -51,6 +47,12 @@
 !
 !>        Structure for boundary velocity spectr
         type(sph_vector_BC_spectr) :: bc_Uspectr
+!>        Structure for boundary magnetic spectr
+        type(sph_vector_BC_spectr) :: bc_Bspectr
+!>        Structure for boundary temeprture spectr
+        type(sph_scalar_BC_spectr) :: bc_Tspectr
+!>        Structure for boundary composition spectr
+        type(sph_scalar_BC_spectr) :: bc_Cspectr
 !
 !
 !>        Structure for FDM matrix of center
@@ -70,43 +72,5 @@
 !>        Structure for 4th order FDM matrix of free slip boundary at CMB
         type(fdm4_CMB_vpol) :: fdm4_free_CMB
       end type sph_MHD_boundary_data
-!
-! -----------------------------------------------------------------------
-!
-      contains
-!
-! -----------------------------------------------------------------------
-!
-      subroutine alloc_vsp_bc_array(jmax, bc_Uspectr)
-!
-      integer(kind= kint), intent(in) :: jmax
-      type(sph_vector_BC_spectr), intent(inout) :: bc_Uspectr
-!
-      allocate(bc_Uspectr%vp_ICB_bc(jmax))
-      allocate(bc_Uspectr%vt_ICB_bc(jmax))
-      allocate(bc_Uspectr%vp_CMB_bc(jmax))
-      allocate(bc_Uspectr%vt_CMB_bc(jmax))
-!
-      if(jmax .le. 0) return
-      bc_Uspectr%vp_ICB_bc = 0.0d0
-      bc_Uspectr%vt_ICB_bc = 0.0d0
-      bc_Uspectr%vp_CMB_bc = 0.0d0
-      bc_Uspectr%vt_CMB_bc = 0.0d0
-!
-      end subroutine alloc_vsp_bc_array
-!
-! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-      subroutine dealloc_vsp_bc_array(bc_Uspectr)
-!
-      type(sph_vector_BC_spectr), intent(inout) :: bc_Uspectr
-!
-      deallocate(bc_Uspectr%vp_ICB_bc, bc_Uspectr%vt_ICB_bc)
-      deallocate(bc_Uspectr%vp_CMB_bc, bc_Uspectr%vt_CMB_bc)
-!
-      end subroutine dealloc_vsp_bc_array
-!
-! -----------------------------------------------------------------------
 !
       end module t_boundary_data_sph_MHD

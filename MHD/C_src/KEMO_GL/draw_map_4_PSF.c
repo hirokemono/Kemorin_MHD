@@ -15,10 +15,7 @@ void set_map_patch_VAO(int ist_psf, int ied_psf,
 	
 	set_psf_map_to_buf(ist_psf, ied_psf, psf_s, psf_a, map_buf);
 	
-	glBindVertexArray(psf_VAO->id_VAO);
-	Const_VAO_4_Simple(psf_VAO, map_buf);
-	glBindVertexArray(0);
-	
+	Const_VAO_4_Simple(psf_VAO, map_buf);	
 	return;	
 }
 
@@ -51,9 +48,7 @@ void set_map_PSF_isolines_VAO(struct psf_data **psf_s, struct psf_menu_val **psf
 		};
 	};
 	
-	glBindVertexArray(psf_VAO->id_VAO);
 	Const_VAO_4_Simple(psf_VAO, map_buf);
-	glBindVertexArray(0);
 	return;
 }
 

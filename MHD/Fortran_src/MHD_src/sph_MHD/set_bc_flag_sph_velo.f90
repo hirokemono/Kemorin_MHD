@@ -27,6 +27,7 @@
       use m_boundary_condition_IDs
       use t_boundary_data_sph_MHD
       use t_boundary_params_sph_MHD
+      use t_boundary_sph_spectr
 !
       implicit none
 !
@@ -63,7 +64,7 @@
       call find_both_sides_of_boundaries(sph_rj, radial_rj_grp,        &
      &   velo_nod, torque_surf, sph_bc_U, igrp_icb, igrp_cmb)
 !
-      call alloc_vsp_bc_array(sph_rj%nidx_rj(2), bc_Uspectr)
+      call alloc_sph_vector_bc_array(sph_rj%nidx_rj(2), bc_Uspectr)
 !
 !
       i = abs(igrp_icb)

@@ -23,9 +23,7 @@ void set_PSF_patch_VAO(int shading_mode, int ist_psf, int ied_psf,
 	set_psf_nodes_to_buf(ist_psf, ied_psf, shading_mode, 
 								   psf_s, psf_m, psf_a, psf_buf);
 	
-	glBindVertexArray(psf_VAO->id_VAO);
 	Const_VAO_4_Phong(psf_VAO, psf_buf);
-	glBindVertexArray(0);
 	return;	
 }
 
@@ -49,7 +47,6 @@ void set_PSF_texture_VAO(int shading_mode, int ist_psf, int ied_psf,
 	i = psf_a->ipsf_viz_far[ist_psf]-1;
 	psf_m[i]->texture_name[0] = set_texture_to_buffer(psf_m[i]->texture_width, psf_m[i]->texture_height,
 				psf_m[i]->texture_rgba);
-	glBindVertexArray(0);
 	
 	return;	
 }
@@ -79,9 +76,7 @@ void set_PSF_arrow_VAO(struct psf_data **psf_s, struct psf_menu_val **psf_m, str
 		};
 	};
 	
-	glBindVertexArray(psf_VAO->id_VAO);
 	Const_VAO_4_Phong(psf_VAO, psf_buf);
-	glBindVertexArray(0);
 	return;	
 }
 
@@ -116,9 +111,7 @@ void set_PSF_isoline_VAO(struct view_element *view_s,
 		};
 	};
 	
-	glBindVertexArray(psf_VAO->id_VAO);
 	Const_VAO_4_Phong(psf_VAO, psf_buf);
-	glBindVertexArray(0);
 	return;
 }
 
@@ -141,9 +134,6 @@ void set_PSF_solid_objects_VAO(struct view_element *view_s,
 		
 	set_color_code_for_psfs(psf_s, psf_m, psf_a);
 	
-	glDisable(GL_CULL_FACE);
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	glBindVertexArray(psf_solid_VAO[1]->id_VAO);
 	set_PSF_texture_VAO(view_s->shading_mode,
 				IZERO, psf_a->istack_solid_psf_txtur, 
 				psf_s, psf_m, psf_a, psf_solid_VAO[1], psf_buf);
@@ -186,6 +176,9 @@ void set_PSF_trans_objects_VAO(struct view_element *view_s,
 void draw_PSF_solid_objects_VAO(struct psf_data **psf_s, struct psf_menu_val **psf_m,
 			struct kemo_array_control *psf_a, struct view_element *view_s, 
 			struct VAO_ids **psf_solid_VAO, struct kemoview_shaders *kemo_shaders){
+	
+	glDisable(GL_CULL_FACE);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	if(psf_solid_VAO[1]->npoint_draw >0){
 		glUseProgram(kemo_shaders->phong_texure->programId);
 		transfer_matrix_to_shader(kemo_shaders->phong_texure, view_s);

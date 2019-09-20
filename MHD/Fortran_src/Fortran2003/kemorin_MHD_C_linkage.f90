@@ -293,8 +293,6 @@
 !    int kemoview_get_stereo_shutter();
 !    int kemoview_get_anaglyph_flag();
 !    
-!    void kemoview_draw_glut_menubottun();
-!    
 !    /* subroutines for surafces */
 !    void kemoview_set_PSF_num_loaded(int num);
 !    void kemoview_set_PSF_max_loaded(int num);

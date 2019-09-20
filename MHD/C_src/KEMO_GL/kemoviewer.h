@@ -670,10 +670,7 @@ extern "C" {
     void kemoview_set_anaglyph_flag(int iflag);
     int kemoview_get_stereo_shutter(void);
     int kemoview_get_anaglyph_flag(void);
-    
-    void kemoview_draw_glut_menubottun(void);
-	void kemoview_draw_glut_menubottun3(void);
-    
+
     /* subroutines for surafces */
     void kemoview_set_PSF_num_loaded(int num);
     void kemoview_set_PSF_max_loaded(int num);

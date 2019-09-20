@@ -7,6 +7,7 @@
 
 #include "m_kemoviewer_data.h"
 #include "vartex_array_object_gl.h"
+#include "drawGL_by_VAO.h"
 #include "draw_colorbar_gl.h"
 #include "draw_fieldlines.h"
 #include "draw_coastline.h"

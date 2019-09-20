@@ -114,6 +114,7 @@ void select_stride_VBO(int inum, struct gl_strided_buffer *strided_buf){
 }
 
 void Const_VAO_4_Simple(struct VAO_ids *VAO, struct gl_strided_buffer *strided_buf){
+	glBindVertexArray(VAO->id_VAO);
 	glDeleteBuffers(1, &VAO->id_vertex);
 	
 	glGenBuffers(1, &VAO->id_vertex);
@@ -128,6 +129,7 @@ void Const_VAO_4_Simple(struct VAO_ids *VAO, struct gl_strided_buffer *strided_b
 	
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
+	glBindVertexArray(0);
 };
 
 void Const_VAO_4_Texture(struct VAO_ids *VAO, struct gl_strided_buffer *strided_buf){
@@ -148,6 +150,7 @@ void Const_VAO_4_Texture(struct VAO_ids *VAO, struct gl_strided_buffer *strided_
 };
 
 void Const_VAO_4_Phong(struct VAO_ids *VAO, struct gl_strided_buffer *strided_buf){
+	glBindVertexArray(VAO->id_VAO);
 	glDeleteBuffers(1, &VAO->id_vertex);
 
 	glGenBuffers(1, &VAO->id_vertex);
@@ -165,15 +168,33 @@ void Const_VAO_4_Phong(struct VAO_ids *VAO, struct gl_strided_buffer *strided_bu
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(2);
 	glEnableVertexAttribArray(3);
+	glBindVertexArray(0);
 	return;
 };
 
 void Const_VAO_4_Phong_Texture(struct VAO_ids *VAO, struct gl_strided_buffer *strided_buf){
-	Const_VAO_4_Phong(VAO, strided_buf);
+	glBindVertexArray(VAO->id_VAO);
+	glDeleteBuffers(1, &VAO->id_vertex);
 	
+	glGenBuffers(1, &VAO->id_vertex);
+	glBindBuffer(GL_ARRAY_BUFFER, VAO->id_vertex);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * strided_buf->num_nod_buf*strided_buf->ncomp_buf,
+				 strided_buf->v_buf, GL_STATIC_DRAW);
+
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, strided_buf->istride,
+						  (GLvoid*) (strided_buf->ist_xyz * sizeof(GL_FLOAT)));
+	glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, strided_buf->istride, 
+						  (GLvoid*) (strided_buf->ist_csurf * sizeof(GL_FLOAT)));
+	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, strided_buf->istride, 
+						  (GLvoid*) (strided_buf->ist_norm * sizeof(GL_FLOAT)));
 	glVertexAttribPointer(4, 2, GL_FLOAT, GL_FALSE, strided_buf->istride, 
 						  (GLvoid*) (strided_buf->ist_tex * sizeof(GL_FLOAT)));
+
+	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(2);
+	glEnableVertexAttribArray(3);
 	glEnableVertexAttribArray(4);
+	glBindVertexArray(0);
 	return;
 };
 

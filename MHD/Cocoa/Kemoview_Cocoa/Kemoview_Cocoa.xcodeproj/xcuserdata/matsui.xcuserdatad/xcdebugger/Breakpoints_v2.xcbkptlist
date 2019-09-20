@@ -27,16 +27,16 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "No"
+            shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "../../C_src/CONTROLS/set_rgba_table_c.c"
-            timestampString = "590426642.74357"
+            filePath = "../../C_src/KEMO_GL/move_draw_objects_gl.c"
+            timestampString = "590698987.266959"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "126"
-            endingLineNumber = "126"
-            landmarkName = "set_linear_colormap"
+            startingLineNumber = "51"
+            endingLineNumber = "51"
+            landmarkName = "init_kemoview_VAOs"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -46,45 +46,13 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "../../C_src/CONTROLS/set_rgba_table_c.c"
-            timestampString = "590426688.2660969"
+            filePath = "../../C_src/KEMO_GL/drawGL_by_VAO.c"
+            timestampString = "590698987.267488"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "127"
-            endingLineNumber = "127"
-            landmarkName = "set_linear_colormap"
-            landmarkType = "9">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "../../C_src/CONTROLS/set_rgba_table_c.c"
-            timestampString = "590426689.174644"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "128"
-            endingLineNumber = "128"
-            landmarkName = "set_linear_colormap"
-            landmarkType = "9">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "../../C_src/CONTROLS/set_rgba_table_c.c"
-            timestampString = "590426691.25893"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "129"
-            endingLineNumber = "129"
-            landmarkName = "set_linear_colormap"
+            startingLineNumber = "17"
+            endingLineNumber = "17"
+            landmarkName = "drawgl_patch_with_phong"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>

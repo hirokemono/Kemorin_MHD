@@ -24,7 +24,6 @@
 #include "set_kemoviewer_ucd_data.h"
 #include "skip_comment_c.h"
 #include "write_modelview_matrix.h"
-#include "draw_menu_bottun_gl.h"
 #include "rotate_animation.h"
 #include "set_each_psf_parameters.h"
 #include "set_each_fline_parameters.h"

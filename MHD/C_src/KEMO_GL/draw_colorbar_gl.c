@@ -30,9 +30,7 @@ void set_colorbar_box_VAO(int iflag_retina, GLfloat text_color[4], GLfloat bg_co
 	inum_quad = fade_colorbar_box_to_buf(inum_quad, cmap_s, bg_color, cbar_wk, cbar_buf);
 	inum_quad = colorbar_frame_to_buf(inum_quad, iflag_retina, text_color, cbar_wk, cbar_buf);
 	
-	glBindVertexArray(cbar_VAO->id_VAO);
 	Const_VAO_4_Simple(cbar_VAO, cbar_buf);
-	glBindVertexArray(0);
 	return;
 };
 

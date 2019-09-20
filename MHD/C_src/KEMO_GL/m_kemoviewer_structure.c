@@ -676,11 +676,6 @@ void kemoview_set_anaglyph_flag(int iflag){kemo_sgl->view_s->iflag_streo_anaglyp
 int kemoview_get_stereo_shutter(void){return kemo_sgl->view_s->iflag_streo_stutter;}
 int kemoview_get_anaglyph_flag(void){return kemo_sgl->view_s->iflag_streo_anaglyph;}
 
-void kemoview_draw_glut_menubottun(void){
-	draw_menu_by_VAO(kemo_sgl->menu_VAO, kemo_sgl->kemo_shaders);	
-};
-//void kemoview_draw_glut_menubottun3(void){draw_menubottun_gl3();}
-
 /* Subroutines for surface rendering */
 void kemoview_set_PSF_num_loaded(int num){
 	set_PSF_num_loaded(num, kemo_sgl->kemo_psf->psf_a);

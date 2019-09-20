@@ -18,6 +18,7 @@ m_kemoviewer_structure.o \
 \
 write_modelview_matrix.o \
 vartex_array_object_gl.o \
+drawGL_by_VAO.o \
 \
 psf_data_array_manager.o \
 read_data_4_kemoviewer.o \
@@ -53,7 +54,6 @@ draw_patches_4_PSF.o \
 draw_map_4_PSF.o \
 draw_coastline.o \
 draw_colorbar_gl.o \
-draw_menu_bottun_gl.o \
 \
 move_draw_objects_gl.o \
 modify_stereo_view_gl.o \
@@ -169,6 +169,27 @@ module:
 	write_image_2_bmp.o \
     set_texture_4_psf.o \
 	move_draw_objects_gl.o \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
+	>> $(MAKENAME)
+	
+	@echo \
+	vartex_array_object_gl.o: \
+	'$$(KEMO_C_GLDIR)'/vartex_array_object_gl.c \
+	vartex_array_object_gl.h \
+	kemoviewer.h \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
+	>> $(MAKENAME)
+	
+	@echo \
+	drawGL_by_VAO.o: \
+	'$$(KEMO_C_GLDIR)'/drawGL_by_VAO.c \
+	drawGL_by_VAO.h \
+	kemoviewer.h \
+	m_gl_transfer_matrix.o \
+	vartex_array_object_gl.o \
+	glsl.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)
@@ -316,7 +337,6 @@ module:
 	psf_data_array_manager.o \
 	set_kemoviewer_ucd_data.o \
 	write_modelview_matrix.o \
-	draw_menu_bottun_gl.o \
 	rotate_animation.o \
 	set_each_psf_parameters.o \
 	set_each_fline_parameters.o \
@@ -670,6 +690,7 @@ module:
 	m_kemoviewer_data.o \
 	vartex_array_object_gl.o \
 	glsl.o \
+	drawGL_by_VAO.o \
 	draw_colorbar_gl.o \
 	draw_fieldlines.o \
 	draw_coastline.o \
@@ -760,27 +781,6 @@ module:
 	glsl.o \
 	rainbow_color_code_c.o \
 	set_colorbar_to_buffer.o \
-	>> $(MAKENAME)
-	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
-	>> $(MAKENAME)
-	
-	@echo \
-	vartex_array_object_gl.o: \
-	'$$(KEMO_C_GLDIR)'/vartex_array_object_gl.c \
-	vartex_array_object_gl.h \
-	kemoviewer.h \
-	>> $(MAKENAME)
-	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
-	>> $(MAKENAME)
-	
-	@echo \
-	draw_menu_bottun_gl.o: \
-	'$$(KEMO_C_GLDIR)'/draw_menu_bottun_gl.c \
-	draw_menu_bottun_gl.h \
-	ysglfontdata.o \
-	vartex_array_object_gl.o \
-	glsl.o \
-	set_menu_bottun_to_buf.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)

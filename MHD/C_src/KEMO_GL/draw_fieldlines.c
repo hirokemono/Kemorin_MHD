@@ -18,10 +18,7 @@ void set_fieldtubes_VAO(struct psf_data *fline_s, struct fline_menu_val *fline_m
 	
 	icou = set_fieldtubes_to_buf(ncorner, fline_s, fline_m, fline_buf);
 	
-	glBindVertexArray(fline_VAO->id_VAO);
-	Const_VAO_4_Phong(fline_VAO, fline_buf);
-	glBindVertexArray(0);
-	
+	Const_VAO_4_Phong(fline_VAO, fline_buf);	
 	return;
 }
 
@@ -40,9 +37,7 @@ void set_fieldlines_VAO(struct psf_data *fline_s, struct fline_menu_val *fline_m
 	
 	icou = set_fieldlines_to_buf(fline_s, fline_m, fline_buf);
 	
-	glBindVertexArray(fline_VAO->id_VAO);
 	Const_VAO_4_Simple(fline_VAO, fline_buf);
-	glBindVertexArray(0);
 	return;
 }
 
@@ -68,47 +63,3 @@ void sel_fieldlines_VAO(struct psf_data *fline_s, struct fline_menu_val *fline_m
 	return;
 };
 
-static void draw_fieldtube_VAO(struct view_element *view_s, 
-			struct VAO_ids *fline_VAO, struct kemoview_shaders *kemo_shaders){
-	if(fline_VAO->npoint_draw <= 0) return;
-	
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	glDisable(GL_CULL_FACE);
-	
-	glUseProgram(kemo_shaders->phong->programId);
-	transfer_matrix_to_shader(kemo_shaders->phong, view_s);
-	set_phong_light_list(kemo_shaders->phong, kemo_shaders->lights);
-	
-	glBindVertexArray(fline_VAO->id_VAO);
-	glDrawArrays(GL_TRIANGLES, IZERO, fline_VAO->npoint_draw);
-	
-	return;
-};
-
-void draw_fieldlines_VAO(struct view_element *view_s, 
-			struct VAO_ids *fline_VAO, struct kemoview_shaders *kemo_shaders){
-	if(fline_VAO->npoint_draw <= 0) return;
-	
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	
-	glUseProgram(kemo_shaders->simple->programId);
-	transfer_matrix_to_shader(kemo_shaders->simple, view_s);
-	
-	glBindVertexArray(fline_VAO->id_VAO);
-	glDrawArrays(GL_LINES, IZERO, fline_VAO->npoint_draw);
-	
-	return;
-};
-
-void sel_draw_fieldlines_VAO(struct fline_menu_val *fline_m, struct view_element *view_s, 
-			struct VAO_ids **fline_VAO, struct kemoview_shaders *kemo_shaders){
-	if(fline_VAO[1]->npoint_draw <= 0) return;
-	
-	if(fline_m->fieldline_type == IFLAG_PIPE){
-		draw_fieldtube_VAO(view_s, fline_VAO[0], kemo_shaders);
-	} else {
-		draw_fieldlines_VAO(view_s, fline_VAO[1], kemo_shaders);
-	};
-	
-	return;
-};

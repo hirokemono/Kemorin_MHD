@@ -10,10 +10,7 @@ void draw_menu_by_VAO(struct VAO_ids *menu_VAO, struct kemoview_shaders *kemo_sh
 	
 	GLenum ErrorCheckValue = glGetError();
 	
-	glGenVertexArrays(1, &menu_VAO->id_VAO);
-	glBindVertexArray(menu_VAO->id_VAO);
 	Const_VAO_4_Simple(menu_VAO, strided_buf);
-	glBindVertexArray(0);
 	free(strided_buf->v_buf);
 	free(strided_buf);
 	
