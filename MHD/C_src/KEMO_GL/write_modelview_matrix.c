@@ -157,11 +157,6 @@ void write_GL_modelview_file(struct kv_string *filename, struct view_element *vi
 		mat_c0->streo_view_c->iflag_use = 1;
 		copy_GL_stereo_params_to_ctl(view, mat_c0->streo_view_c);
 	};
-    /*
-	glGetDoublev(GL_MODELVIEW_MATRIX, view->mat_object_2_eye);
-    copy_mat44_to_ctl(view->mat_object_2_eye, mat_c0->modelview_mat_ctl);
-    copy_mat44_to_ctl(view->mat_eye_2_clip, mat_c0->projection_mat_ctl);
-    */
     
 	write_modeview_file_c(filename->string, mat_c0);
 	free(mat_c0);

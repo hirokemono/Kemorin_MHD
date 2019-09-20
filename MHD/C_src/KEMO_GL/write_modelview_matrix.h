@@ -23,8 +23,6 @@
 
 /* prototypes */
 
-void GL_modelview_matrix_to_ctl(FILE *fp, struct view_element *view);
-
 void copy_GL_stereo_params_to_ctl(struct view_element *view, struct streo_view_ctl_c *streo_view_c);
 void copy_GL_modelview_params_to_ctl(struct view_element *view, struct modeview_ctl_c *mat_c);
 
