@@ -129,10 +129,12 @@ void set_linear_colormap(struct colormap_params *cmap_s,
 	return;
 }
 void set_constant_opacitymap(struct colormap_params *cmap_s,
-			double val_min, double val_max, double opaciy){
+			double val_min, double val_max, double opacity){
 	clear_real2_clist(cmap_s->opacitymap);
-	append_real2_clist(val_min, opaciy, cmap_s->opacitymap);
-	append_real2_clist(val_max, opaciy, cmap_s->opacitymap);
+	append_real2_clist(val_min, opacity, cmap_s->opacitymap);
+	append_real2_clist(val_max, opacity, cmap_s->opacitymap);
+	cmap_s->max_opacity = opacity;
+	cmap_s->min_opacity = opacity;
 	return;
 }
 void set_full_opacitymap(struct colormap_params *cmap_s,

@@ -72,7 +72,7 @@ static int set_mesh_grids_VAO(struct viewer_mesh *mesh_s, struct mesh_menu_val *
 	icou = 0;
 	icou = set_mesh_grid_to_buf(mesh_s, mesh_m, mesh_buf);
 
-	Const_VAO_4_Phong(mesh_VAO, mesh_buf);
+	Const_VAO_4_Simple(mesh_VAO, mesh_buf);
 	return num_edge;
 }
 
@@ -115,76 +115,3 @@ void set_solid_mesh_VAO(struct viewer_mesh *mesh_s, struct mesh_menu_val *mesh_m
 	free(mesh_buf);
 	return;
 };
-
-void draw_solid_mesh_VAO(struct mesh_menu_val *mesh_m, struct view_element *view_s, 
-			struct VAO_ids **mesh_VAO, struct kemoview_shaders *kemo_shaders){
-	
-	if(mesh_VAO[1]->npoint_draw > 0){
-		glEnable(GL_CULL_FACE);
-		glPolygonMode(GL_FRONT, GL_FILL);
-		glUseProgram(kemo_shaders->phong->programId);
-		transfer_matrix_to_shader(kemo_shaders->phong, view_s);
-		set_phong_light_list(kemo_shaders->phong, kemo_shaders->lights);
-	
-		glBindVertexArray(mesh_VAO[1]->id_VAO);
-		glDrawArrays(GL_LINES, IZERO, (mesh_VAO[1]->npoint_draw));
-	};
-	
-	if(mesh_VAO[2]->npoint_draw > 0){
-		glDisable(GL_CULL_FACE);
-		glPolygonMode(GL_FRONT, GL_FILL);
-		glUseProgram(kemo_shaders->phong->programId);
-		transfer_matrix_to_shader(kemo_shaders->phong, view_s);
-		set_phong_light_list(kemo_shaders->phong, kemo_shaders->lights);
-	
-		glBindVertexArray(mesh_VAO[2]->id_VAO);
-		glDrawArrays(GL_TRIANGLES, IZERO, (mesh_VAO[2]->npoint_draw));
-	};
-	
-	if(mesh_VAO[0]->npoint_draw > 0){
-		glEnable(GL_CULL_FACE);
-		if(mesh_m->polygon_mode == NORMAL_POLYGON) { 
-			glPolygonMode(GL_FRONT, GL_FILL);
-			glCullFace(GL_BACK);
-		} else if(mesh_m->polygon_mode == REVERSE_POLYGON) {
-			glPolygonMode(GL_BACK, GL_FILL);
-			glCullFace(GL_FRONT);
-		};
-	
-		glUseProgram(kemo_shaders->phong->programId);
-		transfer_matrix_to_shader(kemo_shaders->phong, view_s);
-		set_phong_light_list(kemo_shaders->phong, kemo_shaders->lights);
-	
-		glBindVertexArray(mesh_VAO[0]->id_VAO);
-		glDrawArrays(GL_TRIANGLES, IZERO, (mesh_VAO[0]->npoint_draw));
-	};
-	return;
-};
-
-void draw_trans_mesh_VAO(struct mesh_menu_val *mesh_m, struct view_element *view_s, 
-			struct VAO_ids *mesh_trans_VAO, struct kemoview_shaders *kemo_shaders){
-	if(mesh_trans_VAO->npoint_draw <= 0) return;
-	
-	glDisable(GL_CULL_FACE);
-	glDepthMask(GL_FALSE);
-	glEnable(GL_MULTISAMPLE);
-	glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	
-	glUseProgram(kemo_shaders->phong->programId);
-	transfer_matrix_to_shader(kemo_shaders->phong, view_s);
-	set_phong_light_list(kemo_shaders->phong, kemo_shaders->lights);
-	
-	glBindVertexArray(mesh_trans_VAO->id_VAO);
-	glDrawArrays(GL_TRIANGLES, IZERO, (mesh_trans_VAO->npoint_draw));
-	
-	glDisable(GL_BLEND);
-	glDepthMask(GL_TRUE);
-	glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
-	glDisable(GL_MULTISAMPLE);
-	return;
-}
-

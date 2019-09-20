@@ -48,7 +48,7 @@ void send_opacity_table_items_s(struct colormap_params *cmap_s,
 
 void set_linear_colormap(struct colormap_params *cmap_s, double val_min, double val_max);
 void set_constant_opacitymap(struct colormap_params *cmap_s,
-			double val_min, double val_max, double opaciy);
+			double val_min, double val_max, double opacity);
 void set_full_opacitymap(struct colormap_params *cmap_s, double val_min, double val_max);
 
 void copy_colormap_from_ctl(struct chara_ctl_item *colormap_mode_ctl, 

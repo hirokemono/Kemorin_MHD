@@ -11,7 +11,7 @@ void alloc_color_index_list_s(struct colormap_params *cmap_s, int id_cmode){
 	cmap_s->colormap = init_real2_clist();
 	cmap_s->opacitymap = init_real2_clist();
 	cmap_s->max_opacity = ONE;
-	cmap_s->min_opacity = ZERO;
+	cmap_s->min_opacity = ONE;
 	
     cmap_s->single_color = (double *)calloc(4,sizeof(double));
     if (cmap_s->single_color == NULL){
