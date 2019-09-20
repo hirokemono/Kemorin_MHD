@@ -28,36 +28,36 @@ struct view_element{
 	GLint gl_drawID;
 	GLint nx_window, ny_window;
 	
-	GLdouble x_lookfrom[3];
-	GLdouble x_lookat[3];
-	GLdouble shift[3];
-	GLdouble rotation[4];
-	GLdouble r_max;
-	GLdouble iso_scale;
-	GLdouble max_point[3];
-	GLdouble min_point[3];
+	double x_lookfrom[3];
+	double x_lookat[3];
+	double shift[3];
+	double rotation[4];
+	double r_max;
+	double iso_scale;
+	double max_point[3];
+	double min_point[3];
 	
-	GLdouble rotate_dragging[4];
-	GLdouble rotate_animation[4];
+	double rotate_dragging[4];
+	double rotate_animation[4];
 	
-	GLdouble mat_object_2_eye[16];
-	GLdouble mat_eye_2_clip[16];
+	double mat_object_2_eye[16];
+	double mat_eye_2_clip[16];
 	
-	GLdouble aperture; /*camera aperture*/
-	GLdouble aspect; /*camera aspect ratio*/
-	GLdouble near; /*camera near distance*/
-	GLdouble far; /*camera far   distance*/
+	double aperture; /*camera aperture*/
+	double aspect; /*camera aspect ratio*/
+	double near; /*camera near distance*/
+	double far; /*camera far   distance*/
     
-	GLdouble rotpoint[3];   /*rotation point*/
+	double rotpoint[3];   /*rotation point*/
     
-	GLdouble eye_separation; /*eye separation for streo view*/
-	GLdouble focal_length;   /*focal length for streo view*/
-	GLdouble eye_to_focal;   /*ratio of eye sparation to focal length*/
+	double eye_separation; /*eye separation for streo view*/
+	double focal_length;   /*focal length for streo view*/
+	double eye_to_focal;   /*ratio of eye sparation to focal length*/
     
 	/* spin for Animation */
-	GLdouble rRot_animate[3];
-	GLdouble rVel_animate[3];
-	GLdouble rAccel_animate[3];
+	double rRot_animate[3];
+	double rVel_animate[3];
+	double rAccel_animate[3];
     
 	int iflag_core_profile;
 	int iflag_shading_profile;
@@ -67,12 +67,12 @@ struct view_element{
 
 /* prototypes */
 
-void identity_glmat_c(GLdouble mat[16]);
+void identity_glmat_c(double mat[16]);
 
-void orthogonal_glmat_c(GLdouble left, GLdouble right, GLdouble bottom, GLdouble top,
-						GLdouble near, GLdouble far, GLdouble mat[16]);
-void orthogonalGL(GLdouble left, GLdouble right, GLdouble bottom, GLdouble top,
-			GLdouble near, GLdouble far);
+void orthogonal_glmat_c(double left, double right, double bottom, double top,
+						double near, double far, double mat[16]);
+void orthogonalGL(double left, double right, double bottom, double top,
+			double near, double far);
 
 void set_view_by_identity(void);
 void modify_view_by_struct(struct view_element *view);
@@ -114,8 +114,8 @@ void set_gl_retinamode(struct view_element *view, int i_retina);
 
 
 void set_gl_rotation_parameter(struct view_element *view, double rot_vect[4]);
-void set_gl_dragging_rotation(struct view_element *view, GLdouble rot_vect[4]);
-void set_gl_animation_rotation(struct view_element *view, GLdouble rot_vect[4]);
+void set_gl_dragging_rotation(struct view_element *view, double rot_vect[4]);
+void set_gl_animation_rotation(struct view_element *view, double rot_vect[4]);
 void set_gl_animation_rot_axis(struct view_element *view, int iaxis);
 void set_gl_animation_rot_angle(struct view_element *view, int int_degree);
 void set_gl_shift_vector(struct view_element *view, double position[3]);
@@ -124,8 +124,8 @@ void set_gl_projection_aperture(struct view_element *view, double aperture_s);
 void set_gl_stereo_parameter(struct view_element *view, double focus, double eye_sep);
 
 void send_gl_rotation_parameter(struct view_element *view, double rot_vect[4]);
-void send_gl_dragging_rotation(struct view_element *view, GLdouble rot_vect[4]);
-void send_gl_animation_rotation(struct view_element *view, GLdouble rot_vect[4]);
+void send_gl_dragging_rotation(struct view_element *view, double rot_vect[4]);
+void send_gl_animation_rotation(struct view_element *view, double rot_vect[4]);
 void send_gl_shift_vector(struct view_element *view, double position[3]);
 void send_gl_lookat_vector(struct view_element *view, double position[3]);
 double send_scalar_scale_factor(struct view_element *view);
@@ -134,22 +134,22 @@ void send_gl_projection_parameters(struct view_element *view, double *aperture_s
 								   double *near_s, double *far_s, double *aspect_s);
 
 double send_gl_stereo_focus(struct view_element *view);
-GLdouble send_gl_stereo_eyeseparation(struct view_element *view);
+double send_gl_stereo_eyeseparation(struct view_element *view);
 
 
 /* called with the start position and the window origin + size */
-void gl_startTrackball(GLdouble x, GLdouble y, struct view_element *view);
+void gl_startTrackball(double x, double y, struct view_element *view);
 /* calculated rotation based on current mouse position */
-void gl_rollToTrackball(GLdouble x, GLdouble y, struct view_element *view);
+void gl_rollToTrackball(double x, double y, struct view_element *view);
 /* add a GL rotation (dA) to an existing GL rotation (A) */
 void gl_drag_addToRotationTrackball(struct view_element *view);
 
 
-void gl_mousedolly_struct(struct view_element *view, GLdouble start[2],
-                          GLdouble x_dolly, GLdouble y_dolly);
-void gl_mousepan_struct(struct view_element *view, GLdouble start[2], 
-                        GLdouble x_pan, GLdouble y_pan);
-void gl_zooming_struct(struct view_element *view, GLdouble wheelDelta);
+void gl_mousedolly_struct(struct view_element *view, double start[2],
+                          double x_dolly, double y_dolly);
+void gl_mousepan_struct(struct view_element *view, double start[2], 
+                        double x_pan, double y_pan);
+void gl_zooming_struct(struct view_element *view, double wheelDelta);
 
 void reset_to_init_angle(struct view_element *view);
 void reset_all_view_parameter(struct view_element *view);
@@ -160,7 +160,7 @@ void view_for_yz_plane(struct view_element *view);
 void view_for_xz_plane(struct view_element *view);
 
 
-void set_3d_position_to_window_d(int point_screen[2], GLdouble xx[3], 
+void set_3d_position_to_window_d(int point_screen[2], double xx[3], 
                                  int nx_win, int ny_win, struct view_element *view);
 
 #endif

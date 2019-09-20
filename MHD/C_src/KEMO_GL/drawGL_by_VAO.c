@@ -34,15 +34,15 @@ void drawgl_lines(struct view_element *view_s,
 
 void draw_map_objects_VAO(struct view_element *view_s, 
 			struct VAO_ids **map_VAO, struct kemoview_shaders *kemo_shaders){
-	GLdouble xwin, ywin;
-	GLdouble orthogonal[16];
+	double xwin, ywin;
+	double orthogonal[16];
 	int i;
 	
 	if(view_s->ny_window > view_s->nx_window) {
 		xwin = 2.05;
-		ywin = 2.05 * (GLdouble)view_s->ny_window / (GLdouble)view_s->nx_window;
+		ywin = 2.05 * (double)view_s->ny_window / (double)view_s->nx_window;
 	} else{
-		xwin = 1.7 * (GLdouble)view_s->nx_window / (GLdouble)view_s->ny_window;
+		xwin = 1.7 * (double)view_s->nx_window / (double)view_s->ny_window;
 		ywin = 1.7;
 	}
 	

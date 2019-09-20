@@ -19,13 +19,13 @@
 #define ROTATE  3
 
 typedef struct {
-	GLdouble x,y,z;
+	double x,y,z;
 } recVec;
 
 typedef struct {
 	recVec viewPos; // View position
 	recVec viewDir; // View direction vector
-	GLdouble aperture; // pContextInfo->camera aperture
+	double aperture; // pContextInfo->camera aperture
 } recCamera;
 
 

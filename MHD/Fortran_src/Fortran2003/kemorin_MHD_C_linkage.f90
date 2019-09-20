@@ -257,7 +257,7 @@
 !    void kemoview_update_distance();
 !    
 !    void kemoview_set_rotation_parameter(double rot_vect[4]);
-!    void kemoview_set_dragging_rotation(GLdouble rot_vect[4]);
+!    void kemoview_set_dragging_rotation(double rot_vect[4]);
 !    void kemoview_set_animation_rot_axis(int iaxis);
 !    void kemoview_set_animation_rot_angle(int int_degree);
 !    void kemoview_set_shift_vector(double position[3]);
@@ -276,16 +276,16 @@
 !    double kemoview_get_stereo_focus();
 !    double kemoview_get_stereo_eyeseparation();
 !    
-!    void kemoview_mousedolly(GLdouble start[2], GLdouble x_dolly, GLdouble y_dolly);
-!    void kemoview_mousepan(GLdouble start[2], GLdouble x_pan, GLdouble y_pan);
-!    void kemoview_zooming(GLdouble wheelDelta);
+!    void kemoview_mousedolly(double start[2], double x_dolly, double y_dolly);
+!    void kemoview_mousepan(double start[2], double x_pan, double y_pan);
+!    void kemoview_zooming(double wheelDelta);
 !    
-!    void kemoview_startTrackball(GLdouble x, GLdouble y);
+!    void kemoview_startTrackball(double x, double y);
 !    /* calculated rotation based on current mouse position */
-!    void kemoview_rollToTrackball(GLdouble x, GLdouble y);
+!    void kemoview_rollToTrackball(double x, double y);
 !    /* add a GL rotation (dA) to an existing GL rotation (A) */
 !    void kemoview_drugging_addToRotationTrackball();
-!    void kemoview_animation_add_rotation(GLdouble dt);
+!    void kemoview_animation_add_rotation(double dt);
 !    void kemoview_reset_animation();
 !    
 !    void kemoview_set_stereo_shutter(int iflag);

@@ -84,7 +84,7 @@ void set_colorbar_VAO(int iflag_retina, GLint nx_win, GLint ny_win,
 
 void draw_colorbar_VAO(struct cbar_work *cbar_wk,
 			struct VAO_ids **cbar_VAO, struct kemoview_shaders *kemo_shaders){
-	GLdouble orthogonal[16];
+	double orthogonal[16];
 	if(cbar_VAO[1]->npoint_draw <= 0) return;
 	
 	orthogonal_glmat_c(0.0, cbar_wk->xwin, 0.0, cbar_wk->ywin, -1.0, 1.0, orthogonal);

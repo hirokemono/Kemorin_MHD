@@ -257,7 +257,7 @@ void transfer_matrix_to_shader(struct shader_ids *Shader, struct view_element *v
 	glUniformMatrix3fv(normalMatLocation, 1, GL_FALSE, nrmat);
 };
 
-void map_matrix_to_shader(struct shader_ids *Shader, const GLdouble *orthogonal){
+void map_matrix_to_shader(struct shader_ids *Shader, const double *orthogonal){
 	GLfloat model[16], proj[16], nrmat[9];
 	int i;
 	

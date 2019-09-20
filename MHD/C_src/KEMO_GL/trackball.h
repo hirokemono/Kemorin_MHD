@@ -59,15 +59,15 @@ extern "C" {
 #endif
 
 /* called with the start position and the window origin + size */
-void startTrackball_c (GLdouble x, GLdouble y, GLdouble originX, GLdouble originY, 
-			GLdouble width, GLdouble height);
+void startTrackball_c (double x, double y, double originX, double originY, 
+			double width, double height);
 
 /* calculated rotation based on current mouse position */
 /* rot is output rotation angle */
-void rollToTrackball_c (GLdouble x, GLdouble y, GLdouble rot [4]);
+void rollToTrackball_c (double x, double y, double rot [4]);
 
 /* add a GL rotation (dA) to an existing GL rotation (A) */
-void addToRotationTrackball_c (GLdouble *dA, GLdouble *A);
+void addToRotationTrackball_c (double *dA, double *A);
 
 #ifdef __cplusplus
 }

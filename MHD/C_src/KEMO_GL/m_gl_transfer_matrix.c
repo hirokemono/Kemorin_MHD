@@ -5,10 +5,10 @@
 
 #define DTOR            0.01745329251994
 
-static GLdouble object_size = 7.0e0;
+static double object_size = 7.0e0;
 
 
-void identity_glmat_c(GLdouble mat[16]){
+void identity_glmat_c(double mat[16]){
 	mat[ 0] = ONE;
 	mat[ 4] = ZERO;
 	mat[ 8] = ZERO;
@@ -31,8 +31,8 @@ void identity_glmat_c(GLdouble mat[16]){
 	return;
 };
 
-void translate_glmat_c(GLdouble trans_x, GLdouble trans_y, GLdouble trans_z, 
-			GLdouble mat[16]){
+void translate_glmat_c(double trans_x, double trans_y, double trans_z, 
+			double mat[16]){
 	mat[ 0] = ONE;
 	mat[ 4] = ZERO;
 	mat[ 8] = ZERO;
@@ -55,8 +55,8 @@ void translate_glmat_c(GLdouble trans_x, GLdouble trans_y, GLdouble trans_z,
 	return;
 };
 
-void scale_glmat_c(GLdouble scale_x, GLdouble scale_y, GLdouble scale_z,
-			GLdouble mat[16]){
+void scale_glmat_c(double scale_x, double scale_y, double scale_z,
+			double mat[16]){
 	mat[ 0] = scale_x;
 	mat[ 4] = ZERO;
 	mat[ 8] = ZERO;
@@ -79,13 +79,13 @@ void scale_glmat_c(GLdouble scale_x, GLdouble scale_y, GLdouble scale_z,
 	return;
 };
 
-void rotate_glmat_c(GLdouble angle_deg, GLdouble axis_x, GLdouble axis_y, GLdouble axis_z, 
-			GLdouble mat[16]){
-	GLdouble pi = FOUR * atan(ONE);
-	GLdouble axs1_x, axs1_y, axs1_z, saxis;
-	GLdouble angle = angle_deg * pi / 180.0;
-	GLdouble c_agl = cos(angle);
-	GLdouble s_agl = sin(angle);
+void rotate_glmat_c(double angle_deg, double axis_x, double axis_y, double axis_z, 
+			double mat[16]){
+	double pi = FOUR * atan(ONE);
+	double axs1_x, axs1_y, axs1_z, saxis;
+	double angle = angle_deg * pi / 180.0;
+	double c_agl = cos(angle);
+	double s_agl = sin(angle);
 	
 	saxis = sqrt(axis_x*axis_x + axis_y*axis_y + axis_z*axis_z);
 	if(saxis == 0.0){
@@ -120,8 +120,8 @@ void rotate_glmat_c(GLdouble angle_deg, GLdouble axis_x, GLdouble axis_y, GLdoub
 	return;
 };
 
-void frustsum_glmat_c(GLdouble left, GLdouble right, GLdouble bottom, GLdouble top,
-			GLdouble near, GLdouble far, GLdouble mat[16]){
+void frustsum_glmat_c(double left, double right, double bottom, double top,
+			double near, double far, double mat[16]){
 	
 	mat[ 0] = TWO*near / (right-left);
 	mat[ 4] = ZERO;
@@ -146,8 +146,8 @@ void frustsum_glmat_c(GLdouble left, GLdouble right, GLdouble bottom, GLdouble t
 	return;
 };
 
-void orthogonal_glmat_c(GLdouble left, GLdouble right, GLdouble bottom, GLdouble top,
-			GLdouble near, GLdouble far, GLdouble mat[16]){
+void orthogonal_glmat_c(double left, double right, double bottom, double top,
+			double near, double far, double mat[16]){
 	
 	mat[ 0] = TWO / (right-left);
 	mat[ 4] = ZERO;
@@ -172,13 +172,13 @@ void orthogonal_glmat_c(GLdouble left, GLdouble right, GLdouble bottom, GLdouble
 	return;
 };
 
-void copy_glmat_c(GLdouble a[16], GLdouble b[16]){
+void copy_glmat_c(double a[16], double b[16]){
 	int i;
 	for(i=0;i<16;i++){b[i] = a[i];};
 	return;
 };
 
-void cal_glmat44_prod_c(GLdouble a[16], GLdouble b[16], GLdouble c[16]){
+void cal_glmat44_prod_c(double a[16], double b[16], double c[16]){
 	c[ 0] = a[0]*b[0] + a[4]*b[1] + a[ 8]*b[2] + a[12]*b[3];
 	c[ 1] = a[1]*b[0] + a[5]*b[1] + a[ 9]*b[2] + a[13]*b[3];
 	c[ 2] = a[2]*b[0] + a[6]*b[1] + a[10]*b[2] + a[14]*b[3];
@@ -201,7 +201,7 @@ void cal_glmat44_prod_c(GLdouble a[16], GLdouble b[16], GLdouble c[16]){
 	return;
 };
 
-void cal_glmat33_prod_c(GLdouble a[16], GLdouble b[16], GLdouble c[16]){
+void cal_glmat33_prod_c(double a[16], double b[16], double c[16]){
 	c[ 0] = a[0]*b[0] + a[4]*b[1] + a[ 8]*b[2];
 	c[ 1] = a[1]*b[0] + a[5]*b[1] + a[ 9]*b[2];
 	c[ 2] = a[2]*b[0] + a[6]*b[1] + a[10]*b[2];
@@ -225,10 +225,10 @@ void cal_glmat33_prod_c(GLdouble a[16], GLdouble b[16], GLdouble c[16]){
 };
 
 
-static void perspectiveGL(GLdouble fovY, GLdouble aspect, GLdouble zNear, GLdouble zFar,
-			GLdouble projection[16]){
-    GLdouble pi = 3.1415926535897932384626433832795;
-    GLdouble fW, fH;
+static void perspectiveGL(double fovY, double aspect, double zNear, double zFar,
+			double projection[16]){
+    double pi = 3.1415926535897932384626433832795;
+    double fW, fH;
     
     /* fH = tan( (fovY / 2) / 180 * pi ) * zNear; */
     fH = tan( fovY / 360 * pi ) * zNear;
@@ -237,17 +237,17 @@ static void perspectiveGL(GLdouble fovY, GLdouble aspect, GLdouble zNear, GLdoub
 	frustsum_glmat_c(-fW, fW, -fH, fH, zNear, zFar, projection);
 }
 
-void orthogonalGL(GLdouble left, GLdouble right, GLdouble bottom, GLdouble top,
-			GLdouble near, GLdouble far){
-	GLdouble orthogonal[16];
+void orthogonalGL(double left, double right, double bottom, double top,
+			double near, double far){
+	double orthogonal[16];
 	orthogonal_glmat_c(left, right, bottom, top, near, far, orthogonal);
 	return;
 };
 
-static void Kemo_Translate_view_c(GLdouble shift_x, GLdouble shift_y, GLdouble shift_z, 
-			GLdouble model[16]){
-	GLdouble tmpmat[16];
-	GLdouble trans[16];
+static void Kemo_Translate_view_c(double shift_x, double shift_y, double shift_z, 
+			double model[16]){
+	double tmpmat[16];
+	double trans[16];
 	
 	copy_glmat_c(model, tmpmat);
    	translate_glmat_c(shift_x, shift_y, shift_z, trans);
@@ -255,10 +255,10 @@ static void Kemo_Translate_view_c(GLdouble shift_x, GLdouble shift_y, GLdouble s
 	return;
 }
 
-static void Kemo_Scale_view_c(GLdouble scale_x, GLdouble scale_y, GLdouble scale_z, 
-			GLdouble model[16]){
-	GLdouble tmpmat[16];
-	GLdouble trans[16];
+static void Kemo_Scale_view_c(double scale_x, double scale_y, double scale_z, 
+			double model[16]){
+	double tmpmat[16];
+	double trans[16];
 	
 	copy_glmat_c(model, tmpmat);
    	scale_glmat_c(scale_x, scale_y, scale_z, trans);
@@ -266,9 +266,9 @@ static void Kemo_Scale_view_c(GLdouble scale_x, GLdouble scale_y, GLdouble scale
 	return;
 }
 
-static void Kemo_Rotate_view_c(GLdouble rotate[4], GLdouble model[16]){
-	GLdouble tmpmat[16];
-	GLdouble trans[16];
+static void Kemo_Rotate_view_c(double rotate[4], double model[16]){
+	double tmpmat[16];
+	double trans[16];
 	
 	copy_glmat_c(model, tmpmat);
    	rotate_glmat_c(rotate[0], rotate[1], rotate[2], rotate[3], trans);
@@ -276,11 +276,11 @@ static void Kemo_Rotate_view_c(GLdouble rotate[4], GLdouble model[16]){
 	return;
 }
 
-static void update_projection(GLdouble x_lookfrom[2], GLint nx_window, GLint ny_window,
-							  GLdouble aperture, GLdouble aspect, GLdouble near, GLdouble far,
-							  GLdouble projection[16]){
-	GLdouble wd2;
-	GLdouble left, right;
+static void update_projection(double x_lookfrom[2], GLint nx_window, GLint ny_window,
+							  double aperture, double aspect, double near, double far,
+							  double projection[16]){
+	double wd2;
+	double left, right;
 	
 	near = x_lookfrom[2] - object_size * HALF;
 	if (near < 1.0e-6) near = 1.0e-6;
@@ -288,7 +288,7 @@ static void update_projection(GLdouble x_lookfrom[2], GLint nx_window, GLint ny_
 	far = x_lookfrom[2] + object_size * HALF;
 	if (far < ONE) far = ONE;
 	
-	aspect = ((GLdouble) nx_window) / ((GLdouble) ny_window);
+	aspect = ((double) nx_window) / ((double) ny_window);
 	wd2 =  near * tan(aperture*DTOR*HALF);
 	
 	left  = - aspect * wd2;
@@ -298,11 +298,11 @@ static void update_projection(GLdouble x_lookfrom[2], GLint nx_window, GLint ny_
 	return;
 }
 
-static void update_projection_left(GLdouble x_lookfrom[2], GLint nx_window, GLint ny_window,
-								   GLdouble aperture, GLdouble aspect, GLdouble near, GLdouble far,
-								   GLdouble focalLength, GLdouble eyeSep, GLdouble projection[16]){
-	GLdouble wd2, ndfl;
-	GLdouble left, right;
+static void update_projection_left(double x_lookfrom[2], GLint nx_window, GLint ny_window,
+								   double aperture, double aspect, double near, double far,
+								   double focalLength, double eyeSep, double projection[16]){
+	double wd2, ndfl;
+	double left, right;
 	
 	near = x_lookfrom[2] - object_size * HALF;
 	if (near < 1.0e-6) near = 1.0e-6;
@@ -310,7 +310,7 @@ static void update_projection_left(GLdouble x_lookfrom[2], GLint nx_window, GLin
 	far = x_lookfrom[2] + object_size * HALF;
 	if (far < ONE) far = ONE;
 	
-	aspect = ((GLdouble) nx_window) / ((GLdouble) ny_window);
+	aspect = ((double) nx_window) / ((double) ny_window);
 	wd2 =  near * tan(aperture*DTOR*HALF);
 	ndfl = near / focalLength;
 	
@@ -321,11 +321,11 @@ static void update_projection_left(GLdouble x_lookfrom[2], GLint nx_window, GLin
 	return;
 }
 
-static void update_projection_right(GLdouble x_lookfrom[2], GLint nx_window, GLint ny_window,
-									GLdouble aperture, GLdouble aspect, GLdouble near, GLdouble far,
-									GLdouble focalLength, GLdouble eyeSep, GLdouble projection[16]){
-	GLdouble wd2, ndfl;
-	GLdouble left, right;
+static void update_projection_right(double x_lookfrom[2], GLint nx_window, GLint ny_window,
+									double aperture, double aspect, double near, double far,
+									double focalLength, double eyeSep, double projection[16]){
+	double wd2, ndfl;
+	double left, right;
 	
 	near = x_lookfrom[2] - object_size * HALF;
 	if (near < 1.0e-6) near = 1.0e-6;
@@ -333,7 +333,7 @@ static void update_projection_right(GLdouble x_lookfrom[2], GLint nx_window, GLi
 	far = x_lookfrom[2] + object_size * HALF;
 	if (far < ONE) far = ONE;
 	
-	aspect = ((GLdouble) nx_window) / ((GLdouble) ny_window);
+	aspect = ((double) nx_window) / ((double) ny_window);
 	wd2 =  near * tan(aperture*DTOR*HALF);
 	ndfl = near / focalLength;
 	
@@ -347,7 +347,7 @@ static void update_projection_right(GLdouble x_lookfrom[2], GLint nx_window, GLi
 
 
 void set_view_by_identity(void){
-	GLdouble modelview[16];
+	double modelview[16];
 	
 	identity_glmat_c(modelview);
 	return;
@@ -443,11 +443,11 @@ void rotate_right_view_by_struct(struct view_element *view){
 };
 
 void set_view_for_message(struct view_element *view){
-	GLdouble modelview[16];
-	GLdouble scale[3];
+	double modelview[16];
+	double scale[3];
 	
-	scale[0] =  ((GLdouble) (1+view->iflag_retina)) / ((GLdouble) view->nx_window);
-	scale[1] = - ((GLdouble) (1+view->iflag_retina)) / ((GLdouble) view->ny_window);
+	scale[0] =  ((double) (1+view->iflag_retina)) / ((double) view->nx_window);
+	scale[1] = - ((double) (1+view->iflag_retina)) / ((double) view->ny_window);
 	scale[2] =  1.0;
 	
 	identity_glmat_c(modelview);
@@ -457,7 +457,7 @@ void set_view_for_message(struct view_element *view){
 
 
 void set_projection_by_identity(void){
-	GLdouble projection[16];
+	double projection[16];
 	
 	identity_glmat_c(projection);
 	return;
@@ -594,7 +594,7 @@ void init_kemoview_perspective(struct view_element *view){
 	view->near =       INITIAL_NEAR;
 	view->far =        INITIAL_FAR;
 	
-	view->aspect = ((GLdouble) view->nx_window) / ((GLdouble) view->ny_window);
+	view->aspect = ((double) view->nx_window) / ((double) view->ny_window);
 	
 	view->focal_length =  INITIAL_FOCAL;
 	view->eye_separation = INITIAL_EYE_SEP;
@@ -633,18 +633,18 @@ void set_gl_retinamode(struct view_element *view, int i_retina)
 void set_gl_rotation_parameter(struct view_element *view, double rot_vect[4])
 {
 	int i;
-	for (i=0;i<4;i++) {view->rotation[i] = (GLdouble) rot_vect[i];};
+	for (i=0;i<4;i++) {view->rotation[i] = rot_vect[i];};
 	return;
 }
 
-void set_gl_dragging_rotation(struct view_element *view, GLdouble rot_vect[4])
+void set_gl_dragging_rotation(struct view_element *view, double rot_vect[4])
 {
 	int i;
 	for (i=0;i<4;i++) {view->rotate_dragging[i] = rot_vect[i];};
 	return;
 }
 
-void set_gl_animation_rotation(struct view_element *view, GLdouble rot_vect[4])
+void set_gl_animation_rotation(struct view_element *view, double rot_vect[4])
 {
 	int i;
 	for (i=0;i<4;i++) {view->rotate_animation[i] = rot_vect[i];};
@@ -657,33 +657,33 @@ void set_gl_animation_rot_axis(struct view_element *view, int iaxis){
 	view->rotate_animation[iaxis] = ONE;
 }
 void set_gl_animation_rot_angle(struct view_element *view, int int_degree){
-	view->rotate_animation[0] = (GLdouble) int_degree;
+	view->rotate_animation[0] = (double) int_degree;
 }
 
 void set_gl_shift_vector(struct view_element *view, double position[3])
 {
 	int i;
-	for (i=0;i<3;i++) {view->shift[i] =      (GLdouble)  position[i];};
-	for (i=0;i<3;i++) {view->x_lookfrom[i] = (GLdouble) -position[i];};
+	for (i=0;i<3;i++) {view->shift[i] =       position[i];};
+	for (i=0;i<3;i++) {view->x_lookfrom[i] = -position[i];};
 	return;
 }
 
 void set_gl_scalar_scale_factor(struct view_element *view, double scale_s)
 {
-	view->iso_scale = (GLdouble) scale_s;
+	view->iso_scale = scale_s;
 	return;
 };
 
 void set_gl_projection_aperture(struct view_element *view, double aperture_s)
 {
-	view->aperture = (GLdouble) aperture_s;
+	view->aperture = aperture_s;
 	return;
 };
 
 void set_gl_stereo_parameter(struct view_element *view, double focus, double eye_sep)
 {
-	view->focal_length =   (GLdouble) focus;
-	view->eye_separation = (GLdouble) eye_sep;
+	view->focal_length =   focus;
+	view->eye_separation = eye_sep;
 	view->eye_to_focal =  view->eye_separation / view->focal_length;
 	return;
 };
@@ -696,14 +696,14 @@ void send_gl_rotation_parameter(struct view_element *view, double rot_vect[4])
 	return;
 }
 
-void send_gl_dragging_rotation(struct view_element *view, GLdouble rot_vect[4])
+void send_gl_dragging_rotation(struct view_element *view, double rot_vect[4])
 {
 	int i;
 	for (i=0;i<4;i++) {rot_vect[i] = view->rotate_dragging[i];};
 	return;
 }
 
-void send_gl_animation_rotation(struct view_element *view, GLdouble rot_vect[4])
+void send_gl_animation_rotation(struct view_element *view, double rot_vect[4])
 {
 	int i;
 	for (i=0;i<4;i++) {rot_vect[i] = view->rotate_animation[i];};
@@ -747,12 +747,12 @@ double send_gl_stereo_eyeseparation(struct view_element *view){
 
 
 /* called with the start position and the window origin + size */
-void gl_startTrackball(GLdouble x, GLdouble y, struct view_element *view){
+void gl_startTrackball(double x, double y, struct view_element *view){
 	startTrackball_c(x, y, ZERO, ZERO, view->nx_window, -view->ny_window);
 	return;
 };
 /* calculated rotation based on current mouse position */
-void gl_rollToTrackball(GLdouble x, GLdouble y, struct view_element *view){
+void gl_rollToTrackball(double x, double y, struct view_element *view){
 	rollToTrackball_c (x, y, view->rotate_dragging);
 	return;
 };
@@ -770,9 +770,9 @@ void gl_drag_addToRotationTrackball(struct view_element *view){
 
 
 
-void gl_mousedolly_struct(struct view_element *view, GLdouble start[2], 
-                          GLdouble x_dolly, GLdouble y_dolly){
-	GLdouble dolly = (start[1] - y_dolly) * view->shift[2] / 300.0f;
+void gl_mousedolly_struct(struct view_element *view, double start[2], 
+                          double x_dolly, double y_dolly){
+	double dolly = (start[1] - y_dolly) * view->shift[2] / 300.0f;
 	view->shift[2] -= dolly;
     /* do not let z = 0.0 */
 	if (view->shift[2] == 0.0) view->shift[2] = -0.0001;
@@ -782,10 +782,10 @@ void gl_mousedolly_struct(struct view_element *view, GLdouble start[2],
 	return;
 }
 
-void gl_mousepan_struct(struct view_element *view, GLdouble start[2], 
-                        GLdouble x_pan, GLdouble y_pan){
-	GLdouble panX = (start[0] - x_pan) / (1200.0f / view->shift[2]);
-	GLdouble panY = (start[1] - y_pan) / (1200.0f / view->shift[2]);
+void gl_mousepan_struct(struct view_element *view, double start[2], 
+                        double x_pan, double y_pan){
+	double panX = (start[0] - x_pan) / (1200.0f / view->shift[2]);
+	double panY = (start[1] - y_pan) / (1200.0f / view->shift[2]);
 	view->shift[0] += panX;
 	view->shift[1] -= panY;
 	view->x_lookfrom[0] = -view->shift[0];
@@ -795,8 +795,8 @@ void gl_mousepan_struct(struct view_element *view, GLdouble start[2],
 }
 
 
-void gl_zooming_struct(struct view_element *view, GLdouble wheelDelta){
-	GLdouble deltaAperture = wheelDelta * -view->aperture / 200.0f;
+void gl_zooming_struct(struct view_element *view, double wheelDelta){
+	double deltaAperture = wheelDelta * -view->aperture / 200.0f;
 	view->aperture += deltaAperture;
 	/* do not let aperture <= 0.1 and  aperture >= 180*/
 	if (view->aperture < 0.1)   view->aperture = 0.1;
@@ -876,7 +876,7 @@ void view_for_xz_plane(struct view_element *view){
 };
 
 
-void set_3d_position_to_window_d(int point_screen[2], GLdouble xx[3], 
+void set_3d_position_to_window_d(int point_screen[2], double xx[3], 
                                  int nx_win, int ny_win, struct view_element *view){
 	int i;
 	double end_eye[4];

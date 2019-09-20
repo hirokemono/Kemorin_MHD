@@ -14,7 +14,7 @@ GLint XpixelGLWindow, YpixelGLWindow;
 GLint XpixelRectView, YpixelRectView;
 
 // single set of interaction flags and states
-GLdouble gDollyPanStartPoint[2] = {0.0, 0.0};
+double gDollyPanStartPoint[2] = {0.0, 0.0};
 GLboolean gDolly = GL_FALSE;
 GLboolean gPan = GL_FALSE;
 GLboolean gTrackball = GL_FALSE;
@@ -124,7 +124,7 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 // move camera in z axis
 -(void)mouseDolly: (NSPoint) location
 {
-	kemoview_mousedolly(gDollyPanStartPoint, (GLdouble) location.x, (GLdouble) location.y);
+	kemoview_mousedolly(gDollyPanStartPoint, (double) location.x, (double) location.y);
 }
 	
 // ---------------------------------
@@ -132,7 +132,7 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 // move camera in x/y plane
 - (void)mousePan: (NSPoint) location
 {
-	kemoview_mousepan(gDollyPanStartPoint, (GLdouble) location.x, (GLdouble) location.y);
+	kemoview_mousepan(gDollyPanStartPoint, (double) location.x, (double) location.y);
 }
 
 // ---------------------------------
@@ -318,8 +318,8 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 	gDolly = GL_FALSE; // no dolly
 	gPan = GL_TRUE; 
 	gTrackball = GL_FALSE; // no trackball
-	gDollyPanStartPoint[0] = (GLdouble) location.x;
-	gDollyPanStartPoint[1] = (GLdouble) location.y;
+	gDollyPanStartPoint[0] = (double) location.x;
+	gDollyPanStartPoint[1] = (double) location.y;
 	gTrackingViewInfo = self;
 }
 
@@ -337,8 +337,8 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 	gDolly = GL_TRUE;
 	gPan = GL_FALSE; // no pan
 	gTrackball = GL_FALSE; // no trackball
-	gDollyPanStartPoint[0] = (GLdouble) location.x;
-	gDollyPanStartPoint[1] = (GLdouble) location.y;
+	gDollyPanStartPoint[0] = (double) location.x;
+	gDollyPanStartPoint[1] = (double) location.y;
 	gTrackingViewInfo = self;
 }
 
@@ -402,7 +402,7 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 	float wheelDelta = [theEvent deltaX] + [theEvent deltaY] + [theEvent deltaZ];
 	if (wheelDelta)
 	{
-		kemoview_zooming((GLdouble) wheelDelta);
+		kemoview_zooming((double) wheelDelta);
 		[self QuickUpdateImage];
 	}
 }
@@ -425,7 +425,7 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 
 - (void)magnifyWithEvent:(NSEvent *)theEvent
 {
-    GLdouble newScale = 200.0*[theEvent magnification];
+    double newScale = 200.0*[theEvent magnification];
     kemoview_zooming(newScale);
 	[self QuickUpdateImage];
 }

@@ -117,7 +117,7 @@ int set_psf_arrows_to_buf(int ist_patch, int ncorner, struct psf_data *psf_s, st
 			struct gl_strided_buffer *strided_buf) {
 	double x_line[6], dir_line[6], color_line[8];
 	double xyz[18*ncorner], nor[18*ncorner], col[24*ncorner];
-	GLdouble dcolor[4];
+	double dcolor[4];
 	int num_wall, inum_buf;
 	
 	double v_tmp[3], v_xyz[3], x_rtp[3], d_mag;

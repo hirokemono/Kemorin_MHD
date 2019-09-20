@@ -52,21 +52,21 @@
 
 #include <math.h>
 
-static const GLdouble kTol = 0.001;
-static const GLdouble kRad2Deg = 180. / 3.1415927;
-static const GLdouble kDeg2Rad = 3.1415927 / 180.;
+static const double kTol = 0.001;
+static const double kRad2Deg = 180. / 3.1415927;
+static const double kDeg2Rad = 3.1415927 / 180.;
 
-GLdouble gRadiusTrackball;
-GLdouble gStartPtTrackball[3];
-GLdouble gEndPtTrackball[3];
-GLdouble gXCenterTrackball = 0;
-GLdouble gYCenterTrackball = 0;
+double gRadiusTrackball;
+double gStartPtTrackball[3];
+double gEndPtTrackball[3];
+double gXCenterTrackball = 0;
+double gYCenterTrackball = 0;
 
 /* mouse positon and view size as inputs*/
-void startTrackball_c (GLdouble x, GLdouble y, GLdouble originX, GLdouble originY, 
-			GLdouble width, GLdouble height)
+void startTrackball_c (double x, double y, double originX, double originY, 
+			double width, double height)
 {
-    GLdouble xxyy;
+    double xxyy;
     
     /* Start up the trackball.  The trackball works by pretending that a ball
        encloses the 3D view.  You roll this pretend ball with the mouse.  For
@@ -108,11 +108,11 @@ void startTrackball_c (GLdouble x, GLdouble y, GLdouble originX, GLdouble origin
 
 /* update to new mouse position, output rotation angle */
 /* rot is output rotation angle*/
-void rollToTrackball_c (GLdouble x, GLdouble y, GLdouble rot [4])
+void rollToTrackball_c (double x, double y, double rot [4])
 {
-    GLdouble xxyy;
-    GLdouble cosAng, sinAng;
-    GLdouble ls, le, lr;
+    double xxyy;
+    double cosAng, sinAng;
+    double ls, le, lr;
 
     gEndPtTrackball[0] =  x - gXCenterTrackball ;
     gEndPtTrackball[1] =  y - gYCenterTrackball;
@@ -165,10 +165,10 @@ void rollToTrackball_c (GLdouble x, GLdouble y, GLdouble rot [4])
     /* returns rotate */
 }
 
-static void rotation2Quat (GLdouble *A, GLdouble *q)
+static void rotation2Quat (double *A, double *q)
 {
-    GLdouble ang2;  /* The half-angle */
-    GLdouble sinAng2; /* sin(half-angle) */
+    double ang2;  /* The half-angle */
+    double sinAng2; /* sin(half-angle) */
 	
 	/*
     // Convert a GL-style rotation to a quaternion.  The GL rotation looks like this:
@@ -183,10 +183,10 @@ static void rotation2Quat (GLdouble *A, GLdouble *q)
     q[3] = cos(ang2);
 }
 
-void addToRotationTrackball_c (GLdouble * dA, GLdouble * A)
+void addToRotationTrackball_c (double * dA, double * A)
 {
-    GLdouble q0[4], q1[4], q2[4];
-	GLdouble theta2, sinTheta2;
+    double q0[4], q1[4], q2[4];
+	double theta2, sinTheta2;
 	
 	/*
     // Figure out A' = A . dA

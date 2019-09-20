@@ -112,7 +112,7 @@
 // given a delta time in seconds and current rotation accel, velocity and position, update overall object rotation
 - (void) updateObjectRotationForTimeDelta:(CFAbsoluteTime)deltaTime
 {
-    GLdouble dt = deltaTime;
+    double dt = deltaTime;
 	kemoview_animation_add_rotation(dt);
 	[self UpdateParameters];
 }

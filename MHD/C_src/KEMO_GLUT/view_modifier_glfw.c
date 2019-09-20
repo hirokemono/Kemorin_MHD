@@ -15,10 +15,10 @@ static int right_button_func =  ZOOM;
 static int arrow_key_func =     PAN;
 
 static int      moving_left, moving_middle, moving_right;
-static GLdouble  begin_left[2], begin_middle[2], begin_right[2];
+static double  begin_left[2], begin_middle[2], begin_right[2];
 
-static GLdouble  begin[2];
-static GLdouble  gTrackBallRotation[4];
+static double  begin[2];
+static double  gTrackBallRotation[4];
 
 void mouseButtonCB(GLFWwindow *window, int button, int action, int mods) {
 	double xpos;
@@ -28,8 +28,8 @@ void mouseButtonCB(GLFWwindow *window, int button, int action, int mods) {
 
 	if(button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
 		moving_left = 1;
-		begin_left[0] = (GLdouble) xpos;
-		begin_left[1] = (GLdouble) ypos;
+		begin_left[0] = xpos;
+		begin_left[1] = ypos;
 	};
 	if(button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE) {
 		moving_left = 0;
@@ -37,8 +37,8 @@ void mouseButtonCB(GLFWwindow *window, int button, int action, int mods) {
 	
 	if(button == GLFW_MOUSE_BUTTON_MIDDLE && action == GLFW_PRESS) {
 		moving_middle = 1;
-		begin_middle[0] = (GLdouble) xpos;
-		begin_middle[1] = (GLdouble) ypos;
+		begin_middle[0] = xpos;
+		begin_middle[1] = ypos;
 	};
 	if(button == GLFW_MOUSE_BUTTON_MIDDLE && action == GLFW_RELEASE) {
 		moving_middle = 0;
@@ -46,8 +46,8 @@ void mouseButtonCB(GLFWwindow *window, int button, int action, int mods) {
 	
 	if(button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS) {
 		moving_right = 1;
-		begin_right[0] = (GLdouble) xpos;
-		begin_right[1] = (GLdouble) ypos;
+		begin_right[0] = xpos;
+		begin_right[1] = ypos;
 	};
 	if(button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_RELEASE) {
 		moving_right = 0;
@@ -62,7 +62,7 @@ void mouseButtonCB(GLFWwindow *window, int button, int action, int mods) {
 void mousePosCB(GLFWwindow *window, double xpos, double ypos) {
 	/*! This gets called when the mouse moves */
 	
-	GLdouble factor;
+	double factor;
 	int button_function = left_button_func;
 	
 	/*printf("mousePosCB %.1lf %.1lf\n", xpos, ypos); */
@@ -88,14 +88,14 @@ void mousePosCB(GLFWwindow *window, double xpos, double ypos) {
 	
 	if (button_function == ZOOM){
 		factor = -0.5*(ypos-begin[1]);
-		kemoview_zooming((GLdouble) factor);
+		kemoview_zooming(factor);
 	}
 	
 	if (button_function == WALKTO){
-		kemoview_mousedolly(begin, (GLdouble) xpos, (GLdouble) ypos);
+		kemoview_mousedolly(begin, xpos, ypos);
 	}
 	else if(button_function == PAN){
-		kemoview_mousepan(begin, (GLdouble) xpos, (GLdouble) ypos);
+		kemoview_mousepan(begin, xpos, ypos);
 	}
 	else if (button_function == ROTATE) {
 		gTrackBallRotation[0] = ZERO;
@@ -126,16 +126,16 @@ void mousePosCB(GLFWwindow *window, double xpos, double ypos) {
     /* ! update private variables and redisplay */
 	
 	if (moving_left) {
-		begin_left[0] = (GLdouble) xpos;
-		begin_left[1] = (GLdouble) ypos;
+		begin_left[0] = xpos;
+		begin_left[1] = ypos;
     }
 	else if(moving_middle) {
-		begin_middle[0] = (GLdouble) xpos;
-		begin_middle[1] = (GLdouble) ypos;
+		begin_middle[0] = xpos;
+		begin_middle[1] = ypos;
 	}
 	else if(moving_right) {
-		begin_right[0] = (GLdouble) xpos;
-		begin_right[1] = (GLdouble) ypos;
+		begin_right[0] = xpos;
+		begin_right[1] = ypos;
 	};
 	return;
 }
@@ -147,7 +147,7 @@ void set_GlfwWindowSize(int width, int height){
 
 void mouseScrollCB(GLFWwindow *window, double x, double y) {
 /*	printf("mouseScrollCB %.1lf %.1lf\n", x, y);*/
-    GLdouble newScale = x + y;
+    double newScale = x + y;
     kemoview_zooming(newScale);
 }
 void charFunCB(GLFWwindow* window, unsigned int charInfo) {
@@ -157,8 +157,8 @@ void charFunCB(GLFWwindow* window, unsigned int charInfo) {
 
 /*! This routine handles the arrow key operations */
 static void keyFuncCB(GLFWwindow* window, int key, int scancode, int action, int mods) {
-	GLdouble x_dbl, y_dbl;
-	GLdouble factor;
+	double x_dbl, y_dbl;
+	double factor;
 	
 /*	printf("keyFuncCB %d %d %d %d\n", key, scancode, action, mods);	*/
 	
@@ -174,7 +174,7 @@ static void keyFuncCB(GLFWwindow* window, int key, int scancode, int action, int
 		else {
 			factor = ZERO;
 		};
-		kemoview_zooming((GLdouble) factor);
+		kemoview_zooming(factor);
 	}
 	
 	else if (arrow_key_func == WALKTO){

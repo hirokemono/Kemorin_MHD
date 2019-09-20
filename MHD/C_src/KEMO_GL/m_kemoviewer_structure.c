@@ -110,8 +110,8 @@ void kemoview_draw_fast_gl3(void){
 	return;
 };
 
-void kemoview_orthogonalGL(GLdouble left, GLdouble right, GLdouble bottom, GLdouble top,
-						   GLdouble near, GLdouble far){
+void kemoview_orthogonalGL(double left, double right, double bottom, double top,
+						   double near, double far){
 	orthogonalGL(left, right, bottom, top, near, far);
 	return;
 };
@@ -595,7 +595,7 @@ void kemoview_update_distance(void){
 void kemoview_set_rotation_parameter(double rot_vect[4]){
 	set_gl_rotation_parameter(kemo_sgl->view_s, rot_vect);
 };
-void kemoview_set_dragging_rotation(GLdouble rot_vect[4]){
+void kemoview_set_dragging_rotation(double rot_vect[4]){
 	set_gl_dragging_rotation(kemo_sgl->view_s, rot_vect);
 };
 void kemoview_set_animation_rot_axis(int iaxis){
@@ -648,26 +648,26 @@ void kemoview_get_projection_parameters(double *aperture_s, double *near_s,
 double kemoview_get_stereo_focus(void){return send_gl_stereo_focus(kemo_sgl->view_s);};
 double kemoview_get_stereo_eyeseparation(void){return send_gl_stereo_eyeseparation(kemo_sgl->view_s);};
 
-void kemoview_mousedolly(GLdouble start[2], GLdouble x_dolly, GLdouble y_dolly){
+void kemoview_mousedolly(double start[2], double x_dolly, double y_dolly){
 	gl_mousedolly_struct(kemo_sgl->view_s, start, x_dolly, y_dolly);
 }
-void kemoview_mousepan(GLdouble start[2], GLdouble x_pan, GLdouble y_pan){
+void kemoview_mousepan(double start[2], double x_pan, double y_pan){
 	gl_mousepan_struct(kemo_sgl->view_s, start, x_pan, y_pan);
 }
-void kemoview_zooming(GLdouble wheelDelta){
+void kemoview_zooming(double wheelDelta){
 	gl_zooming_struct(kemo_sgl->view_s, wheelDelta);
 }
 
 /* called with the start position and the window origin + size */
-void kemoview_startTrackball(GLdouble x, GLdouble y){gl_startTrackball(x, y, kemo_sgl->view_s);};
+void kemoview_startTrackball(double x, double y){gl_startTrackball(x, y, kemo_sgl->view_s);};
 /* calculated rotation based on current mouse position */
-void kemoview_rollToTrackball(GLdouble x, GLdouble y){ gl_rollToTrackball (x, y, kemo_sgl->view_s);};
+void kemoview_rollToTrackball(double x, double y){ gl_rollToTrackball (x, y, kemo_sgl->view_s);};
 /* add a GL rotation (dA) to an existing GL rotation (A) */
 void kemoview_drugging_addToRotationTrackball(void){
     gl_drag_addToRotationTrackball(kemo_sgl->view_s);
 }
 
-void kemoview_animation_add_rotation(GLdouble dt){add_animation_rotation(kemo_sgl->view_s, dt);}
+void kemoview_animation_add_rotation(double dt){add_animation_rotation(kemo_sgl->view_s, dt);}
 void kemoview_reset_animation(void){reset_rot_animation(kemo_sgl->view_s);};
 
 

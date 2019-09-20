@@ -8,7 +8,7 @@ static const GLfloat white[4] =   {WHITE_R,WHITE_G,WHITE_B,WHITE_A};
 static const GLfloat l_green[4] = {L_GREEN_R,L_GREEN_G,L_GREEN_B,L_GREEN_A};
 /* static const GLfloat d_green[4] = {D_GREEN_R,D_GREEN_G,D_GREEN_B,D_GREEN_A}; */
 
-static GLdouble c_code[4];
+static double c_code[4];
 
 static int set_cyclic_id_by_N_c(int inum, int iloop, int i_min, int i_max){
 	int ival;

@@ -24,8 +24,8 @@ void reset_rot_animation(struct view_element *view_s){
 
 void add_animation_rotation(struct view_element *view_s, double dt){
     // update rotation based on vel and accel
-	GLdouble AnimateRotation[4] = {0.0f, 0.0f, 0.0f, 0.0f};
-	GLdouble fVMax = ONE;
+	double AnimateRotation[4] = {0.0f, 0.0f, 0.0f, 0.0f};
+	double fVMax = ONE;
 	short i;
     
 	// do velocities
