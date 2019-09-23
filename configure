@@ -13122,6 +13122,8 @@ fi
 
 
 # 		AX_HAVE_OPENGL
+		GL_INC="${GL_CFLAGS} ${X_CFLAGS}"
+		GL_LIBS="${GL_LIBS} ${X_LIBS}"
 		{ $as_echo "$as_me:${as_lineno-$LINENO}: result: GL_CFLAGS... \"${GL_CFLAGS}\"" >&5
 $as_echo "GL_CFLAGS... \"${GL_CFLAGS}\"" >&6; }
 		{ $as_echo "$as_me:${as_lineno-$LINENO}: result: GL_LIBS... \"${GL_LIBS}\"" >&5
@@ -13130,7 +13132,6 @@ $as_echo "GL_LIBS... \"${GL_LIBS}\"" >&6; }
 $as_echo "GL_LDFLAGS... \"${GL_LDFLAGS}\"" >&6; }
 		{ $as_echo "$as_me:${as_lineno-$LINENO}: result: CPPFLAGS... \"${CPPFLAGS}\"" >&5
 $as_echo "CPPFLAGS... \"${CPPFLAGS}\"" >&6; }
-		GL_INC="${GL_CFLAGS} -I/usr/X11/include"
 	fi
 	AQUATERM_LIBS=""
 fi
