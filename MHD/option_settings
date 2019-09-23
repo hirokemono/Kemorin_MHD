@@ -25,6 +25,15 @@ CFLAGS="-O3 -Wall -g" FCFLAGS="-O3 -Wall -g" --with-blas \
 PKG_CONFIG_PATH=/Users/matsui/local/lib/pkgconfig:/usr/lib/pkgconfig
 #
 # -------------------------------------------------------------------------------
+# Ubuntu 18 (VirtualBox)
+# -------------------------------------------------------------------------------
+#
+./configure FC=mpif90 CC=mpicc CFLAGS=-O3  FCFLAGS=-O3 \
+--with-blas=/usr/lib/x86_64-linux-gnu/  --with-zlib --with-pgplot \
+--enable-fftw3 --enable-libpng --enable-gl --enable-gtk --enable-glfw \
+PKG_CONFIG_PATH=/usr/lib/x86_64-linux-gnu/pkgconfig/
+#
+# -------------------------------------------------------------------------------
 # Intel XEON Icelake (TACC Frontera)
 # -------------------------------------------------------------------------------
 #
