@@ -274,7 +274,7 @@ else
 	then
 		AX_CHECK_GL
 # 		AX_HAVE_OPENGL
-		GL_INC="${GL_CFLAGS} ${X_CFLAGS}"
+		GL_INC="${GL_INC} -I/usr/X11/include"
 		GL_LIBS="${GL_LIBS} ${X_LIBS}"
 		AC_MSG_RESULT(GL_CFLAGS... "${GL_CFLAGS}")
 		AC_MSG_RESULT(GL_LIBS... "${GL_LIBS}")
