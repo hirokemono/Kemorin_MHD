@@ -21,7 +21,8 @@ dnl Include MPI related definitions
 builtin(include,MHD/confdb/ax_mpi.m4)
 
 dnl Include OpenGL Check related definitions
-builtin(include,MHD/confdb/ax_have_opengl.m4)
+###  builtin(include,MHD/confdb/ax_have_opengl.m4)
+builtin(include,MHD/confdb/ax_check_gl.m4)
 
 dnl Include gmake Check related definitions
 builtin(include,MHD/confdb/check_gnu_make.m4)
@@ -271,12 +272,11 @@ else
 # Checks for OpenGL
 	if test ${USE_gl} = "yes"
 	then
-        AX_CHECK_GL
-#        AX_CHECK_GLU
-#        AX_CHECK_GLUT
-
-		AX_HAVE_OPENGL
+		AX_CHECK_GL
+# 		AX_HAVE_OPENGL
 		AC_MSG_RESULT(GL_CFLAGS... "${GL_CFLAGS}")
+		AC_MSG_RESULT(GL_LIBS... "${GL_LIBS}")
+		AC_MSG_RESULT(GL_LDFLAGS... "${GL_LDFLAGS}")
 		AC_MSG_RESULT(CPPFLAGS... "${CPPFLAGS}")
 		GL_INC="${GL_CFLAGS} -I/usr/X11/include"
 	fi
