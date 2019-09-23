@@ -13122,7 +13122,7 @@ fi
 
 
 # 		AX_HAVE_OPENGL
-		GL_INC="${GL_CFLAGS} ${X_CFLAGS}"
+		GL_INC="${GL_INC} -I/usr/X11/include"
 		GL_LIBS="${GL_LIBS} ${X_LIBS}"
 		{ $as_echo "$as_me:${as_lineno-$LINENO}: result: GL_CFLAGS... \"${GL_CFLAGS}\"" >&5
 $as_echo "GL_CFLAGS... \"${GL_CFLAGS}\"" >&6; }
