@@ -96,8 +96,8 @@ NSData *SnapshotData;
 }
 
 -(void) OpenQTMovieFile:(NSString *)movieFileName{
-    GLint XViewsize = [_kemoviewer KemoviewHorizontalViewSize];
-    GLint YViewsize = [_kemoviewer KemoviewVerticalViewSize];
+    int XViewsize = [_kemoviewer KemoviewHorizontalViewSize];
+    int YViewsize = [_kemoviewer KemoviewVerticalViewSize];
     
     // Movie setting
     NSDictionary *outputSettings = 
@@ -163,8 +163,8 @@ NSData *SnapshotData;
 - (void) SetGLBitmapToImageRep
 {
     static unsigned char *glimage;
-    GLint XViewsize = [_kemoviewer KemoviewHorizontalViewSize];
-    GLint YViewsize = [_kemoviewer KemoviewVerticalViewSize];
+    int XViewsize = [_kemoviewer KemoviewHorizontalViewSize];
+    int YViewsize = [_kemoviewer KemoviewVerticalViewSize];
     
     glimage = (unsigned char*)calloc(3*XViewsize*XViewsize, sizeof(unsigned char));
     

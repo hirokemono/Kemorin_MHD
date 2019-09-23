@@ -44,7 +44,7 @@ static void dummy_handler(int sel){
 /* Create 1st level menu() */
 
 static void make_1st_level_menu(){
-	GLint menu_id;
+	int menu_id;
 	
 	int iflag_draw_m = kemoview_get_draw_mesh_flag();
 	int iflag_draw_p = kemoview_get_PSF_draw_switch();
@@ -70,7 +70,6 @@ void draw_mesh_kemo(int iflag_streo_shutter, int iflag_dmesh) {
 	int narg_glut = 0;
 	char **arg_glut;
 	int iflag_core_profile = 1;
-    GLboolean bStereo;
 	/* Initialize arrays for viewer */
 	
 	single_kemoview = kemoview_allocate_single_viwewer_struct();

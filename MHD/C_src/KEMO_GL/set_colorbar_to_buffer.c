@@ -6,8 +6,8 @@
 
 
 static void set_one_quad_to_buf(int i_quad, 
-			GLfloat x1[3], GLfloat x2[3], GLfloat x3[3], GLfloat x4[3], 
-			GLfloat c1[4], GLfloat c2[4], GLfloat c3[4], GLfloat c4[4], 
+			float x1[3], float x2[3], float x3[3], float x4[3], 
+			float c1[4], float c2[4], float c3[4], float c4[4], 
 			struct gl_strided_buffer *strided_buf){
 	int nd;
 	
@@ -38,7 +38,7 @@ static void set_one_quad_to_buf(int i_quad,
 };
 
 static void set_one_texture_to_buf(int i_quad, 
-			GLfloat t1[2], GLfloat t2[2], GLfloat t3[2], GLfloat t4[2], 
+			float t1[2], float t2[2], float t3[2], float t4[2], 
 			struct gl_strided_buffer *strided_buf){
 	int nd;
 	
@@ -65,9 +65,9 @@ static void set_one_texture_to_buf(int i_quad,
 int solid_colorbar_box_to_buf(int ist_quad, struct colormap_params *cmap_s, 
 			struct cbar_work *cbar_wk, struct gl_strided_buffer *strided_buf){
 	int inum_quad = ist_quad;
-	GLfloat y1;
-	GLfloat x1[3], x2[3], x3[3], x4[3];
-	GLfloat c1[4], c2[4], c3[4], c4[4];
+	float y1;
+	float x1[3], x2[3], x3[3], x4[3];
+	float c1[4], c2[4], c3[4], c4[4];
 	double psf_value;
 	double f_color[4], l_color[4];
 	int i, nd;
@@ -86,7 +86,7 @@ int solid_colorbar_box_to_buf(int ist_quad, struct colormap_params *cmap_s,
 	x4[2] = 0.001;
 	
 	for(i=0;i<cbar_wk->num_quad;i++){
-		y1 = cbar_wk->ybar_min + cbar_wk->ydelta * (GLfloat) i;
+		y1 = cbar_wk->ybar_min + cbar_wk->ydelta * (float) i;
 		psf_value = cbar_wk->psf_min + (cbar_wk->psf_max - cbar_wk->psf_min)
 									* (double)(i+1) / (double)cbar_wk->num_quad;
 		set_rainbow_color_code(cmap_s, psf_value, f_color);
@@ -112,12 +112,12 @@ int solid_colorbar_box_to_buf(int ist_quad, struct colormap_params *cmap_s,
 	return inum_quad;
 };
 
-int fade_colorbar_box_to_buf(int ist_quad, struct colormap_params *cmap_s, GLfloat *bg_color, 
+int fade_colorbar_box_to_buf(int ist_quad, struct colormap_params *cmap_s, float *bg_color, 
 			struct cbar_work *cbar_wk, struct gl_strided_buffer *strided_buf){
 	int inum_quad = ist_quad;
-	GLfloat y1;
-	GLfloat x1[3], x2[3], x3[3], x4[3];
-	GLfloat c1[4], c2[4], c3[4], c4[4];
+	float y1;
+	float x1[3], x2[3], x3[3], x4[3];
+	float c1[4], c2[4], c3[4], c4[4];
 	
 	double psf_value;
 	double f_color[4], l_color[4];
@@ -142,7 +142,7 @@ int fade_colorbar_box_to_buf(int ist_quad, struct colormap_params *cmap_s, GLflo
 	x4[2] = 0.001;
 	
 	for(i=0;i<cbar_wk->num_quad;i++){
-		y1 = cbar_wk->ybar_min + cbar_wk->ydelta * (GLfloat)i;
+		y1 = cbar_wk->ybar_min + cbar_wk->ydelta * (float)i;
 		
 		psf_value = cbar_wk->psf_min + (cbar_wk->psf_max - cbar_wk->psf_min)
 									* (double)(i+1) / (double)cbar_wk->num_quad;
@@ -174,10 +174,10 @@ int fade_colorbar_box_to_buf(int ist_quad, struct colormap_params *cmap_s, GLflo
 	return inum_quad;
 };
 
-int colorbar_frame_to_buf(int ist_quad, int iflag_retina, GLfloat *text_color,
+int colorbar_frame_to_buf(int ist_quad, int iflag_retina, float *text_color,
 			struct cbar_work *cbar_wk, struct gl_strided_buffer *strided_buf){
-	GLfloat x1[3], x2[3], x3[3], x4[3];
-	GLfloat c1[4], c2[4], c3[4], c4[4];
+	float x1[3], x2[3], x3[3], x4[3];
+	float c1[4], c2[4], c3[4], c4[4];
 	int nd;
 	
 	x1[2] = 0.001;
@@ -262,11 +262,11 @@ int colorbar_frame_to_buf(int ist_quad, int iflag_retina, GLfloat *text_color,
 	return (ist_quad+4);
 };
 
-void colorbar_mbox_to_buf(int iflag_retina, GLfloat *text_color,
+void colorbar_mbox_to_buf(int iflag_retina, float *text_color,
 			struct cbar_work *cbar_wk, struct gl_strided_buffer *strided_buf){
-	GLfloat x1[3], x2[3], x3[3], x4[3];
-	GLfloat c1[4], c2[4], c3[4], c4[4];
-	GLfloat t1[2], t2[2], t3[2], t4[2];
+	float x1[3], x2[3], x3[3], x4[3];
+	float c1[4], c2[4], c3[4], c4[4];
+	float t1[2], t2[2], t3[2], t4[2];
 	int nd;
 	
 	x1[0] = cbar_wk->xbar_max + 8.0*(iflag_retina + 1);

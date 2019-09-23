@@ -89,6 +89,8 @@ void dropFileToGlfw_CB(GLFWwindow *window, int num, const char **paths) {
 void windowSizeCB(GLFWwindow *window, int width, int height) {
 /*	printf("windowSizeCB %d %d\n", width, height); */
 	kemoview_update_projection_by_viewer_size(width, height);
+	glViewport(IZERO, IZERO, (GLint) width, (GLint) height);
+	
 	update_windowsize_menu(mbot->view_menu, gtk_win);
 }
 void frameBufferSizeCB(GLFWwindow *window, int nx_buf, int ny_buf){
@@ -145,7 +147,6 @@ int draw_mesh_kemo(int iflag_streo_shutter, int iflag_dmesh) {
 	char **arg_glut;
 	int iflag_core_profile = 1;
 	int iflag_retinamode = 0;
-    GLboolean bStereo;
 	/* Initialize arrays for viewer */
 	
 	single_kemoview = kemoview_allocate_single_viwewer_struct();

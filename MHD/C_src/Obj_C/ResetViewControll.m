@@ -50,7 +50,7 @@
 	tmpRotation[3] = (double) self.RotationAxisZ;
 	tmpRotation[0] = (double) self.RotationAngle;	
     
-	kemoview_set_windowsize((GLint) self.xPixel, (GLint) self.yPixel);
+	kemoview_set_windowsize((int) self.xPixel, (int) self.yPixel);
 	kemoview_set_rotation_parameter(tmpRotation);
 	kemoview_set_shift_vector(tmpShift);
 	kemoview_set_scale_factor((double) self.ScaleFactor);

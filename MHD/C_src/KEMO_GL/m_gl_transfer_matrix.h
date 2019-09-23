@@ -25,8 +25,8 @@ struct view_element{
 	int iflag_streo_anaglyph;
 	int shading_mode;
 	
-	GLint gl_drawID;
-	GLint nx_window, ny_window;
+	int gl_drawID;
+	int nx_window, ny_window;
 	
 	double x_lookfrom[3];
 	double x_lookat[3];
@@ -105,10 +105,10 @@ void set_3d_position_to_window(int point_screen[2], double xx[3],
 
 void init_kemoview_perspective(struct view_element *view);
 
-void set_gl_windowsize(struct view_element *view, GLint npixel_x, GLint npixel_y);
+void set_gl_windowsize(struct view_element *view, int npixel_x, int npixel_y);
 void send_gl_windowsize(struct view_element *view, int *npixel_x, int *npixel_y);
 void update_projection_by_windowsize(struct view_element *view,
-                                     GLint npixel_x, GLint npixel_y);
+                                     int npixel_x, int npixel_y);
 
 void set_gl_retinamode(struct view_element *view, int i_retina);
 

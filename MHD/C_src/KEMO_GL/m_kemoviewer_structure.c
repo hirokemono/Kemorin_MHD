@@ -579,11 +579,11 @@ void kemoview_set_retinamode(int i_retina){
     set_gl_retinamode(kemo_sgl->view_s, i_retina);
 }
 
-void kemoview_set_windowsize(GLint npixel_x, GLint npixel_y){
+void kemoview_set_windowsize(int npixel_x, int npixel_y){
 	set_gl_windowsize(kemo_sgl->view_s, npixel_x, npixel_y);
 };
 
-void kemoview_update_projection_by_viewer_size(GLint npixel_x, GLint npixel_y){
+void kemoview_update_projection_by_viewer_size(int npixel_x, int npixel_y){
 	update_projection_by_windowsize(kemo_sgl->view_s, npixel_x, npixel_y);
 };
 

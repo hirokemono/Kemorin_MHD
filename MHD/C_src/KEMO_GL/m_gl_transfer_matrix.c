@@ -276,7 +276,7 @@ static void Kemo_Rotate_view_c(double rotate[4], double model[16]){
 	return;
 }
 
-static void update_projection(double x_lookfrom[2], GLint nx_window, GLint ny_window,
+static void update_projection(double x_lookfrom[2], int nx_window, int ny_window,
 							  double aperture, double aspect, double near, double far,
 							  double projection[16]){
 	double wd2;
@@ -298,7 +298,7 @@ static void update_projection(double x_lookfrom[2], GLint nx_window, GLint ny_wi
 	return;
 }
 
-static void update_projection_left(double x_lookfrom[2], GLint nx_window, GLint ny_window,
+static void update_projection_left(double x_lookfrom[2], int nx_window, int ny_window,
 								   double aperture, double aspect, double near, double far,
 								   double focalLength, double eyeSep, double projection[16]){
 	double wd2, ndfl;
@@ -321,7 +321,7 @@ static void update_projection_left(double x_lookfrom[2], GLint nx_window, GLint 
 	return;
 }
 
-static void update_projection_right(double x_lookfrom[2], GLint nx_window, GLint ny_window,
+static void update_projection_right(double x_lookfrom[2], int nx_window, int ny_window,
 									double aperture, double aspect, double near, double far,
 									double focalLength, double eyeSep, double projection[16]){
 	double wd2, ndfl;
@@ -602,7 +602,7 @@ void init_kemoview_perspective(struct view_element *view){
 	return;
 }
 
-void set_gl_windowsize(struct view_element *view, GLint npixel_x, GLint npixel_y)
+void set_gl_windowsize(struct view_element *view, int npixel_x, int npixel_y)
 {
 	view->nx_window = npixel_x;
 	view->ny_window = npixel_y;
@@ -615,9 +615,8 @@ void send_gl_windowsize(struct view_element *view, int *npixel_x, int *npixel_y)
 	return;
 }
 void update_projection_by_windowsize(struct view_element *view,
-                                     GLint npixel_x, GLint npixel_y)
+                                     int npixel_x, int npixel_y)
 {
-	glViewport(IZERO, IZERO, npixel_x, npixel_y);
     set_gl_windowsize(view, npixel_x, npixel_y);
 	update_projection_struct(view);
     return;

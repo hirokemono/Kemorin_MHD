@@ -16,9 +16,9 @@
 
 /* prototypes */
 
-void cube_surf_VBO(GLfloat fSize, struct VAO_ids *VAO_quad, struct gl_strided_buffer *gl_buf);
-void cube_edge_VBO(GLfloat fSize, struct VAO_ids *VAO_quad, struct gl_strided_buffer *gl_buf);
-void cube_flat_VBO(GLfloat fSize, struct VAO_ids *VAO_quad, struct gl_strided_buffer *gl_buf);
+void cube_surf_VBO(float fSize, struct VAO_ids *VAO_quad, struct gl_strided_buffer *gl_buf);
+void cube_edge_VBO(float fSize, struct VAO_ids *VAO_quad, struct gl_strided_buffer *gl_buf);
+void cube_flat_VBO(float fSize, struct VAO_ids *VAO_quad, struct gl_strided_buffer *gl_buf);
 
 void set_quadVBO(struct VAO_ids *VAO_quad, struct gl_strided_buffer *gl_buf);
 

@@ -10,8 +10,8 @@
 
 // ==================================
 
-GLint XpixelGLWindow, YpixelGLWindow;
-GLint XpixelRectView, YpixelRectView;
+int XpixelGLWindow, YpixelGLWindow;
+int XpixelRectView, YpixelRectView;
 
 // single set of interaction flags and states
 double gDollyPanStartPoint[2] = {0.0, 0.0};
@@ -62,12 +62,12 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
     return iflag_updated;
 }
 
-- (GLint) KemoviewHorizontalViewSize
+- (int) KemoviewHorizontalViewSize
 {
     return XpixelGLWindow;
 }
 
-- (GLint) KemoviewVerticalViewSize
+- (int) KemoviewVerticalViewSize
 {
     return YpixelGLWindow;
 }

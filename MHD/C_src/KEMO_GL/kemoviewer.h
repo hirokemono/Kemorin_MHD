@@ -629,8 +629,8 @@ extern "C" {
     void kemoviewer_reset_to_init_angle(void);
     
     void kemoview_set_retinamode(int i_retina);
-    void kemoview_set_windowsize(GLint npixel_x, GLint npixel_y);
-    void kemoview_update_projection_by_viewer_size(GLint npixel_x, GLint npixel_y);
+    void kemoview_set_windowsize(int npixel_x, int npixel_y);
+    void kemoview_update_projection_by_viewer_size(int npixel_x, int npixel_y);
     
     void kemoview_update_distance(void);
     

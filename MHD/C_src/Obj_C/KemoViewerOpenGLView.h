@@ -61,8 +61,8 @@ typedef struct {
 
 - (void) setRetinaMode;
 - (int) getViewSize;
-- (GLint) KemoviewHorizontalViewSize;
-- (GLint) KemoviewVerticalViewSize;
+- (int) KemoviewHorizontalViewSize;
+- (int) KemoviewVerticalViewSize;
 
 - (void) updateProjection;
 - (void) updateModelView;

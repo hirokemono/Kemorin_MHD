@@ -15,11 +15,11 @@
 
 int solid_colorbar_box_to_buf(int ist_quad, struct colormap_params *cmap_s, 
 			struct cbar_work *cbar_wk, struct gl_strided_buffer *strided_buf);
-int fade_colorbar_box_to_buf(int ist_quad, struct colormap_params *cmap_s, GLfloat *bg_color, 
+int fade_colorbar_box_to_buf(int ist_quad, struct colormap_params *cmap_s, float *bg_color, 
 			struct cbar_work *cbar_wk, struct gl_strided_buffer *strided_buf);
-int colorbar_frame_to_buf(int ist_quad, int iflag_retina, GLfloat *text_color,
+int colorbar_frame_to_buf(int ist_quad, int iflag_retina, float *text_color,
 			struct cbar_work *cbar_wk, struct gl_strided_buffer *strided_buf);
-void colorbar_mbox_to_buf(int iflag_retina, GLfloat *text_color,
+void colorbar_mbox_to_buf(int iflag_retina, float *text_color,
 			struct cbar_work *cbar_wk, struct gl_strided_buffer *strided_buf);
 
 #endif

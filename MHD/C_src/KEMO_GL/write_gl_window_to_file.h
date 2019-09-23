@@ -16,8 +16,8 @@
 
 /* prototypes */
 int set_image_format_id_by_ext(char *image_fmt);
-void write_gl_window_to_file(int iflag_img, const char *fhead, GLint nwin_x, GLint nwin_y);
+void write_gl_window_to_file(int iflag_img, const char *fhead, int nwin_x, int nwin_y);
 void write_gl_window_step_file(int iflag_img, int istep, const char *fhead,
-			GLint nwin_x, GLint nwin_y);
+			int nwin_x, int nwin_y);
 
 #endif
