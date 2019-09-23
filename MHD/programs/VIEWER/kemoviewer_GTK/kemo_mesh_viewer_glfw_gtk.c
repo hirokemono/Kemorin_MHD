@@ -186,11 +186,13 @@ int draw_mesh_kemo(int iflag_streo_shutter, int iflag_dmesh) {
 	} else{
 		glfwWindowHint(GLFW_STEREO, GLFW_FALSE);
 	};
+	/*
 	if(iflag_retinamode == 1){
 		glfwWindowHint(GLFW_COCOA_RETINA_FRAMEBUFFER, GLFW_TRUE);
 	} else{
 		glfwWindowHint(GLFW_COCOA_RETINA_FRAMEBUFFER, GLFW_FALSE);
 	};
+	*/
 	/*! GTK Initialization*/
 	/* gtk_set_locale(); */
 	gtk_init(&narg_glut, &arg_glut);
