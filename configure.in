@@ -271,7 +271,7 @@ else
 # Checks for OpenGL
 	if test ${USE_gl} = "yes"
 	then
-#        AX_CHECK_GL
+        AX_CHECK_GL
 #        AX_CHECK_GLU
 #        AX_CHECK_GLUT
 

@@ -80,7 +80,7 @@ HDF5_FFLAGS=    @HDF5_FFLAGS@
 HDF5_LDFLAGS=   @HDF5_LDFLAGS@
 HDF5_FLIBS=     @HDF5_PFLIBS@
 #
-#   OpenGL settings (Requirement: OpenGL, GLUT, libpng)
+#   OpenGL settings (Requirement: OpenGL, libpng)
 #
 OPENGL_INC = @GL_INC@
 OPENGL_LIBS= @GL_LIBS@

@@ -638,6 +638,7 @@ GTK3_CFLAGS
 AQUATERM_LIBS
 GL_INC
 COCOA_FLAG
+GL_LDFLAGS
 GL_LIBS
 GL_CFLAGS
 HAVE_LIBAQUATERM
@@ -806,6 +807,7 @@ with_blas
 with_zlib
 with_x
 with_aquaterm
+with_gl
 with___with_Mesa
 enable_Mesa
 with_pgplot
@@ -833,6 +835,8 @@ ZLIB_LIBS
 PNG_CFLAGS
 PNG_LIBS
 XMKMF
+GL_CFLAGS
+GL_LIBS
 GTK3_CFLAGS
 GTK3_LIBS
 GLFW_CFLAGS
@@ -1486,6 +1490,10 @@ Optional Packages:
   --with-aquaterm=DIR root directory path of aquaterm installation defaults to
                     /Library/Frameworks or /System/Library/Frameworks if not found in /Library/Frameworks
   --without-aquaterm to disable aquaterm usage completely
+  --with-gl[=ARG]         use opengl (ARG=yes), using the specific lib
+                          (ARG=<lib>), using the OpenGL lib that link with X
+                          (ARG=x), using the OpenGL lib that link without X
+                          (ARG=nox), or disable it (ARG=no) [ARG=yes]
 Prefer the Mesa library over a vendors native OpenGL library (default=yes)
   --with-pgplot=DIR root directory path of pgplot installation defaults to
                     /usr/local or /usr if not found in /usr/local
@@ -1515,6 +1523,8 @@ Some influential environment variables:
   PNG_CFLAGS  C compiler flags for PNG, overriding pkg-config
   PNG_LIBS    linker flags for PNG, overriding pkg-config
   XMKMF       Path to xmkmf, Makefile generator for X Window System
+  GL_CFLAGS   C compiler flags for GL, overriding pkg-config
+  GL_LIBS     linker flags for GL, overriding pkg-config
   GTK3_CFLAGS C compiler flags for GTK3, overriding pkg-config
   GTK3_LIBS   linker flags for GTK3, overriding pkg-config
   GLFW_CFLAGS C compiler flags for GLFW, overriding pkg-config
@@ -11664,7 +11674,1407 @@ else
 # Checks for OpenGL
 	if test ${USE_gl} = "yes"
 	then
-#        AX_CHECK_GL
+
+
+# Check whether --with-gl was given.
+if test "${with_gl+set}" = set; then :
+  withval=$with_gl;
+    case "$withval" in #(
+  "no"|"NO") :
+    ax_check_gl_want_gl="no" ;; #(
+  "yes"|"YES") :
+    ax_check_gl_want_gl="yes" ;; #(
+  *) :
+    ax_check_gl_want_gl="$withval" ;;
+esac
+
+else
+  ax_check_gl_want_gl="yes"
+fi
+
+
+ # check consistency of parameters
+ if test "X$have_x" = "Xdisabled"; then :
+  if test X$ax_check_gl_want_gl = "Xx"; then :
+  as_fn_error $? "You prefer OpenGL with X and asked for no X support" "$LINENO" 5
+fi
+fi
+
+ # set flags
+ no_gl="yes"
+
+ # now do the real testing
+ if test X$ax_check_gl_want_gl != "Xno"; then :
+
+
+ # does we need X or not
+  # do not check if empty : allow a subroutine to modify the choice
+ if test "X$ax_check_gl_need_x" = "X"; then :
+  ax_check_gl_need_x="default"
+        if test "X$no_x" = "Xyes"; then :
+  ax_check_gl_need_x="no"
+fi
+        if test "X$ax_check_gl_want_gl" = "Xnox"; then :
+  ax_check_gl_need_x="no"
+fi
+        if test "X$ax_check_gl_want_gl" = "Xx"; then :
+  ax_check_gl_need_x="yes"
+fi
+fi
+
+
+ # try first pkgconfig
+ { $as_echo "$as_me:${as_lineno-$LINENO}: checking for a working OpenGL implementation by pkg-config" >&5
+$as_echo_n "checking for a working OpenGL implementation by pkg-config... " >&6; }
+ if test "X${PKG_CONFIG}" = "X"; then :
+   { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+         ax_check_gl_pkg_config=no
+else
+   { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+
+
+
+pkg_failed=no
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for GL" >&5
+$as_echo_n "checking for GL... " >&6; }
+
+if test -n "$PKG_CONFIG"; then
+    if test -n "$GL_CFLAGS"; then
+        pkg_cv_GL_CFLAGS="$GL_CFLAGS"
+    else
+        if test -n "$PKG_CONFIG" && \
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"gl\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "gl") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_GL_CFLAGS=`$PKG_CONFIG --cflags "gl" 2>/dev/null`
+else
+  pkg_failed=yes
+fi
+    fi
+else
+	pkg_failed=untried
+fi
+if test -n "$PKG_CONFIG"; then
+    if test -n "$GL_LIBS"; then
+        pkg_cv_GL_LIBS="$GL_LIBS"
+    else
+        if test -n "$PKG_CONFIG" && \
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"gl\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "gl") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_GL_LIBS=`$PKG_CONFIG --libs "gl" 2>/dev/null`
+else
+  pkg_failed=yes
+fi
+    fi
+else
+	pkg_failed=untried
+fi
+
+
+
+if test $pkg_failed = yes; then
+
+if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
+        _pkg_short_errors_supported=yes
+else
+        _pkg_short_errors_supported=no
+fi
+        if test $_pkg_short_errors_supported = yes; then
+	        GL_PKG_ERRORS=`$PKG_CONFIG --short-errors --errors-to-stdout --print-errors "gl"`
+        else
+	        GL_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "gl"`
+        fi
+	# Put the nasty error message in config.log where it belongs
+	echo "$GL_PKG_ERRORS" >&5
+
+	ax_check_gl_pkg_config=no
+elif test $pkg_failed = untried; then
+	ax_check_gl_pkg_config=no
+else
+	GL_CFLAGS=$pkg_cv_GL_CFLAGS
+	GL_LIBS=$pkg_cv_GL_LIBS
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+	ax_check_gl_pkg_config=yes
+fi
+ if test "X$ax_check_gl_pkg_config" = "Xyes"; then :
+
+        # check headers
+        ac_ext=c
+ac_cpp='$CPP $CPPFLAGS'
+ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_c_compiler_gnu
+
+ 	ax_check_gl_saved_libs="${LIBS}"
+ax_check_gl_saved_cflags="${CFLAGS}"
+ax_check_gl_saved_cppflags="${CPPFLAGS}"
+ax_check_gl_saved_ldflags="${LDFLAGS}"
+
+        CFLAGS="${GL_CFLAGS} ${CFLAGS}"
+        for ac_header in windows.h
+do :
+  ac_fn_c_check_header_compile "$LINENO" "windows.h" "ac_cv_header_windows_h" "$ac_includes_default
+"
+if test "x$ac_cv_header_windows_h" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_WINDOWS_H 1
+_ACEOF
+
+fi
+
+done
+
+        for ac_header in GL/gl.h OpenGL/gl.h
+do :
+  as_ac_Header=`$as_echo "ac_cv_header_$ac_header" | $as_tr_sh`
+ac_fn_c_check_header_compile "$LINENO" "$ac_header" "$as_ac_Header" "
+  $ac_includes_default
+
+  # if defined(HAVE_WINDOWS_H) && defined(_WIN32)
+  #   include <windows.h>
+  # endif
+
+
+"
+if eval test \"x\$"$as_ac_Header"\" = x"yes"; then :
+  cat >>confdefs.h <<_ACEOF
+#define `$as_echo "HAVE_$ac_header" | $as_tr_cpp` 1
+_ACEOF
+ ax_check_gl_have_headers="yes";break
+else
+  ax_check_gl_have_headers_headers="no"
+fi
+
+done
+
+        LIBS="${ax_check_gl_saved_libs}"
+CFLAGS="${ax_check_gl_saved_cflags}"
+CPPFLAGS="${ax_check_gl_saved_cppflags}"
+LDFLAGS="${ax_check_gl_saved_ldflags}"
+
+	ac_ext=c
+ac_cpp='$CPP $CPPFLAGS'
+ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_c_compiler_gnu
+
+	{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for OpenGL headers" >&5
+$as_echo_n "checking for OpenGL headers... " >&6; }
+if ${ax_cv_check_gl_have_headers+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ax_cv_check_gl_have_headers="${ax_check_gl_have_headers}"
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_gl_have_headers" >&5
+$as_echo "$ax_cv_check_gl_have_headers" >&6; }
+
+        # pkgconfig library are suposed to work ...
+        if test "X$ax_cv_check_gl_have_headers" = "Xno"; then :
+  as_fn_error $? "\"Pkgconfig detected OpenGL library has no headers!\"" "$LINENO" 5
+fi
+
+	 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for compiling a minimal OpenGL program" >&5
+$as_echo_n "checking for compiling a minimal OpenGL program... " >&6; }
+if ${ax_cv_check_gl_compile_opengl+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+   ac_ext=c
+ac_cpp='$CPP $CPPFLAGS'
+ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_c_compiler_gnu
+
+ ax_check_gl_saved_libs="${LIBS}"
+ax_check_gl_saved_cflags="${CFLAGS}"
+ax_check_gl_saved_cppflags="${CPPFLAGS}"
+ax_check_gl_saved_ldflags="${LDFLAGS}"
+
+ CFLAGS="${GL_CFLAGS} ${CFLAGS}"
+ cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+# if defined(HAVE_WINDOWS_H) && defined(_WIN32)
+#   include <windows.h>
+# endif
+# ifdef HAVE_GL_GL_H
+#   include <GL/gl.h>
+# elif defined(HAVE_OPENGL_GL_H)
+#   include <OpenGL/gl.h>
+# else
+#   error no gl.h
+# endif
+
+#ifdef F77_DUMMY_MAIN
+
+#  ifdef __cplusplus
+     extern "C"
+#  endif
+   int F77_DUMMY_MAIN() { return 1; }
+
+#endif
+int
+main ()
+{
+glBegin(0)
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_compile "$LINENO"; then :
+  ax_check_gl_compile_opengl="yes"
+else
+  ax_check_gl_compile_opengl="no"
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+ LIBS="${ax_check_gl_saved_libs}"
+CFLAGS="${ax_check_gl_saved_cflags}"
+CPPFLAGS="${ax_check_gl_saved_cppflags}"
+LDFLAGS="${ax_check_gl_saved_ldflags}"
+
+ ac_ext=c
+ac_cpp='$CPP $CPPFLAGS'
+ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_c_compiler_gnu
+
+
+                 ax_cv_check_gl_compile_opengl="${ax_check_gl_compile_opengl}"
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_gl_compile_opengl" >&5
+$as_echo "$ax_cv_check_gl_compile_opengl" >&6; }
+ ax_check_gl_compile_opengl="${ax_cv_check_gl_compile_opengl}"
+
+	if test "X$ax_cv_check_gl_compile_opengl" = "Xno"; then :
+  as_fn_error $? "\"Pkgconfig detected opengl library could not be used for compiling minimal program!\"" "$LINENO" 5
+fi
+
+	 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for linking a minimal OpenGL program" >&5
+$as_echo_n "checking for linking a minimal OpenGL program... " >&6; }
+if ${ax_cv_check_gl_link_opengl+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+   ac_ext=c
+ac_cpp='$CPP $CPPFLAGS'
+ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_c_compiler_gnu
+
+ ax_check_gl_saved_libs="${LIBS}"
+ax_check_gl_saved_cflags="${CFLAGS}"
+ax_check_gl_saved_cppflags="${CPPFLAGS}"
+ax_check_gl_saved_ldflags="${LDFLAGS}"
+
+ CFLAGS="${GL_CFLAGS} ${CFLAGS}"
+ LIBS="${GL_LIBS} ${LIBS}"
+ LDFLAGS="${GL_LDFLAGS} ${LDFLAGS}"
+ cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+# if defined(HAVE_WINDOWS_H) && defined(_WIN32)
+#   include <windows.h>
+# endif
+# ifdef HAVE_GL_GL_H
+#   include <GL/gl.h>
+# elif defined(HAVE_OPENGL_GL_H)
+#   include <OpenGL/gl.h>
+# else
+#   error no gl.h
+# endif
+
+#ifdef F77_DUMMY_MAIN
+
+#  ifdef __cplusplus
+     extern "C"
+#  endif
+   int F77_DUMMY_MAIN() { return 1; }
+
+#endif
+int
+main ()
+{
+glBegin(0)
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ax_check_gl_link_opengl="yes"
+else
+  ax_check_gl_link_opengl="no"
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+ LIBS="${ax_check_gl_saved_libs}"
+CFLAGS="${ax_check_gl_saved_cflags}"
+CPPFLAGS="${ax_check_gl_saved_cppflags}"
+LDFLAGS="${ax_check_gl_saved_ldflags}"
+
+ ac_ext=c
+ac_cpp='$CPP $CPPFLAGS'
+ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_c_compiler_gnu
+
+
+                 ax_cv_check_gl_link_opengl="${ax_check_gl_link_opengl}"
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_gl_link_opengl" >&5
+$as_echo "$ax_cv_check_gl_link_opengl" >&6; }
+ ax_check_gl_link_opengl="${ax_cv_check_gl_link_opengl}"
+
+	if test "X$ax_cv_check_gl_link_opengl" = "Xno"; then :
+  as_fn_error $? "\"Pkgconfig detected opengl library could not be used for linking minimal program!\"" "$LINENO" 5
+fi
+
+fi
+
+fi
+
+ # if no pkgconfig or pkgconfig fail try manual way
+ if test "X$ax_check_gl_pkg_config" = "Xno"; then :
+
+ no_gl="yes"
+
+
+ case ${host} in #(
+  *-darwin*) :
+     case $ax_check_gl_need_x in #(
+  # try to get X libs if possible do not use framework
+         yes) :
+
+ ac_ext=c
+ac_cpp='$CPP $CPPFLAGS'
+ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_c_compiler_gnu
+
+ ax_check_gl_saved_libs="${LIBS}"
+ax_check_gl_saved_cflags="${CFLAGS}"
+ax_check_gl_saved_cppflags="${CPPFLAGS}"
+ax_check_gl_saved_ldflags="${LDFLAGS}"
+
+ CFLAGS="${GL_CFLAGS} ${CFLAGS}"
+ # see comment in _AX_CHECK_GL_INCLUDES_DEFAULT
+ for ac_header in windows.h
+do :
+  ac_fn_c_check_header_compile "$LINENO" "windows.h" "ac_cv_header_windows_h" "$ac_includes_default
+"
+if test "x$ac_cv_header_windows_h" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_WINDOWS_H 1
+_ACEOF
+
+fi
+
+done
+
+ # FIXME: use extra cflags
+ for ac_header in GL/gl.h
+do :
+  ac_fn_c_check_header_compile "$LINENO" "GL/gl.h" "ac_cv_header_GL_gl_h" "
+  $ac_includes_default
+
+  # if defined(HAVE_WINDOWS_H) && defined(_WIN32)
+  #   include <windows.h>
+  # endif
+
+
+"
+if test "x$ac_cv_header_GL_gl_h" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_GL_GL_H 1
+_ACEOF
+ ax_check_gl_have_headers="yes"
+else
+  ax_check_gl_have_headers_headers="no"
+fi
+
+done
+
+ # do not try darwin specific OpenGl/gl.h
+ LIBS="${ax_check_gl_saved_libs}"
+CFLAGS="${ax_check_gl_saved_cflags}"
+CPPFLAGS="${ax_check_gl_saved_cppflags}"
+LDFLAGS="${ax_check_gl_saved_ldflags}"
+
+ ac_ext=c
+ac_cpp='$CPP $CPPFLAGS'
+ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_c_compiler_gnu
+
+
+	 no ;; #(
+  *) :
+
+ ac_ext=c
+ac_cpp='$CPP $CPPFLAGS'
+ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_c_compiler_gnu
+
+ ax_check_gl_saved_libs="${LIBS}"
+ax_check_gl_saved_cflags="${CFLAGS}"
+ax_check_gl_saved_cppflags="${CPPFLAGS}"
+ax_check_gl_saved_ldflags="${LDFLAGS}"
+
+ # FIXME: use -framework opengl as an extra cflags
+ CFLAGS="-framework opengl ${GL_CFLAGS} ${CFLAGS}"
+ for ac_header in OpenGL/gl.h
+do :
+  ac_fn_c_check_header_compile "$LINENO" "OpenGL/gl.h" "ac_cv_header_OpenGL_gl_h" "
+  $ac_includes_default
+
+  # if defined(HAVE_WINDOWS_H) && defined(_WIN32)
+  #   include <windows.h>
+  # endif
+
+
+"
+if test "x$ac_cv_header_OpenGL_gl_h" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_OPENGL_GL_H 1
+_ACEOF
+ ax_check_gl_have_headers="yes"
+else
+  ax_check_gl_have_headers_headers="no"
+fi
+
+done
+
+ if test "X$ax_check_gl_have_headers" = "yes"; then :
+  GL_CFLAGS="-framework opengl ${GL_CFLAGS}"
+fi
+ ax_check_gl_saved_libs="${LIBS}"
+ax_check_gl_saved_cflags="${CFLAGS}"
+ax_check_gl_saved_cppflags="${CPPFLAGS}"
+ax_check_gl_saved_ldflags="${LDFLAGS}"
+
+ ac_ext=c
+ac_cpp='$CPP $CPPFLAGS'
+ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_c_compiler_gnu
+
+
+	 # per default use framework that will select if possible no_x version
+
+ ac_ext=c
+ac_cpp='$CPP $CPPFLAGS'
+ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_c_compiler_gnu
+
+ ax_check_gl_saved_libs="${LIBS}"
+ax_check_gl_saved_cflags="${CFLAGS}"
+ax_check_gl_saved_cppflags="${CPPFLAGS}"
+ax_check_gl_saved_ldflags="${LDFLAGS}"
+
+ # FIXME: use -framework opengl as an extra cflags
+ CFLAGS="-framework opengl ${GL_CFLAGS} ${CFLAGS}"
+ for ac_header in OpenGL/gl.h
+do :
+  ac_fn_c_check_header_compile "$LINENO" "OpenGL/gl.h" "ac_cv_header_OpenGL_gl_h" "
+  $ac_includes_default
+
+  # if defined(HAVE_WINDOWS_H) && defined(_WIN32)
+  #   include <windows.h>
+  # endif
+
+
+"
+if test "x$ac_cv_header_OpenGL_gl_h" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_OPENGL_GL_H 1
+_ACEOF
+ ax_check_gl_have_headers="yes"
+else
+  ax_check_gl_have_headers_headers="no"
+fi
+
+done
+
+ if test "X$ax_check_gl_have_headers" = "yes"; then :
+  GL_CFLAGS="-framework opengl ${GL_CFLAGS}"
+fi
+ ax_check_gl_saved_libs="${LIBS}"
+ax_check_gl_saved_cflags="${CFLAGS}"
+ax_check_gl_saved_cppflags="${CPPFLAGS}"
+ax_check_gl_saved_ldflags="${LDFLAGS}"
+
+ ac_ext=c
+ac_cpp='$CPP $CPPFLAGS'
+ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_c_compiler_gnu
+
+
+	  # if not found set that we need x in order to found the good library
+	  if test "X$ax_check_gl_have_headers" = "yes"; then :
+  ax_check_gl_need_x="no"
+else
+  ax_check_gl_need_x="yes"
+		 # retry with general test
+
+ ac_ext=c
+ac_cpp='$CPP $CPPFLAGS'
+ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_c_compiler_gnu
+
+ ax_check_gl_saved_libs="${LIBS}"
+ax_check_gl_saved_cflags="${CFLAGS}"
+ax_check_gl_saved_cppflags="${CPPFLAGS}"
+ax_check_gl_saved_ldflags="${LDFLAGS}"
+
+ CFLAGS="${GL_CFLAGS} ${CFLAGS}"
+ # see comment in _AX_CHECK_GL_INCLUDES_DEFAULT
+ for ac_header in windows.h
+do :
+  ac_fn_c_check_header_compile "$LINENO" "windows.h" "ac_cv_header_windows_h" "$ac_includes_default
+"
+if test "x$ac_cv_header_windows_h" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_WINDOWS_H 1
+_ACEOF
+
+fi
+
+done
+
+ # FIXME: use extra cflags
+ for ac_header in GL/gl.h
+do :
+  ac_fn_c_check_header_compile "$LINENO" "GL/gl.h" "ac_cv_header_GL_gl_h" "
+  $ac_includes_default
+
+  # if defined(HAVE_WINDOWS_H) && defined(_WIN32)
+  #   include <windows.h>
+  # endif
+
+
+"
+if test "x$ac_cv_header_GL_gl_h" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_GL_GL_H 1
+_ACEOF
+ ax_check_gl_have_headers="yes"
+else
+  ax_check_gl_have_headers_headers="no"
+fi
+
+done
+
+ # do not try darwin specific OpenGl/gl.h
+ LIBS="${ax_check_gl_saved_libs}"
+CFLAGS="${ax_check_gl_saved_cflags}"
+CPPFLAGS="${ax_check_gl_saved_cppflags}"
+LDFLAGS="${ax_check_gl_saved_ldflags}"
+
+ ac_ext=c
+ac_cpp='$CPP $CPPFLAGS'
+ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_c_compiler_gnu
+
+
+fi
+  ;;
+esac
+ ;; #(
+  *) :
+
+ ac_ext=c
+ac_cpp='$CPP $CPPFLAGS'
+ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_c_compiler_gnu
+
+ ax_check_gl_saved_libs="${LIBS}"
+ax_check_gl_saved_cflags="${CFLAGS}"
+ax_check_gl_saved_cppflags="${CPPFLAGS}"
+ax_check_gl_saved_ldflags="${LDFLAGS}"
+
+ CFLAGS="${GL_CFLAGS} ${CFLAGS}"
+ # see comment in _AX_CHECK_GL_INCLUDES_DEFAULT
+ for ac_header in windows.h
+do :
+  ac_fn_c_check_header_compile "$LINENO" "windows.h" "ac_cv_header_windows_h" "$ac_includes_default
+"
+if test "x$ac_cv_header_windows_h" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_WINDOWS_H 1
+_ACEOF
+
+fi
+
+done
+
+ # FIXME: use extra cflags
+ for ac_header in GL/gl.h
+do :
+  ac_fn_c_check_header_compile "$LINENO" "GL/gl.h" "ac_cv_header_GL_gl_h" "
+  $ac_includes_default
+
+  # if defined(HAVE_WINDOWS_H) && defined(_WIN32)
+  #   include <windows.h>
+  # endif
+
+
+"
+if test "x$ac_cv_header_GL_gl_h" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_GL_GL_H 1
+_ACEOF
+ ax_check_gl_have_headers="yes"
+else
+  ax_check_gl_have_headers_headers="no"
+fi
+
+done
+
+ # do not try darwin specific OpenGl/gl.h
+ LIBS="${ax_check_gl_saved_libs}"
+CFLAGS="${ax_check_gl_saved_cflags}"
+CPPFLAGS="${ax_check_gl_saved_cppflags}"
+LDFLAGS="${ax_check_gl_saved_ldflags}"
+
+ ac_ext=c
+ac_cpp='$CPP $CPPFLAGS'
+ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_c_compiler_gnu
+
+ ;;
+esac
+ { $as_echo "$as_me:${as_lineno-$LINENO}: checking for OpenGL headers" >&5
+$as_echo_n "checking for OpenGL headers... " >&6; }
+if ${ax_cv_check_gl_have_headers+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ax_cv_check_gl_have_headers="${ax_check_gl_have_headers}"
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_gl_have_headers" >&5
+$as_echo "$ax_cv_check_gl_have_headers" >&6; }
+
+ if test "X$ax_check_gl_have_headers" = "Xyes"; then :
+   { $as_echo "$as_me:${as_lineno-$LINENO}: checking for compiling a minimal OpenGL program" >&5
+$as_echo_n "checking for compiling a minimal OpenGL program... " >&6; }
+if ${ax_cv_check_gl_compile_opengl+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+   ac_ext=c
+ac_cpp='$CPP $CPPFLAGS'
+ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_c_compiler_gnu
+
+ ax_check_gl_saved_libs="${LIBS}"
+ax_check_gl_saved_cflags="${CFLAGS}"
+ax_check_gl_saved_cppflags="${CPPFLAGS}"
+ax_check_gl_saved_ldflags="${LDFLAGS}"
+
+ CFLAGS="${GL_CFLAGS} ${CFLAGS}"
+ cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+# if defined(HAVE_WINDOWS_H) && defined(_WIN32)
+#   include <windows.h>
+# endif
+# ifdef HAVE_GL_GL_H
+#   include <GL/gl.h>
+# elif defined(HAVE_OPENGL_GL_H)
+#   include <OpenGL/gl.h>
+# else
+#   error no gl.h
+# endif
+
+#ifdef F77_DUMMY_MAIN
+
+#  ifdef __cplusplus
+     extern "C"
+#  endif
+   int F77_DUMMY_MAIN() { return 1; }
+
+#endif
+int
+main ()
+{
+glBegin(0)
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_compile "$LINENO"; then :
+  ax_check_gl_compile_opengl="yes"
+else
+  ax_check_gl_compile_opengl="no"
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+ LIBS="${ax_check_gl_saved_libs}"
+CFLAGS="${ax_check_gl_saved_cflags}"
+CPPFLAGS="${ax_check_gl_saved_cppflags}"
+LDFLAGS="${ax_check_gl_saved_ldflags}"
+
+ ac_ext=c
+ac_cpp='$CPP $CPPFLAGS'
+ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_c_compiler_gnu
+
+
+                 ax_cv_check_gl_compile_opengl="${ax_check_gl_compile_opengl}"
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_gl_compile_opengl" >&5
+$as_echo "$ax_cv_check_gl_compile_opengl" >&6; }
+ ax_check_gl_compile_opengl="${ax_cv_check_gl_compile_opengl}"
+
+else
+  ax_check_gl_compile_opengl=no
+fi
+
+ if test "X$ax_check_gl_compile_opengl" = "Xyes"; then :
+
+ case ${host} in #(
+  *-darwin*) :
+    # ldhack list
+ ldhack1 = "-Wl,-framework,OpenGL"
+ ldhack2 = "-Wl,-dylib_file,/System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libGL.dylib:/System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libGL.dylib"
+ ldhack3 = "$ldhack1,$ldhack2"
+
+ # select hack
+ if test "X$ax_check_gl_need_x" = "Xyes"; then :
+  # libs already set by -framework cflag
+        darwinlibs=""
+        ldhacks="$ldhack1 $ldhack2 $ldhack3"
+else
+  # do not use framework ldflags in case of x version
+        darwinlibs="GL gl MesaGL"
+        ldhack="$ldhack2"
+fi
+
+ ax_check_gl_link_opengl="no"
+ for extralibs in " " $darwinlibs; do
+   for extraldflags in " " ldhacks; do
+       ac_ext=c
+ac_cpp='$CPP $CPPFLAGS'
+ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_c_compiler_gnu
+
+        ax_check_gl_saved_libs="${LIBS}"
+ax_check_gl_saved_cflags="${CFLAGS}"
+ax_check_gl_saved_cppflags="${CPPFLAGS}"
+ax_check_gl_saved_ldflags="${LDFLAGS}"
+
+       CFLAGS="${GL_CFLAGS} ${CFLAGS}"
+       LIBS="$extralibs ${GL_LIBS} ${LIBS}"
+       LDFLAGS="$extraldflags ${GL_LDFLAGS} ${LDFLAGS}"
+       cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+# if defined(HAVE_WINDOWS_H) && defined(_WIN32)
+#   include <windows.h>
+# endif
+# ifdef HAVE_GL_GL_H
+#   include <GL/gl.h>
+# elif defined(HAVE_OPENGL_GL_H)
+#   include <OpenGL/gl.h>
+# else
+#   error no gl.h
+# endif
+
+#ifdef F77_DUMMY_MAIN
+
+#  ifdef __cplusplus
+     extern "C"
+#  endif
+   int F77_DUMMY_MAIN() { return 1; }
+
+#endif
+int
+main ()
+{
+glBegin(0)
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ax_check_gl_link_opengl="yes"
+else
+  ax_check_gl_link_opengl="no"
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+       LIBS="${ax_check_gl_saved_libs}"
+CFLAGS="${ax_check_gl_saved_cflags}"
+CPPFLAGS="${ax_check_gl_saved_cppflags}"
+LDFLAGS="${ax_check_gl_saved_ldflags}"
+
+       ac_ext=c
+ac_cpp='$CPP $CPPFLAGS'
+ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_c_compiler_gnu
+
+       if test "X$ax_check_gl_link_opengl" = "Xyes"; then :
+  break
+fi
+   done;
+   if test "X$ax_check_gl_link_opengl" = "Xyes"; then :
+  break
+fi
+ done;
+ GL_LIBS="$extralibs ${GL_LIBS}"
+ GL_LDFLAGS="$extraldflags ${GL_LDFLAGS}"
+ ;; #(
+  # try first cygwin version
+         *-cygwin*) :
+     ax_check_gl_manual_libs_generic_extra_libs="GL gl MesaGL opengl32"
+ if test "X$ax_check_gl_manual_libs_generic_extra_libs" = "X"; then :
+  as_fn_error $? "AX_CHECK_GL_MANUAL_LIBS_GENERIC argument must no be empty" "$LINENO" 5
+fi
+
+ ac_ext=c
+ac_cpp='$CPP $CPPFLAGS'
+ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_c_compiler_gnu
+
+ ax_check_gl_saved_libs="${LIBS}"
+ax_check_gl_saved_cflags="${CFLAGS}"
+ax_check_gl_saved_cppflags="${CPPFLAGS}"
+ax_check_gl_saved_ldflags="${LDFLAGS}"
+
+ CFLAGS="${GL_CFLAGS} ${CFLAGS}"
+ LIBS="${GL_LIBS} ${LIBS}"
+ { $as_echo "$as_me:${as_lineno-$LINENO}: checking for library containing glBegin" >&5
+$as_echo_n "checking for library containing glBegin... " >&6; }
+if ${ac_cv_search_glBegin+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_func_search_save_LIBS=$LIBS
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char glBegin ();
+#ifdef F77_DUMMY_MAIN
+
+#  ifdef __cplusplus
+     extern "C"
+#  endif
+   int F77_DUMMY_MAIN() { return 1; }
+
+#endif
+int
+main ()
+{
+return glBegin ();
+  ;
+  return 0;
+}
+_ACEOF
+for ac_lib in '' $ax_check_gl_manual_libs_generic_extra_libs; do
+  if test -z "$ac_lib"; then
+    ac_res="none required"
+  else
+    ac_res=-l$ac_lib
+    LIBS="-l$ac_lib  $ac_func_search_save_LIBS"
+  fi
+  if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_search_glBegin=$ac_res
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext
+  if ${ac_cv_search_glBegin+:} false; then :
+  break
+fi
+done
+if ${ac_cv_search_glBegin+:} false; then :
+
+else
+  ac_cv_search_glBegin=no
+fi
+rm conftest.$ac_ext
+LIBS=$ac_func_search_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_search_glBegin" >&5
+$as_echo "$ac_cv_search_glBegin" >&6; }
+ac_res=$ac_cv_search_glBegin
+if test "$ac_res" != no; then :
+  test "$ac_res" = "none required" || LIBS="$ac_res $LIBS"
+  ax_check_gl_lib_opengl="yes"
+else
+  ax_check_gl_lib_opengl="no"
+fi
+
+ case $ac_cv_search_glBegin in #(
+  "none required") :
+     ;; #(
+  no) :
+     ;; #(
+  *) :
+    GL_LIBS="${ac_cv_search_glBegin} ${GL_LIBS}" ;;
+esac
+  LIBS="${ax_check_gl_saved_libs}"
+CFLAGS="${ax_check_gl_saved_cflags}"
+CPPFLAGS="${ax_check_gl_saved_cppflags}"
+LDFLAGS="${ax_check_gl_saved_ldflags}"
+
+  ac_ext=c
+ac_cpp='$CPP $CPPFLAGS'
+ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_c_compiler_gnu
+
+ ;; #(
+  # try first native
+	 *-mingw*) :
+     ax_check_gl_manual_libs_generic_extra_libs="opengl32 GL gl MesaGL"
+ if test "X$ax_check_gl_manual_libs_generic_extra_libs" = "X"; then :
+  as_fn_error $? "AX_CHECK_GL_MANUAL_LIBS_GENERIC argument must no be empty" "$LINENO" 5
+fi
+
+ ac_ext=c
+ac_cpp='$CPP $CPPFLAGS'
+ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_c_compiler_gnu
+
+ ax_check_gl_saved_libs="${LIBS}"
+ax_check_gl_saved_cflags="${CFLAGS}"
+ax_check_gl_saved_cppflags="${CPPFLAGS}"
+ax_check_gl_saved_ldflags="${LDFLAGS}"
+
+ CFLAGS="${GL_CFLAGS} ${CFLAGS}"
+ LIBS="${GL_LIBS} ${LIBS}"
+ { $as_echo "$as_me:${as_lineno-$LINENO}: checking for library containing glBegin" >&5
+$as_echo_n "checking for library containing glBegin... " >&6; }
+if ${ac_cv_search_glBegin+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_func_search_save_LIBS=$LIBS
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char glBegin ();
+#ifdef F77_DUMMY_MAIN
+
+#  ifdef __cplusplus
+     extern "C"
+#  endif
+   int F77_DUMMY_MAIN() { return 1; }
+
+#endif
+int
+main ()
+{
+return glBegin ();
+  ;
+  return 0;
+}
+_ACEOF
+for ac_lib in '' $ax_check_gl_manual_libs_generic_extra_libs; do
+  if test -z "$ac_lib"; then
+    ac_res="none required"
+  else
+    ac_res=-l$ac_lib
+    LIBS="-l$ac_lib  $ac_func_search_save_LIBS"
+  fi
+  if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_search_glBegin=$ac_res
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext
+  if ${ac_cv_search_glBegin+:} false; then :
+  break
+fi
+done
+if ${ac_cv_search_glBegin+:} false; then :
+
+else
+  ac_cv_search_glBegin=no
+fi
+rm conftest.$ac_ext
+LIBS=$ac_func_search_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_search_glBegin" >&5
+$as_echo "$ac_cv_search_glBegin" >&6; }
+ac_res=$ac_cv_search_glBegin
+if test "$ac_res" != no; then :
+  test "$ac_res" = "none required" || LIBS="$ac_res $LIBS"
+  ax_check_gl_lib_opengl="yes"
+else
+  ax_check_gl_lib_opengl="no"
+fi
+
+ case $ac_cv_search_glBegin in #(
+  "none required") :
+     ;; #(
+  no) :
+     ;; #(
+  *) :
+    GL_LIBS="${ac_cv_search_glBegin} ${GL_LIBS}" ;;
+esac
+  LIBS="${ax_check_gl_saved_libs}"
+CFLAGS="${ax_check_gl_saved_cflags}"
+CPPFLAGS="${ax_check_gl_saved_cppflags}"
+LDFLAGS="${ax_check_gl_saved_ldflags}"
+
+  ac_ext=c
+ac_cpp='$CPP $CPPFLAGS'
+ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_c_compiler_gnu
+
+ ;; #(
+  *) :
+     ax_check_gl_manual_libs_generic_extra_libs="GL gl MesaGL"
+ if test "X$ax_check_gl_manual_libs_generic_extra_libs" = "X"; then :
+  as_fn_error $? "AX_CHECK_GL_MANUAL_LIBS_GENERIC argument must no be empty" "$LINENO" 5
+fi
+
+ ac_ext=c
+ac_cpp='$CPP $CPPFLAGS'
+ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_c_compiler_gnu
+
+ ax_check_gl_saved_libs="${LIBS}"
+ax_check_gl_saved_cflags="${CFLAGS}"
+ax_check_gl_saved_cppflags="${CPPFLAGS}"
+ax_check_gl_saved_ldflags="${LDFLAGS}"
+
+ CFLAGS="${GL_CFLAGS} ${CFLAGS}"
+ LIBS="${GL_LIBS} ${LIBS}"
+ { $as_echo "$as_me:${as_lineno-$LINENO}: checking for library containing glBegin" >&5
+$as_echo_n "checking for library containing glBegin... " >&6; }
+if ${ac_cv_search_glBegin+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_func_search_save_LIBS=$LIBS
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char glBegin ();
+#ifdef F77_DUMMY_MAIN
+
+#  ifdef __cplusplus
+     extern "C"
+#  endif
+   int F77_DUMMY_MAIN() { return 1; }
+
+#endif
+int
+main ()
+{
+return glBegin ();
+  ;
+  return 0;
+}
+_ACEOF
+for ac_lib in '' $ax_check_gl_manual_libs_generic_extra_libs; do
+  if test -z "$ac_lib"; then
+    ac_res="none required"
+  else
+    ac_res=-l$ac_lib
+    LIBS="-l$ac_lib  $ac_func_search_save_LIBS"
+  fi
+  if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_search_glBegin=$ac_res
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext
+  if ${ac_cv_search_glBegin+:} false; then :
+  break
+fi
+done
+if ${ac_cv_search_glBegin+:} false; then :
+
+else
+  ac_cv_search_glBegin=no
+fi
+rm conftest.$ac_ext
+LIBS=$ac_func_search_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_search_glBegin" >&5
+$as_echo "$ac_cv_search_glBegin" >&6; }
+ac_res=$ac_cv_search_glBegin
+if test "$ac_res" != no; then :
+  test "$ac_res" = "none required" || LIBS="$ac_res $LIBS"
+  ax_check_gl_lib_opengl="yes"
+else
+  ax_check_gl_lib_opengl="no"
+fi
+
+ case $ac_cv_search_glBegin in #(
+  "none required") :
+     ;; #(
+  no) :
+     ;; #(
+  *) :
+    GL_LIBS="${ac_cv_search_glBegin} ${GL_LIBS}" ;;
+esac
+  LIBS="${ax_check_gl_saved_libs}"
+CFLAGS="${ax_check_gl_saved_cflags}"
+CPPFLAGS="${ax_check_gl_saved_cppflags}"
+LDFLAGS="${ax_check_gl_saved_ldflags}"
+
+  ac_ext=c
+ac_cpp='$CPP $CPPFLAGS'
+ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_c_compiler_gnu
+
+ ;;
+esac
+
+ { $as_echo "$as_me:${as_lineno-$LINENO}: checking for OpenGL libraries" >&5
+$as_echo_n "checking for OpenGL libraries... " >&6; }
+if ${ax_cv_check_gl_lib_opengl+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ax_cv_check_gl_lib_opengl="${ax_check_gl_lib_opengl}"
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_gl_lib_opengl" >&5
+$as_echo "$ax_cv_check_gl_lib_opengl" >&6; }
+ ax_check_gl_lib_opengl="${ax_cv_check_gl_lib_opengl}"
+
+else
+  ax_check_gl_lib_opengl=no
+fi
+
+ if test "X$ax_check_gl_lib_opengl" = "Xyes"; then :
+   { $as_echo "$as_me:${as_lineno-$LINENO}: checking for linking a minimal OpenGL program" >&5
+$as_echo_n "checking for linking a minimal OpenGL program... " >&6; }
+if ${ax_cv_check_gl_link_opengl+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+   ac_ext=c
+ac_cpp='$CPP $CPPFLAGS'
+ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_c_compiler_gnu
+
+ ax_check_gl_saved_libs="${LIBS}"
+ax_check_gl_saved_cflags="${CFLAGS}"
+ax_check_gl_saved_cppflags="${CPPFLAGS}"
+ax_check_gl_saved_ldflags="${LDFLAGS}"
+
+ CFLAGS="${GL_CFLAGS} ${CFLAGS}"
+ LIBS="${GL_LIBS} ${LIBS}"
+ LDFLAGS="${GL_LDFLAGS} ${LDFLAGS}"
+ cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+# if defined(HAVE_WINDOWS_H) && defined(_WIN32)
+#   include <windows.h>
+# endif
+# ifdef HAVE_GL_GL_H
+#   include <GL/gl.h>
+# elif defined(HAVE_OPENGL_GL_H)
+#   include <OpenGL/gl.h>
+# else
+#   error no gl.h
+# endif
+
+#ifdef F77_DUMMY_MAIN
+
+#  ifdef __cplusplus
+     extern "C"
+#  endif
+   int F77_DUMMY_MAIN() { return 1; }
+
+#endif
+int
+main ()
+{
+glBegin(0)
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ax_check_gl_link_opengl="yes"
+else
+  ax_check_gl_link_opengl="no"
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+ LIBS="${ax_check_gl_saved_libs}"
+CFLAGS="${ax_check_gl_saved_cflags}"
+CPPFLAGS="${ax_check_gl_saved_cppflags}"
+LDFLAGS="${ax_check_gl_saved_ldflags}"
+
+ ac_ext=c
+ac_cpp='$CPP $CPPFLAGS'
+ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_c_compiler_gnu
+
+
+                 ax_cv_check_gl_link_opengl="${ax_check_gl_link_opengl}"
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_gl_link_opengl" >&5
+$as_echo "$ax_cv_check_gl_link_opengl" >&6; }
+ ax_check_gl_link_opengl="${ax_cv_check_gl_link_opengl}"
+
+else
+  ax_check_gl_link_opengl=no
+fi
+
+ if test "X$ax_check_gl_link_opengl" = "Xyes"; then :
+  no_gl="no"
+else
+  no_gl="yes"
+fi
+
+else
+  no_gl=no
+fi
+
+
+ # test if need to test X compatibility
+ if test $no_gl = no; then :
+  # test X compatibility
+ 	if test X$ax_check_gl_need_x != "Xdefault"; then :
+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking wether OpenGL link implictly with X" >&5
+$as_echo_n "checking wether OpenGL link implictly with X... " >&6; }
+if ${ax_cv_check_gl_link_with_x+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+
+ # try if opengl need X
+ ac_ext=c
+ac_cpp='$CPP $CPPFLAGS'
+ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_c_compiler_gnu
+
+ ax_check_gl_saved_libs="${LIBS}"
+ax_check_gl_saved_cflags="${CFLAGS}"
+ax_check_gl_saved_cppflags="${CPPFLAGS}"
+ax_check_gl_saved_ldflags="${LDFLAGS}"
+
+ CFLAGS="${GL_CFLAGS} ${CFLAGS}"
+ LIBS="${GL_LIBS} ${LIBS}"
+ LDFLAGS="${GL_LDFLAGS} ${LDFLAGS}"
+ cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char glXQueryVersion ();
+#ifdef F77_DUMMY_MAIN
+
+#  ifdef __cplusplus
+     extern "C"
+#  endif
+   int F77_DUMMY_MAIN() { return 1; }
+
+#endif
+int
+main ()
+{
+return glXQueryVersion ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ax_check_gl_link_implicitly_with_x="yes"
+else
+  ax_check_gl_link_implicitly_with_x="no"
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+ LIBS="${ax_check_gl_saved_libs}"
+CFLAGS="${ax_check_gl_saved_cflags}"
+CPPFLAGS="${ax_check_gl_saved_cppflags}"
+LDFLAGS="${ax_check_gl_saved_ldflags}"
+
+ ac_ext=c
+ac_cpp='$CPP $CPPFLAGS'
+ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_c_compiler_gnu
+
+
+                               ax_cv_check_gl_link_with_x="${ax_check_gl_link_implicitly_with_x}"
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_gl_link_with_x" >&5
+$as_echo "$ax_cv_check_gl_link_with_x" >&6; }
+                               if test "X${ax_cv_check_gl_link_with_x}" = "X${ax_check_gl_need_x}"; then :
+  no_gl="no"
+else
+  no_gl=yes
+fi
+fi
+
+fi
+
+fi
+
+ { $as_echo "$as_me:${as_lineno-$LINENO}: checking for a working OpenGL implementation" >&5
+$as_echo_n "checking for a working OpenGL implementation... " >&6; }
+ if test "X$no_gl" = "Xno"; then :
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+        { $as_echo "$as_me:${as_lineno-$LINENO}: checking for CFLAGS needed for OpenGL" >&5
+$as_echo_n "checking for CFLAGS needed for OpenGL... " >&6; }
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: \"${GL_CFLAGS}\"" >&5
+$as_echo "\"${GL_CFLAGS}\"" >&6; }
+        { $as_echo "$as_me:${as_lineno-$LINENO}: checking for LIBS needed for OpenGL" >&5
+$as_echo_n "checking for LIBS needed for OpenGL... " >&6; }
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: \"${GL_LIBS}\"" >&5
+$as_echo "\"${GL_LIBS}\"" >&6; }
+        { $as_echo "$as_me:${as_lineno-$LINENO}: checking for LDFLAGS needed for OpenGL" >&5
+$as_echo_n "checking for LDFLAGS needed for OpenGL... " >&6; }
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: \"${GL_LDFLAGS}\"" >&5
+$as_echo "\"${GL_LDFLAGS}\"" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+        GL_CFLAGS=""
+        GL_LIBS=""
+        GL_LDFLAGS=""
+fi
+
+
+
+
+
 #        AX_CHECK_GLU
 #        AX_CHECK_GLUT
 

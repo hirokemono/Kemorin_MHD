@@ -79,7 +79,7 @@ HDF5_FFLAGS=   -I/Users/matsui/local/include
 HDF5_LDFLAGS=  -L/Users/matsui/local/lib
 HDF5_FLIBS=    -lhdf5_fortran -lhdf5 -lhdf5hl_fortran -lhdf5_hl
 #
-#   GLUT settings (Requirement: OpenGL, GLUT, libpng)
+#   GLUT settings (Requirement: OpenGL, libpng)
 #
 COCOA_FLAG = -D__APPLE__
 OPENGL_INC = -I/usr/X11/include
