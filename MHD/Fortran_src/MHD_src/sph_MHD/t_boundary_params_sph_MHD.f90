@@ -29,29 +29,33 @@
       implicit none
 !
 !
-!>      integer flag for fixed velocity boundary
+!>      integer flag for undefined boundary
       integer(kind = kint), parameter :: iflag_undefined_bc = -1
-!>      integer flag for fixed velocity boundary
+!>      integer flag for fixed boundary
       integer(kind = kint), parameter :: iflag_fixed_field = 0
-!>      integer flag for free-slip boundary
+!>      integer flag for fixed flux boundary
       integer(kind = kint), parameter :: iflag_fixed_flux =  1
 !>      integer flag for whole sphere model
       integer(kind = kint), parameter :: iflag_sph_fill_center = 41
 !>      integer flag for whole sphere model
       integer(kind = kint), parameter :: iflag_sph_fix_center =  42
+!>      integer flag for fixed drifting boundary
+      integer(kind = kint), parameter :: iflag_evolve_field =    50
+!>      integer flag for fixed drifting flux
+      integer(kind = kint), parameter :: iflag_evolve_flux =     51
 !
 !
 !>      integer flag for fixed velocity boundary at inner core
-      integer(kind = kint), parameter :: iflag_fixed_velo = 0
+      integer(kind = kint), parameter :: iflag_fixed_velo = 100
 !>      integer flag for free-slip boundary at inner core
-      integer(kind = kint), parameter :: iflag_free_slip =  1
+      integer(kind = kint), parameter :: iflag_free_slip =  101
 !>      integer flag for rotatable inner core
-      integer(kind = kint), parameter :: iflag_rotatable_ic = 10
+      integer(kind = kint), parameter :: iflag_rotatable_ic = 110
 !
 !>      integer flag for insulated magnetic boundary
-      integer(kind = kint), parameter :: iflag_sph_insulator =   0
+      integer(kind = kint), parameter :: iflag_sph_insulator =  200
 !>      integer flag for pseudo vacuum magnetic boundary
-      integer(kind = kint), parameter :: iflag_radial_magne =   11
+      integer(kind = kint), parameter :: iflag_radial_magne =   201
 !
 !
 !>      Structure for basic boundary condition parameters
