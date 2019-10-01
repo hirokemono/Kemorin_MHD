@@ -109,7 +109,6 @@
       type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !
-!
 !   ----  lead nonlinear terms by phesdo spectrum
 !
       if (iflag_debug.eq.1) write(*,*) 'nonlinear_by_pseudo_sph'

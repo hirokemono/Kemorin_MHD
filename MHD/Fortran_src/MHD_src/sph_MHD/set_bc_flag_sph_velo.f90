@@ -9,13 +9,13 @@
 !!@verbatim
 !!      subroutine set_sph_bc_velo_sph                                  &
 !!     &         (sph_rj, radial_rj_grp, r_ICB, r_CMB,                  &
-!!     &          velo_nod, torque_surf, sph_bc_U, bc_Uspectr)
+!!     &          velo_nod, torque_surf, sph_bc_U, bc_Uspec)
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(group_data), intent(in) :: radial_rj_grp
 !!        type(boundary_condition_list), intent(in) :: velo_nod
 !!        type(boundary_condition_list), intent(in) :: torque_surf
 !!        type(sph_boundary_type), intent(inout) :: sph_bc_U
-!!        type(sph_vector_BC_spectr), intent(inout) :: bc_Uspectr
+!!        type(sph_vector_BC_coef), intent(inout) :: bc_Uspec
 !!@endverbatim
 !
       module set_bc_flag_sph_velo
@@ -41,7 +41,7 @@
 !
       subroutine set_sph_bc_velo_sph                                    &
      &         (sph_rj, radial_rj_grp, r_ICB, r_CMB,                    &
-     &          velo_nod, torque_surf, sph_bc_U, bc_Uspectr)
+     &          velo_nod, torque_surf, sph_bc_U, bc_Uspec)
 !
       use t_spheric_rj_data
       use t_group_data
@@ -55,7 +55,7 @@
       type(boundary_condition_list), intent(in) :: torque_surf
 !
       type(sph_boundary_type), intent(inout) :: sph_bc_U
-      type(sph_vector_BC_spectr), intent(inout) :: bc_Uspectr
+      type(sph_vector_BC_coef), intent(inout) :: bc_Uspec
 !
       integer(kind = kint) :: i
       integer(kind = kint) :: igrp_icb, igrp_cmb
@@ -64,7 +64,7 @@
       call find_both_sides_of_boundaries(sph_rj, radial_rj_grp,        &
      &   velo_nod, torque_surf, sph_bc_U, igrp_icb, igrp_cmb)
 !
-      call alloc_sph_vector_bc_array(sph_rj%nidx_rj(2), bc_Uspectr)
+      call alloc_sph_vector_bc_array(sph_rj%nidx_rj(2), bc_Uspec)
 !
 !
       i = abs(igrp_icb)
@@ -72,12 +72,12 @@
         call set_sph_velo_ICB_flag                                      &
      &    (sph_rj%nidx_rj(2), sph_rj%idx_rj_degree_one, r_ICB,          &
      &     torque_surf%ibc_type(i), torque_surf%bc_magnitude(i),        &
-     &      sph_bc_U, bc_Uspectr%vt_ICB_bc)
+     &      sph_bc_U, bc_Uspec%vt_ICB_bc)
       else
         call set_sph_velo_ICB_flag                                      &
      &    (sph_rj%nidx_rj(2), sph_rj%idx_rj_degree_one, r_ICB,          &
      &     velo_nod%ibc_type(i), velo_nod%bc_magnitude(i),              &
-     &      sph_bc_U, bc_Uspectr%vt_ICB_bc)
+     &      sph_bc_U, bc_Uspec%vt_ICB_bc)
       end if
 !
       i = abs(igrp_cmb)
@@ -85,12 +85,12 @@
         call set_sph_velo_CMB_flag                                      &
      &    (sph_rj%nidx_rj(2), sph_rj%idx_rj_degree_one, r_CMB,          &
      &      torque_surf%ibc_type(i), torque_surf%bc_magnitude(i),       &
-     &      sph_bc_U, bc_Uspectr%vt_CMB_bc)
+     &      sph_bc_U, bc_Uspec%vt_CMB_bc)
       else
         call set_sph_velo_CMB_flag                                      &
      &    (sph_rj%nidx_rj(2), sph_rj%idx_rj_degree_one, r_CMB,          &
      &      velo_nod%ibc_type(i), velo_nod%bc_magnitude(i),             &
-     &      sph_bc_U, bc_Uspectr%vt_CMB_bc)
+     &      sph_bc_U, bc_Uspec%vt_CMB_bc)
       end if
 !
       end subroutine set_sph_bc_velo_sph
@@ -123,17 +123,17 @@
         sph_bc_U%iflag_icb = iflag_sph_fix_center
 !
       else if (ibc_type .eq. (iflag_bc_rot+1)) then
-        sph_bc_U%iflag_icb = iflag_fixed_velo
+        sph_bc_U%iflag_icb = iflag_fixed_field
         if(idx_rj_degree_one( 1) .gt.0 ) then
           vt_ICB_bc( idx_rj_degree_one( 1) ) = r_ICB*r_ICB * bc_mag
         end if
       else if (ibc_type .eq. (iflag_bc_rot+2)) then
-        sph_bc_U%iflag_icb = iflag_fixed_velo
+        sph_bc_U%iflag_icb = iflag_fixed_field
         if(idx_rj_degree_one(-1) .gt. 0) then
           vt_ICB_bc( idx_rj_degree_one(-1) ) = r_ICB*r_ICB * bc_mag
         end if
       else if (ibc_type .eq. (iflag_bc_rot+3)) then
-        sph_bc_U%iflag_icb = iflag_fixed_velo
+        sph_bc_U%iflag_icb = iflag_fixed_field
         if(idx_rj_degree_one( 0) .gt. 0) then
           vt_ICB_bc( idx_rj_degree_one( 0) ) = r_ICB*r_ICB * bc_mag
         end if
@@ -162,17 +162,17 @@
         sph_bc_U%iflag_cmb = iflag_fixed_velo
 !
       else if (ibc_type .eq. (iflag_bc_rot+1)) then
-        sph_bc_U%iflag_cmb = iflag_fixed_velo
+        sph_bc_U%iflag_cmb = iflag_fixed_field
         if(idx_rj_degree_one( 1) .gt.0 ) then
           vt_CMB_bc( idx_rj_degree_one( 1) ) = r_CMB*r_CMB * bc_mag
         end if
       else if (ibc_type .eq. (iflag_bc_rot+2)) then
-        sph_bc_U%iflag_cmb = iflag_fixed_velo
+        sph_bc_U%iflag_cmb = iflag_fixed_field
         if(idx_rj_degree_one(-1) .gt. 0) then
           vt_CMB_bc( idx_rj_degree_one(-1) ) = r_CMB*r_CMB * bc_mag
         end if
       else if (ibc_type .eq. (iflag_bc_rot+3)) then
-        sph_bc_U%iflag_cmb = iflag_fixed_velo
+        sph_bc_U%iflag_cmb = iflag_fixed_field
         if(idx_rj_degree_one( 0) .gt. 0) then
           vt_CMB_bc( idx_rj_degree_one( 0) ) = r_CMB*r_CMB * bc_mag
         end if

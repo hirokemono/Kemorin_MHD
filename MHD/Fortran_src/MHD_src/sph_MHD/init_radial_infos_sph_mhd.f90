@@ -132,8 +132,7 @@
       if(iflag_debug.gt.0) write(*,*) 's_set_bc_sph_mhd'
       call s_set_bc_sph_mhd                                             &
      &   (bc_IO, sph%sph_params, sph%sph_rj, sph_grps%radial_rj_grp,    &
-     &    MHD_prop, MHD_BC, CTR_nod_grp_name, CTR_sf_grp_name,          &
-     &    sph_MHD_bc)
+     &    MHD_prop, MHD_BC, sph_MHD_bc)
 !
       call init_reference_temps                                         &
      &   (MHD_prop%ref_param_T, MHD_prop%takepito_T,                    &

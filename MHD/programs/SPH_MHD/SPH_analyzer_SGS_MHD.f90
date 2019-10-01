@@ -19,11 +19,11 @@
 !!        type(work_SPH_MHD), intent(inout) :: SPH_WK
 !!        type(field_IO), intent(inout) :: sph_fst_IO
 !!      subroutine SPH_analyze_SGS_MHD                                  &
-!!     &         (i_step, MHD_files, SPH_model, iflag_finish,           &
+!!     &         (i_step, MHD_files, iflag_finish, SPH_model,           &
 !!     &          MHD_step, sph_fst_IO, SPH_SGS, SPH_MHD, SPH_WK)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
-!!        type(SPH_MHD_model_data), intent(in) :: SPH_model
 !!        type(SGS_paremeters), intent(in) :: SGS_par
+!!        type(SPH_MHD_model_data), intent(inout) :: SPH_model
 !!        type(MHD_step_param), intent(inout) :: MHD_step
 !!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !!        type(work_SPH_MHD), intent(inout) :: SPH_WK
@@ -142,6 +142,10 @@
 !*
 !* obtain linear terms for starting
 !*
+      if(iflag_debug .gt. 0) write(*,*) 'set_MHD_evolved_boundaries'
+      call set_MHD_evolved_boundaries(MHD_step%time_d, SPH_MHD%sph,     &
+     &    SPH_model%MHD_prop, SPH_model%sph_MHD_bc)
+!
       if(iflag_debug .gt. 0) write(*,*) 'set_sph_field_to_start'
       call set_sph_field_to_start                                       &
      &   (SPH_MHD%sph%sph_rj, SPH_WK%r_2nd, SPH_model%MHD_prop,         &
@@ -173,7 +177,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine SPH_analyze_SGS_MHD                                    &
-     &         (i_step, MHD_files, SPH_model, iflag_finish,             &
+     &         (i_step, MHD_files, iflag_finish, SPH_model,             &
      &          MHD_step, sph_fst_IO, SPH_SGS, SPH_MHD, SPH_WK)
 !
       use momentum_w_SGS_explicit
@@ -186,9 +190,9 @@
 !
       integer(kind = kint), intent(in) :: i_step
       type(MHD_file_IO_params), intent(in) :: MHD_files
-      type(SPH_MHD_model_data), intent(in) :: SPH_model
 !
       integer(kind = kint), intent(inout) :: iflag_finish
+      type(SPH_MHD_model_data), intent(inout) :: SPH_model
       type(MHD_step_param), intent(inout) :: MHD_step
       type(SPH_SGS_structure), intent(inout) :: SPH_SGS
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
@@ -209,6 +213,10 @@
 !*
 !*  ----------  time evolution by inplicit method ----------
 !*
+      if(iflag_debug .gt. 0) write(*,*) 'set_MHD_evolved_boundaries'
+      call set_MHD_evolved_boundaries(MHD_step%time_d, SPH_MHD%sph,     &
+     &    SPH_model%MHD_prop, SPH_model%sph_MHD_bc)
+!
       if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+3)
       call s_cal_sol_sph_MHD_crank                                      &
      &   (MHD_step%time_d%dt, SPH_MHD%sph%sph_rj, SPH_WK%r_2nd,         &

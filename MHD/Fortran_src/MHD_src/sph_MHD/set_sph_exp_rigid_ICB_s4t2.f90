@@ -93,7 +93,7 @@
 !
         d_rj(inod,is_fld  ) = zero
         d_rj(inod,is_fld+1) = zero
-        d_rj(inod,is_fld+2) = Vt_ICB(j)*r_ICB(1)
+        d_rj(inod,is_fld+2) = Vt_ICB(j)
 !
         d2s_dr2 =  fdm4_noslip_ICB( 2,3) * d_rj(i_p2,is_fld  )          &
      &           + fdm4_noslip_ICB( 1,3) * d_rj(i_p1,is_fld  )

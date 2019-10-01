@@ -55,6 +55,7 @@
       implicit none
 !
       private :: sph_dynamic_similarity
+      private :: sph_dynamic_nl_gradient
 !
 !*   ------------------------------------------------------------------
 !*

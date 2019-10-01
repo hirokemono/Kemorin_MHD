@@ -9,7 +9,7 @@
 !!
 !!@verbatim
 !!      subroutine cal_sph_cmb_rigid_v_and_w_s4t2(nri, jmax,            &
-!!     &          g_sph_rj, kr_out, r_CMB, r_CMB1, d1nod_mat_fdm_2,     &
+!!     &          g_sph_rj, kr_out, r_CMB1, d1nod_mat_fdm_2,            &
 !!     &          fdm2_fix_fld_CMB, fdm4_noslip_CMB, fdm4_noslip_CMB1,  &
 !!     &          Vt_CMB, is_fld, is_rot, n_point, ntot_phys_rj, d_rj)
 !!      subroutine cal_sph_cmb_rigid_rot_s4t2                           &
@@ -60,14 +60,14 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_sph_cmb_rigid_v_and_w_s4t2(nri, jmax,              &
-     &          g_sph_rj, kr_out, r_CMB, r_CMB1, d1nod_mat_fdm_2,       &
+     &          g_sph_rj, kr_out, r_CMB1, d1nod_mat_fdm_2,              &
      &          fdm2_fix_fld_CMB, fdm4_noslip_CMB, fdm4_noslip_CMB1,    &
      &          Vt_CMB, is_fld, is_rot, n_point, ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: nri, jmax, kr_out
       integer(kind = kint), intent(in) :: is_fld, is_rot
       real(kind = kreal), intent(in) :: g_sph_rj(jmax,13)
-      real(kind = kreal), intent(in) :: r_CMB(0:2), r_CMB1(0:2)
+      real(kind = kreal), intent(in) :: r_CMB1(0:2)
       real(kind = kreal), intent(in) :: d1nod_mat_fdm_2(nri,-1:1)
       real(kind = kreal), intent(in) :: fdm2_fix_fld_CMB(0:2,3)
       real(kind = kreal), intent(in) :: fdm4_noslip_CMB(-2:0,2:4)
@@ -90,7 +90,7 @@
 !
         d_rj(inod,is_fld  ) = zero
         d_rj(inod,is_fld+1) = zero
-        d_rj(inod,is_fld+2) = Vt_CMB(j)*r_CMB(1)
+        d_rj(inod,is_fld+2) = Vt_CMB(j)
 !
         d2s_dr2 =  fdm4_noslip_CMB(-2,3) * d_rj(i_n2,is_fld  )          &
      &           + fdm4_noslip_CMB(-1,3) * d_rj(i_n1,is_fld  )

@@ -8,8 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine s_set_bc_sph_mhd(bc_IO, sph_params, sph_rj,          &
-!!     &          radial_rj_grp, MHD_prop, MHD_BC,                      &
-!!     &          CTR_nod_grp_name, CTR_sf_grp_name, sph_MHD_bc)
+!!     &          radial_rj_grp, MHD_prop, MHD_BC, sph_MHD_bc)
 !!        type(boundary_spectra), intent(in) :: bc_IO
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
 !!        type(MHD_BC_lists), intent(in) :: MHD_BC
@@ -47,8 +46,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine s_set_bc_sph_mhd(bc_IO, sph_params, sph_rj,            &
-     &          radial_rj_grp, MHD_prop, MHD_BC,                        &
-     &          CTR_nod_grp_name, CTR_sf_grp_name, sph_MHD_bc)
+     &          radial_rj_grp, MHD_prop, MHD_BC, sph_MHD_bc)
 !
       use m_phys_labels
       use set_bc_flag_sph_velo
@@ -67,9 +65,6 @@
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(MHD_BC_lists), intent(in) :: MHD_BC
 !
-      character(len=kchara), intent(in) :: CTR_nod_grp_name
-      character(len=kchara), intent(in) :: CTR_sf_grp_name
-!
       type(sph_MHD_boundary_data), intent(inout) :: sph_MHD_bc
 !
       integer(kind = kint) :: kst, ked
@@ -80,7 +75,7 @@
         call set_sph_bc_velo_sph(sph_rj, radial_rj_grp,                 &
      &      sph_params%radius_ICB, sph_params%radius_CMB,               &
      &      MHD_BC%velo_BC%nod_BC, MHD_BC%velo_BC%surf_BC,              &
-     &      sph_MHD_bc%sph_bc_U, sph_MHD_bc%bc_Uspectr)
+     &      sph_MHD_bc%sph_bc_U, sph_MHD_bc%bc_Uspec)
 !
         call cal_fdm_coefs_4_BCs                                        &
      &     (sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r,                   &

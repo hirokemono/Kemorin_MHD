@@ -276,7 +276,6 @@
       type(spherical_trns_works), intent(inout) :: WK_sph
       type(phys_data), intent(inout) :: rj_fld
 !
-!
 !      Evaluate fields for output in spectrum space
       if (iflag_debug.eq.1) write(*,*) 's_cal_energy_flux_rj'
       call s_cal_energy_flux_rj                                         &
