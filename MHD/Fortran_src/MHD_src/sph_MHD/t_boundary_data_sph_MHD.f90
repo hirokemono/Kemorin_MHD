@@ -57,9 +57,13 @@
         type(sph_scalar_BC_coef) :: bc_Cspec
 !
 !>        Structure for evoluved boundary velocity spectr
-        type(sph_vector_BC_evo) :: bc_Uevo
+        type(sph_vector_BC_evo) :: ICB_Uevo
+!>        Structure for evoluved boundary velocity spectr
+        type(sph_vector_BC_evo) :: CMB_Uevo
 !>        Structure for evoluved boundary magnetic spectr
-        type(sph_vector_BC_evo) :: bc_Bevo
+        type(sph_vector_BC_evo) :: ICB_Bevo
+!>        Structure for evoluved boundary magnetic spectr
+        type(sph_vector_BC_evo) :: CMB_Bevo
 !>        Structure for evoluved boundary temeprture spectr
         type(sph_scalar_BC_evo) :: bc_Tevo
 !>        Structure for evoluved boundary composition spectr
@@ -106,7 +110,8 @@
 !
       if(MHD_prop%cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
         call set_evo_vector_boundaries(time_d%time, sph%sph_rj,         &
-     &      sph_MHD_bc%sph_bc_B, sph_MHD_bc%bc_Bevo,                    &
+     &      sph_MHD_bc%sph_bc_B,                                        &
+     &      sph_MHD_bc%ICB_Bevo, sph_MHD_bc%CMB_Bevo,                   &
      &      sph_MHD_bc%bc_Bspec)
       end if
 !
@@ -128,7 +133,8 @@
 !
       if(MHD_prop%fl_prop%iflag_scheme .gt. id_no_evolution) then
         call set_evo_vector_boundaries(time_d%time, sph%sph_rj,         &
-     &      sph_MHD_bc%sph_bc_U, sph_MHD_bc%bc_Uevo,                    &
+     &      sph_MHD_bc%sph_bc_U,                                        &
+     &      sph_MHD_bc%ICB_Uevo, sph_MHD_bc%CMB_Uevo,                   &
      &      sph_MHD_bc%bc_Uspec)
       end if
       if(MHD_prop%ht_prop%iflag_scheme .gt. id_no_evolution) then

@@ -14,8 +14,8 @@
 !!        type(sph_vector_BC_coef), intent(inout) :: bc_Vspec
 !!      subroutine alloc_sph_evo_scalar_bc_array(jmax, bc_Sevo)
 !!        type(sph_scalar_BC_evo), intent(inout) :: bc_Sevo
-!!      subroutine alloc_sph_evo_vector_bc_array(jmax, bc_Uevo)
-!!        type(sph_vector_BC_evo), intent(inout) :: bc_Uevo
+!!      subroutine alloc_sph_evo_vector_bc_array(jmax, bc_Vevo)
+!!        type(sph_vector_BC_evo), intent(inout) :: bc_Vevo
 !!
 !!      subroutine dealloc_sph_scalar_bc_array(bc_Sspec)
 !!        type(sph_scalar_BC_coef), intent(inout) :: bc_Sspec
@@ -23,8 +23,8 @@
 !!        type(sph_vector_BC_coef), intent(inout) :: bc_Vspec
 !!      subroutine dealloc_sph_evo_scalar_bc_array(bc_Sevo)
 !!        type(sph_scalar_BC_evo), intent(inout) :: bc_Sevo
-!!      subroutine dealloc_sph_evo_vector_bc_array(bc_Uevo)
-!!        type(sph_vector_BC_evo), intent(inout) :: bc_Uevo
+!!      subroutine dealloc_sph_evo_vector_bc_array(bc_Vevo)
+!!        type(sph_vector_BC_evo), intent(inout) :: bc_Vevo
 !!@endverbatim
 !!
 !!@n @param jmax    number of modes for spherical harmonics @f$L*(L+2)@f$
@@ -94,44 +94,30 @@
         real(kind = kreal), allocatable :: s_CMB_phase(:)
       end type sph_scalar_BC_evo
 !
+!
 !>      Structure for boundary velocity spectr
       type sph_vector_BC_evo
 !>        Number of componentts
         integer(kind = kint) :: jmax_vBC
 !
 !>        Fixed poloidal velocity spectrum for ICB
-        real(kind = kreal), allocatable :: vp_ICB_mag(:)
+        real(kind = kreal), allocatable :: Vp_BC_mag(:)
 !>        Fixed poloidal velocity spectrum for ICB
-        real(kind = kreal), allocatable :: dp_ICB_mag(:)
+        real(kind = kreal), allocatable :: Dp_BC_mag(:)
 !>        Fixed toroidal velocity spectrum for ICB
-        real(kind = kreal), allocatable :: vt_ICB_mag(:)
-!
-!>        Fixed poloidal velocity spectrum for CMB
-        real(kind = kreal), allocatable :: vp_CMB_mag(:)
-!>        Fixed poloidal velocity spectrum for CMB
-        real(kind = kreal), allocatable :: dp_CMB_mag(:)
-!>        Fixed toroidal velocity spectrum for CMB
-        real(kind = kreal), allocatable :: vt_CMB_mag(:)
-!
-!>        Angular frequency poloidal velocity spectrum for ICB
-        real(kind = kreal), allocatable :: vp_ICB_freq(:)
-!>        Angular frequency toroidal velocity spectrum for ICB
-        real(kind = kreal), allocatable :: vt_ICB_freq(:)
+        real(kind = kreal), allocatable :: Vt_BC_mag(:)
 !
 !>        Angular phase of poloidal velocity spectrum for ICB
-        real(kind = kreal), allocatable :: vp_ICB_phase(:)
+        real(kind = kreal), allocatable :: Vp_BC_phase(:)
+!>        Angular phase of poloidal velocity spectrum for ICB
+        real(kind = kreal), allocatable :: Dp_BC_phase(:)
 !>        Angular phase of toroidal velocity spectrum for ICB
-        real(kind = kreal), allocatable :: vt_ICB_phase(:)
+        real(kind = kreal), allocatable :: Vt_BC_phase(:)
 !
-!>        Angular frequency poloidal velocity spectrum for CMB
-        real(kind = kreal), allocatable :: vp_CMB_freq(:)
-!>        Angular frequency toroidal velocity spectrum for CMB
-        real(kind = kreal), allocatable :: vt_CMB_freq(:)
-!
-!>        Angular phase of poloidal velocity spectrum for CMB
-        real(kind = kreal), allocatable :: vp_CMB_phase(:)
-!>        Angular phase of toroidal velocity spectrum for CMB
-        real(kind = kreal), allocatable :: vt_CMB_phase(:)
+!>        Angular frequency poloidal velocity spectrum for ICB
+        real(kind = kreal), allocatable :: Vp_BC_freq(:)
+!>        Angular frequency toroidal velocity spectrum for ICB
+        real(kind = kreal), allocatable :: Vt_BC_freq(:)
       end type sph_vector_BC_evo
 !
 ! -----------------------------------------------------------------------
@@ -217,54 +203,36 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine alloc_sph_evo_vector_bc_array(jmax, bc_Uevo)
+      subroutine alloc_sph_evo_vector_bc_array(jmax, bc_Vevo)
 !
       integer(kind = kint), intent(in) :: jmax
-      type(sph_vector_BC_evo), intent(inout) :: bc_Uevo
+      type(sph_vector_BC_evo), intent(inout) :: bc_Vevo
 !
 !
-      bc_Uevo%jmax_vBC = jmax
+      bc_Vevo%jmax_vBC = jmax
 !
-      allocate(bc_Uevo%vp_ICB_mag(bc_Uevo%jmax_vBC))
-      allocate(bc_Uevo%dp_ICB_mag(bc_Uevo%jmax_vBC))
-      allocate(bc_Uevo%vt_ICB_mag(bc_Uevo%jmax_vBC))
+      allocate(bc_Vevo%Vp_BC_mag(bc_Vevo%jmax_vBC))
+      allocate(bc_Vevo%Dp_BC_mag(bc_Vevo%jmax_vBC))
+      allocate(bc_Vevo%Vt_BC_mag(bc_Vevo%jmax_vBC))
 !
-      allocate(bc_Uevo%vp_ICB_freq(bc_Uevo%jmax_vBC))
-      allocate(bc_Uevo%vt_ICB_freq(bc_Uevo%jmax_vBC))
+      allocate(bc_Vevo%Vp_BC_phase(bc_Vevo%jmax_vBC))
+      allocate(bc_Vevo%Dp_BC_phase(bc_Vevo%jmax_vBC))
+      allocate(bc_Vevo%Vt_BC_phase(bc_Vevo%jmax_vBC))
 !
-      allocate(bc_Uevo%vp_ICB_phase(bc_Uevo%jmax_vBC))
-      allocate(bc_Uevo%vt_ICB_phase(bc_Uevo%jmax_vBC))
+      allocate(bc_Vevo%Vp_BC_freq(bc_Vevo%jmax_vBC))
+      allocate(bc_Vevo%Vt_BC_freq(bc_Vevo%jmax_vBC))
 !
-      allocate(bc_Uevo%vp_CMB_mag(bc_Uevo%jmax_vBC))
-      allocate(bc_Uevo%dp_CMB_mag(bc_Uevo%jmax_vBC))
-      allocate(bc_Uevo%vt_CMB_mag(bc_Uevo%jmax_vBC))
+      if(bc_Vevo%jmax_vBC .le. 0) return
+      bc_Vevo%Vp_BC_mag = 0.0d0
+      bc_Vevo%Dp_BC_mag = 0.0d0
+      bc_Vevo%Vt_BC_mag = 0.0d0
 !
-      allocate(bc_Uevo%vp_CMB_freq(bc_Uevo%jmax_vBC))
-      allocate(bc_Uevo%vt_CMB_freq(bc_Uevo%jmax_vBC))
+      bc_Vevo%Vp_BC_freq = 0.0d0
+      bc_Vevo%Vt_BC_freq = 0.0d0
 !
-      allocate(bc_Uevo%vp_CMB_phase(bc_Uevo%jmax_vBC))
-      allocate(bc_Uevo%vt_CMB_phase(bc_Uevo%jmax_vBC))
-!
-      if(bc_Uevo%jmax_vBC .le. 0) return
-      bc_Uevo%vp_ICB_mag = 0.0d0
-      bc_Uevo%dp_ICB_mag = 0.0d0
-      bc_Uevo%vt_ICB_mag = 0.0d0
-!
-      bc_Uevo%vp_ICB_freq = 0.0d0
-      bc_Uevo%vt_ICB_freq = 0.0d0
-!
-      bc_Uevo%vp_ICB_phase = 0.0d0
-      bc_Uevo%vt_ICB_phase = 0.0d0
-!
-      bc_Uevo%vp_CMB_mag = 0.0d0
-      bc_Uevo%dp_CMB_mag = 0.0d0
-      bc_Uevo%vt_CMB_mag = 0.0d0
-!
-      bc_Uevo%vp_CMB_freq = 0.0d0
-      bc_Uevo%vt_CMB_freq = 0.0d0
-!
-      bc_Uevo%vp_CMB_phase = 0.0d0
-      bc_Uevo%vt_CMB_phase = 0.0d0
+      bc_Vevo%Vp_BC_phase = 0.0d0
+      bc_Vevo%Dp_BC_phase = 0.0d0
+      bc_Vevo%Vt_BC_phase = 0.0d0
 !
       end subroutine alloc_sph_evo_vector_bc_array
 !
@@ -306,20 +274,18 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine dealloc_sph_evo_vector_bc_array(bc_Uevo)
+      subroutine dealloc_sph_evo_vector_bc_array(bc_Vevo)
 !
-      type(sph_vector_BC_evo), intent(inout) :: bc_Uevo
+      type(sph_vector_BC_evo), intent(inout) :: bc_Vevo
 !
 !
-      deallocate(bc_Uevo%vp_ICB_mag, bc_Uevo%vp_CMB_mag)
-      deallocate(bc_Uevo%dp_ICB_mag, bc_Uevo%dp_CMB_mag)
-      deallocate(bc_Uevo%vt_ICB_mag, bc_Uevo%vt_CMB_mag)
+      deallocate(bc_Vevo%Vp_BC_mag, bc_Vevo%Dp_BC_mag)
+      deallocate(bc_Vevo%Vt_BC_mag)
 !
-      deallocate(bc_Uevo%vp_ICB_freq,  bc_Uevo%vp_CMB_freq)
-      deallocate(bc_Uevo%vt_ICB_freq,  bc_Uevo%vt_CMB_freq)
+      deallocate(bc_Vevo%Vp_BC_freq,  bc_Vevo%Vt_BC_freq)
 !
-      deallocate(bc_Uevo%vp_ICB_phase, bc_Uevo%vp_CMB_phase)
-      deallocate(bc_Uevo%vt_ICB_phase, bc_Uevo%vt_CMB_phase)
+      deallocate(bc_Vevo%Vp_BC_phase, bc_Vevo%Dp_BC_phase)
+      deallocate(bc_Vevo%Vt_BC_phase)
 !
       end subroutine dealloc_sph_evo_vector_bc_array
 !
