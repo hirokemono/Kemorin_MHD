@@ -15,7 +15,7 @@
 !!      subroutine set_fixed_scalar_bc_by_file(field_name, sph_rj,      &
 !!     &          bc_IO, ref_grp, bc_data, iflag_bc_scalar)
 !!      subroutine set_fixed_gradient_bc_by_file(field_name, sph_rj,    &
-!!     &          bc_IO, ref_grp, bc_data, iflag_bc_scalar)
+!!     &          bc_IO, ref_grp, iflag_bc_scalar, bc_data)
 !!        type(boundary_spectra), intent(in) :: bc_IO
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!
@@ -262,7 +262,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_fixed_gradient_bc_by_file(field_name, sph_rj,      &
-     &          bc_IO, ref_grp, bc_data, iflag_bc_scalar)
+     &          bc_IO, ref_grp, iflag_bc_scalar, bc_data)
 !
       use t_boundary_params_sph_MHD
       use skip_comment_f
