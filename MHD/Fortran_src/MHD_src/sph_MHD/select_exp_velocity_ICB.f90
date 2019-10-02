@@ -8,12 +8,12 @@
 !!
 !!@verbatim
 !!      subroutine sel_ICB_grad_vp_and_vorticity(sph_rj, r_2nd,         &
-!!     &          sph_bc_U, bc_Uspec, fdm2_free_ICB, g_sph_rj,          &
+!!     &          sph_bc_U, ICB_Uspec, fdm2_free_ICB, g_sph_rj,         &
 !!     &          is_velo, is_vort, rj_fld)
 !!        Input:    ipol%i_velo, itor%i_velo
 !!        Solution: idpdr%i_velo, ipol%i_vort, itor%i_vort, idpdr%i_vort
 !!      subroutine sel_ICB_grad_poloidal_moment                         &
-!!     &         (sph_rj, r_2nd, sph_bc_U, bc_Uspec, fdm2_free_ICB,     &
+!!     &         (sph_rj, r_2nd, sph_bc_U, ICB_Uspec, fdm2_free_ICB,    &
 !!     &          is_fld, rj_fld)
 !!        Input:    is_fld, is_fld+2
 !!        Solution: is_fld+1
@@ -36,7 +36,7 @@
 !!        Solution: ipol%i_w_diffuse, itor%i_w_diffuse, idpdr%i_w_diffuse
 !!          type(sph_rj_grid), intent(in) :: sph_rj
 !!          type(sph_boundary_type), intent(in) :: sph_bc_U
-!!          type(sph_vector_BC_coef), intent(in) :: bc_Uspec
+!!          type(sph_vector_BC_coef), intent(in) :: ICB_Uspec
 !!          type(fdm2_free_slip), intent(in) :: fdm2_free_ICB
 !!          type(fdm_matrices), intent(in) :: r_2nd
 !!          type(phys_data), intent(inout) :: rj_fld
@@ -69,13 +69,13 @@
 ! -----------------------------------------------------------------------
 !
       subroutine sel_ICB_grad_vp_and_vorticity(sph_rj, r_2nd,           &
-     &          sph_bc_U, bc_Uspec, fdm2_free_ICB, g_sph_rj,            &
+     &          sph_bc_U, ICB_Uspec, fdm2_free_ICB, g_sph_rj,           &
      &          is_velo, is_vort, rj_fld)
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
       type(sph_boundary_type), intent(in) :: sph_bc_U
-      type(sph_vector_BC_coef), intent(in) :: bc_Uspec
+      type(sph_vector_BC_coef), intent(in) :: ICB_Uspec
       type(fdm2_free_slip), intent(in) :: fdm2_free_ICB
 !
       integer(kind = kint), intent(in) :: is_velo, is_vort
@@ -111,8 +111,8 @@
      &   .or. sph_bc_U%iflag_icb .eq. iflag_evolve_field) then
         call cal_sph_nod_icb_rigid_vect(sph_rj%nidx_rj,                 &
      &      sph_rj%idx_gl_1d_rj_j, sph_rj%radius_1d_rj_r,               &
-     &      sph_bc_U%kr_in, sph_bc_U%r_ICB, bc_Uspec%vp_ICB_bc,         &
-     &      bc_Uspec%dp_ICB_bc, bc_Uspec%vt_ICB_bc,                     &
+     &      sph_bc_U%kr_in, sph_bc_U%r_ICB,                             &
+     &      ICB_Uspec%Vp_BC, ICB_Uspec%Dp_BC, ICB_Uspec%Vt_BC,          &
      &      is_velo, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         call cal_sph_nod_icb_fixed_rot2(sph_rj%nidx_rj(2), g_sph_rj,    &
      &      sph_bc_U%kr_in, sph_bc_U%r_ICB,                             &
@@ -136,13 +136,13 @@
 ! -----------------------------------------------------------------------
 !
       subroutine sel_ICB_grad_poloidal_moment                           &
-     &         (sph_rj, r_2nd, sph_bc_U, bc_Uspec, fdm2_free_ICB,       &
+     &         (sph_rj, r_2nd, sph_bc_U, ICB_Uspec, fdm2_free_ICB,      &
      &          is_fld, rj_fld)
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
       type(sph_boundary_type), intent(in) :: sph_bc_U
-      type(sph_vector_BC_coef), intent(in) :: bc_Uspec
+      type(sph_vector_BC_coef), intent(in) :: ICB_Uspec
       type(fdm2_free_slip), intent(in) :: fdm2_free_ICB
 !
       integer(kind = kint), intent(in) :: is_fld
@@ -168,8 +168,8 @@
      &   .or. sph_bc_U%iflag_icb .eq. iflag_evolve_field) then
         call cal_sph_nod_icb_rigid_vect(sph_rj%nidx_rj,                 &
      &      sph_rj%idx_gl_1d_rj_j, sph_rj%radius_1d_rj_r,               &
-     &      sph_bc_U%kr_in, sph_bc_U%r_ICB, bc_Uspec%vp_ICB_bc,         &
-     &      bc_Uspec%dp_ICB_bc, bc_Uspec%vt_ICB_bc,                     &
+     &      sph_bc_U%kr_in, sph_bc_U%r_ICB,                             &
+     &      ICB_Uspec%Vp_BC, ICB_Uspec%Dp_BC, ICB_Uspec%Vt_BC,          &
      &      is_fld, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !      else if(sph_bc_U%iflag_icb .eq. iflag_fixed_velo) then
       else

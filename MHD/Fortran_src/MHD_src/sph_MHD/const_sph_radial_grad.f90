@@ -19,28 +19,28 @@
 !!        Solution: is_grad
 !!
 !!      subroutine const_grad_vp_and_vorticity                          &
-!!     &         (sph_rj, r_2nd, sph_bc_U, bc_Uspec,                    &
+!!     &         (sph_rj, r_2nd, sph_bc_U, ICB_Uspec, CMB_Uspec,        &
 !!     &          fdm2_free_ICB, fdm2_free_CMB, g_sph_rj,               &
 !!     &          is_velo, is_vort, rj_fld)
 !!        Input:    ipol%i_velo, itor%i_velo
 !!        Solution: idpdr%i_velo, ipol%i_vort, itor%i_vort, idpdr%i_vort
 !!
 !!      subroutine const_grad_bp_and_current                            &
-!!     &         (sph_rj, r_2nd, sph_bc_B, bc_Bspec, g_sph_rj,          &
-!!     &          is_magne, is_current, rj_fld)
+!!     &         (sph_rj, r_2nd, sph_bc_B, ICB_Bspec, CMB_Bspec,        &
+!!     &          g_sph_rj, is_magne, is_current, rj_fld)
 !!        Input:    ipol%i_magne, itor%i_magne
 !!        Solution: idpdr%i_magne,
 !!                  ipol%i_current, itor%i_current, idpdr%i_current
 !!
 !!      subroutine const_grad_poloidal_moment                           &
-!!     &         (sph_rj, r_2nd, sph_bc_U, bc_Uspec,                    &
+!!     &         (sph_rj, r_2nd, sph_bc_U, ICB_Uspec, CMB_Uspec,        &
 !!     &          fdm2_free_ICB, fdm2_free_CMB, is_fld, rj_fld)
 !!        Input:    is_fld, is_fld+2
 !!        Solution: is_fld+1
 !!
 !!      subroutine const_grad_poloidal_magne                            &
-!!     &         (sph_rj, r_2nd, sph_bc_B, bc_Bspec, g_sph_rj,          &
-!!     &          is_magne, rj_fld)
+!!     &         (sph_rj, r_2nd, sph_bc_B, ICB_Bspec, CMB_Bspec,        &
+!!     &          g_sph_rj, is_magne, rj_fld)
 !!        Input:    ipol%i_magne, itor%i_magne
 !!        Solution: idpdr%i_magne
 !!
@@ -57,7 +57,7 @@
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(fdm_matrices), intent(in) :: r_2nd
 !!        type(sph_boundary_type), intent(in) :: sph_bc_U
-!!        type(sph_vector_BC_coef), intent(in) :: bc_Uspec
+!!        type(sph_vector_BC_coef), intent(in) :: ICB_Uspec, CMB_Uspec
 !!        type(phys_data), intent(inout) :: rj_fld
 !!@endverbatim
 !!
@@ -147,7 +147,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine const_grad_vp_and_vorticity                            &
-     &         (sph_rj, r_2nd, sph_bc_U, bc_Uspec,                      &
+     &         (sph_rj, r_2nd, sph_bc_U, ICB_Uspec, CMB_Uspec,          &
      &          fdm2_free_ICB, fdm2_free_CMB, g_sph_rj,                 &
      &          is_velo, is_vort, rj_fld)
 !
@@ -158,7 +158,7 @@
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
       type(sph_boundary_type), intent(in) :: sph_bc_U
-      type(sph_vector_BC_coef), intent(in) :: bc_Uspec
+      type(sph_vector_BC_coef), intent(in) :: ICB_Uspec, CMB_Uspec
       type(fdm2_free_slip), intent(in) :: fdm2_free_ICB, fdm2_free_CMB
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
       integer(kind = kint), intent(in) :: is_velo, is_vort
@@ -167,10 +167,10 @@
 !
 !
       call sel_ICB_grad_vp_and_vorticity                                &
-     &   (sph_rj, r_2nd, sph_bc_U, bc_Uspec, fdm2_free_ICB, g_sph_rj,   &
+     &   (sph_rj, r_2nd, sph_bc_U, ICB_Uspec, fdm2_free_ICB, g_sph_rj,  &
      &    is_velo, is_vort, rj_fld)
       call sel_CMB_grad_vp_and_vorticity                                &
-     &   (sph_rj, sph_bc_U, bc_Uspec, fdm2_free_CMB, g_sph_rj,          &
+     &   (sph_rj, sph_bc_U, CMB_Uspec, fdm2_free_CMB, g_sph_rj,         &
      &    is_velo, is_vort, rj_fld)
 !
       call cal_sph_diff_pol_and_rot2(sph_bc_U%kr_in, sph_bc_U%kr_out,   &
@@ -183,8 +183,8 @@
 ! -----------------------------------------------------------------------
 !
       subroutine const_grad_bp_and_current                              &
-     &         (sph_rj, r_2nd, sph_bc_B, bc_Bspec, g_sph_rj,            &
-     &          is_magne, is_current, rj_fld)
+     &         (sph_rj, r_2nd, sph_bc_B, ICB_Bspec, CMB_Bspec,          &
+     &          g_sph_rj, is_magne, is_current, rj_fld)
 !
       use extend_potential_field
       use cal_sph_exp_rotation
@@ -194,7 +194,7 @@
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
       type(sph_boundary_type), intent(in) :: sph_bc_B
-      type(sph_vector_BC_coef), intent(in) :: bc_Bspec
+      type(sph_vector_BC_coef), intent(in) :: ICB_Bspec, CMB_Bspec
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
       integer(kind = kint), intent(in) :: is_magne, is_current
 !
@@ -202,10 +202,10 @@
 !
 !
       call sel_ICB_grad_bp_and_current                                  &
-     &   (sph_rj, r_2nd, sph_bc_B, bc_Bspec, g_sph_rj,                  &
+     &   (sph_rj, r_2nd, sph_bc_B, ICB_Bspec, g_sph_rj,                 &
      &    is_magne, is_current, rj_fld)
       call sel_CMB_grad_bp_and_current                                  &
-     &   (sph_rj, sph_bc_B, bc_Bspec, g_sph_rj,                         &
+     &   (sph_rj, sph_bc_B, CMB_Bspec, g_sph_rj,                        &
      &    is_magne, is_current, rj_fld)
 !
       call cal_sph_diff_pol_and_rot2(sph_bc_B%kr_in, sph_bc_B%kr_out,   &
@@ -233,7 +233,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine const_grad_poloidal_moment                             &
-     &         (sph_rj, r_2nd, sph_bc_U, bc_Uspec,                      &
+     &         (sph_rj, r_2nd, sph_bc_U, ICB_Uspec, CMB_Uspec,          &
      &          fdm2_free_ICB, fdm2_free_CMB, is_fld, rj_fld)
 !
       use cal_sph_exp_rotation
@@ -243,7 +243,7 @@
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
       type(sph_boundary_type), intent(in) :: sph_bc_U
-      type(sph_vector_BC_coef), intent(in) :: bc_Uspec
+      type(sph_vector_BC_coef), intent(in) :: ICB_Uspec, CMB_Uspec
       type(fdm2_free_slip), intent(in) :: fdm2_free_ICB, fdm2_free_CMB
       integer(kind = kint), intent(in) :: is_fld
 !
@@ -251,10 +251,10 @@
 !
 !
       call sel_ICB_grad_poloidal_moment                                 &
-     &   (sph_rj, r_2nd, sph_bc_U, bc_Uspec, fdm2_free_ICB,             &
+     &   (sph_rj, r_2nd, sph_bc_U, ICB_Uspec, fdm2_free_ICB,            &
      &    is_fld, rj_fld)
       call sel_CMB_grad_poloidal_moment                                 &
-     &   (sph_rj, sph_bc_U, bc_Uspec, fdm2_free_CMB, is_fld, rj_fld)
+     &   (sph_rj, sph_bc_U, CMB_Uspec, fdm2_free_CMB, is_fld, rj_fld)
 !
       call cal_sph_diff_poloidal2(sph_bc_U%kr_in, sph_bc_U%kr_out,      &
      &    sph_rj%nidx_rj, r_2nd%fdm(1)%dmat, is_fld,                    &
@@ -265,8 +265,8 @@
 ! -----------------------------------------------------------------------
 !
       subroutine const_grad_poloidal_magne                              &
-     &         (sph_rj, r_2nd, sph_bc_B, bc_Bspec, g_sph_rj,            &
-     &          is_magne, rj_fld)
+     &         (sph_rj, r_2nd, sph_bc_B, ICB_Bspec, CMB_Bspec,          &
+     &          g_sph_rj, is_magne, rj_fld)
 !
       use extend_potential_field
       use cal_sph_exp_rotation
@@ -276,7 +276,7 @@
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
       type(sph_boundary_type), intent(in) :: sph_bc_B
-      type(sph_vector_BC_coef), intent(in) :: bc_Bspec
+      type(sph_vector_BC_coef), intent(in) :: ICB_Bspec, CMB_Bspec
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
       integer(kind = kint), intent(in) :: is_magne
 !
@@ -284,10 +284,10 @@
 !
 !
       call sel_ICB_grad_poloidal_magne                                  &
-     &   (sph_rj, r_2nd, sph_bc_B, bc_Bspec, g_sph_rj,                  &
+     &   (sph_rj, r_2nd, sph_bc_B, ICB_Bspec, g_sph_rj,                 &
      &    is_magne, rj_fld)
       call sel_CMB_grad_poloidal_magne                                  &
-     &    (sph_rj, sph_bc_B, bc_Bspec, g_sph_rj, is_magne, rj_fld)
+     &    (sph_rj, sph_bc_B, CMB_Bspec, g_sph_rj, is_magne, rj_fld)
 !
 !
       call cal_sph_diff_poloidal2(sph_bc_B%kr_in, sph_bc_B%kr_out,      &

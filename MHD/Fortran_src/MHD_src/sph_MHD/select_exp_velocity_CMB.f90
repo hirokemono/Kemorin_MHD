@@ -8,12 +8,12 @@
 !!
 !!@verbatim
 !!      subroutine sel_CMB_grad_vp_and_vorticity                        &
-!!     &         (sph_rj, sph_bc_U, bc_Uspec, fdm2_free_CMB, g_sph_rj,  &
+!!     &         (sph_rj, sph_bc_U, CMB_Uspec, fdm2_free_CMB, g_sph_rj, &
 !!     &          is_velo, is_vort, rj_fld)
 !!        Input:    ipol%i_velo, itor%i_velo
 !!        Solution: idpdr%i_velo, ipol%i_vort, itor%i_vort, idpdr%i_vort
 !!      subroutine sel_CMB_grad_poloidal_moment                         &
-!!     &         (sph_rj, sph_bc_U, bc_Uspec, fdm2_free_CMB,            &
+!!     &         (sph_rj, sph_bc_U, CMB_Uspec, fdm2_free_CMB,           &
 !!     &          is_fld, rj_fld)
 !!        Input:    is_fld, is_fld+2
 !!        Solution: is_fld+1
@@ -36,7 +36,7 @@
 !!        Solution: ipol%i_w_diffuse, itor%i_w_diffuse, idpdr%i_w_diffuse
 !!          type(sph_rj_grid), intent(in) :: sph_rj
 !!          type(sph_boundary_type), intent(in) :: sph_bc_U
-!!          type(sph_vector_BC_coef), intent(in) :: bc_Uspec
+!!          type(sph_vector_BC_coef), intent(in) :: CMB_Uspec
 !!          type(fdm2_free_slip), intent(in) :: fdm2_free_ICB
 !!          type(fdm_matrices), intent(in) :: r_2nd
 !!          type(phys_data), intent(inout) :: rj_fld
@@ -68,12 +68,12 @@
 ! -----------------------------------------------------------------------
 !
       subroutine sel_CMB_grad_vp_and_vorticity                          &
-     &         (sph_rj, sph_bc_U, bc_Uspec, fdm2_free_CMB, g_sph_rj,    &
+     &         (sph_rj, sph_bc_U, CMB_Uspec, fdm2_free_CMB, g_sph_rj,   &
      &          is_velo, is_vort, rj_fld)
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(sph_boundary_type), intent(in) :: sph_bc_U
-      type(sph_vector_BC_coef), intent(in) :: bc_Uspec
+      type(sph_vector_BC_coef), intent(in) :: CMB_Uspec
       type(fdm2_free_slip), intent(in) :: fdm2_free_CMB
 !
       integer(kind = kint), intent(in) :: is_velo, is_vort
@@ -91,8 +91,8 @@
       else if(sph_bc_U%iflag_cmb .eq. iflag_fixed_field                 &
      &   .or. sph_bc_U%iflag_cmb .eq. iflag_evolve_field) then
         call cal_sph_nod_cmb_rigid_vect                                 &
-     &     (sph_rj%nidx_rj(2), sph_bc_U%kr_out, bc_Uspec%vp_CMB_bc,     &
-     &      bc_Uspec%dp_CMB_bc, bc_Uspec%vt_CMB_bc,                     &
+     &     (sph_rj%nidx_rj(2), sph_bc_U%kr_out,                         &
+     &      CMB_Uspec%Vp_BC, CMB_Uspec%Dp_BC, CMB_Uspec%Vt_BC,          &
      &      is_velo, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         call cal_sph_nod_cmb_fixed_rot2(sph_rj%nidx_rj(2), g_sph_rj,    &
      &      sph_bc_U%kr_out, sph_bc_U%r_CMB,                            &
@@ -113,12 +113,12 @@
 ! -----------------------------------------------------------------------
 !
       subroutine sel_CMB_grad_poloidal_moment                           &
-     &         (sph_rj, sph_bc_U, bc_Uspec, fdm2_free_CMB,              &
+     &         (sph_rj, sph_bc_U, CMB_Uspec, fdm2_free_CMB,             &
      &          is_fld, rj_fld)
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(sph_boundary_type), intent(in) :: sph_bc_U
-      type(sph_vector_BC_coef), intent(in) :: bc_Uspec
+      type(sph_vector_BC_coef), intent(in) :: CMB_Uspec
       type(fdm2_free_slip), intent(in) :: fdm2_free_CMB
 !
       integer(kind = kint), intent(in) :: is_fld
@@ -133,8 +133,8 @@
       else if(sph_bc_U%iflag_cmb .eq. iflag_fixed_field                 &
      &   .or. sph_bc_U%iflag_cmb .eq. iflag_evolve_field) then
         call cal_sph_nod_cmb_rigid_vect                                 &
-     &     (sph_rj%nidx_rj(2), sph_bc_U%kr_out, bc_Uspec%vp_CMB_bc,     &
-     &      bc_Uspec%dp_CMB_bc, bc_Uspec%vt_CMB_bc,                     &
+     &     (sph_rj%nidx_rj(2), sph_bc_U%kr_out,                         &
+     &      CMB_Uspec%Vp_BC, CMB_Uspec%Dp_BC, CMB_Uspec%Vt_BC,          &
      &      is_fld, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !      else if(sph_bc_U%iflag_cmb .eq. iflag_fixed_velo) then
       else

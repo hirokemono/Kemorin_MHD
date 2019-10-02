@@ -91,12 +91,14 @@
         if (iflag_debug .gt. 0)                                         &
      &       write(*,*) 'cal_sol_velo_by_vort_sph_crank'
         call cal_sol_velo_by_vort_sph_crank                             &
-     &     (sph_rj, r_2nd, sph_MHD_bc%sph_bc_U, sph_MHD_bc%bc_Uspec,    &
+     &     (sph_rj, r_2nd, sph_MHD_bc%sph_bc_U,                         &
+     &      sph_MHD_bc%ICB_Uspec, sph_MHD_bc%CMB_Uspec,                 &
      &      sph_MHD_bc%fdm2_free_ICB, sph_MHD_bc%fdm2_free_CMB,         &
      &      sph_MHD_mat%band_vp_evo, sph_MHD_mat%band_vt_evo,           &
      &      ipol, itor, rj_fld)
         call const_grad_vp_and_vorticity                                &
-     &     (sph_rj, r_2nd, sph_MHD_bc%sph_bc_U, sph_MHD_bc%bc_Uspec,    &
+     &     (sph_rj, r_2nd, sph_MHD_bc%sph_bc_U,                         &
+     &      sph_MHD_bc%ICB_Uspec, sph_MHD_bc%CMB_Uspec,                 &
      &      sph_MHD_bc%fdm2_free_ICB, sph_MHD_bc%fdm2_free_CMB,         &
      &      leg%g_sph_rj, ipol%i_velo, ipol%i_vort, rj_fld)
       end if
@@ -124,11 +126,13 @@
       if(iflag_debug.gt.0) write(*,*) 'cal_sol_magne_sph_crank'
       if(MHD_prop%cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
         call cal_sol_magne_sph_crank                                    &
-     &     (sph_rj, r_2nd, sph_MHD_bc%sph_bc_B, sph_MHD_bc%bc_Bspec,    &
+     &     (sph_rj, r_2nd, sph_MHD_bc%sph_bc_B,                         &
+     &      sph_MHD_bc%ICB_Bspec, sph_MHD_bc%CMB_Bspec,                 &
      &      sph_MHD_mat%band_bp_evo, sph_MHD_mat%band_bt_evo,           &
      &      leg%g_sph_rj, ipol, itor, rj_fld)
         call const_grad_bp_and_current                                  &
-     &     (sph_rj, r_2nd, sph_MHD_bc%sph_bc_B, sph_MHD_bc%bc_Bspec,    &
+     &     (sph_rj, r_2nd, sph_MHD_bc%sph_bc_B,                         &
+     &      sph_MHD_bc%ICB_Bspec, sph_MHD_bc%CMB_Bspec,                 &
      &      leg%g_sph_rj, ipol%i_magne, ipol%i_current, rj_fld)
       end if
 !
@@ -183,7 +187,8 @@
 !
       if(ipol%i_velo*ipol%i_vort .gt. 0) then
         call const_grad_vp_and_vorticity                                &
-     &     (sph_rj, r_2nd, sph_MHD_bc%sph_bc_U, sph_MHD_bc%bc_Uspec,    &
+     &     (sph_rj, r_2nd, sph_MHD_bc%sph_bc_U,                         &
+     &      sph_MHD_bc%ICB_Uspec, sph_MHD_bc%CMB_Uspec,                 &
      &      sph_MHD_bc%fdm2_free_ICB, sph_MHD_bc%fdm2_free_CMB,         &
      &      leg%g_sph_rj, ipol%i_velo, ipol%i_vort, rj_fld)
       end if
@@ -211,7 +216,8 @@
 !
       if(ipol%i_magne*ipol%i_current .gt. 0) then
         call const_grad_bp_and_current                                  &
-     &     (sph_rj, r_2nd, sph_MHD_bc%sph_bc_B, sph_MHD_bc%bc_Bspec,    &
+     &     (sph_rj, r_2nd, sph_MHD_bc%sph_bc_B,                         &
+     &      sph_MHD_bc%ICB_Bspec, sph_MHD_bc%CMB_Bspec,                 &
      &      leg%g_sph_rj, ipol%i_magne, ipol%i_current, rj_fld)
       end if
 !

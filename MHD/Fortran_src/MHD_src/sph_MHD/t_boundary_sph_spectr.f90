@@ -58,18 +58,11 @@
         integer(kind = kint) :: jmax_vBC
 !
 !>        Fixed poloidal velocity spectrum for ICB
-        real(kind = kreal), allocatable :: vp_ICB_bc(:)
+        real(kind = kreal), allocatable :: Vp_BC(:)
 !>        Fixed poloidal velocity spectrum for ICB
-        real(kind = kreal), allocatable :: dp_ICB_bc(:)
+        real(kind = kreal), allocatable :: Dp_BC(:)
 !>        Fixed toroidal velocity spectrum for ICB
-        real(kind = kreal), allocatable :: vt_ICB_bc(:)
-!
-!>        Fixed poloidal velocity spectrum for CMB
-        real(kind = kreal), allocatable :: vp_CMB_bc(:)
-!>        Fixed poloidal velocity spectrum for CMB
-        real(kind = kreal), allocatable :: dp_CMB_bc(:)
-!>        Fixed toroidal velocity spectrum for CMB
-        real(kind = kreal), allocatable :: vt_CMB_bc(:)
+        real(kind = kreal), allocatable :: Vt_BC(:)
       end type sph_vector_BC_coef
 !
 !
@@ -145,22 +138,14 @@
 !
       bc_Vspec%jmax_vBC = jmax
 !
-      allocate(bc_Vspec%vp_ICB_bc(bc_Vspec%jmax_vBC))
-      allocate(bc_Vspec%dp_ICB_bc(bc_Vspec%jmax_vBC))
-      allocate(bc_Vspec%vt_ICB_bc(bc_Vspec%jmax_vBC))
-!
-      allocate(bc_Vspec%vp_CMB_bc(bc_Vspec%jmax_vBC))
-      allocate(bc_Vspec%dp_CMB_bc(bc_Vspec%jmax_vBC))
-      allocate(bc_Vspec%vt_CMB_bc(bc_Vspec%jmax_vBC))
+      allocate(bc_Vspec%Vp_BC(bc_Vspec%jmax_vBC))
+      allocate(bc_Vspec%Dp_BC(bc_Vspec%jmax_vBC))
+      allocate(bc_Vspec%Vt_BC(bc_Vspec%jmax_vBC))
 !
       if(bc_Vspec%jmax_vBC .le. 0) return
-      bc_Vspec%vp_ICB_bc = 0.0d0
-      bc_Vspec%dp_ICB_bc = 0.0d0
-      bc_Vspec%vt_ICB_bc = 0.0d0
-!
-      bc_Vspec%vp_CMB_bc = 0.0d0
-      bc_Vspec%dp_CMB_bc = 0.0d0
-      bc_Vspec%vt_CMB_bc = 0.0d0
+      bc_Vspec%Vp_BC = 0.0d0
+      bc_Vspec%Dp_BC = 0.0d0
+      bc_Vspec%Vt_BC = 0.0d0
 !
       end subroutine alloc_sph_vector_bc_array
 !
@@ -237,9 +222,8 @@
 !
       type(sph_vector_BC_coef), intent(inout) :: bc_Vspec
 !
-      deallocate(bc_Vspec%vp_ICB_bc, bc_Vspec%vp_CMB_bc)
-      deallocate(bc_Vspec%dp_ICB_bc, bc_Vspec%dp_CMB_bc)
-      deallocate(bc_Vspec%vt_ICB_bc, bc_Vspec%vt_CMB_bc)
+      deallocate(bc_Vspec%Vp_BC, bc_Vspec%Dp_BC)
+      deallocate(bc_Vspec%Vt_BC)
 !
       end subroutine dealloc_sph_vector_bc_array
 !

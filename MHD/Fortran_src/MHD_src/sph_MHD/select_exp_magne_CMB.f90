@@ -8,13 +8,13 @@
 !!
 !!@verbatim
 !!      subroutine sel_CMB_grad_bp_and_current                          &
-!!     &         (sph_rj, sph_bc_B, bc_Bspec, g_sph_rj,                 &
+!!     &         (sph_rj, sph_bc_B, CMB_Bspec, g_sph_rj,                &
 !!     &          is_magne, is_current, rj_fld)
 !!        Input:    ipol%i_magne, itor%i_magne
 !!        Solution: idpdr%i_magne,
 !!                  ipol%i_current, itor%i_current, idpdr%i_current
 !!      subroutine sel_CMB_grad_poloidal_magne                          &
-!!     &         (sph_rj, sph_bc_B, bc_Bspec, g_sph_rj,                 &
+!!     &         (sph_rj, sph_bc_B, CMB_Bspec, g_sph_rj,                &
 !!     &          is_magne, rj_fld)
 !!        Input:    ipol%i_magne, itor%i_magne
 !!        Solution: idpdr%i_magne
@@ -80,12 +80,12 @@
 ! -----------------------------------------------------------------------
 !
       subroutine sel_CMB_grad_bp_and_current                            &
-     &         (sph_rj, sph_bc_B, bc_Bspec, g_sph_rj,                   &
+     &         (sph_rj, sph_bc_B, CMB_Bspec, g_sph_rj,                  &
      &          is_magne, is_current, rj_fld)
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(sph_boundary_type), intent(in) :: sph_bc_B
-      type(sph_vector_BC_coef), intent(in) :: bc_Bspec
+      type(sph_vector_BC_coef), intent(in) :: CMB_Bspec
       integer(kind = kint), intent(in) :: is_magne, is_current
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
 !
@@ -100,8 +100,8 @@
      &      rj_fld%d_fld)
       else if(sph_bc_B%iflag_cmb .eq. iflag_evolve_field) then
         call cal_sph_nod_cmb_rigid_vect                                 &
-     &     (sph_rj%nidx_rj(2), sph_bc_B%kr_out, bc_Bspec%vp_CMB_bc,     &
-     &      bc_Bspec%dp_CMB_bc, bc_Bspec%vt_CMB_bc,                     &
+     &     (sph_rj%nidx_rj(2), sph_bc_B%kr_out,                         &
+     &      CMB_Bspec%Vp_BC, CMB_Bspec%Dp_BC, CMB_Bspec%Vt_BC,          &
      &      is_magne, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         call cal_sph_nod_cmb_fixed_rot2(sph_rj%nidx_rj(2), g_sph_rj,    &
      &      sph_bc_B%kr_out, sph_bc_B%r_CMB,                            &
@@ -122,12 +122,12 @@
 ! -----------------------------------------------------------------------
 !
       subroutine sel_CMB_grad_poloidal_magne                            &
-     &         (sph_rj, sph_bc_B, bc_Bspec, g_sph_rj,                   &
+     &         (sph_rj, sph_bc_B, CMB_Bspec, g_sph_rj,                  &
      &          is_magne, rj_fld)
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(sph_boundary_type), intent(in) :: sph_bc_B
-      type(sph_vector_BC_coef), intent(in) :: bc_Bspec
+      type(sph_vector_BC_coef), intent(in) :: CMB_Bspec
       integer(kind = kint), intent(in) :: is_magne
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
 !
@@ -140,8 +140,8 @@
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       else if(sph_bc_B%iflag_cmb .eq. iflag_evolve_field) then
         call cal_sph_nod_cmb_rigid_vect                                 &
-     &     (sph_rj%nidx_rj(2), sph_bc_B%kr_out, bc_Bspec%vp_CMB_bc,     &
-     &      bc_Bspec%dp_CMB_bc, bc_Bspec%vt_CMB_bc,                     &
+     &     (sph_rj%nidx_rj(2), sph_bc_B%kr_out,                         &
+     &      CMB_Bspec%Vp_BC, CMB_Bspec%Dp_BC, CMB_Bspec%Vt_BC,          &
      &      is_magne, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !      else if(sph_bc_B%iflag_cmb .eq. iflag_sph_insulator) then
       else

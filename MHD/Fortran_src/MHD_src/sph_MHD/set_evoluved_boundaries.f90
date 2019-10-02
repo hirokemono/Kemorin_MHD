@@ -10,13 +10,14 @@
 !!      subroutine set_evo_scalar_boundaries                            &
 !!     &         (time, sph_rj, sph_bc, ICB_Sevo, CMB_Sevo, bc_Sspec)
 !!      subroutine set_evo_vector_boundaries                            &
-!!     &         (time, sph_rj, sph_bc, ICB_Uevo, CMB_Uevo, bc_Vspec)
+!!     &         (time, sph_rj, sph_bc, ICB_Uevo, CMB_Uevo,             &
+!!     &          ICB_Uspec, CMB_Uspec)
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(sph_boundary_type), intent(in) :: sph_bc
 !!        type(sph_scalar_BC_evo), intent(in) :: ICB_Sevo, CMB_Sevo
 !!        type(sph_scalar_BC_coef), intent(inout) :: bc_Sspec
 !!        type(sph_vector_BC_evo), intent(in) :: ICB_Uevo, CMB_Uevo
-!!        type(sph_vector_BC_coef), intent(inout) :: bc_Vspec
+!!        type(sph_vector_BC_coef), intent(inout) :: ICB_Uspec, CMB_Uspec
 !!@endverbatim
 !!
       module set_evoluved_boundaries
@@ -70,7 +71,8 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_evo_vector_boundaries                              &
-     &         (time, sph_rj, sph_bc, ICB_Uevo, CMB_Uevo, bc_Vspec)
+     &         (time, sph_rj, sph_bc, ICB_Uevo, CMB_Uevo,               &
+     &          ICB_Uspec, CMB_Uspec)
 !
       use t_spheric_rj_data
       use t_boundary_params_sph_MHD
@@ -81,7 +83,7 @@
       type(sph_boundary_type), intent(in) :: sph_bc
       type(sph_vector_BC_evo), intent(in) :: ICB_Uevo, CMB_Uevo
 !
-      type(sph_vector_BC_coef), intent(inout) :: bc_Vspec
+      type(sph_vector_BC_coef), intent(inout) :: ICB_Uspec, CMB_Uspec
 !
 !
       if(sph_bc%iflag_icb .eq. iflag_evolve_field                       &
@@ -92,7 +94,7 @@
      &      ICB_Uevo%Vp_BC_phase, ICB_Uevo%Dp_BC_phase,                 &
      &      ICB_Uevo%Vt_BC_phase,                                       &
      &      ICB_Uevo%Vp_BC_freq, ICB_Uevo%Vt_BC_freq,                   &
-     &      bc_Vspec%vp_ICB_bc, bc_Vspec%dp_ICB_bc, bc_Vspec%vt_ICB_bc)
+     &      ICB_Uspec%Vp_BC, ICB_Uspec%Dp_BC, ICB_Uspec%Vt_BC)
       end if
 !
       if(sph_bc%iflag_cmb .eq. iflag_evolve_field                       &
@@ -103,7 +105,7 @@
      &      CMB_Uevo%Vp_BC_phase, CMB_Uevo%Dp_BC_phase,                 &
      &      CMB_Uevo%Vt_BC_phase,                                       &
      &      CMB_Uevo%Vp_BC_freq, CMB_Uevo%Vt_BC_freq,                   &
-     &      bc_Vspec%vp_CMB_bc, bc_Vspec%dp_CMB_bc, bc_Vspec%vt_CMB_bc)
+     &      CMB_Uspec%Vp_BC, CMB_Uspec%Dp_BC, CMB_Uspec%Vt_BC)
       end if
 !
       end subroutine set_evo_vector_boundaries

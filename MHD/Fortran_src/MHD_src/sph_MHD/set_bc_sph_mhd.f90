@@ -75,7 +75,8 @@
         call set_sph_bc_velo_sph(sph_rj, radial_rj_grp,                 &
      &      sph_params%radius_ICB, sph_params%radius_CMB,               &
      &      MHD_BC%velo_BC%nod_BC, MHD_BC%velo_BC%surf_BC,              &
-     &      sph_MHD_bc%sph_bc_U, sph_MHD_bc%bc_Uspec)
+     &      sph_MHD_bc%sph_bc_U,                                        &
+     &      sph_MHD_bc%ICB_Uspec, sph_MHD_bc%CMB_Uspec)
 !
         call cal_fdm_coefs_4_BCs                                        &
      &     (sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r,                   &
