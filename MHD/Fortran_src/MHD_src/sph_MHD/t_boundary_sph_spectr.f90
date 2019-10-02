@@ -79,19 +79,11 @@
         integer(kind = kint) :: jmax_sBC
 !
 !>        Fixed poloidal velocity spectrum for ICB
-        real(kind = kreal), allocatable :: s_ICB_mag(:)
-!>        Fixed poloidal velocity spectrum for CMB
-        real(kind = kreal), allocatable :: s_CMB_mag(:)
-!
+        real(kind = kreal), allocatable :: S_BC_mag(:)
 !>        Angular frequency scalar spectrum for ICB
-        real(kind = kreal), allocatable :: s_ICB_freq(:)
+        real(kind = kreal), allocatable :: S_BC_freq(:)
 !>        Angular phase scalar spectrum for ICB
-        real(kind = kreal), allocatable :: s_ICB_phase(:)
-!
-!>        Angular frequency scalar spectrum for ICB
-        real(kind = kreal), allocatable :: s_CMB_freq(:)
-!>        Angular phase scalar spectrum for ICB
-        real(kind = kreal), allocatable :: s_CMB_phase(:)
+        real(kind = kreal), allocatable :: S_BC_phase(:)
       end type sph_scalar_BC_evo
 !
 !
@@ -182,22 +174,14 @@
 !
       bc_Sevo%jmax_sBC = jmax
 !
-      allocate(bc_Sevo%s_ICB_mag(bc_Sevo%jmax_sBC))
-      allocate(bc_Sevo%s_ICB_freq(bc_Sevo%jmax_sBC))
-      allocate(bc_Sevo%s_ICB_phase(bc_Sevo%jmax_sBC))
-!
-      allocate(bc_Sevo%s_CMB_mag(bc_Sevo%jmax_sBC))
-      allocate(bc_Sevo%s_CMB_freq(bc_Sevo%jmax_sBC))
-      allocate(bc_Sevo%s_CMB_phase(bc_Sevo%jmax_sBC))
+      allocate(bc_Sevo%S_BC_mag(bc_Sevo%jmax_sBC))
+      allocate(bc_Sevo%S_BC_freq(bc_Sevo%jmax_sBC))
+      allocate(bc_Sevo%S_BC_phase(bc_Sevo%jmax_sBC))
 !
       if(bc_Sevo%jmax_sBC .le. 0) return
-      bc_Sevo%s_ICB_mag = 0.0d0
-      bc_Sevo%s_ICB_freq = 0.0d0
-      bc_Sevo%s_ICB_phase = 0.0d0
-!
-      bc_Sevo%s_CMB_mag = 0.0d0
-      bc_Sevo%s_CMB_freq = 0.0d0
-      bc_Sevo%s_CMB_phase = 0.0d0
+      bc_Sevo%S_BC_mag = 0.0d0
+      bc_Sevo%S_BC_freq = 0.0d0
+      bc_Sevo%S_BC_phase = 0.0d0
 !
       end subroutine alloc_sph_evo_scalar_bc_array
 !
@@ -266,9 +250,8 @@
       type(sph_scalar_BC_evo), intent(inout) :: bc_Sevo
 !
 !
-      deallocate(bc_Sevo%s_ICB_mag,   bc_Sevo%s_CMB_mag)
-      deallocate(bc_Sevo%s_ICB_freq,  bc_Sevo%s_CMB_freq)
-      deallocate(bc_Sevo%s_ICB_phase, bc_Sevo%s_CMB_phase)
+      deallocate(bc_Sevo%S_BC_mag)
+      deallocate(bc_Sevo%S_BC_phase, bc_Sevo%S_BC_freq)
 !
       end subroutine dealloc_sph_evo_scalar_bc_array
 !

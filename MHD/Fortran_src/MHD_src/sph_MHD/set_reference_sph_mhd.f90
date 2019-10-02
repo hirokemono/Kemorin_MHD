@@ -12,10 +12,10 @@
 !!     &          n_point, ntot_phys_rj, d_rj)
 !!
 !!      subroutine adjust_sph_temp_bc_by_reftemp(idx_rj_degree_zero,    &
-!!     &          nri, reftemp_rj, sph_bc, bc_Sspec, bc_Sevo)
+!!     &          nri, reftemp_rj, sph_bc, bc_Sspec, ICB_Sevo, CMB_Sevo)
 !!        type(sph_boundary_type), intent(in) :: sph_bc
 !!        type(sph_scalar_BC_coef), intent(inout) :: bc_Sspec
-!!        type(sph_scalar_BC_evo), intent(inout) :: bc_Sevo
+!!        type(sph_scalar_BC_evo), intent(inout) :: ICB_Sevo, CMB_Sevo
 !!
 !!      subroutine chenge_temp_to_per_temp_sph(idx_rj_degree_zero,      &
 !!     &          nidx_rj, radius_1d_rj_r, reftemp_rj,                  &
@@ -99,7 +99,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine adjust_sph_temp_bc_by_reftemp(idx_rj_degree_zero,      &
-     &          nri, reftemp_rj, sph_bc, bc_Sspec, bc_Sevo)
+     &          nri, reftemp_rj, sph_bc, bc_Sspec, ICB_Sevo, CMB_Sevo)
 !
       use t_boundary_params_sph_MHD
       use t_boundary_sph_spectr
@@ -110,7 +110,7 @@
       type(sph_boundary_type), intent(in) :: sph_bc
 !
       type(sph_scalar_BC_coef), intent(inout) :: bc_Sspec
-      type(sph_scalar_BC_evo), intent(inout) :: bc_Sevo
+      type(sph_scalar_BC_evo), intent(inout) :: ICB_Sevo, CMB_Sevo
 !
       integer(kind = kint) :: j
 !
@@ -122,10 +122,10 @@
       if(sph_bc%iflag_icb .eq. iflag_sph_fix_center) then
         bc_Sspec%s_CTR_bc = bc_Sspec%s_CTR_bc - reftemp_rj(1,0)
       else if(sph_bc%iflag_icb .eq. iflag_evolve_flux) then
-        bc_Sevo%s_ICB_mag(j) = bc_Sevo%s_ICB_mag(j)                     &
+        ICB_Sevo%S_BC_mag(j) = ICB_Sevo%S_BC_mag(j)                     &
      &                        - reftemp_rj(sph_bc%kr_in,1)
       else if(sph_bc%iflag_icb .eq. iflag_evolve_field) then
-        bc_Sevo%s_ICB_mag(j) = bc_Sevo%s_ICB_mag(j)                     &
+        ICB_Sevo%S_BC_mag(j) = ICB_Sevo%S_BC_mag(j)                     &
      &                        - reftemp_rj(sph_bc%kr_in,0)
       else if(sph_bc%iflag_icb .eq. iflag_fixed_flux) then
         bc_Sspec%s_ICB_bc(j) = bc_Sspec%s_ICB_bc(j)                     &
@@ -137,10 +137,10 @@
 !
 !
       if(sph_bc%iflag_cmb .eq. iflag_evolve_flux) then
-        bc_Sevo%s_CMB_mag(j) = bc_Sevo%s_CMB_mag(j)                     &
+        CMB_Sevo%S_BC_mag(j) = CMB_Sevo%S_BC_mag(j)                     &
      &                        - reftemp_rj(sph_bc%kr_out,1)
       else if(sph_bc%iflag_cmb .eq. iflag_evolve_field) then
-        bc_Sevo%s_CMB_mag(j) = bc_Sevo%s_CMB_mag(j)                     &
+        CMB_Sevo%S_BC_mag(j) = CMB_Sevo%S_BC_mag(j)                     &
      &                        - reftemp_rj(sph_bc%kr_out,0)
       else if(sph_bc%iflag_cmb .eq. iflag_fixed_flux) then
         bc_Sspec%s_CMB_bc(j) = bc_Sspec%s_CMB_bc(j)                     &

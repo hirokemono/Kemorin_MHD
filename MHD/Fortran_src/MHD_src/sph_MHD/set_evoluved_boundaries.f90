@@ -8,12 +8,12 @@
 !!
 !!@verbatim
 !!      subroutine set_evo_scalar_boundaries                            &
-!!     &         (time, sph_rj, sph_bc, bc_Sevo, bc_Sspec)
+!!     &         (time, sph_rj, sph_bc, ICB_Sevo, CMB_Sevo, bc_Sspec)
 !!      subroutine set_evo_vector_boundaries                            &
 !!     &         (time, sph_rj, sph_bc, ICB_Uevo, CMB_Uevo, bc_Vspec)
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(sph_boundary_type), intent(in) :: sph_bc
-!!        type(sph_scalar_BC_evo), intent(in) :: bc_Sevo
+!!        type(sph_scalar_BC_evo), intent(in) :: ICB_Sevo, CMB_Sevo
 !!        type(sph_scalar_BC_coef), intent(inout) :: bc_Sspec
 !!        type(sph_vector_BC_evo), intent(in) :: ICB_Uevo, CMB_Uevo
 !!        type(sph_vector_BC_coef), intent(inout) :: bc_Vspec
@@ -35,7 +35,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_evo_scalar_boundaries                              &
-     &         (time, sph_rj, sph_bc, bc_Sevo, bc_Sspec)
+     &         (time, sph_rj, sph_bc, ICB_Sevo, CMB_Sevo, bc_Sspec)
 !
       use t_spheric_rj_data
       use t_boundary_params_sph_MHD
@@ -44,7 +44,7 @@
       real(kind = kreal), intent(in) :: time
       type(sph_rj_grid), intent(in) :: sph_rj
       type(sph_boundary_type), intent(in) :: sph_bc
-      type(sph_scalar_BC_evo), intent(in) :: bc_Sevo
+      type(sph_scalar_BC_evo), intent(in) :: ICB_Sevo, CMB_Sevo
 !
       type(sph_scalar_BC_coef), intent(inout) :: bc_Sspec
 !
@@ -53,7 +53,7 @@
      &    .or. sph_bc%iflag_icb .eq. iflag_evolve_flux) then
         call cal_sph_nod_evo_scalar_BC                                  &
      &     (time, sph_rj%nidx_rj(2), sph_rj%idx_gl_1d_rj_j,             &
-     &      bc_Sevo%s_ICB_mag, bc_Sevo%s_ICB_phase, bc_Sevo%s_ICB_freq, &
+     &      ICB_Sevo%S_BC_mag, ICB_Sevo%S_BC_phase, ICB_Sevo%S_BC_freq, &
      &      bc_Sspec%s_ICB_bc)
       end if
 !
@@ -61,7 +61,7 @@
      &    .or. sph_bc%iflag_cmb .eq. iflag_evolve_flux) then
         call cal_sph_nod_evo_scalar_BC                                  &
      &     (time, sph_rj%nidx_rj(2), sph_rj%idx_gl_1d_rj_j,             &
-     &      bc_Sevo%s_CMB_mag, bc_Sevo%s_CMB_phase, bc_Sevo%s_CMB_freq, &
+     &      CMB_Sevo%S_BC_mag, CMB_Sevo%S_BC_phase, CMB_Sevo%S_BC_freq, &
      &      bc_Sspec%s_CMB_bc)
       end if
 !
