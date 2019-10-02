@@ -55,10 +55,6 @@
      &     (time, sph_rj%nidx_rj(2), sph_rj%idx_gl_1d_rj_j,             &
      &      bc_Sevo%s_ICB_mag, bc_Sevo%s_ICB_freq, bc_Sevo%s_ICB_phase, &
      &      bc_Sspec%s_ICB_bc)
-      else if(sph_bc%iflag_icb .eq. iflag_fixed_field) then
-        bc_Sspec%s_ICB_bc = sph_bc%ICB_fld
-      else if(sph_bc%iflag_icb .eq. iflag_fixed_flux) then
-        bc_Sspec%s_ICB_bc = sph_bc%ICB_flux
       end if
 !
       if(sph_bc%iflag_cmb .eq. iflag_evolve_field                       &
@@ -67,10 +63,6 @@
      &     (time, sph_rj%nidx_rj(2), sph_rj%idx_gl_1d_rj_j,             &
      &      bc_Sevo%s_CMB_mag, bc_Sevo%s_CMB_freq, bc_Sevo%s_CMB_phase, &
      &      bc_Sspec%s_CMB_bc)
-      else if(sph_bc%iflag_cmb .eq. iflag_fixed_field) then
-        bc_Sspec%s_CMB_bc = sph_bc%CMB_fld
-      else if(sph_bc%iflag_cmb .eq. iflag_fixed_flux) then
-        bc_Sspec%s_CMB_bc = sph_bc%CMB_flux
       end if
 !
       end subroutine set_evo_scalar_boundaries

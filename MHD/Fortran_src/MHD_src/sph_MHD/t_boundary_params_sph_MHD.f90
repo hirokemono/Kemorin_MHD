@@ -8,12 +8,8 @@
 !!
 !!
 !!@verbatim
-!!      subroutine alloc_fixed_bc_array(jmax, sph_bc)
-!!      subroutine dealloc_fixed_bc_array(sph_bc)
-!!
 !!      subroutine cal_fdm_coefs_4_BCs(nri, radius, sph_bc)
 !!      subroutine check_fdm_coefs_4_BC2(label, sph_bc)
-!!      subroutine check_sph_boundary_spectra(label, jmax, j_rj, sph_bc)
 !!        type(sph_boundary_type), intent(inout) :: sph_bc
 !!@endverbatim
 !!
@@ -116,38 +112,6 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine alloc_fixed_bc_array(jmax, sph_bc)
-!
-      integer(kind= kint), intent(in) :: jmax
-      type(sph_boundary_type), intent(inout) :: sph_bc
-!
-      allocate(sph_bc%ICB_fld(jmax))
-      allocate(sph_bc%CMB_fld(jmax))
-      allocate(sph_bc%ICB_flux(jmax))
-      allocate(sph_bc%CMB_flux(jmax))
-      sph_bc%CTR_fld = 0.0d0
-      sph_bc%ICB_fld = 0.0d0
-      sph_bc%CMB_fld = 0.0d0
-      sph_bc%ICB_flux = 0.0d0
-      sph_bc%CMB_flux = 0.0d0
-!
-      end subroutine alloc_fixed_bc_array
-!
-! -----------------------------------------------------------------------
-!
-      subroutine dealloc_fixed_bc_array(sph_bc)
-!
-      type(sph_boundary_type), intent(inout) :: sph_bc
-!
-!
-      deallocate(sph_bc%ICB_fld,  sph_bc%CMB_fld)
-      deallocate(sph_bc%ICB_flux, sph_bc%CMB_flux)
-!
-      end subroutine dealloc_fixed_bc_array
-!
-! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
       subroutine cal_fdm_coefs_4_BCs(nri, radius, sph_bc)
 !
       use cal_fdm_coefs_4_boundaries
@@ -220,49 +184,6 @@
       write(50,'(1p9E25.15e3)') sph_bc%fdm2_fix_dr_CMB(-1:1,3)
 !
       end subroutine check_fdm_coefs_4_BC2
-!
-! -----------------------------------------------------------------------
-!
-      subroutine check_sph_boundary_spectra(label, jmax, j_rj, sph_bc)
-!
-      integer(kind = kint), intent(in) :: jmax
-      integer(kind = kint), intent(in) :: j_rj(jmax,3)
-      character(len=kchara), intent(in) :: label
-      type(sph_boundary_type), intent(in) :: sph_bc
-!
-      integer(kind = kint) :: j
-!
-!
-      write(50,*) ' Boundary condition spectra for ', trim(label)
-!
-      write(50,*) 'iflag_icb', sph_bc%iflag_icb
-      if(sph_bc%iflag_icb .eq. iflag_fixed_field) then
-        write(50,*) 'field at ICB '
-        do j = 1, jmax
-          write(50,*) j_rj(j,1:3), sph_bc%ICB_fld(j)
-        end do
-      end if
-      if(sph_bc%iflag_icb .eq. iflag_fixed_flux) then
-        write(50,*) 'flux at ICB '
-        do j = 1, jmax
-          write(50,*) j_rj(j,1:3),  sph_bc%ICB_flux(j)
-        end do
-      end if
-!
-      write(50,*) 'iflag_cmb', sph_bc%iflag_cmb
-      if(sph_bc%iflag_cmb .eq. iflag_fixed_field) then
-        do j = 1, jmax
-          write(50,*)  j_rj(j,1:3), sph_bc%CMB_fld(j)
-        end do
-      end if
-      if(sph_bc%iflag_cmb .eq. iflag_fixed_flux) then
-        write(50,*) 'flux at CMB '
-        do j = 1, jmax
-          write(50,*) j_rj(j,1:3), sph_bc%CMB_flux(j)
-        end do
-      end if
-!
-      end subroutine check_sph_boundary_spectra
 !
 ! -----------------------------------------------------------------------
 !

@@ -9,15 +9,17 @@
 !!@verbatim
 !!      subroutine set_sph_bc_temp_sph                                  &
 !!     &         (bc_IO, sph_rj, radial_rj_grp, temp_nod, h_flux_surf,  &
-!!     &          sph_bc_T)
+!!     &          sph_bc_T, sph_Tspec)
 !!      subroutine set_sph_bc_composition_sph                           &
 !!     &         (bc_IO, sph_rj, radial_rj_grp, light_nod, light_surf,  &
-!!     &          sph_bc_C)
+!!     &          sph_bc_C, sph_Cspec)
 !!        type(boundary_spectra), intent(in) :: bc_IO
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(group_data), intent(in) :: radial_rj_grp
 !!        type(sph_boundary_type), intent(inout) :: sph_bc_T
+!!        type(sph_scalar_BC_coef), intent(inout) :: sph_Tspec
 !!        type(sph_boundary_type), intent(inout) :: sph_bc_C
+!!        type(sph_scalar_BC_coef), intent(inout) :: sph_Cspec
 !!
 !!      subroutine find_both_sides_of_boundaries(sph_rj, radial_rj_grp, &
 !!     &         bc_nod, bc_surf, sph_bc, igrp_icb, igrp_cmb)
@@ -41,6 +43,7 @@
       use t_spheric_rj_data
       use t_group_data
       use t_boundary_params_sph_MHD
+      use t_boundary_sph_spectr
       use t_sph_boundary_input_data
       use t_bc_data_list
 !
@@ -58,7 +61,7 @@
 !
       subroutine set_sph_bc_temp_sph                                    &
      &         (bc_IO, sph_rj, radial_rj_grp, temp_nod, h_flux_surf,    &
-     &          sph_bc_T)
+     &          sph_bc_T, sph_Tspec)
 !
       use m_phys_labels
 !
@@ -69,30 +72,27 @@
       type(boundary_condition_list), intent(in) :: h_flux_surf
 !
       type(sph_boundary_type), intent(inout) :: sph_bc_T
+      type(sph_scalar_BC_coef), intent(inout) :: sph_Tspec
 !
       integer(kind = kint) :: i
 !
 !
       call set_sph_bc_scalar_sph(fhd_temp, fhd_h_flux,                  &
      &    temp_nod, h_flux_surf, bc_IO, sph_rj, radial_rj_grp,          &
-     &    sph_bc_T)
+     &    sph_bc_T, sph_Tspec)
 !
       if(i_debug .gt. 0) then
+        write(*,*) 'sph_bc_T%iflag_icb', sph_bc_T%iflag_icb
         do i = 1, sph_rj%nidx_rj(2)
-          if( sph_bc_T%ICB_fld(i) .ne. 0.0d0) write(*,*)                &
-     &      ' sph_bc_T%ICB_fld', i,  sph_rj%idx_gl_1d_rj_j(i,2:3),      &
-     &       sph_bc_T%ICB_fld(i)
-          if( sph_bc_T%ICB_flux(i) .ne. 0.0d0) write(*,*)               &
-     &      ' sph_bc_T%ICB_flux', i,  sph_rj%idx_gl_1d_rj_j(i,2:3),     &
-     &       sph_bc_T%ICB_flux(i)
+          if( sph_Tspec%s_ICB_bc(i) .ne. 0.0d0) write(*,*)              &
+     &      ' sph_Tspec%s_ICB_bc', i,  sph_rj%idx_gl_1d_rj_j(i,2:3),    &
+     &       sph_Tspec%s_ICB_bc(i)
         end do
+        write(*,*) 'sph_bc_T%iflag_cmb', sph_bc_T%iflag_cmb
         do i = 1, sph_rj%nidx_rj(2)
-          if( sph_bc_T%CMB_fld(i) .ne. 0.0d0) write(*,*)                &
-     &       ' sph_bc_T%CMB_fld', i, sph_rj%idx_gl_1d_rj_j(i,2:3),      &
-     &        sph_bc_T%CMB_fld(i)
-          if( sph_bc_T%CMB_flux(i) .ne. 0.0d0) write(*,*)               &
-     &       ' sph_bc_T%CMB_flux', i,  sph_rj%idx_gl_1d_rj_j(i,2:3),    &
-     &        sph_bc_T%CMB_flux(i)
+          if( sph_Tspec%s_CMB_bc(i) .ne. 0.0d0) write(*,*)              &
+     &       ' sph_Tspec%s_CMB_bc', i, sph_rj%idx_gl_1d_rj_j(i,2:3),    &
+     &        sph_Tspec%s_CMB_bc(i)
         end do
       end if
       
@@ -119,7 +119,7 @@
 !
       subroutine set_sph_bc_composition_sph                             &
      &         (bc_IO, sph_rj, radial_rj_grp, light_nod, light_surf,    &
-     &          sph_bc_C)
+     &          sph_bc_C, sph_Cspec)
 !
       use m_phys_labels
 !
@@ -130,30 +130,27 @@
       type(boundary_condition_list), intent(in) :: light_surf
 !
       type(sph_boundary_type), intent(inout) :: sph_bc_C
+      type(sph_scalar_BC_coef), intent(inout) :: sph_Cspec
 !
       integer(kind = kint) :: i
 !
 !
       call set_sph_bc_scalar_sph(fhd_light, fhd_c_flux,                 &
      &    light_nod, light_surf, bc_IO, sph_rj, radial_rj_grp,          &
-     &    sph_bc_C)
+     &    sph_bc_C, sph_Cspec)
 !
       if(i_debug .gt. 0) then
+        write(*,*) 'sph_bc_C%iflag_icb', sph_bc_C%iflag_icb
         do i = 1, sph_rj%nidx_rj(2)
-          if( sph_bc_C%ICB_fld(i) .ne. 0.0d0) write(*,*)                &
-     &      ' sph_bc_C%ICB_fld', i,  sph_rj%idx_gl_1d_rj_j(i,2:3),      &
-     &       sph_bc_C%ICB_fld(i)
-          if( sph_bc_C%ICB_flux(i) .ne. 0.0d0) write(*,*)               &
-     &      ' sph_bc_C%ICB_flux', i,  sph_rj%idx_gl_1d_rj_j(i,2:3),     &
-     &       sph_bc_C%ICB_flux(i)
+          if( sph_Cspec%s_ICB_bc(i) .ne. 0.0d0) write(*,*)              &
+     &      ' sph_Cspec%s_ICB_bc', i,  sph_rj%idx_gl_1d_rj_j(i,2:3),    &
+     &       sph_Cspec%s_ICB_bc(i)
         end do
+        write(*,*) 'sph_bc_C%iflag_cmb', sph_bc_C%iflag_cmb
         do i = 1, sph_rj%nidx_rj(2)
-          if( sph_bc_C%CMB_fld(i) .ne. 0.0d0) write(*,*)                &
-     &       ' sph_bc_C%CMB_fld', i, sph_rj%idx_gl_1d_rj_j(i,2:3),      &
-     &        sph_bc_C%CMB_fld(i)
-          if( sph_bc_C%CMB_flux(i) .ne. 0.0d0) write(*,*)               &
-     &       ' sph_bc_C%CMB_flux', i,  sph_rj%idx_gl_1d_rj_j(i,2:3),    &
-     &        sph_bc_C%CMB_flux(i)
+          if( sph_Cspec%s_CMB_bc(i) .ne. 0.0d0) write(*,*)              &
+     &       ' sph_Cspec%s_CMB_bc', i, sph_rj%idx_gl_1d_rj_j(i,2:3),    &
+     &        sph_Cspec%s_CMB_bc(i)
         end do
       end if
 !
@@ -181,7 +178,7 @@
 !
       subroutine set_sph_bc_scalar_sph                                  &
      &         (fhd_field, fhd_flux, nod_bc_list, surf_bc_list, bc_IO,  &
-     &          sph_rj, radial_rj_grp, sph_bc)
+     &          sph_rj, radial_rj_grp, sph_bc, bc_Sspec)
 !
       character(len=kchara), intent(in) :: fhd_field
       character(len=kchara), intent(in) :: fhd_flux
@@ -193,22 +190,25 @@
       type(boundary_spectra), intent(in) :: bc_IO
 !
       type(sph_boundary_type), intent(inout) :: sph_bc
+      type(sph_scalar_BC_coef), intent(inout) :: bc_Sspec
 !
       integer(kind = kint) :: igrp_icb, igrp_cmb
 !
 !
+      call alloc_sph_scalar_bc_array(sph_rj%nidx_rj(2), bc_Sspec)
+!
       call find_both_sides_of_boundaries(sph_rj, radial_rj_grp,         &
      &    nod_bc_list, surf_bc_list, sph_bc, igrp_icb, igrp_cmb)
 !
-      call alloc_fixed_bc_array(sph_rj%nidx_rj(2), sph_bc)
-!
 !      Boundary setting for inner boundary
       call inner_sph_bc_scalar_sph(fhd_field, fhd_flux,                 &
-     &    nod_bc_list, surf_bc_list, bc_IO, igrp_icb, sph_rj, sph_bc)
+     &    nod_bc_list, surf_bc_list, bc_IO, igrp_icb, sph_rj,           &
+     &    sph_bc, bc_Sspec)
 !
 !      Boundary setting for outer boundary
       call outer_sph_bc_scalar_sph(fhd_field, fhd_flux,                 &
-     &    nod_bc_list, surf_bc_list, bc_IO, igrp_cmb, sph_rj, sph_bc)
+     &    nod_bc_list, surf_bc_list, bc_IO, igrp_cmb, sph_rj,           &
+     &    sph_bc, bc_Sspec)
 !
       end subroutine set_sph_bc_scalar_sph
 !
@@ -216,7 +216,7 @@
 !
       subroutine inner_sph_bc_scalar_sph(fhd_field, fhd_flux,           &
      &          nod_bc_list, surf_bc_list, bc_IO,                       &
-     &          igrp_icb, sph_rj, sph_bc)
+     &          igrp_icb, sph_rj, sph_bc, bc_Sspec)
 !
       integer(kind = kint), intent(in) :: igrp_icb
       character(len=kchara), intent(in) :: fhd_field
@@ -228,21 +228,23 @@
       type(boundary_spectra), intent(in) :: bc_IO
 !
       type(sph_boundary_type), intent(inout) :: sph_bc
+      type(sph_scalar_BC_coef), intent(inout) :: bc_Sspec
 !
       integer(kind = kint) :: i
 !
 !      Boundary setting for inner boundary
       i = abs(igrp_icb)
       if(igrp_icb .lt. 0) then
-        if( surf_bc_list%ibc_type(i)  .eq. iflag_bc_fix_s) then
+        if(surf_bc_list%ibc_type(i)  .eq. iflag_bc_fix_s) then
           call set_homogenious_grad_bc                                  &
      &       (surf_bc_list%bc_name(i), surf_bc_list%bc_magnitude(i),    &
      &        sph_rj%nidx_rj(2), sph_rj%idx_rj_degree_zero,             &
-     &        sph_bc%icb_grp_name, sph_bc%ICB_flux, sph_bc%iflag_icb)
+     &        sph_bc%icb_grp_name, bc_Sspec%s_ICB_bc,                   &
+     &        sph_bc%iflag_icb)
         else if(surf_bc_list%ibc_type(i)  .eq. iflag_bc_file_s) then
           call set_fixed_gradient_bc_by_file                            &
      &       (fhd_flux, sph_rj, bc_IO, sph_bc%icb_grp_name,             &
-     &        sph_bc%ICB_flux, sph_bc%iflag_icb)
+     &        bc_Sspec%s_ICB_bc, sph_bc%iflag_icb)
 !
         else if(surf_bc_list%ibc_type(i) .eq. iflag_sph_2_center        &
      &    .and. surf_bc_list%bc_name(i) .eq. sph_bc%icb_grp_name) then
@@ -254,24 +256,27 @@
         end if
 !
       else if(igrp_icb .gt. 0) then
-        if ( nod_bc_list%ibc_type(i)  .eq. iflag_bc_fix_flux) then
+        if(nod_bc_list%ibc_type(i)  .eq. iflag_bc_fix_flux) then
           call set_homogenious_grad_bc                                  &
      &       (nod_bc_list%bc_name(i), nod_bc_list%bc_magnitude(i),      &
      &        sph_rj%nidx_rj(2), sph_rj%idx_rj_degree_zero,             &
-     &        sph_bc%icb_grp_name, sph_bc%ICB_flux, sph_bc%iflag_icb)
+     &        sph_bc%icb_grp_name, bc_Sspec%s_ICB_bc,                   &
+     &        sph_bc%iflag_icb)
         else if(nod_bc_list%ibc_type(i)  .eq. iflag_bc_file_flux) then
           call set_fixed_gradient_bc_by_file                            &
      &       (fhd_flux,  sph_rj, bc_IO, sph_bc%icb_grp_name,            &
-     &       sph_bc%ICB_flux, sph_bc%iflag_icb)
+     &       bc_Sspec%s_ICB_bc, sph_bc%iflag_icb)
 !
         else if(nod_bc_list%ibc_type(i)  .eq. iflag_bc_fix_s) then
           call set_homogenious_scalar_bc                                &
      &       (nod_bc_list%bc_name(i), nod_bc_list%bc_magnitude(i),      &
      &        sph_rj%nidx_rj(2), sph_rj%idx_rj_degree_zero,             &
-     &        sph_bc%icb_grp_name, sph_bc%ICB_fld, sph_bc%iflag_icb)
+     &        sph_bc%icb_grp_name, bc_Sspec%s_ICB_bc,                   &
+     &        sph_bc%iflag_icb)
         else if(nod_bc_list%ibc_type(i)  .eq. iflag_bc_file_s) then
           call set_fixed_scalar_bc_by_file(fhd_field, sph_rj, bc_IO,    &
-     &        sph_bc%icb_grp_name, sph_bc%ICB_fld, sph_bc%iflag_icb)
+     &        sph_bc%icb_grp_name, bc_Sspec%s_ICB_bc,                   &
+     &        sph_bc%iflag_icb)
 !
         else if(nod_bc_list%ibc_type(i) .eq. iflag_sph_2_center         &
      &    .and. nod_bc_list%bc_name(i) .eq. sph_bc%icb_grp_name) then
@@ -283,8 +288,10 @@
         end if
       end if
 !
-      sph_bc%ICB_flux(1:sph_rj%nidx_rj(2))                              &
-     &      = -sph_bc%ICB_flux(1:sph_rj%nidx_rj(2))
+      if(sph_bc%iflag_icb .eq. iflag_fixed_flux) then
+        bc_Sspec%s_ICB_bc(1:sph_rj%nidx_rj(2))                          &
+     &      = -bc_Sspec%s_ICB_bc(1:sph_rj%nidx_rj(2))
+      end if
 !
       end subroutine inner_sph_bc_scalar_sph
 !
@@ -292,7 +299,7 @@
 !
       subroutine outer_sph_bc_scalar_sph(fhd_field, fhd_flux,           &
      &          nod_bc_list, surf_bc_list, bc_IO,                       &
-     &          igrp_cmb, sph_rj, sph_bc)
+     &          igrp_cmb, sph_rj, sph_bc, bc_Sspec)
 !
       integer(kind = kint), intent(in) :: igrp_cmb
       character(len=kchara), intent(in) :: fhd_field
@@ -304,6 +311,7 @@
       type(boundary_spectra), intent(in) :: bc_IO
 !
       type(sph_boundary_type), intent(inout) :: sph_bc
+      type(sph_scalar_BC_coef), intent(inout) :: bc_Sspec
 !
       integer(kind = kint) :: i
 !
@@ -314,11 +322,12 @@
           call set_homogenious_grad_bc                                  &
      &       (surf_bc_list%bc_name(i), surf_bc_list%bc_magnitude(i),    &
      &        sph_rj%nidx_rj(2), sph_rj%idx_rj_degree_zero,             &
-     &        sph_bc%cmb_grp_name, sph_bc%CMB_flux, sph_bc%iflag_cmb)
+     &        sph_bc%cmb_grp_name, bc_Sspec%s_CMB_bc,                   &
+     &        sph_bc%iflag_cmb)
         else if (surf_bc_list%ibc_type(i)  .eq. iflag_bc_file_s) then
           call set_fixed_gradient_bc_by_file                            &
      &       (fhd_flux, sph_rj, bc_IO, sph_bc%cmb_grp_name,             &
-     &        sph_bc%CMB_flux, sph_bc%iflag_cmb)
+     &        bc_Sspec%s_CMB_bc, sph_bc%iflag_cmb)
         end if
 !
       else if(igrp_cmb .gt. 0) then
@@ -326,20 +335,23 @@
           call set_homogenious_grad_bc                                  &
      &       (nod_bc_list%bc_name(i), nod_bc_list%bc_magnitude(i),      &
      &        sph_rj%nidx_rj(2), sph_rj%idx_rj_degree_zero,             &
-     &        sph_bc%cmb_grp_name, sph_bc%CMB_flux, sph_bc%iflag_cmb)
+     &        sph_bc%cmb_grp_name, bc_Sspec%s_CMB_bc,                   &
+     &        sph_bc%iflag_cmb)
         else if(nod_bc_list%ibc_type(i)  .eq. iflag_bc_file_flux) then
           call set_fixed_gradient_bc_by_file                            &
      &       (fhd_flux, sph_rj, bc_IO, sph_bc%cmb_grp_name,             &
-     &        sph_bc%CMB_flux, sph_bc%iflag_cmb)
+     &        bc_Sspec%s_CMB_bc, sph_bc%iflag_cmb)
 !
         else if(nod_bc_list%ibc_type(i)  .eq. iflag_bc_fix_s) then
           call set_homogenious_scalar_bc                                &
      &       (nod_bc_list%bc_name(i), nod_bc_list%bc_magnitude(i),      &
      &        sph_rj%nidx_rj(2), sph_rj%idx_rj_degree_zero,             &
-     &        sph_bc%cmb_grp_name, sph_bc%CMB_fld, sph_bc%iflag_cmb)
+     &        sph_bc%cmb_grp_name, bc_Sspec%s_CMB_bc,                   &
+     &        sph_bc%iflag_cmb)
         else if(nod_bc_list%ibc_type(i)  .eq. iflag_bc_file_s) then
           call set_fixed_scalar_bc_by_file(fhd_field, sph_rj, bc_IO,    &
-     &        sph_bc%cmb_grp_name, sph_bc%CMB_fld, sph_bc%iflag_cmb)
+     &        sph_bc%cmb_grp_name, bc_Sspec%s_CMB_bc,                   &
+     &        sph_bc%iflag_cmb)
         end if
       end if
 !

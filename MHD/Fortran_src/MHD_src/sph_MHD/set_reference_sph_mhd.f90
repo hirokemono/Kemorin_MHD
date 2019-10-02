@@ -11,8 +11,11 @@
 !!     &          idx_rj_degree_zero, nidx_rj, i_press,                 &
 !!     &          n_point, ntot_phys_rj, d_rj)
 !!
-!!      subroutine adjust_sph_temp_bc_by_reftemp                        &
-!!     &         (idx_rj_degree_zero, nri, reftemp_rj, sph_bc_S)
+!!      subroutine adjust_sph_temp_bc_by_reftemp(idx_rj_degree_zero,    &
+!!     &          nri, reftemp_rj, sph_bc, bc_Sspec, bc_Sevo)
+!!        type(sph_boundary_type), intent(in) :: sph_bc
+!!        type(sph_scalar_BC_coef), intent(inout) :: bc_Sspec
+!!        type(sph_scalar_BC_evo), intent(inout) :: bc_Sevo
 !!
 !!      subroutine chenge_temp_to_per_temp_sph(idx_rj_degree_zero,      &
 !!     &          nidx_rj, radius_1d_rj_r, reftemp_rj,                  &
@@ -95,31 +98,56 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine adjust_sph_temp_bc_by_reftemp                          &
-     &         (idx_rj_degree_zero, nri, reftemp_rj, sph_bc_S)
+      subroutine adjust_sph_temp_bc_by_reftemp(idx_rj_degree_zero,      &
+     &          nri, reftemp_rj, sph_bc, bc_Sspec, bc_Sevo)
 !
       use t_boundary_params_sph_MHD
+      use t_boundary_sph_spectr
 !
       integer(kind = kint), intent(in) :: idx_rj_degree_zero
       integer(kind = kint), intent(in) :: nri
       real(kind=kreal), intent(in) :: reftemp_rj(nri,0:2)
+      type(sph_boundary_type), intent(in) :: sph_bc
 !
-      type(sph_boundary_type), intent(inout) :: sph_bc_S
+      type(sph_scalar_BC_coef), intent(inout) :: bc_Sspec
+      type(sph_scalar_BC_evo), intent(inout) :: bc_Sevo
+!
+      integer(kind = kint) :: j
 !
 !
-      if(idx_rj_degree_zero .gt. 0) then
-        sph_bc_S%ICB_fld(idx_rj_degree_zero)                            &
-     &   = sph_bc_S%ICB_fld(idx_rj_degree_zero)                         &
-     &    - reftemp_rj(sph_bc_S%kr_in,0)
-        sph_bc_S%CMB_fld(idx_rj_degree_zero)                            &
-     &   = sph_bc_S%CMB_fld(idx_rj_degree_zero)                         &
-     &     - reftemp_rj(sph_bc_S%kr_out,0)
-        sph_bc_S%ICB_flux(idx_rj_degree_zero)                           &
-     &   = sph_bc_S%ICB_flux(idx_rj_degree_zero)                        &
-     &    - reftemp_rj(sph_bc_S%kr_in,1)
-        sph_bc_S%CMB_flux(idx_rj_degree_zero)                           &
-     &   = sph_bc_S%CMB_flux(idx_rj_degree_zero)                        &
-     &    - reftemp_rj(sph_bc_S%kr_out,1)
+      if(idx_rj_degree_zero .eq. 0) return
+      j = idx_rj_degree_zero
+!
+!      if     (sph_bc%iflag_icb .eq. iflag_sph_fill_center) then
+      if(sph_bc%iflag_icb .eq. iflag_sph_fix_center) then
+        bc_Sspec%s_CTR_bc = bc_Sspec%s_CTR_bc - reftemp_rj(1,0)
+      else if(sph_bc%iflag_icb .eq. iflag_evolve_flux) then
+        bc_Sevo%s_ICB_mag(j) = bc_Sevo%s_ICB_mag(j)                     &
+     &                        - reftemp_rj(sph_bc%kr_in,1)
+      else if(sph_bc%iflag_icb .eq. iflag_evolve_field) then
+        bc_Sevo%s_ICB_mag(j) = bc_Sevo%s_ICB_mag(j)                     &
+     &                        - reftemp_rj(sph_bc%kr_in,0)
+      else if(sph_bc%iflag_icb .eq. iflag_fixed_flux) then
+        bc_Sspec%s_ICB_bc(j) = bc_Sspec%s_ICB_bc(j)                     &
+     &                        - reftemp_rj(sph_bc%kr_in,1)
+      else if(sph_bc%iflag_icb .eq. iflag_fixed_field) then
+        bc_Sspec%s_ICB_bc(j) = bc_Sspec%s_ICB_bc(j)                     &
+     &                        - reftemp_rj(sph_bc%kr_in,0)
+      end if
+!
+!
+      if(sph_bc%iflag_cmb .eq. iflag_evolve_flux) then
+        bc_Sevo%s_CMB_mag(j) = bc_Sevo%s_CMB_mag(j)                     &
+     &                        - reftemp_rj(sph_bc%kr_out,1)
+      else if(sph_bc%iflag_cmb .eq. iflag_evolve_field) then
+        bc_Sevo%s_CMB_mag(j) = bc_Sevo%s_CMB_mag(j)                     &
+     &                        - reftemp_rj(sph_bc%kr_out,0)
+      else if(sph_bc%iflag_cmb .eq. iflag_fixed_flux) then
+        bc_Sspec%s_CMB_bc(j) = bc_Sspec%s_CMB_bc(j)                     &
+     &                        - reftemp_rj(sph_bc%kr_out,1)
+      else if(sph_bc%iflag_cmb .eq. iflag_fixed_field) then
+        bc_Sspec%s_CMB_bc(j) = bc_Sspec%s_CMB_bc(j)                     &
+     &                        - reftemp_rj(sph_bc%kr_out,0)
       end if
 !
       end subroutine adjust_sph_temp_bc_by_reftemp

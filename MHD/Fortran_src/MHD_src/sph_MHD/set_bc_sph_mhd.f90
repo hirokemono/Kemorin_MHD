@@ -100,7 +100,7 @@
         if(iflag_debug .gt. 0) write(*,*) 'set_sph_bc_temp_sph'
         call set_sph_bc_temp_sph(bc_IO, sph_rj, radial_rj_grp,          &
      &      MHD_BC%temp_BC%nod_BC, MHD_BC%temp_BC%surf_BC,              &
-     &      sph_MHD_bc%sph_bc_T)
+     &      sph_MHD_bc%sph_bc_T, sph_MHD_bc%bc_Tspec)
         call cal_fdm_coefs_4_BCs                                        &
      &     (sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r,                   &
      &      sph_MHD_bc%sph_bc_T)
@@ -121,7 +121,7 @@
         if(iflag_debug .gt. 0) write(*,*) 'set_sph_bc_composition_sph'
         call set_sph_bc_composition_sph(bc_IO, sph_rj, radial_rj_grp,   &
      &      MHD_BC%light_BC%nod_BC, MHD_BC%light_BC%surf_BC,            &
-     &      sph_MHD_bc%sph_bc_C)
+     &      sph_MHD_bc%sph_bc_C, sph_MHD_bc%bc_Cspec)
         call cal_fdm_coefs_4_BCs                                        &
      &     (sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r,                   &
      &      sph_MHD_bc%sph_bc_C)
@@ -156,17 +156,6 @@
      &          sph_MHD_bc%sph_bc_C%iflag_icb
         write(*,*) 'sph_bc_C%iflag_cmb', sph_MHD_bc%sph_bc_C%kr_out,    &
      &          sph_MHD_bc%sph_bc_C%iflag_cmb
-!
-        if(MHD_prop%ht_prop%iflag_scheme .gt. id_no_evolution) then
-          call check_sph_boundary_spectra(fhd_temp,                     &
-     &        sph_rj%nidx_rj(2), sph_rj%idx_gl_1d_rj_j,                 &
-     &        sph_MHD_bc%sph_bc_T)
-        end if
-        if(MHD_prop%cp_prop%iflag_scheme .gt. id_no_evolution) then
-          call check_sph_boundary_spectra(fhd_light,                    &
-     &        sph_rj%nidx_rj(2), sph_rj%idx_gl_1d_rj_j,                 &
-     &        sph_MHD_bc%sph_bc_C)
-        end if
       end if
 !
       if (iflag_debug .eq. iflag_full_msg) then
