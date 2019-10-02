@@ -8,7 +8,8 @@
 !!
 !!@verbatim
 !!      subroutine set_evo_scalar_boundaries                            &
-!!     &         (time, sph_rj, sph_bc, ICB_Sevo, CMB_Sevo, bc_Sspec)
+!!     &         (time, sph_rj, sph_bc, ICB_Sevo, CMB_Sevo,             &
+!!     &          ICB_Sspec, CMB_Sspec)
 !!      subroutine set_evo_vector_boundaries                            &
 !!     &         (time, sph_rj, sph_bc, ICB_Uevo, CMB_Uevo,             &
 !!     &          ICB_Uspec, CMB_Uspec)
@@ -36,7 +37,8 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_evo_scalar_boundaries                              &
-     &         (time, sph_rj, sph_bc, ICB_Sevo, CMB_Sevo, bc_Sspec)
+     &         (time, sph_rj, sph_bc, ICB_Sevo, CMB_Sevo,               &
+     &          ICB_Sspec, CMB_Sspec)
 !
       use t_spheric_rj_data
       use t_boundary_params_sph_MHD
@@ -47,7 +49,7 @@
       type(sph_boundary_type), intent(in) :: sph_bc
       type(sph_scalar_BC_evo), intent(in) :: ICB_Sevo, CMB_Sevo
 !
-      type(sph_scalar_BC_coef), intent(inout) :: bc_Sspec
+      type(sph_scalar_BC_coef), intent(inout) :: ICB_Sspec, CMB_Sspec
 !
 !
       if(sph_bc%iflag_icb .eq. iflag_evolve_field                       &
@@ -55,7 +57,7 @@
         call cal_sph_nod_evo_scalar_BC                                  &
      &     (time, sph_rj%nidx_rj(2), sph_rj%idx_gl_1d_rj_j,             &
      &      ICB_Sevo%S_BC_mag, ICB_Sevo%S_BC_phase, ICB_Sevo%S_BC_freq, &
-     &      bc_Sspec%s_ICB_bc)
+     &      ICB_Sspec%S_BC)
       end if
 !
       if(sph_bc%iflag_cmb .eq. iflag_evolve_field                       &
@@ -63,7 +65,7 @@
         call cal_sph_nod_evo_scalar_BC                                  &
      &     (time, sph_rj%nidx_rj(2), sph_rj%idx_gl_1d_rj_j,             &
      &      CMB_Sevo%S_BC_mag, CMB_Sevo%S_BC_phase, CMB_Sevo%S_BC_freq, &
-     &      bc_Sspec%s_CMB_bc)
+     &      CMB_Sspec%S_BC)
       end if
 !
       end subroutine set_evo_scalar_boundaries

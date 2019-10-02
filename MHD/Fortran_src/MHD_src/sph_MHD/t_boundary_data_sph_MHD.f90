@@ -56,9 +56,13 @@
 !>        Structure for boundary magnetic spectr
         type(sph_vector_BC_coef) :: CMB_Bspec
 !>        Structure for boundary temeprture spectr
-        type(sph_scalar_BC_coef) :: bc_Tspec
+        type(sph_scalar_BC_coef) :: ICB_Tspec
+!>        Structure for boundary temeprture spectr
+        type(sph_scalar_BC_coef) :: CMB_Tspec
 !>        Structure for boundary composition spectr
-        type(sph_scalar_BC_coef) :: bc_Cspec
+        type(sph_scalar_BC_coef) :: ICB_Cspec
+!>        Structure for boundary composition spectr
+        type(sph_scalar_BC_coef) :: CMB_Cspec
 !
 !>        Structure for evoluved boundary velocity spectr
         type(sph_vector_BC_evo) :: ICB_Uevo
@@ -149,13 +153,13 @@
         call set_evo_scalar_boundaries(time_d%time, sph%sph_rj,         &
      &      sph_MHD_bc%sph_bc_T,                                        &
      &      sph_MHD_bc%ICB_Tevo, sph_MHD_bc%CMB_Tevo,                   &
-     &      sph_MHD_bc%bc_Tspec)
+     &      sph_MHD_bc%ICB_Tspec, sph_MHD_bc%CMB_Tspec)
       end if
       if(MHD_prop%cp_prop%iflag_scheme .gt. id_no_evolution) then
         call set_evo_scalar_boundaries(time_d%time, sph%sph_rj,         &
      &      sph_MHD_bc%sph_bc_C,                                        &
      &      sph_MHD_bc%ICB_Cevo, sph_MHD_bc%CMB_Cevo,                   &
-     &      sph_MHD_bc%bc_Cspec)
+     &      sph_MHD_bc%ICB_Cspec, sph_MHD_bc%CMB_Cspec)
       end if
 !
       end subroutine set_cv_evolved_boundaries

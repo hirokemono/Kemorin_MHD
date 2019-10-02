@@ -7,29 +7,29 @@
 !> @brief Evaluate radial delivatives
 !!
 !!@verbatim
-!!      subroutine set_CMB_scalar_sph_crank(sph_rj, sph_bc, bc_Sspec,   &
+!!      subroutine set_CMB_scalar_sph_crank(sph_rj, sph_bc, CMB_Sspec,  &
 !!     &          coef_f, coef_d, dt, coef_imp, is_field, rj_fld)
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(sph_boundary_type), intent(in) :: sph_bc
 !!        type(phys_data), intent(inout) :: rj_fld
 !!
 !!      subroutine sel_CMB_radial_grad_scalar                           &
-!!     &         (sph_rj, sph_bc, bc_Sspec, g_sph_rj,                   &
+!!     &         (sph_rj, sph_bc, CMB_Sspec, g_sph_rj,                  &
 !!     &          is_fld, is_grad, rj_fld)
 !!          Input:    is_fld
 !!          Solution: is_grad
 !!        type(sph_boundary_type), intent(in) :: sph_bc
-!!        type(sph_scalar_BC_coef), intent(in) :: bc_Sspec
+!!        type(sph_scalar_BC_coef), intent(in) :: CMB_Sspec
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!
 !!      subroutine sel_CMB_sph_scalar_diffusion                         &
-!!     &         (sph_rj, sph_bc, bc_Sspec, g_sph_rj, coef_diffuse,     &
+!!     &         (sph_rj, sph_bc, CMB_Sspec, g_sph_rj, coef_diffuse,    &
 !!     &          is_fld, is_diffuse, rj_fld)
 !!          Input:    is_fld
 !!          Solution: is_diffusee
 !!
 !!      subroutine sel_CMB_sph_scalar_advect                            &
-!!     &         (sph_rj, sph_bc, bc_Sspec, g_sph_rj,                   &
+!!     &         (sph_rj, sph_bc, CMB_Sspec, g_sph_rj,                  &
 !!     &          is_flux, is_advect, rj_fld)
 !!          Input:    is_flux
 !!          Solution: is_advect
@@ -67,7 +67,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_CMB_scalar_sph_crank(sph_rj, sph_bc, bc_Sspec,     &
+      subroutine set_CMB_scalar_sph_crank(sph_rj, sph_bc, CMB_Sspec,    &
      &          coef_f, coef_d, dt, coef_imp, is_field, rj_fld)
 !
       use set_scalar_boundary_sph
@@ -75,7 +75,7 @@
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(sph_boundary_type), intent(in) :: sph_bc
-      type(sph_scalar_BC_coef), intent(in) :: bc_Sspec
+      type(sph_scalar_BC_coef), intent(in) :: CMB_Sspec
       real(kind = kreal), intent(in) :: coef_imp, coef_f, coef_d
       real(kind = kreal), intent(in) :: dt
 !
@@ -90,12 +90,12 @@
         call set_fixed_scalar_sph(sph_rj%nidx_rj(2),                    &
      &      sph_rj%inod_rj_center, sph_rj%idx_rj_degree_zero,           &
      &      sph_bc%kr_out, sph_rj%nidx_rj(1), is_field,                 &
-     &      bc_Sspec%s_CMB_bc, bc_Sspec%s_CTR_bc,                       &
+     &      CMB_Sspec%S_BC, CMB_Sspec%S_CTR,                            &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       else if(coef_f .ne. 0.0d0) then
         call adjust_out_fixed_flux_sph                                  &
      &     (sph_rj%nidx_rj(2), sph_bc%kr_out, sph_bc%r_CMB,             &
-     &      sph_bc%fdm2_fix_dr_CMB, bc_Sspec%s_CMB_bc, coef_d,          &
+     &      sph_bc%fdm2_fix_dr_CMB, CMB_Sspec%S_BC, coef_d,             &
      &      coef_imp, dt, is_field, rj_fld%n_point, rj_fld%ntot_phys,   &
      &      rj_fld%d_fld)
 !      else if(sph_bc%iflag_cmb .eq. iflag_fixed_flux                   &
@@ -103,7 +103,7 @@
       else
         call poisson_out_fixed_flux_sph                                 &
      &     (sph_rj%nidx_rj(2), sph_bc%kr_out, sph_bc%r_CMB,             &
-     &      sph_bc%fdm2_fix_dr_CMB, bc_Sspec%s_CMB_bc, is_field,        &
+     &      sph_bc%fdm2_fix_dr_CMB, CMB_Sspec%S_BC, is_field,           &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !
@@ -113,7 +113,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine sel_CMB_radial_grad_scalar                             &
-     &         (sph_rj, sph_bc, bc_Sspec, g_sph_rj,                     &
+     &         (sph_rj, sph_bc, CMB_Sspec, g_sph_rj,                    &
      &          is_fld, is_grad, rj_fld)
 !
       use cal_sph_exp_fixed_scalar
@@ -122,7 +122,7 @@
 !
       type(sph_boundary_type), intent(in) :: sph_bc
       type(sph_rj_grid), intent(in) :: sph_rj
-      type(sph_scalar_BC_coef), intent(in) :: bc_Sspec
+      type(sph_scalar_BC_coef), intent(in) :: CMB_Sspec
 !
       integer(kind = kint), intent(in) :: is_fld, is_grad
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
@@ -134,11 +134,11 @@
      &    .or. sph_bc%iflag_cmb .eq. iflag_evolve_flux) then
         call dsdr_sph_out_fix_flux_2                                    &
      &     (sph_rj%nidx_rj(2), g_sph_rj, sph_bc%kr_out,                 &
-     &      sph_bc%r_CMB, bc_Sspec%s_CMB_bc, is_fld, is_grad,           &
+     &      sph_bc%r_CMB, CMB_Sspec%S_BC, is_fld, is_grad,              &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         call dsdr_sph_lm0_out_fix_flux_2                                &
      &     (sph_rj%idx_rj_degree_zero, sph_rj%nidx_rj(2),               &
-     &      sph_bc%kr_out, sph_bc%r_CMB, bc_Sspec%s_CMB_bc, is_grad,    &
+     &      sph_bc%kr_out, sph_bc%r_CMB, CMB_Sspec%S_BC, is_grad,       &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !      else if(sph_bc%iflag_cmb .eq. iflag_fixed_field                  &
 !     &   .or. sph_bc%iflag_cmb .eq. iflag_evolve_field) then
@@ -146,12 +146,12 @@
         call dsdr_sph_fix_scalar_out_2                                  &
      &     (sph_rj%nidx_rj(2), g_sph_rj,                                &
      &      sph_bc%kr_out, sph_bc%r_CMB, sph_bc%fdm2_fix_fld_CMB,       &
-     &      bc_Sspec%s_CMB_bc, is_fld, is_grad,                         &
+     &      CMB_Sspec%S_BC, is_fld, is_grad,                            &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         call dsdr_sph_lm0_fix_scalar_out_2                              &
      &     (sph_rj%idx_rj_degree_zero, sph_rj%nidx_rj(2),               &
      &      sph_bc%kr_out, sph_bc%r_CMB, sph_bc%fdm2_fix_fld_CMB,       &
-     &      bc_Sspec%s_CMB_bc, is_fld, is_grad,                         &
+     &      CMB_Sspec%S_BC, is_fld, is_grad,                            &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !
@@ -161,7 +161,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine sel_CMB_sph_scalar_diffusion                           &
-     &         (sph_rj, sph_bc, bc_Sspec, g_sph_rj, coef_diffuse,       &
+     &         (sph_rj, sph_bc, CMB_Sspec, g_sph_rj, coef_diffuse,      &
      &          is_fld, is_diffuse, rj_fld)
 !
       use cal_sph_exp_fixed_scalar
@@ -169,7 +169,7 @@
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(sph_boundary_type), intent(in) :: sph_bc
-      type(sph_scalar_BC_coef), intent(in) :: bc_Sspec
+      type(sph_scalar_BC_coef), intent(in) :: CMB_Sspec
 !
       integer(kind = kint), intent(in) :: is_fld, is_diffuse
       real(kind = kreal), intent(in) :: coef_diffuse
@@ -183,7 +183,7 @@
         call cal_sph_out_fix_flux_diffuse2                              &
      &     (sph_rj%nidx_rj(2), g_sph_rj,                                &
      &      sph_bc%kr_out, sph_bc%r_CMB, sph_bc%fdm2_fix_dr_CMB,        &
-     &      bc_Sspec%s_CMB_bc, coef_diffuse, is_fld, is_diffuse,        &
+     &      CMB_Sspec%S_BC, coef_diffuse, is_fld, is_diffuse,           &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !      else if(sph_bc%iflag_cmb .eq. iflag_fixed_field                  &
 !     &   .or. sph_bc%iflag_cmb .eq. iflag_evolve_field) then
@@ -191,7 +191,7 @@
         call cal_sph_out_fix_scalar_diffuse2                            &
      &     (sph_rj%nidx_rj(2), g_sph_rj,                                &
      &      sph_bc%kr_out, sph_bc%r_CMB, sph_bc%fdm2_fix_fld_CMB,       &
-     &      bc_Sspec%s_CMB_bc, coef_diffuse, is_fld, is_diffuse,        &
+     &      CMB_Sspec%S_BC, coef_diffuse, is_fld, is_diffuse,           &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !
@@ -200,7 +200,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine sel_CMB_sph_scalar_advect                              &
-     &         (sph_rj, sph_bc, bc_Sspec, g_sph_rj,                     &
+     &         (sph_rj, sph_bc, CMB_Sspec, g_sph_rj,                    &
      &          is_flux, is_advect, rj_fld)
 !
       use cal_sph_exp_fixed_scalar
@@ -208,7 +208,7 @@
 !
       type(sph_boundary_type), intent(in) :: sph_bc
       type(sph_rj_grid), intent(in) :: sph_rj
-      type(sph_scalar_BC_coef), intent(in) :: bc_Sspec
+      type(sph_scalar_BC_coef), intent(in) :: CMB_Sspec
 !
       integer(kind = kint), intent(in) :: is_flux, is_advect
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
@@ -220,7 +220,7 @@
      &    .or. sph_bc%iflag_cmb .eq. iflag_evolve_flux) then
         call cal_div_sph_out_fix_flux_2                                 &
      &     (sph_rj%nidx_rj(2), g_sph_rj, sph_bc%kr_out,                 &
-     &      sph_bc%r_CMB, bc_Sspec%s_CMB_bc, is_flux, is_advect,        &
+     &      sph_bc%r_CMB, CMB_Sspec%S_BC, is_flux, is_advect,           &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !      else if(sph_bc%iflag_cmb .eq. iflag_fixed_field                  &
 !     &   .or. sph_bc%iflag_cmb .eq. iflag_evolve_field) then
@@ -228,7 +228,7 @@
         call cal_sph_div_flux_4_fix_out                                 &
      &     (sph_rj%nidx_rj(2), g_sph_rj,                                &
      &      sph_bc%kr_out, sph_bc%r_CMB, sph_bc%fdm2_fix_fld_CMB,       &
-     &      bc_Sspec%s_CMB_bc, is_flux, is_advect,                      &
+     &      CMB_Sspec%S_BC, is_flux, is_advect,                         &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !

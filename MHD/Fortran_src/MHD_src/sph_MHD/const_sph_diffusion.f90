@@ -25,14 +25,14 @@
 !!        Input:    ipol%i_magne, itor%i_magne
 !!        Solution: ipol%i_b_diffuse, itor%i_b_diffuse, idpdr%i_b_diffuse
 !!
-!!      subroutine const_sph_scalar_diffusion                           &
-!!     &         (sph_rj, r_2nd, sph_bc, bc_Sspec, fdm2_center,         &
+!!      subroutine const_sph_scalar_diffusion(sph_rj, r_2nd,            &
+!!     &          sph_bc, ICB_Sspec, CMB_Sspec, fdm2_center,            &
 !!     &          g_sph_rj, coef_diffuse, is_fld, is_diffuse, rj_fld)
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(fdm_matrices), intent(in) :: r_2nd
 !!        type(phys_data), intent(inout) :: rj_fld
 !!        type(sph_boundary_type), intent(in) :: sph_bc
-!!        type(sph_scalar_BC_coef), intent(in) :: bc_Sspec
+!!        type(sph_scalar_BC_coef), intent(in) :: ICB_Sspec, CMB_Sspec
 !!        type(fdm2_center_mat), intent(in) :: fdm2_center
 !!@endverbatim
 !!
@@ -213,8 +213,8 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine const_sph_scalar_diffusion                             &
-     &         (sph_rj, r_2nd, sph_bc, bc_Sspec, fdm2_center,           &
+      subroutine const_sph_scalar_diffusion(sph_rj, r_2nd,              &
+     &          sph_bc, ICB_Sspec, CMB_Sspec, fdm2_center,              &
      &          g_sph_rj, coef_diffuse, is_fld, is_diffuse, rj_fld)
 !
       use t_coef_fdm2_MHD_boundaries
@@ -224,7 +224,7 @@
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
       type(sph_boundary_type), intent(in) :: sph_bc
-      type(sph_scalar_BC_coef), intent(in) :: bc_Sspec
+      type(sph_scalar_BC_coef), intent(in) :: ICB_Sspec, CMB_Sspec
       type(fdm2_center_mat), intent(in) :: fdm2_center
 !
       integer(kind = kint), intent(in) :: is_fld, is_diffuse
@@ -240,11 +240,11 @@
      &    r_2nd%fdm(1)%dmat, r_2nd%fdm(2)%dmat,                         &
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
-      call sel_ICB_sph_scalar_diffusion(sph_rj, sph_bc, bc_Sspec,       &
+      call sel_ICB_sph_scalar_diffusion(sph_rj, sph_bc, ICB_Sspec,      &
      &    fdm2_center, g_sph_rj, coef_diffuse,                          &
      &    is_fld, is_diffuse, rj_fld)
       call sel_CMB_sph_scalar_diffusion                                 &
-     &   (sph_rj, sph_bc, bc_Sspec, g_sph_rj, coef_diffuse,             &
+     &   (sph_rj, sph_bc, CMB_Sspec, g_sph_rj, coef_diffuse,            &
      &    is_fld, is_diffuse, rj_fld)
 !
       end subroutine const_sph_scalar_diffusion

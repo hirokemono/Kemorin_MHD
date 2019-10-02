@@ -44,12 +44,10 @@
         integer(kind = kint) :: jmax_sBC
 !
 !>        Fixed poloidal velocity spectrum for center
-        real(kind = kreal) :: s_CTR_bc = 0.0d0
+        real(kind = kreal) :: S_CTR = 0.0d0
 !
 !>        Fixed poloidal velocity spectrum for ICB
-        real(kind = kreal), allocatable :: s_ICB_bc(:)
-!>        Fixed poloidal velocity spectrum for CMB
-        real(kind = kreal), allocatable :: s_CMB_bc(:)
+        real(kind = kreal), allocatable :: S_BC(:)
       end type sph_scalar_BC_coef
 !
 !>      Structure for boundary velocity spectr
@@ -118,13 +116,10 @@
 !
 !
       bc_Sspec%jmax_sBC = jmax
-!
-      allocate(bc_Sspec%s_ICB_bc(bc_Sspec%jmax_sBC))
-      allocate(bc_Sspec%s_CMB_bc(bc_Sspec%jmax_sBC))
+      allocate(bc_Sspec%S_BC(bc_Sspec%jmax_sBC))
 !
       if(bc_Sspec%jmax_sBC .le. 0) return
-      bc_Sspec%s_ICB_bc = 0.0d0
-      bc_Sspec%s_CMB_bc = 0.0d0
+      bc_Sspec%S_BC = 0.0d0
 !
       end subroutine alloc_sph_scalar_bc_array
 !
@@ -212,7 +207,7 @@
 !
       type(sph_scalar_BC_coef), intent(inout) :: bc_Sspec
 !
-      deallocate(bc_Sspec%s_ICB_bc, bc_Sspec%s_CMB_bc)
+      deallocate(bc_Sspec%S_BC)
 !
       end subroutine dealloc_sph_scalar_bc_array
 !
