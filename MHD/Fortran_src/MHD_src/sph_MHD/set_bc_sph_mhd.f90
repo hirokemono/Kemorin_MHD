@@ -75,9 +75,7 @@
         call set_sph_bc_velo_sph(bc_IO, sph_rj, radial_rj_grp,          &
      &      sph_params%radius_ICB, sph_params%radius_CMB,               &
      &      MHD_BC%velo_BC%nod_BC, MHD_BC%velo_BC%surf_BC,              &
-     &      sph_MHD_bc%sph_bc_U,                                        &
-     &      sph_MHD_bc%ICB_Uspec, sph_MHD_bc%CMB_Uspec,                 &
-     &      sph_MHD_bc%ICB_Uevo, sph_MHD_bc%CMB_Uevo)
+     &      sph_MHD_bc%sph_bc_U, sph_MHD_bc%bcs_U)
 !
         call cal_fdm_coefs_4_BCs                                        &
      &     (sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r,                   &
@@ -113,9 +111,7 @@
         call set_sph_bc_magne_sph(bc_IO, sph_rj, radial_rj_grp,         &
      &      CTR_nod_grp_name, CTR_sf_grp_name,                          &
      &      MHD_BC%magne_BC%nod_BC, MHD_BC%magne_BC%surf_BC,            &
-     &      sph_MHD_bc%sph_bc_B,                                        &
-     &      sph_MHD_bc%ICB_Bspec, sph_MHD_bc%CMB_Bspec,                 &
-     &      sph_MHD_bc%ICB_Bevo, sph_MHD_bc%CMB_Bevo)
+     &      sph_MHD_bc%sph_bc_B, sph_MHD_bc%bcs_B)
         call cal_fdm_coefs_4_BCs                                        &
      &     (sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r,                   &
      &      sph_MHD_bc%sph_bc_B)
@@ -189,7 +185,7 @@
 !
       subroutine set_sph_bc_magne_sph(bc_IO, sph_rj, radial_rj_grp,     &
      &        CTR_nod_grp_name, CTR_sf_grp_name, magne_nod, magne_surf, &
-     &        sph_bc_B, ICB_Bspec, CMB_Bspec, ICB_Bevo, CMB_Bevo)
+     &        sph_bc_B, bcs_B)
 !
       use set_bc_sph_scalars
 !
@@ -202,8 +198,7 @@
       type(boundary_spectra), intent(in) :: bc_IO
 !
       type(sph_boundary_type), intent(inout) :: sph_bc_B
-      type(sph_vector_BC_coef), intent(inout) :: ICB_Bspec, CMB_Bspec
-      type(sph_vector_BC_evo), intent(inout) :: ICB_Bevo, CMB_Bevo
+      type(sph_vector_boundary_data), intent(inout) :: bcs_B
 !
       integer(kind = kint) :: i
       integer(kind = kint) :: igrp_icb, igrp_cmb
@@ -212,10 +207,14 @@
       call find_both_sides_of_boundaries(sph_rj, radial_rj_grp,         &
      &    magne_nod, magne_surf, sph_bc_B, igrp_icb, igrp_cmb)
 !
-      call alloc_sph_vector_bc_array(sph_rj%nidx_rj(2), ICB_Bspec)
-      call alloc_sph_vector_bc_array(sph_rj%nidx_rj(2), CMB_Bspec)
-      call alloc_sph_evo_vector_bc_array(sph_rj%nidx_rj(2), ICB_Bevo)
-      call alloc_sph_evo_vector_bc_array(sph_rj%nidx_rj(2), ICB_Bevo)
+      call alloc_sph_vector_bc_array                                    &
+     &   (sph_rj%nidx_rj(2), bcs_B%ICB_Vspec)
+      call alloc_sph_vector_bc_array                                    &
+     &   (sph_rj%nidx_rj(2), bcs_B%CMB_Vspec)
+      call alloc_sph_evo_vector_bc_array                                &
+     &   (sph_rj%nidx_rj(2), bcs_B%ICB_Vevo)
+      call alloc_sph_evo_vector_bc_array                                &
+     &   (sph_rj%nidx_rj(2), bcs_B%CMB_Vevo)
 !
       sph_bc_B%iflag_icb = iflag_sph_insulator
       sph_bc_B%iflag_cmb = iflag_sph_insulator
@@ -249,7 +248,7 @@
      &      .and. sph_bc_B%iflag_icb .eq. iflag_undefined_bc) then
           call set_fixed_vector_bc_by_file(fhd_magne, sph_rj,           &
      &        bc_IO, sph_bc_B%icb_grp_name, sph_bc_B%iflag_icb,         &
-     &        CMB_Bspec, CMB_Bevo)
+     &        bcs_B%CMB_Vspec, bcs_B%CMB_Vevo)
         end if
       end if
 !
@@ -266,7 +265,7 @@
      &      .and. sph_bc_B%iflag_cmb .eq. iflag_undefined_bc) then
           call set_fixed_vector_bc_by_file(fhd_magne, sph_rj,           &
      &        bc_IO, sph_bc_B%cmb_grp_name, sph_bc_B%iflag_cmb,         &
-     &        CMB_Bspec, CMB_Bevo)
+     &        bcs_B%CMB_Vspec, bcs_B%CMB_Vevo)
         end if
       end if
 !

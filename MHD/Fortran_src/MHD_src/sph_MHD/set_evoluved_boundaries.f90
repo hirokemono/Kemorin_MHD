@@ -10,14 +10,11 @@
 !!      subroutine set_evo_scalar_boundaries                            &
 !!     &         (time, sph_rj, sph_bc, bcs_S)
 !!      subroutine set_evo_vector_boundaries                            &
-!!     &         (time, sph_rj, sph_bc, ICB_Uevo, CMB_Uevo,             &
-!!     &          ICB_Uspec, CMB_Uspec)
+!!     &         (time, sph_rj, sph_bc, bcs_V)
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(sph_boundary_type), intent(in) :: sph_bc
 !!        type(sph_scalar_boundary_data), intent(inout) :: bcs_S
-!!        type(sph_scalar_BC_coef), intent(inout) :: bc_Sspec
-!!        type(sph_vector_BC_evo), intent(in) :: ICB_Uevo, CMB_Uevo
-!!        type(sph_vector_BC_coef), intent(inout) :: ICB_Uspec, CMB_Uspec
+!!        type(sph_vector_boundary_data), intent(inout) :: bcs_V
 !!@endverbatim
 !!
       module set_evoluved_boundaries
@@ -65,8 +62,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_evo_vector_boundaries                              &
-     &         (time, sph_rj, sph_bc, ICB_Uevo, CMB_Uevo,               &
-     &          ICB_Uspec, CMB_Uspec)
+     &         (time, sph_rj, sph_bc, bcs_V)
 !
       use t_spheric_rj_data
       use t_boundary_params_sph_MHD
@@ -75,21 +71,20 @@
       real(kind = kreal), intent(in) :: time
       type(sph_rj_grid), intent(in) :: sph_rj
       type(sph_boundary_type), intent(in) :: sph_bc
-      type(sph_vector_BC_evo), intent(in) :: ICB_Uevo, CMB_Uevo
 !
-      type(sph_vector_BC_coef), intent(inout) :: ICB_Uspec, CMB_Uspec
+      type(sph_vector_boundary_data), intent(inout) :: bcs_V
 !
 !
       if(sph_bc%iflag_icb .eq. iflag_evolve_field                       &
      &    .or. sph_bc%iflag_icb .eq. iflag_evolve_flux) then
         call cal_sph_nod_evo_vector_BC                                  &
-     &     (time, sph_rj, ICB_Uevo, ICB_Uspec)
+     &     (time, sph_rj, bcs_V%ICB_Vevo, bcs_V%ICB_Vspec)
       end if
 !
       if(sph_bc%iflag_cmb .eq. iflag_evolve_field                       &
      &    .or. sph_bc%iflag_cmb .eq. iflag_evolve_flux) then
         call cal_sph_nod_evo_vector_BC                                  &
-     &     (time, sph_rj, CMB_Uevo, CMB_Uspec)
+     &     (time, sph_rj, bcs_V%CMB_Vevo, bcs_V%CMB_Vspec)
       end if
 !
       end subroutine set_evo_vector_boundaries

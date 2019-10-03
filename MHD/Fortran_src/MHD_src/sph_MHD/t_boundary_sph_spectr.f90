@@ -116,6 +116,18 @@
         type(sph_scalar_BC_evo) :: CMB_Sevo
       end type sph_scalar_boundary_data
 !
+!>      Structure for vector spectr boundaries
+      type sph_vector_boundary_data
+!>        Structure for boundary scalar spectr
+        type(sph_vector_BC_coef) :: ICB_Vspec
+!>        Structure for boundary scalar spectr
+        type(sph_vector_BC_coef) :: CMB_Vspec
+!>        Structure for evoluved boundary scalar spectr
+        type(sph_vector_BC_evo) :: ICB_Vevo
+!>        Structure for evoluved boundary scalar spectr
+        type(sph_vector_BC_evo) :: CMB_Vevo
+      end type sph_vector_boundary_data
+!
 ! -----------------------------------------------------------------------
 !
       contains

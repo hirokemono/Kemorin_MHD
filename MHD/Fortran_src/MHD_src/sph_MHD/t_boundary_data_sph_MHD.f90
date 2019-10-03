@@ -47,29 +47,14 @@
 !>        Structure for basic compositional boundary condition parameters
         type(sph_boundary_type) :: sph_bc_C
 !
+!>        Structure for boundary velocity field spectr
+        type(sph_vector_boundary_data) :: bcs_U
+!>        Structure for boundary magnetic field spectr
+        type(sph_vector_boundary_data) :: bcs_B
 !>        Structure for boundary temperature spectr
         type(sph_scalar_boundary_data) :: bcs_T
 !>        Structure for boundary composition spectr
         type(sph_scalar_boundary_data) :: bcs_C
-!
-!>        Structure for boundary velocity spectr
-        type(sph_vector_BC_coef) :: ICB_Uspec
-!>        Structure for boundary velocity spectr
-        type(sph_vector_BC_coef) :: CMB_Uspec
-!>        Structure for boundary magnetic spectr
-        type(sph_vector_BC_coef) :: ICB_Bspec
-!>        Structure for boundary magnetic spectr
-        type(sph_vector_BC_coef) :: CMB_Bspec
-!
-!>        Structure for evoluved boundary velocity spectr
-        type(sph_vector_BC_evo) :: ICB_Uevo
-!>        Structure for evoluved boundary velocity spectr
-        type(sph_vector_BC_evo) :: CMB_Uevo
-!>        Structure for evoluved boundary magnetic spectr
-        type(sph_vector_BC_evo) :: ICB_Bevo
-!>        Structure for evoluved boundary magnetic spectr
-        type(sph_vector_BC_evo) :: CMB_Bevo
-!
 !
 !>        Structure for FDM matrix of center
         type(fdm2_center_mat) :: fdm2_center
@@ -111,9 +96,7 @@
 !
       if(MHD_prop%cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
         call set_evo_vector_boundaries(time_d%time, sph%sph_rj,         &
-     &      sph_MHD_bc%sph_bc_B,                                        &
-     &      sph_MHD_bc%ICB_Bevo, sph_MHD_bc%CMB_Bevo,                   &
-     &      sph_MHD_bc%ICB_Bspec, sph_MHD_bc%CMB_Bspec)
+     &      sph_MHD_bc%sph_bc_B, sph_MHD_bc%bcs_B)
       end if
 !
       end subroutine set_MHD_evolved_boundaries
@@ -134,9 +117,7 @@
 !
       if(MHD_prop%fl_prop%iflag_scheme .gt. id_no_evolution) then
         call set_evo_vector_boundaries(time_d%time, sph%sph_rj,         &
-     &      sph_MHD_bc%sph_bc_U,                                        &
-     &      sph_MHD_bc%ICB_Uevo, sph_MHD_bc%CMB_Uevo,                   &
-     &      sph_MHD_bc%ICB_Uspec, sph_MHD_bc%CMB_Uspec)
+     &      sph_MHD_bc%sph_bc_U, sph_MHD_bc%bcs_U)
       end if
       if(MHD_prop%ht_prop%iflag_scheme .gt. id_no_evolution) then
         call set_evo_scalar_boundaries(time_d%time, sph%sph_rj,         &

@@ -8,16 +8,14 @@
 !!
 !!@verbatim
 !!      subroutine set_sph_bc_velo_sph(bc_IO, sph_rj, radial_rj_grp,    &
-!!     &          r_ICB, r_CMB, velo_nod, torque_surf,                  &
-!!     &          sph_bc_U, ICB_Uspec, CMB_Uspec, ICB_Uevo, CMB_Uevo)
+!!     &          r_ICB, r_CMB, velo_nod, torque_surf, sph_bc_U, bcs_U)
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(group_data), intent(in) :: radial_rj_grp
 !!        type(boundary_condition_list), intent(in) :: velo_nod
 !!        type(boundary_condition_list), intent(in) :: torque_surf
 !!        type(boundary_spectra), intent(in) :: bc_IO
 !!        type(sph_boundary_type), intent(inout) :: sph_bc_U
-!!        type(sph_vector_BC_coef), intent(inout) :: ICB_Uspec, CMB_Uspec
-!!        type(sph_vector_BC_evo), intent(inout) :: ICB_Uevo, CMB_Uevo
+!!        type(sph_vector_boundary_data), intent(inout) :: bcs_U
 !!@endverbatim
 !
       module set_bc_flag_sph_velo
@@ -44,8 +42,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_sph_bc_velo_sph(bc_IO, sph_rj, radial_rj_grp,      &
-     &          r_ICB, r_CMB, velo_nod, torque_surf,                    &
-     &          sph_bc_U, ICB_Uspec, CMB_Uspec, ICB_Uevo, CMB_Uevo)
+     &          r_ICB, r_CMB, velo_nod, torque_surf, sph_bc_U, bcs_U)
 !
       use t_spheric_rj_data
       use t_group_data
@@ -60,8 +57,7 @@
       type(boundary_spectra), intent(in) :: bc_IO
 !
       type(sph_boundary_type), intent(inout) :: sph_bc_U
-      type(sph_vector_BC_coef), intent(inout) :: ICB_Uspec, CMB_Uspec
-      type(sph_vector_BC_evo), intent(inout) :: ICB_Uevo, CMB_Uevo
+      type(sph_vector_boundary_data), intent(inout) :: bcs_U
 !
       integer(kind = kint) :: i
       integer(kind = kint) :: igrp_icb, igrp_cmb
@@ -70,32 +66,36 @@
       call find_both_sides_of_boundaries(sph_rj, radial_rj_grp,         &
      &   velo_nod, torque_surf, sph_bc_U, igrp_icb, igrp_cmb)
 !
-      call alloc_sph_vector_bc_array(sph_rj%nidx_rj(2), ICB_Uspec)
-      call alloc_sph_vector_bc_array(sph_rj%nidx_rj(2), CMB_Uspec)
-      call alloc_sph_evo_vector_bc_array(sph_rj%nidx_rj(2), ICB_Uevo)
-      call alloc_sph_evo_vector_bc_array(sph_rj%nidx_rj(2), ICB_Uevo)
+      call alloc_sph_vector_bc_array                                    &
+     &   (sph_rj%nidx_rj(2), bcs_U%ICB_Vspec)
+      call alloc_sph_vector_bc_array                                    &
+     &   (sph_rj%nidx_rj(2), bcs_U%CMB_Vspec)
+      call alloc_sph_evo_vector_bc_array                                &
+     &   (sph_rj%nidx_rj(2), bcs_U%ICB_Vevo)
+      call alloc_sph_evo_vector_bc_array                                &
+     &   (sph_rj%nidx_rj(2), bcs_U%CMB_Vevo)
 !
 !
       i = abs(igrp_icb)
       if(igrp_icb .lt. 0) then
         call set_sph_velo_ICB_flag(sph_rj, bc_IO, r_ICB,                &
      &     torque_surf%ibc_type(i), torque_surf%bc_magnitude(i),        &
-     &     sph_bc_U, ICB_Uspec, ICB_Uevo)
+     &     sph_bc_U, bcs_U%ICB_Vspec, bcs_U%ICB_Vevo)
       else
         call set_sph_velo_ICB_flag(sph_rj, bc_IO, r_ICB,                &
      &      velo_nod%ibc_type(i), velo_nod%bc_magnitude(i),             &
-     &      sph_bc_U, ICB_Uspec, ICB_Uevo)
+     &      sph_bc_U, bcs_U%ICB_Vspec, bcs_U%ICB_Vevo)
       end if
 !
       i = abs(igrp_cmb)
       if(igrp_cmb .lt. 0) then
         call set_sph_velo_CMB_flag(sph_rj, bc_IO, r_CMB,                &
      &      torque_surf%ibc_type(i), torque_surf%bc_magnitude(i),       &
-     &      sph_bc_U, CMB_Uspec, CMB_Uevo)
+     &      sph_bc_U, bcs_U%CMB_Vspec, bcs_U%CMB_Vevo)
       else
         call set_sph_velo_CMB_flag(sph_rj, bc_IO, r_CMB,                &
      &      velo_nod%ibc_type(i), velo_nod%bc_magnitude(i),             &
-     &      sph_bc_U, CMB_Uspec, CMB_Uevo)
+     &      sph_bc_U, bcs_U%CMB_Vspec, bcs_U%CMB_Vevo)
       end if
 !
       end subroutine set_sph_bc_velo_sph
