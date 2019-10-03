@@ -209,15 +209,7 @@
       integer(kind = kint) :: igrp_icb, igrp_cmb
 !
 !
-      call alloc_sph_scalar_bc_array                                    &
-     &   (sph_rj%nidx_rj(2), bcs_S%ICB_Sspec)
-      call alloc_sph_scalar_bc_array                                    &
-     &   (sph_rj%nidx_rj(2), bcs_S%CMB_Sspec)
-!
-      call alloc_sph_evo_scalar_bc_array                                &
-     &   (sph_rj%nidx_rj(2), bcs_S%ICB_Sevo)
-      call alloc_sph_evo_scalar_bc_array                                &
-     &   (sph_rj%nidx_rj(2), bcs_S%CMB_Sevo)
+      call alloc_sph_scalar_bcs_data(sph_rj%nidx_rj(2), bcs_S)
 !
       call find_both_sides_of_boundaries(sph_rj, radial_rj_grp,         &
      &    nod_bc_list, surf_bc_list, sph_bc, igrp_icb, igrp_cmb)

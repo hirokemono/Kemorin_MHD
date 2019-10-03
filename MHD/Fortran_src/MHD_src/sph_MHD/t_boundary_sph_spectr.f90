@@ -8,23 +8,12 @@
 !!
 !!
 !!@verbatim
-!!      subroutine alloc_sph_scalar_bc_array(jmax, bc_Sspec)
-!!        type(sph_scalar_BC_coef), intent(inout) :: bc_Sspec
-!!      subroutine alloc_sph_vector_bc_array(jmax, bc_Vspec)
-!!        type(sph_vector_BC_coef), intent(inout) :: bc_Vspec
-!!      subroutine alloc_sph_evo_scalar_bc_array(jmax, bc_Sevo)
-!!        type(sph_scalar_BC_evo), intent(inout) :: bc_Sevo
-!!      subroutine alloc_sph_evo_vector_bc_array(jmax, bc_Vevo)
-!!        type(sph_vector_BC_evo), intent(inout) :: bc_Vevo
-!!
-!!      subroutine dealloc_sph_scalar_bc_array(bc_Sspec)
-!!        type(sph_scalar_BC_coef), intent(inout) :: bc_Sspec
-!!      subroutine dealloc_sph_vector_bc_array(bc_Vspec)
-!!        type(sph_vector_BC_coef), intent(inout) :: bc_Vspec
-!!      subroutine dealloc_sph_evo_scalar_bc_array(bc_Sevo)
-!!        type(sph_scalar_BC_evo), intent(inout) :: bc_Sevo
-!!      subroutine dealloc_sph_evo_vector_bc_array(bc_Vevo)
-!!        type(sph_vector_BC_evo), intent(inout) :: bc_Vevo
+!!      subroutine alloc_sph_scalar_bcs_data(jmax, bcs_S)
+!!      subroutine dealloc_sph_scalar_bcs_data(bcs_S)
+!!        type(sph_scalar_boundary_data), intent(inout) :: bcs_S
+!!      subroutine alloc_sph_vector_bcs_data(jmax, bcs_V)
+!!      subroutine dealloc_sph_vector_bcs_data(bcs_V)
+!!        type(sph_vector_boundary_data), intent(inout) :: bcs_V
 !!@endverbatim
 !!
 !!@n @param jmax    number of modes for spherical harmonics @f$L*(L+2)@f$
@@ -128,10 +117,81 @@
         type(sph_vector_BC_evo) :: CMB_Vevo
       end type sph_vector_boundary_data
 !
+      private :: alloc_sph_scalar_bc_array
+      private :: alloc_sph_evo_scalar_bc_array
+      private :: dealloc_sph_scalar_bc_array
+      private :: dealloc_sph_evo_scalar_bc_array
+      private :: alloc_sph_vector_bc_array
+      private :: alloc_sph_evo_vector_bc_array
+      private :: dealloc_sph_vector_bc_array
+      private :: dealloc_sph_evo_vector_bc_array
+!
 ! -----------------------------------------------------------------------
 !
       contains
 !
+! -----------------------------------------------------------------------
+!
+      subroutine alloc_sph_scalar_bcs_data(jmax, bcs_S)
+!
+      integer(kind = kint), intent(in) :: jmax
+      type(sph_scalar_boundary_data), intent(inout) :: bcs_S
+!
+!
+      call alloc_sph_scalar_bc_array(jmax, bcs_S%ICB_Sspec)
+      call alloc_sph_scalar_bc_array(jmax, bcs_S%CMB_Sspec)
+!
+      call alloc_sph_evo_scalar_bc_array(jmax, bcs_S%ICB_Sevo)
+      call alloc_sph_evo_scalar_bc_array(jmax, bcs_S%CMB_Sevo)
+!
+      end subroutine alloc_sph_scalar_bcs_data
+!
+! -----------------------------------------------------------------------
+!
+      subroutine alloc_sph_vector_bcs_data(jmax, bcs_V)
+!
+      integer(kind = kint), intent(in) :: jmax
+      type(sph_vector_boundary_data), intent(inout) :: bcs_V
+!
+!
+      call alloc_sph_vector_bc_array(jmax, bcs_V%ICB_Vspec)
+      call alloc_sph_vector_bc_array(jmax, bcs_V%CMB_Vspec)
+      call alloc_sph_evo_vector_bc_array(jmax, bcs_V%ICB_Vevo)
+      call alloc_sph_evo_vector_bc_array(jmax, bcs_V%CMB_Vevo)
+!
+      end subroutine alloc_sph_vector_bcs_data
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine dealloc_sph_scalar_bcs_data(bcs_S)
+!
+      type(sph_scalar_boundary_data), intent(inout) :: bcs_S
+!
+!
+      call dealloc_sph_scalar_bc_array(bcs_S%ICB_Sspec)
+      call dealloc_sph_scalar_bc_array(bcs_S%CMB_Sspec)
+!
+      call dealloc_sph_evo_scalar_bc_array(bcs_S%ICB_Sevo)
+      call dealloc_sph_evo_scalar_bc_array(bcs_S%CMB_Sevo)
+!
+      end subroutine dealloc_sph_scalar_bcs_data
+!
+! -----------------------------------------------------------------------
+!
+      subroutine dealloc_sph_vector_bcs_data(bcs_V)
+!
+      type(sph_vector_boundary_data), intent(inout) :: bcs_V
+!
+!
+      call dealloc_sph_vector_bc_array(bcs_V%ICB_Vspec)
+      call dealloc_sph_vector_bc_array(bcs_V%CMB_Vspec)
+      call dealloc_sph_evo_vector_bc_array(bcs_V%ICB_Vevo)
+      call dealloc_sph_evo_vector_bc_array(bcs_V%CMB_Vevo)
+!
+      end subroutine dealloc_sph_vector_bcs_data
+!
+! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
       subroutine alloc_sph_scalar_bc_array(jmax, bc_Sspec)
@@ -242,8 +302,7 @@
 !
       type(sph_vector_BC_coef), intent(inout) :: bc_Vspec
 !
-      deallocate(bc_Vspec%Vp_BC, bc_Vspec%Dp_BC)
-      deallocate(bc_Vspec%Vt_BC)
+      deallocate(bc_Vspec%Vp_BC, bc_Vspec%Dp_BC, bc_Vspec%Vt_BC)
 !
       end subroutine dealloc_sph_vector_bc_array
 !

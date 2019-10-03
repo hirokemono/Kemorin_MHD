@@ -207,18 +207,10 @@
       call find_both_sides_of_boundaries(sph_rj, radial_rj_grp,         &
      &    magne_nod, magne_surf, sph_bc_B, igrp_icb, igrp_cmb)
 !
-      call alloc_sph_vector_bc_array                                    &
-     &   (sph_rj%nidx_rj(2), bcs_B%ICB_Vspec)
-      call alloc_sph_vector_bc_array                                    &
-     &   (sph_rj%nidx_rj(2), bcs_B%CMB_Vspec)
-      call alloc_sph_evo_vector_bc_array                                &
-     &   (sph_rj%nidx_rj(2), bcs_B%ICB_Vevo)
-      call alloc_sph_evo_vector_bc_array                                &
-     &   (sph_rj%nidx_rj(2), bcs_B%CMB_Vevo)
+      call alloc_sph_vector_bcs_data(sph_rj%nidx_rj(2), bcs_B)
 !
       sph_bc_B%iflag_icb = iflag_sph_insulator
       sph_bc_B%iflag_cmb = iflag_sph_insulator
-!
 !
       i = abs(igrp_icb)
       if(igrp_icb .lt. 0) then

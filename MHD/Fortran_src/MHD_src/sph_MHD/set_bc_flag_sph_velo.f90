@@ -66,14 +66,7 @@
       call find_both_sides_of_boundaries(sph_rj, radial_rj_grp,         &
      &   velo_nod, torque_surf, sph_bc_U, igrp_icb, igrp_cmb)
 !
-      call alloc_sph_vector_bc_array                                    &
-     &   (sph_rj%nidx_rj(2), bcs_U%ICB_Vspec)
-      call alloc_sph_vector_bc_array                                    &
-     &   (sph_rj%nidx_rj(2), bcs_U%CMB_Vspec)
-      call alloc_sph_evo_vector_bc_array                                &
-     &   (sph_rj%nidx_rj(2), bcs_U%ICB_Vevo)
-      call alloc_sph_evo_vector_bc_array                                &
-     &   (sph_rj%nidx_rj(2), bcs_U%CMB_Vevo)
+      call alloc_sph_vector_bcs_data(sph_rj%nidx_rj(2), bcs_U)
 !
 !
       i = abs(igrp_icb)
