@@ -7,22 +7,8 @@
 !> @brief Boundary condition data from external file
 !!
 !!@verbatim
-!!      subroutine set_bc_for_sph_scalar_by_file(sph_rj,                &
-!!     &          num_bc_mode, imode_gl, bc_input, bc_data)
-!!      subroutine set_bc_for_sph_vector_by_file(sph_rj,                &
-!!     &          num_bc_mode, imode_gl, bc_input,                      &
-!!     &          vp_data, dp_data, vt_data)
-!!
-!!      subroutine set_bc_for_evolved_sph_by_file(sph_rj,               &
-!!     &          num_bc_mode, imode_gl, bc_input, bc_data)
-!!      subroutine bc_for_evo_vect2_sph_by_file(sph_rj,                 &
-!!     &          num_bc_mode, imode_gl, bc_input, vp_data, vt_data)
-!!      subroutine bc_for_evo_vector_sph_by_file(sph_rj,                &
-!!     &          num_bc_mode, imode_gl, bc_input,                      &
-!!     &          vp_data, dp_data, vt_data)
-!!        type(sph_rj_grid), intent(in) :: sph_rj
-!!
 !!      integer(kind = kint) function num_comp_bc_data(label)
+!!      logical function find_bc_label(label, field_name, postfix)
 !!@endverbatim
 !
       module set_sph_boundary_from_file
@@ -44,177 +30,11 @@
 !
 !
       private :: find_scalar_bc_label, find_vector_bc_label
-      private :: find_bc_label
 !
 ! -----------------------------------------------------------------------
 !
       contains
 !
-! -----------------------------------------------------------------------
-!
-      subroutine set_bc_for_sph_scalar_by_file(sph_rj,                  &
-     &          num_bc_mode, imode_gl, bc_input, bc_data)
-!
-      type(sph_rj_grid), intent(in) :: sph_rj
-      integer(kind = kint), intent(in) :: num_bc_mode
-      integer(kind = kint), intent(in) :: imode_gl(2,num_bc_mode)
-      real(kind = kreal), intent(in) :: bc_input(num_bc_mode,1)
-!
-      real(kind = kreal), intent(inout) :: bc_data(sph_rj%nidx_rj(2))
-!
-      integer(kind = kint) :: inum, j
-      integer :: l, m
-!
-!
-      do inum = 1, num_bc_mode
-        l = int(imode_gl(1,inum))
-        m = int(imode_gl(2,inum))
-        j = find_local_sph_address(sph_rj, l, m)
-        if(j .gt. 0) bc_data(j) = bc_input(inum,1)
-      end do
-!
-      end subroutine set_bc_for_sph_scalar_by_file
-!
-! -----------------------------------------------------------------------
-!
-      subroutine set_bc_for_sph_vector_by_file(sph_rj,                  &
-     &          num_bc_mode, imode_gl, bc_input,                        &
-     &          vp_data, dp_data, vt_data)
-!
-      type(sph_rj_grid), intent(in) :: sph_rj
-      integer(kind = kint), intent(in) :: num_bc_mode
-      integer(kind = kint), intent(in) :: imode_gl(2,num_bc_mode)
-      real(kind = kreal), intent(in) :: bc_input(num_bc_mode,3)
-!
-      real(kind = kreal), intent(inout) :: vp_data(sph_rj%nidx_rj(2))
-      real(kind = kreal), intent(inout) :: dp_data(sph_rj%nidx_rj(2))
-      real(kind = kreal), intent(inout) :: vt_data(sph_rj%nidx_rj(2))
-!
-!
-      integer(kind = kint) :: inum, j
-      integer :: l, m
-!
-!
-      do inum = 1, num_bc_mode
-        l = int(imode_gl(1,inum))
-        m = int(imode_gl(2,inum))
-        j = find_local_sph_address(sph_rj, l, m)
-        if(j .gt. 0) then
-          vp_data(j) = bc_input(inum,1)
-          dp_data(j) = bc_input(inum,2)
-          vt_data(j) = bc_input(inum,3)
-        end if
-      end do
-!
-      end subroutine set_bc_for_sph_vector_by_file
-!
-! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-      subroutine bc_for_evo_scalar_sph_by_file(sph_rj,                  &
-     &          num_bc_mode, ncomp_bc, imode_gl, bc_input, bc_data)
-!
-      type(sph_rj_grid), intent(in) :: sph_rj
-      integer(kind = kint), intent(in) :: num_bc_mode, ncomp_bc
-      integer(kind = kint), intent(in) :: imode_gl(2,num_bc_mode)
-      real(kind = kreal), intent(in) :: bc_input(num_bc_mode,ncomp_bc)
-!
-      real(kind = kreal), intent(inout) :: bc_data(sph_rj%nidx_rj(2))
-!
-      integer(kind = kint) :: inum, j
-      integer :: l, m
-!
-!
-      do inum = 1, num_bc_mode
-        l = int(imode_gl(1,inum))
-        m = int(imode_gl(2,inum))
-        j = find_local_sph_address(sph_rj, l, m)
-        if(j .gt. 0) bc_data(j) = bc_input(inum,1)
-!
-        if(m .eq. 0) cycle
-        j = find_local_sph_address(sph_rj, l, (-m))
-        if(j .gt. 0) bc_data(j) = bc_input(inum,1)
-      end do
-!
-      end subroutine bc_for_evo_scalar_sph_by_file
-!
-! -----------------------------------------------------------------------
-!
-      subroutine bc_for_evo_vect2_sph_by_file(sph_rj,                   &
-     &          num_bc_mode, imode_gl, bc_input, vp_data, vt_data)
-!
-      type(sph_rj_grid), intent(in) :: sph_rj
-      integer(kind = kint), intent(in) :: num_bc_mode
-      integer(kind = kint), intent(in) :: imode_gl(2,num_bc_mode)
-      real(kind = kreal), intent(in) :: bc_input(num_bc_mode,2)
-!
-      real(kind = kreal), intent(inout) :: vp_data(sph_rj%nidx_rj(2))
-      real(kind = kreal), intent(inout) :: vt_data(sph_rj%nidx_rj(2))
-!
-      integer(kind = kint) :: inum, j
-      integer :: l, m
-!
-!
-      do inum = 1, num_bc_mode
-        l = int(imode_gl(1,inum))
-        m = int(imode_gl(2,inum))
-        j = find_local_sph_address(sph_rj, l, m)
-        if(j .gt. 0) then
-          vp_data(j) = bc_input(inum,1)
-          vt_data(j) = bc_input(inum,2)
-        end if
-!
-        if(m .eq. 0) cycle
-        j = find_local_sph_address(sph_rj, l, (-m))
-        if(j .gt. 0) then
-          vp_data(j) = bc_input(inum,1)
-          vt_data(j) = bc_input(inum,2)
-        end if
-      end do
-!
-      end subroutine bc_for_evo_vect2_sph_by_file
-!
-! -----------------------------------------------------------------------
-!
-      subroutine bc_for_evo_vector_sph_by_file(sph_rj,                  &
-     &          num_bc_mode, imode_gl, bc_input,                        &
-     &          vp_data, dp_data, vt_data)
-!
-      type(sph_rj_grid), intent(in) :: sph_rj
-      integer(kind = kint), intent(in) :: num_bc_mode
-      integer(kind = kint), intent(in) :: imode_gl(2,num_bc_mode)
-      real(kind = kreal), intent(in) :: bc_input(num_bc_mode,3)
-!
-      real(kind = kreal), intent(inout) :: vp_data(sph_rj%nidx_rj(2))
-      real(kind = kreal), intent(inout) :: dp_data(sph_rj%nidx_rj(2))
-      real(kind = kreal), intent(inout) :: vt_data(sph_rj%nidx_rj(2))
-!
-      integer(kind = kint) :: inum, j
-      integer :: l, m
-!
-!
-      do inum = 1, num_bc_mode
-        l = int(imode_gl(1,inum))
-        m = int(imode_gl(2,inum))
-        j = find_local_sph_address(sph_rj, l, m)
-        if(j .gt. 0) then
-          vp_data(j) = bc_input(inum,1)
-          dp_data(j) = bc_input(inum,2)
-          vt_data(j) = bc_input(inum,3)
-        end if
-!
-        if(m .eq. 0) cycle
-        j = find_local_sph_address(sph_rj, l, (-m))
-        if(j .gt. 0) then
-          vp_data(j) = bc_input(inum,1)
-          dp_data(j) = bc_input(inum,2)
-          vt_data(j) = bc_input(inum,3)
-        end if
-      end do
-!
-      end subroutine bc_for_evo_vector_sph_by_file
-!
-! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
       integer(kind = kint) function num_comp_bc_data(label)
