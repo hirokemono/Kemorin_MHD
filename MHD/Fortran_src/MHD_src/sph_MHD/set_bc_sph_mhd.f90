@@ -102,9 +102,7 @@
         if(iflag_debug .gt. 0) write(*,*) 'set_sph_bc_temp_sph'
         call set_sph_bc_temp_sph(bc_IO, sph_rj, radial_rj_grp,          &
      &      MHD_BC%temp_BC%nod_BC, MHD_BC%temp_BC%surf_BC,              &
-     &      sph_MHD_bc%sph_bc_T,                                        &
-     &      sph_MHD_bc%ICB_Tspec, sph_MHD_bc%CMB_Tspec,                 &
-     &      sph_MHD_bc%ICB_Tevo, sph_MHD_bc%CMB_Tevo)
+     &      sph_MHD_bc%sph_bc_T, sph_MHD_bc%bcs_T)
         call cal_fdm_coefs_4_BCs                                        &
      &     (sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r,                   &
      &      sph_MHD_bc%sph_bc_T)
@@ -127,9 +125,7 @@
         if(iflag_debug .gt. 0) write(*,*) 'set_sph_bc_composition_sph'
         call set_sph_bc_composition_sph(bc_IO, sph_rj, radial_rj_grp,   &
      &      MHD_BC%light_BC%nod_BC, MHD_BC%light_BC%surf_BC,            &
-     &      sph_MHD_bc%sph_bc_C,                                        &
-     &      sph_MHD_bc%ICB_Cspec, sph_MHD_bc%CMB_Cspec,                 &
-     &      sph_MHD_bc%ICB_Cevo, sph_MHD_bc%CMB_Cevo)
+     &      sph_MHD_bc%sph_bc_C, sph_MHD_bc%bcs_C)
         call cal_fdm_coefs_4_BCs                                        &
      &     (sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r,                   &
      &      sph_MHD_bc%sph_bc_C)

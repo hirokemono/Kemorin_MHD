@@ -103,6 +103,19 @@
         real(kind = kreal), allocatable :: Vt_BC_freq(:)
       end type sph_vector_BC_evo
 !
+!
+!>      Structure for scalar spectr boundaries
+      type sph_scalar_boundary_data
+!>        Structure for boundary scalar spectr
+        type(sph_scalar_BC_coef) :: ICB_Sspec
+!>        Structure for boundary scalar spectr
+        type(sph_scalar_BC_coef) :: CMB_Sspec
+!>        Structure for evoluved boundary scalar spectr
+        type(sph_scalar_BC_evo) :: ICB_Sevo
+!>        Structure for evoluved boundary scalar spectr
+        type(sph_scalar_BC_evo) :: CMB_Sevo
+      end type sph_scalar_boundary_data
+!
 ! -----------------------------------------------------------------------
 !
       contains

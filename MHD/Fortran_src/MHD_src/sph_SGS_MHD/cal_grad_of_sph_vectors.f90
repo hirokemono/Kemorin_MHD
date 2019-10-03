@@ -75,8 +75,7 @@
         if(iflag_debug .gt. 0)  write(*,*)                              &
      &           'const_radial_grad_temp', ipol%i_grad_t
         call const_radial_grad_scalar(sph%sph_rj, r_2nd,                &
-     &      sph_MHD_bc%sph_bc_T,                                        &
-     &      sph_MHD_bc%ICB_Tspec, sph_MHD_bc%CMB_Tspec,                 &
+     &      sph_MHD_bc%sph_bc_T, sph_MHD_bc%bcs_T,                      &
      &      sph_MHD_bc%fdm2_center, leg%g_sph_rj,                       &
      &      ipol%i_temp, ipol%i_grad_t, rj_fld)
       end if
@@ -85,8 +84,7 @@
         if(iflag_debug .gt. 0)  write(*,*)                              &
      &           'const_radial_grad_composition', ipol%i_grad_composit
         call const_radial_grad_scalar(sph%sph_rj, r_2nd,                &
-     &      sph_MHD_bc%sph_bc_C,                                        &
-     &      sph_MHD_bc%ICB_Cspec, sph_MHD_bc%CMB_Cspec,                 &
+     &      sph_MHD_bc%sph_bc_C, sph_MHD_bc%bcs_C,                      &
      &      sph_MHD_bc%fdm2_center, leg%g_sph_rj,                       &
      &      ipol%i_light, ipol%i_grad_composit, rj_fld)
       end if
@@ -135,8 +133,7 @@
         if(iflag_debug .gt. 0)  write(*,*)                              &
      &     'const_radial_grad_filter_temp', ipol%i_grad_filter_temp
         call const_radial_grad_scalar(sph%sph_rj, r_2nd,                &
-     &      sph_MHD_bc%sph_bc_T,                                        &
-     &      sph_MHD_bc%ICB_Tspec, sph_MHD_bc%CMB_Tspec,                 &
+     &      sph_MHD_bc%sph_bc_T, sph_MHD_bc%bcs_T,                      &
      &      sph_MHD_bc%fdm2_center, leg%g_sph_rj,                       &
      &      ipol%i_filter_temp, ipol%i_grad_filter_temp, rj_fld)
       end if
@@ -145,8 +142,7 @@
         if(iflag_debug .gt. 0)  write(*,*)                              &
      &     'const_radial_grad_filter_comp', ipol%i_grad_filter_comp
         call const_radial_grad_scalar(sph%sph_rj, r_2nd,                &
-     &      sph_MHD_bc%sph_bc_C,                                        &
-     &      sph_MHD_bc%ICB_Cspec, sph_MHD_bc%CMB_Cspec,                 &
+     &      sph_MHD_bc%sph_bc_C, sph_MHD_bc%bcs_C,                      &
      &      sph_MHD_bc%fdm2_center, leg%g_sph_rj,                       &
      &      ipol%i_filter_comp, ipol%i_grad_filter_comp, rj_fld)
       end if

@@ -27,13 +27,15 @@
 !!        Solution address: ipol%i_magne, itor%i_magne
 !!
 !!      subroutine cal_sol_scalar_sph_crank(dt, sph_rj, property,       &
-!!     &         sph_bc, ICB_Sspec, CMB_Sspec, band_s_evo, band_s00_evo,&
+!!     &         sph_bc, bcs_S, band_s_evo, band_s00_evo,               &
 !!     &         is_scalar, rj_fld, x00_w_center)
-!!         type(sph_rj_grid), intent(in) :: sph_rj
-!!         type(scalar_property), intent(in) :: cp_prop
-!!         type(band_matrices_type), intent(in) :: band_comp_evo
-!!         type(phys_address), intent(in) :: ipol
-!!         type(phys_data), intent(inout) :: rj_fld
+!!        type(sph_rj_grid), intent(in) :: sph_rj
+!!        type(sph_boundary_type), intent(in) :: sph_bc
+!!        type(sph_scalar_boundary_data), intent(in) :: bcs_S
+!!        type(scalar_property), intent(in) :: cp_prop
+!!        type(band_matrices_type), intent(in) :: band_comp_evo
+!!        type(phys_address), intent(in) :: ipol
+!!        type(phys_data), intent(inout) :: rj_fld
 !!        Input address:    ipol%i_light
 !!        Solution address: ipol%i_light
 !!@endverbatim
@@ -186,7 +188,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_sol_scalar_sph_crank(dt, sph_rj, property,         &
-     &         sph_bc, ICB_Sspec, CMB_Sspec, band_s_evo, band_s00_evo,  &
+     &         sph_bc, bcs_S, band_s_evo, band_s00_evo,                 &
      &         is_scalar, rj_fld, x00_w_center)
 !
       use t_physical_property
@@ -200,7 +202,7 @@
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(sph_boundary_type), intent(in) :: sph_bc
-      type(sph_scalar_BC_coef), intent(in) :: ICB_Sspec, CMB_Sspec
+      type(sph_scalar_boundary_data), intent(in) :: bcs_S
       type(band_matrices_type), intent(in) :: band_s_evo
       type(band_matrix_type), intent(in) :: band_s00_evo
       type(scalar_property), intent(in) :: property
@@ -212,10 +214,10 @@
      &                   :: x00_w_center(0:sph_rj%nidx_rj(1))
 !
 !
-      call set_CMB_scalar_sph_crank(sph_rj, sph_bc, CMB_Sspec,          &
+      call set_CMB_scalar_sph_crank(sph_rj, sph_bc, bcs_S%CMB_Sspec,    &
      &    property%coef_advect, property%coef_diffuse, dt,              &
      &    property%coef_imp, is_scalar, rj_fld)
-      call set_ICB_scalar_sph_crank(sph_rj, sph_bc, ICB_Sspec,          &
+      call set_ICB_scalar_sph_crank(sph_rj, sph_bc, bcs_S%ICB_Sspec,    &
      &    property%coef_advect, property%coef_diffuse, dt,              &
      &    property%coef_imp, is_scalar, rj_fld)
 !

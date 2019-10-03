@@ -107,8 +107,7 @@
       if(iflag_debug.gt.0) write(*,*) 'cal_sol_scalar_sph_crank'
       if(MHD_prop%ht_prop%iflag_scheme .gt. id_no_evolution) then
         call cal_sol_scalar_sph_crank(dt, sph_rj,                       &
-     &      MHD_prop%ht_prop, sph_MHD_bc%sph_bc_T,                      &
-     &      sph_MHD_bc%ICB_Tspec, sph_MHD_bc%CMB_Tspec,                 &
+     &      MHD_prop%ht_prop, sph_MHD_bc%sph_bc_T, sph_MHD_bc%bcs_T,    &
      &      sph_MHD_mat%band_temp_evo, sph_MHD_mat%band_temp00_evo,     &
      &      ipol%i_temp, rj_fld, sph_MHD_mat%x00_w_center)
       end if
@@ -117,8 +116,7 @@
       if(iflag_debug.gt.0) write(*,*) 'cal_sol_scalar_sph_crank'
       if(MHD_prop%cp_prop%iflag_scheme .gt. id_no_evolution) then
         call cal_sol_scalar_sph_crank(dt, sph_rj,                       &
-     &      MHD_prop%cp_prop, sph_MHD_bc%sph_bc_C,                      &
-     &      sph_MHD_bc%ICB_Cspec, sph_MHD_bc%CMB_Cspec,                 &
+     &      MHD_prop%cp_prop, sph_MHD_bc%sph_bc_C, sph_MHD_bc%bcs_C,    &
      &      sph_MHD_mat%band_comp_evo, sph_MHD_mat%band_comp00_evo,     &
      &      ipol%i_light, rj_fld, sph_MHD_mat%x00_w_center)
       end if
@@ -153,14 +151,12 @@
 !
       if(MHD_prop%ht_prop%iflag_scheme .gt. id_no_evolution) then
         call update_after_heat_sph(sph_rj, r_2nd, MHD_prop%ht_prop,     &
-     &      sph_MHD_bc%sph_bc_T,                                        &
-     &      sph_MHD_bc%ICB_Tspec, sph_MHD_bc%CMB_Tspec,                 &
+     &      sph_MHD_bc%sph_bc_T, sph_MHD_bc%bcs_T,                      &
      &      sph_MHD_bc%fdm2_center, leg, ipol, rj_fld)
       end if
       if(MHD_prop%cp_prop%iflag_scheme .gt. id_no_evolution) then
         call update_after_composit_sph(sph_rj, r_2nd, MHD_prop%cp_prop, &
-     &      sph_MHD_bc%sph_bc_C,                                        &
-     &      sph_MHD_bc%ICB_Cspec, sph_MHD_bc%CMB_Cspec,                 &
+     &      sph_MHD_bc%sph_bc_C, sph_MHD_bc%bcs_C,                      &
      &      sph_MHD_bc%fdm2_center, leg, ipol, rj_fld)
       end if
       if(MHD_prop%cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
@@ -211,13 +207,11 @@
 !
       if(iflag_debug.gt.0) write(*,*) 'update_after_heat_sph'
       call update_after_heat_sph(sph_rj, r_2nd, MHD_prop%ht_prop,       &
-     &    sph_MHD_bc%sph_bc_T,                                          &
-     &    sph_MHD_bc%ICB_Tspec, sph_MHD_bc%CMB_Tspec,                   &
+     &    sph_MHD_bc%sph_bc_T, sph_MHD_bc%bcs_T,                        &
      &    sph_MHD_bc%fdm2_center, leg, ipol, rj_fld)
       if(iflag_debug.gt.0) write(*,*) 'update_after_composit_sph'
       call update_after_composit_sph(sph_rj, r_2nd, MHD_prop%cp_prop,   &
-     &    sph_MHD_bc%sph_bc_C,                                          &
-     &    sph_MHD_bc%ICB_Cspec, sph_MHD_bc%CMB_Cspec,                   &
+     &    sph_MHD_bc%sph_bc_C, sph_MHD_bc%bcs_C,                        &
      &    sph_MHD_bc%fdm2_center, leg, ipol, rj_fld)
 !
       if(ipol%i_magne*ipol%i_current .gt. 0) then
@@ -310,8 +304,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine update_after_heat_sph(sph_rj, r_2nd, ht_prop,          &
-     &          sph_bc_T, ICB_Tspec, CMB_Tspec, fdm2_center, leg,       &
-     &          ipol, rj_fld)
+     &          sph_bc_T, bcs_T, fdm2_center, leg, ipol, rj_fld)
 !
       use t_physical_property
 !
@@ -319,7 +312,7 @@
       type(fdm_matrices), intent(in) :: r_2nd
       type(scalar_property), intent(in) :: ht_prop
       type(sph_boundary_type), intent(in) :: sph_bc_T
-      type(sph_scalar_BC_coef), intent(in) :: ICB_Tspec, CMB_Tspec
+      type(sph_scalar_boundary_data), intent(in) :: bcs_T
       type(fdm2_center_mat), intent(in) :: fdm2_center
       type(legendre_4_sph_trans), intent(in) :: leg
       type(phys_address), intent(in) :: ipol
@@ -331,7 +324,7 @@
      &           'const_radial_grad_temp', ipol%i_grad_t
       if(ipol%i_grad_t .gt. 0) then
         call const_radial_grad_scalar                                   &
-     &     (sph_rj, r_2nd, sph_bc_T, ICB_Tspec, CMB_Tspec, fdm2_center, &
+     &     (sph_rj, r_2nd, sph_bc_T, bcs_T, fdm2_center,                &
      &      leg%g_sph_rj, ipol%i_temp, ipol%i_grad_t, rj_fld)
       end if
 !
@@ -340,7 +333,7 @@
         if(iflag_debug .gt. 0)  write(*,*)                              &
      &           'const_sph_scalar_diffusion', ipol%i_t_diffuse
         call const_sph_scalar_diffusion                                 &
-     &     (sph_rj, r_2nd, sph_bc_T, ICB_Tspec, CMB_Tspec, fdm2_center, &
+     &     (sph_rj, r_2nd, sph_bc_T, bcs_T, fdm2_center,                &
      &      leg%g_sph_rj, ht_prop%coef_diffuse,                         &
      &      ipol%i_temp, ipol%i_t_diffuse, rj_fld)
       end if
@@ -350,8 +343,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine update_after_composit_sph(sph_rj, r_2nd, cp_prop,      &
-     &          sph_bc_C, ICB_Cspec, CMB_Cspec, fdm2_center, leg,       &
-     &          ipol, rj_fld)
+     &          sph_bc_C, bcs_C, fdm2_center, leg, ipol, rj_fld)
 !
       use t_physical_property
 !
@@ -359,7 +351,7 @@
       type(fdm_matrices), intent(in) :: r_2nd
       type(scalar_property), intent(in) :: cp_prop
       type(sph_boundary_type), intent(in) :: sph_bc_C
-      type(sph_scalar_BC_coef), intent(in) :: ICB_Cspec, CMB_Cspec
+      type(sph_scalar_boundary_data), intent(in) :: bcs_C
       type(fdm2_center_mat), intent(in) :: fdm2_center
       type(legendre_4_sph_trans), intent(in) :: leg
       type(phys_address), intent(in) :: ipol
@@ -369,7 +361,7 @@
 !         Input: ipol%i_light,  Solution: ipol%i_grad_composit
       if(ipol%i_grad_composit .gt. 0) then
         call const_radial_grad_scalar                                   &
-     &     (sph_rj, r_2nd, sph_bc_C, ICB_Cspec, CMB_Cspec, fdm2_center, &
+     &     (sph_rj, r_2nd, sph_bc_C, bcs_C, fdm2_center,                &
      &      leg%g_sph_rj, ipol%i_light, ipol%i_grad_composit, rj_fld)
       end if
 !
@@ -378,7 +370,7 @@
         if(iflag_debug .gt. 0)  write(*,*)                              &
      &           'const_sph_scalar_diffusion', ipol%i_c_diffuse
         call const_sph_scalar_diffusion                                 &
-     &     (sph_rj, r_2nd, sph_bc_C, ICB_Cspec, CMB_Cspec, fdm2_center, &
+     &     (sph_rj, r_2nd, sph_bc_C, bcs_C, fdm2_center,                &
      &      leg%g_sph_rj, cp_prop%coef_diffuse, ipol%i_light,           &
      &      ipol%i_c_diffuse, rj_fld)
       end if

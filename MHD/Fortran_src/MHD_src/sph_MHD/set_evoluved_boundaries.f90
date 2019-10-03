@@ -8,14 +8,13 @@
 !!
 !!@verbatim
 !!      subroutine set_evo_scalar_boundaries                            &
-!!     &         (time, sph_rj, sph_bc, ICB_Sevo, CMB_Sevo,             &
-!!     &          ICB_Sspec, CMB_Sspec)
+!!     &         (time, sph_rj, sph_bc, bcs_S)
 !!      subroutine set_evo_vector_boundaries                            &
 !!     &         (time, sph_rj, sph_bc, ICB_Uevo, CMB_Uevo,             &
 !!     &          ICB_Uspec, CMB_Uspec)
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(sph_boundary_type), intent(in) :: sph_bc
-!!        type(sph_scalar_BC_evo), intent(in) :: ICB_Sevo, CMB_Sevo
+!!        type(sph_scalar_boundary_data), intent(inout) :: bcs_S
 !!        type(sph_scalar_BC_coef), intent(inout) :: bc_Sspec
 !!        type(sph_vector_BC_evo), intent(in) :: ICB_Uevo, CMB_Uevo
 !!        type(sph_vector_BC_coef), intent(inout) :: ICB_Uspec, CMB_Uspec
@@ -25,6 +24,10 @@
 !
       use m_precision
       use m_constants
+!
+      use t_spheric_rj_data
+      use t_boundary_params_sph_MHD
+      use t_boundary_sph_spectr
 !
       implicit none
 !
@@ -37,35 +40,24 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_evo_scalar_boundaries                              &
-     &         (time, sph_rj, sph_bc, ICB_Sevo, CMB_Sevo,               &
-     &          ICB_Sspec, CMB_Sspec)
-!
-      use t_spheric_rj_data
-      use t_boundary_params_sph_MHD
-      use t_boundary_sph_spectr
+     &         (time, sph_rj, sph_bc, bcs_S)
 !
       real(kind = kreal), intent(in) :: time
       type(sph_rj_grid), intent(in) :: sph_rj
       type(sph_boundary_type), intent(in) :: sph_bc
-      type(sph_scalar_BC_evo), intent(in) :: ICB_Sevo, CMB_Sevo
 !
-      type(sph_scalar_BC_coef), intent(inout) :: ICB_Sspec, CMB_Sspec
-!
+      type(sph_scalar_boundary_data), intent(inout) :: bcs_S
 !
       if(sph_bc%iflag_icb .eq. iflag_evolve_field                       &
      &    .or. sph_bc%iflag_icb .eq. iflag_evolve_flux) then
         call cal_sph_nod_evo_scalar_BC                                  &
-     &     (time, sph_rj%nidx_rj(2), sph_rj%idx_gl_1d_rj_j,             &
-     &      ICB_Sevo%S_BC_mag, ICB_Sevo%S_BC_phase, ICB_Sevo%S_BC_freq, &
-     &      ICB_Sspec%S_BC)
+     &     (time, sph_rj, bcs_S%ICB_Sevo, bcs_S%ICB_Sspec)
       end if
 !
       if(sph_bc%iflag_cmb .eq. iflag_evolve_field                       &
      &    .or. sph_bc%iflag_cmb .eq. iflag_evolve_flux) then
         call cal_sph_nod_evo_scalar_BC                                  &
-     &     (time, sph_rj%nidx_rj(2), sph_rj%idx_gl_1d_rj_j,             &
-     &      CMB_Sevo%S_BC_mag, CMB_Sevo%S_BC_phase, CMB_Sevo%S_BC_freq, &
-     &      CMB_Sspec%S_BC)
+     &     (time, sph_rj, bcs_S%CMB_Sevo, bcs_S%CMB_Sspec)
       end if
 !
       end subroutine set_evo_scalar_boundaries
@@ -91,23 +83,13 @@
       if(sph_bc%iflag_icb .eq. iflag_evolve_field                       &
      &    .or. sph_bc%iflag_icb .eq. iflag_evolve_flux) then
         call cal_sph_nod_evo_vector_BC                                  &
-     &     (time, sph_rj%nidx_rj(2), sph_rj%idx_gl_1d_rj_j,             &
-     &      ICB_Uevo%Vp_BC_mag, ICB_Uevo%Dp_BC_mag, ICB_Uevo%Vt_BC_mag, &
-     &      ICB_Uevo%Vp_BC_phase, ICB_Uevo%Dp_BC_phase,                 &
-     &      ICB_Uevo%Vt_BC_phase,                                       &
-     &      ICB_Uevo%Vp_BC_freq, ICB_Uevo%Vt_BC_freq,                   &
-     &      ICB_Uspec%Vp_BC, ICB_Uspec%Dp_BC, ICB_Uspec%Vt_BC)
+     &     (time, sph_rj, ICB_Uevo, ICB_Uspec)
       end if
 !
       if(sph_bc%iflag_cmb .eq. iflag_evolve_field                       &
      &    .or. sph_bc%iflag_cmb .eq. iflag_evolve_flux) then
         call cal_sph_nod_evo_vector_BC                                  &
-     &     (time, sph_rj%nidx_rj(2), sph_rj%idx_gl_1d_rj_j,             &
-     &      CMB_Uevo%Vp_BC_mag, CMB_Uevo%Dp_BC_mag, CMB_Uevo%Vt_BC_mag, &
-     &      CMB_Uevo%Vp_BC_phase, CMB_Uevo%Dp_BC_phase,                 &
-     &      CMB_Uevo%Vt_BC_phase,                                       &
-     &      CMB_Uevo%Vp_BC_freq, CMB_Uevo%Vt_BC_freq,                   &
-     &      CMB_Uspec%Vp_BC, CMB_Uspec%Dp_BC, CMB_Uspec%Vt_BC)
+     &     (time, sph_rj, CMB_Uevo, CMB_Uspec)
       end if
 !
       end subroutine set_evo_vector_boundaries
@@ -115,29 +97,27 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_sph_nod_evo_scalar_BC(time, jmax, idx_rj,          &
-     &         S_BC_mag, S_BC_phase, S_BC_freq, S_BC)
+      subroutine cal_sph_nod_evo_scalar_BC                              &
+     &         (time, sph_rj, BC_Sevo, BC_Sspec)
 !
-      integer(kind = kint), intent(in) :: jmax
-      integer(kind = kint), intent(in) :: idx_rj(jmax,3)
       real(kind = kreal), intent(in) :: time
-      real(kind = kreal), intent(in) :: S_BC_mag(jmax)
-      real(kind = kreal), intent(in) :: S_BC_phase(jmax)
-      real(kind = kreal), intent(in) :: S_BC_freq(jmax)
+      type(sph_rj_grid), intent(in) :: sph_rj
+      type(sph_scalar_BC_evo), intent(in) :: BC_Sevo
 !
-      real(kind = kreal), intent(inout) :: S_BC(jmax)
+      type(sph_scalar_BC_coef), intent(inout) :: BC_Sspec
 !
       integer(kind = kint) :: j, m
       real(kind = kreal) :: phase_sin
 !
 !
 !$omp parallel do private(j,m,phase_sin)
-      do j = 1, jmax
-        m = abs(idx_rj(j,3))
-        phase_sin = dble(sign(1, idx_rj(j,3))) * atan(one)              &
-     &             - atan(one)
-        S_BC(j) = S_BC_mag(j) * cos(dble(m) * S_BC_freq(j) * time       &
-    &                               + S_BC_phase(j) + phase_sin)
+      do j = 1, sph_rj%nidx_rj(2)
+        m = abs(sph_rj%idx_gl_1d_rj_j(j,3))
+        phase_sin = (dble(sign(1,sph_rj%idx_gl_1d_rj_j(j,3))) - 1.0d0)  &
+     &             * atan(one)
+        BC_Sspec%S_BC(j) = BC_Sevo%S_BC_mag(j)                          &
+     &                * cos(dble(m) * BC_Sevo%S_BC_freq(j) * time       &
+     &                      + BC_Sevo%S_BC_phase(j) + phase_sin)
       end do
 !$omp end parallel do
 !
@@ -146,41 +126,32 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_sph_nod_evo_vector_BC                              &
-     &         (time, jmax, idx_rj, Vp_BC_mag, Dp_BC_mag, Vt_BC_mag,    &
-     &          Vp_BC_phase, Dp_BC_phase, Vt_BC_phase,                  &
-     &          Vp_BC_freq, Vt_BC_freq, Vp_BC, Dp_BC, Vt_BC)
+     &         (time, sph_rj, BC_Vevo, BC_Vspec)
 !
-      integer(kind = kint), intent(in) :: jmax
-      integer(kind = kint), intent(in) :: idx_rj(jmax,3)
       real(kind = kreal), intent(in) :: time
-      real(kind = kreal), intent(in) :: Vp_BC_mag(jmax)
-      real(kind = kreal), intent(in) :: Dp_BC_mag(jmax)
-      real(kind = kreal), intent(in) :: Vt_BC_mag(jmax)
-      real(kind = kreal), intent(in) :: Vp_BC_phase(jmax)
-      real(kind = kreal), intent(in) :: Dp_BC_phase(jmax)
-      real(kind = kreal), intent(in) :: Vt_BC_phase(jmax)
-      real(kind = kreal), intent(in) :: Vp_BC_freq(jmax)
-      real(kind = kreal), intent(in) :: Vt_BC_freq(jmax)
+      type(sph_rj_grid), intent(in) :: sph_rj
+      type(sph_vector_BC_evo), intent(in) :: BC_Vevo
 !
-      real(kind = kreal), intent(inout) :: Vp_BC(jmax)
-      real(kind = kreal), intent(inout) :: Dp_BC(jmax)
-      real(kind = kreal), intent(inout) :: Vt_BC(jmax)
+      type(sph_vector_BC_coef), intent(inout) :: BC_Vspec
 !
       integer(kind = kint) :: j, m
       real(kind = kreal) :: phase_sin
 !
 !
 !$omp parallel do private(j,m,phase_sin)
-      do j = 1, jmax
-        m = abs(idx_rj(j,3))
-        phase_sin = dble(sign(1, idx_rj(j,3))) * atan(one)              &
-     &             - atan(one)
-        Vp_BC(j) = Vp_BC_mag(j) * cos(dble(m) * Vp_BC_freq(j) * time    &
-    &                                 + Vp_BC_phase(j) + phase_sin)
-        Dp_BC(j) = Dp_BC_mag(j) * cos(dble(m) * Vp_BC_freq(j) * time    &
-    &                                 + Dp_BC_phase(j) + phase_sin)
-        Vt_BC(j) = Vt_BC_mag(j) * cos(dble(m) * Vt_BC_freq(j) * time    &
-    &                                 + Vt_BC_phase(j) + phase_sin)
+      do j = 1, sph_rj%nidx_rj(2)
+        m = abs(sph_rj%idx_gl_1d_rj_j(j,3))
+        phase_sin = (dble(sign(1,sph_rj%idx_gl_1d_rj_j(j,3))) - 1.0d0)  &
+     &             * atan(one)
+        BC_Vspec%Vp_BC(j) = BC_Vevo%Vp_BC_mag(j)                        &
+     &                  * cos(dble(m) * BC_Vevo%Vp_BC_freq(j) * time    &
+     &                        + BC_Vevo%Vp_BC_phase(j) + phase_sin)
+        BC_Vspec%Dp_BC(j) = BC_Vevo%Dp_BC_mag(j)                        &
+     &                  * cos(dble(m) * BC_Vevo%Vp_BC_freq(j) * time    &
+     &                        + BC_Vevo%Dp_BC_phase(j) + phase_sin)
+        BC_Vspec%Vt_BC(j) = BC_Vevo%Vt_BC_mag(j)                        &
+     &                  * cos(dble(m) * BC_Vevo%Vt_BC_freq(j) * time    &
+     &                        + BC_Vevo%Vt_BC_phase(j) + phase_sin)
       end do
 !$omp end parallel do
 !

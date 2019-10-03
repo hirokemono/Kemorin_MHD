@@ -7,8 +7,8 @@
 !>@brief Evaluate divergence of forces
 !!
 !!@verbatim
-!!      subroutine const_sph_scalar_advect(sph_rj, r_2nd,               &
-!!     &          sph_bc, ICB_Sspec, CMB_Sspec, fdm2_center, g_sph_rj,  &
+!!      subroutine const_sph_scalar_advect                              &
+!!     &         (sph_rj, r_2nd, sph_bc, bcs_S, fdm2_center, g_sph_rj,  &
 !!     &          is_flux, is_advect, rj_fld)
 !!      subroutine const_sph_div_force(sph_rj, r_2nd, sph_bc_U,         &
 !!     &          g_sph_rj, is_fld, is_div, rj_fld)
@@ -16,7 +16,7 @@
 !!        type(fdm_matrices), intent(in) :: r_2nd
 !!        type(sph_boundary_type), intent(in) :: sph_bc
 !!        type(sph_boundary_type), intent(in) :: sph_bc_U
-!!        type(sph_scalar_BC_coef), intent(in) :: ICB_Sspec, CMB_Sspec
+!!        type(sph_scalar_boundary_data), intent(in) :: bcs_S
 !!        type(fdm2_center_mat), intent(in) :: fdm2_center
 !!        type(phys_data), intent(inout) :: rj_fld
 !!@endverbatim
@@ -48,8 +48,8 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine const_sph_scalar_advect(sph_rj, r_2nd,                 &
-     &          sph_bc, ICB_Sspec, CMB_Sspec, fdm2_center, g_sph_rj,    &
+      subroutine const_sph_scalar_advect                                &
+     &         (sph_rj, r_2nd, sph_bc, bcs_S, fdm2_center, g_sph_rj,    &
      &          is_flux, is_advect, rj_fld)
 !
       use cal_sph_exp_rotation
@@ -59,7 +59,7 @@
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
       type(sph_boundary_type), intent(in) :: sph_bc
-      type(sph_scalar_BC_coef), intent(in) :: ICB_Sspec, CMB_Sspec
+      type(sph_scalar_boundary_data), intent(in) :: bcs_S
       type(fdm2_center_mat), intent(in) :: fdm2_center
 !
       integer(kind = kint), intent(in) :: is_flux, is_advect
@@ -73,11 +73,10 @@
      &    is_flux, is_advect, rj_fld%n_point, rj_fld%ntot_phys,         &
      &    rj_fld%d_fld)
 !
-      call sel_ICB_sph_scalar_advect(sph_rj, sph_bc, ICB_Sspec,         &
+      call sel_ICB_sph_scalar_advect(sph_rj, sph_bc, bcs_S%ICB_Sspec,   &
      &    fdm2_center, g_sph_rj, is_flux, is_advect, rj_fld)
-      call sel_CMB_sph_scalar_advect                                    &
-     &   (sph_rj, sph_bc, CMB_Sspec, g_sph_rj,                          &
-     &    is_flux, is_advect, rj_fld)
+      call sel_CMB_sph_scalar_advect(sph_rj, sph_bc, bcs_S%CMB_Sspec,   &
+     &    g_sph_rj, is_flux, is_advect, rj_fld)
 !
       end subroutine const_sph_scalar_advect
 !

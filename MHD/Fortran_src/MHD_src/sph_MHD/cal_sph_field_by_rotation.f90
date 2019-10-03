@@ -73,9 +73,8 @@
       if (iflag_debug .ge. iflag_routine_msg)                           &
      &     write(*,*) 'cal_div_of_fluxes_sph'
       call cal_div_of_fluxes_sph(sph_rj, r_2nd, leg%g_sph_rj,           &
-     &    sph_MHD_bc%sph_bc_T, sph_MHD_bc%sph_bc_C,                     &
-     &    sph_MHD_bc%ICB_Tspec, sph_MHD_bc%CMB_Tspec,                   &
-     &    sph_MHD_bc%ICB_Cspec, sph_MHD_bc%CMB_Cspec,                   &
+     &    sph_MHD_bc%sph_bc_T, sph_MHD_bc%bcs_T,                        &
+     &    sph_MHD_bc%sph_bc_C, sph_MHD_bc%bcs_C,                        &
      &    sph_MHD_bc%fdm2_center, ipol, rj_fld)
 !
       end subroutine rot_momentum_eq_exp_sph
@@ -205,9 +204,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_div_of_fluxes_sph                                  &
-     &         (sph_rj, r_2nd, g_sph_rj, sph_bc_T, sph_bc_C,            &
-     &          ICB_Tspec, CMB_Tspec, ICB_Cspec, CMB_Cspec,             &
+      subroutine cal_div_of_fluxes_sph(sph_rj, r_2nd, g_sph_rj,         &
+     &          sph_bc_T, bcs_T, sph_bc_C, bcs_C,                       &
      &          fdm2_center, ipol, rj_fld)
 !
       use calypso_mpi
@@ -217,8 +215,7 @@
       type(fdm_matrices), intent(in) :: r_2nd
       type(phys_address), intent(in) :: ipol
       type(sph_boundary_type), intent(in) :: sph_bc_T, sph_bc_C
-      type(sph_scalar_BC_coef), intent(in) :: ICB_Tspec, CMB_Tspec
-      type(sph_scalar_BC_coef), intent(in) :: ICB_Cspec, CMB_Cspec
+      type(sph_scalar_boundary_data), intent(in) :: bcs_T, bcs_C
       type(fdm2_center_mat), intent(in) :: fdm2_center
 !
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
@@ -229,14 +226,14 @@
       if( (ipol%i_h_flux*ipol%i_h_advect) .gt. 0) then
         if (iflag_debug .gt. 0) write(*,*) 'take div of heat flux'
         call const_sph_scalar_advect                                    &
-     &     (sph_rj, r_2nd, sph_bc_T, ICB_Tspec, CMB_Tspec, fdm2_center, &
+     &     (sph_rj, r_2nd, sph_bc_T, bcs_T, fdm2_center,                &
      &      g_sph_rj, ipol%i_h_flux, ipol%i_h_advect, rj_fld)
       end if
 !
       if( (ipol%i_c_flux*ipol%i_c_advect) .gt. 0) then
         if (iflag_debug .gt. 0) write(*,*) 'take div  of composit flux'
         call const_sph_scalar_advect                                    &
-     &     (sph_rj, r_2nd, sph_bc_C, ICB_Cspec, CMB_Cspec, fdm2_center, &
+     &     (sph_rj, r_2nd, sph_bc_C, bcs_C, fdm2_center,                &
      &      g_sph_rj, ipol%i_c_flux, ipol%i_c_advect, rj_fld)
       end if
 !
