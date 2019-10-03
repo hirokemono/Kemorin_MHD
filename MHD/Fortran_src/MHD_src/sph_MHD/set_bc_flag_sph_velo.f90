@@ -169,6 +169,7 @@
       integer(kind = kint) :: j
 !
 !
+      write(*,*) 'sph_bc_U%iflag_cmb', ibc_type, sph_bc_U%iflag_cmb, iflag_bc_file_s
       if      (ibc_type .eq. iflag_free_sph) then
         sph_bc_U%iflag_cmb = iflag_free_slip
       else if (ibc_type .eq. iflag_non_slip_sph) then

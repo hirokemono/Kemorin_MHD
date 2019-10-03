@@ -166,6 +166,10 @@
       else if (cmp_no_case(bc_type_ctl, bc_file_z)                      &
      &    .or. cmp_no_case(bc_type_ctl, fix_file_z)) then
         ibc_type = iflag_bc_file_z
+!
+      else if (cmp_no_case(bc_type_ctl, fixed_file)                     &
+     &    .or. cmp_no_case(bc_type_ctl, fixed_file_bc)) then
+        ibc_type = iflag_bc_file_s
       end if
 !
       end subroutine set_bc_group_types_vector
