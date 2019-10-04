@@ -317,7 +317,6 @@
         ICB_Sspec%S_BC(1:sph_rj%nidx_rj(2))                             &
      &      = -ICB_Sspec%S_BC(1:sph_rj%nidx_rj(2))
       end if
-      write(*,*) 'inner_sph_bc_scalar_sph end'
 !
       end subroutine inner_sph_bc_scalar_sph
 !
@@ -390,7 +389,6 @@
      &        bc_IO, sph_bc%cmb_grp_name, sph_bc%iflag_cmb, CMB_Sevo)
         end if
       end if
-      write(*,*) 'outer_sph_bc_scalar_sph end'
 !
       end subroutine outer_sph_bc_scalar_sph
 !

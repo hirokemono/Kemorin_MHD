@@ -7,6 +7,8 @@
 !> @brief Boundary condition data from external file
 !!
 !!@verbatim
+!!      subroutine alloc_each_bc_item_ctl(bc_ctls)
+!!      subroutine bcast_each_bc_item_ctl(bc_ctls)
 !!      subroutine dealloc_each_bc_item_ctl(bc_ctls)
 !!        type(each_boundary_spectr), intent(inout) :: bc_ctls
 !!
@@ -63,8 +65,6 @@
         real(kind = kreal), allocatable ::   bc_input(:,:)
       end type each_boundary_spectr
 !
-      private :: alloc_each_bc_item_ctl
-!
 ! -----------------------------------------------------------------------
 !
       contains
@@ -96,6 +96,43 @@
       deallocate(bc_ctls%imode_gl, bc_ctls%bc_input)
 !
       end subroutine dealloc_each_bc_item_ctl
+!
+! -----------------------------------------------------------------------
+!
+      subroutine bcast_each_bc_item_num(bc_ctls)
+!
+      use calypso_mpi
+!
+      type(each_boundary_spectr), intent(inout) :: bc_ctls
+!
+!
+      call MPI_BCAST(bc_ctls%bc_group, kchara,                          &
+     &               CALYPSO_CHARACTER, 0, CALYPSO_COMM, ierr_MPI)
+      call MPI_BCAST(bc_ctls%bc_field, kchara,                          &
+     &               CALYPSO_CHARACTER, 0, CALYPSO_COMM, ierr_MPI)
+      call MPI_BCAST(bc_ctls%ncomp_bc,  1,                              &
+     &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+      call MPI_BCAST(bc_ctls%num_bc_mode,  1,                           &
+     &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+!
+      end subroutine bcast_each_bc_item_num
+!
+! -----------------------------------------------------------------------
+!
+      subroutine bcast_each_bc_item_ctl(bc_ctls)
+!
+      use calypso_mpi
+!
+      type(each_boundary_spectr), intent(inout) :: bc_ctls
+!
+!
+      call MPI_BCAST(bc_ctls%imode_gl, (2*bc_ctls%num_bc_mode),         &
+     &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+      call MPI_BCAST(bc_ctls%imode_gl,                                  &
+     &               (bc_ctls%num_bc_mode*bc_ctls%ncomp_bc),            &
+     &               CALYPSO_REAL, 0, CALYPSO_COMM, ierr_MPI)
+!
+      end subroutine bcast_each_bc_item_ctl
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------

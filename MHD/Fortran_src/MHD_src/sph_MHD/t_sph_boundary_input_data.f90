@@ -8,6 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine dealloc_sph_bc_item_ctl(bc_IO)
+!!      subroutine bcast_boundary_spectr_file(bc_IO)
 !!        type(boundary_spectra), intent(inout) :: bc_IO
 !!
 !!      subroutine read_boundary_spectr_file(bc_IO)
@@ -92,6 +93,39 @@
       deallocate(bc_IO%ctls)
 !
       end subroutine dealloc_sph_bc_item_ctl
+!
+! -----------------------------------------------------------------------
+!
+      subroutine bcast_boundary_spectr_file(bc_IO)
+!
+      use calypso_mpi
+!
+      type(boundary_spectra), intent(inout) :: bc_IO
+!
+      integer(kind = kint) :: igrp
+!
+!
+      call MPI_BCAST(bc_IO%num_bc_fld,  1,                              &
+     &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+      if(my_rank .ne. 0) call alloc_sph_bc_item_ctl(bc_IO)
+      call calypso_mpi_barrier
+!
+      do igrp = 1, bc_IO%num_bc_fld
+        call bcast_each_bc_item_num(bc_IO%ctls(igrp))
+      end do
+!
+      if(my_rank .ne. 0) then
+        do igrp = 1, bc_IO%num_bc_fld
+          call alloc_each_bc_item_ctl(bc_IO%ctls(igrp))
+        end do
+      end if
+      call calypso_mpi_barrier
+!
+      do igrp = 1, bc_IO%num_bc_fld
+        call bcast_each_bc_item_ctl(bc_IO%ctls(igrp))
+      end do
+!
+      end subroutine bcast_boundary_spectr_file
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
