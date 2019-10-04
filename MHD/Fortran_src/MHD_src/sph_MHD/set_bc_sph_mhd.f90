@@ -188,6 +188,7 @@
      &        sph_bc_B, bcs_B)
 !
       use set_bc_sph_scalars
+      use set_sph_bc_data_by_file
 !
       character(len=kchara), intent(in) :: CTR_nod_grp_name
       character(len=kchara), intent(in) :: CTR_sf_grp_name
@@ -236,11 +237,14 @@
 !
         else if(magne_nod%ibc_type(i) .eq. iflag_pseudo_vacuum) then
             sph_bc_B%iflag_icb =  iflag_radial_magne
-        else if(magne_nod%ibc_type(i) .eq. iflag_bc_file_s              &
-     &      .and. sph_bc_B%iflag_icb .eq. iflag_undefined_bc) then
-          call set_fixed_vector_bc_by_file(fhd_magne, sph_rj,           &
-     &        bc_IO, sph_bc_B%icb_grp_name, sph_bc_B%iflag_icb,         &
-     &        bcs_B%CMB_Vspec, bcs_B%CMB_Vevo)
+        else if(magne_nod%ibc_type(i) .eq. iflag_bc_file_s) then
+          call set_fixed_vector_bc_by_file(fhd_magne, sph_rj, bc_IO,    &
+     &        sph_bc_B%icb_grp_name, sph_bc_B%iflag_icb,                &
+     &        bcs_B%ICB_Vspec)
+        else if(magne_nod%ibc_type(i) .eq. iflag_bc_evo_field) then
+          call set_evolved_vector_bc_by_file(fhd_magne, sph_rj, bc_IO,  &
+     &        sph_bc_B%icb_grp_name, sph_bc_B%iflag_icb,                &
+     &        bcs_B%ICB_Vevo)
         end if
       end if
 !
@@ -253,11 +257,14 @@
       else
         if(magne_nod%ibc_type(i) .eq. iflag_pseudo_vacuum) then
           sph_bc_B%iflag_cmb =  iflag_radial_magne
-        else if(magne_nod%ibc_type(i) .eq. iflag_bc_file_s              &
-     &      .and. sph_bc_B%iflag_cmb .eq. iflag_undefined_bc) then
-          call set_fixed_vector_bc_by_file(fhd_magne, sph_rj,           &
-     &        bc_IO, sph_bc_B%cmb_grp_name, sph_bc_B%iflag_cmb,         &
-     &        bcs_B%CMB_Vspec, bcs_B%CMB_Vevo)
+        else if(magne_nod%ibc_type(i) .eq. iflag_bc_file_s) then
+          call set_fixed_vector_bc_by_file(fhd_magne, sph_rj, bc_IO,    &
+     &        sph_bc_B%cmb_grp_name, sph_bc_B%iflag_cmb,                &
+     &        bcs_B%CMB_Vspec)
+        else if(magne_nod%ibc_type(i) .eq. iflag_bc_evo_field) then
+          call set_evolved_vector_bc_by_file(fhd_magne, sph_rj, bc_IO,  &
+     &        sph_bc_B%cmb_grp_name, sph_bc_B%iflag_cmb,                &
+     &        bcs_B%CMB_Vevo)
         end if
       end if
 !

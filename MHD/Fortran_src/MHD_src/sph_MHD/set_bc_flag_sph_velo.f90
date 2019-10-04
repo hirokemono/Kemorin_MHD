@@ -99,6 +99,8 @@
       subroutine set_sph_velo_ICB_flag(sph_rj, bc_IO, r_ICB, ibc_type,  &
      &          bc_mag, sph_bc_U, ICB_Uspec, ICB_Uevo)
 !
+      use set_sph_bc_data_by_file
+!
       type(sph_rj_grid), intent(in) :: sph_rj
       type(boundary_spectra), intent(in) :: bc_IO
       real(kind = kreal), intent(in) :: r_ICB
@@ -142,12 +144,14 @@
           ICB_Uspec%Vt_BC(j) = r_ICB*r_ICB * bc_mag
         end if
 !
-      else if(ibc_type .eq. iflag_bc_file_s                             &
-     &      .and. sph_bc_U%iflag_icb .eq. iflag_undefined_bc) then
-        call set_fixed_vector_bc_by_file(fhd_velo, sph_rj,              &
-     &      bc_IO, sph_bc_U%icb_grp_name, sph_bc_U%iflag_icb,           &
-     &      ICB_Uspec, ICB_Uevo)
+      else if(ibc_type .eq. iflag_bc_file_s) then
+        call set_fixed_vector_bc_by_file(fhd_velo, sph_rj, bc_IO,       &
+     &      sph_bc_U%icb_grp_name, sph_bc_U%iflag_icb, ICB_Uspec)
+      else if(ibc_type .eq. iflag_bc_evo_field) then
+        call set_evolved_vector_bc_by_file(fhd_velo, sph_rj, bc_IO,     &
+     &      sph_bc_U%icb_grp_name, sph_bc_U%iflag_icb, ICB_Uevo)
       end if
+      write(*,*) 'set_sph_velo_ICB_flag end'
 !
       end subroutine set_sph_velo_ICB_flag
 !
@@ -155,6 +159,8 @@
 !
       subroutine set_sph_velo_CMB_flag(sph_rj, bc_IO, r_CMB, ibc_type,  &
      &          bc_mag, sph_bc_U, CMB_Uspec, CMB_Uevo)
+!
+      use set_sph_bc_data_by_file
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(boundary_spectra), intent(in) :: bc_IO
@@ -194,12 +200,14 @@
           CMB_Uspec%Vt_BC(j) = r_CMB*r_CMB * bc_mag
         end if
 !
-      else if(ibc_type .eq. iflag_bc_file_s                             &
-     &      .and. sph_bc_U%iflag_cmb .eq. iflag_undefined_bc) then
-        call set_fixed_vector_bc_by_file(fhd_velo, sph_rj,              &
-     &      bc_IO, sph_bc_U%cmb_grp_name, sph_bc_U%iflag_cmb,           &
-     &      CMB_Uspec, CMB_Uevo)
+      else if(ibc_type .eq. iflag_bc_file_s) then
+        call set_fixed_vector_bc_by_file(fhd_velo, sph_rj, bc_IO,       &
+     &      sph_bc_U%cmb_grp_name, sph_bc_U%iflag_cmb, CMB_Uspec)
+      else if(ibc_type .eq. iflag_bc_evo_field) then
+        call set_evolved_vector_bc_by_file(fhd_velo, sph_rj, bc_IO,     &
+     &      sph_bc_U%cmb_grp_name, sph_bc_U%iflag_cmb, CMB_Uevo)
       end if
+      write(*,*) 'set_sph_velo_CMB_flag end'
 !
       end subroutine set_sph_velo_CMB_flag
 !
