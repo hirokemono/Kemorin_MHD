@@ -16,7 +16,7 @@
 !
       implicit none
 !
-      integer(kind = kint) :: nele
+      integer(kind = kint) :: nele, increment_cheby
       real(kind = kreal) :: shell, ratio, rmin, rmax
 !
 !>  Structure of grid and spectr data for spherical spectr method
@@ -44,6 +44,13 @@
         sph_params_rgrid%iflag_radial_grid = 2
       end if
 !
+      increment_cheby = 1
+      if(sph_params_rgrid%iflag_radial_grid .eq. 2) then
+        write(*,*) 'input adjust increment for chebyshev grid'
+        read(*,*) increment_cheby
+        if(increment_cheby .le. 0) increment_cheby = 1
+      end if
+!
       sph_params_rgrid%radius_ICB = shell * ratio / (one - ratio)
       sph_params_rgrid%radius_CMB = sph_params_rgrid%radius_ICB + shell
 !
@@ -52,8 +59,8 @@
         rmax = sph_params_rgrid%radius_CMB
       end if
 !
-      call count_set_radial_grid                                        &
-     &  (nele, rmin, rmax, sph_params_rgrid, sph_rtp_rgrid, s3d_radius)
+      call count_set_radial_grid(nele, rmin, rmax, increment_cheby,     &
+     &    sph_params_rgrid, sph_rtp_rgrid, s3d_radius)
 !
       stop
       end program const_radial_grid_sph

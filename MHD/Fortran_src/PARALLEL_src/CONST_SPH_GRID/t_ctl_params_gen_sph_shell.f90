@@ -230,7 +230,8 @@
       type(layering_group_list), intent(inout) :: added_radial_grp
       integer(kind = kint), intent(inout) :: ierr
 !
-      integer(kind = kint) :: i, kr, icou
+      integer(kind = kint) :: i, kr, icou, nele
+      integer(kind = kint) :: increment_cheby = 1
       real(kind = kreal) :: ICB_to_CMB_ratio, fluid_core_size
       real(kind = kreal) :: r_in, r_out
 !
@@ -357,8 +358,26 @@
 !
         if(r_in .eq. zero)  sph_rj%iflag_rj_center = 1
 !
-        call count_set_radial_grid(spctl%num_fluid_grid_ctl%intvalue,   &
-     &      r_in,  r_out, sph_params, sph_rtp, s3d_radius)
+        increment_cheby = 1
+        if(spctl%increment_cheby_ctl%iflag .gt. 0) then
+          increment_cheby = spctl%increment_cheby_ctl%intvalue
+          if(increment_cheby .le. 0) increment_cheby = 1
+        end if
+!
+        if(sph_params%iflag_radial_grid .eq. igrid_half_Chebyshev       &
+     &     .or. sph_params%iflag_radial_grid .eq. igrid_Chebyshev) then
+          nele = sph_params%nlayer_CMB-sph_params%nlayer_ICB
+          if(mod(nele,increment_cheby) .ne. 0) then
+            write(*,*) 'Chebyshev increment should be ',                &
+     &                 'devisor of (# fluid grid - 1)'
+            ierr = ierr_mesh
+            return
+          end if
+        end if
+!
+        call count_set_radial_grid                                      &
+     &     (spctl%num_fluid_grid_ctl%intvalue, r_in, r_out,             &
+     &      increment_cheby, sph_params, sph_rtp, s3d_radius)
       end if
 !
 !       Check whole sphere model
