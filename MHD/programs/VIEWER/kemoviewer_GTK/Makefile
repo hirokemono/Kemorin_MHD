@@ -5,6 +5,9 @@
 TARGET_KEMOVIEW_GTK =  kemoviewer_GTK
 TARGET_KEMOVIEW_GLFW = kemoviewer_GLFW
 
+TARGET_KEMOVIEW_GTK_TEST =  gtk_test_4_view
+TARGET_KEMOVIEW_GLFW_TEST =  glfw_test_4_view
+
 MOD_KEMOVIEW_GTK = \
 tree_views_4_fixed_lists_GTK.o \
 tree_view_real2_GTK.o \
@@ -21,7 +24,15 @@ kemo_mesh_viewer_glfw_gtk.o \
 \
 '$$(OBJ_KEMOVIEW_GLUT)'
 
+MOD_KEMOVIEW_GTK_TEST = \
+viewer_GTK_test.o \
+\
+'$$(OBJ_KEMOVIEW_GLUT)'
 
+MOD_KEMOVIEW_GLFW_TEST = \
+viewer_GLFW_test.o \
+\
+'$$(OBJ_KEMOVIEW_GLUT)'
 
 #
 #  -------------------------------------------------------------------------
@@ -34,11 +45,14 @@ dir_list:
 target_list:
 	@echo 'TARGET_KEMOVIEW_GTK =  $$(BUILDDIR)/$(TARGET_KEMOVIEW_GTK)'  >> $(MAKENAME)
 	@echo 'TARGET_KEMOVIEW_GLFW = $$(BUILDDIR)/$(TARGET_KEMOVIEW_GLFW)' >> $(MAKENAME)
+	@echo 'TARGET_KEMOVIEW_GTK_TEST = $$(BUILDDIR)/$(TARGET_KEMOVIEW_GTK_TEST)' >> $(MAKENAME)
+	@echo 'TARGET_KEMOVIEW_GLFW_TEST = $$(BUILDDIR)/$(TARGET_KEMOVIEW_GLFW_TEST)' >> $(MAKENAME)
 	@echo >> $(MAKENAME)
 
 target_task:
 	@echo viewer_gtk:  '$$(TARGET_KEMOVIEW_GTK)'   >> $(MAKENAME)
 	@echo viewer_glfw: '$$(TARGET_KEMOVIEW_GLFW)'  >> $(MAKENAME)
+	@echo viewer_gtk_test:  '$$(TARGET_KEMOVIEW_GTK_TEST) $$(TARGET_KEMOVIEW_GLFW_TEST)'   >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_KEMOVIEW_GTK)': '$$(MOD_KEMOVIEW_GTK)' \
 	'$$(LIB_KEMO_C_FILE)' \
@@ -54,6 +68,20 @@ target_task:
 	'$$(MOD_KEMOVIEW_GLFW) -L. $$(LIB_KEMO_C)' \
 	'$$(GTK3_LIBS) $$(GLFW_LIBS) $$(OPENGL_LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
+	@echo '$$(TARGET_KEMOVIEW_GTK_TEST)': '$$(MOD_KEMOVIEW_GTK_TEST)' \
+	'$$(LIB_KEMO_C_FILE)' \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' '$$(OPTFLAGS_GL) $$(GTK3_CFLAGS) $$(GLFW_CFLAGS)' -o '$$(TARGET_KEMOVIEW_GTK_TEST)' \
+	'$$(MOD_KEMOVIEW_GTK_TEST) -L. $$(LIB_KEMO_C)' \
+	'$$(GTK3_LIBS) $$(GLFW_LIBS) $$(OPENGL_LIBS)' >> $(MAKENAME)
+	@echo '' >> $(MAKENAME)
+	@echo '$$(TARGET_KEMOVIEW_GLFW_TEST)': '$$(MOD_KEMOVIEW_GLFW_TEST)' \
+	'$$(LIB_KEMO_C_FILE)' \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' '$$(OPTFLAGS_GL) $$(GTK3_CFLAGS) $$(GLFW_CFLAGS)' -o '$$(TARGET_KEMOVIEW_GLFW_TEST)' \
+	'$$(MOD_KEMOVIEW_GLFW_TEST) -L. $$(LIB_KEMO_C)' \
+	'$$(GTK3_LIBS) $$(GLFW_LIBS) $$(OPENGL_LIBS)' >> $(MAKENAME)
+	@echo '' >> $(MAKENAME)
 
 lib_name:
 
@@ -62,6 +90,10 @@ mod_list:
 	@echo  $(MOD_KEMOVIEW_GTK) >> $(MAKENAME)
 	@echo  MOD_KEMOVIEW_GLFW =  \\ >> $(MAKENAME)
 	@echo  $(MOD_KEMOVIEW_GLFW) >> $(MAKENAME)
+	@echo  MOD_KEMOVIEW_GTK_TEST =  \\ >> $(MAKENAME)
+	@echo  $(MOD_KEMOVIEW_GTK_TEST) >> $(MAKENAME)
+	@echo  MOD_KEMOVIEW_GLFW_TEST =  \\ >> $(MAKENAME)
+	@echo  $(MOD_KEMOVIEW_GLFW_TEST) >> $(MAKENAME)
 	@echo   >> $(MAKENAME)
 
 
@@ -109,13 +141,34 @@ module:
 	kemoviewer.h \
 	kemo_mesh_viewer_gtk.h \
 	kemoview_fileselector_gtk.o \
-	kemoview_gtk_colormap_menu.o \
 	kemoview_gtk_mesh_menu.o \
 	kemoview_gtk_preference_menu.o \
 	view_modifier_glfw.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS)' \
 	'$$(KEMOVIEW_GTKDIR)'/kemo_mesh_viewer_gtk.c \
+	>> $(MAKENAME)
+	
+	@echo \
+	viewer_GTK_test.o:  \
+	'$$(KEMOVIEW_GTKDIR)'/viewer_GTK_test.c  \
+	kemoviewer.h \
+	kemoview_fileselector_gtk.o \
+	kemoview_gtk_mesh_menu.o \
+	kemoview_gtk_preference_menu.o \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS)' \
+	'$$(KEMOVIEW_GTKDIR)'/viewer_GTK_test.c \
+	>> $(MAKENAME)
+	
+	@echo \
+	viewer_GLFW_test.o:  \
+	'$$(KEMOVIEW_GTKDIR)'/viewer_GLFW_test.c  \
+	kemoviewer.h \
+	view_modifier_glfw.o \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS)' \
+	'$$(KEMOVIEW_GTKDIR)'/viewer_GLFW_test.c \
 	>> $(MAKENAME)
 
 includes:
