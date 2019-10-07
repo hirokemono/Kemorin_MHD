@@ -52,7 +52,6 @@ static void psf_fline_colormode_CB(GtkComboBox *combobox_sfcolor, gpointer user_
     int index_mode = gtk_selected_combobox_index(combobox_sfcolor);
 	
 	kemoview_set_fline_color_type(index_mode);
-	//	draw_mesh_w_menu();
 	
 	draw_mesh_glfw();
 	return;

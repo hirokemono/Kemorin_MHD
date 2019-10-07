@@ -88,8 +88,6 @@ static void load_texture_handler(gpointer user_data){
         kemoview_free_kvstring(image_prefix);
 	};
 	
-//	glutSetWindow(winid);
-//	draw_mesh_w_menu();
 	return;
 };
 
@@ -102,7 +100,6 @@ static void psf_surf_colormode_CB(GtkComboBox *combobox_sfcolor, gpointer user_d
     else if (index_mode == RAINBOW_PSF_SURF) {kemoview_set_PSF_patch_color_mode(RAINBOW_SURFACE);}
 	else if (index_mode == TEXTURE_PSF_SURF) {load_texture_handler(user_data);};
 	
-//	draw_mesh_w_menu();
 	return;
 };
 

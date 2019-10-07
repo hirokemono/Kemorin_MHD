@@ -9,60 +9,7 @@
 static int winid, menu_win;
 int submenu_id;
 
-static void make_1st_level_menu();
-
 struct kemoviewer_type *single_kemoview;
-
-
-/* subroutine for reading mesh */
-
-
-
-/* draw object using GLUT */
-
-static void draw_mesh_w_menu(){
-	make_1st_level_menu();
-	draw_mesh_keep_menu();
-	return;
-};
-
-/* ---------  Action for selected menu -----------   */ 
-
-static void main_menu_handler(int sel){
-	if(sel == SET_COAST_RADIUS){
-		kemoview_main_window(single_kemoview);
-	};
-    return;
-};
-
-static void dummy_handler(int sel){
-	int itmp;
-	itmp = sel;
-	return;
-}
-
-/* Create 1st level menu() */
-
-static void make_1st_level_menu(){
-	int menu_id;
-	
-	int iflag_draw_m = kemoview_get_draw_mesh_flag();
-	int iflag_draw_p = kemoview_get_PSF_draw_switch();
-	int iflag_draw_f = kemoview_get_fline_switch();
-	int iflag_any_objects_on = iflag_draw_p + iflag_draw_m + iflag_draw_f;
-	
-	int nload_psf = kemoview_get_PSF_num_loaded();
-	
-	glutSetWindow(menu_win);
-	
-	submenu_id = menu_init();
-	
-	menu_id = glutCreateMenu(main_menu_handler);
-	
-	glutAddMenuEntry("Main menu",SET_COAST_RADIUS);
-	glutAttachMenu(GLUT_LEFT_BUTTON);
-	return;
-};
 
 /* Main routine for C */
 
@@ -123,7 +70,7 @@ void draw_mesh_kemo(int iflag_streo_shutter, int iflag_dmesh) {
 	kemoview_draw_menu_setup();
 	
 	glutSetWindow(winid);
-	draw_mesh_w_menu();
+	draw_mesh_keep_menu();
 	
 	/*! set callback for GLUT*/
 	glutMainLoop();
