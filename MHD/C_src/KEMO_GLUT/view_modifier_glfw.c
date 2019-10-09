@@ -263,6 +263,7 @@ GLFWwindow * open_kemoviwer_window(int npixel_x, int npixel_y){
 	glfw_window = glfwCreateWindow(npixel_x, npixel_y, "Kemoviewer", NULL, NULL);
 	if (!glfw_window)
 	{
+        printf("Baka!!\n");
 		glfwTerminate();
 		exit(1);
 	}
