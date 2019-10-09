@@ -24,6 +24,9 @@
 @synthesize elevationSliderValue;
 @synthesize azimuthSliderValue;
 - (void)awakeFromNib{
+    int i;
+    float r, t, p;
+    
 	self.radialLightPosition = [[NSMutableArray alloc]init];
 	self.elevationLightPosition = [[NSMutableArray alloc]init];
 	self.azimuthLightPosition = [[NSMutableArray alloc]init];
@@ -32,20 +35,39 @@
 	self.numLightTable =  [[defaults stringForKey:@"numberOfLights"] intValue];
 //	self.numLightTable = 0;
 
-	self.radialLightPosition =    [[defaults arrayForKey:@"lightsRadialPosition"] mutableCopy];
-	self.elevationLightPosition = [[defaults arrayForKey:@"lightsElevationPosition"] mutableCopy];
-	self.azimuthLightPosition =   [[defaults arrayForKey:@"lightsAzimuthalPosition"] mutableCopy];
+    if(self.numLightTable <= 0){
+        kemoview_init_phong_light_list();
+        
+        self.numLightTable = kemoview_get_num_light_position();
 
-	self.ambientMaterial =  [[defaults stringForKey:@"materialAmbient"] floatValue];
-	self.diffuseMaterial =  [[defaults stringForKey:@"materialDiffuse"] floatValue];
-	self.specularMaterial = [[defaults stringForKey:@"materialSpecular"] floatValue];
-	self.shinessMaterial =  [[defaults stringForKey:@"materialShineness"] floatValue];
+        self.ambientMaterial = kemoview_send_material_ambient();
+        self.diffuseMaterial = kemoview_send_material_diffuse();
+        self.specularMaterial = kemoview_send_material_specular();
+        self.shinessMaterial = kemoview_send_material_shiness();
+        
+        for(i=0;i<self.numLightTable;i++){
+            kemoview_get_each_light_rtp(i, &r, &t, &p);
+            
+            [self.radialLightPosition addObject:[NSNumber numberWithFloat:r]];
+            [self.elevationLightPosition addObject:[NSNumber numberWithFloat:t]];
+            [self.azimuthLightPosition addObject:[NSNumber numberWithFloat:p]];
+        };
+    } else {
+        self.radialLightPosition =    [[defaults arrayForKey:@"lightsRadialPosition"] mutableCopy];
+        self.elevationLightPosition = [[defaults arrayForKey:@"lightsElevationPosition"] mutableCopy];
+        self.azimuthLightPosition =   [[defaults arrayForKey:@"lightsAzimuthalPosition"] mutableCopy];
 
-	kemoview_alloc_phong_light_list(self.numLightTable);
-	kemovier_set_material_ambient(self.ambientMaterial);
-	kemoview_set_material_diffuse(self.diffuseMaterial);
-	kemoview_set_material_specular(self.specularMaterial);
-	kemoview_set_material_shineness(self.shinessMaterial);
+        self.ambientMaterial =  [[defaults stringForKey:@"materialAmbient"] floatValue];
+        self.diffuseMaterial =  [[defaults stringForKey:@"materialDiffuse"] floatValue];
+        self.specularMaterial = [[defaults stringForKey:@"materialSpecular"] floatValue];
+        self.shinessMaterial =  [[defaults stringForKey:@"materialShineness"] floatValue];
+
+        kemoview_alloc_phong_light_list(self.numLightTable);
+        kemovier_set_material_ambient(self.ambientMaterial);
+        kemoview_set_material_diffuse(self.diffuseMaterial);
+        kemoview_set_material_specular(self.specularMaterial);
+        kemoview_set_material_shineness(self.shinessMaterial);
+    };
 	
 	[self InitLightTable];
 	return;
