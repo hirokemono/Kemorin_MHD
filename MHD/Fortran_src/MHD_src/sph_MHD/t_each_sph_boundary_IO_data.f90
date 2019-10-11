@@ -128,7 +128,7 @@
 !
       call MPI_BCAST(bc_ctls%imode_gl, (2*bc_ctls%num_bc_mode),         &
      &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(bc_ctls%imode_gl,                                  &
+      call MPI_BCAST(bc_ctls%bc_input,                                  &
      &               (bc_ctls%num_bc_mode*bc_ctls%ncomp_bc),            &
      &               CALYPSO_REAL, 0, CALYPSO_COMM, ierr_MPI)
 !

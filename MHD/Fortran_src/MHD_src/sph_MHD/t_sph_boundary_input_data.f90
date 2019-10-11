@@ -112,16 +112,9 @@
 !
       do igrp = 1, bc_IO%num_bc_fld
         call bcast_each_bc_item_num(bc_IO%ctls(igrp))
-      end do
-!
-      if(my_rank .ne. 0) then
-        do igrp = 1, bc_IO%num_bc_fld
+        if(my_rank .ne. 0) then
           call alloc_each_bc_item_ctl(bc_IO%ctls(igrp))
-        end do
-      end if
-      call calypso_mpi_barrier
-!
-      do igrp = 1, bc_IO%num_bc_fld
+        end if
         call bcast_each_bc_item_ctl(bc_IO%ctls(igrp))
       end do
 !

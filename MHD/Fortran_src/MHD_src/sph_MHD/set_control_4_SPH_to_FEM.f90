@@ -51,12 +51,10 @@
       if (iflag .eq. id_no_boundary_file) return
 !
       if (iflag_debug.eq.1) write(*,*) 'read_boundary_spectr_file'
-      call read_boundary_spectr_file(bc_IO)
-
-!      if(my_rank .eq. 0) call read_boundary_spectr_file(bc_IO)
-!      call calypso_mpi_barrier
-!      call bcast_boundary_spectr_file(bc_IO)
-!      call calypso_mpi_barrier
+      if(my_rank .eq. 0) call read_boundary_spectr_file(bc_IO)
+      call calypso_mpi_barrier
+      call bcast_boundary_spectr_file(bc_IO)
+      call calypso_mpi_barrier
 !
       end subroutine sph_boundary_IO_control
 !
