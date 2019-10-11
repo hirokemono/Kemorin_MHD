@@ -151,7 +151,6 @@
         call set_evolved_vector_bc_by_file(fhd_velo, sph_rj, bc_IO,     &
      &      sph_bc_U%icb_grp_name, sph_bc_U%iflag_icb, ICB_Uevo)
       end if
-      write(*,*) 'set_sph_velo_ICB_flag end'
 !
       end subroutine set_sph_velo_ICB_flag
 !
@@ -175,7 +174,6 @@
       integer(kind = kint) :: j
 !
 !
-      write(*,*) 'sph_bc_U%iflag_cmb', ibc_type, sph_bc_U%iflag_cmb, iflag_bc_file_s
       if      (ibc_type .eq. iflag_free_sph) then
         sph_bc_U%iflag_cmb = iflag_free_slip
       else if (ibc_type .eq. iflag_non_slip_sph) then
@@ -207,7 +205,6 @@
         call set_evolved_vector_bc_by_file(fhd_velo, sph_rj, bc_IO,     &
      &      sph_bc_U%cmb_grp_name, sph_bc_U%iflag_cmb, CMB_Uevo)
       end if
-      write(*,*) 'set_sph_velo_CMB_flag end'
 !
       end subroutine set_sph_velo_CMB_flag
 !

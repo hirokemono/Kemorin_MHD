@@ -95,7 +95,6 @@
 !
 !
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+1)
-      call calypso_MPI_barrier
       call reset_elapse_4_init_sph_mhd
 !
       end subroutine initialize_sph_mhd

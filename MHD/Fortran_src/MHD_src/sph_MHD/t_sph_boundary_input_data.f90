@@ -52,7 +52,7 @@
 !>        File name for boundary condition file
         character(len=kchara) :: file_name = 'boundary_spectr.dat'
 !>        Name of boundary conditions to set
-        integer(kind = kint) :: num_bc_fld
+        integer(kind = kint) :: num_bc_fld = 0
 !>        Structures for boundary conditions
         type(each_boundary_spectr), allocatable :: ctls(:)
       end type boundary_spectra

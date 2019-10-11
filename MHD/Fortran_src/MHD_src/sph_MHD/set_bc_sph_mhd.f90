@@ -77,6 +77,7 @@
      &      MHD_BC%velo_BC%nod_BC, MHD_BC%velo_BC%surf_BC,              &
      &      sph_MHD_bc%sph_bc_U, sph_MHD_bc%bcs_U)
 !
+!
         call cal_fdm_coefs_4_BCs                                        &
      &     (sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r,                   &
      &      sph_MHD_bc%sph_bc_U)
@@ -95,6 +96,7 @@
         call cal_fdm2_CMB_free_vt                                       &
      &     (sph_rj%radius_1d_rj_r(kst:ked), sph_MHD_bc%fdm2_free_CMB)
       end if
+!
 !
       if(MHD_prop%ht_prop%iflag_scheme .gt. id_no_evolution) then
         if(iflag_debug .gt. 0) write(*,*) 'set_sph_bc_temp_sph'
