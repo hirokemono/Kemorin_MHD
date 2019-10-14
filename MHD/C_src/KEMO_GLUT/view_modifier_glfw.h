@@ -33,7 +33,7 @@ extern "C" {
 
 GLFWwindow * open_kemoviwer_window(int npixel_x, int npixel_y);
 
-void glfw_view_modifier_init(GLFWwindow* window);
+void glfw_view_modifier_init();
 void set_GlfwWindowSize(int width, int height);
 
 void draw_fast_glfw(void);

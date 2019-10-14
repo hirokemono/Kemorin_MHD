@@ -6,7 +6,7 @@
 
 /* initial settings */
 
-GLFWwindow *glfw_window;
+GtkWidget *gl_area;
 int iflag_quickdraw = 0;
 
 static int left_button_func =   ROTATE;
@@ -23,7 +23,8 @@ static double  gTrackBallRotation[4];
 void mouseButtonCB(GLFWwindow *window, int button, int action, int mods) {
 	double xpos;
 	double ypos;
-	glfwGetCursorPos(window, &xpos, &ypos);
+	
+	gdk_device_get_window_at_position_double(gl_widget, mouse, &xpos, &ypos);
 /*	printf("mouseButtonCB %d %d %d %lf, %lf\n", button, action, mods, xpos, ypos);*/
 
 	if(button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
@@ -141,7 +142,7 @@ void mousePosCB(GLFWwindow *window, double xpos, double ypos) {
 }
 
 void set_GtkWindowSize(int width, int height){
-	glfwSetWindowSize(glfw_window, width, height);
+	gtk_widget_set_size_request(gl_area, width, height);
 	kemoview_update_projection_by_viewer_size(width, height);
 	glViewport(IZERO, IZERO, (GLint) width, (GLint) height);
 };
@@ -255,23 +256,21 @@ static void keyFuncCB(GLFWwindow* window, int key, int scancode, int action, int
 		kemoview_set_scale_factor(current_scale);
  	};
 	
-	glfwSwapBuffers(window);
+	gtk_gl_area_swap_buffers(GTK_GL_AREA(gl_area));
 	return;
 }
 
 GLFWwindow * open_kemoviwer_window(int npixel_x, int npixel_y){
-	glfw_window = glfwCreateWindow(npixel_x, npixel_y, "Kemoviewer", NULL, NULL);
-	if (!glfw_window)
-	{
+	gl_area = gtk_gl_area_new (void);
+	if (!gl_area){
         printf("Baka!!\n");
-		glfwTerminate();
 		exit(1);
-	}
-
+	};
+	
 	/* Make the window's context current */
-	glfwSetWindowSize(glfw_window, npixel_x, npixel_y);
-	glfwMakeContextCurrent(glfw_window);
-	return glfw_window;
+	gtk_widget_set_size_request(gl_area, npixel_x, npixel_y);
+	gtk_gl_area_make_current(gl_area);
+	return gl_area;
 };
 
 
@@ -293,13 +292,13 @@ void gtk_view_modifier_init(GLFWwindow* window){
 
 void draw_fast_gtk(){
 	kemoview_draw_fast_gl3();
-	glfwSwapBuffers(glfw_window);
+	gtk_gl_area_swap_buffers(GTK_GL_AREA(gl_area));
 	return;
 };
 
 void draw_mesh_gtk(){
 	kemoview_modify_view();
-	glfwSwapBuffers(glfw_window);
+	gtk_gl_area_swap_buffers(GTK_GL_AREA(gl_area));
 	return;
 };
 
@@ -310,14 +309,13 @@ void write_rotate_views_gtk(int iflag_img, struct kv_string *image_prefix,
     ied_deg = 360/inc_deg;
 	
 	kemoview_set_animation_rot_axis(i_axis);
-	glfwFocusWindow(glfw_window);
 	for (i = 0; i< ied_deg; i++) {
 		glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 		int_degree =  i*inc_deg;
 		
 		kemoview_set_animation_rot_angle(int_degree);
 		kemoview_rotate();
-		glfwSwapBuffers(glfw_window);
+		gtk_gl_area_swap_buffers(GTK_GL_AREA(gl_area));
 		
         kemoview_write_window_to_file_w_step(iflag_img, i, image_prefix);
 	};
@@ -329,8 +327,7 @@ void write_evolution_views_gtk(int iflag_img, struct kv_string *image_prefix,
 								int ist_udt, int ied_udt, int inc_udt){
 	int i;
 
-	glfwFocusWindow(glfw_window);
-	glfwSwapBuffers(glfw_window);
+	gtk_gl_area_swap_buffers(GTK_GL_AREA(gl_area));
 	for (i=ist_udt; i<(ied_udt+1); i++) {
 		if( ((i-ist_udt)%inc_udt) == 0) {
 			
@@ -338,7 +335,7 @@ void write_evolution_views_gtk(int iflag_img, struct kv_string *image_prefix,
 			
 			glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 			draw_mesh_gtk();
-			glfwSwapBuffers(glfw_window);
+			gtk_gl_area_swap_buffers(GTK_GL_AREA(gl_area));
             
             kemoview_write_window_to_file_w_step(iflag_img, i, image_prefix);
 		}

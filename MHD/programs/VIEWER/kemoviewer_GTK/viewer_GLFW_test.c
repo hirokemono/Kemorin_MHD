@@ -137,7 +137,7 @@ int draw_glfw_test(int iflag_streo_shutter, int iflag_dmesh) {
 	
 	/*! set callback for GLfw*/
 	kemoviewer_reset_to_init_angle();
-	glfw_view_modifier_init(glfw_win);
+	glfw_view_modifier_init();
 	
 	/* Set Cllback for drug and Drop into window */
 	glfwSetDropCallback(glfw_win, dropFileToGlfw_CB);

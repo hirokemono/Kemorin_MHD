@@ -275,17 +275,17 @@ GLFWwindow * open_kemoviwer_window(int npixel_x, int npixel_y){
 };
 
 
-void glfw_view_modifier_init(GLFWwindow* window){
+void glfw_view_modifier_init(){
 	/* set callback for mouse button */
-	glfwSetMouseButtonCallback(window, mouseButtonCB);
+	glfwSetMouseButtonCallback(glfw_window, mouseButtonCB);
 	/* set callback for cursor position */
-	glfwSetCursorPosCallback(window, mousePosCB);
+	glfwSetCursorPosCallback(glfw_window, mousePosCB);
 	/* set callback for cursor position */
-	glfwSetScrollCallback(window, mouseScrollCB);
+	glfwSetScrollCallback(glfw_window, mouseScrollCB);
 	
 	/* Set callback for keyboard input */
-	glfwSetKeyCallback(window, keyFuncCB);
-	glfwSetCharCallback(window, charFunCB);
+	glfwSetKeyCallback(glfw_window, keyFuncCB);
+	glfwSetCharCallback(glfw_window, charFunCB);
 	
 	return;
 }
