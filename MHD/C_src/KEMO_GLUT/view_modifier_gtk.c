@@ -1,8 +1,8 @@
 
-/* view_modifier_glfw.c */
+/* view_modifier_gtk.c */
 
 
-#include "view_modifier_glfw.h"
+#include "view_modifier_gtk.h"
 
 /* initial settings */
 
@@ -54,7 +54,7 @@ void mouseButtonCB(GLFWwindow *window, int button, int action, int mods) {
 	};
 	
 	if(action == GLFW_RELEASE){
-		draw_mesh_glfw();
+		draw_mesh_gtk();
 	};
 	return;
 };
@@ -140,7 +140,7 @@ void mousePosCB(GLFWwindow *window, double xpos, double ypos) {
 	return;
 }
 
-void set_GlfwWindowSize(int width, int height){
+void set_GtkWindowSize(int width, int height){
 	glfwSetWindowSize(glfw_window, width, height);
 	kemoview_update_projection_by_viewer_size(width, height);
 	glViewport(IZERO, IZERO, (GLint) width, (GLint) height);
@@ -275,7 +275,7 @@ GLFWwindow * open_kemoviwer_window(int npixel_x, int npixel_y){
 };
 
 
-void glfw_view_modifier_init(GLFWwindow* window){
+void gtk_view_modifier_init(GLFWwindow* window){
 	/* set callback for mouse button */
 	glfwSetMouseButtonCallback(window, mouseButtonCB);
 	/* set callback for cursor position */
@@ -291,19 +291,19 @@ void glfw_view_modifier_init(GLFWwindow* window){
 }
 
 
-void draw_fast_glfw(){
+void draw_fast_gtk(){
 	kemoview_draw_fast_gl3();
 	glfwSwapBuffers(glfw_window);
 	return;
 };
 
-void draw_mesh_glfw(){
+void draw_mesh_gtk(){
 	kemoview_modify_view();
 	glfwSwapBuffers(glfw_window);
 	return;
 };
 
-void write_rotate_views_glut(int iflag_img, struct kv_string *image_prefix, 
+void write_rotate_views_gtk(int iflag_img, struct kv_string *image_prefix, 
                              int i_axis, int inc_deg) {
     int i, int_degree, ied_deg;
     if(inc_deg <= 0) inc_deg = 1;
@@ -321,11 +321,11 @@ void write_rotate_views_glut(int iflag_img, struct kv_string *image_prefix,
 		
         kemoview_write_window_to_file_w_step(iflag_img, i, image_prefix);
 	};
-	draw_mesh_glfw();
+	draw_mesh_gtk();
 	return;
 }
 
-void write_evolution_views_glut(int iflag_img, struct kv_string *image_prefix, 
+void write_evolution_views_gtk(int iflag_img, struct kv_string *image_prefix, 
 								int ist_udt, int ied_udt, int inc_udt){
 	int i;
 
@@ -337,7 +337,7 @@ void write_evolution_views_glut(int iflag_img, struct kv_string *image_prefix,
 			kemoview_viewer_evolution(i);
 			
 			glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-			draw_mesh_glfw();
+			draw_mesh_gtk();
 			glfwSwapBuffers(glfw_window);
             
             kemoview_write_window_to_file_w_step(iflag_img, i, image_prefix);
@@ -347,7 +347,7 @@ void write_evolution_views_glut(int iflag_img, struct kv_string *image_prefix,
 };
 
 
-void set_viewtype_mode_glfw(int selected){
+void set_viewtype_mode_gtk(int selected){
 	
 	if(selected == RESET) selected = VIEW_3D;
 

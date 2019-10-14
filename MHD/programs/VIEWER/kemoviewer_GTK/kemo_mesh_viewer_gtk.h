@@ -10,15 +10,18 @@
 #include <math.h>
 #include <string.h>
 
-#include "gtk/gtk.h"
+#include <gtk/gtk.h>
 
 #include "kemoviewer.h"
+#include "kemoview_gtk_PSF_menu.h"
 #include "kemoview_gtk_mesh_menu.h"
 #include "kemoview_gtk_preference_menu.h"
 #include "kemoview_fileselector_gtk.h"
+#include "kemoview_gtk_main_menu.h"
+#include "kemoview_gtk_viewmatrix_menu.h"
 
 /* prototypes */
 
-void draw_mesh_kemo(int iflag_streo_shutter, int iflag_dmesh);
+int draw_mesh_kemo(int iflag_streo_shutter, int iflag_dmesh);
 
 #endif

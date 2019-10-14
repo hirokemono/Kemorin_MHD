@@ -123,10 +123,7 @@ int draw_glfw_test(int iflag_streo_shutter, int iflag_dmesh) {
 		glfwWindowHint(GLFW_COCOA_RETINA_FRAMEBUFFER, GLFW_FALSE);
 	};
 	*/
-	/*! GTK Initialization*/
-	/* gtk_set_locale(); */
-	gtk_init(&narg_glut, &arg_glut);
-    
+	
 	/* Create a windowed mode window and its OpenGL context */
 	glfw_win = open_kemoviwer_window(NPIX_X, NPIX_Y);
 	int nx_buf, ny_buf;
@@ -161,7 +158,7 @@ int draw_glfw_test(int iflag_streo_shutter, int iflag_dmesh) {
 	kemoview_init_phong_light_list();
 	
 	glClear(GL_COLOR_BUFFER_BIT);
-	display(glfw_win);
+	draw_mesh_glfw();
 	glfwPollEvents();
 	glfwPostEmptyEvent();
 	

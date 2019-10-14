@@ -6,6 +6,7 @@
 int main(int argc, char *argv[]){
 	int iflag_streo_shutter = SHUTTER_OFF;
 	int i;
+	int ierr;
 	
 	/*	printf("Number of arguments %d\n", argc);*/
 	for (i = 0; i < argc; i++) {
@@ -23,8 +24,8 @@ int main(int argc, char *argv[]){
 		}
 	}
 	
-	draw_mesh_kemo(iflag_streo_shutter, IZERO);
-	return 0;
+	ierr = draw_mesh_kemo(iflag_streo_shutter, IZERO);
+	return ierr;
 };
 
 

@@ -227,7 +227,7 @@ int draw_mesh_kemo(int iflag_streo_shutter, int iflag_dmesh) {
 	
 	iflag_gtk_focus = 1;
 	glClear(GL_COLOR_BUFFER_BIT);
-	display(glfw_win);
+	draw_mesh_glfw();
 	glfwPollEvents();
 	glfwPostEmptyEvent();
 	

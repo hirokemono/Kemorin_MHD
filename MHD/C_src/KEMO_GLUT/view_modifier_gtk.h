@@ -1,8 +1,8 @@
 
-/* view_modifier_glfw.h */
+/* view_modifier_gtk.h */
 
-#ifndef VIEW_MODIFIER_GLFW_
-#define VIEW_MODIFIER_GLFW_
+#ifndef VIEW_MODIFIER_GTK_
+#define VIEW_MODIFIER_GTK_
 
 #include <math.h>
 #include <stdio.h>
@@ -27,26 +27,18 @@ struct window_pointers{
 
 /* prototypes */
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 GLFWwindow * open_kemoviwer_window(int npixel_x, int npixel_y);
 
-void glfw_view_modifier_init(GLFWwindow* window);
-void set_GlfwWindowSize(int width, int height);
+void gtk_view_modifier_init(GLFWwindow* window);
+void set_GtkWindowSize(int width, int height);
 
-void draw_fast_glfw(void);
-void draw_mesh_glfw(void);
-void write_rotate_views_glut(int iflag_img, struct kv_string *image_prefix, 
+void draw_fast_gtk(void);
+void draw_mesh_gtk(void);
+void write_rotate_views_gtk(int iflag_img, struct kv_string *image_prefix, 
                              int i_axis, int inc_deg);
-void write_evolution_views_glut(int iflag_img, struct kv_string *image_prefix, 
+void write_evolution_views_gtk(int iflag_img, struct kv_string *image_prefix, 
 								int ist_udt, int ied_udt, int inc_udt);
 
 void set_viewtype_mode_glfw(int selected);
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif
