@@ -182,6 +182,16 @@
 !
       integer :: k, j, i
 !
+      j = find_local_sph_address(sph_rj, 6, 6)
+      if(j .gt. 0) then
+        write(*,*) 'poloidal velocity and toroidal vorticity original'
+        do k = 1, sph_rj%nidx_rj(1)
+          i = local_sph_node_address(sph_rj, k, j)
+          write(*,*) k, rj_fld%d_fld(i,ipol%i_velo),                    &
+     &                  rj_fld%d_fld(i,itor%i_vort)
+        end do
+      end if
+!
       if(ipol%i_velo*ipol%i_vort .gt. 0) then
         call const_grad_vp_and_vorticity                                &
      &     (sph_rj, r_2nd, sph_MHD_bc%sph_bc_U, sph_MHD_bc%bcs_U,       &
@@ -201,9 +211,9 @@
      &      rj_fld)
       end if
 !
-      j = find_local_sph_address(sph_rj, 0, 0)
+      j = find_local_sph_address(sph_rj, 6, 6)
       if(j .gt. 0) then
-        write(*,*) 'poloidal velocity and toroidal vorticity'
+        write(*,*) 'poloidal velocity and toroidal vorticity after'
         do k = 1, sph_rj%nidx_rj(1)
           i = local_sph_node_address(sph_rj, k, j)
           write(*,*) k, rj_fld%d_fld(i,ipol%i_velo),                    &
