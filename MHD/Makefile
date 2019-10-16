@@ -88,8 +88,12 @@ else
 endif
 
 ifdef OPENGL_LIBS
+  ifdef GLFW_LIBS
+    CPP_FLAGS+= -DGLFW3
+  endif
+
   OPENGL_LIBRARIES = $(OPENGL_LIBS) $$(PNG_LIBS) $$(ZLIB_LIBS)
-  OPTFLAGS_GL=  $$(OPTFLAGS) $(CPP_FLAGS) $$(OPENGL_INC) $$(PNG_CFLAGS)
+  OPTFLAGS_GL=  $$(OPTFLAGS) $(CPP_FLAGS) $$(OPENGL_INC) $$(PNG_CFLAGS)  
 endif
 
 ifdef MPILIBS
@@ -301,7 +305,8 @@ makemake:
 		ZLIB_LIBS='$(ZLIB_LIBS)'     \
 		PNG_LIBS='$(PNG_LIBS)'       \
 		FFTW3_LIBS='$(FFTW3_LIBS)'   \
-        FFTW3_C='$(FFTW3_C)'   \
+		FFTW3_C='$(FFTW3_C)'   \
+		GLFW_LIBS='$(GLFW_LIBS)'   \
 		MAKEDIR='$(MAKEDIR)' \
 		MAKENAME='$(MAKENAME)' \
 		64BIT_INT='$(64BIT_INT)'   \

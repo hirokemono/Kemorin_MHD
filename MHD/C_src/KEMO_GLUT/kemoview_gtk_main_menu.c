@@ -98,7 +98,7 @@ void open_kemoviewer_file_glfw(struct kv_string *filename, struct main_buttons *
 	delete_kemoview_menu(mbot);
 	update_kemoview_menu(mbot, window_main);
 	gtk_widget_queue_draw(window_main);
-	draw_mesh_glfw();
+	draw_full();
 	return;
 };
 
@@ -109,13 +109,13 @@ static void set_viewtype_CB(GtkComboBox *combobox_viewtype, gpointer user_data)
 	
 	int index_mode = gtk_selected_combobox_index(combobox_viewtype);
 	
-	set_viewtype_mode_glfw(index_mode);
+	set_viewtype_mode(index_mode);
 	
 	delete_kemoview_menu(mbot);
 	update_kemoview_menu(mbot, window_main);
 	
 	gtk_widget_queue_draw(window_main);
-	draw_mesh_glfw();
+	draw_full();
 	return;
 };
 
@@ -123,7 +123,7 @@ static void set_image_fileformat_CB(GtkComboBox *combobox_filefmt, gpointer user
 {
     int id_fmt = gtk_selected_combobox_index(combobox_filefmt);
 	
-	draw_mesh_glfw();
+	draw_full();
 	return;
 };
 
@@ -169,7 +169,7 @@ static void current_psf_select_CB(GtkComboBox *combobox_sfcolor, gpointer user_d
 	
 	
 	gtk_widget_queue_draw(window_main);
-	draw_mesh_glfw();
+	draw_full();
 	return;
 };
 
@@ -179,14 +179,14 @@ static void close_psf_CB(GtkButton *button, gpointer user_data){
 	
 	int nload_psf = kemoview_close_PSF_view();
 	
-	set_viewtype_mode_glfw(VIEW_3D);
+	set_viewtype_mode(VIEW_3D);
 	dealloc_colormap_views_4_viewer(mbot->color_vws);
 	
 	delete_kemoview_menu(mbot);
 	update_kemoview_menu(mbot, window_main);
 	
 	gtk_widget_queue_draw(window_main);
-	draw_mesh_glfw();
+	draw_full();
 };
 
 static void close_fline_CB(GtkButton *button, gpointer user_data){
@@ -199,7 +199,7 @@ static void close_fline_CB(GtkButton *button, gpointer user_data){
 	update_kemoview_menu(mbot, window_main);
 	
 	gtk_widget_queue_draw(window_main);
-	draw_mesh_glfw();
+	draw_full();
 };
 
 static void close_mesh_CB(GtkButton *button, gpointer user_data){
@@ -213,7 +213,7 @@ static void close_mesh_CB(GtkButton *button, gpointer user_data){
 	update_kemoview_menu(mbot, window_main);
 	
 	gtk_widget_queue_draw(window_main);
-	draw_mesh_glfw();
+	draw_full();
 	return;
 };
 
@@ -233,7 +233,7 @@ static void psf_field_select_CB(GtkComboBox *combobox_field, gpointer user_data)
 	
 	
 	gtk_widget_queue_draw(window_main);
-	draw_mesh_glfw();
+	draw_full();
 	return;
 };
 
@@ -253,7 +253,7 @@ static void psf_component_select_CB(GtkComboBox *combobox_comp, gpointer user_da
 	
 	
 	gtk_widget_queue_draw(window_main);
-	draw_mesh_glfw();
+	draw_full();
 	return;
 };
 

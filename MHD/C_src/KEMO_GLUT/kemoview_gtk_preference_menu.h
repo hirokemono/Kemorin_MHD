@@ -21,7 +21,13 @@
 #include "tree_view_4_light_position.h"
 #include "kemoview_gtk_colorsel.h"
 #include "kemoview_gtk_routines.h"
-#include "view_modifier_glfw.h"
+
+#ifdef GLFW3
+	#include "view_modifier_glfw.h"
+#else
+	#include "view_modifier_gtk.h"
+#endif
+
 
 /*  prototypes */
 

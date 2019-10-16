@@ -6,6 +6,15 @@
 
 /* initial settings */
 
+#define LEFT_BUTTON    1
+#define MIDDLE_BUTTON  2
+#define RIGHT_BUTTON   3
+
+#define GTK_KEY_DOWN   10000
+#define GTK_KEY_UP     10000
+#define GTK_KEY_LEFT   10000
+#define GTK_KEY_RIGHT  10000
+
 GtkWidget *gl_area;
 int iflag_quickdraw = 0;
 
@@ -20,54 +29,55 @@ static double  begin_left[2], begin_middle[2], begin_right[2];
 static double  begin[2];
 static double  gTrackBallRotation[4];
 
-void mouseButtonCB(GLFWwindow *window, int button, int action, int mods) {
-	double xpos;
-	double ypos;
-	
-	gdk_device_get_window_at_position_double(gl_widget, mouse, &xpos, &ypos);
-/*	printf("mouseButtonCB %d %d %d %lf, %lf\n", button, action, mods, xpos, ypos);*/
+gboolean mouseButtonCB(GtkWidget *widget, GdkEventButton *event, gpointer user_data) {
+	double xpos = event->x;
+	double ypos = event->y;
+	printf("mouseButtonCB %d %d %lf, %lf\n", event->button, 
+				event->type, xpos, ypos);
 
-	if(button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
+	if(event->button == LEFT_BUTTON && event->type == GDK_BUTTON_PRESS) {
 		moving_left = 1;
 		begin_left[0] = xpos;
 		begin_left[1] = ypos;
 	};
-	if(button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE) {
+	if(event->button == LEFT_BUTTON && event->type == GDK_BUTTON_RELEASE) {
 		moving_left = 0;
 	};
 	
-	if(button == GLFW_MOUSE_BUTTON_MIDDLE && action == GLFW_PRESS) {
+	if(event->button == MIDDLE_BUTTON && event->type == GDK_BUTTON_PRESS) {
 		moving_middle = 1;
 		begin_middle[0] = xpos;
 		begin_middle[1] = ypos;
 	};
-	if(button == GLFW_MOUSE_BUTTON_MIDDLE && action == GLFW_RELEASE) {
+	if(event->button == MIDDLE_BUTTON && event->type == GDK_BUTTON_RELEASE) {
 		moving_middle = 0;
 	};
 	
-	if(button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS) {
+	if(event->button == RIGHT_BUTTON && event->type == GDK_BUTTON_PRESS) {
 		moving_right = 1;
 		begin_right[0] = xpos;
 		begin_right[1] = ypos;
 	};
-	if(button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_RELEASE) {
+	if(event->button == RIGHT_BUTTON && event->type == GDK_BUTTON_RELEASE) {
 		moving_right = 0;
 	};
 	
-	if(action == GLFW_RELEASE){
-		draw_mesh_gtk();
+	if(event->type == GDK_BUTTON_RELEASE){
+		draw_full();
 	};
-	return;
+	return TRUE;
 };
 
-void mousePosCB(GLFWwindow *window, double xpos, double ypos) {
+gboolean mousePosCB(GtkWidget *widget, GdkEventButton *event, gpointer user_data) {
 	/*! This gets called when the mouse moves */
+	double xpos = event->x;
+	double ypos = event->y;
 	
 	double factor;
 	int button_function = left_button_func;
 	
 	/*printf("mousePosCB %.1lf %.1lf\n", xpos, ypos); */
-	if (moving_left == 0 && moving_middle == 0 && moving_right == 0) return;
+	if (moving_left == 0 && moving_middle == 0 && moving_right == 0) return TRUE;
 	
 	/*! Determine and apply the button function */
 	
@@ -138,27 +148,29 @@ void mousePosCB(GLFWwindow *window, double xpos, double ypos) {
 		begin_right[0] = xpos;
 		begin_right[1] = ypos;
 	};
-	return;
+	return TRUE;
 }
 
-void set_GtkWindowSize(int width, int height){
+void set_GLWindowSize(int width, int height){
 	gtk_widget_set_size_request(gl_area, width, height);
 	kemoview_update_projection_by_viewer_size(width, height);
 	glViewport(IZERO, IZERO, (GLint) width, (GLint) height);
 };
 
-void mouseScrollCB(GLFWwindow *window, double x, double y) {
+gboolean mouseScrollCB(GtkWidget *widget, GdkEventScroll *event, gpointer user_data) {
 /*	printf("mouseScrollCB %.1lf %.1lf\n", x, y);*/
-    double newScale = x + y;
-    kemoview_zooming(newScale);
+    double newScale = event->x + event->y;
+	kemoview_zooming(newScale);
+	return TRUE;
 }
-void charFunCB(GLFWwindow* window, unsigned int charInfo) {
+
+void charFunCB(GtkWidget *widget, unsigned int charInfo) {
 	printf("charFunCB %d\n", charInfo);
 }
 
 
 /*! This routine handles the arrow key operations */
-static void keyFuncCB(GLFWwindow* window, int key, int scancode, int action, int mods) {
+static void keyFuncCB(GtkWidget *widget, GdkEventKey *event, gpointer user_data) {
 	double x_dbl, y_dbl;
 	double factor;
 	
@@ -167,10 +179,10 @@ static void keyFuncCB(GLFWwindow* window, int key, int scancode, int action, int
 	x_dbl = ZERO;
 	y_dbl = ZERO;
 	if (arrow_key_func == ZOOM){
-		if (key == GLFW_KEY_DOWN && action == GLFW_PRESS){
+		if (event->keyval == GTK_KEY_DOWN && event->type == GDK_KEY_PRESS){
 			factor = ONE;
 		}
-		else if (key == GLFW_KEY_UP && action == GLFW_PRESS){
+		else if (event->keyval == GTK_KEY_UP && event->type == GDK_KEY_PRESS){
 			factor = -ONE;
 		}
 		else {
@@ -184,10 +196,10 @@ static void keyFuncCB(GLFWwindow* window, int key, int scancode, int action, int
 		begin[1] = ZERO;
 		x_dbl = ZERO;
 		y_dbl = ZERO;
-		if (key == GLFW_KEY_DOWN && action == GLFW_PRESS){
+		if (event->keyval == GTK_KEY_DOWN && event->type == GDK_KEY_PRESS){
 			x_dbl = ONE;
 		}
-		else if (key == GLFW_KEY_UP && action == GLFW_PRESS){
+		else if (event->keyval == GTK_KEY_UP && event->type == GDK_KEY_PRESS){
 			y_dbl = -ONE;
 		}
 		else {
@@ -199,19 +211,19 @@ static void keyFuncCB(GLFWwindow* window, int key, int scancode, int action, int
 	else if (arrow_key_func == PAN){
 		begin[0] = ZERO;
 		begin[1] = ZERO;
-		if (key == GLFW_KEY_LEFT && action == GLFW_PRESS){
+		if (event->keyval == GTK_KEY_LEFT && event->type == GDK_KEY_PRESS){
 			x_dbl = -ONE;
 			y_dbl = ZERO;
 		}
-		else if (key == GLFW_KEY_RIGHT && action == GLFW_PRESS){
+		else if (event->keyval == GTK_KEY_RIGHT && event->type == GDK_KEY_PRESS){
 			x_dbl = ONE;
 			y_dbl = ZERO;
 		}
-		else if (key == GLFW_KEY_DOWN && action == GLFW_PRESS){
+		else if (event->keyval == GTK_KEY_DOWN && event->type == GDK_KEY_PRESS){
 			x_dbl = ZERO;
 			y_dbl = ONE;
 		}
-		else if (key == GLFW_KEY_UP && action == GLFW_PRESS){
+		else if (event->keyval == GTK_KEY_UP && event->type == GDK_KEY_PRESS){
 			x_dbl = ZERO;
 			y_dbl = -ONE;
 		};
@@ -219,19 +231,19 @@ static void keyFuncCB(GLFWwindow* window, int key, int scancode, int action, int
 	}
 	
 	else if (arrow_key_func == ROTATE){
-		if (key == GLFW_KEY_LEFT && action == GLFW_PRESS){
+		if (event->keyval == GTK_KEY_LEFT && event->type == GDK_KEY_PRESS){
 			x_dbl = begin[0] - TEN;
 			y_dbl = begin[1] + ZERO;
 		}
-		else if (key == GLFW_KEY_RIGHT && action == GLFW_PRESS){
+		else if (event->keyval == GTK_KEY_RIGHT && event->type == GDK_KEY_PRESS){
 			x_dbl = begin[0] + TEN;
 			y_dbl = begin[1] + ZERO;
 		}
-		else if (key == GLFW_KEY_DOWN && action == GLFW_PRESS){
+		else if (event->keyval == GTK_KEY_DOWN && event->type == GDK_KEY_PRESS){
 			x_dbl = begin[0] + ZERO;
 			y_dbl = begin[1] + TEN;
 		}
-		else if (key == GLFW_KEY_UP && action == GLFW_PRESS){
+		else if (event->keyval == GTK_KEY_UP && event->type == GDK_KEY_PRESS){
 			x_dbl = begin[0] + ZERO;
 			y_dbl = begin[1] - TEN;
 		};
@@ -244,9 +256,9 @@ static void keyFuncCB(GLFWwindow* window, int key, int scancode, int action, int
 		double current_scale;
         current_scale = kemoview_get_scale_factor();
         
-		if (key == GLFW_KEY_DOWN && action == GLFW_PRESS)
+		if (event->keyval == GTK_KEY_DOWN && event->type == GDK_KEY_PRESS)
 		factor = ONE/(ONE + TWO_CENT);
-		else if (key == GLFW_KEY_UP && action == GLFW_PRESS){
+		else if (event->keyval == GTK_KEY_UP && event->type == GDK_KEY_PRESS){
 			factor = ONE + TWO_CENT;
 		}
 		else {
@@ -256,12 +268,12 @@ static void keyFuncCB(GLFWwindow* window, int key, int scancode, int action, int
 		kemoview_set_scale_factor(current_scale);
  	};
 	
-	gtk_gl_area_swap_buffers(GTK_GL_AREA(gl_area));
+/*	gtk_gl_area_swap_buffers(GTK_GL_AREA(gl_area)); */
 	return;
 }
 
-GLFWwindow * open_kemoviwer_window(int npixel_x, int npixel_y){
-	gl_area = gtk_gl_area_new (void);
+GtkWidget * open_kemoviwer_gl_panel(int npixel_x, int npixel_y){
+	gl_area = gtk_gl_area_new();
 	if (!gl_area){
         printf("Baka!!\n");
 		exit(1);
@@ -269,40 +281,56 @@ GLFWwindow * open_kemoviwer_window(int npixel_x, int npixel_y){
 	
 	/* Make the window's context current */
 	gtk_widget_set_size_request(gl_area, npixel_x, npixel_y);
-	gtk_gl_area_make_current(gl_area);
+	gtk_gl_area_make_current(GTK_GL_AREA(gl_area));
+	
+	gtk_gl_area_set_required_version(GTK_GL_AREA(gl_area), 4, 1);
+	
+	gtk_gl_area_set_has_alpha(GTK_GL_AREA(gl_area), TRUE);
+	gtk_gl_area_set_has_depth_buffer(GTK_GL_AREA(gl_area), TRUE);
+	gtk_gl_area_set_has_stencil_buffer(GTK_GL_AREA(gl_area), TRUE);
+	gtk_gl_area_set_auto_render(GTK_GL_AREA(gl_area), TRUE);
 	return gl_area;
 };
 
 
-void gtk_view_modifier_init(GLFWwindow* window){
+void gtk_callbacks_init(){
 	/* set callback for mouse button */
-	glfwSetMouseButtonCallback(window, mouseButtonCB);
+	g_signal_connect(G_OBJECT(gl_area), "button_press_event", G_CALLBACK(mouseButtonCB), NULL);
+	g_signal_connect(G_OBJECT(gl_area), "button_release_event", G_CALLBACK(mouseButtonCB), NULL);
 	/* set callback for cursor position */
-	glfwSetCursorPosCallback(window, mousePosCB);
+	g_signal_connect(G_OBJECT(gl_area), "motion_notify_event", G_CALLBACK(mousePosCB), NULL);
 	/* set callback for cursor position */
-	glfwSetScrollCallback(window, mouseScrollCB);
+	g_signal_connect(G_OBJECT(gl_area), "scroll_event", G_CALLBACK(mouseScrollCB), NULL);
 	
 	/* Set callback for keyboard input */
-	glfwSetKeyCallback(window, keyFuncCB);
-	glfwSetCharCallback(window, charFunCB);
+	g_signal_connect(G_OBJECT(gl_area), "key-press-event", G_CALLBACK(keyFuncCB), NULL);
+	
+	gtk_widget_set_events(GTK_WIDGET(gl_area),
+				GDK_BUTTON_PRESS_MASK |
+				GDK_BUTTON_RELEASE_MASK |
+				GDK_POINTER_MOTION_MASK |
+				GDK_ENTER_NOTIFY_MASK |
+				GDK_LEAVE_NOTIFY_MASK | 
+				GDK_SCROLL_MASK
+				);
 	
 	return;
 }
 
 
-void draw_fast_gtk(){
+void draw_fast(){
 	kemoview_draw_fast_gl3();
-	gtk_gl_area_swap_buffers(GTK_GL_AREA(gl_area));
+/*	gtk_gl_area_swap_buffers(GTK_GL_AREA(gl_area)); */
 	return;
 };
 
-void draw_mesh_gtk(){
+void draw_full(){
 	kemoview_modify_view();
-	gtk_gl_area_swap_buffers(GTK_GL_AREA(gl_area));
+/*	gtk_gl_area_swap_buffers(GTK_GL_AREA(gl_area)); */
 	return;
 };
 
-void write_rotate_views_gtk(int iflag_img, struct kv_string *image_prefix, 
+void write_rotate_views(int iflag_img, struct kv_string *image_prefix, 
                              int i_axis, int inc_deg) {
     int i, int_degree, ied_deg;
     if(inc_deg <= 0) inc_deg = 1;
@@ -315,27 +343,27 @@ void write_rotate_views_gtk(int iflag_img, struct kv_string *image_prefix,
 		
 		kemoview_set_animation_rot_angle(int_degree);
 		kemoview_rotate();
-		gtk_gl_area_swap_buffers(GTK_GL_AREA(gl_area));
+/*		gtk_gl_area_swap_buffers(GTK_GL_AREA(gl_area)); */
 		
         kemoview_write_window_to_file_w_step(iflag_img, i, image_prefix);
 	};
-	draw_mesh_gtk();
+	draw_full();
 	return;
 }
 
-void write_evolution_views_gtk(int iflag_img, struct kv_string *image_prefix, 
+void write_evolution_views(int iflag_img, struct kv_string *image_prefix, 
 								int ist_udt, int ied_udt, int inc_udt){
 	int i;
 
-	gtk_gl_area_swap_buffers(GTK_GL_AREA(gl_area));
+/*	gtk_gl_area_swap_buffers(GTK_GL_AREA(gl_area)); */
 	for (i=ist_udt; i<(ied_udt+1); i++) {
 		if( ((i-ist_udt)%inc_udt) == 0) {
 			
 			kemoview_viewer_evolution(i);
 			
 			glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-			draw_mesh_gtk();
-			gtk_gl_area_swap_buffers(GTK_GL_AREA(gl_area));
+			draw_full();
+/*			gtk_gl_area_swap_buffers(GTK_GL_AREA(gl_area)); */
             
             kemoview_write_window_to_file_w_step(iflag_img, i, image_prefix);
 		}
@@ -344,7 +372,7 @@ void write_evolution_views_gtk(int iflag_img, struct kv_string *image_prefix,
 };
 
 
-void set_viewtype_mode_gtk(int selected){
+void set_viewtype_mode(int selected){
 	
 	if(selected == RESET) selected = VIEW_3D;
 

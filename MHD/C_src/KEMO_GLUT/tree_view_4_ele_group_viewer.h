@@ -19,7 +19,13 @@
 #include "tree_view_4_viewer_mesh.h"
 #include "create_tree_view_columns_GTK.h"
 #include "quicksort_c.h"
-#include "view_modifier_glfw.h"
+
+#ifdef GLFW3
+	#include "view_modifier_glfw.h"
+#else
+	#include "view_modifier_gtk.h"
+#endif
+
 
 /* prototypes */
 

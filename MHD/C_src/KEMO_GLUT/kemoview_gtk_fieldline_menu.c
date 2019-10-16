@@ -15,7 +15,7 @@ static void fline_thickness_CB(GtkWidget *entry, gpointer data)
 	if(thick_in > 0) kemoview_set_fline_thickness(thick_in);
 /*	printf("thick_in %d\n", thick_in);*/
 	
-	draw_mesh_glfw();
+	draw_full();
 }
 
 static void MinChange_CB(GtkWidget *entry, gpointer data)
@@ -26,7 +26,7 @@ static void MinChange_CB(GtkWidget *entry, gpointer data)
 	double data_min = (double) gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
 	kemoview_set_fline_linear_colormap(data_min, data_max);
 	
-	draw_mesh_glfw();
+	draw_full();
 }
 
 static void MaxChange_CB(GtkWidget *entry, gpointer data)
@@ -37,13 +37,13 @@ static void MaxChange_CB(GtkWidget *entry, gpointer data)
 	double data_max = (double) gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
 	kemoview_set_fline_linear_colormap(data_min, data_max);
 	
-	draw_mesh_glfw();
+	draw_full();
 }
 
 static void psf_fieldtube_switch_CB(GObject *switch_1, GParamSpec *pspec, gpointer data){
 	kemoview_toggle_fline_type();
 	
-	draw_mesh_glfw();
+	draw_full();
 	return;
 };
 
@@ -53,7 +53,7 @@ static void psf_fline_colormode_CB(GtkComboBox *combobox_sfcolor, gpointer user_
 	
 	kemoview_set_fline_color_type(index_mode);
 	
-	draw_mesh_glfw();
+	draw_full();
 	return;
 };
 

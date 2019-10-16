@@ -16,7 +16,7 @@ static void kemoview_gtk_BGcolorsel(GtkButton *button, gpointer data){
 	int iflag_set = kemoview_gtk_colorsel_CB(parent, color);
 	if(iflag_set > 0){kemoview_set_background_color(color);};
 	
-	draw_mesh_glfw();
+	draw_full();
 	return;
 }
 
@@ -26,7 +26,7 @@ static void AmbientChange(GtkWidget *entry, gpointer data)
 	kemovier_set_material_ambient(value);
 /*	printf("gtk_min %d\n", gtk_min);*/
 	
-	draw_mesh_glfw();
+	draw_full();
 	return;
 }
 static void DiffuseChange(GtkWidget *entry, gpointer data)
@@ -35,7 +35,7 @@ static void DiffuseChange(GtkWidget *entry, gpointer data)
 	kemoview_set_material_diffuse(value);
 /*	printf("gtk_min %d\n", gtk_min);*/
 	
-	draw_mesh_glfw();
+	draw_full();
 	return;
 }
 static void SpecularChange(GtkWidget *entry, gpointer data)
@@ -44,7 +44,7 @@ static void SpecularChange(GtkWidget *entry, gpointer data)
 	kemoview_set_material_specular(value);
 /*	printf("gtk_min %d\n", gtk_min);*/
 	
-	draw_mesh_glfw();
+	draw_full();
 	return;
 }
 static void ShinenessChange(GtkWidget *entry, gpointer data)
@@ -54,7 +54,7 @@ static void ShinenessChange(GtkWidget *entry, gpointer data)
 	kemoview_set_material_shineness(value);
 /*	printf("gtk_min %d\n", gtk_min);*/
 	
-	draw_mesh_glfw();
+	draw_full();
 	return;
 }
 

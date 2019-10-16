@@ -27,7 +27,7 @@ static void kemoview_colormap_data_edited_CB(GtkCellRendererText *cell, gchar *p
 		kemoview_set_PSF_color_data(i, value, color);
 	};
 	gtk_widget_queue_draw(color_vws->scrolled_window);
-	draw_mesh_glfw();
+	draw_full();
 };
 
 static void kemoview_colormap_color_edited_CB(GtkCellRendererText *cell, gchar *path_str,
@@ -44,7 +44,7 @@ static void kemoview_colormap_color_edited_CB(GtkCellRendererText *cell, gchar *
 		kemoview_set_PSF_color_data(i, value, color);
 	};
 	gtk_widget_queue_draw(color_vws->scrolled_window);
-	draw_mesh_glfw();
+	draw_full();
 };
 
 static void add_kemoview_colormap_list_items_CB(GtkButton *button, gpointer user_data){
@@ -61,7 +61,7 @@ static void add_kemoview_colormap_list_items_CB(GtkButton *button, gpointer user
 		kemoview_set_PSF_color_data(i, value, color);
 	};
 	gtk_widget_queue_draw(color_vws->scrolled_window);
-	draw_mesh_glfw();
+	draw_full();
 };
 
 
@@ -79,7 +79,7 @@ static void delete_kemoview_colormap_list_items_CB(GtkButton *button, gpointer u
 		kemoview_set_PSF_color_data(i, value, color);
 	};
 	gtk_widget_queue_draw(color_vws->scrolled_window);
-	draw_mesh_glfw();
+	draw_full();
 };
 
 
@@ -100,7 +100,7 @@ static void kemoview_opacity_data_edited_CB(GtkCellRendererText *cell, gchar *pa
 		kemoview_set_PSF_opacity_data(i, value, opacity);
 	};
 	gtk_widget_queue_draw(color_vws->scrolled_window);
-	draw_mesh_glfw();
+	draw_full();
 };
 
 static void kemoview_opacity_color_edited_CB(GtkCellRendererText *cell, gchar *path_str,
@@ -119,7 +119,7 @@ static void kemoview_opacity_color_edited_CB(GtkCellRendererText *cell, gchar *p
 		kemoview_set_PSF_opacity_data(i, value, opacity);
 	};
 	gtk_widget_queue_draw(color_vws->scrolled_window);
-	draw_mesh_glfw();
+	draw_full();
 };
 
 static void add_kemoview_opacity_list_items_CB(GtkButton *button, gpointer user_data){
@@ -138,7 +138,7 @@ static void add_kemoview_opacity_list_items_CB(GtkButton *button, gpointer user_
 		kemoview_set_PSF_opacity_data(i, value, opacity);
 	};
 	gtk_widget_queue_draw(color_vws->scrolled_window);
-	draw_mesh_glfw();
+	draw_full();
 };
 
 static void delete_kemoview_opacity_list_items_CB(GtkButton *button, gpointer user_data){
@@ -156,7 +156,7 @@ static void delete_kemoview_opacity_list_items_CB(GtkButton *button, gpointer us
 		kemoview_set_PSF_opacity_data(i, value, opacity);
 	};
 	gtk_widget_queue_draw(color_vws->scrolled_window);
-	draw_mesh_glfw();
+	draw_full();
 };
 
 static void set_kemoview_color_mode_CB(GtkComboBox *combobox_cmap, gpointer user_data)

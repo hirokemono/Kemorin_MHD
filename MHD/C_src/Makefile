@@ -25,18 +25,12 @@ GTK
 
 ifdef OPENGL_LIBS
   OBJS_C+= \
-    $$(OBJ_KEMO_GL_C) \
-    $$(OBJ_SHADERS)
+    $$(OBJ_KEMO_GL_C)   \
+    $$(OBJ_SHADERS)     \
+    $$(OBJ_KEMO_GTK_C)
   LIBDIRS+=   \
     KEMO_GL   \
     GLSL      \
-    KEMO_GLUT
-endif
-
-ifdef GTK3_LIBS
-  OBJS_C+= \
-    $$(OBJ_KEMO_GTK_C)
-  LIBDIRS+=   \
     GTK
 endif
 
@@ -92,6 +86,7 @@ mod_list:
 		ZLIB_LIBS='$(ZLIB_LIBS)'     \
 		PNG_LIBS='$(PNG_LIBS)'       \
 		FFTW3_C='$(FFTW3_C)'   \
+		GLFW_LIBS='$(GLFW_LIBS)'   \
 		MAKENAME='$(MAKENAME)' \
 		mod_list \
 		) \

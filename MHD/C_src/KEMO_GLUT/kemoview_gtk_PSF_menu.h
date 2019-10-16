@@ -28,7 +28,12 @@
 #include "kemoview_gtk_PSF_isoline_menu.h"
 #include "kemoview_gtk_PSF_vector_menu.h"
 
-#include "view_modifier_glfw.h"
+#ifdef GLFW3
+	#include "view_modifier_glfw.h"
+#else
+	#include "view_modifier_gtk.h"
+#endif
+
 
 /*  prototypes */
 

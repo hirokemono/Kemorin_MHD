@@ -27,7 +27,7 @@ static void mainloop_4_glfw(){
 	while (!glfwWindowShouldClose(glfw_win)){
 		iflag = glfwWindowShouldClose(glfw_win);
 		
-		draw_mesh_glfw();
+		draw_full();
 		glfwPollEvents();
 	};
 	return;
@@ -125,7 +125,7 @@ int draw_glfw_test(int iflag_streo_shutter, int iflag_dmesh) {
 	*/
 	
 	/* Create a windowed mode window and its OpenGL context */
-	glfw_win = open_kemoviwer_window(NPIX_X, NPIX_Y);
+	glfw_win = open_kemoviwer_glfw_window(NPIX_X, NPIX_Y);
 	int nx_buf, ny_buf;
 	glfwGetFramebufferSize(glfw_win, &nx_buf, &ny_buf);
 	
@@ -137,7 +137,7 @@ int draw_glfw_test(int iflag_streo_shutter, int iflag_dmesh) {
 	
 	/*! set callback for GLfw*/
 	kemoviewer_reset_to_init_angle();
-	glfw_view_modifier_init();
+	glfw_callbacks_init();
 	
 	/* Set Cllback for drug and Drop into window */
 	glfwSetDropCallback(glfw_win, dropFileToGlfw_CB);
@@ -158,7 +158,7 @@ int draw_glfw_test(int iflag_streo_shutter, int iflag_dmesh) {
 	kemoview_init_phong_light_list();
 	
 	glClear(GL_COLOR_BUFFER_BIT);
-	draw_mesh_glfw();
+	draw_full();
 	glfwPollEvents();
 	glfwPostEmptyEvent();
 	

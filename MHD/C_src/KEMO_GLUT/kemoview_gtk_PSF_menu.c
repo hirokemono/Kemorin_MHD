@@ -32,7 +32,7 @@ static void load_colormap_file_panel_CB(GtkButton *loadButton, gpointer user_dat
 	kemoview_free_kvstring(filename);
 	
 	gtk_widget_queue_draw(window);
-	draw_mesh_glfw();
+	draw_full();
 	return;
 };
 

@@ -18,18 +18,18 @@
 
 /* prototypes */
 
-GLFWwindow * open_kemoviwer_window(int npixel_x, int npixel_y);
+GtkWidget * open_kemoviwer_gl_panel(int npixel_x, int npixel_y);
 
-void gtk_view_modifier_init(GLFWwindow* window);
-void set_GtkWindowSize(int width, int height);
+void gtk_callbacks_init();
+void set_GLWindowSize(int width, int height);
 
-void draw_fast_gtk(void);
-void draw_mesh_gtk(void);
-void write_rotate_views_gtk(int iflag_img, struct kv_string *image_prefix, 
+void draw_fast(void);
+void draw_full(void);
+void write_rotate_views(int iflag_img, struct kv_string *image_prefix, 
                              int i_axis, int inc_deg);
-void write_evolution_views_gtk(int iflag_img, struct kv_string *image_prefix, 
+void write_evolution_views(int iflag_img, struct kv_string *image_prefix, 
 								int ist_udt, int ied_udt, int inc_udt);
 
-void set_viewtype_mode_glfw(int selected);
+void set_viewtype_mode(int selected);
 
 #endif

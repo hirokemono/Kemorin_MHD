@@ -2,9 +2,14 @@
 #
 #
 
-OBJ_KEMOVIEW_GLUT = \
-view_modifier_glfw.o \
-\
+
+ifdef GLFW_LIBS
+	OBJ_KEMOVIEW_GLUT = view_modifier_glfw.o
+else
+	OBJ_KEMOVIEW_GLUT = view_modifier_gtk.o
+endif
+
+OBJ_KEMOVIEW_GLUT += \
 kemoview_fileselector_gtk.o \
 kemoview_gtk_PSF_surface_menu.o \
 kemoview_gtk_PSF_isoline_menu.o \
@@ -47,6 +52,15 @@ mod_list:
 
 module:
 	@echo \
+	view_modifier_gtk.o:  \
+	'$$(KEMO_C_GLUTDIR)'/view_modifier_gtk.c  \
+	view_modifier_gtk.h \
+	kemoviewer.h \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS) $$<' \
+	>> $(MAKENAME)
+	
+	@echo \
 	view_modifier_glfw.o:  \
 	'$$(KEMO_C_GLUTDIR)'/view_modifier_glfw.c  \
 	view_modifier_glfw.h \
@@ -74,6 +88,7 @@ module:
 	tree_view_chara_int_GTK.o \
 	kemoview_gtk_routines.o \
 	kemoview_fileselector_gtk.o \
+	view_modifier_gtk.o \
 	view_modifier_glfw.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS) $$<' \
@@ -88,6 +103,7 @@ module:
 	tree_view_4_pvr_colormap.o \
 	tree_view_chara_int_GTK.o \
 	kemoview_gtk_routines.o \
+	view_modifier_gtk.o \
 	view_modifier_glfw.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS) $$<' \
@@ -103,6 +119,7 @@ module:
 	tree_view_4_pvr_colormap.o \
 	tree_view_chara_int_GTK.o \
 	kemoview_gtk_routines.o \
+	view_modifier_gtk.o \
 	view_modifier_glfw.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS) $$<' \
@@ -124,6 +141,7 @@ module:
 	kemoview_gtk_PSF_surface_menu.o \
 	kemoview_gtk_PSF_isoline_menu.o \
 	kemoview_gtk_PSF_vector_menu.o \
+	view_modifier_gtk.o \
 	view_modifier_glfw.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS) $$<' \
@@ -140,6 +158,7 @@ module:
 	tree_view_4_nod_group_viewer.o \
 	tree_view_4_ele_group_viewer.o \
 	tree_view_4_surf_group_viewer.o \
+	view_modifier_gtk.o \
 	view_modifier_glfw.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS) $$<' \
@@ -155,6 +174,7 @@ module:
 	tree_views_4_fixed_lists_GTK.o \
 	tree_view_chara_int_GTK.o \
 	kemoview_gtk_routines.o \
+	view_modifier_gtk.o \
 	view_modifier_glfw.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS) $$<' \
@@ -167,6 +187,7 @@ module:
 	kemoviewer.h \
 	tree_views_4_fixed_lists_GTK.o \
 	kemoview_gtk_fline_selectors.o \
+	view_modifier_gtk.o \
 	view_modifier_glfw.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS) $$<' \
@@ -181,6 +202,7 @@ module:
 	tree_views_4_fixed_lists_GTK.o \
 	kemoview_fileselector_gtk.o \
 	kemoview_gtk_routines.o \
+	view_modifier_gtk.o \
 	view_modifier_glfw.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS) $$<' \
@@ -196,6 +218,7 @@ module:
 	tree_views_4_fixed_lists_GTK.o \
 	kemoview_fileselector_gtk.o \
 	kemoview_gtk_routines.o \
+	view_modifier_gtk.o \
 	view_modifier_glfw.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS) $$<' \
@@ -211,6 +234,7 @@ module:
 	tree_view_chara_int_GTK.o \
 	kemoview_fileselector_gtk.o \
 	kemoview_gtk_routines.o \
+	view_modifier_gtk.o \
 	view_modifier_glfw.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS) $$<' \
@@ -224,6 +248,7 @@ module:
 	m_kemoviewer_data.o \
 	kemoview_gtk_routines.o \
 	kemoview_fileselector_gtk.o \
+	view_modifier_gtk.o \
 	view_modifier_glfw.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS) $$<' \
@@ -247,6 +272,7 @@ module:
 	kemoview_gtk_fieldline_menu.o \
 	kemoview_gtk_viewmatrix_menu.o \
 	kemoview_gtk_mesh_menu.o \
+	view_modifier_gtk.o \
 	view_modifier_glfw.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS) $$<' \
@@ -262,6 +288,7 @@ module:
 	tree_view_4_light_position.o \
 	kemoview_gtk_colorsel.o \
 	kemoview_gtk_routines.o \
+	view_modifier_gtk.o \
 	view_modifier_glfw.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS) $$<' \
@@ -280,6 +307,7 @@ module:
 	kemoview_gtk_routines.o \
 	kemoview_gtk_colorsel.o \
 	quicksort_c.o \
+	view_modifier_gtk.o \
 	view_modifier_glfw.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS) $$<' \
@@ -298,6 +326,7 @@ module:
 	kemoview_gtk_colorsel.o \
 	create_tree_view_columns_GTK.o \
 	quicksort_c.o \
+	view_modifier_gtk.o \
 	view_modifier_glfw.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS) $$<' \
@@ -316,6 +345,7 @@ module:
 	kemoview_gtk_colorsel.o \
 	create_tree_view_columns_GTK.o \
 	quicksort_c.o \
+	view_modifier_gtk.o \
 	view_modifier_glfw.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS) $$<' \
@@ -334,6 +364,7 @@ module:
 	kemoview_gtk_routines.o \
 	kemoview_gtk_colorsel.o \
 	quicksort_c.o \
+	view_modifier_gtk.o \
 	view_modifier_glfw.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS) $$<' \
@@ -376,6 +407,7 @@ module:
 	tree_view_kemoview_colormap.h \
 	kemoviewer.h \
 	tree_view_4_colormap.o \
+	view_modifier_gtk.o \
 	view_modifier_glfw.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(GTK3_CFLAGS) $$(C_INCLUDE) $$<' \

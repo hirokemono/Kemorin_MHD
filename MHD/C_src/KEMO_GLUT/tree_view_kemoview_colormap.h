@@ -12,7 +12,13 @@
 
 #include "kemoviewer.h"
 #include "tree_view_4_colormap.h"
-#include "view_modifier_glfw.h"
+
+#ifdef GLFW3
+	#include "view_modifier_glfw.h"
+#else
+	#include "view_modifier_gtk.h"
+#endif
+
 
 /* prototypes */
 

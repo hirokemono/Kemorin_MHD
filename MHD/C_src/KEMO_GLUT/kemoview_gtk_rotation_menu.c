@@ -22,7 +22,7 @@ static void set_rotation_direction_CB(GtkComboBox *combobox_rotdir, gpointer use
 {
     iaxis_rot = gtk_selected_combobox_index(combobox_rotdir);
    	
-	draw_mesh_glfw();
+	draw_full();
 	return;
 };
 
@@ -30,7 +30,7 @@ static void set_rotation_fileformat_CB(GtkComboBox *combobox_filefmt, gpointer u
 {
     id_fmt_rot = gtk_selected_combobox_index(combobox_filefmt);
 	
-	draw_mesh_glfw();
+	draw_full();
 	return;
 };
 
@@ -47,7 +47,7 @@ static void rotation_view_CB(GtkButton *button, gpointer user_data){
 	struct kv_string *image_prefix = kemoview_init_kvstring_by_string("Kemoviewer");
 	
 	gtk_window_set_focus(GTK_WINDOW(window_main), NULL);
-	write_rotate_views_glut(NO_SAVE_FILE, image_prefix, iaxis_rot, inc_deg);
+	write_rotate_views(NO_SAVE_FILE, image_prefix, iaxis_rot, inc_deg);
 	kemoview_free_kvstring(image_prefix);
 	return;
 };
@@ -70,7 +70,7 @@ static void rotation_save_CB(GtkButton *button, gpointer user_data){
 	kemoview_free_kvstring(filename);
 	
 	gtk_window_set_focus(GTK_WINDOW(window_main), NULL);
-	write_rotate_views_glut(id_fmt_rot, file_prefix, iaxis_rot, inc_deg);
+	write_rotate_views(id_fmt_rot, file_prefix, iaxis_rot, inc_deg);
 	
 	return;
 };

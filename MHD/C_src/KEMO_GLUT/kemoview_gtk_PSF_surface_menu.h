@@ -21,7 +21,13 @@
 #include "tree_view_chara_int_GTK.h"
 #include "kemoview_gtk_routines.h"
 #include "kemoview_fileselector_gtk.h"
-#include "view_modifier_glfw.h"
+
+#ifdef GLFW3
+	#include "view_modifier_glfw.h"
+#else
+	#include "view_modifier_gtk.h"
+#endif
+
 
 /*  prototypes */
 

@@ -15,7 +15,7 @@ static void fline_field_select_CB(GtkComboBox *combobox_field, gpointer user_dat
 	
 	kemoview_set_fline_color_field(index_mode);
 	
-	draw_mesh_glfw();
+	draw_full();
 	return;
 };
 
@@ -24,7 +24,7 @@ static void fline_component_select_CB(GtkComboBox *combobox_comp, gpointer user_
     int index_mode = gtk_selected_combobox_index(combobox_comp);
 	kemoview_set_fline_color_component(index_mode);
 	
-	draw_mesh_glfw();
+	draw_full();
 	return;
 };
 

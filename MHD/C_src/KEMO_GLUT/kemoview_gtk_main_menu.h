@@ -28,7 +28,12 @@
 #include "kemoview_gtk_viewmatrix_menu.h"
 #include "kemoview_gtk_mesh_menu.h"
 
-#include "view_modifier_glfw.h"
+#ifdef GLFW3
+	#include "view_modifier_glfw.h"
+#else
+	#include "view_modifier_gtk.h"
+#endif
+
 
 struct main_buttons{
 	GtkWidget *vbox_menu;

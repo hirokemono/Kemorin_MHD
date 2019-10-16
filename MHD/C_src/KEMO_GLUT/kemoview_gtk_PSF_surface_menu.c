@@ -35,7 +35,7 @@ static void set_PSFcolor_GTK(GtkColorChooser *colordialog)
 	dcolor[3] = (gdouble) kemoview_get_PSF_max_opacity();
 	kemoview_set_PSF_single_color(dcolor);
 	kemoview_set_PSF_patch_color_mode(SINGLE_COLOR);
-	draw_mesh_glfw();
+	draw_full();
 	return;
 }
 

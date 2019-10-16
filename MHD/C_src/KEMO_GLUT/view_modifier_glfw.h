@@ -27,26 +27,17 @@ struct window_pointers{
 
 /* prototypes */
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+GLFWwindow * open_kemoviwer_glfw_window(int npixel_x, int npixel_y);
 
-GLFWwindow * open_kemoviwer_window(int npixel_x, int npixel_y);
+void glfw_callbacks_init();
+void set_GLWindowSize(int width, int height);
 
-void glfw_view_modifier_init();
-void set_GlfwWindowSize(int width, int height);
-
-void draw_fast_glfw(void);
-void draw_mesh_glfw(void);
-void write_rotate_views_glut(int iflag_img, struct kv_string *image_prefix, 
+void draw_fast(void);
+void draw_full(void);
+void write_rotate_views(int iflag_img, struct kv_string *image_prefix, 
                              int i_axis, int inc_deg);
-void write_evolution_views_glut(int iflag_img, struct kv_string *image_prefix, 
+void write_evolution_views(int iflag_img, struct kv_string *image_prefix, 
 								int ist_udt, int ied_udt, int inc_udt);
 
-void set_viewtype_mode_glfw(int selected);
-
-#ifdef __cplusplus
-}
-#endif
-
+void set_viewtype_mode(int selected);
 #endif

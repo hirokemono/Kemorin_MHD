@@ -12,7 +12,7 @@
 static void psf_vector_switch_CB(GObject *switch_1, GParamSpec *pspec, gpointer data){
 	kemoview_select_PSF_draw_switch(PSFVECT_TOGGLE);
 	
-	draw_mesh_glfw();
+	draw_full();
 	return;
 };
 
@@ -22,7 +22,7 @@ static void set_vector_mode_cb(GtkComboBox *combobox_cmap, gpointer user_data)
     
 	kemoview_set_PSF_tangential_vec_mode(index_mode);
 	
-	draw_mesh_glfw();
+	draw_full();
     return;
 }
 
@@ -32,7 +32,7 @@ static void set_vector_color_cb(GtkComboBox *combobox_cmap, gpointer user_data)
     
 	kemoview_select_PSF_draw_switch(index_mode);
 	
-	draw_mesh_glfw();
+	draw_full();
     return;
 }
 
@@ -41,7 +41,7 @@ static void set_ref_vector_CB(GtkWidget *entry, gpointer user_data)
 	double gtk_floatvalue = (double) gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
 	kemoview_set_PSF_vector_scale(gtk_floatvalue);
 	
-	draw_mesh_glfw();
+	draw_full();
 	return;
 }
 
@@ -50,7 +50,7 @@ static void set_vect_increment_CB(GtkWidget *entry, gpointer user_data)
 	int gtk_intvalue = (int) gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(entry));
 	kemoview_set_PSF_vector_increment(gtk_intvalue);
 	
-	draw_mesh_glfw();
+	draw_full();
 	return;
 }
 
@@ -60,7 +60,7 @@ static void set_vector_width_CB(GtkWidget *entry, gpointer user_data)
 	double gtk_floatvalue = (double) gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
 	kemoview_set_PSF_vector_thickness(gtk_floatvalue);
 	
-	draw_mesh_glfw();
+	draw_full();
 	return;
 }
 

@@ -18,7 +18,13 @@
 #include "kemoviewer.h"
 #include "tree_views_4_fixed_lists_GTK.h"
 #include "kemoview_gtk_fline_selectors.h"
-#include "view_modifier_glfw.h"
+
+#ifdef GLFW3
+	#include "view_modifier_glfw.h"
+#else
+	#include "view_modifier_gtk.h"
+#endif
+
 
 /*  prototypes */
 

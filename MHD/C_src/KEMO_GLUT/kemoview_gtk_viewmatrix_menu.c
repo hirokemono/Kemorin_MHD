@@ -74,7 +74,7 @@ static void load_viewmatrix_CB(GtkButton *button, gpointer user_data){
 	kemoview_load_modelview_file(filename);
 	kemoview_free_kvstring(filename);
 	
-	draw_mesh_glfw();
+	draw_full();
 	return;
 };
 
@@ -83,8 +83,8 @@ static void windowsize_x_CB(GtkWidget *entry, gpointer user_data){
 	kemoview_get_shift_vector(view_menu->tmpShift);
 	view_menu->npixel_x = (int) gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(entry));
 	
-	set_GlfwWindowSize(view_menu->npixel_x, view_menu->npixel_y);
-	draw_mesh_glfw();
+	set_GLWindowSize(view_menu->npixel_x, view_menu->npixel_y);
+	draw_full();
 	return;
 };
 static void windowsize_y_CB(GtkWidget *entry, gpointer user_data){
@@ -92,8 +92,8 @@ static void windowsize_y_CB(GtkWidget *entry, gpointer user_data){
 	kemoview_get_shift_vector(view_menu->tmpShift);
 	view_menu->npixel_y = (int) gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(entry));
 	
-	set_GlfwWindowSize(view_menu->npixel_x, view_menu->npixel_y);
-	draw_mesh_glfw();
+	set_GLWindowSize(view_menu->npixel_x, view_menu->npixel_y);
+	draw_full();
 	return;
 };
 static void eye_position_x_CB(GtkWidget *entry, gpointer user_data){
@@ -102,7 +102,7 @@ static void eye_position_x_CB(GtkWidget *entry, gpointer user_data){
 	view_menu->tmpShift[0] = -gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
 	kemoview_set_shift_vector(view_menu->tmpShift);
 	
-	draw_fast_glfw();
+	draw_fast();
 	return;
 };
 static void eye_position_y_CB(GtkWidget *entry, gpointer user_data){
@@ -111,7 +111,7 @@ static void eye_position_y_CB(GtkWidget *entry, gpointer user_data){
 	view_menu->tmpShift[1] = -gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
 	kemoview_set_shift_vector(view_menu->tmpShift);
 	
-	draw_fast_glfw();
+	draw_fast();
 	return;
 };
 static void eye_position_z_CB(GtkWidget *entry, gpointer user_data){
@@ -120,7 +120,7 @@ static void eye_position_z_CB(GtkWidget *entry, gpointer user_data){
 	view_menu->tmpShift[2] = -gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
 	kemoview_set_shift_vector(view_menu->tmpShift);
 	
-	draw_fast_glfw();
+	draw_fast();
 	return;
 };
 
@@ -129,7 +129,7 @@ static void scale_CB(GtkWidget *entry, gpointer user_data){
 	view_menu->tmpScale = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
 	kemoview_set_scale_factor(view_menu->tmpScale);
 	
-	draw_fast_glfw();
+	draw_fast();
 	return;
 };
 
@@ -139,7 +139,7 @@ static void spin_x_CB(GtkWidget *entry, gpointer user_data){
 	view_menu->tmpRotation[1] = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
 	kemoview_set_rotation_parameter(view_menu->tmpRotation);
 	
-	draw_fast_glfw();
+	draw_fast();
 	return;
 };
 static void spin_y_CB(GtkWidget *entry, gpointer user_data){
@@ -148,7 +148,7 @@ static void spin_y_CB(GtkWidget *entry, gpointer user_data){
 	view_menu->tmpRotation[2] = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
 	kemoview_set_rotation_parameter(view_menu->tmpRotation);
 	
-	draw_fast_glfw();
+	draw_fast();
 	return;
 };
 static void spin_z_CB(GtkWidget *entry, gpointer user_data){
@@ -157,7 +157,7 @@ static void spin_z_CB(GtkWidget *entry, gpointer user_data){
 	view_menu->tmpRotation[3] = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
 	kemoview_set_rotation_parameter(view_menu->tmpRotation);
 	
-	draw_fast_glfw();
+	draw_fast();
 	return;
 };
 static void spin_deg_CB(GtkWidget *entry, gpointer user_data){
@@ -166,7 +166,7 @@ static void spin_deg_CB(GtkWidget *entry, gpointer user_data){
 	view_menu->tmpRotation[0] = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
 	kemoview_set_rotation_parameter(view_menu->tmpRotation);
 	
-	draw_fast_glfw();
+	draw_fast();
 	return;
 };
 
@@ -175,7 +175,7 @@ static void aperture_CB(GtkWidget *entry, gpointer user_data){
 	view_menu->tmpAperture = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
 	kemoview_set_projection_aperture(view_menu->tmpAperture);
 	
-	draw_fast_glfw();
+	draw_fast();
 	return;
 };
 
@@ -185,7 +185,7 @@ static void focus_CB(GtkWidget *entry, gpointer user_data){
 	view_menu->tmpFocus = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
 	kemoview_set_stereo_parameter(view_menu->tmpFocus, view_menu->tmpEyeRatio);
 	
-	draw_fast_glfw();
+	draw_fast();
 	return;
 };
 static void eye_sep_CB(GtkWidget *entry, gpointer user_data){
@@ -194,7 +194,7 @@ static void eye_sep_CB(GtkWidget *entry, gpointer user_data){
 	view_menu->tmpEyeRatio = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
 	kemoview_set_stereo_parameter(view_menu->tmpFocus, view_menu->tmpEyeRatio);
 	
-	draw_fast_glfw();
+	draw_fast();
 	return;
 };
 

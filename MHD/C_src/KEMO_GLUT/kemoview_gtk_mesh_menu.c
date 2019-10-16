@@ -15,7 +15,7 @@ static void subdoain_distance_CB(GtkWidget *entry, gpointer data)
 	if(dist >= 0.0) kemoview_set_domain_distance(dist);
 	kemoview_draw_with_modified_domain_distance();
 	
-	draw_mesh_glfw();
+	draw_full();
 }
 
 static void node_size_CB(GtkWidget *entry, gpointer data)
@@ -23,7 +23,7 @@ static void node_size_CB(GtkWidget *entry, gpointer data)
 	double size = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
 	if(size >= 0.0) kemoview_set_node_diamater(size);
 	
-	draw_mesh_glfw();
+	draw_full();
 }
 
 static void num_color_loop_CB(GtkWidget *entry, gpointer data)
@@ -31,7 +31,7 @@ static void num_color_loop_CB(GtkWidget *entry, gpointer data)
 	int nloop = (int) gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(entry));
 	kemoview_set_num_of_color_loop(nloop);
 	
-	draw_mesh_glfw();
+	draw_full();
 }
 
 static void set_mesh_color_mode_CB(GtkComboBox *combobox_sfcolor, gpointer user_data)
@@ -56,7 +56,7 @@ static void set_mesh_color_mode_CB(GtkComboBox *combobox_sfcolor, gpointer user_
     printf("Selected mode %d, %s\n", index_mode, row_string);
 	kemoview_set_mesh_color_mode(index_mode);
 	
-	draw_mesh_glfw();
+	draw_full();
 	return;
 };
 

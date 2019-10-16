@@ -15,7 +15,7 @@ static void toggle_draw_domain_patch_CB(GtkTreeViewColumn *renderer,
 	int index_grp = toggle_draw_patch_switch(path_str, user_data, &index1_for_toggle);
     kemoview_set_draw_domain_patch(index1_for_toggle, index_grp);
 	
-	draw_mesh_glfw();
+	draw_full();
 }
 
 static void toggle_draw_domain_grid_CB(GtkTreeViewColumn *renderer, 
@@ -24,7 +24,7 @@ static void toggle_draw_domain_grid_CB(GtkTreeViewColumn *renderer,
 	int index_grp = toggle_draw_grid_switch(path_str, user_data, &index2_for_toggle);
     kemoview_set_draw_domain_grid(index2_for_toggle, index_grp);
 	
-	draw_mesh_glfw();
+	draw_full();
 }
 
 static void toggle_draw_domain_node_CB(GtkTreeViewColumn *renderer, gchar *path_str, gpointer user_data){
@@ -32,7 +32,7 @@ static void toggle_draw_domain_node_CB(GtkTreeViewColumn *renderer, gchar *path_
 	int index_grp = toggle_draw_node_switch(path_str, user_data, &index3_for_toggle);
     kemoview_set_draw_domain_nod(index3_for_toggle, index_grp);
 	
-	draw_mesh_glfw();
+	draw_full();
 }
 
 
@@ -43,7 +43,7 @@ static void draw_all_domain_patch_CB(GtkButton *button, gpointer user_data)
 	for(i=0;i<num;i++){
 		kemoview_set_draw_domain_patch(IONE, i);
 	};
-	draw_mesh_glfw();
+	draw_full();
 }
 
 static void draw_all_domain_grids_CB(GtkButton *button, gpointer user_data)
@@ -53,7 +53,7 @@ static void draw_all_domain_grids_CB(GtkButton *button, gpointer user_data)
 	for(i=0;i<num;i++){
 		kemoview_set_draw_domain_grid(IONE, i);
 	};
-	draw_mesh_glfw();
+	draw_full();
 }
 
 static void draw_all_domain_nodes_CB(GtkButton *button, gpointer user_data)
@@ -63,7 +63,7 @@ static void draw_all_domain_nodes_CB(GtkButton *button, gpointer user_data)
 	for(i=0;i<num;i++){
 		kemoview_set_draw_domain_nod(IONE, i);
 	};
-	draw_mesh_glfw();
+	draw_full();
 }
 
 static void hide_all_domain_patch_CB(GtkButton *button, gpointer user_data)
@@ -73,7 +73,7 @@ static void hide_all_domain_patch_CB(GtkButton *button, gpointer user_data)
 	for(i=0;i<num;i++){
 		kemoview_set_draw_domain_patch(IZERO, i);
 	};
-	draw_mesh_glfw();
+	draw_full();
 }
 
 static void hide_all_domain_grids_CB(GtkButton *button, gpointer user_data)
@@ -83,7 +83,7 @@ static void hide_all_domain_grids_CB(GtkButton *button, gpointer user_data)
 	for(i=0;i<num;i++){
 		kemoview_set_draw_domain_grid(IZERO, i);
 	};
-	draw_mesh_glfw();
+	draw_full();
 }
 
 static void hide_all_domain_nodes_CB(GtkButton *button, gpointer user_data)
@@ -93,7 +93,7 @@ static void hide_all_domain_nodes_CB(GtkButton *button, gpointer user_data)
 	for(i=0;i<num;i++){
 		kemoview_set_draw_domain_nod(IZERO, i);
 	};
-	draw_mesh_glfw();
+	draw_full();
 }
 
 
@@ -108,7 +108,7 @@ static void domain_patch_colormode_CB(GtkComboBox *combobox_sfcolor, gpointer us
 		kemoview_set_domain_color_flag(SURFSOLID_TOGGLE, index_mode);
 	};
 	
-	draw_mesh_glfw();
+	draw_full();
 	return;
 };
 
@@ -123,7 +123,7 @@ static void domain_grid_colormode_CB(GtkComboBox *combobox_sfcolor, gpointer use
 		kemoview_set_domain_color_flag(SURFGRID_TOGGLE, index_mode);
 	};
 	
-	draw_mesh_glfw();
+	draw_full();
 	return;
 };
 
@@ -138,7 +138,7 @@ static void domain_node_colormode_CB(GtkComboBox *combobox_sfcolor, gpointer use
 		kemoview_set_domain_color_flag(SURFNOD_TOGGLE, index_mode);
 	};
 	
-	draw_mesh_glfw();
+	draw_full();
 	return;
 };
 
@@ -149,7 +149,7 @@ static void set_domain_opacity_CB(GtkWidget *entry, gpointer user_data)
 	colorcode4[3] = (float) gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
 	kemoview_set_domain_color_code(SURFSOLID_TOGGLE, colorcode4);
 	
-	draw_mesh_glfw();
+	draw_full();
 	return;
 }
 static void set_single_domain_patch_color_CB(GtkButton *button, gpointer user_data)
@@ -161,7 +161,7 @@ static void set_single_domain_patch_color_CB(GtkButton *button, gpointer user_da
 	int iflag_set = kemoview_gtk_colorsel_CB(parent_win, colorcode4);
 	if(iflag_set > 0) {kemoview_set_domain_color_code(SURFSOLID_TOGGLE, colorcode4);};
 	
-	draw_mesh_glfw();
+	draw_full();
 	return;
 };
 
@@ -174,7 +174,7 @@ static void set_single_domain_grids_color_CB(GtkButton *button, gpointer user_da
 	int iflag_set = kemoview_gtk_colorsel_CB(parent_win, colorcode4);
 	if(iflag_set > 0) {kemoview_set_domain_color_code(SURFGRID_TOGGLE, colorcode4);};
 	
-	draw_mesh_glfw();
+	draw_full();
 	return;
 };
 static void set_single_domain_nodes_color_CB(GtkButton *button, gpointer user_data)
@@ -186,7 +186,7 @@ static void set_single_domain_nodes_color_CB(GtkButton *button, gpointer user_da
 	int iflag_set = kemoview_gtk_colorsel_CB(parent_win, colorcode4);
 	if(iflag_set > 0) {kemoview_set_domain_color_code(SURFNOD_TOGGLE, colorcode4);};
 	
-	draw_mesh_glfw();
+	draw_full();
 	return;
 };
 
