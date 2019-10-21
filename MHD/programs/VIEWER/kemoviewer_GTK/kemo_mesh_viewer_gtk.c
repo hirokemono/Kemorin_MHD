@@ -1,95 +1,95 @@
 
-/* kemo_mesh_viewer_glfw_gtk.c*/
+/* kemo_mesh_viewer_gtk.c*/
 
-#include "kemo_mesh_viewer_glfw_gtk.h"
+#include "kemo_mesh_viewer_gtk.h"
 
 #define NPIX_X  960
 #define NPIX_Y  800
 
 struct kemoviewer_type *single_kemoview;
 
-GLFWwindow *glfw_win;
-int iflag_glfw_focus = 0;
+static int iflag_core_profile = 1;
 int iflag_gtk_focus = 0;
 
 GtkWidget *gtk_win;
-struct main_buttons *mbot;
+GtkWidget *kemoview_win;
+GtkWidget *kemoview_area;
+GdkGLContext *gl_context;
 
-static void mainloop_4_glfw(){
-	int iflag;
-	/* Loop until the user closes the window */
-	while (!glfwWindowShouldClose(glfw_win)){
-		iflag = glfwWindowShouldClose(glfw_win);
-		
-		glfwPollEvents();
-		
-		/* Collect GTK events */
-		update_viewmatrix_menu(mbot->view_menu, gtk_win);
-		while (gtk_events_pending()) gtk_main_iteration();
-	};
-	return;
-}
+struct main_buttons *mbot;
 
 /* Callback functions for GTK */
 
 static void gtkWindowclose_CB(GtkButton *button, gpointer user_data){
 	gtk_widget_destroy(gtk_win);
-	glfwSetWindowShouldClose(glfw_win, GLFW_TRUE);
-	iflag_glfw_focus = 0;
+	gtk_widget_destroy(kemoview_win);
 	iflag_gtk_focus = 0;
 }
 
 static void gtkFocus_in_CB (GtkWidget *window, GtkDirectionType direction, gpointer user_data){
 	printf ("Focus-in GTK window \n");
 	iflag_gtk_focus = 1;
-	iflag_glfw_focus = 0;
 	return;
 }
 
 static void gtkFocus_out_CB (GtkWidget *window, GtkDirectionType direction, gpointer user_data){
 	printf ("Focus-out GTK window \n");
 	iflag_gtk_focus = 0;
-	if(glfwGetWindowAttrib(glfw_win, GLFW_FOCUSED) == GLFW_TRUE) iflag_glfw_focus = 1;
 	return;
 }
 
-/* Callbacks for GLFW */ 
-
-void glfwWindowFocus_CB(GLFWwindow *window, int focused) {
-	if(focused){
-		printf("GLFW window focused\n");
-		iflag_glfw_focus = 1;
-	} else {
-		printf("GLFW window lost focuse\n");
-		iflag_glfw_focus = 0;
+static gboolean realiseCB(GtkGLArea *area, GdkGLContext *context)
+{
+	printf("Tako\n");
+	gtk_gl_area_make_current(GTK_GL_AREA(area));
+  if (gtk_gl_area_get_error (GTK_GL_AREA(area)) != NULL)
+  {
+    printf("failed to initialiize buffers\n");
+    return FALSE;
 	}
-}
+	fprintf(stdout,
+			"INFO: OpenGL Version: %s\n",
+			glGetString(GL_VERSION)
+			);
+	
+	
+	/* Make the window's context current */
+	gtk_widget_set_size_request(area, NPIX_X, NPIX_Y);
+	
+	gtk_gl_area_set_has_alpha(GTK_GL_AREA(area), TRUE);
+	gtk_gl_area_set_has_depth_buffer(GTK_GL_AREA(area), TRUE);
+	gtk_gl_area_set_has_stencil_buffer(GTK_GL_AREA(area), TRUE);
+	gtk_gl_area_set_auto_render(GTK_GL_AREA(area), TRUE);
+	
+	/* ! set the perspective and lighting */
+	kemoviewer_reset_to_init_angle();
+	kemoview_init_background_color();
+	kemoview_init_lighting(iflag_core_profile);
+	kemoview_init_phong_light_list();
+	
+	return TRUE;
+};
 
-void glfwWindowclose_CB(GLFWwindow *window) {
-	gtk_widget_destroy(gtk_win);
-	glfwSetWindowShouldClose(window, GLFW_TRUE);
-	iflag_glfw_focus = 0;
-	return;
-}
+static gboolean renderCB(GtkGLArea *area, GdkGLContext *context)
+{
+	return TRUE;
+};
+
+/* Callbacks for GLFW
 
 void windowSizeCB(GLFWwindow *window, int width, int height) {
-	/*	printf("windowSizeCB %d %d\n", width, height); */
+	/*	printf("windowSizeCB %d %d\n", width, height);
 	kemoview_update_projection_by_viewer_size(width, height);
 	glViewport(IZERO, IZERO, (GLint) width, (GLint) height);
 	
 	update_windowsize_menu(mbot->view_menu, gtk_win);
 }
-void frameBufferSizeCB(GLFWwindow *window, int nx_buf, int ny_buf){
-	printf("frameBufferSizeCB %d %d\n", nx_buf, ny_buf);
-}
-
+*/
 /* Main GTK window */
 
-void kemoview_main_window(struct kemoviewer_type *kemoviewer_data){
-	GtkWidget *vbox, *hbox;
+void kemoview_main_window(struct kemoviewer_type *kemoviewer_data, GtkWidget *vbox){
 	
 	GtkWidget *quitButton;
-	GtkWidget *gl_area;
 	GtkWidget *takoButton;
 	
 	mbot = (struct main_buttons *) malloc(sizeof(struct main_buttons));
@@ -99,9 +99,7 @@ void kemoview_main_window(struct kemoviewer_type *kemoviewer_data){
 	mbot->lightparams_vws = (struct lightparams_view *) malloc(sizeof(struct lightparams_view));
 	init_light_views_4_viewer(kemoviewer_data->kemo_shaders->lights, mbot->lightparams_vws);
 	
-	gtk_win = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-	
-	gtk_window_set_title(GTK_WINDOW(gtk_win), "Mesh viewer");
+	gtk_window_set_title(GTK_WINDOW(gtk_win), "Kemoviewer menu");
 	gtk_widget_set_size_request(gtk_win, 150, -1);
 	gtk_container_set_border_width(GTK_CONTAINER(gtk_win), 5);
 	g_signal_connect(G_OBJECT(gtk_win), "destroy", G_CALLBACK(gtkWindowclose_CB), NULL);
@@ -111,31 +109,16 @@ void kemoview_main_window(struct kemoviewer_type *kemoviewer_data){
 	quitButton = gtk_button_new_with_label("Quit");
 	g_signal_connect(G_OBJECT(quitButton), "clicked", G_CALLBACK(gtkWindowclose_CB), NULL);
 	
-	takoButton = gtk_button_new_with_label("Tako");
-	gl_area = gtk_gl_area_new();
-	
-	
 	mbot->menuHbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	
-	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), quitButton, FALSE, FALSE, 0);
 	make_gtk_main_menu_box(mbot, gtk_win);
 	gtk_box_pack_start(GTK_BOX(vbox), mbot->menuHbox, FALSE, FALSE, 0);
 	
-	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
-	gtk_box_pack_start(GTK_BOX(hbox), vbox, FALSE, FALSE, 0);
-	gtk_container_add(GTK_CONTAINER(hbox), gl_area);
-	gtk_box_pack_start(GTK_BOX(hbox), takoButton, FALSE, FALSE, 0);
-
-	gtk_container_add(GTK_CONTAINER(gtk_win), hbox);
-
+	
+	
 	gtk_widget_show_all(mbot->menuHbox);
 	gtk_widget_show(quitButton);
-	gtk_widget_show(vbox);
-	gtk_widget_show(takoButton);
-	gtk_widget_show(gl_area);
-	gtk_widget_show(hbox);
-	gtk_widget_show(gtk_win);
 	return;
 }
 
@@ -144,7 +127,6 @@ void kemoview_main_window(struct kemoviewer_type *kemoviewer_data){
 int draw_mesh_kemo(int iflag_streo_shutter, int iflag_dmesh) {
 	int narg_glut = 0;
 	char **arg_glut;
-	int iflag_core_profile = 1;
 	int iflag_retinamode = 0;
 	/* Initialize arrays for viewer */
 	
@@ -161,80 +143,45 @@ int draw_mesh_kemo(int iflag_streo_shutter, int iflag_dmesh) {
 	kemoview_set_retinamode(iflag_retinamode);
 	kemoview_set_windowsize(NPIX_X, NPIX_Y);
 	
-	/*! glfw Initialization*/
-	if(!glfwInit()) return -1;
-	
-	glfwWindowHint(GLFW_SAMPLES, 4);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
-	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // for MacOS
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-	glfwWindowHint(GLFW_RED_BITS, 8);
-	glfwWindowHint(GLFW_GREEN_BITS, 8);
-	glfwWindowHint(GLFW_BLUE_BITS, 8);
-	glfwWindowHint(GLFW_ALPHA_BITS, 8);
-	glfwWindowHint(GLFW_DEPTH_BITS, 24);
-	glfwWindowHint(GLFW_STENCIL_BITS, 8);
-	glfwWindowHint(GLFW_STENCIL_BITS, 8);
-	glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
-	glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_TRUE);
-	
-	glfwWindowHint(GLFW_SAMPLES, 4);
-	if(iflag_streo_shutter == SHUTTER_ON){
-		glfwWindowHint(GLFW_STEREO, GLFW_FALSE);
-	} else{
-		glfwWindowHint(GLFW_STEREO, GLFW_FALSE);
-	};
-	/*
-	 if(iflag_retinamode == 1){
-	 glfwWindowHint(GLFW_COCOA_RETINA_FRAMEBUFFER, GLFW_TRUE);
-	 } else{
-	 glfwWindowHint(GLFW_COCOA_RETINA_FRAMEBUFFER, GLFW_FALSE);
-	 };
-	 */
 	/*! GTK Initialization*/
 	/* gtk_set_locale(); */
 	gtk_init(&narg_glut, &arg_glut);
 	
-	/* Create a windowed mode window and its OpenGL context */
-	glfw_win = open_kemoviwer_gl_panel(NPIX_X, NPIX_Y);
-	int nx_buf, ny_buf;
-	glfwGetFramebufferSize(glfw_win, &nx_buf, &ny_buf);
+	gtk_win = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	kemoview_win = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	gtk_window_set_title(GTK_WINDOW(kemoview_win), "Kemoviewer");
+
+	kemoview_area = open_kemoviwer_gl_panel(NPIX_X, NPIX_Y);
+	gtk_widget_set_vexpand(kemoview_area, TRUE);
+	gtk_widget_set_hexpand(kemoview_area, TRUE);
+	gl_context = gtk_gl_area_get_context(kemoview_area);
+	gtk_gl_area_set_required_version(kemoview_area, 3, 2);
 	
-	fprintf(
-			stdout,
-			"INFO: OpenGL Version: %s\n",
-			glGetString(GL_VERSION)
-			);
-	
-	/*! set callback for GLfw*/
-	kemoviewer_reset_to_init_angle();
+	g_signal_connect(kemoview_area, "realize", G_CALLBACK(realiseCB), NULL);
+	g_signal_connect(kemoview_area, "render", G_CALLBACK(renderCB), NULL);
 	gtk_callbacks_init();
 	
 	/* Set callback for drug and Drop into window */
 	
 	/* Set callback for window size changing */
 //	glfwSetWindowSizeCallback(glfw_win, windowSizeCB);
-
-	/* set callback for window focus */
-	glfwSetWindowFocusCallback(glfw_win, glfwWindowFocus_CB);
-	/* set callback for window focus */
-	glfwSetWindowCloseCallback(glfw_win, glfwWindowclose_CB);
 	
-	/* ! set the perspective and lighting */
-	kemoview_init_background_color();
-	kemoview_init_lighting(iflag_core_profile);
-	kemoview_init_phong_light_list();
 	
 	iflag_gtk_focus = 1;
-	glClear(GL_COLOR_BUFFER_BIT);
+//	glClear(GL_COLOR_BUFFER_BIT);
 	draw_full();
-	glfwPollEvents();
-	glfwPostEmptyEvent();
 	
-	kemoview_main_window(single_kemoview);
-	mainloop_4_glfw();
-	glfwTerminate();
+	GtkWidget *vbox;
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+	kemoview_main_window(single_kemoview, vbox);
+	
+	gtk_widget_show(vbox);
+	gtk_container_add(GTK_CONTAINER(gtk_win), vbox);
+	gtk_container_add(GTK_CONTAINER(kemoview_win), kemoview_area);
+	gtk_widget_show(gtk_win);
+	gtk_widget_show_all(kemoview_win);
+	
+	gtk_main();
 	
 	dealloc_light_views_4_viewer(mbot->lightparams_vws);
 	//	free(mbot->lightparams_vws);

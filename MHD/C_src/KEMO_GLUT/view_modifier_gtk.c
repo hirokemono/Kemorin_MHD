@@ -278,17 +278,6 @@ GtkWidget * open_kemoviwer_gl_panel(int npixel_x, int npixel_y){
         printf("Baka!!\n");
 		exit(1);
 	};
-	
-	/* Make the window's context current */
-	gtk_widget_set_size_request(gl_area, npixel_x, npixel_y);
-	gtk_gl_area_make_current(GTK_GL_AREA(gl_area));
-	
-	gtk_gl_area_set_required_version(GTK_GL_AREA(gl_area), 4, 1);
-	
-	gtk_gl_area_set_has_alpha(GTK_GL_AREA(gl_area), TRUE);
-	gtk_gl_area_set_has_depth_buffer(GTK_GL_AREA(gl_area), TRUE);
-	gtk_gl_area_set_has_stencil_buffer(GTK_GL_AREA(gl_area), TRUE);
-	gtk_gl_area_set_auto_render(GTK_GL_AREA(gl_area), TRUE);
 	return gl_area;
 };
 
@@ -319,13 +308,13 @@ void gtk_callbacks_init(){
 
 
 void draw_fast(){
-	kemoview_draw_fast_gl3();
+//	kemoview_draw_fast_gl3();
 /*	gtk_gl_area_swap_buffers(GTK_GL_AREA(gl_area)); */
 	return;
 };
 
 void draw_full(){
-	kemoview_modify_view();
+//	kemoview_modify_view();
 /*	gtk_gl_area_swap_buffers(GTK_GL_AREA(gl_area)); */
 	return;
 };
