@@ -107,14 +107,15 @@
       type(phys_address), intent(in) :: ipol, itor
       type(phys_data), intent(inout) :: rj_fld
 !
-      real (kind = kreal) :: pi, rr, mag
+      real (kind = kreal), parameter :: Bnrm = 1.0d0
+!
+      real (kind = kreal) :: pi, rr, b_ref
       integer(kind = kint) :: is, it, is_ICB, is_CMB
       integer :: js, jt, k
 !
 !
       if(ipol%i_magne .eq. izero) return
       pi = four * atan(one)
-      mag = 1.0d0
 !
 !$omp parallel do
       do is = 1, nnod_rj(sph)
@@ -135,7 +136,16 @@
           rj_fld%d_fld(is,ipol%i_magne)                                 &
      &                           =  (5.0d0/8.0d0) * (-3.0d0 * rr**3     &
      &                             + 4.0d0 * sph_bc_B%r_CMB(0) * rr**2  &
-     &                             - sph_bc_B%r_ICB(0)**4 / rr) * mag
+     &                             - sph_bc_B%r_ICB(0)**4 / rr)
+        end do
+!
+        is = local_sph_data_address(sph, sph_bc_B%kr_out, js)
+        rr = radius_1d_rj_r(sph, sph_bc_B%kr_out)
+        b_ref = rj_fld%d_fld(is,ipol%i_magne)
+        do k = sph_bc_B%kr_in, sph_bc_B%kr_out
+          is = local_sph_data_address(sph, k, js)
+          rj_fld%d_fld(is,ipol%i_magne) = rj_fld%d_fld(is,ipol%i_magne) &
+     &      * rr**2 * Bnrm / rj_fld%d_fld(is,ipol%i_magne)
         end do
 !
 !   Fill potential field if inner core exist
@@ -145,7 +155,7 @@
           rr = radius_1d_rj_r(sph, k) / sph_bc_B%r_ICB(0)
 !   Substitute poloidal mangetic field
           rj_fld%d_fld(is,ipol%i_magne)                                 &
-     &       =  rj_fld%d_fld(is_ICB,ipol%i_magne) * rr**(ione+1) * mag
+     &       =  rj_fld%d_fld(is_ICB,ipol%i_magne) * rr**(ione+1)
         end do
 !
 !   Fill potential field if external of the core exist
@@ -155,7 +165,7 @@
           rr = radius_1d_rj_r(sph, k) / sph_bc_B%r_CMB(0)
 !   Substitute poloidal mangetic field
           rj_fld%d_fld(is,ipol%i_magne)                                 &
-     &       =  rj_fld%d_fld(is_CMB,ipol%i_magne) * rr**(-ione) * mag
+     &       =  rj_fld%d_fld(is_CMB,ipol%i_magne) * rr**(-ione)
         end do
       end if
 !
