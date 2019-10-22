@@ -208,6 +208,7 @@
 		1862C5DA2311C8D7000306E6 /* read_image_2_png.c in Sources */ = {isa = PBXBuildFile; fileRef = 1862C5D92311C8D7000306E6 /* read_image_2_png.c */; };
 		1862C5DF2311C912000306E6 /* gl_buffer_2_png.c in Sources */ = {isa = PBXBuildFile; fileRef = 1862C5DB2311C911000306E6 /* gl_buffer_2_png.c */; };
 		1862C5E02311C912000306E6 /* gl_buffer_2_bmp.c in Sources */ = {isa = PBXBuildFile; fileRef = 1862C5DD2311C912000306E6 /* gl_buffer_2_bmp.c */; };
+		18658F97235F591600203FBE /* libGL.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18658F96235F591600203FBE /* libGL.dylib */; };
 		187145772357A71500C42271 /* kemoview_gtk_PSF_menu.c in Sources */ = {isa = PBXBuildFile; fileRef = 187145752357A71400C42271 /* kemoview_gtk_PSF_menu.c */; };
 		1871457A2357A76C00C42271 /* tree_view_4_colormap.c in Sources */ = {isa = PBXBuildFile; fileRef = 187145782357A76C00C42271 /* tree_view_4_colormap.c */; };
 		1871457D2357A78B00C42271 /* kemoview_gtk_viewmatrix_menu.c in Sources */ = {isa = PBXBuildFile; fileRef = 1871457B2357A78B00C42271 /* kemoview_gtk_viewmatrix_menu.c */; };
@@ -650,6 +651,7 @@
 		1862C5DC2311C911000306E6 /* gl_buffer_2_bmp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = gl_buffer_2_bmp.h; path = ../../../C_src/KEMO_GL/gl_buffer_2_bmp.h; sourceTree = "<group>"; };
 		1862C5DD2311C912000306E6 /* gl_buffer_2_bmp.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = gl_buffer_2_bmp.c; path = ../../../C_src/KEMO_GL/gl_buffer_2_bmp.c; sourceTree = "<group>"; };
 		1862C5DE2311C912000306E6 /* gl_buffer_2_png.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = gl_buffer_2_png.h; path = ../../../C_src/KEMO_GL/gl_buffer_2_png.h; sourceTree = "<group>"; };
+		18658F96235F591600203FBE /* libGL.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libGL.dylib; path = ../../../../../../../opt/local/lib/libGL.dylib; sourceTree = "<group>"; };
 		187145752357A71400C42271 /* kemoview_gtk_PSF_menu.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = kemoview_gtk_PSF_menu.c; path = ../../../C_src/KEMO_GLUT/kemoview_gtk_PSF_menu.c; sourceTree = "<group>"; };
 		187145762357A71400C42271 /* kemoview_gtk_PSF_menu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = kemoview_gtk_PSF_menu.h; path = ../../../C_src/KEMO_GLUT/kemoview_gtk_PSF_menu.h; sourceTree = "<group>"; };
 		187145782357A76C00C42271 /* tree_view_4_colormap.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tree_view_4_colormap.c; path = ../../../C_src/GTK/tree_view_4_colormap.c; sourceTree = "<group>"; };
@@ -715,6 +717,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				18658F97235F591600203FBE /* libGL.dylib in Frameworks */,
 				18F1EBF3231DFAE50080FCFE /* libz.tbd in Frameworks */,
 				1862C2672311B28B000306E6 /* libpng.a in Frameworks */,
 				1862C38C2311B39D000306E6 /* libgobject-2.0.a in Frameworks */,
@@ -770,6 +773,7 @@
 		1862C2652311B28B000306E6 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				18658F96235F591600203FBE /* libGL.dylib */,
 				18F1EBF2231DFAE40080FCFE /* libz.tbd */,
 				1862C2662311B28B000306E6 /* libpng.a */,
 				1862C3812311B39D000306E6 /* libgtk-3.a */,
