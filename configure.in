@@ -20,10 +20,6 @@ builtin(include,MHD/confdb/ax_openmp.m4)
 dnl Include MPI related definitions
 builtin(include,MHD/confdb/ax_mpi.m4)
 
-dnl Include OpenGL Check related definitions
-###  builtin(include,MHD/confdb/ax_have_opengl.m4)
-builtin(include,MHD/confdb/ax_check_gl.m4)
-
 dnl Include gmake Check related definitions
 builtin(include,MHD/confdb/check_gnu_make.m4)
 
@@ -31,7 +27,6 @@ dnl Include BLAS library check
 builtin(include,MHD/confdb/ax_blas.m4)
 builtin(include,MHD/confdb/ax_blas_f77_func.m4)
 
-builtin(include,MHD/confdb/ax_check_gl.m4)
 #
 dnl Include zlib Check related definitions
 builtin(include,MHD/confdb/ax_check_zlib.m4)
@@ -257,7 +252,6 @@ then
 	AC_SUBST(X_LIBS)
 	
 	USE_gl = "yes"
-
 	GL_LIBS="-framework OpenGL  -framework CoreVideo  -framework IOKit -framework Cocoa"
 	GL_INC="-I/usr/X11/include"
 	COCOA_FLAG="-D__APPLE__"
@@ -272,18 +266,22 @@ else
 # Checks for OpenGL
 	if test ${USE_gl} = "yes"
 	then
-		AX_CHECK_GL
-# 		AX_HAVE_OPENGL
-		GL_INC="${GL_INC} -I/usr/X11/include"
-		GL_LIBS="${GL_LIBS} ${X_LIBS}"
-		AC_MSG_RESULT(GL_CFLAGS... "${GL_CFLAGS}")
-		AC_MSG_RESULT(GL_LIBS... "${GL_LIBS}")
-		AC_MSG_RESULT(GL_LDFLAGS... "${GL_LDFLAGS}")
-		AC_MSG_RESULT(CPPFLAGS... "${CPPFLAGS}")
+		PKG_CHECK_MODULES([GL], gl, have_gl=yes, AC_MSG_ERROR(Cannot find OpenGL))
+		echo "have_gl=$have_gl"
 	fi
+	
+	if test ${have_gl} = "yes"
+	then
+		PKGFLAGS_GL="OpenGL"
+	else
+		PKGFLAGS_GL=""
+	fi
+	
 	AQUATERM_LIBS=""
 fi
 AC_SUBST(COCOA_FLAG)
+
+AC_SUBST(PKGFLAGS_GL)
 AC_SUBST(GL_LIBS)
 AC_SUBST(GL_INC)
 AC_SUBST(AQUATERM_LIBS)
