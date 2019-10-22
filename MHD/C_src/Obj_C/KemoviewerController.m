@@ -185,7 +185,7 @@
 {
 	[_resetview  SetViewByInpit];
 	[_kemoviewer updateProjection];
-	[_kemoviewer swapbuffer_cocoa];
+	[_kemoviewer UpdateImage];
 }
 
 - (IBAction) ResetviewAction:(id)sender;
