@@ -727,10 +727,24 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		18658F992360D1F400203FBE /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				18F1EBA9231DF5D50080FCFE /* KEMO_GTK */,
+				18F1EB85231DF0280080FCFE /* Programs */,
+				18F1EB02231DEFCA0080FCFE /* Core_C */,
+				18F1EA4D231DEF8E0080FCFE /* KEMO_GL */,
+				18F1E99C231DEF560080FCFE /* CONTROLS */,
+				18F1E986231DEF260080FCFE /* GLSL */,
+				18F1E938231DEEF70080FCFE /* GTK */,
+			);
+			name = Sources;
+			sourceTree = "<group>";
+		};
 		18F1E8E3231DED9A0080FCFE = {
 			isa = PBXGroup;
 			children = (
-				18F1E8EE231DED9A0080FCFE /* kemoviewer_GLFW_GTK */,
+				18658F992360D1F400203FBE /* Sources */,
 				18F1E8ED231DED9A0080FCFE /* Products */,
 				18F1EB8C231DF08E0080FCFE /* Frameworks */,
 			);
@@ -742,20 +756,6 @@
 				18F1E8EC231DED9A0080FCFE /* kemoviewer_GLFW_GTK */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		18F1E8EE231DED9A0080FCFE /* kemoviewer_GLFW_GTK */ = {
-			isa = PBXGroup;
-			children = (
-				18F1EBA9231DF5D50080FCFE /* KEMO_GTK */,
-				18F1EB85231DF0280080FCFE /* Programs */,
-				18F1EB02231DEFCA0080FCFE /* Core_C */,
-				18F1EA4D231DEF8E0080FCFE /* KEMO_GL */,
-				18F1E99C231DEF560080FCFE /* CONTROLS */,
-				18F1E986231DEF260080FCFE /* GLSL */,
-				18F1E938231DEEF70080FCFE /* GTK */,
-			);
-			path = kemoviewer_GLFW_GTK;
 			sourceTree = "<group>";
 		};
 		18F1E938231DEEF70080FCFE /* GTK */ = {
@@ -811,6 +811,7 @@
 				18F1E93B231DEF130080FCFE /* tree_views_4_fixed_lists_GTK.h */,
 			);
 			name = GTK;
+			path = kemoviewer_GLFW_GTK;
 			sourceTree = "<group>";
 		};
 		18F1E986231DEF260080FCFE /* GLSL */ = {
@@ -836,6 +837,7 @@
 				18F1E98A231DEF3E0080FCFE /* test.vert */,
 			);
 			name = GLSL;
+			path = kemoviewer_GLFW_GTK;
 			sourceTree = "<group>";
 		};
 		18F1E99C231DEF560080FCFE /* CONTROLS */ = {
@@ -959,6 +961,7 @@
 				18F1EA0C231DEF860080FCFE /* t_SGS_MHD_control_c.h */,
 			);
 			name = CONTROLS;
+			path = kemoviewer_GLFW_GTK;
 			sourceTree = "<group>";
 		};
 		18F1EA4D231DEF8E0080FCFE /* KEMO_GL */ = {
@@ -1085,6 +1088,7 @@
 				18F1EAA2231DEFBB0080FCFE /* write_modelview_matrix.h */,
 			);
 			name = KEMO_GL;
+			path = kemoviewer_GLFW_GTK;
 			sourceTree = "<group>";
 		};
 		18F1EB02231DEFCA0080FCFE /* Core_C */ = {
@@ -1177,6 +1181,7 @@
 				18F1EB3E231DEFF80080FCFE /* ysglmaketextbitmap.c */,
 			);
 			name = Core_C;
+			path = kemoviewer_GLFW_GTK;
 			sourceTree = "<group>";
 		};
 		18F1EB85231DF0280080FCFE /* Programs */ = {
@@ -1187,6 +1192,7 @@
 				18F1EBEB231DF74F0080FCFE /* kemoviewer_glfw_gtk.c */,
 			);
 			name = Programs;
+			path = kemoviewer_GLFW_GTK;
 			sourceTree = "<group>";
 		};
 		18F1EB8C231DF08E0080FCFE /* Frameworks */ = {
@@ -1262,6 +1268,7 @@
 				18779AE92331645300D886CB /* tree_view_kemoview_colormap.h */,
 			);
 			name = KEMO_GTK;
+			path = kemoviewer_GLFW_GTK;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
