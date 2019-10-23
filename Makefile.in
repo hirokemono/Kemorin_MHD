@@ -80,6 +80,11 @@ HDF5_FFLAGS=    @HDF5_FFLAGS@
 HDF5_LDFLAGS=   @HDF5_LDFLAGS@
 HDF5_FLIBS=     @HDF5_PFLIBS@
 #
+#   X window settings
+#
+X_CFLAGS = @X_CFLAGS@
+X_LIBS= @X_LIBS@ -lm
+#
 #   OpenGL settings (Requirement: OpenGL, libpng)
 #
 OPENGL_INC = @GL_INC@
@@ -139,6 +144,8 @@ makemake: $(MAKE_MOD_DEP)
 		PNG_LIBS="$(PNG_LIBS)"       \
 		FFTW3_CFLAGS="$(FFTW3_CFLAGS)" \
 		FFTW3_LIBS="$(FFTW3_LIBS)" \
+		X_LIBS="$(X_LIBS)" \
+		X_CFLAGS="$(X_CFLAGS)" \
 		OPENGL_INC="$(OPENGL_INC)" \
 		OPENGL_LIBS="$(OPENGL_LIBS)" \
 		PGPLOT_LIBS="$(PGPLOT_LIBS)" \
@@ -188,6 +195,8 @@ makemake64: $(MAKE_MOD_DEP)
 		PNG_LIBS="$(PNG_LIBS)"       \
 		FFTW3_CFLAGS="$(FFTW3_CFLAGS)" \
 		FFTW3_LIBS="$(FFTW3_LIBS)" \
+		X_LIBS="$(X_LIBS)" \
+		X_CFLAGS="$(X_CFLAGS)" \
 		OPENGL_INC="$(OPENGL_INC)" \
 		OPENGL_LIBS="$(OPENGL_LIBS)" \
 		PGPLOT_LIBS="$(PGPLOT_LIBS)" \
