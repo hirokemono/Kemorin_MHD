@@ -272,6 +272,7 @@ else
 	
 	if test ${have_gl} = "yes"
 	then
+		GL_LIBS= "${GL_LIBS}" "${X_LIBS}"
 		PKGFLAGS_GL="OpenGL"
 	else
 		PKGFLAGS_GL=""
