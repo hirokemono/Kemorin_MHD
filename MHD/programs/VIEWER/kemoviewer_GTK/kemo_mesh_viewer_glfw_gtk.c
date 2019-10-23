@@ -175,7 +175,6 @@ int draw_mesh_kemo(int iflag_streo_shutter, int iflag_dmesh) {
 	glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
 	glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_TRUE);
 	
-	glfwWindowHint(GLFW_SAMPLES, 4);
 	if(iflag_streo_shutter == SHUTTER_ON){
 		glfwWindowHint(GLFW_STEREO, GLFW_FALSE);
 	} else{

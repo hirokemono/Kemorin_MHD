@@ -173,7 +173,7 @@ int draw_mesh_kemo(int iflag_streo_shutter, int iflag_dmesh) {
 	gtk_widget_set_vexpand(kemoview_area, TRUE);
 	gtk_widget_set_hexpand(kemoview_area, TRUE);
 
-	gtk_gl_area_set_required_version(kemoview_area, 4, 1);
+	gtk_gl_area_set_required_version(kemoview_area, 3, 3);
 	
 //	g_signal_connect(G_OBJECT(kemoview_area), "create-context", G_CALLBACK(tako_context), NULL);
 	g_signal_connect(G_OBJECT(kemoview_area), "realize", G_CALLBACK(realiseCB), NULL);
