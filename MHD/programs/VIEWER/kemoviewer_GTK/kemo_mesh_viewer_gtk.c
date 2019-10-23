@@ -38,8 +38,24 @@ static void gtkFocus_out_CB (GtkWidget *window, GtkDirectionType direction, gpoi
 	return;
 }
 
+GdkGLContext * tako_context(GtkGLArea *area, gpointer user_data){
+	int mj, mn;
+	GdkGLContext *context = gtk_gl_area_get_context(area);
+	gdk_gl_context_set_required_version(context, 3, 2);
+	gdk_gl_context_get_required_version(context, &mj, &mn);
+	printf("tako_context %d %d\n", mj, mn);
+	gtk_gl_area_get_required_version(kemoview_area, &mj, &mn);
+	printf("mj, mn init:  %d, %d \n", mj, mn);
+	return context;
+}
+
 static gboolean realiseCB(GtkGLArea *area, GdkGLContext *context)
 {
+	int mj, mn;
+	
+	gtk_gl_area_get_required_version(area, &mj, &mn);
+	printf("mj, mn:  %d, %d \n", mj, mn);
+	
 	printf("Tako\n");
 	gtk_gl_area_make_current(GTK_GL_AREA(area));
   if (gtk_gl_area_get_error (GTK_GL_AREA(area)) != NULL)
@@ -47,11 +63,13 @@ static gboolean realiseCB(GtkGLArea *area, GdkGLContext *context)
     printf("failed to initialiize buffers\n");
     return FALSE;
 	}
+
 	fprintf(stdout,
 			"INFO: OpenGL Version: %s\n",
 			glGetString(GL_VERSION)
 			);
 	
+	return TRUE;
 	
 	/* Make the window's context current */
 	gtk_widget_set_size_request(area, NPIX_X, NPIX_Y);
@@ -154,11 +172,12 @@ int draw_mesh_kemo(int iflag_streo_shutter, int iflag_dmesh) {
 	kemoview_area = open_kemoviwer_gl_panel(NPIX_X, NPIX_Y);
 	gtk_widget_set_vexpand(kemoview_area, TRUE);
 	gtk_widget_set_hexpand(kemoview_area, TRUE);
-	gl_context = gtk_gl_area_get_context(kemoview_area);
-	gtk_gl_area_set_required_version(kemoview_area, 3, 2);
+
+	gtk_gl_area_set_required_version(kemoview_area, 4, 1);
 	
-	g_signal_connect(kemoview_area, "realize", G_CALLBACK(realiseCB), NULL);
-	g_signal_connect(kemoview_area, "render", G_CALLBACK(renderCB), NULL);
+//	g_signal_connect(G_OBJECT(kemoview_area), "create-context", G_CALLBACK(tako_context), NULL);
+	g_signal_connect(G_OBJECT(kemoview_area), "realize", G_CALLBACK(realiseCB), NULL);
+	g_signal_connect(G_OBJECT(kemoview_area), "render", G_CALLBACK(renderCB), NULL);
 	gtk_callbacks_init();
 	
 	/* Set callback for drug and Drop into window */

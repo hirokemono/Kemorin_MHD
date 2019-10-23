@@ -1649,7 +1649,6 @@
 					/usr/X11/include,
 					/opt/local/include/libpng16,
 					/usr/local/include,
-					/opt/local/include,
 					"/opt/local/include/gtk-3.0",
 					"/opt/local/include/at-spi2-atk/2.0",
 					"/opt/local/include/at-spi-2.0",
@@ -1666,6 +1665,7 @@
 					"/opt/local/lib/glib-2.0/include",
 					"/opt/local/include/glib-2.0",
 					"/opt/local/include/gdk-pixbuf-2.0",
+					/opt/local/include,
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1683,7 +1683,6 @@
 					/usr/X11/include,
 					/opt/local/include/libpng16,
 					/usr/local/include,
-					/opt/local/include,
 					"/opt/local/include/gtk-3.0",
 					"/opt/local/include/at-spi2-atk/2.0",
 					"/opt/local/include/at-spi-2.0",
@@ -1700,6 +1699,7 @@
 					"/opt/local/lib/glib-2.0/include",
 					"/opt/local/include/glib-2.0",
 					"/opt/local/include/gdk-pixbuf-2.0",
+					/opt/local/include,
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",

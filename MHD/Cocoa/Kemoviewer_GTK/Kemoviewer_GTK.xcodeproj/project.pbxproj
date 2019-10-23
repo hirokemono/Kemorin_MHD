@@ -23,7 +23,6 @@
 		1862C38B2311B39D000306E6 /* libpango-1.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1862C37E2311B39D000306E6 /* libpango-1.0.a */; };
 		1862C38C2311B39D000306E6 /* libgobject-2.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1862C37F2311B39D000306E6 /* libgobject-2.0.a */; };
 		1862C38D2311B39D000306E6 /* libfribidi.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1862C3802311B39D000306E6 /* libfribidi.dylib */; };
-		1862C38E2311B39D000306E6 /* libgtk-3.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1862C3812311B39D000306E6 /* libgtk-3.a */; };
 		1862C3E42311BA93000306E6 /* coordinate_converter_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 1862C3942311BA8B000306E6 /* coordinate_converter_c.c */; };
 		1862C3E52311BA93000306E6 /* kemosrc_param_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 1862C3952311BA8B000306E6 /* kemosrc_param_c.c */; };
 		1862C3E62311BA93000306E6 /* set_surface_mesh_data.c in Sources */ = {isa = PBXBuildFile; fileRef = 1862C3962311BA8B000306E6 /* set_surface_mesh_data.c */; };
@@ -208,7 +207,7 @@
 		1862C5DA2311C8D7000306E6 /* read_image_2_png.c in Sources */ = {isa = PBXBuildFile; fileRef = 1862C5D92311C8D7000306E6 /* read_image_2_png.c */; };
 		1862C5DF2311C912000306E6 /* gl_buffer_2_png.c in Sources */ = {isa = PBXBuildFile; fileRef = 1862C5DB2311C911000306E6 /* gl_buffer_2_png.c */; };
 		1862C5E02311C912000306E6 /* gl_buffer_2_bmp.c in Sources */ = {isa = PBXBuildFile; fileRef = 1862C5DD2311C912000306E6 /* gl_buffer_2_bmp.c */; };
-		18658F97235F591600203FBE /* libGL.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18658F96235F591600203FBE /* libGL.dylib */; };
+		18658F982360448300203FBE /* libgtk-3.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1862C3812311B39D000306E6 /* libgtk-3.a */; };
 		187145772357A71500C42271 /* kemoview_gtk_PSF_menu.c in Sources */ = {isa = PBXBuildFile; fileRef = 187145752357A71400C42271 /* kemoview_gtk_PSF_menu.c */; };
 		1871457A2357A76C00C42271 /* tree_view_4_colormap.c in Sources */ = {isa = PBXBuildFile; fileRef = 187145782357A76C00C42271 /* tree_view_4_colormap.c */; };
 		1871457D2357A78B00C42271 /* kemoview_gtk_viewmatrix_menu.c in Sources */ = {isa = PBXBuildFile; fileRef = 1871457B2357A78B00C42271 /* kemoview_gtk_viewmatrix_menu.c */; };
@@ -717,7 +716,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				18658F97235F591600203FBE /* libGL.dylib in Frameworks */,
+				18658F982360448300203FBE /* libgtk-3.a in Frameworks */,
 				18F1EBF3231DFAE50080FCFE /* libz.tbd in Frameworks */,
 				1862C2672311B28B000306E6 /* libpng.a in Frameworks */,
 				1862C38C2311B39D000306E6 /* libgobject-2.0.a in Frameworks */,
@@ -729,7 +728,6 @@
 				1862C3852311B39D000306E6 /* libintl.a in Frameworks */,
 				1862C3842311B39D000306E6 /* libgio-2.0.a in Frameworks */,
 				1862C38B2311B39D000306E6 /* libpango-1.0.a in Frameworks */,
-				1862C38E2311B39D000306E6 /* libgtk-3.a in Frameworks */,
 				1862C3862311B39D000306E6 /* libglib-2.0.a in Frameworks */,
 				1862C3882311B39D000306E6 /* libatk-1.0.a in Frameworks */,
 				1862C3832311B39D000306E6 /* libgdk-3.a in Frameworks */,
