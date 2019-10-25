@@ -1,4 +1,4 @@
-#version 400
+#version 330
 // simple.frag
 
 in vec4 ex_Color;

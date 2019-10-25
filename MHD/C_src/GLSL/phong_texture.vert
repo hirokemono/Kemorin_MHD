@@ -1,4 +1,4 @@
-#version 400
+#version 330
 // phong_texture.vert
 
 layout (location = 0) in vec3  xyz;

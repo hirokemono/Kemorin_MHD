@@ -353,7 +353,7 @@ char * load_dash_lines_3D_vert(void){
 char * load_gouraud_frag(void){
     const char  gouraud_frag_src[]
     = {
-        "#version 400\n"\
+        "#version 330\n"\
         "// gouraud.frag\n"\
         "\n"\
         "in vec4 ex_Position;\n"\
@@ -378,7 +378,7 @@ char * load_gouraud_frag(void){
 char * load_gouraud_vert(void){
     const char  gouraud_vert_src[]
     = {
-        "#version 400\n"\
+        "#version 330\n"\
         "// gouraud.vert\n"\
         "\n"\
         "layout (location = 0) in vec3  xyz;\n"\
@@ -463,7 +463,7 @@ char * load_gouraud_vert(void){
 char * load_menu_frag(void){
     const char  menu_frag_src[]
     = {
-        "#version 400\n"\
+        "#version 330\n"\
         "\n"\
         "in vec4 ex_Color;\n"\
         "out vec4 out_Color;\n"\
@@ -485,7 +485,7 @@ char * load_menu_frag(void){
 char * load_menu_vert(void){
     const char  menu_vert_src[]
     = {
-        "#version 400\n"\
+        "#version 330\n"\
         "\n"\
         "layout(location=0) in vec3 in_Position;\n"\
         "layout(location=1) in vec4 in_Color;\n"\
@@ -509,7 +509,7 @@ char * load_menu_vert(void){
 char * load_phong_frag(void){
     const char  phong_frag_src[]
     = {
-        "#version 400\n"\
+        "#version 330\n"\
         "// phong.frag\n"\
         "\n"\
         "in vec4 position;\n"\
@@ -583,7 +583,7 @@ char * load_phong_frag(void){
 char * load_phong_vert(void){
     const char  phong_vert_src[]
     = {
-        "#version 400\n"\
+        "#version 330\n"\
         "// phong.vert\n"\
         "\n"\
         "layout (location = 0) in vec3  xyz;\n"\
@@ -623,7 +623,7 @@ char * load_phong_vert(void){
 char * load_phong_1color_frag(void){
     const char  phong_1color_frag_src[]
     = {
-        "#version 400\n"\
+        "#version 330\n"\
         "//\n"\
         "//\n"\
         "// phong_1color.frag\n"\
@@ -702,7 +702,7 @@ char * load_phong_1color_frag(void){
 char * load_phong_1color_vert(void){
     const char  phong_1color_vert_src[]
     = {
-        "#version 400\n"\
+        "#version 330\n"\
         "// phong_1color.vert\n"\
         "\n"\
         "layout(location = 0) in vec3  xyz;\n"\
@@ -738,7 +738,7 @@ char * load_phong_1color_vert(void){
 char * load_phong_texture_frag(void){
     const char  phong_texture_frag_src[]
     = {
-        "#version 400\n"\
+        "#version 330\n"\
         "// phong_texture.frag\n"\
         "\n"\
         "in vec4 position;\n"\
@@ -817,7 +817,7 @@ char * load_phong_texture_frag(void){
 char * load_phong_texture_vert(void){
     const char  phong_texture_vert_src[]
     = {
-        "#version 400\n"\
+        "#version 330\n"\
         "// phong_texture.vert\n"\
         "\n"\
         "layout (location = 0) in vec3  xyz;\n"\
@@ -859,7 +859,7 @@ char * load_phong_texture_vert(void){
 char * load_simple_frag(void){
     const char  simple_frag_src[]
     = {
-        "#version 400\n"\
+        "#version 330\n"\
         "// simple.frag\n"\
         "\n"\
         "in vec4 ex_Color;\n"\
@@ -881,7 +881,7 @@ char * load_simple_frag(void){
 char * load_simple_vert(void){
     const char  simple_vert_src[]
     = {
-        "#version 400\n"\
+        "#version 330\n"\
         "// simple.vert\n"\
         "\n"\
         "layout (location = 0) in vec3  xyz;\n"\
@@ -914,7 +914,7 @@ char * load_simple_vert(void){
 char * load_simple_texture_frag(void){
     const char  simple_texture_frag_src[]
     = {
-        "#version 400\n"\
+        "#version 330\n"\
         "// simple_texture.frag\n"\
         "\n"\
         "in vec4 position;\n"\
@@ -941,7 +941,7 @@ char * load_simple_texture_frag(void){
 char * load_simple_texture_vert(void){
     const char  simple_texture_vert_src[]
     = {
-        "#version 400\n"\
+        "#version 330\n"\
         "// simple_texture.vert\n"\
         "\n"\
         "layout (location = 0) in vec3  xyz;\n"\

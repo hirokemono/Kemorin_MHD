@@ -1,4 +1,4 @@
-#version 400
+#version 330
 // simple_texture.frag
 
 in vec4 position;
