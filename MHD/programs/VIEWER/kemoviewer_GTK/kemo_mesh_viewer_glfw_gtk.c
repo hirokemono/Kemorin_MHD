@@ -10,6 +10,7 @@ struct kemoviewer_type *single_kemoview;
 
 GLFWwindow *glfw_win;
 int iflag_glfw_focus = 0;
+int iflag_glfw_end = 0;
 int iflag_gtk_focus = 0;
 
 GtkWidget *gtk_win;
@@ -24,6 +25,7 @@ static void mainloop_4_glfw(){
 		glfwPollEvents();
 		
 		/* Collect GTK events */
+		if(iflag_glfw_end == 1) return;
 		update_viewmatrix_menu(mbot->view_menu, gtk_win);
 		while (gtk_events_pending()) gtk_main_iteration();
 	};
@@ -69,6 +71,8 @@ void glfwWindowclose_CB(GLFWwindow *window) {
 	gtk_widget_destroy(gtk_win);
 	glfwSetWindowShouldClose(window, GLFW_TRUE);
 	iflag_glfw_focus = 0;
+	iflag_gtk_focus = 0;
+	iflag_glfw_end = 1;
 	return;
 }
 
@@ -163,8 +167,12 @@ int draw_mesh_kemo(int iflag_streo_shutter, int iflag_dmesh) {
 	glfwWindowHint(GLFW_SAMPLES, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // for MacOS
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+#ifdef __APPLE__
+	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // for MacOS
+#endif
+	
 	glfwWindowHint(GLFW_RED_BITS, 8);
 	glfwWindowHint(GLFW_GREEN_BITS, 8);
 	glfwWindowHint(GLFW_BLUE_BITS, 8);
