@@ -154,7 +154,7 @@ int draw_glfw_test(int iflag_streo_shutter, int iflag_dmesh) {
 	
 	/* ! set the perspective and lighting */
 	kemoview_init_background_color();
-	kemoview_init_lighting(iflag_core_profile);
+	kemoview_init_lighting();
 	kemoview_init_phong_light_list();
 	
 	glClear(GL_COLOR_BUFFER_BIT);

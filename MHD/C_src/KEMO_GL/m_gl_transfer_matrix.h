@@ -59,7 +59,6 @@ struct view_element{
 	double rVel_animate[3];
 	double rAccel_animate[3];
     
-	int iflag_core_profile;
 	GLuint index_modelViewMatrix;
 	GLuint index_ProjectionMatrix;
 };

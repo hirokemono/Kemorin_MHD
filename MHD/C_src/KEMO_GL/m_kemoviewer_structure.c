@@ -118,9 +118,7 @@ void kemoview_indentity_projectionmatrix(void){set_projection_by_identity();};
 void kemoview_indentity_viewmatrix(void){set_view_by_identity();};
 void kemoview_message_viewmatrix(void){set_view_for_message(kemo_sgl->view_s);};
 
-void kemoview_init_lighting(int iflag_core_profile){
-	kemo_sgl->view_s->iflag_core_profile = iflag_core_profile;
-	
+void kemoview_init_lighting(){
 	kemo_gl_initial_lighting_c(kemo_sgl->view_s, kemo_sgl->kemo_shaders);
 	assign_kemoview_VAOs(kemo_sgl->kemo_VAOs);
 }

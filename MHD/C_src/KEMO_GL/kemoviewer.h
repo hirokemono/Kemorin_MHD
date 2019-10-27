@@ -441,7 +441,7 @@ extern "C" {
 
 	void kemoview_draw_fast_gl3(void);
 	
-    void kemoview_init_lighting(int iflag_core_profile);
+    void kemoview_init_lighting(void);
     
 	void kemoview_orthogonalGL(double left, double right, double bottom, double top,
 							   double near, double far);

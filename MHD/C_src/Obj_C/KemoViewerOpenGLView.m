@@ -523,7 +523,7 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 	[self prepareOpenGL:iflag_core_profile];
 	
 	kemoviewer_reset_to_init_angle();
-	kemoview_init_lighting(iflag_core_profile);
+	kemoview_init_lighting();
 
 	// set start values...
 	fAnimate =  0;
