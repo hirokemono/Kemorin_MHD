@@ -7,7 +7,6 @@ struct kemoviewer_type *kemo_sgl;
 
 void kemoview_allocate_pointers(){
 	kemo_sgl->view_s = (struct view_element *)      malloc(sizeof(struct view_element));
-	kemo_sgl->view_s->iflag_shading_profile = 0;
 	
 	kemo_sgl->kemo_shaders = init_kemoview_shaders();
 	kemo_sgl->kemo_VAOs = init_kemoview_VAOs();
@@ -121,7 +120,6 @@ void kemoview_message_viewmatrix(void){set_view_for_message(kemo_sgl->view_s);};
 
 void kemoview_init_lighting(int iflag_core_profile){
 	kemo_sgl->view_s->iflag_core_profile = iflag_core_profile;
-	kemo_sgl->view_s->iflag_shading_profile = iflag_core_profile;
 	
 	kemo_gl_initial_lighting_c(kemo_sgl->view_s, kemo_sgl->kemo_shaders);
 	assign_kemoview_VAOs(kemo_sgl->kemo_VAOs);
