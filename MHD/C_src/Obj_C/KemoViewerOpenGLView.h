@@ -101,7 +101,7 @@ typedef struct {
 - (BOOL) becomeFirstResponder;
 - (BOOL) resignFirstResponder;
 
-- (void) prepareOpenGL:(int) iflag_core_profile;
+- (void) prepareKemoOpenGL;
 - (void) awakeFromNib;
 
 @end

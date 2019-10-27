@@ -922,7 +922,6 @@ static void make_1st_level_menu(){
 void draw_mesh_kemo(int iflag_streo_shutter, int iflag_dmesh) {
 	int narg_glut = 0;
 	char **arg_glut;
-	int iflag_core_profile = 1;
 	
 	/* Initialize arrays for viewer */
 	

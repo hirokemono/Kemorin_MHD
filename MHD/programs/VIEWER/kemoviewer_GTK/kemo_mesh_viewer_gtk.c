@@ -8,7 +8,6 @@
 
 struct kemoviewer_type *single_kemoview;
 
-static int iflag_core_profile = 1;
 int iflag_gtk_focus = 0;
 
 GtkWidget *gtk_win;

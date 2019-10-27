@@ -87,7 +87,6 @@ void gtk_test_window(struct kemoviewer_type *kemoviewer_data){
 int draw_gtk_menu_kemo(int iflag_streo_shutter, int iflag_dmesh) {
 	int narg_glut = 0;
 	char **arg_glut;
-	int iflag_core_profile = 1;
 	int iflag_retinamode = 0;
 	/* Initialize arrays for viewer */
 	

@@ -75,7 +75,6 @@ void frameBufferSizeCB(GLFWwindow *window, int nx_buf, int ny_buf){
 int draw_glfw_test(int iflag_streo_shutter, int iflag_dmesh) {
 	int narg_glut = 0;
 	char **arg_glut;
-	int iflag_core_profile = 1;
 	int iflag_retinamode = 0;
 	/* Initialize arrays for viewer */
 	

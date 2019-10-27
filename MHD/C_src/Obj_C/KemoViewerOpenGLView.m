@@ -440,12 +440,11 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 
 // set initial OpenGL state (current context is set)
 // called after context is created
-- (void) prepareOpenGL:(int) iflag_core_profile
+- (void) prepareKemoOpenGL
 {
 	GLfloat BgColor4f[4];
 
-	if(iflag_core_profile > 0){
-		static const NSOpenGLPixelFormatAttribute attr[]= {
+	static const NSOpenGLPixelFormatAttribute attr[]= {
 			NSOpenGLPFAOpenGLProfile, NSOpenGLProfileVersion3_2Core,
 			NSOpenGLPFANoRecovery,
 			NSOpenGLPFADoubleBuffer,
@@ -459,15 +458,13 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 //			NSOpenGLPFASampleBuffers, 1,
 //			NSOpenGLPFASamples, 4, 
 			0
-		};
-		NSOpenGLPixelFormat *pixelFormat = [[[NSOpenGLPixelFormat alloc] initWithAttributes:attr] autorelease];
-		_context = [ self openGLContext ];
-		[_context initWithFormat: pixelFormat shareContext: nil];
-		[_context makeCurrentContext];
-	} else {
-	    int swapInt = 1;
-  	  [[self openGLContext] setValues:&swapInt forParameter:NSOpenGLCPSwapInterval]; // set to vbl sync
 	};
+	NSOpenGLPixelFormat *pixelFormat = [[[NSOpenGLPixelFormat alloc] initWithAttributes:attr] autorelease];
+
+	_context = [ self openGLContext ];
+	[_context initWithFormat: pixelFormat shareContext: nil];
+	[_context makeCurrentContext];
+
 	fprintf(
 			stdout,
 			"INFO: OpenGL Version: %s\n",
@@ -500,7 +497,6 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 
 - (void) awakeFromNib
 {
-	int iflag_core_profile = 1;
     id_window = kemoview_get_current_viewer_id();
     kemoview_set_single_viewer_id(id_window);
 
@@ -520,7 +516,7 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 	kemoview_set_stereo_shutter(SHUTTER_OFF);
 	kemoview_set_anaglyph_flag(anaglyphFlag);
 	
-	[self prepareOpenGL:iflag_core_profile];
+	[self prepareKemoOpenGL];
 	
 	kemoviewer_reset_to_init_angle();
 	kemoview_init_lighting();
