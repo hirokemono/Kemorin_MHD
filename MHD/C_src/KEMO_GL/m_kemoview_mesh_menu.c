@@ -288,26 +288,26 @@ void set_draw_surfgrp_grid(int iflag, int i, struct mesh_menu_val *mesh_m) {mesh
 void set_draw_surfgrp_node(int iflag, int i, struct mesh_menu_val *mesh_m)  {mesh_m->draw_surfgrp_nod[i] = iflag;};
 
 
-int get_draw_nodgrp_node(int i, static struct mesh_menu_val *mesh_m){
+int get_draw_nodgrp_node(int i, struct mesh_menu_val *mesh_m){
 	return mesh_m->draw_nodgrp_nod[i];
 };
 
-int get_draw_elegrp_patch(int i, static struct mesh_menu_val *mesh_m){
+int get_draw_elegrp_patch(int i, struct mesh_menu_val *mesh_m){
 	return mesh_m->draw_elegrp_solid[i];
 };
-int get_draw_elegrp_grid(int i, static struct mesh_menu_val *mesh_m) {
+int get_draw_elegrp_grid(int i, struct mesh_menu_val *mesh_m) {
 	return mesh_m->draw_elegrp_grid[i];
 };
-int get_draw_elegrp_node(int i, static struct mesh_menu_val *mesh_m)  {
+int get_draw_elegrp_node(int i, struct mesh_menu_val *mesh_m)  {
 	return mesh_m->draw_elegrp_nod[i];
 };
 
-int get_draw_surfgrp_patch(int i, static struct mesh_menu_val *mesh_m){
+int get_draw_surfgrp_patch(int i, struct mesh_menu_val *mesh_m){
 	return mesh_m->draw_surfgrp_solid[i];
 };
-int get_draw_surfgrp_grid(int i, static struct mesh_menu_val *mesh_m) {
+int get_draw_surfgrp_grid(int i, struct mesh_menu_val *mesh_m) {
 	return mesh_m->draw_surfgrp_grid[i];
 };
-int get_draw_surfgrp_node(int i, static struct mesh_menu_val *mesh_m)  {
+int get_draw_surfgrp_node(int i, struct mesh_menu_val *mesh_m)  {
 	return mesh_m->draw_surfgrp_nod[i];
 };
