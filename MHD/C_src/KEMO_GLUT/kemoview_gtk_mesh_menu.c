@@ -9,33 +9,37 @@
 
 #include "kemoview_gtk_mesh_menu.h"
 
-static void subdoain_distance_CB(GtkWidget *entry, gpointer data)
+static void subdoain_distance_CB(GtkWidget *entry, gpointer user_data)
 {
+	struct kemoview_mesh *kemo_mesh = (struct kemoview_mesh *) user_data;
 	double dist = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
-	if(dist >= 0.0) kemoview_set_domain_distance(dist);
+	if(dist >= 0.0) set_domain_distance(dist, kemo_mesh->mesh_m);
 	kemoview_draw_with_modified_domain_distance();
 	
 	draw_full();
 }
 
-static void node_size_CB(GtkWidget *entry, gpointer data)
+static void node_size_CB(GtkWidget *entry, gpointer user_data)
 {
+	struct kemoview_mesh *kemo_mesh = (struct kemoview_mesh *) user_data;
 	double size = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
-	if(size >= 0.0) kemoview_set_node_diamater(size);
+	if(size >= 0.0) set_node_diamater(size, kemo_mesh->mesh_m);
 	
 	draw_full();
 }
 
-static void num_color_loop_CB(GtkWidget *entry, gpointer data)
+static void num_color_loop_CB(GtkWidget *entry, gpointer user_data)
 {
+	struct kemoview_mesh *kemo_mesh = (struct kemoview_mesh *) user_data;
 	int nloop = (int) gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(entry));
-	kemoview_set_num_of_color_loop(nloop);
+	set_num_of_color_loop(nloop, kemo_mesh->mesh_m);
 	
 	draw_full();
 }
 
 static void set_mesh_color_mode_CB(GtkComboBox *combobox_sfcolor, gpointer user_data)
 {
+	struct kemoview_mesh *kemo_mesh = (struct kemoview_mesh *) user_data;
     GtkTreeModel *model_cmap = gtk_combo_box_get_model(combobox_sfcolor);
     GtkTreeIter iter;
     
@@ -54,14 +58,14 @@ static void set_mesh_color_mode_CB(GtkComboBox *combobox_sfcolor, gpointer user_
     gtk_tree_model_get(model_cmap, &iter, COLUMN_FIELD_MATH, &index_mode, -1);
     
     printf("Selected mode %d, %s\n", index_mode, row_string);
-	kemoview_set_mesh_color_mode(index_mode);
+	set_mesh_color_mode(index_mode, kemo_mesh->mesh_m);
 	
 	draw_full();
 	return;
 };
 
 
-void add_gtk_mesh_menu(struct kemoview_mesh_view *mesh_vws, 
+void add_gtk_mesh_menu(struct kemoview_mesh *kemo_mesh, struct kemoview_mesh_view *mesh_vws, 
 			GtkWidget *window, GtkWidget *box_out){
 	
 	GtkWidget *hbox_distance;
@@ -94,17 +98,20 @@ void add_gtk_mesh_menu(struct kemoview_mesh_view *mesh_vws,
 	current_distance = kemoview_get_domain_distance();
 	adj_dist = gtk_adjustment_new(current_distance, 0.0, 10.0, 0.005, 0.005, 0.0);
 	spin_dist = gtk_spin_button_new(GTK_ADJUSTMENT(adj_dist), 0, 3);
-	g_signal_connect(spin_dist, "value-changed", G_CALLBACK(subdoain_distance_CB),NULL);
+	g_signal_connect(spin_dist, "value-changed", G_CALLBACK(subdoain_distance_CB),
+					 (gpointer) kemo_mesh);
 	
 	current_size = kemoview_get_node_diamater();
 	adj_node_size = gtk_adjustment_new(current_size, 0.0, 10.0, 0.00001, 0.00001, 0.0);
 	spin_node_size = gtk_spin_button_new(GTK_ADJUSTMENT(adj_node_size), 0, 3);
-	g_signal_connect(spin_node_size, "value-changed", G_CALLBACK(node_size_CB),NULL);
+	g_signal_connect(spin_node_size, "value-changed", G_CALLBACK(node_size_CB),
+					 (gpointer) kemo_mesh);
 	
 	current_num_loop = kemoview_get_num_of_color_loop();
 	adj_num_loop = gtk_adjustment_new(current_num_loop, 0, 100, 1, 1, 0.0);
 	spin_num_loop = gtk_spin_button_new(GTK_ADJUSTMENT(adj_num_loop), 0, 0);
-	g_signal_connect(spin_num_loop, "value-changed", G_CALLBACK(num_color_loop_CB),NULL);
+	g_signal_connect(spin_num_loop, "value-changed", G_CALLBACK(num_color_loop_CB),
+					 (gpointer) kemo_mesh);
 	
 	
 	label_tree_color_mode = create_fixed_label_w_index_tree();
@@ -127,7 +134,7 @@ void add_gtk_mesh_menu(struct kemoview_mesh_view *mesh_vws,
 	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combobox_color_mode), renderer_color_mode,
 				"text", COLUMN_FIELD_NAME, NULL);
 	g_signal_connect(G_OBJECT(combobox_color_mode), "changed", 
-				G_CALLBACK(set_mesh_color_mode_CB), NULL);
+				G_CALLBACK(set_mesh_color_mode_CB), (gpointer) kemo_mesh);
 	
 	
 	hbox_distance = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
@@ -153,9 +160,9 @@ void add_gtk_mesh_menu(struct kemoview_mesh_view *mesh_vws,
 	gtk_box_pack_start(GTK_BOX(box_out), hbox_color_mode, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(box_out), hbox_num_loop, TRUE, TRUE, 0);
 	
-	add_domain_draw_box(mesh_vws->domain_vws, window, box_out);
-	add_nod_group_draw_box(mesh_vws->nod_grp_vws, window, box_out);
-	add_ele_group_draw_box(mesh_vws->ele_grp_vws, window, box_out);
-	add_surf_group_draw_box(mesh_vws->surf_grp_vws, window, box_out);
+	add_domain_draw_box(kemo_mesh->mesh_m, mesh_vws->domain_vws, window, box_out);
+	add_nod_group_draw_box(kemo_mesh->mesh_m, mesh_vws->nod_grp_vws, window, box_out);
+	add_ele_group_draw_box(kemo_mesh->mesh_m, mesh_vws->ele_grp_vws, window, box_out);
+	add_surf_group_draw_box(kemo_mesh->mesh_m, mesh_vws->surf_grp_vws, window, box_out);
 	return;
 }

@@ -298,7 +298,7 @@ module:
 	tree_view_4_domain_viewer.o: \
 	'$$(KEMO_C_GLUTDIR)'/tree_view_4_domain_viewer.c \
 	tree_view_4_domain_viewer.h \
-	kemoviewer.h \
+	m_kemoview_mesh_menu.o \
 	tree_views_4_fixed_lists_GTK.o \
 	t_control_chara_int3_IO.o \
 	tree_view_chara_int3_GTK.o \
@@ -317,7 +317,7 @@ module:
 	tree_view_4_ele_group_viewer.o: \
 	'$$(KEMO_C_GLUTDIR)'/tree_view_4_ele_group_viewer.c \
 	tree_view_4_ele_group_viewer.h \
-	kemoviewer.h \
+	m_kemoview_mesh_menu.o \
 	tree_views_4_fixed_lists_GTK.o \
 	t_control_chara_int3_IO.o \
 	tree_view_chara_int3_GTK.o \
@@ -336,7 +336,7 @@ module:
 	tree_view_4_surf_group_viewer.o: \
 	'$$(KEMO_C_GLUTDIR)'/tree_view_4_surf_group_viewer.c \
 	tree_view_4_surf_group_viewer.h \
-	kemoviewer.h \
+	m_kemoview_mesh_menu.o \
 	tree_views_4_fixed_lists_GTK.o \
 	t_control_chara_int3_IO.o \
 	tree_view_chara_int3_GTK.o \
@@ -355,7 +355,7 @@ module:
 	tree_view_4_nod_group_viewer.o: \
 	'$$(KEMO_C_GLUTDIR)'/tree_view_4_nod_group_viewer.c \
 	tree_view_4_nod_group_viewer.h \
-	kemoviewer.h \
+	m_kemoview_mesh_menu.o \
 	t_control_chara_int_IO.o \
 	tree_views_4_fixed_lists_GTK.o \
 	tree_view_chara_int_GTK.o \

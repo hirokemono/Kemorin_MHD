@@ -10,7 +10,7 @@
 
 #include <gtk/gtk.h>
 
-#include "kemoviewer.h"
+#include "m_kemoview_mesh_menu.h"
 #include "kemoview_gtk_routines.h"
 #include "kemoview_gtk_colorsel.h"
 #include "tree_views_4_fixed_lists_GTK.h"
@@ -29,7 +29,7 @@
 
 /* prototypes */
 
-void add_domain_draw_box(struct ci3_clist_view *domain_vws, 
+void add_domain_draw_box(struct mesh_menu_val *mesh_m, struct ci3_clist_view *domain_vws, 
 						 GtkWidget *window_mesh, GtkWidget *vbox);
 
 #endif /* tree_view_4_domain_viewer */

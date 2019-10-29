@@ -9,19 +9,27 @@
 
 static void toggle_draw_node_group_CB(GtkTreeViewColumn *renderer, 
 			gchar *path_str, gpointer user_data){
+	struct ci_clist_view *nod_grp_vws 
+			= (struct ci_clist_view *) g_object_get_data(G_OBJECT(user_data), "nod_grp_view");
+	struct mesh_menu_val *mesh_m 
+			= (struct mesh_menu_val *) g_object_get_data(G_OBJECT(user_data), "mesh_menu");
 	int index1_for_toggle;
-	int index_grp = toggle_draw_nod_grp_node_switch(path_str, user_data, &index1_for_toggle);
-    kemoview_set_draw_nodgrp_node(index1_for_toggle, index_grp);
+	int index_grp = toggle_draw_nod_grp_node_switch(path_str, nod_grp_vws, &index1_for_toggle);
+    set_draw_nodgrp_node(index1_for_toggle, index_grp, mesh_m);
 	
 	draw_full();
 }
 
 static void draw_all_nod_grp_nodes_CB(GtkButton *button, gpointer user_data)
 {
+	struct ci_clist_view *nod_grp_vws 
+			= (struct ci_clist_view *) g_object_get_data(G_OBJECT(user_data), "nod_grp_view");
+	struct mesh_menu_val *mesh_m 
+			= (struct mesh_menu_val *) g_object_get_data(G_OBJECT(user_data), "mesh_menu");
 	int i;
-	int num = set_all_node_draw_flags(IONE, user_data);
+	int num = set_all_node_draw_flags(IONE, nod_grp_vws);
 	for(i=0;i<num;i++){
-		kemoview_set_draw_nodgrp_node(IONE, i);
+		set_draw_nodgrp_node(IONE, i, mesh_m);
 	};
 	
 	draw_full();
@@ -29,10 +37,14 @@ static void draw_all_nod_grp_nodes_CB(GtkButton *button, gpointer user_data)
 
 static void hide_all_nod_grp_nodes_CB(GtkButton *button, gpointer user_data)
 {
+	struct ci_clist_view *nod_grp_vws 
+			= (struct ci_clist_view *) g_object_get_data(G_OBJECT(user_data), "nod_grp_view");
+	struct mesh_menu_val *mesh_m 
+			= (struct mesh_menu_val *) g_object_get_data(G_OBJECT(user_data), "mesh_menu");
 	int i;
-	int num = set_all_node_draw_flags(IZERO, user_data);
+	int num = set_all_node_draw_flags(IZERO, nod_grp_vws);
 	for(i=0;i<num;i++){
-		kemoview_set_draw_nodgrp_node(IZERO, i);
+		set_draw_nodgrp_node(IZERO, i, mesh_m);
 	};
 	
 	draw_full();
@@ -40,13 +52,14 @@ static void hide_all_nod_grp_nodes_CB(GtkButton *button, gpointer user_data)
 
 static void nod_grp_node_colormode_CB(GtkComboBox *combobox_sfcolor, gpointer user_data)
 {
+	struct mesh_menu_val *mesh_m 
+			= (struct mesh_menu_val *) g_object_get_data(G_OBJECT(user_data), "mesh_menu");
     int index_mode = gtk_selected_combobox_index(combobox_sfcolor);
 	
 	if (index_mode == SINGLE_COLOR){
-//		kemoview_gtk_surfcolorsel(user_data);
-		kemoview_set_node_grp_color_flag(index_mode);
+		select_node_grp_node_color(index_mode, mesh_m);
 	} else {
-		kemoview_set_node_grp_color_flag(index_mode);
+		select_node_grp_node_color(index_mode, mesh_m);
 	};
 	
 	draw_full();
@@ -55,18 +68,20 @@ static void nod_grp_node_colormode_CB(GtkComboBox *combobox_sfcolor, gpointer us
 
 static void set_single_nod_grp_nodes_color_CB(GtkButton *button, gpointer user_data)
 {
+	struct mesh_menu_val *mesh_m 
+			= (struct mesh_menu_val *) g_object_get_data(G_OBJECT(user_data), "mesh_menu");
+	GtkWindow *parent = GTK_WINDOW(g_object_get_data(G_OBJECT(user_data), "parent"));
 	float colorcode4[4];
-	GtkWindow *parent = GTK_WINDOW(user_data);
 	
-	kemoview_get_node_grp_color_code(colorcode4);
+	send_node_grp_color_code(mesh_m, colorcode4);
 	int iflag_set = kemoview_gtk_colorsel_CB(parent, colorcode4);
-	if(iflag_set > 0) {kemoview_set_node_grp_color_code(colorcode4);};
+	if(iflag_set > 0) {set_node_grp_color_code(colorcode4, mesh_m);};
 	return;
 };
 
 
 
-static void create_node_group_columns(struct ci_clist_view *nod_grp_vws)
+static void create_node_group_columns(struct mesh_menu_val *mesh_m, struct ci_clist_view *nod_grp_vws)
 {
     GtkCellRenderer *textRenderer1;
     GtkCellRenderer *textRenderer2;
@@ -75,6 +90,10 @@ static void create_node_group_columns(struct ci_clist_view *nod_grp_vws)
 	GtkTreeViewColumn *column_1st;
     GtkTreeViewColumn *column_2nd;
     GtkTreeViewColumn *column_3rd;
+	
+	GtkWidget *entry = gtk_entry_new();
+	g_object_set_data(G_OBJECT(entry_file), "nod_grp_view", (gpointer) nod_grp_vws);
+	g_object_set_data(G_OBJECT(entry_file), "mesh_menu", (gpointer) mesh_m);
 	
     /* First raw */
 	column_1st = create_each_column_no_sort(nod_grp_vws->tree_view, 
@@ -91,10 +110,10 @@ static void create_node_group_columns(struct ci_clist_view *nod_grp_vws)
 				"Node", COLUMN_MESH_THIRD);
 	toggleRenderer1 = create_each_toggle_renderer(column_3rd, 60, COLUMN_MESH_THIRD);
 	g_signal_connect(G_OBJECT(toggleRenderer1), "toggled", 
-				G_CALLBACK(toggle_draw_node_group_CB), (gpointer) nod_grp_vws);
+				G_CALLBACK(toggle_draw_node_group_CB), (gpointer) entry);
 };
 
-static void create_node_group_view(struct ci_clist_view *nod_grp_vws)
+static void create_node_group_view(struct mesh_menu_val *mesh_m, struct ci_clist_view *nod_grp_vws)
 {
     int i;
     GtkTreeModel *model;
@@ -110,7 +129,7 @@ static void create_node_group_view(struct ci_clist_view *nod_grp_vws)
     model = gtk_tree_model_sort_new_with_model(GTK_TREE_MODEL(child_model));
     gtk_tree_view_set_model(GTK_TREE_VIEW(nod_grp_vws->tree_view), model);
 	
-	create_node_group_columns(nod_grp_vws);
+	create_node_group_columns(mesh_m, nod_grp_vws);
     
     /* Mode selection */
     selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(nod_grp_vws->tree_view));
@@ -128,7 +147,7 @@ static void create_node_group_view(struct ci_clist_view *nod_grp_vws)
     
 }
 
-void add_nod_group_draw_box(struct ci_clist_view *nod_grp_vws,
+void add_nod_group_draw_box(struct mesh_menu_val *mesh_m, struct ci_clist_view *nod_grp_vws,
 			GtkWidget *window_mesh, GtkWidget *vbox)
 {
 	GtkWidget *scrolled_table;
@@ -154,7 +173,12 @@ void add_nod_group_draw_box(struct ci_clist_view *nod_grp_vws,
 	GtkWidget *vbox_nod_grp;
 	GtkWidget *expander,  *scroll, *Frame;
 	
-	create_node_group_view(nod_grp_vws);
+	GtkWidget *entry = gtk_entry_new();
+	g_object_set_data(G_OBJECT(entry), "nod_grp_view", (gpointer) nod_grp_vws);
+	g_object_set_data(G_OBJECT(entry), "mesh_menu", (gpointer) mesh_m);
+	g_object_set_data(G_OBJECT(entry), "parent", (gpointer) window_mesh);
+	
+	create_node_group_view(mesh_m, nod_grp_vws);
 	
 	/* Delete data bottun */
 	scrolled_table = gtk_scrolled_window_new(NULL, NULL);
@@ -168,12 +192,12 @@ void add_nod_group_draw_box(struct ci_clist_view *nod_grp_vws,
 	gtk_box_pack_start(GTK_BOX(vbox_table), scrolled_table, TRUE, TRUE, 0);
 	add_sorting_signal_w_label(GTK_TREE_VIEW(nod_grp_vws->tree_view), vbox_table);
 	
-    button_draw_node = gtk_button_new_with_label("Draw nodes");
+	button_draw_node = gtk_button_new_with_label("Draw nodes");
     g_signal_connect(G_OBJECT(button_draw_node), "clicked", 
-                     G_CALLBACK(draw_all_nod_grp_nodes_CB), (gpointer) nod_grp_vws);
+                     G_CALLBACK(draw_all_nod_grp_nodes_CB), (gpointer) entry);
     button_hide_node = gtk_button_new_with_label("Hide nodes");
-    g_signal_connect(G_OBJECT(button_hide_node), "clicked", 
-                     G_CALLBACK(hide_all_nod_grp_nodes_CB), (gpointer) nod_grp_vws);
+    g_signal_connect(G_OBJECT(btton_hide_node), "clicked", 
+                     G_CALLBACK(hide_all_nod_grp_nodes_CB), (gpointer) entry);
 	
 	
 	
@@ -202,13 +226,13 @@ void add_nod_group_draw_box(struct ci_clist_view *nod_grp_vws,
 	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combobox_node_color), renderer_node_color,
 				"text", COLUMN_FIELD_NAME, NULL);
 	g_signal_connect(G_OBJECT(combobox_node_color), "changed", 
-				G_CALLBACK(nod_grp_node_colormode_CB), (gpointer) window_mesh);
+				G_CALLBACK(nod_grp_node_colormode_CB), (gpointer) entry);
 	
 	kemoview_get_node_grp_color_code(color4);
 	set_color_to_GTK(color4, &gcolor);
 	button_node_color = gtk_color_button_new_with_rgba(&gcolor);
     g_signal_connect(G_OBJECT(button_node_color), "clicked", 
-				G_CALLBACK(set_single_nod_grp_nodes_color_CB), (gpointer) window_mesh);
+				G_CALLBACK(set_single_nod_grp_nodes_color_CB), (gpointer) entry);
 	
 	
 	Frame = gtk_frame_new("");
