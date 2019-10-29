@@ -107,6 +107,13 @@ void init_viewer_parameters(struct mesh_menu_val *mesh_m){
 };
 
 
+void set_mesh_color_mode(int icolor, struct mesh_menu_val *mesh_m)  {mesh_m->mesh_color_mode = icolor;};
+void set_num_of_color_loop(int icolor, struct mesh_menu_val *mesh_m){mesh_m->num_of_color_loop = icolor;};
+
+void set_node_diamater(double diam, struct mesh_menu_val *mesh_m)  {mesh_m->node_diam = diam;};
+void set_domain_distance(double dist, struct mesh_menu_val *mesh_m){mesh_m->dist_domains = dist;};
+
+
 void select_domain_node_color(int selected, struct mesh_menu_val *mesh_m){
 	mesh_m->domain_node_color = selected;
 	return;
@@ -267,4 +274,40 @@ int toggle_coastline_flag(struct mesh_menu_val *mesh_m){
 };
 int toggle_sphere_grid_flag(struct mesh_menu_val *mesh_m){
 	return mesh_m->iflag_draw_sph_grid = toggle_value_c(mesh_m->iflag_draw_sph_grid);
+};
+
+
+void set_draw_nodgrp_node(int iflag, int i, struct mesh_menu_val *mesh_m){mesh_m->draw_nodgrp_nod[i] = iflag;};
+
+void set_draw_elegrp_patch(int iflag, int i, struct mesh_menu_val *mesh_m){mesh_m->draw_elegrp_solid[i] = iflag;};
+void set_draw_elegrp_grid(int iflag, int i, struct mesh_menu_val *mesh_m) {mesh_m->draw_elegrp_grid[i] = iflag;};
+void set_draw_elegrp_node(int iflag, int i, struct mesh_menu_val *mesh_m)  {mesh_m->draw_elegrp_nod[i] = iflag;};
+
+void set_draw_surfgrp_patch(int iflag, int i, struct mesh_menu_val *mesh_m){mesh_m->draw_surfgrp_solid[i] = iflag;};
+void set_draw_surfgrp_grid(int iflag, int i, struct mesh_menu_val *mesh_m) {mesh_m->draw_surfgrp_grid[i] = iflag;};
+void set_draw_surfgrp_node(int iflag, int i, struct mesh_menu_val *mesh_m)  {mesh_m->draw_surfgrp_nod[i] = iflag;};
+
+
+int get_draw_nodgrp_node(int i, static struct mesh_menu_val *mesh_m){
+	return mesh_m->draw_nodgrp_nod[i];
+};
+
+int get_draw_elegrp_patch(int i, static struct mesh_menu_val *mesh_m){
+	return mesh_m->draw_elegrp_solid[i];
+};
+int get_draw_elegrp_grid(int i, static struct mesh_menu_val *mesh_m) {
+	return mesh_m->draw_elegrp_grid[i];
+};
+int get_draw_elegrp_node(int i, static struct mesh_menu_val *mesh_m)  {
+	return mesh_m->draw_elegrp_nod[i];
+};
+
+int get_draw_surfgrp_patch(int i, static struct mesh_menu_val *mesh_m){
+	return mesh_m->draw_surfgrp_solid[i];
+};
+int get_draw_surfgrp_grid(int i, static struct mesh_menu_val *mesh_m) {
+	return mesh_m->draw_surfgrp_grid[i];
+};
+int get_draw_surfgrp_node(int i, static struct mesh_menu_val *mesh_m)  {
+	return mesh_m->draw_surfgrp_nod[i];
 };

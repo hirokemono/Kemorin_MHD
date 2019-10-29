@@ -300,11 +300,19 @@ float kemoview_send_material_shiness(void){
 
 
 /* mesh ontrols  */
-void kemoview_set_mesh_color_mode(int icolor)  {kemo_sgl->kemo_mesh->mesh_m->mesh_color_mode = icolor;};
-void kemoview_set_num_of_color_loop(int icolor){kemo_sgl->kemo_mesh->mesh_m->num_of_color_loop = icolor;};
+void kemoview_set_mesh_color_mode(int icolor)  {
+	set_mesh_color_mode(icolor, kemo_sgl->kemo_mesh->mesh_m);
+};
+void kemoview_set_num_of_color_loop(int icolor){
+	set_num_of_color_loop(icolor, kemo_sgl->kemo_mesh->mesh_m);
+};
 
-void kemoview_set_node_diamater(double diam)   {kemo_sgl->kemo_mesh->mesh_m->node_diam = diam;};
-void kemoview_set_domain_distance(double dist){kemo_sgl->kemo_mesh->mesh_m->dist_domains = dist;};
+void kemoview_set_node_diamater(double diam)   {
+	set_node_diamater(diam, kemo_sgl->kemo_mesh->mesh_m);
+};
+void kemoview_set_domain_distance(double dist){
+	set_domain_distance(dist, kemo_sgl->kemo_mesh->mesh_m);
+};
 
 
 void kemoview_set_domain_color_flag(int selected, int icolor){
@@ -321,8 +329,12 @@ int kemoview_get_domain_color_flag(int selected){
     return icolor;
 }
 
-void kemoview_set_node_grp_color_flag(int icolor)  {select_node_grp_node_color(icolor, kemo_sgl->kemo_mesh->mesh_m);};
-int kemoview_get_node_grp_color_flag(void) {return get_node_grp_node_color(kemo_sgl->kemo_mesh->mesh_m);};
+void kemoview_set_node_grp_color_flag(int icolor){
+	select_node_grp_node_color(icolor, kemo_sgl->kemo_mesh->mesh_m);
+};
+int kemoview_get_node_grp_color_flag(void) {
+	return get_node_grp_node_color(kemo_sgl->kemo_mesh->mesh_m);
+};
 
 void kemoview_set_ele_grp_color_flag(int selected, int icolor){
     if(selected == SURFSOLID_TOGGLE){select_ele_grp_patch_color(icolor, kemo_sgl->kemo_mesh->mesh_m);}
@@ -441,26 +453,53 @@ void kemoview_set_draw_domain_nod(int iflag, int i)  {
 }
 
 
-void kemoview_set_draw_nodgrp_node(int iflag, int i){kemo_sgl->kemo_mesh->mesh_m->draw_nodgrp_nod[i] = iflag;};
+void kemoview_set_draw_nodgrp_node(int iflag, int i){
+	set_draw_nodgrp_node(iflag, i, kemo_sgl->kemo_mesh->mesh_m);
+};
+void kemoview_set_draw_elegrp_patch(int iflag, int i){
+	set_draw_elegrp_patch(iflag, i, kemo_sgl->kemo_mesh->mesh_m);
+};
+void kemoview_set_draw_elegrp_grid(int iflag, int i){
+	set_draw_elegrp_grid(iflag, i, kemo_sgl->kemo_mesh->mesh_m);
+};
+void kemoview_set_draw_elegrp_node(int iflag, int i) {
+	set_draw_elegrp_node(iflag, i, kemo_sgl->kemo_mesh->mesh_m);
+};
 
-void kemoview_set_draw_elegrp_patch(int iflag, int i){kemo_sgl->kemo_mesh->mesh_m->draw_elegrp_solid[i] = iflag;};
-void kemoview_set_draw_elegrp_grid(int iflag, int i) {kemo_sgl->kemo_mesh->mesh_m->draw_elegrp_grid[i] = iflag;};
-void kemoview_set_draw_elegrp_node(int iflag, int i)  {kemo_sgl->kemo_mesh->mesh_m->draw_elegrp_nod[i] = iflag;};
+void kemoview_set_draw_surfgrp_patch(int iflag, int i){
+	set_draw_surfgrp_patch(iflag, i, kemo_sgl->kemo_mesh->mesh_m);
+};
+void kemoview_set_draw_surfgrp_grid(int iflag, int i){
+	set_draw_surfgrp_grid(iflag, i, kemo_sgl->kemo_mesh->mesh_m);
+};
+void kemoview_set_draw_surfgrp_node(int iflag, int i){
+	set_draw_surfgrp_node(int iflag, int i, kemo_sgl->kemo_mesh->mesh_m);
+};
 
-void kemoview_set_draw_surfgrp_patch(int iflag, int i){kemo_sgl->kemo_mesh->mesh_m->draw_surfgrp_solid[i] = iflag;};
-void kemoview_set_draw_surfgrp_grid(int iflag, int i) {kemo_sgl->kemo_mesh->mesh_m->draw_surfgrp_grid[i] = iflag;};
-void kemoview_set_draw_surfgrp_node(int iflag, int i)  {kemo_sgl->kemo_mesh->mesh_m->draw_surfgrp_nod[i] = iflag;};
 
+int kemoview_get_draw_nodgrp_node(int i){
+	return kemoview_get_draw_nodgrp_node(i, kemo_sgl->kemo_mesh->mesh_m);
+};
 
-int kemoview_get_draw_nodgrp_node(int i){return kemo_sgl->kemo_mesh->mesh_m->draw_nodgrp_nod[i];};
+int kemoview_get_draw_elegrp_patch(int i){
+	return kemoview_get_draw_elegrp_patch(i, kemo_sgl->kemo_mesh->mesh_m);
+};
+int kemoview_get_draw_elegrp_grid(int i) {
+	return kemoview_get_draw_elegrp_grid(i, kemo_sgl->kemo_mesh->mesh_m);
+};
+int kemoview_get_draw_elegrp_node(int i)  {
+	return kemoview_get_draw_elegrp_node(i, kemo_sgl->kemo_mesh->mesh_m);
+};
 
-int kemoview_get_draw_elegrp_patch(int i){return kemo_sgl->kemo_mesh->mesh_m->draw_elegrp_solid[i];};
-int kemoview_get_draw_elegrp_grid(int i) {return kemo_sgl->kemo_mesh->mesh_m->draw_elegrp_grid[i];};
-int kemoview_get_draw_elegrp_node(int i)  {return kemo_sgl->kemo_mesh->mesh_m->draw_elegrp_nod[i];};
-
-int kemoview_get_draw_surfgrp_patch(int i){return kemo_sgl->kemo_mesh->mesh_m->draw_surfgrp_solid[i];};
-int kemoview_get_draw_surfgrp_grid(int i) {return kemo_sgl->kemo_mesh->mesh_m->draw_surfgrp_grid[i];};
-int kemoview_get_draw_surfgrp_node(int i)  {return kemo_sgl->kemo_mesh->mesh_m->draw_surfgrp_nod[i];};
+int kemoview_get_draw_surfgrp_patch(int i){
+	return kemoview_get_draw_surfgrp_patch(i, kemo_sgl->kemo_mesh->mesh_m);
+};
+int kemoview_get_draw_surfgrp_grid(int i){
+	return kemoview_get_draw_surfgrp_grid(i, kemo_sgl->kemo_mesh->mesh_m);
+};
+int kemoview_get_draw_surfgrp_node(int i){
+	return kemoview_get_draw_surfgrp_node(i, kemo_sgl->kemo_mesh->mesh_m);
+};
 
 void kemoview_nod_grp_toggle(int selected){
 	select_draw_flag_toggle(selected, kemo_sgl->kemo_mesh->mesh_d->ngrp_nod_sf, kemo_sgl->kemo_mesh->mesh_m->draw_nodgrp_nod);
