@@ -7,8 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "zlib.h" 
-#include "png.h"
+#include "write_image_2_png.h"
 #include "kemosrc_param_c.h"
 
 /* prototypes */

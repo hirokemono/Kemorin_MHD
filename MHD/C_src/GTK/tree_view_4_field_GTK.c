@@ -35,8 +35,8 @@ void append_field_model_data(int index_field, struct all_field_ctl_c *all_fld_tb
                        COLUMN_FIELD_INDEX, index_field,
                        COLUMN_FIELD_NAME, all_fld_tbl->field_name,
                        COLUMN_FIELD_MATH, all_fld_tbl->field_math,
-                       COLUMN_VIZ_FLAG, (gboolean) all_fld_tbl->iflag_viz,
-                       COLUMN_MONITOR_FLAG, (gboolean) all_fld_tbl->iflag_monitor,
+                       COLUMN_FORTH, (gboolean) all_fld_tbl->iflag_viz,
+                       COLUMN_FIFTH, (gboolean) all_fld_tbl->iflag_monitor,
                        COLUMN_NUM_COMP, all_fld_tbl->num_comp,
                        COLUMN_QUADRATURE, all_fld_tbl->iflag_quad,
                        -1);
@@ -57,7 +57,7 @@ static void toggle_viz_switch(GtkTreeViewColumn *renderer,
     gtk_tree_model_get_iter(child_model, &iter, child_path);  
     gtk_tree_model_get(child_model, &iter, COLUMN_FIELD_INDEX, &index_field, -1);
     gtk_tree_model_get(child_model, &iter, COLUMN_FIELD_NAME, &row_string, -1);
-    gtk_tree_model_get(child_model, &iter, COLUMN_VIZ_FLAG, &index_for_toggle, -1);
+    gtk_tree_model_get(child_model, &iter, COLUMN_FORTH, &index_for_toggle, -1);
     
    
     printf("toggle_viz_switch %d, %s: %s\n", index_field, row_string,
@@ -65,7 +65,7 @@ static void toggle_viz_switch(GtkTreeViewColumn *renderer,
     
     index_for_toggle = (index_for_toggle+ 1) % 2;
     gtk_list_store_set(GTK_LIST_STORE(child_model), &iter,
-                       COLUMN_VIZ_FLAG, (gboolean) index_for_toggle, -1);
+                       COLUMN_FORTH, (gboolean) index_for_toggle, -1);
     gtk_tree_path_free(child_path);  
     gtk_tree_path_free(path);  
     
@@ -88,14 +88,14 @@ static void toggle_monitor_switch(GtkTreeViewColumn *renderer, gchar *path_str, 
     gtk_tree_model_get_iter(child_model, &iter, child_path);  
     gtk_tree_model_get(child_model, &iter, COLUMN_FIELD_INDEX, &index_field, -1);
     gtk_tree_model_get(child_model, &iter, COLUMN_FIELD_NAME, &row_string, -1);
-	gtk_tree_model_get(child_model, &iter, COLUMN_MONITOR_FLAG, &index_for_toggle, -1);
+	gtk_tree_model_get(child_model, &iter, COLUMN_FIFTH, &index_for_toggle, -1);
     
     printf("toggle_monitor_switch %d, %s: %s\n", index_field, row_string,
            fields_vws->all_fld_tbl[index_field]->field_name);
 	
     index_for_toggle = (index_for_toggle+ 1) % 2;
     gtk_list_store_set(GTK_LIST_STORE(child_model), &iter,
-                       COLUMN_MONITOR_FLAG, (gboolean) index_for_toggle, -1);
+                       COLUMN_FIFTH, (gboolean) index_for_toggle, -1);
     gtk_tree_path_free(child_path);  
     gtk_tree_path_free(path);  
     
@@ -136,15 +136,15 @@ void create_field_tree_columns(struct field_views *fields_vws)
     
     /* Forth row */
 	column_4th = create_each_field_column(fields_vws->used_tree_view,
-				"Field output", COLUMN_VIZ_FLAG);
-	toggleRenderer1 = create_each_toggle_renderer(column_4th, 60, COLUMN_VIZ_FLAG);
+				"Field output", COLUMN_FORTH);
+	toggleRenderer1 = create_each_toggle_renderer(column_4th, 60, COLUMN_FORTH);
 	g_signal_connect(G_OBJECT(toggleRenderer1), "toggled", 
 				G_CALLBACK(toggle_viz_switch), (gpointer) fields_vws);
     
     /* Fifth row */
 	column_5th = create_each_field_column(fields_vws->used_tree_view,
-				"Monitor output", COLUMN_MONITOR_FLAG);
-	toggleRenderer2 = create_each_toggle_renderer(column_5th, 60, COLUMN_MONITOR_FLAG);
+				"Monitor output", COLUMN_FIFTH);
+	toggleRenderer2 = create_each_toggle_renderer(column_5th, 60, COLUMN_FIFTH);
 	g_signal_connect(G_OBJECT(toggleRenderer2), "toggled",
 				G_CALLBACK(toggle_monitor_switch), (gpointer) fields_vws);
 };

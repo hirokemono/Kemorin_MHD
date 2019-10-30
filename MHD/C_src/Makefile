@@ -9,7 +9,7 @@ LIB_KEMO_C_FILE = libkemo_c.a
 
 OBJS_C= \
 $$(OBJ_KEMO_C) \
-$$(OBJ_KEMO_CTL_C)
+$$(OBJ_CTL_C)
 
 LIBDIRS = \
 CORE_C \
@@ -18,20 +18,21 @@ CONTROLS
 SUBDIRS = \
 CORE_C    \
 CONTROLS  \
-KEMO_GL   \
-KEMO_GLUT \
-GLSL      \
-GTK
+KEMO_GL
 
 ifdef OPENGL_LIBS
   OBJS_C+= \
-    $$(OBJ_KEMO_GL_C)   \
+    $$(OBJ_C_GL)   \
     $$(OBJ_SHADERS)     \
-    $$(OBJ_KEMO_GTK_C)
+    $$(OBJ_GTK_C)
   LIBDIRS+=   \
     KEMO_GL   \
     GLSL      \
     GTK
+  SUBDIRS+= \
+    GLSL      \
+    GTK       \
+    KEMO_GLUT
 endif
 
 #
@@ -96,26 +97,33 @@ mod_list:
 module:
 	@for dir in $(SUBDIRS); do \
 		( cd $${dir};  \
-		echo 'generate compile commands for ' $$dir ; \
+		echo 'generate dependencies of headers for ' $$dir ; \
 		$(GMAKE) \
 		GMAKE='$(GMAKE)' \
-		MAKE_MOD_DEP='$(MAKE_MOD_DEP)' \
 		MAKENAME='$(MAKENAME)' \
 		module \
 		) \
 	done
 
-includes:
+dependencies:
 	@for dir in $(SUBDIRS); do \
 		( cd $${dir};  \
-		echo 'generate symbolic link commands for ' $$dir ; \
+		echo 'generate dependencies of headers for ' $$dir ; \
 		$(GMAKE) \
 		GMAKE='$(GMAKE)' \
+		MPICC='$(MPICC)'   \
+		MHDDIR='$(MHDDIR)' \
 		MAKENAME='$(MAKENAME)' \
-		includes \
+		DEPFLAGS='$(DEPFLAGS)' \
+		OPTFLAGS_GL='$(OPTFLAGS_GL)' \
+		C_INCLUDE='$(C_INCLUDE)' \
+		GTK3_CFLAGS='$(GTK3_CFLAGS)' \
+		GLFW_CFLAGS='$(GLFW_CFLAGS)' \
+		dependencies \
 		) \
 	done
 
+includes:
 
 clean:
 	@for dir in $(SUBDIRS); do \

@@ -8,8 +8,7 @@
 #ifndef TREE_VIEW_4_VIEWER_MESH_
 #define TREE_VIEW_4_VIEWER_MESH_
 
-#include <gtk/gtk.h>
-
+#include "calypso_GTK.h"
 #include "kemoviewer.h"
 #include "m_surface_mesh_4_viewer_c.h"
 #include "t_control_chara_int_IO.h"
@@ -17,7 +16,6 @@
 #include "tree_views_4_fixed_lists_GTK.h"
 #include "tree_view_chara_int_GTK.h"
 #include "tree_view_chara_int3_GTK.h"
-#include "create_tree_view_columns_GTK.h"
 #include "quicksort_c.h"
 
 #define COLUMN_MESH_INDEX    0

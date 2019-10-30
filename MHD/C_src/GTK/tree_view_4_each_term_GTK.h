@@ -8,8 +8,7 @@
 #ifndef tree_view_4_each_term_GTK_h_
 #define tree_view_4_each_term_GTK_h_
 
-#include <gtk/gtk.h>
-
+#include "calypso_GTK.h"
 #include "t_ctl_data_SGS_MHD_model_c.h"
 #include "tree_views_4_fixed_lists_GTK.h"
 #include "tree_view_4_force_GTK.h"

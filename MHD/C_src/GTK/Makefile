@@ -3,28 +3,9 @@
 #
 
 KEMO_GTK_DIR = $$(C_SRCDIR)/GTK
-
-OBJ_KEMO_GTK_C = \
-control_elements_IO_GTK.o \
-\
-kemoview_gtk_routines.o \
-kemoview_gtk_colorsel.o \
-\
-create_tree_view_columns_GTK.o \
-tree_views_4_fixed_lists_GTK.o \
-tree_view_real2_GTK.o \
-tree_view_real3_GTK.o \
-tree_view_chara_GTK.o \
-tree_view_chara_int_GTK.o \
-tree_view_chara_int3_GTK.o \
-tree_view_chara_real_GTK.o \
-tree_view_chara2_real_GTK.o \
-\
-tree_view_4_colormap.o \
-tree_view_4_pvr_colormap.o \
-tree_view_4_field_GTK.o \
-control_panel_4_field_GTK.o \
-ctl_panel_platforms_GTK.o
+SRC_GTK_C = $(shell ls *.c)
+INC_GTK_C = $(addsuffix .h,$(basename $(SRC_GTK_C)) )
+OBJ_GTK_C = $(addsuffix .o,$(basename $(SRC_GTK_C)) )
 
 #
 #  ------------------------------------------------------------------
@@ -36,226 +17,32 @@ dir_list:
 lib_name:
 
 lib_archve:
-	@echo '	''$$(AR)' '$$(ARFLUGS)' rcsv '$$@' '$$(OBJ_KEMO_GTK_C)' >> $(MAKENAME)
+	@echo '	''$$(AR)' '$$(ARFLUGS)' rcsv '$$@' '$$(OBJ_GTK_C)' >> $(MAKENAME)
 
 
 mod_list:
-	@echo  OBJ_KEMO_GTK_C=  \\ >> $(MAKENAME)
-	@echo  $(OBJ_KEMO_GTK_C)   >> $(MAKENAME)
+	@echo  OBJ_GTK_C=  \\ >> $(MAKENAME)
+	@echo  $(OBJ_GTK_C)   >> $(MAKENAME)
 	@echo   >> $(MAKENAME)
 
 
-module:
-	@echo \
-	control_elements_IO_GTK.o: \
-	'$$(KEMO_GTK_DIR)'/control_elements_IO_GTK.c \
-	control_elements_IO_GTK.h \
-	control_elements_IO_c.o \
-	t_control_int_IO.o \
-	t_control_real_IO.o \
-	t_control_chara_IO.o \
-	tree_view_chara_int_GTK.o \
-	tree_views_4_fixed_lists_GTK.o \
-	>> $(MAKENAME)
-	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(GTK3_CFLAGS) $$(C_INCLUDE) $$<' \
-	>> $(MAKENAME)
-	
-	@echo \
-	tree_views_4_fixed_lists_GTK.o: \
-	'$$(KEMO_GTK_DIR)'/tree_views_4_fixed_lists_GTK.c \
-	tree_views_4_fixed_lists_GTK.h \
-	m_direction_labels_c.o \
-	>> $(MAKENAME)
-	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(GTK3_CFLAGS) $$(C_INCLUDE) $$<' \
-	>> $(MAKENAME)
-	
-	@echo \
-	kemoview_gtk_routines.o: \
-	'$$(KEMO_GTK_DIR)'/kemoview_gtk_routines.c \
-	kemoview_gtk_routines.h \
-	tree_views_4_fixed_lists_GTK.o \
-	>> $(MAKENAME)
-	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(GTK3_CFLAGS) $$(C_INCLUDE) $$<' \
-	>> $(MAKENAME)
-	
-	@echo \
-	kemoview_gtk_colorsel.o: \
-	'$$(KEMO_GTK_DIR)'/kemoview_gtk_colorsel.c \
-	kemoview_gtk_colorsel.h \
-	>> $(MAKENAME)
-	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(GTK3_CFLAGS) $$(C_INCLUDE) $$<' \
-	>> $(MAKENAME)
-	
-	@echo \
-	create_tree_view_columns_GTK.o: \
-	'$$(KEMO_GTK_DIR)'/create_tree_view_columns_GTK.c \
-	create_tree_view_columns_GTK.h \
-	>> $(MAKENAME)
-	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(GTK3_CFLAGS) $$(C_INCLUDE) $$<' \
-	>> $(MAKENAME)
-	
-	@echo \
-	tree_view_real2_GTK.o: \
-	'$$(KEMO_GTK_DIR)'/tree_view_real2_GTK.c \
-	tree_view_real2_GTK.h \
-	t_control_real2_IO.o \
-	tree_views_4_fixed_lists_GTK.o \
-	>> $(MAKENAME)
-	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(GTK3_CFLAGS) $$(C_INCLUDE) $$<' \
-	>> $(MAKENAME)
-	
-	@echo \
-	tree_view_real3_GTK.o: \
-	'$$(KEMO_GTK_DIR)'/tree_view_real3_GTK.c \
-	tree_view_real3_GTK.h \
-	t_control_real3_IO.o \
-	tree_views_4_fixed_lists_GTK.o \
-	>> $(MAKENAME)
-	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(GTK3_CFLAGS) $$(C_INCLUDE) $$<' \
-	>> $(MAKENAME)
-	
-	@echo \
-	tree_view_chara_GTK.o: \
-	'$$(KEMO_GTK_DIR)'/tree_view_chara_GTK.c \
-	tree_view_chara_GTK.h \
-	t_control_chara_IO.o \
-	tree_views_4_fixed_lists_GTK.o \
-	>> $(MAKENAME)
-	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(GTK3_CFLAGS) $$(C_INCLUDE) $$<' \
-	>> $(MAKENAME)
-	
-	@echo \
-	tree_view_chara_int_GTK.o: \
-	'$$(KEMO_GTK_DIR)'/tree_view_chara_int_GTK.c \
-	tree_view_chara_int_GTK.h \
-	t_control_chara_int_IO.o \
-	tree_views_4_fixed_lists_GTK.o \
-	>> $(MAKENAME)
-	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(GTK3_CFLAGS) $$(C_INCLUDE) $$<' \
-	>> $(MAKENAME)
-	
-	@echo \
-	tree_view_chara_int3_GTK.o: \
-	'$$(KEMO_GTK_DIR)'/tree_view_chara_int3_GTK.c \
-	tree_view_chara_int3_GTK.h \
-	t_control_chara_int3_IO.o \
-	tree_views_4_fixed_lists_GTK.o \
-	>> $(MAKENAME)
-	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(GTK3_CFLAGS) $$(C_INCLUDE) $$<' \
-	>> $(MAKENAME)
-	
-	@echo \
-	tree_view_chara_real_GTK.o: \
-	'$$(KEMO_GTK_DIR)'/tree_view_chara_real_GTK.c \
-	tree_view_chara_real_GTK.h \
-	t_control_chara_real_IO.o \
-	tree_views_4_fixed_lists_GTK.o \
-	>> $(MAKENAME)
-	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(GTK3_CFLAGS) $$(C_INCLUDE) $$<' \
-	>> $(MAKENAME)
-	
-	@echo \
-	tree_view_chara2_real_GTK.o: \
-	'$$(KEMO_GTK_DIR)'/tree_view_chara2_real_GTK.c \
-	tree_view_chara2_real_GTK.h \
-	t_control_chara2_real_IO.o \
-	tree_views_4_fixed_lists_GTK.o \
-	>> $(MAKENAME)
-	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(GTK3_CFLAGS) $$(C_INCLUDE) $$<' \
-	>> $(MAKENAME)
-	
-	@echo \
-	tree_view_4_colormap.o:  \
-	'$$(KEMO_GTK_DIR)'/tree_view_4_colormap.c  \
-	tree_view_4_colormap.h \
-	t_control_chara_IO.o \
-	t_control_real_IO.o \
-	t_control_real2_IO.o \
-	t_ctl_data_pvr_colormap_c.o \
-	tree_view_real2_GTK.o \
-	tree_view_chara_int_GTK.o \
-	tree_views_4_fixed_lists_GTK.o \
-	quicksort_c.o \
-	set_rgb_colors_c.o \
-	set_rgba_table_c.o \
-	m_color_table_c.o \
-	set_each_psf_parameters.o \
-	init_gl_lighting_c.o \
-	kemoview_gtk_routines.o \
-	>> $(MAKENAME)
-	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(GTK3_CFLAGS) $$(C_INCLUDE) $$<' \
-	>> $(MAKENAME)
-	
-	@echo \
-	tree_view_4_pvr_colormap.o:  \
-	'$$(KEMO_GTK_DIR)'/tree_view_4_pvr_colormap.c  \
-	tree_view_4_pvr_colormap.h \
-	t_control_chara_IO.o \
-	t_control_real_IO.o \
-	t_control_real2_IO.o \
-	t_ctl_data_pvr_colormap_c.o \
-	tree_view_real2_GTK.o \
-	tree_view_chara_int_GTK.o \
-	tree_views_4_fixed_lists_GTK.o \
-	tree_view_4_colormap.o \
-	quicksort_c.o \
-	set_rgb_colors_c.o \
-	set_rgba_table_c.o \
-	m_color_table_c.o \
-	m_kemoview_psf_menu.o \
-	set_each_psf_parameters.o \
-	init_gl_lighting_c.o \
-	kemoview_gtk_routines.o \
-	>> $(MAKENAME)
-	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(GTK3_CFLAGS) $$(C_INCLUDE) $$<' \
-	>> $(MAKENAME)
-	
-	@echo \
-	tree_view_4_field_GTK.o: \
-	'$$(KEMO_GTK_DIR)'/tree_view_4_field_GTK.c \
-	tree_view_4_field_GTK.h \
-	t_ctl_data_4_fields_c.o \
-	tree_views_4_fixed_lists_GTK.o \
-	create_tree_view_columns_GTK.o \
-	>> $(MAKENAME)
-	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(GTK3_CFLAGS) $$(C_INCLUDE) $$<' \
-	>> $(MAKENAME)
-	
-	@echo \
-	control_panel_4_field_GTK.o: \
-	'$$(KEMO_GTK_DIR)'/control_panel_4_field_GTK.c \
-	control_panel_4_field_GTK.h \
-	t_SGS_MHD_control_c.o \
-	t_ctl_data_4_fields_c.o \
-	tree_views_4_fixed_lists_GTK.o \
-	tree_view_4_field_GTK.o \
-	>> $(MAKENAME)
-	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(GTK3_CFLAGS) $$(C_INCLUDE) $$<' \
-	>> $(MAKENAME)
-	
-	@echo \
-	ctl_panel_platforms_GTK.o: \
-	'$$(KEMO_GTK_DIR)'/ctl_panel_platforms_GTK.c \
-	ctl_panel_platforms_GTK.h \
-	t_ctl_data_4_platforms_c.o \
-	tree_views_4_fixed_lists_GTK.o \
-	tree_view_chara_int_GTK.o \
-	control_elements_IO_GTK.o \
-	>> $(MAKENAME)
-	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(GTK3_CFLAGS) $$(C_INCLUDE) $$<' \
-	>> $(MAKENAME)
+module: Makefie.depends
+	@cat Makefie.depends >> $(MAKENAME)
 
+dependencies: Makefie.depends
 
-includes:
-	@for sources in `ls *.h`; do \
+Makefie.depends: $(SRC_GTK_C) $(INC_GTK_C)
+	echo 'Construct dependencies in C_src/GTK'
+	@echo '#' > $(MAKENAME).tmp
+	@for sources in $(SRC_GTK_C) ; do \
 		( \
-		echo 'copy include files for ' $$sources ; \
-		echo $$sources': $$(KEMO_GTK_DIR)/'$$sources \
-		>> $(MAKENAME); \
-		echo '	cp $$(KEMO_GTK_DIR)/'$$sources . \
-		>> $(MAKENAME) \
+		cd $(MAKEDIR); \
+		$(MPICC) $(DEPFLAGS) $(OPTFLAGS_GL) $(C_INCLUDE) $(GTK3_CFLAGS) $(MHDDIR)/C_src/GTK/$$sources >> $(MAKENAME).tmp; \
+		echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS) $$<' >> $(MAKENAME).tmp \
 		) \
 	done
+	@sed -e 's@'$(MHDDIR)/C_src'@'$$\(C_SRCDIR\)'@g' $(MAKENAME).tmp >  $(MHDDIR)/C_src/GTK/Makefie.depends
+	@rm $(MAKENAME).tmp
 
 clean:
 	rm -f *.o $(TARGET) *.mod *~

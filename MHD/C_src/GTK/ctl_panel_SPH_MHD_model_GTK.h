@@ -8,7 +8,7 @@
 #ifndef ctl_panel_SPH_MHD_model_GTK__
 #define ctl_panel_SPH_MHD_model_GTK__
 
-#include <gtk/gtk.h>
+#include "calypso_GTK.h"
 #include "t_ctl_data_SGS_MHD_model_c.h"
 #include "t_ctl_data_4_fields_c.h"
 #include "tree_views_4_fixed_lists_GTK.h"

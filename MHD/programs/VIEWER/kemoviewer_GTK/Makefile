@@ -101,7 +101,7 @@ module:
 	@echo \
 	kemoviewer_glfw_gtk.o:  \
 	'$$(KEMOVIEW_GTKDIR)'/kemoviewer_glfw_gtk.c  \
-	kemoviewer.h \
+	'$$(KEMO_C_GLDIR)'/kemoviewer.h \
 	kemo_mesh_viewer_glfw_gtk.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS)' \
@@ -112,7 +112,7 @@ module:
 	kemo_mesh_viewer_glfw_gtk.o:  \
 	'$$(KEMOVIEW_GTKDIR)'/kemo_mesh_viewer_glfw_gtk.c  \
 	kemo_mesh_viewer_glfw_gtk.h \
-	kemoviewer.h \
+	'$$(KEMO_C_GLDIR)'/kemoviewer.h \
 	kemoview_gtk_PSF_menu.o \
 	kemoview_gtk_mesh_menu.o \
 	kemoview_gtk_preference_menu.o \
@@ -128,7 +128,7 @@ module:
 	@echo \
 	kemoviewer_gtk.o:  \
 	'$$(KEMOVIEW_GTKDIR)'/kemoviewer_gtk.c  \
-	kemoviewer.h \
+	'$$(KEMO_C_GLDIR)'/kemoviewer.h \
 	kemo_mesh_viewer_gtk.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS)' \
@@ -138,12 +138,13 @@ module:
 	@echo \
 	kemo_mesh_viewer_gtk.o:  \
 	'$$(KEMOVIEW_GTKDIR)'/kemo_mesh_viewer_gtk.c  \
-	kemoviewer.h \
 	kemo_mesh_viewer_gtk.h \
+	'$$(KEMO_C_GLDIR)'/kemoviewer.h \
+	calypso_GTK.o \
+	view_modifier_glfw.o \
 	kemoview_fileselector_gtk.o \
 	kemoview_gtk_mesh_menu.o \
 	kemoview_gtk_preference_menu.o \
-	view_modifier_glfw.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS)' \
 	'$$(KEMOVIEW_GTKDIR)'/kemo_mesh_viewer_gtk.c \
@@ -152,7 +153,7 @@ module:
 	@echo \
 	viewer_GTK_test.o:  \
 	'$$(KEMOVIEW_GTKDIR)'/viewer_GTK_test.c  \
-	kemoviewer.h \
+	'$$(KEMO_C_GLDIR)'/kemoviewer.h \
 	kemoview_fileselector_gtk.o \
 	kemoview_gtk_mesh_menu.o \
 	kemoview_gtk_preference_menu.o \
@@ -164,7 +165,7 @@ module:
 	@echo \
 	viewer_GLFW_test.o:  \
 	'$$(KEMOVIEW_GTKDIR)'/viewer_GLFW_test.c  \
-	kemoviewer.h \
+	'$$(KEMO_C_GLDIR)'/kemoviewer.h \
 	view_modifier_glfw.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS)' \

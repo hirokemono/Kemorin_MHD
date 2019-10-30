@@ -6,8 +6,8 @@
 
 #include <math.h>
 #include <stdio.h>
-#include <gtk/gtk.h>
 
+#include "calypso_GTK.h"
 #include "kemoviewer.h"
 
 #define ZOOM    1

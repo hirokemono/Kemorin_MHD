@@ -4,7 +4,10 @@
 #ifndef _FFTW3_WRAPPER_KEMO_C_
 #define _FFTW3_WRAPPER_KEMO_C_
 
-#include "fftw3.h"
+#ifndef DEPENDENCY_CHECK
+  #include "fftw3.h"
+#endif
+
 #include "kemosrc_param_c.h"
 
 /* prototypes */

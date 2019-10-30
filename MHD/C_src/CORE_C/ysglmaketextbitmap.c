@@ -1,5 +1,6 @@
-#include "ysglfontdata.h"
-#include <stdio.h>
+/* ysglmaketextbitmap.c */
+
+#include "ysglmaketextbitmap.h"
 
 int YsGlWriteStringToSingleBitBitmap(
 	char str[],

@@ -10,9 +10,9 @@
 #include <math.h>
 #include <string.h>
 
-#include <gtk/gtk.h>
-#include <GLFW/glfw3.h>
 
+#include "calypso_GTK.h"
+#include "view_modifier_glfw.h"
 #include "kemoviewer.h"
 #include "kemoview_gtk_PSF_menu.h"
 #include "kemoview_gtk_mesh_menu.h"
@@ -20,7 +20,6 @@
 #include "kemoview_fileselector_gtk.h"
 #include "kemoview_gtk_main_menu.h"
 #include "kemoview_gtk_viewmatrix_menu.h"
-#include "view_modifier_glfw.h"
 
 /* prototypes */
 

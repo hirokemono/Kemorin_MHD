@@ -18,8 +18,8 @@ int append_ci3_item_to_tree(int index, char *c_tbl, int i1_data, int i2_data, in
                        COLUMN_FIELD_INDEX, index,
                        COLUMN_FIELD_NAME,  c_tbl,
                        COLUMN_FIELD_MATH,  i1_data,
-                       COLUMN_FIELD_VALUE, i2_data,
-                       COLUMN_FIELD_NODE,  i3_data,
+                       COLUMN_FORTH, i2_data,
+                       COLUMN_FIFTH,  i3_data,
                        -1);
     return index + 1;
 }
@@ -55,8 +55,8 @@ void ci3_tree_name_edited(gchar *path_str, gchar *new_text,
     gtk_tree_model_get_iter(child_model, &iter, child_path);  
     gtk_tree_model_get(child_model, &iter, COLUMN_FIELD_NAME,  &old_text, -1);
     gtk_tree_model_get(child_model, &iter, COLUMN_FIELD_MATH,  &old_value1, -1);
-    gtk_tree_model_get(child_model, &iter, COLUMN_FIELD_VALUE, &old_value2, -1);
-    gtk_tree_model_get(child_model, &iter, COLUMN_FIELD_NODE,  &old_value3, -1);
+    gtk_tree_model_get(child_model, &iter, COLUMN_FORTH, &old_value2, -1);
+    gtk_tree_model_get(child_model, &iter, COLUMN_FIFTH,  &old_value3, -1);
     
     printf("Change %s to %s\n", old_text, new_text);
 
@@ -86,8 +86,8 @@ void ci3_tree_value1_edited(gchar *path_str, gchar *new_text,
     gtk_tree_model_get_iter(child_model, &iter, child_path);  
     gtk_tree_model_get(child_model, &iter, COLUMN_FIELD_NAME,  &old_text, -1);
     gtk_tree_model_get(child_model, &iter, COLUMN_FIELD_MATH,  &old_value1, -1);
-    gtk_tree_model_get(child_model, &iter, COLUMN_FIELD_VALUE, &old_value2, -1);
-    gtk_tree_model_get(child_model, &iter, COLUMN_FIELD_NODE,  &old_value3, -1);
+    gtk_tree_model_get(child_model, &iter, COLUMN_FORTH, &old_value2, -1);
+    gtk_tree_model_get(child_model, &iter, COLUMN_FIFTH,  &old_value3, -1);
     
     printf("Change %d to %d\n", old_value1, new_value);
     
@@ -118,13 +118,13 @@ void ci3_tree_value2_edited(gchar *path_str, gchar *new_text,
     gtk_tree_model_get_iter(child_model, &iter, child_path);  
     gtk_tree_model_get(child_model, &iter, COLUMN_FIELD_NAME,  &old_text, -1);
     gtk_tree_model_get(child_model, &iter, COLUMN_FIELD_MATH,  &old_value1, -1);
-    gtk_tree_model_get(child_model, &iter, COLUMN_FIELD_VALUE, &old_value2, -1);
-    gtk_tree_model_get(child_model, &iter, COLUMN_FIELD_NODE,  &old_value3, -1);
+    gtk_tree_model_get(child_model, &iter, COLUMN_FORTH, &old_value2, -1);
+    gtk_tree_model_get(child_model, &iter, COLUMN_FIFTH,  &old_value3, -1);
     
     printf("Change %d to %d\n", old_value2, new_value);
     
     gtk_list_store_set(GTK_LIST_STORE(child_model), &iter,
-                       COLUMN_FIELD_VALUE, new_value, -1);
+                       COLUMN_FORTH, new_value, -1);
     gtk_tree_path_free(child_path);  
     gtk_tree_path_free(path);  
     
@@ -150,13 +150,13 @@ void ci3_tree_value3_edited(gchar *path_str, gchar *new_text,
     gtk_tree_model_get_iter(child_model, &iter, child_path);  
     gtk_tree_model_get(child_model, &iter, COLUMN_FIELD_NAME,  &old_text, -1);
     gtk_tree_model_get(child_model, &iter, COLUMN_FIELD_MATH,  &old_value1, -1);
-    gtk_tree_model_get(child_model, &iter, COLUMN_FIELD_VALUE, &old_value2, -1);
-    gtk_tree_model_get(child_model, &iter, COLUMN_FIELD_NODE,  &old_value3, -1);
+    gtk_tree_model_get(child_model, &iter, COLUMN_FORTH, &old_value2, -1);
+    gtk_tree_model_get(child_model, &iter, COLUMN_FIFTH,  &old_value3, -1);
     
     printf("Change %d to %d\n", old_value3, new_value);
     
     gtk_list_store_set(GTK_LIST_STORE(child_model), &iter,
-                       COLUMN_FIELD_NODE, new_value, -1);
+                       COLUMN_FIFTH, new_value, -1);
     gtk_tree_path_free(child_path);  
     gtk_tree_path_free(path);  
     
@@ -229,8 +229,8 @@ int add_ci3_list_from_combobox_GTK(int index, GtkTreePath *path, GtkTreeModel *t
     gtk_tree_model_get_iter(tree_model, &iter, path);  
     gtk_tree_model_get(tree_model, &iter, COLUMN_FIELD_NAME, &row_string, -1);
     gtk_tree_model_get(tree_model, &iter, COLUMN_FIELD_MATH, &ivalue1, -1);
-    gtk_tree_model_get(tree_model, &iter, COLUMN_FIELD_VALUE, &ivalue2, -1);
-    gtk_tree_model_get(tree_model, &iter, COLUMN_FIELD_NODE, &ivalue3, -1);
+    gtk_tree_model_get(tree_model, &iter, COLUMN_FORTH, &ivalue2, -1);
+    gtk_tree_model_get(tree_model, &iter, COLUMN_FIFTH, &ivalue3, -1);
     
 	index = append_ci3_item_to_tree(index, row_string, ivalue1, ivalue2, ivalue3, 
 				child_model_to_add);
@@ -487,10 +487,10 @@ void create_text_int3_tree_view(struct chara_int3_clist *ci3_clist, GtkTreeView 
                  "width", (gint)150, NULL);
 
     gtk_tree_view_column_pack_start(column, renderer_spin, TRUE);
-    gtk_tree_view_column_set_attributes(column, renderer_spin, "text", COLUMN_FIELD_VALUE, NULL);
+    gtk_tree_view_column_set_attributes(column, renderer_spin, "text", COLUMN_FORTH, NULL);
     gtk_tree_view_column_set_resizable(column, TRUE);
     gtk_tree_view_column_set_clickable(column, TRUE);
-    g_object_set_data(G_OBJECT(column), "column_id", GINT_TO_POINTER(COLUMN_FIELD_VALUE));
+    g_object_set_data(G_OBJECT(column), "column_id", GINT_TO_POINTER(COLUMN_FORTH));
     g_signal_connect(G_OBJECT(column), "clicked", 
                      G_CALLBACK(column_clicked), (gpointer) ci3_tree_view);
     
@@ -508,10 +508,10 @@ void create_text_int3_tree_view(struct chara_int3_clist *ci3_clist, GtkTreeView 
                  "width", (gint)150, NULL);
 
     gtk_tree_view_column_pack_start(column, renderer_spin, TRUE);
-    gtk_tree_view_column_set_attributes(column, renderer_spin, "text", COLUMN_FIELD_NODE, NULL);
+    gtk_tree_view_column_set_attributes(column, renderer_spin, "text", COLUMN_FIFTH, NULL);
     gtk_tree_view_column_set_resizable(column, TRUE);
     gtk_tree_view_column_set_clickable(column, TRUE);
-    g_object_set_data(G_OBJECT(column), "column_id", GINT_TO_POINTER(COLUMN_FIELD_NODE));
+    g_object_set_data(G_OBJECT(column), "column_id", GINT_TO_POINTER(COLUMN_FIFTH));
     g_signal_connect(G_OBJECT(column), "clicked", 
                      G_CALLBACK(column_clicked), (gpointer) ci3_tree_view);
     

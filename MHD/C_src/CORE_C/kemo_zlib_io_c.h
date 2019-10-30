@@ -9,7 +9,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "zlib.h"               /* /usr(/local)/include/zlib.h */
+#ifndef DEPENDENCY_CHECK
+  #include <zlib.h>               /* /usr(/local)/include/zlib.h */
+#endif
 
 #include "kemosrc_param_c.h"
 #include "numbers_to_bin_c.h"

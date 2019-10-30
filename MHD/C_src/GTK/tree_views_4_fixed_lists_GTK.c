@@ -7,102 +7,6 @@
 
 #include "tree_views_4_fixed_lists_GTK.h"
 
-void set_last_field_to_label(GtkTreeSelection *selection, gpointer user_data)
-{
-    GtkLabel *label;
-    GtkTreeModel *model;
-    GList *list;
-    GList *cur;
-    gchar *row_string;
-    GtkTreeIter iter;
-
-    label = g_object_get_data(G_OBJECT(selection), "label");
-
-    list = gtk_tree_selection_get_selected_rows(selection, &model);
-    if (list == NULL) {
-        gtk_label_set_text(label, "");
-        return;
-    }
-    
-    for (cur = g_list_first(list); cur != NULL; cur = g_list_next(cur)) {
-        if (gtk_tree_model_get_iter(model, &iter, (GtkTreePath *)cur->data) == TRUE) {
-            gtk_tree_model_get(model, &iter, COLUMN_FIELD_NAME, &row_string, -1);
-        }
-        gtk_tree_path_free((GtkTreePath *)cur->data);
-    }
-    g_list_free(list);
-    
-    gtk_label_set_text(label, row_string);
-}
-
-
-
-void block_changed_signal(GObject *instance)
-{
-	GList *list;
-	GList *cur;
-	gulong handler_id;
-	GtkTreeSelection *selection;
-
-	list = g_object_get_data(G_OBJECT(instance), "selection_list");
-	for (cur = g_list_first(list); cur != NULL; cur = g_list_next(cur)) {
-		selection = cur->data;
-		handler_id = GPOINTER_TO_UINT(g_object_get_data(G_OBJECT(selection), "changed_handler_id"));
-		g_signal_handler_block(G_OBJECT(selection), handler_id);
-	}
-}
-
-void unblock_changed_signal(GObject *instance)
-{
-	GList *list;
-	GList *cur;
-	gulong handler_id;
-	GtkTreeSelection *selection;
-	
-	list = g_object_get_data(G_OBJECT(instance), "selection_list");
-	for (cur = g_list_first(list); cur != NULL; cur = g_list_next(cur)) {
-		selection = cur->data;
-		handler_id = GPOINTER_TO_UINT(g_object_get_data(G_OBJECT(selection), "changed_handler_id"));
-		g_signal_handler_unblock(G_OBJECT(selection), handler_id);
-
-		/* changedシグナルをブロックしていた間の変更を反映させる */
-		set_last_field_to_label(selection, NULL);
-	}
-}
-
-
-void add_sorting_signal_w_label(GtkTreeView *tree_view, GtkWidget *hbox){
-    GtkTreeSelection *selection;
-	GtkTreeModel *model;
-    GtkTreeModel *child_model;
-    gulong changed_handler_id;
-    GtkWidget *label;
-    GList *list;
-	
-    /*
-     * selectionにchangedシグナルハンドラを登録する。
-     * 後で同じchild_modelを使用しているselectionのchangedシグナルをブロック出来るように
-     * child_modelにselectionのリストを、selectionにシグナルハンドラIDを登録する。
-     * changedハンドラ内で使用するlabelも同様に登録しておく。
-     */
-    label = gtk_label_new("");
-    gtk_box_pack_end(GTK_BOX(hbox), label, TRUE, TRUE, 0);
-	
-	selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(tree_view));
-    changed_handler_id = g_signal_connect(G_OBJECT(selection), "changed",
-                                          G_CALLBACK(set_last_field_to_label), NULL);
-    g_object_set_data(G_OBJECT(selection), "changed_handler_id", GUINT_TO_POINTER(changed_handler_id));
-    g_object_set_data(G_OBJECT(selection), "label", label);
-    
-    model = gtk_tree_view_get_model(GTK_TREE_VIEW(tree_view));
-    child_model = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model));
-    list = g_object_get_data(G_OBJECT(child_model), "selection_list");
-    list = g_list_append(list, selection);
-    g_object_set_data(G_OBJECT(child_model), "selection_list", list);
-	return;
-}
-
-
 
 GtkWidget * create_fixed_label_w_math_tree(void){
     /* Construct empty list storage */
@@ -176,11 +80,11 @@ void create_fixed_constant_tree(GtkWidget *label_tree)
     gtk_tree_view_column_set_title(column, "value");
     renderer = gtk_cell_renderer_spin_new();
     gtk_tree_view_column_pack_start(column, renderer, TRUE);
-    gtk_tree_view_column_set_attributes(column, renderer, "text", COLUMN_FIELD_VALUE, NULL);
+    gtk_tree_view_column_set_attributes(column, renderer, "text", COLUMN_FORTH, NULL);
     g_object_set(renderer, "width", (gint)150, NULL);
     gtk_tree_view_column_set_resizable(column, TRUE);
     gtk_tree_view_column_set_clickable(column, TRUE);
-    g_object_set_data(G_OBJECT(column), "column_id", GINT_TO_POINTER(COLUMN_FIELD_VALUE));
+    g_object_set_data(G_OBJECT(column), "column_id", GINT_TO_POINTER(COLUMN_FORTH));
     
     
     /* 選択モード */

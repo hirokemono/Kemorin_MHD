@@ -13,8 +13,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <gtk/gtk.h>
-
+#include "calypso_GTK.h"
 #include "kemoviewer.h"
 #include "m_kemoviewer_data.h"
 #include "m_kemoview_psf_menu.h"

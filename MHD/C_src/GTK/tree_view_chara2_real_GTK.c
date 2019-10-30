@@ -18,7 +18,7 @@ int append_c2r_item_to_tree(const int index, const char *c1_tbl, const char *c2_
                        COLUMN_FIELD_INDEX, index,
                        COLUMN_FIELD_NAME,  c1_tbl,
                        COLUMN_FIELD_MATH,  c2_tbl,
-                       COLUMN_FIELD_VALUE, r_data,
+                       COLUMN_FORTH, r_data,
                        -1);
     return index + 1;
 }
@@ -54,7 +54,7 @@ void c2r_tree_1st_text_edited(gchar *path_str, gchar *new_text,
     gtk_tree_model_get_iter(child_model, &iter, child_path);  
     gtk_tree_model_get(child_model, &iter, COLUMN_FIELD_NAME, &first_string, -1);
     gtk_tree_model_get(child_model, &iter, COLUMN_FIELD_MATH, &second_string, -1);
-    gtk_tree_model_get(child_model, &iter, COLUMN_FIELD_VALUE, &old_value, -1);
+    gtk_tree_model_get(child_model, &iter, COLUMN_FORTH, &old_value, -1);
     
     printf("Change %s to %s\n", first_string, new_text);
     
@@ -83,7 +83,7 @@ void c2r_tree_2nd_text_edited(gchar *path_str, gchar *new_text,
     gtk_tree_model_get_iter(child_model, &iter, child_path);  
     gtk_tree_model_get(child_model, &iter, COLUMN_FIELD_NAME, &first_string, -1);
     gtk_tree_model_get(child_model, &iter, COLUMN_FIELD_MATH, &second_string, -1);
-    gtk_tree_model_get(child_model, &iter, COLUMN_FIELD_VALUE, &old_value, -1);
+    gtk_tree_model_get(child_model, &iter, COLUMN_FORTH, &old_value, -1);
     
     printf("Change %s to %s\n", second_string, new_text);
     
@@ -113,12 +113,12 @@ void c2r_tree_value_edited(gchar *path_str, gchar *new_text,
     gtk_tree_model_get_iter(child_model, &iter, child_path);  
     gtk_tree_model_get(child_model, &iter, COLUMN_FIELD_NAME, &old_text, -1);
     gtk_tree_model_get(child_model, &iter, COLUMN_FIELD_MATH, &second_string, -1);
-    gtk_tree_model_get(child_model, &iter, COLUMN_FIELD_VALUE, &old_value, -1);
+    gtk_tree_model_get(child_model, &iter, COLUMN_FORTH, &old_value, -1);
     
     printf("Change %lf to %lf\n", old_value, new_value);
     
     gtk_list_store_set(GTK_LIST_STORE(child_model), &iter,
-                       COLUMN_FIELD_VALUE, new_value, -1);
+                       COLUMN_FORTH, new_value, -1);
     gtk_tree_path_free(child_path);  
     gtk_tree_path_free(path);  
     
@@ -191,7 +191,7 @@ int add_c2r_list_from_combobox_GTK(int index, GtkTreePath *path, GtkTreeModel *t
     gtk_tree_model_get_iter(tree_model, &iter, path);  
     gtk_tree_model_get(tree_model, &iter, COLUMN_FIELD_NAME, &row_string, -1);
     gtk_tree_model_get(tree_model, &iter, COLUMN_FIELD_MATH, &second_string, -1);
-    gtk_tree_model_get(tree_model, &iter, COLUMN_FIELD_VALUE, &value, -1);
+    gtk_tree_model_get(tree_model, &iter, COLUMN_FORTH, &value, -1);
     
     index = append_c2r_item_to_tree(index, row_string, second_string, value, child_model_to_add);
     append_chara2_real_clist(row_string, second_string, value, c2r_clst);
@@ -272,7 +272,7 @@ void delete_c2r_list_items_GTK(GtkTreeView *tree_view_to_del,
         gtk_tree_model_get(child_model_to_del, &iter, COLUMN_FIELD_INDEX, &index_field, -1);
         gtk_tree_model_get(child_model_to_del, &iter, COLUMN_FIELD_NAME, &field_name, -1);
         gtk_tree_model_get(child_model_to_del, &iter, COLUMN_FIELD_MATH, &field_math, -1);
-        gtk_tree_model_get(child_model_to_del, &iter, COLUMN_FIELD_VALUE, &value, -1);
+        gtk_tree_model_get(child_model_to_del, &iter, COLUMN_FORTH, &value, -1);
         
         printf("To be moved: %d, %s %lf\n", index_field, field_name, value);
         /* Delete */
@@ -377,10 +377,10 @@ void create_text2_real_tree_view(GtkListStore *cbox_child_model, GtkTreeView *c2
                  "width", (gint)150, NULL);
     
     gtk_tree_view_column_pack_start(column, renderer_spin, TRUE);
-    gtk_tree_view_column_set_attributes(column, renderer_spin, "text", COLUMN_FIELD_VALUE, NULL);
+    gtk_tree_view_column_set_attributes(column, renderer_spin, "text", COLUMN_FORTH, NULL);
     gtk_tree_view_column_set_resizable(column, TRUE);
     gtk_tree_view_column_set_clickable(column, TRUE);
-    g_object_set_data(G_OBJECT(column), "column_id", GINT_TO_POINTER(COLUMN_FIELD_VALUE));
+    g_object_set_data(G_OBJECT(column), "column_id", GINT_TO_POINTER(COLUMN_FORTH));
     g_signal_connect(G_OBJECT(column), "clicked", 
                      G_CALLBACK(column_clicked), (gpointer) c2r_tree_view);
     
@@ -482,10 +482,10 @@ void create_cbox_text_real_tree_view(GtkListStore *cbox_child_model, GtkTreeView
                  "width", (gint)150, NULL);
     
     gtk_tree_view_column_pack_start(column, renderer_spin, TRUE);
-    gtk_tree_view_column_set_attributes(column, renderer_spin, "text", COLUMN_FIELD_VALUE, NULL);
+    gtk_tree_view_column_set_attributes(column, renderer_spin, "text", COLUMN_FORTH, NULL);
     gtk_tree_view_column_set_resizable(column, TRUE);
     gtk_tree_view_column_set_clickable(column, TRUE);
-    g_object_set_data(G_OBJECT(column), "column_id", GINT_TO_POINTER(COLUMN_FIELD_VALUE));
+    g_object_set_data(G_OBJECT(column), "column_id", GINT_TO_POINTER(COLUMN_FORTH));
     g_signal_connect(G_OBJECT(column), "clicked", 
                      G_CALLBACK(column_clicked), (gpointer) c2r_tree_view);
     

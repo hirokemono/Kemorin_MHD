@@ -8,8 +8,7 @@
 #ifndef TREE_VIEW_KEMOVIEW_COLORMAP_
 #define TREE_VIEW_KEMOVIEW_COLORMAP_
 
-#include <gtk/gtk.h>
-
+#include "calypso_GTK.h"
 #include "kemoviewer.h"
 #include "tree_view_4_colormap.h"
 

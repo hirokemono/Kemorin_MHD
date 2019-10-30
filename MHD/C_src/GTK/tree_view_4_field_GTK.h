@@ -9,19 +9,10 @@
 #define tree_view_4_field_GTK_h_
 
 #include <stdlib.h>
-#include <gtk/gtk.h>
 
+#include "calypso_GTK.h"
 #include "t_ctl_data_4_fields_c.h"
 #include "tree_views_4_fixed_lists_GTK.h"
-#include "create_tree_view_columns_GTK.h"
-
-#define COLUMN_FIELD_INDEX    0
-#define COLUMN_FIELD_NAME     1
-#define COLUMN_FIELD_MATH     2
-#define COLUMN_VIZ_FLAG       3
-#define COLUMN_MONITOR_FLAG   4
-#define COLUMN_NUM_COMP       5
-#define COLUMN_QUADRATURE     6
 
 struct field_views{
     GtkWidget *used_tree_view;

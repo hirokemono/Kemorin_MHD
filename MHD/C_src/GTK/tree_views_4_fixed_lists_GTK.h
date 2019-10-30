@@ -8,15 +8,8 @@
 #ifndef tree_views_4_fixed_lists_GTK_h_
 #define tree_views_4_fixed_lists_GTK_h_
 
-#include <gtk/gtk.h>
-
+#include "calypso_GTK.h"
 #include "m_direction_labels_c.h"
-
-#define COLUMN_FIELD_INDEX    0
-#define COLUMN_FIELD_NAME     1
-#define COLUMN_FIELD_MATH     2
-#define COLUMN_FIELD_VALUE    3
-#define COLUMN_FIELD_NODE     4
 
 void set_last_field_to_label(GtkTreeSelection *selection, gpointer user_data);
 void block_changed_signal(GObject *instance);

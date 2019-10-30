@@ -13,8 +13,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <gtk/gtk.h>
-
+#include "calypso_GTK.h"
 #include "kemoviewer.h"
 #include "tree_views_4_fixed_lists_GTK.h"
 #include "kemoview_gtk_fline_selectors.h"

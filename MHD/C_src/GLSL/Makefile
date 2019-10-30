@@ -5,6 +5,9 @@
 F90_LOCAL = gfortran-mp-8
 
 SHADERDIR = $$(C_SRCDIR)/GLSL
+SRC_GLSL_C = $(shell ls *.c)
+INC_GLSL_C = $(addsuffix .h,$(basename $(SRC_GLSL_C)) )
+MOD_GLSL_C = $(addsuffix .o,$(basename $(SRC_GLSL_C)) )
 
 SHADER_PREFIX = shaders
 
@@ -39,27 +42,23 @@ mod_list:
 	@echo  $(OBJ_SHADERS)   >> $(MAKENAME)
 	@echo   >> $(MAKENAME)
 
-module:
-	@echo \
-	$(SHADER_PREFIX).o: \
-	'$$(SHADERDIR)'/$(SHADER_PREFIX).c \
-	$(SHADER_PREFIX).h \
-	kemoviewer.h \
-	skip_comment_c.h \
-	>> $(MAKENAME)
-	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE) $$<' \
-	>> $(MAKENAME)
+module: Makefie.depends
+	@cat Makefie.depends >> $(MAKENAME)
 
-includes:
-	@for sources in `ls *.h`; do \
+dependencies: Makefie.depends
+
+Makefie.depends: $(SRC_GLSL_C) $(INC_GLSL_C)
+	echo 'Construct dependencies in C_src/GLSL'
+	@echo '#' > $(MAKENAME).tmp
+	@for sources in $(SRC_GLSL_C) ; do \
 		( \
-		echo 'copy include files for ' $$sources ; \
-		echo $$sources': $$(SHADERDIR)/'$$sources \
-		>> $(MAKENAME); \
-		echo '	cp $$(SHADERDIR)/'$$sources . \
-		>> $(MAKENAME) \
+		cd $(MAKEDIR); \
+		$(MPICC) $(DEPFLAGS) $(OPTFLAGS_GL) $(C_INCLUDE) $(MHDDIR)/C_src/GLSL/$$sources >> $(MAKENAME).tmp; \
+		echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' >> $(MAKENAME).tmp \
 		) \
 	done
+	@sed -e 's@'$(MHDDIR)/C_src'@'$$\(C_SRCDIR\)'@g' $(MAKENAME).tmp > $(MHDDIR)/C_src/GLSL/Makefie.depends
+	@rm $(MAKENAME).tmp
 
 clean:
 	rm -f *.o *.mod *~ *.par *.diag *.a

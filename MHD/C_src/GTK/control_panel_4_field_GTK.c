@@ -67,8 +67,8 @@ static void transfer_model_data(int iflag_if_add, struct all_field_ctl_c **all_f
         gtk_tree_model_get(child_model_to_del, &iter, COLUMN_FIELD_INDEX, &index_field, -1);
         gtk_tree_model_get(child_model_to_del, &iter, COLUMN_FIELD_NAME, &field_name, -1);
         gtk_tree_model_get(child_model_to_del, &iter, COLUMN_FIELD_MATH, &field_math, -1);
-        gtk_tree_model_get(child_model_to_del, &iter, COLUMN_VIZ_FLAG, &iflag_viz, -1);
-        gtk_tree_model_get(child_model_to_del, &iter, COLUMN_MONITOR_FLAG, &iflag_monitor, -1);
+        gtk_tree_model_get(child_model_to_del, &iter, COLUMN_FORTH, &iflag_viz, -1);
+        gtk_tree_model_get(child_model_to_del, &iter, COLUMN_FIFTH, &iflag_monitor, -1);
         gtk_tree_model_get(child_model_to_del, &iter, COLUMN_NUM_COMP, &num_comp, -1);
         gtk_tree_model_get(child_model_to_del, &iter, COLUMN_QUADRATURE, &iflag_quad, -1);
         

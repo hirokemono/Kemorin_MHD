@@ -8,8 +8,7 @@
 #ifndef TREE_VIEW_4_LIGHT_POSITION_
 #define TREE_VIEW_4_LIGHT_POSITION_
 
-#include <gtk/gtk.h>
-
+#include "calypso_GTK.h"
 #include "t_control_real_IO.h"
 #include "t_control_real3_IO.h"
 #include "m_phong_light_table_c.h"

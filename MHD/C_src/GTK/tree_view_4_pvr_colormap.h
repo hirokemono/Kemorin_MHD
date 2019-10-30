@@ -8,8 +8,7 @@
 #ifndef tree_view_4_pvr_colormap_h_
 #define tree_view_4_pvr_colormap_h_
 
-#include <gtk/gtk.h>
-
+#include "calypso_GTK.h"
 #include "t_control_chara_IO.h"
 #include "t_control_real_IO.h"
 #include "t_control_real2_IO.h"

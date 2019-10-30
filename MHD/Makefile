@@ -45,12 +45,13 @@ External_libs \
 programs
 
 
-
 F_INCLUDE = -I.
 C_INCLUDE = -I.
 
 ifdef FC_NAME_MANGLE
   CPP_FLAGS = -DCONNECT_TO_C
+  C_INCLUDE += -I$(MHDDIR)/C_src/CORE_C
+  C_INCLUDE += -I$(MHDDIR)/C_src/CONTROLS
 
   ifdef PNG_LIBS
     CPP_FLAGS += -DPNG_OUTPUT
@@ -88,6 +89,11 @@ else
 endif
 
 ifdef OPENGL_LIBS
+  C_INCLUDE += -I$(MHDDIR)/C_src/KEMO_GL
+  C_INCLUDE += -I$(MHDDIR)/C_src/GLSL
+  C_INCLUDE += -I$(MHDDIR)/C_src/GTK
+  C_INCLUDE += -I$(MHDDIR)/C_src/KEMO_GLUT
+
   ifdef GLFW_LIBS
     CPP_FLAGS+= -DGLFW3
   endif
@@ -99,6 +105,8 @@ endif
 ifdef MPILIBS
   F90LIBS+= -L$(MPILIBDIR) $(MPILIBS)
 endif
+
+DEPFLAGS= -MM -w -DDEPENDENCY_CHECK
 
 #
 #  -------------------------------------------------------------------------
@@ -352,6 +360,24 @@ makemake:
 	@echo '#' >> $(MAKENAME)
 	@echo '# Rules for routines' >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
+	@for dir in C_src ; do \
+		( \
+		echo 'copy C dependencies'; \
+		cd $${dir};  \
+		$(GMAKE) \
+		GMAKE='$(GMAKE)' \
+		MHDDIR='$(MHDDIR)' \
+		MAKEDIR='$(MAKEDIR)' \
+		MAKENAME='$(MAKENAME)' \
+		MPICC="$(MPICC)"   \
+		DEPFLAGS='$(DEPFLAGS)' \
+		OPTFLAGS_GL='$(OPTFLAGS_GL)' \
+		C_INCLUDE='$(C_INCLUDE)' \
+		GTK3_CFLAGS='$(GTK3_CFLAGS)' \
+		GLFW_CFLAGS='$(GLFW_CFLAGS)' \
+		dependencies; \
+		) \
+	done
 	@for dir in $(SUBDIRS) ; do \
 		( \
 		echo 'generate compile commands for ' $$dir ; \

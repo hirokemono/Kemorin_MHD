@@ -8,7 +8,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "png.h"
 #include "kemosrc_param_c.h"
 #include "kemoviewer_param_c.h"
 #include "gl_buffer_2_bmp.h"

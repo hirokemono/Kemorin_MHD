@@ -8,8 +8,7 @@
 #ifndef TREE_VIEW_4_DOMAIN_VIEWER_
 #define TREE_VIEW_4_DOMAIN_VIEWER_
 
-#include <gtk/gtk.h>
-
+#include "calypso_GTK.h"
 #include "kemoviewer.h"
 #include "kemoview_gtk_routines.h"
 #include "kemoview_gtk_colorsel.h"
@@ -17,7 +16,6 @@
 #include "t_control_chara_int3_IO.h"
 #include "tree_view_chara_int3_GTK.h"
 #include "tree_view_4_viewer_mesh.h"
-#include "create_tree_view_columns_GTK.h"
 #include "quicksort_c.h"
 
 #ifdef GLFW3

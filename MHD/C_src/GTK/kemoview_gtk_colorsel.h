@@ -13,7 +13,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <gtk/gtk.h>
+#include "calypso_GTK.h"
 
 /*  prototypes */
 

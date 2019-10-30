@@ -36,7 +36,8 @@ LIBS_PG_UTIL = \
 '$$(LIB_MESH)'
 
 LIB_FILES_PG_UTIL = \
-'$$(LIB_DRAW_PG_FILE)'
+'$$(LIB_DRAW_PG_FILE)' \
+'$$(LIB_MESH_FILE)'
 
 ifdef FORTRAN_C_CONNECT
   LIBS_PSF_UTIL+=        '$$(LIB_KEMO_C)'

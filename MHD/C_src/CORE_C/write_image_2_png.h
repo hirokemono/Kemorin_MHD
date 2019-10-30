@@ -7,8 +7,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "zlib.h" 
-#include "png.h"
+#ifndef DEPENDENCY_CHECK
+  #include <zlib.h>
+  #include <png.h>
+#endif
+
 #include "kemosrc_param_c.h"
 
 /* prototypes */

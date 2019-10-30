@@ -61,7 +61,7 @@ static void delete_dless_data(gpointer user_data)
         gtk_tree_model_get(child_model_to_del, &iter, COLUMN_FIELD_INDEX, &index_field, -1);
         gtk_tree_model_get(child_model_to_del, &iter, COLUMN_FIELD_NAME, &field_name, -1);
         gtk_tree_model_get(child_model_to_del, &iter, COLUMN_FIELD_MATH, &field_math, -1);
-        gtk_tree_model_get(child_model_to_del, &iter, COLUMN_FIELD_VALUE, &value, -1);
+        gtk_tree_model_get(child_model_to_del, &iter, COLUMN_FORTH, &value, -1);
         
         printf("To be moved: %d, %s %lf\n", index_field, field_name, value);
         /* Delete */
@@ -135,7 +135,7 @@ static void cb_add_dimless_name(GtkComboBox *combobox_add, gpointer user_data)
     gtk_tree_model_get(model_comp, &iter, COLUMN_FIELD_INDEX, &index_comp, -1);
     gtk_tree_model_get(model_comp, &iter, COLUMN_FIELD_NAME, &row_string, -1);
     gtk_tree_model_get(model_comp, &iter, COLUMN_FIELD_MATH, &math_string, -1);
-    gtk_tree_model_get(model_comp, &iter, COLUMN_FIELD_VALUE, &value, -1);
+    gtk_tree_model_get(model_comp, &iter, COLUMN_FORTH, &value, -1);
     
     append_chara_real_clist(row_string, value, 
 							coefs_vw->mom_ctl_gtk->coef_4_termal_buo_list);

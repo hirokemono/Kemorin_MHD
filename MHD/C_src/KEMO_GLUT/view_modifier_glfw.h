@@ -6,9 +6,12 @@
 
 #include <math.h>
 #include <stdio.h>
-#include <GLFW/glfw3.h>
-#include <gtk/gtk.h>
 
+#ifndef DEPENDENCY_CHECK
+  #include <GLFW/glfw3.h>
+#endif
+
+#include "calypso_GTK.h"
 #include "kemoviewer.h"
 
 #define ZOOM    1
