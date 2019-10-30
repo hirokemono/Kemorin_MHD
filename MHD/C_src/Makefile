@@ -11,25 +11,17 @@ OBJS_C= \
 $$(OBJ_KEMO_C) \
 $$(OBJ_CTL_C)
 
-LIBDIRS = \
-CORE_C \
-CONTROLS
-
 SUBDIRS = \
 CORE_C    \
-CONTROLS  \
-KEMO_GL
+CONTROLS
 
 ifdef OPENGL_LIBS
   OBJS_C+= \
     $$(OBJ_C_GL)   \
     $$(OBJ_SHADERS)     \
     $$(OBJ_GTK_C)
-  LIBDIRS+=   \
-    KEMO_GL   \
-    GLSL      \
-    GTK
   SUBDIRS+= \
+	KEMO_GL   \
     GLSL      \
     GTK       \
     KEMO_GLUT
@@ -69,7 +61,7 @@ libtarget:
 	@echo  '$$(LIB_KEMO_C_FILE): $(OBJS_C)' >> $(MAKENAME)
 
 lib_archve:
-	@for dir in $(LIBDIRS); do \
+	@for dir in $(SUBDIRS); do \
 		( cd $${dir};  \
 		$(GMAKE) \
 		GMAKE='$(GMAKE)' \
