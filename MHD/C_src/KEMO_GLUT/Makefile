@@ -54,12 +54,12 @@ mod_list:
 	@echo   >> $(MAKENAME)
 
 
-module: Makefie.depends
-	@cat Makefie.depends >> $(MAKENAME)
+module:
+	@cat Makefile.depends >> $(MAKENAME)
 
-dependencies: Makefie.depends
+dependencies: Makefile.depends
 
-Makefie.depends: $(SRC_GLUT_C) $(INC_GLUT_C)
+Makefile.depends: $(SRC_GLUT_C) $(INC_GLUT_C)
 	echo 'Construct dependencies in C_src/KEMO_GLUT'
 	@echo '#' > $(MAKENAME).tmp
 	@for sources in $(SRC_GLUT_C) ; do \
@@ -69,7 +69,7 @@ Makefie.depends: $(SRC_GLUT_C) $(INC_GLUT_C)
 		echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS) $$(GLFW_CFLAGS) $$<' >> $(MAKENAME).tmp \
 		) \
 	done
-	@sed -e 's@'$(MHDDIR)/C_src'@'$$\(C_SRCDIR\)'@g' $(MAKENAME).tmp > $(MHDDIR)/C_src/KEMO_GLUT/Makefie.depends
+	@sed -e 's@'$(MHDDIR)/C_src'@'$$\(C_SRCDIR\)'@g' $(MAKENAME).tmp > $(MHDDIR)/C_src/KEMO_GLUT/Makefile.depends
 	@rm $(MAKENAME).tmp
 
 clean:

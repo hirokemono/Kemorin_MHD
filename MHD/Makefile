@@ -128,6 +128,26 @@ fluid:
 		GMAKE='$(GMAKE)' \
 		fluid
 
+depends:
+	@for dir in C_src ; do \
+		( \
+		echo 'copy C dependencies'; \
+		cd $${dir};  \
+		$(GMAKE) \
+		GMAKE='$(GMAKE)' \
+		MHDDIR='$(MHDDIR)' \
+		MAKEDIR='$(MAKEDIR)' \
+		MAKENAME='$(MAKENAME)' \
+		MPICC="$(MPICC)"   \
+		DEPFLAGS='$(DEPFLAGS)' \
+		OPTFLAGS_GL='$(OPTFLAGS_GL)' \
+		C_INCLUDE='$(C_INCLUDE)' \
+		GTK3_CFLAGS='$(GTK3_CFLAGS)' \
+		GLFW_CFLAGS='$(GLFW_CFLAGS)' \
+		dependencies; \
+		) \
+	done
+
 
 makemake:
 	if [ ! -d $(MAKEDIR) ]; then \
@@ -360,24 +380,6 @@ makemake:
 	@echo '#' >> $(MAKENAME)
 	@echo '# Rules for routines' >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
-	@for dir in C_src ; do \
-		( \
-		echo 'copy C dependencies'; \
-		cd $${dir};  \
-		$(GMAKE) \
-		GMAKE='$(GMAKE)' \
-		MHDDIR='$(MHDDIR)' \
-		MAKEDIR='$(MAKEDIR)' \
-		MAKENAME='$(MAKENAME)' \
-		MPICC="$(MPICC)"   \
-		DEPFLAGS='$(DEPFLAGS)' \
-		OPTFLAGS_GL='$(OPTFLAGS_GL)' \
-		C_INCLUDE='$(C_INCLUDE)' \
-		GTK3_CFLAGS='$(GTK3_CFLAGS)' \
-		GLFW_CFLAGS='$(GLFW_CFLAGS)' \
-		dependencies; \
-		) \
-	done
 	@for dir in $(SUBDIRS) ; do \
 		( \
 		echo 'generate compile commands for ' $$dir ; \

@@ -42,12 +42,12 @@ mod_list:
 	@echo  $(OBJ_SHADERS)   >> $(MAKENAME)
 	@echo   >> $(MAKENAME)
 
-module: Makefie.depends
-	@cat Makefie.depends >> $(MAKENAME)
+module:
+	@cat Makefile.depends >> $(MAKENAME)
 
-dependencies: Makefie.depends
+dependencies: Makefile.depends
 
-Makefie.depends: $(SRC_GLSL_C) $(INC_GLSL_C)
+Makefile.depends: $(SRC_GLSL_C) $(INC_GLSL_C)
 	echo 'Construct dependencies in C_src/GLSL'
 	@echo '#' > $(MAKENAME).tmp
 	@for sources in $(SRC_GLSL_C) ; do \
@@ -57,7 +57,7 @@ Makefie.depends: $(SRC_GLSL_C) $(INC_GLSL_C)
 		echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' >> $(MAKENAME).tmp \
 		) \
 	done
-	@sed -e 's@'$(MHDDIR)/C_src'@'$$\(C_SRCDIR\)'@g' $(MAKENAME).tmp > $(MHDDIR)/C_src/GLSL/Makefie.depends
+	@sed -e 's@'$(MHDDIR)/C_src'@'$$\(C_SRCDIR\)'@g' $(MAKENAME).tmp > $(MHDDIR)/C_src/GLSL/Makefile.depends
 	@rm $(MAKENAME).tmp
 
 clean:

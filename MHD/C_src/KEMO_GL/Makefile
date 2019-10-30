@@ -26,12 +26,12 @@ mod_list:
 	@echo   >> $(MAKENAME)
 
 
-module: Makefie.depends
-	@cat Makefie.depends >> $(MAKENAME)
+module:
+	@cat Makefile.depends >> $(MAKENAME)
 
-dependencies: Makefie.depends
+dependencies: Makefile.depends
 
-Makefie.depends: $(SRC_C_GL) $(INC_C_GL)
+Makefile.depends: $(SRC_C_GL) $(INC_C_GL)
 	echo 'Construct dependencies in C_src/KEMO_GL'
 	@echo '#' > $(MAKENAME).tmp
 	@for sources in $(SRC_C_GL) ; do \
@@ -41,7 +41,7 @@ Makefie.depends: $(SRC_C_GL) $(INC_C_GL)
 		echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' >> $(MAKENAME).tmp \
 		) \
 	done
-	@sed -e 's@'$(MHDDIR)/C_src'@'$$\(C_SRCDIR\)'@g' $(MAKENAME).tmp > $(MHDDIR)/C_src/KEMO_GL/Makefie.depends
+	@sed -e 's@'$(MHDDIR)/C_src'@'$$\(C_SRCDIR\)'@g' $(MAKENAME).tmp > $(MHDDIR)/C_src/KEMO_GL/Makefile.depends
 	@rm $(MAKENAME).tmp
 
 clean:

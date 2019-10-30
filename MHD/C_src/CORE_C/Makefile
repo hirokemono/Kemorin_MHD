@@ -90,12 +90,12 @@ mod_list:
 	@echo   >> $(MAKENAME)
 
 
-module: Makefie.depends
-	@cat Makefie.depends >> $(MAKENAME)
+module:
+	@cat Makefile.depends >> $(MAKENAME)
 
-dependencies: Makefie.depends
+dependencies: Makefile.depends
 
-Makefie.depends: $(SRC_KEMO_C) $(INC_KEMO_C)
+Makefile.depends: $(SRC_KEMO_C) $(INC_KEMO_C)
 	echo 'Construct dependencies in C_src/CORE_C'
 	@echo '#' > $(MAKENAME).tmp
 	@for sources in $(SRC_KEMO_C) ; do \
@@ -105,7 +105,7 @@ Makefie.depends: $(SRC_KEMO_C) $(INC_KEMO_C)
 		echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE) $$<' >> $(MAKENAME).tmp \
 		) \
 	done
-	@sed -e 's@'$(MHDDIR)/C_src'@'$$\(C_SRCDIR\)'@g' $(MAKENAME).tmp > $(MHDDIR)/C_src/CORE_C/Makefie.depends
+	@sed -e 's@'$(MHDDIR)/C_src'@'$$\(C_SRCDIR\)'@g' $(MAKENAME).tmp > $(MHDDIR)/C_src/CORE_C/Makefile.depends
 	@rm $(MAKENAME).tmp
 
 clean:

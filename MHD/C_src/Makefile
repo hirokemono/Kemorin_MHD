@@ -97,7 +97,7 @@ mod_list:
 module:
 	@for dir in $(SUBDIRS); do \
 		( cd $${dir};  \
-		echo 'generate dependencies of headers for ' $$dir ; \
+		echo 'Copy sourse dependencies for ' $$dir ; \
 		$(GMAKE) \
 		GMAKE='$(GMAKE)' \
 		MAKENAME='$(MAKENAME)' \

@@ -26,12 +26,12 @@ mod_list:
 	@echo   >> $(MAKENAME)
 
 
-module: Makefie.depends
-	@cat Makefie.depends >> $(MAKENAME)
+module:
+	@cat Makefile.depends >> $(MAKENAME)
 
-dependencies: Makefie.depends
+dependencies: Makefile.depends
 
-Makefie.depends: $(SRC_GTK_C) $(INC_GTK_C)
+Makefile.depends: $(SRC_GTK_C) $(INC_GTK_C)
 	echo 'Construct dependencies in C_src/GTK'
 	@echo '#' > $(MAKENAME).tmp
 	@for sources in $(SRC_GTK_C) ; do \
@@ -41,7 +41,7 @@ Makefie.depends: $(SRC_GTK_C) $(INC_GTK_C)
 		echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS) $$<' >> $(MAKENAME).tmp \
 		) \
 	done
-	@sed -e 's@'$(MHDDIR)/C_src'@'$$\(C_SRCDIR\)'@g' $(MAKENAME).tmp >  $(MHDDIR)/C_src/GTK/Makefie.depends
+	@sed -e 's@'$(MHDDIR)/C_src'@'$$\(C_SRCDIR\)'@g' $(MAKENAME).tmp >  $(MHDDIR)/C_src/GTK/Makefile.depends
 	@rm $(MAKENAME).tmp
 
 clean:
