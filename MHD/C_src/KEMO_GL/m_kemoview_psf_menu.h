@@ -58,6 +58,7 @@ struct psf_menu_val{
 	int psf_patch_color;
 	int isoline_color;
 	int n_isoline;
+	double isoline_width;
 	
 	int ist_positive_line;
 	

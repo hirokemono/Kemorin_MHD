@@ -714,6 +714,7 @@ extern "C" {
 	void kemoview_set_PSF_patch_color_mode(int iflag);
     void kemoview_set_PSF_isoline_color_mode(int iflag);
     void kemoview_set_PSF_num_isoline(int nlline);
+	void kemoview_set_PSF_isoline_width(double width);
     void kemoview_set_PSF_vector_increment(int increment);
     void kemoview_set_PSF_vector_scale(double scale);
     void kemoview_set_PSF_vector_thickness(double size);
@@ -721,6 +722,7 @@ extern "C" {
     int kemoview_get_PSF_patch_color_mode(void);
     int kemoview_get_PSF_isoline_color_mode(void);
     int kemoview_get_PSF_num_isoline(void);
+	double kemoview_get_PSF_isoline_width(void);
     int kemoview_get_PSF_vector_color_mode(void);
     int kemoview_get_PSF_vector_increment(void);
     double kemoview_get_PSF_vector_scale(void);

@@ -824,6 +824,9 @@ void kemoview_set_PSF_isoline_color_mode(int iflag){
 void kemoview_set_PSF_num_isoline(int nlline){
 	set_each_n_isoline(kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current], nlline);
 };
+void kemoview_set_PSF_isoline_width(double width){
+	set_each_isoline_width(kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current], width);
+};
 void kemoview_set_PSF_vector_increment(int increment){
 	set_each_increment_vect(kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current], increment);
 };
@@ -842,6 +845,9 @@ int kemoview_get_PSF_isoline_color_mode(void){
 };
 int kemoview_get_PSF_num_isoline(void){
 	return send_num_isoline(kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current]);
+};
+double kemoview_get_PSF_isoline_width(void){
+	return send_isoline_width(kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current]);
 };
 int kemoview_get_PSF_vector_color_mode(void){
 	return send_each_vector_patch_color(kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current]);
