@@ -97,7 +97,7 @@ module:
 		) \
 	done
 
-dependencies:
+depends:
 	@for dir in $(SUBDIRS); do \
 		( cd $${dir};  \
 		echo 'generate dependencies of headers for ' $$dir ; \
@@ -111,7 +111,7 @@ dependencies:
 		C_INCLUDE='$(C_INCLUDE)' \
 		GTK3_CFLAGS='$(GTK3_CFLAGS)' \
 		GLFW_CFLAGS='$(GLFW_CFLAGS)' \
-		dependencies \
+		depends \
 		) \
 	done
 

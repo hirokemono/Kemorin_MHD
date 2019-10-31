@@ -83,6 +83,8 @@ else
   FORTRAN_C_CONNECT = $(CPP_FLAGS)
 endif
 
+DEPFLAGS= -MM -w -DDEPENDENCY_CHECK
+
 #
 #  -------------------------------------------------------------------------
 #
@@ -102,6 +104,24 @@ fluid:
 		$(GMAKE) \
 		GMAKE='$(GMAKE)' \
 		fluid
+
+depends:
+	@for dir in C_src ; do \
+		( \
+		echo 'copy C dependencies'; \
+		cd $${dir};  \
+		$(GMAKE) \
+		GMAKE='$(GMAKE)' \
+		MHDDIR='$(MHDDIR)' \
+		MAKEDIR='$(MAKEDIR)' \
+		MAKENAME='$(MAKENAME)' \
+		MPICC="$(MPICC)"   \
+		DEPFLAGS='$(DEPFLAGS)' \
+		OPTFLAGS='$(OPTFLAGS)' \
+		C_INCLUDE='$(C_INCLUDE)' \
+		depends; \
+		) \
+	done
 
 
 makemake:

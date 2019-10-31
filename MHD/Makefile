@@ -144,7 +144,7 @@ depends:
 		C_INCLUDE='$(C_INCLUDE)' \
 		GTK3_CFLAGS='$(GTK3_CFLAGS)' \
 		GLFW_CFLAGS='$(GLFW_CFLAGS)' \
-		dependencies; \
+		depends; \
 		) \
 	done
 

@@ -29,7 +29,7 @@ mod_list:
 module:
 	@cat Makefile.depends >> $(MAKENAME)
 
-dependencies: Makefile.depends
+depends: Makefile.depends
 
 Makefile.depends: $(SRC_C_GL) $(INC_C_GL)
 	echo 'Construct dependencies in C_src/KEMO_GL'

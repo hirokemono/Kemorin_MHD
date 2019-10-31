@@ -29,7 +29,7 @@ mod_list:
 module:
 	@cat Makefile.depends >> $(MAKENAME)
 
-dependencies: Makefile.depends
+depends: Makefile.depends
 
 Makefile.depends: $(SRC_CTL_C) $(INC_CTL_C)
 	echo 'Construct dependencies in C_src/CONTROLS'

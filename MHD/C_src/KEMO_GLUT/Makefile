@@ -57,7 +57,7 @@ mod_list:
 module:
 	@cat Makefile.depends >> $(MAKENAME)
 
-dependencies: Makefile.depends
+depends: Makefile.depends
 
 Makefile.depends: $(SRC_GLUT_C) $(INC_GLUT_C)
 	echo 'Construct dependencies in C_src/KEMO_GLUT'
