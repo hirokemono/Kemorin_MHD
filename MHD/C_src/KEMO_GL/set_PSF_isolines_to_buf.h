@@ -22,7 +22,7 @@ int find_start_positive_lines(int n_isoline, struct colormap_params *cmap_s);
 
 int count_PSF_all_isolines_to_buf(int ncorner, 
 			struct psf_data *psf_s, struct psf_menu_val *psf_m);
-int set_PSF_all_isolines_to_buf(int ist_patch, double radius, int ncorner, 
+int set_PSF_all_isolines_to_buf(int ist_patch, int ncorner, 
 			struct psf_data *psf_s, struct psf_menu_val *psf_m,
 			struct gl_strided_buffer *psf_buf);
 

@@ -26,9 +26,29 @@
 	#include "view_modifier_gtk.h"
 #endif
 
+struct gtk_psf_isoline_menu{
+	GtkWidget *hbox_draw, *hbox_zero, *hbox_color;
+	GtkWidget *hbox_nline, *hbox_width;
+	
+	GtkWidget *vbox_iso;
+	
+	GtkWidget *switch_1, *switch_zero;
+	
+	GtkWidget *combobox_gdcolor;
+	GtkWidget *label_tree_gdcolor;
+	GtkCellRenderer *renderer_gdcolor;
+	GtkTreeModel *model_gdcolor;
+	GtkTreeModel *child_model_gdcolor;
+	
+	int index;
+	int iflag_sfcolor;
+	
+	GtkWidget *spin_nline, *spin_width;
+	GtkAdjustment *adj_nline, *adj_width;
+};
+
 
 /*  prototypes */
-void add_gtk_isoline_menu(struct colormap_view *color_vws, 
-			GtkWidget *window_cmap, GtkWidget *box);
+void add_gtk_isoline_menu(GtkWidget *window, GtkWidget *box);
 	
 #endif

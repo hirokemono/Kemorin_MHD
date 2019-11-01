@@ -365,33 +365,12 @@ int kemoview_get_surf_grp_color_flag(int selected){
     return icolor;
 }
 
-void kemoview_set_domain_color_code(int selected, float color_code4[4]){
-	set_domain_color_code(selected, color_code4, kemo_sgl->kemo_mesh->mesh_m);
+void kemoview_set_mesh_color_code(int iflag_group, int selected, float color_code4[4]){
+	set_mesh_color_code(iflag_group, selected, color_code4, kemo_sgl->kemo_mesh);
 };
-void kemoview_set_node_grp_color_code(float color_code4[4]){
-	set_node_grp_color_code(color_code4, kemo_sgl->kemo_mesh->mesh_m);
+void kemoview_get_mesh_color_code(int iflag_group, int selected, float color_code4[4]){
+	get_mesh_color_code(kemo_sgl->kemo_mesh, iflag_group, selected, color_code4);
 };
-void kemoview_set_ele_grp_color_code(int selected, float color_code4[4]){
-	set_ele_grp_color_code(selected, color_code4, kemo_sgl->kemo_mesh->mesh_m);
-};
-void kemoview_set_surf_grp_color_code(int selected, float color_code4[4]){
-	set_surf_grp_color_code(selected, color_code4, kemo_sgl->kemo_mesh->mesh_m);
-};
-
-void kemoview_get_domain_color_code(int selected, float color_code4[4]){
-	send_domain_color_code(kemo_sgl->kemo_mesh->mesh_m, selected, color_code4);
-};
-void kemoview_get_node_grp_color_code(float color_code4[4]){
-	send_node_grp_color_code(kemo_sgl->kemo_mesh->mesh_m, color_code4);
-};
-void kemoview_get_ele_grp_color_code(int selected, float color_code4[4]){
-	send_ele_grp_color_code(kemo_sgl->kemo_mesh->mesh_m, selected, color_code4);
-};
-void kemoview_get_surf_grp_color_code(int selected, float color_code4[4]){
-	send_surf_grp_color_code(kemo_sgl->kemo_mesh->mesh_m, selected, color_code4);
-};
-
-
 
 void kemoview_set_domain_opacity(double opacity_in){kemo_sgl->kemo_mesh->mesh_m->domain_opacity = opacity_in;};
 void kemoview_set_ele_grp_opacity(double opacity_in)   {kemo_sgl->kemo_mesh->mesh_m->ele_grp_opacity = opacity_in;};
@@ -824,8 +803,8 @@ void kemoview_set_PSF_isoline_color_mode(int iflag){
 void kemoview_set_PSF_num_isoline(int nlline){
 	set_each_n_isoline(kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current], nlline);
 };
-void kemoview_set_PSF_isoline_width(double width){
-	set_each_isoline_width(kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current], width);
+void kemoview_set_PSF_isoline_width(double value, int i_digit){
+	set_each_isoline_width(kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current], value, i_digit);
 };
 void kemoview_set_PSF_vector_increment(int increment){
 	set_each_increment_vect(kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current], increment);
@@ -846,8 +825,8 @@ int kemoview_get_PSF_isoline_color_mode(void){
 int kemoview_get_PSF_num_isoline(void){
 	return send_num_isoline(kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current]);
 };
-double kemoview_get_PSF_isoline_width(void){
-	return send_isoline_width(kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current]);
+void kemoview_get_PSF_isoline_width(double *value, int *i_digit){
+	return send_isoline_width(kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current], value, i_digit);
 };
 int kemoview_get_PSF_vector_color_mode(void){
 	return send_each_vector_patch_color(kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current]);
@@ -1073,10 +1052,12 @@ int kemoview_get_fline_type(void) {return get_fline_type(kemo_sgl->kemo_fline->f
 int kemoview_toggle_fline_type(void){return toggle_fline_type(kemo_sgl->kemo_fline->fline_m);};
 
 
-void kemoview_set_fline_thickness(double thick) {
-	set_fline_thickness(kemo_sgl->kemo_fline->fline_m, thick);
+void kemoview_set_fline_thickness(double value, int i_digit) {
+	set_fline_thickness(kemo_sgl->kemo_fline->fline_m, value, i_digit);
 };
-double kemoview_get_fline_thickness(void) {return get_fline_thickness(kemo_sgl->kemo_fline->fline_m);};
+void kemoview_get_fline_thickness(double *value, int *i_digit){
+	get_fline_thickness(kemo_sgl->kemo_fline->fline_m, value, i_digit);
+};
 
 double kemoview_get_fline_data_min(int i){
 	return get_fline_data_min(kemo_sgl->kemo_fline->fline_d, i);

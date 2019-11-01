@@ -25,8 +25,8 @@
 
 - (id)init;
 {
-	FlineThickFactor = 1;
-	FlineThickDigit = -2;
+	self.FlineThickFactor = 1;
+	self.FlineThickDigit = -2;
 	self.FlineWindowlabel = [NSString stringWithFormat:@"Fieldline View"];
 	
 	FlineNumberOfComponent =[[NSMutableArray alloc] init];
@@ -73,6 +73,8 @@
 {
 	int i, iflag;
 	double minmax;
+	double current_thick;
+	int current_digit;
     struct kv_string *colorname = kemoview_alloc_kvstring();
     NSString *stname;
 	NSNumber *stnum;
@@ -80,9 +82,9 @@
 	FlineNumberOfField =  kemoview_get_fline_color_num_field();
 	FlineTotalComponent = kemoview_get_fline_color_ncomptot();
 	
-	FlineThickFactor = 1;
-	FlineThickDigit = -2;
-	kemoview_set_fline_thickness(0.01);
+	kemoview_get_fline_thickness(&current_thick, &current_digit);
+	self.FlineThickFactor = (CGFloat) current_thick;
+	self.FlineThickDigit = (CGFloat) current_digit;
 
 
 	[FlineFieldName removeAllObjects];	
@@ -319,23 +321,7 @@
 
 - (IBAction)SetFieldlineThicknessAction:(id)sender;
 {
-	float fieldlineThickness;
-	int IntFlineThickFactor, IntFlineThickDigit;
-	int i;
-	
-	IntFlineThickFactor = (int) FlineThickFactor;
-	IntFlineThickDigit = (int) FlineThickDigit;
-	
-	fieldlineThickness = (double) IntFlineThickFactor;
-	if(IntFlineThickDigit < 0){
-		for(i=0;i< (-IntFlineThickDigit);i++) fieldlineThickness = fieldlineThickness / 10.0;
-	}
-	else {
-		for(i=0;i<IntFlineThickDigit;i++) fieldlineThickness = fieldlineThickness * 10.0;
-	}
-	
-	kemoview_set_fline_thickness((double) fieldlineThickness);
-	
+	kemoview_set_fline_thickness((double) self.FlineThickFactor, (int) self.FlineThickDigit);
 	[_kemoviewer UpdateImage];
 }
 

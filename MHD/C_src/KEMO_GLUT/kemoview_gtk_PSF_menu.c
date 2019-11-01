@@ -69,7 +69,7 @@ void make_psf_menu_box(struct colormap_view *color_vws,
 	int if_psf = kemoview_get_PSF_field_id();
 	int ncomp = kemoview_get_PSF_num_component(if_psf);
 	
-	add_gtk_isoline_menu(color_vws, window, box_out);
+	add_gtk_isoline_menu(window, box_out);
 	add_gtk_psf_surface_menu(color_vws, window, box_out);
 	add_gtk_psf_colormap_menu(color_vws, window, box_out);
 	

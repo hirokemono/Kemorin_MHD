@@ -1165,7 +1165,7 @@
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <clipView key="contentView" id="Meu-5Y-hVs">
                                                 <rect key="frame" x="1" y="0.0" width="322" height="177"/>
-                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                <autoresizingMask key="autoresizingMask"/>
                                                 <subviews>
                                                     <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" headerView="760" id="761">
                                                         <rect key="frame" x="0.0" y="0.0" width="322" height="160"/>
@@ -2206,8 +2206,243 @@
                                     <rect key="frame" x="0.0" y="0.0" width="230" height="686"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <box autoresizesSubviews="NO" borderType="line" title="Surface" id="1079">
-                                            <rect key="frame" x="17" y="226" width="198" height="249"/>
+                                        <box autoresizesSubviews="NO" borderType="line" title="Field to Display" id="1892">
+                                            <rect key="frame" x="17" y="594" width="198" height="92"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <view key="contentView" id="4Pa-T4-4I0">
+                                                <rect key="frame" x="1" y="1" width="196" height="76"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                <subviews>
+                                                    <popUpButton verticalHuggingPriority="750" id="1074">
+                                                        <rect key="frame" x="15" y="42" width="166" height="26"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <popUpButtonCell key="cell" type="push" title="Field" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" refusesFirstResponder="YES" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="1107" id="1103">
+                                                            <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
+                                                            <font key="font" metaFont="menu"/>
+                                                            <menu key="menu" title="OtherViews" id="1104">
+                                                                <items>
+                                                                    <menuItem title="Field" state="on" id="1107"/>
+                                                                    <menuItem title="Item 2" id="1106"/>
+                                                                    <menuItem title="Item 3" id="1105"/>
+                                                                </items>
+                                                            </menu>
+                                                            <connections>
+                                                                <binding destination="2714" name="selectedIndex" keyPath="selection.self.PSFSelectedField" id="2909"/>
+                                                            </connections>
+                                                        </popUpButtonCell>
+                                                        <connections>
+                                                            <action selector="PsfFieldAction:" target="1157" id="1172"/>
+                                                            <binding destination="1157" name="enabled" keyPath="self.DrawPsfFlag" id="1266"/>
+                                                        </connections>
+                                                    </popUpButton>
+                                                    <popUpButton verticalHuggingPriority="750" id="1076">
+                                                        <rect key="frame" x="16" y="11" width="166" height="26"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <popUpButtonCell key="cell" type="push" title="Component" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" refusesFirstResponder="YES" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="1101" id="1097">
+                                                            <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
+                                                            <font key="font" metaFont="menu"/>
+                                                            <menu key="menu" title="OtherViews" id="1098">
+                                                                <items>
+                                                                    <menuItem title="Component" state="on" id="1101"/>
+                                                                </items>
+                                                            </menu>
+                                                            <connections>
+                                                                <binding destination="2714" name="selectedIndex" keyPath="selection.self.PSFSelectedComponent" id="2912"/>
+                                                            </connections>
+                                                        </popUpButtonCell>
+                                                        <connections>
+                                                            <action selector="PsfComponentAction:" target="1157" id="1171"/>
+                                                            <binding destination="1157" name="enabled" keyPath="self.DrawPsfFlag" id="1269"/>
+                                                        </connections>
+                                                    </popUpButton>
+                                                </subviews>
+                                            </view>
+                                        </box>
+                                        <box autoresizesSubviews="NO" misplaced="YES" borderType="line" title="Vector" id="3003">
+                                            <rect key="frame" x="17" y="-4" width="198" height="206"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <view key="contentView" id="CZ1-hQ-dWH">
+                                                <rect key="frame" x="1" y="1" width="196" height="190"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                <subviews>
+                                                    <button verticalHuggingPriority="750" id="3004">
+                                                        <rect key="frame" x="89" y="152" width="96" height="32"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <buttonCell key="cell" type="push" title="Off" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="3005">
+                                                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                            <font key="font" metaFont="system"/>
+                                                        </buttonCell>
+                                                        <connections>
+                                                            <action selector="DrawPSFVectorAction:" target="1157" id="3061"/>
+                                                            <binding destination="1157" name="enabled" keyPath="self.PSFVectorMenuAcrive" id="3089"/>
+                                                        </connections>
+                                                    </button>
+                                                    <popUpButton verticalHuggingPriority="750" id="3006">
+                                                        <rect key="frame" x="83" y="97" width="99" height="26"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <popUpButtonCell key="cell" type="push" title="Colored" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="3012" id="3009">
+                                                            <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
+                                                            <font key="font" metaFont="menu"/>
+                                                            <menu key="menu" title="OtherViews" id="3010">
+                                                                <items>
+                                                                    <menuItem title="Colored" state="on" id="3012" userLabel="Colored"/>
+                                                                    <menuItem title="White" tag="1" id="3011"/>
+                                                                </items>
+                                                            </menu>
+                                                            <connections>
+                                                                <binding destination="2714" name="selectedIndex" keyPath="selection.self.psfVectorColorTag" id="3120"/>
+                                                            </connections>
+                                                        </popUpButtonCell>
+                                                        <connections>
+                                                            <action selector="ChoosePsfVectorColorAction:" target="1157" id="3109"/>
+                                                            <binding destination="1157" name="enabled" keyPath="self.PSFVectorMenuAcrive" id="3094"/>
+                                                        </connections>
+                                                    </popUpButton>
+                                                    <popUpButton verticalHuggingPriority="750" id="3801">
+                                                        <rect key="frame" x="83" y="128" width="99" height="26"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <popUpButtonCell key="cell" type="push" title="Full" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="3804" id="3802">
+                                                            <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
+                                                            <font key="font" metaFont="menu"/>
+                                                            <menu key="menu" title="OtherViews" id="3803">
+                                                                <items>
+                                                                    <menuItem title="Full" state="on" id="3804"/>
+                                                                    <menuItem title="Tangential" tag="1" id="3805"/>
+                                                                </items>
+                                                            </menu>
+                                                            <connections>
+                                                                <binding destination="2714" name="selectedIndex" keyPath="selection.self.psfVectorColorTag" id="3806"/>
+                                                            </connections>
+                                                        </popUpButtonCell>
+                                                        <connections>
+                                                            <action selector="ChoosePsfVectorModeAction:" target="1157" id="3818"/>
+                                                            <binding destination="2714" name="selectedTag" keyPath="selection.self.psfTangentialVectorTag" id="3817"/>
+                                                            <binding destination="1157" name="enabled" keyPath="self.PSFVectorMenuAcrive" id="3807"/>
+                                                        </connections>
+                                                    </popUpButton>
+                                                    <textField verticalHuggingPriority="750" id="3007">
+                                                        <rect key="frame" x="15" y="101" width="51" height="17"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Color" id="3008">
+                                                            <font key="font" metaFont="system"/>
+                                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                        </textFieldCell>
+                                                    </textField>
+                                                    <textField verticalHuggingPriority="750" id="3809">
+                                                        <rect key="frame" x="15" y="133" width="51" height="17"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Mode" id="3810">
+                                                            <font key="font" metaFont="system"/>
+                                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                        </textFieldCell>
+                                                    </textField>
+                                                    <textField verticalHuggingPriority="750" id="3022">
+                                                        <rect key="frame" x="104" y="71" width="74" height="22"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="3023">
+                                                            <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" paddingCharacter="*" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="3024"/>
+                                                            <font key="font" metaFont="system"/>
+                                                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                            <connections>
+                                                                <binding destination="2714" name="value" keyPath="selection.self.ScaleVector" id="3112"/>
+                                                            </connections>
+                                                        </textFieldCell>
+                                                        <connections>
+                                                            <action selector="SetReferenceVector:" target="1157" id="3111"/>
+                                                            <binding destination="1157" name="enabled" keyPath="self.PSFVectorMenuAcrive" id="3097"/>
+                                                        </connections>
+                                                    </textField>
+                                                    <textField verticalHuggingPriority="750" id="3027">
+                                                        <rect key="frame" x="15" y="73" width="75" height="17"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Reference" id="3028">
+                                                            <font key="font" metaFont="system"/>
+                                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                        </textFieldCell>
+                                                    </textField>
+                                                    <textField verticalHuggingPriority="750" id="3029">
+                                                        <rect key="frame" x="104" y="41" width="53" height="22"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" drawsBackground="YES" id="3034">
+                                                            <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" paddingCharacter="*" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="3035">
+                                                                <real key="minimum" value="0.0"/>
+                                                                <real key="maximum" value="500"/>
+                                                            </numberFormatter>
+                                                            <font key="font" metaFont="system"/>
+                                                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                            <connections>
+                                                                <binding destination="1157" name="value" keyPath="self.PSFVectorIncrement" id="3117"/>
+                                                            </connections>
+                                                        </textFieldCell>
+                                                        <connections>
+                                                            <action selector="SetVectorIncrement:" target="1157" id="3115"/>
+                                                            <binding destination="1157" name="editable" keyPath="self.DrawPsfFlag" id="3038"/>
+                                                            <binding destination="1157" name="enabled" keyPath="self.PSFVectorMenuAcrive" previousBinding="3038" id="3101"/>
+                                                        </connections>
+                                                    </textField>
+                                                    <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" id="3030">
+                                                        <rect key="frame" x="162" y="38" width="19" height="27"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <stepperCell key="cell" continuous="YES" alignment="left" maxValue="100" id="3033">
+                                                            <connections>
+                                                                <binding destination="1157" name="value" keyPath="self.PSFVectorIncrement" id="3121"/>
+                                                            </connections>
+                                                        </stepperCell>
+                                                        <connections>
+                                                            <action selector="SetVectorIncrement:" target="1157" id="3114"/>
+                                                            <binding destination="1157" name="value" keyPath="self.PSFVectorIncrement" id="3119"/>
+                                                            <binding destination="1157" name="enabled" keyPath="self.PSFVectorMenuAcrive" id="3102"/>
+                                                        </connections>
+                                                    </stepper>
+                                                    <textField verticalHuggingPriority="750" id="3031">
+                                                        <rect key="frame" x="15" y="43" width="82" height="17"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Increment" id="3032">
+                                                            <font key="font" metaFont="system"/>
+                                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                        </textFieldCell>
+                                                    </textField>
+                                                    <textField verticalHuggingPriority="750" misplaced="YES" id="gY4-JK-CO7">
+                                                        <rect key="frame" x="104" y="13" width="75" height="22"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" drawsBackground="YES" id="8mS-3f-Yyc">
+                                                            <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" paddingCharacter="*" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="sTG-Z4-W6G">
+                                                                <real key="minimum" value="0.0"/>
+                                                                <real key="maximum" value="100"/>
+                                                            </numberFormatter>
+                                                            <font key="font" metaFont="system"/>
+                                                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                            <connections>
+                                                                <binding destination="1157" name="value" keyPath="self.VectorThickness" id="zR8-uT-etD"/>
+                                                            </connections>
+                                                        </textFieldCell>
+                                                        <connections>
+                                                            <action selector="SetVectorThickness:" target="1157" id="XqM-aP-fwI"/>
+                                                            <binding destination="1157" name="editable" keyPath="self.DrawPsfFlag" id="Bgi-sX-xiJ"/>
+                                                            <binding destination="1157" name="enabled" keyPath="self.PSFVectorMenuAcrive" previousBinding="Bgi-sX-xiJ" id="TVi-VQ-eYt"/>
+                                                        </connections>
+                                                    </textField>
+                                                    <textField verticalHuggingPriority="750" misplaced="YES" id="yUa-MZ-FE9">
+                                                        <rect key="frame" x="15" y="15" width="82" height="17"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Width" id="Eqv-Hu-AYr">
+                                                            <font key="font" metaFont="system"/>
+                                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                        </textFieldCell>
+                                                    </textField>
+                                                </subviews>
+                                            </view>
+                                        </box>
+                                        <box autoresizesSubviews="NO" misplaced="YES" borderType="line" title="Surface" id="1079">
+                                            <rect key="frame" x="17" y="206" width="198" height="249"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <view key="contentView" id="qff-HL-V5e">
                                                 <rect key="frame" x="1" y="1" width="196" height="233"/>
@@ -2416,15 +2651,15 @@
                                                 </subviews>
                                             </view>
                                         </box>
-                                        <box autoresizesSubviews="NO" borderType="line" title="Isoline" id="1077">
-                                            <rect key="frame" x="16" y="479" width="198" height="111"/>
+                                        <box autoresizesSubviews="NO" misplaced="YES" borderType="line" title="Isoline" id="1077">
+                                            <rect key="frame" x="15" y="454" width="198" height="136"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <view key="contentView" id="PKN-Oq-Mlh">
-                                                <rect key="frame" x="1" y="1" width="196" height="95"/>
+                                                <rect key="frame" x="1" y="1" width="196" height="120"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
-                                                    <textField verticalHuggingPriority="750" id="1091">
-                                                        <rect key="frame" x="104" y="14" width="53" height="22"/>
+                                                    <textField verticalHuggingPriority="750" misplaced="YES" id="1091">
+                                                        <rect key="frame" x="105" y="41" width="53" height="22"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" drawsBackground="YES" id="1094">
                                                             <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" paddingCharacter="*" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="1095">
@@ -2443,8 +2678,8 @@
                                                             <binding destination="1157" name="editable" keyPath="self.DrawPsfFlag" id="1367"/>
                                                         </connections>
                                                     </textField>
-                                                    <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" id="1090">
-                                                        <rect key="frame" x="162" y="11" width="19" height="27"/>
+                                                    <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" misplaced="YES" id="1090">
+                                                        <rect key="frame" x="163" y="38" width="19" height="27"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <stepperCell key="cell" continuous="YES" alignment="left" maxValue="100" id="1096">
                                                             <connections>
@@ -2456,8 +2691,8 @@
                                                             <binding destination="1157" name="enabled" keyPath="self.DrawPsfFlag" id="1370"/>
                                                         </connections>
                                                     </stepper>
-                                                    <popUpButton verticalHuggingPriority="750" id="1871">
-                                                        <rect key="frame" x="82" y="40" width="99" height="26"/>
+                                                    <popUpButton verticalHuggingPriority="750" misplaced="YES" id="1871">
+                                                        <rect key="frame" x="83" y="67" width="99" height="26"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <popUpButtonCell key="cell" type="push" title="Black" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" tag="1" imageScaling="proportionallyDown" inset="2" selectedItem="1875" id="1872">
                                                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
@@ -2477,8 +2712,8 @@
                                                             <action selector="ChoosePsfLineColorAction:" target="1157" id="1889"/>
                                                         </connections>
                                                     </popUpButton>
-                                                    <textField verticalHuggingPriority="750" id="1885">
-                                                        <rect key="frame" x="15" y="46" width="51" height="17"/>
+                                                    <textField verticalHuggingPriority="750" misplaced="YES" id="1885">
+                                                        <rect key="frame" x="16" y="73" width="51" height="17"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Color" id="1886">
                                                             <font key="font" metaFont="system"/>
@@ -2486,8 +2721,8 @@
                                                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                         </textFieldCell>
                                                     </textField>
-                                                    <textField verticalHuggingPriority="750" id="2429">
-                                                        <rect key="frame" x="15" y="16" width="82" height="17"/>
+                                                    <textField verticalHuggingPriority="750" misplaced="YES" id="2429">
+                                                        <rect key="frame" x="16" y="43" width="82" height="17"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Num. of line" id="2430">
                                                             <font key="font" metaFont="system"/>
@@ -2495,8 +2730,8 @@
                                                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                         </textFieldCell>
                                                     </textField>
-                                                    <button id="1069">
-                                                        <rect key="frame" x="16" y="69" width="64" height="18"/>
+                                                    <button misplaced="YES" id="1069">
+                                                        <rect key="frame" x="17" y="96" width="64" height="18"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <buttonCell key="cell" type="check" title="Isoline" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="1143">
                                                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -2510,8 +2745,8 @@
                                                             <binding destination="1157" name="enabled" keyPath="self.DrawPsfFlag" id="1275"/>
                                                         </connections>
                                                     </button>
-                                                    <button id="1070">
-                                                        <rect key="frame" x="129" y="70" width="51" height="18"/>
+                                                    <button misplaced="YES" id="1070">
+                                                        <rect key="frame" x="130" y="97" width="51" height="18"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <buttonCell key="cell" type="check" title="Zero" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="1142">
                                                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -2525,236 +2760,76 @@
                                                             <binding destination="1157" name="enabled" keyPath="self.DrawPsfFlag" id="1278"/>
                                                         </connections>
                                                     </button>
-                                                </subviews>
-                                            </view>
-                                        </box>
-                                        <box autoresizesSubviews="NO" borderType="line" title="Field to Display" id="1892">
-                                            <rect key="frame" x="17" y="594" width="198" height="92"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                            <view key="contentView" id="4Pa-T4-4I0">
-                                                <rect key="frame" x="1" y="1" width="196" height="76"/>
-                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                                <subviews>
-                                                    <popUpButton verticalHuggingPriority="750" id="1074">
-                                                        <rect key="frame" x="15" y="42" width="166" height="26"/>
+                                                    <textField verticalHuggingPriority="750" misplaced="YES" id="NeK-iS-Uh6">
+                                                        <rect key="frame" x="85" y="11" width="17" height="22"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                        <popUpButtonCell key="cell" type="push" title="Field" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" refusesFirstResponder="YES" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="1107" id="1103">
-                                                            <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                                                            <font key="font" metaFont="menu"/>
-                                                            <menu key="menu" title="OtherViews" id="1104">
-                                                                <items>
-                                                                    <menuItem title="Field" state="on" id="1107"/>
-                                                                    <menuItem title="Item 2" id="1106"/>
-                                                                    <menuItem title="Item 3" id="1105"/>
-                                                                </items>
-                                                            </menu>
-                                                            <connections>
-                                                                <binding destination="2714" name="selectedIndex" keyPath="selection.self.PSFSelectedField" id="2909"/>
-                                                            </connections>
-                                                        </popUpButtonCell>
-                                                        <connections>
-                                                            <action selector="PsfFieldAction:" target="1157" id="1172"/>
-                                                            <binding destination="1157" name="enabled" keyPath="self.DrawPsfFlag" id="1266"/>
-                                                        </connections>
-                                                    </popUpButton>
-                                                    <popUpButton verticalHuggingPriority="750" id="1076">
-                                                        <rect key="frame" x="16" y="11" width="166" height="26"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                        <popUpButtonCell key="cell" type="push" title="Component" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" refusesFirstResponder="YES" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="1101" id="1097">
-                                                            <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                                                            <font key="font" metaFont="menu"/>
-                                                            <menu key="menu" title="OtherViews" id="1098">
-                                                                <items>
-                                                                    <menuItem title="Component" state="on" id="1101"/>
-                                                                </items>
-                                                            </menu>
-                                                            <connections>
-                                                                <binding destination="2714" name="selectedIndex" keyPath="selection.self.PSFSelectedComponent" id="2912"/>
-                                                            </connections>
-                                                        </popUpButtonCell>
-                                                        <connections>
-                                                            <action selector="PsfComponentAction:" target="1157" id="1171"/>
-                                                            <binding destination="1157" name="enabled" keyPath="self.DrawPsfFlag" id="1269"/>
-                                                        </connections>
-                                                    </popUpButton>
-                                                </subviews>
-                                            </view>
-                                        </box>
-                                        <box autoresizesSubviews="NO" misplaced="YES" borderType="line" title="Vector" id="3003">
-                                            <rect key="frame" x="17" y="16" width="198" height="206"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                            <view key="contentView" id="CZ1-hQ-dWH">
-                                                <rect key="frame" x="1" y="1" width="196" height="190"/>
-                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                                <subviews>
-                                                    <button verticalHuggingPriority="750" id="3004">
-                                                        <rect key="frame" x="89" y="152" width="96" height="32"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                        <buttonCell key="cell" type="push" title="Off" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="3005">
-                                                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                                            <font key="font" metaFont="system"/>
-                                                        </buttonCell>
-                                                        <connections>
-                                                            <action selector="DrawPSFVectorAction:" target="1157" id="3061"/>
-                                                            <binding destination="1157" name="enabled" keyPath="self.PSFVectorMenuAcrive" id="3089"/>
-                                                        </connections>
-                                                    </button>
-                                                    <popUpButton verticalHuggingPriority="750" id="3006">
-                                                        <rect key="frame" x="83" y="97" width="99" height="26"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                        <popUpButtonCell key="cell" type="push" title="Colored" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="3012" id="3009">
-                                                            <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                                                            <font key="font" metaFont="menu"/>
-                                                            <menu key="menu" title="OtherViews" id="3010">
-                                                                <items>
-                                                                    <menuItem title="Colored" state="on" id="3012" userLabel="Colored"/>
-                                                                    <menuItem title="White" tag="1" id="3011"/>
-                                                                </items>
-                                                            </menu>
-                                                            <connections>
-                                                                <binding destination="2714" name="selectedIndex" keyPath="selection.self.psfVectorColorTag" id="3120"/>
-                                                            </connections>
-                                                        </popUpButtonCell>
-                                                        <connections>
-                                                            <action selector="ChoosePsfVectorColorAction:" target="1157" id="3109"/>
-                                                            <binding destination="1157" name="enabled" keyPath="self.PSFVectorMenuAcrive" id="3094"/>
-                                                        </connections>
-                                                    </popUpButton>
-                                                    <popUpButton verticalHuggingPriority="750" id="3801">
-                                                        <rect key="frame" x="83" y="128" width="99" height="26"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                        <popUpButtonCell key="cell" type="push" title="Full" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="3804" id="3802">
-                                                            <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                                                            <font key="font" metaFont="menu"/>
-                                                            <menu key="menu" title="OtherViews" id="3803">
-                                                                <items>
-                                                                    <menuItem title="Full" state="on" id="3804"/>
-                                                                    <menuItem title="Tangential" tag="1" id="3805"/>
-                                                                </items>
-                                                            </menu>
-                                                            <connections>
-                                                                <binding destination="2714" name="selectedIndex" keyPath="selection.self.psfVectorColorTag" id="3806"/>
-                                                            </connections>
-                                                        </popUpButtonCell>
-                                                        <connections>
-                                                            <action selector="ChoosePsfVectorModeAction:" target="1157" id="3818"/>
-                                                            <binding destination="2714" name="selectedTag" keyPath="selection.self.psfTangentialVectorTag" id="3817"/>
-                                                            <binding destination="1157" name="enabled" keyPath="self.PSFVectorMenuAcrive" id="3807"/>
-                                                        </connections>
-                                                    </popUpButton>
-                                                    <textField verticalHuggingPriority="750" id="3007">
-                                                        <rect key="frame" x="15" y="101" width="51" height="17"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Color" id="3008">
-                                                            <font key="font" metaFont="system"/>
-                                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                                        </textFieldCell>
-                                                    </textField>
-                                                    <textField verticalHuggingPriority="750" id="3809">
-                                                        <rect key="frame" x="15" y="133" width="51" height="17"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Mode" id="3810">
-                                                            <font key="font" metaFont="system"/>
-                                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                                        </textFieldCell>
-                                                    </textField>
-                                                    <textField verticalHuggingPriority="750" id="3022">
-                                                        <rect key="frame" x="104" y="71" width="74" height="22"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="3023">
-                                                            <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" paddingCharacter="*" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="3024"/>
-                                                            <font key="font" metaFont="system"/>
-                                                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
-                                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                                            <connections>
-                                                                <binding destination="2714" name="value" keyPath="selection.self.ScaleVector" id="3112"/>
-                                                            </connections>
-                                                        </textFieldCell>
-                                                        <connections>
-                                                            <action selector="SetReferenceVector:" target="1157" id="3111"/>
-                                                            <binding destination="1157" name="enabled" keyPath="self.PSFVectorMenuAcrive" id="3097"/>
-                                                        </connections>
-                                                    </textField>
-                                                    <textField verticalHuggingPriority="750" id="3027">
-                                                        <rect key="frame" x="15" y="73" width="75" height="17"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
-                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Reference" id="3028">
-                                                            <font key="font" metaFont="system"/>
-                                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                                        </textFieldCell>
-                                                    </textField>
-                                                    <textField verticalHuggingPriority="750" id="3029">
-                                                        <rect key="frame" x="104" y="41" width="53" height="22"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" drawsBackground="YES" id="3034">
-                                                            <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" paddingCharacter="*" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="3035">
-                                                                <real key="minimum" value="0.0"/>
-                                                                <real key="maximum" value="500"/>
+                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" continuous="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="WNR-ii-Xif">
+                                                            <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" paddingCharacter="*" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="E8z-b2-sdH">
+                                                                <real key="minimum" value="1"/>
+                                                                <real key="maximum" value="9"/>
                                                             </numberFormatter>
                                                             <font key="font" metaFont="system"/>
                                                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                             <connections>
-                                                                <binding destination="1157" name="value" keyPath="self.PSFVectorIncrement" id="3117"/>
+                                                                <action selector="SetIsolineWidth:" target="1157" id="au9-yI-AUY"/>
+                                                                <binding destination="1157" name="value" keyPath="self.IsolineWidth" id="lrA-64-eb1"/>
+                                                            </connections>
+                                                        </textFieldCell>
+                                                    </textField>
+                                                    <textField verticalHuggingPriority="750" misplaced="YES" id="F9m-Dz-XaY">
+                                                        <rect key="frame" x="140" y="22" width="29" height="16"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" continuous="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" drawsBackground="YES" id="ihy-uY-BLD">
+                                                            <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" paddingCharacter="*" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="yWF-fx-YUY">
+                                                                <real key="minimum" value="-30"/>
+                                                                <real key="maximum" value="30"/>
+                                                            </numberFormatter>
+                                                            <font key="font" metaFont="smallSystem"/>
+                                                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                            <connections>
+                                                                <binding destination="1157" name="value" keyPath="self.IsolineDigit" id="tNs-pn-hO0"/>
                                                             </connections>
                                                         </textFieldCell>
                                                         <connections>
-                                                            <action selector="SetVectorIncrement:" target="1157" id="3115"/>
-                                                            <binding destination="1157" name="editable" keyPath="self.DrawPsfFlag" id="3038"/>
-                                                            <binding destination="1157" name="enabled" keyPath="self.PSFVectorMenuAcrive" previousBinding="3038" id="3101"/>
+                                                            <action selector="SetIsolineWidth:" target="1157" id="TJA-QV-W9V"/>
                                                         </connections>
                                                     </textField>
-                                                    <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" id="3030">
-                                                        <rect key="frame" x="162" y="38" width="19" height="27"/>
+                                                    <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" misplaced="YES" id="Icf-zd-ULQ">
+                                                        <rect key="frame" x="99" y="7" width="19" height="27"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                        <stepperCell key="cell" continuous="YES" alignment="left" maxValue="100" id="3033">
+                                                        <stepperCell key="cell" continuous="YES" state="on" alignment="left" minValue="1" maxValue="9" doubleValue="3" id="wfM-0m-97P">
                                                             <connections>
-                                                                <binding destination="1157" name="value" keyPath="self.PSFVectorIncrement" id="3121"/>
+                                                                <action selector="SetIsolineWidth:" target="1157" id="eDC-ew-hIc"/>
+                                                                <binding destination="1157" name="value" keyPath="self.IsolineWidth" id="xqR-pP-GJo"/>
                                                             </connections>
                                                         </stepperCell>
-                                                        <connections>
-                                                            <action selector="SetVectorIncrement:" target="1157" id="3114"/>
-                                                            <binding destination="1157" name="value" keyPath="self.PSFVectorIncrement" id="3119"/>
-                                                            <binding destination="1157" name="enabled" keyPath="self.PSFVectorMenuAcrive" id="3102"/>
-                                                        </connections>
                                                     </stepper>
-                                                    <textField verticalHuggingPriority="750" id="3031">
-                                                        <rect key="frame" x="15" y="43" width="82" height="17"/>
+                                                    <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" misplaced="YES" id="7Ts-6J-G5f">
+                                                        <rect key="frame" x="169" y="17" width="15" height="22"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Increment" id="3032">
+                                                        <stepperCell key="cell" controlSize="small" continuous="YES" alignment="left" minValue="-30" maxValue="30" doubleValue="-7" id="3yx-pH-6Xd">
+                                                            <font key="font" metaFont="smallSystem"/>
+                                                            <connections>
+                                                                <action selector="SetIsolineWidth:" target="1157" id="r30-qS-ddg"/>
+                                                                <binding destination="1157" name="value" keyPath="self.IsolineDigit" id="4fA-d0-0Kl"/>
+                                                            </connections>
+                                                        </stepperCell>
+                                                    </stepper>
+                                                    <textField verticalHuggingPriority="750" misplaced="YES" id="gLJ-CX-KeN">
+                                                        <rect key="frame" x="115" y="13" width="33" height="17"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="x10" id="eL2-4o-Kpm">
                                                             <font key="font" metaFont="system"/>
                                                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                         </textFieldCell>
                                                     </textField>
-                                                    <textField verticalHuggingPriority="750" misplaced="YES" id="gY4-JK-CO7">
-                                                        <rect key="frame" x="104" y="13" width="75" height="22"/>
+                                                    <textField verticalHuggingPriority="750" misplaced="YES" id="hYH-3P-wqS">
+                                                        <rect key="frame" x="14" y="12" width="67" height="17"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" drawsBackground="YES" id="8mS-3f-Yyc">
-                                                            <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" paddingCharacter="*" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="sTG-Z4-W6G">
-                                                                <real key="minimum" value="0.0"/>
-                                                                <real key="maximum" value="100"/>
-                                                            </numberFormatter>
-                                                            <font key="font" metaFont="system"/>
-                                                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
-                                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                                            <connections>
-                                                                <binding destination="1157" name="value" keyPath="self.VectorThickness" id="zR8-uT-etD"/>
-                                                            </connections>
-                                                        </textFieldCell>
-                                                        <connections>
-                                                            <action selector="SetVectorThickness:" target="1157" id="XqM-aP-fwI"/>
-                                                            <binding destination="1157" name="editable" keyPath="self.DrawPsfFlag" id="Bgi-sX-xiJ"/>
-                                                            <binding destination="1157" name="enabled" keyPath="self.PSFVectorMenuAcrive" previousBinding="Bgi-sX-xiJ" id="TVi-VQ-eYt"/>
-                                                        </connections>
-                                                    </textField>
-                                                    <textField verticalHuggingPriority="750" misplaced="YES" id="yUa-MZ-FE9">
-                                                        <rect key="frame" x="15" y="15" width="82" height="17"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Width" id="Eqv-Hu-AYr">
+                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Line width" id="SNp-FF-jks">
                                                             <font key="font" metaFont="system"/>
                                                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -3646,7 +3721,7 @@
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" heightSizable="YES"/>
                                     <clipView key="contentView" id="Vae-Vq-U6W">
                                         <rect key="frame" x="1" y="0.0" width="229" height="117"/>
-                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                        <autoresizingMask key="autoresizingMask"/>
                                         <subviews>
                                             <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" alternatingRowBackgroundColors="YES" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" headerView="8Zb-aV-5rs" id="Gdj-Kb-Y6t">
                                                 <rect key="frame" x="0.0" y="0.0" width="229" height="94"/>
@@ -3808,7 +3883,7 @@
                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" heightSizable="YES"/>
                     <clipView key="contentView" drawsBackground="NO" copiesOnScroll="NO" id="ChU-hG-Nc0">
                         <rect key="frame" x="0.0" y="0.0" width="224" height="614"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <view id="3791">
                                 <rect key="frame" x="0.0" y="0.0" width="224" height="614"/>

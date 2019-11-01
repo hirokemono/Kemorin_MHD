@@ -145,7 +145,7 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 	colorcode4[1] =  (float) greenBG;
 	colorcode4[2] =  (float) blueBG;
 	colorcode4[3] =  (float) opacityBG;
-	kemoview_set_node_grp_color_code(colorcode4);
+	kemoview_set_mesh_color_code(NODE_GRP_FLAG, SURFSOLID_TOGGLE, colorcode4);
 	
 	[_kemoviewer UpdateImage];
 }

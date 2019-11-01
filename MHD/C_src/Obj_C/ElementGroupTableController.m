@@ -240,7 +240,7 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 	colorcode4[1] =  (float) greenBG;
 	colorcode4[2] =  (float) blueBG;
 	colorcode4[3] =  (float) opacityBG;
-	kemoview_set_ele_grp_color_code(SURFSOLID_TOGGLE, colorcode4);
+	kemoview_set_mesh_color_code(ELEM_GRP_FLAG, SURFSOLID_TOGGLE, colorcode4);
 	
 	[_kemoviewer UpdateImage];
 }
@@ -254,7 +254,7 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 	colorcode4[1] =  (float) greenBG;
 	colorcode4[2] =  (float) blueBG;
 	colorcode4[3] =  (float) opacityBG;
-	kemoview_set_ele_grp_color_code(SURFGRID_TOGGLE, colorcode4);
+	kemoview_set_mesh_color_code(ELEM_GRP_FLAG, SURFGRID_TOGGLE, colorcode4);
 	
 	[_kemoviewer UpdateImage];
 }
@@ -268,7 +268,7 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 	colorcode4[1] =  (float) greenBG;
 	colorcode4[2] =  (float) blueBG;
 	colorcode4[3] =  (float) opacityBG;
-	kemoview_set_ele_grp_color_code(SURFNOD_TOGGLE, colorcode4);
+	kemoview_set_mesh_color_code(ELEM_GRP_FLAG, SURFNOD_TOGGLE, colorcode4);
 	
 	[_kemoviewer UpdateImage];
 }

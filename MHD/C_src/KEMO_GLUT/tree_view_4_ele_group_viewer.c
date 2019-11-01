@@ -150,9 +150,9 @@ static void ele_grp_node_colormode_CB(GtkComboBox *combobox_sfcolor, gpointer us
 static void set_ele_grp_opacity_CB(GtkWidget *entry, gpointer user_data)
 {
 	float colorcode4[4];
-	kemoview_get_ele_grp_color_code(SURFSOLID_TOGGLE, colorcode4);
+	kemoview_get_mesh_color_code(ELEM_GRP_FLAG, ELEM_GRP_FLAG, SURFSOLID_TOGGLE, colorcode4);
 	colorcode4[3] = (float) gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
-	kemoview_set_ele_grp_color_code(SURFSOLID_TOGGLE, colorcode4);
+	kemoview_set_mesh_color_code(ELEM_GRP_FLAG, SURFSOLID_TOGGLE, colorcode4);
 	
 	draw_full();
 	return;
@@ -162,9 +162,9 @@ static void set_single_ele_grp_patch_color_CB(GtkButton *button, gpointer user_d
 	float colorcode4[4];
 	GtkWindow *parent = GTK_WINDOW(user_data);
 	
-	kemoview_get_ele_grp_color_code(SURFSOLID_TOGGLE, colorcode4);
+	kemoview_get_mesh_color_code(ELEM_GRP_FLAG, ELEM_GRP_FLAG, SURFSOLID_TOGGLE, colorcode4);
 	int iflag_set = kemoview_gtk_colorsel_CB(parent, colorcode4);
-	if(iflag_set > 0) {kemoview_set_ele_grp_color_code(SURFSOLID_TOGGLE, colorcode4);};
+	if(iflag_set > 0) {kemoview_set_mesh_color_code(ELEM_GRP_FLAG, SURFSOLID_TOGGLE, colorcode4);};
 	
 	draw_full();
 	return;
@@ -174,9 +174,9 @@ static void set_single_ele_grp_grids_color_CB(GtkButton *button, gpointer user_d
 	float colorcode4[4];
 	GtkWindow *parent = GTK_WINDOW(user_data);
 	
-	kemoview_get_ele_grp_color_code(SURFGRID_TOGGLE, colorcode4);
+	kemoview_get_mesh_color_code(ELEM_GRP_FLAG, SURFGRID_TOGGLE, colorcode4);
 	int iflag_set = kemoview_gtk_colorsel_CB(parent, colorcode4);
-	if(iflag_set > 0) {kemoview_set_ele_grp_color_code(SURFGRID_TOGGLE, colorcode4);};
+	if(iflag_set > 0) {kemoview_set_mesh_color_code(ELEM_GRP_FLAG, SURFGRID_TOGGLE, colorcode4);};
 	
 	draw_full();
 	return;
@@ -186,9 +186,9 @@ static void set_single_ele_grp_nodes_color_CB(GtkButton *button, gpointer user_d
 	float colorcode4[4];
 	GtkWindow *parent = GTK_WINDOW(user_data);
 	
-	kemoview_get_ele_grp_color_code(SURFNOD_TOGGLE, colorcode4);
+	kemoview_get_mesh_color_code(ELEM_GRP_FLAG, SURFNOD_TOGGLE, colorcode4);
 	int iflag_set = kemoview_gtk_colorsel_CB(parent, colorcode4);
-	if(iflag_set > 0) {kemoview_set_ele_grp_color_code(SURFNOD_TOGGLE, colorcode4);};
+	if(iflag_set > 0) {kemoview_set_mesh_color_code(ELEM_GRP_FLAG, SURFNOD_TOGGLE, colorcode4);};
 	
 	draw_full();
 	return;
@@ -442,7 +442,7 @@ void add_ele_group_draw_box(struct ci3_clist_view *ele_grp_vws,
 				G_CALLBACK(ele_grp_node_colormode_CB), (gpointer) window_mesh);
 	
 	
-	kemoview_get_ele_grp_color_code(SURFSOLID_TOGGLE, color4);
+	kemoview_get_mesh_color_code(ELEM_GRP_FLAG, SURFSOLID_TOGGLE, color4);
 	set_color_to_GTK(color4, &gcolor);
 	sprintf(current_opacity_text, "    %f    ", color4[3]);
 	adj_opacity = gtk_adjustment_new(color4[3], 0.0, 1.0, 0.01, 0.01, 0.0);
@@ -454,13 +454,13 @@ void add_ele_group_draw_box(struct ci3_clist_view *ele_grp_vws,
     g_signal_connect(G_OBJECT(button_patch_color), "clicked", 
                      G_CALLBACK(set_single_ele_grp_patch_color_CB), (gpointer) window_mesh);
 	
-	kemoview_get_ele_grp_color_code(SURFGRID_TOGGLE, color4);
+	kemoview_get_mesh_color_code(ELEM_GRP_FLAG, SURFGRID_TOGGLE, color4);
 	set_color_to_GTK(color4, &gcolor);
 	button_grid_color = gtk_color_button_new_with_rgba(&gcolor);
     g_signal_connect(G_OBJECT(button_grid_color), "clicked", 
 				G_CALLBACK(set_single_ele_grp_grids_color_CB), (gpointer) window_mesh);
 	
-	kemoview_get_ele_grp_color_code(SURFNOD_TOGGLE, color4);
+	kemoview_get_mesh_color_code(ELEM_GRP_FLAG, SURFNOD_TOGGLE, color4);
 	set_color_to_GTK(color4, &gcolor);
 	button_node_color = gtk_color_button_new_with_rgba(&gcolor);
     g_signal_connect(G_OBJECT(button_node_color), "clicked", 

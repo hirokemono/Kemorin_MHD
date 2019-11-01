@@ -58,9 +58,9 @@ static void set_single_nod_grp_nodes_color_CB(GtkButton *button, gpointer user_d
 	float colorcode4[4];
 	GtkWindow *parent = GTK_WINDOW(user_data);
 	
-	kemoview_get_node_grp_color_code(colorcode4);
+	kemoview_get_mesh_color_code(NODE_GRP_FLAG, SURFSOLID_TOGGLE, colorcode4);
 	int iflag_set = kemoview_gtk_colorsel_CB(parent, colorcode4);
-	if(iflag_set > 0) {kemoview_set_node_grp_color_code(colorcode4);};
+	if(iflag_set > 0) {kemoview_set_mesh_color_code(NODE_GRP_FLAG, SURFSOLID_TOGGLE, colorcode4);};
 	return;
 };
 
@@ -204,7 +204,7 @@ void add_nod_group_draw_box(struct ci_clist_view *nod_grp_vws,
 	g_signal_connect(G_OBJECT(combobox_node_color), "changed", 
 				G_CALLBACK(nod_grp_node_colormode_CB), (gpointer) window_mesh);
 	
-	kemoview_get_node_grp_color_code(color4);
+	kemoview_get_mesh_color_code(NODE_GRP_FLAG, SURFSOLID_TOGGLE, color4);
 	set_color_to_GTK(color4, &gcolor);
 	button_node_color = gtk_color_button_new_with_rgba(&gcolor);
     g_signal_connect(G_OBJECT(button_node_color), "clicked", 

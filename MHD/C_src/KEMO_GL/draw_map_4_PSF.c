@@ -22,7 +22,7 @@ void set_map_patch_VAO(int ist_psf, int ied_psf,
 void set_map_PSF_isolines_VAO(struct psf_data **psf_s, struct psf_menu_val **psf_m,
 			struct kemo_array_control *psf_a, struct view_element *view_s,
 			struct VAO_ids *psf_VAO, struct gl_strided_buffer *map_buf){
-	double radius = 1.5;
+	double ref_width = 1.5;
 	int ncorner = 6;
 	int i, iflag;
 	int inum_patch;
@@ -35,7 +35,6 @@ void set_map_PSF_isolines_VAO(struct psf_data **psf_s, struct psf_menu_val **psf
 	};
 	psf_VAO->npoint_draw = ITHREE * num_patch;
 	if(psf_VAO->npoint_draw <= 0) return;
-	radius = set_tube_radius_by_view(view_s, radius);
 	set_buffer_address_4_patch(ITHREE*num_patch, map_buf);
 	resize_strided_buffer(map_buf->num_nod_buf, map_buf->ncomp_buf, map_buf);
 	
@@ -43,7 +42,10 @@ void set_map_PSF_isolines_VAO(struct psf_data **psf_s, struct psf_menu_val **psf
 	for(i=0; i<psf_a->nmax_loaded; i++){
 		iflag = psf_a->iflag_loaded[i] * (psf_m[i]->draw_psf_grid + psf_m[i]->draw_psf_zero);
 		if(iflag > 0){
-			inum_patch = set_map_PSF_isoline_to_buf(inum_patch, radius, ncorner, 
+			if(psf_m[i]->isoline_width <= 0.0){
+				psf_m[i]->isoline_width = set_tube_radius_by_view(view_s, ref_width);
+			};
+			inum_patch = set_map_PSF_isoline_to_buf(inum_patch, ncorner, 
 						psf_s[i], psf_m[i], map_buf);
 		};
 	};

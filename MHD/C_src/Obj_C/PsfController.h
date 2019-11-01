@@ -67,6 +67,8 @@
 	CGFloat PsfMinimumValue;
 	CGFloat PsfMaximumValue;
 	NSInteger IsolineNumber;
+	CGFloat IsolineWidth;
+	CGFloat IsolineDigit;
     CGFloat PSFOpacity;
     
     
@@ -119,6 +121,8 @@
 @property CGFloat PsfMinimumValue;
 @property CGFloat PsfMaximumValue;
 @property NSInteger IsolineNumber;
+@property CGFloat IsolineWidth;
+@property CGFloat IsolineDigit;
 @property CGFloat PSFOpacity;
 
 @property NSInteger PSFSelectedField;
@@ -186,6 +190,7 @@
 
 - (IBAction)SetPSFDisplayrange:(id)sender;
 - (IBAction)ShowIsolineNumber:(id)pSender;
+- (IBAction)SetIsolineWidth:(id)pSender;
 
 - (IBAction)DrawPSFVectorAction:(id)sender;
 - (IBAction)SetReferenceVector:(id)pSender;

@@ -11,9 +11,23 @@
 
 static void fline_thickness_CB(GtkWidget *entry, gpointer data)
 {
+	double current_thick;
+	int current_digit;
 	double thick_in = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
-	if(thick_in > 0) kemoview_set_fline_thickness(thick_in);
-/*	printf("thick_in %d\n", thick_in);*/
+	if(thick_in <= 0) return;
+	
+	kemoview_get_fline_thickness(&current_thick, &current_digit);
+	kemoview_set_fline_thickness(thick_in, current_digit);
+
+	draw_full();
+}
+static void fline_digit_CB(GtkWidget *entry, gpointer data)
+{
+	double current_thick;
+	int current_digit;
+	int in_digit = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(entry));
+	kemoview_get_fline_thickness(&current_thick, &current_digit);
+	kemoview_set_fline_thickness(current_thick, in_digit);
 	
 	draw_full();
 }
@@ -60,7 +74,7 @@ static void psf_fline_colormode_CB(GtkComboBox *combobox_sfcolor, gpointer user_
 
 void add_gtk_fieldline_menu(GtkWidget *box_out){
 	GtkWidget *hbox_tube, *hbox_color;
-	GtkWidget *hbox_thickness, *hbox_org_thick;
+	GtkWidget *hbox_thickness;
 	GtkWidget *hbox_range, *hbox_org_range;
 	
 	GtkWidget *combobox_color;
@@ -76,7 +90,11 @@ void add_gtk_fieldline_menu(GtkWidget *box_out){
 	GtkWidget *spin_thick;
 	GtkAdjustment *adj_thick;
 	double current_thick;
-	char current_thick_text[30];
+	int int_thick;
+	
+	GtkWidget *spin_digit;
+	GtkAdjustment *adj_digit;
+	int current_digit;
 	
 	GtkWidget *spin_min, *spin_max;
 	GtkAdjustment *adj_min, *adj_max;
@@ -134,11 +152,16 @@ void add_gtk_fieldline_menu(GtkWidget *box_out){
 				G_CALLBACK(psf_fieldtube_switch_CB), NULL);
 	
 	
-	current_thick = kemoview_get_fline_thickness();
-	sprintf(current_thick_text, "    %e    ", current_thick);
-	adj_thick = gtk_adjustment_new(current_thick, 0.0, 1.0, 0.005, 0.005, 0.0);
-	spin_thick = gtk_spin_button_new(GTK_ADJUSTMENT(adj_thick), 0, 3);
+	kemoview_get_fline_thickness(&current_thick, &current_digit);
+	int_thick = (int) current_thick;
+
+	adj_thick = gtk_adjustment_new(int_thick, 0.0, 9.0, 1, 1, 0.0);
+	spin_thick = gtk_spin_button_new(GTK_ADJUSTMENT(adj_thick), 0, 0);
 	g_signal_connect(spin_thick, "value-changed", G_CALLBACK(fline_thickness_CB),NULL);
+	
+	adj_digit = gtk_adjustment_new(int_thick, -30, 30, 1, 1, 0.0);
+	spin_digit = gtk_spin_button_new(GTK_ADJUSTMENT(adj_digit), 0, 0);
+	g_signal_connect(spin_digit, "value-changed", G_CALLBACK(fline_digit_CB),NULL);
 	
 	delta = range_max - range_min;
 	sprintf(min_text, "    %e    ", range_min);
@@ -161,12 +184,11 @@ void add_gtk_fieldline_menu(GtkWidget *box_out){
 	gtk_box_pack_start(GTK_BOX(hbox_tube), gtk_label_new("Draw tube: "), FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_tube), switch_tube, FALSE, FALSE, 0);
 	
-	hbox_org_thick = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
-	gtk_box_pack_start(GTK_BOX(hbox_org_thick), gtk_label_new("Current thickness: "), TRUE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox_org_thick), gtk_label_new(current_thick_text), TRUE, TRUE, 0);
 	hbox_thickness = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
 	gtk_box_pack_start(GTK_BOX(hbox_thickness), gtk_label_new("Thickness: "), TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_thickness), spin_thick, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_thickness), gtk_label_new("X 10^"), TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_thickness), spin_digit, TRUE, TRUE, 0);
 	
 	hbox_org_range = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
 	gtk_box_pack_start(GTK_BOX(hbox_org_range), gtk_label_new(min_text), TRUE, TRUE, 0);
@@ -180,7 +202,6 @@ void add_gtk_fieldline_menu(GtkWidget *box_out){
 	add_fline_draw_component_box(box_out);
 	gtk_box_pack_start(GTK_BOX(box_out), hbox_color, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(box_out), hbox_tube, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(box_out), hbox_org_thick, TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(box_out), hbox_thickness, TRUE, TRUE, 0);
 	
 	gtk_box_pack_start(GTK_BOX(box_out), gtk_label_new("Range"), TRUE, TRUE, 0);

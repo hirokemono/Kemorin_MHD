@@ -28,4 +28,10 @@ void dealloc_kemoview_mesh(struct kemoview_mesh *kemo_mesh);
 
 void reset_draw_mesh(struct kemoview_mesh *kemo_mesh);
 void close_mesh_view(struct kemoview_mesh *kemo_mesh);
+
+void set_mesh_color_code(int iflag_group, int selected, float color_code4[4],
+						 struct kemoview_mesh *kemo_mesh);
+void get_mesh_color_code(struct kemoview_mesh *kemo_mesh, 
+						 int iflag_group, int selected, float color_code4[4]);
+
 #endif

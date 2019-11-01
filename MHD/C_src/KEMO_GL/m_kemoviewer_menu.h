@@ -32,6 +32,11 @@
 #define SURFSOLID_TOGGLE  2
 #define SURFGRID_TOGGLE   3
 
+#define DOMAIN_FLAG     0
+#define NODE_GRP_FLAG   1
+#define ELEM_GRP_FLAG   2
+#define SURF_GRP_FLAG   3
+
 #define ISET_FLINE_TYPE   11
 #define ISET_FLINE_THICK  200
 #define FLINE_OFF         50

@@ -23,6 +23,8 @@
 @synthesize PsfMinimumValue;
 @synthesize PsfMaximumValue;
 @synthesize IsolineNumber;
+@synthesize IsolineWidth;
+@synthesize IsolineDigit;
 @synthesize PSFOpacity;
 
 @synthesize currentPSFID;
@@ -77,6 +79,8 @@
 	PsfIsolineColor =    [NSNumber alloc];
 	PsfIsolineNumber =   [NSNumber alloc];
 	
+	self.IsolineWidth = 1.0;
+	self.IsolineDigit = -3;
 	self.IsolineNumber = 20;
 	self.PSFOpacity = 1.0;
 	self.psfMoreOpenFlag = 0;
@@ -162,6 +166,9 @@
 }
 
 - (void) UpdateCurrentPsfMenu{
+	double current_value;
+	int i_digit;
+	
 	self.PSFSelectedField =     kemoview_get_PSF_field_id();
 	self.PSFSelectedComponent = kemoview_get_PSF_component_id();
     
@@ -176,6 +183,10 @@
 	self.PsfMinimumValue =   kemoview_get_PSF_min_data(iplotted);
 	self.PsfMaximumValue =   kemoview_get_PSF_max_data(iplotted);
 	self.IsolineNumber =     kemoview_get_PSF_num_isoline();
+
+	kemoview_get_PSF_isoline_width(&current_value, &i_digit);
+	self.IsolineWidth =      (CGFloat) current_value;
+	self.IsolineDigit =      (CGFloat) i_digit;
 	self.PSFOpacity =        kemoview_get_PSF_max_opacity();
 	
 	self.DrawPSFVectorFlag = kemoview_get_PSF_draw_flags(PSFVECT_TOGGLE);
@@ -224,6 +235,10 @@
      self.PsfMinimumValue =   kemoview_get_PSF_min_data(iplotted);
      self.PsfMaximumValue =   kemoview_get_PSF_max_data(iplotted);
      self.IsolineNumber =     kemoview_get_PSF_num_isoline();
+
+	 kemoview_get_PSF_isoline_width(&current_value, &i_digit);
+	 self.IsolineWidth =      (CGFloat) current_value;
+	 self.IsolineDigit =      (CGFloat) i_digit;
      self.PSFOpacity =        kemoview_get_PSF_max_opacity();
      
      self.DrawPSFVectorFlag = kemoview_get_PSF_draw_flags(PSFVECT_TOGGLE);
@@ -557,12 +572,14 @@
 - (IBAction)PsfLineSwitchAction:(id)sender;
 {
 	self.PSFIsolineSwitch = kemoview_select_PSF_draw_switch(PSFGRID_TOGGLE);
+	[self UpdateCurrentPsfMenu];
 	[_kemoviewer UpdateImage];
 }
 
 - (IBAction)PsfZeroLineSwitchAction:(id)sender;
 {
 	self.PSFZerolineSwitch = kemoview_select_PSF_draw_switch(ZEROGRID_TOGGLE);
+	[self UpdateCurrentPsfMenu];
 	[_kemoviewer UpdateImage];
 }
 
@@ -620,6 +637,12 @@
 - (IBAction) ShowIsolineNumber:(id)pSender {
 	kemoview_set_PSF_num_isoline((int) self.IsolineNumber);
     
+	[_kemoviewer UpdateImage];
+}
+
+- (IBAction) SetIsolineWidth:(id)pSender {
+	kemoview_set_PSF_isoline_width((double) self.IsolineWidth, (int) self.IsolineDigit);
+	
 	[_kemoviewer UpdateImage];
 }
 

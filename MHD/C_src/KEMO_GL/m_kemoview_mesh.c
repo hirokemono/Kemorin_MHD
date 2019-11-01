@@ -44,3 +44,31 @@ void close_mesh_view(struct kemoview_mesh *kemo_mesh){
 	return;
 }
 
+
+void set_mesh_color_code(int iflag_group, int selected, float color_code4[4],
+						 struct kemoview_mesh *kemo_mesh){
+	if(iflag_group == DOMAIN_FLAG){
+		set_domain_color_code(selected, color_code4, kemo_mesh->mesh_m);
+	}else if(iflag_group == ELEM_GRP_FLAG){
+		set_node_grp_color_code(color_code4, kemo_mesh->mesh_m);
+	}else if(iflag_group == ELEM_GRP_FLAG){
+		set_ele_grp_color_code(selected, color_code4, kemo_mesh->mesh_m);
+	}else if(iflag_group == SURF_GRP_FLAG){
+		set_surf_grp_color_code(selected, color_code4, kemo_mesh->mesh_m);
+	};
+};
+
+void get_mesh_color_code(struct kemoview_mesh *kemo_mesh, 
+						 int iflag_group, int selected, float color_code4[4]){
+	if(iflag_group == DOMAIN_FLAG){
+		send_domain_color_code(kemo_mesh->mesh_m, selected, color_code4);
+	}else if(iflag_group == ELEM_GRP_FLAG){
+		send_node_grp_color_code(kemo_mesh->mesh_m, color_code4);
+	}else if(iflag_group == ELEM_GRP_FLAG){
+		send_ele_grp_color_code(kemo_mesh->mesh_m, selected, color_code4);
+	}else if(iflag_group == SURF_GRP_FLAG){
+		send_surf_grp_color_code(kemo_mesh->mesh_m, selected, color_code4);
+	};
+};
+
+

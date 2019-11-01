@@ -160,10 +160,7 @@
 !    void kemoview_set_ele_grp_color_flag(int selected, int icolor);
 !    void kemoview_set_surf_grp_color_flag(int selected, int icolor);
 !    
-!    void kemoview_set_domain_color_code(int selected, GLfloat color_code4[4]);
-!    void kemoview_set_node_grp_color_code(GLfloat color_code4[4]);
-!    void kemoview_set_ele_grp_color_code(int selected, GLfloat color_code4[4]);
-!    void kemoview_set_surf_grp_color_code(int selected, GLfloat color_code4[4]);
+!    void kemoview_set_mesh_color_code(int iflag_group, int selected, float color_code4[4]);
 !    
 !    double kemoview_get_domain_opacity();
 !    double kemoview_get_ele_grp_opacity();
@@ -408,7 +405,7 @@
 !	int kemoview_get_fline_type();
 !	int kemoview_toggle_fline_type();
 !	
-!	void kemoview_set_fline_thickness(double thick);
+!	void kemoview_set_fline_thickness(double value, int i_digit);
 !	double kemoview_get_fline_thickness();
 !    
 !    double kemoview_get_fline_data_min(int i);

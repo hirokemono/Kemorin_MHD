@@ -272,6 +272,11 @@
 #define SURFSOLID_TOGGLE  2
 #define SURFGRID_TOGGLE   3
 
+#define DOMAIN_FLAG     0
+#define NODE_GRP_FLAG   1
+#define ELEM_GRP_FLAG   2
+#define SURF_GRP_FLAG   3
+
 #define PSFSOLID_TOGGLE      1
 #define PSFGRID_TOGGLE       2
 #define ZEROGRID_TOGGLE      3
@@ -530,15 +535,8 @@ extern "C" {
     void kemoview_set_surf_grp_color_flag(int selected, int icolor);
 	int kemoview_get_surf_grp_color_flag(int selected);
     
-    void kemoview_set_domain_color_code(int selected, float color_code4[4]);
-    void kemoview_set_node_grp_color_code(float color_code4[4]);
-    void kemoview_set_ele_grp_color_code(int selected, float color_code4[4]);
-    void kemoview_set_surf_grp_color_code(int selected, float color_code4[4]);
-    
-	void kemoview_get_domain_color_code(int selected, float color_code4[4]);
-	void kemoview_get_node_grp_color_code(float color_code4[4]);
-	void kemoview_get_ele_grp_color_code(int selected, float color_code4[4]);
-	void kemoview_get_surf_grp_color_code(int selected, float color_code4[4]);
+	void kemoview_set_mesh_color_code(int iflag_group, int selected, float color_code4[4]);
+	void kemoview_get_mesh_color_code(int iflag_group, int selected, float color_code4[4]);
 	
     double kemoview_get_domain_opacity(void);
     double kemoview_get_ele_grp_opacity(void);
@@ -714,7 +712,7 @@ extern "C" {
 	void kemoview_set_PSF_patch_color_mode(int iflag);
     void kemoview_set_PSF_isoline_color_mode(int iflag);
     void kemoview_set_PSF_num_isoline(int nlline);
-	void kemoview_set_PSF_isoline_width(double width);
+	void kemoview_set_PSF_isoline_width(double value, int i_digit);
     void kemoview_set_PSF_vector_increment(int increment);
     void kemoview_set_PSF_vector_scale(double scale);
     void kemoview_set_PSF_vector_thickness(double size);
@@ -722,7 +720,7 @@ extern "C" {
     int kemoview_get_PSF_patch_color_mode(void);
     int kemoview_get_PSF_isoline_color_mode(void);
     int kemoview_get_PSF_num_isoline(void);
-	double kemoview_get_PSF_isoline_width(void);
+	void kemoview_get_PSF_isoline_width(double *value, int *i_digit);
     int kemoview_get_PSF_vector_color_mode(void);
     int kemoview_get_PSF_vector_increment(void);
     double kemoview_get_PSF_vector_scale(void);
@@ -792,8 +790,8 @@ extern "C" {
 	int kemoview_get_fline_type(void);
 	int kemoview_toggle_fline_type(void);
 	
-	void kemoview_set_fline_thickness(double thick);
-	double kemoview_get_fline_thickness(void);
+	void kemoview_set_fline_thickness(double value, int i_digit);
+	void kemoview_get_fline_thickness(double *value, int *i_digit);
     
     double kemoview_get_fline_data_min(int i);
     double kemoview_get_fline_data_max(int i);
