@@ -66,22 +66,6 @@ void init_fline_parameters(struct fline_menu_val *fline_m){
 	return;
 }
 
-
-void set_draw_flag_for_all(int iflag, int ngrp, int *iflag_draw){
-	int i;
-	for (i=0; i<ngrp; i++){iflag_draw[i] = iflag;};
-	return;
-}
-
-void select_draw_flag_toggle(int selected, int ngrp, int *iflag_draw){
-	if(selected == ngrp+1){set_draw_flag_for_all(IZERO, ngrp, iflag_draw);}
-	else if(selected == ngrp){set_draw_flag_for_all(IONE, ngrp, iflag_draw);}
-	else {iflag_draw[selected] = toggle_value_c(iflag_draw[selected]);};
-	return;
-}
-
-
-
 void set_fline_color_field(int selected, struct psf_data *fline_s,
 			struct fline_menu_val *fline_m){
 	fline_m->if_draw_fline = selected;

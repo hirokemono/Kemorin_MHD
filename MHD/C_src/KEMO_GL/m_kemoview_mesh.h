@@ -29,9 +29,24 @@ void dealloc_kemoview_mesh(struct kemoview_mesh *kemo_mesh);
 void reset_draw_mesh(struct kemoview_mesh *kemo_mesh);
 void close_mesh_view(struct kemoview_mesh *kemo_mesh);
 
+void set_draw_mesh_flag(int iflag_group, int selected, int igrp, int iflag, 
+					   struct kemoview_mesh *kemo_mesh);
+void toggle_draw_mesh_flag(int iflag_group, int selected, int igrp, 
+						   struct kemoview_mesh *kemo_mesh);
+int get_draw_mesh_flag(struct kemoview_mesh *kemo_mesh, 
+						int iflag_group, int selected, int igrp);
+
+void set_mesh_color_flag(int iflag_group, int selected, int icolor,
+						 struct kemoview_mesh *kemo_mesh);
+int get_mesh_color_flag(int iflag_group, int selected, 
+						struct kemoview_mesh *kemo_mesh);
+
 void set_mesh_color_code(int iflag_group, int selected, float color_code4[4],
 						 struct kemoview_mesh *kemo_mesh);
 void get_mesh_color_code(struct kemoview_mesh *kemo_mesh, 
 						 int iflag_group, int selected, float color_code4[4]);
+
+void set_mesh_opacity(int iflag_group, double opacity_in, struct kemoview_mesh *kemo_mesh);
+double get_mesh_opacity(struct kemoview_mesh *kemo_mesh, int iflag_group);
 
 #endif

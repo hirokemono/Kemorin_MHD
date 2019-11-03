@@ -5,6 +5,20 @@
 #include "m_kemoview_mesh_menu.h"
 
 
+static void set_draw_flag_for_all(int iflag, int ngrp, int *iflag_draw){
+	int i;
+	for (i=0; i<ngrp; i++){iflag_draw[i] = iflag;};
+	return;
+}
+
+static void select_draw_flag_toggle(int igrp, int ngrp, int *iflag_draw){
+	if(igrp == ngrp+1){set_draw_flag_for_all(IZERO, ngrp, iflag_draw);}
+	else if(igrp == ngrp){set_draw_flag_for_all(IONE, ngrp, iflag_draw);}
+	else {iflag_draw[igrp] = toggle_value_c(iflag_draw[igrp]);};
+	return;
+}
+
+
 void alloc_draw_mesh_flags(struct viewer_mesh *mesh_s, 
 			struct mesh_menu_val *mesh_m){
 	int i;
@@ -114,71 +128,254 @@ void set_node_diamater(double diam, struct mesh_menu_val *mesh_m)  {mesh_m->node
 void set_domain_distance(double dist, struct mesh_menu_val *mesh_m){mesh_m->dist_domains = dist;};
 
 
-void select_domain_node_color(int selected, struct mesh_menu_val *mesh_m){
-	mesh_m->domain_node_color = selected;
+
+
+void set_polygon_mode(int iflag, struct mesh_menu_val *mesh_m){mesh_m->polygon_mode = iflag;};
+void set_axis_flag(int iflag, struct mesh_menu_val *mesh_m){mesh_m->iflag_draw_axis = iflag;};
+void set_coastline_flag(int iflag, struct mesh_menu_val *mesh_m){mesh_m->iflag_draw_coast = iflag;};
+void set_sphere_grid_flag(int iflag, struct mesh_menu_val *mesh_m){mesh_m->iflag_draw_sph_grid = iflag;};
+
+int toggle_polygon_mode(struct mesh_menu_val *mesh_m){
+	return mesh_m->polygon_mode = toggle_value_c(mesh_m->polygon_mode);
+};
+int toggle_draw_axis(struct mesh_menu_val *mesh_m){
+	return mesh_m->iflag_draw_axis = toggle_value_c(mesh_m->iflag_draw_axis);
+};
+int toggle_coastline_flag(struct mesh_menu_val *mesh_m){
+	return mesh_m->iflag_draw_coast = toggle_value_c(mesh_m->iflag_draw_coast);
+};
+int toggle_sphere_grid_flag(struct mesh_menu_val *mesh_m){
+	return mesh_m->iflag_draw_sph_grid = toggle_value_c(mesh_m->iflag_draw_sph_grid);
+};
+
+
+
+void set_mesh_draw_flag(int num_pe, int selected, int iflag, struct mesh_menu_val *mesh_m){
+	if     (selected == SURFSOLID_TOGGLE){
+		mesh_m->draw_surface_solid = iflag;
+		set_draw_flag_for_all(mesh_m->draw_surface_solid, num_pe, mesh_m->draw_domains_solid);
+	}else if(selected == SURFGRID_TOGGLE){
+		mesh_m->draw_surface_grid = iflag;
+		set_draw_flag_for_all(mesh_m->draw_surface_grid, num_pe, mesh_m->draw_domains_grid);
+	}else if(selected == SURFNOD_TOGGLE){
+		mesh_m->draw_surface_nod = iflag;
+		set_draw_flag_for_all(mesh_m->draw_surface_nod, num_pe, mesh_m->draw_domains_nod);
+	};
 	return;
-}
-void select_domain_grid_color(int selected, struct mesh_menu_val *mesh_m){
-	mesh_m->domain_grid_color = selected;
+};
+
+void mesh_draw_toggle(int num_pe, int selected, struct mesh_menu_val *mesh_m){
+	if     (selected == SURFSOLID_TOGGLE){
+		mesh_m->draw_surface_solid = toggle_value_c(mesh_m->draw_surface_solid);
+		set_draw_flag_for_all(mesh_m->draw_surface_solid, num_pe, mesh_m->draw_domains_solid);
+	}else if(selected == SURFGRID_TOGGLE){
+		mesh_m->draw_surface_grid = toggle_value_c(mesh_m->draw_surface_grid);
+		set_draw_flag_for_all(mesh_m->draw_surface_grid, num_pe, mesh_m->draw_domains_grid);
+	}else if(selected == SURFNOD_TOGGLE){
+		mesh_m->draw_surface_nod = toggle_value_c(mesh_m->draw_surface_nod);
+		set_draw_flag_for_all(mesh_m->draw_surface_nod, num_pe, mesh_m->draw_domains_nod);
+	};
 	return;
-}
-void select_domain_patch_color(int selected, struct mesh_menu_val *mesh_m){
-	mesh_m->domain_surface_color = selected;
+};
+
+
+void set_draw_domain_flag(int selected, int igrp, int iflag, struct mesh_menu_val *mesh_m){
+	if(selected == SURFSOLID_TOGGLE){
+		mesh_m->draw_surface_solid = IONE;
+		mesh_m->draw_domains_solid[igrp] = iflag;
+	} else if(selected == SURFGRID_TOGGLE){
+		mesh_m->draw_surface_grid = IONE;
+		mesh_m->draw_domains_grid[igrp] = iflag;
+	} else if(selected == SURFNOD_TOGGLE){
+		mesh_m->draw_surface_nod = IONE;
+		mesh_m->draw_domains_nod[igrp] = iflag;
+	};
+	return;
+};
+
+void set_draw_nodgrp_flag(int igrp, int iflag, struct mesh_menu_val *mesh_m){
+	mesh_m->draw_nodgrp_nod[igrp] = iflag;
+	return;
+};
+
+void set_draw_elegrp_flag(int selected, int igrp, int iflag, struct mesh_menu_val *mesh_m){
+	if(selected == SURFSOLID_TOGGLE){
+		mesh_m->draw_elegrp_solid[igrp] = iflag;
+	} else if(selected == SURFGRID_TOGGLE){
+		mesh_m->draw_elegrp_grid[igrp] = iflag;
+	} else if(selected == SURFNOD_TOGGLE){
+		mesh_m->draw_elegrp_nod[igrp] = iflag;
+	};
+	return;
+};
+
+void set_draw_surfgrp_flag(int selected, int igrp, int iflag, struct mesh_menu_val *mesh_m){
+	if(selected == SURFSOLID_TOGGLE){
+		mesh_m->draw_surfgrp_solid[igrp] = iflag;
+	} else if(selected == SURFGRID_TOGGLE){
+		mesh_m->draw_surfgrp_grid[igrp] = iflag;
+	} else if(selected == SURFNOD_TOGGLE){
+		mesh_m->draw_surfgrp_nod[igrp] = iflag;
+	};
+	return;
+};
+
+void toggle_draw_domain_flag(int selected, int igrp, int ngrp, struct mesh_menu_val *mesh_m){
+	if(selected == SURFSOLID_TOGGLE){
+		select_draw_flag_toggle(igrp, ngrp, mesh_m->draw_domains_solid);
+	} else if(selected == SURFGRID_TOGGLE){
+		select_draw_flag_toggle(igrp, ngrp, mesh_m->draw_domains_grid);
+	} else if(selected == SURFNOD_TOGGLE){
+		select_draw_flag_toggle(igrp, ngrp, mesh_m->draw_domains_nod);
+	};
+	return;
+};
+
+void toggle_draw_nodgrp_flag(int igrp, int ngrp, struct mesh_menu_val *mesh_m){
+	select_draw_flag_toggle(igrp, ngrp, mesh_m->draw_nodgrp_nod);
+	return;
+};
+
+void toggle_draw_elegrp_flag(int selected, int igrp, int ngrp, struct mesh_menu_val *mesh_m){
+	if(selected == SURFSOLID_TOGGLE){
+		select_draw_flag_toggle(igrp, ngrp, mesh_m->draw_elegrp_solid);
+	} else if(selected == SURFGRID_TOGGLE){
+		select_draw_flag_toggle(igrp, ngrp, mesh_m->draw_elegrp_grid);
+	} else if(selected == SURFNOD_TOGGLE){
+		select_draw_flag_toggle(igrp, ngrp, mesh_m->draw_elegrp_nod);
+	};
+	return;
+};
+
+void toggle_draw_surfgrp_flag(int selected, int igrp, int ngrp, struct mesh_menu_val *mesh_m){
+	if(selected == SURFSOLID_TOGGLE){
+		select_draw_flag_toggle(igrp, ngrp, mesh_m->draw_surfgrp_solid);
+	} else if(selected == SURFGRID_TOGGLE){
+		select_draw_flag_toggle(igrp, ngrp, mesh_m->draw_surfgrp_grid);
+	} else if(selected == SURFNOD_TOGGLE){
+		select_draw_flag_toggle(igrp, ngrp, mesh_m->draw_surfgrp_nod);
+	};
 	return;
 }
 
-int get_domain_node_color_mode(struct mesh_menu_val *mesh_m){return mesh_m->domain_node_color;};
-int get_domain_grid_color_mode(struct mesh_menu_val *mesh_m){return mesh_m->domain_grid_color;};
-int get_domain_patch_color_mode(struct mesh_menu_val *mesh_m){return mesh_m->domain_surface_color;};
+int get_draw_domain_flag(struct mesh_menu_val *mesh_m, int selected, int igrp){
+	int iflag = 0;
+	if(selected == SURFSOLID_TOGGLE){
+		iflag = mesh_m->draw_domains_solid[igrp];
+	} else if(selected == SURFGRID_TOGGLE){
+		iflag = mesh_m->draw_domains_grid[igrp];
+	} else if(selected == SURFNOD_TOGGLE){
+		iflag = mesh_m->draw_domains_nod[igrp];
+	};
+	return iflag;
+};
 
-void select_ele_grp_node_color(int selected, struct mesh_menu_val *mesh_m){
-	mesh_m->ele_node_color = selected;
-	return;
-}
-void select_ele_grp_grid_color(int selected, struct mesh_menu_val *mesh_m){
-	mesh_m->ele_grid_color = selected;
-	return;
-}
-void select_ele_grp_patch_color(int selected, struct mesh_menu_val *mesh_m){
-	mesh_m->ele_surface_color = selected;
-	return;
-}
+int get_draw_nodgrp_flag(struct mesh_menu_val *mesh_m, int igrp){
+	return mesh_m->draw_nodgrp_nod[igrp];
+};
 
-int get_ele_grp_node_color(struct mesh_menu_val *mesh_m){return mesh_m->ele_node_color;}
-int get_ele_grp_grid_color(struct mesh_menu_val *mesh_m){return mesh_m->ele_grid_color;}
-int get_ele_grp_patch_color(struct mesh_menu_val *mesh_m){return mesh_m->ele_surface_color;}
+int get_draw_elegrp_flag(struct mesh_menu_val *mesh_m, int selected, int igrp){
+	int iflag = 0;
+	if(selected == SURFSOLID_TOGGLE){
+		iflag = mesh_m->draw_elegrp_solid[igrp];
+	} else if(selected == SURFGRID_TOGGLE){
+		iflag = mesh_m->draw_elegrp_grid[igrp];
+	} else if(selected == SURFNOD_TOGGLE){
+		iflag = mesh_m->draw_elegrp_nod[igrp];
+	};
+	return iflag;
+};
 
-void select_surf_grp_node_color(int selected, struct mesh_menu_val *mesh_m){
-	mesh_m->surf_node_color = selected;
-	return;
-}
-void select_surf_grp_grid_color(int selected, struct mesh_menu_val *mesh_m){
-	mesh_m->surf_grid_color = selected;
-	return;
-}
-void select_surf_grp_patch_color(int selected, struct mesh_menu_val *mesh_m){
-	mesh_m->surf_surface_color = selected;
-	return;
-}
-
-int get_surf_grp_node_color(struct mesh_menu_val *mesh_m){return mesh_m->surf_node_color;}
-int get_surf_grp_grid_color(struct mesh_menu_val *mesh_m){return mesh_m->surf_grid_color;}
-int get_surf_grp_patch_color(struct mesh_menu_val *mesh_m){return mesh_m->surf_surface_color;}
+int get_draw_surfgrp_flag(struct mesh_menu_val *mesh_m, int selected, int igrp){
+	int iflag = 0;
+	if(selected == SURFSOLID_TOGGLE){
+		iflag = mesh_m->draw_surfgrp_solid[igrp];
+	} else if(selected == SURFGRID_TOGGLE){
+		iflag = mesh_m->draw_surfgrp_grid[igrp];
+	} else if(selected == SURFNOD_TOGGLE){
+		iflag = mesh_m->draw_surfgrp_nod[igrp];
+	};
+	return iflag;
+};
 
 
-void select_node_grp_node_color(int selected, struct mesh_menu_val *mesh_m){
-	mesh_m->node_node_color = selected;
+void set_domain_color_flag(int icolor, int selected, struct mesh_menu_val *mesh_m){
+	if(selected == SURFSOLID_TOGGLE){
+		mesh_m->domain_node_color = icolor;
+	}else if(selected == SURFGRID_TOGGLE){
+		mesh_m->domain_grid_color = icolor;
+	}else if(selected == SURFNOD_TOGGLE){
+		mesh_m->domain_surface_color = icolor;
+	};
 	return;
 }
-int get_node_grp_node_color(struct mesh_menu_val *mesh_m){
+void set_node_grp_color_flag(int icolor, struct mesh_menu_val *mesh_m){
+	mesh_m->node_node_color = icolor;
+	return;
+};
+void set_ele_grp_color_flag(int selected, int icolor, struct mesh_menu_val *mesh_m){
+	if(selected == SURFSOLID_TOGGLE){
+		mesh_m->ele_surface_color = icolor;
+	}else if(selected == SURFGRID_TOGGLE){
+		mesh_m->ele_grid_color = icolor;
+	}else if(selected == SURFNOD_TOGGLE){
+		mesh_m->ele_node_color = icolor;
+	};
+    return;
+}
+void set_surf_grp_color_flag(int selected, int icolor, struct mesh_menu_val *mesh_m){
+	if(selected == SURFSOLID_TOGGLE){
+		mesh_m->surf_surface_color = icolor;
+	}else if(selected == SURFGRID_TOGGLE){
+		mesh_m->surf_grid_color = icolor;
+	}else if(selected == SURFNOD_TOGGLE){
+		mesh_m->surf_node_color = icolor;
+	};
+    return;
+}
+
+int get_domain_color_flag(int selected, struct mesh_menu_val *mesh_m){
+	int icolor = 0;
+	if(selected == SURFSOLID_TOGGLE){
+		icolor = mesh_m->domain_node_color;
+	}else if(selected == SURFGRID_TOGGLE){
+		icolor = mesh_m->domain_grid_color;
+	}else if(selected == SURFNOD_TOGGLE){
+		icolor =  mesh_m->domain_surface_color;
+	};
+	return icolor;
+}
+int get_node_grp_color_flag(struct mesh_menu_val *mesh_m){
 	return mesh_m->node_node_color;
 };
+int get_ele_grp_color_flag(int selected, struct mesh_menu_val *mesh_m){
+	int icolor = 0;
+	if(selected == SURFSOLID_TOGGLE){
+		icolor = mesh_m->ele_surface_color;
+	}else if(selected == SURFGRID_TOGGLE){
+		icolor = mesh_m->ele_grid_color;
+	}else if(selected == SURFNOD_TOGGLE){
+		icolor = mesh_m->ele_node_color;
+	};
+    return icolor;
+}
+int get_surf_grp_color_flag(int selected, struct mesh_menu_val *mesh_m){
+	int icolor = 0;
+	if(selected == SURFSOLID_TOGGLE){
+		icolor = mesh_m->surf_surface_color;
+	}else if(selected == SURFGRID_TOGGLE){
+		icolor = mesh_m->surf_grid_color;
+	}else if(selected == SURFNOD_TOGGLE){
+		icolor = mesh_m->surf_node_color;
+	};
+    return icolor;
+}
 
 void set_domain_color_code(int selected, float color_code4[4],
 			struct mesh_menu_val *mesh_m){
     if(selected == SURFSOLID_TOGGLE){
         copy_rgba_color_c(color_code4, mesh_m->domain_surface_color_code);
-        kemoview_set_domain_opacity((double) color_code4[3]);
+        kemoview_set_mesh_opacity(DOMAIN_FLAG, (double) color_code4[3]);
     } else if(selected == SURFGRID_TOGGLE){
         copy_rgba_color_c(color_code4, mesh_m->domain_grid_color_code);
     } else if(selected == SURFNOD_TOGGLE){
@@ -195,7 +392,7 @@ void set_ele_grp_color_code(int selected, float color_code4[4],
 			struct mesh_menu_val *mesh_m){
     if(selected == SURFSOLID_TOGGLE){
         copy_rgba_color_c(color_code4, mesh_m->ele_surface_color_code);
-        kemoview_set_ele_grp_opacity((double) color_code4[3]);
+        kemoview_set_mesh_opacity(ELEM_GRP_FLAG, (double) color_code4[3]);
     } else if(selected == SURFGRID_TOGGLE){
         copy_rgba_color_c(color_code4, mesh_m->ele_grid_color_code);
     } else if(selected == SURFNOD_TOGGLE){
@@ -208,7 +405,7 @@ void set_surf_grp_color_code(int selected, float color_code4[4],
 			struct mesh_menu_val *mesh_m){
     if(selected == SURFSOLID_TOGGLE){
         copy_rgba_color_c(color_code4, mesh_m->surf_surface_color_code);
-        kemoview_set_surf_grp_opacity((double) color_code4[3]);
+        kemoview_set_mesh_opacity(SURF_GRP_FLAG, (double) color_code4[3]);
     } else if(selected == SURFGRID_TOGGLE){
         copy_rgba_color_c(color_code4, mesh_m->surf_grid_color_code);
     } else if(selected == SURFNOD_TOGGLE){
@@ -257,57 +454,3 @@ void send_surf_grp_color_code(struct mesh_menu_val *mesh_m, int selected,
     return;
 }
 
-
-void set_polygon_mode(int iflag, struct mesh_menu_val *mesh_m){mesh_m->polygon_mode = iflag;};
-void set_axis_flag(int iflag, struct mesh_menu_val *mesh_m){mesh_m->iflag_draw_axis = iflag;};
-void set_coastline_flag(int iflag, struct mesh_menu_val *mesh_m){mesh_m->iflag_draw_coast = iflag;};
-void set_sphere_grid_flag(int iflag, struct mesh_menu_val *mesh_m){mesh_m->iflag_draw_sph_grid = iflag;};
-
-int toggle_polygon_mode(struct mesh_menu_val *mesh_m){
-	return mesh_m->polygon_mode = toggle_value_c(mesh_m->polygon_mode);
-};
-int toggle_draw_axis(struct mesh_menu_val *mesh_m){
-	return mesh_m->iflag_draw_axis = toggle_value_c(mesh_m->iflag_draw_axis);
-};
-int toggle_coastline_flag(struct mesh_menu_val *mesh_m){
-	return mesh_m->iflag_draw_coast = toggle_value_c(mesh_m->iflag_draw_coast);
-};
-int toggle_sphere_grid_flag(struct mesh_menu_val *mesh_m){
-	return mesh_m->iflag_draw_sph_grid = toggle_value_c(mesh_m->iflag_draw_sph_grid);
-};
-
-
-void set_draw_nodgrp_node(int iflag, int i, struct mesh_menu_val *mesh_m){mesh_m->draw_nodgrp_nod[i] = iflag;};
-
-void set_draw_elegrp_patch(int iflag, int i, struct mesh_menu_val *mesh_m){mesh_m->draw_elegrp_solid[i] = iflag;};
-void set_draw_elegrp_grid(int iflag, int i, struct mesh_menu_val *mesh_m) {mesh_m->draw_elegrp_grid[i] = iflag;};
-void set_draw_elegrp_node(int iflag, int i, struct mesh_menu_val *mesh_m)  {mesh_m->draw_elegrp_nod[i] = iflag;};
-
-void set_draw_surfgrp_patch(int iflag, int i, struct mesh_menu_val *mesh_m){mesh_m->draw_surfgrp_solid[i] = iflag;};
-void set_draw_surfgrp_grid(int iflag, int i, struct mesh_menu_val *mesh_m) {mesh_m->draw_surfgrp_grid[i] = iflag;};
-void set_draw_surfgrp_node(int iflag, int i, struct mesh_menu_val *mesh_m)  {mesh_m->draw_surfgrp_nod[i] = iflag;};
-
-
-int get_draw_nodgrp_node(int i, struct mesh_menu_val *mesh_m){
-	return mesh_m->draw_nodgrp_nod[i];
-};
-
-int get_draw_elegrp_patch(int i, struct mesh_menu_val *mesh_m){
-	return mesh_m->draw_elegrp_solid[i];
-};
-int get_draw_elegrp_grid(int i, struct mesh_menu_val *mesh_m) {
-	return mesh_m->draw_elegrp_grid[i];
-};
-int get_draw_elegrp_node(int i, struct mesh_menu_val *mesh_m)  {
-	return mesh_m->draw_elegrp_nod[i];
-};
-
-int get_draw_surfgrp_patch(int i, struct mesh_menu_val *mesh_m){
-	return mesh_m->draw_surfgrp_solid[i];
-};
-int get_draw_surfgrp_grid(int i, struct mesh_menu_val *mesh_m) {
-	return mesh_m->draw_surfgrp_grid[i];
-};
-int get_draw_surfgrp_node(int i, struct mesh_menu_val *mesh_m)  {
-	return mesh_m->draw_surfgrp_nod[i];
-};

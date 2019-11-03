@@ -164,24 +164,30 @@ void send_each_light_rtp(struct phong_lights *lights,
 	return;
 }
 
-void set_material_ambient(struct phong_lights *lights, float ambient_in){
-	lights->ambient = ambient_in;
-	return;
-};
-void set_material_diffuse(struct phong_lights *lights, float diffuse_in){
-	lights->diffuse = diffuse_in;
-	return;
-};
-void set_material_specular(struct phong_lights *lights, float specular_in){
-	lights->specular = specular_in;
-	return;
-};
-void set_material_shineness(struct phong_lights *lights, float shiness_in){
-	lights->shiness = shiness_in;
+void set_matrial_parameter(int itype, float value, struct phong_lights *lights){
+	if(itype == AMBIENT_FLAG){
+		lights->ambient = value;
+	}else if(itype == DIFFUSE_FLAG){
+		lights->diffuse = value;
+	}else if(itype == SPECULAR_FLAG){
+		lights->specular = value;
+	}else if(itype == SHINENESS_FLAG){
+		lights->shiness = value;
+	};
 	return;
 };
 
-float send_material_ambient(struct phong_lights *lights){return lights->ambient;};
-float send_material_diffuse(struct phong_lights *lights){return lights->diffuse;};
-float send_material_specular(struct phong_lights *lights){return lights->specular;};
-float send_material_shiness(struct phong_lights *lights){return lights->shiness;};
+float get_matrial_parameter(int itype, struct phong_lights *lights){
+	float value = 0.0;
+	if(itype == AMBIENT_FLAG){
+		value = lights->ambient;
+	}else if(itype == DIFFUSE_FLAG){
+		value = lights->diffuse;
+	}else if(itype == SPECULAR_FLAG){
+		value = lights->specular;
+	}else if(itype == SHINENESS_FLAG){
+		value = lights->shiness;
+	};
+	return value;
+};
+

@@ -65,7 +65,7 @@
 		[ElementGroupDisplayPatchFlags removeAllObjects];
 		for(i=0;i<NumElementGroup;i++){
 			[ElementGroupDisplayPatchFlags addObject:[[NSNumber alloc ] initWithInt:1] ];
-			kemoview_set_draw_elegrp_patch(IONE,i);
+			kemoview_set_draw_mesh_item(ELEM_GRP_FLAG, SURFSOLID_TOGGLE, i, IONE);
 		}
 	}
 	else if([selectedElementGroupObjectType isEqualToString:@"EleGrpGrid"]) {
@@ -73,14 +73,14 @@
 		[ElementGroupDisplayWireFlags removeAllObjects];
 		for(i=0;i<NumElementGroup;i++){
 			[ElementGroupDisplayWireFlags addObject:[[NSNumber alloc ] initWithInt:1] ];
-			kemoview_set_draw_elegrp_grid(IONE,i);
+			kemoview_set_draw_mesh_item(ELEM_GRP_FLAG, SURFGRID_TOGGLE, i, IONE);
 		}
 	}
 	else if([selectedElementGroupObjectType isEqualToString:@"EleGrpNode"]) {
 		[ElementGroupDisplayNodeFlags removeAllObjects];
 		for(i=0;i<NumElementGroup;i++){
 			[ElementGroupDisplayNodeFlags addObject:[[NSNumber alloc ] initWithInt:1] ];
-			kemoview_set_draw_elegrp_node(IONE,i);
+			kemoview_set_draw_mesh_item(ELEM_GRP_FLAG, SURFNOD_TOGGLE, i, IONE);
 		}
 	}
     
@@ -96,21 +96,21 @@
 		[ElementGroupDisplayPatchFlags removeAllObjects];
 		for(i=0;i<NumElementGroup;i++){
 			[ElementGroupDisplayPatchFlags addObject:[[NSNumber alloc ] initWithInt:0] ];
-			kemoview_set_draw_elegrp_patch(IZERO,i);
+			kemoview_set_draw_mesh_item(ELEM_GRP_FLAG, SURFSOLID_TOGGLE, i, IZERO);
 		}
 	}
 	else if([selectedElementGroupObjectType isEqualToString:@"EleGrpGrid"]) {
 		[ElementGroupDisplayWireFlags removeAllObjects];
 		for(i=0;i<NumElementGroup;i++){
 			[ElementGroupDisplayWireFlags addObject:[[NSNumber alloc ] initWithInt:0] ];
-			kemoview_set_draw_elegrp_grid(IZERO,i);
+			kemoview_set_draw_mesh_item(ELEM_GRP_FLAG, SURFGRID_TOGGLE, i, IZERO);
 		}
 	}
 	else if([selectedElementGroupObjectType isEqualToString:@"EleGrpNode"]) {
 		[ElementGroupDisplayNodeFlags removeAllObjects];
 		for(i=0;i<NumElementGroup;i++){
 			[ElementGroupDisplayNodeFlags addObject:[[NSNumber alloc ] initWithInt:0] ];
-			kemoview_set_draw_elegrp_node(IZERO,i);
+			kemoview_set_draw_mesh_item(ELEM_GRP_FLAG, SURFNOD_TOGGLE, i, IZERO);
 		}
 	}	
     [self UpdateElementTable];
@@ -155,15 +155,15 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 
     identifier = [tableColumn identifier];
     if([identifier isEqualToString:@"EleGrpPatch"]) {
-		kemoview_set_draw_elegrp_patch([object intValue],rowIndex);
+		kemoview_set_draw_mesh_item(ELEM_GRP_FLAG, SURFSOLID_TOGGLE, rowIndex, [object intValue]);
 		[ElementGroupDisplayPatchFlags replaceObjectAtIndex:rowIndex withObject:object];
     }
     if([identifier isEqualToString:@"EleGrpGrid"]) {
-		kemoview_set_draw_elegrp_grid([object intValue],rowIndex);
+		kemoview_set_draw_mesh_item(ELEM_GRP_FLAG, SURFGRID_TOGGLE, rowIndex, [object intValue]);
 		[ElementGroupDisplayWireFlags replaceObjectAtIndex:rowIndex withObject:object];
    }
     if([identifier isEqualToString:@"EleGrpNode"]) {
-		kemoview_set_draw_elegrp_node([object intValue],rowIndex);
+		kemoview_set_draw_mesh_item(ELEM_GRP_FLAG, SURFNOD_TOGGLE, rowIndex, [object intValue]);
 		[ElementGroupDisplayNodeFlags replaceObjectAtIndex:rowIndex withObject:object];
    }
 	[_kemoviewer UpdateImage];
@@ -194,11 +194,11 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
         kemoview_free_kvstring(groupname);
 
         [ElementGroupDisplayNames      addObject:stname];
-		iflag = kemoview_get_draw_elegrp_patch(i);
+		iflag = kemoview_get_draw_mesh_item(ELEM_GRP_FLAG, SURFSOLID_TOGGLE, i);
 		[ElementGroupDisplayPatchFlags addObject:[[NSNumber alloc ] initWithInt:iflag] ];
-		iflag = kemoview_get_draw_elegrp_grid(i);
+		iflag = kemoview_get_draw_mesh_item(ELEM_GRP_FLAG, SURFGRID_TOGGLE, i);
 		[ElementGroupDisplayWireFlags  addObject:[[NSNumber alloc ] initWithInt:iflag] ];
-		iflag = kemoview_get_draw_elegrp_node(i);
+		iflag = kemoview_get_draw_mesh_item(ELEM_GRP_FLAG, SURFNOD_TOGGLE, i);
 		[ElementGroupDisplayNodeFlags  addObject:[[NSNumber alloc ] initWithInt:iflag] ];
 		[stname release];
 	}
@@ -209,7 +209,7 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 - (IBAction)ChooseEleGrpPatchColorAction:(id)sender;
 {
 	NSInteger tag = [[_EleGrpPatchColorItem selectedCell] tag];
-	kemoview_set_ele_grp_color_flag(SURFSOLID_TOGGLE, tag);
+	kemoview_set_mesh_color_flag(ELEM_GRP_FLAG, SURFSOLID_TOGGLE, tag);
 
 	[_kemoviewer UpdateImage];
 }
@@ -217,7 +217,7 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 - (IBAction)ChooseEleGrpLineColorAction:(id)sender;
 {
 	NSInteger tag = [[_EleGrpLineColorItem selectedCell] tag];
-	kemoview_set_ele_grp_color_flag(SURFGRID_TOGGLE, tag);
+	kemoview_set_mesh_color_flag(ELEM_GRP_FLAG, SURFGRID_TOGGLE, tag);
 
 	[_kemoviewer UpdateImage];
 }
@@ -225,7 +225,7 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 - (IBAction)ChooseEleGrpNodeColorAction:(id)sender;
 {
 	NSInteger tag = [[_EleGrpNodeColorItem selectedCell] tag];
-	kemoview_set_ele_grp_color_flag(SURFNOD_TOGGLE, tag);
+	kemoview_set_mesh_color_flag(ELEM_GRP_FLAG, SURFNOD_TOGGLE, tag);
 
 	[_kemoviewer UpdateImage];
 }

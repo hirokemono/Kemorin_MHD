@@ -110,29 +110,45 @@ void set_num_of_color_loop(int icolor, struct mesh_menu_val *mesh_m);
 void set_node_diamater(double diam, struct mesh_menu_val *mesh_m);
 void set_domain_distance(double dist, struct mesh_menu_val *mesh_m);
 
-void select_domain_node_color(int selected, struct mesh_menu_val *mesh_m);
-void select_domain_grid_color(int selected, struct mesh_menu_val *mesh_m);
-void select_domain_patch_color(int selected, struct mesh_menu_val *mesh_m);
-int get_domain_node_color_mode(struct mesh_menu_val *mesh_m);
-int get_domain_grid_color_mode(struct mesh_menu_val *mesh_m);
-int get_domain_patch_color_mode(struct mesh_menu_val *mesh_m);
 
-void select_ele_grp_node_color(int selected, struct mesh_menu_val *mesh_m);
-void select_ele_grp_grid_color(int selected, struct mesh_menu_val *mesh_m);
-void select_ele_grp_patch_color(int selected, struct mesh_menu_val *mesh_m);
-int get_ele_grp_node_color(struct mesh_menu_val *mesh_m);
-int get_ele_grp_grid_color(struct mesh_menu_val *mesh_m);
-int get_ele_grp_patch_color(struct mesh_menu_val *mesh_m);
+void set_polygon_mode(int iflag, struct mesh_menu_val *mesh_m);
+void set_axis_flag(int iflag, struct mesh_menu_val *mesh_m);
+void set_coastline_flag(int iflag, struct mesh_menu_val *mesh_m);
+void set_sphere_grid_flag(int iflag, struct mesh_menu_val *mesh_m);
 
-void select_surf_grp_node_color(int selected, struct mesh_menu_val *mesh_m);
-void select_surf_grp_grid_color(int selected, struct mesh_menu_val *mesh_m);
-void select_surf_grp_patch_color(int selected, struct mesh_menu_val *mesh_m);
-int get_surf_grp_node_color(struct mesh_menu_val *mesh_m);
-int get_surf_grp_grid_color(struct mesh_menu_val *mesh_m);
-int get_surf_grp_patch_color(struct mesh_menu_val *mesh_m);
+int toggle_polygon_mode(struct mesh_menu_val *mesh_m);
+int toggle_draw_axis(struct mesh_menu_val *mesh_m);
+int toggle_coastline_flag(struct mesh_menu_val *mesh_m);
+int toggle_sphere_grid_flag(struct mesh_menu_val *mesh_m);
 
-void select_node_grp_node_color(int selected, struct mesh_menu_val *mesh_m);
-int get_node_grp_node_color(struct mesh_menu_val *mesh_m);
+void set_mesh_draw_flag(int num_pe, int selected, int iflag, struct mesh_menu_val *mesh_m);
+void mesh_draw_toggle(int num_pe, int selected, struct mesh_menu_val *mesh_m);
+
+void set_draw_domain_flag(int selected, int igrp, int iflag, struct mesh_menu_val *mesh_m);
+void set_draw_nodgrp_flag(int igrp, int iflag, struct mesh_menu_val *mesh_m);
+void set_draw_elegrp_flag(int selected, int igrp, int iflag, struct mesh_menu_val *mesh_m);
+void set_draw_surfgrp_flag(int selected, int igrp, int iflag, struct mesh_menu_val *mesh_m);
+
+void toggle_draw_domain_flag(int selected, int igrp, int ngrp, struct mesh_menu_val *mesh_m);
+void toggle_draw_nodgrp_flag(int igrp, int ngrp, struct mesh_menu_val *mesh_m);
+void toggle_draw_elegrp_flag(int selected, int igrp, int ngrp, struct mesh_menu_val *mesh_m);
+void toggle_draw_surfgrp_flag(int selected, int igrp, int ngrp, struct mesh_menu_val *mesh_m);
+
+int get_draw_domain_flag(struct mesh_menu_val *mesh_m, int selected, int igrp);
+int get_draw_nodgrp_flag(struct mesh_menu_val *mesh_m, int igrp);
+int get_draw_elegrp_flag(struct mesh_menu_val *mesh_m, int selected, int igrp);
+int get_draw_surfgrp_flag(struct mesh_menu_val *mesh_m, int selected, int igrp);
+
+
+void set_domain_color_flag(int selected, int icolor, struct mesh_menu_val *mesh_m);
+void set_node_grp_color_flag(int icolor, struct mesh_menu_val *mesh_m);
+void set_ele_grp_color_flag(int selected, int icolor, struct mesh_menu_val *mesh_m);
+void set_surf_grp_color_flag(int selected, int icolor, struct mesh_menu_val *mesh_m);
+
+int get_domain_color_flag(int selected, struct mesh_menu_val *mesh_m);
+int get_node_grp_color_flag(struct mesh_menu_val *mesh_m);
+int get_ele_grp_color_flag(int selected, struct mesh_menu_val *mesh_m);
+int get_surf_grp_color_flag(int selected, struct mesh_menu_val *mesh_m);
 
 void set_domain_color_code(int selected, float color_code4[4],
 			struct mesh_menu_val *mesh_m);
@@ -149,30 +165,4 @@ void send_ele_grp_color_code(struct mesh_menu_val *mesh_m, int selected,
 			float color_code4[4]);
 void send_surf_grp_color_code(struct mesh_menu_val *mesh_m, int selected,
 			float color_code4[4]);
-
-void set_polygon_mode(int iflag, struct mesh_menu_val *mesh_m);
-void set_axis_flag(int iflag, struct mesh_menu_val *mesh_m);
-void set_coastline_flag(int iflag, struct mesh_menu_val *mesh_m);
-void set_sphere_grid_flag(int iflag, struct mesh_menu_val *mesh_m);
-
-int toggle_polygon_mode(struct mesh_menu_val *mesh_m);
-int toggle_draw_axis(struct mesh_menu_val *mesh_m);
-int toggle_coastline_flag(struct mesh_menu_val *mesh_m);
-int toggle_sphere_grid_flag(struct mesh_menu_val *mesh_m);
-
-void set_draw_nodgrp_node(int iflag, int i, struct mesh_menu_val *mesh_m);
-void set_draw_elegrp_patch(int iflag, int i, struct mesh_menu_val *mesh_m);
-void set_draw_elegrp_grid(int iflag, int i, struct mesh_menu_val *mesh_m);
-void set_draw_elegrp_node(int iflag, int i, struct mesh_menu_val *mesh_m);
-void set_draw_surfgrp_patch(int iflag, int i, struct mesh_menu_val *mesh_m);
-void set_draw_surfgrp_grid(int iflag, int i, struct mesh_menu_val *mesh_m);
-void set_draw_surfgrp_node(int iflag, int i, struct mesh_menu_val *mesh_m);
-
-int get_draw_nodgrp_node(int i, struct mesh_menu_val *mesh_m);
-int get_draw_elegrp_patch(int i, struct mesh_menu_val *mesh_m);
-int get_draw_elegrp_grid(int i, struct mesh_menu_val *mesh_m);
-int get_draw_elegrp_node(int i, struct mesh_menu_val *mesh_m);
-int get_draw_surfgrp_patch(int i, struct mesh_menu_val *mesh_m);
-int get_draw_surfgrp_grid(int i, struct mesh_menu_val *mesh_m);
-int get_draw_surfgrp_node(int i, struct mesh_menu_val *mesh_m);
 #endif

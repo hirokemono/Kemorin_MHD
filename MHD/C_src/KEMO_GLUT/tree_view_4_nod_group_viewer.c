@@ -11,7 +11,7 @@ static void toggle_draw_node_group_CB(GtkTreeViewColumn *renderer,
 			gchar *path_str, gpointer user_data){
 	int index1_for_toggle;
 	int index_grp = toggle_draw_nod_grp_node_switch(path_str, user_data, &index1_for_toggle);
-    kemoview_set_draw_nodgrp_node(index1_for_toggle, index_grp);
+    kemoview_set_draw_mesh_item(NODE_GRP_FLAG, SURFSOLID_TOGGLE, index_grp, index1_for_toggle);
 	
 	draw_full();
 }
@@ -21,7 +21,7 @@ static void draw_all_nod_grp_nodes_CB(GtkButton *button, gpointer user_data)
 	int i;
 	int num = set_all_node_draw_flags(IONE, user_data);
 	for(i=0;i<num;i++){
-		kemoview_set_draw_nodgrp_node(IONE, i);
+		kemoview_set_draw_mesh_item(NODE_GRP_FLAG, SURFSOLID_TOGGLE, i, IONE);
 	};
 	
 	draw_full();
@@ -32,7 +32,7 @@ static void hide_all_nod_grp_nodes_CB(GtkButton *button, gpointer user_data)
 	int i;
 	int num = set_all_node_draw_flags(IZERO, user_data);
 	for(i=0;i<num;i++){
-		kemoview_set_draw_nodgrp_node(IZERO, i);
+		kemoview_set_draw_mesh_item(NODE_GRP_FLAG, SURFSOLID_TOGGLE, i, IZERO);
 	};
 	
 	draw_full();
@@ -44,9 +44,9 @@ static void nod_grp_node_colormode_CB(GtkComboBox *combobox_sfcolor, gpointer us
 	
 	if (index_mode == SINGLE_COLOR){
 //		kemoview_gtk_surfcolorsel(user_data);
-		kemoview_set_node_grp_color_flag(index_mode);
+		kemoview_set_mesh_color_flag(NODE_GRP_FLAG, SURFSOLID_TOGGLE, index_mode);
 	} else {
-		kemoview_set_node_grp_color_flag(index_mode);
+		kemoview_set_mesh_color_flag(NODE_GRP_FLAG, SURFSOLID_TOGGLE, index_mode);
 	};
 	
 	draw_full();
@@ -188,7 +188,7 @@ void add_nod_group_draw_box(struct ci_clist_view *nod_grp_vws,
 	
 	combobox_node_color = gtk_combo_box_new_with_model(child_model_node_color);
 	renderer_node_color = gtk_cell_renderer_text_new();
-	iflag_color = kemoview_get_node_grp_color_flag();
+	iflag_color = kemoview_get_mesh_color_flag(NODE_GRP_FLAG, SURFSOLID_TOGGLE);
 	if(iflag_color == GROUP_COLOR){
 		gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_node_color), 3);
 	} else 	if(iflag_color == DOMAIN_COLOR){

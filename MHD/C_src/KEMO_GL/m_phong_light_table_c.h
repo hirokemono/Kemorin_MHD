@@ -6,6 +6,7 @@
 #define M_PHONG_LIGHT_TABLE_C_
 
 #include <math.h>
+#include "kemoviewer.h"
 #include "m_gl_transfer_matrix.h"
 
 struct phong_lights{
@@ -36,15 +37,8 @@ int send_num_light_position(struct phong_lights *lights);
 void send_each_light_rtp(struct phong_lights *lights, 
 			int i_point, float *r, float *t, float *p);
 
-void set_material_ambient(struct phong_lights *lights, float ambient_in);
-void set_material_diffuse(struct phong_lights *lights, float diffuse_in);
-void set_material_specular(struct phong_lights *lights, float specular_in);
-void set_material_shineness(struct phong_lights *lights, float shiness_in);
-
-float send_material_ambient(struct phong_lights *lights);
-float send_material_diffuse(struct phong_lights *lights);
-float send_material_specular(struct phong_lights *lights);
-float send_material_shiness(struct phong_lights *lights);
+void set_matrial_parameter(int itype, float value, struct phong_lights *lights);
+float get_matrial_parameter(int itype, struct phong_lights *lights);
 
 #endif
 

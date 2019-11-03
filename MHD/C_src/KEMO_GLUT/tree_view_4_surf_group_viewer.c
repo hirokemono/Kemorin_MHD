@@ -11,7 +11,7 @@ static void toggle_draw_surf_grp_patch_CB(GtkTreeViewColumn *renderer,
 			gchar *path_str, gpointer user_data){
 	int index1_for_toggle;
 	int index_grp = toggle_draw_patch_switch(path_str, user_data, &index1_for_toggle);
-    kemoview_set_draw_surfgrp_patch(index1_for_toggle, index_grp);
+    kemoview_set_draw_mesh_item(SURF_GRP_FLAG, SURFSOLID_TOGGLE, index_grp, index1_for_toggle);
 	
 	draw_full();
 }
@@ -20,7 +20,7 @@ static void toggle_draw_surf_grp_grid_CB(GtkTreeViewColumn *renderer,
 			gchar *path_str, gpointer user_data){
 	int index2_for_toggle;
 	int index_grp = toggle_draw_grid_switch(path_str, user_data, &index2_for_toggle);
-    kemoview_set_draw_surfgrp_grid(index2_for_toggle, index_grp);
+    kemoview_set_draw_mesh_item(SURF_GRP_FLAG, SURFGRID_TOGGLE, index_grp, index2_for_toggle);
 	
 	draw_full();
 }
@@ -28,7 +28,7 @@ static void toggle_draw_surf_grp_grid_CB(GtkTreeViewColumn *renderer,
 static void toggle_draw_surf_grp_node_CB(GtkTreeViewColumn *renderer, gchar *path_str, gpointer user_data){
 	int index3_for_toggle;
 	int index_grp = toggle_draw_node_switch(path_str, user_data, &index3_for_toggle);
-    kemoview_set_draw_surfgrp_node(index3_for_toggle, index_grp);
+    kemoview_set_draw_mesh_item(SURF_GRP_FLAG, SURFNOD_TOGGLE, index_grp, index3_for_toggle);
 	
 	draw_full();
 }
@@ -39,7 +39,7 @@ static void draw_all_sf_grp_patch_CB(GtkButton *button, gpointer user_data)
 	int i;
 	int num = set_all_draw_flags(IONE, COLUMN_MESH_THIRD, user_data);
 	for(i=0;i<num;i++){
-		kemoview_set_draw_surfgrp_patch(IONE, i);
+		kemoview_set_draw_mesh_item(SURF_GRP_FLAG, SURFSOLID_TOGGLE, i, IONE);
 	};
 	
 	draw_full();
@@ -50,7 +50,7 @@ static void draw_all_sf_grp_grids_CB(GtkButton *button, gpointer user_data)
 	int i;
 	int num = set_all_draw_flags(IONE, COLUMN_MESH_FORTH, user_data);
 	for(i=0;i<num;i++){
-		kemoview_set_draw_surfgrp_grid(IONE, i);
+		kemoview_set_draw_mesh_item(SURF_GRP_FLAG, SURFGRID_TOGGLE, i, IONE);
 	};
 	
 	draw_full();
@@ -61,7 +61,7 @@ static void draw_all_sf_grp_nodes_CB(GtkButton *button, gpointer user_data)
 	int i;
 	int num = set_all_draw_flags(IONE, COLUMN_MESH_FIFTH, user_data);
 	for(i=0;i<num;i++){
-		kemoview_set_draw_surfgrp_node(IONE, i);
+		kemoview_set_draw_mesh_item(SURF_GRP_FLAG, SURFNOD_TOGGLE, i, IONE);
 	};
 	
 	draw_full();
@@ -72,7 +72,7 @@ static void hide_all_sf_grp_patch_CB(GtkButton *button, gpointer user_data)
 	int i;
 	int num = set_all_draw_flags(IZERO, COLUMN_MESH_THIRD, user_data);
 	for(i=0;i<num;i++){
-		kemoview_set_draw_surfgrp_patch(IZERO, i);
+		kemoview_set_draw_mesh_item(SURF_GRP_FLAG, SURFSOLID_TOGGLE, i, IZERO);
 	};
 	
 	draw_full();
@@ -83,7 +83,7 @@ static void hide_all_sf_grp_grids_CB(GtkButton *button, gpointer user_data)
 	int i;
 	int num = set_all_draw_flags(IONE, COLUMN_MESH_FORTH, user_data);
 	for(i=0;i<num;i++){
-		kemoview_set_draw_surfgrp_grid(IZERO, i);
+		kemoview_set_draw_mesh_item(SURF_GRP_FLAG, SURFGRID_TOGGLE, i, IZERO);
 	};
 	
 	draw_full();
@@ -94,7 +94,7 @@ static void hide_all_sf_grp_nodes_CB(GtkButton *button, gpointer user_data)
 	int i;
 	int num = set_all_draw_flags(IZERO, COLUMN_MESH_FIFTH, user_data);
 	for(i=0;i<num;i++){
-		kemoview_set_draw_surfgrp_node(IZERO, i);
+		kemoview_set_draw_mesh_item(SURF_GRP_FLAG, SURFNOD_TOGGLE, i, IZERO);
 	};
 	
 	draw_full();
@@ -107,9 +107,9 @@ static void surf_grp_patch_colormode_CB(GtkComboBox *combobox_sfcolor, gpointer 
 	
 	if (index_mode == SINGLE_COLOR){
 //		kemoview_gtk_surfcolorsel(user_data);
-		kemoview_set_surf_grp_color_flag(SURFSOLID_TOGGLE, index_mode);
+		kemoview_set_mesh_color_flag(SURF_GRP_FLAG, SURFSOLID_TOGGLE, index_mode);
 	} else {
-		kemoview_set_surf_grp_color_flag(SURFSOLID_TOGGLE, index_mode);
+		kemoview_set_mesh_color_flag(SURF_GRP_FLAG, SURFSOLID_TOGGLE, index_mode);
 	};
 	
 	draw_full();
@@ -122,9 +122,9 @@ static void surf_grp_grid_colormode_CB(GtkComboBox *combobox_sfcolor, gpointer u
 	
 	if (index_mode == SINGLE_COLOR){
 //		kemoview_gtk_surfcolorsel(user_data);
-		kemoview_set_surf_grp_color_flag(SURFGRID_TOGGLE, index_mode);
+		kemoview_set_mesh_color_flag(SURF_GRP_FLAG, SURFGRID_TOGGLE, index_mode);
 	} else {
-		kemoview_set_surf_grp_color_flag(SURFGRID_TOGGLE, index_mode);
+		kemoview_set_mesh_color_flag(SURF_GRP_FLAG, SURFGRID_TOGGLE, index_mode);
 	};
 	
 	draw_full();
@@ -137,9 +137,9 @@ static void surf_grp_node_colormode_CB(GtkComboBox *combobox_sfcolor, gpointer u
 	
 	if (index_mode == SINGLE_COLOR){
 //		kemoview_gtk_surfcolorsel(user_data);
-		kemoview_set_surf_grp_color_flag(SURFNOD_TOGGLE, index_mode);
+		kemoview_set_mesh_color_flag(SURF_GRP_FLAG, SURFNOD_TOGGLE, index_mode);
 	} else {
-		kemoview_set_surf_grp_color_flag(SURFNOD_TOGGLE, index_mode);
+		kemoview_set_mesh_color_flag(SURF_GRP_FLAG, SURFNOD_TOGGLE, index_mode);
 	};
 	
 	draw_full();
@@ -367,7 +367,7 @@ void add_surf_group_draw_box(struct ci3_clist_view *surf_grp_vws,
 	
 	combobox_patch_color = gtk_combo_box_new_with_model(child_model_patch_color);
 	renderer_patch_color = gtk_cell_renderer_text_new();
-	iflag_color = kemoview_get_surf_grp_color_flag(SURFSOLID_TOGGLE);
+	iflag_color = kemoview_get_mesh_color_flag(SURF_GRP_FLAG, SURFSOLID_TOGGLE);
 	if(iflag_color == GROUP_COLOR){
 		gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_patch_color), 3);
 	} else 	if(iflag_color == DOMAIN_COLOR){
@@ -395,7 +395,7 @@ void add_surf_group_draw_box(struct ci3_clist_view *surf_grp_vws,
 	
 	combobox_grid_color = gtk_combo_box_new_with_model(child_model_grid_color);
 	renderer_grid_color = gtk_cell_renderer_text_new();
-	iflag_color = kemoview_get_surf_grp_color_flag(SURFGRID_TOGGLE);
+	iflag_color = kemoview_get_mesh_color_flag(SURF_GRP_FLAG, SURFGRID_TOGGLE);
 	if(iflag_color == GROUP_COLOR){
 		gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_grid_color), 3);
 	} else 	if(iflag_color == DOMAIN_COLOR){
@@ -423,7 +423,7 @@ void add_surf_group_draw_box(struct ci3_clist_view *surf_grp_vws,
 	
 	combobox_node_color = gtk_combo_box_new_with_model(child_model_node_color);
 	renderer_node_color = gtk_cell_renderer_text_new();
-	iflag_color = kemoview_get_surf_grp_color_flag(SURFNOD_TOGGLE);
+	iflag_color = kemoview_get_mesh_color_flag(SURF_GRP_FLAG, SURFNOD_TOGGLE);
 	if(iflag_color == GROUP_COLOR){
 		gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_node_color), 3);
 	} else 	if(iflag_color == DOMAIN_COLOR){

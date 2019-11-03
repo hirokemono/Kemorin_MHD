@@ -151,62 +151,19 @@
 !    void kemoview_set_domain_distance(double dist);
 !    
 !    
-!    void kemoview_set_domain_opacity(double opacity_in);
-!    void kemoview_set_ele_grp_opacity(double opacity_in);
-!    void kemoview_set_surf_grp_opacity(double opacity_in);
-!    
-!    void kemoview_set_domain_color_flag(int selected, int icolor);
-!    void kemoview_set_node_grp_color_flag(int icolor);
-!    void kemoview_set_ele_grp_color_flag(int selected, int icolor);
-!    void kemoview_set_surf_grp_color_flag(int selected, int icolor);
-!    
+!    void kemoview_set_mesh_color_flag(int iflag_group, int selected, int icolor);
 !    void kemoview_set_mesh_color_code(int iflag_group, int selected, float color_code4[4]);
 !    
-!    double kemoview_get_domain_opacity();
-!    double kemoview_get_ele_grp_opacity();
-!    double kemoview_get_surf_grp_opacity();
+!    void kemoview_set_mesh_opacity(int iflag_group, double opacity_in);
+!    double kemoview_get_mesh_opacity(int iflag_group);
 !    
-!    
-!    int kemoview_get_draw_mesh_node();
-!    int kemoview_get_draw_mesh_grid();
-!    int kemoview_get_draw_mesh_patch();
 !    
 !    void kemoview_set_mesh_draw_flag(int selected, int iflag);
 !    void kemoview_mesh_draw_toggle(int selected);
 !    
-!    void kemoview_set_draw_domain_patch(int iflag, int i);
-!    void kemoview_set_draw_domain_grid(int iflag, int i);
-!    void kemoview_set_draw_domain_nod(int iflag, int i);
-!    
-!    void kemoview_set_draw_nodgrp_node(int iflag, int i);
-!    
-!    void kemoview_set_draw_elegrp_patch(int iflag, int i);
-!    void kemoview_set_draw_elegrp_grid(int iflag, int i);
-!    void kemoview_set_draw_elegrp_node(int iflag, int i);
-!	
-!    void kemoview_set_draw_surfgrp_patch(int iflag, int i);
-!    void kemoview_set_draw_surfgrp_grid(int iflag, int i);
-!    void kemoview_set_draw_surfgrp_node(int iflag, int i);
-!
-!    int kemoview_get_draw_nodgrp_node(int i);
-!    
-!    int kemoview_get_draw_elegrp_patch(int i);
-!    int kemoview_get_draw_elegrp_grid(int i);
-!    int kemoview_get_draw_elegrp_node(int i);
-!
-!    int kemoview_get_draw_surfgrp_patch(int i);
-!    int kemoview_get_draw_surfgrp_grid(int i);
-!    int kemoview_get_draw_surfgrp_node(int i);
-!    
-!    void kemoview_nod_grp_toggle(int selected);
-!    
-!    void kemoview_ele_grp_toggle(int selected);
-!    void kemoview_ele_grp_nod_toggle(int selected);
-!    void kemoview_ele_grp_grid_toggle(int selected);
-!    
-!    void kemoview_surf_grp_toggle(int selected);
-!    void kemoview_surf_grp_nod_toggle(int selected);
-!    void kemoview_surf_grp_grid_toggle(int selected);
+!    void kemoview_set_draw_mesh_item(int iflag_group, int selected, int igrp, int iflag);
+!    void kemoview_toggle_draw_mesh_item(int iflag_group, int selected, int igrp){
+!    int kemoview_get_draw_mesh_item(int iflag_group, int selected, int igrp);
 !    
 !    int kemoview_get_draw_mesh_flag();
 !    

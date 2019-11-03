@@ -213,17 +213,17 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
     if([identifier isEqualToString:@"DomainPatch"]) {
 		[DomainDisplayPatchFlags replaceObjectAtIndex:rowIndex withObject:object];
 		iflag = [[DomainDisplayPatchFlags objectAtIndex:rowIndex] intValue];
-		kemoview_set_draw_domain_patch(iflag, rowIndex);
+		kemoview_set_draw_mesh_item(DOMAIN_FLAG, SURFSOLID_TOGGLE, iflag, rowIndex);
     }
     if([identifier isEqualToString:@"DomainGrid"]) {
 		[DomainDisplayWireFlags replaceObjectAtIndex:rowIndex withObject:object];
 		iflag = [[DomainDisplayWireFlags objectAtIndex:rowIndex] intValue];
-		kemoview_set_draw_domain_grid(iflag, rowIndex);
+		kemoview_set_draw_mesh_item(DOMAIN_FLAG, SURFGRID_TOGGLE, iflag, rowIndex);
     }
     if([identifier isEqualToString:@"DomainNode"]) {
 		[DomainDisplayNodeFlags replaceObjectAtIndex:rowIndex withObject:object];
 		iflag = [[DomainDisplayNodeFlags objectAtIndex:rowIndex] intValue];
-		kemoview_set_draw_domain_nod(iflag, rowIndex);
+		kemoview_set_draw_mesh_item(DOMAIN_FLAG, SURFNOD_TOGGLE, rowIndex, iflag);
     }
 
 	[_kemoviewer UpdateImage];
@@ -242,7 +242,7 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 - (IBAction)ChooseDomainPatchColorAction:(id)sender;
 {
 	NSInteger tag = [[_DomainPatchColorItem selectedCell] tag];
-	kemoview_set_domain_color_flag(SURFSOLID_TOGGLE, (int) tag);
+	kemoview_set_mesh_color_flag(DOMAIN_FLAG, SURFSOLID_TOGGLE, (int) tag);
 
 	[_kemoviewer UpdateImage];
 }
@@ -250,7 +250,7 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 - (IBAction)ChooseDomainLineColorAction:(id)sender;
 {
 	NSInteger tag = [[_DomainLineColorItem selectedCell] tag];
-	kemoview_set_domain_color_flag(SURFGRID_TOGGLE, (int) tag);
+	kemoview_set_mesh_color_flag(DOMAIN_FLAG, SURFGRID_TOGGLE, (int) tag);
 
 	[_kemoviewer UpdateImage];
 }
@@ -258,7 +258,7 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 - (IBAction)ChooseDomainNodeColorAction:(id)sender;
 {
 	NSInteger tag = [[_DomainNodeColorItem selectedCell] tag];
-	kemoview_set_domain_color_flag(SURFNOD_TOGGLE, (int) tag);
+	kemoview_set_mesh_color_flag(DOMAIN_FLAG, SURFNOD_TOGGLE, (int) tag);
 
 	[_kemoviewer UpdateImage];
 }

@@ -52,16 +52,16 @@ void init_mesh_views_4_viewer(struct kemoview_mesh_view *mesh_vws){
 	for(i=0;i<kemoview_get_num_subdomain();i++){
 		sprintf(tmp_name, "Domain %d", i);
 		append_chara_int3_clist(tmp_name, 
-					kemoview_get_draw_mesh_patch(i), 
-					kemoview_get_draw_mesh_grid(i), 
-					kemoview_get_draw_mesh_node(i), 
+					kemoview_get_draw_mesh_item(DOMAIN_FLAG, SURFSOLID_TOGGLE, i), 
+					kemoview_get_draw_mesh_item(DOMAIN_FLAG, SURFGRID_TOGGLE, i), 
+					kemoview_get_draw_mesh_item(DOMAIN_FLAG, SURFNOD_TOGGLE, i), 
 					mesh_vws->domain_vws->ci3_clist_gtk);
 	};
 	for(i=0;i<kemoview_get_num_node_grp();i++){
         groupname = kemoview_alloc_kvstring();
 		kemoview_get_node_grp_name(groupname, i);
 		append_chara_int_clist(groupname, 
-					kemoview_get_draw_nodgrp_node(i),
+					kemoview_get_draw_mesh_item(NODE_GRP_FLAG, SURFSOLID_TOGGLE, i),
 					mesh_vws->nod_grp_vws->ci_clist_gtk);
         kemoview_free_kvstring(groupname);
 	};
@@ -69,9 +69,9 @@ void init_mesh_views_4_viewer(struct kemoview_mesh_view *mesh_vws){
         groupname = kemoview_alloc_kvstring();
 		kemoview_get_ele_grp_name(groupname, i);
 		append_chara_int3_clist(groupname->string, 
-					kemoview_get_draw_elegrp_patch(i), 
-					kemoview_get_draw_elegrp_grid(i), 
-					kemoview_get_draw_elegrp_node(i), 
+					kemoview_get_draw_mesh_item(ELEM_GRP_FLAG, SURFSOLID_TOGGLE, i), 
+					kemoview_get_draw_mesh_item(ELEM_GRP_FLAG, SURFGRID_TOGGLE, i), 
+					kemoview_get_draw_mesh_item(ELEM_GRP_FLAG, SURFNOD_TOGGLE, i), 
 					mesh_vws->ele_grp_vws->ci3_clist_gtk);
         kemoview_free_kvstring(groupname);
 	};
@@ -79,9 +79,9 @@ void init_mesh_views_4_viewer(struct kemoview_mesh_view *mesh_vws){
         groupname = kemoview_alloc_kvstring();
 		kemoview_get_surf_grp_name(groupname, i);
 		append_chara_int3_clist(groupname->string, 
-					kemoview_get_draw_surfgrp_patch(i), 
-					kemoview_get_draw_surfgrp_grid(i), 
-					kemoview_get_draw_surfgrp_node(i), 
+					kemoview_get_draw_mesh_item(SURF_GRP_FLAG, SURFSOLID_TOGGLE, i), 
+					kemoview_get_draw_mesh_item(SURF_GRP_FLAG, SURFGRID_TOGGLE, i), 
+					kemoview_get_draw_mesh_item(SURF_GRP_FLAG, SURFNOD_TOGGLE, i), 
 					mesh_vws->surf_grp_vws->ci3_clist_gtk);
         kemoview_free_kvstring(groupname);
 	};
