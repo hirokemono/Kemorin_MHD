@@ -130,7 +130,7 @@ int get_each_PSF_field_param(int selected, struct kemoview_psf *kemo_psf){
 		output =  send_field_draw_each_psf(kemo_psf->psf_m[i_current]);
 	} else if(selected == COMPONENT_SEL_FLAG){
 		output =  send_draw_comp_id_psf(kemo_psf->psf_m[i_current]);
-	} else if(selected == DRQW_ADDRESS_FLAG){
+	} else if(selected == DRAW_ADDRESS_FLAG){
 		output =  send_draw_component_psf(kemo_psf->psf_m[i_current]);
 	} else if(selected == COORDINATE_FLAG){
 		output =  send_coordinate_id_psf(kemo_psf->psf_d[i_current], kemo_psf->psf_m[i_current]);
@@ -220,3 +220,17 @@ int get_each_PSF_color_param(int selected, struct kemoview_psf *kemo_psf){
 	return iflag;
 };
 
+double get_each_PSF_colormap_range(int selected, struct kemoview_psf *kemo_psf){
+	double value = 0.0;
+	int i_current = kemo_psf->psf_a->id_current;
+	if(selected == ISET_COLOR_MIN){
+		value = send_each_PSF_color_table_min(kemo_psf->psf_m[i_current]);
+	}else if(selected == ISET_COLOR_MAX){
+		value = send_each_PSF_color_table_max(kemo_psf->psf_m[i_current]);
+	}else if(selected == ISET_OPACITY_MIN){
+		value = send_each_PSF_minimum_opacity(kemo_psf->psf_m[i_current]);
+	}else if(selected == ISET_OPACITY_MAX){
+		value = send_each_PSF_maximum_opacity(kemo_psf->psf_m[i_current]);
+	};
+	return value;
+};

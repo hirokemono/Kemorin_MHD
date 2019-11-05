@@ -418,11 +418,16 @@
 #define SET_CURRENT   2
 #define DRAW_SWITCH   3
 
+#define ISET_COLOR_MIN   10
+#define ISET_COLOR_MAX   11
+#define ISET_OPACITY_MIN 20
+#define ISET_OPACITY_MAX 21
+
 #define FIELD_SEL_FLAG       0
 #define COMPONENT_SEL_FLAG   1
 #define NUM_FIELD_FLAG       2
 #define NTOT_COMPONENT_FLAG  3
-#define DRQW_ADDRESS_FLAG    4
+#define DRAW_ADDRESS_FLAG    4
 #define COORDINATE_FLAG      5
 
 #define EPSILON  1.e-9
@@ -689,10 +694,7 @@ extern "C" {
     void kemoview_set_PSF_color_data(int i_point, double value, double color);
     void kemoview_set_PSF_opacity_data(int i_point, double value, double opacity);
     
-    double kemoview_get_PSF_color_table_min(void);
-    double kemoview_get_PSF_color_table_max(void);
-    double kemoview_get_PSF_min_opacity(void);
-    double kemoview_get_PSF_max_opacity(void);
+	double kemoview_get_each_PSF_colormap_range(int selected);
     int kemoview_get_PSF_color_table_num(void);
     int kemoview_get_PSF_opacity_table_num(void);
     

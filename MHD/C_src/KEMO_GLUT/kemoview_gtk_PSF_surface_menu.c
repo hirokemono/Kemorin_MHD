@@ -32,7 +32,7 @@ static void set_PSFcolor_GTK(GtkColorChooser *colordialog)
 	dcolor[0] = gcolor.red;
 	dcolor[1] = gcolor.green;
 	dcolor[2] = gcolor.blue;
-	dcolor[3] = (gdouble) kemoview_get_PSF_max_opacity();
+	dcolor[3] = (gdouble) kemoview_get_each_PSF_colormap_range(ISET_OPACITY_MAX);
 	kemoview_set_PSF_single_color(dcolor);
 	kemoview_set_PSF_color_param(PSFSOLID_TOGGLE, SINGLE_COLOR);
 	draw_full();
@@ -113,7 +113,7 @@ static void set_psf_opacity_CB(GtkWidget *entry, gpointer user_data)
 
 static void MinChange_CB(GtkWidget *entry, gpointer data)
 {
-	int icomp = kemoview_get_each_PSF_field_param(DRQW_ADDRESS_FLAG);
+	int icomp = kemoview_get_each_PSF_field_param(DRAW_ADDRESS_FLAG);
 	double data_max = kemoview_get_PSF_max_data(icomp);
 	
 	double data_min = (double) gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
@@ -121,7 +121,7 @@ static void MinChange_CB(GtkWidget *entry, gpointer data)
 }
 static void MaxChange_CB(GtkWidget *entry, gpointer data)
 {
-	int icomp = kemoview_get_each_PSF_field_param(DRQW_ADDRESS_FLAG);
+	int icomp = kemoview_get_each_PSF_field_param(DRAW_ADDRESS_FLAG);
 	double data_min = kemoview_get_PSF_min_data(icomp);
 	
 	double data_max = (double) gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
@@ -212,17 +212,17 @@ void add_gtk_psf_surface_menu(struct colormap_view *color_vws,
 	g_signal_connect(G_OBJECT(combobox_sfcolor), "changed", 
 				G_CALLBACK(psf_surf_colormode_CB), (gpointer) window_cmap);
 	
-	current_value = kemoview_get_PSF_max_opacity();
+	current_value = kemoview_get_each_PSF_colormap_range(ISET_OPACITY_MAX);
 	sprintf(current_opacity_text, "    %e    ", current_value);
 	adj_opacity1 = gtk_adjustment_new(current_value, 0.0, 1.0, 0.01, 0.01, 0.0);
 	spin_opacity1 = gtk_spin_button_new(GTK_ADJUSTMENT(adj_opacity1), 0, 2);
 	g_signal_connect(spin_opacity1, "value-changed", G_CALLBACK(set_psf_opacity_CB), (gpointer) color_vws);
 	
-	icomp = kemoview_get_each_PSF_field_param(DRQW_ADDRESS_FLAG);
+	icomp = kemoview_get_each_PSF_field_param(DRAW_ADDRESS_FLAG);
 	range_min = kemoview_get_PSF_min_data(icomp);
 	range_max = kemoview_get_PSF_max_data(icomp);
-	data_min = kemoview_get_PSF_color_table_min();
-	data_max = kemoview_get_PSF_color_table_max();
+	data_min = kemoview_get_each_PSF_colormap_range(ISET_COLOR_MIN);
+	data_max = kemoview_get_each_PSF_colormap_range(ISET_COLOR_MAX);
 	delta = range_max - range_min;
 	sprintf(min_text, "    %e    ", range_min);
 	sprintf(max_text, "    %e    ", range_max);

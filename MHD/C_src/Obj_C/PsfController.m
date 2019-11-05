@@ -172,14 +172,14 @@
 	self.PSFSelectedField =     kemoview_get_each_PSF_field_param(FIELD_SEL_FLAG);
 	self.PSFSelectedComponent = kemoview_get_each_PSF_field_param(COMPONENT_SEL_FLAG);
     
-	int iplotted = kemoview_get_each_PSF_field_param(DRQW_ADDRESS_FLAG);
+	int iplotted = kemoview_get_each_PSF_field_param(DRAW_ADDRESS_FLAG);
 	
 	self.PSFSurfaceSwitch =  kemoview_get_PSF_draw_flags(PSFSOLID_TOGGLE);
 	self.PSFIsolineSwitch =  kemoview_get_PSF_draw_flags(PSFGRID_TOGGLE);
 	self.PSFZerolineSwitch = kemoview_get_PSF_draw_flags(ZEROGRID_TOGGLE);
 	self.PSFColorbarSwitch = kemoview_get_PSF_draw_flags(COLORBAR_TOGGLE);
-	self.PsfMinimumRange =   kemoview_get_PSF_color_table_min();
-	self.PsfMaximumRange =   kemoview_get_PSF_color_table_max();
+	self.PsfMinimumRange =   kemoview_get_each_PSF_colormap_range(ISET_COLOR_MIN);
+	self.PsfMaximumRange =   kemoview_get_each_PSF_colormap_range(ISET_COLOR_MAX);
 	self.PsfMinimumValue =   kemoview_get_PSF_min_data(iplotted);
 	self.PsfMaximumValue =   kemoview_get_PSF_max_data(iplotted);
 	self.IsolineNumber =     kemoview_get_PSF_color_param(ISET_NLINE);
@@ -187,7 +187,7 @@
 	kemoview_get_PSF_isoline_width(&current_value, &i_digit);
 	self.IsolineWidth =      (CGFloat) current_value;
 	self.IsolineDigit =      (CGFloat) i_digit;
-	self.PSFOpacity =        kemoview_get_PSF_max_opacity();
+	self.PSFOpacity =        kemoview_get_each_PSF_colormap_range(ISET_OPACITY_MAX);
 	
 	self.DrawPSFVectorFlag = kemoview_get_PSF_draw_flags(PSFVECT_TOGGLE);
 	self.ScaleVector =       kemoview_get_PSF_vector_scale();
@@ -224,14 +224,14 @@
 	kemoview_set_each_PSF_field_param(FIELD_SEL_FLAG, self.PSFSelectedField);
     kemoview_set_each_PSF_field_param(COMPONENT_SEL_FLAG, (int) self.PSFSelectedComponent);
     /*   
-     int iplotted = kemoview_get_each_PSF_field_param(DRQW_ADDRESS_FLAG);
+     int iplotted = kemoview_get_each_PSF_field_param(DRAW_ADDRESS_FLAG);
      
      self.PSFSurfaceSwitch =  kemoview_get_PSF_draw_flags(PSFSOLID_TOGGLE);
      self.PSFIsolineSwitch =  kemoview_get_PSF_draw_flags(PSFGRID_TOGGLE);
      self.PSFZerolineSwitch = kemoview_get_PSF_draw_flags(ZEROGRID_TOGGLE);
      self.PSFColorbarSwitch = kemoview_get_PSF_draw_flags(COLORBAR_TOGGLE);
-     self.PsfMinimumRange =   kemoview_get_PSF_color_table_min();
-     self.PsfMaximumRange =   kemoview_get_PSF_color_table_max();
+     self.PsfMinimumRange =   kemoview_get_each_PSF_colormap_range(ISET_COLOR_MIN);
+     self.PsfMaximumRange =   kemoview_get_each_PSF_colormap_range(ISET_COLOR_MAX);
      self.PsfMinimumValue =   kemoview_get_PSF_min_data(iplotted);
      self.PsfMaximumValue =   kemoview_get_PSF_max_data(iplotted);
      self.IsolineNumber =     kemoview_get_PSF_color_param(ISET_NLINE);
@@ -239,7 +239,7 @@
 	 kemoview_get_PSF_isoline_width(&current_value, &i_digit);
 	 self.IsolineWidth =      (CGFloat) current_value;
 	 self.IsolineDigit =      (CGFloat) i_digit;
-     self.PSFOpacity =        kemoview_get_PSF_max_opacity();
+     self.PSFOpacity =        kemoview_get_each_PSF_colormap_range(ISET_OPACITY_MAX);
      
      self.DrawPSFVectorFlag = kemoview_get_PSF_draw_flags(PSFVECT_TOGGLE);
      self.ScaleVector =       kemoview_get_PSF_vector_scale();
@@ -383,7 +383,7 @@
 		};
 		
         
-		iplotted = kemoview_get_each_PSF_field_param(DRQW_ADDRESS_FLAG);
+		iplotted = kemoview_get_each_PSF_field_param(DRAW_ADDRESS_FLAG);
 		self.PsfMinimumValue = kemoview_get_PSF_min_data(iplotted);
 		self.PsfMaximumValue = kemoview_get_PSF_max_data(iplotted);
 	}
@@ -394,12 +394,12 @@
 - (void) SetPsfRanges{
 	int iplotted;
     
-	iplotted = kemoview_get_each_PSF_field_param(DRQW_ADDRESS_FLAG);
+	iplotted = kemoview_get_each_PSF_field_param(DRAW_ADDRESS_FLAG);
     
  	self.PsfMinimumValue = kemoview_get_PSF_min_data(iplotted);
 	self.PsfMaximumValue = kemoview_get_PSF_max_data(iplotted);
-	self.PsfMinimumRange = kemoview_get_PSF_color_table_min();
-	self.PsfMaximumRange = kemoview_get_PSF_color_table_max();
+	self.PsfMinimumRange = kemoview_get_each_PSF_colormap_range(ISET_COLOR_MIN);
+	self.PsfMaximumRange = kemoview_get_each_PSF_colormap_range(ISET_COLOR_MAX);
     
     [self.rgbaMapObject updateColormapParameter];
     [self.colorMapObject InitColorTables];

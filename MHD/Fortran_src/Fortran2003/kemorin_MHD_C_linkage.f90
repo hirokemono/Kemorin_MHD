@@ -299,10 +299,7 @@
 !    void kemoview_set_PSF_color_data(int i_point, double value, double color);
 !    void kemoview_set_PSF_opacity_data(int i_point, double value, double opacity);
 !    
-!    double kemoview_get_PSF_color_table_min();
-!    double kemoview_get_PSF_color_table_max();
-!    double kemoview_get_PSF_min_opacity();
-!    double kemoview_get_PSF_max_opacity();
+!    double kemoview_get_each_PSF_colormap_range(int selected);
 !    int kemoview_get_PSF_color_table_num();
 !    int kemoview_get_PSF_opacity_table_num();
 !    

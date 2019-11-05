@@ -20,8 +20,8 @@
 }
 
 - (void)updateColormapParameter {
-	self.DataMinimum = kemoview_get_PSF_color_table_min();
-	self.DataMaximum = kemoview_get_PSF_color_table_max();
+	self.DataMinimum = kemoview_get_each_PSF_colormap_range(ISET_COLOR_MIN);
+	self.DataMaximum = kemoview_get_each_PSF_colormap_range(ISET_COLOR_MAX);
 }
 
 - (IBAction)SetColorMode:(id)pId;
@@ -83,7 +83,7 @@
                                            [_kemoviewer UpdateImage];
                                            [_colorMapObject SetColorTables];
                                            [_opacityMapObject SetOpacityTables];
-                                           [ColorModeItem selectItemAtIndex:kemoview_get_PSF_color_mode(ISET_COLORMAP)];
+                                           [ColorModeItem selectItemAtIndex:kemoview_get_PSF_color_param(ISET_COLORMAP)];
                                        };
                                    }];
     

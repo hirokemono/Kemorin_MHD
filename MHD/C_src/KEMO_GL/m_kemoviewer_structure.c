@@ -579,7 +579,7 @@ int kemoview_toggle_PSF_draw_refv(void){
 
 void * kemoview_link_active_colormap_param(void){
 	int i_current = kemoview_get_PSF_loaded_params(SET_CURRENT);
-	int icomp = kemoview_get_each_PSF_field_param(DRQW_ADDRESS_FLAG);
+	int icomp = kemoview_get_each_PSF_field_param(DRAW_ADDRESS_FLAG);
 	void *current_cmap = kemo_sgl->kemo_psf->psf_m[i_current]->cmap_psf_comp[icomp];
 	return current_cmap;
 }
@@ -675,17 +675,8 @@ void kemoview_set_PSF_opacity_data(int i_point, double value, double opacity){
 							   i_point, value, opacity);
 }
 
-double kemoview_get_PSF_color_table_min(void){
-	return send_each_PSF_color_table_min(kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current]);
-};
-double kemoview_get_PSF_color_table_max(void){
-	return send_each_PSF_color_table_max(kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current]);
-};
-double kemoview_get_PSF_min_opacity(void){
-	return send_each_PSF_minimum_opacity(kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current]);
-};
-double kemoview_get_PSF_max_opacity(void){
-	return send_each_PSF_maximum_opacity(kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current]);
+double kemoview_get_each_PSF_colormap_range(int selected){
+	return get_each_PSF_colormap_range(selected, kemo_sgl->kemo_psf);
 };
 int kemoview_get_PSF_color_table_num(void){
 	return send_each_PSF_color_table_num(kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current]);

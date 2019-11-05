@@ -136,8 +136,8 @@
 	double d_min, d_max;
 	
 	NumColorTable = 2;
-	d_min = kemoview_get_PSF_color_table_min();
-	d_max = kemoview_get_PSF_color_table_max();
+	d_min = kemoview_get_each_PSF_colormap_range(ISET_COLOR_MIN);
+	d_max = kemoview_get_each_PSF_colormap_range(ISET_COLOR_MAX);
 	
 	[self SetColorTables];
 }
