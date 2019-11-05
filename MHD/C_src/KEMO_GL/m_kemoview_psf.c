@@ -83,3 +83,140 @@ void evolution_psf_viewer(struct psf_data *psf_ucd_tmp, struct kemoview_psf *kem
 	return;
 }
 
+void set_PSF_loaded_params(int selected, int input, struct kemoview_psf *kemo_psf){
+	if(selected == NUM_LOADED){
+		set_PSF_num_loaded(input, kemo_psf->psf_a);
+	}else if(selected == MAX_LOADED){
+		set_PSF_max_loaded(input, kemo_psf->psf_a);
+	}else if(selected == SET_CURRENT){
+		set_current_PSF_to_menu(input, kemo_psf->psf_a);
+	};
+	return;
+}
+
+int get_PSF_loaded_params(struct kemoview_psf *kemo_psf, int selected){
+	int output = 0;
+	if(selected == NUM_LOADED){
+		output= get_PSF_num_loaded(kemo_psf->psf_a);
+	}else if(selected == MAX_LOADED){
+		output = get_PSF_max_loaded(kemo_psf->psf_a);
+	}else if(selected == SET_CURRENT){
+		output = get_curent_PSF_ID(kemo_psf->psf_a);
+	}else if(selected == DRAW_SWITCH){
+		output = get_PSF_draw_switch(kemo_psf->psf_a);
+	};
+	return output;
+}
+
+void set_each_PSF_field_param(int selected, int input, struct kemoview_psf *kemo_psf){
+	int i_current = kemo_psf->psf_a->id_current;
+	if(selected == FIELD_SEL_FLAG){
+		set_PSF_field(input, kemo_psf->psf_d[i_current], kemo_psf->psf_m[i_current]);
+	}else if(selected == COMPONENT_SEL_FLAG){
+		set_PSF_component(input, kemo_psf->psf_d[i_current], kemo_psf->psf_m[i_current]);
+	};
+	return;
+};
+
+int get_each_PSF_field_param(int selected, struct kemoview_psf *kemo_psf){
+	int output = 0;
+	int i_current = kemo_psf->psf_a->id_current;
+	
+	if(selected == NUM_FIELD_FLAG){
+		output = send_nfield_each_psf(kemo_psf->psf_d[i_current]);
+	} else if(selected == NTOT_COMPONENT_FLAG){
+		output = send_ncomptot_each_psf(kemo_psf->psf_d[i_current]);
+	} else if(selected == FIELD_SEL_FLAG){
+		output =  send_field_draw_each_psf(kemo_psf->psf_m[i_current]);
+	} else if(selected == COMPONENT_SEL_FLAG){
+		output =  send_draw_comp_id_psf(kemo_psf->psf_m[i_current]);
+	} else if(selected == DRQW_ADDRESS_FLAG){
+		output =  send_draw_component_psf(kemo_psf->psf_m[i_current]);
+	} else if(selected == COORDINATE_FLAG){
+		output =  send_coordinate_id_psf(kemo_psf->psf_d[i_current], kemo_psf->psf_m[i_current]);
+	};
+	return output;
+};
+
+int toggle_each_PSF_draw_switch(int selected, struct kemoview_psf *kemo_psf){
+	int i_current = kemo_psf->psf_a->id_current;
+	int toggle = 0;
+	
+	if      (selected == PSFSOLID_TOGGLE){
+		return toggle_draw_psf_solid(kemo_psf->psf_m[i_current]);
+	} else if (selected == PSFGRID_TOGGLE){
+		return toggle_draw_psf_grid(kemo_psf->psf_m[i_current]);
+	} else if (selected == ZEROGRID_TOGGLE){
+		return toggle_draw_psf_zero(kemo_psf->psf_m[i_current]);
+	} else if (selected == COLORBAR_TOGGLE){
+		return toggle_draw_psf_cbar(kemo_psf->psf_m[i_current]);
+	} else if (selected == PSF_POLYGON_SWITCH){
+		return toggle_each_psf_polygon_mode(kemo_psf->psf_m[i_current]);
+	} else if (selected == PSFVECT_TOGGLE){
+		return toggle_draw_psf_vect(kemo_psf->psf_m[i_current]);
+	} else if (selected == PSFREFV_TOGGLE){
+		return toggle_draw_psf_refv(kemo_psf->psf_m[i_current]);
+	} else if (selected == PSFTANVEC_TOGGLE){
+		return toggle_each_psf_vector_mode(kemo_psf->psf_m[i_current]);
+	};
+	return toggle;
+}
+
+int get_each_PSF_draw_switch(int selected, struct kemoview_psf *kemo_psf){
+	int i_current = kemo_psf->psf_a->id_current;
+	int iflag = 0;
+	if      (selected == PSFSOLID_TOGGLE){
+		iflag = send_draw_psf_solid(kemo_psf->psf_m[i_current]);
+	} else if (selected == PSFGRID_TOGGLE){
+		iflag = send_draw_psf_grid(kemo_psf->psf_m[i_current]);
+	} else if (selected == ZEROGRID_TOGGLE){
+		iflag = send_draw_psf_zero(kemo_psf->psf_m[i_current]);
+	} else if (selected == COLORBAR_TOGGLE){
+		iflag = send_draw_psf_cbar(kemo_psf->psf_m[i_current]);
+	} else if (selected == PSF_POLYGON_SWITCH){
+		iflag = send_each_psf_polygon_mode(kemo_psf->psf_m[i_current]);
+	} else if (selected == PSFVECT_TOGGLE){
+		iflag = send_draw_psf_vect(kemo_psf->psf_m[i_current]);
+	} else if (selected == PSFTANVEC_TOGGLE){
+		iflag = send_each_psf_vector_mode(kemo_psf->psf_m[i_current]);
+	};
+	return iflag;
+}
+
+void set_each_PSF_color_param(int selected, int input, struct kemoview_psf *kemo_psf){
+	int i_current = kemo_psf->psf_a->id_current;
+	if(selected == PSFSOLID_TOGGLE){
+		set_psf_patch_color_mode(kemo_psf->psf_m[i_current], input);
+	}else if(selected == PSFGRID_TOGGLE){
+		set_each_isoline_color(kemo_psf->psf_m[i_current], input);
+	}else if(selected == ISET_NLINE){
+		set_each_n_isoline(kemo_psf->psf_m[i_current], input);
+	}else if(selected == ISET_COLORMAP){
+		set_PSF_colormap_id(kemo_psf->psf_m[i_current], input);
+	}else if(selected == ISET_VECTOR_COLOR){
+		set_each_vector_patch_color(kemo_psf->psf_m[i_current], input);
+	}else if(selected == ISET_VECTOR_INC){
+		set_each_increment_vect(kemo_psf->psf_m[i_current], input);
+	};
+	return;
+};
+
+int get_each_PSF_color_param(int selected, struct kemoview_psf *kemo_psf){
+	int iflag = 0;
+	int i_current = kemo_psf->psf_a->id_current;
+	if(selected == PSFSOLID_TOGGLE){
+		iflag = send_each_psf_patch_color(kemo_psf->psf_m[i_current]);
+	}else if(selected == PSFGRID_TOGGLE){
+		iflag = send_each_isoline_color(kemo_psf->psf_m[i_current]);
+	}else if(selected == ISET_NLINE){
+		iflag = send_num_isoline(kemo_psf->psf_m[i_current]);
+	}else if(selected == ISET_COLORMAP){
+		iflag = send_PSF_colormap_id(kemo_psf->psf_m[i_current]);
+	}else if(selected == ISET_VECTOR_COLOR){
+		iflag = send_each_vector_patch_color(kemo_psf->psf_m[i_current]);
+	}else if(selected == ISET_VECTOR_INC){
+		iflag = send_increment_vector(kemo_psf->psf_m[i_current]);
+	};
+	return iflag;
+};
+

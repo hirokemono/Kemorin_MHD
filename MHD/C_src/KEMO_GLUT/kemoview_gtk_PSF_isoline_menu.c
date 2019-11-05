@@ -29,9 +29,9 @@ static void psf_surf_colormode_CB(GtkComboBox *combobox_gdcolor, gpointer user_d
 {
     int index_mode = gtk_selected_combobox_index(combobox_gdcolor);
 	
-	if (index_mode == RAINBOW_PSF_LINE)    {kemoview_set_PSF_isoline_color_mode(RAINBOW_LINE);}
-	else if (index_mode == WHITE_PSF_LINE) {kemoview_set_PSF_isoline_color_mode(WHITE_LINE);}
-    else if (index_mode == BLACK_PSF_LINE) {kemoview_set_PSF_isoline_color_mode(BLACK_LINE);}
+	if (index_mode == RAINBOW_PSF_LINE)    {kemoview_set_PSF_color_param(PSFGRID_TOGGLE, RAINBOW_LINE);}
+	else if (index_mode == WHITE_PSF_LINE) {kemoview_set_PSF_color_param(PSFGRID_TOGGLE, WHITE_LINE);}
+    else if (index_mode == BLACK_PSF_LINE) {kemoview_set_PSF_color_param(PSFGRID_TOGGLE, BLACK_LINE);}
 	
 	draw_full();
 	return;
@@ -40,7 +40,7 @@ static void psf_surf_colormode_CB(GtkComboBox *combobox_gdcolor, gpointer user_d
 static void set_nline_CB(GtkWidget *entry, gpointer user_data)
 {
 	int gtk_intvalue = (int) gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(entry));
-	kemoview_set_PSF_num_isoline(gtk_intvalue);
+	kemoview_set_PSF_color_param(ISET_NLINE, gtk_intvalue);
 	
 	draw_full();
 	return;
@@ -119,7 +119,7 @@ void add_gtk_isoline_menu(GtkWidget *window, GtkWidget *box){
 	
 	combobox_gdcolor = gtk_combo_box_new_with_model(child_model_gdcolor);
 	renderer_gdcolor = gtk_cell_renderer_text_new();
-	iflag_sfcolor = kemoview_get_PSF_patch_color_mode();
+	iflag_sfcolor = kemoview_get_PSF_color_param(PSFGRID_TOGGLE);
 	if(iflag_sfcolor == BLACK_PSF_LINE){
 		gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_gdcolor), 2);
 	} else 	if(iflag_sfcolor == WHITE_PSF_LINE){
@@ -134,7 +134,7 @@ void add_gtk_isoline_menu(GtkWidget *window, GtkWidget *box){
 				G_CALLBACK(psf_surf_colormode_CB), (gpointer) window);
 	
 	
-	int current_nline = kemoview_get_PSF_num_isoline();
+	int current_nline = kemoview_get_PSF_color_param(ISET_NLINE);
 	adj_nline = gtk_adjustment_new ((double) current_nline, 0, 200, 1, 1, 0.0);
 	spin_nline = gtk_spin_button_new(GTK_ADJUSTMENT(adj_nline), 0, 0);
 	g_signal_connect(spin_nline, "value-changed", G_CALLBACK(set_nline_CB), NULL);

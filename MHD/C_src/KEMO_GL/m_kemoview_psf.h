@@ -11,6 +11,7 @@
 #include "m_psf_data_4_viewer_c.h"
 #include "read_data_4_kemoviewer.h"
 #include "psf_data_array_manager.h"
+#include "set_each_psf_parameters.h"
 
 struct kemoview_psf{
     struct kemo_array_control   *psf_a;
@@ -27,4 +28,16 @@ void init_draw_psf(struct kemoview_psf *kemo_psf, struct psf_data *ucd_tmp,
 void close_PSF_view(struct kemoview_psf *kemo_psf);
 
 void evolution_psf_viewer(struct psf_data *psf_ucd_tmp, struct kemoview_psf *kemo_psf);
+
+void set_PSF_loaded_params(int selected, int input, struct kemoview_psf *kemo_psf);
+int get_PSF_loaded_params(struct kemoview_psf *kemo_psf, int selected);
+
+void set_each_PSF_field_param(int selected, int input, struct kemoview_psf *kemo_psf);
+int get_each_PSF_field_param(int selected, struct kemoview_psf *kemo_psf);
+
+int toggle_each_PSF_draw_switch(int selected, struct kemoview_psf *kemo_psf);
+int get_each_PSF_draw_switch(int selected, struct kemoview_psf *kemo_psf);
+
+void set_each_PSF_color_param(int selected, int input, struct kemoview_psf *kemo_psf);
+int get_each_PSF_color_param(int selected, struct kemoview_psf *kemo_psf);
 #endif

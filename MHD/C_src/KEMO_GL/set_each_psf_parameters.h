@@ -110,9 +110,9 @@ void set_PSF_rgb_from_value(struct psf_menu_val *psf_menu,
 double get_PSF_opacity_at_value(struct psf_menu_val *psf_menu, double value);
 void set_each_PSF_color_point(struct psf_menu_val *psf_menu, int i_point, double value, double color);
 void set_each_PSF_opacity_point(struct psf_menu_val *psf_menu, int i_point, double value, double opacity);
-void set_PSF_color_mode_id(struct psf_menu_val *psf_menu, int isel);
+void set_PSF_colormap_id(struct psf_menu_val *psf_menu, int isel);
 
-int send_PSF_color_mode_id(struct psf_menu_val *psf_menu);
+int send_PSF_colormap_id(struct psf_menu_val *psf_menu);
 double send_each_PSF_color_table_min(struct psf_menu_val *psf_menu);
 double send_each_PSF_color_table_max(struct psf_menu_val *psf_menu);
 double send_each_PSF_minimum_opacity(struct psf_menu_val *psf_menu);

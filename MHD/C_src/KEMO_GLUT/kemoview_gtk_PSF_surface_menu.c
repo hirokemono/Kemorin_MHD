@@ -34,7 +34,7 @@ static void set_PSFcolor_GTK(GtkColorChooser *colordialog)
 	dcolor[2] = gcolor.blue;
 	dcolor[3] = (gdouble) kemoview_get_PSF_max_opacity();
 	kemoview_set_PSF_single_color(dcolor);
-	kemoview_set_PSF_patch_color_mode(SINGLE_COLOR);
+	kemoview_set_PSF_color_param(PSFSOLID_TOGGLE, SINGLE_COLOR);
 	draw_full();
 	return;
 }
@@ -84,7 +84,7 @@ static void load_texture_handler(gpointer user_data){
 	
 	if(id_image == SAVE_PNG || id_image == SAVE_BMP){
 		kemoview_set_texture_to_PSF(id_image, image_prefix);
-		kemoview_set_PSF_patch_color_mode(TEXTURED_SURFACE);
+		kemoview_set_PSF_color_param(PSFSOLID_TOGGLE, TEXTURED_SURFACE);
         kemoview_free_kvstring(image_prefix);
 	};
 	
@@ -95,9 +95,9 @@ static void psf_surf_colormode_CB(GtkComboBox *combobox_sfcolor, gpointer user_d
 {
     int index_mode = gtk_selected_combobox_index(combobox_sfcolor);
 	
-	if (index_mode == WHITE_SURFACE)     {kemoview_set_PSF_patch_color_mode(WHITE_SURFACE);}
+	if (index_mode == WHITE_SURFACE)     {kemoview_set_PSF_color_param(PSFSOLID_TOGGLE, WHITE_SURFACE);}
 	else if (index_mode == SINGLE_COLOR) {kemoview_gtk_surfcolorsel(user_data);}
-    else if (index_mode == RAINBOW_PSF_SURF) {kemoview_set_PSF_patch_color_mode(RAINBOW_SURFACE);}
+    else if (index_mode == RAINBOW_PSF_SURF) {kemoview_set_PSF_color_param(PSFSOLID_TOGGLE, RAINBOW_SURFACE);}
 	else if (index_mode == TEXTURE_PSF_SURF) {load_texture_handler(user_data);};
 	
 	return;
@@ -113,7 +113,7 @@ static void set_psf_opacity_CB(GtkWidget *entry, gpointer user_data)
 
 static void MinChange_CB(GtkWidget *entry, gpointer data)
 {
-	int icomp = kemoview_get_PSF_draw_data_address();
+	int icomp = kemoview_get_each_PSF_field_param(DRQW_ADDRESS_FLAG);
 	double data_max = kemoview_get_PSF_max_data(icomp);
 	
 	double data_min = (double) gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
@@ -121,7 +121,7 @@ static void MinChange_CB(GtkWidget *entry, gpointer data)
 }
 static void MaxChange_CB(GtkWidget *entry, gpointer data)
 {
-	int icomp = kemoview_get_PSF_draw_data_address();
+	int icomp = kemoview_get_each_PSF_field_param(DRQW_ADDRESS_FLAG);
 	double data_min = kemoview_get_PSF_min_data(icomp);
 	
 	double data_max = (double) gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
@@ -196,7 +196,7 @@ void add_gtk_psf_surface_menu(struct colormap_view *color_vws,
 	
 	combobox_sfcolor = gtk_combo_box_new_with_model(child_model_sfcolor);
 	renderer_sfcolor = gtk_cell_renderer_text_new();
-	iflag_sfcolor = kemoview_get_PSF_patch_color_mode();
+	iflag_sfcolor = kemoview_get_PSF_color_param(PSFSOLID_TOGGLE);
 	if(iflag_sfcolor == TEXTURE_PSF_SURF){
 		gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_sfcolor), 3);
 	} else 	if(iflag_sfcolor == SINGLE_COLOR){
@@ -218,7 +218,7 @@ void add_gtk_psf_surface_menu(struct colormap_view *color_vws,
 	spin_opacity1 = gtk_spin_button_new(GTK_ADJUSTMENT(adj_opacity1), 0, 2);
 	g_signal_connect(spin_opacity1, "value-changed", G_CALLBACK(set_psf_opacity_CB), (gpointer) color_vws);
 	
-	icomp = kemoview_get_PSF_draw_data_address();
+	icomp = kemoview_get_each_PSF_field_param(DRQW_ADDRESS_FLAG);
 	range_min = kemoview_get_PSF_min_data(icomp);
 	range_max = kemoview_get_PSF_max_data(icomp);
 	data_min = kemoview_get_PSF_color_table_min();

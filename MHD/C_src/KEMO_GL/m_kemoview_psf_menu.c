@@ -4,9 +4,7 @@
 
 #include "m_kemoview_psf_menu.h"
 
-void set_PSF_component_name(int ncomp, int icomp, char *comp_name) {
-    int id_coord =    kemoview_get_PSF_coordinate_id();
-	
+void set_PSF_component_name(int ncomp, int id_coord, int icomp, char *comp_name) {
 	if(id_coord == 1){
 		if(ncomp == 3){
 			if(icomp == 0) sprintf(comp_name, "R");
@@ -243,4 +241,3 @@ int get_curent_PSF_filename(struct kemo_array_control *psf_a){return psf_a->id_c
 int get_PSF_draw_switch(struct kemo_array_control *psf_a){
 	return psf_a->iflag_loaded[psf_a->id_current];
 };
-

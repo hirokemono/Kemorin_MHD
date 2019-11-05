@@ -32,7 +32,7 @@
     int		i, npoint;
     
 
-    if(kemoview_get_PSF_num_loaded() < 1) return;
+    if(kemoview_get_PSF_loaded_params(NUM_LOADED) < 1) return;
 	npoint = kemoview_get_PSF_color_table_num();
 	kemoview_get_PSF_color_items(IZERO, &colorMin, &color);
 	kemoview_get_PSF_color_items(npoint-1, &colorMax, &color);

@@ -23,7 +23,7 @@ static void kemoview_gtk_BGcolorsel(GtkButton *button, gpointer data){
 static void AmbientChange(GtkWidget *entry, gpointer data)
 {
 	float value = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
-	kemoview_set_matrial_parameter(AMBIENT_FLAG, value);
+	kemoview_set_material_parameter(AMBIENT_FLAG, value);
 /*	printf("gtk_min %d\n", gtk_min);*/
 	
 	draw_full();
@@ -32,7 +32,7 @@ static void AmbientChange(GtkWidget *entry, gpointer data)
 static void DiffuseChange(GtkWidget *entry, gpointer data)
 {
 	float value = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
-	kemoview_set_matrial_parameter(DIFFUSE_FLAG, value);
+	kemoview_set_material_parameter(DIFFUSE_FLAG, value);
 /*	printf("gtk_min %d\n", gtk_min);*/
 	
 	draw_full();
@@ -41,7 +41,7 @@ static void DiffuseChange(GtkWidget *entry, gpointer data)
 static void SpecularChange(GtkWidget *entry, gpointer data)
 {
 	float value = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
-	kemoview_set_matrial_parameter(SPECULAR_FLAG, value);
+	kemoview_set_material_parameter(SPECULAR_FLAG, value);
 /*	printf("gtk_min %d\n", gtk_min);*/
 	
 	draw_full();
@@ -51,7 +51,7 @@ static void ShinenessChange(GtkWidget *entry, gpointer data)
 {
 	float value = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
 	
-	kemoview_set_material_shineness(SHINENESS_FLAG, value);
+	kemoview_set_material_parameter(SHINENESS_FLAG, value);
 /*	printf("gtk_min %d\n", gtk_min);*/
 	
 	draw_full();
@@ -81,22 +81,22 @@ void kemoview_preference_GTK(struct lightparams_view *lightparams_vws, GtkWidget
 				G_CALLBACK(kemoview_gtk_BGcolorsel), (gpointer)entry);
 	
 	
-	current_value = kemoview_get_matrial_parameter(AMBIENT_FLAG);
+	current_value = kemoview_get_material_parameter(AMBIENT_FLAG);
 	label21 = gtk_label_new("Ambient:   ");
 	adj1 = gtk_adjustment_new(current_value, 0.0, 1.0, 0.01, 0.01, 0.0);
 	spin1 = gtk_spin_button_new(GTK_ADJUSTMENT(adj1),0,2);
 	
-	current_value = kemoview_get_matrial_parameter(DIFFUSE_FLAG);
+	current_value = kemoview_get_material_parameter(DIFFUSE_FLAG);
 	label22 = gtk_label_new("Diffuse:   ");
 	adj2 = gtk_adjustment_new(current_value, 0.0, 1.0, 0.01, 0.01, 0.0);
 	spin2 = gtk_spin_button_new(GTK_ADJUSTMENT(adj2),0,2);
 	
-	current_value = kemoview_get_matrial_parameter(SPECULAR_FLAG);
+	current_value = kemoview_get_material_parameter(SPECULAR_FLAG);
 	label23 = gtk_label_new("Specular:  ");
 	adj3 = gtk_adjustment_new(current_value, 0.0, 1.0, 0.01, 0.01, 0.0);
 	spin3 = gtk_spin_button_new(GTK_ADJUSTMENT(adj3),0,2);
 	
-	current_value = kemoview_get_matrial_parameter(SHINENESS_FLAG);
+	current_value = kemoview_get_material_parameter(SHINENESS_FLAG);
 	label24 = gtk_label_new("Shineness: ");
 	adj4 = gtk_adjustment_new(current_value, 0.0, 100.0, 0.1, 0.1, 0.0);
 	spin4 = gtk_spin_button_new( GTK_ADJUSTMENT(adj4),0,2);

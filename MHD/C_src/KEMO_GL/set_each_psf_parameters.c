@@ -134,11 +134,11 @@ double send_scale_vector(struct psf_menu_val *psf_menu)        {return psf_menu-
 double send_vector_thick(struct psf_menu_val *psf_menu)        {return psf_menu->vector_thick;};
 
 
-void set_PSF_color_mode_id(struct psf_menu_val *psf_menu, int isel){
+void set_PSF_colormap_id(struct psf_menu_val *psf_menu, int isel){
 	set_color_mode_by_id(psf_menu->cmap_psf_comp[psf_menu->icomp_draw_psf], isel);
 	return;
 }
-int send_PSF_color_mode_id(struct psf_menu_val *psf_menu){
+int send_PSF_colormap_id(struct psf_menu_val *psf_menu){
 	return send_color_mode_id_s(psf_menu->cmap_psf_comp[psf_menu->icomp_draw_psf]);
 };
 

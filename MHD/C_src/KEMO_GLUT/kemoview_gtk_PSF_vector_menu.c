@@ -48,7 +48,7 @@ static void set_ref_vector_CB(GtkWidget *entry, gpointer user_data)
 static void set_vect_increment_CB(GtkWidget *entry, gpointer user_data)
 {
 	int gtk_intvalue = (int) gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(entry));
-	kemoview_set_PSF_vector_increment(gtk_intvalue);
+	kemoview_set_PSF_color_param(ISET_VECTOR_INC, gtk_intvalue);
 	
 	draw_full();
 	return;
@@ -144,7 +144,7 @@ void make_gtk_psf_vector_menu(struct colormap_view *color_vws){
 	
 	combobox_veccolor = gtk_combo_box_new_with_model(child_model_veccolor);
 	renderer_veccolor = gtk_cell_renderer_text_new();
-	iflag = kemoview_get_PSF_vector_color_mode();
+	iflag = kemoview_get_PSF_color_param(ISET_VECTOR_COLOR);
 	if(iflag == WHITE_PSF_VECT){
 		gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_veccolor), 1);
 	} else {
@@ -163,7 +163,7 @@ void make_gtk_psf_vector_menu(struct colormap_view *color_vws){
 	spin_ref_vect = gtk_spin_button_new(GTK_ADJUSTMENT(adj_ref_vect), 0, 2);
 	g_signal_connect(spin_ref_vect, "value-changed", G_CALLBACK(set_ref_vector_CB), (gpointer) color_vws);
 	
-	current_vec_increment = kemoview_get_PSF_vector_increment();
+	current_vec_increment = kemoview_get_PSF_color_param(ISET_VECTOR_INC);
 	sprintf(current_vec_inc_txt, "    %d    ", current_vec_increment);
 	adj_vect_inc = gtk_adjustment_new((double) current_vec_increment, 0, 500, 1, 1, 0.0);
 	spin_vect_inc = gtk_spin_button_new(GTK_ADJUSTMENT(adj_vect_inc), 0, 0);

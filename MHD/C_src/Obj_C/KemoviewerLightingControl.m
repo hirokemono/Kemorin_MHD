@@ -40,10 +40,10 @@
         
         self.numLightTable = kemoview_get_num_light_position();
 
-        self.ambientMaterial =  kemoview_get_matrial_parameter(AMBIENT_FLAG);
-        self.diffuseMaterial =  kemoview_get_matrial_parameter(DIFFUSE_FLAG);
-        self.specularMaterial = kemoview_get_matrial_parameter(SPECULAR_FLAG);
-        self.shinessMaterial =  kemoview_get_matrial_parameter(SHINENESS_FLAG);
+        self.ambientMaterial =  kemoview_get_material_parameter(AMBIENT_FLAG);
+        self.diffuseMaterial =  kemoview_get_material_parameter(DIFFUSE_FLAG);
+        self.specularMaterial = kemoview_get_material_parameter(SPECULAR_FLAG);
+        self.shinessMaterial =  kemoview_get_material_parameter(SHINENESS_FLAG);
         
         for(i=0;i<self.numLightTable;i++){
             kemoview_get_each_light_rtp(i, &r, &t, &p);
@@ -63,10 +63,10 @@
         self.shinessMaterial =  [[defaults stringForKey:@"materialShineness"] floatValue];
 
         kemoview_alloc_phong_light_list(self.numLightTable);
-        kemoview_set_matrial_parameter(AMBIENT_FLAG, self.ambientMaterial);
-        kemoview_set_matrial_parameter(DIFFUSE_FLAG, self.diffuseMaterial);
-        kemoview_set_matrial_parameter(SPECULAR_FLAG, self.specularMaterial);
-        kemoview_set_matrial_parameter(SHINENESS_FLAG, self.shinessMaterial);
+        kemoview_set_material_parameter(AMBIENT_FLAG, self.ambientMaterial);
+        kemoview_set_material_parameter(DIFFUSE_FLAG, self.diffuseMaterial);
+        kemoview_set_material_parameter(SPECULAR_FLAG, self.specularMaterial);
+        kemoview_set_material_parameter(SHINENESS_FLAG, self.shinessMaterial);
     };
 	
 	[self InitLightTable];
@@ -250,28 +250,28 @@
 - (IBAction)SetAmbientMaterialAction:(id)sender{
 	NSUserDefaults* defaults = [_kemoviewGL_defaults_controller defaults];
 	[defaults setFloat:((float) self.diffuseMaterial) forKey:@"materialAmbient"];
-	kemoview_set_matrial_parameter(AMBIENT_FLAG, self.ambientMaterial);
+	kemoview_set_material_parameter(AMBIENT_FLAG, self.ambientMaterial);
 	[_kemoviewer UpdateImage];
 	return;
 };
 - (IBAction)SetDiffuseMaterialAction:(id)sender{
 	NSUserDefaults* defaults = [_kemoviewGL_defaults_controller defaults];
 	[defaults setFloat:((float) self.diffuseMaterial) forKey:@"materialDiffuse"];
-	kemoview_set_matrial_parameter(DIFFUSE_FLAG, self.diffuseMaterial);
+	kemoview_set_material_parameter(DIFFUSE_FLAG, self.diffuseMaterial);
 	[_kemoviewer UpdateImage];
 	return;
 };
 - (IBAction)SetSpecularMaterialAction:(id)sender{
 	NSUserDefaults* defaults = [_kemoviewGL_defaults_controller defaults];
 	[defaults setFloat:((float) self.specularMaterial) forKey:@"materialSpecular"];
-	kemoview_set_matrial_parameter(SPECULAR_FLAG, self.specularMaterial);
+	kemoview_set_material_parameter(SPECULAR_FLAG, self.specularMaterial);
 	[_kemoviewer UpdateImage];
 	return;
 };
 - (IBAction)SetShinenessMaterialAction:(id)sender{
 	NSUserDefaults* defaults = [_kemoviewGL_defaults_controller defaults];
 	[defaults setFloat:((float) self.shinessMaterial) forKey:@"materialShineness"];
-	kemoview_set_matrial_parameter(SHINENESS_FLAG, self.shinessMaterial);
+	kemoview_set_material_parameter(SHINENESS_FLAG, self.shinessMaterial);
 	[_kemoviewer UpdateImage];
 	return;
 };

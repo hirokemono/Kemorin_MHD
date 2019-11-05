@@ -248,32 +248,19 @@
 !    int kemoview_get_anaglyph_flag();
 !    
 !    /* subroutines for surafces */
-!    void kemoview_set_PSF_num_loaded(int num);
-!    void kemoview_set_PSF_max_loaded(int num);
+!    void kemoview_set_PSF_num_loaded(int selected, int num);
 !    void kemoview_set_loaded_PSF_flag(int id_psf, int iflag);
-!    void kemoview_set_current_PSF(int id_psf);
-!    int kemoview_get_PSF_num_loaded();
-!    int kemoview_get_PSF_max_loaded();
+!    int kemoview_get_PSF_loaded_params(int selected);
 !    int kemoview_get_PSF_loaded_flag(int id_psf);
-!    int kemoview_get_curent_PSF_ID();
 !    
 !    int kemoview_get_PSF_full_path_file_prefix(char *file_head, int *iflag);
 !    int kemoview_get_PSF_file_prefix(char *file_head);
 !    
-!    void kemoview_set_PSF_field(int sel);
-!    void kemoview_set_PSF_component(int sel);
+!    void kemoview_set_each_PSF_field_param(int selected, int input);
 !    
-!    int kemoview_get_PSF_num_field();
-!    int kemoview_get_PSF_ncomptot();
+!    int kemoview_get_each_PSF_field_param(int selected);
 !    int kemoview_get_PSF_num_component(int i);
 !    void kemoview_get_PSF_field_name(char *name, int i);
-!    
-!    int kemoview_get_PSF_draw_switch();
-!    
-!    int kemoview_get_PSF_field_id();
-!    int kemoview_get_PSF_component_id();
-!    int kemoview_get_PSF_draw_data_address();
-!    int kemoview_get_PSF_coordinate_id();
 !    
 !    void set_texture_current_psf(int img_fmt, const char *img_head);
 !    
@@ -283,26 +270,17 @@
 !    int kemoview_get_PSF_draw_refv();
 !    int kemoview_toggle_PSF_draw_refv();
 !    
-!    void kemoview_set_PSF_patch_color_mode(int iflag);
-!    void kemoview_set_PSF_isoline_color_mode(int iflag);
-!    void kemoview_set_PSF_num_isoline(int nlline);
-!    void kemoview_set_PSF_vector_increment(int increment);
+!    void kemoview_set_PSF_color_param(int selected, int input);
+!    int kemoview_get_PSF_color_param(int selected){
+!
 !    void kemoview_set_PSF_vector_scale(double scale);
 !    void kemoview_set_PSF_vector_thickness(double size);
 !    
-!    int kemoview_get_PSF_patch_color_mode();
-!    int kemoview_get_PSF_isoline_color_mode();
-!    int kemoview_get_PSF_num_isoline();
-!    int kemoview_get_PSF_vector_color_mode();
-!    int kemoview_get_PSF_vector_increment();
 !    double kemoview_get_PSF_vector_scale();
 !    double kemoview_get_PSF_vector_thickness();
 !    
 !    int kemoview_get_PSF_draw_flags(int selected);
 !    int kemoview_select_PSF_draw_switch(int selected);
-!    
-!    void kemoview_set_PSF_color_mode(int isel);
-!    int kemoview_get_PSF_color_mode();
 !    
 !    double kemoview_get_PSF_min_data(int i);
 !    double kemoview_get_PSF_max_data(int i);

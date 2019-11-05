@@ -164,7 +164,7 @@ static void set_kemoview_color_mode_CB(GtkComboBox *combobox_cmap, gpointer user
     struct colormap_view *color_vws = (struct colormap_view *) user_data;
 	int index_mode = set_color_mode_CB(combobox_cmap, color_vws);
 	
-	kemoview_set_PSF_color_mode(index_mode);
+	kemoview_set_PSF_color_param(ISET_COLORMAP, index_mode);
     gtk_widget_queue_draw(color_vws->scrolled_window);
     return;
 }

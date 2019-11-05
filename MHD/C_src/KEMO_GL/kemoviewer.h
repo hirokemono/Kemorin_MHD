@@ -285,6 +285,9 @@
 #define ISET_PSF_OPACITY     7
 #define COLORBAR_TOGGLE      8
 #define PSF_POLYGON_SWITCH   9
+#define ISET_COLORMAP       31
+#define ISET_VECTOR_COLOR   41
+#define ISET_VECTOR_INC     42
 
 #define RAINBOW_PSF_SURF    10
 #define WHITE_PSF_SURF      11
@@ -410,6 +413,18 @@
 #define SPECULAR_FLAG   2
 #define SHINENESS_FLAG  3
 
+#define NUM_LOADED    0
+#define MAX_LOADED    1
+#define SET_CURRENT   2
+#define DRAW_SWITCH   3
+
+#define FIELD_SEL_FLAG       0
+#define COMPONENT_SEL_FLAG   1
+#define NUM_FIELD_FLAG       2
+#define NTOT_COMPONENT_FLAG  3
+#define DRQW_ADDRESS_FLAG    4
+#define COORDINATE_FLAG      5
+
 #define EPSILON  1.e-9
 
 #define OFF 0
@@ -506,8 +521,8 @@ extern "C" {
 	int kemoview_get_num_light_position(void);
 	void kemoview_get_each_light_rtp(int i_point, float *r, float *t, float *p);
 	
-	void kemoview_set_matrial_parameter(int itype, float shiness_in);
-	float kemoview_get_matrial_parameter(int itype);
+	void kemoview_set_material_parameter(int itype, float shiness_in);
+	float kemoview_get_material_parameter(int itype);
 	
 	
     void kemoview_set_mesh_color_mode(int icolor);
@@ -617,34 +632,21 @@ extern "C" {
     int kemoview_get_anaglyph_flag(void);
 
     /* subroutines for surafces */
-    void kemoview_set_PSF_num_loaded(int num);
-    void kemoview_set_PSF_max_loaded(int num);
+	void kemoview_set_PSF_loaded_params(int selected, int input);
     void kemoview_set_loaded_PSF_flag(int id_psf, int iflag);
-    void kemoview_set_current_PSF(int id_psf);
-    int kemoview_get_PSF_num_loaded(void);
-    int kemoview_get_PSF_max_loaded(void);
+
+	int kemoview_get_PSF_loaded_params(int selected);
     int kemoview_get_PSF_loaded_flag(int id_psf);
-    int kemoview_get_curent_PSF_ID(void);
-	int kemoview_get_curent_PSF_filename(void);
     
     void kemoview_get_PSF_full_path_file_name(struct kv_string *ucd_m);
     int kemoview_get_PSF_full_path_file_prefix(struct kv_string *psf_filehead, int *iflag);
     int kemoview_get_PSF_file_prefix(struct kv_string *stripped_filehead);
     
-    void kemoview_set_PSF_field(int sel);
-    void kemoview_set_PSF_component(int sel);
-    
-    int kemoview_get_PSF_num_field(void);
-    int kemoview_get_PSF_ncomptot(void);
+	void kemoview_set_each_PSF_field_param(int selected, int input);    
+	int kemoview_get_each_PSF_field_param(int selected);
+	
     int kemoview_get_PSF_num_component(int i);
 	void kemoview_get_PSF_field_name(struct kv_string *colorname, int i);
-    
-    int kemoview_get_PSF_draw_switch(void);
-    
-    int kemoview_get_PSF_field_id(void);
-    int kemoview_get_PSF_component_id(void);
-    int kemoview_get_PSF_draw_data_address(void);
-    int kemoview_get_PSF_coordinate_id(void);
     
     void kemoview_set_PSF_by_rgba_texture(int width, int height, const unsigned char *bgra_in);
     
@@ -656,28 +658,19 @@ extern "C" {
     
 	void * kemoview_link_active_colormap_param(void);
 	
-	void kemoview_set_PSF_patch_color_mode(int iflag);
-    void kemoview_set_PSF_isoline_color_mode(int iflag);
-    void kemoview_set_PSF_num_isoline(int nlline);
+	int kemoview_select_PSF_draw_switch(int selected);
+	int kemoview_get_PSF_draw_flags(int selected);
+	
+	void kemoview_set_PSF_color_param(int selected, int input);
+	int kemoview_get_PSF_color_param(int selected);
+	
 	void kemoview_set_PSF_isoline_width(double value, int i_digit);
-    void kemoview_set_PSF_vector_increment(int increment);
     void kemoview_set_PSF_vector_scale(double scale);
     void kemoview_set_PSF_vector_thickness(double size);
     
-    int kemoview_get_PSF_patch_color_mode(void);
-    int kemoview_get_PSF_isoline_color_mode(void);
-    int kemoview_get_PSF_num_isoline(void);
 	void kemoview_get_PSF_isoline_width(double *value, int *i_digit);
-    int kemoview_get_PSF_vector_color_mode(void);
-    int kemoview_get_PSF_vector_increment(void);
     double kemoview_get_PSF_vector_scale(void);
     double kemoview_get_PSF_vector_thickness(void);
-    
-    int kemoview_get_PSF_draw_flags(int selected);
-    int kemoview_select_PSF_draw_switch(int selected);
-    
-    void kemoview_set_PSF_color_mode(int isel);
-    int kemoview_get_PSF_color_mode(void);
     
     double kemoview_get_PSF_min_data(int i);
     double kemoview_get_PSF_max_data(int i);

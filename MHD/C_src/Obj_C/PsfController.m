@@ -131,8 +131,8 @@
 	NSNumber *stnum;
     struct kv_string *colorname;
 	
-	PsfNumberOfField =  kemoview_get_PSF_num_field();
-	PsfTotalComponent = kemoview_get_PSF_ncomptot();
+	PsfNumberOfField =  kemoview_get_each_PSF_field_param(NUM_FIELD_FLAG);
+	PsfTotalComponent = kemoview_get_each_PSF_field_param(NTOT_COMPONENT_FLAG);
 	[PsfFieldName removeAllObjects];	
 	[PsfNumberOfComponent removeAllObjects];
 	[PsfMinimum removeAllObjects];
@@ -169,10 +169,10 @@
 	double current_value;
 	int i_digit;
 	
-	self.PSFSelectedField =     kemoview_get_PSF_field_id();
-	self.PSFSelectedComponent = kemoview_get_PSF_component_id();
+	self.PSFSelectedField =     kemoview_get_each_PSF_field_param(FIELD_SEL_FLAG);
+	self.PSFSelectedComponent = kemoview_get_each_PSF_field_param(COMPONENT_SEL_FLAG);
     
-	int iplotted = kemoview_get_PSF_draw_data_address();
+	int iplotted = kemoview_get_each_PSF_field_param(DRQW_ADDRESS_FLAG);
 	
 	self.PSFSurfaceSwitch =  kemoview_get_PSF_draw_flags(PSFSOLID_TOGGLE);
 	self.PSFIsolineSwitch =  kemoview_get_PSF_draw_flags(PSFGRID_TOGGLE);
@@ -182,7 +182,7 @@
 	self.PsfMaximumRange =   kemoview_get_PSF_color_table_max();
 	self.PsfMinimumValue =   kemoview_get_PSF_min_data(iplotted);
 	self.PsfMaximumValue =   kemoview_get_PSF_max_data(iplotted);
-	self.IsolineNumber =     kemoview_get_PSF_num_isoline();
+	self.IsolineNumber =     kemoview_get_PSF_color_param(ISET_NLINE);
 
 	kemoview_get_PSF_isoline_width(&current_value, &i_digit);
 	self.IsolineWidth =      (CGFloat) current_value;
@@ -191,16 +191,16 @@
 	
 	self.DrawPSFVectorFlag = kemoview_get_PSF_draw_flags(PSFVECT_TOGGLE);
 	self.ScaleVector =       kemoview_get_PSF_vector_scale();
-	self.PSFVectorIncrement = kemoview_get_PSF_vector_increment();
+	self.PSFVectorIncrement = kemoview_get_PSF_color_param(ISET_VECTOR_INC);
     self.VectorThickness = kemoview_get_PSF_vector_thickness();
 	
 	self.psfPatchDirectionTag = kemoview_get_PSF_draw_flags(PSF_POLYGON_SWITCH);
 	self.psfTangentialVectorTag = kemoview_get_PSF_draw_flags(PSFTANVEC_TOGGLE);
 	
-	self.psfLineColorTag =  kemoview_get_PSF_isoline_color_mode();
-	self.psfPatchColorTag = kemoview_get_PSF_patch_color_mode();
+	self.psfLineColorTag =  kemoview_get_PSF_color_param(PSFGRID_TOGGLE);
+	self.psfPatchColorTag = kemoview_get_PSF_color_param(PSFSOLID_TOGGLE);
 	
-	self.psfVectorColorTag = kemoview_get_PSF_vector_color_mode();
+	self.psfVectorColorTag = kemoview_get_PSF_color_param(ISET_VECTOR_COLOR);
 	
 	[self CopyPsfDisplayFlagsFromC];
 	[self SetPsfFieldMenu];
@@ -221,10 +221,10 @@
 	self.PSFSelectedField =     IZERO;
 	self.PSFSelectedComponent = IZERO;
     
-	kemoview_set_PSF_field(self.PSFSelectedField);
-    kemoview_set_PSF_component((int) self.PSFSelectedComponent);
+	kemoview_set_each_PSF_field_param(FIELD_SEL_FLAG, self.PSFSelectedField);
+    kemoview_set_each_PSF_field_param(COMPONENT_SEL_FLAG, (int) self.PSFSelectedComponent);
     /*   
-     int iplotted = kemoview_get_PSF_draw_data_address();
+     int iplotted = kemoview_get_each_PSF_field_param(DRQW_ADDRESS_FLAG);
      
      self.PSFSurfaceSwitch =  kemoview_get_PSF_draw_flags(PSFSOLID_TOGGLE);
      self.PSFIsolineSwitch =  kemoview_get_PSF_draw_flags(PSFGRID_TOGGLE);
@@ -234,7 +234,7 @@
      self.PsfMaximumRange =   kemoview_get_PSF_color_table_max();
      self.PsfMinimumValue =   kemoview_get_PSF_min_data(iplotted);
      self.PsfMaximumValue =   kemoview_get_PSF_max_data(iplotted);
-     self.IsolineNumber =     kemoview_get_PSF_num_isoline();
+     self.IsolineNumber =     kemoview_get_PSF_color_param(ISET_NLINE);
 
 	 kemoview_get_PSF_isoline_width(&current_value, &i_digit);
 	 self.IsolineWidth =      (CGFloat) current_value;
@@ -243,16 +243,16 @@
      
      self.DrawPSFVectorFlag = kemoview_get_PSF_draw_flags(PSFVECT_TOGGLE);
      self.ScaleVector =       kemoview_get_PSF_vector_scale();
-     self.PSFVectorIncrement = kemoview_get_PSF_vector_increment();
+     self.PSFVectorIncrement = kemoview_get_PSF_color_param(ISET_VECTOR_INC);
      self.psfTangentialVectorTag = kemoview_get_PSF_draw_flags(PSFTANVEC_TOGGLE);
      
      self.psfPatchDirectionTag = kemoview_get_PSF_draw_flags(PSF_POLYGON_SWITCH);
      self.psfTangentialVectorTag = kemoview_get_PSF_draw_flags(PSFTANVEC_TOGGLE);
      
-     self.psfLineColorTag =  kemoview_get_PSF_isoline_color_mode();
-     self.psfPatchColorTag = kemoview_get_PSF_patch_color_mode();
+     self.psfLineColorTag =  kemoview_get_PSF_color_param(PSFGRID_TOGGLE);
+     self.psfPatchColorTag = kemoview_get_PSF_color_param(PSFSOLID_TOGGLE);
      
-     self.psfVectorColorTag = kemoview_get_PSF_vector_color_mode();
+     self.psfVectorColorTag = kemoview_get_PSF_color_param(ISET_VECTOR_COLOR);
      
      [self CopyPsfDisplayFlagsFromC];
      [self SetPsfFieldMenu];
@@ -275,12 +275,12 @@
 	NSString *PsfNumberTxt;
 	NSString *PsfFileHeader;
     
-	PsfNumberOfdata = kemoview_get_PSF_max_loaded();
+	PsfNumberOfdata = kemoview_get_PSF_loaded_params(MAX_LOADED);
 	[LoadedPsfFileHead removeAllObjects];
 	[LoadedPsfID removeAllObjects];
 	for(i = 0; i < PsfNumberOfdata; i++){
 		if(kemoview_get_PSF_loaded_flag(i) > 0){
-			kemoview_set_current_PSF(i);
+			kemoview_set_PSF_loaded_params(SET_CURRENT, i);
 
             psf_filehead = kemoview_alloc_kvstring();
 			istep = kemoview_get_PSF_full_path_file_prefix(psf_filehead, &ifmt);
@@ -295,12 +295,12 @@
 		}
 	}
     
-	PsfNumberOfdata = kemoview_get_PSF_num_loaded();
+	PsfNumberOfdata = kemoview_get_PSF_loaded_params(NUM_LOADED);
 	[_currentPsfMenu removeAllItems];
 	for(i = 0; i < PsfNumberOfdata; i++){
 		[_currentPsfMenu addItemWithTitle:[LoadedPsfFileHead objectAtIndex: i]];
 		j = [[LoadedPsfID objectAtIndex: i] intValue];
-		if(j == kemoview_get_curent_PSF_ID()) self.currentPSFID = i;
+		if(j == kemoview_get_PSF_loaded_params(SET_CURRENT)) self.currentPSFID = i;
 	};
     
     
@@ -383,7 +383,7 @@
 		};
 		
         
-		iplotted = kemoview_get_PSF_draw_data_address();
+		iplotted = kemoview_get_each_PSF_field_param(DRQW_ADDRESS_FLAG);
 		self.PsfMinimumValue = kemoview_get_PSF_min_data(iplotted);
 		self.PsfMaximumValue = kemoview_get_PSF_max_data(iplotted);
 	}
@@ -394,7 +394,7 @@
 - (void) SetPsfRanges{
 	int iplotted;
     
-	iplotted = kemoview_get_PSF_draw_data_address();
+	iplotted = kemoview_get_each_PSF_field_param(DRQW_ADDRESS_FLAG);
     
  	self.PsfMinimumValue = kemoview_get_PSF_min_data(iplotted);
 	self.PsfMaximumValue = kemoview_get_PSF_max_data(iplotted);
@@ -417,7 +417,7 @@
 						   [[PsfOpenFilehead stringByDeletingPathExtension] lastPathComponent]];
 	[_kemoviewControl SetViewTypeMenu:id_viewtype];
 	
-	self.DrawPsfFlag = kemoview_get_PSF_draw_switch();
+	self.DrawPsfFlag = kemoview_get_PSF_loaded_params(DRAW_SWITCH);
 	[self CopyPsfDisplayFlagsFromC];
 	[self SetPsfFieldMenu];
 	[self SetPsfComponentMenu:0];
@@ -427,7 +427,7 @@
     [_kemoviewControl Set3DView];
 	[_kemoviewer UpdateImage];
 	
-	int num_loaded =  kemoview_get_PSF_num_loaded();
+	int num_loaded =  kemoview_get_PSF_loaded_params(NUM_LOADED);
 	int nlimit_load = kemoview_get_PSF_maximum_load();
 	if(num_loaded >= nlimit_load-1){
 		self.psfMoreOpenFlag = 1;
@@ -520,7 +520,7 @@
 - (IBAction) ClosePsfFile:(id)pId{
     [self ResetCurrentPsfParam];
     int num_loaded = kemoview_close_PSF_view();
-    self.DrawPsfFlag = kemoview_get_PSF_draw_switch();
+    self.DrawPsfFlag = kemoview_get_PSF_loaded_params(DRAW_SWITCH);
     
 	if(num_loaded > 0){
         [self CopyPsfDisplayFlagsFromC];
@@ -535,7 +535,7 @@
 	int id_current;
 	
 	id_current = [[LoadedPsfID objectAtIndex:self.currentPSFID] intValue];
-	kemoview_set_current_PSF(id_current);
+	kemoview_set_PSF_loaded_params(SET_CURRENT, id_current);
     [self SetCurrentPSFFile];
 	[self UpdateCurrentPsfMenu];
 }
@@ -545,7 +545,7 @@
 	int isel = self.PSFSelectedField;
 	[self SetPsfComponentMenu:isel];
     
-	kemoview_set_PSF_field(isel);
+	kemoview_set_each_PSF_field_param(FIELD_SEL_FLAG, isel);
 	
 	[self SetPsfRanges];
     
@@ -555,7 +555,7 @@
 - (IBAction) PsfComponentAction:(id)sender
 {	
     
-	kemoview_set_PSF_component((int) self.PSFSelectedComponent);
+	kemoview_set_each_PSF_field_param(COMPONENT_SEL_FLAG, (int) self.PSFSelectedComponent);
 	
     [self SetPsfRanges];
     
@@ -597,24 +597,19 @@
     else if(self.psfPatchColorTag == SINGLE_COLOR){
         [self SetPSFColorFromColorWell];
     };
-	kemoview_set_PSF_patch_color_mode(self.psfPatchColorTag);
+	kemoview_set_PSF_color_param(PSFSOLID_TOGGLE, self.psfPatchColorTag);
     
 	[_kemoviewer UpdateImage];
 }
 - (IBAction)ChoosePsfLineColorAction:(id)sender;
 {
-	kemoview_set_PSF_isoline_color_mode(self.psfLineColorTag);
+	kemoview_set_PSF_color_param(PSFGRID_TOGGLE, self.psfLineColorTag);
 	[_kemoviewer UpdateImage];
 }
 
 - (IBAction)ChoosePsfVectorColorAction:(id)sender;
 {
-	if(self.psfVectorColorTag == 0){
-		kemoview_select_PSF_draw_switch(RAINBOW_PSF_VECT);
-	} else if (self.psfVectorColorTag == 1) {
-		kemoview_select_PSF_draw_switch(WHITE_PSF_VECT);
-	}
-	
+	kemoview_set_PSF_color_param(ISET_VECTOR_COLOR, (int) self.psfVectorColorTag);
 	[_kemoviewer UpdateImage];
 }
 
@@ -635,7 +630,7 @@
 }
 
 - (IBAction) ShowIsolineNumber:(id)pSender {
-	kemoview_set_PSF_num_isoline((int) self.IsolineNumber);
+	kemoview_set_PSF_color_param(ISET_NLINE, (int) self.IsolineNumber);
     
 	[_kemoviewer UpdateImage];
 }
@@ -663,7 +658,7 @@
 }
 
 - (IBAction)SetVectorIncrement:(id)pSender {
-	kemoview_set_PSF_vector_increment(self.PSFVectorIncrement);
+	kemoview_set_PSF_color_param(ISET_VECTOR_INC, self.PSFVectorIncrement);
 	
 	[_kemoviewer UpdateImage];
 }

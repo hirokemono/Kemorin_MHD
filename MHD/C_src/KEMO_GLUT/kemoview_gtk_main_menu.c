@@ -22,7 +22,7 @@ static void delete_kemoview_menu(struct main_buttons *mbot){
 static void update_kemoview_menu(struct main_buttons *mbot, GtkWidget *window){
 	int iflag_draw_m = kemoview_get_draw_mesh_flag();
 	int iflag_draw_f = kemoview_get_fline_switch();
-	int nload_psf = kemoview_get_PSF_num_loaded();
+	int nload_psf = kemoview_get_PSF_loaded_params(NUM_LOADED);
 	
 	mbot->psfBox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	if(nload_psf > 0){
@@ -161,7 +161,7 @@ static void current_psf_select_CB(GtkComboBox *combobox_sfcolor, gpointer user_d
 
     int index_mode = gtk_selected_combobox_index(combobox_sfcolor);
 	
-	kemoview_set_current_PSF(index_mode);
+	kemoview_set_PSF_loaded_params(SET_CURRENT, index_mode);
 	dealloc_colormap_views_4_viewer(mbot->color_vws);
 	
 	delete_kemoview_menu(mbot);
@@ -224,7 +224,7 @@ static void psf_field_select_CB(GtkComboBox *combobox_field, gpointer user_data)
 	
     int index_mode = gtk_selected_combobox_index(combobox_field);
     
-	kemoview_set_PSF_field(index_mode);
+	kemoview_set_each_PSF_field_param(FIELD_SEL_FLAG, index_mode);
 	
 	dealloc_colormap_views_4_viewer(mbot->color_vws);
 	
@@ -244,7 +244,7 @@ static void psf_component_select_CB(GtkComboBox *combobox_comp, gpointer user_da
     
     int index_mode = gtk_selected_combobox_index(combobox_comp);
 	
-	kemoview_set_PSF_component(index_mode);
+	kemoview_set_each_PSF_field_param(COMPONENT_SEL_FLAG, index_mode);
 	
 	dealloc_colormap_views_4_viewer(mbot->color_vws);
 	
@@ -292,10 +292,10 @@ void add_current_psf_set_box(struct main_buttons *mbot,
 	
 	struct kv_string *stripped_filehead;
 	char label_tmp[512];
-	int id_current = kemoview_get_curent_PSF_ID();
+	int id_current = kemoview_get_PSF_loaded_params(SET_CURRENT);
 	int index_current = 0;
 	int num_psf = 0;
-	for (ipsf=0; ipsf< kemoview_get_PSF_max_loaded(); ipsf++){
+	for (ipsf=0; ipsf< kemoview_get_PSF_loaded_params(MAX_LOADED); ipsf++){
 		if(kemoview_get_PSF_loaded_flag(ipsf) > 0) {num_psf = num_psf + 1;};
 	};
 	
@@ -309,10 +309,10 @@ void add_current_psf_set_box(struct main_buttons *mbot,
 		model_psfs = gtk_tree_view_get_model(GTK_TREE_VIEW(label_tree_psfs));  
 		child_model_psfs = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_psfs));
 		index = 0;
-		for (ipsf=0; ipsf< kemoview_get_PSF_max_loaded(); ipsf++){
+		for (ipsf=0; ipsf< kemoview_get_PSF_loaded_params(MAX_LOADED); ipsf++){
 			if(ipsf == id_current) {index_current = index;};
 			if(kemoview_get_PSF_loaded_flag(ipsf) > 0) {
-				kemoview_set_current_PSF(ipsf);
+				kemoview_set_PSF_loaded_params(SET_CURRENT, ipsf);
 				stripped_filehead = kemoview_alloc_kvstring();
 				istep = kemoview_get_PSF_file_prefix(stripped_filehead);
 				sprintf(label_tmp, "%d: %s", ipsf, stripped_filehead->string);
@@ -320,7 +320,7 @@ void add_current_psf_set_box(struct main_buttons *mbot,
 											   ipsf, child_model_psfs);
 				kemoview_free_kvstring(stripped_filehead);
 			};
-			kemoview_set_current_PSF(id_current);
+			kemoview_set_PSF_loaded_params(SET_CURRENT, id_current);
 		};
 		
 		GtkWidget *entry_file = gtk_entry_new();
@@ -359,8 +359,8 @@ static void add_psf_draw_field_box(struct main_buttons *mbot,
 	int index = 0;
 	
     struct kv_string *colorname = kemoview_alloc_kvstring();
-	int num_field = kemoview_get_PSF_num_field();
-	int if_psf = kemoview_get_PSF_field_id();
+	int num_field = kemoview_get_each_PSF_field_param(NUM_FIELD_FLAG);
+	int if_psf =    kemoview_get_each_PSF_field_param(FIELD_SEL_FLAG);
 	int ifld;
 	
 	GtkWidget *entry;
@@ -412,9 +412,9 @@ static void add_psf_draw_component_box(struct main_buttons *mbot,
 	int index = 0;
 	
 	char comp_name[1024];
-	int if_psf = kemoview_get_PSF_field_id();
+	int if_psf = kemoview_get_each_PSF_field_param(FIELD_SEL_FLAG);
 	int ncomp = kemoview_get_PSF_num_component(if_psf);
-	int icomp;
+	int icomp, id_coord;
 	
 	
 	if(ncomp < 2) return;
@@ -426,15 +426,16 @@ static void add_psf_draw_component_box(struct main_buttons *mbot,
 	label_tree_comp = create_fixed_label_w_index_tree();
 	model_comp = gtk_tree_view_get_model(GTK_TREE_VIEW(label_tree_comp));  
 	child_model_comp = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_comp));
+	id_coord = kemoview_get_each_PSF_field_param(COORDINATE_FLAG);
 	index = 0;
 	for(icomp=0;icomp<ncomp;icomp++){
-		set_PSF_component_name(ncomp, icomp, comp_name);
+		set_PSF_component_name(ncomp, id_coord, icomp, comp_name);
 		index = append_ci_item_to_tree(index, comp_name, icomp, child_model_comp);
 	};
 	
 	combobox_comp = gtk_combo_box_new_with_model(child_model_comp);
 	renderer_comp = gtk_cell_renderer_text_new();
-	icomp = kemoview_get_PSF_component_id();
+	icomp = kemoview_get_each_PSF_field_param(COMPONENT_SEL_FLAG);
 	gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_comp), icomp);
 	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(combobox_comp), renderer_comp, TRUE);
 	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combobox_comp), renderer_comp,

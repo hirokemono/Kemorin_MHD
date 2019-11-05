@@ -150,7 +150,7 @@ static void ele_grp_node_colormode_CB(GtkComboBox *combobox_sfcolor, gpointer us
 static void set_ele_grp_opacity_CB(GtkWidget *entry, gpointer user_data)
 {
 	float colorcode4[4];
-	kemoview_get_mesh_color_code(ELEM_GRP_FLAG, ELEM_GRP_FLAG, SURFSOLID_TOGGLE, colorcode4);
+	kemoview_get_mesh_color_code(ELEM_GRP_FLAG, SURFSOLID_TOGGLE, colorcode4);
 	colorcode4[3] = (float) gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
 	kemoview_set_mesh_color_code(ELEM_GRP_FLAG, SURFSOLID_TOGGLE, colorcode4);
 	
@@ -162,7 +162,7 @@ static void set_single_ele_grp_patch_color_CB(GtkButton *button, gpointer user_d
 	float colorcode4[4];
 	GtkWindow *parent = GTK_WINDOW(user_data);
 	
-	kemoview_get_mesh_color_code(ELEM_GRP_FLAG, ELEM_GRP_FLAG, SURFSOLID_TOGGLE, colorcode4);
+	kemoview_get_mesh_color_code(ELEM_GRP_FLAG, SURFSOLID_TOGGLE, colorcode4);
 	int iflag_set = kemoview_gtk_colorsel_CB(parent, colorcode4);
 	if(iflag_set > 0) {kemoview_set_mesh_color_code(ELEM_GRP_FLAG, SURFSOLID_TOGGLE, colorcode4);};
 	

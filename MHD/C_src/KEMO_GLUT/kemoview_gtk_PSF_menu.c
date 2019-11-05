@@ -66,7 +66,7 @@ void add_gtk_psf_colormap_menu(struct colormap_view *color_vws,
 
 void make_psf_menu_box(struct colormap_view *color_vws,
 			GtkWidget *window, GtkWidget *box_out){
-	int if_psf = kemoview_get_PSF_field_id();
+	int if_psf = kemoview_get_each_PSF_field_param(FIELD_SEL_FLAG);
 	int ncomp = kemoview_get_PSF_num_component(if_psf);
 	
 	add_gtk_isoline_menu(window, box_out);
