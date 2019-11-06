@@ -10,7 +10,6 @@
 #include "kemoview_gtk_PSF_isoline_menu.h"
 
 static void psf_grid_switch_CB(GObject *switch_1, GParamSpec *pspec, gpointer user_data){
-	GtkWidget *window = GTK_WIDGET(user_data);
 	kemoview_select_PSF_draw_switch(PSFGRID_TOGGLE);
 	
 	draw_full();

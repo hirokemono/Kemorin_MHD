@@ -286,6 +286,8 @@
 #define COLORBAR_TOGGLE      8
 #define PSF_POLYGON_SWITCH   9
 #define ISET_COLORMAP       31
+#define ISET_NUM_COLOR      32
+#define ISET_NUM_OPACITY    33
 #define ISET_VECTOR_COLOR   41
 #define ISET_VECTOR_INC     42
 
@@ -429,6 +431,7 @@
 #define NTOT_COMPONENT_FLAG  3
 #define DRAW_ADDRESS_FLAG    4
 #define COORDINATE_FLAG      5
+#define LINETYPE_FLAG       46
 
 #define EPSILON  1.e-9
 
@@ -677,8 +680,6 @@ extern "C" {
     double kemoview_get_PSF_vector_scale(void);
     double kemoview_get_PSF_vector_thickness(void);
     
-    double kemoview_get_PSF_min_data(int i);
-    double kemoview_get_PSF_max_data(int i);
     
 	void kemoview_delete_PSF_color_list(int i_delete);
 	void kemoview_delete_PSF_opacity_list(int i_delete);
@@ -694,9 +695,8 @@ extern "C" {
     void kemoview_set_PSF_color_data(int i_point, double value, double color);
     void kemoview_set_PSF_opacity_data(int i_point, double value, double opacity);
     
+	double kemoview_get_each_PSF_data_range(int selected, int icomp);
 	double kemoview_get_each_PSF_colormap_range(int selected);
-    int kemoview_get_PSF_color_table_num(void);
-    int kemoview_get_PSF_opacity_table_num(void);
     
     void kemoview_get_PSF_color_items(int i_point, double *value, double *color);
     void kemoview_get_PSF_opacity_items(int i_point, double *value, double *opacity);
@@ -712,32 +712,23 @@ extern "C" {
     int kemoview_get_fline_file_step_prefix(struct kv_string *fline_filehead);
     void kemoview_set_fline_file_step(int istep);
     
-    void kemoview_set_fline_switch(int iflag);
-    void kemoview_set_fline_color_type(int iflag);
-    void kemoview_set_fline_color_field(int sel);
-    void kemoview_set_fline_color_component(int sel);
-    
-    int kemoview_get_fline_switch(void);
-    int kemoview_get_fline_color_num_field(void);
-    int kemoview_get_fline_color_ncomptot(void);
+	void kemoview_set_fline_parameters(int selected, int iflag);
+	int kemoview_get_fline_parameters(int selected);
+	
+	void kemoview_set_fline_color_param(int selected, int input);
+	int kemoview_get_fline_color_param(int selected);
+	    
     int kemoview_get_fline_color_num_comps(int i);
-    int kemoview_get_fline_color_istack(int i);
     void kemoview_get_fline_color_data_name(struct kv_string *colorname, int i);
-    int kemoview_get_fline_color_field(void);
-    int kemoview_get_fline_color_component(void);
-    int kemoview_get_fline_color_data_adress(void);
-    int kemoview_get_fline_colormode(void);
     
-	void kemoview_set_fline_type(int iflag);
-	int kemoview_get_fline_type(void);
 	int kemoview_toggle_fline_type(void);
 	
+	void kemoview_set_fline_field_param(int selected, int input);
+	int kemoview_get_fline_field_param(int selected);
+
 	void kemoview_set_fline_thickness(double value, int i_digit);
 	void kemoview_get_fline_thickness(double *value, int *i_digit);
-    
-    double kemoview_get_fline_data_min(int i);
-    double kemoview_get_fline_data_max(int i);
-    
+
     void kemoview_set_fline_linear_colormap(double minvalue, double maxvalue);
     void kemoview_set_fline_constant_opacity(double opacity);
 
@@ -745,16 +736,12 @@ extern "C" {
     
     void kemoview_set_fline_color_data(int i_point, double value, double color);
     void kemoview_set_fline_opacity_data(int i_point, double value, double opacity);
-    void kemoview_set_fline_color_mode_id(int isel);
     
-    double kemoview_get_fline_min_color(void);
-    double kemoview_get_fline_max_color(void);
-    double kemoview_get_fline_min_opacity(void);
-    double kemoview_get_fline_max_opacity(void);
-    
-    int kemoview_get_fline_color_num(void);
-    int kemoview_get_fline_opacity_num(void);
-    void kemoview_get_fline_color_item(int i_point, double *value, double *color);
+	double kemoview_get_fline_data_range(int selected, int icomp);
+	double kemoview_get_fline_colormap_range(int selected);
+
+	
+	void kemoview_get_fline_color_item(int i_point, double *value, double *color);
     void kemoview_get_fline_opacity_item(int i_point, double *value, double *opacity);
     
     void kemoview_write_fline_colormap_file(struct kv_string *filename);

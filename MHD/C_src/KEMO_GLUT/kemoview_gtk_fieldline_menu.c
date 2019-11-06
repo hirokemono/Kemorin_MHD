@@ -34,8 +34,7 @@ static void fline_digit_CB(GtkWidget *entry, gpointer data)
 
 static void MinChange_CB(GtkWidget *entry, gpointer data)
 {
-/*	int icomp = kemoview_get_fline_color_data_adress(); */
-	double data_max = kemoview_get_fline_max_color();
+	double data_max = kemoview_get_fline_colormap_range(ISET_COLOR_MAX);
 	
 	double data_min = (double) gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
 	kemoview_set_fline_linear_colormap(data_min, data_max);
@@ -45,8 +44,7 @@ static void MinChange_CB(GtkWidget *entry, gpointer data)
 
 static void MaxChange_CB(GtkWidget *entry, gpointer data)
 {
-/*	int icomp = kemoview_get_fline_color_data_adress(); */
-	double data_min = kemoview_get_fline_min_color();
+	double data_min = kemoview_get_fline_colormap_range(ISET_COLOR_MIN);
 	
 	double data_max = (double) gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
 	kemoview_set_fline_linear_colormap(data_min, data_max);
@@ -65,8 +63,7 @@ static void psf_fline_colormode_CB(GtkComboBox *combobox_sfcolor, gpointer user_
 {
     int index_mode = gtk_selected_combobox_index(combobox_sfcolor);
 	
-	kemoview_set_fline_color_type(index_mode);
-	
+	kemoview_set_fline_color_param(ISET_COLORMAP, index_mode);
 	draw_full();
 	return;
 };
@@ -103,17 +100,17 @@ void add_gtk_fieldline_menu(GtkWidget *box_out){
 	double range_min, range_max, delta;
 	char min_text[30], max_text[30];
 	
-	num_fld =  kemoview_get_fline_color_num_field();
-	ifield = kemoview_get_fline_color_field();
-	icomp = kemoview_get_fline_color_data_adress();
+	num_fld = kemoview_get_fline_field_param(NUM_FIELD_FLAG);
+	ifield =  kemoview_get_fline_field_param(FIELD_SEL_FLAG);
+	icomp =   kemoview_get_fline_field_param(DRAW_ADDRESS_FLAG);
 	num_comp = kemoview_get_fline_color_num_comps(ifield);
-	itype_fline = kemoview_get_fline_type();
-	icolor_mode = kemoview_get_fline_colormode();
+	itype_fline = kemoview_get_fline_field_param(LINETYPE_FLAG);
+	icolor_mode = kemoview_get_fline_color_param(ISET_COLORMAP);
 	
-    range_min = kemoview_get_fline_data_min(icomp);
-	range_max = kemoview_get_fline_data_max(icomp);
-	data_min = kemoview_get_fline_min_color();
-	data_max = kemoview_get_fline_max_color();
+    range_min = kemoview_get_fline_data_range(ISET_COLOR_MIN, icomp);
+	range_max = kemoview_get_fline_data_range(ISET_COLOR_MAX, icomp);
+	data_min = kemoview_get_fline_colormap_range(ISET_COLOR_MIN);
+	data_max = kemoview_get_fline_colormap_range(ISET_COLOR_MAX);
 	
 	label_tree_color = create_fixed_label_w_index_tree();
 	model_color = gtk_tree_view_get_model(GTK_TREE_VIEW(label_tree_color));  

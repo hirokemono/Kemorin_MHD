@@ -16,7 +16,6 @@
 #include "m_kemoview_mesh.h"
 #include "m_psf_data_4_viewer_c.h"
 #include "m_kemoview_mesh_menu.h"
-#include "m_kemoviewer_menu.h"
 #include "m_gl_transfer_matrix.h"
 #include "kemoviewer_base.h"
 #include "read_data_4_kemoviewer.h"

@@ -8,7 +8,6 @@
 #include <stdlib.h>
 
 #include "kemosrc_param_c.h"
-#include "m_kemoviewer_menu.h"
 #include "move_draw_objects_gl.h"
 #include "gl_buffer_2_png.h"
 #include "gl_buffer_2_bmp.h"

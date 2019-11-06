@@ -4,8 +4,8 @@
 #ifndef SET_FIELDLINE_TO_BUF_
 #define SET_FIELDLINE_TO_BUF_
 
-#include "m_kemoviewer_menu.h"
 #include "m_psf_data_4_viewer_c.h"
+#include "m_kemoview_fline_menu.h"
 #include "vartex_array_object_gl.h"
 #include "rainbow_color_code_c.h"
 #include "set_color_code_on_nodes.h"

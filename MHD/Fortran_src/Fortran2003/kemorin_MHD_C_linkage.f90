@@ -282,13 +282,12 @@
 !    int kemoview_get_PSF_draw_flags(int selected);
 !    int kemoview_select_PSF_draw_switch(int selected);
 !    
-!    double kemoview_get_PSF_min_data(int i);
-!    double kemoview_get_PSF_max_data(int i);
+!    double kemoview_get_each_PSF_data_range(int selected, int icomp);
 !    
-!	void kemoview_delete_PSF_color_list(int i_delete);
-!	void kemoview_delete_PSF_opacity_list(int i_delete);
-!	void kemoview_add_PSF_color_list(double add_value, double add_color);
-!	void kemoview_add_PSF_opacity_list(double add_value, double add_opacity);
+!    void kemoview_delete_PSF_color_list(int i_delete);
+!    void kemoview_delete_PSF_opacity_list(int i_delete);
+!    void kemoview_add_PSF_color_list(double add_value, double add_color);
+!    void kemoview_add_PSF_opacity_list(double add_value, double add_opacity);
 !	
 !    void kemoview_set_PSF_linear_colormap(double minvalue, double maxvalue);
 !    void kemoview_set_PSF_single_color(double *rgba);
@@ -300,8 +299,6 @@
 !    void kemoview_set_PSF_opacity_data(int i_point, double value, double opacity);
 !    
 !    double kemoview_get_each_PSF_colormap_range(int selected);
-!    int kemoview_get_PSF_color_table_num();
-!    int kemoview_get_PSF_opacity_table_num();
 !    
 !    void kemoview_get_PSF_color_items(int i_point, double *value, double *color);
 !    void kemoview_get_PSF_opacity_items(int i_point, double *value, double *opacity);
@@ -316,32 +313,20 @@
 !    int kemoview_get_fline_file_step_prefix(char *file_head);
 !    void kemoview_set_fline_file_step(int istep);
 !    
-!    void kemoview_set_fline_color_field(int sel);
-!    void kemoview_set_fline_color_component(int sel);    
+!    void kemoview_set_fline_field_param(int selected, int input);
 !    
-!    void kemoview_set_fline_switch(int iflag);
-!    void kemoview_set_fline_color_type(int iflag);
+!    void kemoview_set_fline_parameters(int selected, int iflag);
+!    int kemoview_get_fline_parameters(int selected);
+!
+!    void kemoview_set_fline_color_param(int selected, int input);
 !    
-!    int kemoview_get_fline_switch();
-!    int kemoview_get_fline_color_num_field();
-!    int kemoview_get_fline_color_ncomptot();
 !    int kemoview_get_fline_color_num_comps(int i);
-!    int kemoview_get_fline_color_istack(int i);
 !    void kemoview_get_fline_color_data_name(char *name, int i);
-!    int kemoview_get_fline_color_field();
-!    int kemoview_get_fline_color_component();
-!    int kemoview_get_fline_color_data_adress();
-!    int kemoview_get_fline_colormode();
 !    
-!	void kemoview_set_fline_type(int iflag);
-!	int kemoview_get_fline_type();
 !	int kemoview_toggle_fline_type();
 !	
 !	void kemoview_set_fline_thickness(double value, int i_digit);
 !	double kemoview_get_fline_thickness();
-!    
-!    double kemoview_get_fline_data_min(int i);
-!    double kemoview_get_fline_data_max(int i);
 !    
 !    void kemoview_set_fline_linear_colormap(double minvalue, double maxvalue);
 !    void kemoview_set_fline_constant_opacity(double opacity);
@@ -350,36 +335,22 @@
 !    
 !    void kemoview_set_fline_color_data(int i_point, double value, double color);
 !    void kemoview_set_fline_opacity_data(int i_point, double value, double opacity);
-!    void kemoview_set_fline_color_mode_id(int isel);
 !    
-!    double kemoview_get_fline_min_color();
-!    double kemoview_get_fline_max_color();
-!    double kemoview_get_fline_min_opacity();
-        function kemoview_get_fline_min_opacity()                       &
-     &          BIND(C, name = "kemoview_get_fline_min_opacity")
-!          IMPORT C_DOUBLE, c_int
-          integer(c_int) :: kemoview_get_fline_min_opacity
-        END function
-!    
-!    double kemoview_get_fline_max_opacity();
-        function kemoview_get_fline_max_opacity()                       &
-     &          BIND(C, name = "kemoview_get_fline_max_opacity")
+!    double kemoview_get_fline_data_range(int selected, int icomp){
+!    double kemoview_get_fline_colormap_range(int selected);
+        function kemoview_get_fline_colormap_range(selected)            &
+     &          BIND(C, name = "kemoview_get_fline_colormap_range")
 !          IMPORT C_DOUBLE, c_int
           integer(c_int) :: kemoview_get_fline_maximum_opacity
+          integer(c_int) :: selected
         END function
 !    
-!    int kemoview_get_fline_color_num();
-        function kemoview_get_fline_color_num()                         &
-     &          BIND(C, name = "kemoview_get_fline_color_num")
-!          IMPORT c_int
-          integer(c_int) :: kemoview_get_fline_color_num
-        END function
-!
-!    int kemoview_get_fline_opacity_num();
-        function kemoview_get_fline_opacity_num()                       &
-     &          BIND(C, name = "kemoview_get_fline_opacity_num")
+!    int kemoview_get_fline_color_param(int selected);
+        function kemoview_get_fline_color_param(selected)               &
+     &          BIND(C, name = "kemoview_get_fline_color_param")
 !          IMPORT c_int
           integer(c_int) :: kemoview_get_ffline_opacity_num
+          integer(c_int) :: selected
         END function
 !
 !    void kemoview_get_fline_color_item(int i_point, double *value, double *color);

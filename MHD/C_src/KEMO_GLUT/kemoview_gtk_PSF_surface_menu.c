@@ -114,7 +114,7 @@ static void set_psf_opacity_CB(GtkWidget *entry, gpointer user_data)
 static void MinChange_CB(GtkWidget *entry, gpointer data)
 {
 	int icomp = kemoview_get_each_PSF_field_param(DRAW_ADDRESS_FLAG);
-	double data_max = kemoview_get_PSF_max_data(icomp);
+	double data_max = kemoview_get_each_PSF_data_range(ISET_COLOR_MAX, icomp);
 	
 	double data_min = (double) gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
 	kemoview_set_PSF_linear_colormap(data_min, data_max);
@@ -122,7 +122,7 @@ static void MinChange_CB(GtkWidget *entry, gpointer data)
 static void MaxChange_CB(GtkWidget *entry, gpointer data)
 {
 	int icomp = kemoview_get_each_PSF_field_param(DRAW_ADDRESS_FLAG);
-	double data_min = kemoview_get_PSF_min_data(icomp);
+	double data_min = kemoview_get_each_PSF_data_range(ISET_COLOR_MIN, icomp);
 	
 	double data_max = (double) gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
 	kemoview_set_PSF_linear_colormap(data_min, data_max);
@@ -219,8 +219,8 @@ void add_gtk_psf_surface_menu(struct colormap_view *color_vws,
 	g_signal_connect(spin_opacity1, "value-changed", G_CALLBACK(set_psf_opacity_CB), (gpointer) color_vws);
 	
 	icomp = kemoview_get_each_PSF_field_param(DRAW_ADDRESS_FLAG);
-	range_min = kemoview_get_PSF_min_data(icomp);
-	range_max = kemoview_get_PSF_max_data(icomp);
+	range_min = kemoview_get_each_PSF_data_range(ISET_COLOR_MIN, icomp);
+	range_max = kemoview_get_each_PSF_data_range(ISET_COLOR_MAX, icomp);
 	data_min = kemoview_get_each_PSF_colormap_range(ISET_COLOR_MIN);
 	data_max = kemoview_get_each_PSF_colormap_range(ISET_COLOR_MAX);
 	delta = range_max - range_min;

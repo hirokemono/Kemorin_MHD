@@ -212,6 +212,10 @@ int get_each_PSF_color_param(int selected, struct kemoview_psf *kemo_psf){
 		iflag = send_num_isoline(kemo_psf->psf_m[i_current]);
 	}else if(selected == ISET_COLORMAP){
 		iflag = send_PSF_colormap_id(kemo_psf->psf_m[i_current]);
+	}else if(selected == ISET_NUM_COLOR){
+		iflag = send_each_PSF_color_table_num(kemo_psf->psf_m[i_current]);
+	}else if(selected == ISET_NUM_OPACITY){
+		iflag = send_each_PSF_opacity_table_num(kemo_psf->psf_m[i_current]);
 	}else if(selected == ISET_VECTOR_COLOR){
 		iflag = send_each_vector_patch_color(kemo_psf->psf_m[i_current]);
 	}else if(selected == ISET_VECTOR_INC){
@@ -219,6 +223,17 @@ int get_each_PSF_color_param(int selected, struct kemoview_psf *kemo_psf){
 	};
 	return iflag;
 };
+
+double get_each_PSF_data_range(int selected, int icomp, struct kemoview_psf *kemo_psf){
+	double value = 0.0;
+	int i_current = kemo_psf->psf_a->id_current;
+	if(selected == ISET_COLOR_MIN){
+		value = send_psf_data_min(kemo_psf->psf_d[i_current], icomp);
+	}else if(selected == ISET_COLOR_MAX){
+		value = send_psf_data_max(kemo_psf->psf_d[i_current], icomp);
+	};
+	return value;
+}
 
 double get_each_PSF_colormap_range(int selected, struct kemoview_psf *kemo_psf){
 	double value = 0.0;

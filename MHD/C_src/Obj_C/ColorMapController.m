@@ -150,7 +150,7 @@
 	
 	[ColorTableField removeAllObjects];
 	[ColorTableColor removeAllObjects];
-	NumColorTable = kemoview_get_PSF_color_table_num();
+	NumColorTable = kemoview_get_PSF_color_param(ISET_NUM_COLOR);
 	for(i=0;i<NumColorTable;i++){
 		kemoview_get_PSF_color_items(i, &value, &color);
 		[ColorTableField addObject:[[NSNumber alloc ] initWithDouble:value] ];

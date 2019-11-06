@@ -8,7 +8,6 @@
 
 #import "Colormap_EditorAppDelegate.h"
 #include "m_kemoviewer_structure.h"
-#include "m_kemoviewer_menu.h"
 
 struct viewer_mesh       *vmesh;
 struct psf_data          *psf_d;

@@ -13,7 +13,7 @@ static void fline_field_select_CB(GtkComboBox *combobox_field, gpointer user_dat
 {
     int index_mode = gtk_selected_combobox_index(combobox_field);
 	
-	kemoview_set_fline_color_field(index_mode);
+	kemoview_set_fline_field_param(FIELD_SEL_FLAG, index_mode);
 	
 	draw_full();
 	return;
@@ -22,7 +22,7 @@ static void fline_field_select_CB(GtkComboBox *combobox_field, gpointer user_dat
 static void fline_component_select_CB(GtkComboBox *combobox_comp, gpointer user_data)
 {
     int index_mode = gtk_selected_combobox_index(combobox_comp);
-	kemoview_set_fline_color_component(index_mode);
+	kemoview_set_fline_field_param(COMPONENT_SEL_FLAG, index_mode);
 	
 	draw_full();
 	return;
@@ -41,8 +41,8 @@ void add_fline_draw_field_box(GtkWidget *box){
 	int index = 0;
 	
     struct kv_string *colorname = kemoview_alloc_kvstring();
-	int num_field = kemoview_get_fline_color_num_field();
-	int if_fline = kemoview_get_fline_color_field();
+	int num_field = kemoview_get_fline_field_param(NUM_FIELD_FLAG);
+	int if_fline =  kemoview_get_fline_field_param(FIELD_SEL_FLAG);
 	int ifld;
 	
 	label_tree_field = create_fixed_label_w_index_tree();
@@ -85,8 +85,8 @@ void add_fline_draw_component_box(GtkWidget *box){
 	
 	char comp_name[128];
 	int icomp, id_coord;
-	int if_fline = kemoview_get_fline_color_field();
-	int ic_fline = kemoview_get_fline_color_component();
+	int if_fline = kemoview_get_fline_field_param(FIELD_SEL_FLAG);
+	int ic_fline = kemoview_get_fline_field_param(COMPONENT_SEL_FLAG);
 	int ncomp =  kemoview_get_fline_color_num_comps(if_fline);
 	
 	if(ncomp > 1){

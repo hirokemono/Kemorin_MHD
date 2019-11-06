@@ -21,7 +21,7 @@ static void delete_kemoview_menu(struct main_buttons *mbot){
 
 static void update_kemoview_menu(struct main_buttons *mbot, GtkWidget *window){
 	int iflag_draw_m = kemoview_get_draw_mesh_flag();
-	int iflag_draw_f = kemoview_get_fline_switch();
+	int iflag_draw_f = kemoview_get_fline_parameters(DRAW_SWITCH);
 	int nload_psf = kemoview_get_PSF_loaded_params(NUM_LOADED);
 	
 	mbot->psfBox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);

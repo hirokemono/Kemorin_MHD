@@ -619,15 +619,6 @@ double kemoview_get_PSF_vector_thickness(void){
 	return send_vector_thick(kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current]);
 };
 
-double kemoview_get_PSF_min_data(int i){
-	return send_psf_data_min(kemo_sgl->kemo_psf->psf_d[kemo_sgl->kemo_psf->psf_a->id_current], i);
-};
-double kemoview_get_PSF_max_data(int i){
-	return send_psf_data_max(kemo_sgl->kemo_psf->psf_d[kemo_sgl->kemo_psf->psf_a->id_current], i);
-};
-
-
-
 void kemoview_delete_PSF_color_list(int i_delete){
     delete_PSF_color_index_list(kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current], i_delete);
 }
@@ -675,14 +666,11 @@ void kemoview_set_PSF_opacity_data(int i_point, double value, double opacity){
 							   i_point, value, opacity);
 }
 
+double kemoview_get_each_PSF_data_range(int selected, int icomp){
+	return get_each_PSF_data_range(ISET_COLOR_MAX, icomp, kemo_sgl->kemo_psf);
+};
 double kemoview_get_each_PSF_colormap_range(int selected){
 	return get_each_PSF_colormap_range(selected, kemo_sgl->kemo_psf);
-};
-int kemoview_get_PSF_color_table_num(void){
-	return send_each_PSF_color_table_num(kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current]);
-};
-int kemoview_get_PSF_opacity_table_num(void){
-	return send_each_PSF_opacity_table_num(kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current]);
 };
 
 void kemoview_get_PSF_color_items(int i_point, double *value, double *color){
@@ -720,52 +708,36 @@ void kemoview_set_fline_file_step(int istep){
 	set_fline_file_step(kemo_sgl->kemo_fline->fline_m, istep);
 };
 
-void kemoview_set_fline_switch(int iflag){
-	set_fline_switch(kemo_sgl->kemo_fline->fline_m, iflag);
+void kemoview_set_fline_parameters(int selected, int iflag){
+	set_fline_parameters(selected, iflag, kemo_sgl->kemo_fline);
 };
-void kemoview_set_fline_color_type(int iflag) {
-	set_fline_color_type(kemo_sgl->kemo_fline->fline_m, iflag);
+int kemoview_get_fline_parameters(int selected){
+	return get_fline_parameters(kemo_sgl->kemo_fline, selected);
 };
-void kemoview_set_fline_color_field(int sel){
-    set_fline_color_field(sel, kemo_sgl->kemo_fline->fline_d, kemo_sgl->kemo_fline->fline_m);
+
+void kemoview_set_fline_color_param(int selected, int input) {
+	set_fline_color_param(selected, input, kemo_sgl->kemo_fline->fline_m);
 };
-void kemoview_set_fline_color_component(int sel){
-    set_fline_color_component(sel, kemo_sgl->kemo_fline->fline_d, kemo_sgl->kemo_fline->fline_m);
+int kemoview_get_fline_color_param(int selected){
+	return get_fline_color_param(selected, kemo_sgl->kemo_fline);
 };
 
 
-int kemoview_get_fline_switch(void){return get_fline_switch(kemo_sgl->kemo_fline->fline_m);};
-int kemoview_get_fline_color_num_field(void){
-	return get_fline_color_num_field(kemo_sgl->kemo_fline->fline_d);
-};
-int kemoview_get_fline_color_ncomptot(void){
-	return get_fline_color_ncomptot(kemo_sgl->kemo_fline->fline_d);
-};
 int kemoview_get_fline_color_num_comps(int i){
 	return fline_color_num_comps(kemo_sgl->kemo_fline->fline_d, i);
-};
-int kemoview_get_fline_color_istack(int i){
-	return get_fline_color_istack(kemo_sgl->kemo_fline->fline_d, i);
 };
 void kemoview_get_fline_color_data_name(struct kv_string *colorname, int i){
 	get_fline_color_data_name(kemo_sgl->kemo_fline->fline_d, colorname, i);
 };
-int kemoview_get_fline_color_field(void){
-	return get_fline_color_field(kemo_sgl->kemo_fline->fline_m);
-};
-int kemoview_get_fline_color_component(void){
-	return get_fline_color_component(kemo_sgl->kemo_fline->fline_m);
-};
-int kemoview_get_fline_color_data_adress(void){
-	return get_fline_color_data_adress(kemo_sgl->kemo_fline->fline_m);
-};
-int kemoview_get_fline_colormode(void){return get_fline_colormode(kemo_sgl->kemo_fline->fline_m);};
 
-
-void kemoview_set_fline_type(int iflag) {set_fline_type(kemo_sgl->kemo_fline->fline_m, iflag);};
-int kemoview_get_fline_type(void) {return get_fline_type(kemo_sgl->kemo_fline->fline_m);};
 int kemoview_toggle_fline_type(void){return toggle_fline_type(kemo_sgl->kemo_fline->fline_m);};
 
+void kemoview_set_fline_field_param(int selected, int input){
+	return set_fline_field_param(selected, input, kemo_sgl->kemo_fline);
+};
+int kemoview_get_fline_field_param(int selected){
+	return get_fline_field_param(selected, kemo_sgl->kemo_fline);
+};
 
 void kemoview_set_fline_thickness(double value, int i_digit) {
 	set_fline_thickness(kemo_sgl->kemo_fline->fline_m, value, i_digit);
@@ -773,14 +745,6 @@ void kemoview_set_fline_thickness(double value, int i_digit) {
 void kemoview_get_fline_thickness(double *value, int *i_digit){
 	get_fline_thickness(kemo_sgl->kemo_fline->fline_m, value, i_digit);
 };
-
-double kemoview_get_fline_data_min(int i){
-	return get_fline_data_min(kemo_sgl->kemo_fline->fline_d, i);
-};
-double kemoview_get_fline_data_max(int i){
-	return get_fline_data_max(kemo_sgl->kemo_fline->fline_d, i);
-};
-
 
 void kemoview_set_fline_linear_colormap(double minvalue, double maxvalue){
 	set_fline_linear_colormap(kemo_sgl->kemo_fline->fline_m, minvalue, maxvalue);
@@ -799,18 +763,12 @@ void kemoview_set_fline_opacity_data(int i_point, double value, double opacity){
 	set_fline_opacity_data(kemo_sgl->kemo_fline->fline_m, i_point, value, opacity);
 }
 
-void kemoview_set_fline_color_mode_id(int isel){
-	set_fline_color_mode_id(kemo_sgl->kemo_fline->fline_m, isel);
-}
-
-double kemoview_get_fline_min_color(void){return get_fline_min_color(kemo_sgl->kemo_fline->fline_m);};
-double kemoview_get_fline_max_color(void){return get_fline_max_color(kemo_sgl->kemo_fline->fline_m);};
-double kemoview_get_fline_min_opacity(void){return get_fline_min_opacity(kemo_sgl->kemo_fline->fline_m);};
-double kemoview_get_fline_max_opacity(void){return get_fline_max_opacity(kemo_sgl->kemo_fline->fline_m);};
-
-int kemoview_get_fline_color_num(void)  {return get_fline_color_num(kemo_sgl->kemo_fline->fline_m);};
-int kemoview_get_fline_opacity_num(void){return get_fline_opacity_num(kemo_sgl->kemo_fline->fline_m);};
-
+double kemoview_get_fline_data_range(int selected, int icomp){
+	return get_fline_data_range(selected, icomp, kemo_sgl->kemo_fline);
+};
+double kemoview_get_fline_colormap_range(int selected){
+	return get_fline_colormap_range(selected, kemo_sgl->kemo_fline);
+};
 
 void kemoview_get_fline_color_item(int i_point, double *value, double *color){
 	get_fline_color_item(kemo_sgl->kemo_fline->fline_m, i_point, value, color);

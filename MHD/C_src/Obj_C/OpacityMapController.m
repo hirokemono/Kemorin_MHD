@@ -139,7 +139,7 @@
 	
 	[OpacityTableField removeAllObjects];
 	[OpacityTableOpacity removeAllObjects];
-	NumOpacityTable = kemoview_get_PSF_opacity_table_num();
+	NumOpacityTable = kemoview_get_PSF_color_param(ISET_NUM_OPACITY);
 	for(i=0;i<NumOpacityTable;i++){
 		kemoview_get_PSF_opacity_items(i, &value, &opacity);
 		[OpacityTableField    addObject:[[NSNumber alloc ] initWithDouble:value] ];

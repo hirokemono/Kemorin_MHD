@@ -152,12 +152,12 @@
 	}
     kemoview_free_kvstring(colorname);
 	for(i = 0; i < PsfTotalComponent; i++){
-		minmax = kemoview_get_PSF_min_data(i);
+		minmax = kemoview_get_each_PSF_data_range(ISET_COLOR_MIN, i);
 		stnum = [[NSNumber alloc] initWithDouble:minmax];
 		[PsfMinimum      addObject:stnum];
 		[stnum release];	
 		
-		minmax = kemoview_get_PSF_max_data(i);
+		minmax = kemoview_get_each_PSF_data_range(ISET_COLOR_MAX, i);
 		stnum = [[NSNumber alloc] initWithDouble:minmax];
 		[PsfMaximum      addObject:stnum];
 		[stnum release];	
@@ -180,8 +180,8 @@
 	self.PSFColorbarSwitch = kemoview_get_PSF_draw_flags(COLORBAR_TOGGLE);
 	self.PsfMinimumRange =   kemoview_get_each_PSF_colormap_range(ISET_COLOR_MIN);
 	self.PsfMaximumRange =   kemoview_get_each_PSF_colormap_range(ISET_COLOR_MAX);
-	self.PsfMinimumValue =   kemoview_get_PSF_min_data(iplotted);
-	self.PsfMaximumValue =   kemoview_get_PSF_max_data(iplotted);
+	self.PsfMinimumValue =   kemoview_get_each_PSF_data_range(ISET_COLOR_MIN, iplotted);
+	self.PsfMaximumValue =   kemoview_get_each_PSF_data_range(ISET_COLOR_MAX, iplotted);
 	self.IsolineNumber =     kemoview_get_PSF_color_param(ISET_NLINE);
 
 	kemoview_get_PSF_isoline_width(&current_value, &i_digit);
@@ -232,8 +232,8 @@
      self.PSFColorbarSwitch = kemoview_get_PSF_draw_flags(COLORBAR_TOGGLE);
      self.PsfMinimumRange =   kemoview_get_each_PSF_colormap_range(ISET_COLOR_MIN);
      self.PsfMaximumRange =   kemoview_get_each_PSF_colormap_range(ISET_COLOR_MAX);
-     self.PsfMinimumValue =   kemoview_get_PSF_min_data(iplotted);
-     self.PsfMaximumValue =   kemoview_get_PSF_max_data(iplotted);
+     self.PsfMinimumValue =   kemoview_get_each_PSF_data_range(ISET_COLOR_MIN, iplotted);
+     self.PsfMaximumValue =   kemoview_get_each_PSF_data_range(ISET_COLOR_MAX, iplotted);
      self.IsolineNumber =     kemoview_get_PSF_color_param(ISET_NLINE);
 
 	 kemoview_get_PSF_isoline_width(&current_value, &i_digit);
@@ -384,8 +384,8 @@
 		
         
 		iplotted = kemoview_get_each_PSF_field_param(DRAW_ADDRESS_FLAG);
-		self.PsfMinimumValue = kemoview_get_PSF_min_data(iplotted);
-		self.PsfMaximumValue = kemoview_get_PSF_max_data(iplotted);
+		self.PsfMinimumValue = kemoview_get_each_PSF_data_range(ISET_COLOR_MIN, iplotted);
+		self.PsfMaximumValue = kemoview_get_each_PSF_data_range(ISET_COLOR_MAX, iplotted);
 	}
 	
 	return;
@@ -396,8 +396,8 @@
     
 	iplotted = kemoview_get_each_PSF_field_param(DRAW_ADDRESS_FLAG);
     
- 	self.PsfMinimumValue = kemoview_get_PSF_min_data(iplotted);
-	self.PsfMaximumValue = kemoview_get_PSF_max_data(iplotted);
+ 	self.PsfMinimumValue = kemoview_get_each_PSF_data_range(ISET_COLOR_MIN, iplotted);
+	self.PsfMaximumValue = kemoview_get_each_PSF_data_range(ISET_COLOR_MAX, iplotted);
 	self.PsfMinimumRange = kemoview_get_each_PSF_colormap_range(ISET_COLOR_MIN);
 	self.PsfMaximumRange = kemoview_get_each_PSF_colormap_range(ISET_COLOR_MAX);
     

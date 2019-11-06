@@ -33,10 +33,10 @@
     
 
     if(kemoview_get_PSF_loaded_params(NUM_LOADED) < 1) return;
-	npoint = kemoview_get_PSF_color_table_num();
+	npoint = kemoview_get_PSF_color_param(ISET_NUM_COLOR);
 	kemoview_get_PSF_color_items(IZERO, &colorMin, &color);
 	kemoview_get_PSF_color_items(npoint-1, &colorMax, &color);
-	npoint = kemoview_get_PSF_opacity_table_num();
+	npoint = kemoview_get_PSF_color_param(ISET_NUM_OPACITY);
 	kemoview_get_PSF_opacity_items(IZERO, &dataMin, &opacity);
 	kemoview_get_PSF_opacity_items(npoint-1, &dataMax, &opacity);
 	if (dataMin > colorMin) {dataMin = colorMin;};
@@ -70,7 +70,7 @@
 
 	str = [NSString stringWithFormat:@"Color"];
 	[self drawString:str x:105 y:265];
-	for(i = 0; i < kemoview_get_PSF_color_table_num(); i++) {
+	for(i = 0; i < kemoview_get_PSF_color_param(ISET_NUM_COLOR); i++) {
 		kemoview_get_PSF_color_items(i, &value, &color);
 		ylabel = 250 * (value-dataMin) / (dataMax - dataMin);
 		str = [NSString stringWithFormat:@"%1.2e", value];
@@ -79,7 +79,7 @@
 
 	str = [NSString stringWithFormat:@"Opacity"];
 	[self drawString:str x:3 y:265];
-	for(i = 0; i < kemoview_get_PSF_opacity_table_num(); i++) {
+	for(i = 0; i < kemoview_get_PSF_color_param(ISET_NUM_OPACITY); i++) {
 		kemoview_get_PSF_opacity_items(i, &value, &opacity);
 		ylabel = 250 * (value-dataMin) / (dataMax - dataMin);
 		str = [NSString stringWithFormat:@"%1.2e", value];

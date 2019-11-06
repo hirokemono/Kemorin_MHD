@@ -1,13 +1,14 @@
 /*
-// m_kemoviewer_menu.c
+// m_kemoview_fline_menu.c
 */
 
-#include "m_kemoviewer_menu.h"
+#include "m_kemoview_fline_menu.h"
 
 
 void alloc_draw_fline_flags(struct psf_data *fline_s, struct fline_menu_val *fline_m){
 	int i;
-	fline_m->cmap_fline_comp =  (struct colormap_params **) malloc(fline_s->ncomptot*sizeof(struct colormap_params *));
+	fline_m->cmap_fline_comp
+			=  (struct colormap_params **) malloc(fline_s->ncomptot*sizeof(struct colormap_params *));
 	if( fline_m->cmap_fline_comp == NULL ) {
 		printf( "cmap_fline_comp cannot alloc!\n" );
 		exit( 1 );
@@ -21,7 +22,8 @@ void alloc_draw_fline_flags(struct psf_data *fline_s, struct fline_menu_val *fli
 		alloc_color_index_list_s(fline_m->cmap_fline_comp[i], RAINBOW_MODE);
 	};
 	
-	fline_m->cmap_fline_fld =  (struct colormap_params **) malloc(fline_s->nfield*sizeof(struct colormap_params *));
+	fline_m->cmap_fline_fld
+			=  (struct colormap_params **) malloc(fline_s->nfield*sizeof(struct colormap_params *));
 	if( fline_m->cmap_fline_fld == NULL ) {
 		printf( "cmap_fline_fld cannot alloc!\n" );
 		exit( 1 );

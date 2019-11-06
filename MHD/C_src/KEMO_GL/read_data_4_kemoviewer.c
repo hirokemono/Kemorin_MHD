@@ -164,11 +164,6 @@ void set_kemoview_fline_data(struct psf_data *fline_s, struct psf_data *ucd_tmp,
                              struct fline_menu_val *fline_m){
 	int i;
 	
-	if (fline_m->iflag_draw_fline > 0){
-		dealloc_draw_fline_flags(fline_s, fline_m);
-		deallc_all_fline_data(fline_s);
-	}
-    
 	set_fline_data_by_UCD(fline_s, ucd_tmp);
 	alloc_draw_fline_flags(fline_s, fline_m);
 	
