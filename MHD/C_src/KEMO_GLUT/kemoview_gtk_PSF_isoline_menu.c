@@ -50,8 +50,8 @@ static void set_width_CB(GtkWidget *entry, gpointer user_data)
 	double current_width;
 	int i_digit;
 	double gtk_value = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
-	kemoview_get_PSF_isoline_width(&current_width, &i_digit);
-	kemoview_set_PSF_isoline_width(gtk_value, i_digit);
+	kemoview_get_each_PSF_color_w_exp(ISET_WIDTH, &current_width, &i_digit);
+	kemoview_set_each_PSF_color_w_exp(ISET_WIDTH, gtk_value, i_digit);
 	
 	draw_full();
 	return;
@@ -62,8 +62,8 @@ static void set_digit_CB(GtkWidget *entry, gpointer user_data)
 	double current_width;
 	int i_digit;
 	int gtk_value = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(entry));
-	kemoview_get_PSF_isoline_width(&current_width, &i_digit);
-	kemoview_set_PSF_isoline_width(current_width, gtk_value);
+	kemoview_get_each_PSF_color_w_exp(ISET_WIDTH, &current_width, &i_digit);
+	kemoview_set_each_PSF_color_w_exp(ISET_WIDTH, current_width, gtk_value);
 	
 	draw_full();
 	return;
@@ -140,7 +140,7 @@ void add_gtk_isoline_menu(GtkWidget *window, GtkWidget *box){
 	
 	double current_width;
 	int i_digit;
-	kemoview_get_PSF_isoline_width(&current_width, &i_digit);
+	kemoview_get_each_PSF_color_w_exp(ISET_WIDTH, &current_width, &i_digit);
 	adj_width = gtk_adjustment_new(current_width, 1, 9, 1, 1, 0);
 	spin_width = gtk_spin_button_new(GTK_ADJUSTMENT(adj_width), 0, 0);
 	g_signal_connect(spin_width, "value-changed", G_CALLBACK(set_width_CB), NULL);

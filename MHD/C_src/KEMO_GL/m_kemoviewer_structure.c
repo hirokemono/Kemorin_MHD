@@ -599,35 +599,6 @@ int kemoview_get_PSF_color_param(int selected){
 	return get_each_PSF_color_param(selected, kemo_sgl->kemo_psf);
 };
 
-void kemoview_set_PSF_isoline_width(double value, int i_digit){
-	set_each_isoline_width(kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current], value, i_digit);
-};
-void kemoview_set_PSF_vector_scale(double value, int i_digit){
-	set_each_scale_vect(value, i_digit, kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current]);
-};
-void kemoview_set_PSF_vector_thickness(double value, int i_digit){
-	set_each_vector_thick(value, i_digit, kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current]);
-};
-void kemoview_set_PSF_vector_increment(double value, int i_digit){
-	set_each_increment_vect(value, i_digit, kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current]);
-};
-
-
-void kemoview_get_PSF_isoline_width(double *value, int *i_digit){
-	return send_isoline_width(kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current], value, i_digit);
-};
-void kemoview_get_PSF_vector_scale(double *value, int *i_digit){
-	return send_scale_vector(kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current], value, i_digit);
-};
-void kemoview_get_PSF_vector_thickness(double *value, int *i_digit){
-	send_vector_thick(kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current], value, i_digit);
-	return;
-};
-void kemoview_get_PSF_vector_increment(double *value, int *i_digit){;
-	send_each_increment_vect(kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current], value, i_digit);
-	return;
-};
-
 void kemoview_delete_PSF_color_list(int i_delete){
     delete_PSF_color_index_list(kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current], i_delete);
 }
@@ -646,15 +617,14 @@ void kemoview_add_PSF_opacity_list(double add_value, double add_opacity){
 
 void kemoview_set_PSF_linear_colormap(double minvalue, int i_min_digit,
 									  double maxvalue, int i_max_digit){
-    set_PSF_linear_colormap(minvalue, i_min_digit, maxvalue, i_max_digit, 
+	set_PSF_linear_colormap(minvalue, i_min_digit, maxvalue, i_max_digit, 
 							kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current]);
 }
-void kemoview_get_each_PSF_range_min(double *value, int *i_digit){;
-	get_each_PSF_num_exponent(ISET_COLOR_MIN, kemo_sgl->kemo_psf, value, i_digit);
-	return;
+void kemoview_set_each_PSF_color_w_exp(int selected, double value, int i_digit){
+	set_each_PSF_color_w_exp(selected, value, i_digit, kemo_sgl->kemo_psf);
 };
-void kemoview_get_each_PSF_range_max(double *value, int *i_digit){;
-	get_each_PSF_num_exponent(ISET_COLOR_MAX, kemo_sgl->kemo_psf, value, i_digit);
+void kemoview_get_each_PSF_color_w_exp(int selected, double *value, int *i_digit){;
+	get_each_PSF_color_w_exp(selected, kemo_sgl->kemo_psf, value, i_digit);
 	return;
 };
 
@@ -757,24 +727,16 @@ int kemoview_get_fline_field_param(int selected){
 	return get_fline_field_param(selected, kemo_sgl->kemo_fline);
 };
 
-void kemoview_set_fline_thickness(double value, int i_digit) {
-	set_fline_thickness(kemo_sgl->kemo_fline->fline_m, value, i_digit);
-};
-void kemoview_get_fline_thickness(double *value, int *i_digit){
-	get_fline_thickness(kemo_sgl->kemo_fline->fline_m, value, i_digit);
-};
-
 void kemoview_set_fline_linear_colormap(double minvalue, int i_min_digit,
 										double maxvalue, int i_max_digit){
 	set_fline_linear_colormap(minvalue, i_min_digit, maxvalue, i_max_digit, 
 							  kemo_sgl->kemo_fline->fline_m);
 }
-void kemoview_get_fline_range_min(double *value, int *i_digit){
-	get_fline_num_exponent(ISET_COLOR_MIN, kemo_sgl->kemo_fline, value, i_digit);
-	return;
+void kemoview_set_fline_color_w_exp(int selected, double value, int i_digit){
+	set_fline_color_w_exp(selected, value, i_digit, kemo_sgl->kemo_fline);
 };
-void kemoview_get_fline_range_max(double *value, int *i_digit){
-	get_fline_num_exponent(ISET_COLOR_MAX, kemo_sgl->kemo_fline, value, i_digit);
+void kemoview_get_fline_color_w_exp(int selected, double *value, int *i_digit){
+	get_fline_color_w_exp(selected, kemo_sgl->kemo_fline, value, i_digit);
 	return;
 };
 

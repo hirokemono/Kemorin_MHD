@@ -273,11 +273,7 @@
 !    void kemoview_set_PSF_color_param(int selected, int input);
 !    int kemoview_get_PSF_color_param(int selected){
 !
-!    void kemoview_set_PSF_vector_scale(double scale);
-!    void kemoview_set_PSF_vector_thickness(double value, int i_digit);
-!    
-!    void kemoview_get_PSF_vector_scale(double *value, int *i_digit);
-!    void kemoview_get_PSF_vector_thickness(double *value, int *i_digit);
+!    void kemoview_set_each_PSF_color_w_exp(int selected, double value, int i_digit);
 !    
 !    int kemoview_get_PSF_draw_flags(int selected);
 !    int kemoview_select_PSF_draw_switch(int selected);
@@ -325,12 +321,12 @@
 !    int kemoview_get_fline_color_num_comps(int i);
 !    void kemoview_get_fline_color_data_name(char *name, int i);
 !    
-!	int kemoview_toggle_fline_type();
+!    int kemoview_toggle_fline_type();
 !	
-!	void kemoview_set_fline_thickness(double value, int i_digit);
-!	double kemoview_get_fline_thickness();
-!    
+!    void kemoview_set_fline_color_w_exp(int selected, double value, int i_digit){
 !    void kemoview_set_fline_linear_colormap(double minvalue, double maxvalue);
+!    void kemoview_get_fline_color_w_exp(int selected, double *value, int *i_digit);
+!
 !    void kemoview_set_fline_constant_opacity(double opacity);
 !    
 !    double kemoview_get_fline_opacity_at_value(double value);

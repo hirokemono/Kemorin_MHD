@@ -220,6 +220,42 @@ int get_each_PSF_color_param(int selected, struct kemoview_psf *kemo_psf){
 	return iflag;
 };
 
+void set_each_PSF_color_w_exp(int selected, double value, int i_digit, 
+							  struct kemoview_psf *kemo_psf){
+	double data = const_from_digit_order(value, i_digit);
+	int i_current = kemo_psf->psf_a->id_current;
+	if(selected == ISET_WIDTH){
+		set_each_isoline_width(data, kemo_psf->psf_m[i_current]);
+	}else if(selected == ISET_PSF_REFVECT){
+		set_each_scale_vect(data, kemo_psf->psf_m[i_current]);
+	}else if(selected == ISET_PSF_V_THICK){
+		set_each_vector_thick(data, kemo_psf->psf_m[i_current]);
+	}else if(selected == ISET_VECTOR_INC){
+		set_each_increment_vect((int) data, kemo_psf->psf_m[i_current]);
+	};
+	return;
+};
+void get_each_PSF_color_w_exp(int selected, struct kemoview_psf *kemo_psf,
+							   double *value, int *i_digit){
+	double data = 0.0;
+	int i_current = kemo_psf->psf_a->id_current;
+	if(selected == ISET_COLOR_MIN){
+		data = send_each_PSF_color_table_min(kemo_psf->psf_m[i_current]);
+	}else if(selected == ISET_COLOR_MAX){
+		data = send_each_PSF_color_table_max(kemo_psf->psf_m[i_current]);
+	}else if(selected == ISET_WIDTH){
+		data = send_isoline_width(kemo_psf->psf_m[i_current]);
+	}else if(selected == ISET_PSF_REFVECT){
+		data = send_scale_vector(kemo_psf->psf_m[i_current]);
+	}else if(selected == ISET_PSF_V_THICK){
+		data = send_vector_thick(kemo_psf->psf_m[i_current]);
+	}else if(selected == ISET_VECTOR_INC){
+		data = (double) send_each_increment_vect(kemo_psf->psf_m[i_current]);
+	};
+	find_order_digit(data, value, i_digit);
+	return;
+};
+
 double get_each_PSF_data_range(int selected, int icomp, struct kemoview_psf *kemo_psf){
 	double value = 0.0;
 	int i_current = kemo_psf->psf_a->id_current;
@@ -240,17 +276,4 @@ double get_each_PSF_colormap_range(int selected, struct kemoview_psf *kemo_psf){
 		value = send_each_PSF_maximum_opacity(kemo_psf->psf_m[i_current]);
 	};
 	return value;
-};
-
-void get_each_PSF_num_exponent(int selected, struct kemoview_psf *kemo_psf,
-							   double *value, int *i_digit){
-	double data = 0.0;
-	int i_current = kemo_psf->psf_a->id_current;
-	if(selected == ISET_COLOR_MIN){
-		data = send_each_PSF_color_table_min(kemo_psf->psf_m[i_current]);
-	}else if(selected == ISET_COLOR_MAX){
-		data = send_each_PSF_color_table_max(kemo_psf->psf_m[i_current]);
-	};
-	find_order_digit(data, value, i_digit);
-	return;
 };

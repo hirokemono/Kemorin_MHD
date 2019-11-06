@@ -187,29 +187,29 @@
 	self.PsfMaximumValue =   kemoview_get_each_PSF_data_range(ISET_COLOR_MAX, iplotted);
 	self.IsolineNumber =     kemoview_get_PSF_color_param(ISET_NLINE);
 
-	kemoview_get_each_PSF_range_min(&current_value, &i_digit);
+	kemoview_get_each_PSF_color_w_exp(ISET_COLOR_MIN, &current_value, &i_digit);
 	self.PsfMinimumRange =      (CGFloat) current_value;
 	self.PsfMinimumDigit =      (CGFloat) i_digit;
-	kemoview_get_each_PSF_range_max(&current_value, &i_digit);
+	kemoview_get_each_PSF_color_w_exp(ISET_COLOR_MAX, &current_value, &i_digit);
 	self.PsfMaximumRange =      (CGFloat) current_value;
 	self.PsfMaximumDigit =      (CGFloat) i_digit;
 
-	kemoview_get_PSF_isoline_width(&current_value, &i_digit);
+	kemoview_get_each_PSF_color_w_exp(ISET_WIDTH, &current_value, &i_digit);
 	self.IsolineWidth =      (CGFloat) current_value;
 	self.IsolineDigit =      (CGFloat) i_digit;
 	self.PSFOpacity =        kemoview_get_each_PSF_colormap_range(ISET_OPACITY_MAX);
 	
 	self.DrawPSFVectorFlag = kemoview_get_PSF_draw_flags(PSFVECT_TOGGLE);
 
-	kemoview_get_PSF_vector_scale(&current_value, &i_digit);
+	kemoview_get_each_PSF_color_w_exp(ISET_PSF_REFVECT, &current_value, &i_digit);
 	self.ScaleVector =      (CGFloat) current_value;
 	self.ScaleDigit =       (CGFloat) i_digit;
 
-	kemoview_get_PSF_vector_increment(&current_value, &i_digit);
+	kemoview_get_each_PSF_color_w_exp(ISET_VECTOR_INC, &current_value, &i_digit);
 	self.PSFVectorIncrement = (CGFloat) current_value;
 	self.PSFVectorIncDigit =  (CGFloat) i_digit;
 	
-	kemoview_get_PSF_vector_thickness(&current_value, &i_digit);
+	kemoview_get_each_PSF_color_w_exp(ISET_PSF_V_THICK, &current_value, &i_digit);
     self.VectorThickness = (CGFloat) current_value;
 	self.VectorDigit =     (CGFloat) i_digit;
 	
@@ -253,14 +253,14 @@
      self.PsfMaximumValue =   kemoview_get_each_PSF_data_range(ISET_COLOR_MAX, iplotted);
      self.IsolineNumber =     kemoview_get_PSF_color_param(ISET_NLINE);
 
-	 kemoview_get_each_PSF_range_min(&current_value, &i_digit);
+	 kemoview_get_each_PSF_color_w_exp(ISET_COLOR_MIN, &current_value, &i_digit);
 	 self.PsfMinimumRange =      (CGFloat) current_value;
 	 self.PsfMinimumDigit =      (CGFloat) i_digit;
-	 kemoview_get_each_PSF_range_max(&current_value, &i_digit);
+	 kemoview_get_each_PSF_color_w_exp(ISET_COLOR_MAX, &current_value, &i_digit);
 	 self.PsfMaximumRange =      (CGFloat) current_value;
 	 self.PsfMaximumDigit =      (CGFloat) i_digit;
 	 
-	 kemoview_get_PSF_isoline_width(&current_value, &i_digit);
+	 kemoview_get_each_PSF_color_w_exp(ISET_WIDTH, &current_value, &i_digit);
 	 self.IsolineWidth =      (CGFloat) current_value;
 	 self.IsolineDigit =      (CGFloat) i_digit;
 
@@ -268,11 +268,11 @@
      
      self.DrawPSFVectorFlag = kemoview_get_PSF_draw_flags(PSFVECT_TOGGLE);
 
-	 kemoview_get_PSF_vector_scale(&current_value, &i_digit);
+	 kemoview_get_each_PSF_color_w_exp(ISET_PSF_REFVECT, &current_value, &i_digit);
 	 self.ScaleVector =      (CGFloat) current_value;
 	 self.ScaleDigit =       (CGFloat) i_digit;
 
-	 kemoview_get_PSF_vector_increment(&current_value, &i_digit);
+	 kemoview_get_each_PSF_color_w_exp(ISET_VECTOR_INC, &current_value, &i_digit);
 	 self.PSFVectorIncrement = (CGFloat) current_value;
 	 self.PSFVectorIncDigit =  (CGFloat) i_digit;
 	 
@@ -433,10 +433,10 @@
  	self.PsfMinimumValue = kemoview_get_each_PSF_data_range(ISET_COLOR_MIN, iplotted);
 	self.PsfMaximumValue = kemoview_get_each_PSF_data_range(ISET_COLOR_MAX, iplotted);
 
-	kemoview_get_each_PSF_range_min(&current_value, &i_digit);
+	kemoview_get_each_PSF_color_w_exp(ISET_COLOR_MIN, &current_value, &i_digit);
 	self.PsfMinimumRange =      (CGFloat) current_value;
 	self.PsfMinimumDigit =      (CGFloat) i_digit;
-	kemoview_get_each_PSF_range_max(&current_value, &i_digit);
+	kemoview_get_each_PSF_color_w_exp(ISET_COLOR_MAX, &current_value, &i_digit);
 	self.PsfMaximumRange =      (CGFloat) current_value;
 	self.PsfMaximumDigit =      (CGFloat) i_digit;
 	
@@ -677,7 +677,7 @@
 }
 
 - (IBAction) SetIsolineWidth:(id)pSender {
-	kemoview_set_PSF_isoline_width((double) self.IsolineWidth, (int) self.IsolineDigit);
+	kemoview_set_each_PSF_color_w_exp(ISET_WIDTH, (double) self.IsolineWidth, (int) self.IsolineDigit);
 	
 	[_kemoviewer UpdateImage];
 }
@@ -693,19 +693,19 @@
 }
 
 - (IBAction)SetReferenceVector:(id)pSender {
-	kemoview_set_PSF_vector_scale((double) self.ScaleVector, (int) self.ScaleDigit);
+	kemoview_set_each_PSF_color_w_exp(ISET_PSF_REFVECT, (double) self.ScaleVector, (int) self.ScaleDigit);
     
 	[_kemoviewer UpdateImage];
 }
 
 - (IBAction)SetVectorIncrement:(id)pSender {
-	kemoview_set_PSF_vector_increment((double) self.PSFVectorIncrement, (int) self.PSFVectorIncDigit);
+	kemoview_set_each_PSF_color_w_exp(ISET_VECTOR_INC, (double) self.PSFVectorIncrement, (int) self.PSFVectorIncDigit);
 	
 	[_kemoviewer UpdateImage];
 }
 
 - (IBAction)SetVectorThickness:(id)pSender {
-    kemoview_set_PSF_vector_thickness((double) self.VectorThickness, (int) self.VectorDigit);
+    kemoview_set_each_PSF_color_w_exp(ISET_PSF_V_THICK, (double) self.VectorThickness, (int) self.VectorDigit);
     
     [_kemoviewer UpdateImage];
 }

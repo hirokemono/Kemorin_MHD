@@ -41,8 +41,8 @@ static void set_ref_vector_CB(GtkWidget *entry, gpointer user_data)
 	double gtk_floatvalue = (double) gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
 	int i_digit;
 	double current_value;
-	kemoview_get_PSF_vector_scale(&current_value, &i_digit);
-	kemoview_set_PSF_vector_scale(gtk_floatvalue, i_digit);
+	kemoview_get_each_PSF_color_w_exp(ISET_PSF_REFVECT, &current_value, &i_digit);
+	kemoview_set_each_PSF_color_w_exp(ISET_PSF_REFVECT, gtk_floatvalue, i_digit);
 	
 	draw_full();
 	return;
@@ -53,8 +53,8 @@ static void set_ref_digit_CB(GtkWidget *entry, gpointer user_data)
 	double gtk_intvalue = (double) gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(entry));
 	int i_digit;
 	double current_value;
-	kemoview_get_PSF_vector_scale(&current_value, &i_digit);
-	kemoview_set_PSF_vector_scale(current_value, gtk_intvalue);
+	kemoview_get_each_PSF_color_w_exp(ISET_PSF_REFVECT, &current_value, &i_digit);
+	kemoview_set_each_PSF_color_w_exp(ISET_PSF_REFVECT, current_value, gtk_intvalue);
 	
 	draw_full();
 	return;
@@ -65,8 +65,8 @@ static void set_vect_increment_CB(GtkWidget *entry, gpointer user_data)
 	double gtk_floatvalue = (double) gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
 	int i_digit;
 	double current_value;
-	kemoview_get_PSF_vector_increment(&current_value, &i_digit);
-	kemoview_set_PSF_vector_increment(gtk_floatvalue, i_digit);
+	kemoview_get_each_PSF_color_w_exp(ISET_VECTOR_INC, &current_value, &i_digit);
+	kemoview_set_each_PSF_color_w_exp(ISET_VECTOR_INC, gtk_floatvalue, i_digit);
 	
 	draw_full();
 	return;
@@ -77,8 +77,8 @@ static void set_increment_digit_CB(GtkWidget *entry, gpointer user_data)
 	int gtk_intvalue = (int) gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(entry));
 	int i_digit;
 	double current_value;
-	kemoview_get_PSF_vector_increment(&current_value, &i_digit);
-	kemoview_set_PSF_vector_increment(current_value, gtk_intvalue);
+	kemoview_get_each_PSF_color_w_exp(ISET_VECTOR_INC, &current_value, &i_digit);
+	kemoview_set_each_PSF_color_w_exp(ISET_VECTOR_INC, current_value, gtk_intvalue);
 	
 	draw_full();
 	return;
@@ -89,8 +89,8 @@ static void set_vector_width_CB(GtkWidget *entry, gpointer user_data)
 	double gtk_floatvalue = (double) gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
 	int i_digit;
 	double current_value;
-	kemoview_get_PSF_vector_thickness(&current_value, &i_digit);
-	kemoview_set_PSF_vector_thickness(gtk_floatvalue, i_digit);
+	kemoview_get_each_PSF_color_w_exp(ISET_PSF_V_THICK, &current_value, &i_digit);
+	kemoview_set_each_PSF_color_w_exp(ISET_PSF_V_THICK, gtk_floatvalue, i_digit);
 	
 	draw_full();
 	return;
@@ -100,8 +100,8 @@ static void set_width_digit_CB(GtkWidget *entry, gpointer user_data)
 	int gtk_intvalue = (double) gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(entry));
 	int i_digit;
 	double current_value;
-	kemoview_get_PSF_vector_thickness(&current_value, &i_digit);
-	kemoview_set_PSF_vector_thickness(current_value, gtk_intvalue);
+	kemoview_get_each_PSF_color_w_exp(ISET_PSF_V_THICK, &current_value, &i_digit);
+	kemoview_set_each_PSF_color_w_exp(ISET_PSF_V_THICK, current_value, gtk_intvalue);
 	
 	draw_full();
 	return;
@@ -195,7 +195,7 @@ void make_gtk_psf_vector_menu(struct colormap_view *color_vws){
 	
 	int i_digit;
 	double current_value;
-	kemoview_get_PSF_vector_scale(&current_value, &i_digit);
+	kemoview_get_each_PSF_color_w_exp(ISET_PSF_REFVECT, &current_value, &i_digit);
 	adj_ref_vect = gtk_adjustment_new(current_value, 1, 9, 1, 1, 0);
 	spin_ref_vect = gtk_spin_button_new(GTK_ADJUSTMENT(adj_ref_vect), 0, 0);
 	g_signal_connect(spin_ref_vect, "value-changed", G_CALLBACK(set_ref_vector_CB), NULL);
@@ -204,7 +204,7 @@ void make_gtk_psf_vector_menu(struct colormap_view *color_vws){
 	spin_ref_digit = gtk_spin_button_new(GTK_ADJUSTMENT(adj_ref_digit), 0, 0);
 	g_signal_connect(spin_ref_digit, "value-changed", G_CALLBACK(set_ref_digit_CB), NULL);
 	
-	kemoview_get_PSF_vector_increment(&current_value, &i_digit);
+	kemoview_get_each_PSF_color_w_exp(ISET_VECTOR_INC, &current_value, &i_digit);
 	adj_vect_inc = gtk_adjustment_new(current_value, 1, 9, 1, 1, 0);
 	spin_vect_inc = gtk_spin_button_new(GTK_ADJUSTMENT(adj_vect_inc), 0, 0);
 	g_signal_connect(spin_vect_inc, "value-changed", G_CALLBACK(set_vect_increment_CB), NULL);
@@ -213,7 +213,7 @@ void make_gtk_psf_vector_menu(struct colormap_view *color_vws){
 	spin_inc_digit = gtk_spin_button_new(GTK_ADJUSTMENT(adj_inc_digit), 0, 0);
 	g_signal_connect(spin_inc_digit, "value-changed", G_CALLBACK(set_increment_digit_CB), NULL);
 	
-	kemoview_get_PSF_vector_thickness(&current_value, &i_digit);
+	kemoview_get_each_PSF_color_w_exp(ISET_PSF_V_THICK, &current_value, &i_digit);
 	adj_vect_width = gtk_adjustment_new(current_value, 1, 9, 1, 1, 0);
 	spin_vect_width = gtk_spin_button_new(GTK_ADJUSTMENT(adj_vect_width), 0, 0);
 	g_signal_connect(spin_vect_width, "value-changed", G_CALLBACK(set_vector_width_CB), (gpointer) color_vws);

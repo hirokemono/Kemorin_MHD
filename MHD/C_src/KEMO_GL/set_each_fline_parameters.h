@@ -50,8 +50,8 @@ void set_fline_type(struct fline_menu_val *fline_m, int iflag);
 int get_fline_type(struct fline_menu_val *fline_m);
 int toggle_fline_type(struct fline_menu_val *fline_m);
 
-void set_fline_thickness(struct fline_menu_val *fline_m, double value, int i_digit);
-void get_fline_thickness(struct fline_menu_val *fline_m, double *value, int *i_digit);
+void set_fline_thickness(double value, struct fline_menu_val *fline_m);
+double get_fline_thickness(struct fline_menu_val *fline_m);
 
 double get_fline_data_min(struct psf_data *fline_d, int i);
 double get_fline_data_max(struct psf_data *fline_d, int i);

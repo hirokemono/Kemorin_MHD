@@ -42,9 +42,11 @@ int get_each_PSF_draw_switch(int selected, struct kemoview_psf *kemo_psf);
 void set_each_PSF_color_param(int selected, int input, struct kemoview_psf *kemo_psf);
 int get_each_PSF_color_param(int selected, struct kemoview_psf *kemo_psf);
 
+void set_each_PSF_color_w_exp(int selected, double value, int i_digit, 
+							  struct kemoview_psf *kemo_psf);
+void get_each_PSF_color_w_exp(int selected, struct kemoview_psf *kemo_psf,
+							  double *value, int *i_digit);
+
 double get_each_PSF_data_range(int selected, int icomp, struct kemoview_psf *kemo_psf);
 double get_each_PSF_colormap_range(int selected, struct kemoview_psf *kemo_psf);
-
-void get_each_PSF_num_exponent(int selected, struct kemoview_psf *kemo_psf,
-							   double *value, int *i_digit);
 #endif

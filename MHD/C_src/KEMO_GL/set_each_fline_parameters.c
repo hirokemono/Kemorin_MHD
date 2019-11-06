@@ -67,12 +67,8 @@ int toggle_fline_type(struct fline_menu_val *fline_m){
 };
 
 
-void set_fline_thickness(struct fline_menu_val *fline_m, double value, int i_digit){
-	fline_m->fieldline_thick = const_from_digit_order(value, i_digit);
-};
-void get_fline_thickness(struct fline_menu_val *fline_m, double *value, int *i_digit){
-	return find_order_digit(fline_m->fieldline_thick, value, i_digit);
-};
+void set_fline_thickness(double value, struct fline_menu_val *fline_m){fline_m->fieldline_thick = value;};
+double get_fline_thickness(struct fline_menu_val *fline_m){return fline_m->fieldline_thick;};
 
 double get_fline_data_min(struct psf_data *fline_d, int i){
 	return fline_d->d_min[i];

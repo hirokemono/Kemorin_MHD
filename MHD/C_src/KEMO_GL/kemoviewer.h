@@ -289,7 +289,6 @@
 #define ISET_NUM_COLOR      32
 #define ISET_NUM_OPACITY    33
 #define ISET_VECTOR_COLOR   41
-#define ISET_VECTOR_INC     42
 
 #define RAINBOW_PSF_SURF    10
 #define WHITE_PSF_SURF      11
@@ -306,8 +305,6 @@
 #define WHITE_PSF_VECT      42
 #define RAINBOW_PSF_VECT    43
 #define ISET_PSF_VEC_INC    44
-#define ISET_PSF_REFVECT    45
-#define ISET_PSF_V_THICK    46
 #define PSFTANVEC_TOGGLE    47
 #define WRITE_CMAP          50
 #define READ_CMAP           51
@@ -420,10 +417,14 @@
 #define SET_CURRENT   2
 #define DRAW_SWITCH   3
 
-#define ISET_COLOR_MIN   10
-#define ISET_COLOR_MAX   11
-#define ISET_OPACITY_MIN 20
-#define ISET_OPACITY_MAX 21
+#define ISET_COLOR_MIN      10
+#define ISET_COLOR_MAX      11
+#define ISET_OPACITY_MIN    20
+#define ISET_OPACITY_MAX    21
+#define ISET_WIDTH          31
+#define ISET_PSF_REFVECT    32
+#define ISET_PSF_V_THICK    41
+#define ISET_VECTOR_INC     42
 
 #define FIELD_SEL_FLAG       0
 #define COMPONENT_SEL_FLAG   1
@@ -672,26 +673,16 @@ extern "C" {
 	void kemoview_set_PSF_color_param(int selected, int input);
 	int kemoview_get_PSF_color_param(int selected);
 	
-	void kemoview_set_PSF_isoline_width(double value, int i_digit);
-    void kemoview_set_PSF_vector_scale(double value, int i_digit);
-    void kemoview_set_PSF_vector_thickness(double value, int i_digit);
-	void kemoview_set_PSF_vector_increment(double value, int i_digit);
-    
-	void kemoview_get_PSF_isoline_width(double *value, int *i_digit);
-    void kemoview_get_PSF_vector_scale(double *value, int *i_digit);
-    void kemoview_get_PSF_vector_thickness(double *value, int *i_digit);
-	void kemoview_get_PSF_vector_increment(double *value, int *i_digit);
-    
-    
+
 	void kemoview_delete_PSF_color_list(int i_delete);
 	void kemoview_delete_PSF_opacity_list(int i_delete);
 	void kemoview_add_PSF_color_list(double add_value, double add_color);
 	void kemoview_add_PSF_opacity_list(double add_value, double add_opacity);
 	
-    void kemoview_set_PSF_linear_colormap(double minvalue, int i_min_digit,
+	void kemoview_set_PSF_linear_colormap(double minvalue, int i_min_digit,
 										  double maxvalue, int i_max_digit);
-	void kemoview_get_each_PSF_range_min(double *value, int *i_digit);
-	void kemoview_get_each_PSF_range_max(double *value, int *i_digit);
+	void kemoview_set_each_PSF_color_w_exp(int selected, double value, int i_digit);
+	void kemoview_get_each_PSF_color_w_exp(int selected, double *value, int *i_digit);
 	
     void kemoview_set_PSF_single_color(double *rgba);
     void kemoview_set_PSF_constant_opacity(double opacity);
@@ -732,13 +723,10 @@ extern "C" {
 	void kemoview_set_fline_field_param(int selected, int input);
 	int kemoview_get_fline_field_param(int selected);
 
-	void kemoview_set_fline_thickness(double value, int i_digit);
-	void kemoview_get_fline_thickness(double *value, int *i_digit);
-
     void kemoview_set_fline_linear_colormap(double minvalue, int i_min_digit,
 											double maxvalue, int i_max_digit);
-	void kemoview_get_fline_range_min(double *value, int *i_digit);
-	void kemoview_get_fline_range_max(double *value, int *i_digit);
+	void kemoview_set_fline_color_w_exp(int selected, double value, int i_digit);
+	void kemoview_get_fline_color_w_exp(int selected, double *value, int *i_digit);
 
 	void kemoview_set_fline_constant_opacity(double opacity);
 
