@@ -13,11 +13,13 @@ GtkWidget *window_csel;
 
 static void psf_surface_switch_CB(GObject *switch_draw, GParamSpec *pspec, gpointer data){
 	kemoview_select_PSF_draw_switch(PSFSOLID_TOGGLE);
+	draw_full();
 	return;
 };
 
 static void psf_colorbar_switch_CB(GObject *switch_bar, GParamSpec *pspec, gpointer data){
 	kemoview_select_PSF_draw_switch(COLORBAR_TOGGLE);
+	draw_full();
 	return;
 };
 
@@ -108,31 +110,60 @@ static void set_psf_opacity_CB(GtkWidget *entry, gpointer user_data)
 	struct colormap_view *color_vws = (struct colormap_view *) user_data;
 	double gtk_floatvalue = (double) gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
 	kemoview_set_PSF_constant_opacity(gtk_floatvalue);
+	draw_full();
 	return;
 }
 
-static void MinChange_CB(GtkWidget *entry, gpointer data)
+static void MinRangeValueChange_CB(GtkWidget *entry, gpointer data)
 {
-	int icomp = kemoview_get_each_PSF_field_param(DRAW_ADDRESS_FLAG);
-	double data_max = kemoview_get_each_PSF_data_range(ISET_COLOR_MAX, icomp);
-	
-	double data_min = (double) gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
-	kemoview_set_PSF_linear_colormap(data_min, data_max);
+	double gtk_floatvalue = (double) gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
+	double value_min, value_max;
+	int i_min_digit, i_max_digit;
+	kemoview_get_each_PSF_range_min(&value_min, &i_min_digit);
+	kemoview_get_each_PSF_range_max(&value_max, &i_max_digit);
+	kemoview_set_PSF_linear_colormap(gtk_floatvalue, i_min_digit, 
+									 value_max, i_max_digit);
+	draw_full();
 }
-static void MaxChange_CB(GtkWidget *entry, gpointer data)
+static void MinRangeDigitChange_CB(GtkWidget *entry, gpointer data)
 {
-	int icomp = kemoview_get_each_PSF_field_param(DRAW_ADDRESS_FLAG);
-	double data_min = kemoview_get_each_PSF_data_range(ISET_COLOR_MIN, icomp);
-	
-	double data_max = (double) gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
-	kemoview_set_PSF_linear_colormap(data_min, data_max);
+	int gtk_intvalue = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(entry));
+	double value_min, value_max;
+	int i_min_digit, i_max_digit;
+	kemoview_get_each_PSF_range_min(&value_min, &i_min_digit);
+	kemoview_get_each_PSF_range_max(&value_max, &i_max_digit);
+	kemoview_set_PSF_linear_colormap(value_min, gtk_intvalue, 
+									 value_max, i_max_digit);
+	draw_full();
+}
+static void MaxRangeValueChange_CB(GtkWidget *entry, gpointer data)
+{
+	double gtk_floatvalue = (double) gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
+	double value_min, value_max;
+	int i_min_digit, i_max_digit;
+	kemoview_get_each_PSF_range_min(&value_min, &i_min_digit);
+	kemoview_get_each_PSF_range_max(&value_max, &i_max_digit);
+	kemoview_set_PSF_linear_colormap(value_min, i_min_digit, 
+									 gtk_floatvalue, i_max_digit);
+	draw_full();
+}
+static void MaxRangeDigitChange_CB(GtkWidget *entry, gpointer data)
+{
+	int gtk_intvalue = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(entry));
+	double value_min, value_max;
+	int i_min_digit, i_max_digit;
+	kemoview_get_each_PSF_range_min(&value_min, &i_min_digit);
+	kemoview_get_each_PSF_range_max(&value_max, &i_max_digit);
+	kemoview_set_PSF_linear_colormap(value_min, i_min_digit, 
+									 value_max, gtk_intvalue);
+	draw_full();
 }
 
 void add_gtk_psf_surface_menu(struct colormap_view *color_vws, 
 							  GtkWidget *window_cmap, GtkWidget *box){
 	GtkWidget *hbox_draw, *hbox_bar, *hbox_color;
-	GtkWidget *hbox_one_opacity, *hbox_org_opacity;
-	GtkWidget *hbox_range, *hbox_org_range;
+	GtkWidget *hbox_one_opacity;
+	GtkWidget *hbox_max_range, *hbox_min_range;
 	
 	GtkWidget *expander_psf,  *scroll_psf, *Frame_psf;
 	GtkWidget *hbox_psf,  *vbox_psf;
@@ -151,20 +182,17 @@ void add_gtk_psf_surface_menu(struct colormap_view *color_vws,
 	
 	GtkWidget *spin_opacity1;
 	GtkAdjustment *adj_opacity1;
+	int i_digit;
 	double current_value;
-	char current_opacity_text[30];
+	char current_opacity_text[40];
 	
-	GtkWidget *spin_min, *spin_max;
-	GtkAdjustment *adj_min, *adj_max;
+	GtkWidget *spin_range_min, *spin_digit_min; 
+	GtkWidget *spin_range_max, *spin_digit_max;
+	GtkAdjustment *adj_range_min, *adj_digit_min;
+	GtkAdjustment *adj_range_max, *adj_digit_max;
 	int icomp;
-	double data_min, data_max;
-	double range_min, range_max, delta;
+	double value_min, value_max;
 	char min_text[30], max_text[30];
-	
-	GtkWidget *spin_vect_width;
-	GtkAdjustment *adj_vect_width;
-	double current_vec_width;
-	char current_vec_width_txt[30];
 	
 	switch_draw = gtk_switch_new();
 	if(kemoview_get_PSF_draw_flags(PSFSOLID_TOGGLE) == 0){
@@ -213,27 +241,32 @@ void add_gtk_psf_surface_menu(struct colormap_view *color_vws,
 				G_CALLBACK(psf_surf_colormode_CB), (gpointer) window_cmap);
 	
 	current_value = kemoview_get_each_PSF_colormap_range(ISET_OPACITY_MAX);
-	sprintf(current_opacity_text, "    %e    ", current_value);
+	sprintf(current_opacity_text, "Opacity(%1.2e):", current_value);
 	adj_opacity1 = gtk_adjustment_new(current_value, 0.0, 1.0, 0.01, 0.01, 0.0);
 	spin_opacity1 = gtk_spin_button_new(GTK_ADJUSTMENT(adj_opacity1), 0, 2);
 	g_signal_connect(spin_opacity1, "value-changed", G_CALLBACK(set_psf_opacity_CB), (gpointer) color_vws);
 	
 	icomp = kemoview_get_each_PSF_field_param(DRAW_ADDRESS_FLAG);
-	range_min = kemoview_get_each_PSF_data_range(ISET_COLOR_MIN, icomp);
-	range_max = kemoview_get_each_PSF_data_range(ISET_COLOR_MAX, icomp);
-	data_min = kemoview_get_each_PSF_colormap_range(ISET_COLOR_MIN);
-	data_max = kemoview_get_each_PSF_colormap_range(ISET_COLOR_MAX);
-	delta = range_max - range_min;
-	sprintf(min_text, "    %e    ", range_min);
-	sprintf(max_text, "    %e    ", range_max);
-	adj_min = gtk_adjustment_new (data_min, (range_min-1.0e3*delta), (range_max+1.0e3*delta),
-			(delta*1.0e-2), (delta*1.0e-2), 0.0);
-	adj_max = gtk_adjustment_new (data_max, (range_min*1.0e3*delta), (range_max+1.0e3*delta),
-			(delta*1.0e-2), (delta*1.0e-2), 0.0);
-	spin_min = gtk_spin_button_new(GTK_ADJUSTMENT(adj_min),0,2);
-	spin_max = gtk_spin_button_new(GTK_ADJUSTMENT(adj_max),0,2);
-	g_signal_connect(spin_min, "value-changed", G_CALLBACK(MinChange_CB), NULL);
-	g_signal_connect(spin_max, "value-changed", G_CALLBACK(MaxChange_CB), NULL);
+	value_min = kemoview_get_each_PSF_data_range(ISET_COLOR_MIN, icomp);
+	value_max = kemoview_get_each_PSF_data_range(ISET_COLOR_MAX, icomp);
+	sprintf(min_text, "Min(%1.2e): ", value_min);
+	sprintf(max_text, "Max(%1.2e): ", value_max);
+
+	kemoview_get_each_PSF_range_min(&current_value, &i_digit);
+	adj_range_min = gtk_adjustment_new (current_value, -9.999, 9.999, 0.1, 0.1, 0.0);
+	adj_digit_min = gtk_adjustment_new (i_digit, -20, 20, 1, 1, 0);
+	spin_range_min = gtk_spin_button_new(GTK_ADJUSTMENT(adj_range_min),0,2);
+	spin_digit_min = gtk_spin_button_new(GTK_ADJUSTMENT(adj_digit_min),0,0);
+	g_signal_connect(spin_range_min, "value-changed", G_CALLBACK(MinRangeValueChange_CB), NULL);
+	g_signal_connect(spin_digit_min, "value-changed", G_CALLBACK(MinRangeDigitChange_CB), NULL);
+
+	kemoview_get_each_PSF_range_max(&current_value, &i_digit);
+	adj_range_max = gtk_adjustment_new (current_value, -9.999, 9.999, 0.1, 0.1, 0.0);
+	adj_digit_max = gtk_adjustment_new (i_digit, -20, 20, 1, 1, 0);
+	spin_range_max = gtk_spin_button_new(GTK_ADJUSTMENT(adj_range_max),0,2);
+	spin_digit_max = gtk_spin_button_new(GTK_ADJUSTMENT(adj_digit_max),0,0);
+	g_signal_connect(spin_range_max, "value-changed", G_CALLBACK(MaxRangeValueChange_CB), NULL);
+	g_signal_connect(spin_digit_max, "value-changed", G_CALLBACK(MaxRangeDigitChange_CB), NULL);
 	
 	
 	hbox_draw = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
@@ -248,30 +281,30 @@ void add_gtk_psf_surface_menu(struct colormap_view *color_vws,
 	gtk_box_pack_start(GTK_BOX(hbox_color), gtk_label_new("Color mode: "), FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_color), combobox_sfcolor, FALSE, FALSE, 0);
 	
-	hbox_org_opacity = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
-	gtk_box_pack_start(GTK_BOX(hbox_org_opacity), gtk_label_new("Current opacity: "), TRUE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox_org_opacity), gtk_label_new(current_opacity_text), TRUE, TRUE, 0);
 	hbox_one_opacity = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
-	gtk_box_pack_start(GTK_BOX(hbox_one_opacity), gtk_label_new("Opacity: "), TRUE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox_one_opacity), spin_opacity1, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_one_opacity), gtk_label_new(current_opacity_text), FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_one_opacity), spin_opacity1, FALSE, FALSE, 0);
 	
-	hbox_org_range = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
-	gtk_box_pack_start(GTK_BOX(hbox_org_range), gtk_label_new(min_text), TRUE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox_org_range), gtk_label_new(max_text), TRUE, TRUE, 0);
-	hbox_range = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
-	gtk_box_pack_start(GTK_BOX(hbox_range), spin_min, TRUE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox_range), spin_max, TRUE, TRUE, 0);
+	hbox_min_range = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
+	gtk_box_pack_start(GTK_BOX(hbox_min_range), gtk_label_new(min_text), FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_min_range), spin_range_min, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_min_range), gtk_label_new("x10^"), FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_min_range), spin_digit_min, FALSE, FALSE, 0);
+	hbox_max_range = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
+	gtk_box_pack_start(GTK_BOX(hbox_max_range), gtk_label_new(max_text), FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_max_range), spin_range_max, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_max_range), gtk_label_new("x10^"), FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_max_range), spin_digit_max, FALSE, FALSE, 0);
 	
 	vbox_psf = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
 	gtk_box_pack_start(GTK_BOX(vbox_psf), hbox_draw, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox_psf), hbox_bar, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox_psf), hbox_color, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_psf), hbox_org_opacity, TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox_psf), hbox_one_opacity, TRUE, TRUE, 0);
 	
 	gtk_box_pack_start(GTK_BOX(vbox_psf), gtk_label_new("Range"), TRUE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_psf), hbox_org_range, TRUE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_psf), hbox_range, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_psf), hbox_min_range, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_psf), hbox_max_range, TRUE, TRUE, 0);
 	
 	Frame_psf = gtk_frame_new("");
 	gtk_frame_set_shadow_type(GTK_FRAME(Frame_psf), GTK_SHADOW_IN);
@@ -284,7 +317,7 @@ void add_gtk_psf_surface_menu(struct colormap_view *color_vws,
 	scroll_psf = gtk_scrolled_window_new(NULL, NULL);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scroll_psf),
 				GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-	gtk_widget_set_size_request(scroll_psf, 400, 300);
+	gtk_widget_set_size_request(scroll_psf, 420, 320);
 	gtk_container_add(GTK_CONTAINER(scroll_psf), hbox_psf);
 	
 	expander_psf = gtk_expander_new_with_mnemonic("Surface");

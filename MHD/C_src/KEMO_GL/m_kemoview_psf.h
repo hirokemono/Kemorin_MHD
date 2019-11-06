@@ -7,6 +7,7 @@
 
 #include "kemoviewer.h"
 #include "kemoviewer_base.h"
+#include "numbers_to_bin_c.h"
 #include "m_kemoview_psf_menu.h"
 #include "m_psf_data_4_viewer_c.h"
 #include "read_data_4_kemoviewer.h"
@@ -44,4 +45,6 @@ int get_each_PSF_color_param(int selected, struct kemoview_psf *kemo_psf);
 double get_each_PSF_data_range(int selected, int icomp, struct kemoview_psf *kemo_psf);
 double get_each_PSF_colormap_range(int selected, struct kemoview_psf *kemo_psf);
 
+void get_each_PSF_num_exponent(int selected, struct kemoview_psf *kemo_psf,
+							   double *value, int *i_digit);
 #endif

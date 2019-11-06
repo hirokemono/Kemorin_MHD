@@ -96,6 +96,8 @@
     
 	CGFloat PsfMinimumRange;
 	CGFloat PsfMaximumRange;
+	CGFloat PsfMinimumDigit;
+	CGFloat PsfMaximumDigit;
     CGFloat PsfSingleOpacity;
 	
 	NSInteger EvolutionStartStep;
@@ -147,6 +149,8 @@
 
 @property CGFloat PsfMinimumRange;
 @property CGFloat PsfMaximumRange;
+@property CGFloat PsfMinimumDigit;
+@property CGFloat PsfMaximumDigit;
 
 @property NSInteger PSFVectorMenuAcrive;
 @property NSInteger DrawPSFVectorFlag;

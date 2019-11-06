@@ -44,7 +44,7 @@ static void rotation_view_CB(GtkButton *button, gpointer user_data){
 	GtkEntry *entry = GTK_ENTRY(user_data);
 	GtkWidget *window_main = GTK_WIDGET(g_object_get_data(G_OBJECT(user_data), "parent"));
 	
-	struct kv_string *image_prefix = kemoview_init_kvstring_by_string("Kemoviewer");
+	struct kv_string *image_prefix = kemoview_init_kvstring_by_string("CalypsoViewer");
 	
 	gtk_window_set_focus(GTK_WINDOW(window_main), NULL);
 	write_rotate_views(NO_SAVE_FILE, image_prefix, iaxis_rot, inc_deg);

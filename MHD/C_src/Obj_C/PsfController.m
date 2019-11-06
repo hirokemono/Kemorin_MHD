@@ -49,6 +49,8 @@
 
 @synthesize PsfMinimumRange;
 @synthesize PsfMaximumRange;
+@synthesize PsfMinimumDigit;
+@synthesize PsfMaximumDigit;
 
 @synthesize PSFVectorMenuAcrive;
 @synthesize DrawPSFVectorFlag;
@@ -181,11 +183,16 @@
 	self.PSFIsolineSwitch =  kemoview_get_PSF_draw_flags(PSFGRID_TOGGLE);
 	self.PSFZerolineSwitch = kemoview_get_PSF_draw_flags(ZEROGRID_TOGGLE);
 	self.PSFColorbarSwitch = kemoview_get_PSF_draw_flags(COLORBAR_TOGGLE);
-	self.PsfMinimumRange =   kemoview_get_each_PSF_colormap_range(ISET_COLOR_MIN);
-	self.PsfMaximumRange =   kemoview_get_each_PSF_colormap_range(ISET_COLOR_MAX);
 	self.PsfMinimumValue =   kemoview_get_each_PSF_data_range(ISET_COLOR_MIN, iplotted);
 	self.PsfMaximumValue =   kemoview_get_each_PSF_data_range(ISET_COLOR_MAX, iplotted);
 	self.IsolineNumber =     kemoview_get_PSF_color_param(ISET_NLINE);
+
+	kemoview_get_each_PSF_range_min(&current_value, &i_digit);
+	self.PsfMinimumRange =      (CGFloat) current_value;
+	self.PsfMinimumDigit =      (CGFloat) i_digit;
+	kemoview_get_each_PSF_range_max(&current_value, &i_digit);
+	self.PsfMaximumRange =      (CGFloat) current_value;
+	self.PsfMaximumDigit =      (CGFloat) i_digit;
 
 	kemoview_get_PSF_isoline_width(&current_value, &i_digit);
 	self.IsolineWidth =      (CGFloat) current_value;
@@ -242,16 +249,22 @@
      self.PSFIsolineSwitch =  kemoview_get_PSF_draw_flags(PSFGRID_TOGGLE);
      self.PSFZerolineSwitch = kemoview_get_PSF_draw_flags(ZEROGRID_TOGGLE);
      self.PSFColorbarSwitch = kemoview_get_PSF_draw_flags(COLORBAR_TOGGLE);
-     self.PsfMinimumRange =   kemoview_get_each_PSF_colormap_range(ISET_COLOR_MIN);
-     self.PsfMaximumRange =   kemoview_get_each_PSF_colormap_range(ISET_COLOR_MAX);
      self.PsfMinimumValue =   kemoview_get_each_PSF_data_range(ISET_COLOR_MIN, iplotted);
      self.PsfMaximumValue =   kemoview_get_each_PSF_data_range(ISET_COLOR_MAX, iplotted);
      self.IsolineNumber =     kemoview_get_PSF_color_param(ISET_NLINE);
 
+	 kemoview_get_each_PSF_range_min(&current_value, &i_digit);
+	 self.PsfMinimumRange =      (CGFloat) current_value;
+	 self.PsfMinimumDigit =      (CGFloat) i_digit;
+	 kemoview_get_each_PSF_range_max(&current_value, &i_digit);
+	 self.PsfMaximumRange =      (CGFloat) current_value;
+	 self.PsfMaximumDigit =      (CGFloat) i_digit;
+	 
 	 kemoview_get_PSF_isoline_width(&current_value, &i_digit);
 	 self.IsolineWidth =      (CGFloat) current_value;
 	 self.IsolineDigit =      (CGFloat) i_digit;
-     self.PSFOpacity =        kemoview_get_each_PSF_colormap_range(ISET_OPACITY_MAX);
+
+	 self.PSFOpacity =        kemoview_get_each_PSF_colormap_range(ISET_OPACITY_MAX);
      
      self.DrawPSFVectorFlag = kemoview_get_PSF_draw_flags(PSFVECT_TOGGLE);
 
@@ -411,14 +424,22 @@
 }
 
 - (void) SetPsfRanges{
+	double current_value;
+	int i_digit;
 	int iplotted;
     
 	iplotted = kemoview_get_each_PSF_field_param(DRAW_ADDRESS_FLAG);
     
  	self.PsfMinimumValue = kemoview_get_each_PSF_data_range(ISET_COLOR_MIN, iplotted);
 	self.PsfMaximumValue = kemoview_get_each_PSF_data_range(ISET_COLOR_MAX, iplotted);
-	self.PsfMinimumRange = kemoview_get_each_PSF_colormap_range(ISET_COLOR_MIN);
-	self.PsfMaximumRange = kemoview_get_each_PSF_colormap_range(ISET_COLOR_MAX);
+
+	kemoview_get_each_PSF_range_min(&current_value, &i_digit);
+	self.PsfMinimumRange =      (CGFloat) current_value;
+	self.PsfMinimumDigit =      (CGFloat) i_digit;
+	kemoview_get_each_PSF_range_max(&current_value, &i_digit);
+	self.PsfMaximumRange =      (CGFloat) current_value;
+	self.PsfMaximumDigit =      (CGFloat) i_digit;
+	
     
     [self.rgbaMapObject updateColormapParameter];
     [self.colorMapObject InitColorTables];
@@ -644,7 +665,8 @@
 
 - (IBAction) SetPSFDisplayrange:(id)pSender {
 	
-	kemoview_set_PSF_linear_colormap(self.PsfMinimumRange,self.PsfMaximumRange);
+	kemoview_set_PSF_linear_colormap(self.PsfMinimumRange, (int) self.PsfMinimumDigit,
+									 self.PsfMaximumRange, (int) self.PsfMaximumDigit);
 	[_kemoviewer UpdateImage];
 }
 

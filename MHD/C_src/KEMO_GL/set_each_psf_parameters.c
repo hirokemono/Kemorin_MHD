@@ -178,8 +178,11 @@ void add_PSF_opacity_index_list(struct psf_menu_val *psf_menu, double add_value,
 
 
 
-void set_PSF_linear_colormap(struct psf_menu_val *psf_menu, double minvalue, double maxvalue){
-	set_linear_colormap(psf_menu->cmap_psf_comp[psf_menu->icomp_draw_psf], minvalue, maxvalue);
+void set_PSF_linear_colormap(double minvalue, int i_min_digit, double maxvalue, int i_max_digit,
+							 struct psf_menu_val *psf_menu){
+	set_linear_colormap(psf_menu->cmap_psf_comp[psf_menu->icomp_draw_psf], 
+						const_from_digit_order(minvalue, i_min_digit),
+						const_from_digit_order(maxvalue, i_max_digit));
 	return;
 }
 

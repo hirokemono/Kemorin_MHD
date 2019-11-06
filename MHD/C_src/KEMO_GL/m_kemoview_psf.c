@@ -234,14 +234,23 @@ double get_each_PSF_data_range(int selected, int icomp, struct kemoview_psf *kem
 double get_each_PSF_colormap_range(int selected, struct kemoview_psf *kemo_psf){
 	double value = 0.0;
 	int i_current = kemo_psf->psf_a->id_current;
-	if(selected == ISET_COLOR_MIN){
-		value = send_each_PSF_color_table_min(kemo_psf->psf_m[i_current]);
-	}else if(selected == ISET_COLOR_MAX){
-		value = send_each_PSF_color_table_max(kemo_psf->psf_m[i_current]);
-	}else if(selected == ISET_OPACITY_MIN){
+	if(selected == ISET_OPACITY_MIN){
 		value = send_each_PSF_minimum_opacity(kemo_psf->psf_m[i_current]);
 	}else if(selected == ISET_OPACITY_MAX){
 		value = send_each_PSF_maximum_opacity(kemo_psf->psf_m[i_current]);
 	};
 	return value;
+};
+
+void get_each_PSF_num_exponent(int selected, struct kemoview_psf *kemo_psf,
+							   double *value, int *i_digit){
+	double data = 0.0;
+	int i_current = kemo_psf->psf_a->id_current;
+	if(selected == ISET_COLOR_MIN){
+		data = send_each_PSF_color_table_min(kemo_psf->psf_m[i_current]);
+	}else if(selected == ISET_COLOR_MAX){
+		data = send_each_PSF_color_table_max(kemo_psf->psf_m[i_current]);
+	};
+	find_order_digit(data, value, i_digit);
+	return;
 };

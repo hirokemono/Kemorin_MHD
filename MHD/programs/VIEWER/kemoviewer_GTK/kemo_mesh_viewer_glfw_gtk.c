@@ -112,7 +112,7 @@ void kemoview_main_window(struct kemoviewer_type *kemoviewer_data){
 	
 	gtk_win = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	
-	gtk_window_set_title(GTK_WINDOW(gtk_win), "Mesh viewer");
+	gtk_window_set_title(GTK_WINDOW(gtk_win), "CalypsoView menu");
 	gtk_widget_set_size_request(gtk_win, 150, -1);
 	gtk_container_set_border_width(GTK_CONTAINER(gtk_win), 5);
 	g_signal_connect(G_OBJECT(gtk_win), "destroy", G_CALLBACK(gtkWindowclose_CB), NULL);

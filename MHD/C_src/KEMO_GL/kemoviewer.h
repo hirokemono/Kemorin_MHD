@@ -688,7 +688,11 @@ extern "C" {
 	void kemoview_add_PSF_color_list(double add_value, double add_color);
 	void kemoview_add_PSF_opacity_list(double add_value, double add_opacity);
 	
-    void kemoview_set_PSF_linear_colormap(double minvalue, double maxvalue);
+    void kemoview_set_PSF_linear_colormap(double minvalue, int i_min_digit,
+										  double maxvalue, int i_max_digit);
+	void kemoview_get_each_PSF_range_min(double *value, int *i_digit);
+	void kemoview_get_each_PSF_range_max(double *value, int *i_digit);
+	
     void kemoview_set_PSF_single_color(double *rgba);
     void kemoview_set_PSF_constant_opacity(double opacity);
     

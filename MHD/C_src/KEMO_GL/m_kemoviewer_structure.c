@@ -644,10 +644,19 @@ void kemoview_add_PSF_opacity_list(double add_value, double add_opacity){
 							   add_value, add_opacity);
 }
 
-void kemoview_set_PSF_linear_colormap(double minvalue, double maxvalue){
-    set_PSF_linear_colormap(kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current],
-							minvalue, maxvalue);
+void kemoview_set_PSF_linear_colormap(double minvalue, int i_min_digit,
+									  double maxvalue, int i_max_digit){
+    set_PSF_linear_colormap(minvalue, i_min_digit, maxvalue, i_max_digit, 
+							kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current]);
 }
+void kemoview_get_each_PSF_range_min(double *value, int *i_digit){;
+	get_each_PSF_num_exponent(ISET_COLOR_MIN, kemo_sgl->kemo_psf, value, i_digit);
+	return;
+};
+void kemoview_get_each_PSF_range_max(double *value, int *i_digit){;
+	get_each_PSF_num_exponent(ISET_COLOR_MAX, kemo_sgl->kemo_psf, value, i_digit);
+	return;
+};
 
 void kemoview_set_PSF_single_color(double *rgba){
     set_PSF_fixed_color(kemo_sgl->kemo_psf->psf_d[kemo_sgl->kemo_psf->psf_a->id_current],
