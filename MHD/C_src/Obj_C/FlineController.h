@@ -48,6 +48,8 @@
 	
 	CGFloat FlineDisplayMinimum;
 	CGFloat FlineDisplayMaximum;
+	CGFloat FlineDisplayMinDigit;
+	CGFloat FlineDisplayMaxDigit;
 	
 	
 	CGFloat FlineMinimumValue;
@@ -64,6 +66,8 @@
 @property NSInteger DrawFlineFlag;
 @property CGFloat FlineDisplayMinimum;
 @property CGFloat FlineDisplayMaximum;
+@property CGFloat FlineDisplayMinDigit;
+@property CGFloat FlineDisplayMaxDigit;
 
 @property CGFloat FlineMinimumValue;
 @property CGFloat FlineMaximumValue;

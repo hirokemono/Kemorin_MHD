@@ -140,14 +140,22 @@ double get_fline_data_range(int selected, int icomp, struct kemoview_fline *kemo
 
 double get_fline_colormap_range(int selected, struct kemoview_fline *kemo_fline){
 	double value = 0.0;
-	if(selected == ISET_COLOR_MIN){
-		value = get_fline_min_color(kemo_fline->fline_m);
-	}else if(selected == ISET_COLOR_MAX){
-		value = get_fline_max_color(kemo_fline->fline_m);
-	}else if(selected == ISET_OPACITY_MIN){
+	if(selected == ISET_OPACITY_MIN){
 		value = get_fline_min_opacity(kemo_fline->fline_m);
 	}else if(selected == ISET_OPACITY_MAX){
 		value = get_fline_max_opacity(kemo_fline->fline_m);
 	};
 	return value;
+};
+
+void get_fline_num_exponent(int selected, struct kemoview_fline *kemo_fline,
+							   double *value, int *i_digit){
+	double data = 0.0;
+	if(selected == ISET_COLOR_MIN){
+		data = get_fline_min_color(kemo_fline->fline_m);
+	}else if(selected == ISET_COLOR_MAX){
+		data = get_fline_max_color(kemo_fline->fline_m);
+	};
+	find_order_digit(data, value, i_digit);
+	return;
 };

@@ -57,8 +57,8 @@ double get_fline_data_min(struct psf_data *fline_d, int i);
 double get_fline_data_max(struct psf_data *fline_d, int i);
 
 
-void set_fline_linear_colormap(struct fline_menu_val *fline_m, 
-			double minvalue, double maxvalue);
+void set_fline_linear_colormap(double minvalue, int i_min_digit, double maxvalue, int i_max_digit, 
+							   struct fline_menu_val *fline_m);
 void set_fline_constant_opacity(struct psf_data *fline_d, struct fline_menu_val *fline_m,
 			double opacity);
 

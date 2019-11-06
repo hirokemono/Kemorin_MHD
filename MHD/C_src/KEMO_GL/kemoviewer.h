@@ -735,8 +735,12 @@ extern "C" {
 	void kemoview_set_fline_thickness(double value, int i_digit);
 	void kemoview_get_fline_thickness(double *value, int *i_digit);
 
-    void kemoview_set_fline_linear_colormap(double minvalue, double maxvalue);
-    void kemoview_set_fline_constant_opacity(double opacity);
+    void kemoview_set_fline_linear_colormap(double minvalue, int i_min_digit,
+											double maxvalue, int i_max_digit);
+	void kemoview_get_fline_range_min(double *value, int *i_digit);
+	void kemoview_get_fline_range_max(double *value, int *i_digit);
+
+	void kemoview_set_fline_constant_opacity(double opacity);
 
     double kemoview_get_fline_opacity_at_value(double value);
     

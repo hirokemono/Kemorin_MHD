@@ -19,6 +19,8 @@
 @synthesize FlineMaximumValue;
 @synthesize FlineDisplayMinimum;
 @synthesize FlineDisplayMaximum;
+@synthesize FlineDisplayMinDigit;
+@synthesize FlineDisplayMaxDigit;
 @synthesize Flinetype;
 @synthesize FlineThickFactor;
 @synthesize FlineThickDigit;
@@ -201,6 +203,8 @@
 - (IBAction) FlineFieldAction:(id)sender
 {	
 	int isel, iplotted;
+	int i_digit;
+	double value;
 	isel = [_FlineFieldMenu indexOfSelectedItem];
 	[self SetFlineComponentMenu:isel];
 	
@@ -210,14 +214,21 @@
 	iplotted = kemoview_get_fline_field_param(DRAW_ADDRESS_FLAG);
 	self.FlineMinimumValue =   kemoview_get_fline_data_range(ISET_COLOR_MIN, iplotted);
 	self.FlineMaximumValue =   kemoview_get_fline_data_range(ISET_COLOR_MAX, iplotted);
-	self.FlineDisplayMinimum = [[FlineMinimum objectAtIndex:iplotted] doubleValue];
-	self.FlineDisplayMaximum = [[FlineMaximum objectAtIndex:iplotted] doubleValue];
+	
+	kemoview_get_fline_range_min(&value, &i_digit);
+	self.FlineDisplayMinimum =  (CGFloat) value;
+	self.FlineDisplayMinDigit = (CGFloat) i_digit;
+	kemoview_get_fline_range_max(&value, &i_digit);
+	self.FlineDisplayMaximum =  (CGFloat) value;
+	self.FlineDisplayMaxDigit = (CGFloat) i_digit;
 
 	[_kemoviewer UpdateImage];
 }
 
 - (IBAction) FlineComponentAction:(id)sender
 {	
+	int i_digit;
+	double value;
 	int iplotted;
 	
 	kemoview_set_fline_field_param(COMPONENT_SEL_FLAG, (int) [_FlineComponentMenu indexOfSelectedItem]);
@@ -225,8 +236,13 @@
 	iplotted = kemoview_get_fline_field_param(DRAW_ADDRESS_FLAG);
 	self.FlineMinimumValue =   kemoview_get_fline_data_range(ISET_COLOR_MIN, iplotted);
 	self.FlineMaximumValue =   kemoview_get_fline_data_range(ISET_COLOR_MAX, iplotted);
-	self.FlineDisplayMinimum = [[FlineMinimum objectAtIndex:iplotted] doubleValue];
-	self.FlineDisplayMaximum = [[FlineMaximum objectAtIndex:iplotted] doubleValue];	
+
+	kemoview_get_fline_range_min(&value, &i_digit);
+	self.FlineDisplayMinimum =  (CGFloat) value;
+	self.FlineDisplayMinDigit = (CGFloat) i_digit;
+	kemoview_get_fline_range_max(&value, &i_digit);
+	self.FlineDisplayMaximum =  (CGFloat) value;
+	self.FlineDisplayMaxDigit = (CGFloat) i_digit;
 
 	[_kemoviewer UpdateImage];
 }
@@ -245,6 +261,8 @@
 }
 
 - (void) SetFlineComponentMenu:(int)isel{
+	int i_digit;
+	double value;
 	int iplotted;
 
 	[_FlineComponentMenu removeAllItems];
@@ -292,8 +310,13 @@
 		iplotted = kemoview_get_fline_field_param(DRAW_ADDRESS_FLAG);
 		self.FlineMinimumValue =   kemoview_get_fline_data_range(ISET_COLOR_MIN, iplotted);
 		self.FlineMaximumValue =   kemoview_get_fline_data_range(ISET_COLOR_MAX, iplotted);
-		self.FlineDisplayMinimum = [[FlineMinimum objectAtIndex:iplotted] doubleValue];
-		self.FlineDisplayMaximum = [[FlineMaximum objectAtIndex:iplotted] doubleValue];
+
+		kemoview_get_fline_range_min(&value, &i_digit);
+		self.FlineDisplayMinimum =  (CGFloat) value;
+		self.FlineDisplayMinDigit = (CGFloat) i_digit;
+		kemoview_get_fline_range_max(&value, &i_digit);
+		self.FlineDisplayMaximum =  (CGFloat) value;
+		self.FlineDisplayMaxDigit = (CGFloat) i_digit;
 	}
 	return;
 }
@@ -307,7 +330,8 @@
 }
 
 - (IBAction) ShowFlineRange:(id)pSender {
-	kemoview_set_fline_linear_colormap(self.FlineDisplayMinimum, self.FlineDisplayMaximum);
+	kemoview_set_fline_linear_colormap(self.FlineDisplayMinimum, (int) self.FlineDisplayMinDigit,
+									   self.FlineDisplayMaximum, (int) self.FlineDisplayMaxDigit);
 	[_kemoviewer UpdateImage];
 }
 

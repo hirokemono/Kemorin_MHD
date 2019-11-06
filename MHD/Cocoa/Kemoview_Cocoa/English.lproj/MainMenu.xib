@@ -2445,6 +2445,9 @@
                                             <binding destination="1157" name="value" keyPath="self.PSFVectorIncrement" id="7ou-8R-3Ts"/>
                                         </connections>
                                     </textFieldCell>
+                                    <connections>
+                                        <binding destination="1157" name="enabled" keyPath="self.PSFVectorMenuAcrive" id="tPG-Q0-TjR"/>
+                                    </connections>
                                 </textField>
                                 <textField verticalHuggingPriority="750" misplaced="YES" id="lYl-wL-gNg">
                                     <rect key="frame" x="148" y="20" width="28" height="16"/>
@@ -2463,6 +2466,7 @@
                                     </textFieldCell>
                                     <connections>
                                         <action selector="SetVectorIncrement:" target="1157" id="Try-uU-VFi"/>
+                                        <binding destination="1157" name="enabled" keyPath="self.PSFVectorMenuAcrive" id="DXQ-sx-yMr"/>
                                     </connections>
                                 </textField>
                                 <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" misplaced="YES" id="qg8-bp-njZ">
@@ -2475,6 +2479,7 @@
                                     </stepperCell>
                                     <connections>
                                         <action selector="SetVectorIncrement:" target="1157" id="Dbr-os-la6"/>
+                                        <binding destination="1157" name="enabled" keyPath="self.PSFVectorMenuAcrive" id="lOM-Dk-eaS"/>
                                     </connections>
                                 </stepper>
                                 <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" misplaced="YES" id="dZe-Qs-fjv">
@@ -2487,6 +2492,9 @@
                                             <binding destination="1157" name="value" keyPath="self.PSFVectorIncDigit" id="5HR-sh-l3r"/>
                                         </connections>
                                     </stepperCell>
+                                    <connections>
+                                        <binding destination="1157" name="enabled" keyPath="self.PSFVectorMenuAcrive" id="cjV-JB-DGA"/>
+                                    </connections>
                                 </stepper>
                                 <textField verticalHuggingPriority="750" misplaced="YES" id="V9G-jL-hut">
                                     <rect key="frame" x="97" y="68" width="17" height="22"/>
@@ -2504,6 +2512,9 @@
                                             <binding destination="1157" name="value" keyPath="self.ScaleVector" id="QtY-JV-gG4"/>
                                         </connections>
                                     </textFieldCell>
+                                    <connections>
+                                        <binding destination="1157" name="enabled" keyPath="self.PSFVectorMenuAcrive" id="H05-it-kHw"/>
+                                    </connections>
                                 </textField>
                                 <textField verticalHuggingPriority="750" misplaced="YES" id="NP6-pw-qAP">
                                     <rect key="frame" x="148" y="80" width="28" height="16"/>
@@ -2521,6 +2532,9 @@
                                             <binding destination="1157" name="value" keyPath="self.ScaleDigit" id="7Sz-GY-rL8"/>
                                         </connections>
                                     </textFieldCell>
+                                    <connections>
+                                        <binding destination="1157" name="enabled" keyPath="self.PSFVectorMenuAcrive" id="b1T-fP-AIJ"/>
+                                    </connections>
                                 </textField>
                                 <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" misplaced="YES" id="kWw-Mj-v7v">
                                     <rect key="frame" x="110" y="66" width="19" height="27"/>
@@ -2531,6 +2545,9 @@
                                             <binding destination="1157" name="value" keyPath="self.ScaleVector" id="0Nj-qX-wya"/>
                                         </connections>
                                     </stepperCell>
+                                    <connections>
+                                        <binding destination="1157" name="enabled" keyPath="self.PSFVectorMenuAcrive" id="1Kl-rM-ujE"/>
+                                    </connections>
                                 </stepper>
                                 <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" misplaced="YES" id="8Zq-RM-yS4">
                                     <rect key="frame" x="172" y="76" width="15" height="22"/>
@@ -2542,6 +2559,9 @@
                                             <binding destination="1157" name="value" keyPath="self.ScaleDigit" id="Ubm-F4-vqO"/>
                                         </connections>
                                     </stepperCell>
+                                    <connections>
+                                        <binding destination="1157" name="enabled" keyPath="self.PSFVectorMenuAcrive" id="tQn-7t-Fio"/>
+                                    </connections>
                                 </stepper>
                                 <textField verticalHuggingPriority="750" misplaced="YES" id="hWg-Lz-4zt">
                                     <rect key="frame" x="97" y="37" width="17" height="22"/>
@@ -2559,6 +2579,9 @@
                                             <binding destination="1157" name="value" keyPath="self.VectorThickness" id="ogG-hE-tli"/>
                                         </connections>
                                     </textFieldCell>
+                                    <connections>
+                                        <binding destination="1157" name="enabled" keyPath="self.PSFVectorMenuAcrive" id="HkJ-vF-tRv"/>
+                                    </connections>
                                 </textField>
                                 <textField verticalHuggingPriority="750" misplaced="YES" id="u40-aQ-mlK">
                                     <rect key="frame" x="148" y="49" width="28" height="16"/>
@@ -2576,6 +2599,9 @@
                                             <binding destination="1157" name="value" keyPath="self.VectorDigit" id="Q21-GI-nOR"/>
                                         </connections>
                                     </textFieldCell>
+                                    <connections>
+                                        <binding destination="1157" name="enabled" keyPath="self.PSFVectorMenuAcrive" id="9g6-oQ-ENJ"/>
+                                    </connections>
                                 </textField>
                                 <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" misplaced="YES" id="bbg-kh-zzP">
                                     <rect key="frame" x="110" y="35" width="19" height="27"/>
@@ -2586,6 +2612,9 @@
                                             <binding destination="1157" name="value" keyPath="self.VectorThickness" id="bEw-Se-qI8"/>
                                         </connections>
                                     </stepperCell>
+                                    <connections>
+                                        <binding destination="1157" name="enabled" keyPath="self.PSFVectorMenuAcrive" id="nv5-0q-teR"/>
+                                    </connections>
                                 </stepper>
                                 <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" misplaced="YES" id="pCV-xs-Xq5">
                                     <rect key="frame" x="172" y="45" width="15" height="22"/>
@@ -2597,6 +2626,9 @@
                                             <binding destination="1157" name="value" keyPath="self.VectorDigit" id="xPC-6M-fYa"/>
                                         </connections>
                                     </stepperCell>
+                                    <connections>
+                                        <binding destination="1157" name="enabled" keyPath="self.PSFVectorMenuAcrive" id="YF4-aP-4M1"/>
+                                    </connections>
                                 </stepper>
                                 <textField verticalHuggingPriority="750" misplaced="YES" id="yUa-MZ-FE9">
                                     <rect key="frame" x="15" y="40" width="51" height="17"/>
@@ -2779,7 +2811,21 @@
                                     </textFieldCell>
                                     <connections>
                                         <action selector="SetPSFDisplayrange:" target="1157" id="yDP-Zv-76T"/>
+                                        <binding destination="1157" name="enabled" keyPath="self.DrawPsfFlag" id="ARF-37-9B2"/>
                                     </connections>
+                                </textField>
+                                <textField verticalHuggingPriority="750" misplaced="YES" id="1066">
+                                    <rect key="frame" x="8" y="90" width="82" height="22"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                                    <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" allowsUndo="NO" sendsActionOnEndEditing="YES" state="on" alignment="center" id="1147">
+                                        <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#.###E0" negativeFormat="#.###E0" numberStyle="scientific" usesGroupingSeparator="NO" paddingCharacter="*" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="1" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="jEU-dF-s9g"/>
+                                        <font key="font" metaFont="system"/>
+                                        <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                        <connections>
+                                            <binding destination="1157" name="value" keyPath="self.PsfMinimumValue" id="2969"/>
+                                        </connections>
+                                    </textFieldCell>
                                 </textField>
                                 <colorWell misplaced="YES" id="StT-jt-Xhd">
                                     <rect key="frame" x="20" y="161" width="51" height="23"/>
@@ -2825,6 +2871,9 @@
                                             <binding destination="1157" name="value" keyPath="self.PsfMaximumDigit" id="xaQ-3d-7vT"/>
                                         </connections>
                                     </textFieldCell>
+                                    <connections>
+                                        <binding destination="1157" name="enabled" keyPath="self.DrawPsfFlag" id="pOH-MP-VM1"/>
+                                    </connections>
                                 </textField>
                                 <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" misplaced="YES" id="8Uo-3n-eZQ">
                                     <rect key="frame" x="108" y="24" width="19" height="27"/>
@@ -2836,6 +2885,7 @@
                                     </stepperCell>
                                     <connections>
                                         <action selector="SetPSFDisplayrange:" target="1157" id="wdu-QL-5Pv"/>
+                                        <binding destination="1157" name="enabled" keyPath="self.DrawPsfFlag" id="wgn-0s-JVv"/>
                                     </connections>
                                 </stepper>
                                 <textField verticalHuggingPriority="750" misplaced="YES" id="GWh-uY-e4i">
@@ -2858,6 +2908,7 @@
                                     </stepperCell>
                                     <connections>
                                         <action selector="SetPSFDisplayrange:" target="1157" id="H36-1p-dUL"/>
+                                        <binding destination="1157" name="enabled" keyPath="self.DrawPsfFlag" id="9eg-TI-cb8"/>
                                     </connections>
                                 </stepper>
                                 <textField verticalHuggingPriority="750" misplaced="YES" id="eMk-w2-zUr">
@@ -2877,6 +2928,7 @@
                                     </textFieldCell>
                                     <connections>
                                         <action selector="SetPSFDisplayrange:" target="1157" id="k8K-2g-DJn"/>
+                                        <binding destination="1157" name="enabled" keyPath="self.DrawPsfFlag" id="rqj-6S-P5E"/>
                                     </connections>
                                 </textField>
                                 <textField verticalHuggingPriority="750" misplaced="YES" id="apk-Ac-pBe">
@@ -2895,6 +2947,9 @@
                                             <binding destination="1157" name="value" keyPath="self.PsfMinimumDigit" id="8Cj-PC-pzn"/>
                                         </connections>
                                     </textFieldCell>
+                                    <connections>
+                                        <binding destination="1157" name="enabled" keyPath="self.DrawPsfFlag" id="n40-oI-H23"/>
+                                    </connections>
                                 </textField>
                                 <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" misplaced="YES" id="v5r-sW-X2f">
                                     <rect key="frame" x="108" y="55" width="19" height="27"/>
@@ -2906,6 +2961,7 @@
                                     </stepperCell>
                                     <connections>
                                         <action selector="SetPSFDisplayrange:" target="1157" id="8DO-iI-v0g"/>
+                                        <binding destination="1157" name="enabled" keyPath="self.DrawPsfFlag" id="eEh-EH-ikF"/>
                                     </connections>
                                 </stepper>
                                 <textField verticalHuggingPriority="750" misplaced="YES" id="JDI-yl-bkO">
@@ -2928,6 +2984,7 @@
                                     </stepperCell>
                                     <connections>
                                         <action selector="SetPSFDisplayrange:" target="1157" id="jGl-by-OZI"/>
+                                        <binding destination="1157" name="enabled" keyPath="self.DrawPsfFlag" id="XM7-2H-DeM"/>
                                     </connections>
                                 </stepper>
                                 <textField verticalHuggingPriority="750" misplaced="YES" id="2427">
@@ -2937,28 +2994,6 @@
                                         <font key="font" metaFont="system"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                    </textFieldCell>
-                                </textField>
-                                <textField verticalHuggingPriority="750" misplaced="YES" id="3042">
-                                    <rect key="frame" x="77" y="112" width="43" height="17"/>
-                                    <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
-                                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Range" id="3043">
-                                        <font key="font" metaFont="system"/>
-                                        <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                    </textFieldCell>
-                                </textField>
-                                <textField verticalHuggingPriority="750" misplaced="YES" id="1066">
-                                    <rect key="frame" x="8" y="90" width="82" height="22"/>
-                                    <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
-                                    <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" allowsUndo="NO" sendsActionOnEndEditing="YES" state="on" alignment="center" id="1147">
-                                        <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#.###E0" negativeFormat="#.###E0" numberStyle="scientific" usesGroupingSeparator="NO" paddingCharacter="*" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="1" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="jEU-dF-s9g"/>
-                                        <font key="font" metaFont="system"/>
-                                        <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
-                                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                        <connections>
-                                            <binding destination="1157" name="value" keyPath="self.PsfMinimumValue" id="2969"/>
-                                        </connections>
                                     </textFieldCell>
                                 </textField>
                                 <textField verticalHuggingPriority="750" misplaced="YES" id="1067">
@@ -2972,6 +3007,24 @@
                                         <connections>
                                             <binding destination="1157" name="value" keyPath="self.PsfMaximumValue" id="2968"/>
                                         </connections>
+                                    </textFieldCell>
+                                </textField>
+                                <textField verticalHuggingPriority="750" misplaced="YES" id="xvT-9G-cUN">
+                                    <rect key="frame" x="86" y="95" width="24" height="17"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title=" to " id="SEX-dq-cfY">
+                                        <font key="font" metaFont="system"/>
+                                        <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                    </textFieldCell>
+                                </textField>
+                                <textField verticalHuggingPriority="750" misplaced="YES" id="3042">
+                                    <rect key="frame" x="76" y="112" width="43" height="17"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Range" id="3043">
+                                        <font key="font" metaFont="system"/>
+                                        <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                 </textField>
                             </subviews>
@@ -3185,14 +3238,14 @@
         <window title="Fieldline View" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hidesOnDeactivate="YES" oneShot="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="1944">
             <windowStyleMask key="styleMask" titled="YES" miniaturizable="YES" resizable="YES" texturedBackground="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-            <rect key="contentRect" x="1016" y="436" width="234" height="393"/>
+            <rect key="contentRect" x="1016" y="436" width="234" height="415"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1440" height="878"/>
             <view key="contentView" id="1945">
-                <rect key="frame" x="0.0" y="0.0" width="234" height="393"/>
+                <rect key="frame" x="0.0" y="0.0" width="234" height="415"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <box autoresizesSubviews="NO" borderType="line" title="Field to Colur" id="1951">
-                        <rect key="frame" x="16" y="243" width="201" height="90"/>
+                        <rect key="frame" x="16" y="265" width="201" height="90"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <view key="contentView" id="UNd-xW-IbQ">
                             <rect key="frame" x="1" y="1" width="199" height="74"/>
@@ -3238,7 +3291,7 @@
                         </view>
                     </box>
                     <box autoresizesSubviews="NO" borderType="line" title="Color" id="1980">
-                        <rect key="frame" x="17" y="116" width="200" height="123"/>
+                        <rect key="frame" x="17" y="138" width="200" height="123"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <view key="contentView" id="a0E-su-YWl">
                             <rect key="frame" x="1" y="1" width="198" height="107"/>
@@ -3276,7 +3329,7 @@
                                 <textField verticalHuggingPriority="750" id="3155">
                                     <rect key="frame" x="15" y="46" width="71" height="17"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Thick:" id="3156">
+                                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Thickness:" id="3156">
                                         <font key="font" metaFont="system"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -3313,8 +3366,21 @@
                                         </column>
                                     </cells>
                                 </matrix>
-                                <textField verticalHuggingPriority="750" id="3131">
-                                    <rect key="frame" x="83" y="44" width="17" height="22"/>
+                                <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" misplaced="YES" id="3133">
+                                    <rect key="frame" x="100" y="42" width="19" height="27"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <stepperCell key="cell" continuous="YES" state="on" alignment="left" minValue="1" maxValue="9" doubleValue="3" id="3138">
+                                        <connections>
+                                            <binding destination="1932" name="value" keyPath="self.FlineThickFactor" id="3718"/>
+                                            <binding destination="1932" name="enabled" keyPath="self.Flinetype" id="3726"/>
+                                        </connections>
+                                    </stepperCell>
+                                    <connections>
+                                        <action selector="SetFieldlineThicknessAction:" target="1932" id="3712"/>
+                                    </connections>
+                                </stepper>
+                                <textField verticalHuggingPriority="750" misplaced="YES" id="3131">
+                                    <rect key="frame" x="87" y="44" width="17" height="22"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" continuous="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="3141">
                                         <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" paddingCharacter="*" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="3142">
@@ -3333,8 +3399,8 @@
                                         <action selector="SetFieldlineThicknessAction:" target="1932" id="3711"/>
                                     </connections>
                                 </textField>
-                                <textField verticalHuggingPriority="750" id="3132">
-                                    <rect key="frame" x="138" y="55" width="29" height="16"/>
+                                <textField verticalHuggingPriority="750" misplaced="YES" id="3132">
+                                    <rect key="frame" x="142" y="55" width="28" height="16"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" continuous="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" drawsBackground="YES" id="3139">
                                         <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" paddingCharacter="*" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="3140">
@@ -3353,21 +3419,8 @@
                                         <action selector="SetFieldlineThicknessAction:" target="1932" id="3713"/>
                                     </connections>
                                 </textField>
-                                <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" id="3133">
-                                    <rect key="frame" x="97" y="40" width="19" height="27"/>
-                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                    <stepperCell key="cell" continuous="YES" state="on" alignment="left" minValue="1" maxValue="9" doubleValue="3" id="3138">
-                                        <connections>
-                                            <binding destination="1932" name="value" keyPath="self.FlineThickFactor" id="3718"/>
-                                            <binding destination="1932" name="enabled" keyPath="self.Flinetype" id="3726"/>
-                                        </connections>
-                                    </stepperCell>
-                                    <connections>
-                                        <action selector="SetFieldlineThicknessAction:" target="1932" id="3712"/>
-                                    </connections>
-                                </stepper>
-                                <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" id="3134">
-                                    <rect key="frame" x="167" y="50" width="15" height="22"/>
+                                <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" misplaced="YES" id="3134">
+                                    <rect key="frame" x="167" y="52" width="15" height="22"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <stepperCell key="cell" controlSize="small" continuous="YES" alignment="left" minValue="-30" maxValue="30" doubleValue="-7" id="3137">
                                         <font key="font" metaFont="smallSystem"/>
@@ -3380,8 +3433,8 @@
                                         <action selector="SetFieldlineThicknessAction:" target="1932" id="3714"/>
                                     </connections>
                                 </stepper>
-                                <textField verticalHuggingPriority="750" id="3135">
-                                    <rect key="frame" x="113" y="46" width="33" height="17"/>
+                                <textField verticalHuggingPriority="750" misplaced="YES" id="3135">
+                                    <rect key="frame" x="117" y="46" width="33" height="17"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="x10" id="3136">
                                         <font key="font" metaFont="system"/>
@@ -3392,18 +3445,21 @@
                             </subviews>
                         </view>
                     </box>
-                    <box autoresizesSubviews="NO" borderType="line" title="Range" id="1997">
-                        <rect key="frame" x="17" y="16" width="200" height="96"/>
+                    <box autoresizesSubviews="NO" misplaced="YES" borderType="line" title="Range" id="1997">
+                        <rect key="frame" x="17" y="16" width="200" height="118"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <view key="contentView" id="IMa-yh-Wiy">
-                            <rect key="frame" x="1" y="1" width="198" height="80"/>
+                            <rect key="frame" x="1" y="1" width="198" height="102"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
-                                <textField verticalHuggingPriority="750" id="2001">
-                                    <rect key="frame" x="106" y="48" width="74" height="22"/>
+                                <textField verticalHuggingPriority="750" misplaced="YES" id="2001">
+                                    <rect key="frame" x="62" y="40" width="48" height="22"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="2007">
-                                        <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#E0" negativeFormat="#E0" numberStyle="scientific" usesGroupingSeparator="NO" paddingCharacter="*" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="1" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="2008"/>
+                                        <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#.##" negativeFormat="#.##" numberStyle="decimal" usesGroupingSeparator="NO" paddingCharacter="*" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="1" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="2008">
+                                            <real key="minimum" value="-9.9990000000000006"/>
+                                            <real key="maximum" value="9.9990000000000006"/>
+                                        </numberFormatter>
                                         <font key="font" metaFont="system"/>
                                         <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -3416,11 +3472,67 @@
                                         <binding destination="1157" name="editable" keyPath="self.DrawPsfFlag" id="2014"/>
                                     </connections>
                                 </textField>
-                                <textField verticalHuggingPriority="750" id="2002">
-                                    <rect key="frame" x="106" y="15" width="74" height="22"/>
+                                <textField verticalHuggingPriority="750" misplaced="YES" id="1998">
+                                    <rect key="frame" x="13" y="44" width="38" height="17"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Min:" id="2013">
+                                        <font key="font" metaFont="system"/>
+                                        <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                    </textFieldCell>
+                                </textField>
+                                <textField verticalHuggingPriority="750" misplaced="YES" id="chX-dS-X89">
+                                    <rect key="frame" x="13" y="76" width="38" height="17"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Data:" id="ea1-rG-q4W">
+                                        <font key="font" metaFont="system"/>
+                                        <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                    </textFieldCell>
+                                </textField>
+                                <textField verticalHuggingPriority="750" misplaced="YES" id="2003">
+                                    <rect key="frame" x="13" y="11" width="42" height="17"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Max:" id="2004">
+                                        <font key="font" metaFont="system"/>
+                                        <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                    </textFieldCell>
+                                </textField>
+                                <textField verticalHuggingPriority="750" misplaced="YES" id="2000">
+                                    <rect key="frame" x="133" y="71" width="55" height="22"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" allowsUndo="NO" sendsActionOnEndEditing="YES" state="on" alignment="right" id="2009">
+                                        <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" paddingCharacter="*" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="2010"/>
+                                        <font key="font" metaFont="system"/>
+                                        <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                        <connections>
+                                            <binding destination="1932" name="value" keyPath="self.FlineMaximumValue" id="2147"/>
+                                        </connections>
+                                    </textFieldCell>
+                                </textField>
+                                <textField verticalHuggingPriority="750" misplaced="YES" id="1999">
+                                    <rect key="frame" x="55" y="71" width="55" height="22"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" allowsUndo="NO" sendsActionOnEndEditing="YES" state="on" alignment="right" id="2011">
+                                        <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" paddingCharacter="*" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="2012"/>
+                                        <font key="font" metaFont="system"/>
+                                        <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                        <connections>
+                                            <binding destination="1932" name="value" keyPath="self.FlineMinimumValue" id="2150"/>
+                                        </connections>
+                                    </textFieldCell>
+                                </textField>
+                                <textField verticalHuggingPriority="750" misplaced="YES" id="2002">
+                                    <rect key="frame" x="62" y="9" width="48" height="22"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="2005">
-                                        <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#E0" negativeFormat="#E0" numberStyle="scientific" usesGroupingSeparator="NO" paddingCharacter="*" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="1" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="2006"/>
+                                        <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#.##" negativeFormat="#.##" numberStyle="scientific" usesGroupingSeparator="NO" paddingCharacter="*" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="1" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="2006">
+                                            <real key="minimum" value="-9.9990000000000006"/>
+                                            <real key="maximum" value="9.9990000000000006"/>
+                                        </numberFormatter>
                                         <font key="font" metaFont="system"/>
                                         <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -3433,55 +3545,132 @@
                                         <binding destination="1157" name="editable" keyPath="self.DrawPsfFlag" id="2015"/>
                                     </connections>
                                 </textField>
-                                <textField verticalHuggingPriority="750" id="1998">
-                                    <rect key="frame" x="15" y="50" width="38" height="17"/>
+                                <textField verticalHuggingPriority="750" misplaced="YES" id="8T2-fz-ch4">
+                                    <rect key="frame" x="148" y="51" width="28" height="16"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Min:" id="2013">
+                                    <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" continuous="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" drawsBackground="YES" id="Sr4-qO-Vtl">
+                                        <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" paddingCharacter="*" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="MzT-aC-phF">
+                                            <real key="minimum" value="-30"/>
+                                            <real key="maximum" value="30"/>
+                                        </numberFormatter>
+                                        <font key="font" metaFont="smallSystem"/>
+                                        <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                        <connections>
+                                            <binding destination="1932" name="enabled" keyPath="self.Flinetype" id="ndC-2Q-pTe"/>
+                                            <binding destination="1932" name="value" keyPath="self.FlineDisplayMinDigit" id="v8i-rs-PnT"/>
+                                        </connections>
+                                    </textFieldCell>
+                                    <connections>
+                                        <action selector="ShowFlineRange:" target="1932" id="HJb-Yo-gBt"/>
+                                    </connections>
+                                </textField>
+                                <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" misplaced="YES" id="eje-qT-9Z5">
+                                    <rect key="frame" x="106" y="38" width="19" height="27"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <stepperCell key="cell" continuous="YES" state="on" alignment="left" increment="0.10000000000000001" minValue="-9.9990000000000006" maxValue="9.9990000000000006" doubleValue="3" id="iLp-zj-Kh2">
+                                        <connections>
+                                            <binding destination="1932" name="enabled" keyPath="self.Flinetype" id="b2H-9J-RZY"/>
+                                            <binding destination="1932" name="value" keyPath="self.FlineDisplayMinimum" id="6As-ji-dkk"/>
+                                        </connections>
+                                    </stepperCell>
+                                    <connections>
+                                        <action selector="ShowFlineRange:" target="1932" id="PnC-GN-Wfb"/>
+                                    </connections>
+                                </stepper>
+                                <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" misplaced="YES" id="a3E-WO-WjC">
+                                    <rect key="frame" x="173" y="48" width="15" height="22"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <stepperCell key="cell" controlSize="small" continuous="YES" alignment="left" minValue="-30" maxValue="30" doubleValue="-7" id="aFa-it-5CB">
+                                        <font key="font" metaFont="smallSystem"/>
+                                        <connections>
+                                            <binding destination="1932" name="enabled" keyPath="self.Flinetype" id="Nzz-ve-Ngc"/>
+                                            <binding destination="1932" name="value" keyPath="self.FlineDisplayMinDigit" id="AiH-Ld-Dtl"/>
+                                        </connections>
+                                    </stepperCell>
+                                    <connections>
+                                        <action selector="ShowFlineRange:" target="1932" id="dpv-Yu-jsO"/>
+                                    </connections>
+                                </stepper>
+                                <textField verticalHuggingPriority="750" misplaced="YES" id="TXR-Ov-zDZ">
+                                    <rect key="frame" x="123" y="42" width="33" height="17"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="x10" id="tdi-0C-YT4">
                                         <font key="font" metaFont="system"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                 </textField>
-                                <textField verticalHuggingPriority="750" id="2003">
-                                    <rect key="frame" x="15" y="17" width="42" height="17"/>
+                                <textField verticalHuggingPriority="750" misplaced="YES" id="jLv-cF-0W1">
+                                    <rect key="frame" x="148" y="20" width="28" height="16"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Max:" id="2004">
+                                    <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" continuous="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" drawsBackground="YES" id="UmX-85-QGR">
+                                        <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" paddingCharacter="*" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="j6b-U1-GCX">
+                                            <real key="minimum" value="-30"/>
+                                            <real key="maximum" value="30"/>
+                                        </numberFormatter>
+                                        <font key="font" metaFont="smallSystem"/>
+                                        <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                        <connections>
+                                            <binding destination="1932" name="enabled" keyPath="self.Flinetype" id="GZ2-TX-UTA"/>
+                                            <binding destination="1932" name="value" keyPath="self.FlineDisplayMaxDigit" id="xhw-Vg-Ovr"/>
+                                        </connections>
+                                    </textFieldCell>
+                                    <connections>
+                                        <action selector="ShowFlineRange:" target="1932" id="9gU-RL-fwO"/>
+                                    </connections>
+                                </textField>
+                                <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" misplaced="YES" id="huT-Qi-vKo">
+                                    <rect key="frame" x="106" y="7" width="19" height="27"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <stepperCell key="cell" continuous="YES" state="on" alignment="left" increment="0.10000000000000001" minValue="-9.9990000000000006" maxValue="9.9990000000000006" doubleValue="3" id="xyg-HN-YI8">
+                                        <connections>
+                                            <binding destination="1932" name="enabled" keyPath="self.Flinetype" id="npL-4I-LzJ"/>
+                                            <binding destination="1932" name="value" keyPath="self.FlineDisplayMaximum" id="TdQ-Hc-IRo"/>
+                                        </connections>
+                                    </stepperCell>
+                                    <connections>
+                                        <action selector="ShowFlineRange:" target="1932" id="NZS-wj-0W5"/>
+                                    </connections>
+                                </stepper>
+                                <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" misplaced="YES" id="AKF-Pm-brr">
+                                    <rect key="frame" x="173" y="17" width="15" height="22"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <stepperCell key="cell" controlSize="small" continuous="YES" alignment="left" minValue="-30" maxValue="30" doubleValue="-7" id="jEg-ca-xO9">
+                                        <font key="font" metaFont="smallSystem"/>
+                                        <connections>
+                                            <binding destination="1932" name="enabled" keyPath="self.Flinetype" id="s53-nE-MD8"/>
+                                            <binding destination="1932" name="value" keyPath="self.FlineDisplayMaxDigit" id="oJl-Qx-VqX"/>
+                                        </connections>
+                                    </stepperCell>
+                                    <connections>
+                                        <action selector="ShowFlineRange:" target="1932" id="oex-Qe-ScI"/>
+                                    </connections>
+                                </stepper>
+                                <textField verticalHuggingPriority="750" misplaced="YES" id="44U-f4-4wy">
+                                    <rect key="frame" x="123" y="11" width="33" height="17"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="x10" id="AJI-O8-GqQ">
                                         <font key="font" metaFont="system"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                 </textField>
-                                <textField verticalHuggingPriority="750" id="2000">
-                                    <rect key="frame" x="46" y="14" width="55" height="22"/>
+                                <textField verticalHuggingPriority="750" misplaced="YES" id="IzB-YQ-vV4">
+                                    <rect key="frame" x="111" y="73" width="24" height="17"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" allowsUndo="NO" sendsActionOnEndEditing="YES" state="on" alignment="right" id="2009">
-                                        <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" paddingCharacter="*" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="2010"/>
+                                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title=" to " id="Cuc-Nm-rs0">
                                         <font key="font" metaFont="system"/>
-                                        <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                        <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                        <connections>
-                                            <binding destination="1932" name="value" keyPath="self.FlineMaximumValue" id="2147"/>
-                                        </connections>
-                                    </textFieldCell>
-                                </textField>
-                                <textField verticalHuggingPriority="750" id="1999">
-                                    <rect key="frame" x="46" y="45" width="55" height="22"/>
-                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" allowsUndo="NO" sendsActionOnEndEditing="YES" state="on" alignment="right" id="2011">
-                                        <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" paddingCharacter="*" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="2012"/>
-                                        <font key="font" metaFont="system"/>
-                                        <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
-                                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                        <connections>
-                                            <binding destination="1932" name="value" keyPath="self.FlineMinimumValue" id="2150"/>
-                                        </connections>
                                     </textFieldCell>
                                 </textField>
                             </subviews>
                         </view>
                     </box>
                     <button verticalHuggingPriority="750" id="2949">
-                        <rect key="frame" x="124" y="345" width="96" height="32"/>
+                        <rect key="frame" x="124" y="367" width="96" height="32"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="push" title="Close" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="2950">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -3492,7 +3681,7 @@
                         </connections>
                     </button>
                     <button verticalHuggingPriority="750" id="3604">
-                        <rect key="frame" x="14" y="345" width="96" height="32"/>
+                        <rect key="frame" x="14" y="367" width="96" height="32"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="push" title="Reopen" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="3605">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -3509,6 +3698,7 @@
                 <binding destination="1932" name="title" keyPath="self.FlineWindowlabel" id="1948"/>
                 <outlet property="delegate" destination="1932" id="2192"/>
             </connections>
+            <point key="canvasLocation" x="402" y="161.5"/>
         </window>
         <window title="Preferences" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="2202" customClass="NSPanel">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" resizable="YES" utility="YES" texturedBackground="YES"/>

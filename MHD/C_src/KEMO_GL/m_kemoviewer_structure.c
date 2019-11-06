@@ -734,7 +734,7 @@ int kemoview_get_fline_parameters(int selected){
 };
 
 void kemoview_set_fline_color_param(int selected, int input) {
-	set_fline_color_param(selected, input, kemo_sgl->kemo_fline->fline_m);
+	set_fline_color_param(selected, input, kemo_sgl->kemo_fline);
 };
 int kemoview_get_fline_color_param(int selected){
 	return get_fline_color_param(selected, kemo_sgl->kemo_fline);
@@ -764,9 +764,20 @@ void kemoview_get_fline_thickness(double *value, int *i_digit){
 	get_fline_thickness(kemo_sgl->kemo_fline->fline_m, value, i_digit);
 };
 
-void kemoview_set_fline_linear_colormap(double minvalue, double maxvalue){
-	set_fline_linear_colormap(kemo_sgl->kemo_fline->fline_m, minvalue, maxvalue);
+void kemoview_set_fline_linear_colormap(double minvalue, int i_min_digit,
+										double maxvalue, int i_max_digit){
+	set_fline_linear_colormap(minvalue, i_min_digit, maxvalue, i_max_digit, 
+							  kemo_sgl->kemo_fline->fline_m);
 }
+void kemoview_get_fline_range_min(double *value, int *i_digit){
+	get_fline_num_exponent(ISET_COLOR_MIN, kemo_sgl->kemo_fline, value, i_digit);
+	return;
+};
+void kemoview_get_fline_range_max(double *value, int *i_digit){
+	get_fline_num_exponent(ISET_COLOR_MAX, kemo_sgl->kemo_fline, value, i_digit);
+	return;
+};
+
 void kemoview_set_fline_constant_opacity(double opacity){
 	set_fline_constant_opacity(kemo_sgl->kemo_fline->fline_d, kemo_sgl->kemo_fline->fline_m, opacity);
 }
