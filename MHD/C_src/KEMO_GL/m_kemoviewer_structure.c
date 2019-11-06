@@ -676,7 +676,7 @@ void kemoview_set_PSF_opacity_data(int i_point, double value, double opacity){
 }
 
 double kemoview_get_each_PSF_data_range(int selected, int icomp){
-	return get_each_PSF_data_range(ISET_COLOR_MAX, icomp, kemo_sgl->kemo_psf);
+	return get_each_PSF_data_range(selected, icomp, kemo_sgl->kemo_psf);
 };
 double kemoview_get_each_PSF_colormap_range(int selected){
 	return get_each_PSF_colormap_range(selected, kemo_sgl->kemo_psf);
