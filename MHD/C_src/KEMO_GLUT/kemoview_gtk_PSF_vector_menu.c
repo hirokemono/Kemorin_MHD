@@ -58,7 +58,22 @@ static void set_vector_width_CB(GtkWidget *entry, gpointer user_data)
 {
 	struct colormap_view *color_vws = (struct colormap_view *) user_data;
 	double gtk_floatvalue = (double) gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
-	kemoview_set_PSF_vector_thickness(gtk_floatvalue);
+	int i_digit;
+	double current_vec_width;
+	kemoview_get_PSF_vector_thickness(&current_vec_width, &i_digit);
+	kemoview_set_PSF_vector_thickness(gtk_floatvalue, i_digit);
+	
+	draw_full();
+	return;
+}
+static void set_width_digit_CB(GtkWidget *entry, gpointer user_data)
+{
+	struct colormap_view *color_vws = (struct colormap_view *) user_data;
+	int gtk_intvalue = (double) gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(entry));
+	int i_digit;
+	double current_vec_width;
+	kemoview_get_PSF_vector_thickness(&current_vec_width, &i_digit);
+	kemoview_set_PSF_vector_thickness(current_vec_width, gtk_intvalue);
 	
 	draw_full();
 	return;
@@ -70,7 +85,7 @@ void make_gtk_psf_vector_menu(struct colormap_view *color_vws){
 	GtkWidget *hbox_vecmode, *hbox_veccolor;
 	GtkWidget *hbox_12, *hbox_13;
 	GtkWidget *hbox_22, *hbox_23;
-	GtkWidget *hbox_32, *hbox_33;
+	GtkWidget *hbox_32;
 	GtkWidget *vbox_vec;
 	
 	GtkWidget *switch_1;
@@ -100,10 +115,8 @@ void make_gtk_psf_vector_menu(struct colormap_view *color_vws){
 	int current_vec_increment;
 	char current_vec_inc_txt[30];
 	
-	GtkWidget *spin_vect_width;
-	GtkAdjustment *adj_vect_width;
-	double current_vec_width;
-	char current_vec_width_txt[30];
+	GtkWidget *spin_vect_width, *spin_digit;
+	GtkAdjustment *adj_vect_width, *adj_digit;
 	
 	switch_1 = gtk_switch_new();
 	if(kemoview_get_PSF_draw_flags(PSFVECT_TOGGLE) == 0){
@@ -169,11 +182,16 @@ void make_gtk_psf_vector_menu(struct colormap_view *color_vws){
 	spin_vect_inc = gtk_spin_button_new(GTK_ADJUSTMENT(adj_vect_inc), 0, 0);
 	g_signal_connect(spin_vect_inc, "value-changed", G_CALLBACK(set_vect_increment_CB), (gpointer) color_vws);
 	
-	current_vec_width = kemoview_get_PSF_vector_thickness();
-	sprintf(current_vec_width_txt, "    %e    ", current_vec_width);
-	adj_vect_width = gtk_adjustment_new(current_vec_width, 0.0, 1.0, 0.01, 0.01, 0.0);
-	spin_vect_width = gtk_spin_button_new(GTK_ADJUSTMENT(adj_vect_width), 0, 4);
+	int i_digit;
+	double current_vec_width;
+	kemoview_get_PSF_vector_thickness(&current_vec_width, &i_digit);
+	adj_vect_width = gtk_adjustment_new(current_vec_width, 1, 9, 1, 1, 0);
+	spin_vect_width = gtk_spin_button_new(GTK_ADJUSTMENT(adj_vect_width), 0, 0);
 	g_signal_connect(spin_vect_width, "value-changed", G_CALLBACK(set_vector_width_CB), (gpointer) color_vws);
+	
+	adj_digit = gtk_adjustment_new(i_digit, -10, 10, 1, 1, 0);
+	spin_digit = gtk_spin_button_new(GTK_ADJUSTMENT(adj_digit), 0, 0);
+	g_signal_connect(spin_digit, "value-changed", G_CALLBACK(set_width_digit_CB), NULL);
 	
 	
 	hbox_draw = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
@@ -202,12 +220,11 @@ void make_gtk_psf_vector_menu(struct colormap_view *color_vws){
 	gtk_box_pack_start(GTK_BOX(hbox_22), gtk_label_new("Increment: "), TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_22), spin_vect_inc, TRUE, TRUE, 0);
 	
-	hbox_33 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
-	gtk_box_pack_start(GTK_BOX(hbox_33), gtk_label_new("Current width.: "), TRUE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox_33), gtk_label_new(current_vec_width_txt), TRUE, TRUE, 0);
 	hbox_32 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
 	gtk_box_pack_start(GTK_BOX(hbox_32), gtk_label_new("Arrow width: "), TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_32), spin_vect_width, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_32), gtk_label_new("X 10^"), FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_32), spin_digit, TRUE, TRUE, 0);
 	
 	vbox_vec = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
 	gtk_box_pack_start(GTK_BOX(vbox_vec), hbox_draw, FALSE, FALSE, 0);
@@ -217,9 +234,8 @@ void make_gtk_psf_vector_menu(struct colormap_view *color_vws){
 	gtk_box_pack_start(GTK_BOX(vbox_vec), hbox_12, TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox_vec), hbox_23, TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox_vec), hbox_22, TRUE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_vec), hbox_33, TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox_vec), hbox_32, TRUE, TRUE, 0);
 	
-	wrap_into_expanded_frame_gtk("Vector", 400, 300, vbox_vec, color_vws->psfVectorBox);
+	wrap_into_expanded_frame_gtk("Vector", 425, 300, vbox_vec, color_vws->psfVectorBox);
 	return;
 }

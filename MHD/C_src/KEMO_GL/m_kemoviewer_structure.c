@@ -605,8 +605,8 @@ void kemoview_set_PSF_isoline_width(double value, int i_digit){
 void kemoview_set_PSF_vector_scale(double scale){
 	set_each_scale_vect(kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current], scale);
 };
-void kemoview_set_PSF_vector_thickness(double size){
-	set_each_vector_thick(kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current], size);
+void kemoview_set_PSF_vector_thickness(double value, int i_digit){
+	set_each_vector_thick(value, i_digit, kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current]);
 };
 
 void kemoview_get_PSF_isoline_width(double *value, int *i_digit){
@@ -615,8 +615,9 @@ void kemoview_get_PSF_isoline_width(double *value, int *i_digit){
 double kemoview_get_PSF_vector_scale(void){
 	return send_scale_vector(kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current]);
 };
-double kemoview_get_PSF_vector_thickness(void){
-	return send_vector_thick(kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current]);
+void kemoview_get_PSF_vector_thickness(double *value, int *i_digit){
+	send_vector_thick(kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current], value, i_digit);
+	return;
 };
 
 void kemoview_delete_PSF_color_list(int i_delete){

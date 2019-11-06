@@ -78,7 +78,7 @@ void set_each_isoline_width(struct psf_menu_val *psf_menu, double value, int i_d
 void set_each_vector_patch_color(struct psf_menu_val *psf_menu, int iflag);
 void set_each_increment_vect(struct psf_menu_val *psf_menu, int increment);
 void set_each_scale_vect(struct psf_menu_val *psf_menu, double scale);
-void set_each_vector_thick(struct psf_menu_val *psf_menu, double size);
+void set_each_vector_thick(double value, int i_digit, struct psf_menu_val *psf_menu);
 
 int send_each_psf_patch_color(struct psf_menu_val *psf_menu);
 int send_each_isoline_color(struct psf_menu_val *psf_menu);
@@ -87,7 +87,7 @@ void send_isoline_width(struct psf_menu_val *psf_menu, double *value, int *i_dig
 int send_each_vector_patch_color(struct psf_menu_val *psf_menu);
 int send_increment_vector(struct psf_menu_val *psf_menu);
 double send_scale_vector(struct psf_menu_val *psf_menu);
-double send_vector_thick(struct psf_menu_val *psf_menu);
+void send_vector_thick(struct psf_menu_val *psf_menu, double *value, int *i_digit);
 
 double send_psf_data_min(struct psf_data *psf_d, int icomp);
 double send_psf_data_max(struct psf_data *psf_d, int icomp);

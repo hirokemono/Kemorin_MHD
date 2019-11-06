@@ -14,6 +14,7 @@
 #include <stdio.h>
 
 #include "kemoviewer.h"
+#include "kemoviewer_base.h"
 #include "m_psf_data_4_viewer_c.h"
 #include "read_psf_data_viewer_c.h"
 #include "read_psf_vtk_data_c.h"

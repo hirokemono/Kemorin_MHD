@@ -106,6 +106,7 @@
 	NSInteger PSFVectorIncrement;
 	CGFloat ScaleVector;
     CGFloat VectorThickness;    
+	CGFloat VectorDigit;
 }
 @property NSInteger psfMoreOpenFlag;
 @property NSInteger EvolutionStartStep;
@@ -150,6 +151,7 @@
 @property NSInteger PSFVectorIncrement;
 @property CGFloat ScaleVector;
 @property CGFloat VectorThickness;
+@property CGFloat VectorDigit;
 
 
 - (id)init;

@@ -54,6 +54,7 @@
 @synthesize DrawPSFVectorFlag;
 @synthesize ScaleVector;
 @synthesize VectorThickness;
+@synthesize VectorDigit;
 @synthesize PSFVectorIncrement;
 - (id)init;
 {
@@ -192,7 +193,10 @@
 	self.DrawPSFVectorFlag = kemoview_get_PSF_draw_flags(PSFVECT_TOGGLE);
 	self.ScaleVector =       kemoview_get_PSF_vector_scale();
 	self.PSFVectorIncrement = kemoview_get_PSF_color_param(ISET_VECTOR_INC);
-    self.VectorThickness = kemoview_get_PSF_vector_thickness();
+	
+	kemoview_get_PSF_vector_thickness(&current_value, &i_digit);
+    self.VectorThickness = (CGFloat) current_value;
+	self.VectorDigit =     (CGFloat) i_digit;
 	
 	self.psfPatchDirectionTag = kemoview_get_PSF_draw_flags(PSF_POLYGON_SWITCH);
 	self.psfTangentialVectorTag = kemoview_get_PSF_draw_flags(PSFTANVEC_TOGGLE);
@@ -664,7 +668,7 @@
 }
 
 - (IBAction)SetVectorThickness:(id)pSender {
-    kemoview_set_PSF_vector_thickness((double) self.VectorThickness);
+    kemoview_set_PSF_vector_thickness((double) self.VectorThickness, (int) self.VectorDigit);
     
     [_kemoviewer UpdateImage];
 }

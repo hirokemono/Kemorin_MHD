@@ -274,10 +274,10 @@
 !    int kemoview_get_PSF_color_param(int selected){
 !
 !    void kemoview_set_PSF_vector_scale(double scale);
-!    void kemoview_set_PSF_vector_thickness(double size);
+!    void kemoview_set_PSF_vector_thickness(double value, int i_digit);
 !    
 !    double kemoview_get_PSF_vector_scale();
-!    double kemoview_get_PSF_vector_thickness();
+!    void kemoview_get_PSF_vector_thickness(double *value, int *i_digit);
 !    
 !    int kemoview_get_PSF_draw_flags(int selected);
 !    int kemoview_select_PSF_draw_switch(int selected);

@@ -178,6 +178,6 @@ void add_gtk_isoline_menu(GtkWidget *window, GtkWidget *box){
 	gtk_box_pack_start(GTK_BOX(vbox_iso), hbox_nline, FALSE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox_iso), hbox_width, FALSE, TRUE, 0);
 	
-	wrap_into_expanded_frame_gtk("Isolines", 400, 220, vbox_iso, box);
+	wrap_into_expanded_frame_gtk("Isolines", 425, 220, vbox_iso, box);
 	return;
 }
