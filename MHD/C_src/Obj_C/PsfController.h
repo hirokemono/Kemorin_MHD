@@ -105,6 +105,7 @@
 	NSInteger DrawPSFVectorFlag;
 	NSInteger PSFVectorIncrement;
 	CGFloat ScaleVector;
+	CGFloat ScaleDigit;
     CGFloat VectorThickness;    
 	CGFloat VectorDigit;
 }
@@ -150,6 +151,7 @@
 @property NSInteger DrawPSFVectorFlag;
 @property NSInteger PSFVectorIncrement;
 @property CGFloat ScaleVector;
+@property CGFloat ScaleDigit;
 @property CGFloat VectorThickness;
 @property CGFloat VectorDigit;
 

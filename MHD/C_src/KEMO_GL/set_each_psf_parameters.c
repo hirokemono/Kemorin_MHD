@@ -118,7 +118,9 @@ void set_each_vector_patch_color(struct psf_menu_val *psf_menu, int iflag){psf_m
 void set_each_increment_vect(struct psf_menu_val *psf_menu, int increment){
     if(increment > 0) psf_menu->increment_vect = increment;
 };
-void set_each_scale_vect(struct psf_menu_val *psf_menu, double scale)     {psf_menu->scale_vect = scale;};
+void set_each_scale_vect(double value, int i_digit, struct psf_menu_val *psf_menu){
+	psf_menu->scale_vect = const_from_digit_order(value, i_digit);
+};
 void set_each_vector_thick(double value, int i_digit, struct psf_menu_val *psf_menu){
 	psf_menu->vector_thick = const_from_digit_order(value, i_digit);
 };
@@ -132,7 +134,9 @@ void send_isoline_width(struct psf_menu_val *psf_menu, double *value, int *i_dig
 };
 int send_each_vector_patch_color(struct psf_menu_val *psf_menu){return psf_menu->vector_patch_color;};
 int send_increment_vector(struct psf_menu_val *psf_menu)       {return psf_menu->increment_vect;};
-double send_scale_vector(struct psf_menu_val *psf_menu)        {return psf_menu->scale_vect;};
+void send_scale_vector(struct psf_menu_val *psf_menu, double *value, int *i_digit){
+	find_order_digit(psf_menu->scale_vect, value, i_digit);
+};
 void send_vector_thick(struct psf_menu_val *psf_menu, double *value, int *i_digit){
 	find_order_digit(psf_menu->vector_thick, value, i_digit);
 };

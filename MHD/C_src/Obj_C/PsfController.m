@@ -53,6 +53,7 @@
 @synthesize PSFVectorMenuAcrive;
 @synthesize DrawPSFVectorFlag;
 @synthesize ScaleVector;
+@synthesize ScaleDigit;
 @synthesize VectorThickness;
 @synthesize VectorDigit;
 @synthesize PSFVectorIncrement;
@@ -191,7 +192,10 @@
 	self.PSFOpacity =        kemoview_get_each_PSF_colormap_range(ISET_OPACITY_MAX);
 	
 	self.DrawPSFVectorFlag = kemoview_get_PSF_draw_flags(PSFVECT_TOGGLE);
-	self.ScaleVector =       kemoview_get_PSF_vector_scale();
+
+	kemoview_get_PSF_vector_scale(&current_value, &i_digit);
+	self.ScaleVector =      (CGFloat) current_value;
+	self.ScaleDigit =       (CGFloat) i_digit;
 	self.PSFVectorIncrement = kemoview_get_PSF_color_param(ISET_VECTOR_INC);
 	
 	kemoview_get_PSF_vector_thickness(&current_value, &i_digit);
@@ -246,7 +250,10 @@
      self.PSFOpacity =        kemoview_get_each_PSF_colormap_range(ISET_OPACITY_MAX);
      
      self.DrawPSFVectorFlag = kemoview_get_PSF_draw_flags(PSFVECT_TOGGLE);
-     self.ScaleVector =       kemoview_get_PSF_vector_scale();
+
+	 kemoview_get_PSF_vector_scale(&current_value, &i_digit);
+	 self.ScaleVector =      (CGFloat) current_value;
+	 self.ScaleDigit =       (CGFloat) i_digit;
      self.PSFVectorIncrement = kemoview_get_PSF_color_param(ISET_VECTOR_INC);
      self.psfTangentialVectorTag = kemoview_get_PSF_draw_flags(PSFTANVEC_TOGGLE);
      
@@ -656,7 +663,7 @@
 }
 
 - (IBAction)SetReferenceVector:(id)pSender {
-	kemoview_set_PSF_vector_scale((double) self.ScaleVector);
+	kemoview_set_PSF_vector_scale((double) self.ScaleVector, (int) self.ScaleDigit);
     
 	[_kemoviewer UpdateImage];
 }
