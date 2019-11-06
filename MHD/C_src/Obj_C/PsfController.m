@@ -57,6 +57,7 @@
 @synthesize VectorThickness;
 @synthesize VectorDigit;
 @synthesize PSFVectorIncrement;
+@synthesize PSFVectorIncDigit;
 - (id)init;
 {
 	self.PsfWindowlabel = [NSString stringWithFormat:@"PSF View"];
@@ -196,7 +197,10 @@
 	kemoview_get_PSF_vector_scale(&current_value, &i_digit);
 	self.ScaleVector =      (CGFloat) current_value;
 	self.ScaleDigit =       (CGFloat) i_digit;
-	self.PSFVectorIncrement = kemoview_get_PSF_color_param(ISET_VECTOR_INC);
+
+	kemoview_get_PSF_vector_increment(&current_value, &i_digit);
+	self.PSFVectorIncrement = (CGFloat) current_value;
+	self.PSFVectorIncDigit =  (CGFloat) i_digit;
 	
 	kemoview_get_PSF_vector_thickness(&current_value, &i_digit);
     self.VectorThickness = (CGFloat) current_value;
@@ -254,7 +258,11 @@
 	 kemoview_get_PSF_vector_scale(&current_value, &i_digit);
 	 self.ScaleVector =      (CGFloat) current_value;
 	 self.ScaleDigit =       (CGFloat) i_digit;
-     self.PSFVectorIncrement = kemoview_get_PSF_color_param(ISET_VECTOR_INC);
+
+	 kemoview_get_PSF_vector_increment(&current_value, &i_digit);
+	 self.PSFVectorIncrement = (CGFloat) current_value;
+	 self.PSFVectorIncDigit =  (CGFloat) i_digit;
+	 
      self.psfTangentialVectorTag = kemoview_get_PSF_draw_flags(PSFTANVEC_TOGGLE);
      
      self.psfPatchDirectionTag = kemoview_get_PSF_draw_flags(PSF_POLYGON_SWITCH);
@@ -669,7 +677,7 @@
 }
 
 - (IBAction)SetVectorIncrement:(id)pSender {
-	kemoview_set_PSF_color_param(ISET_VECTOR_INC, self.PSFVectorIncrement);
+	kemoview_set_PSF_vector_increment((double) self.PSFVectorIncrement, (int) self.PSFVectorIncDigit);
 	
 	[_kemoviewer UpdateImage];
 }

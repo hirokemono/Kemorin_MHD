@@ -2347,54 +2347,10 @@
                                                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                         </textFieldCell>
                                                     </textField>
-                                                    <textField verticalHuggingPriority="750" id="3029">
-                                                        <rect key="frame" x="104" y="41" width="53" height="22"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" drawsBackground="YES" id="3034">
-                                                            <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" paddingCharacter="*" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="3035">
-                                                                <real key="minimum" value="0.0"/>
-                                                                <real key="maximum" value="500"/>
-                                                            </numberFormatter>
-                                                            <font key="font" metaFont="system"/>
-                                                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
-                                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                                            <connections>
-                                                                <binding destination="1157" name="value" keyPath="self.PSFVectorIncrement" id="3117"/>
-                                                            </connections>
-                                                        </textFieldCell>
-                                                        <connections>
-                                                            <action selector="SetVectorIncrement:" target="1157" id="3115"/>
-                                                            <binding destination="1157" name="editable" keyPath="self.DrawPsfFlag" id="3038"/>
-                                                            <binding destination="1157" name="enabled" keyPath="self.PSFVectorMenuAcrive" previousBinding="3038" id="3101"/>
-                                                        </connections>
-                                                    </textField>
-                                                    <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" id="3030">
-                                                        <rect key="frame" x="162" y="38" width="19" height="27"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                        <stepperCell key="cell" continuous="YES" alignment="left" maxValue="100" id="3033">
-                                                            <connections>
-                                                                <binding destination="1157" name="value" keyPath="self.PSFVectorIncrement" id="3121"/>
-                                                            </connections>
-                                                        </stepperCell>
-                                                        <connections>
-                                                            <action selector="SetVectorIncrement:" target="1157" id="3114"/>
-                                                            <binding destination="1157" name="value" keyPath="self.PSFVectorIncrement" id="3119"/>
-                                                            <binding destination="1157" name="enabled" keyPath="self.PSFVectorMenuAcrive" id="3102"/>
-                                                        </connections>
-                                                    </stepper>
-                                                    <textField verticalHuggingPriority="750" id="3031">
-                                                        <rect key="frame" x="15" y="43" width="82" height="17"/>
+                                                    <textField verticalHuggingPriority="750" misplaced="YES" id="3031">
+                                                        <rect key="frame" x="15" y="13" width="65" height="17"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Increment" id="3032">
-                                                            <font key="font" metaFont="system"/>
-                                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                                        </textFieldCell>
-                                                    </textField>
-                                                    <textField verticalHuggingPriority="750" misplaced="YES" id="yUa-MZ-FE9">
-                                                        <rect key="frame" x="15" y="15" width="82" height="17"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Width" id="Eqv-Hu-AYr">
                                                             <font key="font" metaFont="system"/>
                                                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -2412,8 +2368,8 @@
                                                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                             <connections>
-                                                                <action selector="SetVectorThickness:" target="1157" id="Bfa-fy-03U"/>
-                                                                <binding destination="1157" name="value" keyPath="self.VectorThickness" id="74D-Jc-yCp"/>
+                                                                <action selector="SetVectorIncrement:" target="1157" id="nMG-QC-6Iw"/>
+                                                                <binding destination="1157" name="value" keyPath="self.PSFVectorIncrement" id="7ou-8R-3Ts"/>
                                                             </connections>
                                                         </textFieldCell>
                                                     </textField>
@@ -2429,20 +2385,24 @@
                                                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                             <connections>
-                                                                <action selector="SetVectorThickness:" target="1157" id="onU-RG-mub"/>
-                                                                <binding destination="1157" name="value" keyPath="self.VectorDigit" id="Gxx-De-iad"/>
+                                                                <binding destination="1157" name="value" keyPath="self.PSFVectorIncDigit" id="h0f-Sf-Msy"/>
                                                             </connections>
                                                         </textFieldCell>
+                                                        <connections>
+                                                            <action selector="SetVectorIncrement:" target="1157" id="Try-uU-VFi"/>
+                                                        </connections>
                                                     </textField>
                                                     <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" misplaced="YES" id="qg8-bp-njZ">
                                                         <rect key="frame" x="106" y="8" width="19" height="27"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <stepperCell key="cell" continuous="YES" state="on" alignment="left" minValue="1" maxValue="9" doubleValue="3" id="7rL-fX-o5O">
                                                             <connections>
-                                                                <action selector="SetVectorThickness:" target="1157" id="LcR-0h-1p7"/>
-                                                                <binding destination="1157" name="value" keyPath="self.VectorThickness" id="at2-Iv-72L"/>
+                                                                <binding destination="1157" name="value" keyPath="self.PSFVectorIncrement" id="q2b-t0-eeM"/>
                                                             </connections>
                                                         </stepperCell>
+                                                        <connections>
+                                                            <action selector="SetVectorIncrement:" target="1157" id="Dbr-os-la6"/>
+                                                        </connections>
                                                     </stepper>
                                                     <textField verticalHuggingPriority="750" misplaced="YES" id="TSA-ya-jeK">
                                                         <rect key="frame" x="122" y="14" width="33" height="17"/>
@@ -2459,8 +2419,8 @@
                                                         <stepperCell key="cell" controlSize="small" continuous="YES" alignment="left" minValue="-30" maxValue="30" doubleValue="-7" id="GxN-83-nUT">
                                                             <font key="font" metaFont="smallSystem"/>
                                                             <connections>
-                                                                <action selector="SetVectorThickness:" target="1157" id="vec-2r-8vj"/>
-                                                                <binding destination="1157" name="value" keyPath="self.VectorDigit" id="fiJ-y6-Im7"/>
+                                                                <action selector="SetVectorIncrement:" target="1157" id="wvv-os-h72"/>
+                                                                <binding destination="1157" name="value" keyPath="self.PSFVectorIncDigit" id="5HR-sh-l3r"/>
                                                             </connections>
                                                         </stepperCell>
                                                     </stepper>
@@ -2523,6 +2483,79 @@
                                                         <rect key="frame" x="122" y="74" width="33" height="17"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="x10" id="Q1w-c1-Bcg">
+                                                            <font key="font" metaFont="system"/>
+                                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                        </textFieldCell>
+                                                    </textField>
+                                                    <textField verticalHuggingPriority="750" misplaced="YES" id="hWg-Lz-4zt">
+                                                        <rect key="frame" x="89" y="39" width="17" height="22"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" continuous="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="PWx-pc-oqz">
+                                                            <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" paddingCharacter="*" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="2ra-Je-Ahk">
+                                                                <real key="minimum" value="1"/>
+                                                                <real key="maximum" value="9"/>
+                                                            </numberFormatter>
+                                                            <font key="font" metaFont="system"/>
+                                                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                            <connections>
+                                                                <action selector="SetVectorThickness:" target="1157" id="V5M-iP-TFx"/>
+                                                                <binding destination="1157" name="value" keyPath="self.VectorThickness" id="ogG-hE-tli"/>
+                                                            </connections>
+                                                        </textFieldCell>
+                                                    </textField>
+                                                    <textField verticalHuggingPriority="750" misplaced="YES" id="u40-aQ-mlK">
+                                                        <rect key="frame" x="144" y="50" width="29" height="16"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" continuous="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" drawsBackground="YES" id="pNz-pD-Fap">
+                                                            <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" paddingCharacter="*" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="FCs-KA-iJh">
+                                                                <real key="minimum" value="-30"/>
+                                                                <real key="maximum" value="30"/>
+                                                            </numberFormatter>
+                                                            <font key="font" metaFont="smallSystem"/>
+                                                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                            <connections>
+                                                                <action selector="SetVectorThickness:" target="1157" id="Yn9-7r-zpL"/>
+                                                                <binding destination="1157" name="value" keyPath="self.VectorDigit" id="Q21-GI-nOR"/>
+                                                            </connections>
+                                                        </textFieldCell>
+                                                    </textField>
+                                                    <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" misplaced="YES" id="bbg-kh-zzP">
+                                                        <rect key="frame" x="106" y="37" width="19" height="27"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <stepperCell key="cell" continuous="YES" state="on" alignment="left" minValue="1" maxValue="9" doubleValue="3" id="ttV-DU-MkP">
+                                                            <connections>
+                                                                <action selector="SetVectorThickness:" target="1157" id="ttp-rY-By3"/>
+                                                                <binding destination="1157" name="value" keyPath="self.VectorThickness" id="bEw-Se-qI8"/>
+                                                            </connections>
+                                                        </stepperCell>
+                                                    </stepper>
+                                                    <textField verticalHuggingPriority="750" misplaced="YES" id="qeK-hW-C7y">
+                                                        <rect key="frame" x="122" y="43" width="33" height="17"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="x10" id="v7E-Te-6fk">
+                                                            <font key="font" metaFont="system"/>
+                                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                        </textFieldCell>
+                                                    </textField>
+                                                    <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" misplaced="YES" id="pCV-xs-Xq5">
+                                                        <rect key="frame" x="172" y="47" width="15" height="22"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <stepperCell key="cell" controlSize="small" continuous="YES" alignment="left" minValue="-30" maxValue="30" doubleValue="-7" id="gGN-wb-3At">
+                                                            <font key="font" metaFont="smallSystem"/>
+                                                            <connections>
+                                                                <action selector="SetVectorThickness:" target="1157" id="aSA-Gx-X8x"/>
+                                                                <binding destination="1157" name="value" keyPath="self.VectorDigit" id="xPC-6M-fYa"/>
+                                                            </connections>
+                                                        </stepperCell>
+                                                    </stepper>
+                                                    <textField verticalHuggingPriority="750" misplaced="YES" id="yUa-MZ-FE9">
+                                                        <rect key="frame" x="15" y="42" width="51" height="17"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Width" id="Eqv-Hu-AYr">
                                                             <font key="font" metaFont="system"/>
                                                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>

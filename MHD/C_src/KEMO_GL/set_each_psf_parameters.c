@@ -115,7 +115,9 @@ void set_each_isoline_width(struct psf_menu_val *psf_menu, double value, int i_d
 	psf_menu->isoline_width = const_from_digit_order(value, i_digit);
 };
 void set_each_vector_patch_color(struct psf_menu_val *psf_menu, int iflag){psf_menu->vector_patch_color = iflag;};
-void set_each_increment_vect(struct psf_menu_val *psf_menu, int increment){
+
+void set_each_increment_vect(double value, int i_digit, struct psf_menu_val *psf_menu){
+	int increment = (int) const_from_digit_order(value, i_digit);
     if(increment > 0) psf_menu->increment_vect = increment;
 };
 void set_each_scale_vect(double value, int i_digit, struct psf_menu_val *psf_menu){
@@ -133,7 +135,10 @@ void send_isoline_width(struct psf_menu_val *psf_menu, double *value, int *i_dig
 	return;
 };
 int send_each_vector_patch_color(struct psf_menu_val *psf_menu){return psf_menu->vector_patch_color;};
-int send_increment_vector(struct psf_menu_val *psf_menu)       {return psf_menu->increment_vect;};
+
+void send_each_increment_vect(struct psf_menu_val *psf_menu, double *value, int *i_digit){
+	find_order_digit((double) psf_menu->increment_vect, value, i_digit);
+};
 void send_scale_vector(struct psf_menu_val *psf_menu, double *value, int *i_digit){
 	find_order_digit(psf_menu->scale_vect, value, i_digit);
 };

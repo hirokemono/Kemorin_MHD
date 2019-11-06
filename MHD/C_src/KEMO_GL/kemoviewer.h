@@ -675,10 +675,12 @@ extern "C" {
 	void kemoview_set_PSF_isoline_width(double value, int i_digit);
     void kemoview_set_PSF_vector_scale(double value, int i_digit);
     void kemoview_set_PSF_vector_thickness(double value, int i_digit);
+	void kemoview_set_PSF_vector_increment(double value, int i_digit);
     
 	void kemoview_get_PSF_isoline_width(double *value, int *i_digit);
     void kemoview_get_PSF_vector_scale(double *value, int *i_digit);
     void kemoview_get_PSF_vector_thickness(double *value, int *i_digit);
+	void kemoview_get_PSF_vector_increment(double *value, int *i_digit);
     
     
 	void kemoview_delete_PSF_color_list(int i_delete);

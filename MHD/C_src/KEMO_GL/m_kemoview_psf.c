@@ -195,8 +195,6 @@ void set_each_PSF_color_param(int selected, int input, struct kemoview_psf *kemo
 		set_PSF_colormap_id(kemo_psf->psf_m[i_current], input);
 	}else if(selected == ISET_VECTOR_COLOR){
 		set_each_vector_patch_color(kemo_psf->psf_m[i_current], input);
-	}else if(selected == ISET_VECTOR_INC){
-		set_each_increment_vect(kemo_psf->psf_m[i_current], input);
 	};
 	return;
 };
@@ -218,8 +216,6 @@ int get_each_PSF_color_param(int selected, struct kemoview_psf *kemo_psf){
 		iflag = send_each_PSF_opacity_table_num(kemo_psf->psf_m[i_current]);
 	}else if(selected == ISET_VECTOR_COLOR){
 		iflag = send_each_vector_patch_color(kemo_psf->psf_m[i_current]);
-	}else if(selected == ISET_VECTOR_INC){
-		iflag = send_increment_vector(kemo_psf->psf_m[i_current]);
 	};
 	return iflag;
 };

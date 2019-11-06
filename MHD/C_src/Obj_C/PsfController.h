@@ -103,7 +103,8 @@
 	IBOutlet id _PSFVectorSwitchOutlet;
 	NSInteger PSFVectorMenuAcrive;
 	NSInteger DrawPSFVectorFlag;
-	NSInteger PSFVectorIncrement;
+	CGFloat PSFVectorIncrement;
+	CGFloat PSFVectorIncDigit;
 	CGFloat ScaleVector;
 	CGFloat ScaleDigit;
     CGFloat VectorThickness;    
@@ -149,7 +150,8 @@
 
 @property NSInteger PSFVectorMenuAcrive;
 @property NSInteger DrawPSFVectorFlag;
-@property NSInteger PSFVectorIncrement;
+@property CGFloat PSFVectorIncrement;
+@property CGFloat PSFVectorIncDigit;
 @property CGFloat ScaleVector;
 @property CGFloat ScaleDigit;
 @property CGFloat VectorThickness;
