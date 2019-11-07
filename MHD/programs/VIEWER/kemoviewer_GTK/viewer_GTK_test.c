@@ -94,9 +94,9 @@ int draw_gtk_menu_kemo(int iflag_streo_shutter, int iflag_dmesh) {
 	kemoview_set_view_integer(ISET_SHUTTER, iflag_streo_shutter);
 	
 	if(iflag_streo_shutter == SHUTTER_ON){
-		kemoview_set_anaglyph_flag(ANAGLYPH_OFF);
+		kemoview_set_view_integer(ISET_ANAGYLYPH, ANAGLYPH_OFF);
 	} else {
-		kemoview_set_anaglyph_flag(ANAGLYPH_ON);
+		kemoview_set_view_integer(ISET_ANAGYLYPH, ANAGLYPH_ON);
 	};
 	
 	/*! GTK Initialization*/
