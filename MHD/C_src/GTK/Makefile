@@ -29,9 +29,7 @@ mod_list:
 module:
 	@cat Makefile.depends >> $(MAKENAME)
 
-depends: Makefile.depends
-
-Makefile.depends: $(SRC_GTK_C) $(INC_GTK_C)
+depends:
 	echo 'Construct dependencies in C_src/GTK'
 	@echo '#' > $(MAKENAME).tmp
 	@for sources in $(SRC_GTK_C) ; do \

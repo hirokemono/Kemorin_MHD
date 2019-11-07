@@ -45,9 +45,7 @@ mod_list:
 module:
 	@cat Makefile.depends >> $(MAKENAME)
 
-depends: Makefile.depends
-
-Makefile.depends: $(SRC_GLSL_C) $(INC_GLSL_C)
+depends:
 	echo 'Construct dependencies in C_src/GLSL'
 	@echo '#' > $(MAKENAME).tmp
 	@for sources in $(SRC_GLSL_C) ; do \

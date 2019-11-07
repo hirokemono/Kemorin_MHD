@@ -29,9 +29,7 @@ mod_list:
 module:
 	@cat Makefile.depends >> $(MAKENAME)
 
-depends: Makefile.depends
-
-Makefile.depends: $(SRC_CTL_C) $(INC_CTL_C)
+depends:
 	echo 'Construct dependencies in C_src/CONTROLS'
 	@echo '#' > $(MAKENAME).tmp
 	@for sources in $(SRC_CTL_C) ; do \

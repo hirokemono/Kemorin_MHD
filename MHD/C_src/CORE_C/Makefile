@@ -93,9 +93,7 @@ mod_list:
 module:
 	@cat Makefile.depends >> $(MAKENAME)
 
-depends: Makefile.depends
-
-Makefile.depends: $(SRC_KEMO_C) $(INC_KEMO_C)
+depends:
 	echo 'Construct dependencies in C_src/CORE_C'
 	@echo '#' > $(MAKENAME).tmp
 	@for sources in $(SRC_KEMO_C) ; do \

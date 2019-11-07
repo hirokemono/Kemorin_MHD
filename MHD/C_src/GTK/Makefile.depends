@@ -291,16 +291,17 @@ tree_view_4_colormap.o: \
   $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
   $(C_SRCDIR)/KEMO_GL/icosahedron_c.h \
   $(C_SRCDIR)/KEMO_GL/set_color_code_on_nodes.h \
-  $(C_SRCDIR)/KEMO_GL/m_kemoviewer_menu.h \
-  $(C_SRCDIR)/CORE_C/m_surface_mesh_4_viewer_c.h \
+  $(C_SRCDIR)/KEMO_GL/m_kemoview_fline_menu.h \
   $(C_SRCDIR)/KEMO_GL/rainbow_color_code_c.h \
   $(C_SRCDIR)/KEMO_GL/set_PSF_patches_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/find_isoline_on_patch_c.h \
   $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
   $(C_SRCDIR)/KEMO_GL/modify_object_4_viewer_c.h \
+  $(C_SRCDIR)/CORE_C/m_surface_mesh_4_viewer_c.h \
   $(C_SRCDIR)/KEMO_GL/init_gl_lighting_c.h \
   $(C_SRCDIR)/KEMO_GL/m_kemoview_mesh_menu.h \
+  $(C_SRCDIR)/CORE_C/numbers_to_bin_c.h \
   $(C_SRCDIR)/GTK/kemoview_gtk_routines.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $(GTK3_CFLAGS) $<
 tree_view_4_each_term_GTK.o: \
@@ -406,16 +407,17 @@ tree_view_4_pvr_colormap.o: \
   $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
   $(C_SRCDIR)/KEMO_GL/icosahedron_c.h \
   $(C_SRCDIR)/KEMO_GL/set_color_code_on_nodes.h \
-  $(C_SRCDIR)/KEMO_GL/m_kemoviewer_menu.h \
-  $(C_SRCDIR)/CORE_C/m_surface_mesh_4_viewer_c.h \
+  $(C_SRCDIR)/KEMO_GL/m_kemoview_fline_menu.h \
   $(C_SRCDIR)/KEMO_GL/rainbow_color_code_c.h \
   $(C_SRCDIR)/KEMO_GL/set_PSF_patches_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/find_isoline_on_patch_c.h \
   $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
   $(C_SRCDIR)/KEMO_GL/modify_object_4_viewer_c.h \
+  $(C_SRCDIR)/CORE_C/m_surface_mesh_4_viewer_c.h \
   $(C_SRCDIR)/KEMO_GL/init_gl_lighting_c.h \
   $(C_SRCDIR)/KEMO_GL/m_kemoview_mesh_menu.h \
+  $(C_SRCDIR)/CORE_C/numbers_to_bin_c.h \
   $(C_SRCDIR)/GTK/kemoview_gtk_routines.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $(GTK3_CFLAGS) $<
 tree_view_4_temp_BC_GTK.o: \
