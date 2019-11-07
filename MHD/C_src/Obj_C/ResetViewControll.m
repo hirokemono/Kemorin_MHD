@@ -39,73 +39,49 @@
 
 - (void) SetViewByInpit;
 {
-	double tmpShift[3], tmpRotation[4];
-	
-	tmpShift[0] = -(double) self.ViewPointX;
-	tmpShift[1] = -(double) self.ViewPointY;
-	tmpShift[2] = -(double) self.ViewPointZ;
-	
-	tmpRotation[1] = (double) self.RotationAxisX;
-	tmpRotation[2] = (double) self.RotationAxisY;
-	tmpRotation[3] = (double) self.RotationAxisZ;
-	tmpRotation[0] = (double) self.RotationAngle;	
-    
 	kemoview_set_windowsize((int) self.xPixel, (int) self.yPixel);
-	kemoview_set_rotation_parameter(tmpRotation);
-	kemoview_set_shift_vector(tmpShift);
+
+	kemoview_set_rotation_parameter(1, (double) self.RotationAxisX);
+	kemoview_set_rotation_parameter(2, (double) self.RotationAxisY);
+	kemoview_set_rotation_parameter(3, (double) self.RotationAxisZ);
+	kemoview_set_rotation_parameter(0, (double) self.RotationAngle);
+
+	kemoview_set_shift_vector(0, (double) (-self.ViewPointX));
+	kemoview_set_shift_vector(1, (double) (-self.ViewPointY));
+	kemoview_set_shift_vector(2, (double) (-self.ViewPointZ));
 	kemoview_set_scale_factor((double) self.ScaleFactor);
 	kemoview_set_projection_aperture((double) self.ProjentionAperture);
     
-	kemoview_set_stereo_parameter((double) self.FocusPoint, (double) self.eyeRatio);
-	
+	kemoview_set_stereo_parameter((double) self.FocusPoint, (double) self.eyeRatio);	
 }
 
 - (void) UpdateParameters
 {
-	int tmpWidth, tmpheigh;
-	double tmpLookPoint[3];
-	double tmpShift[3];
-	double tmpRotation[4];
-	double tmpScale;
-	double tmpAperture, tmpNear;
-	double tmpFar, tmpAspect;
-	double tmpFocus, tmpEyeRatio;
+	self.xPixel = kemoview_get_windowsize_x();
+	self.yPixel = kemoview_get_windowsize_y();
 	
-	kemoview_get_windowsize(&tmpWidth, &tmpheigh);
-	kemoview_get_rotation_parameter(tmpRotation);
-	kemoview_get_shift_vector(tmpShift);
-	kemoview_get_lookat_vector(tmpLookPoint);
-	tmpScale = kemoview_get_scale_factor();
-	kemoview_get_projection_parameters(&tmpAperture, &tmpNear,
-                                       &tmpFar, &tmpAspect);
-	tmpFocus = kemoview_get_stereo_focus();
-	tmpEyeRatio = kemoview_get_stereo_eyeseparation();
-
-	self.xPixel = tmpWidth;
-	self.yPixel = tmpheigh;
+	self.ViewPointX = (CGFloat) -kemoview_get_shift_vector(0);
+	self.ViewPointY = (CGFloat) -kemoview_get_shift_vector(1);
+	self.ViewPointZ = (CGFloat) -kemoview_get_shift_vector(2);
 	
-	self.ViewPointX = -tmpShift[0];
-	self.ViewPointY = -tmpShift[1];
-	self.ViewPointZ = -tmpShift[2];
+	self.LookPointX = (CGFloat) kemoview_get_lookat_vector(0);
+	self.LookPointY = (CGFloat) kemoview_get_lookat_vector(1);
+	self.LookPointZ = (CGFloat) kemoview_get_lookat_vector(2);
 	
-	self.LookPointX = tmpLookPoint[0];
-	self.LookPointY = tmpLookPoint[1];
-	self.LookPointZ = tmpLookPoint[2];
+	self.ScaleFactor = (CGFloat) kemoview_get_scale_factor();
 	
-	self.ScaleFactor = tmpScale;
+	self.RotationAxisX = (CGFloat) kemoview_get_rotation_parameter(1);
+	self.RotationAxisY = (CGFloat) kemoview_get_rotation_parameter(2);
+	self.RotationAxisZ = (CGFloat) kemoview_get_rotation_parameter(3);
+	self.RotationAngle = (CGFloat) kemoview_get_rotation_parameter(0);
 	
-	self.RotationAxisX = tmpRotation[1];
-	self.RotationAxisY = tmpRotation[2];
-	self.RotationAxisZ = tmpRotation[3];
-	self.RotationAngle = tmpRotation[0];
+	self.ProjentionAperture = (CGFloat) kemoview_get_projection_aperture();
+	self.ProjentionAspect =   (CGFloat) kemoview_get_projection_aspect();
+	self.ProjentionNear =     (CGFloat) kemoview_get_projection_near();
+	self.ProjentionFar =      (CGFloat) kemoview_get_projection_far();
 	
-	self.ProjentionAperture = tmpAperture;
-	self.ProjentionAspect =   tmpAspect;
-	self.ProjentionNear =     tmpNear;
-	self.ProjentionFar =      tmpFar;
-	
-	self.FocusPoint =     tmpFocus;
-	self.eyeRatio=        tmpEyeRatio;
+	self.FocusPoint =     (CGFloat) kemoview_get_stereo_focus();
+	self.eyeRatio=        (CGFloat) kemoview_get_stereo_eyeseparation();
 	
 }
 

@@ -42,7 +42,7 @@
 	[ElementGroupDisplayPatchFlags removeAllObjects];
 	[ElementGroupDisplayWireFlags removeAllObjects];
 	[ElementGroupDisplayNodeFlags removeAllObjects];
-	NumElementGroup = kemoview_get_num_ele_grp();
+	NumElementGroup = kemoview_get_num_of_mesh_group(ELEM_GRP_FLAG);
 	for(i=0;i<NumElementGroup;i++){
         groupname = kemoview_alloc_kvstring();
 		kemoview_get_ele_grp_name(groupname,i);
@@ -186,7 +186,7 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 	[ElementGroupDisplayPatchFlags removeAllObjects];
 	[ElementGroupDisplayWireFlags removeAllObjects];
 	[ElementGroupDisplayNodeFlags removeAllObjects];
-	NumElementGroup = kemoview_get_num_ele_grp();
+	NumElementGroup = kemoview_get_num_of_mesh_group(ELEM_GRP_FLAG);
 	for(i=0;i<NumElementGroup;i++){
         groupname = kemoview_alloc_kvstring();
 		kemoview_get_ele_grp_name(groupname,i);

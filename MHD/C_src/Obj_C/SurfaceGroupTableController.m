@@ -42,7 +42,7 @@
 	[SurfaceGroupDisplayPatchFlags removeAllObjects];
 	[SurfaceGroupDisplayWireFlags removeAllObjects];
 	[SurfaceGroupDisplayNodeFlags removeAllObjects];
-	NumSurfaceGroup = kemoview_get_num_surf_grp();
+	NumSurfaceGroup = kemoview_get_num_of_mesh_group(SURF_GRP_FLAG);
 	for(i=0;i<NumSurfaceGroup;i++){
         groupname = kemoview_alloc_kvstring();
 		kemoview_get_surf_grp_name(groupname,i);
@@ -183,7 +183,7 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 	[SurfaceGroupDisplayPatchFlags removeAllObjects];
 	[SurfaceGroupDisplayWireFlags removeAllObjects];
 	[SurfaceGroupDisplayNodeFlags removeAllObjects];
-	NumSurfaceGroup = kemoview_get_num_surf_grp();
+	NumSurfaceGroup = kemoview_get_num_of_mesh_group(SURF_GRP_FLAG);
 	for(i=0;i<NumSurfaceGroup;i++){
         groupname = kemoview_alloc_kvstring();
 		kemoview_get_surf_grp_name(groupname,i);

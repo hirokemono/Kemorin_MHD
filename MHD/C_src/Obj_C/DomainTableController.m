@@ -44,7 +44,7 @@
 	
 	self.DomainWindowlabel = [NSString stringWithFormat:@"Mesh View - %@ -",MeshOpenFilehead];
 	self.DrawMeshFlag = kemoview_get_draw_mesh_flag();
-	NumSubDomain =     kemoview_get_num_subdomain();
+	NumSubDomain =     kemoview_get_num_of_mesh_group(DOMAIN_FLAG);
 
 	[DomainDisplayNames removeAllObjects];
 	[DomainDisplayPatchFlags removeAllObjects];
@@ -106,7 +106,7 @@
 	kemoview_close_mesh_view();
 
 	self.DrawMeshFlag = kemoview_get_draw_mesh_flag();
-	NumSubDomain = kemoview_get_num_subdomain();
+	NumSubDomain = kemoview_get_num_of_mesh_group(DOMAIN_FLAG);
 	[DomainDisplayNames removeAllObjects];
 	[DomainDisplayPatchFlags removeAllObjects];
 	[DomainDisplayWireFlags removeAllObjects];

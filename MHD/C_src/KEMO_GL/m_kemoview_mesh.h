@@ -29,6 +29,8 @@ void dealloc_kemoview_mesh(struct kemoview_mesh *kemo_mesh);
 void reset_draw_mesh(struct kemoview_mesh *kemo_mesh);
 void close_mesh_view(struct kemoview_mesh *kemo_mesh);
 
+int get_num_of_mesh_group(int iflag_group, struct kemoview_mesh *kemo_mesh);
+
 void set_draw_mesh_flag(int iflag_group, int selected, int igrp, int iflag, 
 					   struct kemoview_mesh *kemo_mesh);
 void toggle_draw_mesh_flag(int iflag_group, int selected, int igrp, 

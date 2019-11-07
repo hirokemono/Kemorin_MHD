@@ -167,10 +167,7 @@
 !    
 !    int kemoview_get_draw_mesh_flag();
 !    
-!    int kemoview_get_num_subdomain();
-!    int kemoview_get_num_node_grp();
-!    int kemoview_get_num_ele_grp();
-!    int kemoview_get_num_surf_grp();
+!    int kemoview_get_num_of_mesh_group(int iflag_group);
 !    
 !    void kemoview_get_node_grp_name(char *name, int i);
 !    void kemoview_get_ele_grp_name(char *name, int i);
@@ -210,23 +207,27 @@
 !    
 !    void kemoview_update_distance();
 !    
-!    void kemoview_set_rotation_parameter(double rot_vect[4]);
-!    void kemoview_set_dragging_rotation(double rot_vect[4]);
+!    void kemoview_set_rotation_parameter(int i, double rot_vect);
 !    void kemoview_set_animation_rot_axis(int iaxis);
 !    void kemoview_set_animation_rot_angle(int int_degree);
-!    void kemoview_set_shift_vector(double position[3]);
+!    void kemoview_set_shift_vector(int i, double position);
 !    void kemoview_set_scale_factor(double scale_s);
 !    void kemoview_set_projection_aperture(double aperture_s);
 !    void kemoview_set_stereo_parameter(double focus, double eye_sep);
 !    
-!    void kemoview_get_windowsize(int *npixel_x, int *npixel_y);
-!    void kemoview_get_rotation_parameter(double rot_vect[4]);
-!    void kemoview_get_shift_vector(double position[3]);
-!    void kemoview_get_lookat_vector(double position[3]);
-!    double kemoview_get_scale_factor();
-!    double kemoview_get_projection_aperture();
-!    void kemoview_get_projection_parameters(double *aperture_s, double *near_s,
-!                                            double *far_s, double *aspect_s);
+!    int kemoview_get_windowsize_x(void);
+!    int kemoview_get_windowsize_y(void);
+!
+!    double kemoview_get_rotation_parameter(int i);
+!    double kemoview_get_shift_vector(int i);
+!    double kemoview_get_lookat_vector(int i);
+!    double kemoview_get_scale_factor(void);
+!
+!    double kemoview_get_projection_aperture(void);
+!    double kemoview_get_projection_far(void);
+!    double kemoview_get_projection_near(void);
+!    double kemoview_get_projection_aspect(void);
+!
 !    double kemoview_get_stereo_focus();
 !    double kemoview_get_stereo_eyeseparation();
 !    

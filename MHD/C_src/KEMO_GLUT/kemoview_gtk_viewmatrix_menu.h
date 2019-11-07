@@ -29,15 +29,6 @@
 
 
 struct view_widgets{
-	int npixel_x, npixel_y;
-	double tmpShift[3];
-	double tmpLookPoint[3];
-	double tmpRotation[4];
-	double tmpScale;
-	double tmpAperture, tmpNear;
-	double tmpFar, tmpAspect;
-	double tmpFocus, tmpEyeRatio;
-	
 	GtkAdjustment *adj_win_x, *adj_win_y;
 	GtkWidget *spin_win_x, *spin_win_y;
 	GtkWidget *hbox_win_x, *hbox_win_y;

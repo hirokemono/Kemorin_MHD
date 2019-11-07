@@ -320,15 +320,20 @@ double kemoview_get_mesh_opacity(int iflag_group){
 	return get_mesh_opacity(iflag_group, kemo_sgl->kemo_mesh);
 };
 
+int kemoview_get_draw_mesh_flag(void){return kemo_sgl->kemo_mesh->mesh_m->iflag_draw_mesh;};
+int kemoview_get_num_of_mesh_group(int iflag_group){
+	return get_num_of_mesh_group(iflag_group, kemo_sgl->kemo_mesh);
+};
+
 
 void kemoview_set_mesh_draw_flag(int selected, int iflag){
-	int num_pe = kemoview_get_num_subdomain();
+	int num_pe = get_num_of_mesh_group(DOMAIN_FLAG, kemo_sgl->kemo_mesh);
 	set_mesh_draw_flag(num_pe, selected, iflag, kemo_sgl->kemo_mesh->mesh_m);
 	return;
 };
 
 void kemoview_mesh_draw_toggle(int selected){
-	int num_pe = kemoview_get_num_subdomain();
+	int num_pe = get_num_of_mesh_group(DOMAIN_FLAG, kemo_sgl->kemo_mesh);
 	mesh_draw_toggle(num_pe, selected, kemo_sgl->kemo_mesh->mesh_m);
 	return;
 };
@@ -345,14 +350,6 @@ void kemoview_toggle_draw_mesh_item(int iflag_group, int selected, int igrp){
 int kemoview_get_draw_mesh_item(int iflag_group, int selected, int igrp){
 	return get_draw_mesh_flag(kemo_sgl->kemo_mesh, iflag_group, selected, igrp);
 };
-
-int kemoview_get_draw_mesh_flag(void){return kemo_sgl->kemo_mesh->mesh_m->iflag_draw_mesh;};
-
-int kemoview_get_num_subdomain(void){return kemo_sgl->kemo_mesh->mesh_d->num_pe_sf;};
-int kemoview_get_num_node_grp(void) {return kemo_sgl->kemo_mesh->mesh_d->ngrp_nod_sf;};
-int kemoview_get_num_ele_grp(void)  {return kemo_sgl->kemo_mesh->mesh_d->ngrp_ele_sf;};
-int kemoview_get_num_surf_grp(void) {return kemo_sgl->kemo_mesh->mesh_d->ngrp_surf_sf;};
-
 
 void kemoview_get_node_grp_name(struct kv_string *groupname, int i){
     alloc_copy_string(kemo_sgl->kemo_mesh->mesh_d->nod_gp_name_sf[i], groupname);
@@ -435,11 +432,8 @@ void kemoview_update_distance(void){
 	update_projection_struct(kemo_sgl->view_s);
 };
 
-void kemoview_set_rotation_parameter(double rot_vect[4]){
-	set_gl_rotation_parameter(kemo_sgl->view_s, rot_vect);
-};
-void kemoview_set_dragging_rotation(double rot_vect[4]){
-	set_gl_dragging_rotation(kemo_sgl->view_s, rot_vect);
+void kemoview_set_rotation_parameter(int i, double rot_vect){
+	set_gl_rotation_parameter(kemo_sgl->view_s, i, rot_vect);
 };
 void kemoview_set_animation_rot_axis(int iaxis){
 	set_gl_animation_rot_axis(kemo_sgl->view_s, iaxis);
@@ -447,8 +441,8 @@ void kemoview_set_animation_rot_axis(int iaxis){
 void kemoview_set_animation_rot_angle(int int_degree){
 	set_gl_animation_rot_angle(kemo_sgl->view_s, int_degree);
 }
-void kemoview_set_shift_vector(double position[3]){
-	set_gl_shift_vector(kemo_sgl->view_s, position);
+void kemoview_set_shift_vector(int i, double position){
+	set_gl_shift_vector(kemo_sgl->view_s, i, position);
 };
 void kemoview_set_scale_factor(double scale_s){
 	set_gl_scalar_scale_factor(kemo_sgl->view_s, scale_s);
@@ -461,32 +455,32 @@ void kemoview_set_stereo_parameter(double focus, double eye_sep){
 };
 
 
-void kemoview_get_windowsize(int *npixel_x, int *npixel_y){
-	send_gl_windowsize(kemo_sgl->view_s, npixel_x, npixel_y);
-}
-void kemoview_get_rotation_parameter(double rot_vect[4]){
-	send_gl_rotation_parameter(kemo_sgl->view_s, rot_vect);
-}
+int kemoview_get_windowsize_x(void){return send_gl_windowsize_x(kemo_sgl->view_s);};
+int kemoview_get_windowsize_y(void){return send_gl_windowsize_y(kemo_sgl->view_s);};
 
-void kemoview_get_shift_vector(double position[3]){
-	send_gl_shift_vector(kemo_sgl->view_s, position);
+double kemoview_get_rotation_parameter(int i){
+	return send_gl_rotation_parameter(kemo_sgl->view_s, i);
 }
-
-void kemoview_get_lookat_vector(double position[3]){
-	send_gl_lookat_vector(kemo_sgl->view_s, position);
+double kemoview_get_shift_vector(int i){
+	return send_gl_shift_vector(kemo_sgl->view_s, i);
 }
-
-double kemoview_get_scale_factor(void){
-    return send_scalar_scale_factor(kemo_sgl->view_s);
+double kemoview_get_lookat_vector(int i){
+	return send_gl_lookat_vector(kemo_sgl->view_s, i);
 }
+double kemoview_get_scale_factor(void){return send_scalar_scale_factor(kemo_sgl->view_s);};
 
 double kemoview_get_projection_aperture(void){
 	return send_gl_projection_aperture(kemo_sgl->view_s);
-}
-void kemoview_get_projection_parameters(double *aperture_s, double *near_s,
-                                        double *far_s, double *aspect_s){
-	send_gl_projection_parameters(kemo_sgl->view_s, aperture_s, near_s, far_s, aspect_s);
-}
+};
+double kemoview_get_projection_far(void){
+	return send_gl_projection_far(kemo_sgl->view_s);
+};
+double kemoview_get_projection_near(void){
+	return send_gl_projection_near(kemo_sgl->view_s);
+};
+double kemoview_get_projection_aspect(void){
+	return send_gl_projection_aspect(kemo_sgl->view_s);
+};
 
 double kemoview_get_stereo_focus(void){return send_gl_stereo_focus(kemo_sgl->view_s);};
 double kemoview_get_stereo_eyeseparation(void){return send_gl_stereo_eyeseparation(kemo_sgl->view_s);};

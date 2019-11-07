@@ -44,6 +44,19 @@ void close_mesh_view(struct kemoview_mesh *kemo_mesh){
 	return;
 }
 
+int get_num_of_mesh_group(int iflag_group, struct kemoview_mesh *kemo_mesh){
+	int np = 0;
+	if(iflag_group == DOMAIN_FLAG){
+		np = kemo_mesh->mesh_d->num_pe_sf;
+	}else if(iflag_group == NODE_GRP_FLAG){
+		np = kemo_mesh->mesh_d->ngrp_nod_sf;
+	}else if(iflag_group == ELEM_GRP_FLAG){
+		np = kemo_mesh->mesh_d->ngrp_ele_sf;
+	}else if(iflag_group == SURF_GRP_FLAG){
+		np = kemo_mesh->mesh_d->ngrp_surf_sf;
+	};
+	return np;
+};
 
 void set_draw_mesh_flag(int iflag_group, int selected, int igrp, int iflag, 
 					   struct kemoview_mesh *kemo_mesh){

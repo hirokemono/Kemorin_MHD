@@ -108,8 +108,7 @@ void mousePosCB(GLFWwindow *window, double xpos, double ypos) {
 		kemoview_drugging_addToRotationTrackball();
 	}
 	else if (button_function == SCALE){
-		double current_scale;
-        current_scale = kemoview_get_scale_factor();
+		double current_scale = kemoview_get_scale_factor();
         
 		if (ypos < begin[1]) {
 			factor = ONE + TWO_MILI*(begin[1]-ypos);
@@ -240,8 +239,7 @@ static void keyFuncCB(GLFWwindow* window, int key, int scancode, int action, int
 	}
 	
 	else if (arrow_key_func == SCALE){
-		double current_scale;
-        current_scale = kemoview_get_scale_factor();
+		double current_scale = kemoview_get_scale_factor();
         
 		if (key == GLFW_KEY_DOWN && action == GLFW_PRESS)
 		factor = ONE/(ONE + TWO_CENT);

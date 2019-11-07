@@ -49,7 +49,7 @@ void init_mesh_views_4_viewer(struct kemoview_mesh_view *mesh_vws){
 	sprintf(mesh_vws->surf_grp_vws->ci3_clist_gtk->i2_name,"%s", "Grid");
 	sprintf(mesh_vws->surf_grp_vws->ci3_clist_gtk->i3_name,"%s", "Node");
 	
-	for(i=0;i<kemoview_get_num_subdomain();i++){
+	for(i=0;i<kemoview_get_num_of_mesh_group(DOMAIN_FLAG);i++){
 		sprintf(tmp_name, "Domain %d", i);
 		append_chara_int3_clist(tmp_name, 
 					kemoview_get_draw_mesh_item(DOMAIN_FLAG, SURFSOLID_TOGGLE, i), 
@@ -57,7 +57,7 @@ void init_mesh_views_4_viewer(struct kemoview_mesh_view *mesh_vws){
 					kemoview_get_draw_mesh_item(DOMAIN_FLAG, SURFNOD_TOGGLE, i), 
 					mesh_vws->domain_vws->ci3_clist_gtk);
 	};
-	for(i=0;i<kemoview_get_num_node_grp();i++){
+	for(i=0;i<kemoview_get_num_of_mesh_group(NODE_GRP_FLAG);i++){
         groupname = kemoview_alloc_kvstring();
 		kemoview_get_node_grp_name(groupname, i);
 		append_chara_int_clist(groupname, 
@@ -65,7 +65,7 @@ void init_mesh_views_4_viewer(struct kemoview_mesh_view *mesh_vws){
 					mesh_vws->nod_grp_vws->ci_clist_gtk);
         kemoview_free_kvstring(groupname);
 	};
-	for(i=0;i<kemoview_get_num_ele_grp();i++){
+	for(i=0;i<kemoview_get_num_of_mesh_group(ELEM_GRP_FLAG);i++){
         groupname = kemoview_alloc_kvstring();
 		kemoview_get_ele_grp_name(groupname, i);
 		append_chara_int3_clist(groupname->string, 
@@ -75,7 +75,7 @@ void init_mesh_views_4_viewer(struct kemoview_mesh_view *mesh_vws){
 					mesh_vws->ele_grp_vws->ci3_clist_gtk);
         kemoview_free_kvstring(groupname);
 	};
-	for(i=0;i<kemoview_get_num_surf_grp();i++){
+	for(i=0;i<kemoview_get_num_of_mesh_group(SURF_GRP_FLAG);i++){
         groupname = kemoview_alloc_kvstring();
 		kemoview_get_surf_grp_name(groupname, i);
 		append_chara_int3_clist(groupname->string, 

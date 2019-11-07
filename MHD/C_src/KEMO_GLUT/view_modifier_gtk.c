@@ -119,8 +119,7 @@ gboolean mousePosCB(GtkWidget *widget, GdkEventButton *event, gpointer user_data
 		kemoview_drugging_addToRotationTrackball();
 	}
 	else if (button_function == SCALE){
-		double current_scale;
-        current_scale = kemoview_get_scale_factor();
+		double current_scale = kemoview_get_scale_factor();
         
 		if (ypos < begin[1]) {
 			factor = ONE + TWO_MILI*(begin[1]-ypos);
@@ -253,8 +252,7 @@ static void keyFuncCB(GtkWidget *widget, GdkEventKey *event, gpointer user_data)
 	}
 	
 	else if (arrow_key_func == SCALE){
-		double current_scale;
-        current_scale = kemoview_get_scale_factor();
+		double current_scale = kemoview_get_scale_factor();
         
 		if (event->keyval == GTK_KEY_DOWN && event->type == GDK_KEY_PRESS)
 		factor = ONE/(ONE + TWO_CENT);
