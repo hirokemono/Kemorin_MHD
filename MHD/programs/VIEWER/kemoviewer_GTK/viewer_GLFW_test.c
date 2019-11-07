@@ -79,7 +79,7 @@ int draw_glfw_test(int iflag_streo_shutter, int iflag_dmesh) {
 	/* Initialize arrays for viewer */
 	
 	single_kemoview = kemoview_allocate_single_viwewer_struct();
-	kemoview_set_stereo_shutter(iflag_streo_shutter);
+	kemoview_set_view_integer(ISET_SHUTTER, iflag_streo_shutter);
 	
 	if(iflag_streo_shutter == SHUTTER_ON){
 		kemoview_set_anaglyph_flag(ANAGLYPH_OFF);

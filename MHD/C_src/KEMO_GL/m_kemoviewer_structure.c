@@ -432,58 +432,77 @@ void kemoview_update_distance(void){
 	update_projection_struct(kemo_sgl->view_s);
 };
 
-void kemoview_set_rotation_parameter(int i, double rot_vect){
-	set_gl_rotation_parameter(kemo_sgl->view_s, i, rot_vect);
+void kemoview_set_view_integer(int selected, int ivalue){
+	if(selected == ISET_ROTATE_AXIS){
+		set_gl_animation_rot_axis(kemo_sgl->view_s, ivalue);
+	}else if(selected == ISET_ROTATE_INCREMENT){
+		set_gl_animation_rot_angle(kemo_sgl->view_s, ivalue);
+	}else if(selected == ISET_SHUTTER){
+		kemo_sgl->view_s->iflag_streo_stutter = ivalue;
+	}else if(selected == ISET_ANAGYLYPH){
+		kemo_sgl->view_s->iflag_streo_anaglyph = ivalue;
+	}
+	return;
 };
-void kemoview_set_animation_rot_axis(int iaxis){
-	set_gl_animation_rot_axis(kemo_sgl->view_s, iaxis);
-}
-void kemoview_set_animation_rot_angle(int int_degree){
-	set_gl_animation_rot_angle(kemo_sgl->view_s, int_degree);
-}
-void kemoview_set_shift_vector(int i, double position){
-	set_gl_shift_vector(kemo_sgl->view_s, i, position);
-};
-void kemoview_set_scale_factor(double scale_s){
-	set_gl_scalar_scale_factor(kemo_sgl->view_s, scale_s);
-};
-void kemoview_set_projection_aperture(double aperture_s){
-	set_gl_projection_aperture(kemo_sgl->view_s, aperture_s);
+void kemoview_set_view_parameter(int selected, int i, double value){
+	if(selected == ISET_ROTATE){
+		set_gl_rotation_parameter(kemo_sgl->view_s, i, value);
+	}else if(selected == ISET_SHIFT){
+		set_gl_shift_vector(kemo_sgl->view_s, i, value);
+	}else if(selected == ISET_SCALE){
+		set_gl_scalar_scale_factor(kemo_sgl->view_s, value);
+		
+	}else if(selected == ISET_APERTURE){
+		set_gl_projection_aperture(kemo_sgl->view_s, value);
+	};
+	return;
 };
 void kemoview_set_stereo_parameter(double focus, double eye_sep){
 	set_gl_stereo_parameter(kemo_sgl->view_s, focus, eye_sep);
 };
 
 
-int kemoview_get_windowsize_x(void){return send_gl_windowsize_x(kemo_sgl->view_s);};
-int kemoview_get_windowsize_y(void){return send_gl_windowsize_y(kemo_sgl->view_s);};
+int kemoview_get_view_integer(int selected){
+	int ivalue = 0;
+	if(selected == ISET_PIXEL_X){
+		ivalue = send_gl_windowsize_x(kemo_sgl->view_s);
+	}else if(selected == ISET_PIXEL_Y){
+		ivalue = send_gl_windowsize_y(kemo_sgl->view_s);
 
-double kemoview_get_rotation_parameter(int i){
-	return send_gl_rotation_parameter(kemo_sgl->view_s, i);
-}
-double kemoview_get_shift_vector(int i){
-	return send_gl_shift_vector(kemo_sgl->view_s, i);
-}
-double kemoview_get_lookat_vector(int i){
-	return send_gl_lookat_vector(kemo_sgl->view_s, i);
-}
-double kemoview_get_scale_factor(void){return send_scalar_scale_factor(kemo_sgl->view_s);};
+	}else if(selected == ISET_SHUTTER){
+		ivalue = kemo_sgl->view_s->iflag_streo_stutter;
+	}else if(selected == ISET_ANAGYLYPH){
+		ivalue = kemo_sgl->view_s->iflag_streo_anaglyph;
+	};
+	return ivalue;
+};
+double kemoview_get_view_parameter(int selected, int i){
+	double value = 0.0;
+	if(selected == ISET_ROTATE){
+		value =  send_gl_rotation_parameter(kemo_sgl->view_s, i);
+	}else if(selected == ISET_SHIFT){
+		value =  send_gl_shift_vector(kemo_sgl->view_s, i);
+	}else if(selected == ISET_VWPOINT){
+		value =  send_gl_lookat_vector(kemo_sgl->view_s, i);
+	}else if(selected == ISET_SCALE){
+		value =  send_scalar_scale_factor(kemo_sgl->view_s);
 
-double kemoview_get_projection_aperture(void){
-	return send_gl_projection_aperture(kemo_sgl->view_s);
+	}else if(selected == ISET_APERTURE){
+		value =  send_gl_projection_aperture(kemo_sgl->view_s);
+	}else if(selected == ISET_NEAR){
+		value =  send_gl_projection_near(kemo_sgl->view_s);
+	}else if(selected == ISET_FAR){
+		value =  send_gl_projection_far(kemo_sgl->view_s);
+	}else if(selected == ISET_ASPECT){
+		value =  send_gl_projection_aspect(kemo_sgl->view_s);
+		
+	}else if(selected == ISET_FOCUS){
+		value =  send_gl_stereo_focus(kemo_sgl->view_s);
+	}else if(selected == ISET_EYESEP){
+		value =  send_gl_stereo_eyeseparation(kemo_sgl->view_s);
+	};
+	return value;
 };
-double kemoview_get_projection_far(void){
-	return send_gl_projection_far(kemo_sgl->view_s);
-};
-double kemoview_get_projection_near(void){
-	return send_gl_projection_near(kemo_sgl->view_s);
-};
-double kemoview_get_projection_aspect(void){
-	return send_gl_projection_aspect(kemo_sgl->view_s);
-};
-
-double kemoview_get_stereo_focus(void){return send_gl_stereo_focus(kemo_sgl->view_s);};
-double kemoview_get_stereo_eyeseparation(void){return send_gl_stereo_eyeseparation(kemo_sgl->view_s);};
 
 void kemoview_mousedolly(double start[2], double x_dolly, double y_dolly){
 	gl_mousedolly_struct(kemo_sgl->view_s, start, x_dolly, y_dolly);
@@ -507,11 +526,6 @@ void kemoview_drugging_addToRotationTrackball(void){
 void kemoview_animation_add_rotation(double dt){add_animation_rotation(kemo_sgl->view_s, dt);}
 void kemoview_reset_animation(void){reset_rot_animation(kemo_sgl->view_s);};
 
-
-void kemoview_set_stereo_shutter(int iflag){kemo_sgl->view_s->iflag_streo_stutter = iflag;}
-void kemoview_set_anaglyph_flag(int iflag){kemo_sgl->view_s->iflag_streo_anaglyph = iflag;}
-int kemoview_get_stereo_shutter(void){return kemo_sgl->view_s->iflag_streo_stutter;}
-int kemoview_get_anaglyph_flag(void){return kemo_sgl->view_s->iflag_streo_anaglyph;}
 
 /* Subroutines for surface rendering */
 void kemoview_set_PSF_loaded_params(int selected, int input){

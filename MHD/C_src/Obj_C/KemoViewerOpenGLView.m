@@ -139,8 +139,8 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 
 -(id) DrawRotation: (NSInteger) int_degree : (NSInteger)rotationaxis
 {
-	kemoview_set_animation_rot_axis((int) rotationaxis);
-	kemoview_set_animation_rot_angle((int) int_degree);
+	kemoview_set_view_integer(ISET_ROTATE_AXIS, (int) rotationaxis);
+	kemoview_set_view_integer(ISET_ROTATE_INCREMENT, (int) int_degree);
     kemoview_set_single_viewer_id(id_window);
 	kemoview_rotate();
 	
@@ -513,8 +513,8 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
     kemoview_set_pick_surface_command(command);
     kemoview_free_kvstring(command);
 
-	kemoview_set_stereo_shutter(SHUTTER_OFF);
-	kemoview_set_anaglyph_flag(anaglyphFlag);
+	kemoview_set_view_integer(ISET_SHUTTER, SHUTTER_OFF);
+	kemoview_set_view_integer(ISET_ANAGYLYPH, anaglyphFlag);
 	
 	[self prepareKemoOpenGL];
 	

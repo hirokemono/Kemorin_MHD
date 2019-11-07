@@ -108,7 +108,7 @@ void mousePosCB(GLFWwindow *window, double xpos, double ypos) {
 		kemoview_drugging_addToRotationTrackball();
 	}
 	else if (button_function == SCALE){
-		double current_scale = kemoview_get_scale_factor();
+		double current_scale = kemoview_get_view_parameter(ISET_SCALE, 0);
         
 		if (ypos < begin[1]) {
 			factor = ONE + TWO_MILI*(begin[1]-ypos);
@@ -120,7 +120,7 @@ void mousePosCB(GLFWwindow *window, double xpos, double ypos) {
 			factor = ONE;
 		};
 		current_scale = current_scale * factor;
-		kemoview_set_scale_factor(current_scale);
+		kemoview_set_view_parameter(ISET_SCALE, 0, current_scale);
 	};
     /* ! update private variables and redisplay */
 	
@@ -239,7 +239,7 @@ static void keyFuncCB(GLFWwindow* window, int key, int scancode, int action, int
 	}
 	
 	else if (arrow_key_func == SCALE){
-		double current_scale = kemoview_get_scale_factor();
+		double current_scale = kemoview_get_view_parameter(ISET_SCALE, 0);
         
 		if (key == GLFW_KEY_DOWN && action == GLFW_PRESS)
 		factor = ONE/(ONE + TWO_CENT);
@@ -250,7 +250,7 @@ static void keyFuncCB(GLFWwindow* window, int key, int scancode, int action, int
 			factor = ONE;
 		};
 		current_scale = current_scale * factor;
-		kemoview_set_scale_factor(current_scale);
+		kemoview_set_view_parameter(ISET_SCALE, 0, current_scale);
  	};
 	
 	glfwSwapBuffers(window);
@@ -307,13 +307,13 @@ void write_rotate_views(int iflag_img, struct kv_string *image_prefix,
     if(inc_deg <= 0) inc_deg = 1;
     ied_deg = 360/inc_deg;
 	
-	kemoview_set_animation_rot_axis(i_axis);
+	kemoview_set_view_integer(ISET_ROTATE_AXIS, i_axis);
 	glfwFocusWindow(glfw_window);
 	for (i = 0; i< ied_deg; i++) {
 		glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 		int_degree =  i*inc_deg;
 		
-		kemoview_set_animation_rot_angle(int_degree);
+		kemoview_set_view_integer(ISET_ROTATE_INCREMENT, int_degree);
 		kemoview_rotate();
 		glfwSwapBuffers(glfw_window);
 		

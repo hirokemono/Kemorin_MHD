@@ -41,47 +41,49 @@
 {
 	kemoview_set_windowsize((int) self.xPixel, (int) self.yPixel);
 
-	kemoview_set_rotation_parameter(1, (double) self.RotationAxisX);
-	kemoview_set_rotation_parameter(2, (double) self.RotationAxisY);
-	kemoview_set_rotation_parameter(3, (double) self.RotationAxisZ);
-	kemoview_set_rotation_parameter(0, (double) self.RotationAngle);
+	kemoview_set_view_parameter(ISET_ROTATE, 1, (double) self.RotationAxisX);
+	kemoview_set_view_parameter(ISET_ROTATE, 2, (double) self.RotationAxisY);
+	kemoview_set_view_parameter(ISET_ROTATE, 3, (double) self.RotationAxisZ);
+	kemoview_set_view_parameter(ISET_ROTATE, 0, (double) self.RotationAngle);
 
-	kemoview_set_shift_vector(0, (double) (-self.ViewPointX));
-	kemoview_set_shift_vector(1, (double) (-self.ViewPointY));
-	kemoview_set_shift_vector(2, (double) (-self.ViewPointZ));
-	kemoview_set_scale_factor((double) self.ScaleFactor);
-	kemoview_set_projection_aperture((double) self.ProjentionAperture);
+	kemoview_set_view_parameter(ISET_SHIFT, 0, (double) (-self.ViewPointX));
+	kemoview_set_view_parameter(ISET_SHIFT, 1, (double) (-self.ViewPointY));
+	kemoview_set_view_parameter(ISET_SHIFT, 2, (double) (-self.ViewPointZ));
+
+	kemoview_set_view_parameter(ISET_SCALE, 0, (double) self.ScaleFactor);
+
+	kemoview_set_view_parameter(ISET_APERTURE, 0, (double) self.ProjentionAperture);
     
 	kemoview_set_stereo_parameter((double) self.FocusPoint, (double) self.eyeRatio);	
 }
 
 - (void) UpdateParameters
 {
-	self.xPixel = kemoview_get_windowsize_x();
-	self.yPixel = kemoview_get_windowsize_y();
+	self.xPixel = kemoview_get_view_integer(ISET_PIXEL_X);
+	self.yPixel = kemoview_get_view_integer(ISET_PIXEL_Y);
 	
-	self.ViewPointX = (CGFloat) -kemoview_get_shift_vector(0);
-	self.ViewPointY = (CGFloat) -kemoview_get_shift_vector(1);
-	self.ViewPointZ = (CGFloat) -kemoview_get_shift_vector(2);
+	self.ViewPointX = (CGFloat) -kemoview_get_view_parameter(ISET_SHIFT, 0);
+	self.ViewPointY = (CGFloat) -kemoview_get_view_parameter(ISET_SHIFT, 1);
+	self.ViewPointZ = (CGFloat) -kemoview_get_view_parameter(ISET_SHIFT, 2);
 	
-	self.LookPointX = (CGFloat) kemoview_get_lookat_vector(0);
-	self.LookPointY = (CGFloat) kemoview_get_lookat_vector(1);
-	self.LookPointZ = (CGFloat) kemoview_get_lookat_vector(2);
+	self.LookPointX = (CGFloat)  kemoview_get_view_parameter(ISET_VWPOINT, 0);
+	self.LookPointY = (CGFloat)  kemoview_get_view_parameter(ISET_VWPOINT, 1);
+	self.LookPointZ = (CGFloat)  kemoview_get_view_parameter(ISET_VWPOINT, 2);
 	
-	self.ScaleFactor = (CGFloat) kemoview_get_scale_factor();
+	self.ScaleFactor = (CGFloat) kemoview_get_view_parameter(ISET_SCALE, 0);
 	
-	self.RotationAxisX = (CGFloat) kemoview_get_rotation_parameter(1);
-	self.RotationAxisY = (CGFloat) kemoview_get_rotation_parameter(2);
-	self.RotationAxisZ = (CGFloat) kemoview_get_rotation_parameter(3);
-	self.RotationAngle = (CGFloat) kemoview_get_rotation_parameter(0);
+	self.RotationAxisX = (CGFloat) kemoview_get_view_parameter(ISET_ROTATE, 1);
+	self.RotationAxisY = (CGFloat) kemoview_get_view_parameter(ISET_ROTATE, 2);
+	self.RotationAxisZ = (CGFloat) kemoview_get_view_parameter(ISET_ROTATE, 3);
+	self.RotationAngle = (CGFloat) kemoview_get_view_parameter(ISET_ROTATE, 0);
 	
-	self.ProjentionAperture = (CGFloat) kemoview_get_projection_aperture();
-	self.ProjentionAspect =   (CGFloat) kemoview_get_projection_aspect();
-	self.ProjentionNear =     (CGFloat) kemoview_get_projection_near();
-	self.ProjentionFar =      (CGFloat) kemoview_get_projection_far();
+	self.ProjentionAperture = (CGFloat) kemoview_get_view_parameter(ISET_APERTURE, 0);
+	self.ProjentionAspect =   (CGFloat) kemoview_get_view_parameter(ISET_ASPECT, 0);
+	self.ProjentionNear =     (CGFloat) kemoview_get_view_parameter(ISET_NEAR, 0);
+	self.ProjentionFar =      (CGFloat) kemoview_get_view_parameter(ISET_FAR, 0);
 	
-	self.FocusPoint =     (CGFloat) kemoview_get_stereo_focus();
-	self.eyeRatio=        (CGFloat) kemoview_get_stereo_eyeseparation();
+	self.FocusPoint =     (CGFloat) kemoview_get_view_parameter(ISET_FOCUS, 0);
+	self.eyeRatio=        (CGFloat) kemoview_get_view_parameter(ISET_EYESEP, 0);
 	
 }
 

@@ -10,30 +10,30 @@
 
 
 void update_windowsize_menu(struct view_widgets *view_menu, GtkWidget *window){
-	gtk_adjustment_set_value(view_menu->adj_win_x, kemoview_get_windowsize_x());
-	gtk_adjustment_set_value(view_menu->adj_win_y, kemoview_get_windowsize_y());
+	gtk_adjustment_set_value(view_menu->adj_win_x, kemoview_get_view_integer(ISET_PIXEL_X));
+	gtk_adjustment_set_value(view_menu->adj_win_y, kemoview_get_view_integer(ISET_PIXEL_Y));
 	
 	gtk_widget_queue_draw(window);
 	return;
 };
 
 void update_viewmatrix_menu(struct view_widgets *view_menu, GtkWidget *window){	
-	gtk_adjustment_set_value(view_menu->adj_eye_x, -kemoview_get_shift_vector(0));
-	gtk_adjustment_set_value(view_menu->adj_eye_y, -kemoview_get_shift_vector(1));
-	gtk_adjustment_set_value(view_menu->adj_eye_z, -kemoview_get_shift_vector(2));
+	gtk_adjustment_set_value(view_menu->adj_eye_x, -kemoview_get_view_parameter(ISET_SHIFT, 0));
+	gtk_adjustment_set_value(view_menu->adj_eye_y, -kemoview_get_view_parameter(ISET_SHIFT, 1));
+	gtk_adjustment_set_value(view_menu->adj_eye_z, -kemoview_get_view_parameter(ISET_SHIFT, 2));
 	
-	gtk_adjustment_set_value(view_menu->adj_scale, kemoview_get_scale_factor());
+	gtk_adjustment_set_value(view_menu->adj_scale, kemoview_get_view_parameter(ISET_SCALE, 0));
 	
-	gtk_adjustment_set_value(view_menu->adj_rotation_x, kemoview_get_rotation_parameter(1));
-	gtk_adjustment_set_value(view_menu->adj_rotation_y, kemoview_get_rotation_parameter(2));
-	gtk_adjustment_set_value(view_menu->adj_rotation_z, kemoview_get_rotation_parameter(3));
-	gtk_adjustment_set_value(view_menu->adj_rotation_deg, kemoview_get_rotation_parameter(0));
+	gtk_adjustment_set_value(view_menu->adj_rotation_x, kemoview_get_view_parameter(ISET_ROTATE, 1));
+	gtk_adjustment_set_value(view_menu->adj_rotation_y, kemoview_get_view_parameter(ISET_ROTATE, 2));
+	gtk_adjustment_set_value(view_menu->adj_rotation_z, kemoview_get_view_parameter(ISET_ROTATE, 3));
+	gtk_adjustment_set_value(view_menu->adj_rotation_deg, kemoview_get_view_parameter(ISET_ROTATE, 0));
 	
-	gtk_adjustment_set_value(view_menu->adj_aperture, kemoview_get_projection_aperture());
+	gtk_adjustment_set_value(view_menu->adj_aperture, kemoview_get_view_parameter(ISET_APERTURE, 0));
 	
 	if(kemoview_get_view_type_flag() == VIEW_STEREO){
-		gtk_adjustment_set_value(view_menu->adj_focus, kemoview_get_stereo_focus());
-		gtk_adjustment_set_value(view_menu->adj_eye_sep, kemoview_get_stereo_eyeseparation());
+		gtk_adjustment_set_value(view_menu->adj_focus, kemoview_get_view_parameter(ISET_FOCUS, 0));
+		gtk_adjustment_set_value(view_menu->adj_eye_sep, kemoview_get_view_parameter(ISET_EYESEP, 0));
 	};
 	
 	gtk_widget_queue_draw(window);
@@ -71,7 +71,7 @@ static void windowsize_x_CB(GtkWidget *entry, gpointer user_data){
 	struct view_widgets *view_menu = (struct view_widgets *) g_object_get_data(G_OBJECT(user_data), "menu");
 	int gtk_intvalue = (int) gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(entry));
 	
-	set_GLWindowSize(gtk_intvalue, kemoview_get_windowsize_y());
+	set_GLWindowSize(gtk_intvalue, kemoview_get_view_integer(ISET_PIXEL_Y));
 	draw_full();
 	return;
 };
@@ -79,27 +79,27 @@ static void windowsize_y_CB(GtkWidget *entry, gpointer user_data){
 	struct view_widgets *view_menu = (struct view_widgets *) g_object_get_data(G_OBJECT(user_data), "menu");
 	int gtk_intvalue = (int) gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(entry));
 	
-	set_GLWindowSize(kemoview_get_windowsize_x(), gtk_intvalue);
+	set_GLWindowSize(kemoview_get_view_integer(ISET_PIXEL_X), gtk_intvalue);
 	draw_full();
 	return;
 };
 static void eye_position_x_CB(GtkWidget *entry, gpointer user_data){
 	double gtk_floatvalue = -gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
-	kemoview_set_shift_vector(0, gtk_floatvalue);
+	kemoview_set_view_parameter(ISET_SHIFT, 0, gtk_floatvalue);
 	
 	draw_fast();
 	return;
 };
 static void eye_position_y_CB(GtkWidget *entry, gpointer user_data){
 	double gtk_floatvalue = -gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
-	kemoview_set_shift_vector(1, gtk_floatvalue);
+	kemoview_set_view_parameter(ISET_SHIFT, 1, gtk_floatvalue);
 	
 	draw_fast();
 	return;
 };
 static void eye_position_z_CB(GtkWidget *entry, gpointer user_data){
 	double gtk_floatvalue = -gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
-	kemoview_set_shift_vector(2, gtk_floatvalue);
+	kemoview_set_view_parameter(ISET_SHIFT, 2, gtk_floatvalue);
 	
 	draw_fast();
 	return;
@@ -107,7 +107,7 @@ static void eye_position_z_CB(GtkWidget *entry, gpointer user_data){
 
 static void scale_CB(GtkWidget *entry, gpointer user_data){
 	double gtk_floatvalue = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
-	kemoview_set_scale_factor(gtk_floatvalue);
+	kemoview_set_view_parameter(ISET_SCALE, 0, gtk_floatvalue);
 	
 	draw_fast();
 	return;
@@ -115,28 +115,28 @@ static void scale_CB(GtkWidget *entry, gpointer user_data){
 
 static void spin_x_CB(GtkWidget *entry, gpointer user_data){
 	double gtk_floatvalue = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
-	kemoview_set_rotation_parameter(1, gtk_floatvalue);
+	kemoview_set_view_parameter(ISET_ROTATE, 1, gtk_floatvalue);
 	
 	draw_fast();
 	return;
 };
 static void spin_y_CB(GtkWidget *entry, gpointer user_data){
 	double gtk_floatvalue = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
-	kemoview_set_rotation_parameter(2, gtk_floatvalue);
+	kemoview_set_view_parameter(ISET_ROTATE, 2, gtk_floatvalue);
 	
 	draw_fast();
 	return;
 };
 static void spin_z_CB(GtkWidget *entry, gpointer user_data){
 	double gtk_floatvalue = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
-	kemoview_set_rotation_parameter(3, gtk_floatvalue);
+	kemoview_set_view_parameter(ISET_ROTATE, 3, gtk_floatvalue);
 	
 	draw_fast();
 	return;
 };
 static void spin_deg_CB(GtkWidget *entry, gpointer user_data){
 	double gtk_floatvalue = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
-	kemoview_set_rotation_parameter(0, gtk_floatvalue);
+	kemoview_set_view_parameter(ISET_ROTATE, 0, gtk_floatvalue);
 	
 	draw_fast();
 	return;
@@ -144,14 +144,14 @@ static void spin_deg_CB(GtkWidget *entry, gpointer user_data){
 
 static void aperture_CB(GtkWidget *entry, gpointer user_data){
 	double gtk_floatvalue = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
-	kemoview_set_projection_aperture(gtk_floatvalue);
+	kemoview_set_view_parameter(ISET_APERTURE, 0, gtk_floatvalue);
 	
 	draw_fast();
 	return;
 };
 
 static void focus_CB(GtkWidget *entry, gpointer user_data){
-	double tmpEyeRatio = kemoview_get_stereo_eyeseparation();
+	double tmpEyeRatio = kemoview_get_view_parameter(ISET_EYESEP, 0);
 	double gtk_floatvalue = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
 	kemoview_set_stereo_parameter(gtk_floatvalue, tmpEyeRatio);
 	
@@ -159,7 +159,7 @@ static void focus_CB(GtkWidget *entry, gpointer user_data){
 	return;
 };
 static void eye_sep_CB(GtkWidget *entry, gpointer user_data){
-	double tmpFocus = kemoview_get_stereo_focus();
+	double tmpFocus = kemoview_get_view_parameter(ISET_FOCUS, 0);
 	double gtk_floatvalue = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
 	kemoview_set_stereo_parameter(tmpFocus, gtk_floatvalue);
 	
@@ -176,9 +176,12 @@ void gtk_viewmatrix_menu_box(struct view_widgets *view_menu,
 	char current_lookat_y_text[30];
 	char current_lookat_z_text[30];
 	
-	sprintf(current_lookat_x_text, "    %f    ", (float) kemoview_get_lookat_vector(0));
-	sprintf(current_lookat_y_text, "    %f    ", (float) kemoview_get_lookat_vector(1));
-	sprintf(current_lookat_z_text, "    %f    ", (float) kemoview_get_lookat_vector(2));
+	sprintf(current_lookat_x_text, "    %f    ",
+			(float) kemoview_get_view_parameter(ISET_VWPOINT, 0));
+	sprintf(current_lookat_y_text, "    %f    ",
+			(float) kemoview_get_view_parameter(ISET_VWPOINT, 1));
+	sprintf(current_lookat_z_text, "    %f    ",
+			(float) kemoview_get_view_parameter(ISET_VWPOINT, 2));
 	
 	g_object_set_data(G_OBJECT(entry), "parent", (gpointer) window);
 	g_object_set_data(G_OBJECT(entry), "menu", (gpointer) view_menu);

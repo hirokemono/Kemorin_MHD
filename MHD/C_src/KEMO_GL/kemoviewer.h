@@ -412,10 +412,20 @@
 #define ISET_VWPOINT    2
 #define ISET_SCALE      3
 
-#define ISET_APATURE   10
+#define ISET_APERTURE  10
 #define ISET_NEAR      11
 #define ISET_FAR       12
 #define ISET_ASPECT    13
+
+#define ISET_FOCUS     21
+#define ISET_EYESEP    22
+
+#define ISET_PIXEL_X            0
+#define ISET_PIXEL_Y            1
+#define ISET_ROTATE_AXIS       11
+#define ISET_ROTATE_INCREMENT  12
+#define ISET_SHUTTER           41
+#define ISET_ANAGYLYPH         42
 
 #define AMBIENT_FLAG    0
 #define DIFFUSE_FLAG    1
@@ -608,30 +618,13 @@ extern "C" {
     
     void kemoview_update_distance(void);
     
-    void kemoview_set_rotation_parameter(int i, double rot_vect);
-    void kemoview_set_animation_rot_axis(int iaxis);
-    void kemoview_set_animation_rot_angle(int int_degree);
-    void kemoview_set_shift_vector(int i, double position);
-    void kemoview_set_scale_factor(double scale_s);
-    void kemoview_set_projection_aperture(double aperture_s);
+	void kemoview_set_view_integer(int selected, int ivalue);
+	void kemoview_set_view_parameter(int selected, int i, double value);
     void kemoview_set_stereo_parameter(double focus, double eye_sep);
     
-    int kemoview_get_windowsize_x(void);
-	int kemoview_get_windowsize_y(void);
+	int kemoview_get_view_integer(int selected);
+	double kemoview_get_view_parameter(int selected, int i);
 
-	double kemoview_get_rotation_parameter(int i);
-    double kemoview_get_shift_vector(int i);
-    double kemoview_get_lookat_vector(int i);
-	double kemoview_get_scale_factor(void);
-
-	double kemoview_get_projection_aperture(void);
-	double kemoview_get_projection_far(void);
-	double kemoview_get_projection_near(void);
-	double kemoview_get_projection_aspect(void);
-
-	double kemoview_get_stereo_focus(void);
-    double kemoview_get_stereo_eyeseparation(void);
-    
     void kemoview_mousedolly(double start[2], double x_dolly, double y_dolly);
     void kemoview_mousepan(double start[2], double x_pan, double y_pan);
     void kemoview_zooming(double wheelDelta);
@@ -643,11 +636,6 @@ extern "C" {
     void kemoview_drugging_addToRotationTrackball(void);
     void kemoview_animation_add_rotation(double dt);
     void kemoview_reset_animation(void);
-    
-    void kemoview_set_stereo_shutter(int iflag);
-    void kemoview_set_anaglyph_flag(int iflag);
-    int kemoview_get_stereo_shutter(void);
-    int kemoview_get_anaglyph_flag(void);
 
     /* subroutines for surafces */
 	void kemoview_set_PSF_loaded_params(int selected, int input);
