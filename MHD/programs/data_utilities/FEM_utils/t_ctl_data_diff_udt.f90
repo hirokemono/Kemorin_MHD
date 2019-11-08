@@ -5,7 +5,8 @@
 !
 !     required module for 3rd level
 !
-!!      subroutine read_control_4_diff_udt(hd_block, diff_udt_c)
+!!      subroutine read_control_4_diff_udt                              &
+!!     &         (file_name, hd_block, diff_udt_c)
 !!      subroutine dealloc_diff_control_data(diff_udt_c)
 !
       module t_ctl_data_diff_udt
@@ -25,17 +26,6 @@
 !
       implicit  none
 !
-!
-      character(len = kchara), parameter                                &
-     &                 :: fname_diff_ctl = "ctl_diff_udt"
-      character(len = kchara), parameter                                &
-     &                 :: fname_ave_ctl =  "ctl_ave_udt"
-      character(len = kchara), parameter                                &
-     &                 :: fname_prod_ctl = "ctl_prod_udt"
-      character(len = kchara), parameter                                &
-     &                 :: fname_corr_ctl = "ctl_correlate_udt"
-      character(len = kchara), parameter                                &
-     &                 :: fname_grp_patch_ctl = "ctl_med_group_patch"
 !
       integer(kind = kint), parameter :: diff_ctl_file_code = 11
 !
@@ -121,9 +111,6 @@
       private :: hd_dynamic_layers
       private :: hd_int_points
 !
-      private :: fname_diff_ctl, fname_ave_ctl
-      private :: fname_prod_ctl, fname_corr_ctl, fname_grp_patch_ctl
-!
       private :: hd_diff_files, hd_diff_model
       private :: hd_ref_udt_head_ctl, hd_tgt_udt_head_ctl
       private :: hd_correlate_coord
@@ -144,16 +131,17 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine read_control_4_diff_udt(hd_block, diff_udt_c)
+      subroutine read_control_4_diff_udt                                       &
+     &         (file_name, hd_block, diff_udt_c)
 !
-      character(len=kchara), intent(in) :: hd_block
+      character(len=kchara), intent(in) :: file_name, hd_block
       type(diff_udt_ctl), intent(inout)  :: diff_udt_c
 !
       type(buffer_for_control) :: c_buf1
 !
 !
       if(my_rank .eq. 0) then
-        open(diff_ctl_file_code, file=fname_diff_ctl, status='old')
+        open(diff_ctl_file_code, file=file_name, status='old')
 !
         do
           call load_one_line_from_control(diff_ctl_file_code, c_buf1)

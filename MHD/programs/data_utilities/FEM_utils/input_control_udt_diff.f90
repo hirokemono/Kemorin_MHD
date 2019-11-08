@@ -29,6 +29,16 @@
 !
       implicit none
 !
+      character(len = kchara), parameter                                &
+     &                 :: fname_diff_ctl = "ctl_diff_udt"
+      character(len = kchara), parameter                                &
+     &                 :: fname_ave_ctl =  "ctl_ave_udt"
+      character(len = kchara), parameter                                &
+     &                 :: fname_corr_ctl = "ctl_correlate_udt"
+      character(len = kchara), parameter                                &
+     &                 :: fname_grp_patch_ctl = "ctl_med_group_patch"
+!
+!
 !     Top level for difference
       character(len=kchara), parameter ::                               &
      &                   hd_diff_control = 'difference_udts'
@@ -43,6 +53,9 @@
      &                   hd_med_grp_patch = 'meridional_group_patch'
 !
       type(diff_udt_ctl), save, private :: diff_udt_c1
+!
+      private :: fname_diff_ctl, fname_ave_ctl
+      private :: fname_corr_ctl, fname_grp_patch_ctl
 !
       private :: hd_diff_control, hd_ave_control
       private :: hd_corr_control, hd_med_grp_patch
@@ -69,7 +82,8 @@
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'read_control_4_diff_udt'
-      call read_control_4_diff_udt(hd_diff_control, diff_udt_c1)
+      call read_control_4_diff_udt                                      &
+     &   (fname_diff_ctl, hd_diff_control, diff_udt_c1)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_ctl_params_diff_udt'
       call set_ctl_params_diff_udt(diff_udt_c1%d_plt,                   &
@@ -107,7 +121,8 @@
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'read_control_4_diff_udt'
-      call read_control_4_diff_udt(hd_ave_control, diff_udt_c1)
+      call read_control_4_diff_udt                                      &
+     &   (fname_ave_ctl, hd_ave_control, diff_udt_c1)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_ctl_params_diff_udt'
       call set_ctl_params_diff_udt(diff_udt_c1%d_plt,                   &
@@ -142,7 +157,8 @@
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'read_control_4_diff_udt'
-      call read_control_4_diff_udt(hd_corr_control, diff_udt_c1)
+      call read_control_4_diff_udt                                      &
+     &   (fname_corr_ctl, hd_corr_control, diff_udt_c1)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_ctl_params_correlate_udt'
       call set_ctl_params_correlate_udt(diff_udt_c1%d_plt,              &
@@ -166,7 +182,8 @@
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'read_control_4_diff_udt'
-      call read_control_4_diff_udt(hd_med_grp_patch, diff_udt_c1)
+      call read_control_4_diff_udt                                      &
+     &   (fname_grp_patch_ctl, hd_med_grp_patch, diff_udt_c1)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_ctl_params_diff_udt'
       call set_ctl_params_diff_udt(diff_udt_c1%d_plt,                   &
