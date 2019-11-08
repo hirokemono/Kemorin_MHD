@@ -554,7 +554,7 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" heightSizable="YES"/>
                         <clipView key="contentView" drawsBackground="NO" copiesOnScroll="NO" id="Wsi-nh-URc">
                             <rect key="frame" x="1" y="1" width="194" height="565"/>
-                            <autoresizingMask key="autoresizingMask"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <view id="3787">
                                     <rect key="frame" x="0.0" y="0.0" width="196" height="565"/>
@@ -3557,8 +3557,8 @@
                                         <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                         <connections>
-                                            <binding destination="1932" name="enabled" keyPath="self.Flinetype" id="ndC-2Q-pTe"/>
                                             <binding destination="1932" name="value" keyPath="self.FlineDisplayMinDigit" id="v8i-rs-PnT"/>
+                                            <binding destination="1932" name="enabled" keyPath="self.Flinetype" id="ndC-2Q-pTe"/>
                                         </connections>
                                     </textFieldCell>
                                     <connections>
@@ -3570,8 +3570,8 @@
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <stepperCell key="cell" continuous="YES" state="on" alignment="left" increment="0.10000000000000001" minValue="-9.9990000000000006" maxValue="9.9990000000000006" doubleValue="3" id="iLp-zj-Kh2">
                                         <connections>
-                                            <binding destination="1932" name="enabled" keyPath="self.Flinetype" id="b2H-9J-RZY"/>
                                             <binding destination="1932" name="value" keyPath="self.FlineDisplayMinimum" id="6As-ji-dkk"/>
+                                            <binding destination="1932" name="enabled" keyPath="self.Flinetype" id="b2H-9J-RZY"/>
                                         </connections>
                                     </stepperCell>
                                     <connections>
@@ -3584,8 +3584,8 @@
                                     <stepperCell key="cell" controlSize="small" continuous="YES" alignment="left" minValue="-30" maxValue="30" doubleValue="-7" id="aFa-it-5CB">
                                         <font key="font" metaFont="smallSystem"/>
                                         <connections>
-                                            <binding destination="1932" name="enabled" keyPath="self.Flinetype" id="Nzz-ve-Ngc"/>
                                             <binding destination="1932" name="value" keyPath="self.FlineDisplayMinDigit" id="AiH-Ld-Dtl"/>
+                                            <binding destination="1932" name="enabled" keyPath="self.Flinetype" id="Nzz-ve-Ngc"/>
                                         </connections>
                                     </stepperCell>
                                     <connections>
@@ -3613,8 +3613,8 @@
                                         <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                         <connections>
-                                            <binding destination="1932" name="enabled" keyPath="self.Flinetype" id="GZ2-TX-UTA"/>
                                             <binding destination="1932" name="value" keyPath="self.FlineDisplayMaxDigit" id="xhw-Vg-Ovr"/>
+                                            <binding destination="1932" name="enabled" keyPath="self.Flinetype" id="GZ2-TX-UTA"/>
                                         </connections>
                                     </textFieldCell>
                                     <connections>
@@ -3626,8 +3626,8 @@
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                     <stepperCell key="cell" continuous="YES" state="on" alignment="left" increment="0.10000000000000001" minValue="-9.9990000000000006" maxValue="9.9990000000000006" doubleValue="3" id="xyg-HN-YI8">
                                         <connections>
-                                            <binding destination="1932" name="enabled" keyPath="self.Flinetype" id="npL-4I-LzJ"/>
                                             <binding destination="1932" name="value" keyPath="self.FlineDisplayMaximum" id="TdQ-Hc-IRo"/>
+                                            <binding destination="1932" name="enabled" keyPath="self.Flinetype" id="npL-4I-LzJ"/>
                                         </connections>
                                     </stepperCell>
                                     <connections>
@@ -3640,8 +3640,8 @@
                                     <stepperCell key="cell" controlSize="small" continuous="YES" alignment="left" minValue="-30" maxValue="30" doubleValue="-7" id="jEg-ca-xO9">
                                         <font key="font" metaFont="smallSystem"/>
                                         <connections>
-                                            <binding destination="1932" name="enabled" keyPath="self.Flinetype" id="s53-nE-MD8"/>
                                             <binding destination="1932" name="value" keyPath="self.FlineDisplayMaxDigit" id="oJl-Qx-VqX"/>
+                                            <binding destination="1932" name="enabled" keyPath="self.Flinetype" id="s53-nE-MD8"/>
                                         </connections>
                                     </stepperCell>
                                     <connections>
@@ -4282,7 +4282,7 @@
             </view>
             <point key="canvasLocation" x="403.5" y="166"/>
         </window>
-        <customView autoresizesSubviews="NO" canDrawConcurrently="YES" misplaced="YES" id="2222" userLabel="Drawer Content View">
+        <customView autoresizesSubviews="NO" canDrawConcurrently="YES" misplaced="YES" id="2222" userLabel="Viewmatrix Content View">
             <rect key="frame" x="0.0" y="0.0" width="224" height="596"/>
             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES" heightSizable="YES"/>
             <subviews>
@@ -4324,7 +4324,7 @@
                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" heightSizable="YES"/>
                     <clipView key="contentView" drawsBackground="NO" copiesOnScroll="NO" id="ChU-hG-Nc0">
                         <rect key="frame" x="0.0" y="0.0" width="224" height="614"/>
-                        <autoresizingMask key="autoresizingMask"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view id="3791">
                                 <rect key="frame" x="0.0" y="0.0" width="224" height="614"/>
@@ -4766,7 +4766,7 @@
             </subviews>
             <point key="canvasLocation" x="229" y="1193"/>
         </customView>
-        <customView id="2491" userLabel="Drawer Content View">
+        <customView id="2491" userLabel="Colormap Content View">
             <rect key="frame" x="0.0" y="0.0" width="194" height="707"/>
             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" heightSizable="YES"/>
             <subviews>
@@ -4775,7 +4775,7 @@
                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" heightSizable="YES"/>
                     <clipView key="contentView" id="zjy-Ve-9jn">
                         <rect key="frame" x="0.0" y="0.0" width="194" height="707"/>
-                        <autoresizingMask key="autoresizingMask"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view id="3767">
                                 <rect key="frame" x="0.0" y="0.0" width="192" height="705"/>
@@ -4790,7 +4790,7 @@
                                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" heightSizable="YES"/>
                                         <clipView key="contentView" id="sgn-Z0-9rw">
                                             <rect key="frame" x="1" y="0.0" width="153" height="144"/>
-                                            <autoresizingMask key="autoresizingMask"/>
+                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <subviews>
                                                 <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" multipleSelection="NO" rowHeight="14" headerView="2597" id="2596">
                                                     <rect key="frame" x="0.0" y="0.0" width="153" height="127"/>
@@ -4876,7 +4876,7 @@
                                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" heightSizable="YES"/>
                                         <clipView key="contentView" id="xhk-53-bjR">
                                             <rect key="frame" x="1" y="0.0" width="153" height="144"/>
-                                            <autoresizingMask key="autoresizingMask"/>
+                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <subviews>
                                                 <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" rowHeight="14" headerView="2584" id="2585">
                                                     <rect key="frame" x="0.0" y="0.0" width="153" height="127"/>
@@ -4984,7 +4984,7 @@
                                             </menu>
                                         </popUpButtonCell>
                                         <connections>
-                                            <action selector="SetColorMode:" target="2604" id="2609"/>
+                                            <action selector="SetColorMode:" target="2610" id="bQW-tI-tTZ"/>
                                         </connections>
                                     </popUpButton>
                                     <button verticalHuggingPriority="750" id="TAV-2n-WDy">
@@ -5110,7 +5110,6 @@
         </customObject>
         <customObject id="2604" userLabel="RGBAMap Controller" customClass="RGBAMapController">
             <connections>
-                <outlet property="ColorModeItem" destination="2561" id="2605"/>
                 <outlet property="_colorMapObject" destination="2610" id="2784"/>
                 <outlet property="_kemoviewer" destination="3373" id="3399"/>
                 <outlet property="_opacityMapObject" destination="2618" id="2785"/>
@@ -5119,6 +5118,7 @@
         </customObject>
         <customObject id="2610" customClass="ColorMapController">
             <connections>
+                <outlet property="ColorModeItem" destination="2561" id="pQ2-MM-pDc"/>
                 <outlet property="_colorTableView" destination="2596" id="2611"/>
                 <outlet property="_fillRectView" destination="2560" id="3745"/>
                 <outlet property="_kemoviewGL_defaults_controller" destination="716" id="3440"/>

@@ -27,6 +27,8 @@
 
 	IBOutlet NSColorWell *backgroundColorWell;
     NSColor *nsBackgroundColor;
+
+	IBOutlet id ColorModeItem;	
 }
 @property (assign) NSMutableArray * ColorTableField;
 @property (assign) NSMutableArray * ColorTableColor;
@@ -48,5 +50,7 @@
 
 - (IBAction)UpdateColorTables:(id)pID;
 - (IBAction)ChooseBackgroundColorAction: (id) sender;
+
+- (IBAction)SetColorMode:(id)pId;
 
 @end

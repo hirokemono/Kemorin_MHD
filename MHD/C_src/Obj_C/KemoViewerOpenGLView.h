@@ -57,6 +57,8 @@ typedef struct {
 	IBOutlet NSProgressIndicator *evolutionProgreessBar;
 	IBOutlet NSProgressIndicator *FlineEvolutionProgreessBar;
 	float	_evolutionProgressValue;
+	
+	struct kemoviewer_type *_kemorin;
 }
 
 - (void) setRetinaMode;

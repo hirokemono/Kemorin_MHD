@@ -24,8 +24,6 @@
 
 	CGFloat DataMinimum;
 	CGFloat DataMaximum;
-
-	IBOutlet id ColorModeItem;	
 }
 @property CGFloat DataMinimum;
 @property CGFloat DataMaximum;
@@ -34,7 +32,6 @@
 - (void)awakeFromNib;
 - (void)updateColormapParameter;
 
-- (IBAction)SetColorMode:(id)pId;
 - (IBAction)SaveColormapFile:(id)pId;
 - (IBAction)LoadColormapFile:(id)pId;
 

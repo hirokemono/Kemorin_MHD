@@ -157,6 +157,9 @@
 		[ColorTableColor addObject:[[NSNumber alloc ] initWithDouble:color] ];
 	}
 	[_colorTableView reloadData];
+
+	[ColorModeItem selectItemAtIndex:kemoview_get_PSF_color_param(ISET_COLORMAP)];
+	[_kemoviewer UpdateImage];
 }
 
 - (IBAction)UpdateColorTables:(id)pID
@@ -185,5 +188,12 @@
 	
 	[_kemoviewer swapbuffer_cocoa];
 }
+
+- (IBAction)SetColorMode:(id)pId;
+{
+	kemoview_set_PSF_color_param(ISET_COLORMAP, (int) [ColorModeItem indexOfSelectedItem]);
+	[_kemoviewer UpdateImage];
+}
+
 
 @end

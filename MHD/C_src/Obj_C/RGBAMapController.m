@@ -24,12 +24,6 @@
 	self.DataMaximum = kemoview_get_each_PSF_colormap_range(ISET_COLOR_MAX);
 }
 
-- (IBAction)SetColorMode:(id)pId;
-{
-	kemoview_set_PSF_color_param(ISET_COLORMAP, (int) [ColorModeItem indexOfSelectedItem]);
-	[_kemoviewer UpdateImage];
-}
-
 - (void) SetColormapMinMax{
 	[_colorMapObject InitColorTables];
 	[_colorMapObject SetColorTables];
@@ -83,7 +77,6 @@
                                            [_kemoviewer UpdateImage];
                                            [_colorMapObject SetColorTables];
                                            [_opacityMapObject SetOpacityTables];
-                                           [ColorModeItem selectItemAtIndex:kemoview_get_PSF_color_param(ISET_COLORMAP)];
                                        };
                                    }];
     
