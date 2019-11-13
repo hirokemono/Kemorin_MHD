@@ -2666,8 +2666,24 @@
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                 </textField>
+                                <textField verticalHuggingPriority="750" misplaced="YES" id="yhR-hm-kaF">
+                                    <rect key="frame" x="15" y="166" width="51" height="17"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Vector" id="qxv-aN-JZo">
+                                        <font key="font" metaFont="system"/>
+                                        <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                    </textFieldCell>
+                                </textField>
                             </subviews>
                         </view>
+                        <connections>
+                            <binding destination="1157" name="transparent" keyPath="self.PSFVectorMenuAcrive" id="u66-o7-YZF">
+                                <dictionary key="options">
+                                    <string key="NSValueTransformerName">NSNegateBoolean</string>
+                                </dictionary>
+                            </binding>
+                        </connections>
                     </box>
                     <box autoresizesSubviews="NO" misplaced="YES" borderType="line" title="Surface" id="1079">
                         <rect key="frame" x="15" y="215" width="198" height="273"/>
@@ -2700,6 +2716,7 @@
                                     </popUpButtonCell>
                                     <connections>
                                         <action selector="ChoosePsfPatchColorAction:" target="1157" id="1890"/>
+                                        <binding destination="1157" name="enabled" keyPath="self.PSFSurfaceSwitch" id="srF-YB-aMe"/>
                                     </connections>
                                 </popUpButton>
                                 <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" id="3170">
@@ -2732,6 +2749,9 @@
                                             </buttonCell>
                                         </column>
                                     </cells>
+                                    <connections>
+                                        <binding destination="1157" name="enabled" keyPath="self.PSFSurfaceSwitch" id="LBR-Gt-k2f"/>
+                                    </connections>
                                 </matrix>
                                 <textField verticalHuggingPriority="750" misplaced="YES" id="1883">
                                     <rect key="frame" x="22" y="184" width="51" height="17"/>
@@ -2833,6 +2853,7 @@
                                     <color key="color" red="0.11946704630635285" green="0.021984556839427571" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                     <connections>
                                         <action selector="SetPSFPatchColorAction:" target="1157" id="HQ7-et-bQz"/>
+                                        <binding destination="1157" name="enabled" keyPath="self.PSFSurfaceSwitch" id="72f-Pc-xFJ"/>
                                     </connections>
                                 </colorWell>
                                 <slider verticalHuggingPriority="750" misplaced="YES" id="Hlu-EY-wns">
@@ -2841,6 +2862,7 @@
                                     <sliderCell key="cell" alignment="left" maxValue="1" doubleValue="1" tickMarkPosition="above" sliderType="linear" id="QJj-Yt-xvf"/>
                                     <connections>
                                         <action selector="SetPSFSingleOpacityAction:" target="1157" id="JPc-8R-96K"/>
+                                        <binding destination="1157" name="enabled" keyPath="self.PSFSurfaceSwitch" id="m7L-da-9jh"/>
                                         <binding destination="1157" name="value" keyPath="self.PSFOpacity" id="EG7-2b-prG"/>
                                     </connections>
                                 </slider>
@@ -3054,6 +3076,7 @@
                                     </textFieldCell>
                                     <connections>
                                         <action selector="ShowIsolineNumber:" target="1157" id="1177"/>
+                                        <binding destination="1157" name="enabled" keyPath="self.PSFLineSwitch" previousBinding="1367" id="lek-XP-be0"/>
                                         <binding destination="1157" name="editable" keyPath="self.DrawPsfFlag" id="1367"/>
                                     </connections>
                                 </textField>
@@ -3067,7 +3090,7 @@
                                     </stepperCell>
                                     <connections>
                                         <action selector="ShowIsolineNumber:" target="1157" id="1178"/>
-                                        <binding destination="1157" name="enabled" keyPath="self.DrawPsfFlag" id="1370"/>
+                                        <binding destination="1157" name="enabled" keyPath="self.PSFLineSwitch" id="K7f-oJ-Q1P"/>
                                     </connections>
                                 </stepper>
                                 <popUpButton verticalHuggingPriority="750" id="1871">
@@ -3084,11 +3107,13 @@
                                             </items>
                                         </menu>
                                         <connections>
+                                            <binding destination="1157" name="enabled" keyPath="self.PSFLineSwitch" id="Jfh-zA-2sG"/>
                                             <binding destination="2714" name="selectedTag" keyPath="selection.self.psfLineColorTag" id="3700"/>
                                         </connections>
                                     </popUpButtonCell>
                                     <connections>
                                         <action selector="ChoosePsfLineColorAction:" target="1157" id="1889"/>
+                                        <binding destination="1157" name="enabled" keyPath="self.PSFLineSwitch" id="w04-1Q-0DD"/>
                                     </connections>
                                 </popUpButton>
                                 <textField verticalHuggingPriority="750" id="1885">
@@ -3155,6 +3180,9 @@
                                             <binding destination="1157" name="value" keyPath="self.IsolineWidth" id="lrA-64-eb1"/>
                                         </connections>
                                     </textFieldCell>
+                                    <connections>
+                                        <binding destination="1157" name="enabled" keyPath="self.PSFLineSwitch" id="wOq-lZ-ovC"/>
+                                    </connections>
                                 </textField>
                                 <textField verticalHuggingPriority="750" misplaced="YES" id="F9m-Dz-XaY">
                                     <rect key="frame" x="148" y="19" width="28" height="16"/>
@@ -3173,6 +3201,7 @@
                                     </textFieldCell>
                                     <connections>
                                         <action selector="SetIsolineWidth:" target="1157" id="TJA-QV-W9V"/>
+                                        <binding destination="1157" name="enabled" keyPath="self.PSFLineSwitch" id="kj4-eR-xl1"/>
                                     </connections>
                                 </textField>
                                 <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" misplaced="YES" id="7Ts-6J-G5f">
@@ -3182,9 +3211,13 @@
                                         <font key="font" metaFont="smallSystem"/>
                                         <connections>
                                             <action selector="SetIsolineWidth:" target="1157" id="r30-qS-ddg"/>
+                                            <binding destination="1157" name="enabled" keyPath="self.PSFLineSwitch" id="JD8-yh-7cM"/>
                                             <binding destination="1157" name="value" keyPath="self.IsolineDigit" id="4fA-d0-0Kl"/>
                                         </connections>
                                     </stepperCell>
+                                    <connections>
+                                        <binding destination="1157" name="enabled" keyPath="self.PSFLineSwitch" id="5CS-QB-QsK"/>
+                                    </connections>
                                 </stepper>
                                 <textField verticalHuggingPriority="750" misplaced="YES" id="hYH-3P-wqS">
                                     <rect key="frame" x="14" y="9" width="67" height="17"/>
@@ -3201,9 +3234,13 @@
                                     <stepperCell key="cell" continuous="YES" state="on" alignment="left" minValue="1" maxValue="9" doubleValue="3" id="wfM-0m-97P">
                                         <connections>
                                             <action selector="SetIsolineWidth:" target="1157" id="eDC-ew-hIc"/>
+                                            <binding destination="1157" name="enabled" keyPath="self.PSFLineSwitch" id="x4i-mj-4DX"/>
                                             <binding destination="1157" name="value" keyPath="self.IsolineWidth" id="xqR-pP-GJo"/>
                                         </connections>
                                     </stepperCell>
+                                    <connections>
+                                        <binding destination="1157" name="enabled" keyPath="self.PSFLineSwitch" id="tMc-Dg-43E"/>
+                                    </connections>
                                 </stepper>
                                 <textField verticalHuggingPriority="750" misplaced="YES" id="gLJ-CX-KeN">
                                     <rect key="frame" x="125" y="12" width="33" height="17"/>
@@ -4775,7 +4812,7 @@
                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" heightSizable="YES"/>
                     <clipView key="contentView" id="zjy-Ve-9jn">
                         <rect key="frame" x="0.0" y="0.0" width="194" height="707"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <view id="3767">
                                 <rect key="frame" x="0.0" y="0.0" width="192" height="705"/>
@@ -4790,7 +4827,7 @@
                                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" heightSizable="YES"/>
                                         <clipView key="contentView" id="sgn-Z0-9rw">
                                             <rect key="frame" x="1" y="0.0" width="153" height="144"/>
-                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                            <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" multipleSelection="NO" rowHeight="14" headerView="2597" id="2596">
                                                     <rect key="frame" x="0.0" y="0.0" width="153" height="127"/>
@@ -4876,7 +4913,7 @@
                                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" heightSizable="YES"/>
                                         <clipView key="contentView" id="xhk-53-bjR">
                                             <rect key="frame" x="1" y="0.0" width="153" height="144"/>
-                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                            <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" rowHeight="14" headerView="2584" id="2585">
                                                     <rect key="frame" x="0.0" y="0.0" width="153" height="127"/>

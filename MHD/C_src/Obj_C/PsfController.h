@@ -6,7 +6,9 @@
 //  Copyright 2010 Department of Geophysical Sciences, University of Chicago. All rights reserved.
 //
 
+#include "math.h"
 #import <Cocoa/Cocoa.h>
+
 #import "KemoViewerOpenGLView.h"
 #import "KemoviewerController.h"
 #import "RGBAMapController.h"
@@ -85,6 +87,7 @@
 	NSInteger PSFSurfaceSwitch;
 	NSInteger PSFIsolineSwitch;
 	NSInteger PSFZerolineSwitch;
+	NSInteger PSFLineSwitch;
 	NSInteger PSFColorbarSwitch;
     
 	NSInteger psfPatchColorTag;
@@ -145,6 +148,7 @@
 @property NSInteger PSFSurfaceSwitch;
 @property NSInteger PSFIsolineSwitch;
 @property NSInteger PSFZerolineSwitch;
+@property NSInteger PSFLineSwitch;
 @property NSInteger PSFColorbarSwitch;
 
 @property CGFloat PsfMinimumRange;

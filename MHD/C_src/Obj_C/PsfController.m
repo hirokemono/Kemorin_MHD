@@ -45,6 +45,7 @@
 @synthesize PSFSurfaceSwitch;
 @synthesize PSFIsolineSwitch;
 @synthesize PSFZerolineSwitch;
+@synthesize PSFLineSwitch;
 @synthesize PSFColorbarSwitch;
 
 @synthesize PsfMinimumRange;
@@ -186,6 +187,7 @@
 	self.PsfMinimumValue =   kemoview_get_each_PSF_data_range(ISET_COLOR_MIN, iplotted);
 	self.PsfMaximumValue =   kemoview_get_each_PSF_data_range(ISET_COLOR_MAX, iplotted);
 	self.IsolineNumber =     kemoview_get_PSF_color_param(ISET_NLINE);
+	self.PSFLineSwitch = self.PSFZerolineSwitch + self.PSFIsolineSwitch;
 
 	kemoview_get_each_PSF_color_w_exp(ISET_COLOR_MIN, &current_value, &i_digit);
 	self.PsfMinimumRange =      (CGFloat) current_value;
@@ -252,6 +254,7 @@
      self.PsfMinimumValue =   kemoview_get_each_PSF_data_range(ISET_COLOR_MIN, iplotted);
      self.PsfMaximumValue =   kemoview_get_each_PSF_data_range(ISET_COLOR_MAX, iplotted);
      self.IsolineNumber =     kemoview_get_PSF_color_param(ISET_NLINE);
+	 self.PSFLineSwitch = self.PSFZerolineSwitch + self.PSFIsolineSwitch;
 
 	 kemoview_get_each_PSF_color_w_exp(ISET_COLOR_MIN, &current_value, &i_digit);
 	 self.PsfMinimumRange =      (CGFloat) current_value;
@@ -612,6 +615,7 @@
 - (IBAction)PsfLineSwitchAction:(id)sender;
 {
 	self.PSFIsolineSwitch = kemoview_select_PSF_draw_switch(PSFGRID_TOGGLE);
+	self.PSFLineSwitch = self.PSFZerolineSwitch + self.PSFIsolineSwitch;
 	[self UpdateCurrentPsfMenu];
 	[_kemoviewer UpdateImage];
 }
@@ -619,6 +623,7 @@
 - (IBAction)PsfZeroLineSwitchAction:(id)sender;
 {
 	self.PSFZerolineSwitch = kemoview_select_PSF_draw_switch(ZEROGRID_TOGGLE);
+	self.PSFLineSwitch = self.PSFZerolineSwitch + self.PSFIsolineSwitch;
 	[self UpdateCurrentPsfMenu];
 	[_kemoviewer UpdateImage];
 }
