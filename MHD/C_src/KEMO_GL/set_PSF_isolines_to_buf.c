@@ -129,8 +129,8 @@ static int set_PSF_zeroline_to_buf(int ist_patch, int ncorner,
 			struct gl_strided_buffer *psf_buf){
 	double dub_r = 2.0 * psf_m->isoline_width;
 	int inum_patch = ist_patch;
-	inum_patch = set_isoline_to_buf(inum_patch, ncorner, psf_m->isoline_width, ZERO, 
-									dub_r, black, psf_s, psf_buf);
+	inum_patch = set_isoline_to_buf(inum_patch, ncorner, dub_r, ZERO, 
+									psf_m->icomp_draw_psf, black, psf_s, psf_buf);
 	
 	return inum_patch;
 }
