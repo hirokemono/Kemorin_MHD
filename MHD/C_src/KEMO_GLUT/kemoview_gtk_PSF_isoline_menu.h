@@ -27,11 +27,6 @@
 #endif
 
 struct gtk_psf_isoline_menu{
-	GtkWidget *hbox_draw, *hbox_zero, *hbox_color;
-	GtkWidget *hbox_nline, *hbox_width;
-	
-	GtkWidget *vbox_iso;
-	
 	GtkWidget *switch_1, *switch_zero;
 	
 	GtkWidget *combobox_gdcolor;
@@ -40,15 +35,13 @@ struct gtk_psf_isoline_menu{
 	GtkTreeModel *model_gdcolor;
 	GtkTreeModel *child_model_gdcolor;
 	
-	int index;
-	int iflag_sfcolor;
-	
-	GtkWidget *spin_nline, *spin_width;
-	GtkAdjustment *adj_nline, *adj_width;
+	GtkWidget *spin_nline, *spin_width, *spin_digit;
 };
 
 
 /*  prototypes */
-void add_gtk_isoline_menu(GtkWidget *window, GtkWidget *box);
-	
+void set_gtk_isoline_menu_values(struct gtk_psf_isoline_menu *gtk_psf_isoline);
+void add_gtk_isoline_menu(GtkWidget *window, struct gtk_psf_isoline_menu *gtk_psf_isoline,
+						  GtkWidget *box);
+
 #endif

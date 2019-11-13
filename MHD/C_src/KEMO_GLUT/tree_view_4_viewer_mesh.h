@@ -39,6 +39,18 @@ struct ci3_clist_view{
     struct chara_int3_clist *ci3_clist_gtk;
 };
 
+struct gtk_group_menu{
+	GtkWidget *combobox_patch_color;
+	GtkWidget *combobox_grid_color;
+	GtkWidget *combobox_node_color;
+	GtkWidget *button_patch_color;
+	GtkWidget *button_grid_color;
+	GtkWidget *button_node_color;
+	GtkWidget *spin_opacity;
+	
+	GdkRGBA gcolor;
+};
+
 struct kemoview_mesh_view{
     struct ci3_clist_view *domain_vws;
     struct ci_clist_view  *nod_grp_vws;

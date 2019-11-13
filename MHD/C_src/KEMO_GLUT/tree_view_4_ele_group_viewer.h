@@ -24,10 +24,23 @@
 	#include "view_modifier_gtk.h"
 #endif
 
+struct gtk_ele_grp_menu{
+	GtkWidget *combobox_patch_color;
+	GtkWidget *combobox_grid_color;
+	GtkWidget *combobox_node_color;
+	GtkWidget *button_patch_color;
+	GtkWidget *button_grid_color;
+	GtkWidget *button_node_color;
+	GtkWidget *spin_opacity;
+	
+	GdkRGBA gcolor;
+};
+
 
 /* prototypes */
 
-void add_ele_group_draw_box(struct ci3_clist_view *ele_grp_vws,
-							GtkWidget *window_mesh, GtkWidget *vbox);
+void set_ele_group_draw_box(struct gtk_ele_grp_menu *gtk_ele_group);
+void add_ele_group_draw_box(struct ci3_clist_view *ele_grp_vws, GtkWidget *window_mesh, 
+							struct gtk_ele_grp_menu *gtk_ele_group, GtkWidget *vbox);
 
 #endif /* tree_view_4_ele_group_viewer */

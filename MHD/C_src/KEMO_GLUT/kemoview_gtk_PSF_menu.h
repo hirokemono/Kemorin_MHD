@@ -33,11 +33,22 @@
 	#include "view_modifier_gtk.h"
 #endif
 
+struct gtk_psf_color_menu{
+	GtkWidget *switch_draw, *switch_bar;
+	
+	GtkWidget *combobox_sfcolor;
+	
+	GtkWidget *spin_opacity1;	
+	GtkWidget *spin_range_min, *spin_digit_min; 
+	GtkWidget *spin_range_max, *spin_digit_max;
+	char min_text[30], max_text[30];	
+};
+
 
 /*  prototypes */
 
-void add_gtk_psf_colormap_menu(struct colormap_view *color_vws,
-			GtkWidget *window, GtkWidget *box);
+void add_gtk_psf_colormap_menu(struct colormap_view *color_vws, GtkWidget *window, 
+			struct gtk_psf_color_menu *gtk_psf_color, GtkWidget *box);
 
 void make_psf_menu_box(struct colormap_view *color_vws,
 					   GtkWidget *window, GtkWidget *box_out);

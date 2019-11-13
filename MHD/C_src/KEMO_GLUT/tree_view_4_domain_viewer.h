@@ -27,7 +27,8 @@
 
 /* prototypes */
 
-void add_domain_draw_box(struct ci3_clist_view *domain_vws, 
-						 GtkWidget *window_mesh, GtkWidget *vbox);
+void set_domain_draw_box(struct gtk_group_menu *gtk_domain_group);
+void add_domain_draw_box(struct ci3_clist_view *domain_vws, GtkWidget *window_mesh, 
+						 struct gtk_group_menu *gtk_domain_group, GtkWidget *vbox);
 
 #endif /* tree_view_4_domain_viewer */

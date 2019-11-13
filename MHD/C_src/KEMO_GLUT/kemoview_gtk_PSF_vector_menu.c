@@ -136,7 +136,6 @@ void make_gtk_psf_vector_menu(struct colormap_view *color_vws){
 	
 	GtkWidget *spin_vect_inc, *spin_inc_digit;
 	GtkAdjustment *adj_vect_inc, *adj_inc_digit;
-	int current_vec_increment;
 	
 	GtkWidget *spin_vect_width, *spin_width_digit;
 	GtkAdjustment *adj_vect_width, *adj_width_digit;

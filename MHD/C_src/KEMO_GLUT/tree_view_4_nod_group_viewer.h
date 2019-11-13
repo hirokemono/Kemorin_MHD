@@ -24,10 +24,15 @@
 	#include "view_modifier_gtk.h"
 #endif
 
+struct gtk_nod_grp_menu{
+	GtkWidget *combobox_node_color;
+	GtkWidget *button_node_color;
+	GdkRGBA gcolor;
+};
 
 /* prototypes */
 
-void add_nod_group_draw_box(struct ci_clist_view *nod_grp_vws,
-			GtkWidget *window_mesh, GtkWidget *vbox);
+void add_nod_group_draw_box(struct ci_clist_view *nod_grp_vws, GtkWidget *window_mesh, 
+			struct gtk_nod_grp_menu *gtk_node_group, GtkWidget *vbox);
 
 #endif /* tree_view_4_nod_group_viewer */

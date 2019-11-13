@@ -26,7 +26,7 @@ int set_image_format_id_by_ext(char *image_fmt){
 			||(image_fmt[0]=='p' && image_fmt[1]=='d' && image_fmt[2]=='f')){
 		id_img = SAVE_PDF;
 	} else {
-		id_img = 99;
+		id_img = SAVE_UNDEFINED;
 	};
 	
 	return id_img;

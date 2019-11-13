@@ -53,6 +53,9 @@ struct main_buttons{
 	GtkWidget *viewBox;
 	GtkWidget *rotationBox;
 	GtkWidget *evolutionBox;
+
+	GtkWidget *ComboboxImageFormat;
+	int id_iamge_format;
 };
 
 

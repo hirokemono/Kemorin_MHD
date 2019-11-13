@@ -153,9 +153,13 @@ void add_gtk_mesh_menu(struct kemoview_mesh_view *mesh_vws,
 	gtk_box_pack_start(GTK_BOX(box_out), hbox_color_mode, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(box_out), hbox_num_loop, TRUE, TRUE, 0);
 	
-	add_domain_draw_box(mesh_vws->domain_vws, window, box_out);
-	add_nod_group_draw_box(mesh_vws->nod_grp_vws, window, box_out);
-	add_ele_group_draw_box(mesh_vws->ele_grp_vws, window, box_out);
-	add_surf_group_draw_box(mesh_vws->surf_grp_vws, window, box_out);
+	struct gtk_group_menu  *gtk_domain_group = (struct gtk_group_menu *) malloc(sizeof(struct gtk_group_menu));
+	struct gtk_nod_grp_menu  *gtk_node_group = (struct gtk_nod_grp_menu *) malloc(sizeof(struct gtk_nod_grp_menu));
+	struct gtk_ele_grp_menu  *gtk_ele_group = (struct gtk_ele_grp_menu *) malloc(sizeof(struct gtk_ele_grp_menu));
+	struct gtk_surf_grp_menu *gtk_surf_group = (struct gtk_surf_grp_menu *) malloc(sizeof(struct gtk_surf_grp_menu));
+	add_domain_draw_box(mesh_vws->domain_vws, window, gtk_domain_group, box_out);
+	add_nod_group_draw_box(mesh_vws->nod_grp_vws, window, gtk_node_group, box_out);
+	add_ele_group_draw_box(mesh_vws->ele_grp_vws, window, gtk_ele_group, box_out);
+	add_surf_group_draw_box(mesh_vws->surf_grp_vws, window, gtk_surf_group, box_out);
 	return;
 }

@@ -37,8 +37,8 @@ static void load_colormap_file_panel_CB(GtkButton *loadButton, gpointer user_dat
 };
 
 
-void add_gtk_psf_colormap_menu(struct colormap_view *color_vws,
-			GtkWidget *window, GtkWidget *box){
+void add_gtk_psf_colormap_menu(struct colormap_view *color_vws, GtkWidget *window, 
+							   struct gtk_psf_color_menu *gtk_psf_color, GtkWidget *box){
 	GtkWidget *saveButton, *loadButton;
 	
 	GtkWidget *entry;
@@ -69,9 +69,13 @@ void make_psf_menu_box(struct colormap_view *color_vws,
 	int if_psf = kemoview_get_each_PSF_field_param(FIELD_SEL_FLAG);
 	int ncomp = kemoview_get_PSF_num_component(if_psf);
 	
-	add_gtk_isoline_menu(window, box_out);
-	add_gtk_psf_surface_menu(color_vws, window, box_out);
-	add_gtk_psf_colormap_menu(color_vws, window, box_out);
+	
+	struct gtk_psf_isoline_menu *gtk_psf_isoline = (struct gtk_psf_isoline_menu *) malloc(sizeof(struct gtk_psf_isoline_menu));
+	struct gtk_psf_surface_menu *gtk_psf_surface = (struct gtk_psf_surface_menu *) malloc(sizeof(struct gtk_psf_surface_menu));
+	struct gtk_psf_color_menu *gtk_psf_color = (struct gtk_psf_color_menu *) malloc(sizeof(struct gtk_psf_color_menu));
+	add_gtk_isoline_menu(window, gtk_psf_isoline, box_out);
+	add_gtk_psf_surface_menu(color_vws, window, gtk_psf_surface, box_out);
+	add_gtk_psf_colormap_menu(color_vws, window, gtk_psf_color, box_out);
 	
 	color_vws->psfVectorBox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	if(ncomp == 3) make_gtk_psf_vector_menu(color_vws);
