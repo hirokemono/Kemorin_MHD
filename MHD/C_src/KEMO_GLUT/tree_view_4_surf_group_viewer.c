@@ -275,7 +275,7 @@ static void create_surface_group_view(struct ci3_clist_view *surf_grp_vws)
     
 }
 
-void set_surf_group_draw_box(struct gtk_surf_grp_menu *gtk_surf_group){
+void set_surf_group_draw_box(struct gtk_group_menu *gtk_surf_group){
 	int iflag_color;
 	float color4[4];
 	
@@ -332,7 +332,7 @@ void set_surf_group_draw_box(struct gtk_surf_grp_menu *gtk_surf_group){
 };
 
 void add_surf_group_draw_box(struct ci3_clist_view *surf_grp_vws, GtkWidget *window_mesh,
-							 struct gtk_surf_grp_menu *gtk_surf_group, GtkWidget *vbox){
+							 struct gtk_group_menu *gtk_surf_group, GtkWidget *vbox){
 	GtkWidget *scrolled_table;
 	
 	GtkWidget *button_draw_patch, *button_draw_grid, *button_draw_node;

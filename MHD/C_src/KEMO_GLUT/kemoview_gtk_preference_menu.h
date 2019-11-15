@@ -27,9 +27,22 @@
 	#include "view_modifier_gtk.h"
 #endif
 
+struct gtk_preference_menu{
+	GtkWidget *spin_ambient;
+	GtkWidget *spin_diffuse;
+	GtkWidget *spin_specular;
+	GtkWidget *spin_shineness;
+
+	GtkWidget *combobox_node_color;
+	GtkWidget *button_node_color;
+	GdkRGBA gcolor;
+};
+
 
 /*  prototypes */
 
-void kemoview_preference_GTK(struct lightparams_view *lightparams_vws, GtkWidget *box_out);
+void set_GTK_preference_menu(struct gtk_preference_menu *gtk_pref);
+void add_GTK_preference_box(struct lightparams_view *lightparams_vws, struct gtk_preference_menu *gtk_pref, 
+							GtkWidget *box_out);
 
 #endif

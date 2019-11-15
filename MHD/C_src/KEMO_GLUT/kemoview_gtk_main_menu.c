@@ -659,7 +659,8 @@ void make_gtk_main_menu_box(struct main_buttons *mbot, GtkWidget *window_main){
 	gtk_box_pack_start(GTK_BOX(mbot->vbox_menu), mbot->viewBox, FALSE, FALSE, 0);
 	
 	mbot->prefBox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-	kemoview_preference_GTK(mbot->lightparams_vws, mbot->prefBox);
+	struct gtk_preference_menu  *gtk_pref = (struct gtk_preference_menu *) malloc(sizeof(struct gtk_preference_menu));
+	add_GTK_preference_box(mbot->lightparams_vws, gtk_pref, mbot->prefBox);
 	gtk_box_pack_start(GTK_BOX(mbot->vbox_menu), mbot->prefBox, FALSE, FALSE, 0);
 	
 	gtk_box_pack_start(GTK_BOX(mbot->menuHbox), mbot->vbox_menu, FALSE, FALSE, 0);

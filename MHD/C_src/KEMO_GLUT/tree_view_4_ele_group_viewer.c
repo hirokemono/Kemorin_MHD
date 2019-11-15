@@ -277,7 +277,7 @@ static void create_ele_group_view(struct ci3_clist_view *ele_grp_vws)
     
 }
 
-void set_ele_group_draw_box(struct gtk_ele_grp_menu *gtk_ele_group){
+void set_ele_group_draw_box(struct gtk_group_menu *gtk_ele_group){
 	int iflag_color;
 	float color4[4];
 	
@@ -334,7 +334,7 @@ void set_ele_group_draw_box(struct gtk_ele_grp_menu *gtk_ele_group){
 };
 
 void add_ele_group_draw_box(struct ci3_clist_view *ele_grp_vws, GtkWidget *window_mesh, 
-							struct gtk_ele_grp_menu *gtk_ele_group, GtkWidget *vbox){
+							struct gtk_group_menu *gtk_ele_group, GtkWidget *vbox){
 	GtkWidget *scrolled_table;
 	
 	GtkWidget *button_draw_patch, *button_draw_grid, *button_draw_node;

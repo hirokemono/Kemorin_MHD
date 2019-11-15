@@ -132,7 +132,7 @@ void add_gtk_fieldline_menu(GtkWidget *box_out){
 	int num_fld, num_comp, ifield, icomp, itype_fline, icolor_mode;
 	int i_min_digit, i_max_digit;
 	double range_min, range_max;
-	double value_min, value_max, delta;
+	double value_min, value_max;
 	char min_text[40], max_text[40];
 	
 	num_fld = kemoview_get_fline_field_param(NUM_FIELD_FLAG);
@@ -144,6 +144,8 @@ void add_gtk_fieldline_menu(GtkWidget *box_out){
 	
     value_min = kemoview_get_fline_data_range(ISET_COLOR_MIN, icomp);
 	value_max = kemoview_get_fline_data_range(ISET_COLOR_MAX, icomp);
+	sprintf(min_text, "Min(%1.2e): ", value_min);
+	sprintf(max_text, "Max(%1.2e): ", value_max);
 
 	label_tree_color = create_fixed_label_w_index_tree();
 	model_color = gtk_tree_view_get_model(GTK_TREE_VIEW(label_tree_color));  
@@ -192,10 +194,6 @@ void add_gtk_fieldline_menu(GtkWidget *box_out){
 	adj_digit = gtk_adjustment_new(int_thick, -30, 30, 1, 1, 0.0);
 	spin_digit = gtk_spin_button_new(GTK_ADJUSTMENT(adj_digit), 0, 0);
 	g_signal_connect(spin_digit, "value-changed", G_CALLBACK(fline_digit_CB),NULL);
-	
-	delta = value_max - value_min;
-	sprintf(min_text, "Min(%1.2e): ", value_min);
-	sprintf(max_text, "Max(%1.2e): ", value_max);
 
 	
 	kemoview_get_fline_color_w_exp(ISET_COLOR_MIN, &range_min, &i_min_digit);

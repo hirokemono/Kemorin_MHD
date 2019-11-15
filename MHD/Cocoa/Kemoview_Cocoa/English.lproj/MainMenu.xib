@@ -1165,7 +1165,7 @@
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <clipView key="contentView" id="Meu-5Y-hVs">
                                                 <rect key="frame" x="1" y="0.0" width="322" height="177"/>
-                                                <autoresizingMask key="autoresizingMask"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" headerView="760" id="761">
                                                         <rect key="frame" x="0.0" y="0.0" width="322" height="160"/>
@@ -2862,8 +2862,8 @@
                                     <sliderCell key="cell" alignment="left" maxValue="1" doubleValue="1" tickMarkPosition="above" sliderType="linear" id="QJj-Yt-xvf"/>
                                     <connections>
                                         <action selector="SetPSFSingleOpacityAction:" target="1157" id="JPc-8R-96K"/>
-                                        <binding destination="1157" name="enabled" keyPath="self.PSFSurfaceSwitch" id="m7L-da-9jh"/>
                                         <binding destination="1157" name="value" keyPath="self.PSFOpacity" id="EG7-2b-prG"/>
+                                        <binding destination="1157" name="enabled" keyPath="self.PSFSurfaceSwitch" id="m7L-da-9jh"/>
                                     </connections>
                                 </slider>
                                 <button verticalHuggingPriority="750" misplaced="YES" id="2497">
@@ -3076,8 +3076,8 @@
                                     </textFieldCell>
                                     <connections>
                                         <action selector="ShowIsolineNumber:" target="1157" id="1177"/>
-                                        <binding destination="1157" name="enabled" keyPath="self.PSFLineSwitch" previousBinding="1367" id="lek-XP-be0"/>
                                         <binding destination="1157" name="editable" keyPath="self.DrawPsfFlag" id="1367"/>
+                                        <binding destination="1157" name="enabled" keyPath="self.PSFLineSwitch" previousBinding="1367" id="lek-XP-be0"/>
                                     </connections>
                                 </textField>
                                 <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" id="1090">
@@ -3107,8 +3107,8 @@
                                             </items>
                                         </menu>
                                         <connections>
-                                            <binding destination="1157" name="enabled" keyPath="self.PSFLineSwitch" id="Jfh-zA-2sG"/>
                                             <binding destination="2714" name="selectedTag" keyPath="selection.self.psfLineColorTag" id="3700"/>
+                                            <binding destination="1157" name="enabled" keyPath="self.PSFLineSwitch" id="Jfh-zA-2sG"/>
                                         </connections>
                                     </popUpButtonCell>
                                     <connections>
@@ -3211,8 +3211,8 @@
                                         <font key="font" metaFont="smallSystem"/>
                                         <connections>
                                             <action selector="SetIsolineWidth:" target="1157" id="r30-qS-ddg"/>
-                                            <binding destination="1157" name="enabled" keyPath="self.PSFLineSwitch" id="JD8-yh-7cM"/>
                                             <binding destination="1157" name="value" keyPath="self.IsolineDigit" id="4fA-d0-0Kl"/>
+                                            <binding destination="1157" name="enabled" keyPath="self.PSFLineSwitch" id="JD8-yh-7cM"/>
                                         </connections>
                                     </stepperCell>
                                     <connections>
@@ -3234,8 +3234,8 @@
                                     <stepperCell key="cell" continuous="YES" state="on" alignment="left" minValue="1" maxValue="9" doubleValue="3" id="wfM-0m-97P">
                                         <connections>
                                             <action selector="SetIsolineWidth:" target="1157" id="eDC-ew-hIc"/>
-                                            <binding destination="1157" name="enabled" keyPath="self.PSFLineSwitch" id="x4i-mj-4DX"/>
                                             <binding destination="1157" name="value" keyPath="self.IsolineWidth" id="xqR-pP-GJo"/>
+                                            <binding destination="1157" name="enabled" keyPath="self.PSFLineSwitch" id="x4i-mj-4DX"/>
                                         </connections>
                                     </stepperCell>
                                     <connections>
@@ -4199,7 +4199,7 @@
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" heightSizable="YES"/>
                                     <clipView key="contentView" id="Vae-Vq-U6W">
                                         <rect key="frame" x="1" y="0.0" width="229" height="117"/>
-                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                        <autoresizingMask key="autoresizingMask"/>
                                         <subviews>
                                             <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" alternatingRowBackgroundColors="YES" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" headerView="8Zb-aV-5rs" id="Gdj-Kb-Y6t">
                                                 <rect key="frame" x="0.0" y="0.0" width="229" height="94"/>
@@ -4361,7 +4361,7 @@
                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" heightSizable="YES"/>
                     <clipView key="contentView" drawsBackground="NO" copiesOnScroll="NO" id="ChU-hG-Nc0">
                         <rect key="frame" x="0.0" y="0.0" width="224" height="614"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <view id="3791">
                                 <rect key="frame" x="0.0" y="0.0" width="224" height="614"/>

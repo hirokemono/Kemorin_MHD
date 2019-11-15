@@ -24,23 +24,10 @@
 	#include "view_modifier_gtk.h"
 #endif
 
-struct gtk_surf_grp_menu{
-	GtkWidget *combobox_patch_color;
-	GtkWidget *combobox_grid_color;
-	GtkWidget *combobox_node_color;
-	GtkWidget *button_patch_color;
-	GtkWidget *button_grid_color;
-	GtkWidget *button_node_color;
-	GtkWidget *spin_opacity;
-	
-	GdkRGBA gcolor;
-};
-
-
 /* prototypes */
 
-void set_surf_group_draw_box(struct gtk_surf_grp_menu *gtk_surf_group);
+void set_surf_group_draw_box(struct gtk_group_menu *gtk_surf_group);
 void add_surf_group_draw_box(struct ci3_clist_view *surf_grp_vws, GtkWidget *window_mesh,
-							 struct gtk_surf_grp_menu *gtk_surf_group, GtkWidget *vbox);
+							 struct gtk_group_menu *gtk_surf_group, GtkWidget *vbox);
 
 #endif /* tree_view_4_surf_group_viewer */

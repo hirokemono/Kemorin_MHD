@@ -24,8 +24,6 @@ static void AmbientChange(GtkWidget *entry, gpointer data)
 {
 	float value = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
 	kemoview_set_material_parameter(AMBIENT_FLAG, value);
-/*	printf("gtk_min %d\n", gtk_min);*/
-	
 	draw_full();
 	return;
 }
@@ -33,8 +31,6 @@ static void DiffuseChange(GtkWidget *entry, gpointer data)
 {
 	float value = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
 	kemoview_set_material_parameter(DIFFUSE_FLAG, value);
-/*	printf("gtk_min %d\n", gtk_min);*/
-	
 	draw_full();
 	return;
 }
@@ -42,8 +38,6 @@ static void SpecularChange(GtkWidget *entry, gpointer data)
 {
 	float value = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
 	kemoview_set_material_parameter(SPECULAR_FLAG, value);
-/*	printf("gtk_min %d\n", gtk_min);*/
-	
 	draw_full();
 	return;
 }
@@ -52,24 +46,33 @@ static void ShinenessChange(GtkWidget *entry, gpointer data)
 	float value = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
 	
 	kemoview_set_material_parameter(SHINENESS_FLAG, value);
-/*	printf("gtk_min %d\n", gtk_min);*/
-	
 	draw_full();
 	return;
 }
 
-void kemoview_preference_GTK(struct lightparams_view *lightparams_vws, GtkWidget *box_out){
-	GtkWidget *label21, *label22, *label23, *label24;
-	
+void set_GTK_preference_menu(struct gtk_preference_menu *gtk_pref){
+	double current_value;
+	current_value = kemoview_get_material_parameter(AMBIENT_FLAG);
+	gtk_spin_button_set_value(GTK_SPIN_BUTTON(gtk_pref->spin_ambient), current_value);
+	current_value = kemoview_get_material_parameter(DIFFUSE_FLAG);
+	gtk_spin_button_set_value(GTK_SPIN_BUTTON(gtk_pref->spin_diffuse), current_value);
+	current_value = kemoview_get_material_parameter(SPECULAR_FLAG);
+	gtk_spin_button_set_value(GTK_SPIN_BUTTON(gtk_pref->spin_specular), current_value);
+	current_value = kemoview_get_material_parameter(SHINENESS_FLAG);
+	gtk_spin_button_set_value(GTK_SPIN_BUTTON(gtk_pref->spin_shineness), current_value);
+	return;
+}
+
+void add_GTK_preference_box(struct lightparams_view *lightparams_vws, struct gtk_preference_menu *gtk_pref, 
+							GtkWidget *box_out){
 	GtkWidget *vbox;
 	
 	GtkWidget *hbox11, *hbox12, *hbox13, *hbox14;
 	GtkWidget *entry;
 	GtkWidget *BGselButton;
-	GtkWidget *spin1, *spin2, *spin3, *spin4;
 	GtkAdjustment *adj1, *adj2, *adj3, *adj4;
 	
-	float current_value;
+	float current_value = 0.0;
 	
     GLfloat color[4];
 	kemoview_get_background_color(color);
@@ -81,46 +84,40 @@ void kemoview_preference_GTK(struct lightparams_view *lightparams_vws, GtkWidget
 				G_CALLBACK(kemoview_gtk_BGcolorsel), (gpointer)entry);
 	
 	
-	current_value = kemoview_get_material_parameter(AMBIENT_FLAG);
-	label21 = gtk_label_new("Ambient:   ");
 	adj1 = gtk_adjustment_new(current_value, 0.0, 1.0, 0.01, 0.01, 0.0);
-	spin1 = gtk_spin_button_new(GTK_ADJUSTMENT(adj1),0,2);
+	gtk_pref->spin_ambient = gtk_spin_button_new(GTK_ADJUSTMENT(adj1),0,2);
 	
-	current_value = kemoview_get_material_parameter(DIFFUSE_FLAG);
-	label22 = gtk_label_new("Diffuse:   ");
 	adj2 = gtk_adjustment_new(current_value, 0.0, 1.0, 0.01, 0.01, 0.0);
-	spin2 = gtk_spin_button_new(GTK_ADJUSTMENT(adj2),0,2);
+	gtk_pref->spin_diffuse = gtk_spin_button_new(GTK_ADJUSTMENT(adj2),0,2);
 	
-	current_value = kemoview_get_material_parameter(SPECULAR_FLAG);
-	label23 = gtk_label_new("Specular:  ");
 	adj3 = gtk_adjustment_new(current_value, 0.0, 1.0, 0.01, 0.01, 0.0);
-	spin3 = gtk_spin_button_new(GTK_ADJUSTMENT(adj3),0,2);
+	gtk_pref->spin_specular = gtk_spin_button_new(GTK_ADJUSTMENT(adj3),0,2);
 	
-	current_value = kemoview_get_material_parameter(SHINENESS_FLAG);
-	label24 = gtk_label_new("Shineness: ");
 	adj4 = gtk_adjustment_new(current_value, 0.0, 100.0, 0.1, 0.1, 0.0);
-	spin4 = gtk_spin_button_new( GTK_ADJUSTMENT(adj4),0,2);
+	gtk_pref->spin_shineness = gtk_spin_button_new( GTK_ADJUSTMENT(adj4),0,2);
 	
-	g_signal_connect(spin1, "value-changed", G_CALLBACK(AmbientChange), NULL);
-	g_signal_connect(spin2, "value-changed", G_CALLBACK(DiffuseChange), NULL);
-	g_signal_connect(spin3, "value-changed", G_CALLBACK(SpecularChange), NULL);
-	g_signal_connect(spin4, "value-changed", G_CALLBACK(ShinenessChange), NULL);
+	g_signal_connect(gtk_pref->spin_ambient, "value-changed", G_CALLBACK(AmbientChange), NULL);
+	g_signal_connect(gtk_pref->spin_diffuse, "value-changed", G_CALLBACK(DiffuseChange), NULL);
+	g_signal_connect(gtk_pref->spin_specular, "value-changed", G_CALLBACK(SpecularChange), NULL);
+	g_signal_connect(gtk_pref->spin_shineness, "value-changed", G_CALLBACK(ShinenessChange), NULL);
+	
+	set_GTK_preference_menu(gtk_pref);
 	
 	hbox11 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
-	gtk_box_pack_start(GTK_BOX(hbox11), label21, TRUE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox11), spin1, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox11), gtk_label_new("Ambient:   "), TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox11), gtk_pref->spin_ambient, FALSE, FALSE, 0);
 	
 	hbox12 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
-	gtk_box_pack_start(GTK_BOX(hbox12), label22, TRUE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox12), spin2, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox12), gtk_label_new("Diffuse:   "), TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox12), gtk_pref->spin_diffuse, FALSE, FALSE, 0);
 	
 	hbox13 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
-	gtk_box_pack_start(GTK_BOX(hbox13), label23, TRUE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox13), spin3, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox13), gtk_label_new("Specular:  "), TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox13), gtk_pref->spin_specular, FALSE, FALSE, 0);
 	
 	hbox14 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
-	gtk_box_pack_start(GTK_BOX(hbox14), label24, TRUE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox14), spin4, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox14), gtk_label_new("Shineness: "), TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox14), gtk_pref->spin_shineness, FALSE, FALSE, 0);
 	
 	
 	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);

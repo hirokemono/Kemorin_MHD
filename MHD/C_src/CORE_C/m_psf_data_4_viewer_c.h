@@ -107,7 +107,7 @@ void dealloc_psf_cutting_4_map(struct psf_data *viz_s);
 void deallc_all_psf_data(struct psf_data *viz_s);
 void deallc_all_fline_data(struct psf_data *viz_s);
 
-struct vtk_field *alloc_vtk_fields_list_c();
+struct vtk_field *alloc_vtk_fields_list_c(void);
 void alloc_vtk_field_data_c(vtk_fields_t *vtk_s);
 void dealloc_vtk_field_data_c(vtk_fields_t *vtk_s);
 void dealloc_vtk_fields_list_c(struct vtk_field *vtk_list);
