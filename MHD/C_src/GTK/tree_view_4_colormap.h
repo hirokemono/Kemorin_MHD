@@ -30,8 +30,6 @@ struct colormap_view{
 
 	struct colormap_params *cmap_param;	
     GtkWidget *scrolled_window;
-	
-	GtkWidget *psfVectorBox;
 };
 
 void init_colormap_views_4_ctl(struct colormap_ctl_c *cmap_c, 

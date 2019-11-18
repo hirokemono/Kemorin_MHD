@@ -33,7 +33,9 @@
 	#include "view_modifier_gtk.h"
 #endif
 
-struct gtk_psf_color_menu{
+struct psf_color_gtk_menu{
+	GtkWidget *color_box;
+	
 	GtkWidget *switch_draw, *switch_bar;
 	
 	GtkWidget *combobox_sfcolor;
@@ -41,16 +43,29 @@ struct gtk_psf_color_menu{
 	GtkWidget *spin_opacity1;	
 	GtkWidget *spin_range_min, *spin_digit_min; 
 	GtkWidget *spin_range_max, *spin_digit_max;
-	char min_text[30], max_text[30];	
+	char min_text[30], max_text[30];
 };
 
+struct psf_gtk_menu{
+	GtkWidget *psf_vbox;
+	
+	GtkWidget *closeButton;
+	GtkWidget *combobox_field;
+	GtkWidget *combobox_comp;
+	
+	struct psf_isoline_gtk_menu *psf_isoline_menu;
+	struct psf_surface_gtk_menu *psf_surface_menu;
+	struct psf_color_gtk_menu *psf_color_menu;
+	struct psf_vector_gtk_menu *psf_vector_menu;
+	
+	struct colormap_view *color_vws;
+};
 
 /*  prototypes */
 
-void add_gtk_psf_colormap_menu(struct colormap_view *color_vws, GtkWidget *window, 
-			struct gtk_psf_color_menu *gtk_psf_color, GtkWidget *box);
+struct psf_gtk_menu * alloc_psf_gtk_menu();
+void dealloc_psf_gtk_menu(struct psf_gtk_menu *psf_gmenu);
 
-void make_psf_menu_box(struct colormap_view *color_vws,
-					   GtkWidget *window, GtkWidget *box_out);
+void make_psf_menu_box(GtkWidget *window, struct psf_gtk_menu *psf_gmenu);
 
 #endif

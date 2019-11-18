@@ -24,9 +24,22 @@
 	#include "view_modifier_gtk.h"
 #endif
 
+struct fieldline_gtk_menu{
+	GtkWidget *menu_box;
+	
+	GtkWidget *combobox_color;
+	GtkWidget *switch_tube;
+	
+	GtkWidget *label_min, *label_max;
+	GtkWidget *spin_range_min, *spin_min_digit;
+	GtkWidget *spin_range_max, *spin_max_digit;
+	GtkWidget *spin_thick, *spin_digit;
+};
+
 
 /*  prototypes */
 
-void add_gtk_fieldline_menu(GtkWidget *box_out);
+void set_gtk_fieldline_menu(struct fieldline_gtk_menu *fline_menu);
+void add_gtk_fieldline_menu(struct fieldline_gtk_menu *fline_menu);
 
 #endif

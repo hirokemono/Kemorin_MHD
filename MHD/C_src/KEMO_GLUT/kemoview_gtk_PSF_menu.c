@@ -37,12 +37,10 @@ static void load_colormap_file_panel_CB(GtkButton *loadButton, gpointer user_dat
 };
 
 
-void add_gtk_psf_colormap_menu(struct colormap_view *color_vws, GtkWidget *window, 
-							   struct gtk_psf_color_menu *gtk_psf_color, GtkWidget *box){
+static void add_gtk_psf_colormap_menu(GtkWidget *window, struct colormap_view *color_vws, 
+							   struct psf_color_gtk_menu *psf_color_menu){
 	GtkWidget *saveButton, *loadButton;
-	
 	GtkWidget *entry;
-	GtkWidget *vbox_cmap;
 	
 	entry = gtk_entry_new();
 	g_object_set_data(G_OBJECT(entry), "parent", (gpointer) window);
@@ -55,37 +53,71 @@ void add_gtk_psf_colormap_menu(struct colormap_view *color_vws, GtkWidget *windo
 	g_signal_connect(G_OBJECT(loadButton), "clicked", 
 				G_CALLBACK(load_colormap_file_panel_CB), G_OBJECT(entry));
 	
-	vbox_cmap = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
-	add_kemoview_colormap_list_box(color_vws, vbox_cmap);
-	gtk_box_pack_start(GTK_BOX(vbox_cmap), saveButton, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_cmap), loadButton, FALSE, FALSE, 0);
-	
-	wrap_into_expanded_frame_gtk("Color map editor", 420, 450, vbox_cmap, box);
+	add_kemoview_colormap_list_box(color_vws, psf_color_menu->color_box);
+	gtk_box_pack_start(GTK_BOX(psf_color_menu->color_box), saveButton, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(psf_color_menu->color_box), loadButton, FALSE, FALSE, 0);
 	return;
 }
 
-void make_psf_menu_box(struct colormap_view *color_vws,
-			GtkWidget *window, GtkWidget *box_out){
+struct psf_gtk_menu * alloc_psf_gtk_menu(){
+	struct psf_gtk_menu *psf_gmenu = (struct psf_gtk_menu *) malloc(sizeof(struct psf_gtk_menu));
+	
+	psf_gmenu->color_vws = (struct colormap_view *) malloc(sizeof(struct colormap_view));
+	psf_gmenu->psf_isoline_menu = (struct psf_isoline_gtk_menu *) malloc(sizeof(struct psf_isoline_gtk_menu));
+	psf_gmenu->psf_surface_menu = (struct psf_surface_gtk_menu *) malloc(sizeof(struct psf_surface_gtk_menu));
+	psf_gmenu->psf_color_menu =   (struct psf_color_gtk_menu *) malloc(sizeof(struct psf_color_gtk_menu));
+	psf_gmenu->psf_vector_menu =  (struct psf_vector_gtk_menu *) malloc(sizeof(struct psf_vector_gtk_menu));
+	
+	return psf_gmenu;
+};
+
+void dealloc_psf_gtk_menu(struct psf_gtk_menu *psf_gmenu){
+	free(psf_gmenu->psf_isoline_menu);
+	free(psf_gmenu->psf_surface_menu);
+	free(psf_gmenu->psf_color_menu);
+	free(psf_gmenu->psf_vector_menu);
+	
+	dealloc_colormap_views_4_viewer(psf_gmenu->color_vws);
+	free(psf_gmenu->color_vws);
+	
+	free(psf_gmenu);
+	return;
+};
+
+void make_psf_menu_box(GtkWidget *window, struct psf_gtk_menu *psf_gmenu){
 	int if_psf = kemoview_get_each_PSF_field_param(FIELD_SEL_FLAG);
 	int ncomp = kemoview_get_PSF_num_component(if_psf);
 	
+	psf_gmenu->psf_isoline_menu->isoline_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
+	add_gtk_isoline_menu(window, psf_gmenu->psf_isoline_menu);
+	set_gtk_isoline_menu_values(psf_gmenu->psf_isoline_menu);
+	wrap_into_expanded_frame_gtk("Isolines", 425, 220, psf_gmenu->psf_isoline_menu->isoline_box, 
+								 psf_gmenu->psf_vbox);
+
+	psf_gmenu->psf_surface_menu->patch_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
+	add_gtk_psf_surface_menu(window, psf_gmenu->color_vws, psf_gmenu->psf_surface_menu);
+	set_gtk_surface_menu_values(psf_gmenu->psf_surface_menu);
+	wrap_into_expanded_frame_gtk("Surface", 420, 320, psf_gmenu->psf_surface_menu->patch_box,
+								 psf_gmenu->psf_vbox);
 	
-	struct gtk_psf_isoline_menu *gtk_psf_isoline = (struct gtk_psf_isoline_menu *) malloc(sizeof(struct gtk_psf_isoline_menu));
-	struct gtk_psf_surface_menu *gtk_psf_surface = (struct gtk_psf_surface_menu *) malloc(sizeof(struct gtk_psf_surface_menu));
-	struct gtk_psf_color_menu *gtk_psf_color = (struct gtk_psf_color_menu *) malloc(sizeof(struct gtk_psf_color_menu));
-	add_gtk_isoline_menu(window, gtk_psf_isoline, box_out);
-	add_gtk_psf_surface_menu(color_vws, window, gtk_psf_surface, box_out);
-	add_gtk_psf_colormap_menu(color_vws, window, gtk_psf_color, box_out);
+	psf_gmenu->psf_color_menu->color_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
+	add_gtk_psf_colormap_menu(window, psf_gmenu->color_vws, psf_gmenu->psf_color_menu);
+	wrap_into_expanded_frame_gtk("Color map editor", 420, 450, psf_gmenu->psf_color_menu->color_box,
+								 psf_gmenu->psf_vbox);
 	
-	color_vws->psfVectorBox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-	if(ncomp == 3) make_gtk_psf_vector_menu(color_vws);
-	gtk_box_pack_start(GTK_BOX(box_out), color_vws->psfVectorBox, FALSE, TRUE, 0);
-	
-	gtk_widget_show_all(box_out);
+	psf_gmenu->psf_vector_menu->vector_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	if(ncomp == 3){
-		gtk_widget_show(color_vws->psfVectorBox);
+		make_gtk_psf_vector_menu(psf_gmenu->color_vws, psf_gmenu->psf_vector_menu);
+		set_gtk_psf_vector_menu(psf_gmenu->psf_vector_menu);
+	};
+	gtk_box_pack_start(GTK_BOX(psf_gmenu->psf_vbox), psf_gmenu->psf_vector_menu->vector_box,
+					   FALSE, TRUE, 0);
+	
+	gtk_widget_show_all(psf_gmenu->psf_vbox);
+	if(ncomp == 3){
+		gtk_widget_show(psf_gmenu->psf_vector_menu->vector_box);
 	} else {
-		gtk_widget_hide(color_vws->psfVectorBox);
+		gtk_widget_hide(psf_gmenu->psf_vector_menu->vector_box);
 	};
 	return;
 }

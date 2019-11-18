@@ -37,17 +37,21 @@
 struct main_buttons{
 	GtkWidget *vbox_menu;
 	struct view_widgets *view_menu;
-	struct colormap_view *color_vws;
 	struct lightparams_view *lightparams_vws;
 	struct kemoview_mesh_view *mesh_vws;
 	
 	GtkWidget *menuHbox;
 	
 	GtkWidget *BaseBox;
+
 	GtkWidget *psfBox;
+	struct psf_gtk_menu *psf_gmenu;
 	
 	GtkWidget *prefBox;
+	
 	GtkWidget *flineBox;
+	struct fieldline_gtk_menu *fline_menu;
+	
 	GtkWidget *meshBox;
 	
 	GtkWidget *viewBox;

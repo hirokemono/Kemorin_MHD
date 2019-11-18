@@ -26,7 +26,8 @@
 	#include "view_modifier_gtk.h"
 #endif
 
-struct gtk_psf_isoline_menu{
+struct psf_isoline_gtk_menu{
+	GtkWidget *isoline_box;
 	GtkWidget *switch_1, *switch_zero;
 	
 	GtkWidget *combobox_gdcolor;
@@ -40,8 +41,7 @@ struct gtk_psf_isoline_menu{
 
 
 /*  prototypes */
-void set_gtk_isoline_menu_values(struct gtk_psf_isoline_menu *gtk_psf_isoline);
-void add_gtk_isoline_menu(GtkWidget *window, struct gtk_psf_isoline_menu *gtk_psf_isoline,
-						  GtkWidget *box);
+void set_gtk_isoline_menu_values(struct psf_isoline_gtk_menu *psf_isoline_menu);
+void add_gtk_isoline_menu(GtkWidget *window, struct psf_isoline_gtk_menu *psf_isoline_menu);
 
 #endif

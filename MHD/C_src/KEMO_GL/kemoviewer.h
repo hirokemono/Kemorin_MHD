@@ -294,6 +294,7 @@
 #define WHITE_PSF_SURF      11
 #define TEXTURE_PSF_SURF    12
 #define SGL_COLOR_PSF_SURF  13
+#define CHANGE_PSF_COLOR    14
 
 #define RAINBOW_PSF_LINE    20
 #define BLACK_PSF_LINE      21
@@ -302,12 +303,8 @@
 #define PSF_OFF             30
 #define PSFVECT_TOGGLE      40
 #define PSFREFV_TOGGLE      41
-#define WHITE_PSF_VECT      42
-#define RAINBOW_PSF_VECT    43
 #define ISET_PSF_VEC_INC    44
 #define PSFTANVEC_TOGGLE    47
-#define WRITE_CMAP          50
-#define READ_CMAP           51
 
 #define ADD_PSF_COLOR       61
 #define MODIFY_PSF_COLOR    62

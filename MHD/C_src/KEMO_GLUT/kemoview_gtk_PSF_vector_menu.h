@@ -26,9 +26,23 @@
 	#include "view_modifier_gtk.h"
 #endif
 
+struct psf_vector_gtk_menu{
+	GtkWidget *vector_box;
+	
+	GtkWidget *switch_vect;
+	
+	GtkWidget *combobox_vecmode;
+	GtkWidget *combobox_veccolor;
+	
+	GtkWidget *spin_ref_vect, *spin_ref_digit;
+	GtkWidget *spin_vect_inc, *spin_inc_digit;
+	GtkWidget *spin_vect_width, *spin_width_digit;
+};
+
 
 /*  prototypes */
 
-void make_gtk_psf_vector_menu(struct colormap_view *color_vws);
+void set_gtk_psf_vector_menu(struct psf_vector_gtk_menu *psf_vector_menu);
+void make_gtk_psf_vector_menu(struct colormap_view *color_vws, struct psf_vector_gtk_menu *psf_vector_menu);
 
 #endif

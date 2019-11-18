@@ -105,10 +105,13 @@ void kemoview_main_window(struct kemoviewer_type *kemoviewer_data){
 	
 	mbot = (struct main_buttons *) malloc(sizeof(struct main_buttons));
 	mbot->view_menu = (struct view_widgets *) malloc(sizeof(struct view_widgets));
-	mbot->color_vws = (struct colormap_view *) malloc(sizeof(struct colormap_view));
 	mbot->mesh_vws = (struct kemoview_mesh_view *) malloc(sizeof(struct kemoview_mesh_view));
 	mbot->lightparams_vws = (struct lightparams_view *) malloc(sizeof(struct lightparams_view));
-    init_light_views_4_viewer(kemoviewer_data->kemo_shaders->lights, mbot->lightparams_vws);
+	mbot->fline_menu = (struct fieldline_gtk_menu *) malloc(sizeof(struct fieldline_gtk_menu));
+
+	mbot->psf_gmenu = alloc_psf_gtk_menu();
+
+	init_light_views_4_viewer(kemoviewer_data->kemo_shaders->lights, mbot->lightparams_vws);
 	
 	gtk_win = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	
@@ -242,9 +245,9 @@ int draw_mesh_kemo(int iflag_streo_shutter, int iflag_dmesh) {
 	glfwTerminate();
 	
 	dealloc_light_views_4_viewer(mbot->lightparams_vws);
+	dealloc_psf_gtk_menu(mbot->psf_gmenu);
 //	free(mbot->lightparams_vws);
 	free(mbot->mesh_vws);
-	free(mbot->color_vws);
 	free(mbot->view_menu);
 	free(mbot);
 	return 0;
