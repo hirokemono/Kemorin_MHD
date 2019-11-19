@@ -7,47 +7,20 @@
 
 #include "tree_view_4_viewer_mesh.h"
 
-void init_mesh_views_4_viewer(struct kemoview_mesh_view *mesh_vws){
+struct ci3_clist_view * init_domain_views_4_viewer(){
     int i;
 	char tmp_name[128];
-	struct kv_string *groupname;
 	
-    mesh_vws->domain_vws =  (struct ci3_clist_view *)  malloc(sizeof(struct ci3_clist_view));
-    mesh_vws->nod_grp_vws =  (struct ci_clist_view *)  malloc(sizeof(struct ci_clist_view));
-    mesh_vws->ele_grp_vws =  (struct ci3_clist_view *) malloc(sizeof(struct ci3_clist_view));
-    mesh_vws->surf_grp_vws = (struct ci3_clist_view *) malloc(sizeof(struct ci3_clist_view));
+	struct ci3_clist_view *domain_vws = (struct ci3_clist_view *)  malloc(sizeof(struct ci3_clist_view));
+	domain_vws->ci3_clist_gtk =  (struct chara_int3_clist *)  malloc(sizeof(struct chara_int3_clist));
 	
-    mesh_vws->domain_vws->ci3_clist_gtk =  (struct chara_int3_clist *)  malloc(sizeof(struct chara_int3_clist));
-    mesh_vws->nod_grp_vws->ci_clist_gtk =  (struct chara_int_clist *)  malloc(sizeof(struct chara_int_clist));
-    mesh_vws->ele_grp_vws->ci3_clist_gtk =  (struct chara_int3_clist *) malloc(sizeof(struct chara_int3_clist));
-    mesh_vws->surf_grp_vws->ci3_clist_gtk = (struct chara_int3_clist *) malloc(sizeof(struct chara_int3_clist));
+	init_chara_int3_clist(domain_vws->ci3_clist_gtk);
 	
-	init_chara_int3_clist(mesh_vws->domain_vws->ci3_clist_gtk);
-	init_chara_int_clist(mesh_vws->nod_grp_vws->ci_clist_gtk);
-	init_chara_int3_clist(mesh_vws->ele_grp_vws->ci3_clist_gtk);
-	init_chara_int3_clist(mesh_vws->surf_grp_vws->ci3_clist_gtk);
-	
-	sprintf(mesh_vws->domain_vws->ci3_clist_gtk->clist_name,"%s", "Domain Data");
-	sprintf(mesh_vws->domain_vws->ci3_clist_gtk->c1_name,"%s", "Name");
-	sprintf(mesh_vws->domain_vws->ci3_clist_gtk->i1_name,"%s", "Patch");
-	sprintf(mesh_vws->domain_vws->ci3_clist_gtk->i2_name,"%s", "Grid");
-	sprintf(mesh_vws->domain_vws->ci3_clist_gtk->i3_name,"%s", "Node");
-	
-	sprintf(mesh_vws->nod_grp_vws->ci_clist_gtk->clist_name,"%s", "Node group");
-	sprintf(mesh_vws->nod_grp_vws->ci_clist_gtk->c1_name,"%s", "Name");
-	sprintf(mesh_vws->nod_grp_vws->ci_clist_gtk->i1_name,"%s", "Node");
-	
-	sprintf(mesh_vws->ele_grp_vws->ci3_clist_gtk->clist_name,"%s", "Element group");
-	sprintf(mesh_vws->ele_grp_vws->ci3_clist_gtk->c1_name,"%s", "Name");
-	sprintf(mesh_vws->ele_grp_vws->ci3_clist_gtk->i1_name,"%s", "Patch");
-	sprintf(mesh_vws->ele_grp_vws->ci3_clist_gtk->i2_name,"%s", "Grid");
-	sprintf(mesh_vws->ele_grp_vws->ci3_clist_gtk->i3_name,"%s", "Node");
-	
-	sprintf(mesh_vws->surf_grp_vws->ci3_clist_gtk->clist_name,"%s", "Surface group");
-	sprintf(mesh_vws->surf_grp_vws->ci3_clist_gtk->c1_name,"%s", "Name");
-	sprintf(mesh_vws->surf_grp_vws->ci3_clist_gtk->i1_name,"%s", "Patch");
-	sprintf(mesh_vws->surf_grp_vws->ci3_clist_gtk->i2_name,"%s", "Grid");
-	sprintf(mesh_vws->surf_grp_vws->ci3_clist_gtk->i3_name,"%s", "Node");
+	sprintf(domain_vws->ci3_clist_gtk->clist_name,"%s", "Domain Data");
+	sprintf(domain_vws->ci3_clist_gtk->c1_name,"%s", "Name");
+	sprintf(domain_vws->ci3_clist_gtk->i1_name,"%s", "Patch");
+	sprintf(domain_vws->ci3_clist_gtk->i2_name,"%s", "Grid");
+	sprintf(domain_vws->ci3_clist_gtk->i3_name,"%s", "Node");
 	
 	for(i=0;i<kemoview_get_num_of_mesh_group(DOMAIN_FLAG);i++){
 		sprintf(tmp_name, "Domain %d", i);
@@ -55,16 +28,50 @@ void init_mesh_views_4_viewer(struct kemoview_mesh_view *mesh_vws){
 					kemoview_get_draw_mesh_item(DOMAIN_FLAG, SURFSOLID_TOGGLE, i), 
 					kemoview_get_draw_mesh_item(DOMAIN_FLAG, SURFGRID_TOGGLE, i), 
 					kemoview_get_draw_mesh_item(DOMAIN_FLAG, SURFNOD_TOGGLE, i), 
-					mesh_vws->domain_vws->ci3_clist_gtk);
+					domain_vws->ci3_clist_gtk);
 	};
+	return domain_vws;
+}
+
+struct ci_clist_view * init_node_group_views(){
+    int i;
+	struct kv_string *groupname;
+	
+    struct ci_clist_view *nod_grp_vws =  (struct ci_clist_view *)  malloc(sizeof(struct ci_clist_view));
+    nod_grp_vws->ci_clist_gtk =  (struct chara_int_clist *)  malloc(sizeof(struct chara_int_clist));
+	
+	init_chara_int_clist(nod_grp_vws->ci_clist_gtk);
+	
+	sprintf(nod_grp_vws->ci_clist_gtk->clist_name,"%s", "Node group");
+	sprintf(nod_grp_vws->ci_clist_gtk->c1_name,"%s", "Name");
+	sprintf(nod_grp_vws->ci_clist_gtk->i1_name,"%s", "Node");
+	
 	for(i=0;i<kemoview_get_num_of_mesh_group(NODE_GRP_FLAG);i++){
         groupname = kemoview_alloc_kvstring();
 		kemoview_get_node_grp_name(groupname, i);
-		append_chara_int_clist(groupname, 
+		append_chara_int_clist(groupname->string, 
 					kemoview_get_draw_mesh_item(NODE_GRP_FLAG, SURFSOLID_TOGGLE, i),
-					mesh_vws->nod_grp_vws->ci_clist_gtk);
+					nod_grp_vws->ci_clist_gtk);
         kemoview_free_kvstring(groupname);
 	};
+	return nod_grp_vws;
+}
+
+struct ci3_clist_view * init_ele_group_views(){
+    int i;
+	struct kv_string *groupname;
+	
+    struct ci3_clist_view *ele_grp_vws =  (struct ci3_clist_view *) malloc(sizeof(struct ci3_clist_view));
+    ele_grp_vws->ci3_clist_gtk =  (struct chara_int3_clist *) malloc(sizeof(struct chara_int3_clist));
+	
+	init_chara_int3_clist(ele_grp_vws->ci3_clist_gtk);
+	
+	sprintf(ele_grp_vws->ci3_clist_gtk->clist_name,"%s", "Element group");
+	sprintf(ele_grp_vws->ci3_clist_gtk->c1_name,"%s", "Name");
+	sprintf(ele_grp_vws->ci3_clist_gtk->i1_name,"%s", "Patch");
+	sprintf(ele_grp_vws->ci3_clist_gtk->i2_name,"%s", "Grid");
+	sprintf(ele_grp_vws->ci3_clist_gtk->i3_name,"%s", "Node");
+	
 	for(i=0;i<kemoview_get_num_of_mesh_group(ELEM_GRP_FLAG);i++){
         groupname = kemoview_alloc_kvstring();
 		kemoview_get_ele_grp_name(groupname, i);
@@ -72,9 +79,27 @@ void init_mesh_views_4_viewer(struct kemoview_mesh_view *mesh_vws){
 					kemoview_get_draw_mesh_item(ELEM_GRP_FLAG, SURFSOLID_TOGGLE, i), 
 					kemoview_get_draw_mesh_item(ELEM_GRP_FLAG, SURFGRID_TOGGLE, i), 
 					kemoview_get_draw_mesh_item(ELEM_GRP_FLAG, SURFNOD_TOGGLE, i), 
-					mesh_vws->ele_grp_vws->ci3_clist_gtk);
+					ele_grp_vws->ci3_clist_gtk);
         kemoview_free_kvstring(groupname);
 	};
+	return ele_grp_vws;
+}
+
+struct ci3_clist_view * init_surface_group_views(){
+    int i;
+	struct kv_string *groupname;
+	
+	struct  ci3_clist_view *surf_grp_vws = (struct ci3_clist_view *) malloc(sizeof(struct ci3_clist_view));
+	surf_grp_vws->ci3_clist_gtk = (struct chara_int3_clist *) malloc(sizeof(struct chara_int3_clist));
+	
+	init_chara_int3_clist(surf_grp_vws->ci3_clist_gtk);
+	
+	sprintf(surf_grp_vws->ci3_clist_gtk->clist_name,"%s", "Surface group");
+	sprintf(surf_grp_vws->ci3_clist_gtk->c1_name,"%s", "Name");
+	sprintf(surf_grp_vws->ci3_clist_gtk->i1_name,"%s", "Patch");
+	sprintf(surf_grp_vws->ci3_clist_gtk->i2_name,"%s", "Grid");
+	sprintf(surf_grp_vws->ci3_clist_gtk->i3_name,"%s", "Node");
+	
 	for(i=0;i<kemoview_get_num_of_mesh_group(SURF_GRP_FLAG);i++){
         groupname = kemoview_alloc_kvstring();
 		kemoview_get_surf_grp_name(groupname, i);
@@ -82,28 +107,48 @@ void init_mesh_views_4_viewer(struct kemoview_mesh_view *mesh_vws){
 					kemoview_get_draw_mesh_item(SURF_GRP_FLAG, SURFSOLID_TOGGLE, i), 
 					kemoview_get_draw_mesh_item(SURF_GRP_FLAG, SURFGRID_TOGGLE, i), 
 					kemoview_get_draw_mesh_item(SURF_GRP_FLAG, SURFNOD_TOGGLE, i), 
-					mesh_vws->surf_grp_vws->ci3_clist_gtk);
+					surf_grp_vws->ci3_clist_gtk);
         kemoview_free_kvstring(groupname);
 	};
+	return surf_grp_vws;
+}
+
+void dealloc_group_views_4_viewer(struct ci3_clist_view *domain_vws){
+	clear_chara_int3_clist(domain_vws->ci3_clist_gtk);
+	free(domain_vws->ci3_clist_gtk);
+	free(domain_vws);
+    return;
+}
+void dealloc_nod_grp_views_4_viewer(struct ci_clist_view *nod_grp_vws){
+	clear_chara_int_clist(nod_grp_vws->ci_clist_gtk);
+	free(nod_grp_vws->ci_clist_gtk);
+	free(nod_grp_vws);
+    return;
+}
+
+void init_mesh_views_4_viewer(struct kemoview_mesh_view *mesh_vws){
+	mesh_vws->domain_group_gmenu = (struct group_gtk_menu *) malloc(sizeof(struct group_gtk_menu));
+	mesh_vws->node_group_gmenu = (struct nod_grp_gtk_menu *) malloc(sizeof(struct nod_grp_gtk_menu));
+	mesh_vws->ele_group_gmenu = (struct group_gtk_menu *) malloc(sizeof(struct group_gtk_menu));
+	mesh_vws->surf_group_gmenu = (struct group_gtk_menu *) malloc(sizeof(struct group_gtk_menu));
+
+	mesh_vws->domain_group_gmenu->group_vws = init_domain_views_4_viewer();
+	mesh_vws->node_group_gmenu->nod_grp_vws = init_node_group_views();
+	mesh_vws->ele_group_gmenu->group_vws = init_ele_group_views();
+	mesh_vws->surf_group_gmenu->group_vws = init_surface_group_views();
 	return;
 }
 
-
 void dealloc_mesh_views_4_viewer(struct kemoview_mesh_view *mesh_vws){
-	clear_chara_int3_clist(mesh_vws->surf_grp_vws->ci3_clist_gtk);
-	clear_chara_int3_clist(mesh_vws->ele_grp_vws->ci3_clist_gtk);
-	clear_chara_int_clist(mesh_vws->nod_grp_vws->ci_clist_gtk);
-	clear_chara_int3_clist(mesh_vws->domain_vws->ci3_clist_gtk);
+	dealloc_group_views_4_viewer(mesh_vws->surf_group_gmenu->group_vws);
+	dealloc_group_views_4_viewer(mesh_vws->ele_group_gmenu->group_vws);
+	dealloc_nod_grp_views_4_viewer(mesh_vws->node_group_gmenu->nod_grp_vws);
+	dealloc_group_views_4_viewer(mesh_vws->domain_group_gmenu->group_vws);
 	
-	free(mesh_vws->surf_grp_vws->ci3_clist_gtk);
-	free(mesh_vws->ele_grp_vws->ci3_clist_gtk);
-	free(mesh_vws->nod_grp_vws->ci_clist_gtk);
-	free(mesh_vws->domain_vws->ci3_clist_gtk);
-	
-	free(mesh_vws->surf_grp_vws);
-	free(mesh_vws->ele_grp_vws);
-	free(mesh_vws->nod_grp_vws);
-	free(mesh_vws->domain_vws);
+	free(mesh_vws->domain_group_gmenu);
+	free(mesh_vws->node_group_gmenu);
+	free(mesh_vws->ele_group_gmenu);
+	free(mesh_vws->surf_group_gmenu);
     return;
 }
 
@@ -162,7 +207,7 @@ int toggle_draw_patch_switch(gchar *path_str, gpointer user_data,
     gtk_tree_model_get_iter(child_model, &iter, child_path);  
     gtk_tree_model_get(child_model, &iter, COLUMN_MESH_INDEX, &index, -1);
     gtk_tree_model_get(child_model, &iter, COLUMN_MESH_NAME,  &row_string, -1);
-    gtk_tree_model_get(child_model, &iter, COLUMN_MESH_THIRD,  index1_for_toggle, -1);
+    gtk_tree_model_get(child_model, &iter, COLUMN_MESH_THIRD, index1_for_toggle, -1);
 	gtk_tree_model_get(child_model, &iter, COLUMN_MESH_FORTH, &index2_for_toggle, -1);
 	gtk_tree_model_get(child_model, &iter, COLUMN_MESH_FIFTH, &index3_for_toggle, -1);
     

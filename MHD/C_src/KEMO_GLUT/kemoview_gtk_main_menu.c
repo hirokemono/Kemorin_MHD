@@ -514,11 +514,11 @@ void gtk_mesh_menu_box(struct main_buttons *mbot, GtkWidget *window){
 	g_signal_connect(G_OBJECT(closeMeshButton), "clicked", 
 				G_CALLBACK(close_mesh_CB), (gpointer) entry_file);
 	
-	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-	gtk_box_pack_start(GTK_BOX(vbox), closeMeshButton, FALSE, FALSE, 0);
-	add_gtk_mesh_menu(mbot->mesh_vws, window, vbox);
+	mbot->mesh_vws->box_out = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+	gtk_box_pack_start(GTK_BOX(mbot->mesh_vws->box_out), closeMeshButton, FALSE, FALSE, 0);
+	add_gtk_mesh_menu(window, mbot->mesh_vws);
 	
-	wrap_into_frame_gtk("Mesh", vbox, mbot->meshBox);
+	wrap_into_frame_gtk("Mesh", mbot->mesh_vws->box_out, mbot->meshBox);
 	
 	return;
 }

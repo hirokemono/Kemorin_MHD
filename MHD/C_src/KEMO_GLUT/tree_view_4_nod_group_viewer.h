@@ -24,15 +24,9 @@
 	#include "view_modifier_gtk.h"
 #endif
 
-struct gtk_nod_grp_menu{
-	GtkWidget *combobox_node_color;
-	GtkWidget *button_node_color;
-	GdkRGBA gcolor;
-};
-
 /* prototypes */
 
-void add_nod_group_draw_box(struct ci_clist_view *nod_grp_vws, GtkWidget *window_mesh, 
-			struct gtk_nod_grp_menu *gtk_node_group, GtkWidget *vbox);
+void set_nod_group_draw_box(struct nod_grp_gtk_menu *node_group_gmenu);
+void add_nod_group_draw_box(GtkWidget *window_mesh, struct nod_grp_gtk_menu *node_group_gmenu);
 
 #endif /* tree_view_4_nod_group_viewer */

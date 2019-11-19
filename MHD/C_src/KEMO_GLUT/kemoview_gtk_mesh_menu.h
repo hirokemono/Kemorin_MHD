@@ -31,6 +31,5 @@
 
 /*  prototypes */
 
-void add_gtk_mesh_menu(struct kemoview_mesh_view *mesh_vws, 
-					   GtkWidget *window, GtkWidget *box_out);
+void add_gtk_mesh_menu(GtkWidget *window, struct kemoview_mesh_view *mesh_vws);
 #endif

@@ -26,8 +26,7 @@
 
 /* prototypes */
 
-void set_surf_group_draw_box(struct gtk_group_menu *gtk_surf_group);
-void add_surf_group_draw_box(struct ci3_clist_view *surf_grp_vws, GtkWidget *window_mesh,
-							 struct gtk_group_menu *gtk_surf_group, GtkWidget *vbox);
+void set_surf_group_draw_box(struct group_gtk_menu *surf_group_gmenu);
+void add_surf_group_draw_box(GtkWidget *window_mesh, struct group_gtk_menu *surf_group_gmenu);
 
 #endif /* tree_view_4_surf_group_viewer */
