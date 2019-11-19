@@ -478,6 +478,8 @@ void add_surf_group_draw_box(GtkWidget *window_mesh, struct group_gtk_menu *surf
     g_signal_connect(G_OBJECT(surf_group_gmenu->button_node_color), "clicked", 
 				G_CALLBACK(set_single_surf_grp_nodes_color_CB), (gpointer) window_mesh);
 	
+	set_surf_group_draw_box(surf_group_gmenu);	
+	
 	Frame = gtk_frame_new("");
 	gtk_frame_set_shadow_type(GTK_FRAME(Frame), GTK_SHADOW_IN);
 	gtk_container_add(GTK_CONTAINER(Frame), vbox_table);

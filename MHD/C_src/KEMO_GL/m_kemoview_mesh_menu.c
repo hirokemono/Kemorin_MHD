@@ -81,6 +81,13 @@ void dealloc_draw_mesh_flags(struct mesh_menu_val *mesh_m){
 	return;
 }
 
+static void init_single_color(float init_color[4]){
+	init_color[0] = 0.3;
+	init_color[1] = 0.8;
+	init_color[2] = 0.8;
+	init_color[3] = 1.0;
+	return;
+}
 
 void init_viewer_parameters(struct mesh_menu_val *mesh_m){
 	mesh_m->draw_surface_solid = INIT_DRAW_SOLID;
@@ -117,6 +124,20 @@ void init_viewer_parameters(struct mesh_menu_val *mesh_m){
 	mesh_m->iflag_draw_coast =     OFF;
 	mesh_m->iflag_draw_sph_grid =  OFF;
 	mesh_m->radius_coast =         ONE;
+	
+	init_single_color(mesh_m->domain_surface_color_code);
+	init_single_color(mesh_m->domain_grid_color_code);
+	init_single_color(mesh_m->surf_surface_color_code);
+
+	init_single_color(mesh_m->node_node_color_code);
+
+	init_single_color(mesh_m->ele_surface_color_code);
+	init_single_color(mesh_m->ele_grid_color_code);
+	init_single_color(mesh_m->surf_grid_color_code);
+
+	init_single_color(mesh_m->domain_surface_color_code);
+	init_single_color(mesh_m->domain_surface_color_code);
+	init_single_color(mesh_m->surf_node_color_code);
 	return;
 };
 

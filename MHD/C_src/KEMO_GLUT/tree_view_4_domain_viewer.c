@@ -275,7 +275,6 @@ static void create_domain_group_view(struct ci3_clist_view *domain_vws)
 void set_domain_draw_box(struct group_gtk_menu *domain_group_gmenu){
 	int iflag_color;
 	float color4[4];
-	
 	iflag_color = kemoview_get_mesh_color_flag(DOMAIN_FLAG, SURFSOLID_TOGGLE);
 	if(iflag_color == GROUP_COLOR){
 		gtk_combo_box_set_active(GTK_COMBO_BOX(domain_group_gmenu->combobox_patch_color), 3);
@@ -314,8 +313,7 @@ void set_domain_draw_box(struct group_gtk_menu *domain_group_gmenu){
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(domain_group_gmenu->spin_opacity), (double) color4[3]);
 	gtk_color_chooser_set_rgba(GTK_COLOR_CHOOSER(domain_group_gmenu->button_patch_color),
 							   &domain_group_gmenu->gcolor);
-	
-	
+
 	kemoview_get_mesh_color_code(DOMAIN_FLAG, SURFGRID_TOGGLE, color4);
 	set_color_to_GTK(color4, &domain_group_gmenu->gcolor);
 	gtk_color_chooser_set_rgba(GTK_COLOR_CHOOSER(domain_group_gmenu->button_grid_color),
@@ -473,6 +471,8 @@ void add_domain_draw_box(GtkWidget *window_mesh, struct group_gtk_menu *domain_g
     g_signal_connect(G_OBJECT(domain_group_gmenu->button_node_color), "clicked", 
 				G_CALLBACK(set_single_domain_nodes_color_CB), (gpointer) window_mesh);
 	
+	set_domain_draw_box(domain_group_gmenu);
+
 	Frame = gtk_frame_new("");
 	gtk_frame_set_shadow_type(GTK_FRAME(Frame), GTK_SHADOW_IN);
 	gtk_container_add(GTK_CONTAINER(Frame), vbox_table);

@@ -317,7 +317,7 @@ void kemoview_set_mesh_opacity(int iflag_group, double opacity_in){
 };
 
 double kemoview_get_mesh_opacity(int iflag_group){
-	return get_mesh_opacity(iflag_group, kemo_sgl->kemo_mesh);
+	return get_mesh_opacity(kemo_sgl->kemo_mesh, iflag_group);
 };
 
 int kemoview_get_draw_mesh_flag(void){return kemo_sgl->kemo_mesh->mesh_m->iflag_draw_mesh;};

@@ -77,7 +77,6 @@ void dealloc_psf_gtk_menu(struct psf_gtk_menu *psf_gmenu){
 	free(psf_gmenu->psf_color_menu);
 	free(psf_gmenu->psf_vector_menu);
 	
-	dealloc_colormap_views_4_viewer(psf_gmenu->color_vws);
 	free(psf_gmenu->color_vws);
 	
 	free(psf_gmenu);

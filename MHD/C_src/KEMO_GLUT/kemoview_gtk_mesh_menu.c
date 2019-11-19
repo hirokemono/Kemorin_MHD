@@ -130,11 +130,11 @@ void add_gtk_mesh_menu(GtkWidget *window, struct kemoview_mesh_view *mesh_vws){
 	
 	
 	hbox_distance = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
-	gtk_box_pack_start(GTK_BOX(hbox_distance), gtk_label_new("Subdomain distance: "), TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_distance), gtk_label_new("Subdomain distance: "), FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_distance), spin_dist, TRUE, TRUE, 0);
 	
 	hbox_node_size = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
-	gtk_box_pack_start(GTK_BOX(hbox_node_size), gtk_label_new("Node size: "), TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_node_size), gtk_label_new("Node size: "), FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_node_size), spin_node_size, TRUE, TRUE, 0);
 	
 	hbox_color_mode = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
@@ -142,15 +142,15 @@ void add_gtk_mesh_menu(GtkWidget *window, struct kemoview_mesh_view *mesh_vws){
 	gtk_box_pack_start(GTK_BOX(hbox_color_mode), combobox_color_mode, FALSE, FALSE, 0);
 	
 	hbox_num_loop = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
-	gtk_box_pack_start(GTK_BOX(hbox_num_loop), gtk_label_new("# of color loop: "), TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_num_loop), gtk_label_new("Number of color loop: "), FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_num_loop), spin_num_loop, TRUE, TRUE, 0);
 	
 	gtk_container_add(GTK_CONTAINER(window), mesh_vws->box_out);
 	
-	gtk_box_pack_start(GTK_BOX(mesh_vws->box_out), hbox_distance, TRUE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(mesh_vws->box_out), hbox_node_size, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(mesh_vws->box_out), hbox_distance, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(mesh_vws->box_out), hbox_node_size, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(mesh_vws->box_out), hbox_color_mode, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(mesh_vws->box_out), hbox_num_loop, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(mesh_vws->box_out), hbox_num_loop, FALSE, FALSE, 0);
 	
 	mesh_vws->domain_group_gmenu->box_grp = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
 	add_domain_draw_box(window, mesh_vws->domain_group_gmenu);
@@ -168,9 +168,5 @@ void add_gtk_mesh_menu(GtkWidget *window, struct kemoview_mesh_view *mesh_vws){
 	add_surf_group_draw_box(window, mesh_vws->surf_group_gmenu);
 	wrap_into_expanded_frame_gtk("Surface group", 400, 300, mesh_vws->surf_group_gmenu->box_grp, mesh_vws->box_out);
 
-	set_domain_draw_box(mesh_vws->domain_group_gmenu);
-	set_nod_group_draw_box(mesh_vws->node_group_gmenu);
-	set_ele_group_draw_box(mesh_vws->ele_group_gmenu);
-	set_surf_group_draw_box(mesh_vws->surf_group_gmenu);
 	return;
 }
