@@ -72,6 +72,11 @@ struct kemoview_mesh_view{
 	struct group_gtk_menu *surf_group_gmenu;
 	
 	GtkWidget *box_out;
+	
+	GtkWidget *spin_dist;
+	GtkWidget *spin_node_size, *spin_node_digit;
+	GtkWidget *spin_num_loop;
+	GtkWidget *combobox_color_mode;
 };
 
 /* prototypes */

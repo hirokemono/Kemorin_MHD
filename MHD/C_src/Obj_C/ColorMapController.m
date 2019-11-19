@@ -172,11 +172,11 @@
 {
     int i;
     CGFloat rgbaBG[4];
-    GLfloat glrgbaBG[4];
+    float glrgbaBG[4];
 	
 	nsBackgroundColor = [backgroundColorWell color];
 	[nsBackgroundColor getRed:&rgbaBG[0] green:&rgbaBG[1] blue:&rgbaBG[2] alpha:&rgbaBG[3] ];
-    for (i=0; i<3; i++) glrgbaBG[i] = (GLfloat) rgbaBG[i];
+    for (i=0; i<3; i++) glrgbaBG[i] = (float) rgbaBG[i];
 	glrgbaBG[3] = ONE;
 
 	kemoview_set_background_color(glrgbaBG);

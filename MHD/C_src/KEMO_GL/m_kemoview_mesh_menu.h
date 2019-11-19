@@ -80,21 +80,21 @@ struct mesh_menu_val{
 	double ele_grp_opacity;
 	double surf_grp_opacity;
 	
-	GLfloat bg_color[4];
-	GLfloat text_color[4];
+	float bg_color[4];
+	float text_color[4];
 	
-	GLfloat domain_surface_color_code[4];
-	GLfloat ele_surface_color_code[4];
-	GLfloat surf_surface_color_code[4];
+	float domain_surface_color_code[4];
+	float ele_surface_color_code[4];
+	float surf_surface_color_code[4];
 	
-	GLfloat domain_grid_color_code[4];
-	GLfloat ele_grid_color_code[4];
-	GLfloat surf_grid_color_code[4];
+	float domain_grid_color_code[4];
+	float ele_grid_color_code[4];
+	float surf_grid_color_code[4];
 	
-	GLfloat domain_node_color_code[4];
-	GLfloat node_node_color_code[4];
-	GLfloat ele_node_color_code[4];
-	GLfloat surf_node_color_code[4];
+	float domain_node_color_code[4];
+	float node_node_color_code[4];
+	float ele_node_color_code[4];
+	float surf_node_color_code[4];
 };
 
 /* Prototypes */
@@ -107,7 +107,10 @@ void init_viewer_parameters(struct mesh_menu_val *mesh_m);
 
 void set_mesh_color_mode(int icolor, struct mesh_menu_val *mesh_m);
 void set_num_of_color_loop(int icolor, struct mesh_menu_val *mesh_m);
-void set_node_diamater(double diam, struct mesh_menu_val *mesh_m);
+
+void set_node_diamater(double factor, int i_digit, struct mesh_menu_val *mesh_m);
+void get_node_diamater(struct mesh_menu_val *mesh_m, double *factor, int *i_digit);
+
 void set_domain_distance(double dist, struct mesh_menu_val *mesh_m);
 
 

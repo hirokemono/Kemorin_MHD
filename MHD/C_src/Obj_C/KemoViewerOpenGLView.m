@@ -442,7 +442,7 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 // called after context is created
 - (void) prepareKemoOpenGL
 {
-	GLfloat BgColor4f[4];
+	float BgColor4f[4];
 
 	static const NSOpenGLPixelFormatAttribute attr[]= {
 			NSOpenGLPFAOpenGLProfile, NSOpenGLProfileVersion3_2Core,

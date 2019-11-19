@@ -501,8 +501,8 @@ extern "C" {
 	void kemoview_message_viewmatrix(void);
 	
     void kemoview_init_background_color(void);
-    void kemoview_set_background_color(GLfloat color[4]);
-    void kemoview_get_background_color(GLfloat color[4]);
+    void kemoview_set_background_color(float color[4]);
+    void kemoview_get_background_color(float color[4]);
     
     void kemoview_viewer_evolution(int istep);
     
@@ -554,8 +554,10 @@ extern "C" {
     void kemoview_set_mesh_color_mode(int icolor);
     void kemoview_set_num_of_color_loop(int icolor);
     
-    void kemoview_set_node_diamater(double diam);
-    void kemoview_set_domain_distance(double dist);
+    void kemoview_set_node_diamater(double factor, int i_digit);
+	void kemoview_get_node_diamater(double *factor, int *i_digit);
+
+	void kemoview_set_domain_distance(double dist);
     
 	void kemoview_set_mesh_color_flag(int iflag_group, int selected, int icolor);
 	int kemoview_get_mesh_color_flag(int iflag_group, int selected);
@@ -586,9 +588,7 @@ extern "C" {
 	int kemoview_get_mesh_color_mode(void);
 	int kemoview_get_num_of_color_loop(void);
     
-    
-    double kemoview_get_node_diamater(void);
-    double kemoview_get_domain_distance(void);
+	double kemoview_get_domain_distance(void);
     
     
     void kemoview_get_ext_from_file_name(struct kv_string *filename,

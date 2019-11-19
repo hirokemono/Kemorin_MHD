@@ -32,7 +32,6 @@
 	CGFloat ColorLoopCount;
 	CGFloat NodeSizeFactor;
 	CGFloat NodeSizedigits;
-	CGFloat NodeDiameter;
 
 	// Viewer type handling
 	IBOutlet id _viewtypeItem;

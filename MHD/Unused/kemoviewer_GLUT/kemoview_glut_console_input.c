@@ -328,7 +328,7 @@ void set_coastline_radius_console(){
 };
 
 void set_background_color_console(){
-    GLfloat color[4];
+    float color[4];
     float red, green, blue;
     char buf[1024];
 
@@ -339,9 +339,9 @@ void set_background_color_console(){
     sscanf(buf,"%f %f %f", &red, &green, &blue);
     printf("New background Color (R,G,B): %.7e %.7e %.7e \n", red, green, blue);
     
-    color[0] = (GLfloat) red;
-    color[1] = (GLfloat) green;
-    color[2] = (GLfloat) blue;
+    color[0] = (float) red;
+    color[1] = (float) green;
+    color[2] = (float) blue;
 
     
     draw_mesh_keep_menu();

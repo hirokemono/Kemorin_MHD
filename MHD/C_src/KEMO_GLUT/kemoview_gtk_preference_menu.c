@@ -73,8 +73,8 @@ void add_GTK_preference_box(struct lightparams_view *lightparams_vws, struct gtk
 	GtkAdjustment *adj1, *adj2, *adj3, *adj4;
 	
 	float current_value = 0.0;
+	float color[4];
 	
-    GLfloat color[4];
 	kemoview_get_background_color(color);
 	
 	/* Set buttons   */

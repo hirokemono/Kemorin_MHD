@@ -497,8 +497,6 @@ void gtk_fieldline_menu_box(struct main_buttons *mbot, GtkWidget *window){
 }
 
 void gtk_mesh_menu_box(struct main_buttons *mbot, GtkWidget *window){
-	GtkWidget *vbox;
-	
 	GtkWidget *entry_file;
 	GtkWidget *closeMeshButton;
 	

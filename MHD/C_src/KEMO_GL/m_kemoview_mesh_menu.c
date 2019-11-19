@@ -145,7 +145,13 @@ void init_viewer_parameters(struct mesh_menu_val *mesh_m){
 void set_mesh_color_mode(int icolor, struct mesh_menu_val *mesh_m)  {mesh_m->mesh_color_mode = icolor;};
 void set_num_of_color_loop(int icolor, struct mesh_menu_val *mesh_m){mesh_m->num_of_color_loop = icolor;};
 
-void set_node_diamater(double diam, struct mesh_menu_val *mesh_m)  {mesh_m->node_diam = diam;};
+void set_node_diamater(double factor, int i_digit, struct mesh_menu_val *mesh_m){
+	mesh_m->node_diam = const_from_digit_order(factor, i_digit);
+};
+void get_node_diamater(struct mesh_menu_val *mesh_m, double *factor, int *i_digit){
+	find_order_digit(mesh_m->node_diam, factor, i_digit);
+}
+
 void set_domain_distance(double dist, struct mesh_menu_val *mesh_m){mesh_m->dist_domains = dist;};
 
 

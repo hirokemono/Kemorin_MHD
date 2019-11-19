@@ -116,8 +116,8 @@
 !    void kemoview_init_lighting();
 !    
 !    void kemoview_init_background_color();
-!    void kemoview_set_background_color(GLfloat color[4]);
-!    void kemoview_get_background_color(GLfloat color[4]);
+!    void kemoview_set_background_color(float color[4]);
+!    void kemoview_get_background_color(float color[4]);
 !    
 !    void kemoview_viewer_evolution(int istep);
 !    
@@ -147,7 +147,9 @@
 !    void kemoview_set_mesh_color_mode(int icolor);
 !    void kemoview_set_num_of_color_loop(int icolor);
 !    
-!    void kemoview_set_node_diamater(double diam);
+!    void kemoview_set_node_diamater(double factor, int i_digit);
+!    void kemoview_get_node_diamater(double *factor, int *i_digit);
+!
 !    void kemoview_set_domain_distance(double dist);
 !    
 !    
@@ -178,8 +180,6 @@
 !    
 !    int kemoview_get_num_of_color_loop();
 !    
-!    
-!    double kemoview_get_node_diamater();
 !    double kemoview_get_domain_distance();
 !    
 !    

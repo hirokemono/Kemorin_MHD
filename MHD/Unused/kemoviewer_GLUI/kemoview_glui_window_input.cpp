@@ -254,11 +254,11 @@ static void input_coast_radius_from_panel(int val){
 }
 
 static void update_BGcolor_glui(int val){
-    GLfloat color[4];
-    color[0] = (GLfloat) red;
-    color[1] = (GLfloat) green;
-    color[2] = (GLfloat) blue;
-    color[3] = (GLfloat) alpha;
+    float color[4];
+    color[0] = (float) red;
+    color[1] = (float) green;
+    color[2] = (float) blue;
+    color[3] = (float) alpha;
 	
 	draw_mesh_keep_menu();
     kemoview_set_background_color(color);
@@ -465,7 +465,7 @@ void set_coastline_radius_glui(int winid){
 }
 
 void set_background_color_glui(int winid){
-    GLfloat color[4];
+    float color[4];
     char buf[1024];
 	
     kemoview_get_background_color(color);

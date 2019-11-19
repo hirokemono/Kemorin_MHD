@@ -295,7 +295,7 @@ void set_black_color_c(double *f_color){
 	return;
 };
 
-void copy_rgba_color_c(GLfloat input_color4[4], GLfloat copy_color4[4]){
+void copy_rgba_color_c(float input_color4[4], float copy_color4[4]){
 	int i;
 	for(i=0;i<4;i++) copy_color4[i] = input_color4[i];
 	return;

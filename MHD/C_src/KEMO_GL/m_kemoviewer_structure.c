@@ -124,11 +124,11 @@ void kemoview_init_lighting(){
 }
 
 void kemoview_init_background_color(void){init_bg_color_kemoview(kemo_sgl->kemo_mesh->mesh_m);}
-void kemoview_set_background_color(GLfloat color[4]) {
+void kemoview_set_background_color(float color[4]) {
     copy_rgba_color_c(color, kemo_sgl->kemo_mesh->mesh_m->bg_color);
     set_bg_color_kemoview(kemo_sgl->kemo_mesh->mesh_m);
 };
-void kemoview_get_background_color(GLfloat color[4]){copy_rgba_color_c(kemo_sgl->kemo_mesh->mesh_m->bg_color, color);};
+void kemoview_get_background_color(float color[4]){copy_rgba_color_c(kemo_sgl->kemo_mesh->mesh_m->bg_color, color);};
 
 
 /* Routines for menu selection */
@@ -288,9 +288,13 @@ void kemoview_set_num_of_color_loop(int icolor){
 	set_num_of_color_loop(icolor, kemo_sgl->kemo_mesh->mesh_m);
 };
 
-void kemoview_set_node_diamater(double diam)   {
-	set_node_diamater(diam, kemo_sgl->kemo_mesh->mesh_m);
+void kemoview_set_node_diamater(double factor, int i_digit){
+	set_node_diamater(factor, i_digit, kemo_sgl->kemo_mesh->mesh_m);
 };
+void kemoview_get_node_diamater(double *factor, int *i_digit){
+	get_node_diamater(kemo_sgl->kemo_mesh->mesh_m, factor, i_digit);	
+};
+
 void kemoview_set_domain_distance(double dist){
 	set_domain_distance(dist, kemo_sgl->kemo_mesh->mesh_m);
 };
@@ -366,7 +370,6 @@ int kemoview_get_view_type_flag(void){return kemo_sgl->view_s->iflag_view_type;}
 int kemoview_get_mesh_color_mode(void){return kemo_sgl->kemo_mesh->mesh_m->mesh_color_mode;};
 int kemoview_get_num_of_color_loop(void){return kemo_sgl->kemo_mesh->mesh_m->num_of_color_loop;};
 
-double kemoview_get_node_diamater(void)   {return kemo_sgl->kemo_mesh->mesh_m->node_diam;};
 double kemoview_get_domain_distance(void){return kemo_sgl->kemo_mesh->mesh_m->dist_domains;};
 
 

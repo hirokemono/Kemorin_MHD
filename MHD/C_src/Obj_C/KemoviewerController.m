@@ -140,21 +140,7 @@
 }
 
 - (IBAction) ShowNodeSizeValue:(id)pSender {
-	int IntNodeSizeFactor, IntNodeSizedigit;
-	int i;
-	
-	IntNodeSizeFactor = (int) NodeSizeFactor;
-	IntNodeSizedigit = (int) NodeSizedigits;
-
-	NodeDiameter = (double) IntNodeSizeFactor;
-	if(IntNodeSizedigit < 0){
-		for(i=0;i< (-IntNodeSizedigit);i++) NodeDiameter = NodeDiameter / 10.0;
-	}
-	else {
-		for(i=0;i<IntNodeSizedigit;i++) NodeDiameter = NodeDiameter * 10.0;
-	}
-	
-	kemoview_set_node_diamater((double) NodeDiameter);
+	kemoview_set_node_diamater((double) NodeSizeFactor, (int) NodeSizedigits);
 
 	[_kemoviewer UpdateImage];
 }

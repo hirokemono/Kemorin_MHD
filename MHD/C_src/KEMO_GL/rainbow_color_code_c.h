@@ -31,6 +31,6 @@ void set_grid_color_mode_c(int line_color, int color_mode, int color_loop,
 			int igrp, int num_grp, GLfloat single_color[4]);
 
 void set_black_color_c(double *f_color);
-void copy_rgba_color_c(GLfloat input_color4[4], GLfloat copy_color4[4]);
+void copy_rgba_color_c(float input_color4[4], float copy_color4[4]);
 
 #endif
