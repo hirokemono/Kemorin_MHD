@@ -27,9 +27,26 @@
 	#include "view_modifier_gtk.h"
 #endif
 
+struct rotation_gtk_menu{
+	int id_fmt_rot;
+	
+	int inc_deg;
+	int iaxis_rot;
+	
+	GtkWidget *rot_box;
+	
+	GtkWidget *combobox_rotation_dir;
+	GtkWidget *spin_rot_increment;
+	
+	GtkWidget *combobox_rotation_fileformat;
+	GtkWidget *rotView_Button;
+	GtkWidget *rotSave_Button;
+};
+
 
 /*  prototypes */
 
-void add_rotation_menu_box(GtkWidget *window_main, GtkWidget *box_out);
+struct rotation_gtk_menu * init_rotation_menu_box(void);
+void add_rotation_menu_box(GtkWidget *window_main, struct rotation_gtk_menu *rot_gmenu);
 	
 #endif

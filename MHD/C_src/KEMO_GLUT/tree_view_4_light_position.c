@@ -8,17 +8,19 @@
 #include "tree_view_4_light_position.h"
 
 
-void init_light_views_4_ctl(struct real3_clist *light_list, 
-			struct lightparams_view *light_vws){
-    light_vws->light_rtp_vws = (struct r3_clist_view *) malloc(sizeof(struct r3_clist_view));
+struct lightparams_view * init_light_views_4_ctl(struct real3_clist *light_list){
+	struct lightparams_view *light_vws = (struct lightparams_view *) malloc(sizeof(struct lightparams_view));
+	light_vws->light_rtp_vws = (struct r3_clist_view *) malloc(sizeof(struct r3_clist_view));
 	
     init_r3_clist_views(light_list, light_vws->light_rtp_vws);
-    return;
+    return light_vws;
 }
 
-void init_light_views_4_viewer(struct phong_lights *lights, struct lightparams_view *light_vws){
+struct lightparams_view * init_light_views_4_viewer(struct phong_lights *lights){
 	int i, num;
 	float r,t, p;
+
+	struct lightparams_view *light_vws = (struct lightparams_view *) malloc(sizeof(struct lightparams_view));
 	light_vws->light_rtp_vws = (struct r3_clist_view *) malloc(sizeof(struct r3_clist_view));
 	light_vws->light_rtp_vws->r3_clist_gtk = (struct real3_clist *) malloc(sizeof(struct real3_clist));
 	init_real3_clist(light_vws->light_rtp_vws->r3_clist_gtk);
@@ -35,7 +37,7 @@ void init_light_views_4_viewer(struct phong_lights *lights, struct lightparams_v
 		send_each_light_rtp(light_vws->lights_gtk, i, &r, &t, &p);
 		append_real3_clist((double) r, (double) t, (double) p, light_vws->light_rtp_vws->r3_clist_gtk);
 	}
-	return;
+	return light_vws;
 }
 
 void dealloc_light_views_4_viewer(struct lightparams_view *light_vws){

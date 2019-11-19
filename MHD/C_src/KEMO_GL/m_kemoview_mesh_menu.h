@@ -17,6 +17,7 @@
 #include "rainbow_color_code_c.h"
 #include "skip_comment_c.h"
 #include "set_rgba_table_c.h"
+#include "numbers_to_bin_c.h"
 
 
 #define SHUTTER_OFF 0

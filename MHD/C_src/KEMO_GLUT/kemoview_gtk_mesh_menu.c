@@ -129,8 +129,8 @@ void add_gtk_mesh_menu(GtkWidget *window, struct kemoview_mesh_view *mesh_vws){
 	mesh_vws->spin_node_size = gtk_spin_button_new(GTK_ADJUSTMENT(adj_node_size), 0, 3);
 	g_signal_connect(mesh_vws->spin_node_size, "value-changed", G_CALLBACK(node_size_CB),NULL);
 	
-	adj_node_digit = gtk_adjustment_new(-3, -10, 10, -1, 1, 0);
-	mesh_vws->spin_node_digit = gtk_spin_button_new(GTK_ADJUSTMENT(adj_node_digit), 0, 3);
+	adj_node_digit = gtk_adjustment_new(-3, -10, 10, 1, 1, 0);
+	mesh_vws->spin_node_digit = gtk_spin_button_new(GTK_ADJUSTMENT(adj_node_digit), 0, 0);
 	g_signal_connect(mesh_vws->spin_node_digit, "value-changed", G_CALLBACK(node_digit_CB),NULL);
 	
 	adj_num_loop = gtk_adjustment_new(5, 0, 100, 1, 1, 0.0);

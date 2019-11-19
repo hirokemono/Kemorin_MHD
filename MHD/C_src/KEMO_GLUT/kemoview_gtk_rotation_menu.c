@@ -13,14 +13,21 @@
 #define Y_AXIS 2
 #define Z_AXIS 3
 
-int iaxis_rot = Z_AXIS;
-int inc_deg = 2;
-
-int id_fmt_rot = 0;
+struct rotation_gtk_menu * init_rotation_menu_box(void){
+	struct rotation_gtk_menu *rot_gmenu
+			= (struct rotation_gtk_menu *)  malloc(sizeof(struct rotation_gtk_menu));
+	rot_gmenu->id_fmt_rot = 0;
+	
+	rot_gmenu->inc_deg = 2;
+	rot_gmenu->iaxis_rot = Z_AXIS;
+	return rot_gmenu;
+};
 
 static void set_rotation_direction_CB(GtkComboBox *combobox_rotdir, gpointer user_data)
 {
-    iaxis_rot = gtk_selected_combobox_index(combobox_rotdir);
+	struct rotation_gtk_menu *rot_gmenu 
+			= (struct rotation_gtk_menu *) g_object_get_data(G_OBJECT(user_data), "rotation");
+    rot_gmenu->iaxis_rot = gtk_selected_combobox_index(combobox_rotdir);
    	
 	draw_full();
 	return;
@@ -28,7 +35,9 @@ static void set_rotation_direction_CB(GtkComboBox *combobox_rotdir, gpointer use
 
 static void set_rotation_fileformat_CB(GtkComboBox *combobox_filefmt, gpointer user_data)
 {
-    id_fmt_rot = gtk_selected_combobox_index(combobox_filefmt);
+	struct rotation_gtk_menu *rot_gmenu 
+			= (struct rotation_gtk_menu *) g_object_get_data(G_OBJECT(user_data), "rotation");
+    rot_gmenu->id_fmt_rot = gtk_selected_combobox_index(combobox_filefmt);
 	
 	draw_full();
 	return;
@@ -36,24 +45,32 @@ static void set_rotation_fileformat_CB(GtkComboBox *combobox_filefmt, gpointer u
 
 static void rotation_increment_CB(GtkWidget *entry, gpointer user_data)
 {
-	 inc_deg = (int) gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(entry));
+	struct rotation_gtk_menu *rot_gmenu 
+			= (struct rotation_gtk_menu *) g_object_get_data(G_OBJECT(user_data), "rotation");
+	 rot_gmenu->inc_deg = (int) gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(entry));
 /*	printf("radius %d\n", radius);*/
 }
 
 static void rotation_view_CB(GtkButton *button, gpointer user_data){
 	GtkEntry *entry = GTK_ENTRY(user_data);
 	GtkWidget *window_main = GTK_WIDGET(g_object_get_data(G_OBJECT(user_data), "parent"));
+	struct rotation_gtk_menu *rot_gmenu 
+			= (struct rotation_gtk_menu *) g_object_get_data(G_OBJECT(user_data), "rotation");
 	
 	struct kv_string *image_prefix = kemoview_init_kvstring_by_string("CalypsoViewer");
 	
 	gtk_window_set_focus(GTK_WINDOW(window_main), NULL);
-	write_rotate_views(NO_SAVE_FILE, image_prefix, iaxis_rot, inc_deg);
+	write_rotate_views(NO_SAVE_FILE, image_prefix, rot_gmenu->iaxis_rot, rot_gmenu->inc_deg);
 	kemoview_free_kvstring(image_prefix);
 	return;
 };
+
 static void rotation_save_CB(GtkButton *button, gpointer user_data){
 	GtkEntry *entry = GTK_ENTRY(user_data);
 	GtkWidget *window_main = GTK_WIDGET(g_object_get_data(G_OBJECT(user_data), "parent"));
+	struct rotation_gtk_menu *rot_gmenu 
+			= (struct rotation_gtk_menu *) g_object_get_data(G_OBJECT(user_data), "rotation");
+	
 	int id_image;
 	struct kv_string *filename = kemoview_init_kvstring_by_string(gtk_entry_get_text(entry));
     struct kv_string *stripped_ext = kemoview_alloc_kvstring();
@@ -63,35 +80,30 @@ static void rotation_save_CB(GtkButton *button, gpointer user_data){
 	kemoview_get_ext_from_file_name(filename, file_prefix, stripped_ext);
 	id_image = kemoview_set_image_file_format_id(stripped_ext);
 	if(id_image < 0) {
-		id_image = id_fmt_rot;
+		id_image = rot_gmenu->id_fmt_rot;
 	};
 	if(id_image == 0) return;
 	kemoview_free_kvstring(stripped_ext);
 	kemoview_free_kvstring(filename);
 	
 	gtk_window_set_focus(GTK_WINDOW(window_main), NULL);
-	write_rotate_views(id_fmt_rot, file_prefix, iaxis_rot, inc_deg);
+	write_rotate_views(rot_gmenu->id_fmt_rot, file_prefix, rot_gmenu->iaxis_rot, rot_gmenu->inc_deg);
 	
 	return;
 };
 
 
-void add_rotation_menu_box(GtkWidget *window_main, GtkWidget *box_out){
-	GtkWidget *vbox;
-	
+void add_rotation_menu_box(GtkWidget *window_main, struct rotation_gtk_menu *rot_gmenu){
 	GtkWidget *hbox_rotation_dir;
-	GtkWidget *combobox_rotation_dir;
 	GtkWidget *label_tree_rotation_dir;
 	GtkCellRenderer *renderer_rotation_dir;
 	GtkTreeModel *model_rotation_dir;
 	GtkTreeModel *child_model_rotation_dir;
 	
 	GtkWidget *hbox_rot_increment;
-	GtkWidget *spin_rot_increment;
 	GtkAdjustment *adj_rot_increment;
 	
 	GtkWidget *hbox_rotation_fileformat;
-	GtkWidget *combobox_rotation_fileformat;
 	GtkWidget *label_tree_rotation_fileformat;
 	GtkCellRenderer *renderer_rotation_fileformat;
 	GtkTreeModel *model_rotation_fileformat;
@@ -102,10 +114,13 @@ void add_rotation_menu_box(GtkWidget *window_main, GtkWidget *box_out){
 	GtkWidget *rotSelect_Button;
 	
 	GtkWidget *hbox_rotation_save;
-	GtkWidget *rotView_Button;
-	GtkWidget *rotSave_Button;
 	
 	int index = 0;
+	
+	
+	entry_rotation_file = gtk_entry_new();
+	g_object_set_data(G_OBJECT(entry_rotation_file), "parent", (gpointer) window_main);
+	g_object_set_data(G_OBJECT(entry_rotation_file), "rotation", (gpointer) rot_gmenu);
 	
 	label_tree_rotation_dir = create_fixed_label_w_index_tree();
 	model_rotation_dir = gtk_tree_view_get_model(GTK_TREE_VIEW(label_tree_rotation_dir));  
@@ -115,97 +130,97 @@ void add_rotation_menu_box(GtkWidget *window_main, GtkWidget *box_out){
 	index = append_ci_item_to_tree(index, "Y-axis", Y_AXIS, child_model_rotation_dir);
 	index = append_ci_item_to_tree(index, "Z-axis", Z_AXIS, child_model_rotation_dir);
 	
-	combobox_rotation_dir = gtk_combo_box_new_with_model(child_model_rotation_dir);
+	rot_gmenu->combobox_rotation_dir = gtk_combo_box_new_with_model(child_model_rotation_dir);
 	renderer_rotation_dir = gtk_cell_renderer_text_new();
-	if(iaxis_rot == Z_AXIS){
-		gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_rotation_dir), 2);
-	} else if(iaxis_rot == Y_AXIS){
-		gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_rotation_dir), 1);
+	if(rot_gmenu->iaxis_rot == Z_AXIS){
+		gtk_combo_box_set_active(GTK_COMBO_BOX(rot_gmenu->combobox_rotation_dir), 2);
+	} else if(rot_gmenu->iaxis_rot == Y_AXIS){
+		gtk_combo_box_set_active(GTK_COMBO_BOX(rot_gmenu->combobox_rotation_dir), 1);
 	} else {
-		gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_rotation_dir), 0);
+		gtk_combo_box_set_active(GTK_COMBO_BOX(rot_gmenu->combobox_rotation_dir), 0);
 	};
-	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(combobox_rotation_dir), renderer_rotation_dir, TRUE);
-	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combobox_rotation_dir), renderer_rotation_dir,
-				"text", COLUMN_FIELD_NAME, NULL);
-	g_signal_connect(G_OBJECT(combobox_rotation_dir), "changed", 
-				G_CALLBACK(set_rotation_direction_CB), NULL);
+	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(rot_gmenu->combobox_rotation_dir),
+							   renderer_rotation_dir, TRUE);
+	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(rot_gmenu->combobox_rotation_dir), 
+								   renderer_rotation_dir, "text", COLUMN_FIELD_NAME, NULL);
+	g_signal_connect(G_OBJECT(rot_gmenu->combobox_rotation_dir), "changed", 
+				G_CALLBACK(set_rotation_direction_CB), entry_rotation_file);
 	
 	
 	label_tree_rotation_fileformat = create_fixed_label_w_index_tree();
 	model_rotation_fileformat = gtk_tree_view_get_model(GTK_TREE_VIEW(label_tree_rotation_fileformat));  
-	child_model_rotation_fileformat = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_rotation_fileformat));
+	child_model_rotation_fileformat = 
+			gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_rotation_fileformat));
 	index = 0;
 	index = append_ci_item_to_tree(index, "No Image", NO_SAVE_FILE, child_model_rotation_fileformat);
 	index = append_ci_item_to_tree(index, "PNG", SAVE_PNG, child_model_rotation_fileformat);
 	index = append_ci_item_to_tree(index, "BMP", SAVE_BMP, child_model_rotation_fileformat);
 	
-	combobox_rotation_fileformat = gtk_combo_box_new_with_model(child_model_rotation_fileformat);
+	rot_gmenu->combobox_rotation_fileformat = 
+			gtk_combo_box_new_with_model(child_model_rotation_fileformat);
 	renderer_rotation_fileformat = gtk_cell_renderer_text_new();
-	id_fmt_rot = NO_SAVE_FILE;
-	if(id_fmt_rot == SAVE_BMP){
-		gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_rotation_fileformat), 2);
-	} else if(id_fmt_rot == SAVE_PNG){
-		gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_rotation_fileformat), 1);
+	rot_gmenu->id_fmt_rot = NO_SAVE_FILE;
+	if(rot_gmenu->id_fmt_rot == SAVE_BMP){
+		gtk_combo_box_set_active(GTK_COMBO_BOX(rot_gmenu->combobox_rotation_fileformat), 2);
+	} else if(rot_gmenu->id_fmt_rot == SAVE_PNG){
+		gtk_combo_box_set_active(GTK_COMBO_BOX(rot_gmenu->combobox_rotation_fileformat), 1);
 	} else {
-		gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_rotation_fileformat), 0);
+		gtk_combo_box_set_active(GTK_COMBO_BOX(rot_gmenu->combobox_rotation_fileformat), 0);
 	};
-	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(combobox_rotation_fileformat), renderer_rotation_fileformat, TRUE);
-	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combobox_rotation_fileformat), renderer_rotation_fileformat,
-				"text", COLUMN_FIELD_NAME, NULL);
-	g_signal_connect(G_OBJECT(combobox_rotation_fileformat), "changed", 
-				G_CALLBACK(set_rotation_fileformat_CB), NULL);
+	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(rot_gmenu->combobox_rotation_fileformat), 
+							   renderer_rotation_fileformat, TRUE);
+	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(rot_gmenu->combobox_rotation_fileformat), 
+								   renderer_rotation_fileformat, "text", COLUMN_FIELD_NAME, NULL);
+	g_signal_connect(G_OBJECT(rot_gmenu->combobox_rotation_fileformat), "changed", 
+				G_CALLBACK(set_rotation_fileformat_CB), entry_rotation_file);
 	
 	
 	
-	adj_rot_increment = gtk_adjustment_new(inc_deg, 0.0, 180.0, 1, 1, 0.0);
-	spin_rot_increment = gtk_spin_button_new(GTK_ADJUSTMENT(adj_rot_increment), 0, 1);
-	g_signal_connect(spin_rot_increment, "value-changed", G_CALLBACK(rotation_increment_CB),NULL);
-	
-	entry_rotation_file = gtk_entry_new();
-	g_object_set_data(G_OBJECT(entry_rotation_file), "parent", (gpointer) window_main);
+	adj_rot_increment = gtk_adjustment_new(rot_gmenu->inc_deg, 0.0, 180.0, 1, 1, 0.0);
+	rot_gmenu->spin_rot_increment = gtk_spin_button_new(GTK_ADJUSTMENT(adj_rot_increment), 0, 1);
+	g_signal_connect(rot_gmenu->spin_rot_increment, "value-changed",
+					 G_CALLBACK(rotation_increment_CB),entry_rotation_file);
 	
 	rotSelect_Button = gtk_button_new_with_label("Select...");
 	g_signal_connect(rotSelect_Button, "clicked", G_CALLBACK(kemoview_gtk_save_file_select),
 				(gpointer) entry_rotation_file);
 	
 	
-	rotView_Button = gtk_button_new_with_label("View Rotation");
-	g_signal_connect(G_OBJECT(rotView_Button), "clicked", 
+	rot_gmenu->rotView_Button = gtk_button_new_with_label("View Rotation");
+	g_signal_connect(G_OBJECT(rot_gmenu->rotView_Button), "clicked", 
 					 G_CALLBACK(rotation_view_CB), (gpointer)entry_rotation_file);
-	rotSave_Button = gtk_button_new_with_label("Save Rotation");
-	g_signal_connect(G_OBJECT(rotSave_Button), "clicked", 
+	rot_gmenu->rotSave_Button = gtk_button_new_with_label("Save Rotation");
+	g_signal_connect(G_OBJECT(rot_gmenu->rotSave_Button), "clicked", 
 					 G_CALLBACK(rotation_save_CB), (gpointer)entry_rotation_file);
 	
 	
 	hbox_rotation_dir = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
-	gtk_box_pack_start(GTK_BOX(hbox_rotation_dir), gtk_label_new("Surface direction: "), TRUE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox_rotation_dir), combobox_rotation_dir, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_rotation_dir), gtk_label_new("Surface direction: "), FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_rotation_dir), rot_gmenu->combobox_rotation_dir, TRUE, TRUE, 0);
 	
 	hbox_rot_increment = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
-	gtk_box_pack_start(GTK_BOX(hbox_rot_increment), gtk_label_new("Step (Deg.): "), TRUE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox_rot_increment), spin_rot_increment, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_rot_increment), gtk_label_new("Step (Deg.): "), FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_rot_increment), rot_gmenu->spin_rot_increment, TRUE, TRUE, 0);
 	
 	hbox_rotation_filename = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
-	gtk_box_pack_start(GTK_BOX(hbox_rotation_filename), gtk_label_new("Image file: "), TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_rotation_filename), gtk_label_new("Image file: "), FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_rotation_filename), entry_rotation_file, TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_rotation_filename), rotSelect_Button, TRUE, TRUE, 0);
 	
 	hbox_rotation_fileformat = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
-	gtk_box_pack_start(GTK_BOX(hbox_rotation_fileformat), gtk_label_new("File format: "), TRUE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox_rotation_fileformat), combobox_rotation_fileformat, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_rotation_fileformat), gtk_label_new("File format: "), FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_rotation_fileformat), rot_gmenu->combobox_rotation_fileformat,
+					   TRUE, TRUE, 0);
 	
 	hbox_rotation_save = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
-	gtk_box_pack_start(GTK_BOX(hbox_rotation_save), rotView_Button, TRUE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox_rotation_save), rotSave_Button, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_rotation_save), rot_gmenu->rotView_Button, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_rotation_save), rot_gmenu->rotSave_Button, TRUE, TRUE, 0);
 	
 	
-	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-	gtk_box_pack_start(GTK_BOX(vbox), hbox_rotation_dir, FALSE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox), hbox_rot_increment, FALSE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox), hbox_rotation_filename, FALSE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox), hbox_rotation_fileformat, FALSE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox), hbox_rotation_save, FALSE, TRUE, 0);
-	
-	wrap_into_expanded_frame_gtk("Rotation", 360, 200, vbox, box_out);
+	gtk_box_pack_start(GTK_BOX(rot_gmenu->rot_box), hbox_rotation_dir, FALSE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(rot_gmenu->rot_box), hbox_rot_increment, FALSE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(rot_gmenu->rot_box), hbox_rotation_filename, FALSE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(rot_gmenu->rot_box), hbox_rotation_fileformat, FALSE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(rot_gmenu->rot_box), hbox_rotation_save, FALSE, TRUE, 0);
 	return;
 }

@@ -167,10 +167,8 @@ static void eye_sep_CB(GtkWidget *entry, gpointer user_data){
 	return;
 };
 
-void gtk_viewmatrix_menu_box(struct view_widgets *view_menu,
-			GtkWidget *window, GtkWidget *box_out){
+void gtk_viewmatrix_menu_box(GtkWidget *window, struct view_widgets *view_menu){
 	GtkWidget *entry = gtk_entry_new();
-	GtkWidget *vbox;
 	
 	char current_lookat_x_text[30];
 	char current_lookat_y_text[30];
@@ -359,12 +357,12 @@ void gtk_viewmatrix_menu_box(struct view_widgets *view_menu,
 	gtk_box_pack_start(GTK_BOX(view_menu->hbox_viewmatrix_save), view_menu->loadView_Button, FALSE, FALSE, 0);
 
 	
-	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-	gtk_box_pack_start(GTK_BOX(vbox), view_menu->Frame_win, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox), view_menu->Frame_eye, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox), view_menu->Frame_looking, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox), view_menu->Frame_rotation, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox), view_menu->Frame_aperture, FALSE, FALSE, 0);
+	view_menu->box_view = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+	gtk_box_pack_start(GTK_BOX(view_menu->box_view), view_menu->Frame_win, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(view_menu->box_view), view_menu->Frame_eye, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(view_menu->box_view), view_menu->Frame_looking, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(view_menu->box_view), view_menu->Frame_rotation, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(view_menu->box_view), view_menu->Frame_aperture, FALSE, FALSE, 0);
 	
 	if(kemoview_get_view_type_flag() == VIEW_STEREO){
 		view_menu->spin_focus = gtk_spin_button_new(GTK_ADJUSTMENT(view_menu->adj_focus), 0, 3);
@@ -387,13 +385,10 @@ void gtk_viewmatrix_menu_box(struct view_widgets *view_menu,
 		gtk_frame_set_shadow_type(GTK_FRAME(view_menu->Frame_streo), GTK_SHADOW_IN);
 		gtk_container_add(GTK_CONTAINER(view_menu->Frame_streo), view_menu->vbox_streo);
 		
-		gtk_box_pack_start(GTK_BOX(vbox), view_menu->Frame_streo, FALSE, FALSE, 0);
+		gtk_box_pack_start(GTK_BOX(view_menu->box_view), view_menu->Frame_streo, FALSE, FALSE, 0);
 	};
 	
-	gtk_box_pack_start(GTK_BOX(vbox), view_menu->hbox_viewmatrix_save, FALSE, FALSE, 0);
-	
-	wrap_into_expanded_frame_gtk("View parameters", 360, 400, vbox, box_out);
-	
+	gtk_box_pack_start(GTK_BOX(view_menu->box_view), view_menu->hbox_viewmatrix_save, FALSE, FALSE, 0);
 	return;
 }
 

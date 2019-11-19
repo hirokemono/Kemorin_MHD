@@ -27,9 +27,25 @@
 	#include "view_modifier_gtk.h"
 #endif
 
+struct evolution_gtk_menu{
+	int id_fmt_evo;
+	
+	int istart_evo;
+	int iend_evo;
+	int inc_evo;
+	
+	GtkWidget *evo_box;
+	
+	GtkWidget *spin_evo_start;
+	GtkWidget *spin_evo_end;
+	GtkWidget *spin_evo_increment;
+	
+	GtkWidget *combobox_evo_fileformat;
+};
 
 /*  prototypes */
 
-void add_evoluaiton_menu_box(int istep, GtkWidget *window_main, GtkWidget *box_out);
+struct evolution_gtk_menu * init_evoluaiton_menu_box(void);
+void add_evoluaiton_menu_box(int istep, GtkWidget *window_main, struct evolution_gtk_menu *evo_gmenu);
 	
 #endif

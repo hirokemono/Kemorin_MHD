@@ -25,9 +25,8 @@ struct lightparams_view{
 
 /* prototypes */
 
-void init_light_views_4_ctl(struct real3_clist *light_list, 
-			struct lightparams_view *light_vws);
-void init_light_views_4_viewer(struct phong_lights *lights, struct lightparams_view *light_vws);
+struct lightparams_view * init_light_views_4_ctl(struct real3_clist *light_list);
+struct lightparams_view * init_light_views_4_viewer(struct phong_lights *lights);
 void dealloc_light_views_4_viewer(struct lightparams_view *light_vws);
 
 void add_light_list_box(struct lightparams_view *light_vws, GtkWidget *vbox);

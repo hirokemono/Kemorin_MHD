@@ -27,7 +27,11 @@
 	#include "view_modifier_gtk.h"
 #endif
 
-struct gtk_preference_menu{
+struct preference_gtk_menu{
+	struct lightparams_view *lightparams_vws;
+	
+	GtkWidget *box_pref;
+	
 	GtkWidget *spin_ambient;
 	GtkWidget *spin_diffuse;
 	GtkWidget *spin_specular;
@@ -41,8 +45,10 @@ struct gtk_preference_menu{
 
 /*  prototypes */
 
-void set_GTK_preference_menu(struct gtk_preference_menu *gtk_pref);
-void add_GTK_preference_box(struct lightparams_view *lightparams_vws, struct gtk_preference_menu *gtk_pref, 
-							GtkWidget *box_out);
+struct preference_gtk_menu * init_preference_gtk_menu(struct kemoviewer_type *kemoviewer_data);
+void dealloc_preference_gtk_menu(struct preference_gtk_menu *pref_gmenu);
+
+void set_GTK_preference_menu(struct preference_gtk_menu *pref_gmenu);
+void add_GTK_preference_box(struct preference_gtk_menu *pref_gmenu);
 
 #endif

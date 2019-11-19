@@ -35,35 +35,39 @@
 
 
 struct main_buttons{
-	GtkWidget *vbox_menu;
-	struct view_widgets *view_menu;
-	struct lightparams_view *lightparams_vws;
-	struct kemoview_mesh_view *mesh_vws;
-	
 	GtkWidget *menuHbox;
 	
-	GtkWidget *BaseBox;
-
+	GtkWidget *vbox_menu;
+	GtkWidget *viewBox;
+	struct view_widgets *view_menu;
+	
 	GtkWidget *psfBox;
 	struct psf_gtk_menu *psf_gmenu;
 	
 	GtkWidget *prefBox;
+	struct preference_gtk_menu  *pref_gmenu;
 	
 	GtkWidget *flineBox;
 	struct fieldline_gtk_menu *fline_menu;
 	
 	GtkWidget *meshBox;
+	struct kemoview_mesh_view *mesh_vws;
 	
-	GtkWidget *viewBox;
 	GtkWidget *rotationBox;
+	struct rotation_gtk_menu *rot_gmenu;
+	
 	GtkWidget *evolutionBox;
-
+	struct evolution_gtk_menu *evo_gmenu;
+	
 	GtkWidget *ComboboxImageFormat;
 	int id_iamge_format;
 };
 
 
 /*  prototypes */
+
+struct main_buttons * init_main_buttons(struct kemoviewer_type *kemoviewer_data);
+void dealloc_main_buttons(struct main_buttons *mbot);
 
 void open_kemoviewer_file_glfw(struct kv_string *filename, struct main_buttons *mbot,
 							   GtkWidget *window_main);
@@ -73,5 +77,5 @@ void gtk_fieldline_menu_box(struct main_buttons *mbot, GtkWidget *window);
 void gtk_mesh_menu_box(struct main_buttons *mbot, GtkWidget *window);
 
 void make_gtk_main_menu_box(struct main_buttons *mbot, GtkWidget *window_main);
-	
+
 #endif
