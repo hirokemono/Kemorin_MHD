@@ -25,13 +25,18 @@
 !
       implicit none
 !
-!
+!>      Structure of clustered node list
       type node_clustering_list
+!>        Number of grouping
         integer(kind = kint) :: num_gruped_nod
+!>        Stack of grouped node list
         integer(kind = kint), allocatable :: istack_grouped(:)
+!>        Domain ID of each group
         integer(kind = kint), allocatable :: irank_list(:)
 !
+!>        List of local node ID
         integer(kind = kint), allocatable :: inod_list(:)
+!>        List of local node ID
         integer(kind = kint), allocatable :: igrp_by_nod(:)
 !
         type(node_data) :: cluster_nod
