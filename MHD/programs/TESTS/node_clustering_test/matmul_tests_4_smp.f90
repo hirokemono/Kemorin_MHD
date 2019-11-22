@@ -1,5 +1,5 @@
-!>@file   matmul_for_legendre_trans.F90
-!!@brief  module matmul_for_legendre_trans
+!>@file   matmul_tests_4_smp.F90
+!!@brief  module matmul_tests_4_smp
 !!
 !!@author H. Matsui
 !!@date Programmed in Aug., 2013
