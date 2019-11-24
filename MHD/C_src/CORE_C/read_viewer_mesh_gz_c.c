@@ -5,7 +5,7 @@
 #include "read_viewer_mesh_gz_c.h"
 
 static void read_listed_item_gz_viewer(int num, int *item_sf){
-	int i, j, iread, nread, itmp;
+	int i, j, iread, nread;
 	char buf[LENGTHBUF];            /* character buffer for reading line */
 	int num_word, nchara, lbuf;
 	
@@ -17,7 +17,6 @@ static void read_listed_item_gz_viewer(int num, int *item_sf){
 		get_one_line_from_gz(&lbuf, &num_word, &nchara, buf);
 		for (i = 0; i < num_word; i++) {
 			sscanf(&buf[iread], "%d%n", &item_sf[j],&nread);
-			itmp = item_sf[j];
 			j = j + 1;
 			iread = iread + nread;
 		}
@@ -27,24 +26,8 @@ static void read_listed_item_gz_viewer(int num, int *item_sf){
 	return;
 };
 
-static void read_group_stack_gz_viewer(int npe, int ngrp, int *stack_sf){
-	int i, j, num, iread, nread;
-	char buf[LENGTHBUF];            /* character buffer for reading line */
-	int num_word, nchara, lbuf;
-	
-	lbuf = LENGTHBUF;
-	
-	num = npe*ngrp;
-	j = 0;
-	while (j < num) {
-		iread = 0;
-		get_one_line_from_gz(&lbuf, &num_word, &nchara, buf);
-		for (i = 0; i < num_word; i++) {
-			sscanf(&buf[iread], "%d%n", &stack_sf[j+1],&nread);
-			j = j + 1;
-			iread = iread + nread;
-		}
-	}
+static void read_group_stack_gz_viewer(int ngrp, int *stack_sf){
+	read_listed_item_gz_viewer(ngrp, &stack_sf[1]);
 	return;
 };
 
@@ -61,13 +44,13 @@ static void read_group_item_gz_viewer(int npe, int ngrp, int *stack_sf, int *ist
 		num_word = skip_comment_gz_c(&lbuf, buf);
 		sscanf(buf, "%s", name[j]);
 		
-		read_group_stack_gz_viewer(npe, 1, &stack_sf[npe*j]);
-		read_group_stack_gz_viewer(npe, 1, istack_pe);
+		read_group_stack_gz_viewer(npe, &stack_sf[npe*j]);
+		read_group_stack_gz_viewer(npe, istack_pe);
 		for (i = 0; i < npe; i++){
 			stack_sf[npe*j+i+1] = stack_sf[npe*j+i+1] + stack_sf[npe*j];
 			jnum = stack_sf[npe*j+i+1] - stack_sf[npe*j+i];
 			jst =  stack_sf[npe*j+i];
-			printf("%s %d %d \n",name[j], jst, jnum);
+/*			printf("%s %d %d \n",name[j], jst, jnum); */
 			if(jnum > 0){
 				read_listed_item_gz_viewer(jnum, &item[jst]);
 			} else {
@@ -89,7 +72,6 @@ int read_viewer_mesh_gz_c(const char *file_name, struct viewer_mesh *mesh_s){
 	int num_word[1], lbuf[1];
 	
 	lbuf[0] = LENGTHBUF;
-	istack_pe =  (int *)calloc((mesh_s->num_pe_sf)+1,sizeof(int));
 
 	printf("kemoviewer mesh file name: %s \n",file_name);
 	
@@ -103,6 +85,7 @@ int read_viewer_mesh_gz_c(const char *file_name, struct viewer_mesh *mesh_s){
 	
 	/*get_one_line_from_gz(lbuf, num_word, nchara, buf);*/
 	sscanf(buf, "%d", &mesh_s->num_pe_sf);
+	istack_pe =  (int *)calloc((mesh_s->num_pe_sf)+1,sizeof(int));
 	
 	alloc_nummesh_viewer_s(mesh_s);
 	alloc_domain_stack_viewer_s(mesh_s);
@@ -112,8 +95,8 @@ int read_viewer_mesh_gz_c(const char *file_name, struct viewer_mesh *mesh_s){
  	sscanf(buf, "%d", &mesh_s->nnod_viewer);
 	
 	mesh_s->inod_sf_stack[0] = 0;
-	read_group_stack_gz_viewer(mesh_s->num_pe_sf, 1, mesh_s->inod_sf_stack);
-	read_group_stack_gz_viewer(mesh_s->num_pe_sf, 1, istack_pe);
+	read_group_stack_gz_viewer(mesh_s->num_pe_sf, mesh_s->inod_sf_stack);
+	read_group_stack_gz_viewer(mesh_s->num_pe_sf, istack_pe);
 	
 	alloc_node_viewer_s(mesh_s);
 	for (i= 0; i < mesh_s->nnod_viewer; i++) {
@@ -131,15 +114,15 @@ int read_viewer_mesh_gz_c(const char *file_name, struct viewer_mesh *mesh_s){
 	sscanf(buf, "%d", &mesh_s->nsurf_viewer);
 
 	mesh_s->isurf_sf_stack[0] = 0;
-	read_group_stack_gz_viewer(mesh_s->num_pe_sf, 1, mesh_s->isurf_sf_stack);
-	read_group_stack_gz_viewer(mesh_s->num_pe_sf, 1, istack_pe);
+	read_group_stack_gz_viewer(mesh_s->num_pe_sf, mesh_s->isurf_sf_stack);
+	read_group_stack_gz_viewer(mesh_s->num_pe_sf, istack_pe);
 	
 	alloc_sf_type_viewer_s(mesh_s);
 	
 	read_listed_item_gz_viewer(mesh_s->nsurf_viewer, mesh_s->surftyp_viewer);
 	
-	read_group_stack_gz_viewer(mesh_s->num_pe_sf, 1, istack_pe);
-	read_group_stack_gz_viewer(mesh_s->num_pe_sf, 1, istack_pe);
+	read_group_stack_gz_viewer(mesh_s->num_pe_sf, istack_pe);
+	read_group_stack_gz_viewer(mesh_s->num_pe_sf, istack_pe);
 	alloc_surface_params_s(mesh_s);
 	alloc_surf_connect_viewer_s(mesh_s);
 	
@@ -193,8 +176,8 @@ int read_viewer_mesh_gz_c(const char *file_name, struct viewer_mesh *mesh_s){
 	sscanf(buf, "%d", &mesh_s->nedge_viewer);
 
 	mesh_s->iedge_sf_stack[0] = 0;
-	read_group_stack_gz_viewer(mesh_s->num_pe_sf, 1, mesh_s->iedge_sf_stack);
-	read_group_stack_gz_viewer(mesh_s->num_pe_sf, 1, istack_pe);
+	read_group_stack_gz_viewer(mesh_s->num_pe_sf, mesh_s->iedge_sf_stack);
+	read_group_stack_gz_viewer(mesh_s->num_pe_sf, istack_pe);
 	
 	alloc_edge_4_sf_viewer_s(mesh_s);
 	
@@ -223,8 +206,8 @@ int read_viewer_mesh_gz_c(const char *file_name, struct viewer_mesh *mesh_s){
 	num_word[0] = skip_comment_gz_c(lbuf, buf);
 	sscanf(buf, "%d", &itmp);
 	
-	read_group_stack_gz_viewer(mesh_s->num_pe_sf, 1, istack_pe);
-	read_group_stack_gz_viewer(mesh_s->num_pe_sf, 1, istack_pe);
+	read_group_stack_gz_viewer(mesh_s->num_pe_sf, istack_pe);
+	read_group_stack_gz_viewer(mesh_s->num_pe_sf, istack_pe);
 
 	for (i = 0; i < mesh_s->nsurf_viewer; i++) {
 		num_word[0] = skip_comment_gz_c(lbuf, buf);
@@ -241,8 +224,8 @@ int read_viewer_mesh_gz_c(const char *file_name, struct viewer_mesh *mesh_s){
 	sscanf(buf, "%s", name_tmp);
 /*	printf("mesh_s->nnod_domain_sf %d\n", mesh_s->nnod_domain_sf);*/
 	
-	read_group_stack_gz_viewer(mesh_s->num_pe_sf, 1, mesh_s->nod_stack_domain_sf);
-	read_group_stack_gz_viewer(mesh_s->num_pe_sf, 1, istack_pe);
+	read_group_stack_gz_viewer(mesh_s->num_pe_sf, mesh_s->nod_stack_domain_sf);
+	read_group_stack_gz_viewer(mesh_s->num_pe_sf, istack_pe);
 	
 	mesh_s->nnod_domain_sf = mesh_s->nod_stack_domain_sf[mesh_s->num_pe_sf];
 	alloc_domain_nod_item_viewer_s(mesh_s);
@@ -252,8 +235,8 @@ int read_viewer_mesh_gz_c(const char *file_name, struct viewer_mesh *mesh_s){
 	
 	num_word[0] = skip_comment_gz_c(lbuf, buf);
 	sscanf(buf, "%s", name_tmp);
-	read_group_stack_gz_viewer(mesh_s->num_pe_sf, 1, mesh_s->isurf_stack_domain_sf);
-	read_group_stack_gz_viewer(mesh_s->num_pe_sf, 1, istack_pe);
+	read_group_stack_gz_viewer(mesh_s->num_pe_sf, mesh_s->isurf_stack_domain_sf);
+	read_group_stack_gz_viewer(mesh_s->num_pe_sf, istack_pe);
 	
 	mesh_s->nsurf_domain_sf = mesh_s->isurf_stack_domain_sf[mesh_s->num_pe_sf];
 	alloc_domain_surf_item_viewer_s(mesh_s);
@@ -263,8 +246,8 @@ int read_viewer_mesh_gz_c(const char *file_name, struct viewer_mesh *mesh_s){
 	
 	num_word[0] = skip_comment_gz_c(lbuf, buf);
 	sscanf(buf, "%s", name_tmp);
-	read_group_stack_gz_viewer(mesh_s->num_pe_sf, 1, mesh_s->edge_stack_domain_sf);
-	read_group_stack_gz_viewer(mesh_s->num_pe_sf, 1, istack_pe);
+	read_group_stack_gz_viewer(mesh_s->num_pe_sf, mesh_s->edge_stack_domain_sf);
+	read_group_stack_gz_viewer(mesh_s->num_pe_sf, istack_pe);
 	
 	mesh_s->nedge_domain_sf = mesh_s->edge_stack_domain_sf[mesh_s->num_pe_sf];
 	alloc_domain_edge_item_viewer_s(mesh_s);
@@ -278,7 +261,7 @@ int read_viewer_mesh_gz_c(const char *file_name, struct viewer_mesh *mesh_s){
 	alloc_nod_grp_stack_viewer_s(mesh_s);
 	
 	istack_grp =  (int *)calloc((mesh_s->ngrp_nod_sf)+1,sizeof(int));
-	read_group_stack_gz_viewer(1, mesh_s->ngrp_nod_sf, istack_grp);
+	read_group_stack_gz_viewer(mesh_s->ngrp_nod_sf, istack_grp);
 	mesh_s->nnod_nod_sf = istack_grp[mesh_s->ngrp_nod_sf];
 	
 	alloc_nod_grp_item_viewer_s(mesh_s);
@@ -299,7 +282,7 @@ int read_viewer_mesh_gz_c(const char *file_name, struct viewer_mesh *mesh_s){
 		tmp_name_sf[i] = (char *)calloc(KCHARA_C, sizeof(char));
 	};
 	
-	read_group_stack_gz_viewer(1, mesh_s->ngrp_ele_sf, istack_grp);
+	read_group_stack_gz_viewer(mesh_s->ngrp_ele_sf, istack_grp);
 	mesh_s->nele_ele_sf = istack_grp[mesh_s->ngrp_ele_sf];
 	alloc_ele_grp_item_viewer_s(mesh_s);
 	
@@ -310,7 +293,7 @@ int read_viewer_mesh_gz_c(const char *file_name, struct viewer_mesh *mesh_s){
 	num_word[0] = skip_comment_gz_c(lbuf, buf);
 	sscanf(buf, "%d", &itmp);
 	
-	read_group_stack_gz_viewer(1, mesh_s->ngrp_ele_sf, istack_grp);
+	read_group_stack_gz_viewer(mesh_s->ngrp_ele_sf, istack_grp);
 	mesh_s->nnod_ele_sf = istack_grp[mesh_s->ngrp_ele_sf];
 	alloc_ele_grp_nod_item_viewer_s(mesh_s);
 	
@@ -321,7 +304,7 @@ int read_viewer_mesh_gz_c(const char *file_name, struct viewer_mesh *mesh_s){
 	num_word[0] = skip_comment_gz_c(lbuf, buf);
 	sscanf(buf, "%d", &itmp);
 	
-	read_group_stack_gz_viewer(1, mesh_s->ngrp_ele_sf, istack_grp);
+	read_group_stack_gz_viewer(mesh_s->ngrp_ele_sf, istack_grp);
 	mesh_s->nedge_ele_sf = istack_grp[mesh_s->ngrp_ele_sf];
 	alloc_ele_grp_edge_item_viewer_s(mesh_s);
 	
@@ -345,7 +328,7 @@ int read_viewer_mesh_gz_c(const char *file_name, struct viewer_mesh *mesh_s){
 		tmp_name_sf[i] = (char *)calloc(KCHARA_C, sizeof(char));
 	};
 	
-	read_group_stack_gz_viewer(1, mesh_s->ngrp_surf_sf, istack_grp);
+	read_group_stack_gz_viewer(mesh_s->ngrp_surf_sf, istack_grp);
 	mesh_s->nsurf_surf_sf = istack_grp[mesh_s->ngrp_surf_sf];
 	alloc_surf_grp_item_viewer_s(mesh_s);
 	
@@ -356,7 +339,7 @@ int read_viewer_mesh_gz_c(const char *file_name, struct viewer_mesh *mesh_s){
 	num_word[0] = skip_comment_gz_c(lbuf, buf);
 	sscanf(buf, "%d", &itmp);
 	
-	read_group_stack_gz_viewer(1, mesh_s->ngrp_surf_sf, istack_grp);
+	read_group_stack_gz_viewer(mesh_s->ngrp_surf_sf, istack_grp);
 	mesh_s->nnod_surf_sf = istack_grp[mesh_s->ngrp_surf_sf];
 	alloc_surf_grp_nod_item_viewer_s(mesh_s);
 	
@@ -367,7 +350,7 @@ int read_viewer_mesh_gz_c(const char *file_name, struct viewer_mesh *mesh_s){
 	num_word[0] = skip_comment_gz_c(lbuf, buf);
 	sscanf(buf, "%d", &itmp);
 	
-	read_group_stack_gz_viewer(1, mesh_s->ngrp_surf_sf, istack_grp);
+	read_group_stack_gz_viewer(mesh_s->ngrp_surf_sf, istack_grp);
 	mesh_s->nedge_surf_sf = istack_grp[mesh_s->ngrp_surf_sf];
 	alloc_surf_grp_edge_item_viewer_s(mesh_s);
 	
