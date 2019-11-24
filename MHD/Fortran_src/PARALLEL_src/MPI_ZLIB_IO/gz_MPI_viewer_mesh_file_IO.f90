@@ -85,26 +85,13 @@
       call gz_mpi_write_charahead(IO_param, len_int_txt,                &
      &    integer_textline(mgd_view_prm%num_pe_sf))
 !
-      num_item64 = mgd_v_mesh%view_mesh%nnod_viewer
-      call gz_mpi_write_stack_over_domain                               &
-     &   (IO_param, num_item64)
-!
-      num_item64 = mgd_v_mesh%view_mesh%nsurf_viewer
-      call gz_mpi_write_stack_over_domain                               &
-     &   (IO_param, num_item64)
-!
-      num_item64 = mgd_v_mesh%view_mesh%nedge_viewer
-      call gz_mpi_write_stack_over_domain                               &
-     &   (IO_param, num_item64)
-!
       call gz_mpi_write_charahead                                       &
      &   (IO_param, len(hd_node_viewer()), hd_node_viewer())
       call gz_mpi_write_charahead(IO_param, len_int_txt,                &
      &    integer_textline(mgd_view_prm%istack_v_node(nprocs)))
 !
-!
       call gz_mpi_write_viewer_position(IO_param,                       &
-     &    cast_long(mgd_v_mesh%view_mesh%nnod_viewer), n_vector,        &
+     &    mgd_v_mesh%view_mesh%nnod_viewer, n_vector,                   &
      &    mgd_v_mesh%view_mesh%inod_gl_view,                            &
      &    mgd_v_mesh%view_mesh%xx_view)
 !
@@ -114,10 +101,14 @@
       call gz_mpi_write_charahead(IO_param, len_int_txt,                &
      &    integer_textline(mgd_view_prm%istack_v_surf(nprocs)))
 !
+      call gz_mpi_write_num_of_data                                     &
+     &   (IO_param, mgd_v_mesh%view_mesh%nsurf_viewer)
       call gz_mpi_write_element_type                                    &
      &   (IO_param, iten, mgd_v_mesh%view_mesh%nsurf_viewer,            &
      &    mgd_v_mesh%view_mesh%surftyp_viewer)
 !
+      call gz_mpi_write_num_of_data                                     &
+     &   (IO_param, mgd_v_mesh%view_mesh%nsurf_viewer)
       call gz_mpi_write_ele_connect                                     &
      &   (IO_param, mgd_v_mesh%view_mesh%nsurf_viewer,                  &
      &    mgd_v_mesh%view_mesh%nnod_v_surf,                             &
@@ -130,6 +121,8 @@
       call gz_mpi_write_charahead(IO_param, len_int_txt,                &
      &    integer_textline(mgd_view_prm%istack_v_edge(nprocs)))
 !
+      call gz_mpi_write_num_of_data                                     &
+     &   (IO_param, mgd_v_mesh%view_mesh%nedge_viewer)
       call gz_mpi_write_ele_connect                                     &
      &   (IO_param, mgd_v_mesh%view_mesh%nedge_viewer,                  &
      &    mgd_v_mesh%view_mesh%nnod_v_edge,                             &
@@ -142,12 +135,12 @@
       call gz_mpi_write_charahead(IO_param, len_int_txt,                &
      &    integer_textline(mgd_view_prm%istack_v_surf(nprocs)))
 !
-!
+      call gz_mpi_write_num_of_data                                     &
+     &   (IO_param, mgd_v_mesh%view_mesh%nsurf_viewer)
       call gz_mpi_write_ele_connect(IO_param,                           &
      &    mgd_v_mesh%view_mesh%nsurf_viewer, nedge_4_surf,              &
      &    mgd_v_mesh%view_mesh%isurf_gl_view,                           &
      &    mgd_v_mesh%view_mesh%iedge_sf_viewer)
-!
 !
 !
       call gz_mpi_write_charahead                                       &
@@ -164,7 +157,6 @@
      &   (IO_param, len(hd_domain_edge_grp()), hd_domain_edge_grp())
       call gz_mpi_write_domain_grp_data                                 &
      &   (IO_param, mgd_v_mesh%domain_grps%edge_grp)
-!
 !
 !
       call gz_mpi_write_charahead                                       &

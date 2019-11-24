@@ -120,6 +120,7 @@
       if (iflag_debug.eq.1) write(*,*) 'set_belonged_ele_and_next_nod'
       call set_belonged_ele_and_next_nod                                &
      &   (fem_T%mesh, next_tbl_T%neib_ele, next_tbl_T%neib_nod)
+!
       call const_multi_node_clusters                                    &
      &   (3, fem_T%mesh, next_tbl_T%neib_nod, clusters_T)
 !

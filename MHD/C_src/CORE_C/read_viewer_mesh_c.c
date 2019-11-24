@@ -51,11 +51,14 @@ static long read_group_item_4_viewer(long sum_o, int npe, int ngrp, int *stack_s
 int read_viewer_mesh(const char *file_name, struct viewer_mesh *mesh_s){
 	char buf[LENGTHBUF];    /* array for reading line */
 	char **tmp_name_sf;
+	int *itmp_stack;
 	int itmp;
 	long offset = 0;
 	long sum_offset = 0;
 	int i;
 	
+	itmp_stack =  (int *)calloc((mesh_s->num_pe_sf)+1,sizeof(int));
+
 	printf("kemoviewer mesh file name: %s \n",file_name);
 	
 	/* Error for failed file*/ 	
@@ -73,19 +76,18 @@ int read_viewer_mesh(const char *file_name, struct viewer_mesh *mesh_s){
 	alloc_nummesh_viewer_s(mesh_s);
 	alloc_domain_stack_viewer_s(mesh_s);
 	
-	read_group_stack_4_viewer(mesh_s->num_pe_sf, 1, mesh_s->inod_sf_stack);
-	read_group_stack_4_viewer(mesh_s->num_pe_sf, 1, mesh_s->isurf_sf_stack);
-	read_group_stack_4_viewer(mesh_s->num_pe_sf, 1, mesh_s->iedge_sf_stack);
-	
-	mesh_s->nnod_viewer =  mesh_s->inod_sf_stack[mesh_s->num_pe_sf];
-	mesh_s->nsurf_viewer = mesh_s->isurf_sf_stack[mesh_s->num_pe_sf];
-	mesh_s->nedge_viewer = mesh_s->iedge_sf_stack[mesh_s->num_pe_sf];
-	
 	offset = skip_comment_c(fp_mesh);
 	sum_offset = offset + sum_offset;
 	
-	fgets(buf, LENGTHBUF, fp_mesh);
-	sscanf(buf, "%d", &itmp);
+//	fgets(buf, LENGTHBUF, fp_mesh);
+//	sscanf(buf, "%d", &itmp);
+
+	read_group_stack_4_viewer(mesh_s->num_pe_sf, 1, mesh_s->inod_sf_stack);
+	read_group_stack_4_viewer(mesh_s->num_pe_sf, 1, itmp_stack);
+	for (i= 0; i < mesh_s->num_pe_sf; i++){
+		mesh_s->inod_sf_stack[i+1] = mesh_s->inod_sf_stack[i+1] + mesh_s->inod_sf_stack[i];
+	};
+	mesh_s->nnod_viewer =  mesh_s->inod_sf_stack[mesh_s->num_pe_sf];
 	
 	alloc_node_viewer_s(mesh_s);
 	for (i= 0; i < mesh_s->nnod_viewer; i++) {
@@ -104,12 +106,21 @@ int read_viewer_mesh(const char *file_name, struct viewer_mesh *mesh_s){
 	offset = skip_comment_c(fp_mesh);
 	sum_offset = offset + sum_offset;
 	
-	fgets(buf, LENGTHBUF, fp_mesh);
-	sscanf(buf, "%d", &itmp);
+//	fgets(buf, LENGTHBUF, fp_mesh);
+//	sscanf(buf, "%d", &itmp);
+	read_group_stack_4_viewer(mesh_s->num_pe_sf, 1, mesh_s->isurf_sf_stack);
+	read_group_stack_4_viewer(mesh_s->num_pe_sf, 1, itmp_stack);
+	for (i= 0; i < mesh_s->num_pe_sf; i++){
+		mesh_s->isurf_sf_stack[i+1] = mesh_s->isurf_sf_stack[i+1] + mesh_s->isurf_sf_stack[i];
+	};
+	mesh_s->nsurf_viewer = mesh_s->isurf_sf_stack[mesh_s->num_pe_sf];
 	
 	alloc_sf_type_viewer_s(mesh_s);
 	read_listed_item_viewer(mesh_s->nsurf_viewer, mesh_s->surftyp_viewer);
 	
+	read_group_stack_4_viewer(mesh_s->num_pe_sf, 1, itmp_stack);
+	read_group_stack_4_viewer(mesh_s->num_pe_sf, 1, itmp_stack);
+
 	alloc_surface_params_s(mesh_s);
 	alloc_surf_connect_viewer_s(mesh_s);
 	
@@ -164,8 +175,15 @@ int read_viewer_mesh(const char *file_name, struct viewer_mesh *mesh_s){
 	
 	offset = skip_comment_c(fp_mesh);
 	sum_offset = offset + sum_offset;
-	fgets(buf, LENGTHBUF, fp_mesh);
-	sscanf(buf, "%d", &itmp);
+//	fgets(buf, LENGTHBUF, fp_mesh);
+//	sscanf(buf, "%d", &itmp);
+	read_group_stack_4_viewer(mesh_s->num_pe_sf, 1, mesh_s->iedge_sf_stack);
+	read_group_stack_4_viewer(mesh_s->num_pe_sf, 1, itmp_stack);
+	for (i= 0; i < mesh_s->num_pe_sf; i++){
+		mesh_s->iedge_sf_stack[i+1] = mesh_s->iedge_sf_stack[i+1] + mesh_s->iedge_sf_stack[i];
+	};
+	mesh_s->nedge_viewer = mesh_s->iedge_sf_stack[mesh_s->num_pe_sf];
+	
 	alloc_edge_4_sf_viewer_s(mesh_s);
 	
 	if( mesh_s->nnod_4_edge == 3 ){
@@ -185,6 +203,7 @@ int read_viewer_mesh(const char *file_name, struct viewer_mesh *mesh_s){
 				&mesh_s->ie_edge_viewer[i][1]);
 		}
 	}
+	free(itmp_stack);
 	
 	/*printf("mesh_s->ie_edge_viewer %d %d\n", 
 	mesh_s->ie_edge_viewer[mesh_s->nedge_viewer-1][0],

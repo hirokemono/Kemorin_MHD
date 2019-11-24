@@ -23,7 +23,7 @@
 !!     &         (id_mpi_file, ioffset, ilength, nline, textbuf)
 !!      subroutine calypso_mpi_seek_write_real                          &
 !!     &         (id_mpi_file, ioffset, num, vector)
-!!      subroutine calypso_mpi_seek_write_int8                          &
+!!      subroutine 	                          &
 !!     &         (id_mpi_file, ioffset, num, i8_vector)
 !!
 !!      subroutine calypso_mpi_seek_write_head_c                        &
