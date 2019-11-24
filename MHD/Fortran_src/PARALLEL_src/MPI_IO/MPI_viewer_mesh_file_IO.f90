@@ -80,18 +80,14 @@
       call mpi_write_charahead(IO_param, len_int_txt,                   &
      &    integer_textline(mgd_view_prm%num_pe_sf))
 
-      num64 = mgd_v_mesh%view_mesh%nnod_viewer
-      call mpi_write_stack_over_domain(IO_param, num64)
-      num64 = mgd_v_mesh%view_mesh%nsurf_viewer
-      call mpi_write_stack_over_domain(IO_param, num64)
-      num64 = mgd_v_mesh%view_mesh%nedge_viewer
-      call mpi_write_stack_over_domain(IO_param, num64)
-!
       call mpi_write_charahead                                          &
      &   (IO_param, len(hd_node_viewer()), hd_node_viewer())
       call mpi_write_charahead(IO_param, len_int_txt,                   &
      &    integer_textline(mgd_view_prm%istack_v_node(nprocs)))
 !
+!
+      num64 = mgd_v_mesh%view_mesh%nnod_viewer
+      call mpi_write_stack_over_domain(IO_param, num64)
 !
       call mpi_write_viewer_position(IO_param,                          &
      &    mgd_v_mesh%view_mesh%nnod_viewer, ithree,                     &
@@ -104,10 +100,13 @@
       call mpi_write_charahead(IO_param, len_int_txt,                   &
      &    integer_textline(mgd_view_prm%istack_v_surf(nprocs)))
 !
+	  num64 = mgd_v_mesh%view_mesh%nsurf_viewer
+      call mpi_write_stack_over_domain(IO_param, num64)
       call mpi_write_viewer_element_type                                &
      &   (IO_param, iten, mgd_v_mesh%view_mesh%nsurf_viewer,            &
      &    mgd_v_mesh%view_mesh%surftyp_viewer)
 !
+	  call mpi_write_stack_over_domain(IO_param, num64)
       call mpi_write_viewer_connect                                     &
      &   (IO_param, mgd_v_mesh%view_mesh%nsurf_viewer,                  &
      &    mgd_v_mesh%view_mesh%nnod_v_surf,                             &
@@ -120,6 +119,8 @@
       call mpi_write_charahead(IO_param, len_int_txt,                   &
      &    integer_textline(mgd_view_prm%istack_v_edge(nprocs)))
 !
+      num64 = mgd_v_mesh%view_mesh%nedge_viewer
+      call mpi_write_stack_over_domain(IO_param, num64)
       call mpi_write_viewer_connect                                     &
      &   (IO_param, mgd_v_mesh%view_mesh%nedge_viewer,                  &
      &    mgd_v_mesh%view_mesh%nnod_v_edge,                             &
@@ -132,7 +133,8 @@
       call mpi_write_charahead(IO_param, len_int_txt,                   &
      &    integer_textline(mgd_view_prm%istack_v_surf(nprocs)))
 !
-!
+      num64 = mgd_v_mesh%view_mesh%nsurf_viewer
+      call mpi_write_stack_over_domain(IO_param, num64)
       call mpi_write_viewer_connect(IO_param,                           &
      &    mgd_v_mesh%view_mesh%nsurf_viewer, nedge_4_surf,              &
      &    mgd_v_mesh%view_mesh%isurf_gl_view,                           &

@@ -61,7 +61,7 @@
       ilength = len_int8_and_vector_textline(numdir)
       led = nnod * len_int8_and_vector_textline(numdir)
       call istack64_4_parallel_data(led, IO_param)
-!      call mpi_write_stack_over_domain(IO_param, led)
+      call mpi_write_stack_over_domain(IO_param, led)
 !
       ioffset = IO_param%ioff_gl                                        &
      &         + IO_param%istack_merged(IO_param%id_rank)
@@ -107,7 +107,7 @@
      &       + len_multi_6digit_line(nrest)
       end if
 !
-!      call mpi_write_stack_over_domain(IO_param, led)
+      call mpi_write_stack_over_domain(IO_param, led)
       call istack64_4_parallel_data(led, IO_param)
 !
       ioffset = IO_param%ioff_gl                                        &
@@ -158,7 +158,7 @@
         led = ilength * nele
       end if
 !
-!      call mpi_write_stack_over_domain(IO_param, led)
+      call mpi_write_stack_over_domain(IO_param, led)
       call istack64_4_parallel_data(led, IO_param)
 !
       ioffset = IO_param%ioff_gl                                        &
@@ -190,14 +190,14 @@
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
       type(viewer_group_data), intent(in) :: view_grp
 !
-      integer(kind = kint) :: total_count
       integer(kind = kint_gl) :: led
+      character(len=kchara), parameter :: domain_name = 'Domain'
 !
 !
-      call MPI_allREDUCE(view_grp%num_item, total_count, 1,             &
-     &    CALYPSO_INTEGER, MPI_SUM, CALYPSO_COMM, ierr_MPI)
-      call mpi_write_charahead(IO_param, len_int_txt,                   &
-     &    integer_textline(total_count))
+      call mpi_write_charahead(IO_param,                                &
+     &    len_one_word_textline(domain_name),                           &
+     &    one_word_textline(domain_name))
+!
       led = view_grp%num_item
       call mpi_write_stack_over_domain(IO_param, led)
       call mpi_write_viewer_grp_item(IO_param, ieight,                  &
@@ -215,25 +215,38 @@
       character(len=kchara), intent(in) :: grp_name(num_grp)
       type(viewer_group_data), intent(in) :: view_grp
 !
-      integer(kind = kint) :: i, ist, num, ntot, ip
-      integer(kind = kint) :: num_global(nprocs)
+      integer :: ilen_line
+      integer(kind = kint_gl) :: num_item64
+      integer(kind = kint) :: i, ist, num
+      integer(kind = kint), allocatable :: num_l(:), istack_g(:)
 !
 !
       call mpi_write_charahead(IO_param, len_int_txt,                   &
      &    integer_textline(num_grp))
 !
-      ntot = 0
+      allocate(num_l(num_grp))
+      allocate(istack_g(0:num_grp))
       do i = 1, num_grp
-        num = view_grp%istack_sf(i) - view_grp%istack_sf(i-1)
-        call MPI_Allgather(num, 1, CALYPSO_INTEGER, num_global,         &
-     &      1, CALYPSO_INTEGER, CALYPSO_COMM, ierr_MPI)
-        do ip = 2, nprocs
-          num_global(ip) = num_global(ip-1) + num_global(ip)
-        end do
-        num = ntot + num_global(my_rank+1)
-        ntot = ntot + num_global(nprocs)
-        call mpi_write_num_of_data(IO_param, num)
+        num_l(i) = view_grp%istack_sf(i) - view_grp%istack_sf(i-1)
       end do
+      call MPI_allREDUCE(num_l, istack_g(1), num_grp, CALYPSO_INTEGER,  &
+     &    MPI_SUM, CALYPSO_COMM, ierr_MPI)
+      istack_g(0) = 0
+      do i = 1, num_grp
+        istack_g(i) = istack_g(i) + istack_g(i-1)
+      end do
+!
+      ist = 0
+      do
+        num = min(8, num_grp-ist)
+        ilen_line = len_multi_int_textline(num)
+        call mpi_write_charahead(IO_param, ilen_line,                   &
+     &      multi_int_textline(num, istack_g(ist+1)))
+        ist = ist + num
+        if(ist .ge. num_grp) exit
+      end do
+!
+      deallocate(num_l, istack_g)
 !
       do i = 1, num_grp
         call mpi_write_charahead(IO_param,                              &
@@ -242,6 +255,8 @@
 !
         ist = view_grp%istack_sf(i-1) + 1
         num = view_grp%istack_sf(i) - view_grp%istack_sf(i-1)
+        num_item64 = num
+        call mpi_write_stack_over_domain(IO_param, num_item64)
         call mpi_write_viewer_grp_item                                  &
      &     (IO_param, ieight, num, view_grp%item_sf(ist))
       end do
@@ -263,8 +278,7 @@
 !
 !
       if(num .le. 0) then
-!        led = ione
-         led = izero
+        led = ione
       else if(num .gt. 0) then
         nrest = mod((num-1),ncolumn) + 1
         loop = (num-1)/ncolumn
@@ -272,7 +286,7 @@
      &       + len_multi_int_textline(nrest)
       end if
 !
-!      call mpi_write_stack_over_domain(IO_param, led)
+      call mpi_write_stack_over_domain(IO_param, led)
       call istack64_4_parallel_data(led, IO_param)
 !
       ioffset = IO_param%ioff_gl                                        &
@@ -291,9 +305,9 @@
         call calypso_mpi_seek_write_chara(IO_param%id_file, ioffset,    &
      &      len_multi_int_textline(nrest),                              &
      &      multi_int_textline(nrest, int_dat(num-nrest+1)))
-!      else
-!        call calypso_mpi_seek_write_chara                              &
-!     &     (IO_param%id_file, ioffset, ione, char(10))
+      else
+        call calypso_mpi_seek_write_chara                               &
+     &     (IO_param%id_file, ioffset, ione, char(10))
       end if
 !
       end subroutine mpi_write_viewer_grp_item

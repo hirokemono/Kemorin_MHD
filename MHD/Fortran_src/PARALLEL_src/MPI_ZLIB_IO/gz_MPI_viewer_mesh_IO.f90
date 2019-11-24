@@ -8,7 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine gz_mpi_write_viewer_position                         &
-!!     &         (IO_param, nnod, numdir, id_global, xx)
+!!     &         (IO_param, nnod64, numdir, id_global, xx)
 !!
 !!      subroutine gz_mpi_write_domain_grp_data(IO_param, view_grp)
 !!      subroutine gz_mpi_write_viewer_grp_data                         &
@@ -43,22 +43,20 @@
 ! -----------------------------------------------------------------------
 !
       subroutine gz_mpi_write_viewer_position                           &
-     &         (IO_param, nnod, numdir, id_global, xx)
+     &         (IO_param, nnod64, numdir, id_global, xx)
 !
       use gz_MPI_position_IO
       use zlib_convert_ascii_vector
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
-      integer(kind=kint), intent(in) :: nnod
+      integer(kind=kint_gl), intent(in) :: nnod64
       integer(kind=kint), intent(in) :: numdir
-      integer(kind=kint_gl), intent(in) :: id_global(nnod)
-      real(kind=kreal), intent(in) :: xx(nnod, numdir)
+      integer(kind=kint_gl), intent(in) :: id_global(nnod64)
+      real(kind=kreal), intent(in) :: xx(nnod64, numdir)
 !
       integer(kind = MPI_OFFSET_KIND) :: ioffset
-      integer(kind = kint_gl) :: nnod64
 !
-      nnod64 = cast_long(nnod)
-      call gz_mpi_write_num_of_data(IO_param, nnod)
+      call gz_mpi_write_stack_over_domain(IO_param, nnod64)
 !
       call defleate_node_position(nnod64, numdir, id_global, xx, zbuf)
 !
