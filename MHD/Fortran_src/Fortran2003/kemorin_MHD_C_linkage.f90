@@ -129,9 +129,6 @@
 !    int  kemoview_close_PSF_view();
 !    void kemoview_close_fieldline_view();
 !    
-!    void kemoview_set_pick_surface_command(const char *command);
-!    void kemoview_get_pick_surface_command(char *command);
-!    
 !    void kemoview_set_viewtype(int sel);
 !    
 !    

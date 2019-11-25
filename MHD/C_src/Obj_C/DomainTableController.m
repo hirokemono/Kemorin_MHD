@@ -87,7 +87,7 @@
 }
 
 - (IBAction) SelectMeshFile:(id)pId{
-	NSArray *meshFileTypes = [NSArray arrayWithObjects:@"ksm",@"KSM",@"gz",@"GZ",@"gfm",@"GFM",nil];
+	NSArray *meshFileTypes = [NSArray arrayWithObjects:@"ksm",@"KSM",@"gz",@"GZ",nil];
 	NSOpenPanel *MeshOpenPanelObj	= [NSOpenPanel openPanel];
 	[MeshOpenPanelObj setTitle:@"Choose mesh data"];
     [MeshOpenPanelObj setAllowedFileTypes:meshFileTypes];

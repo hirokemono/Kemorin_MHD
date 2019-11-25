@@ -162,16 +162,6 @@ void kemoview_close_fieldline_view(void){
 	return;
 }
 
-void kemoview_set_pick_surface_command(struct kv_string *command){
-    dealloc_kvstring(kemo_sgl->kemo_mesh->mesh_m->pick_surface_command);
-    kemo_sgl->kemo_mesh->mesh_m->pick_surface_command = alloc_kvstring();
-	alloc_kvstringitem(strlen(command->string), kemo_sgl->kemo_mesh->mesh_m->pick_surface_command);
-};
-void kemoview_get_pick_surface_command(struct kv_string *command){
-	unsigned long length = strlen(kemo_sgl->kemo_mesh->mesh_m->pick_surface_command->string);
-	alloc_kvstringitem(length, command);
-};
-
 void kemoview_write_modelview_file(struct kv_string *filename){
 	write_GL_modelview_file(filename, kemo_sgl->view_s);
 }

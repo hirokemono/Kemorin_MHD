@@ -76,7 +76,6 @@ void dealloc_draw_mesh_flags(struct mesh_menu_val *mesh_m){
 	free(mesh_m->draw_domains_grid);
 	free(mesh_m->draw_domains_nod);
 	
-	dealloc_kvstring(mesh_m->pick_surface_command);
 	dealloc_kvstring(mesh_m->mesh_file_name);
 	return;
 }

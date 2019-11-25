@@ -92,21 +92,6 @@ void read_kemoview_data_glut(){
 	printf("stripped_ext %s\n", stripped_ext->string);
     kemoview_free_kvstring(stripped_ext);
 	
-    if(iflag_datatype == IFLAG_FULL_MESH_GZ || iflag_datatype == IFLAG_FULL_MESH){
-        kemoview_free_kvstring(filename);
-
-        command = kemoview_alloc_kvstring();
-        set_pickup_command(command);
-        kemoview_set_pick_surface_command(command);
-        kemoview_free_kvstring(command);
-        
-        filename = kemoview_alloc_kvstring();
-        kemoview_alloc_kvstringitem(strlen(stripped_ext->string)+10, filename);
-        strcpy(filename->string, file_prefix->string);
-        strcat(filename->string, ".ksm");
-        if(iflag_datatype == IFLAG_FULL_MESH_GZ){strcat(filename->string, ".gz");};
-    };
-	
 	iflag_datatype = kemoview_open_data(filename);
     kemoview_free_kvstring(file_prefix);
     kemoview_free_kvstring(filename);

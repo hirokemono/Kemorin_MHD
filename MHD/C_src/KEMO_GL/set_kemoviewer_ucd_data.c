@@ -9,52 +9,6 @@
 
 #include "set_kemoviewer_ucd_data.h"
 
-static void run_pick_surface_c(struct mesh_menu_val *mesh_m){
-	unsigned long length = strlen(mesh_m->pick_surface_command->string) 
-			+ strlen(mesh_m->mesh_file_name->string) + 10;
-	struct kv_string *file_prefix = alloc_kvstring();
-	struct kv_string *file_tmp = alloc_kvstring();
-	struct kv_string *file_ext = alloc_kvstring();
-	struct kv_string *command = alloc_kvstring();
-	
-	alloc_kvstringitem(length, command);
-	
-	if (mesh_m->iformat_surface_mesh == IFLAG_FULL_MESH_GZ) {
-		alloc_kvstringitem(strlen(mesh_m->mesh_file_name->string), file_prefix);
-		get_ext_from_file_name_c(mesh_m->mesh_file_name->string, 
-					file_prefix->string, file_ext->string);
-    } else {
-        alloc_copy_string(mesh_m->mesh_file_name->string, file_prefix);
-    };
-	dealloc_kvstring(mesh_m->mesh_file_name);
-	
-	alloc_kvstringitem(strlen(mesh_m->mesh_file_name->string), file_tmp);
-	alloc_kvstringitem(strlen(mesh_m->mesh_file_name->string), file_ext);
-	get_ext_from_file_name_c(file_prefix->string, file_tmp->string, file_ext->string);
-	get_ext_from_file_name_c(file_tmp->string, file_prefix->string, file_ext->string);
-	dealloc_kvstring(file_tmp);
-	
-	strcpy(command->string, mesh_m->pick_surface_command->string);
-	strcat(command->string, "    ");
-	strcat(command->string, file_prefix->string);
-	printf("pick surface command line: %s\n", command->string);
-	system(command->string);
-	dealloc_kvstring(command);
-	
-	mesh_m->mesh_file_name = alloc_kvstring();
-	alloc_kvstringitem(strlen(file_prefix->string)+10, mesh_m->mesh_file_name);
-	if (mesh_m->iformat_surface_mesh == IFLAG_FULL_MESH_GZ) {
-		sprintf(mesh_m->mesh_file_name->string, "%s.ksm.gz",file_prefix->string);
-		mesh_m->iformat_surface_mesh = IFLAG_SURF_MESH_GZ;
-	} else {
-		sprintf(mesh_m->mesh_file_name->string, "%s.ksm",file_prefix->string);
-		mesh_m->iformat_surface_mesh = IFLAG_SURF_MESH;
-	};
-	dealloc_kvstring(file_prefix);
-	
-	return;
-}
-
 int set_data_format_flag(const char *file_name, char *file_head, char *file_ext){
 	int ifile_type;
 	
@@ -69,11 +23,6 @@ int set_data_format_flag(const char *file_name, char *file_head, char *file_ext)
         if((file_ext[0] == 'k' && file_ext[1] == 's' && file_ext[2] == 'm')
            || (file_ext[0] == 'K' && file_ext[1] == 'S' && file_ext[2] == 'M') ){
             ifile_type = IFLAG_SURF_MESH_GZ;
-        } else if((file_ext[0] == 'g' && file_ext[1] == 'f' && file_ext[2] == 'm')
-                  || (file_ext[0] == 'G' && file_ext[1] == 'F' && file_ext[2] == 'M') ){
-            ifile_type = IFLAG_FULL_MESH_GZ;
-            get_ext_from_file_name_c(file_head2, file_head, file_ext);
-            strngcopy(file_head2, file_head);
         } else if((file_ext[0] == 'u' && file_ext[1] == 'd' && file_ext[2] == 't')
                   || (file_ext[0] == 'U' && file_ext[1] == 'D' && file_ext[2] == 'T') ){
             ifile_type = IFLAG_SURF_UDT_GZ;
@@ -95,12 +44,6 @@ int set_data_format_flag(const char *file_name, char *file_head, char *file_ext)
         } else if(	  (file_ext[0] == 'k' && file_ext[1] == 's' && file_ext[2] == 'm')
                   ||	  (file_ext[0] == 'K' && file_ext[1] == 'S' && file_ext[2] == 'M') ){
             ifile_type = IFLAG_SURF_MESH;
-        } else if(    (file_ext[0] == 'g' && file_ext[1] == 'f' && file_ext[2] == 'm')
-                  ||	  (file_ext[0] == 'G' && file_ext[1] == 'F' && file_ext[2] == 'M') ){
-            ifile_type = IFLAG_FULL_MESH;
-
-            get_ext_from_file_name_c(file_head, file_head2, file_ext);
-            strngcopy(file_head, file_head2);
         } else if(	  (file_ext[0] == 'u' && file_ext[1] == 'd' && file_ext[2] == 't')
                   ||	  (file_ext[0] == 'U' && file_ext[1] == 'D' && file_ext[2] == 'T') ){
             ifile_type = IFLAG_SURF_UDT;
@@ -140,16 +83,11 @@ int kemoviewer_open_data(struct kv_string *filename, struct kemoview_mesh *kemo_
 	printf("file_name %s\n", filename->string);
     dealloc_kvstring(file_ext);
     
-	if(   iflag_fileformat == IFLAG_SURF_MESH || iflag_fileformat == IFLAG_SURF_MESH_GZ
-       || iflag_fileformat == IFLAG_FULL_MESH || iflag_fileformat == IFLAG_FULL_MESH_GZ){
+	if(   iflag_fileformat == IFLAG_SURF_MESH || iflag_fileformat == IFLAG_SURF_MESH_GZ){
         kemo_mesh->mesh_m->iformat_surface_mesh = iflag_fileformat;
 		
 		dealloc_kvstring(kemo_mesh->mesh_m->mesh_file_name);
 		kemo_mesh->mesh_m->mesh_file_name = init_kvstring_by_string(filename->string);
-        
-        if(iflag_fileformat == IFLAG_FULL_MESH || iflag_fileformat == IFLAG_FULL_MESH_GZ){
-            run_pick_surface_c(kemo_mesh->mesh_m);
-        };
         
 		reset_draw_mesh(kemo_mesh);
 		set_kemoview_mesh_data(kemo_mesh->mesh_d, kemo_mesh->mesh_m, view);

@@ -46,7 +46,7 @@
 - (IBAction) OpenKemoviewerFileByMenu:(id)pId;
 {
 	NSArray *kemoviewFileTypes = [NSArray arrayWithObjects:@"ksm",@"KSM",@"udt",@"UDT",@"inp",@"INP",
-							  @"vtk",@"VTK",@"vtd",@"VTD",@"gz",@"GZ",@"gfm",@"GFM",nil];
+							  @"vtk",@"VTK",@"vtd",@"VTD",@"gz",@"GZ",nil];
 	NSOpenPanel *KemoviewOpenPanelObj	= [NSOpenPanel openPanel];
 	[KemoviewOpenPanelObj setTitle:@"Choose data for Kemoviewer"];
     [KemoviewOpenPanelObj setAllowedFileTypes:kemoviewFileTypes];
@@ -155,15 +155,6 @@
 	ImageFormatFlag = [[defaults stringForKey:@"ImageFormatID"] intValue];
 	ImageFormatFlag = [[_ImageFormat_item selectedCell] tag];
 
-}
-
-- (IBAction)getPickSurfCommandName:(id)sender
-{
-	NSUserDefaults* defaults = [_user_defaults_controller defaults];
-	PickSurfaceCommand = [defaults stringForKey:@"PickSurfaceCommand"];
-    struct kv_string *command = kemoview_init_kvstring_by_string([PickSurfaceCommand UTF8String]);
-	kemoview_set_pick_surface_command(command);
-    kemoview_free_kvstring(command);
 }
 
 @end

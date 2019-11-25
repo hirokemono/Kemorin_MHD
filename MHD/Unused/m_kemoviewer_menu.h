@@ -57,14 +57,12 @@
 #define IFLAG_SURFACES   2
 #define IFLAG_LINES      1
 
-#define IFLAG_FULL_MESH   0
 #define IFLAG_SURF_MESH   1
 #define IFLAG_SURF_UDT   10
 #define IFLAG_SURF_UCD   11
 #define IFLAG_SURF_VTD   20
 #define IFLAG_SURF_VTK   21
 
-#define IFLAG_FULL_MESH_GZ  100
 #define IFLAG_SURF_MESH_GZ  101
 #define IFLAG_SURF_UDT_GZ   110
 #define IFLAG_SURF_UCD_GZ   111

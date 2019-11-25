@@ -36,9 +36,6 @@
 	NSMutableArray *PsfFieldName;
 	NSMutableArray *PsfMinimum;
 	NSMutableArray *PsfMaximum;
-
-	NSString *PickSurfaceCommand;
-
 }
 @property NSInteger ImageFormatFlag;
 
@@ -49,8 +46,5 @@
 - (IBAction) LoadViewMatrixFile:(id)pId;
 - (IBAction) SaveImageFile:(id)pId;
 
-
 - (IBAction)ChooseImageFormatAction:(id)sender;
-- (IBAction)getPickSurfCommandName:(id)sender;
-
 @end
