@@ -55,7 +55,7 @@ private :: collect_single_viewer_mesh
 !
       use m_node_quad_2_linear_sf
       use find_mesh_file_format
-      use viewer_mesh_IO_select
+      use viewer_file_IO
       use load_mesh_data
       use add_comm_table_in_node_grp
       use const_kemoview_mesh
@@ -134,7 +134,7 @@ private :: collect_single_viewer_mesh
      &         (nprocs_sf, mesh_file, view_mesh, domain_grps,           &
      &          view_nod_grps, view_ele_grps, view_sf_grps)
 !
-      use viewer_mesh_IO_select
+      use viewer_file_IO
       use merge_viewer_mesh
 !
       integer, intent(in) :: nprocs_sf

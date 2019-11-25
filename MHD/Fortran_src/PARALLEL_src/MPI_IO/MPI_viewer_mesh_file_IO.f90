@@ -100,13 +100,13 @@
       call mpi_write_charahead(IO_param, len_int_txt,                   &
      &    integer_textline(mgd_view_prm%istack_v_surf(nprocs)))
 !
-	  num64 = mgd_v_mesh%view_mesh%nsurf_viewer
+      num64 = mgd_v_mesh%view_mesh%nsurf_viewer
       call mpi_write_stack_over_domain(IO_param, num64)
       call mpi_write_viewer_element_type                                &
      &   (IO_param, iten, mgd_v_mesh%view_mesh%nsurf_viewer,            &
      &    mgd_v_mesh%view_mesh%surftyp_viewer)
 !
-	  call mpi_write_stack_over_domain(IO_param, num64)
+      call mpi_write_stack_over_domain(IO_param, num64)
       call mpi_write_viewer_connect                                     &
      &   (IO_param, mgd_v_mesh%view_mesh%nsurf_viewer,                  &
      &    mgd_v_mesh%view_mesh%nnod_v_surf,                             &

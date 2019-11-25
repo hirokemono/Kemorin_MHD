@@ -76,7 +76,7 @@
 !
       real(kind = kreal), allocatable :: node_volume(:)
 !
-      integer i, ist, ied, inod, inum
+      integer :: i
 !
       call init_elapse_time_by_TOTAL
       call elapsed_label_4_ele_comm_tbl

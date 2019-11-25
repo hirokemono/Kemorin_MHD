@@ -49,8 +49,6 @@
       use int_volume_of_single_domain
       use set_surf_grp_vectors
 !
-      use single_const_kemoview_mesh
-!
       use mesh_IO_select
       use set_nnod_4_ele_by_type
 !
@@ -68,7 +66,6 @@
       type(jacobians_type), save :: jacobians_T
       type(shape_finctions_at_points), save :: spfs_T
 !
-      type(single_make_vierwer_mesh), save :: sgl_viewer_p
       type(domain_groups_4_partitioner), save :: domain_grp1
       type(internals_4_part), save :: internals_part1
       type(partitioner_comm_tables), save :: comm_part1
@@ -295,15 +292,6 @@
 !C-- Finalize
 !      write(*,*) 'dealloc_nod_ele_infos'
       call dealloc_nod_ele_infos(org_fem%mesh, org_fem%group)
-!
-!  ========= Construct subdomain information for viewer ==============
-!
-      if(part_p1%iflag_viewer_output .gt. 0) then
-        write(*,*) 'choose_surface_mesh_sgl'
-        call choose_surface_mesh_sgl                                    &
-     &     (part_p1%num_domain, part_p1%distribute_mesh_file,           &
-     &      sgl_viewer_p)
-      end if
 !
       call output_elapsed_times
 !

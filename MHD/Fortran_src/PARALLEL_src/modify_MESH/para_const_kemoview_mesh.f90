@@ -51,7 +51,7 @@
       use parallel_FEM_mesh_init
       use const_kemoview_mesh
       use set_parallel_file_name
-      use viewer_mesh_IO_select
+      use viewer_file_IO
       use add_comm_table_in_node_grp
 !
       type(field_IO_params), intent(in) :: mesh_file
