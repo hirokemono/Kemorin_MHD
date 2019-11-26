@@ -7,7 +7,7 @@
 !>@brief Surface mesh data generator for kemoviewer
 !!
 !!@verbatim
-!!      subroutine pickup_surface_mesh_para(mesh_file, par_v)
+!!      subroutine pickup_surface_mesh(mesh_file, par_v)
 !!        type(field_IO_params), intent(inout) :: mesh_file
 !!        type(parallel_make_vierwer_mesh), intent(inout) :: par_v
 !!@endverbatim
@@ -44,7 +44,7 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine pickup_surface_mesh_para(mesh_file, par_v)
+      subroutine pickup_surface_mesh(mesh_file, par_v)
 !
       use m_node_quad_2_linear_sf
       use mpi_load_mesh_data
@@ -96,7 +96,7 @@
 !
       call deallocate_quad4_2_linear
 !
-      end subroutine pickup_surface_mesh_para
+      end subroutine pickup_surface_mesh
 !
 !------------------------------------------------------------------
 !

@@ -143,12 +143,6 @@
                                     <action selector="SaveImageFile:" target="1215" id="2632"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="Save As…" keyEquivalent="S" id="80">
-                                <modifierMask key="keyEquivalentModifierMask" shift="YES" command="YES"/>
-                                <connections>
-                                    <action selector="saveDocumentAs:" target="-1" id="363"/>
-                                </connections>
-                            </menuItem>
                             <menuItem isSeparatorItem="YES" id="74">
                                 <modifierMask key="keyEquivalentModifierMask" command="YES"/>
                             </menuItem>
@@ -4167,7 +4161,7 @@
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" heightSizable="YES"/>
                                     <clipView key="contentView" id="Vae-Vq-U6W">
                                         <rect key="frame" x="1" y="0.0" width="229" height="117"/>
-                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                        <autoresizingMask key="autoresizingMask"/>
                                         <subviews>
                                             <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" alternatingRowBackgroundColors="YES" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" headerView="8Zb-aV-5rs" id="Gdj-Kb-Y6t">
                                                 <rect key="frame" x="0.0" y="0.0" width="229" height="94"/>
@@ -5027,11 +5021,7 @@
                 <outlet property="parentWindow" destination="371" id="2227"/>
             </connections>
         </drawer>
-        <customObject id="2679" customClass="ResetViewControll">
-            <connections>
-                <outlet property="lookingToTextField" destination="BiT-o5-iAN" id="N08-oB-sN6"/>
-            </connections>
-        </customObject>
+        <customObject id="2679" customClass="ResetViewControll"/>
         <customObject id="2637" customClass="KemoviewerMovieMaker">
             <connections>
                 <outlet property="_kemoviewer" destination="3373" id="3388"/>

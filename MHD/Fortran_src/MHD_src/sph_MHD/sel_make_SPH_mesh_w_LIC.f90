@@ -259,7 +259,7 @@
      &          'FEM mesh for domain', my_rank, ' is done.'
 !
         if(FEM_mesh_flags%iflag_output_VMESH .gt. 0) then
-          call pickup_surface_mesh_para(mesh_file, par_view)
+          call pickup_surface_mesh(mesh_file, par_view)
         end if
       end if
 !
