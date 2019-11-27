@@ -1,0 +1,3 @@
+test_FFT.o: $(FFT_TEST_DIR)/test_FFT.f90 m_precision.o m_constants.o m_machine_parameter.o m_FFT_selector.o t_FFT_selector.o
+	$(F90) -c $(F90OPTFLAGS) $<
+

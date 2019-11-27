@@ -30,4 +30,7 @@ mod_list:
 
 
 module:
-	@$(MAKE_MOD_DEP) '$(MAKENAME)' '$$(FFT_PLANE_SRCDIR)' $(SRC_FFT_PLANE_COMMON)
+	@cat Makefile.depends >> $(MAKENAME)
+
+depends:
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(FFT_PLANE_SRCDIR)' $(SRC_FFT_PLANE_COMMON)

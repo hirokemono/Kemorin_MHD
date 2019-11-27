@@ -22,6 +22,8 @@ mod_list:
 	@echo  $(MOD_CTL) >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
 
-
 module:
-	@$(MAKE_MOD_DEP) '$(MAKENAME)' '$$(CTL_DIR)' $(SRC_CTL)
+	@cat Makefile.depends >> $(MAKENAME)
+
+depends:
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(CTL_DIR)' $(SRC_CTL)

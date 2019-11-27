@@ -1,0 +1,5 @@
+digit_test.o: $(GAUSS_TEST_DIR)/digit_test.f90 m_precision.o cal_num_digits.o
+	$(F90) -c $(F90OPTFLAGS) $<
+gaussian_points.o: $(GAUSS_TEST_DIR)/gaussian_points.f90 m_precision.o t_gauss_points.o
+	$(F90) -c $(F90OPTFLAGS) $<
+

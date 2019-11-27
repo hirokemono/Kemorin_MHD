@@ -1,0 +1,117 @@
+cal_r_4_refine.o: $(REFINER_DIR)/cal_r_4_refine.f90 m_precision.o m_constants.o m_geometry_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+cal_refined_nod_near_pole.o: $(REFINER_DIR)/cal_refined_nod_near_pole.f90 m_precision.o m_constants.o m_geometry_constants.o t_geometry_data.o t_surface_data.o t_edge_data.o t_refined_node_id.o cal_sph_4_refine.o
+	$(F90) -c $(F90OPTFLAGS) $<
+cal_sph_4_refine.o: $(REFINER_DIR)/cal_sph_4_refine.f90 m_precision.o m_constants.o m_geometry_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+cal_xyz_4_refine.o: $(REFINER_DIR)/cal_xyz_4_refine.f90 m_precision.o m_constants.o m_geometry_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+const_parallel_itp_table.o: $(REFINER_DIR)/const_parallel_itp_table.f90 m_precision.o m_constants.o m_machine_parameter.o t_interpolate_table.o t_interpolate_tbl_org.o t_interpolate_tbl_dest.o t_work_const_itp_table.o const_parallel_itp_tbl_dest.o const_parallel_itp_tbl_org.o ordering_itp_org_tbl.o
+	$(F90) -c $(F90OPTFLAGS) $<
+const_parallel_itp_tbl_dest.o: $(REFINER_DIR)/const_parallel_itp_tbl_dest.f90 m_precision.o t_interpolate_table.o t_interpolate_tbl_org.o t_interpolate_tbl_dest.o
+	$(F90) -c $(F90OPTFLAGS) $<
+const_parallel_itp_tbl_org.o: $(REFINER_DIR)/const_parallel_itp_tbl_org.f90 m_precision.o t_interpolate_table.o t_interpolate_tbl_org.o t_interpolate_tbl_dest.o
+	$(F90) -c $(F90OPTFLAGS) $<
+const_refine_interpolate.o: $(REFINER_DIR)/const_refine_interpolate.f90 m_precision.o m_constants.o m_machine_parameter.o m_file_format_switch.o t_geometry_data.o t_surface_data.o t_edge_data.o t_interpolate_table.o t_control_param_4_refiner.o t_refined_node_id.o t_refined_element_data.o t_work_merge_refine_itp.o itp_table_IO_select_4_zlib.o set_parallel_file_name.o t_mesh_data.o refinment_info_IO.o merge_refine_itp_table.o m_interpolate_table_IO.o set_refine_interpolate_tbl.o copy_interpolate_types.o set_merged_refine_itp.o
+	$(F90) -c $(F90OPTFLAGS) $<
+const_refined_connectivity.o: $(REFINER_DIR)/const_refined_connectivity.f90 m_precision.o m_constants.o m_geometry_constants.o t_geometry_data.o t_surface_data.o t_edge_data.o t_control_param_4_refiner.o t_refined_node_id.o t_refined_element_data.o m_refine_flag_parameters.o set_refined_connection.o set_local_refined_node.o cal_minmax_and_stacks.o
+	$(F90) -c $(F90OPTFLAGS) $<
+const_refined_group.o: $(REFINER_DIR)/const_refined_group.f90 m_precision.o t_mesh_data.o t_geometry_data.o t_surface_data.o t_edge_data.o t_group_data.o t_refined_node_id.o t_refined_element_data.o set_refined_node_group.o find_hanging_surface.o set_refined_ele_group.o set_refined_surf_group.o
+	$(F90) -c $(F90OPTFLAGS) $<
+copy_refined_nod_dbl.o: $(REFINER_DIR)/copy_refined_nod_dbl.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+copy_refined_nod_five_sf.o: $(REFINER_DIR)/copy_refined_nod_five_sf.f90 m_precision.o m_refine_flag_parameters.o
+	$(F90) -c $(F90OPTFLAGS) $<
+copy_refined_nod_for_five.o: $(REFINER_DIR)/copy_refined_nod_for_five.f90 m_precision.o m_refine_flag_parameters.o
+	$(F90) -c $(F90OPTFLAGS) $<
+copy_refined_nod_quad.o: $(REFINER_DIR)/copy_refined_nod_quad.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+copy_refined_nod_stri_edge.o: $(REFINER_DIR)/copy_refined_nod_stri_edge.f90 m_precision.o m_refine_flag_parameters.o
+	$(F90) -c $(F90OPTFLAGS) $<
+copy_refined_nod_tri_1dsurf.o: $(REFINER_DIR)/copy_refined_nod_tri_1dsurf.f90 m_precision.o m_refine_flag_parameters.o
+	$(F90) -c $(F90OPTFLAGS) $<
+copy_refined_nod_tri_edge.o: $(REFINER_DIR)/copy_refined_nod_tri_edge.f90 m_precision.o m_refine_flag_parameters.o
+	$(F90) -c $(F90OPTFLAGS) $<
+copy_refined_nod_tri_full.o: $(REFINER_DIR)/copy_refined_nod_tri_full.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+copy_refined_nod_tri_node.o: $(REFINER_DIR)/copy_refined_nod_tri_node.f90 m_precision.o m_refine_flag_parameters.o
+	$(F90) -c $(F90OPTFLAGS) $<
+copy_refined_nod_tri_surf.o: $(REFINER_DIR)/copy_refined_nod_tri_surf.f90 m_precision.o m_refine_flag_parameters.o
+	$(F90) -c $(F90OPTFLAGS) $<
+copy_refined_nod_tri_xyz.o: $(REFINER_DIR)/copy_refined_nod_tri_xyz.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+count_nnod_for_refine.o: $(REFINER_DIR)/count_nnod_for_refine.f90 m_precision.o m_constants.o t_geometry_data.o t_surface_data.o t_edge_data.o t_refined_node_id.o t_refined_element_data.o cal_minmax_and_stacks.o m_refine_flag_parameters.o
+	$(F90) -c $(F90OPTFLAGS) $<
+find_boundary_4_tri_refine.o: $(REFINER_DIR)/find_boundary_4_tri_refine.f90 m_precision.o m_geometry_constants.o m_refine_flag_parameters.o
+	$(F90) -c $(F90OPTFLAGS) $<
+find_hanging_surface.o: $(REFINER_DIR)/find_hanging_surface.f90 m_precision.o m_geometry_constants.o t_geometry_data.o t_surface_data.o t_edge_data.o m_refine_flag_parameters.o t_refined_node_id.o t_group_data.o
+	$(F90) -c $(F90OPTFLAGS) $<
+m_local_refiened_position.o: $(REFINER_DIR)/m_local_refiened_position.f90 m_constants.o m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+m_refine_flag_parameters.o: $(REFINER_DIR)/m_refine_flag_parameters.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+m_refined_connection_tbl.o: $(REFINER_DIR)/m_refined_connection_tbl.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+merge_domain_local_by_type.o: $(REFINER_DIR)/merge_domain_local_by_type.f90 m_precision.o t_mesh_data.o t_merged_geometry_data.o
+	$(F90) -c $(F90OPTFLAGS) $<
+merge_refine_itp_table.o: $(REFINER_DIR)/merge_refine_itp_table.f90 m_precision.o m_machine_parameter.o m_constants.o t_work_merge_refine_itp.o t_interpolate_tbl_org.o m_refine_flag_parameters.o copy_local_position_2_ele.o modify_local_positions.o t_interpolate_tbl_dest.o m_refined_connection_tbl.o shape_func_elements.o shape_func_3d_linear.o interporate_position_in_ele.o
+	$(F90) -c $(F90OPTFLAGS) $<
+refined_nod_2_mesh_data.o: $(REFINER_DIR)/refined_nod_2_mesh_data.f90 m_precision.o t_geometry_data.o t_refined_node_id.o m_geometry_constants.o t_refined_element_data.o
+	$(F90) -c $(F90OPTFLAGS) $<
+refinment_info_IO.o: $(REFINER_DIR)/refinment_info_IO.f90 m_precision.o m_machine_parameter.o m_constants.o t_geometry_data.o t_refined_element_data.o t_element_refinement_IO.o t_interpolate_tbl_org.o t_interpolate_tbl_dest.o t_work_merge_refine_itp.o set_parallel_file_name.o element_refine_file_IO.o m_refine_flag_parameters.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_all_refine_flags.o: $(REFINER_DIR)/set_all_refine_flags.f90 m_precision.o m_geometry_constants.o t_geometry_data.o t_surface_data.o t_edge_data.o t_refined_element_data.o set_surf_edge_refine_flags.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_control_id_4_refiner.o: $(REFINER_DIR)/set_control_id_4_refiner.f90 m_precision.o t_group_data.o skip_comment_f.o m_refine_flag_parameters.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_each_refined_connect.o: $(REFINER_DIR)/set_each_refined_connect.f90 m_precision.o m_refined_connection_tbl.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_element_refine_flag.o: $(REFINER_DIR)/set_element_refine_flag.f90 m_precision.o t_geometry_data.o t_surface_data.o t_group_data.o t_control_param_4_refiner.o find_boundary_4_tri_refine.o m_refine_flag_parameters.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_local_position_4_refine.o: $(REFINER_DIR)/set_local_position_4_refine.f90 m_precision.o m_refine_flag_parameters.o m_local_refiened_position.o t_geometry_data.o t_surface_data.o t_edge_data.o t_refined_node_id.o t_refined_element_data.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_local_refined_node.o: $(REFINER_DIR)/set_local_refined_node.f90 m_precision.o m_refine_flag_parameters.o t_geometry_data.o m_geometry_constants.o t_surface_data.o t_edge_data.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_merged_refine_itp.o: $(REFINER_DIR)/set_merged_refine_itp.f90 m_precision.o m_constants.o m_machine_parameter.o t_interpolate_tbl_org.o t_interpolate_tbl_dest.o t_work_merge_refine_itp.o set_refine_interpolate_tbl.o merge_refine_itp_table.o copy_local_position_2_ele.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_refine_flags_4_tri.o: $(REFINER_DIR)/set_refine_flags_4_tri.f90 m_precision.o m_machine_parameter.o t_geometry_data.o t_refined_element_data.o m_refine_flag_parameters.o m_geometry_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_refine_interpolate_tbl.o: $(REFINER_DIR)/set_refine_interpolate_tbl.f90 m_precision.o m_machine_parameter.o m_constants.o m_geometry_constants.o t_refined_node_id.o t_interpolate_tbl_org.o t_interpolate_tbl_dest.o copy_local_position_2_ele.o t_geometry_data.o t_surface_data.o t_edge_data.o t_refined_element_data.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_refined_connection.o: $(REFINER_DIR)/set_refined_connection.f90 m_precision.o m_refine_flag_parameters.o copy_refined_nod_quad.o copy_refined_nod_dbl.o copy_refined_nod_tri_xyz.o copy_refined_nod_tri_1dsurf.o copy_refined_nod_tri_full.o copy_refined_nod_tri_surf.o copy_refined_nod_tri_edge.o copy_refined_nod_tri_node.o copy_refined_nod_stri_edge.o copy_refined_nod_for_five.o copy_refined_nod_five_sf.o set_each_refined_connect.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_refined_ele_group.o: $(REFINER_DIR)/set_refined_ele_group.f90 m_precision.o t_group_data.o t_refined_element_data.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_refined_nod_2_sphere.o: $(REFINER_DIR)/set_refined_nod_2_sphere.f90 m_precision.o m_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_refined_node_group.o: $(REFINER_DIR)/set_refined_node_group.f90 m_precision.o t_geometry_data.o t_surface_data.o t_edge_data.o t_group_data.o t_refined_node_id.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_refined_node_id.o: $(REFINER_DIR)/set_refined_node_id.f90 m_precision.o t_geometry_data.o t_surface_data.o t_edge_data.o t_refined_node_id.o t_refined_element_data.o m_refine_flag_parameters.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_refined_position.o: $(REFINER_DIR)/set_refined_position.f90 t_mesh_data.o t_geometry_data.o t_surface_data.o t_edge_data.o t_refined_node_id.o t_control_param_4_refiner.o cal_xyz_4_refine.o cal_sph_4_refine.o cal_r_4_refine.o set_refined_nod_2_sphere.o cal_refined_nod_near_pole.o coordinate_converter.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_refined_surf_group.o: $(REFINER_DIR)/set_refined_surf_group.f90 m_precision.o m_constants.o m_geometry_constants.o t_surface_data.o t_edge_data.o t_group_data.o t_refined_node_id.o t_refined_element_data.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_surf_edge_refine_flags.o: $(REFINER_DIR)/set_surf_edge_refine_flags.f90 m_precision.o m_refine_flag_parameters.o set_surf_edge_tri_flag.o set_surf_edge_stri_flag.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_surf_edge_stri_flag.o: $(REFINER_DIR)/set_surf_edge_stri_flag.f90 m_precision.o m_refine_flag_parameters.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_surf_edge_tri_flag.o: $(REFINER_DIR)/set_surf_edge_tri_flag.f90 m_precision.o m_refine_flag_parameters.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_control_data_4_refine.o: $(REFINER_DIR)/t_control_data_4_refine.f90 m_precision.o t_ctl_data_4_platforms.o t_read_control_elements.o t_control_array_charaint.o t_control_array_character2.o skip_comment_f.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_control_data_refine_para.o: $(REFINER_DIR)/t_control_data_refine_para.f90 m_precision.o t_control_elements.o t_ctl_data_4_platforms.o t_control_data_4_refine.o t_read_control_elements.o skip_comment_f.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_control_param_4_refiner.o: $(REFINER_DIR)/t_control_param_4_refiner.f90 m_precision.o t_file_IO_parameter.o t_control_data_4_refine.o m_default_file_prefix.o skip_comment_f.o set_control_platform_data.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_control_param_refine_para.o: $(REFINER_DIR)/t_control_param_refine_para.f90 m_precision.o t_file_IO_parameter.o m_constants.o m_machine_parameter.o m_file_format_switch.o t_para_refine_itp_tables.o t_control_data_refine_para.o t_control_data_4_refine.o set_control_platform_data.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_para_refine_itp_tables.o: $(REFINER_DIR)/t_para_refine_itp_tables.f90 m_precision.o t_mesh_data.o t_interpolate_table.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_refined_element_data.o: $(REFINER_DIR)/t_refined_element_data.f90 m_precision.o m_geometry_constants.o t_geometry_data.o t_surface_data.o t_edge_data.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_refined_node_id.o: $(REFINER_DIR)/t_refined_node_id.f90 m_precision.o m_constants.o cal_minmax_and_stacks.o t_geometry_data.o t_surface_data.o t_edge_data.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_work_merge_refine_itp.o: $(REFINER_DIR)/t_work_merge_refine_itp.f90 m_precision.o t_geometry_data.o t_interpolate_table.o t_refined_node_id.o t_refined_element_data.o copy_mesh_structures.o
+	$(F90) -c $(F90OPTFLAGS) $<
+

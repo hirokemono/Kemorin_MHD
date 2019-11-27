@@ -24,7 +24,10 @@ mod_list:
 
 
 module:
-	@$(MAKE_MOD_DEP) '$(MAKENAME)' '$$(MHD_COMMON_DIR)' $(SRC_COMMON)
+	@cat Makefile.depends >> $(MAKENAME)
+
+depends:
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(MHD_COMMON_DIR)' $(SRC_COMMON)
 
 
 clean:

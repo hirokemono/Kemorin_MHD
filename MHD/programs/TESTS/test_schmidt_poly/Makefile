@@ -106,7 +106,10 @@ mod_list:
 
 
 module:
-	@$(MAKE_MOD_DEP) '$(MAKENAME)' '$$(SMDT_POLY_TEST_DIR)' $(SOURCES)
+	@cat Makefile.depends >> $(MAKENAME)
+
+depends:
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(SMDT_POLY_TEST_DIR)' $(SOURCES)
 
 clean:
 	rm -f *.o *.mod *~ *.par *.diag *.a

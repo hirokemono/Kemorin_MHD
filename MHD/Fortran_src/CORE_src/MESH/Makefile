@@ -24,7 +24,10 @@ mod_list:
 
 
 module:
-	@$(MAKE_MOD_DEP) '$(MAKENAME)' '$$(MESHDIR)' $(SRC_MESH)
+	@cat Makefile.depends >> $(MAKENAME)
+
+depends:
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(MESHDIR)' $(SRC_MESH)
 
 clean:
 	rm -f *.o *.mod *~ *.par *.diag *.a

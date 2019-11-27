@@ -30,7 +30,10 @@ mod_list:
 
 
 module:
-	@$(MAKE_MOD_DEP) '$(MAKENAME)' '$$(PLANE_COMMON_DIR)' $(SRC_PLANE_COMMON)
+	@cat Makefile.depends >> $(MAKENAME)
+
+depends:
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(PLANE_COMMON_DIR)' $(SRC_PLANE_COMMON)
 
 clean:
 	rm -f *.o *~ *.mod *.a; \

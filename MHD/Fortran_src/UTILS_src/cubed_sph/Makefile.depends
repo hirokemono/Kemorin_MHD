@@ -1,0 +1,99 @@
+cal_circle_position.o: $(CUBED_SPH_DIR)/cal_circle_position.f90 m_precision.o m_constants.o t_cubed_sph_surf_mesh.o t_cubed_sph_radius.o coordinate_converter.o modify_colat_cube_surf.o
+	$(F90) -c $(F90OPTFLAGS) $<
+cal_shell_coarse_position.o: $(CUBED_SPH_DIR)/cal_shell_coarse_position.f90 m_precision.o m_constants.o t_cubed_sph_surf_mesh.o t_cubed_sph_radius.o coordinate_converter.o modify_colat_cube_surf.o
+	$(F90) -c $(F90OPTFLAGS) $<
+cal_shell_position.o: $(CUBED_SPH_DIR)/cal_shell_position.f90 m_precision.o m_constants.o t_cubed_sph_surf_mesh.o t_cubed_sph_mesh.o t_cubed_sph_radius.o t_numref_cubed_sph.o const_rect_sphere_surface.o coordinate_converter.o modify_colat_cube_surf.o
+	$(F90) -c $(F90OPTFLAGS) $<
+check_coarsing_level.o: $(CUBED_SPH_DIR)/check_coarsing_level.f90 m_precision.o t_numref_cubed_sph.o t_cubed_sph_radius.o t_cubed_sph_surf_mesh.o
+	$(F90) -c $(F90OPTFLAGS) $<
+const_rect_sphere_surface.o: $(CUBED_SPH_DIR)/const_rect_sphere_surface.f90 m_precision.o t_cubed_sph_surf_mesh.o t_numref_cubed_sph.o set_cube_surface.o set_surface_rods_sphere.o set_surf_connect_cubed_sph.o coordinate_converter.o output_shell_surface_data.o t_cubed_sph_grp_param.o count_coarse_parameters.o set_coarsed_cube_skin.o merged_ele_4_cubed_sph_surf.o
+	$(F90) -c $(F90OPTFLAGS) $<
+count_coarse_parameters.o: $(CUBED_SPH_DIR)/count_coarse_parameters.f90 m_precision.o t_numref_cubed_sph.o t_cubed_sph_mesh.o t_cubed_sph_surf_mesh.o
+	$(F90) -c $(F90OPTFLAGS) $<
+count_coarse_shell_config.o: $(CUBED_SPH_DIR)/count_coarse_shell_config.f90 m_precision.o t_cubed_sph_surf_mesh.o t_cubed_sph_mesh.o t_numref_cubed_sph.o count_shell_configration.o
+	$(F90) -c $(F90OPTFLAGS) $<
+count_shell_configration.o: $(CUBED_SPH_DIR)/count_shell_configration.f90 m_precision.o m_constants.o t_cubed_sph_radius.o t_cubed_sph_surf_mesh.o t_cubed_sph_mesh.o t_cubed_sph_grp_param.o t_numref_cubed_sph.o
+	$(F90) -c $(F90OPTFLAGS) $<
+count_square_circle_config.o: $(CUBED_SPH_DIR)/count_square_circle_config.f90 m_precision.o t_cubed_sph_radius.o t_cubed_sph_surf_mesh.o t_cubed_sph_mesh.o t_cubed_sph_grp_param.o t_numref_cubed_sph.o count_shell_configration.o m_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+cubed_circle_center_connect.o: $(CUBED_SPH_DIR)/cubed_circle_center_connect.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+cubed_sph_center_connect.o: $(CUBED_SPH_DIR)/cubed_sph_center_connect.f90 m_precision.o set_corner_quad_connect.o set_side_quad_connect.o set_surface_quad_connect.o
+	$(F90) -c $(F90OPTFLAGS) $<
+cubed_sph_file_names.o: $(CUBED_SPH_DIR)/cubed_sph_file_names.f90 m_precision.o set_parallel_file_name.o
+	$(F90) -c $(F90OPTFLAGS) $<
+merged_ele_4_cubed_sph_surf.o: $(CUBED_SPH_DIR)/merged_ele_4_cubed_sph_surf.f90 m_precision.o t_cubed_sph_surf_mesh.o t_numref_cubed_sph.o set_coarse_cube_surf_nod.o
+	$(F90) -c $(F90OPTFLAGS) $<
+modify_colat_cube_surf.o: $(CUBED_SPH_DIR)/modify_colat_cube_surf.f90 m_precision.o m_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+output_shell_surface_data.o: $(CUBED_SPH_DIR)/output_shell_surface_data.f90 m_precision.o t_cubed_sph_surf_mesh.o
+	$(F90) -c $(F90OPTFLAGS) $<
+radial_coarse_stack_c_sph.o: $(CUBED_SPH_DIR)/radial_coarse_stack_c_sph.f90 m_precision.o t_cubed_sph_surf_mesh.o t_numref_cubed_sph.o
+	$(F90) -c $(F90OPTFLAGS) $<
+radial_stack_4_cubed_sph.o: $(CUBED_SPH_DIR)/radial_stack_4_cubed_sph.f90 m_precision.o t_cubed_sph_surf_mesh.o t_cubed_sph_mesh.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_center_cube_edge.o: $(CUBED_SPH_DIR)/set_center_cube_edge.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_center_cube_node.o: $(CUBED_SPH_DIR)/set_center_cube_node.f90 m_precision.o m_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_center_rect_cube_quad.o: $(CUBED_SPH_DIR)/set_center_rect_cube_quad.f90 m_precision.o m_constants.o t_cubed_sph_surf_mesh.o set_center_cube_edge.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_coarse_cube_surf_nod.o: $(CUBED_SPH_DIR)/set_coarse_cube_surf_nod.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_coarsed_cube_skin.o: $(CUBED_SPH_DIR)/set_coarsed_cube_skin.f90 m_precision.o t_cubed_sph_surf_mesh.o set_coarse_cube_surf_nod.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_corner_quad_connect.o: $(CUBED_SPH_DIR)/set_corner_quad_connect.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_cube_surface.o: $(CUBED_SPH_DIR)/set_cube_surface.f90 m_precision.o m_constants.o t_numref_cubed_sph.o t_cubed_sph_surf_mesh.o set_cube_surface_node.o set_squre_circle_node.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_cube_surface_connect.o: $(CUBED_SPH_DIR)/set_cube_surface_connect.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_cube_surface_edge.o: $(CUBED_SPH_DIR)/set_cube_surface_edge.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_cube_surface_node.o: $(CUBED_SPH_DIR)/set_cube_surface_node.f90 m_precision.o m_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_cubed_sph_control.o: $(CUBED_SPH_DIR)/set_cubed_sph_control.f90 m_precision.o t_numref_cubed_sph.o t_control_data_cubed_sph.o t_cubed_sph_radius.o t_cubed_sph_grp_param.o skip_comment_f.o t_control_array_integer2.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_cubed_sph_ele_group_ctl.o: $(CUBED_SPH_DIR)/set_cubed_sph_ele_group_ctl.f90 m_precision.o t_group_data.o t_control_array_charaint.o skip_comment_f.o t_control_array_integer.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_cubed_sph_nod_group_ctl.o: $(CUBED_SPH_DIR)/set_cubed_sph_nod_group_ctl.f90 m_precision.o t_group_data.o t_control_array_integer.o t_control_array_charaint.o skip_comment_f.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_cubed_sph_sf_group_ctl.o: $(CUBED_SPH_DIR)/set_cubed_sph_sf_group_ctl.f90 m_precision.o t_group_data.o t_control_array_charaint.o skip_comment_f.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_element_groups_4_shell.o: $(CUBED_SPH_DIR)/set_element_groups_4_shell.f90 m_precision.o t_group_data.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_merged_ele_cubed_sph.o: $(CUBED_SPH_DIR)/set_merged_ele_cubed_sph.f90 m_precision.o m_constants.o t_numref_cubed_sph.o t_cubed_sph_surf_mesh.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_node_groups_4_shell.o: $(CUBED_SPH_DIR)/set_node_groups_4_shell.f90 m_precision.o t_group_data.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_side_quad_connect.o: $(CUBED_SPH_DIR)/set_side_quad_connect.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_squre_circle_node.o: $(CUBED_SPH_DIR)/set_squre_circle_node.f90 m_precision.o m_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_surf_connect_cubed_sph.o: $(CUBED_SPH_DIR)/set_surf_connect_cubed_sph.f90 m_precision.o t_cubed_sph_surf_mesh.o set_cube_surface_connect.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_surface_groups_4_shell.o: $(CUBED_SPH_DIR)/set_surface_groups_4_shell.f90 m_precision.o t_group_data.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_surface_quad_connect.o: $(CUBED_SPH_DIR)/set_surface_quad_connect.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_surface_rods_sphere.o: $(CUBED_SPH_DIR)/set_surface_rods_sphere.f90 m_precision.o m_constants.o t_cubed_sph_surf_mesh.o set_cube_surface_edge.o set_squre_circle_node.o
+	$(F90) -c $(F90OPTFLAGS) $<
+square_circ_center_connect.o: $(CUBED_SPH_DIR)/square_circ_center_connect.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_control_data_cubed_sph.o: $(CUBED_SPH_DIR)/t_control_data_cubed_sph.f90 m_precision.o skip_comment_f.o t_read_control_elements.o t_control_elements.o t_control_array_integer.o t_control_array_charaint.o t_control_array_integer2.o t_control_array_intreal.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_cubed_sph_grp_param.o: $(CUBED_SPH_DIR)/t_cubed_sph_grp_param.f90 m_precision.o t_group_data.o t_control_data_cubed_sph.o t_control_array_integer.o t_control_array_charaint.o set_cubed_sph_nod_group_ctl.o set_cubed_sph_ele_group_ctl.o set_cubed_sph_sf_group_ctl.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_cubed_sph_mesh.o: $(CUBED_SPH_DIR)/t_cubed_sph_mesh.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_cubed_sph_radius.o: $(CUBED_SPH_DIR)/t_cubed_sph_radius.f90 m_precision.o t_numref_cubed_sph.o t_control_data_cubed_sph.o skip_comment_f.o t_control_array_intreal.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_cubed_sph_surf_mesh.o: $(CUBED_SPH_DIR)/t_cubed_sph_surf_mesh.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_numref_cubed_sph.o: $(CUBED_SPH_DIR)/t_numref_cubed_sph.f90 m_precision.o m_geometry_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+write_cubed_sph_grp_data.o: $(CUBED_SPH_DIR)/write_cubed_sph_grp_data.f90 m_precision.o m_constants.o t_numref_cubed_sph.o t_mesh_data.o t_group_data.o t_cubed_sph_surf_mesh.o t_cubed_sph_mesh.o t_cubed_sph_grp_param.o cubed_sph_file_names.o set_node_groups_4_shell.o set_element_groups_4_shell.o set_surface_groups_4_shell.o
+	$(F90) -c $(F90OPTFLAGS) $<
+write_cubed_sph_mesh_head.o: $(CUBED_SPH_DIR)/write_cubed_sph_mesh_head.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+

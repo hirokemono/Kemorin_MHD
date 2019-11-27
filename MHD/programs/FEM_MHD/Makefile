@@ -159,7 +159,10 @@ mod_list:
 
 
 module:
-	@$(MAKE_MOD_DEP) '$(MAKENAME)' '$$(MHD_OUT_DIR)' $(SOURCES)
+	@cat Makefile.depends >> $(MAKENAME)
+
+depends:
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(MHD_OUT_DIR)' $(SOURCES)
 
 
 clean:

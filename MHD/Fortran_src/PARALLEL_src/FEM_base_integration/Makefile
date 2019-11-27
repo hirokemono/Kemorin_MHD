@@ -22,7 +22,10 @@ mod_list:
 	@echo $(MOD_FEM_INT) >> $(MAKENAME)
 
 module:
-	@$(MAKE_MOD_DEP) '$(MAKENAME)' '$$(FEM_INT_DIR)' $(SRC_FEM_INT)
+	@cat Makefile.depends >> $(MAKENAME)
+
+depends:
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(FEM_INT_DIR)' $(SRC_FEM_INT)
 
 clean:
 	rm -f *.o *.mod *~ *.par *.diag *.a

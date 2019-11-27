@@ -1,0 +1,37 @@
+crs_prodict_by_rs2_djo.o: $(SOLVER_LU_DIR)/crs_prodict_by_rs2_djo.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+detmx.o: $(SOLVER_LU_DIR)/detmx.f90 m_precision.o m_ludcmp.o
+	$(F90) -c $(F90OPTFLAGS) $<
+full_matrix_products.o: $(SOLVER_LU_DIR)/full_matrix_products.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+invmx.o: $(SOLVER_LU_DIR)/invmx.f90 m_precision.o m_ludcmp.o
+	$(F90) -c $(F90OPTFLAGS) $<
+lae.o: $(SOLVER_LU_DIR)/lae.f90 m_precision.o m_ludcmp.o
+	$(F90) -c $(F90OPTFLAGS) $<
+lubksb_357band.o: $(SOLVER_LU_DIR)/lubksb_357band.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+lubksb_357band_mul.o: $(SOLVER_LU_DIR)/lubksb_357band_mul.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+lubksb_357band_mul2.o: $(SOLVER_LU_DIR)/lubksb_357band_mul2.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+ludcmp_357band_mul.o: $(SOLVER_LU_DIR)/ludcmp_357band_mul.f90 m_precision.o m_constants.o m_ludcmp_3band.o m_ludcmp_band.o
+	$(F90) -c $(F90OPTFLAGS) $<
+m_ludcmp.o: $(SOLVER_LU_DIR)/m_ludcmp.f90 m_precision.o m_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+m_ludcmp_3band.o: $(SOLVER_LU_DIR)/m_ludcmp_3band.f90 m_precision.o m_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+m_ludcmp_5mat.o: $(SOLVER_LU_DIR)/m_ludcmp_5mat.f90 m_precision.o m_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+m_ludcmp_band.o: $(SOLVER_LU_DIR)/m_ludcmp_band.f90 m_precision.o m_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+m_ludcmp_bmat.o: $(SOLVER_LU_DIR)/m_ludcmp_bmat.f90 m_precision.o m_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+m_matrix_4_LU.o: $(SOLVER_LU_DIR)/m_matrix_4_LU.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+mat_product_3band_mul.o: $(SOLVER_LU_DIR)/mat_product_3band_mul.f90 m_precision.o m_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+modify_matrix_and_rhs.o: $(SOLVER_LU_DIR)/modify_matrix_and_rhs.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+rs2_prodict_by_djo_crs.o: $(SOLVER_LU_DIR)/rs2_prodict_by_djo_crs.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+

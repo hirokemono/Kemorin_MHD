@@ -22,7 +22,10 @@ mod_list:
 
 
 module:
-	@$(MAKE_MOD_DEP) '$(MAKENAME)' '$$(ZLIB_IO_DIR)' $(SRC_ZLIB_IO)
+	@cat Makefile.depends >> $(MAKENAME)
+
+depends:
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(ZLIB_IO_DIR)' $(SRC_ZLIB_IO)
 
 clean:
 	rm -f *.o *.mod *~ *.par *.diag *.a

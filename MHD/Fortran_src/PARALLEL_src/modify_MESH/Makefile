@@ -42,4 +42,7 @@ mod_list:
 
 
 module:
-	@$(MAKE_MOD_DEP) '$(MAKENAME)' '$$(MODIFY_PARA_MESHDIR)' $(SRC_MODIFY_PARA_MESH)
+	@cat Makefile.depends >> $(MAKENAME)
+
+depends:
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(MODIFY_PARA_MESHDIR)' $(SRC_MODIFY_PARA_MESH)

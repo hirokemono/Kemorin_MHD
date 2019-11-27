@@ -23,7 +23,10 @@ mod_list:
 
 
 module:
-	@$(MAKE_MOD_DEP) '$(MAKENAME)' '$$(FILTER_DIR)' $(SRC_FILTERING)
+	@cat Makefile.depends >> $(MAKENAME)
+
+depends:
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(FILTER_DIR)' $(SRC_FILTERING)
 
 clean:
 	rm -f *.o *.mod *~ *.par *.diag *.a

@@ -1,0 +1,43 @@
+ACDC_Legendre_Poly.o: $(SPH_DIR)/ACDC_Legendre_Poly.F90
+	$(F90) -c $(F90FLAGS) $<
+ACDC_Theta_Derivatives.o: $(SPH_DIR)/ACDC_Theta_Derivatives.F90
+	$(F90) -c $(F90FLAGS) $<
+cal_gaunt_itgs.o: $(SPH_DIR)/cal_gaunt_itgs.f90 m_precision.o m_constants.o normgi.o normei.o
+	$(F90) -c $(F90OPTFLAGS) $<
+cal_int_sph_nonlinear.o: $(SPH_DIR)/cal_int_sph_nonlinear.f90 m_precision.o t_integrals_sph_nonlinear.o cal_gaunt_itgs.o
+	$(F90) -c $(F90OPTFLAGS) $<
+factorials.o: $(SPH_DIR)/factorials.f90 m_precision.o m_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+ispack_lag.o: $(SPH_DIR)/ispack_lag.f90 m_precision.o m_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+legendre.o: $(SPH_DIR)/legendre.f90 m_precision.o m_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+mag_pbar.o: $(SPH_DIR)/mag_pbar.f90 m_precision.o m_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+mag_pbar16.o: $(SPH_DIR)/mag_pbar16.f90 m_precision.o m_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+normei.o: $(SPH_DIR)/normei.f90 m_precision.o m_constants.o normgi.o
+	$(F90) -c $(F90OPTFLAGS) $<
+normgi.o: $(SPH_DIR)/normgi.f90 m_precision.o normgi_by_primes.o
+	$(F90) -c $(F90OPTFLAGS) $<
+normgi_by_fact.o: $(SPH_DIR)/normgi_by_fact.f90 m_precision.o quicksort.o factorials.o
+	$(F90) -c $(F90OPTFLAGS) $<
+normgi_by_primes.o: $(SPH_DIR)/normgi_by_primes.f90 m_precision.o m_constants.o quicksort.o primefac.o
+	$(F90) -c $(F90OPTFLAGS) $<
+schmidt.o: $(SPH_DIR)/schmidt.f90 m_precision.o m_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+schmidt_fix_m.o: $(SPH_DIR)/schmidt_fix_m.f90 m_precision.o m_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+sph_spectr_2_vector.o: $(SPH_DIR)/sph_spectr_2_vector.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+spherical_harmonics.o: $(SPH_DIR)/spherical_harmonics.f90 m_precision.o m_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_integrals_sph_nonlinear.o: $(SPH_DIR)/t_integrals_sph_nonlinear.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_schmidt_legendre_each_m.o: $(SPH_DIR)/t_schmidt_legendre_each_m.f90 m_precision.o schmidt_fix_m.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_schmidt_polynomial.o: $(SPH_DIR)/t_schmidt_polynomial.f90 m_precision.o legendre.o schmidt.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_spherical_harmonics.o: $(SPH_DIR)/t_spherical_harmonics.f90 m_precision.o t_schmidt_polynomial.o spherical_harmonics.o
+	$(F90) -c $(F90OPTFLAGS) $<
+

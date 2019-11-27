@@ -20,9 +20,11 @@ mod_list:
 	@echo  MOD_IO=  \\ >> $(MAKENAME)
 	@echo  $(MOD_IO)   >> $(MAKENAME)
 
-
 module:
-	@$(MAKE_MOD_DEP) '$(MAKENAME)' '$$(IO_DIR)' $(SRC_IO)
+	@cat Makefile.depends >> $(MAKENAME)
+
+depends:
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(IO_DIR)' $(SRC_IO)
 
 clean:
 	rm -f *.o *.mod *~ *.par *.diag *.a

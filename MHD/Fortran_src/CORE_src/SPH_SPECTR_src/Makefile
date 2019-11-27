@@ -23,7 +23,10 @@ mod_list:
 
 
 module:
-	@$(MAKE_MOD_DEP) '$(MAKENAME)' '$$(SPH_SPECTR_DIR)' $(SRC_SPH_SPECTR)
+	@cat Makefile.depends >> $(MAKENAME)
+
+depends:
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(SPH_SPECTR_DIR)' $(SRC_SPH_SPECTR)
 
 clean:
 	rm -f *.o *.mod *~ *.par *.diag *.a

@@ -20,7 +20,10 @@ mod_list:
 
 
 module:
-	@$(MAKE_MOD_DEP) '$(MAKENAME)' '$$(SET_PRECOND_DIR)' $(SRC_SOLVE_SET_PRECONDS)
+	@cat Makefile.depends >> $(MAKENAME)
+
+depends:
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(SET_PRECOND_DIR)' $(SRC_SOLVE_SET_PRECONDS)
 
 
 clean:

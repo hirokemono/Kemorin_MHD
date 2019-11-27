@@ -1,0 +1,17 @@
+cal_fft_for_horizontal.o: $(FFT_PLANE_SRCDIR)/cal_fft_for_horizontal.f90 m_precision.o t_FFT_selector.o
+	$(F90) -c $(F90OPTFLAGS) $<
+inverse_fft_4_plane.o: $(FFT_PLANE_SRCDIR)/inverse_fft_4_plane.f90 m_precision.o t_set_new_spectr.o t_FFT_selector.o t_phys_data.o
+	$(F90) -c $(F90OPTFLAGS) $<
+radial_interpolate.o: $(FFT_PLANE_SRCDIR)/radial_interpolate.f90 m_precision.o m_constants.o t_size_of_cube.o
+	$(F90) -c $(F90OPTFLAGS) $<
+read_positions_of_spectr.o: $(FFT_PLANE_SRCDIR)/read_positions_of_spectr.f90 m_precision.o set_spectr_file_name.o
+	$(F90) -c $(F90OPTFLAGS) $<
+read_udt_data_4_FFT.o: $(FFT_PLANE_SRCDIR)/read_udt_data_4_FFT.f90 m_precision.o m_constants.o t_phys_data.o copy_pick_udt_data_plane.o set_control_assemble.o t_time_data.o t_ucd_data.o t_file_IO_parameter.o set_list_4_FFT.o ucd_IO_select.o set_ucd_data_to_type.o m_file_format_switch.o t_spectr_4_ispack.o t_mesh_data_4_merge.o t_control_array_character3.o skip_comment_f.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_ctl_data_plane_fft.o: $(FFT_PLANE_SRCDIR)/t_ctl_data_plane_fft.f90 m_precision.o m_machine_parameter.o t_read_control_elements.o t_ctl_data_4_platforms.o t_ctl_data_4_time_steps.o t_ctl_data_4_fields.o t_ctl_data_4_plane_model.o t_control_elements.o skip_comment_f.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_set_new_spectr.o: $(FFT_PLANE_SRCDIR)/t_set_new_spectr.f90 m_precision.o m_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_spectr_4_ispack.o: $(FFT_PLANE_SRCDIR)/t_spectr_4_ispack.f90 m_precision.o m_constants.o set_spectr_file_name.o t_mesh_data.o
+	$(F90) -c $(F90OPTFLAGS) $<
+

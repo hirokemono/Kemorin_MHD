@@ -1,0 +1,39 @@
+Cuthill_McKee.o: $(DJDS_ORDER_DIR)/Cuthill_McKee.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+DJDS_hyperplane.o: $(DJDS_ORDER_DIR)/DJDS_hyperplane.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+DJDS_new_comm_table.o: $(DJDS_ORDER_DIR)/DJDS_new_comm_table.f90 m_precision.o t_comm_table.o t_solver_djds.o
+	$(F90) -c $(F90OPTFLAGS) $<
+DJDS_nodiag_item.o: $(DJDS_ORDER_DIR)/DJDS_nodiag_item.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+DJDS_ordering.o: $(DJDS_ORDER_DIR)/DJDS_ordering.f90 m_precision.o mat_conect_SORT.o
+	$(F90) -c $(F90OPTFLAGS) $<
+DJDS_total_nondiag.o: $(DJDS_ORDER_DIR)/DJDS_total_nondiag.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+MC_Cuthill_McKee.o: $(DJDS_ORDER_DIR)/MC_Cuthill_McKee.f90 m_precision.o Cuthill_McKee.o
+	$(F90) -c $(F90OPTFLAGS) $<
+copy_matrix_2_djds_array.o: $(DJDS_ORDER_DIR)/copy_matrix_2_djds_array.f90 m_precision.o m_machine_parameter.o t_iccg_parameter.o t_crs_matrix.o t_solver_djds.o calypso_mpi.o t_geometry_data.o t_vector_for_solver.o set_size_4_smp_types.o reordering_djds_smp_type.o DJDS_new_comm_table.o set_idx_4_mat_type.o
+	$(F90) -c $(F90OPTFLAGS) $<
+mat_conect_SORT.o: $(DJDS_ORDER_DIR)/mat_conect_SORT.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+ordering_MC_RCM.o: $(DJDS_ORDER_DIR)/ordering_MC_RCM.f90 m_precision.o m_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+ordering_MC_RCM_type.o: $(DJDS_ORDER_DIR)/ordering_MC_RCM_type.f90 m_precision.o m_constants.o calypso_mpi.o m_machine_parameter.o t_crs_connect.o t_solver_djds.o t_vector_for_solver.o t_colored_connect.o t_work_DJDS_ordering.o t_iccg_parameter.o ordering_MC_RCM.o MC_Cuthill_McKee.o
+	$(F90) -c $(F90OPTFLAGS) $<
+reordering_djds_smp_type.o: $(DJDS_ORDER_DIR)/reordering_djds_smp_type.f90 m_precision.o t_colored_connect.o t_iccg_parameter.o t_work_DJDS_ordering.o t_crs_connect.o t_solver_djds.o t_vector_for_solver.o ordering_MC_RCM_type.o DJDS_hyperplane.o DJDS_ordering.o DJDS_total_nondiag.o DJDS_nodiag_item.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_DJDS_off_diagonal.o: $(DJDS_ORDER_DIR)/set_DJDS_off_diagonal.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_djds_connectivity_type.o: $(DJDS_ORDER_DIR)/set_djds_connectivity_type.f90 m_precision.o m_machine_parameter.o t_mesh_data.o t_geometry_data.o t_comm_table.o t_next_node_ele_4_node.o t_iccg_parameter.o t_crs_connect.o t_solver_djds.o t_vector_for_solver.o DJDS_new_comm_table.o reordering_djds_smp_type.o set_ele_id_4_node_type.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_idx_4_mat_type.o: $(DJDS_ORDER_DIR)/set_idx_4_mat_type.f90 m_precision.o m_machine_parameter.o t_geometry_data.o t_solver_djds.o t_table_FEM_const.o set_DJDS_off_diagonal.o
+	$(F90) -c $(F90OPTFLAGS) $<
+solve_precond_DJDS.o: $(DJDS_ORDER_DIR)/solve_precond_DJDS.f90 m_precision.o m_constants.o m_machine_parameter.o calypso_mpi.o t_geometry_data.o t_comm_table.o t_crs_matrix.o t_solver_djds.o m_solver_SR.o t_iccg_parameter.o solver_DJDS11_struct.o copy_matrix_2_djds_array.o solver_DJDS33_struct.o solver_DJDSnn_struct.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_colored_connect.o: $(DJDS_ORDER_DIR)/t_colored_connect.f90 m_precision.o t_crs_connect.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_iccg_parameter.o: $(DJDS_ORDER_DIR)/t_iccg_parameter.f90 m_precision.o calypso_mpi.o m_error_IDs.o t_ctl_data_4_solvers.o skip_comment_f.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_work_DJDS_ordering.o: $(DJDS_ORDER_DIR)/t_work_DJDS_ordering.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+

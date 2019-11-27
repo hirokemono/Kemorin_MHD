@@ -1,0 +1,65 @@
+count_num_nod_bc_MHD.o: $(MHD_NOD_BC_DIR)/count_num_nod_bc_MHD.f90 m_precision.o m_constants.o m_boundary_condition_IDs.o t_bc_data_list.o t_group_data.o t_nodal_bc_data.o count_num_nodal_fields.o
+	$(F90) -c $(F90OPTFLAGS) $<
+count_num_nodal_fields.o: $(MHD_NOD_BC_DIR)/count_num_nodal_fields.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+fem_skv_diffuse_sgs_bc.o: $(MHD_NOD_BC_DIR)/fem_skv_diffuse_sgs_bc.f90 m_precision.o m_constants.o m_phys_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+fem_skv_poisson_bc.o: $(MHD_NOD_BC_DIR)/fem_skv_poisson_bc.f90 m_precision.o m_phys_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+fem_skv_poisson_sgs_bc.o: $(MHD_NOD_BC_DIR)/fem_skv_poisson_sgs_bc.f90 m_precision.o m_constants.o m_phys_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+fem_skv_poisson_sgs_bc_t.o: $(MHD_NOD_BC_DIR)/fem_skv_poisson_sgs_bc_t.f90 m_precision.o m_constants.o m_phys_constants.o m_machine_parameter.o m_geometry_constants.o t_geometry_data.o t_fem_gauss_int_coefs.o t_jacobians.o t_filter_elength.o fem_skv_poisson_sgs_bc.o fem_skv_diffuse_sgs_bc.o
+	$(F90) -c $(F90OPTFLAGS) $<
+field_2_each_element_bc.o: $(MHD_NOD_BC_DIR)/field_2_each_element_bc.f90 m_precision.o m_machine_parameter.o
+	$(F90) -c $(F90OPTFLAGS) $<
+int_sk_4_fixed_boundary.o: $(MHD_NOD_BC_DIR)/int_sk_4_fixed_boundary.f90 m_precision.o m_machine_parameter.o m_phys_constants.o t_physical_property.o t_SGS_control_parameter.o t_geometry_data.o t_phys_data.o t_fem_gauss_int_coefs.o t_jacobian_3d.o t_table_FEM_const.o t_finite_element_mat.o t_filter_elength.o t_material_property.o t_SGS_model_coefs.o t_nodal_bc_data.o int_vol_fixed_field_ele.o int_vol_fixed_fld_sgs_ele.o cal_ff_smp_to_ffs.o
+	$(F90) -c $(F90OPTFLAGS) $<
+int_vol_fixed_field_ele.o: $(MHD_NOD_BC_DIR)/int_vol_fixed_field_ele.f90 m_precision.o m_machine_parameter.o m_phys_constants.o m_geometry_constants.o t_geometry_data.o t_phys_data.o t_fem_gauss_int_coefs.o t_jacobians.o t_table_FEM_const.o t_finite_element_mat.o cal_skv_to_ff_smp.o field_2_each_element_bc.o fem_skv_poisson_bc.o
+	$(F90) -c $(F90OPTFLAGS) $<
+int_vol_fixed_fld_sgs_ele.o: $(MHD_NOD_BC_DIR)/int_vol_fixed_fld_sgs_ele.f90 m_precision.o m_machine_parameter.o m_phys_constants.o t_geometry_data.o t_phys_data.o t_fem_gauss_int_coefs.o t_jacobians.o t_table_FEM_const.o t_finite_element_mat.o t_filter_elength.o cal_skv_to_ff_smp.o fem_skv_poisson_sgs_bc_t.o field_2_each_element_bc.o
+	$(F90) -c $(F90OPTFLAGS) $<
+ordering_ele_4_fix_bd.o: $(MHD_NOD_BC_DIR)/ordering_ele_4_fix_bd.f90 m_precision.o cal_minmax_and_stacks.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_aiccg_bc_fixed.o: $(MHD_NOD_BC_DIR)/set_aiccg_bc_fixed.f90 m_precision.o m_constants.o m_geometry_constants.o m_phys_constants.o t_geometry_data.o t_nodal_bc_data.o t_solver_djds.o set_idx_4_mat_type.o correct_matrix_4_boundary.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_aiccg_bc_vectors.o: $(MHD_NOD_BC_DIR)/set_aiccg_bc_vectors.f90 m_precision.o t_physical_property.o t_geometry_data.o t_surface_data.o t_group_data.o t_fem_gauss_int_coefs.o t_jacobian_2d.o t_nodal_bc_data.o t_finite_element_mat.o t_int_surface_data.o t_table_FEM_const.o t_solver_djds.o t_bc_data_MHD.o t_surface_bc_data_MHD.o set_aiccg_bc_fixed.o set_aiccg_free_sph.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_bc_element.o: $(MHD_NOD_BC_DIR)/set_bc_element.f90 m_precision.o m_constants.o t_geometry_data.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_bc_element_type.o: $(MHD_NOD_BC_DIR)/set_bc_element_type.f90 m_precision.o m_constants.o t_mesh_data.o t_nodal_bc_data.o set_bc_element.o t_geometry_data_MHD.o ordering_ele_4_fix_bd.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_bc_scalar_type_id.o: $(MHD_NOD_BC_DIR)/set_bc_scalar_type_id.f90 m_precision.o t_group_data.o t_nodal_bc_data.o set_nodal_bc_type.o t_boundary_field_IO.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_bc_scalars.o: $(MHD_NOD_BC_DIR)/set_bc_scalars.f90 m_precision.o m_constants.o m_phys_labels.o m_boundary_condition_IDs.o t_bc_data_list.o t_geometry_data.o t_group_data.o t_nodal_bc_data.o t_boundary_field_IO.o set_nod_bc_scalar_id.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_bc_vectors.o: $(MHD_NOD_BC_DIR)/set_bc_vectors.f90 m_precision.o m_constants.o m_boundary_condition_IDs.o t_geometry_data.o t_group_data.o t_nodal_bc_data.o t_boundary_field_IO.o t_bc_data_list.o set_nod_bc_vector_id.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_boundary_scalars.o: $(MHD_NOD_BC_DIR)/set_boundary_scalars.f90 m_precision.o m_constants.o t_nodal_bc_data.o m_phys_constants.o t_geometry_data.o t_finite_element_mat.o set_fixed_boundaries.o set_nodal_bc_4_velo.o t_phys_data.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_ele_nod_bc_vectors.o: $(MHD_NOD_BC_DIR)/set_ele_nod_bc_vectors.f90 m_precision.o m_machine_parameter.o m_geometry_constants.o t_geometry_data.o t_geometry_data_MHD.o t_nodal_bc_data.o count_num_nodal_fields.o set_bc_element.o set_bc_element_type.o ordering_ele_4_fix_bd.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_fixed_boundaries.o: $(MHD_NOD_BC_DIR)/set_fixed_boundaries.f90 m_precision.o m_phys_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_nod_bc_scalar_id.o: $(MHD_NOD_BC_DIR)/set_nod_bc_scalar_id.f90 m_precision.o t_geometry_data.o t_group_data.o t_boundary_field_IO.o set_nodal_boundary.o t_bc_data_list.o t_nodal_bc_data.o set_mag_p_sph.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_nod_bc_vector_id.o: $(MHD_NOD_BC_DIR)/set_nod_bc_vector_id.f90 m_precision.o t_geometry_data.o t_group_data.o t_boundary_field_IO.o set_nodal_boundary.o t_nodal_bc_data.o t_phys_data.o t_bc_data_list.o set_radial_magne_sph.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_nodal_bc_4_velo.o: $(MHD_NOD_BC_DIR)/set_nodal_bc_4_velo.f90 m_precision.o m_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_nodal_bc_id_data.o: $(MHD_NOD_BC_DIR)/set_nodal_bc_id_data.f90 m_precision.o m_constants.o t_physical_property.o t_reference_scalar_param.o t_mesh_data.o t_geometry_data_MHD.o t_geometry_data.o t_group_data.o t_phys_data.o t_phys_address.o t_bc_data_MHD.o t_boundary_field_IO.o m_machine_parameter.o m_boundary_condition_IDs.o count_num_nod_bc_MHD.o set_nodal_boundary.o set_boundary_scalars.o t_bc_data_velo.o set_nodal_bc_4_velo.o set_fixed_boundaries.o t_finite_element_mat.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_nodal_bc_type.o: $(MHD_NOD_BC_DIR)/set_nodal_bc_type.f90 m_precision.o t_group_data.o t_nodal_bc_data.o t_boundary_field_IO.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_nodal_boundary.o: $(MHD_NOD_BC_DIR)/set_nodal_boundary.f90 m_precision.o t_group_data.o t_boundary_field_IO.o t_nodal_bc_data.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_radial_magne_sph.o: $(MHD_NOD_BC_DIR)/set_radial_magne_sph.f90 m_precision.o t_schmidt_polynomial.o t_geometry_data.o t_group_data.o t_nodal_bc_data.o t_bc_data_list.o spherical_harmonics.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_bc_data_magne.o: $(MHD_NOD_BC_DIR)/t_bc_data_magne.f90 m_precision.o t_geometry_data.o t_group_data.o t_nodal_bc_data.o t_boundary_field_IO.o t_bc_data_list.o m_boundary_condition_IDs.o count_num_nod_bc_MHD.o set_bc_vectors.o set_ele_nod_bc_vectors.o t_geometry_data_MHD.o set_bc_scalars.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_bc_data_temp.o: $(MHD_NOD_BC_DIR)/t_bc_data_temp.f90 m_precision.o t_nodal_bc_data.o t_geometry_data.o t_group_data.o t_geometry_data_MHD.o t_boundary_field_IO.o t_bc_data_list.o count_num_nod_bc_MHD.o set_bc_scalars.o set_ele_nod_bc_vectors.o set_nodal_boundary.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_bc_data_velo.o: $(MHD_NOD_BC_DIR)/t_bc_data_velo.f90 m_precision.o t_nodal_bc_data.o t_geometry_data.o t_group_data.o t_geometry_data_MHD.o t_boundary_field_IO.o t_bc_data_list.o count_num_nod_bc_MHD.o set_bc_vectors.o set_bc_scalars.o set_ele_nod_bc_vectors.o t_physical_property.o set_nodal_boundary.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_nodal_bc_data.o: $(MHD_NOD_BC_DIR)/t_nodal_bc_data.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+

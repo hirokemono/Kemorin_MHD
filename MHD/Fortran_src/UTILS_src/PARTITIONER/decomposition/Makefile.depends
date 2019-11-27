@@ -1,0 +1,27 @@
+distribute_itp_tbl_4_para.o: $(DECOMP_DIR)/distribute_itp_tbl_4_para.f90 m_precision.o t_work_ditribute_itp.o t_interpolate_table.o t_interpolate_tbl_org.o t_interpolate_tbl_dest.o m_machine_parameter.o t_work_const_itp_table.o ordering_itp_org_tbl.o
+	$(F90) -c $(F90OPTFLAGS) $<
+divide_by_spherical_coord.o: $(DECOMP_DIR)/divide_by_spherical_coord.f90 m_precision.o m_geometry_constants.o t_ctl_param_partitioner.o t_shell_surface_4_part.o t_domain_group_4_partition.o sort_sphere_4_rcb.o sort_cube_4_rcb.o cal_minmax_and_stacks.o find_shell_information.o grouping_by_sphere.o set_sphere_data.o
+	$(F90) -c $(F90OPTFLAGS) $<
+find_shell_information.o: $(DECOMP_DIR)/find_shell_information.f90 m_precision.o t_shell_surface_4_part.o cal_minmax_and_stacks.o coordinate_converter.o
+	$(F90) -c $(F90OPTFLAGS) $<
+grouping_by_sphere.o: $(DECOMP_DIR)/grouping_by_sphere.f90 m_precision.o cal_minmax_and_stacks.o
+	$(F90) -c $(F90OPTFLAGS) $<
+node_equaly_sectioning.o: $(DECOMP_DIR)/node_equaly_sectioning.f90 m_precision.o t_ctl_param_partitioner.o t_domain_group_4_partition.o sort_by_position_4_rcb.o sort_by_position_4_eb3d.o
+	$(F90) -c $(F90OPTFLAGS) $<
+recursive_bisection.o: $(DECOMP_DIR)/recursive_bisection.f90 m_precision.o t_ctl_param_partitioner.o t_domain_group_4_partition.o sort_by_position_4_rcb.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_sphere_data.o: $(DECOMP_DIR)/set_sphere_data.f90 m_precision.o t_shell_surface_4_part.o coordinate_converter.o cal_minmax_and_stacks.o
+	$(F90) -c $(F90OPTFLAGS) $<
+sort_by_position_4_eb3d.o: $(DECOMP_DIR)/sort_by_position_4_eb3d.f90 m_precision.o m_constants.o quicksort.o sort_by_position_4_rcb.o cal_minmax_and_stacks.o sort_sphere_4_rcb.o
+	$(F90) -c $(F90OPTFLAGS) $<
+sort_by_position_4_rcb.o: $(DECOMP_DIR)/sort_by_position_4_rcb.f90 m_precision.o m_constants.o quicksort.o
+	$(F90) -c $(F90OPTFLAGS) $<
+sort_cube_4_rcb.o: $(DECOMP_DIR)/sort_cube_4_rcb.f90 m_precision.o m_constants.o sort_by_position_4_rcb.o quicksort.o
+	$(F90) -c $(F90OPTFLAGS) $<
+sort_sphere_4_rcb.o: $(DECOMP_DIR)/sort_sphere_4_rcb.f90 m_precision.o m_constants.o quicksort.o sort_by_position_4_rcb.o cal_minmax_and_stacks.o int_volume_of_single_domain.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_shell_surface_4_part.o: $(DECOMP_DIR)/t_shell_surface_4_part.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_work_ditribute_itp.o: $(DECOMP_DIR)/t_work_ditribute_itp.f90 m_precision.o t_mesh_data.o t_mesh_data_with_pointer.o t_interpolate_table.o t_interpolate_tbl_org.o t_interpolate_tbl_dest.o
+	$(F90) -c $(F90OPTFLAGS) $<
+

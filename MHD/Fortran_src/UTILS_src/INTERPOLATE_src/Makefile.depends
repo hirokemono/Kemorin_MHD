@@ -1,0 +1,75 @@
+cal_interpolate_coefs.o: $(ITP_SRCDIR)/cal_interpolate_coefs.f90 m_precision.o calypso_mpi.o t_ctl_params_4_gen_table.o m_connect_hexa_2_tetra.o subroutines_4_search_table.o cal_local_position_by_tetra.o modify_local_positions.o solver_33_array.o t_geometry_data.o t_interpolate_coefs_dest.o cal_position_and_grad.o
+	$(F90) -c $(F90OPTFLAGS) $<
+cal_position_and_grad.o: $(ITP_SRCDIR)/cal_position_and_grad.f90 m_precision.o m_constants.o m_geometry_constants.o cal_shape_function_3d.o interporate_position_in_ele.o cal_shape_function_2d.o cal_shape_function_1d.o
+	$(F90) -c $(F90OPTFLAGS) $<
+const_interpolate_4_org.o: $(ITP_SRCDIR)/const_interpolate_4_org.f90 m_precision.o calypso_mpi.o m_machine_parameter.o t_interpolate_tbl_org.o t_interpolate_tbl_dest.o t_interpolate_coefs_dest.o t_work_const_itp_table.o t_ctl_params_4_gen_table.o m_2nd_pallalel_vector.o m_interpolate_table_IO.o itp_table_IO_select_4_zlib.o copy_interpolate_types.o set_itp_destIO_2_org.o ordering_itp_org_tbl.o
+	$(F90) -c $(F90OPTFLAGS) $<
+const_rev_ele_itp_table.o: $(ITP_SRCDIR)/const_rev_ele_itp_table.f90 m_precision.o m_machine_parameter.o t_interpolate_table.o t_work_const_itp_table.o calypso_mpi.o t_interpolate_tbl_org.o t_ctl_params_4_gen_table.o m_2nd_pallalel_vector.o m_interpolate_table_IO.o copy_interpolate_types.o itp_table_IO_select_4_zlib.o const_interpolate_4_org.o
+	$(F90) -c $(F90OPTFLAGS) $<
+construct_interpolate_table.o: $(ITP_SRCDIR)/construct_interpolate_table.f90 m_precision.o t_geometry_data.o calypso_mpi.o m_machine_parameter.o m_2nd_pallalel_vector.o t_ctl_params_4_gen_table.o t_mesh_data.o t_next_node_ele_4_node.o t_interpolate_coefs_dest.o t_search_block_4_itp.o set_2nd_geometry_4_table.o search_node_in_element.o subroutines_4_search_table.o
+	$(F90) -c $(F90OPTFLAGS) $<
+count_interpolate_type_20.o: $(ITP_SRCDIR)/count_interpolate_type_20.f90 m_precision.o m_constants.o t_interpolate_coefs_dest.o
+	$(F90) -c $(F90OPTFLAGS) $<
+count_interpolate_type_27.o: $(ITP_SRCDIR)/count_interpolate_type_27.f90 m_precision.o m_constants.o t_interpolate_coefs_dest.o
+	$(F90) -c $(F90OPTFLAGS) $<
+count_interpolate_type_8.o: $(ITP_SRCDIR)/count_interpolate_type_8.f90 m_precision.o m_constants.o t_interpolate_coefs_dest.o
+	$(F90) -c $(F90OPTFLAGS) $<
+count_number_with_overlap.o: $(ITP_SRCDIR)/count_number_with_overlap.f90 m_precision.o m_constants.o t_mesh_data.o t_file_IO_parameter.o t_mesh_data_4_merge.o mesh_IO_select.o set_element_data_4_IO.o copy_mesh_structures.o load_mesh_data.o t_merged_geometry_data.o t_group_data.o
+	$(F90) -c $(F90OPTFLAGS) $<
+element_posi_2_nodal_array.o: $(ITP_SRCDIR)/element_posi_2_nodal_array.f90 m_precision.o m_constants.o m_machine_parameter.o t_geometry_data.o cal_minmax_and_stacks.o set_size_4_smp_types.o const_mesh_information.o t_mesh_data.o
+	$(F90) -c $(F90OPTFLAGS) $<
+modify_local_positions.o: $(ITP_SRCDIR)/modify_local_positions.f90 m_precision.o solver_33_array.o cal_position_and_grad.o
+	$(F90) -c $(F90OPTFLAGS) $<
+num_nod_ele_merge_by_type.o: $(ITP_SRCDIR)/num_nod_ele_merge_by_type.f90 m_precision.o m_constants.o t_mesh_data.o t_mesh_data_with_pointer.o t_mesh_data_4_merge.o count_number_with_overlap.o set_2nd_geometry_4_serial.o
+	$(F90) -c $(F90OPTFLAGS) $<
+order_dest_table_by_domain.o: $(ITP_SRCDIR)/order_dest_table_by_domain.f90 m_precision.o calypso_mpi.o t_geometry_data.o t_interpolate_tbl_dest.o t_interpolate_coefs_dest.o t_work_const_itp_table.o m_2nd_pallalel_vector.o
+	$(F90) -c $(F90OPTFLAGS) $<
+order_dest_table_by_type.o: $(ITP_SRCDIR)/order_dest_table_by_type.f90 m_precision.o calypso_mpi.o t_geometry_data.o t_interpolate_tbl_dest.o t_interpolate_coefs_dest.o t_work_const_itp_table.o m_geometry_constants.o count_interpolate_type_8.o count_interpolate_type_20.o count_interpolate_type_27.o set_interpolate_type_8.o set_interpolate_type_20.o set_interpolate_type_27.o
+	$(F90) -c $(F90OPTFLAGS) $<
+ordering_itp_org_tbl.o: $(ITP_SRCDIR)/ordering_itp_org_tbl.f90 m_precision.o t_work_const_itp_table.o t_interpolate_tbl_org.o copy_interpolate_types.o
+	$(F90) -c $(F90OPTFLAGS) $<
+read_ctl_data_gen_table.o: $(ITP_SRCDIR)/read_ctl_data_gen_table.f90 m_precision.o calypso_mpi.o m_machine_parameter.o t_read_control_elements.o t_ctl_data_gen_table.o bcast_control_arrays.o bcast_4_platform_ctl.o bcast_4_field_ctl.o bcast_4_time_step_ctl.o
+	$(F90) -c $(F90OPTFLAGS) $<
+search_node_in_element.o: $(ITP_SRCDIR)/search_node_in_element.f90 m_precision.o m_constants.o m_machine_parameter.o cal_interpolate_coefs.o t_search_block_4_itp.o t_geometry_data.o t_interpolate_coefs_dest.o t_ctl_params_4_gen_table.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_2nd_geometry_4_serial.o: $(ITP_SRCDIR)/set_2nd_geometry_4_serial.f90 m_precision.o m_file_format_switch.o t_file_IO_parameter.o t_mesh_data_4_merge.o count_number_with_overlap.o t_mesh_data.o mesh_IO_select.o set_element_data_4_IO.o copy_mesh_structures.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_2nd_geometry_4_table.o: $(ITP_SRCDIR)/set_2nd_geometry_4_table.f90 m_precision.o m_machine_parameter.o t_mesh_data.o t_mesh_data_with_pointer.o m_2nd_pallalel_vector.o m_connect_hexa_2_tetra.o t_file_IO_parameter.o set_parallel_mesh_in_1pe.o transfer_to_long_integers.o m_geometry_constants.o t_geometry_data.o t_interpolate_tbl_dest.o t_interpolate_coefs_dest.o t_work_const_itp_table.o t_search_block_4_itp.o order_dest_table_by_type.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_bin_id_4_destination.o: $(ITP_SRCDIR)/set_bin_id_4_destination.f90 m_precision.o m_constants.o m_machine_parameter.o t_geometry_data.o t_sphere_bin_4_table.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_ctl_interpolation.o: $(ITP_SRCDIR)/set_ctl_interpolation.f90 m_precision.o calypso_mpi.o m_error_IDs.o t_file_IO_parameter.o t_IO_step_parameter.o m_machine_parameter.o m_2nd_pallalel_vector.o m_file_format_switch.o m_field_file_format.o t_ctl_params_4_gen_table.o t_ctl_data_gen_table.o itp_table_IO_select_4_zlib.o set_control_platform_data.o parallel_ucd_IO_select.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_ele_list_4_itp_table.o: $(ITP_SRCDIR)/set_ele_list_4_itp_table.f90 m_precision.o m_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_interpolate_type_20.o: $(ITP_SRCDIR)/set_interpolate_type_20.f90 m_precision.o m_constants.o t_interpolate_tbl_dest.o t_interpolate_coefs_dest.o t_work_const_itp_table.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_interpolate_type_27.o: $(ITP_SRCDIR)/set_interpolate_type_27.f90 m_precision.o m_constants.o t_interpolate_tbl_dest.o t_interpolate_coefs_dest.o t_work_const_itp_table.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_interpolate_type_8.o: $(ITP_SRCDIR)/set_interpolate_type_8.f90 m_precision.o m_constants.o t_interpolate_tbl_dest.o t_interpolate_coefs_dest.o t_work_const_itp_table.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_itp_destIO_2_org.o: $(ITP_SRCDIR)/set_itp_destIO_2_org.f90 m_precision.o t_interpolate_tbl_org.o t_interpolate_tbl_dest.o t_interpolate_coefs_dest.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_minmax_4_each_2nd_ele.o: $(ITP_SRCDIR)/set_minmax_4_each_2nd_ele.f90 m_precision.o m_constants.o m_machine_parameter.o t_geometry_data.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_org_ele_4_each_bin.o: $(ITP_SRCDIR)/set_org_ele_4_each_bin.f90 m_precision.o m_constants.o m_machine_parameter.o t_geometry_data.o t_sphere_bin_4_table.o
+	$(F90) -c $(F90OPTFLAGS) $<
+subroutines_4_search_table.o: $(ITP_SRCDIR)/subroutines_4_search_table.f90 m_precision.o m_constants.o t_geometry_data.o m_connect_hexa_2_tetra.o t_ctl_params_4_gen_table.o t_interpolate_coefs_dest.o set_parallel_file_name.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_ctl_data_gen_table.o: $(ITP_SRCDIR)/t_ctl_data_gen_table.f90 m_precision.o m_machine_parameter.o t_read_control_elements.o t_ctl_data_4_platforms.o t_ctl_data_4_fields.o t_ctl_data_4_time_steps.o t_control_elements.o t_control_array_intreal.o skip_comment_f.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_ctl_params_4_gen_table.o: $(ITP_SRCDIR)/t_ctl_params_4_gen_table.f90 m_precision.o m_field_file_format.o t_file_IO_parameter.o calypso_mpi.o m_error_IDs.o m_machine_parameter.o m_2nd_pallalel_vector.o m_file_format_switch.o m_default_file_prefix.o t_ctl_data_gen_table.o t_search_block_4_itp.o itp_table_IO_select_4_zlib.o set_control_platform_data.o skip_comment_f.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_data_4_interpolate_org.o: $(ITP_SRCDIR)/t_data_4_interpolate_org.f90 m_precision.o m_machine_parameter.o t_geometry_data.o t_sphere_bin_4_table.o set_minmax_4_each_2nd_ele.o set_org_ele_4_each_bin.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_merged_geometry_data.o: $(ITP_SRCDIR)/t_merged_geometry_data.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_mesh_data_4_merge.o: $(ITP_SRCDIR)/t_mesh_data_4_merge.f90 m_precision.o m_constants.o t_mesh_data.o t_group_data.o t_merged_geometry_data.o t_surface_data.o t_phys_data.o t_geometry_data.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_search_block_4_itp.o: $(ITP_SRCDIR)/t_search_block_4_itp.f90 m_precision.o m_constants.o t_group_data.o t_mesh_data.o t_geometry_data.o cal_minmax_and_stacks.o set_ele_list_4_itp_table.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_sphere_bin_4_table.o: $(ITP_SRCDIR)/t_sphere_bin_4_table.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_work_const_itp_table.o: $(ITP_SRCDIR)/t_work_const_itp_table.f90 m_precision.o t_interpolate_tbl_dest.o t_interpolate_coefs_dest.o
+	$(F90) -c $(F90OPTFLAGS) $<
+

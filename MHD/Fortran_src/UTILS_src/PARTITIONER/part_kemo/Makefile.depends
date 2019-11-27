@@ -1,0 +1,57 @@
+add_export_item_4_part.o: $(PART_COMMONDIR)/add_export_item_4_part.f90 m_precision.o t_domain_group_4_partition.o set_parallel_file_name.o t_comm_table.o t_partitioner_comm_table.o sel_part_nod_comm_input.o
+	$(F90) -c $(F90OPTFLAGS) $<
+check_domain_prop_4_part.o: $(PART_COMMONDIR)/check_domain_prop_4_part.f90 m_precision.o t_domain_group_4_partition.o t_internal_4_partitioner.o t_comm_table.o
+	$(F90) -c $(F90OPTFLAGS) $<
+const_domain_tbl_by_file.o: $(PART_COMMONDIR)/const_domain_tbl_by_file.f90 m_precision.o m_2nd_pallalel_vector.o t_mesh_data.o t_file_IO_parameter.o t_domain_group_4_partition.o set_parallel_file_name.o mesh_IO_select.o
+	$(F90) -c $(F90OPTFLAGS) $<
+const_local_groups.o: $(PART_COMMONDIR)/const_local_groups.f90 m_precision.o t_domain_group_4_partition.o set_group_4_subdomain.o t_group_data.o t_mesh_data.o
+	$(F90) -c $(F90OPTFLAGS) $<
+const_local_mesh_by_tbl.o: $(PART_COMMONDIR)/const_local_mesh_by_tbl.f90 m_precision.o m_constants.o m_geometry_constants.o t_ctl_param_partitioner.o t_geometry_data.o t_domain_group_4_partition.o t_internal_4_partitioner.o cal_minmax_and_stacks.o set_internals_by_group_tbl.o set_subdomain_by_group_tbl.o t_group_data.o t_near_mesh_id_4_node.o t_surface_data.o t_edge_data.o ordering_by_element_group.o
+	$(F90) -c $(F90OPTFLAGS) $<
+const_local_mesh_id.o: $(PART_COMMONDIR)/const_local_mesh_id.f90 m_precision.o t_internal_4_partitioner.o t_domain_group_4_partition.o set_local_by_subdomain_tbl.o t_mesh_data.o t_geometry_data.o t_surface_data.o t_edge_data.o
+	$(F90) -c $(F90OPTFLAGS) $<
+const_neighbour_domain.o: $(PART_COMMONDIR)/const_neighbour_domain.f90 m_precision.o t_domain_group_4_partition.o t_internal_4_partitioner.o
+	$(F90) -c $(F90OPTFLAGS) $<
+const_node_comm_table.o: $(PART_COMMONDIR)/const_node_comm_table.f90 m_precision.o t_comm_table.o t_domain_group_4_partition.o t_internal_4_partitioner.o set_import_items.o t_partitioner_comm_table.o sel_part_nod_comm_input.o
+	$(F90) -c $(F90OPTFLAGS) $<
+find_local_elements.o: $(PART_COMMONDIR)/find_local_elements.f90 m_precision.o m_constants.o t_geometry_data.o t_near_mesh_id_4_node.o t_domain_group_4_partition.o
+	$(F90) -c $(F90OPTFLAGS) $<
+generate_comm_tables.o: $(PART_COMMONDIR)/generate_comm_tables.f90 m_precision.o m_constants.o m_machine_parameter.o t_domain_group_4_partition.o t_comm_table.o t_internal_4_partitioner.o t_partitioner_comm_table.o cal_minmax_and_stacks.o set_parallel_file_name.o const_neighbour_domain.o const_node_comm_table.o sel_part_nod_comm_input.o check_domain_prop_4_part.o set_local_by_subdomain_tbl.o add_export_item_4_part.o
+	$(F90) -c $(F90OPTFLAGS) $<
+generate_local_mesh.o: $(PART_COMMONDIR)/generate_local_mesh.f90 m_precision.o m_constants.o t_mesh_data.o t_near_mesh_id_4_node.o t_geometry_data.o t_group_data.o t_edge_data.o t_domain_group_4_partition.o t_internal_4_partitioner.o t_partitioner_comm_table.o t_ctl_param_partitioner.o m_work_time.o m_elapsed_labels_4_PART.o check_domain_prop_4_part.o find_local_elements.o increase_overlap.o const_local_mesh_by_tbl.o generate_comm_tables.o local_mesh_by_part.o intelligent_partition.o delete_data_files.o
+	$(F90) -c $(F90OPTFLAGS) $<
+increase_overlap.o: $(PART_COMMONDIR)/increase_overlap.f90 m_precision.o m_constants.o m_work_time.o t_near_mesh_id_4_node.o m_elapsed_labels_4_PART.o t_ctl_param_partitioner.o t_geometry_data.o t_surface_data.o t_domain_group_4_partition.o intelligent_partition.o
+	$(F90) -c $(F90OPTFLAGS) $<
+init_partitioner.o: $(PART_COMMONDIR)/init_partitioner.f90 m_precision.o m_machine_parameter.o t_mesh_data.o t_next_node_ele_4_node.o t_domain_group_4_partition.o m_error_IDs.o set_domain_and_org_id.o quick_mesh_check_for_part.o error_exit_4_part.o
+	$(F90) -c $(F90OPTFLAGS) $<
+int_volume_of_single_domain.o: $(PART_COMMONDIR)/int_volume_of_single_domain.f90 m_precision.o m_constants.o t_mesh_data.o t_geometry_data.o t_group_data.o t_surface_boundary.o t_shape_functions.o t_fem_gauss_int_coefs.o t_jacobians.o sum_volume_of_domain.o const_jacobians_3d.o fem_element_volume.o
+	$(F90) -c $(F90OPTFLAGS) $<
+local_mesh_by_part.o: $(PART_COMMONDIR)/local_mesh_by_part.f90 m_precision.o m_constants.o t_mesh_data.o t_geometry_data.o t_group_data.o t_domain_group_4_partition.o t_internal_4_partitioner.o t_partitioner_comm_table.o t_ctl_param_partitioner.o set_parallel_file_name.o const_local_mesh_id.o set_local_connectivities.o const_local_groups.o sel_part_nod_comm_input.o delete_data_files.o load_mesh_data.o
+	$(F90) -c $(F90OPTFLAGS) $<
+ordering_by_element_group.o: $(PART_COMMONDIR)/ordering_by_element_group.f90 m_precision.o t_group_data.o
+	$(F90) -c $(F90OPTFLAGS) $<
+sel_part_nod_comm_input.o: $(PART_COMMONDIR)/sel_part_nod_comm_input.f90 m_precision.o t_partitioner_comm_table.o t_comm_table.o work_nod_comm_table_IO.o set_parallel_file_name.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_domain_and_org_id.o: $(PART_COMMONDIR)/set_domain_and_org_id.f90 m_precision.o t_geometry_data.o t_domain_group_4_partition.o t_comm_table.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_group_4_subdomain.o: $(PART_COMMONDIR)/set_group_4_subdomain.f90 m_precision.o t_group_data.o t_domain_group_4_partition.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_import_items.o: $(PART_COMMONDIR)/set_import_items.f90 m_precision.o t_domain_group_4_partition.o t_internal_4_partitioner.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_internals_by_group_tbl.o: $(PART_COMMONDIR)/set_internals_by_group_tbl.f90 m_precision.o t_domain_group_4_partition.o t_internal_4_partitioner.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_local_by_subdomain_tbl.o: $(PART_COMMONDIR)/set_local_by_subdomain_tbl.f90 t_internal_4_partitioner.o t_domain_group_4_partition.o t_geometry_data.o t_surface_data.o t_edge_data.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_local_connectivities.o: $(PART_COMMONDIR)/set_local_connectivities.f90 m_precision.o t_domain_group_4_partition.o t_geometry_data.o t_surface_data.o t_edge_data.o m_geometry_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_subdomain_by_group_tbl.o: $(PART_COMMONDIR)/set_subdomain_by_group_tbl.f90 m_precision.o t_internal_4_partitioner.o t_geometry_data.o t_domain_group_4_partition.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_domain_group_4_partition.o: $(PART_COMMONDIR)/t_domain_group_4_partition.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_geometry_graph.o: $(PART_COMMONDIR)/t_geometry_graph.f90 m_precision.o m_constants.o m_geometry_constants.o t_edge_data.o set_geometry_graph.o cal_minmax_and_stacks.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_internal_4_partitioner.o: $(PART_COMMONDIR)/t_internal_4_partitioner.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_partitioner_comm_table.o: $(PART_COMMONDIR)/t_partitioner_comm_table.f90 m_precision.o t_comm_table.o
+	$(F90) -c $(F90OPTFLAGS) $<
+

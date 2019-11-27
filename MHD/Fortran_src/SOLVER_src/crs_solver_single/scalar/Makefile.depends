@@ -1,0 +1,11 @@
+solver_BiCGSTAB_single.o: $(SOLVER_11S_DIR)/solver_BiCGSTAB_single.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+solver_CG_single.o: $(SOLVER_11S_DIR)/solver_CG_single.f90 m_precision.o m_constants.o m_work_4_CG.o crs_matrix_calcs_11.o incomplete_cholesky_crs_11.o precond_crs_incomplete_lu.o calcs_4_crs_CG11.o crs_norm_products_11.o
+	$(F90) -c $(F90OPTFLAGS) $<
+solver_GMRES_single.o: $(SOLVER_11S_DIR)/solver_GMRES_single.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+solver_GPBiCG_single.o: $(SOLVER_11S_DIR)/solver_GPBiCG_single.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+solver_single.o: $(SOLVER_11S_DIR)/solver_single.f90 m_precision.o solver_CG_single.o solver_BiCGSTAB_single.o solver_GPBiCG_single.o solver_GMRES_single.o
+	$(F90) -c $(F90OPTFLAGS) $<
+

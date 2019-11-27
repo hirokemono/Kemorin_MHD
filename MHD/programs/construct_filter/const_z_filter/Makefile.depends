@@ -1,0 +1,75 @@
+analyzer_gen_z_filter.o: $(CONST_FILTER_Z_DIR)/analyzer_gen_z_filter.f90 m_precision.o m_machine_parameter.o m_vertical_filter_utils.o t_iccg_parameter.o t_crs_connect.o t_crs_matrix.o t_gauss_points.o t_shape_functions.o calypso_mpi.o m_commute_filter_z.o m_neibor_data_z.o m_z_filter_values.o m_work_4_integration.o m_matrix_4_z_commute.o m_int_commtative_filter.o m_int_edge_data.o m_matrix_4_LU.o const_delta_z_analytical.o const_crs_connect_commute_z.o solve_precond_DJDS.o set_diff_position_z_filter.o int_edge_norm_nod_z_filter.o int_edge_moment_z_filter.o int_edge_horiz_filter_peri.o int_edge_commute_z_filter.o int_gaussian_moments.o int_linear_moments.o int_tophat_moments.o input_control_gen_z_filter.o calcs_by_LUsolver.o const_z_commute_matrix.o copy_1darray_2_2darray.o switch_crs_matrix.o cal_jacobian_linear_1d.o set_neib_nod_z.o set_neib_ele_z.o set_neib_connect_z.o set_matrices_4_z_filter.o copy_matrix_2_djds_array.o write_z_filter_4_nod.o t_solver_djds.o
+	$(F90) -c $(F90OPTFLAGS) $<
+analyzer_test_dz.o: $(CONST_FILTER_Z_DIR)/analyzer_test_dz.f90 m_precision.o m_machine_parameter.o m_vertical_filter_utils.o t_iccg_parameter.o t_crs_connect.o t_crs_matrix.o t_shape_functions.o calypso_mpi.o m_commute_filter_z.o m_int_edge_data.o m_int_edge_vart_width.o input_control_gen_z_filter.o const_crs_connect_commute_z.o cal_jacobian_linear_1d.o cal_delta_z_4_z_filter.o
+	$(F90) -c $(F90OPTFLAGS) $<
+cal_delta_z_4_z_filter.o: $(CONST_FILTER_Z_DIR)/cal_delta_z_4_z_filter.f90 m_precision.o t_comm_table.o t_geometry_data.o t_edge_data.o t_iccg_parameter.o t_crs_connect.o t_crs_matrix.o t_shape_functions.o t_fem_gauss_int_coefs.o t_jacobian_1d.o m_int_edge_vart_width.o m_int_edge_data.o m_commute_filter_z.o calcs_by_LUsolver.o solve_by_mass_z.o int_edge_mass_mat_z_filter.o set_matrices_4_z_filter.o
+	$(F90) -c $(F90OPTFLAGS) $<
+cal_jacobian_linear_1d.o: $(CONST_FILTER_Z_DIR)/cal_jacobian_linear_1d.f90 m_precision.o calypso_mpi.o t_shape_functions.o t_jacobians.o t_geometry_data.o t_surface_data.o t_edge_data.o m_gauss_int_parameters.o t_fem_gauss_int_coefs.o set_size_4_smp_types.o set_integration_indices.o set_gauss_int_parameters.o const_jacobians_1d.o
+	$(F90) -c $(F90OPTFLAGS) $<
+calcs_by_LUsolver.o: $(CONST_FILTER_Z_DIR)/calcs_by_LUsolver.f90 m_precision.o m_matrix_4_LU.o m_ludcmp.o m_commute_filter_z.o t_crs_matrix.o m_int_edge_vart_width.o m_int_edge_data.o
+	$(F90) -c $(F90OPTFLAGS) $<
+const_crs_connect_commute_z.o: $(CONST_FILTER_Z_DIR)/const_crs_connect_commute_z.f90 m_precision.o m_constants.o m_commute_filter_z.o t_crs_connect.o t_geometry_data.o m_neibor_data_z.o m_int_edge_data.o t_fem_gauss_int_coefs.o t_jacobian_1d.o
+	$(F90) -c $(F90OPTFLAGS) $<
+const_delta_z_analytical.o: $(CONST_FILTER_Z_DIR)/const_delta_z_analytical.f90 m_precision.o m_constants.o calypso_mpi.o m_commute_filter_z.o m_int_edge_vart_width.o t_geometry_data.o t_edge_data.o int_edge_mass_mat_z_filter.o m_spheric_constants.o t_fem_gauss_int_coefs.o t_jacobian_1d.o
+	$(F90) -c $(F90OPTFLAGS) $<
+const_geometry_z_commute.o: $(CONST_FILTER_Z_DIR)/const_geometry_z_commute.f90 m_precision.o m_constants.o m_commute_filter_z.o t_comm_table.o t_geometry_data.o t_surface_data.o t_edge_data.o m_spheric_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+const_z_commute_matrix.o: $(CONST_FILTER_Z_DIR)/const_z_commute_matrix.f90 m_precision.o m_constants.o t_crs_matrix.o m_commute_filter_z.o m_matrix_4_z_commute.o m_neibor_data_z.o m_z_filter_values.o m_int_edge_vart_width.o
+	$(F90) -c $(F90OPTFLAGS) $<
+copy_1darray_2_2darray.o: $(CONST_FILTER_Z_DIR)/copy_1darray_2_2darray.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+input_control_gen_z_filter.o: $(CONST_FILTER_Z_DIR)/input_control_gen_z_filter.f90 m_precision.o t_comm_table.o t_geometry_data.o t_surface_data.o t_edge_data.o t_iccg_parameter.o t_crs_matrix.o t_ctl_data_gen_z_filter.o m_machine_parameter.o calypso_mpi.o set_ctl_gen_z_filter.o const_geometry_z_commute.o
+	$(F90) -c $(F90OPTFLAGS) $<
+int_edge_commute_z_filter.o: $(CONST_FILTER_Z_DIR)/int_edge_commute_z_filter.f90 m_precision.o t_gauss_points.o m_constants.o m_commute_filter_z.o m_int_commtative_filter.o m_z_filter_values.o m_work_4_integration.o m_int_edge_data.o set_filter_moments.o
+	$(F90) -c $(F90OPTFLAGS) $<
+int_edge_horiz_filter_peri.o: $(CONST_FILTER_Z_DIR)/int_edge_horiz_filter_peri.f90 m_precision.o t_gauss_points.o m_constants.o m_commute_filter_z.o m_z_filter_values.o m_int_edge_data.o m_work_4_integration.o set_filter_moments.o
+	$(F90) -c $(F90OPTFLAGS) $<
+int_edge_mass_mat_z_filter.o: $(CONST_FILTER_Z_DIR)/int_edge_mass_mat_z_filter.f90 m_precision.o m_constants.o t_edge_data.o t_fem_gauss_int_coefs.o t_jacobian_1d.o m_int_edge_data.o m_commute_filter_z.o
+	$(F90) -c $(F90OPTFLAGS) $<
+int_edge_moment_z_filter.o: $(CONST_FILTER_Z_DIR)/int_edge_moment_z_filter.f90 m_precision.o m_constants.o t_edge_data.o t_shape_functions.o t_fem_gauss_int_coefs.o t_jacobian_1d.o m_int_edge_data.o m_int_commtative_filter.o m_commute_filter_z.o
+	$(F90) -c $(F90OPTFLAGS) $<
+int_edge_norm_nod_z_filter.o: $(CONST_FILTER_Z_DIR)/int_edge_norm_nod_z_filter.f90 m_precision.o t_geometry_data.o t_edge_data.o t_gauss_points.o m_constants.o m_commute_filter_z.o m_work_4_integration.o m_z_filter_values.o m_matrix_4_z_commute.o m_neibor_data_z.o m_int_edge_data.o set_filter_moments.o
+	$(F90) -c $(F90OPTFLAGS) $<
+m_commute_filter_z.o: $(CONST_FILTER_Z_DIR)/m_commute_filter_z.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+m_consist_mass_crs.o: $(CONST_FILTER_Z_DIR)/m_consist_mass_crs.f90 m_precision.o t_crs_connect.o
+	$(F90) -c $(F90OPTFLAGS) $<
+m_int_commtative_filter.o: $(CONST_FILTER_Z_DIR)/m_int_commtative_filter.f90 m_precision.o m_commute_filter_z.o
+	$(F90) -c $(F90OPTFLAGS) $<
+m_int_edge_data.o: $(CONST_FILTER_Z_DIR)/m_int_edge_data.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+m_int_edge_vart_width.o: $(CONST_FILTER_Z_DIR)/m_int_edge_vart_width.f90 m_precision.o t_edge_data.o t_fem_gauss_int_coefs.o t_jacobian_1d.o m_commute_filter_z.o m_int_edge_data.o m_consist_mass_crs.o t_geometry_data.o t_shape_functions.o calypso_mpi.o
+	$(F90) -c $(F90OPTFLAGS) $<
+m_matrix_4_z_commute.o: $(CONST_FILTER_Z_DIR)/m_matrix_4_z_commute.f90 m_precision.o m_commute_filter_z.o
+	$(F90) -c $(F90OPTFLAGS) $<
+m_neibor_data_z.o: $(CONST_FILTER_Z_DIR)/m_neibor_data_z.f90 m_precision.o m_commute_filter_z.o
+	$(F90) -c $(F90OPTFLAGS) $<
+m_vertical_filter_utils.o: $(CONST_FILTER_Z_DIR)/m_vertical_filter_utils.f90 m_precision.o t_mesh_data.o t_surface_data.o t_edge_data.o t_jacobians.o
+	$(F90) -c $(F90OPTFLAGS) $<
+m_work_4_integration.o: $(CONST_FILTER_Z_DIR)/m_work_4_integration.f90 m_precision.o m_commute_filter_z.o
+	$(F90) -c $(F90OPTFLAGS) $<
+m_z_filter_values.o: $(CONST_FILTER_Z_DIR)/m_z_filter_values.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+main_gen_z_filter.o: $(CONST_FILTER_Z_DIR)/main_gen_z_filter.f90 m_precision.o calypso_mpi.o analyzer_gen_z_filter.o
+	$(F90) -c $(F90OPTFLAGS) $<
+main_test_dz.o: $(CONST_FILTER_Z_DIR)/main_test_dz.f90 m_precision.o calypso_mpi.o analyzer_test_dz.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_ctl_gen_z_filter.o: $(CONST_FILTER_Z_DIR)/set_ctl_gen_z_filter.f90 m_precision.o t_ctl_data_gen_z_filter.o t_crs_matrix.o t_iccg_parameter.o m_constants.o m_machine_parameter.o m_commute_filter_z.o set_parallel_file_name.o m_spheric_constants.o t_ctl_data_4_plane_model.o t_ctl_data_gen_filter.o skip_comment_f.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_diff_position_z_filter.o: $(CONST_FILTER_Z_DIR)/set_diff_position_z_filter.f90 m_precision.o t_geometry_data.o t_edge_data.o m_commute_filter_z.o m_neibor_data_z.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_matrices_4_z_filter.o: $(CONST_FILTER_Z_DIR)/set_matrices_4_z_filter.f90 m_precision.o m_constants.o t_crs_matrix.o m_consist_mass_crs.o m_int_edge_data.o m_commute_filter_z.o m_matrix_4_z_commute.o m_neibor_data_z.o m_z_filter_values.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_neib_connect_z.o: $(CONST_FILTER_Z_DIR)/set_neib_connect_z.f90 m_precision.o m_commute_filter_z.o m_neibor_data_z.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_neib_ele_z.o: $(CONST_FILTER_Z_DIR)/set_neib_ele_z.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_neib_nod_z.o: $(CONST_FILTER_Z_DIR)/set_neib_nod_z.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+solve_by_mass_z.o: $(CONST_FILTER_Z_DIR)/solve_by_mass_z.f90 m_precision.o m_int_edge_vart_width.o m_consist_mass_crs.o t_geometry_data.o t_comm_table.o t_iccg_parameter.o t_solver_djds.o t_crs_connect.o t_crs_matrix.o calypso_mpi.o solve_precond_DJDS.o copy_matrix_2_djds_array.o m_machine_parameter.o solver_DJDS11_struct.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_ctl_data_gen_z_filter.o: $(CONST_FILTER_Z_DIR)/t_ctl_data_gen_z_filter.f90 m_precision.o calypso_mpi.o m_machine_parameter.o t_read_control_elements.o t_ctl_data_gen_filter.o t_control_elements.o t_ctl_data_4_plane_model.o skip_comment_f.o bcast_control_arrays.o
+	$(F90) -c $(F90OPTFLAGS) $<
+write_z_filter_4_nod.o: $(CONST_FILTER_Z_DIR)/write_z_filter_4_nod.f90 m_precision.o t_geometry_data.o t_edge_data.o m_int_commtative_filter.o m_commute_filter_z.o m_z_filter_values.o m_int_edge_vart_width.o
+	$(F90) -c $(F90OPTFLAGS) $<
+

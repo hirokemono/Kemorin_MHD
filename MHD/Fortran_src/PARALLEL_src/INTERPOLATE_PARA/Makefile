@@ -22,7 +22,10 @@ mod_list:
 	@echo  '#' >> $(MAKENAME)
 
 module:
-	@$(MAKE_MOD_DEP) '$(MAKENAME)' '$$(ITP_PARA_DIR)' $(SRC_ITP_PARA)
+	@cat Makefile.depends >> $(MAKENAME)
+
+depends:
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(ITP_PARA_DIR)' $(SRC_ITP_PARA)
 
 clean:
 	rm -f *.o *.mod *~ *.par *.diag *.a

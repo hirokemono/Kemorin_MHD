@@ -48,7 +48,10 @@ mod_list:
 
 
 module:
-	@$(MAKE_MOD_DEP) '$(MAKENAME)' '$$(PICK_SURF_SRCDIR)' $(SOURCES)
+	@cat Makefile.depends >> $(MAKENAME)
+
+depends:
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(PICK_SURF_SRCDIR)' $(SOURCES)
 
 clean:
 	rm -f *.o *~ *.mod *.diag *.L

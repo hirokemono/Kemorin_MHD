@@ -39,4 +39,7 @@ mod_list:
 	@echo  '#'  >> $(MAKENAME)
 
 module:
-	@$(MAKE_MOD_DEP) '$(MAKENAME)' '$$(CUTSHELL_DIR)' $(SRC_CUTSHELL)
+	@cat Makefile.depends >> $(MAKENAME)
+
+depends:
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(CUTSHELL_DIR)' $(SRC_CUTSHELL)

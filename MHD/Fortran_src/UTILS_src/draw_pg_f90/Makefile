@@ -40,7 +40,10 @@ mod_list:
 	@echo   >> $(MAKENAME)
 
 module:
-	@$(MAKE_MOD_DEP) '$(MAKENAME)' '$$(KEMO_PGDIR)' $(SRC_DRAW_PG)
+	@cat Makefile.depends >> $(MAKENAME)
+
+depends:
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(KEMO_PGDIR)' $(SRC_DRAW_PG)
 
 
 clean:

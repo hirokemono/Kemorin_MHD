@@ -29,7 +29,10 @@ mod_list:
 
 
 module:
-	@$(MAKE_MOD_DEP) '$(MAKENAME)' '$$(SOLVER_11S_DIR)' $(SRC_SOLVER_11_S)
+	@cat Makefile.depends >> $(MAKENAME)
+
+depends:
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(SOLVER_11S_DIR)' $(SRC_SOLVER_11_S)
 
 clean:
 	rm -f *.o *.mod *~ *.par *.diag *.a

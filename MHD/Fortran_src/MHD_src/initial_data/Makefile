@@ -24,7 +24,10 @@ mod_list:
 
 
 module:
-	@$(MAKE_MOD_DEP) '$(MAKENAME)' '$$(MHD_INI_DIR)' $(SRC_KEMO)
+	@cat Makefile.depends >> $(MAKENAME)
+
+depends:
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(MHD_INI_DIR)' $(SRC_KEMO)
 
 clean:
 	rm -f *.o *.mod *~ *.par *.diag *.a

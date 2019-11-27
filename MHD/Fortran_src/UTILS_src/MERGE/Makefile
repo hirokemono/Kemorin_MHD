@@ -30,5 +30,8 @@ mod_list:
 
 
 module:
-	@$(MAKE_MOD_DEP) '$(MAKENAME)' '$$(MERGE_DIR)' $(SRC_MERGE)
+	@cat Makefile.depends >> $(MAKENAME)
+
+depends:
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(MERGE_DIR)' $(SRC_MERGE)
 

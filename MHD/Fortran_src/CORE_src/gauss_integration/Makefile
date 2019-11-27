@@ -24,7 +24,10 @@ mod_list:
 
 
 module:
-	@$(MAKE_MOD_DEP) '$(MAKENAME)' '$$(GAUSSDIR)' $(SRC_GAUSS)
+	@cat Makefile.depends >> $(MAKENAME)
+
+depends:
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(GAUSSDIR)' $(SRC_GAUSS)
 
 clean:
 	rm -f *.o *.mod *~ *.par *.diag *.a

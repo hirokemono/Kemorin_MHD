@@ -105,10 +105,20 @@ module:
 		( cd $${dir};  \
 		$(GMAKE) \
 		GMAKE='$(GMAKE)' \
-		MAKE_MOD_DEP='$(MAKE_MOD_DEP)' \
 		MAKENAME='$(MAKENAME)' \
 		64BIT_INT='$(64BIT_INT)'   \
 		module; \
+		) \
+	done
+
+depends:
+	@for dir in $(SUBDIRS); do \
+		( cd $${dir};  \
+		$(GMAKE) \
+		GMAKE='$(GMAKE)' \
+		MAKE_MOD_DEP='$(MAKE_MOD_DEP)' \
+		64BIT_INT='$(64BIT_INT)'   \
+		depends; \
 		) \
 	done
 

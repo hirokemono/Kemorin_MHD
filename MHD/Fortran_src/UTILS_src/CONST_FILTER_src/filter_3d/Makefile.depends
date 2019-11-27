@@ -1,0 +1,101 @@
+cal_1d_moments_4_fliter.o: $(FILTER_3D_MATDIR)/cal_1d_moments_4_fliter.f90 m_precision.o m_constants.o t_filter_elength.o t_ctl_params_4_gen_filter.o int_tophat_moments.o int_linear_moments.o int_gaussian_moments.o t_reference_moments.o
+	$(F90) -c $(F90OPTFLAGS) $<
+cal_1st_diff_deltax_4_nod.o: $(FILTER_3D_MATDIR)/cal_1st_diff_deltax_4_nod.f90 m_precision.o m_phys_constants.o t_geometry_data.o t_jacobians.o t_table_FEM_const.o t_finite_element_mat.o t_ctl_params_4_gen_filter.o t_comm_table.o t_crs_matrix.o t_filter_elength.o t_filter_moments.o int_vol_elesize_on_node.o cal_ff_smp_to_ffs.o cal_sol_deltax_by_consist.o
+	$(F90) -c $(F90OPTFLAGS) $<
+cal_3d_filter_4_each_node.o: $(FILTER_3D_MATDIR)/cal_3d_filter_4_each_node.f90 m_precision.o m_constants.o calypso_mpi.o t_filter_coefs.o t_matrix_4_filter.o t_geometry_data.o t_filter_elength.o t_reference_moments.o copy_moments_2_matrix.o fem_const_filter_matrix.o modify_matrix_and_rhs.o t_fem_gauss_int_coefs.o t_jacobians.o int_filter_functions.o cal_gaussian_at_node.o
+	$(F90) -c $(F90OPTFLAGS) $<
+cal_deltax_and_prods_4_nod.o: $(FILTER_3D_MATDIR)/cal_deltax_and_prods_4_nod.f90 m_precision.o m_constants.o m_phys_constants.o t_geometry_data.o t_jacobians.o t_comm_table.o t_table_FEM_const.o t_finite_element_mat.o t_crs_matrix.o t_element_list_4_filter.o t_ctl_params_4_gen_filter.o int_vol_elesize_on_node.o t_filter_elength.o t_filter_dxdxi.o
+	$(F90) -c $(F90OPTFLAGS) $<
+cal_diff_elesize_on_ele.o: $(FILTER_3D_MATDIR)/cal_diff_elesize_on_ele.f90 m_precision.o m_phys_constants.o t_geometry_data.o t_fem_gauss_int_coefs.o t_jacobians.o t_filter_moments.o cal_fields_on_element.o t_filter_elength.o cal_differences_on_ele.o
+	$(F90) -c $(F90OPTFLAGS) $<
+cal_dxidx_ele.o: $(FILTER_3D_MATDIR)/cal_dxidx_ele.f90 m_precision.o m_constants.o m_machine_parameter.o t_geometry_data.o t_fem_gauss_int_coefs.o t_jacobians.o t_filter_dxdxi.o
+	$(F90) -c $(F90OPTFLAGS) $<
+cal_element_size.o: $(FILTER_3D_MATDIR)/cal_element_size.f90 m_precision.o m_machine_parameter.o calypso_mpi.o t_mesh_data.o t_comm_table.o t_geometry_data.o t_surface_data.o t_group_data.o t_next_node_ele_4_node.o t_table_FEM_const.o t_work_FEM_integration.o t_finite_element_mat.o t_crs_connect.o t_crs_matrix.o t_jacobian_3d.o t_filter_elength.o t_reference_moments.o t_filter_dxdxi.o t_element_list_4_filter.o t_ctl_params_4_gen_filter.o set_table_4_RHS_assemble.o cal_diff_elesize_on_ele.o cal_filter_moms_ele_by_elen.o int_consist_mass_mat_filter.o int_mass_matrix_gen_filter.o int_vol_elesize_on_node.o cal_filter_moms_by_element.o filter_moments_send_recv.o cal_dxidx_ele.o cal_deltax_and_prods_4_nod.o cal_1st_diff_deltax_4_nod.o t_filter_moments.o t_fem_gauss_int_coefs.o
+	$(F90) -c $(F90OPTFLAGS) $<
+cal_filter_func_each_node.o: $(FILTER_3D_MATDIR)/cal_filter_func_each_node.f90 m_precision.o calypso_mpi.o m_constants.o t_geometry_data.o t_next_node_ele_4_node.o t_fem_gauss_int_coefs.o t_jacobians.o t_filter_elength.o t_reference_moments.o t_filter_coefs.o t_matrix_4_filter.o t_ctl_params_4_gen_filter.o fem_const_filter_matrix.o int_filter_functions.o cal_sol_filter_func_nod.o cal_3d_filter_4_each_node.o write_filters_4_each_node.o expand_filter_area_4_1node.o copy_moments_2_matrix.o delete_small_weighting.o cal_1d_moments_4_fliter.o
+	$(F90) -c $(F90OPTFLAGS) $<
+cal_filter_func_node.o: $(FILTER_3D_MATDIR)/cal_filter_func_node.f90 m_precision.o m_constants.o t_mesh_data.o t_fem_gauss_int_coefs.o t_jacobians.o t_filter_elength.o t_next_node_ele_4_node.o t_reference_moments.o t_filter_coefs.o t_matrix_4_filter.o t_element_list_4_filter.o t_ctl_params_4_gen_filter.o t_filter_moments.o cal_filter_func_each_node.o expand_filter_area_4_1node.o set_simple_filters.o t_filter_dxdxi.o cal_simple_filter_each_node.o
+	$(F90) -c $(F90OPTFLAGS) $<
+cal_filter_moments_again.o: $(FILTER_3D_MATDIR)/cal_filter_moments_again.f90 m_precision.o m_constants.o t_filter_elength.o t_geometry_data.o t_fem_gauss_int_coefs.o t_jacobians.o t_next_node_ele_4_node.o t_filter_moments.o t_reference_moments.o t_filter_coefs.o t_matrix_4_filter.o t_ctl_params_4_gen_filter.o t_crs_connect.o t_crs_matrix.o expand_filter_area_4_1node.o cal_3d_filter_4_each_node.o int_filter_functions.o fem_const_filter_matrix.o set_simple_filters.o
+	$(F90) -c $(F90OPTFLAGS) $<
+cal_filter_moms_by_element.o: $(FILTER_3D_MATDIR)/cal_filter_moms_by_element.f90 m_precision.o m_machine_parameter.o m_phys_constants.o t_table_FEM_const.o t_finite_element_mat.o t_fem_gauss_int_coefs.o t_reference_moments.o t_element_list_4_filter.o t_ctl_params_4_gen_filter.o t_geometry_data.o t_jacobians.o t_filter_elength.o t_comm_table.o t_crs_matrix.o t_filter_dxdxi.o cal_1d_moments_4_fliter.o set_filter_moments_3d.o filter_moments_send_recv.o int_vol_elesize_on_node.o nod_phys_send_recv.o
+	$(F90) -c $(F90OPTFLAGS) $<
+cal_filter_moms_ele_by_elen.o: $(FILTER_3D_MATDIR)/cal_filter_moms_ele_by_elen.f90 m_precision.o m_constants.o t_filter_elength.o t_filter_moments.o t_geometry_data.o t_filter_coefs.o
+	$(F90) -c $(F90OPTFLAGS) $<
+cal_gaussian_at_node.o: $(FILTER_3D_MATDIR)/cal_gaussian_at_node.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+cal_simple_filter_each_node.o: $(FILTER_3D_MATDIR)/cal_simple_filter_each_node.f90 m_precision.o m_constants.o t_geometry_data.o t_fem_gauss_int_coefs.o t_jacobians.o t_filter_elength.o t_filter_dxdxi.o t_reference_moments.o t_next_node_ele_4_node.o t_filter_coefs.o t_matrix_4_filter.o t_ctl_params_4_gen_filter.o expand_filter_area_4_1node.o set_simple_filters.o cal_3d_filter_4_each_node.o int_filter_functions.o fem_const_filter_matrix.o delete_small_weighting.o write_filters_4_each_node.o t_filter_moments.o
+	$(F90) -c $(F90OPTFLAGS) $<
+cal_sol_deltax_by_consist.o: $(FILTER_3D_MATDIR)/cal_sol_deltax_by_consist.f90 m_precision.o m_machine_parameter.o t_comm_table.o t_geometry_data.o t_finite_element_mat.o t_crs_matrix.o calypso_mpi.o t_ctl_params_4_gen_filter.o m_array_for_send_recv.o solver.o
+	$(F90) -c $(F90OPTFLAGS) $<
+cal_sol_filter_func_nod.o: $(FILTER_3D_MATDIR)/cal_sol_filter_func_nod.f90 m_precision.o calypso_mpi.o m_machine_parameter.o t_crs_connect.o t_crs_matrix.o t_matrix_4_filter.o t_ctl_params_4_gen_filter.o copy_2_crs_matrix_4_filter.o solver_single.o m_ludcmp.o
+	$(F90) -c $(F90OPTFLAGS) $<
+check_num_fail_nod_commute.o: $(FILTER_3D_MATDIR)/check_num_fail_nod_commute.f90 m_precision.o m_constants.o calypso_mpi.o t_filter_coefs.o
+	$(F90) -c $(F90OPTFLAGS) $<
+const_new_mesh_filter.o: $(FILTER_3D_MATDIR)/const_new_mesh_filter.f90 m_precision.o t_internal_4_partitioner.o m_2nd_pallalel_vector.o t_comm_table.o t_partitioner_comm_table.o calypso_mpi.o m_nod_filter_comm_table.o m_filter_file_names.o m_file_format_switch.o t_filter_file_data.o set_parallel_file_name.o filter_coefs_file_IO.o filter_coefs_file_IO_b.o filter_moment_IO_select.o set_filter_geometry_4_IO.o set_filters_4_new_domains.o sel_part_nod_comm_input.o
+	$(F90) -c $(F90OPTFLAGS) $<
+const_newdomain_filter.o: $(FILTER_3D_MATDIR)/const_newdomain_filter.f90 m_precision.o calypso_mpi.o t_geometry_data.o t_file_IO_parameter.o t_domain_group_4_partition.o t_filter_coefs.o t_filter_func_4_sorting.o set_parallel_file_name.o mesh_IO_select.o read_org_filter_coefs.o copy_mesh_structures.o set_filters_4_new_domains.o
+	$(F90) -c $(F90OPTFLAGS) $<
+construct_filters.o: $(FILTER_3D_MATDIR)/construct_filters.f90 m_precision.o m_constants.o calypso_mpi.o m_machine_parameter.o t_mesh_data.o t_jacobian_3d.o t_table_FEM_const.o t_crs_connect.o t_work_FEM_integration.o t_filter_elength.o t_filter_moments.o t_filter_dxdxi.o t_reference_moments.o t_filter_coefs.o t_matrix_4_filter.o t_element_list_4_filter.o t_ctl_params_4_gen_filter.o t_ctl_param_newdom_filter.o cal_element_size.o cal_filter_moms_ele_by_elen.o expand_filter_area_4_1node.o binary_IO.o cal_filter_func_node.o cal_1st_diff_deltax_4_nod.o cal_diff_elesize_on_ele.o filter_coefs_file_IO.o m_filter_file_names.o set_parallel_file_name.o correct_wrong_filters.o filter_coefs_file_IO_b.o mesh_data_IO.o mesh_data_IO_b.o m_field_file_format.o
+	$(F90) -c $(F90OPTFLAGS) $<
+copy_2_crs_matrix_4_filter.o: $(FILTER_3D_MATDIR)/copy_2_crs_matrix_4_filter.f90 m_precision.o t_crs_connect.o t_crs_matrix.o t_matrix_4_filter.o
+	$(F90) -c $(F90OPTFLAGS) $<
+copy_filters_4_sorting.o: $(FILTER_3D_MATDIR)/copy_filters_4_sorting.f90 m_precision.o m_nod_filter_comm_table.o t_filter_func_4_sorting.o
+	$(F90) -c $(F90OPTFLAGS) $<
+copy_moments_2_matrix.o: $(FILTER_3D_MATDIR)/copy_moments_2_matrix.f90 m_precision.o t_reference_moments.o t_filter_coefs.o t_matrix_4_filter.o
+	$(F90) -c $(F90OPTFLAGS) $<
+correct_wrong_filters.o: $(FILTER_3D_MATDIR)/correct_wrong_filters.f90 m_precision.o m_constants.o t_mesh_data.o t_fem_gauss_int_coefs.o t_jacobians.o t_next_node_ele_4_node.o t_filter_elength.o t_filter_dxdxi.o t_filter_moments.o t_reference_moments.o t_filter_coefs.o t_matrix_4_filter.o t_element_list_4_filter.o t_ctl_params_4_gen_filter.o binary_IO.o expand_filter_area_4_1node.o copy_moments_2_matrix.o cal_filter_func_each_node.o cal_simple_filter_each_node.o cal_3d_filter_4_each_node.o cal_filter_moments_again.o write_filters_4_each_node.o set_simple_filters.o
+	$(F90) -c $(F90OPTFLAGS) $<
+delete_small_weighting.o: $(FILTER_3D_MATDIR)/delete_small_weighting.f90 m_precision.o calypso_mpi.o t_filter_coefs.o quicksort.o
+	$(F90) -c $(F90OPTFLAGS) $<
+expand_filter_area_4_1node.o: $(FILTER_3D_MATDIR)/expand_filter_area_4_1node.f90 m_precision.o calypso_mpi.o m_machine_parameter.o t_ctl_params_4_gen_filter.o t_filter_coefs.o t_crs_connect.o t_crs_matrix.o t_matrix_4_filter.o t_mesh_data.o t_next_node_ele_4_node.o set_table_4_RHS_assemble.o t_element_list_4_filter.o m_filter_file_names.o m_field_file_format.o set_ele_id_4_node_type.o t_geometry_data.o fem_const_filter_matrix.o add_nodes_elems_4_each_nod.o ordering_by_filtering_size.o delete_small_weighting.o t_reference_moments.o t_filter_elength.o
+	$(F90) -c $(F90OPTFLAGS) $<
+fem_const_filter_matrix.o: $(FILTER_3D_MATDIR)/fem_const_filter_matrix.f90 m_precision.o calypso_mpi.o
+	$(F90) -c $(F90OPTFLAGS) $<
+filters_for_newdomains.o: $(FILTER_3D_MATDIR)/filters_for_newdomains.f90 m_precision.o m_constants.o t_mesh_data.o t_geometry_data.o t_filtering_data.o t_file_IO_parameter.o t_filter_coefs.o t_filter_func_4_sorting.o t_ctl_param_newdom_filter.o set_filters_4_new_domains.o calypso_mpi.o t_domain_group_4_partition.o m_2nd_pallalel_vector.o m_nod_filter_comm_table.o m_filter_file_names.o m_field_file_format.o mesh_IO_select.o copy_filters_4_sorting.o const_newdomain_filter.o set_parallel_file_name.o filter_IO_for_newdomain.o set_filter_geometry_4_IO.o filter_moment_IO_select.o filter_coefs_file_IO.o filter_coefs_file_IO_b.o mesh_data_IO.o mesh_data_IO_b.o binary_IO.o t_filter_file_data.o
+	$(F90) -c $(F90OPTFLAGS) $<
+int_consist_mass_mat_filter.o: $(FILTER_3D_MATDIR)/int_consist_mass_mat_filter.f90 m_precision.o m_machine_parameter.o t_geometry_data.o t_fem_gauss_int_coefs.o t_jacobians.o t_next_node_ele_4_node.o t_table_FEM_const.o t_finite_element_mat.o t_crs_matrix.o t_ctl_params_4_gen_filter.o matrix_initialization.o int_vol_mass_matrix.o t_element_list_4_filter.o int_grouped_mass_matrix.o
+	$(F90) -c $(F90OPTFLAGS) $<
+int_filter_functions.o: $(FILTER_3D_MATDIR)/int_filter_functions.f90 m_precision.o calypso_mpi.o t_geometry_data.o t_fem_gauss_int_coefs.o t_jacobians.o t_reference_moments.o t_filter_coefs.o t_matrix_4_filter.o set_int_point_position.o fem_const_filter_matrix.o
+	$(F90) -c $(F90OPTFLAGS) $<
+int_mass_matrix_gen_filter.o: $(FILTER_3D_MATDIR)/int_mass_matrix_gen_filter.f90 m_precision.o m_machine_parameter.o m_geometry_constants.o t_geometry_data.o t_fem_gauss_int_coefs.o t_jacobians.o t_table_FEM_const.o t_finite_element_mat.o t_ctl_params_4_gen_filter.o int_vol_mass_matrix.o t_element_list_4_filter.o int_grouped_mass_matrix.o cal_ff_smp_to_ffs.o
+	$(F90) -c $(F90OPTFLAGS) $<
+int_vol_elesize_on_node.o: $(FILTER_3D_MATDIR)/int_vol_elesize_on_node.f90 m_precision.o m_constants.o m_machine_parameter.o m_phys_constants.o t_comm_table.o t_geometry_data.o t_jacobians.o t_table_FEM_const.o t_finite_element_mat.o t_crs_matrix.o t_element_list_4_filter.o t_ctl_params_4_gen_filter.o int_element_field_2_node.o cal_ff_smp_to_ffs.o cal_sol_deltax_by_consist.o t_fem_gauss_int_coefs.o nodal_fld_2_each_element.o cal_skv_to_ff_smp.o fem_skv_vector_diff_type.o
+	$(F90) -c $(F90OPTFLAGS) $<
+ordering_by_filtering_size.o: $(FILTER_3D_MATDIR)/ordering_by_filtering_size.f90 m_precision.o t_geometry_data.o t_filter_coefs.o add_nodes_elems_4_each_nod.o t_filter_elength.o
+	$(F90) -c $(F90OPTFLAGS) $<
+read_filter_file_4_sorting.o: $(FILTER_3D_MATDIR)/read_filter_file_4_sorting.f90 m_precision.o t_filtering_data.o t_comm_table.o t_geometry_data.o t_filter_coefs.o t_filter_coefficients.o t_filter_func_4_sorting.o binary_IO.o m_filter_file_names.o filter_IO_for_sorting.o set_parallel_file_name.o filter_coefs_file_IO.o filter_coefs_file_IO_b.o set_filter_geometry_4_IO.o cal_minmax_and_stacks.o mesh_data_IO.o mesh_data_IO_b.o m_nod_filter_comm_table.o m_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+read_org_filter_coefs.o: $(FILTER_3D_MATDIR)/read_org_filter_coefs.f90 m_precision.o t_geometry_data.o set_parallel_file_name.o filter_IO_for_newdomain.o m_filter_file_names.o t_filter_coefs.o t_comm_table.o t_filter_func_4_sorting.o filter_coefs_file_IO.o filter_coefs_file_IO_b.o mesh_data_IO.o mesh_data_IO_b.o binary_IO.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_filter_moments_3d.o: $(FILTER_3D_MATDIR)/set_filter_moments_3d.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_filter_moms_2_new_mesh.o: $(FILTER_3D_MATDIR)/set_filter_moms_2_new_mesh.f90 m_precision.o t_geometry_data.o t_filter_elength.o t_filter_moments.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_filters_4_new_domains.o: $(FILTER_3D_MATDIR)/set_filters_4_new_domains.f90 m_precision.o m_constants.o t_domain_group_4_partition.o t_filter_func_4_sorting.o t_geometry_data.o t_internal_4_partitioner.o m_nod_filter_comm_table.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_inod_newdomain_filter.o: $(FILTER_3D_MATDIR)/set_inod_newdomain_filter.f90 m_precision.o m_2nd_pallalel_vector.o set_parallel_file_name.o mesh_IO_select.o const_newdomain_filter.o set_filters_4_new_domains.o t_ctl_param_newdom_filter.o t_mesh_data.o t_file_IO_parameter.o t_internal_4_partitioner.o t_filter_coefs.o t_filter_func_4_sorting.o m_filter_file_names.o m_field_file_format.o copy_mesh_structures.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_simple_filters.o: $(FILTER_3D_MATDIR)/set_simple_filters.f90 m_precision.o m_constants.o calypso_mpi.o t_filter_coefs.o t_filter_moments.o t_reference_moments.o t_matrix_4_filter.o
+	$(F90) -c $(F90OPTFLAGS) $<
+sorting_by_filtering_area.o: $(FILTER_3D_MATDIR)/sorting_by_filtering_area.f90 m_precision.o m_constants.o calypso_mpi.o t_filter_coefficients.o cal_minmax_and_stacks.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_ctl_data_newdomain_filter.o: $(FILTER_3D_MATDIR)/t_ctl_data_newdomain_filter.f90 m_precision.o calypso_mpi.o m_machine_parameter.o t_read_control_elements.o t_ctl_data_4_platforms.o t_ctl_data_filter_files.o t_ctl_data_3d_filter.o skip_comment_f.o bcast_control_arrays.o bcast_4_platform_ctl.o bcast_4_filter_files_ctl.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_ctl_param_newdom_filter.o: $(FILTER_3D_MATDIR)/t_ctl_param_newdom_filter.f90 m_precision.o t_file_IO_parameter.o calypso_mpi.o m_machine_parameter.o m_2nd_pallalel_vector.o m_file_format_switch.o m_default_file_prefix.o t_ctl_data_3d_filter.o t_ctl_data_4_platforms.o t_ctl_data_filter_files.o set_control_platform_data.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_ctl_params_4_gen_filter.o: $(FILTER_3D_MATDIR)/t_ctl_params_4_gen_filter.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_element_list_4_filter.o: $(FILTER_3D_MATDIR)/t_element_list_4_filter.f90 m_precision.o m_constants.o m_machine_parameter.o t_geometry_data.o t_ctl_params_4_gen_filter.o t_group_data.o cal_minmax_and_stacks.o skip_comment_f.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_filter_coefs.o: $(FILTER_3D_MATDIR)/t_filter_coefs.f90 m_precision.o t_filter_coefficients.o t_geometry_data.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_filter_func_4_sorting.o: $(FILTER_3D_MATDIR)/t_filter_func_4_sorting.f90 m_precision.o m_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_matrix_4_filter.o: $(FILTER_3D_MATDIR)/t_matrix_4_filter.f90 m_precision.o t_crs_connect.o t_crs_matrix.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_reference_moments.o: $(FILTER_3D_MATDIR)/t_reference_moments.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+trans_filter_moms_newdomain.o: $(FILTER_3D_MATDIR)/trans_filter_moms_newdomain.f90 m_precision.o m_constants.o m_machine_parameter.o mesh_IO_select.o set_parallel_file_name.o t_mesh_data.o t_geometry_data.o t_surface_data.o t_edge_data.o t_ctl_param_newdom_filter.o calypso_mpi.o set_filter_moms_2_new_mesh.o m_2nd_pallalel_vector.o m_filter_file_names.o filter_moment_IO_select.o set_element_data_4_IO.o set_nnod_4_ele_by_type.o t_filter_elength.o t_filter_moments.o
+	$(F90) -c $(F90OPTFLAGS) $<
+

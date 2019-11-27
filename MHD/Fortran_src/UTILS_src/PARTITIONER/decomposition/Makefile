@@ -30,4 +30,7 @@ mod_list:
 
 
 module:
-	@$(MAKE_MOD_DEP) '$(MAKENAME)' '$$(DECOMP_DIR)' $(SRC_PART_DECOMP)
+	@cat Makefile.depends >> $(MAKENAME)
+
+depends:
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(DECOMP_DIR)' $(SRC_PART_DECOMP)

@@ -2,101 +2,131 @@
 #
 #
 
-SUBDIRS = \
-kemoviewer_GTK
+KEMOVIEWER_DIR =    $$(PROG_DIR)/VIEWER
+
+TARGET_KEMOVIEW_GTK =  kemoviewer_GTK
+TARGET_KEMOVIEW_GLFW = kemoviewer_GLFW
+
+MOD_KEMOVIEW_GTK = \
+tree_views_4_fixed_lists_GTK.o \
+tree_view_real2_GTK.o \
+tree_view_4_pvr_colormap.o \
+\
+kemo_mesh_viewer_gtk.o \
+kemoviewer_gtk.o \
+\
+'$$(OBJ_KEMOVIEW_GLUT)'
+
+MOD_KEMOVIEW_GLFW = \
+kemoviewer_glfw_gtk.o \
+kemo_mesh_viewer_glfw_gtk.o \
+\
+'$$(OBJ_KEMOVIEW_GLUT)'
 
 #
 #  -------------------------------------------------------------------------
 #
 
 dir_list:
-	@echo 'KEMOVIEWER_DIR =    $$(PROG_DIR)/VIEWER'           >> $(MAKENAME)
-	@echo '#' >> $(MAKENAME)
-	@for dir in $(SUBDIRS); do \
-		( \
-		echo 'generate diectory list for ' $$dir ; \
-		cd $${dir};  \
-		$(GMAKE) \
-		GMAKE='$(GMAKE)' \
-		MAKENAME='$(MAKENAME)' \
-		dir_list \
-		) \
-	done
-	@echo '#' >> $(MAKENAME)
+	@echo 'KEMOVIEWER_DIR = $(KEMOVIEWER_DIR)' >> $(MAKENAME)
+	@echo 'KEMO_GTKDIR =  $$(C_SRCDIR)/GTK'  >> $(MAKENAME)
 
 target_list:
-	@for dir in $(SUBDIRS); do \
-		( cd $${dir};  \
-		$(GMAKE) \
-		GMAKE='$(GMAKE)' \
-		BUILDDIR='$(BUILDDIR)' \
-		MAKENAME='$(MAKENAME)' \
-		target_list \
-		) \
-	done
+	@echo 'TARGET_KEMOVIEW_GTK =  $$(BUILDDIR)/$(TARGET_KEMOVIEW_GTK)'  >> $(MAKENAME)
+	@echo 'TARGET_KEMOVIEW_GLFW = $$(BUILDDIR)/$(TARGET_KEMOVIEW_GLFW)' >> $(MAKENAME)
+	@echo >> $(MAKENAME)
 
 target_task:
+	@echo viewer_gtk:  '$$(TARGET_KEMOVIEW_GTK)'   >> $(MAKENAME)
+	@echo viewer_glfw: '$$(TARGET_KEMOVIEW_GLFW)'  >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
-	@for dir in $(SUBDIRS); do \
-		( cd $${dir};  \
-		$(GMAKE) \
-		GMAKE='$(GMAKE)' \
-		MAKENAME='$(MAKENAME)' \
-		target_task \
-		) \
-	done
-
+	@echo '$$(TARGET_KEMOVIEW_GTK)': '$$(MOD_KEMOVIEW_GTK)' \
+	'$$(LIB_KEMO_C_FILE)' \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' '$$(OPTFLAGS_GL) $$(GTK3_CFLAGS)' -o '$$(TARGET_KEMOVIEW_GTK)' \
+	'$$(MOD_KEMOVIEW_GTK) -L. $$(LIB_KEMO_C)' \
+	'$$(GTK3_LIBS) $$(GLFW_LIBS) $$(OPENGL_LIBS)' >> $(MAKENAME)
+	@echo '' >> $(MAKENAME)
+	@echo '$$(TARGET_KEMOVIEW_GLFW)': '$$(MOD_KEMOVIEW_GLFW)' \
+	'$$(LIB_KEMO_C_FILE)' \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' '$$(OPTFLAGS_GL) $$(GTK3_CFLAGS) $$(GLFW_CFLAGS)' -o '$$(TARGET_KEMOVIEW_GLFW)' \
+	'$$(MOD_KEMOVIEW_GLFW) -L. $$(LIB_KEMO_C)' \
+	'$$(GTK3_LIBS) $$(GLFW_LIBS) $$(OPENGL_LIBS)' >> $(MAKENAME)
+	@echo '' >> $(MAKENAME)
 
 lib_name:
-	@for dir in $(SUBDIRS); do \
-		( cd $${dir};  \
-		$(GMAKE) \
-		GMAKE='$(GMAKE)' \
-		MAKENAME='$(MAKENAME)' \
-		lib_name \
-		) \
-	done
 
 mod_list:
-	@for dir in $(SUBDIRS); do \
-		( cd $${dir};  \
-		$(GMAKE) \
-		GMAKE='$(GMAKE)' \
-		MAKENAME='$(MAKENAME)' \
-		mod_list; \
-		) \
-	done
-
+	@echo  MOD_KEMOVIEW_GTK =  \\ >> $(MAKENAME)
+	@echo  $(MOD_KEMOVIEW_GTK) >> $(MAKENAME)
+	@echo  MOD_KEMOVIEW_GLFW =  \\ >> $(MAKENAME)
+	@echo  $(MOD_KEMOVIEW_GLFW) >> $(MAKENAME)
+	@echo   >> $(MAKENAME)
 
 module:
-	@for dir in $(SUBDIRS); do \
-		( cd $${dir};  \
-		$(GMAKE) \
-		GMAKE='$(GMAKE)' \
-		MAKENAME='$(MAKENAME)' \
-		module; \
-		) \
-	done
+	@echo \
+	kemoviewer_glfw_gtk.o:  \
+	'$$(KEMOVIEWER_DIR)'/kemoviewer_glfw_gtk.c  \
+	'$$(KEMO_C_GLDIR)'/kemoviewer.h \
+	kemo_mesh_viewer_glfw_gtk.o \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS)' \
+	'$$(KEMOVIEWER_DIR)'/kemoviewer_glfw_gtk.c \
+	>> $(MAKENAME)
+	
+	@echo \
+	kemo_mesh_viewer_glfw_gtk.o:  \
+	'$$(KEMOVIEWER_DIR)'/kemo_mesh_viewer_glfw_gtk.c  \
+	kemo_mesh_viewer_glfw_gtk.h \
+	'$$(KEMO_C_GLDIR)'/kemoviewer.h \
+	kemoview_gtk_PSF_menu.o \
+	kemoview_gtk_mesh_menu.o \
+	kemoview_gtk_preference_menu.o \
+	kemoview_fileselector_gtk.o \
+	kemoview_gtk_main_menu.o \
+	kemoview_gtk_viewmatrix_menu.o \
+	view_modifier_glfw.o \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS)' \
+	'$$(KEMOVIEWER_DIR)'/kemo_mesh_viewer_glfw_gtk.c \
+	>> $(MAKENAME)
+	
+	@echo \
+	kemoviewer_gtk.o:  \
+	'$$(KEMOVIEWER_DIR)'/kemoviewer_gtk.c  \
+	'$$(KEMO_C_GLDIR)'/kemoviewer.h \
+	kemo_mesh_viewer_gtk.o \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS)' \
+	'$$(KEMOVIEWER_DIR)'/kemoviewer_gtk.c \
+	>> $(MAKENAME)
+	
+	@echo \
+	kemo_mesh_viewer_gtk.o:  \
+	'$$(KEMOVIEWER_DIR)'/kemo_mesh_viewer_gtk.c  \
+	kemo_mesh_viewer_gtk.h \
+	'$$(KEMO_C_GLDIR)'/kemoviewer.h \
+	calypso_GTK.o \
+	view_modifier_glfw.o \
+	kemoview_fileselector_gtk.o \
+	kemoview_gtk_mesh_menu.o \
+	kemoview_gtk_preference_menu.o \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS)' \
+	'$$(KEMOVIEWER_DIR)'/kemo_mesh_viewer_gtk.c \
+	>> $(MAKENAME)
 
 includes:
-	@for dir in $(SUBDIRS); do \
-		( cd $${dir};  \
-		echo 'generate symbolic link commands for ' $$dir ; \
-		$(GMAKE) \
-		GMAKE='$(GMAKE)' \
-		MAKENAME='$(MAKENAME)' \
-		includes; \
+	@for sources in `ls *.h`; do \
+		( \
+		echo 'copy include files for ' $$sources ; \
+		echo $$sources': $$(KEMOVIEWER_DIR)/'$$sources \
+		>> $(MAKENAME); \
+		echo '	cp $$(KEMOVIEWER_DIR)/'$$sources . \
+		>> $(MAKENAME) \
 		) \
 	done
-
 
 clean:
-	@for dir in $(SUBDIRS); do \
-		( cd $${dir};  \
-		$(GMAKE) \
-		GMAKE='$(GMAKE)' \
-		clean; \
-		) \
-	done
-	
-	rm -f *.o *.mod *~ *.par *.diag *.a
+	rm -f *.o *~ *.mod *.diag *.L

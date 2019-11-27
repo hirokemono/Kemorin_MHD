@@ -65,7 +65,10 @@ mod_list:
 
 
 module:
-	@$(MAKE_MOD_DEP) '$(MAKENAME)' '$$(MESH_TEST_DIR)' $(SRC_MESH_TEST)
+	@cat Makefile.depends >> $(MAKENAME)
+
+depends:
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(MESH_TEST_DIR)' $(SRC_MESH_TEST)
 
 
 clean:

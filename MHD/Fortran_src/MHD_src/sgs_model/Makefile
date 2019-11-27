@@ -23,7 +23,10 @@ mod_list:
 	@echo '#' >> $(MAKENAME)
 
 module:
-	@$(MAKE_MOD_DEP) '$(MAKENAME)' '$$(MHD_SGS_DIR)' $(SRC_SGS)
+	@cat Makefile.depends >> $(MAKENAME)
+
+depends:
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(MHD_SGS_DIR)' $(SRC_SGS)
 
 
 clean:

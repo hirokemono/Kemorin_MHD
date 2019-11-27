@@ -32,7 +32,10 @@ mod_list:
 	@echo  >> $(MAKENAME)
 
 module:
-	@$(MAKE_MOD_DEP) '$(MAKENAME)' '$$(FIELDLINE_DIR)' $(SRC_FIELDLINE)
+	@cat Makefile.depends >> $(MAKENAME)
+
+depends:
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(FIELDLINE_DIR)' $(SRC_FIELDLINE)
 
 clean:
 	rm -f *.o *.mod *~ *.par *.diag *.a

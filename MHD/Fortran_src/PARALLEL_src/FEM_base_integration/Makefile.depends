@@ -1,0 +1,199 @@
+add_skv1_2_matrix.o: $(FEM_INT_DIR)/add_skv1_2_matrix.f90 m_precision.o m_phys_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+add_skv1_to_crs_matrix.o: $(FEM_INT_DIR)/add_skv1_to_crs_matrix.f90 m_precision.o m_machine_parameter.o t_geometry_data.o t_table_FEM_const.o add_skv1_2_matrix.o
+	$(F90) -c $(F90OPTFLAGS) $<
+cal_difference_on_element.o: $(FEM_INT_DIR)/cal_difference_on_element.f90 m_precision.o m_constants.o m_machine_parameter.o
+	$(F90) -c $(F90OPTFLAGS) $<
+cal_differences_on_ele.o: $(FEM_INT_DIR)/cal_differences_on_ele.f90 m_precision.o t_geometry_data.o t_fem_gauss_int_coefs.o t_jacobians.o cal_difference_on_element.o cal_gradient_on_element.o cal_divergence_on_element.o cal_rotation_on_element.o div_s_tensor_on_element.o div_as_tensor_on_element.o
+	$(F90) -c $(F90OPTFLAGS) $<
+cal_divergence_on_element.o: $(FEM_INT_DIR)/cal_divergence_on_element.f90 m_precision.o m_constants.o m_machine_parameter.o
+	$(F90) -c $(F90OPTFLAGS) $<
+cal_ff_smp_to_ffs.o: $(FEM_INT_DIR)/cal_ff_smp_to_ffs.f90 m_precision.o t_geometry_data.o t_table_FEM_const.o m_machine_parameter.o m_phys_constants.o t_finite_element_mat.o cal_rhs_node_order.o
+	$(F90) -c $(F90OPTFLAGS) $<
+cal_fields_on_element.o: $(FEM_INT_DIR)/cal_fields_on_element.f90 m_precision.o t_geometry_data.o t_fem_gauss_int_coefs.o t_jacobians.o fem_fields_on_element.o
+	$(F90) -c $(F90OPTFLAGS) $<
+cal_gradient_on_element.o: $(FEM_INT_DIR)/cal_gradient_on_element.f90 m_precision.o m_constants.o m_machine_parameter.o
+	$(F90) -c $(F90OPTFLAGS) $<
+cal_layerd_ave_correlate.o: $(FEM_INT_DIR)/cal_layerd_ave_correlate.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+cal_layered_volumes.o: $(FEM_INT_DIR)/cal_layered_volumes.f90 m_precision.o m_constants.o m_machine_parameter.o t_geometry_data.o t_layering_ele_list.o calypso_mpi.o
+	$(F90) -c $(F90OPTFLAGS) $<
+cal_prod_w_const_skv.o: $(FEM_INT_DIR)/cal_prod_w_const_skv.f90 m_precision.o t_geometry_data.o m_phys_constants.o cal_product_w_const_skv.o
+	$(F90) -c $(F90OPTFLAGS) $<
+cal_product_to_skv.o: $(FEM_INT_DIR)/cal_product_to_skv.f90 m_precision.o m_machine_parameter.o m_phys_constants.o overwrite_products_smp.o
+	$(F90) -c $(F90OPTFLAGS) $<
+cal_product_w_const_skv.o: $(FEM_INT_DIR)/cal_product_w_const_skv.f90 m_precision.o m_machine_parameter.o m_phys_constants.o overwrite_prod_const_smp.o
+	$(F90) -c $(F90OPTFLAGS) $<
+cal_products_within_skv.o: $(FEM_INT_DIR)/cal_products_within_skv.f90 m_precision.o m_phys_constants.o t_geometry_data.o cal_product_to_skv.o
+	$(F90) -c $(F90OPTFLAGS) $<
+cal_rhs_node_order.o: $(FEM_INT_DIR)/cal_rhs_node_order.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+cal_rotation_on_element.o: $(FEM_INT_DIR)/cal_rotation_on_element.f90 m_precision.o m_constants.o m_machine_parameter.o
+	$(F90) -c $(F90OPTFLAGS) $<
+cal_sk_to_ff_smp.o: $(FEM_INT_DIR)/cal_sk_to_ff_smp.f90 m_precision.o m_phys_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+cal_skv_to_ff_scalar_smp.o: $(FEM_INT_DIR)/cal_skv_to_ff_scalar_smp.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+cal_skv_to_ff_smp.o: $(FEM_INT_DIR)/cal_skv_to_ff_smp.f90 m_precision.o m_machine_parameter.o m_phys_constants.o t_geometry_data.o t_table_FEM_const.o cal_skv_to_ff_vector_smp.o cal_skv_to_ff_scalar_smp.o cal_skv_to_ff_tensor_smp.o
+	$(F90) -c $(F90OPTFLAGS) $<
+cal_skv_to_ff_tensor_smp.o: $(FEM_INT_DIR)/cal_skv_to_ff_tensor_smp.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+cal_skv_to_ff_vector_smp.o: $(FEM_INT_DIR)/cal_skv_to_ff_vector_smp.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+div_as_tensor_on_element.o: $(FEM_INT_DIR)/div_as_tensor_on_element.f90 m_precision.o m_constants.o m_machine_parameter.o
+	$(F90) -c $(F90OPTFLAGS) $<
+div_s_tensor_on_element.o: $(FEM_INT_DIR)/div_s_tensor_on_element.f90 m_precision.o m_constants.o m_machine_parameter.o
+	$(F90) -c $(F90OPTFLAGS) $<
+fem_element_volume.o: $(FEM_INT_DIR)/fem_element_volume.f90 m_precision.o m_machine_parameter.o t_fem_gauss_int_coefs.o t_geometry_data.o t_jacobians.o
+	$(F90) -c $(F90OPTFLAGS) $<
+fem_fields_on_element.o: $(FEM_INT_DIR)/fem_fields_on_element.f90 m_precision.o m_constants.o m_machine_parameter.o
+	$(F90) -c $(F90OPTFLAGS) $<
+fem_grp_skv_mass_mat.o: $(FEM_INT_DIR)/fem_grp_skv_mass_mat.f90 m_precision.o m_phys_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+fem_skl_diffusion.o: $(FEM_INT_DIR)/fem_skl_diffusion.f90 m_precision.o m_phys_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+fem_skl_grad.o: $(FEM_INT_DIR)/fem_skl_grad.f90 m_precision.o m_phys_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+fem_skv_diffusion.o: $(FEM_INT_DIR)/fem_skv_diffusion.f90 m_precision.o m_phys_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+fem_skv_diffusion_sph.o: $(FEM_INT_DIR)/fem_skv_diffusion_sph.f90 m_precision.o m_constants.o m_phys_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+fem_skv_diffusion_type.o: $(FEM_INT_DIR)/fem_skv_diffusion_type.f90 m_precision.o m_machine_parameter.o m_geometry_constants.o t_geometry_data.o t_fem_gauss_int_coefs.o t_jacobians.o fem_skv_diffusion.o
+	$(F90) -c $(F90OPTFLAGS) $<
+fem_skv_div.o: $(FEM_INT_DIR)/fem_skv_div.f90 m_precision.o m_phys_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+fem_skv_div_asym_t.o: $(FEM_INT_DIR)/fem_skv_div_asym_t.f90 m_precision.o m_phys_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+fem_skv_div_flux.o: $(FEM_INT_DIR)/fem_skv_div_flux.f90 m_precision.o m_phys_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+fem_skv_grad.o: $(FEM_INT_DIR)/fem_skv_grad.f90 m_precision.o m_phys_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+fem_skv_inertia.o: $(FEM_INT_DIR)/fem_skv_inertia.f90 m_precision.o m_phys_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+fem_skv_mass_mat.o: $(FEM_INT_DIR)/fem_skv_mass_mat.f90 m_precision.o m_constants.o m_phys_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+fem_skv_mass_mat_type.o: $(FEM_INT_DIR)/fem_skv_mass_mat_type.f90 m_precision.o m_constants.o m_phys_constants.o m_machine_parameter.o t_geometry_data.o t_fem_gauss_int_coefs.o t_jacobians.o fem_skv_mass_mat.o fem_grp_skv_mass_mat.o
+	$(F90) -c $(F90OPTFLAGS) $<
+fem_skv_nodal_field.o: $(FEM_INT_DIR)/fem_skv_nodal_field.f90 m_precision.o m_constants.o m_machine_parameter.o m_phys_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+fem_skv_nodal_field_type.o: $(FEM_INT_DIR)/fem_skv_nodal_field_type.f90 m_precision.o m_machine_parameter.o m_phys_constants.o t_geometry_data.o t_fem_gauss_int_coefs.o t_jacobians.o fem_skv_nodal_field.o fem_skv_scalar_on_ele.o fem_skv_vector_on_ele.o fem_skv_tensor_on_ele.o
+	$(F90) -c $(F90OPTFLAGS) $<
+fem_skv_nonlinear_type.o: $(FEM_INT_DIR)/fem_skv_nonlinear_type.f90 m_precision.o m_machine_parameter.o m_geometry_constants.o t_geometry_data.o t_fem_gauss_int_coefs.o t_jacobians.o fem_skv_inertia.o
+	$(F90) -c $(F90OPTFLAGS) $<
+fem_skv_rot.o: $(FEM_INT_DIR)/fem_skv_rot.f90 m_precision.o m_phys_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+fem_skv_rot2_laplace.o: $(FEM_INT_DIR)/fem_skv_rot2_laplace.f90 m_precision.o m_phys_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+fem_skv_scalar_on_ele.o: $(FEM_INT_DIR)/fem_skv_scalar_on_ele.f90 m_precision.o m_machine_parameter.o m_phys_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+fem_skv_tensor_on_ele.o: $(FEM_INT_DIR)/fem_skv_tensor_on_ele.f90 m_precision.o m_machine_parameter.o m_phys_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+fem_skv_vector_diff_type.o: $(FEM_INT_DIR)/fem_skv_vector_diff_type.f90 m_precision.o m_machine_parameter.o m_geometry_constants.o t_geometry_data.o t_fem_gauss_int_coefs.o t_jacobians.o fem_skv_grad.o fem_skv_div.o fem_skv_rot.o fem_skv_rot2_laplace.o fem_skv_div_flux.o fem_skv_div_asym_t.o
+	$(F90) -c $(F90OPTFLAGS) $<
+fem_skv_vector_on_ele.o: $(FEM_INT_DIR)/fem_skv_vector_on_ele.f90 m_precision.o m_machine_parameter.o m_phys_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+int_area_normal_4_surface.o: $(FEM_INT_DIR)/int_area_normal_4_surface.f90 m_precision.o m_machine_parameter.o m_geometry_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+int_differenciate_on_ele.o: $(FEM_INT_DIR)/int_differenciate_on_ele.f90 m_precision.o m_machine_parameter.o t_geometry_data.o t_fem_gauss_int_coefs.o t_jacobian_3d.o
+	$(F90) -c $(F90OPTFLAGS) $<
+int_edge_vector.o: $(FEM_INT_DIR)/int_edge_vector.f90 m_precision.o m_machine_parameter.o t_edge_data.o t_fem_gauss_int_coefs.o t_jacobian_1d.o
+	$(F90) -c $(F90OPTFLAGS) $<
+int_element_field_2_node.o: $(FEM_INT_DIR)/int_element_field_2_node.f90 m_precision.o m_geometry_constants.o m_phys_constants.o t_geometry_data.o t_phys_data.o t_jacobians.o t_table_FEM_const.o t_finite_element_mat.o fem_skv_mass_mat_type.o fem_skv_nodal_field_type.o cal_skv_to_ff_smp.o cal_ff_smp_to_ffs.o
+	$(F90) -c $(F90OPTFLAGS) $<
+int_element_length.o: $(FEM_INT_DIR)/int_element_length.f90 m_precision.o m_constants.o m_machine_parameter.o m_geometry_constants.o t_geometry_data.o t_filter_dxdxi.o t_filter_elength.o t_fem_gauss_int_coefs.o t_shape_functions.o
+	$(F90) -c $(F90OPTFLAGS) $<
+int_grouped_mass_matrix.o: $(FEM_INT_DIR)/int_grouped_mass_matrix.f90 m_precision.o m_phys_constants.o t_geometry_data.o t_fem_gauss_int_coefs.o t_jacobians.o t_table_FEM_const.o t_finite_element_mat.o fem_skv_mass_mat_type.o cal_skv_to_ff_smp.o cal_ff_smp_to_ffs.o add_skv1_to_crs_matrix.o
+	$(F90) -c $(F90OPTFLAGS) $<
+int_rms_ave_ele_grps.o: $(FEM_INT_DIR)/int_rms_ave_ele_grps.f90 m_precision.o m_constants.o m_geometry_constants.o t_geometry_data.o t_fem_gauss_int_coefs.o t_jacobians.o t_group_data.o int_vol_rms_ave_1egrp.o int_vol_2rms_ave_1egrp.o int_vol_dev_cor_1egrp.o
+	$(F90) -c $(F90OPTFLAGS) $<
+int_surf_ave_fluxes_1sgrp.o: $(FEM_INT_DIR)/int_surf_ave_fluxes_1sgrp.f90 m_precision.o m_machine_parameter.o m_geometry_constants.o t_geometry_data.o t_surface_data.o t_fem_gauss_int_coefs.o t_jacobians.o int_area_normal_4_surface.o int_surf_ave_fluxes_4.o int_surf_ave_fluxes_8.o
+	$(F90) -c $(F90OPTFLAGS) $<
+int_surf_ave_fluxes_4.o: $(FEM_INT_DIR)/int_surf_ave_fluxes_4.f90 m_precision.o m_machine_parameter.o m_geometry_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+int_surf_ave_fluxes_8.o: $(FEM_INT_DIR)/int_surf_ave_fluxes_8.f90 m_precision.o m_machine_parameter.o m_geometry_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+int_surf_ave_layered.o: $(FEM_INT_DIR)/int_surf_ave_layered.f90 m_precision.o m_geometry_constants.o t_geometry_data.o t_surface_data.o t_fem_gauss_int_coefs.o t_jacobians.o int_surf_ave_fluxes_4.o int_surf_ave_fluxes_8.o int_area_normal_4_surface.o
+	$(F90) -c $(F90OPTFLAGS) $<
+int_vol_2rms_ave_1egrp.o: $(FEM_INT_DIR)/int_vol_2rms_ave_1egrp.f90 m_precision.o m_constants.o m_geometry_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+int_vol_dev_cor_1egrp.o: $(FEM_INT_DIR)/int_vol_dev_cor_1egrp.f90 m_precision.o m_constants.o m_geometry_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+int_vol_mass_matrix.o: $(FEM_INT_DIR)/int_vol_mass_matrix.f90 m_precision.o m_phys_constants.o t_geometry_data.o t_fem_gauss_int_coefs.o t_jacobians.o t_table_FEM_const.o t_finite_element_mat.o cal_ff_smp_to_ffs.o m_geometry_constants.o fem_skv_mass_mat_type.o cal_skv_to_ff_smp.o add_skv1_to_crs_matrix.o
+	$(F90) -c $(F90OPTFLAGS) $<
+int_vol_rms_ave_1egrp.o: $(FEM_INT_DIR)/int_vol_rms_ave_1egrp.f90 m_precision.o m_constants.o m_geometry_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+int_vol_vect_cst_difference.o: $(FEM_INT_DIR)/int_vol_vect_cst_difference.f90 m_precision.o m_phys_constants.o t_geometry_data.o t_phys_data.o t_fem_gauss_int_coefs.o t_jacobians.o t_table_FEM_const.o t_finite_element_mat.o nodal_fld_cst_to_element.o cal_skv_to_ff_smp.o fem_skv_vector_diff_type.o
+	$(F90) -c $(F90OPTFLAGS) $<
+int_vol_vect_differences.o: $(FEM_INT_DIR)/int_vol_vect_differences.f90 m_precision.o m_phys_constants.o t_geometry_data.o t_phys_data.o t_fem_gauss_int_coefs.o t_jacobians.o t_table_FEM_const.o t_finite_element_mat.o nodal_fld_2_each_element.o cal_skv_to_ff_smp.o fem_skv_vector_diff_type.o
+	$(F90) -c $(F90OPTFLAGS) $<
+int_volume_of_domain.o: $(FEM_INT_DIR)/int_volume_of_domain.f90 m_precision.o m_constants.o t_mesh_data.o t_geometry_data.o t_group_data.o t_surface_boundary.o t_shape_functions.o t_fem_gauss_int_coefs.o t_jacobians.o set_normal_vectors.o set_surf_grp_vectors.o sum_normal_4_surf_group.o set_connects_4_surf_group.o const_jacobians_3d.o sum_volume_of_domain.o t_layering_ele_list.o cal_layered_volumes.o calypso_mpi.o fem_element_volume.o
+	$(F90) -c $(F90OPTFLAGS) $<
+matrix_initialization.o: $(FEM_INT_DIR)/matrix_initialization.f90 m_precision.o m_constants.o m_machine_parameter.o t_geometry_data.o t_table_FEM_const.o
+	$(F90) -c $(F90OPTFLAGS) $<
+nodal_cst_fld_each_element.o: $(FEM_INT_DIR)/nodal_cst_fld_each_element.f90 m_precision.o m_constants.o m_phys_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+nodal_fld_2_each_element.o: $(FEM_INT_DIR)/nodal_fld_2_each_element.f90 m_precision.o m_constants.o m_machine_parameter.o t_geometry_data.o set_nodal_2_each_element.o t_phys_data.o m_phys_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+nodal_fld_cst_to_element.o: $(FEM_INT_DIR)/nodal_fld_cst_to_element.f90 m_precision.o m_constants.o m_machine_parameter.o t_geometry_data.o nodal_cst_fld_each_element.o t_phys_data.o
+	$(F90) -c $(F90OPTFLAGS) $<
+ordering_4_rhs_assemble.o: $(FEM_INT_DIR)/ordering_4_rhs_assemble.f90 m_precision.o m_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+ordering_rhs_assemble_type.o: $(FEM_INT_DIR)/ordering_rhs_assemble_type.f90 m_precision.o m_constants.o m_machine_parameter.o t_geometry_data.o t_next_node_ele_4_node.o t_table_FEM_const.o ordering_4_rhs_assemble.o cal_minmax_and_stacks.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_crs_connection.o: $(FEM_INT_DIR)/set_crs_connection.f90 m_precision.o m_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_delta_2_each_sf_w_coef.o: $(FEM_INT_DIR)/set_delta_2_each_sf_w_coef.f90 m_precision.o m_constants.o m_geometry_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_delta_2_each_sf_w_cst.o: $(FEM_INT_DIR)/set_delta_2_each_sf_w_cst.f90 m_precision.o m_constants.o m_geometry_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_delta_2_each_surface.o: $(FEM_INT_DIR)/set_delta_2_each_surface.f90 m_precision.o m_constants.o m_geometry_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_edge_vectors.o: $(FEM_INT_DIR)/set_edge_vectors.f90 m_precision.o m_machine_parameter.o m_geometry_constants.o t_geometry_data.o t_edge_data.o t_shape_functions.o t_jacobians.o t_jacobian_1d.o int_edge_vector.o cvt_xyz_vector_2_sph_smp.o cvt_xyz_vector_2_cyl_smp.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_index_list_4_crs.o: $(FEM_INT_DIR)/set_index_list_4_crs.f90 m_precision.o m_machine_parameter.o t_crs_matrix.o set_off_diagonal.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_int_point_position.o: $(FEM_INT_DIR)/set_int_point_position.f90 m_precision.o m_geometry_constants.o t_geometry_data.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_nodal_2_each_element.o: $(FEM_INT_DIR)/set_nodal_2_each_element.f90 m_precision.o m_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_nodal_2_each_sf_w_coef.o: $(FEM_INT_DIR)/set_nodal_2_each_sf_w_coef.f90 m_precision.o m_constants.o m_geometry_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_nodal_2_each_sf_w_cst.o: $(FEM_INT_DIR)/set_nodal_2_each_sf_w_cst.f90 m_precision.o m_constants.o m_geometry_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_nodal_2_each_surface.o: $(FEM_INT_DIR)/set_nodal_2_each_surface.f90 m_precision.o m_constants.o m_geometry_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_nodal_each_ele_w_coef.o: $(FEM_INT_DIR)/set_nodal_each_ele_w_coef.f90 m_precision.o m_constants.o m_machine_parameter.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_nodal_each_ele_w_const.o: $(FEM_INT_DIR)/set_nodal_each_ele_w_const.f90 m_precision.o m_constants.o m_machine_parameter.o m_geometry_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_normal_vectors.o: $(FEM_INT_DIR)/set_normal_vectors.f90 m_precision.o m_machine_parameter.o t_geometry_data.o t_surface_data.o t_shape_functions.o t_fem_gauss_int_coefs.o t_jacobians.o t_jacobian_2d.o int_area_normal_4_surface.o cvt_xyz_vector_2_sph_smp.o cvt_xyz_vector_2_cyl_smp.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_off_diagonal.o: $(FEM_INT_DIR)/set_off_diagonal.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_surf_grp_vectors.o: $(FEM_INT_DIR)/set_surf_grp_vectors.f90 m_precision.o m_machine_parameter.o t_surface_data.o t_group_data.o t_group_connects.o t_surface_group_geometry.o sum_normal_4_surf_group.o m_geometry_constants.o coordinate_converter.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_table_4_RHS_assemble.o: $(FEM_INT_DIR)/set_table_4_RHS_assemble.f90 m_precision.o m_machine_parameter.o t_mesh_data.o t_next_node_ele_4_node.o t_table_FEM_const.o set_ele_id_4_node_type.o ordering_rhs_assemble_type.o t_geometry_data.o
+	$(F90) -c $(F90OPTFLAGS) $<
+sum_normal_4_surf_group.o: $(FEM_INT_DIR)/sum_normal_4_surf_group.f90 m_precision.o calypso_mpi.o m_machine_parameter.o t_geometry_data.o t_group_data.o t_surface_group_geometry.o
+	$(F90) -c $(F90OPTFLAGS) $<
+sum_volume_of_domain.o: $(FEM_INT_DIR)/sum_volume_of_domain.f90 m_precision.o m_machine_parameter.o
+	$(F90) -c $(F90OPTFLAGS) $<
+switch_crs_matrix.o: $(FEM_INT_DIR)/switch_crs_matrix.f90 m_precision.o t_crs_connect.o t_crs_matrix.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_crs_connect.o: $(FEM_INT_DIR)/t_crs_connect.f90 m_precision.o m_machine_parameter.o t_geometry_data.o t_next_node_ele_4_node.o set_crs_connection.o cal_minmax_and_stacks.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_crs_matrix.o: $(FEM_INT_DIR)/t_crs_matrix.f90 m_precision.o t_crs_connect.o t_iccg_parameter.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_finite_element_mat.o: $(FEM_INT_DIR)/t_finite_element_mat.f90 m_precision.o t_geometry_data.o m_phys_constants.o m_machine_parameter.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_finite_surface_mat.o: $(FEM_INT_DIR)/t_finite_surface_mat.f90 m_precision.o t_surface_data.o t_group_data.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_int_surface_data.o: $(FEM_INT_DIR)/t_int_surface_data.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_table_FEM_const.o: $(FEM_INT_DIR)/t_table_FEM_const.f90 m_precision.o m_machine_parameter.o t_geometry_data.o t_crs_matrix.o set_index_list_4_crs.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_work_FEM_integration.o: $(FEM_INT_DIR)/t_work_FEM_integration.f90 m_precision.o t_finite_element_mat.o t_int_surface_data.o t_jacobians.o t_next_node_ele_4_node.o t_table_FEM_const.o t_mesh_data.o m_phys_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_work_layer_correlate.o: $(FEM_INT_DIR)/t_work_layer_correlate.f90 m_precision.o m_constants.o m_machine_parameter.o calypso_mpi.o
+	$(F90) -c $(F90OPTFLAGS) $<
+

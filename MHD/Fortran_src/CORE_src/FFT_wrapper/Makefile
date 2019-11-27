@@ -27,7 +27,10 @@ mod_list:
 
 
 module:
-	@$(MAKE_MOD_DEP) '$(MAKENAME)' '$$(FFT_WRAP_DIR)' $(SRC_FFT_WRAP)
+	@cat Makefile.depends >> $(MAKENAME)
+
+depends:
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(FFT_WRAP_DIR)' $(SRC_FFT_WRAP)
 
 clean:
 	rm -f *.o *.mod *~ *.par *.diag *.a

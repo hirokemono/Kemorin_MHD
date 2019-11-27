@@ -1,0 +1,13 @@
+gauss_integration.o: $(GAUSSDIR)/gauss_integration.f90 m_precision.o m_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+int_gaussian_moments.o: $(GAUSSDIR)/int_gaussian_moments.f90 m_precision.o m_constants.o t_gauss_points.o set_filter_moments.o
+	$(F90) -c $(F90OPTFLAGS) $<
+int_linear_moments.o: $(GAUSSDIR)/int_linear_moments.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+int_tophat_moments.o: $(GAUSSDIR)/int_tophat_moments.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_filter_moments.o: $(GAUSSDIR)/set_filter_moments.f90 m_precision.o m_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_gauss_points.o: $(GAUSSDIR)/t_gauss_points.f90 m_precision.o m_constants.o gauss_integration.o
+	$(F90) -c $(F90OPTFLAGS) $<
+

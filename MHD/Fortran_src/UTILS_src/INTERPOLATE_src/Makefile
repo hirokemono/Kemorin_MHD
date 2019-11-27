@@ -41,8 +41,10 @@ mod_list:
 	@echo >> $(MAKENAME)
 
 module:
-	@$(MAKE_MOD_DEP) '$(MAKENAME)' '$$(ITP_SRCDIR)' $(SRC_ITP_TABLE)
-	@echo  '#' >> $(MAKENAME)
+	@cat Makefile.depends >> $(MAKENAME)
+
+depends:
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(ITP_SRCDIR)' $(SRC_ITP_TABLE)
 
 
 set_clean:

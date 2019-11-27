@@ -1,0 +1,31 @@
+order_vect_4_solver_11.o: $(SOLVER_ORDERING_DIR)/order_vect_4_solver_11.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+order_vect_4_solver_33.o: $(SOLVER_ORDERING_DIR)/order_vect_4_solver_33.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+order_vect_4_solver_nn.o: $(SOLVER_ORDERING_DIR)/order_vect_4_solver_nn.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+ordering_by_l2u_11.o: $(SOLVER_ORDERING_DIR)/ordering_by_l2u_11.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+ordering_by_l2u_33.o: $(SOLVER_ORDERING_DIR)/ordering_by_l2u_33.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+ordering_by_l2u_nn.o: $(SOLVER_ORDERING_DIR)/ordering_by_l2u_nn.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+ordering_by_l2u_o2nu_11.o: $(SOLVER_ORDERING_DIR)/ordering_by_l2u_o2nu_11.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+ordering_by_l2u_o2nu_33.o: $(SOLVER_ORDERING_DIR)/ordering_by_l2u_o2nu_33.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+ordering_by_l2u_o2nu_nn.o: $(SOLVER_ORDERING_DIR)/ordering_by_l2u_o2nu_nn.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+ordering_by_new2old_U_11.o: $(SOLVER_ORDERING_DIR)/ordering_by_new2old_U_11.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+ordering_by_new2old_U_33.o: $(SOLVER_ORDERING_DIR)/ordering_by_new2old_U_33.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+ordering_by_new2old_U_nn.o: $(SOLVER_ORDERING_DIR)/ordering_by_new2old_U_nn.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+ordering_by_o2nl_11.o: $(SOLVER_ORDERING_DIR)/ordering_by_o2nl_11.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+ordering_by_o2nl_33.o: $(SOLVER_ORDERING_DIR)/ordering_by_o2nl_33.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+ordering_by_o2nl_nn.o: $(SOLVER_ORDERING_DIR)/ordering_by_o2nl_nn.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+

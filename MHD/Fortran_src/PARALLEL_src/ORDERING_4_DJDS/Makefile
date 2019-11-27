@@ -24,7 +24,10 @@ mod_list:
 
 
 module:
-	@$(MAKE_MOD_DEP) '$(MAKENAME)' '$$(DJDS_ORDER_DIR)' $(SRC_SOLVER_SET_ORDER)
+	@cat Makefile.depends >> $(MAKENAME)
+
+depends:
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(DJDS_ORDER_DIR)' $(SRC_SOLVER_SET_ORDER)
 
 clean:
 	rm -f *.o *.mod *~ *.par *.diag *.a

@@ -147,7 +147,10 @@ mod_list:
 
 
 module:
-	@$(MAKE_MOD_DEP) '$(MAKENAME)' '$$(SOLVERTEST_DIR)' $(SOURCES)
+	@cat Makefile.depends >> $(MAKENAME)
+
+depends:
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(SOLVERTEST_DIR)' $(SOURCES)
 
 clean:
 	rm -f *.o *.mod *~ *.par *.diag *.a

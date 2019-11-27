@@ -101,4 +101,7 @@ mod_list:
 	@echo  '#'  >> $(MAKENAME)
 
 module:
-	@$(MAKE_MOD_DEP) '$(MAKENAME)' '$$(PLANE_MODEL_DIR)' $(SOURCES)
+	@cat Makefile.depends >> $(MAKENAME)
+
+depends:
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(PLANE_MODEL_DIR)' $(SOURCES)

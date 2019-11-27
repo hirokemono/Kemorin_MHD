@@ -91,7 +91,10 @@ mod_list:
 
 
 module:
-	@$(MAKE_MOD_DEP) '$(MAKENAME)' '$$(NODE_CLUSTERING_TEST_DIR)' $(SRC_NODE_CLUSTERING_TEST)
+	@cat Makefile.depends >> $(MAKENAME)
+
+depends:
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(NODE_CLUSTERING_TEST_DIR)' $(SRC_NODE_CLUSTERING_TEST)
 
 
 clean:

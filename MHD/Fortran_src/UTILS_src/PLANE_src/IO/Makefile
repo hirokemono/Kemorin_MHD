@@ -32,7 +32,10 @@ mod_list:
 
 
 module:
-	@$(MAKE_MOD_DEP) '$(MAKENAME)' '$$(PLANE_IO_DIR)' $(SRC_PLANE_IO)
+	@cat Makefile.depends >> $(MAKENAME)
+
+depends:
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(PLANE_IO_DIR)' $(SRC_PLANE_IO)
 
 clean:
 	rm -f *.o *.mod *~ *.par *.diag *.a

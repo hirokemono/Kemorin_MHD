@@ -1,0 +1,37 @@
+allocate_solver_djds_MHD.o: $(MHD_SOLVER_DIR)/allocate_solver_djds_MHD.f90 m_precision.o t_control_parameter.o t_physical_property.o t_comm_table.o t_solver_djds.o t_vector_for_solver.o t_interpolate_table.o t_sorted_node_MHD.o t_geometry_data.o t_geometry_data_MHD.o
+	$(F90) -c $(F90OPTFLAGS) $<
+cal_coriolis_mat33.o: $(MHD_SOLVER_DIR)/cal_coriolis_mat33.f90 m_precision.o m_constants.o m_phys_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+cal_diffuse_matrix.o: $(MHD_SOLVER_DIR)/cal_diffuse_matrix.f90 m_precision.o m_phys_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+cal_poisson_matrices.o: $(MHD_SOLVER_DIR)/cal_poisson_matrices.f90 m_precision.o m_machine_parameter.o m_geometry_constants.o t_geometry_data.o t_geometry_data_MHD.o t_table_FEM_const.o t_finite_element_mat.o t_solver_djds.o t_coefs_element_4_MHD.o cal_diffuse_matrix.o t_physical_property.o cal_coriolis_mat33.o
+	$(F90) -c $(F90OPTFLAGS) $<
+cal_solver_MHD.o: $(MHD_SOLVER_DIR)/cal_solver_MHD.f90 m_precision.o m_phys_constants.o t_geometry_data.o t_vector_for_solver.o t_interpolate_table.o t_solver_djds.o t_finite_element_mat.o t_phys_data.o t_phys_address.o t_MGCG_parameter.o solver_MGCG_MHD.o copy_for_MHD_solvers.o
+	$(F90) -c $(F90OPTFLAGS) $<
+construct_matrices.o: $(MHD_SOLVER_DIR)/construct_matrices.f90 m_precision.o m_machine_parameter.o m_geometry_constants.o t_control_parameter.o t_FEM_control_parameter.o t_SGS_control_parameter.o t_mesh_data.o t_geometry_data_MHD.o t_geometry_data.o t_surface_data.o t_group_data.o t_jacobians.o t_table_FEM_const.o t_finite_element_mat.o t_int_surface_data.o t_MHD_mass_matrices.o t_work_FEM_integration.o t_filter_elength.o t_material_property.o t_SGS_model_coefs.o t_sorted_node_MHD.o t_FEM_MHD_boundary_data.o t_solver_djds_MHD.o t_MHD_matrices_pack.o t_MGCG_data.o t_physical_property.o t_FEM_SGS_model_coefs.o t_FEM_MHD_solvers.o calypso_mpi.o t_solver_djds.o set_MHD_idx_4_mat_type.o t_time_data.o t_flex_delta_t_data.o set_aiccg_matrices_type.o precond_djds_MHD.o initialize_4_MHD_AMG.o skip_comment_f.o t_MGCG_data_4_MHD.o
+	$(F90) -c $(F90OPTFLAGS) $<
+copy_for_MHD_solvers.o: $(MHD_SOLVER_DIR)/copy_for_MHD_solvers.f90 m_precision.o m_machine_parameter.o m_phys_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+correct_matrix_4_boundary.o: $(MHD_SOLVER_DIR)/correct_matrix_4_boundary.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+init_djds_matrix_lump.o: $(MHD_SOLVER_DIR)/init_djds_matrix_lump.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+init_iccg_matrices.o: $(MHD_SOLVER_DIR)/init_iccg_matrices.f90 m_precision.o m_constants.o calypso_mpi.o m_geometry_constants.o t_physical_property.o t_geometry_data.o t_geometry_data_MHD.o t_solver_djds.o
+	$(F90) -c $(F90OPTFLAGS) $<
+int_vol_lumped_mat_crank.o: $(MHD_SOLVER_DIR)/int_vol_lumped_mat_crank.f90 m_precision.o m_constants.o t_physical_property.o t_mesh_data.o t_geometry_data.o t_geometry_data_MHD.o t_MHD_finite_element_mat.o t_solver_djds.o init_djds_matrix_lump.o cal_coriolis_mat33.o
+	$(F90) -c $(F90OPTFLAGS) $<
+int_vol_poisson_mat.o: $(MHD_SOLVER_DIR)/int_vol_poisson_mat.f90 m_precision.o m_machine_parameter.o m_phys_constants.o t_geometry_data.o t_table_FEM_const.o t_fem_gauss_int_coefs.o t_jacobians.o t_finite_element_mat.o t_solver_djds.o fem_skv_diffusion_type.o cal_skv_to_ff_smp.o add_skv1_to_crs_matrix.o cal_poisson_matrices.o
+	$(F90) -c $(F90OPTFLAGS) $<
+int_vol_poisson_matrix.o: $(MHD_SOLVER_DIR)/int_vol_poisson_matrix.f90 m_precision.o m_phys_constants.o t_physical_property.o t_FEM_control_parameter.o t_SGS_control_parameter.o t_mesh_data.o t_geometry_data.o t_fem_gauss_int_coefs.o t_jacobians.o t_table_FEM_const.o t_filter_elength.o t_finite_element_mat.o t_material_property.o t_SGS_model_coefs.o t_solver_djds.o int_vol_poisson_mat.o int_vol_poisson_sgs_matrix.o
+	$(F90) -c $(F90OPTFLAGS) $<
+precond_djds_MHD.o: $(MHD_SOLVER_DIR)/precond_djds_MHD.f90 m_precision.o m_machine_parameter.o calypso_mpi.o t_physical_property.o t_solver_djds_MHD.o t_FEM_control_parameter.o solver_MGCG_MHD.o t_solver_djds.o solver_DJDS11_struct.o solver_DJDS33_struct.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_MHD_idx_4_mat_type.o: $(MHD_SOLVER_DIR)/set_MHD_idx_4_mat_type.f90 m_precision.o m_geometry_constants.o t_physical_property.o t_mesh_data.o t_geometry_data.o t_geometry_data_MHD.o t_table_FEM_const.o t_solver_djds.o set_idx_4_mat_type.o m_machine_parameter.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_djds_connect_type_MHD.o: $(MHD_SOLVER_DIR)/set_djds_connect_type_MHD.f90 m_precision.o calypso_mpi.o m_machine_parameter.o m_constants.o m_geometry_constants.o t_iccg_parameter.o t_crs_connect.o t_solver_djds.o t_solver_djds_MHD.o t_comm_table.o t_geometry_data.o t_next_node_ele_4_node.o t_table_FEM_const.o set_table_4_RHS_assemble.o set_djds_connectivity_type.o copy_mesh_structures.o t_mesh_data.o t_geometry_data_MHD.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_MHD_matrices_pack.o: $(MHD_SOLVER_DIR)/t_MHD_matrices_pack.f90 m_precision.o t_solver_djds_MHD.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_solver_djds_MHD.o: $(MHD_SOLVER_DIR)/t_solver_djds_MHD.f90 m_precision.o t_control_parameter.o t_physical_property.o t_comm_table.o t_solver_djds.o t_vector_for_solver.o t_interpolate_table.o t_sorted_node_MHD.o allocate_solver_djds_MHD.o
+	$(F90) -c $(F90OPTFLAGS) $<
+

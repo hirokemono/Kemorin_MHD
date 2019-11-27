@@ -61,7 +61,10 @@ mod_list:
 
 
 module:
-	@$(MAKE_MOD_DEP) '$(MAKENAME)' '$$(FFT_TEST_DIR)' $(SRC_FFT_TEST)
+	@cat Makefile.depends >> $(MAKENAME)
+
+depends:
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(FFT_TEST_DIR)' $(SRC_FFT_TEST)
 
 
 clean:

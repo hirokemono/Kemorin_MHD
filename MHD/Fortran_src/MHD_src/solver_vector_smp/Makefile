@@ -24,7 +24,10 @@ mod_list:
 
 
 module:
-	@$(MAKE_MOD_DEP) '$(MAKENAME)' '$$(MHD_SOLVER_DIR)' $(SRC_MHD_SOLVE)
+	@cat Makefile.depends >> $(MAKENAME)
+
+depends:
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(MHD_SOLVER_DIR)' $(SRC_MHD_SOLVE)
 
 clean:
 	rm -f *.o *.mod *~ *.par *.diag *.a

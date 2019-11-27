@@ -1,0 +1,85 @@
+backward_substitute_11.o: $(SOLVER_PRECOND_DIR)/backward_substitute_11.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+backward_substitute_33.o: $(SOLVER_PRECOND_DIR)/backward_substitute_33.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+backward_substitute_33d.o: $(SOLVER_PRECOND_DIR)/backward_substitute_33d.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+backward_substitute_nn.o: $(SOLVER_PRECOND_DIR)/backward_substitute_nn.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+backward_substitute_nnd.o: $(SOLVER_PRECOND_DIR)/backward_substitute_nnd.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+block_ilu_33.o: $(SOLVER_PRECOND_DIR)/block_ilu_33.f90 m_precision.o ordering_by_o2nl_33.o ordering_by_l2u_33.o ordering_by_new2old_U_33.o cal_block_ilu_33.o
+	$(F90) -c $(F90OPTFLAGS) $<
+block_ilu_nn.o: $(SOLVER_PRECOND_DIR)/block_ilu_nn.f90 m_precision.o ordering_by_o2nl_nn.o ordering_by_l2u_nn.o ordering_by_new2old_U_nn.o cal_block_ilu_nn.o
+	$(F90) -c $(F90OPTFLAGS) $<
+cal_block_ilu_33.o: $(SOLVER_PRECOND_DIR)/cal_block_ilu_33.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+cal_block_ilu_nn.o: $(SOLVER_PRECOND_DIR)/cal_block_ilu_nn.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+diagonal_scaling_11.o: $(SOLVER_PRECOND_DIR)/diagonal_scaling_11.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+diagonal_scaling_33.o: $(SOLVER_PRECOND_DIR)/diagonal_scaling_33.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+diagonal_scaling_nn.o: $(SOLVER_PRECOND_DIR)/diagonal_scaling_nn.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+forward_substitute_11.o: $(SOLVER_PRECOND_DIR)/forward_substitute_11.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+forward_substitute_33.o: $(SOLVER_PRECOND_DIR)/forward_substitute_33.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+forward_substitute_33d.o: $(SOLVER_PRECOND_DIR)/forward_substitute_33d.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+forward_substitute_nn.o: $(SOLVER_PRECOND_DIR)/forward_substitute_nn.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+forward_substitute_nnd.o: $(SOLVER_PRECOND_DIR)/forward_substitute_nnd.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+gauss_zeidel_11.o: $(SOLVER_PRECOND_DIR)/gauss_zeidel_11.f90 m_precision.o ordering_by_o2nl_11.o ordering_by_l2u_o2nu_11.o ordering_by_new2old_U_11.o gauss_zeidel_hp_11.o
+	$(F90) -c $(F90OPTFLAGS) $<
+gauss_zeidel_33.o: $(SOLVER_PRECOND_DIR)/gauss_zeidel_33.f90 m_precision.o ordering_by_o2nl_33.o ordering_by_l2u_o2nu_33.o ordering_by_new2old_U_33.o gauss_zeidel_hp_33.o
+	$(F90) -c $(F90OPTFLAGS) $<
+gauss_zeidel_hp_11.o: $(SOLVER_PRECOND_DIR)/gauss_zeidel_hp_11.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+gauss_zeidel_hp_33.o: $(SOLVER_PRECOND_DIR)/gauss_zeidel_hp_33.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+gauss_zeidel_hp_nn.o: $(SOLVER_PRECOND_DIR)/gauss_zeidel_hp_nn.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+gauss_zeidel_nn.o: $(SOLVER_PRECOND_DIR)/gauss_zeidel_nn.f90 m_precision.o ordering_by_o2nl_nn.o ordering_by_l2u_o2nu_nn.o ordering_by_new2old_U_nn.o gauss_zeidel_hp_nn.o
+	$(F90) -c $(F90OPTFLAGS) $<
+gauss_zeidel_w_comm_11.o: $(SOLVER_PRECOND_DIR)/gauss_zeidel_w_comm_11.f90 calypso_mpi.o m_precision.o m_solver_count_time.o gauss_zeidel_11.o solver_SR.o
+	$(F90) -c $(F90OPTFLAGS) $<
+gauss_zeidel_w_comm_33.o: $(SOLVER_PRECOND_DIR)/gauss_zeidel_w_comm_33.f90 calypso_mpi.o m_precision.o m_solver_count_time.o gauss_zeidel_33.o solver_SR_3.o
+	$(F90) -c $(F90OPTFLAGS) $<
+gauss_zeidel_w_comm_nn.o: $(SOLVER_PRECOND_DIR)/gauss_zeidel_w_comm_nn.f90 calypso_mpi.o m_precision.o m_solver_count_time.o gauss_zeidel_nn.o solver_SR_N.o
+	$(F90) -c $(F90OPTFLAGS) $<
+i_cholesky_w_asdd_11.o: $(SOLVER_PRECOND_DIR)/i_cholesky_w_asdd_11.f90 m_precision.o ordering_by_o2nl_11.o ordering_by_l2u_11.o ordering_by_new2old_U_11.o vector_calc_solver_11.o forward_substitute_11.o backward_substitute_11.o djds_matrix_calcs_11.o
+	$(F90) -c $(F90OPTFLAGS) $<
+i_cholesky_w_asdd_33.o: $(SOLVER_PRECOND_DIR)/i_cholesky_w_asdd_33.f90 m_precision.o ordering_by_o2nl_33.o ordering_by_l2u_33.o ordering_by_new2old_U_33.o vector_calc_solver_33.o djds_matrix_calcs_33.o forward_substitute_33.o backward_substitute_33.o
+	$(F90) -c $(F90OPTFLAGS) $<
+i_cholesky_w_asdd_33d.o: $(SOLVER_PRECOND_DIR)/i_cholesky_w_asdd_33d.f90 m_precision.o ordering_by_o2nl_33.o ordering_by_l2u_33.o ordering_by_new2old_U_33.o vector_calc_solver_33.o djds_matrix_calcs_33d.o forward_substitute_33d.o backward_substitute_33d.o
+	$(F90) -c $(F90OPTFLAGS) $<
+i_cholesky_w_asdd_nn.o: $(SOLVER_PRECOND_DIR)/i_cholesky_w_asdd_nn.f90 m_precision.o ordering_by_o2nl_nn.o ordering_by_l2u_nn.o ordering_by_new2old_U_nn.o vector_calc_solver_nn.o djds_matrix_calcs_nn.o forward_substitute_nn.o backward_substitute_nn.o
+	$(F90) -c $(F90OPTFLAGS) $<
+i_cholesky_w_asdd_nnd.o: $(SOLVER_PRECOND_DIR)/i_cholesky_w_asdd_nnd.f90 m_precision.o ordering_by_o2nl_nn.o ordering_by_l2u_nn.o ordering_by_new2old_U_nn.o vector_calc_solver_nn.o djds_matrix_calcs_nnd.o forward_substitute_nnd.o backward_substitute_nnd.o
+	$(F90) -c $(F90OPTFLAGS) $<
+incomplete_cholesky_11.o: $(SOLVER_PRECOND_DIR)/incomplete_cholesky_11.f90 m_precision.o ordering_by_o2nl_11.o ordering_by_l2u_11.o ordering_by_new2old_U_11.o vector_calc_solver_11.o forward_substitute_11.o backward_substitute_11.o
+	$(F90) -c $(F90OPTFLAGS) $<
+incomplete_cholesky_33.o: $(SOLVER_PRECOND_DIR)/incomplete_cholesky_33.f90 m_precision.o ordering_by_o2nl_33.o ordering_by_l2u_33.o ordering_by_new2old_U_33.o vector_calc_solver_33.o forward_substitute_33.o backward_substitute_33.o
+	$(F90) -c $(F90OPTFLAGS) $<
+incomplete_cholesky_33d.o: $(SOLVER_PRECOND_DIR)/incomplete_cholesky_33d.f90 m_precision.o ordering_by_o2nl_33.o ordering_by_l2u_33.o ordering_by_new2old_U_33.o vector_calc_solver_33.o forward_substitute_33d.o backward_substitute_33d.o
+	$(F90) -c $(F90OPTFLAGS) $<
+incomplete_cholesky_nn.o: $(SOLVER_PRECOND_DIR)/incomplete_cholesky_nn.f90 m_precision.o ordering_by_o2nl_nn.o ordering_by_l2u_nn.o ordering_by_new2old_U_nn.o vector_calc_solver_nn.o forward_substitute_nn.o backward_substitute_nn.o
+	$(F90) -c $(F90OPTFLAGS) $<
+incomplete_cholesky_nnd.o: $(SOLVER_PRECOND_DIR)/incomplete_cholesky_nnd.f90 m_precision.o ordering_by_o2nl_nn.o ordering_by_l2u_nn.o ordering_by_new2old_U_nn.o vector_calc_solver_nn.o forward_substitute_nnd.o backward_substitute_nnd.o
+	$(F90) -c $(F90OPTFLAGS) $<
+jacobi_precondition_11.o: $(SOLVER_PRECOND_DIR)/jacobi_precondition_11.f90 m_precision.o ordering_by_o2nl_11.o ordering_by_l2u_o2nu_11.o ordering_by_new2old_U_11.o cal_4_lower_11.o cal_4_upper_11.o diagonal_scaling_11.o
+	$(F90) -c $(F90OPTFLAGS) $<
+jacobi_precondition_33.o: $(SOLVER_PRECOND_DIR)/jacobi_precondition_33.f90 m_precision.o ordering_by_o2nl_33.o ordering_by_l2u_o2nu_33.o ordering_by_new2old_U_33.o cal_4_lower_33.o cal_4_upper_33.o diagonal_scaling_33.o
+	$(F90) -c $(F90OPTFLAGS) $<
+jacobi_precondition_nn.o: $(SOLVER_PRECOND_DIR)/jacobi_precondition_nn.f90 m_precision.o ordering_by_o2nl_nn.o ordering_by_l2u_o2nu_nn.o ordering_by_new2old_U_nn.o cal_4_lower_nn.o cal_4_upper_nn.o diagonal_scaling_nn.o
+	$(F90) -c $(F90OPTFLAGS) $<
+symmetric_gauss_zeidel_11.o: $(SOLVER_PRECOND_DIR)/symmetric_gauss_zeidel_11.f90 m_precision.o m_solver_count_time.o gauss_zeidel_11.o solver_SR.o calypso_mpi.o
+	$(F90) -c $(F90OPTFLAGS) $<
+symmetric_gauss_zeidel_33.o: $(SOLVER_PRECOND_DIR)/symmetric_gauss_zeidel_33.f90 m_precision.o gauss_zeidel_33.o m_solver_count_time.o solver_SR_3.o calypso_mpi.o
+	$(F90) -c $(F90OPTFLAGS) $<
+symmetric_gauss_zeidel_nn.o: $(SOLVER_PRECOND_DIR)/symmetric_gauss_zeidel_nn.f90 m_precision.o m_solver_count_time.o gauss_zeidel_nn.o solver_SR_N.o calypso_mpi.o
+	$(F90) -c $(F90OPTFLAGS) $<
+

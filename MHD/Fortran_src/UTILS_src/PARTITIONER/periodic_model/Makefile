@@ -30,4 +30,7 @@ mod_list:
 
 
 module:
-	@$(MAKE_MOD_DEP) '$(MAKENAME)' '$$(PART_PERIDIR)' $(SRC_PART_PERI)
+	@cat Makefile.depends >> $(MAKENAME)
+
+depends:
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(PART_PERIDIR)' $(SRC_PART_PERI)

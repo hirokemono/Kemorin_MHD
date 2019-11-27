@@ -74,7 +74,10 @@ mod_list:
 
 
 module:
-	@$(MAKE_MOD_DEP) '$(MAKENAME)' '$$(BC_FILE_TEST_DIR)' $(SRC_BC_FILE_TEST)
+	@cat Makefile.depends >> $(MAKENAME)
+
+depends:
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(BC_FILE_TEST_DIR)' $(SRC_BC_FILE_TEST)
 
 
 clean:

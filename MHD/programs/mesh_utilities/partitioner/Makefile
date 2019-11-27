@@ -92,7 +92,10 @@ mod_list:
 
 
 module:
-	@$(MAKE_MOD_DEP) '$(MAKENAME)' '$$(PART_MAINDIR)' $(SOURCES)
+	@cat Makefile.depends >> $(MAKENAME)
+
+depends:
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(PART_MAINDIR)' $(SOURCES)
 
 clean:
 	rm -f *.o *~ *.mod *.diag *.L

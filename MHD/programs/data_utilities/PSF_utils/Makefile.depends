@@ -1,0 +1,41 @@
+cal_psf_rms_aves.o: $(PSF_UTIL_MAINDIR)/cal_psf_rms_aves.f90 m_precision.o m_constants.o t_phys_data.o set_parallel_file_name.o t_norms_4_psf.o copy_field_smp.o
+	$(F90) -c $(F90OPTFLAGS) $<
+const_section_from_triangle.o: $(PSF_UTIL_MAINDIR)/const_section_from_triangle.f90 m_precision.o m_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+drcx_fem.o: $(PSF_UTIL_MAINDIR)/drcx_fem.f90 m_precision.o m_constants.o m_ctl_param_plot_pg.o m_drawpg_fem.o m_isoline_dat_pg.o m_psf_results.o t_ctl_data_plot_pg.o set_control_draw_pg.o set_components_flags.o contour_fem_pg.o drcap_pg.o draw_colorbar_pg.o set_zplane_posi_pg.o set_parallel_file_name.o rbcolor_pg.o
+	$(F90) -c $(F90OPTFLAGS) $<
+drcy_fem.o: $(PSF_UTIL_MAINDIR)/drcy_fem.f90 m_precision.o m_constants.o m_ctl_param_plot_pg.o m_drawpg_fem.o m_isoline_dat_pg.o m_psf_results.o t_ctl_data_plot_pg.o set_control_draw_pg.o set_components_flags.o contour_fem_pg.o drcap_pg.o draw_colorbar_pg.o set_zplane_posi_pg.o set_parallel_file_name.o rbcolor_pg.o
+	$(F90) -c $(F90OPTFLAGS) $<
+drcz_fem.o: $(PSF_UTIL_MAINDIR)/drcz_fem.f90 m_precision.o m_constants.o m_ctl_param_plot_pg.o m_drawpg_fem.o m_isoline_dat_pg.o m_psf_results.o t_ctl_data_plot_pg.o set_control_draw_pg.o set_components_flags.o contour_fem_pg.o drcap_pg.o draw_colorbar_pg.o set_zplane_posi_pg.o set_parallel_file_name.o rbcolor_pg.o
+	$(F90) -c $(F90OPTFLAGS) $<
+drmap_fem.o: $(PSF_UTIL_MAINDIR)/drmap_fem.f90 m_precision.o m_constants.o m_ctl_param_plot_pg.o m_drawpg_fem.o m_isoline_dat_pg.o m_psf_results.o t_ctl_data_plot_pg.o set_control_draw_pg.o set_components_flags.o contour_fem_pg.o drcap_pg.o draw_colorbar_pg.o set_parallel_file_name.o set_map_from_1patch.o draw_mapframe_pg.o map_contour_fem_pg.o set_zplane_posi_pg.o rbcolor_pg.o
+	$(F90) -c $(F90OPTFLAGS) $<
+fix_temperature_4_psf.o: $(PSF_UTIL_MAINDIR)/fix_temperature_4_psf.f90 m_precision.o m_constants.o m_phys_labels.o m_psf_results.o m_field_file_format.o t_file_IO_parameter.o t_time_data.o t_ucd_data.o set_parallel_file_name.o ucd_IO_select.o
+	$(F90) -c $(F90OPTFLAGS) $<
+m_dynamobench_data_by_psf.o: $(PSF_UTIL_MAINDIR)/m_dynamobench_data_by_psf.f90 m_precision.o m_constants.o m_psf_edge_connect.o quicksort.o t_ucd_data.o
+	$(F90) -c $(F90OPTFLAGS) $<
+m_line_from_psf.o: $(PSF_UTIL_MAINDIR)/m_line_from_psf.f90 m_precision.o m_constants.o t_time_data.o t_ucd_data.o t_file_IO_parameter.o m_geometry_constants.o ucd_IO_select.o t_geometry_data.o t_phys_data.o m_psf_edge_connect.o const_section_from_triangle.o set_node_on_edge_quad_psf.o
+	$(F90) -c $(F90OPTFLAGS) $<
+m_merdional_grouping_patch.o: $(PSF_UTIL_MAINDIR)/m_merdional_grouping_patch.f90 m_precision.o t_group_data.o skip_comment_f.o set_parallel_file_name.o m_geometry_constants.o t_ucd_data.o write_ucd_to_vtk_file.o
+	$(F90) -c $(F90OPTFLAGS) $<
+m_psf_edge_connect.o: $(PSF_UTIL_MAINDIR)/m_psf_edge_connect.f90 t_geometry_data.o
+	$(F90) -c $(F90OPTFLAGS) $<
+m_psf_results.o: $(PSF_UTIL_MAINDIR)/m_psf_results.f90 m_precision.o m_field_file_format.o t_psf_results.o t_norms_4_psf.o t_file_IO_parameter.o
+	$(F90) -c $(F90OPTFLAGS) $<
+psf_dynamobench.o: $(PSF_UTIL_MAINDIR)/psf_dynamobench.f90 m_precision.o m_constants.o m_psf_results.o m_field_file_format.o set_parallel_file_name.o m_line_from_psf.o m_psf_edge_connect.o m_dynamobench_data_by_psf.o t_file_IO_parameter.o t_time_data.o t_ucd_data.o
+	$(F90) -c $(F90OPTFLAGS) $<
+psf_fix_reynods_work.o: $(PSF_UTIL_MAINDIR)/psf_fix_reynods_work.f90 m_precision.o m_constants.o m_psf_results.o m_field_file_format.o m_phys_labels.o t_file_IO_parameter.o t_time_data.o t_ucd_data.o set_parallel_file_name.o ucd_IO_select.o
+	$(F90) -c $(F90OPTFLAGS) $<
+psf_range_rms_aves.o: $(PSF_UTIL_MAINDIR)/psf_range_rms_aves.f90 m_precision.o m_constants.o m_psf_results.o m_field_file_format.o t_file_IO_parameter.o t_time_data.o t_ucd_data.o set_parallel_file_name.o ucd_IO_select.o cal_psf_rms_aves.o take_avarages_4_psf.o take_normals_4_psf.o
+	$(F90) -c $(F90OPTFLAGS) $<
+psf_rms_aves.o: $(PSF_UTIL_MAINDIR)/psf_rms_aves.f90 m_precision.o m_constants.o m_psf_results.o m_field_file_format.o t_file_IO_parameter.o t_time_data.o t_ucd_data.o set_parallel_file_name.o ucd_IO_select.o cal_psf_rms_aves.o take_avarages_4_psf.o take_normals_4_psf.o
+	$(F90) -c $(F90OPTFLAGS) $<
+section_from_psf.o: $(PSF_UTIL_MAINDIR)/section_from_psf.f90 m_precision.o m_constants.o m_psf_results.o m_field_file_format.o set_parallel_file_name.o skip_comment_f.o m_line_from_psf.o m_psf_edge_connect.o t_time_data.o t_ucd_data.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_norms_4_psf.o: $(PSF_UTIL_MAINDIR)/t_norms_4_psf.f90 m_precision.o t_geometry_data.o t_phys_data.o
+	$(F90) -c $(F90OPTFLAGS) $<
+take_avarages_4_psf.o: $(PSF_UTIL_MAINDIR)/take_avarages_4_psf.f90 m_precision.o t_geometry_data.o t_phys_data.o t_norms_4_psf.o
+	$(F90) -c $(F90OPTFLAGS) $<
+take_normals_4_psf.o: $(PSF_UTIL_MAINDIR)/take_normals_4_psf.f90 m_precision.o m_constants.o t_geometry_data.o t_phys_data.o t_norms_4_psf.o
+	$(F90) -c $(F90OPTFLAGS) $<
+

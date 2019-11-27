@@ -24,7 +24,10 @@ mod_list:
 
 
 module:
-	@$(MAKE_MOD_DEP) '$(MAKENAME)' '$$(FILTER_3D_MATDIR)' $(SRC_3D_FILTER_MAT)
+	@cat Makefile.depends >> $(MAKENAME)
+
+depends:
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(FILTER_3D_MATDIR)' $(SRC_3D_FILTER_MAT)
 
 clean:
 	rm -f *.o *.mod *~ *.par *.diag *.a

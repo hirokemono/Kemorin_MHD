@@ -129,15 +129,16 @@ fluid:
 		fluid
 
 depends:
-	@for dir in C_src ; do \
+	@for dir in $(SUBDIRS) ; do \
 		( \
-		echo 'copy C dependencies'; \
+		echo 'Construct dependencies'; \
 		cd $${dir};  \
 		$(GMAKE) \
 		GMAKE='$(GMAKE)' \
 		MHDDIR='$(MHDDIR)' \
 		MAKEDIR='$(MAKEDIR)' \
 		MAKENAME='$(MAKENAME)' \
+		64BIT_INT='$(64BIT_INT)'   \
 		MPICC="$(MPICC)"   \
 		DEPFLAGS='$(DEPFLAGS)' \
 		OPTFLAGS_GL='$(OPTFLAGS_GL)' \

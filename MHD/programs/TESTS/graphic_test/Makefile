@@ -1,6 +1,8 @@
 #
 #
 #
+GRAPHIC_TEST_DIR = $$(TESTS_DIR)/graphic_test
+
 TARGET_BMP_TEST =      test_BMP_files
 TARGET_C_PNG_TEST =    test_PNG_C
 
@@ -13,16 +15,6 @@ TARGET_PNG_2_BMP_F =    test_png_2_bmp_f
 MOD_BMP_TEST = \
 write_bmp_image.o \
 test_bmp_images.o
-
-MOD_EPS_TEST = \
-rendereps.o \
-epstest.o
-
-MOD_FGL_PNG_TEST = \
-test_gl_2_png_f.o \
-gl_buffer_2_png_f.o \
-gl_buffer_2_png.o \
-write_image_2_png.o
 
 MOD_C_PNG_TEST = \
 test_wt_png_c.o \
@@ -41,12 +33,14 @@ OBJ_PNG_2_BMP_F = \
 write_bmp_image.o \
 png_to_bmp_f.o
 
+SRC_GRAPHIC_TESTS = $(shell ls *.f90 *.F90)
+
 #
 #  ------------------------------------------------------------------
 #
 
 dir_list:
-	@echo 'GRAPHIC_TEST_DIR =   $$(TESTS_DIR)/graphic_test'      >> $(MAKENAME)
+	@echo 'GRAPHIC_TEST_DIR =   $(GRAPHIC_TEST_DIR)'      >> $(MAKENAME)
 
 target_list:
 	@echo 'TARGET_BMP_TEST =      $$(BUILDDIR)/$(TARGET_BMP_TEST)'     \
@@ -129,42 +123,6 @@ mod_list:
 
 
 module:
-	@echo \
-	test_bmp_images.o: \
-	'$$(GRAPHIC_TEST_DIR)'/test_bmp_images.f90 \
-	write_bmp_image.o \
-	>> $(MAKENAME)
-	@echo '	''$$(F90)' -c '$$(F90FLAGS)' \
-	'$$(GRAPHIC_TEST_DIR)'/test_bmp_images.f90 \
-	>> $(MAKENAME)
-	
-	@echo \
-	png_to_bmp_f.o: \
-	'$$(GRAPHIC_TEST_DIR)'/png_to_bmp_f.F90 \
-	write_bmp_image.o \
-	>> $(MAKENAME)
-	@echo '	''$$(F90)' -c '$$(F90FLAGS)' \
-	'$$(GRAPHIC_TEST_DIR)'/png_to_bmp_f.F90 \
-	>> $(MAKENAME)
-	
-	@echo \
-	epstest.o: \
-	'$$(GRAPHIC_TEST_DIR)'/epstest.f90 \
-	rendereps.o \
-	>> $(MAKENAME)
-	@echo '	''$$(F90)' -c '$$(F90FLAGS)' \
-	'$$(GRAPHIC_TEST_DIR)'/epstest.f90 \
-	>> $(MAKENAME)
-	
-	@echo \
-	test_gl_2_png_f.o: \
-	'$$(GRAPHIC_TEST_DIR)'/test_gl_2_png_f.f90 \
-	gl_buffer_2_png_f.o \
-	gl_buffer_2_png.o \
-	>> $(MAKENAME)
-	@echo '	''$$(F90)' -c '$$(F90FLAGS)' \
-	'$$(GRAPHIC_TEST_DIR)'/test_gl_2_png_f.f90 \
-	>> $(MAKENAME)
 	
 	@echo \
 	test_wt_png_c.o: \
@@ -224,6 +182,11 @@ module:
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE)' \
 	'$$(GRAPHIC_TEST_DIR)'/test_read_viewermesh.c \
 	>> $(MAKENAME)
+	
+	@cat Makefile.depends >> $(MAKENAME)
+
+depends:
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(GRAPHIC_TEST_DIR)' $(SRC_GRAPHIC_TESTS)
 
 
 clean:

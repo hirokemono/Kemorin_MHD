@@ -30,4 +30,7 @@ mod_list:
 
 
 module:
-	@$(MAKE_MOD_DEP) '$(MAKENAME)' '$$(PART_COMMONDIR)' $(SRC_PART_COMMON)
+	@cat Makefile.depends >> $(MAKENAME)
+
+depends:
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(PART_COMMONDIR)' $(SRC_PART_COMMON)

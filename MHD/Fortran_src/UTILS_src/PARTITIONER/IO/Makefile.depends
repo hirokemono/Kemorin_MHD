@@ -1,0 +1,23 @@
+bcast_control_data_4_part.o: $(PART_IODIR)/bcast_control_data_4_part.f90 m_precision.o calypso_mpi.o t_control_data_4_part.o bcast_4_platform_ctl.o bcast_control_arrays.o
+	$(F90) -c $(F90OPTFLAGS) $<
+error_exit_4_part.o: $(PART_IODIR)/error_exit_4_part.f90 m_precision.o m_error_IDs.o
+	$(F90) -c $(F90OPTFLAGS) $<
+m_elapsed_labels_4_PART.o: $(PART_IODIR)/m_elapsed_labels_4_PART.f90 m_precision.o m_work_time.o
+	$(F90) -c $(F90OPTFLAGS) $<
+output_test_mesh.o: $(PART_IODIR)/output_test_mesh.f90 m_precision.o m_machine_parameter.o m_default_file_prefix.o t_mesh_data.o t_read_mesh_data.o copy_mesh_structures.o mesh_file_IO.o set_element_data_4_IO.o set_surface_data_4_IO.o set_edge_data_4_IO.o element_file_IO.o element_geometry_file_IO.o
+	$(F90) -c $(F90OPTFLAGS) $<
+quick_mesh_check_for_part.o: $(PART_IODIR)/quick_mesh_check_for_part.f90 m_precision.o m_constants.o m_error_IDs.o t_geometry_data.o t_group_data.o set_nnod_for_ele_by_type.o check_domain_prop_4_part.o error_exit_4_part.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_control_data_4_part.o: $(PART_IODIR)/set_control_data_4_part.f90 m_precision.o m_constants.o t_ctl_param_partitioner.o t_control_data_4_part.o t_partitioner_comm_table.o m_default_file_prefix.o m_file_format_switch.o itp_table_IO_select_4_zlib.o set_control_platform_data.o t_ctl_data_4_FEM_mesh.o t_control_elements.o skip_comment_f.o t_control_array_charaint.o t_control_array_character.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_control_data_4_part.o: $(PART_IODIR)/t_control_data_4_part.f90 m_precision.o t_read_control_elements.o t_ctl_data_4_platforms.o t_ctl_data_4_FEM_mesh.o t_control_elements.o t_control_array_character.o t_control_array_charaint.o skip_comment_f.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_ctl_param_partitioner.o: $(PART_IODIR)/t_ctl_param_partitioner.f90 m_precision.o t_file_IO_parameter.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_metis_IO.o: $(PART_IODIR)/t_metis_IO.f90 m_precision.o t_edge_data.o t_geometry_graph.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_subdomain_table_IO.o: $(PART_IODIR)/t_subdomain_table_IO.f90 m_precision.o m_constants.o t_geometry_data.o t_domain_group_4_partition.o m_error_IDs.o error_exit_4_part.o skip_comment_f.o
+	$(F90) -c $(F90OPTFLAGS) $<
+work_nod_comm_table_IO.o: $(PART_IODIR)/work_nod_comm_table_IO.f90 m_precision.o t_partitioner_comm_table.o t_comm_table.o
+	$(F90) -c $(F90OPTFLAGS) $<
+

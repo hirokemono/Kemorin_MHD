@@ -38,4 +38,7 @@ mod_list:
 
 
 module:
-	@$(MAKE_MOD_DEP) '$(MAKENAME)' '$$(PERI_CUBE_MESHDIR)' $(SRC_PERI_CUBE_MESH)
+	@cat Makefile.depends >> $(MAKENAME)
+
+depends:
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(PERI_CUBE_MESHDIR)' $(SRC_PERI_CUBE_MESH)

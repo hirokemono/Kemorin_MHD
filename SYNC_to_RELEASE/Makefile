@@ -108,7 +108,7 @@ fluid:
 depends:
 	@for dir in C_src ; do \
 		( \
-		echo 'copy C dependencies'; \
+		echo 'Construct dependencies'; \
 		cd $${dir};  \
 		$(GMAKE) \
 		GMAKE='$(GMAKE)' \

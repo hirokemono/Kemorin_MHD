@@ -23,7 +23,10 @@ mod_list:
 
 
 module:
-	@$(MAKE_MOD_DEP) '$(MAKENAME)' '$$(JACOBIDIR)' $(SRC_JACOBI)
+	@cat Makefile.depends >> $(MAKENAME)
+
+depends:
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(JACOBIDIR)' $(SRC_JACOBI)
 
 clean:
 	rm -f *.o *.mod *~ *.par *.diag *.a

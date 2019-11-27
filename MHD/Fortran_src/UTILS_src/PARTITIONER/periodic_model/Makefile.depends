@@ -1,0 +1,3 @@
+set_ele_import_items_peri.o: $(PART_PERIDIR)/set_ele_import_items_peri.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+

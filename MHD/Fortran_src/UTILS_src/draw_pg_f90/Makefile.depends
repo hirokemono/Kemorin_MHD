@@ -1,0 +1,41 @@
+contour_fem_pg.o: $(KEMO_PGDIR)/contour_fem_pg.f90 m_precision.o m_constants.o rbcolor_pg.o drawline_rainbow_pg.o drawline_zero_pg.o
+	$(F90) -c $(F90OPTFLAGS) $<
+draw_colorbar_pg.o: $(KEMO_PGDIR)/draw_colorbar_pg.f90 m_precision.o m_constants.o rbcolor_pg.o
+	$(F90) -c $(F90OPTFLAGS) $<
+draw_mapframe_pg.o: $(KEMO_PGDIR)/draw_mapframe_pg.f90 m_precision.o m_constants.o map_projection_sph.o
+	$(F90) -c $(F90OPTFLAGS) $<
+drawline_rainbow_pg.o: $(KEMO_PGDIR)/drawline_rainbow_pg.f90 m_precision.o m_constants.o rbcolor_pg.o
+	$(F90) -c $(F90OPTFLAGS) $<
+drawline_zero_pg.o: $(KEMO_PGDIR)/drawline_zero_pg.f90 m_precision.o m_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+drcap_pg.o: $(KEMO_PGDIR)/drcap_pg.f90 m_precision.o m_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+fill_patch_by_edata_pg.o: $(KEMO_PGDIR)/fill_patch_by_edata_pg.f90 m_precision.o m_constants.o rbcolor_pg.o
+	$(F90) -c $(F90OPTFLAGS) $<
+m_ctl_param_plot_pg.o: $(KEMO_PGDIR)/m_ctl_param_plot_pg.f90 m_precision.o m_field_file_format.o
+	$(F90) -c $(F90OPTFLAGS) $<
+m_drawpg_fem.o: $(KEMO_PGDIR)/m_drawpg_fem.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+m_isoline_dat_pg.o: $(KEMO_PGDIR)/m_isoline_dat_pg.f90 m_precision.o m_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+map_contour_fem_pg.o: $(KEMO_PGDIR)/map_contour_fem_pg.f90 m_precision.o m_constants.o coordinate_converter.o rbcolor_pg.o set_map_from_1patch.o drawline_rainbow_pg.o drawline_zero_pg.o
+	$(F90) -c $(F90OPTFLAGS) $<
+map_projection_sph.o: $(KEMO_PGDIR)/map_projection_sph.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+rbcolor_pg.o: $(KEMO_PGDIR)/rbcolor_pg.f90 m_precision.o m_constants.o set_rgb_colors.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_control_draw_pg.o: $(KEMO_PGDIR)/set_control_draw_pg.f90 m_precision.o t_ctl_data_plot_pg.o m_machine_parameter.o m_ctl_param_plot_pg.o skip_comment_f.o m_isoline_dat_pg.o m_file_format_switch.o m_field_file_format.o set_components_flags.o m_spheric_constants.o t_phys_data.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_map_from_1patch.o: $(KEMO_PGDIR)/set_map_from_1patch.f90 m_precision.o m_constants.o m_phys_constants.o m_geometry_constants.o coordinate_converter.o map_projection_sph.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_zplane_cyl_vect_pg.o: $(KEMO_PGDIR)/set_zplane_cyl_vect_pg.f90 m_precision.o m_constants.o cvt_cyl_vect_2_cartecian.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_zplane_posi_pg.o: $(KEMO_PGDIR)/set_zplane_posi_pg.f90 m_precision.o m_constants.o set_components_flags.o set_zplane_xyz_vect_pg.o set_zplane_cyl_vect_pg.o set_zplane_sph_vect_pg.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_zplane_sph_vect_pg.o: $(KEMO_PGDIR)/set_zplane_sph_vect_pg.f90 m_precision.o m_constants.o cvt_vector_2_cartecian.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_zplane_xyz_vect_pg.o: $(KEMO_PGDIR)/set_zplane_xyz_vect_pg.f90 m_precision.o m_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_ctl_data_plot_pg.o: $(KEMO_PGDIR)/t_ctl_data_plot_pg.f90 m_precision.o m_machine_parameter.o t_read_control_elements.o t_ctl_data_4_time_steps.o t_control_elements.o t_control_array_character3.o t_control_array_int2real.o t_control_array_int2real2.o skip_comment_f.o
+	$(F90) -c $(F90OPTFLAGS) $<
+

@@ -1,0 +1,83 @@
+count_export_inside_cube.o: $(CUBMESH_DIR)/count_export_inside_cube.f90 m_precision.o m_constants.o t_neib_range_cube.o t_sleeve_cube.o t_size_of_cube.o set_comm_nod_4_cube.o set_comm_edge_4_cube.o
+	$(F90) -c $(F90OPTFLAGS) $<
+count_export_peri.o: $(CUBMESH_DIR)/count_export_peri.f90 m_precision.o m_constants.o t_size_of_cube.o t_neib_range_cube.o t_sleeve_cube.o set_comm_nod_4_cube.o set_comm_edge_4_cube.o
+	$(F90) -c $(F90OPTFLAGS) $<
+count_import_inside_cube.o: $(CUBMESH_DIR)/count_import_inside_cube.f90 m_precision.o m_constants.o t_size_of_cube.o t_neib_range_cube.o t_sleeve_cube.o set_comm_nod_4_cube.o set_comm_edge_4_cube.o
+	$(F90) -c $(F90OPTFLAGS) $<
+count_import_peri.o: $(CUBMESH_DIR)/count_import_peri.f90 m_precision.o m_constants.o t_size_of_cube.o t_neib_range_cube.o t_sleeve_cube.o set_comm_nod_4_cube.o set_comm_edge_4_cube.o
+	$(F90) -c $(F90OPTFLAGS) $<
+cube_mesh_fiile_IO.o: $(CUBMESH_DIR)/cube_mesh_fiile_IO.f90 m_precision.o m_filter_file_names.o t_size_of_cube.o set_mesh_file_names.o
+	$(F90) -c $(F90OPTFLAGS) $<
+merge_periodic_comm_table.o: $(CUBMESH_DIR)/merge_periodic_comm_table.f90 m_precision.o t_comm_table.o m_fem_mesh_labels.o domain_data_IO.o
+	$(F90) -c $(F90OPTFLAGS) $<
+neib_edge_cube.o: $(CUBMESH_DIR)/neib_edge_cube.f90 m_precision.o m_constants.o t_filter_work_cubmesh.o t_local_node_id_cube.o t_size_of_cube.o t_neib_range_cube.o neib_edge_line_cube.o
+	$(F90) -c $(F90OPTFLAGS) $<
+neib_edge_line_cube.o: $(CUBMESH_DIR)/neib_edge_line_cube.f90 m_precision.o t_size_of_cube.o t_local_node_id_cube.o t_filter_work_cubmesh.o set_parallel_file_name.o t_neib_range_cube.o m_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+neib_nod_cube.o: $(CUBMESH_DIR)/neib_nod_cube.f90 m_precision.o t_neib_range_cube.o t_size_of_cube.o t_local_node_id_cube.o neib_nod_line_cube.o t_filter_data_4_plane.o t_control_param_plane_mesh.o t_filter_work_cubmesh.o t_filter_elength.o set_parallel_file_name.o
+	$(F90) -c $(F90OPTFLAGS) $<
+neib_nod_line_cube.o: $(CUBMESH_DIR)/neib_nod_line_cube.f90 m_precision.o m_constants.o t_size_of_cube.o t_control_param_plane_mesh.o t_local_node_id_cube.o t_filter_work_cubmesh.o t_filter_data_4_plane.o t_l_filtering_data.o t_filter_elength.o filter_mom_type_data_IO.o set_parallel_file_name.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_comm_edge_4_cube.o: $(CUBMESH_DIR)/set_comm_edge_4_cube.f90 m_precision.o t_sleeve_cube.o t_local_node_id_cube.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_comm_nod_4_cube.o: $(CUBMESH_DIR)/set_comm_nod_4_cube.f90 m_precision.o t_sleeve_cube.o t_local_node_id_cube.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_cube_ele_connect.o: $(CUBMESH_DIR)/set_cube_ele_connect.f90 m_precision.o m_geometry_constants.o t_geometry_data.o t_size_of_cube.o t_neib_range_cube.o t_local_node_id_cube.o set_ele_id_peri.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_cube_node.o: $(CUBMESH_DIR)/set_cube_node.f90 m_precision.o t_neib_range_cube.o t_sleeve_cube.o t_size_of_cube.o t_cube_position.o t_local_node_id_cube.o t_geometry_data.o set_internal_nod_cube.o set_sleeve_node_cube.o set_sleeve_nod_peri_cube.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_cube_node_quad.o: $(CUBMESH_DIR)/set_cube_node_quad.f90 m_precision.o m_constants.o t_size_of_cube.o t_neib_range_cube.o t_sleeve_cube.o t_cube_position.o t_local_node_id_cube.o t_geometry_data.o set_internal_nod_cube.o set_sleeve_node_cube.o set_sleeve_nod_peri_cube.o set_sleeve_edge_peri_cube.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_ele_id_peri.o: $(CUBMESH_DIR)/set_ele_id_peri.f90 m_precision.o t_size_of_cube.o t_neib_range_cube.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_export_inside_cube.o: $(CUBMESH_DIR)/set_export_inside_cube.f90 m_precision.o m_constants.o t_neib_range_cube.o t_sleeve_cube.o t_size_of_cube.o t_comm_table.o set_comm_nod_4_cube.o set_comm_edge_4_cube.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_export_peri_cube.o: $(CUBMESH_DIR)/set_export_peri_cube.f90 m_precision.o m_constants.o t_size_of_cube.o t_neib_range_cube.o t_sleeve_cube.o t_local_node_id_cube.o t_comm_table.o set_comm_nod_4_cube.o set_comm_edge_4_cube.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_import_cube.o: $(CUBMESH_DIR)/set_import_cube.f90 m_precision.o t_neib_range_cube.o t_size_of_cube.o t_local_node_id_cube.o t_comm_table.o set_neib_pe_cube.o count_import_inside_cube.o set_import_inside_cube.o count_import_peri.o set_import_peri_cube.o count_export_inside_cube.o set_export_inside_cube.o count_export_peri.o set_export_peri_cube.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_import_inside_cube.o: $(CUBMESH_DIR)/set_import_inside_cube.f90 m_precision.o m_constants.o t_size_of_cube.o t_neib_range_cube.o t_sleeve_cube.o t_comm_table.o set_comm_nod_4_cube.o set_comm_edge_4_cube.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_import_peri_cube.o: $(CUBMESH_DIR)/set_import_peri_cube.f90 m_precision.o m_constants.o t_size_of_cube.o t_neib_range_cube.o t_sleeve_cube.o t_local_node_id_cube.o t_comm_table.o set_comm_nod_4_cube.o set_comm_edge_4_cube.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_internal_nod_cube.o: $(CUBMESH_DIR)/set_internal_nod_cube.f90 m_precision.o m_constants.o t_size_of_cube.o t_neib_range_cube.o t_sleeve_cube.o t_cube_position.o t_local_node_id_cube.o t_geometry_data.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_neib_pe_cube.o: $(CUBMESH_DIR)/set_neib_pe_cube.f90 m_precision.o t_neib_range_cube.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_sleeve_edge_peri_cube.o: $(CUBMESH_DIR)/set_sleeve_edge_peri_cube.f90 m_precision.o t_size_of_cube.o t_neib_range_cube.o t_sleeve_cube.o t_cube_position.o t_local_node_id_cube.o t_geometry_data.o sleeve_edge_side_cube.o sleeve_edge_corner_cube.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_sleeve_nod_peri_cube.o: $(CUBMESH_DIR)/set_sleeve_nod_peri_cube.f90 m_precision.o t_size_of_cube.o t_neib_range_cube.o t_sleeve_cube.o t_cube_position.o t_local_node_id_cube.o t_geometry_data.o sleeve_nod_side_cube.o sleeve_nod_corner_cube.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_sleeve_node_cube.o: $(CUBMESH_DIR)/set_sleeve_node_cube.f90 m_precision.o t_size_of_cube.o t_neib_range_cube.o t_sleeve_cube.o t_cube_position.o t_local_node_id_cube.o t_geometry_data.o set_internal_nod_cube.o
+	$(F90) -c $(F90OPTFLAGS) $<
+sleeve_edge_corner_cube.o: $(CUBMESH_DIR)/sleeve_edge_corner_cube.f90 m_precision.o m_constants.o t_size_of_cube.o t_sleeve_cube.o t_cube_position.o t_local_node_id_cube.o t_geometry_data.o
+	$(F90) -c $(F90OPTFLAGS) $<
+sleeve_edge_side_cube.o: $(CUBMESH_DIR)/sleeve_edge_side_cube.f90 m_precision.o m_constants.o t_size_of_cube.o t_sleeve_cube.o t_neib_range_cube.o t_cube_position.o t_local_node_id_cube.o t_geometry_data.o
+	$(F90) -c $(F90OPTFLAGS) $<
+sleeve_nod_corner_cube.o: $(CUBMESH_DIR)/sleeve_nod_corner_cube.f90 m_precision.o t_size_of_cube.o t_sleeve_cube.o t_local_node_id_cube.o t_cube_position.o t_geometry_data.o
+	$(F90) -c $(F90OPTFLAGS) $<
+sleeve_nod_side_cube.o: $(CUBMESH_DIR)/sleeve_nod_side_cube.f90 m_precision.o t_size_of_cube.o t_neib_range_cube.o t_sleeve_cube.o t_cube_position.o t_local_node_id_cube.o t_geometry_data.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_control_param_plane_mesh.o: $(CUBMESH_DIR)/t_control_param_plane_mesh.f90 m_precision.o m_constants.o t_size_of_cube.o t_ctl_data_4_plane_model.o t_ctl_data_4_cub_kemo.o m_spheric_constants.o skip_comment_f.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_cube_position.o: $(CUBMESH_DIR)/t_cube_position.f90 m_precision.o m_constants.o t_size_of_cube.o m_spheric_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_filter_data_4_plane.o: $(CUBMESH_DIR)/t_filter_data_4_plane.f90 m_precision.o t_control_param_plane_mesh.o t_size_of_cube.o set_parallel_file_name.o skip_comment_f.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_filter_work_cubmesh.o: $(CUBMESH_DIR)/t_filter_work_cubmesh.f90 m_precision.o t_size_of_cube.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_local_node_id_cube.o: $(CUBMESH_DIR)/t_local_node_id_cube.f90 m_precision.o t_size_of_cube.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_neib_range_cube.o: $(CUBMESH_DIR)/t_neib_range_cube.f90 m_precision.o t_size_of_cube.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_size_of_cube.o: $(CUBMESH_DIR)/t_size_of_cube.f90 m_precision.o m_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_sleeve_cube.o: $(CUBMESH_DIR)/t_sleeve_cube.f90 m_precision.o t_neib_range_cube.o
+	$(F90) -c $(F90OPTFLAGS) $<
+write_ele_grp_cube.o: $(CUBMESH_DIR)/write_ele_grp_cube.f90 m_precision.o t_group_data.o t_size_of_cube.o t_neib_range_cube.o set_parallel_file_name.o
+	$(F90) -c $(F90OPTFLAGS) $<
+write_nod_grp_cube.o: $(CUBMESH_DIR)/write_nod_grp_cube.f90 m_precision.o t_size_of_cube.o t_local_node_id_cube.o t_group_data.o
+	$(F90) -c $(F90OPTFLAGS) $<
+write_surf_grp_cube.o: $(CUBMESH_DIR)/write_surf_grp_cube.f90 m_precision.o m_constants.o t_group_data.o t_size_of_cube.o set_parallel_file_name.o
+	$(F90) -c $(F90OPTFLAGS) $<
+

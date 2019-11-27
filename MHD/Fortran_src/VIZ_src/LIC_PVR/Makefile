@@ -32,7 +32,10 @@ mod_list:
 	@echo  >> $(MAKENAME)
 
 module:
-	@$(MAKE_MOD_DEP) '$(MAKENAME)' '$$(LIC_DIR)' $(SRC_LIC)
+	@cat Makefile.depends >> $(MAKENAME)
+
+depends:
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(LIC_DIR)' $(SRC_LIC)
 
 clean:
 	rm -f *.o *.mod *~ *.par *.diag *.a

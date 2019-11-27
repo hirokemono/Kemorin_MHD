@@ -110,9 +110,20 @@ module:
 		( cd $${dir};  \
 		$(GMAKE) \
 		GMAKE='$(GMAKE)' \
-		MAKE_MOD_DEP='$(MAKE_MOD_DEP)' \
 		MAKENAME='$(MAKENAME)' \
 		module; \
+		) \
+	done
+
+depends:
+	@echo '' >> $(MAKENAME)
+	@for dir in $(SUBDIRS); do \
+		( cd $${dir};  \
+		$(GMAKE) \
+		GMAKE='$(GMAKE)' \
+		MAKE_MOD_DEP='$(MAKE_MOD_DEP)' \
+		MAKENAME='$(MAKENAME)' \
+		depends; \
 		) \
 	done
 

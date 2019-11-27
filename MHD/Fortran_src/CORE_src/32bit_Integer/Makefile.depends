@@ -1,0 +1,3 @@
+m_precision.o: $(INT32DIR)/m_precision.f90
+	$(F90) -c $(F90OPTFLAGS) $<
+

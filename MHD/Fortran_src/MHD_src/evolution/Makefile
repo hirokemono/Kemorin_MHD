@@ -25,7 +25,10 @@ mod_list:
 
 
 module:
-	@$(MAKE_MOD_DEP) '$(MAKENAME)' '$$(MHD_EVO_DIR)' $(SRC_EVOLVE)
+	@cat Makefile.depends >> $(MAKENAME)
+
+depends:
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(MHD_EVO_DIR)' $(SRC_EVOLVE)
 
 clean:
 	rm -f *.o *.mod *~ *.par *.diag *.a

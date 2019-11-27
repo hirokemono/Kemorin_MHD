@@ -1,0 +1,21 @@
+extend_comm_table.o: $(MODIFY_PARA_MESHDIR)/extend_comm_table.f90 m_precision.o m_constants.o m_phys_constants.o m_machine_parameter.o calypso_mpi.o t_comm_table.o t_geometry_data.o t_para_double_numbering.o t_work_extend_comm_table.o t_next_node_ele_4_node.o solver_SR_type.o extend_comm_table_SR.o mark_export_nod_ele_extend.o cal_minmax_and_stacks.o find_extended_node_and_ele.o find_extended_comm_table.o
+	$(F90) -c $(F90OPTFLAGS) $<
+extend_element_connect.o: $(MODIFY_PARA_MESHDIR)/extend_element_connect.f90 m_precision.o m_constants.o m_phys_constants.o m_machine_parameter.o t_comm_table.o t_geometry_data.o t_para_double_numbering.o t_work_extend_comm_table.o t_next_node_ele_4_node.o solver_SR_type.o extend_comm_table_SR.o mark_export_nod_ele_extend.o const_mesh_information.o const_element_comm_tables.o cal_minmax_and_stacks.o find_extended_node_and_ele.o find_extended_comm_table.o
+	$(F90) -c $(F90OPTFLAGS) $<
+extend_group_table.o: $(MODIFY_PARA_MESHDIR)/extend_group_table.f90 m_precision.o m_constants.o m_phys_constants.o t_mesh_data.o t_geometry_data.o t_group_data.o t_comm_table.o copy_mesh_structures.o add_comm_table_in_node_grp.o solver_SR_type.o
+	$(F90) -c $(F90OPTFLAGS) $<
+find_extended_comm_table.o: $(MODIFY_PARA_MESHDIR)/find_extended_comm_table.f90 m_precision.o m_constants.o m_phys_constants.o m_machine_parameter.o t_comm_table.o t_geometry_data.o t_para_double_numbering.o t_work_extend_comm_table.o calypso_mpi.o
+	$(F90) -c $(F90OPTFLAGS) $<
+find_extended_node_and_ele.o: $(MODIFY_PARA_MESHDIR)/find_extended_node_and_ele.f90 m_precision.o m_constants.o m_phys_constants.o m_machine_parameter.o t_comm_table.o t_geometry_data.o t_para_double_numbering.o t_work_extend_comm_table.o
+	$(F90) -c $(F90OPTFLAGS) $<
+para_const_kemoview_mesh.o: $(MODIFY_PARA_MESHDIR)/para_const_kemoview_mesh.f90 m_precision.o m_constants.o calypso_mpi.o m_machine_parameter.o m_file_format_switch.o t_mesh_data.o t_file_IO_parameter.o t_merged_viewer_mesh.o m_node_quad_2_linear_sf.o mpi_load_mesh_data.o parallel_FEM_mesh_init.o const_kemoview_mesh.o set_parallel_file_name.o viewer_file_IO.o add_comm_table_in_node_grp.o renumber_para_viewer_mesh.o viewer_mesh_MPI_IO_select.o const_global_element_ids.o
+	$(F90) -c $(F90OPTFLAGS) $<
+parallel_sleeve_extension.o: $(MODIFY_PARA_MESHDIR)/parallel_sleeve_extension.f90 m_precision.o m_machine_parameter.o calypso_mpi.o t_mesh_data.o t_group_data.o t_comm_table.o t_para_double_numbering.o t_next_node_ele_4_node.o const_mesh_information.o const_element_comm_tables.o set_table_4_RHS_assemble.o extend_comm_table.o extend_element_connect.o extend_group_table.o copy_mesh_structures.o set_nnod_4_ele_by_type.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_control_param_mesh_test.o: $(MODIFY_PARA_MESHDIR)/t_control_param_mesh_test.f90 m_precision.o t_file_IO_parameter.o calypso_mpi.o t_ctl_data_mesh_test.o m_machine_parameter.o m_file_format_switch.o set_control_platform_data.o set_ctl_parallel_platform.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_ctl_data_mesh_test.o: $(MODIFY_PARA_MESHDIR)/t_ctl_data_mesh_test.f90 m_precision.o m_machine_parameter.o t_ctl_data_4_platforms.o t_ctl_data_4_FEM_mesh.o calypso_mpi.o skip_comment_f.o bcast_4_platform_ctl.o t_read_control_elements.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_work_extend_comm_table.o: $(MODIFY_PARA_MESHDIR)/t_work_extend_comm_table.f90 m_precision.o m_constants.o m_phys_constants.o m_machine_parameter.o t_comm_table.o t_geometry_data.o t_para_double_numbering.o
+	$(F90) -c $(F90OPTFLAGS) $<
+

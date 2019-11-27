@@ -1,0 +1,17 @@
+full_legendre_on_meridian.o: $(SMDT_POLY_TEST_DIR)/full_legendre_on_meridian.f90 m_precision.o t_schmidt_polynomial.o t_schmidt_poly_on_rtm.o t_spherical_harmonics.o t_gauss_points.o gauss_integration.o spherical_harmonics.o schmidt_poly_on_rtm_grid.o
+	$(F90) -c $(F90OPTFLAGS) $<
+giroop.o: $(SMDT_POLY_TEST_DIR)/giroop.f90 m_precision.o t_integrals_sph_nonlinear.o cal_int_sph_nonlinear.o
+	$(F90) -c $(F90OPTFLAGS) $<
+schmidt_poly_on_meridian.o: $(SMDT_POLY_TEST_DIR)/schmidt_poly_on_meridian.f90 m_precision.o t_schmidt_poly_on_gauss.o t_schmidt_polynomial.o t_spherical_harmonics.o t_gauss_points.o spherical_harmonics.o
+	$(F90) -c $(F90OPTFLAGS) $<
+test_legandre.o: $(SMDT_POLY_TEST_DIR)/test_legandre.f90 mag_pbar.o ispack_lag.o t_spheric_parameter.o t_schmidt_poly_on_rtm.o t_spheric_rlm_data.o schmidt_poly_on_rtm_grid.o
+	$(F90) -c $(F90OPTFLAGS) $<
+test_legendre_by_ACDC.o: $(SMDT_POLY_TEST_DIR)/test_legendre_by_ACDC.f90 ACDC_Legendre_Poly.o ACDC_Theta_Derivatives.o
+	$(F90) -c $(F90OPTFLAGS) $<
+test_legendre_by_MAG.o: $(SMDT_POLY_TEST_DIR)/test_legendre_by_MAG.f90 m_precision.o mag_pbar.o
+	$(F90) -c $(F90OPTFLAGS) $<
+test_legendre_by_MAG16.o: $(SMDT_POLY_TEST_DIR)/test_legendre_by_MAG16.f90 m_precision.o mag_pbar16.o
+	$(F90) -c $(F90OPTFLAGS) $<
+test_schmidt_poly_med.o: $(SMDT_POLY_TEST_DIR)/test_schmidt_poly_med.f90 t_schmidt_poly_on_gauss.o schmidt_poly_on_meridian.o
+	$(F90) -c $(F90OPTFLAGS) $<
+

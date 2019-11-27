@@ -1,0 +1,31 @@
+bcast_ctl_data_4_cub_kemo.o: $(PLANE_IO_DIR)/bcast_ctl_data_4_cub_kemo.f90 calypso_mpi.o t_ctl_data_4_cub_kemo.o bcast_4_platform_ctl.o bcast_4_filter_files_ctl.o t_ctl_data_4_plane_model.o
+	$(F90) -c $(F90OPTFLAGS) $<
+const_merged_groups.o: $(PLANE_IO_DIR)/const_merged_groups.f90 m_precision.o t_group_data.o count_number_with_overlap.o t_mesh_data.o count_merged_groups.o t_merged_geometry_data.o set_merged_groups.o set_overlap_groups.o
+	$(F90) -c $(F90OPTFLAGS) $<
+copy_pick_udt_data_plane.o: $(PLANE_IO_DIR)/copy_pick_udt_data_plane.f90 m_precision.o m_file_format_switch.o t_file_IO_parameter.o t_phys_data.o t_time_data.o ucd_IO_select.o t_mesh_data.o t_ucd_data.o
+	$(F90) -c $(F90OPTFLAGS) $<
+count_merged_groups.o: $(PLANE_IO_DIR)/count_merged_groups.f90 m_precision.o m_constants.o t_group_data.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_geometry_to_merge.o: $(PLANE_IO_DIR)/set_geometry_to_merge.f90 m_precision.o t_mesh_data_4_merge.o set_read_geometry_2_merge.o set_read_boundary_2_merge.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_merged_geometry.o: $(PLANE_IO_DIR)/set_merged_geometry.f90 m_precision.o t_file_IO_parameter.o t_mesh_data_4_merge.o set_geometry_to_merge.o count_number_with_overlap.o const_merged_groups.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_merged_groups.o: $(PLANE_IO_DIR)/set_merged_groups.f90 m_precision.o m_geometry_constants.o t_mesh_data.o t_group_data.o t_merged_geometry_data.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_merged_udt_2_IO.o: $(PLANE_IO_DIR)/set_merged_udt_2_IO.f90 m_precision.o t_mesh_data.o t_phys_data.o t_ucd_data.o t_merged_geometry_data.o set_ucd_data_to_type.o set_ucd_data.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_overlap_groups.o: $(PLANE_IO_DIR)/set_overlap_groups.f90 m_precision.o t_group_data.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_plane_spectr_file_head.o: $(PLANE_IO_DIR)/set_plane_spectr_file_head.f90 m_precision.o t_file_IO_parameter.o t_ctl_data_plane_fft.o set_spectr_file_name.o set_parallel_file_name.o set_control_platform_data.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_read_boundary_2_merge.o: $(PLANE_IO_DIR)/set_read_boundary_2_merge.f90 m_precision.o t_group_data.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_read_geometry_2_merge.o: $(PLANE_IO_DIR)/set_read_geometry_2_merge.f90 m_precision.o t_mesh_data.o t_merged_geometry_data.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_spectr_file_name.o: $(PLANE_IO_DIR)/set_spectr_file_name.f90 m_precision.o set_parallel_file_name.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_ctl_data_4_cub_kemo.o: $(PLANE_IO_DIR)/t_ctl_data_4_cub_kemo.f90 m_precision.o m_machine_parameter.o t_read_control_elements.o t_ctl_data_4_platforms.o t_ctl_data_filter_files.o t_ctl_data_4_plane_model.o t_control_elements.o skip_comment_f.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_ctl_data_4_plane_model.o: $(PLANE_IO_DIR)/t_ctl_data_4_plane_model.f90 m_precision.o m_machine_parameter.o t_control_elements.o t_read_control_elements.o skip_comment_f.o
+	$(F90) -c $(F90OPTFLAGS) $<
+

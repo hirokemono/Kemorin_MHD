@@ -40,7 +40,10 @@ mod_list:
 
 
 module:
-	@$(MAKE_MOD_DEP) '$(MAKENAME)' '$$(REFINER_DIR)' $(SRC_REFINE)
+	@cat Makefile.depends >> $(MAKENAME)
+
+depends:
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(REFINER_DIR)' $(SRC_REFINE)
 
 clean:
 	rm -f *.o *.mod *~ *.par *.diag *.a

@@ -24,7 +24,10 @@ mod_list:
 
 
 module:
-	@$(MAKE_MOD_DEP) '$(MAKENAME)' '$$(MPI_IO_DIR)' $(SRC_MPI_IO)
+	@cat Makefile.depends >> $(MAKENAME)
+
+depends:
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(MPI_IO_DIR)' $(SRC_MPI_IO)
 
 clean:
 	rm -f *.o *.mod *~ *.par *.diag *.a

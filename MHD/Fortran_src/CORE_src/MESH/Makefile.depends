@@ -1,0 +1,107 @@
+add_node_4_group.o: $(MESHDIR)/add_node_4_group.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+add_nodes_elems_4_each_nod.o: $(MESHDIR)/add_nodes_elems_4_each_nod.f90 m_precision.o quicksort.o
+	$(F90) -c $(F90OPTFLAGS) $<
+cal_local_position_by_tetra.o: $(MESHDIR)/cal_local_position_by_tetra.f90 m_precision.o m_geometry_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+const_bc_infinity_surf.o: $(MESHDIR)/const_bc_infinity_surf.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+convert_group_2_linear.o: $(MESHDIR)/convert_group_2_linear.f90 m_precision.o m_geometry_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+copy_communication_table.o: $(MESHDIR)/copy_communication_table.f90 m_precision.o m_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+copy_local_position_2_ele.o: $(MESHDIR)/copy_local_position_2_ele.f90 m_precision.o m_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+count_overlap.o: $(MESHDIR)/count_overlap.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+expand_near_element.o: $(MESHDIR)/expand_near_element.f90 m_precision.o quicksort.o
+	$(F90) -c $(F90OPTFLAGS) $<
+expand_near_flag.o: $(MESHDIR)/expand_near_flag.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+find_element_id_4_node.o: $(MESHDIR)/find_element_id_4_node.f90 m_precision.o m_constants.o quicksort.o
+	$(F90) -c $(F90OPTFLAGS) $<
+find_grp_ele_id_4_node.o: $(MESHDIR)/find_grp_ele_id_4_node.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+find_node_4_group.o: $(MESHDIR)/find_node_4_group.f90 m_precision.o m_constants.o quicksort.o
+	$(F90) -c $(F90OPTFLAGS) $<
+find_selected_domain_bd.o: $(MESHDIR)/find_selected_domain_bd.f90 m_precision.o m_geometry_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+m_27quad_2_8x8linear.o: $(MESHDIR)/m_27quad_2_8x8linear.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+m_connect_hexa_2_tetra.o: $(MESHDIR)/m_connect_hexa_2_tetra.f90 m_precision.o m_27quad_2_8x8linear.o
+	$(F90) -c $(F90OPTFLAGS) $<
+m_ele_rotation_list.o: $(MESHDIR)/m_ele_rotation_list.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+m_geometry_constants.o: $(MESHDIR)/m_geometry_constants.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+m_node_quad_2_linear_sf.o: $(MESHDIR)/m_node_quad_2_linear_sf.f90 m_precision.o m_geometry_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+m_quad_2_triangle.o: $(MESHDIR)/m_quad_2_triangle.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+m_ranbic_dodecahedron.o: $(MESHDIR)/m_ranbic_dodecahedron.f90 m_precision.o m_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+m_tetrahedral_constants.o: $(MESHDIR)/m_tetrahedral_constants.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+mark_surf_hash.o: $(MESHDIR)/mark_surf_hash.f90 m_precision.o m_geometry_constants.o compare_indices.o
+	$(F90) -c $(F90OPTFLAGS) $<
+pickup_internal_element.o: $(MESHDIR)/pickup_internal_element.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+sel_comp_labels_by_coord.o: $(MESHDIR)/sel_comp_labels_by_coord.f90 m_precision.o m_geometry_constants.o add_direction_labels.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_data_4_quad27.o: $(MESHDIR)/set_data_4_quad27.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_distance_near_nod.o: $(MESHDIR)/set_distance_near_nod.f90 m_precision.o quicksort.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_edge_data_by_ele.o: $(MESHDIR)/set_edge_data_by_ele.f90 m_precision.o m_geometry_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_edge_data_by_sf.o: $(MESHDIR)/set_edge_data_by_sf.f90 m_precision.o m_geometry_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_edge_hash_by_ele.o: $(MESHDIR)/set_edge_hash_by_ele.f90 m_precision.o m_geometry_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_edge_hash_by_sf.o: $(MESHDIR)/set_edge_hash_by_sf.f90 m_precision.o m_geometry_constants.o t_sum_hash.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_edge_position.o: $(MESHDIR)/set_edge_position.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_element_list_4_surface.o: $(MESHDIR)/set_element_list_4_surface.f90 m_precision.o m_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_element_position.o: $(MESHDIR)/set_element_position.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_field_on_edge.o: $(MESHDIR)/set_field_on_edge.f90 m_precision.o m_constants.o m_machine_parameter.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_geometry_4_quad27.o: $(MESHDIR)/set_geometry_4_quad27.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_geometry_graph.o: $(MESHDIR)/set_geometry_graph.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_internal_list_4_linear.o: $(MESHDIR)/set_internal_list_4_linear.f90 m_precision.o m_geometry_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_layer_list_by_start_end.o: $(MESHDIR)/set_layer_list_by_start_end.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_layer_list_by_table.o: $(MESHDIR)/set_layer_list_by_table.f90 m_precision.o m_machine_parameter.o m_constants.o cal_minmax_and_stacks.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_local_id_table_4_1ele.o: $(MESHDIR)/set_local_id_table_4_1ele.f90 m_precision.o m_geometry_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_next_node_w_hanging.o: $(MESHDIR)/set_next_node_w_hanging.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_nnod_4_ele_by_type.o: $(MESHDIR)/set_nnod_4_ele_by_type.f90 m_precision.o m_geometry_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_nnod_for_element.o: $(MESHDIR)/set_nnod_for_element.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_node_4_group.o: $(MESHDIR)/set_node_4_group.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_norm_nod_4_surf_grp.o: $(MESHDIR)/set_norm_nod_4_surf_grp.f90 m_precision.o m_geometry_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_surface_data.o: $(MESHDIR)/set_surface_data.f90 m_precision.o m_geometry_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_surface_hash.o: $(MESHDIR)/set_surface_hash.f90 m_precision.o m_geometry_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_surface_id_4_surf_grp.o: $(MESHDIR)/set_surface_id_4_surf_grp.f90 m_precision.o m_constants.o m_geometry_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_surface_node.o: $(MESHDIR)/set_surface_node.f90 m_precision.o m_machine_parameter.o m_geometry_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_surface_position.o: $(MESHDIR)/set_surface_position.f90 m_precision.o m_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_element_hash.o: $(MESHDIR)/t_element_hash.f90 m_precision.o m_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_sum_hash.o: $(MESHDIR)/t_sum_hash.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+

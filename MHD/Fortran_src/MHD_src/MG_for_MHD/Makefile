@@ -24,7 +24,10 @@ mod_list:
 
 
 module:
-	@$(MAKE_MOD_DEP) '$(MAKENAME)' '$$(MHD_AMG_DIR)' $(SRC_MG_4_MHD)
+	@cat Makefile.depends >> $(MAKENAME)
+
+depends:
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(MHD_AMG_DIR)' $(SRC_MG_4_MHD)
 
 clean:
 	rm -f *.o *.mod *~ *.par *.diag *.a

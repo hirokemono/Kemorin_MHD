@@ -24,7 +24,10 @@ mod_list:
 
 
 module:
-	@$(MAKE_MOD_DEP) '$(MAKENAME)' '$$(INT32DIR)' $(SRC_INT32)
+	@cat Makefile.depends >> $(MAKENAME)
+
+depends:
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(INT32DIR)' $(SRC_INT32)
 
 clean:
 	rm -f *.o *.mod *~ *.par *.diag *.a

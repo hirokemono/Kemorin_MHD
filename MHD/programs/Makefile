@@ -104,9 +104,18 @@ module:
 		( cd $${dir};  \
 		$(GMAKE) \
 		GMAKE='$(GMAKE)' \
-		MAKE_MOD_DEP='$(MAKE_MOD_DEP)' \
 		MAKENAME='$(MAKENAME)' \
 		module; \
+		) \
+	done
+
+depends:
+	@for dir in $(SUBDIRS); do \
+		( cd $${dir};  \
+		$(GMAKE) \
+		GMAKE='$(GMAKE)' \
+		MAKE_MOD_DEP='$(MAKE_MOD_DEP)' \
+		depends; \
 		) \
 	done
 

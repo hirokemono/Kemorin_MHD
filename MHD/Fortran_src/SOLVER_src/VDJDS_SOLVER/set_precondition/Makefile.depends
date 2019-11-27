@@ -1,0 +1,25 @@
+precond_block_ilu_33.o: $(SET_PRECOND_DIR)/precond_block_ilu_33.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+precond_block_ilu_nn.o: $(SET_PRECOND_DIR)/precond_block_ilu_nn.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+precond_diagonal_scaling.o: $(SET_PRECOND_DIR)/precond_diagonal_scaling.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+precond_diagonal_scaling_33.o: $(SET_PRECOND_DIR)/precond_diagonal_scaling_33.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+precond_diagonal_scaling_nn.o: $(SET_PRECOND_DIR)/precond_diagonal_scaling_nn.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+precond_incomplete_lu.o: $(SET_PRECOND_DIR)/precond_incomplete_lu.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+precond_ssor_gausszeidel.o: $(SET_PRECOND_DIR)/precond_ssor_gausszeidel.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+precond_ssor_gausszeidel_33.o: $(SET_PRECOND_DIR)/precond_ssor_gausszeidel_33.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+precond_ssor_gausszeidel_nn.o: $(SET_PRECOND_DIR)/precond_ssor_gausszeidel_nn.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+preconditioning_DJDS11.o: $(SET_PRECOND_DIR)/preconditioning_DJDS11.f90 m_precision.o precond_incomplete_lu.o precond_ssor_gausszeidel.o precond_diagonal_scaling.o
+	$(F90) -c $(F90OPTFLAGS) $<
+preconditioning_DJDS33.o: $(SET_PRECOND_DIR)/preconditioning_DJDS33.f90 m_precision.o precond_block_ilu_33.o precond_ssor_gausszeidel_33.o precond_diagonal_scaling_33.o
+	$(F90) -c $(F90OPTFLAGS) $<
+preconditioning_DJDSNN.o: $(SET_PRECOND_DIR)/preconditioning_DJDSNN.f90 m_precision.o precond_block_ilu_nn.o precond_ssor_gausszeidel_nn.o precond_diagonal_scaling_nn.o
+	$(F90) -c $(F90OPTFLAGS) $<
+

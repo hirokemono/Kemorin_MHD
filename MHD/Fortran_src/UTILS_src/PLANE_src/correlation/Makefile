@@ -30,4 +30,7 @@ mod_list:
 
 
 module:
-	@$(MAKE_MOD_DEP) '$(MAKENAME)' '$$(CORRELATE_PLANE_DIR)' $(SRC_CORRELATE_PLANE)
+	@cat Makefile.depends >> $(MAKENAME)
+
+depends:
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(CORRELATE_PLANE_DIR)' $(SRC_CORRELATE_PLANE)

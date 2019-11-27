@@ -1,0 +1,23 @@
+analyzer_cutshell.o: $(CUTSHELL_DIR)/analyzer_cutshell.f90 m_precision.o m_constants.o m_machine_parameter.o t_mesh_data.o t_phys_data.o t_control_data_4_cutshell.o load_mesh_data.o set_control_cut_shell.o cal_mesh_position.o const_cutshell_mesh.o
+	$(F90) -c $(F90OPTFLAGS) $<
+const_cutshell_mesh.o: $(CUTSHELL_DIR)/const_cutshell_mesh.f90 m_precision.o t_mesh_data.o t_group_data.o t_file_IO_parameter.o m_cutshell_nod_ele_flag.o set_cutshell_node_data.o set_cutshell_element.o set_cutshell_node_grp.o set_cutshell_ele_grp.o set_cutshell_surf_grp.o
+	$(F90) -c $(F90OPTFLAGS) $<
+cutshell.o: $(CUTSHELL_DIR)/cutshell.f90 analyzer_cutshell.o m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+m_cutshell_nod_ele_flag.o: $(CUTSHELL_DIR)/m_cutshell_nod_ele_flag.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_control_cut_shell.o: $(CUTSHELL_DIR)/set_control_cut_shell.f90 m_precision.o m_default_file_prefix.o t_control_data_4_cutshell.o const_cutshell_mesh.o set_control_platform_data.o skip_comment_f.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_cutshell_ele_grp.o: $(CUTSHELL_DIR)/set_cutshell_ele_grp.f90 m_precision.o m_cutshell_nod_ele_flag.o t_group_data.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_cutshell_element.o: $(CUTSHELL_DIR)/set_cutshell_element.f90 m_precision.o m_cutshell_nod_ele_flag.o t_geometry_data.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_cutshell_node_data.o: $(CUTSHELL_DIR)/set_cutshell_node_data.f90 m_precision.o m_cutshell_nod_ele_flag.o t_geometry_data.o t_group_data.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_cutshell_node_grp.o: $(CUTSHELL_DIR)/set_cutshell_node_grp.f90 m_precision.o m_cutshell_nod_ele_flag.o t_geometry_data.o t_group_data.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_cutshell_surf_grp.o: $(CUTSHELL_DIR)/set_cutshell_surf_grp.f90 m_precision.o m_cutshell_nod_ele_flag.o t_mesh_data.o t_group_data.o m_geometry_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_control_data_4_cutshell.o: $(CUTSHELL_DIR)/t_control_data_4_cutshell.f90 m_precision.o t_control_elements.o t_read_control_elements.o skip_comment_f.o
+	$(F90) -c $(F90OPTFLAGS) $<
+

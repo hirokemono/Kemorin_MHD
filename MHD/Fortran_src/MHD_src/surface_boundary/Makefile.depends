@@ -1,0 +1,97 @@
+d_tensor_2_each_surface.o: $(MHD_SF_BC_DIR)/d_tensor_2_each_surface.f90 m_precision.o m_machine_parameter.o m_geometry_constants.o m_phys_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+delta_SGS_2_each_surface.o: $(MHD_SF_BC_DIR)/delta_SGS_2_each_surface.f90 m_precision.o m_machine_parameter.o t_geometry_data.o t_group_data.o t_surface_data.o t_phys_data.o set_delta_SGS_2_each_surf.o set_delta_SGS_2_sf_w_coef.o set_delta_SGS_2_sf_w_cst.o
+	$(F90) -c $(F90OPTFLAGS) $<
+delta_phys_2_each_surface.o: $(MHD_SF_BC_DIR)/delta_phys_2_each_surface.f90 m_precision.o m_machine_parameter.o t_geometry_data.o t_surface_data.o t_group_data.o t_phys_data.o set_delta_2_each_surface.o set_delta_2_each_sf_w_coef.o set_delta_2_each_sf_w_cst.o
+	$(F90) -c $(F90OPTFLAGS) $<
+fem_surf_crank_free_sph.o: $(MHD_SF_BC_DIR)/fem_surf_crank_free_sph.f90 m_precision.o m_machine_parameter.o m_geometry_constants.o m_phys_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+fem_surf_skv_diffuse.o: $(MHD_SF_BC_DIR)/fem_surf_skv_diffuse.f90 m_precision.o m_geometry_constants.o m_phys_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+fem_surf_skv_diffuse_sgs.o: $(MHD_SF_BC_DIR)/fem_surf_skv_diffuse_sgs.f90 m_precision.o m_constants.o m_geometry_constants.o m_phys_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+fem_surf_skv_norm_grad.o: $(MHD_SF_BC_DIR)/fem_surf_skv_norm_grad.f90 m_precision.o m_constants.o m_geometry_constants.o m_phys_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+fem_surf_skv_poisson.o: $(MHD_SF_BC_DIR)/fem_surf_skv_poisson.f90 m_precision.o m_geometry_constants.o m_phys_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+fem_surf_skv_poisson_type.o: $(MHD_SF_BC_DIR)/fem_surf_skv_poisson_type.f90 m_precision.o m_machine_parameter.o m_geometry_constants.o m_phys_constants.o t_geometry_data.o t_surface_data.o t_group_data.o t_fem_gauss_int_coefs.o t_jacobian_2d.o t_surface_bc_data.o fem_surf_skv_poisson.o fem_surf_skv_diffuse.o fem_surf_skv_norm_grad.o
+	$(F90) -c $(F90OPTFLAGS) $<
+fem_surf_skv_sgs_commute.o: $(MHD_SF_BC_DIR)/fem_surf_skv_sgs_commute.f90 m_precision.o m_constants.o m_geometry_constants.o m_phys_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+fem_surf_skv_sgs_commute_t.o: $(MHD_SF_BC_DIR)/fem_surf_skv_sgs_commute_t.f90 m_precision.o m_constants.o m_machine_parameter.o m_geometry_constants.o m_phys_constants.o t_geometry_data.o t_surface_data.o t_group_data.o t_fem_gauss_int_coefs.o t_jacobians.o t_jacobian_2d.o t_filter_elength.o fem_surf_skv_sgs_commute.o fem_surf_skv_sgs_grad.o fem_surf_skv_sgs_div.o fem_surf_skv_diffuse_sgs.o
+	$(F90) -c $(F90OPTFLAGS) $<
+fem_surf_skv_sgs_div.o: $(MHD_SF_BC_DIR)/fem_surf_skv_sgs_div.f90 m_precision.o m_constants.o m_geometry_constants.o m_phys_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+fem_surf_skv_sgs_grad.o: $(MHD_SF_BC_DIR)/fem_surf_skv_sgs_grad.f90 m_precision.o m_constants.o m_geometry_constants.o m_phys_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+int_free_slip_surf_sph.o: $(MHD_SF_BC_DIR)/int_free_slip_surf_sph.f90 m_precision.o m_constants.o t_geometry_data.o t_surface_data.o t_group_data.o t_fem_gauss_int_coefs.o t_jacobian_2d.o t_table_FEM_const.o t_finite_element_mat.o t_int_surface_data.o fem_surf_skv_poisson_type.o cal_skv_to_ff_smp.o node_phys_2_each_surface.o
+	$(F90) -c $(F90OPTFLAGS) $<
+int_surf_diffuse_terms.o: $(MHD_SF_BC_DIR)/int_surf_diffuse_terms.f90 m_precision.o t_geometry_data.o t_surface_data.o t_group_data.o t_phys_data.o t_fem_gauss_int_coefs.o t_jacobian_2d.o t_table_FEM_const.o t_finite_element_mat.o t_int_surface_data.o t_surface_bc_data.o delta_phys_2_each_surface.o fem_surf_skv_poisson_type.o cal_skv_to_ff_smp.o
+	$(F90) -c $(F90OPTFLAGS) $<
+int_surf_div_fluxes_sgs.o: $(MHD_SF_BC_DIR)/int_surf_div_fluxes_sgs.f90 m_precision.o t_geometry_data.o t_surface_data.o t_group_data.o t_phys_data.o t_fem_gauss_int_coefs.o t_jacobian_2d.o t_table_FEM_const.o t_finite_element_mat.o t_int_surface_data.o t_filter_elength.o t_surface_bc_data.o delta_SGS_2_each_surface.o fem_surf_skv_sgs_commute_t.o cal_skv_to_ff_smp.o
+	$(F90) -c $(F90OPTFLAGS) $<
+int_surf_div_induct_tsr_sgs.o: $(MHD_SF_BC_DIR)/int_surf_div_induct_tsr_sgs.f90 m_precision.o m_constants.o t_geometry_data.o t_surface_data.o t_group_data.o t_phys_data.o t_fem_gauss_int_coefs.o t_jacobian_2d.o t_table_FEM_const.o t_finite_element_mat.o t_int_surface_data.o t_filter_elength.o t_surface_bc_data.o delta_SGS_2_each_surface.o fem_surf_skv_sgs_commute_t.o cal_skv_to_ff_smp.o
+	$(F90) -c $(F90OPTFLAGS) $<
+int_surf_div_sgs.o: $(MHD_SF_BC_DIR)/int_surf_div_sgs.f90 m_precision.o m_constants.o m_phys_constants.o t_geometry_data.o t_surface_data.o t_group_data.o t_phys_data.o t_fem_gauss_int_coefs.o t_jacobian_2d.o t_table_FEM_const.o t_finite_element_mat.o t_int_surface_data.o t_filter_elength.o delta_phys_2_each_surface.o fem_surf_skv_sgs_commute_t.o cal_skv_to_ff_smp.o
+	$(F90) -c $(F90OPTFLAGS) $<
+int_surf_fixed_gradients.o: $(MHD_SF_BC_DIR)/int_surf_fixed_gradients.f90 m_precision.o m_constants.o t_geometry_data.o t_surface_data.o t_group_data.o t_fem_gauss_int_coefs.o t_jacobian_2d.o t_table_FEM_const.o t_finite_element_mat.o t_surface_bc_data.o fem_surf_skv_poisson_type.o cal_skv_to_ff_smp.o
+	$(F90) -c $(F90OPTFLAGS) $<
+int_surf_grad_sgs.o: $(MHD_SF_BC_DIR)/int_surf_grad_sgs.f90 m_precision.o m_phys_constants.o m_constants.o t_geometry_data.o t_surface_data.o t_group_data.o t_phys_data.o t_fem_gauss_int_coefs.o t_jacobian_2d.o t_table_FEM_const.o t_finite_element_mat.o t_int_surface_data.o t_filter_elength.o delta_phys_2_each_surface.o fem_surf_skv_sgs_commute_t.o cal_skv_to_ff_smp.o
+	$(F90) -c $(F90OPTFLAGS) $<
+int_surf_magne_pre.o: $(MHD_SF_BC_DIR)/int_surf_magne_pre.f90 m_precision.o m_phys_constants.o t_SGS_control_parameter.o t_geometry_data.o t_surface_data.o t_group_data.o t_phys_data.o t_phys_address.o t_fem_gauss_int_coefs.o t_jacobian_2d.o t_table_FEM_const.o t_finite_element_mat.o t_int_surface_data.o t_surface_bc_data.o t_material_property.o t_SGS_model_coefs.o int_surf_div_induct_tsr_sgs.o int_surf_fixed_gradients.o
+	$(F90) -c $(F90OPTFLAGS) $<
+int_surf_normal_fields.o: $(MHD_SF_BC_DIR)/int_surf_normal_fields.f90 m_precision.o t_geometry_data.o t_surface_data.o t_group_data.o t_fem_gauss_int_coefs.o t_jacobian_2d.o t_table_FEM_const.o t_finite_element_mat.o t_int_surface_data.o t_surface_bc_data.o int_surf_poisson_walls.o
+	$(F90) -c $(F90OPTFLAGS) $<
+int_surf_poisson_walls.o: $(MHD_SF_BC_DIR)/int_surf_poisson_walls.f90 m_precision.o m_constants.o t_geometry_data.o t_surface_data.o t_group_data.o t_fem_gauss_int_coefs.o t_jacobian_2d.o t_table_FEM_const.o t_finite_element_mat.o t_int_surface_data.o node_phys_2_each_surface.o fem_surf_skv_poisson_type.o cal_skv_to_ff_smp.o
+	$(F90) -c $(F90OPTFLAGS) $<
+int_surf_rot_sgs.o: $(MHD_SF_BC_DIR)/int_surf_rot_sgs.f90 m_precision.o m_constants.o t_geometry_data.o t_surface_data.o t_group_data.o t_phys_data.o t_fem_gauss_int_coefs.o t_jacobian_2d.o t_table_FEM_const.o t_finite_element_mat.o t_int_surface_data.o t_filter_elength.o t_surface_bc_data.o delta_phys_2_each_surface.o fem_surf_skv_sgs_commute_t.o cal_skv_to_ff_smp.o
+	$(F90) -c $(F90OPTFLAGS) $<
+int_surf_velo_pre.o: $(MHD_SF_BC_DIR)/int_surf_velo_pre.f90 m_precision.o t_SGS_control_parameter.o t_geometry_data.o t_surface_data.o t_group_data.o t_phys_data.o t_phys_address.o t_fem_gauss_int_coefs.o t_jacobian_2d.o t_table_FEM_const.o t_finite_element_mat.o t_int_surface_data.o t_surface_bc_data.o t_material_property.o t_SGS_model_coefs.o t_physical_property.o int_surf_div_fluxes_sgs.o int_surf_fixed_gradients.o int_free_slip_surf_sph.o
+	$(F90) -c $(F90OPTFLAGS) $<
+int_surface_params_MHD.o: $(MHD_SF_BC_DIR)/int_surface_params_MHD.f90 m_precision.o m_machine_parameter.o t_mesh_data.o t_geometry_data.o t_surface_data.o t_group_data.o t_surface_group_connect.o t_surface_group_geometry.o t_group_connects.o t_int_surface_data.o position_of_each_surface.o set_surf_grp_vectors.o set_connects_4_surf_group.o sum_normal_4_surf_group.o
+	$(F90) -c $(F90OPTFLAGS) $<
+m_header_4_surface_bc.o: $(MHD_SF_BC_DIR)/m_header_4_surface_bc.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+node_phys_2_each_surface.o: $(MHD_SF_BC_DIR)/node_phys_2_each_surface.f90 m_precision.o m_machine_parameter.o t_geometry_data.o t_group_data.o t_surface_data.o t_phys_data.o set_nodal_2_each_surface.o set_nodal_2_each_sf_w_coef.o set_nodal_2_each_sf_w_cst.o
+	$(F90) -c $(F90OPTFLAGS) $<
+position_of_each_surface.o: $(MHD_SF_BC_DIR)/position_of_each_surface.f90 m_precision.o m_machine_parameter.o t_geometry_data.o t_surface_data.o t_group_data.o m_geometry_constants.o m_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+scalar_surf_id.o: $(MHD_SF_BC_DIR)/scalar_surf_id.f90 m_precision.o m_header_4_surface_bc.o t_group_data.o t_surface_bc_data.o t_boundary_field_IO.o t_bc_data_list.o set_surf_scalar_id.o set_sf_grad_scalar_id.o set_wall_scalar_id.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_aiccg_free_sph.o: $(MHD_SF_BC_DIR)/set_aiccg_free_sph.f90 m_precision.o t_geometry_data.o t_surface_data.o t_group_data.o t_fem_gauss_int_coefs.o t_jacobian_2d.o t_table_FEM_const.o t_finite_element_mat.o t_solver_djds.o t_surface_bc_data.o t_int_surface_data.o fem_surf_crank_free_sph.o cal_skv_to_ff_smp.o add_skv1_to_crs_matrix.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_delta_SGS_2_each_surf.o: $(MHD_SF_BC_DIR)/set_delta_SGS_2_each_surf.f90 m_precision.o m_geometry_constants.o m_phys_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_delta_SGS_2_sf_w_coef.o: $(MHD_SF_BC_DIR)/set_delta_SGS_2_sf_w_coef.f90 m_precision.o m_geometry_constants.o m_phys_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_delta_SGS_2_sf_w_cst.o: $(MHD_SF_BC_DIR)/set_delta_SGS_2_sf_w_cst.f90 m_precision.o m_geometry_constants.o m_phys_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_normal_field.o: $(MHD_SF_BC_DIR)/set_normal_field.f90 m_precision.o m_machine_parameter.o t_physical_property.o t_phys_data.o t_group_data.o t_surface_group_connect.o t_surface_bc_data.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_sf_grad_scalar_id.o: $(MHD_SF_BC_DIR)/set_sf_grad_scalar_id.f90 set_surface_bc.o m_precision.o m_boundary_condition_IDs.o t_boundary_field_IO.o t_group_data.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_sf_grad_vector_id.o: $(MHD_SF_BC_DIR)/set_sf_grad_vector_id.f90 m_precision.o m_boundary_condition_IDs.o t_group_data.o t_surface_bc_data.o t_boundary_field_IO.o set_surface_bc.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_stress_free_surf_id.o: $(MHD_SF_BC_DIR)/set_stress_free_surf_id.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_surf_scalar_id.o: $(MHD_SF_BC_DIR)/set_surf_scalar_id.f90 m_precision.o m_boundary_condition_IDs.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_surf_vector_id.o: $(MHD_SF_BC_DIR)/set_surf_vector_id.f90 m_precision.o m_boundary_condition_IDs.o t_geometry_data.o t_surface_data.o t_group_data.o t_surface_group_connect.o t_surface_bc_data.o t_boundary_field_IO.o set_surface_bc.o t_surface_group_geometry.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_surface_bc.o: $(MHD_SF_BC_DIR)/set_surface_bc.f90 m_precision.o t_boundary_field_IO.o t_group_data.o set_surface_values.o t_geometry_data.o t_surface_data.o t_surface_group_connect.o t_surface_group_geometry.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_surface_id_MHD.o: $(MHD_SF_BC_DIR)/set_surface_id_MHD.f90 m_precision.o t_control_parameter.o t_physical_property.o t_geometry_data.o t_surface_data.o t_group_data.o t_surface_group_connect.o t_surface_group_geometry.o t_phys_data.o t_phys_address.o t_surface_bc_data_MHD.o t_boundary_field_IO.o t_bc_data_list.o m_machine_parameter.o set_surface_values.o set_normal_field.o scalar_surf_id.o vector_surf_id.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_surface_values.o: $(MHD_SF_BC_DIR)/set_surface_values.f90 m_precision.o t_geometry_data.o t_surface_data.o t_surface_group_geometry.o t_group_data.o t_surface_group_connect.o t_boundary_field_IO.o m_geometry_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_wall_scalar_id.o: $(MHD_SF_BC_DIR)/set_wall_scalar_id.f90 m_precision.o m_boundary_condition_IDs.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_surface_bc_data.o: $(MHD_SF_BC_DIR)/t_surface_bc_data.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_surface_bc_data_MHD.o: $(MHD_SF_BC_DIR)/t_surface_bc_data_MHD.f90 m_precision.o t_surface_bc_data.o t_physical_property.o
+	$(F90) -c $(F90OPTFLAGS) $<
+tensor_2_each_surface.o: $(MHD_SF_BC_DIR)/tensor_2_each_surface.f90 m_precision.o m_constants.o m_machine_parameter.o m_phys_constants.o t_geometry_data.o t_surface_data.o t_group_data.o
+	$(F90) -c $(F90OPTFLAGS) $<
+vector_surf_id.o: $(MHD_SF_BC_DIR)/vector_surf_id.f90 m_precision.o m_header_4_surface_bc.o t_geometry_data.o t_surface_data.o t_group_data.o t_surface_group_connect.o t_surface_group_geometry.o t_surface_bc_data.o t_boundary_field_IO.o t_bc_data_list.o set_surf_vector_id.o set_sf_grad_vector_id.o set_stress_free_surf_id.o
+	$(F90) -c $(F90OPTFLAGS) $<
+

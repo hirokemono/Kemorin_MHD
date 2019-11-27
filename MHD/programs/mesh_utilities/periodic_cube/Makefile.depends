@@ -1,0 +1,9 @@
+const_peri_cube_data.o: $(PERI_CUBE_MESHDIR)/const_peri_cube_data.f90 m_precision.o t_cubed_sph_surf_mesh.o t_cubed_sph_mesh.o t_cubed_sph_grp_param.o m_geometry_constants.o t_numref_cubed_sph.o peri_cube_shell_position.o set_center_rect_cube_quad.o set_center_cube_node.o cubed_sph_center_connect.o write_cubed_sph_mesh_head.o write_cubed_sph_grp_data.o modify_colat_cube_surf.o m_constants.o count_coarse_parameters.o set_merged_ele_cubed_sph.o
+	$(F90) -c $(F90OPTFLAGS) $<
+peri_cube_shell_position.o: $(PERI_CUBE_MESHDIR)/peri_cube_shell_position.f90 m_precision.o m_constants.o t_cubed_sph_surf_mesh.o coordinate_converter.o t_numref_cubed_sph.o
+	$(F90) -c $(F90OPTFLAGS) $<
+periodic_cube.o: $(PERI_CUBE_MESHDIR)/periodic_cube.f90 m_precision.o m_constants.o t_cubed_sph_mesh.o t_cubed_sph_surf_mesh.o t_cubed_sph_radius.o t_numref_cubed_sph.o t_cubed_sph_grp_param.o t_control_data_cubed_sph.o count_coarse_parameters.o const_rect_sphere_surface.o const_peri_cube_data.o set_surf_connect_cubed_sph.o set_peri_cube_control.o count_shell_configration.o check_coarsing_level.o count_coarse_shell_config.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_peri_cube_control.o: $(PERI_CUBE_MESHDIR)/set_peri_cube_control.f90 m_precision.o t_numref_cubed_sph.o t_control_data_cubed_sph.o t_cubed_sph_radius.o t_cubed_sph_grp_param.o set_cubed_sph_control.o
+	$(F90) -c $(F90OPTFLAGS) $<
+

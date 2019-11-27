@@ -32,7 +32,10 @@ mod_list:
 
 
 module:
-	@$(MAKE_MOD_DEP) '$(MAKENAME)' '$$(PSF_SECTION_DIR)' $(SRC_SURFACING)
+	@cat Makefile.depends >> $(MAKENAME)
+
+depends:
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(PSF_SECTION_DIR)' $(SRC_SURFACING)
 
 clean:
 	rm -f *.o *.mod *~ *.par *.diag *.a

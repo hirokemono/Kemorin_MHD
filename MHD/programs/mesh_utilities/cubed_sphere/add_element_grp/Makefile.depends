@@ -1,0 +1,19 @@
+add_elegrp_sph.o: $(ELE_GRP_SPH_DIR)/add_elegrp_sph.f90 m_precision.o calypso_mpi.o analyzer_add_ele_group.o
+	$(F90) -c $(F90OPTFLAGS) $<
+analyzer_add_ele_group.o: $(ELE_GRP_SPH_DIR)/analyzer_add_ele_group.f90 m_precision.o m_constants.o m_machine_parameter.o t_mesh_data.o t_control_data_add_ele_grp.o calypso_mpi.o m_add_ele_grp_parameter.o m_work_4_add_egrp_sph.o mpi_load_mesh_data.o const_mesh_information.o set_control_add_2d_egrp.o set_ele_grp2_by_2d.o set_new_2d_element_group.o
+	$(F90) -c $(F90OPTFLAGS) $<
+m_add_ele_grp_parameter.o: $(ELE_GRP_SPH_DIR)/m_add_ele_grp_parameter.f90 m_precision.o t_file_IO_parameter.o
+	$(F90) -c $(F90OPTFLAGS) $<
+m_work_4_add_egrp_sph.o: $(ELE_GRP_SPH_DIR)/m_work_4_add_egrp_sph.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_control_add_2d_egrp.o: $(ELE_GRP_SPH_DIR)/set_control_add_2d_egrp.f90 m_precision.o m_error_IDs.o t_file_IO_parameter.o calypso_mpi.o m_constants.o m_default_file_prefix.o m_add_ele_grp_parameter.o t_control_data_add_ele_grp.o set_ctl_parallel_platform.o set_control_platform_data.o skip_comment_f.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_ele_grp2_by_2d.o: $(ELE_GRP_SPH_DIR)/set_ele_grp2_by_2d.f90 m_precision.o t_group_data.o m_work_4_add_egrp_sph.o start_end_4_2d_ele_grping.o set_parallel_file_name.o m_add_ele_grp_parameter.o quicksort.o
+	$(F90) -c $(F90OPTFLAGS) $<
+set_new_2d_element_group.o: $(ELE_GRP_SPH_DIR)/set_new_2d_element_group.f90 m_precision.o m_constants.o m_geometry_constants.o calypso_mpi.o t_geometry_data.o m_add_ele_grp_parameter.o set_ele_grp2_by_2d.o t_group_data.o
+	$(F90) -c $(F90OPTFLAGS) $<
+start_end_4_2d_ele_grping.o: $(ELE_GRP_SPH_DIR)/start_end_4_2d_ele_grping.f90 m_precision.o m_constants.o m_geometry_constants.o m_work_4_add_egrp_sph.o quicksort.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_control_data_add_ele_grp.o: $(ELE_GRP_SPH_DIR)/t_control_data_add_ele_grp.f90 m_precision.o calypso_mpi.o t_read_control_elements.o t_ctl_data_4_platforms.o t_control_elements.o t_control_array_charareal2.o skip_comment_f.o bcast_4_platform_ctl.o bcast_control_arrays.o
+	$(F90) -c $(F90OPTFLAGS) $<
+

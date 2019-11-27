@@ -1,0 +1,45 @@
+cal_4_diagonal_11.o: $(SOLVER_MATVEC_DIR)/cal_4_diagonal_11.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+cal_4_diagonal_33.o: $(SOLVER_MATVEC_DIR)/cal_4_diagonal_33.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+cal_4_diagonal_33d.o: $(SOLVER_MATVEC_DIR)/cal_4_diagonal_33d.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+cal_4_diagonal_nn.o: $(SOLVER_MATVEC_DIR)/cal_4_diagonal_nn.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+cal_4_diagonal_nnd.o: $(SOLVER_MATVEC_DIR)/cal_4_diagonal_nnd.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+cal_4_lower_11.o: $(SOLVER_MATVEC_DIR)/cal_4_lower_11.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+cal_4_lower_33.o: $(SOLVER_MATVEC_DIR)/cal_4_lower_33.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+cal_4_lower_33d.o: $(SOLVER_MATVEC_DIR)/cal_4_lower_33d.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+cal_4_lower_nn.o: $(SOLVER_MATVEC_DIR)/cal_4_lower_nn.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+cal_4_lower_nnd.o: $(SOLVER_MATVEC_DIR)/cal_4_lower_nnd.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+cal_4_upper_11.o: $(SOLVER_MATVEC_DIR)/cal_4_upper_11.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+cal_4_upper_33.o: $(SOLVER_MATVEC_DIR)/cal_4_upper_33.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+cal_4_upper_33d.o: $(SOLVER_MATVEC_DIR)/cal_4_upper_33d.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+cal_4_upper_nn.o: $(SOLVER_MATVEC_DIR)/cal_4_upper_nn.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+cal_4_upper_nnd.o: $(SOLVER_MATVEC_DIR)/cal_4_upper_nnd.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+djds_matrix_calcs_11.o: $(SOLVER_MATVEC_DIR)/djds_matrix_calcs_11.f90 m_precision.o cal_4_diagonal_11.o cal_4_lower_11.o cal_4_upper_11.o ordering_by_o2nl_11.o ordering_by_l2u_o2nu_11.o ordering_by_new2old_U_11.o order_vect_4_solver_11.o
+	$(F90) -c $(F90OPTFLAGS) $<
+djds_matrix_calcs_33.o: $(SOLVER_MATVEC_DIR)/djds_matrix_calcs_33.f90 m_precision.o cal_4_diagonal_33.o cal_4_lower_33.o cal_4_upper_33.o ordering_by_o2nl_33.o ordering_by_l2u_o2nu_33.o ordering_by_new2old_U_33.o order_vect_4_solver_33.o
+	$(F90) -c $(F90OPTFLAGS) $<
+djds_matrix_calcs_33d.o: $(SOLVER_MATVEC_DIR)/djds_matrix_calcs_33d.f90 m_precision.o cal_4_diagonal_33d.o cal_4_lower_33d.o cal_4_upper_33d.o ordering_by_o2nl_33.o ordering_by_l2u_o2nu_33.o ordering_by_new2old_U_33.o order_vect_4_solver_33.o
+	$(F90) -c $(F90OPTFLAGS) $<
+djds_matrix_calcs_nn.o: $(SOLVER_MATVEC_DIR)/djds_matrix_calcs_nn.f90 m_precision.o cal_4_diagonal_nn.o cal_4_lower_nn.o cal_4_upper_nn.o ordering_by_o2nl_nn.o ordering_by_l2u_o2nu_nn.o ordering_by_new2old_U_nn.o order_vect_4_solver_nn.o
+	$(F90) -c $(F90OPTFLAGS) $<
+djds_matrix_calcs_nnd.o: $(SOLVER_MATVEC_DIR)/djds_matrix_calcs_nnd.f90 m_precision.o cal_4_diagonal_nnd.o cal_4_lower_nnd.o cal_4_upper_nnd.o ordering_by_o2nl_nn.o ordering_by_l2u_o2nu_nn.o ordering_by_new2old_U_nn.o
+	$(F90) -c $(F90OPTFLAGS) $<
+matvec_by_djo.o: $(SOLVER_MATVEC_DIR)/matvec_by_djo.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+matvec_by_djo_type.o: $(SOLVER_MATVEC_DIR)/matvec_by_djo_type.f90 m_precision.o t_solver_ordered_crs.o matvec_by_djo.o
+	$(F90) -c $(F90OPTFLAGS) $<
+

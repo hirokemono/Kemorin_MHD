@@ -20,7 +20,10 @@ mod_list:
 
 
 module:
-	@$(MAKE_MOD_DEP) '$(MAKENAME)' '$$(SOLVER_MAIN_DIR)' $(SRC_SOLVER_MAINS)
+	@cat Makefile.depends >> $(MAKENAME)
+
+depends:
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(SOLVER_MAIN_DIR)' $(SRC_SOLVER_MAINS)
 
 clean:
 	rm -f *.o *.mod *~ *.par *.diag *.a

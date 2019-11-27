@@ -23,7 +23,10 @@ mod_list:
 
 
 module:
-	@$(MAKE_MOD_DEP) '$(MAKENAME)' '$$(SPH_DIR)' $(SRC_SPH)
+	@cat Makefile.depends >> $(MAKENAME)
+
+depends:
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(SPH_DIR)' $(SRC_SPH)
 
 clean:
 	rm -f *.o *.mod *~ *.par *.diag *.a

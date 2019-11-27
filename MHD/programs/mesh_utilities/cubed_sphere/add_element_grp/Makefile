@@ -54,4 +54,7 @@ mod_list:
 
 
 module:
-	@$(MAKE_MOD_DEP) '$(MAKENAME)' '$$(ELE_GRP_SPH_DIR)' $(SRC_ADDGRP_SPH)
+	@cat Makefile.depends >> $(MAKENAME)
+
+depends:
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(ELE_GRP_SPH_DIR)' $(SRC_ADDGRP_SPH)
