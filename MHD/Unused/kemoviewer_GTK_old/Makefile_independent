@@ -68,8 +68,6 @@ const_viewer_menu_glut.o: $(KEMO_C_GLUTDIR)/const_viewer_menu_glut.c $(KEMO_C_GL
 	$(CC) -c $(OPTFLAGS_GL) $(KEMO_INC) $<
 
 
-includes:
-
 install:
 	if [ ! -d $(LOCALDIR) ]; then \
 		mkdir $(LOCALDIR); \

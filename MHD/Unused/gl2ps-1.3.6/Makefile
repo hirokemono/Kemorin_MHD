@@ -33,13 +33,3 @@ module:
 	'$$(GL2PS_DIR)'/gl2ps.c \
 	>> $(MAKENAME)
 
-includes:
-	@for sources in `ls *.h`; do \
-		( \
-		echo 'copy include files for ' $$sources ; \
-		echo $$sources': $$(GL2PS_DIR)/'$$sources \
-		>> $(MAKENAME); \
-		echo '	cp $$(GL2PS_DIR)/'$$sources . \
-		>> $(MAKENAME) \
-		) \
-	done

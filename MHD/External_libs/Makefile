@@ -89,19 +89,6 @@ depends:
 		) \
 	done
 
-includes:
-	@for dir in $(SUBDIRS) ; do \
-		( \
-		echo 'copy C include files for ' $$dir ; \
-		cd $${dir};  \
-		$(GMAKE) \
-		GMAKE='$(GMAKE)' \
-		MAKENAME='$(MAKENAME)' \
-		includes; \
-		) \
-	done
-
-
 clean:
 	@for dir in $(SUBDIRS); do \
 		( cd $${dir};  \

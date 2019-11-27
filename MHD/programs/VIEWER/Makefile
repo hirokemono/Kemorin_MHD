@@ -81,7 +81,5 @@ depends:
 	@sed -e 's@'$(MHDDIR)'@'$$\(MHDDIR\)'@g' $(MAKENAME).tmp > $(MHDDIR)//programs/VIEWER/Makefile.depends
 	@rm $(MAKENAME).tmp
 
-includes:
-
 clean:
 	rm -f *.o *~ *.mod *.diag *.L

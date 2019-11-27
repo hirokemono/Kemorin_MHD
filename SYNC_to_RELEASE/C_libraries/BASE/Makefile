@@ -47,8 +47,5 @@ depends:
 	@sed -e 's@'$(MHDDIR)/C_libraries'@'$$\(C_SRCDIR\)'@g' $(MAKENAME).tmp > $(MHDDIR)/C_libraries/BASE/Makefile.depends
 	@rm $(MAKENAME).tmp
 
-
-includes:
-
 clean:
 	rm -f *.o $(TARGET) *.mod *~

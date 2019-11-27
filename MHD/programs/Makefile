@@ -130,15 +130,6 @@ depends:
 		) \
 	done
 
-includes:
-	cd VIEWER;  \
-	echo 'generate symbolic link commands for ' $$dir ; \
-	$(GMAKE) \
-	GMAKE='$(GMAKE)' \
-	MAKENAME='$(MAKENAME)' \
-	includes
-
-
 clean:
 	@for dir in $(SUBDIRS); do \
 		( cd $${dir};  \

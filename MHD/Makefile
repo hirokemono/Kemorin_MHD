@@ -394,18 +394,8 @@ makemake:
 		) \
 	done
 	@echo '#' >> $(MAKENAME)
-	@echo '# Rules for includes' >> $(MAKENAME)
+	@echo '# Rules for install' >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
-	@for dir in $(SUBDIRS) ; do \
-		( \
-		echo 'copy C include files for ' $$dir ; \
-		cd $${dir};  \
-		$(GMAKE) \
-		GMAKE='$(GMAKE)' \
-		MAKENAME='$(MAKENAME)' \
-		includes; \
-		) \
-	done
 	@echo '' >> $(MAKENAME)
 	@echo 'install:' >> $(MAKENAME)
 	@echo '	if [ ! -d $$(INSTDIR) ]; then \'       >> $(MAKENAME)
