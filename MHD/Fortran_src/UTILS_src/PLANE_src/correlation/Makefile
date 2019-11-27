@@ -3,8 +3,8 @@
 #
 
 CORRELATE_PLANE_DIR = $$(PLANE_SRCDIR)/correlation
-SRC_CORRELATE_PLANE = $(shell ls *.f90)
-MOD_CORRELATE_PLANE = $(addsuffix .o,$(basename $(SRC_CORRELATE_PLANE)) )
+SOURCES = $(shell ls *.f90)
+MOD_CORRELATE_PLANE = $(addsuffix .o,$(basename $(SOURCES)) )
 
 #
 #  -------------------------------------------------------------------------
@@ -33,4 +33,4 @@ module:
 	@cat Makefile.depends >> $(MAKENAME)
 
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(CORRELATE_PLANE_DIR)' $(SRC_CORRELATE_PLANE)
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(CORRELATE_PLANE_DIR)' $(SOURCES)

@@ -4,8 +4,8 @@
 
 GAUSSDIR = $$(CORE_SRCDIR)/gauss_integration
 
-SRC_GAUSS = $(shell ls *.f90)
-MOD_GAUSS = $(addsuffix .o,$(basename $(SRC_GAUSS)) )
+SOURCES = $(shell ls *.f90)
+MOD_GAUSS = $(addsuffix .o,$(basename $(SOURCES)) )
 
 #
 #  -------------------------------------------------------------------------
@@ -27,7 +27,7 @@ module:
 	@cat Makefile.depends >> $(MAKENAME)
 
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(GAUSSDIR)' $(SRC_GAUSS)
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(GAUSSDIR)' $(SOURCES)
 
 clean:
 	rm -f *.o *.mod *~ *.par *.diag *.a

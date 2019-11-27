@@ -3,8 +3,8 @@
 #
 
 MESH_TYPE_DIR = $$(CORE_SRCDIR)/MESH_type
-SRC_MESH_T = $(shell ls *.f90)
-MOD_MESH_T = $(addsuffix .o,$(basename $(SRC_MESH_T)) )
+SOURCES = $(shell ls *.f90)
+MOD_MESH_T = $(addsuffix .o,$(basename $(SOURCES)) )
 
 
 #
@@ -28,7 +28,7 @@ module:
 	@cat Makefile.depends >> $(MAKENAME)
 
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(MESH_TYPE_DIR)' $(SRC_MESH_T)
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(MESH_TYPE_DIR)' $(SOURCES)
 
 clean:
 	rm -f *.o *.mod *~ *.par *.diag *.a

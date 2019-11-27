@@ -3,8 +3,8 @@
 #
 
 SOLVER_VECCAL_DIR =     $$(DJDS_SOLVER_DIR)/cal_vectors
-SRC_SOLVE_VECCALS = $(shell ls *.f90)
-MOD_SOLVE_VECCALS = $(addsuffix .o,$(basename $(SRC_SOLVE_VECCALS)) )
+SOURCES = $(shell ls *.f90)
+MOD_SOLVE_VECCALS = $(addsuffix .o,$(basename $(SOURCES)) )
 
 #
 #  -------------------------------------------------------------------------
@@ -23,7 +23,7 @@ module:
 	@cat Makefile.depends >> $(MAKENAME)
 
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(SOLVER_VECCAL_DIR)' $(SRC_SOLVE_VECCALS)
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(SOLVER_VECCAL_DIR)' $(SOURCES)
 
 clean:
 	rm -f *.o *.mod *~ *.par *.diag *.a

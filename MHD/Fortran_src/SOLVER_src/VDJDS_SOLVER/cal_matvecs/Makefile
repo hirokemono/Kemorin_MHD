@@ -3,8 +3,8 @@
 #
 
 SOLVER_MATVEC_DIR =     $$(DJDS_SOLVER_DIR)/cal_matvecs
-SRC_SOLVE_MATVEC = $(shell ls *.f90)
-MOD_SOLVE_MATVEC = $(addsuffix .o,$(basename $(SRC_SOLVE_MATVEC)) )
+SOURCES = $(shell ls *.f90)
+MOD_SOLVE_MATVEC = $(addsuffix .o,$(basename $(SOURCES)) )
 
 #
 #  -------------------------------------------------------------------------
@@ -23,7 +23,7 @@ module:
 	@cat Makefile.depends >> $(MAKENAME)
 
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(SOLVER_MATVEC_DIR)' $(SRC_SOLVE_MATVEC)
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(SOLVER_MATVEC_DIR)' $(SOURCES)
 
 clean:
 	rm -f *.o *.mod *~ *.par *.diag *.a

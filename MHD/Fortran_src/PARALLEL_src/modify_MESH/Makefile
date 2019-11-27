@@ -7,8 +7,8 @@ MODIFY_PARA_MESHDIR =    $$(PARA_SRCDIR)/modify_MESH
 LIB_MODIFY_PARA_MESH =      -lpara_modify_mesh
 LIB_MODIFY_PARA_MESH_FILE = libmodify_mesh.a
 
-SRC_MODIFY_PARA_MESH = $(shell ls *.f90 *.F90)
-MOD_MODIFY_PARA_MESH = $(addsuffix .o,$(basename $(SRC_MODIFY_PARA_MESH)) )
+SOURCES = $(shell ls *.f90 *.F90)
+MOD_MODIFY_PARA_MESH = $(addsuffix .o,$(basename $(SOURCES)) )
 
 #
 #  ------------------------------------------------------------------
@@ -45,4 +45,4 @@ module:
 	@cat Makefile.depends >> $(MAKENAME)
 
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(MODIFY_PARA_MESHDIR)' $(SRC_MODIFY_PARA_MESH)
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(MODIFY_PARA_MESHDIR)' $(SOURCES)

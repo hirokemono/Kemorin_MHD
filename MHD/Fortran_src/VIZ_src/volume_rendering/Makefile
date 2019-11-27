@@ -3,8 +3,8 @@
 #
 
 PVR_DIR = $$(VIZ_SRCDIR)/volume_rendering
-SRC_PVR = $(shell ls *.f90)
-MOD_PVR = $(addsuffix .o,$(basename $(SRC_PVR)) )
+SOURCES = $(shell ls *.f90)
+MOD_PVR = $(addsuffix .o,$(basename $(SOURCES)) )
 
 #
 #  --------------------------------------------------------------------
@@ -35,7 +35,7 @@ module:
 	@cat Makefile.depends >> $(MAKENAME)
 
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(PVR_DIR)' $(SRC_PVR)
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(PVR_DIR)' $(SOURCES)
 
 clean:
 	rm -f *.o *.mod *~ *.par *.diag *.a

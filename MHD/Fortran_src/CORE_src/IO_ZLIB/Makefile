@@ -3,8 +3,8 @@
 #
 
 ZLIB_IO_DIR = $$(CORE_SRCDIR)/IO_ZLIB
-SRC_ZLIB_IO = $(shell ls *.f90 *.F90)
-MOD_ZLIB_IO = $(addsuffix .o,$(basename $(SRC_ZLIB_IO)) )
+SOURCES = $(shell ls *.f90 *.F90)
+MOD_ZLIB_IO = $(addsuffix .o,$(basename $(SOURCES)) )
 
 #
 #  -------------------------------------------------------------------------
@@ -25,7 +25,7 @@ module:
 	@cat Makefile.depends >> $(MAKENAME)
 
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(ZLIB_IO_DIR)' $(SRC_ZLIB_IO)
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(ZLIB_IO_DIR)' $(SOURCES)
 
 clean:
 	rm -f *.o *.mod *~ *.par *.diag *.a

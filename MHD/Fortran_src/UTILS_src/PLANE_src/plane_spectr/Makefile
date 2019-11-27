@@ -3,8 +3,8 @@
 #
 
 FFT_PLANE_SRCDIR = $$(PLANE_SRCDIR)/plane_spectr
-SRC_FFT_PLANE_COMMON = $(shell ls *.f90)
-MOD_FFT_PLANE_COMMON = $(addsuffix .o,$(basename $(SRC_FFT_PLANE_COMMON)) )
+SOURCES = $(shell ls *.f90)
+MOD_FFT_PLANE_COMMON = $(addsuffix .o,$(basename $(SOURCES)) )
 
 #
 #  -------------------------------------------------------------------------
@@ -33,4 +33,4 @@ module:
 	@cat Makefile.depends >> $(MAKENAME)
 
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(FFT_PLANE_SRCDIR)' $(SRC_FFT_PLANE_COMMON)
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(FFT_PLANE_SRCDIR)' $(SOURCES)

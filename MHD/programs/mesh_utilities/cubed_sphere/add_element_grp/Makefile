@@ -6,7 +6,7 @@ ELE_GRP_SPH_DIR = $$(CUBE_SPH_DIR)/add_element_grp
 
 TARGET_ADDGRP_SPH =      add_egrp_cubed_sph
 
-SRC_ADDGRP_SPH = $(shell ls *.f90)
+SOURCES = $(shell ls *.f90)
 MOD_ADDGRP_SPH = \
 add_elegrp_sph.o \
 \
@@ -57,4 +57,4 @@ module:
 	@cat Makefile.depends >> $(MAKENAME)
 
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(ELE_GRP_SPH_DIR)' $(SRC_ADDGRP_SPH)
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(ELE_GRP_SPH_DIR)' $(SOURCES)

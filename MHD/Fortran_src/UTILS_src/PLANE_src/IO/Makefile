@@ -3,8 +3,8 @@
 #
 
 PLANE_IO_DIR = $$(PLANE_SRCDIR)/IO
-SRC_PLANE_IO = $(shell ls *.f90)
-MOD_PLANE_IO = $(addsuffix .o,$(basename $(SRC_PLANE_IO)) )
+SOURCES = $(shell ls *.f90)
+MOD_PLANE_IO = $(addsuffix .o,$(basename $(SOURCES)) )
 
 #
 #  ------------------------------------------------------------------
@@ -35,7 +35,7 @@ module:
 	@cat Makefile.depends >> $(MAKENAME)
 
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(PLANE_IO_DIR)' $(SRC_PLANE_IO)
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(PLANE_IO_DIR)' $(SOURCES)
 
 clean:
 	rm -f *.o *.mod *~ *.par *.diag *.a

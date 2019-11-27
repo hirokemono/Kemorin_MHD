@@ -3,17 +3,8 @@
 #
 
 SOLVER_11S_DIR = $$(CRS_SOLVER_S_DIR)/scalar
-SRC_SOLVER_11_S = $(shell ls *.f90)
-MOD_SOLVER_11_S = $(addsuffix .o,$(basename $(SRC_SOLVER_11_S)) )
-
-MOD_SOLVER_11_S= \
-\
-solver_single.o \
-\
-solver_BiCGSTAB_single.o \
-solver_CG_single.o \
-solver_GMRES_single.o \
-solver_GPBiCG_single.o
+SOURCES = $(shell ls *.f90)
+MOD_SOLVER_11_S = $(addsuffix .o,$(basename $(SOURCES)) )
 
 #
 #  -------------------------------------------------------------------------
@@ -32,7 +23,7 @@ module:
 	@cat Makefile.depends >> $(MAKENAME)
 
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(SOLVER_11S_DIR)' $(SRC_SOLVER_11_S)
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(SOLVER_11S_DIR)' $(SOURCES)
 
 clean:
 	rm -f *.o *.mod *~ *.par *.diag *.a

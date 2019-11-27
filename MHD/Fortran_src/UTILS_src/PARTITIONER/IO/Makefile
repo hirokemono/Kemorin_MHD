@@ -3,8 +3,8 @@
 #
 
 PART_IODIR =  $$(PARTITONER_DIR)/IO
-SRC_PART_IO = $(shell ls *.f90)
-MOD_PART_IO = $(addsuffix .o,$(basename $(SRC_PART_IO)) )
+SOURCES = $(shell ls *.f90)
+MOD_PART_IO = $(addsuffix .o,$(basename $(SOURCES)) )
 
 #
 #  -------------------------------------------------------------------------
@@ -33,4 +33,4 @@ module:
 	@cat Makefile.depends >> $(MAKENAME)
 
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(PART_IODIR)' $(SRC_PART_IO)
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(PART_IODIR)' $(SOURCES)

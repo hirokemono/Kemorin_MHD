@@ -33,7 +33,7 @@ OBJ_PNG_2_BMP_F = \
 write_bmp_image.o \
 png_to_bmp_f.o
 
-SRC_GRAPHIC_TESTS = $(shell ls *.f90 *.F90)
+SOURCES = $(shell ls *.f90 *.F90)
 
 #
 #  ------------------------------------------------------------------
@@ -186,7 +186,7 @@ module:
 	@cat Makefile.depends >> $(MAKENAME)
 
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(GRAPHIC_TEST_DIR)' $(SRC_GRAPHIC_TESTS)
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(GRAPHIC_TEST_DIR)' $(SOURCES)
 
 
 clean:

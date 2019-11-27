@@ -3,8 +3,8 @@
 #
 
 MHD_SGS_DIR = $$(MHD_SRCDIR)/sgs_model
-SRC_SGS = $(shell ls *.f90)
-MOD_SGS = $(addsuffix .o,$(basename $(SRC_SGS)) )
+SOURCES = $(shell ls *.f90)
+MOD_SGS = $(addsuffix .o,$(basename $(SOURCES)) )
 
 #
 #  -------------------------------------------------------------------------
@@ -26,7 +26,7 @@ module:
 	@cat Makefile.depends >> $(MAKENAME)
 
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(MHD_SGS_DIR)' $(SRC_SGS)
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(MHD_SGS_DIR)' $(SOURCES)
 
 
 clean:

@@ -6,8 +6,8 @@ CUBMESH_DIR = $$(PLANE_SRCDIR)/cubmesh
 
 LIB_CUBMESH = cubmesh
 
-SRC_CUBMESH = $(shell ls *.f90)
-MOD_CUBMESH = $(addsuffix .o,$(basename $(SRC_CUBMESH)) )
+SOURCES = $(shell ls *.f90)
+MOD_CUBMESH = $(addsuffix .o,$(basename $(SOURCES)) )
 
 #
 #  -------------------------------------------------------------------------
@@ -36,7 +36,7 @@ module:
 	@cat Makefile.depends >> $(MAKENAME)
 
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(CUBMESH_DIR)' $(SRC_CUBMESH)
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(CUBMESH_DIR)' $(SOURCES)
 
 clean:
 	rm -f *.o *.mod *~ *.par *.diag *.a

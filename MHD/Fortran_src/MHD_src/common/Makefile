@@ -3,8 +3,8 @@
 #
 
 MHD_COMMON_DIR = $$(MHD_SRCDIR)/common
-SRC_COMMON = $(shell ls *.f90)
-MOD_COMMON = $(addsuffix .o,$(basename $(SRC_COMMON)) )
+SOURCES = $(shell ls *.f90)
+MOD_COMMON = $(addsuffix .o,$(basename $(SOURCES)) )
 
 #
 #  -------------------------------------------------------------------------
@@ -27,7 +27,7 @@ module:
 	@cat Makefile.depends >> $(MAKENAME)
 
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(MHD_COMMON_DIR)' $(SRC_COMMON)
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(MHD_COMMON_DIR)' $(SOURCES)
 
 
 clean:

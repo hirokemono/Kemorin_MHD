@@ -3,8 +3,8 @@
 #
 
 INT32DIR = $$(CORE_SRCDIR)/32bit_Integer
-SRC_INT32 = $(shell ls *.f90)
-MOD_INT32 = $(addsuffix .o,$(basename $(SRC_INT32)) )
+SOURCES = $(shell ls *.f90)
+MOD_INT32 = $(addsuffix .o,$(basename $(SOURCES)) )
 
 #
 #  -------------------------------------------------------------------------
@@ -27,7 +27,7 @@ module:
 	@cat Makefile.depends >> $(MAKENAME)
 
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(INT32DIR)' $(SRC_INT32)
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(INT32DIR)' $(SOURCES)
 
 clean:
 	rm -f *.o *.mod *~ *.par *.diag *.a

@@ -3,8 +3,8 @@
 #
 
 MHD_NOD_BC_DIR = $$(MHD_SRCDIR)/nodal_boundary
-SRC_NOD_BD = $(shell ls *.f90)
-MOD_NOD_BD = $(addsuffix .o,$(basename $(SRC_NOD_BD)) )
+SOURCES = $(shell ls *.f90)
+MOD_NOD_BD = $(addsuffix .o,$(basename $(SOURCES)) )
 
 #
 #  -------------------------------------------------------------------------
@@ -26,7 +26,7 @@ module:
 	@cat Makefile.depends >> $(MAKENAME)
 
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(MHD_NOD_BC_DIR)' $(SRC_NOD_BD)
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(MHD_NOD_BC_DIR)' $(SOURCES)
 
 clean:
 	rm -f *.o *.mod *~ *.par *.diag *.a

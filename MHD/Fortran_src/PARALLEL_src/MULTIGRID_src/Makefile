@@ -3,8 +3,8 @@
 #
 
 MG_SRCDIR = $$(PARA_SRCDIR)/MULTIGRID_src
-SRC_MULTIGRID = $(shell ls *.f90)
-MOD_MULTIGRID = $(addsuffix .o,$(basename $(SRC_MULTIGRID)) )
+SOURCES = $(shell ls *.f90)
+MOD_MULTIGRID = $(addsuffix .o,$(basename $(SOURCES)) )
 
 #
 #  -------------------------------------------------------------------------
@@ -27,7 +27,7 @@ module:
 	@cat Makefile.depends >> $(MAKENAME)
 
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(MG_SRCDIR)' $(SRC_MULTIGRID)
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(MG_SRCDIR)' $(SOURCES)
 
 clean:
 	rm -f *.o *.mod *~ *.par *.diag *.a

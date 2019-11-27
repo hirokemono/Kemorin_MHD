@@ -3,8 +3,8 @@
 #
 
 MHD_EVO_DIR = $$(MHD_SRCDIR)/evolution
-SRC_EVOLVE = $(shell ls *.f90)
-MOD_EVOLVE = $(addsuffix .o,$(basename $(SRC_EVOLVE)) )
+SOURCES = $(shell ls *.f90)
+MOD_EVOLVE = $(addsuffix .o,$(basename $(SOURCES)) )
 
 #
 #  -------------------------------------------------------------------------
@@ -28,7 +28,7 @@ module:
 	@cat Makefile.depends >> $(MAKENAME)
 
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(MHD_EVO_DIR)' $(SRC_EVOLVE)
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(MHD_EVO_DIR)' $(SOURCES)
 
 clean:
 	rm -f *.o *.mod *~ *.par *.diag *.a

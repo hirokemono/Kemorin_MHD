@@ -3,8 +3,8 @@
 #
 
 MHD_INI_DIR = $$(MHD_SRCDIR)/initial_data
-SRC_KEMO = $(shell ls *.f90)
-MOD_KEMO = $(addsuffix .o,$(basename $(SRC_KEMO)) )
+SOURCES = $(shell ls *.f90)
+MOD_KEMO = $(addsuffix .o,$(basename $(SOURCES)) )
 
 #
 #  -------------------------------------------------------------------------
@@ -27,7 +27,7 @@ module:
 	@cat Makefile.depends >> $(MAKENAME)
 
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(MHD_INI_DIR)' $(SRC_KEMO)
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(MHD_INI_DIR)' $(SOURCES)
 
 clean:
 	rm -f *.o *.mod *~ *.par *.diag *.a

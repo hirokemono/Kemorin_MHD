@@ -75,7 +75,6 @@ module:
 		echo 'copy compile commands for ' $$dir ; \
 		$(GMAKE) \
 		GMAKE='$(GMAKE)' \
-		MAKE_MOD_DEP='$(MAKE_MOD_DEP)' \
 		MAKENAME='$(MAKENAME)' \
 		module \
 		) \

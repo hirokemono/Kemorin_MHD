@@ -3,8 +3,8 @@
 #
 
 MHD_SOLVER_DIR = $$(MHD_SRCDIR)/solver_vector_smp
-SRC_MHD_SOLVE = $(shell ls *.f90)
-MOD_MHD_SOLVE = $(addsuffix .o,$(basename $(SRC_MHD_SOLVE)) )
+SOURCES = $(shell ls *.f90)
+MOD_MHD_SOLVE = $(addsuffix .o,$(basename $(SOURCES)) )
 
 #
 #  -------------------------------------------------------------------------
@@ -27,7 +27,7 @@ module:
 	@cat Makefile.depends >> $(MAKENAME)
 
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(MHD_SOLVER_DIR)' $(SRC_MHD_SOLVE)
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(MHD_SOLVER_DIR)' $(SOURCES)
 
 clean:
 	rm -f *.o *.mod *~ *.par *.diag *.a

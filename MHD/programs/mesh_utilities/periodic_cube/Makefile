@@ -4,8 +4,8 @@
 PERI_CUBE_MESHDIR = $$(MESHER_DIR)/periodic_cube
 
 TARGET_PERI_CUBE = peri_cube_kemo
-SRC_PERI_CUBE_MESH = $(shell ls *.f90)
-MOD_PERI_CUBE_MESH = $(addsuffix .o,$(basename $(SRC_PERI_CUBE_MESH)) )
+SOURCES = $(shell ls *.f90)
+MOD_PERI_CUBE_MESH = $(addsuffix .o,$(basename $(SOURCES)) )
 
 #
 #  -------------------------------------------------------------------------
@@ -41,4 +41,4 @@ module:
 	@cat Makefile.depends >> $(MAKENAME)
 
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(PERI_CUBE_MESHDIR)' $(SRC_PERI_CUBE_MESH)
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(PERI_CUBE_MESHDIR)' $(SOURCES)

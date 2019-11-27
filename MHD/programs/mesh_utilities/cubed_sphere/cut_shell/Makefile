@@ -6,8 +6,8 @@ CUTSHELL_DIR = $$(CUBE_SPH_DIR)/cut_shell
 
 TARGET_CUTSHELL = cutshell_kemo
 
-SRC_CUTSHELL = $(shell ls *.f90)
-MOD_CUTSHELL = $(addsuffix .o,$(basename $(SRC_CUTSHELL)) )
+SOURCES = $(shell ls *.f90)
+MOD_CUTSHELL = $(addsuffix .o,$(basename $(SOURCES)) )
 
 #
 #  -------------------------------------------------------------------------
@@ -42,4 +42,4 @@ module:
 	@cat Makefile.depends >> $(MAKENAME)
 
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(CUTSHELL_DIR)' $(SRC_CUTSHELL)
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(CUTSHELL_DIR)' $(SOURCES)

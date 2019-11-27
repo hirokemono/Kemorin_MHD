@@ -3,8 +3,8 @@
 #
 
 FILTER_3D_IODIR =  $$(FILTER_SRCDIR)/IO
-SRC_GEN_FILTER_IO = $(shell ls *.f90)
-MOD_GEN_FILTER_IO = $(addsuffix .o,$(basename $(SRC_GEN_FILTER_IO)) )
+SOURCES = $(shell ls *.f90)
+MOD_GEN_FILTER_IO = $(addsuffix .o,$(basename $(SOURCES)) )
 
 #
 #  ------------------------------------------------------------------
@@ -28,7 +28,7 @@ module:
 	@cat Makefile.depends >> $(MAKENAME)
 
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(FILTER_3D_IODIR)' $(SRC_GEN_FILTER_IO)
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(FILTER_3D_IODIR)' $(SOURCES)
 
 clean:
 	rm -f *.o *.mod *~ *.par *.diag *.a

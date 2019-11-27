@@ -22,7 +22,8 @@ ifdef FORTRAN_C_CONNECT
 endif
 
 
-SRC_BC_FILE_TEST = $(shell ls *.f90)
+SOURCES = $(shell ls *.f90)
+
 MOD_BC_FILE_TEST = \
 t_ctl_data_test_bc_temp.o \
 m_ctl_params_test_bc_temp.o \
@@ -77,7 +78,7 @@ module:
 	@cat Makefile.depends >> $(MAKENAME)
 
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(BC_FILE_TEST_DIR)' $(SRC_BC_FILE_TEST)
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(BC_FILE_TEST_DIR)' $(SOURCES)
 
 
 clean:

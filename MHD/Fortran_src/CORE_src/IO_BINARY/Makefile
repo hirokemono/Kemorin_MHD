@@ -3,8 +3,8 @@
 #
 
 BINARY_IO_DIR = $$(CORE_SRCDIR)/IO_BINARY
-SRC_BINARY_IO = $(shell ls *.f90 *.F90)
-MOD_BINARY_IO = $(addsuffix .o,$(basename $(SRC_BINARY_IO)) )
+SOURCES = $(shell ls *.f90 *.F90)
+MOD_BINARY_IO = $(addsuffix .o,$(basename $(SOURCES)) )
 
 #
 #  -------------------------------------------------------------------------
@@ -25,7 +25,7 @@ module:
 	@cat Makefile.depends >> $(MAKENAME)
 
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(BINARY_IO_DIR)' $(SRC_BINARY_IO)
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(BINARY_IO_DIR)' $(SOURCES)
 
 clean:
 	rm -f *.o *.mod *~ *.par *.diag *.a

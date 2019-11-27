@@ -3,8 +3,8 @@
 #
 
 SR_DIR = $$(SOLVER_SRCDIR)/send_recv
-SRC_SR = $(shell ls *.f90)
-MOD_SR = $(addsuffix .o,$(basename $(SRC_SR)) )
+SOURCES = $(shell ls *.f90)
+MOD_SR = $(addsuffix .o,$(basename $(SOURCES)) )
 
 #
 #  -------------------------------------------------------------------------
@@ -25,4 +25,4 @@ module:
 	@cat Makefile.depends >> $(MAKENAME)
 
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(SR_DIR)' $(SRC_SR)
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(SR_DIR)' $(SOURCES)

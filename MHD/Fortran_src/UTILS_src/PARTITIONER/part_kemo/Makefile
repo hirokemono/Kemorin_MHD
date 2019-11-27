@@ -3,8 +3,8 @@
 #
 
 PART_COMMONDIR = $$(PARTITONER_DIR)/part_kemo
-SRC_PART_COMMON = $(shell ls *.f90)
-MOD_PART_COMMON = $(addsuffix .o,$(basename $(SRC_PART_COMMON)) )
+SOURCES = $(shell ls *.f90)
+MOD_PART_COMMON = $(addsuffix .o,$(basename $(SOURCES)) )
 
 #
 #  -------------------------------------------------------------------------
@@ -33,4 +33,4 @@ module:
 	@cat Makefile.depends >> $(MAKENAME)
 
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(PART_COMMONDIR)' $(SRC_PART_COMMON)
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(PART_COMMONDIR)' $(SOURCES)

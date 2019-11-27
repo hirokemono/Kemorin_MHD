@@ -123,7 +123,7 @@
 !
       real(kind=kreal), intent(inout) :: S1(NB*NP), S2(NB*NP), S3(NB*NP)
 !
-      integer(kind = kint) :: k, i, j, ist, ied, n1, n2
+      integer(kind = kint) :: k, i, j, isU, ieU, isL, ieL, n1, n2
 !
 !
       do j= 1, N
@@ -202,7 +202,6 @@
        real(kind = kreal), intent(inout) :: S(NB*NP)
 !
       integer(kind = kint) :: i, j, k, isU, ieU, isL, ieL, n1, n2
-      real(kind = kreal) :: W1, W2,  W3
 !
 !
       do j= 1, N
@@ -265,10 +264,7 @@
 !
       real(kind=kreal), intent(inout) :: S1(NB*NP), S2(NB*NP), S3(NB*NP)
 !
-      integer(kind = kint) :: k, i, j, ist, ied, n1, n2
-      real(kind = kreal) :: W1, W2, W3
-      real(kind = kreal) :: V1, V2, V3
-      real(kind = kreal) :: U1, U2, U3
+      integer(kind = kint) :: k, i, j, isU, ieU, isL, ieL, n1, n2
 !
 !
       do j= 1, N
@@ -546,7 +542,6 @@
        real(kind = kreal), intent(inout) :: S(NB*NP)
 !
       integer(kind = kint) :: i, j, k, isU, ieU, isL, ieL, n1, n2
-      real(kind = kreal) :: v
 !
 !
        DO i = N, 1, -1

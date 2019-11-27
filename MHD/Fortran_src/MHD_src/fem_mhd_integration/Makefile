@@ -3,8 +3,8 @@
 #
 
 MHD_RHS_DIR = $$(MHD_SRCDIR)/fem_mhd_integration
-SRC_RHS = $(shell ls *.f90)
-MOD_RHS = $(addsuffix .o,$(basename $(SRC_RHS)) )
+SOURCES = $(shell ls *.f90)
+MOD_RHS = $(addsuffix .o,$(basename $(SOURCES)) )
 
 #
 #  -------------------------------------------------------------------------
@@ -27,7 +27,7 @@ module:
 	@cat Makefile.depends >> $(MAKENAME)
 
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(MHD_RHS_DIR)' $(SRC_RHS)
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(MHD_RHS_DIR)' $(SOURCES)
 
 
 clean:

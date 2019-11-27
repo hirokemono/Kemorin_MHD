@@ -3,8 +3,8 @@
 #
 
 FILTER_3D_MATDIR = $$(FILTER_SRCDIR)/filter_3d
-SRC_3D_FILTER_MAT = $(shell ls *.f90)
-MOD_3D_FILTER_MAT = $(addsuffix .o,$(basename $(SRC_3D_FILTER_MAT)) )
+SOURCES = $(shell ls *.f90)
+MOD_3D_FILTER_MAT = $(addsuffix .o,$(basename $(SOURCES)) )
 
 #
 #  ------------------------------------------------------------------
@@ -27,7 +27,7 @@ module:
 	@cat Makefile.depends >> $(MAKENAME)
 
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(FILTER_3D_MATDIR)' $(SRC_3D_FILTER_MAT)
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(FILTER_3D_MATDIR)' $(SOURCES)
 
 clean:
 	rm -f *.o *.mod *~ *.par *.diag *.a

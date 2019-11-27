@@ -21,8 +21,8 @@ ifdef FORTRAN_C_CONNECT
   LIB_FILES_MESH_TEST+=   '$$(LIB_KEMO_C_FILE)'
 endif
 
-SRC_MESH_TEST = $(shell ls *.f90)
-MOD_MESH_TEST = $(addsuffix .o,$(basename $(SRC_MESH_TEST)) )
+SOURCES = $(shell ls *.f90)
+MOD_MESH_TEST = $(addsuffix .o,$(basename $(SOURCES)) )
 
 #
 #  ------------------------------------------------------------------
@@ -68,7 +68,7 @@ module:
 	@cat Makefile.depends >> $(MAKENAME)
 
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(MESH_TEST_DIR)' $(SRC_MESH_TEST)
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(MESH_TEST_DIR)' $(SOURCES)
 
 
 clean:

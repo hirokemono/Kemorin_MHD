@@ -7,8 +7,8 @@ KEMO_PGDIR = $$(UTILS_SRCDIR)/draw_pg_f90
 LIB_DRAW_PG =       -ldraw_by_pgplot
 LIB_DRAW_PG_FILE = libdraw_by_pgplot.a
 
-SRC_DRAW_PG = $(shell ls *.f90)
-MOD_DRAW_PG = $(addsuffix .o,$(basename $(SRC_DRAW_PG)) )
+SOURCES = $(shell ls *.f90)
+MOD_DRAW_PG = $(addsuffix .o,$(basename $(SOURCES)) )
 
 #
 #  ------------------------------------------------------------------
@@ -43,7 +43,7 @@ module:
 	@cat Makefile.depends >> $(MAKENAME)
 
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(KEMO_PGDIR)' $(SRC_DRAW_PG)
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(KEMO_PGDIR)' $(SOURCES)
 
 
 clean:

@@ -1,12 +1,12 @@
 
       program ICCG_SOLVER
 
+      use m_precision
       use calypso_mpi
 !
       use solverNN
 
       implicit REAL*8 (A-H,O-Z)
-      parameter (kint=4, kreal=8)
       integer(kind=kint )                  ::  N
       integer(kind=kint )                  ::  NP
       integer(kind=kint )                  ::  NPL
@@ -67,8 +67,8 @@
       if (my_rank.eq.0) then
         write (*,*) 'INPUT FILE NAME'
         open (11,file='inp1', status='unknown')
-          read (11,'(a20)') METHOD
-          read (11,'(a20)') PRECOND
+          read (11,*) METHOD
+          read (11,*) PRECOND
           read (11,*)  INTARRAY(2)
 
 !     convergence radius
@@ -176,7 +176,7 @@
      &                   D, AL, INL, IAL, AU, INU, IAU, B, X, PRESET,   &
      &                   NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,   &
      &                                      STACK_EXPORT, NOD_EXPORT,   &
-     &                   my_rank, ITERactual, ERROR,                    &
+     &                   ITERactual, ERROR,                             &
      &                   METHOD, PRECOND, INTARRAY, REALARRAY         )
 
 

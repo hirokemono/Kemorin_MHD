@@ -3,8 +3,8 @@
 #
 
 DECOMP_DIR = $$(PARTITONER_DIR)/decomposition
-SRC_PART_DECOMP = $(shell ls *.f90)
-MOD_PART_DECOMP = $(addsuffix .o,$(basename $(SRC_PART_DECOMP)) )
+SOURCES = $(shell ls *.f90)
+MOD_PART_DECOMP = $(addsuffix .o,$(basename $(SOURCES)) )
 
 #
 #  -------------------------------------------------------------------------
@@ -33,4 +33,4 @@ module:
 	@cat Makefile.depends >> $(MAKENAME)
 
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(DECOMP_DIR)' $(SRC_PART_DECOMP)
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(DECOMP_DIR)' $(SOURCES)

@@ -106,7 +106,7 @@ fluid:
 		fluid
 
 depends:
-	@for dir in C_src ; do \
+	@for dir in $(SUBDIRS) ; do \
 		( \
 		echo 'Construct dependencies'; \
 		cd $${dir};  \

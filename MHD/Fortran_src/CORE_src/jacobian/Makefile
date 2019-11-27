@@ -4,8 +4,8 @@
 
 JACOBIDIR = $$(CORE_SRCDIR)/jacobian
 
-SRC_JACOBI = $(shell ls *.f90)
-MOD_JACOBI = $(addsuffix .o,$(basename $(SRC_JACOBI)) )
+SOURCES = $(shell ls *.f90)
+MOD_JACOBI = $(addsuffix .o,$(basename $(SOURCES)) )
 
 #
 #  -------------------------------------------------------------------------
@@ -26,7 +26,7 @@ module:
 	@cat Makefile.depends >> $(MAKENAME)
 
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(JACOBIDIR)' $(SRC_JACOBI)
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(JACOBIDIR)' $(SOURCES)
 
 clean:
 	rm -f *.o *.mod *~ *.par *.diag *.a

@@ -3,8 +3,8 @@
 #
 
 PLANE_COMMON_DIR = $$(PLANE_SRCDIR)/plane_core
-SRC_PLANE_COMMON = $(shell ls *.f90)
-MOD_PLANE_COMMON = $(addsuffix .o,$(basename $(SRC_PLANE_COMMON)) )
+SOURCES = $(shell ls *.f90)
+MOD_PLANE_COMMON = $(addsuffix .o,$(basename $(SOURCES)) )
 
 #
 #  -------------------------------------------------------------------------
@@ -33,7 +33,7 @@ module:
 	@cat Makefile.depends >> $(MAKENAME)
 
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(PLANE_COMMON_DIR)' $(SRC_PLANE_COMMON)
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(PLANE_COMMON_DIR)' $(SOURCES)
 
 clean:
 	rm -f *.o *~ *.mod *.a; \

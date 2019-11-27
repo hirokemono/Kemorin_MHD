@@ -3,8 +3,8 @@
 #
 
 FEM_INT_DIR = $$(PARA_SRCDIR)/FEM_base_integration
-SRC_FEM_INT = $(shell ls *.f90)
-MOD_FEM_INT = $(addsuffix .o,$(basename $(SRC_FEM_INT)) )
+SOURCES = $(shell ls *.f90)
+MOD_FEM_INT = $(addsuffix .o,$(basename $(SOURCES)) )
 
 #
 #  -------------------------------------------------------------------------
@@ -25,7 +25,7 @@ module:
 	@cat Makefile.depends >> $(MAKENAME)
 
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(FEM_INT_DIR)' $(SRC_FEM_INT)
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(FEM_INT_DIR)' $(SOURCES)
 
 clean:
 	rm -f *.o *.mod *~ *.par *.diag *.a

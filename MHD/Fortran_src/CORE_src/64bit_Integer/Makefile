@@ -3,8 +3,8 @@
 #
 
 INT64DIR = $$(CORE_SRCDIR)/64bit_Integer
-SRC_INT64 = $(shell ls *.f90)
-MOD_INT64 = $(addsuffix .o,$(basename $(SRC_INT64)) )
+SOURCES = $(shell ls *.f90)
+MOD_INT64 = $(addsuffix .o,$(basename $(SOURCES)) )
 
 #
 #  -------------------------------------------------------------------------
@@ -27,7 +27,7 @@ module:
 	@cat Makefile.depends >> $(MAKENAME)
 
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(INT64DIR)' $(SRC_INT64)
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(INT64DIR)' $(SOURCES)
 
 clean:
 	rm -f *.o *.mod *~ *.par *.diag *.a

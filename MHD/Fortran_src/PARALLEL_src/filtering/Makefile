@@ -3,8 +3,8 @@
 #
 
 FILTER_DIR = $$(PARA_SRCDIR)/filtering
-SRC_FILTERING = $(shell ls *.f90)
-MOD_FILTERING = $(addsuffix .o,$(basename $(SRC_FILTERING)) )
+SOURCES = $(shell ls *.f90)
+MOD_FILTERING = $(addsuffix .o,$(basename $(SOURCES)) )
 
 #
 #  -------------------------------------------------------------------------
@@ -26,7 +26,7 @@ module:
 	@cat Makefile.depends >> $(MAKENAME)
 
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(FILTER_DIR)' $(SRC_FILTERING)
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(FILTER_DIR)' $(SOURCES)
 
 clean:
 	rm -f *.o *.mod *~ *.par *.diag *.a

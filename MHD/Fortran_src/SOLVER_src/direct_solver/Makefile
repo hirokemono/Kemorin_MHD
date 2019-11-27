@@ -3,8 +3,8 @@
 #
 
 SOLVER_LU_DIR = $$(SOLVER_SRCDIR)/direct_solver
-SRC_SOLVER_LU = $(shell ls *.f90)
-MOD_SOLVER_LU = $(addsuffix .o,$(basename $(SRC_SOLVER_LU)) )
+SOURCES = $(shell ls *.f90)
+MOD_SOLVER_LU = $(addsuffix .o,$(basename $(SOURCES)) )
 
 #
 #  -------------------------------------------------------------------------
@@ -27,7 +27,7 @@ module:
 	@cat Makefile.depends >> $(MAKENAME)
 
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(SOLVER_LU_DIR)' $(SRC_SOLVER_LU)
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(SOLVER_LU_DIR)' $(SOURCES)
 
 clean:
 	rm -f *.o *.mod *~ *.par *.diag *.a

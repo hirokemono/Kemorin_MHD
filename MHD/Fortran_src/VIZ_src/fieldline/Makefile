@@ -3,8 +3,8 @@
 #
 
 FIELDLINE_DIR = $$(VIZ_SRCDIR)/fieldline
-SRC_FIELDLINE = $(shell ls *.f90)
-MOD_FIELDLINE = $(addsuffix .o,$(basename $(SRC_FIELDLINE)) )
+SOURCES = $(shell ls *.f90)
+MOD_FIELDLINE = $(addsuffix .o,$(basename $(SOURCES)) )
 
 #
 #  --------------------------------------------------------------------
@@ -35,7 +35,7 @@ module:
 	@cat Makefile.depends >> $(MAKENAME)
 
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(FIELDLINE_DIR)' $(SRC_FIELDLINE)
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(FIELDLINE_DIR)' $(SOURCES)
 
 clean:
 	rm -f *.o *.mod *~ *.par *.diag *.a

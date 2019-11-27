@@ -3,8 +3,8 @@
 #
 
 SOLVER_EACH_DIR =     $$(DJDS_SOLVER_DIR)/cal_4_each_solvers
-SRC_SOLVE_EACH = $(shell ls *.f90)
-MOD_SOLVE_EACH = $(addsuffix .o,$(basename $(SRC_SOLVE_EACH)) )
+SOURCES = $(shell ls *.f90)
+MOD_SOLVE_EACH = $(addsuffix .o,$(basename $(SOURCES)) )
 
 #
 #  -------------------------------------------------------------------------
@@ -23,7 +23,7 @@ module:
 	@cat Makefile.depends >> $(MAKENAME)
 
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(SOLVER_EACH_DIR)' $(SRC_SOLVE_EACH)
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(SOLVER_EACH_DIR)' $(SOURCES)
 
 
 clean:

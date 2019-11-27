@@ -3,8 +3,8 @@
 #
 
 BASEDIR = $$(CORE_SRCDIR)/BASE
-SRC_BASE = $(shell ls *.f90)
-MOD_BASE = $(addsuffix .o,$(basename $(SRC_BASE)) )
+SOURCES = $(shell ls *.f90)
+MOD_BASE = $(addsuffix .o,$(basename $(SOURCES)) )
 
 #
 #  -------------------------------------------------------------------------
@@ -27,7 +27,7 @@ module:
 	@cat Makefile.depends >> $(MAKENAME)
 
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(BASEDIR)' $(SRC_BASE)
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(BASEDIR)' $(SOURCES)
 
 clean:
 	rm -f *.o *.mod *~ *.par *.diag *.a

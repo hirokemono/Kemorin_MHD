@@ -3,8 +3,8 @@
 #
 
 DJDS_ORDER_DIR = $$(PARA_SRCDIR)/ORDERING_4_DJDS
-SRC_SOLVER_SET_ORDER = $(shell ls *.f90)
-MOD_SOLVER_SET_ORDER = $(addsuffix .o,$(basename $(SRC_SOLVER_SET_ORDER)) )
+SOURCES = $(shell ls *.f90)
+MOD_SOLVER_SET_ORDER = $(addsuffix .o,$(basename $(SOURCES)) )
 
 #
 #  -------------------------------------------------------------------------
@@ -27,7 +27,7 @@ module:
 	@cat Makefile.depends >> $(MAKENAME)
 
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(DJDS_ORDER_DIR)' $(SRC_SOLVER_SET_ORDER)
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(DJDS_ORDER_DIR)' $(SOURCES)
 
 clean:
 	rm -f *.o *.mod *~ *.par *.diag *.a

@@ -63,6 +63,7 @@ module:
 	@echo '	' '$$(F90) -c $$(F90OPTFLAGS) $$<' >> $(MAKENAME)
 	@echo   >> $(MAKENAME)
 
+depends:
 
 clean:
 	rm -f *.o *.mod *~ *.par *.diag *.a

@@ -7,8 +7,8 @@ ITP_SRCDIR = $$(UTILS_SRCDIR)/INTERPOLATE_src
 LIB_ITP_TABLE =       -lgen_itp_table
 LIB_ITP_TABLE_FILE = libgen_itp_table.a
 
-SRC_ITP_TABLE = $(shell ls *.f90)
-MOD_ITP_TABLE = $(addsuffix .o,$(basename $(SRC_ITP_TABLE)) )
+SOURCES = $(shell ls *.f90)
+MOD_ITP_TABLE = $(addsuffix .o,$(basename $(SOURCES)) )
 
 #
 #  -------------------------------------------------------------------------
@@ -44,7 +44,7 @@ module:
 	@cat Makefile.depends >> $(MAKENAME)
 
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(ITP_SRCDIR)' $(SRC_ITP_TABLE)
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(ITP_SRCDIR)' $(SOURCES)
 
 
 set_clean:

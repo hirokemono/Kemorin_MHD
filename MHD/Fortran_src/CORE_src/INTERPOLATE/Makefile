@@ -3,8 +3,8 @@
 #
 
 INTERPOLATE_DIR = $$(CORE_SRCDIR)/INTERPOLATE
-SRC_ITP = $(shell ls *.f90)
-MOD_ITP = $(addsuffix .o,$(basename $(SRC_ITP)) )
+SOURCES = $(shell ls *.f90)
+MOD_ITP = $(addsuffix .o,$(basename $(SOURCES)) )
 
 #
 #  -------------------------------------------------------------------------
@@ -25,7 +25,7 @@ module:
 	@cat Makefile.depends >> $(MAKENAME)
 
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(INTERPOLATE_DIR)' $(SRC_ITP)
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(INTERPOLATE_DIR)' $(SOURCES)
 
 clean:
 	rm -f *.o *.mod *~ *.par *.diag *.a

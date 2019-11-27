@@ -23,8 +23,8 @@ ifdef FORTRAN_C_CONNECT
   LIB_FILES_FFT_TEST+=   '$$(LIB_KEMO_C_FILE)'
 endif
 
-SRC_FFT_TEST = $(shell ls *.f90)
-MOD_FFT_TEST = $(addsuffix .o,$(basename $(SRC_FFT_TEST)) )
+SOURCES = $(shell ls *.f90)
+MOD_FFT_TEST = $(addsuffix .o,$(basename $(SOURCES)) )
 
 #
 #  ------------------------------------------------------------------
@@ -64,7 +64,7 @@ module:
 	@cat Makefile.depends >> $(MAKENAME)
 
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(FFT_TEST_DIR)' $(SRC_FFT_TEST)
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(FFT_TEST_DIR)' $(SOURCES)
 
 
 clean:

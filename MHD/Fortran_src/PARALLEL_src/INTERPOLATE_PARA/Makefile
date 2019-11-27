@@ -3,8 +3,8 @@
 #
 
 ITP_PARA_DIR = $$(PARA_SRCDIR)/INTERPOLATE_PARA
-SRC_ITP_PARA = $(shell ls *.f90)
-MOD_ITP_PARA = $(addsuffix .o,$(basename $(SRC_ITP_PARA)) )
+SOURCES = $(shell ls *.f90)
+MOD_ITP_PARA = $(addsuffix .o,$(basename $(SOURCES)) )
 
 #
 #  -------------------------------------------------------------------------
@@ -25,7 +25,7 @@ module:
 	@cat Makefile.depends >> $(MAKENAME)
 
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(ITP_PARA_DIR)' $(SRC_ITP_PARA)
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(ITP_PARA_DIR)' $(SOURCES)
 
 clean:
 	rm -f *.o *.mod *~ *.par *.diag *.a

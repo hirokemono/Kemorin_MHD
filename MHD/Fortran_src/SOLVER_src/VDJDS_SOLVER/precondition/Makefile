@@ -3,8 +3,8 @@
 #
 
 SOLVER_PRECOND_DIR =     $$(DJDS_SOLVER_DIR)/precondition
-SRC_SOLVE_PRECONDS = $(shell ls *.f90)
-MOD_SOLVE_PRECONDS = $(addsuffix .o,$(basename $(SRC_SOLVE_PRECONDS)) )
+SOURCES = $(shell ls *.f90)
+MOD_SOLVE_PRECONDS = $(addsuffix .o,$(basename $(SOURCES)) )
 
 #
 #  -------------------------------------------------------------------------
@@ -23,7 +23,7 @@ module:
 	@cat Makefile.depends >> $(MAKENAME)
 
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(SOLVER_PRECOND_DIR)' $(SRC_SOLVE_PRECONDS)
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(SOLVER_PRECOND_DIR)' $(SOURCES)
 
 clean:
 	rm -f *.o *.mod *~ *.par *.diag *.a

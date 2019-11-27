@@ -3,8 +3,8 @@
 #
 
 SPH_SPECTR_DIR = $$(CORE_SRCDIR)/SPH_SPECTR_src
-SRC_SPH_SPECTR = $(shell ls *.f90)
-MOD_SPH_SPECTR = $(addsuffix .o,$(basename $(SRC_SPH_SPECTR)) )
+SOURCES = $(shell ls *.f90)
+MOD_SPH_SPECTR = $(addsuffix .o,$(basename $(SOURCES)) )
 
 #
 #  -------------------------------------------------------------------------
@@ -26,7 +26,7 @@ module:
 	@cat Makefile.depends >> $(MAKENAME)
 
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(SPH_SPECTR_DIR)' $(SRC_SPH_SPECTR)
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(SPH_SPECTR_DIR)' $(SOURCES)
 
 clean:
 	rm -f *.o *.mod *~ *.par *.diag *.a

@@ -3,8 +3,8 @@
 #
 
 LIC_DIR = $$(VIZ_SRCDIR)/LIC_PVR
-SRC_LIC = $(shell ls *.f90)
-MOD_LIC = $(addsuffix .o,$(basename $(SRC_LIC)) )
+SOURCES = $(shell ls *.f90)
+MOD_LIC = $(addsuffix .o,$(basename $(SOURCES)) )
 
 #
 #  --------------------------------------------------------------------
@@ -35,7 +35,7 @@ module:
 	@cat Makefile.depends >> $(MAKENAME)
 
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(LIC_DIR)' $(SRC_LIC)
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(LIC_DIR)' $(SOURCES)
 
 clean:
 	rm -f *.o *.mod *~ *.par *.diag *.a

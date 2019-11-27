@@ -5,8 +5,8 @@
 SR_DIR = $$(PARA_SRCDIR)/rms
 
 LIB_SR = send_recv
-SRC_SR = $(shell ls *.f90)
-MOD_SR = $(addsuffix .o,$(basename $(SRC_SR)) )
+SOURCES = $(shell ls *.f90)
+MOD_SR = $(addsuffix .o,$(basename $(SOURCES)) )
 
 #
 #  -------------------------------------------------------------------------
@@ -43,7 +43,7 @@ module:
 	@cat Makefile.depends >> $(MAKENAME)
 
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(SR_DIR)' $(SRC_SR)
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(SR_DIR)' $(SOURCES)
 
 clean:
 	rm -f *.o *.mod *~ *.par *.diag *.a

@@ -3,8 +3,8 @@
 #
 
 PART_PERIDIR = $$(PARTITONER_DIR)/periodic_model
-SRC_PART_PERI = $(shell ls *.f90)
-MOD_PART_PERI = $(addsuffix .o,$(basename $(SRC_PART_PERI)) )
+SOURCES = $(shell ls *.f90)
+MOD_PART_PERI = $(addsuffix .o,$(basename $(SOURCES)) )
 
 #
 #  -------------------------------------------------------------------------
@@ -33,4 +33,4 @@ module:
 	@cat Makefile.depends >> $(MAKENAME)
 
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(PART_PERIDIR)' $(SRC_PART_PERI)
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(PART_PERIDIR)' $(SOURCES)

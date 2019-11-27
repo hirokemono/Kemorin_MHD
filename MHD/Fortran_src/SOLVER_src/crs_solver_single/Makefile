@@ -58,7 +58,9 @@ module:
 
 depends:
 	@for dir in $(SUBDIRS); do \
-		( cd $${dir};  \
+		( \
+		echo 'Construct dependencies for ' $$dir ; \
+		cd $${dir};  \
 		$(GMAKE) \
 		GMAKE='$(GMAKE)' \
 		MAKE_MOD_DEP='$(MAKE_MOD_DEP)' \

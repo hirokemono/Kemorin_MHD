@@ -3,8 +3,8 @@
 #
 
 MHD_SGS_DYNAMIC_DIR = $$(MHD_SRCDIR)/sgs_dynamic
-SRC_SGS_DYNAMIC = $(shell ls *.f90)
-MOD_SGS_DYNAMIC = $(addsuffix .o,$(basename $(SRC_SGS_DYNAMIC)) )
+SOURCES = $(shell ls *.f90)
+MOD_SGS_DYNAMIC = $(addsuffix .o,$(basename $(SOURCES)) )
 
 #
 #  -------------------------------------------------------------------------
@@ -26,7 +26,7 @@ module:
 	@cat Makefile.depends >> $(MAKENAME)
 
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(MHD_SGS_DYNAMIC_DIR)' $(SRC_SGS_DYNAMIC)
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(MHD_SGS_DYNAMIC_DIR)' $(SOURCES)
 
 
 clean:

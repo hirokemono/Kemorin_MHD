@@ -7,8 +7,8 @@ REFINER_DIR =     $$(UTILS_SRCDIR)/REFINER
 LIB_REFINER =       -lrefine_kemo
 LIB_REFINER_FILE = librefine_kemo.a
 
-SRC_REFINE = $(shell ls *.f90)
-MOD_REFINE = $(addsuffix .o,$(basename $(SRC_REFINE)) )
+SOURCES = $(shell ls *.f90)
+MOD_REFINE = $(addsuffix .o,$(basename $(SOURCES)) )
 
 #
 #  -------------------------------------------------------------------------
@@ -43,7 +43,7 @@ module:
 	@cat Makefile.depends >> $(MAKENAME)
 
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(REFINER_DIR)' $(SRC_REFINE)
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(REFINER_DIR)' $(SOURCES)
 
 clean:
 	rm -f *.o *.mod *~ *.par *.diag *.a

@@ -3,8 +3,8 @@
 #
 
 SOLVER_33_DIR = $$(CRS_SOLVER_DIR)/block33
-SRC_SOLVER_33 = $(shell ls *.f90)
-MOD_SOLVER_33 = $(addsuffix .o,$(basename $(SRC_SOLVER_33)) )
+SOURCES = $(shell ls *.f90)
+MOD_SOLVER_33 = $(addsuffix .o,$(basename $(SOURCES)) )
 
 MOD_SOLVER_33= \
 \
@@ -39,7 +39,7 @@ module:
 	@cat Makefile.depends >> $(MAKENAME)
 
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(SOLVER_33_DIR)' $(SRC_SOLVER_33)
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(SOLVER_33_DIR)' $(SOURCES)
 
 clean:
 	rm -f *.o *.mod *~ *.par *.diag *.a

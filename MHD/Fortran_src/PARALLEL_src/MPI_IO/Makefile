@@ -3,8 +3,8 @@
 #
 
 MPI_IO_DIR = $$(PARA_SRCDIR)/MPI_IO
-SRC_MPI_IO = $(shell ls *.f90 *.F90)
-MOD_MPI_IO = $(addsuffix .o,$(basename $(SRC_MPI_IO)) )
+SOURCES = $(shell ls *.f90 *.F90)
+MOD_MPI_IO = $(addsuffix .o,$(basename $(SOURCES)) )
 
 #
 #  -------------------------------------------------------------------------
@@ -27,7 +27,7 @@ module:
 	@cat Makefile.depends >> $(MAKENAME)
 
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(MPI_IO_DIR)' $(SRC_MPI_IO)
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(MPI_IO_DIR)' $(SOURCES)
 
 clean:
 	rm -f *.o *.mod *~ *.par *.diag *.a

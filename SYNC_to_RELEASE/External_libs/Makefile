@@ -71,8 +71,21 @@ module:
 		GMAKE='$(GMAKE)' \
 		MAKEDIR='$(MAKEDIR)' \
 		MAKENAME='$(MAKENAME)' \
-		MAKE_MOD_DEP='$(MAKE_MOD_DEP)' \
 		module; \
+		) \
+	done
+
+depends:
+	@for dir in $(SUBDIRS) ; do \
+		( \
+		echo 'generate compile commands for ' $$dir ; \
+		cd $${dir};  \
+		$(GMAKE) \
+		GMAKE='$(GMAKE)' \
+		MAKEDIR='$(MAKEDIR)' \
+		MAKENAME='$(MAKENAME)' \
+		MAKE_MOD_DEP='$(MAKE_MOD_DEP)' \
+		depends; \
 		) \
 	done
 

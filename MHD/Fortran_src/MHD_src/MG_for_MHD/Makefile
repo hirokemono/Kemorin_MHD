@@ -3,8 +3,8 @@
 #
 
 MHD_AMG_DIR = $$(MHD_SRCDIR)/MG_for_MHD
-SRC_MG_4_MHD = $(shell ls *.f90)
-MOD_MG_4_MHD = $(addsuffix .o,$(basename $(SRC_MG_4_MHD)) )
+SOURCES = $(shell ls *.f90)
+MOD_MG_4_MHD = $(addsuffix .o,$(basename $(SOURCES)) )
 
 #
 #  -------------------------------------------------------------------------
@@ -27,7 +27,7 @@ module:
 	@cat Makefile.depends >> $(MAKENAME)
 
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(MHD_AMG_DIR)' $(SRC_MG_4_MHD)
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(MHD_AMG_DIR)' $(SOURCES)
 
 clean:
 	rm -f *.o *.mod *~ *.par *.diag *.a

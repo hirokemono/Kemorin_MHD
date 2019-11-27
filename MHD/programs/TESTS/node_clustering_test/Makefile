@@ -37,7 +37,7 @@ analyzer_repartition_test.o \
 \
 t_repartition_test.o
 
-SRC_NODE_CLUSTERING_TEST = $(shell ls *.f90)
+SOURCES = $(shell ls *.f90)
 
 #
 #  ------------------------------------------------------------------
@@ -94,7 +94,7 @@ module:
 	@cat Makefile.depends >> $(MAKENAME)
 
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(NODE_CLUSTERING_TEST_DIR)' $(SRC_NODE_CLUSTERING_TEST)
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(NODE_CLUSTERING_TEST_DIR)' $(SOURCES)
 
 
 clean:

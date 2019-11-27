@@ -7,8 +7,8 @@ CUBED_SPH_DIR =   $$(UTILS_SRCDIR)/cubed_sph
 LIB_CUBED_SPH =       -lcubed_sph_kemo
 LIB_CUBED_SPH_FILE = libcubed_sph_kemo.a
 
-SRC_CUBED_SPH = $(shell ls *.f90)
-MOD_CUBED_SPH = $(addsuffix .o,$(basename $(SRC_CUBED_SPH)) )
+SOURCES = $(shell ls *.f90)
+MOD_CUBED_SPH = $(addsuffix .o,$(basename $(SOURCES)) )
 
 #
 #  -------------------------------------------------------------------------
@@ -46,7 +46,7 @@ module:
 	@cat Makefile.depends >> $(MAKENAME)
 
 depends:
-	@$(MAKE_MOD_DEP) Makefile.depends '$$(CUBED_SPH_DIR)' $(SRC_CUBED_SPH)
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(CUBED_SPH_DIR)' $(SOURCES)
 
 clean:
 	rm -f *.o *.mod $(EXE) $(LIB) *~
