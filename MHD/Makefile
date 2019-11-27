@@ -131,7 +131,6 @@ fluid:
 depends:
 	@for dir in $(SUBDIRS) ; do \
 		( \
-		echo 'Construct dependencies'; \
 		cd $${dir};  \
 		$(GMAKE) \
 		GMAKE='$(GMAKE)' \
@@ -139,7 +138,7 @@ depends:
 		MAKEDIR='$(MAKEDIR)' \
 		MAKENAME='$(MAKENAME)' \
 		64BIT_INT='$(64BIT_INT)'   \
-		MPICC="$(MPICC)"   \
+		CC="$(CC)"   \
 		DEPFLAGS='$(DEPFLAGS)' \
 		OPTFLAGS_GL='$(OPTFLAGS_GL)' \
 		C_INCLUDE='$(C_INCLUDE)' \

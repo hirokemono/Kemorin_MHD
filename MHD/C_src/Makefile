@@ -100,10 +100,9 @@ module:
 depends:
 	@for dir in $(SUBDIRS); do \
 		( cd $${dir};  \
-		echo 'generate dependencies of headers for ' $$dir ; \
 		$(GMAKE) \
 		GMAKE='$(GMAKE)' \
-		MPICC='$(MPICC)'   \
+		CC='$(CC)'   \
 		MHDDIR='$(MHDDIR)' \
 		MAKENAME='$(MAKENAME)' \
 		DEPFLAGS='$(DEPFLAGS)' \

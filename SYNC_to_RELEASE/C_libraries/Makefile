@@ -90,7 +90,7 @@ depends:
 		MHDDIR='$(MHDDIR)' \
 		MAKEDIR='$(MAKEDIR)' \
 		MAKENAME='$(MAKENAME)' \
-		MPICC="$(MPICC)"   \
+		CC="$(CC)"   \
 		DEPFLAGS='$(DEPFLAGS)' \
 		OPTFLAGS='$(OPTFLAGS)' \
 		C_INCLUDE='$(C_INCLUDE)' \

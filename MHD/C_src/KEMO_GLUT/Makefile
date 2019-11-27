@@ -63,7 +63,7 @@ depends:
 	@for sources in $(SRC_GLUT_C) ; do \
 		( \
 		cd $(MAKEDIR); \
-		$(MPICC) $(DEPFLAGS) $(OPTFLAGS_GL) $(C_INCLUDE) $(GTK3_CFLAGS) $(GLFW_CFLAGS) $(MHDDIR)/C_src/KEMO_GLUT/$$sources >> $(MAKENAME).tmp; \
+		$(CC) $(DEPFLAGS) $(OPTFLAGS_GL) $(C_INCLUDE) $(GTK3_CFLAGS) $(GLFW_CFLAGS) $(MHDDIR)/C_src/KEMO_GLUT/$$sources >> $(MAKENAME).tmp; \
 		echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS) $$(GLFW_CFLAGS) $$<' >> $(MAKENAME).tmp \
 		) \
 	done

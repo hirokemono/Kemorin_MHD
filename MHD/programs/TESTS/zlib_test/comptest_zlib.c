@@ -5,7 +5,10 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <zlib.h>               /* /usr(/local)/include/zlib.h */
+
+#ifndef DEPENDENCY_CHECK
+	#include <zlib.h>               /* /usr(/local)/include/zlib.h */
+#endif
 
 #define INBUFSIZ   10240         /* buffer size for original data (arbitraly) */
 #define OUTBUFSIZ  10240         /* buffer size for output data¡Êarbitraly¡Ë */

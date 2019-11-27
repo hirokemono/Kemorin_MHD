@@ -1,9 +1,14 @@
 #
 #
 #
+ZLIB_TEST_DIR = $$(TESTS_DIR)/zlib_test
+
 TARGET_C_ZLIB_TEST =   test_zlib_c_IO
 TARGET_F_ZLIB_TEST =   test_zlib_f_IO
 TARGET_GETARG_TEST =   test_getarg
+
+SOURCES = $(shell ls *.f90)
+SRC_C = $(shell ls *.c)
 
 MOD_C_ZLIB_TEST = \
 comptest_zlib.o
@@ -18,7 +23,7 @@ getarg_test.o
 #
 
 dir_list:
-	@echo 'ZLIB_TEST_DIR =      $$(TESTS_DIR)/zlib_test'         >> $(MAKENAME)
+	@echo 'ZLIB_TEST_DIR = $(ZLIB_TEST_DIR)' >> $(MAKENAME)
 
 target_list:
 	@echo 'TARGET_C_ZLIB_TEST =   $$(BUILDDIR)/$(TARGET_C_ZLIB_TEST)'  \
@@ -68,30 +73,21 @@ mod_list:
 
 
 module:
-	@echo \
-	comptest_zlib.o: \
-	'$$(ZLIB_TEST_DIR)'/comptest_zlib.c \
-	>> $(MAKENAME)
-	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE)' \
-	'$$(ZLIB_TEST_DIR)'/comptest_zlib.c \
-	>> $(MAKENAME)
-	
-	@echo \
-	test_zlib_lines.o: \
-	'$$(ZLIB_TEST_DIR)'/test_zlib_lines.f90 \
-	>> $(MAKENAME)
-	@echo '	''$$(F90)' -c '$$(F90FLAGS)' \
-	'$$(ZLIB_TEST_DIR)'/test_zlib_lines.f90 \
-	>> $(MAKENAME)
-	
-	@echo \
-	getarg_test.o: \
-	'$$(ZLIB_TEST_DIR)'/getarg_test.f90 \
-	>> $(MAKENAME)
-	@echo '	''$$(F90)' -c '$$(F90FLAGS)' \
-	'$$(ZLIB_TEST_DIR)'/getarg_test.f90 \
-	>> $(MAKENAME)
+	@cat Makefile.depends >> $(MAKENAME)
 
+depends:
+	@$(MAKE_MOD_DEP) Makefile.depends '$$(ZLIB_TEST_DIR)' $(SOURCES)
+	
+	@echo '#' > $(MAKENAME).tmp
+	@for sources in $(SRC_C) ; do \
+		( \
+		cd $(MAKEDIR); \
+		$(CC) $(DEPFLAGS) $(OPTFLAGS) $(C_INCLUDE) -I. $(MHDDIR)/programs/TESTS/zlib_test/$$sources >> $(MAKENAME).tmp; \
+		echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE) $$<' >> $(MAKENAME).tmp \
+		) \
+	done
+	@sed -e 's@'$(MHDDIR)'@'$$\(MHDDIR\)'@g' $(MAKENAME).tmp >> $(MHDDIR)//programs/TESTS/zlib_test/Makefile.depends
+	@rm $(MAKENAME).tmp
 
 clean:
 	rm -f *.o *.mod *~ *.par *.diag *.a

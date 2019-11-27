@@ -1,6 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "png.h"
+
+#ifndef DEPENDENCY_CHECK
+	#include <png.h>
+#endif
+
 #include "write_image_2_png.h"
 
 #define WIDTH  (256)

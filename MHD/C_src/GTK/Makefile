@@ -35,7 +35,7 @@ depends:
 	@for sources in $(SRC_GTK_C) ; do \
 		( \
 		cd $(MAKEDIR); \
-		$(MPICC) $(DEPFLAGS) $(OPTFLAGS_GL) $(C_INCLUDE) $(GTK3_CFLAGS) $(MHDDIR)/C_src/GTK/$$sources >> $(MAKENAME).tmp; \
+		$(CC) $(DEPFLAGS) $(OPTFLAGS_GL) $(C_INCLUDE) $(GTK3_CFLAGS) $(MHDDIR)/C_src/GTK/$$sources >> $(MAKENAME).tmp; \
 		echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS) $$<' >> $(MAKENAME).tmp \
 		) \
 	done

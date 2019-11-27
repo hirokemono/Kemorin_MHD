@@ -260,7 +260,6 @@ depends: $(MAKE_MOD_DEP)
 		CC="$(CC)" \
 		CXX="$(CXX)" \
 		MPIF90="$(MPIF90)" \
-		MPICC="$(MPICC)"   \
 		MAKE_MOD_DEP="$(MAKE_MOD_DEP)" \
 		XL_FORTRAN="$(XL_FORTRAN)" \
 		depends

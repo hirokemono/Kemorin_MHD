@@ -2,6 +2,8 @@
 #
 #
 
+PROG_DIR = $$(MHDDIR)/programs
+
 SUBDIRS = \
 FEM_MHD \
 SPH_MHD \
@@ -24,7 +26,7 @@ TESTS
 #
 
 dir_list:
-	@echo 'PROG_DIR = $$(MHDDIR)/programs'     >> $(MAKENAME)
+	@echo 'PROG_DIR = $(PROG_DIR)'     >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
 	@for dir in $(SUBDIRS); do \
 		( \
@@ -116,7 +118,14 @@ depends:
 		cd $${dir};  \
 		$(GMAKE) \
 		GMAKE='$(GMAKE)' \
+		CC='$(CC)'   \
 		MAKE_MOD_DEP='$(MAKE_MOD_DEP)' \
+		MHDDIR='$(MHDDIR)' \
+		MAKEDIR='$(MAKEDIR)' \
+		MAKENAME='$(MAKENAME)' \
+		DEPFLAGS='$(DEPFLAGS)' \
+		OPTFLAGS='$(OPTFLAGS)' \
+		C_INCLUDE='$(C_INCLUDE)' \
 		depends; \
 		) \
 	done

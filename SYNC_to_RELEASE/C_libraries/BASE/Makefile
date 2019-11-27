@@ -40,7 +40,7 @@ depends:
 	@for sources in $(SRC_BASE_C) ; do \
 		( \
 		cd $(MAKEDIR); \
-		$(MPICC) $(DEPFLAGS) $(OPTFLAGS_GL) $(C_INCLUDE) $(MHDDIR)/C_libraries/BASE/$$sources >> $(MAKENAME).tmp; \
+		$(CC) $(DEPFLAGS) $(OPTFLAGS_GL) $(C_INCLUDE) $(MHDDIR)/C_libraries/BASE/$$sources >> $(MAKENAME).tmp; \
 		echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE) $$<' >> $(MAKENAME).tmp \
 		) \
 	done

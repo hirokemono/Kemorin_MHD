@@ -7,6 +7,8 @@ KEMOVIEWER_DIR =    $$(PROG_DIR)/VIEWER
 TARGET_KEMOVIEW_GTK =  kemoviewer_GTK
 TARGET_KEMOVIEW_GLFW = kemoviewer_GLFW
 
+SRC_C = $(shell ls *.c)
+
 MOD_KEMOVIEW_GTK = \
 tree_views_4_fixed_lists_GTK.o \
 tree_view_real2_GTK.o \
@@ -65,68 +67,21 @@ mod_list:
 	@echo   >> $(MAKENAME)
 
 module:
-	@echo \
-	kemoviewer_glfw_gtk.o:  \
-	'$$(KEMOVIEWER_DIR)'/kemoviewer_glfw_gtk.c  \
-	'$$(KEMO_C_GLDIR)'/kemoviewer.h \
-	kemo_mesh_viewer_glfw_gtk.o \
-	>> $(MAKENAME)
-	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS)' \
-	'$$(KEMOVIEWER_DIR)'/kemoviewer_glfw_gtk.c \
-	>> $(MAKENAME)
-	
-	@echo \
-	kemo_mesh_viewer_glfw_gtk.o:  \
-	'$$(KEMOVIEWER_DIR)'/kemo_mesh_viewer_glfw_gtk.c  \
-	kemo_mesh_viewer_glfw_gtk.h \
-	'$$(KEMO_C_GLDIR)'/kemoviewer.h \
-	kemoview_gtk_PSF_menu.o \
-	kemoview_gtk_mesh_menu.o \
-	kemoview_gtk_preference_menu.o \
-	kemoview_fileselector_gtk.o \
-	kemoview_gtk_main_menu.o \
-	kemoview_gtk_viewmatrix_menu.o \
-	view_modifier_glfw.o \
-	>> $(MAKENAME)
-	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS)' \
-	'$$(KEMOVIEWER_DIR)'/kemo_mesh_viewer_glfw_gtk.c \
-	>> $(MAKENAME)
-	
-	@echo \
-	kemoviewer_gtk.o:  \
-	'$$(KEMOVIEWER_DIR)'/kemoviewer_gtk.c  \
-	'$$(KEMO_C_GLDIR)'/kemoviewer.h \
-	kemo_mesh_viewer_gtk.o \
-	>> $(MAKENAME)
-	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS)' \
-	'$$(KEMOVIEWER_DIR)'/kemoviewer_gtk.c \
-	>> $(MAKENAME)
-	
-	@echo \
-	kemo_mesh_viewer_gtk.o:  \
-	'$$(KEMOVIEWER_DIR)'/kemo_mesh_viewer_gtk.c  \
-	kemo_mesh_viewer_gtk.h \
-	'$$(KEMO_C_GLDIR)'/kemoviewer.h \
-	calypso_GTK.o \
-	view_modifier_glfw.o \
-	kemoview_fileselector_gtk.o \
-	kemoview_gtk_mesh_menu.o \
-	kemoview_gtk_preference_menu.o \
-	>> $(MAKENAME)
-	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS)' \
-	'$$(KEMOVIEWER_DIR)'/kemo_mesh_viewer_gtk.c \
-	>> $(MAKENAME)
+	@cat Makefile.depends >> $(MAKENAME)
 
-includes:
-	@for sources in `ls *.h`; do \
+depends:
+	@echo '#' > $(MAKENAME).tmp
+	@for sources in $(SRC_C) ; do \
 		( \
-		echo 'copy include files for ' $$sources ; \
-		echo $$sources': $$(KEMOVIEWER_DIR)/'$$sources \
-		>> $(MAKENAME); \
-		echo '	cp $$(KEMOVIEWER_DIR)/'$$sources . \
-		>> $(MAKENAME) \
+		cd $(MAKEDIR); \
+		$(CC) $(DEPFLAGS) $(OPTFLAGS) $(C_INCLUDE) -I. $(MHDDIR)/programs/VIEWER/$$sources >> $(MAKENAME).tmp; \
+		echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS) $$<' >> $(MAKENAME).tmp \
 		) \
 	done
+	@sed -e 's@'$(MHDDIR)'@'$$\(MHDDIR\)'@g' $(MAKENAME).tmp > $(MHDDIR)//programs/VIEWER/Makefile.depends
+	@rm $(MAKENAME).tmp
+
+includes:
 
 clean:
 	rm -f *.o *~ *.mod *.diag *.L

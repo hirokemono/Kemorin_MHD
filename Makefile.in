@@ -124,7 +124,7 @@ $(MAKE_MOD_DEP): $(MHDDIR)/module_dependency/make_module_dependency.f90
 	$(F90_LOCAL) -o $@ $(MAKEDIR)/make_module_dependency.o
 
 depends: $(MAKE_MOD_DEP)
-	echo "# Construct dependencies"; \
+	@echo "# Construct dependencies"; \
 	cd $(MHDDIR) ; \
 		$(GMAKE) \
 		GMAKE="$(GMAKE)" \
@@ -161,13 +161,12 @@ depends: $(MAKE_MOD_DEP)
 		CC="$(CC)" \
 		CXX="$(CXX)" \
 		MPIF90="$(MPIF90)" \
-		MPICC="$(MPICC)"   \
 		MAKE_MOD_DEP="$(MAKE_MOD_DEP)" \
 		XL_FORTRAN="$(XL_FORTRAN)" \
 		depends
 
 makemake: $(MAKE_MOD_DEP)
-	echo "# Construct Makefile"; \
+	@echo "# Construct Makefile"; \
 	cd $(MHDDIR) ; \
 		$(GMAKE) \
 		GMAKE="$(GMAKE)" \
@@ -218,7 +217,7 @@ makemake: $(MAKE_MOD_DEP)
 		makemake
 
 makemake64: $(MAKE_MOD_DEP)
-	echo "# Construct Makefile for 64-bit integer"; \
+	@echo "# Construct Makefile for 64-bit integer"; \
 	cd $(MHDDIR) ; \
 		$(GMAKE) \
 		GMAKE="$(GMAKE)" \

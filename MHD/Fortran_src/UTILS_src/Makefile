@@ -105,7 +105,6 @@ mod_list:
 
 
 module:
-	@echo '' >> $(MAKENAME)
 	@for dir in $(SUBDIRS); do \
 		( cd $${dir};  \
 		$(GMAKE) \
@@ -116,7 +115,6 @@ module:
 	done
 
 depends:
-	@echo '' >> $(MAKENAME)
 	@for dir in $(SUBDIRS); do \
 		( \
 		echo 'Construct dependencies for ' $$dir ; \

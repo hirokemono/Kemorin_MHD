@@ -10,7 +10,9 @@
 #include <math.h>
 #include <string.h>
 
-#include <gtk/gtk.h>
+#ifndef DEPENDENCY_CHECK
+	#include <gtk/gtk.h>
+#endif
 
 #include "kemoviewer.h"
 #include "kemoview_gtk_PSF_menu.h"

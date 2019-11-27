@@ -106,7 +106,14 @@ depends:
 		cd $${dir};  \
 		$(GMAKE) \
 		GMAKE='$(GMAKE)' \
+		CC='$(CC)'   \
 		MAKE_MOD_DEP='$(MAKE_MOD_DEP)' \
+		MHDDIR='$(MHDDIR)' \
+		MAKEDIR='$(MAKEDIR)' \
+		MAKENAME='$(MAKENAME)' \
+		DEPFLAGS='$(DEPFLAGS)' \
+		OPTFLAGS='$(OPTFLAGS)' \
+		C_INCLUDE='$(C_INCLUDE)' \
 		depends; \
 		) \
 	done

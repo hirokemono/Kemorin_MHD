@@ -5,3 +5,38 @@ png_to_bmp_f.o: $(GRAPHIC_TEST_DIR)/png_to_bmp_f.F90 write_bmp_image.o
 test_bmp_images.o: $(GRAPHIC_TEST_DIR)/test_bmp_images.f90 m_precision.o write_bmp_image.o
 	$(F90) -c $(F90OPTFLAGS) $<
 
+#
+check_fontshape.o: \
+  $(MHDDIR)/programs/TESTS/graphic_test/check_fontshape.c \
+  $(MHDDIR)/C_src/CORE_C/numbers_to_bin_c.h \
+  $(MHDDIR)/C_src/CORE_C/ysglfontdata.h
+	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
+test_read_bmp_c.o: \
+  $(MHDDIR)/programs/TESTS/graphic_test/test_read_bmp_c.c \
+  $(MHDDIR)/C_src/CORE_C/read_image_2_bmp.h \
+  $(MHDDIR)/C_src/CORE_C/kemosrc_param_c.h \
+  $(MHDDIR)/C_src/CORE_C/write_image_2_png.h \
+  $(MHDDIR)/C_src/CORE_C/write_image_2_bmp.h
+	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
+test_read_png_c.o: \
+  $(MHDDIR)/programs/TESTS/graphic_test/test_read_png_c.c \
+  $(MHDDIR)/C_src/CORE_C/read_image_2_png.h \
+  $(MHDDIR)/C_src/CORE_C/write_image_2_png.h \
+  $(MHDDIR)/C_src/CORE_C/kemosrc_param_c.h \
+  $(MHDDIR)/C_src/CORE_C/write_image_2_bmp.h
+	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
+test_read_psf_data.o: \
+  $(MHDDIR)/programs/TESTS/graphic_test/test_read_psf_data.c \
+  $(MHDDIR)/C_src/CORE_C/m_psf_data_4_viewer_c.h \
+  $(MHDDIR)/C_src/CORE_C/kemosrc_param_c.h \
+  $(MHDDIR)/C_src/CORE_C/skip_comment_c.h \
+  $(MHDDIR)/C_src/CORE_C/read_psf_data_viewer_c.h \
+  $(MHDDIR)/C_src/CORE_C/take_normal_psf_c.h \
+  $(MHDDIR)/C_src/CORE_C/cal_surface_center_normal_c.h \
+  $(MHDDIR)/C_src/CORE_C/coordinate_converter_c.h
+	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
+test_wt_png_c.o: \
+  $(MHDDIR)/programs/TESTS/graphic_test/test_wt_png_c.c \
+  $(MHDDIR)/C_src/CORE_C/write_image_2_png.h \
+  $(MHDDIR)/C_src/CORE_C/kemosrc_param_c.h
+	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<

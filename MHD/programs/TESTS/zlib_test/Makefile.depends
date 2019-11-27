@@ -1,0 +1,9 @@
+getarg_test.o: $(ZLIB_TEST_DIR)/getarg_test.f90 getarg_kemo.o
+	$(F90) -c $(F90OPTFLAGS) $<
+test_zlib_lines.o: $(ZLIB_TEST_DIR)/test_zlib_lines.f90 m_precision.o skip_gz_comment.o
+	$(F90) -c $(F90OPTFLAGS) $<
+
+#
+comptest_zlib.o: \
+  $(MHDDIR)/programs/TESTS/zlib_test/comptest_zlib.c
+	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<

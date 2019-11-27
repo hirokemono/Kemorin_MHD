@@ -11,6 +11,9 @@ TARGET_CBMP_READ_TEST = test_read_bmp
 TARGET_CPNG_READ_TEST = test_read_png
 TARGET_PNG_2_BMP_F =    test_png_2_bmp_f
 
+SOURCES = $(shell ls *.f90 *.F90)
+SRC_C = $(shell ls *.c)
+
 
 MOD_BMP_TEST = \
 write_bmp_image.o \
@@ -32,8 +35,6 @@ test_read_bmp_c.o
 OBJ_PNG_2_BMP_F = \
 write_bmp_image.o \
 png_to_bmp_f.o
-
-SOURCES = $(shell ls *.f90 *.F90)
 
 #
 #  ------------------------------------------------------------------
@@ -123,70 +124,21 @@ mod_list:
 
 
 module:
-	
-	@echo \
-	test_wt_png_c.o: \
-	'$$(GRAPHIC_TEST_DIR)'/test_wt_png_c.c \
-	write_image_2_png.o \
-	>> $(MAKENAME)
-	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE)' \
-	'$$(GRAPHIC_TEST_DIR)'/test_wt_png_c.c \
-	>> $(MAKENAME)
-	
-	@echo \
-	test_read_png_c.o: \
-	'$$(GRAPHIC_TEST_DIR)'/test_read_png_c.c \
-	read_image_2_png.o \
-	write_image_2_png.o \
-	write_image_2_bmp.o \
-	>> $(MAKENAME)
-	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE)' \
-	'$$(GRAPHIC_TEST_DIR)'/test_read_png_c.c \
-	>> $(MAKENAME)
-	
-	@echo \
-	test_read_bmp_c.o: \
-	'$$(GRAPHIC_TEST_DIR)'/test_read_bmp_c.c \
-	read_image_2_bmp.o \
-	write_image_2_png.o \
-	write_image_2_bmp.o \
-	>> $(MAKENAME)
-	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE)' \
-	'$$(GRAPHIC_TEST_DIR)'/test_read_bmp_c.c \
-	>> $(MAKENAME)
-	
-	@echo \
-	test_read_psf_data.o: \
-	'$$(GRAPHIC_TEST_DIR)'/test_read_psf_data.c \
-	'$$(KEMO_C_DIR)'/m_psf_data_4_viewer_c.h \
-	'$$(KEMO_C_DIR)'/read_psf_data_viewer_c.h \
-	'$$(KEMO_C_DIR)'/take_normal_psf_c.h \
-	m_psf_data_4_viewer_c.o \
-	read_psf_data_viewer_c.o \
-	take_normal_psf_c.o \
-	>> $(MAKENAME)
-	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE)' \
-	'$$(GRAPHIC_TEST_DIR)'/test_read_psf_data.c \
-	>> $(MAKENAME)
-	
-	@echo \
-	test_read_viewermesh.o: \
-	'$$(GRAPHIC_TEST_DIR)'/test_read_viewermesh.c \
-	'$$(KEMO_C_DIR)'/m_surface_mesh_4_viewer_c.h \
-	'$$(KEMO_C_DIR)'/read_viewer_mesh_c.h \
-	'$$(KEMO_C_DIR)'/check_viewer_mesh_c.h \
-	m_surface_mesh_4_viewer_c.o \
-	read_viewer_mesh_c.o \
-	check_viewer_mesh_c.o \
-	>> $(MAKENAME)
-	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE)' \
-	'$$(GRAPHIC_TEST_DIR)'/test_read_viewermesh.c \
-	>> $(MAKENAME)
-	
 	@cat Makefile.depends >> $(MAKENAME)
 
 depends:
 	@$(MAKE_MOD_DEP) Makefile.depends '$$(GRAPHIC_TEST_DIR)' $(SOURCES)
+	
+	@echo '#' > $(MAKENAME).tmp
+	@for sources in $(SRC_C) ; do \
+		( \
+		cd $(MAKEDIR); \
+		$(CC) $(DEPFLAGS) $(OPTFLAGS) $(C_INCLUDE) -I. $(MHDDIR)/programs/TESTS/graphic_test/$$sources >> $(MAKENAME).tmp; \
+		echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE) $$<' >> $(MAKENAME).tmp \
+		) \
+	done
+	@sed -e 's@'$(MHDDIR)'@'$$\(MHDDIR\)'@g' $(MAKENAME).tmp >> $(MHDDIR)//programs/TESTS/graphic_test/Makefile.depends
+	@rm $(MAKENAME).tmp
 
 
 clean:

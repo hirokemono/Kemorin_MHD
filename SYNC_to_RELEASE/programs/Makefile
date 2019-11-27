@@ -2,6 +2,8 @@
 #
 #
 
+PROG_DIR = $$(MHDDIR)/programs
+
 SUBDIRS = \
 SPH_MHD \
 \
@@ -32,7 +34,7 @@ LIB_FILES_MESH_UTILS = \
 #
 
 dir_list:
-	@echo 'PROG_DIR = $$(MHDDIR)/programs'     >> $(MAKENAME)
+	@echo 'PROG_DIR = $(PROG_DIR)'     >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
 	@for dir in $(SUBDIRS); do \
 		( \
