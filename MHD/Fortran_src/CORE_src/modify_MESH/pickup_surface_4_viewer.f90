@@ -135,7 +135,7 @@
 !
       integer(kind = kint), intent(inout) :: nsurf_viewer
 !
-      integer(kind = kint) :: ip, ist, ied, isurf
+      integer(kind = kint) :: isurf
 !
       nsurf_viewer = 0
       do isurf = 1, numsurf

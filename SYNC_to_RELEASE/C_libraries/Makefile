@@ -94,7 +94,7 @@ depends:
 		DEPFLAGS='$(DEPFLAGS)' \
 		OPTFLAGS='$(OPTFLAGS)' \
 		C_INCLUDE='$(C_INCLUDE)' \
-		dependencies \
+		depends \
 		) \
 	done
 

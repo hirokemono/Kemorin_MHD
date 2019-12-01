@@ -70,8 +70,7 @@ mod_list:
 
 module:
 	@for dir in $(SUBDIRS); do \
-		( cd $${dir};  \
-		echo 'generate compile list for ' $$dir ; \
+		( echo 'generate compile list for ' $$dir ; \
 		cd $${dir};  \
 		$(GMAKE) \
 		GMAKE='$(GMAKE)' \
