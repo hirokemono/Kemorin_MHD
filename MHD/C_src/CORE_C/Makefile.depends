@@ -26,11 +26,6 @@ delete_file_c.o: $(C_SRCDIR)/CORE_C/delete_file_c.c \
   $(C_SRCDIR)/CORE_C/delete_file_c.h \
   $(C_SRCDIR)/CORE_C/kemosrc_param_c.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
-fftw3_wrapper_kemo_c.o: \
-  $(C_SRCDIR)/CORE_C/fftw3_wrapper_kemo_c.c \
-  $(C_SRCDIR)/CORE_C/fftw3_wrapper_kemo_c.h \
-  $(C_SRCDIR)/CORE_C/kemosrc_param_c.h
-	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
 get_ysglbitmap.o: \
   $(C_SRCDIR)/CORE_C/get_ysglbitmap.c \
   $(C_SRCDIR)/CORE_C/get_ysglbitmap.h \

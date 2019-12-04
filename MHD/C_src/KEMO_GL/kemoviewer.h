@@ -51,9 +51,6 @@
 #define copy_rgba_from_png_c       copy_rgba_from_png_c_
 #define copy_grayscale_from_png_c  copy_grayscale_from_png_c_
 #define copy_grayalpha_from_png_c  copy_grayalpha_from_png_c_
-#define read_BMP_c                 read_BMP_c_
-#define copy_rgb_from_BMP_c        copy_rgb_from_BMP_c_
-#define copy_rgba_from_BMP_c       copy_rgba_from_BMP_c_
 
 
 #define kemo_fftw_plan_dft_r2c_1d    kemo_fftw_plan_dft_r2c_1d_
@@ -106,9 +103,6 @@
 #define copy_rgba_from_png_c       COPY_RGBA_FROM_PNG_C
 #define copy_grayscale_from_png_c  COPY_GRAYSCALE_FROM_PNG_C
 #define copy_grayalpha_from_png_c  COPY_GRAYALPHA_FROM_PNG_C
-#define read_BMP_c                 READ_BMP_C
-#define copy_rgb_from_BMP_c        COPY_RGB_FROM_BMP_C
-#define copy_rgba_from_BMP_c       COPY_RGBA_FROM_BMP_C
 
 #define kemo_fftw_plan_dft_r2c_1d    KEMO_FFTW_PLAN_DFT_R2C_1D
 #define kemo_fftw_plan_dft_c2r_1d    KEMO_FFTW_PLAN_DFT_C2R_1D
@@ -160,9 +154,6 @@
 #define copy_rgba_from_png_c       COPY_RGBA_FROM_PNG_C
 #define copy_grayscale_from_png_c  COPY_GRAYSCALE_FROM_PNG_C
 #define copy_grayalpha_from_png_c  COPY_GRAYALPHA_FROM_PNG_C
-#define read_BMP_c                 READ_BMP_C
-#define copy_rgb_from_BMP_c        COPY_RGB_FROM_BMP_C
-#define copy_rgba_from_BMP_c       COPY_RGBA_FROM_BMP_C
 
 #define kemo_fftw_plan_dft_r2c_1d    KEMO_FFTW_PLAN_DFT_R2C_1D
 #define kemo_fftw_plan_dft_c2r_1d    KEMO_FFTW_PLAN_DFT_C2R_1D
@@ -214,9 +205,6 @@
 #define copy_rgba_from_png_c       copy_rgba_from_png_c
 #define copy_grayscale_from_png_c  copy_grayscale_from_png_c
 #define copy_grayalpha_from_png_c  copy_grayalpha_from_png_c
-#define read_BMP_c                 read_BMP_c
-#define copy_rgb_from_BMP_c        copy_rgb_from_BMP_c
-#define copy_rgba_from_BMP_c       copy_rgba_from_BMP_c
 
 #define kemo_fftw_plan_dft_r2c_1d    kemo_fftw_plan_dft_r2c_1d
 #define kemo_fftw_plan_dft_c2r_1d    kemo_fftw_plan_dft_c2r_1d
@@ -307,11 +295,7 @@
 #define PSFTANVEC_TOGGLE    47
 
 #define ADD_PSF_COLOR       61
-#define MODIFY_PSF_COLOR    62
-#define DELETE_PSF_COLOR    63
 #define ADD_PSF_OPACITY     64
-#define MODIFY_PSF_OPACITY  65
-#define DELETE_PSF_OPACITY  66
 
 #define PSF_NOTHING_TODO    99
 
@@ -344,7 +328,6 @@
 #define SET_OPACITY      5
 #define SINGLE_COLOR     6
 #define TEXTURED_SURFACE 7
-#define BLUE_RED_SURFACE 8
 
 #define BLACK_LINE     1
 #define GREEN_LINE     2

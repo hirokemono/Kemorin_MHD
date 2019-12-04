@@ -6,7 +6,6 @@ KEMO_C_DIR =     $$(C_SRCDIR)/CORE_C
 
 SRC_KEMO_C = $(shell ls *.c)
 INC_KEMO_C = $(addsuffix .h,$(basename $(SRC_KEMO_C)) )
-MOD_KEMO_C = $(addsuffix .o,$(basename $(SRC_KEMO_C)) )
 
 OBJ_KEMO_C = \
  kemosrc_param_c.o \

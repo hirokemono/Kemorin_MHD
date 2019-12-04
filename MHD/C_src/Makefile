@@ -11,21 +11,29 @@ OBJS_C= \
 $$(OBJ_KEMO_C) \
 $$(OBJ_CTL_C)
 
-SUBDIRS = \
-CORE_C    \
+SUBDIRS =     \
+CORE_C        \
 CONTROLS
 
 ifdef OPENGL_LIBS
   OBJS_C+= \
-    $$(OBJ_C_GL)   \
-    $$(OBJ_SHADERS)     \
+    $$(OBJ_C_GL)     \
+    $$(OBJ_SHADERS)  \
     $$(OBJ_GTK_C)
-  SUBDIRS+= \
-	KEMO_GL   \
+  SUBDIRS+=   \
+    KEMO_GL   \
     GLSL      \
     GTK       \
     KEMO_GLUT
 endif
+
+ifdef FFTW3_C
+  OBJS_C+= \
+    $$(OBJ_FFTW_C)
+  SUBDIRS+=   \
+    FFTW_wrapper
+endif
+
 
 #
 #  -------------------------------------------------------------------------
