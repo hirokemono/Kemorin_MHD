@@ -507,7 +507,8 @@ NSData *SnapshotData;
 
 - (IBAction)SetFramePerSecond:(id)sender;
 {
-	[_kemoviewer swapbuffer_cocoa];
+    //    [_kemoviewer swapbuffer_cocoa];
+    return;
 }
 
 - (IBAction)getMovieFormatFlag:(id)sender
@@ -518,7 +519,8 @@ NSData *SnapshotData;
 }
 
 - (IBAction)SetEvolutionSteps:(id)sender{
-	[_kemoviewer swapbuffer_cocoa];
+//    [_kemoviewer swapbuffer_cocoa];
+    return;
 }
 
 - (IBAction)ChooseRotateAxis:(id)sender;

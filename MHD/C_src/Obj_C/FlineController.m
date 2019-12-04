@@ -174,6 +174,11 @@
     if(iflag_datatype == IFLAG_LINES) [self OpenFieldlineFile:(NSString *)FlineOpenFilehead];
 }
 
+- (IBAction) UpdateFieldline:(id)pId{
+	[_kemoviewer UpdateImage];
+    return;
+};
+
 - (IBAction) DrawFlineFile:(id)pId{
 	NSArray *flineFileTypes = [NSArray arrayWithObjects:@"inp",@"vtk",@"gz",@"INP",@"VTK",@"GZ",nil];
 	NSOpenPanel *flineOpenPanelObj	= [NSOpenPanel openPanel];
@@ -332,7 +337,7 @@
 - (IBAction) ShowFlineRange:(id)pSender {
 	kemoview_set_fline_linear_colormap(self.FlineDisplayMinimum, (int) self.FlineDisplayMinDigit,
 									   self.FlineDisplayMaximum, (int) self.FlineDisplayMaxDigit);
-	[_kemoviewer UpdateImage];
+//	[_kemoviewer UpdateImage];
 }
 
 - (IBAction)ChooseFieldlineTypeAction:(id)sender;
@@ -346,7 +351,7 @@
 - (IBAction)SetFieldlineThicknessAction:(id)sender;
 {
 	kemoview_set_fline_color_w_exp(ISET_WIDTH, (double) self.FlineThickFactor, (int) self.FlineThickDigit);
-	[_kemoviewer UpdateImage];
+//	[_kemoviewer UpdateImage];
 }
 
 @end

@@ -573,6 +573,11 @@
 	[_kemoviewer UpdateImage];
 };
 
+- (IBAction) UpdatePsfAction:(id)sender
+{
+    [_kemoviewer UpdateImage];
+};
+
 - (IBAction) CurrentPsfAction:(id)sender
 {	
 	int id_current;
@@ -672,19 +677,17 @@
 	
 	kemoview_set_PSF_linear_colormap(self.PsfMinimumRange, (int) self.PsfMinimumDigit,
 									 self.PsfMaximumRange, (int) self.PsfMaximumDigit);
-	[_kemoviewer UpdateImage];
+//	[_kemoviewer UpdateImage];
 }
 
 - (IBAction) ShowIsolineNumber:(id)pSender {
 	kemoview_set_PSF_color_param(ISET_NLINE, (int) self.IsolineNumber);
-    
-	[_kemoviewer UpdateImage];
+//    [_kemoviewer UpdateImage];
 }
 
 - (IBAction) SetIsolineWidth:(id)pSender {
 	kemoview_set_each_PSF_color_w_exp(ISET_WIDTH, (double) self.IsolineWidth, (int) self.IsolineDigit);
-	
-	[_kemoviewer UpdateImage];
+//	[_kemoviewer UpdateImage];
 }
 
 - (IBAction)DrawPSFVectorAction:(id)sender;
@@ -699,20 +702,17 @@
 
 - (IBAction)SetReferenceVector:(id)pSender {
 	kemoview_set_each_PSF_color_w_exp(ISET_PSF_REFVECT, (double) self.ScaleVector, (int) self.ScaleDigit);
-    
-	[_kemoviewer UpdateImage];
+//	[_kemoviewer UpdateImage];
 }
 
 - (IBAction)SetVectorIncrement:(id)pSender {
 	kemoview_set_each_PSF_color_w_exp(ISET_VECTOR_INC, (double) self.PSFVectorIncrement, (int) self.PSFVectorIncDigit);
-	
-	[_kemoviewer UpdateImage];
+//	[_kemoviewer UpdateImage];
 }
 
 - (IBAction)SetVectorThickness:(id)pSender {
     kemoview_set_each_PSF_color_w_exp(ISET_PSF_V_THICK, (double) self.VectorThickness, (int) self.VectorDigit);
-    
-    [_kemoviewer UpdateImage];
+//    [_kemoviewer UpdateImage];
 }
     
 - (IBAction)ChoosePsfPatchDirection:(id)sender;

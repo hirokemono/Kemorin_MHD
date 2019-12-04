@@ -82,6 +82,7 @@
 - (id) CopyFlineDisplayFlagsFromC;
 
 - (void) OpenFieldlineFile:(NSString*) fieldlineFilehead;
+- (IBAction) UpdateFieldline:(id)pId;
 - (IBAction) DrawFlineFile:(id)pId;
 
 - (IBAction) CloseFlineFile:(id)pId;

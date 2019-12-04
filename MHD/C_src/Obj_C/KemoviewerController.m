@@ -167,11 +167,16 @@
     [_kemoviewer setViewerType:VIEW_3D];
 }
 
+- (IBAction) UpdateViewByInpit:(id)sender;
+{
+    [_kemoviewer UpdateImage];
+};
+
 - (IBAction) ChangeViewByInpit:(id)sender;
 {
 	[_resetview  SetViewByInpit];
 	[_kemoviewer updateProjection];
-	[_kemoviewer UpdateImage];
+//	[_kemoviewer UpdateImage];
 }
 
 - (IBAction) ResetviewAction:(id)sender;

@@ -49,7 +49,7 @@
 		
 		[self SetColorTables];
 	}
-	[_kemoviewer UpdateImage];
+//	[_kemoviewer UpdateImage];
 }
 
 - (IBAction)deleteSelectedRow:(id)pId {
@@ -67,7 +67,7 @@
 	}
 	
 	[self SetColorTables];
-	[_kemoviewer UpdateImage];
+//	[_kemoviewer UpdateImage];
 }
 
 
@@ -124,7 +124,7 @@
 	
 	kemoview_set_PSF_color_data(pRowIndex, value, color);
 
-	[_kemoviewer UpdateImage];
+//	[_kemoviewer UpdateImage];
 } // end tableView:setObjectValue:forTableColumn:row:
 
 - (IBAction) ViewSelection:(NSTableView *)pTableViewObj objectValueForTableColumn:(NSTableColumn *)pTableColumn row:(int)pRowIndex :(id)sender{
@@ -159,7 +159,6 @@
 	[_colorTableView reloadData];
 
 	[ColorModeItem selectItemAtIndex:kemoview_get_PSF_color_param(ISET_COLORMAP)];
-	[_kemoviewer UpdateImage];
 }
 
 - (IBAction)UpdateColorTables:(id)pID

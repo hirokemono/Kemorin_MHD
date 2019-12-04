@@ -40,7 +40,7 @@
 		
 		[self SetOpacityTables];
 	}
-	[_kemoviewer UpdateImage];
+//	[_kemoviewer UpdateImage];
 }
 
 - (IBAction)deleteSelectedRow:(id)pId {
@@ -58,7 +58,7 @@
 	}
 	
 	[self SetOpacityTables];
-	[_kemoviewer UpdateImage];
+//	[_kemoviewer UpdateImage];
 }
 
 
@@ -115,7 +115,7 @@
 	
 	kemoview_set_PSF_opacity_data(pRowIndex, value, opacity);
 	
-	[_kemoviewer UpdateImage];
+//	[_kemoviewer UpdateImage];
 } // end tableView:setObjectValue:forTableColumn:row:
 
 - (IBAction) ViewSelection:(NSTableView *)pTableViewObj objectValueForTableColumn:(NSTableColumn *)pTableColumn row:(int)pRowIndex :(id)sender{

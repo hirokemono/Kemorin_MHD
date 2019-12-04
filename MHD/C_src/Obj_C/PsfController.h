@@ -187,6 +187,7 @@
 - (IBAction) OpenPsfFile:(id)pId;
 
 - (IBAction) ClosePsfFile:(id)pId;
+- (IBAction) UpdatePsfAction:(id)sender;
 
 - (IBAction) CurrentPsfAction:(id)sender;
 - (IBAction) PsfFieldAction:(id)sender;
