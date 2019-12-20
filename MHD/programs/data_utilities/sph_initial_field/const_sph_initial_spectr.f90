@@ -397,6 +397,8 @@
       type(phys_address), intent(in) :: ipol, itor
       type(phys_data), intent(inout) :: rj_fld
 !
+      real(kind = kreal), parameter :: b_adjust = 1.0e-3
+!
       real (kind = kreal) :: pi, rr
       integer(kind = kint) :: is, it, is_ICB, is_CMB
       integer :: js, jt, k
@@ -461,6 +463,16 @@
      &       = (10.0d0/3.0d0) * rr * sin(pi*(rr - sph_bc_B%r_ICB(0)))
         end do
       end if
+!
+!
+!$omp parallel do
+      do is = 1, nnod_rj(sph)
+        rj_fld%d_fld(is,ipol%i_magne)                                   &
+     &        = b_adjust * rj_fld%d_fld(is,ipol%i_magne)
+        rj_fld%d_fld(is,itor%i_magne)                                   &
+     &        = b_adjust * = rj_fld%d_fld(is,itor%i_magne)
+      end do
+!$omp end parallel do
 !
       end subroutine set_initial_magne_sph
 !
