@@ -470,7 +470,7 @@
         rj_fld%d_fld(is,ipol%i_magne)                                   &
      &        = b_adjust * rj_fld%d_fld(is,ipol%i_magne)
         rj_fld%d_fld(is,itor%i_magne)                                   &
-     &        = b_adjust * = rj_fld%d_fld(is,itor%i_magne)
+     &        = b_adjust * rj_fld%d_fld(is,itor%i_magne)
       end do
 !$omp end parallel do
 !
