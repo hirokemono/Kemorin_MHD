@@ -47,6 +47,7 @@
       use m_precision
 !
       use m_machine_parameter
+      use m_geometry_constants
       use m_phys_constants
 !
       use t_FEM_control_parameter
@@ -57,6 +58,7 @@
       use t_phys_data
       use t_phys_address
       use t_fem_gauss_int_coefs
+      use t_jacobians
       use t_jacobian_3d
       use t_table_FEM_const
       use t_finite_element_mat
@@ -140,9 +142,8 @@
 !
       if(i_field .eq. iphys%i_coriolis) then
         call int_vol_coriolis_pg                                        &
-     &     (node, ele, fl_prop, g_FEM, jac_3d, rhs_tbl, nod_fld,        &
-     &      fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,         &
-     &      iphys%i_velo, fem_wk, f_nl)
+     &     (node, ele, fluid, fl_prop, g_FEM, jac_3d, rhs_tbl, nod_fld, &
+     &      FEM_prm%npoint_t_evo_int, iphys%i_velo, fem_wk, f_nl)
       end if
 !
       if(i_field .eq. iphys%i_buoyancy) then
@@ -294,10 +295,9 @@
 !
       if(i_field .eq. iphys%i_coriolis) then
         call int_vol_coriolis_upw                                       &
-     &     (node, ele, fl_prop, g_FEM, jac_3d, rhs_tbl, nod_fld,        &
-     &      fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int, dt,     &
-     &      iphys%i_velo, ele_fld%ntot_phys, iv_upw, ele_fld%d_fld,     &
-     &      fem_wk, f_nl)
+     &     (node, ele, fluid, fl_prop, g_FEM, jac_3d, rhs_tbl, nod_fld, &
+     &      FEM_prm%npoint_t_evo_int, dt, iphys%i_velo,                 &
+     &      ele_fld%ntot_phys, iv_upw, ele_fld%d_fld, fem_wk, f_nl)
       end if
 !
       if(i_field .eq. iphys%i_buoyancy) then

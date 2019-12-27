@@ -1,8 +1,14 @@
-!
-!     module int_vol_thermal_ele
-!
-!     Written by H. Matsui on Aug., 2005
-!
+!>@file   int_vol_thermal_ele.f90
+!!@brief  module int_vol_thermal_ele
+!!
+!!@author H. Matsui
+!!@date Programmed in 2002
+!!        modified by H. Matsui in Aug., 2005
+!!        modified by H. Matsui in Aug., 2007
+!!
+!>@brief  Finite elememt integration for heat advection term
+!!
+!!@verbatim
 !!      subroutine int_vol_temp_ele                                     &
 !!     &         (iflug_SGS_term, iflag_commute, ifilter_final, num_int,&
 !!     &          i_field, i_velo, i_SGS_flux, iak_diff_flux,           &
@@ -29,11 +35,13 @@
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_nl
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
+!!@endverbatim
 !
       module int_vol_thermal_ele
 !
       use m_precision
       use m_machine_parameter
+      use m_geometry_constants
       use m_phys_constants
 !
       use t_SGS_control_parameter
@@ -42,6 +50,7 @@
       use t_geometry_data
       use t_phys_data
       use t_fem_gauss_int_coefs
+      use t_jacobians
       use t_jacobian_3d
       use t_table_FEM_const
       use t_finite_element_mat
@@ -69,7 +78,7 @@
       use nodal_fld_cst_to_element
       use sgs_terms_to_each_ele
       use cal_skv_to_ff_smp
-      use fem_skv_nonlinear_type
+      use fem_skv_inertia
       use fem_skv_div_sgs_flux_type
 !
       integer(kind = kint), intent(in) :: iflug_SGS_term
@@ -130,9 +139,13 @@
      &        fem_wk%scalar_1, mhd_fem_wk%sgs_v1, d_ele(1,iele_velo),   &
      &        fem_wk%sk6)
         else
-          call fem_skv_scalar_inertia_type(fluid%istack_ele_fld_smp,    &
-     &        num_int, k2, fem_wk%scalar_1, d_ele(1,iele_velo),         &
-     &        ele, g_FEM, jac_3d, fem_wk%sk6)
+          call fem_skv_scalar_inertia                                   &
+     &       (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,               &
+     &        np_smp, fluid%istack_ele_fld_smp, g_FEM%max_int_point,    &
+     &        g_FEM%maxtot_int_3d, g_FEM%int_start3, g_FEM%owe3d,       &
+     &        num_int, k2, jac_3d%ntot_int, jac_3d%xjac,                &
+     &        jac_3d%an, jac_3d%dnx, fem_wk%scalar_1,                   &
+     &        d_ele(1,iele_velo), fem_wk%sk6)
         end if
       end do
 !

@@ -1,13 +1,14 @@
-!
-!     module int_vol_vect_p_pre
-!
-!     numerical integration for finite elememt equations of induction
-!
-!        programmed by H.Matsui and H.Okuda
-!                              on July 2000 (ver 1.1)
-!        modified by H. Matsui on Oct., 2005
-!        modified by H. Matsui on Aug., 2007
-!
+!>@file   int_vol_vect_p_pre.f90
+!!@brief  module int_vol_vect_p_pre
+!!
+!!@author H. Matsui
+!!@date Programmed in 2002
+!!        modified by H. Matsui in Oct., 2005
+!!        modified by H. Matsui in Aug., 2007
+!!
+!>@brief  Finite elememt integration for induction term
+!!
+!!@verbatim
 !!      subroutine int_vol_vect_p_pre_ele                               &
 !!     &         (num_int, node, ele, conduct, cd_prop, iphys, nod_fld, &
 !!     &          ncomp_ele, iele_magne, d_ele,                         &
@@ -28,11 +29,13 @@
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_nl
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
+!!@endverbatim
 !
       module int_vol_vect_p_pre
 !
       use m_precision
       use m_machine_parameter
+      use m_geometry_constants
       use m_phys_constants
 !
       use t_physical_property
@@ -41,6 +44,7 @@
       use t_phys_data
       use t_phys_address
       use t_fem_gauss_int_coefs
+      use t_jacobians
       use t_jacobian_3d
       use t_table_FEM_const
       use t_finite_element_mat
@@ -63,7 +67,7 @@
       use cal_add_smp
       use nodal_fld_cst_to_element
       use cal_skv_to_ff_smp
-      use fem_skv_nonlinear_type
+      use fem_skv_inertia
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -99,9 +103,13 @@
         call vector_cst_phys_2_each_ele(node, ele, nod_fld,             &
      &      k2, iphys%i_velo, cd_prop%coef_induct, mhd_fem_wk%velo_1)
 !
-        call fem_skv_rot_inertia_type(conduct%istack_ele_fld_smp,       &
-     &      num_int, k2, mhd_fem_wk%velo_1, fem_wk%vector_1,            &
-     &      ele, g_FEM, jac_3d, fem_wk%sk6)
+        call fem_skv_rot_inertia                                        &
+     &     (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,                 &
+     &      np_smp, conduct%istack_ele_fld_smp, g_FEM%max_int_point,    &
+     &      g_FEM%maxtot_int_3d, g_FEM%int_start3, g_FEM%owe3d,         &
+     &      num_int, k2, jac_3d%ntot_int, jac_3d%xjac,                  &
+     &      jac_3d%an, jac_3d%an, mhd_fem_wk%velo_1, fem_wk%vector_1,   &
+     &      fem_wk%sk6)
       end do
 !
       call sub3_skv_to_ff_v_smp(node, ele, rhs_tbl,                     &

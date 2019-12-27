@@ -1,11 +1,17 @@
-!
-!      module int_vol_coriolis_term
-!
-!        programmed by H.Matsui on Nov., 2008
-!
+!>@file   int_vol_coriolis_term.f90
+!!@brief  module int_vol_coriolis_term
+!!
+!!@author H. Matsui and H.Okuda 
+!!@date Programmed in July 2000 (ver 1.1)
+!!        modified by H. Matsui in Oct., 2005
+!!        modified by H. Matsui in Aug., 2007
+!!
+!>@brief  Finite elememt integration for Coriolis force
+!!
+!!@verbatim
 !!      subroutine int_coriolis_nod_exp(node, fl_prop, mlump_fl,        &
 !!     &          i_velo, nod_fld, f_l, f_nl)
-!!      subroutine int_vol_coriolis_crank_ele                           &
+!!      subroutine int_vol_coriolis_ele                                 &
 !!     &         (num_int, node, ele, fluid, fl_prop, g_FEM, jac_3d,    &
 !!     &          rhs_tbl, i_velo, nod_fld, fem_wk, f_l)
 !!        type(node_data), intent(in) :: node
@@ -27,10 +33,13 @@
 !!        type(fluid_property), intent(in) :: fl_prop
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_data), intent(inout) :: nod_fld
+!!@endverbatim
 !
       module int_vol_coriolis_term
 !
       use m_precision
+      use m_machine_parameter
+      use m_geometry_constants
       use m_phys_constants
 !
       use t_physical_property
@@ -38,6 +47,7 @@
       use t_phys_address
       use t_phys_data
       use t_finite_element_mat
+      use t_jacobians
 !
       use cal_coriolis
 !
@@ -75,7 +85,7 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine int_vol_coriolis_crank_ele                             &
+      subroutine int_vol_coriolis_ele                                   &
      &         (num_int, node, ele, fluid, fl_prop, g_FEM, jac_3d,      &
      &          rhs_tbl, i_velo, nod_fld, fem_wk, f_l)
 !
@@ -85,7 +95,7 @@
 !
       use nodal_fld_cst_to_element
       use cal_skv_to_ff_smp
-      use fem_skv_nonlinear_type
+      use fem_skv_inertia
 !
       integer(kind = kint), intent(in) :: i_velo, num_int
       type(node_data), intent(in) :: node
@@ -106,15 +116,19 @@
       do k2 = 1, ele%nnod_4_ele
         call vector_cst_phys_2_each_ele(node, ele, nod_fld,             &
      &      k2, i_velo, fl_prop%coef_cor, fem_wk%vector_1)
-        call fem_skv_coriolis_type                                      &
-     &     (fluid%istack_ele_fld_smp, num_int, k2, fem_wk%vector_1,     &
-     &      fl_prop%sys_rot, ele, g_FEM, jac_3d, fem_wk%sk6)
+        call fem_skv_coriolis                                           &
+     &     (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,                 &
+     &      np_smp, fluid%istack_ele_fld_smp, g_FEM%max_int_point,      &
+     &      g_FEM%maxtot_int_3d, g_FEM%int_start3, g_FEM%owe3d,         &
+     &      num_int, k2, jac_3d%ntot_int, jac_3d%xjac,                  &
+     &      jac_3d%an, jac_3d%an, fem_wk%vector_1, fl_prop%sys_rot,     &
+     &      fem_wk%sk6)
       end do
 !
-      call add3_skv_to_ff_v_smp(node, ele, rhs_tbl,                     &
-     &    fem_wk%sk6, f_l%ff_smp)
+      call add3_skv_to_ff_v_smp                                         &
+     &   (node, ele, rhs_tbl, fem_wk%sk6, f_l%ff_smp)
 !
-      end subroutine int_vol_coriolis_crank_ele
+      end subroutine int_vol_coriolis_ele
 !
 !-----------------------------------------------------------------------
 !
