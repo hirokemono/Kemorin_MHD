@@ -33,7 +33,7 @@ module:
 	@cat Makefile.depends >> $(MAKENAME)
 
 depends:
-	echo 'Construct dependencies in C_src/FFTW_wrapper'
+	@echo 'Construct dependencies in C_src/FFTW_wrapper'
 	@echo '#' > $(MAKENAME).tmp
 	@for sources in $(SOURCES) ; do \
 		( \

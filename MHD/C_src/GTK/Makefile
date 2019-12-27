@@ -30,7 +30,7 @@ module:
 	@cat Makefile.depends >> $(MAKENAME)
 
 depends:
-	echo 'Construct dependencies in C_src/GTK'
+	@echo 'Construct dependencies in C_src/GTK'
 	@echo '#' > $(MAKENAME).tmp
 	@for sources in $(SRC_GTK_C) ; do \
 		( \

@@ -30,7 +30,7 @@ module:
 	@cat Makefile.depends >> $(MAKENAME)
 
 depends:
-	echo 'Construct dependencies in C_src/KEMO_GL'
+	@echo 'Construct dependencies in C_src/KEMO_GL'
 	@echo '#' > $(MAKENAME).tmp
 	@for sources in $(SRC_C_GL) ; do \
 		( \
