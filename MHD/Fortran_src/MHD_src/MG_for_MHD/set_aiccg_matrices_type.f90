@@ -1,9 +1,12 @@
+!>@file   set_aiccg_matrices_type.f90
+!!@brief  module set_aiccg_matrices_type
+!!
+!!@author H. Matsui 
+!!@date Programmed in Aug, 2007
 !
-!     module set_aiccg_matrices_type
-!
-!        programmed H.Matsui on Dec., 2008
-!
-!
+!>@brief  Construct matrices for FEM MHD dynamo
+!!
+!!@verbatim
 !!      subroutine s_set_aiccg_matrices                                 &
 !!     &        (iflag_scheme, dt, FEM_prm, SGS_param, cmt_param,       &
 !!     &         mesh, group, MHD_mesh, nod_bcs, surf_bcs,              &
@@ -44,6 +47,7 @@
 !!        type(DJDS_MATRIX),  intent(inout) :: mat_light
 !!        type(DJDS_MATRIX),  intent(inout) :: mat_press
 !!        type(DJDS_MATRIX),  intent(inout) :: mat_magp
+!!@endverbatim
 !
       module set_aiccg_matrices_type
 !
@@ -166,7 +170,7 @@
 !
       else if (iflag_scheme .eq. id_Crank_nicolson_cmass) then
         call int_vol_crank_mat_consist(FEM_prm%npoint_t_evo_int,        &
-     &      mesh, fl_prop, cd_prop, ht_prop, cp_prop, jacs%g_FEM,       &
+     &      mesh%ele, fl_prop, cd_prop, ht_prop, cp_prop, jacs%g_FEM,   &
      &      jacs%jac_3d, rhs_tbl, MG_mat_fl_q, MG_mat_full_cd_q,        &
      &      fem_wk, mat_velo, mat_magne, mat_temp, mat_light)
         call int_MHD_crank_matrices                                     &

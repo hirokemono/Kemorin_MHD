@@ -1,11 +1,13 @@
-!int_vol_mass_matrix.f90
-!      module int_vol_mass_matrix
+!>@file   int_vol_mass_matrix.f90
+!!@brief  module int_vol_mass_matrix
+!!
+!!@author H. Matsui and H.Okuda 
+!!@date Programmed in July 2000 (ver 1.1)
+!!      Modified in Oct. 2005
 !
-!   Lumped mass matrix for each area
-!        programmed by H.Matsui and H.Okuda
-!                                    on July 2000 (ver 1.1)
-!     Modified by H. Matsui on Oct. 2005
-!
+!>@brief  Integration of mass matrix over domain
+!!
+!!@verbatim
 !!      subroutine int_lumped_mass_matrix                               &
 !!     &         (node, ele, g_FEM, jac_3d, rhs_tbl,                    &
 !!     &          num_int, fem_wk, rhs_l, m_lump)
@@ -39,12 +41,15 @@
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: rhs_l
 !!        type(lumped_mass_matrices), intent(inout) :: m_lump
+!!@endverbatim
 !
       module int_vol_mass_matrix
 !
       use m_precision
-!
+      use m_constants
       use m_phys_constants
+      use m_machine_parameter
+!
       use t_geometry_data
       use t_fem_gauss_int_coefs
       use t_jacobians
@@ -124,7 +129,7 @@
      &         (node, ele, g_FEM, jac_3d_q, rhs_tbl, num_int,           &
      &          fem_wk, rhs_l, m_lump)
 !
-      use fem_skv_mass_mat_type
+      use fem_skv_mass_mat
       use cal_skv_to_ff_smp
 !
       integer (kind=kint), intent(in) :: num_int
@@ -143,13 +148,17 @@
       call reset_ff_smp(node%max_nod_smp, rhs_l)
       call reset_sk6(n_scalar, ele, fem_wk%sk6)
 !
-      call fem_skv_mass_mat_diag_HRZ_type(ele%istack_ele_smp, num_int,  &
-     &    ele, g_FEM, jac_3d_q, fem_wk%sk6)
-      call sum_skv_diagonal_4_HRZ_type(ele%istack_ele_smp, ele,         &
-     &    fem_wk%sk6, fem_wk%me_diag)
+      call fem_skv_mass_mat_diag_HRZ                                    &
+     &   (ele%numele, ele%nnod_4_ele, np_smp, ele%istack_ele_smp,       &
+     &    g_FEM%max_int_point, g_FEM%maxtot_int_3d, g_FEM%int_start3,   &
+     &    g_FEM%owe3d, jac_3d_q%ntot_int, num_int, jac_3d_q%xjac,       &
+     &    jac_3d_q%an, fem_wk%sk6)
+      call sum_skv_diagonal_4_HRZ(ele%numele, ele%nnod_4_ele, np_smp,   &
+     &    ele%istack_ele_smp, fem_wk%sk6, fem_wk%me_diag)
 !
-      call vol_average_skv_HRZ_type                                     &
-     &   (ele%istack_ele_smp, ele, fem_wk%sk6, fem_wk%me_diag)
+      call volume_average_skv_HRZ                                       &
+     &   (ele%numele, ele%nnod_4_ele, np_smp, ele%istack_ele_smp,       &
+     &    ele%volume_ele, fem_wk%sk6, fem_wk%me_diag)
 !
       call add1_skv_to_ff_v_smp                                         &
      &   (node, ele, rhs_tbl, fem_wk%sk6, rhs_l%ff_smp)
@@ -166,7 +175,7 @@
      &         (ele, g_FEM, jac_3d, rhs_tbl, mat_tbl,                   &
      &          iele_fsmp_stack, num_int, fem_wk, nmat_size, aiccg)
 !
-      use fem_skv_mass_mat_type
+      use fem_skv_mass_mat
       use cal_skv_to_ff_smp
       use add_skv1_to_crs_matrix
 !
@@ -190,8 +199,12 @@
 !
       do k2 = 1, ele%nnod_4_ele
         call reset_sk6(n_scalar, ele, fem_wk%sk6)
-        call fem_skv_mass_matrix_type(iele_fsmp_stack, num_int, k2,     &
-     &      ele, g_FEM, jac_3d, fem_wk%sk6)
+        call fem_skv_mass_matrix                                        &
+     &     (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,                 &
+     &      np_smp, iele_fsmp_stack,                                    &
+     &      g_FEM%max_int_point, g_FEM%maxtot_int_3d, g_FEM%int_start3, &
+     &      g_FEM%owe3d, jac_3d%ntot_int, num_int, jac_3d%xjac,         &
+     &      jac_3d%an, jac_3d%an, k2, fem_wk%sk6)
         call add_skv1_to_crs_matrix11(ele, rhs_tbl, mat_tbl,            &
      &      k2, fem_wk%sk6, nmat_size, aiccg)
       end do
@@ -204,7 +217,7 @@
       subroutine int_mass_matrix(node, ele, g_FEM, jac_3d, rhs_tbl,     &
      &          iele_fsmp_stack, num_int, fem_wk, rhs_l, m_lump)
 !
-      use fem_skv_mass_mat_type
+      use fem_skv_mass_mat
       use cal_skv_to_ff_smp
 !
       integer (kind=kint), intent(in) :: num_int
@@ -230,8 +243,12 @@
 ! -------- loop for shape function for the phsical values
 !
       do k2 = 1, ele%nnod_4_ele
-        call fem_skv_mass_matrix_type(iele_fsmp_stack, num_int, k2,     &
-     &      ele, g_FEM, jac_3d, fem_wk%sk6)
+        call fem_skv_mass_matrix                                        &
+     &     (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,                 &
+     &      np_smp, iele_fsmp_stack,                                    &
+     &      g_FEM%max_int_point, g_FEM%maxtot_int_3d, g_FEM%int_start3, &
+     &      g_FEM%owe3d, jac_3d%ntot_int, num_int, jac_3d%xjac,         &
+     &      jac_3d%an, jac_3d%an, k2, fem_wk%sk6)
       end do
 !
       call add1_skv_to_ff_v_smp                                         &
@@ -247,7 +264,7 @@
      &         (node, ele, g_FEM, jac_3d, rhs_tbl,                      &
      &          iele_fsmp_stack, num_int, fem_wk, rhs_l, m_lump)
 !
-      use fem_skv_mass_mat_type
+      use fem_skv_mass_mat
       use cal_skv_to_ff_smp
 !
       integer (kind=kint), intent(in) :: num_int
@@ -267,8 +284,11 @@
       call reset_ff_smp(node%max_nod_smp, rhs_l)
       call reset_sk6(n_scalar, ele, fem_wk%sk6)
 !
-      call fem_skv_mass_matrix_diag_type                                &
-     &   (iele_fsmp_stack, num_int, ele, g_FEM, jac_3d, fem_wk%sk6)
+      call fem_skv_mass_matrix_diag                                     &
+     &   (ele%numele, ele%nnod_4_ele, np_smp, iele_fsmp_stack,          &
+     &    g_FEM%max_int_point, g_FEM%maxtot_int_3d, g_FEM%int_start3,   &
+     &    g_FEM%owe3d, jac_3d%ntot_int, num_int, jac_3d%xjac,           &
+     &    jac_3d%an, fem_wk%sk6)
 !
       call add1_skv_to_ff_v_smp                                         &
      &   (node, ele, rhs_tbl, fem_wk%sk6, rhs_l%ff_smp)
@@ -283,7 +303,7 @@
      &         (node, ele, g_FEM, jac_3d_q, rhs_tbl,                    &
      &          iele_fsmp_stack, num_int, fem_wk, rhs_l, m_lump)
 !
-      use fem_skv_mass_mat_type
+      use fem_skv_mass_mat
       use cal_skv_to_ff_smp
 !
       integer (kind=kint), intent(in) :: num_int
@@ -303,10 +323,13 @@
       call reset_ff_smp(node%max_nod_smp, rhs_l)
       call reset_sk6(n_scalar, ele, fem_wk%sk6)
 !
-      call fem_skv_mass_mat_diag_HRZ_type                               &
-     &   (iele_fsmp_stack, num_int, ele, g_FEM, jac_3d_q, fem_wk%sk6)
-      call vol_average_skv_HRZ_type                                     &
-     &   (iele_fsmp_stack, ele, fem_wk%sk6, fem_wk%me_diag)
+      call fem_skv_mass_mat_diag_HRZ                                    &
+     &   (ele%numele, ele%nnod_4_ele, np_smp, iele_fsmp_stack,          &
+     &    g_FEM%max_int_point, g_FEM%maxtot_int_3d, g_FEM%int_start3,   &
+     &    g_FEM%owe3d, jac_3d_q%ntot_int, num_int, jac_3d_q%xjac,       &
+     &    jac_3d_q%an, fem_wk%sk6)
+      call volume_average_skv_HRZ(ele%numele, ele%nnod_4_ele, np_smp,   &
+     &    iele_fsmp_stack, ele%volume_ele, fem_wk%sk6, fem_wk%me_diag)
 !
       call add1_skv_to_ff_v_smp                                         &
      &   (node, ele, rhs_tbl, fem_wk%sk6, rhs_l%ff_smp)

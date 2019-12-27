@@ -1,14 +1,19 @@
+!>@file   set_merged_geometry.f90
+!!@brief  module set_merged_geometry
+!!
+!!@author H. Matsui
+!!@date Programmed in 20??
 !
-!      module set_merged_geometry
-!
-!      Written by H. Matsui
-!
+!>@brief  Construct merged mesh data
+!!
+!!@verbatim
 !!      subroutine set_merged_mesh_and_group(mesh_file, mgd_mesh)
 !!      subroutine set_merged_node_and_element(mesh_file, mgd_mesh)
 !!      subroutine count_overlapped_mesh_groups(mgd_mesh)
 !!     &         (mesh_file, nnod_4_ele, mgd_mesh)
 !!        type(field_IO_params), intent(in) :: mesh_file
 !!        type(merged_mesh), intent(inout) :: mgd_mesh
+!!@endverbatim
 !
       module set_merged_geometry
 !

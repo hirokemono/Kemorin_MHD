@@ -1,8 +1,12 @@
-!int_vol_poisson_mat.f90
-!      module int_vol_poisson_mat
+!>@file   int_vol_poisson_mat.f90
+!!@brief  module int_vol_poisson_mat
+!!
+!!@author H. Matsui
+!!@date Programmed in Oct. 2005
 !
-!     Written by H. Matsui on Oct. 2005
-!
+!>@brief  Integration of poisson matrix and diffusion matrix
+!!
+!!@verbatim
 !!      subroutine int_vol_poisson_mat11                                &
 !!     &         (ele, g_FEM, jac_3d_l, rhs_tbl, MG_mat_tbl,            &
 !!     &          n_int, fem_wk, mat11)
@@ -20,6 +24,7 @@
 !!        type(table_mat_const), intent(in) :: MG_mat_tbl
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(DJDS_MATRIX),  intent(inout) :: mat33
+!!@endverbatim
 !
       module int_vol_poisson_mat
 !

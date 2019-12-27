@@ -1,8 +1,12 @@
+!>@file   int_element_field_2_node.f90
+!!@brief  module int_element_field_2_node
+!!
+!!@author H. Matsui
+!!@date Programmed in Oct., 2006
 !
-!      module int_element_field_2_node
-!
-!     Written by H. Matsui on Oct., 2006
-!
+!>@brief  Evaluate nodal field from element averaged field
+!!
+!!@verbatim
 !!      subroutine cal_ele_scalar_2_node                                &
 !!     &         (node, ele, jacs, rhs_tbl, m_lump,                     &
 !!     &          ntot_comp_ele, ifield_ele, scalar_ele,                &
@@ -38,20 +42,23 @@
 !!        type(lumped_mass_matrices), intent(in) :: m_lump
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: rhs_l
+!!@endverbatim
 !
       module int_element_field_2_node
 !
       use m_precision
+      use m_constants
+      use m_machine_parameter
       use m_geometry_constants
       use m_phys_constants
 !
       use t_geometry_data
       use t_phys_data
       use t_jacobians
+      use t_fem_gauss_int_coefs
       use t_table_FEM_const
       use t_finite_element_mat
 !
-      use fem_skv_mass_mat_type
       use fem_skv_nodal_field_type
       use cal_skv_to_ff_smp
 !
@@ -172,6 +179,8 @@
      &         (node, ele, g_FEM, jac_3d, rhs_tbl, iele_fsmp_stack,     &
      &          scalar_ele, fem_wk, rhs_l)
 !
+      use fem_skv_mass_mat
+!
       type(node_data), intent(in) ::    node
       type(element_data), intent(in) :: ele
       type(FEM_gauss_int_coefs), intent(in) :: g_FEM
@@ -193,8 +202,11 @@
      &     (iele_fsmp_stack, g_FEM%max_int_point, ele, g_FEM, jac_3d,   &
      &      scalar_ele, fem_wk%sk6)
       else
-        call fem_skv_mass_mat_diag_HRZ_type(iele_fsmp_stack,            &
-     &      g_FEM%max_int_point, ele, g_FEM, jac_3d, fem_wk%sk6)
+        call fem_skv_mass_mat_diag_HRZ                                  &
+     &     (ele%numele, ele%nnod_4_ele, np_smp, iele_fsmp_stack,        &
+     &      g_FEM%max_int_point, g_FEM%maxtot_int_3d, g_FEM%int_start3, &
+     &      g_FEM%owe3d, jac_3d%ntot_int, g_FEM%max_int_point,          &
+     &      jac_3d%xjac, jac_3d%an, fem_wk%sk6)
         call fem_skv_scalar_on_ele_HRZ_type(iele_fsmp_stack,            &
      &      fem_wk%me_diag, ele, scalar_ele, fem_wk%sk6)
       end if
@@ -209,6 +221,8 @@
       subroutine int_area_ele_vector_2_node                             &
      &         (node, ele, g_FEM, jac_3d, rhs_tbl, iele_fsmp_stack,     &
      &          vector_ele, fem_wk, rhs_l)
+!
+      use fem_skv_mass_mat
 !
       type(node_data), intent(in) ::    node
       type(element_data), intent(in) :: ele
@@ -231,8 +245,11 @@
      &     (iele_fsmp_stack, g_FEM%max_int_point, ele, g_FEM, jac_3d,   &
      &      vector_ele, fem_wk%sk6)
       else
-        call fem_skv_mass_mat_diag_HRZ_type(iele_fsmp_stack,            &
-     &      g_FEM%max_int_point, ele, g_FEM, jac_3d, fem_wk%sk6)
+        call fem_skv_mass_mat_diag_HRZ                                  &
+     &     (ele%numele, ele%nnod_4_ele, np_smp, iele_fsmp_stack,        &
+     &      g_FEM%max_int_point, g_FEM%maxtot_int_3d, g_FEM%int_start3, &
+     &      g_FEM%owe3d, jac_3d%ntot_int, g_FEM%max_int_point,          &
+     &      jac_3d%xjac, jac_3d%an, fem_wk%sk6)
         call fem_skv_vector_on_ele_HRZ_type(iele_fsmp_stack,            &
      &      fem_wk%me_diag, ele, vector_ele, fem_wk%sk6)
       end if
@@ -248,6 +265,8 @@
       subroutine int_grp_ele_scalar_2_node                              &
      &         (node, ele, g_FEM, jac_3d, rhs_tbl, iele_fsmp_stack,     &
      &          nele_grp, iele_grp, scalar_ele, fem_wk, rhs_l)
+!
+      use fem_grp_skv_mass_mat
 !
       type(node_data), intent(in) ::    node
       type(element_data), intent(in) :: ele
@@ -272,9 +291,11 @@
      &     (iele_fsmp_stack, nele_grp, iele_grp, g_FEM%max_int_point,   &
      &      ele, g_FEM, jac_3d, scalar_ele, fem_wk%sk6)
       else
-        call fem_grp_skv_mass_mat_diag_HRZ_t                            &
-     &     (iele_fsmp_stack, nele_grp, iele_grp, g_FEM%max_int_point,   &
-     &      ele, g_FEM, jac_3d, fem_wk%sk6)
+        call fem_grp_skv_mass_mat_diag_HRZ(ele%numele, ele%nnod_4_ele,  &
+     &      np_smp, iele_fsmp_stack, nele_grp, iele_grp,                &
+     &      g_FEM%max_int_point, g_FEM%maxtot_int_3d, g_FEM%int_start3, &
+     &      g_FEM%owe3d, jac_3d%ntot_int, g_FEM%max_int_point,          &
+     &      jac_3d%xjac, jac_3d%an, fem_wk%sk6)
         call fem_skv_scalar_on_egrp_HRZ_type(iele_fsmp_stack,           &
      &      nele_grp, iele_grp, fem_wk%me_diag, ele, scalar_ele,        &
      &      fem_wk%sk6)
@@ -290,6 +311,8 @@
       subroutine int_grp_ele_vector_2_node                              &
      &         (node, ele, g_FEM, jac_3d, rhs_tbl, iele_fsmp_stack,     &
      &          nele_grp, iele_grp, vector_ele, fem_wk, rhs_l)
+!
+      use fem_grp_skv_mass_mat
 !
       type(node_data), intent(in) ::    node
       type(element_data), intent(in) :: ele
@@ -314,9 +337,11 @@
      &     (iele_fsmp_stack, nele_grp, iele_grp, g_FEM%max_int_point,   &
      &      ele, g_FEM, jac_3d, vector_ele, fem_wk%sk6)
       else
-        call fem_grp_skv_mass_mat_diag_HRZ_t(iele_fsmp_stack,           &
-     &      nele_grp, iele_grp, g_FEM%max_int_point,                    &
-     &      ele, g_FEM, jac_3d, fem_wk%sk6)
+        call fem_grp_skv_mass_mat_diag_HRZ(ele%numele, ele%nnod_4_ele,  &
+     &      np_smp, iele_fsmp_stack, nele_grp, iele_grp,                &
+     &      g_FEM%max_int_point, g_FEM%maxtot_int_3d, g_FEM%int_start3, &
+     &      g_FEM%owe3d, jac_3d%ntot_int, g_FEM%max_int_point,          &
+     &      jac_3d%xjac, jac_3d%an, fem_wk%sk6)
         call fem_skv_vector_on_egrp_HRZ_type(iele_fsmp_stack,           &
      &      nele_grp, iele_grp, fem_wk%me_diag, ele, vector_ele,        &
      &      fem_wk%sk6)

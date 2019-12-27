@@ -1,8 +1,12 @@
+!>@file   int_vol_fractional.f90
+!!@brief  module int_vol_fractional
+!!
+!!@author H. Matsui
+!!@date Programmed in June. 2005
 !
-!     module int_vol_fractional
-!
-!      Written by H. Matsui on june, 2005
-!
+!>@brief  Integration for fractional step scheme
+!!
+!!@verbatim
 !!      subroutine int_vol_div_vect_linear                              &
 !!     &         (node, ele, g_FEM, jac_3d, jac_3d_l, rhs_tbl, nod_fld, &
 !!     &          iele_fsmp_stack, n_int, i_vector, fem_wk, f_l)
@@ -26,6 +30,7 @@
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l
+!!@endverbatim
 !
       module int_vol_fractional
 !

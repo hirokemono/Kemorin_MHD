@@ -70,8 +70,6 @@ fem_skv_inertia.o: $(FEM_INT_DIR)/fem_skv_inertia.f90 m_precision.o m_phys_const
 	$(F90) -c $(F90OPTFLAGS) $<
 fem_skv_mass_mat.o: $(FEM_INT_DIR)/fem_skv_mass_mat.f90 m_precision.o m_constants.o m_phys_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
-fem_skv_mass_mat_type.o: $(FEM_INT_DIR)/fem_skv_mass_mat_type.f90 m_precision.o m_constants.o m_phys_constants.o m_machine_parameter.o t_geometry_data.o t_fem_gauss_int_coefs.o t_jacobians.o fem_skv_mass_mat.o fem_grp_skv_mass_mat.o
-	$(F90) -c $(F90OPTFLAGS) $<
 fem_skv_nodal_field.o: $(FEM_INT_DIR)/fem_skv_nodal_field.f90 m_precision.o m_constants.o m_machine_parameter.o m_phys_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
 fem_skv_nodal_field_type.o: $(FEM_INT_DIR)/fem_skv_nodal_field_type.f90 m_precision.o m_machine_parameter.o m_phys_constants.o t_geometry_data.o t_fem_gauss_int_coefs.o t_jacobians.o fem_skv_nodal_field.o fem_skv_scalar_on_ele.o fem_skv_vector_on_ele.o fem_skv_tensor_on_ele.o
@@ -96,11 +94,11 @@ int_differenciate_on_ele.o: $(FEM_INT_DIR)/int_differenciate_on_ele.f90 m_precis
 	$(F90) -c $(F90OPTFLAGS) $<
 int_edge_vector.o: $(FEM_INT_DIR)/int_edge_vector.f90 m_precision.o m_machine_parameter.o t_edge_data.o t_fem_gauss_int_coefs.o t_jacobian_1d.o
 	$(F90) -c $(F90OPTFLAGS) $<
-int_element_field_2_node.o: $(FEM_INT_DIR)/int_element_field_2_node.f90 m_precision.o m_geometry_constants.o m_phys_constants.o t_geometry_data.o t_phys_data.o t_jacobians.o t_table_FEM_const.o t_finite_element_mat.o fem_skv_mass_mat_type.o fem_skv_nodal_field_type.o cal_skv_to_ff_smp.o cal_ff_smp_to_ffs.o
+int_element_field_2_node.o: $(FEM_INT_DIR)/int_element_field_2_node.f90 m_precision.o m_constants.o m_machine_parameter.o m_geometry_constants.o m_phys_constants.o t_geometry_data.o t_phys_data.o t_jacobians.o t_fem_gauss_int_coefs.o t_table_FEM_const.o t_finite_element_mat.o fem_skv_nodal_field_type.o cal_skv_to_ff_smp.o cal_ff_smp_to_ffs.o fem_skv_mass_mat.o fem_grp_skv_mass_mat.o
 	$(F90) -c $(F90OPTFLAGS) $<
 int_element_length.o: $(FEM_INT_DIR)/int_element_length.f90 m_precision.o m_constants.o m_machine_parameter.o m_geometry_constants.o t_geometry_data.o t_filter_dxdxi.o t_filter_elength.o t_fem_gauss_int_coefs.o t_shape_functions.o
 	$(F90) -c $(F90OPTFLAGS) $<
-int_grouped_mass_matrix.o: $(FEM_INT_DIR)/int_grouped_mass_matrix.f90 m_precision.o m_phys_constants.o t_geometry_data.o t_fem_gauss_int_coefs.o t_jacobians.o t_table_FEM_const.o t_finite_element_mat.o fem_skv_mass_mat_type.o cal_skv_to_ff_smp.o cal_ff_smp_to_ffs.o add_skv1_to_crs_matrix.o
+int_grouped_mass_matrix.o: $(FEM_INT_DIR)/int_grouped_mass_matrix.f90 m_precision.o m_constants.o m_phys_constants.o m_machine_parameter.o t_geometry_data.o t_fem_gauss_int_coefs.o t_jacobians.o t_table_FEM_const.o t_finite_element_mat.o cal_skv_to_ff_smp.o cal_ff_smp_to_ffs.o fem_grp_skv_mass_mat.o add_skv1_to_crs_matrix.o fem_skv_mass_mat.o
 	$(F90) -c $(F90OPTFLAGS) $<
 int_rms_ave_ele_grps.o: $(FEM_INT_DIR)/int_rms_ave_ele_grps.f90 m_precision.o m_constants.o m_geometry_constants.o t_geometry_data.o t_fem_gauss_int_coefs.o t_jacobians.o t_group_data.o int_vol_rms_ave_1egrp.o int_vol_2rms_ave_1egrp.o int_vol_dev_cor_1egrp.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -116,7 +114,7 @@ int_vol_2rms_ave_1egrp.o: $(FEM_INT_DIR)/int_vol_2rms_ave_1egrp.f90 m_precision.
 	$(F90) -c $(F90OPTFLAGS) $<
 int_vol_dev_cor_1egrp.o: $(FEM_INT_DIR)/int_vol_dev_cor_1egrp.f90 m_precision.o m_constants.o m_geometry_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
-int_vol_mass_matrix.o: $(FEM_INT_DIR)/int_vol_mass_matrix.f90 m_precision.o m_phys_constants.o t_geometry_data.o t_fem_gauss_int_coefs.o t_jacobians.o t_table_FEM_const.o t_finite_element_mat.o cal_ff_smp_to_ffs.o m_geometry_constants.o fem_skv_mass_mat_type.o cal_skv_to_ff_smp.o add_skv1_to_crs_matrix.o
+int_vol_mass_matrix.o: $(FEM_INT_DIR)/int_vol_mass_matrix.f90 m_precision.o m_constants.o m_phys_constants.o m_machine_parameter.o t_geometry_data.o t_fem_gauss_int_coefs.o t_jacobians.o t_table_FEM_const.o t_finite_element_mat.o cal_ff_smp_to_ffs.o m_geometry_constants.o fem_skv_mass_mat.o cal_skv_to_ff_smp.o add_skv1_to_crs_matrix.o
 	$(F90) -c $(F90OPTFLAGS) $<
 int_vol_rms_ave_1egrp.o: $(FEM_INT_DIR)/int_vol_rms_ave_1egrp.f90 m_precision.o m_constants.o m_geometry_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
