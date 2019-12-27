@@ -30,13 +30,16 @@
       module int_vol_fractional
 !
       use m_precision
+      use m_machine_parameter
+      use m_geometry_constants
       use m_phys_constants
 !
       use t_geometry_data
       use t_phys_data
       use t_table_FEM_const
-      use t_fem_gauss_int_coefs
+      use t_jacobians
       use t_finite_element_mat
+      use t_fem_gauss_int_coefs
 !
       implicit none
 !
@@ -138,7 +141,7 @@
 !
       use cal_skv_to_ff_smp
       use nodal_fld_2_each_element
-      use fem_skv_diffusion_type
+      use fem_skv_diffusion
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -162,10 +165,14 @@
 !
 ! -------- loop for shape function for the phsical values
       do k2 = 1, ele%nnod_4_ele
-        call scalar_phys_2_each_element(node, ele, nod_fld,   &
+        call scalar_phys_2_each_element(node, ele, nod_fld,             &
      &      k2, i_scalar, fem_wk%scalar_1)
-        call fem_skv_scalar_diffuse_type(iele_fsmp_stack, n_int, k2,    &
-     &      ak_d, ele, g_FEM, jac_3d, fem_wk%scalar_1, fem_wk%sk6)
+        call fem_skv_scalar_diffuse                                     &
+     &     (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,                 &
+     &      np_smp, iele_fsmp_stack, g_FEM%max_int_point,               &
+     &      g_FEM%maxtot_int_3d, g_FEM%int_start3, g_FEM%owe3d, n_int,  &
+     &      k2, jac_3d%ntot_int, jac_3d%xjac, jac_3d%dnx, jac_3d%dnx,   &
+     &      ak_d, fem_wk%scalar_1, fem_wk%sk6)
       end do
 !
       call add1_skv_coef_to_ff_v_smp                                    &
@@ -182,7 +189,7 @@
 !
       use cal_skv_to_ff_smp
       use nodal_fld_2_each_element
-      use fem_skv_diffusion_type
+      use fem_skv_diffusion
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -206,10 +213,14 @@
 !
 ! -------- loop for shape function for the phsical values
       do k2 = 1, ele%nnod_4_ele
-        call vector_phys_2_each_element(node, ele, nod_fld,   &
-     &      k2, i_vector, fem_wk%vector_1)
-        call fem_skv_vector_diffuse_type(iele_fsmp_stack, n_int, k2,    &
-     &      ak_d, ele, g_FEM, jac_3d, fem_wk%vector_1, fem_wk%sk6)
+        call vector_phys_2_each_element                                 &
+     &     (node, ele, nod_fld, k2, i_vector, fem_wk%vector_1)
+        call fem_skv_vector_diffuse                                     &
+     &     (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,                 &
+     &      np_smp, iele_fsmp_stack, g_FEM%max_int_point,               &
+     &      g_FEM%maxtot_int_3d, g_FEM%int_start3, g_FEM%owe3d, n_int,  &
+     &      k2, jac_3d%ntot_int, jac_3d%xjac, jac_3d%dnx, jac_3d%dnx,   &
+     &      ak_d, fem_wk%vector_1, fem_wk%sk6)
       end do
 !
       call add3_skv_coef_to_ff_v_smp                                    &

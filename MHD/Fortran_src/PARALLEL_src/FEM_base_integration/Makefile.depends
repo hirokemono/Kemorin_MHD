@@ -58,8 +58,6 @@ fem_skv_diffusion.o: $(FEM_INT_DIR)/fem_skv_diffusion.f90 m_precision.o m_phys_c
 	$(F90) -c $(F90OPTFLAGS) $<
 fem_skv_diffusion_sph.o: $(FEM_INT_DIR)/fem_skv_diffusion_sph.f90 m_precision.o m_constants.o m_phys_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
-fem_skv_diffusion_type.o: $(FEM_INT_DIR)/fem_skv_diffusion_type.f90 m_precision.o m_machine_parameter.o m_geometry_constants.o t_geometry_data.o t_fem_gauss_int_coefs.o t_jacobians.o fem_skv_diffusion.o
-	$(F90) -c $(F90OPTFLAGS) $<
 fem_skv_div.o: $(FEM_INT_DIR)/fem_skv_div.f90 m_precision.o m_phys_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
 fem_skv_div_asym_t.o: $(FEM_INT_DIR)/fem_skv_div_asym_t.f90 m_precision.o m_phys_constants.o

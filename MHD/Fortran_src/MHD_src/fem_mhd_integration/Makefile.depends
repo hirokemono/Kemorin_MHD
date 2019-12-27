@@ -98,7 +98,7 @@ int_vol_coriolis_term.o: $(MHD_RHS_DIR)/int_vol_coriolis_term.f90 m_precision.o 
 	$(F90) -c $(F90OPTFLAGS) $<
 int_vol_diffusion_ele.o: $(MHD_RHS_DIR)/int_vol_diffusion_ele.f90 m_precision.o m_machine_parameter.o m_constants.o m_phys_constants.o t_geometry_data.o t_phys_data.o t_fem_gauss_int_coefs.o t_jacobian_3d.o t_table_FEM_const.o t_finite_element_mat.o t_filter_elength.o t_material_property.o t_SGS_model_coefs.o int_vol_fractional.o int_vol_sgs_fractional.o
 	$(F90) -c $(F90OPTFLAGS) $<
-int_vol_fractional.o: $(MHD_RHS_DIR)/int_vol_fractional.f90 m_precision.o m_phys_constants.o t_geometry_data.o t_phys_data.o t_table_FEM_const.o t_fem_gauss_int_coefs.o t_finite_element_mat.o cal_skv_to_ff_smp.o nodal_fld_2_each_element.o fem_skv_vector_diff_type.o fem_skv_diffusion_type.o
+int_vol_fractional.o: $(MHD_RHS_DIR)/int_vol_fractional.f90 m_precision.o m_machine_parameter.o m_geometry_constants.o m_phys_constants.o t_geometry_data.o t_phys_data.o t_table_FEM_const.o t_jacobians.o t_finite_element_mat.o t_fem_gauss_int_coefs.o cal_skv_to_ff_smp.o nodal_fld_2_each_element.o fem_skv_vector_diff_type.o fem_skv_diffusion.o
 	$(F90) -c $(F90OPTFLAGS) $<
 int_vol_fractional_div.o: $(MHD_RHS_DIR)/int_vol_fractional_div.f90 m_precision.o m_machine_parameter.o t_geometry_data.o t_phys_address.o t_phys_data.o t_fem_gauss_int_coefs.o t_jacobians.o t_table_FEM_const.o t_finite_element_mat.o t_filter_elength.o t_material_property.o t_SGS_model_coefs.o int_vol_fractional.o int_vol_sgs_fractional.o
 	$(F90) -c $(F90OPTFLAGS) $<
