@@ -1,13 +1,14 @@
-!
-!     module int_vol_velo_pre
-!
-!     numerical integration for finite elememt equations of momentum
-!
-!        programmed by H.Matsui and H.Okuda
-!                              on July 2000 (ver 1.1)
-!        modified by H. Matsui on Oct., 2005
-!        modified by H. Matsui on Aug., 2007
-!
+!>@file   int_vol_velo_pre.f90
+!!@brief  module int_vol_velo_pre
+!!
+!!@author H. Matsui and H.Okuda 
+!!@date Programmed in July 2000 (ver 1.1)
+!!        modified by H. Matsui in Oct., 2005
+!!        modified by H. Matsui in Aug., 2007
+!!
+!>@brief  Finite elememt integration for momentum equation
+!!
+!!@verbatim
 !!      subroutine int_vol_velo_pre_ele(iflag_4_rotate, num_int,        &
 !!     &         SGS_param, cmt_param, node, ele, fluid,                &
 !!     &         fl_prop, cd_prop, iphys, nod_fld, ak_MHD,              &
@@ -39,11 +40,13 @@
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_nl
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
+!!@endverbatim
 !
 !
       module int_vol_velo_pre
 !
       use m_precision
+      use m_machine_parameter
       use m_phys_constants
 !
       use t_SGS_control_parameter
@@ -53,6 +56,7 @@
       use t_phys_data
       use t_phys_address
       use t_fem_gauss_int_coefs
+      use t_jacobians
       use t_jacobian_3d
       use t_table_FEM_const
       use t_finite_element_mat
@@ -82,7 +86,7 @@
       use gravity_vec_each_ele
       use sgs_terms_to_each_ele
       use cal_skv_to_ff_smp
-      use fem_skv_nodal_field_type
+      use fem_skv_nodal_field
       use fem_skv_vector_diff_type
       use fem_skv_nonlinear_type
       use fem_skv_div_sgs_flux_type
@@ -273,32 +277,44 @@
      &       (node, ele, nod_fld, k2, iphys%i_temp, iphys%i_light,      &
      &        fl_prop%i_grav, fl_prop%grav,                             &
      &        ak_MHD%ak_buo, ak_MHD%ak_comp_buo, fem_wk%vector_1)
-          call fem_skv_vector_type                                      &
-     &       (fluid%istack_ele_fld_smp, num_int, k2,                    &
-     &        ele, g_FEM, jac_3d, fem_wk%vector_1, fem_wk%sk6)
+          call fem_skv_vector_field                                     &
+     &       (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,               &
+     &        fluid%istack_ele_fld_smp, g_FEM%max_int_point,            &
+     &        g_FEM%maxtot_int_3d, g_FEM%int_start3, g_FEM%owe3d,       &
+     &        jac_3d%ntot_int, num_int, k2, jac_3d%xjac,                &
+     &        jac_3d%an, jac_3d%an, fem_wk%vector_1, fem_wk%sk6)
         else if (fl_prop%iflag_4_gravity .eq. id_FORCE_ele_int) then
           call set_gravity_vec_each_ele(node, ele, nod_fld, k2,         &
      &        iphys%i_temp, fl_prop%i_grav, fl_prop%grav,               &
      &        ak_MHD%ak_buo, fem_wk%vector_1)
-          call fem_skv_vector_type                                      &
-     &       (fluid%istack_ele_fld_smp, num_int, k2,                    &
-     &        ele, g_FEM, jac_3d, fem_wk%vector_1, fem_wk%sk6)
+          call fem_skv_vector_field                                     &
+     &       (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,               &
+     &        fluid%istack_ele_fld_smp, g_FEM%max_int_point,            &
+     &        g_FEM%maxtot_int_3d, g_FEM%int_start3, g_FEM%owe3d,       &
+     &        jac_3d%ntot_int, num_int, k2, jac_3d%xjac,                &
+     &        jac_3d%an, jac_3d%an, fem_wk%vector_1, fem_wk%sk6)
         else if(fl_prop%iflag_4_composit_buo .eq. id_FORCE_ele_int)     &
      &      then
           call set_gravity_vec_each_ele(node, ele, nod_fld, k2,         &
      &        iphys%i_light, fl_prop%i_grav, fl_prop%grav,              &
      &        ak_MHD%ak_comp_buo, fem_wk%vector_1)
-          call fem_skv_vector_type                                      &
-     &       (fluid%istack_ele_fld_smp, num_int, k2,                    &
-     &        ele, g_FEM, jac_3d, fem_wk%vector_1, fem_wk%sk6)
+          call fem_skv_vector_field                                     &
+     &       (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,               &
+     &        fluid%istack_ele_fld_smp, g_FEM%max_int_point,            &
+     &        g_FEM%maxtot_int_3d, g_FEM%int_start3, g_FEM%owe3d,       &
+     &        jac_3d%ntot_int, num_int, k2, jac_3d%xjac,                &
+     &        jac_3d%an, jac_3d%an, fem_wk%vector_1, fem_wk%sk6)
         else if(fl_prop%iflag_4_filter_gravity .eq. id_FORCE_ele_int)   &
      &      then
           call set_gravity_vec_each_ele(node, ele, nod_fld, k2,         &
      &        iphys%i_filter_temp, fl_prop%i_grav, fl_prop%grav,        &
      &        ak_MHD%ak_buo, fem_wk%vector_1)
-          call fem_skv_vector_type                                      &
-     &       (fluid%istack_ele_fld_smp, num_int, k2,                    &
-     &        ele, g_FEM, jac_3d, fem_wk%vector_1, fem_wk%sk6)
+          call fem_skv_vector_field                                     &
+     &       (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,               &
+     &        fluid%istack_ele_fld_smp, g_FEM%max_int_point,            &
+     &        g_FEM%maxtot_int_3d, g_FEM%int_start3, g_FEM%owe3d,       &
+     &        jac_3d%ntot_int, num_int, k2, jac_3d%xjac,                &
+     &        jac_3d%an, jac_3d%an, fem_wk%vector_1, fem_wk%sk6)
         end if
 !
       end do

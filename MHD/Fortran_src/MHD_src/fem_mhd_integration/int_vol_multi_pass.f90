@@ -1,10 +1,13 @@
+!>@file   int_vol_multi_pass.f90
+!!@brief  module int_vol_multi_pass
+!!
+!!@author H. Matsui and H.Okuda 
+!!@date Programmed in July 2000 (ver 1.1)
+!!      Modified in Oct. 2005
 !
-!      module int_vol_multi_pass
-!
-!        programmed by H.Matsui and H.Okuda
-!                                    on July 2000 (ver 1.1)
-!     Modified by H. Matsui on Oct. 2005
-!
+!>@brief  Integration for multi path scheme
+!!
+!!@verbatim
 !!      subroutine int_vol_multi_pass_scalar(num_int, iele_fsmp_stack,  &
 !!     &          node, ele, g_FEM, jac_3d, rhs_tbl, ff_m_smp,          &
 !!     &          fem_wk, f_nl)
@@ -26,6 +29,7 @@
 !!        type(lumped_mass_matrices), intent(in) :: m_lump
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_nl
+!!@endverbatim
 !
       module int_vol_multi_pass
 !
@@ -54,7 +58,7 @@
       use nodal_fld_2_each_element
       use cal_skv_to_ff_smp
       use cal_for_ffs
-      use fem_skv_nodal_field_type
+      use fem_skv_nodal_field
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -79,8 +83,12 @@
       do k2 = 1, ele%nnod_4_ele
         call scalar_2_each_element(node, ele,                           &
      &      k2, f_nl%ff(1:node%numnod,1), fem_wk%scalar_1)
-        call fem_skv_scalar_type(iele_fsmp_stack, num_int, k2,          &
-     &      ele, g_FEM, jac_3d, fem_wk%scalar_1, fem_wk%sk6)
+        call fem_skv_scalar_field                                       &
+     &     (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,                 &
+     &      iele_fsmp_stack, g_FEM%max_int_point, g_FEM%maxtot_int_3d,  &
+     &      g_FEM%int_start3, g_FEM%owe3d, jac_3d%ntot_int, num_int,    &
+     &      k2, jac_3d%xjac, jac_3d%an, jac_3d%an,                      &
+     &      fem_wk%scalar_1, fem_wk%sk6)
       end do
 !
       call sub1_skv_to_ff_v_smp(node, ele, rhs_tbl,                     &
@@ -100,7 +108,7 @@
       use nodal_fld_2_each_element
       use cal_skv_to_ff_smp
       use cal_for_ffs
-      use fem_skv_nodal_field_type
+      use fem_skv_nodal_field
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -125,8 +133,12 @@
       do k2 = 1, ele%nnod_4_ele
         call vector_2_each_element(node, ele,                           &
      &      k2, f_nl%ff, fem_wk%vector_1)
-        call fem_skv_vector_type(iele_fsmp_stack, num_int, k2,          &
-     &      ele, g_FEM, jac_3d, fem_wk%vector_1, fem_wk%sk6)
+        call fem_skv_vector_field                                       &
+     &     (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,                 &
+     &      iele_fsmp_stack, g_FEM%max_int_point, g_FEM%maxtot_int_3d,  &
+     &      g_FEM%int_start3, g_FEM%owe3d, jac_3d%ntot_int, num_int,    &
+     &      k2, jac_3d%xjac, jac_3d%an, jac_3d%an,                      &
+     &      fem_wk%vector_1, fem_wk%sk6)
       end do
 !
       call sub3_skv_to_ff_v_smp(node, ele, rhs_tbl,                     &

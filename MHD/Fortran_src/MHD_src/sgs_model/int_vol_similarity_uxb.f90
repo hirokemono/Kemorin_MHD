@@ -1,9 +1,13 @@
-!int_vol_similarity_uxb.f90
-!     module int_vol_similarity_uxb
+!>@file   int_vol_similarity_uxb.f90
+!!@brief  module int_vol_similarity_uxb
+!!
+!!@author H. Matsui
+!!@date Programmed in 2004
+!!      Modified in July, 2007
 !
-!     Written by H. Matsui
-!     Modified by H. Matsui on July, 2007
-!
+!>@brief  Integration of SGS induction term by scale similarity model
+!!
+!!@verbatim
 !!      subroutine int_simi_vp_induct(num_int, icomp_sgs_uxb,           &
 !!     &          node, ele, conduct, iphys, nod_fld, g_FEM, jac_3d,    &
 !!     &          rhs_tbl, sgs_coefs, fem_wk, f_nl)
@@ -24,11 +28,11 @@
 !!        type(SGS_coefficients_type), intent(in) :: sgs_coefs
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_nl
+!!@endverbatim
 !
       module int_vol_similarity_uxb
 !
       use m_precision
-!
       use m_machine_parameter
       use m_phys_constants
 !
@@ -38,6 +42,7 @@
       use t_phys_data
       use t_phys_address
       use t_fem_gauss_int_coefs
+      use t_jacobians
       use t_jacobian_3d
       use t_table_FEM_const
       use t_finite_element_mat
@@ -57,7 +62,7 @@
      &          rhs_tbl, sgs_coefs, fem_wk, f_nl)
 !
       use nodal_fld_2_each_element
-      use fem_skv_nodal_field_type
+      use fem_skv_nodal_field
       use cal_products_within_skv
       use cal_skv_to_ff_smp
 !
@@ -86,9 +91,12 @@
       do k2 = 1, ele%nnod_4_ele
         call vector_phys_2_each_element(node, ele, nod_fld,             &
      &      k2, iphys%i_sgs_simi, fem_wk%vector_1)
-        call fem_skv_vector_type                                        &
-     &     (conduct%istack_ele_fld_smp, num_int, k2,                    &
-     &      ele, g_FEM, jac_3d, fem_wk%vector_1, fem_wk%sk6)
+        call fem_skv_vector_field                                       &
+     &     (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,                 &
+     &      conduct%istack_ele_fld_smp,  &
+     &      g_FEM%max_int_point, g_FEM%maxtot_int_3d, g_FEM%int_start3, &
+     &      g_FEM%owe3d, jac_3d%ntot_int, num_int, k2, jac_3d%xjac,     &
+     &      jac_3d%an, jac_3d%an, fem_wk%vector_1, fem_wk%sk6)
         call scalar_prod_to_tensor_skv                                  &
      &     (ele, conduct%istack_ele_fld_smp, sgs_coefs%ntot_comp,       &
      &      icomp_sgs_uxb, sgs_coefs%ak, fem_wk%sk6)
