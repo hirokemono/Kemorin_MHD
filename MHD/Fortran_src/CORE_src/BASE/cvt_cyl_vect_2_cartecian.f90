@@ -1,9 +1,9 @@
 !>@file   cvt_cyl_vect_2_cartecian.f90
-!!@brief  module cvt_cyl_vect_2_cartecian
+!!        module cvt_cyl_vect_2_cartecian
 !!
 !!@author H. Matsui
 !!@date Programmed in Sep., 2011
-!
+!!
 !>@brief Convert vector from cylindrical coordinate
 !!       to Cartesian coordinate
 !!

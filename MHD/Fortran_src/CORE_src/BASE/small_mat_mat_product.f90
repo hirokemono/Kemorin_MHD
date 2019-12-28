@@ -1,9 +1,9 @@
 !>@file   small_mat_mat_product.f90
-!!@brief  module small_mat_mat_product
+!!        module small_mat_mat_product
 !!
 !!@author H. Matsui
 !!@date Programmed in May, 2013
-!
+!!
 !>@brief  Take matrix-matrix product for small matrices
 !!
 !!@verbatim

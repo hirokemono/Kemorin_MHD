@@ -1,8 +1,8 @@
 !>@file   cal_minmax_4_vector_smp.f90
-!!@brief  module cal_minmax_4_vector_smp
+!!        module cal_minmax_4_vector_smp
 !!
 !!@date  Programmed by H.Matsui on Aug., 2006
-!
+!!
 !>@brief Find minimum and maximum values
 !!
 !!@verbatim

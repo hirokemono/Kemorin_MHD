@@ -1,11 +1,11 @@
 !>@file   cal_products_w_const_smp.f90
-!!@brief  module cal_products_w_const_smp
+!!        module cal_products_w_const_smp
 !!
 !!@author H. Matsui
 !!@date Programmed...May., 2009
-!
+!!
 !>@brief Obtain products of field with constant field
-!!@n     $omp parallel is required to use these routines
+!!       $omp parallel is required to use these routines
 !!
 !!@verbatim
 !!      subroutine cal_coef_prod_scalar_smp(nnod, coef, scalar2, prod)

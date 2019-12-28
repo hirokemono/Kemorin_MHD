@@ -1,9 +1,9 @@
 !>@file   m_volume_average_labels.f90
-!!@brief  module m_volume_average_labels
+!!        module m_volume_average_labels
 !!
 !!@author H. Matsui
 !!@date Programmed in June, 2009
-!
+!!
 !>@brief  Set control parameters for spherical harmonics dynamo from IO
 !!
 !!@verbatim

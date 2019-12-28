@@ -1,9 +1,9 @@
 !>@file   transform_mat_operations.f90
-!!@brief  module transform_mat_operations
+!!        module transform_mat_operations
 !!
 !!@author H. Matsui
 !!@date    programmed by H.Matsui on ????
-!
+!!
 !>@brief Matrix operations for Affine transforms
 !!
 !!@verbatim

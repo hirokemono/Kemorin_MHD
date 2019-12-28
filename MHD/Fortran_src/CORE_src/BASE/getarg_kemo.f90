@@ -1,9 +1,9 @@
 !>@file   getarg_kemo.f90
-!!@brief  module getarg_kemo
+!!        module getarg_kemo
 !!
 !!@author H. Matsui
 !!@date Programmed in July, 2010
-!
+!!
 !>@brief  Subroutines to get text from command line
 !!
 !!@verbatim

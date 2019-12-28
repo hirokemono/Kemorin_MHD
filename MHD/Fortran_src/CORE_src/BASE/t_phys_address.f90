@@ -4,7 +4,7 @@
 !! @author H. Matsui
 !! @date ...
 !!
-!
+!!
 !> @brief Structure of field addresses
 !!       These integer points adresses of fields.
 !!
@@ -20,7 +20,7 @@
       type phys_address
 !
 !>        Start address for velocity
-!!         @f$ u_{i} @f$
+!!         \f$ u_{i} \f$
         integer (kind=kint) :: i_velo  =           izero
 !>        Start address for pressure
 !!         @f$ p @f$

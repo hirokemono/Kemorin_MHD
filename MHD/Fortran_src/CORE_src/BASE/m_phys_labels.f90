@@ -1,10 +1,10 @@
 !>@file  m_phys_labels.f90
 !!       module m_phys_labels
 !!
-!! @author H. Matsui
-!! @date   Programmed on June, 2005
-!
-!> @brief Labels of fields
+!!@author H. Matsui
+!!@date   Programmed on June, 2005
+!!
+!>@brief Labels of fields
 !!
 !!@verbatim
 !! !!!!!  physical values!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

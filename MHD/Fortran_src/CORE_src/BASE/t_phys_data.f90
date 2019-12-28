@@ -1,9 +1,9 @@
 !>@file   t_phys_data.f90
-!!@brief  module t_phys_data
+!!        module t_phys_data
 !!
 !!@author H. Matsui
 !!@date Programmed in ????
-!
+!!
 !> @brief Structure of field data
 !!
 !!@verbatim

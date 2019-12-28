@@ -1,9 +1,9 @@
 !>@file   cvt_vector_2_sphereical.f90
-!!@brief  module cvt_vector_2_sphereical
+!!        module cvt_vector_2_sphereical
 !!
 !!@author H. Matsui
 !!@date Programmed in June, 2005
-!
+!!
 !>@brief Convert vector from spherical coordinate
 !!       to Cartesian coordinate
 !!
