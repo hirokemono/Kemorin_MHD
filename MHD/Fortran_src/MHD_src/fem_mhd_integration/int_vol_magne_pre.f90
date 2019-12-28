@@ -180,7 +180,7 @@
       use cal_skv_to_ff_smp
       use fem_skv_lorentz_full_type
       use fem_skv_div_sgs_flux_upw
-      use fem_skv_vect_diff_upw_type
+      use fem_skv_div_asym_t_upw
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(commutation_control_params), intent(in) :: cmt_param
@@ -250,10 +250,14 @@
           call vector_cst_phys_2_each_ele(node, ele, nod_fld, k2,       &
      &        iphys%i_SGS_induct_t, cd_prop%coef_induct,                &
      &        mhd_fem_wk%sgs_v1)
-          call fem_skv_div_as_tsr_upw                                   &
-     &       (conduct%istack_ele_fld_smp, num_int, k2, dt,              &
-     &        d_ele(1,iphys_ele%i_magne), ele, g_FEM, jac_3d,           &
-     &        mhd_fem_wk%sgs_v1, fem_wk%sk6)
+          call fem_skv_all_div_asym_t_upw                               &
+     &       (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,               &
+     &        np_smp, conduct%istack_ele_fld_smp, g_FEM%max_int_point,  &
+     &        g_FEM%maxtot_int_3d, g_FEM%int_start3, g_FEM%owe3d,       &
+     &        num_int, k2, dt, jac_3d%ntot_int, jac_3d%xjac,            &
+     &        jac_3d%an, jac_3d%dnx, jac_3d%dnx,                        &
+     &        d_ele(1,iphys_ele%i_magne), mhd_fem_wk%sgs_v1,            &
+     &        fem_wk%sk6)
         end if
 !
       end do

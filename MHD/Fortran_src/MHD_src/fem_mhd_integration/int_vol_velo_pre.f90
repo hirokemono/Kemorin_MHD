@@ -364,10 +364,10 @@
       use sgs_terms_to_each_ele
       use cal_skv_to_ff_smp
       use fem_skv_nodal_fld_upwind
-      use fem_skv_vect_diff_upw_type
       use fem_skv_nonlinear_upwind
       use fem_skv_div_sgs_flux_upw
       use fem_skv_lorentz_full_type
+      use fem_skv_div_flux_upw
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(commutation_control_params), intent(in) :: cmt_param
@@ -497,9 +497,12 @@
               call tensor_cst_phys_2_each_ele(node, ele, nod_fld,       &
      &            k2, iphys%i_SGS_m_flux, fl_prop%coef_nega_v,          &
      &            fem_wk%tensor_1)
-              call fem_skv_div_tsr_upw                                  &
-     &           (fluid%istack_ele_fld_smp, num_int, k2, dt,            &
-     &            d_ele(1,ie_upw), ele, g_FEM, jac_3d,                  &
+              call fem_skv_all_div_flux_upw                             &
+     &           (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele, np_smp,   &
+     &            fluid%istack_ele_fld_smp, g_FEM%max_int_point,        &
+     &            g_FEM%maxtot_int_3d, g_FEM%int_start3, g_FEM%owe3d,   &
+     &            num_int, k2, dt, jac_3d%ntot_int, jac_3d%xjac,        &
+     &            jac_3d%an, jac_3d%dnx, jac_3d%dnx, d_ele(1,ie_upw),   &
      &            fem_wk%tensor_1, fem_wk%sk6)
             end if
           end if
@@ -553,9 +556,12 @@
               call tensor_cst_phys_2_each_ele                           &
      &           (node, ele, nod_fld, k2, iphys%i_SGS_maxwell,          &
      &            fl_prop%coef_lor, fem_wk%tensor_1)
-              call fem_skv_div_tsr_upw                                  &
-     &           (fluid%istack_ele_fld_smp, num_int, k2, dt,            &
-     &            d_ele(1,ie_upw), ele, g_FEM, jac_3d,                  &
+              call fem_skv_all_div_flux_upw                             &
+     &           (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele, np_smp,   &
+     &            fluid%istack_ele_fld_smp, g_FEM%max_int_point,        &
+     &            g_FEM%maxtot_int_3d, g_FEM%int_start3, g_FEM%owe3d,   &
+     &            num_int, k2, dt, jac_3d%ntot_int, jac_3d%xjac,        &
+     &            jac_3d%an, jac_3d%dnx, jac_3d%dnx, d_ele(1,ie_upw),   &
      &            fem_wk%tensor_1, fem_wk%sk6)
             end if
           end if

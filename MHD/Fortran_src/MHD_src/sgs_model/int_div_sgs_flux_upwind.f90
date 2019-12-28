@@ -32,14 +32,15 @@
 !
       use m_precision
 !
-!
       use m_machine_parameter
+      use m_geometry_constants
       use m_phys_constants
 !
       use t_geometry_data_MHD
       use t_geometry_data
       use t_phys_data
       use t_fem_gauss_int_coefs
+      use t_jacobians
       use t_jacobian_3d
       use t_table_FEM_const
       use t_finite_element_mat
@@ -59,7 +60,7 @@
 !
       use sgs_terms_2_each_ele
       use cal_skv_to_ff_smp
-      use fem_skv_vect_diff_upw_type
+      use fem_skv_div_flux_upw
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -91,9 +92,13 @@
      &     (node%numnod, ele%numele, ele%nnod_4_ele, ele%ie,            &
      &      ele%istack_ele_smp, k2, nod_fld%ntot_phys,                  &
      &      i_vect, i_flux, nod_fld%d_fld, fem_wk%tensor_1)
-        call fem_skv_div_tsr_upw                                        &
-     &     (fluid%istack_ele_fld_smp, num_int, k2, dt, d_ele(1,ie_upw), &
-     &      ele, g_FEM, jac_3d, fem_wk%tensor_1, fem_wk%sk6)
+        call fem_skv_all_div_flux_upw                                   &
+     &     (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,                 &
+     &      np_smp, fluid%istack_ele_fld_smp, g_FEM%max_int_point,      &
+     &      g_FEM%maxtot_int_3d, g_FEM%int_start3, g_FEM%owe3d,         &
+     &      num_int, k2, dt, jac_3d%ntot_int, jac_3d%xjac,              &
+     &      jac_3d%an, jac_3d%dnx, jac_3d%dnx, d_ele(1,ie_upw),         &
+     &      fem_wk%tensor_1, fem_wk%sk6)
       end do
       call add3_skv_to_ff_v_smp(node, ele, rhs_tbl,                     &
      &    fem_wk%sk6, f_nl%ff_smp)
@@ -108,8 +113,8 @@
      &          ncomp_ele, iele_velo, d_ele, fem_wk, f_nl)
 !
       use sgs_terms_2_each_ele
+      use fem_skv_div_upw
       use cal_skv_to_ff_smp
-      use fem_skv_vect_diff_upw_type
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -140,8 +145,12 @@
      &     (node%numnod, ele%numele, ele%nnod_4_ele, ele%ie,            &
      &      ele%istack_ele_smp, k2, nod_fld%ntot_phys,                  &
      &      i_vect, i_scalar, i_flux, nod_fld%d_fld, fem_wk%vector_1)
-        call fem_skv_divergence_upw(fluid%istack_ele_fld_smp,           &
-     &      num_int, k2, dt, d_ele(1,iele_velo), ele, g_FEM, jac_3d,    &
+        call fem_skv_all_div_upw                                        &
+     &     (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,                 &
+     &      np_smp, fluid%istack_ele_fld_smp, g_FEM%max_int_point,      &
+     &      g_FEM%maxtot_int_3d, g_FEM%int_start3, g_FEM%owe3d,         &
+     &      num_int, k2, dt, jac_3d%ntot_int, jac_3d%xjac,              &
+     &      jac_3d%an, jac_3d%dnx, jac_3d%dnx, d_ele(1,iele_velo),      &
      &      fem_wk%vector_1, fem_wk%sk6)
       end do
 !
@@ -158,7 +167,7 @@
      &          ncomp_ele, iele_velo, d_ele, fem_wk, f_nl)
 !
       use sgs_terms_2_each_ele
-      use fem_skv_vect_diff_upw_type
+      use fem_skv_div_asym_t_upw
       use cal_skv_to_ff_smp
 !
       type(node_data), intent(in) :: node
@@ -187,8 +196,12 @@
      &     (node%numnod, ele%numele, ele%nnod_4_ele, ele%ie,            &
      &      ele%istack_ele_smp, k2, nod_fld%ntot_phys,                  &
      &      i_b, i_v, i_flux, nod_fld%d_fld, fem_wk%vector_1)
-        call fem_skv_div_as_tsr_upw(conduct%istack_ele_fld_smp,         &
-     &      num_int, k2, dt, d_ele(1,iele_velo), ele, g_FEM, jac_3d,    &
+        call fem_skv_all_div_asym_t_upw                                 &
+     &     (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,                 &
+     &      np_smp, conduct%istack_ele_fld_smp, g_FEM%max_int_point,    &
+     &      g_FEM%maxtot_int_3d, g_FEM%int_start3, g_FEM%owe3d,         &
+     &      num_int, k2, dt, jac_3d%ntot_int, jac_3d%xjac,              &
+     &      jac_3d%an, jac_3d%dnx, jac_3d%dnx, d_ele(1,iele_velo),      &
      &      fem_wk%vector_1, fem_wk%sk6)
       end do
 !
