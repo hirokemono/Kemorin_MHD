@@ -47,7 +47,6 @@
       module int_vol_Lorentz
 !
       use m_precision
-!
       use m_machine_parameter
       use m_geometry_constants
       use m_phys_constants
@@ -138,7 +137,7 @@
       use cal_add_smp
       use nodal_fld_2_each_element
       use cal_skv_to_ff_smp
-      use fem_skv_lorentz_full_type
+      use fem_skv_lorentz_full
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -167,9 +166,13 @@
       do k2=1, ele%nnod_4_ele
         call vector_phys_2_each_element(node, ele, nod_fld,             &
      &      k2, i_magne, fem_wk%vector_1)
-        call fem_skv_lorentz_full_galerkin(iele_fsmp_stack, num_int,    &
-     &      k2, fl_prop%coef_lor, fem_wk%vector_1, d_ele(1,iele_magne), &
-     &      cd_prop%ex_magne, ele, g_FEM, jac_3d, fem_wk%sk6)
+        call fem_skv_lorentz_full_pg                                    &
+     &     (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,                 &
+     &      np_smp, iele_fsmp_stack, g_FEM%max_int_point,               &
+     &      g_FEM%maxtot_int_3d, g_FEM%int_start3, g_FEM%owe3d,         &
+     &      jac_3d%ntot_int, num_int, k2, jac_3d%xjac,                  &
+     &      jac_3d%an, jac_3d%dnx, fl_prop%coef_lor, fem_wk%vector_1,   &
+     &      d_ele(1,iele_magne), cd_prop%ex_magne, fem_wk%sk6)
       end do
 !
       call add3_skv_to_ff_v_smp                                         &
@@ -187,7 +190,7 @@
       use cal_add_smp
       use nodal_fld_cst_to_element
       use cal_skv_to_ff_smp
-      use fem_skv_lorentz_full_type
+      use fem_skv_lorentz_full
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -222,9 +225,13 @@
       do k2 = 1, ele%nnod_4_ele
         call vector_cst_phys_2_each_ele(node, ele, nod_fld,             &
      &      k2, i_vecp, fl_prop%coef_lor, mhd_fem_wk%vecp_1)
-        call fem_skv_lorentz_rot_galerkin(iele_fsmp_stack,              &
-     &      num_int, k2, mhd_fem_wk%vecp_1, fem_wk%vector_1,            &
-     &      ele, g_FEM, jac_3d, fem_wk%sk6)
+        call fem_skv_lorentz_rot                                        &
+     &     (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,                 &
+     &      np_smp, iele_fsmp_stack, g_FEM%max_int_point,               &
+     &      g_FEM%maxtot_int_3d, g_FEM%int_start3, g_FEM%owe3d,         &
+     &      jac_3d%ntot_int, num_int, k2, jac_3d%xjac,                  &
+     &      jac_3d%dnx, jac_3d%dnx, mhd_fem_wk%vecp_1, fem_wk%vector_1, &
+     &      fem_wk%sk6)
       end do
 !
       call add3_skv_to_ff_v_smp                                         &
@@ -301,7 +308,7 @@
       use cal_add_smp
       use nodal_fld_2_each_element
       use cal_skv_to_ff_smp
-      use fem_skv_lorentz_full_type
+      use fem_skv_lorentz_full
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -331,10 +338,14 @@
       do k2 = 1, ele%nnod_4_ele
         call vector_phys_2_each_element(node, ele, nod_fld,             &
      &      k2, i_magne, fem_wk%vector_1)
-        call fem_skv_lorentz_full_upwind(iele_fsmp_stack,               &
-     &      num_int, k2, dt, fl_prop%coef_lor, fem_wk%vector_1,         &
-     &      d_ele(1,ie_upw), d_ele(1,iele_magne), cd_prop%ex_magne,     &
-     &      ele, g_FEM, jac_3d, fem_wk%sk6)
+        call fem_skv_lorentz_full_upw                                   &
+     &     (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,                 &
+     &      np_smp, iele_fsmp_stack, g_FEM%max_int_point,               &
+     &      g_FEM%maxtot_int_3d, g_FEM%int_start3, g_FEM%owe3d,         &
+     &      jac_3d%ntot_int, num_int, k2, dt, jac_3d%xjac,              &
+     &      jac_3d%an, jac_3d%dnx, jac_3d%dnx, fl_prop%coef_lor,        &
+     &      fem_wk%vector_1, d_ele(1,ie_upw), d_ele(1,iele_magne),      &
+     &      cd_prop%ex_magne, fem_wk%sk6)
       end do
 !
       call add3_skv_to_ff_v_smp                                         &

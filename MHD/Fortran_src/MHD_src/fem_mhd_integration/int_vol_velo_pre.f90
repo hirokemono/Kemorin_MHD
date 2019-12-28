@@ -46,6 +46,7 @@
       module int_vol_velo_pre
 !
       use m_precision
+      use m_constants
       use m_machine_parameter
       use m_geometry_constants
       use m_phys_constants
@@ -91,7 +92,7 @@
       use fem_skv_inertia
       use fem_skv_div_flux
       use fem_skv_div_sgs_flux_type
-      use fem_skv_lorentz_full_type
+      use fem_skv_lorentz_full
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(commutation_control_params), intent(in) :: cmt_param
@@ -229,10 +230,13 @@
      &          fem_wk%vector_1)
 !$omp end parallel
 !
-            call fem_skv_lorentz_rot_galerkin                           &
-     &         (fluid%istack_ele_fld_smp, num_int, k2,                  &
-     &          mhd_fem_wk%vecp_1, fem_wk%vector_1,                     &
-     &          ele, g_FEM, jac_3d, fem_wk%sk6)
+            call fem_skv_lorentz_rot                                    &
+     &         (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,             &
+     &          np_smp, fluid%istack_ele_fld_smp, g_FEM%max_int_point,  &
+     &          g_FEM%maxtot_int_3d, g_FEM%int_start3, g_FEM%owe3d,     &
+     &          jac_3d%ntot_int, num_int, k2, jac_3d%xjac,              &
+     &          jac_3d%dnx, jac_3d%dnx, mhd_fem_wk%vecp_1,              &
+     &          fem_wk%vector_1, fem_wk%sk6)
           else if (iflag_4_rotate .eq. id_turn_OFF) then
             call vector_cst_phys_2_each_ele(node, ele, nod_fld, k2,     &
      &          iphys%i_magne, fl_prop%coef_lor, mhd_fem_wk%magne_1)
@@ -366,7 +370,7 @@
       use fem_skv_nodal_fld_upwind
       use fem_skv_nonlinear_upwind
       use fem_skv_div_sgs_flux_upw
-      use fem_skv_lorentz_full_type
+      use fem_skv_lorentz_full
       use fem_skv_div_flux_upw
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
@@ -520,10 +524,13 @@
      &          fem_wk%vector_1)
 !$omp end parallel
 !
-            call fem_skv_lorentz_rot_galerkin                           &
-     &         (fluid%istack_ele_fld_smp, num_int, k2,                  &
-     &          mhd_fem_wk%vecp_1, fem_wk%vector_1,                     &
-     &          ele, g_FEM, jac_3d, fem_wk%sk6)
+            call fem_skv_lorentz_rot                                    &
+     &         (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,             &
+     &          np_smp, fluid%istack_ele_fld_smp, g_FEM%max_int_point,  &
+     &          g_FEM%maxtot_int_3d, g_FEM%int_start3, g_FEM%owe3d,     &
+     &          jac_3d%ntot_int, num_int, k2, jac_3d%xjac,              &
+     &          jac_3d%dnx, jac_3d%dnx, mhd_fem_wk%vecp_1,              &
+     &          fem_wk%vector_1, fem_wk%sk6)
           else
             call vector_cst_phys_2_each_ele(node, ele, nod_fld, k2,     &
      &          iphys%i_magne, fl_prop%coef_lor, mhd_fem_wk%magne_1)

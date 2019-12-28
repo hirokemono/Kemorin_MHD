@@ -41,6 +41,7 @@
       module int_vol_magne_pre
 !
       use m_precision
+      use m_constants
       use m_machine_parameter
       use m_geometry_constants
       use m_phys_constants
@@ -52,6 +53,7 @@
       use t_phys_data
       use t_phys_address
       use t_fem_gauss_int_coefs
+      use t_jacobians
       use t_jacobian_3d
       use t_table_FEM_const
       use t_finite_element_mat
@@ -82,7 +84,7 @@
       use sgs_terms_to_each_ele
       use cal_skv_to_ff_smp
       use fem_skv_div_asym_t
-      use fem_skv_lorentz_full_type
+      use fem_skv_induction
       use fem_skv_div_sgs_flux_type
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
@@ -130,11 +132,14 @@
      &      cd_prop%ex_magne, fem_wk%vector_1)
 !$omp end parallel
 !
-        call fem_skv_induction_galerkin                                 &
-     &     (conduct%istack_ele_fld_smp, num_int, k2,                    &
-     &      cd_prop%coef_induct, mhd_fem_wk%velo_1, mhd_fem_wk%magne_1, &
-     &      d_ele(1,iphys_ele%i_velo),  fem_wk%vector_1,                &
-     &      ele, g_FEM, jac_3d, fem_wk%sk6)
+        call fem_skv_induction_pg                                       &
+     &     (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,                 &
+     &      np_smp, conduct%istack_ele_fld_smp, g_FEM%max_int_point,    &
+     &      g_FEM%maxtot_int_3d, g_FEM%int_start3, g_FEM%owe3d,         &
+     &      jac_3d%ntot_int, num_int, k2,                               &
+     &      jac_3d%xjac, jac_3d%an, jac_3d%dnx, mhd_fem_wk%velo_1,      &
+     &      mhd_fem_wk%magne_1, d_ele(1,iphys_ele%i_velo),              &
+     &      fem_wk%vector_1, cd_prop%coef_induct, fem_wk%sk6)
 !
         if (SGS_param%iflag_SGS_uxb .ne. id_SGS_none                    &
      &    .and. cmt_param%iflag_c_uxb .eq. id_SGS_commute_ON) then
@@ -178,7 +183,7 @@
       use nodal_fld_cst_to_element
       use sgs_terms_to_each_ele
       use cal_skv_to_ff_smp
-      use fem_skv_lorentz_full_type
+      use fem_skv_induction
       use fem_skv_div_sgs_flux_upw
       use fem_skv_div_asym_t_upw
 !
@@ -227,11 +232,15 @@
      &      cd_prop%ex_magne, fem_wk%vector_1)
 !$omp end parallel
 !
-        call fem_skv_induction_upmagne                                  &
-     &     (conduct%istack_ele_fld_smp, num_int, k2, dt,                &
-     &      cd_prop%coef_induct, mhd_fem_wk%velo_1, mhd_fem_wk%magne_1, &
+        call fem_skv_induction_upm                                      &
+     &     (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,                 &
+     &      np_smp, conduct%istack_ele_fld_smp, g_FEM%max_int_point,    &
+     &      g_FEM%maxtot_int_3d, g_FEM%int_start3, g_FEM%owe3d,         &
+     &      jac_3d%ntot_int, num_int, k2, dt, jac_3d%xjac,              &
+     &      jac_3d%an, jac_3d%dnx, jac_3d%dnx,                          &
+     &      mhd_fem_wk%velo_1, mhd_fem_wk%magne_1,                      &
      &      d_ele(1,iphys_ele%i_velo), fem_wk%vector_1,                 &
-     &      d_ele(1,iphys_ele%i_magne), ele, g_FEM, jac_3d,             &
+     &      d_ele(1,iphys_ele%i_magne), cd_prop%coef_induct,            &
      &      fem_wk%sk6)
 !
         if (SGS_param%iflag_SGS_uxb .ne. id_SGS_none                    &

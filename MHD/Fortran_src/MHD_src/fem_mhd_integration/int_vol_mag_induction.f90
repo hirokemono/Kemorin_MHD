@@ -1,20 +1,21 @@
-!
-!     module int_vol_mag_induction
-!
-!     numerical integration for finite elememt equations of induction
-!
-!        programmed by H.Matsui and H.Okuda
-!                              on July 2000 (ver 1.1)
-!        modified by H. Matsui on Oct., 2005
-!        modified by H. Matsui on Aug., 2007
-!
+!>@file   int_vol_mag_induction.f90
+!!@brief  module int_vol_mag_induction
+!!
+!!@author H. Matsui 
+!!@date Programmed by H. Matsui in 2002
+!!        modified by H. Matsui in Oct., 2005
+!!        modified by H. Matsui in Aug., 2007
+!!
+!>@brief  Finite elememt integration for magnetic induction equation
+!!
+!!@verbatim
 !!      subroutine int_vol_mag_induct_pg(node, ele, cd_prop,            &
 !!     &          g_FEM, jac_3d,rhs_tbl, nod_fld, iphys_nod, iphys_ele, &
-!!     &          iele_fsmp_stack, n_int, ncomp_ele, d_ele,             &
+!!     &          iele_fsmp_stack, num_int, ncomp_ele, d_ele,           &
 !!     &          fem_wk, mhd_fem_wk, f_nl)
 !!      subroutine int_vol_mag_induct_upm(node, ele, cd_prop,           &
 !!     &          g_FEM, jac_3d, rhs_tbl, nod_fld, iphys_nod, iphys_ele,&
-!!     &          iele_fsmp_stack, n_int, dt, ncomp_ele, d_ele,         &
+!!     &          iele_fsmp_stack, num_int, dt, ncomp_ele, d_ele,       &
 !!     &          fem_wk, mhd_fem_wk, f_nl)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -28,11 +29,12 @@
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_nl
+!!@endverbatim
 !
       module int_vol_mag_induction
 !
       use m_precision
-!
+      use m_constants
       use m_machine_parameter
       use m_phys_constants
 !
@@ -56,13 +58,13 @@
 !
       subroutine int_vol_mag_induct_pg(node, ele, cd_prop,              &
      &          g_FEM, jac_3d,rhs_tbl, nod_fld, iphys_nod, iphys_ele,   &
-     &          iele_fsmp_stack, n_int, ncomp_ele, d_ele,               &
+     &          iele_fsmp_stack, num_int, ncomp_ele, d_ele,             &
      &          fem_wk, mhd_fem_wk, f_nl)
 !
       use cal_add_smp
       use nodal_fld_2_each_element
       use cal_skv_to_ff_smp
-      use fem_skv_lorentz_full_type
+      use fem_skv_induction
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -75,7 +77,7 @@
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !
       integer(kind = kint), intent(in) :: iele_fsmp_stack(0:np_smp)
-      integer(kind = kint), intent(in) :: n_int
+      integer(kind = kint), intent(in) :: num_int
       integer(kind = kint), intent(in) :: ncomp_ele
       real(kind = kreal), intent(in) :: d_ele(ele%numele,ncomp_ele)
 !
@@ -101,10 +103,14 @@
         call vector_phys_2_each_element(node, ele, nod_fld,             &
      &      k2, iphys_nod%i_magne, fem_wk%vector_1)
 !
-        call fem_skv_induction_galerkin(iele_fsmp_stack, n_int, k2,     &
-     &      cd_prop%coef_induct, mhd_fem_wk%velo_1, fem_wk%vector_1,    &
+        call fem_skv_induction_pg                                       &
+     &     (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,                 &
+     &      np_smp, iele_fsmp_stack, g_FEM%max_int_point,               &
+     &      g_FEM%maxtot_int_3d, g_FEM%int_start3, g_FEM%owe3d,         &
+     &      jac_3d%ntot_int, num_int, k2, jac_3d%xjac,                  &
+     &      jac_3d%an, jac_3d%dnx, mhd_fem_wk%velo_1, fem_wk%vector_1,  &
      &      d_ele(1,iphys_ele%i_velo), mhd_fem_wk%magne_1,              &
-     &      ele, g_FEM, jac_3d, fem_wk%sk6)
+     &      cd_prop%coef_induct, fem_wk%sk6)
       end do
 !
       call add3_skv_to_ff_v_smp                                         &
@@ -116,13 +122,13 @@
 !
       subroutine int_vol_mag_induct_upm(node, ele, cd_prop,             &
      &          g_FEM, jac_3d, rhs_tbl, nod_fld, iphys_nod, iphys_ele,  &
-     &          iele_fsmp_stack, n_int, dt, ncomp_ele, d_ele,           &
+     &          iele_fsmp_stack, num_int, dt, ncomp_ele, d_ele,         &
      &          fem_wk, mhd_fem_wk, f_nl)
 !
       use cal_add_smp
       use nodal_fld_2_each_element
       use cal_skv_to_ff_smp
-      use fem_skv_lorentz_full_type
+      use fem_skv_induction
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -135,7 +141,7 @@
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !
       integer(kind = kint), intent(in) :: iele_fsmp_stack(0:np_smp)
-      integer(kind = kint), intent(in) :: n_int
+      integer(kind = kint), intent(in) :: num_int
       integer(kind = kint), intent(in) :: ncomp_ele
       real(kind = kreal), intent(in) :: d_ele(ele%numele,ncomp_ele)
       real(kind = kreal), intent(in) :: dt
@@ -162,10 +168,16 @@
         call vector_phys_2_each_element(node, ele, nod_fld,             &
      &      k2, iphys_nod%i_magne, fem_wk%vector_1)
 !
-        call fem_skv_induction_upmagne(iele_fsmp_stack, n_int, k2, dt,  &
-     &      cd_prop%coef_induct, mhd_fem_wk%velo_1, fem_wk%vector_1,    &
+        call fem_skv_induction_upm                                      &
+     &     (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,                 &
+     &      np_smp, iele_fsmp_stack, g_FEM%max_int_point,               &
+     &      g_FEM%maxtot_int_3d, g_FEM%int_start3, g_FEM%owe3d,         &
+     &      jac_3d%ntot_int, num_int, k2, dt, jac_3d%xjac,              &
+     &      jac_3d%an, jac_3d%dnx, jac_3d%dnx,                          &
+     &      mhd_fem_wk%velo_1, fem_wk%vector_1,                         &
      &      d_ele(1,iphys_ele%i_velo), mhd_fem_wk%magne_1,              &
-     &      d_ele(1,iphys_ele%i_magne), ele, g_FEM, jac_3d, fem_wk%sk6)
+     &      d_ele(1,iphys_ele%i_magne), cd_prop%coef_induct,            &
+     &      fem_wk%sk6)
       end do
 !
       call add3_skv_to_ff_v_smp                                         &
