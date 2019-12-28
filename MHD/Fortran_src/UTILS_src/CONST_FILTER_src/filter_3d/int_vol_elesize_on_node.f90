@@ -1,12 +1,16 @@
-!
-!     module int_vol_elesize_on_node
-!
-!     Written by H. Matsui on Nov., 2006
-!     Modified by H. Matsui on Mar., 2008
-!
-!      subroutine allocate_scalar_ele_4_int
-!      subroutine deallocate_scalar_ele_4_int
-!
+!>@file   int_vol_elesize_on_node.f90
+!!@brief  module int_vol_elesize_on_node
+!!
+!!@author H. Matsui 
+!!@date Programmed by H. Matsui in Nov., 2006
+!!        modified by H. Matsui in Mar., 2008
+!!
+!>@brief  Finite elememt integration for element size evaluation
+!!
+!!@verbatim
+!!      subroutine allocate_scalar_ele_4_int
+!!      subroutine deallocate_scalar_ele_4_int
+!!
 !!      subroutine int_dx_ele2_node(nod_comm, node, ele, g_FEM, jac_3d, &
 !!     &          rhs_tbl, tbl_crs, m_lump, fil_elist, gfil_p, mass,    &
 !!     &          elen_ele, elen_nod, fem_wk, f_l)
@@ -25,6 +29,7 @@
 !!        type(CRS_matrix), intent(inout) :: mass
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l
+!!@endverbatim
 !
       module int_vol_elesize_on_node
 !
@@ -32,6 +37,7 @@
       use m_constants
 !
       use m_machine_parameter
+      use m_geometry_constants
       use m_phys_constants
 !
       implicit none
@@ -141,7 +147,7 @@
 !
       use nodal_fld_2_each_element
       use cal_skv_to_ff_smp
-      use fem_skv_vector_diff_type
+      use fem_skv_grad
 !
       integer(kind = kint), intent(in) :: num_int_points
       type(node_data),    intent(in) :: node
@@ -162,9 +168,12 @@
       do k2 = 1, ele%nnod_4_ele
         call scalar_2_each_element(node, ele,                           &
      &      k2, elen_org_nod, scalar_ele)
-        call fem_skv_gradient                                           &
-     &     (ele%istack_ele_smp, num_int_points,                         &
-     &      k2, ele, g_FEM, jac_3d, scalar_ele, fem_wk%sk6)
+        call fem_skv_all_grad                                           &
+     &     (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,                 &
+     &    np_smp, ele%istack_ele_smp, g_FEM%max_int_point,              &
+     &    g_FEM%maxtot_int_3d, g_FEM%int_start3, g_FEM%owe3d,           &
+     &    num_int_points, k2, jac_3d%ntot_int, jac_3d%xjac,             &
+     &    jac_3d%an, jac_3d%dnx, scalar_ele, fem_wk%sk6)
       end do
 !
       call add3_skv_to_ff_v_smp(node, ele, rhs_tbl,                     &

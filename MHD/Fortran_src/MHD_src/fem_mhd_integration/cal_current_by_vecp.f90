@@ -1,11 +1,13 @@
-!cal_current_by_vecp.f90
-!      module cal_current_by_vecp
-!
-!        programmed by H.Matsui and H.Okuda
-!                                    on July 2000 (ver 1.1)
-!      Modified by H. Matsui on Aug, 2007
-!
-!
+!>@file   cal_current_by_vecp.f90
+!!@brief  module cal_current_by_vecp
+!!
+!!@author H. Matsui 
+!!@date Programmed by H. Matsui in 2002
+!!        modified by H. Matsui in Aug., 2007
+!!
+!>@brief  Finite elememt integration to evaluate current density
+!!
+!!@verbatim
 !!      subroutine int_current_diffuse                                  &
 !!     &         (FEM_prm, nod_comm, node, ele, surf, sf_grp, Asf_bcs,  &
 !!     &          iphys, jacs, rhs_tbl, m_lump, mhd_fem_wk,             &
@@ -46,6 +48,7 @@
 !!        type(work_surface_element_mat), intent(inout) :: surf_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
 !!        type(phys_data),    intent(inout) :: nod_fld
+!!@endverbatim
 !
       module cal_current_by_vecp
 !
@@ -66,6 +69,7 @@
       use t_surface_bc_data
 !
       use m_machine_parameter
+      use m_geometry_constants
       use m_phys_constants
 !
       implicit none
@@ -111,8 +115,8 @@
 !  Volume integration
 !
       call int_vol_current_diffuse                                      &
-     &   (iphys%i_vecp, FEM_prm%npoint_poisson_int,                     &
-     &    node, ele, nod_fld, jacs, rhs_tbl, fem_wk, f_nl)
+     &   (iphys%i_vecp, FEM_prm%npoint_poisson_int, node, ele, nod_fld, &
+     &    jacs%g_FEM, jacs%jac_3d, rhs_tbl, fem_wk, f_nl)
 !
 !  for boundary conditions
 !
@@ -138,16 +142,17 @@
 ! ----------------------------------------------------------------------
 !
       subroutine int_vol_current_diffuse(i_vecp, num_int, node, ele,    &
-     &          nod_fld, jacs, rhs_tbl, fem_wk, f_nl)
+     &          nod_fld, g_FEM, jac_3d, rhs_tbl, fem_wk, f_nl)
 !
       use nodal_fld_2_each_element
-      use fem_skv_vector_diff_type
+      use fem_skv_rot2_laplace
       use cal_skv_to_ff_smp
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(phys_data),    intent(in) :: nod_fld
-      type(jacobians_type), intent(in) :: jacs
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
+      type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       integer(kind = kint), intent(in) :: i_vecp
       integer(kind = kint), intent(in) :: num_int
@@ -164,9 +169,12 @@
       do k2 = 1, ele%nnod_4_ele
         call vector_phys_2_each_element                                 &
      &     (node, ele, nod_fld, k2, i_vecp, fem_wk%vector_1)
-        call fem_skv_rot_rot_by_laplace                                 &
-     &     (ele%istack_ele_smp, num_int, k2,                            &
-     &      ele, jacs%g_FEM, jacs%jac_3d, fem_wk%vector_1, fem_wk%sk6)
+        call fem_all_skv_rot2_laplace                                   &
+     &     (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,                 &
+     &      np_smp, ele%istack_ele_smp, g_FEM%max_int_point,            &
+     &      g_FEM%maxtot_int_3d, g_FEM%int_start3, g_FEM%owe3d,         &
+     &      num_int, k2, jac_3d%ntot_int, jac_3d%xjac,                  &
+     &      jac_3d%dnx, jac_3d%dnx, fem_wk%vector_1, fem_wk%sk6)
       end do
 !
       call add3_skv_to_ff_v_smp(node, ele, rhs_tbl,                     &

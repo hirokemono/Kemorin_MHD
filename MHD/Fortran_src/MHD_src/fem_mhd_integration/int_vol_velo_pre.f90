@@ -89,7 +89,7 @@
       use cal_skv_to_ff_smp
       use fem_skv_nodal_field
       use fem_skv_inertia
-      use fem_skv_vector_diff_type
+      use fem_skv_div_flux
       use fem_skv_div_sgs_flux_type
       use fem_skv_lorentz_full_type
 !
@@ -267,9 +267,12 @@
               call tensor_cst_phys_2_each_ele                           &
      &           (node, ele, nod_fld, k2, iphys%i_SGS_maxwell,          &
      &            fl_prop%coef_lor, fem_wk%tensor_1)
-              call fem_skv_div_tensor                                   &
-     &           (fluid%istack_ele_fld_smp, num_int, k2,                &
-     &            ele, g_FEM, jac_3d, fem_wk%tensor_1, fem_wk%sk6)
+              call fem_skv_all_div_flux                                 &
+     &           (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,           &
+     &           np_smp, fluid%istack_ele_fld_smp, g_FEM%max_int_point, &
+     &           g_FEM%maxtot_int_3d, g_FEM%int_start3, g_FEM%owe3d,    &
+     &           num_int, k2, jac_3d%ntot_int, jac_3d%xjac,             &
+     &           jac_3d%an, jac_3d%dnx, fem_wk%tensor_1, fem_wk%sk6)
             end if
           end if
 !
