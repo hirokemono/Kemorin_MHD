@@ -1,9 +1,9 @@
 !>@file   set_orders_of_field.f90
-!!@brief  module set_orders_of_field
+!!        module set_orders_of_field
 !!
 !!@author H. Matsui
 !!@date Programmed by H. Matsui in Jan., 2010
-!
+!!
 !> @brief Chenge order of field by element type
 !!
 !!@verbatim

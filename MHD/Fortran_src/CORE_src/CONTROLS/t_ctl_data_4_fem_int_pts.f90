@@ -1,10 +1,10 @@
 !>@file   t_ctl_data_4_fem_int_pts.f90
-!!@brief  module t_ctl_data_4_fem_int_pts
+!!        module t_ctl_data_4_fem_int_pts
 !!
 !!@author H. Matsui
 !!@date Programmed by H. Matsui in 2002
 !!@n    Mmodified by H. Matsui in March, 2006
-!
+!!
 !> @brief REad integration points for FEM
 !!
 !!@verbatim

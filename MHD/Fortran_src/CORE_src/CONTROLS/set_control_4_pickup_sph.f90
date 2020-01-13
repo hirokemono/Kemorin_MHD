@@ -4,7 +4,7 @@
 !! @author H. Matsui
 !! @date   Programmed in 2012
 !!
-!
+!!
 !> @brief Set control parameter for monitoring spectrum
 !!
 !!@verbatim

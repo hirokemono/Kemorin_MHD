@@ -1,9 +1,9 @@
 !>@file   t_ctl_data_ele_layering.f90
-!!@brief  module t_ctl_data_ele_layering
+!!        module t_ctl_data_ele_layering
 !!
 !!@author H. Matsui
 !!@date Programmed in Nov., 2009
-!
+!!
 !>@brief  Structure for reading parameters for radial grouping
 !!
 !!@verbatim

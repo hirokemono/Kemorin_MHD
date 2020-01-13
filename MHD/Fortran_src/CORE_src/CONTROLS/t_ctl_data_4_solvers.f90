@@ -1,9 +1,9 @@
 !>@file   t_ctl_data_4_solvers.f90
-!!@brief  module t_ctl_data_4_solvers
+!!        module t_ctl_data_4_solvers
 !!
 !!@author H. Matsui
 !!@date Programmed in June, 2007
-!
+!!
 !>@brief  Structure for reading parameters for MGCG
 !!
 !!@verbatim

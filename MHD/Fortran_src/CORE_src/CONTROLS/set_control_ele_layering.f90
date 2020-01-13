@@ -1,9 +1,9 @@
 !>@file   set_control_ele_layering.f90
-!!@brief  module set_control_ele_layering
+!!        module set_control_ele_layering
 !!
 !!@author H. Matsui
 !!@date Programmed in Nov., 2009
-!
+!!
 !>@brief  Set parameters for radial grouping
 !!
 !!@verbatim

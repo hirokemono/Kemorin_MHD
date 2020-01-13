@@ -1,9 +1,9 @@
 !>@file   t_ctl_data_filter_files.f90
-!!@brief  module t_ctl_data_filter_files
+!!        module t_ctl_data_filter_files
 !!
 !!@author H. Matsui
 !!@date Programmed in July, 2006
-!
+!!
 !>@brief  Structure for reading parameters for filtering files
 !!
 !!@verbatim

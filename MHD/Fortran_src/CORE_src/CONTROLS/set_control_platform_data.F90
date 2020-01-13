@@ -1,10 +1,10 @@
 !>@file   set_control_platform_data.f90
-!!@brief  module set_control_platform_data
+!!        module set_control_platform_data
 !!
 !!@author H. Matsui
 !!@date Programmed in 2009
-!
-!>@brief  Set file headers and number of processor and threds
+!!
+!>@brief  Set file headers and number of processor and threads
 !!        from control data
 !!
 !!@verbatim

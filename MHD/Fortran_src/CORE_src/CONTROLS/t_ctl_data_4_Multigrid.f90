@@ -1,9 +1,9 @@
 !>@file   t_ctl_data_4_Multigrid.f90
-!!@brief  module t_ctl_data_4_Multigrid
+!!        module t_ctl_data_4_Multigrid
 !!
 !!@author H. Matsui
 !!@date Programmed in July, 2007
-!
+!!
 !>@brief  Structure for reading parameters for MGCG
 !!
 !!@verbatim
