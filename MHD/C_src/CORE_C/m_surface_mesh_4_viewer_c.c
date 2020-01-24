@@ -572,6 +572,15 @@ static void dealloc_mesh_draw_s(struct viewer_mesh *mesh_s){
 	return;
 };
 
+struct viewer_mesh * alloc_viewer_mesh(){
+    struct viewer_mesh * mesh_s =  (struct viewer_mesh *)   malloc(sizeof(struct viewer_mesh));
+    if(mesh_s == NULL){
+        printf("malloc error for viewer_mesh\n");
+        exit(0);
+    }
+
+    return mesh_s;
+};
 
 void dealloc_all_mesh_4_viewer_s(struct viewer_mesh *mesh_s){
 	dealloc_mesh_draw_s(mesh_s);

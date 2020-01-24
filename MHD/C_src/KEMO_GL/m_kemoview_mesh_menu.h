@@ -101,6 +101,8 @@ struct mesh_menu_val{
 
 void alloc_draw_mesh_flags(struct viewer_mesh *mesh_s,
 			struct mesh_menu_val *mesh_m);
+struct mesh_menu_val * alloc_mesh_menu_val(void);
+
 void dealloc_draw_mesh_flags(struct mesh_menu_val *mesh_m);
 
 void init_viewer_parameters(struct mesh_menu_val *mesh_m);

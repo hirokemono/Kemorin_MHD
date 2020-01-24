@@ -14,6 +14,9 @@
 #define IHIGHT_TXT 20
 #define IWIDTH_TXT 140
 
+#define IHIGHT_MSG 20
+#define IWIDTH_MSG 800
+
 struct cbar_work{
 	int iflag_zero;
 	
@@ -42,6 +45,31 @@ struct cbar_work{
 	unsigned char testBMP[9*IHIGHT_TXT*IWIDTH_TXT];
 };
 
+struct msg_work{
+    int iflag_zero;
+    
+    float xwin;
+    float ywin;
+    
+    float xbar_min;
+    float xbar_max;
+    float xbar_mid;
+    
+    float ybar_min;
+    float ybar_max;
+    float ydelta;
+    float yline_zero;
+    
+    int num_quad;
+    double psf_min;
+    
+    char minlabel[25];
+    
+    int id_texture;
+    unsigned char numBMP[12*IHIGHT_MSG*IWIDTH_MSG];
+    unsigned char testBMP[9*IHIGHT_MSG*IWIDTH_MSG];
+};
+
 
 /* prototypes */
 
@@ -51,6 +79,8 @@ void set_colorbar_position(int iflag_retina, int nx_win, int ny_win,
 
 void clear_colorbar_text_image(struct cbar_work *cbar_wk);
 void set_colorbar_text_image(float text_color3[3], struct cbar_work *cbar_wk);
+
+struct msg_work * alloc_message_work(void);
 
 #endif
 

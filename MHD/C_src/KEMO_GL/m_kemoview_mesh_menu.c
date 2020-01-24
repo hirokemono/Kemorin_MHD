@@ -60,6 +60,16 @@ void alloc_draw_mesh_flags(struct viewer_mesh *mesh_s,
 	return;
 }
 
+struct mesh_menu_val * alloc_mesh_menu_val(void){
+    struct mesh_menu_val *mesh_m = (struct mesh_menu_val *) malloc(sizeof(struct mesh_menu_val));
+    if(mesh_m == NULL){
+        printf("malloc error for mesh_menu_val\n");
+        exit(0);
+    }
+    
+    return mesh_m;
+};
+
 void dealloc_draw_mesh_flags(struct mesh_menu_val *mesh_m){
 	free(mesh_m->draw_surfgrp_solid);
 	free(mesh_m->draw_surfgrp_grid);

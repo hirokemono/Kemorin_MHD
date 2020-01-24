@@ -1,9 +1,9 @@
 /*
-// draw_colorbar_gl.h
+// draw_messages_gl.h
 */
 
-#ifndef DRAW_COLORBAR_GL_
-#define DRAW_COLORBAR_GL_
+#ifndef DRAW_MESSAGES_GL_
+#define DRAW_MESSAGES_GL_
 
 #include <math.h>
 #include "m_kemoview_psf_menu.h"
@@ -19,12 +19,12 @@
 
 /* prototypes */
 
-void set_colorbar_VAO(int iflag_retina, GLint nx_win, GLint ny_win,
-			GLfloat text_color[4], GLfloat bg_color[4], 
+void set_message_VAO(int iflag_retina, GLint nx_win, GLint ny_win,
+			GLfloat text_color[4], GLfloat bg_color[4], struct msg_work *msg_wk, 
 			struct psf_menu_val **psf_m, struct kemo_array_control *psf_a, 
-			struct VAO_ids **cbar_VAO);
-void draw_colorbar_VAO(struct cbar_work *cbar_wk,
-			struct VAO_ids **cbar_VAO, struct kemoview_shaders *kemo_shaders);
+			struct VAO_ids **msg_VAO);
+void draw_message_VAO(struct msg_work *msg_wk, struct cbar_work *cbar_wk,
+			struct VAO_ids **msg_VAO, struct kemoview_shaders *kemo_shaders);
 
 #endif
 

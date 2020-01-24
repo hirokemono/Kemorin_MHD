@@ -118,4 +118,46 @@ void set_colorbar_text_image(float text_color3[3], struct cbar_work *cbar_wk){
 	return;
 };
 
+struct msg_work * alloc_message_work(void){
+	struct msg_work *msg_wk = (struct msg_work *) malloc(sizeof(struct msg_work));
+	if(msg_wk == NULL){
+		printf("malloc error for msg_work\n");
+		exit(0);
+	}
+	return msg_wk;
+};
+
+
+void set_windowsize_image(int npixel_x, int npixel_y, 
+                          float text_color3[3], struct msg_work *msg_wk){
+    int i;
+    
+    sprintf(msg_wk->minlabel, "Window size: (%4d, %4d)", npixel_x, npixel_y);
+    
+    YsGlWriteStringToRGBA8Bitmap(msg_wk->minlabel, 191, 191, 191, 95, msg_wk->numBMP, IWIDTH_MSG, 3*IHIGHT_MSG,
+                                 0, 0, YsFont12x16, 14, 16);
+    YsGlWriteStringToRGBA8Bitmap(msg_wk->minlabel, 191, 191, 191, 95, msg_wk->numBMP, IWIDTH_MSG, 3*IHIGHT_MSG,
+                                 0, 2, YsFont12x16, 14, 16);
+    YsGlWriteStringToRGBA8Bitmap(msg_wk->minlabel, 191, 191, 191, 95, msg_wk->numBMP, IWIDTH_MSG, 3*IHIGHT_MSG,
+                                 1, 0, YsFont12x16, 14, 16);
+    
+    YsGlWriteStringToRGBA8Bitmap(msg_wk->minlabel, 255, 255, 255, 125, msg_wk->numBMP, IWIDTH_MSG, 3*IHIGHT_MSG,
+                                 0, 1, YsFont12x16, 14, 16);
+    
+    for(i=0;i<3*IWIDTH_MSG*IHIGHT_MSG;i++){
+        msg_wk->testBMP[3*i  ] = (unsigned char) (0.8 * (float) ((int) msg_wk->numBMP[4*i  ]));
+        msg_wk->testBMP[3*i+1] = (unsigned char) (0.2 * (float) ((int) msg_wk->numBMP[4*i+1]));
+        msg_wk->testBMP[3*i+2] = (unsigned char) (0.4 * (float) ((int) msg_wk->numBMP[4*i+2]));
+    };
+    //    pixout_BMP_c("/Users/matsui/Desktop/aho", IWIDTH_MSG, 3*IHIGHT_MSG, testBMP);
+    
+    for(i=0;i<3*IWIDTH_MSG*IHIGHT_MSG;i++){
+        msg_wk->numBMP[4*i  ] = (unsigned char) (text_color3[0] * (float) ((int) msg_wk->numBMP[4*i  ]));
+        msg_wk->numBMP[4*i+1] = (unsigned char) (text_color3[1] * (float) ((int) msg_wk->numBMP[4*i+1]));
+        msg_wk->numBMP[4*i+2] = (unsigned char) (text_color3[2] * (float) ((int) msg_wk->numBMP[4*i+2]));
+    };
+    return;
+};
+
+
 

@@ -9,6 +9,7 @@
 #include "vartex_array_object_gl.h"
 #include "drawGL_by_VAO.h"
 #include "draw_colorbar_gl.h"
+#include "draw_messages_gl.h"
 #include "draw_fieldlines.h"
 #include "draw_coastline.h"
 #include "drawcube_gl.h"
@@ -18,6 +19,7 @@
 
 struct kemoview_VAOs{
 	struct VAO_ids *cube_VAO;
+    struct VAO_ids **msg_VAO;
 	
 	struct VAO_ids **mesh_solid_VAO;
 	struct VAO_ids *mesh_trans_VAO;

@@ -17,14 +17,16 @@ struct kemoview_mesh * init_kemoview_mesh(void){
 		exit(0);
 	}
 	
-	kemo_mesh->mesh_d =  (struct viewer_mesh *)     malloc(NMAX_PSF*sizeof(struct viewer_mesh));
-	kemo_mesh->mesh_m =  (struct mesh_menu_val *) malloc(NMAX_PSF*sizeof(struct mesh_menu_val));
+    kemo_mesh->mesh_d =  alloc_viewer_mesh();
+	kemo_mesh->mesh_m =  alloc_mesh_menu_val();
+    kemo_mesh->msg_wk =  alloc_message_work();
 	return kemo_mesh;
 };
 
 void dealloc_kemoview_mesh(struct kemoview_mesh *kemo_mesh){
 	free(kemo_mesh->mesh_d);
 	free(kemo_mesh->mesh_m);
+    free(kemo_mesh->msg_wk);
 	free(kemo_mesh);
 	return;
 };
@@ -105,7 +107,6 @@ int get_draw_mesh_flag(struct kemoview_mesh *kemo_mesh,
 
 void set_mesh_color_flag(int iflag_group, int selected, int icolor,
 						 struct kemoview_mesh *kemo_mesh){
-	int iflag = 0;
 	if(iflag_group == DOMAIN_FLAG){
 		set_domain_color_flag(selected, icolor, kemo_mesh->mesh_m);
 	}else if(iflag_group == NODE_GRP_FLAG){
