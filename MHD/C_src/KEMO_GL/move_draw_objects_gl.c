@@ -13,11 +13,7 @@ struct kemoview_VAOs * init_kemoview_VAOs(void){
     }
 	
 	kemo_VAOs->cube_VAO = (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
-
-    kemo_VAOs->msg_VAO = (struct VAO_ids **) malloc(2*sizeof(struct VAO_ids *));
-    for(i=0;i<2;i++){
-        kemo_VAOs->msg_VAO[i] = (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
-    };
+    kemo_VAOs->msg_VAO =  (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
 	
 	kemo_VAOs->mesh_solid_VAO = (struct VAO_ids **) malloc(3*sizeof(struct VAO_ids *));
 	for(i=0;i<3;i++){
@@ -59,10 +55,6 @@ struct kemoview_VAOs * init_kemoview_VAOs(void){
 void dealloc_kemoview_VAOs(struct kemoview_VAOs *kemo_VAOs){
 	int i;
 	free(kemo_VAOs->cube_VAO);
-
-    for(i=0;i<2;i++){
-        free(kemo_VAOs->msg_VAO[i]);
-    };
     free(kemo_VAOs->msg_VAO);
 	
 	for(i=0;i<3;i++){
@@ -125,8 +117,7 @@ void assign_kemoview_VAOs(struct kemoview_VAOs *kemo_VAOs){
 	glGenVertexArrays(1, &kemo_VAOs->map_VAO[2]->id_VAO);
 	glGenVertexArrays(1, &kemo_VAOs->map_VAO[3]->id_VAO);
     glGenVertexArrays(1, &kemo_VAOs->cube_VAO->id_VAO);
-    glGenVertexArrays(1, &kemo_VAOs->msg_VAO[0]->id_VAO);
-    glGenVertexArrays(1, &kemo_VAOs->msg_VAO[1]->id_VAO);
+    glGenVertexArrays(1, &kemo_VAOs->msg_VAO->id_VAO);
 };
 
 void clear_kemoview_VAOs(struct kemoview_VAOs *kemo_VAOs){
@@ -152,8 +143,7 @@ void clear_kemoview_VAOs(struct kemoview_VAOs *kemo_VAOs){
 	Destroy_VAO(kemo_VAOs->map_VAO[2]);
 	Destroy_VAO(kemo_VAOs->map_VAO[3]);
     Destroy_VAO(kemo_VAOs->cube_VAO);
-    Destroy_VAO(kemo_VAOs->msg_VAO[0]);
-    Destroy_VAO(kemo_VAOs->msg_VAO[1]);
+    Destroy_VAO(kemo_VAOs->msg_VAO);
 };
 
 void get_gl_buffer_to_bmp(int num_x, int num_y, unsigned char *glimage){
@@ -203,7 +193,7 @@ static void quick_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_fl
 	draw_colorbar_VAO(kemo_psf->psf_a->cbar_wk, kemo_VAOs->cbar_VAO, kemo_shaders);
 	
     /* Draw message */
-    draw_message_VAO(kemo_mesh->msg_wk, kemo_psf->psf_a->cbar_wk, kemo_VAOs->msg_VAO, kemo_shaders);
+    draw_message_VAO(kemo_mesh->msg_wk, kemo_VAOs->msg_VAO, kemo_shaders);
 
     /* draw example cube for empty data */
 	if(kemo_VAOs->cube_VAO->npoint_draw > 0){
@@ -299,7 +289,7 @@ static void update_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_f
                      kemo_mesh->mesh_m->text_color, kemo_mesh->mesh_m->bg_color, 
                      kemo_mesh->msg_wk, kemo_psf->psf_m, kemo_psf->psf_a,
                      kemo_VAOs->msg_VAO);
-    draw_message_VAO(kemo_mesh->msg_wk, kemo_psf->psf_a->cbar_wk, kemo_VAOs->msg_VAO, kemo_shaders);
+    draw_message_VAO(kemo_mesh->msg_wk, kemo_VAOs->msg_VAO, kemo_shaders);
     
     /* draw example cube for empty data */
 	iflag = kemo_mesh->mesh_m->iflag_draw_mesh + iflag_psf + kemo_fline->fline_m->iflag_draw_fline;

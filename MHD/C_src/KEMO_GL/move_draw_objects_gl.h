@@ -19,7 +19,7 @@
 
 struct kemoview_VAOs{
 	struct VAO_ids *cube_VAO;
-    struct VAO_ids **msg_VAO;
+    struct VAO_ids *msg_VAO;
 	
 	struct VAO_ids **mesh_solid_VAO;
 	struct VAO_ids *mesh_trans_VAO;

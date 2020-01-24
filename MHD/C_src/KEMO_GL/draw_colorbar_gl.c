@@ -34,9 +34,10 @@ static void set_colorbar_box_VAO(int iflag_retina, GLfloat text_color[4], GLfloa
 	return;
 };
 
-static void set_colorbar_text_VAO(int iflag_retina, GLfloat text_color[4], GLfloat bg_color[4], 
-			struct colormap_params *cmap_s, struct cbar_work *cbar_wk,
-			struct VAO_ids *text_VAO, struct gl_strided_buffer *cbar_buf){
+static void set_colorbar_text_VAO(int iflag_retina, 
+								  GLfloat text_color[4], GLfloat bg_color[4], 
+								  struct cbar_work *cbar_wk,　struct VAO_ids *text_VAO,
+								  struct gl_strided_buffer *cbar_buf){
 	set_buffer_address_4_patch(text_VAO->npoint_draw, cbar_buf);
 	resize_strided_buffer(cbar_buf->num_nod_buf, cbar_buf->ncomp_buf, cbar_buf);
 	
@@ -74,7 +75,7 @@ void set_colorbar_VAO(int iflag_retina, GLint nx_win, GLint ny_win,
 			set_colorbar_box_VAO(iflag_retina, text_color, bg_color, 
 						psf_m[i]->cmap_psf_comp[icomp], psf_a->cbar_wk, cbar_VAO[0], cbar_buf);
 			set_colorbar_text_VAO(iflag_retina, text_color, bg_color, 
-						psf_m[i]->cmap_psf_comp[icomp], psf_a->cbar_wk, cbar_VAO[1], cbar_buf);
+						psf_a->cbar_wk, cbar_VAO[1], cbar_buf);
 		};
 	};
 	free(cbar_buf->v_buf);
