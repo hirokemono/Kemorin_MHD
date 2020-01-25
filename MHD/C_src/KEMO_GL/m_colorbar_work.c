@@ -128,6 +128,37 @@ struct msg_work * alloc_message_work(void){
 };
 
 
+void set_message_position(int iflag_retina, int nx_win, int ny_win,
+						  struct cbar_work *cbar_wk){
+	cbar_wk->num_quad = 64;
+	
+	cbar_wk->xwin = (float)nx_win;
+	cbar_wk->ywin = (float)ny_win;
+	
+    if( cbar_wk->xwin >= 640*(iflag_retina+1) ){
+        cbar_wk->xbar_max = cbar_wk->xwin * 0.875;
+    } else {
+        cbar_wk->xbar_max = cbar_wk->xwin - (iflag_retina+1) * 80;
+    }
+	cbar_wk->xbar_min = cbar_wk->xbar_max - 0.025 * cbar_wk->xwin;
+	cbar_wk->xbar_mid = (cbar_wk->xbar_min + cbar_wk->xbar_max) * 0.5;
+	cbar_wk->ybar_min = 0.05 * cbar_wk->ywin;
+	cbar_wk->ybar_max = 0.25 * cbar_wk->ywin;
+	cbar_wk->ydelta =  (cbar_wk->ybar_max - cbar_wk->ybar_min) / ((float) cbar_wk->num_quad);
+	
+	cbar_wk->iflag_zero = 0;
+	
+	cbar_wk->psf_min = -20.0;
+	cbar_wk->psf_max = 500.0;
+	if( (cbar_wk->psf_min*cbar_wk->psf_max) < ZERO ) cbar_wk->iflag_zero = 1;
+	
+	cbar_wk->yline_zero = cbar_wk->ybar_min 
+		+ (cbar_wk->ybar_max - cbar_wk->ybar_min) * (-cbar_wk->psf_min) 
+		/ (cbar_wk->psf_max - cbar_wk->psf_min);
+	
+	return;
+}
+
 void set_windowsize_image(int npixel_x, int npixel_y, 
                           float text_color3[3], struct msg_work *msg_wk){
     int i;

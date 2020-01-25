@@ -27,10 +27,7 @@ static void set_message_text_VAO(int iflag_retina,
 
 void set_message_VAO(int iflag_retina, GLint nx_win, GLint ny_win,
 			GLfloat text_color[4], GLfloat bg_color[4], struct msg_work *msg_wk, 
-			struct psf_menu_val **psf_m, struct kemo_array_control *psf_a, 
-			struct VAO_ids *msg_VAO){
-	int i;
-	int icomp;
+			struct kemo_array_control *psf_a, struct VAO_ids *msg_VAO){
 	struct gl_strided_buffer *cbar_buf 
 		= (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
 	set_buffer_address_4_patch(16, cbar_buf);
@@ -38,20 +35,17 @@ void set_message_VAO(int iflag_retina, GLint nx_win, GLint ny_win,
 		
 	msg_VAO->npoint_draw = 0;
 	clear_colorbar_text_image(psf_a->cbar_wk);
-	for(i=0; i<psf_a->nmax_loaded; i++){
-		if(psf_a->iflag_loaded[i] != 0 && psf_m[i]->draw_psf_cbar > 0) {
-			icomp = psf_m[i]->icomp_draw_psf;
-			set_colorbar_position(iflag_retina, (int) nx_win, (int) ny_win, 
-								  psf_m[i]->cmap_psf_comp[icomp], psf_a->cbar_wk);
-			msg_wk->xwin = (float)nx_win;
-			msg_wk->ywin = (float)ny_win;
-			set_colorbar_text_image(text_color, psf_a->cbar_wk);
-			
-			count_message_text_VAO(psf_a->cbar_wk, msg_VAO);
-			set_message_text_VAO(iflag_retina, text_color, bg_color, 
-						msg_wk, psf_a->cbar_wk, msg_VAO, cbar_buf);
-		};
-	};
+	
+	set_message_position(iflag_retina, (int) nx_win, (int) ny_win, 
+                                 psf_a->cbar_wk);
+	msg_wk->xwin = (float)nx_win;
+	msg_wk->ywin = (float)ny_win;
+	set_colorbar_text_image(text_color, psf_a->cbar_wk);
+	
+	count_message_text_VAO(psf_a->cbar_wk, msg_VAO);
+	set_message_text_VAO(iflag_retina, text_color, bg_color, 
+						 msg_wk, psf_a->cbar_wk, msg_VAO, cbar_buf);
+	
 	free(cbar_buf->v_buf);
 	free(cbar_buf);
 	return;

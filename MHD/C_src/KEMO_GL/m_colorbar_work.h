@@ -81,6 +81,10 @@ void clear_colorbar_text_image(struct cbar_work *cbar_wk);
 void set_colorbar_text_image(float text_color3[3], struct cbar_work *cbar_wk);
 
 struct msg_work * alloc_message_work(void);
+void set_message_position(int iflag_retina, int nx_win, int ny_win,
+						  struct cbar_work *cbar_wk);
+void set_windowsize_image(int npixel_x, int npixel_y, 
+                          float text_color3[3], struct msg_work *msg_wk);
 
 #endif
 
