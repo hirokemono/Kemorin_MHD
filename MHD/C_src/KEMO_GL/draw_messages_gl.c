@@ -4,47 +4,45 @@
 
 #include "draw_messages_gl.h"
 
-static void count_message_text_VAO(struct cbar_work *cbar_wk,struct VAO_ids *text_VAO){
-	text_VAO->npoint_draw = ITHREE*2*(cbar_wk->iflag_zero + ITWO);
+static void count_message_text_VAO(struct VAO_ids *text_VAO){
+	text_VAO->npoint_draw = ITHREE*2;
 	return;
 };
 
 static void set_message_text_VAO(int iflag_retina, 
 								 GLfloat text_color[4], GLfloat bg_color[4], 
-								 struct msg_work *msg_wk, struct cbar_work *cbar_wk,
-								 struct VAO_ids *text_VAO, struct gl_strided_buffer *cbar_buf){
+								 struct msg_work *msg_wk, struct VAO_ids *text_VAO,
+								 struct gl_strided_buffer *cbar_buf){
 	set_buffer_address_4_patch(text_VAO->npoint_draw, cbar_buf);
 	resize_strided_buffer(cbar_buf->num_nod_buf, cbar_buf->ncomp_buf, cbar_buf);
 	
-	colorbar_mbox_to_buf(iflag_retina, text_color, cbar_wk, cbar_buf);
+	message_mbox_to_buf(iflag_retina, text_color, msg_wk, cbar_buf);
 	
 	glBindVertexArray(text_VAO->id_VAO);
 	Const_VAO_4_Texture(text_VAO, cbar_buf);
-	msg_wk->id_texture = set_texture_to_buffer(IWIDTH_TXT, 3*IHIGHT_TXT, cbar_wk->numBMP);
+	msg_wk->id_texture = set_texture_to_buffer(IWIDTH_TXT, 3*IHIGHT_TXT, msg_wk->numBMP);
 	glBindVertexArray(0);
 	return;
 };
 
 void set_message_VAO(int iflag_retina, GLint nx_win, GLint ny_win,
 			GLfloat text_color[4], GLfloat bg_color[4], struct msg_work *msg_wk, 
-			struct kemo_array_control *psf_a, struct VAO_ids *msg_VAO){
+			struct VAO_ids *msg_VAO){
 	struct gl_strided_buffer *cbar_buf 
 		= (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
 	set_buffer_address_4_patch(16, cbar_buf);
 	alloc_strided_buffer(cbar_buf->num_nod_buf, cbar_buf->ncomp_buf, cbar_buf);
 		
 	msg_VAO->npoint_draw = 0;
-	clear_colorbar_text_image(psf_a->cbar_wk);
+	clear_message_text_image(msg_wk);
 	
-	set_message_position(iflag_retina, (int) nx_win, (int) ny_win, 
-                                 psf_a->cbar_wk);
-	msg_wk->xwin = (float)nx_win;
-	msg_wk->ywin = (float)ny_win;
-	set_colorbar_text_image(text_color, psf_a->cbar_wk);
+	set_message_position(iflag_retina, (int) nx_win, (int) ny_win, msg_wk);
+
+	set_windowsize_image((int) nx_win, (int) ny_win, text_color, msg_wk);
 	
-	count_message_text_VAO(psf_a->cbar_wk, msg_VAO);
+	count_message_text_VAO(msg_VAO);
 	set_message_text_VAO(iflag_retina, text_color, bg_color, 
-						 msg_wk, psf_a->cbar_wk, msg_VAO, cbar_buf);
+						 msg_wk, msg_VAO, cbar_buf);
 	
 	free(cbar_buf->v_buf);
 	free(cbar_buf);

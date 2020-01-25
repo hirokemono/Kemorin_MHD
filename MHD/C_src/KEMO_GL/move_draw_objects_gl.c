@@ -287,7 +287,7 @@ static void update_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_f
 
     set_message_VAO(view_s->iflag_retina, view_s->nx_window, view_s->ny_window,
                      kemo_mesh->mesh_m->text_color, kemo_mesh->mesh_m->bg_color, 
-                     kemo_mesh->msg_wk, kemo_psf->psf_a, kemo_VAOs->msg_VAO);
+                     kemo_mesh->msg_wk, kemo_VAOs->msg_VAO);
     draw_message_VAO(kemo_mesh->msg_wk, kemo_VAOs->msg_VAO, kemo_shaders);
     
     /* draw example cube for empty data */

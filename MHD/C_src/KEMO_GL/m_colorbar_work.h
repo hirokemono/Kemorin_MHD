@@ -46,28 +46,17 @@ struct cbar_work{
 };
 
 struct msg_work{
-    int iflag_zero;
-    
     float xwin;
     float ywin;
     
-    float xbar_min;
     float xbar_max;
-    float xbar_mid;
-    
     float ybar_min;
-    float ybar_max;
-    float ydelta;
-    float yline_zero;
     
-    int num_quad;
-    double psf_min;
-    
-    char minlabel[25];
+    char minlabel[20];
     
     int id_texture;
-    unsigned char numBMP[12*IHIGHT_MSG*IWIDTH_MSG];
-    unsigned char testBMP[9*IHIGHT_MSG*IWIDTH_MSG];
+    unsigned char numBMP[12*IHIGHT_TXT*IWIDTH_TXT];
+    unsigned char testBMP[9*IHIGHT_TXT*IWIDTH_TXT];
 };
 
 
@@ -82,7 +71,8 @@ void set_colorbar_text_image(float text_color3[3], struct cbar_work *cbar_wk);
 
 struct msg_work * alloc_message_work(void);
 void set_message_position(int iflag_retina, int nx_win, int ny_win,
-						  struct cbar_work *cbar_wk);
+						  struct msg_work *msg_wk);
+void clear_message_text_image(struct msg_work *msg_wk);
 void set_windowsize_image(int npixel_x, int npixel_y, 
                           float text_color3[3], struct msg_work *msg_wk);
 
