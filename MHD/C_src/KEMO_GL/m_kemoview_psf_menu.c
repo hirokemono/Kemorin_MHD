@@ -65,7 +65,7 @@ void dealloc_psfs_sorting_list(struct kemo_array_control *psf_a){
     free(psf_a->z_ele_viz);
     free(psf_a->ipsf_viz_far);
     free(psf_a->iele_viz_far);
-    free(psf_a->cbar_wk);
+    dealloc_colorbar_position(psf_a->cbar_wk);
 
     return;
 }
@@ -139,13 +139,6 @@ void alloc_kemoview_array(struct kemo_array_control *psf_a){
     psf_a->istack_trans_psf_txtur = 0;
     psf_a->istack_trans_psf_patch = 0;
     alloc_psfs_sorting_list(psf_a);
-	
-	psf_a->cbar_wk = (struct cbar_work *) malloc(sizeof(struct cbar_work));
-	if( psf_a->cbar_wk == NULL ) {
-		printf( "cbar_work cannot alloc!\n" );
-		exit( 1 );
-	}
-	
 	return;
 };
 void set_max_psf_loading(int ntot_psf_data, struct kemo_array_control *psf_a){

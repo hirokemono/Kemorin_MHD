@@ -20,7 +20,7 @@ static void set_message_text_VAO(int iflag_retina,
 	
 	glBindVertexArray(text_VAO->id_VAO);
 	Const_VAO_4_Texture(text_VAO, cbar_buf);
-	msg_wk->id_texture = set_texture_to_buffer(IWIDTH_TXT, 3*IHIGHT_TXT, msg_wk->numBMP);
+	msg_wk->id_texture = set_texture_to_buffer(IWIDTH_TXT, 3*IHIGHT_TXT, msg_wk->msgBMP);
 	glBindVertexArray(0);
 	return;
 };
@@ -33,11 +33,8 @@ void set_message_VAO(int iflag_retina, GLint nx_win, GLint ny_win,
 	set_buffer_address_4_patch(16, cbar_buf);
 	alloc_strided_buffer(cbar_buf->num_nod_buf, cbar_buf->ncomp_buf, cbar_buf);
 		
-	msg_VAO->npoint_draw = 0;
 	clear_message_text_image(msg_wk);
-	
 	set_message_position(iflag_retina, (int) nx_win, (int) ny_win, msg_wk);
-
 	set_windowsize_image((int) nx_win, (int) ny_win, text_color, msg_wk);
 	
 	count_message_text_VAO(msg_VAO);

@@ -41,8 +41,11 @@ struct cbar_work{
 	char zerolabel[20];
 	
 	int id_texture;
-	unsigned char numBMP[12*IHIGHT_TXT*IWIDTH_TXT];
-	unsigned char testBMP[9*IHIGHT_TXT*IWIDTH_TXT];
+    int npixel;
+    int npix_x;
+    int npix_y;
+	unsigned char *numBMP;
+	unsigned char *testBMP;
 };
 
 struct msg_work{
@@ -55,14 +58,18 @@ struct msg_work{
     char minlabel[20];
     
     int id_texture;
-    unsigned char numBMP[12*IHIGHT_TXT*IWIDTH_TXT];
-    unsigned char testBMP[9*IHIGHT_TXT*IWIDTH_TXT];
+    int npixel;
+    int npix_x;
+    int npix_y;
+    unsigned char *msgBMP;
+    unsigned char *testBMP;
 };
 
 
 /* prototypes */
 
 struct cbar_work * alloc_colorbar_position(void);
+void dealloc_colorbar_position(struct cbar_work *cbar_wk);
 void set_colorbar_position(int iflag_retina, int nx_win, int ny_win,
 			struct colormap_params *cmap_s, struct cbar_work *cbar_wk);
 
