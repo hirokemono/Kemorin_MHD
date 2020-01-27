@@ -332,10 +332,10 @@ void message_mbox_to_buf(int iflag_retina, float *text_color,
 	float t1[2], t2[2], t3[2], t4[2];
 	int nd;
 	
-	x1[0] = msg_wk->xbar_max + 8.0*(iflag_retina + 1);
-	x2[0] = msg_wk->xbar_max + 104.0*(iflag_retina + 1);
-	x3[0] = msg_wk->xbar_max + 104.0*(iflag_retina + 1);
-	x4[0] = msg_wk->xbar_max + 8.0*(iflag_retina + 1);
+	x1[0] = msg_wk->xbar_max;
+	x2[0] = msg_wk->xbar_max + 320.0*(iflag_retina + 1);
+	x3[0] = msg_wk->xbar_max + 320.0*(iflag_retina + 1);
+	x4[0] = msg_wk->xbar_max;
 	x1[2] = 0.001;
 	x2[2] = 0.001;
 	x3[2] = 0.001;
@@ -352,12 +352,12 @@ void message_mbox_to_buf(int iflag_retina, float *text_color,
 	
 	x1[1] = msg_wk->ybar_min - iflag_retina - 1;
 	x2[1] = msg_wk->ybar_min - iflag_retina - 1;
-	x3[1] = msg_wk->ybar_min + 16.0 * (iflag_retina + 1);
-	x4[1] = msg_wk->ybar_min + 16.0 * (iflag_retina + 1);
+	x3[1] = msg_wk->ybar_min + 24.0 * (iflag_retina + 1);
+	x4[1] = msg_wk->ybar_min + 24.0 * (iflag_retina + 1);
 	t1[1] = 0.0;
 	t2[1] = 0.0;
-	t3[1] = 1.0 / 3.0;
-	t4[1] = 1.0 / 3.0;
+	t3[1] = 1.0;
+	t4[1] = 1.0;
 	set_one_quad_to_buf(0, x1, x2, x3, x4, c1, c2, c3, c4, strided_buf);
 	set_one_texture_to_buf(0, t1, t2, t3, t4, strided_buf);
 	

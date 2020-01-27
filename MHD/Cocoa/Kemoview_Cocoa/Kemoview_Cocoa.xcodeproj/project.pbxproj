@@ -119,6 +119,7 @@
 		188FFDA82309DE2900F5A0DE /* m_phong_light_table_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 188FFDA62309DE2800F5A0DE /* m_phong_light_table_c.c */; };
 		18B5A2721F832A8A005AF658 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 18B5A2711F832A8A005AF658 /* libz.tbd */; };
 		18CE99DC23DB7BB7005D8886 /* draw_messages_gl.c in Sources */ = {isa = PBXBuildFile; fileRef = 18CE99DA23DB7BB6005D8886 /* draw_messages_gl.c */; };
+		18CE99E223DF493B005D8886 /* write_image_2_bmp.c in Sources */ = {isa = PBXBuildFile; fileRef = 18CE99E023DF493B005D8886 /* write_image_2_bmp.c */; };
 		18CFFEB722FBFDAD005D7739 /* vartex_array_object_gl.c in Sources */ = {isa = PBXBuildFile; fileRef = 18CFFEB522FBFDAD005D7739 /* vartex_array_object_gl.c */; };
 		18D7E72B1562D359009B05FF /* cal_surface_center_normal_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E64F1562D359009B05FF /* cal_surface_center_normal_c.c */; };
 		18D7E72C1562D359009B05FF /* check_psf_data_viewer_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E6511562D359009B05FF /* check_psf_data_viewer_c.c */; };
@@ -417,6 +418,8 @@
 		18B5A2711F832A8A005AF658 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		18CE99DA23DB7BB6005D8886 /* draw_messages_gl.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = draw_messages_gl.c; sourceTree = "<group>"; };
 		18CE99DB23DB7BB7005D8886 /* draw_messages_gl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = draw_messages_gl.h; sourceTree = "<group>"; };
+		18CE99E023DF493B005D8886 /* write_image_2_bmp.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = write_image_2_bmp.c; path = CORE_C/write_image_2_bmp.c; sourceTree = "<group>"; };
+		18CE99E123DF493B005D8886 /* write_image_2_bmp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = write_image_2_bmp.h; path = CORE_C/write_image_2_bmp.h; sourceTree = "<group>"; };
 		18CFFEB522FBFDAD005D7739 /* vartex_array_object_gl.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = vartex_array_object_gl.c; sourceTree = "<group>"; };
 		18CFFEB622FBFDAD005D7739 /* vartex_array_object_gl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vartex_array_object_gl.h; sourceTree = "<group>"; };
 		18D7E64F1562D359009B05FF /* cal_surface_center_normal_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = cal_surface_center_normal_c.c; sourceTree = "<group>"; };
@@ -803,6 +806,8 @@
 		18D7E64D1562D359009B05FF /* C_src */ = {
 			isa = PBXGroup;
 			children = (
+				18CE99E023DF493B005D8886 /* write_image_2_bmp.c */,
+				18CE99E123DF493B005D8886 /* write_image_2_bmp.h */,
 				188FFD6523087CB900F5A0DE /* GLSL */,
 				185CB939212F593C00BB3C0B /* CONTROLS */,
 				18D7E64E1562D359009B05FF /* CORE_C */,
@@ -1349,6 +1354,7 @@
 				18D7E7911562D359009B05FF /* NodeGroupTableController.m in Sources */,
 				1852CFB2236B7B790043C983 /* m_color_table_c.c in Sources */,
 				18D7E7921562D359009B05FF /* OpacityMapController.m in Sources */,
+				18CE99E223DF493B005D8886 /* write_image_2_bmp.c in Sources */,
 				18D7E7931562D359009B05FF /* PSFArrayControler.m in Sources */,
 				18D7E7941562D359009B05FF /* PsfController.m in Sources */,
 				185CB9B4212F593D00BB3C0B /* t_control_data_4_fline_c.c in Sources */,

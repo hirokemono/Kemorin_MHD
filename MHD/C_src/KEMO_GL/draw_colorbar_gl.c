@@ -36,7 +36,7 @@ static void set_colorbar_box_VAO(int iflag_retina, GLfloat text_color[4], GLfloa
 
 static void set_colorbar_text_VAO(int iflag_retina, 
 								  GLfloat text_color[4], GLfloat bg_color[4], 
-								  struct cbar_work *cbar_wk,　struct VAO_ids *text_VAO,
+								  struct cbar_work *cbar_wk, struct VAO_ids *text_VAO,
 								  struct gl_strided_buffer *cbar_buf){
 	set_buffer_address_4_patch(text_VAO->npoint_draw, cbar_buf);
 	resize_strided_buffer(cbar_buf->num_nod_buf, cbar_buf->ncomp_buf, cbar_buf);
@@ -45,7 +45,8 @@ static void set_colorbar_text_VAO(int iflag_retina,
 	
 	glBindVertexArray(text_VAO->id_VAO);
 	Const_VAO_4_Texture(text_VAO, cbar_buf);
-	cbar_wk->id_texture = set_texture_to_buffer(IWIDTH_TXT, 3*IHIGHT_TXT, cbar_wk->numBMP);
+	cbar_wk->id_texture = set_texture_to_buffer(cbar_wk->npix_x, 3*cbar_wk->npix_y,
+                                                cbar_wk->numBMP);
 	glBindVertexArray(0);
 	return;
 };

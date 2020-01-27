@@ -20,7 +20,7 @@ static void set_message_text_VAO(int iflag_retina,
 	
 	glBindVertexArray(text_VAO->id_VAO);
 	Const_VAO_4_Texture(text_VAO, cbar_buf);
-	msg_wk->id_texture = set_texture_to_buffer(IWIDTH_TXT, 3*IHIGHT_TXT, msg_wk->msgBMP);
+	msg_wk->id_texture = set_texture_to_buffer(msg_wk->npix_x, msg_wk->npix_y, msg_wk->msgBMP);
 	glBindVertexArray(0);
 	return;
 };

@@ -14,8 +14,8 @@
 #define IHIGHT_TXT 20
 #define IWIDTH_TXT 140
 
-#define IHIGHT_MSG 20
-#define IWIDTH_MSG 800
+#define IHIGHT_MSG 40
+#define IWIDTH_MSG 488
 
 struct cbar_work{
 	int iflag_zero;
@@ -55,7 +55,7 @@ struct msg_work{
     float xbar_max;
     float ybar_min;
     
-    char minlabel[20];
+    char minlabel[26];
     
     int id_texture;
     int npixel;
