@@ -85,13 +85,17 @@ void dropFileToGlfw_CB(GLFWwindow *window, int num, const char **paths) {
 		open_kemoviewer_file_glfw(filename, mbot, gtk_win);
 	}
 }
+
 void windowSizeCB(GLFWwindow *window, int width, int height) {
-/*	printf("windowSizeCB %d %d\n", width, height); */
+    printf("retinemode %d\n", kemoview_get_retinamode());
 	kemoview_update_projection_by_viewer_size(width, height);
+	kemoview_set_windowsize_message(1);
 	glViewport(IZERO, IZERO, (GLint) width, (GLint) height);
 	
 	update_windowsize_menu(mbot->view_menu, gtk_win);
+	kemoview_set_windowsize_message(0);
 }
+
 void frameBufferSizeCB(GLFWwindow *window, int nx_buf, int ny_buf){
 	printf("frameBufferSizeCB %d %d\n", nx_buf, ny_buf);
 }
@@ -138,7 +142,7 @@ void kemoview_main_window(struct kemoviewer_type *kemoviewer_data){
 int draw_mesh_kemo(int iflag_streo_shutter, int iflag_dmesh) {
 	int narg_glut = 0;
 	char **arg_glut;
-	int iflag_retinamode = 0;
+	int iflag_retinamode = 1;
 	/* Initialize arrays for viewer */
 	
 	single_kemoview = kemoview_allocate_single_viwewer_struct();
@@ -164,6 +168,11 @@ int draw_mesh_kemo(int iflag_streo_shutter, int iflag_dmesh) {
 
 #ifdef __APPLE__
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // for MacOS
+	if(iflag_retinamode == 1){
+		glfwWindowHint(GLFW_COCOA_RETINA_FRAMEBUFFER, GLFW_TRUE);
+	} else{
+		glfwWindowHint(GLFW_COCOA_RETINA_FRAMEBUFFER, GLFW_FALSE);
+	};
 #endif
 	
 	glfwWindowHint(GLFW_RED_BITS, 8);
@@ -181,13 +190,7 @@ int draw_mesh_kemo(int iflag_streo_shutter, int iflag_dmesh) {
 	} else{
 		glfwWindowHint(GLFW_STEREO, GLFW_FALSE);
 	};
-	/*
-	if(iflag_retinamode == 1){
-		glfwWindowHint(GLFW_COCOA_RETINA_FRAMEBUFFER, GLFW_TRUE);
-	} else{
-		glfwWindowHint(GLFW_COCOA_RETINA_FRAMEBUFFER, GLFW_FALSE);
-	};
-	*/
+	
 	/*! GTK Initialization*/
 	/* gtk_set_locale(); */
 	gtk_init(&narg_glut, &arg_glut);

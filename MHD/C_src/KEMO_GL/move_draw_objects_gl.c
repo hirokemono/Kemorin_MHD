@@ -193,8 +193,9 @@ static void quick_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_fl
 	draw_colorbar_VAO(kemo_psf->psf_a->cbar_wk, kemo_VAOs->cbar_VAO, kemo_shaders);
 	
     /* Draw message */
-    draw_message_VAO(kemo_mesh->msg_wk, kemo_VAOs->msg_VAO, kemo_shaders);
-
+    if(kemo_mesh->msg_wk->iflag_message > 0){
+	    draw_message_VAO(kemo_mesh->msg_wk, kemo_VAOs->msg_VAO, kemo_shaders);
+    };
     /* draw example cube for empty data */
 	if(kemo_VAOs->cube_VAO->npoint_draw > 0){
 		draw_initial_cube(view_s, kemo_VAOs->cube_VAO, kemo_shaders);
@@ -284,12 +285,12 @@ static void update_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_f
 	draw_colorbar_VAO(kemo_psf->psf_a->cbar_wk, kemo_VAOs->cbar_VAO, kemo_shaders);
 	
     /* Draw message */
-
-    set_message_VAO(view_s->iflag_retina, view_s->nx_window, view_s->ny_window,
-                     kemo_mesh->mesh_m->text_color, kemo_mesh->mesh_m->bg_color, 
-                     kemo_mesh->msg_wk, kemo_VAOs->msg_VAO);
-    draw_message_VAO(kemo_mesh->msg_wk, kemo_VAOs->msg_VAO, kemo_shaders);
-    
+    if(kemo_mesh->msg_wk->iflag_message > 0){
+	    set_message_VAO(view_s->iflag_retina, view_s->nx_window, view_s->ny_window,
+	                     kemo_mesh->mesh_m->text_color, kemo_mesh->mesh_m->bg_color, 
+ 	                    kemo_mesh->msg_wk, kemo_VAOs->msg_VAO);
+ 	   draw_message_VAO(kemo_mesh->msg_wk, kemo_VAOs->msg_VAO, kemo_shaders);
+    };
     /* draw example cube for empty data */
 	iflag = kemo_mesh->mesh_m->iflag_draw_mesh + iflag_psf + kemo_fline->fline_m->iflag_draw_fline;
 	if(iflag == 0){

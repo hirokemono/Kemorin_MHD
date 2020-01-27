@@ -97,6 +97,7 @@ static gboolean renderCB(GtkGLArea *area, GdkGLContext *context)
 void windowSizeCB(GLFWwindow *window, int width, int height) {
 	/*	printf("windowSizeCB %d %d\n", width, height);
 	kemoview_update_projection_by_viewer_size(width, height);
+    kemoview_set_windowsize_message(1);
 	glViewport(IZERO, IZERO, (GLint) width, (GLint) height);
 	
 	update_windowsize_menu(mbot->view_menu, gtk_win);

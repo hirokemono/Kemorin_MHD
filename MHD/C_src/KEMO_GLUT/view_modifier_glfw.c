@@ -139,7 +139,7 @@ void mousePosCB(GLFWwindow *window, double xpos, double ypos) {
 	return;
 }
 
-void set_GLWindowSize(int width, int height){
+void set_GLFWindowSize(int width, int height){
 	glfwSetWindowSize(glfw_window, width, height);
 	kemoview_update_projection_by_viewer_size(width, height);
 	glViewport(IZERO, IZERO, (GLint) width, (GLint) height);

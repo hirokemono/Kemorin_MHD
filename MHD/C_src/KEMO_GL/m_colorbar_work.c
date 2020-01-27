@@ -3,7 +3,6 @@
 */
 
 #include "m_colorbar_work.h"
-#include "write_image_2_bmp.h"
 
 
 struct cbar_work * alloc_colorbar_position(void){
@@ -154,6 +153,7 @@ struct msg_work * alloc_message_work(void){
 		exit(0);
 	}
 
+    msg_wk->iflag_message = 0;
     msg_wk->npix_x = IWIDTH_MSG;
     msg_wk->npix_y = IHIGHT_MSG;
     msg_wk->npixel = msg_wk->npix_x * msg_wk->npix_y;
@@ -166,6 +166,11 @@ void dealloc_message_work(struct msg_work *msg_wk){
     free(msg_wk->msgBMP);
     free(msg_wk->testBMP);
     free(msg_wk);
+    return;
+};
+
+void set_message_switch(int iflag, struct msg_work *msg_wk){
+    msg_wk->iflag_message = iflag;
     return;
 };
 
@@ -239,14 +244,14 @@ void set_windowsize_image(int npixel_x, int npixel_y,
         msg_wk->msgBMP[4*msg_wk->npix_x*(i+1)-6] = 255;
         msg_wk->msgBMP[4*msg_wk->npix_x*(i+1)-5] = 255;
     };
-
+/*
     for(i=0;i<msg_wk->npixel;i++){
 		msg_wk->testBMP[3*i  ] = (unsigned char) (0.8 * (float) ((int) msg_wk->msgBMP[4*i  ]));
 		msg_wk->testBMP[3*i+1] = (unsigned char) (0.2 * (float) ((int) msg_wk->msgBMP[4*i+1]));
 		msg_wk->testBMP[3*i+2] = (unsigned char) (0.4 * (float) ((int) msg_wk->msgBMP[4*i+2]));
 	};
 	pixout_BMP_c("/Users/matsui/Desktop/aho", msg_wk->npix_x, msg_wk->npix_y, msg_wk->testBMP);
-
+*/
     
 	for(i=0;i<msg_wk->npixel;i++){
 		msg_wk->msgBMP[4*i  ] = (unsigned char) (text_color3[0] * (float) ((int) msg_wk->msgBMP[4*i  ]));

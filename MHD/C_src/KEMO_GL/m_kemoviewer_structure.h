@@ -12,6 +12,7 @@
 #include "m_kemoview_psf.h"
 #include "m_kemoview_fline.h"
 #include "m_kemoview_mesh.h"
+#include "m_colorbar_work.h"
 #include "m_phong_light_table_c.h"
 #include "m_gl_transfer_matrix.h"
 #include "vartex_array_object_gl.h"

@@ -411,14 +411,20 @@ void kemoviewer_reset_to_init_angle(void){
 void kemoview_set_retinamode(int i_retina){
     set_gl_retinamode(kemo_sgl->view_s, i_retina);
 }
+int kemoview_get_retinamode(void){
+    return send_gl_retinamode(kemo_sgl->view_s);
+}
 
 void kemoview_set_windowsize(int npixel_x, int npixel_y){
 	set_gl_windowsize(kemo_sgl->view_s, npixel_x, npixel_y);
 };
-
 void kemoview_update_projection_by_viewer_size(int npixel_x, int npixel_y){
 	update_projection_by_windowsize(kemo_sgl->view_s, npixel_x, npixel_y);
 };
+void kemoview_set_windowsize_message(int iflag){
+    set_message_switch(iflag, kemo_sgl->kemo_mesh->msg_wk);
+    return;
+}
 
 
 void kemoview_update_distance(void){
@@ -776,7 +782,7 @@ void kemoview_read_fline_colormap_file(struct kv_string *filename){
 	read_fline_colormap_file(kemo_sgl->kemo_fline->fline_m, filename);
 }
 
-/*  Trmporal routines */
+/*  Temporal routines */
 
 struct shader_ids sampleShader;
 

@@ -110,6 +110,7 @@ void update_projection_by_windowsize(struct view_element *view,
                                      int npixel_x, int npixel_y);
 
 void set_gl_retinamode(struct view_element *view, int i_retina);
+int send_gl_retinamode(struct view_element *view);
 
 
 void set_gl_rotation_parameter(struct view_element *view, int i, double rot_vect);

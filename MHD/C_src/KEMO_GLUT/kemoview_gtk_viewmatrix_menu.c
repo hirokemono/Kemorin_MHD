@@ -71,7 +71,7 @@ static void windowsize_x_CB(GtkWidget *entry, gpointer user_data){
 	struct view_widgets *view_menu = (struct view_widgets *) g_object_get_data(G_OBJECT(user_data), "menu");
 	int gtk_intvalue = (int) gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(entry));
 	
-	set_GLWindowSize(gtk_intvalue, kemoview_get_view_integer(ISET_PIXEL_Y));
+	set_GLFWindowSize(gtk_intvalue, kemoview_get_view_integer(ISET_PIXEL_Y));
 	draw_full();
 	return;
 };
@@ -79,7 +79,7 @@ static void windowsize_y_CB(GtkWidget *entry, gpointer user_data){
 	struct view_widgets *view_menu = (struct view_widgets *) g_object_get_data(G_OBJECT(user_data), "menu");
 	int gtk_intvalue = (int) gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(entry));
 	
-	set_GLWindowSize(kemoview_get_view_integer(ISET_PIXEL_X), gtk_intvalue);
+	set_GLFWindowSize(kemoview_get_view_integer(ISET_PIXEL_X), gtk_intvalue);
 	draw_full();
 	return;
 };

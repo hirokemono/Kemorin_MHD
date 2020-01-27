@@ -104,13 +104,15 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 	if (iflag_updated != 0) {
 		
 		kemoview_update_projection_by_viewer_size(XpixelGLWindow, YpixelGLWindow);
-        
+        kemoview_set_windowsize_message(1);
         [_context makeCurrentContext];
 		[_cocoaGLMessages updateInfoString];
 		[_cocoaGLMessages updateRsolutionString:XpixelGLWindow:YpixelGLWindow];
 		
 		[self swapbuffer_cocoa];
-	}
+    } else{
+	    kemoview_set_windowsize_message(0);
+    }
 }
 
 - (void) swapbuffer_cocoa{

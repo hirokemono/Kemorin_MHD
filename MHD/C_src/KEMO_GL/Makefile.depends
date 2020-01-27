@@ -104,6 +104,7 @@ draw_fieldlines.o: \
   $(C_SRCDIR)/CORE_C/skip_comment_c.h \
   $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h \
   $(C_SRCDIR)/CORE_C/m_psf_data_4_viewer_c.h \
+  $(C_SRCDIR)/KEMO_GL/kemoviewer_base.h \
   $(C_SRCDIR)/KEMO_GL/m_gl_transfer_matrix.h \
   $(C_SRCDIR)/KEMO_GL/trackball.h \
   $(C_SRCDIR)/KEMO_GL/vartex_array_object_gl.h \
@@ -120,7 +121,6 @@ draw_fieldlines.o: \
   $(C_SRCDIR)/CONTROLS/t_control_real3_IO.h \
   $(C_SRCDIR)/KEMO_GL/set_color_code_on_nodes.h \
   $(C_SRCDIR)/KEMO_GL/m_kemoview_psf_menu.h \
-  $(C_SRCDIR)/KEMO_GL/kemoviewer_base.h \
   $(C_SRCDIR)/KEMO_GL/m_colorbar_work.h \
   $(C_SRCDIR)/CORE_C/ysglfontdata.h \
   $(C_SRCDIR)/KEMO_GL/set_fieldline_to_buf.h \
@@ -176,6 +176,39 @@ draw_map_4_PSF.o: \
   $(C_SRCDIR)/KEMO_GL/find_isoline_on_patch_c.h \
   $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
   $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h
+	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $<
+draw_messages_gl.o: \
+  $(C_SRCDIR)/KEMO_GL/draw_messages_gl.c \
+  $(C_SRCDIR)/KEMO_GL/draw_messages_gl.h \
+  $(C_SRCDIR)/KEMO_GL/m_kemoview_psf_menu.h \
+  $(C_SRCDIR)/KEMO_GL/kemoviewer.h \
+  $(C_SRCDIR)/CORE_C/kemosrc_param_c.h \
+  $(C_SRCDIR)/KEMO_GL/kemoviewer_param_c.h \
+  $(C_SRCDIR)/KEMO_GL/kemoviewer_base.h \
+  $(C_SRCDIR)/CORE_C/m_psf_data_4_viewer_c.h \
+  $(C_SRCDIR)/CORE_C/skip_comment_c.h \
+  $(C_SRCDIR)/CONTROLS/m_color_table_c.h \
+  $(C_SRCDIR)/CORE_C/set_rgb_colors_c.h \
+  $(C_SRCDIR)/CONTROLS/t_control_real2_IO.h \
+  $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h \
+  $(C_SRCDIR)/KEMO_GL/m_colorbar_work.h \
+  $(C_SRCDIR)/CORE_C/ysglfontdata.h \
+  $(C_SRCDIR)/CONTROLS/set_rgba_table_c.h \
+  $(C_SRCDIR)/CONTROLS/t_ctl_data_pvr_colormap_c.h \
+  $(C_SRCDIR)/CONTROLS/t_control_int_IO.h \
+  $(C_SRCDIR)/CONTROLS/t_control_real_IO.h \
+  $(C_SRCDIR)/CONTROLS/t_control_chara_IO.h \
+  $(C_SRCDIR)/CONTROLS/t_control_real3_IO.h \
+  $(C_SRCDIR)/KEMO_GL/m_gl_transfer_matrix.h \
+  $(C_SRCDIR)/KEMO_GL/trackball.h \
+  $(C_SRCDIR)/KEMO_GL/vartex_array_object_gl.h \
+  $(C_SRCDIR)/KEMO_GL/glsl.h \
+  $(C_SRCDIR)/KEMO_GL/m_phong_light_table_c.h \
+  $(C_SRCDIR)/GLSL/shaders.h \
+  $(C_SRCDIR)/CORE_C/invert_small_matrix_c.h \
+  $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
+  $(C_SRCDIR)/KEMO_GL/rainbow_color_code_c.h \
+  $(C_SRCDIR)/KEMO_GL/set_colorbar_to_buffer.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $<
 draw_patch_4_mesh_c.o: \
   $(C_SRCDIR)/KEMO_GL/draw_patch_4_mesh_c.c \
@@ -363,6 +396,7 @@ gl_buffer_2_bmp.o: \
   $(C_SRCDIR)/KEMO_GL/drawGL_by_VAO.h \
   $(C_SRCDIR)/KEMO_GL/draw_colorbar_gl.h \
   $(C_SRCDIR)/KEMO_GL/set_colorbar_to_buffer.h \
+  $(C_SRCDIR)/KEMO_GL/draw_messages_gl.h \
   $(C_SRCDIR)/KEMO_GL/draw_fieldlines.h \
   $(C_SRCDIR)/KEMO_GL/set_fieldline_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/draw_coastline.h \
@@ -456,6 +490,7 @@ gl_buffer_2_png.o: \
   $(C_SRCDIR)/KEMO_GL/drawGL_by_VAO.h \
   $(C_SRCDIR)/KEMO_GL/draw_colorbar_gl.h \
   $(C_SRCDIR)/KEMO_GL/set_colorbar_to_buffer.h \
+  $(C_SRCDIR)/KEMO_GL/draw_messages_gl.h \
   $(C_SRCDIR)/KEMO_GL/draw_fieldlines.h \
   $(C_SRCDIR)/KEMO_GL/set_fieldline_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/draw_coastline.h \
@@ -632,7 +667,8 @@ m_kemoview_fline_menu.o: \
   $(C_SRCDIR)/CONTROLS/t_control_real2_IO.h \
   $(C_SRCDIR)/CORE_C/skip_comment_c.h \
   $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h \
-  $(C_SRCDIR)/CORE_C/m_psf_data_4_viewer_c.h
+  $(C_SRCDIR)/CORE_C/m_psf_data_4_viewer_c.h \
+  $(C_SRCDIR)/KEMO_GL/kemoviewer_base.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $<
 m_kemoview_mesh.o: \
   $(C_SRCDIR)/KEMO_GL/m_kemoview_mesh.c \
@@ -898,6 +934,7 @@ m_kemoviewer_structure.o: \
   $(C_SRCDIR)/KEMO_GL/drawGL_by_VAO.h \
   $(C_SRCDIR)/KEMO_GL/draw_colorbar_gl.h \
   $(C_SRCDIR)/KEMO_GL/set_colorbar_to_buffer.h \
+  $(C_SRCDIR)/KEMO_GL/draw_messages_gl.h \
   $(C_SRCDIR)/KEMO_GL/draw_fieldlines.h \
   $(C_SRCDIR)/KEMO_GL/set_fieldline_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/draw_coastline.h \
@@ -1047,6 +1084,7 @@ modify_stereo_view_gl.o: \
   $(C_SRCDIR)/KEMO_GL/drawGL_by_VAO.h \
   $(C_SRCDIR)/KEMO_GL/draw_colorbar_gl.h \
   $(C_SRCDIR)/KEMO_GL/set_colorbar_to_buffer.h \
+  $(C_SRCDIR)/KEMO_GL/draw_messages_gl.h \
   $(C_SRCDIR)/KEMO_GL/draw_fieldlines.h \
   $(C_SRCDIR)/KEMO_GL/set_fieldline_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/draw_coastline.h \
@@ -1137,6 +1175,7 @@ move_draw_objects_gl.o: \
   $(C_SRCDIR)/KEMO_GL/drawGL_by_VAO.h \
   $(C_SRCDIR)/KEMO_GL/draw_colorbar_gl.h \
   $(C_SRCDIR)/KEMO_GL/set_colorbar_to_buffer.h \
+  $(C_SRCDIR)/KEMO_GL/draw_messages_gl.h \
   $(C_SRCDIR)/KEMO_GL/draw_fieldlines.h \
   $(C_SRCDIR)/KEMO_GL/set_fieldline_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/draw_coastline.h \
@@ -1595,6 +1634,7 @@ set_fieldline_to_buf.o: \
   $(C_SRCDIR)/CORE_C/set_rgb_colors_c.h \
   $(C_SRCDIR)/CONTROLS/t_control_real2_IO.h \
   $(C_SRCDIR)/CONTROLS/control_elements_IO_c.h \
+  $(C_SRCDIR)/KEMO_GL/kemoviewer_base.h \
   $(C_SRCDIR)/KEMO_GL/vartex_array_object_gl.h \
   $(C_SRCDIR)/KEMO_GL/rainbow_color_code_c.h \
   $(C_SRCDIR)/CONTROLS/set_rgba_table_c.h \
@@ -1605,7 +1645,6 @@ set_fieldline_to_buf.o: \
   $(C_SRCDIR)/CONTROLS/t_control_real3_IO.h \
   $(C_SRCDIR)/KEMO_GL/set_color_code_on_nodes.h \
   $(C_SRCDIR)/KEMO_GL/m_kemoview_psf_menu.h \
-  $(C_SRCDIR)/KEMO_GL/kemoviewer_base.h \
   $(C_SRCDIR)/KEMO_GL/m_colorbar_work.h \
   $(C_SRCDIR)/CORE_C/ysglfontdata.h \
   $(C_SRCDIR)/KEMO_GL/icosahedron_c.h
@@ -1965,6 +2004,7 @@ write_gl_window_to_file.o: \
   $(C_SRCDIR)/KEMO_GL/drawGL_by_VAO.h \
   $(C_SRCDIR)/KEMO_GL/draw_colorbar_gl.h \
   $(C_SRCDIR)/KEMO_GL/set_colorbar_to_buffer.h \
+  $(C_SRCDIR)/KEMO_GL/draw_messages_gl.h \
   $(C_SRCDIR)/KEMO_GL/draw_fieldlines.h \
   $(C_SRCDIR)/KEMO_GL/set_fieldline_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/draw_coastline.h \
