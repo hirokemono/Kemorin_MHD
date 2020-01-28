@@ -87,17 +87,29 @@ void dropFileToGlfw_CB(GLFWwindow *window, int num, const char **paths) {
 }
 
 void windowSizeCB(GLFWwindow *window, int width, int height) {
-    printf("retinemode %d\n", kemoview_get_retinamode());
-	kemoview_update_projection_by_viewer_size(width, height, width, height);
+    int nx_buf, ny_buf;
+	glfwGetFramebufferSize(glfw_win, &nx_buf, &ny_buf);
+	
+	kemoview_update_projection_by_viewer_size(nx_buf, ny_buf, width, height);
 	kemoview_set_windowsize_message(1);
-	glViewport(IZERO, IZERO, (GLint) width, (GLint) height);
+	glViewport(IZERO, IZERO, (GLint) nx_buf, (GLint) ny_buf);
 	
 	update_windowsize_menu(mbot->view_menu, gtk_win);
 	kemoview_set_windowsize_message(0);
+/*    printf("retinemode %d\n", kemoview_get_retinamode()); */
 }
 
 void frameBufferSizeCB(GLFWwindow *window, int nx_buf, int ny_buf){
-	printf("frameBufferSizeCB %d %d\n", nx_buf, ny_buf);
+	int npix_x, npix_y;
+	glfwGetWindowSize(window, &npix_x, &npix_y);
+/*	printf("frameBufferSizeCB %d %d\n", nx_buf, ny_buf); */
+	
+	kemoview_update_projection_by_viewer_size(nx_buf, ny_buf, npix_x, npix_y);
+	kemoview_set_windowsize_message(1);
+	glViewport(IZERO, IZERO, (GLint) nx_buf, (GLint) ny_buf);
+	
+	update_windowsize_menu(mbot->view_menu, gtk_win);
+	kemoview_set_windowsize_message(0);
 }
 
 /* Main GTK window */
@@ -192,14 +204,10 @@ int draw_mesh_kemo(int iflag_streo_shutter, int iflag_dmesh) {
 	gtk_init(&narg_glut, &arg_glut);
     
 	/* Create a windowed mode window and its OpenGL context */
-	glfw_win = open_kemoviwer_glfw_window(NPIX_X, NPIX_Y);
-
-    /*! Create viewer window*/
-    kemoview_set_windowsize(NPIX_X, NPIX_Y, NPIX_X, NPIX_Y);
-    
-    
     int nx_buf, ny_buf;
+	glfw_win = open_kemoviwer_glfw_window(NPIX_X, NPIX_Y);
 	glfwGetFramebufferSize(glfw_win, &nx_buf, &ny_buf);
+    kemoview_set_windowsize(nx_buf, ny_buf, NPIX_X, NPIX_Y);
 	
 	fprintf(
 			stdout,
