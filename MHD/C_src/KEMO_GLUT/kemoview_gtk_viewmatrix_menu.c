@@ -10,10 +10,17 @@
 
 
 void update_windowsize_menu(struct view_widgets *view_menu, GtkWidget *window){
-	gtk_adjustment_set_value(view_menu->adj_win_x, kemoview_get_view_integer(ISET_PIXEL_X));
-	gtk_adjustment_set_value(view_menu->adj_win_y, kemoview_get_view_integer(ISET_PIXEL_Y));
+    char windowsize_x_text[30];
+    char windowsize_y_text[30];
+    
+    sprintf(windowsize_x_text, "    %d    ", kemoview_get_view_integer(ISET_PIXEL_X));
+    sprintf(windowsize_y_text, "    %d    ", kemoview_get_view_integer(ISET_PIXEL_Y));
+    
+    gtk_label_set_text(GTK_LABEL(view_menu->spin_win_x), windowsize_x_text);
+    gtk_label_set_text(GTK_LABEL(view_menu->spin_win_y), windowsize_y_text);
 	
 	gtk_widget_queue_draw(window);
+	draw_full();
 	return;
 };
 
@@ -67,22 +74,6 @@ static void load_viewmatrix_CB(GtkButton *button, gpointer user_data){
 	return;
 };
 
-static void windowsize_x_CB(GtkWidget *entry, gpointer user_data){
-	struct view_widgets *view_menu = (struct view_widgets *) g_object_get_data(G_OBJECT(user_data), "menu");
-	int gtk_intvalue = (int) gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(entry));
-	
-	set_GLFWindowSize(gtk_intvalue, kemoview_get_view_integer(ISET_PIXEL_Y));
-	draw_full();
-	return;
-};
-static void windowsize_y_CB(GtkWidget *entry, gpointer user_data){
-	struct view_widgets *view_menu = (struct view_widgets *) g_object_get_data(G_OBJECT(user_data), "menu");
-	int gtk_intvalue = (int) gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(entry));
-	
-	set_GLFWindowSize(kemoview_get_view_integer(ISET_PIXEL_X), gtk_intvalue);
-	draw_full();
-	return;
-};
 static void eye_position_x_CB(GtkWidget *entry, gpointer user_data){
 	double gtk_floatvalue = -gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
 	kemoview_set_view_parameter(ISET_SHIFT, 0, gtk_floatvalue);
@@ -170,10 +161,16 @@ static void eye_sep_CB(GtkWidget *entry, gpointer user_data){
 void gtk_viewmatrix_menu_box(GtkWidget *window, struct view_widgets *view_menu){
 	GtkWidget *entry = gtk_entry_new();
 	
+    char windowsize_x_text[30];
+    char windowsize_y_text[30];
+    
 	char current_lookat_x_text[30];
 	char current_lookat_y_text[30];
 	char current_lookat_z_text[30];
 	
+    sprintf(windowsize_x_text, "    %d    ", kemoview_get_view_integer(ISET_PIXEL_X));
+    sprintf(windowsize_y_text, "    %d    ", kemoview_get_view_integer(ISET_PIXEL_Y));
+    
 	sprintf(current_lookat_x_text, "    %f    ",
 			(float) kemoview_get_view_parameter(ISET_VWPOINT, 0));
 	sprintf(current_lookat_y_text, "    %f    ",
@@ -184,8 +181,9 @@ void gtk_viewmatrix_menu_box(GtkWidget *window, struct view_widgets *view_menu){
 	g_object_set_data(G_OBJECT(entry), "parent", (gpointer) window);
 	g_object_set_data(G_OBJECT(entry), "menu", (gpointer) view_menu);
 	
-	view_menu->adj_win_x = gtk_adjustment_new(0, 0, 16392, 1, 1, 0);
-	view_menu->adj_win_y = gtk_adjustment_new(0, 0, 16392, 1, 1, 0);
+    view_menu->spin_win_x = gtk_label_new(windowsize_x_text);
+    view_menu->spin_win_y = gtk_label_new(windowsize_y_text);
+    
 	view_menu->adj_eye_x = gtk_adjustment_new(0.0, -1000.0, 1000.0, 1., 1., 0.0);
 	view_menu->adj_eye_y = gtk_adjustment_new(0.0, -1000.0, 1000.0, 1., 1., 0.0);
 	view_menu->adj_eye_z = gtk_adjustment_new(0.0, -1000.0, 1000.0, 1., 1., 0.0);
@@ -206,11 +204,6 @@ void gtk_viewmatrix_menu_box(GtkWidget *window, struct view_widgets *view_menu){
 	
 	update_windowsize_menu(view_menu, window);
 	update_viewmatrix_menu(view_menu, window);
-	
-	view_menu->spin_win_x = gtk_spin_button_new(GTK_ADJUSTMENT(view_menu->adj_win_x), 0, 0);
-	g_signal_connect(view_menu->spin_win_x, "value-changed", G_CALLBACK(windowsize_x_CB), entry);
-	view_menu->spin_win_y = gtk_spin_button_new(GTK_ADJUSTMENT(view_menu->adj_win_y), 0, 0);
-	g_signal_connect(view_menu->spin_win_y, "value-changed", G_CALLBACK(windowsize_y_CB), entry);
 	
 	view_menu->spin_eye_x = gtk_spin_button_new(GTK_ADJUSTMENT(view_menu->adj_eye_x), 0, 3);
 	g_signal_connect(view_menu->spin_eye_x, "value-changed", G_CALLBACK(eye_position_x_CB), NULL);
