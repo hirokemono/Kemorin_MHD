@@ -88,7 +88,7 @@ void dropFileToGlfw_CB(GLFWwindow *window, int num, const char **paths) {
 
 void windowSizeCB(GLFWwindow *window, int width, int height) {
     printf("retinemode %d\n", kemoview_get_retinamode());
-	kemoview_update_projection_by_viewer_size(width, height);
+	kemoview_update_projection_by_viewer_size(width, height, width, height);
 	kemoview_set_windowsize_message(1);
 	glViewport(IZERO, IZERO, (GLint) width, (GLint) height);
 	
@@ -154,10 +154,6 @@ int draw_mesh_kemo(int iflag_streo_shutter, int iflag_dmesh) {
 		kemoview_set_view_integer(ISET_ANAGYLYPH, ANAGLYPH_ON);
 	};
 	
-	/*! Create viewer window*/
-	kemoview_set_retinamode(iflag_retinamode);
-	kemoview_set_windowsize(NPIX_X, NPIX_Y);
-
 	/*! glfw Initialization*/
 	if(!glfwInit()) return -1;
 
@@ -197,7 +193,12 @@ int draw_mesh_kemo(int iflag_streo_shutter, int iflag_dmesh) {
     
 	/* Create a windowed mode window and its OpenGL context */
 	glfw_win = open_kemoviwer_glfw_window(NPIX_X, NPIX_Y);
-	int nx_buf, ny_buf;
+
+    /*! Create viewer window*/
+    kemoview_set_windowsize(NPIX_X, NPIX_Y, NPIX_X, NPIX_Y);
+    
+    
+    int nx_buf, ny_buf;
 	glfwGetFramebufferSize(glfw_win, &nx_buf, &ny_buf);
 	
 	fprintf(

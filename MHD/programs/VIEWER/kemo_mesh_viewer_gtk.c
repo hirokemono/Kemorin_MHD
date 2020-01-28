@@ -156,10 +156,6 @@ int draw_mesh_kemo(int iflag_streo_shutter, int iflag_dmesh) {
 		kemoview_set_view_integer(ISET_ANAGYLYPH, ANAGLYPH_ON);
 	};
 	
-	/*! Create viewer window*/
-	kemoview_set_retinamode(iflag_retinamode);
-	kemoview_set_windowsize(NPIX_X, NPIX_Y);
-	
 	/*! GTK Initialization*/
 	/* gtk_set_locale(); */
 	gtk_init(&narg_glut, &arg_glut);
@@ -193,7 +189,10 @@ int draw_mesh_kemo(int iflag_streo_shutter, int iflag_dmesh) {
 	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	kemoview_main_window(single_kemoview, vbox);
 	
-	gtk_widget_show(vbox);
+    /*! Create viewer window*/
+    kemoview_set_windowsize(NPIX_X, NPIX_Y, NPIX_X, NPIX_Y);
+
+    gtk_widget_show(vbox);
 	gtk_container_add(GTK_CONTAINER(gtk_win), vbox);
 	gtk_container_add(GTK_CONTAINER(kemoview_win), kemoview_area);
 	gtk_widget_show(gtk_win);
