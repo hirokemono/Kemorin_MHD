@@ -107,8 +107,6 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
                                                   XpixelRectView, YpixelRectView);
         kemoview_set_windowsize_message(1);
         [_context makeCurrentContext];
-		[_cocoaGLMessages updateInfoString];
-		[_cocoaGLMessages updateRsolutionString:XpixelGLWindow:YpixelGLWindow];
 		
 		[self swapbuffer_cocoa];
     } else{
@@ -196,7 +194,6 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 	// setup viewport and prespective
 	[self resizeGL]; // forces projection matrix update (does test for size changes)
 	[self updateModelView];  // update model view matrix for object
-	[_cocoaGLMessages  drawInfo:XpixelRectView:YpixelRectView];
 	[self swapbuffer_cocoa];
 }
 
@@ -246,13 +243,13 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 
 -(void) setInfo:(NSInteger)flag
 {
-    [_cocoaGLMessages setDrawInfoFlag:flag];
+//    [_cocoaGLMessages setDrawInfoFlag:flag];
 	[self setNeedsDisplay: YES];
 }
 
 -(void) setQuickHelp:(NSInteger)flag
 {
-	[_cocoaGLMessages  setQuickHelpFlag:flag];
+//	[_cocoaGLMessages  setQuickHelpFlag:flag];
 	[self setNeedsDisplay: YES];
 }
 

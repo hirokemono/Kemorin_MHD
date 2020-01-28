@@ -183,7 +183,6 @@
 		18D7E7851562D359009B05FF /* ElementGroupTableController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E7041562D359009B05FF /* ElementGroupTableController.m */; };
 		18D7E7861562D359009B05FF /* fillRectView.m in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E7061562D359009B05FF /* fillRectView.m */; };
 		18D7E7871562D359009B05FF /* FlineController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E7081562D359009B05FF /* FlineController.m */; };
-		18D7E7881562D359009B05FF /* GLString.m in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E70A1562D359009B05FF /* GLString.m */; };
 		18D7E7891562D359009B05FF /* Kemoview_IO_Controller.m in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E70C1562D359009B05FF /* Kemoview_IO_Controller.m */; };
 		18D7E78A1562D359009B05FF /* KemoviewDragDropWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E70E1562D359009B05FF /* KemoviewDragDropWindow.m */; };
 		18D7E78B1562D359009B05FF /* KemoviewerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E7101562D359009B05FF /* KemoviewerController.m */; };
@@ -197,7 +196,6 @@
 		18D7E7941562D359009B05FF /* PsfController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E7221562D359009B05FF /* PsfController.m */; };
 		18D7E7951562D359009B05FF /* ResetViewControll.m in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E7241562D359009B05FF /* ResetViewControll.m */; };
 		18D7E7961562D359009B05FF /* RGBAMapController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E7261562D359009B05FF /* RGBAMapController.m */; };
-		18D7E7971562D359009B05FF /* SetCocoaGLMessases.m in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E7281562D359009B05FF /* SetCocoaGLMessases.m */; };
 		18D7E7981562D359009B05FF /* SurfaceGroupTableController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E72A1562D359009B05FF /* SurfaceGroupTableController.m */; };
 		18E2A550230879E20048A57A /* set_mesh_patch_2_gl_buf.c in Sources */ = {isa = PBXBuildFile; fileRef = 18E2A54E230879E10048A57A /* set_mesh_patch_2_gl_buf.c */; };
 		18EE497722E231B0000B1F03 /* m_read_text_to_character.c in Sources */ = {isa = PBXBuildFile; fileRef = 18EE497522E231B0000B1F03 /* m_read_text_to_character.c */; };
@@ -548,8 +546,6 @@
 		18D7E7061562D359009B05FF /* fillRectView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = fillRectView.m; sourceTree = "<group>"; };
 		18D7E7071562D359009B05FF /* FlineController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FlineController.h; sourceTree = "<group>"; };
 		18D7E7081562D359009B05FF /* FlineController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FlineController.m; sourceTree = "<group>"; };
-		18D7E7091562D359009B05FF /* GLString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLString.h; sourceTree = "<group>"; };
-		18D7E70A1562D359009B05FF /* GLString.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GLString.m; sourceTree = "<group>"; };
 		18D7E70B1562D359009B05FF /* Kemoview_IO_Controller.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Kemoview_IO_Controller.h; sourceTree = "<group>"; };
 		18D7E70C1562D359009B05FF /* Kemoview_IO_Controller.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Kemoview_IO_Controller.m; sourceTree = "<group>"; };
 		18D7E70D1562D359009B05FF /* KemoviewDragDropWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KemoviewDragDropWindow.h; sourceTree = "<group>"; };
@@ -576,8 +572,6 @@
 		18D7E7241562D359009B05FF /* ResetViewControll.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ResetViewControll.m; sourceTree = "<group>"; };
 		18D7E7251562D359009B05FF /* RGBAMapController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RGBAMapController.h; sourceTree = "<group>"; };
 		18D7E7261562D359009B05FF /* RGBAMapController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RGBAMapController.m; sourceTree = "<group>"; };
-		18D7E7271562D359009B05FF /* SetCocoaGLMessases.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SetCocoaGLMessases.h; sourceTree = "<group>"; };
-		18D7E7281562D359009B05FF /* SetCocoaGLMessases.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SetCocoaGLMessases.m; sourceTree = "<group>"; };
 		18D7E7291562D359009B05FF /* SurfaceGroupTableController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SurfaceGroupTableController.h; sourceTree = "<group>"; };
 		18D7E72A1562D359009B05FF /* SurfaceGroupTableController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SurfaceGroupTableController.m; sourceTree = "<group>"; };
 		18E2A54E230879E10048A57A /* set_mesh_patch_2_gl_buf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = set_mesh_patch_2_gl_buf.c; sourceTree = "<group>"; };
@@ -1034,8 +1028,6 @@
 				18D7E7061562D359009B05FF /* fillRectView.m */,
 				18D7E7071562D359009B05FF /* FlineController.h */,
 				18D7E7081562D359009B05FF /* FlineController.m */,
-				18D7E7091562D359009B05FF /* GLString.h */,
-				18D7E70A1562D359009B05FF /* GLString.m */,
 				18D7E70B1562D359009B05FF /* Kemoview_IO_Controller.h */,
 				18D7E70C1562D359009B05FF /* Kemoview_IO_Controller.m */,
 				18D7E70D1562D359009B05FF /* KemoviewDragDropWindow.h */,
@@ -1062,8 +1054,6 @@
 				18D7E7241562D359009B05FF /* ResetViewControll.m */,
 				18D7E7251562D359009B05FF /* RGBAMapController.h */,
 				18D7E7261562D359009B05FF /* RGBAMapController.m */,
-				18D7E7271562D359009B05FF /* SetCocoaGLMessases.h */,
-				18D7E7281562D359009B05FF /* SetCocoaGLMessases.m */,
 				18D7E7291562D359009B05FF /* SurfaceGroupTableController.h */,
 				18D7E72A1562D359009B05FF /* SurfaceGroupTableController.m */,
 			);
@@ -1336,7 +1326,6 @@
 				18D7E7871562D359009B05FF /* FlineController.m in Sources */,
 				185CB9D6212F593D00BB3C0B /* t_ctl_data_mhd_evolution_c.c in Sources */,
 				185CB9BD212F593D00BB3C0B /* t_control_data_lic_masking_list.c in Sources */,
-				18D7E7881562D359009B05FF /* GLString.m in Sources */,
 				18D7E7891562D359009B05FF /* Kemoview_IO_Controller.m in Sources */,
 				188C941F230DA8C300A4DB14 /* set_each_fline_parameters.c in Sources */,
 				18D7E78A1562D359009B05FF /* KemoviewDragDropWindow.m in Sources */,
@@ -1359,7 +1348,6 @@
 				18D7E7951562D359009B05FF /* ResetViewControll.m in Sources */,
 				18D7E7961562D359009B05FF /* RGBAMapController.m in Sources */,
 				185CB9C7212F593D00BB3C0B /* t_control_int_IO.c in Sources */,
-				18D7E7971562D359009B05FF /* SetCocoaGLMessases.m in Sources */,
 				185CB9CE212F593D00BB3C0B /* t_ctl_data_4_platforms_c.c in Sources */,
 				18D7E7981562D359009B05FF /* SurfaceGroupTableController.m in Sources */,
 				18F6DAF615D993F7006F4600 /* set_each_psf_parameters.c in Sources */,

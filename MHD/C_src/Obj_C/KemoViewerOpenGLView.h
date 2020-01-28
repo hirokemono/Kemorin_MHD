@@ -11,7 +11,6 @@
 #import <OpenGL/glext.h>
 
 #import "ResetViewControll.h"
-#import "SetCocoaGLMessases.h"
 
 #include "kemoviewer.h"
 
@@ -33,7 +32,6 @@ typedef struct {
 @interface KemoViewerOpenGLView : NSOpenGLView {
 	IBOutlet NSUserDefaultsController* _kemoviewGL_defaults_controller;
 	IBOutlet ResetViewControll*  _resetview;
-	IBOutlet SetCocoaGLMessases* _cocoaGLMessages;
 	IBOutlet NSWindow*  mainWindow;
 	
 	NSOpenGLContext * _context;
