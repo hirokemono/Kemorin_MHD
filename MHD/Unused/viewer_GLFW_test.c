@@ -61,7 +61,7 @@ void dropFileToGlfw_CB(GLFWwindow *window, int num, const char **paths) {
 }
 void windowSizeCB(GLFWwindow *window, int width, int height) {
 /*	printf("windowSizeCB %d %d\n", width, height); */
-	kemoview_update_projection_by_viewer_size(width, height);
+	kemoview_update_projection_by_viewer_size(width, height, width, height);
 	glViewport(IZERO, IZERO, (GLint) width, (GLint) height);
 }
 void frameBufferSizeCB(GLFWwindow *window, int nx_buf, int ny_buf){
@@ -89,7 +89,7 @@ int draw_glfw_test(int iflag_streo_shutter, int iflag_dmesh) {
 	
 	/*! Create viewer window*/
 	kemoview_set_retinamode(iflag_retinamode);
-	kemoview_set_windowsize(NPIX_X, NPIX_Y);
+	kemoview_set_windowsize(NPIX_X, NPIX_Y, NPIX_X, NPIX_Y);
 
 	/*! glfw Initialization*/
 	if(!glfwInit()) return -1;

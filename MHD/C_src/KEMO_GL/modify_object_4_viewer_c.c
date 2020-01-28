@@ -126,7 +126,7 @@ double set_tube_radius_by_view(struct view_element *view_s, double radius){
 				+ view_s->max_point[1]*view_s->max_point[1]
 				+ view_s->max_point[2]*view_s->max_point[2]);
 	radius = radius * size * (1.0 + (float)view_s->iflag_retina)
-			/ (float) view_s->ny_window;
+			/ (float) view_s->ny_frame;
 	
 	return radius;
 }

@@ -278,7 +278,7 @@ static void update_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_f
 	};
 	
 	
-	set_colorbar_VAO(view_s->iflag_retina, view_s->nx_window, view_s->ny_window,
+	set_colorbar_VAO(view_s->iflag_retina, view_s->nx_frame, view_s->ny_frame,
 				kemo_mesh->mesh_m->text_color, kemo_mesh->mesh_m->bg_color, 
 				kemo_psf->psf_m, kemo_psf->psf_a,
 				kemo_VAOs->cbar_VAO);
@@ -286,7 +286,7 @@ static void update_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_f
 	
     /* Draw message */
     if(kemo_mesh->msg_wk->iflag_message > 0){
-	    set_message_VAO(view_s->iflag_retina, view_s->nx_window, view_s->ny_window,
+	    set_message_VAO(view_s->iflag_retina, view_s->nx_frame, view_s->ny_frame,
 	                     kemo_mesh->mesh_m->text_color, kemo_mesh->mesh_m->bg_color, 
  	                    kemo_mesh->msg_wk, kemo_VAOs->msg_VAO);
  	   draw_message_VAO(kemo_mesh->msg_wk, kemo_VAOs->msg_VAO, kemo_shaders);

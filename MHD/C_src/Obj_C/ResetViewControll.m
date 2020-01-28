@@ -39,8 +39,6 @@
 
 - (void) SetViewByInpit;
 {
-	kemoview_set_windowsize((int) self.xPixel, (int) self.yPixel);
-
 	kemoview_set_view_parameter(ISET_ROTATE, 1, (double) self.RotationAxisX);
 	kemoview_set_view_parameter(ISET_ROTATE, 2, (double) self.RotationAxisY);
 	kemoview_set_view_parameter(ISET_ROTATE, 3, (double) self.RotationAxisZ);

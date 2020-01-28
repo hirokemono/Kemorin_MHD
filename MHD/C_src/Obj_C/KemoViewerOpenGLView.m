@@ -103,7 +103,8 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
     int iflag_updated = [self getViewSize];
 	if (iflag_updated != 0) {
 		
-		kemoview_update_projection_by_viewer_size(XpixelGLWindow, YpixelGLWindow);
+		kemoview_update_projection_by_viewer_size(XpixelGLWindow, YpixelGLWindow,
+                                                  XpixelRectView, YpixelRectView);
         kemoview_set_windowsize_message(1);
         [_context makeCurrentContext];
 		[_cocoaGLMessages updateInfoString];
@@ -484,7 +485,10 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 	int iflag_updates = [self getViewSize];
     [self setRetinaMode];
     
-    if(iflag_updates != 0) kemoview_set_windowsize(XpixelGLWindow, YpixelGLWindow);
+    if(iflag_updates != 0){
+        kemoview_set_windowsize(XpixelGLWindow, YpixelGLWindow, 
+                                XpixelRectView, YpixelRectView);
+    };
 		
 	NSUserDefaults* defaults = [_kemoviewGL_defaults_controller defaults];
 	BgColor4f[0] = [[defaults stringForKey:@"BackGroundRed"] floatValue];

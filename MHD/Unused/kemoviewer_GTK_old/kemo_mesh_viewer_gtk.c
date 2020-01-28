@@ -136,7 +136,7 @@ void draw_mesh_kemo(int iflag_streo_shutter, int iflag_dmesh) {
 	};
 	/*! Create viewer window*/
     kemoview_set_retinamode(IZERO);
-	kemoview_set_windowsize(NPIX_X, NPIX_Y);
+	kemoview_set_windowsize(NPIX_X, NPIX_Y, NPIX_X, NPIX_Y);
 	glutInitWindowSize(NPIX_X, NPIX_Y);
 	winid = create_kemoview_window();
 	

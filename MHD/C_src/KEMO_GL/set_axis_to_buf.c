@@ -12,21 +12,21 @@ static float set_ratio_4_axislabel(struct view_element *view_s,
 	GLfloat ratio;
 	GLfloat ratio_tmp[2];
 	
-	if ( end_screen[0] < view_s->nx_window/10 ) { 
-		ratio_tmp[0] = (GLfloat) (view_s->nx_window/10 - zero_screen[0])
+	if ( end_screen[0] < view_s->nx_frame/10 ) { 
+		ratio_tmp[0] = (GLfloat) (view_s->nx_frame/10 - zero_screen[0])
         / (GLfloat) (end_screen[0] - zero_screen[0]);
-	} else if  ( end_screen[0] > view_s->nx_window*9/10 ) {
-		ratio_tmp[0] = (GLfloat) (zero_screen[0]-view_s->nx_window*9/10)
+	} else if  ( end_screen[0] > view_s->nx_frame*9/10 ) {
+		ratio_tmp[0] = (GLfloat) (zero_screen[0]-view_s->nx_frame*9/10)
         / (GLfloat) (zero_screen[0] - end_screen[0]);
 	} else {
 		ratio_tmp[0] = ONE;
 	};
 	
-	if ( end_screen[1] < view_s->ny_window/10 ) { 
-		ratio_tmp[1] = (GLfloat) (view_s->ny_window/10 - zero_screen[1])
+	if ( end_screen[1] < view_s->ny_frame/10 ) { 
+		ratio_tmp[1] = (GLfloat) (view_s->ny_frame/10 - zero_screen[1])
         / (GLfloat) (end_screen[1] - zero_screen[1]);
-	} else if  ( end_screen[1] > view_s->ny_window*9/10 ) {
-		ratio_tmp[1] = (GLfloat) (zero_screen[1]-view_s->ny_window*9/10)
+	} else if  ( end_screen[1] > view_s->ny_frame*9/10 ) {
+		ratio_tmp[1] = (GLfloat) (zero_screen[1]-view_s->ny_frame*9/10)
         / (GLfloat) (zero_screen[1] - end_screen[1]);
 	} else {
 		ratio_tmp[1] = ONE;
@@ -61,13 +61,13 @@ static void set_vertexs_for_axis(struct view_element *view_s, double dist,
 	xx_axis[1] = axis_org[1];
 	xx_axis[2] = axis_org[2];
 	set_3d_position_to_window(zero_screen, xx_axis, 
-                              view_s->nx_window, view_s->ny_window, view_s);
+                              view_s->nx_frame, view_s->ny_frame, view_s);
 	
 	xx_axis[0] = axis_org[0] + l_axis[0];
 	xx_axis[1] = axis_org[1];
 	xx_axis[2] = axis_org[2];
 	set_3d_position_to_window(end_screen, xx_axis, 
-                              view_s->nx_window, view_s->ny_window, view_s);
+                              view_s->nx_frame, view_s->ny_frame, view_s);
 	label_ratio[0] = set_ratio_4_axislabel(view_s, end_screen, zero_screen, l_axis[0]);
 	x_label[0] = end_screen[0] / label_ratio[0];
 	x_label[1] = end_screen[1] / label_ratio[0];
@@ -76,7 +76,7 @@ static void set_vertexs_for_axis(struct view_element *view_s, double dist,
 	xx_axis[1] = axis_org[1] + l_axis[1];
 	xx_axis[2] = axis_org[2];
 	set_3d_position_to_window(end_screen, xx_axis, 
-                              view_s->nx_window, view_s->ny_window, view_s);
+                              view_s->nx_frame, view_s->ny_frame, view_s);
 	label_ratio[1] = set_ratio_4_axislabel(view_s, end_screen, zero_screen, l_axis[1]);
 	y_label[0] = end_screen[0] / label_ratio[0];
 	y_label[1] = end_screen[1] / label_ratio[0];
@@ -85,7 +85,7 @@ static void set_vertexs_for_axis(struct view_element *view_s, double dist,
 	xx_axis[1] = axis_org[1];
 	xx_axis[2] = axis_org[2] + l_axis[2];
 	set_3d_position_to_window(end_screen, xx_axis, 
-                              view_s->nx_window, view_s->ny_window, view_s);
+                              view_s->nx_frame, view_s->ny_frame, view_s);
 	label_ratio[2] = set_ratio_4_axislabel(view_s, end_screen, zero_screen, l_axis[2]);
 	z_label[0] = end_screen[0] / label_ratio[0];
 	z_label[1] = end_screen[1] / label_ratio[0];
@@ -95,7 +95,7 @@ static void set_vertexs_for_axis(struct view_element *view_s, double dist,
 	if(label_ratio[2] <= min_l_ratio) min_l_ratio = label_ratio[2];
 	
 	*radius = *radius * min_l_ratio * (1.0 + (float)view_s->iflag_retina)
-			/ (float) view_s->ny_window;
+			/ (float) view_s->ny_frame;
 
 	/*
 	 printf("x_label %e, %e \n",x_label[0],x_label[1]);

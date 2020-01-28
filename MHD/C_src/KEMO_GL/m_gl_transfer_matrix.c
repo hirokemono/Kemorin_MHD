@@ -276,7 +276,7 @@ static void Kemo_Rotate_view_c(double rotate[4], double model[16]){
 	return;
 }
 
-static void update_projection(double x_lookfrom[2], int nx_window, int ny_window,
+static void update_projection(double x_lookfrom[2], int nx_frame, int ny_frame,
 							  double aperture, double aspect, double near, double far,
 							  double projection[16]){
 	double wd2;
@@ -288,7 +288,7 @@ static void update_projection(double x_lookfrom[2], int nx_window, int ny_window
 	far = x_lookfrom[2] + object_size * HALF;
 	if (far < ONE) far = ONE;
 	
-	aspect = ((double) nx_window) / ((double) ny_window);
+	aspect = ((double) nx_frame) / ((double) ny_frame);
 	wd2 =  near * tan(aperture*DTOR*HALF);
 	
 	left  = - aspect * wd2;
@@ -298,7 +298,7 @@ static void update_projection(double x_lookfrom[2], int nx_window, int ny_window
 	return;
 }
 
-static void update_projection_left(double x_lookfrom[2], int nx_window, int ny_window,
+static void update_projection_left(double x_lookfrom[2], int nx_frame, int ny_frame,
 								   double aperture, double aspect, double near, double far,
 								   double focalLength, double eyeSep, double projection[16]){
 	double wd2, ndfl;
@@ -310,7 +310,7 @@ static void update_projection_left(double x_lookfrom[2], int nx_window, int ny_w
 	far = x_lookfrom[2] + object_size * HALF;
 	if (far < ONE) far = ONE;
 	
-	aspect = ((double) nx_window) / ((double) ny_window);
+	aspect = ((double) nx_frame) / ((double) ny_frame);
 	wd2 =  near * tan(aperture*DTOR*HALF);
 	ndfl = near / focalLength;
 	
@@ -321,7 +321,7 @@ static void update_projection_left(double x_lookfrom[2], int nx_window, int ny_w
 	return;
 }
 
-static void update_projection_right(double x_lookfrom[2], int nx_window, int ny_window,
+static void update_projection_right(double x_lookfrom[2], int nx_frame, int ny_frame,
 									double aperture, double aspect, double near, double far,
 									double focalLength, double eyeSep, double projection[16]){
 	double wd2, ndfl;
@@ -333,7 +333,7 @@ static void update_projection_right(double x_lookfrom[2], int nx_window, int ny_
 	far = x_lookfrom[2] + object_size * HALF;
 	if (far < ONE) far = ONE;
 	
-	aspect = ((double) nx_window) / ((double) ny_window);
+	aspect = ((double) nx_frame) / ((double) ny_frame);
 	wd2 =  near * tan(aperture*DTOR*HALF);
 	ndfl = near / focalLength;
 	
@@ -446,8 +446,8 @@ void set_view_for_message(struct view_element *view){
 	double modelview[16];
 	double scale[3];
 	
-	scale[0] =  ((double) (1+view->iflag_retina)) / ((double) view->nx_window);
-	scale[1] = - ((double) (1+view->iflag_retina)) / ((double) view->ny_window);
+	scale[0] =  ((double) (1+view->iflag_retina)) / ((double) view->nx_frame);
+	scale[1] = - ((double) (1+view->iflag_retina)) / ((double) view->ny_frame);
 	scale[2] =  1.0;
 	
 	identity_glmat_c(modelview);
@@ -470,20 +470,20 @@ void init_projection_struct(struct view_element *view){
 };
 
 void update_projection_struct(struct view_element *view){
-	update_projection(view->x_lookfrom, view->nx_window, view->ny_window,
+	update_projection(view->x_lookfrom, view->nx_frame, view->ny_frame,
                       view->aperture, view->aspect, view->near, view->far, 
 					  view->mat_eye_2_clip);
 	return;
 };
 void update_left_projection_struct(struct view_element *view){
-	update_projection_left(view->x_lookfrom, view->nx_window, view->ny_window,
+	update_projection_left(view->x_lookfrom, view->nx_frame, view->ny_frame,
 						   view->aperture, view->aspect, view->near, view->far,
 						   view->focal_length, view->eye_separation, 
 						   view->mat_eye_2_clip);
 	return;
 };
 void update_right_projection_struct(struct view_element *view){
-	update_projection_right(view->x_lookfrom, view->nx_window, view->ny_window,
+	update_projection_right(view->x_lookfrom, view->nx_frame, view->ny_frame,
 							view->aperture, view->aspect, view->near, view->far,
 							view->focal_length, view->eye_separation, 
 							view->mat_eye_2_clip);
@@ -594,7 +594,7 @@ void init_kemoview_perspective(struct view_element *view){
 	view->near =       INITIAL_NEAR;
 	view->far =        INITIAL_FAR;
 	
-	view->aspect = ((double) view->nx_window) / ((double) view->ny_window);
+	view->aspect = ((double) view->nx_frame) / ((double) view->ny_frame);
 	
 	view->focal_length =  INITIAL_FOCAL;
 	view->eye_separation = INITIAL_EYE_SEP;
@@ -602,18 +602,28 @@ void init_kemoview_perspective(struct view_element *view){
 	return;
 }
 
-void set_gl_windowsize(struct view_element *view, int npixel_x, int npixel_y)
+void set_gl_windowsize(struct view_element *view, int npixel_x, int npixel_y,
+                       int nwindow_x, int nwindow_y)
 {
-	view->nx_window = npixel_x;
-	view->ny_window = npixel_y;
+	view->nx_frame = npixel_x;
+	view->ny_frame = npixel_y;
+    view->nx_window = nwindow_x;
+    view->ny_window = nwindow_y;
+
+    if(view->nx_frame > view->nx_window){
+        view->iflag_retina = 1;
+    } else {
+        view->iflag_retina = 0;
+    }
 	return;
 }
-int send_gl_windowsize_x(struct view_element *view){return (int) view->nx_window;};
-int send_gl_windowsize_y(struct view_element *view){return (int) view->ny_window;};
-void update_projection_by_windowsize(struct view_element *view,
-                                     int npixel_x, int npixel_y)
+
+int send_gl_windowsize_x(struct view_element *view){return (int) view->nx_frame;};
+int send_gl_windowsize_y(struct view_element *view){return (int) view->ny_frame;};
+void update_projection_by_windowsize(struct view_element *view, int npixel_x, int npixel_y,
+                                     int nwindow_x, int nwindow_y)
 {
-    set_gl_windowsize(view, npixel_x, npixel_y);
+    set_gl_windowsize(view, npixel_x, npixel_y, nwindow_x, nwindow_y);
 	update_projection_struct(view);
     return;
 }
@@ -722,7 +732,7 @@ double send_gl_stereo_eyeseparation(struct view_element *view){
 
 /* called with the start position and the window origin + size */
 void gl_startTrackball(double x, double y, struct view_element *view){
-	startTrackball_c(x, y, ZERO, ZERO, view->nx_window, -view->ny_window);
+	startTrackball_c(x, y, ZERO, ZERO, view->nx_frame, -view->ny_frame);
 	return;
 };
 /* calculated rotation based on current mouse position */

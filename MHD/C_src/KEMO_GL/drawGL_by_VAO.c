@@ -38,11 +38,11 @@ void draw_map_objects_VAO(struct view_element *view_s,
 	double orthogonal[16];
 	int i;
 	
-	if(view_s->ny_window > view_s->nx_window) {
+	if(view_s->ny_frame > view_s->nx_frame) {
 		xwin = 2.05;
-		ywin = 2.05 * (double)view_s->ny_window / (double)view_s->nx_window;
+		ywin = 2.05 * (double)view_s->ny_frame / (double)view_s->nx_frame;
 	} else{
-		xwin = 1.7 * (double)view_s->nx_window / (double)view_s->ny_window;
+		xwin = 1.7 * (double)view_s->nx_frame / (double)view_s->ny_frame;
 		ywin = 1.7;
 	}
 	

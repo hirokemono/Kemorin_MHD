@@ -85,8 +85,8 @@ void copy_GL_modelview_params_to_ctl(struct view_element *view, struct modeview_
 	lookat_in_view[2] = view->x_lookat[2];
 	
 	mat_c->img_size_c->iflag_use = 1;
-	update_int_ctl_item_c(view->nx_window, mat_c->img_size_c->num_xpixel_ctl);
-	update_int_ctl_item_c(view->ny_window, mat_c->img_size_c->num_ypixel_ctl);
+	update_int_ctl_item_c(view->nx_frame, mat_c->img_size_c->num_xpixel_ctl);
+	update_int_ctl_item_c(view->ny_frame, mat_c->img_size_c->num_ypixel_ctl);
 	
 	copy_vector_to_ctl(viewpt_in_view, mat_c->viewpt_in_viewer_list);
 	
@@ -120,8 +120,16 @@ void copy_GL_modelview_params_from_ctl(struct modeview_ctl_c *mat_c, struct view
     double drotation[3];
 	
 	if(mat_c->img_size_c->iflag_use > 0){
-		view->nx_window = set_from_int_ctl_item_c(mat_c->img_size_c->num_xpixel_ctl);
-		view->ny_window = set_from_int_ctl_item_c(mat_c->img_size_c->num_ypixel_ctl);
+		view->nx_frame = set_from_int_ctl_item_c(mat_c->img_size_c->num_xpixel_ctl);
+		view->ny_frame = set_from_int_ctl_item_c(mat_c->img_size_c->num_ypixel_ctl);
+
+        if(view->iflag_retina > 0){
+            view->nx_window = view->nx_frame / 2;
+            view->ny_window = view->ny_frame / 2;
+        } else {
+            view->nx_window = view->nx_frame;
+            view->ny_window = view->ny_frame;
+        }
 	};
 	
 	copy_vector_from_ctl(&mat_c->viewpt_in_viewer_list->cr_item_head, viewpt_in_view);

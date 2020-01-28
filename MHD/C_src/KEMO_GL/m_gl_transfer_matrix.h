@@ -27,6 +27,7 @@ struct view_element{
 	
 	int gl_drawID;
 	int nx_window, ny_window;
+    int nx_frame, ny_frame;
 	
 	double x_lookfrom[3];
 	double x_lookat[3];
@@ -103,11 +104,12 @@ void set_3d_position_to_window(int point_screen[2], double xx[3],
 
 void init_kemoview_perspective(struct view_element *view);
 
-void set_gl_windowsize(struct view_element *view, int npixel_x, int npixel_y);
+void set_gl_windowsize(struct view_element *view, int npixel_x, int npixel_y,
+                       int nwindow_x, int nwindow_y);
 int send_gl_windowsize_x(struct view_element *view);
 int send_gl_windowsize_y(struct view_element *view);
-void update_projection_by_windowsize(struct view_element *view,
-                                     int npixel_x, int npixel_y);
+void update_projection_by_windowsize(struct view_element *view, int npixel_x, int npixel_y,
+                                     int nwindow_x, int nwindow_y);
 
 void set_gl_retinamode(struct view_element *view, int i_retina);
 int send_gl_retinamode(struct view_element *view);

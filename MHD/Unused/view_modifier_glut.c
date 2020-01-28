@@ -344,7 +344,7 @@ void display(){
 };
 
 void modifywindow(int width, int height){
-    kemoview_update_projection_by_viewer_size(width, height);
+    kemoview_update_projection_by_viewer_size(width, height, width, height);
 	return;
 }
 

@@ -102,15 +102,12 @@ void open_kemoviewer_file_glfw(struct kv_string *filename, struct main_buttons *
 			GtkWidget *window_main){
     struct kv_string *file_prefix = kemoview_alloc_kvstring();
     struct kv_string *stripped_ext = kemoview_alloc_kvstring();
-    struct kv_string *command = kemoview_alloc_kvstring();
 	int iflag_datatype = kemoview_set_data_format_flag(filename, file_prefix, stripped_ext);
 	
 	printf("file name: %s\n", filename->string);
 	printf("file_prefix %s\n", file_prefix->string);
 	printf("stripped_ext %s\n", stripped_ext->string);
     kemoview_free_kvstring(stripped_ext);
-    
-	kemoview_free_kvstring(command);
     kemoview_free_kvstring(file_prefix);
 	
 	iflag_datatype = kemoview_open_data(filename);

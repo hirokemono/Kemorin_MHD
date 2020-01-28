@@ -415,11 +415,11 @@ int kemoview_get_retinamode(void){
     return send_gl_retinamode(kemo_sgl->view_s);
 }
 
-void kemoview_set_windowsize(int npixel_x, int npixel_y){
-	set_gl_windowsize(kemo_sgl->view_s, npixel_x, npixel_y);
+void kemoview_set_windowsize(int npixel_x, int npixel_y, int nwindow_x, int nwindow_y){
+    set_gl_windowsize(kemo_sgl->view_s, npixel_x, npixel_y, nwindow_x, nwindow_y);
 };
-void kemoview_update_projection_by_viewer_size(int npixel_x, int npixel_y){
-	update_projection_by_windowsize(kemo_sgl->view_s, npixel_x, npixel_y);
+void kemoview_update_projection_by_viewer_size(int npixel_x, int npixel_y, int nwindow_x, int nwindow_y){
+	update_projection_by_windowsize(kemo_sgl->view_s, npixel_x, npixel_y, nwindow_x, nwindow_y);
 };
 void kemoview_set_windowsize_message(int iflag){
     set_message_switch(iflag, kemo_sgl->kemo_mesh->msg_wk);
@@ -804,11 +804,11 @@ int kemoview_set_image_file_format_id(struct kv_string *image_ext){
 
 void kemoview_write_window_to_file(int iflag_img, struct kv_string *image_prefix){
     write_gl_window_to_file(iflag_img, image_prefix->string, 
-                            kemo_sgl->view_s->nx_window, kemo_sgl->view_s->ny_window);
+                            kemo_sgl->view_s->nx_frame, kemo_sgl->view_s->ny_frame);
 }
 void kemoview_write_window_to_file_w_step(int iflag_img, int istep, struct kv_string *image_prefix){
     write_gl_window_step_file(iflag_img, istep, image_prefix->string, 
-                              kemo_sgl->view_s->nx_window, kemo_sgl->view_s->ny_window);
+                              kemo_sgl->view_s->nx_frame, kemo_sgl->view_s->ny_frame);
 }
 
 void kemoview_set_texture_to_PSF(int img_fmt, struct kv_string *image_prefix){

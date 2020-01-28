@@ -152,7 +152,7 @@ gboolean mousePosCB(GtkWidget *widget, GdkEventButton *event, gpointer user_data
 
 void set_GTKindowSize(int width, int height){
 	gtk_widget_set_size_request(gl_area, width, height);
-	kemoview_update_projection_by_viewer_size(width, height);
+	kemoview_update_projection_by_viewer_size(width, height, width, height);
 	glViewport(IZERO, IZERO, (GLint) width, (GLint) height);
 };
 
