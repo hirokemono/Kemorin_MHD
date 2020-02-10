@@ -91,8 +91,10 @@
       integer, intent(in) :: id_rank
       type(platform_data_control), intent(in) :: plt
 !
+#ifdef _OPENMP
       integer, external :: omp_get_max_threads
       integer :: np_smp4
+#endif
 !
 !
       np_smp = 1

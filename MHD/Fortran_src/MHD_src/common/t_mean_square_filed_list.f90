@@ -21,9 +21,6 @@
 !
       use m_precision
 !
-      use t_phys_address
-      use t_phys_data
-!
       implicit  none
 !
 !

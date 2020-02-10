@@ -593,7 +593,7 @@
 !
 !   Energy fluxes
 !
-!>        Field label for magnetic enerfy flux
+!>        Field label for magnetic energy flux
 !>       @f$ B_{i}e_{ijk} \partial_{j} \left(e_{klm}u_{l}B_{m}\right) @f$
       character(len=kchara), parameter                                  &
      &             :: fhd_mag_ene_gen =       'magnetic_ene_generation'
