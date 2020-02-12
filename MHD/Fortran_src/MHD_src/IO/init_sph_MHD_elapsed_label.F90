@@ -4,7 +4,7 @@
 !!@author H. Matsui
 !!@date Programmed in April, 2013
 !
-!>@brief  Initialize elepsed time monitoring
+!>@brief  Initialize elepsed time monitoring 
 !!
 !!@verbatim
 !!      subroutine set_sph_MHD_elapsed_label
