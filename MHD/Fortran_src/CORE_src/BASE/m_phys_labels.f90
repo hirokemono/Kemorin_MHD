@@ -143,6 +143,8 @@
 !
       use m_precision
       use t_base_field_labels
+      use t_base_force_labels
+      use t_energy_flux_labels
 !
       implicit none
 !
@@ -151,17 +153,6 @@
 !>        Field label for time
 !!         @f$ t @f$
       character(len=kchara), parameter :: fhd_time =   'time'
-!
-&
-!     &             :: fhd_current = 'current_density'
-!>        Field label for electric field
-!!         @f$ E_{i} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_e_field = 'electric_field'
-!>        Field label for poynting flux
-!!         @f$  e_{ijk} E_{j} B_{k} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_poynting = 'poynting_flux'
 !
 !>        Divergence of velocity
 !!         @f$ \partial_{i} u_{i} @f$
@@ -236,32 +227,7 @@
       character(len=kchara), parameter                                  &
      &             :: fhd_c_diffuse = 'composition_diffusion'
 !
-!>        Field label for magnetic tension
-!!         @f$ B_{j} \partial_{j} B_{i} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_press_grad = 'pressure_gradient'
 !
-!>        Field label for pressure gradient
-!!         @f$ \partial_{i} p @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_mag_tension = 'magnetic_tension'
-!
-!>        Field label for heat flux
-!!         @f$ u_{i} T @f$
-      character(len=kchara), parameter :: fhd_h_flux =  'heat_flux'
-!>        Field label for perturbation of heat flux
-!!         @f$ u_{i} \Theta @f$
-      character(len=kchara), parameter :: fhd_ph_flux = 'part_h_flux'
-!>        Field label for compositinoal flux
-!!         @f$ u_{i} C @f$
-      character(len=kchara), parameter :: fhd_c_flux =  'composite_flux'
-!>        Field label for perturbation of composition flux
-!!         @f$ u_{i} \Theta_C @f$
-      character(len=kchara), parameter :: fhd_pc_flux = 'part_c_flux'
-!
-!>        Field label for advection for momentum
-!!         @f$ u_{j} \partial_{j} u_{i} @f$
-      character(len=kchara), parameter :: fhd_inertia = 'inertia'
 !>        Field label for divergence of momentum flux
 !!         @f$ \partial_{j} \left( u_{i} u_{j} \right) @f$
       character(len=kchara), parameter :: fhd_div_m_flux = 'div_m_flux'
@@ -273,34 +239,6 @@
 !!         @f$ \partial_{i} \left(e_{ijk} u_{j} B_{k} \right) @f$
       character(len=kchara), parameter                                  &
      &             :: fhd_div_induct_t =  'div_induct_t'
-!>        Field label for magnetic induction
-!!         @f$ e_{ijk} \partial_{j}\left(e_{klm}u_{l}B_{m} \right)@f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_mag_induct =    'magnetic_induction'
-!>        Field label for inductino for vector potential
-!!         @f$ e_{ijk} u_{j} B_{k} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_vp_induct =     'vecp_induction'
-!>        Field label for magnetic stretch term
-!!         @f$ B_{i} \partial_{k} u_{k} \right)@f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_mag_stretch =   'magnetic_stretch'
-!>        Field label for Lorentz force
-!!         @f$ e_{ijk} J_{j} B_{k} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_Lorentz =       'Lorentz_force'
-!>        Field label for Coriolis force
-!!         @f$ -2 e_{ijk} \Omega_{j} u_{k} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_Coriolis =      'Coriolis_force'
-!>        Field label for buoyancy
-!!         @f$ -\alpha_{T} g_{i} T @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_buoyancy =      'buoyancy'
-!>        Field label for compositional buoyancy
-!!         @f$ -\alpha_{C} g_{i} C @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_comp_buo =      'composite_buoyancy'
 !>        Field label for filtered buoyancy
 !!         @f$ -\alpha_{C} g_{i} \tilde{T} @f$
       character(len=kchara), parameter                                  &
@@ -473,14 +411,6 @@
       character(len=kchara), parameter                                  &
      &             :: fhd_cross_helicity =    'cross_helicity'
 !
-!>        Field label for advection for temperature
-!!         @f$ u_{i} \partial_{i} T @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_heat_advect =       'heat_advect'
-!>        Field label for advection for perturbation of temperature
-!!         @f$ u_{i} \partial_{i} \Theta @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_part_h_advect =     'part_h_advect'
 !>        Field label for divergence of heat flux
 !!         @f$ \partial_{i} \left( u_{i} T \right) @f$
       character(len=kchara), parameter                                  &
@@ -489,14 +419,6 @@
 !!         @f$ \partial_{i} \left( u_{i} \Theta \right) @f$
       character(len=kchara), parameter                                  &
      &             :: fhd_div_ph_flux =       'div_part_h_flux'
-!>        Field label for advection for composition
-!!         @f$ u_{i} \partial_{i} C @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_composit_advect =    'composition_advect'
-!>        Field label for advection for perturbation of composition
-!!         @f$ u_{i} \partial_{i} \Theta_C @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_part_c_advect =     'part_c_advect'
 !>        Field label for divergence of composition flux
 !!         @f$ \partial_{i} \left( u_{i} C \right) @f$
       character(len=kchara), parameter                                  &
@@ -506,32 +428,7 @@
       character(len=kchara), parameter                                  &
      &             :: fhd_div_pc_flux =       'div_part_c_flux'
 !
-!   Energy fluxes
-!
-!>        Field label for magnetic energy flux
-!>       @f$ B_{i}e_{ijk} \partial_{j} \left(e_{klm}u_{l}B_{m}\right) @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_mag_ene_gen =       'magnetic_ene_generation'
-!>        Field label for work against Lorentz force
-!!         @f$ - u_{i} \left( e_{ijk} J_{j} B_{k} \right) @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_work_agst_Lorentz = 'work_against_Lorentz'
-!>        Field label for work of Lorentz force
-!!         @f$ u_{i} \left( e_{ijk} J_{j} B_{k} \right) @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_Lorentz_work =      'Lorentz_work'
-!>        Field label for work of divergence of Maxwell tensor
-!!         @f$ u_{i} \partial_{j} \left( B_{j} B_{i} \right) @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_mag_tension_work =  'mag_tension_work'
-!>        Field label for buoyancy flux
-!!         @f$ -u_{i} \alpha_{T} g_{i} T @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_buoyancy_flux =     'buoyancy_flux'
-!>        Field label for compositional buoyancy flux
-!!         @f$ -u_{i} \alpha_{c} g_{i} C @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_comp_buo_flux =     'composite_buoyancy_flux'
+
 !>        Field label for filtered buoyancy flux
 !!         @f$ -u_{i} \alpha_{c} g_{i} \tilde{T} @f$
       character(len=kchara), parameter                                  &
@@ -616,15 +513,6 @@
       character(len=kchara), parameter                                  &
      &             :: fhd_maxwell_t_w_sgs = 'maxwell_tensor_w_sgs'
 !
-!>        Field label for temperature flux
-      character(len=kchara), parameter                                  &
-     &             :: fhd_temp_generation =   'temp_generation'
-!>        Field label for perturbation temperature flux
-      character(len=kchara), parameter                                  &
-     &             :: fhd_part_temp_gen =     'part_temp_gen'
-!>        Field label for perturbation composition flux
-      character(len=kchara), parameter                                  &
-     &             :: fhd_part_comp_gen =     'part_comp_gen'
 !>        Field label for energy flux by viscous diffusion
 !!         @f$ u_{i} \left( \partial_{j}\partial_{j} u_{i} \right) @f$
       character(len=kchara), parameter                                  &
@@ -659,14 +547,6 @@
 !
 !  fluxes by resolved field
 !
-!>        Field label for momentum flux
-!!         @f$ u_{i} u_{j} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_mom_flux =      'momentum_flux'
-!>        Field label for Maxwell tensor
-!!         @f$ B_{i} B_{j} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_maxwell_t =     'maxwell_tensor'
 !>        Field label for SGS momentum flux
 !!         @f$ \overline{u_{i}u_{j}} - \bar{u}_{i}\bar{u}_{j} @f$
       character(len=kchara), parameter                                  &
@@ -694,10 +574,6 @@
       character(len=kchara), parameter                                  &
      &             :: fhd_SGS_maxwell_t = 'SGS_maxwell_tensor'
 !
-!>        Field label for Tensor for magnetic induction
-!!         @f$ u_{i} B_{j}  - B_{i} u_{J} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_induct_t =      'induction_tensor'
 !>        Field label for SGS magnetic induction tensor
       character(len=kchara), parameter                                  &
      &             :: fhd_SGS_induct_t =  'SGS_induct_tensor'
