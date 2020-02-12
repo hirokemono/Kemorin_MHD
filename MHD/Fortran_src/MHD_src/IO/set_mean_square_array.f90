@@ -37,7 +37,7 @@
       subroutine set_mean_square_values                                 &
      &         (nod_fld, iphys, i_rms, j_ave, ifld_msq, msq_list)
 !
-      use m_phys_labels
+      use t_base_field_labels
       use m_phys_constants
       use m_volume_average_labels
 !

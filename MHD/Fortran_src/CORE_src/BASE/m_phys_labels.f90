@@ -142,6 +142,7 @@
       module m_phys_labels
 !
       use m_precision
+      use t_base_field_labels
 !
       implicit none
 !
@@ -151,22 +152,8 @@
 !!         @f$ t @f$
       character(len=kchara), parameter :: fhd_time =   'time'
 !
-!>        Field label for velocity
-!!         @f$ u_{i} @f$
-      character(len=kchara), parameter :: fhd_velo = 'velocity' 
-!>        Field label for vorticity
-!!         @f$ \omega_{i} = e_{ijk} \partial_{j} u_{k} @f$
-      character(len=kchara), parameter :: fhd_vort = 'vorticity'
-!>        Field label for magnetic field
-!!         @f$ B_{i} @f$
-      character(len=kchara), parameter :: fhd_magne = 'magnetic_field'
-!>        Field label for magnetic vector potential
-!!         @f$ B_{i} = e_{ijk} \partial_{j} A_{k} @f$
-      character(len=kchara), parameter :: fhd_vecp = 'vector_potential'
-!>        Field label for current density
-!!         @f$ J_{i} = e_{ijk} \partial_{j} B_{k} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_current = 'current_density'
+&
+!     &             :: fhd_current = 'current_density'
 !>        Field label for electric field
 !!         @f$ E_{i} @f$
       character(len=kchara), parameter                                  &
@@ -455,78 +442,6 @@
 !
 !  scalars
 !
-!>        Field label for pressure @f$ p @f$
-      character(len=kchara), parameter :: fhd_press = 'pressure'
-!
-!>        Field label for temperature
-!!         @f$ T @f$
-      character(len=kchara), parameter :: fhd_temp =  'temperature'
-!>        Field label for perturbation of temperature
-!!         @f$ \Theta = T - T_{0} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_part_temp = 'perturbation_temp'
-!>        Field label for reference temperature
-!!         @f$  T_{0} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_ref_temp =  'reference_temperature'
-!
-!>        Field label for compostiion variation
-!!         @f$ C @f$
-      character(len=kchara), parameter :: fhd_light = 'composition'
-!>        Field label for perturbation of composition
-!!         @f$  C - C_{0} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_part_light = 'parturbation_composition'
-!>        Field label for reference composition
-!!         @f$  C_{0} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_ref_light =  'reference_composition'
-!
-!>        Field label for entropy
-!!         @f$ S @f$
-      character(len=kchara), parameter :: fhd_entropy =  'entropy'
-!>        Field label for perturbation of entropy
-!!         @f$  S - S_{0} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_per_entropy = 'perturbation_entropy'
-!>        Field label for reference entropy
-!!         @f$  S_{0} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_ref_entropy =  'reference_entropy'
-!
-!>        Field label for heat source
-!!         @f$ q_{T} @f$
-      character(len=kchara), parameter                                  &
-     &              :: fhd_heat_source =  'heat_source'
-!>        Field label for composion source
-!!         @f$ q_{C} @f$
-      character(len=kchara), parameter                                  &
-     &              :: fhd_light_source =  'composition_source'
-!>        Field label for entropysource
-!!         @f$ q_{S} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_entropy_source =  'entropy_source'
-!
-!>        Field label for density
-!!         @f$ \rho @f$
-      character(len=kchara), parameter :: fhd_density =  'density'
-!>        Field label for perturbation of density
-!!         @f$  \rho - \rho_{0} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_per_density = 'perturbation_density'
-!>        Field label for reference density
-!!         @f$  \rho_{0} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_ref_density =  'reference_density'
-!
-!>        Field label for magnetic potential
-!!         @f$ W @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_mag_potential =     'magnetic_potential'
-!>        Field label for electric potential
-!!         @f$ \varphi @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_scalar_potential =  'scalar_potential'
 !
 !>        Field label for filtered temperature
 !!         @f$ \bar{T} @f$

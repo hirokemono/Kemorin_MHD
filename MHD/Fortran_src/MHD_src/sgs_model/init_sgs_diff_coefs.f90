@@ -45,8 +45,8 @@
      &          ifld_diff, icomp_diff, wk_diff, diff_coefs)
 !
       use calypso_mpi
-      use m_phys_labels
 !
+      use t_base_field_labels
       use t_SGS_control_parameter
       use t_layering_ele_list
       use t_ele_info_4_dynamic
@@ -96,8 +96,8 @@
      &          ntot_diff_comp, diff_coefs)
 !
       use calypso_mpi
-      use m_phys_labels
 !
+      use t_base_field_labels
       use t_layering_ele_list
       use t_ele_info_4_dynamic
       use t_material_property
@@ -210,6 +210,7 @@
       use calypso_mpi
       use m_phys_labels
 !
+      use t_base_field_labels
       use t_layering_ele_list
       use t_ele_info_4_dynamic
       use t_material_property

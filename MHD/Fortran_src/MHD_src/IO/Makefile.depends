@@ -14,7 +14,7 @@ check_base_field.o: $(MHD_IO_DIR)/check_base_field.f90 m_precision.o m_constants
 	$(F90) -c $(F90OPTFLAGS) $<
 check_base_forces.o: $(MHD_IO_DIR)/check_base_forces.f90 m_precision.o m_constants.o t_base_field_labels.o t_base_force_labels.o t_control_array_character3.o add_nodal_fields_ctl.o
 	$(F90) -c $(F90OPTFLAGS) $<
-check_ene_flux_w_symmetry.o: $(MHD_IO_DIR)/check_ene_flux_w_symmetry.f90 m_precision.o m_constants.o t_base_field_labels.o m_field_w_symmetry_labels.o m_energy_flux_w_sym_labels.o
+check_ene_flux_w_symmetry.o: $(MHD_IO_DIR)/check_ene_flux_w_symmetry.f90 m_precision.o m_constants.o t_base_field_labels.o m_field_w_symmetry_labels.o m_energy_flux_w_sym_labels.o t_control_array_character3.o add_nodal_fields_ctl.o
 	$(F90) -c $(F90OPTFLAGS) $<
 check_energy_fluxes.o: $(MHD_IO_DIR)/check_energy_fluxes.f90 m_precision.o m_constants.o t_base_field_labels.o t_base_force_labels.o t_energy_flux_labels.o t_control_array_character3.o add_nodal_fields_ctl.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -98,7 +98,7 @@ set_control_sph_filter.o: $(MHD_IO_DIR)/set_control_sph_filter.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<
 set_ini_sgs_model_coefs_IO.o: $(MHD_IO_DIR)/set_ini_sgs_model_coefs_IO.f90 m_precision.o calypso_mpi.o m_constants.o t_ele_info_4_dynamic.o t_SGS_model_coefs.o t_time_data.o t_field_data_IO.o cal_minmax_and_stacks.o const_global_element_ids.o
 	$(F90) -c $(F90OPTFLAGS) $<
-set_mean_square_array.o: $(MHD_IO_DIR)/set_mean_square_array.f90 m_precision.o t_phys_address.o t_phys_data.o t_mean_square_filed_list.o t_mean_square_values.o m_phys_labels.o m_phys_constants.o m_volume_average_labels.o
+set_mean_square_array.o: $(MHD_IO_DIR)/set_mean_square_array.f90 m_precision.o t_phys_address.o t_phys_data.o t_mean_square_filed_list.o t_mean_square_values.o t_base_field_labels.o m_phys_constants.o m_volume_average_labels.o
 	$(F90) -c $(F90OPTFLAGS) $<
 set_node_group_types.o: $(MHD_IO_DIR)/set_node_group_types.f90 m_precision.o m_boundary_condition_IDs.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -160,7 +160,7 @@ t_ctl_data_termal_norm.o: $(MHD_IO_DIR)/t_ctl_data_termal_norm.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_ucd_file.o: $(MHD_IO_DIR)/t_ucd_file.f90 m_precision.o m_constants.o t_time_data.o t_mesh_data.o t_comm_table.o t_geometry_data.o t_ucd_data.o t_phys_data.o t_file_IO_parameter.o t_IO_step_parameter.o calypso_mpi.o parallel_ucd_IO_select.o output_parallel_ucd_file.o set_ucd_data_to_type.o
 	$(F90) -c $(F90OPTFLAGS) $<
-time_step_file_IO.o: $(MHD_IO_DIR)/time_step_file_IO.f90 m_precision.o t_phys_data.o t_phys_address.o t_mean_square_filed_list.o m_phys_labels.o m_phys_constants.o m_volume_average_labels.o write_field_labels.o
+time_step_file_IO.o: $(MHD_IO_DIR)/time_step_file_IO.f90 m_precision.o t_phys_data.o t_base_field_labels.o t_mean_square_filed_list.o m_phys_labels.o m_phys_constants.o m_volume_average_labels.o write_field_labels.o
 	$(F90) -c $(F90OPTFLAGS) $<
 write_djds_mat_MHD.o: $(MHD_IO_DIR)/write_djds_mat_MHD.f90 m_precision.o calypso_mpi.o m_machine_parameter.o set_parallel_file_name.o t_FEM_control_parameter.o t_control_parameter.o t_MHD_matrices_pack.o t_physical_property.o t_solver_djds_MHD.o write_djds_matrix_struct.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
