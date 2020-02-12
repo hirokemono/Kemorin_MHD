@@ -16,12 +16,6 @@
 !!     &         (i_phys, field_name, sym_base_fld, asym_base_fld, flag)
 !!        type(base_field_address), intent(inout) :: sym_base_fld
 !!        type(base_field_address), intent(inout) :: asym_base_fld
-!!      integer(kind = kint) function check_base_field_w_sym_id         &
-!!     &                            (i_field, field_name, base_fld,     &
-!!     &                             sym_base_fld, asym_base_fld)
-!!        type(base_field_address), intent(in) :: base_fld
-!!        type(base_field_address), intent(in) :: sym_base_fld
-!!        type(base_field_address), intent(in) :: asym_base_fld
 !!
 !!      subroutine base_vec_w_sym_monitor_address                       &
 !!     &         (field_name, i_field, numrms, numave,                  &
@@ -35,6 +29,9 @@
 !!        type(base_field_address), intent(inout) :: ave_sym_base
 !!        type(base_field_address), intent(inout) :: rms_asym_base
 !!        type(base_field_address), intent(inout) :: ave_asym_base
+!!
+!!      integer(kind = kint) function num_fields_w_symmetry()
+!!      subroutine set_field_w_symmetry_names(field_names)
 !!
 !! !!!!!  Base field names  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!
@@ -63,6 +60,9 @@
 !
       implicit  none
 ! 
+!
+      integer(kind = kint), parameter, private :: nfld_w_sym = 2 * 16
+!
 !>        Field label for symmetric velocity @f$ u_{sym} @f$
       character(len=kchara), parameter                                  &
      &         :: fhd_sym_velo = 'sym_velocity'
@@ -103,7 +103,7 @@
      &           :: fhd_sym_light = 'sym_composition'
 !>        Field label for symmetric entropy @f$ S @f$
       character(len=kchara), parameter                                  &
-     &         :: fhd_sym_entropy =  'sym_entropy'
+     &           :: fhd_sym_entropy =  'sym_entropy'
 !
 !>        Field label for symmetric perturbation of density
 !!         @f$  \rho - \rho_{0} @f$
@@ -357,96 +357,6 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      integer(kind = kint) function check_base_field_w_sym_id           &
-     &                            (i_field, field_name, base_fld,       &
-     &                             sym_base_fld, asym_base_fld)
-!
-      integer(kind = kint), intent(in) :: i_field
-      character(len = kchara), intent(in) :: field_name
-      type(base_field_address), intent(in) :: base_fld
-      type(base_field_address), intent(in) :: sym_base_fld
-      type(base_field_address), intent(in) :: asym_base_fld
-!
-      integer(kind = kint) :: iflag
-!
-!
-      iflag = 0
-      if(      (i_field .eq. sym_base_fld%i_velo)                       &
-     &    .or. (i_field .eq. asym_base_fld%i_velo)) then 
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 base_fld%i_velo, fhd_velo)
-      else if( (i_field .eq. sym_base_fld%i_vort)                       &
-     &    .or. (i_field .eq. asym_base_fld%i_vort)) then 
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 base_fld%i_vort, fhd_vort)
-      else if( (i_field .eq. sym_base_fld%i_magne)                      &
-     &    .or. (i_field .eq. asym_base_fld%i_magne)) then 
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 base_fld%i_magne, fhd_magne)
-      else if( (i_field .eq. sym_base_fld%i_vecp)                       &
-     &    .or. (i_field .eq. asym_base_fld%i_vecp)) then 
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 base_fld%i_vecp, fhd_vecp)
-      else if( (i_field .eq. sym_base_fld%i_current)                    &
-     &    .or. (i_field .eq. asym_base_fld%i_current)) then 
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 base_fld%i_current, fhd_current)
-!
-      else if( (i_field .eq. sym_base_fld%i_press)                      &
-     &    .or. (i_field .eq. asym_base_fld%i_press)) then 
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 base_fld%i_press, fhd_press)
-      else if( (i_field .eq. sym_base_fld%i_mag_p)                      &
-     &    .or. (i_field .eq. asym_base_fld%i_mag_p)) then 
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 base_fld%i_mag_p, fhd_mag_potential)
-      else if( (i_field .eq. sym_base_fld%i_scalar_p)                   &
-     &    .or. (i_field .eq. asym_base_fld%i_scalar_p)) then 
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 base_fld%i_scalar_p, fhd_scalar_potential)
-!
-      else if( (i_field .eq. sym_base_fld%i_temp)                       &
-     &    .or. (i_field .eq. asym_base_fld%i_temp)) then 
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 base_fld%i_temp, fhd_temp)
-      else if( (i_field .eq. sym_base_fld%i_light)                      &
-     &    .or. (i_field .eq. asym_base_fld%i_light)) then 
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 base_fld%i_light, fhd_light)
-      else if( (i_field .eq. sym_base_fld%i_density)                    &
-     &    .or. (i_field .eq. asym_base_fld%i_density)) then 
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 base_fld%i_density, fhd_density)
-      else if( (i_field .eq. sym_base_fld%i_entropy)                    &
-     &    .or. (i_field .eq. asym_base_fld%i_entropy)) then 
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 base_fld%i_entropy, fhd_entropy)
-!
-      else if( (i_field .eq. sym_base_fld%i_par_temp)                   &
-     &    .or. (i_field .eq. asym_base_fld%i_par_temp)) then 
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 base_fld%i_par_temp, fhd_temp)
-      else if( (i_field .eq. sym_base_fld%i_par_light)                  &
-     &    .or. (i_field .eq. asym_base_fld%i_par_light)) then 
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 base_fld%i_par_light, fhd_light)
-      else if( (i_field .eq. sym_base_fld%i_par_density)                &
-     &    .or. (i_field .eq. asym_base_fld%i_par_density)) then 
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 base_fld%i_par_density, fhd_density)
-      else if( (i_field .eq. sym_base_fld%i_par_entropy)                &
-     &    .or. (i_field .eq. asym_base_fld%i_par_entropy)) then 
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 base_fld%i_par_entropy, fhd_entropy)
-      end if
-      check_base_field_w_sym_id = iflag
-      return
-!
-      end function check_base_field_w_sym_id
-!
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
       subroutine base_vec_w_sym_monitor_address                         &
      &         (field_name, i_field, numrms, numave,                    &
      &          rms_sym_base, ave_sym_base,                             &
@@ -506,6 +416,69 @@
       flag = (flag_r .and. flag_a)
 !
       end subroutine base_scl_w_sym_monitor_address
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      integer(kind = kint) function num_fields_w_symmetry()
+      num_fields_w_symmetry = nfld_w_sym
+      return
+      end function num_fields_w_symmetry
+!
+! ----------------------------------------------------------------------
+!
+      subroutine set_field_w_symmetry_names(field_names)
+!
+      character(len = kchara), intent(inout) :: field_names(nfld_w_sym)
+!
+!
+      write(field_names( 1),'(a,a1)') trim(fhd_sym_velo), CHAR(0)
+      write(field_names( 2),'(a,a1)') trim(fhd_asym_velo), CHAR(0)
+      write(field_names( 3),'(a,a1)') trim(fhd_sym_vort), CHAR(0)
+      write(field_names( 4),'(a,a1)') trim(fhd_asym_vort), CHAR(0)
+      write(field_names( 5),'(a,a1)') trim(fhd_sym_press), CHAR(0)
+      write(field_names( 6),'(a,a1)') trim(fhd_asym_press), CHAR(0)
+!
+      write(field_names( 7),'(a,a1)') trim(fhd_sym_magne), CHAR(0)
+      write(field_names( 8),'(a,a1)') trim(fhd_asym_magne), CHAR(0)
+      write(field_names( 9),'(a,a1)') trim(fhd_sym_vecp), CHAR(0)
+      write(field_names(10),'(a,a1)') trim(fhd_asym_vecp), CHAR(0)
+      write(field_names(11),'(a,a1)') trim(fhd_sym_current), CHAR(0)
+      write(field_names(12),'(a,a1)') trim(fhd_asym_current), CHAR(0)
+      write(field_names(13),'(a,a1)')                                   &
+     &                      trim(fhd_sym_mag_potential), CHAR(0)
+      write(field_names(14),'(a,a1)')                                   &
+     &                      trim(fhd_asym_mag_potential), CHAR(0)
+      write(field_names(15),'(a,a1)')                                   &
+     &                      trim(fhd_sym_scalar_potential), CHAR(0)
+      write(field_names(16),'(a,a1)')                                   &
+     &                      trim(fhd_asym_scalar_potential), CHAR(0)
+!
+      write(field_names(17),'(a,a1)') trim(fhd_sym_temp), CHAR(0)
+      write(field_names(18),'(a,a1)') trim(fhd_asym_temp), CHAR(0)
+      write(field_names(19),'(a,a1)') trim(fhd_sym_light), CHAR(0)
+      write(field_names(20),'(a,a1)') trim(fhd_asym_light), CHAR(0)
+      write(field_names(21),'(a,a1)') trim(fhd_sym_density), CHAR(0)
+      write(field_names(22),'(a,a1)') trim(fhd_asym_density), CHAR(0)
+      write(field_names(23),'(a,a1)') trim(fhd_sym_entropy), CHAR(0)
+      write(field_names(24),'(a,a1)') trim(fhd_asym_entropy), CHAR(0)
+!
+      write(field_names(25),'(a,a1)') trim(fhd_sym_part_temp), CHAR(0)
+      write(field_names(26),'(a,a1)') trim(fhd_asym_part_temp), CHAR(0)
+      write(field_names(27),'(a,a1)') trim(fhd_sym_part_light), CHAR(0)
+      write(field_names(28),'(a,a1)')                                   &
+     &                      trim(fhd_asym_part_light), CHAR(0)
+!
+      write(field_names(29),'(a,a1)')                                   &
+     &                      trim(fhd_sym_per_density), CHAR(0)
+      write(field_names(30),'(a,a1)')                                   &
+     &                      trim(fhd_asym_per_density), CHAR(0)
+      write(field_names(31),'(a,a1)')                                   &
+     &                      trim(fhd_sym_per_entropy), CHAR(0)
+      write(field_names(32),'(a,a1)')                                   &
+     &                      trim(fhd_asym_per_entropy), CHAR(0)
+!
+      end subroutine set_field_w_symmetry_names
 !
 ! ----------------------------------------------------------------------
 !

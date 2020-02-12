@@ -47,6 +47,9 @@
 !!        type(base_force_address), intent(inout) :: ave_force_sym1_asym2
 !!        type(base_force_address), intent(inout) :: ave_force_asym1_sym2
 !!
+!!      integer(kind = kint) function num_forces_w_symmetry()
+!!      subroutine set_force_w_symmetry_names(field_names)
+!!
 !! !!!!!  Base field names  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!
 !! field names 
@@ -118,6 +121,8 @@
 !
       implicit  none
 ! 
+      integer(kind = kint), parameter, private :: nforce_w_sym = 69
+!
 !>        Field label of advection of momentum
 !!         @f$ u_{symj} \partial_{j} u_{symi} @f$
 !!         or @f$ \omega_{sym} \times u_{sym} @f$
@@ -701,288 +706,6 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      integer(kind = kint) function check_force_by_sym_sym_id           &
-     &         (i_field, field_name, sym_base_fld, force_sym1_sym2)
-!
-      integer(kind = kint), intent(in) :: i_field
-      character(len = kchara), intent(in) :: field_name
-      type(base_field_address), intent(in) :: sym_base_fld
-      type(base_force_address), intent(in) :: force_sym1_sym2
-!
-      integer(kind = kint) :: iflag
-!
-!
-      iflag = 0
-      if(      (i_field .eq. force_sym1_sym2%i_m_advect)                &
-     &    .or. (i_field .eq. force_sym1_sym2%i_m_flux) ) then
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 sym_base_fld%i_vort, fhd_sym_vort)
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 sym_base_fld%i_velo, fhd_sym_velo)
-      else if( (i_field .eq. force_sym1_sym2%i_lorentz) ) then
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 sym_base_fld%i_current, fhd_sym_current)
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 sym_base_fld%i_magne, fhd_sym_magne)
-      else if( (i_field .eq. force_sym1_sym2%i_maxwell)                 &
-     &    .or. (i_field .eq. force_sym1_sym2%i_m_tension) ) then
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 sym_base_fld%i_magne, fhd_sym_magne)
-!
-      else if( (i_field .eq. force_sym1_sym2%i_buoyancy)) then
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 sym_base_fld%i_temp, fhd_sym_temp)
-      else if( (i_field .eq. force_sym1_sym2%i_comp_buo)) then
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 sym_base_fld%i_light, fhd_sym_light)
-!
-      else if( (i_field .eq. force_sym1_sym2%i_vp_induct)               &
-     &    .or. (i_field .eq. force_sym1_sym2%i_induction)               &
-     &    .or. (i_field .eq. force_sym1_sym2%i_mag_stretch)             &
-     &    .or. (i_field .eq. force_sym1_sym2%i_induct_t) ) then
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 sym_base_fld%i_velo, fhd_sym_velo)
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 sym_base_fld%i_magne, fhd_sym_magne)
-!
-      else if( (i_field .eq. force_sym1_sym2%i_h_advect)                &
-     &    .or. (i_field .eq. force_sym1_sym2%i_h_flux) ) then
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 sym_base_fld%i_velo, fhd_sym_velo)
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 sym_base_fld%i_temp, fhd_sym_temp)
-      else if( (i_field .eq. force_sym1_sym2%i_ph_advect)               &
-     &    .or. (i_field .eq. force_sym1_sym2%i_ph_flux) ) then
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 sym_base_fld%i_velo, fhd_sym_velo)
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 sym_base_fld%i_par_temp, fhd_sym_part_temp)
-      else if( (i_field .eq. force_sym1_sym2%i_c_advect)                &
-     &    .or. (i_field .eq. force_sym1_sym2%i_c_flux) ) then
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 sym_base_fld%i_velo, fhd_sym_velo)
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 sym_base_fld%i_light, fhd_sym_light)
-      else if( (i_field .eq. force_sym1_sym2%i_pc_advect)               &
-     &    .or. (i_field .eq. force_sym1_sym2%i_pc_flux) ) then
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 sym_base_fld%i_velo, fhd_sym_velo)
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 sym_base_fld%i_par_light, fhd_sym_part_light)
-      end if
-      check_force_by_sym_sym_id = iflag
-      return
-!
-      end function check_force_by_sym_sym_id
-!
-! ----------------------------------------------------------------------
-!
-      integer(kind = kint) function check_force_by_asym_asym_id         &
-     &         (i_field, field_name, asym_base_fld, force_asym1_asym2)
-!
-      integer(kind = kint), intent(in) :: i_field
-      character(len = kchara), intent(in) :: field_name
-      type(base_field_address), intent(in) :: asym_base_fld
-      type(base_force_address), intent(in) :: force_asym1_asym2
-!
-      integer(kind = kint) :: iflag
-!
-!
-      iflag = 0
-      if(      (i_field .eq. force_asym1_asym2%i_m_advect)              &
-     &    .or. (i_field .eq. force_asym1_asym2%i_m_flux) ) then
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 asym_base_fld%i_vort, fhd_asym_vort)
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 asym_base_fld%i_velo, fhd_asym_velo)
-      else if( (i_field .eq. force_asym1_asym2%i_lorentz) ) then
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 asym_base_fld%i_current, fhd_asym_current)
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 asym_base_fld%i_magne, fhd_asym_magne)
-      else if( (i_field .eq. force_asym1_asym2%i_maxwell)               &
-     &    .or. (i_field .eq. force_asym1_asym2%i_m_tension) ) then
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 asym_base_fld%i_magne, fhd_asym_magne)
-!
-      else if( (i_field .eq. force_asym1_asym2%i_buoyancy)) then
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 asym_base_fld%i_temp, fhd_asym_temp)
-      else if( (i_field .eq. force_asym1_asym2%i_comp_buo)) then
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 asym_base_fld%i_light, fhd_asym_light)
-!
-      else if( (i_field .eq. force_asym1_asym2%i_vp_induct)             &
-     &    .or. (i_field .eq. force_asym1_asym2%i_induction)             &
-     &    .or. (i_field .eq. force_asym1_asym2%i_mag_stretch)           &
-     &    .or. (i_field .eq. force_asym1_asym2%i_induct_t) ) then
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 asym_base_fld%i_velo, fhd_asym_velo)
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 asym_base_fld%i_magne, fhd_asym_magne)
-      else if( (i_field .eq. force_asym1_asym2%i_h_advect)              &
-     &    .or. (i_field .eq. force_asym1_asym2%i_h_flux) ) then
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 asym_base_fld%i_velo, fhd_asym_velo)
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 asym_base_fld%i_temp, fhd_asym_temp)
-      else if( (i_field .eq. force_asym1_asym2%i_ph_advect)             &
-     &    .or. (i_field .eq. force_asym1_asym2%i_ph_flux) ) then
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 asym_base_fld%i_velo, fhd_asym_velo)
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 asym_base_fld%i_par_temp, fhd_asym_part_temp)
-!
-      else if( (i_field .eq. force_asym1_asym2%i_c_advect)              &
-     &    .or. (i_field .eq. force_asym1_asym2%i_c_flux) ) then
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 asym_base_fld%i_velo, fhd_asym_velo)
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 asym_base_fld%i_light, fhd_asym_light)
-      else if( (i_field .eq. force_asym1_asym2%i_pc_advect)             &
-     &    .or. (i_field .eq. force_asym1_asym2%i_pc_flux) ) then
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 asym_base_fld%i_velo, fhd_asym_velo)
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 asym_base_fld%i_par_light, fhd_asym_part_light)
-      end if
-      check_force_by_asym_asym_id = iflag
-      return
-!
-      end function check_force_by_asym_asym_id
-!
-! ----------------------------------------------------------------------
-!
-      integer(kind = kint) function check_force_by_sym_asym_id          &
-     &         (i_field, field_name, sym_base_fld, asym_base_fld,       &
-     &          force_sym1_asym2, force_asym1_sym2)
-!
-      integer(kind = kint), intent(in) :: i_field
-      character(len = kchara), intent(in) :: field_name
-      type(base_field_address), intent(in) :: sym_base_fld
-      type(base_field_address), intent(in) :: asym_base_fld
-      type(base_force_address), intent(in) :: force_sym1_asym2
-      type(base_force_address), intent(in) :: force_asym1_sym2
-!
-      integer(kind = kint) :: iflag
-!
-!
-      iflag = 0
-      if(      (i_field .eq. force_sym1_asym2%i_m_advect)               &
-     &    .or. (i_field .eq. force_sym1_asym2%i_m_flux) ) then
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 sym_base_fld%i_vort, fhd_sym_vort)
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 asym_base_fld%i_velo, fhd_asym_velo)
-      else if( (i_field .eq. force_sym1_asym2%i_lorentz)  ) then
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 sym_base_fld%i_current, fhd_sym_current)
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 asym_base_fld%i_magne, fhd_asym_magne)
-!
-      else if( (i_field .eq. force_sym1_asym2%i_maxwell)                &
-     &    .or. (i_field .eq. force_sym1_asym2%i_m_tension) ) then
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 sym_base_fld%i_magne, fhd_sym_magne)
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 asym_base_fld%i_magne, fhd_asym_magne)
-!
-      else if( (i_field .eq. force_sym1_asym2%i_vp_induct)              &
-     &    .or. (i_field .eq. force_sym1_asym2%i_induction)              &
-     &    .or. (i_field .eq. force_sym1_asym2%i_mag_stretch)            &
-     &    .or. (i_field .eq. force_sym1_asym2%i_induct_t) ) then
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 sym_base_fld%i_velo, fhd_sym_velo)
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 asym_base_fld%i_magne, fhd_asym_magne)
-!
-      else if( (i_field .eq. force_sym1_asym2%i_h_advect)               &
-     &    .or. (i_field .eq. force_sym1_asym2%i_h_flux)  ) then
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 sym_base_fld%i_velo, fhd_sym_velo)
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 asym_base_fld%i_temp, fhd_asym_temp)
-      else if( (i_field .eq. force_sym1_asym2%i_ph_advect)              &
-     &    .or. (i_field .eq. force_sym1_asym2%i_ph_flux)  ) then
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 sym_base_fld%i_velo, fhd_sym_velo)
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 asym_base_fld%i_par_temp, fhd_asym_part_temp)
-      else if( (i_field .eq. force_sym1_asym2%i_c_advect)               &
-     &    .or. (i_field .eq. force_sym1_asym2%i_c_flux)  ) then
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 sym_base_fld%i_velo, fhd_sym_velo)
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 asym_base_fld%i_light, fhd_asym_light)
-      else if( (i_field .eq. force_sym1_asym2%i_pc_advect)              &
-     &    .or. (i_field .eq. force_sym1_asym2%i_pc_flux)  ) then
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 sym_base_fld%i_velo, fhd_sym_velo)
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 asym_base_fld%i_par_light, fhd_asym_part_light)
-!
-!
-      else if( (i_field .eq. force_asym1_sym2%i_m_advect)) then
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 asym_base_fld%i_vort, fhd_asym_vort)
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 sym_base_fld%i_velo, fhd_sym_velo)
-!
-      else if( (i_field .eq. force_asym1_sym2%i_lorentz)) then
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 asym_base_fld%i_current, fhd_asym_current)
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 sym_base_fld%i_magne, fhd_sym_magne)
-!
-      else if( (i_field .eq. force_asym1_sym2%i_m_tension)) then
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 asym_base_fld%i_magne, fhd_asym_magne)
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 sym_base_fld%i_magne, fhd_sym_magne)
-!
-      else if( (i_field .eq. force_asym1_sym2%i_vp_induct)              &
-     &    .or. (i_field .eq. force_asym1_sym2%i_induction)              &
-     &    .or. (i_field .eq. force_asym1_sym2%i_mag_stretch)) then
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 asym_base_fld%i_velo, fhd_asym_velo)
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 sym_base_fld%i_magne, fhd_sym_magne)
-!
-      else if( (i_field .eq. force_asym1_sym2%i_h_advect)               &
-     &    .or. (i_field .eq. force_asym1_sym2%i_h_flux)) then
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 asym_base_fld%i_velo, fhd_asym_velo)
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 sym_base_fld%i_temp, fhd_asym_temp)
-!
-      else if( (i_field .eq. force_asym1_sym2%i_ph_advect)              &
-     &    .or. (i_field .eq. force_asym1_sym2%i_ph_flux)) then
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 asym_base_fld%i_velo, fhd_asym_velo)
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 sym_base_fld%i_par_temp, fhd_sym_part_temp)
-      else if( (i_field .eq. force_asym1_sym2%i_c_advect)               &
-     &    .or. (i_field .eq. force_asym1_sym2%i_c_flux)  ) then
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 asym_base_fld%i_velo, fhd_asym_velo)
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 sym_base_fld%i_light, fhd_sym_light)
-!
-      else if( (i_field .eq. force_asym1_sym2%i_pc_advect)              &
-     &    .or. (i_field .eq. force_asym1_sym2%i_pc_flux)  ) then
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 asym_base_fld%i_velo, fhd_asym_velo)
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 sym_base_fld%i_par_light, fhd_asym_part_light)
-      end if
-      check_force_by_sym_asym_id = iflag
-      return
-!
-      end function check_force_by_sym_asym_id
-!
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
       subroutine force_w_sym_monitor_address                            &
      &         (field_name, i_field, numrms, numave,                    &
      &          rms_force_sym1_sym2, rms_force_asym1_asym2,             &
@@ -1019,6 +742,160 @@
       flag = (flag_r .and. flag_a)
 !
       end subroutine force_w_sym_monitor_address
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      integer(kind = kint) function num_forces_w_symmetry()
+      num_forces_w_symmetry = nforce_w_sym
+      return
+      end function num_forces_w_symmetry
+!
+! ----------------------------------------------------------------------
+!
+      subroutine set_force_w_symmetry_names(field_names)
+!
+      character(len = kchara), intent(inout)                            &
+     &                        :: field_names(nforce_w_sym)
+!
+!
+      write(field_names( 1),'(a,a1)') trim(fhd_wsym_x_usym), CHAR(0)
+      write(field_names( 2),'(a,a1)') trim(fhd_wasym_x_uasym), CHAR(0)
+      write(field_names( 3),'(a,a1)') trim(fhd_wsym_x_uasym), CHAR(0)
+      write(field_names( 4),'(a,a1)') trim(fhd_wasym_x_uaym), CHAR(0)
+!
+      write(field_names( 5),'(a,a1)') trim(fhd_Jsym_x_Bsym), CHAR(0)
+      write(field_names( 6),'(a,a1)') trim(fhd_Jasym_x_Basym), CHAR(0)
+      write(field_names( 7),'(a,a1)') trim(fhd_Jsym_x_Basym), CHAR(0)
+      write(field_names( 8),'(a,a1)') trim(fhd_Jasym_x_Bsym), CHAR(0)
+!
+      write(field_names( 9),'(a,a1)')                                   &
+     &                  trim(fhd_Bsym_nabla_Bsym), CHAR(0)
+      write(field_names(10),'(a,a1)')                                   &
+     &                  trim(fhd_Basym_nabla_Basym), CHAR(0)
+      write(field_names(11),'(a,a1)')                                   &
+     &                  trim(fhd_Bsym_nabla_Basym), CHAR(0)
+      write(field_names(12),'(a,a1)')                                   &
+     &                  trim(fhd_Basym_nabla_Bsym), CHAR(0)
+!
+      write(field_names(13),'(a,a1)') trim(fhd_sym_buoyancy), CHAR(0)
+      write(field_names(14),'(a,a1)') trim(fhd_asym_buoyancy), CHAR(0)
+      write(field_names(15),'(a,a1)') trim(fhd_sym_comp_buo), CHAR(0)
+      write(field_names(16),'(a,a1)') trim(fhd_asym_comp_buo), CHAR(0)
+!
+      write(field_names(17),'(a,a1)') trim(fhd_usym_x_Bsym), CHAR(0)
+      write(field_names(18),'(a,a1)') trim(fhd_uasym_x_Basym), CHAR(0)
+      write(field_names(19),'(a,a1)') trim(fhd_usym_x_Basym), CHAR(0)
+      write(field_names(20),'(a,a1)') trim(fhd_uasym_x_Bsym), CHAR(0)
+!
+      write(field_names(21),'(a,a1)')                                   &
+     &                  trim(fhd_rot_usym_x_Bsym), CHAR(0)
+      write(field_names(22),'(a,a1)')                                   &
+     &                  trim(fhd_rot_uasym_x_Basym), CHAR(0)
+      write(field_names(23),'(a,a1)')                                   &
+     &                  trim(fhd_rot_usym_x_Basym), CHAR(0)
+      write(field_names(24),'(a,a1)')                                   &
+     &                  trim(fhd_rot_uasym_x_Bsym), CHAR(0)
+!
+      write(field_names(25),'(a,a1)')                                   &
+     &                  trim(fhd_Bsym_nabla_usym), CHAR(0)
+      write(field_names(26),'(a,a1)')                                   &
+     &                  trim(fhd_Basym_nabla_uasym), CHAR(0)
+      write(field_names(27),'(a,a1)')                                   &
+     &                  trim(fhd_Bsym_nabla_uasym), CHAR(0)
+      write(field_names(28),'(a,a1)')                                   &
+     &                  trim(fhd_Basym_nabla_usym), CHAR(0)
+!
+      write(field_names(29),'(a,a1)')                                   &
+     &                  trim(fhd_usym_nabla_Tsym), CHAR(0)
+      write(field_names(30),'(a,a1)')                                   &
+     &                  trim(fhd_uasym_nabla_Tasym), CHAR(0)
+      write(field_names(31),'(a,a1)')                                   &
+     &                  trim(fhd_usym_nabla_Tasym), CHAR(0)
+      write(field_names(32),'(a,a1)')                                   &
+     &                  trim(fhd_uasym_nabla_Tsym), CHAR(0)
+!
+      write(field_names(33),'(a,a1)')                                   &
+     &                  trim(fhd_usym_nabla_pTsym), CHAR(0)
+      write(field_names(34),'(a,a1)')                                   &
+     &                  trim(fhd_uasym_nabla_pTasym), CHAR(0)
+      write(field_names(35),'(a,a1)')                                   &
+     &                  trim(fhd_usym_nabla_pTasym), CHAR(0)
+      write(field_names(36),'(a,a1)')                                   &
+     &                  trim(fhd_uasym_nabla_pTsym), CHAR(0)
+!
+      write(field_names(37),'(a,a1)') trim(fhd_h_flux_sym_sym), CHAR(0)
+      write(field_names(38),'(a,a1)')                                   &
+     &                  trim(fhd_h_flux_asym_asym), CHAR(0)
+      write(field_names(39),'(a,a1)')                                   &
+     &                  trim(fhd_h_flux_sym_asym), CHAR(0)
+      write(field_names(40),'(a,a1)')                                   &
+     &                  trim(fhd_h_flux_asym_sym), CHAR(0)
+!
+      write(field_names(41),'(a,a1)')                                   &
+     &                  trim(fhd_ph_flux_sym_sym), CHAR(0)
+      write(field_names(42),'(a,a1)')                                   &
+     &                  trim(fhd_ph_flux_asym_asym), CHAR(0)
+      write(field_names(43),'(a,a1)')                                   &
+     &                  trim(fhd_ph_flux_sym_asym), CHAR(0)
+      write(field_names(44),'(a,a1)')                                   &
+     &                  trim(fhd_ph_flux_asym_sym), CHAR(0)
+!
+      write(field_names(45),'(a,a1)')                                   &
+     &                  trim(fhd_usym_nabla_Csym), CHAR(0)
+      write(field_names(46),'(a,a1)')                                   &
+     &                  trim(fhd_uasym_nabla_Casym), CHAR(0)
+      write(field_names(47),'(a,a1)')                                   &
+     &                  trim(fhd_usym_nabla_Casym), CHAR(0)
+      write(field_names(48),'(a,a1)')                                   &
+     &                  trim(fhd_uasym_nabla_Csym), CHAR(0)
+!
+      write(field_names(49),'(a,a1)')                                   &
+     &                  trim(fhd_usym_nabla_pCsym), CHAR(0)
+      write(field_names(50),'(a,a1)')                                   &
+     &                  trim(fhd_uasym_nabla_pCasym), CHAR(0)
+      write(field_names(51),'(a,a1)')                                   &
+     &                  trim(fhd_usym_nabla_pCasym), CHAR(0)
+      write(field_names(52),'(a,a1)')                                   &
+     &                  trim(fhd_uasym_nabla_pCsym), CHAR(0)
+!
+      write(field_names(53),'(a,a1)')                                   &
+     &                  trim(fhd_c_flux_sym_sym), CHAR(0)
+      write(field_names(54),'(a,a1)')                                   &
+     &                  trim(fhd_c_flux_asym_asym), CHAR(0)
+      write(field_names(55),'(a,a1)')                                   &
+     &                  trim(fhd_c_flux_sym_asym), CHAR(0)
+      write(field_names(56),'(a,a1)')                                   &
+     &                  trim(fhd_c_flux_asym_sym), CHAR(0)
+!
+      write(field_names(57),'(a,a1)')                                   &
+     &                  trim(fhd_pc_flux_sym_sym), CHAR(0)
+      write(field_names(58),'(a,a1)')                                   &
+     &                  trim(fhd_pc_flux_asym_asym), CHAR(0)
+      write(field_names(59),'(a,a1)')                                   &
+     &                  trim(fhd_pc_flux_sym_asym), CHAR(0)
+      write(field_names(60),'(a,a1)')                                   &
+     &                  trim(fhd_pc_flux_asym_sym), CHAR(0)
+!
+      write(field_names(61),'(a,a1)')                                   &
+     &                  trim(fhd_m_flux_sym_sym), CHAR(0)
+      write(field_names(62),'(a,a1)')                                   &
+     &                  trim(fhd_m_flux_asym_asym), CHAR(0)
+      write(field_names(63),'(a,a1)')                                   &
+     &                  trim(fhd_m_flux_sym_asym), CHAR(0)
+!
+      write(field_names(64),'(a,a1)')                                   &
+     &                  trim(fhd_maxwell_sym_sym), CHAR(0)
+      write(field_names(65),'(a,a1)')                                   &
+     &                  trim(fhd_maxwell_asym_asym), CHAR(0)
+      write(field_names(66),'(a,a1)')                                   &
+     &                  trim(fhd_maxwell_sym_asym), CHAR(0)
+!
+      write(field_names(67),'(a,a1)') trim(fhd_usym_Bsym), CHAR(0)
+      write(field_names(68),'(a,a1)') trim(fhd_uasym_Basym), CHAR(0)
+      write(field_names(69),'(a,a1)') trim(fhd_uasym_Bsym), CHAR(0)
+!
+      end subroutine set_force_w_symmetry_names
 !
 ! ----------------------------------------------------------------------
 !

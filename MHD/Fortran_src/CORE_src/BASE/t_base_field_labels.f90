@@ -18,9 +18,7 @@
 !!      subroutine set_base_scalar_addresses                            &
 !!     &         (i_phys, field_name, base_fld, flag)
 !!        type(base_field_address), intent(inout) :: base_fld
-!!      integer(kind = kint) function check_base_field_id               &
-!!     &                            (i_field, field_name, base_fld)
-!!        type(base_field_address), intent(in) :: base_fld
+!!
 !!      subroutine base_vector_monitor_address                          &
 !!     &         (field_name, i_field, numrms, numave,                  &
 !!     &          rms_base, ave_base, flag)
@@ -411,61 +409,6 @@
       end if  
 !
       end subroutine set_base_scalar_addresses
-!
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      integer(kind = kint) function check_base_field_id                 &
-     &                            (i_field, field_name, base_fld)
-!
-      integer(kind = kint), intent(in) :: i_field
-      character(len = kchara), intent(in) :: field_name
-      type(base_field_address), intent(in) :: base_fld
-!
-      integer(kind = kint) :: iflag
-!
-!
-      iflag = 0
-      if(      (i_field .eq. base_fld%i_vort)                           &
-     &   .and. (i_field .eq. base_fld%i_press)                          &
-     &   .and. (i_field .eq. base_fld%i_magne)                          &
-     &   .and. (i_field .eq. base_fld%i_temp)                           &
-     &   .and. (i_field .eq. base_fld%i_light)                          &
-     &   .and. (i_field .eq. base_fld%i_density)                        &
-     &   .and. (i_field .eq. base_fld%i_entropy)) then
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                                base_fld%i_velo, fhd_velo)
-      else if( (i_field .eq. base_fld%i_vecp)                           &
-     &   .and. (i_field .eq. base_fld%i_current)                        &
-     &   .and. (i_field .eq. base_fld%i_mag_p)                          &
-     &   .and. (i_field .eq. base_fld%i_scalar_p)) then
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                                base_fld%i_magne, fhd_magne)
-!
-      else if( (i_field .eq. base_fld%i_par_temp)                       &
-     &   .and. (i_field .eq. base_fld%i_ref_t)                          &
-     &   .and. (i_field .eq. base_fld%i_heat_source)) then
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                                base_fld%i_temp, fhd_temp)
-      else if( (i_field .eq. base_fld%i_par_light)                      &
-     &   .and. (i_field .eq. base_fld%i_ref_c)                          &
-     &   .and. (i_field .eq. base_fld%i_light_source)) then
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                                base_fld%i_light, fhd_light)
-      else if( (i_field .eq. base_fld%i_par_entropy)                    &
-     &   .and. (i_field .eq. base_fld%i_ref_entropy)                    &
-     &   .and. (i_field .eq. base_fld%i_entropy_source)) then
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                                base_fld%i_entropy, fhd_entropy)
-      else if( (i_field .eq. base_fld%i_par_density)                    &
-     &   .and. (i_field .eq. base_fld%i_ref_density)) then 
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                                base_fld%i_density, fhd_density)
-      end if
-      check_base_field_id = iflag
-      return
-!
-      end function check_base_field_id
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------

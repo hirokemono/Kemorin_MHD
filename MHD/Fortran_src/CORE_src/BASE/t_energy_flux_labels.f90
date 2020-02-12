@@ -11,17 +11,16 @@
 !!      logical function check_enegy_fluxes(field_name)
 !!      subroutine set_enegy_fluxe_addresses                            &
 !!     &         (i_phys, field_name, base_force, flag)
-!!      integer(kind = kint) function check_base_force_id               &
-!!     &                    (i_field, field_name, base_fld, base_force)
-!!        type(base_field_address), intent(in) :: base_fld
-!!        type(energy_flux_address), intent(in) :: base_force
+!!        type(energy_flux_address), intent(inout) :: ene_flux
 !!
-!!      subroutine base_force_monitor_address                           &
+!!      subroutine energy_fluxes_monitor_address                        &
 !!     &         (field_name, i_field, numrms, numave,                  &
-!!     &          rms_force, ave_force, flag)
-!!        type(energy_flux_address), intent(inout) :: rms_force
-!!        type(energy_flux_address), intent(inout) :: ave_force
+!!     &          rms_ene_flux, ave_ene_flux, flag)
+!!        type(energy_flux_address), intent(inout) :: rms_ene_flux
+!!        type(energy_flux_address), intent(inout) :: ave_ene_flux
 !!
+!!      integer(kind = kint) function num_energy_fluxes()
+!!      subroutine set_energy_flux_names(field_names)
 !! !!!!!  Base field names  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!
 !! field names 
@@ -67,6 +66,8 @@
 !
       implicit  none
 ! 
+!
+      integer(kind = kint), parameter, private :: nene_flux = 14
 !
 !>        Field label of work of inertia
 !!         @f$ u_{i} (u_{j} \partial_{j} u_{i}) @f$
@@ -221,7 +222,7 @@
       logical, intent(inout) :: flag
 !
 !
-      flag = check_base_forces(field_name)
+      flag = check_enegy_fluxes(field_name)
       if(flag) then
         if (field_name .eq. fhd_inertia_work) then
           ene_flux%i_m_advect_work = i_phys
@@ -264,99 +265,6 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      integer(kind = kint) function check_base_ene_fluxes_id            &
-     &                   (i_field, field_name,                          &
-     &                    base_fld, base_force, ene_flux)
-!
-      integer(kind = kint), intent(in) :: i_field
-      character(len = kchara), intent(in) :: field_name
-      type(base_field_address), intent(in) :: base_fld
-      type(base_force_address), intent(in) :: base_force
-      type(energy_flux_address), intent(in) :: ene_flux
-!
-      integer(kind = kint) :: iflag
-!
-!
-      iflag = 0
-      if( (i_field .eq. ene_flux%i_m_advect_work) ) then
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 base_fld%i_velo, fhd_velo)
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 base_force%i_m_advect, fhd_inertia)
-      else if( (i_field .eq. ene_flux%i_nega_ujb)                       &
-     &    .or. (i_field .eq. ene_flux%i_ujb)) then
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 base_fld%i_velo, fhd_velo)
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 base_force%i_lorentz, fhd_Lorentz)
-      else if( (i_field .eq. ene_flux%i_m_tension_wk)) then
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 base_fld%i_velo, fhd_velo)
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 base_force%i_m_tension, fhd_mag_tension)
-!
-      else if( (i_field .eq. ene_flux%i_buo_gen)) then
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 base_fld%i_velo, fhd_velo)
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 base_force%i_buoyancy, fhd_buoyancy)
-      else if( (i_field .eq. ene_flux%i_c_buo_gen)) then
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 base_fld%i_velo, fhd_velo)
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 base_force%i_comp_buo, fhd_comp_buo)
-!
-      else if( (i_field .eq. ene_flux%i_me_gen)) then
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 base_fld%i_magne, fhd_magne)
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 base_force%i_induction, fhd_mag_induct)
-      else if( (i_field .eq. ene_flux%i_mag_stretch_flux)) then
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 base_fld%i_magne, fhd_magne)
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 base_force%i_mag_stretch, fhd_mag_stretch)
-!
-      else if( (i_field .eq. ene_flux%i_temp_gen)) then
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 base_fld%i_temp, fhd_temp)
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 base_force%i_h_advect, fhd_heat_advect)
-      else if( (i_field .eq. ene_flux%i_par_t_gen)) then
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 base_fld%i_par_temp, fhd_part_temp)
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 base_force%i_ph_advect, fhd_part_h_advect)
-      else if( (i_field .eq. ene_flux%i_comp_gen)) then
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 base_fld%i_light, fhd_light)
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 base_force%i_c_advect, fhd_composit_advect)
-      else if( (i_field .eq. ene_flux%i_par_c_gen)) then
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 base_fld%i_par_light, fhd_part_light)
-        iflag = iflag + missing_field(i_field, field_name,              &
-     &                 base_force%i_pc_advect, fhd_part_c_advect)
-!
-!      else if( (i_field .eq. ene_flux%i_vis_e_diffuse)) then
-!        iflag = iflag + missing_field(i_field, field_name,             &
-!     &                 base_fld%i_velo, fhd_velo)
-!        iflag = iflag + missing_field(i_field, field_name,             &
-!     &                 base_force%i_v_diffuse, fhd_viscous)
-!      else if( (i_field .eq. ene_flux%i_mag_e_diffuse)) then
-!        iflag = iflag + missing_field(i_field, field_name,             &
-!     &                 base_fld%i_magne, fhd_magne)
-!        iflag = iflag + missing_field(i_field, field_name,             &
-!     &                 base_force%i_b_diffuse, fhd_mag_diffuse)
-      end if
-      check_base_ene_fluxes_id = iflag
-      return
-!
-      end function check_base_ene_fluxes_id
-!
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
       subroutine energy_fluxes_monitor_address                          &
      &         (field_name, i_field, numrms, numave,                    &
      &          rms_ene_flux, ave_ene_flux, flag)
@@ -382,6 +290,51 @@
       flag = (flag_r .and. flag_a)
 !
       end subroutine energy_fluxes_monitor_address
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      integer(kind = kint) function num_energy_fluxes()
+      num_energy_fluxes = nene_flux
+      return
+      end function num_energy_fluxes
+!
+! ----------------------------------------------------------------------
+!
+      subroutine set_energy_flux_names(field_names)
+!
+      character(len = kchara), intent(inout) :: field_names(nene_flux)
+!
+!
+      write(field_names( 1),'(a,a1)') trim(fhd_inertia_work), CHAR(0)
+      write(field_names( 2),'(a,a1)')                                   &
+     &                   trim(fhd_work_agst_Lorentz), CHAR(0)
+      write(field_names( 3),'(a,a1)') trim(fhd_Lorentz_work), CHAR(0)
+      write(field_names( 4),'(a,a1)')                                   &
+     &                   trim(fhd_mag_tension_work), CHAR(0)
+!
+      write(field_names( 5),'(a,a1)') trim(fhd_buoyancy_flux), CHAR(0)
+      write(field_names( 6),'(a,a1)') trim(fhd_comp_buo_flux), CHAR(0)
+!
+      write(field_names( 7),'(a,a1)') trim(fhd_buoyancy), CHAR(0)
+      write(field_names( 8),'(a,a1)') trim(fhd_comp_buo), CHAR(0)
+!
+      write(field_names( 9),'(a,a1)') trim(fhd_mag_ene_gen), CHAR(0)
+      write(field_names(10),'(a,a1)')                                   &
+     &                   trim(fhd_mag_stretch_flux), CHAR(0)
+!
+      write(field_names(11),'(a,a1)')                                   &
+     &                   trim(fhd_temp_generation), CHAR(0)
+      write(field_names(12),'(a,a1)') trim(fhd_part_temp_gen), CHAR(0)
+      write(field_names(13),'(a,a1)')                                   &
+     &                   trim(fhd_comp_generation), CHAR(0)
+      write(field_names(14),'(a,a1)') trim(fhd_part_comp_gen), CHAR(0)
+!
+!      write(field_names(15),'(a,a1)') trim(fhd_vis_ene_diffuse), CHAR(0)
+!      write(field_names(16),'(a,a1)')                                  &
+!     &                   trim(fhd_mag_ene_diffuse), CHAR(0)
+!
+      end subroutine set_energy_flux_names
 !
 ! ----------------------------------------------------------------------
 !
