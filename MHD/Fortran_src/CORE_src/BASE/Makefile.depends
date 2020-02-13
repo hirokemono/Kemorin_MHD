@@ -70,11 +70,15 @@ getarg_kemo.o: $(BASEDIR)/getarg_kemo.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<
 m_constants.o: $(BASEDIR)/m_constants.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<
+m_dble_filter_field_labels.o: $(BASEDIR)/m_dble_filter_field_labels.f90 m_precision.o m_constants.o t_base_field_labels.o
+	$(F90) -c $(F90OPTFLAGS) $<
 m_energy_flux_w_sym_labels.o: $(BASEDIR)/m_energy_flux_w_sym_labels.f90 m_precision.o m_constants.o t_base_field_labels.o t_base_force_labels.o t_energy_flux_labels.o m_field_w_symmetry_labels.o m_force_w_sym_labels.o
 	$(F90) -c $(F90OPTFLAGS) $<
 m_error_IDs.o: $(BASEDIR)/m_error_IDs.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<
 m_field_w_symmetry_labels.o: $(BASEDIR)/m_field_w_symmetry_labels.f90 m_precision.o m_constants.o t_base_field_labels.o
+	$(F90) -c $(F90OPTFLAGS) $<
+m_filtered_field_labels.o: $(BASEDIR)/m_filtered_field_labels.f90 m_precision.o m_constants.o t_base_field_labels.o
 	$(F90) -c $(F90OPTFLAGS) $<
 m_force_w_sym_labels.o: $(BASEDIR)/m_force_w_sym_labels.f90 m_precision.o m_constants.o t_base_field_labels.o t_base_force_labels.o m_field_w_symmetry_labels.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -87,6 +91,8 @@ m_phys_labels.o: $(BASEDIR)/m_phys_labels.f90 m_precision.o t_base_field_labels.
 m_t_step_parameter.o: $(BASEDIR)/m_t_step_parameter.f90 m_precision.o t_time_data.o
 	$(F90) -c $(F90OPTFLAGS) $<
 m_volume_average_labels.o: $(BASEDIR)/m_volume_average_labels.f90 m_precision.o m_phys_labels.o add_direction_labels.o
+	$(F90) -c $(F90OPTFLAGS) $<
+m_wide_filter_field_labels.o: $(BASEDIR)/m_wide_filter_field_labels.f90 m_precision.o m_constants.o t_base_field_labels.o
 	$(F90) -c $(F90OPTFLAGS) $<
 mag_of_field_smp.o: $(BASEDIR)/mag_of_field_smp.f90 m_precision.o m_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<

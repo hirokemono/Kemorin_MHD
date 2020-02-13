@@ -35,34 +35,36 @@
 !!
 !! field names 
 !!
-!!   velocity:     velocity    u
-!!   pressure:     pressure    P
-!!   vorticity:    vorticity   \omega = \nabra \times v
+!!   velocity [i_velo]:     velocity    u
+!!   pressure [i_press]:     pressure    P
+!!   vorticity [i_vort]:    vorticity   \omega = \nabra \times v
 !!
-!!   vector_potential:   vector potential \nabla \times A = B
-!!   magnetic_field:     magnetic field   B
-!!   current_density:    current density  J = \nabla \times B
-!!   magnetic_potential: potential       \phi
-!!   electric_field:     electric field   E
-!!   poynting_flux:      Poynting flux    S = E \times B
+!!   vector_potential [i_vecp] :   vector potential \nabla \times A = B
+!!   magnetic_field [i_magne]:     magnetic field   B
+!!   current_density [i_current]:    current density  J = \nabla \times B
+!!   magnetic_potential [i_mag_p]:   potential       \phi
+!!   scalar_potential [i_scalar_p]:  scalar potential   \phi
+!!   electric_field []:     electric field   E
+!!   poynting_flux []:      Poynting flux    S = E \times B
 !!
-!!   density:      density     \rho
-!!   temperature:  temperature T
-!!   composition:  Composition anormally C
-!!   entropy:      Entropy               S
+!!   temperature [i_temp]:  temperature T
+!!   composition [i_light]:  Composition anormally C
+!!   density [i_density]:      density     \rho
+!!   entropy [i_entropy]:      Entropy               S
 !!
-!!   reference_temperature:   T_0
-!!   reference_density:       \rho_0
-!!   reference_entropy:       S_0
+!!   reference_temperature [i_ref_t]:   T_0
+!!   reference_composition [i_ref_c]:   C_0
+!!   reference_density [i_ref_density]:       \rho_0
+!!   reference_entropy [i_ref_entropy]:       S_0
 !!
-!!   perturbation_temp:         \Theta = T - T_0
-!!   perturbation_density:      \rho - \rho_0
-!!   parturbation_composition:  C - C_0
-!!   perturbation_entropy:      S - S_0
+!!   perturbation_temp [i_par_temp]:         \Theta = T - T_0
+!!   parturbation_composition [i_par_light]:  C - C_0
+!!   perturbation_density [i_par_density]:      \rho - \rho_0
+!!   perturbation_entropy [i_par_entropy]:      S - S_0
 !!
-!!   heat_source:            heat source              q_{T}
-!!   composition_source:     compositoin source       q_{T}
-!!   entropy_source:         entropy source           q_{S}
+!!   heat_source [i_heat_source]:            heat source          q_{T}
+!!   composition_source [i_light_source]:     compositoin source  q_{C}
+!!   entropy_source [i_entropy_source]:         entropy source    q_{S}
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!@endverbatim
