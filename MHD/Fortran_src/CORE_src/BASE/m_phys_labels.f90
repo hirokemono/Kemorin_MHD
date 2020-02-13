@@ -146,6 +146,10 @@
       use t_base_force_labels
       use t_energy_flux_labels
 !
+      use m_filtered_field_labels
+      use m_wide_filter_field_labels
+      use m_dble_filter_field_labels
+!
       implicit none
 !
 !>        Field label for time step
@@ -164,26 +168,6 @@
 !!         @f$ \partial_{i} A_{i} @f$
       character(len=kchara), parameter :: fhd_div_a = 'div_vector_p'
 !
-!>        Field label for filtered velocity
-!!         @f$ \bar{u}_{i} @f$
-      character(len=kchara), parameter                                  &
-     &            :: fhd_filter_velo = 'filter_velo'
-!>        Field label for filtered velocity
-!!         @f$ \bar{\omega}_{i} @f$
-      character(len=kchara), parameter                                  &
-     &            :: fhd_filter_vort = 'filter_vorticity'
-!>        Field label for filtered magnetic field
-!!         @f$ \bar{B}_{i} @f$
-      character(len=kchara), parameter                                  &
-     &            :: fhd_filter_magne = 'filter_magne'
-!>        Field label for filtered magnetic field
-!!         @f$ \bar{B}_{i} @f$
-      character(len=kchara), parameter                                  &
-     &            :: fhd_filter_current = 'filter_current'
-!>        Field label for filtered vetor potential
-!!         @f$ \bar{A}_{i} @f$
-      character(len=kchara), parameter                                  &
-     &            :: fhd_filter_vecp = 'filter_vecp'
 !>        Field label for filtered vetor potential
 !!         @f$ \bar{A}_{i} @f$
       character(len=kchara), parameter                                  &
@@ -379,20 +363,6 @@
      &             :: fhd_dbl_SGS_vp_induct = 'double_SGS_vp_induction'
 !
 !  scalars
-!
-!
-!>        Field label for filtered temperature
-!!         @f$ \bar{T} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_filter_temp =       'filter_temp'
-!>        Field label for filtered perturbation of temperature
-!!         @f$ \bar{\Theta} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_filter_part_temp =  'filter_part_temp'
-!>        Field label for filtered conposition
-!!         @f$ \bar{C} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_filter_comp =       'filter_composition'
 !
 !>        Field label for kinetic helicity
 !!         @f$ H_{u} = u_{i} \omega_{i} @f$
@@ -750,67 +720,19 @@
 !
 !  wider filtered field
 !
-!>        Field label for filtered velocity by wider filter
-      character(len=kchara), parameter                                  &
-     &             :: fhd_w_filter_velo = 'wide_filter_velo'
-!>        Field label for filtered vorticity by wider filter
-      character(len=kchara), parameter                                  &
-     &             :: fhd_w_filter_vort = 'wide_filter_vorticity'
-!>        Field label for filtered magnetic vector potential
-!!        by wider filter
-      character(len=kchara), parameter                                  &
-     &             :: fhd_w_filter_vecp = 'wide_filter_vecp'
-!>        Field label for filtered magnetic field by wider filter
-      character(len=kchara), parameter                                  &
-     &             :: fhd_w_filter_magne = 'wide_filter_magne'
-!>        Field label for filtered current density by wider filter
-      character(len=kchara), parameter                                  &
-     &             :: fhd_w_filter_current = 'wide_filter_current'
-!
-!>        Field label for filtered temperature by wider filter
-      character(len=kchara), parameter                                  &
-     &      :: fhd_w_filter_temp =      'wide_filter_temp'
 !>        Field label for filtered grad. of temperature by wider filter
       character(len=kchara), parameter                                  &
      &      :: fhd_w_filter_grad_temp = 'wide_filter_grad_temp'
-!
-!>        Field label for filtered compostiion by wider filter
-      character(len=kchara), parameter                                  &
-     &      :: fhd_w_filter_comp =    'wide_filter_composition'
 !>        Field label for filtered grad. of composition by wider filter
       character(len=kchara), parameter                                  &
      &      :: fhd_w_filter_grad_comp = 'wide_filter_grad_composition'
 !
 !  double filtered field
 !
-!>        Field label for filtered velocity by double filtering
-      character(len=kchara), parameter                                  &
-     &             :: fhd_d_filter_velo = 'double_filter_velo'
-!>        Field label for filtered vorticity by double filtering
-      character(len=kchara), parameter                                  &
-     &             :: fhd_d_filter_vort = 'double_filter_vorticity'
-!>        Field label for filtered magnetic vector potential
-!!        by double filtering
-      character(len=kchara), parameter                                  &
-     &             :: fhd_d_filter_vecp = 'double_filter_vecp'
-!>        Field label for filtered magnetic field by double filtering
-      character(len=kchara), parameter                                  &
-     &             :: fhd_d_filter_magne = 'double_filter_magne'
-!>        Field label for filtered current density by double filtering
-      character(len=kchara), parameter                                  &
-     &             :: fhd_d_filter_current = 'double_filter_current'
-!
-!>        Field label for filtered temperature by double filtering
-      character(len=kchara), parameter                                  &
-     &      :: fhd_d_filter_temp =      'double_filter_temp'
 !>        Field label for filtered grad. of temperature
 !!        by double filtering
       character(len=kchara), parameter                                  &
      &      :: fhd_d_filter_grad_temp = 'double_filter_grad_temp'
-!
-!>        Field label for filtered compostiion by double filtering
-      character(len=kchara), parameter                                  &
-     &      :: fhd_d_filter_comp =    'double_filter_composition'
 !>        Field label for filtered grad. of composition
 !>        by double filtering
       character(len=kchara), parameter                                  &

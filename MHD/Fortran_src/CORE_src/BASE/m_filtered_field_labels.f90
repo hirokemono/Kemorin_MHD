@@ -28,40 +28,29 @@
 !!      integer(kind = kint) function num_filter_fields()
 !!      subroutine set_filter_field_names(field_names)
 !!
-!! !!!!!  Base field names  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!! !!!!!  Filtered field names  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!
 !! field names (Single filtered, wide filtered, double filtered)
 !!
-!!   filter_velo,      wide_filter_velo, double_filter_velo
-!!       [i_velo]:     filtered velocity    u
-!!   filter_vorticity, wide_filter_vorticity, double_filter_vorticity
-!!       [i_vort]:    filtered vorticity   \omega = \nabra \times v
+!!   filter_velo   [i_velo]:     filtered velocity    u
+!!   filter_vorticity   [i_vort]: 
+!!            filtered vorticity   \omega = \nabra \times v
 !!
-!!   filter_vecp, wide_filter_vecp, double_filter_vecp 
-!!       [i_vecp] :   filtered vector potential \nabla \times A = B
-!!   filter_magne, wide_filter_magne, double_filter_magne
-!!       [i_magne]:     filtered magnetic field   B
-!!   filter_current, wide_filter_current, double_filter_current
-!!       [i_current]:    filtered current density  J = \nabla \times B
+!!   filter_vecp  [i_vecp]: 
+!!            filtered vector potential \nabla \times A = B
+!!   filter_magne  [i_magne]:     filtered magnetic field   B
+!!   filter_current   [i_current]: 
+!!            filtered current density  J = \nabla \times B
 !!
-!!   filter_temp, wide_filter_temp, double_filter_temp
-!!       [i_temp]:  filtered temperature              T
-!!   filter_part_comp, wide_filter_composition,
-!!   double_filter_composition
-!!       [i_light]:  filtered Composition anormally   C
-!!   filter_density, wide_filter_density, double_filter_density
-!!       [i_density]:      filtered density              \rho
-!!   filter_entropy, wide_filter_entropy, double_filter_entropy
-!!       [i_entropy]:      filtered Entropy               S
+!!   filter_temp    [i_temp]:  filtered temperature              T
+!!   filter_part_comp  [i_light]:   filtered Composition anormally   C
+!!   filter_density    [i_density]: filtered density              \rho
+!!   filter_entropy    [i_entropy]: filtered Entropy               S
 !!
-!!   filter_part_temp, wide_filter_part_temp, double_filter_pert_temp
-!!       [i_par_temp]:         \Theta = T - T_0
-!!   parturbation_composition, wide_filter_part_comp,
-!!    double_filter_pert_comp  [i_par_light]:  C - C_0
-!!   filter_part_density, wide_filter_part_density,
-!!    double_filter_pert_density [i_par_density]:      \rho - \rho_0
-!!   filter_part_entropy, wide_filter_part_entropy,
-!!    double_filter_pert_entropy,  [i_par_entropy]:      S - S_0
+!!   filter_part_temp            [i_par_temp]:    \Theta = T - T_0
+!!   parturbation_composition    [i_par_light]:    C - C_0
+!!   filter_part_density         [i_par_density]:  \rho - \rho_0
+!!   filter_part_entropy         [i_par_entropy]:  S - S_0
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!@endverbatim
@@ -137,57 +126,6 @@
 !!         @f$ \bar{S} - S_{0} @f$
       character(len=kchara), parameter                                  &
      &             :: fhd_filter_part_entropy =  'filter_part_entropy'
-!
-!  wider filtered field
-!
-!>        Field label for filtered velocity by wider filter
-      character(len=kchara), parameter                                  &
-     &             :: fhd_w_filter_velo = 'wide_filter_velo'
-!>        Field label for filtered vorticity by wider filter
-      character(len=kchara), parameter                                  &
-     &             :: fhd_w_filter_vort = 'wide_filter_vorticity'
-!>        Field label for filtered magnetic vector potential
-!!        by wider filter
-      character(len=kchara), parameter                                  &
-     &             :: fhd_w_filter_vecp = 'wide_filter_vecp'
-!>        Field label for filtered magnetic field by wider filter
-      character(len=kchara), parameter                                  &
-     &             :: fhd_w_filter_magne = 'wide_filter_magne'
-!>        Field label for filtered current density by wider filter
-      character(len=kchara), parameter                                  &
-     &             :: fhd_w_filter_current = 'wide_filter_current'
-!
-!>        Field label for filtered temperature by wider filter
-      character(len=kchara), parameter                                  &
-     &      :: fhd_w_filter_temp =      'wide_filter_temp'
-!>        Field label for filtered perturbation of temperature
-!!                                                  by wider filter
-      character(len=kchara), parameter                                  &
-     &      :: fhd_w_filter_part_temp = 'wide_filter_part_temp'
-!
-!>        Field label for filtered compostiion by wider filter
-      character(len=kchara), parameter                                  &
-     &      :: fhd_w_filter_comp =    'wide_filter_composition'
-!>        Field label for filtered perturbation of composition
-!!                                                  by wider filter
-      character(len=kchara), parameter                                  &
-     &      :: fhd_w_filter_part_comp = 'wide_filter_part_comp'
-!
-!>        Field label for filtered density by wider filter
-      character(len=kchara), parameter                                  &
-     &      :: fhd_w_filter_density =    'wide_filter_density'
-!>        Field label for filtered perturbation of density
-!!                                                  by wider filter
-      character(len=kchara), parameter                                  &
-     &      :: fhd_w_filter_part_density = 'wide_filter_part_density'
-!
-!>        Field label for filtered entropy by wider filter
-      character(len=kchara), parameter                                  &
-     &      :: fhd_w_filter_entropy =    'wide_filter_entropy'
-!>        Field label for filtered perturbation of entropy
-!!                                                  by wider filter
-      character(len=kchara), parameter                                  &
-     &      :: fhd_w_filter_part_entropy = 'wide_filter_part_entropy'
 !
 ! ----------------------------------------------------------------------
 !
