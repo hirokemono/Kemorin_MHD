@@ -43,14 +43,14 @@
 !!            filtered current density  J = \nabla \times B
 !!
 !!   filter_temp    [i_temp]:  filtered temperature              T
-!!   filter_part_comp  [i_light]:   filtered Composition anormally   C
+!!   filter_composition  [i_light]:   filtered Composition anormally   C
 !!   filter_density    [i_density]: filtered density              \rho
 !!   filter_entropy    [i_entropy]: filtered Entropy               S
 !!
-!!   filter_part_temp            [i_par_temp]:    \Theta = T - T_0
-!!   parturbation_composition    [i_par_light]:    C - C_0
-!!   filter_part_density         [i_par_density]:  \rho - \rho_0
-!!   filter_part_entropy         [i_par_entropy]:  S - S_0
+!!   filter_pert_temp            [i_par_temp]:    \Theta = T - T_0
+!!   filter_pert_comp            [i_par_light]:    C - C_0
+!!   filter_pert_density         [i_par_density]:  \rho - \rho_0
+!!   filter_pert_entropy         [i_par_entropy]:  S - S_0
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!@endverbatim
@@ -98,7 +98,7 @@
 !>        Field label for filtered perturbation of temperature
 !!         @f$ \bar{\Theta} @f$
       character(len=kchara), parameter                                  &
-     &             :: fhd_filter_part_temp =  'filter_part_temp'
+     &             :: fhd_filter_pert_temp =  'filter_pert_temp'
 !
 !>        Field label for filtered conposition
 !!         @f$ \bar{C} @f$
@@ -107,7 +107,7 @@
 !>        Field label for filtered conposition
 !!         @f$ \bar{C} - C_{0} @f$
       character(len=kchara), parameter                                  &
-     &             :: fhd_filter_part_comp =  'filter_part_comp'
+     &             :: fhd_filter_pert_comp =  'filter_pert_comp'
 !
 !>        Field label for filtered conposition
 !!         @f$ \bar{\rho} @f$
@@ -116,16 +116,16 @@
 !>        Field label for filtered conposition
 !!         @f$ \bar{\rho} - rho_{0} @f$
       character(len=kchara), parameter                                  &
-     &             :: fhd_filter_part_density =  'filter_part_density'
+     &             :: fhd_filter_pert_density =  'filter_pert_density'
 !
 !>        Field label for filtered entropy
 !!         @f$ \bar{S} @f$
       character(len=kchara), parameter                                  &
      &             :: fhd_filter_entropy =       'filter_entropy'
-!>        Field label for filtered entropy
+!>        Field label for filtered perturbation of entropy
 !!         @f$ \bar{S} - S_{0} @f$
       character(len=kchara), parameter                                  &
-     &             :: fhd_filter_part_entropy =  'filter_part_entropy'
+     &             :: fhd_filter_pert_entropy =  'filter_pert_entropy'
 !
 ! ----------------------------------------------------------------------
 !
@@ -161,10 +161,10 @@
      &   .or. (field_name .eq. fhd_filter_density)                      &
      &   .or. (field_name .eq. fhd_filter_entropy)                      &
 !
-     &   .or. (field_name .eq. fhd_filter_part_temp)                    &
-     &   .or. (field_name .eq. fhd_filter_part_comp)                    &
-     &   .or. (field_name .eq. fhd_filter_part_density)                 &
-     &   .or. (field_name .eq. fhd_filter_part_entropy)                 &
+     &   .or. (field_name .eq. fhd_filter_pert_temp)                    &
+     &   .or. (field_name .eq. fhd_filter_pert_comp)                    &
+     &   .or. (field_name .eq. fhd_filter_pert_density)                 &
+     &   .or. (field_name .eq. fhd_filter_pert_entropy)                 &
      &      )   check_filter_scalar = .TRUE.
 !
       end function check_filter_scalar
@@ -215,22 +215,22 @@
       if(flag) then
         if      (field_name .eq. fhd_filter_temp) then
           filter_fld%i_temp =            i_phys
-        else if (field_name .eq. fhd_filter_part_temp) then
+        else if (field_name .eq. fhd_filter_pert_temp) then
           filter_fld%i_par_temp =        i_phys
 !
         else if (field_name .eq. fhd_filter_comp) then
           filter_fld%i_light =          i_phys
-        else if (field_name .eq. fhd_filter_part_comp) then
+        else if (field_name .eq. fhd_filter_pert_comp) then
           filter_fld%i_par_light =      i_phys
 !
         else if (field_name .eq. fhd_filter_density) then
           filter_fld%i_density =        i_phys
-        else if (field_name .eq. fhd_filter_part_density) then
+        else if (field_name .eq. fhd_filter_pert_density) then
           filter_fld%i_par_density =    i_phys
 !
         else if (field_name .eq. fhd_filter_entropy) then
           filter_fld%i_entropy =        i_phys
-        else if (field_name .eq. fhd_filter_part_entropy) then
+        else if (field_name .eq. fhd_filter_pert_entropy) then
           filter_fld%i_par_entropy =    i_phys
         end if
       end if  
@@ -323,13 +323,13 @@
       write(field_names( 9),'(a,a1)') trim(fhd_filter_entropy), CHAR(0)
 !
       write(field_names(10),'(a,a1)')                                   &
-     &                   trim(fhd_filter_part_temp), CHAR(0)
+     &                   trim(fhd_filter_pert_temp), CHAR(0)
       write(field_names(11),'(a,a1)')                                   &
-     &                   trim(fhd_filter_part_comp), CHAR(0)
+     &                   trim(fhd_filter_pert_comp), CHAR(0)
       write(field_names(12),'(a,a1)')                                   &
-     &                   trim(fhd_filter_part_density), CHAR(0)
+     &                   trim(fhd_filter_pert_density), CHAR(0)
       write(field_names(13),'(a,a1)')                                   &
-     &                   trim(fhd_filter_part_entropy), CHAR(0)
+     &                   trim(fhd_filter_pert_entropy), CHAR(0)
 !
       end subroutine set_filter_field_names
 !

@@ -64,13 +64,13 @@
         call add_phys_name_ctl(fhd_filter_entropy, field_ctl)
 !
       else if(field_name .eq. fhd_d_filter_pert_temp) then
-        call add_phys_name_ctl(fhd_filter_part_temp, field_ctl)
+        call add_phys_name_ctl(fhd_filter_pert_temp, field_ctl)
       else if(field_name .eq. fhd_d_filter_pert_comp) then
-        call add_phys_name_ctl(fhd_filter_part_comp, field_ctl)
+        call add_phys_name_ctl(fhd_filter_pert_comp, field_ctl)
       else if(field_name .eq. fhd_d_filter_pert_density) then
-        call add_phys_name_ctl(fhd_filter_part_density, field_ctl)
+        call add_phys_name_ctl(fhd_filter_pert_density, field_ctl)
       else if(field_name .eq. fhd_d_filter_pert_entropy) then
-        call add_phys_name_ctl(fhd_filter_part_entropy, field_ctl)
+        call add_phys_name_ctl(fhd_filter_pert_entropy, field_ctl)
       end if
 !
       end subroutine add_double_filter_field_ctl
@@ -123,16 +123,16 @@
 !
       else if(field_name .eq. fhd_d_filter_pert_temp) then
         flag = flag .and. check_field_list_ctl                          &
-     &                  (fhd_filter_part_temp, field_ctl)
+     &                  (fhd_filter_pert_temp, field_ctl)
       else if(field_name .eq. fhd_d_filter_pert_comp) then
         flag = flag .and. check_field_list_ctl                          &
-     &                  (fhd_filter_part_comp, field_ctl)
+     &                  (fhd_filter_pert_comp, field_ctl)
       else if(field_name .eq. fhd_d_filter_pert_density) then
         flag = flag .and. check_field_list_ctl                          &
-     &                  (fhd_filter_part_density, field_ctl)
+     &                  (fhd_filter_pert_density, field_ctl)
       else if(field_name .eq. fhd_d_filter_pert_entropy) then
         flag = flag .and. check_field_list_ctl                          &
-     &                  (fhd_filter_part_entropy, field_ctl)
+     &                  (fhd_filter_pert_entropy, field_ctl)
       end if
       check_double_filter_field_ctl = flag
       return
@@ -186,16 +186,16 @@
 !
       else if( (i_field .eq. dbl_filter_fld%i_par_temp)) then
         iflag = iflag + missing_field(i_field, field_name,              &
-     &         filter_fld%i_par_temp, fhd_filter_part_comp)
+     &         filter_fld%i_par_temp, fhd_filter_pert_temp)
       else if( (i_field .eq. dbl_filter_fld%i_par_light)) then
         iflag = iflag + missing_field(i_field, field_name,              &
-     &         filter_fld%i_par_light, fhd_filter_part_comp)
+     &         filter_fld%i_par_light, fhd_filter_pert_comp)
       else if( (i_field .eq. dbl_filter_fld%i_par_density)) then
         iflag = iflag + missing_field(i_field, field_name,              &
-     &         filter_fld%i_par_density, fhd_filter_part_density)
+     &         filter_fld%i_par_density, fhd_filter_pert_density)
       else if( (i_field .eq. dbl_filter_fld%i_par_entropy)) then
         iflag = iflag + missing_field(i_field, field_name,              &
-     &         filter_fld%i_par_entropy, fhd_filter_part_entropy)
+     &         filter_fld%i_par_entropy, fhd_filter_pert_entropy)
       end if
       check_double_filter_field_id = iflag
       return

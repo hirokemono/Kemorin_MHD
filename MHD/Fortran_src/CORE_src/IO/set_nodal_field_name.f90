@@ -272,7 +272,7 @@
      &      )   iflag = 1
 !
       if (    (phys_nod_name_ctl .eq. fhd_filter_temp         )         &
-     &   .or. (phys_nod_name_ctl .eq. fhd_filter_part_temp    )         &
+     &   .or. (phys_nod_name_ctl .eq. fhd_filter_pert_temp    )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_filter_comp         )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_div_filter_v        )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_div_filter_b        )         &

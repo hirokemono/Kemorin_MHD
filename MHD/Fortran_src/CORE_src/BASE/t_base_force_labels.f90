@@ -27,39 +27,47 @@
 !!      integer(kind = kint) function num_base_forces()
 !!      subroutine set_base_force_names(field_names)
 !!
-!! !!!!!  Base field names  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!! !!!!!  Base force names  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!
 !! field names 
 !!
-!!   pressure_gradient:     pressure gradient    u
-!!   inertia:        inertia (\omega \times u)
-!!   momentum_flux:  momentum flux     u_{i} u_{j}
-!!   Lorentz_force:  Lorentz force     J \times B
-!!   magnetic_tension:  magnetic tension   (B \nabla) B
-!!   maxwell_tensor:  maxwell tensor       B_{i} B_{j}
-!!   Coriolis_force:  Coriolis force     2 \Omega \times u
-!!   buoyancy:   Thermal buoyancy       - \alpha_{T} g T
-!!   composite_buoyancy:   compositional buoyancy  - \alpha_{C} g C
+!!   pressure_gradient  [i_press_grad]:     pressure gradient    u
+!!   inertia    [i_m_advect]:        inertia (\omega \times u)
+!!   momentum_flux   [i_m_flux]:  momentum flux     u_{i} u_{j}
+!!   Lorentz_force   [i_lorentz]:  Lorentz force     J \times B
+!!   magnetic_tension  [i_m_tension]:  magnetic tension   (B \nabla) B
+!!   maxwell_tensor    [i_maxwell]:  maxwell tensor       B_{i} B_{j}
+!!   Coriolis_force   [i_coriolis]:  Coriolis force     2 \Omega \times u
+!!   buoyancy   [i_buoyancy]:   Thermal buoyancy       - \alpha_{T} g T
+!!   composite_buoyancy   [i_comp_buo]:
+!!                       compositional buoyancy  - \alpha_{C} g C
 !!
-!!   vecp_induction:     induction                           u \times B
-!!   magnetic_induction:  magneitic induction \nabla \times (u \times B)
-!!   magnetic_stretch:    magneitic streatch         (B \nabla) u
-!!   induction_tensor:    induction induction tensor
+!!   vecp_induction   [i_vp_induct]:     induction         u \times B
+!!   magnetic_induction   [i_induction]:
+!!                         magneitic induction \nabla \times (u \times B)
+!!   magnetic_stretch    [i_mag_stretch]:
+!!                         magneitic streatch         (B \nabla) u
+!!   induction_tensor    [i_induct_t]:    induction induction tensor
 !!                                 u_{i} B_{j}  - B_{i} u_{J}
-!!   electric_field:   electric field              E
-!!   poynting_flux:    poynting flux      E \times B
+!!   electric_field      [i_electric]:   electric field              E
+!!   poynting_flux       [i_poynting]:    poynting flux      E \times B
 !!
-!!   heat_advect:    heat advection     (u \cdot \nabla) T
-!!   part_h_advect:  perturbation of heat advection
+!!   heat_advect         [i_h_advect]:  heat advection
+!!                                     (u \cdot \nabla) T
+!!   part_h_advect       [i_ph_advect]:  perturbation of heat advection
 !!                                      (u \cdot \nabla) \Theta
-!!   heat_flux:    heat flux                   uT
-!!   part_h_flux:  perturbation of heat flux   u\Theta
+!!   heat_flux           [i_h_flux]:    heat flux          uT
+!!   part_h_flux         [i_ph_flux]:  perturbation of heat flux 
+!!                                    u\Theta
 !!
-!!   composition_advect:    composition advection     (u \cdot \nabla) C
-!!   part_c_advect:  perturbation of composition advection
+!!   composition_advect [i_c_advect]:    composition advection
+!!                                      (u \cdot \nabla) C
+!!   part_c_advect      [i_pc_advect]:
+!!                     perturbation of composition advection
 !!                                      (u \cdot \nabla) (C-C_0)
-!!   composite_flux:    composition flux                   uC
-!!   part_c_flux:  perturbation of composition flux   u(C-C_0)
+!!   composite_flux     [i_c_flux]:    composition flux         uC
+!!   part_c_flux        [i_pc_flux]:  perturbation of composition flux
+!!                                      u(C-C_0)
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!@endverbatim
@@ -311,16 +319,12 @@
           base_force%i_press_grad = i_phys
         else if (field_name .eq. fhd_inertia) then
           base_force%i_m_advect =   i_phys
-        else if (field_name .eq. fhd_mom_flux ) then
-          base_force%i_m_flux =     i_phys
         else if (field_name .eq. fhd_Coriolis) then
           base_force%i_coriolis =   i_phys
         else if (field_name .eq. fhd_Lorentz) then
           base_force%i_lorentz =    i_phys
         else if (field_name .eq. fhd_mag_tension) then
           base_force%i_m_tension =  i_phys
-        else if (field_name .eq. fhd_maxwell_t ) then
-          base_force%i_maxwell =    i_phys
 !
         else if (field_name .eq. fhd_e_field) then
           base_force%i_electric = i_phys

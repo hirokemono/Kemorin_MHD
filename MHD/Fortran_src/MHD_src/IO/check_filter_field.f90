@@ -63,13 +63,13 @@
       else if(field_name .eq. fhd_filter_entropy) then
         call add_phys_name_ctl(fhd_entropy, field_ctl)
 !
-      else if(field_name .eq. fhd_filter_part_temp) then
+      else if(field_name .eq. fhd_filter_pert_temp) then
         call add_phys_name_ctl(fhd_part_temp, field_ctl)
-      else if(field_name .eq. fhd_filter_part_comp) then
+      else if(field_name .eq. fhd_filter_pert_comp) then
         call add_phys_name_ctl(fhd_part_light, field_ctl)
-      else if(field_name .eq. fhd_filter_part_density) then
+      else if(field_name .eq. fhd_filter_pert_density) then
         call add_phys_name_ctl(fhd_per_density, field_ctl)
-      else if(field_name .eq. fhd_filter_part_entropy) then
+      else if(field_name .eq. fhd_filter_pert_entropy) then
         call add_phys_name_ctl(fhd_per_entropy, field_ctl)
       end if
 !
@@ -113,16 +113,16 @@
       else if(field_name .eq. fhd_filter_entropy) then
         flag = flag .and. check_field_list_ctl(fhd_entropy, field_ctl)
 !
-      else if(field_name .eq. fhd_filter_part_temp) then
+      else if(field_name .eq. fhd_filter_pert_temp) then
         flag = flag                                                     &
      &        .and. check_field_list_ctl(fhd_part_temp, field_ctl)
-      else if(field_name .eq. fhd_filter_part_comp) then
+      else if(field_name .eq. fhd_filter_pert_comp) then
         flag = flag                                                     &
      &        .and. check_field_list_ctl(fhd_part_light, field_ctl)
-      else if(field_name .eq. fhd_filter_part_density) then
+      else if(field_name .eq. fhd_filter_pert_density) then
         flag = flag                                                     &
      &        .and. check_field_list_ctl(fhd_per_density, field_ctl)
-      else if(field_name .eq. fhd_filter_part_entropy) then
+      else if(field_name .eq. fhd_filter_pert_entropy) then
         flag = flag                                                     &
      &        .and. check_field_list_ctl(fhd_per_entropy, field_ctl)
       end if

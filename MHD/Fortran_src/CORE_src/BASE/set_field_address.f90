@@ -126,7 +126,7 @@
           iphys%i_filter_magne =   i0
         else if ( field_name(i) .eq. fhd_filter_current ) then
           iphys%i_filter_current = i0
-        else if ( field_name(i) .eq. fhd_filter_part_temp ) then
+        else if ( field_name(i) .eq. fhd_filter_pert_temp ) then
           iphys%i_filter_par_t =   i0
         else if ( field_name(i) .eq. fhd_filter_comp ) then
           iphys%i_filter_comp =    i0

@@ -44,7 +44,7 @@
 !!   perturbation_entropy:      S - S_0
 !!
 !!   filter_velo, filter_vorticity
-!!   filter_temp, filter_part_temp, filter_composition
+!!   filter_temp, filter_pert_temp, filter_composition
 !!   filter_vecp, filter_magne, filter_current
 !!
 !!   truncated_magnetic_field
@@ -145,6 +145,7 @@
       use t_base_field_labels
       use t_base_force_labels
       use t_energy_flux_labels
+      use t_SGS_term_labels
 !
       use m_filtered_field_labels
       use m_wide_filter_field_labels
@@ -233,27 +234,6 @@
 !!             - \bar{u}_{i}\bar{u}_{j} \right) @f$
       character(len=kchara), parameter                                  &
      &             :: fhd_div_SGS_m_flux =      'div_SGS_m_flux'
-!>        Field label for SGS heat flux
-!!         @f$ \overline{u_{i}T} - \bar{u}_{i}\bar{T} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_SGS_h_flux =          'SGS_heat_flux'
-!>        Field label for SGS compositional flux
-!!         @f$ \overline{u_{i}C} - \bar{u}_{i}\bar{C} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_SGS_c_flux =          'SGS_composit_flux'
-!>        Field label for divergence of SGS Maxwell tensor
-!!         @f$ \partial_{i} \left( \overline{B_{i}B_{j}}
-!!              - \bar{B}_{i}\bar{B}_{j} \right) @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_SGS_Lorentz =         'SGS_Lorentz'
-!>        Field label for divergence of SGS magnetic induction tensor
-      character(len=kchara), parameter                                  &
-     &             :: fhd_SGS_induction =       'SGS_induction'
-!>        Field label for SGS induction for vector potential
-!!         @f$ e_{ijk}\left(\overline{u_{j}B_{k}}
-!!            - \bar{u}_{j}\bar{B}_{k} \right) @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_SGS_vp_induct =       'SGS_vecp_induction'
 !>        Field label for true divergence of SGS momentum flux
 !!         @f$ \partial_{i} \left( \overline{u_{i}u_{j}}
 !!            - \bar{u}_{i}\bar{u}_{j} \right) @f$
@@ -268,14 +248,6 @@
 !>            of SGS magnetic induction tensor
       character(len=kchara), parameter                                  &
      &             :: fhd_SGS_mag_induct_true = 'SGS_mag_induct_true'
-!
-!>        Field label for SGS buoyancy
-      character(len=kchara), parameter                                  &
-     &             :: fhd_SGS_buoyancy =  'SGS_buoyancy'
-!>        Field label for SGS compositional buoyancy
-      character(len=kchara), parameter                                  &
-     &             :: fhd_SGS_comp_buo = 'SGS_composit_buoyancy'
-!
 !
 !>        Field label for model coefficient of SGS heat flux
 !!         @f$ \overline{u_{i}T} - \bar{u}_{i}\bar{T} @f$
@@ -517,15 +489,6 @@
 !
 !  fluxes by resolved field
 !
-!>        Field label for SGS momentum flux
-!!         @f$ \overline{u_{i}u_{j}} - \bar{u}_{i}\bar{u}_{j} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_SGS_m_flux =    'SGS_momentum_flux'
-!>        Field label for SGS inertia term
-!!         @f$ e_{ijk}\left(\overline{\omega_{j}u_{k}}
-!!            - \bar{\omega}_{j}\bar{u}_{k} \right) @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_SGS_inertia =     'SGS_inertia'
 !>        Field label for rotation of SGS inertia term
       character(len=kchara), parameter                                  &
      &             :: fhd_SGS_rot_inertia = 'rot_SGS_inertia'
@@ -538,15 +501,6 @@
 !>        Field label for divergence of SGS Lorentz force
       character(len=kchara), parameter                                  &
      &             :: fhd_SGS_div_Lorentz = 'div_SGS_Lorentz'
-!
-!>        Field label for SGS Maxwell tensor
-!!         @f$ \overline{B_{i}B_{j}} - \bar{B}_{i}\bar{B}_{j} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_SGS_maxwell_t = 'SGS_maxwell_tensor'
-!
-!>        Field label for SGS magnetic induction tensor
-      character(len=kchara), parameter                                  &
-     &             :: fhd_SGS_induct_t =  'SGS_induct_tensor'
 !
 !   work fields
 !

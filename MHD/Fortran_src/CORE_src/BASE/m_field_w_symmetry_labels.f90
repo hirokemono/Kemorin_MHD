@@ -112,11 +112,11 @@
 !>        Field label for symmetric perturbation of temperature
 !!         @f$ \Theta = T - T_{0} @f$
       character(len=kchara), parameter                                  &
-     &          :: fhd_sym_part_temp = 'sym_perturbation_temp'
+     &          :: fhd_sym_per_temp = 'sym_perturbation_temp'
 !>        Field label for symmetric perturbation of composition
 !!         @f$  C - C_{0} @f$
       character(len=kchara), parameter                                  &
-     &        :: fhd_sym_part_light = 'sym_parturbation_composition'
+     &        :: fhd_sym_per_light = 'sym_perturbation_composition'
 !>        Field label for symmetric perturbation of entropy
 !!         @f$  S - S_{0} @f$
       character(len=kchara), parameter                                  &
@@ -172,11 +172,11 @@
 !>        Field label for asymmetric perturbation of temperature
 !!         @f$ \Theta = T - T_{0} @f$
       character(len=kchara), parameter                                  &
-     &       :: fhd_asym_part_temp = 'asym_perturbation_temp'
+     &       :: fhd_asym_per_temp = 'asym_perturbation_temp'
 !>        Field label for asymmetric perturbation of composition
 !!         @f$  C - C_{0} @f$
       character(len=kchara), parameter                                  &
-     &       :: fhd_asym_part_light = 'asym_parturbation_composition'
+     &       :: fhd_asym_per_light = 'asym_perturbation_composition'
 !>        Field label for asymmetric perturbation of entropy
 !!         @f$  S - S_{0} @f$
       character(len=kchara), parameter                                  &
@@ -224,8 +224,8 @@
      &   .or. (field_name .eq. fhd_sym_light)                           &
      &   .or. (field_name .eq. fhd_sym_entropy)                         &
      &   .or. (field_name .eq. fhd_sym_per_density)                     &
-     &   .or. (field_name .eq. fhd_sym_part_temp)                       &
-     &   .or. (field_name .eq. fhd_sym_part_light)                      &
+     &   .or. (field_name .eq. fhd_sym_per_temp)                        &
+     &   .or. (field_name .eq. fhd_sym_per_light)                       &
      &   .or. (field_name .eq. fhd_sym_per_entropy)                     &
      &   .or. (field_name .eq. fhd_asym_press)                          &
      &   .or. (field_name .eq. fhd_asym_mag_potential)                  &
@@ -235,8 +235,8 @@
      &   .or. (field_name .eq. fhd_asym_light)                          &
      &   .or. (field_name .eq. fhd_asym_entropy)                        &
      &   .or. (field_name .eq. fhd_asym_per_density)                    &
-     &   .or. (field_name .eq. fhd_asym_part_temp)                      &
-     &   .or. (field_name .eq. fhd_asym_part_light)                     &
+     &   .or. (field_name .eq. fhd_asym_per_temp)                       &
+     &   .or. (field_name .eq. fhd_asym_per_light)                      &
      &   .or. (field_name .eq. fhd_asym_per_entropy)                    &
      &      )   check_base_scalar_w_symmetry = .TRUE.
 !
@@ -316,9 +316,9 @@
         else if (field_name .eq. fhd_sym_entropy) then
           sym_base_fld%i_entropy =        i_phys
 !
-        else if (field_name .eq. fhd_sym_part_temp) then
+        else if (field_name .eq. fhd_sym_per_temp) then
           sym_base_fld%i_par_temp =           i_phys
-        else if (field_name .eq. fhd_sym_part_light) then
+        else if (field_name .eq. fhd_sym_per_light) then
           sym_base_fld%i_par_light =          i_phys
         else if (field_name .eq. fhd_sym_per_density) then
           sym_base_fld%i_par_density =        i_phys
@@ -341,9 +341,9 @@
         else if (field_name .eq. fhd_asym_entropy) then
           asym_base_fld%i_entropy =        i_phys
 !
-        else if (field_name .eq. fhd_asym_part_temp) then
+        else if (field_name .eq. fhd_asym_per_temp) then
           asym_base_fld%i_par_temp =           i_phys
-        else if (field_name .eq. fhd_asym_part_light) then
+        else if (field_name .eq. fhd_asym_per_light) then
           asym_base_fld%i_par_light =          i_phys
         else if (field_name .eq. fhd_asym_per_density) then
           asym_base_fld%i_par_density =        i_phys
@@ -463,11 +463,11 @@
       write(field_names(23),'(a,a1)') trim(fhd_sym_entropy), CHAR(0)
       write(field_names(24),'(a,a1)') trim(fhd_asym_entropy), CHAR(0)
 !
-      write(field_names(25),'(a,a1)') trim(fhd_sym_part_temp), CHAR(0)
-      write(field_names(26),'(a,a1)') trim(fhd_asym_part_temp), CHAR(0)
-      write(field_names(27),'(a,a1)') trim(fhd_sym_part_light), CHAR(0)
+      write(field_names(25),'(a,a1)') trim(fhd_sym_per_temp), CHAR(0)
+      write(field_names(26),'(a,a1)') trim(fhd_asym_per_temp), CHAR(0)
+      write(field_names(27),'(a,a1)') trim(fhd_sym_per_light), CHAR(0)
       write(field_names(28),'(a,a1)')                                   &
-     &                      trim(fhd_asym_part_light), CHAR(0)
+     &                      trim(fhd_asym_per_light), CHAR(0)
 !
       write(field_names(29),'(a,a1)')                                   &
      &                      trim(fhd_sym_per_density), CHAR(0)

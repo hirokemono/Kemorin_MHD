@@ -9,28 +9,17 @@
 !!
 !!@verbatim
 !!      logical function check_forces_w_sym(field_name)
+!!      logical function check_flux_tensors_w_sym(field_name)
 !!      subroutine set_force_w_sym_addresses(i_phys, field_name,        &
 !!     &          force_sym1_sym2, force_asym1_asym2,                   &
 !!     &          force_sym1_asym2, force_asym1_sym2, flag)
+!!      subroutine set_flux_tensor_w_sym_addresses(i_phys, field_name,  &
+!!     &          force_sym1_sym2, force_asym1_asym2, force_sym1_asym2, &
+!!     &          flag)
 !!        type(base_force_address), intent(inout) :: force_sym1_sym2
 !!        type(base_force_address), intent(inout) :: force_asym1_asym2
 !!        type(base_force_address), intent(inout) :: force_sym1_asym2
 !!        type(base_force_address), intent(inout) :: force_asym1_sym2
-!!      integer(kind = kint) function check_force_by_sym_sym_id         &
-!!     &         (i_field, field_name, sym_base_fld, force_sym1_sym2)
-!!        type(base_field_address), intent(in) :: sym_base_fld
-!!        type(base_force_address), intent(in) :: force_sym1_sym2
-!!      integer(kind = kint) function check_force_by_asym_asym_id       &
-!!     &         (i_field, field_name, asym_base_fld, force_asym1_asym2)
-!!        type(base_field_address), intent(in) :: asym_base_fld
-!!        type(base_force_address), intent(in) :: force_asym1_asym2
-!!      integer(kind = kint) function check_force_by_sym_asym_id        &
-!!     &         (i_field, field_name, sym_base_fld, asym_base_fld,     &
-!!     &          force_sym1_asym2, force_asym1_sym2)
-!!        type(base_field_address), intent(in) :: sym_base_fld
-!!        type(base_field_address), intent(in) :: asym_base_fld
-!!        type(base_force_address), intent(in) :: force_sym1_asym2
-!!        type(base_force_address), intent(in) :: force_asym1_sym2
 !!
 !!      subroutine force_w_sym_monitor_address                          &
 !!     &         (field_name, i_field, numrms, numave,                  &
@@ -38,6 +27,12 @@
 !!     &          rms_force_sym1_asym2, rms_force_asym1_sym2,           &
 !!     &          ave_force_sym1_sym2, ave_force_asym1_asym2,           &
 !!     &          ave_force_sym1_asym2, ave_force_asym1_sym2, flag)
+!!      subroutine flux_tsr_w_sym_monitor_address                       &
+!!     &         (field_name, i_field, numrms, numave,                  &
+!!     &          rms_force_sym1_sym2, rms_force_asym1_asym2,           &
+!!     &          rms_force_sym1_asym2,                                 &
+!!     &          ave_force_sym1_sym2, ave_force_asym1_asym2,           &
+!!     &          ave_force_sym1_asym2, flag)
 !!        type(base_force_address), intent(inout) :: rms_force_sym1_sym2
 !!        type(base_force_address), intent(inout)::rms_force_asym1_asym2
 !!        type(base_force_address), intent(inout) :: rms_force_sym1_asym2
@@ -439,10 +434,6 @@
      &   .or. (field_name .eq. fhd_wsym_x_uasym)                        &
      &   .or. (field_name .eq. fhd_wasym_x_uaym)                        &
 !
-     &   .or. (field_name .eq. fhd_m_flux_sym_sym)                      &
-     &   .or. (field_name .eq. fhd_m_flux_asym_asym)                    &
-     &   .or. (field_name .eq. fhd_m_flux_sym_asym)                     &
-!
      &   .or. (field_name .eq. fhd_Jsym_x_Bsym)                         &
      &   .or. (field_name .eq. fhd_Jasym_x_Basym)                       &
      &   .or. (field_name .eq. fhd_Jsym_x_Basym)                        &
@@ -452,10 +443,6 @@
      &   .or. (field_name .eq. fhd_Basym_nabla_Basym)                   &
      &   .or. (field_name .eq. fhd_Bsym_nabla_Basym)                    &
      &   .or. (field_name .eq. fhd_Basym_nabla_Bsym)                    &
-!
-     &   .or. (field_name .eq. fhd_maxwell_sym_sym)                     &
-     &   .or. (field_name .eq. fhd_maxwell_asym_asym)                   &
-     &   .or. (field_name .eq. fhd_maxwell_sym_asym)                    &
 !
      &   .or. (field_name .eq. fhd_sym_buoyancy)                        &
      &   .or. (field_name .eq. fhd_asym_buoyancy)                       &
@@ -526,6 +513,27 @@
 !
 ! ----------------------------------------------------------------------
 !
+      logical function check_flux_tensors_w_sym(field_name)
+!
+      character(len = kchara), intent(in) :: field_name
+!
+!
+      check_flux_tensors_w_sym = .FALSE.
+      if (    (field_name .eq. fhd_m_flux_sym_sym)                      &
+     &   .or. (field_name .eq. fhd_m_flux_asym_asym)                    &
+     &   .or. (field_name .eq. fhd_m_flux_sym_asym)                     &
+!
+     &   .or. (field_name .eq. fhd_maxwell_sym_sym)                     &
+     &   .or. (field_name .eq. fhd_maxwell_asym_asym)                   &
+     &   .or. (field_name .eq. fhd_maxwell_sym_asym)                    &
+!
+     &      )   check_flux_tensors_w_sym = .TRUE.
+!
+      end function check_flux_tensors_w_sym
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
       subroutine set_force_w_sym_addresses(i_phys, field_name,          &
      &          force_sym1_sym2, force_asym1_asym2,                     &
      &          force_sym1_asym2, force_asym1_sym2, flag)
@@ -551,13 +559,6 @@
         else if (field_name .eq. fhd_wasym_x_uaym) then
           force_asym1_sym2%i_m_advect =   i_phys
 !
-        else if (field_name .eq. fhd_m_flux_sym_sym ) then
-          force_sym1_sym2%i_m_flux =     i_phys
-        else if (field_name .eq. fhd_m_flux_asym_asym ) then
-          force_asym1_asym2%i_m_flux =     i_phys
-        else if (field_name .eq. fhd_m_flux_sym_asym ) then
-          force_sym1_asym2%i_m_flux =     i_phys
-!
         else if (field_name .eq. fhd_Jsym_x_Bsym) then
           force_sym1_sym2%i_lorentz =    i_phys
         else if (field_name .eq. fhd_Jasym_x_Basym) then
@@ -575,13 +576,6 @@
           force_sym1_asym2%i_m_tension =  i_phys
         else if (field_name .eq. fhd_Basym_nabla_Bsym) then
           force_asym1_sym2%i_m_tension =  i_phys
-!
-        else if (field_name .eq. fhd_maxwell_sym_sym) then
-          force_sym1_sym2%i_maxwell =    i_phys
-        else if (field_name .eq. fhd_maxwell_asym_asym) then
-          force_asym1_asym2%i_maxwell =    i_phys
-        else if (field_name .eq. fhd_maxwell_sym_asym) then
-          force_sym1_asym2%i_maxwell =    i_phys
 !
         else if (field_name .eq. fhd_sym_buoyancy) then
           force_sym1_sym2%i_buoyancy =   i_phys
@@ -704,6 +698,41 @@
       end subroutine set_force_w_sym_addresses
 !
 ! ----------------------------------------------------------------------
+!
+      subroutine set_flux_tensor_w_sym_addresses(i_phys, field_name,    &
+     &          force_sym1_sym2, force_asym1_asym2, force_sym1_asym2,   &
+     &          flag)
+!
+      integer(kind = kint), intent(in) :: i_phys
+      character(len = kchara), intent(in) :: field_name
+!
+      type(base_force_address), intent(inout) :: force_sym1_sym2
+      type(base_force_address), intent(inout) :: force_asym1_asym2
+      type(base_force_address), intent(inout) :: force_sym1_asym2
+      logical, intent(inout) :: flag
+!
+!
+      flag = check_flux_tensors_w_sym(field_name)
+      if(flag) then
+        if      (field_name .eq. fhd_m_flux_sym_sym ) then
+          force_sym1_sym2%i_m_flux =     i_phys
+        else if (field_name .eq. fhd_m_flux_asym_asym ) then
+          force_asym1_asym2%i_m_flux =     i_phys
+        else if (field_name .eq. fhd_m_flux_sym_asym ) then
+          force_sym1_asym2%i_m_flux =     i_phys
+!
+        else if (field_name .eq. fhd_maxwell_sym_sym) then
+          force_sym1_sym2%i_maxwell =    i_phys
+        else if (field_name .eq. fhd_maxwell_asym_asym) then
+          force_asym1_asym2%i_maxwell =    i_phys
+        else if (field_name .eq. fhd_maxwell_sym_asym) then
+          force_sym1_asym2%i_maxwell =    i_phys
+        end if
+      end if
+!
+      end subroutine set_flux_tensor_w_sym_addresses
+!
+! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
       subroutine force_w_sym_monitor_address                            &
@@ -742,6 +771,43 @@
       flag = (flag_r .and. flag_a)
 !
       end subroutine force_w_sym_monitor_address
+!
+! ----------------------------------------------------------------------
+!
+      subroutine flux_tsr_w_sym_monitor_address                         &
+     &         (field_name, i_field, numrms, numave,                    &
+     &          rms_force_sym1_sym2, rms_force_asym1_asym2,             &
+     &          rms_force_sym1_asym2,                                   &
+     &          ave_force_sym1_sym2, ave_force_asym1_asym2,             &
+     &          ave_force_sym1_asym2, flag)
+!
+      character(len = kchara), intent(in):: field_name
+      integer(kind = kint), intent(in) :: i_field
+      integer(kind = kint), intent(in) :: numrms, numave
+!
+      type(base_force_address), intent(inout) :: rms_force_sym1_sym2
+      type(base_force_address), intent(inout) :: rms_force_asym1_asym2
+      type(base_force_address), intent(inout) :: rms_force_sym1_asym2
+      type(base_force_address), intent(inout) :: ave_force_sym1_sym2
+      type(base_force_address), intent(inout) :: ave_force_asym1_asym2
+      type(base_force_address), intent(inout) :: ave_force_sym1_asym2
+      logical, intent(inout) :: flag
+!
+      logical :: flag_a, flag_r
+!
+!
+      flag = .FALSE.
+!
+      if(i_field .eq. 0) return
+      call set_flux_tensor_w_sym_addresses((numrms+1), field_name,      &
+     &    rms_force_sym1_sym2, rms_force_asym1_asym2,                   &
+     &    rms_force_sym1_asym2, flag_r)
+      call set_flux_tensor_w_sym_addresses((numave+1), field_name,      &
+     &    ave_force_sym1_sym2, ave_force_asym1_asym2,                   &
+     &    ave_force_sym1_asym2, flag_a)
+      flag = (flag_r .and. flag_a)
+!
+      end subroutine flux_tsr_w_sym_monitor_address
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------

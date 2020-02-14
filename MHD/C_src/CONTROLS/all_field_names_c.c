@@ -185,7 +185,7 @@ const struct field_def field_props[NUM_FIELD] = {
 			{3, "filter_current", "$$    $$"},
 			{3, "filter_vecp", "$$    $$"},
 			{1, "filter_temp", "$$    $$"},
-			{1, "filter_part_temp", "$$    $$"},
+			{1, "filter_pert_temp", "$$    $$"},
 			{1, "filter_composition", "$$    $$"},
 			
 			{3, "grad_filtered_temp", "$$    $$"},

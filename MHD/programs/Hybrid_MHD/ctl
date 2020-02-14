@@ -53,7 +53,7 @@ begin MHD_control
 !   electric_field, poynting_flux
 !   composition, perturbation_temp, parturbation_composition
 !
-!   filter_velo, filter_temp, filter_part_temp
+!   filter_velo, filter_temp, filter_pert_temp
 !   filter_vecp, filter_magne
 !
 !   kinetic_helicity, magnetic_helicity
