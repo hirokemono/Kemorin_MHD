@@ -11,10 +11,10 @@
 !!      logical function check_wide_fil_vector(field_name)
 !!      logical function check_wide_fil_scalar(field_name)
 !!      subroutine set_wide_fil_vector_addresses                        &
-!!     &         (i_phys, field_name, filter_fld, flag)
+!!     &         (i_phys, field_name, wide_filter_fld, flag)
 !!      subroutine set_wide_fil_scaler_addresses                        &
-!!     &         (i_phys, field_name, filter_fld, flag)
-!!        type(base_field_address), intent(inout) :: filter_fld
+!!     &         (i_phys, field_name, wide_filter_fld, flag)
+!!        type(base_field_address), intent(inout) :: wide_filter_fld
 !!
 !!      subroutine wide_fil_vec_monitor_address                         &
 !!     &         (field_name, i_field, numrms, numave,                  &
@@ -53,7 +53,12 @@
 !!    wide_filter_pert_temp     [i_par_temp]:         \Theta = T - T_0
 !!    wide_filter_pert_comp     [i_par_light]:        C - C_0
 !!    wide_filter_pert_density  [i_par_density]:      \rho - \rho_0
-!!    wide_filter_pert_entropy, [i_par_entropy]:      S - S_0
+!!    wide_filter_pert_entropy  [i_par_entropy]:      S - S_0
+!!
+!!    wide_filter_grad_temp        [i_grad_t];        gradient of 
+!!                                    wider filtered temperature
+!!    wide_filter_grad_composition [i_grad_composit]: gradient of 
+!!                                    wider filtered composition
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!@endverbatim
@@ -67,7 +72,7 @@
       implicit  none
 ! 
 !
-      integer(kind = kint), parameter, private :: nfld_w_filter = 13
+      integer(kind = kint), parameter, private :: nfld_w_filter = 15
 !
 !  wider filtered field
 !
@@ -120,6 +125,14 @@
       character(len=kchara), parameter                                  &
      &      :: fhd_w_filter_pert_entropy = 'wide_filter_pert_entropy'
 !
+!
+!>        Field label for filtered grad. of temperature by wider filter
+      character(len=kchara), parameter                                  &
+     &      :: fhd_w_filter_grad_temp = 'wide_filter_grad_temp'
+!>        Field label for filtered grad. of composition by wider filter
+      character(len=kchara), parameter                                  &
+     &      :: fhd_w_filter_grad_comp = 'wide_filter_grad_composition'
+!
 ! ----------------------------------------------------------------------
 !
       contains
@@ -137,6 +150,8 @@
      &   .or. (field_name .eq. fhd_w_filter_vecp)                       &
      &   .or. (field_name .eq. fhd_w_filter_magne)                      &
      &   .or. (field_name .eq. fhd_w_filter_current)                    &
+     &   .or. (field_name .eq. fhd_w_filter_grad_temp)                  &
+     &   .or. (field_name .eq. fhd_w_filter_grad_comp)                  &
      &      )   check_wide_fil_vector = .TRUE.
 !
       end function check_wide_fil_vector
@@ -156,8 +171,8 @@
 !
      &   .or. (field_name .eq. fhd_w_filter_pert_temp)                  &
      &   .or. (field_name .eq. fhd_w_filter_pert_comp)                  &
-     &   .or. (field_name .eq. fhd_w_filter_pert_density)               &
-     &   .or. (field_name .eq. fhd_w_filter_pert_entropy)               &
+!     &   .or. (field_name .eq. fhd_w_filter_pert_density)              &
+!     &   .or. (field_name .eq. fhd_w_filter_pert_entropy)              &
      &      )   check_wide_fil_scalar = .TRUE.
 !
       end function check_wide_fil_scalar
@@ -165,28 +180,33 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_wide_fil_vector_addresses                          &
-     &         (i_phys, field_name, filter_fld, flag)
+     &         (i_phys, field_name, wide_filter_fld, flag)
 !
       integer(kind = kint), intent(in) :: i_phys
       character(len = kchara), intent(in) :: field_name
 !
-      type(base_field_address), intent(inout) :: filter_fld
+      type(base_field_address), intent(inout) :: wide_filter_fld
       logical, intent(inout) :: flag
 !
 !
       flag = check_wide_fil_vector(field_name)
       if(flag) then
         if (field_name .eq. fhd_w_filter_velo) then
-          filter_fld%i_velo = i_phys
+          wide_filter_fld%i_velo = i_phys
         else if (field_name .eq. fhd_w_filter_vort) then
-          filter_fld%i_vort = i_phys
+          wide_filter_fld%i_vort = i_phys
 !
         else if (field_name .eq. fhd_w_filter_magne) then
-          filter_fld%i_magne =    i_phys
+          wide_filter_fld%i_magne =    i_phys
         else if (field_name .eq. fhd_w_filter_vecp) then
-          filter_fld%i_vecp =     i_phys
+          wide_filter_fld%i_vecp =     i_phys
         else if (field_name .eq. fhd_w_filter_current) then
-          filter_fld%i_current =  i_phys
+          wide_filter_fld%i_current =  i_phys
+!
+!        else if (field_name .eq. fhd_w_filter_grad_temp) then
+!          wide_filter_fld%i_grad_t =         i_phys
+!        else if (field_name .eq. fhd_w_filter_grad_comp) then
+!          wide_filter_fld%i_grad_composit =  i_phys
         end if
       end if
 !
@@ -195,36 +215,36 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_wide_fil_scaler_addresses                          &
-     &         (i_phys, field_name, filter_fld, flag)
+     &         (i_phys, field_name, wide_filter_fld, flag)
 !
       integer(kind = kint), intent(in) :: i_phys
       character(len = kchara), intent(in) :: field_name
 !
-      type(base_field_address), intent(inout) :: filter_fld
+      type(base_field_address), intent(inout) :: wide_filter_fld
       logical, intent(inout) :: flag
 !
 !
       flag = check_wide_fil_scalar(field_name)
       if(flag) then
         if      (field_name .eq. fhd_w_filter_temp) then
-          filter_fld%i_temp =            i_phys
+          wide_filter_fld%i_temp =            i_phys
         else if (field_name .eq. fhd_w_filter_pert_temp) then
-          filter_fld%i_par_temp =        i_phys
+          wide_filter_fld%i_par_temp =        i_phys
 !
         else if (field_name .eq. fhd_w_filter_comp) then
-          filter_fld%i_light =          i_phys
+          wide_filter_fld%i_light =          i_phys
         else if (field_name .eq. fhd_w_filter_pert_comp) then
-          filter_fld%i_par_light =      i_phys
+          wide_filter_fld%i_par_light =      i_phys
 !
         else if (field_name .eq. fhd_w_filter_density) then
-          filter_fld%i_density =        i_phys
+          wide_filter_fld%i_density =        i_phys
         else if (field_name .eq. fhd_w_filter_pert_density) then
-          filter_fld%i_par_density =    i_phys
+          wide_filter_fld%i_par_density =    i_phys
 !
         else if (field_name .eq. fhd_w_filter_entropy) then
-          filter_fld%i_entropy =        i_phys
+          wide_filter_fld%i_entropy =        i_phys
         else if (field_name .eq. fhd_w_filter_pert_entropy) then
-          filter_fld%i_par_entropy =    i_phys
+          wide_filter_fld%i_par_entropy =    i_phys
         end if
       end if  
 !
@@ -330,6 +350,11 @@
      &                   trim(fhd_w_filter_pert_density), CHAR(0)
       write(field_names(13),'(a,a1)')                                   &
      &                   trim(fhd_w_filter_pert_entropy), CHAR(0)
+!
+      write(field_names(14),'(a,a1)')                                   &
+     &                   trim(fhd_w_filter_grad_temp), CHAR(0)
+      write(field_names(15),'(a,a1)')                                   &
+     &                   trim(fhd_w_filter_grad_comp), CHAR(0)
 !
       end subroutine set_wide_filter_field_names
 !

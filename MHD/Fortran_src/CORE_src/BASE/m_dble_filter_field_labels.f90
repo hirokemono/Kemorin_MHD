@@ -56,6 +56,11 @@
 !!   double_filter_pert_density [i_par_density]:      \rho - \rho_0
 !!   double_filter_pert_entropy,  [i_par_entropy]:      S - S_0
 !!
+!!    double_filter_grad_temp [i_grad_t];        gradient of 
+!!                                    double filtered temperature
+!!    double_filter_grad_comp [i_grad_composit]: gradient of 
+!!                                    double filtered composition
+!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!@endverbatim
 !!
@@ -68,7 +73,7 @@
       implicit  none
 ! 
 !
-      integer(kind = kint), parameter, private :: nfld_d_filter = 13
+      integer(kind = kint), parameter, private :: nfld_d_filter = 15
 !
 !  double filtered field
 !
@@ -121,6 +126,15 @@
       character(len=kchara), parameter                                  &
      &      :: fhd_d_filter_pert_entropy = 'double_filter_pert_entropy'
 !
+!>        Field label for filtered grad. of temperature
+!!        by double filtering
+      character(len=kchara), parameter                                  &
+     &      :: fhd_d_filter_grad_temp = 'double_filter_grad_temp'
+!>        Field label for filtered grad. of composition
+!>        by double filtering
+      character(len=kchara), parameter                                  &
+     &      :: fhd_d_filter_grad_comp = 'double_filter_grad_comp'
+!
 ! ----------------------------------------------------------------------
 !
       contains
@@ -138,6 +152,8 @@
      &   .or. (field_name .eq. fhd_d_filter_magne)                      &
      &   .or. (field_name .eq. fhd_d_filter_vecp)                       &
      &   .or. (field_name .eq. fhd_d_filter_current)                    &
+!     &   .or. (field_name .eq. fhd_d_filter_grad_temp)                 &
+!     &   .or. (field_name .eq. fhd_d_filter_grad_comp)                 &
      &      )   check_double_vector_scalar = .TRUE.
 !
       end function check_double_vector_scalar
@@ -157,8 +173,9 @@
 !
      &   .or. (field_name .eq. fhd_d_filter_pert_temp)                  &
      &   .or. (field_name .eq. fhd_d_filter_pert_comp)                  &
-     &   .or. (field_name .eq. fhd_d_filter_pert_density)               &
-     &   .or. (field_name .eq. fhd_d_filter_pert_entropy)               &
+!
+!     &   .or. (field_name .eq. fhd_d_filter_pert_density)              &
+!     &   .or. (field_name .eq. fhd_d_filter_pert_entropy)              &
      &      )   check_double_filter_scalar = .TRUE.
 !
       end function check_double_filter_scalar
@@ -188,6 +205,11 @@
           dbl_filter_fld%i_vecp =     i_phys
         else if (field_name .eq. fhd_d_filter_current) then
           dbl_filter_fld%i_current =  i_phys
+!
+!        else if (field_name .eq. fhd_d_filter_grad_temp) then
+!          dbl_filter_fld%i_grad_t =         i_phys
+!        else if (field_name .eq. fhd_d_filter_grad_comp) then
+!          dbl_filter_fld%i_grad_composit =  i_phys
         end if
       end if
 !
@@ -328,6 +350,11 @@
      &                   trim(fhd_d_filter_pert_density), CHAR(0)
       write(field_names(13),'(a,a1)')                                   &
      &                   trim(fhd_d_filter_pert_entropy), CHAR(0)
+!
+      write(field_names(14),'(a,a1)')                                   &
+     &                   trim(fhd_d_filter_grad_temp), CHAR(0)
+      write(field_names(15),'(a,a1)')                                   &
+     &                   trim(fhd_d_filter_grad_comp), CHAR(0)
 !
       end subroutine set_double_filter_field_names
 !

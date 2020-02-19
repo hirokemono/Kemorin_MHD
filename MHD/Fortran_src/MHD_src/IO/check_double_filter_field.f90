@@ -45,6 +45,11 @@
         call add_phys_name_ctl(fhd_d_filter_velo, field_ctl)
       else if(field_name .eq. fhd_d_filter_current) then
         call add_phys_name_ctl(fhd_d_filter_magne, field_ctl)
+!
+      else if(field_name .eq. fhd_d_filter_grad_temp) then
+        call add_phys_name_ctl(fhd_d_filter_temp, field_ctl)
+      else if(field_name .eq. fhd_d_filter_grad_comp) then
+        call add_phys_name_ctl(fhd_d_filter_comp, field_ctl)
       end if
 !
       if(     field_name .eq. fhd_d_filter_velo) then
@@ -96,6 +101,13 @@
       else if(field_name .eq. fhd_d_filter_current) then
         flag = flag                                                     &
      &        .and. check_field_list_ctl(fhd_d_filter_magne, field_ctl)
+!
+      else if(field_name .eq. fhd_d_filter_grad_temp) then
+        flag = flag                                                     &
+     &        .and. check_field_list_ctl(fhd_d_filter_temp, field_ctl)
+      else if(field_name .eq. fhd_d_filter_grad_comp) then
+        flag = flag                                                     &
+     &        .and. check_field_list_ctl(fhd_d_filter_comp, field_ctl)
       end if
 !
       if(     field_name .eq. fhd_d_filter_velo) then
@@ -176,7 +188,7 @@
      &                 filter_fld%i_temp, fhd_filter_temp)
       else if( (i_field .eq. dbl_filter_fld%i_light)) then
         iflag = iflag + missing_field(i_field, field_name,              &
-     &                 filter_fld%i_vecp, fhd_filter_comp)
+     &                 filter_fld%i_light, fhd_filter_comp)
       else if( (i_field .eq. dbl_filter_fld%i_density)) then
         iflag = iflag + missing_field(i_field, field_name,              &
      &                 filter_fld%i_density, fhd_filter_density)
@@ -196,6 +208,13 @@
       else if( (i_field .eq. dbl_filter_fld%i_par_entropy)) then
         iflag = iflag + missing_field(i_field, field_name,              &
      &         filter_fld%i_par_entropy, fhd_filter_pert_entropy)
+!
+!      else if( (i_field .eq. dbl_filter_fld%i_grad_t)) then
+!        iflag = iflag + missing_field(i_field, field_name,             &
+!     &         dbl_filter_fld%i_temp, fhd_d_filter_temp)
+!      else if( (i_field .eq. dbl_filter_fld%i_grad_composit)) then
+!        iflag = iflag + missing_field(i_field, field_name,             &
+!     &         dbl_filter_fld%i_light, fhd_d_filter_comp)
       end if
       check_double_filter_field_id = iflag
       return

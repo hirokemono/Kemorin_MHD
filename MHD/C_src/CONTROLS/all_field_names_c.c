@@ -33,10 +33,10 @@ const struct field_def field_props[NUM_FIELD] = {
 			{1, "reference_density", "$$  \\rho_{0}  $$"},
 			
 			{3, "grad_temp", "$$  \\nabla T  $$"},
-			{3, "grad_part_temp", "$$  \\nabla \\Theta  $$"},
+			{3, "grad_pert_temp", "$$  \\nabla \\Theta  $$"},
 			{3, "grad_reference_temp", "$$  \\nabla T_{0}  $$"},
 			{3, "grad_composition", "$$  \\nabla C  $$"},
-			{3, "grad_part_composition", "$$  \\nabla \\left(\\Delta C\\right)  $$"},
+			{3, "grad_pert_composition", "$$  \\nabla \\left(\\Delta C\\right)  $$"},
 			{3, "grad_reference_composition", "$$  \\nabla C_{0}  $$"},
 			
 			/* Square of fields */
@@ -252,7 +252,7 @@ const struct field_def field_props[NUM_FIELD] = {
 			{1, "div_SGS_c_flux", "$$    $$"},
 			{3, "div_SGS_m_flux", "$$    $$"},
 			{6, "momentum_flux_w_SGS", "$$    $$"},
-			{6, "maxwell_tensor_w_sgs", "$$    $$"},
+			{6, "maxwell_tensor_w_SGS", "$$    $$"},
 			{3, "intertia_w_SGS", "$$    $$"},
 			{3, "Lorentz_w_SGS", "$$    $$"},
 			{3, "vecp_induction_w_SGS", "$$    $$"},

@@ -67,10 +67,10 @@
      &  .or. (phys_nod_name_ctl .eq. fhd_e_field            )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_poynting           )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_grad_temp          )           &
-     &  .or. (phys_nod_name_ctl .eq. fhd_grad_par_temp      )           &
+     &  .or. (phys_nod_name_ctl .eq. fhd_grad_per_temp      )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_grad_ref_temp      )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_grad_composit      )           &
-     &  .or. (phys_nod_name_ctl .eq. fhd_grad_par_light     )           &
+     &  .or. (phys_nod_name_ctl .eq. fhd_grad_per_light     )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_grad_ref_light     )           &
      &      )   iflag = 1
 !

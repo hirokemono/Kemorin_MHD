@@ -51,8 +51,13 @@
 !!
 !!   vis_ene_diffuse:  Energy dissipation by Viscousity
 !!                                     u ( \nabla^{2} u)
-!!   vis_ene_diffuse:  Energy dissipation by Ohmic dissipation
+!!   mag_ene_diffuse:  Energy dissipation by Ohmic dissipation
 !!                                     B ( \nabla^{2} B)
+!!
+!!   pressure_work:  work of pressure gradient
+!!                                     u ( \nabla p)
+!!   m_potential_work: energy flux of scalar potential
+!!                                     B ( \nabla \phi)
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!@endverbatim
@@ -67,7 +72,7 @@
       implicit  none
 ! 
 !
-      integer(kind = kint), parameter, private :: nene_flux = 14
+      integer(kind = kint), parameter, private :: nene_flux = 18
 !
 !>        Field label of work of inertia
 !!         @f$ u_{i} (u_{j} \partial_{j} u_{i}) @f$
@@ -124,12 +129,28 @@
 !
 !>        Field label of energy flux by viscous diffusion
 !!         @f$ u_{i} \left( \partial_{j}\partial_{j} u_{i} \right) @f$
-!      character(len=kchara), parameter                                 &
-!     &             :: fhd_vis_ene_diffuse =   'vis_ene_diffuse'
+      character(len=kchara), parameter                                  &
+     &             :: fhd_vis_ene_diffuse =   'vis_ene_diffuse'
 !>        Field label of energy flux by magnetic diffusion
 !!         @f$ B_{i} \left( \partial_{j}\partial_{j} B_{i} \right) @f$
-!      character(len=kchara), parameter                                 &
-!     &             :: fhd_mag_ene_diffuse =   'mag_ene_diffuse'
+      character(len=kchara), parameter                                  &
+     &             :: fhd_mag_ene_diffuse =   'mag_ene_diffuse'
+!
+!>        Field label for potential in momentum euqaion
+!!         @f$  \varphi @f$
+      character(len=kchara), parameter                                  &
+     &             :: fhd_press_work =      'pressure_work'
+!>        Field label for potential in induction euqaion
+!!         @f$  \varphi @f$
+      character(len=kchara), parameter                                  &
+     &             :: fhd_m_potential_work = 'm_potential_work'
+!
+!   --------------------------------------------------------------------
+!
+!>        Old Field label for buoyancy flux
+!!         @f$ -u_{i} \alpha_{T} g_{i} T @f$
+      character(len=kchara), parameter                                  &
+     &             :: fhd_buoyancy_work =     'buoyancy_work'
 !
 !>       Structure of start address of base forces
       type energy_flux_address
@@ -174,10 +195,10 @@
 !
 !>        Field address of energy flux by viscous diffusion
 !!         @f$ u_{i} \left( \partial_{j}\partial_{j} u_{i} \right) @f$
-!        integer (kind=kint) :: i_vis_e_diffuse =   izero
+        integer (kind=kint) :: i_vis_e_diffuse =   izero
 !>        Field address of energy flux by magnetic diffusion
 !!         @f$ B_{i} \left( \partial_{j}\partial_{j} B_{i} \right) @f$
-!        integer (kind=kint) :: i_mag_e_diffuse =   izero
+        integer (kind=kint) :: i_mag_e_diffuse =   izero
       end type energy_flux_address
 !
 ! ----------------------------------------------------------------------
@@ -330,9 +351,13 @@
      &                   trim(fhd_comp_generation), CHAR(0)
       write(field_names(14),'(a,a1)') trim(fhd_part_comp_gen), CHAR(0)
 !
-!      write(field_names(15),'(a,a1)') trim(fhd_vis_ene_diffuse), CHAR(0)
-!      write(field_names(16),'(a,a1)')                                  &
-!     &                   trim(fhd_mag_ene_diffuse), CHAR(0)
+      write(field_names(15),'(a,a1)') trim(fhd_vis_ene_diffuse), CHAR(0)
+      write(field_names(16),'(a,a1)')                                   &
+     &                   trim(fhd_mag_ene_diffuse), CHAR(0)
+!
+      write(field_names(17),'(a,a1)') trim(fhd_press_work), CHAR(0)
+      write(field_names(18),'(a,a1)')                                   &
+     &                   trim(fhd_m_potential_work), CHAR(0)
 !
       end subroutine set_energy_flux_names
 !

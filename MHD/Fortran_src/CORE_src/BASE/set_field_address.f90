@@ -425,14 +425,14 @@
 !
         else if ( field_name(i) .eq. fhd_grad_temp ) then
           iphys%i_grad_t =           i0
-        else if ( field_name(i) .eq. fhd_grad_par_temp ) then
-          iphys%i_grad_part_t =      i0
+        else if ( field_name(i) .eq. fhd_grad_per_temp ) then
+          iphys%i_grad_per_t =       i0
         else if ( field_name(i) .eq. fhd_grad_ref_temp ) then
           iphys%i_gref_t =           i0
         else if ( field_name(i) .eq. fhd_grad_composit ) then
           iphys%i_grad_composit =    i0
-        else if ( field_name(i) .eq. fhd_grad_par_light ) then
-          iphys%i_grad_part_c =      i0
+        else if ( field_name(i) .eq. fhd_grad_per_light ) then
+          iphys%i_grad_per_c =       i0
         else if ( field_name(i) .eq. fhd_grad_ref_light) then
           iphys%i_gref_c =           i0
         end if

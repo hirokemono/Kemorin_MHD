@@ -570,11 +570,11 @@
 !>        start address for gradient of @f$ T @f$
         integer (kind=kint) :: i_grad_t =           izero
 !>        start address for gradient of @f$ \Theta @f$
-        integer (kind=kint) :: i_grad_part_t =      izero
+        integer (kind=kint) :: i_grad_per_t =       izero
 !>        start address for gradient of @f$ C @f$
         integer (kind=kint) :: i_grad_composit =    izero
 !>        start address for gradient of perturbation of composition
-        integer (kind=kint) :: i_grad_part_c =      izero
+        integer (kind=kint) :: i_grad_per_c =       izero
 !
 !
 !    Gradient of filtered fields

@@ -63,14 +63,14 @@
       if(ht_prop%iflag_scheme .gt. id_no_evolution) then
         call add_phys_name_ctl(fhd_grad_temp, field_ctl)
         call add_phys_name_ctl(fhd_part_temp, field_ctl)
-        call add_phys_name_ctl(fhd_grad_par_temp, field_ctl)
+        call add_phys_name_ctl(fhd_grad_per_temp, field_ctl)
       end if
 !
 !   gradient of dummy scalar flag
       if(cp_prop%iflag_scheme .gt. id_no_evolution) then
         call add_phys_name_ctl(fhd_grad_composit, field_ctl)
         call add_phys_name_ctl(fhd_part_light, field_ctl)
-        call add_phys_name_ctl(fhd_grad_par_light, field_ctl)
+        call add_phys_name_ctl(fhd_grad_per_light, field_ctl)
       end if
 !
 !

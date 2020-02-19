@@ -52,6 +52,12 @@
         call add_phys_name_ctl(fhd_velo, field_ctl)
         call add_phys_name_ctl(fhd_magne, field_ctl)
         call add_phys_name_ctl(fhd_SGS_vp_induct, field_ctl)
+      else if( (field_name .eq. fhd_div_SGS_m_flux)) then
+        call add_phys_name_ctl(fhd_SGS_m_flux, field_ctl)
+      else if( (field_name .eq. fhd_div_SGS_h_flux)) then
+        call add_phys_name_ctl(fhd_SGS_h_flux, field_ctl)
+      else if( (field_name .eq. fhd_div_SGS_c_flux)) then
+        call add_phys_name_ctl(fhd_SGS_c_flux, field_ctl)
       end if
 !
 !
@@ -103,6 +109,15 @@
         flag = flag .and. check_field_list_ctl(fhd_velo, field_ctl)     &
      &        .and. check_field_list_ctl(fhd_magne, field_ctl)          &
      &        .and. check_field_list_ctl(fhd_SGS_vp_induct, field_ctl)
+      else if( (field_name .eq. fhd_div_SGS_m_flux)) then
+        flag = flag                                                     &
+     &        .and. check_field_list_ctl(fhd_SGS_m_flux, field_ctl)
+      else if( (field_name .eq. fhd_div_SGS_h_flux)) then
+        flag = flag                                                     &
+     &        .and. check_field_list_ctl(fhd_SGS_h_flux, field_ctl)
+      else if( (field_name .eq. fhd_div_SGS_c_flux)) then
+        flag = flag                                                     &
+     &        .and. check_field_list_ctl(fhd_SGS_c_flux, field_ctl)
       end if
 !
       if( (field_name .eq. fhd_SGS_inertia)) then
@@ -163,6 +178,15 @@
      &                                base_fld%i_magne, fhd_magne)
         iflag = iflag + missing_field(i_field, field_name,              &
      &                 SGS_term%i_SGS_vp_induct, fhd_SGS_vp_induct)
+      else if( (i_field .eq. SGS_term%i_SGS_div_m_flux)) then
+        iflag = iflag + missing_field(i_field, field_name,              &
+     &                 SGS_term%i_SGS_m_flux, fhd_SGS_m_flux)
+      else if( (i_field .eq. SGS_term%i_SGS_div_h_flux)) then
+        iflag = iflag + missing_field(i_field, field_name,              &
+     &                 SGS_term%i_SGS_h_flux, fhd_SGS_h_flux)
+      else if( (i_field .eq. SGS_term%i_SGS_div_c_flux)) then
+        iflag = iflag + missing_field(i_field, field_name,              &
+     &                 SGS_term%i_SGS_c_flux, fhd_SGS_c_flux)
       end if
 !
       if( (i_field .eq. SGS_term%i_SGS_inertia)                         &
