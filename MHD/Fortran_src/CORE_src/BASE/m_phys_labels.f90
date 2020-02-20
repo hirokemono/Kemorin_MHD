@@ -156,6 +156,9 @@
 !
       use m_diff_force_labels
       use m_filtered_field_labels
+      use m_filtered_force_labels
+      use m_filtered_ene_flux_labels
+      use m_diff_filtered_force_labels
       use m_wide_filter_field_labels
       use m_dble_filter_field_labels
       use m_grad_filter_field_labels
@@ -169,28 +172,6 @@
 !>        Field label for time
 !!         @f$ t @f$
       character(len=kchara), parameter :: fhd_time =   'time'
-!
-!>        Field label for filtered buoyancy
-!!         @f$ -\alpha_{C} g_{i} \tilde{T} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_filter_buo =    'filtered_buoyancy'
-!
-!
-!>        Field label for filtered buoyancy flux
-!!         @f$ -u_{i} \alpha_{c} g_{i} \tilde{T} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_filter_buo_flux =   'filtered_buoyancy_flux'
-!
-!   work fields
-!
-!  divergence of momentum equations
-!>        Field label for divergence of filtered buoyancy
-      character(len=kchara), parameter                                  &
-     &             :: fhd_div_filter_buo = 'div_filtered_buoyancy'
-!
-!>        Field label for curl of filtered buoyancy
-      character(len=kchara), parameter                                  &
-     &             :: fhd_rot_filter_buo = 'rot_filtered_buoyancy'
 !
 !   --------------------------------------------------------------------
 !
