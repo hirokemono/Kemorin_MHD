@@ -61,17 +61,6 @@
 !
       implicit none
 !
-!
-      type field_def
-        integer(kind = kint) ::  n_comp
-        character(len=kchara) :: name
-        character(len=kchara) :: math
-      end type field_def
-!
-      type(field_def), parameter :: velocity                            &
-     &   = field_def(n_comp = 3, name = 'velocity',                     &
-     &               math = ('$u$'//char(0)))
-!
 !>        Divergence of velocity
 !!         @f$ \partial_{i} u_{i} @f$
       character(len=kchara), parameter :: fhd_div_v = 'div_velocity'
