@@ -44,9 +44,9 @@
       end do
       check_field_list_ctl = .FALSE.
 !
-      if(iflag_debug .gt. 0) then
-        write(*,*) trim(fld_name), ' is missing in the field list.'
-      end if
+!      if(iflag_debug .gt. 0) then
+!        write(*,*) trim(fld_name), ' is missing in the field list.'
+!      end if
 !
       end function check_field_list_ctl
 !

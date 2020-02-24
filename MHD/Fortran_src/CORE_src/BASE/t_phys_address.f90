@@ -14,6 +14,8 @@
       use m_precision
       use m_constants
 !
+      use t_base_force_labels
+!
       implicit  none
 ! 
 !>       Structure for start address for fields
@@ -697,8 +699,6 @@
         integer (kind=kint) :: i_div_buoyancy =   izero
 !>        start address for divergence of compositional buoyancy
         integer (kind=kint) :: i_div_comp_buo =   izero
-!>        start address for divergence of filtered buoyancy
-        integer (kind=kint) :: i_div_filter_buo = izero
 !>        start address for divergence of viscousity
         integer (kind=kint) :: i_div_viscous =    izero
 !
@@ -714,8 +714,6 @@
         integer (kind=kint) :: i_rot_buoyancy = izero
 !>        start address for curl of compositional buoyancy
         integer (kind=kint) :: i_rot_comp_buo = izero
-!>        start address for curl of filtered buoyancy
-        integer (kind=kint) :: i_rot_filter_buo = izero
 !
 !  arrays for current forces
 !
@@ -808,6 +806,15 @@
 !!          i_back_B+1: radial derivative of poloidal component
 !!          i_back_B+2: 2nd radial derivative of poloidal component
         integer (kind=kint) :: i_back_B = izero
+!
+!
+!
+        integer (kind=kint) :: i_filter_comp_buo = izero
+!
+!>        structure of rotation of forces by filtered field
+        type(base_force_address) :: rot_frc_by_filter
+!>        structure of divergence of forces by filtered field
+        type(base_force_address) :: div_frc_by_filter
       end type phys_address
 !
 !

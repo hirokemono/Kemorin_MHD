@@ -97,7 +97,7 @@
           call add_phys_name_ctl(fhd_rot_Lorentz, field_ctl)
           call add_phys_name_ctl(fhd_div_Lorentz, field_ctl)
         end if
-!   buoyancy flag
+!   thermal buoyancy flag
         if(fl_prop%iflag_4_gravity .gt. id_turn_OFF) then
           call add_phys_name_ctl(fhd_buoyancy, field_ctl)
           call add_phys_name_ctl(fhd_rot_buoyancy, field_ctl)
@@ -109,11 +109,19 @@
           call add_phys_name_ctl(fhd_div_comp_buo, field_ctl)
           call add_phys_name_ctl(fhd_rot_comp_buo, field_ctl)
         end if
-!   filtered buoyancy flag
+!   filtered thermal buoyancy flag
         if(fl_prop%iflag_4_filter_gravity .gt. id_turn_OFF) then
           call add_phys_name_ctl(fhd_filter_buo, field_ctl)
-          call add_phys_name_ctl(fhd_div_filter_buo, field_ctl)
-          call add_phys_name_ctl(fhd_rot_filter_buo, field_ctl)
+          call add_phys_name_ctl(div_filtered_buoyancy%name, field_ctl)
+          call add_phys_name_ctl(rot_filtered_buoyancy%name, field_ctl)
+        end if
+!   filtered compositional buoyancy flag
+        if(fl_prop%iflag_4_filter_comp_buo .gt. id_turn_OFF) then
+          call add_phys_name_ctl(fhd_filter_comp_buo, field_ctl)
+          call add_phys_name_ctl                                        &
+     &       (div_filtered_comp_buoyancy%name, field_ctl)
+          call add_phys_name_ctl                                        &
+     &       (rot_filtered_comp_buoyancy%name, field_ctl)
         end if
       end if
 !

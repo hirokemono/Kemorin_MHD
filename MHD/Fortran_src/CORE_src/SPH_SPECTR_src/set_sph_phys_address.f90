@@ -164,8 +164,9 @@
      &    itor%i_rot_buoyancy, idpdr%i_rot_buoyancy)
       call set_vect_sph_address(ipol%i_rot_comp_buo,                    &
      &    itor%i_rot_comp_buo, idpdr%i_rot_comp_buo)
-      call set_vect_sph_address(ipol%i_rot_filter_buo,                  &
-     &    itor%i_rot_filter_buo, idpdr%i_rot_filter_buo)
+      call set_vect_sph_address(ipol%rot_frc_by_filter%i_buoyancy,      &
+     &    itor%rot_frc_by_filter%i_buoyancy,                            &
+     &    idpdr%rot_frc_by_filter%i_buoyancy)
 !
       call set_vect_sph_address(ipol%i_grad_t, itor%i_grad_t,           &
      &    idpdr%i_grad_t)

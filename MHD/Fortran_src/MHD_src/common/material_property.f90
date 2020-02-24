@@ -108,14 +108,15 @@
         fl_prop%acoef_press = one / fl_prop%coef_press
         fl_prop%coef_nega_v = - fl_prop%coef_velo
 !
-        if (fl_prop%iflag_4_gravity .gt. id_turn_OFF                    &
+        if     (fl_prop%iflag_4_gravity .gt. id_turn_OFF                &
      &     .or. fl_prop%iflag_4_filter_gravity .gt. id_turn_OFF) then
           call construct_coefficient(fl_prop%coef_buo,                  &
      &       MHD_coef_list%dimless_list, MHD_coef_list%coefs_buoyancy,  &
      &      depth_top, depth_bottom)
         end if
 !
-        if (fl_prop%iflag_4_composit_buo .gt. id_turn_OFF) then
+        if     (fl_prop%iflag_4_composit_buo .gt. id_turn_OFF           &
+     &     .or. fl_prop%iflag_4_filter_comp_buo .gt. id_turn_OFF) then
           call construct_coefficient(fl_prop%coef_comp_buo,             &
      &       MHD_coef_list%dimless_list, MHD_coef_list%coefs_comp_buo,  &
      &       depth_top, depth_bottom)

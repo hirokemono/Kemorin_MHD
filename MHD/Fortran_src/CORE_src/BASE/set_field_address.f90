@@ -44,6 +44,8 @@
      &          field_name, num_component, iphys)
 !
       use m_phys_labels
+      use m_rot_filtered_force_labels
+      use m_div_filtered_force_labels
 !
       integer(kind = kint), intent(in) :: istart_adress
       integer(kind = kint), intent(in) :: num_field
@@ -53,6 +55,7 @@
       type(phys_address), intent(inout) :: iphys
 !
       integer(kind = kint) :: i, i0
+      logical :: flag
 !
 !
       i0 = istart_adress
@@ -552,8 +555,6 @@
           iphys%i_div_buoyancy =   i0
         else if ( field_name(i) .eq. fhd_div_comp_buo ) then
           iphys%i_div_comp_buo =   i0
-        else if ( field_name(i) .eq. fhd_div_filter_buo ) then
-          iphys%i_div_filter_buo = i0
         else if ( field_name(i) .eq. fhd_div_viscous ) then
           iphys%i_div_viscous =    i0
 !
@@ -567,8 +568,6 @@
           iphys%i_rot_buoyancy =   i0
         else if ( field_name(i) .eq. fhd_rot_comp_buo ) then
           iphys%i_rot_comp_buo =   i0
-        else if ( field_name(i) .eq. fhd_rot_filter_buo ) then
-          iphys%i_rot_filter_buo = i0
 !
         else if ( field_name(i) .eq. fhd_forces ) then
           iphys%i_forces =     i0
@@ -577,6 +576,11 @@
         else if ( field_name(i) .eq. fhd_div_forces ) then
           iphys%i_div_forces = i0
         end if
+!
+        call set_rot_fil_force_addresses(i0, field_name(i),             &
+     &      iphys%rot_frc_by_filter, flag)
+        call set_div_fil_force_addresses(i0, field_name(i),             &
+     &      iphys%div_frc_by_filter, flag)
 !
         if ( field_name(i) .eq. fhd_pre_mom ) then
           iphys%i_pre_mom =      i0

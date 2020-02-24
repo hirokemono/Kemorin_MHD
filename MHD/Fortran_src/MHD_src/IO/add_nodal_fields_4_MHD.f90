@@ -43,8 +43,20 @@
       use t_control_array_character3
       use t_reference_scalar_param
 !
+      use check_diff_filter_forces
+!
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(ctl_array_c3), intent(inout) :: field_ctl
+!
+!     add terms by field list
+!
+      call add_field_ctl_4_rot_fil_forces(field_ctl)
+          if (iflag_debug .ge. iflag_routine_msg) write(*,*)            &
+     &    'add_field_ctl_4_rot_fil_forces end'
+      call add_field_ctl_4_div_fil_forces(field_ctl)
+        if (iflag_debug .ge. iflag_routine_msg) write(*,*)              &
+     &    'add_field_ctl_4_div_fil_forces end'
+!
 !
 !    set work fields for potentials
 !
@@ -124,13 +136,15 @@
       end if
 !
       if (fl_prop%iflag_4_coriolis .gt. id_turn_OFF)                    &
-     &              call add_phys_name_ctl(fhd_Coriolis, field_ctl)
+     &          call add_phys_name_ctl(fhd_Coriolis, field_ctl)
       if (fl_prop%iflag_4_gravity .eq. id_FORCE_at_node)                &
-     &              call add_phys_name_ctl(fhd_buoyancy, field_ctl)
+     &          call add_phys_name_ctl(fhd_buoyancy, field_ctl)
       if (fl_prop%iflag_4_composit_buo .eq. id_FORCE_at_node)           &
-     &              call add_phys_name_ctl(fhd_comp_buo, field_ctl)
+     &          call add_phys_name_ctl(fhd_comp_buo, field_ctl)
       if (fl_prop%iflag_4_filter_gravity .eq. id_FORCE_at_node)         &
-     &              call add_phys_name_ctl(fhd_filter_buo, field_ctl)
+     &          call add_phys_name_ctl(fhd_filter_buo, field_ctl)
+      if (fl_prop%iflag_4_filter_comp_buo .eq. id_FORCE_at_node)        &
+     &          call add_phys_name_ctl(fhd_filter_comp_buo, field_ctl)
 !
       end subroutine add_ctl_4_forces
 !

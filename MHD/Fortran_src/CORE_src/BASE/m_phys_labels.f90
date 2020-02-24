@@ -158,7 +158,8 @@
       use m_filtered_field_labels
       use m_filtered_force_labels
       use m_filtered_ene_flux_labels
-      use m_diff_filtered_force_labels
+      use m_rot_filtered_force_labels
+      use m_div_filtered_force_labels
       use m_wide_filter_field_labels
       use m_dble_filter_field_labels
       use m_grad_filter_field_labels

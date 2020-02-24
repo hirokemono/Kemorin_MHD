@@ -98,7 +98,12 @@
           call add_term_to_div_force(ipol, ipol%i_div_comp_buo,         &
      &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         else if(fl_prop%iflag_4_filter_gravity .ne. id_turn_OFF) then
-          call add_term_to_div_force(ipol, ipol%i_div_filter_buo,       &
+          call add_term_to_div_force                                    &
+     &       (ipol, ipol%div_frc_by_filter%i_buoyancy,                  &
+     &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+        else if(fl_prop%iflag_4_filter_comp_buo .ne. id_turn_OFF) then
+          call add_term_to_div_force                                    &
+     &       (ipol, ipol%div_frc_by_filter%i_comp_buo,                  &
      &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         end if
 !
@@ -126,11 +131,11 @@
      &     (ipol, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       else
 !
-        if(fl_prop%iflag_4_filter_gravity .ne. id_turn_OFF) then
+        if(ipol%i_SGS_rot_inertia .ne. id_turn_OFF) then
           call add_term_to_div_force(ipol, ipol%i_div_inertia,          &
      &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         end if
-        if(ipol%i_SGS_rot_inertia .ne. izero) then
+        if(ipol%i_SGS_rot_Lorentz .ne. izero) then
           call add_term_to_div_force(ipol, ipol%i_div_Lorentz,          &
      &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         end if

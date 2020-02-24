@@ -49,6 +49,9 @@
       subroutine set_vector_field_name(phys_nod_name_ctl, icou,         &
      &          phys_nod_name, num_nod_component, iflag)
 !
+      use m_rot_filtered_force_labels
+      use m_div_filtered_force_labels
+!
       character(len = kchara), intent(in) :: phys_nod_name_ctl
       integer (kind = kint), intent(inout) :: icou
       integer (kind = kint), intent(inout) :: num_nod_component
@@ -152,7 +155,6 @@
      &  .or. (phys_nod_name_ctl .eq. fhd_rot_Coriolis       )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_rot_buoyancy       )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_rot_comp_buo       )           &
-     &  .or. (phys_nod_name_ctl .eq. fhd_rot_filter_buo     )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_geostrophic        )           &
      &      )   iflag = 1
 !
@@ -222,6 +224,9 @@
      &  .or. (phys_nod_name_ctl .eq. fhd_rot_forces         )           &
      &      )   iflag = 1
 !
+      if(check_rot_fil_force(phys_nod_name_ctl)) iflag = 1
+!
+
       if (iflag .eq. 1) then
         icou = icou + 1
         phys_nod_name = phys_nod_name_ctl
@@ -234,6 +239,8 @@
 !
       subroutine set_scalar_field_name(phys_nod_name_ctl, icou,         &
      &          phys_nod_name, num_nod_component, iflag)
+!
+      use m_div_filtered_force_labels
 !
       character(len = kchara), intent(in) :: phys_nod_name_ctl
       integer (kind = kint), intent(inout) :: icou
@@ -338,7 +345,6 @@
      &   .or. (phys_nod_name_ctl .eq. fhd_div_Coriolis        )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_div_buoyancy        )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_div_comp_buo        )         &
-     &   .or. (phys_nod_name_ctl .eq. fhd_div_filter_buo      )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_div_viscous         )         &
      &      )   iflag = 1
 !
@@ -376,6 +382,8 @@
      &   .or. (phys_nod_name_ctl .eq. fhd_temp_scale          )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_composition_scale   )         &
      &       ) iflag = 1
+!
+      if(check_div_fil_force(phys_nod_name_ctl)) iflag = 1
 !
       if (iflag .eq. 1) then
         icou = icou + 1

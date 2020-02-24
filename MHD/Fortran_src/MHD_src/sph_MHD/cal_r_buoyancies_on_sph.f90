@@ -93,11 +93,20 @@
      &      ipol_comp, ipol%i_div_comp_buo,                             &
      &      sph_rj%nidx_rj, sph_rj%radius_1d_rj_r,                      &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+      end if
 !
-      else if (fl_prop%iflag_4_filter_gravity .gt. id_turn_OFF) then
+      if (fl_prop%iflag_4_filter_gravity .gt. id_turn_OFF) then
         if (iflag_debug.eq.1) write(*,*) 'cal_r_buoyancy_on_sph'
         call cal_r_buoyancy_on_sph(kr, fl_prop%coef_buo,                &
-     &      ipol%i_filter_temp, ipol%i_div_filter_buo,                  &
+     &      ipol%i_filter_temp, ipol%div_frc_by_filter%i_buoyancy,      &
+     &      sph_rj%nidx_rj, sph_rj%radius_1d_rj_r,                      &
+     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+      end if
+!
+      if (fl_prop%iflag_4_filter_comp_buo .gt. id_turn_OFF) then
+        if (iflag_debug.eq.1) write(*,*) 'cal_r_buoyancy_on_sph'
+        call cal_r_buoyancy_on_sph(kr, fl_prop%coef_comp_buo,           &
+     &      ipol%i_filter_comp, ipol%div_frc_by_filter%i_comp_buo,      &
      &      sph_rj%nidx_rj, sph_rj%radius_1d_rj_r,                      &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if

@@ -93,7 +93,7 @@
      &      'cal_rot_buoyancy_sph_MHD', ipol%i_filter_temp
         call cal_rot_buoyancy_sph_MHD(sph_bc_U%kr_in, sph_bc_U%kr_out,  &
      &      fl_prop%coef_buo, ipol%i_filter_temp,                       &
-     &      itor%i_rot_filter_buo, sph_rj%nidx_rj,                      &
+     &      itor%rot_frc_by_filter%i_buoyancy, sph_rj%nidx_rj,          &
      &      sph_rj%radius_1d_rj_r, rj_fld%n_point, rj_fld%ntot_phys,    &
      &      rj_fld%d_fld)
       end if

@@ -99,13 +99,14 @@
         call alloc_velo_diff_MHD_AMG(numele, ak_MHD)
         ak_MHD%ak_d_velo(1:numele) = fl_prop%coef_diffuse
 !
-        if (fl_prop%iflag_4_gravity .gt. id_turn_OFF                    &
+        if     (fl_prop%iflag_4_gravity .gt. id_turn_OFF                &
      &     .or. fl_prop%iflag_4_filter_gravity .gt. id_turn_OFF) then
           call alloc_buoyancy_coef_ele(numele, ak_MHD)
           ak_MHD%ak_buo(1:numele) = fl_prop%coef_buo
         end if
 !
-        if (fl_prop%iflag_4_composit_buo .gt. id_turn_OFF) then
+        if     (fl_prop%iflag_4_composit_buo .gt. id_turn_OFF           &
+     &     .or. fl_prop%iflag_4_filter_comp_buo .gt. id_turn_OFF) then
           call alloc_comp_buo_coef_ele(numele, ak_MHD)
           ak_MHD%ak_comp_buo(1:numele) = fl_prop%coef_comp_buo
         end if
