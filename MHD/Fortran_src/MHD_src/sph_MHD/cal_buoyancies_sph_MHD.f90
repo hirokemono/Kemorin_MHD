@@ -111,6 +111,18 @@
         call delete_sphere_average(ipol%i_filter_buo, sph_rj, rj_fld)
       end if
 !
+      if(ipol%i_filter_comp*ipol%i_filter_comp_buo .gt. 0) then
+        if (iflag_debug.ge.1)  write(*,*)                             &
+     &      'cal_buoyancy_sph_MHD by filtrered composition'
+        call cal_buoyancy_sph_MHD(sph_bc_U%kr_in, sph_bc_U%kr_out,      &
+     &      leg%g_sph_rj, fl_prop%coef_comp_buo,                        &
+     &      ipol%i_filter_comp, ipol%i_filter_comp_buo,                 &
+     &      sph_rj%nidx_rj, sph_rj%radius_1d_rj_r,                      &
+     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+        call delete_sphere_average                                      &
+     &     (ipol%i_filter_comp_buo, sph_rj, rj_fld)
+      end if
+!
       end subroutine sel_buoyancies_sph_MHD
 !
 !-----------------------------------------------------------------------

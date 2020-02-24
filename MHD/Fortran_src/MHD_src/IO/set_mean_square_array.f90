@@ -516,6 +516,11 @@
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_filter_buo,              &
      &          i_rms%i_filter_buo, j_ave%i_filter_buo, msq_list)
+          else if ( field_name .eq. fhd_filter_comp_buo ) then
+            call set_rms_address                                        &
+     &         (field_name, num_comps, iphys%i_filter_comp_buo,         &
+     &          i_rms%i_filter_comp_buo, j_ave%i_filter_comp_buo,       &
+     &          msq_list)
           end if
 !
           if ( field_name .eq. fhd_viscous ) then
@@ -717,6 +722,11 @@
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_f_buo_gen,               &
      &          i_rms%i_f_buo_gen, j_ave%i_f_buo_gen, msq_list)
+          else if ( field_name .eq. fhd_filter_comp_buo_flux) then
+            call set_rms_address                                        &
+     &         (field_name, num_comps, iphys%i_f_comp_buo_gen,          &
+     &          i_rms%i_f_comp_buo_gen, j_ave%i_f_comp_buo_gen,         &
+     &          msq_list)
           end if
 !
           if ( field_name .eq. fhd_vis_ene_diffuse ) then

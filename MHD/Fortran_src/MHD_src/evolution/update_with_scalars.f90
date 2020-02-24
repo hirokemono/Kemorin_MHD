@@ -164,6 +164,16 @@
      &        nod_fld)
           nod_fld%iflag_update(iphys%i_filter_temp) = 1
         end if
+!
+        if((iphys%i_filter_comp_buo+iphys%i_f_comp_buo_gen)             &
+     &                                           .gt. 0) then
+          if (iflag_debug.gt.0) write(*,*) 'filter temp for buoyancy'
+          call cal_filtered_scalar_whole(SGS_par%filter_p,              &
+     &        mesh%nod_comm, mesh%node, FEM_filters%filtering,          &
+     &        iphys%i_filter_comp, iphys%i_light, FEM_SGS_wk%wk_filter, &
+     &        nod_fld)
+          nod_fld%iflag_update(iphys%i_filter_comp) = 1
+        end if
       end if
 !
       if(SGS_par%model_p%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF          &

@@ -188,8 +188,11 @@
 !!         @f$ -u_{i} \alpha_{c} g_{i} C @f$
         integer (kind=kint) :: i_c_buo_gen =       izero
 !>        start address for filtered buoyancy flux
-!!         @f$ -u_{i} \alpha_{c} g_{i} \tilde{T} @f$
+!!         @f$ -u_{i} \alpha_{T} g_{i} \tilde{T} @f$
         integer (kind=kint) :: i_f_buo_gen =       izero
+!>        start address for filtered buoyancy flux
+!!         @f$ -u_{i} \alpha_{C} g_{i} \tilde{C} @f$
+        integer (kind=kint) :: i_f_comp_buo_gen =  izero
 !>        start address for temperature flux
         integer (kind=kint) :: i_temp_gen =        izero
 !>        start address for perturbation temperature flux

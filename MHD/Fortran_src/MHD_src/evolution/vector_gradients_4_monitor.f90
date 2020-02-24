@@ -273,6 +273,15 @@
       end if
 !
 !
+      if (iphys%i_f_comp_buo_gen .gt. izero) then
+        if(iflag_debug .ge. iflag_routine_msg)                          &
+     &             write(*,*) 'lead  ', trim(fhd_filter_comp_buo_flux)
+        call cal_gravity_flux(node,                                     &
+     &      fl_prop%i_grav, fl_prop%coef_comp_buo, fl_prop%grav,        &
+     &      iphys%i_velo, iphys%i_filter_comp, iphys%i_f_comp_buo_gen,  &
+     &      nod_fld)
+      end if
+!
 !$omp parallel
       if (iphys%i_temp_gen .gt. izero) then
         call cal_phys_product_4_scalar                                  &

@@ -215,6 +215,15 @@
      &        nod_fld%ntot_phys, iphys%i_filter_temp, iphys%i_velo,     &
      &        iphys%i_f_buo_gen, nod_fld%d_fld)
       end if
+!
+      if(iphys%i_f_comp_buo_gen .gt. 0) then
+        call pole_sph_buoyancy_flux                                     &
+     &       (node%numnod, node%internal_node, node%xx,                 &
+     &        sph_rtp%nnod_rtp, sph_rtp%nidx_rtp(1),                    &
+     &        fl_prop%coef_comp_buo, nod_fld%ntot_phys,                 &
+     &        iphys%i_filter_comp, iphys%i_velo,                        &
+     &        iphys%i_f_comp_buo_gen, nod_fld%d_fld)
+      end if
 !$omp end parallel
 !
       end subroutine pole_energy_flux_rtp

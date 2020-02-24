@@ -167,6 +167,8 @@
           iphys%i_c_buo_gen = i0
         else if (field_name(i) .eq. fhd_filter_buo_flux) then
           iphys%i_f_buo_gen = i0
+        else if (field_name(i) .eq. fhd_filter_comp_buo_flux) then
+          iphys%i_f_comp_buo_gen = i0
         else if (field_name(i) .eq. fhd_vis_ene_diffuse) then
           iphys%i_vis_e_diffuse = i0
         else if (field_name(i) .eq. fhd_mag_ene_diffuse) then
@@ -246,6 +248,8 @@
           iphys%i_comp_buo =    i0
         else if (field_name(i) .eq. fhd_filter_buo) then
           iphys%i_filter_buo =  i0
+        else if (field_name(i) .eq. fhd_filter_comp_buo) then
+          iphys%i_filter_comp_buo =  i0
         else if (field_name(i) .eq. fhd_composit_advect ) then
           iphys%i_c_advect =    i0
         else if (field_name(i) .eq. fhd_part_c_advect ) then
