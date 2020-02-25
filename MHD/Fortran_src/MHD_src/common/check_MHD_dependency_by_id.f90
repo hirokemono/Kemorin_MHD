@@ -215,16 +215,6 @@
      &       (fld, i_start, iphys%i_velo, fhd_velo)
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_light, fhd_light)
-        else if(i_start .eq. iphys%i_f_buo_gen) then 
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_velo, fhd_velo)
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_filter_temp, fhd_filter_temp)
-        else if(i_start .eq. iphys%i_f_comp_buo_gen) then 
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_velo, fhd_velo)
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_filter_comp, fhd_filter_comp)
         else if(i_start .eq. iphys%i_temp_gen) then 
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_h_advect, fhd_heat_advect)

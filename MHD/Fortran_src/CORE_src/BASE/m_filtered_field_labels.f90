@@ -155,8 +155,8 @@
       character(len = kchara), intent(in) :: field_name
 !
 !
-      check_filter_scalar = .FALSE.
-      if (    (field_name .eq. fhd_filter_temp)                         &
+      check_filter_scalar                                               &
+     &   =    (field_name .eq. fhd_filter_temp)                         &
      &   .or. (field_name .eq. fhd_filter_comp)                         &
      &   .or. (field_name .eq. fhd_filter_density)                      &
      &   .or. (field_name .eq. fhd_filter_entropy)                      &
@@ -164,8 +164,7 @@
      &   .or. (field_name .eq. fhd_filter_pert_temp)                    &
      &   .or. (field_name .eq. fhd_filter_pert_comp)                    &
      &   .or. (field_name .eq. fhd_filter_pert_density)                 &
-     &   .or. (field_name .eq. fhd_filter_pert_entropy)                 &
-     &      )   check_filter_scalar = .TRUE.
+     &   .or. (field_name .eq. fhd_filter_pert_entropy)
 !
       end function check_filter_scalar
 !

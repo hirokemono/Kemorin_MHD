@@ -149,7 +149,6 @@
      &  .or. (phys_nod_name_ctl .eq. fhd_Coriolis           )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_buoyancy           )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_comp_buo           )           &
-     &  .or. (phys_nod_name_ctl .eq. filtered_buoyancy%name )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_rot_inertia        )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_rot_Lorentz        )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_rot_Coriolis       )           &
@@ -224,7 +223,8 @@
      &  .or. (phys_nod_name_ctl .eq. fhd_rot_forces         )           &
      &      )   iflag = 1
 !
-      if(check_rot_fil_force(phys_nod_name_ctl)) iflag = 1
+      if(     check_filtered_force(phys_nod_name_ctl)                   &
+     &   .or. check_rot_fil_force(phys_nod_name_ctl)) iflag = 1
 !
 
       if (iflag .eq. 1) then
@@ -314,8 +314,6 @@
      &   .or. (phys_nod_name_ctl .eq. fhd_mag_tension_work    )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_buoyancy_flux       )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_comp_buo_flux       )         &
-     &   .or. (phys_nod_name_ctl .eq. filtered_buoyancy_flux%name)      &
-     &   .or. (phys_nod_name_ctl .eq. filtered_comp_buoyancy_flux%name) &
      &   .or. (phys_nod_name_ctl .eq. fhd_div_SGS_h_flux      )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_div_SGS_c_flux      )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_SGS_m_ene_gen       )         &
@@ -384,7 +382,9 @@
      &   .or. (phys_nod_name_ctl .eq. fhd_composition_scale   )         &
      &       ) iflag = 1
 !
-      if(check_div_fil_force(phys_nod_name_ctl)) iflag = 1
+      if(     check_filtered_scallar_flux(phys_nod_name_ctl)            &
+     &   .or. check_div_fil_force(phys_nod_name_ctl)                    &
+     &   .or. check_filter_enegy_fluxes(phys_nod_name_ctl)) iflag = 1
 !
       if (iflag .eq. 1) then
         icou = icou + 1
@@ -424,8 +424,11 @@
      &   .or. (phys_nod_name_ctl .eq. fhd_SGS_maxwell_t  )              &
      &   .or. (phys_nod_name_ctl .eq. fhd_mom_flux_w_sgs )              &
      &   .or. (phys_nod_name_ctl .eq. fhd_maxwell_t_w_sgs)              &
-     &       ) then
+     &       ) iflag = 1
 !
+      if(check_filtered_flux_tensor(phys_nod_name_ctl)) iflag = 1
+!
+      if (iflag .eq. 1) then
         iflag = 1
         icou = icou + 1
         phys_nod_name = phys_nod_name_ctl

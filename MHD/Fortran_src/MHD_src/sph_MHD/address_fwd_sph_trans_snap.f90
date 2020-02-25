@@ -107,12 +107,16 @@
      &    f_trns%i_c_buo_gen, trns_fwd)
       call add_field_name_4_sph_trns_snap                               &
      &   (filtered_buoyancy_flux%name, n_scalar,                        &
-     &    ipol%i_f_buo_gen, itor%i_f_buo_gen, iphys%i_f_buo_gen,        &
-     &    f_trns%i_f_buo_gen, trns_fwd)
+     &    ipol%eflux_by_filter%i_buo_gen,                               &
+     &    itor%eflux_by_filter%i_buo_gen,                               &
+     &    iphys%eflux_by_filter%i_buo_gen,                              &
+     &    f_trns%eflux_by_filter%i_buo_gen, trns_fwd)
       call add_field_name_4_sph_trns_snap                               &
      &   (filtered_comp_buoyancy_flux%name, n_scalar,                   &
-     &    ipol%i_f_comp_buo_gen, itor%i_f_comp_buo_gen,                 &
-     &    iphys%i_f_comp_buo_gen, f_trns%i_f_comp_buo_gen, trns_fwd)
+     &    ipol%eflux_by_filter%i_c_buo_gen,                             &
+     &    itor%eflux_by_filter%i_c_buo_gen,                             &
+     &    iphys%eflux_by_filter%i_c_buo_gen,                            &
+     &    f_trns%eflux_by_filter%i_c_buo_gen, trns_fwd)
 !
       call add_field_name_4_sph_trns_snap                               &
      &   (fhd_magnetic_helicity, n_scalar,                              &

@@ -157,7 +157,7 @@
         end if
 !
         if((iphys%force_by_filter%i_buoyancy                            &
-     &    + iphys%i_f_buo_gen) .gt. 0) then
+     &    + iphys%eflux_by_filter%i_buo_gen) .gt. 0) then
           if (iflag_debug.gt.0) write(*,*) 'filter temp for buoyancy'
           call cal_filtered_scalar_whole(SGS_par%filter_p,              &
      &        mesh%nod_comm, mesh%node, FEM_filters%filtering,          &
@@ -167,7 +167,7 @@
         end if
 !
         if((iphys%force_by_filter%i_comp_buo                            &
-     &     + iphys%i_f_comp_buo_gen) .gt. 0) then
+     &     + iphys%eflux_by_filter%i_c_buo_gen) .gt. 0) then
           if (iflag_debug.gt.0) write(*,*) 'filter temp for buoyancy'
           call cal_filtered_scalar_whole(SGS_par%filter_p,              &
      &        mesh%nod_comm, mesh%node, FEM_filters%filtering,          &

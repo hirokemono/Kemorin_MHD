@@ -15,6 +15,7 @@
       use m_constants
 !
       use t_base_force_labels
+      use t_energy_flux_labels
 !
       implicit  none
 ! 
@@ -187,12 +188,6 @@
 !>        start address for compositional buoyancy flux
 !!         @f$ -u_{i} \alpha_{c} g_{i} C @f$
         integer (kind=kint) :: i_c_buo_gen =       izero
-!>        start address for filtered buoyancy flux
-!!         @f$ -u_{i} \alpha_{T} g_{i} \tilde{T} @f$
-        integer (kind=kint) :: i_f_buo_gen =       izero
-!>        start address for filtered buoyancy flux
-!!         @f$ -u_{i} \alpha_{C} g_{i} \tilde{C} @f$
-        integer (kind=kint) :: i_f_comp_buo_gen =  izero
 !>        start address for temperature flux
         integer (kind=kint) :: i_temp_gen =        izero
 !>        start address for perturbation temperature flux
@@ -814,6 +809,9 @@
         type(base_force_address) :: rot_frc_by_filter
 !>        Structure of divergence of forces by filtered field
         type(base_force_address) :: div_frc_by_filter
+!
+!>        Structure of energy fluxes by filtered field
+        type(energy_flux_address) :: eflux_by_filter
       end type phys_address
 !
 !

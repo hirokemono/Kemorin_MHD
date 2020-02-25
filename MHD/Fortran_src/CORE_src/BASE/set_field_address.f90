@@ -165,11 +165,6 @@
           iphys%i_buo_gen =   i0
         else if (field_name(i) .eq. fhd_comp_buo_flux) then
           iphys%i_c_buo_gen = i0
-        else if (field_name(i) .eq. filtered_buoyancy_flux%name) then
-          iphys%i_f_buo_gen = i0
-        else if (field_name(i) .eq. filtered_comp_buoyancy_flux%name)   &
-     &   then
-          iphys%i_f_comp_buo_gen = i0
         else if (field_name(i) .eq. fhd_vis_ene_diffuse) then
           iphys%i_vis_e_diffuse = i0
         else if (field_name(i) .eq. fhd_mag_ene_diffuse) then
@@ -584,6 +579,8 @@
      &      iphys%rot_frc_by_filter, flag)
         call set_div_fil_force_addresses(i0, field_name(i),             &
      &      iphys%div_frc_by_filter, flag)
+        call set_filter_ene_flux_addresses(i0, field_name(i),           &
+     &      iphys%eflux_by_filter, flag)
 !
         if ( field_name(i) .eq. fhd_pre_mom ) then
           iphys%i_pre_mom =      i0

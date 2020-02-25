@@ -263,23 +263,23 @@
      &      iphys%i_velo, iphys%i_light,  iphys%i_c_buo_gen, nod_fld)
       end if
 !
-      if (iphys%i_f_buo_gen .gt. izero) then
+      if (iphys%eflux_by_filter%i_buo_gen .gt. izero) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &      write(*,*) 'lead  ', trim(filtered_buoyancy_flux%name)
         call cal_gravity_flux(node,                                     &
      &      fl_prop%i_grav, fl_prop%coef_buo, fl_prop%grav,             &
-     &      iphys%i_velo, iphys%i_filter_temp, iphys%i_f_buo_gen,       &
-     &      nod_fld)
+     &      iphys%i_velo, iphys%i_filter_temp,                          &
+     &      iphys%eflux_by_filter%i_buo_gen, nod_fld)
       end if
 !
 !
-      if (iphys%i_f_comp_buo_gen .gt. izero) then
+      if (iphys%eflux_by_filter%i_c_buo_gen .gt. izero) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &      write(*,*) 'lead  ', trim(filtered_comp_buoyancy_flux%name)
         call cal_gravity_flux(node,                                     &
      &      fl_prop%i_grav, fl_prop%coef_comp_buo, fl_prop%grav,        &
-     &      iphys%i_velo, iphys%i_filter_comp, iphys%i_f_comp_buo_gen,  &
-     &      nod_fld)
+     &      iphys%i_velo, iphys%i_filter_comp,                          &
+     &      iphys%eflux_by_filter%i_c_buo_gen, nod_fld)
       end if
 !
 !$omp parallel

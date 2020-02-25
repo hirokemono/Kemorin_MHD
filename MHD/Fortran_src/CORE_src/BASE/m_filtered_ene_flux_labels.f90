@@ -8,6 +8,10 @@
 !> @brief Labels and addresses for energy fluxes by filtered field
 !!
 !!@verbatim
+!!      logical function check_filter_enegy_fluxes(field_name)
+!!      subroutine set_filter_ene_flux_addresses                        &
+!!     &         (i_phys, field_name, eflux_by_filter, flag)
+!!
 !!      integer(kind = kint) function num_filtered_ene_fluxes()
 !!      subroutine set_filtered_ene_flax_labels(n_comps, names, maths)
 !!
@@ -15,21 +19,22 @@
 !!
 !!    Field name [Address]
 !!
-!!   inertia_work_by_filtered          [eflux_by_filter%i_m_advect]
-!!   wk_against_Lorentz_by_filtered    [eflux_by_filter%i_lorentz]
-!!   Lorentz_work_by_filtered          [eflux_by_filter%i_lorentz]
-!!   mag_tension_work_by_filtered      [eflux_by_filter%i_m_tension]
+!!   inertia_work_by_filtered          [eflux_by_filter%i_m_advect_work]
+!!   wk_against_Lorentz_by_filtered    [eflux_by_filter%i_nega_ujb]
+!!   Lorentz_work_by_filtered          [eflux_by_filter%i_ujb]
+!!   mag_tension_work_by_filtered      [eflux_by_filter%i_m_tension_wk]
 !!
-!!   filtered_buoyancy_flux            [eflux_by_filter%i_buoyancy]
-!!   filtered_comp_buoyancy_flux       [eflux_by_filter%i_comp_buo]
+!!   filtered_buoyancy_flux            [eflux_by_filter%i_buo_gen]
+!!   filtered_comp_buoyancy_flux       [eflux_by_filter%i_c_buo_gen]
 !!
-!!   mag_ene_generation_by_filtered    [eflux_by_filter%i_induction]
-!!   mag_stretch_flux_by_filtered      [eflux_by_filter%i_mag_stretch]
+!!   mag_ene_generation_by_filtered    [eflux_by_filter%i_me_gen]
+!!   mag_stretch_flux_by_filtered
+!!                              [eflux_by_filter%i_mag_stretch_flux]
 !!
-!!   temp_generation_by_filtered       [eflux_by_filter%i_h_advect]
-!!   part_temp_gen_by_filtered         [eflux_by_filter%i_ph_advect]
-!!   comp_generation_by_filtered       [eflux_by_filter%i_c_advect]
-!!   part_comp_gen_by_filtered         [eflux_by_filter%i_pc_advect]
+!!   temp_generation_by_filtered       [eflux_by_filter%i_temp_gen]
+!!   part_temp_gen_by_filtered         [eflux_by_filter%i_par_t_gen]
+!!   comp_generation_by_filtered       [eflux_by_filter%i_comp_gen]
+!!   part_comp_gen_by_filtered         [eflux_by_filter%i_par_c_gen]
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!@endverbatim
@@ -38,9 +43,8 @@
 !
       use m_precision
       use m_phys_constants
-      use t_base_field_labels
-      use t_base_force_labels
       use t_field_labels
+      use t_energy_flux_labels
 !
       implicit  none
 ! 
@@ -136,6 +140,80 @@
 ! ----------------------------------------------------------------------
 !
       contains
+!
+! ----------------------------------------------------------------------
+!
+      logical function check_filter_enegy_fluxes(field_name)
+!
+      character(len = kchara), intent(in) :: field_name
+!
+!
+      check_filter_enegy_fluxes                                         &
+     &   =    (field_name .eq. inertia_work_by_filtered%name)           &
+     &   .or. (field_name .eq. wk_against_Lorentz_by_filtered%name)     &
+     &   .or. (field_name .eq. Lorentz_work_by_filtered%name)           &
+     &   .or. (field_name .eq. mag_tension_work_by_filtered%name)       &
+     &   .or. (field_name .eq. filtered_buoyancy_flux%name)             &
+     &   .or. (field_name .eq. filtered_comp_buoyancy_flux%name)        &
+     &   .or. (field_name .eq. mag_ene_generation_by_filtered%name)     &
+     &   .or. (field_name .eq. mag_stretch_flux_by_filtered%name)       &
+     &   .or. (field_name .eq. temp_generation_by_filtered%name)        &
+     &   .or. (field_name .eq. part_temp_gen_by_filtered%name)          &
+     &   .or. (field_name .eq. comp_generation_by_filtered%name)        &
+     &   .or. (field_name .eq. part_comp_gen_by_filtered%name)
+!
+      end function check_filter_enegy_fluxes
+!
+! ----------------------------------------------------------------------
+!
+      subroutine set_filter_ene_flux_addresses                          &
+     &         (i_phys, field_name, eflux_by_filter, flag)
+!
+      integer(kind = kint), intent(in) :: i_phys
+      character(len = kchara), intent(in) :: field_name
+!
+      type(energy_flux_address), intent(inout) :: eflux_by_filter
+      logical, intent(inout) :: flag
+!
+!
+      flag = check_filter_enegy_fluxes(field_name)
+      if(flag) then
+        if (field_name .eq. inertia_work_by_filtered%name) then
+          eflux_by_filter%i_m_advect_work = i_phys
+        else if (field_name .eq. wk_against_Lorentz_by_filtered%name)   &
+     &   then
+          eflux_by_filter%i_nega_ujb =      i_phys
+        else if (field_name .eq. Lorentz_work_by_filtered%name) then
+          eflux_by_filter%i_ujb =           i_phys
+        else if (field_name .eq. mag_tension_work_by_filtered%name)     &
+     &   then
+          eflux_by_filter%i_m_tension_wk =  i_phys
+!
+        else if (field_name .eq. filtered_buoyancy_flux%name) then
+          eflux_by_filter%i_buo_gen =       i_phys
+        else if (field_name .eq. filtered_comp_buoyancy_flux%name) then
+          eflux_by_filter%i_c_buo_gen =     i_phys
+!
+        else if (field_name .eq. mag_ene_generation_by_filtered%name)   &
+     &   then
+          eflux_by_filter%i_me_gen =           i_phys
+        else if (field_name .eq. mag_stretch_flux_by_filtered%name)     &
+     &   then
+          eflux_by_filter%i_mag_stretch_flux = i_phys
+!
+        else if (field_name .eq. temp_generation_by_filtered%name) then
+          eflux_by_filter%i_temp_gen =  i_phys
+        else if (field_name .eq. part_temp_gen_by_filtered%name) then
+          eflux_by_filter%i_par_t_gen = i_phys
+!
+        else if (field_name .eq. comp_generation_by_filtered%name) then
+          eflux_by_filter%i_comp_gen =  i_phys
+        else if (field_name .eq. part_comp_gen_by_filtered%name) then
+          eflux_by_filter%i_par_c_gen = i_phys
+        end if
+      end if
+!
+      end subroutine set_filter_ene_flux_addresses
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------

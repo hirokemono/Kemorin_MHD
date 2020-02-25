@@ -720,15 +720,16 @@
      &         (field_name, num_comps, iphys%i_c_buo_gen,               &
      &          i_rms%i_c_buo_gen, j_ave%i_c_buo_gen, msq_list)
           else if ( field_name .eq. filtered_buoyancy_flux%name) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_f_buo_gen,               &
-     &          i_rms%i_f_buo_gen, j_ave%i_f_buo_gen, msq_list)
+            call set_rms_address(field_name, num_comps,                 &
+     &          iphys%eflux_by_filter%i_buo_gen,                        &
+     &          i_rms%eflux_by_filter%i_buo_gen,                        &
+     &          j_ave%eflux_by_filter%i_buo_gen, msq_list)
           else if(field_name .eq. filtered_comp_buoyancy_flux%name)     &
      &     then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_f_comp_buo_gen,          &
-     &          i_rms%i_f_comp_buo_gen, j_ave%i_f_comp_buo_gen,         &
-     &          msq_list)
+            call set_rms_address(field_name, num_comps,                 &
+     &          iphys%eflux_by_filter%i_c_buo_gen,                      &
+     &          i_rms%eflux_by_filter%i_c_buo_gen,                      &
+     &          j_ave%eflux_by_filter%i_c_buo_gen, msq_list)
           end if
 !
           if ( field_name .eq. fhd_vis_ene_diffuse ) then
