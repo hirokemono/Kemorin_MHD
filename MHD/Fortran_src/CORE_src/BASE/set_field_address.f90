@@ -246,9 +246,9 @@
           iphys%i_buoyancy =    i0
         else if (field_name(i) .eq. fhd_comp_buo) then
           iphys%i_comp_buo =    i0
-        else if (field_name(i) .eq. fhd_filter_buo) then
+        else if (field_name(i) .eq. filtered_buoyancy%name) then
           iphys%i_filter_buo =  i0
-        else if (field_name(i) .eq. fhd_filter_comp_buo) then
+        else if (field_name(i) .eq. filtered_comp_buoyancy%name) then
           iphys%i_filter_comp_buo =  i0
         else if (field_name(i) .eq. fhd_composit_advect ) then
           iphys%i_c_advect =    i0

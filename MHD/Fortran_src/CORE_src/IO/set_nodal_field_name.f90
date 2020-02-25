@@ -149,7 +149,7 @@
      &  .or. (phys_nod_name_ctl .eq. fhd_Coriolis           )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_buoyancy           )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_comp_buo           )           &
-     &  .or. (phys_nod_name_ctl .eq. fhd_filter_buo         )           &
+     &  .or. (phys_nod_name_ctl .eq. filtered_buoyancy%name )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_rot_inertia        )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_rot_Lorentz        )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_rot_Coriolis       )           &

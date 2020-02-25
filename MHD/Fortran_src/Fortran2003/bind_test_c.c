@@ -3,8 +3,10 @@
 #include <stdio.h>
 
 int lengthchara_f();
+int num_filtered_forces_f();
 int num_rot_filtered_forces_f();
 int num_div_filtered_forces_f();
+void set_filtered_force_labels_f(int *ncomp1, char *name1, char *math1);
 void rot_filtered_force_labels_f(int *ncomp1, char *name1, char *math1);
 void div_filtered_force_labels_f(int *ncomp1, char *name1, char *math1);
 
@@ -16,7 +18,9 @@ int main(int argc, char **argv)
 	
 	int len_f = lengthchara_f();
 	
-	int ist_rot_filtered_forces = 0;
+	int ist_filtered_forces = 0;
+	int ist_rot_filtered_forces = ist_filtered_forces
+			+ num_filtered_forces_f();
 	int ist_div_filtered_forces = ist_rot_filtered_forces
 			+ num_rot_filtered_forces_f();
 	int nword = ist_div_filtered_forces
@@ -35,6 +39,9 @@ int main(int argc, char **argv)
 		exit(0);
 	}
 	
+	set_filtered_force_labels_f(&ncomp[ist_filtered_forces], 
+								&name1[len_f*ist_filtered_forces],
+								&math1[len_f*ist_filtered_forces]);
 	rot_filtered_force_labels_f(&ncomp[ist_rot_filtered_forces], 
 								&name1[len_f*ist_rot_filtered_forces],
 								&math1[len_f*ist_rot_filtered_forces]);

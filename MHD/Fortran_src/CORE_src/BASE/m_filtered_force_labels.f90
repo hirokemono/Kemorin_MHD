@@ -5,54 +5,37 @@
 !! @date   Programmed in Jan., 2020
 !!
 !!
-!> @brief Labels and addresses for basic forces
+!> @brief Labels and addresses for forces by filtered field
 !!
 !!@verbatim
-!! !!!!!  Filtered force names  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!      integer(kind = kint) function num_filtered_forces()
+!!      subroutine set_filtered_force_labels(n_comps, names, maths)
 !!
-!! field names 
+!! !!!!!  divergence of forces by filtered field !!!!!!!!!!!!!!!!!!
 !!
-!!   inertia_by_filtered    [i_m_advect]:
-!!                    inertia (\omega \times u)
-!!   momentum_flux_by_filtered   [i_m_flux]:
-!!                    momentum flux     u_{i} u_{j}
-!!   Lorentz_force_by_filtered   [i_lorentz]:
-!!                    Lorentz force     J \times B
-!!   magne_tension_by_filtered  [i_m_tension]:
-!!                    magnetic tension   (B \nabla) B
-!!   maxwell_tensor_by_filtered    [i_maxwell]:
-!!                    maxwell tensor       B_{i} B_{j}
+!!   inertia_by_filtered           [force_by_filter%i_m_advect]
+!!   Lorentz_force_by_filtered     [force_by_filter%i_lorentz]
+!!   magnetic_tension_by_filtered  [force_by_filter%i_m_tension]
 !!
-!!   filtered_buoyancy   [i_buoyancy]:   Thermal buoyancy  -\alpha_{T} gT
-!!   filtered_comp_buoyancy   [i_comp_buo]:
-!!                       compositional buoyancy  -\alpha_{C} gC
+!!   filtered_buoyancy             [force_by_filter%i_buoyancy]
+!!   filtered_comp_buoyancy        [force_by_filter%i_comp_buo]
 !!
-!!   vecp_inducti_by_filtered   [i_vp_induct]:
-!!                          induction         u \times B
-!!   magnetic_induct_by_filtered   [i_induction]:
-!!                         magneitic induction \nabla \times (u \times B)
-!!   magnetic_stretch_by_filtered    [i_mag_stretch]:
-!!                         magneitic streatch         (B \nabla) u
-!!   induction_tensor_by_filtered    [i_induct_t]:
-!!          induction induction tensor      u_{i} B_{j}  - B_{i} u_{J}
-!!   heat_advect_by_filtered         [i_h_advect]:  heat advection
-!!                                     (u \cdot \nabla) T
-!!   part_h_advect_by_filtered       [i_ph_advect]:
-!!                             perturbation of heat advection
-!!                                      (u \cdot \nabla) \Theta
-!!   heat_flux_by_filtered           [i_h_flux]:    heat flux          uT
-!!   part_h_flux_by_filtered         [i_ph_flux]:
-!!                            perturbation of heat flux    u\Theta
+!!   vecp_induction_by_filtered    [force_by_filter%i_induction]
+!!   magnetic_stretch_by_filtered  [force_by_filter%i_mag_stretch]
 !!
-!!   comp_advect_by_filtered [i_c_advect]:    composition advection
-!!                                      (u \cdot \nabla) C
-!!   comp_advect_by_filtered      [i_pc_advect]:
-!!                     perturbation of composition advection
-!!                                      (u \cdot \nabla) (C-C_0)
-!!   composite_flux_by_filtered     [i_c_flux]:
-!!                             composition flux         uC
-!!   part_c_flux_by_filtered        [i_pc_flux]:
-!!                    perturbation of composition flux   u(C-C_0)
+!!   momentum_flux_by_filtered     [force_by_filter%i_m_flux]
+!!   maxwell_tensor_by_filtered    [force_by_filter%i_maxwell]
+!!   induction_tensor_by_filtered  [force_by_filter%i_induct_t]
+!!
+!!   heat_advect_by_filtered       [force_by_filter%i_induct_t]
+!!   part_h_advect_by_filtered     [force_by_filter%i_induct_t]
+!!   heat_flux_by_filtered         [force_by_filter%i_h_flux]
+!!   part_h_flux_by_filtered       [force_by_filter%i_ph_flux]
+!!
+!!   comp_advect_by_filtered       [force_by_filter%i_induct_t]
+!!   part_c_advect_by_filtered     [force_by_filter%i_induct_t]
+!!   composite_flux_by_filtered    [force_by_filter%i_c_flux]
+!!   part_c_flux_by_filtered       [force_by_filter%i_pc_flux]
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!@endverbatim
@@ -60,92 +43,195 @@
       module m_filtered_force_labels
 !
       use m_precision
-      use m_constants
+      use m_phys_constants
       use t_base_field_labels
+      use t_field_labels
 !
       implicit  none
-! 
-      integer(kind = kint), parameter, private :: nforce_filter = 19
+!
+      integer(kind = kint), parameter, private :: nforce_filter = 18
 !
 !>        Field label for advection for momentum by filtered field
-!!         @f$ u_{j} \partial_{j} u_{i} @f$
-      character(len=kchara), parameter                                  &
-     &          :: fhd_inertia_by_filter = 'inertia_by_filtered'
+!!         @f$ -e_{ijk} \tilde{\omega}_{j} \tilde{u}_{k} @f$
+      type(field_def), parameter :: inertia_by_filtered                 &
+     &    = field_def(n_comp = n_vector,                                &
+     &                name = 'inertia_by_filtered',                     &
+     &           math = '$ -e_{ijk} \tilde{\omega}_{j} \tilde{u}_{k}$')
 !>        Field label for momentum flux by filtered field
-!!         @f$ u_{i} u_{j} @f$
-      character(len=kchara), parameter                                  &
-     &          :: fhd_mom_flux_by_filter = 'momentum_flux_by_filtered'
+!!         @f$ \tilde{u}_{i} \tilde{u}_{j} @f$
+      type(field_def), parameter :: momentum_flux_by_filtered           &
+     &    = field_def(n_comp = n_sym_tensor,                            &
+     &                name = 'momentum_flux_by_filtered',               &
+     &                math = '$ \tilde{u}_{i} \tilde{u}_{j} $')
 !>        Field label for Lorentz force
-!!         @f$ e_{ijk} J_{j} B_{k} @f$
-      character(len=kchara), parameter                                  &
-     &          :: fhd_Lorentz_by_filter = 'Lorentz_force_by_filtered'
+!!         @f$ e_{ijk} \tilde{J}_{j} \tilde{B}_{k} @f$
+      type(field_def), parameter :: Lorentz_force_by_filtered           &
+     &    = field_def(n_comp = n_vector,                                &
+     &                name = 'Lorentz_force_by_filtered',               &
+     &                math = '$ e_{ijk} \tilde{J}_{j} \tilde{B}_{k}$')
 !>        start address for magnetic tension
-!!         @f$ B_{j} \partial_{j} B_{i} @f$
-      character(len=kchara), parameter :: fhd_mag_tension_by_filter     &
-     &                                = 'magne_tension_by_filtered'
+!!         @f$ \tilde{B}_{j} \partial_{j} \tilde{B}_{i} @f$
+      type(field_def), parameter :: magnetic_tension_by_filtered        &
+     &    = field_def(n_comp = n_vector,                                &
+     &                name = 'magnetic_tension_by_filtered',            &
+     &          math = '$ \tilde{B}_{j} \partial_{j} \tilde{B}_{i}$ ')
 !>        Field label for Maxwell tensor
-!!         @f$ B_{i} B_{j} @f$
-      character(len=kchara), parameter                                  &
-     &          :: fhd_maxwell_by_filter = 'maxwell_tensor_by_filtered'
+!!         @f$ \tilde{B}_{i} \tilde{B}_{j} @f$
+      type(field_def), parameter :: maxwell_tensor_by_filtered          &
+     &    = field_def(n_comp = n_sym_tensor,                            &
+     &                name = 'maxwell_tensor_by_filtered',              &
+     &                math = '$ \tilde{B}_{i} \tilde{B}_{j} $')
 !
 !>        Field label for filtered buoyancy
-!!         @f$ -\alpha_{C} g_{i} \tilde{T} @f$
-      character(len=kchara), parameter                                  &
-     &          :: fhd_filter_buo =    'filtered_buoyancy'
+!!         @f$ -\alpha_{T} g_{i} \tilde{T} @f$
+      type(field_def), parameter :: filtered_buoyancy                   &
+     &    = field_def(n_comp = n_vector,                                &
+     &                name = 'filtered_buoyancy',                       &
+     &                math = '$ -\alpha_{T} g_{i} \tilde{T} $')
 !>        Field label for compositional buoyancy
-!!         @f$ -\alpha_{C} g_{i} C @f$
-      character(len=kchara), parameter                                  &
-     &          :: fhd_filter_comp_buo = 'filtered_comp_buoyancy'
+!!         @f$ -\alpha_{C} g_{i} \tilde{C} @f$
+      type(field_def), parameter :: filtered_comp_buoyancy              &
+     &    = field_def(n_comp = n_vector,                                &
+     &                name = 'filtered_comp_buoyancy',                  &
+     &                math = '$ -\alpha_{C} g_{i} \tilde{C} $')
 !!
 !>        Field label for induction for vector potential
-!!         @f$ e_{ijk} u_{j} B_{k} @f$
-      character(len=kchara), parameter                                  &
-     &       :: fhd_vp_induct_by_filter = 'vecp_inducti_by_filtered'
-!>        Field label for magnetic induction
-!!         @f$ e_{ijk} \partial_{j}\left(e_{klm}u_{l}B_{m} \right)@f$
-      character(len=kchara), parameter :: fhd_mag_induct_by_filter      &
-     &                                = 'magnetic_induct_by_filtered'
+!!         @f$ e_{ijk} \tilde{u}_{j} \tilde{B}_{k} @f$
+      type(field_def), parameter :: vecp_induction_by_filtered          &
+     &    = field_def(n_comp = n_vector,                                &
+     &                name = 'vecp_induction_by_filtered',              &
+     &                math = '$ e_{ijk} \tilde{u}_{j} \tilde{B}_{k} $')
 !>        Field label for magnetic stretch term
-!!         @f$ \left(B_{i} \partial_{k} u_{k} \right)@f$
-      character(len=kchara), parameter :: fhd_mag_stretch_by_filter     &
-     &                                = 'magnetic_stretch_by_filtered'
+!!         @f$ (\tilde{B}_{i} \partial_{i} \tilde{u}_{k}) @f$
+      type(field_def), parameter :: magnetic_stretch_by_filtered        &
+     &    = field_def(n_comp = n_vector,                                &
+     &                name = 'magnetic_stretch_by_filtered',            &
+     &                math = '$ (\tilde{B}_{i} \partial_{i})'           &
+     &                      //' \tilde{u}_{k} $')
 !>        Field label for Tensor for magnetic induction
-!!         @f$ u_{i} B_{j}  - B_{i} u_{J} @f$
-      character(len=kchara), parameter                                  &
-     &       :: fhd_induct_t_by_filter = 'induction_tensor_by_filtered'
+!!         @f$ \tilde{u}_{i} \tilde{B}_{j}
+!!            - \tilde{B}_{i} \tilde{u}_{J} @f$
+      type(field_def), parameter :: induction_tensor_by_filtered        &
+     &    = field_def(n_comp = n_vector,                                &
+     &                name = 'induction_tensor_by_filtered',            &
+     &                math = '$ (\tilde{B}_{i} \partial_{i})'           &
+     &                      //' \tilde{u}_{k} $')
 !
 !>        Field label for advection for temperature
-!!         @f$ u_{i} \partial_{i} T @f$
-      character(len=kchara), parameter                                  &
-     &      :: fhd_heat_advect_by_ftr = 'heat_advect_by_filtered'
+!!         @f$ \tilde{u}_{i} \partial_{i} \tilde{T} @f$
+      type(field_def), parameter :: heat_advect_by_filtered             &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                name = 'heat_advect_by_filtered',                 &
+     &              math = '$ \tilde{u}_{i} \partial_{i} \tilde{T} $')
 !>        Field label for advection for perturbation of temperature
-!!         @f$ u_{i} \partial_{i} \Theta @f$
-      character(len=kchara), parameter                                  &
-     &      :: fhd_part_h_advect_by_ftr = 'part_h_advect_by_filtered'
+!!         @f$ \tilde{u}_{i} \partial_{i} \tilde{\Theta} @f$
+      type(field_def), parameter :: part_h_advect_by_filtered           &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                name = 'part_h_advect_by_filtered',               &
+     &          math = '$ \tilde{u}_{i} \partial_{i} \tilde{\Theta} $')
 !>        Field label for heat flux
-!!         @f$ u_{i} T @f$
-      character(len=kchara), parameter                                  &
-     &      :: fhd_h_flux_by_filter = 'heat_flux_by_filtered'
+!!         @f$ \tilde{u}_{i} \tilde{T} @f$
+      type(field_def), parameter :: heat_flux_by_filtered               &
+     &    = field_def(n_comp = n_vector,                                &
+     &                name = 'heat_flux_by_filtered',                   &
+     &                math = '$ \tilde{u}_{i} \tilde{T} $')
 !>        Field label for perturbation of heat flux
-!!         @f$ u_{i} \Theta @f$
-      character(len=kchara), parameter                                  &
-     &      :: fhd_ph_flux_by_filter = 'part_h_flux_by_filtered'
+!!         @f$ \tilde{u}_{i} \tilde{\Theta} @f$
+      type(field_def), parameter :: part_h_flux_by_filtered             &
+     &    = field_def(n_comp = n_vector,                                &
+     &                name = 'part_h_flux_by_filtered',                 &
+     &                math = '$ \tilde{u}_{i} \tilde{\Theta} $')
 !
 !>        Field label for advection for composition
-!!         @f$ u_{i} \partial_{i} C @f$
-      character(len=kchara), parameter                                  &
-     &      :: fhd_composit_advect_by_ftr= 'comp_advect_by_filtered'
+!!         @f$ \tilde{u}_{i} \partial_{i} \tilde{C} @f$
+      type(field_def), parameter :: comp_advect_by_filtered             &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                name = 'comp_advect_by_filtered',                 &
+     &              math = '$ \tilde{u}_{i} \partial_{i} \tilde{C} $')
 !>        Field label for advection for perturbation of composition
-!!         @f$ u_{i} \partial_{i} \Theta_C @f$
-      character(len=kchara), parameter                                  &
-     &       :: fhd_part_c_advect_by_ftr = 'part_c_advect_by_filtered'
+!!         @f$ \tilde{u}_{i} \partial_{i} \tilde{\Theta}_{C} @f$
+      type(field_def), parameter :: part_c_advect_by_filtered           &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                name = 'part_c_advect_by_filtered',               &
+     &      math = '$ \tilde{u}_{i} \partial_{i} \tilde{\Theta}_{C} $')
 !>        Field label for compositinoal flux
-!!         @f$ u_{i} C @f$
-      character(len=kchara), parameter                                  &
-     &       :: fhd_c_flux_by_filter = 'composite_flux_by_filtered'
+!!         @f$ \tilde{u}_{i} \tilde{C} @f$
+      type(field_def), parameter :: composite_flux_by_filtered          &
+     &    = field_def(n_comp = n_vector,                                &
+     &                name = 'composite_flux_by_filtered',              &
+     &                math = '$ \tilde{u}_{i} \tilde{C} $')
 !>        Field label for perturbation of composition flux
-!!         @f$ u_{i} \Theta_C @f$
-      character(len=kchara), parameter                                  &
-     &       :: fhd_pc_flux_by_filter = 'part_c_flux_by_filtered'
+!!         @f$ \tilde{u}_{i} \tilde{\Theta}_{C} @f$
+      type(field_def), parameter :: part_c_flux_by_filtered             &
+     &    = field_def(n_comp = n_vector,                                &
+     &                name = 'part_c_flux_by_filtered',                 &
+     &                math = '$ \tilde{u}_{i} \tilde{\Theta}_{C} $')
+!
+! ----------------------------------------------------------------------
+!
+      contains
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+! 
+      integer(kind = kint) function num_filtered_forces()
+      num_filtered_forces = nforce_filter
+      return
+      end function num_filtered_forces
+!
+! ----------------------------------------------------------------------
+!
+      subroutine set_filtered_force_labels(n_comps, names, maths)
+!
+      integer(kind = kint), intent(inout) :: n_comps(nforce_filter)
+      character(len = kchara), intent(inout) :: names(nforce_filter)
+      character(len = kchara), intent(inout) :: maths(nforce_filter)
+!
+!
+      call set_field_labels(inertia_by_filtered,                        &
+     &    n_comps( 1), names( 1), maths( 1))
+      call set_field_labels(Lorentz_force_by_filtered,                  &
+     &    n_comps( 2), names( 2), maths( 2))
+      call set_field_labels(magnetic_tension_by_filtered,               &
+     &    n_comps( 3), names( 3), maths( 3))
+!
+      call set_field_labels(filtered_buoyancy,                          &
+     &    n_comps( 4), names( 4), maths( 4))
+      call set_field_labels(filtered_comp_buoyancy,                     &
+     &    n_comps( 5), names( 5), maths( 5))
+!
+      call set_field_labels(vecp_induction_by_filtered,                 &
+     &    n_comps( 6), names( 6), maths( 6))
+      call set_field_labels(magnetic_stretch_by_filtered,               &
+     &    n_comps( 7), names( 7), maths( 7))
+!
+      call set_field_labels(heat_advect_by_filtered,                    &
+     &    n_comps( 8), names( 8), maths( 8))
+      call set_field_labels(part_h_advect_by_filtered,                  &
+     &    n_comps( 9), names( 9), maths( 9))
+      call set_field_labels(comp_advect_by_filtered,                    &
+     &    n_comps(10), names(10), maths(10))
+      call set_field_labels(part_c_advect_by_filtered,                  &
+     &    n_comps(11), names(11), maths(11))
+!
+      call set_field_labels(momentum_flux_by_filtered,                  &
+     &    n_comps(12), names(12), maths(12))
+      call set_field_labels(maxwell_tensor_by_filtered,                 &
+     &    n_comps(13), names(13), maths(13))
+      call set_field_labels(induction_tensor_by_filtered,               &
+     &    n_comps(14), names(14), maths(14))
+!
+      call set_field_labels(heat_flux_by_filtered,                      &
+     &    n_comps(15), names(15), maths(15))
+      call set_field_labels(part_h_flux_by_filtered,                    &
+     &    n_comps(16), names(16), maths(16))
+      call set_field_labels(composite_flux_by_filtered,                 &
+     &    n_comps(17), names(17), maths(17))
+      call set_field_labels(part_c_flux_by_filtered,                    &
+     &    n_comps(18), names(18), maths(18))
+!
+      end subroutine set_filtered_force_labels
+!
+! ----------------------------------------------------------------------
 !
       end module m_filtered_force_labels

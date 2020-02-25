@@ -4,7 +4,7 @@
 !!@author H. Matsui
 !!@date   Programmed on June, 2005
 !!
-!>@brief Labels of fields
+!> @brief Labels and addresses for divergence of forces by filtered field
 !!
 !!@verbatim
 !!      logical function check_div_fil_force(field_name)
@@ -54,50 +54,58 @@
 !
 !  divergence of momentum equations
 !>        Field label for divergence of advection
+!!         @f$ - \partial_{i} 
+!!           \left(e_{ijk} \tilde{\omega}_{j} \tilde{u}_{k} \right) @f$
       type(field_def), parameter :: div_inertia_by_filtered             &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'div_inertia_by_filtered',                 &
      &                math = '$ \partial_{i}'                           &
-     &                // '(e_{ijk} \tilde{\omega}_{j} \tilde{u}_{k}$')
+     &                // '(e_{ijk} \tilde{\omega}_{j} \tilde{u}_{k})$')
 !>        Field label for divergence of Lorentz force
+!!         @f$ \partial_{i}
+!!            \left(e_{ijk} \tilde{J}_{j} \tilde{B}_{k} \right) @f$
       type(field_def), parameter :: div_Lorentz_force_by_filtered       &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'div_Lorentz_force_by_filtered',           &
      &                math = '$ \partial_{i}'                           &
-     &                    // '(e_{ijk} \tilde{J}_{j} \tilde{B}_{k}$')
+     &                    // '(e_{ijk} \tilde{J}_{j} \tilde{B}_{k})$')
 !
 !>        Field label for divergence of filtered buoyancy
+!!         @f$ -\partial_{i} \alpha_{T} g_{i} \tilde{T} @f$
       type(field_def), parameter :: div_filtered_buoyancy               &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'div_filtered_buoyancy',                   &
      &             math = '$-\partial_{i} \alpha_{T} \tilde{T} g_{i}$')
 !>        Field label for divergence of filtered compositional buoyancy
+!!         @f$ -\partial_{i} \alpha_{C} g_{i} \tilde{C} @f$
       type(field_def), parameter :: div_filtered_comp_buoyancy          &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'div_filtered_comp_buoyancy',              &
      &             math = '$-\partial_{i} \alpha_{C} \tilde{C} g_{i}$')
 !
 !>        Field label for divergence of induction
+!!         @f$ \partial_{j} (e_{ijk} \tilde{u}_{j} \tilde{B}_{k}) @f$
       type(field_def), parameter :: div_vecp_induction_by_filtered      &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'div_vecp_induction_by_filtered',          &
      &                math = '$ \partial_{i}'                           &
-     &                    // '(e_{ijk} \tilde{u}_{j} \tilde{B}_{k}$')
+     &                    // '(e_{ijk} \tilde{u}_{j} \tilde{B}_{k})$')
 !
 !>        Field label for divergence of momentum flux
-!!         @f$ \partial_{j} \left( u_{i} u_{j} \right) @f$
+!!         @f$ \partial_{j} (\tilde{u}_{i} \tilde{u}_{j}) @f$
       type(field_def), parameter :: div_m_flux_by_filtered              &
      &    = field_def(n_comp = n_vector,                                &
      &             name = 'div_m_flux_by_filtered',                     &
      &          math = '$-\partial_{j} (\tilde{B}_{i} \tilde{B}_{j})$')
 !>        Field label for divergence of Maxwell stress
-!!         @f$ \partial_{j} \left( B_{i} B_{j} \right) @f$
+!!         @f$ \partial_{j} (\tilde{B}_{i} \tilde{B}_{j}) @f$
       type(field_def), parameter :: div_maxwell_t_by_filtered           &
      &    = field_def(n_comp = n_vector,                                &
      &          name = 'div_maxwell_t_by_filtered',                     &
      &          math = '$ \partial_{j} (\tilde{B}_{i} \tilde{B}_{j})$')
 !>        Field label for divergence of magnetic induction
-!!         @f$ \partial_{i} \left(u_{i} B_{j} - B_{i} u_{J} \right) @f$
+!!         @f$ \partial_{i} (\tilde{u}_{i} \tilde{B}_{j}
+!!                         - \tilde{B}_{i} \tilde{u}_{J}) @f$
       type(field_def), parameter :: div_induct_t_by_filtered            &
      &    = field_def(n_comp = n_vector,                                &
      &             name = 'div_induct_t_by_filtered',                   &
@@ -105,13 +113,13 @@
      &                  //' - \tilde{B}_{i} \tilde{u}_{J})$')
 !
 !>        Field label for divergence of heat flux
-!!         @f$ \partial_{i} \left( u_{i} T \right) @f$
+!!         @f$ \partial_{i} ( \tilde{u}_{i} \tilde{T} ) @f$
       type(field_def), parameter :: div_h_flux_by_filtered              &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'div_h_flux_by_filtered',                  &
      &                math = '$-\partial_{i} \tilde{u}_{i} \tilde{T}$')
 !>        Field label for divergence of perturbation of heat flux
-!!         @f$ \partial_{i} \left( u_{i} \Theta \right) @f$
+!!         @f$ \partial_{i} ( \tilde{u}_{i} \tilde{\Theta} ) @f$
       type(field_def), parameter :: div_part_h_flux_by_filtered         &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'div_part_h_flux_by_filtered',             &

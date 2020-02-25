@@ -40,10 +40,11 @@
 !
       if    (check_field_list_ctl(rot_inertia_by_filtered%name,         &
      &        field_ctl))                                               &
-     &   call add_phys_name_ctl(fhd_inertia_by_filter, field_ctl)
+     &   call add_phys_name_ctl(inertia_by_filtered%name, field_ctl)
       if(check_field_list_ctl(rot_Lorentz_force_by_filtered%name,       &
      &        field_ctl))                                               &
-     &   call add_phys_name_ctl(fhd_Lorentz_by_filter, field_ctl)
+     &   call add_phys_name_ctl                                         &
+     &      (Lorentz_force_by_filtered%name, field_ctl)
 !
       if(check_field_list_ctl(rot_filtered_buoyancy%name,               &
      &        field_ctl))                                               &
@@ -54,7 +55,8 @@
 !
       if(check_field_list_ctl(magnetic_induction_by_filtered%name,      &
      &        field_ctl))                                               &
-     &   call add_phys_name_ctl(fhd_vp_induct_by_filter, field_ctl)
+     &   call add_phys_name_ctl                                         &
+     &      (vecp_induction_by_filtered%name, field_ctl)
 !
       end subroutine add_field_ctl_4_rot_fil_forces
 !
@@ -70,10 +72,11 @@
 !
       if(check_field_list_ctl(div_inertia_by_filtered%name,             &
      &        field_ctl))                                               &
-     &   call add_phys_name_ctl(fhd_inertia_by_filter, field_ctl)
+     &   call add_phys_name_ctl(inertia_by_filtered%name, field_ctl)
       if(check_field_list_ctl(div_Lorentz_force_by_filtered%name,       &
      &        field_ctl))                                               &
-     &   call add_phys_name_ctl(fhd_Lorentz_by_filter, field_ctl)
+     &   call add_phys_name_ctl                                         &
+     &      (Lorentz_force_by_filtered%name, field_ctl)
 !
       if(check_field_list_ctl(div_filtered_buoyancy%name,               &
      &        field_ctl))                                               &
@@ -84,30 +87,37 @@
 !
       if(check_field_list_ctl(div_vecp_induction_by_filtered%name,      &
      &        field_ctl))                                               &
-     &   call add_phys_name_ctl(fhd_vp_induct_by_filter, field_ctl)
+     &   call add_phys_name_ctl                                         &
+     &      (vecp_induction_by_filtered%name, field_ctl)
 !
       if(check_field_list_ctl(div_m_flux_by_filtered%name,              &
      &        field_ctl))                                               &
-     &   call add_phys_name_ctl(fhd_mom_flux_by_filter, field_ctl)
+     &   call add_phys_name_ctl                                         &
+     &      (momentum_flux_by_filtered%name, field_ctl)
       if(check_field_list_ctl(div_maxwell_t_by_filtered%name,           &
      &        field_ctl))                                               &
-     &   call add_phys_name_ctl(fhd_maxwell_by_filter, field_ctl)
+     &   call add_phys_name_ctl                                         &
+     &      (maxwell_tensor_by_filtered%name, field_ctl)
       if(check_field_list_ctl(div_induct_t_by_filtered%name,            &
      &        field_ctl))                                               &
-     &   call add_phys_name_ctl(fhd_induct_t_by_filter, field_ctl)
+     &   call add_phys_name_ctl                                         &
+     &      (induction_tensor_by_filtered%name, field_ctl)
 !
       if(check_field_list_ctl(div_h_flux_by_filtered%name,              &
      &        field_ctl))                                               &
-     &   call add_phys_name_ctl(fhd_h_flux_by_filter, field_ctl)
+     &   call add_phys_name_ctl(heat_flux_by_filtered%name, field_ctl)
       if(check_field_list_ctl(div_part_h_flux_by_filtered%name,         &
      &        field_ctl))                                               &
-     &   call add_phys_name_ctl(fhd_ph_flux_by_filter, field_ctl)
+     &   call add_phys_name_ctl                                         &
+     &      (part_h_flux_by_filtered%name, field_ctl)
       if(check_field_list_ctl(div_c_flux_by_filtered%name,              &
      &        field_ctl))                                               &
-     &   call add_phys_name_ctl(fhd_c_flux_by_filter, field_ctl)
+     &   call add_phys_name_ctl                                         &
+     &      (composite_flux_by_filtered%name, field_ctl)
       if(check_field_list_ctl(div_part_c_flux_by_filtered%name,         &
      &        field_ctl))                                               &
-     &   call add_phys_name_ctl(fhd_pc_flux_by_filter, field_ctl)
+     &   call add_phys_name_ctl                                         &
+     &      (part_c_flux_by_filtered%name, field_ctl)
 !
       end subroutine add_field_ctl_4_div_fil_forces
 !

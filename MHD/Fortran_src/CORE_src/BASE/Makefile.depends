@@ -86,7 +86,7 @@ m_filtered_ene_flux_labels.o: $(BASEDIR)/m_filtered_ene_flux_labels.f90 m_precis
 	$(F90) -c $(F90OPTFLAGS) $<
 m_filtered_field_labels.o: $(BASEDIR)/m_filtered_field_labels.f90 m_precision.o m_constants.o t_base_field_labels.o
 	$(F90) -c $(F90OPTFLAGS) $<
-m_filtered_force_labels.o: $(BASEDIR)/m_filtered_force_labels.f90 m_precision.o m_constants.o t_base_field_labels.o
+m_filtered_force_labels.o: $(BASEDIR)/m_filtered_force_labels.f90 m_precision.o m_phys_constants.o t_base_field_labels.o t_field_labels.o
 	$(F90) -c $(F90OPTFLAGS) $<
 m_force_w_SGS_labels.o: $(BASEDIR)/m_force_w_SGS_labels.f90 m_precision.o m_constants.o t_base_field_labels.o
 	$(F90) -c $(F90OPTFLAGS) $<

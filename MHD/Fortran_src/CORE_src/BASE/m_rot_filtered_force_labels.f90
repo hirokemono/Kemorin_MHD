@@ -4,7 +4,7 @@
 !!@author H. Matsui
 !!@date   Programmed on June, 2005
 !!
-!>@brief Labels of fields
+!> @brief Labels and addresses for rotation of forces by filtered field
 !!
 !!@verbatim
 !!      logical function check_rot_fil_force(field_name)
@@ -41,17 +41,21 @@
 !
 !  rotation of momentum equations
 !>        Field label for curl of advection
+!!         @f$-e_{ijk} \partial_{j}
+!!            \left(e_{klm} \tilde{\omega}_{l} \tilde{u}_{m} \right) @f$
       type(field_def), parameter :: rot_inertia_by_filtered             &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'rot_inertia_by_filtered',                 &
      &                math = '$ e_{ijk} \partial_{j}'                   &
-     &                // ' (e_{kkm} \tilde{\omega}_{l} \tilde{u}_{m}$')
+     &               // ' (e_{kkm} \tilde{\omega}_{l} \tilde{u}_{m})$')
 !>        Field label for curl of Lorentz force
+!!         @f$ e_{ijk} \partial_{j}
+!!            \left(e_{klm} \tilde{J}_{l} \tilde{B}_{m} \right) @f$
       type(field_def), parameter :: rot_Lorentz_force_by_filtered       &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'rot_Lorentz_force_by_filtered',           &
      &                math = '$ e_{ijk} \partial_{j}'                   &
-     &                    // '(e_{kkm} \tilde{J}_{l} \tilde{B}_{m}$')
+     &                    // '(e_{kkm} \tilde{J}_{l} \tilde{B}_{m})$')
 !
 !>        Field label for curl of filtered buoyancy
 !!        @f$ -e_{ijk} \partial_{j} \alpha_{T} \tilde{T} g_{k}$') @f$
@@ -68,7 +72,7 @@
      &                math = '$-e_{ijk} \partial_{j} \alpha_{C}'        &
      &                    // ' \tilde{C} g_{k}$')
 !
-!>        Field label for divergence of induction
+!>        Field label for magnetic induction
 !!        @f$ e_{ijk} \partial_{j}
 !!            (e_{klm} \tilde{u}_{l} \tilde{B}_{m}$ @f$
       type(field_def), parameter :: magnetic_induction_by_filtered      &
