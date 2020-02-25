@@ -288,8 +288,8 @@
      &     .or. i_fld .eq. iphys%i_lorentz                              &
      &     .or. i_fld .eq. iphys%i_buoyancy                             &
      &     .or. i_fld .eq. iphys%i_comp_buo                             &
-     &     .or. i_fld .eq. iphys%i_filter_buo                           &
-     &     .or. i_fld .eq. iphys%i_filter_comp_buo                      &
+     &     .or. i_fld .eq. iphys%force_by_filter%i_buoyancy             &
+     &     .or. i_fld .eq. iphys%force_by_filter%i_comp_buo             &
      &     .or. i_fld .eq. iphys%i_coriolis) then
           if(iflag_debug .ge. iflag_routine_msg)                        &
      &             write(*,*) 'lead  ', trim(nod_fld%phys_name(i))

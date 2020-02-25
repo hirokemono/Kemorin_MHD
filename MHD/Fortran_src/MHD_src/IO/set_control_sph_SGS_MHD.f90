@@ -235,6 +235,9 @@
         call add_field_name_4_SGS(SGS_param, field_ctl)
         call add_field_name_dynamic_SGS                                 &
      &     (SGS_param, MHD_prop%fl_prop, field_ctl)
+!
+        call add_dependent_field(field_ctl)
+!
         if (iflag_debug.eq.1) write(*,*)                                &
      &    'field_ctl%num after modified ', field_ctl%num
 !

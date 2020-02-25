@@ -133,12 +133,12 @@
      &                name = 'div_c_flux_by_filtered',                  &
      &                math = '$-\partial_{i} \tilde{u}_{i} \tilde{C}$')
 !>        Field label for divergence of perturbation of compopstion flux
-!!         @f$ -\partial_{i} \tilde{u}_{i} (\tilde{C}-C_{0}) @f$
+!!         @f$ -\partial_{i} \tilde{u}_{i} \tilde{\Theta}_{C} @f$
       type(field_def), parameter :: div_part_c_flux_by_filtered         &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'div_part_c_flux_by_filtered',             &
      &                math = '$-\partial_{i} \tilde{u}_{i}'             &
-     &                       //' (\tilde{C}-C_{0})$')
+     &                       //' \tilde{\Theta}_{C} $')
 !
 ! ----------------------------------------------------------------------
 !

@@ -173,16 +173,16 @@
       if(MHD_prop%fl_prop%iflag_4_filter_gravity .gt. id_turn_OFF) then
         call const_sph_div_force                                        &
      &     (sph_rj, r_2nd, sph_MHD_bc%sph_bc_U, g_sph_rj,               &
-     &      ipol%i_filter_buo, ipol%div_frc_by_filter%i_buoyancy,       &
-     &      rj_fld)
+     &      ipol%force_by_filter%i_buoyancy,                            &
+     &      ipol%div_frc_by_filter%i_buoyancy, rj_fld)
       end if
 !
       if(MHD_prop%fl_prop%iflag_4_filter_comp_buo                       &
      &                           .gt. id_turn_OFF) then
         call const_sph_div_force                                        &
      &     (sph_rj, r_2nd, sph_MHD_bc%sph_bc_U, g_sph_rj,               &
-     &      ipol%i_filter_comp_buo, ipol%div_frc_by_filter%i_comp_buo,  &
-     &      rj_fld)
+     &      ipol%force_by_filter%i_comp_buo,                            &
+     &      ipol%div_frc_by_filter%i_comp_buo, rj_fld)
       end if
 !
 !      call sel_div_buoyancies_sph_MHD(sph_rj, ipol,                    &

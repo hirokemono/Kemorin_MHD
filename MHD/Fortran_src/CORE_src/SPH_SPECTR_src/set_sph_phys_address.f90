@@ -151,10 +151,12 @@
      &    idpdr%i_buoyancy)
       call set_vect_sph_address(ipol%i_comp_buo, itor%i_comp_buo,       &
      &    idpdr%i_comp_buo)
-      call set_vect_sph_address(ipol%i_filter_buo, itor%i_filter_buo,   &
-     &    idpdr%i_filter_buo)
-      call set_vect_sph_address(ipol%i_filter_comp_buo,                 &
-     &    itor%i_filter_comp_buo, idpdr%i_filter_comp_buo)
+      call set_vect_sph_address(ipol%force_by_filter%i_buoyancy,        &
+     &    itor%force_by_filter%i_buoyancy,                              &
+     &    idpdr%force_by_filter%i_buoyancy)
+      call set_vect_sph_address(ipol%force_by_filter%i_comp_buo,        &
+     &    itor%force_by_filter%i_comp_buo,                              &
+     &    idpdr%force_by_filter%i_comp_buo)
 !
       call set_vect_sph_address(ipol%i_rot_inertia,                     &
      &    itor%i_rot_inertia, idpdr%i_rot_inertia)

@@ -123,7 +123,7 @@
       end if
 !
       if(fl_prop%iflag_4_filter_comp_buo .gt. id_turn_OFF) then
-        if (iflag_debug.ge.1)  write(*,*)                             &
+        if (iflag_debug.ge.1)  write(*,*)                               &
      &      'cal_div_buoyancy_sph_MHD by filtrered composition'
         call cal_div_buoyancy_sph_MHD                                   &
      &     (sph_bc_U%kr_in, sph_bc_U%kr_out, fl_prop%coef_comp_buo,     &

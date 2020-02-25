@@ -513,14 +513,15 @@
      &         (field_name, num_comps, iphys%i_comp_buo,                &
      &          i_rms%i_comp_buo, j_ave%i_comp_buo, msq_list)
           else if(field_name .eq. filtered_buoyancy%name) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_filter_buo,              &
-     &          i_rms%i_filter_buo, j_ave%i_filter_buo, msq_list)
+            call set_rms_address(field_name, num_comps,                 &
+     &          iphys%force_by_filter%i_buoyancy,                       &
+     &          i_rms%force_by_filter%i_buoyancy,                       &
+     &          j_ave%force_by_filter%i_buoyancy, msq_list)
           else if(field_name .eq. filtered_comp_buoyancy%name) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_filter_comp_buo,         &
-     &          i_rms%i_filter_comp_buo, j_ave%i_filter_comp_buo,       &
-     &          msq_list)
+            call set_rms_address(field_name, num_comps,                 &
+     &          iphys%force_by_filter%i_comp_buo,                       &
+     &          i_rms%force_by_filter%i_comp_buo,                       &
+     &          j_ave%force_by_filter%i_comp_buo, msq_list)
           end if
 !
           if ( field_name .eq. fhd_viscous ) then

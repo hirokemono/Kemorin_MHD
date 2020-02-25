@@ -5,9 +5,10 @@
 !! @date   Programmed in Jan., 2020
 !!
 !!
-!> @brief Labels and addresses for basic fields
+!> @brief Labels and addresses for filtered forces
 !!
 !!@verbatim
+!!      subroutine add_field_ctl_filterd_forces(field_ctl)
 !!      subroutine add_field_ctl_4_rot_fil_forces(field_ctl)
 !!      subroutine add_field_ctl_4_div_fil_forces(field_ctl)
 !!        type(ctl_array_c3), intent(inout) :: field_ctl
@@ -30,6 +31,81 @@
 !
 ! ----------------------------------------------------------------------
 !
+      subroutine add_field_ctl_filterd_forces(field_ctl)
+!
+      use add_nodal_fields_ctl
+!
+      type(ctl_array_c3), intent(inout) :: field_ctl
+!
+!
+      if(check_field_list_ctl(inertia_by_filtered%name,                 &
+     &                        field_ctl)) then
+         call add_phys_name_ctl(fhd_filter_velo, field_ctl)
+         call add_phys_name_ctl(fhd_filter_vort, field_ctl)
+      end if
+      if(check_field_list_ctl(momentum_flux_by_filtered%name,           &
+     &        field_ctl))                                               &
+     &   call add_phys_name_ctl(fhd_filter_velo, field_ctl)
+!
+      if(check_field_list_ctl(Lorentz_force_by_filtered%name,           &
+     &                        field_ctl)) then
+         call add_phys_name_ctl(fhd_filter_magne, field_ctl)
+         call add_phys_name_ctl(fhd_filter_current, field_ctl)
+      end if
+      if(     check_field_list_ctl(magnetic_tension_by_filtered%name,   &
+     &                             field_ctl)                           &
+     &   .or. check_field_list_ctl(maxwell_tensor_by_filtered%name,     &
+     &                             field_ctl)) then
+         call add_phys_name_ctl(fhd_filter_magne, field_ctl)
+      end if
+!
+      if(check_field_list_ctl(filtered_buoyancy%name, field_ctl))       &
+     &   call add_phys_name_ctl(fhd_filter_temp, field_ctl)
+      if(check_field_list_ctl(filtered_comp_buoyancy%name, field_ctl))  &
+     &   call add_phys_name_ctl(fhd_filter_comp, field_ctl)
+!
+      if(     check_field_list_ctl(vecp_induction_by_filtered%name,     &
+     &                             field_ctl)                           &
+     &   .or. check_field_list_ctl(magnetic_stretch_by_filtered%name,   &
+     &                             field_ctl)                           &
+     &   .or. check_field_list_ctl(induction_tensor_by_filtered%name,   &
+     &                             field_ctl)) then
+         call add_phys_name_ctl(fhd_filter_velo, field_ctl)
+         call add_phys_name_ctl(fhd_filter_magne, field_ctl)
+      end if
+!
+      if(check_field_list_ctl(heat_advect_by_filtered%name, field_ctl)  &
+     &   .or. check_field_list_ctl(heat_flux_by_filtered%name,          &
+     &                             field_ctl)) then
+         call add_phys_name_ctl(fhd_filter_velo, field_ctl)
+         call add_phys_name_ctl(fhd_filter_temp, field_ctl)
+      end if
+      if(     check_field_list_ctl(part_h_advect_by_filtered%name,      &
+     &                             field_ctl)                           &
+     &   .or. check_field_list_ctl(part_h_flux_by_filtered%name,        &
+     &                             field_ctl)) then
+         call add_phys_name_ctl(fhd_filter_velo, field_ctl)
+         call add_phys_name_ctl(fhd_filter_pert_temp, field_ctl)
+      end if
+!
+      if(check_field_list_ctl(comp_advect_by_filtered%name, field_ctl)  &
+     &   .or. check_field_list_ctl(composite_flux_by_filtered%name,     &
+     &                             field_ctl)) then
+         call add_phys_name_ctl(fhd_filter_velo, field_ctl)
+         call add_phys_name_ctl(fhd_filter_comp, field_ctl)
+      end if
+      if(     check_field_list_ctl(part_c_advect_by_filtered%name,      &
+     &                             field_ctl)                           &
+     &   .or. check_field_list_ctl(part_c_flux_by_filtered%name,        &
+     &                             field_ctl)) then
+         call add_phys_name_ctl(fhd_filter_velo, field_ctl)
+         call add_phys_name_ctl(fhd_filter_pert_comp, field_ctl)
+      end if
+!
+      end subroutine add_field_ctl_filterd_forces
+!
+! ----------------------------------------------------------------------
+!
       subroutine add_field_ctl_4_rot_fil_forces(field_ctl)
 !
       use m_rot_filtered_force_labels
@@ -48,10 +124,10 @@
 !
       if(check_field_list_ctl(rot_filtered_buoyancy%name,               &
      &        field_ctl))                                               &
-     &   call add_phys_name_ctl(fhd_filter_temp, field_ctl)
+     &   call add_phys_name_ctl(filtered_buoyancy%name, field_ctl)
       if(check_field_list_ctl(rot_filtered_comp_buoyancy%name,          &
      &        field_ctl))                                               &
-     &   call add_phys_name_ctl(fhd_filter_comp, field_ctl)
+     &   call add_phys_name_ctl(filtered_comp_buoyancy%name, field_ctl)
 !
       if(check_field_list_ctl(magnetic_induction_by_filtered%name,      &
      &        field_ctl))                                               &
@@ -80,10 +156,10 @@
 !
       if(check_field_list_ctl(div_filtered_buoyancy%name,               &
      &        field_ctl))                                               &
-     &   call add_phys_name_ctl(fhd_filter_temp, field_ctl)
+     &   call add_phys_name_ctl(filtered_buoyancy%name, field_ctl)
       if(check_field_list_ctl(div_filtered_comp_buoyancy%name,          &
      &        field_ctl))                                               &
-     &   call add_phys_name_ctl(fhd_filter_comp, field_ctl)
+     &   call add_phys_name_ctl(filtered_comp_buoyancy%name, field_ctl)
 !
       if(check_field_list_ctl(div_vecp_induction_by_filtered%name,      &
      &        field_ctl))                                               &

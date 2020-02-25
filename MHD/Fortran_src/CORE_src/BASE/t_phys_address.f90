@@ -304,9 +304,6 @@
 !>        start address for compositional buoyancy
 !!         @f$ -\alpha_{C} g_{i} C @f$
         integer (kind=kint) :: i_comp_buo =        izero
-!>        start address for filtered buoyancy
-!!         @f$ -\alpha_{C} g_{i} \tilde{T} @f$
-        integer (kind=kint) :: i_filter_buo =      izero
 !>        start address for magnetic induction
 !!         @f$ e_{ijk} \partial_{j}\left(e_{klm}u_{l}B_{m} \right)@f$
         integer (kind=kint) :: i_induction =       izero
@@ -811,12 +808,11 @@
         integer (kind=kint) :: i_back_B = izero
 !
 !
-!
-        integer (kind=kint) :: i_filter_comp_buo = izero
-!
-!>        structure of rotation of forces by filtered field
+!>        Structure of forces by filtered field
+        type(base_force_address) :: force_by_filter
+!>        Structure of rotation of forces by filtered field
         type(base_force_address) :: rot_frc_by_filter
-!>        structure of divergence of forces by filtered field
+!>        Structure of divergence of forces by filtered field
         type(base_force_address) :: div_frc_by_filter
       end type phys_address
 !

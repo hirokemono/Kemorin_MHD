@@ -38,24 +38,35 @@
 !
 ! -----------------------------------------------------------------------
 !
+      subroutine add_dependent_field(field_ctl)
+!
+      use check_diff_filter_forces
+!
+      type(ctl_array_c3), intent(inout) :: field_ctl
+!
+!
+      call add_field_ctl_4_rot_fil_forces(field_ctl)
+      if (iflag_debug .ge. iflag_routine_msg) write(*,*)                &
+     &    'add_field_ctl_4_rot_fil_forces end'
+      call add_field_ctl_4_div_fil_forces(field_ctl)
+      if (iflag_debug .ge. iflag_routine_msg) write(*,*)                &
+     &    'add_field_ctl_4_div_fil_forces end'
+!
+      call add_field_ctl_filterd_forces(field_ctl)
+      if (iflag_debug .ge. iflag_routine_msg) write(*,*)                &
+     &    'add_field_ctl_filterd_forces end'
+!
+      end subroutine add_dependent_field
+!
+! -----------------------------------------------------------------------
+!
       subroutine add_field_name_4_mhd(MHD_prop, field_ctl)
 !
       use t_control_array_character3
       use t_reference_scalar_param
 !
-      use check_diff_filter_forces
-!
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(ctl_array_c3), intent(inout) :: field_ctl
-!
-!     add terms by field list
-!
-      call add_field_ctl_4_rot_fil_forces(field_ctl)
-          if (iflag_debug .ge. iflag_routine_msg) write(*,*)            &
-     &    'add_field_ctl_4_rot_fil_forces end'
-      call add_field_ctl_4_div_fil_forces(field_ctl)
-        if (iflag_debug .ge. iflag_routine_msg) write(*,*)              &
-     &    'add_field_ctl_4_div_fil_forces end'
 !
 !
 !    set work fields for potentials

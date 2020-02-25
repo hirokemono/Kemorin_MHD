@@ -119,7 +119,8 @@
       character(len=kchara), parameter :: fhd_comp_gen_by_filter        &
      &                      =   'comp_generation_by_filtered'
 !>        Field label of perturbation composition flux
-!!         @f$ (C - C_0) (u_{i} \partial_{i}) (C - C_0) @f$
+!!         @f$ \tilde{\Theta}_{C} (u_{i} \partial_{i}) 
+!!            \tilde{\Theta}_{C} @f$
       character(len=kchara), parameter :: fhd_part_comp_gen_by_filter   &
      &                      =     'part_comp_gen_by_filtered'
 !
