@@ -1,5 +1,5 @@
-!>@file   check_diff_filter_forces.f90
-!!        module check_diff_filter_forces
+!>@file   check_filtered_forces.f90
+!!        module check_filtered_forces
 !!
 !! @author H. Matsui
 !! @date   Programmed in Jan., 2020
@@ -14,7 +14,7 @@
 !!        type(ctl_array_c3), intent(inout) :: field_ctl
 !!@endverbatim
 !!
-      module check_diff_filter_forces
+      module check_filtered_forces
 !
       use m_precision
       use m_constants
@@ -199,4 +199,4 @@
 !
 ! ----------------------------------------------------------------------
 !
-      end module check_diff_filter_forces
+      end module check_filtered_forces

@@ -40,7 +40,7 @@
 !
       subroutine add_dependent_field(field_ctl)
 !
-      use check_diff_filter_forces
+      use check_filtered_forces
 !
       type(ctl_array_c3), intent(inout) :: field_ctl
 !
