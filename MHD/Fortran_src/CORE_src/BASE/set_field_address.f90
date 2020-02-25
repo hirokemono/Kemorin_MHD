@@ -165,9 +165,10 @@
           iphys%i_buo_gen =   i0
         else if (field_name(i) .eq. fhd_comp_buo_flux) then
           iphys%i_c_buo_gen = i0
-        else if (field_name(i) .eq. fhd_filter_buo_flux) then
+        else if (field_name(i) .eq. filtered_buoyancy_flux%name) then
           iphys%i_f_buo_gen = i0
-        else if (field_name(i) .eq. fhd_filter_comp_buo_flux) then
+        else if (field_name(i) .eq. filtered_comp_buoyancy_flux%name)   &
+     &   then
           iphys%i_f_comp_buo_gen = i0
         else if (field_name(i) .eq. fhd_vis_ene_diffuse) then
           iphys%i_vis_e_diffuse = i0

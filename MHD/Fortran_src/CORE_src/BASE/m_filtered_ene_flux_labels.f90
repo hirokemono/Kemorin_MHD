@@ -5,54 +5,31 @@
 !! @date   Programmed in Jan., 2020
 !!
 !!
-!> @brief Labels and addresses for basic forces
+!> @brief Labels and addresses for energy fluxes by filtered field
 !!
 !!@verbatim
-!!      logical function check_enegy_fluxes(field_name)
-!!      subroutine set_enegy_fluxe_addresses                            &
-!!     &         (i_phys, field_name, base_force, flag)
-!!        type(energy_flux_address), intent(inout) :: ene_flux
+!!      integer(kind = kint) function num_filtered_ene_fluxes()
+!!      subroutine set_filtered_ene_flax_labels(n_comps, names, maths)
 !!
-!!      subroutine energy_fluxes_monitor_address                        &
-!!     &         (field_name, i_field, numrms, numave,                  &
-!!     &          rms_ene_flux, ave_ene_flux, flag)
-!!        type(energy_flux_address), intent(inout) :: rms_ene_flux
-!!        type(energy_flux_address), intent(inout) :: ave_ene_flux
-!!
-!!      integer(kind = kint) function num_energy_fluxes()
-!!      subroutine set_energy_flux_names(field_names)
 !! !!!!!  Base field names  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!
-!! field names 
+!!    Field name [Address]
 !!
-!!   inertia_work_by_filtered:  Work of Reynolds stress
-!!                             u \cdot (\omega \times u)
-!!   Lorentz_work_by_filtered:  Work of Lorentz force
-!!                             u \cdot (J \times B)
-!!   work_against_Lorentz_by_filtered:  Work against Lorentz force
-!!                                           -u \cdot (J \times B)
-!!   mag_tension_work_by_filtered: Work of magnetic tension
-!!                                            u \cdot( (B \nabla) B)
-!!   filtered_buoyancy_flux:       Thermal buoyancy flux
-!!                                           -u \cdot (\alpha_{T} g T)
-!!   filtered_comp_buoyancy_flux: Compositional buoyancy flux
-!!                                           -u \cdot (\alpha_{C} g C)
+!!   inertia_work_by_filtered          [eflux_by_filter%i_m_advect]
+!!   wk_against_Lorentz_by_filtered    [eflux_by_filter%i_lorentz]
+!!   Lorentz_work_by_filtered          [eflux_by_filter%i_lorentz]
+!!   mag_tension_work_by_filtered      [eflux_by_filter%i_m_tension]
 !!
-!!   magnetic_ene_generation_by_filtered:
-!!                    energy flux by magneitic induction
-!!                              B \cdot (\nabla \times (u \times B))
-!!   magnetic_stretch_flux_by_filtered:
-!!                    energy flux by magneitic streatch 
-!!                              B \cdot ((B \nabla) u)
+!!   filtered_buoyancy_flux            [eflux_by_filter%i_buoyancy]
+!!   filtered_comp_buoyancy_flux       [eflux_by_filter%i_comp_buo]
 !!
-!!   temp_generation_by_filtered: heat advection flux
-!!                              T (u \cdot \nabla) T
-!!   part_temp_gen_by_filtered:  perturbation of heat advection flux
-!!                                     \Theta (u \cdot \nabla) \Theta
-!!   comp_generation_by_filtered:    composition advection flux 
-!!                                     C (u \cdot \nabla) C
-!!   part_comp_gen_by_filtered: 
-!!                perturbation of composition advection flux
+!!   mag_ene_generation_by_filtered    [eflux_by_filter%i_induction]
+!!   mag_stretch_flux_by_filtered      [eflux_by_filter%i_mag_stretch]
+!!
+!!   temp_generation_by_filtered       [eflux_by_filter%i_h_advect]
+!!   part_temp_gen_by_filtered         [eflux_by_filter%i_ph_advect]
+!!   comp_generation_by_filtered       [eflux_by_filter%i_c_advect]
+!!   part_comp_gen_by_filtered         [eflux_by_filter%i_pc_advect]
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!@endverbatim
@@ -60,68 +37,153 @@
       module m_filtered_ene_flux_labels
 !
       use m_precision
-      use m_constants
+      use m_phys_constants
       use t_base_field_labels
       use t_base_force_labels
+      use t_field_labels
 !
       implicit  none
 ! 
 !
-      integer(kind = kint), parameter, private                          &
-     &                   :: nene_flux_by_filtered = 11
+      integer(kind = kint), parameter, private :: neflux_by_filter = 12
 !
 !>        Field label of work of inertia
-!!         @f$ u_{i} (u_{j} \partial_{j} u_{i}) @f$
-      character(len=kchara), parameter :: fhd_inertia_work_by_filter    &
-     &                      = 'inertia_work_by_filtered'
+!!         @f$ u_{i} (\tilde{u}_{j} \partial_{j} \tilde{u}_{i}) @f$,
+!!         @f$ u_{i} (e_{ijk} \tilde{\omega}_{j} \tilde{u}_{k}) @f$
+      type(field_def), parameter :: inertia_work_by_filtered            &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                name = 'inertia_work_by_filtered',                &
+     &                math = '$ u_{i} (e_{ijk}'                         &
+     &                     //  ' \tilde{\omega}_{j} \tilde{u}_{k})$')
 !
 !>        Field label of work against Lorentz force
-!!         @f$ - u_{i} \left( e_{ijk} J_{j} B_{k} \right) @f$
-      character(len=kchara), parameter :: fhd_wk_agst_Lorentz_by_filter &
-     &                      = 'work_against_Lorentz_by_filtered'
+!!         @f$ - u_{i} (e_{ijk} \tilde{J}_{j} \tilde{B}_{k}) @f$
+      type(field_def), parameter :: wk_against_Lorentz_by_filtered      &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                name = 'wk_against_Lorentz_by_filtered',          &
+     &         math = '$ u_{i} (e_{ijk} \tilde{J}_{j} \tilde{B}_{k})$')
 !>        Field label of work of Lorentz force
-!!         @f$ u_{i} \left( e_{ijk} J_{j} B_{k} \right) @f$
-      character(len=kchara), parameter :: fhd_Lorentz_work_by_filter    &
-     &                      = 'Lorentz_work_by_filtered'
+!!         @f$ u_{i} (e_{ijk} \tilde{J}_{j} \tilde{B}_{k}) @f$
+      type(field_def), parameter :: Lorentz_work_by_filtered            &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                name = 'Lorentz_work_by_filtered',                &
+     &         math = '$ u_{i} (e_{ijk} \tilde{J}_{j} \tilde{B}_{k})$')
 !>        Field address of work of magnetic tension
-!!         @f$ u_{i} (B_{j} \partial_{j}) B_{i} @f$
-      character(len=kchara), parameter :: fhd_m_tension_work_by_filter  &
-     &                      = 'mag_tension_work_by_filtered'
+!!         @f$ u_{i} (\tilde{B}_{j} \partial_{j}) \tilde{B}_{i} @f$
+      type(field_def), parameter :: mag_tension_work_by_filtered        &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                name = 'mag_tension_work_by_filtered',            &
+     &                math = '$ u_{i} (\tilde{B}_{j} \partial_{j}) '    &
+     &                    // ' \tilde{B}_{i} $')
 !
 !>        Field label for filtered buoyancy flux
-!!         @f$ -u_{i} \alpha_{c} g_{i} \tilde{T} @f$
-      character(len=kchara), parameter :: fhd_filter_buo_flux           &
-     &                      =   'filtered_buoyancy_flux'
+!!         @f$ -u_{i} \alpha_{T} g_{i} \tilde{T} @f$
+      type(field_def), parameter :: filtered_buoyancy_flux              &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                name = 'filtered_buoyancy_flux',                  &
+     &                math = '$ -u_{i} \alpha_{T} g_{i} \tilde{T} $')
 !>        Field label of compositional buoyancy flux
-!!         @f$ -u_{i} \alpha_{c} g_{i} \tilde{C} @f$
-      character(len=kchara), parameter :: fhd_filter_comp_buo_flux      &
-     &                      = 'filtered_comp_buoyancy_flux'
-!!
+!!         @f$ -u_{i} \alpha_{C} g_{i} \tilde{C} @f$
+      type(field_def), parameter :: filtered_comp_buoyancy_flux         &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                name = 'filtered_comp_buoyancy_flux',             &
+     &                math = '$ -u_{i} \alpha_{C} g_{i} \tilde{C} $')
+!
 !>        Field label of magnetic energy flux
-!>       @f$ B_{i}e_{ijk} \partial_{j} \left(e_{klm}u_{l}B_{m}\right) @f$
-      character(len=kchara), parameter :: fhd_mag_ene_gen_by_filter     &
-     &                      = 'magnetic_ene_generation_by_filtered'
+!!         @f$ B_{i} e_{ijk} \partial_{j}
+!!            (e_{klm} \tilde{u}_{l} \tilde{B}_{m}) @f$
+      type(field_def), parameter :: mag_ene_generation_by_filtered      &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                name = 'mag_ene_generation_by_filtered',          &
+     &                math = '$ B_{i} e_{ijk} \partial_{j} '            &
+     &                   // ' (e_{klm} \tilde{u}_{l} \tilde{B}_{m}) $')
 !>        Field label of energy flux of magnetic stretch term
-!!       @f$ u_{i} \left(B_{i} \partial_{k} u_{k} \right)@f$
-      character(len=kchara), parameter :: fhd_m_stretch_flux_by_filter  &
-     &                      = 'magnetic_stretch_flux_by_filtered'
+!!          @f$ B_{i} (\tilde{B}_{i} \partial_{k} \tilde{u}_{k}) @f$
+      type(field_def), parameter :: mag_stretch_flux_by_filtered        &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                name = 'mag_stretch_flux_by_filtered',            &
+     &                math = '$ B_{i} '                                 &
+     &              // ' (\tilde{B}_{i} \partial_{k} \tilde{u}_{k}) $')
 !
 !>        Field label of temperature flux
-!!         @f$ T (u_{i} \partial_{i}) T @f$
-      character(len=kchara), parameter :: fhd_temp_gen_by_filter        &
-     &                      =   'temp_generation_by_filtered'
+!!         @f$ T (\tilde{u}_{i} \partial_{i}) \tilde{T} @f$
+      type(field_def), parameter :: temp_generation_by_filtered         &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                name = 'temp_generation_by_filtered',             &
+     &          math = '$ T (\tilde{u}_{i} \partial_{i}) \tilde{T} $')
 !>        Field label of perturbation temperature flux
-!!         @f$ \Theta (u_{i} \partial_{i}) \Theta @f$
-      character(len=kchara), parameter :: fhd_part_temp_gen_by_filter   &
-     &                      =     'part_temp_gen_by_filtered'
+!!         @f$ \Theta (\tilde{u}_{i} \partial_{i}) \tilde{\Theta} @f$
+      type(field_def), parameter :: part_temp_gen_by_filtered           &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                name = 'part_temp_gen_by_filtered',               &
+     &                math = '$ \Theta (\tilde{u}_{i} \partial_{i})'    &
+     &                    // ' \tilde{\Theta} $')
 !>        Field label of composition flux
-!!         @f$ C (u_{i} \partial_{i}) @f$
-      character(len=kchara), parameter :: fhd_comp_gen_by_filter        &
-     &                      =   'comp_generation_by_filtered'
+!!         @f$ C (\tilde{u}_{i} \partial_{i}) \tilde{C} @f$
+      type(field_def), parameter :: comp_generation_by_filtered         &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                name = 'comp_generation_by_filtered',             &
+     &           math = '$ C (\tilde{u}_{i} \partial_{i}) \tilde{C} $')
 !>        Field label of perturbation composition flux
-!!         @f$ \tilde{\Theta}_{C} (u_{i} \partial_{i}) 
+!!         @f$ \Theta_{C} (\tilde{u}_{i} \partial_{i})
 !!            \tilde{\Theta}_{C} @f$
-      character(len=kchara), parameter :: fhd_part_comp_gen_by_filter   &
-     &                      =     'part_comp_gen_by_filtered'
+      type(field_def), parameter :: part_comp_gen_by_filtered           &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                name = 'part_comp_gen_by_filtered',               &
+     &                math = '$ \Theta_{C}(\tilde{u}_{i} \partial_{i})' &
+     &                    // ' \tilde{\Theta}_{C} $')
+!
+! ----------------------------------------------------------------------
+!
+      contains
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+! 
+      integer(kind = kint) function num_filtered_ene_fluxes()
+      num_filtered_ene_fluxes = neflux_by_filter
+      return
+      end function num_filtered_ene_fluxes
+!
+! ----------------------------------------------------------------------
+!
+      subroutine set_filtered_ene_flax_labels(n_comps, names, maths)
+!
+      integer(kind = kint), intent(inout) :: n_comps(neflux_by_filter)
+      character(len = kchara), intent(inout) :: names(neflux_by_filter)
+      character(len = kchara), intent(inout) :: maths(neflux_by_filter)
+!
+!
+      call set_field_labels(inertia_work_by_filtered,                   &
+     &    n_comps( 1), names( 1), maths( 1))
+      call set_field_labels(wk_against_Lorentz_by_filtered,             &
+     &    n_comps( 2), names( 2), maths( 2))
+      call set_field_labels(Lorentz_work_by_filtered,                   &
+     &    n_comps( 3), names( 3), maths( 3))
+      call set_field_labels(mag_tension_work_by_filtered,               &
+     &    n_comps( 4), names( 4), maths( 4))
+!
+      call set_field_labels(filtered_buoyancy_flux,                     &
+     &    n_comps( 5), names( 5), maths( 5))
+      call set_field_labels(filtered_comp_buoyancy_flux,                &
+     &    n_comps( 6), names( 6), maths( 6))
+!
+      call set_field_labels(mag_ene_generation_by_filtered,             &
+     &    n_comps( 7), names( 7), maths( 7))
+      call set_field_labels(mag_stretch_flux_by_filtered,               &
+     &    n_comps( 8), names( 8), maths( 8))
+!
+      call set_field_labels(temp_generation_by_filtered,                &
+     &    n_comps( 9), names( 9), maths( 9))
+      call set_field_labels(part_temp_gen_by_filtered,                  &
+     &    n_comps(10), names(10), maths(10))
+      call set_field_labels(comp_generation_by_filtered,                &
+     &    n_comps(11), names(11), maths(11))
+      call set_field_labels(part_comp_gen_by_filtered,                  &
+     &    n_comps(12), names(12), maths(12))
+!
+      end subroutine set_filtered_ene_flax_labels
+!
+! ----------------------------------------------------------------------
 !
       end module m_filtered_ene_flux_labels

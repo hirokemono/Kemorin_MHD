@@ -314,7 +314,8 @@
      &   .or. (phys_nod_name_ctl .eq. fhd_mag_tension_work    )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_buoyancy_flux       )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_comp_buo_flux       )         &
-     &   .or. (phys_nod_name_ctl .eq. fhd_filter_buo_flux     )         &
+     &   .or. (phys_nod_name_ctl .eq. filtered_buoyancy_flux%name)      &
+     &   .or. (phys_nod_name_ctl .eq. filtered_comp_buoyancy_flux%name) &
      &   .or. (phys_nod_name_ctl .eq. fhd_div_SGS_h_flux      )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_div_SGS_c_flux      )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_SGS_m_ene_gen       )         &

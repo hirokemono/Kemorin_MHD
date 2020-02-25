@@ -106,11 +106,11 @@
      &    ipol%i_c_buo_gen, itor%i_c_buo_gen, iphys%i_c_buo_gen,        &
      &    f_trns%i_c_buo_gen, trns_fwd)
       call add_field_name_4_sph_trns_snap                               &
-     &   (fhd_filter_buo_flux, n_scalar,                                &
+     &   (filtered_buoyancy_flux%name, n_scalar,                        &
      &    ipol%i_f_buo_gen, itor%i_f_buo_gen, iphys%i_f_buo_gen,        &
      &    f_trns%i_f_buo_gen, trns_fwd)
       call add_field_name_4_sph_trns_snap                               &
-     &   (fhd_filter_comp_buo_flux, n_scalar,                           &
+     &   (filtered_comp_buoyancy_flux%name, n_scalar,                   &
      &    ipol%i_f_comp_buo_gen, itor%i_f_comp_buo_gen,                 &
      &    iphys%i_f_comp_buo_gen, f_trns%i_f_comp_buo_gen, trns_fwd)
 !

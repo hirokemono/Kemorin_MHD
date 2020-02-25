@@ -34,9 +34,9 @@
 !!   div_induct_t_by_filtered          [div_frc_by_filter%i_induct_t]
 !!
 !!   div_h_flux_by_filtered            [div_frc_by_filter%i_h_flux]
-!!   div_part_h_flux_by_filtered       [div_frc_by_filter%i_ph_flux]
+!!   div_pert_h_flux_by_filtered       [div_frc_by_filter%i_ph_flux]
 !!   div_c_flux_by_filtered            [div_frc_by_filter%i_c_flux]
-!!   div_part_c_flux_by_filtered       [div_frc_by_filter%i_pc_flux]
+!!   div_pert_c_flux_by_filtered       [div_frc_by_filter%i_pc_flux]
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!@endverbatim
@@ -120,9 +120,9 @@
      &                math = '$-\partial_{i} \tilde{u}_{i} \tilde{T}$')
 !>        Field label for divergence of perturbation of heat flux
 !!         @f$ \partial_{i} ( \tilde{u}_{i} \tilde{\Theta} ) @f$
-      type(field_def), parameter :: div_part_h_flux_by_filtered         &
+      type(field_def), parameter :: div_pert_h_flux_by_filtered         &
      &    = field_def(n_comp = n_scalar,                                &
-     &                name = 'div_part_h_flux_by_filtered',             &
+     &                name = 'div_pert_h_flux_by_filtered',             &
      &                math = '$-\partial_{i} \tilde{u}_{i}'             &
      &                       //' \tilde{\Therta}$')
 !
@@ -134,9 +134,9 @@
      &                math = '$-\partial_{i} \tilde{u}_{i} \tilde{C}$')
 !>        Field label for divergence of perturbation of compopstion flux
 !!         @f$ -\partial_{i} \tilde{u}_{i} \tilde{\Theta}_{C} @f$
-      type(field_def), parameter :: div_part_c_flux_by_filtered         &
+      type(field_def), parameter :: div_pert_c_flux_by_filtered         &
      &    = field_def(n_comp = n_scalar,                                &
-     &                name = 'div_part_c_flux_by_filtered',             &
+     &                name = 'div_pert_c_flux_by_filtered',             &
      &                math = '$-\partial_{i} \tilde{u}_{i}'             &
      &                       //' \tilde{\Theta}_{C} $')
 !
@@ -183,9 +183,9 @@
 !
       check_div_fil_scl_flux                                            &
      &   =    (field_name .eq. div_h_flux_by_filtered%name)             &
-     &   .or. (field_name .eq. div_part_h_flux_by_filtered%name)        &
+     &   .or. (field_name .eq. div_pert_h_flux_by_filtered%name)        &
      &   .or. (field_name .eq. div_c_flux_by_filtered%name)             &
-     &   .or. (field_name .eq. div_part_c_flux_by_filtered%name)
+     &   .or. (field_name .eq. div_pert_c_flux_by_filtered%name)
 !
       end function check_div_fil_scl_flux
 !
@@ -223,12 +223,12 @@
 !
         else if (field_name .eq. div_h_flux_by_filtered%name) then
           div_frc_by_filter%i_h_flux =    i_phys
-        else if (field_name .eq. div_part_h_flux_by_filtered%name) then
+        else if (field_name .eq. div_pert_h_flux_by_filtered%name) then
           div_frc_by_filter%i_ph_flux =   i_phys
 !
         else if (field_name .eq. div_c_flux_by_filtered%name) then
           div_frc_by_filter%i_c_flux =    i_phys
-        else if (field_name .eq. div_part_c_flux_by_filtered%name) then
+        else if (field_name .eq. div_pert_c_flux_by_filtered%name) then
           div_frc_by_filter%i_pc_flux =   i_phys
 !
         else if (field_name .eq. div_m_flux_by_filtered%name) then
@@ -283,11 +283,11 @@
 !
       call set_field_labels(div_h_flux_by_filtered,                     &
      &    n_comps( 9), names( 9), maths( 9))
-      call set_field_labels(div_part_h_flux_by_filtered,                &
+      call set_field_labels(div_pert_h_flux_by_filtered,                &
      &    n_comps(10), names(10), maths(10))
       call set_field_labels(div_c_flux_by_filtered,                     &
      &    n_comps(11), names(11), maths(11))
-      call set_field_labels(div_part_c_flux_by_filtered,                &
+      call set_field_labels(div_pert_c_flux_by_filtered,                &
      &    n_comps(12), names(12), maths(12))
 !
       end subroutine set_div_filtered_force_labels

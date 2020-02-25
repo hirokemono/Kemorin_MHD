@@ -32,18 +32,18 @@
 !!   magnetic_stretch_by_filtered  [force_by_filter%i_mag_stretch]
 !!
 !!   heat_advect_by_filtered       [force_by_filter%i_h_advect]
-!!   part_h_advect_by_filtered     [force_by_filter%i_ph_advect]
+!!   pert_h_advect_by_filtered     [force_by_filter%i_ph_advect]
 !!   comp_advect_by_filtered       [force_by_filter%i_c_advect]
-!!   part_c_advect_by_filtered     [force_by_filter%i_pc_advect]
+!!   pert_c_advect_by_filtered     [force_by_filter%i_pc_advect]
 !!
 !!   momentum_flux_by_filtered     [force_by_filter%i_m_flux]
 !!   maxwell_tensor_by_filtered    [force_by_filter%i_maxwell]
 !!   induction_tensor_by_filtered  [force_by_filter%i_induct_t]
 !!
 !!   heat_flux_by_filtered         [force_by_filter%i_h_flux]
-!!   part_h_flux_by_filtered       [force_by_filter%i_ph_flux]
+!!   pert_h_flux_by_filtered       [force_by_filter%i_ph_flux]
 !!   composite_flux_by_filtered    [force_by_filter%i_c_flux]
-!!   part_c_flux_by_filtered       [force_by_filter%i_pc_flux]
+!!   pert_c_flux_by_filtered       [force_by_filter%i_pc_flux]
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!@endverbatim
@@ -133,9 +133,9 @@
      &              math = '$ \tilde{u}_{i} \partial_{i} \tilde{T} $')
 !>        Field label for advection for perturbation of temperature
 !!         @f$ \tilde{u}_{i} \partial_{i} \tilde{\Theta} @f$
-      type(field_def), parameter :: part_h_advect_by_filtered           &
+      type(field_def), parameter :: pert_h_advect_by_filtered           &
      &    = field_def(n_comp = n_scalar,                                &
-     &                name = 'part_h_advect_by_filtered',               &
+     &                name = 'pert_h_advect_by_filtered',               &
      &          math = '$ \tilde{u}_{i} \partial_{i} \tilde{\Theta} $')
 !>        Field label for heat flux
 !!         @f$ \tilde{u}_{i} \tilde{T} @f$
@@ -145,9 +145,9 @@
      &                math = '$ \tilde{u}_{i} \tilde{T} $')
 !>        Field label for perturbation of heat flux
 !!         @f$ \tilde{u}_{i} \tilde{\Theta} @f$
-      type(field_def), parameter :: part_h_flux_by_filtered             &
+      type(field_def), parameter :: pert_h_flux_by_filtered             &
      &    = field_def(n_comp = n_vector,                                &
-     &                name = 'part_h_flux_by_filtered',                 &
+     &                name = 'pert_h_flux_by_filtered',                 &
      &                math = '$ \tilde{u}_{i} \tilde{\Theta} $')
 !
 !>        Field label for advection for composition
@@ -158,9 +158,9 @@
      &              math = '$ \tilde{u}_{i} \partial_{i} \tilde{C} $')
 !>        Field label for advection for perturbation of composition
 !!         @f$ \tilde{u}_{i} \partial_{i} \tilde{\Theta}_{C} @f$
-      type(field_def), parameter :: part_c_advect_by_filtered           &
+      type(field_def), parameter :: pert_c_advect_by_filtered           &
      &    = field_def(n_comp = n_scalar,                                &
-     &                name = 'part_c_advect_by_filtered',               &
+     &                name = 'pert_c_advect_by_filtered',               &
      &      math = '$ \tilde{u}_{i} \partial_{i} \tilde{\Theta}_{C} $')
 !>        Field label for compositinoal flux
 !!         @f$ \tilde{u}_{i} \tilde{C} @f$
@@ -170,9 +170,9 @@
      &                math = '$ \tilde{u}_{i} \tilde{C} $')
 !>        Field label for perturbation of composition flux
 !!         @f$ \tilde{u}_{i} \tilde{\Theta}_{C} @f$
-      type(field_def), parameter :: part_c_flux_by_filtered             &
+      type(field_def), parameter :: pert_c_flux_by_filtered             &
      &    = field_def(n_comp = n_vector,                                &
-     &                name = 'part_c_flux_by_filtered',                 &
+     &                name = 'pert_c_flux_by_filtered',                 &
      &                math = '$ \tilde{u}_{i} \tilde{\Theta}_{C} $')
 !
 ! ----------------------------------------------------------------------
@@ -199,9 +199,9 @@
      &   .or. (field_name .eq. induction_tensor_by_filtered%name)       &
 !
      &   .or. (field_name .eq. heat_flux_by_filtered%name)              &
-     &   .or. (field_name .eq. part_h_flux_by_filtered%name)            &
+     &   .or. (field_name .eq. pert_h_flux_by_filtered%name)            &
      &   .or. (field_name .eq. composite_flux_by_filtered%name)         &
-     &   .or. (field_name .eq. part_c_flux_by_filtered%name)
+     &   .or. (field_name .eq. pert_c_flux_by_filtered%name)
 !
       end function check_filtered_force
 !
@@ -227,9 +227,9 @@
 !
       check_filtered_scallar_flux                                       &
      &   =    (field_name .eq. heat_advect_by_filtered%name)            &
-     &   .or. (field_name .eq. part_h_advect_by_filtered%name)          &
+     &   .or. (field_name .eq. pert_h_advect_by_filtered%name)          &
      &   .or. (field_name .eq. comp_advect_by_filtered%name)            &
-     &   .or. (field_name .eq. part_c_advect_by_filtered%name)
+     &   .or. (field_name .eq. pert_c_advect_by_filtered%name)
 !
       end function check_filtered_scallar_flux
 !
@@ -269,20 +269,20 @@
 !
         else if (field_name .eq. heat_advect_by_filtered%name) then
           force_by_filter%i_h_advect =    i_phys
-        else if (field_name .eq. part_h_advect_by_filtered%name) then
+        else if (field_name .eq. pert_h_advect_by_filtered%name) then
           force_by_filter%i_ph_advect =   i_phys
         else if (field_name .eq. comp_advect_by_filtered%name) then
           force_by_filter%i_c_advect =    i_phys
-        else if (field_name .eq. part_c_advect_by_filtered%name) then
+        else if (field_name .eq. pert_c_advect_by_filtered%name) then
           force_by_filter%i_pc_advect =   i_phys
 !
         else if (field_name .eq. heat_flux_by_filtered%name) then
           force_by_filter%i_h_flux =    i_phys
-        else if (field_name .eq. part_h_flux_by_filtered%name) then
+        else if (field_name .eq. pert_h_flux_by_filtered%name) then
           force_by_filter%i_ph_flux =   i_phys
         else if (field_name .eq. composite_flux_by_filtered%name) then
           force_by_filter%i_c_flux =    i_phys
-        else if (field_name .eq. part_c_flux_by_filtered%name) then
+        else if (field_name .eq. pert_c_flux_by_filtered%name) then
           force_by_filter%i_pc_flux =   i_phys
 !
         else if(field_name .eq. momentum_flux_by_filtered%name) then
@@ -332,11 +332,11 @@
 !
       call set_field_labels(heat_advect_by_filtered,                    &
      &    n_comps( 8), names( 8), maths( 8))
-      call set_field_labels(part_h_advect_by_filtered,                  &
+      call set_field_labels(pert_h_advect_by_filtered,                  &
      &    n_comps( 9), names( 9), maths( 9))
       call set_field_labels(comp_advect_by_filtered,                    &
      &    n_comps(10), names(10), maths(10))
-      call set_field_labels(part_c_advect_by_filtered,                  &
+      call set_field_labels(pert_c_advect_by_filtered,                  &
      &    n_comps(11), names(11), maths(11))
 !
       call set_field_labels(momentum_flux_by_filtered,                  &
@@ -348,11 +348,11 @@
 !
       call set_field_labels(heat_flux_by_filtered,                      &
      &    n_comps(15), names(15), maths(15))
-      call set_field_labels(part_h_flux_by_filtered,                    &
+      call set_field_labels(pert_h_flux_by_filtered,                    &
      &    n_comps(16), names(16), maths(16))
       call set_field_labels(composite_flux_by_filtered,                 &
      &    n_comps(17), names(17), maths(17))
-      call set_field_labels(part_c_flux_by_filtered,                    &
+      call set_field_labels(pert_c_flux_by_filtered,                    &
      &    n_comps(18), names(18), maths(18))
 !
       end subroutine set_filtered_force_labels

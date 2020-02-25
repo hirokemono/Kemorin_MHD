@@ -80,9 +80,9 @@
          call add_phys_name_ctl(fhd_filter_velo, field_ctl)
          call add_phys_name_ctl(fhd_filter_temp, field_ctl)
       end if
-      if(     check_field_list_ctl(part_h_advect_by_filtered%name,      &
+      if(     check_field_list_ctl(pert_h_advect_by_filtered%name,      &
      &                             field_ctl)                           &
-     &   .or. check_field_list_ctl(part_h_flux_by_filtered%name,        &
+     &   .or. check_field_list_ctl(pert_h_flux_by_filtered%name,        &
      &                             field_ctl)) then
          call add_phys_name_ctl(fhd_filter_velo, field_ctl)
          call add_phys_name_ctl(fhd_filter_pert_temp, field_ctl)
@@ -94,9 +94,9 @@
          call add_phys_name_ctl(fhd_filter_velo, field_ctl)
          call add_phys_name_ctl(fhd_filter_comp, field_ctl)
       end if
-      if(     check_field_list_ctl(part_c_advect_by_filtered%name,      &
+      if(     check_field_list_ctl(pert_c_advect_by_filtered%name,      &
      &                             field_ctl)                           &
-     &   .or. check_field_list_ctl(part_c_flux_by_filtered%name,        &
+     &   .or. check_field_list_ctl(pert_c_flux_by_filtered%name,        &
      &                             field_ctl)) then
          call add_phys_name_ctl(fhd_filter_velo, field_ctl)
          call add_phys_name_ctl(fhd_filter_pert_comp, field_ctl)
@@ -182,18 +182,18 @@
       if(check_field_list_ctl(div_h_flux_by_filtered%name,              &
      &        field_ctl))                                               &
      &   call add_phys_name_ctl(heat_flux_by_filtered%name, field_ctl)
-      if(check_field_list_ctl(div_part_h_flux_by_filtered%name,         &
+      if(check_field_list_ctl(div_pert_h_flux_by_filtered%name,         &
      &        field_ctl))                                               &
      &   call add_phys_name_ctl                                         &
-     &      (part_h_flux_by_filtered%name, field_ctl)
+     &      (pert_h_flux_by_filtered%name, field_ctl)
       if(check_field_list_ctl(div_c_flux_by_filtered%name,              &
      &        field_ctl))                                               &
      &   call add_phys_name_ctl                                         &
      &      (composite_flux_by_filtered%name, field_ctl)
-      if(check_field_list_ctl(div_part_c_flux_by_filtered%name,         &
+      if(check_field_list_ctl(div_pert_c_flux_by_filtered%name,         &
      &        field_ctl))                                               &
      &   call add_phys_name_ctl                                         &
-     &      (part_c_flux_by_filtered%name, field_ctl)
+     &      (pert_c_flux_by_filtered%name, field_ctl)
 !
       end subroutine add_field_ctl_4_div_fil_forces
 !
