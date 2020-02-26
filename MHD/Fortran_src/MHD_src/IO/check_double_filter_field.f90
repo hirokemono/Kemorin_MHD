@@ -8,6 +8,7 @@
 !> @brief Labels and addresses for basic fields
 !!
 !!@verbatim
+!!      subroutine add_wide_filter_field_ctl(field_ctl)
 !!      subroutine add_double_filter_field_ctl(field_ctl)
 !!        type(ctl_array_c3), intent(in) :: field_ctl
 !!@endverbatim
@@ -18,7 +19,6 @@
       use m_constants
       use t_base_field_labels
       use m_filtered_field_labels
-      use m_dble_filter_field_labels
 !
       implicit  none
 ! 
@@ -28,9 +28,62 @@
 !
 ! ----------------------------------------------------------------------
 !
+      subroutine add_wide_filter_field_ctl(field_ctl)
+!
+      use t_control_array_character3
+      use m_wide_filter_field_labels
+      use add_nodal_fields_ctl
+!
+      type(ctl_array_c3), intent(inout) :: field_ctl
+!
+!
+      if(check_field_list_ctl(wide_filter_vorticity%name, field_ctl))   &
+     &  call add_phys_name_ctl(wide_filter_velocity%name, field_ctl)
+      if(check_field_list_ctl(wide_filter_current%name, field_ctl))     &
+     &  call add_phys_name_ctl(wide_filter_magne%name, field_ctl)
+!
+      if(check_field_list_ctl(wide_filter_grad_temp%name, field_ctl))   &
+     &  call add_phys_name_ctl(wide_filter_temp%name, field_ctl)
+      if(check_field_list_ctl(wide_filter_grad_composition%name,        &
+     &                        field_ctl))                               &
+     &  call add_phys_name_ctl(wide_filter_composition%name, field_ctl)
+!
+      if(check_field_list_ctl(wide_filter_velocity%name, field_ctl))    &
+     &  call add_phys_name_ctl(fhd_filter_velo, field_ctl)
+      if(check_field_list_ctl(wide_filter_magne%name, field_ctl))       &
+     &  call add_phys_name_ctl(fhd_filter_magne, field_ctl)
+      if(check_field_list_ctl(wide_filter_vector_potential%name,        &
+     &                        field_ctl))                               &
+     &  call add_phys_name_ctl(fhd_filter_vecp, field_ctl)
+!
+      if(check_field_list_ctl(wide_filter_temp%name, field_ctl))        &
+     &  call add_phys_name_ctl(fhd_filter_temp, field_ctl)
+      if(check_field_list_ctl(wide_filter_composition%name, field_ctl)) &
+     &  call add_phys_name_ctl(fhd_filter_comp, field_ctl)
+      if(check_field_list_ctl(wide_filter_density%name, field_ctl))     &
+     &  call add_phys_name_ctl(fhd_filter_density, field_ctl)
+      if(check_field_list_ctl(wide_filter_entropy%name, field_ctl))     &
+     &  call add_phys_name_ctl(fhd_filter_entropy, field_ctl)
+!
+      if(check_field_list_ctl(wide_filter_pert_temp%name, field_ctl))   &
+     &  call add_phys_name_ctl(fhd_filter_pert_temp, field_ctl)
+      if(check_field_list_ctl(wide_filter_pert_comp%name, field_ctl))   &
+     &  call add_phys_name_ctl(fhd_filter_pert_comp, field_ctl)
+      if(check_field_list_ctl(wide_filter_pert_density%name,            &
+     &                        field_ctl))                               &
+     &  call add_phys_name_ctl(fhd_filter_pert_density, field_ctl)
+      if(check_field_list_ctl(wide_filter_pert_entropy%name,            &
+     &                        field_ctl))                               &
+     &  call add_phys_name_ctl(fhd_filter_pert_entropy, field_ctl)
+!
+      end subroutine add_wide_filter_field_ctl
+!
+! -----------------------------------------------------------------------
+!
       subroutine add_double_filter_field_ctl(field_ctl)
 !
       use t_control_array_character3
+      use m_dble_filter_field_labels
       use add_nodal_fields_ctl
 !
       type(ctl_array_c3), intent(inout) :: field_ctl

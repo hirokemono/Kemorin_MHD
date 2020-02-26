@@ -17,6 +17,10 @@
 !!      subroutine set_filtered_ene_flax_labels_f                       &
 !!     &         (n_comps_c, field_name_c, field_math_c) bind(c)
 !!
+!!      integer(c_int) function num_wide_filter_fields_f() bind(c)
+!!      subroutine set_wide_filter_field_labels_f                       &
+!!     &         (n_comps_c, field_name_c, field_math_c) bind(c)
+!!
 !!      integer(c_int) function num_double_filter_fields_f() bind(c)
 !!      subroutine set_dbl_filter_field_labels_f                        &
 !!     &         (n_comps_c, field_name_c, field_math_c) bind(c)
@@ -169,6 +173,33 @@
      &   (n_comps_c(1), field_name_c(1), field_math_c(1))
 !
       end subroutine set_filtered_ene_flax_labels_f
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      integer(c_int) function num_wide_filter_fields_f() bind(c)
+!
+      use m_wide_filter_field_labels
+!
+      num_wide_filter_fields_f = num_wide_filter_fields()
+      return
+      end function num_wide_filter_fields_f
+!
+! ----------------------------------------------------------------------
+!
+      subroutine set_wide_filter_field_labels_f                         &
+     &         (n_comps_c, field_name_c, field_math_c) bind(c)
+!
+      use m_wide_filter_field_labels
+!
+      integer(c_int), intent(inout) :: n_comps_c(*)
+      character(C_CHAR), intent(inout) :: field_name_c(*)
+      character(C_CHAR), intent(inout) :: field_math_c(*)
+!
+      call set_wide_filter_field_labels                                 &
+     &   (n_comps_c(1), field_name_c(1), field_math_c(1))
+!
+      end subroutine set_wide_filter_field_labels_f
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------

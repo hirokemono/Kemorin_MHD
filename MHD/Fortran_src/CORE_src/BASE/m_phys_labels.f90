@@ -51,11 +51,6 @@
 !!
 !!   div_filter_velo, div_filter_magne, div_filter_vecp
 !!
-!!   wide_filter_velo, wide_filter_vorticity
-!!   wide_filter_temp, wide_filter_composition
-!!   wide_filter_grad_temp, wide_filter_grad_composition
-!!   wide_filter_vecp, wide_filter_magne, wide_filter_current
-!!
 !!   kinetic_helicity, magnetic_helicity
 !!   current_helicity, cross_helicity
 !!

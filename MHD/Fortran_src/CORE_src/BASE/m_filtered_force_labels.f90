@@ -21,6 +21,8 @@
 !!
 !! !!!!!  divergence of forces by filtered field !!!!!!!!!!!!!!!!!!
 !!
+!!      Field label  [Address]
+!!
 !!   inertia_by_filtered           [force_by_filter%i_m_advect]
 !!   Lorentz_force_by_filtered     [force_by_filter%i_lorentz]
 !!   magnetic_tension_by_filtered  [force_by_filter%i_m_tension]

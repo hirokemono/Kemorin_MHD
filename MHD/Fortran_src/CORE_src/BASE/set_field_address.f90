@@ -502,23 +502,23 @@
         else if ( field_name(i) .eq. fhd_SGS_comp) then
           iphys%i_sgs_composit = i0
 !
-        else if ( field_name(i) .eq. fhd_w_filter_velo ) then
+        else if ( field_name(i) .eq. wide_filter_velocity%name ) then
           iphys%i_wide_fil_velo =    i0
-        else if ( field_name(i) .eq. fhd_w_filter_vort ) then
+        else if ( field_name(i) .eq. wide_filter_vorticity%name ) then
           iphys%i_wide_fil_vort =    i0
-        else if ( field_name(i) .eq. fhd_w_filter_temp ) then
+        else if ( field_name(i) .eq. wide_filter_temp%name ) then
           iphys%i_wide_fil_temp =    i0
-        else if ( field_name(i) .eq. fhd_w_filter_comp ) then
+        else if ( field_name(i) .eq. wide_filter_composition%name ) then
           iphys%i_wide_fil_comp =    i0
-        else if ( field_name(i) .eq. fhd_w_filter_vecp ) then
+        else if ( field_name(i) .eq. wide_filter_vector_potential%name ) then
           iphys%i_wide_fil_vecp =    i0
-        else if ( field_name(i) .eq. fhd_w_filter_magne ) then
+        else if ( field_name(i) .eq. wide_filter_magne%name ) then
           iphys%i_wide_fil_magne =   i0
-        else if ( field_name(i) .eq. fhd_w_filter_current ) then
+        else if ( field_name(i) .eq. wide_filter_current%name ) then
           iphys%i_wide_fil_current = i0
-        else if ( field_name(i) .eq. fhd_w_filter_grad_temp ) then
+        else if ( field_name(i) .eq. wide_filter_grad_temp%name ) then
           iphys%i_wide_fil_grad_t =  i0
-        else if ( field_name(i) .eq. fhd_w_filter_grad_comp ) then
+        else if ( field_name(i) .eq. wide_filter_grad_composition%name) then
           iphys%i_wide_fil_grad_c =  i0
         end if
 !

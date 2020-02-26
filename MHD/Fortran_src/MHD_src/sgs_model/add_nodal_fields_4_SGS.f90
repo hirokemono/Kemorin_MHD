@@ -136,13 +136,15 @@
      &     .and. SGS_param%iflag_SGS.eq.id_SGS_similarity) then
         do i = 1, field_ctl%num
           if(      field_ctl%c1_tbl(i) .eq. fhd_filter_velo) then
-            call add_phys_name_ctl(fhd_w_filter_velo, field_ctl)
+            call add_phys_name_ctl                                      &
+     &         (wide_filter_velocity%name, field_ctl)
           else if( field_ctl%c1_tbl(i) .eq. fhd_filter_vecp) then
-            call add_phys_name_ctl(fhd_w_filter_vecp, field_ctl)
+            call add_phys_name_ctl                                      &
+     &         (wide_filter_vector_potential%name, field_ctl)
           else if( field_ctl%c1_tbl(i) .eq. fhd_filter_magne) then
-            call add_phys_name_ctl(fhd_w_filter_magne, field_ctl)
+            call add_phys_name_ctl(wide_filter_magne%name, field_ctl)
           else if( field_ctl%c1_tbl(i) .eq. fhd_filter_temp) then
-            call add_phys_name_ctl(fhd_w_filter_temp, field_ctl)
+            call add_phys_name_ctl(wide_filter_temp%name, field_ctl)
           end if
         end do
       end if

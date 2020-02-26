@@ -250,14 +250,8 @@
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_filter_comp,             &
      &          i_rms%i_filter_comp, j_ave%i_filter_comp, msq_list)
-          else if ( field_name .eq. fhd_w_filter_temp ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_wide_fil_temp,           &
-     &          i_rms%i_wide_fil_temp, j_ave%i_wide_fil_temp, msq_list)
-          else if ( field_name .eq. fhd_w_filter_comp ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_wide_fil_comp,           &
-     &          i_rms%i_wide_fil_comp, j_ave%i_wide_fil_comp, msq_list)
+          else if(check_wide_filter_scalar(field_name)) then
+            call set_rms_address_list(i, nod_fld, msq_list)
           else if(check_double_filter_scalar(field_name)) then
             call set_rms_address_list(i, nod_fld, msq_list)
           end if
@@ -895,41 +889,16 @@
             call set_rms_address                                        &
      &         (field_name, n_scalar, iphys%i_truncated_B,              &
      &          i_rms%i_truncated_B, j_ave%i_truncated_B, msq_list)
-          else if ( field_name .eq. fhd_w_filter_velo ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_wide_fil_velo,           &
-     &          i_rms%i_wide_fil_velo, j_ave%i_wide_fil_velo, msq_list)
-          else if ( field_name .eq. fhd_w_filter_vort ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_wide_fil_vort,           &
-     &          i_rms%i_wide_fil_vort, j_ave%i_wide_fil_vort, msq_list)
-          else if ( field_name .eq. fhd_w_filter_vecp ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_wide_fil_vecp,           &
-     &          i_rms%i_wide_fil_vecp, j_ave%i_wide_fil_vecp, msq_list)
-          else if ( field_name .eq. fhd_w_filter_magne ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_wide_fil_magne,          &
-     &          i_rms%i_wide_fil_magne, j_ave%i_wide_fil_magne,         &
-     &          msq_list)
-          else if ( field_name .eq. fhd_w_filter_current ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_wide_fil_current,        &
-     &          i_rms%i_wide_fil_current, j_ave%i_wide_fil_current,     &
-     &          msq_list)
-          else if ( field_name .eq. fhd_w_filter_grad_temp ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_wide_fil_grad_t,         &
-     &          i_rms%i_wide_fil_grad_t, j_ave%i_wide_fil_grad_t,       &
-     &          msq_list)
-          else if ( field_name .eq. fhd_w_filter_grad_comp ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_wide_fil_grad_c,         &
-     &          i_rms%i_wide_fil_grad_c, j_ave%i_wide_fil_grad_c,       &
-     &          msq_list)
           end if
 !
-          if(check_double_filter_vector(field_name)) then
+          if(check_wide_filter_vector(field_name)) then
+            call set_rms_address_list(i, nod_fld, msq_list)
+          else if(check_wide_filter_scalar(field_name)) then
+            call set_rms_address_list(i, nod_fld, msq_list)
+          else if(check_wide_filter_grad(field_name)) then
+            call set_rms_address_list(i, nod_fld, msq_list)
+!
+          else if(check_double_filter_vector(field_name)) then
             call set_rms_address_list(i, nod_fld, msq_list)
           else if(check_double_filter_scalar(field_name)) then
             call set_rms_address_list(i, nod_fld, msq_list)

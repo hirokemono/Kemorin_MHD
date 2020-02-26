@@ -49,6 +49,9 @@
       call add_double_filter_field_ctl(field_ctl)
       if (iflag_debug .ge. iflag_routine_msg) write(*,*)                &
      &    'add_double_filter_field_ctl end'
+      call add_wide_filter_field_ctl(field_ctl)
+      if (iflag_debug .ge. iflag_routine_msg) write(*,*)                &
+     &    'add_wide_filter_field_ctl end'
 !
       call add_field_ctl_4_fil_ene_flux(field_ctl)
       if (iflag_debug .ge. iflag_routine_msg) write(*,*)                &

@@ -113,23 +113,23 @@
       type(phys_address), intent(inout) :: b_trns
 !
 !   wide filtered velocity
-      call add_field_name_4_sph_trns                                    &
-     &   (ipol%i_wide_fil_velo, fhd_w_filter_velo, n_vector,            &
+      call add_field_name_4_sph_trns(ipol%i_wide_fil_velo,              &
+     &    wide_filter_velocity%name, wide_filter_velocity%n_comp,       &
      &    ipol%i_wide_fil_velo, itor%i_wide_fil_velo,                   &
      &    iphys%i_wide_fil_velo, b_trns%i_wide_fil_velo, trns_back)
 !   wide filtered vorticity
-      call add_field_name_4_sph_trns                                    &
-     &   (ipol%i_wide_fil_vort, fhd_w_filter_vort, n_vector,            &
+      call add_field_name_4_sph_trns(ipol%i_wide_fil_vort,              &
+     &    wide_filter_vorticity%name, wide_filter_vorticity%n_comp,     &
      &    ipol%i_wide_fil_vort, itor%i_wide_fil_vort,                   &
      &    iphys%i_wide_fil_vort, b_trns%i_wide_fil_vort, trns_back)
 !   wide filtered magnetic field
-      call add_field_name_4_sph_trns                                    &
-     &   (ipol%i_wide_fil_magne, fhd_w_filter_magne, n_vector,          &
+      call add_field_name_4_sph_trns(ipol%i_wide_fil_magne,             &
+     &    wide_filter_magne%name, wide_filter_magne%n_comp,             &
      &    ipol%i_wide_fil_magne, itor%i_wide_fil_magne,                 &
      &    iphys%i_wide_fil_magne, b_trns%i_wide_fil_magne, trns_back)
 !   wide filtered current density
-      call add_field_name_4_sph_trns                                    &
-     &   (ipol%i_wide_fil_current, fhd_w_filter_current, n_vector,      &
+      call add_field_name_4_sph_trns(ipol%i_wide_fil_current,           &
+     &    wide_filter_current%name, wide_filter_current%n_comp,         &
      &    ipol%i_wide_fil_current, itor%i_wide_fil_current,             &
      &    iphys%i_wide_fil_current, b_trns%i_wide_fil_current,          &
      &    trns_back)
@@ -251,13 +251,14 @@
 !
 !
 !   wide filtered temperature
-      call add_field_name_4_sph_trns                                    &
-     &   (ipol%i_wide_fil_temp, fhd_w_filter_temp, n_scalar,            &
+      call add_field_name_4_sph_trns(ipol%i_wide_fil_temp,              &
+     &    wide_filter_temp%name, wide_filter_temp%n_comp,               &
      &    ipol%i_wide_fil_temp, itor%i_wide_fil_temp,                   &
      &    iphys%i_wide_fil_temp, b_trns%i_wide_fil_temp, trns_back)
 !   wide filtered composition
-      call add_field_name_4_sph_trns                                    &
-     &   (ipol%i_wide_fil_comp, fhd_w_filter_comp, n_scalar,            &
+      call add_field_name_4_sph_trns(ipol%i_wide_fil_comp,              &
+     &    wide_filter_composition%name,                                 &
+     &    wide_filter_composition%n_comp,                               &
      &    ipol%i_wide_fil_comp, itor%i_wide_fil_comp,                   &
      &    iphys%i_wide_fil_comp, b_trns%i_wide_fil_comp, trns_back)
 !

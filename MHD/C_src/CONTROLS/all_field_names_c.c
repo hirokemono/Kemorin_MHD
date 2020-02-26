@@ -276,9 +276,9 @@ const struct field_def field_props[NUM_FIELD] = {
 			{1, "SGS_comp_gen_true", "$$    $$"},
 			{1, "SGS_m_ene_gen_true", "$$    $$"},
 			
-			{3, "wide_filter_velo", "$$    $$"},
+			{3, "wide_filter_velocity", "$$    $$"},
 			{3, "wide_filter_vorticity", "$$    $$"},
-			{3, "wide_filter_vecp", "$$    $$"},
+			{3, "wide_filter_vector_potential", "$$    $$"},
 			{3, "wide_filter_magne", "$$    $$"},
 			{3, "wide_filter_current", "$$    $$"},
 			{1, "wide_filter_temp", "$$    $$"},

@@ -26,8 +26,8 @@
 !!
 !! !!!!!  Double filterd field names  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!      Field label  [Address]
-!
-!!   double_filter_velo              [dbl_filter_fld%i_velo]
+!!
+!!   double_filter_velocity          [dbl_filter_fld%i_velo]
 !!   double_filter_vorticity         [dbl_filter_fld%i_vort]
 !!
 !!   double_filter_magne             [dbl_filter_fld%i_magne]
@@ -44,8 +44,8 @@
 !!   double_filter_pert_density      [dbl_filter_fld%i_per_density]
 !!   double_filter_pert_entropy      [dbl_filter_fld%i_per_entropy]
 !!
-!!    double_filter_grad_temp [dbl_filter_grad%i_grad_t]
-!!    double_filter_grad_comp [dbl_filter_grad%i_grad_composit]
+!!   double_filter_grad_temp [dbl_filter_grad%i_grad_t]
+!!   double_filter_grad_comp [dbl_filter_grad%i_grad_composit]
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!@endverbatim
@@ -314,6 +314,7 @@
 !
       end subroutine set_dble_fil_grad_addresses
 !
+! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
       integer(kind = kint) function num_double_filter_fields()
