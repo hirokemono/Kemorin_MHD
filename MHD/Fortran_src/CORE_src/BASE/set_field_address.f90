@@ -520,26 +520,14 @@
           iphys%i_wide_fil_grad_t =  i0
         else if ( field_name(i) .eq. fhd_w_filter_grad_comp ) then
           iphys%i_wide_fil_grad_c =  i0
-!
-        else if ( field_name(i) .eq. double_filter_velocity%name ) then
-          iphys%i_dbl_fil_velo =    i0
-        else if ( field_name(i) .eq. double_filter_vorticity%name ) then
-          iphys%i_dbl_fil_vort =    i0
-        else if ( field_name(i) .eq. double_filter_temp%name ) then
-          iphys%i_dbl_fil_temp =    i0
-        else if ( field_name(i) .eq. double_filter_composition%name ) then
-          iphys%i_dbl_fil_comp =    i0
-        else if ( field_name(i) .eq. double_filter_vector_potential%name ) then
-          iphys%i_dbl_fil_vecp =    i0
-        else if ( field_name(i) .eq. double_filter_magne%name ) then
-          iphys%i_dbl_fil_magne =   i0
-        else if ( field_name(i) .eq. double_filter_current%name ) then
-          iphys%i_dbl_fil_current = i0
-        else if ( field_name(i) .eq. double_filter_grad_temp%name ) then
-          iphys%i_dbl_fil_grad_t =  i0
-        else if ( field_name(i) .eq. double_filter_grad_comp%name ) then
-          iphys%i_dbl_fil_grad_c =  i0
         end if
+!
+        call set_dble_fil_vector_addresses                              &
+     &     (i0, field_name(i), iphys%dbl_filter_fld, flag)
+        call set_dble_fil_scaler_addresses                              &
+     &     (i0, field_name(i), iphys%dbl_filter_fld, flag)
+        call set_dble_fil_grad_addresses                                &
+     &     (i0, field_name(i), iphys%dbl_filter_grad, flag)
 !
         if ( field_name(i) .eq. fhd_div_inertia ) then
           iphys%i_div_inertia =    i0

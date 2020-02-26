@@ -8,9 +8,10 @@
 !> @brief Labels and addresses for filtered forces
 !!
 !!@verbatim
-!!      subroutine add_field_ctl_filterd_forces(field_ctl)
+!!      subroutine add_field_ctl_4_filter_forces(field_ctl)
 !!      subroutine add_field_ctl_4_rot_fil_forces(field_ctl)
 !!      subroutine add_field_ctl_4_div_fil_forces(field_ctl)
+!!      subroutine add_field_ctl_4_fil_ene_flux(field_ctl)
 !!        type(ctl_array_c3), intent(inout) :: field_ctl
 !!@endverbatim
 !!
@@ -31,7 +32,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine add_field_ctl_filterd_forces(field_ctl)
+      subroutine add_field_ctl_4_filter_forces(field_ctl)
 !
       use add_nodal_fields_ctl
 !
@@ -102,7 +103,7 @@
          call add_phys_name_ctl(fhd_filter_pert_comp, field_ctl)
       end if
 !
-      end subroutine add_field_ctl_filterd_forces
+      end subroutine add_field_ctl_4_filter_forces
 !
 ! ----------------------------------------------------------------------
 !
@@ -196,6 +197,90 @@
      &      (pert_c_flux_by_filtered%name, field_ctl)
 !
       end subroutine add_field_ctl_4_div_fil_forces
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine add_field_ctl_4_fil_ene_flux(field_ctl)
+!
+      use m_filtered_ene_flux_labels
+      use add_nodal_fields_ctl
+!
+      type(ctl_array_c3), intent(inout) :: field_ctl
+!
+!
+      if(check_field_list_ctl(inertia_work_by_filtered%name,            &
+     &                        field_ctl)) then
+         call add_phys_name_ctl(fhd_velo, field_ctl)
+         call add_phys_name_ctl(inertia_by_filtered%name, field_ctl)
+      end if
+!
+      if(check_field_list_ctl(wk_against_Lorentz_by_filtered%name,      &
+     &                        field_ctl)                                &
+     &     .or. check_field_list_ctl(Lorentz_work_by_filtered%name,     &
+     &                        field_ctl)) then
+         call add_phys_name_ctl(fhd_velo, field_ctl)
+         call add_phys_name_ctl                                         &
+     &      (Lorentz_force_by_filtered%name, field_ctl)
+      end if
+      if(check_field_list_ctl(mag_tension_work_by_filtered%name,        &
+     &                        field_ctl)) then
+         call add_phys_name_ctl(fhd_velo, field_ctl)
+         call add_phys_name_ctl                                         &
+     &      (magnetic_tension_by_filtered%name, field_ctl)
+      end if
+!
+      if(check_field_list_ctl(filtered_buoyancy_flux%name,              &
+     &                        field_ctl)) then
+         call add_phys_name_ctl(fhd_velo, field_ctl)
+         call add_phys_name_ctl(filtered_buoyancy%name, field_ctl)
+      end if
+      if(check_field_list_ctl(filtered_comp_buoyancy_flux%name,         &
+     &                        field_ctl)) then
+         call add_phys_name_ctl(fhd_velo, field_ctl)
+         call add_phys_name_ctl(filtered_comp_buoyancy%name, field_ctl)
+      end if
+!
+      if(check_field_list_ctl(mag_ene_generation_by_filtered%name,      &
+     &                        field_ctl)) then
+         call add_phys_name_ctl(fhd_magne, field_ctl)
+         call add_phys_name_ctl                                         &
+     &      (vecp_induction_by_filtered%name, field_ctl)
+      end if
+      if(check_field_list_ctl(mag_stretch_flux_by_filtered%name,        &
+     &                        field_ctl)) then
+         call add_phys_name_ctl(fhd_magne, field_ctl)
+         call add_phys_name_ctl                                         &
+     &      (magnetic_stretch_by_filtered%name, field_ctl)
+      end if
+!
+      if(check_field_list_ctl(temp_generation_by_filtered%name,         &
+     &                        field_ctl)) then
+         call add_phys_name_ctl(fhd_temp, field_ctl)
+         call add_phys_name_ctl                                         &
+     &      (heat_advect_by_filtered%name, field_ctl)
+      end if
+      if(check_field_list_ctl(part_temp_gen_by_filtered%name,           &
+     &                        field_ctl)) then
+         call add_phys_name_ctl(fhd_part_temp, field_ctl)
+         call add_phys_name_ctl                                         &
+     &      (pert_h_advect_by_filtered%name, field_ctl)
+      end if
+!
+      if(check_field_list_ctl(comp_generation_by_filtered%name,         &
+     &                        field_ctl)) then
+         call add_phys_name_ctl(fhd_light, field_ctl)
+         call add_phys_name_ctl                                         &
+     &      (comp_advect_by_filtered%name, field_ctl)
+      end if
+      if(check_field_list_ctl(part_comp_gen_by_filtered%name,           &
+     &                        field_ctl)) then
+         call add_phys_name_ctl(fhd_part_light, field_ctl)
+         call add_phys_name_ctl                                         &
+     &      (pert_c_advect_by_filtered%name, field_ctl)
+      end if
+!
+      end subroutine add_field_ctl_4_fil_ene_flux
 !
 ! ----------------------------------------------------------------------
 !

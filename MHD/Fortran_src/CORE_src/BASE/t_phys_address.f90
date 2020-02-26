@@ -14,8 +14,10 @@
       use m_precision
       use m_constants
 !
+      use t_base_field_labels
       use t_base_force_labels
       use t_energy_flux_labels
+      use t_grad_field_labels
 !
       implicit  none
 ! 
@@ -655,33 +657,6 @@
 !!        by wider filter
         integer (kind=kint) :: i_wide_fil_grad_c  =  izero
 !
-!  double filtered field
-!
-!>        start address for filtered velocity by double filtering
-        integer (kind=kint) :: i_dbl_fil_velo  =  izero
-!>        start address for filtered vorticity by double filtering
-        integer (kind=kint) :: i_dbl_fil_vort  =  izero
-!>        start address for filtered magnetic vector potential
-!!        by double filtering
-        integer (kind=kint) :: i_dbl_fil_vecp =     izero
-!>        start address for filtered magnetic field by double filtering
-        integer (kind=kint) :: i_dbl_fil_magne =  izero
-!>        start address for filtered current density by double filtering
-        integer (kind=kint) :: i_dbl_fil_current =  izero
-!
-!>        start address for filtered temperature by double filtering
-        integer (kind=kint) :: i_dbl_fil_temp  =  izero
-!>        start address for filtered grad. of temperature
-!!        by double filtering
-        integer (kind=kint) :: i_dbl_fil_grad_t  =  izero
-!
-!>        start address for filtered compostiion by double filtering
-        integer (kind=kint) :: i_dbl_fil_comp  =  izero
-!>        start address for filtered grad. of composition
-!>        by double filtering
-        integer (kind=kint) :: i_dbl_fil_grad_c  =  izero
-!
-!
 !  divergence of momentum equations
 !
 !>        start address for divergence of advection
@@ -802,6 +777,11 @@
 !!          i_back_B+2: 2nd radial derivative of poloidal component
         integer (kind=kint) :: i_back_B = izero
 !
+!
+!>        Structure of double filtered field
+        type(base_field_address) :: dbl_filter_fld
+!>        Structure of gradient of double filtered field
+        type(gradient_field_address) :: dbl_filter_grad
 !
 !>        Structure of forces by filtered field
         type(base_force_address) :: force_by_filter

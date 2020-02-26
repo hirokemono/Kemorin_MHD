@@ -6,7 +6,7 @@ FEM_sgs_model_coefs_IO.o: $(MHD_IO_DIR)/FEM_sgs_model_coefs_IO.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<
 SPH_SGS_ini_model_coefs_IO.o: $(MHD_IO_DIR)/SPH_SGS_ini_model_coefs_IO.f90 m_precision.o calypso_mpi.o m_constants.o t_SGS_control_parameter.o t_sph_filtering.o t_SGS_model_coefs.o t_file_IO_parameter.o t_time_data.o t_ele_info_4_dynamic.o field_IO_select.o set_ini_sgs_model_coefs_IO.o cal_minmax_and_stacks.o
 	$(F90) -c $(F90OPTFLAGS) $<
-add_nodal_fields_4_MHD.o: $(MHD_IO_DIR)/add_nodal_fields_4_MHD.f90 m_precision.o m_machine_parameter.o m_phys_labels.o t_control_parameter.o t_physical_property.o add_nodal_fields_ctl.o calypso_mpi.o check_filtered_forces.o t_control_array_character3.o t_reference_scalar_param.o
+add_nodal_fields_4_MHD.o: $(MHD_IO_DIR)/add_nodal_fields_4_MHD.f90 m_precision.o m_machine_parameter.o m_phys_labels.o t_control_parameter.o t_physical_property.o add_nodal_fields_ctl.o calypso_mpi.o check_filtered_forces.o check_double_filter_field.o t_control_array_character3.o t_reference_scalar_param.o
 	$(F90) -c $(F90OPTFLAGS) $<
 bcast_ctl_data_SGS_model.o: $(MHD_IO_DIR)/bcast_ctl_data_SGS_model.f90 m_precision.o calypso_mpi.o t_ctl_data_SGS_model.o t_ctl_data_SGS_filter.o bcast_4_filter_files_ctl.o bcast_control_arrays.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -26,7 +26,7 @@ check_field_w_symmetry.o: $(MHD_IO_DIR)/check_field_w_symmetry.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<
 check_filter_field.o: $(MHD_IO_DIR)/check_filter_field.f90 m_precision.o m_constants.o t_base_field_labels.o m_filtered_field_labels.o t_control_array_character3.o add_nodal_fields_ctl.o
 	$(F90) -c $(F90OPTFLAGS) $<
-check_filtered_forces.o: $(MHD_IO_DIR)/check_filtered_forces.f90 m_precision.o m_constants.o t_control_array_character3.o m_filtered_field_labels.o m_filtered_force_labels.o add_nodal_fields_ctl.o m_rot_filtered_force_labels.o m_div_filtered_force_labels.o
+check_filtered_forces.o: $(MHD_IO_DIR)/check_filtered_forces.f90 m_precision.o m_constants.o t_control_array_character3.o m_filtered_field_labels.o m_filtered_force_labels.o add_nodal_fields_ctl.o m_rot_filtered_force_labels.o m_div_filtered_force_labels.o m_filtered_ene_flux_labels.o
 	$(F90) -c $(F90OPTFLAGS) $<
 check_forces_w_symmetry.o: $(MHD_IO_DIR)/check_forces_w_symmetry.f90 m_precision.o m_constants.o t_base_force_labels.o m_field_w_symmetry_labels.o m_force_w_sym_labels.o t_control_array_character3.o add_nodal_fields_ctl.o
 	$(F90) -c $(F90OPTFLAGS) $<

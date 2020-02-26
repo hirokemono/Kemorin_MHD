@@ -931,6 +931,8 @@
 !
           if(check_double_filter_vector(field_name)) then
             call set_rms_address_list(i, nod_fld, msq_list)
+          else if(check_double_filter_scalar(field_name)) then
+            call set_rms_address_list(i, nod_fld, msq_list)
           else if(check_double_filter_grad(field_name)) then
             call set_rms_address_list(i, nod_fld, msq_list)
           end if

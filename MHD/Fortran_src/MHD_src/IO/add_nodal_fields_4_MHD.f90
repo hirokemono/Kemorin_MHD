@@ -41,9 +41,18 @@
       subroutine add_dependent_field(field_ctl)
 !
       use check_filtered_forces
+      use check_double_filter_field
 !
       type(ctl_array_c3), intent(inout) :: field_ctl
 !
+!
+      call add_double_filter_field_ctl(field_ctl)
+      if (iflag_debug .ge. iflag_routine_msg) write(*,*)                &
+     &    'add_double_filter_field_ctl end'
+!
+      call add_field_ctl_4_fil_ene_flux(field_ctl)
+      if (iflag_debug .ge. iflag_routine_msg) write(*,*)                &
+     &    'add_field_ctl_4_fil_ene_flux end'
 !
       call add_field_ctl_4_rot_fil_forces(field_ctl)
       if (iflag_debug .ge. iflag_routine_msg) write(*,*)                &
@@ -52,9 +61,9 @@
       if (iflag_debug .ge. iflag_routine_msg) write(*,*)                &
      &    'add_field_ctl_4_div_fil_forces end'
 !
-      call add_field_ctl_filterd_forces(field_ctl)
+      call add_field_ctl_4_filter_forces(field_ctl)
       if (iflag_debug .ge. iflag_routine_msg) write(*,*)                &
-     &    'add_field_ctl_filterd_forces end'
+     &    'add_field_ctl_4_filter_forces end'
 !
       end subroutine add_dependent_field
 !
