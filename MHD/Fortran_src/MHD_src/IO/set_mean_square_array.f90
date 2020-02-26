@@ -20,7 +20,6 @@
       module set_mean_square_array
 !
       use m_precision
-      use calypso_mpi
 !
       use t_phys_address
       use t_phys_data
