@@ -527,7 +527,7 @@
      &                 force_sym1_sym2%i_h_advect, fhd_usym_nabla_Tsym)
       else if( (i_field .eq. eflux_sym1_sym2%i_par_t_gen)) then
         iflag = iflag + missing_field(i_field, field_name,              &
-     &                 base_fld%i_par_temp, fhd_part_temp)
+     &                 base_fld%i_per_temp, fhd_part_temp)
         iflag = iflag + missing_field(i_field, field_name,              &
      &                 force_sym1_sym2%i_ph_advect,                     &
      &                 fhd_usym_nabla_pTsym)
@@ -539,7 +539,7 @@
      &                 force_sym1_sym2%i_c_advect, fhd_usym_nabla_Csym)
       else if( (i_field .eq. eflux_sym1_sym2%i_par_c_gen)) then
         iflag = iflag + missing_field(i_field, field_name,              &
-     &                 base_fld%i_par_light, fhd_part_light)
+     &                 base_fld%i_per_light, fhd_part_light)
         iflag = iflag + missing_field(i_field, field_name,              &
      &                 force_sym1_sym2%i_pc_advect,                     &
      &                 fhd_usym_nabla_pCsym)
@@ -616,7 +616,7 @@
      &                 fhd_uasym_nabla_Tasym)
       else if( (i_field .eq. eflux_asym1_asym2%i_par_t_gen)) then
         iflag = iflag + missing_field(i_field, field_name,              &
-     &                 base_fld%i_par_temp, fhd_part_temp)
+     &                 base_fld%i_per_temp, fhd_part_temp)
         iflag = iflag + missing_field(i_field, field_name,              &
      &                 force_asym1_asym2%i_ph_advect,                   &
      &                 fhd_uasym_nabla_pTasym)
@@ -629,7 +629,7 @@
      &                 fhd_uasym_nabla_Casym)
       else if( (i_field .eq. eflux_asym1_asym2%i_par_c_gen)) then
         iflag = iflag + missing_field(i_field, field_name,              &
-     &                 base_fld%i_par_light, fhd_part_light)
+     &                 base_fld%i_per_light, fhd_part_light)
         iflag = iflag + missing_field(i_field, field_name,              &
      &                 force_asym1_asym2%i_pc_advect,                   &
      &                 fhd_uasym_nabla_pCasym)
@@ -696,7 +696,7 @@
      &                 fhd_usym_nabla_Tasym)
       else if( (i_field .eq. eflux_sym1_asym2%i_par_t_gen)) then
         iflag = iflag + missing_field(i_field, field_name,              &
-     &                 base_fld%i_par_temp, fhd_part_temp)
+     &                 base_fld%i_per_temp, fhd_part_temp)
         iflag = iflag + missing_field(i_field, field_name,              &
      &                 force_sym1_asym2%i_ph_advect,                    &
      &                 fhd_usym_nabla_pTasym)
@@ -709,7 +709,7 @@
      &                 fhd_usym_nabla_Casym)
       else if( (i_field .eq. eflux_sym1_asym2%i_par_c_gen)) then
         iflag = iflag + missing_field(i_field, field_name,              &
-     &                 base_fld%i_par_light, fhd_part_light)
+     &                 base_fld%i_per_light, fhd_part_light)
         iflag = iflag + missing_field(i_field, field_name,              &
      &                 force_sym1_asym2%i_pc_advect,                    &
      &                 fhd_usym_nabla_pCasym)
@@ -755,7 +755,7 @@
      &                 fhd_usym_nabla_Tasym)
       else if( (i_field .eq. eflux_asym1_sym2%i_par_t_gen)) then
         iflag = iflag + missing_field(i_field, field_name,              &
-     &                 base_fld%i_par_temp, fhd_part_temp)
+     &                 base_fld%i_per_temp, fhd_part_temp)
         iflag = iflag + missing_field(i_field, field_name,              &
      &                 force_asym1_sym2%i_ph_advect,                    &
      &                 fhd_uasym_nabla_pTsym)
@@ -768,7 +768,7 @@
      &                 fhd_uasym_nabla_Csym)
       else if( (i_field .eq. eflux_asym1_sym2%i_par_c_gen)) then
         iflag = iflag + missing_field(i_field, field_name,              &
-     &                 base_fld%i_par_light, fhd_part_light)
+     &                 base_fld%i_per_light, fhd_part_light)
         iflag = iflag + missing_field(i_field, field_name,              &
      &                 force_asym1_sym2%i_pc_advect,                    &
      &                 fhd_uasym_nabla_pCsym)

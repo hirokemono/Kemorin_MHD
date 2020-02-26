@@ -68,13 +68,13 @@
         else if ( field_name(i) .eq. fhd_temp ) then
           iphys%i_temp = i0
         else if ( field_name(i) .eq. fhd_part_temp ) then
-          iphys%i_par_temp = i0
+          iphys%i_per_temp = i0
         else if ( field_name(i) .eq. fhd_vort ) then
           iphys%i_vort = i0
         else if ( field_name(i) .eq. fhd_light ) then
           iphys%i_light = i0
         else if ( field_name(i) .eq. fhd_part_light ) then
-          iphys%i_par_light = i0
+          iphys%i_per_light = i0
         else if ( field_name(i) .eq. fhd_magne ) then
           iphys%i_magne = i0
         else if ( field_name(i) .eq. fhd_vecp ) then
@@ -92,13 +92,13 @@
         else if ( field_name(i) .eq. fhd_entropy ) then
           iphys%i_entropy = i0
         else if ( field_name(i) .eq. fhd_per_entropy ) then
-          iphys%i_par_entropy = i0
+          iphys%i_per_entropy = i0
         else if ( field_name(i) .eq. fhd_ref_entropy ) then
           iphys%i_ref_entropy = i0
         else if ( field_name(i) .eq. fhd_density ) then
           iphys%i_density = i0
         else if ( field_name(i) .eq. fhd_per_density ) then
-          iphys%i_par_density = i0
+          iphys%i_per_density = i0
         else if ( field_name(i) .eq. fhd_ref_density ) then
           iphys%i_ref_density = i0
 !
@@ -521,23 +521,23 @@
         else if ( field_name(i) .eq. fhd_w_filter_grad_comp ) then
           iphys%i_wide_fil_grad_c =  i0
 !
-        else if ( field_name(i) .eq. fhd_d_filter_velo ) then
+        else if ( field_name(i) .eq. double_filter_velocity%name ) then
           iphys%i_dbl_fil_velo =    i0
-        else if ( field_name(i) .eq. fhd_d_filter_vort ) then
+        else if ( field_name(i) .eq. double_filter_vorticity%name ) then
           iphys%i_dbl_fil_vort =    i0
-        else if ( field_name(i) .eq. fhd_d_filter_temp ) then
+        else if ( field_name(i) .eq. double_filter_temp%name ) then
           iphys%i_dbl_fil_temp =    i0
-        else if ( field_name(i) .eq. fhd_d_filter_comp ) then
+        else if ( field_name(i) .eq. double_filter_composition%name ) then
           iphys%i_dbl_fil_comp =    i0
-        else if ( field_name(i) .eq. fhd_d_filter_vecp ) then
+        else if ( field_name(i) .eq. double_filter_vector_potential%name ) then
           iphys%i_dbl_fil_vecp =    i0
-        else if ( field_name(i) .eq. fhd_d_filter_magne ) then
+        else if ( field_name(i) .eq. double_filter_magne%name ) then
           iphys%i_dbl_fil_magne =   i0
-        else if ( field_name(i) .eq. fhd_d_filter_current ) then
+        else if ( field_name(i) .eq. double_filter_current%name ) then
           iphys%i_dbl_fil_current = i0
-        else if ( field_name(i) .eq. fhd_d_filter_grad_temp ) then
+        else if ( field_name(i) .eq. double_filter_grad_temp%name ) then
           iphys%i_dbl_fil_grad_t =  i0
-        else if ( field_name(i) .eq. fhd_d_filter_grad_comp ) then
+        else if ( field_name(i) .eq. double_filter_grad_comp%name ) then
           iphys%i_dbl_fil_grad_c =  i0
         end if
 !

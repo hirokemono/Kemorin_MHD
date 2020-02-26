@@ -127,7 +127,7 @@
      &       (fld, i_start, iphys%i_mag_p, fhd_mag_potential)
 !
         else if(i_start .eq. iphys%i_t_diffuse                          &
-     &     .or. i_start .eq. iphys%i_par_temp                           &
+     &     .or. i_start .eq. iphys%i_per_temp                           &
      &     .or. i_start .eq. iphys%i_filter_temp                        &
      &     .or. i_start .eq. iphys%i_wide_fil_temp                      &
      &     .or. i_start .eq. iphys%i_buoyancy                           &
@@ -230,7 +230,7 @@
      &       (fld, i_start, iphys%i_pc_advect, fhd_part_c_advect)
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_light, fhd_light)
-        else if(i_start .eq. iphys%i_par_entropy) then 
+        else if(i_start .eq. iphys%i_per_entropy) then 
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_entropy, fhd_per_entropy)
           call check_missing_field                                      &
@@ -320,7 +320,7 @@
      &       (fld, i_start, iphys%i_temp, fhd_temp)
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_light, fhd_light)
-        else if(i_start .eq. iphys%i_par_density) then 
+        else if(i_start .eq. iphys%i_per_density) then 
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_density, fhd_density)
           call check_missing_field                                      &

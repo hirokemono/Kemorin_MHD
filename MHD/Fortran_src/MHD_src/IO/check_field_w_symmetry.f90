@@ -243,22 +243,22 @@
         iflag = iflag + missing_field(i_field, field_name,              &
      &                 base_fld%i_entropy, fhd_entropy)
 !
-      else if( (i_field .eq. sym_base_fld%i_par_temp)                   &
-     &    .or. (i_field .eq. asym_base_fld%i_par_temp)) then 
+      else if( (i_field .eq. sym_base_fld%i_per_temp)                   &
+     &    .or. (i_field .eq. asym_base_fld%i_per_temp)) then 
         iflag = iflag + missing_field(i_field, field_name,              &
-     &                 base_fld%i_par_temp, fhd_part_temp)
-      else if( (i_field .eq. sym_base_fld%i_par_light)                  &
-     &    .or. (i_field .eq. asym_base_fld%i_par_light)) then 
+     &                 base_fld%i_per_temp, fhd_part_temp)
+      else if( (i_field .eq. sym_base_fld%i_per_light)                  &
+     &    .or. (i_field .eq. asym_base_fld%i_per_light)) then 
         iflag = iflag + missing_field(i_field, field_name,              &
-     &                 base_fld%i_par_light, fhd_part_light)
-      else if( (i_field .eq. sym_base_fld%i_par_density)                &
-     &    .or. (i_field .eq. asym_base_fld%i_par_density)) then 
+     &                 base_fld%i_per_light, fhd_part_light)
+      else if( (i_field .eq. sym_base_fld%i_per_density)                &
+     &    .or. (i_field .eq. asym_base_fld%i_per_density)) then 
         iflag = iflag + missing_field(i_field, field_name,              &
-     &                 base_fld%i_par_density, fhd_per_density)
-      else if( (i_field .eq. sym_base_fld%i_par_entropy)                &
-     &    .or. (i_field .eq. asym_base_fld%i_par_entropy)) then 
+     &                 base_fld%i_per_density, fhd_per_density)
+      else if( (i_field .eq. sym_base_fld%i_per_entropy)                &
+     &    .or. (i_field .eq. asym_base_fld%i_per_entropy)) then 
         iflag = iflag + missing_field(i_field, field_name,              &
-     &                 base_fld%i_par_entropy, fhd_per_entropy)
+     &                 base_fld%i_per_entropy, fhd_per_entropy)
       end if
       check_field_w_symmetry_id = iflag
       return

@@ -317,13 +317,13 @@
           sym_base_fld%i_entropy =        i_phys
 !
         else if (field_name .eq. fhd_sym_per_temp) then
-          sym_base_fld%i_par_temp =           i_phys
+          sym_base_fld%i_per_temp =           i_phys
         else if (field_name .eq. fhd_sym_per_light) then
-          sym_base_fld%i_par_light =          i_phys
+          sym_base_fld%i_per_light =          i_phys
         else if (field_name .eq. fhd_sym_per_density) then
-          sym_base_fld%i_par_density =        i_phys
+          sym_base_fld%i_per_density =        i_phys
         else if (field_name .eq. fhd_sym_per_entropy) then
-          sym_base_fld%i_par_entropy =        i_phys
+          sym_base_fld%i_per_entropy =        i_phys
 !
         else if (field_name .eq. fhd_asym_press) then
           asym_base_fld%i_press = i_phys
@@ -342,13 +342,13 @@
           asym_base_fld%i_entropy =        i_phys
 !
         else if (field_name .eq. fhd_asym_per_temp) then
-          asym_base_fld%i_par_temp =           i_phys
+          asym_base_fld%i_per_temp =           i_phys
         else if (field_name .eq. fhd_asym_per_light) then
-          asym_base_fld%i_par_light =          i_phys
+          asym_base_fld%i_per_light =          i_phys
         else if (field_name .eq. fhd_asym_per_density) then
-          asym_base_fld%i_par_density =        i_phys
+          asym_base_fld%i_per_density =        i_phys
         else if (field_name .eq. fhd_asym_per_entropy) then
-          asym_base_fld%i_par_entropy =        i_phys
+          asym_base_fld%i_per_entropy =        i_phys
         end if
       end if  
 !

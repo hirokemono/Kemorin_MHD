@@ -316,19 +316,6 @@
      &      mk_MHD%mlump_cd, mhd_fem_wk, rhs_mat, nod_fld)
       end if
 !
-!
-!      if (iphys%i_SGS_buoyancy .gt. 0) then
-!        if(iflag_debug.gt.0) write(*,*)                                &
-!     &        'lead ', trim(fhd_SGS_buoyancy)
-!         call cal_terms_4_momentum(iphys%i_SGS_buoyancy)
-!      end if
-!
-!      if (iphys%i_SGS_comp_buo .gt. 0) then
-!        if(iflag_debug.gt.0) write(*,*)                                &
-!     &        'lead ', trim(fhd_SGS_comp_buo)
-!         call cal_terms_4_momentum(iphys%i_SGS_comp_buo)
-!      end if
-!
       end subroutine cal_diff_of_sgs_terms
 !
 !-----------------------------------------------------------------------

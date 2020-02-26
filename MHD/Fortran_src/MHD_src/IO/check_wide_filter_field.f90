@@ -191,18 +191,18 @@
         iflag = iflag + missing_field(i_field, field_name,              &
      &                                base_fld%i_entropy, fhd_entropy)
 !
-      else if( (i_field .eq. wide_filter_fld%i_par_temp)) then
+      else if( (i_field .eq. wide_filter_fld%i_per_temp)) then
         iflag = iflag + missing_field(i_field, field_name,              &
-     &                 base_fld%i_par_temp, fhd_part_temp)
-      else if( (i_field .eq. wide_filter_fld%i_par_light)) then
+     &                 base_fld%i_per_temp, fhd_part_temp)
+      else if( (i_field .eq. wide_filter_fld%i_per_light)) then
         iflag = iflag + missing_field(i_field, field_name,              &
-     &                 base_fld%i_par_light, fhd_part_light)
-      else if( (i_field .eq. wide_filter_fld%i_par_density)) then
+     &                 base_fld%i_per_light, fhd_part_light)
+      else if( (i_field .eq. wide_filter_fld%i_per_density)) then
         iflag = iflag + missing_field(i_field, field_name,              &
-     &                 base_fld%i_par_density, fhd_per_density)
-      else if( (i_field .eq. wide_filter_fld%i_par_entropy)) then
+     &                 base_fld%i_per_density, fhd_per_density)
+      else if( (i_field .eq. wide_filter_fld%i_per_entropy)) then
         iflag = iflag + missing_field(i_field, field_name,              &
-     &                 base_fld%i_par_entropy, fhd_per_entropy)
+     &                 base_fld%i_per_entropy, fhd_per_entropy)
 !
 !      else if( (i_field .eq. wide_filter_fld%i_grad_t)) then
 !        iflag = iflag + missing_field(i_field, field_name,             &

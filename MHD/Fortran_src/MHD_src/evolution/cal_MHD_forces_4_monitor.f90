@@ -106,7 +106,7 @@
         if(iflag_debug.gt.0) write(*,*) 'lead  ', trim(fhd_ph_flux)
 !$omp parallel
         call cal_phys_scalar_product_vector                             &
-     &     (iphys%i_velo, iphys%i_par_temp, iphys%i_ph_flux, nod_fld)
+     &     (iphys%i_velo, iphys%i_per_temp, iphys%i_ph_flux, nod_fld)
 !$omp end parallel
 !
       else if (iphys%i_c_flux .gt.  izero) then
@@ -120,7 +120,7 @@
         if(iflag_debug.gt.0) write(*,*) 'lead  ', trim(fhd_pc_flux)
 !$omp parallel
         call cal_phys_scalar_product_vector                             &
-     &     (iphys%i_velo, iphys%i_par_light, iphys%i_pc_flux, nod_fld)
+     &     (iphys%i_velo, iphys%i_per_light, iphys%i_pc_flux, nod_fld)
 !$omp end parallel
 !
       else if (iphys%i_m_flux .gt. izero) then
@@ -204,7 +204,7 @@
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &             write(*,*) 'lead  ', trim(fhd_part_h_advect)
         call cal_terms_4_advect                                         &
-     &     (iphys%i_ph_advect, iphys%i_par_temp,                        &
+     &     (iphys%i_ph_advect, iphys%i_per_temp,                        &
      &      FEM_prm%iflag_temp_supg, FEM_prm%npoint_t_evo_int, dt,      &
      &      FEM_prm, nod_comm, node, ele, fluid, ht_prop,               &
      &      nod_bcs%Tnod_bcs, iphys_ele, ele_fld, fem_int,              &
@@ -249,7 +249,7 @@
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &             write(*,*) 'lead  ', trim(fhd_part_c_advect)
         call cal_terms_4_advect                                         &
-     &     (iphys%i_pc_advect, iphys%i_par_light,                       &
+     &     (iphys%i_pc_advect, iphys%i_per_light,                       &
      &      FEM_prm%iflag_comp_supg, FEM_prm%npoint_t_evo_int, dt,      &
      &      FEM_prm, nod_comm, node, ele, fluid, cp_prop,               &
      &      nod_bcs%Tnod_bcs, iphys_ele, ele_fld, fem_int,              &

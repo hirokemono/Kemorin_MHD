@@ -57,10 +57,10 @@
 !!   reference_density [i_ref_density]:       \rho_0
 !!   reference_entropy [i_ref_entropy]:       S_0
 !!
-!!   perturbation_temp [i_par_temp]:         \Theta = T - T_0
-!!   parturbation_composition [i_par_light]:  C - C_0
-!!   perturbation_density [i_par_density]:      \rho - \rho_0
-!!   perturbation_entropy [i_par_entropy]:      S - S_0
+!!   perturbation_temp [i_per_temp]:         \Theta = T - T_0
+!!   parturbation_composition [i_per_light]:  C - C_0
+!!   perturbation_density [i_per_density]:      \rho - \rho_0
+!!   perturbation_entropy [i_per_entropy]:      S - S_0
 !!
 !!   heat_source [i_heat_source]:            heat source          q_{T}
 !!   composition_source [i_light_source]:     compositoin source  q_{C}
@@ -202,7 +202,7 @@
         integer (kind=kint) :: i_temp  =           izero
 !>        start address for perturbation of temperature
 !!         @f$ \Theta = T - T_{0} @f$
-        integer (kind=kint) :: i_par_temp =        izero
+        integer (kind=kint) :: i_per_temp =        izero
 !>        start address for reference temperature
 !!         @f$  T_{0} @f$
         integer (kind=kint) :: i_ref_t =           izero
@@ -212,7 +212,7 @@
         integer (kind=kint) :: i_light =           izero
 !>        start address for perturbation of composition
 !!         @f$  C - C_{0} @f$
-        integer (kind=kint) :: i_par_light =       izero
+        integer (kind=kint) :: i_per_light =       izero
 !>        start address for reference temperature
 !!         @f$  C_{0} @f$
         integer (kind=kint) :: i_ref_c =           izero
@@ -222,7 +222,7 @@
         integer (kind=kint) :: i_density =         izero
 !>        start address for perturbation of density
 !!         @f$  \rho - \rho_{0} @f$
-        integer (kind=kint) :: i_par_density =     izero
+        integer (kind=kint) :: i_per_density =     izero
 !>        start address for reference density
 !!         @f$  \rho_{0} @f$
         integer (kind=kint) :: i_ref_density =     izero
@@ -232,7 +232,7 @@
         integer (kind=kint) :: i_entropy =         izero
 !>        start address for perturbation of entropy
 !!         @f$  S - S_{0} @f$
-        integer (kind=kint) :: i_par_entropy =     izero
+        integer (kind=kint) :: i_per_entropy =     izero
 !>        start address for reference entropy
 !!         @f$  S_{0} @f$
         integer (kind=kint) :: i_ref_entropy =     izero
@@ -376,28 +376,28 @@
         else if (field_name .eq. fhd_temp) then
           base_fld%i_temp =            i_phys
         else if (field_name .eq. fhd_part_temp) then
-          base_fld%i_par_temp =        i_phys
+          base_fld%i_per_temp =        i_phys
         else if (field_name .eq. fhd_ref_temp) then
           base_fld%i_ref_t =           i_phys
 !
         else if (field_name .eq. fhd_light) then
           base_fld%i_light =          i_phys
         else if (field_name .eq. fhd_part_light) then
-          base_fld%i_par_light =      i_phys
+          base_fld%i_per_light =      i_phys
         else if (field_name .eq. fhd_ref_light) then
           base_fld%i_ref_c =          i_phys
 !
         else if (field_name .eq. fhd_density) then
           base_fld%i_density =        i_phys
         else if (field_name .eq. fhd_per_density) then
-          base_fld%i_par_density =    i_phys
+          base_fld%i_per_density =    i_phys
         else if (field_name .eq. fhd_ref_density) then
           base_fld%i_ref_density =    i_phys
 !
         else if (field_name .eq. fhd_entropy) then
           base_fld%i_entropy =        i_phys
         else if (field_name .eq. fhd_per_entropy) then
-          base_fld%i_par_entropy =    i_phys
+          base_fld%i_per_entropy =    i_phys
         else if (field_name .eq. fhd_ref_entropy) then
           base_fld%i_ref_entropy =    i_phys
 !

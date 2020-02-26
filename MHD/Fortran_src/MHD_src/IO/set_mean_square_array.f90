@@ -40,6 +40,9 @@
       use t_base_field_labels
       use m_phys_constants
       use m_volume_average_labels
+      use m_filtered_force_labels
+      use m_dble_filter_field_labels
+      use m_filtered_ene_flux_labels
 !
       type(phys_data), intent(in) :: nod_fld
       type(phys_address), intent(in) :: iphys
@@ -185,32 +188,32 @@
 !
           if ( field_name .eq. fhd_part_temp ) then
             call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_par_temp,                &
-     &          i_rms%i_par_temp, j_ave%i_par_temp, msq_list)
+     &         (field_name, num_comps, iphys%i_per_temp,                &
+     &          i_rms%i_per_temp, j_ave%i_per_temp, msq_list)
           else if ( field_name .eq. fhd_light ) then
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_light,                   &
      &          i_rms%i_light, j_ave%i_light, msq_list)
           else if ( field_name .eq. fhd_part_light ) then
             call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_par_light,               &
-     &          i_rms%i_par_light, j_ave%i_par_light, msq_list)
+     &         (field_name, num_comps, iphys%i_per_light,               &
+     &          i_rms%i_per_light, j_ave%i_per_light, msq_list)
           else if ( field_name .eq. fhd_entropy ) then
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_entropy,                 &
      &          i_rms%i_entropy, j_ave%i_entropy, msq_list)
           else if ( field_name .eq. fhd_per_entropy ) then
             call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_par_entropy,             &
-     &          i_rms%i_par_entropy, j_ave%i_par_entropy, msq_list)
+     &         (field_name, num_comps, iphys%i_per_entropy,             &
+     &          i_rms%i_per_entropy, j_ave%i_per_entropy, msq_list)
           else if ( field_name .eq. fhd_density ) then
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_density,                 &
      &          i_rms%i_density, j_ave%i_density, msq_list)
           else if ( field_name .eq. fhd_per_density ) then
             call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_par_density,             &
-     &          i_rms%i_par_density, j_ave%i_par_density, msq_list)
+     &         (field_name, num_comps, iphys%i_per_density,             &
+     &          i_rms%i_per_density, j_ave%i_per_density, msq_list)
 !
           else if ( field_name .eq. fhd_heat_source ) then
             call set_rms_address                                        &
@@ -255,14 +258,8 @@
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_wide_fil_comp,           &
      &          i_rms%i_wide_fil_comp, j_ave%i_wide_fil_comp, msq_list)
-          else if ( field_name .eq. fhd_d_filter_temp ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_dbl_fil_temp,            &
-     &          i_rms%i_dbl_fil_temp, j_ave%i_dbl_fil_temp, msq_list)
-          else if ( field_name .eq. fhd_d_filter_comp ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_dbl_fil_comp,            &
-     &          i_rms%i_dbl_fil_comp, j_ave%i_dbl_fil_comp, msq_list)
+          else if(check_double_filter_scalar(field_name)) then
+            call set_rms_address_list(i, nod_fld, msq_list)
           end if
 !
           if      ( field_name .eq. fhd_square_v ) then
@@ -932,37 +929,10 @@
      &          msq_list)
           end if
 !
-          if ( field_name .eq. fhd_d_filter_velo ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_dbl_fil_velo,            &
-     &          i_rms%i_dbl_fil_velo, j_ave%i_dbl_fil_velo, msq_list)
-          else if ( field_name .eq. fhd_d_filter_vort ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_dbl_fil_vort,            &
-     &          i_rms%i_dbl_fil_vort, j_ave%i_dbl_fil_vort, msq_list)
-          else if ( field_name .eq. fhd_d_filter_vecp ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_dbl_fil_vecp,            &
-     &          i_rms%i_dbl_fil_vecp, j_ave%i_dbl_fil_vecp, msq_list)
-          else if ( field_name .eq. fhd_d_filter_magne ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_dbl_fil_magne,           &
-     &          i_rms%i_dbl_fil_magne, j_ave%i_dbl_fil_magne, msq_list)
-          else if ( field_name .eq. fhd_d_filter_current ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_dbl_fil_current,         &
-     &          i_rms%i_dbl_fil_current, j_ave%i_dbl_fil_current,       &
-     &          msq_list)
-          else if ( field_name .eq. fhd_d_filter_grad_temp ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_dbl_fil_grad_t,          &
-     &          i_rms%i_dbl_fil_grad_t, j_ave%i_dbl_fil_grad_t,         &
-     &          msq_list)
-          else if ( field_name .eq. fhd_d_filter_grad_comp ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_dbl_fil_grad_c,          &
-     &          i_rms%i_dbl_fil_grad_c, j_ave%i_dbl_fil_grad_c,         &
-     &          msq_list)
+          if(check_double_filter_vector(field_name)) then
+            call set_rms_address_list(i, nod_fld, msq_list)
+          else if(check_double_filter_grad(field_name)) then
+            call set_rms_address_list(i, nod_fld, msq_list)
           end if
 !
           if ( field_name .eq. fhd_velocity_scale ) then

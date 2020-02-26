@@ -50,10 +50,10 @@
 !!   wide_filter_entropy
 !!       [i_entropy]:      filtered Entropy               S
 !!
-!!    wide_filter_pert_temp     [i_par_temp]:         \Theta = T - T_0
-!!    wide_filter_pert_comp     [i_par_light]:        C - C_0
-!!    wide_filter_pert_density  [i_par_density]:      \rho - \rho_0
-!!    wide_filter_pert_entropy  [i_par_entropy]:      S - S_0
+!!    wide_filter_pert_temp     [i_per_temp]:         \Theta = T - T_0
+!!    wide_filter_pert_comp     [i_per_light]:        C - C_0
+!!    wide_filter_pert_density  [i_per_density]:      \rho - \rho_0
+!!    wide_filter_pert_entropy  [i_per_entropy]:      S - S_0
 !!
 !!    wide_filter_grad_temp        [i_grad_t];        gradient of 
 !!                                    wider filtered temperature
@@ -229,22 +229,22 @@
         if      (field_name .eq. fhd_w_filter_temp) then
           wide_filter_fld%i_temp =            i_phys
         else if (field_name .eq. fhd_w_filter_pert_temp) then
-          wide_filter_fld%i_par_temp =        i_phys
+          wide_filter_fld%i_per_temp =        i_phys
 !
         else if (field_name .eq. fhd_w_filter_comp) then
           wide_filter_fld%i_light =          i_phys
         else if (field_name .eq. fhd_w_filter_pert_comp) then
-          wide_filter_fld%i_par_light =      i_phys
+          wide_filter_fld%i_per_light =      i_phys
 !
         else if (field_name .eq. fhd_w_filter_density) then
           wide_filter_fld%i_density =        i_phys
         else if (field_name .eq. fhd_w_filter_pert_density) then
-          wide_filter_fld%i_par_density =    i_phys
+          wide_filter_fld%i_per_density =    i_phys
 !
         else if (field_name .eq. fhd_w_filter_entropy) then
           wide_filter_fld%i_entropy =        i_phys
         else if (field_name .eq. fhd_w_filter_pert_entropy) then
-          wide_filter_fld%i_par_entropy =    i_phys
+          wide_filter_fld%i_per_entropy =    i_phys
         end if
       end if  
 !

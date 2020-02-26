@@ -66,16 +66,16 @@
 !
 !>        start address for perturbation of temperature
 !!         @f$ \Theta = T - T_{0} @f$
-        integer (kind=kint) :: i_par_temp =        izero
+        integer (kind=kint) :: i_per_temp =        izero
 !>        start address for perturbation of composition
 !!         @f$  C - C_{0} @f$
-        integer (kind=kint) :: i_par_light =       izero
+        integer (kind=kint) :: i_per_light =       izero
 !>        start address for perturbation of density
 !!         @f$  \rho - \rho_{0} @f$
-        integer (kind=kint) :: i_par_density =     izero
+        integer (kind=kint) :: i_per_density =     izero
 !>        start address for perturbation of entropy
 !!         @f$  S - S_{0} @f$
-        integer (kind=kint) :: i_par_entropy =     izero
+        integer (kind=kint) :: i_per_entropy =     izero
 !
 !>        start address for heat source
 !!         @f$ q_{T} @f$

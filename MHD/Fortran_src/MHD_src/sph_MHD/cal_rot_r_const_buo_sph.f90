@@ -64,14 +64,14 @@
 !
       if    (ref_param_T%iflag_reference .eq. id_sphere_ref_temp        &
      &  .or. ref_param_T%iflag_reference .eq. id_takepiro_temp) then
-        ipol_temp =  ipol%i_par_temp
+        ipol_temp =  ipol%i_per_temp
       else
         ipol_temp =  ipol%i_temp
       end if
 !
       if    (ref_param_C%iflag_reference .eq. id_sphere_ref_temp        &
      &  .or. ref_param_C%iflag_reference .eq. id_takepiro_temp) then
-        ipol_comp =  ipol%i_par_light
+        ipol_comp =  ipol%i_per_light
       else
         ipol_comp =  ipol%i_light
       end if

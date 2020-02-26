@@ -224,7 +224,7 @@
       type(phys_address), intent(inout) :: b_trns
 !
 !
-!      if(b_trns%i_temp.eq.0 .or. ipol%i_par_temp.gt.0) then
+!      if(b_trns%i_temp.eq.0 .or. ipol%i_per_temp.gt.0) then
       call add_field_name_4_sph_trns_snap(fhd_temp, n_scalar,           &
      &    ipol%i_temp, itor%i_temp, iphys%i_temp,                       &
      &    b_trns%i_temp, trns_back)
@@ -239,8 +239,8 @@
      &    ipol%i_press, itor%i_press, iphys%i_press,                    &
      &    b_trns%i_press, trns_back)
       call add_field_name_4_sph_trns_nofld(fhd_part_temp, n_scalar,     &
-     &    ipol%i_par_temp, itor%i_par_temp, iphys%i_par_temp,           &
-     &    b_trns%i_par_temp, trns_back)
+     &    ipol%i_per_temp, itor%i_per_temp, iphys%i_per_temp,           &
+     &    b_trns%i_per_temp, trns_back)
       call add_field_name_4_sph_trns_snap(fhd_filter_temp, n_scalar,    &
      &    ipol%i_filter_temp, itor%i_filter_temp, iphys%i_filter_temp,  &
      &    b_trns%i_filter_temp, trns_back)

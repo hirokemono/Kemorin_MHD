@@ -112,7 +112,7 @@
         if(SGS_par%model_p%iflag_parterbuation .eq. id_SGS_REFERENCE)   &
      &   then
           call copy_scalar_component(nod_fld,                           &
-     &        iphys%i_par_temp, iphys%i_sgs_temp)
+     &        iphys%i_per_temp, iphys%i_sgs_temp)
         else
           call copy_scalar_component(nod_fld,                           &
      &        iphys%i_temp, iphys%i_sgs_temp)
@@ -253,7 +253,7 @@
         if(SGS_par%model_p%iflag_parterbuation .eq. id_SGS_REFERENCE)   &
      &   then
           call copy_scalar_component(nod_fld,                           &
-     &        iphys%i_par_light, iphys%i_sgs_composit)
+     &        iphys%i_per_light, iphys%i_sgs_composit)
         else
           call copy_scalar_component(nod_fld,                           &
      &        iphys%i_light, iphys%i_sgs_composit)

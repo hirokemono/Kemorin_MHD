@@ -222,7 +222,7 @@
      &                 base_force%i_h_advect, fhd_heat_advect)
       else if( (i_field .eq. ene_flux%i_par_t_gen)) then
         iflag = iflag + missing_field(i_field, field_name,              &
-     &                 base_fld%i_par_temp, fhd_part_temp)
+     &                 base_fld%i_per_temp, fhd_part_temp)
         iflag = iflag + missing_field(i_field, field_name,              &
      &                 base_force%i_ph_advect, fhd_part_h_advect)
       else if( (i_field .eq. ene_flux%i_comp_gen)) then
@@ -232,7 +232,7 @@
      &                 base_force%i_c_advect, fhd_composit_advect)
       else if( (i_field .eq. ene_flux%i_par_c_gen)) then
         iflag = iflag + missing_field(i_field, field_name,              &
-     &                 base_fld%i_par_light, fhd_part_light)
+     &                 base_fld%i_per_light, fhd_part_light)
         iflag = iflag + missing_field(i_field, field_name,              &
      &                 base_force%i_pc_advect, fhd_part_c_advect)
 !

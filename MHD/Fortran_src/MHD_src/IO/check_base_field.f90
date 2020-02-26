@@ -152,22 +152,22 @@
         iflag = iflag + missing_field(i_field, field_name,              &
      &                                base_fld%i_magne, fhd_magne)
 !
-      else if( (i_field .eq. base_fld%i_par_temp)                       &
+      else if( (i_field .eq. base_fld%i_per_temp)                       &
      &    .or. (i_field .eq. base_fld%i_ref_t)                          &
      &    .or. (i_field .eq. base_fld%i_heat_source)) then
         iflag = iflag + missing_field(i_field, field_name,              &
      &                                base_fld%i_temp, fhd_temp)
-      else if( (i_field .eq. base_fld%i_par_light)                      &
+      else if( (i_field .eq. base_fld%i_per_light)                      &
      &    .or. (i_field .eq. base_fld%i_ref_c)                          &
      &    .or. (i_field .eq. base_fld%i_light_source)) then
         iflag = iflag + missing_field(i_field, field_name,              &
      &                                base_fld%i_light, fhd_light)
-      else if( (i_field .eq. base_fld%i_par_entropy)                    &
+      else if( (i_field .eq. base_fld%i_per_entropy)                    &
      &    .or. (i_field .eq. base_fld%i_ref_entropy)                    &
      &    .or. (i_field .eq. base_fld%i_entropy_source)) then
         iflag = iflag + missing_field(i_field, field_name,              &
      &                                base_fld%i_entropy, fhd_entropy)
-      else if( (i_field .eq. base_fld%i_par_density)                    &
+      else if( (i_field .eq. base_fld%i_per_density)                    &
      &    .or. (i_field .eq. base_fld%i_ref_density)) then 
         iflag = iflag + missing_field(i_field, field_name,              &
      &                                base_fld%i_density, fhd_density)

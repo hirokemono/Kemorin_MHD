@@ -190,15 +190,6 @@
      &  .or. (phys_nod_name_ctl .eq. fhd_w_filter_grad_comp)            &
      &       )  iflag = 1
 !
-      if (   (phys_nod_name_ctl .eq. fhd_d_filter_velo     )            &
-     &  .or. (phys_nod_name_ctl .eq. fhd_d_filter_vort     )            &
-     &  .or. (phys_nod_name_ctl .eq. fhd_d_filter_vecp     )            &
-     &  .or. (phys_nod_name_ctl .eq. fhd_d_filter_magne    )            &
-     &  .or. (phys_nod_name_ctl .eq. fhd_d_filter_current  )            &
-     &  .or. (phys_nod_name_ctl .eq. fhd_d_filter_grad_temp)            &
-     &  .or. (phys_nod_name_ctl .eq. fhd_d_filter_grad_comp)            &
-     &       )  iflag = 1
-!
       if (   (phys_nod_name_ctl .eq. fhd_wide_SGS_inertia   )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_wide_SGS_h_flux    )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_wide_SGS_c_flux    )           &
@@ -224,7 +215,9 @@
      &      )   iflag = 1
 !
       if(     check_filtered_force(phys_nod_name_ctl)                   &
-     &   .or. check_rot_fil_force(phys_nod_name_ctl)) iflag = 1
+     &   .or. check_rot_fil_force(phys_nod_name_ctl)                    &
+     &   .or. check_double_filter_grad(phys_nod_name_ctl)               &
+     &   .or. check_double_filter_vector(phys_nod_name_ctl)) iflag = 1
 !
 
       if (iflag .eq. 1) then
@@ -349,8 +342,6 @@
 !
       if (    (phys_nod_name_ctl .eq. fhd_w_filter_temp      )          &
      &   .or. (phys_nod_name_ctl .eq. fhd_w_filter_comp      )          &
-     &   .or. (phys_nod_name_ctl .eq. fhd_d_filter_temp      )          &
-     &   .or. (phys_nod_name_ctl .eq. fhd_d_filter_comp      )          &
      &       ) iflag = 1
 !
       if (    (phys_nod_name_ctl .eq. fhd_Csim_SGS_h_flux    )          &
@@ -384,7 +375,8 @@
 !
       if(     check_filtered_scallar_flux(phys_nod_name_ctl)            &
      &   .or. check_div_fil_force(phys_nod_name_ctl)                    &
-     &   .or. check_filter_enegy_fluxes(phys_nod_name_ctl)) iflag = 1
+     &   .or. check_filter_enegy_fluxes(phys_nod_name_ctl)              &
+     &   .or. check_double_filter_scalar(phys_nod_name_ctl)) iflag = 1
 !
       if (iflag .eq. 1) then
         icou = icou + 1

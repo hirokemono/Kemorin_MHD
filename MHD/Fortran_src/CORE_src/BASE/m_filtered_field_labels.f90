@@ -47,10 +47,10 @@
 !!   filter_density    [i_density]: filtered density              \rho
 !!   filter_entropy    [i_entropy]: filtered Entropy               S
 !!
-!!   filter_pert_temp            [i_par_temp]:    \Theta = T - T_0
-!!   filter_pert_comp            [i_par_light]:    C - C_0
-!!   filter_pert_density         [i_par_density]:  \rho - \rho_0
-!!   filter_pert_entropy         [i_par_entropy]:  S - S_0
+!!   filter_pert_temp            [i_per_temp]:    \Theta = T - T_0
+!!   filter_pert_comp            [i_per_light]:    C - C_0
+!!   filter_pert_density         [i_per_density]:  \rho - \rho_0
+!!   filter_pert_entropy         [i_per_entropy]:  S - S_0
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!@endverbatim
@@ -215,22 +215,22 @@
         if      (field_name .eq. fhd_filter_temp) then
           filter_fld%i_temp =            i_phys
         else if (field_name .eq. fhd_filter_pert_temp) then
-          filter_fld%i_par_temp =        i_phys
+          filter_fld%i_per_temp =        i_phys
 !
         else if (field_name .eq. fhd_filter_comp) then
           filter_fld%i_light =          i_phys
         else if (field_name .eq. fhd_filter_pert_comp) then
-          filter_fld%i_par_light =      i_phys
+          filter_fld%i_per_light =      i_phys
 !
         else if (field_name .eq. fhd_filter_density) then
           filter_fld%i_density =        i_phys
         else if (field_name .eq. fhd_filter_pert_density) then
-          filter_fld%i_par_density =    i_phys
+          filter_fld%i_per_density =    i_phys
 !
         else if (field_name .eq. fhd_filter_entropy) then
           filter_fld%i_entropy =        i_phys
         else if (field_name .eq. fhd_filter_pert_entropy) then
-          filter_fld%i_par_entropy =    i_phys
+          filter_fld%i_per_entropy =    i_phys
         end if
       end if  
 !

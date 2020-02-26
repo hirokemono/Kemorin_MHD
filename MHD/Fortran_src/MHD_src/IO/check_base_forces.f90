@@ -240,7 +240,7 @@
         iflag = iflag + missing_field(i_field, field_name,              &
      &                 base_fld%i_velo, fhd_velo)
         iflag = iflag + missing_field(i_field, field_name,              &
-     &                           base_fld%i_par_temp, fhd_part_temp)
+     &                           base_fld%i_per_temp, fhd_part_temp)
       else if( (i_field .eq. base_force%i_c_advect)                     &
      &    .or. (i_field .eq. base_force%i_c_flux)) then
         iflag = iflag + missing_field(i_field, field_name,              &
@@ -252,7 +252,7 @@
         iflag = iflag + missing_field(i_field, field_name,              &
      &                 base_fld%i_velo, fhd_velo)
         iflag = iflag + missing_field(i_field, field_name,              &
-     &                           base_fld%i_par_light, fhd_part_light)
+     &                           base_fld%i_per_light, fhd_part_light)
       end if
       check_base_force_id = iflag
       return

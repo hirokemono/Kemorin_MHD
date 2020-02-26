@@ -558,7 +558,7 @@
         iflag = iflag + missing_field(i_field, field_name,              &
      &                 sym_base_fld%i_velo, fhd_sym_velo)
         iflag = iflag + missing_field(i_field, field_name,              &
-     &                 sym_base_fld%i_par_temp, fhd_sym_per_temp)
+     &                 sym_base_fld%i_per_temp, fhd_sym_per_temp)
       else if( (i_field .eq. force_sym1_sym2%i_c_advect)                &
      &    .or. (i_field .eq. force_sym1_sym2%i_c_flux) ) then
         iflag = iflag + missing_field(i_field, field_name,              &
@@ -570,7 +570,7 @@
         iflag = iflag + missing_field(i_field, field_name,              &
      &                 sym_base_fld%i_velo, fhd_sym_velo)
         iflag = iflag + missing_field(i_field, field_name,              &
-     &                 sym_base_fld%i_par_light, fhd_sym_per_light)
+     &                 sym_base_fld%i_per_light, fhd_sym_per_light)
       end if
       check_force_by_sym_sym_id = iflag
       return
@@ -633,7 +633,7 @@
         iflag = iflag + missing_field(i_field, field_name,              &
      &                 asym_base_fld%i_velo, fhd_asym_velo)
         iflag = iflag + missing_field(i_field, field_name,              &
-     &                 asym_base_fld%i_par_temp, fhd_asym_per_temp)
+     &                 asym_base_fld%i_per_temp, fhd_asym_per_temp)
 !
       else if( (i_field .eq. force_asym1_asym2%i_c_advect)              &
      &    .or. (i_field .eq. force_asym1_asym2%i_c_flux) ) then
@@ -646,7 +646,7 @@
         iflag = iflag + missing_field(i_field, field_name,              &
      &                 asym_base_fld%i_velo, fhd_asym_velo)
         iflag = iflag + missing_field(i_field, field_name,              &
-     &                 asym_base_fld%i_par_light, fhd_asym_per_light)
+     &                 asym_base_fld%i_per_light, fhd_asym_per_light)
       end if
       check_force_by_asym_asym_id = iflag
       return
@@ -709,7 +709,7 @@
         iflag = iflag + missing_field(i_field, field_name,              &
      &                 sym_base_fld%i_velo, fhd_sym_velo)
         iflag = iflag + missing_field(i_field, field_name,              &
-     &                 asym_base_fld%i_par_temp, fhd_asym_per_temp)
+     &                 asym_base_fld%i_per_temp, fhd_asym_per_temp)
       else if( (i_field .eq. force_sym1_asym2%i_c_advect)               &
      &    .or. (i_field .eq. force_sym1_asym2%i_c_flux)  ) then
         iflag = iflag + missing_field(i_field, field_name,              &
@@ -721,7 +721,7 @@
         iflag = iflag + missing_field(i_field, field_name,              &
      &                 sym_base_fld%i_velo, fhd_sym_velo)
         iflag = iflag + missing_field(i_field, field_name,              &
-     &                 asym_base_fld%i_par_light, fhd_asym_per_light)
+     &                 asym_base_fld%i_per_light, fhd_asym_per_light)
 !
 !
       else if( (i_field .eq. force_asym1_sym2%i_m_advect)) then
@@ -762,7 +762,7 @@
         iflag = iflag + missing_field(i_field, field_name,              &
      &                 asym_base_fld%i_velo, fhd_asym_velo)
         iflag = iflag + missing_field(i_field, field_name,              &
-     &                 sym_base_fld%i_par_temp, fhd_sym_per_temp)
+     &                 sym_base_fld%i_per_temp, fhd_sym_per_temp)
       else if( (i_field .eq. force_asym1_sym2%i_c_advect)               &
      &    .or. (i_field .eq. force_asym1_sym2%i_c_flux)  ) then
         iflag = iflag + missing_field(i_field, field_name,              &
@@ -775,7 +775,7 @@
         iflag = iflag + missing_field(i_field, field_name,              &
      &                 asym_base_fld%i_velo, fhd_asym_velo)
         iflag = iflag + missing_field(i_field, field_name,              &
-     &                 sym_base_fld%i_par_light, fhd_sym_per_light)
+     &                 sym_base_fld%i_per_light, fhd_sym_per_light)
       end if
       check_force_by_sym_asym_id = iflag
       return
