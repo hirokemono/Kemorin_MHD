@@ -11,8 +11,12 @@
 !!@verbatim
 !!      subroutine alloc_mean_square_name(msq_list)
 !!      subroutine dealloc_mean_square_name(msq_list)
+!!      subroutine set_rms_address_list(ifld, nod_fld, msq_list)
+!!        type(phys_data), intent(in) :: nod_fld
+!!        type(mean_square_list), intent(inout) :: msq_list
 !!      subroutine set_rms_address(field_name, num_comp,                &
 !!     &          i_phys, ir_rms, ja_ave, msq_list)
+!!        type(mean_square_list), intent(inout) :: msq_list
 !!      subroutine copy_field_name_4_mean_square                        &
 !!     &         (num_copy, list_org, list_new)
 !!@endverbatim
@@ -83,6 +87,57 @@
       end subroutine dealloc_mean_square_name
 !
 !-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      subroutine set_rms_address_list(ifld, nod_fld, msq_list)
+!
+      use m_machine_parameter
+      use t_phys_data
+!
+      integer(kind = kint), intent(in) :: ifld
+      type(phys_data), intent(in) :: nod_fld
+      type(mean_square_list), intent(inout) :: msq_list
+!
+      integer(kind = kint) :: i_phys, n_comp
+      integer(kind = kint) :: ir_rms, ja_ave
+      type(mean_square_list) :: tmp_list
+!
+!
+      i_phys = nod_fld%istack_component(ifld-1) + 1
+      n_comp = nod_fld%num_component(ifld)
+      ir_rms = msq_list%numrms + 1
+      ja_ave = msq_list%numave + 1
+!
+      tmp_list%nfield = msq_list%nfield
+      call alloc_mean_square_name(tmp_list)
+      call copy_field_name_4_mean_square                                &
+     &   (tmp_list%nfield, msq_list, tmp_list)
+      call dealloc_mean_square_name(msq_list)
+!
+      msq_list%nfield = msq_list%nfield + 1
+      msq_list%numrms = msq_list%numrms + 1
+      msq_list%numave =  msq_list%numave + n_comp
+      call alloc_mean_square_name(msq_list)
+      call copy_field_name_4_mean_square                                &
+     &   (tmp_list%nfield, tmp_list, msq_list)
+      call dealloc_mean_square_name(tmp_list)
+!
+      msq_list%field_name(msq_list%nfield) = nod_fld%phys_name(ifld)
+      msq_list%ifld_msq(msq_list%nfield) = i_phys
+      msq_list%ncomp_msq(msq_list%nfield) = n_comp
+      msq_list%irms_msq(msq_list%nfield) = ir_rms
+      if(n_comp .gt. 0) msq_list%jave_msq(msq_list%nfield) = ja_ave
+!
+      if(iflag_debug .eq. 0) return
+      write(*,'(i5,a2,a,a2,4i5)') msq_list%nfield, '. ',                &
+     &    trim(msq_list%field_name(msq_list%nfield)), ': ',             &
+     &    msq_list%ifld_msq(msq_list%nfield),                           &
+     &    msq_list%ncomp_msq(msq_list%nfield),                          &
+     &    msq_list%irms_msq(msq_list%nfield),                           &
+     &    msq_list%jave_msq(msq_list%nfield)
+!
+      end subroutine set_rms_address_list
+!
 !-----------------------------------------------------------------------
 !
       subroutine set_rms_address(field_name, num_comp,                  &

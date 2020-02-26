@@ -146,7 +146,7 @@
 !
       call s_int_mean_squares(FEM_prm%npoint_t_evo_int,                 &
      &    mesh, MHD_mesh%fluid, MHD_mesh%conduct, iphys, nod_fld, jacs, &
-     &    fem_sq%i_rms, fem_sq%j_ave, fem_sq%i_msq, fem_sq%msq_list,    &
+     &    fem_sq%i_rms, fem_sq%i_msq, fem_sq%msq_list,                  &
      &    rhs_mat%fem_wk, mhd_fem_wk, fem_sq%msq)
       call int_no_evo_mean_squares(time_d%i_time_step, time_d%dt,       &
      &    mesh, MHD_prop%fl_prop, MHD_prop%cd_prop,                     &

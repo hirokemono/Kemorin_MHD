@@ -20,6 +20,7 @@
       module set_mean_square_array
 !
       use m_precision
+      use calypso_mpi
 !
       use t_phys_address
       use t_phys_data
@@ -48,12 +49,10 @@
       type(mean_square_address), intent(inout) :: ifld_msq
       type(mean_square_list), intent(inout) :: msq_list
 !
-      integer (kind = kint) :: i, i0, j0, num_comps
+      integer (kind = kint) :: i, num_comps
       character(len = kchara) :: field_name
 !
 !
-      i0 = 0
-      j0 = 0
       do i = 1, nod_fld%num_phys
         field_name = nod_fld%phys_name(i)
         num_comps =  nod_fld%num_component(i)
@@ -512,16 +511,8 @@
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_comp_buo,                &
      &          i_rms%i_comp_buo, j_ave%i_comp_buo, msq_list)
-          else if(field_name .eq. filtered_buoyancy%name) then
-            call set_rms_address(field_name, num_comps,                 &
-     &          iphys%force_by_filter%i_buoyancy,                       &
-     &          i_rms%force_by_filter%i_buoyancy,                       &
-     &          j_ave%force_by_filter%i_buoyancy, msq_list)
-          else if(field_name .eq. filtered_comp_buoyancy%name) then
-            call set_rms_address(field_name, num_comps,                 &
-     &          iphys%force_by_filter%i_comp_buo,                       &
-     &          i_rms%force_by_filter%i_comp_buo,                       &
-     &          j_ave%force_by_filter%i_comp_buo, msq_list)
+          else if(check_filtered_force(field_name)) then
+            call set_rms_address_list(i, nod_fld, msq_list)
           end if
 !
           if ( field_name .eq. fhd_viscous ) then
@@ -719,17 +710,8 @@
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_c_buo_gen,               &
      &          i_rms%i_c_buo_gen, j_ave%i_c_buo_gen, msq_list)
-          else if ( field_name .eq. filtered_buoyancy_flux%name) then
-            call set_rms_address(field_name, num_comps,                 &
-     &          iphys%eflux_by_filter%i_buo_gen,                        &
-     &          i_rms%eflux_by_filter%i_buo_gen,                        &
-     &          j_ave%eflux_by_filter%i_buo_gen, msq_list)
-          else if(field_name .eq. filtered_comp_buoyancy_flux%name)     &
-     &     then
-            call set_rms_address(field_name, num_comps,                 &
-     &          iphys%eflux_by_filter%i_c_buo_gen,                      &
-     &          i_rms%eflux_by_filter%i_c_buo_gen,                      &
-     &          j_ave%eflux_by_filter%i_c_buo_gen, msq_list)
+          else if(check_filter_enegy_fluxes(field_name)) then
+            call set_rms_address_list(i, nod_fld, msq_list)
           end if
 !
           if ( field_name .eq. fhd_vis_ene_diffuse ) then

@@ -6,9 +6,8 @@
 !      Modified by H. Matsui on Aug, 2007
 !
 !!      subroutine s_int_mean_squares(npoint_integrate,                 &
-!!     &          mesh, fluid, conduct, iphys, nod_fld, jacs,           &
-!!     &          i_rms, j_ave, ifld_msq, msq_list,                     &
-!!     &          fem_wk, mhd_fem_wk, fem_msq)
+!!     &          mesh, fluid, conduct, iphys, nod_fld, jacs, i_rms,    &
+!!     &          ifld_msq, msq_list, fem_wk, mhd_fem_wk, fem_msq)
 !!      subroutine int_no_evo_mean_squares(i_step, dt, mesh,            &
 !!     &          fl_prop, cd_prop, iphys, nod_fld, iphys_ele, ele_fld, &
 !!     &          fluid, jacs, i_rms, j_ave, fem_wk, fem_msq)
@@ -48,15 +47,14 @@
       implicit none
 !
 ! ----------------------------------------------------------------------
-!
+! 
       contains
 !
 ! ----------------------------------------------------------------------
 !
       subroutine s_int_mean_squares(npoint_integrate,                   &
-     &          mesh, fluid, conduct, iphys, nod_fld, jacs,             &
-     &          i_rms, j_ave, ifld_msq, msq_list,                       &
-     &          fem_wk, mhd_fem_wk, fem_msq)
+     &          mesh, fluid, conduct, iphys, nod_fld, jacs, i_rms,      &
+     &          ifld_msq, msq_list, fem_wk, mhd_fem_wk, fem_msq)
 !
       use m_constants
       use calypso_mpi
@@ -70,7 +68,7 @@
       type(phys_address), intent(in) :: iphys
       type(phys_data), intent(in) :: nod_fld
       type(jacobians_type), intent(in) :: jacs
-      type(phys_address), intent(in) :: i_rms, j_ave
+      type(phys_address), intent(in) :: i_rms
       type(mean_square_address), intent(in) :: ifld_msq
       type(mean_square_list), intent(in) :: msq_list
 !
