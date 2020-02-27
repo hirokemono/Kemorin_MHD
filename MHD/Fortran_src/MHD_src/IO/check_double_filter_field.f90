@@ -8,8 +8,8 @@
 !> @brief Labels and addresses for basic fields
 !!
 !!@verbatim
-!!      subroutine add_wide_filter_field_ctl(field_ctl)
-!!      subroutine add_double_filter_field_ctl(field_ctl)
+!!      subroutine add_field_ctl_4_wide_fil_field(field_ctl)
+!!      subroutine add_field_ctl_4_dbl_fil_field(field_ctl)
 !!        type(ctl_array_c3), intent(in) :: field_ctl
 !!@endverbatim
 !!
@@ -28,7 +28,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine add_wide_filter_field_ctl(field_ctl)
+      subroutine add_field_ctl_4_wide_fil_field(field_ctl)
 !
       use t_control_array_character3
       use m_wide_filter_field_labels
@@ -76,11 +76,11 @@
      &                        field_ctl))                               &
      &  call add_phys_name_ctl(fhd_filter_pert_entropy, field_ctl)
 !
-      end subroutine add_wide_filter_field_ctl
+      end subroutine add_field_ctl_4_wide_fil_field
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine add_double_filter_field_ctl(field_ctl)
+      subroutine add_field_ctl_4_dbl_fil_field(field_ctl)
 !
       use t_control_array_character3
       use m_dble_filter_field_labels
@@ -129,7 +129,7 @@
      &                        field_ctl))                               &
      &  call add_phys_name_ctl(fhd_filter_pert_entropy, field_ctl)
 !
-      end subroutine add_double_filter_field_ctl
+      end subroutine add_field_ctl_4_dbl_fil_field
 !
 ! -----------------------------------------------------------------------
 !

@@ -18,6 +18,7 @@
       use t_base_force_labels
       use t_energy_flux_labels
       use t_grad_field_labels
+      use t_diff_vector_labels
 !
       implicit  none
 ! 
@@ -772,6 +773,9 @@
 !
 !>        Structure of energy fluxes by filtered field
         type(energy_flux_address) :: eflux_by_filter
+!
+!>        Structure of difference of vector
+        type(diff_vector_address) :: diff_vector
       end type phys_address
 !
 !

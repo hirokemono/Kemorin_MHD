@@ -135,7 +135,7 @@ const struct field_def field_props[NUM_FIELD] = {
 			
 			{1, "div_velocity", "$$    $$"},
 			{1, "div_magnetic", "$$    $$"},
-			{1, "div_vector_p", "$$    $$"},
+			{1, "div_vector_potential", "$$    $$"},
 			
 			{1, "div_inertia", "$$    $$"},
 			{1, "div_Lorentz_force", "$$    $$"},

@@ -257,7 +257,7 @@
         else if(field_name .eq. Lorentz_force_by_filtered%name) then
           force_by_filter%i_lorentz =    i_phys
         else if(field_name .eq. magnetic_tension_by_filtered%name) then
-          force_by_filter%i_m_tension =    i_phys
+          force_by_filter%i_m_tension =  i_phys
 !
         else if(field_name .eq. filtered_buoyancy%name) then
           force_by_filter%i_buoyancy =   i_phys

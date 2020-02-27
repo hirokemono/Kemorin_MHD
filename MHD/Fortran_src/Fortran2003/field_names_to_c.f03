@@ -1,6 +1,13 @@
 !
 !
-!
+!!      integer(c_int) function num_divergence_fields_f() bind(c)
+!!      subroutine set_divergence_field_labels_f                        &
+!!     &         (n_comps_c, field_name_c, field_math_c) bind(c)
+!!
+!!      integer(c_int) function num_gradient_fields_f() bind(c)
+!!      subroutine set_gradient_field_labels_f                          &
+!!     &         (n_comps_c, field_name_c, field_math_c) bind(c)
+!!
 !!      integer(c_int) function num_filtered_forces_f() bind(c)
 !!      subroutine set_filtered_force_labels_f                          &
 !!     &         (n_comps_c, field_name_c, field_math_c) bind(c)
@@ -23,6 +30,10 @@
 !!
 !!      integer(c_int) function num_double_filter_fields_f() bind(c)
 !!      subroutine set_dbl_filter_field_labels_f                        &
+!!     &         (n_comps_c, field_name_c, field_math_c) bind(c)
+!!
+!!      integer(c_int) function num_difference_vector_f() bind(c)
+!!      subroutine set_differnce_vector_labels_f                        &
 !!     &         (n_comps_c, field_name_c, field_math_c) bind(c)
 !
       module field_names_to_c
@@ -66,6 +77,60 @@
       call set_base_field_names(field_name_c(1))
 !
       end subroutine set_base_field_names_f
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      integer(c_int) function num_divergence_fields_f() bind(c)
+!
+      use t_grad_field_labels
+!
+      num_divergence_fields_f = num_divergence_fields()
+      return
+      end function num_divergence_fields_f
+!
+! ----------------------------------------------------------------------
+!
+      subroutine set_divergence_field_labels_f                          &
+     &         (n_comps_c, field_name_c, field_math_c) bind(c)
+!
+      use t_grad_field_labels
+!
+      integer(c_int), intent(inout) :: n_comps_c(*)
+      character(C_CHAR), intent(inout) :: field_name_c(*)
+      character(C_CHAR), intent(inout) :: field_math_c(*)
+!
+      call set_divergence_field_labels                                  &
+     &   (n_comps_c(1), field_name_c(1), field_math_c(1))
+!
+      end subroutine set_divergence_field_labels_f
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      integer(c_int) function num_gradient_fields_f() bind(c)
+!
+      use t_grad_field_labels
+!
+      num_gradient_fields_f = num_gradient_fields()
+      return
+      end function num_gradient_fields_f
+!
+! ----------------------------------------------------------------------
+!
+      subroutine set_gradient_field_labels_f                            &
+     &         (n_comps_c, field_name_c, field_math_c) bind(c)
+!
+      use t_grad_field_labels
+!
+      integer(c_int), intent(inout) :: n_comps_c(*)
+      character(C_CHAR), intent(inout) :: field_name_c(*)
+      character(C_CHAR), intent(inout) :: field_math_c(*)
+!
+      call set_gradient_field_labels                                    &
+     &   (n_comps_c(1), field_name_c(1), field_math_c(1))
+!
+      end subroutine set_gradient_field_labels_f
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
@@ -227,6 +292,33 @@
      &   (n_comps_c(1), field_name_c(1), field_math_c(1))
 !
       end subroutine set_dbl_filter_field_labels_f
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      integer(c_int) function num_difference_vector_f() bind(c)
+!
+      use t_diff_vector_labels
+!
+      num_difference_vector_f = num_difference_vector()
+      return
+      end function num_difference_vector_f
+!
+! ----------------------------------------------------------------------
+!
+      subroutine set_differnce_vector_labels_f                          &
+     &         (n_comps_c, field_name_c, field_math_c) bind(c)
+!
+      use t_diff_vector_labels
+!
+      integer(c_int), intent(inout) :: n_comps_c(*)
+      character(C_CHAR), intent(inout) :: field_name_c(*)
+      character(C_CHAR), intent(inout) :: field_math_c(*)
+!
+      call set_differnce_vector_labels                                  &
+     &   (n_comps_c(1), field_name_c(1), field_math_c(1))
+!
+      end subroutine set_differnce_vector_labels_f
 !
 ! ----------------------------------------------------------------------
 !

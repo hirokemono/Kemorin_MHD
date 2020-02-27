@@ -25,7 +25,7 @@
 !!
 !!   div_velocity: divergence of velocity          div u
 !!   div_magnetic: divergence of magnetic field    div B
-!!   div_vector_p: divergence of vector potential  div A
+!!   div_vector_potential: divergence of vector potential  div A
 !!
 !!   heat_source:            heat source              q_{T}
 !!   composition_source:     compositoin source       q_{T}
@@ -144,6 +144,7 @@
       use t_grad_field_labels
       use t_explicit_term_labels
       use t_field_product_labels
+      use t_diff_vector_labels
       use t_SGS_term_labels
       use t_diff_SGS_term_labels
       use t_SGS_model_coef_labels
