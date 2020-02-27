@@ -112,12 +112,10 @@
      &     .or. i_start .eq. iphys%i_filter_temp                        &
      &     .or. i_start .eq. iphys%i_buoyancy                           &
      &     .or. i_start .eq. iphys%i_heat_source                        &
-     &     .or. i_start .eq. iphys%i_square_t                           &
-     &     .or. i_start .eq. iphys%i_grad_t) then 
+     &     .or. i_start .eq. iphys%i_square_t) then 
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_temp, fhd_temp)
-        else if(i_start .eq. iphys%i_grad_composit                      &
-     &     .or. i_start .eq. iphys%i_filter_comp                        &
+        else if(i_start .eq. iphys%i_filter_comp                        &
      &     .or. i_start .eq. iphys%i_comp_buo                           &
      &     .or. i_start .eq. iphys%i_c_diffuse                          &
      &     .or. i_start .eq. iphys%i_square_c                           &

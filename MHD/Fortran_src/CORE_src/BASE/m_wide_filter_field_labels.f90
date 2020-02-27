@@ -44,7 +44,7 @@
 !!   wide_filter_pert_density      [wide_filter_fld%i_per_density]
 !!   wide_filter_pert_entropy      [wide_filter_fld%i_per_entropy]
 !!
-!!    wide_filter_grad_temp        [wide_filter_grad%i_grad_t]
+!!    wide_filter_grad_temp        [wide_filter_grad%i_grad_temp]
 !!    wide_filter_grad_composition [wide_filter_grad%i_grad_composit]
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -303,7 +303,7 @@
       flag = check_wide_filter_grad(field_name)
       if(flag) then
         if(field_name .eq. wide_filter_grad_temp%name) then
-          wide_filter_grad%i_grad_t =         i_phys
+          wide_filter_grad%i_grad_temp =      i_phys
         else if(field_name .eq. wide_filter_grad_composition%name) then
           wide_filter_grad%i_grad_composit =  i_phys
         end if

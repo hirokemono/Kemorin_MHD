@@ -186,10 +186,12 @@
       if (iflag_debug.eq.1) write(*,*)' set_reference_temp'
       call set_reference_temp                                           &
      &   (MHD_prop%ref_param_T, MHD_prop%takepito_T, mesh%node,         &
-     &    MHD_mesh%fluid, iphys%i_ref_t, iphys%i_gref_t, nod_fld)
+     &    MHD_mesh%fluid, iphys%i_ref_t, iphys%grad_fld%i_grad_ref_t,   &
+     &    nod_fld)
       call set_reference_temp                                           &
      &   (MHD_prop%ref_param_C, MHD_prop%takepito_C, mesh%node,         &
-      &   MHD_mesh%fluid, iphys%i_ref_c, iphys%i_gref_c, nod_fld)
+     &    MHD_mesh%fluid, iphys%i_ref_c, iphys%grad_fld%i_grad_ref_c,   &
+     &    nod_fld)
 !
       if (iflag_debug.eq.1) write(*,*)' set_material_property'
       call set_material_property                                        &

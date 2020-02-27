@@ -75,23 +75,23 @@
      &    ipol%diff_vector%i_grad_jx, ipol%diff_vector%i_grad_jy,       &
      &    ipol%diff_vector%i_grad_jz, rj_fld)
 !
-!         Input: ipol%i_temp,  Solution: ipol%i_grad_t
-      if(ipol%i_grad_t .gt. 0) then
+!         Input: ipol%i_temp,  Solution: ipol%grad_fld%i_grad_temp
+      if(ipol%grad_fld%i_grad_temp .gt. 0) then
         if(iflag_debug .gt. 0)  write(*,*)                              &
-     &           'const_radial_grad_temp', ipol%i_grad_t
+     &           'const_radial_grad_temp', ipol%grad_fld%i_grad_temp
         call const_radial_grad_scalar(sph%sph_rj, r_2nd,                &
      &      sph_MHD_bc%sph_bc_T, sph_MHD_bc%bcs_T,                      &
      &      sph_MHD_bc%fdm2_center, leg%g_sph_rj,                       &
-     &      ipol%i_temp, ipol%i_grad_t, rj_fld)
+     &      ipol%i_temp, ipol%grad_fld%i_grad_temp, rj_fld)
       end if
 !
-      if(ipol%i_grad_composit .gt. 0) then
+      if(ipol%grad_fld%i_grad_composit .gt. 0) then
         if(iflag_debug .gt. 0)  write(*,*)                              &
-     &           'const_radial_grad_composition', ipol%i_grad_composit
+     &   'const_radial_grad_composition', ipol%grad_fld%i_grad_composit
         call const_radial_grad_scalar(sph%sph_rj, r_2nd,                &
      &      sph_MHD_bc%sph_bc_C, sph_MHD_bc%bcs_C,                      &
      &      sph_MHD_bc%fdm2_center, leg%g_sph_rj,                       &
-     &      ipol%i_light, ipol%i_grad_composit, rj_fld)
+     &      ipol%i_light, ipol%grad_fld%i_grad_composit, rj_fld)
       end if
 !
       end subroutine overwrt_grad_of_vectors_sph
@@ -133,7 +133,7 @@
      &    ipol%i_grad_filter_jx, ipol%i_grad_filter_jy,                 &
      &    ipol%i_grad_filter_jz, rj_fld)
 !
-!         Input: ipol%i_filter_temp,  Solution: ipol%i_grad_t
+!       Input: ipol%i_filter_temp, Solution: ipol%grad_fld%i_grad_temp
       if(ipol%i_grad_filter_temp .gt. 0) then
         if(iflag_debug .gt. 0)  write(*,*)                              &
      &     'const_radial_grad_filter_temp', ipol%i_grad_filter_temp

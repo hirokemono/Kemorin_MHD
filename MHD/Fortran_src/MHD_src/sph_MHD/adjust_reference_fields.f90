@@ -13,14 +13,14 @@
 !!     &          MHD_prop, sph_rj, ipol, idpdr, rj_fld)
 !!        d_rj(inod,ipol%i_temp):        T => \Theta = T - T0
 !!        d_rj(inod,ipol%i_per_temp):    \Theta = T - T0
-!!        d_rj(inod,ipol%i_grad_t):      T => d \Theta / dr
-!!        d_rj(inod,ipol%i_grad_per_t): d \Theta / dr
+!!        d_rj(inod,ipol%grad_fld%i_grad_temp):      T => d \Theta / dr
+!!        d_rj(inod,ipol%grad_fld%i_grad_per_t): d \Theta / dr
 !!      subroutine trans_per_temp_to_temp_sph                           &
 !!     &         (SPH_model, sph_rj, ipol, idpdr, rj_fld)
 !!        d_rj(inod,ipol%i_temp):        \Theta = T - T0 => T
 !!        d_rj(inod,ipol%i_per_temp):    \Theta = T - T0
-!!        d_rj(inod,ipol%i_grad_t):      d \Theta / dr   => dT / dr
-!!        d_rj(inod,ipol%i_grad_per_t): d \Theta / dr
+!!        d_rj(inod,ipol%grad_fld%i_grad_temp): d \Theta / dr   => dT / dr
+!!        d_rj(inod,ipol%grad_fld%i_grad_per_t): d \Theta / dr
 !!
 !!        type(SPH_MHD_model_data), intent(in) :: SPH_model
 !!        type(sph_shell_parameters), intent(in) :: sph_params
@@ -86,14 +86,17 @@
 !
       call sync_scalar_by_pert_sph                                      &
      &   (sph_rj, SPH_model%ref_temp, SPH_model%MHD_prop%ref_param_T,   &
-     &    ipol%i_temp, ipol%i_grad_t, idpdr%i_grad_t,                   &
-     &    ipol%i_per_temp, ipol%i_grad_per_t, idpdr%i_grad_per_t,       &
+     &    ipol%i_temp,                                                  &
+     &    ipol%grad_fld%i_grad_temp, idpdr%grad_fld%i_grad_temp,        &
+     &    ipol%i_per_temp,                                              &
+     &    ipol%grad_fld%i_grad_per_t, idpdr%grad_fld%i_grad_per_t,      &
      &    rj_fld)
 !
       call sync_scalar_by_pert_sph                                      &
      &   (sph_rj, SPH_model%ref_comp, SPH_model%MHD_prop%ref_param_C,   &
-     &    ipol%i_light, ipol%i_grad_composit, idpdr%i_grad_composit,    &
-     &    ipol%i_per_light, ipol%i_grad_per_c, idpdr%i_grad_per_c,      &
+     &    ipol%i_light, ipol%grad_fld%i_grad_composit,                  &
+     &    idpdr%grad_fld%i_grad_composit, ipol%i_per_light,             &
+     &    ipol%grad_fld%i_grad_per_c, idpdr%grad_fld%i_grad_per_c,      &
      &    rj_fld)
 !
       end subroutine sync_temp_by_per_temp_sph
@@ -114,14 +117,17 @@
 !
         call trans_pert_to_scalar_sph                                   &
      &     (sph_rj, SPH_model%ref_temp, SPH_model%MHD_prop%ref_param_T, &
-     &      ipol%i_temp, ipol%i_grad_t, idpdr%i_grad_t,                 &
-     &      ipol%i_per_temp, ipol%i_grad_per_t, idpdr%i_grad_per_t,     &
+     &      ipol%i_temp,                                                &
+     &      ipol%grad_fld%i_grad_temp, idpdr%grad_fld%i_grad_temp,      &
+     &      ipol%i_per_temp,                                            &
+     &      ipol%grad_fld%i_grad_per_t, idpdr%grad_fld%i_grad_per_t,    &
      &      rj_fld)
 !
         call trans_pert_to_scalar_sph                                   &
      &     (sph_rj, SPH_model%ref_comp, SPH_model%MHD_prop%ref_param_C, &
-     &      ipol%i_light, ipol%i_grad_composit, idpdr%i_grad_composit,  &
-     &      ipol%i_per_light, ipol%i_grad_per_c, idpdr%i_grad_per_c,    &
+     &      ipol%i_light, ipol%grad_fld%i_grad_composit,                &
+     &      idpdr%grad_fld%i_grad_composit, ipol%i_per_light,           &
+     &      ipol%grad_fld%i_grad_per_c, idpdr%grad_fld%i_grad_per_c,    &
      &      rj_fld)
 !
       end subroutine trans_per_temp_to_temp_sph

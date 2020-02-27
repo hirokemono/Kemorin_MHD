@@ -134,7 +134,8 @@
      &      bn_trns%diff_vector%i_grad_vx,                              &
      &      bn_trns%diff_vector%i_grad_vy,                              &
      &      bn_trns%diff_vector%i_grad_vz,                              &
-     &      bn_trns%i_grad_t, trns_b_NLGD%ncomp, trns_b_NLGD%fld_rtp,   &
+     &      bn_trns%grad_fld%i_grad_temp,                               &
+     &      trns_b_NLGD%ncomp, trns_b_NLGD%fld_rtp,                     &
      &      fg_trns%i_SGS_h_flux, trns_f_SGS%ncomp, trns_f_SGS%fld_rtp)
       end if
 !
@@ -145,7 +146,7 @@
      &      bn_trns%diff_vector%i_grad_vx,                              &
      &      bn_trns%diff_vector%i_grad_vy,                              &
      &      bn_trns%diff_vector%i_grad_vz,                              &
-     &      bn_trns%i_grad_composit,                                    &
+     &      bn_trns%grad_fld%i_grad_composit,                           &
      &      trns_b_NLGD%ncomp, trns_b_NLGD%fld_rtp,                     &
      &      fg_trns%i_SGS_c_flux, trns_f_SGS%ncomp, trns_f_SGS%fld_rtp)
       end if

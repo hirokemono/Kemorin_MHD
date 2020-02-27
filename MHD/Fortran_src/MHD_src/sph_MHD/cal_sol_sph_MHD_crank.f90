@@ -313,13 +313,13 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-!         Input: ipol%i_temp,  Solution: ipol%i_grad_t
+!         Input: ipol%i_temp,  Solution: ipol%grad_fld%i_grad_temp
       if(iflag_debug .gt. 0)  write(*,*)                                &
-     &           'const_radial_grad_temp', ipol%i_grad_t
-      if(ipol%i_grad_t .gt. 0) then
+     &           'const_radial_grad_temp', ipol%grad_fld%i_grad_temp
+      if(ipol%grad_fld%i_grad_temp .gt. 0) then
         call const_radial_grad_scalar                                   &
-     &     (sph_rj, r_2nd, sph_bc_T, bcs_T, fdm2_center,                &
-     &      leg%g_sph_rj, ipol%i_temp, ipol%i_grad_t, rj_fld)
+     &     (sph_rj, r_2nd, sph_bc_T, bcs_T, fdm2_center, leg%g_sph_rj,  &
+     &      ipol%i_temp, ipol%grad_fld%i_grad_temp, rj_fld)
       end if
 !
 !         Input: ipol%i_temp,  Solution: ipol%i_t_diffuse
@@ -352,11 +352,12 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-!         Input: ipol%i_light,  Solution: ipol%i_grad_composit
-      if(ipol%i_grad_composit .gt. 0) then
+!         Input: ipol%i_light,  Solution: ipol%grad_fld%i_grad_composit
+      if(ipol%grad_fld%i_grad_composit .gt. 0) then
         call const_radial_grad_scalar                                   &
      &     (sph_rj, r_2nd, sph_bc_C, bcs_C, fdm2_center,                &
-     &      leg%g_sph_rj, ipol%i_light, ipol%i_grad_composit, rj_fld)
+     &      leg%g_sph_rj, ipol%i_light, ipol%grad_fld%i_grad_composit,  &
+     &      rj_fld)
       end if
 !
 !         Input: ipol%i_light,  Solution: ipol%i_c_diffuse

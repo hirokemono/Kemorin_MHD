@@ -92,9 +92,9 @@
       call set_vect_sph_address(ipol%wide_filter_fld%i_current,         &
      &    itor%wide_filter_fld%i_current,                               &
      &    idpdr%wide_filter_fld%i_current)
-      call set_vect_sph_address(ipol%wide_filter_grad%i_grad_t,         &
-     &    itor%wide_filter_grad%i_grad_t,                               &
-     &    idpdr%wide_filter_grad%i_grad_t)
+      call set_vect_sph_address(ipol%wide_filter_grad%i_grad_temp,      &
+     &    itor%wide_filter_grad%i_grad_temp,                            &
+     &    idpdr%wide_filter_grad%i_grad_temp)
       call set_vect_sph_address(ipol%wide_filter_grad%i_grad_composit,  &
      &    itor%wide_filter_grad%i_grad_composit,                        &
      &    idpdr%wide_filter_grad%i_grad_composit)
@@ -109,9 +109,9 @@
      &    itor%dbl_filter_fld%i_current,                                &
      &    idpdr%dbl_filter_fld%i_current)
 !
-      call set_vect_sph_address(ipol%dbl_filter_grad%i_grad_t,          &
-     &    itor%dbl_filter_grad%i_grad_t,                                &
-     &    idpdr%dbl_filter_grad%i_grad_t)
+      call set_vect_sph_address(ipol%dbl_filter_grad%i_grad_temp,       &
+     &    itor%dbl_filter_grad%i_grad_temp,                             &
+     &    idpdr%dbl_filter_grad%i_grad_temp)
       call set_vect_sph_address(ipol%dbl_filter_grad%i_grad_composit,   &
      &    itor%dbl_filter_grad%i_grad_composit,                         &
      &    idpdr%dbl_filter_grad%i_grad_composit)
@@ -179,16 +179,17 @@
      &    itor%rot_frc_by_filter%i_buoyancy,                            &
      &    idpdr%rot_frc_by_filter%i_buoyancy)
 !
-      call set_vect_sph_address(ipol%i_grad_t, itor%i_grad_t,           &
-     &    idpdr%i_grad_t)
-      call set_vect_sph_address(ipol%i_grad_per_t,                      &
-     &    itor%i_grad_per_t, idpdr%i_grad_per_t)
-      call set_vect_sph_address(ipol%i_grad_composit,                   &
-     &    itor%i_grad_composit, idpdr%i_grad_composit)
+      call set_vect_sph_address(ipol%grad_fld%i_grad_temp,              &
+     &    itor%grad_fld%i_grad_temp, idpdr%grad_fld%i_grad_temp)
+      call set_vect_sph_address(ipol%grad_fld%i_grad_per_t,             &
+     &    itor%grad_fld%i_grad_per_t, idpdr%grad_fld%i_grad_per_t)
+      call set_vect_sph_address(ipol%grad_fld%i_grad_composit,          &
+     &    itor%grad_fld%i_grad_composit,                                &
+     &    idpdr%grad_fld%i_grad_composit)
       call set_vect_sph_address(ipol%i_grad_filter_temp,                &
      &    itor%i_grad_filter_temp, idpdr%i_grad_filter_temp)
-      call set_vect_sph_address(ipol%i_grad_per_c,                      &
-     &    itor%i_grad_per_c, idpdr%i_grad_per_c)
+      call set_vect_sph_address(ipol%grad_fld%i_grad_per_c,             &
+     &    itor%grad_fld%i_grad_per_c, idpdr%grad_fld%i_grad_per_c)
 !
 !
       call set_vect_sph_address(ipol%i_grad_filter_vx,                  &

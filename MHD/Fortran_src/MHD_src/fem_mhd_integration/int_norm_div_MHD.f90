@@ -73,9 +73,9 @@
 !
       call int_norm_divergence(fluid%istack_ele_fld_smp, iphys%i_velo,  &
      &    node, ele, nod_fld, jacs%g_FEM, jacs%jac_3d, fem_wk,          &
-     &    fem_msq%ave_local(j_ave%i_div_v))
+     &    fem_msq%ave_local(j_ave%grad_fld%i_div_v))
       call MPI_allREDUCE                                                &
-     &   (fem_msq%ave_local(j_ave%i_div_v) , div_v_sig, 1,              &
+     &   (fem_msq%ave_local(j_ave%grad_fld%i_div_v) , div_v_sig, 1,     &
      &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
 !
 !
@@ -112,9 +112,9 @@
 !
       call int_norm_divergence(ele%istack_ele_smp, iphys%i_magne,       &
      &    node, ele, nod_fld, jacs%g_FEM, jacs%jac_3d, fem_wk,          &
-     &    fem_msq%ave_local(j_ave%i_div_b))
+     &    fem_msq%ave_local(j_ave%grad_fld%i_div_b))
       call MPI_allREDUCE                                                &
-     &   (fem_msq%ave_local(j_ave%i_div_b) , div_b_sig, 1,              &
+     &   (fem_msq%ave_local(j_ave%grad_fld%i_div_b) , div_b_sig, 1,     &
      &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
 !
       div_b_sig = abs(div_b_sig) / ele%volume
@@ -150,9 +150,9 @@
 !
       call int_norm_divergence(ele%istack_ele_smp, iphys%i_vecp,        &
      &    node, ele, nod_fld, jacs%g_FEM, jacs%jac_3d, fem_wk,          &
-     &    fem_msq%ave_local(j_ave%i_div_a))
+     &    fem_msq%ave_local(j_ave%grad_fld%i_div_a))
       call MPI_allREDUCE                                                &
-     &   (fem_msq%ave_local(j_ave%i_div_a) , div_a_sig, 1,              &
+     &   (fem_msq%ave_local(j_ave%grad_fld%i_div_a) , div_a_sig, 1,     &
      &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
 !
       div_a_sig = abs(div_a_sig) / ele%volume

@@ -66,19 +66,19 @@
       if    (ref_param_T%iflag_reference .eq. id_sphere_ref_temp        &
      &  .or. ref_param_T%iflag_reference .eq. id_takepiro_temp) then
         ipol_temp =  ipol%i_per_temp
-        igrad_temp = ipol%i_grad_per_t
+        igrad_temp = ipol%grad_fld%i_grad_per_t
       else
         ipol_temp =  ipol%i_temp
-        igrad_temp = ipol%i_grad_t
+        igrad_temp = ipol%grad_fld%i_grad_temp
       end if
 !
       if    (ref_param_C%iflag_reference .eq. id_sphere_ref_temp        &
      &  .or. ref_param_C%iflag_reference .eq. id_takepiro_temp) then
         ipol_comp =  ipol%i_per_light
-        igrad_comp = ipol%i_grad_per_c
+        igrad_comp = ipol%grad_fld%i_grad_per_c
       else
         ipol_comp =  ipol%i_light
-        igrad_comp = ipol%i_grad_composit
+        igrad_comp = ipol%grad_fld%i_grad_composit
       end if
 !
       if ((fl_prop%iflag_4_gravity * fl_prop%iflag_4_composit_buo)      &

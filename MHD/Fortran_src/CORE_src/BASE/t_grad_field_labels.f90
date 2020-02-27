@@ -21,11 +21,11 @@
 !!
 !! field names 
 !!
-!!  div_velocity             [i_grad_t]:  divergence of velocity
-!!  div_magnetic             [i_grad_t]:  divergence of magnetic field
-!!  div_vector_potential     [i_grad_t]:  divergence of vector potential
+!!  div_velocity             [i_div_v]:  divergence of velocity
+!!  div_magnetic             [i_div_b]:  divergence of magnetic field
+!!  div_vector_potential     [i_div_a]:  divergence of vector potential
 !!
-!!  grad_temp                   [i_grad_t]:  gradient of temperature
+!!  grad_temp                   [i_grad_temp]:  gradient of temperature
 !!  grad_pert_temp              [i_grad_per_t]:
 !!                     gradient of perturbation of temperature
 !!  grad_reference_temp         [i_grad_ref_t]:
@@ -173,7 +173,7 @@
 !
 !>        Field address for gradient of @f$ T @f$
 !!         @f$  \partial_{i} T / dz@f$
-        integer (kind=kint) :: i_grad_t =           izero
+        integer (kind=kint) :: i_grad_temp =           izero
 !>        Field address for gradient of @f$ \Theta @f$
 !!         @f$  \partial_{i} \Theta / dz@f$
         integer (kind=kint) :: i_grad_per_t =      izero
@@ -279,7 +279,7 @@
           grad_fld%i_div_a =    i_phys
 !
         else if(field_name .eq. grad_temp%name) then
-          grad_fld%i_grad_t =     i_phys
+          grad_fld%i_grad_temp =  i_phys
         else if(field_name .eq. grad_pert_temp%name) then
           grad_fld%i_grad_per_t = i_phys
         else if(field_name .eq. grad_reference_temp%name) then

@@ -109,13 +109,6 @@
           iphys%i_light_source = i0
         else if ( field_name(i) .eq. fhd_entropy_source ) then
           iphys%i_entropy_source = i0
-!
-        else if ( field_name(i) .eq. div_velocity%name ) then
-          iphys%i_div_v =    i0
-        else if ( field_name(i) .eq. div_magnetic%name ) then
-          iphys%i_div_b =    i0
-        else if ( field_name(i) .eq. div_vector_potential%name ) then
-          iphys%i_div_a =    i0
         end if
 !
         if ( field_name(i) .eq. fhd_filter_velo ) then
@@ -391,21 +384,10 @@
           iphys%i_ref_t = i0
         else if ( field_name(i) .eq. fhd_ref_light ) then
           iphys%i_ref_c = i0
-!
-        else if ( field_name(i) .eq. grad_temp%name ) then
-          iphys%i_grad_t =           i0
-        else if ( field_name(i) .eq. grad_pert_temp%name ) then
-          iphys%i_grad_per_t =       i0
-        else if ( field_name(i) .eq. grad_reference_temp%name ) then
-          iphys%i_gref_t =           i0
-        else if ( field_name(i) .eq. grad_composition%name ) then
-          iphys%i_grad_composit =    i0
-        else if ( field_name(i) .eq. grad_pert_composition%name ) then
-          iphys%i_grad_per_c =       i0
-        else if ( field_name(i) .eq. grad_reference_composition%name) then
-          iphys%i_gref_c =           i0
         end if
 !
+        call set_gradient_field_addresses                               &
+      &     (i0, field_name(i), iphys%grad_fld, flag)
         call set_diff_vector_addresses                                  &
       &     (i0, field_name(i), iphys%diff_vector, flag)
 !

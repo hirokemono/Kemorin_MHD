@@ -44,7 +44,7 @@
 !!   double_filter_pert_density      [dbl_filter_fld%i_per_density]
 !!   double_filter_pert_entropy      [dbl_filter_fld%i_per_entropy]
 !!
-!!   double_filter_grad_temp [dbl_filter_grad%i_grad_t]
+!!   double_filter_grad_temp [dbl_filter_grad%i_grad_temp]
 !!   double_filter_grad_comp [dbl_filter_grad%i_grad_composit]
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -306,7 +306,7 @@
       flag = check_double_filter_grad(field_name)
       if(flag) then
         if (field_name .eq. double_filter_grad_temp%name) then
-          dbl_filter_grad%i_grad_t =         i_phys
+          dbl_filter_grad%i_grad_temp =      i_phys
         else if (field_name .eq. double_filter_grad_comp%name) then
           dbl_filter_grad%i_grad_composit =  i_phys
         end if

@@ -100,17 +100,9 @@
 !>        start address for reference temperature
 !!         @f$  T_{0} @f$
         integer (kind=kint) :: i_ref_t =           izero
-!>        start address for gradient of reference temperature
-!!         @f$  \partial T_{0} / dz@f$
-!>         or @f$  \partial T_{0} / dr@f$
-        integer (kind=kint) :: i_gref_t =          izero
 !>        start address for reference temperature
 !!         @f$  C_{0} @f$
         integer (kind=kint) :: i_ref_c =           izero
-!>        start address for gradient of reference temperature
-!!         @f$  \partial C_{0} / dz@f$
-!>         or @f$  \partial C_{0} / dr@f$
-        integer (kind=kint) :: i_gref_c =          izero
 !>        start address for reference density
 !!         @f$  \rho_{0} @f$
         integer (kind=kint) :: i_ref_density =     izero
@@ -120,16 +112,6 @@
 !>        start address for poynting flux
 !!         @f$  e_{ijk} E_{j} B_{k} @f$
         integer (kind=kint) :: i_poynting =        izero
-!
-!>        start address for velocity
-!!         @f$ \partial_{i} u_{i} @f$
-        integer (kind=kint) :: i_div_v =           izero
-!>        start address for magnetic field
-!!         @f$ \partial_{i} B_{i} @f$
-        integer (kind=kint) :: i_div_b =           izero
-!>        start address for magnetic vector potential
-!!         @f$ \partial_{i} A_{i} @f$
-        integer (kind=kint) :: i_div_a =           izero
 !
 !>        Start address for filtered velocity
 !!         @f$ \bar{u}_{i} @f$
@@ -535,17 +517,6 @@
 !>        Square of composition @f$ C^{2} @f$
       integer (kind=kint) :: i_square_c = izero
 !
-!    Gradient of fields
-!>        start address for gradient of @f$ T @f$
-        integer (kind=kint) :: i_grad_t =           izero
-!>        start address for gradient of @f$ \Theta @f$
-        integer (kind=kint) :: i_grad_per_t =       izero
-!>        start address for gradient of @f$ C @f$
-        integer (kind=kint) :: i_grad_composit =    izero
-!>        start address for gradient of perturbation of composition
-        integer (kind=kint) :: i_grad_per_c =       izero
-!
-!
 !    Gradient of filtered fields
 !>        start address for gradient of @f$ \tilde{u}_{x} @f$
         integer (kind=kint) :: i_grad_filter_vx = izero
@@ -722,6 +693,9 @@
 !!          i_back_B+2: 2nd radial derivative of poloidal component
         integer (kind=kint) :: i_back_B = izero
 !
+!
+!>        Structure of gradient of fields
+        type(gradient_field_address) :: grad_fld
 !
 !>        Structure of wide filtered field
         type(base_field_address) :: wide_filter_fld

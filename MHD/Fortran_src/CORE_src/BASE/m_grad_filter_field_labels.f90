@@ -11,9 +11,9 @@
 !!
 !! field names 
 !!
-!!  div_filter_velo         [i_grad_t]:  divergence of velocity
-!!  div_filter_magne        [i_grad_t]:  divergence of magnetic field
-!!  div_filter_vecp         [i_grad_t]:  divergence of vector potential
+!!  div_filter_velo         [i_div_v]:  divergence of velocity
+!!  div_filter_magne        [i_div_b]:  divergence of magnetic field
+!!  div_filter_vecp         [i_div_a]:  divergence of vector potential
 !!
 !!  grad_filtered_temp            [i_grad_t]:  gradient of temperature
 !!  grad_filter_pert_temp         [i_grad_per_t]:

@@ -110,15 +110,17 @@
 !
 !   Gradient of temperature
       call add_field_name_4_sph_trns                                    &
-     &   (ipol%i_grad_t, grad_temp%name, grad_temp%n_comp,              &
-     &    ipol%i_grad_t, itor%i_grad_t,       &
-     &    iphys%i_grad_t, b_trns%i_grad_t, trns_back)
+     &   (ipol%grad_fld%i_grad_temp, grad_temp%name, grad_temp%n_comp,  &
+     &    ipol%grad_fld%i_grad_temp, itor%grad_fld%i_grad_temp,         &
+     &    iphys%grad_fld%i_grad_temp, b_trns%grad_fld%i_grad_temp,      &
+     &    trns_back)
 !
 !   Gradient of composition
-      call add_field_name_4_sph_trns(ipol%i_grad_composit,              &
+      call add_field_name_4_sph_trns(ipol%grad_fld%i_grad_composit,     &
      &    grad_composition%name, grad_composition%n_comp,               &
-     &    ipol%i_grad_composit, itor%i_grad_composit,                   &
-     &    iphys%i_grad_composit, b_trns%i_grad_composit, trns_back)
+     &    ipol%grad_fld%i_grad_composit, itor%grad_fld%i_grad_composit, &
+     &    iphys%grad_fld%i_grad_composit,                               &
+     &    b_trns%grad_fld%i_grad_composit, trns_back)
 !
       end subroutine b_trans_vector_gradients
 !

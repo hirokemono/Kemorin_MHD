@@ -251,11 +251,11 @@
         call int_norm_divergence                                        &
      &    (fluid%istack_ele_fld_smp, iphys%i_velo, mesh%node, mesh%ele, &
      &     nod_fld, jacs%g_FEM, jacs%jac_3d, fem_wk,                    &
-     &     fem_msq%ave_local(j_ave%i_div_v))
+     &     fem_msq%ave_local(j_ave%grad_fld%i_div_v))
         call int_rms_divergence                                         &
      &    (fluid%istack_ele_fld_smp, iphys%i_velo, mesh%node, mesh%ele, &
      &     nod_fld, jacs%g_FEM, jacs%jac_3d, fem_wk,                    &
-     &     fem_msq%rms_local(i_rms%i_div_v))
+     &     fem_msq%rms_local(i_rms%grad_fld%i_div_v))
         call cal_stability_4_advect(i_step, dt, mesh%ele, fluid,        &
      &      ele_fld%ntot_phys, iphys_ele%i_velo, ele_fld%d_fld)
       end if
@@ -264,11 +264,11 @@
         call int_norm_divergence                                        &
      &     (mesh%ele%istack_ele_smp, iphys%i_vecp, mesh%node, mesh%ele, &
      &      nod_fld, jacs%g_FEM, jacs%jac_3d, fem_wk,                   &
-     &      fem_msq%ave_local(j_ave%i_div_a))
+     &      fem_msq%ave_local(j_ave%grad_fld%i_div_a))
         call int_rms_divergence                                         &
      &     (mesh%ele%istack_ele_smp, iphys%i_vecp, mesh%node, mesh%ele, &
      &      nod_fld, jacs%g_FEM, jacs%jac_3d, fem_wk,                   &
-     &      fem_msq%rms_local(i_rms%i_div_a))
+     &      fem_msq%rms_local(i_rms%grad_fld%i_div_a))
       end if
 !
       if      (cd_prop%iflag_Bevo_scheme .gt. id_no_evolution           &
@@ -276,11 +276,11 @@
         call int_norm_divergence                                        &
      &    (mesh%ele%istack_ele_smp, iphys%i_magne, mesh%node, mesh%ele, &
      &     nod_fld, jacs%g_FEM, jacs%jac_3d, fem_wk,                    &
-     &     fem_msq%ave_local(j_ave%i_div_b))
+     &     fem_msq%ave_local(j_ave%grad_fld%i_div_b))
         call int_rms_divergence                                         &
      &    (mesh%ele%istack_ele_smp, iphys%i_magne, mesh%node, mesh%ele, &
      &     nod_fld, jacs%g_FEM, jacs%jac_3d, fem_wk,                    &
-     &     fem_msq%rms_local(i_rms%i_div_b))
+     &     fem_msq%rms_local(i_rms%grad_fld%i_div_b))
       end if
 !
       if(iphys%i_filter_velo .gt. 0) then

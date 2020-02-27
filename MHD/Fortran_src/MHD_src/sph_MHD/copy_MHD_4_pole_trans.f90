@@ -77,10 +77,11 @@
      &    fls_pl(1,bs_trns%i_induction), iphys%i_induction, nod_fld)
 !
       call copy_pole_vec_fld_from_trans(m_folding, sph_rtp, node,       &
-     &    fls_pl(1,bs_trns%i_grad_t), iphys%i_grad_t, nod_fld)
+     &    fls_pl(1,bs_trns%grad_fld%i_grad_temp),                       &
+     &    iphys%grad_fld%i_grad_temp, nod_fld)
       call copy_pole_vec_fld_from_trans(m_folding, sph_rtp, node,       &
-     &    fls_pl(1,bs_trns%i_grad_composit),                            &
-     &    iphys%i_grad_composit, nod_fld)
+     &    fls_pl(1,bs_trns%grad_fld%i_grad_composit),                   &
+     &    iphys%grad_fld%i_grad_composit, nod_fld)
 !
 !
 !
