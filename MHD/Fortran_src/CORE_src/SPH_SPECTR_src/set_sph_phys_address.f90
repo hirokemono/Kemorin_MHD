@@ -224,37 +224,37 @@
      &    itor%i_grad_filter_jz,  idpdr%i_grad_filter_jz)
 !
 !
-      call set_vect_sph_address(ipol%i_grad_vx, itor%i_grad_vx,         &
-     &    idpdr%i_grad_vx)
-      call set_vect_sph_address(ipol%i_grad_vy, itor%i_grad_vy,         &
-     &    idpdr%i_grad_vy)
-      call set_vect_sph_address(ipol%i_grad_vz, itor%i_grad_vz,         &
-     &    idpdr%i_grad_vz)
-      call set_vect_sph_address(ipol%i_grad_wx, itor%i_grad_wx,         &
-     &    idpdr%i_grad_wx)
-      call set_vect_sph_address(ipol%i_grad_wy, itor%i_grad_wy,         &
-     &    idpdr%i_grad_wy)
-      call set_vect_sph_address(ipol%i_grad_wz, itor%i_grad_wz,         &
-     &    idpdr%i_grad_wz)
+      call set_vect_sph_address(ipol%diff_vector%i_grad_vx,             &
+     &    itor%diff_vector%i_grad_vx, idpdr%diff_vector%i_grad_vx)
+      call set_vect_sph_address(ipol%diff_vector%i_grad_vy,             &
+     &    itor%diff_vector%i_grad_vy, idpdr%diff_vector%i_grad_vy)
+      call set_vect_sph_address(ipol%diff_vector%i_grad_vz,             &
+     &    itor%diff_vector%i_grad_vz, idpdr%diff_vector%i_grad_vz)
+      call set_vect_sph_address(ipol%diff_vector%i_grad_wx,             &
+     &    itor%diff_vector%i_grad_wx, idpdr%diff_vector%i_grad_wx)
+      call set_vect_sph_address(ipol%diff_vector%i_grad_wy,             &
+     &    itor%diff_vector%i_grad_wy, idpdr%diff_vector%i_grad_wy)
+      call set_vect_sph_address(ipol%diff_vector%i_grad_wz,             &
+     &    itor%diff_vector%i_grad_wz, idpdr%diff_vector%i_grad_wz)
 !
-      call set_vect_sph_address(ipol%i_grad_ax, itor%i_grad_ax,         &
-     &    idpdr%i_grad_ax)
-      call set_vect_sph_address(ipol%i_grad_ay, itor%i_grad_ay,         &
-     &    idpdr%i_grad_ay)
-      call set_vect_sph_address(ipol%i_grad_az, itor%i_grad_az,         &
-     &    idpdr%i_grad_az)
-      call set_vect_sph_address(ipol%i_grad_bx, itor%i_grad_bx,         &
-     &    idpdr%i_grad_bx)
-      call set_vect_sph_address(ipol%i_grad_by, itor%i_grad_by,         &
-     &    idpdr%i_grad_by)
-      call set_vect_sph_address(ipol%i_grad_bz, itor%i_grad_bz,         &
-     &    idpdr%i_grad_bz)
-      call set_vect_sph_address(ipol%i_grad_jx, itor%i_grad_jx,         &
-     &    idpdr%i_grad_jx)
-      call set_vect_sph_address(ipol%i_grad_jy, itor%i_grad_jy,         &
-     &    idpdr%i_grad_jy)
-      call set_vect_sph_address(ipol%i_grad_jz, itor%i_grad_jz,         &
-     &    idpdr%i_grad_jz)
+      call set_vect_sph_address(ipol%diff_vector%i_grad_ax,             &
+     &    itor%diff_vector%i_grad_ax, idpdr%diff_vector%i_grad_ax)
+      call set_vect_sph_address(ipol%diff_vector%i_grad_ay,             &
+     &    itor%diff_vector%i_grad_ay, idpdr%diff_vector%i_grad_ay)
+      call set_vect_sph_address(ipol%diff_vector%i_grad_az,             &
+     &    itor%diff_vector%i_grad_az, idpdr%diff_vector%i_grad_az)
+      call set_vect_sph_address(ipol%diff_vector%i_grad_bx,             &
+     &    itor%diff_vector%i_grad_bx, idpdr%diff_vector%i_grad_bx)
+      call set_vect_sph_address(ipol%diff_vector%i_grad_by,             &
+     &    itor%diff_vector%i_grad_by, idpdr%diff_vector%i_grad_by)
+      call set_vect_sph_address(ipol%diff_vector%i_grad_bz,             &
+     &    itor%diff_vector%i_grad_bz, idpdr%diff_vector%i_grad_bz)
+      call set_vect_sph_address(ipol%diff_vector%i_grad_jx,             &
+     &    itor%diff_vector%i_grad_jx, idpdr%diff_vector%i_grad_jx)
+      call set_vect_sph_address(ipol%diff_vector%i_grad_jy,             &
+     &    itor%diff_vector%i_grad_jy, idpdr%diff_vector%i_grad_jy)
+      call set_vect_sph_address(ipol%diff_vector%i_grad_jz,             &
+     &    itor%diff_vector%i_grad_jz, idpdr%diff_vector%i_grad_jz)
 !
 !
       call set_vect_sph_address(ipol%i_SGS_h_flux,                      &

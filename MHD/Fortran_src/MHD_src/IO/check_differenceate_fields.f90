@@ -8,8 +8,8 @@
 !> @brief Labels and addresses for differenciate of fields
 !!
 !!@verbatim
-!!      subroutine add_wide_filter_field_ctl(field_ctl)
-!!      subroutine add_double_filter_field_ctl(field_ctl)
+!!      subroutine add_field_ctl_4_grad_field(field_ctl)
+!!      subroutine add_field_ctl_4_diff_vector(field_ctl)
 !!        type(ctl_array_c3), intent(in) :: field_ctl
 !!@endverbatim
 !!

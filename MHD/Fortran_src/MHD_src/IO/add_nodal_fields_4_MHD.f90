@@ -42,6 +42,7 @@
 !
       use check_filtered_forces
       use check_double_filter_field
+      use check_differenceate_fields
 !
       type(ctl_array_c3), intent(inout) :: field_ctl
 !
@@ -67,6 +68,14 @@
       call add_field_ctl_4_filter_forces(field_ctl)
       if (iflag_debug .ge. iflag_routine_msg) write(*,*)                &
      &    'add_field_ctl_4_filter_forces end'
+!
+      call add_field_ctl_4_diff_vector(field_ctl)
+      if (iflag_debug .ge. iflag_routine_msg) write(*,*)                &
+     &    'add_field_ctl_4_diff_vector end'
+      call add_field_ctl_4_grad_field(field_ctl)
+      if (iflag_debug .ge. iflag_routine_msg) write(*,*)                &
+     &    'add_field_ctl_4_grad_field end'
+
 !
       end subroutine add_dependent_field
 !

@@ -357,9 +357,9 @@
      &      sph_rtp%a_r_1d_rtp_r, sph_rtp%cot_theta_1d_rtp,             &
      &      trns_b_snap%fld_rtp(1,bs_trns%i_magne),                     &
      &      trns_b_snap%fld_rtp(1,bs_trns%i_velo),                      &
-     &      trns_b_snap%fld_rtp(1,bs_trns%i_grad_vx),                   &
-     &      trns_b_snap%fld_rtp(1,bs_trns%i_grad_vy),                   &
-     &      trns_b_snap%fld_rtp(1,bs_trns%i_grad_vz),                   &
+     &      trns_b_snap%fld_rtp(1,bs_trns%diff_vector%i_grad_vx),       &
+     &      trns_b_snap%fld_rtp(1,bs_trns%diff_vector%i_grad_vy),       &
+     &      trns_b_snap%fld_rtp(1,bs_trns%diff_vector%i_grad_vz),       &
      &      trns_f_snap%fld_rtp(1,fs_trns%i_mag_stretch) )
 !$omp end parallel
       end if

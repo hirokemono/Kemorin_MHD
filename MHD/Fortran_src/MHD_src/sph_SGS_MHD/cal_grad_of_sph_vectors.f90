@@ -56,19 +56,24 @@
 !
       call overwrt_grad_of_vector_sph                                   &
      &   (sph%sph_rj, r_2nd, sph_MHD_bc%sph_bc_U, leg%g_sph_rj,         &
-     &    ipol%i_grad_vx, ipol%i_grad_vy, ipol%i_grad_vz, rj_fld)
+     &    ipol%diff_vector%i_grad_vx, ipol%diff_vector%i_grad_vy,       &
+     &    ipol%diff_vector%i_grad_vz, rj_fld)
       call overwrt_grad_of_vector_sph                                   &
      &   (sph%sph_rj, r_2nd, sph_MHD_bc%sph_bc_U, leg%g_sph_rj,         &
-     &    ipol%i_grad_wx, ipol%i_grad_wy, ipol%i_grad_wz, rj_fld)
+     &    ipol%diff_vector%i_grad_wx, ipol%diff_vector%i_grad_wy,       &
+     &    ipol%diff_vector%i_grad_wz, rj_fld)
       call overwrt_grad_of_vector_sph                                   &
      &   (sph%sph_rj, r_2nd, sph_MHD_bc%sph_bc_B, leg%g_sph_rj,         &
-     &    ipol%i_grad_ax, ipol%i_grad_ay, ipol%i_grad_az, rj_fld)
+     &    ipol%diff_vector%i_grad_ax, ipol%diff_vector%i_grad_ay,       &
+     &    ipol%diff_vector%i_grad_az, rj_fld)
       call overwrt_grad_of_vector_sph                                   &
      &   (sph%sph_rj, r_2nd, sph_MHD_bc%sph_bc_B, leg%g_sph_rj,         &
-     &    ipol%i_grad_bx, ipol%i_grad_by, ipol%i_grad_bz, rj_fld)
+     &    ipol%diff_vector%i_grad_bx, ipol%diff_vector%i_grad_by,       &
+     &    ipol%diff_vector%i_grad_bz, rj_fld)
       call overwrt_grad_of_vector_sph                                   &
      &   (sph%sph_rj, r_2nd, sph_MHD_bc%sph_bc_B, leg%g_sph_rj,         &
-     &    ipol%i_grad_jx, ipol%i_grad_jy, ipol%i_grad_jz, rj_fld)
+     &    ipol%diff_vector%i_grad_jx, ipol%diff_vector%i_grad_jy,       &
+     &    ipol%diff_vector%i_grad_jz, rj_fld)
 !
 !         Input: ipol%i_temp,  Solution: ipol%i_grad_t
       if(ipol%i_grad_t .gt. 0) then

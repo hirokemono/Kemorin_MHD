@@ -83,12 +83,17 @@
 !
       do i = 1, nod_fld%num_phys
         i_fld = nod_fld%istack_component(i-1) + 1
-        if(     i_fld .eq. iphys%i_grad_vx                              &
-     &     .or. i_fld .eq. iphys%i_grad_vy                              &
-     &     .or. i_fld .eq. iphys%i_grad_vz) then
-          if(i_fld .eq. iphys%i_grad_vx) i_src = iphys%i_velo
-          if(i_fld .eq. iphys%i_grad_vy) i_src = iphys%i_velo + 1
-          if(i_fld .eq. iphys%i_grad_vz) i_src = iphys%i_velo + 2
+        if(     i_fld .eq. iphys%diff_vector%i_grad_vx                  &
+     &     .or. i_fld .eq. iphys%diff_vector%i_grad_vy                  &
+     &     .or. i_fld .eq. iphys%diff_vector%i_grad_vz) then
+          if(i_fld .eq. iphys%diff_vector%i_grad_vx) then
+            i_src = iphys%i_velo
+          else if(i_fld .eq. iphys%diff_vector%i_grad_vy) then
+            i_src = iphys%i_velo + 1
+          else if(i_fld .eq. iphys%diff_vector%i_grad_vz) then
+            i_src = iphys%i_velo + 2
+          end if
+!
           if(iflag_debug .ge. iflag_routine_msg)                        &
      &             write(*,*) 'lead  ', trim(nod_fld%phys_name(i))
           call choose_cal_gradient                                      &
@@ -99,12 +104,17 @@
      &        rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
         end if
 !
-        if(     i_fld .eq. iphys%i_grad_wx                              &
-     &     .or. i_fld .eq. iphys%i_grad_wy                              &
-     &     .or. i_fld .eq. iphys%i_grad_wz) then
-          if(i_fld .eq. iphys%i_grad_wx) i_src = iphys%i_vort
-          if(i_fld .eq. iphys%i_grad_wy) i_src = iphys%i_vort + 1
-          if(i_fld .eq. iphys%i_grad_wz) i_src = iphys%i_vort + 2
+        if(     i_fld .eq. iphys%diff_vector%i_grad_wx                  &
+     &     .or. i_fld .eq. iphys%diff_vector%i_grad_wy                  &
+     &     .or. i_fld .eq. iphys%diff_vector%i_grad_wz) then
+          if(i_fld .eq. iphys%diff_vector%i_grad_wx) then
+            i_src = iphys%i_vort
+          else if(i_fld .eq. iphys%diff_vector%i_grad_wy) then
+            i_src = iphys%i_vort + 1
+          else if(i_fld .eq. iphys%diff_vector%i_grad_wz) then
+            i_src = iphys%i_vort + 2
+          end if
+!
           if(iflag_debug .ge. iflag_routine_msg)                        &
      &             write(*,*) 'lead  ', trim(nod_fld%phys_name(i))
           call choose_cal_gradient                                      &
@@ -115,12 +125,17 @@
      &        rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
         end if
 !
-        if(     i_fld .eq. iphys%i_grad_ax                              &
-     &     .or. i_fld .eq. iphys%i_grad_ay                              &
-     &     .or. i_fld .eq. iphys%i_grad_az) then
-          if(i_fld .eq. iphys%i_grad_ax) i_src = iphys%i_vecp
-          if(i_fld .eq. iphys%i_grad_ay) i_src = iphys%i_vecp + 1
-          if(i_fld .eq. iphys%i_grad_az) i_src = iphys%i_vecp + 2
+        if(     i_fld .eq. iphys%diff_vector%i_grad_ax                  &
+     &     .or. i_fld .eq. iphys%diff_vector%i_grad_ay                  &
+     &     .or. i_fld .eq. iphys%diff_vector%i_grad_az) then
+          if(i_fld .eq. iphys%diff_vector%i_grad_ax) then
+            i_src = iphys%i_vecp
+          else if(i_fld .eq. iphys%diff_vector%i_grad_ay) then
+            i_src = iphys%i_vecp + 1
+          else if(i_fld .eq. iphys%diff_vector%i_grad_az) then
+            i_src = iphys%i_vecp + 2
+          end if
+!
           if(iflag_debug .ge. iflag_routine_msg)                        &
      &             write(*,*) 'lead  ', trim(nod_fld%phys_name(i))
           call choose_cal_gradient                                      &
@@ -131,12 +146,17 @@
      &        rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
         end if
 !
-        if(     i_fld .eq. iphys%i_grad_bx                              &
-     &     .or. i_fld .eq. iphys%i_grad_by                              &
-     &     .or. i_fld .eq. iphys%i_grad_bz) then
-          if(i_fld .eq. iphys%i_grad_bx) i_src = iphys%i_magne
-          if(i_fld .eq. iphys%i_grad_by) i_src = iphys%i_magne + 1
-          if(i_fld .eq. iphys%i_grad_bz) i_src = iphys%i_magne + 2
+        if(     i_fld .eq. iphys%diff_vector%i_grad_bx                  &
+     &     .or. i_fld .eq. iphys%diff_vector%i_grad_by                  &
+     &     .or. i_fld .eq. iphys%diff_vector%i_grad_bz) then
+          if(i_fld .eq. iphys%diff_vector%i_grad_bx) then
+            i_src = iphys%i_magne
+          else if(i_fld .eq. iphys%diff_vector%i_grad_by) then
+            i_src = iphys%i_magne + 1
+          else if(i_fld .eq. iphys%diff_vector%i_grad_bz) then
+            i_src = iphys%i_magne + 2
+          end if
+!
           if(iflag_debug .ge. iflag_routine_msg)                        &
      &             write(*,*) 'lead  ', trim(nod_fld%phys_name(i))
           call choose_cal_gradient                                      &
@@ -147,12 +167,17 @@
      &        rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
         end if
 !
-        if(     i_fld .eq. iphys%i_grad_jx                              &
-     &     .or. i_fld .eq. iphys%i_grad_jy                              &
-     &     .or. i_fld .eq. iphys%i_grad_jz) then
-          if(i_fld .eq. iphys%i_grad_jx) i_src = iphys%i_current
-          if(i_fld .eq. iphys%i_grad_jy) i_src = iphys%i_current + 1
-          if(i_fld .eq. iphys%i_grad_jz) i_src = iphys%i_current + 2
+        if(     i_fld .eq. iphys%diff_vector%i_grad_jx                  &
+     &     .or. i_fld .eq. iphys%diff_vector%i_grad_jy                  &
+     &     .or. i_fld .eq. iphys%diff_vector%i_grad_jz) then
+          if(i_fld .eq. iphys%diff_vector%i_grad_jx) then
+            i_src = iphys%i_current
+          else if(i_fld .eq. iphys%diff_vector%i_grad_jy) then
+            i_src = iphys%i_current + 1
+          else if(i_fld .eq. iphys%diff_vector%i_grad_jz) then
+            i_src = iphys%i_current + 2
+          end if
+!
           if(iflag_debug .ge. iflag_routine_msg)                        &
      &             write(*,*) 'lead  ', trim(nod_fld%phys_name(i))
           call choose_cal_gradient                                      &
@@ -319,14 +344,14 @@
       end if
 !
       if (iphys%i_mag_stretch .gt. izero) then
-        call cal_phys_dot_product                                       &
-     &     (iphys%i_grad_vx, iphys%i_magne, iphys%i_mag_stretch,        &
+        call cal_phys_dot_product(iphys%diff_vector%i_grad_vx,          &
+     &      iphys%i_magne, iphys%i_mag_stretch,                         &
      &      nod_fld)
-        call cal_phys_dot_product                                       &
-     &     (iphys%i_grad_vy, iphys%i_magne, (iphys%i_mag_stretch+1),    &
+        call cal_phys_dot_product(iphys%diff_vector%i_grad_vy,          &
+     &      iphys%i_magne, (iphys%i_mag_stretch+1),                     &
      &      nod_fld)
-        call cal_phys_dot_product                                       &
-     &     (iphys%i_grad_vz, iphys%i_magne, (iphys%i_mag_stretch+2),    &
+        call cal_phys_dot_product(iphys%diff_vector%i_grad_vz,          &
+     &      iphys%i_magne, (iphys%i_mag_stretch+2),                     &
      &      nod_fld)
       end if
 !

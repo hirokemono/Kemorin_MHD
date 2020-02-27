@@ -536,37 +536,6 @@
       integer (kind=kint) :: i_square_c = izero
 !
 !    Gradient of fields
-!>        start address for gradient of @f$ u_{x} @f$
-        integer (kind=kint) :: i_grad_vx = izero
-!>        start address for gradient of @f$ u_{y} @f$
-        integer (kind=kint) :: i_grad_vy = izero
-!>        start address for gradient of @f$ u_{z} @f$
-        integer (kind=kint) :: i_grad_vz = izero
-!>        start address for gradient of @f$ \omega_{x} @f$
-        integer (kind=kint) :: i_grad_wx = izero
-!>        start address for gradient of @f$ \omega_{y} @f$
-        integer (kind=kint) :: i_grad_wy = izero
-!>        start address for gradient of @f$ \omega_{z} @f$
-        integer (kind=kint) :: i_grad_wz = izero
-!>        start address for gradient of @f$ A_{x} @f$
-        integer (kind=kint) :: i_grad_ax = izero
-!>        start address for gradient of @f$ A_{y} @f$
-        integer (kind=kint) :: i_grad_ay = izero
-!>        start address for gradient of @f$ A_{z} @f$
-        integer (kind=kint) :: i_grad_az = izero
-!>        start address for gradient of @f$ B_{x} @f$
-        integer (kind=kint) :: i_grad_bx = izero
-!>        start address for gradient of @f$ B_{y} @f$
-        integer (kind=kint) :: i_grad_by = izero
-!>        start address for gradient of @f$ B_{z} @f$
-        integer (kind=kint) :: i_grad_bz = izero
-!>        start address for gradient of @f$ J_{x} @f$
-        integer (kind=kint) :: i_grad_jx = izero
-!>        start address for gradient of @f$ J_{y} @f$
-        integer (kind=kint) :: i_grad_jy = izero
-!>        start address for gradient of @f$ J_{z} @f$
-        integer (kind=kint) :: i_grad_jz = izero
-!
 !>        start address for gradient of @f$ T @f$
         integer (kind=kint) :: i_grad_t =           izero
 !>        start address for gradient of @f$ \Theta @f$

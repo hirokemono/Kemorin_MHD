@@ -8,7 +8,7 @@
 !!
 !!@verbatim
 !!      logical function check_difference_vectors(field_name)
-!!      subroutine set_difference_vector_addresses                      &
+!!      subroutine set_diff_vector_addresses                            &
 !!     &         (i_phys, field_name, diff_vector, flag)
 !!        type(diff_vector_address), intent(inout) :: diff_vector
 !!
@@ -199,7 +199,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_difference_vector_addresses                        &
+      subroutine set_diff_vector_addresses                              &
      &         (i_phys, field_name, diff_vector, flag)
 !
       integer(kind = kint), intent(in) :: i_phys
@@ -248,7 +248,7 @@
         end if
       end if
 !
-      end subroutine set_difference_vector_addresses
+      end subroutine set_diff_vector_addresses
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
