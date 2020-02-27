@@ -115,7 +115,7 @@
         call add_phys_name_ctl(grad_v_1%name, field_ctl)
         call add_phys_name_ctl(grad_v_2%name, field_ctl)
         call add_phys_name_ctl(grad_v_3%name, field_ctl)
-        call add_phys_name_ctl(fhd_grad_temp, field_ctl)
+        call add_phys_name_ctl(grad_temp%name, field_ctl)
       end if
 !
       if(SGS_param%iflag_SGS_c_flux .eq. id_SGS_similarity) then
@@ -125,7 +125,7 @@
         call add_phys_name_ctl(grad_v_1%name, field_ctl)
         call add_phys_name_ctl(grad_v_2%name, field_ctl)
         call add_phys_name_ctl(grad_v_3%name, field_ctl)
-        call add_phys_name_ctl(fhd_grad_composit, field_ctl)
+        call add_phys_name_ctl(grad_composition%name, field_ctl)
       end if
 !
       end subroutine add_field_name_4_SGS

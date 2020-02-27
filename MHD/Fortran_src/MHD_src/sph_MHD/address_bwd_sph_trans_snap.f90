@@ -148,10 +148,12 @@
      &    ipol%i_induction, itor%i_induction, iphys%i_induction,        &
      &    b_trns%i_induction, trns_back)
 !
-      call add_field_name_4_sph_trns_snap(fhd_grad_temp, n_vector,      &
+      call add_field_name_4_sph_trns_snap                               &
+     &   (grad_temp%name, grad_temp%n_comp,                             &
      &    ipol%i_grad_t, itor%i_grad_t, iphys%i_grad_t,                 &
      &    b_trns%i_grad_t, trns_back)
-      call add_field_name_4_sph_trns_snap(fhd_grad_composit, n_vector,  &
+      call add_field_name_4_sph_trns_snap                               &
+     &   (grad_composition%name, grad_composition%n_comp,               &
      &    ipol%i_grad_composit, itor%i_grad_composit,                   &
      &    iphys%i_grad_composit, b_trns%i_grad_composit, trns_back)
 !

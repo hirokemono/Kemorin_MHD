@@ -66,22 +66,18 @@
 !
 !>        Divergence of velocity
 !!         @f$ \partial_{i} u_{i} @f$
-      character(len=kchara), parameter :: fhd_div_v = 'div_velocity'
       type(field_def), parameter :: div_velocity                        &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'div_velocity',                            &
      &                math = '$ \partial_{i} u_{i} $')
 !>        Divergence of magnetic field
 !!         @f$ \partial_{igrad} B_{i} @f$
-      character(len=kchara), parameter :: fhd_div_b = 'div_magnetic'
       type(field_def), parameter :: div_magnetic                        &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'div_magnetic',                            &
      &                math = '$ \partial_{i} B_{i} $')
 !>        Divergence of magnetic vector potential
 !!         @f$ \partial_{i} A_{i} @f$
-      character(len=kchara), parameter                                  &
-     &          :: fhd_div_a = 'div_vector_potential'
       type(field_def), parameter :: div_vector_potential                &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'div_vector_potential',                    &
@@ -89,23 +85,18 @@
 !
 !>        Field label for gradient of @f$ T @f$
 !!         @f$  \partial_{i} T / dz@f$
-      character(len=kchara), parameter :: fhd_grad_temp = 'grad_temp'
       type(field_def), parameter :: grad_temp                           &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'grad_temp',                               &
      &                math = '$ \partial_{i} T $')
 !>        Field label for gradient of @f$ \Theta @f$
 !!         @f$  \partial_{i} \Theta / dz@f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_grad_per_temp = 'grad_pert_temp'
       type(field_def), parameter :: grad_pert_temp                      &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'grad_pert_temp',                          &
      &                math = '$ \partial_{i} \Theta $')
 !>        Field label for gradient of reference temperature
 !!         @f$  \partial_{i} T_{0} / dz@f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_grad_ref_temp = 'grad_reference_temp'
       type(field_def), parameter :: grad_reference_temp                 &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'grad_reference_temp',                     &
@@ -113,24 +104,18 @@
 !
 !>        Field label for gradient of @f$ C @f$
 !!         @f$  \partial_{i} C / dz@f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_grad_composit = 'grad_composition'
       type(field_def), parameter :: grad_composition                    &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'grad_composition',                        &
      &                math = '$ \partial_{i} C $')
 !>        Field label for gradient of perturbation of composition
 !!         @f$  \partial_{i} \Theta_{C} / dz@f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_grad_per_light = 'grad_pert_composition'
       type(field_def), parameter :: grad_pert_composition               &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'grad_pert_composition',                   &
      &                math = '$ \partial_{i} \Theta_{C} $')
 !>        Field label for gradient of reference composition
 !!         @f$  \partial_{i} C_{0} / dz@f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_grad_ref_light = 'grad_reference_composition'
       type(field_def), parameter :: grad_reference_composition          &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'grad_reference_composition',              &
@@ -138,24 +123,18 @@
 !
 !>        Field label for gradient of density
 !!         @f$  \partial_{i} \rho / dz@f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_grad_density = 'grad_density'
       type(field_def), parameter :: grad_density                        &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'grad_density',                            &
      &                math = '$ \partial_{i} \rho $')
 !>        Field label for gradient of perturbation of density
 !!         @f$  \partial_{i} \Theta_{\rho} / dz@f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_grad_per_density = 'grad_pert_density'
       type(field_def), parameter :: grad_pert_density                   &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'grad_pert_density',                       &
      &                math = '$ \partial_{i} \Theta_{\rho} $')
 !>        Field label for gradient of reference density
 !!         @f$  \partial_{i} \rho_{0} / dz@f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_grad_ref_density = 'grad_reference_density'
       type(field_def), parameter :: grad_reference_density              &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'grad_reference_density',                  &
@@ -163,24 +142,18 @@
 !
 !>        Field label for gradient of entropy
 !!         @f$  \partial_{i} S / dz@f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_grad_entropy = 'grad_entropy'
       type(field_def), parameter :: grad_entropy                        &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'grad_entropy',                            &
      &                math = '$ \partial_{i} S $')
 !>        Field label for gradient of perturbation of entropy
 !!         @f$  \partial_{i} \Theta_{S} / dz@f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_grad_per_entropy = 'grad_pert_entropy'
       type(field_def), parameter :: grad_pert_entropy                   &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'grad_pert_entropy',                       &
      &                math = '$ \partial_{i} \Theta_{S} $')
 !>        Field label for gradient of reference density
 !!         @f$  \partial_{i} S_{0} / dz@f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_grad_ref_entropy = 'grad_reference_entropy'
       type(field_def), parameter :: grad_reference_entropy              &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'grad_reference_entropy',                  &

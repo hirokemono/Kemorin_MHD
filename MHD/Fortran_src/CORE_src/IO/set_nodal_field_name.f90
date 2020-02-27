@@ -69,12 +69,6 @@
      &  .or. (phys_nod_name_ctl .eq. fhd_current            )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_e_field            )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_poynting           )           &
-     &  .or. (phys_nod_name_ctl .eq. fhd_grad_temp          )           &
-     &  .or. (phys_nod_name_ctl .eq. fhd_grad_per_temp      )           &
-     &  .or. (phys_nod_name_ctl .eq. fhd_grad_ref_temp      )           &
-     &  .or. (phys_nod_name_ctl .eq. fhd_grad_composit      )           &
-     &  .or. (phys_nod_name_ctl .eq. fhd_grad_per_light     )           &
-     &  .or. (phys_nod_name_ctl .eq. fhd_grad_ref_light     )           &
      &      )   iflag = 1
 !
       if (   (phys_nod_name_ctl .eq. fhd_filter_velo        )           &
@@ -188,7 +182,8 @@
      &  .or. (phys_nod_name_ctl .eq. fhd_rot_forces         )           &
      &      )   iflag = 1
 !
-      if(     check_filtered_force(phys_nod_name_ctl)                   &
+      if(     check_gradient_field(phys_nod_name_ctl)                   &
+     &   .or. check_filtered_force(phys_nod_name_ctl)                   &
      &   .or. check_rot_fil_force(phys_nod_name_ctl)                    &
      &   .or. check_wide_filter_vector(phys_nod_name_ctl)               &
      &   .or. check_wide_filter_grad(phys_nod_name_ctl)                 &
@@ -231,9 +226,6 @@
      &  .or. (phys_nod_name_ctl .eq. fhd_heat_source          )         &
      &  .or. (phys_nod_name_ctl .eq. fhd_light_source         )         &
      &  .or. (phys_nod_name_ctl .eq. fhd_entropy_source       )         &
-     &  .or. (phys_nod_name_ctl .eq. fhd_div_v                )         &
-     &  .or. (phys_nod_name_ctl .eq. fhd_div_b                )         &
-     &  .or. (phys_nod_name_ctl .eq. fhd_div_a                )         &
      &      )   iflag = 1
 !
       if (    (phys_nod_name_ctl .eq. fhd_ref_temp            )         &
@@ -346,7 +338,8 @@
      &   .or. (phys_nod_name_ctl .eq. fhd_composition_scale   )         &
      &       ) iflag = 1
 !
-      if(     check_filtered_scallar_flux(phys_nod_name_ctl)            &
+      if(     check_divergence_field(phys_nod_name_ctl)                 &
+     &   .or. check_filtered_scallar_flux(phys_nod_name_ctl)            &
      &   .or. check_div_fil_force(phys_nod_name_ctl)                    &
      &   .or. check_filter_enegy_fluxes(phys_nod_name_ctl)              &
      &   .or. check_wide_filter_scalar(phys_nod_name_ctl)               &

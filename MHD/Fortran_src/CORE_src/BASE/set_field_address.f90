@@ -110,11 +110,11 @@
         else if ( field_name(i) .eq. fhd_entropy_source ) then
           iphys%i_entropy_source = i0
 !
-        else if ( field_name(i) .eq. fhd_div_v ) then
+        else if ( field_name(i) .eq. div_velocity%name ) then
           iphys%i_div_v =    i0
-        else if ( field_name(i) .eq. fhd_div_b ) then
+        else if ( field_name(i) .eq. div_magnetic%name ) then
           iphys%i_div_b =    i0
-        else if ( field_name(i) .eq. fhd_div_a ) then
+        else if ( field_name(i) .eq. div_vector_potential%name ) then
           iphys%i_div_a =    i0
         end if
 !
@@ -392,17 +392,17 @@
         else if ( field_name(i) .eq. fhd_ref_light ) then
           iphys%i_ref_c = i0
 !
-        else if ( field_name(i) .eq. fhd_grad_temp ) then
+        else if ( field_name(i) .eq. grad_temp%name ) then
           iphys%i_grad_t =           i0
-        else if ( field_name(i) .eq. fhd_grad_per_temp ) then
+        else if ( field_name(i) .eq. grad_pert_temp%name ) then
           iphys%i_grad_per_t =       i0
-        else if ( field_name(i) .eq. fhd_grad_ref_temp ) then
+        else if ( field_name(i) .eq. grad_reference_temp%name ) then
           iphys%i_gref_t =           i0
-        else if ( field_name(i) .eq. fhd_grad_composit ) then
+        else if ( field_name(i) .eq. grad_composition%name ) then
           iphys%i_grad_composit =    i0
-        else if ( field_name(i) .eq. fhd_grad_per_light ) then
+        else if ( field_name(i) .eq. grad_pert_composition%name ) then
           iphys%i_grad_per_c =       i0
-        else if ( field_name(i) .eq. fhd_grad_ref_light) then
+        else if ( field_name(i) .eq. grad_reference_composition%name) then
           iphys%i_gref_c =           i0
         end if
 !

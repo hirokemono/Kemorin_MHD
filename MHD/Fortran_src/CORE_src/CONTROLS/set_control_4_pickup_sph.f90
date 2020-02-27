@@ -340,7 +340,7 @@
 !    Turn On Nusselt number if temperature gradient is there
       Nu_type%iflag_no_source_Nu = 0
       do i = 1, rj_fld%num_phys
-        if(rj_fld%phys_name(i) .eq. fhd_grad_temp) then
+        if(rj_fld%phys_name(i) .eq. grad_temp%name) then
           Nu_type%iflag_no_source_Nu = 1
           exit
         end if

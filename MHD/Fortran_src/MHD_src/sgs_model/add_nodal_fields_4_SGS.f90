@@ -100,13 +100,14 @@
 !            call add_phys_name_ctl(grad_j_2%name, field_ctl)
 !            call add_phys_name_ctl(grad_j_3%name, field_ctl)
           else if(field_ctl%c1_tbl(i) .eq. fhd_temp) then
-            call add_phys_name_ctl(fhd_grad_temp, field_ctl)
+            call add_phys_name_ctl(grad_temp%name, field_ctl)
           else if(field_ctl%c1_tbl(i) .eq. fhd_ref_temp) then
-            call add_phys_name_ctl(fhd_grad_per_temp, field_ctl)
+            call add_phys_name_ctl(grad_pert_temp%name, field_ctl)
           else if(field_ctl%c1_tbl(i) .eq. fhd_light) then
-            call add_phys_name_ctl(fhd_grad_composit, field_ctl)
+            call add_phys_name_ctl(grad_composition%name, field_ctl)
           else if(field_ctl%c1_tbl(i) .eq. fhd_ref_light) then
-            call add_phys_name_ctl(fhd_grad_per_light, field_ctl)
+            call add_phys_name_ctl(grad_pert_composition%name,          &
+     &                             field_ctl)
           end if
         end do
       end if
