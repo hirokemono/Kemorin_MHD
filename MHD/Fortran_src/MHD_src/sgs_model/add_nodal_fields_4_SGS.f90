@@ -80,25 +80,25 @@
      &    .or. SGS_param%iflag_SGS.eq.id_SGS_similarity) then
         do i = 1, field_ctl%num
           if(      field_ctl%c1_tbl(i) .eq. fhd_velo) then
-            call add_phys_name_ctl(fhd_grad_v_1, field_ctl)
-            call add_phys_name_ctl(fhd_grad_v_2, field_ctl)
-            call add_phys_name_ctl(fhd_grad_v_3, field_ctl)
+            call add_phys_name_ctl(grad_v_1%name, field_ctl)
+            call add_phys_name_ctl(grad_v_2%name, field_ctl)
+            call add_phys_name_ctl(grad_v_3%name, field_ctl)
 !          if(      field_ctl%c1_tbl(i) .eq. fhd_vort) then
-!            call add_phys_name_ctl(fhd_grad_w_1, field_ctl)
-!            call add_phys_name_ctl(fhd_grad_w_2, field_ctl)
-!            call add_phys_name_ctl(fhd_grad_w_3, field_ctl)
+!            call add_phys_name_ctl(grad_w_1%name, field_ctl)
+!            call add_phys_name_ctl(grad_w_2%name, field_ctl)
+!            call add_phys_name_ctl(grad_w_3%name, field_ctl)
 !          else if( field_ctl%c1_tbl(i) .eq. fhd_vecp) then
-!            call add_phys_name_ctl(fhd_grad_a_1, field_ctl)
-!            call add_phys_name_ctl(fhd_grad_a_2, field_ctl)
-!            call add_phys_name_ctl(fhd_grad_a_3, field_ctl)
+!            call add_phys_name_ctl(grad_a_1%name, field_ctl)
+!            call add_phys_name_ctl(grad_a_2%name, field_ctl)
+!            call add_phys_name_ctl(grad_a_3%name, field_ctl)
           else if(field_ctl%c1_tbl(i) .eq. fhd_magne) then
-            call add_phys_name_ctl(fhd_grad_b_1, field_ctl)
-            call add_phys_name_ctl(fhd_grad_b_2, field_ctl)
-            call add_phys_name_ctl(fhd_grad_b_3, field_ctl)
+            call add_phys_name_ctl(grad_b_1%name, field_ctl)
+            call add_phys_name_ctl(grad_b_2%name, field_ctl)
+            call add_phys_name_ctl(grad_b_3%name, field_ctl)
 !          else if( field_ctl%c1_tbl(i) .eq. fhd_current) then
-!            call add_phys_name_ctl(fhd_grad_j_1, field_ctl)
-!            call add_phys_name_ctl(fhd_grad_j_2, field_ctl)
-!            call add_phys_name_ctl(fhd_grad_j_3, field_ctl)
+!            call add_phys_name_ctl(grad_j_1%name, field_ctl)
+!            call add_phys_name_ctl(grad_j_2%name, field_ctl)
+!            call add_phys_name_ctl(grad_j_3%name, field_ctl)
           else if(field_ctl%c1_tbl(i) .eq. fhd_temp) then
             call add_phys_name_ctl(fhd_grad_temp, field_ctl)
           else if(field_ctl%c1_tbl(i) .eq. fhd_ref_temp) then

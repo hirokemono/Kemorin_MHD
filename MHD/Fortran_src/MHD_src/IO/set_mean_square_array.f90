@@ -38,6 +38,7 @@
      &         (nod_fld, iphys, i_rms, j_ave, ifld_msq, msq_list)
 !
       use t_base_field_labels
+      use t_diff_vector_labels
       use m_phys_constants
       use m_volume_average_labels
       use m_filtered_force_labels
@@ -286,70 +287,8 @@
      &          i_rms%i_square_c, j_ave%i_square_c, msq_list)
           end if
 !
-          if      ( field_name .eq. fhd_grad_v_1 ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_grad_vx,                 &
-     &          i_rms%i_grad_vx, j_ave%i_grad_vx, msq_list)
-          else if ( field_name .eq. fhd_grad_v_2 ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_grad_vy,                 &
-     &          i_rms%i_grad_vy, j_ave%i_grad_vy, msq_list)
-          else if ( field_name .eq. fhd_grad_v_3 ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_grad_vz,                 &
-     &          i_rms%i_grad_vz, j_ave%i_grad_vz, msq_list)
-          end if
-          if      ( field_name .eq. fhd_grad_w_1 ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_grad_wx,                 &
-     &          i_rms%i_grad_wx, j_ave%i_grad_wx, msq_list)
-          else if ( field_name .eq. fhd_grad_w_2 ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_grad_wy,                 &
-     &          i_rms%i_grad_wy, j_ave%i_grad_wy, msq_list)
-          else if ( field_name .eq. fhd_grad_w_3 ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_grad_wz,                 &
-     &          i_rms%i_grad_wz, j_ave%i_grad_wz, msq_list)
-          end if
-          if      ( field_name .eq. fhd_grad_a_1 ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_grad_ax,                 &
-     &          i_rms%i_grad_ax, j_ave%i_grad_ax, msq_list)
-          else if ( field_name .eq. fhd_grad_a_2 ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_grad_ay,                 &
-     &          i_rms%i_grad_ay, j_ave%i_grad_ay, msq_list)
-          else if ( field_name .eq. fhd_grad_a_3 ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_grad_az,                 &
-     &          i_rms%i_grad_az, j_ave%i_grad_az, msq_list)
-          end if
-          if      ( field_name .eq. fhd_grad_b_1 ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_grad_bx,                 &
-     &          i_rms%i_grad_bx, j_ave%i_grad_bx, msq_list)
-          else if ( field_name .eq. fhd_grad_b_2 ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_grad_by,                 &
-     &          i_rms%i_grad_by, j_ave%i_grad_by, msq_list)
-          else if ( field_name .eq. fhd_grad_b_3 ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_grad_bz,                 &
-     &          i_rms%i_grad_bz, j_ave%i_grad_bz, msq_list)
-          end if
-          if      ( field_name .eq. fhd_grad_j_1 ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_grad_jx,                 &
-     &          i_rms%i_grad_vx, j_ave%i_grad_jx, msq_list)
-          else if ( field_name .eq. fhd_grad_j_2 ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_grad_jy,                 &
-     &          i_rms%i_grad_jy, j_ave%i_grad_jy, msq_list)
-          else if ( field_name .eq. fhd_grad_j_3 ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_grad_jz,                 &
-     &          i_rms%i_grad_jz, j_ave%i_grad_jz, msq_list)
+          if(check_difference_vectors(field_name)) then
+            call set_rms_address_list(i, nod_fld, msq_list)
           end if
 !
           if      ( field_name .eq. fhd_grad_filter_v_1 ) then

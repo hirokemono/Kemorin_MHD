@@ -391,35 +391,35 @@
         else if ( field_name(i) .eq. fhd_ref_light ) then
           iphys%i_ref_c = i0
 !
-        else if ( field_name(i) .eq. fhd_grad_v_1 ) then
+        else if ( field_name(i) .eq. grad_v_1%name ) then
           iphys%i_grad_vx =      i0
-        else if ( field_name(i) .eq. fhd_grad_v_2 ) then
+        else if ( field_name(i) .eq. grad_v_2%name ) then
           iphys%i_grad_vy =      i0
-        else if ( field_name(i) .eq. fhd_grad_v_3 ) then
+        else if ( field_name(i) .eq. grad_v_3%name ) then
           iphys%i_grad_vz =      i0
-        else if ( field_name(i) .eq. fhd_grad_w_1 ) then
+        else if ( field_name(i) .eq. grad_w_1%name ) then
           iphys%i_grad_wx =      i0
-        else if ( field_name(i) .eq. fhd_grad_w_2 ) then
+        else if ( field_name(i) .eq. grad_w_2%name ) then
           iphys%i_grad_wy =      i0
-        else if ( field_name(i) .eq. fhd_grad_w_3 ) then
+        else if ( field_name(i) .eq. grad_w_3%name ) then
           iphys%i_grad_wz =      i0
-        else if ( field_name(i) .eq. fhd_grad_a_1 ) then
+        else if ( field_name(i) .eq. grad_a_1%name ) then
           iphys%i_grad_ax =      i0
-        else if ( field_name(i) .eq. fhd_grad_a_2 ) then
+        else if ( field_name(i) .eq. grad_a_2%name ) then
           iphys%i_grad_ay =      i0
-        else if ( field_name(i) .eq. fhd_grad_a_3 ) then
+        else if ( field_name(i) .eq. grad_a_3%name ) then
           iphys%i_grad_az =      i0
-        else if ( field_name(i) .eq. fhd_grad_b_1 ) then
+        else if ( field_name(i) .eq. grad_b_1%name ) then
           iphys%i_grad_bx =      i0
-        else if ( field_name(i) .eq. fhd_grad_b_2 ) then
+        else if ( field_name(i) .eq. grad_b_2%name ) then
           iphys%i_grad_by =      i0
-        else if ( field_name(i) .eq. fhd_grad_b_3 ) then
+        else if ( field_name(i) .eq. grad_b_3%name ) then
           iphys%i_grad_bz =      i0
-        else if ( field_name(i) .eq. fhd_grad_j_1 ) then
+        else if ( field_name(i) .eq. grad_j_1%name ) then
           iphys%i_grad_jx =      i0
-        else if ( field_name(i) .eq. fhd_grad_j_2 ) then
+        else if ( field_name(i) .eq. grad_j_2%name ) then
           iphys%i_grad_jy =      i0
-        else if ( field_name(i) .eq. fhd_grad_j_3 ) then
+        else if ( field_name(i) .eq. grad_j_3%name ) then
           iphys%i_grad_jz =      i0
 !
         else if ( field_name(i) .eq. fhd_grad_temp ) then

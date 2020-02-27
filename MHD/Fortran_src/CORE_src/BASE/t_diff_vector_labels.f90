@@ -46,95 +46,80 @@
 !
 !  difference of field
 !>        Field label for gradient of @f$ \partial_{i} u_{x} @f$
-      character(len=kchara), parameter :: fhd_grad_v_1 =  'grad_v_1'
       type(field_def), parameter :: grad_v_1                            &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'grad_v_1',                                &
      &                math = '$ \partial_{i} u_{1} $')
 !>        Field label for gradient of @f$ \partial_{i} u_{y} @f$
-      character(len=kchara), parameter :: fhd_grad_v_2 =  'grad_v_2'
       type(field_def), parameter :: grad_v_2                            &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'grad_v_2',                                &
      &                math = '$ \partial_{i} u_{2} $')
 !>        Field label for gradient of @f$ \partial_{i} u_{z} @f$
-      character(len=kchara), parameter :: fhd_grad_v_3 =  'grad_v_3'
       type(field_def), parameter :: grad_v_3                            &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'grad_v_3',                                &
      &                math = '$ \partial_{i} u_{3} $')
 !
 !>        Field label for gradient of @f$ \partial_{i} \omega_{x} @f$
-      character(len=kchara), parameter :: fhd_grad_w_1 =  'grad_w_1'
       type(field_def), parameter :: grad_w_1                            &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'grad_w_1',                                &
      &                math = '$ \partial_{i} \omega_{1} $')
 !>        Field label for gradient of @f$ \partial_{i} \omega_{y} @f$
-      character(len=kchara), parameter :: fhd_grad_w_2 =  'grad_w_2'
       type(field_def), parameter :: grad_w_2                            &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'grad_w_2',                                &
      &                math = '$ \partial_{i} \omega_{2} $')
 !>        Field label for gradient of @f$ \partial_{i} \omega_{z} @f$
-      character(len=kchara), parameter :: fhd_grad_w_3 =  'grad_w_3'
       type(field_def), parameter :: grad_w_3                            &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'grad_w_3',                                &
      &                math = '$ \partial_{i} \omega_{3} $')
 !
 !>        Field label for gradient of @f$ \partial_{i} A_{x} @f$
-      character(len=kchara), parameter :: fhd_grad_a_1 =  'grad_a_1'
       type(field_def), parameter :: grad_a_1                            &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'grad_a_1',                                &
      &                math = '$ \partial_{i} A_{1} $')
 !>        Field label for gradient of @f$ \partial_{i} A_{y} @f$
-      character(len=kchara), parameter :: fhd_grad_a_2 =  'grad_a_2'
       type(field_def), parameter :: grad_a_2                            &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'grad_a_2',                                &
      &                math = '$ \partial_{i} A_{2} $')
 !>        Field label for gradient of @f$ \partial_{i} A_{z} @f$
-      character(len=kchara), parameter :: fhd_grad_a_3 =  'grad_a_3'
       type(field_def), parameter :: grad_a_3                            &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'grad_a_3',                                &
      &                math = '$ \partial_{i} A_{3} $')
 !
 !>        Field label for gradient of @f$ \partial_{i} B_{x} @f$
-      character(len=kchara), parameter :: fhd_grad_b_1 =  'grad_b_1'
       type(field_def), parameter :: grad_b_1                            &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'grad_b_1',                                &
      &                math = '$ \partial_{i} B_{1} $')
 !>        Field label for gradient of @f$ \partial_{i} B_{y} @f$
-      character(len=kchara), parameter :: fhd_grad_b_2 =  'grad_b_2'
       type(field_def), parameter :: grad_b_2                            &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'grad_b_2',                                &
      &                math = '$ \partial_{i} B_{2} $')
 !>        Field label for gradient of @f$ \partial_{i} B_{z} @f$
-      character(len=kchara), parameter :: fhd_grad_b_3 =  'grad_b_3'
       type(field_def), parameter :: grad_b_3                            &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'grad_b_3',                                &
      &                math = '$ \partial_{i} B_{3} $')
 !
 !>        Field label for gradient of @f$ \partial_{i} J_{x} @f$
-      character(len=kchara), parameter :: fhd_grad_j_1 =  'grad_j_1'
       type(field_def), parameter :: grad_j_1                            &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'grad_j_1',                                &
      &                math = '$ \partial_{i} J_{1} $')
 !>        Field label for gradient of @f$ \partial_{i} J_{y} @f$
-      character(len=kchara), parameter :: fhd_grad_j_2 =  'grad_j_2'
       type(field_def), parameter :: grad_j_2                            &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'grad_j_2',                                &
      &                math = '$ \partial_{i} J_{2} $')
 !>        Field label for gradient of @f$ \partial_{i} J_{z} @f$
-      character(len=kchara), parameter :: fhd_grad_j_3 =  'grad_j_3'
       type(field_def), parameter :: grad_j_3                            &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'grad_j_3',                                &

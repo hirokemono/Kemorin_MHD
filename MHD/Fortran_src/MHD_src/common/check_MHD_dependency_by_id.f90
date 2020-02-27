@@ -193,11 +193,11 @@
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_magne, fhd_magne)
           call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_grad_vx, fhd_grad_v_1)
+     &       (fld, i_start, iphys%i_grad_vx, grad_v_1%name)
           call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_grad_vy, fhd_grad_v_2)
+     &       (fld, i_start, iphys%i_grad_vy, grad_v_2%name)
           call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_grad_vz,fhd_grad_v_3)
+     &       (fld, i_start, iphys%i_grad_vz, grad_v_3%name)
 !
         else if(i_start .eq. iphys%i_c_advect                           &
      &     .or. i_start .eq. iphys%i_pc_advect                          &
