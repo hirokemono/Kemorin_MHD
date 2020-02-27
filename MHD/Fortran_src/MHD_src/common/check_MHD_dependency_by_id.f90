@@ -49,7 +49,6 @@
       do i = 1, fld%num_phys
         i_start = fld%istack_component(i-1) + 1
         if(     i_start .eq. iphys%i_filter_velo                        &
-     &     .or. i_start .eq. iphys%i_wide_fil_velo                      &
      &     .or. i_start .eq. iphys%i_vort                               &
      &     .or. i_start .eq. iphys%i_press                              &
      &     .or. i_start .eq. iphys%i_magne                              &
@@ -67,7 +66,6 @@
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_velo, fhd_velo)
         else if(i_start .eq. iphys%i_filter_vort                        &
-     &     .or. i_start .eq. iphys%i_wide_fil_vort                      &
      &     .or. i_start .eq. iphys%i_SGS_inertia                        &
      &     .or. i_start .eq. iphys%i_wide_SGS_inertia                   &
      &     .or. i_start .eq. iphys%i_velo_scale                         &
@@ -83,7 +81,6 @@
      &       (fld, i_start, iphys%i_press, fhd_press)
 !
         else if(i_start .eq. iphys%i_filter_magne                       &
-     &     .or. i_start .eq. iphys%i_wide_fil_magne                     &
      &     .or. i_start .eq. iphys%i_current                            &
      &     .or. i_start .eq. iphys%i_b_diffuse                          &
      &     .or. i_start .eq. iphys%i_mag_p                              &
@@ -109,7 +106,6 @@
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_vecp, fhd_vecp)
         else if(i_start .eq. iphys%i_filter_current                     &
-     &     .or. i_start .eq. iphys%i_wide_fil_current                   &
      &     .or. i_start .eq. iphys%i_c_heli                             &
      &     .or. i_start .eq. iphys%i_magne_scale                        &
      &     .or. i_start .eq. iphys%i_square_j                           &
@@ -129,7 +125,6 @@
         else if(i_start .eq. iphys%i_t_diffuse                          &
      &     .or. i_start .eq. iphys%i_per_temp                           &
      &     .or. i_start .eq. iphys%i_filter_temp                        &
-     &     .or. i_start .eq. iphys%i_wide_fil_temp                      &
      &     .or. i_start .eq. iphys%i_buoyancy                           &
      &     .or. i_start .eq. iphys%i_heat_source                        &
      &     .or. i_start .eq. iphys%i_square_t                           &
@@ -138,7 +133,6 @@
      &       (fld, i_start, iphys%i_temp, fhd_temp)
         else if(i_start .eq. iphys%i_grad_composit                      &
      &     .or. i_start .eq. iphys%i_filter_comp                        &
-     &     .or. i_start .eq. iphys%i_wide_fil_comp                      &
      &     .or. i_start .eq. iphys%i_comp_buo                           &
      &     .or. i_start .eq. iphys%i_c_diffuse                          &
      &     .or. i_start .eq. iphys%i_square_c                           &

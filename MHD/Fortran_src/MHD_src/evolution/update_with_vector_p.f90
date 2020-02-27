@@ -130,16 +130,16 @@
 !
         if     (SGS_par%model_p%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF   &
      &    .and. SGS_par%model_p%iflag_SGS.eq.id_SGS_similarity          &
-     &    .and. iphys%i_wide_fil_vecp.ne. 0) then
+     &    .and. iphys%wide_filter_fld%i_vecp.ne. 0) then
           if (iflag_debug.gt.0)                                         &
-     &         write(*,*) 'cal_filtered_vector_p i_wide_fil_vecp'
+     &        write(*,*) 'cal_filtered_vector_p wide_filter_fld%i_vecp'
           call cal_filtered_vector_whole(SGS_par%filter_p,              &
      &        mesh%nod_comm, mesh%node, FEM_filters%wide_filtering,     &
-     &        iphys%i_wide_fil_vecp, iphys%i_filter_vecp,               &
+     &        iphys%wide_filter_fld%i_vecp, iphys%i_filter_vecp,        &
      &        FEM_SGS_wk%wk_filter, nod_fld)
-          nod_fld%iflag_update(iphys%i_wide_fil_vecp  ) = 1
-          nod_fld%iflag_update(iphys%i_wide_fil_vecp+1) = 1
-          nod_fld%iflag_update(iphys%i_wide_fil_vecp+2) = 1
+          nod_fld%iflag_update(iphys%wide_filter_fld%i_vecp  ) = 1
+          nod_fld%iflag_update(iphys%wide_filter_fld%i_vecp+1) = 1
+          nod_fld%iflag_update(iphys%wide_filter_fld%i_vecp+2) = 1
         end if
 !
 !
@@ -254,14 +254,14 @@
      &         mesh%node, mesh%ele, nod_fld, fem_int%jcs, mhd_fem_wk)
          end if
 !
-         if(iflag2.eq.3 .and. iphys%i_wide_fil_magne.ne.0) then
+         if(iflag2.eq.3 .and. iphys%wide_filter_fld%i_magne.ne.0) then
            call cal_filtered_vector_whole(SGS_par%filter_p,             &
      &          mesh%nod_comm, mesh%node, FEM_filters%wide_filtering,   &
-     &         iphys%i_wide_fil_magne, iphys%i_filter_magne,            &
+     &         iphys%wide_filter_fld%i_magne, iphys%i_filter_magne,     &
      &         FEM_SGS_wk%wk_filter, nod_fld)
-           nod_fld%iflag_update(iphys%i_wide_fil_magne  ) = 1
-           nod_fld%iflag_update(iphys%i_wide_fil_magne+1) = 1
-           nod_fld%iflag_update(iphys%i_wide_fil_magne+2) = 1
+           nod_fld%iflag_update(iphys%wide_filter_fld%i_magne  ) = 1
+           nod_fld%iflag_update(iphys%wide_filter_fld%i_magne+1) = 1
+           nod_fld%iflag_update(iphys%wide_filter_fld%i_magne+2) = 1
          end if
 !
        end if

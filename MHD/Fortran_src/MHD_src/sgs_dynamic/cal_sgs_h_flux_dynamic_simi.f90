@@ -92,7 +92,7 @@
 !   similarity model with wider filter
 !
       if (iflag_debug.eq.1)                                             &
-     &     write(*,*) 'cal_sgs_sf_simi i_wide_fil_temp'
+     &     write(*,*) 'cal_sgs_sf_simi wide_filter_fld%i_temp'
       call cal_sgs_sf_simi(iphys%i_sgs_grad_f,                          &
      &    ifield_f, ifield_w, ivelo, ivelo_f, icomp_sgs_flux,           &
      &    SGS_par%filter_p, mesh%nod_comm, mesh%node,                   &

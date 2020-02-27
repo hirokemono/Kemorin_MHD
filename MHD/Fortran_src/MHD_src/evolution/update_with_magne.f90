@@ -163,14 +163,14 @@
      &        mesh%node, mesh%ele, nod_fld, fem_int%jcs, mhd_fem_wk)
         end if
 !
-        if (iflag2.eq.3 .and. iphys%i_wide_fil_magne.ne.0) then
+        if (iflag2.eq.3 .and. iphys%wide_filter_fld%i_magne.ne.0) then
           call cal_filtered_vector_whole(SGS_par%filter_p,              &
      &         mesh%nod_comm, mesh%node, FEM_filters%wide_filtering,    &
-     &         iphys%i_wide_fil_magne, iphys%i_filter_magne,            &
+     &         iphys%wide_filter_fld%i_magne, iphys%i_filter_magne,     &
      &         FEM_SGS_wk%wk_filter, nod_fld)
-           nod_fld%iflag_update(iphys%i_wide_fil_magne  ) = 1
-           nod_fld%iflag_update(iphys%i_wide_fil_magne+1) = 1
-           nod_fld%iflag_update(iphys%i_wide_fil_magne+2) = 1
+           nod_fld%iflag_update(iphys%wide_filter_fld%i_magne  ) = 1
+           nod_fld%iflag_update(iphys%wide_filter_fld%i_magne+1) = 1
+           nod_fld%iflag_update(iphys%wide_filter_fld%i_magne+2) = 1
         end if
       end if
 !

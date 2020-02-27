@@ -85,10 +85,10 @@
 !   similarity model with wider filter
 !
       if (iflag_debug.gt.0)                                             &
-     &     write(*,*) 'cal_sgs_uxb_simi_wide i_wide_fil_velo'
+     &     write(*,*) 'cal_sgs_uxb_simi_wide wide_filter_fld%i_velo'
       call cal_sgs_uxb_simi(iphys%i_sgs_grad_f,                         &
      &    iphys%i_filter_velo, iphys%i_filter_magne,                    &
-     &    iphys%i_wide_fil_velo, iphys%i_wide_fil_magne,                &
+     &    iphys%wide_filter_fld%i_velo, iphys%wide_filter_fld%i_magne,  &
      &    SGS_par%filter_p, mesh%nod_comm, mesh%node,                   &
      &    FEM_filters%wide_filtering, FEM_SGS_wk%wk_filter, nod_fld)
 !      call check_nodal_data                                            &
@@ -171,11 +171,11 @@
 !   similarity model with wider filter
 !
       if (iflag_debug.gt.0)                                             &
-     &     write(*,*) 'cal_sgs_induct_t_simi_wide i_wide_fil_velo'
+     &   write(*,*) 'cal_sgs_induct_t_simi_wide wide_filter_fld%i_velo'
       call cal_sgs_induct_t_simi(iphys%i_sgs_grad_f,                    &
      &    iphys%i_filter_velo, iphys%i_filter_magne,                    &
-     &    iphys%i_wide_fil_velo, iphys%i_wide_fil_magne, icomp_sgs_uxb, &
-     &    SGS_par%filter_p, mesh%nod_comm, mesh%node,                   &
+     &    iphys%wide_filter_fld%i_velo, iphys%wide_filter_fld%i_magne,  &
+     &    icomp_sgs_uxb, SGS_par%filter_p, mesh%nod_comm, mesh%node,    &
      &    FEM_filters%wide_filtering, sgs_coefs_nod,                    &
      &    FEM_SGS_wk%wk_filter, nod_fld)
 !      call check_nodal_data                                            &

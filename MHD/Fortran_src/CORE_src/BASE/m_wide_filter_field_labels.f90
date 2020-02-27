@@ -44,7 +44,7 @@
 !!   wide_filter_pert_density      [wide_filter_fld%i_per_density]
 !!   wide_filter_pert_entropy      [wide_filter_fld%i_per_entropy]
 !!
-!!    wide_filter_grad_temp [wide_filter_grad%i_grad_t]
+!!    wide_filter_grad_temp        [wide_filter_grad%i_grad_t]
 !!    wide_filter_grad_composition [wide_filter_grad%i_grad_composit]
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -62,13 +62,6 @@
 ! 
 !
       integer(kind = kint), parameter, private :: nfld_w_filter = 15
-!
-!  wider filtered field
-!
-!>        Field label for filtered velocity by wider filter
-      character(len=kchara), parameter                                  &
-     &             :: fhd_w_filter_velo = 'wide_filter_velocity'
-!
 !
 !>        Field label for filtered velocity by wide filtering
 !!         @f$ \overline{u}_{i} @f$

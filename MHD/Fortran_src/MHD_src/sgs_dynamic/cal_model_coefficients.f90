@@ -145,7 +145,7 @@
      &          write(*,*) 's_cal_sgs_s_flux_dynamic_simi temp'
           call s_cal_sgs_s_flux_dynamic_simi(FEM_prm%npoint_t_evo_int,  &
      &        SGS_par%model_p%itype_Csym_h_flux, iphys%i_sgs_temp,      &
-     &        iphys%i_filter_temp, iphys%i_wide_fil_temp,               &
+     &        iphys%i_filter_temp, iphys%wide_filter_fld%i_temp,        &
      &        iphys%i_velo, iphys%i_filter_velo, iphys%i_SGS_h_flux,    &
      &        ifld_sgs%i_heat_flux, icomp_sgs%i_heat_flux, SGS_par,     &
      &        fem%mesh, iphys, fem_int, FEM_filters,                    &
@@ -196,7 +196,7 @@
      &          write(*,*) 's_cal_sgs_s_flux_dynamic_simi comp'
           call s_cal_sgs_s_flux_dynamic_simi(FEM_prm%npoint_t_evo_int,  &
      &        SGS_par%model_p%itype_Csym_c_flux, iphys%i_sgs_composit,  &
-     &        iphys%i_filter_comp, iphys%i_wide_fil_comp,               &
+     &        iphys%i_filter_comp, iphys%wide_filter_fld%i_light,       &
      &        iphys%i_velo, iphys%i_filter_velo, iphys%i_SGS_c_flux,    &
      &        ifld_sgs%i_comp_flux, icomp_sgs%i_comp_flux, SGS_par,     &
      &        fem%mesh, iphys, fem_int, FEM_filters,                    &

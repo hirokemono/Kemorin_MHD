@@ -149,17 +149,17 @@
         end if
       end if
 !
-      if (iphys%i_wide_fil_velo.ne.0 .and. iflag_dmc.eq.0) then
+      if (iphys%wide_filter_fld%i_velo.ne.0 .and. iflag_dmc.eq.0) then
         if (SGS_par%model_p%iflag_SGS.eq.id_SGS_similarity              &
      &    .and. SGS_par%model_p%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF)  &
      &   then
           call cal_filtered_vector_whole(SGS_par%filter_p,              &
      &        mesh%nod_comm, mesh%node, FEM_filters%wide_filtering,     &
-     &        iphys%i_wide_fil_velo, iphys%i_filter_velo,               &
+     &        iphys%wide_filter_fld%i_velo, iphys%i_filter_velo,        &
      &        FEM_SGS_wk%wk_filter, nod_fld)
-          nod_fld%iflag_update(iphys%i_wide_fil_velo  ) = 1
-          nod_fld%iflag_update(iphys%i_wide_fil_velo+1) = 1
-          nod_fld%iflag_update(iphys%i_wide_fil_velo+2) = 1
+          nod_fld%iflag_update(iphys%wide_filter_fld%i_velo  ) = 1
+          nod_fld%iflag_update(iphys%wide_filter_fld%i_velo+1) = 1
+          nod_fld%iflag_update(iphys%wide_filter_fld%i_velo+2) = 1
         end if
       end if
 !

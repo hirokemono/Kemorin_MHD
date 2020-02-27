@@ -27,13 +27,13 @@
 !!      subroutine wider_similarity_SGS_rtp                             &
 !!     &         (sph_rtp, MHD_prop, bd_trns, trns_b_DYNS)
 !!       Input ::  fil_rtp(1,il_frc)
-!!               il_frc = i_wide_SGS_inertia, i_wide_SGS_Lorentz,
-!!                        i_wide_SGS_vp_induct, i_wide_SGS_h_flux, 
-!!                        i_wide_SGS_c_flux
+!!             il_frc = i_wide_SGS_inertia, i_wide_SGS_Lorentz,
+!!                      i_wide_SGS_vp_induct, i_wide_SGS_h_flux, 
+!!                      i_wide_SGS_c_flux
 !!                 fld_rtp(1,ib_frc)
-!!               ib_frc = i_wide_fil_velo, i_wide_fil_vort,
-!!                        i_wide_fil_magne, i_wide_fil_current
-!!                        i_wide_fil_temp, i_wide_fil_comp
+!!             ib_frc = wide_filter_fld%i_velo, wide_filter_fld%i_vort,
+!!                   wide_filter_fld%i_magne, wide_filter_fld%i_current
+!!                   wide_filter_fld%i_temp, wide_filter_fld%i_light
 !!       Output ::  fil_rtp(1,il_frc)
 !!               il_frc = i_wide_SGS_inertia, i_wide_SGS_Lorentz,
 !!                        i_wide_SGS_vp_induct, i_wide_SGS_h_flux, 
@@ -174,40 +174,40 @@
       if(bd_trns%i_wide_SGS_inertia .gt. 0) then
         call overwrt_sub_X_prod_w_coef_smp                              &
      &     (sph_rtp%nnod_rtp, MHD_prop%fl_prop%coef_velo,               &
-     &      trns_b_DYNS%fld_rtp(1,bd_trns%i_wide_fil_vort),             &
-     &      trns_b_DYNS%fld_rtp(1,bd_trns%i_wide_fil_velo),             &
+     &      trns_b_DYNS%fld_rtp(1,bd_trns%wide_filter_fld%i_vort),      &
+     &      trns_b_DYNS%fld_rtp(1,bd_trns%wide_filter_fld%i_velo),      &
      &      trns_b_DYNS%fld_rtp(1,bd_trns%i_wide_SGS_inertia))
       end if
 !
       if(bd_trns%i_wide_SGS_Lorentz .gt. 0) then
         call overwrt_sub_X_prod_w_coef_smp                              &
      &     (sph_rtp%nnod_rtp, MHD_prop%fl_prop%coef_lor,                &
-     &      trns_b_DYNS%fld_rtp(1,bd_trns%i_wide_fil_current),          &
-     &      trns_b_DYNS%fld_rtp(1,bd_trns%i_wide_fil_magne),            &
+     &      trns_b_DYNS%fld_rtp(1,bd_trns%wide_filter_fld%i_current),   &
+     &      trns_b_DYNS%fld_rtp(1,bd_trns%wide_filter_fld%i_magne),     &
      &      trns_b_DYNS%fld_rtp(1,bd_trns%i_wide_SGS_Lorentz))
       end if
 !
       if(bd_trns%i_wide_SGS_vp_induct .gt. 0) then
         call overwrt_sub_X_prod_w_coef_smp                              &
      &     (sph_rtp%nnod_rtp, MHD_prop%cd_prop%coef_induct,             &
-     &      trns_b_DYNS%fld_rtp(1,bd_trns%i_wide_fil_velo),             &
-     &      trns_b_DYNS%fld_rtp(1,bd_trns%i_wide_fil_magne),            &
+     &      trns_b_DYNS%fld_rtp(1,bd_trns%wide_filter_fld%i_velo),      &
+     &      trns_b_DYNS%fld_rtp(1,bd_trns%wide_filter_fld%i_magne),     &
      &      trns_b_DYNS%fld_rtp(1,bd_trns%i_wide_SGS_vp_induct))
       end if
 !
       if(bd_trns%i_wide_SGS_h_flux .gt. 0) then
         call overwrt_sub_scl_flux_w_coef_smp                            &
      &     (sph_rtp%nnod_rtp, MHD_prop%ht_prop%coef_advect,             &
-     &      trns_b_DYNS%fld_rtp(1,bd_trns%i_wide_fil_velo),             &
-     &      trns_b_DYNS%fld_rtp(1,bd_trns%i_wide_fil_temp),             &
+     &      trns_b_DYNS%fld_rtp(1,bd_trns%wide_filter_fld%i_velo),      &
+     &      trns_b_DYNS%fld_rtp(1,bd_trns%wide_filter_fld%i_temp),      &
      &      trns_b_DYNS%fld_rtp(1,bd_trns%i_wide_SGS_h_flux))
       end if
 !
       if(bd_trns%i_wide_SGS_c_flux .gt. 0) then
         call overwrt_sub_scl_flux_w_coef_smp                            &
      &     (sph_rtp%nnod_rtp, MHD_prop%cp_prop%coef_advect,             &
-     &      trns_b_DYNS%fld_rtp(1,bd_trns%i_wide_fil_velo),             &
-     &      trns_b_DYNS%fld_rtp(1,bd_trns%i_wide_fil_comp),             &
+     &      trns_b_DYNS%fld_rtp(1,bd_trns%wide_filter_fld%i_velo),      &
+     &      trns_b_DYNS%fld_rtp(1,bd_trns%wide_filter_fld%i_light),     &
      &      trns_b_DYNS%fld_rtp(1,bd_trns%i_wide_SGS_c_flux))
       end if
 !$omp end parallel

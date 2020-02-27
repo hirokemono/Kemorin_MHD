@@ -192,12 +192,12 @@
       do j_fld = 1, picked%num_field_rj
         i_fld = picked%ifield_monitor_rj(j_fld)
         jcou = picked%istack_comp_rj(j_fld-1)
-        if (   i_fld .eq. ipol%i_velo                                &
-     &      .or. i_fld .eq. ipol%i_magne                             &
-     &      .or. i_fld .eq. ipol%i_filter_velo                       &
-     &      .or. i_fld .eq. ipol%i_filter_magne                      &
-     &      .or. i_fld .eq. ipol%i_wide_fil_velo                     &
-     &      .or. i_fld .eq. ipol%i_wide_fil_magne) then
+        if (   i_fld .eq. ipol%i_velo                                   &
+     &      .or. i_fld .eq. ipol%i_magne                                &
+     &      .or. i_fld .eq. ipol%i_filter_velo                          &
+     &      .or. i_fld .eq. ipol%i_filter_magne                         &
+     &      .or. i_fld .eq. ipol%wide_filter_fld%i_velo                 &
+     &      .or. i_fld .eq. ipol%wide_filter_fld%i_magne) then
           call one_point_mean_sq_to_energy(rms_out(jcou+1))
         end if
       end do

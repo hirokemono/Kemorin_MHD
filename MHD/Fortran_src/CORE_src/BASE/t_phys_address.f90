@@ -631,31 +631,6 @@
 !!        to obatin commutation error
         integer (kind=kint) :: i_sgs_composit =    izero
 !
-!  wider filtered field
-!
-!>        start address for filtered velocity by wider filter
-        integer (kind=kint) :: i_wide_fil_velo  =  izero
-!>        start address for filtered vorticity by wider filter
-        integer (kind=kint) :: i_wide_fil_vort  =  izero
-!>        start address for filtered magnetic field by wider filter
-        integer (kind=kint) :: i_wide_fil_magne =  izero
-!>        start address for filtered magnetic vector potential
-!!        by wider filter
-        integer (kind=kint) :: i_wide_fil_vecp =     izero
-!>        start address for filtered current density by wider filter
-        integer (kind=kint) :: i_wide_fil_current =  izero
-!
-!>        start address for filtered temperature by wider filter
-        integer (kind=kint) :: i_wide_fil_temp  =  izero
-!>        start address for filtered grad. of temperature
-!!        by wider filter
-        integer (kind=kint) :: i_wide_fil_grad_t  =  izero
-!
-!>        start address for filtered composition by wider filter
-        integer (kind=kint) :: i_wide_fil_comp  =  izero
-!>        start address for filtered grad. of composition
-!!        by wider filter
-        integer (kind=kint) :: i_wide_fil_grad_c  =  izero
 !
 !  divergence of momentum equations
 !
@@ -777,6 +752,11 @@
 !!          i_back_B+2: 2nd radial derivative of poloidal component
         integer (kind=kint) :: i_back_B = izero
 !
+!
+!>        Structure of wide filtered field
+        type(base_field_address) :: wide_filter_fld
+!>        Structure of gradient of wide filtered field
+        type(gradient_field_address) :: wide_filter_grad
 !
 !>        Structure of double filtered field
         type(base_field_address) :: dbl_filter_fld

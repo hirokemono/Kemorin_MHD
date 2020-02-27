@@ -146,12 +146,13 @@
             nod_fld%iflag_update(iphys%i_filter_temp) = 1
           end if
 !
-          if (iphys%i_wide_fil_temp.ne.0 .and. iflag_dmc .eq. 0) then
-            if (iflag_debug.gt.0)                                       &
-     &        write(*,*) 'cal_w_filtered_scalar', iphys%i_wide_fil_temp
+          if(iphys%wide_filter_fld%i_temp .ne. 0                        &
+     &                    .and. iflag_dmc .eq. 0) then
+            if (iflag_debug.gt.0) write(*,*) 'cal_w_filtered_scalar',   &
+     &                           iphys%wide_filter_fld%i_temp
             call cal_filtered_scalar_whole(SGS_par%filter_p,            &
      &          mesh%nod_comm, mesh%node, FEM_filters%wide_filtering,   &
-     &          iphys%i_wide_fil_temp, iphys%i_filter_temp,             &
+     &          iphys%wide_filter_fld%i_temp, iphys%i_filter_temp,      &
      &          FEM_SGS_wk%wk_filter, nod_fld)
           end if
         end if
@@ -273,12 +274,13 @@
           nod_fld%iflag_update(iphys%i_filter_comp) = 1
         end if
 !
-        if (iphys%i_wide_fil_temp.ne.0 .and. iflag_dmc .eq. 0) then
-          if (iflag_debug.gt.0)                                         &
-     &      write(*,*) 'cal_w_filtered_scalar', iphys%i_wide_fil_temp
+        if (iphys%wide_filter_fld%i_temp .ne. 0                         &
+     &                   .and. iflag_dmc .eq. 0) then
+          if (iflag_debug.gt.0) write(*,*) 'cal_w_filtered_scalar',     &
+     &                         iphys%wide_filter_fld%i_temp
           call cal_filtered_scalar_whole (SGS_par%filter_p,             &
      &        mesh%nod_comm, mesh%node, FEM_filters%wide_filtering,     &
-     &        iphys%i_wide_fil_temp, iphys%i_filter_comp,               &
+     &        iphys%wide_filter_fld%i_temp, iphys%i_filter_comp,        &
      &        FEM_SGS_wk%wk_filter, nod_fld)
         end if
       end if

@@ -204,7 +204,7 @@
 !>         or @f$  \partial C_{0} / dr@f$
         integer (kind=kint) :: i_grad_ref_entropy = izero
 !
-!  difference of field
+!  difference of vector
 !
 !>        Field address for gradient of @f$ u_{x} @f$
         integer (kind=kint) :: i_grad_vx = izero

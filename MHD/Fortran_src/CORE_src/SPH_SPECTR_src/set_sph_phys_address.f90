@@ -83,18 +83,21 @@
       call set_vect_sph_address(ipol%i_truncated_B,                     &
      &    itor%i_truncated_B, idpdr%i_truncated_B)
 !
-      call set_vect_sph_address(ipol%i_wide_fil_velo,                   &
-     &    itor%i_wide_fil_velo, idpdr%i_wide_fil_velo)
-      call set_vect_sph_address(ipol%i_wide_fil_vort,                   &
-     &    itor%i_wide_fil_vort, idpdr%i_wide_fil_vort)
-      call set_vect_sph_address(ipol%i_wide_fil_magne,                  &
-     &    itor%i_wide_fil_magne, idpdr%i_wide_fil_magne)
-      call set_vect_sph_address(ipol%i_wide_fil_current,                &
-     &    itor%i_wide_fil_current, idpdr%i_wide_fil_current)
-      call set_vect_sph_address(ipol%i_wide_fil_grad_t,                 &
-     &    itor%i_wide_fil_grad_t, idpdr%i_wide_fil_grad_t)
-      call set_vect_sph_address(ipol%i_wide_fil_grad_c,                 &
-     &    itor%i_wide_fil_grad_c, idpdr%i_wide_fil_grad_c)
+      call set_vect_sph_address(ipol%wide_filter_fld%i_velo,            &
+     &    itor%wide_filter_fld%i_velo, idpdr%wide_filter_fld%i_velo)
+      call set_vect_sph_address(ipol%wide_filter_fld%i_vort,            &
+     &    itor%wide_filter_fld%i_vort, idpdr%wide_filter_fld%i_vort)
+      call set_vect_sph_address(ipol%wide_filter_fld%i_magne,           &
+     &    itor%wide_filter_fld%i_magne, idpdr%wide_filter_fld%i_magne)
+      call set_vect_sph_address(ipol%wide_filter_fld%i_current,         &
+     &    itor%wide_filter_fld%i_current,                               &
+     &    idpdr%wide_filter_fld%i_current)
+      call set_vect_sph_address(ipol%wide_filter_grad%i_grad_t,         &
+     &    itor%wide_filter_grad%i_grad_t,                               &
+     &    idpdr%wide_filter_grad%i_grad_t)
+      call set_vect_sph_address(ipol%wide_filter_grad%i_grad_composit,  &
+     &    itor%wide_filter_grad%i_grad_composit,                        &
+     &    idpdr%wide_filter_grad%i_grad_composit)
 !
       call set_vect_sph_address(ipol%dbl_filter_fld%i_velo,             &
      &    itor%dbl_filter_fld%i_velo, idpdr%dbl_filter_fld%i_velo)
