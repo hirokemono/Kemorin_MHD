@@ -295,19 +295,9 @@
           if(check_diff_filter_vectors(field_name)) then
             call set_rms_address_list(i, nod_fld, msq_list)
           end if
-!
-          if ( field_name .eq. fhd_grad_filter_temp ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_grad_filter_comp,        &
-     &          i_rms%i_grad_filter_temp, j_ave%i_grad_filter_temp,     &
-     &          msq_list)
-          else if ( field_name .eq. fhd_grad_filter_comp ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_grad_filter_comp,        &
-     &          i_rms%i_grad_filter_comp, j_ave%i_grad_filter_comp,     &
-     &          msq_list)
+          if(check_grad_filter_field(field_name)) then
+            call set_rms_address_list(i, nod_fld, msq_list)
           end if
-!
 !
           if ( field_name .eq. fhd_mom_flux ) then
             call set_rms_address                                        &

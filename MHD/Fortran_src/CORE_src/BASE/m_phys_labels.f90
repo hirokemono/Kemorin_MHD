@@ -49,8 +49,6 @@
 !!
 !!   truncated_magnetic_field
 !!
-!!   div_filter_velo, div_filter_magne, div_filter_vecp
-!!
 !!   kinetic_helicity, magnetic_helicity
 !!   current_helicity, cross_helicity
 !!

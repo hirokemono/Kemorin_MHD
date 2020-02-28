@@ -51,6 +51,7 @@
 !
       use m_rot_filtered_force_labels
       use m_div_filtered_force_labels
+      use m_grad_filter_field_labels
 !
       character(len = kchara), intent(in) :: phys_nod_name_ctl
       integer (kind = kint), intent(inout) :: icou
@@ -84,10 +85,6 @@
      &  .or. (phys_nod_name_ctl .eq. fhd_square_b           )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_square_a           )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_square_j           )           &
-     &      )   iflag = 1
-!
-      if (   (phys_nod_name_ctl .eq. fhd_grad_filter_temp   )           &
-     &  .or. (phys_nod_name_ctl .eq. fhd_grad_filter_comp   )           &
      &      )   iflag = 1
 !
       if (   (phys_nod_name_ctl .eq. fhd_viscous            )           &
@@ -175,6 +172,7 @@
      &   .or. check_double_filter_grad(phys_nod_name_ctl)               &
      &   .or. check_double_filter_vector(phys_nod_name_ctl)             &
      &   .or. check_difference_vectors(phys_nod_name_ctl)               &
+     &   .or. check_grad_filter_field(phys_nod_name_ctl)                &
      &   .or. check_diff_filter_vectors(phys_nod_name_ctl)) iflag = 1
 !
 
@@ -192,6 +190,7 @@
      &          phys_nod_name, num_nod_component, iflag)
 !
       use m_div_filtered_force_labels
+      use m_grad_filter_field_labels
 !
       character(len = kchara), intent(in) :: phys_nod_name_ctl
       integer (kind = kint), intent(inout) :: icou
@@ -229,9 +228,6 @@
       if (    (phys_nod_name_ctl .eq. fhd_filter_temp         )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_filter_pert_temp    )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_filter_comp         )         &
-     &   .or. (phys_nod_name_ctl .eq. fhd_div_filter_v        )         &
-     &   .or. (phys_nod_name_ctl .eq. fhd_div_filter_b        )         &
-     &   .or. (phys_nod_name_ctl .eq. fhd_div_filter_a        )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_SGS_temp            )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_SGS_comp            )         &
      &      )   iflag = 1
@@ -329,7 +325,8 @@
      &   .or. check_div_fil_force(phys_nod_name_ctl)                    &
      &   .or. check_filter_enegy_fluxes(phys_nod_name_ctl)              &
      &   .or. check_wide_filter_scalar(phys_nod_name_ctl)               &
-     &   .or. check_double_filter_scalar(phys_nod_name_ctl)) iflag = 1
+     &   .or. check_double_filter_scalar(phys_nod_name_ctl)             &
+     &   .or. check_div_filter_field(phys_nod_name_ctl)) iflag = 1
 !
       if (iflag .eq. 1) then
         icou = icou + 1

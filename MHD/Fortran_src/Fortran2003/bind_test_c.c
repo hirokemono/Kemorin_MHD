@@ -6,6 +6,9 @@ int lengthchara_f();
 
 int num_divergence_fields_f();
 int num_gradient_fields_f();
+
+int num_div_filter_fields_f();
+int num_grad_filter_fields_f();
 int num_filtered_forces_f();
 int num_rot_filtered_forces_f();
 int num_div_filtered_forces_f();
@@ -17,6 +20,9 @@ int num_diff_filter_vector_f();
 
 void set_divergence_field_labels_f(int *ncomp1, char *name1, char *math1);
 void set_gradient_field_labels_f(int *ncomp1, char *name1, char *math1);
+
+void set_div_filter_field_labels_f(int *ncomp1, char *name1, char *math1);
+void set_grad_filter_field_labels_f(int *ncomp1, char *name1, char *math1);
 void set_filtered_force_labels_f(int *ncomp1, char *name1, char *math1);
 void rot_filtered_force_labels_f(int *ncomp1, char *name1, char *math1);
 void div_filtered_force_labels_f(int *ncomp1, char *name1, char *math1);
@@ -39,14 +45,21 @@ int main(int argc, char **argv)
 			+ num_divergence_fields_f();
 	int ist_filtered_forces = ist_gradient_fields
 			+ num_gradient_fields_f();
+	
 	int ist_rot_filtered_forces = ist_filtered_forces
 			+ num_filtered_forces_f();
 	int ist_div_filtered_forces = ist_rot_filtered_forces
 			+ num_rot_filtered_forces_f();
 	int ist_filtered_ene_fluxes = ist_div_filtered_forces
 			+ num_div_filtered_forces_f();
-	int ist_wide_filter_fields = ist_filtered_ene_fluxes
+	int ist_div_filter_fields = ist_filtered_ene_fluxes
 			+ num_filtered_ene_fluxes_f();
+	
+	int ist_grad_filter_fields = ist_div_filter_fields
+			+ num_div_filter_fields_f();
+	int ist_wide_filter_fields = ist_grad_filter_fields
+			+ num_grad_filter_fields_f();
+	
 	int ist_double_filter_fields = ist_wide_filter_fields
 			+ num_wide_filter_fields_f();
 	int ist_difference_vector = ist_double_filter_fields
@@ -89,6 +102,13 @@ int main(int argc, char **argv)
 	set_filtered_ene_flax_labels_f(&ncomp[ist_filtered_ene_fluxes], 
 								&name1[len_f*ist_filtered_ene_fluxes], 
 								&math1[len_f*ist_filtered_ene_fluxes]);
+	
+	set_div_filter_field_labels_f(&ncomp[ist_div_filter_fields], 
+								&name1[len_f*ist_div_filter_fields],
+								&math1[len_f*ist_div_filter_fields]);
+	set_grad_filter_field_labels_f(&ncomp[ist_grad_filter_fields], 
+								&name1[len_f*ist_grad_filter_fields],
+								&math1[len_f*ist_grad_filter_fields]);
 	
 	set_wide_filter_field_labels_f(&ncomp[ist_wide_filter_fields], 
 								&name1[len_f*ist_wide_filter_fields], 

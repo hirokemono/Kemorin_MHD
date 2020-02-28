@@ -192,34 +192,38 @@
      &    b_trns%diff_fil_vect%i_grad_bz, trns_back)
 !
 !   Gradient of Radial current density
-      call add_field_name_4_sph_trns(ipol%i_grad_filter_jx,             &
+      call add_field_name_4_sph_trns(ipol%diff_fil_vect%i_grad_jx,      &
      &    grad_filtered_j_1%name, grad_filtered_j_1%n_comp,             &
-     &    ipol%i_grad_filter_jx, itor%i_grad_filter_jx,                 &
-     &    iphys%i_grad_filter_jx, b_trns%i_grad_filter_jx, trns_back)
+     &    ipol%diff_fil_vect%i_grad_jx, itor%diff_fil_vect%i_grad_jx,   &
+     &    iphys%diff_fil_vect%i_grad_jx,                                &
+     &    b_trns%diff_fil_vect%i_grad_jx, trns_back)
 !   Gradient of meridional current density
-      call add_field_name_4_sph_trns(ipol%i_grad_filter_jy,             &
+      call add_field_name_4_sph_trns(ipol%diff_fil_vect%i_grad_jy,      &
      &    grad_filtered_j_2%name, grad_filtered_j_2%n_comp,             &
-     &    ipol%i_grad_filter_jy, itor%i_grad_filter_jy,                 &
-     &    iphys%i_grad_filter_jy, b_trns%i_grad_filter_jy, trns_back)
+     &    ipol%diff_fil_vect%i_grad_jy, itor%diff_fil_vect%i_grad_jy,   &
+     &    iphys%diff_fil_vect%i_grad_jy,                                &
+     &    b_trns%diff_fil_vect%i_grad_jy, trns_back)
 !   Gradient of zonal current density
-      call add_field_name_4_sph_trns(ipol%i_grad_filter_jz,             &
+      call add_field_name_4_sph_trns(ipol%diff_fil_vect%i_grad_jz,      &
      &    grad_filtered_j_3%name, grad_filtered_j_3%n_comp,             &
-     &    ipol%i_grad_filter_jz, itor%i_grad_filter_jz,                 &
-     &    iphys%i_grad_filter_jz, b_trns%i_grad_filter_jz, trns_back)
+     &    ipol%diff_fil_vect%i_grad_jz, itor%diff_fil_vect%i_grad_jz,   &
+     &    iphys%diff_fil_vect%i_grad_jz,                                &
+     &    b_trns%diff_fil_vect%i_grad_jz, trns_back)
 !
 !   Gradient of temperature
-      call add_field_name_4_sph_trns(ipol%i_grad_filter_temp,           &
-     &    fhd_grad_filter_temp, n_vector,      &
-     &    ipol%i_grad_filter_temp, itor%i_grad_filter_temp,             &
-     &    iphys%i_grad_filter_temp, b_trns%i_grad_filter_temp,          &
-     &    trns_back)
+      call add_field_name_4_sph_trns(ipol%grad_fil_fld%i_grad_temp,     &
+     &    grad_filtered_temp%name, grad_filtered_temp%n_comp,           &
+     &    ipol%grad_fil_fld%i_grad_temp, itor%grad_fil_fld%i_grad_temp, &
+     &    iphys%grad_fil_fld%i_grad_temp,                               &
+     &    b_trns%grad_fil_fld%i_grad_temp, trns_back)
 !
 !   Gradient of composition
-      call add_field_name_4_sph_trns(ipol%i_grad_filter_comp,           &
-     &    fhd_grad_filter_comp, n_vector,      &
-     &    ipol%i_grad_filter_comp, itor%i_grad_filter_comp,             &
-     &    iphys%i_grad_filter_comp, b_trns%i_grad_filter_comp,          &
-     &    trns_back)
+      call add_field_name_4_sph_trns(ipol%grad_fil_fld%i_grad_composit, &
+     &    grad_filtered_comp%name, grad_filtered_comp%n_comp,           &
+     &    ipol%grad_fil_fld%i_grad_composit,                            &
+     &    itor%grad_fil_fld%i_grad_composit,                            &
+     &    iphys%grad_fil_fld%i_grad_composit,                           &
+     &    b_trns%grad_fil_fld%i_grad_composit, trns_back)
 !
       end subroutine b_trans_filter_vector_grads
 !

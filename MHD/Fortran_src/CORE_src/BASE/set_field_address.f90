@@ -132,11 +132,11 @@
         else if ( field_name(i) .eq. fhd_truncated_B) then
           iphys%i_truncated_B =    i0
 !
-        else if ( field_name(i) .eq. fhd_div_filter_v ) then
+        else if ( field_name(i) .eq. div_filtered_velo%name ) then
           iphys%i_div_filter_v =    i0
-        else if ( field_name(i) .eq. fhd_div_filter_b ) then
+        else if ( field_name(i) .eq. div_filtered_magne%name ) then
           iphys%i_div_filter_b =    i0
-        else if ( field_name(i) .eq. fhd_div_filter_a ) then
+        else if ( field_name(i) .eq. div_filtered_vector_potential%name ) then
           iphys%i_div_filter_a =    i0
 !
         else if ( field_name(i) .eq. fhd_kinetic_helicity ) then
@@ -408,14 +408,10 @@
           iphys%i_square_c = i0
         end if
 !
+        call set_grad_filter_field_addresses                            &
+     &     (i0, field_name(i), iphys%grad_fil_fld, flag)
         call set_diff_filter_vect_addresses                             &
      &     (i0, field_name(i), iphys%diff_fil_vect, flag)
-!
-        if ( field_name(i) .eq. fhd_grad_filter_temp ) then
-          iphys%i_grad_filter_temp = i0
-        else if ( field_name(i) .eq. fhd_grad_filter_comp ) then
-          iphys%i_grad_filter_comp = i0
-        end if
 !
         if ( field_name(i) .eq. fhd_SGS_simi ) then
           iphys%i_sgs_simi =     i0

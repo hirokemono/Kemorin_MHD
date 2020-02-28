@@ -130,22 +130,6 @@
 !
       do i = 1, fld%num_phys
         i_start = fld%istack_component(i-1) + 1
-        if(i_start .eq. iphys%i_grad_filter_jx                     &
-     &     .or. i_start .eq. iphys%i_grad_filter_jy                     &
-     &     .or. i_start .eq. iphys%i_grad_filter_jz) then 
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_filter_current, fhd_filter_current)
-        else if(i_start .eq. iphys%i_grad_filter_temp) then 
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_filter_temp, fhd_filter_temp)
-        else if(i_start .eq. iphys%i_grad_filter_comp) then 
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_filter_comp, fhd_filter_comp)
-        end if
-      end do
-!
-      do i = 1, fld%num_phys
-        i_start = fld%istack_component(i-1) + 1
         if(i_start .eq. iphys%i_temp_scale) then 
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_t_diffuse, fhd_thermal_diffusion)

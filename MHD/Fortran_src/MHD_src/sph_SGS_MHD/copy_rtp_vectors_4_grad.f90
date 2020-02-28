@@ -79,8 +79,9 @@
       end if
       if(bs_trns%i_filter_current .gt. 0) then
         call copy_vect_to_grad_vect_rtp(sph%sph_rtp,                    &
-     &      bs_trns%i_filter_current, fd_trns%i_grad_filter_jx,         &
-     &      fd_trns%i_grad_filter_jy, fd_trns%i_grad_filter_jz,         &
+     &      bs_trns%i_filter_current, fd_trns%diff_fil_vect%i_grad_jx,  &
+     &      fd_trns%diff_fil_vect%i_grad_jy,                            &
+     &      fd_trns%diff_fil_vect%i_grad_jz,                            &
      &      trns_b_SGS%ncomp, trns_DYNG%ncomp,                          &
      &      trns_b_SGS%fld_rtp, trns_DYNG%fld_rtp)
       end if

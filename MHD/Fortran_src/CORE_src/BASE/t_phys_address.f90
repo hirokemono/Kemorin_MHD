@@ -517,21 +517,6 @@
 !>        Square of composition @f$ C^{2} @f$
       integer (kind=kint) :: i_square_c = izero
 !
-!    Gradient of filtered fields
-!>        start address for gradient of @f$ \tilde{J}_{x} @f$
-        integer (kind=kint) :: i_grad_filter_jx = izero
-!>        start address for gradient of @f$ \tilde{J}_{y} @f$
-        integer (kind=kint) :: i_grad_filter_jy = izero
-!>        start address for gradient of @f$ \tilde{J}_{z} @f$
-        integer (kind=kint) :: i_grad_filter_jz = izero
-!
-!>        start address for gradient of @f$ \tilde{T} @f$
-        integer (kind=kint) :: i_grad_filter_temp = izero
-!>        start address for gradient of @f$ \tilde{C} @f$
-        integer (kind=kint) :: i_grad_filter_comp = izero
-!
-!
-!
 !>        start address for SGS term by scale similarity method
         integer (kind=kint) :: i_sgs_simi =        izero
 !>        start address for SGS term by nonlinear gradient method
@@ -695,6 +680,9 @@
 !
 !>        Structure of difference of vector
         type(diff_vector_address) :: diff_vector
+!
+!>        Structure of gradient of filtered fields
+        type(gradient_field_address) :: grad_fil_fld
 !>        Structure of difference of filtered vector
         type(diff_vector_address) :: diff_fil_vect
       end type phys_address

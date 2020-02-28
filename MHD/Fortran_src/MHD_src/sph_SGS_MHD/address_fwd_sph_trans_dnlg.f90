@@ -117,20 +117,23 @@
      &    f_trns%diff_fil_vect%i_grad_bz, trns_fwd)
 !
 !   Radial current density
-      call add_field_name_4_sph_trns(ipol%i_grad_filter_jx,  &
+      call add_field_name_4_sph_trns(ipol%diff_fil_vect%i_grad_jx,      &
      &    grad_filtered_j_1%name, n_scalar,                             &
-     &    ipol%i_grad_filter_jx, itor%i_grad_filter_jx,                 &
-     &    iphys%i_grad_filter_jx, f_trns%i_grad_filter_jx, trns_fwd)
+     &    ipol%diff_fil_vect%i_grad_jx, itor%diff_fil_vect%i_grad_jx,   &
+     &    iphys%diff_fil_vect%i_grad_jx,                                &
+     &    f_trns%diff_fil_vect%i_grad_jx, trns_fwd)
 !   meridional current density
-      call add_field_name_4_sph_trns(ipol%i_grad_filter_jy,  &
+      call add_field_name_4_sph_trns(ipol%diff_fil_vect%i_grad_jy,      &
      &    grad_filtered_j_2%name, n_scalar,                             &
-     &    ipol%i_grad_filter_jy, itor%i_grad_filter_jy,                 &
-     &    iphys%i_grad_filter_jy, f_trns%i_grad_filter_jy, trns_fwd)
+     &    ipol%diff_fil_vect%i_grad_jy, itor%diff_fil_vect%i_grad_jy,   &
+     &    iphys%diff_fil_vect%i_grad_jy,                                &
+     &    f_trns%diff_fil_vect%i_grad_jy, trns_fwd)
 !   zonal current density
-      call add_field_name_4_sph_trns(ipol%i_grad_filter_jz,  &
+      call add_field_name_4_sph_trns(ipol%diff_fil_vect%i_grad_jz,      &
      &    grad_filtered_j_3%name, n_scalar,                             &
-     &    ipol%i_grad_filter_jz, itor%i_grad_filter_jz,                 &
-     &    iphys%i_grad_filter_jz, f_trns%i_grad_filter_jz, trns_fwd)
+     &    ipol%diff_fil_vect%i_grad_jz, itor%diff_fil_vect%i_grad_jz,   &
+     &    iphys%diff_fil_vect%i_grad_jz,                                &
+     &    f_trns%diff_fil_vect%i_grad_jz, trns_fwd)
       trns_fwd%num_scalar = trns_fwd%nfield - trns_fwd%num_vector
 !
       end subroutine f_trans_address_scalar_dnlg

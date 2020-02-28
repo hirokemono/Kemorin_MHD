@@ -11,6 +11,7 @@
 !!      subroutine add_field_ctl_4_grad_field(field_ctl)
 !!      subroutine add_field_ctl_4_diff_vector(field_ctl)
 !!
+!!      subroutine add_field_ctl_4_grad_fil_field(field_ctl)
 !!      subroutine add_field_ctl_4_diff_fiil_vect(field_ctl)
 !!        type(ctl_array_c3), intent(in) :: field_ctl
 !!@endverbatim
@@ -54,19 +55,19 @@
      &   call add_phys_name_ctl(fhd_ref_temp, field_ctl)
 !
       if(check_field_list_ctl(grad_composition%name, field_ctl))        &
-     &   call add_phys_name_ctl(fhd_density, field_ctl)
+     &   call add_phys_name_ctl(fhd_light, field_ctl)
       if(check_field_list_ctl(grad_pert_composition%name, field_ctl))   &
-     &   call add_phys_name_ctl(fhd_per_density, field_ctl)
+     &   call add_phys_name_ctl(fhd_part_light, field_ctl)
       if(check_field_list_ctl(grad_reference_composition%name,          &
      &                        field_ctl))                               &
-     &   call add_phys_name_ctl(fhd_ref_density, field_ctl)
+     &   call add_phys_name_ctl(fhd_ref_light, field_ctl)
 !
       if(check_field_list_ctl(grad_density%name, field_ctl))            &
-     &   call add_phys_name_ctl(fhd_entropy, field_ctl)
+     &   call add_phys_name_ctl(fhd_density, field_ctl)
       if(check_field_list_ctl(grad_pert_density%name, field_ctl))       &
-     &   call add_phys_name_ctl(fhd_per_entropy, field_ctl)
+     &   call add_phys_name_ctl(fhd_per_density, field_ctl)
       if(check_field_list_ctl(grad_reference_density%name, field_ctl))  &
-     &   call add_phys_name_ctl(fhd_ref_entropy, field_ctl)
+     &   call add_phys_name_ctl(fhd_ref_density, field_ctl)
 !
       if(check_field_list_ctl(grad_entropy%name, field_ctl))            &
      &   call add_phys_name_ctl(fhd_entropy, field_ctl)
@@ -111,6 +112,49 @@
      &  call add_phys_name_ctl(fhd_current, field_ctl)
 !
       end subroutine add_field_ctl_4_diff_vector
+!
+! -----------------------------------------------------------------------
+!
+      subroutine add_field_ctl_4_grad_fil_field(field_ctl)
+!
+      use m_grad_filter_field_labels
+      use m_filtered_field_labels
+      use add_nodal_fields_ctl
+!
+      type(ctl_array_c3), intent(inout) :: field_ctl
+!
+!
+      if(check_field_list_ctl(div_filtered_velo%name, field_ctl))       &
+     &   call add_phys_name_ctl(fhd_filter_velo, field_ctl)
+      if(check_field_list_ctl(div_filtered_magne%name, field_ctl))      &
+     &   call add_phys_name_ctl(fhd_filter_magne, field_ctl)
+      if(check_field_list_ctl(div_filtered_vector_potential%name,       &
+     &                        field_ctl))                               &
+     &   call add_phys_name_ctl(fhd_filter_vecp, field_ctl)
+!
+      if(check_field_list_ctl(grad_filtered_temp%name, field_ctl))      &
+     &   call add_phys_name_ctl(fhd_filter_temp, field_ctl)
+      if(check_field_list_ctl(grad_filtered_pert_temp%name, field_ctl)) &
+     &   call add_phys_name_ctl(fhd_filter_pert_temp, field_ctl)
+!
+      if(check_field_list_ctl(grad_filtered_comp%name, field_ctl))      &
+     &   call add_phys_name_ctl(fhd_filter_comp, field_ctl)
+      if(check_field_list_ctl(grad_filtered_pert_comp%name, field_ctl)) &
+     &   call add_phys_name_ctl(fhd_per_density, field_ctl)
+!
+      if(check_field_list_ctl(grad_filtered_density%name, field_ctl))   &
+     &   call add_phys_name_ctl(fhd_filter_density, field_ctl)
+      if(check_field_list_ctl(grad_filtered_pert_density%name,          &
+     &                        field_ctl))                               &
+     &   call add_phys_name_ctl(fhd_filter_pert_density, field_ctl)
+!
+      if(check_field_list_ctl(grad_filtered_entropy%name, field_ctl))   &
+     &   call add_phys_name_ctl(fhd_filter_entropy, field_ctl)
+      if(check_field_list_ctl(grad_filtered_pert_entropy%name,          &
+     &                        field_ctl))                               &
+     &   call add_phys_name_ctl(fhd_filter_pert_entropy, field_ctl)
+!
+      end subroutine add_field_ctl_4_grad_fil_field
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------

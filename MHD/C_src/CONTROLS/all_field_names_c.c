@@ -211,9 +211,9 @@ const struct field_def field_props[NUM_FIELD] = {
 			{3, "grad_filtered_j_2", "$$    $$"},
 			{3, "grad_filtered_j_3", "$$    $$"},
 			
-			{1, "div_filter_velo", "$$    $$"},
-			{1, "div_filter_magne", "$$    $$"},
-			{1, "div_filter_vecp", "$$    $$"},
+			{1, "div_filtered_velo", "$$    $$"},
+			{1, "div_filtered_magne", "$$    $$"},
+			{1, "div_filtered_vector_potential", "$$    $$"},
 			
 			{3, "filtered_buoyancy", "$$    $$"},
 			{1, "filtered_buoyancy_flux", "$$    $$"},
