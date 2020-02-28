@@ -719,6 +719,8 @@
 !
 !>        Structure of difference of vector
         type(diff_vector_address) :: diff_vector
+!>        Structure of difference of filtered vector
+        type(diff_vector_address) :: diff_fil_vect
       end type phys_address
 !
 !

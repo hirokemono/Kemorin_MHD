@@ -45,81 +45,96 @@
 !
 !
 !  difference of field
-!>        Field label for gradient of @f$ \partial_{i} u_{x} @f$
+!>        Field label for gradient of velocity
+!!             @f$ \partial_{i} u_{x} @f$
       type(field_def), parameter :: grad_v_1                            &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'grad_v_1',                                &
      &                math = '$ \partial_{i} u_{1} $')
-!>        Field label for gradient of @f$ \partial_{i} u_{y} @f$
+!>        Field label for gradient of velocity
+!!             @f$ \partial_{i} u_{y} @f$
       type(field_def), parameter :: grad_v_2                            &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'grad_v_2',                                &
      &                math = '$ \partial_{i} u_{2} $')
-!>        Field label for gradient of @f$ \partial_{i} u_{z} @f$
+!>        Field label for gradient of velocity
+!!             @f$ \partial_{i} u_{z} @f$
       type(field_def), parameter :: grad_v_3                            &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'grad_v_3',                                &
      &                math = '$ \partial_{i} u_{3} $')
 !
-!>        Field label for gradient of @f$ \partial_{i} \omega_{x} @f$
+!>        Field label for gradient of vorticity
+!!             @f$ \partial_{i} \omega_{x} @f$
       type(field_def), parameter :: grad_w_1                            &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'grad_w_1',                                &
      &                math = '$ \partial_{i} \omega_{1} $')
-!>        Field label for gradient of @f$ \partial_{i} \omega_{y} @f$
+!>        Field label for gradient of vorticity
+!!             @f$ \partial_{i} \omega_{y} @f$
       type(field_def), parameter :: grad_w_2                            &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'grad_w_2',                                &
      &                math = '$ \partial_{i} \omega_{2} $')
-!>        Field label for gradient of @f$ \partial_{i} \omega_{z} @f$
+!>        Field label for gradient of vorticity
+!!             @f$ \partial_{i} \omega_{z} @f$
       type(field_def), parameter :: grad_w_3                            &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'grad_w_3',                                &
      &                math = '$ \partial_{i} \omega_{3} $')
 !
-!>        Field label for gradient of @f$ \partial_{i} A_{x} @f$
+!>        Field label for gradient of vector potential
+!!             @f$ \partial_{i} A_{x} @f$
       type(field_def), parameter :: grad_a_1                            &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'grad_a_1',                                &
      &                math = '$ \partial_{i} A_{1} $')
-!>        Field label for gradient of @f$ \partial_{i} A_{y} @f$
+!>        Field label for gradient of vector potential
+!!             @f$ \partial_{i} A_{y} @f$
       type(field_def), parameter :: grad_a_2                            &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'grad_a_2',                                &
      &                math = '$ \partial_{i} A_{2} $')
-!>        Field label for gradient of @f$ \partial_{i} A_{z} @f$
+!>        Field label for gradient of vector potential
+!!             @f$ \partial_{i} A_{z} @f$
       type(field_def), parameter :: grad_a_3                            &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'grad_a_3',                                &
      &                math = '$ \partial_{i} A_{3} $')
 !
-!>        Field label for gradient of @f$ \partial_{i} B_{x} @f$
+!>        Field label for gradient of magnetic field
+!!             @f$ \partial_{i} B_{x} @f$
       type(field_def), parameter :: grad_b_1                            &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'grad_b_1',                                &
      &                math = '$ \partial_{i} B_{1} $')
-!>        Field label for gradient of @f$ \partial_{i} B_{y} @f$
+!>        Field label for gradient of magnetic field
+!!             @f$ \partial_{i} B_{y} @f$
       type(field_def), parameter :: grad_b_2                            &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'grad_b_2',                                &
      &                math = '$ \partial_{i} B_{2} $')
-!>        Field label for gradient of @f$ \partial_{i} B_{z} @f$
+!>        Field label for gradient of magnetic field
+!!             @f$ \partial_{i} B_{z} @f$
       type(field_def), parameter :: grad_b_3                            &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'grad_b_3',                                &
      &                math = '$ \partial_{i} B_{3} $')
 !
-!>        Field label for gradient of @f$ \partial_{i} J_{x} @f$
+!>        Field label for gradient of current density
+!!             @f$ \partial_{i} J_{x} @f$
       type(field_def), parameter :: grad_j_1                            &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'grad_j_1',                                &
      &                math = '$ \partial_{i} J_{1} $')
-!>        Field label for gradient of @f$ \partial_{i} J_{y} @f$
+!>        Field label for gradient of current density
+!!             @f$ \partial_{i} J_{y} @f$
       type(field_def), parameter :: grad_j_2                            &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'grad_j_2',                                &
      &                math = '$ \partial_{i} J_{2} $')
-!>        Field label for gradient of @f$ \partial_{i} J_{z} @f$
+!>        Field label for gradient of current density
+!!             @f$ \partial_{i} J_{z} @f$
       type(field_def), parameter :: grad_j_3                            &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'grad_j_3',                                &
@@ -127,39 +142,54 @@
 !
 !
       type diff_vector_address
-!>        Field address for gradient of @f$ \partial_{i} u_{x} @f$
+!>        Field address for gradient of velocity
+!!             @f$ \partial_{i} u_{x} @f$
         integer (kind=kint) :: i_grad_vx = izero
-!>        Field address for gradient of @f$ \partial_{i} u_{y} @f$
+!>        Field address for gradient of velocity
+!!             @f$ \partial_{i} u_{y} @f$
         integer (kind=kint) :: i_grad_vy = izero
-!>        Field address for gradient of @f$ \partial_{i} u_{z} @f$
+!>        Field address for gradient of velocity
+!!             @f$ \partial_{i} u_{z} @f$
         integer (kind=kint) :: i_grad_vz = izero
 !
-!>        Field address for gradient of @f$ \partial_{i} \omega_{x} @f$
+!>        Field address for gradient of vorticity
+!!             @f$ \partial_{i} \omega_{x} @f$
         integer (kind=kint) :: i_grad_wx = izero
-!>        Field address for gradient of @f$ \partial_{i} \omega_{y} @f$
+!>        Field address for gradient of vorticity
+!!             @f$ \partial_{i} \omega_{y} @f$
         integer (kind=kint) :: i_grad_wy = izero
-!>        Field address for gradient of @f$ \partial_{i} \omega_{z} @f$
+!>        Field address for gradient of vorticity
+!!             @f$ \partial_{i} \omega_{z} @f$
         integer (kind=kint) :: i_grad_wz = izero
 !
-!>        Field address for gradient of @f$ \partial_{i} A_{x} @f$
+!>        Field address for gradient of vector potential
+!!             @f$ \partial_{i} A_{x} @f$
         integer (kind=kint) :: i_grad_ax = izero
-!>        Field address for gradient of @f$ \partial_{i} A_{y} @f$
+!>        Field address for gradient of vector potential
+!!             @f$ \partial_{i} A_{y} @f$
         integer (kind=kint) :: i_grad_ay = izero
-!>        Field address for gradient of @f$ \partial_{i} A_{z} @f$
+!>        Field address for gradient of vector potential
+!!             @f$ \partial_{i} A_{z} @f$
         integer (kind=kint) :: i_grad_az = izero
 !
-!>        Field address for gradient of @f$ \partial_{i} B_{x} @f$
+!>        Field address for gradient of magnetic field
+!!             @f$ \partial_{i} B_{x} @f$
         integer (kind=kint) :: i_grad_bx = izero
-!>        Field address for gradient of @f$ \partial_{i} B_{y} @f$
+!>        Field address for gradient of magnetic field
+!!             @f$ \partial_{i} B_{y} @f$
         integer (kind=kint) :: i_grad_by = izero
-!>        Field address for gradient of @f$ \partial_{i} B_{z} @f$
+!>        Field address for gradient of magnetic field
+!!             @f$ \partial_{i} B_{z} @f$
         integer (kind=kint) :: i_grad_bz = izero
 !
-!>        Field address for gradient of @f$ \partial_{i} J_{x} @f$
+!>        Field address for gradient of current density
+!!             @f$ \partial_{i} J_{x} @f$
         integer (kind=kint) :: i_grad_jx = izero
-!>        Field address for gradient of @f$ \partial_{i} J_{y} @f$
+!>        Field address for gradient of current density
+!!             @f$ \partial_{i} J_{y} @f$
         integer (kind=kint) :: i_grad_jy = izero
-!>        Field address for gradient of @f$ \partial_{i} J_{z} @f$
+!>        Field address for gradient of current density
+!!             @f$ \partial_{i} J_{z} @f$
         integer (kind=kint) :: i_grad_jz = izero
       end type diff_vector_address
 !

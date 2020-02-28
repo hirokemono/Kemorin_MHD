@@ -54,6 +54,10 @@
       if (iflag_debug .ge. iflag_routine_msg) write(*,*)                &
      &    'add_field_ctl_4_wide_fil_field end'
 !
+      call add_field_ctl_4_diff_fiil_vect(field_ctl)
+      if (iflag_debug .ge. iflag_routine_msg) write(*,*)                &
+     &    'add_field_ctl_4_diff_fiil_vect end'
+!
       call add_field_ctl_4_fil_ene_flux(field_ctl)
       if (iflag_debug .ge. iflag_routine_msg) write(*,*)                &
      &    'add_field_ctl_4_fil_ene_flux end'

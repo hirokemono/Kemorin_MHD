@@ -86,22 +86,7 @@
      &  .or. (phys_nod_name_ctl .eq. fhd_square_j           )           &
      &      )   iflag = 1
 !
-      if (   (phys_nod_name_ctl .eq. fhd_grad_filter_v_1    )           &
-     &  .or. (phys_nod_name_ctl .eq. fhd_grad_filter_v_2    )           &
-     &  .or. (phys_nod_name_ctl .eq. fhd_grad_filter_v_3    )           &
-     &  .or. (phys_nod_name_ctl .eq. fhd_grad_filter_w_1    )           &
-     &  .or. (phys_nod_name_ctl .eq. fhd_grad_filter_w_2    )           &
-     &  .or. (phys_nod_name_ctl .eq. fhd_grad_filter_w_3    )           &
-     &  .or. (phys_nod_name_ctl .eq. fhd_grad_filter_a_1    )           &
-     &  .or. (phys_nod_name_ctl .eq. fhd_grad_filter_a_2    )           &
-     &  .or. (phys_nod_name_ctl .eq. fhd_grad_filter_a_3    )           &
-     &  .or. (phys_nod_name_ctl .eq. fhd_grad_filter_b_1    )           &
-     &  .or. (phys_nod_name_ctl .eq. fhd_grad_filter_b_2    )           &
-     &  .or. (phys_nod_name_ctl .eq. fhd_grad_filter_b_3    )           &
-     &  .or. (phys_nod_name_ctl .eq. fhd_grad_filter_j_1    )           &
-     &  .or. (phys_nod_name_ctl .eq. fhd_grad_filter_j_2    )           &
-     &  .or. (phys_nod_name_ctl .eq. fhd_grad_filter_j_3    )           &
-     &  .or. (phys_nod_name_ctl .eq. fhd_grad_filter_temp   )           &
+      if (   (phys_nod_name_ctl .eq. fhd_grad_filter_temp   )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_grad_filter_comp   )           &
      &      )   iflag = 1
 !
@@ -189,7 +174,8 @@
      &   .or. check_wide_filter_grad(phys_nod_name_ctl)                 &
      &   .or. check_double_filter_grad(phys_nod_name_ctl)               &
      &   .or. check_double_filter_vector(phys_nod_name_ctl)             &
-     &   .or. check_difference_vectors(phys_nod_name_ctl)) iflag = 1
+     &   .or. check_difference_vectors(phys_nod_name_ctl)               &
+     &   .or. check_diff_filter_vectors(phys_nod_name_ctl)) iflag = 1
 !
 
       if (iflag .eq. 1) then

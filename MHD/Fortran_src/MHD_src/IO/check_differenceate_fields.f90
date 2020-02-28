@@ -10,6 +10,8 @@
 !!@verbatim
 !!      subroutine add_field_ctl_4_grad_field(field_ctl)
 !!      subroutine add_field_ctl_4_diff_vector(field_ctl)
+!!
+!!      subroutine add_field_ctl_4_diff_fiil_vect(field_ctl)
 !!        type(ctl_array_c3), intent(in) :: field_ctl
 !!@endverbatim
 !!
@@ -17,8 +19,8 @@
 !
       use m_precision
       use m_constants
-      use t_base_field_labels
-!      use m_filtered_field_labels
+!
+      use t_control_array_character3
 !
       implicit  none
 ! 
@@ -30,8 +32,8 @@
 !
       subroutine add_field_ctl_4_grad_field(field_ctl)
 !
-      use t_control_array_character3
       use t_grad_field_labels
+      use t_base_field_labels
       use add_nodal_fields_ctl
 !
       type(ctl_array_c3), intent(inout) :: field_ctl
@@ -79,8 +81,8 @@
 !
       subroutine add_field_ctl_4_diff_vector(field_ctl)
 !
-      use t_control_array_character3
       use t_diff_vector_labels
+      use t_base_field_labels
       use add_nodal_fields_ctl
 !
       type(ctl_array_c3), intent(inout) :: field_ctl
@@ -109,6 +111,42 @@
      &  call add_phys_name_ctl(fhd_current, field_ctl)
 !
       end subroutine add_field_ctl_4_diff_vector
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine add_field_ctl_4_diff_fiil_vect(field_ctl)
+!
+      use m_diff_filter_vect_labels
+      use m_filtered_field_labels
+      use add_nodal_fields_ctl
+!
+      type(ctl_array_c3), intent(inout) :: field_ctl
+!
+!
+      if(   check_field_list_ctl(grad_filtered_v_1%name, field_ctl)     &
+     & .or. check_field_list_ctl(grad_filtered_v_2%name, field_ctl)     &
+     & .or. check_field_list_ctl(grad_filtered_v_3%name, field_ctl))    &
+     &  call add_phys_name_ctl(fhd_filter_velo, field_ctl)
+      if(   check_field_list_ctl(grad_filtered_w_1%name, field_ctl)     &
+     & .or. check_field_list_ctl(grad_filtered_w_2%name, field_ctl)     &
+     & .or. check_field_list_ctl(grad_filtered_w_3%name, field_ctl))    &
+     &  call add_phys_name_ctl(fhd_filter_vort, field_ctl)
+!
+      if(   check_field_list_ctl(grad_filtered_b_1%name, field_ctl)     &
+     & .or. check_field_list_ctl(grad_filtered_b_2%name, field_ctl)     &
+     & .or. check_field_list_ctl(grad_filtered_b_3%name, field_ctl))    &
+     &  call add_phys_name_ctl(fhd_filter_magne, field_ctl)
+      if(   check_field_list_ctl(grad_filtered_a_1%name, field_ctl)     &
+     & .or. check_field_list_ctl(grad_filtered_a_2%name, field_ctl)     &
+     & .or. check_field_list_ctl(grad_filtered_a_3%name, field_ctl))    &
+     &  call add_phys_name_ctl(fhd_filter_vecp, field_ctl)
+      if(   check_field_list_ctl(grad_filtered_j_1%name, field_ctl)     &
+     & .or. check_field_list_ctl(grad_filtered_j_2%name, field_ctl)     &
+     & .or. check_field_list_ctl(grad_filtered_j_3%name, field_ctl))    &
+     &  call add_phys_name_ctl(fhd_filter_current, field_ctl)
+!
+      end subroutine add_field_ctl_4_diff_fiil_vect
 !
 ! -----------------------------------------------------------------------
 !

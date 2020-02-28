@@ -215,43 +215,43 @@
 !
 !
       if(SGS_param%iflag_SGS_m_flux .eq. id_SGS_NL_grad) then
-        call add_phys_name_ctl(fhd_grad_filter_w_1, field_ctl)
-        call add_phys_name_ctl(fhd_grad_filter_w_2, field_ctl)
-        call add_phys_name_ctl(fhd_grad_filter_w_3, field_ctl)
-        call add_phys_name_ctl(fhd_grad_filter_v_1, field_ctl)
-        call add_phys_name_ctl(fhd_grad_filter_v_2, field_ctl)
-        call add_phys_name_ctl(fhd_grad_filter_v_3, field_ctl)
+        call add_phys_name_ctl(grad_filtered_w_1%name, field_ctl)
+        call add_phys_name_ctl(grad_filtered_w_2%name, field_ctl)
+        call add_phys_name_ctl(grad_filtered_w_3%name, field_ctl)
+        call add_phys_name_ctl(grad_filtered_v_1%name, field_ctl)
+        call add_phys_name_ctl(grad_filtered_v_2%name, field_ctl)
+        call add_phys_name_ctl(grad_filtered_v_3%name, field_ctl)
       end if
 !
       if(SGS_param%iflag_SGS_lorentz .eq. id_SGS_NL_grad) then
-        call add_phys_name_ctl(fhd_grad_filter_j_1, field_ctl)
-        call add_phys_name_ctl(fhd_grad_filter_j_2, field_ctl)
-        call add_phys_name_ctl(fhd_grad_filter_j_3, field_ctl)
-        call add_phys_name_ctl(fhd_grad_filter_b_1, field_ctl)
-        call add_phys_name_ctl(fhd_grad_filter_b_2, field_ctl)
-        call add_phys_name_ctl(fhd_grad_filter_b_3, field_ctl)
+        call add_phys_name_ctl(grad_filtered_j_1%name, field_ctl)
+        call add_phys_name_ctl(grad_filtered_j_2%name, field_ctl)
+        call add_phys_name_ctl(grad_filtered_j_3%name, field_ctl)
+        call add_phys_name_ctl(grad_filtered_b_1%name, field_ctl)
+        call add_phys_name_ctl(grad_filtered_b_2%name, field_ctl)
+        call add_phys_name_ctl(grad_filtered_b_3%name, field_ctl)
       end if
 !
       if(SGS_param%iflag_SGS_uxb .eq. id_SGS_NL_grad) then
-        call add_phys_name_ctl(fhd_grad_filter_v_1, field_ctl)
-        call add_phys_name_ctl(fhd_grad_filter_v_2, field_ctl)
-        call add_phys_name_ctl(fhd_grad_filter_v_3, field_ctl)
-        call add_phys_name_ctl(fhd_grad_filter_b_1, field_ctl)
-        call add_phys_name_ctl(fhd_grad_filter_b_2, field_ctl)
-        call add_phys_name_ctl(fhd_grad_filter_b_3, field_ctl)
+        call add_phys_name_ctl(grad_filtered_v_1%name, field_ctl)
+        call add_phys_name_ctl(grad_filtered_v_2%name, field_ctl)
+        call add_phys_name_ctl(grad_filtered_v_3%name, field_ctl)
+        call add_phys_name_ctl(grad_filtered_b_1%name, field_ctl)
+        call add_phys_name_ctl(grad_filtered_b_2%name, field_ctl)
+        call add_phys_name_ctl(grad_filtered_b_3%name, field_ctl)
       end if
 !
       if(SGS_param%iflag_SGS_h_flux .eq. id_SGS_NL_grad) then
-        call add_phys_name_ctl(fhd_grad_filter_v_1, field_ctl)
-        call add_phys_name_ctl(fhd_grad_filter_v_2, field_ctl)
-        call add_phys_name_ctl(fhd_grad_filter_v_3, field_ctl)
+        call add_phys_name_ctl(grad_filtered_v_1%name, field_ctl)
+        call add_phys_name_ctl(grad_filtered_v_2%name, field_ctl)
+        call add_phys_name_ctl(grad_filtered_v_3%name, field_ctl)
         call add_phys_name_ctl(fhd_grad_filter_temp, field_ctl)
       end if
 !
       if(SGS_param%iflag_SGS_c_flux .eq. id_SGS_NL_grad) then
-        call add_phys_name_ctl(fhd_grad_filter_v_1, field_ctl)
-        call add_phys_name_ctl(fhd_grad_filter_v_2, field_ctl)
-        call add_phys_name_ctl(fhd_grad_filter_v_3, field_ctl)
+        call add_phys_name_ctl(grad_filtered_v_1%name, field_ctl)
+        call add_phys_name_ctl(grad_filtered_v_2%name, field_ctl)
+        call add_phys_name_ctl(grad_filtered_v_3%name, field_ctl)
         call add_phys_name_ctl(fhd_grad_filter_comp, field_ctl)
       end if
 !
