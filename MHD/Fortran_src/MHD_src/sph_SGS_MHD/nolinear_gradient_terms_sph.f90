@@ -187,9 +187,12 @@
      &     (sph%sph_rtp, wide_filters, MHD_prop%fl_prop%coef_velo,      &
      &      bg_trns%i_filter_vort, bg_trns%i_filter_velo,               &
      &      trns_b_SGS%ncomp, trns_b_SGS%fld_rtp,                       &
-     &      bd_trns%i_grad_filter_wx, bd_trns%i_grad_filter_wy,         &
-     &      bd_trns%i_grad_filter_wz, bd_trns%i_grad_filter_vx,         &
-     &      bd_trns%i_grad_filter_vy, bd_trns%i_grad_filter_vz,         &
+     &      bd_trns%diff_fil_vect%i_grad_wx,                            &
+     &      bd_trns%diff_fil_vect%i_grad_wy,                            &
+     &      bd_trns%diff_fil_vect%i_grad_wz,                            &
+     &      bd_trns%diff_fil_vect%i_grad_vx,                            &
+     &      bd_trns%diff_fil_vect%i_grad_vy,                            &
+     &      bd_trns%diff_fil_vect%i_grad_vz,                            &
      &      trns_b_DYNG%ncomp, trns_b_DYNG%fld_rtp,                     &
      &      fd_trns%i_wide_SGS_inertia, trns_f_DYNS%ncomp,              &
      &      trns_f_DYNS%fld_rtp)
@@ -201,8 +204,9 @@
      &      bg_trns%i_filter_current, bg_trns%i_filter_magne,           &
      &      trns_b_SGS%ncomp, trns_b_SGS%fld_rtp,                       &
      &      bd_trns%i_grad_filter_jx, bd_trns%i_grad_filter_jy,         &
-     &      bd_trns%i_grad_filter_jz, bd_trns%i_grad_filter_bx,         &
-     &      bd_trns%i_grad_filter_by, bd_trns%i_grad_filter_bz,         &
+     &      bd_trns%i_grad_filter_jz, bd_trns%diff_fil_vect%i_grad_bx,  &
+     &      bd_trns%diff_fil_vect%i_grad_by,                            &
+     &      bd_trns%diff_fil_vect%i_grad_bz,                            &
      &      trns_b_DYNG%ncomp, trns_b_DYNG%fld_rtp,                     &
      &      fd_trns%i_wide_SGS_Lorentz, trns_f_DYNS%ncomp,              &
      &      trns_f_DYNS%fld_rtp)
@@ -213,9 +217,12 @@
      &     (sph%sph_rtp, wide_filters, MHD_prop%cd_prop%coef_induct,    &
      &      bg_trns%i_filter_velo, bg_trns%i_filter_magne,              &
      &      trns_b_SGS%ncomp, trns_b_SGS%fld_rtp,                       &
-     &      bd_trns%i_grad_filter_vx, bd_trns%i_grad_filter_vy,         &
-     &      bd_trns%i_grad_filter_vz, bd_trns%i_grad_filter_bx,         &
-     &      bd_trns%i_grad_filter_by, bd_trns%i_grad_filter_bz,         &
+     &      bd_trns%diff_fil_vect%i_grad_vx,                            &
+     &      bd_trns%diff_fil_vect%i_grad_vy,                            &
+     &      bd_trns%diff_fil_vect%i_grad_vz,                            &
+     &      bd_trns%diff_fil_vect%i_grad_bx,                            &
+     &      bd_trns%diff_fil_vect%i_grad_by,                            &
+     &      bd_trns%diff_fil_vect%i_grad_bz,                            &
      &      trns_b_DYNG%ncomp, trns_b_DYNG%fld_rtp,                     &
      &      fd_trns%i_wide_SGS_vp_induct, trns_f_DYNS%ncomp,            &
      &      trns_f_DYNS%fld_rtp)
@@ -225,8 +232,10 @@
         call sel_SGS_s_flux_nl_gradient(sph%sph_rtp, wide_filters,      &
      &      MHD_prop%ht_prop%coef_advect, bg_trns%i_filter_velo,        &
      &      trns_b_SGS%ncomp, trns_b_SGS%fld_rtp,                       &
-     &      bd_trns%i_grad_filter_vx, bd_trns%i_grad_filter_vy,         &
-     &      bd_trns%i_grad_filter_vz, bd_trns%i_grad_filter_temp,       &
+     &      bd_trns%diff_fil_vect%i_grad_vx,                            &
+     &      bd_trns%diff_fil_vect%i_grad_vy,                            &
+     &      bd_trns%diff_fil_vect%i_grad_vz,                            &
+     &      bd_trns%i_grad_filter_temp,                                 &
      &      trns_b_DYNG%ncomp, trns_b_DYNG%fld_rtp,                     &
      &      fd_trns%i_wide_SGS_h_flux, trns_f_DYNS%ncomp,               &
      &      trns_f_DYNS%fld_rtp)
@@ -236,8 +245,10 @@
         call sel_SGS_s_flux_nl_gradient(sph%sph_rtp, wide_filters,      &
      &      MHD_prop%cp_prop%coef_advect, bg_trns%i_filter_velo,        &
      &      trns_b_SGS%ncomp, trns_b_SGS%fld_rtp,                       &
-     &      bd_trns%i_grad_filter_vx, bd_trns%i_grad_filter_vy,         &
-     &      bd_trns%i_grad_filter_vz, bd_trns%i_grad_filter_comp,       &
+     &      bd_trns%diff_fil_vect%i_grad_vx,                            &
+     &      bd_trns%diff_fil_vect%i_grad_vy,                            &
+     &      bd_trns%diff_fil_vect%i_grad_vz,                            &
+     &      bd_trns%i_grad_filter_comp,                                 &
      &      trns_b_DYNG%ncomp, trns_b_DYNG%fld_rtp,                     &
      &      fd_trns%i_wide_SGS_c_flux, trns_f_DYNS%ncomp,               &
      &      trns_f_DYNS%fld_rtp)

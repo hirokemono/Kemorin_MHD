@@ -47,29 +47,33 @@
 !
       if(bs_trns%i_filter_velo .gt. 0) then
         call copy_vect_to_grad_vect_rtp(sph%sph_rtp,                    &
-     &      bs_trns%i_filter_velo, fd_trns%i_grad_filter_vx,            &
-     &      fd_trns%i_grad_filter_vy, fd_trns%i_grad_filter_vz,         &
+     &      bs_trns%i_filter_velo, fd_trns%diff_fil_vect%i_grad_vx,     &
+     &      fd_trns%diff_fil_vect%i_grad_vy,                            &
+     &      fd_trns%diff_fil_vect%i_grad_vz,                            &
      &      trns_b_SGS%ncomp, trns_DYNG%ncomp,                          &
      &      trns_b_SGS%fld_rtp, trns_DYNG%fld_rtp)
       end if
       if(bs_trns%i_filter_vort .gt. 0) then
         call copy_vect_to_grad_vect_rtp(sph%sph_rtp,                    &
-     &      bs_trns%i_filter_vort, fd_trns%i_grad_filter_wx,            &
-     &      fd_trns%i_grad_filter_wy, fd_trns%i_grad_filter_wz,         &
+     &      bs_trns%i_filter_vort, fd_trns%diff_fil_vect%i_grad_wx,     &
+     &      fd_trns%diff_fil_vect%i_grad_wy,                            &
+     &      fd_trns%diff_fil_vect%i_grad_wz,                            &
      &      trns_b_SGS%ncomp, trns_DYNG%ncomp,                          &
      &      trns_b_SGS%fld_rtp, trns_DYNG%fld_rtp)
       end if
       if(bs_trns%i_filter_vecp .gt. 0) then
         call copy_vect_to_grad_vect_rtp(sph%sph_rtp,                    &
-     &      bs_trns%i_filter_vecp, fd_trns%i_grad_filter_ax,            &
-     &      fd_trns%i_grad_filter_ay, fd_trns%i_grad_filter_az,         &
+     &      bs_trns%i_filter_vecp, fd_trns%diff_fil_vect%i_grad_ax,     &
+     &      fd_trns%diff_fil_vect%i_grad_ay,                            &
+     &      fd_trns%diff_fil_vect%i_grad_az,                            &
      &      trns_b_SGS%ncomp, trns_DYNG%ncomp,                          &
      &      trns_b_SGS%fld_rtp, trns_DYNG%fld_rtp)
       end if
       if(bs_trns%i_filter_magne .gt. 0) then
         call copy_vect_to_grad_vect_rtp(sph%sph_rtp,                    &
-     &      bs_trns%i_filter_magne, fd_trns%i_grad_filter_bx,           &
-     &      fd_trns%i_grad_filter_by, fd_trns%i_grad_filter_bz,         &
+     &      bs_trns%i_filter_magne, fd_trns%diff_fil_vect%i_grad_bx,    &
+     &      fd_trns%diff_fil_vect%i_grad_by,                            &
+     &      fd_trns%diff_fil_vect%i_grad_bz,                            &
      &      trns_b_SGS%ncomp, trns_DYNG%ncomp,                          &
      &      trns_b_SGS%fld_rtp, trns_DYNG%fld_rtp)
       end if

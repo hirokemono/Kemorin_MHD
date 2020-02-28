@@ -518,30 +518,6 @@
       integer (kind=kint) :: i_square_c = izero
 !
 !    Gradient of filtered fields
-!>        start address for gradient of @f$ \tilde{u}_{x} @f$
-        integer (kind=kint) :: i_grad_filter_vx = izero
-!>        start address for gradient of @f$ \tilde{u}_{y} @f$
-        integer (kind=kint) :: i_grad_filter_vy = izero
-!>        start address for gradient of @f$ \tilde{u}_{z} @f$
-        integer (kind=kint) :: i_grad_filter_vz = izero
-!>        start address for gradient of @f$ \tilde{\omega}_{x} @f$
-        integer (kind=kint) :: i_grad_filter_wx = izero
-!>        start address for gradient of @f$ \tilde{\omega}_{y} @f$
-        integer (kind=kint) :: i_grad_filter_wy = izero
-!>        start address for gradient of @f$ \tilde{\omega}_{z} @f$
-        integer (kind=kint) :: i_grad_filter_wz = izero
-!>        start address for gradient of @f$ \tilde{A}_{x} @f$
-        integer (kind=kint) :: i_grad_filter_ax = izero
-!>        start address for gradient of @f$ \tilde{A}_{y} @f$
-        integer (kind=kint) :: i_grad_filter_ay = izero
-!>        start address for gradient of @f$ \tilde{A}_{z} @f$
-        integer (kind=kint) :: i_grad_filter_az = izero
-!>        start address for gradient of @f$ \tilde{B}_{x} @f$
-        integer (kind=kint) :: i_grad_filter_bx = izero
-!>        start address for gradient of @f$ \tilde{B}_{y} @f$
-        integer (kind=kint) :: i_grad_filter_by = izero
-!>        start address for gradient of @f$ \tilde{B}_{z} @f$
-        integer (kind=kint) :: i_grad_filter_bz = izero
 !>        start address for gradient of @f$ \tilde{J}_{x} @f$
         integer (kind=kint) :: i_grad_filter_jx = izero
 !>        start address for gradient of @f$ \tilde{J}_{y} @f$

@@ -47,6 +47,7 @@
       use t_diff_vector_labels
       use m_rot_filtered_force_labels
       use m_div_filtered_force_labels
+      use m_diff_filter_vect_labels
 !
       integer(kind = kint), intent(in) :: istart_adress
       integer(kind = kint), intent(in) :: num_field
@@ -407,38 +408,10 @@
           iphys%i_square_c = i0
         end if
 !
-        if      ( field_name(i) .eq. grad_filtered_v_1%name ) then
-          iphys%i_grad_filter_vx = i0
-        else if ( field_name(i) .eq. grad_filtered_v_2%name ) then
-          iphys%i_grad_filter_vy = i0
-        else if ( field_name(i) .eq. grad_filtered_v_3%name ) then
-          iphys%i_grad_filter_vz = i0
-        else if ( field_name(i) .eq. grad_filtered_w_1%name ) then
-          iphys%i_grad_filter_wx = i0
-        else if ( field_name(i) .eq. grad_filtered_w_2%name ) then
-          iphys%i_grad_filter_wy = i0
-        else if ( field_name(i) .eq. grad_filtered_w_3%name ) then
-          iphys%i_grad_filter_wz = i0
-        else if ( field_name(i) .eq. grad_filtered_a_1%name ) then
-          iphys%i_grad_filter_ax = i0
-        else if ( field_name(i) .eq. grad_filtered_a_2%name ) then
-          iphys%i_grad_filter_ay = i0
-        else if ( field_name(i) .eq. grad_filtered_a_3%name ) then
-          iphys%i_grad_filter_az = i0
-        else if ( field_name(i) .eq. grad_filtered_b_1%name ) then
-          iphys%i_grad_filter_bx = i0
-        else if ( field_name(i) .eq. grad_filtered_b_2%name ) then
-          iphys%i_grad_filter_by = i0
-        else if ( field_name(i) .eq. grad_filtered_b_3%name ) then
-          iphys%i_grad_filter_bz = i0
-        else if ( field_name(i) .eq. grad_filtered_j_1%name ) then
-          iphys%i_grad_filter_jx = i0
-        else if ( field_name(i) .eq. grad_filtered_j_2%name ) then
-          iphys%i_grad_filter_jy = i0
-        else if ( field_name(i) .eq. grad_filtered_j_3%name ) then
-          iphys%i_grad_filter_jz = i0
+        call set_diff_filter_vect_addresses                             &
+     &     (i0, field_name(i), iphys%diff_fil_vect, flag)
 !
-        else if ( field_name(i) .eq. fhd_grad_filter_temp ) then
+        if ( field_name(i) .eq. fhd_grad_filter_temp ) then
           iphys%i_grad_filter_temp = i0
         else if ( field_name(i) .eq. fhd_grad_filter_comp ) then
           iphys%i_grad_filter_comp = i0

@@ -60,66 +60,75 @@
 !
 !
 !   Radial velocity
-      call add_field_name_4_sph_trns                                    &
-     &   (ipol%i_grad_filter_vx, grad_filtered_v_1%name, n_scalar,      &
-     &    ipol%i_grad_filter_vx, itor%i_grad_filter_vx,                 &
-     &    iphys%i_grad_filter_vx, f_trns%i_grad_filter_vx, trns_fwd)
+      call add_field_name_4_sph_trns(ipol%diff_fil_vect%i_grad_vx,      &
+     &    grad_filtered_v_1%name, n_scalar,                             &
+     &    ipol%diff_fil_vect%i_grad_vx, itor%diff_fil_vect%i_grad_vx,   &
+     &    iphys%diff_fil_vect%i_grad_vx,                                &
+     &    f_trns%diff_fil_vect%i_grad_vx, trns_fwd)
 !   meridional velocity
-      call add_field_name_4_sph_trns                                    &
-     &   (ipol%i_grad_filter_vy, grad_filtered_v_2%name, n_scalar,      &
-     &    ipol%i_grad_filter_vy, itor%i_grad_filter_vy,                 &
-     &    iphys%i_grad_filter_vy, f_trns%i_grad_filter_vy, trns_fwd)
+      call add_field_name_4_sph_trns(ipol%diff_fil_vect%i_grad_vy,      &
+     &    grad_filtered_v_2%name, n_scalar,                             &
+     &    ipol%diff_fil_vect%i_grad_vy, itor%diff_fil_vect%i_grad_vy,   &
+     &    iphys%diff_fil_vect%i_grad_vy,                                &
+     &    f_trns%diff_fil_vect%i_grad_vy, trns_fwd)
 !   zonal velocity
-      call add_field_name_4_sph_trns                                    &
-     &   (ipol%i_grad_filter_vz, grad_filtered_v_3%name, n_scalar,      &
-     &    ipol%i_grad_filter_vz, itor%i_grad_filter_vz,                 &
-     &    iphys%i_grad_filter_vz, f_trns%i_grad_filter_vz, trns_fwd)
+      call add_field_name_4_sph_trns(ipol%diff_fil_vect%i_grad_vz,      &
+     &    grad_filtered_v_3%name, n_scalar,                             &
+     &    ipol%diff_fil_vect%i_grad_vz, itor%diff_fil_vect%i_grad_vz,   &
+     &    iphys%diff_fil_vect%i_grad_vz,                                &
+     &    f_trns%diff_fil_vect%i_grad_vz, trns_fwd)
 !
 !   Radial vorticity
-      call add_field_name_4_sph_trns                                    &
-     &   (ipol%i_grad_filter_wx, grad_filtered_w_1%name, n_scalar,      &
-     &    ipol%i_grad_filter_wx, itor%i_grad_filter_wx,                 &
-     &    iphys%i_grad_filter_wx, f_trns%i_grad_filter_wx, trns_fwd)
+      call add_field_name_4_sph_trns(ipol%diff_fil_vect%i_grad_wx,      &
+     &    grad_filtered_w_1%name, n_scalar,                             &
+     &    ipol%diff_fil_vect%i_grad_wx, itor%diff_fil_vect%i_grad_wx,   &
+     &    iphys%diff_fil_vect%i_grad_wx,                                &
+     &    f_trns%diff_fil_vect%i_grad_wx, trns_fwd)
 !   meridional vorticity
-      call add_field_name_4_sph_trns                                    &
-     &   (ipol%i_grad_filter_wy, grad_filtered_w_2%name, n_scalar,      &
-     &    ipol%i_grad_filter_wy, itor%i_grad_filter_wy,                 &
-     &    iphys%i_grad_filter_wy, f_trns%i_grad_filter_wy, trns_fwd)
+      call add_field_name_4_sph_trns(ipol%diff_fil_vect%i_grad_wy,      &
+     &    grad_filtered_w_2%name, n_scalar,                             &
+     &    ipol%diff_fil_vect%i_grad_wy, itor%diff_fil_vect%i_grad_wy,   &
+     &    iphys%diff_fil_vect%i_grad_wy,                                &
+     &    f_trns%diff_fil_vect%i_grad_wy, trns_fwd)
 !   zonal vorticity
-      call add_field_name_4_sph_trns                                    &
-     &   (ipol%i_grad_filter_wz, grad_filtered_w_3%name, n_scalar,      &
-     &    ipol%i_grad_filter_wz, itor%i_grad_filter_wz,                 &
-     &    iphys%i_grad_filter_wz, f_trns%i_grad_filter_wz, trns_fwd)
+      call add_field_name_4_sph_trns(ipol%diff_fil_vect%i_grad_wz,      &
+     &    grad_filtered_w_3%name, n_scalar,                             &
+     &    ipol%diff_fil_vect%i_grad_wz, itor%diff_fil_vect%i_grad_wz,   &
+     &    iphys%diff_fil_vect%i_grad_wz,                                &
+     &    f_trns%diff_fil_vect%i_grad_wz, trns_fwd)
 !
 !   Radial magnetic field
-      call add_field_name_4_sph_trns                                    &
-     &   (ipol%i_grad_filter_bx, grad_filtered_b_1%name, n_scalar,      &
-     &    ipol%i_grad_filter_bx, itor%i_grad_filter_bx,                 &
-     &    iphys%i_grad_filter_bx, f_trns%i_grad_filter_bx, trns_fwd)
+      call add_field_name_4_sph_trns(ipol%diff_fil_vect%i_grad_bx,      &
+     &    grad_filtered_b_1%name, n_scalar,                             &
+     &    ipol%diff_fil_vect%i_grad_bx, itor%diff_fil_vect%i_grad_bx,   &
+     &    iphys%diff_fil_vect%i_grad_bx,                                &
+     &    f_trns%diff_fil_vect%i_grad_bx, trns_fwd)
 !   meridional magnetic field
-      call add_field_name_4_sph_trns                                    &
-     &   (ipol%i_grad_filter_by, grad_filtered_b_2%name, n_scalar,      &
-     &    ipol%i_grad_filter_by, itor%i_grad_filter_by,                 &
-     &    iphys%i_grad_filter_by, f_trns%i_grad_filter_by, trns_fwd)
+      call add_field_name_4_sph_trns(ipol%diff_fil_vect%i_grad_by,      &
+     &    grad_filtered_b_2%name, n_scalar,                             &
+     &    ipol%diff_fil_vect%i_grad_by, itor%diff_fil_vect%i_grad_by,   &
+     &    iphys%diff_fil_vect%i_grad_by,                                &
+     &    f_trns%diff_fil_vect%i_grad_by, trns_fwd)
 !   zonal magnetic field
-      call add_field_name_4_sph_trns                                    &
-     &   (ipol%i_grad_filter_bz, grad_filtered_b_3%name, n_scalar,      &
-     &    ipol%i_grad_filter_bz, itor%i_grad_filter_bz,                 &
-     &    iphys%i_grad_filter_bz, f_trns%i_grad_filter_bz, trns_fwd)
+      call add_field_name_4_sph_trns(ipol%diff_fil_vect%i_grad_bz,      &
+     &    grad_filtered_b_3%name, n_scalar,                             &
+     &    ipol%diff_fil_vect%i_grad_bz, itor%diff_fil_vect%i_grad_bz,   &
+     &    iphys%diff_fil_vect%i_grad_bz,                                &
+     &    f_trns%diff_fil_vect%i_grad_bz, trns_fwd)
 !
 !   Radial current density
-      call add_field_name_4_sph_trns                                    &
-     &   (ipol%i_grad_filter_jx, grad_filtered_j_1%name, n_scalar,      &
+      call add_field_name_4_sph_trns(ipol%i_grad_filter_jx,  &
+     &    grad_filtered_j_1%name, n_scalar,                             &
      &    ipol%i_grad_filter_jx, itor%i_grad_filter_jx,                 &
      &    iphys%i_grad_filter_jx, f_trns%i_grad_filter_jx, trns_fwd)
 !   meridional current density
-      call add_field_name_4_sph_trns                                    &
-     &   (ipol%i_grad_filter_jy, grad_filtered_j_2%name, n_scalar,      &
+      call add_field_name_4_sph_trns(ipol%i_grad_filter_jy,  &
+     &    grad_filtered_j_2%name, n_scalar,                             &
      &    ipol%i_grad_filter_jy, itor%i_grad_filter_jy,                 &
      &    iphys%i_grad_filter_jy, f_trns%i_grad_filter_jy, trns_fwd)
 !   zonal current density
-      call add_field_name_4_sph_trns                                    &
-     &   (ipol%i_grad_filter_jz, grad_filtered_j_3%name, n_scalar,      &
+      call add_field_name_4_sph_trns(ipol%i_grad_filter_jz,  &
+     &    grad_filtered_j_3%name, n_scalar,                             &
      &    ipol%i_grad_filter_jz, itor%i_grad_filter_jz,                 &
      &    iphys%i_grad_filter_jz, f_trns%i_grad_filter_jz, trns_fwd)
       trns_fwd%num_scalar = trns_fwd%nfield - trns_fwd%num_vector
