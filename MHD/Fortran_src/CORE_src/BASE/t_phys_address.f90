@@ -262,9 +262,6 @@
 !>        start address for inductino for vector potential
 !!         @f$ e_{ijk} u_{j} B_{k} @f$
         integer (kind=kint) :: i_vp_induct =       izero
-!>        start address for magnetic stretch term
-!!         @f$ B_{j} \partial_{j} \u_{i} \right)@f$
-        integer (kind=kint) :: i_mag_stretch =     izero
 !
 !>        start address for SGS heat flux
 !!         @f$ \overline{u_{i}T} - \bar{u}_{i}\bar{T} @f$

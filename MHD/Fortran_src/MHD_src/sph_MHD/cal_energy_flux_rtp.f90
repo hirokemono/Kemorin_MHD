@@ -348,7 +348,7 @@
       end if
 !$omp end parallel
 !
-      if(fs_trns%i_mag_stretch .gt. 0) then
+      if(fs_trns%forces%i_mag_stretch .gt. 0) then
         if (iflag_debug.eq.1) write(*,*) 'cal_rtp_magnetic_streach'
 !$omp parallel
         call cal_rtp_magnetic_streach                                   &
@@ -360,7 +360,7 @@
      &      trns_b_snap%fld_rtp(1,bs_trns%diff_vector%i_grad_vx),       &
      &      trns_b_snap%fld_rtp(1,bs_trns%diff_vector%i_grad_vy),       &
      &      trns_b_snap%fld_rtp(1,bs_trns%diff_vector%i_grad_vz),       &
-     &      trns_f_snap%fld_rtp(1,fs_trns%i_mag_stretch) )
+     &      trns_f_snap%fld_rtp(1,fs_trns%forces%i_mag_stretch))
 !$omp end parallel
       end if
 !

@@ -344,15 +344,15 @@
      &      nod_fld)
       end if
 !
-      if (iphys%i_mag_stretch .gt. izero) then
+      if (iphys%forces%i_mag_stretch .gt. izero) then
         call cal_phys_dot_product(iphys%diff_vector%i_grad_vx,          &
-     &      iphys%i_magne, iphys%i_mag_stretch,                         &
+     &      iphys%i_magne, iphys%forces%i_mag_stretch,                  &
      &      nod_fld)
         call cal_phys_dot_product(iphys%diff_vector%i_grad_vy,          &
-     &      iphys%i_magne, (iphys%i_mag_stretch+1),                     &
+     &      iphys%i_magne, (iphys%forces%i_mag_stretch+1),              &
      &      nod_fld)
         call cal_phys_dot_product(iphys%diff_vector%i_grad_vz,          &
-     &      iphys%i_magne, (iphys%i_mag_stretch+2),                     &
+     &      iphys%i_magne, (iphys%forces%i_mag_stretch+2),              &
      &      nod_fld)
       end if
 !

@@ -134,7 +134,7 @@
         else if(i_start .eq. iphys%i_comp_scale) then 
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_c_diffuse, fhd_c_diffuse)
-        else if(i_start .eq. iphys%i_mag_stretch) then 
+        else if(i_start .eq. iphys%forces%i_mag_stretch) then 
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_magne, fhd_magne)
           call check_missing_field                                      &

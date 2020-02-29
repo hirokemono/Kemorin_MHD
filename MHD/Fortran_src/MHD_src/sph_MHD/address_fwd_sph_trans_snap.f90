@@ -59,8 +59,9 @@
      &    f_trns%i_poynting, trns_fwd)
       call add_field_name_4_sph_trns_snap                               &
      &   (magnetic_stretch%name, magnetic_stretch%n_comp,               &
-     &    ipol%i_mag_stretch, itor%i_mag_stretch, iphys%i_mag_stretch,  &
-     &    f_trns%i_mag_stretch, trns_fwd)
+     &    ipol%forces%i_mag_stretch, itor%forces%i_mag_stretch,         &
+     &    iphys%forces%i_mag_stretch, f_trns%forces%i_mag_stretch,      &
+     &    trns_fwd)
 !
       call add_field_name_4_sph_trns_snap(fhd_square_v, n_vector,       &
      &    ipol%i_square_v, itor%i_square_v, iphys%i_square_v,           &

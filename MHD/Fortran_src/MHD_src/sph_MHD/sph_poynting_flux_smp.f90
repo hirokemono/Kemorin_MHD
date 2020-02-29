@@ -141,17 +141,20 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      if(ipol%i_mag_stretch .eq. 0) return
+      if(ipol%forces%i_mag_stretch .eq. 0) return
 !
       call copy_grad_vect_to_m_stretch                                  &
      &   (ipol,  rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
       call const_sph_gradient_no_bc(sph_rj, r_2nd, sph_bc_U, g_sph_rj,  &
-     &   (ipol%i_mag_stretch  ), ipol%diff_vector%i_grad_vx, rj_fld)
+     &   (ipol%forces%i_mag_stretch  ), ipol%diff_vector%i_grad_vx,     &
+     &    rj_fld)
       call const_sph_gradient_no_bc(sph_rj, r_2nd, sph_bc_U, g_sph_rj,  &
-     &   (ipol%i_mag_stretch+1), ipol%diff_vector%i_grad_vy, rj_fld)
+     &   (ipol%forces%i_mag_stretch+1), ipol%diff_vector%i_grad_vy,     &
+     &    rj_fld)
       call const_sph_gradient_no_bc(sph_rj, r_2nd, sph_bc_U, g_sph_rj,  &
-     &   (ipol%i_mag_stretch+2), ipol%diff_vector%i_grad_vz, rj_fld)
+     &   (ipol%forces%i_mag_stretch+2), ipol%diff_vector%i_grad_vz,     &
+     &    rj_fld)
 !
       end subroutine cal_grad_of_velocities_sph
 !
@@ -186,14 +189,14 @@
       real (kind=kreal), intent(inout) :: d_rj(nnod,ntot_phys_rj)
 !
 !
-      if(ipol%i_mag_stretch .eq. 0) return
+      if(ipol%forces%i_mag_stretch .eq. 0) return
 !
 !$omp parallel workshare
-      d_rj(1:nnod,ipol%i_mag_stretch  )                                 &
+      d_rj(1:nnod,ipol%forces%i_mag_stretch  )                          &
      &     = d_rj(1:nnod,ipol%diff_vector%i_grad_vx)
-      d_rj(1:nnod,ipol%i_mag_stretch+1)                                 &
+      d_rj(1:nnod,ipol%forces%i_mag_stretch+1)                          &
      &     = d_rj(1:nnod,ipol%diff_vector%i_grad_vy)
-      d_rj(1:nnod,ipol%i_mag_stretch+2)                                 &
+      d_rj(1:nnod,ipol%forces%i_mag_stretch+2)                          &
      &     = d_rj(1:nnod,ipol%diff_vector%i_grad_vz)
 !$omp end parallel workshare
 !
