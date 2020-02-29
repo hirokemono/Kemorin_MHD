@@ -217,9 +217,6 @@
 !>        start address for heat flux
 !!         @f$ u_{i} T @f$
         integer (kind=kint) :: i_h_flux =          izero
-!>        start address for perturbation of heat flux
-!!         @f$ u_{i} \Theta @f$
-        integer (kind=kint) :: i_ph_flux =         izero
 !>        start address for momentum flux
 !!         @f$ u_{i} u_{j} @f$
         integer (kind=kint) :: i_m_flux =          izero

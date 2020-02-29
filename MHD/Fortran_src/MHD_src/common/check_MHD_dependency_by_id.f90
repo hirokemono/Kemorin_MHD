@@ -187,7 +187,6 @@
      &       (fld, i_start, iphys%i_magne, fhd_magne)
         else if(i_start .eq. iphys%i_buo_gen                            &
      &     .or. i_start .eq. iphys%i_h_flux                             &
-     &     .or. i_start .eq. iphys%i_ph_flux                            &
      &     .or. i_start .eq. iphys%i_SGS_h_flux                         &
      &     .or. i_start .eq. iphys%i_wide_SGS_h_flux                    &
      &     .or. i_start .eq. iphys%i_entropy                            &
@@ -295,7 +294,7 @@
      &       (fld, i_start, iphys%i_h_flux, heat_flux%name)
         else if(i_start .eq. iphys%i_ph_flux_div) then 
           call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_ph_flux, pert_heat_flux%name)
+     &       (fld, i_start, iphys%forces%i_ph_flux, pert_heat_flux%name)
         else if(i_start .eq. iphys%i_c_flux_div) then 
           call check_missing_field                                      &
      &       (fld, i_start, iphys%forces%i_c_flux, composite_flux%name)
