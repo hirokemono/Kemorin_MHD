@@ -187,8 +187,6 @@
 !
         else if (field_name(i) .eq. heat_advect%name ) then
           iphys%i_h_advect =    i0
-        else if (field_name(i) .eq. pert_heat_advect%name ) then
-          iphys%i_ph_advect =   i0
         else if (field_name(i) .eq. inertia%name) then
           iphys%i_m_advect =    i0
         else if (field_name(i) .eq. fhd_div_h_flux ) then

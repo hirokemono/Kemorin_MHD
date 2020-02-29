@@ -315,8 +315,8 @@
 !
       if (iphys%i_par_t_gen .gt. izero) then
         call cal_phys_product_4_scalar                                  &
-     &     (iphys%i_ph_advect, iphys%i_per_temp, iphys%i_par_t_gen,     &
-     &      nod_fld)
+     &     (iphys%forces%i_ph_advect, iphys%i_per_temp,                 &
+     &      iphys%i_par_t_gen, nod_fld)
       end if
 !
       if (iphys%i_par_c_gen .gt. izero) then

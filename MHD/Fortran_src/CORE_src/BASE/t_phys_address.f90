@@ -217,9 +217,6 @@
 !>        start address for advection for temperature
 !!         @f$ u_{i} \partial_{i} T @f$
         integer (kind=kint) :: i_h_advect =        izero
-!>        start address for advection for perturbation of temperature
-!!         @f$ u_{i} \partial_{i} \Theta @f$
-        integer (kind=kint) :: i_ph_advect =       izero
 !>        start address for advection for momentum
 !!         @f$ u_{j} \partial_{j} u_{i} @f$
         integer (kind=kint) :: i_m_advect =        izero

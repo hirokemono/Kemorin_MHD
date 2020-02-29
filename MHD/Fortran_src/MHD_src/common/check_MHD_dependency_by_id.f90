@@ -157,7 +157,7 @@
      &       (fld, i_start, iphys%i_temp, fhd_temp)
         else if(i_start .eq. iphys%i_par_t_gen) then 
           call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_ph_advect, pert_heat_advect%name)
+     &       (fld, i_start, iphys%forces%i_ph_advect, pert_heat_advect%name)
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_temp, fhd_temp)
         else if(i_start .eq. iphys%i_par_c_gen) then 
@@ -186,7 +186,6 @@
      &     .or. i_start .eq. iphys%i_wide_SGS_h_flux                    &
      &     .or. i_start .eq. iphys%i_entropy                            &
      &     .or. i_start .eq. iphys%i_SGS_temp_gen                       &
-     &     .or. i_start .eq. iphys%i_ph_advect                          &
      &     .or. i_start .eq. iphys%i_h_advect) then 
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_velo, fhd_velo)
