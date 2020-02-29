@@ -197,7 +197,7 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      if( (ipol%i_SGS_h_flux*ipol%i_h_advect) .gt. 0) then
+      if( (ipol%i_SGS_h_flux * ipol%forces%i_h_advect) .gt. 0) then
         if (iflag_debug .gt. 0) write(*,*) 'take div of heat flux'
         call const_sph_scalar_advect                                    &
      &     (sph_rj, r_2nd, sph_bc_T, bcs_T, fdm2_center,                &

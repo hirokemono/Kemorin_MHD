@@ -226,8 +226,8 @@
 !
 !   ----  lead nonlinear terms by phesdo spectrum
 !
-      if(ipol%i_h_advect .gt. 0) then
-        call clear_field_data(rj_fld, n_scalar, ipol%i_h_advect)
+      if(ipol%forces%i_h_advect .gt. 0) then
+        call clear_field_data(rj_fld, n_scalar, ipol%forces%i_h_advect)
       end if
       if(ipol%forces%i_c_advect .gt. 0) then
         call clear_field_data(rj_fld, n_scalar, ipol%forces%i_c_advect)

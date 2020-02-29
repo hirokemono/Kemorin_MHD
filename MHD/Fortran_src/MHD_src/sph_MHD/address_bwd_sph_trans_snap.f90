@@ -292,8 +292,8 @@
 !
       call add_field_name_4_sph_trns_snap                               &
      &   (heat_advect%name, heat_advect%n_comp,                         &
-     &    ipol%i_h_advect, itor%i_h_advect, iphys%i_h_advect,           &
-     &    b_trns%i_h_advect, trns_back)
+     &    ipol%forces%i_h_advect, itor%forces%i_h_advect,               &
+     &    iphys%forces%i_h_advect, b_trns%forces%i_h_advect, trns_back)
       call add_field_name_4_sph_trns_snap                               &
      &   (composition_advect%name, composition_advect%n_comp,           &
      &    ipol%forces%i_c_advect, itor%forces%i_c_advect,               &
