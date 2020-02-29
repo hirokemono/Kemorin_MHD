@@ -274,9 +274,6 @@
 !>        start address for advection for composition
 !!         @f$ u_{i} \partial_{i} C @f$
         integer (kind=kint) :: i_c_advect =        izero
-!>        start address for advection for perturbation of composition
-!!         @f$ u_{i} \partial_{i} \Theta_C @f$
-        integer (kind=kint) :: i_pc_advect =       izero
 !
 !>        start address for SGS heat flux
 !!         @f$ \overline{u_{i}T} - \bar{u}_{i}\bar{T} @f$

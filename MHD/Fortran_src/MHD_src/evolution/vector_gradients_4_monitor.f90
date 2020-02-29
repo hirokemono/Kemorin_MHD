@@ -321,8 +321,8 @@
 !
       if (iphys%i_par_c_gen .gt. izero) then
         call cal_phys_product_4_scalar                                  &
-     &     (iphys%i_pc_advect, iphys%i_per_light, iphys%i_par_c_gen,    &
-     &      nod_fld)
+     &     (iphys%forces%i_pc_advect, iphys%i_per_light,                &
+     &      iphys%i_par_c_gen, nod_fld)
       end if
 !
       if (iphys%i_vis_e_diffuse .gt. izero) then

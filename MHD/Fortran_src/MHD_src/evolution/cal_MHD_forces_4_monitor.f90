@@ -256,11 +256,11 @@
      &      mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat, nod_fld)
       end if
 !
-      if(iphys%i_pc_advect .gt. izero) then
+      if(iphys%forces%i_pc_advect .gt. izero) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &             write(*,*) 'lead  ', trim(pert_comp_advect%name)
         call cal_terms_4_advect                                         &
-     &     (iphys%i_pc_advect, iphys%i_per_light,                       &
+     &     (iphys%forces%i_pc_advect, iphys%i_per_light,                &
      &      FEM_prm%iflag_comp_supg, FEM_prm%npoint_t_evo_int, dt,      &
      &      FEM_prm, nod_comm, node, ele, fluid, cp_prop,               &
      &      nod_bcs%Tnod_bcs, iphys_ele, ele_fld, fem_int,              &

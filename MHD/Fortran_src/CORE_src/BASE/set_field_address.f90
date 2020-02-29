@@ -225,8 +225,6 @@
           iphys%i_comp_buo =    i0
         else if (field_name(i) .eq. composition_advect%name ) then
           iphys%i_c_advect =    i0
-        else if (field_name(i) .eq. pert_comp_advect%name ) then
-          iphys%i_pc_advect =   i0
         end if
 !
         call set_base_force_addresses                                   &
