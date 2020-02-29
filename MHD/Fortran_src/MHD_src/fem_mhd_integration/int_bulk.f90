@@ -147,7 +147,7 @@
      &        iphys%i_filter_magne,                                     &
      &        mesh, nod_fld, jacs, fem_wk, fem_msq)
 !
-        else if(msq_list%ifld_msq(i) .eq. iphys%i_induct_t              &
+        else if(msq_list%ifld_msq(i) .eq. iphys%forces%i_induct_t       &
      &    .or. msq_list%ifld_msq(i) .eq. iphys%i_SGS_induct_t) then
            call int_all_4_asym_tensor                                   &
      &        (conduct%istack_ele_fld_smp, npoint_integrate,            &

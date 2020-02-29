@@ -244,12 +244,8 @@
 !
       if (    (phys_nod_name_ctl .eq. fhd_thermal_diffusion   )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_c_diffuse           )         &
-     &   .or. (phys_nod_name_ctl .eq. heat_advect%name         )         &
-     &   .or. (phys_nod_name_ctl .eq. pert_heat_advect%name       )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_div_h_flux          )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_div_ph_flux         )         &
-     &   .or. (phys_nod_name_ctl .eq. composition_advect%name     )         &
-     &   .or. (phys_nod_name_ctl .eq. pert_comp_advect%name       )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_div_c_flux          )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_div_pc_flux         )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_mag_ene_gen         )         &
@@ -320,7 +316,8 @@
      &   .or. (phys_nod_name_ctl .eq. fhd_composition_scale   )         &
      &       ) iflag = 1
 !
-      if(     check_divergence_field(phys_nod_name_ctl)                 &
+      if(     check_scalar_advection(phys_nod_name_ctl)                 &
+     &   .or. check_divergence_field(phys_nod_name_ctl)                 &
      &   .or. check_filtered_scallar_flux(phys_nod_name_ctl)            &
      &   .or. check_div_fil_force(phys_nod_name_ctl)                    &
      &   .or. check_filter_enegy_fluxes(phys_nod_name_ctl)              &
@@ -360,15 +357,14 @@
 !
       if (iflag .gt. 0) return
 !
-       if (   (phys_nod_name_ctl .eq. momentum_flux%name)               &
-     &   .or. (phys_nod_name_ctl .eq. maxwell_tensor%name)              &
-     &   .or. (phys_nod_name_ctl .eq. fhd_SGS_m_flux     )              &
+       if (   (phys_nod_name_ctl .eq. fhd_SGS_m_flux     )              &
      &   .or. (phys_nod_name_ctl .eq. fhd_SGS_maxwell_t  )              &
      &   .or. (phys_nod_name_ctl .eq. fhd_mom_flux_w_sgs )              &
      &   .or. (phys_nod_name_ctl .eq. fhd_maxwell_t_w_sgs)              &
      &       ) iflag = 1
 !
-      if(check_filtered_flux_tensor(phys_nod_name_ctl)) iflag = 1
+      if(     check_flux_tensors(phys_nod_name_ctl)                     &
+     &   .or. check_filtered_flux_tensor(phys_nod_name_ctl)) iflag = 1
 !
       if (iflag .eq. 1) then
         iflag = 1

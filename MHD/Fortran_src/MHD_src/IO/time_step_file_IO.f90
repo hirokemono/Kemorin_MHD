@@ -132,7 +132,7 @@
      &         (id_ave, id_msq, msq_list%field_name(i))
           end if
 !
-        else if(msq_list%ifld_msq(i) .eq. iphys%i_induct_t              &
+        else if(msq_list%ifld_msq(i) .eq. iphys%forces%i_induct_t       &
      &    .or. msq_list%ifld_msq(i) .eq. iphys%i_SGS_induct_t) then
             call write_one_label(id_msq, msq_list%field_name(i))
             call set_asym_tensor_label                                  &

@@ -139,11 +139,12 @@
      &                                 trim(maxwell_tensor%name)
         call cal_maxwell_tensor                                         &
      &     (cd_prop%ex_magne, iphys%i_magne, iphys%i_maxwell, nod_fld)
-      else if (iphys%i_induct_t .gt. izero) then
+      else if (iphys%forces%i_induct_t .gt. izero) then
         if(iflag_debug.gt.0) write(*,*) 'lead  ',                       &
      &                      trim(induction_tensor%name)
         call cal_induction_tensor                                       &
-     &     (iphys%i_magne, iphys%i_velo, iphys%i_induct_t, nod_fld)
+     &     (iphys%i_magne, iphys%i_velo,                                &
+     &      iphys%forces%i_induct_t, nod_fld)
       else if (iphys%i_density .gt. izero) then
         if(iflag_debug.gt.0) write(*,*) 'lead  ', trim(fhd_density)
         call set_boussinesq_density_at_node                             &

@@ -220,9 +220,6 @@
 !>        start address for Maxwell tensor
 !!         @f$ B_{i} B_{j} @f$
         integer (kind=kint) :: i_maxwell =         izero
-!>        start address for TEnsor for magnetic induction
-!!         @f$ u_{i} B_{j}  - B_{i} u_{J} @f$
-        integer (kind=kint) :: i_induct_t =        izero
 !
 !>        start address for advection for temperature
 !!         @f$ u_{i} \partial_{i} T @f$

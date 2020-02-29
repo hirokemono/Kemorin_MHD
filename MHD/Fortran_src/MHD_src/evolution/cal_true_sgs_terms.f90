@@ -450,8 +450,8 @@
 !
 !
       call cal_induction_tensor                                         &
-     &   (iphys%i_filter_magne, iphys%i_filter_velo, iphys%i_induct_t,  &
-     &    nod_fld)
+     &   (iphys%i_filter_magne, iphys%i_filter_velo,                    &
+     &    iphys%forces%i_induct_t, nod_fld)
       call cal_terms_4_magnetic                                         &
      &   (iphys%i_induct_div, iak_diff_uxb, ak_MHD%ak_d_magne, dt,      &
      &    FEM_prm, SGS_par%model_p, SGS_par%commute_p,                  &

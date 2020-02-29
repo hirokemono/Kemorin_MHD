@@ -115,7 +115,7 @@
         call int_vol_div_asym_tsr                                       &
      &     (node, ele, g_FEM, jac_3d, rhs_tbl, nod_fld,                 &
      &      conduct%istack_ele_fld_smp, num_int,                        &
-     &      iphys%i_induct_t, fem_wk, f_nl)
+     &      iphys%forces%i_induct_t, fem_wk, f_nl)
 !
       else if (i_field .eq. iphys%i_SGS_induction) then
         if(cmt_param%iflag_c_uxb .eq. id_SGS_commute_ON) then
@@ -183,8 +183,8 @@
         call int_vol_div_as_tsr_upw                                     &
      &     (node, ele, g_FEM, jac_3d, rhs_tbl, nod_fld,                 &
      &      conduct%istack_ele_fld_smp, num_int, dt,                    &
-     &      iphys%i_induct_t, ele_fld%ntot_phys, iphys_ele%i_magne,     &
-     &      ele_fld%d_fld, fem_wk, f_nl)
+     &      iphys%forces%i_induct_t, ele_fld%ntot_phys,                 &
+     &      iphys_ele%i_magne, ele_fld%d_fld, fem_wk, f_nl)
 !
       else if (i_field .eq. iphys%i_SGS_induction) then
         if(cmt_param%iflag_c_uxb .eq. id_SGS_commute_ON) then

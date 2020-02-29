@@ -177,7 +177,6 @@
 !
         else if(i_start .eq. iphys%i_x_heli                             &
      &     .or. i_start .eq. iphys%i_vp_induct                          &
-     &     .or. i_start .eq. iphys%i_induct_t                           &
      &     .or. i_start .eq. iphys%i_wide_SGS_vp_induct                 &
      &     .or. i_start .eq. iphys%i_SGS_vp_induct                      &
      &     .or. i_start .eq. iphys%i_SGS_induct_t) then 
@@ -287,7 +286,7 @@
      &       (fld, i_start, iphys%i_maxwell, maxwell_tensor%name)
         else if(i_start .eq. iphys%i_induct_div) then 
           call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_induct_t, induction_tensor%name)
+     &       (fld, i_start, iphys%forces%i_induct_t, induction_tensor%name)
         else if(i_start .eq. iphys%i_h_flux_div) then 
           call check_missing_field                                      &
      &       (fld, i_start, iphys%forces%i_h_flux, heat_flux%name)
