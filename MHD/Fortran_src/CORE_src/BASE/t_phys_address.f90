@@ -220,9 +220,6 @@
 !>        start address for perturbation of heat flux
 !!         @f$ u_{i} \Theta @f$
         integer (kind=kint) :: i_ph_flux =         izero
-!>        start address for compositinoal flux
-!!         @f$ u_{i} C @f$
-        integer (kind=kint) :: i_c_flux =          izero
 !>        start address for momentum flux
 !!         @f$ u_{i} u_{j} @f$
         integer (kind=kint) :: i_m_flux =          izero

@@ -94,12 +94,12 @@
      &      iphys%i_h_flux, nod_fld%d_fld)
       end if
 !
-      if( (iphys%i_c_flux * cp_prop%iflag_scheme) .gt. 0) then
+      if( (iphys%forces%i_c_flux * cp_prop%iflag_scheme) .gt. 0) then
         call pole_fld_cst_vec_scalar_prod                               &
      &     (node%numnod, node%internal_node, node%xx,                   &
      &      sph_rtp%nnod_rtp, sph_rtp%nidx_rtp(1), cd_prop%coef_induct, &
      &      nod_fld%ntot_phys, iphys%i_velo, iphys%i_light,             &
-     &      iphys%i_c_flux, nod_fld%d_fld)
+     &      iphys%forces%i_c_flux, nod_fld%d_fld)
       end if
 !
       end subroutine pole_nonlinear_sph_MHD

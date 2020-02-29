@@ -129,8 +129,8 @@
      &    idpdr%i_h_flux)
       call set_vect_sph_address(ipol%i_ph_flux, itor%i_ph_flux,         &
      &    idpdr%i_ph_flux)
-      call set_vect_sph_address(ipol%i_c_flux, itor%i_c_flux,           &
-     &    idpdr%i_c_flux)
+      call set_vect_sph_address(ipol%forces%i_c_flux,                   &
+     &    itor%forces%i_c_flux, idpdr%forces%i_c_flux)
       call set_vect_sph_address(ipol%forces%i_pc_flux,                  &
      &    itor%forces%i_pc_flux, idpdr%forces%i_pc_flux)
 !

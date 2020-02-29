@@ -107,12 +107,12 @@
      &      trns_f_MHD%fld_pole(1,f_trns%i_h_flux) )
       end if
 !
-      if( (f_trns%i_c_flux * cp_prop%iflag_scheme) .gt. 0) then
+      if( (f_trns%forces%i_c_flux * cp_prop%iflag_scheme) .gt. 0) then
         call cal_vec_scalar_prod_w_coef_smp                             &
      &     (sph_rtp%nnod_pole, cp_prop%coef_advect,                     &
      &      trns_b_MHD%fld_pole(1,bs_trns%i_velo),                      &
             trns_b_MHD%fld_pole(1,bs_trns%i_light),                     &
-     &      trns_f_MHD%fld_pole(1,f_trns%i_c_flux) )
+     &      trns_f_MHD%fld_pole(1,f_trns%forces%i_c_flux) )
       end if
 !
 !      if( (f_trns%i_Coriolis*fl_prop%iflag_4_coriolis) .gt. 0) then

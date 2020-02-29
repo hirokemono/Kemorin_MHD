@@ -101,10 +101,10 @@
 !
 !   composition flux flag
       if(cp_prop%iflag_scheme .gt. id_no_evolution) then
-        call add_field_name_4_sph_trns                                  &
-     &     (ipol%i_c_flux, composite_flux%name, composite_flux%n_comp,  &
-     &      ipol%i_c_flux, itor%i_c_flux, iphys%i_c_flux,               &
-     &      f_trns%i_c_flux, trns_fwd)
+        call add_field_name_4_sph_trns(ipol%forces%i_c_flux,            &
+     &      composite_flux%name, composite_flux%n_comp,                 &
+     &      ipol%forces%i_c_flux, itor%forces%i_c_flux,                 &
+     &      iphys%forces%i_c_flux, f_trns%forces%i_c_flux, trns_fwd)
       end if
       trns_fwd%num_vector = trns_fwd%nfield
 !

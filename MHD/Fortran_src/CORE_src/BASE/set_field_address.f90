@@ -189,8 +189,6 @@
           iphys%i_h_flux =   i0
         else if (field_name(i) .eq. pert_heat_flux%name ) then
           iphys%i_ph_flux =  i0
-        else if (field_name(i) .eq. composite_flux%name ) then
-          iphys%i_c_flux =   i0
         else if (field_name(i) .eq. momentum_flux%name ) then
           iphys%i_m_flux =   i0
         else if (field_name(i) .eq. maxwell_tensor%name ) then
