@@ -129,11 +129,11 @@
      &      iphys%forces%i_pc_flux, nod_fld)
 !$omp end parallel
 !
-      else if (iphys%i_m_flux .gt. izero) then
+      else if (iphys%forces%i_m_flux .gt. izero) then
         if(iflag_debug.gt.0) write(*,*) 'lead  ',                       &
      &                                 trim(momentum_flux%name)
         call cal_flux_tensor                                            &
-     &     (iphys%i_velo, iphys%i_velo, iphys%i_m_flux, nod_fld)
+     &     (iphys%i_velo, iphys%i_velo, iphys%forces%i_m_flux, nod_fld)
       else if (iphys%forces%i_maxwell .gt. izero) then
         if(iflag_debug.gt.0) write(*,*) 'lead  ',                       &
      &                                 trim(maxwell_tensor%name)

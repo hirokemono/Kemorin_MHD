@@ -214,10 +214,6 @@
 !!         @f$ \kappa \partial_{i}\partial_{i} C @f$
         integer (kind=kint) :: i_c_diffuse =       izero
 !
-!>        start address for momentum flux
-!!         @f$ u_{i} u_{j} @f$
-        integer (kind=kint) :: i_m_flux =          izero
-!
 !>        start address for advection for temperature
 !!         @f$ u_{i} \partial_{i} T @f$
         integer (kind=kint) :: i_h_advect =        izero

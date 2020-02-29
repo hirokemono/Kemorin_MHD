@@ -105,7 +105,7 @@
 !
       if(ipol%i_mom_flux_w_sgs .gt. 0) then
         call add_2_nod_tensors                                          &
-     &     (rj_fld, ipol%i_m_flux, ipol%i_SGS_m_flux,                   &
+     &     (rj_fld, ipol%forces%i_m_flux, ipol%i_SGS_m_flux,            &
      &      ipol%i_mom_flux_w_sgs)
       end if
 !

@@ -136,7 +136,7 @@
         call int_vol_div_tsr_w_const                                    &
      &     (node, ele, g_FEM, jac_3d, rhs_tbl, nod_fld,                 &
      &      fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,         &
-     &      iphys%i_m_flux, fl_prop%coef_nega_v, fem_wk, f_nl)
+     &      iphys%forces%i_m_flux, fl_prop%coef_nega_v, fem_wk, f_nl)
 !
       end if
 !
@@ -294,7 +294,7 @@
         call int_vol_div_tsr_w_const_upw                                &
      &     (node, ele, g_FEM, jac_3d, rhs_tbl, nod_fld,                 &
      &      fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int, dt,     &
-     &      iphys%i_m_flux, ele_fld%ntot_phys, iv_upw,                  &
+     &      iphys%forces%i_m_flux, ele_fld%ntot_phys, iv_upw,           &
      &      ele_fld%d_fld, fl_prop%coef_nega_v, fem_wk, f_nl)
       end if
 !

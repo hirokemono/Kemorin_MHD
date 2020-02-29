@@ -338,8 +338,8 @@
 !
 !
       call cal_flux_tensor                                              &
-     &   (iphys%i_filter_velo, iphys%i_filter_velo, iphys%i_m_flux,     &
-     &    nod_fld)
+     &   (iphys%i_filter_velo, iphys%i_filter_velo,                     &
+     &    iphys%forces%i_m_flux, nod_fld)
       call cal_terms_4_momentum                                         &
      &   (iphys%i_m_flux_div, iak_diff_mf, iak_diff_lor, dt,            &
      &    FEM_prm, SGS_par%model_p, SGS_par%commute_p,                  &
