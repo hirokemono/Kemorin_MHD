@@ -44,6 +44,7 @@
      &          field_name, num_component, iphys)
 !
       use m_phys_labels
+      use t_base_force_labels
       use t_diff_vector_labels
       use m_rot_filtered_force_labels
       use m_div_filtered_force_labels
@@ -190,8 +191,6 @@
           iphys%i_ph_flux =  i0
         else if (field_name(i) .eq. composite_flux%name ) then
           iphys%i_c_flux =   i0
-        else if (field_name(i) .eq. pert_comp_flux%name ) then
-          iphys%i_pc_flux =   i0
         else if (field_name(i) .eq. momentum_flux%name ) then
           iphys%i_m_flux =   i0
         else if (field_name(i) .eq. maxwell_tensor%name ) then
@@ -242,6 +241,9 @@
         else if (field_name(i) .eq. pert_comp_advect%name ) then
           iphys%i_pc_advect =   i0
         end if
+!
+        call set_base_force_addresses                                   &
+     &     (i0, field_name(i), iphys%forces, flag)
 !
         if ( field_name(i) .eq. fhd_SGS_h_flux ) then
           iphys%i_SGS_h_flux =   i0

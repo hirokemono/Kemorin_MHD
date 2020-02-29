@@ -12,9 +12,8 @@
 !!      logical function check_force_vectors(field_name)
 !!      logical function check_flux_tensors(field_name)
 !!      subroutine set_base_force_addresses                             &
-!!     &         (i_phys, field_name, base_force, flag)
-!!      subroutine set_flux_tensor_addresses                            &
-!!     &         (i_phys, field_name, base_force, flag)
+!!     &         (i_phys, field_name, forces, flag)
+!!        type(base_force_address), intent(inout) :: forces
 !!
 !!      integer(kind = kint) function num_base_forces()
 !!      subroutine set_base_force_labels(n_comps, names, maths)
@@ -348,12 +347,12 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_base_force_addresses                               &
-     &         (i_phys, field_name, base_force, flag)
+     &         (i_phys, field_name, forces, flag)
 !
       integer(kind = kint), intent(in) :: i_phys
       character(len = kchara), intent(in) :: field_name
 !
-      type(base_force_address), intent(inout) :: base_force
+      type(base_force_address), intent(inout) :: forces
       logical, intent(inout) :: flag
 !
 !
@@ -362,53 +361,53 @@
      &      .or. check_flux_tensors(field_name)
       if(flag) then
         if (field_name .eq. pressure_gradient%name) then
-          base_force%i_press_grad = i_phys
+          forces%i_press_grad = i_phys
         else if (field_name .eq. inertia%name) then
-          base_force%i_m_advect =   i_phys
+          forces%i_m_advect =   i_phys
         else if (field_name .eq. Coriolis_force%name) then
-          base_force%i_coriolis =   i_phys
+          forces%i_coriolis =   i_phys
         else if (field_name .eq. Lorentz_force%name) then
-          base_force%i_lorentz =    i_phys
+          forces%i_lorentz =    i_phys
         else if (field_name .eq. magnetic_tension%name) then
-          base_force%i_m_tension =  i_phys
+          forces%i_m_tension =  i_phys
 !
         else if (field_name .eq. buoyancy%name) then
-          base_force%i_buoyancy =   i_phys
+          forces%i_buoyancy =   i_phys
         else if (field_name .eq. composite_buoyancy%name) then
-          base_force%i_comp_buo =   i_phys
+          forces%i_comp_buo =   i_phys
 !
         else if (field_name .eq. vecp_induction%name) then
-          base_force%i_vp_induct =   i_phys
+          forces%i_vp_induct =   i_phys
         else if (field_name .eq. magnetic_induction%name) then
-          base_force%i_induction =   i_phys
+          forces%i_induction =   i_phys
         else if (field_name .eq. magnetic_stretch%name) then
-          base_force%i_mag_stretch = i_phys
+          forces%i_mag_stretch = i_phys
 !
         else if (field_name .eq. heat_advect%name) then
-          base_force%i_h_advect =  i_phys
+          forces%i_h_advect =  i_phys
         else if (field_name .eq. pert_heat_advect%name) then
-          base_force%i_ph_advect = i_phys
+          forces%i_ph_advect = i_phys
 !
         else if (field_name .eq. composition_advect%name) then
-          base_force%i_c_advect =  i_phys
+          forces%i_c_advect =  i_phys
         else if (field_name .eq. pert_comp_advect%name) then
-          base_force%i_pc_advect = i_phys
+          forces%i_pc_advect = i_phys
 !
         else if (field_name .eq. momentum_flux%name ) then
-          base_force%i_m_flux =     i_phys
+          forces%i_m_flux =     i_phys
         else if (field_name .eq. maxwell_tensor%name ) then
-          base_force%i_maxwell =    i_phys
+          forces%i_maxwell =    i_phys
         else if (field_name .eq. induction_tensor%name ) then
-          base_force%i_induct_t =    i_phys
+          forces%i_induct_t =    i_phys
 !
         else if (field_name .eq. heat_flux%name) then
-          base_force%i_h_flux =    i_phys
+          forces%i_h_flux =    i_phys
         else if (field_name .eq. pert_heat_flux%name) then
-          base_force%i_ph_flux =   i_phys
+          forces%i_ph_flux =   i_phys
         else if (field_name .eq. composite_flux%name) then
-          base_force%i_c_flux =    i_phys
+          forces%i_c_flux =    i_phys
         else if (field_name .eq. pert_comp_flux%name) then
-          base_force%i_pc_flux =   i_phys
+          forces%i_pc_flux =   i_phys
         end if
       end if
 !

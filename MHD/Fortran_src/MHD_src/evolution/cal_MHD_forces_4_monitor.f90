@@ -118,12 +118,13 @@
      &     (iphys%i_velo, iphys%i_light, iphys%i_c_flux, nod_fld)
 !$omp end parallel
 !
-      else if (iphys%i_pc_flux .gt. izero) then
+      else if (iphys%forces%i_pc_flux .gt. izero) then
         if(iflag_debug.gt.0) write(*,*) 'lead  ',                       &
      &                       trim(pert_comp_flux%name)
 !$omp parallel
         call cal_phys_scalar_product_vector                             &
-     &     (iphys%i_velo, iphys%i_per_light, iphys%i_pc_flux, nod_fld)
+     &     (iphys%i_velo, iphys%i_per_light,                            &
+     &      iphys%forces%i_pc_flux, nod_fld)
 !$omp end parallel
 !
       else if (iphys%i_m_flux .gt. izero) then
@@ -277,7 +278,7 @@
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &             write(*,*) 'lead  ', trim(fhd_div_pc_flux)
         call cal_div_of_scalar_flux                                     &
-     &     (iphys%i_pc_flux_div, iphys%i_pc_flux,                       &
+     &     (iphys%i_pc_flux_div, iphys%forces%i_pc_flux,                &
      &      FEM_prm%iflag_comp_supg, FEM_prm%npoint_t_evo_int, dt,      &
      &      FEM_prm, nod_comm, node, ele, fluid, cp_prop,               &
      &      nod_bcs%Tnod_bcs, iphys_ele, ele_fld, fem_int,              &

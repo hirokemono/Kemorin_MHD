@@ -223,9 +223,6 @@
 !>        start address for compositinoal flux
 !!         @f$ u_{i} C @f$
         integer (kind=kint) :: i_c_flux =          izero
-!>        start address for compositinoal flux
-!!         @f$ u_{i} \Theta_{C} @f$
-        integer (kind=kint) :: i_pc_flux =          izero
 !>        start address for momentum flux
 !!         @f$ u_{i} u_{j} @f$
         integer (kind=kint) :: i_m_flux =          izero
@@ -655,6 +652,8 @@
         integer (kind=kint) :: i_back_B = izero
 !
 !
+!>        Structure of forces
+        type(base_force_address) :: forces
 !>        Structure of gradient of fields
         type(gradient_field_address) :: grad_fld
 !
