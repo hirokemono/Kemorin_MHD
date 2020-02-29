@@ -136,7 +136,7 @@
      &                         'lead  ', trim(nod_fld%phys_name(i) )
            call cal_div_sgs_s_flux_true_pre(FEM_prm%iflag_temp_supg,    &
      &         FEM_prm%npoint_t_evo_int, dt, iphys%i_SGS_div_hf_true,   &
-     &         iphys%i_h_flux, iphys%i_h_flux_div,                      &
+     &         iphys%forces%i_h_flux, iphys%i_h_flux_div,               &
      &         iphys%i_filter_temp, iphys%i_filter_velo, FEM_prm,       &
      &         nod_comm, node, ele, fluid, ht_prop, nod_bcs%Tnod_bcs,   &
      &         iphys_ele, ele_fld, fem_int, mk_MHD%mlump_fl,            &

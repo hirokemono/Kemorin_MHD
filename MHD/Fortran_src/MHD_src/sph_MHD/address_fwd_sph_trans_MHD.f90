@@ -94,9 +94,9 @@
 !   heat flux flag
       if(ht_prop%iflag_scheme .gt. id_no_evolution) then
         call add_field_name_4_sph_trns                                  &
-     &     (ipol%i_h_flux, heat_flux%name, heat_flux%n_comp,            &
-     &      ipol%i_h_flux, itor%i_h_flux, iphys%i_h_flux,               &
-     &      f_trns%i_h_flux, trns_fwd)
+     &     (ipol%forces%i_h_flux, heat_flux%name, heat_flux%n_comp,     &
+     &      ipol%forces%i_h_flux, itor%forces%i_h_flux,                 &
+     &      iphys%forces%i_h_flux, f_trns%forces%i_h_flux, trns_fwd)
       end if
 !
 !   composition flux flag

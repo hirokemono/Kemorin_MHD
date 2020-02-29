@@ -186,7 +186,6 @@
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_magne, fhd_magne)
         else if(i_start .eq. iphys%i_buo_gen                            &
-     &     .or. i_start .eq. iphys%i_h_flux                             &
      &     .or. i_start .eq. iphys%i_SGS_h_flux                         &
      &     .or. i_start .eq. iphys%i_wide_SGS_h_flux                    &
      &     .or. i_start .eq. iphys%i_entropy                            &
@@ -291,7 +290,7 @@
      &       (fld, i_start, iphys%i_induct_t, induction_tensor%name)
         else if(i_start .eq. iphys%i_h_flux_div) then 
           call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_h_flux, heat_flux%name)
+     &       (fld, i_start, iphys%forces%i_h_flux, heat_flux%name)
         else if(i_start .eq. iphys%i_ph_flux_div) then 
           call check_missing_field                                      &
      &       (fld, i_start, iphys%forces%i_ph_flux, pert_heat_flux%name)
@@ -455,7 +454,7 @@
 !
         else if(i_start .eq. iphys%i_h_flux_w_sgs) then 
           call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_h_flux, heat_flux%name)
+     &       (fld, i_start, iphys%forces%i_h_flux, heat_flux%name)
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_SGS_h_flux, fhd_SGS_h_flux)
         else if(i_start .eq. iphys%i_c_flux_w_sgs) then 

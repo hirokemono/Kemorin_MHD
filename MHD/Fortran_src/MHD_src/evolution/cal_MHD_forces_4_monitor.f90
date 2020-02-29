@@ -95,11 +95,11 @@
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-      if (iphys%i_h_flux .gt. izero) then
+      if (iphys%forces%i_h_flux .gt. izero) then
         if(iflag_debug.gt.0) write(*,*) 'lead  ', trim(heat_flux%name)
 !$omp parallel
         call cal_phys_scalar_product_vector                             &
-     &     (iphys%i_velo, iphys%i_temp, iphys%i_h_flux, nod_fld)
+     &     (iphys%i_velo, iphys%i_temp, iphys%forces%i_h_flux, nod_fld)
 !$omp end parallel
 !
       else if (iphys%forces%i_ph_flux .gt. izero) then
@@ -224,7 +224,7 @@
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &             write(*,*) 'lead  ', trim(fhd_div_h_flux)
         call cal_div_of_scalar_flux                                     &
-     &     (iphys%i_h_flux_div, iphys%i_h_flux,                         &
+     &     (iphys%i_h_flux_div, iphys%forces%i_h_flux,                  &
      &      FEM_prm%iflag_temp_supg, FEM_prm%npoint_t_evo_int, dt,      &
      &      FEM_prm, nod_comm, node, ele, fluid, ht_prop,               &
      &      nod_bcs%Tnod_bcs, iphys_ele, ele_fld, fem_int,              &

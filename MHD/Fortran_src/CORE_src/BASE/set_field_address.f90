@@ -185,8 +185,6 @@
         else if (field_name(i) .eq. fhd_c_diffuse) then
           iphys%i_c_diffuse =  i0
 !
-        else if (field_name(i) .eq. heat_flux%name ) then
-          iphys%i_h_flux =   i0
         else if (field_name(i) .eq. momentum_flux%name ) then
           iphys%i_m_flux =   i0
         else if (field_name(i) .eq. maxwell_tensor%name ) then
