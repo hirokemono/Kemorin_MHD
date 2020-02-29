@@ -217,9 +217,6 @@
 !>        start address for momentum flux
 !!         @f$ u_{i} u_{j} @f$
         integer (kind=kint) :: i_m_flux =          izero
-!>        start address for Maxwell tensor
-!!         @f$ B_{i} B_{j} @f$
-        integer (kind=kint) :: i_maxwell =         izero
 !
 !>        start address for advection for temperature
 !!         @f$ u_{i} \partial_{i} T @f$

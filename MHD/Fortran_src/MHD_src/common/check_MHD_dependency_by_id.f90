@@ -80,7 +80,6 @@
      &     .or. i_start .eq. iphys%i_mag_p                              &
      &     .or. i_start .eq. iphys%i_m_tension                          &
      &     .or. i_start .eq. iphys%i_lorentz                            &
-     &     .or. i_start .eq. iphys%i_maxwell                            &
      &     .or. i_start .eq. iphys%i_SGS_maxwell                        &
      &     .or. i_start .eq. iphys%i_square_b                           &
      &     .or. i_start .eq. iphys%i_truncated_B) then
@@ -283,7 +282,7 @@
      &       (fld, i_start, iphys%i_m_flux, momentum_flux%name)
         else if(i_start .eq. iphys%i_maxwell_div) then 
           call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_maxwell, maxwell_tensor%name)
+     &       (fld, i_start, iphys%forces%i_maxwell, maxwell_tensor%name)
         else if(i_start .eq. iphys%i_induct_div) then 
           call check_missing_field                                      &
      &       (fld, i_start, iphys%forces%i_induct_t, induction_tensor%name)
@@ -493,7 +492,7 @@
      &       (fld, i_start, iphys%i_SGS_m_flux, fhd_SGS_m_flux)
         else if(i_start .eq. iphys%i_maxwell_t_w_sgs) then 
           call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_maxwell, maxwell_tensor%name)
+     &       (fld, i_start, iphys%forces%i_maxwell, maxwell_tensor%name)
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_SGS_maxwell, fhd_SGS_maxwell_t)
         end if

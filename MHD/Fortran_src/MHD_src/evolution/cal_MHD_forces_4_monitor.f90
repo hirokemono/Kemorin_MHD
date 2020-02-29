@@ -134,11 +134,12 @@
      &                                 trim(momentum_flux%name)
         call cal_flux_tensor                                            &
      &     (iphys%i_velo, iphys%i_velo, iphys%i_m_flux, nod_fld)
-      else if (iphys%i_maxwell .gt. izero) then
+      else if (iphys%forces%i_maxwell .gt. izero) then
         if(iflag_debug.gt.0) write(*,*) 'lead  ',                       &
      &                                 trim(maxwell_tensor%name)
         call cal_maxwell_tensor                                         &
-     &     (cd_prop%ex_magne, iphys%i_magne, iphys%i_maxwell, nod_fld)
+     &     (cd_prop%ex_magne, iphys%i_magne,                            &
+     &      iphys%forces%i_maxwell, nod_fld)
       else if (iphys%forces%i_induct_t .gt. izero) then
         if(iflag_debug.gt.0) write(*,*) 'lead  ',                       &
      &                      trim(induction_tensor%name)

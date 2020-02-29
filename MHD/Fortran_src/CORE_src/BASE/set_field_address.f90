@@ -187,8 +187,6 @@
 !
         else if (field_name(i) .eq. momentum_flux%name ) then
           iphys%i_m_flux =   i0
-        else if (field_name(i) .eq. maxwell_tensor%name ) then
-          iphys%i_maxwell =  i0
 !
         else if (field_name(i) .eq. heat_advect%name ) then
           iphys%i_h_advect =    i0
