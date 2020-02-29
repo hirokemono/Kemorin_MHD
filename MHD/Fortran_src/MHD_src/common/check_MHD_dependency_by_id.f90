@@ -144,8 +144,7 @@
           call check_missing_field                                      &
      &       (fld, i_start, iphys%diff_vector%i_grad_vz, grad_v_3%name)
 !
-        else if(i_start .eq. iphys%i_c_advect                           &
-     &     .or. i_start .eq. iphys%i_c_buo_gen                          &
+        else if(i_start .eq. iphys%i_c_buo_gen                          &
      &     .or. i_start .eq. iphys%i_SGS_c_flux) then 
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_velo, fhd_velo)

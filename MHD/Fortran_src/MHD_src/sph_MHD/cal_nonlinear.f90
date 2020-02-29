@@ -229,8 +229,8 @@
       if(ipol%i_h_advect .gt. 0) then
         call clear_field_data(rj_fld, n_scalar, ipol%i_h_advect)
       end if
-      if(ipol%i_c_advect .gt. 0) then
-        call clear_field_data(rj_fld, n_scalar, ipol%i_c_advect)
+      if(ipol%forces%i_c_advect .gt. 0) then
+        call clear_field_data(rj_fld, n_scalar, ipol%forces%i_c_advect)
       end if
       if(ipol%i_forces .gt. 0) then
         call clear_field_data(rj_fld, n_vector, ipol%i_forces)

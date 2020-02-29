@@ -24,9 +24,9 @@
 !!      subroutine add_ref_advect_sph_MHD(sph_rj, sph_MHD_bc, MHD_prop, &
 !!     &          leg, ref_temp, ref_comp, ipol, rj_fld)
 !!       Input ::  rj_fld(1,is_fld)
-!!               is_fld = i_velo, i_h_advect, i_c_advect
+!!               is_fld = i_velo, i_h_advect, forces%i_c_advect
 !!       Output :: rj_fld(1,is_fld)
-!!               is_fld = i_h_advect, i_c_advect
+!!               is_fld = i_h_advect, forces%i_c_advect
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
 !!        type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
@@ -165,7 +165,7 @@
         call add_reference_advect_sph(sph_MHD_bc%sph_bc_C,              &
      &      MHD_prop%cp_prop, MHD_prop%ref_param_C,                     &
      &      sph_rj%nidx_rj, sph_rj%ar_1d_rj, leg%g_sph_rj,              &
-     &      ipol%i_c_advect, ipol%i_velo, ref_comp%t_rj, rj_fld)
+     &      ipol%forces%i_c_advect, ipol%i_velo, ref_comp%t_rj, rj_fld)
 !
       end subroutine add_ref_advect_sph_MHD
 !

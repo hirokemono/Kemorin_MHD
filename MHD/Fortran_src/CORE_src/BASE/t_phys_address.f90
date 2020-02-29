@@ -271,9 +271,6 @@
 !>        start address for magnetic stretch term
 !!         @f$ B_{j} \partial_{j} \u_{i} \right)@f$
         integer (kind=kint) :: i_mag_stretch =     izero
-!>        start address for advection for composition
-!!         @f$ u_{i} \partial_{i} C @f$
-        integer (kind=kint) :: i_c_advect =        izero
 !
 !>        start address for SGS heat flux
 !!         @f$ \overline{u_{i}T} - \bar{u}_{i}\bar{T} @f$

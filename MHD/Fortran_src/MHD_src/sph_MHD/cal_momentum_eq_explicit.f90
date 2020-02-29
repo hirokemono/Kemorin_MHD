@@ -144,7 +144,7 @@
      &                'sel_scalar_diff_adv_src_adams composition'
         call sel_scalar_diff_adv_src_adams                              &
      &     (sph_bc_C%kr_in, sph_bc_C%kr_out, ipol%i_c_diffuse,          &
-     &      ipol%i_c_advect, ipol%i_light_source, ipol%i_light,         &
+     &      ipol%forces%i_c_advect, ipol%i_light_source, ipol%i_light,  &
      &      ipol%i_pre_composit, dt, cp_prop%coef_exp,                  &
      &      cp_prop%coef_source, sph_rj, rj_fld)
       end if
@@ -165,7 +165,7 @@
           if(iflag_debug .gt. 0) write(*,*)                             &
      &                'sel_ctr_scl_diff_adv_src_adams composition'
         call sel_ctr_scl_diff_adv_src_adams                             &
-     &     (ipol%i_c_diffuse, ipol%i_c_advect,                          &
+     &     (ipol%i_c_diffuse, ipol%forces%i_c_advect,                   &
      &      ipol%i_light_source, ipol%i_light, ipol%i_pre_composit,     &
      &      dt, cp_prop%coef_exp, cp_prop%coef_source, sph_rj, rj_fld)
       end if
@@ -227,9 +227,9 @@
      &                'sel_scalar_diff_adv_src_euler composition'
         call sel_scalar_diff_adv_src_euler                              &
      &     (sph_bc_C%kr_in, sph_bc_C%kr_out, ipol%i_c_diffuse,          &
-     &      ipol%i_c_advect, ipol%i_light_source, ipol%i_light, dt,     &
-     &      cp_prop%coef_exp, cp_prop%coef_advect, cp_prop%coef_source, &
-     &      sph_rj, rj_fld)
+     &      ipol%forces%i_c_advect, ipol%i_light_source, ipol%i_light,  &
+     &      dt, cp_prop%coef_exp, cp_prop%coef_advect,                  &
+     &      cp_prop%coef_source, sph_rj, rj_fld)
       end if
 !
 !   Center evolution
@@ -248,9 +248,10 @@
         if(iflag_debug .gt. 0) write(*,*)                               &
      &                'sel_ctr_scl_diff_adv_src_euler composition'
         call sel_ctr_scl_diff_adv_src_euler                             &
-     &     (ipol%i_c_diffuse, ipol%i_c_advect, ipol%i_light_source,     &
-     &      ipol%i_light, dt, cp_prop%coef_exp, cp_prop%coef_advect,    &
-     &      cp_prop%coef_source, sph_rj, rj_fld)
+     &     (ipol%i_c_diffuse, ipol%forces%i_c_advect,                   &
+     &      ipol%i_light_source, ipol%i_light, dt,                      &
+     &      cp_prop%coef_exp, cp_prop%coef_advect, cp_prop%coef_source, &
+     &      sph_rj, rj_fld)
       end if
 !
       end subroutine cal_explicit_sph_euler
@@ -294,7 +295,7 @@
 !
       if(cp_prop%iflag_scheme .gt. id_no_evolution) then
         call sel_ini_adams_scalar_w_src                                 &
-     &     (sph_bc_C%kr_in, sph_bc_C%kr_out, ipol%i_c_advect,           &
+     &     (sph_bc_C%kr_in, sph_bc_C%kr_out, ipol%forces%i_c_advect,    &
      &      ipol%i_light_source, ipol%i_pre_composit,                   &
      &      cp_prop%coef_source, sph_rj, rj_fld)
       end if
@@ -312,8 +313,9 @@
 !
       if(cp_prop%iflag_scheme .gt. id_no_evolution                      &
      &  .and. ipol%i_light_source .gt. izero) then
-        call center_ini_adams_scalar_w_src (sph_rj%inod_rj_center,      &
-     &      ipol%i_c_advect, ipol%i_light_source, ipol%i_pre_composit,  &
+        call center_ini_adams_scalar_w_src                              &
+     &     (sph_rj%inod_rj_center, ipol%forces%i_c_advect,              &
+     &      ipol%i_light_source, ipol%i_pre_composit,                   &
      &      cp_prop%coef_source, rj_fld%n_point, rj_fld%ntot_phys,      &
      &      rj_fld%d_fld)
       end if

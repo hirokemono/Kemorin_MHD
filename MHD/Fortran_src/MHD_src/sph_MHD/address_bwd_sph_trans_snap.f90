@@ -296,8 +296,8 @@
      &    b_trns%i_h_advect, trns_back)
       call add_field_name_4_sph_trns_snap                               &
      &   (composition_advect%name, composition_advect%n_comp,           &
-     &    ipol%i_c_advect, itor%i_c_advect, iphys%i_c_advect,           &
-     &    b_trns%i_c_advect, trns_back)
+     &    ipol%forces%i_c_advect, itor%forces%i_c_advect,               &
+     &    iphys%forces%i_c_advect, b_trns%forces%i_c_advect, trns_back)
 !
       call add_field_name_4_sph_trns_snap(fhd_div_Coriolis, n_scalar,   &
      &    ipol%i_div_Coriolis, itor%i_div_Coriolis,                     &

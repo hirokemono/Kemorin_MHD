@@ -245,11 +245,11 @@
       end if
 !
 !
-      if(iphys%i_c_advect .gt. izero) then
+      if(iphys%forces%i_c_advect .gt. izero) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &             write(*,*) 'lead  ', trim(composition_advect%name)
         call cal_terms_4_advect                                         &
-     &     (iphys%i_c_advect, iphys%i_light,                            &
+     &     (iphys%forces%i_c_advect, iphys%i_light,                     &
      &      FEM_prm%iflag_comp_supg, FEM_prm%npoint_t_evo_int, dt,      &
      &      FEM_prm, nod_comm, node, ele, fluid, cp_prop,               &
      &      nod_bcs%Tnod_bcs, iphys_ele, ele_fld, fem_int,              &
