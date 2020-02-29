@@ -46,7 +46,7 @@
 !!                                     \Theta (u \cdot \nabla) \Theta
 !!   composition_gen:    composition advection flux 
 !!                                     C (u \cdot \nabla) C
-!!   part_c_advect:      perturbation of composition advection flux
+!!   pert_comp_advect:   perturbation of composition advection flux
 !!                                     C (u \cdot \nabla) (C-C_0)
 !!
 !!   vis_ene_diffuse:  Energy dissipation by Viscousity
@@ -72,7 +72,7 @@
       implicit  none
 ! 
 !
-      integer(kind = kint), parameter, private :: nene_flux = 18
+      integer(kind = kint), parameter, private :: nene_flux = 16
 !
 !>        Field label of work of inertia
 !!         @f$ u_{i} (u_{j} \partial_{j} u_{i}) @f$
@@ -106,7 +106,7 @@
       character(len=kchara), parameter                                  &
      &             :: fhd_mag_ene_gen =       'magnetic_ene_generation'
 !>        Field label of energy flux of magnetic stretch term
-!!       @f$ u_{i} \left(B_{i} \partial_{k} u_{k} \right)@f$
+!!       @f$ u_{i} \left(B_{j} \partial_{j} u_{i} \right)@f$
       character(len=kchara), parameter                                  &
      &             :: fhd_mag_stretch_flux =   'magnetic_stretch_flux'
 !
@@ -177,7 +177,7 @@
 !>       @f$ B_{i}e_{ijk} \partial_{j} \left(e_{klm}u_{l}B_{m}\right) @f$
         integer (kind=kint) :: i_me_gen =           izero
 !>        Field label of energy flux of magnetic stretch term
-!!       @f$ u_{i} \left(B_{i} \partial_{k} u_{k} \right)@f$
+!!       @f$ u_{i} \left(B_{j} \partial_{j} u_{i} \right)@f$
         integer (kind=kint) :: i_mag_stretch_flux = izero
 !
 !>        Field address of temperature flux
@@ -337,26 +337,23 @@
       write(field_names( 5),'(a,a1)') trim(fhd_buoyancy_flux), CHAR(0)
       write(field_names( 6),'(a,a1)') trim(fhd_comp_buo_flux), CHAR(0)
 !
-      write(field_names( 7),'(a,a1)') trim(fhd_buoyancy), CHAR(0)
-      write(field_names( 8),'(a,a1)') trim(fhd_comp_buo), CHAR(0)
-!
-      write(field_names( 9),'(a,a1)') trim(fhd_mag_ene_gen), CHAR(0)
-      write(field_names(10),'(a,a1)')                                   &
+      write(field_names( 7),'(a,a1)') trim(fhd_mag_ene_gen), CHAR(0)
+      write(field_names( 8),'(a,a1)')                                   &
      &                   trim(fhd_mag_stretch_flux), CHAR(0)
 !
-      write(field_names(11),'(a,a1)')                                   &
+      write(field_names( 9),'(a,a1)')                                   &
      &                   trim(fhd_temp_generation), CHAR(0)
-      write(field_names(12),'(a,a1)') trim(fhd_part_temp_gen), CHAR(0)
-      write(field_names(13),'(a,a1)')                                   &
+      write(field_names(10),'(a,a1)') trim(fhd_part_temp_gen), CHAR(0)
+      write(field_names(11),'(a,a1)')                                   &
      &                   trim(fhd_comp_generation), CHAR(0)
-      write(field_names(14),'(a,a1)') trim(fhd_part_comp_gen), CHAR(0)
+      write(field_names(12),'(a,a1)') trim(fhd_part_comp_gen), CHAR(0)
 !
-      write(field_names(15),'(a,a1)') trim(fhd_vis_ene_diffuse), CHAR(0)
-      write(field_names(16),'(a,a1)')                                   &
+      write(field_names(13),'(a,a1)') trim(fhd_vis_ene_diffuse), CHAR(0)
+      write(field_names(14),'(a,a1)')                                   &
      &                   trim(fhd_mag_ene_diffuse), CHAR(0)
 !
-      write(field_names(17),'(a,a1)') trim(fhd_press_work), CHAR(0)
-      write(field_names(18),'(a,a1)')                                   &
+      write(field_names(15),'(a,a1)') trim(fhd_press_work), CHAR(0)
+      write(field_names(16),'(a,a1)')                                   &
      &                   trim(fhd_m_potential_work), CHAR(0)
 !
       end subroutine set_energy_flux_names

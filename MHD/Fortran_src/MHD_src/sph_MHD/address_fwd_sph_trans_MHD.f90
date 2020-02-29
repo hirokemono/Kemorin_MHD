@@ -58,13 +58,13 @@
 !   advection flag
       if(fl_prop%iflag_scheme .gt. id_no_evolution) then
         call add_field_name_4_sph_trns                                  &
-     &     (ipol%i_m_advect, fhd_inertia, n_vector,                     &
+     &     (ipol%i_m_advect, inertia%name, inertia%n_comp,              &
      &      ipol%i_m_advect, itor%i_m_advect, iphys%i_m_advect,         &
      &      f_trns%i_m_advect, trns_fwd)
 !   Coriolis flag
         if(fl_prop%iflag_4_coriolis .gt. id_turn_OFF) then
           call add_field_name_4_sph_trns                                &
-     &       (ipol%i_coriolis, fhd_Coriolis, n_vector,                  &
+     &       (ipol%i_coriolis, Coriolis_force%name, n_vector,                  &
      &        ipol%i_coriolis, itor%i_coriolis, iphys%i_coriolis,       &
      &        f_trns%i_coriolis, trns_fwd)
         end if
@@ -77,7 +77,7 @@
 !   Lorentz flag
         if(fl_prop%iflag_4_lorentz .gt. id_turn_OFF) then
           call add_field_name_4_sph_trns                                &
-     &       (ipol%i_lorentz, fhd_Lorentz, n_vector,                    &
+     &       (ipol%i_lorentz, Lorentz_force%name, Lorentz_force%n_comp, &
      &        ipol%i_lorentz, itor%i_lorentz, iphys%i_lorentz,          &
      &        f_trns%i_lorentz, trns_fwd)
         end if
@@ -85,8 +85,8 @@
 !
 !   induction flag
       if(cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
-        call add_field_name_4_sph_trns                                  &
-     &     (ipol%i_vp_induct, fhd_vp_induct, n_vector,                  &
+        call add_field_name_4_sph_trns(ipol%i_vp_induct,                &
+     &      vecp_induction%name, vecp_induction%n_comp,                 &
      &      ipol%i_vp_induct, itor%i_vp_induct, iphys%i_vp_induct,      &
      &      f_trns%i_vp_induct, trns_fwd)
       end if
@@ -94,7 +94,7 @@
 !   heat flux flag
       if(ht_prop%iflag_scheme .gt. id_no_evolution) then
         call add_field_name_4_sph_trns                                  &
-     &     (ipol%i_h_flux, fhd_h_flux, n_vector,                        &
+     &     (ipol%i_h_flux, heat_flux%name, heat_flux%n_comp,            &
      &      ipol%i_h_flux, itor%i_h_flux, iphys%i_h_flux,               &
      &      f_trns%i_h_flux, trns_fwd)
       end if
@@ -102,7 +102,7 @@
 !   composition flux flag
       if(cp_prop%iflag_scheme .gt. id_no_evolution) then
         call add_field_name_4_sph_trns                                  &
-     &     (ipol%i_c_flux, fhd_c_flux, n_vector,                        &
+     &     (ipol%i_c_flux, composite_flux%name, composite_flux%n_comp,  &
      &      ipol%i_c_flux, itor%i_c_flux, iphys%i_c_flux,               &
      &      f_trns%i_c_flux, trns_fwd)
       end if

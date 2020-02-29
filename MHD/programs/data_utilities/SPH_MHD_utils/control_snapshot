@@ -67,11 +67,11 @@
 !   Coriolis_force, buoyancy
 !
 !
-!   heat_flux, part_h_flux
+!   heat_flux, pert_heat_flux
 !   momentum_flux, maxwell_tensor
 !   magnetic_induction, vecp_induction
 !
-!   heat_advect, part_h_advect
+!   heat_advect, pert_heat_advect
 !   inertia,  
 !   div_h_flux, div_part_h_flux
 !   div_m_flux, div_maxwell_t

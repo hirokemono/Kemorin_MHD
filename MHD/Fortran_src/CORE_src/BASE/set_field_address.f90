@@ -184,26 +184,26 @@
         else if (field_name(i) .eq. fhd_c_diffuse) then
           iphys%i_c_diffuse =  i0
 !
-        else if (field_name(i) .eq. fhd_h_flux ) then
+        else if (field_name(i) .eq. heat_flux%name ) then
           iphys%i_h_flux =   i0
-        else if (field_name(i) .eq. fhd_ph_flux ) then
+        else if (field_name(i) .eq. pert_heat_flux%name ) then
           iphys%i_ph_flux =  i0
-        else if (field_name(i) .eq. fhd_c_flux ) then
+        else if (field_name(i) .eq. composite_flux%name ) then
           iphys%i_c_flux =   i0
-        else if (field_name(i) .eq. fhd_pc_flux ) then
+        else if (field_name(i) .eq. pert_comp_flux%name ) then
           iphys%i_pc_flux =   i0
-        else if (field_name(i) .eq. fhd_mom_flux ) then
+        else if (field_name(i) .eq. momentum_flux%name ) then
           iphys%i_m_flux =   i0
-        else if (field_name(i) .eq. fhd_maxwell_t ) then
+        else if (field_name(i) .eq. maxwell_tensor%name ) then
           iphys%i_maxwell =  i0
-        else if (field_name(i) .eq. fhd_induct_t ) then
+        else if (field_name(i) .eq. induction_tensor%name ) then
           iphys%i_induct_t = i0
 !
-        else if (field_name(i) .eq. fhd_heat_advect ) then
+        else if (field_name(i) .eq. heat_advect%name ) then
           iphys%i_h_advect =    i0
-        else if (field_name(i) .eq. fhd_part_h_advect ) then
+        else if (field_name(i) .eq. pert_heat_advect%name ) then
           iphys%i_ph_advect =   i0
-        else if (field_name(i) .eq. fhd_inertia) then
+        else if (field_name(i) .eq. inertia%name) then
           iphys%i_m_advect =    i0
         else if (field_name(i) .eq. fhd_div_h_flux ) then
           iphys%i_h_flux_div =  i0
@@ -219,27 +219,27 @@
           iphys%i_maxwell_div = i0
         else if (field_name(i) .eq. fhd_div_induct_t) then
           iphys%i_induct_div =  i0
-        else if (field_name(i) .eq. fhd_mag_induct) then
+        else if (field_name(i) .eq. magnetic_induction%name) then
           iphys%i_induction =   i0
-        else if (field_name(i) .eq. fhd_vp_induct) then
+        else if (field_name(i) .eq. vecp_induction%name) then
           iphys%i_vp_induct =   i0
-        else if (field_name(i) .eq. fhd_mag_stretch) then
+        else if (field_name(i) .eq. magnetic_stretch%name) then
           iphys%i_mag_stretch = i0
-        else if (field_name(i) .eq. fhd_press_grad) then
+        else if (field_name(i) .eq. pressure_gradient%name) then
           iphys%i_press_grad =  i0
-        else if (field_name(i) .eq. fhd_mag_tension) then
+        else if (field_name(i) .eq. magnetic_tension%name) then
           iphys%i_m_tension =   i0
-        else if (field_name(i) .eq. fhd_Lorentz) then
+        else if (field_name(i) .eq. Lorentz_force%name) then
           iphys%i_lorentz =     i0
-        else if (field_name(i) .eq. fhd_Coriolis) then
+        else if (field_name(i) .eq. Coriolis_force%name) then
           iphys%i_coriolis =    i0
-        else if (field_name(i) .eq. fhd_buoyancy) then
+        else if (field_name(i) .eq. buoyancy%name) then
           iphys%i_buoyancy =    i0
-        else if (field_name(i) .eq. fhd_comp_buo) then
+        else if (field_name(i) .eq. composite_buoyancy%name) then
           iphys%i_comp_buo =    i0
-        else if (field_name(i) .eq. fhd_composit_advect ) then
+        else if (field_name(i) .eq. composition_advect%name ) then
           iphys%i_c_advect =    i0
-        else if (field_name(i) .eq. fhd_part_c_advect ) then
+        else if (field_name(i) .eq. pert_comp_advect%name ) then
           iphys%i_pc_advect =   i0
         end if
 !

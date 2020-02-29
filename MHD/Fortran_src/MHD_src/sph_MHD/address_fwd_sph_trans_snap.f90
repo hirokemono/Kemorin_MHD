@@ -47,7 +47,8 @@
       trns_fwd%nfield = 0
       call alloc_sph_trns_field_name(trns_fwd)
 !
-      call add_field_name_4_sph_trns_snap(fhd_Coriolis, n_vector,       &
+      call add_field_name_4_sph_trns_snap                               &
+     &   (Coriolis_force%name, Coriolis_force%n_comp,                   &
      &    ipol%i_coriolis, itor%i_coriolis, iphys%i_coriolis,           &
      &    f_trns%i_coriolis, trns_fwd)
       call add_field_name_4_sph_trns_snap(fhd_e_field, n_vector,        &
@@ -56,7 +57,8 @@
       call add_field_name_4_sph_trns_snap(fhd_poynting, n_vector,       &
      &    ipol%i_poynting, itor%i_poynting, iphys%i_poynting,           &
      &    f_trns%i_poynting, trns_fwd)
-      call add_field_name_4_sph_trns_snap(fhd_mag_stretch, n_vector,    &
+      call add_field_name_4_sph_trns_snap                               &
+     &   (magnetic_stretch%name, magnetic_stretch%n_comp,               &
      &    ipol%i_mag_stretch, itor%i_mag_stretch, iphys%i_mag_stretch,  &
      &    f_trns%i_mag_stretch, trns_fwd)
 !

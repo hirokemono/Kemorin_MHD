@@ -56,6 +56,14 @@
 !!         @f$ \bar{A}_{i} @f$
       character(len=kchara), parameter                                  &
      &            :: fhd_truncated_B = 'truncated_magnetic_field'
+!>        Field label for electric field
+!!         @f$ E_{i} @f$
+      character(len=kchara), parameter                                  &
+     &             :: fhd_e_field = 'electric_field'
+!>        Field label for poynting flux
+!!         @f$  e_{ijk} E_{j} B_{k} @f$
+      character(len=kchara), parameter                                  &
+     &             :: fhd_poynting = 'poynting_flux'
 !
 !
 !>        Field label for kinetic helicity

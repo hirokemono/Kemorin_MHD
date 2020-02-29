@@ -158,17 +158,17 @@
      &       (fld, i_start, iphys%i_light, fhd_light)
         else if(i_start .eq. iphys%i_temp_gen) then 
           call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_h_advect, fhd_heat_advect)
+     &       (fld, i_start, iphys%i_h_advect, heat_advect%name)
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_temp, fhd_temp)
         else if(i_start .eq. iphys%i_par_t_gen) then 
           call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_ph_advect, fhd_part_h_advect)
+     &       (fld, i_start, iphys%i_ph_advect, pert_heat_advect%name)
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_temp, fhd_temp)
         else if(i_start .eq. iphys%i_par_c_gen) then 
           call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_pc_advect, fhd_part_c_advect)
+     &       (fld, i_start, iphys%i_pc_advect, pert_comp_advect%name)
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_light, fhd_light)
         else if(i_start .eq. iphys%i_per_entropy) then 
@@ -208,7 +208,7 @@
      &       (fld, i_start, iphys%i_magne, fhd_magne)
           else
             call check_missing_field                                    &
-     &       (fld, i_start, iphys%i_vp_induct, fhd_vp_induct)
+     &       (fld, i_start, iphys%i_vp_induct, vecp_induction%name)
           end if
         else if(i_start .eq. iphys%i_SGS_induction) then 
           if (cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
@@ -229,12 +229,12 @@
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_magne, fhd_magne)
           call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_induction, fhd_mag_induct)
+     &       (fld, i_start, iphys%i_induction, magnetic_induction%name)
         else if(i_start .eq. iphys%i_m_tension_wk) then 
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_velo, fhd_velo)
           call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_m_tension, fhd_mag_tension)
+     &       (fld, i_start, iphys%i_m_tension, magnetic_tension%name)
         else if(i_start .eq. iphys%i_vis_e_diffuse) then 
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_velo, fhd_velo)
@@ -269,41 +269,41 @@
         else if(i_start .eq. iphys%i_electric                           &
      &     .or. i_start .eq. iphys%i_poynting) then 
           call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_vp_induct, fhd_vp_induct)
+     &       (fld, i_start, iphys%i_vp_induct, vecp_induction%name)
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_current, fhd_current)
 !
         else if(i_start .eq. iphys%i_div_Lorentz                        &
      &     .or. i_start .eq. iphys%i_rot_Lorentz) then 
           call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_lorentz, fhd_Lorentz)
+     &       (fld, i_start, iphys%i_lorentz, Lorentz_force%name)
         else if(i_start .eq. iphys%i_geostrophic) then 
           call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_coriolis, fhd_Coriolis)
+     &       (fld, i_start, iphys%i_coriolis, Coriolis_force%name)
           call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_press_grad, fhd_press_grad)
+     &       (fld, i_start, iphys%i_press_grad, pressure_gradient%name)
 !
         else if(i_start .eq. iphys%i_m_flux_div) then 
           call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_m_flux, fhd_mom_flux)
+     &       (fld, i_start, iphys%i_m_flux, momentum_flux%name)
         else if(i_start .eq. iphys%i_maxwell_div) then 
           call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_maxwell, fhd_maxwell_t)
+     &       (fld, i_start, iphys%i_maxwell, maxwell_tensor%name)
         else if(i_start .eq. iphys%i_induct_div) then 
           call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_induct_t, fhd_induct_t)
+     &       (fld, i_start, iphys%i_induct_t, induction_tensor%name)
         else if(i_start .eq. iphys%i_h_flux_div) then 
           call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_h_flux, fhd_h_flux)
+     &       (fld, i_start, iphys%i_h_flux, heat_flux%name)
         else if(i_start .eq. iphys%i_ph_flux_div) then 
           call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_ph_flux, fhd_ph_flux)
+     &       (fld, i_start, iphys%i_ph_flux, pert_heat_flux%name)
         else if(i_start .eq. iphys%i_c_flux_div) then 
           call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_c_flux, fhd_c_flux)
+     &       (fld, i_start, iphys%i_c_flux, composite_flux%name)
         else if(i_start .eq. iphys%i_pc_flux_div) then 
           call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_pc_flux, fhd_pc_flux)
+     &       (fld, i_start, iphys%i_pc_flux, pert_comp_flux%name)
 !
         else if(i_start .eq. iphys%i_SGS_div_hf_true) then 
           call check_missing_field                                      &
@@ -458,47 +458,47 @@
 !
         else if(i_start .eq. iphys%i_h_flux_w_sgs) then 
           call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_h_flux, fhd_h_flux)
+     &       (fld, i_start, iphys%i_h_flux, heat_flux%name)
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_SGS_h_flux, fhd_SGS_h_flux)
         else if(i_start .eq. iphys%i_c_flux_w_sgs) then 
           call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_c_flux, fhd_c_flux)
+     &       (fld, i_start, iphys%i_c_flux, composite_flux%name)
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_SGS_c_flux, fhd_SGS_c_flux)
         else if(i_start .eq. iphys%i_inertia_w_sgs) then 
           call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_m_advect, fhd_inertia)
+     &       (fld, i_start, iphys%i_m_advect, inertia%name)
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_SGS_inertia, fhd_SGS_inertia)
         else if(i_start .eq. iphys%i_Lorentz_w_sgs) then 
           call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_lorentz, fhd_Lorentz)
+     &       (fld, i_start, iphys%i_lorentz, Lorentz_force%name)
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_SGS_Lorentz, fhd_SGS_Lorentz)
         else if(i_start .eq. iphys%i_Lorentz_w_sgs) then 
           call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_lorentz, fhd_Lorentz)
+     &       (fld, i_start, iphys%i_lorentz, Lorentz_force%name)
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_SGS_Lorentz, fhd_SGS_Lorentz)
         else if(i_start .eq. iphys%i_vp_induct_w_sgs) then 
           call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_vp_induct, fhd_vp_induct)
+     &       (fld, i_start, iphys%i_vp_induct, vecp_induction%name)
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_SGS_vp_induct, fhd_SGS_vp_induct)
         else if(i_start .eq. iphys%i_mag_induct_w_sgs) then 
           call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_induction, fhd_mag_induct)
+     &       (fld, i_start, iphys%i_induction, magnetic_induction%name)
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_SGS_induction, fhd_SGS_induction)
         else if(i_start .eq. iphys%i_mom_flux_w_sgs) then 
           call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_m_flux, fhd_mom_flux)
+     &       (fld, i_start, iphys%i_m_flux, momentum_flux%name)
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_SGS_m_flux, fhd_SGS_m_flux)
         else if(i_start .eq. iphys%i_maxwell_t_w_sgs) then 
           call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_maxwell, fhd_maxwell_t)
+     &       (fld, i_start, iphys%i_maxwell, maxwell_tensor%name)
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_SGS_maxwell, fhd_SGS_maxwell_t)
         end if

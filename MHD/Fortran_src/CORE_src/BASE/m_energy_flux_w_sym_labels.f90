@@ -77,7 +77,7 @@
 !!       Composition advection flux            C (u \cdot \nabla) C
 !!   pC_usym_nabla_pCsym, pC_uasym_nabla_pCasym,
 !!   pC_usym_nabla_pCasym, pC_uasym_nabla_pCsym:
-!!   part_c_advect:      perturbation of composition advection flux
+!!   pert_comp_advect:      perturbation of composition advection flux
 !!                                   (C-C_0) (u \cdot \nabla) (C-C_0)
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

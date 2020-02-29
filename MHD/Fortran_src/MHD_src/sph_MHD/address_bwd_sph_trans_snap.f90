@@ -95,10 +95,12 @@
      &    ipol%i_rot_comp_buo, itor%i_rot_comp_buo,                     &
      &    iphys%i_rot_comp_buo, b_trns%i_rot_comp_buo, trns_back)
 !
-      call add_field_name_4_sph_trns_snap(fhd_buoyancy, n_vector,       &
+      call add_field_name_4_sph_trns_snap                               &
+     &   (buoyancy%name, buoyancy%n_comp,                               &
      &    ipol%i_buoyancy, itor%i_buoyancy, iphys%i_buoyancy,           &
      &    b_trns%i_buoyancy, trns_back)
-      call add_field_name_4_sph_trns_snap(fhd_comp_buo, n_vector,       &
+      call add_field_name_4_sph_trns_snap                               &
+     &   (composite_buoyancy%name, composite_buoyancy%n_comp,           &
      &    ipol%i_comp_buo, itor%i_comp_buo, iphys%i_comp_buo,           &
      &    b_trns%i_comp_buo, trns_back)
 !
@@ -141,10 +143,12 @@
      &    ipol%i_SGS_induction, itor%i_SGS_induction,                   &
      &    iphys%i_SGS_induction, b_trns%i_SGS_induction, trns_back)
 !
-      call add_field_name_4_sph_trns_snap(fhd_press_grad, n_vector,     &
+      call add_field_name_4_sph_trns_snap                               &
+     &   (pressure_gradient%name, pressure_gradient%n_comp,             &
      &    ipol%i_press_grad, itor%i_press_grad, iphys%i_press_grad,     &
      &    b_trns%i_press_grad, trns_back)
-      call add_field_name_4_sph_trns_snap(fhd_mag_induct, n_vector,     &
+      call add_field_name_4_sph_trns_snap                               &
+     &   (magnetic_induction%name, magnetic_induction%n_comp,           &
      &    ipol%i_induction, itor%i_induction, iphys%i_induction,        &
      &    b_trns%i_induction, trns_back)
 !
@@ -286,11 +290,12 @@
      &    ipol%i_c_diffuse, itor%i_c_diffuse, iphys%i_c_diffuse,        &
      &    b_trns%i_c_diffuse, trns_back)
 !
-      call add_field_name_4_sph_trns_snap(fhd_heat_advect, n_scalar,    &
+      call add_field_name_4_sph_trns_snap                               &
+     &   (heat_advect%name, heat_advect%n_comp,                         &
      &    ipol%i_h_advect, itor%i_h_advect, iphys%i_h_advect,           &
      &    b_trns%i_h_advect, trns_back)
       call add_field_name_4_sph_trns_snap                               &
-     &   (fhd_composit_advect, n_scalar,                                &
+     &   (composition_advect%name, composition_advect%n_comp,           &
      &    ipol%i_c_advect, itor%i_c_advect, iphys%i_c_advect,           &
      &    b_trns%i_c_advect, trns_back)
 !

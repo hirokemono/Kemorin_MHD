@@ -96,43 +96,49 @@
 !
 !
       if (iphys%i_h_flux .gt. izero) then
-        if(iflag_debug.gt.0) write(*,*) 'lead  ', trim(fhd_h_flux)
+        if(iflag_debug.gt.0) write(*,*) 'lead  ', trim(heat_flux%name)
 !$omp parallel
         call cal_phys_scalar_product_vector                             &
      &     (iphys%i_velo, iphys%i_temp, iphys%i_h_flux, nod_fld)
 !$omp end parallel
 !
       else if (iphys%i_ph_flux .gt. izero) then
-        if(iflag_debug.gt.0) write(*,*) 'lead  ', trim(fhd_ph_flux)
+        if(iflag_debug.gt.0) write(*,*) 'lead  ',                       &
+     &                      trim(pert_heat_flux%name)
 !$omp parallel
         call cal_phys_scalar_product_vector                             &
      &     (iphys%i_velo, iphys%i_per_temp, iphys%i_ph_flux, nod_fld)
 !$omp end parallel
 !
       else if (iphys%i_c_flux .gt.  izero) then
-        if(iflag_debug.gt.0) write(*,*) 'lead  ', trim(fhd_c_flux)
+        if(iflag_debug.gt.0) write(*,*) 'lead  ',                       &
+     &                       trim(composite_flux%name)
 !$omp parallel
         call cal_phys_scalar_product_vector                             &
      &     (iphys%i_velo, iphys%i_light, iphys%i_c_flux, nod_fld)
 !$omp end parallel
 !
       else if (iphys%i_pc_flux .gt. izero) then
-        if(iflag_debug.gt.0) write(*,*) 'lead  ', trim(fhd_pc_flux)
+        if(iflag_debug.gt.0) write(*,*) 'lead  ',                       &
+     &                       trim(pert_comp_flux%name)
 !$omp parallel
         call cal_phys_scalar_product_vector                             &
      &     (iphys%i_velo, iphys%i_per_light, iphys%i_pc_flux, nod_fld)
 !$omp end parallel
 !
       else if (iphys%i_m_flux .gt. izero) then
-        if(iflag_debug.gt.0) write(*,*) 'lead  ', trim(fhd_mom_flux)
+        if(iflag_debug.gt.0) write(*,*) 'lead  ',                       &
+     &                                 trim(momentum_flux%name)
         call cal_flux_tensor                                            &
      &     (iphys%i_velo, iphys%i_velo, iphys%i_m_flux, nod_fld)
       else if (iphys%i_maxwell .gt. izero) then
-        if(iflag_debug.gt.0) write(*,*) 'lead  ', trim(fhd_maxwell_t)
+        if(iflag_debug.gt.0) write(*,*) 'lead  ',                       &
+     &                                 trim(maxwell_tensor%name)
         call cal_maxwell_tensor                                         &
      &     (cd_prop%ex_magne, iphys%i_magne, iphys%i_maxwell, nod_fld)
       else if (iphys%i_induct_t .gt. izero) then
-        if(iflag_debug.gt.0) write(*,*) 'lead  ', trim(fhd_induct_t)
+        if(iflag_debug.gt.0) write(*,*) 'lead  ',                       &
+     &                      trim(induction_tensor%name)
         call cal_induction_tensor                                       &
      &     (iphys%i_magne, iphys%i_velo, iphys%i_induct_t, nod_fld)
       else if (iphys%i_density .gt. izero) then
@@ -191,7 +197,7 @@
 !
       if(iphys%i_h_advect .gt. izero) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
-     &             write(*,*) 'lead  ', trim(fhd_heat_advect)
+     &             write(*,*) 'lead  ', trim(heat_advect%name)
         call cal_terms_4_advect                                         &
      &     (iphys%i_h_advect, iphys%i_temp,                             &
      &      FEM_prm%iflag_temp_supg, FEM_prm%npoint_t_evo_int, dt,      &
@@ -202,7 +208,7 @@
 !
       if(iphys%i_ph_advect .gt. izero) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
-     &             write(*,*) 'lead  ', trim(fhd_part_h_advect)
+     &             write(*,*) 'lead  ', trim(pert_heat_advect%name)
         call cal_terms_4_advect                                         &
      &     (iphys%i_ph_advect, iphys%i_per_temp,                        &
      &      FEM_prm%iflag_temp_supg, FEM_prm%npoint_t_evo_int, dt,      &
@@ -236,7 +242,7 @@
 !
       if(iphys%i_c_advect .gt. izero) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
-     &             write(*,*) 'lead  ', trim(fhd_composit_advect)
+     &             write(*,*) 'lead  ', trim(composition_advect%name)
         call cal_terms_4_advect                                         &
      &     (iphys%i_c_advect, iphys%i_light,                            &
      &      FEM_prm%iflag_comp_supg, FEM_prm%npoint_t_evo_int, dt,      &
@@ -247,7 +253,7 @@
 !
       if(iphys%i_pc_advect .gt. izero) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
-     &             write(*,*) 'lead  ', trim(fhd_part_c_advect)
+     &             write(*,*) 'lead  ', trim(pert_comp_advect%name)
         call cal_terms_4_advect                                         &
      &     (iphys%i_pc_advect, iphys%i_per_light,                       &
      &      FEM_prm%iflag_comp_supg, FEM_prm%npoint_t_evo_int, dt,      &
@@ -325,7 +331,7 @@
 !
       if (iphys%i_vp_induct .gt. izero) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
-     &             write(*,*) 'lead  ', trim(fhd_vp_induct)
+     &             write(*,*) 'lead  ', trim(vecp_induction%name)
         call cal_vecp_induction                                         &
      &     (dt, FEM_prm, nod_comm, node, ele, conduct, cd_prop,         &
      &      nod_bcs%Bnod_bcs, iphys, iphys_ele, ele_fld, fem_int,       &

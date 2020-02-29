@@ -232,13 +232,13 @@
      &          msq_list)
           end if
 !
-          if ( field_name .eq. fhd_press_grad ) then
+          if ( field_name .eq. pressure_gradient%name ) then
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_press_grad,              &
      &          i_rms%i_press_grad, j_ave%i_press_grad, msq_list)
           end if
 !
-          if ( field_name .eq. fhd_mag_tension ) then
+          if ( field_name .eq. magnetic_tension%name ) then
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_m_tension,               &
      &          i_rms%i_m_tension, j_ave%i_m_tension, msq_list)
@@ -299,19 +299,19 @@
             call set_rms_address_list(i, nod_fld, msq_list)
           end if
 !
-          if ( field_name .eq. fhd_mom_flux ) then
+          if ( field_name .eq. momentum_flux%name ) then
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_m_flux,                  &
      &          i_rms%i_m_flux, j_ave%i_m_flux, msq_list)
-          else if ( field_name .eq. fhd_maxwell_t ) then
+          else if ( field_name .eq. maxwell_tensor%name ) then
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_maxwell,                 &
      &          i_rms%i_maxwell, j_ave%i_maxwell, msq_list)
-          else if ( field_name .eq. fhd_induct_t ) then
+          else if ( field_name .eq. induction_tensor%name ) then
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_induct_t,                &
      &          i_rms%i_induct_t, j_ave%i_induct_t, msq_list)
-          else if ( field_name .eq. fhd_inertia ) then
+          else if ( field_name .eq. inertia%name ) then
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_m_advect,                &
      &          i_rms%i_m_advect, j_ave%i_m_advect, msq_list)
@@ -327,31 +327,31 @@
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_induct_div,              &
      &          i_rms%i_induct_div, j_ave%i_induct_div, msq_list)
-          else if ( field_name .eq. fhd_mag_induct ) then
+          else if ( field_name .eq. magnetic_induction%name ) then
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_induction,               &
      &          i_rms%i_induction, j_ave%i_induction, msq_list)
-          else if ( field_name .eq. fhd_vp_induct ) then
+          else if ( field_name .eq. vecp_induction%name ) then
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_vp_induct,               &
      &          i_rms%i_vp_induct, j_ave%i_vp_induct, msq_list)
-          else if ( field_name .eq. fhd_mag_stretch ) then
+          else if ( field_name .eq. magnetic_stretch%name ) then
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_mag_stretch,             &
      &          i_rms%i_mag_stretch, j_ave%i_mag_stretch, msq_list)
-          else if ( field_name .eq. fhd_Lorentz ) then
+          else if ( field_name .eq. Lorentz_force%name ) then
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_lorentz,                 &
      &          i_rms%i_lorentz, j_ave%i_lorentz, msq_list)
-          else if ( field_name .eq. fhd_Coriolis ) then
+          else if ( field_name .eq. Coriolis_force%name ) then
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_coriolis,                &
      &          i_rms%i_coriolis, j_ave%i_coriolis, msq_list)
-          else if ( field_name .eq. fhd_buoyancy ) then
+          else if ( field_name .eq. buoyancy%name ) then
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_buoyancy,                &
      &          i_rms%i_buoyancy, j_ave%i_buoyancy, msq_list)
-          else if ( field_name .eq. fhd_comp_buo ) then
+          else if ( field_name .eq. composite_buoyancy%name ) then
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_comp_buo,                &
      &          i_rms%i_comp_buo, j_ave%i_comp_buo, msq_list)
@@ -566,31 +566,31 @@
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_mag_e_diffuse,           &
      &          i_rms%i_mag_e_diffuse, j_ave%i_mag_e_diffuse, msq_list)
-          else if ( field_name .eq. fhd_h_flux ) then
+          else if ( field_name .eq. heat_flux%name ) then
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_h_flux,                  &
      &          i_rms%i_h_flux, j_ave%i_h_flux, msq_list)
-          else if ( field_name .eq. fhd_ph_flux ) then
+          else if ( field_name .eq. pert_heat_flux%name ) then
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_ph_flux,                 &
      &          i_rms%i_ph_flux, j_ave%i_ph_flux, msq_list)
-          else if ( field_name .eq. fhd_c_flux ) then
+          else if ( field_name .eq. composite_flux%name ) then
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_c_flux,                  &
      &          i_rms%i_c_flux, j_ave%i_c_flux, msq_list)
-          else if ( field_name .eq. fhd_pc_flux ) then
+          else if ( field_name .eq. pert_comp_flux%name ) then
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_pc_flux,                 &
      &          i_rms%i_pc_flux, j_ave%i_pc_flux, msq_list)
-          else if ( field_name .eq. fhd_heat_advect ) then
+          else if ( field_name .eq. heat_advect%name ) then
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_h_advect,                &
      &          i_rms%i_h_advect, j_ave%i_h_advect, msq_list)
-          else if ( field_name .eq. fhd_part_h_advect ) then
+          else if ( field_name .eq. pert_heat_advect%name ) then
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_ph_advect,               &
      &          i_rms%i_ph_advect, j_ave%i_ph_advect, msq_list)
-          else if ( field_name .eq. fhd_part_c_advect ) then
+          else if ( field_name .eq. pert_comp_advect%name ) then
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_pc_advect,               &
      &          i_rms%i_pc_advect, j_ave%i_pc_advect, msq_list)

@@ -112,12 +112,12 @@
      &                name = 'vecp_induction_by_filtered',              &
      &                math = '$ e_{ijk} \tilde{u}_{j} \tilde{B}_{k} $')
 !>        Field label for magnetic stretch term
-!!         @f$ (\tilde{B}_{i} \partial_{i} \tilde{u}_{k}) @f$
+!!         @f$ (\tilde{B}_{j} \partial_{j} \tilde{u}_{i}) @f$
       type(field_def), parameter :: magnetic_stretch_by_filtered        &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'magnetic_stretch_by_filtered',            &
-     &                math = '$ (\tilde{B}_{i} \partial_{i})'           &
-     &                      //' \tilde{u}_{k} $')
+     &                math = '$ (\tilde{B}_{j} \partial_{j})'           &
+     &                      //' \tilde{u}_{i} $')
 !>        Field label for Tensor for magnetic induction
 !!         @f$ \tilde{u}_{i} \tilde{B}_{j}
 !!            - \tilde{B}_{i} \tilde{u}_{J} @f$

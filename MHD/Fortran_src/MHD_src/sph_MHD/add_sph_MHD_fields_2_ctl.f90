@@ -81,31 +81,31 @@
         call add_phys_name_ctl(fhd_div_viscous, field_ctl)
         call add_phys_name_ctl(fhd_w_viscous, field_ctl)
 !
-        call add_phys_name_ctl(fhd_inertia, field_ctl)
+        call add_phys_name_ctl(inertia%name, field_ctl)
         call add_phys_name_ctl(fhd_rot_inertia, field_ctl)
         call add_phys_name_ctl(fhd_div_inertia, field_ctl)
 !
 !   Coriolis flag
         if(fl_prop%iflag_4_coriolis .gt. id_turn_OFF) then
-          call add_phys_name_ctl(fhd_Coriolis, field_ctl)
+          call add_phys_name_ctl(Coriolis_force%name, field_ctl)
           call add_phys_name_ctl(fhd_rot_Coriolis, field_ctl)
           call add_phys_name_ctl(fhd_div_Coriolis, field_ctl)
         end if
 !   Lorentz flag
         if(fl_prop%iflag_4_lorentz .gt. id_turn_OFF) then
-          call add_phys_name_ctl(fhd_Lorentz, field_ctl)
+          call add_phys_name_ctl(Lorentz_force%name, field_ctl)
           call add_phys_name_ctl(fhd_rot_Lorentz, field_ctl)
           call add_phys_name_ctl(fhd_div_Lorentz, field_ctl)
         end if
 !   thermal buoyancy flag
         if(fl_prop%iflag_4_gravity .gt. id_turn_OFF) then
-          call add_phys_name_ctl(fhd_buoyancy, field_ctl)
+          call add_phys_name_ctl(buoyancy%name, field_ctl)
           call add_phys_name_ctl(fhd_rot_buoyancy, field_ctl)
           call add_phys_name_ctl(fhd_div_buoyancy, field_ctl)
         end if
 !   compositional buoyancy flag
         if(fl_prop%iflag_4_composit_buo .gt. id_turn_OFF) then
-          call add_phys_name_ctl(fhd_comp_buo, field_ctl)
+          call add_phys_name_ctl(composite_buoyancy%name, field_ctl)
           call add_phys_name_ctl(fhd_div_comp_buo, field_ctl)
           call add_phys_name_ctl(fhd_rot_comp_buo, field_ctl)
         end if
@@ -130,22 +130,22 @@
       if(cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
         call add_phys_name_ctl(fhd_mag_diffuse, field_ctl)
 !
-        call add_phys_name_ctl(fhd_mag_induct, field_ctl)
-        call add_phys_name_ctl(fhd_vp_induct, field_ctl)
+        call add_phys_name_ctl(magnetic_induction%name, field_ctl)
+        call add_phys_name_ctl(vecp_induction%name, field_ctl)
       end if
 !
 !   divergence of heat flux flag
       if(ht_prop%iflag_scheme .gt. id_no_evolution) then
         call add_phys_name_ctl(fhd_thermal_diffusion, field_ctl)
-        call add_phys_name_ctl(fhd_h_flux, field_ctl)
-        call add_phys_name_ctl(fhd_heat_advect, field_ctl)
+        call add_phys_name_ctl(heat_flux%name, field_ctl)
+        call add_phys_name_ctl(heat_advect%name, field_ctl)
       end if
 !
 !   divergence of dummy scalar flag
       if(cp_prop%iflag_scheme .gt. id_no_evolution) then
         call add_phys_name_ctl(fhd_c_diffuse, field_ctl)
-        call add_phys_name_ctl(fhd_c_flux, field_ctl)
-        call add_phys_name_ctl(fhd_composit_advect, field_ctl)
+        call add_phys_name_ctl(composite_flux%name, field_ctl)
+        call add_phys_name_ctl(composition_advect%name, field_ctl)
       end if
 !
       end subroutine add_field_name_4_sph_mhd

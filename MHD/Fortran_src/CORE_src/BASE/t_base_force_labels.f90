@@ -8,24 +8,16 @@
 !> @brief Labels and addresses for basic forces
 !!
 !!@verbatim
-!!      logical function check_forces_vectors(field_name)
+!!      logical function check_scalar_advection(field_name)
+!!      logical function check_force_vectors(field_name)
 !!      logical function check_flux_tensors(field_name)
 !!      subroutine set_base_force_addresses                             &
 !!     &         (i_phys, field_name, base_force, flag)
 !!      subroutine set_flux_tensor_addresses                            &
 !!     &         (i_phys, field_name, base_force, flag)
 !!
-!!      subroutine base_force_monitor_address                           &
-!!     &         (field_name, i_field, numrms, numave,                  &
-!!     &          rms_force, ave_force, flag)
-!!      subroutine flux_tensor_monitor_address                          &
-!!     &         (field_name, i_field, numrms, numave,                  &
-!!     &          rms_force, ave_force, flag)
-!!        type(base_force_address), intent(inout) :: rms_force
-!!        type(base_force_address), intent(inout) :: ave_force
-!!
 !!      integer(kind = kint) function num_base_forces()
-!!      subroutine set_base_force_names(field_names)
+!!      subroutine set_base_force_labels(n_comps, names, maths)
 !!
 !! !!!!!  Base force names  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!
@@ -33,10 +25,8 @@
 !!
 !!   pressure_gradient  [i_press_grad]:     pressure gradient    u
 !!   inertia    [i_m_advect]:        inertia (\omega \times u)
-!!   momentum_flux   [i_m_flux]:  momentum flux     u_{i} u_{j}
 !!   Lorentz_force   [i_lorentz]:  Lorentz force     J \times B
 !!   magnetic_tension  [i_m_tension]:  magnetic tension   (B \nabla) B
-!!   maxwell_tensor    [i_maxwell]:  maxwell tensor       B_{i} B_{j}
 !!   Coriolis_force   [i_coriolis]:  Coriolis force     2 \Omega \times u
 !!   buoyancy   [i_buoyancy]:   Thermal buoyancy       - \alpha_{T} g T
 !!   composite_buoyancy   [i_comp_buo]:
@@ -47,24 +37,24 @@
 !!                         magneitic induction \nabla \times (u \times B)
 !!   magnetic_stretch    [i_mag_stretch]:
 !!                         magneitic streatch         (B \nabla) u
-!!   induction_tensor    [i_induct_t]:    induction induction tensor
-!!                                 u_{i} B_{j}  - B_{i} u_{J}
-!!   electric_field      [i_electric]:   electric field              E
-!!   poynting_flux       [i_poynting]:    poynting flux      E \times B
 !!
 !!   heat_advect         [i_h_advect]:  heat advection
 !!                                     (u \cdot \nabla) T
-!!   part_h_advect       [i_ph_advect]:  perturbation of heat advection
+!!   pert_heat_advect    [i_ph_advect]:  perturbation of heat advection
 !!                                      (u \cdot \nabla) \Theta
-!!   heat_flux           [i_h_flux]:    heat flux          uT
-!!   part_h_flux         [i_ph_flux]:  perturbation of heat flux 
-!!                                    u\Theta
-!!
 !!   composition_advect [i_c_advect]:    composition advection
 !!                                      (u \cdot \nabla) C
-!!   part_c_advect      [i_pc_advect]:
+!!   pert_comp_advect   [i_pc_advect]:
 !!                     perturbation of composition advection
 !!                                      (u \cdot \nabla) (C-C_0)
+!!
+!!   momentum_flux   [i_m_flux]:  momentum flux     u_{i} u_{j}
+!!   maxwell_tensor    [i_maxwell]:  maxwell tensor       B_{i} B_{j}
+!!   induction_tensor    [i_induct_t]:    induction induction tensor
+!!                                 u_{i} B_{j}  - B_{i} u_{J}
+!!   heat_flux           [i_h_flux]:    heat flux          uT
+!!   pert_heat_flux      [i_ph_flux]:  perturbation of heat flux 
+!!                                    u\Theta
 !!   composite_flux     [i_c_flux]:    composition flux         uC
 !!   part_c_flux        [i_pc_flux]:  perturbation of composition flux
 !!                                      u(C-C_0)
@@ -75,102 +65,148 @@
       module t_base_force_labels
 !
       use m_precision
-      use m_constants
+      use m_phys_constants
+      use t_field_labels
 !
       implicit  none
 ! 
-      integer(kind = kint), parameter, private :: nforce_base = 23
+      integer(kind = kint), parameter, private :: nforce_base = 21
 !
 !>        Field label for pressure gradient
 !!         @f$ \partial_{i} p @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_press_grad = 'pressure_gradient'
+      type(field_def), parameter :: pressure_gradient                   &
+     &    = field_def(n_comp = n_vector,                                &
+     &                name = 'pressure_gradient',                       &
+     &                math = '$ \partial_{i} p $')
 !>        Field label for advection for momentum
-!!         @f$ u_{j} \partial_{j} u_{i} @f$
-      character(len=kchara), parameter :: fhd_inertia = 'inertia'
-!>        Field label for momentum flux
-!!         @f$ u_{i} u_{j} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_mom_flux =      'momentum_flux'
+!!         @f$ e_{ijk} \omega_{j} u_{k}  @f$ 
+!!          or @f$ u_{j} \partial_{j} u_{i} @f$
+      type(field_def), parameter :: inertia                             &
+     &    = field_def(n_comp = n_vector,                                &
+     &                name = 'inertia',                                 &
+     &                math = '$ e_{ijk} \omega_{j} u_{k} $')
 !>        Field label for Lorentz force
 !!         @f$ e_{ijk} J_{j} B_{k} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_Lorentz =       'Lorentz_force'
+      type(field_def), parameter :: Lorentz_force                       &
+     &    = field_def(n_comp = n_vector,                                &
+     &                name = 'Lorentz_force',                           &
+     &                math = '$ e_{ijk} J{j} B_{k} $')
 !>        start address for magnetic tension
 !!         @f$ B_{j} \partial_{j} B_{i} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_mag_tension = 'magnetic_tension'
-!>        Field label for Maxwell tensor
-!!         @f$ B_{i} B_{j} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_maxwell_t =     'maxwell_tensor'
+      type(field_def), parameter :: magnetic_tension                    &
+     &    = field_def(n_comp = n_vector,                                &
+     &                name = 'magnetic_tension',                        &
+     &                math = '$ B_{j} \partial_{j} B_{i} $')
 !>        Field label for Coriolis force
 !!         @f$ -2 e_{ijk} \Omega_{j} u_{k} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_Coriolis =      'Coriolis_force'
+      type(field_def), parameter :: Coriolis_force                      &
+     &    = field_def(n_comp = n_vector,                                &
+     &                name = 'Coriolis_force',                          &
+     &                math = '$ -2 e_{ijk} \Omega_{j} u_{k} $')
 !>        Field label for buoyancy
 !!         @f$ -\alpha_{T} g_{i} T @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_buoyancy =      'buoyancy'
+      type(field_def), parameter :: buoyancy                            &
+     &    = field_def(n_comp = n_vector,                                &
+     &                name = 'buoyancy',                                &
+     &                math = '$ -\alpha_{T} g_{i} T $')
 !>        Field label for compositional buoyancy
 !!         @f$ -\alpha_{C} g_{i} C @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_comp_buo =      'composite_buoyancy'
-!!
+      type(field_def), parameter :: composite_buoyancy                  &
+     &    = field_def(n_comp = n_vector,                                &
+     &                name = 'composite_buoyancy',                      &
+     &                math = '$ -\alpha_{C} g_{i} C $')
+!
 !>        Field label for induction for vector potential
 !!         @f$ e_{ijk} u_{j} B_{k} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_vp_induct =     'vecp_induction'
+      type(field_def), parameter :: vecp_induction                      &
+     &    = field_def(n_comp = n_vector,                                &
+     &                name = 'vecp_induction',                          &
+     &                math = '$ e_{ijk} u_{j} B_{k} $')
 !>        Field label for magnetic induction
 !!         @f$ e_{ijk} \partial_{j}\left(e_{klm}u_{l}B_{m} \right)@f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_mag_induct =    'magnetic_induction'
+      type(field_def), parameter :: magnetic_induction                  &
+     &    = field_def(n_comp = n_vector,                                &
+     &                name = 'magnetic_induction',                      &
+     &                math = '$ e_{ijk} \partial_{j} '                  &
+     &                     // ' (e_{ijk} u_{j} B_{k} )$')
 !>        Field label for magnetic stretch term
-!!         @f$ \left(B_{i} \partial_{k} u_{k} \right)@f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_mag_stretch =   'magnetic_stretch'
-!>        Field label for Tensor for magnetic induction
-!!         @f$ u_{i} B_{j}  - B_{i} u_{J} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_induct_t =      'induction_tensor'
-!>        Field label for electric field
-!!         @f$ E_{i} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_e_field = 'electric_field'
-!>        Field label for poynting flux
-!!         @f$  e_{ijk} E_{j} B_{k} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_poynting = 'poynting_flux'
+!!         @f$ B_{j} \partial_{j} u_{i} @f$
+      type(field_def), parameter :: magnetic_stretch                    &
+     &    = field_def(n_comp = n_vector,                                &
+     &                name = 'magnetic_stretch',                        &
+     &                math = '$ B_{j} \partial_{j} u_{i} $')
+!
 !
 !>        Field label for advection for temperature
 !!         @f$ u_{i} \partial_{i} T @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_heat_advect =       'heat_advect'
+      type(field_def), parameter :: heat_advect                         &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                name = 'heat_advect',                             &
+     &                math = '$ u_{i} \partial_{i} T $')
 !>        Field label for advection for perturbation of temperature
 !!         @f$ u_{i} \partial_{i} \Theta @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_part_h_advect =     'part_h_advect'
-!>        Field label for heat flux
-!!         @f$ u_{i} T @f$
-      character(len=kchara), parameter :: fhd_h_flux = 'heat_flux'
-!>        Field label for perturbation of heat flux
-!!         @f$ u_{i} \Theta @f$
-      character(len=kchara), parameter :: fhd_ph_flux = 'part_h_flux'
+      type(field_def), parameter :: pert_heat_advect                    &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                name = 'pert_heat_advect',                        &
+     &                math = '$ u_{i} \partial_{i} \Theta $')
 !
 !>        Field label for advection for composition
 !!         @f$ u_{i} \partial_{i} C @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_composit_advect =    'composition_advect'
+      type(field_def), parameter :: composition_advect                  &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                name = 'composition_advect',                      &
+     &                math = '$ u_{i} \partial_{i} C $')
 !>        Field label for advection for perturbation of composition
-!!         @f$ u_{i} \partial_{i} \Theta_C @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_part_c_advect =     'part_c_advect'
+!!         @f$ u_{i} \partial_{i} \Theta_{C} @f$
+      type(field_def), parameter :: pert_comp_advect                    &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                name = 'pert_comp_advect',                        &
+     &                math = '$ u_{i} \partial_{i} \Theta_{C} $')
+!
+!
+!>        Field label for momentum flux
+!!         @f$ u_{i} u_{j} @f$
+      type(field_def), parameter :: momentum_flux                       &
+     &    = field_def(n_comp = n_sym_tensor,                            &
+     &                name = 'momentum_flux',                           &
+     &                math = '$ u_{i} u_{j} $')
+!>        Field label for Maxwell tensor
+!!         @f$ B_{i} B_{j} @f$
+      type(field_def), parameter :: maxwell_tensor                      &
+     &    = field_def(n_comp = n_sym_tensor,                            &
+     &                name = 'maxwell_tensor',                          &
+     &                math = '$ B_{i} B_{j} $')
+!>        Field label of tensor for magnetic induction
+!!         @f$ u_{i} B_{j}  - B_{i} u_{J} @f$
+      type(field_def), parameter :: induction_tensor                    &
+     &    = field_def(n_comp = n_vector,                                &
+     &                name = 'induction_tensor',                        &
+     &                math = '$ u_{i} B_{j}  - B_{i} u_{J} $')
+!
+!>        Field label for heat flux
+!!         @f$ u_{i} T @f$
+      type(field_def), parameter :: heat_flux                           &
+     &    = field_def(n_comp = n_vector,                                &
+     &                name = 'heat_flux',                               &
+     &                math = '$ u_{i} T $')
+!>        Field label for perturbation of heat flux
+!!         @f$ u_{i} \Theta @f$
+      type(field_def), parameter :: pert_heat_flux                      &
+     &    = field_def(n_comp = n_vector,                                &
+     &                name = 'pert_heat_flux',                          &
+     &                math = '$ u_{i} \Theta $')
 !>        Field label for compositinoal flux
 !!         @f$ u_{i} C @f$
-      character(len=kchara), parameter :: fhd_c_flux = 'composite_flux'
+      type(field_def), parameter :: composite_flux                      &
+     &    = field_def(n_comp = n_vector,                                &
+     &                name = 'composite_flux',                          &
+     &                math = '$ u_{i} C $')
 !>        Field label for perturbation of composition flux
-!!         @f$ u_{i} \Theta_C @f$
-      character(len=kchara), parameter :: fhd_pc_flux = 'part_c_flux'
+!!         @f$ u_{i} \Theta_{C} @f$
+      type(field_def), parameter :: pert_comp_flux                      &
+     &    = field_def(n_comp = n_vector,                                &
+     &                name = 'pert_comp_flux',                          &
+     &                math = '$ u_{i} \Theta_{C} $')
 !
 !>       Structure for start address for base forces
       type base_force_address
@@ -203,7 +239,7 @@
 !!         @f$ e_{ijk} u_{j} B_{k} @f$
         integer (kind=kint) :: i_vp_induct =       izero
 !>        start address for magnetic stretch term
-!!         @f$ B_{i} \partial_{k} \u_{k} \right)@f$
+!!         @f$ B_{j} \partial_{j} u_{i} @f$
         integer (kind=kint) :: i_mag_stretch =     izero
 !>        start address for electric field
 !!         @f$ E_{i} @f$
@@ -222,9 +258,18 @@
 !!         @f$ u_{i} \partial_{i} C @f$
         integer (kind=kint) :: i_c_advect =        izero
 !>        start address for advection for perturbation of composition
-!!         @f$ u_{i} \partial_{i} \Theta_C @f$
+!!         @f$ u_{i} \partial_{i} \Theta_{C} @f$
         integer (kind=kint) :: i_pc_advect =       izero
 !!
+!>        start address for momentum flux
+!!         @f$ u_{i} u_{j} @f$
+        integer (kind=kint) :: i_m_flux =          izero
+!>        start address for Maxwell tensor
+!!         @f$ B_{i} B_{j} @f$
+        integer (kind=kint) :: i_maxwell =         izero
+!>        start address for TEnsor for magnetic induction
+!!         @f$ u_{i} B_{j}  - B_{i} u_{J} @f$
+        integer (kind=kint) :: i_induct_t =        izero
 !>        start address for heat flux
 !!         @f$ u_{i} T @f$
         integer (kind=kint) :: i_h_flux =          izero
@@ -237,15 +282,6 @@
 !>        start address for compositinoal flux
 !!         @f$ u_{i} \Theta_{C} @f$
         integer (kind=kint) :: i_pc_flux =          izero
-!>        start address for momentum flux
-!!         @f$ u_{i} u_{j} @f$
-        integer (kind=kint) :: i_m_flux =          izero
-!>        start address for Maxwell tensor
-!!         @f$ B_{i} B_{j} @f$
-        integer (kind=kint) :: i_maxwell =         izero
-!>        start address for TEnsor for magnetic induction
-!!         @f$ u_{i} B_{j}  - B_{i} u_{J} @f$
-        integer (kind=kint) :: i_induct_t =        izero
       end type base_force_address
 !
 ! ----------------------------------------------------------------------
@@ -254,36 +290,46 @@
 !
 ! ----------------------------------------------------------------------
 !
-      logical function check_forces_vectors(field_name)
+      logical function check_scalar_advection(field_name)
 !
       character(len = kchara), intent(in) :: field_name
 !
 !
-      check_forces_vectors = .FALSE.
-      if (    (field_name .eq. fhd_press_grad)                          &
-     &   .or. (field_name .eq. fhd_inertia)                             &
-     &   .or. (field_name .eq. fhd_Coriolis)                            &
-     &   .or. (field_name .eq. fhd_Lorentz)                             &
-     &   .or. (field_name .eq. fhd_mag_tension)                         &
-     &   .or. (field_name .eq. fhd_e_field)                             &
-     &   .or. (field_name .eq. fhd_poynting)                            &
-     &   .or. (field_name .eq. fhd_buoyancy)                            &
-     &   .or. (field_name .eq. fhd_comp_buo)                            &
-     &   .or. (field_name .eq. fhd_vp_induct)                           &
-     &   .or. (field_name .eq. fhd_mag_induct)                          &
-     &   .or. (field_name .eq. fhd_mag_stretch)                         &
-     &   .or. (field_name .eq. fhd_induct_t)                            &
-     &   .or. (field_name .eq. fhd_heat_advect)                         &
-     &   .or. (field_name .eq. fhd_part_h_advect)                       &
-     &   .or. (field_name .eq. fhd_h_flux)                              &
-     &   .or. (field_name .eq. fhd_ph_flux)                             &
-     &   .or. (field_name .eq. fhd_composit_advect)                     &
-     &   .or. (field_name .eq. fhd_part_c_advect)                       &
-     &   .or. (field_name .eq. fhd_c_flux)                              &
-     &   .or. (field_name .eq. fhd_pc_flux)                             &
-     &      )   check_forces_vectors = .TRUE.
+      check_scalar_advection                                            &
+     &   =    (field_name .eq. heat_advect%name)                        &
+     &   .or. (field_name .eq. pert_heat_advect%name)                   &
+     &   .or. (field_name .eq. composition_advect%name)                 &
+     &   .or. (field_name .eq. pert_comp_advect%name)
 !
-      end function check_forces_vectors
+      end function check_scalar_advection
+!
+! ----------------------------------------------------------------------
+!
+      logical function check_force_vectors(field_name)
+!
+      character(len = kchara), intent(in) :: field_name
+!
+!
+      check_force_vectors                                               &
+     &   =    (field_name .eq. pressure_gradient%name)                  &
+     &   .or. (field_name .eq. inertia%name)                            &
+     &   .or. (field_name .eq. Coriolis_force%name)                     &
+     &   .or. (field_name .eq. Lorentz_force%name)                      &
+     &   .or. (field_name .eq. magnetic_tension%name)                   &
+     &   .or. (field_name .eq. buoyancy%name)                           &
+     &   .or. (field_name .eq. composite_buoyancy%name)                 &
+     &   .or. (field_name .eq. vecp_induction%name)                     &
+     &   .or. (field_name .eq. magnetic_induction%name)                 &
+     &   .or. (field_name .eq. magnetic_stretch%name)                   &
+!
+     &   .or. (field_name .eq. induction_tensor%name)                   &
+!
+     &   .or. (field_name .eq. heat_flux%name)                          &
+     &   .or. (field_name .eq. pert_heat_flux%name)                     &
+     &   .or. (field_name .eq. composite_flux%name)                     &
+     &   .or. (field_name .eq. pert_comp_flux%name)
+!
+      end function check_force_vectors
 !
 ! ----------------------------------------------------------------------
 !
@@ -292,10 +338,9 @@
       character(len = kchara), intent(in) :: field_name
 !
 !
-      check_flux_tensors = .FALSE.
-      if (    (field_name .eq. fhd_mom_flux)                            &
-     &   .or. (field_name .eq. fhd_maxwell_t)                           &
-     &      )   check_flux_tensors = .TRUE.
+      check_flux_tensors                                                &
+     &   =    (field_name .eq. momentum_flux%name)                      &
+     &   .or. (field_name .eq. maxwell_tensor%name)
 !
       end function check_flux_tensors
 !
@@ -312,139 +357,62 @@
       logical, intent(inout) :: flag
 !
 !
-      flag = check_forces_vectors(field_name)
+      flag = check_force_vectors(field_name)                            &
+     &      .or. check_scalar_advection(field_name)                     &
+     &      .or. check_flux_tensors(field_name)
       if(flag) then
-        if (field_name .eq. fhd_press_grad) then
+        if (field_name .eq. pressure_gradient%name) then
           base_force%i_press_grad = i_phys
-        else if (field_name .eq. fhd_inertia) then
+        else if (field_name .eq. inertia%name) then
           base_force%i_m_advect =   i_phys
-        else if (field_name .eq. fhd_Coriolis) then
+        else if (field_name .eq. Coriolis_force%name) then
           base_force%i_coriolis =   i_phys
-        else if (field_name .eq. fhd_Lorentz) then
+        else if (field_name .eq. Lorentz_force%name) then
           base_force%i_lorentz =    i_phys
-        else if (field_name .eq. fhd_mag_tension) then
+        else if (field_name .eq. magnetic_tension%name) then
           base_force%i_m_tension =  i_phys
 !
-        else if (field_name .eq. fhd_e_field) then
-          base_force%i_electric = i_phys
-        else if (field_name .eq. fhd_poynting) then
-          base_force%i_poynting = i_phys
-!
-        else if (field_name .eq. fhd_buoyancy) then
+        else if (field_name .eq. buoyancy%name) then
           base_force%i_buoyancy =   i_phys
-        else if (field_name .eq. fhd_comp_buo) then
+        else if (field_name .eq. composite_buoyancy%name) then
           base_force%i_comp_buo =   i_phys
 !
-        else if (field_name .eq. fhd_vp_induct) then
+        else if (field_name .eq. vecp_induction%name) then
           base_force%i_vp_induct =   i_phys
-        else if (field_name .eq. fhd_mag_induct) then
+        else if (field_name .eq. magnetic_induction%name) then
           base_force%i_induction =   i_phys
-        else if (field_name .eq. fhd_mag_stretch) then
+        else if (field_name .eq. magnetic_stretch%name) then
           base_force%i_mag_stretch = i_phys
-        else if (field_name .eq. fhd_induct_t ) then
+!
+        else if (field_name .eq. heat_advect%name) then
+          base_force%i_h_advect =  i_phys
+        else if (field_name .eq. pert_heat_advect%name) then
+          base_force%i_ph_advect = i_phys
+!
+        else if (field_name .eq. composition_advect%name) then
+          base_force%i_c_advect =  i_phys
+        else if (field_name .eq. pert_comp_advect%name) then
+          base_force%i_pc_advect = i_phys
+!
+        else if (field_name .eq. momentum_flux%name ) then
+          base_force%i_m_flux =     i_phys
+        else if (field_name .eq. maxwell_tensor%name ) then
+          base_force%i_maxwell =    i_phys
+        else if (field_name .eq. induction_tensor%name ) then
           base_force%i_induct_t =    i_phys
 !
-        else if (field_name .eq. fhd_heat_advect) then
-          base_force%i_h_advect =  i_phys
-        else if (field_name .eq. fhd_part_h_advect) then
-          base_force%i_ph_advect = i_phys
-        else if (field_name .eq. fhd_h_flux) then
+        else if (field_name .eq. heat_flux%name) then
           base_force%i_h_flux =    i_phys
-        else if (field_name .eq. fhd_ph_flux) then
+        else if (field_name .eq. pert_heat_flux%name) then
           base_force%i_ph_flux =   i_phys
-!
-        else if (field_name .eq. fhd_composit_advect) then
-          base_force%i_c_advect =  i_phys
-        else if (field_name .eq. fhd_part_c_advect) then
-          base_force%i_pc_advect = i_phys
-        else if (field_name .eq. fhd_c_flux) then
+        else if (field_name .eq. composite_flux%name) then
           base_force%i_c_flux =    i_phys
-        else if (field_name .eq. fhd_pc_flux) then
+        else if (field_name .eq. pert_comp_flux%name) then
           base_force%i_pc_flux =   i_phys
         end if
       end if
 !
       end subroutine set_base_force_addresses
-!
-! ----------------------------------------------------------------------
-!
-      subroutine set_flux_tensor_addresses                              &
-     &         (i_phys, field_name, base_force, flag)
-!
-      integer(kind = kint), intent(in) :: i_phys
-      character(len = kchara), intent(in) :: field_name
-!
-      type(base_force_address), intent(inout) :: base_force
-      logical, intent(inout) :: flag
-!
-!
-      flag = check_flux_tensors(field_name)
-      if(flag) then
-        if (field_name .eq. fhd_mom_flux ) then
-          base_force%i_m_flux =     i_phys
-        else if (field_name .eq. fhd_maxwell_t ) then
-          base_force%i_maxwell =    i_phys
-        end if
-      end if
-!
-      end subroutine set_flux_tensor_addresses
-!
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      subroutine base_force_monitor_address                             &
-     &         (field_name, i_field, numrms, numave,                    &
-     &          rms_force, ave_force, flag)
-!
-      character(len = kchara), intent(in):: field_name
-      integer(kind = kint), intent(in) :: i_field
-      integer(kind = kint), intent(in) :: numrms, numave
-!
-      type(base_force_address), intent(inout) :: rms_force
-      type(base_force_address), intent(inout) :: ave_force
-      logical, intent(inout) :: flag
-!
-      logical :: flag_a, flag_r
-!
-!
-      flag = .FALSE.
-!
-      if(i_field .eq. 0) return
-      call set_base_force_addresses                                     &
-     &   ((numrms+1), field_name, rms_force, flag_r)
-      call set_base_force_addresses                                     &
-     &   ((numave+1), field_name, ave_force, flag_a)
-      flag = (flag_r .and. flag_a)
-!
-      end subroutine base_force_monitor_address
-!
-! ----------------------------------------------------------------------
-!
-      subroutine flux_tensor_monitor_address                            &
-     &         (field_name, i_field, numrms, numave,                    &
-     &          rms_force, ave_force, flag)
-!
-      character(len = kchara), intent(in):: field_name
-      integer(kind = kint), intent(in) :: i_field
-      integer(kind = kint), intent(in) :: numrms, numave
-!
-      type(base_force_address), intent(inout) :: rms_force
-      type(base_force_address), intent(inout) :: ave_force
-      logical, intent(inout) :: flag
-!
-      logical :: flag_a, flag_r
-!
-!
-      flag = .FALSE.
-!
-      if(i_field .eq. 0) return
-      call set_flux_tensor_addresses                                    &
-     &   ((numrms+1), field_name, rms_force, flag_r)
-      call set_flux_tensor_addresses                                    &
-     &   ((numave+1), field_name, ave_force, flag_a)
-      flag = (flag_r .and. flag_a)
-!
-      end subroutine flux_tensor_monitor_address
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
@@ -456,40 +424,63 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_base_force_names(field_names)
+      subroutine set_base_force_labels(n_comps, names, maths)
 !
-      character(len = kchara), intent(inout) :: field_names(nforce_base)
+      integer(kind = kint), intent(inout) :: n_comps(nforce_base)
+      character(len = kchara), intent(inout) :: names(nforce_base)
+      character(len = kchara), intent(inout) :: maths(nforce_base)
 !
 !
-      write(field_names( 1),'(a,a1)') trim(fhd_inertia), CHAR(0)
-      write(field_names( 2),'(a,a1)') trim(fhd_mom_flux), CHAR(0)
-      write(field_names( 3),'(a,a1)') trim(fhd_Lorentz), CHAR(0)
-      write(field_names( 4),'(a,a1)') trim(fhd_mag_tension), CHAR(0)
-      write(field_names( 5),'(a,a1)') trim(fhd_maxwell_t), CHAR(0)
-      write(field_names( 6),'(a,a1)') trim(fhd_Coriolis), CHAR(0)
-      write(field_names( 7),'(a,a1)') trim(fhd_buoyancy), CHAR(0)
-      write(field_names( 8),'(a,a1)') trim(fhd_comp_buo), CHAR(0)
+      call set_field_labels(pressure_gradient,                          &
+     &    n_comps( 1), names( 1), maths( 1))
+      call set_field_labels(inertia,                                    &
+     &    n_comps( 2), names( 2), maths( 2))
+      call set_field_labels(Coriolis_force,                             &
+     &    n_comps( 3), names( 3), maths( 3))
 !
-      write(field_names( 9),'(a,a1)') trim(fhd_vp_induct), CHAR(0)
-      write(field_names(10),'(a,a1)') trim(fhd_mag_stretch), CHAR(0)
-      write(field_names(11),'(a,a1)') trim(fhd_induct_t), CHAR(0)
-      write(field_names(12),'(a,a1)') trim(fhd_e_field), CHAR(0)
-      write(field_names(13),'(a,a1)') trim(fhd_poynting), CHAR(0)
+      call set_field_labels(Lorentz_force,                              &
+     &    n_comps( 4), names( 4), maths( 4))
+      call set_field_labels(magnetic_tension,                           &
+     &    n_comps( 5), names( 5), maths( 5))
 !
-      write(field_names(14),'(a,a1)') trim(fhd_heat_advect), CHAR(0)
-      write(field_names(15),'(a,a1)') trim(fhd_part_h_advect), CHAR(0)
-      write(field_names(16),'(a,a1)') trim(fhd_h_flux), CHAR(0)
-      write(field_names(17),'(a,a1)') trim(fhd_ph_flux), CHAR(0)
-      write(field_names(18),'(a,a1)')                                   &
-     &                      trim(fhd_composit_advect), CHAR(0)
-      write(field_names(19),'(a,a1)') trim(fhd_part_c_advect), CHAR(0)
-      write(field_names(20),'(a,a1)') trim(fhd_c_flux), CHAR(0)
-      write(field_names(21),'(a,a1)') trim(fhd_pc_flux), CHAR(0)
+      call set_field_labels(buoyancy,                                   &
+     &    n_comps( 6), names( 6), maths( 6))
+      call set_field_labels(composite_buoyancy,                         &
+     &    n_comps( 7), names( 7), maths( 7))
 !
-      write(field_names(22),'(a,a1)') trim(fhd_mag_induct), CHAR(0)
-      write(field_names(23),'(a,a1)') trim(fhd_press_grad), CHAR(0)
+      call set_field_labels(magnetic_induction,                         &
+     &    n_comps( 8), names( 8), maths( 8))
+      call set_field_labels(vecp_induction,                             &
+     &    n_comps( 9), names( 9), maths( 9))
+      call set_field_labels(magnetic_stretch,                           &
+     &    n_comps(10), names(10), maths(10))
 !
-      end subroutine set_base_force_names
+      call set_field_labels(heat_advect,                                &
+     &    n_comps(11), names(11), maths(11))
+      call set_field_labels(pert_heat_advect,                           &
+     &    n_comps(12), names(12), maths(12))
+      call set_field_labels(composition_advect,                         &
+     &    n_comps(13), names(13), maths(13))
+      call set_field_labels(pert_comp_advect,                           &
+     &    n_comps(14), names(14), maths(14))
+!
+      call set_field_labels(momentum_flux,                              &
+     &    n_comps(15), names(15), maths(15))
+      call set_field_labels(maxwell_tensor,                             &
+     &    n_comps(16), names(16), maths(16))
+      call set_field_labels(induction_tensor,                           &
+     &    n_comps(17), names(17), maths(17))
+!
+      call set_field_labels(heat_flux,                                  &
+     &    n_comps(18), names(18), maths(18))
+      call set_field_labels(pert_heat_flux,                             &
+     &    n_comps(19), names(19), maths(19))
+      call set_field_labels(composite_flux,                             &
+     &    n_comps(20), names(20), maths(20))
+      call set_field_labels(pert_comp_flux,                             &
+     &    n_comps(21), names(21), maths(21))
+!
+      end subroutine set_base_force_labels
 !
 ! ----------------------------------------------------------------------
 !

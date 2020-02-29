@@ -4,6 +4,7 @@
 
 int lengthchara_f();
 
+int num_base_forces_f();
 int num_divergence_fields_f();
 int num_gradient_fields_f();
 
@@ -18,6 +19,7 @@ int num_double_filter_fields_f();
 int num_difference_vector_f();
 int num_diff_filter_vector_f();
 
+void set_base_force_labels_f(int *ncomp1, char *name1, char *math1);
 void set_divergence_field_labels_f(int *ncomp1, char *name1, char *math1);
 void set_gradient_field_labels_f(int *ncomp1, char *name1, char *math1);
 
@@ -40,7 +42,9 @@ int main(int argc, char **argv)
 	
 	int len_f = lengthchara_f();
 	
-	int ist_divergence_fields = 0;
+	int ist_base_forces = 0;
+	int ist_divergence_fields = ist_base_forces
+			+ num_base_forces_f();
 	int ist_gradient_fields = ist_divergence_fields
 			+ num_divergence_fields_f();
 	int ist_filtered_forces = ist_gradient_fields
@@ -83,6 +87,10 @@ int main(int argc, char **argv)
 		exit(0);
 	}
 	
+	
+	set_base_force_labels_f(&ncomp[ist_base_forces], 
+								&name1[len_f*ist_base_forces],
+								&math1[len_f*ist_base_forces]);
 	set_divergence_field_labels_f(&ncomp[ist_divergence_fields], 
 								&name1[len_f*ist_divergence_fields],
 								&math1[len_f*ist_divergence_fields]);

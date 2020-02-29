@@ -176,11 +176,11 @@
       end if
 !
       if (fl_prop%iflag_4_coriolis .gt. id_turn_OFF)                    &
-     &          call add_phys_name_ctl(fhd_Coriolis, field_ctl)
+     &  call add_phys_name_ctl(Coriolis_force%name, field_ctl)
       if (fl_prop%iflag_4_gravity .eq. id_FORCE_at_node)                &
-     &          call add_phys_name_ctl(fhd_buoyancy, field_ctl)
+     &  call add_phys_name_ctl(buoyancy%name, field_ctl)
       if (fl_prop%iflag_4_composit_buo .eq. id_FORCE_at_node)           &
-     &          call add_phys_name_ctl(fhd_comp_buo, field_ctl)
+     &  call add_phys_name_ctl(composite_buoyancy%name, field_ctl)
       if (fl_prop%iflag_4_filter_gravity .eq. id_FORCE_at_node)         &
      &  call add_phys_name_ctl(filtered_buoyancy%name, field_ctl)
       if (fl_prop%iflag_4_filter_comp_buo .eq. id_FORCE_at_node)        &

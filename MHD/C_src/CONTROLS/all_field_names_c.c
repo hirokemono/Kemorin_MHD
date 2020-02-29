@@ -81,9 +81,9 @@ const struct field_def field_props[NUM_FIELD] = {
 			{6, "momentum_flux", "$$    $$"},
 			{6, "maxwell_tensor", "$$    $$"},
 			{3, "heat_flux", "$$    $$"},
-			{3, "part_h_flux", "$$    $$"},
+			{3, "pert_heat_flux", "$$    $$"},
 			{3, "composite_flux", "$$    $$"},
-			{3, "part_c_flux", "$$    $$"},
+			{3, "pert_comp_flux", "$$    $$"},
 			
 			{3, "pressure_gradient", "$$    $$"},
 			{3, "inertia", "$$    $$"},
@@ -103,11 +103,11 @@ const struct field_def field_props[NUM_FIELD] = {
 			{1, "div_induct_t", "$$    $$"},
 			
 			{1, "heat_advect", "$$    $$"},
-			{1, "part_h_advect", "$$    $$"},
+			{1, "pert_heat_advect", "$$    $$"},
 			{1, "div_h_flux", "$$    $$"},
 			{1, "div_part_h_flux", "$$    $$"},
 			{1, "composition_advect", "$$    $$"},
-			{1, "part_c_advect", "$$    $$"},
+			{1, "pert_comp_advect", "$$    $$"},
 			{1, "div_c_flux", "$$    $$"},
 			{1, "div_part_c_flux", "$$    $$"},
 			

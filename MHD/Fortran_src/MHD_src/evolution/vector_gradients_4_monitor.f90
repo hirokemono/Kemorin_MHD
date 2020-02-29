@@ -223,7 +223,7 @@
       if (iphys%i_induction .gt. izero                                  &
      &      .and. cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
-     &             write(*,*) 'lead  ', trim(fhd_mag_induct)
+     &             write(*,*) 'lead  ', trim(magnetic_induction%name)
         call s_int_magne_induction                                      &
      &     (FEM_prm%npoint_poisson_int, nod_comm, node, ele, iphys,     &
      &      fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,     &

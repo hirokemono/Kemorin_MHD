@@ -102,7 +102,7 @@
      &                math = '$ B_{i} e_{ijk} \partial_{j} '            &
      &                   // ' (e_{klm} \tilde{u}_{l} \tilde{B}_{m}) $')
 !>        Field label of energy flux of magnetic stretch term
-!!          @f$ B_{i} (\tilde{B}_{i} \partial_{k} \tilde{u}_{k}) @f$
+!!          @f$ B_{i} (\tilde{B}_{j} \partial_{j} \tilde{u}_{i}) @f$
       type(field_def), parameter :: mag_stretch_flux_by_filtered        &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'mag_stretch_flux_by_filtered',            &

@@ -65,13 +65,13 @@
 !!
 !!   div_inertia, div_Lorentz_force, div_Coriolis_force
 !!
-!!   heat_flux,      part_h_flux
-!!   composite_flux, part_c_flux
+!!   heat_flux,      pert_heat_flux
+!!   composite_flux, pert_comp_flux
 !!   momentum_flux, maxwell_tensor
 !!   magnetic_induction, vecp_induction
 !!   magnetic_stretch
 !!
-!!   heat_advect, part_h_advect
+!!   heat_advect, pert_heat_advect
 !!   inertia,  
 !!   div_h_flux, div_part_h_flux
 !!   div_m_flux, div_maxwell_t

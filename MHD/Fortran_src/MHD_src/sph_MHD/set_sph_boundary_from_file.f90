@@ -52,8 +52,8 @@
       if(      cmp_no_case(label, fhd_temp)                             &
      &    .or. cmp_no_case(label, fhd_light)                            &
      &    .or. cmp_no_case(label, fhd_entropy)                          &
-     &    .or. cmp_no_case(label, fhd_h_flux)                           &
-     &    .or. cmp_no_case(label, fhd_c_flux)) num_comp = 1
+     &    .or. cmp_no_case(label, heat_flux%name)                       &
+     &    .or. cmp_no_case(label, composite_flux%name)) num_comp = 1
 !
       if(find_vector_bc_label(label, mag_label))   num_comp = 3
       if(find_vector_bc_label(label, phase_label)) num_comp = 3
@@ -79,8 +79,8 @@
       find_scalar_bc_label = find_bc_label(label, fhd_temp, postfix)    &
      &                  .or. find_bc_label(label, fhd_light, postfix)   &
      &                  .or. find_bc_label(label, fhd_entropy, postfix) &
-     &                  .or. find_bc_label(label, fhd_h_flux, postfix)  &
-     &                  .or. find_bc_label(label, fhd_c_flux, postfix)
+     &         .or. find_bc_label(label, heat_flux%name, postfix)       &
+     &         .or. find_bc_label(label, composite_flux%name, postfix)
 !
       end function find_scalar_bc_label
 !

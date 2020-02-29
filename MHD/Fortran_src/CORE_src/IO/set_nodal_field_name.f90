@@ -91,23 +91,23 @@
      &  .or. (phys_nod_name_ctl .eq. fhd_w_viscous          )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_vecp_diffuse       )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_mag_diffuse        )           &
-     &  .or. (phys_nod_name_ctl .eq. fhd_mag_tension        )           &
-     &  .or. (phys_nod_name_ctl .eq. fhd_h_flux             )           &
-     &  .or. (phys_nod_name_ctl .eq. fhd_ph_flux            )           &
-     &  .or. (phys_nod_name_ctl .eq. fhd_c_flux             )           &
-     &  .or. (phys_nod_name_ctl .eq. fhd_pc_flux            )           &
-     &  .or. (phys_nod_name_ctl .eq. fhd_inertia            )           &
+     &  .or. (phys_nod_name_ctl .eq. magnetic_tension%name        )           &
+     &  .or. (phys_nod_name_ctl .eq. heat_flux%name             )           &
+     &  .or. (phys_nod_name_ctl .eq. pert_heat_flux%name            )           &
+     &  .or. (phys_nod_name_ctl .eq. composite_flux%name             )           &
+     &  .or. (phys_nod_name_ctl .eq. pert_comp_flux%name            )           &
+     &  .or. (phys_nod_name_ctl .eq. inertia%name            )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_div_m_flux         )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_div_maxwell_t      )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_div_induct_t       )           &
-     &  .or. (phys_nod_name_ctl .eq. fhd_mag_induct         )           &
-     &  .or. (phys_nod_name_ctl .eq. fhd_vp_induct          )           &
-     &  .or. (phys_nod_name_ctl .eq. fhd_mag_stretch        )           &
-     &  .or. (phys_nod_name_ctl .eq. fhd_press_grad         )           &
-     &  .or. (phys_nod_name_ctl .eq. fhd_Lorentz            )           &
-     &  .or. (phys_nod_name_ctl .eq. fhd_Coriolis           )           &
-     &  .or. (phys_nod_name_ctl .eq. fhd_buoyancy           )           &
-     &  .or. (phys_nod_name_ctl .eq. fhd_comp_buo           )           &
+     &  .or. (phys_nod_name_ctl .eq. magnetic_induction%name         )           &
+     &  .or. (phys_nod_name_ctl .eq. vecp_induction%name          )           &
+     &  .or. (phys_nod_name_ctl .eq. magnetic_stretch%name        )           &
+     &  .or. (phys_nod_name_ctl .eq. pressure_gradient%name         )           &
+     &  .or. (phys_nod_name_ctl .eq. Lorentz_force%name            )           &
+     &  .or. (phys_nod_name_ctl .eq. Coriolis_force%name           )           &
+     &  .or. (phys_nod_name_ctl .eq. buoyancy%name           )           &
+     &  .or. (phys_nod_name_ctl .eq. composite_buoyancy%name           )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_rot_inertia        )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_rot_Lorentz        )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_rot_Coriolis       )           &
@@ -244,12 +244,12 @@
 !
       if (    (phys_nod_name_ctl .eq. fhd_thermal_diffusion   )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_c_diffuse           )         &
-     &   .or. (phys_nod_name_ctl .eq. fhd_heat_advect         )         &
-     &   .or. (phys_nod_name_ctl .eq. fhd_part_h_advect       )         &
+     &   .or. (phys_nod_name_ctl .eq. heat_advect%name         )         &
+     &   .or. (phys_nod_name_ctl .eq. pert_heat_advect%name       )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_div_h_flux          )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_div_ph_flux         )         &
-     &   .or. (phys_nod_name_ctl .eq. fhd_composit_advect     )         &
-     &   .or. (phys_nod_name_ctl .eq. fhd_part_c_advect       )         &
+     &   .or. (phys_nod_name_ctl .eq. composition_advect%name     )         &
+     &   .or. (phys_nod_name_ctl .eq. pert_comp_advect%name       )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_div_c_flux          )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_div_pc_flux         )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_mag_ene_gen         )         &
@@ -360,8 +360,8 @@
 !
       if (iflag .gt. 0) return
 !
-       if (   (phys_nod_name_ctl .eq. fhd_mom_flux       )              &
-     &   .or. (phys_nod_name_ctl .eq. fhd_maxwell_t      )              &
+       if (   (phys_nod_name_ctl .eq. momentum_flux%name)               &
+     &   .or. (phys_nod_name_ctl .eq. maxwell_tensor%name)              &
      &   .or. (phys_nod_name_ctl .eq. fhd_SGS_m_flux     )              &
      &   .or. (phys_nod_name_ctl .eq. fhd_SGS_maxwell_t  )              &
      &   .or. (phys_nod_name_ctl .eq. fhd_mom_flux_w_sgs )              &
@@ -377,7 +377,7 @@
         num_nod_component = 6
       end if
 !
-       if (  (phys_nod_name_ctl .eq. fhd_induct_t      )                &
+       if (  (phys_nod_name_ctl .eq. induction_tensor%name      )       &
      &  .or. (phys_nod_name_ctl .eq. fhd_SGS_induct_t  )                &
      &       ) then
 !
