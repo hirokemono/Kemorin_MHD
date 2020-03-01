@@ -295,7 +295,7 @@
         if(     i_fld .eq. iphys%i_m_advect                             &
      &     .or. i_fld .eq. iphys%i_m_flux_div                           &
      &     .or. i_fld .eq. iphys%i_maxwell_div                          &
-     &     .or. i_fld .eq. iphys%i_m_tension                            &
+     &     .or. i_fld .eq. iphys%forces%i_m_tension                     &
      &     .or. i_fld .eq. iphys%i_lorentz                              &
      &     .or. i_fld .eq. iphys%forces%i_buoyancy                      &
      &     .or. i_fld .eq. iphys%forces%i_comp_buo                      &

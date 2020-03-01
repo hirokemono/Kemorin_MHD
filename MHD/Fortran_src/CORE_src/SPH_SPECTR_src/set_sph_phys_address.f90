@@ -148,8 +148,8 @@
      &    itor%forces%i_vp_induct, idpdr%forces%i_vp_induct)
       call set_vect_sph_address(ipol%forces%i_mag_stretch,              &
      &    itor%forces%i_mag_stretch, idpdr%forces%i_mag_stretch)
-      call set_vect_sph_address(ipol%i_m_tension, itor%i_m_tension,     &
-     &    idpdr%i_m_tension)
+      call set_vect_sph_address(ipol%forces%i_m_tension,                &
+     &    itor%forces%i_m_tension, idpdr%forces%i_m_tension)
       call set_vect_sph_address(ipol%i_lorentz, itor%i_lorentz,         &
      &    idpdr%i_lorentz)
       call set_vect_sph_address(ipol%i_coriolis, itor%i_coriolis,       &

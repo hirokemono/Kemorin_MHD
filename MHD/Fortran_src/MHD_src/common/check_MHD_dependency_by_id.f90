@@ -77,7 +77,6 @@
      &     .or. i_start .eq. iphys%i_current                            &
      &     .or. i_start .eq. iphys%i_b_diffuse                          &
      &     .or. i_start .eq. iphys%i_mag_p                              &
-     &     .or. i_start .eq. iphys%i_m_tension                          &
      &     .or. i_start .eq. iphys%i_lorentz                            &
      &     .or. i_start .eq. iphys%i_SGS_maxwell                        &
      &     .or. i_start .eq. iphys%i_square_b                           &
@@ -211,7 +210,7 @@
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_velo, fhd_velo)
           call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_m_tension, magnetic_tension%name)
+     &       (fld, i_start, iphys%forces%i_m_tension, magnetic_tension%name)
         else if(i_start .eq. iphys%i_vis_e_diffuse) then 
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_velo, fhd_velo)

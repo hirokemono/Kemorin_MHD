@@ -168,7 +168,7 @@
      &      iphys%i_filter_comp, ak_MHD%ak_comp_buo, fem_wk, f_nl)
       end if
 !
-      if(i_field .eq. iphys%i_m_tension) then
+      if(i_field .eq. iphys%forces%i_m_tension) then
         call int_vol_Lorentz_pg(node, ele,                              &
      &      fl_prop, cd_prop, g_FEM, jac_3d, rhs_tbl, nod_fld,          &
      &      fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,         &
@@ -332,7 +332,7 @@
       end if
 !
 !
-      if(i_field .eq. iphys%i_m_tension) then
+      if(i_field .eq. iphys%forces%i_m_tension) then
         call int_vol_Lorentz_upw(node, ele,                             &
      &      fl_prop, cd_prop, g_FEM, jac_3d, rhs_tbl, nod_fld,          &
      &      fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int, dt,     &

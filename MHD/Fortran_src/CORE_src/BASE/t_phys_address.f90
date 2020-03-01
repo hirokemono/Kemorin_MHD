@@ -241,9 +241,6 @@
 !>        Start address for pressure gradient
 !!         @f$ \partial_{i} p @f$
         integer (kind=kint) :: i_press_grad  =    izero
-!>        start address for magnetic tension
-!!         @f$ B_{j} \partial_{j} B_{i} @f$
-        integer (kind=kint) :: i_m_tension =       izero
 !>        start address for Lorentz force
 !!         @f$ e_{ijk} J_{j} B_{k} @f$
         integer (kind=kint) :: i_lorentz =         izero
