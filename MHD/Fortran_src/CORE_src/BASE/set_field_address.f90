@@ -209,8 +209,6 @@
           iphys%i_lorentz =     i0
         else if (field_name(i) .eq. Coriolis_force%name) then
           iphys%i_coriolis =    i0
-        else if (field_name(i) .eq. buoyancy%name) then
-          iphys%i_buoyancy =    i0
         end if
 !
         call set_base_force_addresses                                   &

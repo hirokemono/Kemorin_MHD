@@ -155,58 +155,63 @@
       if(fl_prop%iflag_4_composit_buo .eq. id_FORCE_at_node             &
      &   .and. fl_prop%iflag_4_gravity .eq. id_FORCE_at_node) then
         call set_double_gravity_2_each_node                             &
-     &     (iphys%i_temp, iphys%i_light, iphys%i_buoyancy,              &
+     &     (iphys%i_temp, iphys%i_light, iphys%forces%i_buoyancy,       &
      &      fl_prop%i_grav, fl_prop%coef_buo, fl_prop%coef_comp_buo,    &
      &      fl_prop%grav, node, nod_fld)
 !
       else if(fl_prop%iflag_4_filter_comp_buo .eq. id_FORCE_at_node     &
      & .and. fl_prop%iflag_4_filter_gravity .eq. id_FORCE_at_node) then
         call set_double_gravity_2_each_node                             &
-     &     (iphys%i_filter_temp, iphys%i_filter_comp, iphys%i_buoyancy, &
-     &      fl_prop%i_grav, fl_prop%coef_buo, fl_prop%coef_comp_buo,    &
-     &      fl_prop%grav, node, nod_fld)
+     &     (iphys%i_filter_temp, iphys%i_filter_comp,                   &
+     &      iphys%forces%i_buoyancy, fl_prop%i_grav,                    &
+     &      fl_prop%coef_buo, fl_prop%coef_comp_buo, fl_prop%grav,      &
+     &      node, nod_fld)
 !
       else if(fl_prop%iflag_4_filter_comp_buo .eq. id_FORCE_at_node     &
      & .and. fl_prop%iflag_4_gravity .eq. id_FORCE_at_node) then
         call set_double_gravity_2_each_node                             &
-     &     (iphys%i_temp, iphys%i_filter_comp, iphys%i_buoyancy,        &
-     &      fl_prop%i_grav, fl_prop%coef_buo, fl_prop%coef_comp_buo,    &
-     &      fl_prop%grav, node, nod_fld)
+     &     (iphys%i_temp, iphys%i_filter_comp,                          &
+     &      iphys%forces%i_buoyancy, fl_prop%i_grav,                    &
+     &      fl_prop%coef_buo, fl_prop%coef_comp_buo, fl_prop%grav,      &
+     &      node, nod_fld)
 !
       else if(fl_prop%iflag_4_composit_buo .eq. id_FORCE_at_node        &
      & .and. fl_prop%iflag_4_filter_gravity .eq. id_FORCE_at_node) then
         call set_double_gravity_2_each_node                             &
-     &     (iphys%i_filter_temp, iphys%i_light, iphys%i_buoyancy,       &
-     &      fl_prop%i_grav, fl_prop%coef_buo, fl_prop%coef_comp_buo,    &
-     &      fl_prop%grav, node, nod_fld)
+     &     (iphys%i_filter_temp, iphys%i_light,                         &
+     &      iphys%forces%i_buoyancy, fl_prop%i_grav,                    &
+     &      fl_prop%coef_buo, fl_prop%coef_comp_buo, fl_prop%grav,      &
+     &      node, nod_fld)
 !
 !
       else if (fl_prop%iflag_4_gravity .eq. id_FORCE_at_node) then
-        call set_gravity_2_each_node(iphys%i_temp, iphys%i_buoyancy,    &
+        call set_gravity_2_each_node                                    &
+     &     (iphys%i_temp, iphys%forces%i_buoyancy,                      &
      &      fl_prop%i_grav, fl_prop%coef_buo, fl_prop%grav,             &
      &      node, nod_fld)
 !
       else if (fl_prop%iflag_4_composit_buo .eq. id_FORCE_at_node) then
-        call set_gravity_2_each_node(iphys%i_light, iphys%i_buoyancy,   &
+        call set_gravity_2_each_node                                    &
+     &     (iphys%i_light, iphys%forces%i_buoyancy,                     &
      &      fl_prop%i_grav, fl_prop%coef_comp_buo, fl_prop%grav,        &
      &      node, nod_fld)
 !
       else if(fl_prop%iflag_4_filter_gravity .eq. id_FORCE_at_node)     &
      &    then
         call set_gravity_2_each_node                                    &
-     &     (iphys%i_filter_temp, iphys%i_buoyancy,                      &
+     &     (iphys%i_filter_temp, iphys%forces%i_buoyancy,               &
      &      fl_prop%i_grav, fl_prop%coef_buo, fl_prop%grav,             &
      &      node, nod_fld)
       else if(fl_prop%iflag_4_filter_comp_buo .eq. id_FORCE_at_node)    &
      &    then
         call set_gravity_2_each_node                                    &
-     &     (iphys%i_filter_comp, iphys%i_buoyancy,                      &
+     &     (iphys%i_filter_comp, iphys%forces%i_buoyancy,               &
      &      fl_prop%i_grav, fl_prop%coef_comp_buo, fl_prop%grav,        &
      &      node, nod_fld)
       end if
 !
       call int_vol_buoyancy_nod(node%numnod, node%istack_nod_smp,       &
-     &    nod_fld%ntot_phys, iphys%i_buoyancy, nod_fld%d_fld,           &
+     &    nod_fld%ntot_phys, iphys%forces%i_buoyancy, nod_fld%d_fld,    &
      &    mlump_fl%ml_o, f_nl%ff)
 !
       end subroutine int_buoyancy_nod_exp

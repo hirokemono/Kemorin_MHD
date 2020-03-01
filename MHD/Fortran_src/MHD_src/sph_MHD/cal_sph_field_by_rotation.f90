@@ -160,7 +160,7 @@
       if(MHD_prop%fl_prop%iflag_4_gravity .gt. id_turn_OFF) then
         call const_sph_div_force                                        &
      &     (sph_rj, r_2nd, sph_MHD_bc%sph_bc_U, g_sph_rj,               &
-     &      ipol%i_buoyancy, ipol%i_div_buoyancy, rj_fld)
+     &      ipol%forces%i_buoyancy, ipol%i_div_buoyancy, rj_fld)
       end if
 !
       if(MHD_prop%fl_prop%iflag_4_composit_buo .gt. id_turn_OFF) then

@@ -97,8 +97,8 @@
 !
       call add_field_name_4_sph_trns_snap                               &
      &   (buoyancy%name, buoyancy%n_comp,                               &
-     &    ipol%i_buoyancy, itor%i_buoyancy, iphys%i_buoyancy,           &
-     &    b_trns%i_buoyancy, trns_back)
+     &    ipol%forces%i_buoyancy, itor%forces%i_buoyancy,               &
+     &    iphys%forces%i_buoyancy, b_trns%forces%i_buoyancy, trns_back)
       call add_field_name_4_sph_trns_snap                               &
      &   (composite_buoyancy%name, composite_buoyancy%n_comp,           &
      &    ipol%forces%i_comp_buo, itor%forces%i_comp_buo,               &

@@ -108,7 +108,6 @@
         else if(i_start .eq. iphys%i_t_diffuse                          &
      &     .or. i_start .eq. iphys%i_per_temp                           &
      &     .or. i_start .eq. iphys%i_filter_temp                        &
-     &     .or. i_start .eq. iphys%i_buoyancy                           &
      &     .or. i_start .eq. iphys%i_heat_source                        &
      &     .or. i_start .eq. iphys%i_square_t) then 
           call check_missing_field                                      &

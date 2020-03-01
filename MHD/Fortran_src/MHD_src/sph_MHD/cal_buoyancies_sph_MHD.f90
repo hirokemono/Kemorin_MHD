@@ -79,14 +79,16 @@
         ipol_comp =  ipol%i_light
       end if
 !
-      if (ipol_temp*ipol%i_buoyancy .gt. 0) then
+      if (ipol_temp * ipol%forces%i_buoyancy .gt. 0) then
         if (iflag_debug.ge.1)  write(*,*)                               &
      &    'cal_buoyancy_sph_MHD by pert. temperature'
-        call cal_buoyancy_sph_MHD(sph_bc_U%kr_in, sph_bc_U%kr_out,      &
-     &      leg%g_sph_rj, fl_prop%coef_buo, ipol_temp, ipol%i_buoyancy, &
+        call cal_buoyancy_sph_MHD                                       &
+     &     (sph_bc_U%kr_in, sph_bc_U%kr_out, leg%g_sph_rj,              &
+     &      fl_prop%coef_buo, ipol_temp, ipol%forces%i_buoyancy,        &
      &      sph_rj%nidx_rj, sph_rj%radius_1d_rj_r,                      &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
-        call delete_sphere_average(ipol%i_buoyancy, sph_rj, rj_fld)
+        call delete_sphere_average                                      &
+     &     (ipol%forces%i_buoyancy, sph_rj, rj_fld)
       end if
 !
       if (ipol_comp * ipol%forces%i_comp_buo .gt. 0) then

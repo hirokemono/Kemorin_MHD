@@ -250,9 +250,6 @@
 !>        start address for Coriolis force
 !!         @f$ -2 e_{ijk} \Omega_{j} u_{k} @f$
         integer (kind=kint) :: i_coriolis =        izero
-!>        start address for buoyancy
-!!         @f$ -\alpha_{T} g_{i} T @f$
-        integer (kind=kint) :: i_buoyancy =        izero
 !
 !>        start address for SGS heat flux
 !!         @f$ \overline{u_{i}T} - \bar{u}_{i}\bar{T} @f$
