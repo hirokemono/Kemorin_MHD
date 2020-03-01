@@ -55,7 +55,6 @@
      &     .or. i_start .eq. iphys%i_temp                               &
      &     .or. i_start .eq. iphys%i_light                              &
      &     .or. i_start .eq. iphys%i_v_diffuse                          &
-     &     .or. i_start .eq. iphys%i_m_advect                           &
      &     .or. i_start .eq. iphys%i_SGS_m_flux                         &
      &     .or. i_start .eq. iphys%i_square_v) then
           call check_missing_field                                      &
@@ -442,7 +441,7 @@
      &       (fld, i_start, iphys%i_SGS_c_flux, fhd_SGS_c_flux)
         else if(i_start .eq. iphys%i_inertia_w_sgs) then 
           call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_m_advect, inertia%name)
+     &       (fld, i_start, iphys%forces%i_m_advect, inertia%name)
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_SGS_inertia, fhd_SGS_inertia)
         else if(i_start .eq. iphys%i_Lorentz_w_sgs) then 

@@ -117,7 +117,7 @@
       type(phys_data), intent(inout) :: ele_fld
 !
 !
-      if(i_field .eq. iphys%i_m_advect) then
+      if(i_field .eq. iphys%forces%i_m_advect) then
         if (FEM_prm%iflag_rotate_form .eq. id_turn_ON) then
           call int_vol_rot_inertia                                      &
      &       (node, ele, g_FEM, jac_3d, rhs_tbl, nod_fld,               &
@@ -273,7 +273,7 @@
       type(phys_data), intent(inout) :: ele_fld
 !
 !
-      if(i_field .eq. iphys%i_m_advect) then
+      if(i_field .eq. iphys%forces%i_m_advect) then
         if (FEM_prm%iflag_rotate_form .eq. id_turn_ON) then
           call int_vol_rot_inertia_upw                                  &
      &       (node, ele, g_FEM, jac_3d, rhs_tbl, nod_fld,               &

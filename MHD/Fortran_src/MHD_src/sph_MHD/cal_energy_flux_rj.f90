@@ -81,7 +81,7 @@
 !
       if(ipol%i_inertia_w_sgs .gt. 0) then
         call add_2_nod_vectors                                          &
-     &     (rj_fld, ipol%i_m_advect, ipol%i_SGS_inertia,                &
+     &     (rj_fld, ipol%forces%i_m_advect, ipol%i_SGS_inertia,         &
      &      ipol%i_inertia_w_sgs)
       end if
 !

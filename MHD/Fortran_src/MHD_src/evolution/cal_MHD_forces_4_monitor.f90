@@ -292,7 +292,7 @@
 !
       do i = 1, nod_fld%num_phys
         i_fld = nod_fld%istack_component(i-1) + 1
-        if(     i_fld .eq. iphys%i_m_advect                             &
+        if(     i_fld .eq. iphys%forces%i_m_advect                      &
      &     .or. i_fld .eq. iphys%i_m_flux_div                           &
      &     .or. i_fld .eq. iphys%i_maxwell_div                          &
      &     .or. i_fld .eq. iphys%forces%i_m_tension                     &

@@ -13,7 +13,7 @@
 !!               ib_fld = i_velo, i_vort, i_magne, i_current,
 !!                        i_temp, i_light
 !!       Output :: trns_f_MHD%fld_rtp(1,if_frc)
-!!               if_frc = i_m_advect, forces%i_lorentz, 
+!!               if_frc = forces%i_m_advect, forces%i_lorentz, 
 !!                        forces%i_vp_induct, forces%i_h_flux, 
 !!                        forces%i_c_flux, forces%i_coriolis
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
@@ -88,12 +88,12 @@
 !
 !
 !$omp parallel
-      if(f_trns%i_m_advect .gt. 0) then
+      if(f_trns%forces%i_m_advect .gt. 0) then
         call cal_cross_prod_w_coef_smp                                  &
      &     (sph_rtp%nnod_rtp, MHD_prop%fl_prop%coef_velo,               &
      &      trns_b_MHD%fld_rtp(1,b_trns%i_vort),                        &
      &      trns_b_MHD%fld_rtp(1,b_trns%i_velo),                        &
-     &      trns_f_MHD%fld_rtp(1,f_trns%i_m_advect) )
+     &      trns_f_MHD%fld_rtp(1,f_trns%forces%i_m_advect) )
       end if
 !
       if(f_trns%forces%i_lorentz .gt. 0) then

@@ -77,11 +77,11 @@
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
       call cal_radial_force_on_sph(sph_bc_U%kr_in,                      &
-     &      ipol%i_m_advect, ipol%i_div_inertia,                        &
+     &      ipol%forces%i_m_advect, ipol%i_div_inertia,                 &
      &      sph_rj%nidx_rj, sph_rj%ar_1d_rj, g_sph_rj,                  &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       call cal_radial_force_on_sph(sph_bc_U%kr_out,                     &
-     &      ipol%i_m_advect, ipol%i_div_inertia,                        &
+     &      ipol%forces%i_m_advect, ipol%i_div_inertia,                 &
      &      sph_rj%nidx_rj, sph_rj%ar_1d_rj, g_sph_rj,                  &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !

@@ -185,8 +185,6 @@
         else if (field_name(i) .eq. fhd_c_diffuse) then
           iphys%i_c_diffuse =  i0
 !
-        else if (field_name(i) .eq. inertia%name) then
-          iphys%i_m_advect =    i0
         else if (field_name(i) .eq. fhd_div_h_flux ) then
           iphys%i_h_flux_div =  i0
         else if (field_name(i) .eq. fhd_div_ph_flux ) then

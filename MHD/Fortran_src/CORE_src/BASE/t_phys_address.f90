@@ -214,9 +214,6 @@
 !!         @f$ \kappa \partial_{i}\partial_{i} C @f$
         integer (kind=kint) :: i_c_diffuse =       izero
 !
-!>        start address for advection for momentum
-!!         @f$ u_{j} \partial_{j} u_{i} @f$
-        integer (kind=kint) :: i_m_advect =        izero
 !>        start address for divergence of heat flux
 !!         @f$ \partial_{i} \left( u_{i} T \right) @f$
         integer (kind=kint) :: i_h_flux_div =      izero

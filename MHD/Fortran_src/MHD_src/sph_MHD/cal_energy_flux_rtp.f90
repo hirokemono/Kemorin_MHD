@@ -72,12 +72,13 @@
 !
 !
 !$omp parallel
-      if( (f_trns%i_m_advect * fl_prop%iflag_scheme) .gt. 0) then
+      if( (f_trns%forces%i_m_advect * fl_prop%iflag_scheme)             &
+     &                                               .gt. 0) then
         call cal_cross_prod_w_coef_smp                                  &
      &     (sph_rtp%nnod_pole, fl_prop%coef_velo,                       &
      &      trns_b_MHD%fld_pole(1,bs_trns%i_vort),                      &
      &      trns_b_MHD%fld_pole(1,bs_trns%i_velo),                      &
-     &      trns_f_MHD%fld_pole(1,f_trns%i_m_advect) )
+     &      trns_f_MHD%fld_pole(1,f_trns%forces%i_m_advect) )
       end if
 !
       if( (f_trns%forces%i_lorentz * fl_prop%iflag_4_lorentz)           &

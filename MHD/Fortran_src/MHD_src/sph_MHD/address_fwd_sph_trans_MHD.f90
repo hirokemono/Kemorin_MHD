@@ -58,9 +58,10 @@
 !   advection flag
       if(fl_prop%iflag_scheme .gt. id_no_evolution) then
         call add_field_name_4_sph_trns                                  &
-     &     (ipol%i_m_advect, inertia%name, inertia%n_comp,              &
-     &      ipol%i_m_advect, itor%i_m_advect, iphys%i_m_advect,         &
-     &      f_trns%i_m_advect, trns_fwd)
+     &     (ipol%forces%i_m_advect, inertia%name, inertia%n_comp,       &
+     &      ipol%forces%i_m_advect, itor%forces%i_m_advect,             &
+     &      iphys%forces%i_m_advect, f_trns%forces%i_m_advect,          &
+     &      trns_fwd)
 !   Coriolis flag
         if(fl_prop%iflag_4_coriolis .gt. id_turn_OFF) then
           call add_field_name_4_sph_trns(ipol%forces%i_coriolis,        &
