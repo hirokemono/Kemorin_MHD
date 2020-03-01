@@ -99,7 +99,7 @@
      &    MHD_mat%MG_DJDS_table(0), MHD_mat%MG_DJDS_fluid(0),           &
      &    MHD_mat%MG_DJDS_linear(0),                                    &
      &    MHD_mat%MG_DJDS_lin_fl(0),                                    &
-     &    MHD_mat_tbls%base, MHD_mat_tbls%fluid_q,                      &
+     &    MHD_mat_tbls%full, MHD_mat_tbls%fluid_q,                      &
      &    MHD_mat_tbls%full_conduct_q, MHD_mat_tbls%linear,             &
      &    MHD_mat_tbls%fluid_l)
 !
@@ -291,7 +291,7 @@
      &    Csims_FEM_MHD%diff_coefs, fem_int%rhs_tbl,                    &
      &    MHD_mat%MG_DJDS_table(i_lev),  MHD_mat%MG_DJDS_fluid(i_lev),  &
      &    MHD_mat%MG_DJDS_linear(i_lev), MHD_mat%MG_DJDS_lin_fl(i_lev), &
-     &    MHD_mat_tbls%base, MHD_mat_tbls%fluid_q,                      &
+     &    MHD_mat_tbls%full, MHD_mat_tbls%fluid_q,                      &
      &    MHD_mat_tbls%full_conduct_q,                                  &
      &    MHD_mat_tbls%linear, MHD_mat_tbls%fluid_l,                    &
      &    mk_MHD%mlump_fl, mk_MHD%mlump_cd,                             &

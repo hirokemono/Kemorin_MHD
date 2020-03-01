@@ -46,7 +46,7 @@
 !!      subroutine const_pressure_gradient(sph_rj, r_2nd, sph_bc_U,     &
 !!     &          g_sph_rj, coef_press, is_press, is_grad, rj_fld)
 !!        Input:    ipol%i_press
-!!        Solution: ipol%i_press_grad
+!!        Solution: ipol%forces%i_press_grad
 !!
 !!      subroutine const_sph_gradient_no_bc(sph_rj, r_2nd, sph_bc,      &
 !!     &          g_sph_rj, is_fld, is_grad, rj_fld)

@@ -62,7 +62,7 @@
 !
       if(ipol%i_geostrophic .gt. 0) then
         call add_2_nod_vectors                                          &
-     &     (rj_fld, ipol%forces%i_coriolis, ipol%i_press_grad,          &
+     &     (rj_fld, ipol%forces%i_coriolis, ipol%forces%i_press_grad,   &
      &      ipol%i_geostrophic)
       end if
 !

@@ -145,8 +145,9 @@
 !
       call add_field_name_4_sph_trns_snap                               &
      &   (pressure_gradient%name, pressure_gradient%n_comp,             &
-     &    ipol%i_press_grad, itor%i_press_grad, iphys%i_press_grad,     &
-     &    b_trns%i_press_grad, trns_back)
+     &    ipol%forces%i_press_grad, itor%forces%i_press_grad,           &
+     &    iphys%forces%i_press_grad, b_trns%forces%i_press_grad,        &
+     &    trns_back)
       call add_field_name_4_sph_trns_snap                               &
      &   (magnetic_induction%name, magnetic_induction%n_comp,           &
      &    ipol%forces%i_induction, itor%forces%i_induction,             &

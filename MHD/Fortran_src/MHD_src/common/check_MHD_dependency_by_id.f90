@@ -67,9 +67,6 @@
      &     .or. i_start .eq. iphys%i_square_w) then 
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_vort, fhd_vort)
-        else if(i_start .eq. iphys%i_press_grad) then
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_press, fhd_press)
 !
         else if(i_start .eq. iphys%i_filter_magne                       &
      &     .or. i_start .eq. iphys%i_current                            &
@@ -254,7 +251,7 @@
           call check_missing_field                                      &
      &       (fld, i_start, iphys%forces%i_coriolis, Coriolis_force%name)
           call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_press_grad, pressure_gradient%name)
+     &       (fld, i_start, iphys%forces%i_press_grad, pressure_gradient%name)
 !
         else if(i_start .eq. iphys%i_m_flux_div) then 
           call check_missing_field                                      &

@@ -235,9 +235,6 @@
 !>        start address for divergence of magnetic induction
 !!         @f$ \partial_{i} \left(e_{ijk} u_{j} B_{k} \right) @f$
         integer (kind=kint) :: i_induct_div =      izero
-!>        Start address for pressure gradient
-!!         @f$ \partial_{i} p @f$
-        integer (kind=kint) :: i_press_grad  =    izero
 !
 !>        start address for SGS heat flux
 !!         @f$ \overline{u_{i}T} - \bar{u}_{i}\bar{T} @f$

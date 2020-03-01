@@ -287,7 +287,7 @@
      &      MHD_mat%MG_DJDS_fluid(i_level),                             &
      &      MHD_mat%MG_DJDS_linear(i_level),                            &
      &      MHD_mat%MG_DJDS_lin_fl(i_level),                            &
-     &      MHD_mat%MG_mat_tbls(i_level)%base,                          &
+     &      MHD_mat%MG_mat_tbls(i_level)%full,                          &
      &      MHD_mat%MG_mat_tbls(i_level)%fluid_q,                       &
      &      MHD_mat%MG_mat_tbls(i_level)%full_conduct_q,                &
      &      MHD_mat%MG_mat_tbls(i_level)%linear,                        &

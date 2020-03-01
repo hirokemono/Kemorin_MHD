@@ -19,7 +19,7 @@
 !>  Structures for FEM marix table
       type tables_MHD_mat_const
 !>  Structure for linear FEM marix table
-        type(table_mat_const) :: base
+        type(table_mat_const) :: full
 !>  Structure for linear FEM marix table
         type(table_mat_const) :: linear
 !

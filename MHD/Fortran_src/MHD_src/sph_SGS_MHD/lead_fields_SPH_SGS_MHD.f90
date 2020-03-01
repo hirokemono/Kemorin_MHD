@@ -161,12 +161,12 @@
       call cal_sol_pressure_by_div_v(sph%sph_rj, sph_MHD_bc%sph_bc_U,   &
      &    band_p_poisson, ipol, rj_fld)
 !
-      if(ipol%i_press_grad .gt. 0) then
+      if(ipol%forces%i_press_grad .gt. 0) then
         if (iflag_debug.eq.1) write(*,*) 'const_pressure_gradient'
         call const_pressure_gradient                                    &
      &     (sph%sph_rj, r_2nd, sph_MHD_bc%sph_bc_U,                     &
      &      leg%g_sph_rj, MHD_prop%fl_prop%coef_press,                  &
-     &      ipol%i_press, ipol%i_press_grad, rj_fld)
+     &      ipol%i_press, ipol%forces%i_press_grad, rj_fld)
       end if
 !
       end subroutine pressure_SGS_SPH_MHD
