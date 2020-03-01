@@ -11,6 +11,7 @@
 !!      logical function check_scalar_advection(field_name)
 !!      logical function check_force_vectors(field_name)
 !!      logical function check_flux_tensors(field_name)
+!!      logical function check_asym_flux_tensors(field_name)
 !!      subroutine set_base_force_addresses                             &
 !!     &         (i_phys, field_name, forces, flag)
 !!        type(base_force_address), intent(inout) :: forces
@@ -321,8 +322,6 @@
      &   .or. (field_name .eq. magnetic_induction%name)                 &
      &   .or. (field_name .eq. magnetic_stretch%name)                   &
 !
-     &   .or. (field_name .eq. induction_tensor%name)                   &
-!
      &   .or. (field_name .eq. heat_flux%name)                          &
      &   .or. (field_name .eq. pert_heat_flux%name)                     &
      &   .or. (field_name .eq. composite_flux%name)                     &
@@ -342,6 +341,17 @@
      &   .or. (field_name .eq. maxwell_tensor%name)
 !
       end function check_flux_tensors
+!
+! ----------------------------------------------------------------------
+!
+      logical function check_asym_flux_tensors(field_name)
+!
+      character(len = kchara), intent(in) :: field_name
+!
+!
+      check_asym_flux_tensors = (field_name .eq. induction_tensor%name)
+!
+      end function check_asym_flux_tensors
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------

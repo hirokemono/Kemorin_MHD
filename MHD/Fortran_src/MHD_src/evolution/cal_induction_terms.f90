@@ -127,8 +127,9 @@
 !
       call cal_ff_2_vector(node%numnod, node%istack_nod_smp,            &
      &    rhs_mat%f_nl%ff, mlump_cd%ml, nod_fld%ntot_phys,              &
-     &    iphys%i_vp_induct, nod_fld%d_fld)
-      call vector_send_recv(iphys%i_vp_induct, nod_comm, nod_fld)
+     &    iphys%forces%i_vp_induct, nod_fld%d_fld)
+      call vector_send_recv                                             &
+     &   (iphys%forces%i_vp_induct, nod_comm, nod_fld)
 !
       end subroutine cal_vecp_induction
 !

@@ -210,10 +210,10 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      if( (ipol%i_vp_induct*ipol%i_induction) .gt. 0) then
+      if( (ipol%forces%i_vp_induct * ipol%i_induction) .gt. 0) then
         if (iflag_debug .gt. 0) write(*,*) 'obtain magnetic induction'
         call const_sph_rotation_uxb(sph_rj, r_2nd, sph_bc_B, g_sph_rj,  &
-     &      ipol%i_vp_induct, ipol%i_induction, rj_fld)
+     &      ipol%forces%i_vp_induct, ipol%i_induction, rj_fld)
       end if
 !
       end subroutine cal_rot_of_induction_sph

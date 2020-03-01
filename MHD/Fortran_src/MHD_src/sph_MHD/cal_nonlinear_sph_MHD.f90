@@ -13,7 +13,7 @@
 !!               ib_fld = i_velo, i_vort, i_magne, i_current,
 !!                        i_temp, i_light
 !!       Output :: trns_f_MHD%fld_rtp(1,if_frc)
-!!               if_frc = i_m_advect, i_lorentz, i_vp_induct, 
+!!               if_frc = i_m_advect, i_lorentz, forces%i_vp_induct, 
 !!                        forces%i_h_flux, forces%i_c_flux, i_Coriolis
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
@@ -105,12 +105,12 @@
 !
 !
 !
-      if(f_trns%i_vp_induct .gt. 0) then
+      if(f_trns%forces%i_vp_induct .gt. 0) then
         call cal_cross_prod_w_coef_smp                                  &
      &     (sph_rtp%nnod_rtp, MHD_prop%cd_prop%coef_induct,             &
      &      trns_b_MHD%fld_rtp(1,b_trns%i_velo),                        &
      &      trns_b_MHD%fld_rtp(1,b_trns%i_magne),                       &
-     &      trns_f_MHD%fld_rtp(1,f_trns%i_vp_induct) )
+     &      trns_f_MHD%fld_rtp(1,f_trns%forces%i_vp_induct) )
       end if
 !
 !

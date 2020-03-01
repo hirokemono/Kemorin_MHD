@@ -63,7 +63,7 @@
       iphys_sph%i_magne =      1
       iphys_sph%i_current =    4
       iphys_sph%i_b_diffuse =  7
-      iphys_sph%i_vp_induct = 10
+      iphys_sph%forces%i_vp_induct = 10
       iphys_sph%i_induction = 13
       sph_fld%num_phys =   5
       sph_fld%ntot_phys = 15
@@ -162,7 +162,7 @@
      &      FEM_MHD1%field)
 !
       call interpolate_vector_type                                      &
-     &   (iphys%i_vp_induct,  iphys_sph%i_vp_induct,                    &
+     &   (iphys%forces%i_vp_induct,  iphys_sph%i_vp_induct,             &
      &    itp_FEM_2_SPH, mesh_fem, mesh_sph, fem_fld, sph_fld)
       call interpolate_vector_type                                      &
      &   (iphys%i_SGS_vp_induct, iphys_sph%i_SGS_vp_induct,             &
@@ -174,8 +174,9 @@
       call check_calypso_sph_comm_buf_N                                 &
      &   (ncomp_xyz_2_rj, comms_sph%comm_rlm, comms_sph%comm_rj)
 !
-      call copy_nod_vec_to_sph_trans(node1, sph_fld,                    &
-     &    iphys_sph%i_vp_induct, frc_hbd_rtp(1,f_hbd_trns%i_vp_induct))
+      call copy_nod_vec_to_sph_trans                                    &
+     &   (node1, sph_fld, iphys_sph%forces%i_vp_induct,                 &
+     &    frc_hbd_rtp(1,f_hbd_trns%forces%i_vp_induct))
       call copy_nod_vec_to_sph_trans(node1, sph_fld,                    &
      &    iphys_sph%i_SGS_vp_induct,                                    &
      &    frc_hbd_rtp(1,f_hbd_trns%i_SGS_vp_induct))
@@ -186,7 +187,7 @@
      &    n_WS, n_WR, WS(1), WR(1), WK1_sph)
 !
       call sel_sph_rj_vector_from_recv(ncomp_xyz_2_rj,                  &
-     &    ipol%i_vp_induct, f_hbd_trns%i_vp_induct,                     &
+     &    ipol%forces%i_vp_induct, f_hbd_trns%forces%i_vp_induct,       &
      &    comms_sph%comm_rj, n_WR, WR(1), rj_fld)
       call sel_sph_rj_vector_from_recv(ncomp_xyz_2_rj,                  &
      &    ipol%i_SGS_vp_induct, f_hbd_trns%i_SGS_vp_induct,             &
@@ -194,7 +195,7 @@
 !
 !
       call const_sph_rotation_uxb(sph%sph_rj, SPH_WK%r_2nd, sph_bc_B,   &
-     &    g_sph_rj, ipol%i_vp_induct, ipol%i_induction, rj_fld)
+     &    g_sph_rj, ipol%forces%i_vp_induct, ipol%i_induction, rj_fld)
       call const_sph_rotation_uxb(sph%sph_rj, SPH_WK%r_2nd, sph_bc_B,   &
      &    g_sph_rj, ipol%i_SGS_vp_induct, ipol%i_SGS_induction, rj_fld)
 !*
@@ -225,11 +226,12 @@
      &    mhd_fem_wk%mlump_cd, mhd_fem_wk, rhs_mat, nod_fld)
 !
       call interpolate_vector_type                                      &
-     &   (iphys%i_vp_induct, iphys_sph%i_vp_induct,                     &
+     &   (iphys%forces%i_vp_induct, iphys_sph%forces%i_vp_induct,       &
      &    itp_FEM_2_SPH, mesh_fem, mesh_sph, fem_fld, sph_fld)
 !
-      call copy_nod_vec_to_sph_trans(node1, sph_fld,                    &
-     &    iphys_sph%i_vp_induct, frc_hbd_rtp(1,f_hbd_trns%i_vp_induct))
+      call copy_nod_vec_to_sph_trans                                    &
+     &   (node1, sph_fld, iphys_sph%forces%i_vp_induct,                 &
+     &    frc_hbd_rtp(1,f_hbd_trns%forces%i_vp_induct))
 !
       call check_calypso_sph_comm_buf_N                                 &
      &   (ncomp_xyz_2_rj, comms_sph%comm_rtp, comms_sph%comm_rtm)
@@ -242,11 +244,11 @@
      &    n_WS, n_WR, WS(1), WR(1), WK1_sph)
 !
       call sel_sph_rj_vector_from_recv(ncomp_xyz_2_rj,                  &
-     &   (ipol%i_vp_induct, f_hbd_trns%i_vp_induct,                     &
+     &   (ipol%forces%i_vp_induct, f_hbd_trns%i_vp_induct,              &
      &    comms_sph%comm_rj, n_WR, WR, rj_fld)
 !
       call const_sph_rotation_uxb(sph%sph_rj, SPH_WK%r_2nd, sph_bc_B,   &
-     &    g_sph_rj, ipol%i_vp_induct, ipol%i_induction, rj_fld)
+     &    g_sph_rj, ipol%forces%i_vp_induct, ipol%i_induction, rj_fld)
 !
       end subroutine nonlinear_incuction_SPH
 !

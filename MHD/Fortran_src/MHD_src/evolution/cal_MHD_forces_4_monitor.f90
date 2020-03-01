@@ -334,7 +334,7 @@
       end do
 !
 !
-      if (iphys%i_vp_induct .gt. izero) then
+      if (iphys%forces%i_vp_induct .gt. izero) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &             write(*,*) 'lead  ', trim(vecp_induction%name)
         call cal_vecp_induction                                         &

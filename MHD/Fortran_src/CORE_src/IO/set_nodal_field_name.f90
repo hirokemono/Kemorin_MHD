@@ -91,23 +91,9 @@
      &  .or. (phys_nod_name_ctl .eq. fhd_w_viscous          )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_vecp_diffuse       )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_mag_diffuse        )           &
-     &  .or. (phys_nod_name_ctl .eq. magnetic_tension%name        )           &
-     &  .or. (phys_nod_name_ctl .eq. heat_flux%name             )           &
-     &  .or. (phys_nod_name_ctl .eq. pert_heat_flux%name            )           &
-     &  .or. (phys_nod_name_ctl .eq. composite_flux%name             )           &
-     &  .or. (phys_nod_name_ctl .eq. pert_comp_flux%name            )           &
-     &  .or. (phys_nod_name_ctl .eq. inertia%name            )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_div_m_flux         )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_div_maxwell_t      )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_div_induct_t       )           &
-     &  .or. (phys_nod_name_ctl .eq. magnetic_induction%name         )           &
-     &  .or. (phys_nod_name_ctl .eq. vecp_induction%name          )           &
-     &  .or. (phys_nod_name_ctl .eq. magnetic_stretch%name        )           &
-     &  .or. (phys_nod_name_ctl .eq. pressure_gradient%name         )           &
-     &  .or. (phys_nod_name_ctl .eq. Lorentz_force%name            )           &
-     &  .or. (phys_nod_name_ctl .eq. Coriolis_force%name           )           &
-     &  .or. (phys_nod_name_ctl .eq. buoyancy%name           )           &
-     &  .or. (phys_nod_name_ctl .eq. composite_buoyancy%name           )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_rot_inertia        )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_rot_Lorentz        )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_rot_Coriolis       )           &
@@ -164,7 +150,8 @@
      &  .or. (phys_nod_name_ctl .eq. fhd_rot_forces         )           &
      &      )   iflag = 1
 !
-      if(     check_gradient_field(phys_nod_name_ctl)                   &
+      if(     check_force_vectors(phys_nod_name_ctl)                    &
+     &   .or. check_gradient_field(phys_nod_name_ctl)                   &
      &   .or. check_filtered_force(phys_nod_name_ctl)                   &
      &   .or. check_rot_fil_force(phys_nod_name_ctl)                    &
      &   .or. check_wide_filter_vector(phys_nod_name_ctl)               &
@@ -373,7 +360,7 @@
         num_nod_component = 6
       end if
 !
-       if (  (phys_nod_name_ctl .eq. induction_tensor%name      )       &
+       if (  check_asym_flux_tensors(phys_nod_name_ctl)                 &
      &  .or. (phys_nod_name_ctl .eq. fhd_SGS_induct_t  )                &
      &       ) then
 !

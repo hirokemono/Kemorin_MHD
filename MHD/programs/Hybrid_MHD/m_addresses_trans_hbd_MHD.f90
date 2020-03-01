@@ -142,7 +142,7 @@
 !   induction flag
       if(cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
         nvector_xyz_2_rj = nvector_xyz_2_rj + 1
-        f_hbd_trns%i_vp_induct =  3*nvector_xyz_2_rj - 2
+        f_hbd_trns%forces%i_vp_induct =  3*nvector_xyz_2_rj - 2
       end if
 !    SGS magnetic induction flag
       if(SGS_param%iflag_SGS_uxb .gt. id_SGS_none) then
@@ -189,9 +189,10 @@
       write(*,*)
 !
       write(*,*) 'nvector_xyz_2_rj  ', nvector_xyz_2_rj
-      if(f_hbd_trns%i_vp_induct .gt. 0) write(*,*)                      &
-     &       'f_hbd_trns%i_vp_induct ', f_hbd_trns%i_vp_induct,         &
-     &        ipol%i_vp_induct, itor%i_vp_induct, idpdr%i_vp_induct
+      if(f_hbd_trns%forces%i_vp_induct .gt. 0) write(*,*)               &
+     &       'f_hbd_trns%forces%i_vp_induct ',                          &
+     &        f_hbd_trns%forces%i_vp_induct, ipol%forces%i_vp_induct,   &
+     &        itor%forces%i_vp_induct, idpdr%forces%i_vp_induct
       if(f_hbd_trns%i_SGS_vp_induct .gt. 0) write(*,*)                  &
      &       'f_hbd_trns%i_SGS_vp_induct', f_hbd_trns%i_SGS_vp_induct,  &
      &        ipol%i_SGS_vp_induct, itor%i_SGS_vp_induct,               &

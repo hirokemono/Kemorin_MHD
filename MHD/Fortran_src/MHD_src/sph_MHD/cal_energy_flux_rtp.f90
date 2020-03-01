@@ -90,12 +90,13 @@
 !
 !
 !
-      if((f_trns%i_vp_induct * cd_prop%iflag_Bevo_scheme) .gt. 0) then
+      if((f_trns%forces%i_vp_induct * cd_prop%iflag_Bevo_scheme)        &
+     &                                                    .gt. 0) then
         call cal_cross_prod_w_coef_smp                                  &
      &     (sph_rtp%nnod_pole, cd_prop%coef_induct,                     &
      &      trns_b_MHD%fld_pole(1,bs_trns%i_velo),                      &
      &      trns_b_MHD%fld_pole(1,bs_trns%i_magne),                     &
-     &      trns_f_MHD%fld_pole(1,f_trns%i_vp_induct) )
+     &      trns_f_MHD%fld_pole(1,f_trns%forces%i_vp_induct) )
       end if
 !
 !
@@ -204,7 +205,7 @@
         call cal_electric_field_smp(np_smp, sph_rtp%nnod_rtp,           &
      &      sph_rtp%istack_inod_rtp_smp, cd_prop%coef_diffuse,          &
      &      trns_b_snap%fld_rtp(1,bs_trns%i_current),                   &
-     &      trns_f_MHD%fld_rtp(1,f_trns%i_vp_induct),                   &
+     &      trns_f_MHD%fld_rtp(1,f_trns%forces%i_vp_induct),            &
      &      trns_f_snap%fld_rtp(1,fs_trns%i_electric))
       end if
 !
@@ -212,7 +213,7 @@
         call cal_poynting_flux_smp(np_smp, sph_rtp%nnod_rtp,            &
      &      sph_rtp%istack_inod_rtp_smp, cd_prop%coef_diffuse,          &
      &      trns_b_snap%fld_rtp(1,bs_trns%i_current),                   &
-     &      trns_f_MHD%fld_rtp(1,f_trns%i_vp_induct),                   &
+     &      trns_f_MHD%fld_rtp(1,f_trns%forces%i_vp_induct),            &
      &      trns_b_snap%fld_rtp(1,bs_trns%i_magne),                     &
      &      trns_f_snap%fld_rtp(1,fs_trns%i_poynting))
       end if

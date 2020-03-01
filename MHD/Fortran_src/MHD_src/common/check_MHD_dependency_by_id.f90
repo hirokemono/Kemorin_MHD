@@ -173,7 +173,6 @@
      &       (fld, i_start, iphys%i_ref_entropy, fhd_ref_entropy)
 !
         else if(i_start .eq. iphys%i_x_heli                             &
-     &     .or. i_start .eq. iphys%i_vp_induct                          &
      &     .or. i_start .eq. iphys%i_wide_SGS_vp_induct                 &
      &     .or. i_start .eq. iphys%i_SGS_vp_induct                      &
      &     .or. i_start .eq. iphys%i_SGS_induct_t) then 
@@ -198,7 +197,7 @@
      &       (fld, i_start, iphys%i_magne, fhd_magne)
           else
             call check_missing_field                                    &
-     &       (fld, i_start, iphys%i_vp_induct, vecp_induction%name)
+     &       (fld, i_start, iphys%forces%i_vp_induct, vecp_induction%name)
           end if
         else if(i_start .eq. iphys%i_SGS_induction) then 
           if (cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
@@ -259,7 +258,7 @@
         else if(i_start .eq. iphys%i_electric                           &
      &     .or. i_start .eq. iphys%i_poynting) then 
           call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_vp_induct, vecp_induction%name)
+     &       (fld, i_start, iphys%forces%i_vp_induct, vecp_induction%name)
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_current, fhd_current)
 !
@@ -473,7 +472,7 @@
      &       (fld, i_start, iphys%i_SGS_Lorentz, fhd_SGS_Lorentz)
         else if(i_start .eq. iphys%i_vp_induct_w_sgs) then 
           call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_vp_induct, vecp_induction%name)
+     &       (fld, i_start, iphys%forces%i_vp_induct, vecp_induction%name)
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_SGS_vp_induct, fhd_SGS_vp_induct)
         else if(i_start .eq. iphys%i_mag_induct_w_sgs) then 

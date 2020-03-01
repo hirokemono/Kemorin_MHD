@@ -85,10 +85,11 @@
 !
 !   induction flag
       if(cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
-        call add_field_name_4_sph_trns(ipol%i_vp_induct,                &
+        call add_field_name_4_sph_trns(ipol%forces%i_vp_induct,         &
      &      vecp_induction%name, vecp_induction%n_comp,                 &
-     &      ipol%i_vp_induct, itor%i_vp_induct, iphys%i_vp_induct,      &
-     &      f_trns%i_vp_induct, trns_fwd)
+     &      ipol%forces%i_vp_induct, itor%forces%i_vp_induct,           &
+     &      iphys%forces%i_vp_induct, f_trns%forces%i_vp_induct,        &
+     &      trns_fwd)
       end if
 !
 !   heat flux flag

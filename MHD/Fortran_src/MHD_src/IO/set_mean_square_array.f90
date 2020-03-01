@@ -294,6 +294,9 @@
           if(check_flux_tensors(field_name)) then
             call set_rms_address_list(i, nod_fld, msq_list)
           end if
+          if(check_asym_flux_tensors(field_name)) then
+            call set_rms_address_list(i, nod_fld, msq_list)
+          end if
 !
           if ( field_name .eq. fhd_div_m_flux ) then
             call set_rms_address                                        &
