@@ -387,7 +387,8 @@
       if(idx_rj_l0 .le. 0) return
 !
       i10c_o = idx_rj_l0
-      sk_10c = d_rj(i10c_o,itor%i_lorentz) * radius_1d_rj_r(1)**3
+      sk_10c = d_rj(i10c_o,itor%forces%i_lorentz)                       &
+     &        * radius_1d_rj_r(1)**3
 !
 !$omp parallel do reduction(+:sk_10c) private(i10c_i,i10c_o)
       do k = 1, kr_in-1
@@ -395,16 +396,17 @@
         i10c_o = idx_rj_l0 + (k  )*jmax
 !
         sk_10c = sk_10c                                                 &
-     &        + (d_rj(i10c_i,itor%i_lorentz) * radius_1d_rj_r(k  )**2   &
-     &         + d_rj(i10c_o,itor%i_lorentz) * radius_1d_rj_r(k+1)**2)  &
-     &        * (radius_1d_rj_r(k+1) - radius_1d_rj_r(k))
+     &   + (d_rj(i10c_i,itor%forces%i_lorentz) * radius_1d_rj_r(k  )**2 &
+     &   + d_rj(i10c_o,itor%forces%i_lorentz) * radius_1d_rj_r(k+1)**2) &
+     &    * (radius_1d_rj_r(k+1) - radius_1d_rj_r(k))
       end do
 !$omp end parallel do
 !
       i10c_o = idx_rj_l0 + (kr_in-1)*jmax
-      d_rj(i10c_o,itor%i_lorentz) = half * five * sk_10c                &
+      d_rj(i10c_o,itor%forces%i_lorentz) = half * five * sk_10c         &
      &                           * ar_1d_rj(kr_in,1)**3
-      d_rj(i10c_o,ipol%i_rot_Lorentz) = d_rj(i10c_o,itor%i_lorentz)
+      d_rj(i10c_o,ipol%i_rot_Lorentz)                                   &
+     &      = d_rj(i10c_o,itor%forces%i_lorentz)
 !
       end subroutine int_icore_tor_lorentz_l1
 !

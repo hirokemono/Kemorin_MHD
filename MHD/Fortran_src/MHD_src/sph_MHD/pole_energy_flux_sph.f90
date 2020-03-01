@@ -68,12 +68,13 @@
      &      iphys%i_m_advect, nod_fld%d_fld)
       end if
 !
-      if( (iphys%i_lorentz * fl_prop%iflag_4_lorentz) .gt. 0) then
+      if( (iphys%forces%i_lorentz * fl_prop%iflag_4_lorentz)            &
+     &                                                .gt. 0) then
         call pole_fld_cst_cross_prod                                    &
      &     (node%numnod, node%internal_node, node%xx,                   &
      &      sph_rtp%nnod_rtp, sph_rtp%nidx_rtp(1), fl_prop%coef_lor,    &
      &      nod_fld%ntot_phys, iphys%i_current, iphys%i_velo,           &
-     &      iphys%i_lorentz, nod_fld%d_fld)
+     &      iphys%forces%i_lorentz, nod_fld%d_fld)
       end if
 !
 !
@@ -128,19 +129,19 @@
 !
 !
 !$omp parallel
-      if( (iphys%i_lorentz*iphys%i_ujb) .gt. 0) then
+      if( (iphys%forces%i_lorentz * iphys%i_ujb) .gt. 0) then
         call pole_fld_cst_dot_prod                                      &
      &     (node%numnod, node%internal_node, node%xx,                   &
      &      sph_rtp%nnod_rtp, sph_rtp%nidx_rtp(1), one,                 &
-     &      nod_fld%ntot_phys, iphys%i_lorentz, iphys%i_velo,           &
+     &      nod_fld%ntot_phys, iphys%forces%i_lorentz, iphys%i_velo,    &
      &      iphys%i_ujb, nod_fld%d_fld)
       end if
 !
-      if( (iphys%i_lorentz*iphys%i_nega_ujb) .gt. 0) then
+      if( (iphys%forces%i_lorentz * iphys%i_nega_ujb) .gt. 0) then
         call pole_fld_cst_dot_prod                                      &
      &     (node%numnod, node%internal_node, node%xx,                   &
      &      sph_rtp%nnod_rtp, sph_rtp%nidx_rtp(1), dminus,              &
-     &      nod_fld%ntot_phys, iphys%i_lorentz, iphys%i_velo,           &
+     &      nod_fld%ntot_phys, iphys%forces%i_lorentz, iphys%i_velo,    &
      &       iphys%i_nega_ujb, nod_fld%d_fld)
       end if
 !

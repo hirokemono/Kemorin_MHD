@@ -241,9 +241,6 @@
 !>        Start address for pressure gradient
 !!         @f$ \partial_{i} p @f$
         integer (kind=kint) :: i_press_grad  =    izero
-!>        start address for Lorentz force
-!!         @f$ e_{ijk} J_{j} B_{k} @f$
-        integer (kind=kint) :: i_lorentz =         izero
 !>        start address for Coriolis force
 !!         @f$ -2 e_{ijk} \Omega_{j} u_{k} @f$
         integer (kind=kint) :: i_coriolis =        izero

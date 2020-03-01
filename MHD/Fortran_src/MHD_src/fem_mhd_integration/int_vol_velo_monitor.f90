@@ -174,7 +174,7 @@
      &      fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,         &
      &      iphys%i_magne, ele_fld%ntot_phys, iphys_ele%i_magne,        &
      &      ele_fld%d_fld, fem_wk, mhd_fem_wk, f_nl)
-      else if(i_field .eq. iphys%i_lorentz) then
+      else if(i_field .eq. iphys%forces%i_lorentz) then
         if (FEM_prm%iflag_rotate_form .eq. id_turn_ON) then
           call int_vol_full_rot_Lorentz_pg(node, ele,                   &
      &        fl_prop, cd_prop, g_FEM, jac_3d, rhs_tbl, nod_fld,        &
@@ -338,7 +338,7 @@
      &      fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int, dt,     &
      &      iphys%i_magne, ele_fld%ntot_phys, iphys_ele%i_magne,        &
      &      iv_upw, ele_fld%d_fld, fem_wk, mhd_fem_wk, f_nl)
-      else if(i_field .eq. iphys%i_lorentz) then
+      else if(i_field .eq. iphys%forces%i_lorentz) then
         if (FEM_prm%iflag_rotate_form .eq. id_turn_ON) then
           call int_vol_full_rot_Lorentz_pg(node, ele,                   &
      &        fl_prop, cd_prop, g_FEM, jac_3d, rhs_tbl, nod_fld,        &

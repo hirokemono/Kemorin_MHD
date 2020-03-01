@@ -108,11 +108,11 @@
      &      ipol%i_m_advect, ipol%i_rot_inertia, rj_fld)
       end if
 !
-      if( (ipol%i_lorentz*ipol%i_rot_Lorentz) .gt. 0) then
+      if( (ipol%forces%i_lorentz * ipol%i_rot_Lorentz) .gt. 0) then
         if (iflag_debug .gt. 0) write(*,*) 'take rotation of Lorentz'
         call const_sph_force_rot2(sph_rj, r_2nd,                        &
      &      sph_bc_U, fdm2_free_ICB, fdm2_free_CMB, g_sph_rj,           &
-     &      ipol%i_lorentz, ipol%i_rot_Lorentz, rj_fld)
+     &      ipol%forces%i_lorentz, ipol%i_rot_Lorentz, rj_fld)
 !
         if(sph_bc_U%iflag_icb .eq. iflag_rotatable_ic) then
           call int_icore_toroidal_lorentz                               &
@@ -148,7 +148,7 @@
       if(MHD_prop%fl_prop%iflag_4_lorentz .gt. id_turn_OFF) then
         call const_sph_div_force                                        &
      &     (sph_rj, r_2nd, sph_MHD_bc%sph_bc_U, g_sph_rj,               &
-     &      ipol%i_lorentz, ipol%i_div_Lorentz, rj_fld)
+     &      ipol%forces%i_lorentz, ipol%i_div_Lorentz, rj_fld)
       end if
 !
       if(MHD_prop%fl_prop%iflag_4_coriolis .gt. id_turn_OFF) then

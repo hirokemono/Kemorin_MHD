@@ -76,10 +76,11 @@
         end if
 !   Lorentz flag
         if(fl_prop%iflag_4_lorentz .gt. id_turn_OFF) then
-          call add_field_name_4_sph_trns                                &
-     &       (ipol%i_lorentz, Lorentz_force%name, Lorentz_force%n_comp, &
-     &        ipol%i_lorentz, itor%i_lorentz, iphys%i_lorentz,          &
-     &        f_trns%i_lorentz, trns_fwd)
+          call add_field_name_4_sph_trns(ipol%forces%i_lorentz,         &
+     &        Lorentz_force%name, Lorentz_force%n_comp,                 &
+     &        ipol%forces%i_lorentz, itor%forces%i_lorentz,             &
+     &        iphys%forces%i_lorentz, f_trns%forces%i_lorentz,          &
+     &        trns_fwd)
         end if
       end if
 !

@@ -108,7 +108,7 @@
         call pick_mag_torque_inner_core                                 &
      &     (sph_rj%idx_rj_degree_one,  sph_rj%nidx_rj,                  &
      &      sph_params%nlayer_ICB, sph_rj%radius_1d_rj_r,               &
-     &      itor%i_lorentz, rj_fld%n_point, rj_fld%ntot_phys,           &
+     &      itor%forces%i_lorentz, rj_fld%n_point, rj_fld%ntot_phys,    &
      &      rj_fld%d_fld, bench%m_torque_icore)
       end if
 !

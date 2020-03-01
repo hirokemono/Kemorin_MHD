@@ -77,7 +77,6 @@
      &     .or. i_start .eq. iphys%i_current                            &
      &     .or. i_start .eq. iphys%i_b_diffuse                          &
      &     .or. i_start .eq. iphys%i_mag_p                              &
-     &     .or. i_start .eq. iphys%i_lorentz                            &
      &     .or. i_start .eq. iphys%i_SGS_maxwell                        &
      &     .or. i_start .eq. iphys%i_square_b                           &
      &     .or. i_start .eq. iphys%i_truncated_B) then
@@ -252,7 +251,7 @@
         else if(i_start .eq. iphys%i_div_Lorentz                        &
      &     .or. i_start .eq. iphys%i_rot_Lorentz) then 
           call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_lorentz, Lorentz_force%name)
+     &       (fld, i_start, iphys%forces%i_lorentz, Lorentz_force%name)
         else if(i_start .eq. iphys%i_geostrophic) then 
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_coriolis, Coriolis_force%name)
@@ -449,12 +448,12 @@
      &       (fld, i_start, iphys%i_SGS_inertia, fhd_SGS_inertia)
         else if(i_start .eq. iphys%i_Lorentz_w_sgs) then 
           call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_lorentz, Lorentz_force%name)
+     &       (fld, i_start, iphys%forces%i_lorentz, Lorentz_force%name)
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_SGS_Lorentz, fhd_SGS_Lorentz)
         else if(i_start .eq. iphys%i_Lorentz_w_sgs) then 
           call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_lorentz, Lorentz_force%name)
+     &       (fld, i_start, iphys%forces%i_lorentz, Lorentz_force%name)
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_SGS_Lorentz, fhd_SGS_Lorentz)
         else if(i_start .eq. iphys%i_vp_induct_w_sgs) then 

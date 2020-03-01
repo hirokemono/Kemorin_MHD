@@ -80,12 +80,13 @@
      &      trns_f_MHD%fld_pole(1,f_trns%i_m_advect) )
       end if
 !
-      if( (f_trns%i_lorentz * fl_prop%iflag_4_lorentz) .gt. 0) then
+      if( (f_trns%forces%i_lorentz * fl_prop%iflag_4_lorentz)           &
+     &                                                 .gt. 0) then
         call cal_cross_prod_w_coef_smp                                  &
      &     (sph_rtp%nnod_pole, fl_prop%coef_lor,                        &
      &      trns_b_MHD%fld_pole(1,bs_trns%i_current),                   &
      &      trns_b_MHD%fld_pole(1,bs_trns%i_magne),                     &
-     &      trns_f_MHD%fld_pole(1,f_trns%i_lorentz) )
+     &      trns_f_MHD%fld_pole(1,f_trns%forces%i_lorentz) )
       end if
 !
 !
@@ -164,14 +165,14 @@
 !
       if(fs_trns%i_ujb .gt. 0) then
         call cal_dot_prod_no_coef_smp(sph_rtp%nnod_rtp,                 &
-     &      trns_f_MHD%fld_rtp(1,f_trns%i_lorentz),                     &
+     &      trns_f_MHD%fld_rtp(1,f_trns%forces%i_lorentz),              &
      &      trns_b_snap%fld_rtp(1,bs_trns%i_velo),                      &
      &      trns_f_snap%fld_rtp(1,fs_trns%i_ujb) )
       end if
 !
       if(fs_trns%i_nega_ujb .gt. 0) then
         call cal_dot_prod_w_coef_smp(sph_rtp%nnod_rtp, dminus,          &
-     &      trns_f_MHD%fld_rtp(1,f_trns%i_lorentz),                     &
+     &      trns_f_MHD%fld_rtp(1,f_trns%forces%i_lorentz),              &
      &      trns_b_snap%fld_rtp(1,bs_trns%i_velo),                      &
      &      trns_f_snap%fld_rtp(1,fs_trns%i_nega_ujb) )
       end if
