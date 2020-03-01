@@ -152,8 +152,8 @@
      &    itor%forces%i_m_tension, idpdr%forces%i_m_tension)
       call set_vect_sph_address(ipol%forces%i_lorentz,                  &
      &    itor%forces%i_lorentz, idpdr%forces%i_lorentz)
-      call set_vect_sph_address(ipol%i_coriolis, itor%i_coriolis,       &
-     &    idpdr%i_coriolis)
+      call set_vect_sph_address(ipol%forces%i_coriolis,                 &
+     &    itor%forces%i_coriolis, idpdr%forces%i_coriolis)
       call set_vect_sph_address(ipol%forces%i_buoyancy,                 &
      &    itor%forces%i_buoyancy, idpdr%forces%i_buoyancy)
       call set_vect_sph_address(ipol%forces%i_comp_buo,                 &

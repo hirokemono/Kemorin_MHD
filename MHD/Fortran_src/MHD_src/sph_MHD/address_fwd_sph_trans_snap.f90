@@ -49,8 +49,8 @@
 !
       call add_field_name_4_sph_trns_snap                               &
      &   (Coriolis_force%name, Coriolis_force%n_comp,                   &
-     &    ipol%i_coriolis, itor%i_coriolis, iphys%i_coriolis,           &
-     &    f_trns%i_coriolis, trns_fwd)
+     &    ipol%forces%i_coriolis, itor%forces%i_coriolis,               &
+     &    iphys%forces%i_coriolis, f_trns%forces%i_coriolis, trns_fwd)
       call add_field_name_4_sph_trns_snap(fhd_e_field, n_vector,        &
      &    ipol%i_electric, itor%i_electric, iphys%i_electric,           &
      &    f_trns%i_electric, trns_fwd)

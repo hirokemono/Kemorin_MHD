@@ -140,7 +140,7 @@
 !
       end if
 !
-      if(i_field .eq. iphys%i_coriolis) then
+      if(i_field .eq. iphys%forces%i_coriolis) then
         call int_vol_coriolis_pg                                        &
      &     (node, ele, fluid, fl_prop, g_FEM, jac_3d, rhs_tbl, nod_fld, &
      &      FEM_prm%npoint_t_evo_int, iphys%i_velo, fem_wk, f_nl)
@@ -298,7 +298,7 @@
      &      ele_fld%d_fld, fl_prop%coef_nega_v, fem_wk, f_nl)
       end if
 !
-      if(i_field .eq. iphys%i_coriolis) then
+      if(i_field .eq. iphys%forces%i_coriolis) then
         call int_vol_coriolis_upw                                       &
      &     (node, ele, fluid, fl_prop, g_FEM, jac_3d, rhs_tbl, nod_fld, &
      &      FEM_prm%npoint_t_evo_int, dt, iphys%i_velo,                 &

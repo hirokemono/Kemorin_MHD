@@ -172,7 +172,7 @@
         if(sph_rj%idx_rj_degree_one(m) .gt. 0) then
           i1 = sph_rj%idx_rj_degree_one(m)                              &
      &        + (sph_bc_U%kr_in-1)*sph_rj%nidx_rj(2)
-          rj_fld%d_fld(i1,itor%i_coriolis)                              &
+          rj_fld%d_fld(i1,itor%forces%i_coriolis)                       &
      &           = rj_fld%d_fld(i1,ipol%i_rot_Coriolis)
         end if
       end do

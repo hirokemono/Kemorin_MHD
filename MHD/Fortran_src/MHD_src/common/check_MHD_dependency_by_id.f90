@@ -56,7 +56,6 @@
      &     .or. i_start .eq. iphys%i_light                              &
      &     .or. i_start .eq. iphys%i_v_diffuse                          &
      &     .or. i_start .eq. iphys%i_m_advect                           &
-     &     .or. i_start .eq. iphys%i_coriolis                           &
      &     .or. i_start .eq. iphys%i_SGS_m_flux                         &
      &     .or. i_start .eq. iphys%i_square_v) then
           call check_missing_field                                      &
@@ -254,7 +253,7 @@
      &       (fld, i_start, iphys%forces%i_lorentz, Lorentz_force%name)
         else if(i_start .eq. iphys%i_geostrophic) then 
           call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_coriolis, Coriolis_force%name)
+     &       (fld, i_start, iphys%forces%i_coriolis, Coriolis_force%name)
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_press_grad, pressure_gradient%name)
 !

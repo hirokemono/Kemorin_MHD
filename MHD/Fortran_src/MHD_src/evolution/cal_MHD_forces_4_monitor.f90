@@ -301,7 +301,7 @@
      &     .or. i_fld .eq. iphys%forces%i_comp_buo                      &
      &     .or. i_fld .eq. iphys%force_by_filter%i_buoyancy             &
      &     .or. i_fld .eq. iphys%force_by_filter%i_comp_buo             &
-     &     .or. i_fld .eq. iphys%i_coriolis) then
+     &     .or. i_fld .eq. iphys%forces%i_coriolis) then
           if(iflag_debug .ge. iflag_routine_msg)                        &
      &             write(*,*) 'lead  ', trim(nod_fld%phys_name(i))
           call cal_terms_4_momentum                                     &

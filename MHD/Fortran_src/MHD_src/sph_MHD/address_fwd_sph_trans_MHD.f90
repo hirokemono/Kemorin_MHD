@@ -63,10 +63,11 @@
      &      f_trns%i_m_advect, trns_fwd)
 !   Coriolis flag
         if(fl_prop%iflag_4_coriolis .gt. id_turn_OFF) then
-          call add_field_name_4_sph_trns                                &
-     &       (ipol%i_coriolis, Coriolis_force%name, n_vector,                  &
-     &        ipol%i_coriolis, itor%i_coriolis, iphys%i_coriolis,       &
-     &        f_trns%i_coriolis, trns_fwd)
+          call add_field_name_4_sph_trns(ipol%forces%i_coriolis,        &
+     &        Coriolis_force%name, Coriolis_force%n_comp,               &
+     &        ipol%forces%i_coriolis, itor%forces%i_coriolis,           &
+     &        iphys%forces%i_coriolis, f_trns%forces%i_coriolis,        &
+     &        trns_fwd)
         end if
         if(fl_prop%iflag_4_coriolis .gt. id_turn_OFF) then
           call add_field_name_4_sph_trns                                &

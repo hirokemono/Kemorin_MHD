@@ -15,7 +15,7 @@
 !!       Output :: trns_f_MHD%fld_rtp(1,if_frc)
 !!               if_frc = i_m_advect, forces%i_lorentz, 
 !!                        forces%i_vp_induct, forces%i_h_flux, 
-!!                        forces%i_c_flux, i_Coriolis
+!!                        forces%i_c_flux, forces%i_coriolis
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
 !!        type(legendre_4_sph_trans), intent(in) :: leg
@@ -131,11 +131,11 @@
      &      trns_f_MHD%fld_rtp(1,f_trns%forces%i_c_flux) )
       end if
 !
-      if(f_trns%i_Coriolis .gt. 0) then
+      if(f_trns%forces%i_coriolis .gt. 0) then
         call cal_wz_coriolis_rtp(sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,    &
      &      leg%g_colat_rtp, MHD_prop%fl_prop%coef_cor,                 &
      &      trns_b_MHD%fld_rtp(1,b_trns%i_velo),                        &
-     &      trns_f_MHD%fld_rtp(1,f_trns%i_Coriolis))
+     &      trns_f_MHD%fld_rtp(1,f_trns%forces%i_coriolis))
       end if
 !$omp end parallel
 !

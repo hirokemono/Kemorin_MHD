@@ -203,8 +203,6 @@
           iphys%i_induct_div =  i0
         else if (field_name(i) .eq. pressure_gradient%name) then
           iphys%i_press_grad =  i0
-        else if (field_name(i) .eq. Coriolis_force%name) then
-          iphys%i_coriolis =    i0
         end if
 !
         call set_base_force_addresses                                   &
