@@ -64,7 +64,7 @@
       iphys_sph%i_current =    4
       iphys_sph%i_b_diffuse =  7
       iphys_sph%forces%i_vp_induct = 10
-      iphys_sph%i_induction = 13
+      iphys_sph%forces%i_induction = 13
       sph_fld%num_phys =   5
       sph_fld%ntot_phys = 15
 !
@@ -149,7 +149,7 @@
 !
 !
       call cal_sgs_uxb_2_monitor
-     &     (Csims_FEM_MHD%icomp_sgs%i_induction,                        &
+     &     (Csims_FEM_MHD%icomp_sgs%forces%i_induction,                 &
      &      Csims_FEM_MHD%iphys_elediff%i_velo, MHD_step1%time_d%dt,    &
      &      FEM_prm, SGS_par%model_p, SGS_par%filter_p,                 &
      &      mesh%nod_comm, mesh%node, mesh%ele,                         &
@@ -195,7 +195,8 @@
 !
 !
       call const_sph_rotation_uxb(sph%sph_rj, SPH_WK%r_2nd, sph_bc_B,   &
-     &    g_sph_rj, ipol%forces%i_vp_induct, ipol%i_induction, rj_fld)
+     &    g_sph_rj, ipol%forces%i_vp_induct, ipol%forces%i_induction,   &
+     &    rj_fld)
       call const_sph_rotation_uxb(sph%sph_rj, SPH_WK%r_2nd, sph_bc_B,   &
      &    g_sph_rj, ipol%i_SGS_vp_induct, ipol%i_SGS_induction, rj_fld)
 !*
@@ -248,7 +249,8 @@
      &    comms_sph%comm_rj, n_WR, WR, rj_fld)
 !
       call const_sph_rotation_uxb(sph%sph_rj, SPH_WK%r_2nd, sph_bc_B,   &
-     &    g_sph_rj, ipol%forces%i_vp_induct, ipol%i_induction, rj_fld)
+     &    g_sph_rj, ipol%forces%i_vp_induct, ipol%forces%i_induction,   &
+     &    rj_fld)
 !
       end subroutine nonlinear_incuction_SPH
 !
@@ -300,7 +302,8 @@
       call sel_sph_rj_vector_to_send(ncomp_rj_2_xyz,                    &
      &    ipol%i_b_diffuse, b_hbd_trns%i_b_diffuse, rj_fld, n_WS, WS)
       call sel_sph_rj_vector_to_send(ncomp_rj_2_xyz,                    &
-     &    ipol%i_induction, b_hbd_trns%i_induction, rj_fld, n_WS, WS)
+     &    ipol%forces%i_induction, b_hbd_trns%forces%i_induction,       &
+     &    rj_fld, n_WS, WS)
       if (SGS_param%iflag_SGS_uxb .ne. id_SGS_none) then
         call sel_sph_rj_vector_to_send(ncomp_rj_2_xyz,                  &
      &      ipol%i_SGS_induction, b_hbd_trns%i_SGS_induction, rj_fld,   &
@@ -327,8 +330,9 @@
      &    iphys_sph%i_b_diffuse, mesh_sph%node, sph_fld)
       call copy_nod_vec_from_trans_wpole                                &
      &   (sph%sph_rtp, sph%sph_params%m_folding, nvector_rj_2_xyz,      &
-     &    b_hbd_trns%i_induction, fld_hbd_rtp(1,1), fld_hbd_pole,       &
-     &    iphys_sph%i_induction, mesh_sph%node, sph_fld)
+     &    b_hbd_trns%forces%i_induction, fld_hbd_rtp(1,1),              &
+     &    fld_hbd_pole, iphys_sph%forces%i_induction,                   &
+     &    mesh_sph%node, sph_fld)
       if ( SGS_param%iflag_SGS_uxb .ne. id_SGS_none) then
         call copy_nod_vec_from_trans_wpole                              &
      &   (sph%sph_rtp, sph%sph_params%m_folding, nvector_rj_2_xyz,      &
@@ -347,7 +351,7 @@
      &   (iphys_sph%i_b_diffuse, iphys%i_b_diffuse,                     &
      &    itp_SPH_2_FEM, mesh_sph, mesh_fem, sph_fld, fem_fld)
       call interpolate_vector_type                                      &
-     &   (iphys_sph%i_induction, iphys%i_induction,                     &
+     &   (iphys_sph%forces%i_induction, iphys%forces%i_induction,       &
      &    itp_SPH_2_FEM, mesh_sph, mesh_fem, sph_fld, fem_fld)
       if ( SGS_param%iflag_SGS_uxb .ne. id_SGS_none) then
         call interpolate_vector_type                                    &

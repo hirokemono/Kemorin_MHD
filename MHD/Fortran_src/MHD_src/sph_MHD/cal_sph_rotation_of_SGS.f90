@@ -169,7 +169,7 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      if( (ipol%i_SGS_vp_induct*ipol%i_induction) .gt. 0) then
+      if( (ipol%i_SGS_vp_induct*ipol%forces%i_induction) .gt. 0) then
         if (iflag_debug .gt. 0) write(*,*) 'obtain magnetic induction'
         call const_sph_rotation_uxb(sph_rj, r_2nd, sph_bc_B, g_sph_rj,  &
      &      ipol%i_SGS_vp_induct, ipol%i_SGS_induction, rj_fld)

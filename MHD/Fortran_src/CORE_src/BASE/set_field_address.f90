@@ -201,8 +201,6 @@
           iphys%i_maxwell_div = i0
         else if (field_name(i) .eq. fhd_div_induct_t) then
           iphys%i_induct_div =  i0
-        else if (field_name(i) .eq. magnetic_induction%name) then
-          iphys%i_induction =   i0
         else if (field_name(i) .eq. pressure_gradient%name) then
           iphys%i_press_grad =  i0
         else if (field_name(i) .eq. magnetic_tension%name) then

@@ -20,9 +20,6 @@
 !!   div_composite_buoyancy, rot_composite_buoyancy   [i_comp_buo]:
 !!                            Compositional buoyancy  - \alpha_{C} g C
 !!
-!!   magnetic_induction   [i_induction]:
-!!                         magneitic induction \nabla \times (u \times B)
-!!
 !!   div_m_flux   [i_m_flux]:  momentum flux  \partial_{j} (u_{i} u_{j})
 !!   div_maxwell_t [i_maxwell]:  maxwell tensor
 !!                                  \partial_{j} (B_{i} B_{j})

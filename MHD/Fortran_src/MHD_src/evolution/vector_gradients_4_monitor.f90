@@ -220,7 +220,7 @@
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-      if (iphys%i_induction .gt. izero                                  &
+      if (iphys%forces%i_induction .gt. izero                           &
      &      .and. cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &             write(*,*) 'lead  ', trim(magnetic_induction%name)
@@ -265,7 +265,8 @@
 !
       if (iphys%i_me_gen .gt. izero) then
         call cal_phys_dot_product                                       &
-     &     (iphys%i_induction, iphys%i_magne, iphys%i_me_gen, nod_fld)
+     &     (iphys%forces%i_induction, iphys%i_magne,                    &
+     &      iphys%i_me_gen, nod_fld)
       end if
 !$omp end parallel
 !

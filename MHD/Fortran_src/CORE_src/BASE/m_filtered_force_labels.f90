@@ -30,7 +30,7 @@
 !!   filtered_buoyancy             [force_by_filter%i_buoyancy]
 !!   filtered_comp_buoyancy        [force_by_filter%i_comp_buo]
 !!
-!!   vecp_induction_by_filtered    [force_by_filter%i_induction]
+!!   vecp_induction_by_filtered    [force_by_filter%i_vp_induct]
 !!   magnetic_stretch_by_filtered  [force_by_filter%i_mag_stretch]
 !!
 !!   heat_advect_by_filtered       [force_by_filter%i_h_advect]
@@ -265,7 +265,7 @@
           force_by_filter%i_comp_buo =   i_phys
 !
         else if(field_name .eq. vecp_induction_by_filtered%name) then
-          force_by_filter%i_induction =    i_phys
+          force_by_filter%i_vp_induct =    i_phys
         else if(field_name .eq. magnetic_stretch_by_filtered%name) then
           force_by_filter%i_mag_stretch =  i_phys
 !

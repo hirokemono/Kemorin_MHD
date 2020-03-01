@@ -105,7 +105,7 @@
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !
 !
-      if (i_field .eq. iphys%i_induction) then
+      if (i_field .eq. iphys%forces%i_induction) then
         call int_vol_mag_induct_pg(node, ele, cd_prop,                  &
      &      g_FEM, jac_3d, rhs_tbl, nod_fld, iphys, iphys_ele,          &
      &      conduct%istack_ele_fld_smp, num_int,                        &
@@ -173,7 +173,7 @@
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !
 !
-      if (i_field .eq. iphys%i_induction) then
+      if (i_field .eq. iphys%forces%i_induction) then
         call int_vol_mag_induct_upm(node, ele, cd_prop,                 &
      &      g_FEM, jac_3d, rhs_tbl, nod_fld, iphys, iphys_ele,          &
      &      conduct%istack_ele_fld_smp, num_int, dt,                    &

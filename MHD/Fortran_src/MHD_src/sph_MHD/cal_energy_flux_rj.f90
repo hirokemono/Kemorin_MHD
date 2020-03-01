@@ -99,7 +99,7 @@
 !
       if(ipol%i_mag_induct_w_sgs .gt. 0) then
         call add_2_nod_vectors                                          &
-     &     (rj_fld, ipol%i_induction, ipol%i_SGS_induction,             &
+     &     (rj_fld, ipol%forces%i_induction, ipol%i_SGS_induction,      &
      &      ipol%i_mag_induct_w_sgs)
       end if
 !

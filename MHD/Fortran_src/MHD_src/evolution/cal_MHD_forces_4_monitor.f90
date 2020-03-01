@@ -318,7 +318,7 @@
       do i = 1, nod_fld%num_phys
         i_fld = nod_fld%istack_component(i-1) + 1
         if(     i_fld .eq. iphys%i_induct_div                           &
-     &     .or. (i_fld.eq.iphys%i_induction                             &
+     &     .or. (i_fld.eq.iphys%forces%i_induction                      &
      &      .and. cd_prop%iflag_Bevo_scheme.gt.id_no_evolution)) then
           if(iflag_debug .ge. iflag_routine_msg)                        &
      &             write(*,*) 'lead  ', trim(nod_fld%phys_name(i))

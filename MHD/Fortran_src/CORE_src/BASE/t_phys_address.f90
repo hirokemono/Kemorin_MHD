@@ -256,9 +256,6 @@
 !>        start address for compositional buoyancy
 !!         @f$ -\alpha_{C} g_{i} C @f$
         integer (kind=kint) :: i_comp_buo =        izero
-!>        start address for magnetic induction
-!!         @f$ e_{ijk} \partial_{j}\left(e_{klm}u_{l}B_{m} \right)@f$
-        integer (kind=kint) :: i_induction =       izero
 !
 !>        start address for SGS heat flux
 !!         @f$ \overline{u_{i}T} - \bar{u}_{i}\bar{T} @f$

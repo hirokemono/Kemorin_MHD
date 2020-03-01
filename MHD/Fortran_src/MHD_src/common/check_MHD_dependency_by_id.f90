@@ -189,16 +189,6 @@
      &       (fld, i_start, iphys%i_velo, fhd_velo)
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_temp, fhd_temp)
-        else if(i_start .eq. iphys%i_induction) then 
-          if (cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
-            call check_missing_field                                    &
-     &       (fld, i_start, iphys%i_velo, fhd_velo)
-            call check_missing_field                                    &
-     &       (fld, i_start, iphys%i_magne, fhd_magne)
-          else
-            call check_missing_field                                    &
-     &       (fld, i_start, iphys%forces%i_vp_induct, vecp_induction%name)
-          end if
         else if(i_start .eq. iphys%i_SGS_induction) then 
           if (cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
             call check_missing_field                                    &
@@ -218,7 +208,7 @@
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_magne, fhd_magne)
           call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_induction, magnetic_induction%name)
+     &       (fld, i_start, iphys%forces%i_induction, magnetic_induction%name)
         else if(i_start .eq. iphys%i_m_tension_wk) then 
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_velo, fhd_velo)
@@ -477,7 +467,7 @@
      &       (fld, i_start, iphys%i_SGS_vp_induct, fhd_SGS_vp_induct)
         else if(i_start .eq. iphys%i_mag_induct_w_sgs) then 
           call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_induction, magnetic_induction%name)
+     &       (fld, i_start, iphys%forces%i_induction, magnetic_induction%name)
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_SGS_induction, fhd_SGS_induction)
         else if(i_start .eq. iphys%i_mom_flux_w_sgs) then 

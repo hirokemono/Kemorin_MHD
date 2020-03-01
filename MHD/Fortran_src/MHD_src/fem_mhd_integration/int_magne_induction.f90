@@ -83,11 +83,12 @@
 !     &   f_l%ff, mlump_cd%ml, nod_fld%ntot_phys,                       &
 !     &   iphys%i_magne, nod_fld%d_fld)
       call cal_ff_smp_2_vector(node, rhs_tbl, f_nl%ff_smp, mlump_cd%ml, &
-     &    nod_fld%ntot_phys, iphys%i_induction, nod_fld%d_fld)
+     &    nod_fld%ntot_phys, iphys%forces%i_induction, nod_fld%d_fld)
 !
 !    communication
 !
-      call vector_send_recv(iphys%i_induction, nod_comm, nod_fld)
+      call vector_send_recv                                             &
+     &   (iphys%forces%i_induction, nod_comm, nod_fld)
 !
       end subroutine s_int_magne_induction
 !

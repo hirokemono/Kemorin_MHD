@@ -27,7 +27,7 @@
 !!   div_filtered_buoyancy             [div_frc_by_filter%i_buoyancy]
 !!   div_filtered_comp_buoyancy        [div_frc_by_filter%i_comp_buo]
 !!
-!!   div_vecp_induction_by_filtered    [div_frc_by_filter%i_induction]
+!!   div_vecp_induction_by_filtered    [div_frc_by_filter%i_vp_induct]
 !!
 !!   div_m_flux_by_filtered            [div_frc_by_filter%i_m_flux]
 !!   div_maxwell_t_by_filtered         [div_frc_by_filter%i_maxwell]
@@ -219,7 +219,7 @@
 !
         else if (field_name .eq. div_vecp_induction_by_filtered%name)   &
      &   then
-          div_frc_by_filter%i_induction =  i_phys
+          div_frc_by_filter%i_vp_induct =  i_phys
 !
         else if (field_name .eq. div_h_flux_by_filtered%name) then
           div_frc_by_filter%i_h_flux =    i_phys

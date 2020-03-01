@@ -149,8 +149,9 @@
      &    b_trns%i_press_grad, trns_back)
       call add_field_name_4_sph_trns_snap                               &
      &   (magnetic_induction%name, magnetic_induction%n_comp,           &
-     &    ipol%i_induction, itor%i_induction, iphys%i_induction,        &
-     &    b_trns%i_induction, trns_back)
+     &    ipol%forces%i_induction, itor%forces%i_induction,             &
+     &    iphys%forces%i_induction, b_trns%forces%i_induction,          &
+     &    trns_back)
 !
       call add_field_name_4_sph_trns_snap                               &
      &   (grad_temp%name, grad_temp%n_comp,                             &
