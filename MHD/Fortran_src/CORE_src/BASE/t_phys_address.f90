@@ -253,9 +253,6 @@
 !>        start address for buoyancy
 !!         @f$ -\alpha_{T} g_{i} T @f$
         integer (kind=kint) :: i_buoyancy =        izero
-!>        start address for compositional buoyancy
-!!         @f$ -\alpha_{C} g_{i} C @f$
-        integer (kind=kint) :: i_comp_buo =        izero
 !
 !>        start address for SGS heat flux
 !!         @f$ \overline{u_{i}T} - \bar{u}_{i}\bar{T} @f$

@@ -151,7 +151,7 @@
      &     (node, ele, g_FEM, jac_3d, fl_prop, rhs_tbl, nod_fld,        &
      &      fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,         &
      &      iphys%i_temp, ak_MHD%ak_buo, fem_wk, f_nl)
-      else if(i_field .eq. iphys%i_comp_buo) then
+      else if(i_field .eq. iphys%forces%i_comp_buo) then
         call int_vol_buoyancy_pg                                        &
      &     (node, ele, g_FEM, jac_3d, fl_prop, rhs_tbl, nod_fld,        &
      &      fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,         &
@@ -311,7 +311,7 @@
      &      fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int, dt,     &
      &      iphys%i_temp, ak_MHD%ak_buo, ele_fld%ntot_phys,             &
      &      iv_upw, ele_fld%d_fld, fem_wk, f_nl)
-      else if(i_field .eq. iphys%i_comp_buo) then
+      else if(i_field .eq. iphys%forces%i_comp_buo) then
         call int_vol_buoyancy_upw                                       &
      &     (node, ele, g_FEM, jac_3d, fl_prop, rhs_tbl, nod_fld,        &
      &      fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int, dt,     &

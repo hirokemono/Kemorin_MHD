@@ -101,8 +101,8 @@
      &    b_trns%i_buoyancy, trns_back)
       call add_field_name_4_sph_trns_snap                               &
      &   (composite_buoyancy%name, composite_buoyancy%n_comp,           &
-     &    ipol%i_comp_buo, itor%i_comp_buo, iphys%i_comp_buo,           &
-     &    b_trns%i_comp_buo, trns_back)
+     &    ipol%forces%i_comp_buo, itor%forces%i_comp_buo,               &
+     &    iphys%forces%i_comp_buo, b_trns%forces%i_comp_buo, trns_back)
 !
       call add_field_name_4_sph_trns_snap(fhd_geostrophic, n_vector,    &
      &    ipol%i_geostrophic, itor%i_geostrophic, iphys%i_geostrophic,  &

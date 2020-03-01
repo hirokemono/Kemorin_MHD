@@ -298,7 +298,7 @@
      &     .or. i_fld .eq. iphys%i_m_tension                            &
      &     .or. i_fld .eq. iphys%i_lorentz                              &
      &     .or. i_fld .eq. iphys%i_buoyancy                             &
-     &     .or. i_fld .eq. iphys%i_comp_buo                             &
+     &     .or. i_fld .eq. iphys%forces%i_comp_buo                      &
      &     .or. i_fld .eq. iphys%force_by_filter%i_buoyancy             &
      &     .or. i_fld .eq. iphys%force_by_filter%i_comp_buo             &
      &     .or. i_fld .eq. iphys%i_coriolis) then

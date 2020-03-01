@@ -211,8 +211,6 @@
           iphys%i_coriolis =    i0
         else if (field_name(i) .eq. buoyancy%name) then
           iphys%i_buoyancy =    i0
-        else if (field_name(i) .eq. composite_buoyancy%name) then
-          iphys%i_comp_buo =    i0
         end if
 !
         call set_base_force_addresses                                   &

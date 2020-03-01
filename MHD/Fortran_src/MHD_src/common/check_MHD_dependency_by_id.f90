@@ -114,7 +114,6 @@
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_temp, fhd_temp)
         else if(i_start .eq. iphys%i_filter_comp                        &
-     &     .or. i_start .eq. iphys%i_comp_buo                           &
      &     .or. i_start .eq. iphys%i_c_diffuse                          &
      &     .or. i_start .eq. iphys%i_square_c                           &
      &     .or. i_start .eq. iphys%i_light_source) then 
