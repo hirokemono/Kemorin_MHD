@@ -256,7 +256,7 @@
         if ( field_name(i) .eq. SGS_temp_flux_gen%name ) then
           iphys%i_SGS_temp_gen =     i0
         else if ( field_name(i) .eq. SGS_mag_induction_flux%name ) then
-          iphys%i_SGS_me_gen =       i0
+          iphys%SGS_ene_flux%i_SGS_me_gen =       i0
         else if ( field_name(i) .eq. SGS_Lorentz_work%name ) then
           iphys%SGS_ene_flux%i_SGS_Lor_wk =       i0
         else if ( field_name(i) .eq. Reynolds_work%name ) then

@@ -385,10 +385,10 @@
      &      iphys%SGS_ene_flux%i_SGS_Lor_wk, nod_fld)
       end if
 !
-      if (iphys%i_SGS_me_gen .gt. 0) then
+      if (iphys%SGS_ene_flux%i_SGS_me_gen .gt. 0) then
         call cal_phys_dot_product                                       &
      &     (iphys%i_magne, iphys%rot_SGS%i_SGS_induction,               &
-     &      iphys%i_SGS_me_gen, nod_fld)
+     &      iphys%SGS_ene_flux%i_SGS_me_gen, nod_fld)
       end if
 !$omp end parallel
 !

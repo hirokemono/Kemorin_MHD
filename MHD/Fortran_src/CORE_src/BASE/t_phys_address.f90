@@ -342,8 +342,6 @@
 !
 !>        start address for temperature generation by SGS heat flux
         integer (kind=kint) :: i_SGS_temp_gen =    izero
-!>        start address for energy flux of SGS induction
-        integer (kind=kint) :: i_SGS_me_gen =      izero
 !
 !>        Field address for geostrophic balance
 !!         @f$ -2 e_{ijk} \Omega_{j} u_{k} + \partial_{i} p @f$
