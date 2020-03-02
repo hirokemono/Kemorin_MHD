@@ -103,11 +103,12 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      if( (ipol%i_SGS_inertia*ipol%i_SGS_rot_inertia) .gt. 0) then
+      if(ipol%i_SGS_rot_inertia .gt. 0) then
         if (iflag_debug .gt. 0) write(*,*) 'take rotation of advection'
         call const_sph_force_rot2(sph_rj, r_2nd,                        &
      &      sph_bc_U, fdm2_free_ICB, fdm2_free_CMB, g_sph_rj,           &
-     &      ipol%i_SGS_inertia, ipol%i_SGS_rot_inertia, rj_fld)
+     &      ipol%SGS_term%i_SGS_inertia, ipol%i_SGS_rot_inertia,        &
+     &      rj_fld)
       end if
 !
       if( (ipol%i_SGS_Lorentz*ipol%i_SGS_rot_Lorentz) .gt. 0) then
@@ -136,10 +137,11 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      if( (ipol%i_SGS_inertia*ipol%i_div_inertia) .gt. 0) then
+      if(ipol%i_div_inertia .gt. 0) then
         call const_sph_div_force                                        &
      &     (sph_rj, r_2nd, sph_MHD_bc%sph_bc_U, g_sph_rj,               &
-     &      ipol%i_SGS_inertia, ipol%i_SGS_div_inertia, rj_fld)
+     &      ipol%SGS_term%i_SGS_inertia, ipol%i_SGS_div_inertia,        &
+     &      rj_fld)
       end if
 !
       if( (ipol%i_SGS_Lorentz*ipol%i_div_Lorentz) .gt. 0) then

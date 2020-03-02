@@ -76,10 +76,11 @@
      &    iphys%i_filter_current, b_trns%i_filter_current, trns_back)
 !
 !   filtered Inertia
-      call add_field_name_4_sph_trns                                    &
-     &   (ipol%i_SGS_inertia, SGS_inertia%name, SGS_inertia%n_comp,     &
-     &    ipol%i_SGS_inertia, itor%i_SGS_inertia,                       &
-     &    iphys%i_SGS_inertia, b_trns%i_SGS_inertia, trns_back)
+      call add_field_name_4_sph_trns(ipol%SGS_term%i_SGS_inertia,       &
+     &    SGS_inertia%name, SGS_inertia%n_comp,                         &
+     &    ipol%SGS_term%i_SGS_inertia, itor%SGS_term%i_SGS_inertia,     &
+     &    iphys%SGS_term%i_SGS_inertia, b_trns%SGS_term%i_SGS_inertia,  &
+     &    trns_back)
 !   filtered Lorentz force
       call add_field_name_4_sph_trns                                    &
      &   (ipol%i_SGS_Lorentz, SGS_Lorentz%name, SGS_Lorentz%n_comp,     &

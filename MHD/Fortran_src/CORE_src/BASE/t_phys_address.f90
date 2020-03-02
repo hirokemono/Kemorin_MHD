@@ -237,8 +237,6 @@
 !!         @f$ \partial_{i} \left(e_{ijk} u_{j} B_{k} \right) @f$
         integer (kind=kint) :: i_induct_div =      izero
 !
-!>        start address for SGS inertia term
-        integer (kind=kint) :: i_SGS_inertia =    izero
 !>        start address for divergence of SGS Maxwell tensor
 !!         @f$ \partial_{i} \left( \overline{B_{i}B_{j}} - \bar{B}_{i}\bar{B}_{j} \right) @f$
         integer (kind=kint) :: i_SGS_Lorentz =     izero

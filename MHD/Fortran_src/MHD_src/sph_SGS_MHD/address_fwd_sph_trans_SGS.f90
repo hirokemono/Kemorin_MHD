@@ -45,10 +45,11 @@
 !
 !
 !   SGS advection flag
-      call add_field_name_4_sph_trns                                    &
-     &   (ipol%i_SGS_inertia, SGS_inertia%name, SGS_inertia%n_comp,     &
-     &    ipol%i_SGS_inertia, itor%i_SGS_inertia, iphys%i_SGS_inertia,  &
-     &    f_trns%i_SGS_inertia, trns_fwd)
+      call add_field_name_4_sph_trns(ipol%SGS_term%i_SGS_inertia,       &
+     &    SGS_inertia%name, SGS_inertia%n_comp,                         &
+     &    ipol%SGS_term%i_SGS_inertia, itor%SGS_term%i_SGS_inertia,     &
+     &    iphys%SGS_term%i_SGS_inertia, f_trns%SGS_term%i_SGS_inertia,  &
+     &    trns_fwd)
 !   SGS Lorentz force flag
       call add_field_name_4_sph_trns                                    &
      &   (ipol%i_SGS_Lorentz, SGS_Lorentz%name, SGS_Lorentz%n_comp,     &

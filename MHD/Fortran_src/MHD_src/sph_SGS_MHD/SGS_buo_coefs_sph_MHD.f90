@@ -115,19 +115,19 @@
         call sel_product_double_buo_coefs                               &
      &     (sph_rtp, sph_d_grp, wk_sgs%num_kinds,                       &
      &      ifld_sgs%i_buoyancy, ifld_sgs%i_comp_buoyancy,              &
-     &      wk_sgs%fld_coef, trns_f_SGS%ncomp, fg_trns%i_SGS_inertia,   &
-     &      trns_f_SGS%fld_rtp)
+     &      wk_sgs%fld_coef, trns_f_SGS%ncomp,                          &
+     &      fg_trns%SGS_term%i_SGS_inertia, trns_f_SGS%fld_rtp)
       else if(ifld_sgs%i_buoyancy .gt. 0) then
         call sel_product_single_buo_coefs                               &
      &     (sph_rtp, sph_d_grp, wk_sgs%num_kinds,                       &
      &      ifld_sgs%i_buoyancy, wk_sgs%fld_coef,                       &
-     &      trns_f_SGS%ncomp, fg_trns%i_SGS_inertia,                    &
+     &      trns_f_SGS%ncomp, fg_trns%SGS_term%i_SGS_inertia,           &
      &      trns_f_SGS%fld_rtp)
       else if(ifld_sgs%i_comp_buoyancy .gt. 0) then
         call sel_product_single_buo_coefs                               &
      &     (sph_rtp, sph_d_grp, wk_sgs%num_kinds,                       &
      &      ifld_sgs%i_comp_buoyancy, wk_sgs%fld_coef,                  &
-     &      trns_f_SGS%ncomp, fg_trns%i_SGS_inertia,                    &
+     &      trns_f_SGS%ncomp, fg_trns%SGS_term%i_SGS_inertia,           &
      &      trns_f_SGS%fld_rtp)
       end if
 !
@@ -182,11 +182,11 @@
 !
       if(iflag_FFT .eq. iflag_FFTW) then
         call prod_sgl_radial_buo_coefs_pin(sph_rtp%nidx_rtp, sgs_c,     &
-     &      fg_trns%i_SGS_inertia, sph_rtp%nnod_rtp,                    &
+     &      fg_trns%SGS_term%i_SGS_inertia, sph_rtp%nnod_rtp,           &
      &      trns_f_SGS%ncomp, trns_f_SGS%fld_rtp)
       else
         call prod_sgl_radial_buo_coefs_pout(sph_rtp%nidx_rtp, sgs_c,    &
-     &      fg_trns%i_SGS_inertia, sph_rtp%nnod_rtp,                    &
+     &      fg_trns%SGS_term%i_SGS_inertia, sph_rtp%nnod_rtp,           &
      &      trns_f_SGS%ncomp, trns_f_SGS%fld_rtp)
       end if
 !
@@ -209,11 +209,11 @@
 !
       if(iflag_FFT .eq. iflag_FFTW) then
         call prod_dbl_radial_buo_coefs_pin(sph_rtp%nidx_rtp, sgs_c,     &
-     &      fg_trns%i_SGS_inertia, sph_rtp%nnod_rtp,                    &
+     &      fg_trns%SGS_term%i_SGS_inertia, sph_rtp%nnod_rtp,           &
      &      trns_f_SGS%ncomp, trns_f_SGS%fld_rtp)
       else
         call prod_dbl_radial_buo_coefs_pout(sph_rtp%nidx_rtp, sgs_c,    &
-     &      fg_trns%i_SGS_inertia, sph_rtp%nnod_rtp,                    &
+     &      fg_trns%SGS_term%i_SGS_inertia, sph_rtp%nnod_rtp,           &
      &      trns_f_SGS%ncomp, trns_f_SGS%fld_rtp)
       end if
 !
