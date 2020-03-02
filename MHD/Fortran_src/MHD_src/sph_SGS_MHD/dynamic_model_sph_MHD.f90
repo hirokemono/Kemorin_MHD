@@ -155,7 +155,7 @@
      &     (sph_rtp, dynamic_SPH%sph_d_grp, stab_weight,                &
      &      trns_Csim%forward%fld_rtp, trns_Csim%forward%ncomp,         &
      &      trns_Csim%f_trns%SGS_ene_flux%i_reynolds_wk,                &
-     &      trns_Csim%f_trns%i_SGS_buo_wk,                              &
+     &      trns_Csim%f_trns%SGS_ene_flux%i_SGS_buo_wk,                 &
      &      dynamic_SPH%ifld_sgs%i_buoyancy,                            &
      &      dynamic_SPH%icomp_sgs%i_buoyancy, dynamic_SPH%wk_sgs)
       end if

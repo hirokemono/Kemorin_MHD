@@ -392,12 +392,13 @@
       end if
 !$omp end parallel
 !
-      if (iphys%i_SGS_buo_wk .gt. 0) then
+      if (iphys%SGS_ene_flux%i_SGS_buo_wk .gt. 0) then
         if(iflag_debug.gt.0) write(*,*)                                 &
      &        'lead ', trim(SGS_buoyancy_flux%name)
         call cal_SGS_gravity_flux                                       &
      &     (node, fl_prop%i_grav, fl_prop%coef_buo, fl_prop%grav,       &
-     &      iphys%SGS_term%i_SGS_h_flux, iphys%i_SGS_buo_wk, nod_fld)
+     &      iphys%SGS_term%i_SGS_h_flux,                                &
+     &      iphys%SGS_ene_flux%i_SGS_buo_wk, nod_fld)
       end if
 !
       if (iphys%i_SGS_comp_buo_wk .gt. 0) then

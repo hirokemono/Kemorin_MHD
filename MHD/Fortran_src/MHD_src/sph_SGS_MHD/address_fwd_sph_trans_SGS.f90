@@ -95,10 +95,12 @@
      &    iphys%SGS_ene_flux%i_reynolds_wk,                             &
      &    f_trns%SGS_ene_flux%i_reynolds_wk, trns_fwd)
 !   work of SGS buoyancy
-      call add_field_name_4_sph_trns(ipol%i_SGS_buo_wk,                 &
+      call add_field_name_4_sph_trns(ipol%SGS_ene_flux%i_SGS_buo_wk,    &
      &    SGS_buoyancy_flux%name, SGS_buoyancy_flux%n_comp,             &
-     &    ipol%i_SGS_buo_wk, itor%i_SGS_buo_wk,                         &
-     &    iphys%i_SGS_buo_wk, f_trns%i_SGS_buo_wk, trns_fwd)
+     &    ipol%SGS_ene_flux%i_SGS_buo_wk,                               &
+     &    itor%SGS_ene_flux%i_SGS_buo_wk,                               &
+     &    iphys%SGS_ene_flux%i_SGS_buo_wk,                              &
+     &    f_trns%SGS_ene_flux%i_SGS_buo_wk, trns_fwd)
 !   work of SGS compositional buoyancy
       call add_field_name_4_sph_trns(ipol%i_SGS_comp_buo_wk,            &
      &   SGS_comp_buoyancy_flux%name, SGS_comp_buoyancy_flux%n_comp,    &
