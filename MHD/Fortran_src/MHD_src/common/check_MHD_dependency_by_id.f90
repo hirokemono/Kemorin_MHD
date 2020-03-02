@@ -365,8 +365,7 @@
           call check_missing_field                                      &
      &       (fld, i_start, iphys%SGS_term%i_SGS_c_flux, SGS_composit_flux%name)
 !
-        else if(i_start .eq. iphys%i_SGS_buoyancy                       &
-     &     .or. i_start .eq. iphys%i_SGS_buo_wk) then 
+        else if(i_start .eq. iphys%i_SGS_buo_wk) then 
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_velo, fhd_velo)
           call check_missing_field                                      &

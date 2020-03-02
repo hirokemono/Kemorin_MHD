@@ -326,8 +326,6 @@
 !!         @f$e_{ijk}\left(\overline{u_{j}B_{k}} - \bar{u}_{j}\bar{B}_{k} \right) @f$
         integer (kind=kint) :: i_SGS_vp_induct =   izero
 !
-!>        start address for SGS buoyancy
-        integer (kind=kint) :: i_SGS_buoyancy =   izero
 !>        start address for SGS compositional buoyancy
         integer (kind=kint) :: i_SGS_comp_buo =   izero
 !
