@@ -344,8 +344,6 @@
         integer (kind=kint) :: i_SGS_temp_gen =    izero
 !>        start address for energy flux of SGS induction
         integer (kind=kint) :: i_SGS_me_gen =      izero
-!>        start address for work of SGS Lorentz force
-        integer (kind=kint) :: i_SGS_Lor_wk =      izero
 !
 !>        start address for work of SGS buoyancy
         integer (kind=kint) :: i_SGS_buo_wk =      izero

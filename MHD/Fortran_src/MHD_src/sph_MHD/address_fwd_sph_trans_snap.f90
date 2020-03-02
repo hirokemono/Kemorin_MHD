@@ -143,8 +143,10 @@
 !
       call add_field_name_4_sph_trns_snap                               &
      &   (SGS_Lorentz_work%name, SGS_Lorentz_work%n_comp,               &
-     &    ipol%i_SGS_Lor_wk, itor%i_SGS_Lor_wk, iphys%i_SGS_Lor_wk,     &
-     &    f_trns%i_SGS_Lor_wk, trns_fwd)
+     &    ipol%SGS_ene_flux%i_SGS_Lor_wk,                               &
+     &    itor%SGS_ene_flux%i_SGS_Lor_wk,                               &
+     &    iphys%SGS_ene_flux%i_SGS_Lor_wk,                              &
+     &    f_trns%SGS_ene_flux%i_SGS_Lor_wk, trns_fwd)
       call add_field_name_4_sph_trns_snap                               &
      &   (SGS_mag_induction_flux%name, SGS_mag_induction_flux%n_comp,   &
      &    ipol%i_SGS_me_gen, itor%i_SGS_me_gen, iphys%i_SGS_me_gen,     &
