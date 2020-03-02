@@ -277,13 +277,12 @@
       character(len = kchara), intent(in) :: field_name
 !
 !
-      check_base_vector = .FALSE.
-      if (    (field_name .eq. fhd_velo)                                &
+      check_base_vector                                                 &
+     &   =    (field_name .eq. fhd_velo)                                &
      &   .or. (field_name .eq. fhd_vort)                                &
      &   .or. (field_name .eq. fhd_magne)                               &
      &   .or. (field_name .eq. fhd_vecp)                                &
-     &   .or. (field_name .eq. fhd_current)                             &
-     &      )   check_base_vector = .TRUE.
+     &   .or. (field_name .eq. fhd_current)
 !
       end function check_base_vector
 !
@@ -294,8 +293,8 @@
       character(len = kchara), intent(in) :: field_name
 !
 !
-      check_base_scalar = .FALSE.
-      if (    (field_name .eq. fhd_press)                               &
+      check_base_scalar                                                 &
+     &   =    (field_name .eq. fhd_press)                               &
      &   .or. (field_name .eq. fhd_mag_potential)                       &
      &   .or. (field_name .eq. fhd_scalar_potential)                    &
 !
@@ -317,8 +316,7 @@
 !
      &   .or. (field_name .eq. fhd_heat_source)                         &
      &   .or. (field_name .eq. fhd_light_source)                        &
-     &   .or. (field_name .eq. fhd_entropy_source)                      &
-     &      )   check_base_scalar = .TRUE.
+     &   .or. (field_name .eq. fhd_entropy_source)
 !
       end function check_base_scalar
 !

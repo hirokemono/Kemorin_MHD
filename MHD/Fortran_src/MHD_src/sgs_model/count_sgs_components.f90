@@ -213,7 +213,7 @@
          if (SGS_param%iflag_SGS_m_flux .ne. id_SGS_none) then
            icomp_sgs%i_mom_flux = i
            ifld_sgs%i_mom_flux =  j
-           wk_sgs%name(j) = fhd_SGS_m_flux
+           wk_sgs%name(j) = SGS_momentum_flux%name
            sgs_coefs%num_comps(j) = 6
            i = i + sgs_coefs%num_comps(j)
            j = j + 1

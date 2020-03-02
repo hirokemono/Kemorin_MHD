@@ -304,9 +304,9 @@
      &        fhd_SGS_h_flux, lab(1) )
           call write_vector_label(file_id, lab(1))
 !
-        else if ( wk_sgs%name(i) .eq. fhd_SGS_m_flux ) then
+        else if ( wk_sgs%name(i) .eq. SGS_momentum_flux%name ) then
           call sel_coord_tensor_comp_labels(icoord_Csim,                &
-     &        fhd_SGS_m_flux, lab(1) )
+     &        SGS_momentum_flux%name, lab(1) )
           call write_sym_tensor_label(file_id, lab(1))
 !
         else if ( wk_sgs%name(i) .eq. fhd_SGS_maxwell_t ) then
@@ -378,7 +378,7 @@
      &         'composition_x, composition_y, composition_z, '
         else if ( wk_diff%name(i) .eq. fhd_SGS_h_flux ) then
           write(file_id,'(a)') 'SGS_hf_x, SGS_hf_y, SGS_hf_z, '
-        else if ( wk_diff%name(i) .eq. fhd_SGS_m_flux ) then
+        else if ( wk_diff%name(i) .eq. SGS_momentum_flux%name ) then
           write(file_id,'(a)') 'SGS_mf_xx, SGS_mf_xy, SGS_mf_xz, '
           write(file_id,'(a)') 'SGS_mf_yx, SGS_mf_yy, SGS_mf_yz, '
           write(file_id,'(a)') 'SGS_mf_zx, SGS_mf_yz, SGS_mf_zz, '

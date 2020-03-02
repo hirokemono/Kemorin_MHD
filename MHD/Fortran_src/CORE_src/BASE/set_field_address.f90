@@ -208,7 +208,7 @@
           iphys%i_SGS_h_flux =   i0
         else if ( field_name(i) .eq. fhd_SGS_c_flux ) then
           iphys%i_SGS_c_flux =   i0
-        else if ( field_name(i) .eq. fhd_SGS_m_flux ) then
+        else if ( field_name(i) .eq. SGS_momentum_flux%name ) then
           iphys%i_SGS_m_flux =   i0
         else if ( field_name(i) .eq. fhd_SGS_maxwell_t ) then
           iphys%i_SGS_maxwell =  i0

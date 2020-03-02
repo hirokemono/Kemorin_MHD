@@ -351,7 +351,7 @@
      &       (fld, i_start, iphys%i_SGS_induction, fhd_SGS_induction)
         else if(i_start .eq. iphys%i_SGS_div_m_flux) then
           call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_SGS_m_flux, fhd_SGS_m_flux)
+     &       (fld, i_start, iphys%i_SGS_m_flux, SGS_momentum_flux%name)
         else if(i_start .eq. iphys%i_SGS_Lorentz                        &
      &     .or. i_start .eq. iphys%i_wide_SGS_Lorentz) then
           call check_missing_field                                      &
@@ -465,7 +465,7 @@
           call check_missing_field                                      &
      &       (fld, i_start, iphys%forces%i_m_flux, momentum_flux%name)
           call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_SGS_m_flux, fhd_SGS_m_flux)
+     &       (fld, i_start, iphys%i_SGS_m_flux, SGS_momentum_flux%name)
         else if(i_start .eq. iphys%i_maxwell_t_w_sgs) then 
           call check_missing_field                                      &
      &       (fld, i_start, iphys%forces%i_maxwell, maxwell_tensor%name)

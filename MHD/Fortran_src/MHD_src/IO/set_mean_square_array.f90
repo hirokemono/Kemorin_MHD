@@ -336,7 +336,7 @@
      &          i_rms%i_c_diffuse, j_ave%i_c_diffuse, msq_list)
           end if
 !
-          if ( field_name .eq. fhd_SGS_m_flux ) then
+          if ( field_name .eq. SGS_momentum_flux%name ) then
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_SGS_m_flux,              &
      &          i_rms%i_SGS_m_flux, j_ave%i_SGS_m_flux, msq_list)

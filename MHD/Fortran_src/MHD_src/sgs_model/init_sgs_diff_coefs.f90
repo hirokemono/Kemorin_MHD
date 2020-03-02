@@ -249,7 +249,7 @@
            if (cmt_param%iflag_c_mf .eq. id_SGS_commute_ON) then
              icomp_diff%i_mom_flux = id
              ifld_diff%i_mom_flux = jd
-             wk_diff%name(jd) = fhd_SGS_m_flux
+             wk_diff%name(jd) = SGS_momentum_flux%name
              diff_coefs%num_comps(jd) = 9
              id = id + diff_coefs%num_comps(jd)
              jd = jd + 1

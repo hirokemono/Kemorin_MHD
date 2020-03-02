@@ -12,6 +12,12 @@
 !!      subroutine set_gradient_field_labels_f                          &
 !!     &         (n_comps_c, field_name_c, field_math_c) bind(c)
 !!
+!!      integer(c_int) function num_SGS_terms_f()                       &
+!!     &              bind(c, name="num_SGS_terms_f")
+!!      subroutine set_SGS_term_labels_f                                &
+!!     &         (n_comps_c, field_name_c, field_math_c)                &
+!!     &          bind(c, name="set_SGS_term_labels_f")
+!!
 !!      integer(c_int) function num_div_filter_fields_f() bind(c)
 !!      subroutine set_div_filter_field_labels_f                        &
 !!     &         (n_comps_c, field_name_c, field_math_c) bind(c)
@@ -174,6 +180,35 @@
      &   (n_comps_c(1), field_name_c(1), field_math_c(1))
 !
       end subroutine set_gradient_field_labels_f
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      integer(c_int) function num_SGS_terms_f()                         &
+     &              bind(c, name="num_SGS_terms_f")
+!
+      use t_SGS_term_labels
+!
+      num_SGS_terms_f = num_SGS_terms()
+      return
+      end function num_SGS_terms_f
+!
+! ----------------------------------------------------------------------
+!
+      subroutine set_SGS_term_labels_f                                  &
+     &         (n_comps_c, field_name_c, field_math_c)                  &
+     &          bind(c, name="set_SGS_term_labels_f")
+!
+      use t_SGS_term_labels
+!
+      integer(c_int), intent(inout) :: n_comps_c(*)
+      character(C_CHAR), intent(inout) :: field_name_c(*)
+      character(C_CHAR), intent(inout) :: field_math_c(*)
+!
+      call set_SGS_term_labels                                          &
+     &   (n_comps_c(1), field_name_c(1), field_math_c(1))
+!
+      end subroutine set_SGS_term_labels_f
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------

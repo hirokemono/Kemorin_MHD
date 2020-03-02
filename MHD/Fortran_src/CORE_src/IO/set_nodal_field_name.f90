@@ -344,7 +344,7 @@
 !
       if (iflag .gt. 0) return
 !
-       if (   (phys_nod_name_ctl .eq. fhd_SGS_m_flux     )              &
+       if (   (phys_nod_name_ctl .eq. SGS_momentum_flux%name     )              &
      &   .or. (phys_nod_name_ctl .eq. fhd_SGS_maxwell_t  )              &
      &   .or. (phys_nod_name_ctl .eq. fhd_mom_flux_w_sgs )              &
      &   .or. (phys_nod_name_ctl .eq. fhd_maxwell_t_w_sgs)              &

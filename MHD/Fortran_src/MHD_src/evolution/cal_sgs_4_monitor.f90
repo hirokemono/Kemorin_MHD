@@ -164,7 +164,8 @@
       end if
 !
       if (iphys%i_SGS_m_flux .gt. 0) then
-        if(iflag_debug.gt.0) write(*,*) 'lead ', trim(fhd_SGS_m_flux)
+        if(iflag_debug.gt.0) write(*,*)                                 &
+     &      'lead ', trim(SGS_momentum_flux%name)
         call cal_sgs_momentum_flux                                      &
      &     (icomp_sgs%i_mom_flux, iphys_elediff%i_velo, dt,             &
      &      FEM_prm, SGS_param, filter_param, nod_comm, node, ele,      &
