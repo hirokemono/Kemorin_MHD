@@ -195,8 +195,8 @@
       if(fl_prop%iflag_4_composit_buo .gt. id_turn_OFF) then
         call cal_SGS_gravity_flux                                       &
      &     (node, fl_prop%i_grav, fl_prop%coef_comp_buo, fl_prop%grav,  &
-     &      iphys%SGS_term%i_SGS_c_flux, iphys%i_SGS_comp_buo_wk,       &
-     &      nod_fld)
+     &      iphys%SGS_term%i_SGS_c_flux,                                &
+     &      iphys%SGS_ene_flux%i_SGS_comp_buo_wk, nod_fld)
        end if
 !
 !   take RMS of SGS buoyancy flux and work of Reynolds stress
@@ -294,7 +294,7 @@
           call int_vol_rms_ave_ele_grps                                 &
      &       (node, ele, layer_tbl%e_grp, g_FEM, jac_3d_q, jac_3d_l,    &
      &        num_int, nod_fld%ntot_phys,                               &
-     &        iphys%i_SGS_comp_buo_wk, nod_fld%d_fld,                   &
+     &        iphys%SGS_ene_flux%i_SGS_comp_buo_wk, nod_fld%d_fld,      &
      &        sgs_l(1,3), sgs_l(1,6))
         end if
       else if(fl_prop%iflag_4_composit_buo .gt. id_turn_OFF) then
@@ -302,7 +302,7 @@
      &      g_FEM, jac_3d_q, jac_3d_l, num_int,                         &
      &      nod_fld%ntot_phys, iphys%SGS_ene_flux%i_reynolds_wk,        &
      &      nod_fld%d_fld, nod_fld%ntot_phys,                           &
-     &      iphys%i_SGS_comp_buo_wk, nod_fld%d_fld,                     &
+     &      iphys%SGS_ene_flux%i_SGS_comp_buo_wk, nod_fld%d_fld,        &
      &      sgs_l(1,1), sgs_l(1,4), sgs_l(1,3), sgs_l(1,6))
       end if
 !

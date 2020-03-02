@@ -345,10 +345,6 @@
 !>        start address for energy flux of SGS induction
         integer (kind=kint) :: i_SGS_me_gen =      izero
 !
-!>        start address for work of SGS compositional buoyancy
-        integer (kind=kint) :: i_SGS_comp_buo_wk = izero
-!
-!
 !>        Field address for geostrophic balance
 !!         @f$ -2 e_{ijk} \Omega_{j} u_{k} + \partial_{i} p @f$
       integer (kind=kint) :: i_geostrophic = izero

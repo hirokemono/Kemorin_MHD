@@ -264,7 +264,7 @@
         else if ( field_name(i) .eq. SGS_buoyancy_flux%name ) then
           iphys%SGS_ene_flux%i_SGS_buo_wk =       i0
         else if ( field_name(i) .eq. SGS_comp_buoyancy_flux%name ) then
-          iphys%i_SGS_comp_buo_wk =  i0
+          iphys%SGS_ene_flux%i_SGS_comp_buo_wk =  i0
 !
         else if ( field_name(i) .eq. fhd_geostrophic ) then
           iphys%i_geostrophic =  i0
