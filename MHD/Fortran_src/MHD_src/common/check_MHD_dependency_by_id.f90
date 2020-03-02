@@ -316,8 +316,7 @@
 !
       do i = 1, fld%num_phys
         i_start = fld%istack_component(i-1) + 1
-        if(     i_start .eq. iphys%i_SGS_rot_inertia                    &
-     &     .or. i_start .eq. iphys%i_dbl_SGS_inertia) then 
+        if(     i_start .eq. iphys%i_dbl_SGS_inertia) then 
           call check_missing_field                                      &
      &       (fld, i_start, iphys%SGS_term%i_SGS_inertia, SGS_inertia%name)
         else if(i_start .eq. iphys%i_wide_SGS_c_flux) then 

@@ -190,11 +190,11 @@
 !$omp do private (inod)
       do inod = ist, ied
         d_rj(inod,ipol%i_forces) = d_rj(inod,ipol%i_forces)             &
-     &                            - d_rj(inod,ipol%i_SGS_rot_inertia)   &
-     &                            + d_rj(inod,ipol%i_SGS_rot_Lorentz)
+     &                          - d_rj(inod,ipol%rot_SGS%i_SGS_inertia) &
+     &                          + d_rj(inod,ipol%i_SGS_rot_Lorentz)
         d_rj(inod,itor%i_forces) = d_rj(inod,itor%i_forces)             &
-     &                            - d_rj(inod,itor%i_SGS_rot_inertia)   &
-     &                            + d_rj(inod,itor%i_SGS_rot_Lorentz)
+     &                          - d_rj(inod,itor%rot_SGS%i_SGS_inertia) &
+     &                          + d_rj(inod,itor%i_SGS_rot_Lorentz)
       end do
 !$omp end do nowait
 !
@@ -308,9 +308,9 @@
 !$omp do private (inod)
       do inod = ist, ied
         d_rj(inod,ipol%i_forces) = d_rj(inod,ipol%i_forces)             &
-     &                            - d_rj(inod,ipol%i_SGS_rot_inertia)
+     &                          - d_rj(inod,ipol%rot_SGS%i_SGS_inertia)
         d_rj(inod,itor%i_forces) = d_rj(inod,itor%i_forces)             &
-     &                            - d_rj(inod,itor%i_SGS_rot_inertia)
+     &                          - d_rj(inod,itor%rot_SGS%i_SGS_inertia)
       end do
 !$omp end do nowait
 !

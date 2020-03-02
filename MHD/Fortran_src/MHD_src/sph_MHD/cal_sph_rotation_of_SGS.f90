@@ -103,11 +103,11 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      if(ipol%i_SGS_rot_inertia .gt. 0) then
+      if(ipol%rot_SGS%i_SGS_inertia .gt. 0) then
         if (iflag_debug .gt. 0) write(*,*) 'take rotation of advection'
         call const_sph_force_rot2(sph_rj, r_2nd,                        &
      &      sph_bc_U, fdm2_free_ICB, fdm2_free_CMB, g_sph_rj,           &
-     &      ipol%SGS_term%i_SGS_inertia, ipol%i_SGS_rot_inertia,        &
+     &      ipol%SGS_term%i_SGS_inertia, ipol%rot_SGS%i_SGS_inertia,    &
      &      rj_fld)
       end if
 !

@@ -239,8 +239,6 @@
         integer (kind=kint) :: i_induct_div =      izero
 !
 !>        start address for curl of SGS inertia term
-        integer (kind=kint) :: i_SGS_rot_inertia =    izero
-!>        start address for curl of SGS inertia term
         integer (kind=kint) :: i_SGS_rot_Lorentz =    izero
 !
 !

@@ -131,8 +131,8 @@
 !
       call add_field_name_4_sph_trns_snap                               &
      &   (rot_SGS_inertia%name, rot_SGS_inertia%n_comp,                 &
-     &    ipol%i_SGS_rot_inertia, itor%i_SGS_rot_inertia,               &
-     &    iphys%i_SGS_rot_inertia, b_trns%i_SGS_rot_inertia,            &
+     &    ipol%rot_SGS%i_SGS_inertia, itor%rot_SGS%i_SGS_inertia,       &
+     &    iphys%rot_SGS%i_SGS_inertia, b_trns%rot_SGS%i_SGS_inertia,    &
      &    trns_back)
       call add_field_name_4_sph_trns_snap                               &
      &   (rot_SGS_Lorentz%name, rot_SGS_Lorentz%n_comp,                 &

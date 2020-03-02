@@ -125,13 +125,13 @@
 !
 !
 !$omp parallel
-      if(ipol%i_SGS_rot_inertia  .ne. 0                                 &
+      if(ipol%rot_SGS%i_SGS_inertia  .ne. 0                             &
      &  .and.  ipol%i_SGS_rot_Lorentz .ne. 0) then
         call set_SGS_forces_to_div_force                                &
      &     (ipol, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       else
 !
-        if(ipol%i_SGS_rot_inertia .ne. id_turn_OFF) then
+        if(ipol%rot_SGS%i_SGS_inertia .ne. id_turn_OFF) then
           call add_term_to_div_force(ipol, ipol%i_div_inertia,          &
      &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         end if
@@ -298,8 +298,8 @@
 !$omp do private (inod)
       do inod = 1, nnod_rj
         d_rj(inod,ipol%i_press) =  d_rj(inod,ipol%i_press)              &
-     &                           - d_rj(inod,ipol%i_SGS_rot_inertia)    &
-     &                           + d_rj(inod,ipol%i_SGS_rot_Lorentz)
+     &                         - d_rj(inod,ipol%rot_SGS%i_SGS_inertia)  &
+     &                         + d_rj(inod,ipol%i_SGS_rot_Lorentz)
       end do
 !$omp end do nowait
 !
