@@ -170,7 +170,7 @@
 !
 !   lead work of Reynolds stress
 !
-      call cal_terms_4_momentum(iphys%i_SGS_div_m_flux,                 &
+      call cal_terms_4_momentum(iphys%SGS_term%i_SGS_div_m_flux,        &
      &    ifld_diff%i_mom_flux, ifld_diff%i_lorentz, dt,                &
      &    FEM_prm, SGS_par%model_p, SGS_par%commute_p,                  &
      &    nod_comm, node, ele, surf, sf_grp, fluid, fl_prop, cd_prop,   &
@@ -180,8 +180,8 @@
 !
 !$omp parallel
       call cal_phys_dot_product                                         &
-     &   (iphys%i_velo, iphys%i_SGS_div_m_flux, iphys%i_reynolds_wk,    &
-     &    nod_fld)
+     &   (iphys%i_velo, iphys%SGS_term%i_SGS_div_m_flux,                &
+     &    iphys%i_reynolds_wk, nod_fld)
 !$omp end parallel
 !
 !   lead SGS buoyancy flux

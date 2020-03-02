@@ -317,9 +317,6 @@
 !>        start address for divergence of SGS composition flux
 !!         @f$ \partial_{i} \left( \overline{u_{i}C} - \bar{u}_{i}\bar{C} \right) @f$
         integer (kind=kint) :: i_SGS_div_c_flux=   izero
-!>        start address for divergence of SGS momentum flux
-!!         @f$ \partial_{i} \left( \overline{u_{i}u_{j}} - \bar{u}_{i}\bar{u}_{j} \right) @f$
-        integer (kind=kint) :: i_SGS_div_m_flux=   izero
 !
 !>        start address for true divergence of SGS heat flux
 !!         @f$ \partial_{i} \left( \overline{u_{i}T} - \bar{u}_{i}\bar{T} \right) @f$
