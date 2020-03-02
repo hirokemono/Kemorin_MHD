@@ -89,7 +89,7 @@
         if(SGS_param%iflag_SGS_lorentz .ne. id_SGS_none) then
           msg = 'solving SGS lorentz term needs'
           call check_missing_field_w_msg                                &
-     &       (fld, msg, iphys%i_SGS_Lorentz)
+     &       (fld, msg, iphys%SGS_term%i_SGS_Lorentz)
         end if
       end if
 !

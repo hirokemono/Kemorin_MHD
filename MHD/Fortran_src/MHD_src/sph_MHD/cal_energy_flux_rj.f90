@@ -87,7 +87,7 @@
 !
       if(ipol%i_Lorentz_w_sgs .gt. 0) then
         call add_2_nod_vectors                                          &
-     &     (rj_fld, ipol%forces%i_lorentz, ipol%i_SGS_Lorentz,          &
+     &     (rj_fld, ipol%forces%i_lorentz, ipol%SGS_term%i_SGS_Lorentz, &
      &      ipol%i_Lorentz_w_sgs)
       end if
 !

@@ -296,7 +296,7 @@
       do i = 1, nod_fld%num_phys
         i_fld = nod_fld%istack_component(i-1) + 1
         if(     i_fld .eq. iphys%i_SGS_div_m_flux                       &
-     &     .or. i_fld .eq. iphys%i_SGS_Lorentz) then
+     &     .or. i_fld .eq. iphys%SGS_term%i_SGS_Lorentz) then
           if(iflag_debug .ge. iflag_routine_msg)                        &
      &             write(*,*) 'lead  ', trim(nod_fld%phys_name(i))
           call cal_terms_4_momentum                                     &
@@ -381,8 +381,8 @@
 !
       if (iphys%i_SGS_Lor_wk .gt. 0) then
         call cal_phys_dot_product                                       &
-     &     (iphys%i_velo, iphys%i_SGS_Lorentz, iphys%i_SGS_Lor_wk,      &
-     &      nod_fld)
+     &     (iphys%i_velo, iphys%SGS_term%i_SGS_Lorentz,                 &
+     &      iphys%i_SGS_Lor_wk, nod_fld)
       end if
 !
       if (iphys%i_SGS_me_gen .gt. 0) then

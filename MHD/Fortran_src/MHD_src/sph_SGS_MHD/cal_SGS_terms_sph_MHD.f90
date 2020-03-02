@@ -10,15 +10,15 @@
 !!      subroutine similarity_SGS_terms_rtp(sph_rtp, MHD_prop,          &
 !!     &          bg_trns, fg_trns, trns_b_SGS, trns_f_SGS)
 !!       Input ::  fil_rtp(1,il_frc)
-!!               il_frc = SGS_term%i_SGS_inertia, i_SGS_Lorentz,
+!!               il_frc = SGS_term%i_SGS_inertia, SGS_term%i_SGS_Lorentz,
 !!                        i_SGS_vp_induct, 
 !!                        SGS_term%i_SGS_h_flux, SGS_term%i_SGS_c_flux
 !!                 frc_rtp(1,if_frc)
-!!               if_frc = SGS_term%i_SGS_inertia, i_SGS_Lorentz,
+!!               if_frc = SGS_term%i_SGS_inertia, SGS_term%i_SGS_Lorentz,
 !!                        i_SGS_vp_induct, 
 !!                        SGS_term%i_SGS_h_flux, SGS_term%i_SGS_c_flux
 !!       Output ::  fSGS_rtp(1,ig_frc)
-!!               ig_frc = SGS_term%i_SGS_inertia, i_SGS_Lorentz,
+!!               ig_frc = SGS_term%i_SGS_inertia, SGS_term%i_SGS_Lorentz,
 !!                        i_SGS_vp_induct,
 !!                        SGS_term%i_SGS_h_flux, SGS_term%i_SGS_c_flux
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
@@ -106,13 +106,13 @@
      &      trns_f_SGS%fld_rtp(1,fg_trns%SGS_term%i_SGS_inertia))
       end if
 !
-      if(fg_trns%i_SGS_Lorentz .gt. 0) then
+      if(fg_trns%SGS_term%i_SGS_Lorentz .gt. 0) then
         call subcract_X_product_w_coef_smp                              &
      &     (sph_rtp%nnod_rtp, MHD_prop%fl_prop%coef_lor,                &
-     &      trns_b_SGS%fld_rtp(1,bg_trns%i_SGS_Lorentz),                &
+     &      trns_b_SGS%fld_rtp(1,bg_trns%SGS_term%i_SGS_Lorentz),       &
      &      trns_b_SGS%fld_rtp(1,bg_trns%i_filter_current),             &
      &      trns_b_SGS%fld_rtp(1,bg_trns%i_filter_magne),               &
-     &      trns_f_SGS%fld_rtp(1,fg_trns%i_SGS_Lorentz))
+     &      trns_f_SGS%fld_rtp(1,fg_trns%SGS_term%i_SGS_Lorentz))
       end if
 !
       if(fg_trns%i_SGS_vp_induct .gt. 0) then

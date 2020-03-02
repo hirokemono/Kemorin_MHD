@@ -212,7 +212,7 @@
      &        fem_wk, f_nl)
         end if
 !
-      else if(i_field .eq. iphys%i_SGS_Lorentz) then
+      else if(i_field .eq. iphys%SGS_term%i_SGS_Lorentz) then
         if (cmt_param%iflag_c_lorentz .eq. id_SGS_commute_ON) then
           call int_vol_div_SGS_tsr_flux(node, ele, nod_fld,             &
      &        g_FEM, jac_3d, rhs_tbl, FEM_elens, diff_coefs,            &
@@ -381,7 +381,7 @@
      &        ele_fld%d_fld, fl_prop%coef_nega_v, fem_wk, f_nl)
         end if
 !
-      else if(i_field .eq. iphys%i_SGS_Lorentz) then
+      else if(i_field .eq. iphys%SGS_term%i_SGS_Lorentz) then
         if (cmt_param%iflag_c_lorentz .eq. id_SGS_commute_ON) then
           call int_vol_div_SGS_tsr_flux_upw(node, ele, nod_fld,         &
      &        g_FEM, jac_3d, rhs_tbl, FEM_elens, diff_coefs,            &

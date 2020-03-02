@@ -111,11 +111,12 @@
      &      rj_fld)
       end if
 !
-      if( (ipol%i_SGS_Lorentz*ipol%i_SGS_rot_Lorentz) .gt. 0) then
+      if(ipol%i_SGS_rot_Lorentz .gt. 0) then
         if (iflag_debug .gt. 0) write(*,*) 'take rotation of Lorentz'
         call const_sph_force_rot2(sph_rj, r_2nd,                        &
      &      sph_bc_U, fdm2_free_ICB, fdm2_free_CMB, g_sph_rj,           &
-     &      ipol%i_SGS_Lorentz, ipol%i_SGS_rot_Lorentz, rj_fld)
+     &      ipol%SGS_term%i_SGS_Lorentz, ipol%i_SGS_rot_Lorentz,        &
+     &      rj_fld)
       end if
 !
       end subroutine SGS_rot_of_SGS_forces_sph_2
@@ -144,10 +145,11 @@
      &      rj_fld)
       end if
 !
-      if( (ipol%i_SGS_Lorentz*ipol%i_div_Lorentz) .gt. 0) then
+      if(ipol%i_div_Lorentz .gt. 0) then
         call const_sph_div_force                                        &
      &     (sph_rj, r_2nd, sph_MHD_bc%sph_bc_U, g_sph_rj,               &
-     &      ipol%i_SGS_Lorentz, ipol%i_SGS_div_Lorentz, rj_fld)
+     &      ipol%SGS_term%i_SGS_Lorentz, ipol%i_SGS_div_Lorentz,        &
+     &      rj_fld)
       end if
 !
       end subroutine cal_div_of_SGS_forces_sph_2

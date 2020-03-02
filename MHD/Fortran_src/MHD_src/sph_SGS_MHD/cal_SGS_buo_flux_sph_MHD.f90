@@ -120,7 +120,7 @@
 !
       if(fs_trns%i_SGS_Lor_wk .gt. 0) then
         call cal_dot_prod_no_coef_smp(sph_rtp%nnod_rtp,                 &
-     &      trns_f_SGS%fld_rtp(1,fg_trns%i_SGS_lorentz),                &
+     &      trns_f_SGS%fld_rtp(1,fg_trns%SGS_term%i_SGS_Lorentz),       &
      &      trns_b_MHD%fld_rtp(1,b_trns%i_velo),                        &
      &      trns_f_snap%fld_rtp(1,fs_trns%i_SGS_Lor_wk))
       end if

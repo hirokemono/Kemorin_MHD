@@ -186,7 +186,7 @@
         end if
       end if
 !
-      if (i_field .eq. iphys%i_SGS_Lorentz) then
+      if (i_field .eq. iphys%SGS_term%i_SGS_Lorentz) then
         if (cmt_param%iflag_c_lorentz .eq. id_SGS_commute_ON) then
           call int_sf_skv_sgs_div_t_flux(node, ele, surf, sf_grp,       &
      &        nod_fld, g_FEM, jac_sf_grp, rhs_tbl, FEM_elens,           &

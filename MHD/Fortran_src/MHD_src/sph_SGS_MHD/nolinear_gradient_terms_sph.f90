@@ -95,7 +95,7 @@
      &      trns_f_SGS%fld_rtp)
       end if
 !
-      if(fg_trns%i_SGS_Lorentz .gt. 0) then
+      if(fg_trns%SGS_term%i_SGS_Lorentz .gt. 0) then
         call sel_sph_SGS_induct_nl_gradient                             &
      &     (sph%sph_rtp, sph_filters, MHD_prop%fl_prop%coef_lor,        &
      &      b_trns%i_current, b_trns%i_magne,                           &
@@ -107,7 +107,7 @@
      &      bn_trns%diff_vector%i_grad_by,                              &
      &      bn_trns%diff_vector%i_grad_bz,                              &
      &      trns_b_NLGD%ncomp, trns_b_NLGD%fld_rtp,                     &
-     &      fg_trns%i_SGS_Lorentz, trns_f_SGS%ncomp,                    &
+     &      fg_trns%SGS_term%i_SGS_Lorentz, trns_f_SGS%ncomp,           &
      &      trns_f_SGS%fld_rtp)
       end if
 !

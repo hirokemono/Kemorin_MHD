@@ -346,15 +346,14 @@
         else if(i_start .eq. iphys%i_SGS_div_m_flux) then
           call check_missing_field                                      &
      &       (fld, i_start, iphys%SGS_term%i_SGS_m_flux, SGS_momentum_flux%name)
-        else if(i_start .eq. iphys%i_SGS_Lorentz                        &
-     &     .or. i_start .eq. iphys%i_wide_SGS_Lorentz) then
+        else if(i_start .eq. iphys%i_wide_SGS_Lorentz) then
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_magne, fhd_magne)
         else if(i_start .eq. iphys%i_SGS_rot_Lorentz                    &
      &     .or. i_start .eq. iphys%i_SGS_div_Lorentz                    &
      &     .or. i_start .eq. iphys%i_dbl_SGS_Lorentz) then
           call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_SGS_Lorentz, SGS_Lorentz%name)
+     &       (fld, i_start, iphys%SGS_term%i_SGS_Lorentz, SGS_Lorentz%name)
         else if(i_start .eq. iphys%i_dbl_SGS_vp_induct) then 
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_SGS_vp_induct, SGS_vecp_induction%name)
@@ -399,7 +398,7 @@
      &        fhd_wide_SGS_inertia)
         else if(i_start .eq. iphys%i_Csim_SGS_Lorentz) then 
           call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_SGS_Lorentz, SGS_Lorentz%name)
+     &       (fld, i_start, iphys%SGS_term%i_SGS_Lorentz, SGS_Lorentz%name)
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_wide_SGS_Lorentz,                   &
      &        fhd_wide_SGS_Lorentz)
@@ -439,12 +438,12 @@
           call check_missing_field                                      &
      &       (fld, i_start, iphys%forces%i_lorentz, Lorentz_force%name)
           call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_SGS_Lorentz, SGS_Lorentz%name)
+     &       (fld, i_start, iphys%SGS_term%i_SGS_Lorentz, SGS_Lorentz%name)
         else if(i_start .eq. iphys%i_Lorentz_w_sgs) then 
           call check_missing_field                                      &
      &       (fld, i_start, iphys%forces%i_lorentz, Lorentz_force%name)
           call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_SGS_Lorentz, SGS_Lorentz%name)
+     &       (fld, i_start, iphys%SGS_term%i_SGS_Lorentz, SGS_Lorentz%name)
         else if(i_start .eq. iphys%i_vp_induct_w_sgs) then 
           call check_missing_field                                      &
      &       (fld, i_start, iphys%forces%i_vp_induct, vecp_induction%name)
