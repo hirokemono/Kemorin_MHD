@@ -136,7 +136,8 @@
 !
 !
       if (iphys%i_SGS_h_flux .gt. 0) then
-        if(iflag_debug.gt.0) write(*,*) 'lead ', trim(fhd_SGS_h_flux)
+        if(iflag_debug.gt.0) write(*,*)                                 &
+     &          'lead ', trim(SGS_heat_flux%name)
         call cal_sgs_heat_flux                                          &
      &     (FEM_prm%iflag_temp_supg, FEM_prm%npoint_t_evo_int, dt,      &
      &      SGS_param%iflag_SGS_h_flux, SGS_param%itype_Csym_h_flux,    &
@@ -150,7 +151,8 @@
       end if
 !
       if (iphys%i_SGS_c_flux .gt. 0) then
-        if(iflag_debug.gt.0) write(*,*) 'lead ', trim(fhd_SGS_c_flux)
+        if(iflag_debug.gt.0) write(*,*)                                 &
+     &          'lead ', trim(SGS_composit_flux%name)
         call cal_sgs_heat_flux                                          &
      &     (FEM_prm%iflag_comp_supg, FEM_prm%npoint_t_evo_int, dt,      &
      &      SGS_param%iflag_SGS_c_flux, SGS_param%itype_Csym_c_flux,    &
@@ -176,7 +178,7 @@
 !
       if (iphys%i_SGS_maxwell .gt. 0) then
         if(iflag_debug.gt.0) write(*,*)                                 &
-     &        'lead ', trim(fhd_SGS_maxwell_t)
+     &        'lead ', trim(SGS_maxwell_tensor%name)
         call cal_sgs_maxwell                                            &
      &     (icomp_sgs%i_lorentz, iphys_elediff%i_magne, dt,             &
      &      FEM_prm, SGS_param, filter_param, nod_comm, node, ele,      &
@@ -187,8 +189,8 @@
       end if
 !
       if (iphys%i_SGS_induct_t .gt. 0) then
-        if(iflag_debug.gt.0) write(*,*) 'lead ',                        &
-     &                                 trim(induction_tensor%name)
+        if(iflag_debug.gt.0) write(*,*)                                 &
+     &         'lead ', trim(induction_tensor%name)
         call cal_sgs_magne_induction(icomp_sgs%i_induction,             &
      &      iphys_elediff%i_velo, iphys_elediff%i_magne, dt,            &
      &      FEM_prm, SGS_param, filter_param, nod_comm, node, ele,      &

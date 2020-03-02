@@ -38,10 +38,10 @@
 !
       if( (field_name .eq. fhd_SGS_buoyancy)) then
         call add_phys_name_ctl(fhd_velo, field_ctl)
-        call add_phys_name_ctl(fhd_SGS_h_flux, field_ctl)
+        call add_phys_name_ctl(SGS_heat_flux%name, field_ctl)
       else if( (field_name .eq. fhd_SGS_comp_buo)) then
         call add_phys_name_ctl(fhd_velo, field_ctl)
-        call add_phys_name_ctl(fhd_SGS_c_flux, field_ctl)
+        call add_phys_name_ctl(SGS_composit_flux%name, field_ctl)
       else if( (field_name .eq. fhd_SGS_induction)) then
         call add_phys_name_ctl(fhd_velo, field_ctl)
         call add_phys_name_ctl(fhd_magne, field_ctl)
@@ -49,9 +49,9 @@
       else if( (field_name .eq. fhd_div_SGS_m_flux)) then
         call add_phys_name_ctl(SGS_momentum_flux%name, field_ctl)
       else if( (field_name .eq. fhd_div_SGS_h_flux)) then
-        call add_phys_name_ctl(fhd_SGS_h_flux, field_ctl)
+        call add_phys_name_ctl(SGS_heat_flux%name, field_ctl)
       else if( (field_name .eq. fhd_div_SGS_c_flux)) then
-        call add_phys_name_ctl(fhd_SGS_c_flux, field_ctl)
+        call add_phys_name_ctl(SGS_composit_flux%name, field_ctl)
       end if
 !
 !
@@ -61,18 +61,18 @@
       else if( (field_name .eq. SGS_momentum_flux%name)) then
         call add_phys_name_ctl(fhd_velo, field_ctl)
       else if( (field_name .eq. fhd_SGS_Lorentz)                        &
-     &    .or. (field_name .eq. fhd_SGS_maxwell_t) ) then
+     &    .or. (field_name .eq. SGS_maxwell_tensor%name) ) then
         call add_phys_name_ctl(fhd_magne, field_ctl)
 !
       else if( (field_name .eq. fhd_SGS_vp_induct)                      &
-     &    .or. (field_name .eq. fhd_SGS_induct_t)) then
+     &    .or. (field_name .eq. SGS_induct_tensor%name)) then
         call add_phys_name_ctl(fhd_velo, field_ctl)
         call add_phys_name_ctl(fhd_magne, field_ctl)
 !
-      else if( (field_name .eq. fhd_SGS_h_flux)) then
+      else if( (field_name .eq. SGS_heat_flux%name)) then
         call add_phys_name_ctl(fhd_velo, field_ctl)
         call add_phys_name_ctl(fhd_temp, field_ctl)
-      else if((field_name .eq. fhd_SGS_c_flux)) then
+      else if((field_name .eq. SGS_composit_flux%name)) then
         call add_phys_name_ctl(fhd_velo, field_ctl)
         call add_phys_name_ctl(fhd_light, field_ctl)
       end if

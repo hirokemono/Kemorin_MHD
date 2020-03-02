@@ -67,16 +67,12 @@
      &                     // '  - \bar{u}_{i}\bar{u}_{j} $')
 !>        Field label for SGS Maxwell tensor
 !!         @f$ \overline{B_{i}B_{j}} - \bar{B}_{i}\bar{B}_{j} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_SGS_maxwell_t = 'SGS_maxwell_tensor'
       type(field_def), parameter :: SGS_maxwell_tensor                  &
      &    = field_def(n_comp = n_sym_tensor,                            &
      &                name = 'SGS_maxwell_tensor',                      &
      &                math = '$ \overline{B_{i}B_{j}}'                  &
      &                     // '  - \bar{B}_{i}\bar{B}_{j} $')
 !>        Field label for SGS magnetic induction tensor
-      character(len=kchara), parameter                                  &
-     &             :: fhd_SGS_induct_t =  'SGS_induct_tensor'
       type(field_def), parameter :: SGS_induct_tensor                   &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'SGS_induct_tensor',                       &
@@ -87,8 +83,6 @@
 !
 !>        Field label for SGS heat flux
 !!         @f$ \overline{u_{i}T} - \bar{u}_{i}\bar{T} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_SGS_h_flux =    'SGS_heat_flux'
       type(field_def), parameter :: SGS_heat_flux                       &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'SGS_heat_flux',                           &
@@ -96,8 +90,6 @@
      &                     // ' - \bar{u}_{i}\bar{T} $')
 !>        Field label for SGS compositional flux
 !!         @f$ \overline{u_{i}C} - \bar{u}_{i}\bar{C} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_SGS_c_flux =    'SGS_composit_flux'
       type(field_def), parameter :: SGS_composit_flux                   &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'SGS_composit_flux',                       &
@@ -283,9 +275,9 @@
      &   .or. (field_name .eq. fhd_SGS_comp_buo)                        &
      &   .or. (field_name .eq. fhd_SGS_vp_induct)                       &
      &   .or. (field_name .eq. fhd_SGS_induction)                       &
-     &   .or. (field_name .eq. fhd_SGS_induct_t)                        &
-     &   .or. (field_name .eq. fhd_SGS_h_flux)                          &
-     &   .or. (field_name .eq. fhd_SGS_c_flux)
+     &   .or. (field_name .eq. SGS_induct_tensor%name)                  &
+     &   .or. (field_name .eq. SGS_heat_flux%name)                      &
+     &   .or. (field_name .eq. SGS_composit_flux%name)
 !
       end function check_SGS_vector_terms
 !
@@ -298,7 +290,7 @@
 !
       check_SGS_tensor_terms                                            &
      &   =    (field_name .eq. SGS_momentum_flux%name)                  &
-     &   .or. (field_name .eq. fhd_SGS_maxwell_t)
+     &   .or. (field_name .eq. SGS_maxwell_tensor%name)
 !
       end function check_SGS_tensor_terms
 !
@@ -321,22 +313,20 @@
       if(flag) then
         if (field_name .eq. SGS_momentum_flux%name ) then
           SGS_term%i_SGS_m_flux =     i_phys
-        else if (field_name .eq. fhd_SGS_maxwell_t ) then
+        else if (field_name .eq. SGS_maxwell_tensor%name ) then
           SGS_term%i_SGS_maxwell =    i_phys
-        else if (field_name .eq. fhd_SGS_induct_t ) then
+        else if (field_name .eq. SGS_induct_tensor%name ) then
           SGS_term%i_SGS_induct_t =    i_phys
 !
-        else if (field_name .eq. fhd_SGS_h_flux) then
+        else if (field_name .eq. SGS_heat_flux%name) then
           SGS_term%i_SGS_h_flux =    i_phys
-        else if (field_name .eq. fhd_SGS_c_flux) then
+        else if (field_name .eq. SGS_composit_flux%name) then
           SGS_term%i_SGS_c_flux =    i_phys
 !
         else if (field_name .eq. fhd_SGS_inertia) then
           SGS_term%i_SGS_inertia =   i_phys
         else if (field_name .eq. fhd_SGS_Lorentz) then
           SGS_term%i_SGS_Lorentz =    i_phys
-        else if (field_name .eq. fhd_SGS_maxwell_t ) then
-          SGS_term%i_SGS_maxwell =    i_phys
 !
         else if (field_name .eq. fhd_SGS_buoyancy) then
           SGS_term%i_SGS_buoyancy =   i_phys

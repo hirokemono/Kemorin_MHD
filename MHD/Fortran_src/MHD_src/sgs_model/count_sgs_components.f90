@@ -202,7 +202,7 @@
          if (SGS_param%iflag_SGS_h_flux .ne. id_SGS_none) then
            icomp_sgs%i_heat_flux = i
            ifld_sgs%i_heat_flux =  j
-           wk_sgs%name(j) = fhd_SGS_h_flux
+           wk_sgs%name(j) = SGS_heat_flux%name
            sgs_coefs%num_comps(j) = 3
            i = i + sgs_coefs%num_comps(j)
            j = j + 1
@@ -222,7 +222,7 @@
          if (SGS_param%iflag_SGS_lorentz .ne. id_SGS_none) then
            icomp_sgs%i_lorentz = i
            ifld_sgs%i_lorentz =  j
-           wk_sgs%name(j) = fhd_SGS_maxwell_t
+           wk_sgs%name(j) = SGS_maxwell_tensor%name
            sgs_coefs%num_comps(j) = 6
            i = i + sgs_coefs%num_comps(j)
            j = j + 1
@@ -273,7 +273,7 @@
          if (SGS_param%iflag_SGS_c_flux .ne. id_SGS_none) then
            icomp_sgs%i_comp_flux = i
            ifld_sgs%i_comp_flux =  j
-           wk_sgs%name(j) = fhd_SGS_c_flux
+           wk_sgs%name(j) = SGS_composit_flux%name
            sgs_coefs%num_comps(j) = 3
            i = i + sgs_coefs%num_comps(j)
            j = j + 1

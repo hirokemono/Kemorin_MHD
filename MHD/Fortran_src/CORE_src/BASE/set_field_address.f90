@@ -204,15 +204,15 @@
         call set_base_force_addresses                                   &
      &     (i0, field_name(i), iphys%forces, flag)
 !
-        if ( field_name(i) .eq. fhd_SGS_h_flux ) then
+        if ( field_name(i) .eq. SGS_heat_flux%name ) then
           iphys%i_SGS_h_flux =   i0
-        else if ( field_name(i) .eq. fhd_SGS_c_flux ) then
+        else if ( field_name(i) .eq. SGS_composit_flux%name ) then
           iphys%i_SGS_c_flux =   i0
         else if ( field_name(i) .eq. SGS_momentum_flux%name ) then
           iphys%i_SGS_m_flux =   i0
-        else if ( field_name(i) .eq. fhd_SGS_maxwell_t ) then
+        else if ( field_name(i) .eq. SGS_maxwell_tensor%name ) then
           iphys%i_SGS_maxwell =  i0
-        else if ( field_name(i) .eq. fhd_SGS_induct_t ) then
+        else if ( field_name(i) .eq. SGS_induct_tensor%name ) then
           iphys%i_SGS_induct_t = i0
         else if ( field_name(i) .eq. fhd_SGS_inertia ) then
           iphys%i_SGS_inertia =  i0

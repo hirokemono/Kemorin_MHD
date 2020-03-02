@@ -104,8 +104,8 @@
 !
       if (   (phys_nod_name_ctl .eq. fhd_div_SGS_m_flux     )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_SGS_inertia        )           &
-     &  .or. (phys_nod_name_ctl .eq. fhd_SGS_h_flux         )           &
-     &  .or. (phys_nod_name_ctl .eq. fhd_SGS_c_flux         )           &
+     &  .or. (phys_nod_name_ctl .eq. SGS_heat_flux%name         )           &
+     &  .or. (phys_nod_name_ctl .eq. SGS_composit_flux%name         )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_SGS_Lorentz        )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_SGS_induction      )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_SGS_vp_induct      )           &
@@ -344,8 +344,7 @@
 !
       if (iflag .gt. 0) return
 !
-       if (   (phys_nod_name_ctl .eq. SGS_momentum_flux%name     )              &
-     &   .or. (phys_nod_name_ctl .eq. fhd_SGS_maxwell_t  )              &
+       if (   check_SGS_tensor_terms(phys_nod_name_ctl)                 &
      &   .or. (phys_nod_name_ctl .eq. fhd_mom_flux_w_sgs )              &
      &   .or. (phys_nod_name_ctl .eq. fhd_maxwell_t_w_sgs)              &
      &       ) iflag = 1
@@ -361,7 +360,7 @@
       end if
 !
        if (  check_asym_flux_tensors(phys_nod_name_ctl)                 &
-     &  .or. (phys_nod_name_ctl .eq. fhd_SGS_induct_t  )                &
+     &  .or. (phys_nod_name_ctl .eq. SGS_induct_tensor%name  )          &
      &       ) then
 !
         iflag = 1

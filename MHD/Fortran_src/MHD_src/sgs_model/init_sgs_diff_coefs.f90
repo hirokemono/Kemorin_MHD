@@ -236,7 +236,7 @@
            if (cmt_param%iflag_c_hf .eq. id_SGS_commute_ON) then
              icomp_diff%i_heat_flux = id
              ifld_diff%i_heat_flux =  jd
-             wk_diff%name(jd) = fhd_SGS_h_flux
+             wk_diff%name(jd) = SGS_heat_flux%name
              diff_coefs%num_comps(jd) = 3
              id = id + diff_coefs%num_comps(jd)
              jd = jd + 1
@@ -286,7 +286,7 @@
            if(cmt_param%iflag_c_cf .eq. id_SGS_commute_ON) then
              icomp_diff%i_comp_flux = id
              ifld_diff%i_comp_flux =  jd
-             wk_diff%name(jd) = fhd_SGS_c_flux
+             wk_diff%name(jd) = SGS_composit_flux%name
              diff_coefs%num_comps(jd) = 3
              id = id + diff_coefs%num_comps(jd)
              jd = jd + 1

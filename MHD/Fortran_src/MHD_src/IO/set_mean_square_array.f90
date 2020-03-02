@@ -340,11 +340,11 @@
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_SGS_m_flux,              &
      &          i_rms%i_SGS_m_flux, j_ave%i_SGS_m_flux, msq_list)
-          else if ( field_name .eq. fhd_SGS_maxwell_t ) then
+          else if ( field_name .eq. SGS_maxwell_tensor%name ) then
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_SGS_maxwell,             &
      &          i_rms%i_SGS_maxwell, j_ave%i_SGS_maxwell, msq_list)
-          else if ( field_name .eq. fhd_SGS_induct_t ) then
+          else if ( field_name .eq. SGS_induct_tensor%name ) then
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_SGS_induct_t,            &
      &          i_rms%i_SGS_induct_t, j_ave%i_SGS_induct_t, msq_list)
@@ -553,7 +553,7 @@
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_par_c_gen,               &
      &          i_rms%i_par_c_gen, j_ave%i_par_c_gen, msq_list)
-          else if ( field_name .eq. fhd_SGS_h_flux ) then
+          else if ( field_name .eq. SGS_heat_flux%name ) then
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_SGS_h_flux,              &
      &          i_rms%i_SGS_h_flux, j_ave%i_SGS_h_flux, msq_list)
@@ -562,7 +562,7 @@
      &         (field_name, num_comps, iphys%i_SGS_div_h_flux,          &
      &          i_rms%i_SGS_div_h_flux, j_ave%i_SGS_div_h_flux,         &
      &          msq_list)
-          else if ( field_name .eq. fhd_SGS_c_flux ) then
+          else if ( field_name .eq. SGS_composit_flux%name ) then
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_SGS_c_flux,              &
      &          i_rms%i_SGS_c_flux, j_ave%i_SGS_c_flux, msq_list)
