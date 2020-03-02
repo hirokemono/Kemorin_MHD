@@ -31,8 +31,8 @@
       module t_SGS_enegy_flux_labels
 !
       use m_precision
-      use m_constants
-      use t_base_field_labels
+      use m_phys_constants
+      use t_field_labels
 !
       implicit  none
 ! 
