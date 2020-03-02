@@ -334,7 +334,7 @@
 !
       use products_nodal_fields_smp
       use int_sgs_induction
-      use sgs_buoyancy_flux
+      use cal_sgs_buoyancy_flux
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(communication_table), intent(in) :: nod_comm
@@ -394,7 +394,7 @@
 !
       if (iphys%i_SGS_buo_wk .gt. 0) then
         if(iflag_debug.gt.0) write(*,*)                                 &
-     &        'lead ', trim(fhd_SGS_buo_flux)
+     &        'lead ', trim(SGS_buoyancy_flux%name)
         call cal_SGS_gravity_flux                                       &
      &     (node, fl_prop%i_grav, fl_prop%coef_buo, fl_prop%grav,       &
      &      iphys%SGS_term%i_SGS_h_flux, iphys%i_SGS_buo_wk, nod_fld)
@@ -402,7 +402,7 @@
 !
       if (iphys%i_SGS_comp_buo_wk .gt. 0) then
         if(iflag_debug.gt.0) write(*,*)                                 &
-     &        'lead ', trim(fhd_SGS_comp_buo_flux)
+     &        'lead ', trim(SGS_comp_buoyancy_flux%name)
         call cal_SGS_gravity_flux                                       &
      &     (node, fl_prop%i_grav, fl_prop%coef_comp_buo, fl_prop%grav,  &
      &      iphys%SGS_term%i_SGS_h_flux, iphys%i_SGS_comp_buo_wk,       &

@@ -100,7 +100,7 @@
       use cal_sgs_fluxes
       use cal_momentum_terms
       use products_nodal_fields_smp
-      use sgs_buoyancy_flux
+      use cal_sgs_buoyancy_flux
       use merge_dynamic_coefs
       use set_sgs_diff_model_coefs
       use int_rms_ave_ele_grps

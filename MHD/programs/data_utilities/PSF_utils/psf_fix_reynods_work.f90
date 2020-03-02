@@ -80,7 +80,7 @@
 !
 !
         do ifld = 1, psf_u%psf_phys%num_phys
-          if(psf_u%psf_phys%phys_name(ifld) .ne. fhd_Reynolds_work)     &
+          if(psf_u%psf_phys%phys_name(ifld) .ne. Reynolds_work%name)    &
      &     cycle
 !
           ist = psf_u%psf_phys%istack_component(ifld-1) + 1

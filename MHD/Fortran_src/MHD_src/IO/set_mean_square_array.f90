@@ -40,6 +40,7 @@
       use t_base_field_labels
       use t_diff_vector_labels
       use t_SGS_term_labels
+      use t_SGS_enegy_flux_labels
       use m_phys_constants
       use m_volume_average_labels
       use m_diff_SGS_term_labels
@@ -524,31 +525,10 @@
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_par_c_gen,               &
      &          i_rms%i_par_c_gen, j_ave%i_par_c_gen, msq_list)
-          else if ( field_name .eq. fhd_SGS_temp_gen ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_SGS_temp_gen,            &
-     &          i_rms%i_SGS_temp_gen, j_ave%i_SGS_temp_gen, msq_list)
-          else if ( field_name .eq. fhd_SGS_m_ene_gen ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_SGS_me_gen,              &
-     &          i_rms%i_SGS_me_gen, j_ave%i_SGS_me_gen, msq_list)
-          else if ( field_name .eq. fhd_SGS_Lorentz_work ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_SGS_Lor_wk,              &
-     &          i_rms%i_SGS_Lor_wk, j_ave%i_SGS_Lor_wk, msq_list)
-          else if ( field_name .eq. fhd_Reynolds_work ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_reynolds_wk,             &
-     &          i_rms%i_reynolds_wk, j_ave%i_reynolds_wk, msq_list)
-          else if ( field_name .eq. fhd_SGS_buo_flux ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_SGS_buo_wk,              &
-     &          i_rms%i_SGS_buo_wk, j_ave%i_SGS_buo_wk, msq_list)
-          else if ( field_name .eq. fhd_SGS_comp_buo_flux ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_SGS_comp_buo_wk,         &
-     &          i_rms%i_SGS_comp_buo_wk, j_ave%i_SGS_comp_buo_wk,       &
-     &          msq_list)
+          end if
+!
+          if(check_SGS_ene_fluxes(field_name)) then
+            call set_rms_address_list(i, nod_fld, msq_list)
           end if
 !
           if (field_name .eq. fhd_SGS_div_h_flux_true) then

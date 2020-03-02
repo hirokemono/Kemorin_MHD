@@ -49,15 +49,16 @@
       if (SGS_param%iflag_SGS_gravity .ne. id_SGS_none) then
         call add_phys_name_ctl(SGS_momentum_flux%name, field_ctl)
         call add_phys_name_ctl(div_SGS_m_flux%name, field_ctl)
-        call add_phys_name_ctl(fhd_Reynolds_work, field_ctl)
+        call add_phys_name_ctl(Reynolds_work%name, field_ctl)
 !
         if(fl_prop%iflag_4_gravity .gt. id_turn_OFF) then
           call add_phys_name_ctl(SGS_heat_flux%name, field_ctl)
-          call add_phys_name_ctl(fhd_SGS_buo_flux, field_ctl)
+          call add_phys_name_ctl(SGS_buoyancy_flux%name, field_ctl)
         end if
         if(fl_prop%iflag_4_composit_buo .gt. id_turn_OFF) then
           call add_phys_name_ctl(SGS_composit_flux%name, field_ctl)
-          call add_phys_name_ctl(fhd_SGS_comp_buo_flux, field_ctl)
+          call add_phys_name_ctl                                        &
+     &       (SGS_comp_buoyancy_flux%name, field_ctl)
         end if
       end if
 !

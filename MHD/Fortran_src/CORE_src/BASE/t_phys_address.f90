@@ -20,6 +20,7 @@
       use t_grad_field_labels
       use t_diff_vector_labels
       use t_SGS_term_labels
+      use t_SGS_enegy_flux_labels
 !
       implicit  none
 ! 

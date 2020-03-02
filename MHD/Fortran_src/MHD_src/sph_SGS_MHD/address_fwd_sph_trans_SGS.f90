@@ -89,17 +89,17 @@
 !
 !   work of Reynolds stress
       call add_field_name_4_sph_trns                                    &
-     &   (ipol%i_reynolds_wk, fhd_Reynolds_work, n_scalar,              &
+     &   (ipol%i_reynolds_wk, Reynolds_work%name, Reynolds_work%n_comp, &
      &    ipol%i_reynolds_wk, itor%i_reynolds_wk,                       &
      &    iphys%i_reynolds_wk, f_trns%i_reynolds_wk, trns_fwd)
 !   work of SGS buoyancy
-      call add_field_name_4_sph_trns                                    &
-     &   (ipol%i_SGS_buo_wk, fhd_SGS_buo_flux, n_scalar,                &
+      call add_field_name_4_sph_trns(ipol%i_SGS_buo_wk,                 &
+     &    SGS_buoyancy_flux%name, SGS_buoyancy_flux%n_comp,             &
      &    ipol%i_SGS_buo_wk, itor%i_SGS_buo_wk,                         &
      &    iphys%i_SGS_buo_wk, f_trns%i_SGS_buo_wk, trns_fwd)
 !   work of SGS compositional buoyancy
-      call add_field_name_4_sph_trns                                    &
-     &   (ipol%i_SGS_comp_buo_wk, fhd_SGS_comp_buo_flux, n_scalar,      &
+      call add_field_name_4_sph_trns(ipol%i_SGS_comp_buo_wk,            &
+     &   SGS_comp_buoyancy_flux%name, SGS_comp_buoyancy_flux%n_comp,    &
      &    ipol%i_SGS_comp_buo_wk, itor%i_SGS_comp_buo_wk,               &
      &    iphys%i_SGS_comp_buo_wk, f_trns%i_SGS_comp_buo_wk, trns_fwd)
 !

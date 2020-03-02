@@ -1,5 +1,5 @@
-!sgs_buoyancy_flux.f90
-!     module sgs_buoyancy_flux
+!cal_sgs_buoyancy_flux.f90
+!     module cal_sgs_buoyancy_flux
 !
 !      Written by H. Matsui on June, 2005
 !
@@ -8,7 +8,7 @@
 !!        type(node_data), intent(in) :: node
 !!        type(phys_data), intent(inout) :: nod_fld
 !
-      module sgs_buoyancy_flux
+      module cal_sgs_buoyancy_flux
 !
       use m_precision
 !
@@ -157,4 +157,4 @@
 !
 ! -----------------------------------------------------------------------
 !
-      end module sgs_buoyancy_flux
+      end module cal_sgs_buoyancy_flux

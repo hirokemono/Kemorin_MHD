@@ -236,12 +236,12 @@
      &   .or. (phys_nod_name_ctl .eq. fhd_mag_tension_work    )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_buoyancy_flux       )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_comp_buo_flux       )         &
-     &   .or. (phys_nod_name_ctl .eq. fhd_SGS_m_ene_gen       )         &
-     &   .or. (phys_nod_name_ctl .eq. fhd_SGS_temp_gen        )         &
-     &   .or. (phys_nod_name_ctl .eq. fhd_SGS_Lorentz_work    )         &
-     &   .or. (phys_nod_name_ctl .eq. fhd_Reynolds_work       )         &
-     &   .or. (phys_nod_name_ctl .eq. fhd_SGS_buo_flux        )         &
-     &   .or. (phys_nod_name_ctl .eq. fhd_SGS_comp_buo_flux   )         &
+     &   .or. (phys_nod_name_ctl .eq. SGS_mag_induction_flux%name       )         &
+     &   .or. (phys_nod_name_ctl .eq. SGS_temp_flux_gen%name        )         &
+     &   .or. (phys_nod_name_ctl .eq. SGS_Lorentz_work%name    )         &
+     &   .or. (phys_nod_name_ctl .eq. Reynolds_work%name       )         &
+     &   .or. (phys_nod_name_ctl .eq. SGS_buoyancy_flux%name        )         &
+     &   .or. (phys_nod_name_ctl .eq. SGS_comp_buoyancy_flux%name   )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_temp_generation     )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_part_temp_gen       )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_part_temp           )         &

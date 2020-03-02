@@ -253,17 +253,17 @@
         end if
 !
 !
-        if ( field_name(i) .eq. fhd_SGS_temp_gen ) then
+        if ( field_name(i) .eq. SGS_temp_flux_gen%name ) then
           iphys%i_SGS_temp_gen =     i0
-        else if ( field_name(i) .eq. fhd_SGS_m_ene_gen ) then
+        else if ( field_name(i) .eq. SGS_mag_induction_flux%name ) then
           iphys%i_SGS_me_gen =       i0
-        else if ( field_name(i) .eq. fhd_SGS_Lorentz_work ) then
+        else if ( field_name(i) .eq. SGS_Lorentz_work%name ) then
           iphys%i_SGS_Lor_wk =       i0
-        else if ( field_name(i) .eq. fhd_Reynolds_work ) then
+        else if ( field_name(i) .eq. Reynolds_work%name ) then
           iphys%i_reynolds_wk =      i0
-        else if ( field_name(i) .eq. fhd_SGS_buo_flux ) then
+        else if ( field_name(i) .eq. SGS_buoyancy_flux%name ) then
           iphys%i_SGS_buo_wk =       i0
-        else if ( field_name(i) .eq. fhd_SGS_comp_buo_flux ) then
+        else if ( field_name(i) .eq. SGS_comp_buoyancy_flux%name ) then
           iphys%i_SGS_comp_buo_wk =  i0
 !
         else if ( field_name(i) .eq. fhd_geostrophic ) then

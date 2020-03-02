@@ -134,25 +134,28 @@
      &    ipol%i_x_heli, itor%i_x_heli, iphys%i_x_heli,                 &
      &    f_trns%i_x_heli, trns_fwd)
 !
-      call add_field_name_4_sph_trns_snap(fhd_Reynolds_work, n_scalar,  &
+      call add_field_name_4_sph_trns_snap                               &
+     &   (Reynolds_work%name, Reynolds_work%n_comp,                     &
      &    ipol%i_reynolds_wk, itor%i_reynolds_wk, iphys%i_reynolds_wk,  &
      &    f_trns%i_reynolds_wk, trns_fwd)
 !
       call add_field_name_4_sph_trns_snap                               &
-     &   (fhd_SGS_Lorentz_work, n_scalar,                               &
+     &   (SGS_Lorentz_work%name, SGS_Lorentz_work%n_comp,               &
      &    ipol%i_SGS_Lor_wk, itor%i_SGS_Lor_wk, iphys%i_SGS_Lor_wk,     &
      &    f_trns%i_SGS_Lor_wk, trns_fwd)
-      call add_field_name_4_sph_trns_snap(fhd_SGS_m_ene_gen, n_scalar,  &
+      call add_field_name_4_sph_trns_snap                               &
+     &   (SGS_mag_induction_flux%name, SGS_mag_induction_flux%n_comp,   &
      &    ipol%i_SGS_me_gen, itor%i_SGS_me_gen, iphys%i_SGS_me_gen,     &
      &    f_trns%i_SGS_me_gen, trns_fwd)
 !
-      call add_field_name_4_sph_trns_snap(fhd_SGS_buo_flux, n_scalar,   &
+      call add_field_name_4_sph_trns_snap                               &
+     &   (SGS_buoyancy_flux%name, SGS_buoyancy_flux%n_comp,             &
      &    ipol%i_SGS_buo_wk, itor%i_SGS_buo_wk, iphys%i_SGS_buo_wk,     &
      &    f_trns%i_SGS_buo_wk, trns_fwd)
       call add_field_name_4_sph_trns_snap                               &
-     &   (fhd_SGS_comp_buo_flux, n_scalar, ipol%i_SGS_comp_buo_wk,      &
-     &    itor%i_SGS_comp_buo_wk, iphys%i_SGS_comp_buo_wk,              &
-     &    f_trns%i_SGS_comp_buo_wk, trns_fwd)
+     &   (SGS_comp_buoyancy_flux%name, SGS_comp_buoyancy_flux%n_comp,   &
+     &    ipol%i_SGS_comp_buo_wk, itor%i_SGS_comp_buo_wk,               &
+     &    iphys%i_SGS_comp_buo_wk, f_trns%i_SGS_comp_buo_wk, trns_fwd)
 !
       call add_field_name_4_sph_trns_snap                               &
      &   (fhd_Csim_SGS_h_flux, n_scalar, ipol%i_Csim_SGS_h_flux,        &

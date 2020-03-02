@@ -8,22 +8,31 @@
 !> @brief Labels and addresses for basic forces
 !!
 !!@verbatim
+!!      logical function check_SGS_ene_fluxes(field_name)
+!!      subroutine set_SGS_ene_flux_addresses                           &
+!!     &         (i_phys, field_name, SGS_ene_flux, flag)
+!!      type(SGS_ene_flux_address), intent(inout) :: SGS_ene_flux
 !!
 !!      integer(kind = kint) function num_SGS_energy_fluxes()
 !!      subroutine set_SGS_energy_flux_labels(n_comps, names, maths)
 !!
-!! !!!!!  product of fields names  !!!!!!!!!!!!!!!!!!!!!!!!!!!
+!! !!!!!  energy flux by SGS terms names  !!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!
 !! field names 
 !!
-!!   fhd_Reynolds_work []: 
-!!   fhd_SGS_Lorentz_work []: 
-!!   fhd_SGS_buo_flux []: 
-!!   fhd_SGS_comp_buo_flux []: 
+!!   Reynolds_work [i_reynolds_wk]:   Reynolds stress
+!!   SGS_Lorentz_work [i_SGS_Lor_wk]: work of SGS Lorentz force
+!!   SGS_buoyancy_flux [i_SGS_buo_wk]: SGS buoyancy flux
+!!   SGS_comp_buoyancy_flux [i_SGS_comp_buo_wk]: 
+!!                          SGS compositional buoyancy flux
 !!
-!!   fhd_SGS_m_ene_gen []: 
+!!   SGS_mag_induction_flux [i_SGS_me_gen]:
+!!                           magnetic energy flux by SGS induction
 !!
-!!   fhd_SGS_temp_gen []: 
+!!   SGS_temp_flux_gen [i_SGS_temp_gen]:
+!!                           temperature change by SGS heat flux
+!!   SGS_comp_flux_gen [i_SGS_comp_gen]:
+!!                           temperature change by SGS composition flux
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!@endverbatim
@@ -43,8 +52,6 @@
 !>        Field label for work of SGS Reynolds stress
 !!         @f$ -u_{i} e_{ijk} (\overline{\omega_{j}u_{k}}
 !!            - \bar{\omega}_{j}\bar{u}_{k}) @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_Reynolds_work =     'Reynolds_work'
       type(field_def), parameter :: Reynolds_work                       &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'Reynolds_work',                           &
@@ -54,8 +61,6 @@
 !>        Field label for work of SGS Lorentz force
 !!         @f$  u_{i} e_{ijk} (\overline{J_{j}B_{k}}
 !!            - \bar{J}_{j}\bar{B}_{k}) @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_SGS_Lorentz_work =  'SGS_Lorentz_work'
       type(field_def), parameter :: SGS_Lorentz_work                    &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'SGS_Lorentz_work',                        &
@@ -64,8 +69,6 @@
      &                     // ' - \bar{\omega}_{j}\bar{u}_{k}) $')
 !>        Field label for work of SGS buoyancy
 !!         @f$ - u_{i} C^{sim} \alpha_{T} g_{i} I_{Ti} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_SGS_buo_flux =      'SGS_buoyancy_flux'
       type(field_def), parameter :: SGS_buoyancy_flux                   &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'SGS_buoyancy_flux',                       &
@@ -74,8 +77,6 @@
      &                     // ' - \bar{\omega}_{j}\bar{u}_{k}) $')
 !>        Field label for work of SGS compositional buoyancy
 !!         @f$ - u_{i} C^{sim} \alpha_{C} g_{i} I_{Ci} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_SGS_comp_buo_flux = 'SGS_comp_buoyancy_flux'
       type(field_def), parameter :: SGS_comp_buoyancy_flux              &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'SGS_comp_buoyancy_flux',                  &
@@ -86,8 +87,6 @@
 !>        Field label for energy flux of SGS induction
 !!         @f$ B_{i} e_{ijk} \partual_{j} e_{klm} 
 !!            (\overline{u_{l}B_{m}} - \bar{u}_{l}\bar{B}_{m} ) @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_SGS_m_ene_gen = 'SGS_mag_induction_flux'
       type(field_def), parameter :: SGS_mag_induction_flux              &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'SGS_mag_induction_flux',                  &
@@ -98,8 +97,6 @@
 !>        Field label for temperature generation by SGS heat flux
 !!         @f$ T \partial_{i} \left( \overline{u_{i}T}
 !!            - \bar{u}_{i}\bar{T} \right) @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_SGS_temp_gen =      'SGS_temp_flux_gen'
       type(field_def), parameter :: SGS_temp_flux_gen                   &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'SGS_temp_flux_gen',                       &
@@ -120,7 +117,7 @@
 !
 !
 !>       Structure of start address for energy flux by SGS terms
-      type SGS_flux_address
+      type SGS_ene_flux_address
 !>        Field address for work of SGS Reynolds stress
 !!         @f$ -u_{i} e_{ijk} (\overline{\omega_{j}u_{k}}
 !!            - \bar{\omega}_{j}\bar{u}_{k}) @f$
@@ -150,11 +147,65 @@
 !!         @f$ C \partial_{i} \left( \overline{u_{i}C}
 !!            - \bar{u}_{i}\bar{C} \right) @f$
         integer (kind=kint) :: i_SGS_comp_gen =    izero
-      end type SGS_flux_address
+      end type SGS_ene_flux_address
 !
 ! ----------------------------------------------------------------------
 !
       contains
+!
+! ----------------------------------------------------------------------
+!
+      logical function check_SGS_ene_fluxes(field_name)
+!
+      character(len = kchara), intent(in) :: field_name
+!
+!
+      check_SGS_ene_fluxes                                              &
+     &   =    (field_name .eq. Reynolds_work%name)                      &
+     &   .or. (field_name .eq. SGS_Lorentz_work%name)                   &
+     &   .or. (field_name .eq. SGS_buoyancy_flux%name)                  &
+     &   .or. (field_name .eq. SGS_comp_buoyancy_flux%name)             &
+!
+     &   .or. (field_name .eq. SGS_mag_induction_flux%name)             &
+     &   .or. (field_name .eq. SGS_temp_flux_gen%name)                  &
+     &   .or. (field_name .eq. SGS_comp_flux_gen%name)
+!
+      end function check_SGS_ene_fluxes
+!
+! ----------------------------------------------------------------------
+!
+      subroutine set_SGS_ene_flux_addresses                             &
+     &         (i_phys, field_name, SGS_ene_flux, flag)
+!
+      integer(kind = kint), intent(in) :: i_phys
+      character(len = kchara), intent(in) :: field_name
+!
+      type(SGS_ene_flux_address), intent(inout) :: SGS_ene_flux
+      logical, intent(inout) :: flag
+!
+!
+      flag = check_SGS_ene_fluxes(field_name)
+      if(flag) then
+        if (field_name .eq. Reynolds_work%name ) then
+          SGS_ene_flux%i_reynolds_wk =     i_phys
+        else if (field_name .eq. SGS_Lorentz_work%name ) then
+          SGS_ene_flux%i_SGS_Lor_wk =      i_phys
+        else if (field_name .eq. SGS_buoyancy_flux%name ) then
+          SGS_ene_flux%i_SGS_buo_wk =      i_phys
+        else if (field_name .eq. SGS_comp_buoyancy_flux%name ) then
+          SGS_ene_flux%i_SGS_comp_buo_wk = i_phys
+!
+        else if (field_name .eq. SGS_mag_induction_flux%name) then
+          SGS_ene_flux%i_SGS_me_gen =      i_phys
+!
+        else if (field_name .eq. SGS_temp_flux_gen%name) then
+          SGS_ene_flux%i_SGS_temp_gen =    i_phys
+        else if (field_name .eq. SGS_comp_flux_gen%name) then
+          SGS_ene_flux%i_SGS_comp_gen =    i_phys
+        end if
+      end if
+!
+      end subroutine set_SGS_ene_flux_addresses
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
