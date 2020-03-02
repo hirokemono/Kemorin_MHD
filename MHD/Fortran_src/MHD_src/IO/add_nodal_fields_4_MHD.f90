@@ -40,6 +40,7 @@
 !
       subroutine add_dependent_field(field_ctl)
 !
+      use check_SGS_terms
       use check_base_forces
       use check_filtered_forces
       use check_double_filter_field
@@ -47,6 +48,10 @@
 !
       type(ctl_array_c3), intent(inout) :: field_ctl
 !
+!
+      call add_field_ctl_4_SGS_terms(field_ctl)
+      if (iflag_debug .ge. iflag_routine_msg) write(*,*)                &
+     &    'add_field_ctl_4_SGS_terms end'
 !
       call add_field_ctl_4_dbl_fil_field(field_ctl)
       if (iflag_debug .ge. iflag_routine_msg) write(*,*)                &

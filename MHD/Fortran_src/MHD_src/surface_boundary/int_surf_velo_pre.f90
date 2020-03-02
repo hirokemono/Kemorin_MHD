@@ -104,7 +104,7 @@
           call int_sf_skv_sgs_div_t_flux(node, ele, surf, sf_grp,       &
      &        nod_fld, g_FEM, jac_sf_grp, rhs_tbl, FEM_elens,           &
      &        Vsf_bcs%sgs, num_int, SGS_param%ifilter_final,            &
-     &        iphys%i_SGS_m_flux, iphys%i_velo, iphys%i_velo,           &
+     &        iphys%SGS_term%i_SGS_m_flux, iphys%i_velo, iphys%i_velo,  &
      &        diff_coefs%num_field, iak_diff_mf, diff_coefs%ak,         &
      &        fl_prop%coef_velo, fem_wk, surf_wk, f_nl)
         end if
@@ -179,7 +179,7 @@
           call int_sf_skv_sgs_div_t_flux(node, ele, surf, sf_grp,       &
      &        nod_fld, g_FEM, jac_sf_grp, rhs_tbl, FEM_elens,           &
      &        Vsf_bcs%sgs, num_int, SGS_param%ifilter_final,            &
-     &        iphys%i_SGS_m_flux, iphys%i_velo, iphys%i_velo,           &
+     &        iphys%SGS_term%i_SGS_m_flux, iphys%i_velo, iphys%i_velo,  &
      &        diff_coefs%num_field, iak_diff_mf, diff_coefs%ak,         &
      &        fl_prop%coef_velo, fem_wk, surf_wk, f_nl)
         end if

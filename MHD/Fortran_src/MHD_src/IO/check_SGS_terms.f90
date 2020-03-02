@@ -8,7 +8,7 @@
 !> @brief Labels and addresses for basic fields
 !!
 !!@verbatim
-!!      subroutine add_SGS_terms_ctl(field_name, field_ctl)
+!!      subroutine add_field_ctl_4_SGS_terms(field_ctl)
 !!@endverbatim
 !!
       module check_SGS_terms
@@ -17,7 +17,6 @@
       use m_constants
 !
       use t_base_field_labels
-      use t_SGS_term_labels
 !
       implicit  none
 ! 
@@ -27,57 +26,65 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine add_SGS_terms_ctl(field_name, field_ctl)
+      subroutine add_field_ctl_4_SGS_terms(field_ctl)
 !
       use t_control_array_character3
+      use t_SGS_term_labels
       use add_nodal_fields_ctl
 !
-      character(len = kchara), intent(in) :: field_name
       type(ctl_array_c3), intent(inout) :: field_ctl
 !
 !
-      if( (field_name .eq. SGS_buoyancy%name)) then
+      if(check_field_list_ctl(SGS_buoyancy%name, field_ctl)) then
         call add_phys_name_ctl(fhd_velo, field_ctl)
         call add_phys_name_ctl(SGS_heat_flux%name, field_ctl)
-      else if( (field_name .eq. SGS_composit_buoyancy%name)) then
+      else if(check_field_list_ctl(SGS_composit_buoyancy%name,          &
+     &                             field_ctl)) then
         call add_phys_name_ctl(fhd_velo, field_ctl)
         call add_phys_name_ctl(SGS_composit_flux%name, field_ctl)
-      else if( (field_name .eq. SGS_induction%name)) then
+      else if(check_field_list_ctl(SGS_induction%name, field_ctl)) then
         call add_phys_name_ctl(fhd_velo, field_ctl)
         call add_phys_name_ctl(fhd_magne, field_ctl)
         call add_phys_name_ctl(SGS_vecp_induction%name, field_ctl)
-      else if( (field_name .eq. div_SGS_m_flux%name)) then
+      else if(check_field_list_ctl(div_SGS_m_flux%name,                 &
+     &                             field_ctl)) then
         call add_phys_name_ctl(SGS_momentum_flux%name, field_ctl)
-      else if( (field_name .eq. div_SGS_h_flux%name)) then
+      else if(check_field_list_ctl(div_SGS_h_flux%name,                 &
+     &                             field_ctl)) then
         call add_phys_name_ctl(SGS_heat_flux%name, field_ctl)
-      else if( (field_name .eq. div_SGS_c_flux%name)) then
+      else if(check_field_list_ctl(div_SGS_c_flux%name,                 &
+     &                             field_ctl)) then
         call add_phys_name_ctl(SGS_composit_flux%name, field_ctl)
       end if
 !
 !
-      if( (field_name .eq. SGS_inertia%name)) then
+      if(check_field_list_ctl(SGS_inertia%name, field_ctl)) then
         call add_phys_name_ctl(fhd_vort, field_ctl)
         call add_phys_name_ctl(fhd_velo, field_ctl)
-      else if( (field_name .eq. SGS_momentum_flux%name)) then
+      else if(check_field_list_ctl(SGS_momentum_flux%name,              &
+     &                             field_ctl)) then
         call add_phys_name_ctl(fhd_velo, field_ctl)
-      else if( (field_name .eq. SGS_Lorentz%name)                       &
-     &    .or. (field_name .eq. SGS_maxwell_tensor%name) ) then
+      else if(check_field_list_ctl(SGS_Lorentz%name, field_ctl)         &
+     &   .or. check_field_list_ctl(SGS_maxwell_tensor%name,             &
+     &                             field_ctl)) then
         call add_phys_name_ctl(fhd_magne, field_ctl)
 !
-      else if( (field_name .eq. SGS_vecp_induction%name)                &
-     &    .or. (field_name .eq. SGS_induct_tensor%name)) then
+      else if(check_field_list_ctl(SGS_vecp_induction%name, field_ctl)  &
+     &   .or. check_field_list_ctl(SGS_induct_tensor%name,              &
+     &                             field_ctl)) then
         call add_phys_name_ctl(fhd_velo, field_ctl)
         call add_phys_name_ctl(fhd_magne, field_ctl)
 !
-      else if( (field_name .eq. SGS_heat_flux%name)) then
+      else if(check_field_list_ctl(SGS_heat_flux%name, field_ctl)) then
         call add_phys_name_ctl(fhd_velo, field_ctl)
         call add_phys_name_ctl(fhd_temp, field_ctl)
-      else if((field_name .eq. SGS_composit_flux%name)) then
+      else if(check_field_list_ctl(SGS_composit_flux%name,             &
+     &                             field_ctl)) then
         call add_phys_name_ctl(fhd_velo, field_ctl)
         call add_phys_name_ctl(fhd_light, field_ctl)
       end if
 !
-      end subroutine add_SGS_terms_ctl
+      end subroutine add_field_ctl_4_SGS_terms
 !
 ! -----------------------------------------------------------------------
 !

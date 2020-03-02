@@ -140,8 +140,8 @@
 !
       if (iflag_debug.gt.0)  write(*,*) 'cal_div_sgs_m_flux_simi'
       call cal_div_sgs_mf_simi                                          &
-     &   (iphys%i_sgs_grad, iphys%i_SGS_m_flux, iphys%i_velo, dt,       &
-     &    FEM_prm, mesh%nod_comm, mesh%node, mesh%ele, fluid,           &
+     &   (iphys%i_sgs_grad, iphys%SGS_term%i_SGS_m_flux, iphys%i_velo,  &
+     &    dt, FEM_prm, mesh%nod_comm, mesh%node, mesh%ele, fluid,       &
      &    iphys_ele, ele_fld, fem_int%jcs, fem_int%rhs_tbl,             &
      &    rhs_mat%fem_wk, mk_MHD%mlump_fl, rhs_mat%f_l, rhs_mat%f_nl,   &
      &    nod_fld)
@@ -196,7 +196,7 @@
      &    mk_MHD%mlump_fl, mesh%node, mesh%ele, mesh%surf,              &
      &    group%surf_grp, fem_int%jcs, fem_int%rhs_tbl,                 &
      &    FEM_filters%FEM_elens, Vsf_bcs%sgs, ifilter_2delta,           &
-     &    iphys%i_sgs_grad, iphys%i_SGS_m_flux, iphys%i_velo,           &
+     &    iphys%i_sgs_grad, iphys%SGS_term%i_SGS_m_flux, iphys%i_velo,  &
      &    rhs_mat%fem_wk, rhs_mat%surf_wk, rhs_mat%f_l, rhs_mat%f_nl,   &
      &    nod_fld)
 !

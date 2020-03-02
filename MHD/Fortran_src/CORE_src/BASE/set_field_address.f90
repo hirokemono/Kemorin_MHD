@@ -209,7 +209,7 @@
         else if ( field_name(i) .eq. SGS_composit_flux%name ) then
           iphys%i_SGS_c_flux =   i0
         else if ( field_name(i) .eq. SGS_momentum_flux%name ) then
-          iphys%i_SGS_m_flux =   i0
+          iphys%SGS_term%i_SGS_m_flux =   i0
         else if ( field_name(i) .eq. SGS_maxwell_tensor%name ) then
           iphys%i_SGS_maxwell =  i0
         else if ( field_name(i) .eq. SGS_induct_tensor%name ) then

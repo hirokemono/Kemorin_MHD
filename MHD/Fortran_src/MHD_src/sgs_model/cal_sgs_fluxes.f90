@@ -210,24 +210,24 @@
         if (iflag_debug.eq.1)                                           &
      &    write(*,*) 'cal_sgs_m_flux_grad', SGS_param%ifilter_final
         call cal_sgs_m_flux_grad_w_coef(SGS_param%ifilter_final,        &
-     &      icomp_sgs_mf, iphys%i_SGS_m_flux, iphys%i_velo, ie_dvx, dt, &
-     &      FEM_prm, SGS_param, nod_comm, node, ele, fluid,             &
+     &      icomp_sgs_mf, iphys%SGS_term%i_SGS_m_flux, iphys%i_velo,    &
+     &      ie_dvx, dt, FEM_prm, SGS_param, nod_comm, node, ele, fluid, &
      &      iphys_ele, ele_fld, jacs, FEM_elens, sgs_coefs,             &
      &      rhs_tbl, mlump_fl, fem_wk, mhd_fem_wk, nod_fld)
 !
       else if (SGS_param%iflag_SGS_m_flux .eq. id_SGS_similarity) then
         if (iflag_debug.eq.1)                                           &
-     &    write(*,*) 'cal_sgs_mf_simi', iphys%i_SGS_m_flux
-        call cal_sgs_mf_simi(iphys%i_SGS_m_flux, iphys%i_velo,          &
+     &    write(*,*) 'cal_sgs_mf_simi', iphys%SGS_term%i_SGS_m_flux
+        call cal_sgs_mf_simi(iphys%SGS_term%i_SGS_m_flux, iphys%i_velo, &
      &      iphys%i_filter_velo, icomp_sgs_mf,                          &
      &      filter_param, nod_comm, node, filtering, sgs_coefs_nod,     &
      &      wk_filter, nod_fld)
 !
       else if (SGS_param%iflag_SGS_m_flux .eq. id_SGS_diffusion) then
-        if (iflag_debug.eq.1)                                           &
-     &    write(*,*) 'cal_sgs_m_flux_diffuse', iphys%i_SGS_m_flux
-        call cal_sgs_m_flux_diffuse                                     &
-     &     (iphys%i_velo, iphys%i_sgs_diffuse, iphys%i_SGS_m_flux, dt,  &
+        if (iflag_debug.eq.1) write(*,*) 'cal_sgs_m_flux_diffuse',      &
+     &                                  iphys%SGS_term%i_SGS_m_flux
+        call cal_sgs_m_flux_diffuse(iphys%i_velo,                       &
+     &      iphys%i_sgs_diffuse, iphys%SGS_term%i_SGS_m_flux, dt,       &
      &      FEM_prm, nod_comm, node, ele, fluid, iphys_ele, ele_fld,    &
      &      jacs%g_FEM, jacs%jac_3d, rhs_tbl, mlump_fl, fem_wk,         &
      &      f_l, f_nl, nod_fld)

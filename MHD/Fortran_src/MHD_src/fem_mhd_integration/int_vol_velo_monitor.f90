@@ -201,14 +201,15 @@
           call int_vol_div_SGS_tsr_flux(node, ele, nod_fld,             &
      &        g_FEM, jac_3d, rhs_tbl, FEM_elens, diff_coefs,            &
      &        fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,       &
-     &        iphys%i_velo, iphys%i_SGS_m_flux,                         &
+     &        iphys%i_velo, iphys%SGS_term%i_SGS_m_flux,                &
      &        SGS_param%ifilter_final, iak_diff_mf,                     &
      &        fl_prop%coef_nega_v, fem_wk, mhd_fem_wk, f_nl)
         else
           call int_vol_div_tsr_w_const                                  &
      &       (node, ele, g_FEM, jac_3d, rhs_tbl, nod_fld,               &
      &        fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,       &
-     &        iphys%i_SGS_m_flux, fl_prop%coef_nega_v, fem_wk, f_nl)
+     &        iphys%SGS_term%i_SGS_m_flux, fl_prop%coef_nega_v,         &
+     &        fem_wk, f_nl)
         end if
 !
       else if(i_field .eq. iphys%i_SGS_Lorentz) then
@@ -367,7 +368,7 @@
           call int_vol_div_SGS_tsr_flux_upw(node, ele, nod_fld,         &
      &        g_FEM, jac_3d, rhs_tbl, FEM_elens, diff_coefs,            &
      &        fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int, dt,   &
-     &        iphys%i_velo, iphys%i_SGS_m_flux,                         &
+     &        iphys%i_velo, iphys%SGS_term%i_SGS_m_flux,                &
      &        SGS_param%ifilter_final, iak_diff_mf,                     &
      &        ele_fld%ntot_phys, iv_upw, ele_fld%d_fld,                 &
      &        fl_prop%coef_nega_v, fem_wk, mhd_fem_wk, f_nl)
@@ -375,7 +376,7 @@
           call int_vol_div_tsr_w_const_upw                              &
      &       (node, ele, g_FEM, jac_3d, rhs_tbl, nod_fld,               &
      &        fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int, dt,   &
-     &        iphys%i_SGS_m_flux, ele_fld%ntot_phys, iv_upw,            &
+     &        iphys%SGS_term%i_SGS_m_flux, ele_fld%ntot_phys, iv_upw,   &
      &        ele_fld%d_fld, fl_prop%coef_nega_v, fem_wk, f_nl)
         end if
 !

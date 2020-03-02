@@ -98,7 +98,8 @@
       if (fl_prop%iflag_scheme .gt. id_no_evolution) then
         if ( SGS_param%iflag_SGS_m_flux .ne. id_SGS_none) then
           msg = 'solving SGS momentum flux needs'
-          call check_missing_field_w_msg(fld, msg, iphys%i_SGS_m_flux)
+          call check_missing_field_w_msg                                &
+     &       (fld, msg, iphys%SGS_term%i_SGS_m_flux)
         end if
 !
         if (SGS_param%iflag_SGS_lorentz .ne. id_SGS_none) then

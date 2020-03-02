@@ -19,6 +19,7 @@
       use t_energy_flux_labels
       use t_grad_field_labels
       use t_diff_vector_labels
+      use t_SGS_term_labels
 !
       implicit  none
 ! 
@@ -242,9 +243,6 @@
 !>        start address for SGS compositional flux
 !!         @f$ \overline{u_{i}T} - \bar{u}_{i}\bar{T} @f$
         integer (kind=kint) :: i_SGS_c_flux =      izero
-!>        start address for SGS momentum flux
-!!         @f$ \overline{u_{i}u_{j}} - \bar{u}_{i}\bar{u}_{j} @f$
-        integer (kind=kint) :: i_SGS_m_flux =      izero
 !>        start address for SGS Maxwell tensor
 !!         @f$ \overline{B_{i}B_{j}} - \bar{B}_{i}\bar{B}_{j} @f$
         integer (kind=kint) :: i_SGS_maxwell =     izero
@@ -623,6 +621,9 @@
         type(gradient_field_address) :: grad_fil_fld
 !>        Structure of difference of filtered vector
         type(diff_vector_address) :: diff_fil_vect
+!
+!>        Structure of SGS terms
+        type(SGS_term_address) :: SGS_term
       end type phys_address
 !
 !

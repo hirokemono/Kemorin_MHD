@@ -104,8 +104,8 @@
 !    SGS term by similarity model
 !
       if (iflag_debug.gt.0)                                             &
-     &     write(*,*) 'cal_sgs_mf_simi iphys%i_SGS_m_flux'
-      call cal_sgs_mf_simi(iphys%i_SGS_m_flux, iphys%i_velo,            &
+     &     write(*,*) 'cal_sgs_mf_simi iphys%SGS_term%i_SGS_m_flux'
+      call cal_sgs_mf_simi(iphys%SGS_term%i_SGS_m_flux, iphys%i_velo,   &
      &    iphys%i_filter_velo, icomp_sgs_mf, SGS_par%filter_p,          &
      &    mesh%nod_comm, mesh%node, FEM_filters%filtering,              &
      &    sgs_coefs_nod, FEM_SGS_wk%wk_filter, nod_fld)
@@ -113,7 +113,7 @@
 !    copy to work array
 !
        call copy_tensor_component(nod_fld,                              &
-     &     iphys%i_SGS_m_flux, iphys%i_sgs_simi)
+     &     iphys%SGS_term%i_SGS_m_flux, iphys%i_sgs_simi)
 !      call check_nodal_data                                            &
 !     &   ((50+my_rank), nod_fld, n_sym_tensor, iphys%i_sgs_simi)
 !
@@ -133,7 +133,7 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'cal_sgs_m_flux_grad_4_dyn'
       call cal_sgs_m_flux_grad_no_coef(ifilter_2delta,                  &
-     &    iphys%i_SGS_m_flux, iphys%i_velo, ie_dvx, dt,                 &
+     &    iphys%SGS_term%i_SGS_m_flux, iphys%i_velo, ie_dvx, dt,        &
      &    FEM_prm,  mesh%nod_comm, mesh%node, mesh%ele, fluid,          &
      &    iphys_ele, ele_fld, fem_int%jcs, FEM_filters%FEM_elens,       &
      &    fem_int%rhs_tbl, mk_MHD%mlump_fl, rhs_mat%fem_wk,             &
@@ -142,9 +142,9 @@
 !      filtering
 !
       call cal_filtered_sym_tensor_whole(SGS_par%filter_p,              &
-     &   mesh%nod_comm, mesh%node, FEM_filters%filtering,               &
-     &    iphys%i_sgs_grad, iphys%i_SGS_m_flux, FEM_SGS_wk%wk_filter,   &
-     &    nod_fld)
+     &    mesh%nod_comm, mesh%node, FEM_filters%filtering,              &
+     &    iphys%i_sgs_grad, iphys%SGS_term%i_SGS_m_flux,                &
+     &    FEM_SGS_wk%wk_filter, nod_fld)
 !      call check_nodal_data                                            &
 !     &   ((50+my_rank), nod_fld, n_sym_tensor, iphys%i_sgs_grad)
 !
