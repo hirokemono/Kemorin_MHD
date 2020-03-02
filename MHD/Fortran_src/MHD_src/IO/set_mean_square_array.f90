@@ -371,11 +371,11 @@
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_SGS_inertia,             &
      &          i_rms%i_SGS_inertia, j_ave%i_SGS_inertia, msq_list)
-          else if ( field_name .eq. fhd_SGS_induction ) then
+          else if ( field_name .eq. SGS_induction%name ) then
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_SGS_induction,           &
      &          i_rms%i_SGS_induction, j_ave%i_SGS_induction, msq_list)
-          else if ( field_name .eq. fhd_SGS_vp_induct ) then
+          else if ( field_name .eq. SGS_vecp_induction%name ) then
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_SGS_vp_induct,           &
      &          i_rms%i_SGS_vp_induct, j_ave%i_SGS_vp_induct, msq_list)

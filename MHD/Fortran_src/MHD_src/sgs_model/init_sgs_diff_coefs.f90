@@ -273,7 +273,7 @@
            if (cmt_param%iflag_c_uxb .eq. id_SGS_commute_ON) then
              icomp_diff%i_induction = id
              ifld_diff%i_induction =  jd
-             wk_diff%name(jd) = fhd_SGS_induction
+             wk_diff%name(jd) = SGS_induction%name
              diff_coefs%num_comps(jd) = 9
              id = id + diff_coefs%num_comps(jd)
              jd = jd + 1

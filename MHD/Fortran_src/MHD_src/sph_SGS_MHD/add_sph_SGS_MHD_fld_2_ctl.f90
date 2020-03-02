@@ -56,8 +56,8 @@
       end if
 !
       if(SGS_param%iflag_SGS_uxb .gt. id_SGS_none) then
-        call add_phys_name_ctl(fhd_SGS_vp_induct, field_ctl)
-        call add_phys_name_ctl(fhd_SGS_induction, field_ctl)
+        call add_phys_name_ctl(SGS_vecp_induction%name, field_ctl)
+        call add_phys_name_ctl(SGS_induction%name, field_ctl)
       end if
 !
       if(SGS_param%iflag_SGS_h_flux .gt. id_SGS_none) then

@@ -138,8 +138,8 @@
      &    itor%i_SGS_rot_Lorentz, iphys%i_SGS_rot_Lorentz,              &
      &    b_trns%i_SGS_rot_Lorentz, trns_back)
 !
-      call add_field_name_4_sph_trns                                    &
-     &   (ipol%i_SGS_induction, fhd_SGS_induction, n_vector,            &
+      call add_field_name_4_sph_trns(ipol%i_SGS_induction,              &
+     &    SGS_induction%name, SGS_induction%n_comp,                     &
      &    ipol%i_SGS_induction, itor%i_SGS_induction,                   &
      &    iphys%i_SGS_induction, b_trns%i_SGS_induction, trns_back)
 !

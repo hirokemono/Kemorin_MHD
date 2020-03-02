@@ -42,10 +42,10 @@
       else if( (field_name .eq. SGS_composit_buoyancy%name)) then
         call add_phys_name_ctl(fhd_velo, field_ctl)
         call add_phys_name_ctl(SGS_composit_flux%name, field_ctl)
-      else if( (field_name .eq. fhd_SGS_induction)) then
+      else if( (field_name .eq. SGS_induction%name)) then
         call add_phys_name_ctl(fhd_velo, field_ctl)
         call add_phys_name_ctl(fhd_magne, field_ctl)
-        call add_phys_name_ctl(fhd_SGS_vp_induct, field_ctl)
+        call add_phys_name_ctl(SGS_vecp_induction%name, field_ctl)
       else if( (field_name .eq. fhd_div_SGS_m_flux)) then
         call add_phys_name_ctl(SGS_momentum_flux%name, field_ctl)
       else if( (field_name .eq. fhd_div_SGS_h_flux)) then
@@ -64,7 +64,7 @@
      &    .or. (field_name .eq. SGS_maxwell_tensor%name) ) then
         call add_phys_name_ctl(fhd_magne, field_ctl)
 !
-      else if( (field_name .eq. fhd_SGS_vp_induct)                      &
+      else if( (field_name .eq. SGS_vecp_induction%name)                &
      &    .or. (field_name .eq. SGS_induct_tensor%name)) then
         call add_phys_name_ctl(fhd_velo, field_ctl)
         call add_phys_name_ctl(fhd_magne, field_ctl)

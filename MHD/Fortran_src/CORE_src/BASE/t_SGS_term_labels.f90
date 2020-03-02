@@ -129,8 +129,6 @@
 !>        Field label for SGS induction for vector potential
 !!         @f$ e_{ijk} (\overline{u_{j}B_{k}}
 !!            - \bar{u}_{j}\bar{B}_{k}) @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_SGS_vp_induct =       'SGS_vecp_induction'
       type(field_def), parameter :: SGS_vecp_induction                  &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'SGS_vecp_induction',                      &
@@ -139,8 +137,6 @@
 !>        Field label for SGS magnetic induction
 !!         @f$ e_{ijk} \partual_{j} e_{klm} (\overline{u_{l}B_{m}}
 !!            - \bar{u}_{l}\bar{B}_{m} ) @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_SGS_induction =       'SGS_induction'
       type(field_def), parameter :: SGS_induction                       &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'SGS_induction',                           &
@@ -265,8 +261,8 @@
      &   .or. (field_name .eq. SGS_Lorentz%name)                        &
      &   .or. (field_name .eq. SGS_buoyancy%name)                       &
      &   .or. (field_name .eq. SGS_composit_buoyancy%name)              &
-     &   .or. (field_name .eq. fhd_SGS_vp_induct)                       &
-     &   .or. (field_name .eq. fhd_SGS_induction)                       &
+     &   .or. (field_name .eq. SGS_vecp_induction%name)                 &
+     &   .or. (field_name .eq. SGS_induction%name)                      &
      &   .or. (field_name .eq. SGS_induct_tensor%name)                  &
      &   .or. (field_name .eq. SGS_heat_flux%name)                      &
      &   .or. (field_name .eq. SGS_composit_flux%name)
@@ -325,9 +321,9 @@
         else if (field_name .eq. SGS_composit_buoyancy%name) then
           SGS_term%i_SGS_comp_buo =   i_phys
 !
-        else if (field_name .eq. fhd_SGS_vp_induct) then
+        else if (field_name .eq. SGS_vecp_induction%name) then
           SGS_term%i_SGS_vp_induct =   i_phys
-        else if (field_name .eq. fhd_SGS_induction) then
+        else if (field_name .eq. SGS_induction%name) then
           SGS_term%i_SGS_induction =   i_phys
 !
         else if (field_name .eq. div_SGS_m_flux%name) then

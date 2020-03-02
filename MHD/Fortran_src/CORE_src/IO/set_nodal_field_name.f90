@@ -107,8 +107,8 @@
      &  .or. (phys_nod_name_ctl .eq. SGS_heat_flux%name         )           &
      &  .or. (phys_nod_name_ctl .eq. SGS_composit_flux%name         )           &
      &  .or. (phys_nod_name_ctl .eq. SGS_Lorentz%name        )           &
-     &  .or. (phys_nod_name_ctl .eq. fhd_SGS_induction      )           &
-     &  .or. (phys_nod_name_ctl .eq. fhd_SGS_vp_induct      )           &
+     &  .or. (phys_nod_name_ctl .eq. SGS_induction%name      )           &
+     &  .or. (phys_nod_name_ctl .eq. SGS_vecp_induction%name      )           &
      &  .or. (phys_nod_name_ctl .eq. SGS_buoyancy%name       )           &
      &  .or. (phys_nod_name_ctl .eq. SGS_composit_buoyancy%name       )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_SGS_div_m_flux_true)           &

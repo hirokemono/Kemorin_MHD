@@ -361,7 +361,7 @@
 !
       if (iphys%i_SGS_vp_induct .gt. 0) then
         if(iflag_debug.gt.0) write(*,*)                                 &
-     &        'lead ', trim(fhd_SGS_vp_induct)
+     &        'lead ', trim(SGS_vecp_induction%name)
         call cal_sgs_uxb_2_monitor                                      &
      &     (Csims_FEM_MHD%icomp_sgs%i_induction,                        &
      &      Csims_FEM_MHD%iphys_elediff%i_velo, MHD_step%time_d%dt,     &
@@ -377,7 +377,7 @@
 !
       if (iphys%i_SGS_induction .gt. 0) then
         if(iflag_debug.gt.0) write(*,*)                                 &
-     &        'lead ', trim(fhd_SGS_induction)
+     &        'lead ', trim(SGS_induction%name)
         call int_vol_sgs_induction(FEM_prm, mesh%nod_comm,              &
      &      mesh%node, mesh%ele, MHD_mesh%conduct, iphys,               &
      &      fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,     &

@@ -202,7 +202,7 @@
 !
       if (iphys%i_SGS_vp_induct .gt. 0) then
         if(iflag_debug.gt.0) write(*,*)                                 &
-     &        'lead ', trim(fhd_SGS_vp_induct)
+     &        'lead ', trim(SGS_vecp_induction%name)
         call cal_sgs_uxb_2_monitor                                      &
      &     (icomp_sgs%i_induction, iphys_elediff%i_velo, dt,            &
      &      FEM_prm, SGS_param, filter_param, nod_comm, node, ele,      &
@@ -310,7 +310,7 @@
       if (      iphys%i_SGS_induction .gt. 0                            &
      &   .and. cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
         if(iflag_debug.gt.0) write(*,*)                                 &
-     &        'lead ', trim(fhd_SGS_induction)
+     &        'lead ', trim(SGS_induction%name)
         call cal_terms_4_magnetic(iphys%i_SGS_induction,                &
      &      ifld_diff%i_induction, ak_MHD%ak_d_magne, dt,               &
      &      FEM_prm, SGS_param, cmt_param, nod_comm, node, ele,         &
@@ -354,7 +354,7 @@
       if (     iphys%i_SGS_induction .gt. 0                             &
      &   .and. cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
         if(iflag_debug.gt.0) write(*,*)                                 &
-     &        'lead ', trim(fhd_SGS_induction)
+     &        'lead ', trim(SGS_induction%name)
         call int_vol_sgs_induction                                      &
      &     (FEM_prm, nod_comm, node, ele, conduct, iphys,               &
      &      jacs%g_FEM, jacs%jac_3d, rhs_tbl, mk_MHD%mlump_cd,          &

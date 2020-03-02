@@ -252,7 +252,7 @@
          if (SGS_param%iflag_SGS_uxb .ne. id_SGS_none) then
            icomp_sgs%i_induction = i
            ifld_sgs%i_induction =  j
-           wk_sgs%name(j) = fhd_SGS_induction
+           wk_sgs%name(j) = SGS_induction%name
            sgs_coefs%num_comps(j) = 3
            i = i + sgs_coefs%num_comps(j)
            j = j + 1
@@ -262,7 +262,7 @@
          if (SGS_param%iflag_SGS_uxb .ne. id_SGS_none) then
            icomp_sgs%i_induction = i
            ifld_sgs%i_induction =  j
-           wk_sgs%name(j) = fhd_SGS_induction
+           wk_sgs%name(j) = SGS_induction%name
            sgs_coefs%num_comps(j) = 3
            i = i + sgs_coefs%num_comps(j)
            j = j + 1
