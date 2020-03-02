@@ -38,21 +38,6 @@
       integer(kind = kint), parameter, private :: nforce_base = 17
 !
 !
-!  difference of SGS terms
-!
-!>        Field label for rotation of SGS inertia term
-      character(len=kchara), parameter                                  &
-     &             :: fhd_SGS_rot_inertia = 'rot_SGS_inertia'
-!>        Field label for divergence of SGS inertia term
-      character(len=kchara), parameter                                  &
-     &             :: fhd_SGS_div_inertia = 'div_SGS_inertia'
-!>        Field label for rotation of SGS Lorentz force
-      character(len=kchara), parameter                                  &
-     &             :: fhd_SGS_rot_Lorentz = 'rot_SGS_Lorentz'
-!>        Field label for divergence of SGS Lorentz force
-      character(len=kchara), parameter                                  &
-     &             :: fhd_SGS_div_Lorentz = 'div_SGS_Lorentz'
-!
 !  fluxes by resolved field
 !>        Field label for energy flux of SGS induction
       character(len=kchara), parameter                                  &

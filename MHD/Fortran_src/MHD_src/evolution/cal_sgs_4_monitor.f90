@@ -202,7 +202,7 @@
      &      f_l, nod_fld)
       end if
 !
-      if (iphys%SGS_term%i_SGS_vp_induct .gt. 0) then
+      if (iphys%SGS_term%i_SGS_induction .gt. 0) then
         if(iflag_debug.gt.0) write(*,*)                                 &
      &        'lead ', trim(SGS_vecp_induction%name)
         call cal_sgs_uxb_2_monitor                                      &
@@ -263,10 +263,10 @@
       integer(kind = kint) :: i, i_fld
 !
 !
-      if (iphys%SGS_term%i_SGS_div_h_flux .gt. 0) then
+      if (iphys%div_SGS%i_SGS_h_flux .gt. 0) then
         if(iflag_debug.gt.0) write(*,*)                                 &
      &        'lead ', trim(div_SGS_h_flux%name)
-        call cal_terms_4_heat(iphys%SGS_term%i_SGS_div_h_flux,          &
+        call cal_terms_4_heat(iphys%div_SGS%i_SGS_h_flux,               &
      &      iphys%i_velo, iphys%i_temp,                                 &
      &      iphys%SGS_term%i_SGS_h_flux, ifld_diff%i_heat_flux,         &
      &      FEM_prm%iflag_temp_supg, FEM_prm%npoint_t_evo_int,          &
@@ -278,10 +278,10 @@
      &      mhd_fem_wk, rhs_mat, nod_fld)
       end if
 !
-      if (iphys%SGS_term%i_SGS_div_c_flux .gt. 0) then
+      if (iphys%div_SGS%i_SGS_c_flux .gt. 0) then
         if(iflag_debug.gt.0) write(*,*)                                 &
      &        'lead ', trim(div_SGS_h_flux%name)
-        call cal_terms_4_heat(iphys%SGS_term%i_SGS_div_c_flux,          &
+        call cal_terms_4_heat(iphys%div_SGS%i_SGS_c_flux,               &
      &      iphys%i_velo, iphys%i_light,                                &
      &      iphys%SGS_term%i_SGS_c_flux, ifld_diff%i_comp_flux,         &
      &      FEM_prm%iflag_comp_supg, FEM_prm%npoint_t_evo_int,          &
@@ -295,7 +295,7 @@
 !
       do i = 1, nod_fld%num_phys
         i_fld = nod_fld%istack_component(i-1) + 1
-        if(     i_fld .eq. iphys%SGS_term%i_SGS_div_m_flux              &
+        if(     i_fld .eq. iphys%div_SGS%i_SGS_m_flux                   &
      &     .or. i_fld .eq. iphys%SGS_term%i_SGS_Lorentz) then
           if(iflag_debug .ge. iflag_routine_msg)                        &
      &             write(*,*) 'lead  ', trim(nod_fld%phys_name(i))
@@ -310,11 +310,11 @@
         end if
       end do
 !
-      if (      iphys%SGS_term%i_SGS_induction .gt. 0                   &
+      if (      iphys%rot_SGS%i_SGS_induction .gt. 0                    &
      &   .and. cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
         if(iflag_debug.gt.0) write(*,*)                                 &
      &        'lead ', trim(SGS_induction%name)
-        call cal_terms_4_magnetic(iphys%SGS_term%i_SGS_induction,       &
+        call cal_terms_4_magnetic(iphys%rot_SGS%i_SGS_induction,        &
      &      ifld_diff%i_induction, ak_MHD%ak_d_magne, dt,               &
      &      FEM_prm, SGS_param, cmt_param, nod_comm, node, ele,         &
      &      surf, conduct, sf_grp, cd_prop,                             &
@@ -354,7 +354,7 @@
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-      if (     iphys%SGS_term%i_SGS_induction .gt. 0                    &
+      if (     iphys%rot_SGS%i_SGS_induction .gt. 0                     &
      &   .and. cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
         if(iflag_debug.gt.0) write(*,*)                                 &
      &        'lead ', trim(SGS_induction%name)
@@ -368,14 +368,14 @@
 !$omp parallel
       if (iphys%i_SGS_temp_gen .gt. 0) then
         call cal_phys_product_4_scalar                                  &
-     &     (iphys%i_temp, iphys%SGS_term%i_SGS_div_h_flux,              &
+     &     (iphys%i_temp, iphys%div_SGS%i_SGS_h_flux,                   &
      &      iphys%i_SGS_temp_gen, nod_fld)
       end if
 !
 !
       if (iphys%i_reynolds_wk .gt. 0) then
         call cal_phys_dot_product                                       &
-     &     (iphys%i_velo, iphys%SGS_term%i_SGS_div_m_flux,              &
+     &     (iphys%i_velo, iphys%div_SGS%i_SGS_m_flux,                   &
      &      iphys%i_reynolds_wk, nod_fld)
       end if
 !
@@ -387,7 +387,7 @@
 !
       if (iphys%i_SGS_me_gen .gt. 0) then
         call cal_phys_dot_product                                       &
-     &     (iphys%i_magne, iphys%SGS_term%i_SGS_induction,              &
+     &     (iphys%i_magne, iphys%rot_SGS%i_SGS_induction,               &
      &      iphys%i_SGS_me_gen, nod_fld)
       end if
 !$omp end parallel

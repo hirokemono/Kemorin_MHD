@@ -8,9 +8,9 @@
 !> @brief Labels and addresses for SGS terms
 !!
 !!@verbatim
-!!      logical function check_SGS_scalar_terms(field_name)
 !!      logical function check_SGS_vector_terms(field_name)
 !!      logical function check_SGS_tensor_terms(field_name)
+!!      logical function check_SGS_induction_tensor(field_name)
 !!      subroutine set_SGS_term_addresses                               &
 !!     &         (i_phys, field_name, SGS_term, flag)
 !!        type(SGS_term_address), intent(inout) :: SGS_term
@@ -35,14 +35,6 @@
 !!   SGS_composit_buoyancy [i_SGS_comp_buo]:  SGS compositional buoyancy
 !!
 !!   SGS_vecp_induction   [i_SGS_vp_induct]: SGS induction  u \times 
-!!   SGS_induction        [i_SGS_induction]: SGS magneitic induction
-!!
-!!   div_SGS_m_flux   [i_SGS_div_m_flux]: divergence of 
-!!                                           SGS momentum flux
-!!   div_SGS_h_flux   [i_SGS_div_h_flux]: divergence of 
-!!                                           SGS heat flux
-!!   div_SGS_c_flux   [i_SGS_div_c_flux]: divergence of 
-!!                                           SGS composition flux
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!@endverbatim
@@ -51,12 +43,11 @@
 !
       use m_precision
       use m_constants
-      use t_base_field_labels
       use t_field_labels
 !
       implicit  none
 ! 
-      integer(kind = kint), parameter, private :: nterms_SGS = 14
+      integer(kind = kint), parameter, private :: nterms_SGS = 10
 !
 !>        Field label for SGS momentum flux
 !!         @f$ \overline{u_{i}u_{j}} - \bar{u}_{i}\bar{u}_{j} @f$
@@ -134,40 +125,7 @@
      &                name = 'SGS_vecp_induction',                      &
      &                math = '$ e_{ijk} (\overline{u}_{j}B_{k}}'        &
      &                     // ' - \bar{u}_{j}\bar{B}_{k}) $')
-!>        Field label for SGS magnetic induction
-!!         @f$ e_{ijk} \partual_{j} e_{klm} (\overline{u_{l}B_{m}}
-!!            - \bar{u}_{l}\bar{B}_{m} ) @f$
-      type(field_def), parameter :: SGS_induction                       &
-     &    = field_def(n_comp = n_vector,                                &
-     &                name = 'SGS_induction',                           &
-     &                math = '$ e_{ijk} \partual_{j} e_{klm}'           &
-     &                     // ' (\overline{u_{l}B_{m}}'                 &
-     &                     // ' - \bar{u}_{j}\bar{B}_{k}) $')
 !
-!>        Field label for divergence of SGS momentum flux
-!!         @f$ \partial_{i} ( \overline{u_{i}u_{j}}
-!!             - \bar{u}_{i}\bar{u}_{j}) @f$
-      type(field_def), parameter :: div_SGS_m_flux                      &
-     &    = field_def(n_comp = n_vector,                                &
-     &                name = 'div_SGS_m_flux',                          &
-     &                math = '$ \partial_{i} ( \overline{u_{i}u_{j}}'   &
-     &                     // ' - \bar{u}_{i}\bar{u}_{j}) $')
-!>        Field label for divergence of SGS heat flux
-!!         @f$ \partial_{i} \left( \overline{u_{i}T}
-!!            - \bar{u}_{i}\bar{T} \right) @f$
-      type(field_def), parameter :: div_SGS_h_flux                      &
-     &    = field_def(n_comp = n_scalar,                                &
-     &                name = 'div_SGS_h_flux',                          &
-     &                math = '$ \partial_{i} ( \overline{u_{i}T}'       &
-     &                     // ' - \bar{u}_{i}\bar{T}) $')
-!>        Field label for divergence of SGS heat flux
-!!         @f$ \partial_{i} \left( \overline{u_{i}C}
-!!            - \bar{u}_{i}\bar{C} \right) @f$
-      type(field_def), parameter :: div_SGS_c_flux                      &
-     &    = field_def(n_comp = n_scalar,                                &
-     &                name = 'div_SGS_c_flux',                          &
-     &                math = '$ \partial_{i} ( \overline{u_{i}C}'       &
-     &                     // ' - \bar{u}_{i}\bar{C}) $')
 !
 !>       Structure for start address for SGS terms
       type SGS_term_address
@@ -205,42 +163,12 @@
 !>        start address for SGS induction for vector potential
 !!         @f$ e_{ijk} (\overline{u_{j}B_{k}}
 !!            - \bar{u}_{j}\bar{B}_{k}) @f$
-        integer (kind=kint) :: i_SGS_vp_induct =   izero
-!>        start address for divergence of SGS magnetic induction tensor
-!!         @f$ e_{ijk} \partual_{j} e_{klm} (\overline{u_{l}B_{m}}
-!!            - \bar{u}_{l}\bar{B}_{m} ) @f$
         integer (kind=kint) :: i_SGS_induction =   izero
-!
-!>        start address for divergence of SGS momentum flux
-!!         @f$ \partial_{i} ( \overline{u_{i}u_{j}}
-!!             - \bar{u}_{i}\bar{u}_{j}) @f$
-         integer (kind=kint) :: i_SGS_div_m_flux=   izero
-!>        start address for divergence of SGS heat flux
-!!         @f$ \partial_{i} \left( \overline{u_{i}T}
-!!            - \bar{u}_{i}\bar{T} \right) @f$
-        integer (kind=kint) :: i_SGS_div_h_flux=   izero
-!>        start address for divergence of SGS composition flux
-!!         @f$ \partial_{i} \left( \overline{u_{i}C}
-!!            - \bar{u}_{i}\bar{C} \right) @f$
-        integer (kind=kint) :: i_SGS_div_c_flux=   izero
       end type SGS_term_address
 !
 ! ----------------------------------------------------------------------
 !
       contains
-!
-! ----------------------------------------------------------------------
-!
-      logical function check_SGS_scalar_terms(field_name)
-!
-      character(len = kchara), intent(in) :: field_name
-!
-!
-      check_SGS_scalar_terms                                            &
-     &   =    (field_name .eq. div_SGS_h_flux%name)                     &
-     &   .or. (field_name .eq. div_SGS_c_flux%name)
-!
-      end function check_SGS_scalar_terms
 !
 ! ----------------------------------------------------------------------
 !
@@ -251,13 +179,10 @@
 !
       check_SGS_vector_terms                                            &
      &   =    (field_name .eq. SGS_inertia%name)                        &
-     &   .or. (field_name .eq. div_SGS_m_flux%name)                     &
      &   .or. (field_name .eq. SGS_Lorentz%name)                        &
      &   .or. (field_name .eq. SGS_buoyancy%name)                       &
      &   .or. (field_name .eq. SGS_composit_buoyancy%name)              &
      &   .or. (field_name .eq. SGS_vecp_induction%name)                 &
-     &   .or. (field_name .eq. SGS_induction%name)                      &
-     &   .or. (field_name .eq. SGS_induct_tensor%name)                  &
      &   .or. (field_name .eq. SGS_heat_flux%name)                      &
      &   .or. (field_name .eq. SGS_composit_flux%name)
 !
@@ -277,6 +202,18 @@
       end function check_SGS_tensor_terms
 !
 ! ----------------------------------------------------------------------
+!
+      logical function check_SGS_induction_tensor(field_name)
+!
+      character(len = kchara), intent(in) :: field_name
+!
+!
+      check_SGS_induction_tensor                                        &
+     &   =    (field_name .eq. SGS_induct_tensor%name)
+!
+      end function check_SGS_induction_tensor
+!
+! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
       subroutine set_SGS_term_addresses                                 &
@@ -291,7 +228,7 @@
 !
       flag = check_SGS_vector_terms(field_name)                         &
      &    .or. check_SGS_tensor_terms(field_name)                       &
-     &    .or. check_SGS_scalar_terms(field_name)
+     &    .or. check_SGS_induction_tensor(field_name)
       if(flag) then
         if (field_name .eq. SGS_momentum_flux%name ) then
           SGS_term%i_SGS_m_flux =     i_phys
@@ -316,16 +253,7 @@
           SGS_term%i_SGS_comp_buo =   i_phys
 !
         else if (field_name .eq. SGS_vecp_induction%name) then
-          SGS_term%i_SGS_vp_induct =   i_phys
-        else if (field_name .eq. SGS_induction%name) then
           SGS_term%i_SGS_induction =   i_phys
-!
-        else if (field_name .eq. div_SGS_m_flux%name) then
-          SGS_term%i_SGS_div_m_flux =    i_phys
-        else if (field_name .eq. div_SGS_h_flux%name ) then
-          SGS_term%i_SGS_div_h_flux =     i_phys
-        else if (field_name .eq. div_SGS_c_flux%name ) then
-          SGS_term%i_SGS_div_c_flux =    i_phys
         end if
       end if
 !
@@ -371,15 +299,6 @@
 !
       call set_field_labels(SGS_vecp_induction,                         &
      &    n_comps(10), names(10), maths(10))
-      call set_field_labels(SGS_induction,                              &
-     &    n_comps(11), names(11), maths(11))
-!
-      call set_field_labels(div_SGS_m_flux,                             &
-     &    n_comps(12), names(12), maths(12))
-      call set_field_labels(div_SGS_h_flux,                             &
-     &    n_comps(13), names(13), maths(13))
-      call set_field_labels(div_SGS_c_flux,                             &
-     &    n_comps(14), names(14), maths(14))
 !
       end subroutine set_SGS_term_labels
 !

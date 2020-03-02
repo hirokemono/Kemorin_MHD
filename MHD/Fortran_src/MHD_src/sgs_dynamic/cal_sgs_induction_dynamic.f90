@@ -133,7 +133,7 @@
 !
       if (iflag_debug.gt.0)  write(*,*) 'cal_sgs_uxb_grad_4_dyn'
       call cal_sgs_vp_induct_grad_no_coef(ifilter_2delta,               &
-     &    iphys%SGS_term%i_SGS_vp_induct, iphys%i_magne,                &
+     &    iphys%SGS_term%i_SGS_induction, iphys%i_magne,                &
      &    ie_dvx, dt, FEM_prm, mesh%nod_comm, mesh%node, mesh%ele,      &
      &    conduct, cd_prop, iphys_ele, ele_fld,                         &
      &    fem_int%jcs, fem_int%rhs_tbl, FEM_filters%FEM_elens,          &
@@ -144,7 +144,7 @@
 !
       call cal_filtered_vector_whole(SGS_par%filter_p,                  &
      &    mesh%nod_comm, mesh%node, FEM_filters%filtering,              &
-     &    iphys%i_sgs_grad, iphys%SGS_term%i_SGS_vp_induct,             &
+     &    iphys%i_sgs_grad, iphys%SGS_term%i_SGS_induction,             &
      &    FEM_SGS_wk%wk_filter, nod_fld)
 !
 !   Change coordinate

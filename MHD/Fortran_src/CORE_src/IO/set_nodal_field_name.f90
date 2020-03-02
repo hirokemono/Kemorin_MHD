@@ -49,6 +49,8 @@
       subroutine set_vector_field_name(phys_nod_name_ctl, icou,         &
      &          phys_nod_name, num_nod_component, iflag)
 !
+      use t_SGS_term_labels
+!
       use m_rot_filtered_force_labels
       use m_div_filtered_force_labels
       use m_grad_filter_field_labels
@@ -102,28 +104,16 @@
      &  .or. (phys_nod_name_ctl .eq. fhd_geostrophic        )           &
      &      )   iflag = 1
 !
-      if (   (phys_nod_name_ctl .eq. div_SGS_m_flux%name     )           &
-     &  .or. (phys_nod_name_ctl .eq. SGS_inertia%name        )           &
-     &  .or. (phys_nod_name_ctl .eq. SGS_heat_flux%name         )           &
-     &  .or. (phys_nod_name_ctl .eq. SGS_composit_flux%name         )           &
-     &  .or. (phys_nod_name_ctl .eq. SGS_Lorentz%name        )           &
-     &  .or. (phys_nod_name_ctl .eq. SGS_induction%name      )           &
-     &  .or. (phys_nod_name_ctl .eq. SGS_vecp_induction%name      )           &
-     &  .or. (phys_nod_name_ctl .eq. SGS_buoyancy%name       )           &
-     &  .or. (phys_nod_name_ctl .eq. SGS_composit_buoyancy%name       )           &
-     &  .or. (phys_nod_name_ctl .eq. fhd_SGS_div_m_flux_true)           &
+      if (   (phys_nod_name_ctl .eq. fhd_SGS_div_m_flux_true)           &
      &  .or. (phys_nod_name_ctl .eq. fhd_SGS_Lorentz_true   )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_SGS_mag_induct_true)           &
-     &  .or. (phys_nod_name_ctl .eq. fhd_SGS_rot_inertia    )           &
-     &  .or. (phys_nod_name_ctl .eq. fhd_SGS_rot_Lorentz    )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_h_flux_w_sgs       )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_c_flux_w_sgs       )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_inertia_w_sgs      )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_Lorentz_w_sgs      )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_vp_induct_w_sgs    )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_mag_induct_w_sgs   )           &
-     &  .or. (phys_nod_name_ctl .eq. fhd_SGS_rot_Lorentz    )           &
-     &  .or. (phys_nod_name_ctl .eq. fhd_SGS_rot_Lorentz    )           &
+
      &      )   iflag = 1
 !
       if (   (phys_nod_name_ctl .eq. fhd_wide_SGS_inertia   )           &
@@ -152,6 +142,9 @@
 !
       if(     check_force_vectors(phys_nod_name_ctl)                    &
      &   .or. check_gradient_field(phys_nod_name_ctl)                   &
+     &   .or. check_SGS_vector_terms(phys_nod_name_ctl)                 &
+     &   .or. check_div_SGS_flux_tensor(phys_nod_name_ctl)              &
+     &   .or. check_rot_SGS_terms(phys_nod_name_ctl)                    &
      &   .or. check_filtered_force(phys_nod_name_ctl)                   &
      &   .or. check_rot_fil_force(phys_nod_name_ctl)                    &
      &   .or. check_wide_filter_vector(phys_nod_name_ctl)               &
@@ -175,6 +168,8 @@
 !
       subroutine set_scalar_field_name(phys_nod_name_ctl, icou,         &
      &          phys_nod_name, num_nod_component, iflag)
+!
+      use t_SGS_term_labels
 !
       use m_div_filtered_force_labels
       use m_grad_filter_field_labels
@@ -241,8 +236,6 @@
      &   .or. (phys_nod_name_ctl .eq. fhd_mag_tension_work    )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_buoyancy_flux       )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_comp_buo_flux       )         &
-     &   .or. (phys_nod_name_ctl .eq. div_SGS_h_flux%name      )         &
-     &   .or. (phys_nod_name_ctl .eq. div_SGS_c_flux%name      )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_SGS_m_ene_gen       )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_SGS_temp_gen        )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_SGS_Lorentz_work    )         &
@@ -262,8 +255,6 @@
      &   .or. (phys_nod_name_ctl .eq. fhd_SGS_temp_gen_true   )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_SGS_comp_gen_true   )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_SGS_m_ene_gen_true  )         &
-     &   .or. (phys_nod_name_ctl .eq. fhd_SGS_div_inertia     )         &
-     &   .or. (phys_nod_name_ctl .eq. fhd_SGS_div_Lorentz     )         &
      &      )   iflag = 1
 !
       if (    (phys_nod_name_ctl .eq. fhd_div_inertia         )         &
@@ -305,6 +296,7 @@
 !
       if(     check_scalar_advection(phys_nod_name_ctl)                 &
      &   .or. check_divergence_field(phys_nod_name_ctl)                 &
+     &   .or. check_div_SGS_flux_vector(phys_nod_name_ctl)              &
      &   .or. check_filtered_scallar_flux(phys_nod_name_ctl)            &
      &   .or. check_div_fil_force(phys_nod_name_ctl)                    &
      &   .or. check_filter_enegy_fluxes(phys_nod_name_ctl)              &
@@ -333,6 +325,8 @@
       subroutine set_tensor_field_name(phys_nod_name_ctl, icou,         &
      &          phys_nod_name, num_nod_component, iflag)
 !
+      use t_SGS_term_labels
+!
       character(len = kchara), intent(in) :: phys_nod_name_ctl
       integer (kind = kint), intent(inout) :: icou
       integer (kind = kint), intent(inout) :: num_nod_component
@@ -360,7 +354,7 @@
       end if
 !
        if (  check_asym_flux_tensors(phys_nod_name_ctl)                 &
-     &  .or. (phys_nod_name_ctl .eq. SGS_induct_tensor%name  )          &
+     &  .or. check_SGS_induction_tensor(phys_nod_name_ctl)              &
      &       ) then
 !
         iflag = 1

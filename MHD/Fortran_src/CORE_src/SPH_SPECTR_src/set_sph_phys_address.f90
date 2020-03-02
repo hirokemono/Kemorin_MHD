@@ -267,9 +267,9 @@
      &    itor%SGS_term%i_SGS_inertia, idpdr%SGS_term%i_SGS_inertia)
       call set_vect_sph_address(ipol%SGS_term%i_SGS_Lorentz,            &
      &    itor%SGS_term%i_SGS_Lorentz, idpdr%SGS_term%i_SGS_Lorentz)
-      call set_vect_sph_address(ipol%SGS_term%i_SGS_vp_induct,          &
-     &    itor%SGS_term%i_SGS_vp_induct,                                &
-     &    idpdr%SGS_term%i_SGS_vp_induct)
+      call set_vect_sph_address(ipol%SGS_term%i_SGS_induction,          &
+     &    itor%SGS_term%i_SGS_induction,                                &
+     &    idpdr%SGS_term%i_SGS_induction)
 !
       call set_vect_sph_address(ipol%i_wide_SGS_h_flux,                 &
      &    itor%i_wide_SGS_h_flux, idpdr%i_wide_SGS_h_flux)
@@ -293,12 +293,10 @@
       call set_vect_sph_address(ipol%i_dbl_SGS_vp_induct,               &
      &    itor%i_dbl_SGS_vp_induct, idpdr%i_dbl_SGS_vp_induct)
 !
-      call set_vect_sph_address(ipol%SGS_term%i_SGS_div_m_flux,         &
-     &    itor%SGS_term%i_SGS_div_m_flux,                               &
-     &    idpdr%SGS_term%i_SGS_div_m_flux)
-      call set_vect_sph_address(ipol%SGS_term%i_SGS_induction,          &
-     &    itor%SGS_term%i_SGS_induction,                                &
-     &    idpdr%SGS_term%i_SGS_induction)
+      call set_vect_sph_address(ipol%div_SGS%i_SGS_m_flux,              &
+     &    itor%div_SGS%i_SGS_m_flux, idpdr%div_SGS%i_SGS_m_flux)
+      call set_vect_sph_address(ipol%rot_SGS%i_SGS_induction,           &
+     &    itor%rot_SGS%i_SGS_induction, idpdr%rot_SGS%i_SGS_induction)
       call set_vect_sph_address(ipol%SGS_term%i_SGS_buoyancy,           &
      &    itor%SGS_term%i_SGS_buoyancy, idpdr%SGS_term%i_SGS_buoyancy)
       call set_vect_sph_address(ipol%SGS_term%i_SGS_comp_buo,           &

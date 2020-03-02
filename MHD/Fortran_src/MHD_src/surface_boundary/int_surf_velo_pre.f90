@@ -175,7 +175,7 @@
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
 !
 !
-      if (i_field .eq. iphys%SGS_term%i_SGS_div_m_flux) then
+      if (i_field .eq. iphys%div_SGS%i_SGS_m_flux) then
         if (cmt_param%iflag_c_mf .eq. id_SGS_commute_ON) then
           call int_sf_skv_sgs_div_t_flux(node, ele, surf, sf_grp,       &
      &        nod_fld, g_FEM, jac_sf_grp, rhs_tbl, FEM_elens,           &

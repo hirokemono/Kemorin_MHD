@@ -49,6 +49,9 @@
       type(ctl_array_c3), intent(inout) :: field_ctl
 !
 !
+      call add_field_ctl_4_diff_SGS_terms(field_ctl)
+      if (iflag_debug .ge. iflag_routine_msg) write(*,*)                &
+     &    'add_field_ctl_4_diff_SGS_terms end'
       call add_field_ctl_4_SGS_terms(field_ctl)
       if (iflag_debug .ge. iflag_routine_msg) write(*,*)                &
      &    'add_field_ctl_4_SGS_terms end'

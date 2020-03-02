@@ -325,10 +325,10 @@
      &    iphys%SGS_term%i_SGS_m_flux, n_sym_tensor, nod_fld%d_fld)
 !$omp end parallel
 !
-      if (iphys%SGS_term%i_SGS_div_m_flux .gt. 0) then
+      if (iphys%div_SGS%i_SGS_m_flux .gt. 0) then
         if(iflag_debug.gt.0) write(*,*)                                 &
      &        'lead radial', trim(div_SGS_m_flux%name)
-        call cal_terms_4_momentum(iphys%SGS_term%i_SGS_div_m_flux,      &
+        call cal_terms_4_momentum(iphys%div_SGS%i_SGS_m_flux,           &
      &      Csims_FEM_MHD%ifld_diff%i_mom_flux,                         &
      &      Csims_FEM_MHD%ifld_diff%i_lorentz, MHD_step%time_d%dt,      &
      &      FEM_prm, SGS_par%model_p, SGS_par%commute_p,                &
@@ -343,7 +343,7 @@
 !$omp parallel
       if (iphys%i_reynolds_wk .gt. 0) then
         call cal_phys_dot_product                                       &
-     &     (iphys%i_velo, iphys%SGS_term%i_SGS_div_m_flux,              &
+     &     (iphys%i_velo, iphys%div_SGS%i_SGS_m_flux,                   &
      &      iphys%i_reynolds_wk, nod_fld)
       end if
 !
@@ -360,7 +360,7 @@
      &    iphys%i_velo, n_vector, nod_fld%d_fld)
 !$omp end parallel
 !
-      if (iphys%SGS_term%i_SGS_vp_induct .gt. 0) then
+      if (iphys%SGS_term%i_SGS_induction .gt. 0) then
         if(iflag_debug.gt.0) write(*,*)                                 &
      &        'lead ', trim(SGS_vecp_induction%name)
         call cal_sgs_uxb_2_monitor                                      &
@@ -376,7 +376,7 @@
 
       end if
 !
-      if (iphys%SGS_term%i_SGS_induction .gt. 0) then
+      if (iphys%rot_SGS%i_SGS_induction .gt. 0) then
         if(iflag_debug.gt.0) write(*,*)                                 &
      &        'lead ', trim(SGS_induction%name)
         call int_vol_sgs_induction(FEM_prm, mesh%nod_comm,              &
@@ -389,7 +389,7 @@
 !$omp parallel
       if (iphys%i_SGS_me_gen .gt. 0) then
         call cal_phys_dot_product                                       &
-     &     (iphys%i_magne, iphys%SGS_term%i_SGS_induction,              &
+     &     (iphys%i_magne, iphys%rot_SGS%i_SGS_induction,               &
      &      iphys%i_SGS_me_gen, nod_fld)
       end if
 !$omp end parallel

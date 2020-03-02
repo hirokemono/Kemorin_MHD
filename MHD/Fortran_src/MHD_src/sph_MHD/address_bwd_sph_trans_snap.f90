@@ -130,19 +130,20 @@
      &    b_trns%i_mag_induct_w_sgs, trns_back)
 !
       call add_field_name_4_sph_trns_snap                               &
-     &   (fhd_SGS_rot_inertia, n_vector, ipol%i_SGS_rot_inertia,        &
-     &    itor%i_SGS_rot_inertia, iphys%i_SGS_rot_inertia,              &
-     &    b_trns%i_SGS_rot_inertia, trns_back)
+     &   (rot_SGS_inertia%name, rot_SGS_inertia%n_comp,                 &
+     &    ipol%i_SGS_rot_inertia, itor%i_SGS_rot_inertia,               &
+     &    iphys%i_SGS_rot_inertia, b_trns%i_SGS_rot_inertia,            &
+     &    trns_back)
       call add_field_name_4_sph_trns_snap                               &
-     &   (fhd_SGS_rot_Lorentz, n_vector, ipol%i_SGS_rot_Lorentz,        &
-     &    itor%i_SGS_rot_Lorentz, iphys%i_SGS_rot_Lorentz,              &
-     &    b_trns%i_SGS_rot_Lorentz, trns_back)
+     &   (rot_SGS_Lorentz%name, rot_SGS_Lorentz%n_comp,                 &
+     &    ipol%i_SGS_rot_Lorentz, itor%i_SGS_rot_Lorentz,               &
+     &    iphys%i_SGS_rot_Lorentz, b_trns%i_SGS_rot_Lorentz, trns_back)
 !
-      call add_field_name_4_sph_trns(ipol%SGS_term%i_SGS_induction,     &
+      call add_field_name_4_sph_trns(ipol%rot_SGS%i_SGS_induction,      &
      &    SGS_induction%name, SGS_induction%n_comp,                     &
-     &    ipol%SGS_term%i_SGS_induction, itor%SGS_term%i_SGS_induction, &
-     &    iphys%SGS_term%i_SGS_induction,                               &
-     &    b_trns%SGS_term%i_SGS_induction, trns_back)
+     &    ipol%rot_SGS%i_SGS_induction, itor%rot_SGS%i_SGS_induction,   &
+     &    iphys%rot_SGS%i_SGS_induction,                                &
+     &    b_trns%rot_SGS%i_SGS_induction, trns_back)
 !
       call add_field_name_4_sph_trns_snap                               &
      &   (pressure_gradient%name, pressure_gradient%n_comp,             &
@@ -307,25 +308,23 @@
      &    iphys%i_div_Coriolis, b_trns%i_div_Coriolis, trns_back)
 !
       call add_field_name_4_sph_trns_snap                               &
-     &   (fhd_SGS_div_inertia, n_scalar,                                &
+     &   (div_SGS_inertia%name, div_SGS_inertia%n_comp,                 &
      &    ipol%i_SGS_div_inertia, itor%i_SGS_div_inertia,               &
      &    iphys%i_SGS_div_inertia, b_trns%i_SGS_div_inertia, trns_back)
       call add_field_name_4_sph_trns_snap                               &
-     &   (fhd_SGS_div_Lorentz, n_scalar,                                &
+     &   (div_SGS_Lorentz%name, div_SGS_Lorentz%n_comp,                 &
      &    ipol%i_SGS_div_Lorentz, itor%i_SGS_div_Lorentz,               &
      &    iphys%i_SGS_div_Lorentz, b_trns%i_SGS_div_Lorentz, trns_back)
       call add_field_name_4_sph_trns_snap                               &
      &   (div_SGS_h_flux%name, div_SGS_h_flux%n_comp,                   &
-     &    ipol%SGS_term%i_SGS_div_h_flux,                               &
-     &    itor%SGS_term%i_SGS_div_h_flux,                               &
-     &    iphys%SGS_term%i_SGS_div_h_flux,                              &
-     &    b_trns%SGS_term%i_SGS_div_h_flux, trns_back)
+     &    ipol%div_SGS%i_SGS_h_flux, itor%div_SGS%i_SGS_h_flux,         &
+     &    iphys%div_SGS%i_SGS_h_flux, b_trns%div_SGS%i_SGS_h_flux,      &
+     &    trns_back)
       call add_field_name_4_sph_trns_snap                               &
      &   (div_SGS_c_flux%name, div_SGS_c_flux%n_comp,                   &
-     &    ipol%SGS_term%i_SGS_div_c_flux,                               &
-     &    itor%SGS_term%i_SGS_div_c_flux,                               &
-     &    iphys%SGS_term%i_SGS_div_c_flux,                              &
-     &    b_trns%SGS_term%i_SGS_div_c_flux, trns_back)
+     &    ipol%div_SGS%i_SGS_c_flux, itor%div_SGS%i_SGS_c_flux,         &
+     &    iphys%div_SGS%i_SGS_c_flux, b_trns%div_SGS%i_SGS_c_flux,      &
+     &    trns_back)
       trns_back%num_scalar = trns_back%nfield - trns_back%num_vector
 !
       end subroutine b_trans_address_scalar_snap

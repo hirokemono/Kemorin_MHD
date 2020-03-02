@@ -39,8 +39,10 @@
 !
       use t_base_field_labels
       use t_diff_vector_labels
+      use t_SGS_term_labels
       use m_phys_constants
       use m_volume_average_labels
+      use m_diff_SGS_term_labels
       use m_filtered_force_labels
       use m_dble_filter_field_labels
       use m_filtered_ene_flux_labels
@@ -339,10 +341,20 @@
           if(check_SGS_vector_terms(field_name)) then
             call set_rms_address_list(i, nod_fld, msq_list)
           end if
-          if(check_SGS_scalar_terms(field_name)) then
+          if(check_SGS_tensor_terms(field_name)) then
             call set_rms_address_list(i, nod_fld, msq_list)
           end if
-          if(check_SGS_tensor_terms(field_name)) then
+          if(check_SGS_induction_tensor(field_name)) then
+            call set_rms_address_list(i, nod_fld, msq_list)
+          end if
+!
+          if(check_div_SGS_flux_vector(field_name)) then
+            call set_rms_address_list(i, nod_fld, msq_list)
+          end if
+          if(check_div_SGS_flux_tensor(field_name)) then
+            call set_rms_address_list(i, nod_fld, msq_list)
+          end if
+          if(check_rot_SGS_terms(field_name)) then
             call set_rms_address_list(i, nod_fld, msq_list)
           end if
 !
@@ -412,17 +424,7 @@
      &          msq_list)
           end if
 !
-          if ( field_name .eq. fhd_SGS_rot_inertia ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_SGS_rot_inertia,         &
-     &          i_rms%i_SGS_rot_inertia, j_ave%i_SGS_rot_inertia,       &
-     &          msq_list)
-          else if ( field_name .eq. fhd_SGS_rot_Lorentz ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_SGS_rot_Lorentz,         &
-     &          i_rms%i_SGS_rot_Lorentz, j_ave%i_SGS_rot_Lorentz,       &
-     &          msq_list)
-          else if ( field_name .eq. fhd_geostrophic ) then
+          if ( field_name .eq. fhd_geostrophic ) then
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_geostrophic,             &
      &          i_rms%i_geostrophic, j_ave%i_geostrophic, msq_list)
@@ -595,16 +597,6 @@
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_SGS_me_gen_tr,           &
      &          i_rms%i_SGS_me_gen_tr, j_ave%i_SGS_me_gen_tr, msq_list)
-          else if ( field_name .eq. fhd_SGS_div_inertia ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_SGS_div_inertia,         &
-     &          i_rms%i_SGS_div_inertia, j_ave%i_SGS_div_inertia,       &
-     &          msq_list)
-          else if ( field_name .eq. fhd_SGS_div_Lorentz ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_SGS_div_Lorentz,         &
-     &          i_rms%i_SGS_div_Lorentz, j_ave%i_SGS_div_Lorentz,       &
-     &          msq_list)
           end if
 !
           if ( field_name .eq. fhd_filter_vort ) then

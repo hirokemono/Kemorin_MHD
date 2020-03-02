@@ -161,7 +161,7 @@
      &      rhs_tbl, Bsf_bcs%grad, num_int, ak_d_magne, fem_wk, f_l)
       end if
 !
-      if (i_field .eq. iphys%SGS_term%i_SGS_induction) then
+      if (i_field .eq. iphys%rot_SGS%i_SGS_induction) then
         if (SGS_param%iflag_SGS_uxb .ne. id_SGS_none                    &
      &    .and. cmt_param%iflag_c_uxb .eq. id_SGS_commute_ON) then
           call int_surf_div_induct_t_sgs                                &

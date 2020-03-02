@@ -135,7 +135,7 @@
      &                'sel_scl_diff_adv_SGS_src_adams temperature'
         call sel_scl_diff_adv_SGS_src_adams(SGS_param%iflag_SGS_h_flux, &
      &      sph_bc_T%kr_in, sph_bc_T%kr_out, ipol%i_t_diffuse,          &
-     &      ipol%forces%i_h_advect, ipol%SGS_term%i_SGS_div_h_flux,     &
+     &      ipol%forces%i_h_advect, ipol%div_SGS%i_SGS_h_flux,          &
      &      ipol%i_heat_source, ipol%i_temp, ipol%i_pre_heat,           &
      &      dt, ht_prop%coef_exp, ht_prop%coef_source, sph_rj, rj_fld)
       end if
@@ -145,7 +145,7 @@
      &                'sel_scl_diff_adv_SGS_src_adams composition'
         call sel_scl_diff_adv_SGS_src_adams(SGS_param%iflag_SGS_c_flux, &
      &      sph_bc_C%kr_in, sph_bc_C%kr_out, ipol%i_c_diffuse,          &
-     &      ipol%forces%i_c_advect, ipol%SGS_term%i_SGS_div_c_flux,     &
+     &      ipol%forces%i_c_advect, ipol%div_SGS%i_SGS_c_flux,          &
      &      ipol%i_light_source, ipol%i_light, ipol%i_pre_composit,     &
      &      dt, cp_prop%coef_exp, cp_prop%coef_source, sph_rj, rj_fld)
       end if
@@ -158,7 +158,7 @@
      &                'sel_ctr_scl_SGS_dadv_src_adms temperature'
         call sel_ctr_scl_SGS_dadv_src_adms                              &
      &     (SGS_param%iflag_SGS_h_flux, ipol%i_t_diffuse,               &
-     &      ipol%forces%i_h_advect, ipol%SGS_term%i_SGS_div_h_flux,     &
+     &      ipol%forces%i_h_advect, ipol%div_SGS%i_SGS_h_flux,          &
      &      ipol%i_heat_source, ipol%i_temp, ipol%i_pre_heat,           &
      &      dt, ht_prop%coef_exp, ht_prop%coef_source, sph_rj, rj_fld)
       end if
@@ -168,7 +168,7 @@
      &                'sel_ctr_scl_SGS_dadv_src_adms composition'
         call sel_ctr_scl_SGS_dadv_src_adms                              &
      &     (SGS_param%iflag_SGS_c_flux, ipol%i_c_diffuse,               &
-     &      ipol%forces%i_c_advect, ipol%SGS_term%i_SGS_div_c_flux,     &
+     &      ipol%forces%i_c_advect, ipol%div_SGS%i_SGS_c_flux,          &
      &      ipol%i_light_source, ipol%i_light, ipol%i_pre_composit,     &
      &      dt, cp_prop%coef_exp, cp_prop%coef_source, sph_rj, rj_fld)
       end if
@@ -217,7 +217,7 @@
      &                'sel_scl_diff_adv_SGS_src_elr temperature'
         call sel_scl_diff_adv_SGS_src_elr(SGS_param%iflag_SGS_h_flux,   &
      &      sph_bc_T%kr_in, sph_bc_T%kr_out, ipol%i_t_diffuse,          &
-     &      ipol%forces%i_h_advect, ipol%SGS_term%i_SGS_div_h_flux,     &
+     &      ipol%forces%i_h_advect, ipol%div_SGS%i_SGS_h_flux,          &
      &      ipol%i_heat_source, ipol%i_temp, dt, ht_prop%coef_exp,      &
      &      ht_prop%coef_advect, ht_prop%coef_source, sph_rj, rj_fld)
       end if
@@ -227,7 +227,7 @@
      &                'sel_scl_diff_adv_SGS_src_elr composition'
         call sel_scl_diff_adv_SGS_src_elr(SGS_param%iflag_SGS_c_flux,   &
      &      sph_bc_C%kr_in, sph_bc_C%kr_out, ipol%i_c_diffuse,          &
-     &      ipol%forces%i_c_advect, ipol%SGS_term%i_SGS_div_c_flux,     &
+     &      ipol%forces%i_c_advect, ipol%div_SGS%i_SGS_c_flux,          &
      &      ipol%i_light_source, ipol%i_light, dt, cp_prop%coef_exp,    &
      &      cp_prop%coef_advect, cp_prop%coef_source, sph_rj, rj_fld)
       end if
@@ -240,7 +240,7 @@
      &                'sel_ctr_scl_SGS_dadv_src_elr temperature'
         call sel_ctr_scl_SGS_dadv_src_elr                               &
      &     (SGS_param%iflag_SGS_h_flux, ipol%i_t_diffuse,               &
-     &      ipol%forces%i_h_advect, ipol%SGS_term%i_SGS_div_h_flux,     &
+     &      ipol%forces%i_h_advect, ipol%div_SGS%i_SGS_h_flux,          &
      &      ipol%i_heat_source, ipol%i_temp, dt, ht_prop%coef_exp,      &
      &      ht_prop%coef_advect, ht_prop%coef_source, sph_rj, rj_fld)
       end if
@@ -250,7 +250,7 @@
      &                'sel_ctr_scl_SGS_dadv_src_elr composition'
         call sel_ctr_scl_SGS_dadv_src_elr                               &
      &     (SGS_param%iflag_SGS_c_flux, ipol%i_c_diffuse,               &
-     &      ipol%forces%i_c_advect, ipol%SGS_term%i_SGS_div_c_flux,     &
+     &      ipol%forces%i_c_advect, ipol%div_SGS%i_SGS_c_flux,          &
      &      ipol%i_light_source, ipol%i_light, dt, cp_prop%coef_exp,    &
      &      cp_prop%coef_advect, cp_prop%coef_source, sph_rj, rj_fld)
       end if
@@ -289,14 +289,14 @@
       if(ht_prop%iflag_scheme .gt.     id_no_evolution) then
         call sel_ini_adams_sscl_w_src_SGS(SGS_param%iflag_SGS_h_flux,   &
      &      sph_bc_T%kr_in, sph_bc_T%kr_out, ipol%forces%i_h_advect,    &
-     &      ipol%SGS_term%i_SGS_div_h_flux, ipol%i_heat_source,         &
+     &      ipol%div_SGS%i_SGS_h_flux, ipol%i_heat_source,              &
      &      ipol%i_pre_heat, ht_prop%coef_source, sph_rj, rj_fld)
       end if
 !
       if(cp_prop%iflag_scheme .gt. id_no_evolution) then
         call sel_ini_adams_sscl_w_src_SGS(SGS_param%iflag_SGS_c_flux,   &
      &      sph_bc_C%kr_in, sph_bc_C%kr_out, ipol%forces%i_c_advect,    &
-     &      ipol%SGS_term%i_SGS_div_c_flux, ipol%i_light_source,        &
+     &      ipol%div_SGS%i_SGS_c_flux, ipol%i_light_source,             &
      &      ipol%i_pre_composit, cp_prop%coef_source, sph_rj, rj_fld)
       end if
 !
@@ -305,14 +305,14 @@
       if(ht_prop%iflag_scheme .gt.     id_no_evolution) then
         call sel_ctr_ini_adams_scl_w_src                                &
      &     (SGS_param%iflag_SGS_h_flux, ipol%forces%i_h_advect,         &
-     &      ipol%SGS_term%i_SGS_div_h_flux, ipol%i_heat_source,         &
+     &      ipol%div_SGS%i_SGS_h_flux, ipol%i_heat_source,              &
      &      ipol%i_pre_heat, ht_prop%coef_source, sph_rj, rj_fld)
       end if
 !
       if(cp_prop%iflag_scheme .gt. id_no_evolution) then
         call sel_ctr_ini_adams_scl_w_src                                &
      &     (SGS_param%iflag_SGS_c_flux, ipol%forces%i_c_advect,         &
-     &      ipol%SGS_term%i_SGS_div_c_flux, ipol%i_light_source,        &
+     &      ipol%div_SGS%i_SGS_c_flux, ipol%i_light_source,             &
      &      ipol%i_pre_composit, cp_prop%coef_source, sph_rj, rj_fld)
       end if
 !

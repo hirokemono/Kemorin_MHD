@@ -45,14 +45,14 @@
 !
       if(SGS_param%iflag_SGS_m_flux .gt. id_SGS_none) then
         call add_phys_name_ctl(SGS_inertia%name, field_ctl)
-        call add_phys_name_ctl(fhd_SGS_rot_inertia, field_ctl)
-        call add_phys_name_ctl(fhd_SGS_div_inertia, field_ctl)
+        call add_phys_name_ctl(rot_SGS_inertia%name, field_ctl)
+        call add_phys_name_ctl(div_SGS_inertia%name, field_ctl)
       end if
 !
       if(SGS_param%iflag_SGS_lorentz .gt. id_SGS_none) then
         call add_phys_name_ctl(SGS_Lorentz%name, field_ctl)
-        call add_phys_name_ctl(fhd_SGS_rot_Lorentz, field_ctl)
-        call add_phys_name_ctl(fhd_SGS_div_Lorentz, field_ctl)
+        call add_phys_name_ctl(rot_SGS_Lorentz%name, field_ctl)
+        call add_phys_name_ctl(div_SGS_Lorentz%name, field_ctl)
       end if
 !
       if(SGS_param%iflag_SGS_uxb .gt. id_SGS_none) then

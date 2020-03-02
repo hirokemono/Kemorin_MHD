@@ -127,7 +127,7 @@
 !
       if(fs_trns%i_SGS_me_gen .gt. 0) then
         call cal_dot_prod_no_coef_smp(sph_rtp%nnod_rtp,                 &
-     &      trns_b_snap%fld_rtp(1,bs_trns%SGS_term%i_SGS_induction),    &
+     &      trns_b_snap%fld_rtp(1,bs_trns%rot_SGS%i_SGS_induction),     &
      &      trns_b_MHD%fld_rtp(1,b_trns%i_magne),                       &
      &      trns_f_snap%fld_rtp(1,fs_trns%i_SGS_me_gen))
       end if

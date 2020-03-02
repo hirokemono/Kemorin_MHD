@@ -57,11 +57,11 @@
      &    iphys%SGS_term%i_SGS_Lorentz, f_trns%SGS_term%i_SGS_Lorentz,  &
      &    trns_fwd)
 !   SGS induction flag
-      call add_field_name_4_sph_trns(ipol%SGS_term%i_SGS_vp_induct,     &
+      call add_field_name_4_sph_trns(ipol%SGS_term%i_SGS_induction,     &
      &    SGS_vecp_induction%name, SGS_vecp_induction%n_comp,           &
-     &    ipol%SGS_term%i_SGS_vp_induct, itor%SGS_term%i_SGS_vp_induct, &
-     &    iphys%SGS_term%i_SGS_vp_induct,                               &
-     &    f_trns%SGS_term%i_SGS_vp_induct, trns_fwd)
+     &    ipol%SGS_term%i_SGS_induction, itor%SGS_term%i_SGS_induction, &
+     &    iphys%SGS_term%i_SGS_induction,                               &
+     &    f_trns%SGS_term%i_SGS_induction, trns_fwd)
 !   SGS heat flux flag
       call add_field_name_4_sph_trns(ipol%SGS_term%i_SGS_h_flux,        &
      &    SGS_heat_flux%name, SGS_heat_flux%n_comp,                     &

@@ -158,6 +158,7 @@
       use m_wide_filter_field_labels
       use m_dble_filter_field_labels
       use m_grad_filter_field_labels
+      use m_diff_SGS_term_labels
       use m_force_w_SGS_labels
       use m_wide_SGS_term_labels
 !

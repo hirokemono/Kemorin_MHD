@@ -46,6 +46,7 @@
       use m_phys_labels
       use t_base_force_labels
       use t_diff_vector_labels
+      use t_SGS_term_labels
       use m_rot_filtered_force_labels
       use m_div_filtered_force_labels
       use m_diff_filter_vect_labels
@@ -204,20 +205,15 @@
         call set_base_force_addresses                                   &
      &     (i0, field_name(i), iphys%forces, flag)
 !
-        if ( field_name(i) .eq. SGS_heat_flux%name ) then
-          iphys%SGS_term%i_SGS_h_flux =   i0
-        else if ( field_name(i) .eq. SGS_composit_flux%name ) then
-          iphys%SGS_term%i_SGS_c_flux =   i0
-        else if ( field_name(i) .eq. SGS_momentum_flux%name ) then
-          iphys%SGS_term%i_SGS_m_flux =   i0
-        else if ( field_name(i) .eq. SGS_maxwell_tensor%name ) then
-          iphys%SGS_term%i_SGS_maxwell =  i0
-        else if ( field_name(i) .eq. SGS_induct_tensor%name ) then
-          iphys%SGS_term%i_SGS_induct_t = i0
-        else if ( field_name(i) .eq. SGS_inertia%name ) then
-          iphys%SGS_term%i_SGS_inertia =  i0
+        call set_SGS_term_addresses                                     &
+     &     (i0, field_name(i), iphys%SGS_term, flag)
+        call set_div_SGS_term_addresses                                 &
+     &     (i0, field_name(i), iphys%div_SGS, flag)
+        call set_rot_SGS_term_addresses                                 &
+     &     (i0, field_name(i), iphys%rot_SGS, flag)
 !
-        else if ( field_name(i) .eq. fhd_wide_SGS_h_flux ) then
+!
+        if ( field_name(i) .eq. fhd_wide_SGS_h_flux ) then
           iphys%i_wide_SGS_h_flux =    i0
         else if ( field_name(i) .eq. fhd_wide_SGS_c_flux ) then
           iphys%i_wide_SGS_c_flux =    i0
@@ -256,34 +252,8 @@
           iphys%i_Csim_SGS_comp_buo = i0
         end if
 !
-        if ( field_name(i) .eq. div_SGS_h_flux%name ) then
-          iphys%SGS_term%i_SGS_div_h_flux = i0
-        else if ( field_name(i) .eq. div_SGS_c_flux%name ) then
-          iphys%SGS_term%i_SGS_div_c_flux = i0
-        else if (field_name(i) .eq. div_SGS_m_flux%name) then
-          iphys%SGS_term%i_SGS_div_m_flux = i0
 !
-        else if (field_name(i) .eq. SGS_Lorentz%name) then
-          iphys%SGS_term%i_SGS_Lorentz =    i0
-        else if (field_name(i) .eq. SGS_induction%name) then
-          iphys%SGS_term%i_SGS_induction =  i0
-        else if (field_name(i) .eq. SGS_vecp_induction%name) then
-          iphys%SGS_term%i_SGS_vp_induct =  i0
-        else if ( field_name(i) .eq. SGS_buoyancy%name ) then
-          iphys%SGS_term%i_SGS_buoyancy =   i0
-        else if ( field_name(i) .eq. SGS_composit_buoyancy%name) then
-          iphys%SGS_term%i_SGS_comp_buo =   i0
-!
-        else if ( field_name(i) .eq. fhd_SGS_rot_inertia ) then
-          iphys%i_SGS_rot_inertia =   i0
-        else if ( field_name(i) .eq. fhd_SGS_div_inertia ) then
-          iphys%i_SGS_div_inertia =   i0
-        else if ( field_name(i) .eq. fhd_SGS_rot_Lorentz ) then
-          iphys%i_SGS_rot_Lorentz =   i0
-        else if ( field_name(i) .eq. fhd_SGS_div_Lorentz ) then
-          iphys%i_SGS_div_Lorentz =   i0
-!
-        else if ( field_name(i) .eq. fhd_SGS_temp_gen ) then
+        if ( field_name(i) .eq. fhd_SGS_temp_gen ) then
           iphys%i_SGS_temp_gen =     i0
         else if ( field_name(i) .eq. fhd_SGS_m_ene_gen ) then
           iphys%i_SGS_me_gen =       i0
