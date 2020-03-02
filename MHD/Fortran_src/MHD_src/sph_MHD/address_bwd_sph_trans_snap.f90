@@ -136,8 +136,9 @@
      &    trns_back)
       call add_field_name_4_sph_trns_snap                               &
      &   (rot_SGS_Lorentz%name, rot_SGS_Lorentz%n_comp,                 &
-     &    ipol%i_SGS_rot_Lorentz, itor%i_SGS_rot_Lorentz,               &
-     &    iphys%i_SGS_rot_Lorentz, b_trns%i_SGS_rot_Lorentz, trns_back)
+     &    ipol%rot_SGS%i_SGS_Lorentz, itor%rot_SGS%i_SGS_Lorentz,       &
+     &    iphys%rot_SGS%i_SGS_Lorentz, b_trns%rot_SGS%i_SGS_Lorentz,    &
+     &    trns_back)
 !
       call add_field_name_4_sph_trns(ipol%rot_SGS%i_SGS_induction,      &
      &    SGS_induction%name, SGS_induction%n_comp,                     &

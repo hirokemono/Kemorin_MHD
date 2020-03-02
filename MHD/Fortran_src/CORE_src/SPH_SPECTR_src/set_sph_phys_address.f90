@@ -303,8 +303,8 @@
      &    itor%SGS_term%i_SGS_comp_buo, idpdr%SGS_term%i_SGS_comp_buo)
       call set_vect_sph_address(ipol%rot_SGS%i_SGS_inertia,             &
      &    itor%rot_SGS%i_SGS_inertia, idpdr%rot_SGS%i_SGS_inertia)
-      call set_vect_sph_address(ipol%i_SGS_rot_Lorentz,                 &
-     &    itor%i_SGS_rot_Lorentz, idpdr%i_SGS_rot_Lorentz)
+      call set_vect_sph_address(ipol%rot_SGS%i_SGS_Lorentz,             &
+     &    itor%rot_SGS%i_SGS_Lorentz, idpdr%rot_SGS%i_SGS_Lorentz)
 !
       call set_vect_sph_address(ipol%i_forces, itor%i_forces,           &
      &    idpdr%i_forces)

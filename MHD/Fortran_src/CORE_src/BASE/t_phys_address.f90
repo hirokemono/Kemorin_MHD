@@ -238,10 +238,6 @@
 !!         @f$ \partial_{i} \left(e_{ijk} u_{j} B_{k} \right) @f$
         integer (kind=kint) :: i_induct_div =      izero
 !
-!>        start address for curl of SGS inertia term
-        integer (kind=kint) :: i_SGS_rot_Lorentz =    izero
-!
-!
 !      SGS terms by wider filter
 !
 !>        start address for SGS heat flux by wider filter
