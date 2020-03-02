@@ -54,7 +54,7 @@ begin marge_control
 !   SGS_induction, SGS_vecp_induction
 !
 !   SGS_Lorentz_ene  SGS_buo_e_gen
-!   SGS_temp_gen     SGS_m_ene_gen
+!   SGS_temp_flux_gen     SGS_mag_induction_flux
 !
 !   v_r, v_theta, v_phi, w_r, w_theta, w_phi
 !   a_r, a_theta, a_phi, b_r, b_theta, b_phi, j_r, j_theta, j_phi

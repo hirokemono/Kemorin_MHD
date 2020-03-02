@@ -10,6 +10,7 @@ int num_gradient_fields_f();
 
 int num_SGS_terms_f();
 int num_diff_SGS_terms_f();
+int num_SGS_energy_fluxes_f();
 int num_div_filter_fields_f();
 int num_grad_filter_fields_f();
 int num_filtered_forces_f();
@@ -30,6 +31,7 @@ void set_grad_filter_field_labels_f(int *ncomp1, char *name1, char *math1);
 
 void set_SGS_term_labels_f(int *ncomp1, char *name1, char *math1);
 void set_diff_SGS_term_labels_f(int *ncomp1, char *name1, char *math1);
+void set_SGS_energy_flux_labels_f(int *ncomp1, char *name1, char *math1);
 
 void set_filtered_force_labels_f(int *ncomp1, char *name1, char *math1);
 void rot_filtered_force_labels_f(int *ncomp1, char *name1, char *math1);
@@ -67,8 +69,10 @@ int main(int argc, char **argv)
 	
 	int ist_diff_SGS_terms = ist_SGS_terms
 			+ num_SGS_terms_f();
-	int ist_div_filter_fields = ist_diff_SGS_terms
+	int ist_SGS_energy_fluxes = ist_diff_SGS_terms
 			+ num_diff_SGS_terms_f();
+	int ist_div_filter_fields = ist_SGS_energy_fluxes
+			+ num_SGS_energy_fluxes_f();
 	
 	int ist_grad_filter_fields = ist_div_filter_fields
 			+ num_div_filter_fields_f();
@@ -115,6 +119,9 @@ int main(int argc, char **argv)
 	set_diff_SGS_term_labels_f(&ncomp[ist_diff_SGS_terms], 
 								&name1[len_f*ist_diff_SGS_terms],
 								&math1[len_f*ist_diff_SGS_terms]);
+	set_SGS_energy_flux_labels_f(&ncomp[ist_SGS_energy_fluxes], 
+								&name1[len_f*ist_SGS_energy_fluxes],
+								&math1[len_f*ist_SGS_energy_fluxes]);
 	
 	set_filtered_force_labels_f(&ncomp[ist_filtered_forces], 
 								&name1[len_f*ist_filtered_forces],

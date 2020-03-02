@@ -46,7 +46,7 @@
       module m_diff_SGS_term_labels
 !
       use m_precision
-      use m_constants
+      use m_phys_constants
       use t_field_labels
       use t_SGS_term_labels
 !

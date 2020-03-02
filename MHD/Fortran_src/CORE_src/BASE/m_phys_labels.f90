@@ -93,7 +93,7 @@
 !!
 !!
 !!   SGS_Lorentz_work      Reynolds_work
-!!   SGS_temp_gen          SGS_m_ene_gen
+!!   SGS_temp_flux_gen     SGS_mag_induction_flux
 !!   SGS_buoyancy_flux     SGS_comp_buoyancy_flux
 !!
 !!   geostrophic_balance

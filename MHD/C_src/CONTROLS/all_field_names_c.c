@@ -258,8 +258,8 @@ const struct field_def field_props[NUM_FIELD] = {
 			{3, "vecp_induction_w_SGS", "$$    $$"},
 			{3, "induction_w_SGS", "$$    $$"},
 			
-			{1, "SGS_m_ene_gen", "$$    $$"},
-			{1, "SGS_temp_gen", "$$    $$"},
+			{1, "SGS_mag_induction_flux", "$$    $$"},
+			{1, "SGS_temp_flux_gen", "$$    $$"},
 			{1, "SGS_Lorentz_work", "$$    $$"},
 			{1, "Reynolds_work", "$$    $$"},
 			{1, "SGS_buoyancy_flux", "$$    $$"},

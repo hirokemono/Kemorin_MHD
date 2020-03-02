@@ -87,7 +87,7 @@ begin MHD_control
 !   SGS_induction, 
 !
 !   SGS_Lorentz_work Reynolds_work
-!   SGS_temp_gen     SGS_m_ene_gen
+!   SGS_temp_flux_gen     SGS_mag_induction_flux
 !
 ! termes for direct estimation
 !   SGS_div_h_flux_true
