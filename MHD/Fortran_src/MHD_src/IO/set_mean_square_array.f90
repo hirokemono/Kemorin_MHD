@@ -363,11 +363,11 @@
      &         (field_name, num_comps, iphys%i_maxwell_t_w_sgs,         &
      &          i_rms%i_maxwell_t_w_sgs, j_ave%i_maxwell_t_w_sgs,       &
      &          msq_list)
-          else if ( field_name .eq. fhd_SGS_Lorentz ) then
+          else if ( field_name .eq. SGS_Lorentz%name ) then
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_SGS_Lorentz,             &
      &          i_rms%i_SGS_Lorentz, j_ave%i_SGS_Lorentz, msq_list)
-          else if ( field_name .eq. fhd_SGS_inertia ) then
+          else if ( field_name .eq. SGS_inertia%name ) then
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_SGS_inertia,             &
      &          i_rms%i_SGS_inertia, j_ave%i_SGS_inertia, msq_list)
@@ -379,11 +379,11 @@
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_SGS_vp_induct,           &
      &          i_rms%i_SGS_vp_induct, j_ave%i_SGS_vp_induct, msq_list)
-          else if ( field_name .eq. fhd_SGS_buoyancy ) then
+          else if ( field_name .eq. SGS_buoyancy%name ) then
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_SGS_buoyancy,            &
      &          i_rms%i_SGS_buoyancy, j_ave%i_SGS_buoyancy, msq_list)
-          else if ( field_name .eq. fhd_SGS_comp_buo ) then
+          else if ( field_name .eq. SGS_composit_buoyancy%name ) then
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_SGS_comp_buo,            &
      &          i_rms%i_SGS_comp_buo, j_ave%i_SGS_comp_buo, msq_list)

@@ -260,7 +260,7 @@
            if (cmt_param%iflag_c_lorentz .eq. id_SGS_commute_ON) then
              icomp_diff%i_lorentz = id
              ifld_diff%i_lorentz = jd
-             wk_diff%name(jd) = fhd_SGS_Lorentz
+             wk_diff%name(jd) = SGS_Lorentz%name
              diff_coefs%num_comps(jd) = 9
              id = id + diff_coefs%num_comps(jd)
              jd = jd + 1

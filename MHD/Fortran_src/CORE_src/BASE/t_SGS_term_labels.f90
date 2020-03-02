@@ -99,8 +99,6 @@
 !>        Field label for SGS inertia term
 !!         @f$ e_{ijk}\left(\overline{\omega_{j}u_{k}}
 !!            - \bar{\omega}_{j}\bar{u}_{k} \right) @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_SGS_inertia =     'SGS_inertia'
       type(field_def), parameter :: SGS_inertia                         &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'SGS_inertia',                             &
@@ -109,8 +107,6 @@
 !>        Field label for divergence of SGS Maxwell tensor
 !!         @f$ e_{ijk}\left(\overline{J_{j}B_{k}}
 !!            - \bar{J}_{j}\bar{B}_{k} \right) @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_SGS_Lorentz =     'SGS_Lorentz'
       type(field_def), parameter :: SGS_Lorentz                         &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'SGS_Lorentz',                             &
@@ -119,16 +115,12 @@
 !
 !>        Field label for SGS buoyancy
 !!         @f$ -C^{sim} \alpha_{T} g_{i} I_{Ti} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_SGS_buoyancy =  'SGS_buoyancy'
       type(field_def), parameter :: SGS_buoyancy                        &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'SGS_buoyancy',                            &
      &                math = '$ -C^{sim} \alpha_{T} g_{i} I_{Ti} $')
 !>        Field label for SGS compositional buoyancy
 !!         @f$ -C^{sim} \alpha_{C} g_{i} I_{Ci} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_SGS_comp_buo = 'SGS_composit_buoyancy'
       type(field_def), parameter :: SGS_composit_buoyancy               &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'SGS_composit_buoyancy',                   &
@@ -268,11 +260,11 @@
 !
 !
       check_SGS_vector_terms                                            &
-     &   =    (field_name .eq. fhd_SGS_inertia)                         &
+     &   =    (field_name .eq. SGS_inertia%name)                        &
      &   .or. (field_name .eq. div_SGS_m_flux%name)                     &
-     &   .or. (field_name .eq. fhd_SGS_Lorentz)                         &
-     &   .or. (field_name .eq. fhd_SGS_buoyancy)                        &
-     &   .or. (field_name .eq. fhd_SGS_comp_buo)                        &
+     &   .or. (field_name .eq. SGS_Lorentz%name)                        &
+     &   .or. (field_name .eq. SGS_buoyancy%name)                       &
+     &   .or. (field_name .eq. SGS_composit_buoyancy%name)              &
      &   .or. (field_name .eq. fhd_SGS_vp_induct)                       &
      &   .or. (field_name .eq. fhd_SGS_induction)                       &
      &   .or. (field_name .eq. SGS_induct_tensor%name)                  &
@@ -323,14 +315,14 @@
         else if (field_name .eq. SGS_composit_flux%name) then
           SGS_term%i_SGS_c_flux =    i_phys
 !
-        else if (field_name .eq. fhd_SGS_inertia) then
+        else if (field_name .eq. SGS_inertia%name) then
           SGS_term%i_SGS_inertia =   i_phys
-        else if (field_name .eq. fhd_SGS_Lorentz) then
+        else if (field_name .eq. SGS_Lorentz%name) then
           SGS_term%i_SGS_Lorentz =    i_phys
 !
-        else if (field_name .eq. fhd_SGS_buoyancy) then
+        else if (field_name .eq. SGS_buoyancy%name) then
           SGS_term%i_SGS_buoyancy =   i_phys
-        else if (field_name .eq. fhd_SGS_comp_buo) then
+        else if (field_name .eq. SGS_composit_buoyancy%name) then
           SGS_term%i_SGS_comp_buo =   i_phys
 !
         else if (field_name .eq. fhd_SGS_vp_induct) then

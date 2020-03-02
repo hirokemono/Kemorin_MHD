@@ -36,10 +36,10 @@
       type(ctl_array_c3), intent(inout) :: field_ctl
 !
 !
-      if( (field_name .eq. fhd_SGS_buoyancy)) then
+      if( (field_name .eq. SGS_buoyancy%name)) then
         call add_phys_name_ctl(fhd_velo, field_ctl)
         call add_phys_name_ctl(SGS_heat_flux%name, field_ctl)
-      else if( (field_name .eq. fhd_SGS_comp_buo)) then
+      else if( (field_name .eq. SGS_composit_buoyancy%name)) then
         call add_phys_name_ctl(fhd_velo, field_ctl)
         call add_phys_name_ctl(SGS_composit_flux%name, field_ctl)
       else if( (field_name .eq. fhd_SGS_induction)) then
@@ -55,12 +55,12 @@
       end if
 !
 !
-      if( (field_name .eq. fhd_SGS_inertia)) then
+      if( (field_name .eq. SGS_inertia%name)) then
         call add_phys_name_ctl(fhd_vort, field_ctl)
         call add_phys_name_ctl(fhd_velo, field_ctl)
       else if( (field_name .eq. SGS_momentum_flux%name)) then
         call add_phys_name_ctl(fhd_velo, field_ctl)
-      else if( (field_name .eq. fhd_SGS_Lorentz)                        &
+      else if( (field_name .eq. SGS_Lorentz%name)                       &
      &    .or. (field_name .eq. SGS_maxwell_tensor%name) ) then
         call add_phys_name_ctl(fhd_magne, field_ctl)
 !

@@ -103,14 +103,14 @@
      &      )   iflag = 1
 !
       if (   (phys_nod_name_ctl .eq. fhd_div_SGS_m_flux     )           &
-     &  .or. (phys_nod_name_ctl .eq. fhd_SGS_inertia        )           &
+     &  .or. (phys_nod_name_ctl .eq. SGS_inertia%name        )           &
      &  .or. (phys_nod_name_ctl .eq. SGS_heat_flux%name         )           &
      &  .or. (phys_nod_name_ctl .eq. SGS_composit_flux%name         )           &
-     &  .or. (phys_nod_name_ctl .eq. fhd_SGS_Lorentz        )           &
+     &  .or. (phys_nod_name_ctl .eq. SGS_Lorentz%name        )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_SGS_induction      )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_SGS_vp_induct      )           &
-     &  .or. (phys_nod_name_ctl .eq. fhd_SGS_buoyancy       )           &
-     &  .or. (phys_nod_name_ctl .eq. fhd_SGS_comp_buo       )           &
+     &  .or. (phys_nod_name_ctl .eq. SGS_buoyancy%name       )           &
+     &  .or. (phys_nod_name_ctl .eq. SGS_composit_buoyancy%name       )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_SGS_div_m_flux_true)           &
      &  .or. (phys_nod_name_ctl .eq. fhd_SGS_Lorentz_true   )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_SGS_mag_induct_true)           &

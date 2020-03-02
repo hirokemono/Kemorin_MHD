@@ -214,7 +214,7 @@
           iphys%i_SGS_maxwell =  i0
         else if ( field_name(i) .eq. SGS_induct_tensor%name ) then
           iphys%i_SGS_induct_t = i0
-        else if ( field_name(i) .eq. fhd_SGS_inertia ) then
+        else if ( field_name(i) .eq. SGS_inertia%name ) then
           iphys%i_SGS_inertia =  i0
 !
         else if ( field_name(i) .eq. fhd_wide_SGS_h_flux ) then
@@ -262,15 +262,15 @@
           iphys%i_SGS_div_c_flux = i0
         else if (field_name(i) .eq. fhd_div_SGS_m_flux) then
           iphys%i_SGS_div_m_flux = i0
-        else if (field_name(i) .eq. fhd_SGS_Lorentz) then
+        else if (field_name(i) .eq. SGS_Lorentz%name) then
           iphys%i_SGS_Lorentz =    i0
         else if (field_name(i) .eq. fhd_SGS_induction) then
           iphys%i_SGS_induction =  i0
         else if (field_name(i) .eq. fhd_SGS_vp_induct) then
           iphys%i_SGS_vp_induct =  i0
-        else if ( field_name(i) .eq. fhd_SGS_buoyancy ) then
+        else if ( field_name(i) .eq. SGS_buoyancy%name ) then
           iphys%i_SGS_buoyancy =   i0
-        else if ( field_name(i) .eq. fhd_SGS_comp_buo ) then
+        else if ( field_name(i) .eq. SGS_composit_buoyancy%name) then
           iphys%i_SGS_comp_buo =   i0
 !
         else if ( field_name(i) .eq. fhd_SGS_rot_inertia ) then

@@ -232,7 +232,7 @@
           if(fl_prop%iflag_4_gravity .gt. 0) then
             icomp_sgs%i_buoyancy = i
             ifld_sgs%i_buoyancy =  j
-            wk_sgs%name(j) = fhd_SGS_buoyancy
+            wk_sgs%name(j) = SGS_buoyancy%name
             sgs_coefs%num_comps(j) = 6
             i = i + sgs_coefs%num_comps(j)
             j = j + 1
@@ -240,7 +240,7 @@
           if(fl_prop%iflag_4_composit_buo .gt. id_turn_OFF) then
             icomp_sgs%i_comp_buoyancy = i
             ifld_sgs%i_comp_buoyancy =  j
-            wk_sgs%name(j) = fhd_SGS_comp_buo
+            wk_sgs%name(j) = SGS_composit_buoyancy%name
             sgs_coefs%num_comps(j) = 6
             i = i + sgs_coefs%num_comps(j)
             j = j + 1

@@ -299,22 +299,22 @@
 !
 !
       do i = 1, wk_sgs%num_kinds
-        if ( wk_sgs%name(i) .eq. SGS_heat_flux%name ) then
+        if     (wk_sgs%name(i) .eq. SGS_heat_flux%name) then
           call sel_coord_vector_comp_labels(icoord_Csim,                &
      &        SGS_heat_flux%name, lab(1) )
           call write_vector_label(file_id, lab(1))
 !
-        else if ( wk_sgs%name(i) .eq. SGS_momentum_flux%name ) then
+        else if(wk_sgs%name(i) .eq. SGS_momentum_flux%name) then
           call sel_coord_tensor_comp_labels(icoord_Csim,                &
      &        SGS_momentum_flux%name, lab(1) )
           call write_sym_tensor_label(file_id, lab(1))
 !
-        else if ( wk_sgs%name(i) .eq. SGS_maxwell_tensor%name) then
+        else if(wk_sgs%name(i) .eq. SGS_maxwell_tensor%name) then
           call sel_coord_tensor_comp_labels(icoord_Csim,                &
      &        SGS_maxwell_tensor%name, lab(1) )
           call write_sym_tensor_label(file_id, lab(1))
 !
-        else if ( wk_sgs%name(i) .eq. fhd_SGS_induction ) then
+        else if(wk_sgs%name(i) .eq. fhd_SGS_induction) then
           if(cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
             write(label,'(a)') 'SGS_uxB'
             call sel_coord_vector_comp_labels(icoord_Csim,              &
@@ -328,17 +328,17 @@
             call write_sym_tensor_label(file_id, lab(1))
           end if
 !
-        else if ( wk_sgs%name(i) .eq. fhd_SGS_buoyancy ) then
+        else if(wk_sgs%name(i) .eq. SGS_buoyancy%name) then
           call sel_coord_tensor_comp_labels(icoord_Csim,                &
-     &          fhd_SGS_buoyancy, lab(1) )
+     &        SGS_buoyancy%name, lab(1) )
           call write_sym_tensor_label(file_id, lab(1))
 !
-        else if ( wk_sgs%name(i) .eq. fhd_SGS_comp_buo ) then
+        else if(wk_sgs%name(i) .eq. SGS_composit_buoyancy%name) then
           call sel_coord_tensor_comp_labels(icoord_Csim,                &
-     &          fhd_SGS_comp_buo, lab(1) )
+     &          SGS_composit_buoyancy%name, lab(1) )
           call write_sym_tensor_label(file_id, lab(1))
 !
-        else if ( wk_sgs%name(i) .eq. SGS_composit_flux%name ) then
+        else if(wk_sgs%name(i) .eq. SGS_composit_flux%name) then
           call sel_coord_vector_comp_labels(icoord_Csim,                &
      &        SGS_composit_flux%name, lab(1) )
           call write_vector_label(file_id, lab(1))
@@ -391,7 +391,7 @@
      &        'SGS_maxwell_yx, SGS_maxwell_yy, SGS_maxwell_yz, '
           write(file_id,'(a)')                                          &
      &        'SGS_maxwell_zx, SGS_maxwell_yz, SGS_maxwell_zz, '
-        else if ( wk_diff%name(i) .eq. fhd_SGS_Lorentz) then
+        else if ( wk_diff%name(i) .eq. SGS_Lorentz%name) then
           write(file_id,'(a)') 'SGS_lor_xx, SGS_lor_xy, SGS_lor_xz, '
           write(file_id,'(a)') 'SGS_lor_yx, SGS_lor_yy, SGS_lor_yz, '
           write(file_id,'(a)') 'SGS_lor_zx, SGS_lor_yz, SGS_lor_zz, '
