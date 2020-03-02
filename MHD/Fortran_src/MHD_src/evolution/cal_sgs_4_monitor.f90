@@ -278,10 +278,10 @@
      &      mhd_fem_wk, rhs_mat, nod_fld)
       end if
 !
-      if (iphys%i_SGS_div_c_flux .gt. 0) then
+      if (iphys%SGS_term%i_SGS_div_c_flux .gt. 0) then
         if(iflag_debug.gt.0) write(*,*)                                 &
      &        'lead ', trim(div_SGS_h_flux%name)
-        call cal_terms_4_heat(iphys%i_SGS_div_c_flux,                   &
+        call cal_terms_4_heat(iphys%SGS_term%i_SGS_div_c_flux,          &
      &      iphys%i_velo, iphys%i_light,                                &
      &      iphys%SGS_term%i_SGS_c_flux, ifld_diff%i_comp_flux,         &
      &      FEM_prm%iflag_comp_supg, FEM_prm%npoint_t_evo_int,          &
