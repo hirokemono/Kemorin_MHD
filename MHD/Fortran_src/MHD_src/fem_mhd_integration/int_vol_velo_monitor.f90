@@ -217,14 +217,15 @@
           call int_vol_div_SGS_tsr_flux(node, ele, nod_fld,             &
      &        g_FEM, jac_3d, rhs_tbl, FEM_elens, diff_coefs,            &
      &        fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,       &
-     &        iphys%i_magne, iphys%i_SGS_maxwell,                       &
+     &        iphys%i_magne, iphys%SGS_term%i_SGS_maxwell,              &
      &        SGS_param%ifilter_final, iak_diff_lor,                    &
      &        fl_prop%coef_lor, fem_wk, mhd_fem_wk, f_nl)
         else
           call int_vol_div_tsr_w_const                                  &
      &       (node, ele, g_FEM, jac_3d, rhs_tbl, nod_fld,               &
      &        fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,       &
-     &        iphys%i_SGS_maxwell, fl_prop%coef_lor, fem_wk, f_nl)
+     &        iphys%SGS_term%i_SGS_maxwell, fl_prop%coef_lor,           &
+     &        fem_wk, f_nl)
         end if
       end if
 !
@@ -385,7 +386,7 @@
           call int_vol_div_SGS_tsr_flux_upw(node, ele, nod_fld,         &
      &        g_FEM, jac_3d, rhs_tbl, FEM_elens, diff_coefs,            &
      &        fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int, dt,   &
-     &        iphys%i_magne, iphys%i_SGS_maxwell,                       &
+     &        iphys%i_magne, iphys%SGS_term%i_SGS_maxwell,              &
      &        SGS_param%ifilter_final, iak_diff_lor,                    &
      &        ele_fld%ntot_phys, iv_upw, ele_fld%d_fld,                 &
      &        fl_prop%coef_lor, fem_wk, mhd_fem_wk, f_nl)
@@ -393,7 +394,7 @@
           call int_vol_div_tsr_w_const_upw                              &
      &       (node, ele, g_FEM, jac_3d, rhs_tbl, nod_fld,               &
      &        fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int, dt,   &
-     &        iphys%i_SGS_maxwell, ele_fld%ntot_phys, iv_upw,           &
+     &        iphys%SGS_term%i_SGS_maxwell, ele_fld%ntot_phys, iv_upw,  &
      &        ele_fld%d_fld, fl_prop%coef_lor, fem_wk, f_nl)
         end if
       end if

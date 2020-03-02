@@ -111,7 +111,7 @@
 !
       if(ipol%i_maxwell_t_w_sgs .gt. 0) then
         call add_2_nod_tensors                                          &
-     &     (rj_fld, ipol%forces%i_maxwell, ipol%i_SGS_maxwell,          &
+     &     (rj_fld, ipol%forces%i_maxwell, ipol%SGS_term%i_SGS_maxwell, &
      &      ipol%i_maxwell_t_w_sgs)
       end if
 !

@@ -105,9 +105,9 @@
 !
 !    SGS term by similarity model
 !
-      if (iflag_debug.gt.0) write(*,*)                                  &
-     &        'cal_sgs_mf_simi i_SGS_maxwell', iphys%i_SGS_maxwell
-      call cal_sgs_mf_simi(iphys%i_SGS_maxwell, iphys%i_magne,          &
+      if (iflag_debug.gt.0) write(*,*) 'cal_sgs_mf_simi i_SGS_maxwell', &
+     &                     iphys%SGS_term%i_SGS_maxwell
+      call cal_sgs_mf_simi(iphys%SGS_term%i_SGS_maxwell, iphys%i_magne, &
      &    iphys%i_filter_magne, icomp_sgs_lor, SGS_par%filter_p,        &
      &    mesh%nod_comm, mesh%node, FEM_filters%filtering,              &
      &    sgs_coefs_nod, FEM_SGS_wk%wk_filter, nod_fld)
@@ -115,7 +115,7 @@
 !    copy to work array
 !
        call copy_tensor_component(nod_fld,                              &
-     &     iphys%i_SGS_maxwell, iphys%i_sgs_simi)
+     &     iphys%SGS_term%i_SGS_maxwell, iphys%i_sgs_simi)
 !
 !   gradient model by filtered field
 !
@@ -131,7 +131,7 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'cal_sgs_maxwell_grad_4_dyn'
       call cal_sgs_m_flux_grad_no_coef(ifilter_2delta,                  &
-     &    iphys%i_SGS_maxwell, iphys%i_magne, ie_dbx, dt,               &
+     &    iphys%SGS_term%i_SGS_maxwell, iphys%i_magne, ie_dbx, dt,      &
      &    FEM_prm, mesh%nod_comm, mesh%node, mesh%ele, fluid,           &
      &    iphys_ele, fld_ele, fem_int%jcs, FEM_filters%FEM_elens,       &
      &    fem_int%rhs_tbl, mk_MHD%mlump_fl, rhs_mat%fem_wk, mhd_fem_wk, &
@@ -141,8 +141,8 @@
 !
       call cal_filtered_sym_tensor_whole(SGS_par%filter_p,              &
      &    mesh%nod_comm, mesh%node, FEM_filters%filtering,              &
-     &    iphys%i_sgs_grad, iphys%i_SGS_maxwell, FEM_SGS_wk%wk_filter,  &
-     &    nod_fld)
+     &    iphys%i_sgs_grad, iphys%SGS_term%i_SGS_maxwell,               &
+     &    FEM_SGS_wk%wk_filter, nod_fld)
 !
 !   Change coordinate
 !

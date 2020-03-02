@@ -262,8 +262,8 @@
           if (SGS_param%iflag_SGS_lorentz .ne. id_SGS_none) then
             if(cmt_param%iflag_c_lorentz .eq. id_SGS_commute_ON) then
               call SGS_const_tensor_each_ele(node, ele, nod_fld, k2,    &
-     &            iphys%i_magne, iphys%i_SGS_maxwell, fl_prop%coef_lor, &
-     &            mhd_fem_wk%sgs_t1, fem_wk%tensor_1)
+     &            iphys%i_magne, iphys%SGS_term%i_SGS_maxwell,          &
+     &            fl_prop%coef_lor, mhd_fem_wk%sgs_t1, fem_wk%tensor_1)
               call fem_skv_div_sgs_tensor(fluid%istack_ele_fld_smp,     &
      &            num_int, k2, SGS_param%ifilter_final,                 &
      &            diff_coefs%num_field, iak_diff_lor, diff_coefs%ak,    &
@@ -271,7 +271,7 @@
      &            fem_wk%tensor_1, fem_wk%sk6)
             else
               call tensor_cst_phys_2_each_ele                           &
-     &           (node, ele, nod_fld, k2, iphys%i_SGS_maxwell,          &
+     &           (node, ele, nod_fld, k2, iphys%SGS_term%i_SGS_maxwell, &
      &            fl_prop%coef_lor, fem_wk%tensor_1)
               call fem_skv_all_div_flux                                 &
      &           (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,           &
@@ -572,8 +572,8 @@
           if (SGS_param%iflag_SGS_lorentz .ne. id_SGS_none) then
             if (cmt_param%iflag_c_lorentz .eq. id_SGS_commute_ON) then
               call SGS_const_tensor_each_ele(node, ele, nod_fld, k2,    &
-     &            iphys%i_magne, iphys%i_SGS_maxwell, fl_prop%coef_lor, &
-     &            mhd_fem_wk%sgs_t1, fem_wk%tensor_1)
+     &            iphys%i_magne, iphys%SGS_term%i_SGS_maxwell,          &
+     &            fl_prop%coef_lor, mhd_fem_wk%sgs_t1, fem_wk%tensor_1)
               call fem_skv_div_sgs_tensor_upwind                        &
      &           (fluid%istack_ele_fld_smp, num_int,                    &
      &            k2, SGS_param%ifilter_final, dt,                      &
@@ -582,7 +582,7 @@
      &            mhd_fem_wk%sgs_t1, fem_wk%tensor_1, fem_wk%sk6)
             else
               call tensor_cst_phys_2_each_ele                           &
-     &           (node, ele, nod_fld, k2, iphys%i_SGS_maxwell,          &
+     &           (node, ele, nod_fld, k2, iphys%SGS_term%i_SGS_maxwell, &
      &            fl_prop%coef_lor, fem_wk%tensor_1)
               call fem_skv_all_div_flux_upw                             &
      &           (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele, np_smp,   &

@@ -243,9 +243,6 @@
 !>        start address for SGS compositional flux
 !!         @f$ \overline{u_{i}T} - \bar{u}_{i}\bar{T} @f$
         integer (kind=kint) :: i_SGS_c_flux =      izero
-!>        start address for SGS Maxwell tensor
-!!         @f$ \overline{B_{i}B_{j}} - \bar{B}_{i}\bar{B}_{j} @f$
-        integer (kind=kint) :: i_SGS_maxwell =     izero
 !>        start address for SGS magnetic induction tensor
         integer (kind=kint) :: i_SGS_induct_t =    izero
 !>        start address for SGS inertia term

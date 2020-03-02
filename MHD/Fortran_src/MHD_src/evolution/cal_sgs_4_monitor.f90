@@ -176,7 +176,7 @@
      &      wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
-      if (iphys%i_SGS_maxwell .gt. 0) then
+      if (iphys%SGS_term%i_SGS_maxwell .gt. 0) then
         if(iflag_debug.gt.0) write(*,*)                                 &
      &        'lead ', trim(SGS_maxwell_tensor%name)
         call cal_sgs_maxwell                                            &

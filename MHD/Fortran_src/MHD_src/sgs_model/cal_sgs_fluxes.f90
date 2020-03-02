@@ -279,25 +279,25 @@
         if (iflag_debug.eq.1)                                           &
      &    write(*,*) 'cal_sgs_maxwell_grad', SGS_param%ifilter_final
         call cal_sgs_m_flux_grad_w_coef(SGS_param%ifilter_final,        &
-     &      icomp_sgs_lor, iphys%i_SGS_maxwell, iphys%i_magne, ie_dbx,  &
-     &      dt, FEM_prm, SGS_param, nod_comm, node, ele, fluid,         &
+     &      icomp_sgs_lor, iphys%SGS_term%i_SGS_maxwell, iphys%i_magne, &
+     &      ie_dbx, dt, FEM_prm, SGS_param, nod_comm, node, ele, fluid, &
      &      iphys_ele, ele_fld, jacs, FEM_elens, sgs_coefs, rhs_tbl,    &
      &      mlump_fl, fem_wk, mhd_fem_wk, nod_fld)
 !
 !
       else if(SGS_param%iflag_SGS_lorentz .eq. id_SGS_similarity) then
         if (iflag_debug.eq.1)                                           &
-     &     write(*,*) 'cal_sgs_mf_simi',  iphys%i_SGS_maxwell
-        call cal_sgs_mf_simi(iphys%i_SGS_maxwell, iphys%i_magne,        &
-     &      iphys%i_filter_magne, icomp_sgs_lor,                        &
+     &     write(*,*) 'cal_sgs_mf_simi',  iphys%SGS_term%i_SGS_maxwell
+        call cal_sgs_mf_simi(iphys%SGS_term%i_SGS_maxwell,              &
+     &      iphys%i_magne, iphys%i_filter_magne, icomp_sgs_lor,         &
      &      filter_param, nod_comm, node, filtering, sgs_coefs_nod,     &
      &      wk_filter, nod_fld)
 !
       else if(SGS_param%iflag_SGS_lorentz .eq. id_SGS_diffusion) then
-        if (iflag_debug.eq.1)                                           &
-     &     write(*,*) 'cal_sgs_m_flux_diffuse', iphys%i_SGS_maxwell
-        call cal_sgs_m_flux_diffuse                                     &
-     &    (iphys%i_magne, iphys%i_sgs_diffuse, iphys%i_SGS_maxwell, dt, &
+        if (iflag_debug.eq.1) write(*,*) 'cal_sgs_m_flux_diffuse',      &
+     &                                  iphys%SGS_term%i_SGS_maxwell
+        call cal_sgs_m_flux_diffuse(iphys%i_magne,                      &
+     &     iphys%i_sgs_diffuse, iphys%SGS_term%i_SGS_maxwell, dt,       &
      &     FEM_prm, nod_comm, node, ele, fluid, iphys_ele, ele_fld,     &
      &     jacs%g_FEM, jacs%jac_3d, rhs_tbl, mlump_fl, fem_wk,          &
      &     f_l, f_nl, nod_fld)

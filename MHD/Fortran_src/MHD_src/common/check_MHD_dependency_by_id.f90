@@ -71,7 +71,6 @@
      &     .or. i_start .eq. iphys%i_current                            &
      &     .or. i_start .eq. iphys%i_b_diffuse                          &
      &     .or. i_start .eq. iphys%i_mag_p                              &
-     &     .or. i_start .eq. iphys%i_SGS_maxwell                        &
      &     .or. i_start .eq. iphys%i_square_b                           &
      &     .or. i_start .eq. iphys%i_truncated_B) then
           call check_missing_field                                      &
@@ -469,7 +468,7 @@
           call check_missing_field                                      &
      &       (fld, i_start, iphys%forces%i_maxwell, maxwell_tensor%name)
           call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_SGS_maxwell, SGS_maxwell_tensor%name)
+     &       (fld, i_start, iphys%SGS_term%i_SGS_maxwell, SGS_maxwell_tensor%name)
         end if
       end do
 !
