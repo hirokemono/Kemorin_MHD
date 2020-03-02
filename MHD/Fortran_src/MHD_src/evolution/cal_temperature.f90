@@ -213,7 +213,8 @@
      &     (FEM_prm%iflag_temp_supg, FEM_prm%npoint_t_evo_int, dt,      &
      &      SGS_param%iflag_SGS_h_flux, SGS_param%itype_Csym_h_flux,    &
      &      i_field, iphys%i_filter_temp,                               &
-     &      iphys%i_velo, iphys%i_filter_velo, iphys%i_SGS_h_flux,      &
+     &      iphys%i_velo, iphys%i_filter_velo,                          &
+     &      iphys%SGS_term%i_SGS_h_flux,                                &
      &      icomp_sgs%i_heat_flux, iphys_elediff%i_velo, SGS_param,     &
      &      filter_param, mesh%nod_comm, mesh%node, mesh%ele, fluid,    &
      &      iphys_ele, ele_fld, jacs, rhs_tbl, FEM_elens, filtering,    &
@@ -222,7 +223,7 @@
       end if
 !
 !      call check_nodal_data                                            &
-!     &   ((50+my_rank), nod_fld, 3, iphys%i_SGS_h_flux)
+!     &   ((50+my_rank), nod_fld, 3, iphys%SGS_term%i_SGS_h_flux)
 !
 !  ----------  clear the vector and lumped mass matrix
 !
@@ -246,7 +247,7 @@
      &     (SGS_param%iflag_SGS_h_flux, cmt_param%iflag_c_hf,           &
      &      SGS_param%ifilter_final, FEM_prm%npoint_t_evo_int,          &
      &      dt, iphys%i_temp, iphys%i_velo,                             &
-     &      iphys%i_SGS_h_flux, ifld_diff%i_heat_flux,                  &
+     &      iphys%SGS_term%i_SGS_h_flux, ifld_diff%i_heat_flux,         &
      &      mesh%node, mesh%ele, fluid, property, nod_fld,              &
      &      jacs%g_FEM, jacs%jac_3d, rhs_tbl, FEM_elens, diff_coefs,    &
      &      ele_fld%ntot_phys, iphys_ele%i_velo, ele_fld%d_fld,         &
@@ -256,7 +257,7 @@
      &     (SGS_param%iflag_SGS_h_flux, cmt_param%iflag_c_hf,           &
      &      SGS_param%ifilter_final, FEM_prm%npoint_t_evo_int,          &
      &      iphys%i_temp, iphys%i_velo,                                 &
-     &      iphys%i_SGS_h_flux, ifld_diff%i_heat_flux,                  &
+     &      iphys%SGS_term%i_SGS_h_flux, ifld_diff%i_heat_flux,         &
      &      mesh%node, mesh%ele, fluid, property, nod_fld,              &
      &      jacs%g_FEM, jacs%jac_3d, rhs_tbl, FEM_elens, diff_coefs,    &
      &      ele_fld%ntot_phys, iphys_ele%i_velo, ele_fld%d_fld,         &
@@ -277,8 +278,9 @@
      &      group%surf_grp, nod_fld, jacs%g_FEM, jacs%jac_sf_grp,       &
      &      rhs_tbl, FEM_elens, FEM_prm%npoint_t_evo_int,               &
      &      sf_bcs%sgs%ngrp_sf_dat, sf_bcs%sgs%id_grp_sf_dat,           &
-     &      SGS_param%ifilter_final, iphys%i_SGS_h_flux, iphys%i_velo,  &
-     &      iphys%i_temp, diff_coefs%num_field, ifld_diff%i_heat_flux,  &
+     &      SGS_param%ifilter_final, iphys%SGS_term%i_SGS_h_flux,       &
+     &      iphys%i_velo, iphys%i_temp,                                 &
+     &      diff_coefs%num_field, ifld_diff%i_heat_flux,                &
      &      diff_coefs%ak, property%coef_advect, fem_wk, surf_wk, f_nl)
       end if
 !

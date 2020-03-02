@@ -69,7 +69,7 @@
 !
       if(ipol%i_h_flux_w_sgs .gt. 0) then
         call add_2_nod_vectors                                          &
-     &     (rj_fld, ipol%forces%i_h_flux, ipol%i_SGS_h_flux,            &
+     &     (rj_fld, ipol%forces%i_h_flux, ipol%SGS_term%i_SGS_h_flux,   &
      &      ipol%i_h_flux_w_sgs)
       end if
 !

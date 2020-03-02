@@ -127,7 +127,7 @@
      &      trns_f_SGS%fld_rtp)
       end if
 !
-      if(fg_trns%i_SGS_h_flux .gt. 0) then
+      if(fg_trns%SGS_term%i_SGS_h_flux .gt. 0) then
         call sel_SGS_s_flux_nl_gradient                                 &
      &     (sph%sph_rtp, sph_filters, MHD_prop%ht_prop%coef_advect,     &
      &      b_trns%i_velo, trns_b_MHD%ncomp, trns_b_MHD%fld_rtp,        &
@@ -136,7 +136,8 @@
      &      bn_trns%diff_vector%i_grad_vz,                              &
      &      bn_trns%grad_fld%i_grad_temp,                               &
      &      trns_b_NLGD%ncomp, trns_b_NLGD%fld_rtp,                     &
-     &      fg_trns%i_SGS_h_flux, trns_f_SGS%ncomp, trns_f_SGS%fld_rtp)
+     &      fg_trns%SGS_term%i_SGS_h_flux,                              &
+     &      trns_f_SGS%ncomp, trns_f_SGS%fld_rtp)
       end if
 !
       if(fg_trns%i_SGS_c_flux .gt. 0) then

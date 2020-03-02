@@ -85,7 +85,7 @@
 !
       if(ifld_sgs%i_heat_flux .gt. 0) then
         call product_fixed_model_coefs(SGS_param%SGS_hf_factor,         &
-     &      sph_rtp, fg_trns%i_SGS_h_flux, n_vector,                    &
+     &      sph_rtp, fg_trns%SGS_term%i_SGS_h_flux, n_vector,           &
      &      trns_f_SGS%ncomp, trns_f_SGS%fld_rtp)
       end if
 !
@@ -141,7 +141,7 @@
         if (iflag_debug.eq.1) write(*,*) 'sel_product_model_coefs HF'
         call sel_product_model_coefs                                    &
      &     (SGS_param%SGS_hf_factor, sph_rtp, dynamic_SPH%sph_d_grp,    &
-     &      n_vector, fg_trns%i_SGS_h_flux,                             &
+     &      n_vector, fg_trns%SGS_term%i_SGS_h_flux,                    &
      &      dynamic_SPH%ifld_sgs%i_heat_flux,                           &
      &      dynamic_SPH%wk_sgs, trns_f_SGS)
       end if

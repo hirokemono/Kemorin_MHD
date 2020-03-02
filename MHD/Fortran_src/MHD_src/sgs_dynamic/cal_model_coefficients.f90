@@ -129,7 +129,8 @@
      &        time_d%dt, SGS_par%model_p%itype_Csym_h_flux,             &
      &        SGS_par%model_p%SGS_hf_factor,                            &
      &        iphys%i_sgs_temp, iphys%i_filter_temp,                    &
-     &        iphys%i_velo, iphys%i_filter_velo, iphys%i_SGS_h_flux,    &
+     &        iphys%i_velo, iphys%i_filter_velo,                        &
+     &        iphys%SGS_term%i_SGS_h_flux,                              &
      &        ifld_sgs%i_heat_flux, icomp_sgs%i_heat_flux,              &
      &        iphys_elediff%i_velo, iphys_elediff%i_filter_velo,        &
      &        SGS_par, fem%mesh, iphys,                                 &
@@ -146,7 +147,8 @@
           call s_cal_sgs_s_flux_dynamic_simi(FEM_prm%npoint_t_evo_int,  &
      &        SGS_par%model_p%itype_Csym_h_flux, iphys%i_sgs_temp,      &
      &        iphys%i_filter_temp, iphys%wide_filter_fld%i_temp,        &
-     &        iphys%i_velo, iphys%i_filter_velo, iphys%i_SGS_h_flux,    &
+     &        iphys%i_velo, iphys%i_filter_velo,                        &
+     &        iphys%SGS_term%i_SGS_h_flux,                              &
      &        ifld_sgs%i_heat_flux, icomp_sgs%i_heat_flux, SGS_par,     &
      &        fem%mesh, iphys, fem_int, FEM_filters,                    &
      &        SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%rhs_mat, nod_fld,       &
@@ -159,7 +161,8 @@
      &       (SGS_par%model_p%itype_Csym_h_flux,                        &
      &        FEM_prm%iflag_temp_supg, FEM_prm%npoint_t_evo_int,        &
      &        time_d%dt, iphys%i_sgs_temp, iphys%i_filter_temp,         &
-     &        iphys%i_velo, iphys%i_filter_velo, iphys%i_SGS_h_flux,    &
+     &        iphys%i_velo, iphys%i_filter_velo,                        &
+     &        iphys%SGS_term%i_SGS_h_flux,                              &
      &        ifld_diff%i_heat_flux, icomp_sgs%i_heat_flux,             &
      &        icomp_diff%i_heat_flux, iphys_elediff%i_filter_velo,      &
      &        SGS_par, fem%mesh, fem%group,                             &

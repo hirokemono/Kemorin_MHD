@@ -135,14 +135,15 @@
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-      if (iphys%i_SGS_h_flux .gt. 0) then
+      if (iphys%SGS_term%i_SGS_h_flux .gt. 0) then
         if(iflag_debug.gt.0) write(*,*)                                 &
      &          'lead ', trim(SGS_heat_flux%name)
         call cal_sgs_heat_flux                                          &
      &     (FEM_prm%iflag_temp_supg, FEM_prm%npoint_t_evo_int, dt,      &
      &      SGS_param%iflag_SGS_h_flux, SGS_param%itype_Csym_h_flux,    &
      &      iphys%i_sgs_temp, iphys%i_filter_temp,                      &
-     &      iphys%i_velo, iphys%i_filter_velo, iphys%i_SGS_h_flux,      &
+     &      iphys%i_velo, iphys%i_filter_velo,                          &
+     &      iphys%SGS_term%i_SGS_h_flux,                                &
      &      icomp_sgs%i_heat_flux, iphys_elediff%i_velo,                &
      &      SGS_param, filter_param, nod_comm, node, ele, fluid,        &
      &      iphys_ele, ele_fld, jacs, rhs_tbl, FEM_elens, filtering,    &
@@ -266,7 +267,7 @@
      &        'lead ', trim(div_SGS_h_flux%name)
         call cal_terms_4_heat                                           &
      &     (iphys%i_SGS_div_h_flux, iphys%i_velo, iphys%i_temp,         &
-     &      iphys%i_SGS_h_flux, ifld_diff%i_heat_flux,                  &
+     &      iphys%SGS_term%i_SGS_h_flux, ifld_diff%i_heat_flux,         &
      &      FEM_prm%iflag_temp_supg, FEM_prm%npoint_t_evo_int,          &
      &      SGS_param%ifilter_final, SGS_param%iflag_SGS_h_flux,        &
      &      cmt_param%iflag_c_hf, cmt_param%iflag_c_temp, dt,           &
@@ -394,7 +395,7 @@
      &        'lead ', trim(fhd_SGS_buo_flux)
         call cal_SGS_gravity_flux                                       &
      &     (node, fl_prop%i_grav, fl_prop%coef_buo, fl_prop%grav,       &
-     &      iphys%i_SGS_h_flux, iphys%i_SGS_buo_wk, nod_fld)
+     &      iphys%SGS_term%i_SGS_h_flux, iphys%i_SGS_buo_wk, nod_fld)
       end if
 !
       if (iphys%i_SGS_comp_buo_wk .gt. 0) then
@@ -402,7 +403,8 @@
      &        'lead ', trim(fhd_SGS_comp_buo_flux)
         call cal_SGS_gravity_flux                                       &
      &     (node, fl_prop%i_grav, fl_prop%coef_comp_buo, fl_prop%grav,  &
-     &      iphys%i_SGS_h_flux, iphys%i_SGS_comp_buo_wk, nod_fld)
+     &      iphys%SGS_term%i_SGS_h_flux, iphys%i_SGS_comp_buo_wk,       &
+     &      nod_fld)
       end if
 !
 !

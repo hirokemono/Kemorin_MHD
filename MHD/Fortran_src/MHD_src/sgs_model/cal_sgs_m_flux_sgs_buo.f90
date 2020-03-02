@@ -189,7 +189,7 @@
       if(fl_prop%iflag_4_gravity .gt. id_turn_OFF) then
         call cal_SGS_gravity_flux                                       &
      &     (node, fl_prop%i_grav, fl_prop%coef_buo, fl_prop%grav,       &
-     &      iphys%i_SGS_h_flux, iphys%i_SGS_buo_wk, nod_fld)
+     &      iphys%SGS_term%i_SGS_h_flux, iphys%i_SGS_buo_wk, nod_fld)
       end if
       if(fl_prop%iflag_4_composit_buo .gt. id_turn_OFF) then
         call cal_SGS_gravity_flux                                       &

@@ -60,10 +60,11 @@
      &    ipol%i_SGS_vp_induct, itor%i_SGS_vp_induct,                   &
      &    iphys%i_SGS_vp_induct, f_trns%i_SGS_vp_induct, trns_fwd)
 !   SGS heat flux flag
-      call add_field_name_4_sph_trns                                    &
-     &   (ipol%i_SGS_h_flux, SGS_heat_flux%name, SGS_heat_flux%n_comp,  &
-     &    ipol%i_SGS_h_flux, itor%i_SGS_h_flux, iphys%i_SGS_h_flux,     &
-     &    f_trns%i_SGS_h_flux, trns_fwd)
+      call add_field_name_4_sph_trns(ipol%SGS_term%i_SGS_h_flux,        &
+     &    SGS_heat_flux%name, SGS_heat_flux%n_comp,                     &
+     &    ipol%SGS_term%i_SGS_h_flux, itor%SGS_term%i_SGS_h_flux,       &
+     &    iphys%SGS_term%i_SGS_h_flux, f_trns%SGS_term%i_SGS_h_flux,    &
+     &    trns_fwd)
 !   SGS composition flux flag
       call add_field_name_4_sph_trns(ipol%i_SGS_c_flux,                 &
      &    SGS_composit_flux%name, SGS_composit_flux%n_comp,             &

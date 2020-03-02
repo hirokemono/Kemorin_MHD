@@ -76,7 +76,7 @@
         call sel_SGS_buoyancy_flux_rtp                                  &
      &    (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                          &
      &     sph_rtp%radius_1d_rtp_r, fl_prop%coef_buo,                   &
-     &     trns_f_SGS%fld_rtp(1,fg_trns%i_SGS_h_flux),                  &
+     &     trns_f_SGS%fld_rtp(1,fg_trns%SGS_term%i_SGS_h_flux),         &
      &     trns_f_DYNS%fld_rtp(1,fs_trns%i_SGS_buo_wk))
       end if
       if(fl_prop%iflag_4_composit_buo .gt. id_turn_OFF) then
@@ -138,7 +138,7 @@
         call cal_buoyancy_flux_rtp_pout                                 &
      &    (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                          &
      &     sph_rtp%radius_1d_rtp_r, fl_prop%coef_buo,                   &
-     &     trns_f_SGS%fld_rtp(1,fg_trns%i_SGS_h_flux),                  &
+     &     trns_f_SGS%fld_rtp(1,fg_trns%SGS_term%i_SGS_h_flux),         &
      &     trns_f_snap%fld_rtp(1,fs_trns%i_SGS_buo_wk))
       end if
       if(fs_trns%i_SGS_comp_buo_wk .gt. 0) then

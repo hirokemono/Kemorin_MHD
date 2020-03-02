@@ -259,8 +259,8 @@
      &    itor%diff_vector%i_grad_jz, idpdr%diff_vector%i_grad_jz)
 !
 !
-      call set_vect_sph_address(ipol%i_SGS_h_flux,                      &
-     &    itor%i_SGS_h_flux, idpdr%i_SGS_h_flux)
+      call set_vect_sph_address(ipol%SGS_term%i_SGS_h_flux,             &
+     &    itor%SGS_term%i_SGS_h_flux, idpdr%SGS_term%i_SGS_h_flux)
       call set_vect_sph_address(ipol%i_SGS_c_flux,                      &
      &    itor%i_SGS_c_flux, idpdr%i_SGS_c_flux)
       call set_vect_sph_address(ipol%i_SGS_inertia,                     &

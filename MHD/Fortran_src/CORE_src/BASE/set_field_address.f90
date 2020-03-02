@@ -205,7 +205,7 @@
      &     (i0, field_name(i), iphys%forces, flag)
 !
         if ( field_name(i) .eq. SGS_heat_flux%name ) then
-          iphys%i_SGS_h_flux =   i0
+          iphys%SGS_term%i_SGS_h_flux =   i0
         else if ( field_name(i) .eq. SGS_composit_flux%name ) then
           iphys%i_SGS_c_flux =   i0
         else if ( field_name(i) .eq. SGS_momentum_flux%name ) then
