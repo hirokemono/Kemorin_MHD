@@ -373,10 +373,10 @@
       end if
 !
 !
-      if (iphys%i_reynolds_wk .gt. 0) then
+      if (iphys%SGS_ene_flux%i_reynolds_wk .gt. 0) then
         call cal_phys_dot_product                                       &
      &     (iphys%i_velo, iphys%div_SGS%i_SGS_m_flux,                   &
-     &      iphys%i_reynolds_wk, nod_fld)
+     &      iphys%SGS_ene_flux%i_reynolds_wk, nod_fld)
       end if
 !
       if (iphys%i_SGS_Lor_wk .gt. 0) then

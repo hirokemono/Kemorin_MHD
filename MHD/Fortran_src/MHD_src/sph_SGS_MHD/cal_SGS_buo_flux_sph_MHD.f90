@@ -69,7 +69,7 @@
       call cal_dot_prod_no_coef_smp(sph_rtp%nnod_rtp,                   &
      &    trns_f_SGS%fld_rtp(1,fg_trns%SGS_term%i_SGS_inertia),         &
      &    trns_b_MHD%fld_rtp(1,b_trns%i_velo),                          &
-     &    trns_f_DYNS%fld_rtp(1,fs_trns%i_reynolds_wk))
+     &    trns_f_DYNS%fld_rtp(1,fs_trns%SGS_ene_flux%i_reynolds_wk))
 !$omp end parallel
 !
       if(fl_prop%iflag_4_gravity .gt. id_turn_OFF) then
@@ -111,11 +111,11 @@
 !
 !
 !$omp parallel
-      if(fs_trns%i_reynolds_wk .gt. 0) then
+      if(fs_trns%SGS_ene_flux%i_reynolds_wk .gt. 0) then
         call cal_dot_prod_w_coef_smp(sph_rtp%nnod_rtp, dminus,          &
      &      trns_f_SGS%fld_rtp(1,fg_trns%SGS_term%i_SGS_inertia),       &
      &      trns_b_MHD%fld_rtp(1,b_trns%i_velo),                        &
-     &      trns_f_snap%fld_rtp(1,fs_trns%i_reynolds_wk))
+     &      trns_f_snap%fld_rtp(1,fs_trns%SGS_ene_flux%i_reynolds_wk))
       end if
 !
       if(fs_trns%i_SGS_Lor_wk .gt. 0) then

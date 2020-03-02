@@ -88,10 +88,12 @@
 !
 !
 !   work of Reynolds stress
-      call add_field_name_4_sph_trns                                    &
-     &   (ipol%i_reynolds_wk, Reynolds_work%name, Reynolds_work%n_comp, &
-     &    ipol%i_reynolds_wk, itor%i_reynolds_wk,                       &
-     &    iphys%i_reynolds_wk, f_trns%i_reynolds_wk, trns_fwd)
+      call add_field_name_4_sph_trns(ipol%SGS_ene_flux%i_reynolds_wk,   &
+     &    Reynolds_work%name, Reynolds_work%n_comp,                     &
+     &    ipol%SGS_ene_flux%i_reynolds_wk,                              &
+     &    itor%SGS_ene_flux%i_reynolds_wk,                              &
+     &    iphys%SGS_ene_flux%i_reynolds_wk,                             &
+     &    f_trns%SGS_ene_flux%i_reynolds_wk, trns_fwd)
 !   work of SGS buoyancy
       call add_field_name_4_sph_trns(ipol%i_SGS_buo_wk,                 &
      &    SGS_buoyancy_flux%name, SGS_buoyancy_flux%n_comp,             &

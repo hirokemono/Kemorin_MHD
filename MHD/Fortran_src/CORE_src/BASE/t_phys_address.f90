@@ -346,8 +346,6 @@
         integer (kind=kint) :: i_SGS_me_gen =      izero
 !>        start address for work of SGS Lorentz force
         integer (kind=kint) :: i_SGS_Lor_wk =      izero
-!>        start address for work of SGS Reynolds stress
-        integer (kind=kint) :: i_reynolds_wk =     izero
 !
 !>        start address for work of SGS buoyancy
         integer (kind=kint) :: i_SGS_buo_wk =      izero
@@ -591,6 +589,8 @@
         type(SGS_term_address) :: div_SGS
 !>        Structure of rotation of SGS terms
         type(SGS_term_address) :: rot_SGS
+!>        Structure of SGS energy fluxes
+        type(SGS_ene_flux_address) :: SGS_ene_flux
       end type phys_address
 !
 !

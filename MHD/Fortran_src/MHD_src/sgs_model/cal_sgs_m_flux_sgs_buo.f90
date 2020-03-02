@@ -181,7 +181,7 @@
 !$omp parallel
       call cal_phys_dot_product                                         &
      &   (iphys%i_velo, iphys%div_SGS%i_SGS_m_flux,                     &
-     &    iphys%i_reynolds_wk, nod_fld)
+     &    iphys%SGS_ene_flux%i_reynolds_wk, nod_fld)
 !$omp end parallel
 !
 !   lead SGS buoyancy flux
@@ -281,9 +281,9 @@
 !
 !   take RMS of SGS buoyancy flux and work of Reynolds stress
       if(fl_prop%iflag_4_gravity .gt. id_turn_OFF) then
-        call int_vol_2rms_ave_ele_grps                                  &
-     &     (node, ele, layer_tbl%e_grp, g_FEM, jac_3d_q, jac_3d_l,      &
-     &      num_int, nod_fld%ntot_phys, iphys%i_reynolds_wk,            &
+        call int_vol_2rms_ave_ele_grps(node, ele, layer_tbl%e_grp,      &
+     &      g_FEM, jac_3d_q, jac_3d_l, num_int,                         &
+     &      nod_fld%ntot_phys, iphys%SGS_ene_flux%i_reynolds_wk,        &
      &      nod_fld%d_fld, nod_fld%ntot_phys, iphys%i_SGS_buo_wk,       &
      &      nod_fld%d_fld, sgs_l(1,1), sgs_l(1,4), sgs_l(1,2),          &
      &      sgs_l(1,5) )
@@ -296,9 +296,9 @@
      &        sgs_l(1,3), sgs_l(1,6))
         end if
       else if(fl_prop%iflag_4_composit_buo .gt. id_turn_OFF) then
-        call int_vol_2rms_ave_ele_grps                                  &
-     &     (node, ele, layer_tbl%e_grp, g_FEM, jac_3d_q, jac_3d_l,      &
-     &      num_int, nod_fld%ntot_phys, iphys%i_reynolds_wk,            &
+        call int_vol_2rms_ave_ele_grps(node, ele, layer_tbl%e_grp,      &
+     &      g_FEM, jac_3d_q, jac_3d_l, num_int,                         &
+     &      nod_fld%ntot_phys, iphys%SGS_ene_flux%i_reynolds_wk,        &
      &      nod_fld%d_fld, nod_fld%ntot_phys,                           &
      &      iphys%i_SGS_comp_buo_wk, nod_fld%d_fld,                     &
      &      sgs_l(1,1), sgs_l(1,4), sgs_l(1,3), sgs_l(1,6))

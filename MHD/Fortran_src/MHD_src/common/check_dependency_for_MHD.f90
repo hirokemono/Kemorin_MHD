@@ -63,7 +63,6 @@
      &   (MHD_prop%fl_prop, MHD_prop%cd_prop,                           &
      &    MHD_prop%ht_prop, MHD_prop%cp_prop, iphys, nod_fld)
       call check_dependencies_by_id(MHD_prop%cd_prop, iphys, nod_fld)
-      call check_dependence_FEM_MHD_by_id(iphys, nod_fld)
       call check_dependence_FEM_evo(MHD_prop%fl_prop, iphys, nod_fld)
 !
       end subroutine set_FEM_MHD_field_data
@@ -92,7 +91,6 @@
      &   (MHD_prop%fl_prop, MHD_prop%cd_prop,                           &
      &    MHD_prop%ht_prop, MHD_prop%cp_prop, ipol, rj_fld)
       call check_dependencies_by_id(MHD_prop%cd_prop, ipol, rj_fld)
-      call check_dependence_SPH_MHD_by_id(ipol, rj_fld)
       call check_dependence_SPH_evo(MHD_prop%fl_prop, ipol, rj_fld)
 !
       end subroutine set_sph_MHD_sprctr_data

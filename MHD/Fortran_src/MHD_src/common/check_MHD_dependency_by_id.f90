@@ -8,8 +8,6 @@
 !!
 !!@verbatim
 !!      subroutine check_dependencies_by_id(cd_prop, iphys, fld)
-!!      subroutine check_dependence_FEM_MHD_by_id(iphys, fld)
-!!      subroutine check_dependence_SPH_MHD_by_id(iphys, fld)
 !!        type(conductive_property), intent(in) :: cd_prop
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_data), intent(in) :: fld
@@ -451,51 +449,6 @@
       end do
 !
       end subroutine check_dependencies_by_id
-!
-! -----------------------------------------------------------------------
-!
-      subroutine check_dependence_FEM_MHD_by_id(iphys, fld)
-!
-      type(phys_address), intent(in) :: iphys
-      type(phys_data), intent(in) :: fld
-!
-      integer(kind = kint) :: i, i_start
-!
-!
-      do i = 1, fld%num_phys
-        i_start = fld%istack_component(i-1) + 1
-        if(i_start .eq. iphys%i_reynolds_wk) then
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_velo, fhd_velo)
-          call check_missing_field(fld, i_start,                        &
-     &        iphys%div_SGS%i_SGS_m_flux, div_SGS_m_flux%name)
-        end if
-      end do
-!
-      end subroutine check_dependence_FEM_MHD_by_id
-!
-! -----------------------------------------------------------------------
-!
-      subroutine check_dependence_SPH_MHD_by_id(iphys, fld)
-!
-      type(phys_address), intent(in) :: iphys
-      type(phys_data), intent(in) :: fld
-!
-      integer(kind = kint) :: i, i_start
-!
-!
-      do i = 1, fld%num_phys
-        i_start = fld%istack_component(i-1) + 1
-        if(i_start .eq. iphys%i_reynolds_wk) then
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_velo, fhd_velo)
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%SGS_term%i_SGS_inertia,               &
-     &        SGS_inertia%name)
-        end if
-      end do
-!
-      end subroutine check_dependence_SPH_MHD_by_id
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------

@@ -136,8 +136,10 @@
 !
       call add_field_name_4_sph_trns_snap                               &
      &   (Reynolds_work%name, Reynolds_work%n_comp,                     &
-     &    ipol%i_reynolds_wk, itor%i_reynolds_wk, iphys%i_reynolds_wk,  &
-     &    f_trns%i_reynolds_wk, trns_fwd)
+     &    ipol%SGS_ene_flux%i_reynolds_wk,                              &
+     &    itor%SGS_ene_flux%i_reynolds_wk,                              &
+     &    iphys%SGS_ene_flux%i_reynolds_wk,                             &
+     &    f_trns%SGS_ene_flux%i_reynolds_wk, trns_fwd)
 !
       call add_field_name_4_sph_trns_snap                               &
      &   (SGS_Lorentz_work%name, SGS_Lorentz_work%n_comp,               &
