@@ -310,11 +310,11 @@
         end if
       end do
 !
-      if (      iphys%i_SGS_induction .gt. 0                            &
+      if (      iphys%SGS_term%i_SGS_induction .gt. 0                   &
      &   .and. cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
         if(iflag_debug.gt.0) write(*,*)                                 &
      &        'lead ', trim(SGS_induction%name)
-        call cal_terms_4_magnetic(iphys%i_SGS_induction,                &
+        call cal_terms_4_magnetic(iphys%SGS_term%i_SGS_induction,       &
      &      ifld_diff%i_induction, ak_MHD%ak_d_magne, dt,               &
      &      FEM_prm, SGS_param, cmt_param, nod_comm, node, ele,         &
      &      surf, conduct, sf_grp, cd_prop,                             &
@@ -354,7 +354,7 @@
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-      if (     iphys%i_SGS_induction .gt. 0                             &
+      if (     iphys%SGS_term%i_SGS_induction .gt. 0                    &
      &   .and. cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
         if(iflag_debug.gt.0) write(*,*)                                 &
      &        'lead ', trim(SGS_induction%name)
@@ -387,8 +387,8 @@
 !
       if (iphys%i_SGS_me_gen .gt. 0) then
         call cal_phys_dot_product                                       &
-     &     (iphys%i_magne, iphys%i_SGS_induction, iphys%i_SGS_me_gen,   &
-     &      nod_fld)
+     &     (iphys%i_magne, iphys%SGS_term%i_SGS_induction,              &
+     &      iphys%i_SGS_me_gen, nod_fld)
       end if
 !$omp end parallel
 !

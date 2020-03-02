@@ -107,7 +107,7 @@
         if ( SGS_param%iflag_SGS_uxb .ne. id_SGS_none) then
           msg = 'solving SGS magnetic induction needs'
           call check_missing_field_w_msg                                &
-     &       (fld, msg, iphys%i_SGS_induction)
+     &       (fld, msg, iphys%SGS_term%i_SGS_induction)
           call check_missing_field_w_msg                                &
      &       (fld, msg, iphys%SGS_term%i_SGS_vp_induct)
         end if

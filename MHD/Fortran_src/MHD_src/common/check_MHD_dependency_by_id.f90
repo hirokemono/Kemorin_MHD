@@ -173,16 +173,6 @@
      &       (fld, i_start, iphys%i_velo, fhd_velo)
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_temp, fhd_temp)
-        else if(i_start .eq. iphys%i_SGS_induction) then 
-          if (cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
-            call check_missing_field                                    &
-     &       (fld, i_start, iphys%i_velo, fhd_velo)
-            call check_missing_field                                    &
-     &       (fld, i_start, iphys%i_magne, fhd_magne)
-          else
-            call check_missing_field                                    &
-     &         (fld, i_start, iphys%SGS_term%i_SGS_vp_induct, SGS_vecp_induction%name)
-          end if
         end if
       end do
 !
@@ -341,7 +331,7 @@
      &       (fld, i_start, iphys%SGS_term%i_SGS_c_flux, SGS_composit_flux%name)
         else if(i_start .eq. iphys%i_SGS_me_gen) then 
           call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_SGS_induction, SGS_induction%name)
+     &       (fld, i_start, iphys%SGS_term%i_SGS_induction, SGS_induction%name)
         else if(i_start .eq. iphys%i_SGS_div_m_flux) then
           call check_missing_field                                      &
      &       (fld, i_start, iphys%SGS_term%i_SGS_m_flux, SGS_momentum_flux%name)
@@ -450,7 +440,7 @@
           call check_missing_field                                      &
      &       (fld, i_start, iphys%forces%i_induction, magnetic_induction%name)
           call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_SGS_induction, SGS_induction%name)
+     &       (fld, i_start, iphys%SGS_term%i_SGS_induction, SGS_induction%name)
         else if(i_start .eq. iphys%i_mom_flux_w_sgs) then 
           call check_missing_field                                      &
      &       (fld, i_start, iphys%forces%i_m_flux, momentum_flux%name)

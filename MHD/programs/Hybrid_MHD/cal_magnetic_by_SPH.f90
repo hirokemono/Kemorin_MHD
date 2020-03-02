@@ -70,7 +70,7 @@
 !
       if ( SGS_param%iflag_SGS_uxb .ne. id_SGS_none) then
         iphys_sph%SGS_term%i_SGS_vp_induct = 16
-        iphys_sph%i_SGS_induction = 19
+        iphys_sph%SGS_term%i_SGS_induction = 19
         sph_fld%num_phys =   7
         sph_fld%ntot_phys = 21
       end if
@@ -200,7 +200,7 @@
      &    rj_fld)
       call const_sph_rotation_uxb(sph%sph_rj, SPH_WK%r_2nd, sph_bc_B,   &
      &    g_sph_rj, ipol%SGS_term%i_SGS_vp_induct,                      &
-     &    ipol%i_SGS_induction, rj_fld)
+     &    ipol%SGS_term%i_SGS_induction, rj_fld)
 !*
       end subroutine nonlinear_incuction_wSGS_SPH
 !
@@ -308,8 +308,8 @@
      &    rj_fld, n_WS, WS)
       if (SGS_param%iflag_SGS_uxb .ne. id_SGS_none) then
         call sel_sph_rj_vector_to_send(ncomp_rj_2_xyz,                  &
-     &      ipol%i_SGS_induction, b_hbd_trns%i_SGS_induction, rj_fld,   &
-     &      n_WS, WS)
+     &      ipol%SGS_term%i_SGS_induction, b_hbd_trns%i_SGS_induction,  &
+     &      rj_fld, n_WS, WS)
       end if
 !
       call sph_b_trans_w_poles                                          &
@@ -338,8 +338,9 @@
       if ( SGS_param%iflag_SGS_uxb .ne. id_SGS_none) then
         call copy_nod_vec_from_trans_wpole                              &
      &   (sph%sph_rtp, sph%sph_params%m_folding, nvector_rj_2_xyz,      &
-     &    b_hbd_trns%i_SGS_induction, fld_hbd_rtp(1,1), fld_hbd_pole,   &
-     &    iphys_sph%i_SGS_induction, mesh_sph%node, sph_fld)
+     &    b_hbd_trns%SGS_term%i_SGS_induction,                          &
+     &    fld_hbd_rtp(1,1), fld_hbd_pole,                               &
+     &    iphys_sph%SGS_term%i_SGS_induction, mesh_sph%node, sph_fld)
       end if
 !
 !
@@ -357,7 +358,8 @@
      &    itp_SPH_2_FEM, mesh_sph, mesh_fem, sph_fld, fem_fld)
       if ( SGS_param%iflag_SGS_uxb .ne. id_SGS_none) then
         call interpolate_vector_type                                    &
-     &   (iphys_sph%i_SGS_induction, iphys%i_SGS_induction,             &
+     &   (iphys_sph%SGS_term%i_SGS_induction,                           &
+     &    iphys%SGS_term%i_SGS_induction,                               &
      &    itp_SPH_2_FEM, mesh_sph, mesh_fem, sph_fld, fem_fld)
       end if
 !

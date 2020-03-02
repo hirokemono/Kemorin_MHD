@@ -85,20 +85,20 @@
 !$omp parallel do private (inod)
       do inod = 1, nnod_rj
         d_rj(inod,ipol%i_magne) = d_rj(inod,ipol%i_magne)               &
-     &         + dt * (coef_exp *  d_rj(inod,ipol%i_b_diffuse)          &
-     &                 + adam_0 *  d_rj(inod,ipol%forces%i_induction)   &
-     &                 + adam_0 *  d_rj(inod,ipol%i_SGS_induction)      &
-     &                     + adam_1 *  d_rj(inod,ipol%i_pre_uxb) )
+     &      + dt * (coef_exp * d_rj(inod,ipol%i_b_diffuse)              &
+     &              + adam_0 * d_rj(inod,ipol%forces%i_induction)       &
+     &              + adam_0 * d_rj(inod,ipol%SGS_term%i_SGS_induction) &
+     &              + adam_1 * d_rj(inod,ipol%i_pre_uxb) )
         d_rj(inod,itor%i_magne) = d_rj(inod,itor%i_magne)               &
-     &         + dt * (coef_exp *  d_rj(inod,itor%i_b_diffuse)          &
-     &                 + adam_0 *  d_rj(inod,itor%forces%i_induction)   &
-     &                 + adam_0 *  d_rj(inod,itor%i_SGS_induction)      &
-     &                 + adam_1 *  d_rj(inod,itor%i_pre_uxb) )
+     &      + dt * (coef_exp * d_rj(inod,itor%i_b_diffuse)              &
+     &              + adam_0 * d_rj(inod,itor%forces%i_induction)       &
+     &              + adam_0 * d_rj(inod,itor%SGS_term%i_SGS_induction) &
+     &              + adam_1 * d_rj(inod,itor%i_pre_uxb) )
 !
         d_rj(inod,ipol%i_pre_uxb) = d_rj(inod,ipol%forces%i_induction)  &
-     &                           + d_rj(inod,ipol%i_SGS_induction)
+     &              + d_rj(inod,ipol%SGS_term%i_SGS_induction)
         d_rj(inod,itor%i_pre_uxb) = d_rj(inod,itor%forces%i_induction)  &
-     &                           + d_rj(inod,itor%i_SGS_induction)
+     &              + d_rj(inod,itor%SGS_term%i_SGS_induction)
       end do
 !$omp end parallel do
 !
@@ -149,13 +149,13 @@
 !$omp parallel do private (inod)
       do inod = 1, nnod_rj
         d_rj(inod,ipol%i_magne) = d_rj(inod,ipol%i_magne)               &
-     &         + dt * (coef_exp * d_rj(inod,ipol%i_b_diffuse)           &
-     &                          + d_rj(inod,ipol%forces%i_induction)    &
-     &                          + d_rj(inod,ipol%i_SGS_induction) )
+     &     + dt * (coef_exp * d_rj(inod,ipol%i_b_diffuse)               &
+     &                      + d_rj(inod,ipol%forces%i_induction)        &
+     &                      + d_rj(inod,ipol%SGS_term%i_SGS_induction))
         d_rj(inod,itor%i_magne) = d_rj(inod,itor%i_magne)               &
-     &         + dt * (coef_exp * d_rj(inod,itor%i_b_diffuse)           &
-     &                          + d_rj(inod,itor%forces%i_induction)    &
-     &                          + d_rj(inod,itor%i_SGS_induction) )
+     &     + dt * (coef_exp * d_rj(inod,itor%i_b_diffuse)               &
+     &                      + d_rj(inod,itor%forces%i_induction)        &
+     &                      + d_rj(inod,itor%SGS_term%i_SGS_induction))
       end do
 !$omp end parallel do
 !
@@ -198,9 +198,9 @@
 !$omp parallel do private (inod)
       do inod = 1, nnod_rj
         d_rj(inod,ipol%i_pre_uxb) = d_rj(inod,ipol%forces%i_induction)  &
-     &                            + d_rj(inod,ipol%i_SGS_induction)
+     &                       + d_rj(inod,ipol%SGS_term%i_SGS_induction)
         d_rj(inod,itor%i_pre_uxb) = d_rj(inod,itor%forces%i_induction)  &
-     &                            + d_rj(inod,itor%i_SGS_induction)
+     &                       + d_rj(inod,itor%SGS_term%i_SGS_induction)
       end do
 !$omp end parallel do
 !
