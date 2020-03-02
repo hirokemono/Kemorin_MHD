@@ -188,7 +188,7 @@
      &      f_l, f_nl, nod_fld)
       end if
 !
-      if (iphys%i_SGS_induct_t .gt. 0) then
+      if (iphys%SGS_term%i_SGS_induct_t .gt. 0) then
         if(iflag_debug.gt.0) write(*,*)                                 &
      &         'lead ', trim(induction_tensor%name)
         call cal_sgs_magne_induction(icomp_sgs%i_induction,             &

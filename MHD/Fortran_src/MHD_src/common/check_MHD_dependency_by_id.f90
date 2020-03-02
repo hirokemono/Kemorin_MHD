@@ -163,8 +163,7 @@
 !
         else if(i_start .eq. iphys%i_x_heli                             &
      &     .or. i_start .eq. iphys%i_wide_SGS_vp_induct                 &
-     &     .or. i_start .eq. iphys%i_SGS_vp_induct                      &
-     &     .or. i_start .eq. iphys%i_SGS_induct_t) then 
+     &     .or. i_start .eq. iphys%i_SGS_vp_induct) then 
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_velo, fhd_velo)
           call check_missing_field                                      &

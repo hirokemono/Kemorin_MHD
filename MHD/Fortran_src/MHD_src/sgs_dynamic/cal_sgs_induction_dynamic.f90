@@ -218,7 +218,7 @@
 !
       if (iflag_debug.gt.0)  write(*,*) 'cal_sgs_induct_t_simi'
       call cal_sgs_induct_t_simi                                        &
-     &   (iphys%i_SGS_induct_t, iphys%i_velo, iphys%i_magne,            &
+     &   (iphys%SGS_term%i_SGS_induct_t, iphys%i_velo, iphys%i_magne,   &
      &    iphys%i_filter_velo, iphys%i_filter_magne, icomp_sgs_uxb,     &
      &    SGS_par%filter_p, mesh%nod_comm, mesh%node,                   &
      &    FEM_filters%filtering, sgs_coefs_nod, FEM_SGS_wk%wk_filter,   &
@@ -227,7 +227,7 @@
 !    copy to work array
 !
        call copy_vector_component(nod_fld,                              &
-      &    iphys%i_SGS_induct_t, iphys%i_sgs_simi)
+      &    iphys%SGS_term%i_SGS_induct_t, iphys%i_sgs_simi)
 !
 !   gradient model by filtered field
 !
@@ -244,7 +244,7 @@
 !
       if (iflag_debug.gt.0)  write(*,*) 'cal_sgs_induct_t_grad_4_dyn'
       call cal_sgs_induct_t_grad_no_coef                                &
-     &   (ifilter_2delta,  iphys%i_SGS_induct_t,                        &
+     &   (ifilter_2delta,  iphys%SGS_term%i_SGS_induct_t,               &
      &    iphys%i_velo, iphys%i_magne, ie_dvx, ie_dbx, dt, FEM_prm,     &
      &    mesh%nod_comm, mesh%node, mesh%ele, conduct, cd_prop,         &
      &    iphys_ele, ele_fld, fem_int%jcs,                              &
@@ -255,8 +255,8 @@
 !
       call cal_filtered_vector_whole(SGS_par%filter_p,                  &
      &    mesh%nod_comm, mesh%node, FEM_filters%filtering,              &
-     &    iphys%i_sgs_grad, iphys%i_SGS_induct_t, FEM_SGS_wk%wk_filter, &
-     &    nod_fld)
+     &    iphys%i_sgs_grad, iphys%SGS_term%i_SGS_induct_t,              &
+     &    FEM_SGS_wk%wk_filter, nod_fld)
 !
 !   Change coordinate
 !

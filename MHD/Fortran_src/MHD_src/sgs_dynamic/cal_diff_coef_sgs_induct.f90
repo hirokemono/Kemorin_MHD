@@ -137,8 +137,8 @@
 !
       if (iflag_debug.gt.0)  write(*,*) 'cal_div_sgs_induct_simi'
       call cal_div_sgs_idct_simi(iphys%i_sgs_grad,                      &
-     &    iphys%i_SGS_induct_t, iphys%i_velo, iphys%i_magne, dt,        &
-     &    FEM_prm, mesh%nod_comm, mesh%node, mesh%ele, conduct,         &
+     &    iphys%SGS_term%i_SGS_induct_t, iphys%i_velo, iphys%i_magne,   &
+     &    dt, FEM_prm, mesh%nod_comm, mesh%node, mesh%ele, conduct,     &
      &    iphys_ele, ele_fld, fem_int%jcs, fem_int%rhs_tbl,             &
      &    rhs_mat%fem_wk, mk_MHD%mlump_cd, rhs_mat%f_l, rhs_mat%f_nl,   &
      &    nod_fld)
@@ -179,8 +179,9 @@
       call cal_commute_error_4_idct(FEM_prm%npoint_t_evo_int,           &
      &    conduct%istack_ele_fld_smp, mk_MHD%mlump_cd,                  &
      &    mesh%node, mesh%ele, mesh%surf, group%surf_grp,               &
-     &    Bsf_bcs, fem_int%jcs, fem_int%rhs_tbl, FEM_filters%FEM_elens, &
-     &    ifilter_2delta, iphys%i_sgs_grad, iphys%i_SGS_induct_t,       &
+     &    Bsf_bcs, fem_int%jcs, fem_int%rhs_tbl,                        &
+     &    FEM_filters%FEM_elens, ifilter_2delta,                        &
+     &    iphys%i_sgs_grad, iphys%SGS_term%i_SGS_induct_t,              &
      &    iphys%i_velo, iphys%i_magne, rhs_mat%fem_wk, rhs_mat%surf_wk, &
      &    rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
 !

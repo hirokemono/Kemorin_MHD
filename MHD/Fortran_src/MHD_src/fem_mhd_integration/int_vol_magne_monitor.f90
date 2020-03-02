@@ -128,7 +128,8 @@
           call int_vol_div_as_tsr_w_const                               &
      &       (node, ele, g_FEM, jac_3d, rhs_tbl, nod_fld,               &
      &        conduct%istack_ele_fld_smp, num_int,                      &
-     &        iphys%i_SGS_induct_t, cd_prop%coef_induct, fem_wk, f_nl)
+     &        iphys%SGS_term%i_SGS_induct_t, cd_prop%coef_induct,       &
+     &        fem_wk, f_nl)
         end if
       end if
 !
@@ -199,7 +200,7 @@
           call int_vol_div_as_tsr_cst_upw                               &
      &       (node, ele, g_FEM, jac_3d, rhs_tbl, nod_fld,               &
      &        conduct%istack_ele_fld_smp, num_int, dt,                  &
-     &        iphys%i_SGS_induct_t, ele_fld%ntot_phys,                  &
+     &        iphys%SGS_term%i_SGS_induct_t, ele_fld%ntot_phys,         &
      &        iphys_ele%i_magne, ele_fld%d_fld, cd_prop%coef_induct,    &
      &        fem_wk, f_nl)
         end if

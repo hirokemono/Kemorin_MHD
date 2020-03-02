@@ -351,7 +351,7 @@
         if (iflag_debug.eq.1)                                           &
      &    write(*,*) 'cal_sgs_induct_t_grad'
         call cal_sgs_induct_t_grad_w_coef(SGS_param%ifilter_final,      &
-     &      icomp_sgs_uxb, iphys%i_SGS_induct_t,                        &
+     &      icomp_sgs_uxb, iphys%SGS_term%i_SGS_induct_t,               &
      &      iphys%i_velo, iphys%i_magne, ie_dvx, ie_dbx, dt,            &
      &      FEM_prm, SGS_param, nod_comm, node, ele, conduct, cd_prop,  &
      &      iphys_ele, ele_fld, jacs, rhs_tbl, FEM_elens, sgs_coefs,    &
@@ -361,7 +361,7 @@
         if (iflag_debug.eq.1)                                           &
      &      write(*,*) 'cal_sgs_induct_t_simi'
         call cal_sgs_induct_t_simi                                      &
-     &     (iphys%i_SGS_induct_t, iphys%i_velo,  iphys%i_magne,         &
+     &     (iphys%SGS_term%i_SGS_induct_t, iphys%i_velo, iphys%i_magne, &
      &      iphys%i_filter_velo, iphys%i_filter_magne, icomp_sgs_uxb,   &
      &      filter_param, nod_comm, node, filtering, sgs_coefs_nod,     &
      &      wk_filter, nod_fld)

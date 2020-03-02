@@ -104,7 +104,8 @@
      &      (node, ele, surf, sf_grp, nod_fld, g_FEM, jac_sf_grp,       &
      &       rhs_tbl, FEM_elens, Bsf_bcs%sgs, num_int,                  &
      &       SGS_param%ifilter_final, diff_coefs%num_field,             &
-     &       iak_diff_uxb, diff_coefs%ak, iphys%i_SGS_induct_t,         &
+     &       iak_diff_uxb, diff_coefs%ak,                               &
+     &       iphys%SGS_term%i_SGS_induct_t,                             &
      &       iphys%i_velo, iphys%i_magne, fem_wk, surf_wk, f_nl)
       end if
 !
@@ -167,7 +168,8 @@
      &       (node, ele, surf, sf_grp, nod_fld, g_FEM, jac_sf_grp,      &
      &        rhs_tbl, FEM_elens, Bsf_bcs%sgs, num_int,                 &
      &        SGS_param%ifilter_final, diff_coefs%num_field,            &
-     &        iak_diff_uxb, diff_coefs%ak, iphys%i_SGS_induct_t,        &
+     &        iak_diff_uxb, diff_coefs%ak,                              &
+     &        iphys%SGS_term%i_SGS_induct_t,                            &
      &        iphys%i_velo, iphys%i_magne, fem_wk, surf_wk, f_nl)
         end if
       end if

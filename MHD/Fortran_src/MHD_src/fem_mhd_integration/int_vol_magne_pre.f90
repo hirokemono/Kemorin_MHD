@@ -143,8 +143,9 @@
 !
         if (SGS_param%iflag_SGS_uxb .ne. id_SGS_none                    &
      &    .and. cmt_param%iflag_c_uxb .eq. id_SGS_commute_ON) then
-           call SGS_const_induct_each_ele(node, ele, nod_fld,           &
-     &         k2, iphys%i_magne, iphys%i_velo, iphys%i_SGS_induct_t,   &
+           call SGS_const_induct_each_ele                               &
+     &        (node, ele, nod_fld, k2, iphys%i_magne, iphys%i_velo,     &
+     &         iphys%SGS_term%i_SGS_induct_t,                           &
      &         cd_prop%coef_induct, mhd_fem_wk%sgs_v1, fem_wk%vector_1)
            call fem_skv_div_sgs_asym_tsr(conduct%istack_ele_fld_smp,    &
      &         num_int, k2, SGS_param%ifilter_final,                    &
@@ -153,7 +154,7 @@
      &         fem_wk%vector_1, fem_wk%sk6)
         else if (SGS_param%iflag_SGS_uxb .ne. id_SGS_none) then
           call vector_cst_phys_2_each_ele(node, ele, nod_fld, k2,       &
-     &        iphys%i_SGS_induct_t, cd_prop%coef_induct,                &
+     &        iphys%SGS_term%i_SGS_induct_t, cd_prop%coef_induct,       &
      &        mhd_fem_wk%sgs_v1)
           call fem_skv_all_div_asym_t                                   &
      &       (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,               &
@@ -245,8 +246,9 @@
 !
         if (SGS_param%iflag_SGS_uxb .ne. id_SGS_none                    &
      &    .and. cmt_param%iflag_c_uxb .eq. id_SGS_commute_ON) then
-          call SGS_const_induct_each_ele(node, ele, nod_fld,            &
-     &        k2, iphys%i_magne, iphys%i_velo, iphys%i_SGS_induct_t,    &
+          call SGS_const_induct_each_ele(node, ele, nod_fld, k2,        &
+     &        iphys%i_magne, iphys%i_velo,                              &
+     &        iphys%SGS_term%i_SGS_induct_t,                            &
      &        cd_prop%coef_induct, mhd_fem_wk%sgs_v1, fem_wk%vector_1)
           call fem_skv_div_sgs_asym_t_upwind                            &
      &       (conduct%istack_ele_fld_smp, num_int,                      &
@@ -257,7 +259,7 @@
      &        fem_wk%vector_1, fem_wk%sk6)
         else if (SGS_param%iflag_SGS_uxb .ne. id_SGS_none) then
           call vector_cst_phys_2_each_ele(node, ele, nod_fld, k2,       &
-     &        iphys%i_SGS_induct_t, cd_prop%coef_induct,                &
+     &        iphys%SGS_term%i_SGS_induct_t, cd_prop%coef_induct,       &
      &        mhd_fem_wk%sgs_v1)
           call fem_skv_all_div_asym_t_upw                               &
      &       (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,               &
