@@ -100,7 +100,7 @@
       call int_vol_rotation                                             &
      &   (node, ele, g_FEM, jac_3d, rhs_tbl, nod_fld,                   &
      &    conduct%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,         &
-     &    iphys%i_SGS_vp_induct, fem_wk, f_nl)
+     &    iphys%SGS_term%i_SGS_vp_induct, fem_wk, f_nl)
 !
 !      call cal_multi_pass_4_vector_ff                                  &
 !     &   (ele%istack_ele_smp, FEM_prm, m1_lump, nod_comm, node, ele,   &
@@ -168,9 +168,10 @@
       call set_ff_nl_smp_2_ff(n_vector, node, rhs_tbl, f_l, f_nl)
       call cal_ff_2_vector                                              &
      &   (node%numnod, node%istack_nod_smp, f_nl%ff, mlump_cd%ml,       &
-     &    nod_fld%ntot_phys, iphys%i_SGS_vp_induct, nod_fld%d_fld)
+     &    nod_fld%ntot_phys, iphys%SGS_term%i_SGS_vp_induct,            &
+     &    nod_fld%d_fld)
       call vector_send_recv                                             &
-     &   (iphys%i_SGS_vp_induct, nod_comm, nod_fld)
+     &   (iphys%SGS_term%i_SGS_vp_induct, nod_comm, nod_fld)
 !
       end subroutine cal_sgs_uxb_2_monitor
 !

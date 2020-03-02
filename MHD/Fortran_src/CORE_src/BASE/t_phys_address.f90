@@ -322,9 +322,6 @@
         integer (kind=kint) :: i_SGS_div_m_flux=   izero
 !>        start address for divergence of SGS magnetic induction tensor
         integer (kind=kint) :: i_SGS_induction =   izero
-!>        start address for SGS induction for vector potential
-!!         @f$e_{ijk}\left(\overline{u_{j}B_{k}} - \bar{u}_{j}\bar{B}_{k} \right) @f$
-        integer (kind=kint) :: i_SGS_vp_induct =   izero
 !
 !>        start address for true divergence of SGS heat flux
 !!         @f$ \partial_{i} \left( \overline{u_{i}T} - \bar{u}_{i}\bar{T} \right) @f$

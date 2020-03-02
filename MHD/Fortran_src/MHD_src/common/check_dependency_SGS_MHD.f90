@@ -109,7 +109,7 @@
           call check_missing_field_w_msg                                &
      &       (fld, msg, iphys%i_SGS_induction)
           call check_missing_field_w_msg                                &
-     &       (fld, msg, iphys%i_SGS_vp_induct)
+     &       (fld, msg, iphys%SGS_term%i_SGS_vp_induct)
         end if
       end if
 !

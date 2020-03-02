@@ -360,7 +360,7 @@
      &    iphys%i_velo, n_vector, nod_fld%d_fld)
 !$omp end parallel
 !
-      if (iphys%i_SGS_vp_induct .gt. 0) then
+      if (iphys%SGS_term%i_SGS_vp_induct .gt. 0) then
         if(iflag_debug.gt.0) write(*,*)                                 &
      &        'lead ', trim(SGS_vecp_induction%name)
         call cal_sgs_uxb_2_monitor                                      &

@@ -267,7 +267,7 @@
         else if (field_name(i) .eq. SGS_induction%name) then
           iphys%i_SGS_induction =  i0
         else if (field_name(i) .eq. SGS_vecp_induction%name) then
-          iphys%i_SGS_vp_induct =  i0
+          iphys%SGS_term%i_SGS_vp_induct =  i0
         else if ( field_name(i) .eq. SGS_buoyancy%name ) then
           iphys%SGS_term%i_SGS_buoyancy =   i0
         else if ( field_name(i) .eq. SGS_composit_buoyancy%name) then

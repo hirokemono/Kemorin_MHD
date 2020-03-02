@@ -147,7 +147,7 @@
 !    SGS magnetic induction flag
       if(SGS_param%iflag_SGS_uxb .gt. id_SGS_none) then
         nvector_xyz_2_rj = nvector_xyz_2_rj + 1
-        f_hbd_trns%i_SGS_vp_induct =  3*nvector_xyz_2_rj - 2
+        f_hbd_trns%SGS_term%i_SGS_vp_induct =  3*nvector_xyz_2_rj - 2
       end if
       ncomp_xyz_2_rj = 3*nvector_xyz_2_rj
 !
@@ -195,10 +195,12 @@
      &       'f_hbd_trns%forces%i_vp_induct ',                          &
      &        f_hbd_trns%forces%i_vp_induct, ipol%forces%i_vp_induct,   &
      &        itor%forces%i_vp_induct, idpdr%forces%i_vp_induct
-      if(f_hbd_trns%i_SGS_vp_induct .gt. 0) write(*,*)                  &
-     &       'f_hbd_trns%i_SGS_vp_induct', f_hbd_trns%i_SGS_vp_induct,  &
-     &        ipol%i_SGS_vp_induct, itor%i_SGS_vp_induct,               &
-     &        idpdr%i_SGS_vp_induct
+      if(f_hbd_trns%SGS_term%i_SGS_vp_induct .gt. 0) write(*,*)         &
+     &       'f_hbd_trns%i_SGS_vp_induct',                              &
+     &        f_hbd_trns%SGS_term%i_SGS_vp_induct,                      &
+     &        ipol%SGS_term%i_SGS_vp_induct,                            &
+     &        itor%SGS_term%i_SGS_vp_induct,                            &
+     &        idpdr%SGS_term%i_SGS_vp_induct
 !
       write(*,*) 'nscalar_xyz_2_rj  ', nscalar_xyz_2_rj
       write(*,*)
