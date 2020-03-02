@@ -370,8 +370,7 @@
      &       (fld, i_start, iphys%i_velo, fhd_velo)
           call check_missing_field                                      &
      &       (fld, i_start, iphys%SGS_term%i_SGS_h_flux, SGS_heat_flux%name)
-        else if(i_start .eq. iphys%i_SGS_comp_buo                       &
-     &     .or. i_start .eq. iphys%i_SGS_comp_buo_wk) then 
+        else if(i_start .eq. iphys%i_SGS_comp_buo_wk) then 
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_velo, fhd_velo)
           call check_missing_field                                      &

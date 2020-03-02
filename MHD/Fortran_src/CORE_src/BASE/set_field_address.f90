@@ -271,7 +271,7 @@
         else if ( field_name(i) .eq. SGS_buoyancy%name ) then
           iphys%SGS_term%i_SGS_buoyancy =   i0
         else if ( field_name(i) .eq. SGS_composit_buoyancy%name) then
-          iphys%i_SGS_comp_buo =   i0
+          iphys%SGS_term%i_SGS_comp_buo =   i0
 !
         else if ( field_name(i) .eq. fhd_SGS_rot_inertia ) then
           iphys%i_SGS_rot_inertia =   i0

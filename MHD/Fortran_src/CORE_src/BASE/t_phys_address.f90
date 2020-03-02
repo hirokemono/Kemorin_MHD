@@ -326,10 +326,6 @@
 !!         @f$e_{ijk}\left(\overline{u_{j}B_{k}} - \bar{u}_{j}\bar{B}_{k} \right) @f$
         integer (kind=kint) :: i_SGS_vp_induct =   izero
 !
-!>        start address for SGS compositional buoyancy
-        integer (kind=kint) :: i_SGS_comp_buo =   izero
-!
-!
 !>        start address for true divergence of SGS heat flux
 !!         @f$ \partial_{i} \left( \overline{u_{i}T} - \bar{u}_{i}\bar{T} \right) @f$
         integer (kind=kint) :: i_SGS_div_hf_true = izero
