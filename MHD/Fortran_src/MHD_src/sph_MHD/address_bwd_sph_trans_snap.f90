@@ -309,12 +309,14 @@
 !
       call add_field_name_4_sph_trns_snap                               &
      &   (div_SGS_inertia%name, div_SGS_inertia%n_comp,                 &
-     &    ipol%i_SGS_div_inertia, itor%i_SGS_div_inertia,               &
-     &    iphys%i_SGS_div_inertia, b_trns%i_SGS_div_inertia, trns_back)
+     &    ipol%div_SGS%i_SGS_inertia, itor%div_SGS%i_SGS_inertia,       &
+     &    iphys%div_SGS%i_SGS_inertia, b_trns%div_SGS%i_SGS_inertia,    &
+     &    trns_back)
       call add_field_name_4_sph_trns_snap                               &
      &   (div_SGS_Lorentz%name, div_SGS_Lorentz%n_comp,                 &
-     &    ipol%i_SGS_div_Lorentz, itor%i_SGS_div_Lorentz,               &
-     &    iphys%i_SGS_div_Lorentz, b_trns%i_SGS_div_Lorentz, trns_back)
+     &    ipol%div_SGS%i_SGS_Lorentz, itor%div_SGS%i_SGS_Lorentz,       &
+     &    iphys%div_SGS%i_SGS_Lorentz, b_trns%div_SGS%i_SGS_Lorentz,    &
+     &    trns_back)
       call add_field_name_4_sph_trns_snap                               &
      &   (div_SGS_h_flux%name, div_SGS_h_flux%n_comp,                   &
      &    ipol%div_SGS%i_SGS_h_flux, itor%div_SGS%i_SGS_h_flux,         &

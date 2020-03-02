@@ -240,12 +240,8 @@
 !
 !>        start address for curl of SGS inertia term
         integer (kind=kint) :: i_SGS_rot_inertia =    izero
-!>        start address for divergence of SGS inertia term
-        integer (kind=kint) :: i_SGS_div_inertia =    izero
 !>        start address for curl of SGS inertia term
         integer (kind=kint) :: i_SGS_rot_Lorentz =    izero
-!>        start address for divergence of SGS inertia term
-        integer (kind=kint) :: i_SGS_div_Lorentz =    izero
 !
 !
 !      SGS terms by wider filter

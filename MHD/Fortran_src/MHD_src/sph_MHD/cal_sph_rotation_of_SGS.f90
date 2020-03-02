@@ -141,14 +141,14 @@
       if(ipol%i_div_inertia .gt. 0) then
         call const_sph_div_force                                        &
      &     (sph_rj, r_2nd, sph_MHD_bc%sph_bc_U, g_sph_rj,               &
-     &      ipol%SGS_term%i_SGS_inertia, ipol%i_SGS_div_inertia,        &
+     &      ipol%SGS_term%i_SGS_inertia, ipol%div_SGS%i_SGS_inertia,    &
      &      rj_fld)
       end if
 !
       if(ipol%i_div_Lorentz .gt. 0) then
         call const_sph_div_force                                        &
      &     (sph_rj, r_2nd, sph_MHD_bc%sph_bc_U, g_sph_rj,               &
-     &      ipol%SGS_term%i_SGS_Lorentz, ipol%i_SGS_div_Lorentz,        &
+     &      ipol%SGS_term%i_SGS_Lorentz, ipol%div_SGS%i_SGS_Lorentz,    &
      &      rj_fld)
       end if
 !
