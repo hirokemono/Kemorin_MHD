@@ -75,7 +75,7 @@
 !
       if(ipol%i_c_flux_w_sgs .gt. 0) then
         call add_2_nod_vectors                                          &
-     &     (rj_fld, ipol%forces%i_c_flux, ipol%i_SGS_c_flux,            &
+     &     (rj_fld, ipol%forces%i_c_flux, ipol%SGS_term%i_SGS_c_flux,   &
      &      ipol%i_c_flux_w_sgs)
       end if
 !

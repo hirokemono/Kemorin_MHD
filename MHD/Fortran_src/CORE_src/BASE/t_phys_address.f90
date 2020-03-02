@@ -237,9 +237,6 @@
 !!         @f$ \partial_{i} \left(e_{ijk} u_{j} B_{k} \right) @f$
         integer (kind=kint) :: i_induct_div =      izero
 !
-!>        start address for SGS compositional flux
-!!         @f$ \overline{u_{i}T} - \bar{u}_{i}\bar{T} @f$
-        integer (kind=kint) :: i_SGS_c_flux =      izero
 !>        start address for SGS inertia term
         integer (kind=kint) :: i_SGS_inertia =    izero
 !>        start address for divergence of SGS Maxwell tensor

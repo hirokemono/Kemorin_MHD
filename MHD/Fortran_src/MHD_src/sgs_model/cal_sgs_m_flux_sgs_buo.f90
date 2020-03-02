@@ -194,7 +194,8 @@
       if(fl_prop%iflag_4_composit_buo .gt. id_turn_OFF) then
         call cal_SGS_gravity_flux                                       &
      &     (node, fl_prop%i_grav, fl_prop%coef_comp_buo, fl_prop%grav,  &
-     &      iphys%i_SGS_c_flux, iphys%i_SGS_comp_buo_wk, nod_fld)
+     &      iphys%SGS_term%i_SGS_c_flux, iphys%i_SGS_comp_buo_wk,       &
+     &      nod_fld)
        end if
 !
 !   take RMS of SGS buoyancy flux and work of Reynolds stress

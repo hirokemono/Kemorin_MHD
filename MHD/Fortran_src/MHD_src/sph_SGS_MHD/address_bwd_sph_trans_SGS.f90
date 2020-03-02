@@ -97,10 +97,11 @@
      &    iphys%SGS_term%i_SGS_h_flux, b_trns%SGS_term%i_SGS_h_flux,    &
      &    trns_back)
 !   filtered composition flux
-      call add_field_name_4_sph_trns(ipol%i_SGS_c_flux,                 &
+      call add_field_name_4_sph_trns(ipol%SGS_term%i_SGS_c_flux,        &
      &    SGS_composit_flux%name, SGS_composit_flux%n_comp,             &
-     &    ipol%i_SGS_c_flux, itor%i_SGS_c_flux, iphys%i_SGS_c_flux,     &
-     &    b_trns%i_SGS_c_flux, trns_back)
+     &    ipol%SGS_term%i_SGS_c_flux, itor%SGS_term%i_SGS_c_flux,       &
+     &    iphys%SGS_term%i_SGS_c_flux, b_trns%SGS_term%i_SGS_c_flux,    &
+     &    trns_back)
 !
       end subroutine b_trans_vector_similarity
 !

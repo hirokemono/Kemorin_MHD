@@ -133,8 +133,7 @@
           call check_missing_field                                      &
      &       (fld, i_start, iphys%diff_vector%i_grad_vz, grad_v_3%name)
 !
-        else if(i_start .eq. iphys%i_c_buo_gen                          &
-     &     .or. i_start .eq. iphys%i_SGS_c_flux) then 
+        else if(i_start .eq. iphys%i_c_buo_gen) then 
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_velo, fhd_velo)
           call check_missing_field                                      &
@@ -341,7 +340,7 @@
         else if(i_start .eq. iphys%i_SGS_div_c_flux                     &
      &     .or. i_start .eq. iphys%i_wide_SGS_c_flux) then 
           call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_SGS_c_flux, SGS_composit_flux%name)
+     &       (fld, i_start, iphys%SGS_term%i_SGS_c_flux, SGS_composit_flux%name)
         else if(i_start .eq. iphys%i_SGS_me_gen) then 
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_SGS_induction, SGS_induction%name)
@@ -366,7 +365,7 @@
      &       (fld, i_start, iphys%SGS_term%i_SGS_h_flux, SGS_heat_flux%name)
         else if(i_start .eq. iphys%i_dbl_SGS_c_flux) then 
           call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_SGS_c_flux, SGS_composit_flux%name)
+     &       (fld, i_start, iphys%SGS_term%i_SGS_c_flux, SGS_composit_flux%name)
 !
         else if(i_start .eq. iphys%i_SGS_buoyancy                       &
      &     .or. i_start .eq. iphys%i_SGS_buo_wk) then 
@@ -379,7 +378,7 @@
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_velo, fhd_velo)
           call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_SGS_c_flux, SGS_composit_flux%name)
+     &       (fld, i_start, iphys%SGS_term%i_SGS_c_flux, SGS_composit_flux%name)
 !
         else if(i_start .eq. iphys%i_Csim_SGS_h_flux) then 
           call check_missing_field                                      &
@@ -389,7 +388,7 @@
      &        fhd_wide_SGS_h_flux)
         else if(i_start .eq. iphys%i_Csim_SGS_c_flux) then 
           call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_SGS_c_flux, SGS_composit_flux%name)
+     &       (fld, i_start, iphys%SGS_term%i_SGS_c_flux, SGS_composit_flux%name)
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_wide_SGS_c_flux,                    &
      &        fhd_wide_SGS_c_flux)
@@ -418,7 +417,7 @@
      &       (fld, i_start, iphys%i_velo, fhd_velo)
         else if(i_start .eq. iphys%i_Csim_SGS_comp_buo) then 
           call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_SGS_c_flux, SGS_composit_flux%name)
+     &       (fld, i_start, iphys%SGS_term%i_SGS_c_flux, SGS_composit_flux%name)
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_velo, fhd_velo)
 !
@@ -431,7 +430,7 @@
           call check_missing_field                                      &
      &       (fld, i_start, iphys%forces%i_c_flux, composite_flux%name)
           call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_SGS_c_flux, SGS_composit_flux%name)
+     &       (fld, i_start, iphys%SGS_term%i_SGS_c_flux, SGS_composit_flux%name)
         else if(i_start .eq. iphys%i_inertia_w_sgs) then 
           call check_missing_field                                      &
      &       (fld, i_start, iphys%forces%i_m_advect, inertia%name)

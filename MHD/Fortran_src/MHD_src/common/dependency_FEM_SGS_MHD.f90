@@ -142,7 +142,8 @@
       if ( cp_prop%iflag_scheme .gt. id_no_evolution) then
         if (SGS_param%iflag_SGS_c_flux .ne. id_SGS_none) then
           msg = 'solving SGS compsition flux needs'
-          call check_missing_field_w_msg(fld, msg, iphys%i_SGS_c_flux)
+          call check_missing_field_w_msg                                &
+     &       (fld, msg, iphys%SGS_term%i_SGS_c_flux)
         end if
       end if
 !

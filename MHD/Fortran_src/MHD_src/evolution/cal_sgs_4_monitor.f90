@@ -151,14 +151,15 @@
      &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
-      if (iphys%i_SGS_c_flux .gt. 0) then
+      if (iphys%SGS_term%i_SGS_c_flux .gt. 0) then
         if(iflag_debug.gt.0) write(*,*)                                 &
      &          'lead ', trim(SGS_composit_flux%name)
         call cal_sgs_heat_flux                                          &
      &     (FEM_prm%iflag_comp_supg, FEM_prm%npoint_t_evo_int, dt,      &
      &      SGS_param%iflag_SGS_c_flux, SGS_param%itype_Csym_c_flux,    &
      &      iphys%i_sgs_composit, iphys%i_filter_comp,                  &
-     &      iphys%i_velo, iphys%i_filter_velo, iphys%i_SGS_c_flux,      &
+     &      iphys%i_velo, iphys%i_filter_velo,                          &
+     &      iphys%SGS_term%i_SGS_c_flux,                                &
      &      icomp_sgs%i_comp_flux, iphys_elediff%i_velo,                &
      &      SGS_param, filter_param, nod_comm, node, ele, fluid,        &
      &      iphys_ele, ele_fld, jacs, rhs_tbl, FEM_elens, filtering,    &
@@ -280,8 +281,9 @@
       if (iphys%i_SGS_div_c_flux .gt. 0) then
         if(iflag_debug.gt.0) write(*,*)                                 &
      &        'lead ', trim(div_SGS_h_flux%name)
-        call cal_terms_4_heat(iphys%i_SGS_div_c_flux, iphys%i_velo,     &
-     &      iphys%i_light, iphys%i_SGS_c_flux, ifld_diff%i_comp_flux,   &
+        call cal_terms_4_heat(iphys%i_SGS_div_c_flux,                   &
+     &      iphys%i_velo, iphys%i_light,                                &
+     &      iphys%SGS_term%i_SGS_c_flux, ifld_diff%i_comp_flux,         &
      &      FEM_prm%iflag_comp_supg, FEM_prm%npoint_t_evo_int,          &
      &      SGS_param%ifilter_final, SGS_param%iflag_SGS_c_flux,        &
      &      cmt_param%iflag_c_cf, cmt_param%iflag_c_light, dt,          &

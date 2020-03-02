@@ -12,15 +12,15 @@
 !!       Input ::  fil_rtp(1,il_frc)
 !!               il_frc = i_SGS_inertia, i_SGS_Lorentz,
 !!                        i_SGS_vp_induct, 
-!!                        SGS_term%i_SGS_h_flux, i_SGS_c_flux
+!!                        SGS_term%i_SGS_h_flux, SGS_term%i_SGS_c_flux
 !!                 frc_rtp(1,if_frc)
 !!               if_frc = i_SGS_inertia, i_SGS_Lorentz,
 !!                        i_SGS_vp_induct, 
-!!                        SGS_term%i_SGS_h_flux, i_SGS_c_flux
+!!                        SGS_term%i_SGS_h_flux, SGS_term%i_SGS_c_flux
 !!       Output ::  fSGS_rtp(1,ig_frc)
 !!               ig_frc = i_SGS_inertia, i_SGS_Lorentz,
 !!                        i_SGS_vp_induct,
-!!                        SGS_term%i_SGS_h_flux, i_SGS_c_flux
+!!                        SGS_term%i_SGS_h_flux, SGS_term%i_SGS_c_flux
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(phys_address), intent(in) :: f_trns
 !!        type(phys_address), intent(in) :: bg_trns, fg_trns
@@ -133,13 +133,13 @@
      &      trns_f_SGS%fld_rtp(1,fg_trns%SGS_term%i_SGS_h_flux))
       end if
 !
-      if(fg_trns%i_SGS_c_flux .gt. 0) then
+      if(fg_trns%SGS_term%i_SGS_c_flux .gt. 0) then
         call subtract_scl_flux_w_coef_smp                               &
      &     (sph_rtp%nnod_rtp, MHD_prop%cp_prop%coef_advect,             &
-     &      trns_b_SGS%fld_rtp(1,bg_trns%i_SGS_c_flux),                 &
+     &      trns_b_SGS%fld_rtp(1,bg_trns%SGS_term%i_SGS_c_flux),        &
      &      trns_b_SGS%fld_rtp(1,bg_trns%i_filter_velo),                &
      &      trns_b_SGS%fld_rtp(1,bg_trns%i_filter_temp),                &
-     &      trns_f_SGS%fld_rtp(1,fg_trns%i_SGS_c_flux))
+     &      trns_f_SGS%fld_rtp(1,fg_trns%SGS_term%i_SGS_c_flux))
       end if
 !$omp end parallel
 !

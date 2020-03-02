@@ -40,7 +40,7 @@
 !!                   forces%i_c_flux
 !!       Output:  rj_fld(1:is_fld)
 !!          is_fld = i_SGS_inertia, i_SGS_Lorentz, i_SGS_vp_induct, 
-!!                  SGS_term%i_SGS_h_flux, i_SGS_c_flux, 
+!!                  SGS_term%i_SGS_h_flux, SGS_term%i_SGS_c_flux, 
 !!      subroutine cal_sph_wide_filtering_forces                        &
 !!     &         (sph_rj, ipol, sph_wide_f, rj_fld)
 !!       Input:   rj_fld(1:is_fld)
@@ -55,7 +55,7 @@
 !!     &         (sph_rj, ipol, sph_base_f, rj_fld)
 !!       Input:   rj_fld(1:is_fld)
 !!          is_fld = i_SGS_inertia, i_SGS_Lorentz, i_SGS_vp_induct, 
-!!                  SGS_term%i_SGS_h_flux, i_SGS_c_flux, 
+!!                  SGS_term%i_SGS_h_flux, SGS_term%i_SGS_c_flux, 
 !!       Output:  rj_fld(1:is_fld)
 !!          is_fld = i_dbl_SGS_inertia, i_dbl_SGS_Lorentz,
 !!                  i_dbl_SGS_vp_induct,
@@ -213,7 +213,8 @@
      &   (ipol%forces%i_h_flux, ipol%SGS_term%i_SGS_h_flux,             &
      &    sph_rj, sph_base_f%r_filter, sph_base_f%sph_filter, rj_fld)
 !
-      call vector_sph_filter(ipol%forces%i_c_flux, ipol%i_SGS_c_flux,   &
+      call vector_sph_filter                                            &
+     &   (ipol%forces%i_c_flux, ipol%SGS_term%i_SGS_c_flux,             &
      &    sph_rj, sph_base_f%r_filter, sph_base_f%sph_filter, rj_fld)
 !
       end subroutine cal_sph_base_filtering_forces
@@ -304,7 +305,8 @@
      &   (ipol%SGS_term%i_SGS_h_flux, ipol%i_dbl_SGS_h_flux,            &
      &    sph_rj, sph_base_f%r_filter, sph_base_f%sph_filter, rj_fld)
 !
-      call vector_sph_filter(ipol%i_SGS_c_flux, ipol%i_dbl_SGS_c_flux,  &
+      call vector_sph_filter                                            &
+     &   (ipol%SGS_term%i_SGS_c_flux, ipol%i_dbl_SGS_c_flux,            &
      &    sph_rj, sph_base_f%r_filter, sph_base_f%sph_filter, rj_fld)
 !
       end subroutine cal_sph_dble_filtering_forces

@@ -66,10 +66,11 @@
      &    iphys%SGS_term%i_SGS_h_flux, f_trns%SGS_term%i_SGS_h_flux,    &
      &    trns_fwd)
 !   SGS composition flux flag
-      call add_field_name_4_sph_trns(ipol%i_SGS_c_flux,                 &
+      call add_field_name_4_sph_trns(ipol%SGS_term%i_SGS_c_flux,        &
      &    SGS_composit_flux%name, SGS_composit_flux%n_comp,             &
-     &    ipol%i_SGS_c_flux, itor%i_SGS_c_flux, iphys%i_SGS_c_flux,     &
-     &    f_trns%i_SGS_c_flux, trns_fwd)
+     &    ipol%SGS_term%i_SGS_c_flux, itor%SGS_term%i_SGS_c_flux,       &
+     &    iphys%SGS_term%i_SGS_c_flux, f_trns%SGS_term%i_SGS_c_flux,    &
+     &    trns_fwd)
 !
       end subroutine f_trans_vector_SGS_terms
 !
