@@ -147,8 +147,6 @@
 !>        Field label for divergence of SGS momentum flux
 !!         @f$ \partial_{i} ( \overline{u_{i}u_{j}}
 !!             - \bar{u}_{i}\bar{u}_{j}) @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_div_SGS_m_flux =  'div_SGS_m_flux'
       type(field_def), parameter :: div_SGS_m_flux                      &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'div_SGS_m_flux',                          &
@@ -157,8 +155,6 @@
 !>        Field label for divergence of SGS heat flux
 !!         @f$ \partial_{i} \left( \overline{u_{i}T}
 !!            - \bar{u}_{i}\bar{T} \right) @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_div_SGS_h_flux =    'div_SGS_h_flux'
       type(field_def), parameter :: div_SGS_h_flux                      &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'div_SGS_h_flux',                          &
@@ -167,8 +163,6 @@
 !>        Field label for divergence of SGS heat flux
 !!         @f$ \partial_{i} \left( \overline{u_{i}C}
 !!            - \bar{u}_{i}\bar{C} \right) @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_div_SGS_c_flux =    'div_SGS_c_flux'
       type(field_def), parameter :: div_SGS_c_flux                      &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'div_SGS_c_flux',                          &

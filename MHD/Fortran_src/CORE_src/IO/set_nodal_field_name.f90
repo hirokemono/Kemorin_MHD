@@ -102,7 +102,7 @@
      &  .or. (phys_nod_name_ctl .eq. fhd_geostrophic        )           &
      &      )   iflag = 1
 !
-      if (   (phys_nod_name_ctl .eq. fhd_div_SGS_m_flux     )           &
+      if (   (phys_nod_name_ctl .eq. div_SGS_m_flux%name     )           &
      &  .or. (phys_nod_name_ctl .eq. SGS_inertia%name        )           &
      &  .or. (phys_nod_name_ctl .eq. SGS_heat_flux%name         )           &
      &  .or. (phys_nod_name_ctl .eq. SGS_composit_flux%name         )           &
@@ -241,8 +241,8 @@
      &   .or. (phys_nod_name_ctl .eq. fhd_mag_tension_work    )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_buoyancy_flux       )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_comp_buo_flux       )         &
-     &   .or. (phys_nod_name_ctl .eq. fhd_div_SGS_h_flux      )         &
-     &   .or. (phys_nod_name_ctl .eq. fhd_div_SGS_c_flux      )         &
+     &   .or. (phys_nod_name_ctl .eq. div_SGS_h_flux%name      )         &
+     &   .or. (phys_nod_name_ctl .eq. div_SGS_c_flux%name      )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_SGS_m_ene_gen       )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_SGS_temp_gen        )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_SGS_Lorentz_work    )         &

@@ -46,11 +46,11 @@
         call add_phys_name_ctl(fhd_velo, field_ctl)
         call add_phys_name_ctl(fhd_magne, field_ctl)
         call add_phys_name_ctl(SGS_vecp_induction%name, field_ctl)
-      else if( (field_name .eq. fhd_div_SGS_m_flux)) then
+      else if( (field_name .eq. div_SGS_m_flux%name)) then
         call add_phys_name_ctl(SGS_momentum_flux%name, field_ctl)
-      else if( (field_name .eq. fhd_div_SGS_h_flux)) then
+      else if( (field_name .eq. div_SGS_h_flux%name)) then
         call add_phys_name_ctl(SGS_heat_flux%name, field_ctl)
-      else if( (field_name .eq. fhd_div_SGS_c_flux)) then
+      else if( (field_name .eq. div_SGS_c_flux%name)) then
         call add_phys_name_ctl(SGS_composit_flux%name, field_ctl)
       end if
 !

@@ -326,7 +326,7 @@
 !
       if (iphys%i_SGS_div_m_flux .gt. 0) then
         if(iflag_debug.gt.0) write(*,*)                                 &
-     &        'lead radial', trim(fhd_div_SGS_m_flux)
+     &        'lead radial', trim(div_SGS_m_flux%name)
         call cal_terms_4_momentum(iphys%i_SGS_div_m_flux,               &
      &      Csims_FEM_MHD%ifld_diff%i_mom_flux,                         &
      &      Csims_FEM_MHD%ifld_diff%i_lorentz, MHD_step%time_d%dt,      &

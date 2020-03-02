@@ -348,7 +348,7 @@
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_SGS_induct_t,            &
      &          i_rms%i_SGS_induct_t, j_ave%i_SGS_induct_t, msq_list)
-          else if ( field_name .eq. fhd_div_SGS_m_flux ) then
+          else if ( field_name .eq. div_SGS_m_flux%name ) then
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_SGS_div_m_flux,          &
      &          i_rms%i_SGS_div_m_flux, j_ave%i_SGS_div_m_flux,         &
@@ -557,7 +557,7 @@
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_SGS_h_flux,              &
      &          i_rms%i_SGS_h_flux, j_ave%i_SGS_h_flux, msq_list)
-          else if ( field_name .eq. fhd_div_SGS_h_flux ) then
+          else if ( field_name .eq. div_SGS_h_flux%name ) then
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_SGS_div_h_flux,          &
      &          i_rms%i_SGS_div_h_flux, j_ave%i_SGS_div_h_flux,         &
@@ -639,12 +639,12 @@
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_SGS_me_gen_tr,           &
      &          i_rms%i_SGS_me_gen_tr, j_ave%i_SGS_me_gen_tr, msq_list)
-          else if ( field_name .eq. fhd_div_SGS_h_flux ) then
+          else if ( field_name .eq. div_SGS_h_flux%name ) then
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_SGS_div_h_flux,          &
      &          i_rms%i_SGS_div_h_flux, j_ave%i_SGS_div_h_flux,         &
      &          msq_list)
-          else if ( field_name .eq. fhd_div_SGS_c_flux ) then
+          else if ( field_name .eq. div_SGS_c_flux%name ) then
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_SGS_div_c_flux,          &
      &          i_rms%i_SGS_div_c_flux, j_ave%i_SGS_div_c_flux,         &

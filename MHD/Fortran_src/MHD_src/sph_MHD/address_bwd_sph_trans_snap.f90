@@ -314,11 +314,11 @@
      &    ipol%i_SGS_div_Lorentz, itor%i_SGS_div_Lorentz,               &
      &    iphys%i_SGS_div_Lorentz, b_trns%i_SGS_div_Lorentz, trns_back)
       call add_field_name_4_sph_trns_snap                               &
-     &   (fhd_div_SGS_h_flux, n_scalar,                                 &
+     &   (div_SGS_h_flux%name, div_SGS_h_flux%n_comp,                   &
      &    ipol%i_SGS_div_h_flux, itor%i_SGS_div_h_flux,                 &
      &    iphys%i_SGS_div_h_flux, b_trns%i_SGS_div_h_flux, trns_back)
       call add_field_name_4_sph_trns_snap                               &
-     &   (fhd_div_SGS_c_flux, n_scalar,                                 &
+     &   (div_SGS_c_flux%name, div_SGS_c_flux%n_comp,                   &
      &    ipol%i_SGS_div_c_flux, itor%i_SGS_div_c_flux,                 &
      &     iphys%i_SGS_div_c_flux, b_trns%i_SGS_div_c_flux, trns_back)
       trns_back%num_scalar = trns_back%nfield - trns_back%num_vector

@@ -62,12 +62,12 @@
 !
       if(SGS_param%iflag_SGS_h_flux .gt. id_SGS_none) then
         call add_phys_name_ctl(SGS_heat_flux%name, field_ctl)
-        call add_phys_name_ctl(fhd_div_SGS_h_flux, field_ctl)
+        call add_phys_name_ctl(div_SGS_h_flux%name, field_ctl)
       end if
 !
       if(SGS_param%iflag_SGS_c_flux .gt. id_SGS_none) then
         call add_phys_name_ctl(SGS_composit_flux%name, field_ctl)
-        call add_phys_name_ctl(fhd_div_SGS_c_flux, field_ctl)
+        call add_phys_name_ctl(div_SGS_c_flux%name, field_ctl)
       end if
 !
 !   Add fieltered field

@@ -263,7 +263,7 @@
 !
       if (iphys%i_SGS_div_h_flux .gt. 0) then
         if(iflag_debug.gt.0) write(*,*)                                 &
-     &        'lead ', trim(fhd_div_SGS_h_flux)
+     &        'lead ', trim(div_SGS_h_flux%name)
         call cal_terms_4_heat                                           &
      &     (iphys%i_SGS_div_h_flux, iphys%i_velo, iphys%i_temp,         &
      &      iphys%i_SGS_h_flux, ifld_diff%i_heat_flux,                  &
@@ -278,7 +278,7 @@
 !
       if (iphys%i_SGS_div_c_flux .gt. 0) then
         if(iflag_debug.gt.0) write(*,*)                                 &
-     &        'lead ', trim(fhd_div_SGS_h_flux)
+     &        'lead ', trim(div_SGS_h_flux%name)
         call cal_terms_4_heat(iphys%i_SGS_div_c_flux, iphys%i_velo,     &
      &      iphys%i_light, iphys%i_SGS_c_flux, ifld_diff%i_comp_flux,   &
      &      FEM_prm%iflag_comp_supg, FEM_prm%npoint_t_evo_int,          &

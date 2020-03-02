@@ -256,11 +256,11 @@
           iphys%i_Csim_SGS_comp_buo = i0
         end if
 !
-        if ( field_name(i) .eq. fhd_div_SGS_h_flux ) then
+        if ( field_name(i) .eq. div_SGS_h_flux%name ) then
           iphys%i_SGS_div_h_flux = i0
-        else if ( field_name(i) .eq. fhd_div_SGS_c_flux ) then
+        else if ( field_name(i) .eq. div_SGS_c_flux%name ) then
           iphys%i_SGS_div_c_flux = i0
-        else if (field_name(i) .eq. fhd_div_SGS_m_flux) then
+        else if (field_name(i) .eq. div_SGS_m_flux%name) then
           iphys%i_SGS_div_m_flux = i0
         else if (field_name(i) .eq. SGS_Lorentz%name) then
           iphys%i_SGS_Lorentz =    i0
