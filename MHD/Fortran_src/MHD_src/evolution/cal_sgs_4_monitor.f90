@@ -263,11 +263,11 @@
       integer(kind = kint) :: i, i_fld
 !
 !
-      if (iphys%i_SGS_div_h_flux .gt. 0) then
+      if (iphys%SGS_term%i_SGS_div_h_flux .gt. 0) then
         if(iflag_debug.gt.0) write(*,*)                                 &
      &        'lead ', trim(div_SGS_h_flux%name)
-        call cal_terms_4_heat                                           &
-     &     (iphys%i_SGS_div_h_flux, iphys%i_velo, iphys%i_temp,         &
+        call cal_terms_4_heat(iphys%SGS_term%i_SGS_div_h_flux,          &
+     &      iphys%i_velo, iphys%i_temp,                                 &
      &      iphys%SGS_term%i_SGS_h_flux, ifld_diff%i_heat_flux,         &
      &      FEM_prm%iflag_temp_supg, FEM_prm%npoint_t_evo_int,          &
      &      SGS_param%ifilter_final, SGS_param%iflag_SGS_h_flux,        &
@@ -368,8 +368,8 @@
 !$omp parallel
       if (iphys%i_SGS_temp_gen .gt. 0) then
         call cal_phys_product_4_scalar                                  &
-     &     (iphys%i_temp, iphys%i_SGS_div_h_flux, iphys%i_SGS_temp_gen, &
-     &      nod_fld)
+     &     (iphys%i_temp, iphys%SGS_term%i_SGS_div_h_flux,              &
+     &      iphys%i_SGS_temp_gen, nod_fld)
       end if
 !
 !

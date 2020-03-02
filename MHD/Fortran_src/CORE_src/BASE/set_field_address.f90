@@ -257,7 +257,7 @@
         end if
 !
         if ( field_name(i) .eq. div_SGS_h_flux%name ) then
-          iphys%i_SGS_div_h_flux = i0
+          iphys%SGS_term%i_SGS_div_h_flux = i0
         else if ( field_name(i) .eq. div_SGS_c_flux%name ) then
           iphys%i_SGS_div_c_flux = i0
         else if (field_name(i) .eq. div_SGS_m_flux%name) then

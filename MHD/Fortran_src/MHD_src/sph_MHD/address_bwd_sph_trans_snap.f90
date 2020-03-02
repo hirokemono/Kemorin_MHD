@@ -316,8 +316,10 @@
      &    iphys%i_SGS_div_Lorentz, b_trns%i_SGS_div_Lorentz, trns_back)
       call add_field_name_4_sph_trns_snap                               &
      &   (div_SGS_h_flux%name, div_SGS_h_flux%n_comp,                   &
-     &    ipol%i_SGS_div_h_flux, itor%i_SGS_div_h_flux,                 &
-     &    iphys%i_SGS_div_h_flux, b_trns%i_SGS_div_h_flux, trns_back)
+     &    ipol%SGS_term%i_SGS_div_h_flux,                               &
+     &    itor%SGS_term%i_SGS_div_h_flux,                               &
+     &    iphys%SGS_term%i_SGS_div_h_flux,                              &
+     &    b_trns%SGS_term%i_SGS_div_h_flux, trns_back)
       call add_field_name_4_sph_trns_snap                               &
      &   (div_SGS_c_flux%name, div_SGS_c_flux%n_comp,                   &
      &    ipol%i_SGS_div_c_flux, itor%i_SGS_div_c_flux,                 &

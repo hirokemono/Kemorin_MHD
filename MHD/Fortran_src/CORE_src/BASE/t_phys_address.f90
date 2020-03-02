@@ -311,9 +311,6 @@
         integer (kind=kint) :: i_Csim_SGS_comp_buo =     izero
 !
 !
-!>        start address for divergence of SGS heat flux
-!!         @f$ \partial_{i} \left( \overline{u_{i}T} - \bar{u}_{i}\bar{T} \right) @f$
-        integer (kind=kint) :: i_SGS_div_h_flux=   izero
 !>        start address for divergence of SGS composition flux
 !!         @f$ \partial_{i} \left( \overline{u_{i}C} - \bar{u}_{i}\bar{C} \right) @f$
         integer (kind=kint) :: i_SGS_div_c_flux=   izero
