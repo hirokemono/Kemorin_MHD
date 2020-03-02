@@ -366,10 +366,15 @@
 !
 !
 !$omp parallel
-      if (iphys%i_SGS_temp_gen .gt. 0) then
+      if (iphys%SGS_ene_flux%i_SGS_temp_gen .gt. 0) then
         call cal_phys_product_4_scalar                                  &
      &     (iphys%i_temp, iphys%div_SGS%i_SGS_h_flux,                   &
-     &      iphys%i_SGS_temp_gen, nod_fld)
+     &      iphys%SGS_ene_flux%i_SGS_temp_gen, nod_fld)
+      end if
+      if (iphys%SGS_ene_flux%i_SGS_comp_gen .gt. 0) then
+        call cal_phys_product_4_scalar                                  &
+     &     (iphys%i_light, iphys%div_SGS%i_SGS_c_flux,                  &
+     &      iphys%SGS_ene_flux%i_SGS_comp_gen, nod_fld)
       end if
 !
 !

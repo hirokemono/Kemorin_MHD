@@ -47,6 +47,7 @@
       use t_base_force_labels
       use t_diff_vector_labels
       use t_SGS_term_labels
+      use t_SGS_enegy_flux_labels
       use m_rot_filtered_force_labels
       use m_div_filtered_force_labels
       use m_diff_filter_vect_labels
@@ -252,21 +253,10 @@
           iphys%i_Csim_SGS_comp_buo = i0
         end if
 !
+        call set_SGS_ene_flux_addresses                                 &
+     &     (i0, field_name(i), iphys%SGS_ene_flux, flag)
 !
-        if ( field_name(i) .eq. SGS_temp_flux_gen%name ) then
-          iphys%i_SGS_temp_gen =     i0
-        else if ( field_name(i) .eq. SGS_mag_induction_flux%name ) then
-          iphys%SGS_ene_flux%i_SGS_me_gen =       i0
-        else if ( field_name(i) .eq. SGS_Lorentz_work%name ) then
-          iphys%SGS_ene_flux%i_SGS_Lor_wk =       i0
-        else if ( field_name(i) .eq. Reynolds_work%name ) then
-          iphys%SGS_ene_flux%i_reynolds_wk =      i0
-        else if ( field_name(i) .eq. SGS_buoyancy_flux%name ) then
-          iphys%SGS_ene_flux%i_SGS_buo_wk =       i0
-        else if ( field_name(i) .eq. SGS_comp_buoyancy_flux%name ) then
-          iphys%SGS_ene_flux%i_SGS_comp_buo_wk =  i0
-!
-        else if ( field_name(i) .eq. fhd_geostrophic ) then
+        if ( field_name(i) .eq. fhd_geostrophic ) then
           iphys%i_geostrophic =  i0
 !
         else if ( field_name(i) .eq. fhd_h_flux_w_sgs ) then

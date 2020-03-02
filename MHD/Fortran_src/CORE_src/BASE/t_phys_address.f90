@@ -340,9 +340,6 @@
         integer (kind=kint) :: i_reynolds_wk_tr =  izero
 !
 !
-!>        start address for temperature generation by SGS heat flux
-        integer (kind=kint) :: i_SGS_temp_gen =    izero
-!
 !>        Field address for geostrophic balance
 !!         @f$ -2 e_{ijk} \Omega_{j} u_{k} + \partial_{i} p @f$
       integer (kind=kint) :: i_geostrophic = izero

@@ -236,12 +236,6 @@
      &   .or. (phys_nod_name_ctl .eq. fhd_mag_tension_work    )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_buoyancy_flux       )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_comp_buo_flux       )         &
-     &   .or. (phys_nod_name_ctl .eq. SGS_mag_induction_flux%name       )         &
-     &   .or. (phys_nod_name_ctl .eq. SGS_temp_flux_gen%name        )         &
-     &   .or. (phys_nod_name_ctl .eq. SGS_Lorentz_work%name    )         &
-     &   .or. (phys_nod_name_ctl .eq. Reynolds_work%name       )         &
-     &   .or. (phys_nod_name_ctl .eq. SGS_buoyancy_flux%name        )         &
-     &   .or. (phys_nod_name_ctl .eq. SGS_comp_buoyancy_flux%name   )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_temp_generation     )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_part_temp_gen       )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_part_temp           )         &
@@ -297,6 +291,7 @@
       if(     check_scalar_advection(phys_nod_name_ctl)                 &
      &   .or. check_divergence_field(phys_nod_name_ctl)                 &
      &   .or. check_div_SGS_flux_vector(phys_nod_name_ctl)              &
+     &   .or. check_SGS_ene_fluxes(phys_nod_name_ctl)                   &
      &   .or. check_filtered_scallar_flux(phys_nod_name_ctl)            &
      &   .or. check_div_fil_force(phys_nod_name_ctl)                    &
      &   .or. check_filter_enegy_fluxes(phys_nod_name_ctl)              &
