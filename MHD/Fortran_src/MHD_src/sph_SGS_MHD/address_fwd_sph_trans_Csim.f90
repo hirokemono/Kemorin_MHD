@@ -71,10 +71,10 @@
      &    iphys%Csim%i_SGS_c_flux, f_trns%Csim%i_SGS_c_flux, trns_fwd)
 !
 !   SGS buoyancy
-      call add_field_name_4_sph_trns(ipol%i_Csim_SGS_buoyancy, &
+      call add_field_name_4_sph_trns(ipol%Csim%i_SGS_buoyancy,          &
      &    Csim_SGS_buoyancy%name, Csim_SGS_buoyancy%n_comp,             &
-     &    ipol%i_Csim_SGS_buoyancy, itor%i_Csim_SGS_buoyancy,           &
-     &    iphys%i_Csim_SGS_buoyancy, f_trns%i_Csim_SGS_buoyancy,        &
+     &    ipol%Csim%i_SGS_buoyancy, itor%Csim%i_SGS_buoyancy,           &
+     &    iphys%Csim%i_SGS_buoyancy, f_trns%Csim%i_SGS_buoyancy,        &
      &    trns_fwd)
 !   SGS compostional buoyancy
       call add_field_name_4_sph_trns(ipol%i_Csim_SGS_comp_buo,          &

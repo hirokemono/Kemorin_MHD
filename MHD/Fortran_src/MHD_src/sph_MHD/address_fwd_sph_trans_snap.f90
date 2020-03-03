@@ -191,8 +191,8 @@
      &    trns_fwd)
       call add_field_name_4_sph_trns_snap                               &
      &   (Csim_SGS_buoyancy%name, Csim_SGS_buoyancy%n_comp,             &
-     &    ipol%i_Csim_SGS_buoyancy, itor%i_Csim_SGS_buoyancy,           &
-     &    iphys%i_Csim_SGS_buoyancy, f_trns%i_Csim_SGS_buoyancy, &
+     &    ipol%Csim%i_SGS_buoyancy, itor%Csim%i_SGS_buoyancy,           &
+     &    iphys%Csim%i_SGS_buoyancy, f_trns%Csim%i_SGS_buoyancy,        &
      &    trns_fwd)
       call add_field_name_4_sph_trns_snap                               &
      &   (Csim_SGS_composit_buo%name, Csim_SGS_composit_buo%n_comp,     &

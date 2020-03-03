@@ -230,7 +230,7 @@
         else if ( field_name(i) .eq. Csim_SGS_induction%name ) then
           iphys%Csim%i_SGS_induction = i0
         else if ( field_name(i) .eq. Csim_SGS_buoyancy%name ) then
-          iphys%i_Csim_SGS_buoyancy = i0
+          iphys%Csim%i_SGS_buoyancy = i0
         else if ( field_name(i) .eq. Csim_SGS_composit_buo%name ) then
           iphys%i_Csim_SGS_comp_buo = i0
         end if

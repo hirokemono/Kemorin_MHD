@@ -155,9 +155,9 @@
       wk_sgs_buo%Cbuo_ave_sph_gl(0:sph_rj%nidx_rj(1),1:2) = 0.0d0
       if(sph_rj%idx_rj_degree_zero .gt. izero) then
 !
-        if(ipol%i_Csim_SGS_buoyancy .gt. 0) then
+        if(ipol%Csim%i_SGS_buoyancy .gt. 0) then
           call ave_one_scalar_sph_spectr                                &
-     &       (ipol%i_Csim_SGS_buoyancy, sph_rj%nidx_rj,                 &
+     &       (ipol%Csim%i_SGS_buoyancy, sph_rj%nidx_rj,                 &
      &        sph_rj%idx_rj_degree_zero, sph_rj%inod_rj_center,         &
      &        rj_fld, sph_rj%radius_1d_rj_r, sph_rj%nidx_rj(1),         &
      &        itwo, ione, wk_sgs_buo%Cbuo_ave_sph_lc)
@@ -212,10 +212,10 @@
       if(sph_rj%idx_rj_degree_zero .gt. izero) then
         wk_sgs_buo%Cbuo_ave_sph_lc(1:sph_rj%nidx_rj(1),1:2) = 0.0d0
 !
-        if(ipol%i_Csim_SGS_buoyancy .gt. 0) then
+        if(ipol%Csim%i_SGS_buoyancy .gt. 0) then
 !          write(*,*) 'ave_one_scalar_sph_spectr thermnal'
           call ave_one_scalar_sph_spectr                                &
-     &       (ipol%i_Csim_SGS_buoyancy, sph_rj%nidx_rj,                 &
+     &       (ipol%Csim%i_SGS_buoyancy, sph_rj%nidx_rj,                 &
      &        sph_rj%idx_rj_degree_zero, sph_rj%inod_rj_center,         &
      &        rj_fld, sph_rj%radius_1d_rj_r,  sph_rj%nidx_rj(1),        &
      &        itwo, ione, wk_sgs_buo%Cbuo_ave_sph_lc)

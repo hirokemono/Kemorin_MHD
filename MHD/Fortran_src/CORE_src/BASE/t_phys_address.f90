@@ -240,8 +240,6 @@
 !
 !   model coefficient
 !
-!>        start address for model coefficient of SGS buoyancy
-        integer (kind=kint) :: i_Csim_SGS_buoyancy =    izero
 !>        start address for model coefficient of SGS composition buoyancy
         integer (kind=kint) :: i_Csim_SGS_comp_buo =     izero
 !
