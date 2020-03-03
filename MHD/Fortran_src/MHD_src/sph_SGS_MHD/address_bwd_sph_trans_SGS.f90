@@ -156,31 +156,31 @@
 !
 !
 !   wide filtered Inertia
-      call add_field_name_4_sph_trns                                    &
-     &   (ipol%i_wide_SGS_inertia, fhd_wide_SGS_inertia, n_vector,      &
+      call add_field_name_4_sph_trns(ipol%i_wide_SGS_inertia,           &
+     &    wide_SGS_inertia%name, wide_SGS_inertia%n_comp,               &
      &    ipol%i_wide_SGS_inertia, itor%i_wide_SGS_inertia,             &
      &    iphys%i_wide_SGS_inertia, b_trns%i_wide_SGS_inertia,          &
      &    trns_back)
 !   wide filtered Lorentz force
-      call add_field_name_4_sph_trns                                    &
-     &   (ipol%i_wide_SGS_Lorentz, fhd_wide_SGS_Lorentz, n_vector,      &
+      call add_field_name_4_sph_trns(ipol%i_wide_SGS_Lorentz,           &
+     &    wide_SGS_Lorentz%name, wide_SGS_Lorentz%n_comp,               &
      &    ipol%i_wide_SGS_Lorentz, itor%i_wide_SGS_Lorentz,             &
      &    iphys%i_wide_SGS_Lorentz, b_trns%i_wide_SGS_Lorentz,          &
      &    trns_back)
 !   wide filtered induction
-      call add_field_name_4_sph_trns                                    &
-     &   (ipol%i_wide_SGS_vp_induct, fhd_wide_SGS_vp_induct, n_vector,  &
+      call add_field_name_4_sph_trns(ipol%i_wide_SGS_vp_induct,         &
+     &    wide_SGS_vp_induction%name, wide_SGS_vp_induction%n_comp,     &
      &    ipol%i_wide_SGS_vp_induct, itor%i_wide_SGS_vp_induct,         &
      &    iphys%i_wide_SGS_vp_induct, b_trns%i_wide_SGS_vp_induct,      &
      &    trns_back)
 !   wide filtered heat flux
-      call add_field_name_4_sph_trns                                    &
-     &   (ipol%i_wide_SGS_h_flux, fhd_wide_SGS_h_flux, n_vector,        &
+      call add_field_name_4_sph_trns(ipol%i_wide_SGS_h_flux,            &
+     &    wide_SGS_heat_flux%name, wide_SGS_heat_flux%n_comp,           &
      &    ipol%i_wide_SGS_h_flux, itor%i_wide_SGS_h_flux,               &
      &    iphys%i_wide_SGS_h_flux, b_trns%i_wide_SGS_h_flux, trns_back)
 !   wide filtered composition flux
-      call add_field_name_4_sph_trns                                    &
-     &   (ipol%i_wide_SGS_c_flux, fhd_wide_SGS_c_flux, n_vector,        &
+      call add_field_name_4_sph_trns(ipol%i_wide_SGS_c_flux,            &
+     &    wide_SGS_composit_flux%name, wide_SGS_composit_flux%n_comp,   &
      &    ipol%i_wide_SGS_c_flux, itor%i_wide_SGS_c_flux,               &
      &    iphys%i_wide_SGS_c_flux, b_trns%i_wide_SGS_c_flux, trns_back)
 !
@@ -197,29 +197,30 @@
 !
 !
 !   dual filtered Inertia
-      call add_field_name_4_sph_trns                                    &
-     &   (ipol%i_dbl_SGS_inertia, fhd_dbl_SGS_inertia, n_vector,        &
+      call add_field_name_4_sph_trns(ipol%i_dbl_SGS_inertia,            &
+     &    double_SGS_inertia%name, double_SGS_inertia%n_comp,           &
      &    ipol%i_dbl_SGS_inertia, itor%i_dbl_SGS_inertia,               &
      &    iphys%i_dbl_SGS_inertia, b_trns%i_dbl_SGS_inertia, trns_back)
 !   dual filtered Lorentz force
-      call add_field_name_4_sph_trns                                    &
-     &   (ipol%i_dbl_SGS_Lorentz, fhd_dbl_SGS_Lorentz, n_vector,        &
+      call add_field_name_4_sph_trns(ipol%i_dbl_SGS_Lorentz,            &
+     &    double_SGS_Lorentz%name, double_SGS_Lorentz%n_comp,           &
      &    ipol%i_dbl_SGS_Lorentz, itor%i_dbl_SGS_Lorentz,               &
      &    iphys%i_dbl_SGS_Lorentz, b_trns%i_dbl_SGS_Lorentz, trns_back)
 !   dual filtered induction
-      call add_field_name_4_sph_trns                                    &
-     &   (ipol%i_dbl_SGS_vp_induct, fhd_dbl_SGS_vp_induct, n_vector,    &
+      call add_field_name_4_sph_trns(ipol%i_dbl_SGS_vp_induct,          &
+     &    double_SGS_vp_induction%name, double_SGS_vp_induction%n_comp, &
      &    ipol%i_dbl_SGS_vp_induct, itor%i_dbl_SGS_vp_induct,           &
      &    iphys%i_dbl_SGS_vp_induct, b_trns%i_dbl_SGS_vp_induct,        &
      &    trns_back)
 !   dual filtered heat flux
-      call add_field_name_4_sph_trns                                    &
-     &   (ipol%i_dbl_SGS_h_flux, fhd_dbl_SGS_h_flux, n_vector,          &
+      call add_field_name_4_sph_trns(ipol%i_dbl_SGS_h_flux,             &
+     &    double_SGS_heat_flux%name, double_SGS_heat_flux%n_comp,       &
      &    ipol%i_dbl_SGS_h_flux, itor%i_dbl_SGS_h_flux,                 &
      &    iphys%i_dbl_SGS_h_flux, b_trns%i_dbl_SGS_h_flux, trns_back)
 !   dual filtered composition flux
-      call add_field_name_4_sph_trns                                    &
-     &   (ipol%i_dbl_SGS_c_flux, fhd_dbl_SGS_c_flux, n_vector,          &
+      call add_field_name_4_sph_trns(ipol%i_dbl_SGS_c_flux,             &
+     &    double_SGS_composit_flux%name,                                &
+     &    double_SGS_composit_flux%n_comp,                              &
      &    ipol%i_dbl_SGS_c_flux, itor%i_dbl_SGS_c_flux,                 &
      &    iphys%i_dbl_SGS_c_flux, b_trns%i_dbl_SGS_c_flux, trns_back)
 !

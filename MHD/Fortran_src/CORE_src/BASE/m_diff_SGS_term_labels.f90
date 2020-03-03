@@ -56,77 +56,77 @@
 !
 !
 !>        Field label for divergence of SGS momentum flux
-!!         @f$ \partial_{i} ( \overline{u_{i}u_{j}}
-!!             - \bar{u}_{i}\bar{u}_{j}) @f$
+!!         @f$ \partial_{i} ( \widetilde{u_{i}u_{j}}
+!!             - \tilde{u}_{i}\tilde{u}_{j}) @f$
       type(field_def), parameter :: div_SGS_m_flux                      &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'div_SGS_m_flux',                          &
-     &                math = '$ \partial_{i} ( \overline{u_{i}u_{j}}'   &
-     &                     // ' - \bar{u}_{i}\bar{u}_{j}) $')
+     &                math = '$ \partial_{i} ( \widetilde{u_{i}u_{j}}'  &
+     &                     // ' - \tilde{u}_{i}\tilde{u}_{j}) $')
 !>        Field label for divergence of SGS heat flux
-!!         @f$ \partial_{i} \left( \overline{u_{i}T}
-!!            - \bar{u}_{i}\bar{T} \right) @f$
+!!         @f$ \partial_{i} \left( \widetilde{u_{i}T}
+!!            - \tilde{u}_{i}\tilde{T} \right) @f$
       type(field_def), parameter :: div_SGS_h_flux                      &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'div_SGS_h_flux',                          &
-     &                math = '$ \partial_{i} ( \overline{u_{i}T}'       &
-     &                     // ' - \bar{u}_{i}\bar{T}) $')
+     &                math = '$ \partial_{i} ( \widetilde{u_{i}T}'      &
+     &                     // ' - \tilde{u}_{i}\tilde{T}) $')
 !>        Field label for divergence of SGS heat flux
-!!         @f$ \partial_{i} \left( \overline{u_{i}C}
-!!            - \bar{u}_{i}\bar{C} \right) @f$
+!!         @f$ \partial_{i} \left( \widetilde{u_{i}C}
+!!            - \tilde{u}_{i}\tilde{C} \right) @f$
       type(field_def), parameter :: div_SGS_c_flux                      &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'div_SGS_c_flux',                          &
-     &                math = '$ \partial_{i} ( \overline{u_{i}C}'       &
-     &                     // ' - \bar{u}_{i}\bar{C}) $')
+     &                math = '$ \partial_{i} ( \widetilde{u_{i}C}'      &
+     &                     // ' - \tilde{u}_{i}\tilde{C}) $')
 !
 !>        Field label for divergence of SGS inertia term
-!!         @f$ \partial_{i} e_{ijk} (\overline{\omega_{j}u_{k}}
-!!            - \bar{\omega}_{j}\bar{u}_{k}) @f$
+!!         @f$ \partial_{i} e_{ijk} (\widetilde{\omega_{j}u_{k}}
+!!            - \tilde{\omega}_{j}\tilde{u}_{k}) @f$
       type(field_def), parameter :: div_SGS_inertia                     &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'div_SGS_inertia',                         &
      &                math = '$ \partial_{i} e_{ijk}'                   &
-     &                     // ' (\overline{\omega_{j}u_{k}}'            &
-     &                     // ' - \bar{\omega}_{j}\bar{u}_{k}) $')
+     &                     // ' (\widetilde{\omega_{j}u_{k}}'           &
+     &                     // ' - \tilde{\omega}_{j}\tilde{u}_{k}) $')
 !>        Field label for divergence of SGS Lorentz force
-!!         @f$ \partial_{i} e_{ijk} (\overline{J{j}u_{k}}
-!!            - \bar{J}_{j}\bar{u}_{k}) @f$
+!!         @f$ \partial_{i} e_{ijk} (\widetilde{J{j}u_{k}}
+!!            - \tilde{J}_{j}\tilde{u}_{k}) @f$
       type(field_def), parameter :: div_SGS_Lorentz                     &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'div_SGS_Lorentz',                         &
      &                math = '$ \partial_{i} e_{ijk}'                   &
-     &                     // ' (\overline{J_{j}B_{k}}'                 &
-     &                     // ' - \bar{J}_{j}\bar{B}_{k}) $')
+     &                     // ' (\widetilde{J_{j}B_{k}}'                &
+     &                     // ' - \tilde{J}_{j}\tilde{B}_{k}) $')
 !
 !>        Field label for rotation of SGS inertia term
-!!        @f$  e_{ijk} \partial_{j} e_{klm}
-!!        (\overline{\omega_{n}u_{m}} - \bar{\omega}_{n}\bar{u}_{m})@f$
+!!        @f$  e_{ijk} \partial_{j} e_{klm} (\widetilde{\omega_{n}u_{m}}
+!!            - \tilde{\omega}_{n}\tilde{u}_{m})@f$
       type(field_def), parameter :: rot_SGS_inertia                     &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'rot_SGS_inertia',                         &
      &                math = '$ e_{ijk} \partial_{j} e_{klm}'           &
-     &                     // ' (\overline{\omega_{n}u_{m}}'            &
-     &                     // ' - \bar{\omega}_{n}\bar{u}_{m}) $')
+     &                     // ' (\widetilde{\omega_{n}u_{m}}'           &
+     &                     // ' - \tilde{\omega}_{n}\tilde{u}_{m}) $')
 !>        Field label for rotation of SGS Lorentz force
 !!        @f$  e_{ijk} \partial_{j} e_{klm}
-!!        (\overline{J_{n}B_{m}} - \bar{J}_{n}\bar{B}_{m})@f$
+!!        (\widetilde{J_{n}B_{m}} - \tilde{J}_{n}\tilde{B}_{m})@f$
       type(field_def), parameter :: rot_SGS_Lorentz                     &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'rot_SGS_Lorentz',                         &
      &                math = '$ e_{ijk} \partial_{j} e_{klm}'           &
-     &                     // ' (\overline{J_{n}B_{m}}'                 &
-     &                     // ' - \bar{J}_{n}\bar{B}_{m}) $')
+     &                     // ' (\widetilde{J_{n}B_{m}}'                &
+     &                     // ' - \tilde{J}_{n}\tilde{B}_{m}) $')
 !
 !>        Field label for SGS magnetic induction
-!!         @f$ e_{ijk} \partual_{j} e_{klm} (\overline{u_{l}B_{m}}
-!!            - \bar{u}_{l}\bar{B}_{m} ) @f$
+!!         @f$ e_{ijk} \partual_{j} e_{klm} (\widetilde{u_{l}B_{m}}
+!!            - \tilde{u}_{l}\tilde{B}_{m} ) @f$
       type(field_def), parameter :: SGS_induction                       &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'SGS_induction',                           &
      &                math = '$ e_{ijk} \partual_{j} e_{klm}'           &
-     &                     // ' (\overline{u_{l}B_{m}}'                 &
-     &                     // ' - \bar{u}_{j}\bar{B}_{k}) $')
+     &                     // ' (\widetilde{u_{l}B_{m}}'                &
+     &                     // ' - \tilde{u}_{j}\tilde{B}_{k}) $')
 !
 ! ----------------------------------------------------------------------
 !

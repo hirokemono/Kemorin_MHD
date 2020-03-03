@@ -568,6 +568,7 @@
         type(SGS_term_address) :: rot_SGS
 !>        Structure of SGS energy fluxes
         type(SGS_ene_flux_address) :: SGS_ene_flux
+!
       end type phys_address
 !
 !

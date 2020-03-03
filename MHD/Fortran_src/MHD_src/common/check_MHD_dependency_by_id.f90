@@ -344,31 +344,31 @@
      &       (fld, i_start, iphys%SGS_term%i_SGS_h_flux, SGS_heat_flux%name)
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_wide_SGS_h_flux,                    &
-     &        fhd_wide_SGS_h_flux)
+     &        wide_SGS_heat_flux%name)
         else if(i_start .eq. iphys%i_Csim_SGS_c_flux) then 
           call check_missing_field                                      &
      &       (fld, i_start, iphys%SGS_term%i_SGS_c_flux, SGS_composit_flux%name)
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_wide_SGS_c_flux,                    &
-     &        fhd_wide_SGS_c_flux)
+     &        wide_SGS_composit_flux%name)
         else if(i_start .eq. iphys%i_Csim_SGS_m_flux) then 
           call check_missing_field                                      &
      &       (fld, i_start, iphys%SGS_term%i_SGS_inertia, SGS_inertia%name)
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_wide_SGS_inertia,                   &
-     &        fhd_wide_SGS_inertia)
+     &        wide_SGS_inertia%name)
         else if(i_start .eq. iphys%i_Csim_SGS_Lorentz) then 
           call check_missing_field                                      &
      &       (fld, i_start, iphys%SGS_term%i_SGS_Lorentz, SGS_Lorentz%name)
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_wide_SGS_Lorentz,                   &
-     &        fhd_wide_SGS_Lorentz)
+     &        wide_SGS_Lorentz%name)
         else if(i_start .eq. iphys%i_Csim_SGS_induction) then 
           call check_missing_field                                      &
      &       (fld, i_start, iphys%SGS_term%i_SGS_induction, SGS_vecp_induction%name)
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_wide_SGS_vp_induct,                 &
-     &       fhd_wide_SGS_vp_induct)
+     &       wide_SGS_vp_induction%name)
         else if(i_start .eq. iphys%i_Csim_SGS_buoyancy) then 
           call check_missing_field                                      &
      &       (fld, i_start, iphys%SGS_term%i_SGS_h_flux, SGS_heat_flux%name)

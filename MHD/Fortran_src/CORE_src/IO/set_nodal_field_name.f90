@@ -116,20 +116,6 @@
 
      &      )   iflag = 1
 !
-      if (   (phys_nod_name_ctl .eq. fhd_wide_SGS_inertia   )           &
-     &  .or. (phys_nod_name_ctl .eq. fhd_wide_SGS_h_flux    )           &
-     &  .or. (phys_nod_name_ctl .eq. fhd_wide_SGS_c_flux    )           &
-     &  .or. (phys_nod_name_ctl .eq. fhd_wide_SGS_vp_induct )           &
-     &  .or. (phys_nod_name_ctl .eq. fhd_wide_SGS_Lorentz   )           &
-     &       )  iflag = 1
-!
-      if (   (phys_nod_name_ctl .eq. fhd_dbl_SGS_inertia   )            &
-     &  .or. (phys_nod_name_ctl .eq. fhd_dbl_SGS_h_flux    )            &
-     &  .or. (phys_nod_name_ctl .eq. fhd_dbl_SGS_c_flux    )            &
-     &  .or. (phys_nod_name_ctl .eq. fhd_dbl_SGS_vp_induct )            &
-     &  .or. (phys_nod_name_ctl .eq. fhd_dbl_SGS_Lorentz   )            &
-     &       )  iflag = 1
-!
       if (   (phys_nod_name_ctl .eq. fhd_pre_mom            )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_pre_uxb            )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_chk_mom            )           &
@@ -153,7 +139,10 @@
      &   .or. check_double_filter_vector(phys_nod_name_ctl)             &
      &   .or. check_difference_vectors(phys_nod_name_ctl)               &
      &   .or. check_grad_filter_field(phys_nod_name_ctl)                &
-     &   .or. check_diff_filter_vectors(phys_nod_name_ctl)) iflag = 1
+     &   .or. check_diff_filter_vectors(phys_nod_name_ctl)              &
+     &   .or. check_wide_SGS_vector_terms(phys_nod_name_ctl)            &
+     &   .or. check_double_SGS_vector_terms(phys_nod_name_ctl)          &
+     &        ) iflag = 1
 !
 
       if (iflag .eq. 1) then

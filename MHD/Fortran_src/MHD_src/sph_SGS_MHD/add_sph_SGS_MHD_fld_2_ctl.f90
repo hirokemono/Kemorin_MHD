@@ -258,15 +258,15 @@
 !       Add SGS fluxes
 !
       if(SGS_param%iflag_SGS_m_flux .gt. id_SGS_none)                   &
-     &   call add_phys_name_ctl(fhd_wide_SGS_inertia, field_ctl)
+     &   call add_phys_name_ctl(wide_SGS_inertia%name, field_ctl)
       if(SGS_param%iflag_SGS_lorentz .gt. id_SGS_none)                  &
-     &   call add_phys_name_ctl(fhd_wide_SGS_Lorentz, field_ctl)
+     &   call add_phys_name_ctl(wide_SGS_Lorentz%name, field_ctl)
       if(SGS_param%iflag_SGS_uxb .gt. id_SGS_none)                      &
-     &   call add_phys_name_ctl(fhd_wide_SGS_vp_induct, field_ctl)
+     &   call add_phys_name_ctl(wide_SGS_vp_induction%name, field_ctl)
       if(SGS_param%iflag_SGS_h_flux .gt. id_SGS_none)                   &
-     &   call add_phys_name_ctl(fhd_wide_SGS_h_flux, field_ctl)
+     &   call add_phys_name_ctl(wide_SGS_heat_flux%name, field_ctl)
       if(SGS_param%iflag_SGS_c_flux .gt. id_SGS_none)                   &
-     &   call add_phys_name_ctl(fhd_wide_SGS_c_flux, field_ctl)
+     &   call add_phys_name_ctl(wide_SGS_composit_flux%name, field_ctl)
 !
 !
       if(SGS_param%iflag_SGS_gravity .gt. id_SGS_none) then
@@ -284,15 +284,17 @@
 !
 !
       if(SGS_param%iflag_SGS_m_flux .gt. id_SGS_none)                   &
-     &   call add_phys_name_ctl(fhd_dbl_SGS_inertia, field_ctl)
+     &   call add_phys_name_ctl(double_SGS_inertia%name, field_ctl)
       if(SGS_param%iflag_SGS_lorentz .gt. id_SGS_none)                  &
-     &   call add_phys_name_ctl(fhd_dbl_SGS_Lorentz, field_ctl)
+     &   call add_phys_name_ctl(double_SGS_Lorentz%name, field_ctl)
       if(SGS_param%iflag_SGS_uxb .gt. id_SGS_none)                      &
-     &   call add_phys_name_ctl(fhd_dbl_SGS_vp_induct, field_ctl)
+     &   call add_phys_name_ctl(double_SGS_vp_induction%name,           &
+     &                          field_ctl)
       if(SGS_param%iflag_SGS_h_flux .gt. id_SGS_none)                   &
-     &   call add_phys_name_ctl(fhd_dbl_SGS_h_flux, field_ctl)
+     &   call add_phys_name_ctl(double_SGS_heat_flux%name, field_ctl)
       if(SGS_param%iflag_SGS_c_flux .gt. id_SGS_none)                   &
-     &   call add_phys_name_ctl(fhd_dbl_SGS_c_flux, field_ctl)
+     &   call add_phys_name_ctl(double_SGS_composit_flux%name,          &
+     &                          field_ctl)
 !
 !      if(SGS_param%iflag_SGS_gravity .gt. id_SGS_none) then
 !        call add_phys_name_ctl(fhd_filter_velo, field_ctl)

@@ -214,26 +214,26 @@
      &     (i0, field_name(i), iphys%rot_SGS, flag)
 !
 !
-        if ( field_name(i) .eq. fhd_wide_SGS_h_flux ) then
+        if ( field_name(i) .eq. wide_SGS_heat_flux%name ) then
           iphys%i_wide_SGS_h_flux =    i0
-        else if ( field_name(i) .eq. fhd_wide_SGS_c_flux ) then
+        else if ( field_name(i) .eq. wide_SGS_composit_flux%name ) then
           iphys%i_wide_SGS_c_flux =    i0
-        else if ( field_name(i) .eq. fhd_wide_SGS_inertia ) then
+        else if ( field_name(i) .eq. wide_SGS_inertia%name ) then
           iphys%i_wide_SGS_inertia =   i0
-        else if ( field_name(i) .eq. fhd_wide_SGS_Lorentz ) then
+        else if ( field_name(i) .eq. wide_SGS_Lorentz%name ) then
           iphys%i_wide_SGS_Lorentz =   i0
-        else if (field_name(i) .eq. fhd_wide_SGS_vp_induct) then
+        else if (field_name(i) .eq. wide_SGS_vp_induction%name) then
           iphys%i_wide_SGS_vp_induct = i0
 !
-        else if ( field_name(i) .eq. fhd_dbl_SGS_h_flux ) then
+        else if ( field_name(i) .eq. double_SGS_heat_flux%name ) then
           iphys%i_dbl_SGS_h_flux =    i0
-        else if ( field_name(i) .eq. fhd_dbl_SGS_c_flux ) then
+        else if ( field_name(i) .eq. double_SGS_composit_flux%name) then
           iphys%i_dbl_SGS_c_flux =    i0
-        else if ( field_name(i) .eq. fhd_dbl_SGS_inertia ) then
+        else if ( field_name(i) .eq. double_SGS_inertia%name ) then
           iphys%i_dbl_SGS_inertia =   i0
-        else if ( field_name(i) .eq. fhd_dbl_SGS_Lorentz ) then
+        else if ( field_name(i) .eq. double_SGS_Lorentz%name ) then
           iphys%i_dbl_SGS_Lorentz =   i0
-        else if (field_name(i) .eq. fhd_dbl_SGS_vp_induct) then
+        else if (field_name(i) .eq. double_SGS_vp_induction%name) then
           iphys%i_dbl_SGS_vp_induct = i0
         end if
 !

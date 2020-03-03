@@ -50,81 +50,81 @@
 !
 !  energy flux by SGS terms
 !>        Field label for work of SGS Reynolds stress
-!!         @f$ -u_{i} e_{ijk} (\overline{\omega_{j}u_{k}}
-!!            - \bar{\omega}_{j}\bar{u}_{k}) @f$
+!!         @f$ -u_{i} e_{ijk} (\widetilde{\omega_{j}u_{k}}
+!!            - \tilde{\omega}_{j}\tilde{u}_{k}) @f$
       type(field_def), parameter :: Reynolds_work                       &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'Reynolds_work',                           &
      &                math = '$ \partial_{i} e_{ijk}'                   &
-     &                     // ' (\overline{\omega_{j}u_{k}}'            &
-     &                     // ' - \bar{\omega}_{j}\bar{u}_{k}) $')
+     &                     // ' (\widetilde{\omega_{j}u_{k}}'           &
+     &                     // ' - \tilde{\omega}_{j}\tilde{u}_{k}) $')
 !>        Field label for work of SGS Lorentz force
-!!         @f$  u_{i} e_{ijk} (\overline{J_{j}B_{k}}
-!!            - \bar{J}_{j}\bar{B}_{k}) @f$
+!!         @f$  u_{i} e_{ijk} (\widetilde{J_{j}B_{k}}
+!!            - \tilde{J}_{j}\tilde{B}_{k}) @f$
       type(field_def), parameter :: SGS_Lorentz_work                    &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'SGS_Lorentz_work',                        &
      &                math = '$ \partial_{i} e_{ijk}'                   &
-     &                     // ' (\overline{\omega_{j}u_{k}}'            &
-     &                     // ' - \bar{\omega}_{j}\bar{u}_{k}) $')
+     &                     // ' (\widetilde{\omega_{j}u_{k}}'           &
+     &                     // ' - \tilde{\omega}_{j}\tilde{u}_{k}) $')
 !>        Field label for work of SGS buoyancy
 !!         @f$ - u_{i} C^{sim} \alpha_{T} g_{i} I_{Ti} @f$
       type(field_def), parameter :: SGS_buoyancy_flux                   &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'SGS_buoyancy_flux',                       &
      &                math = '$ \partial_{i} e_{ijk}'                   &
-     &                     // ' (\overline{\omega_{j}u_{k}}'            &
-     &                     // ' - \bar{\omega}_{j}\bar{u}_{k}) $')
+     &                     // ' (\widetilde{\omega_{j}u_{k}}'           &
+     &                     // ' - \tilde{\omega}_{j}\tilde{u}_{k}) $')
 !>        Field label for work of SGS compositional buoyancy
 !!         @f$ - u_{i} C^{sim} \alpha_{C} g_{i} I_{Ci} @f$
       type(field_def), parameter :: SGS_comp_buoyancy_flux              &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'SGS_comp_buoyancy_flux',                  &
      &                math = '$ \partial_{i} e_{ijk}'                   &
-     &                     // ' (\overline{\omega_{j}u_{k}}'            &
-     &                     // ' - \bar{\omega}_{j}\bar{u}_{k}) $')
+     &                     // ' (\widetilde{\omega_{j}u_{k}}'           &
+     &                     // ' - \tilde{\omega}_{j}\tilde{u}_{k}) $')
 !
 !>        Field label for energy flux of SGS induction
 !!         @f$ B_{i} e_{ijk} \partual_{j} e_{klm} 
-!!            (\overline{u_{l}B_{m}} - \bar{u}_{l}\bar{B}_{m} ) @f$
+!!            (\widetilde{u_{l}B_{m}} - \tilde{u}_{l}\tilde{B}_{m} ) @f$
       type(field_def), parameter :: SGS_mag_induction_flux              &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'SGS_mag_induction_flux',                  &
      &                math = '$ \partial_{i} e_{ijk}'                   &
-     &                     // ' (\overline{\omega_{j}u_{k}}'            &
-     &                     // ' - \bar{\omega}_{j}\bar{u}_{k}) $')
+     &                     // ' (\widetilde{\omega_{j}u_{k}}'           &
+     &                     // ' - \tilde{\omega}_{j}\tilde{u}_{k}) $')
 !
 !>        Field label for temperature generation by SGS heat flux
-!!         @f$ T \partial_{i} \left( \overline{u_{i}T}
-!!            - \bar{u}_{i}\bar{T} \right) @f$
+!!         @f$ T \partial_{i} \left( \widetilde{u_{i}T}
+!!            - \tilde{u}_{i}\tilde{T} \right) @f$
       type(field_def), parameter :: SGS_temp_flux_gen                   &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'SGS_temp_flux_gen',                       &
      &                math = '$ \partial_{i} e_{ijk}'                   &
-     &                     // ' (\overline{\omega_{j}u_{k}}'            &
-     &                     // ' - \bar{\omega}_{j}\bar{u}_{k}) $')
+     &                     // ' (\widetilde{\omega_{j}u_{k}}'           &
+     &                     // ' - \tilde{\omega}_{j}\tilde{u}_{k}) $')
 !>        Field label for composition generation by SGS composition flux
-!!         @f$ C \partial_{i} \left( \overline{u_{i}C}
-!!            - \bar{u}_{i}\bar{C} \right) @f$
+!!         @f$ C \partial_{i} \left( \widetilde{u_{i}C}
+!!            - \tilde{u}_{i}\tilde{C} \right) @f$
       character(len=kchara), parameter                                  &
      &             :: fhd_SGS_comp_gen =      'SGS_comp_flux_gen'
       type(field_def), parameter :: SGS_comp_flux_gen                   &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'SGS_comp_flux_gen',                       &
      &                math = '$ \partial_{i} e_{ijk}'                   &
-     &                     // ' (\overline{\omega_{j}u_{k}}'            &
-     &                     // ' - \bar{\omega}_{j}\bar{u}_{k}) $')
+     &                     // ' (\widetilde{\omega_{j}u_{k}}'           &
+     &                     // ' - \tilde{\omega}_{j}\tilde{u}_{k}) $')
 !
 !
 !>       Structure of start address for energy flux by SGS terms
       type SGS_ene_flux_address
 !>        Field address for work of SGS Reynolds stress
-!!         @f$ -u_{i} e_{ijk} (\overline{\omega_{j}u_{k}}
-!!            - \bar{\omega}_{j}\bar{u}_{k}) @f$
+!!         @f$ -u_{i} e_{ijk} (\widetilde{\omega_{j}u_{k}}
+!!            - \tilde{\omega}_{j}\tilde{u}_{k}) @f$
         integer (kind=kint) :: i_reynolds_wk =     izero
 !>        Field address for work of SGS Lorentz force
-!!         @f$  u_{i} e_{ijk} (\overline{J_{j}B_{k}}
-!!            - \bar{J}_{j}\bar{B}_{k}) @f$
+!!         @f$  u_{i} e_{ijk} (\widetilde{J_{j}B_{k}}
+!!            - \tilde{J}_{j}\tilde{B}_{k}) @f$
         integer (kind=kint) :: i_SGS_Lor_wk =      izero
 !>        Field address for work of SGS buoyancy
 !!         @f$ - u_{i} C^{sim} \alpha_{T} g_{i} I_{Ti} @f$
@@ -135,17 +135,17 @@
 !
 !>        Field address for energy flux of SGS induction
 !!         @f$ B_{i} e_{ijk} \partual_{j} e_{klm} 
-!!            (\overline{u_{l}B_{m}} - \bar{u}_{l}\bar{B}_{m} ) @f$
+!!            (\widetilde{u_{l}B_{m}} - \tilde{u}_{l}\tilde{B}_{m} ) @f$
         integer (kind=kint) :: i_SGS_me_gen =      izero
 !
 !>        Field address for temperature generation by SGS heat flux
-!!         @f$ T \partial_{i} \left( \overline{u_{i}T}
-!!            - \bar{u}_{i}\bar{T} \right) @f$
+!!         @f$ T \partial_{i} \left( \widetilde{u_{i}T}
+!!            - \tilde{u}_{i}\tilde{T} \right) @f$
         integer (kind=kint) :: i_SGS_temp_gen =    izero
 !>        Field address for composition generation
 !!           by SGS composition flux
-!!         @f$ C \partial_{i} \left( \overline{u_{i}C}
-!!            - \bar{u}_{i}\bar{C} \right) @f$
+!!         @f$ C \partial_{i} \left( \widetilde{u_{i}C}
+!!            - \tilde{u}_{i}\tilde{C} \right) @f$
         integer (kind=kint) :: i_SGS_comp_gen =    izero
       end type SGS_ene_flux_address
 !

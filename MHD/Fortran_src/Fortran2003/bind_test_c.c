@@ -21,6 +21,7 @@ int num_wide_filter_fields_f();
 int num_double_filter_fields_f();
 int num_difference_vector_f();
 int num_diff_filter_vector_f();
+int num_wide_SGS_terms_f();
 
 void set_base_force_labels_f(int *ncomp1, char *name1, char *math1);
 void set_divergence_field_labels_f(int *ncomp1, char *name1, char *math1);
@@ -41,6 +42,7 @@ void set_wide_filter_field_labels_f(int *ncomp1, char *name1, char *math1);
 void set_dbl_filter_field_labels_f(int *ncomp1, char *name1, char *math1);
 void set_differnce_vector_labels_f(int *ncomp1, char *name1, char *math1);
 void set_diff_filter_vect_labels_f(int *ncomp1, char *name1, char *math1);
+void set_wide_SGS_term_labels_f(int *ncomp1, char *name1, char *math1);
 
 int main(int argc, char **argv)
 {
@@ -85,9 +87,11 @@ int main(int argc, char **argv)
 			+ num_double_filter_fields_f();
 	int ist_diff_filter_vector = ist_difference_vector
 			+ num_difference_vector_f();
-	
-	int nword = ist_diff_filter_vector
+	int ist_wide_SGS_terms = ist_diff_filter_vector
 			+ num_diff_filter_vector_f();
+	
+	int nword = ist_wide_SGS_terms
+			+ num_wide_SGS_terms_f();
 	
 	int *ncomp = (int *)calloc(nword, sizeof(int));
 	char *name1 = (char *)calloc(len_f*nword, sizeof(char));
@@ -156,6 +160,9 @@ int main(int argc, char **argv)
 	set_diff_filter_vect_labels_f(&ncomp[ist_diff_filter_vector], 
 								&name1[len_f*ist_diff_filter_vector], 
 								&math1[len_f*ist_diff_filter_vector]);
+	set_wide_SGS_term_labels_f(&ncomp[ist_wide_SGS_terms], 
+								&name1[len_f*ist_wide_SGS_terms], 
+								&math1[len_f*ist_wide_SGS_terms]);
 	
 	printf("nword %d %d \n", len_f, nword);
 	for(i=0;i<nword;i++){

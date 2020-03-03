@@ -371,58 +371,9 @@
      &          msq_list)
           end if
 !
-          if ( field_name .eq. fhd_wide_SGS_h_flux ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_wide_SGS_h_flux,         &
-     &          i_rms%i_wide_SGS_h_flux, j_ave%i_wide_SGS_h_flux,       &
-     &          msq_list)
-          else if ( field_name .eq. fhd_wide_SGS_c_flux ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_wide_SGS_c_flux,         &
-     &          i_rms%i_wide_SGS_c_flux, j_ave%i_wide_SGS_c_flux,       &
-     &          msq_list)
-          else if ( field_name .eq. fhd_wide_SGS_inertia ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_wide_SGS_inertia,        &
-     &          i_rms%i_wide_SGS_inertia, j_ave%i_wide_SGS_inertia,     &
-     &          msq_list)
-          else if ( field_name .eq. fhd_wide_SGS_Lorentz ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_wide_SGS_Lorentz,        &
-     &          i_rms%i_wide_SGS_Lorentz, j_ave%i_wide_SGS_Lorentz,     &
-     &          msq_list)
-          else if ( field_name .eq. fhd_wide_SGS_vp_induct ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_wide_SGS_vp_induct,      &
-     &          i_rms%i_wide_SGS_vp_induct, j_ave%i_wide_SGS_vp_induct, &
-     &          msq_list)
-          end if
-!
-          if ( field_name .eq. fhd_dbl_SGS_h_flux ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_dbl_SGS_h_flux,          &
-     &          i_rms%i_dbl_SGS_h_flux, j_ave%i_dbl_SGS_h_flux,         &
-     &          msq_list)
-          else if ( field_name .eq. fhd_dbl_SGS_c_flux ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_dbl_SGS_c_flux,          &
-     &          i_rms%i_dbl_SGS_c_flux, j_ave%i_dbl_SGS_c_flux,         &
-     &          msq_list)
-          else if ( field_name .eq. fhd_dbl_SGS_inertia ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_dbl_SGS_inertia,         &
-     &          i_rms%i_dbl_SGS_inertia, j_ave%i_dbl_SGS_inertia,       &
-     &          msq_list)
-          else if ( field_name .eq. fhd_dbl_SGS_Lorentz ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_dbl_SGS_Lorentz,         &
-     &          i_rms%i_dbl_SGS_Lorentz, j_ave%i_dbl_SGS_Lorentz,       &
-     &          msq_list)
-          else if ( field_name .eq. fhd_dbl_SGS_vp_induct ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_dbl_SGS_vp_induct,       &
-     &          i_rms%i_dbl_SGS_vp_induct, j_ave%i_dbl_SGS_vp_induct,   &
-     &          msq_list)
+          if(    check_wide_SGS_vector_terms(field_name)                &
+     &      .or. check_double_SGS_vector_terms(field_name)) then
+            call set_rms_address_list(i, nod_fld, msq_list)
           end if
 !
           if ( field_name .eq. fhd_geostrophic ) then

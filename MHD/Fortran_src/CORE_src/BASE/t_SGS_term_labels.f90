@@ -42,7 +42,7 @@
       module t_SGS_term_labels
 !
       use m_precision
-      use m_constants
+      use m_phys_constants
       use t_field_labels
 !
       implicit  none
@@ -50,59 +50,59 @@
       integer(kind = kint), parameter, private :: nterms_SGS = 10
 !
 !>        Field label for SGS momentum flux
-!!         @f$ \overline{u_{i}u_{j}} - \bar{u}_{i}\bar{u}_{j} @f$
+!!         @f$ \widetilde{u_{i}u_{j}} - \tilde{u}_{i}\tilde{u}_{j} @f$
       type(field_def), parameter :: SGS_momentum_flux                   &
      &    = field_def(n_comp = n_sym_tensor,                            &
      &                name = 'SGS_momentum_flux',                       &
-     &                math = '$ \overline{u_{i}u_{j}}'                  &
-     &                     // '  - \bar{u}_{i}\bar{u}_{j} $')
+     &                math = '$ \widetilde{u_{i}u_{j}}'                 &
+     &                     // '  - \tilde{u}_{i}\tilde{u}_{j} $')
 !>        Field label for SGS Maxwell tensor
-!!         @f$ \overline{B_{i}B_{j}} - \bar{B}_{i}\bar{B}_{j} @f$
+!!         @f$ \widetilde{B_{i}B_{j}} - \tilde{B}_{i}\tilde{B}_{j} @f$
       type(field_def), parameter :: SGS_maxwell_tensor                  &
      &    = field_def(n_comp = n_sym_tensor,                            &
      &                name = 'SGS_maxwell_tensor',                      &
-     &                math = '$ \overline{B_{i}B_{j}}'                  &
-     &                     // '  - \bar{B}_{i}\bar{B}_{j} $')
+     &                math = '$ \widetilde{B_{i}B_{j}}'                 &
+     &                     // '  - \tilde{B}_{i}\tilde{B}_{j} $')
 !>        Field label for SGS magnetic induction tensor
       type(field_def), parameter :: SGS_induct_tensor                   &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'SGS_induct_tensor',                       &
-     &                math = '$ \overline{u_{i}B_{j}}'                  &
-     &                     // '  - \bar{u}_{i}\bar{B}_{j}'              &
-     &                     // ' - \overline{B_{i}u_{j}}'                &
-     &                     // '  + \bar{B}_{i}\bar{u}_{j} $')
+     &                math = '$ \widetilde{u_{i}B_{j}}'                 &
+     &                     // '  - \tilde{u}_{i}\tilde{B}_{j}'          &
+     &                     // ' - \widetilde{B_{i}u_{j}}'               &
+     &                     // '  + \tilde{B}_{i}\tilde{u}_{j} $')
 !
 !>        Field label for SGS heat flux
-!!         @f$ \overline{u_{i}T} - \bar{u}_{i}\bar{T} @f$
+!!         @f$ \widetilde{u_{i}T} - \tilde{u}_{i}\tilde{T} @f$
       type(field_def), parameter :: SGS_heat_flux                       &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'SGS_heat_flux',                           &
-     &                math = '$ \overline{u_{i}T}'                      &
-     &                     // ' - \bar{u}_{i}\bar{T} $')
+     &                math = '$ \widetilde{u_{i}T}'                     &
+     &                     // ' - \tilde{u}_{i}\tilde{T} $')
 !>        Field label for SGS compositional flux
-!!         @f$ \overline{u_{i}C} - \bar{u}_{i}\bar{C} @f$
+!!         @f$ \widetilde{u_{i}C} - \tilde{u}_{i}\tilde{C} @f$
       type(field_def), parameter :: SGS_composit_flux                   &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'SGS_composit_flux',                       &
-     &                math = '$ \overline{u_{i}C}'                      &
-     &                     // ' - \bar{u}_{i}\bar{C} $')
+     &                math = '$ \widetilde{u_{i}C}'                     &
+     &                     // ' - \tilde{u}_{i}\tilde{C} $')
 !
 !>        Field label for SGS inertia term
-!!         @f$ e_{ijk}\left(\overline{\omega_{j}u_{k}}
-!!            - \bar{\omega}_{j}\bar{u}_{k} \right) @f$
+!!         @f$ e_{ijk}\left(\widetilde{\omega_{j}u_{k}}
+!!            - \tilde{\omega}_{j}\tilde{u}_{k} \right) @f$
       type(field_def), parameter :: SGS_inertia                         &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'SGS_inertia',                             &
-     &                math = '$ e_{ijk} (\overline{\omega_{j}u_{k}}'    &
-     &                     // ' - \bar{\omega}_{j}\bar{u}_{k}) $')
+     &                math = '$ e_{ijk} (\widetilde{\omega_{j}u_{k}}'   &
+     &                     // ' - \tilde{\omega}_{j}\tilde{u}_{k}) $')
 !>        Field label for divergence of SGS Maxwell tensor
-!!         @f$ e_{ijk}\left(\overline{J_{j}B_{k}}
-!!            - \bar{J}_{j}\bar{B}_{k} \right) @f$
+!!         @f$ e_{ijk}\left(\widetilde{J_{j}B_{k}}
+!!            - \tilde{J}_{j}\tilde{B}_{k} \right) @f$
       type(field_def), parameter :: SGS_Lorentz                         &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'SGS_Lorentz',                             &
-     &                math = '$ e_{ijk} (\overline{J}_{j}B_{k}}'        &
-     &                     // ' - \bar{J}_{j}\bar{B}_{k}) $')
+     &                math = '$ e_{ijk} (\widetilde{J_{j}B_{k}}'        &
+     &                     // ' - \tilde{J}_{j}\tilde{B}_{k}) $')
 !
 !>        Field label for SGS buoyancy
 !!         @f$ -C^{sim} \alpha_{T} g_{i} I_{Ti} @f$
@@ -118,39 +118,39 @@
      &                math = '$ -C^{sim} \alpha_{C} g_{i} I_{Ci} $')
 !
 !>        Field label for SGS induction for vector potential
-!!         @f$ e_{ijk} (\overline{u_{j}B_{k}}
-!!            - \bar{u}_{j}\bar{B}_{k}) @f$
+!!         @f$ e_{ijk} (\widetilde{u_{j}B_{k}}
+!!            - \tilde{u}_{j}\tilde{B}_{k}) @f$
       type(field_def), parameter :: SGS_vecp_induction                  &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'SGS_vecp_induction',                      &
-     &                math = '$ e_{ijk} (\overline{u}_{j}B_{k}}'        &
-     &                     // ' - \bar{u}_{j}\bar{B}_{k}) $')
+     &                math = '$ e_{ijk} (\widetilde{u_{j}B_{k}}'        &
+     &                     // ' - \tilde{u}_{j}\tilde{B}_{k}) $')
 !
 !
 !>       Structure for start address for SGS terms
       type SGS_term_address
 !>        start address for SGS momentum flux
-!!         @f$ \overline{u_{i}u_{j}} - \bar{u}_{i}\bar{u}_{j} @f$
+!!         @f$ \widetilde{u_{i}u_{j}} - \tilde{u}_{i}\tilde{u}_{j} @f$
         integer (kind=kint) :: i_SGS_m_flux =      izero
 !>        start address for SGS Maxwell tensor
-!!         @f$ \overline{B_{i}B_{j}} - \bar{B}_{i}\bar{B}_{j} @f$
+!!         @f$ \widetilde{B_{i}B_{j}} - \tilde{B}_{i}\tilde{B}_{j} @f$
         integer (kind=kint) :: i_SGS_maxwell =     izero
 !>        start address for SGS magnetic induction tensor
         integer (kind=kint) :: i_SGS_induct_t =    izero
 !>        start address for SGS heat flux
-!!         @f$ \overline{u_{i}T} - \bar{u}_{i}\bar{T} @f$
+!!         @f$ \widetilde{u_{i}T} - \tilde{u}_{i}\tilde{T} @f$
         integer (kind=kint) :: i_SGS_h_flux =      izero
 !>        start address for SGS compositional flux
-!!         @f$ \overline{u_{i}C} - \bar{u}_{i}\bar{C} @f$
+!!         @f$ \widetilde{u_{i}C} - \tilde{u}_{i}\tilde{C} @f$
         integer (kind=kint) :: i_SGS_c_flux =      izero
 !
 !>        start address for SGS inertia term
-!!         @f$ e_{ijk}\left(\overline{\omega_{j}u_{k}}
-!!            - \bar{\omega}_{j}\bar{u}_{k} \right) @f$
+!!         @f$ e_{ijk}\left(\widetilde{\omega_{j}u_{k}}
+!!            - \tilde{\omega}_{j}\tilde{u}_{k} \right) @f$
         integer (kind=kint) :: i_SGS_inertia =    izero
 !>        start address for divergence of SGS Maxwell tensor
-!!         @f$ e_{ijk}\left(\overline{J_{j}B_{k}}
-!!            - \bar{J}_{j}\bar{B}_{k} \right) @f$
+!!         @f$ e_{ijk}\left(\widetilde{J_{j}B_{k}}
+!!            - \tilde{J}_{j}\tilde{B}_{k} \right) @f$
         integer (kind=kint) :: i_SGS_Lorentz =     izero
 !
 !>        start address for SGS buoyancy
@@ -161,8 +161,8 @@
         integer (kind=kint) :: i_SGS_comp_buo =   izero
 !
 !>        start address for SGS induction for vector potential
-!!         @f$ e_{ijk} (\overline{u_{j}B_{k}}
-!!            - \bar{u}_{j}\bar{B}_{k}) @f$
+!!         @f$ e_{ijk} (\widetilde{u_{j}B_{k}}
+!!            - \tilde{u}_{j}\tilde{B}_{k}) @f$
         integer (kind=kint) :: i_SGS_induction =   izero
       end type SGS_term_address
 !
