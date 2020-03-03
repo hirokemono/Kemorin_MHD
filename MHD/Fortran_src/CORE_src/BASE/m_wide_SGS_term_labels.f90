@@ -231,10 +231,10 @@
         else if (field_name .eq. double_SGS_inertia%name) then
           dble_SGS%i_SGS_inertia =   i_phys
         else if (field_name .eq. double_SGS_Lorentz%name) then
-          dble_SGS%i_SGS_Lorentz =    i_phys
+          dble_SGS%i_SGS_Lorentz =   i_phys
 !
         else if (field_name .eq. double_SGS_vp_induction%name) then
-          dble_SGS%i_SGS_induction =   i_phys
+          dble_SGS%i_SGS_induction = i_phys
         end if
       end if
 !

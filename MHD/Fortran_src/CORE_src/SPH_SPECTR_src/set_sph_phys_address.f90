@@ -283,8 +283,8 @@
      &    itor%wide_SGS%i_SGS_induction,                                &
      &    idpdr%wide_SGS%i_SGS_induction)
 !
-      call set_vect_sph_address(ipol%i_dbl_SGS_h_flux,                  &
-     &    itor%i_dbl_SGS_h_flux, idpdr%i_dbl_SGS_h_flux)
+      call set_vect_sph_address(ipol%dble_SGS%i_SGS_h_flux,             &
+     &    itor%dble_SGS%i_SGS_h_flux, idpdr%dble_SGS%i_SGS_h_flux)
       call set_vect_sph_address(ipol%dble_SGS%i_SGS_c_flux,             &
      &    itor%dble_SGS%i_SGS_c_flux, idpdr%dble_SGS%i_SGS_c_flux)
       call set_vect_sph_address(ipol%dble_SGS%i_SGS_inertia,            &

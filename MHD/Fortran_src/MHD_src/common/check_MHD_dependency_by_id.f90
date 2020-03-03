@@ -313,11 +313,7 @@
 !
       do i = 1, fld%num_phys
         i_start = fld%istack_component(i-1) + 1
-        if(i_start .eq. iphys%i_dbl_SGS_h_flux) then 
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%SGS_term%i_SGS_h_flux, SGS_heat_flux%name)
-!
-        else if(i_start .eq. iphys%i_Csim_SGS_h_flux) then 
+        if(i_start .eq. iphys%i_Csim_SGS_h_flux) then 
           call check_missing_field                                      &
      &       (fld, i_start, iphys%SGS_term%i_SGS_h_flux, SGS_heat_flux%name)
           call check_missing_field                                      &

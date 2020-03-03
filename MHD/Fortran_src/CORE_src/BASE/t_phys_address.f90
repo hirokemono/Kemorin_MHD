@@ -238,13 +238,6 @@
 !!         @f$ \partial_{i} \left(e_{ijk} u_{j} B_{k} \right) @f$
         integer (kind=kint) :: i_induct_div =      izero
 !
-!      SGS terms by double filtering
-!
-!>        start address for SGS heat flux with wider filter
-!!         @f$ \overline{\overline{u_{i}T}}
-!!            - \bar{\bar{u}}_{i}\bar{\bar{T}} @f$
-        integer (kind=kint) :: i_dbl_SGS_h_flux =      izero
-!
 !   model coefficient
 !
 !>        start address for model coefficient of SGS heat flux

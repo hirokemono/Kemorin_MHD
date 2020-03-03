@@ -219,10 +219,6 @@
         call set_double_SGS_term_addresses                              &
      &     (i0, field_name(i), iphys%dble_SGS, flag)
 !
-        if ( field_name(i) .eq. double_SGS_heat_flux%name ) then
-          iphys%i_dbl_SGS_h_flux =    i0
-        end if
-!
         if ( field_name(i) .eq. fhd_Csim_SGS_h_flux ) then
           iphys%i_Csim_SGS_h_flux =   i0
         else if ( field_name(i) .eq. fhd_Csim_SGS_c_flux ) then

@@ -217,10 +217,11 @@
      &    iphys%dble_SGS%i_SGS_induction,                               &
      &    b_trns%dble_SGS%i_SGS_induction, trns_back)
 !   dual filtered heat flux
-      call add_field_name_4_sph_trns(ipol%i_dbl_SGS_h_flux,             &
+      call add_field_name_4_sph_trns(ipol%dble_SGS%i_SGS_h_flux,        &
      &    double_SGS_heat_flux%name, double_SGS_heat_flux%n_comp,       &
-     &    ipol%i_dbl_SGS_h_flux, itor%i_dbl_SGS_h_flux,                 &
-     &    iphys%i_dbl_SGS_h_flux, b_trns%i_dbl_SGS_h_flux, trns_back)
+     &    ipol%dble_SGS%i_SGS_h_flux, itor%dble_SGS%i_SGS_h_flux,       &
+     &    iphys%dble_SGS%i_SGS_h_flux, b_trns%dble_SGS%i_SGS_h_flux,    &
+     &    trns_back)
 !   dual filtered composition flux
       call add_field_name_4_sph_trns(ipol%dble_SGS%i_SGS_c_flux,        &
      &    double_SGS_composit_flux%name,                                &
