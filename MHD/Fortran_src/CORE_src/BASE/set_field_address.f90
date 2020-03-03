@@ -48,6 +48,7 @@
       use t_diff_vector_labels
       use t_SGS_term_labels
       use t_SGS_enegy_flux_labels
+      use t_SGS_model_coef_labels
       use m_rot_filtered_force_labels
       use m_div_filtered_force_labels
       use m_diff_filter_vect_labels
@@ -219,21 +220,8 @@
         call set_double_SGS_term_addresses                              &
      &     (i0, field_name(i), iphys%dble_SGS, flag)
 !
-        if ( field_name(i) .eq. Csim_SGS_heat_flux%name ) then
-          iphys%Csim%i_SGS_h_flux =   i0
-        else if ( field_name(i) .eq. Csim_SGS_composit_flux%name ) then
-          iphys%Csim%i_SGS_c_flux =   i0
-        else if ( field_name(i) .eq. Csim_SGS_inertia%name ) then
-          iphys%Csim%i_SGS_m_flux =   i0
-        else if ( field_name(i) .eq. Csim_SGS_Lorentz%name ) then
-          iphys%Csim%i_SGS_Lorentz =  i0
-        else if ( field_name(i) .eq. Csim_SGS_induction%name ) then
-          iphys%Csim%i_SGS_induction = i0
-        else if ( field_name(i) .eq. Csim_SGS_buoyancy%name ) then
-          iphys%Csim%i_SGS_buoyancy = i0
-        else if ( field_name(i) .eq. Csim_SGS_composit_buo%name ) then
-          iphys%Csim%i_SGS_comp_buo = i0
-        end if
+        call set_SGS_model_coef_addresses                               &
+     &     (i0, field_name(i), iphys%dble_SGS, flag)
 !
         call set_SGS_ene_flux_addresses                                 &
      &     (i0, field_name(i), iphys%SGS_ene_flux, flag)

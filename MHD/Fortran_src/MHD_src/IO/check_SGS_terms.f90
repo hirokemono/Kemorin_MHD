@@ -11,6 +11,7 @@
 !!      subroutine add_field_ctl_4_SGS_terms(field_ctl)
 !!      subroutine add_field_ctl_4_diff_SGS_terms(field_ctl)
 !!      subroutine add_field_ctl_4_SGS_ene_fluxes(field_ctl)
+!!      subroutine add_field_ctl_4_model_coefs(field_ctl)
 !!        type(ctl_array_c3), intent(inout) :: field_ctl
 !!@endverbatim
 !!
@@ -163,6 +164,56 @@
       end if
 !
       end subroutine add_field_ctl_4_SGS_ene_fluxes
+!
+! -----------------------------------------------------------------------
+!
+      subroutine add_field_ctl_4_model_coefs(field_ctl)
+!
+      use t_control_array_character3
+      use t_SGS_model_coef_labels
+      use t_SGS_term_labels
+      use m_wide_SGS_term_labels
+      use add_nodal_fields_ctl
+!
+      type(ctl_array_c3), intent(inout) :: field_ctl
+!
+!
+      if(check_field_list_ctl(Csim_SGS_heat_flux%name, field_ctl)) then
+        call add_phys_name_ctl(SGS_heat_flux%name, field_ctl)
+        call add_phys_name_ctl(wide_SGS_heat_flux%name, field_ctl)
+      end if
+      if(check_field_list_ctl(Csim_SGS_composit_flux%name,              &
+     &                        field_ctl)) then
+        call add_phys_name_ctl(SGS_composit_flux%name, field_ctl)
+        call add_phys_name_ctl(wide_SGS_composit_flux%name, field_ctl)
+      end if
+!
+!
+      if(check_field_list_ctl(Csim_SGS_inertia%name, field_ctl)) then
+        call add_phys_name_ctl(SGS_inertia%name, field_ctl)
+        call add_phys_name_ctl(wide_SGS_inertia%name, field_ctl)
+      end if
+      if(check_field_list_ctl(Csim_SGS_Lorentz%name, field_ctl)) then
+        call add_phys_name_ctl(SGS_Lorentz%name, field_ctl)
+        call add_phys_name_ctl(wide_SGS_Lorentz%name, field_ctl)
+      end if
+!
+      if(check_field_list_ctl(Csim_SGS_induction%name, field_ctl)) then
+        call add_phys_name_ctl(SGS_vecp_induction%name, field_ctl)
+        call add_phys_name_ctl(wide_SGS_vp_induction%name, field_ctl)
+      end if
+!
+      if(check_field_list_ctl(Csim_SGS_buoyancy%name, field_ctl)) then
+        call add_phys_name_ctl(SGS_heat_flux%name, field_ctl)
+        call add_phys_name_ctl(fhd_velo, field_ctl)
+      end if
+      if(check_field_list_ctl(Csim_SGS_composit_buo%name,               &
+     &                        field_ctl)) then
+        call add_phys_name_ctl(SGS_composit_flux%name, field_ctl)
+        call add_phys_name_ctl(fhd_velo, field_ctl)
+      end if
+!
+      end subroutine add_field_ctl_4_model_coefs
 !
 ! -----------------------------------------------------------------------
 !

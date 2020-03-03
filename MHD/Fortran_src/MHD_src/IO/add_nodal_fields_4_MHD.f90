@@ -51,6 +51,10 @@
       type(ctl_array_c3), intent(inout) :: field_ctl
 !
 !
+      call add_field_ctl_4_model_coefs(field_ctl)
+      if (iflag_debug .ge. iflag_routine_msg) write(*,*)                &
+     &    'add_field_ctl_4_model_coefs end'
+!
       call add_field_ctl_4_dble_SGS_terms(field_ctl)
       if (iflag_debug .ge. iflag_routine_msg) write(*,*)                &
      &    'add_field_ctl_4_dble_SGS_terms end'

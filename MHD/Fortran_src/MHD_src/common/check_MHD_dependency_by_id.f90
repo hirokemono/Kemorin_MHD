@@ -313,48 +313,7 @@
 !
       do i = 1, fld%num_phys
         i_start = fld%istack_component(i-1) + 1
-        if(i_start .eq. iphys%Csim%i_SGS_h_flux) then 
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%SGS_term%i_SGS_h_flux, SGS_heat_flux%name)
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%wide_SGS%i_SGS_h_flux,                    &
-     &        wide_SGS_heat_flux%name)
-        else if(i_start .eq. iphys%Csim%i_SGS_c_flux) then 
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%SGS_term%i_SGS_c_flux, SGS_composit_flux%name)
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%wide_SGS%i_SGS_c_flux,                &
-     &        wide_SGS_composit_flux%name)
-        else if(i_start .eq. iphys%Csim%i_SGS_m_flux) then 
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%SGS_term%i_SGS_inertia, SGS_inertia%name)
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%wide_SGS%i_SGS_inertia,                   &
-     &        wide_SGS_inertia%name)
-        else if(i_start .eq. iphys%Csim%i_SGS_Lorentz) then 
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%SGS_term%i_SGS_Lorentz, SGS_Lorentz%name)
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%wide_SGS%i_SGS_Lorentz,               &
-     &        wide_SGS_Lorentz%name)
-        else if(i_start .eq. iphys%Csim%i_SGS_induction) then 
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%SGS_term%i_SGS_induction, SGS_vecp_induction%name)
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%wide_SGS%i_SGS_induction,             &
-     &       wide_SGS_vp_induction%name)
-        else if(i_start .eq. iphys%Csim%i_SGS_buoyancy) then 
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%SGS_term%i_SGS_h_flux, SGS_heat_flux%name)
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_velo, fhd_velo)
-        else if(i_start .eq. iphys%Csim%i_SGS_comp_buo) then 
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%SGS_term%i_SGS_c_flux, SGS_composit_flux%name)
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_velo, fhd_velo)
-!
-        else if(i_start .eq. iphys%i_h_flux_w_sgs) then 
+        if(i_start .eq. iphys%i_h_flux_w_sgs) then 
           call check_missing_field                                      &
      &       (fld, i_start, iphys%forces%i_h_flux, heat_flux%name)
           call check_missing_field                                      &
