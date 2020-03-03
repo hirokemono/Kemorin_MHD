@@ -88,7 +88,7 @@
      &     (sph_rtp, dynamic_SPH%sph_d_grp, SGS_param%stab_weight,      &
      &      n_vector, dynamic_SPH%ifld_sgs%i_lorentz,                   &
      &      trns_f_SIMI%fld_rtp(1,fg_trns%SGS_term%i_SGS_Lorentz),      &
-     &      trns_b_wide%fld_rtp(1,bw_trns%i_wide_SGS_Lorentz),          &
+     &      trns_b_wide%fld_rtp(1,bw_trns%wide_SGS%i_SGS_Lorentz),      &
      &      trns_b_dble%fld_rtp(1,bd_trns%i_dbl_SGS_Lorentz),           &
      &      dynamic_SPH%wk_sgs)
       end if

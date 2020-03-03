@@ -162,10 +162,10 @@
      &    iphys%i_wide_SGS_inertia, b_trns%i_wide_SGS_inertia,          &
      &    trns_back)
 !   wide filtered Lorentz force
-      call add_field_name_4_sph_trns(ipol%i_wide_SGS_Lorentz,           &
+      call add_field_name_4_sph_trns(ipol%wide_SGS%i_SGS_Lorentz,       &
      &    wide_SGS_Lorentz%name, wide_SGS_Lorentz%n_comp,               &
-     &    ipol%i_wide_SGS_Lorentz, itor%i_wide_SGS_Lorentz,             &
-     &    iphys%i_wide_SGS_Lorentz, b_trns%i_wide_SGS_Lorentz,          &
+     &    ipol%wide_SGS%i_SGS_Lorentz, itor%wide_SGS%i_SGS_Lorentz,     &
+     &    iphys%wide_SGS%i_SGS_Lorentz, b_trns%wide_SGS%i_SGS_Lorentz,  &
      &    trns_back)
 !   wide filtered induction
       call add_field_name_4_sph_trns(ipol%wide_SGS%i_SGS_induction,     &

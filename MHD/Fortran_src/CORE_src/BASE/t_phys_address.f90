@@ -248,10 +248,6 @@
         integer (kind=kint) :: i_wide_SGS_c_flux =      izero
 !>        start address for SGS inertia term  by wider filter
         integer (kind=kint) :: i_wide_SGS_inertia =    izero
-!>        start address for SGS Lorentz force wih wider filter
-!!         @f$ \partial_{i} \left( \overline{B_{i}B_{j}}
-!!            - \bar{B}_{i}\bar{B}_{j} \right) @f$
-        integer (kind=kint) :: i_wide_SGS_Lorentz =     izero
 !
 !
 !      SGS terms by double filtering

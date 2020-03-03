@@ -321,9 +321,6 @@
         else if(i_start .eq. iphys%i_wide_SGS_c_flux) then 
           call check_missing_field                                      &
      &       (fld, i_start, iphys%SGS_term%i_SGS_c_flux, SGS_composit_flux%name)
-        else if(i_start .eq. iphys%i_wide_SGS_Lorentz) then
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_magne, fhd_magne)
         else if(i_start .eq. iphys%i_dbl_SGS_Lorentz) then
           call check_missing_field                                      &
      &       (fld, i_start, iphys%SGS_term%i_SGS_Lorentz, SGS_Lorentz%name)
@@ -360,7 +357,7 @@
           call check_missing_field                                      &
      &       (fld, i_start, iphys%SGS_term%i_SGS_Lorentz, SGS_Lorentz%name)
           call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_wide_SGS_Lorentz,                   &
+     &       (fld, i_start, iphys%wide_SGS%i_SGS_Lorentz,               &
      &        wide_SGS_Lorentz%name)
         else if(i_start .eq. iphys%i_Csim_SGS_induction) then 
           call check_missing_field                                      &
