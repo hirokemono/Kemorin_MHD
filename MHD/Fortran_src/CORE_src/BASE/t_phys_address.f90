@@ -244,10 +244,6 @@
 !!         @f$ \overline{\overline{u_{i}T}}
 !!            - \bar{\bar{u}}_{i}\bar{\bar{T}} @f$
         integer (kind=kint) :: i_dbl_SGS_h_flux =      izero
-!>        start address for SGS composition flux with wider filter
-!!         @f$ \overline{\overline{u_{i}C}}
-!!            - \bar{\bar{u}}_{i}\bar{\bar{C}} @f$
-        integer (kind=kint) :: i_dbl_SGS_c_flux =      izero
 !
 !   model coefficient
 !

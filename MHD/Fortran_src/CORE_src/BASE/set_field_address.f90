@@ -221,8 +221,6 @@
 !
         if ( field_name(i) .eq. double_SGS_heat_flux%name ) then
           iphys%i_dbl_SGS_h_flux =    i0
-        else if ( field_name(i) .eq. double_SGS_composit_flux%name) then
-          iphys%i_dbl_SGS_c_flux =    i0
         end if
 !
         if ( field_name(i) .eq. fhd_Csim_SGS_h_flux ) then
