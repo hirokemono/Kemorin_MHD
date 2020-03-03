@@ -196,8 +196,8 @@
      &    trns_fwd)
       call add_field_name_4_sph_trns_snap                               &
      &   (Csim_SGS_composit_buo%name, Csim_SGS_composit_buo%n_comp,     &
-     &    ipol%i_Csim_SGS_comp_buo, itor%i_Csim_SGS_comp_buo,    &
-     &    iphys%i_Csim_SGS_comp_buo, f_trns%i_Csim_SGS_comp_buo, &
+     &    ipol%Csim%i_SGS_comp_buo, itor%Csim%i_SGS_comp_buo,           &
+     &    iphys%Csim%i_SGS_comp_buo, f_trns%Csim%i_SGS_comp_buo,        &
      &    trns_fwd)
 !
       call add_field_name_4_sph_trns_snap(fhd_velocity_scale, n_scalar, &

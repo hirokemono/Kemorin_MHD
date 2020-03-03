@@ -238,12 +238,6 @@
 !!         @f$ \partial_{i} \left(e_{ijk} u_{j} B_{k} \right) @f$
         integer (kind=kint) :: i_induct_div =      izero
 !
-!   model coefficient
-!
-!>        start address for model coefficient of SGS composition buoyancy
-        integer (kind=kint) :: i_Csim_SGS_comp_buo =     izero
-!
-!
 !>        start address for true divergence of SGS heat flux
 !!         @f$ \partial_{i} \left( \overline{u_{i}T} - \bar{u}_{i}\bar{T} \right) @f$
         integer (kind=kint) :: i_SGS_div_hf_true = izero

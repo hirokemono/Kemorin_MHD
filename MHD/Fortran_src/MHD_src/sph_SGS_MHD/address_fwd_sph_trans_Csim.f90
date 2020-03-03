@@ -77,10 +77,10 @@
      &    iphys%Csim%i_SGS_buoyancy, f_trns%Csim%i_SGS_buoyancy,        &
      &    trns_fwd)
 !   SGS compostional buoyancy
-      call add_field_name_4_sph_trns(ipol%i_Csim_SGS_comp_buo,          &
+      call add_field_name_4_sph_trns(ipol%Csim%i_SGS_comp_buo,          &
      &    Csim_SGS_composit_buo%name, Csim_SGS_composit_buo%n_comp,     &
-     &    ipol%i_Csim_SGS_comp_buo, itor%i_Csim_SGS_comp_buo,           &
-     &    iphys%i_Csim_SGS_comp_buo, f_trns%i_Csim_SGS_comp_buo,        &
+     &    ipol%Csim%i_SGS_comp_buo, itor%Csim%i_SGS_comp_buo,           &
+     &    iphys%Csim%i_SGS_comp_buo, f_trns%Csim%i_SGS_comp_buo,        &
      &    trns_fwd)
 !
       end subroutine f_trans_address_scalar_Csim
