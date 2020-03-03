@@ -135,27 +135,27 @@
      &    rhs_mat%fem_wk, mk_MHD%mlump_fl, rhs_mat%f_l, rhs_mat%f_nl,   &
      &    nod_fld)
 !
-!   take divergence of heat flux (to iphys%i_sgs_grad)
+!   take divergence of heat flux (to iphys%SGS_wk%i_nlg)
 !
       if (iflag_debug.gt.0)  write(*,*) 'cal_div_sgs_maxwell_simi'
-      call cal_div_sgs_mf_simi(iphys%i_sgs_grad,                        &
+      call cal_div_sgs_mf_simi(iphys%SGS_wk%i_nlg,                      &
      &    iphys%SGS_term%i_SGS_maxwell, iphys%i_magne, dt,              &
      &    FEM_prm, mesh%nod_comm, mesh%node, mesh%ele, fluid,           &
      &    iphys_ele, ele_fld, fem_int%jcs, fem_int%rhs_tbl,             &
      &    rhs_mat%fem_wk, mk_MHD%mlump_fl, rhs_mat%f_l, rhs_mat%f_nl,   &
      &    nod_fld)
 !
-!    filtering (to iphys%i_sgs_grad)
+!    filtering (to iphys%SGS_wk%i_nlg)
 !
       call cal_filtered_vector_whole(SGS_par%filter_p,                  &
      &   mesh%nod_comm, mesh%node, FEM_filters%filtering,               &
-     &    iphys%i_sgs_grad, iphys%i_sgs_grad, FEM_SGS_wk%wk_filter,     &
+     &    iphys%SGS_wk%i_nlg, iphys%SGS_wk%i_nlg, FEM_SGS_wk%wk_filter, &
      &    nod_fld)
 !
 !    take difference (to iphys%SGS_wk%i_simi)
 !
       call subtract_2_nod_vectors(nod_fld,                              &
-     &    iphys%i_sgs_grad, iphys%SGS_wk%i_simi, iphys%SGS_wk%i_simi)
+     &    iphys%SGS_wk%i_nlg, iphys%SGS_wk%i_simi, iphys%SGS_wk%i_simi)
       call delete_field_by_fixed_v_bc                                   &
      &   (Vnod_bcs, iphys%SGS_wk%i_simi, nod_fld)
 !
@@ -181,31 +181,31 @@
 !      call check_nodal_data                                            &
 !     &   ((50+my_rank), nod_fld, n_vector, iphys%i_sgs_grad_f)
 !
-!    obtain modeled commutative error  ( to iphys%i_sgs_grad)
+!    obtain modeled commutative error  ( to iphys%SGS_wk%i_nlg)
 !
       call cal_commute_error_4_mf                                       &
      &   (FEM_prm%npoint_t_evo_int, fluid%istack_ele_fld_smp,           &
      &    mk_MHD%mlump_fl, mesh%node, mesh%ele, mesh%surf,              &
      &    group%surf_grp, fem_int%jcs, fem_int%rhs_tbl,                 &
      &    FEM_filters%FEM_elens, Bsf_bcs%sgs, ifilter_2delta,           &
-     &    iphys%i_sgs_grad, iphys%SGS_term%i_SGS_maxwell,               &
+     &    iphys%SGS_wk%i_nlg, iphys%SGS_term%i_SGS_maxwell,             &
      &    iphys%i_magne, rhs_mat%fem_wk, rhs_mat%surf_wk,               &
      &    rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
 !
       call vector_send_recv                                             &
-     &   (iphys%i_sgs_grad, mesh%nod_comm, nod_fld)
+     &   (iphys%SGS_wk%i_nlg, mesh%nod_comm, nod_fld)
 !
-!    filtering (to iphys%i_sgs_grad)
+!    filtering (to iphys%SGS_wk%i_nlg)
 !
       call cal_filtered_vector_whole(SGS_par%filter_p,                  &
      &     mesh%nod_comm, mesh%node, FEM_filters%filtering,             &
-     &    iphys%i_sgs_grad, iphys%i_sgs_grad, FEM_SGS_wk%wk_filter,     &
+     &    iphys%SGS_wk%i_nlg, iphys%SGS_wk%i_nlg, FEM_SGS_wk%wk_filter, &
      &    nod_fld)
       call delete_field_by_fixed_v_bc                                   &
-     &   (Vnod_bcs, iphys%i_sgs_grad, nod_fld)
+     &   (Vnod_bcs, iphys%SGS_wk%i_nlg, nod_fld)
 !
 !      call check_nodal_data                                            &
-!     &   ((50+my_rank), nod_fld, n_vector, iphys%i_sgs_grad)
+!     &   ((50+my_rank), nod_fld, n_vector, iphys%SGS_wk%i_nlg)
 !
 !     obtain model coefficient
 !

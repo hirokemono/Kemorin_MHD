@@ -146,7 +146,7 @@
 !
       call cal_filtered_vector_whole(SGS_par%filter_p,                  &
      &    mesh%nod_comm, mesh%node, FEM_filters%filtering,              &
-     &    iphys%i_sgs_grad, i_sgs, FEM_SGS_wk%wk_filter, nod_fld)
+     &    iphys%SGS_wk%i_nlg, i_sgs, FEM_SGS_wk%wk_filter, nod_fld)
 !
 !   Change coordinate
 !

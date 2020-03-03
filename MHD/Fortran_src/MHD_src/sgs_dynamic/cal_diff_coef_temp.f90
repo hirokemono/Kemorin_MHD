@@ -142,26 +142,26 @@
      &    nod_comm, node, ele, iphys_ele, ele_fld, jacs%g_FEM,          &
      &    jacs%jac_3d,  rhs_tbl, fem_wk, f_l, f_nl, nod_fld)
 !
-!   take gradient of temperature (to iphys%i_sgs_grad)
+!   take gradient of temperature (to iphys%SGS_wk%i_nlg)
 !
       if (iflag_debug.gt.0) write(*,*) 'cal_gradent_in_fluid',          &
-     &                     iphys%i_sgs_grad, ifield
+     &                     iphys%SGS_wk%i_nlg, ifield
       call choose_cal_gradient                                          &
-     &   (iflag_supg, num_int, dt, ifield, iphys%i_sgs_grad,            &
+     &   (iflag_supg, num_int, dt, ifield, iphys%SGS_wk%i_nlg,          &
      &    fluid%istack_ele_fld_smp, mlump_fl,                           &
      &    nod_comm, node, ele, iphys_ele, ele_fld, jacs%g_FEM,          &
      &    jacs%jac_3d, rhs_tbl, fem_wk, f_l, f_nl, nod_fld)
 !
-!    filtering (to iphys%i_sgs_grad)
+!    filtering (to iphys%SGS_wk%i_nlg)
 !
       call cal_filtered_vector_whole                                    &
      &   (SGS_par%filter_p, nod_comm, node, filtering,                  &
-     &    iphys%i_sgs_grad, iphys%i_sgs_grad, wk_filter, nod_fld)
+     &    iphys%SGS_wk%i_nlg, iphys%SGS_wk%i_nlg, wk_filter, nod_fld)
 !
 !    take difference (to iphys%SGS_wk%i_simi)
 !
       call subtract_2_nod_vectors(nod_fld,                              &
-     &    iphys%i_sgs_grad, iphys%SGS_wk%i_simi, iphys%SGS_wk%i_simi)
+     &    iphys%SGS_wk%i_nlg, iphys%SGS_wk%i_simi, iphys%SGS_wk%i_simi)
 !
 !      call check_nodal_data                                            &
 !     &   ((50+my_rank), nod_fld, n_vector, iphys%SGS_wk%i_simi)
@@ -182,27 +182,27 @@
 !      call check_nodal_data                                            &
 !     &   ((50+my_rank), nod_fld, n_vector, iphys%i_sgs_grad_f)
 !
-!    modeled commutative error by grid filter ( to iphys%i_sgs_grad)
+!    modeled commutative error by grid filter ( to iphys%SGS_wk%i_nlg)
 !
       if (iflag_debug.gt.0)                                             &
-     &     write(*,*) 'cal_commute_error_temp', iphys%i_sgs_grad
+     &     write(*,*) 'cal_commute_error_temp', iphys%SGS_wk%i_nlg
       call cal_grad_commute(num_int, fluid%istack_ele_fld_smp,          &
      &    mlump_fl, node, ele, surf, sf_grp,                            &
      &    jacs%g_FEM, jacs%jac_3d, jacs%jac_sf_grp, rhs_tbl,            &
-     &    FEM_elens, Tsf_bcs%sgs, ifilter_2delta, iphys%i_sgs_grad,     &
+     &    FEM_elens, Tsf_bcs%sgs, ifilter_2delta, iphys%SGS_wk%i_nlg,   &
      &    ifield, fem_wk, surf_wk, f_l, f_nl, nod_fld)
 !
       call vector_send_recv                                             &
-     &   (iphys%i_sgs_grad, nod_comm, nod_fld)
+     &   (iphys%SGS_wk%i_nlg, nod_comm, nod_fld)
 !
-!    filtering (to iphys%i_sgs_grad)
+!    filtering (to iphys%SGS_wk%i_nlg)
 !
       call cal_filtered_vector_whole                                    &
      &   (SGS_par%filter_p, nod_comm, node, filtering,                  &
-     &    iphys%i_sgs_grad, iphys%i_sgs_grad, wk_filter, nod_fld)
+     &    iphys%SGS_wk%i_nlg, iphys%SGS_wk%i_nlg, wk_filter, nod_fld)
 !
 !      call check_nodal_data                                            &
-!     &   ((50+my_rank), nod_fld, n_vector, iphys%i_sgs_grad)
+!     &   ((50+my_rank), nod_fld, n_vector, iphys%SGS_wk%i_nlg)
 !
 !     obtain model coefficient
 !

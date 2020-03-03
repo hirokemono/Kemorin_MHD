@@ -327,8 +327,6 @@
       integer (kind=kint) :: i_square_c = izero
 !
 !>        start address for SGS term by nonlinear gradient method
-        integer (kind=kint) :: i_sgs_grad =        izero
-!>        start address for SGS term by nonlinear gradient method
 !!        using fileterd field
         integer (kind=kint) :: i_sgs_grad_f =      izero
 !>        start address for SGS term by turbulence diffusivity

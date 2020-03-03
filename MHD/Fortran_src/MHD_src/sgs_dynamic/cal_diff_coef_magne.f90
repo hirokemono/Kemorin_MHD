@@ -131,7 +131,7 @@
       integer (kind=kint) :: i_sgs_grad_p, i_sgs_grad_fp, i_sgs_simi_p
 !
 !
-      i_sgs_grad_p =  iphys%i_sgs_grad +   3
+      i_sgs_grad_p =  iphys%SGS_wk%i_nlg +   3
       i_sgs_grad_fp = iphys%i_sgs_grad_f + 3
       i_sgs_simi_p =  iphys%SGS_wk%i_simi +   3
 !
@@ -165,13 +165,13 @@
      &    nod_comm, node, ele, iphys_ele, ele_fld, jacs%g_FEM,          &
      &    jacs%jac_3d, rhs_tbl, fem_wk, f_l, f_nl, nod_fld)
 !
-!   take rotation and gradient of B (to iphys%i_sgs_grad)
+!   take rotation and gradient of B (to iphys%SGS_wk%i_nlg)
 !
       if (iflag_debug.gt.0) write(*,*) 'cal_rotation_whole',            &
-     &                     iphys%i_sgs_grad, iphys%i_magne
+     &                     iphys%SGS_wk%i_nlg, iphys%i_magne
       call choose_cal_rotation                                          &
      &   (FEM_prm%iflag_magne_supg, FEM_prm%npoint_t_evo_int, dt,       &
-     &    iphys%i_magne, iphys%i_sgs_grad, ele%istack_ele_smp,          &
+     &    iphys%i_magne, iphys%SGS_wk%i_nlg, ele%istack_ele_smp,          &
      &    m_lump, nod_comm, node, ele, iphys_ele, ele_fld,              &
      &    jacs%g_FEM, jacs%jac_3d, rhs_tbl, fem_wk, f_nl, nod_fld)
       if (iflag_debug.gt.0)                                             &
@@ -182,16 +182,16 @@
      &    nod_comm, node, ele, iphys_ele, ele_fld, jacs%g_FEM,          &
      &    jacs%jac_3d, rhs_tbl, fem_wk, f_l, f_nl, nod_fld)
 !
-!    filtering (to iphys%i_sgs_grad)
+!    filtering (to iphys%SGS_wk%i_nlg)
 !
       call cal_filtered_sym_tensor_whole                                &
      &   (SGS_par%filter_p, nod_comm, node, filtering,                  &
-     &    iphys%i_sgs_grad, iphys%i_sgs_grad, wk_filter, nod_fld)
+     &    iphys%SGS_wk%i_nlg, iphys%SGS_wk%i_nlg, wk_filter, nod_fld)
 !
 !    take difference (to iphys%SGS_wk%i_simi)
 !
       call subtract_2_nod_tensors(nod_fld,                              &
-     &    iphys%i_sgs_grad, iphys%SGS_wk%i_simi, iphys%SGS_wk%i_simi)
+     &    iphys%SGS_wk%i_nlg, iphys%SGS_wk%i_simi, iphys%SGS_wk%i_simi)
 !
 !      call check_nodal_data                                            &
 !     &   ((50+my_rank), nod_fld, n_sym_tensor, iphys%SGS_wk%i_simi)
@@ -219,14 +219,14 @@
 !      call check_nodal_data                                            &
 !     &   ((50+my_rank), nod_fld, n_sym_tensor, iphys%i_sgs_grad_f)
 !
-!    obtain modeled commutative error  ( to iphys%i_sgs_grad)
+!    obtain modeled commutative error  ( to iphys%SGS_wk%i_nlg)
 !
       call cal_rotation_commute                                         &
      &   (FEM_prm%npoint_t_evo_int, ele%istack_ele_smp,                 &
      &    m_lump, node, ele, surf, sf_grp,                              &
      &    jacs%g_FEM, jacs%jac_3d, jacs%jac_sf_grp,                     &
      &    rhs_tbl, FEM_elens, Bsf_bcs%sgs, ifilter_2delta,              &
-     &    iphys%i_sgs_grad, iphys%i_magne,                              &
+     &    iphys%SGS_wk%i_nlg, iphys%i_magne,                            &
      &    fem_wk, surf_wk, f_l, f_nl, nod_fld)
       call cal_grad_commute                                             &
      &   (FEM_prm%npoint_t_evo_int, ele%istack_ele_smp,                 &
@@ -237,16 +237,16 @@
      &    f_l, f_nl, nod_fld)
 !
       call sym_tensor_send_recv                                         &
-     &   (iphys%i_sgs_grad, nod_comm, nod_fld)
+     &   (iphys%SGS_wk%i_nlg, nod_comm, nod_fld)
 !
-!    filtering (to iphys%i_sgs_grad)
+!    filtering (to iphys%SGS_wk%i_nlg)
 !
       call cal_filtered_sym_tensor_whole                                &
      &   (SGS_par%filter_p, nod_comm, node, filtering,                  &
-     &    iphys%i_sgs_grad, iphys%i_sgs_grad, wk_filter, nod_fld)
+     &    iphys%SGS_wk%i_nlg, iphys%SGS_wk%i_nlg, wk_filter, nod_fld)
 !
 !      call check_nodal_data                                            &
-!     &   ((50+my_rank), nod_fld, n_sym_tensor, iphys%i_sgs_grad)
+!     &   ((50+my_rank), nod_fld, n_sym_tensor, iphys%SGS_wk%i_nlg)
 !
 !     obtain model coefficient
 !

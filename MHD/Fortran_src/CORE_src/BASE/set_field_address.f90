@@ -306,9 +306,9 @@
      &     (i0, field_name(i), iphys%diff_fil_vect, flag)
 !
         if ( field_name(i) .eq. SGS_simi%name ) then
-          iphys%SGS_wk%i_simi =     i0
+          iphys%SGS_wk%i_simi =  i0
         else if ( field_name(i) .eq. SGS_grad%name ) then
-          iphys%i_sgs_grad =     i0
+          iphys%SGS_wk%i_nlg =   i0
         else if ( field_name(i) .eq. SGS_grad_f%name ) then
           iphys%i_sgs_grad_f =   i0
         else if ( field_name(i) .eq. SGS_diffuse%name) then

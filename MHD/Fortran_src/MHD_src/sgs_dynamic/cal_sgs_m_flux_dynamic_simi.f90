@@ -122,11 +122,11 @@
 !
       call cal_filtered_sym_tensor_whole(SGS_par%filter_p,              &
      &    mesh%nod_comm, mesh%node, FEM_filters%filtering,              &
-     &    iphys%i_sgs_grad, iphys%SGS_term%i_SGS_m_flux,                &
+     &    iphys%SGS_wk%i_nlg, iphys%SGS_term%i_SGS_m_flux,              &
      &    FEM_SGS_wk%wk_filter, nod_fld)
 !
 !      call check_nodal_data                                            &
-!     &   ((50+my_rank), nod_fld, n_sym_tensor, iphys%i_sgs_grad)
+!     &   ((50+my_rank), nod_fld, n_sym_tensor, iphys%SGS_wk%i_nlg)
 !
 !   Change coordinate
 !
@@ -226,7 +226,7 @@
 !
       call cal_filtered_sym_tensor_whole(SGS_par%filter_p,              &
      &     mesh%nod_comm, mesh%node, FEM_filters%filtering,             &
-     &    iphys%i_sgs_grad, iphys%SGS_term%i_SGS_maxwell,               &
+     &    iphys%SGS_wk%i_nlg, iphys%SGS_term%i_SGS_maxwell,             &
      &    FEM_SGS_wk%wk_filter, nod_fld)
 !
 !   Change coordinate

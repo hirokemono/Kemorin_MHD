@@ -144,7 +144,7 @@
 !
       call cal_filtered_vector_whole(SGS_par%filter_p,                  &
      &    mesh%nod_comm, mesh%node, FEM_filters%filtering,              &
-     &    iphys%i_sgs_grad, iphys%SGS_term%i_SGS_induction,             &
+     &    iphys%SGS_wk%i_nlg, iphys%SGS_term%i_SGS_induction,           &
      &    FEM_SGS_wk%wk_filter, nod_fld)
 !
 !   Change coordinate
@@ -255,7 +255,7 @@
 !
       call cal_filtered_vector_whole(SGS_par%filter_p,                  &
      &    mesh%nod_comm, mesh%node, FEM_filters%filtering,              &
-     &    iphys%i_sgs_grad, iphys%SGS_term%i_SGS_induct_t,              &
+     &    iphys%SGS_wk%i_nlg, iphys%SGS_term%i_SGS_induct_t,            &
      &    FEM_SGS_wk%wk_filter, nod_fld)
 !
 !   Change coordinate
