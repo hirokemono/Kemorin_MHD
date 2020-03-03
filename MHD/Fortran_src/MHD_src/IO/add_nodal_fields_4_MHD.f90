@@ -43,7 +43,7 @@
       use t_SGS_control_parameter
       use check_wide_SGS_terms
       use check_SGS_terms
-      use check_filter_field
+      use check_filtered_field
       use check_filtered_forces
       use check_double_filter_field
 !
