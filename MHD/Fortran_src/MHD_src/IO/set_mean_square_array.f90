@@ -41,6 +41,7 @@
       use t_diff_vector_labels
       use t_SGS_term_labels
       use t_SGS_enegy_flux_labels
+      use t_SGS_model_coef_labels
       use m_phys_constants
       use m_volume_average_labels
       use m_diff_SGS_term_labels
@@ -578,41 +579,8 @@
      &          i_rms%i_comp_scale, j_ave%i_comp_scale, msq_list)
           end if
 !
-          if ( field_name .eq. Csim_SGS_heat_flux%name ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_Csim_SGS_h_flux,         &
-     &          i_rms%i_Csim_SGS_h_flux, j_ave%i_Csim_SGS_h_flux,       &
-     &          msq_list)
-          else if ( field_name .eq. Csim_SGS_composit_flux%name ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_Csim_SGS_c_flux,         &
-     &          i_rms%i_Csim_SGS_c_flux, j_ave%i_Csim_SGS_c_flux,       &
-     &          msq_list)
-          else if ( field_name .eq. Csim_SGS_inertia%name ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_Csim_SGS_m_flux,         &
-     &          i_rms%i_Csim_SGS_m_flux, j_ave%i_Csim_SGS_m_flux,       &
-     &          msq_list)
-          else if ( field_name .eq. Csim_SGS_Lorentz%name ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_Csim_SGS_Lorentz,        &
-     &          i_rms%i_Csim_SGS_Lorentz, j_ave%i_Csim_SGS_Lorentz,     &
-     &          msq_list)
-          else if ( field_name .eq. Csim_SGS_induction%name ) then
-            call set_rms_address                                        &
-     &        (field_name, num_comps, iphys%i_Csim_SGS_induction,       &
-     &         i_rms%i_Csim_SGS_induction, j_ave%i_Csim_SGS_induction,  &
-     &         msq_list)
-          else if ( field_name .eq. Csim_SGS_buoyancy%name ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_Csim_SGS_buoyancy,       &
-     &          i_rms%i_Csim_SGS_buoyancy, j_ave%i_Csim_SGS_buoyancy,   &
-     &          msq_list)
-          else if ( field_name .eq. Csim_SGS_composit_buo%name ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_Csim_SGS_comp_buo,       &
-     &          i_rms%i_Csim_SGS_comp_buo, j_ave%i_Csim_SGS_comp_buo,   &
-     &          msq_list)
+          if(check_SGS_moedel_coefs(field_name)) then
+            call set_rms_address_list(i, nod_fld, msq_list)
           end if
 !
 !   Old field label... Should be deleted later!!

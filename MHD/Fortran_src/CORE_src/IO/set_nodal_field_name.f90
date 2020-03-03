@@ -159,6 +159,7 @@
      &          phys_nod_name, num_nod_component, iflag)
 !
       use t_SGS_term_labels
+      use t_SGS_model_coef_labels
 !
       use m_div_filtered_force_labels
       use m_grad_filter_field_labels
@@ -199,8 +200,6 @@
       if (    (phys_nod_name_ctl .eq. fhd_filter_temp         )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_filter_pert_temp    )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_filter_comp         )         &
-     &   .or. (phys_nod_name_ctl .eq. temp_4_SGS%name         )         &
-     &   .or. (phys_nod_name_ctl .eq. comp_4_SGS%name         )         &
      &      )   iflag = 1
 !
       if (    (phys_nod_name_ctl .eq. fhd_square_t            )         &
@@ -248,15 +247,6 @@
      &   .or. (phys_nod_name_ctl .eq. fhd_div_viscous         )         &
      &      )   iflag = 1
 !
-      if (    (phys_nod_name_ctl .eq. Csim_SGS_heat_flux%name    )          &
-     &   .or. (phys_nod_name_ctl .eq. Csim_SGS_composit_flux%name    )          &
-     &   .or. (phys_nod_name_ctl .eq. Csim_SGS_inertia%name    )          &
-     &   .or. (phys_nod_name_ctl .eq. Csim_SGS_Lorentz%name   )          &
-     &   .or. (phys_nod_name_ctl .eq. Csim_SGS_induction%name )          &
-     &   .or. (phys_nod_name_ctl .eq. Csim_SGS_buoyancy%name  )          &
-     &   .or. (phys_nod_name_ctl .eq. Csim_SGS_composit_buo%name  )     &
-     &       ) iflag = 1
-!
       if (    (phys_nod_name_ctl .eq. fhd_pre_heat            )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_pre_composit        )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_pre_press           )         &
@@ -281,12 +271,14 @@
      &   .or. check_divergence_field(phys_nod_name_ctl)                 &
      &   .or. check_div_SGS_flux_vector(phys_nod_name_ctl)              &
      &   .or. check_SGS_ene_fluxes(phys_nod_name_ctl)                   &
+     &   .or. check_SGS_moedel_coefs(phys_nod_name_ctl)                 &
      &   .or. check_filtered_scallar_flux(phys_nod_name_ctl)            &
      &   .or. check_div_fil_force(phys_nod_name_ctl)                    &
      &   .or. check_filter_enegy_fluxes(phys_nod_name_ctl)              &
      &   .or. check_wide_filter_scalar(phys_nod_name_ctl)               &
      &   .or. check_double_filter_scalar(phys_nod_name_ctl)             &
-     &   .or. check_div_filter_field(phys_nod_name_ctl)) iflag = 1
+     &   .or. check_div_filter_field(phys_nod_name_ctl)                 &
+     &   .or. check_commute_SGS_work(phys_nod_name_ctl)) iflag = 1
 !
       if (iflag .eq. 1) then
         icou = icou + 1
@@ -310,6 +302,7 @@
      &          phys_nod_name, num_nod_component, iflag)
 !
       use t_SGS_term_labels
+      use t_SGS_model_coef_labels
 !
       character(len = kchara), intent(in) :: phys_nod_name_ctl
       integer (kind = kint), intent(inout) :: icou
@@ -347,12 +340,7 @@
         num_nod_component = 3
       end if
 !
-      if (   (phys_nod_name_ctl .eq. SGS_simi%name   )                   &
-     &  .or. (phys_nod_name_ctl .eq. SGS_grad%name   )                   &
-     &  .or. (phys_nod_name_ctl .eq. SGS_grad_f%name )                   &
-     &  .or. (phys_nod_name_ctl .eq. SGS_diffuse%name)                  &
-     &      ) then
-!
+      if (check_dynamic_SGS_work(phys_nod_name_ctl)) then
         iflag = 1
         icou = icou + 1
         phys_nod_name = phys_nod_name_ctl
