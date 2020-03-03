@@ -51,7 +51,7 @@
 !!       Output:  rj_fld(1:is_fld)
 !!          is_fld = wide_SGS%i_SGS_inertia, wide_SGS%i_SGS_Lorentz,
 !!                  wide_SGS%i_SGS_induction,
-!!                  i_wide_SGS_h_flux, i_wide_SGS_c_flux
+!!                  wide_SGS%i_SGS_h_flux, wide_SGS%i_SGS_c_flux
 !!      subroutine cal_sph_dble_filtering_forces                        &
 !!     &         (sph_rj, ipol, sph_base_f, rj_fld)
 !!       Input:   rj_fld(1:is_fld)
@@ -259,11 +259,11 @@
      &    sph_rj, sph_wide_f%r_filter, sph_wide_f%sph_filter, rj_fld)
 !
       call vector_sph_filter                                            &
-     &   (ipol%forces%i_h_flux, ipol%i_wide_SGS_h_flux,                 &
+     &   (ipol%forces%i_h_flux, ipol%wide_SGS%i_SGS_h_flux,             &
      &    sph_rj, sph_wide_f%r_filter, sph_wide_f%sph_filter, rj_fld)
 !
       call vector_sph_filter                                            &
-     &   (ipol%forces%i_c_flux, ipol%i_wide_SGS_c_flux,                 &
+     &   (ipol%forces%i_c_flux, ipol%wide_SGS%i_SGS_c_flux,             &
      &    sph_rj, sph_wide_f%r_filter, sph_wide_f%sph_filter, rj_fld)
 !
       end subroutine cal_sph_wide_filtering_forces

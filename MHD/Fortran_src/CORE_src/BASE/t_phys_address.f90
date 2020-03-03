@@ -238,15 +238,6 @@
 !!         @f$ \partial_{i} \left(e_{ijk} u_{j} B_{k} \right) @f$
         integer (kind=kint) :: i_induct_div =      izero
 !
-!      SGS terms by wider filter
-!
-!>        start address for SGS heat flux by wider filter
-!!         @f$ \overline{u_{i}T} - \bar{u}_{i}\bar{T} @f$
-        integer (kind=kint) :: i_wide_SGS_h_flux =      izero
-!>        start address for SGS compositional flux by wider filter
-!!         @f$ \overline{u_{i}T} - \bar{u}_{i}\bar{T} @f$
-        integer (kind=kint) :: i_wide_SGS_c_flux =      izero
-!
 !      SGS terms by double filtering
 !
 !>        start address for SGS heat flux with wider filter

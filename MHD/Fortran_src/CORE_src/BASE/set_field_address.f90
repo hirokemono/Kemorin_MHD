@@ -217,12 +217,7 @@
         call set_wide_SGS_term_addresses                                &
      &     (i0, field_name(i), iphys%wide_SGS, flag)
 !
-        if ( field_name(i) .eq. wide_SGS_heat_flux%name ) then
-          iphys%i_wide_SGS_h_flux =    i0
-        else if ( field_name(i) .eq. wide_SGS_composit_flux%name ) then
-          iphys%i_wide_SGS_c_flux =    i0
-!
-        else if ( field_name(i) .eq. double_SGS_heat_flux%name ) then
+        if ( field_name(i) .eq. double_SGS_heat_flux%name ) then
           iphys%i_dbl_SGS_h_flux =    i0
         else if ( field_name(i) .eq. double_SGS_composit_flux%name) then
           iphys%i_dbl_SGS_c_flux =    i0

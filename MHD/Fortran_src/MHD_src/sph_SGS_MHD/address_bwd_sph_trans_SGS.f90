@@ -174,15 +174,17 @@
      &    iphys%wide_SGS%i_SGS_induction,                               &
      &    b_trns%wide_SGS%i_SGS_induction, trns_back)
 !   wide filtered heat flux
-      call add_field_name_4_sph_trns(ipol%i_wide_SGS_h_flux,            &
+      call add_field_name_4_sph_trns(ipol%wide_SGS%i_SGS_h_flux,        &
      &    wide_SGS_heat_flux%name, wide_SGS_heat_flux%n_comp,           &
-     &    ipol%i_wide_SGS_h_flux, itor%i_wide_SGS_h_flux,               &
-     &    iphys%i_wide_SGS_h_flux, b_trns%i_wide_SGS_h_flux, trns_back)
+     &    ipol%wide_SGS%i_SGS_h_flux, itor%wide_SGS%i_SGS_h_flux,       &
+     &    iphys%wide_SGS%i_SGS_h_flux, b_trns%wide_SGS%i_SGS_h_flux,    &
+     &    trns_back)
 !   wide filtered composition flux
-      call add_field_name_4_sph_trns(ipol%i_wide_SGS_c_flux,            &
+      call add_field_name_4_sph_trns(ipol%wide_SGS%i_SGS_c_flux,        &
      &    wide_SGS_composit_flux%name, wide_SGS_composit_flux%n_comp,   &
-     &    ipol%i_wide_SGS_c_flux, itor%i_wide_SGS_c_flux,               &
-     &    iphys%i_wide_SGS_c_flux, b_trns%i_wide_SGS_c_flux, trns_back)
+     &    ipol%wide_SGS%i_SGS_c_flux, itor%wide_SGS%i_SGS_c_flux,       &
+     &    iphys%wide_SGS%i_SGS_c_flux, b_trns%wide_SGS%i_SGS_c_flux,    &
+     &    trns_back)
 !
       end subroutine b_trans_vector_wide_similarity
 !

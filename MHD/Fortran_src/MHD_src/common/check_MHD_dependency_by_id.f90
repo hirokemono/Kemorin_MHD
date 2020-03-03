@@ -162,7 +162,6 @@
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_magne, fhd_magne)
         else if(i_start .eq. iphys%i_buo_gen                            &
-     &     .or. i_start .eq. iphys%i_wide_SGS_h_flux                    &
      &     .or. i_start .eq. iphys%i_entropy) then 
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_velo, fhd_velo)
@@ -317,9 +316,6 @@
         if(     i_start .eq. iphys%i_dbl_SGS_inertia) then 
           call check_missing_field                                      &
      &       (fld, i_start, iphys%SGS_term%i_SGS_inertia, SGS_inertia%name)
-        else if(i_start .eq. iphys%i_wide_SGS_c_flux) then 
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%SGS_term%i_SGS_c_flux, SGS_composit_flux%name)
         else if(i_start .eq. iphys%i_dbl_SGS_Lorentz) then
           call check_missing_field                                      &
      &       (fld, i_start, iphys%SGS_term%i_SGS_Lorentz, SGS_Lorentz%name)
@@ -338,13 +334,13 @@
           call check_missing_field                                      &
      &       (fld, i_start, iphys%SGS_term%i_SGS_h_flux, SGS_heat_flux%name)
           call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_wide_SGS_h_flux,                    &
+     &       (fld, i_start, iphys%wide_SGS%i_SGS_h_flux,                    &
      &        wide_SGS_heat_flux%name)
         else if(i_start .eq. iphys%i_Csim_SGS_c_flux) then 
           call check_missing_field                                      &
      &       (fld, i_start, iphys%SGS_term%i_SGS_c_flux, SGS_composit_flux%name)
           call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_wide_SGS_c_flux,                    &
+     &       (fld, i_start, iphys%wide_SGS%i_SGS_c_flux,                &
      &        wide_SGS_composit_flux%name)
         else if(i_start .eq. iphys%i_Csim_SGS_m_flux) then 
           call check_missing_field                                      &

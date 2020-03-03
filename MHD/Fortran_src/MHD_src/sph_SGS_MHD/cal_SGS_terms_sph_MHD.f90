@@ -31,16 +31,16 @@
 !!     &         (sph_rtp, MHD_prop, bd_trns, trns_b_DYNS)
 !!       Input ::  fil_rtp(1,il_frc)
 !!             il_frc = wide_SGS%i_SGS_inertia, wide_SGS%i_SGS_Lorentz,
-!!                      wide_SGS%i_SGS_induction, i_wide_SGS_h_flux, 
-!!                      i_wide_SGS_c_flux
+!!                      wide_SGS%i_SGS_induction, wide_SGS%i_SGS_h_flux, 
+!!                      wide_SGS%i_SGS_c_flux
 !!                 fld_rtp(1,ib_frc)
 !!             ib_frc = wide_filter_fld%i_velo, wide_filter_fld%i_vort,
 !!                   wide_filter_fld%i_magne, wide_filter_fld%i_current
 !!                   wide_filter_fld%i_temp, wide_filter_fld%i_light
 !!       Output ::  fil_rtp(1,il_frc)
 !!               il_frc = wide_SGS%i_SGS_inertia, wide_SGS%i_SGS_Lorentz,
-!!                        wide_SGS%i_SGS_induction, i_wide_SGS_h_flux, 
-!!                        i_wide_SGS_c_flux
+!!                        wide_SGS%i_SGS_induction, wide_SGS%i_SGS_h_flux, 
+!!                        wide_SGS%i_SGS_c_flux
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
 !!        type(phys_address), intent(in) :: b_trns
@@ -198,20 +198,20 @@
      &      trns_b_DYNS%fld_rtp(1,bd_trns%wide_SGS%i_SGS_induction))
       end if
 !
-      if(bd_trns%i_wide_SGS_h_flux .gt. 0) then
+      if(bd_trns%wide_SGS%i_SGS_h_flux .gt. 0) then
         call overwrt_sub_scl_flux_w_coef_smp                            &
      &     (sph_rtp%nnod_rtp, MHD_prop%ht_prop%coef_advect,             &
      &      trns_b_DYNS%fld_rtp(1,bd_trns%wide_filter_fld%i_velo),      &
      &      trns_b_DYNS%fld_rtp(1,bd_trns%wide_filter_fld%i_temp),      &
-     &      trns_b_DYNS%fld_rtp(1,bd_trns%i_wide_SGS_h_flux))
+     &      trns_b_DYNS%fld_rtp(1,bd_trns%wide_SGS%i_SGS_h_flux))
       end if
 !
-      if(bd_trns%i_wide_SGS_c_flux .gt. 0) then
+      if(bd_trns%wide_SGS%i_SGS_c_flux .gt. 0) then
         call overwrt_sub_scl_flux_w_coef_smp                            &
      &     (sph_rtp%nnod_rtp, MHD_prop%cp_prop%coef_advect,             &
      &      trns_b_DYNS%fld_rtp(1,bd_trns%wide_filter_fld%i_velo),      &
      &      trns_b_DYNS%fld_rtp(1,bd_trns%wide_filter_fld%i_light),     &
-     &      trns_b_DYNS%fld_rtp(1,bd_trns%i_wide_SGS_c_flux))
+     &      trns_b_DYNS%fld_rtp(1,bd_trns%wide_SGS%i_SGS_c_flux))
       end if
 !$omp end parallel
 !
