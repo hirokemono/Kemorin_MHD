@@ -240,9 +240,6 @@
 !
 !   model coefficient
 !
-!>        start address for model coefficient of SGS heat flux
-!!         @f$ \overline{u_{i}T} - \bar{u}_{i}\bar{T} @f$
-        integer (kind=kint) :: i_Csim_SGS_h_flux =      izero
 !>        start address for model coefficient of SGS compositional flux
 !!         @f$ \overline{u_{i}T} - \bar{u}_{i}\bar{T} @f$
         integer (kind=kint) :: i_Csim_SGS_c_flux =      izero
@@ -526,6 +523,8 @@
         type(SGS_term_address) :: rot_SGS
 !>        Structure of SGS energy fluxes
         type(SGS_ene_flux_address) :: SGS_ene_flux
+!>        Structure of model coefficients
+        type(SGS_term_address) :: Csim
 !
 !>        Structure of wide filtered SGS terms
         type(SGS_term_address) :: wide_SGS

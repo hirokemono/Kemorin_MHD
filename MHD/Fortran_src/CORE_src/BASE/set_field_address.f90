@@ -220,7 +220,7 @@
      &     (i0, field_name(i), iphys%dble_SGS, flag)
 !
         if ( field_name(i) .eq. Csim_SGS_heat_flux%name ) then
-          iphys%i_Csim_SGS_h_flux =   i0
+          iphys%Csim%i_SGS_h_flux =   i0
         else if ( field_name(i) .eq. Csim_SGS_composit_flux%name ) then
           iphys%i_Csim_SGS_c_flux =   i0
         else if ( field_name(i) .eq. Csim_SGS_inertia%name ) then

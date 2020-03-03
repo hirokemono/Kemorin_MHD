@@ -169,8 +169,8 @@
 !
       call add_field_name_4_sph_trns_snap                               &
      &   (Csim_SGS_heat_flux%name, Csim_SGS_heat_flux%n_comp,           &
-     &    ipol%i_Csim_SGS_h_flux, itor%i_Csim_SGS_h_flux,   &
-     &    iphys%i_Csim_SGS_h_flux, f_trns%i_Csim_SGS_h_flux, trns_fwd)
+     &    ipol%Csim%i_SGS_h_flux, itor%Csim%i_SGS_h_flux,               &
+     &    iphys%Csim%i_SGS_h_flux, f_trns%Csim%i_SGS_h_flux, trns_fwd)
       call add_field_name_4_sph_trns_snap                               &
      &   (Csim_SGS_composit_flux%name, Csim_SGS_composit_flux%n_comp,   &
      &    ipol%i_Csim_SGS_c_flux, itor%i_Csim_SGS_c_flux, &
