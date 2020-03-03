@@ -216,6 +216,8 @@
 !
         call set_wide_SGS_term_addresses                                &
      &     (i0, field_name(i), iphys%wide_SGS, flag)
+        call set_double_SGS_term_addresses                              &
+     &     (i0, field_name(i), iphys%dble_SGS, flag)
 !
         if ( field_name(i) .eq. double_SGS_heat_flux%name ) then
           iphys%i_dbl_SGS_h_flux =    i0
@@ -225,8 +227,6 @@
           iphys%i_dbl_SGS_inertia =   i0
         else if ( field_name(i) .eq. double_SGS_Lorentz%name ) then
           iphys%i_dbl_SGS_Lorentz =   i0
-        else if (field_name(i) .eq. double_SGS_vp_induction%name) then
-          iphys%i_dbl_SGS_vp_induct = i0
         end if
 !
         if ( field_name(i) .eq. fhd_Csim_SGS_h_flux ) then

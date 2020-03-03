@@ -60,7 +60,7 @@
 !!                  SGS_term%i_SGS_h_flux, SGS_term%i_SGS_c_flux, 
 !!       Output:  rj_fld(1:is_fld)
 !!          is_fld = i_dbl_SGS_inertia, i_dbl_SGS_Lorentz,
-!!                  i_dbl_SGS_vp_induct,
+!!                  dble_SGS%i_SGS_induction,
 !!                  i_dbl_SGS_h_flux, i_dbl_SGS_c_flux
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(phys_address), intent(in) :: ipol
@@ -301,7 +301,7 @@
      &    sph_rj, sph_base_f%r_filter, sph_base_f%sph_filter, rj_fld)
 !
       call vector_sph_filter                                            &
-     &   (ipol%SGS_term%i_SGS_induction, ipol%i_dbl_SGS_vp_induct,      &
+     &   (ipol%SGS_term%i_SGS_induction, ipol%dble_SGS%i_SGS_induction, &
      &    sph_rj, sph_base_f%r_filter, sph_base_f%sph_filter, rj_fld)
 !
       call vector_sph_filter                                            &

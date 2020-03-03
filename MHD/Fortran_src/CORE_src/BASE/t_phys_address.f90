@@ -256,10 +256,6 @@
 !!         @f$ e_{ijk}\left(\overline{\overline{\J_{j}B_{k}}}
 !!            - \bar{\bar{J}}_{j}\bar{\bar{B}}_{k} \right) @f$
         integer (kind=kint) :: i_dbl_SGS_Lorentz =     izero
-!>        start address for SGS induction with wider filter
-!!         @f$ e_{ijk}\left(\overline{\overline{\u_{j}B_{k}}}
-!!            - \bar{\bar{u}}_{j}\bar{\bar{B}}_{k} \right) @f$
-        integer (kind=kint) :: i_dbl_SGS_vp_induct =   izero
 !
 !   model coefficient
 !
