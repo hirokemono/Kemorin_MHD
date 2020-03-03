@@ -356,11 +356,7 @@
         iflag = 1
         icou = icou + 1
         phys_nod_name = phys_nod_name_ctl
-!        if (iflag_SGS_difference .eq. 2) then
-!          num_nod_component = 7
-!        else
-          num_nod_component = 6
-!        end if
+        num_nod_component = 6
       end if
 !
       end subroutine set_tensor_field_name

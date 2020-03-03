@@ -8,7 +8,7 @@
 !> @brief Labels and addresses for basic fields
 !!
 !!@verbatim
-!!      subroutine add_filter_field_ctl(field_name, field_ctl)
+!!      subroutine add_filter_field_ctl(field_ctl)
 !!        type(ctl_array_c3), intent(in) :: field_ctl
 !!
 !!      subroutine add_field_ctl_4_grad_fil_field(field_ctl)
@@ -31,12 +31,11 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine add_filter_field_ctl(field_name, field_ctl)
+      subroutine add_filter_field_ctl(field_ctl)
 !
       use t_control_array_character3
       use add_nodal_fields_ctl
 !
-      character(len = kchara), intent(in) :: field_name
       type(ctl_array_c3), intent(inout) :: field_ctl
 !
 !

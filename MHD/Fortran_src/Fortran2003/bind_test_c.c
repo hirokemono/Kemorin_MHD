@@ -11,6 +11,10 @@ int num_gradient_fields_f();
 int num_SGS_terms_f();
 int num_diff_SGS_terms_f();
 int num_SGS_energy_fluxes_f();
+int num_SGS_model_coefs_f();
+int num_dynamic_SGS_work_f();
+
+int num_dynamic_SGS_work_f();
 int num_div_filter_fields_f();
 int num_grad_filter_fields_f();
 int num_filtered_forces_f();
@@ -33,6 +37,8 @@ void set_grad_filter_field_labels_f(int *ncomp1, char *name1, char *math1);
 void set_SGS_term_labels_f(int *ncomp1, char *name1, char *math1);
 void set_diff_SGS_term_labels_f(int *ncomp1, char *name1, char *math1);
 void set_SGS_energy_flux_labels_f(int *ncomp1, char *name1, char *math1);
+void set_SGS_model_coefs_labels_f(int *ncomp1, char *name1, char *math1);
+void set_dynamic_SGS_work_labels_f(int *ncomp1, char *name1, char *math1);
 
 void set_filtered_force_labels_f(int *ncomp1, char *name1, char *math1);
 void rot_filtered_force_labels_f(int *ncomp1, char *name1, char *math1);
@@ -73,8 +79,10 @@ int main(int argc, char **argv)
 			+ num_SGS_terms_f();
 	int ist_SGS_energy_fluxes = ist_diff_SGS_terms
 			+ num_diff_SGS_terms_f();
-	int ist_div_filter_fields = ist_SGS_energy_fluxes
+	int ist_SGS_model_coefs = ist_SGS_energy_fluxes
 			+ num_SGS_energy_fluxes_f();
+	int ist_div_filter_fields = ist_SGS_model_coefs
+			+ num_SGS_model_coefs_f();
 	
 	int ist_grad_filter_fields = ist_div_filter_fields
 			+ num_div_filter_fields_f();
@@ -89,9 +97,11 @@ int main(int argc, char **argv)
 			+ num_difference_vector_f();
 	int ist_wide_SGS_terms = ist_diff_filter_vector
 			+ num_diff_filter_vector_f();
-	
-	int nword = ist_wide_SGS_terms
+	int ist_dynamic_SGS_work = ist_wide_SGS_terms
 			+ num_wide_SGS_terms_f();
+	
+	int nword = ist_dynamic_SGS_work
+			+ num_dynamic_SGS_work_f();
 	
 	int *ncomp = (int *)calloc(nword, sizeof(int));
 	char *name1 = (char *)calloc(len_f*nword, sizeof(char));
@@ -126,6 +136,9 @@ int main(int argc, char **argv)
 	set_SGS_energy_flux_labels_f(&ncomp[ist_SGS_energy_fluxes], 
 								&name1[len_f*ist_SGS_energy_fluxes],
 								&math1[len_f*ist_SGS_energy_fluxes]);
+	set_SGS_model_coefs_labels_f(&ncomp[ist_SGS_model_coefs], 
+								&name1[len_f*ist_SGS_model_coefs],
+								&math1[len_f*ist_SGS_model_coefs]);
 	
 	set_filtered_force_labels_f(&ncomp[ist_filtered_forces], 
 								&name1[len_f*ist_filtered_forces],
@@ -163,6 +176,9 @@ int main(int argc, char **argv)
 	set_wide_SGS_term_labels_f(&ncomp[ist_wide_SGS_terms], 
 								&name1[len_f*ist_wide_SGS_terms], 
 								&math1[len_f*ist_wide_SGS_terms]);
+	set_dynamic_SGS_work_labels_f(&ncomp[ist_dynamic_SGS_work], 
+								&name1[len_f*ist_dynamic_SGS_work], 
+								&math1[len_f*ist_dynamic_SGS_work]);
 	
 	printf("nword %d %d \n", len_f, nword);
 	for(i=0;i<nword;i++){
