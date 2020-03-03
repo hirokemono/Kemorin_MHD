@@ -30,7 +30,7 @@
 !!      subroutine wider_similarity_SGS_rtp                             &
 !!     &         (sph_rtp, MHD_prop, bd_trns, trns_b_DYNS)
 !!       Input ::  fil_rtp(1,il_frc)
-!!             il_frc = i_wide_SGS_inertia, wide_SGS%i_SGS_Lorentz,
+!!             il_frc = wide_SGS%i_SGS_inertia, wide_SGS%i_SGS_Lorentz,
 !!                      wide_SGS%i_SGS_induction, i_wide_SGS_h_flux, 
 !!                      i_wide_SGS_c_flux
 !!                 fld_rtp(1,ib_frc)
@@ -38,7 +38,7 @@
 !!                   wide_filter_fld%i_magne, wide_filter_fld%i_current
 !!                   wide_filter_fld%i_temp, wide_filter_fld%i_light
 !!       Output ::  fil_rtp(1,il_frc)
-!!               il_frc = i_wide_SGS_inertia, wide_SGS%i_SGS_Lorentz,
+!!               il_frc = wide_SGS%i_SGS_inertia, wide_SGS%i_SGS_Lorentz,
 !!                        wide_SGS%i_SGS_induction, i_wide_SGS_h_flux, 
 !!                        i_wide_SGS_c_flux
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
@@ -174,12 +174,12 @@
 !
 !
 !$omp parallel
-      if(bd_trns%i_wide_SGS_inertia .gt. 0) then
+      if(bd_trns%wide_SGS%i_SGS_inertia .gt. 0) then
         call overwrt_sub_X_prod_w_coef_smp                              &
      &     (sph_rtp%nnod_rtp, MHD_prop%fl_prop%coef_velo,               &
      &      trns_b_DYNS%fld_rtp(1,bd_trns%wide_filter_fld%i_vort),      &
      &      trns_b_DYNS%fld_rtp(1,bd_trns%wide_filter_fld%i_velo),      &
-     &      trns_b_DYNS%fld_rtp(1,bd_trns%i_wide_SGS_inertia))
+     &      trns_b_DYNS%fld_rtp(1,bd_trns%wide_SGS%i_SGS_inertia))
       end if
 !
       if(bd_trns%wide_SGS%i_SGS_Lorentz .gt. 0) then

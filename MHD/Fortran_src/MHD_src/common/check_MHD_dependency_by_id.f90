@@ -57,7 +57,6 @@
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_velo, fhd_velo)
         else if(i_start .eq. iphys%i_filter_vort                        &
-     &     .or. i_start .eq. iphys%i_wide_SGS_inertia                   &
      &     .or. i_start .eq. iphys%i_velo_scale                         &
      &     .or. i_start .eq. iphys%i_k_heli                             &
      &     .or. i_start .eq. iphys%i_square_w) then 
@@ -351,7 +350,7 @@
           call check_missing_field                                      &
      &       (fld, i_start, iphys%SGS_term%i_SGS_inertia, SGS_inertia%name)
           call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_wide_SGS_inertia,                   &
+     &       (fld, i_start, iphys%wide_SGS%i_SGS_inertia,                   &
      &        wide_SGS_inertia%name)
         else if(i_start .eq. iphys%i_Csim_SGS_Lorentz) then 
           call check_missing_field                                      &

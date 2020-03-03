@@ -221,8 +221,6 @@
           iphys%i_wide_SGS_h_flux =    i0
         else if ( field_name(i) .eq. wide_SGS_composit_flux%name ) then
           iphys%i_wide_SGS_c_flux =    i0
-        else if ( field_name(i) .eq. wide_SGS_inertia%name ) then
-          iphys%i_wide_SGS_inertia =   i0
 !
         else if ( field_name(i) .eq. double_SGS_heat_flux%name ) then
           iphys%i_dbl_SGS_h_flux =    i0

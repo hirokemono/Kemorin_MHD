@@ -156,10 +156,10 @@
 !
 !
 !   wide filtered Inertia
-      call add_field_name_4_sph_trns(ipol%i_wide_SGS_inertia,           &
+      call add_field_name_4_sph_trns(ipol%wide_SGS%i_SGS_inertia,       &
      &    wide_SGS_inertia%name, wide_SGS_inertia%n_comp,               &
-     &    ipol%i_wide_SGS_inertia, itor%i_wide_SGS_inertia,             &
-     &    iphys%i_wide_SGS_inertia, b_trns%i_wide_SGS_inertia,          &
+     &    ipol%wide_SGS%i_SGS_inertia, itor%wide_SGS%i_SGS_inertia,     &
+     &    iphys%wide_SGS%i_SGS_inertia, b_trns%wide_SGS%i_SGS_inertia,  &
      &    trns_back)
 !   wide filtered Lorentz force
       call add_field_name_4_sph_trns(ipol%wide_SGS%i_SGS_Lorentz,       &

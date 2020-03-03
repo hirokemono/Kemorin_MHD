@@ -246,9 +246,6 @@
 !>        start address for SGS compositional flux by wider filter
 !!         @f$ \overline{u_{i}T} - \bar{u}_{i}\bar{T} @f$
         integer (kind=kint) :: i_wide_SGS_c_flux =      izero
-!>        start address for SGS inertia term  by wider filter
-        integer (kind=kint) :: i_wide_SGS_inertia =    izero
-!
 !
 !      SGS terms by double filtering
 !

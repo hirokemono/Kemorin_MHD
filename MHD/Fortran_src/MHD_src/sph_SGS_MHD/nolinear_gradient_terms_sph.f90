@@ -184,7 +184,7 @@
       type(address_each_sph_trans), intent(inout) :: trns_f_DYNS
 !
 !
-      if(fd_trns%i_wide_SGS_inertia .gt. 0) then
+      if(fd_trns%wide_SGS%i_SGS_inertia .gt. 0) then
         call sel_sph_SGS_induct_nl_gradient                             &
      &     (sph%sph_rtp, wide_filters, MHD_prop%fl_prop%coef_velo,      &
      &      bg_trns%i_filter_vort, bg_trns%i_filter_velo,               &
@@ -196,7 +196,7 @@
      &      bd_trns%diff_fil_vect%i_grad_vy,                            &
      &      bd_trns%diff_fil_vect%i_grad_vz,                            &
      &      trns_b_DYNG%ncomp, trns_b_DYNG%fld_rtp,                     &
-     &      fd_trns%i_wide_SGS_inertia, trns_f_DYNS%ncomp,              &
+     &      fd_trns%wide_SGS%i_SGS_inertia, trns_f_DYNS%ncomp,          &
      &      trns_f_DYNS%fld_rtp)
       end if
 !
