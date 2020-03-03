@@ -103,7 +103,7 @@
         write(*,*) 'ifld_sgs%i_heat_flux',                              &
      &        ifld_sgs%i_heat_flux, trns_snap%f_trns%Csim%i_SGS_h_flux
         write(*,*) 'ifld_sgs%i_comp_flux',                              &
-     &        ifld_sgs%i_comp_flux, trns_snap%f_trns%i_Csim_SGS_c_flux
+     &        ifld_sgs%i_comp_flux, trns_snap%f_trns%Csim%i_SGS_c_flux
         write(*,*) 'ifld_sgs%i_buoyancy',                               &
      &        ifld_sgs%i_buoyancy, trns_snap%f_trns%i_Csim_SGS_buoyancy
         write(*,*) 'ifld_sgs%i_comp_buoyancy',                          &
@@ -137,7 +137,7 @@
 !
       if(ifld_sgs%i_comp_flux .gt. 0) then
         call set_model_coefs_sph_snap(sph_rtp, sph_d_grp,               &
-     &      trns_snap%f_trns%i_Csim_SGS_c_flux, ifld_sgs%i_comp_flux,   &
+     &      trns_snap%f_trns%Csim%i_SGS_c_flux, ifld_sgs%i_comp_flux,   &
      &      wk_sgs, trns_snap%forward)
       end if
 !

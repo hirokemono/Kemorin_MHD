@@ -240,9 +240,6 @@
 !
 !   model coefficient
 !
-!>        start address for model coefficient of SGS compositional flux
-!!         @f$ \overline{u_{i}T} - \bar{u}_{i}\bar{T} @f$
-        integer (kind=kint) :: i_Csim_SGS_c_flux =      izero
 !>        start address for model coefficient of SGS momentum flux
 !!         @f$ \overline{u_{i}u_{j}} - \bar{u}_{i}\bar{u}_{j} @f$
         integer (kind=kint) :: i_Csim_SGS_m_flux =      izero

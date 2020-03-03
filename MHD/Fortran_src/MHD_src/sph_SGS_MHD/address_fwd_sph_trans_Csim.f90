@@ -65,10 +65,10 @@
      &    ipol%Csim%i_SGS_h_flux, itor%Csim%i_SGS_h_flux,               &
      &    iphys%Csim%i_SGS_h_flux, f_trns%Csim%i_SGS_h_flux, trns_fwd)
 !   SGS composition flux flag
-      call add_field_name_4_sph_trns(ipol%i_Csim_SGS_c_flux,  &
+      call add_field_name_4_sph_trns(ipol%Csim%i_SGS_c_flux,            &
      &    Csim_SGS_composit_flux%name, Csim_SGS_composit_flux%n_comp,   &
-     &    ipol%i_Csim_SGS_c_flux, itor%i_Csim_SGS_c_flux,               &
-     &    iphys%i_Csim_SGS_c_flux, f_trns%i_Csim_SGS_c_flux, trns_fwd)
+     &    ipol%Csim%i_SGS_c_flux, itor%Csim%i_SGS_c_flux,               &
+     &    iphys%Csim%i_SGS_c_flux, f_trns%Csim%i_SGS_c_flux, trns_fwd)
 !
 !   SGS buoyancy
       call add_field_name_4_sph_trns(ipol%i_Csim_SGS_buoyancy, &
