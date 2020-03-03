@@ -168,33 +168,36 @@
      &    f_trns%SGS_ene_flux%i_SGS_comp_buo_wk, trns_fwd)
 !
       call add_field_name_4_sph_trns_snap                               &
-     &   (fhd_Csim_SGS_h_flux, n_scalar, ipol%i_Csim_SGS_h_flux,        &
-     &    itor%i_Csim_SGS_h_flux, iphys%i_Csim_SGS_h_flux,              &
-     &    f_trns%i_Csim_SGS_h_flux, trns_fwd)
+     &   (Csim_SGS_heat_flux%name, Csim_SGS_heat_flux%n_comp,           &
+     &    ipol%i_Csim_SGS_h_flux, itor%i_Csim_SGS_h_flux,   &
+     &    iphys%i_Csim_SGS_h_flux, f_trns%i_Csim_SGS_h_flux, trns_fwd)
       call add_field_name_4_sph_trns_snap                               &
-     &   (fhd_Csim_SGS_c_flux, n_scalar, ipol%i_Csim_SGS_c_flux,        &
-     &    itor%i_Csim_SGS_c_flux, iphys%i_Csim_SGS_c_flux,              &
-     &    f_trns%i_Csim_SGS_c_flux, trns_fwd)
+     &   (Csim_SGS_composit_flux%name, Csim_SGS_composit_flux%n_comp,   &
+     &    ipol%i_Csim_SGS_c_flux, itor%i_Csim_SGS_c_flux, &
+     &    iphys%i_Csim_SGS_c_flux, f_trns%i_Csim_SGS_c_flux, trns_fwd)
       call add_field_name_4_sph_trns_snap                               &
-     &   (fhd_Csim_SGS_m_flux, n_scalar, ipol%i_Csim_SGS_m_flux,        &
-     &    itor%i_Csim_SGS_m_flux, iphys%i_Csim_SGS_m_flux,              &
-     &    f_trns%i_Csim_SGS_m_flux, trns_fwd)
+     &   (Csim_SGS_inertia%name, Csim_SGS_inertia%n_comp,               &
+     &    ipol%i_Csim_SGS_m_flux, itor%i_Csim_SGS_m_flux,               &
+     &    iphys%i_Csim_SGS_m_flux, f_trns%i_Csim_SGS_m_flux, trns_fwd)
       call add_field_name_4_sph_trns_snap                               &
-     &   (fhd_Csim_SGS_Lorentz, n_scalar, ipol%i_Csim_SGS_Lorentz,      &
-     &    itor%i_Csim_SGS_Lorentz, iphys%i_Csim_SGS_Lorentz,            &
-     &    f_trns%i_Csim_SGS_Lorentz, trns_fwd)
+     &   (Csim_SGS_Lorentz%name, Csim_SGS_Lorentz%n_comp,               &
+     &    ipol%i_Csim_SGS_Lorentz, itor%i_Csim_SGS_Lorentz, &
+     &    iphys%i_Csim_SGS_Lorentz, f_trns%i_Csim_SGS_Lorentz, trns_fwd)
       call add_field_name_4_sph_trns_snap                               &
-     &   (fhd_Csim_SGS_induction, n_scalar, ipol%i_Csim_SGS_induction,  &
-     &    itor%i_Csim_SGS_induction, iphys%i_Csim_SGS_induction,        &
-     &    f_trns%i_Csim_SGS_induction, trns_fwd)
+     &   (Csim_SGS_induction%name, Csim_SGS_induction%n_comp,           &
+     &    ipol%i_Csim_SGS_induction, itor%i_Csim_SGS_induction, &
+     &    iphys%i_Csim_SGS_induction, f_trns%i_Csim_SGS_induction, &
+     &    trns_fwd)
       call add_field_name_4_sph_trns_snap                               &
-     &   (fhd_Csim_SGS_buoyancy, n_scalar, ipol%i_Csim_SGS_buoyancy,    &
-     &    itor%i_Csim_SGS_buoyancy, iphys%i_Csim_SGS_buoyancy,          &
-     &    f_trns%i_Csim_SGS_buoyancy, trns_fwd)
+     &   (Csim_SGS_buoyancy%name, Csim_SGS_buoyancy%n_comp,             &
+     &    ipol%i_Csim_SGS_buoyancy, itor%i_Csim_SGS_buoyancy,           &
+     &    iphys%i_Csim_SGS_buoyancy, f_trns%i_Csim_SGS_buoyancy, &
+     &    trns_fwd)
       call add_field_name_4_sph_trns_snap                               &
-     &   (fhd_Csim_SGS_comp_buo, n_scalar, ipol%i_Csim_SGS_comp_buo,    &
-     &    itor%i_Csim_SGS_comp_buo, iphys%i_Csim_SGS_comp_buo,          &
-     &    f_trns%i_Csim_SGS_comp_buo, trns_fwd)
+     &   (Csim_SGS_composit_buo%name, Csim_SGS_composit_buo%n_comp,     &
+     &    ipol%i_Csim_SGS_comp_buo, itor%i_Csim_SGS_comp_buo,    &
+     &    iphys%i_Csim_SGS_comp_buo, f_trns%i_Csim_SGS_comp_buo, &
+     &    trns_fwd)
 !
       call add_field_name_4_sph_trns_snap(fhd_velocity_scale, n_scalar, &
      &    ipol%i_velo_scale, itor%i_velo_scale, iphys%i_velo_scale,     &

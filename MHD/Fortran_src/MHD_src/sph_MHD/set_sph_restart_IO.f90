@@ -92,13 +92,13 @@
      &     .or. rj_fld%phys_name(i_fld) .eq. fhd_light_source           &
      &     .or. rj_fld%phys_name(i_fld) .eq. fhd_entropy_source         &
 !
-     &     .or. rj_fld%phys_name(i_fld) .eq. fhd_Csim_SGS_h_flux        &
-     &     .or. rj_fld%phys_name(i_fld) .eq. fhd_Csim_SGS_c_flux        &
-     &     .or. rj_fld%phys_name(i_fld) .eq. fhd_Csim_SGS_m_flux        &
-     &     .or. rj_fld%phys_name(i_fld) .eq. fhd_Csim_SGS_Lorentz       &
-     &     .or. rj_fld%phys_name(i_fld) .eq. fhd_Csim_SGS_induction     &
-     &     .or. rj_fld%phys_name(i_fld) .eq. fhd_Csim_SGS_buoyancy      &
-     &     .or. rj_fld%phys_name(i_fld) .eq. fhd_Csim_SGS_comp_buo      &
+     &     .or. rj_fld%phys_name(i_fld) .eq. Csim_SGS_heat_flux%name        &
+     &     .or. rj_fld%phys_name(i_fld) .eq. Csim_SGS_composit_flux%name        &
+     &     .or. rj_fld%phys_name(i_fld) .eq. Csim_SGS_inertia%name        &
+     &     .or. rj_fld%phys_name(i_fld) .eq. Csim_SGS_Lorentz%name       &
+     &     .or. rj_fld%phys_name(i_fld) .eq. Csim_SGS_induction%name     &
+     &     .or. rj_fld%phys_name(i_fld) .eq. Csim_SGS_buoyancy%name      &
+     &     .or. rj_fld%phys_name(i_fld) .eq. Csim_SGS_composit_buo%name      &
      &     ) then
            fld_IO%num_field_IO = fld_IO%num_field_IO + 1
          end if
@@ -143,13 +143,13 @@
      &         .or. rj_fld%phys_name(i_fld) .eq. fhd_light_source       &
      &         .or. rj_fld%phys_name(i_fld) .eq. fhd_entropy_source     &
 !
-     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_Csim_SGS_h_flux    &
-     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_Csim_SGS_c_flux    &
-     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_Csim_SGS_m_flux    &
-     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_Csim_SGS_Lorentz   &
-     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_Csim_SGS_induction &
-     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_Csim_SGS_buoyancy  &
-     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_Csim_SGS_comp_buo  &
+     &         .or. rj_fld%phys_name(i_fld) .eq. Csim_SGS_heat_flux%name    &
+     &         .or. rj_fld%phys_name(i_fld) .eq. Csim_SGS_composit_flux%name    &
+     &         .or. rj_fld%phys_name(i_fld) .eq. Csim_SGS_inertia%name    &
+     &         .or. rj_fld%phys_name(i_fld) .eq. Csim_SGS_Lorentz%name   &
+     &         .or. rj_fld%phys_name(i_fld) .eq. Csim_SGS_induction%name &
+     &         .or. rj_fld%phys_name(i_fld) .eq. Csim_SGS_buoyancy%name  &
+     &         .or. rj_fld%phys_name(i_fld) .eq. Csim_SGS_composit_buo%name  &
      &         ) then
           icou = icou + 1
           fld_IO%fld_name(icou) = rj_fld%phys_name(i_fld)
@@ -199,13 +199,13 @@
      &         .or. rj_fld%phys_name(i_fld) .eq. fhd_light_source       &
      &         .or. rj_fld%phys_name(i_fld) .eq. fhd_entropy_source     &
 !
-     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_Csim_SGS_h_flux    &
-     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_Csim_SGS_c_flux    &
-     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_Csim_SGS_m_flux    &
-     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_Csim_SGS_Lorentz   &
-     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_Csim_SGS_induction &
-     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_Csim_SGS_buoyancy  &
-     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_Csim_SGS_comp_buo  &
+     &         .or. rj_fld%phys_name(i_fld) .eq. Csim_SGS_heat_flux%name    &
+     &         .or. rj_fld%phys_name(i_fld) .eq. Csim_SGS_composit_flux%name    &
+     &         .or. rj_fld%phys_name(i_fld) .eq. Csim_SGS_inertia%name    &
+     &         .or. rj_fld%phys_name(i_fld) .eq. Csim_SGS_Lorentz%name   &
+     &         .or. rj_fld%phys_name(i_fld) .eq. Csim_SGS_induction%name &
+     &         .or. rj_fld%phys_name(i_fld) .eq. Csim_SGS_buoyancy%name  &
+     &         .or. rj_fld%phys_name(i_fld) .eq. Csim_SGS_composit_buo%name  &
      &         ) then
               call copy_each_sph_field_to_IO                            &
      &           (rj_fld, fld_IO, i_fld, j_IO)
@@ -258,13 +258,13 @@
      &         .or. rj_fld%phys_name(i_fld) .eq. fhd_light_source       &
      &         .or. rj_fld%phys_name(i_fld) .eq. fhd_entropy_source     &
 !
-     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_Csim_SGS_h_flux    &
-     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_Csim_SGS_c_flux    &
-     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_Csim_SGS_m_flux    &
-     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_Csim_SGS_Lorentz   &
-     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_Csim_SGS_induction &
-     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_Csim_SGS_buoyancy  &
-     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_Csim_SGS_comp_buo  &
+     &         .or. rj_fld%phys_name(i_fld) .eq. Csim_SGS_heat_flux%name    &
+     &         .or. rj_fld%phys_name(i_fld) .eq. Csim_SGS_composit_flux%name    &
+     &         .or. rj_fld%phys_name(i_fld) .eq. Csim_SGS_inertia%name    &
+     &         .or. rj_fld%phys_name(i_fld) .eq. Csim_SGS_Lorentz%name   &
+     &         .or. rj_fld%phys_name(i_fld) .eq. Csim_SGS_induction%name &
+     &         .or. rj_fld%phys_name(i_fld) .eq. Csim_SGS_buoyancy%name  &
+     &         .or. rj_fld%phys_name(i_fld) .eq. Csim_SGS_composit_buo%name  &
      &         ) then
               call copy_each_sph_field_from_IO                          &
      &           (fld_IO, rj_fld, i_fld, j_IO)

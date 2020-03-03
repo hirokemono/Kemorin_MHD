@@ -219,17 +219,17 @@
         call set_double_SGS_term_addresses                              &
      &     (i0, field_name(i), iphys%dble_SGS, flag)
 !
-        if ( field_name(i) .eq. fhd_Csim_SGS_h_flux ) then
+        if ( field_name(i) .eq. Csim_SGS_heat_flux%name ) then
           iphys%i_Csim_SGS_h_flux =   i0
-        else if ( field_name(i) .eq. fhd_Csim_SGS_c_flux ) then
+        else if ( field_name(i) .eq. Csim_SGS_composit_flux%name ) then
           iphys%i_Csim_SGS_c_flux =   i0
-        else if ( field_name(i) .eq. fhd_Csim_SGS_m_flux ) then
+        else if ( field_name(i) .eq. Csim_SGS_inertia%name ) then
           iphys%i_Csim_SGS_m_flux =   i0
-        else if ( field_name(i) .eq. fhd_Csim_SGS_Lorentz ) then
+        else if ( field_name(i) .eq. Csim_SGS_Lorentz%name ) then
           iphys%i_Csim_SGS_Lorentz =  i0
-        else if ( field_name(i) .eq. fhd_Csim_SGS_induction ) then
+        else if ( field_name(i) .eq. Csim_SGS_induction%name ) then
           iphys%i_Csim_SGS_induction = i0
-        else if ( field_name(i) .eq. fhd_Csim_SGS_buoyancy ) then
+        else if ( field_name(i) .eq. Csim_SGS_buoyancy%name ) then
           iphys%i_Csim_SGS_buoyancy = i0
         else if ( field_name(i) .eq. Csim_SGS_composit_buo%name ) then
           iphys%i_Csim_SGS_comp_buo = i0

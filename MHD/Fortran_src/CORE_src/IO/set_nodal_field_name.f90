@@ -248,12 +248,12 @@
      &   .or. (phys_nod_name_ctl .eq. fhd_div_viscous         )         &
      &      )   iflag = 1
 !
-      if (    (phys_nod_name_ctl .eq. fhd_Csim_SGS_h_flux    )          &
-     &   .or. (phys_nod_name_ctl .eq. fhd_Csim_SGS_c_flux    )          &
-     &   .or. (phys_nod_name_ctl .eq. fhd_Csim_SGS_m_flux    )          &
-     &   .or. (phys_nod_name_ctl .eq. fhd_Csim_SGS_Lorentz   )          &
-     &   .or. (phys_nod_name_ctl .eq. fhd_Csim_SGS_induction )          &
-     &   .or. (phys_nod_name_ctl .eq. fhd_Csim_SGS_buoyancy  )          &
+      if (    (phys_nod_name_ctl .eq. Csim_SGS_heat_flux%name    )          &
+     &   .or. (phys_nod_name_ctl .eq. Csim_SGS_composit_flux%name    )          &
+     &   .or. (phys_nod_name_ctl .eq. Csim_SGS_inertia%name    )          &
+     &   .or. (phys_nod_name_ctl .eq. Csim_SGS_Lorentz%name   )          &
+     &   .or. (phys_nod_name_ctl .eq. Csim_SGS_induction%name )          &
+     &   .or. (phys_nod_name_ctl .eq. Csim_SGS_buoyancy%name  )          &
      &   .or. (phys_nod_name_ctl .eq. Csim_SGS_composit_buo%name  )     &
      &       ) iflag = 1
 !

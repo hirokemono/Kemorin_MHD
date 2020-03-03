@@ -147,27 +147,27 @@
 !   Add model coefficients
 !
       if(SGS_param%iflag_SGS_m_flux .gt. id_SGS_none) then
-        call add_phys_name_ctl(fhd_Csim_SGS_m_flux, field_ctl)
+        call add_phys_name_ctl(Csim_SGS_inertia%name, field_ctl)
       end if
       if(SGS_param%iflag_SGS_lorentz .gt. id_SGS_none) then
-        call add_phys_name_ctl(fhd_Csim_SGS_Lorentz, field_ctl)
+        call add_phys_name_ctl(Csim_SGS_Lorentz%name, field_ctl)
       end if
       if(SGS_param%iflag_SGS_uxb .gt. id_SGS_none) then
-        call add_phys_name_ctl(fhd_Csim_SGS_induction, field_ctl)
+        call add_phys_name_ctl(Csim_SGS_induction%name, field_ctl)
       end if
       if(SGS_param%iflag_SGS_h_flux .gt. id_SGS_none) then
-        call add_phys_name_ctl(fhd_Csim_SGS_h_flux, field_ctl)
+        call add_phys_name_ctl(Csim_SGS_heat_flux%name, field_ctl)
       end if
       if(SGS_param%iflag_SGS_c_flux .gt. id_SGS_none) then
-        call add_phys_name_ctl(fhd_Csim_SGS_c_flux, field_ctl)
+        call add_phys_name_ctl(Csim_SGS_composit_flux%name, field_ctl)
       end if
 !
       if(SGS_param%iflag_SGS_gravity .gt. id_SGS_none) then
         if(fl_prop%iflag_4_gravity .gt. id_turn_OFF) then
-          call add_phys_name_ctl(fhd_Csim_SGS_buoyancy, field_ctl)
+          call add_phys_name_ctl(Csim_SGS_buoyancy%name, field_ctl)
         end if
         if(fl_prop%iflag_4_composit_buo .gt. id_turn_OFF) then
-          call add_phys_name_ctl(fhd_Csim_SGS_comp_buo, field_ctl)
+          call add_phys_name_ctl(Csim_SGS_composit_buo%name, field_ctl)
         end if
       end if
 !

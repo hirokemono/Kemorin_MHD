@@ -5,7 +5,7 @@
 !! @date   Programmed in Jan., 2020
 !!
 !!
-!> @brief Labels and addresses for SGS terms
+!> @brief Labels and addresses for SGS model coefficients and work area
 !!
 !!@verbatim
 !!      logical function check_SGS_moedel_coefs(field_name)
@@ -71,56 +71,42 @@
 !
 !>        Field label for model coefficient of SGS heat flux
 !!         @f$ C^{sim}_{I} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_Csim_SGS_h_flux = 'Csim_SGS_heat_flux'
       type(field_def), parameter :: Csim_SGS_heat_flux                  &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'Csim_SGS_heat_flux',                      &
      &                math = '$ C^{sim}_{I} $')
 !>        Field label for model coefficient of SGS composition flux
 !!         @f$ C^{sim}_{Ic} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_Csim_SGS_c_flux = 'Csim_SGS_composit_flux'
       type(field_def), parameter :: Csim_SGS_composit_flux              &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'Csim_SGS_composit_flux',                  &
      &                math = '$ C^{sim}_{Ic}} $')
 !>        Field label for model coefficient of SGS inertia term
 !!         @f$ C^{sim}_{\tau} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_Csim_SGS_m_flux = 'Csim_SGS_inertia'
       type(field_def), parameter :: Csim_SGS_inertia                    &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'Csim_SGS_inertia',                        &
      &                math = '$ C^{sim}_{\tau}} $')
 !>        Field label for model coefficient of SGS Lorentz force
 !!         @f$ C^{sim}_{M} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_Csim_SGS_Lorentz = 'Csim_SGS_Lorentz'
       type(field_def), parameter :: Csim_SGS_Lorentz                    &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'Csim_SGS_Lorentz',                        &
      &                math = '$ C^{sim}_{M}} $')
 !>        Field label for model coefficient of SGS induction
 !!         @f$ C^{sim}_{\alphs} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_Csim_SGS_induction = 'Csim_SGS_induction'
       type(field_def), parameter :: Csim_SGS_induction                  &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'Csim_SGS_induction',                      &
      &                math = '$ C^{sim}_{\alpha}} $')
 !>        Field label for model coefficient of SGS buoyancy
 !!         @f$ C^{sim}_{buo} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_Csim_SGS_buoyancy =  'Csim_SGS_buoyancy'
       type(field_def), parameter :: Csim_SGS_buoyancy                   &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'Csim_SGS_buoyancy',                       &
      &                math = '$  C^{sim}_{buo} $')
 !>        Field label for odel coefficient of SGS compositional buoyancy
 !!         @f$ C^{sim}_{buo_C} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_Csim_SGS_comp_buo = 'Csim_SGS_composit_buo'
       type(field_def), parameter :: Csim_SGS_composit_buo               &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'Csim_SGS_composit_buo',                   &
