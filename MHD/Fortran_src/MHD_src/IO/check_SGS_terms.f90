@@ -5,12 +5,13 @@
 !! @date   Programmed in Jan., 2020
 !!
 !!
-!> @brief Labels and addresses for basic fields
+!> @brief Labels and addresses for SGS terms
 !!
 !!@verbatim
 !!      subroutine add_field_ctl_4_SGS_terms(field_ctl)
 !!      subroutine add_field_ctl_4_diff_SGS_terms(field_ctl)
 !!      subroutine add_field_ctl_4_SGS_ene_fluxes(field_ctl)
+!!        type(ctl_array_c3), intent(inout) :: field_ctl
 !!@endverbatim
 !!
       module check_SGS_terms

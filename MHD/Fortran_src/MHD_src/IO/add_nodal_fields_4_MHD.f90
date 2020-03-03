@@ -38,16 +38,32 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine add_dependent_field(field_ctl)
+      subroutine add_dependent_SGS_field(SGS_param, field_ctl)
 !
+      use t_SGS_control_parameter
+      use check_wide_SGS_terms
       use check_SGS_terms
-      use check_base_forces
+      use check_filter_field
       use check_filtered_forces
       use check_double_filter_field
-      use check_differenceate_fields
 !
+      type(SGS_model_control_params), intent(in) :: SGS_param
       type(ctl_array_c3), intent(inout) :: field_ctl
 !
+!
+      call add_field_ctl_4_dble_SGS_terms(field_ctl)
+      if (iflag_debug .ge. iflag_routine_msg) write(*,*)                &
+     &    'add_field_ctl_4_dble_SGS_terms end'
+!
+      if(SGS_param%iflag_SGS .eq. id_SGS_similarity) then
+        call add_field_ctl_4_simi_wide_SGS(field_ctl)
+        if (iflag_debug .ge. iflag_routine_msg) write(*,*)              &
+     &      'add_field_ctl_4_simi_wide_SGS end'
+      else if(SGS_param%iflag_SGS .eq. id_SGS_NL_grad) then
+        call add_field_ctl_4_grad_wide_SGS(field_ctl)
+        if (iflag_debug .ge. iflag_routine_msg) write(*,*)              &
+     &    'add_field_ctl_4_grad_wide_SGS end'
+      end if
 !
       call add_field_ctl_4_SGS_ene_fluxes(field_ctl)
       if (iflag_debug .ge. iflag_routine_msg) write(*,*)                &
@@ -66,9 +82,9 @@
       if (iflag_debug .ge. iflag_routine_msg) write(*,*)                &
      &    'add_field_ctl_4_wide_fil_field end'
 !
-      call add_field_ctl_4_diff_fiil_vect(field_ctl)
+      call add_field_ctl_4_diff_fil_vect(field_ctl)
       if (iflag_debug .ge. iflag_routine_msg) write(*,*)                &
-     &    'add_field_ctl_4_diff_fiil_vect end'
+     &    'add_field_ctl_4_diff_fil_vect end'
       call add_field_ctl_4_grad_fil_field(field_ctl)
       if (iflag_debug .ge. iflag_routine_msg) write(*,*)                &
      &    'add_field_ctl_4_grad_fil_field end'
@@ -88,6 +104,18 @@
       if (iflag_debug .ge. iflag_routine_msg) write(*,*)                &
      &    'add_field_ctl_4_filter_forces end'
 !
+      end subroutine add_dependent_SGS_field
+!
+! -----------------------------------------------------------------------
+!
+      subroutine add_dependent_field(field_ctl)
+!
+      use check_base_forces
+      use check_differenceate_fields
+!
+      type(ctl_array_c3), intent(inout) :: field_ctl
+!
+!
       call add_field_ctl_4_diff_vector(field_ctl)
       if (iflag_debug .ge. iflag_routine_msg) write(*,*)                &
      &    'add_field_ctl_4_diff_vector end'
@@ -101,6 +129,7 @@
 !
       end subroutine add_dependent_field
 !
+! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
       subroutine add_field_name_4_mhd(MHD_prop, field_ctl)

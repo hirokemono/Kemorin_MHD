@@ -81,6 +81,7 @@
         call add_work_area_4_sgs_model                                  &
      &     (SGS_par%model_p, MHD_prop%fl_prop, field_ctl)
 !
+        call add_dependent_SGS_field(SGS_par%model_p, field_ctl)
         call add_dependent_field(field_ctl)
 !
         if (iflag_debug .ge. iflag_routine_msg) write(*,*)              &

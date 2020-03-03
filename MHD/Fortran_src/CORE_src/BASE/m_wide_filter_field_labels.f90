@@ -234,7 +234,7 @@
       flag = check_wide_filter_vector(field_name)
       if(flag) then
         if (field_name .eq. wide_filter_velocity%name) then
-          wide_filter_fld%i_velo =     i_phys
+          wide_filter_fld%i_velo =    i_phys
         else if(field_name .eq. wide_filter_vorticity%name) then
           wide_filter_fld%i_vort =    i_phys
 !

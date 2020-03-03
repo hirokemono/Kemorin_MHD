@@ -105,8 +105,6 @@
       type(sph_boundary_type), intent(inout) :: sph_bc_T
       type(sph_scalar_boundary_data), intent(inout) :: bcs_T
 !
-      integer(kind = kint) :: i
-!
 !
       call set_sph_bc_scalar_sph(fhd_temp, heat_flux%name,              &
      &    bc_IO, sph_rj, radial_rj_grp, temp_nod, h_flux_surf,          &
@@ -154,8 +152,6 @@
 !
       type(sph_boundary_type), intent(inout) :: sph_bc_C
       type(sph_scalar_boundary_data), intent(inout) :: bcs_C
-!
-      integer(kind = kint) :: i
 !
 !
       call set_sph_bc_scalar_sph(fhd_light, composite_flux%name,        &
