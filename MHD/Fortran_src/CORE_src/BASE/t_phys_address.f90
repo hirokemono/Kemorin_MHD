@@ -240,8 +240,6 @@
 !
 !   model coefficient
 !
-!>        start address for model coefficient of SGS magnetic induction
-        integer (kind=kint) :: i_Csim_SGS_induction =    izero
 !>        start address for model coefficient of SGS buoyancy
         integer (kind=kint) :: i_Csim_SGS_buoyancy =    izero
 !>        start address for model coefficient of SGS composition buoyancy

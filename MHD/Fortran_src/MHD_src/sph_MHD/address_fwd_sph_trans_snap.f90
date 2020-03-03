@@ -182,11 +182,12 @@
       call add_field_name_4_sph_trns_snap                               &
      &   (Csim_SGS_Lorentz%name, Csim_SGS_Lorentz%n_comp,               &
      &    ipol%Csim%i_SGS_Lorentz, itor%Csim%i_SGS_Lorentz,             &
-     &    iphys%Csim%i_SGS_Lorentz, f_trns%Csim%i_SGS_Lorentz, trns_fwd)
+     &    iphys%Csim%i_SGS_Lorentz, f_trns%Csim%i_SGS_Lorentz,          &
+     &    trns_fwd)
       call add_field_name_4_sph_trns_snap                               &
      &   (Csim_SGS_induction%name, Csim_SGS_induction%n_comp,           &
-     &    ipol%i_Csim_SGS_induction, itor%i_Csim_SGS_induction, &
-     &    iphys%i_Csim_SGS_induction, f_trns%i_Csim_SGS_induction, &
+     &    ipol%Csim%i_SGS_induction, itor%Csim%i_SGS_induction,         &
+     &    iphys%Csim%i_SGS_induction, f_trns%Csim%i_SGS_induction,      &
      &    trns_fwd)
       call add_field_name_4_sph_trns_snap                               &
      &   (Csim_SGS_buoyancy%name, Csim_SGS_buoyancy%n_comp,             &

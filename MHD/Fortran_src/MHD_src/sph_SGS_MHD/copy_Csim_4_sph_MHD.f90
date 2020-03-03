@@ -99,7 +99,7 @@
         write(*,*) 'ifld_sgs%i_lorentz',                                &
      &        ifld_sgs%i_lorentz, trns_snap%f_trns%Csim%i_SGS_Lorentz
         write(*,*) 'ifld_sgs%i_induction', ifld_sgs%i_induction,        &
-     &        trns_snap%f_trns%i_Csim_SGS_induction
+     &        trns_snap%f_trns%Csim%i_SGS_induction
         write(*,*) 'ifld_sgs%i_heat_flux',                              &
      &        ifld_sgs%i_heat_flux, trns_snap%f_trns%Csim%i_SGS_h_flux
         write(*,*) 'ifld_sgs%i_comp_flux',                              &
@@ -125,7 +125,7 @@
 !
       if(ifld_sgs%i_induction .gt. 0) then
         call set_model_coefs_sph_snap(sph_rtp, sph_d_grp,               &
-     &     trns_snap%f_trns%i_Csim_SGS_induction, ifld_sgs%i_induction, &
+     &     trns_snap%f_trns%Csim%i_SGS_induction, ifld_sgs%i_induction, &
      &     wk_sgs, trns_snap%forward)
       end if
 !
