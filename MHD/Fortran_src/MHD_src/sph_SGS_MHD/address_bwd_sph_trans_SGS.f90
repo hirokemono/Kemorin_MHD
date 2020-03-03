@@ -204,10 +204,11 @@
      &    ipol%i_dbl_SGS_inertia, itor%i_dbl_SGS_inertia,               &
      &    iphys%i_dbl_SGS_inertia, b_trns%i_dbl_SGS_inertia, trns_back)
 !   dual filtered Lorentz force
-      call add_field_name_4_sph_trns(ipol%i_dbl_SGS_Lorentz,            &
+      call add_field_name_4_sph_trns(ipol%dble_SGS%i_SGS_Lorentz,       &
      &    double_SGS_Lorentz%name, double_SGS_Lorentz%n_comp,           &
-     &    ipol%i_dbl_SGS_Lorentz, itor%i_dbl_SGS_Lorentz,               &
-     &    iphys%i_dbl_SGS_Lorentz, b_trns%i_dbl_SGS_Lorentz, trns_back)
+     &    ipol%dble_SGS%i_SGS_Lorentz, itor%dble_SGS%i_SGS_Lorentz,     &
+     &    iphys%dble_SGS%i_SGS_Lorentz, b_trns%dble_SGS%i_SGS_Lorentz,  &
+     &    trns_back)
 !   dual filtered induction
       call add_field_name_4_sph_trns(ipol%dble_SGS%i_SGS_induction,     &
      &    double_SGS_vp_induction%name, double_SGS_vp_induction%n_comp, &

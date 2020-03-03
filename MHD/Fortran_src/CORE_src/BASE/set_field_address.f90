@@ -225,8 +225,6 @@
           iphys%i_dbl_SGS_c_flux =    i0
         else if ( field_name(i) .eq. double_SGS_inertia%name ) then
           iphys%i_dbl_SGS_inertia =   i0
-        else if ( field_name(i) .eq. double_SGS_Lorentz%name ) then
-          iphys%i_dbl_SGS_Lorentz =   i0
         end if
 !
         if ( field_name(i) .eq. fhd_Csim_SGS_h_flux ) then

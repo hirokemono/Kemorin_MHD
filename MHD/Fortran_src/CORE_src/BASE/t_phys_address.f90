@@ -252,10 +252,6 @@
 !!         @f$ e_{ijk}\left(\overline{\overline{\omega_{j}u_{k}}}
 !!            - \bar{\bar{\omega}}_{j}\bar{\bar{u}}_{k} \right) @f$
         integer (kind=kint) :: i_dbl_SGS_inertia =    izero
-!>        start address for SGS Lorentz force with wider filter
-!!         @f$ e_{ijk}\left(\overline{\overline{\J_{j}B_{k}}}
-!!            - \bar{\bar{J}}_{j}\bar{\bar{B}}_{k} \right) @f$
-        integer (kind=kint) :: i_dbl_SGS_Lorentz =     izero
 !
 !   model coefficient
 !
