@@ -316,7 +316,7 @@
         else if ( field_name(i) .eq. temp_4_SGS%name) then
           iphys%SGS_wk%i_sgs_temp =    i0
         else if ( field_name(i) .eq. comp_4_SGS%name) then
-          iphys%i_sgs_composit = i0
+          iphys%SGS_wk%i_sgs_composit = i0
         end if
 !
         call set_wide_fil_vector_addresses                              &

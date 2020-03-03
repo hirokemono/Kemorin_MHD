@@ -250,14 +250,14 @@
 !
       iflag_dmc = dynamic_SGS_flag(i_step, SGS_par)
 !
-      if (iphys%i_sgs_composit .ne. 0) then
+      if (iphys%SGS_wk%i_sgs_composit .ne. 0) then
         if(SGS_par%model_p%iflag_parterbuation .eq. id_SGS_REFERENCE)   &
      &   then
           call copy_scalar_component(nod_fld,                           &
-     &        iphys%i_per_light, iphys%i_sgs_composit)
+     &        iphys%i_per_light, iphys%SGS_wk%i_sgs_composit)
         else
           call copy_scalar_component(nod_fld,                           &
-     &        iphys%i_light, iphys%i_sgs_composit)
+     &        iphys%i_light, iphys%SGS_wk%i_sgs_composit)
         end if
       end if
 !
@@ -269,7 +269,7 @@
           if (iflag_debug.gt.0)   write(*,*) 'cal_filtered_composition'
           call cal_filtered_scalar_whole(SGS_par%filter_p,              &
      &        mesh%nod_comm, mesh%node, FEM_filters%filtering,          &
-     &        iphys%i_filter_comp, iphys%i_sgs_composit,                &
+     &        iphys%i_filter_comp, iphys%SGS_wk%i_sgs_composit,         &
      &        FEM_SGS_wk%wk_filter, nod_fld)
           nod_fld%iflag_update(iphys%i_filter_comp) = 1
         end if
@@ -296,9 +296,9 @@
      &        then
                if (iflag_debug.gt.0)  write(*,*)                        &
      &                        's_cal_diff_coef_scalar composition'
-               call s_cal_diff_coef_scalar                              &
-     &            (FEM_prm%iflag_comp_supg, FEM_prm%npoint_t_evo_int,   &
-     &             dt, iphys%i_sgs_composit, iphys%i_filter_comp,       &
+               call s_cal_diff_coef_scalar(FEM_prm%iflag_comp_supg,     &
+     &             FEM_prm%npoint_t_evo_int, dt,                        &
+     &             iphys%SGS_wk%i_sgs_composit, iphys%i_filter_comp,    &
      &             iak_diff_c, icomp_diff_c, SGS_par,                   &
      &             mesh%nod_comm, mesh%node, mesh%ele, mesh%surf,       &
      &             group%surf_grp, sf_bcs, iphys, iphys_ele, ele_fld,   &
