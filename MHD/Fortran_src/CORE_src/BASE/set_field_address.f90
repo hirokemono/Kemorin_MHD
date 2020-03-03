@@ -312,7 +312,7 @@
         else if ( field_name(i) .eq. SGS_grad_f%name ) then
           iphys%SGS_wk%i_wd_nlg = i0
         else if ( field_name(i) .eq. SGS_diffuse%name) then
-          iphys%i_sgs_diffuse =  i0
+          iphys%SGS_wk%i_wk_diffuse =  i0
         else if ( field_name(i) .eq. temp_4_SGS%name) then
           iphys%i_sgs_temp =     i0
         else if ( field_name(i) .eq. comp_4_SGS%name) then

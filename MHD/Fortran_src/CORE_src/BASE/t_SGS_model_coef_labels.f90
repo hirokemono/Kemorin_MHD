@@ -156,14 +156,14 @@
 !>       Structure of start address for dynamic model's work area
       type dynamic_SGS_work_address
 !>        start address of SGS term by scale similarity method
-        integer (kind=kint) :: i_simi =  izero
+        integer (kind=kint) :: i_simi =   izero
 !>        start address of SGS term by nonlinear gradient method
-        integer (kind=kint) :: i_nlg =   izero
+        integer (kind=kint) :: i_nlg =    izero
 !>        start address of SGS term by nonlinear gradient method
 !!        using fileterd field
-        integer (kind=kint) :: i_wd_nlg =      izero
+        integer (kind=kint) :: i_wd_nlg = izero
 !>        start address of SGS term by turbulence diffusivity
-        integer (kind=kint) :: i_sgs_diffuse =     izero
+        integer (kind=kint) :: i_wk_diffuse = izero
 !
 !>        start address of temperature to obatin commutation error
         integer (kind=kint) :: i_sgs_temp =        izero
@@ -280,7 +280,7 @@
           SGS_wk%i_wd_nlg =   i_phys
 !
         else if (field_name .eq. SGS_diffuse%name ) then
-          SGS_wk%i_sgs_diffuse =  i_phys
+          SGS_wk%i_wk_diffuse =  i_phys
 !
         else if (field_name .eq. temp_4_SGS%name) then
           SGS_wk%i_sgs_temp =     i_phys
