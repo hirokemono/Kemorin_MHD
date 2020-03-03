@@ -199,10 +199,11 @@
 !
 !
 !   dual filtered Inertia
-      call add_field_name_4_sph_trns(ipol%i_dbl_SGS_inertia,            &
+      call add_field_name_4_sph_trns(ipol%dble_SGS%i_SGS_inertia,       &
      &    double_SGS_inertia%name, double_SGS_inertia%n_comp,           &
-     &    ipol%i_dbl_SGS_inertia, itor%i_dbl_SGS_inertia,               &
-     &    iphys%i_dbl_SGS_inertia, b_trns%i_dbl_SGS_inertia, trns_back)
+     &    ipol%dble_SGS%i_SGS_inertia, itor%dble_SGS%i_SGS_inertia,     &
+     &    iphys%dble_SGS%i_SGS_inertia, b_trns%dble_SGS%i_SGS_inertia,  &
+     &    trns_back)
 !   dual filtered Lorentz force
       call add_field_name_4_sph_trns(ipol%dble_SGS%i_SGS_Lorentz,       &
      &    double_SGS_Lorentz%name, double_SGS_Lorentz%n_comp,           &

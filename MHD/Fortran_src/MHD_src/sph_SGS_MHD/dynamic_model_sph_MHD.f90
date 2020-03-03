@@ -78,7 +78,7 @@
      &      n_vector, dynamic_SPH%ifld_sgs%i_mom_flux,                  &
      &      trns_f_SIMI%fld_rtp(1,fg_trns%SGS_term%i_SGS_inertia),      &
      &      trns_b_wide%fld_rtp(1,bw_trns%wide_SGS%i_SGS_inertia),      &
-     &      trns_b_dble%fld_rtp(1,bd_trns%i_dbl_SGS_inertia),           &
+     &      trns_b_dble%fld_rtp(1,bd_trns%dble_SGS%i_SGS_inertia),      &
      &      dynamic_SPH%wk_sgs)
       end if
 !

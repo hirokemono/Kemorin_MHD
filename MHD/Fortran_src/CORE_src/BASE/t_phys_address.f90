@@ -248,10 +248,6 @@
 !!         @f$ \overline{\overline{u_{i}C}}
 !!            - \bar{\bar{u}}_{i}\bar{\bar{C}} @f$
         integer (kind=kint) :: i_dbl_SGS_c_flux =      izero
-!>        start address for SGS inertia term with wider filter
-!!         @f$ e_{ijk}\left(\overline{\overline{\omega_{j}u_{k}}}
-!!            - \bar{\bar{\omega}}_{j}\bar{\bar{u}}_{k} \right) @f$
-        integer (kind=kint) :: i_dbl_SGS_inertia =    izero
 !
 !   model coefficient
 !
