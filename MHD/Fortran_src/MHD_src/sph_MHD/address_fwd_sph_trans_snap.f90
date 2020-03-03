@@ -177,8 +177,8 @@
      &    iphys%Csim%i_SGS_c_flux, f_trns%Csim%i_SGS_c_flux, trns_fwd)
       call add_field_name_4_sph_trns_snap                               &
      &   (Csim_SGS_inertia%name, Csim_SGS_inertia%n_comp,               &
-     &    ipol%i_Csim_SGS_m_flux, itor%i_Csim_SGS_m_flux,               &
-     &    iphys%i_Csim_SGS_m_flux, f_trns%i_Csim_SGS_m_flux, trns_fwd)
+     &    ipol%Csim%i_SGS_m_flux, itor%Csim%i_SGS_m_flux,               &
+     &    iphys%Csim%i_SGS_m_flux, f_trns%Csim%i_SGS_m_flux, trns_fwd)
       call add_field_name_4_sph_trns_snap                               &
      &   (Csim_SGS_Lorentz%name, Csim_SGS_Lorentz%n_comp,               &
      &    ipol%i_Csim_SGS_Lorentz, itor%i_Csim_SGS_Lorentz, &

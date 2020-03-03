@@ -240,9 +240,6 @@
 !
 !   model coefficient
 !
-!>        start address for model coefficient of SGS momentum flux
-!!         @f$ \overline{u_{i}u_{j}} - \bar{u}_{i}\bar{u}_{j} @f$
-        integer (kind=kint) :: i_Csim_SGS_m_flux =      izero
 !>        start address for model coefficient of SGS Maxwell tensor
 !!         @f$ \overline{B_{i}B_{j}} - \bar{B}_{i}\bar{B}_{j} @f$
         integer (kind=kint) :: i_Csim_SGS_Lorentz =     izero

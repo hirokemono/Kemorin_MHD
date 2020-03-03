@@ -43,10 +43,10 @@
 !
 !
 !   SGS advection flag
-      call add_field_name_4_sph_trns(ipol%i_Csim_SGS_m_flux,            &
+      call add_field_name_4_sph_trns(ipol%Csim%i_SGS_m_flux,            &
      &    Csim_SGS_inertia%name, Csim_SGS_inertia%n_comp,               &
-     &    ipol%i_Csim_SGS_m_flux, itor%i_Csim_SGS_m_flux,               &
-     &    iphys%i_Csim_SGS_m_flux, f_trns%i_Csim_SGS_m_flux, trns_fwd)
+     &    ipol%Csim%i_SGS_m_flux, itor%Csim%i_SGS_m_flux,               &
+     &    iphys%Csim%i_SGS_m_flux, f_trns%Csim%i_SGS_m_flux, trns_fwd)
 !   SGS Lorentz force flag
       call add_field_name_4_sph_trns(ipol%i_Csim_SGS_Lorentz,  &
      &    Csim_SGS_Lorentz%name, Csim_SGS_Lorentz%n_comp,               &

@@ -325,7 +325,7 @@
           call check_missing_field                                      &
      &       (fld, i_start, iphys%wide_SGS%i_SGS_c_flux,                &
      &        wide_SGS_composit_flux%name)
-        else if(i_start .eq. iphys%i_Csim_SGS_m_flux) then 
+        else if(i_start .eq. iphys%Csim%i_SGS_m_flux) then 
           call check_missing_field                                      &
      &       (fld, i_start, iphys%SGS_term%i_SGS_inertia, SGS_inertia%name)
           call check_missing_field                                      &
