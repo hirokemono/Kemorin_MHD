@@ -48,10 +48,10 @@
      &    ipol%Csim%i_SGS_m_flux, itor%Csim%i_SGS_m_flux,               &
      &    iphys%Csim%i_SGS_m_flux, f_trns%Csim%i_SGS_m_flux, trns_fwd)
 !   SGS Lorentz force flag
-      call add_field_name_4_sph_trns(ipol%i_Csim_SGS_Lorentz,  &
+      call add_field_name_4_sph_trns(ipol%Csim%i_SGS_Lorentz,           &
      &    Csim_SGS_Lorentz%name, Csim_SGS_Lorentz%n_comp,               &
-     &    ipol%i_Csim_SGS_Lorentz, itor%i_Csim_SGS_Lorentz,             &
-     &    iphys%i_Csim_SGS_Lorentz, f_trns%i_Csim_SGS_Lorentz,          &
+     &    ipol%Csim%i_SGS_Lorentz, itor%Csim%i_SGS_Lorentz,             &
+     &    iphys%Csim%i_SGS_Lorentz, f_trns%Csim%i_SGS_Lorentz,          &
      &    trns_fwd)
 !   SGS induction flag
       call add_field_name_4_sph_trns(ipol%i_Csim_SGS_induction,       &

@@ -240,9 +240,6 @@
 !
 !   model coefficient
 !
-!>        start address for model coefficient of SGS Maxwell tensor
-!!         @f$ \overline{B_{i}B_{j}} - \bar{B}_{i}\bar{B}_{j} @f$
-        integer (kind=kint) :: i_Csim_SGS_Lorentz =     izero
 !>        start address for model coefficient of SGS magnetic induction
         integer (kind=kint) :: i_Csim_SGS_induction =    izero
 !>        start address for model coefficient of SGS buoyancy

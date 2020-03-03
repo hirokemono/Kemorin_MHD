@@ -226,7 +226,7 @@
         else if ( field_name(i) .eq. Csim_SGS_inertia%name ) then
           iphys%Csim%i_SGS_m_flux =   i0
         else if ( field_name(i) .eq. Csim_SGS_Lorentz%name ) then
-          iphys%i_Csim_SGS_Lorentz =  i0
+          iphys%Csim%i_SGS_Lorentz =  i0
         else if ( field_name(i) .eq. Csim_SGS_induction%name ) then
           iphys%i_Csim_SGS_induction = i0
         else if ( field_name(i) .eq. Csim_SGS_buoyancy%name ) then
