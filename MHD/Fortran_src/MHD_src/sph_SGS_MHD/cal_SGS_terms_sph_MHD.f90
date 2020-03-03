@@ -31,7 +31,7 @@
 !!     &         (sph_rtp, MHD_prop, bd_trns, trns_b_DYNS)
 !!       Input ::  fil_rtp(1,il_frc)
 !!             il_frc = i_wide_SGS_inertia, i_wide_SGS_Lorentz,
-!!                      i_wide_SGS_vp_induct, i_wide_SGS_h_flux, 
+!!                      wide_SGS%i_SGS_induction, i_wide_SGS_h_flux, 
 !!                      i_wide_SGS_c_flux
 !!                 fld_rtp(1,ib_frc)
 !!             ib_frc = wide_filter_fld%i_velo, wide_filter_fld%i_vort,
@@ -39,7 +39,7 @@
 !!                   wide_filter_fld%i_temp, wide_filter_fld%i_light
 !!       Output ::  fil_rtp(1,il_frc)
 !!               il_frc = i_wide_SGS_inertia, i_wide_SGS_Lorentz,
-!!                        i_wide_SGS_vp_induct, i_wide_SGS_h_flux, 
+!!                        wide_SGS%i_SGS_induction, i_wide_SGS_h_flux, 
 !!                        i_wide_SGS_c_flux
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
@@ -190,12 +190,12 @@
      &      trns_b_DYNS%fld_rtp(1,bd_trns%i_wide_SGS_Lorentz))
       end if
 !
-      if(bd_trns%i_wide_SGS_vp_induct .gt. 0) then
+      if(bd_trns%wide_SGS%i_SGS_induction .gt. 0) then
         call overwrt_sub_X_prod_w_coef_smp                              &
      &     (sph_rtp%nnod_rtp, MHD_prop%cd_prop%coef_induct,             &
      &      trns_b_DYNS%fld_rtp(1,bd_trns%wide_filter_fld%i_velo),      &
      &      trns_b_DYNS%fld_rtp(1,bd_trns%wide_filter_fld%i_magne),     &
-     &      trns_b_DYNS%fld_rtp(1,bd_trns%i_wide_SGS_vp_induct))
+     &      trns_b_DYNS%fld_rtp(1,bd_trns%wide_SGS%i_SGS_induction))
       end if
 !
       if(bd_trns%i_wide_SGS_h_flux .gt. 0) then

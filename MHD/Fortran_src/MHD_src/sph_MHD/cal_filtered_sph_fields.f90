@@ -50,7 +50,7 @@
 !!                  forces%i_c_flux
 !!       Output:  rj_fld(1:is_fld)
 !!          is_fld = i_wide_SGS_inertia, i_wide_SGS_Lorentz,
-!!                  i_wide_SGS_vp_induct,
+!!                  wide_SGS%i_SGS_induction,
 !!                  i_wide_SGS_h_flux, i_wide_SGS_c_flux
 !!      subroutine cal_sph_dble_filtering_forces                        &
 !!     &         (sph_rj, ipol, sph_base_f, rj_fld)
@@ -255,7 +255,7 @@
      &    sph_rj, sph_wide_f%r_filter, sph_wide_f%sph_filter, rj_fld)
 !
       call vector_sph_filter                                            &
-     &   (ipol%forces%i_vp_induct, ipol%i_wide_SGS_vp_induct,           &
+     &   (ipol%forces%i_vp_induct, ipol%wide_SGS%i_SGS_induction,       &
      &    sph_rj, sph_wide_f%r_filter, sph_wide_f%sph_filter, rj_fld)
 !
       call vector_sph_filter                                            &

@@ -157,8 +157,7 @@
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_ref_entropy, fhd_ref_entropy)
 !
-        else if(i_start .eq. iphys%i_x_heli                             &
-     &     .or. i_start .eq. iphys%i_wide_SGS_vp_induct) then 
+        else if(i_start .eq. iphys%i_x_heli) then 
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_velo, fhd_velo)
           call check_missing_field                                      &
@@ -367,7 +366,7 @@
           call check_missing_field                                      &
      &       (fld, i_start, iphys%SGS_term%i_SGS_induction, SGS_vecp_induction%name)
           call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_wide_SGS_vp_induct,                 &
+     &       (fld, i_start, iphys%wide_SGS%i_SGS_induction,             &
      &       wide_SGS_vp_induction%name)
         else if(i_start .eq. iphys%i_Csim_SGS_buoyancy) then 
           call check_missing_field                                      &

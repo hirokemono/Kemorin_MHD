@@ -11,11 +11,11 @@
 !!      logical function check_wide_SGS_vector_terms(field_name)
 !!      logical function check_double_SGS_vector_terms(field_name)
 !!      subroutine set_wide_SGS_term_addresses                          &
-!!     &         (i_phys, field_name, wide_SGS_term, flag)
-!!        type(SGS_term_address), intent(inout) :: wide_SGS_term
+!!     &         (i_phys, field_name, wide_SGS, flag)
+!!        type(SGS_term_address), intent(inout) :: wide_SGS
 !!      subroutine set_double_SGS_term_addresses                        &
-!!     &         (i_phys, field_name, dble_SGS_term, flag)
-!!        type(SGS_term_address), intent(inout) :: dble_SGS_term
+!!     &         (i_phys, field_name, dble_SGS, flag)
+!!        type(SGS_term_address), intent(inout) :: dble_SGS
 !!
 !!      integer(kind = kint) function num_wide_SGS_terms()
 !!      subroutine set_wide_SGS_term_labels(n_comps, names, maths)
@@ -23,22 +23,22 @@
 !! !!!!!  SGS terms names  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!
 !!     SGS terms using wider filter
-!!   wide_SGS_inertia           [wide_SGS_term%i_SGS_inertia]
-!!   wide_SGS_Lorentz           [wide_SGS_term%i_SGS_Lorentz]
+!!   wide_SGS_inertia           [wide_SGS%i_SGS_inertia]
+!!   wide_SGS_Lorentz           [wide_SGS%i_SGS_Lorentz]
 !!
-!!   wide_SGS_vp_induction      [wide_SGS_term%i_SGS_induction]
+!!   wide_SGS_vp_induction      [wide_SGS%i_SGS_induction]
 !!
-!!   wide_SGS_heat_flux         [wide_SGS_term%i_SGS_h_flux]
-!!   wide_SGS_composit_flux     [wide_SGS_term%i_SGS_c_flux]
+!!   wide_SGS_heat_flux         [wide_SGS%i_SGS_h_flux]
+!!   wide_SGS_composit_flux     [wide_SGS%i_SGS_c_flux]
 !!
 !!     SGS terms using doulbe filter
-!!   double_SGS_inertia         [dble_SGS_term%i_SGS_inertia]
-!!   double_SGS_Lorentz         [dble_SGS_term%i_SGS_Lorentz]
+!!   double_SGS_inertia         [dble_SGS%i_SGS_inertia]
+!!   double_SGS_Lorentz         [dble_SGS%i_SGS_Lorentz]
 !!
-!!   double_SGS_vp_induction    [dble_SGS_term%i_SGS_induction]
+!!   double_SGS_vp_induction    [dble_SGS%i_SGS_induction]
 !!
-!!   double_SGS_heat_flux       [dble_SGS_term%i_SGS_h_flux]
-!!   double_SGS_composit_flux   [dble_SGS_term%i_SGS_c_flux]
+!!   double_SGS_heat_flux       [dble_SGS%i_SGS_h_flux]
+!!   double_SGS_composit_flux   [dble_SGS%i_SGS_c_flux]
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!@endverbatim
@@ -181,29 +181,29 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_wide_SGS_term_addresses                            &
-     &         (i_phys, field_name, wide_SGS_term, flag)
+     &         (i_phys, field_name, wide_SGS, flag)
 !
       integer(kind = kint), intent(in) :: i_phys
       character(len = kchara), intent(in) :: field_name
 !
-      type(SGS_term_address), intent(inout) :: wide_SGS_term
+      type(SGS_term_address), intent(inout) :: wide_SGS
       logical, intent(inout) :: flag
 !
 !
       flag = check_wide_SGS_vector_terms(field_name)
       if(flag) then
         if (field_name .eq. wide_SGS_heat_flux%name) then
-          wide_SGS_term%i_SGS_h_flux =    i_phys
+          wide_SGS%i_SGS_h_flux =    i_phys
         else if (field_name .eq. wide_SGS_composit_flux%name) then
-          wide_SGS_term%i_SGS_c_flux =    i_phys
+          wide_SGS%i_SGS_c_flux =    i_phys
 !
         else if (field_name .eq. wide_SGS_inertia%name) then
-          wide_SGS_term%i_SGS_inertia =   i_phys
+          wide_SGS%i_SGS_inertia =   i_phys
         else if (field_name .eq. wide_SGS_Lorentz%name) then
-          wide_SGS_term%i_SGS_Lorentz =    i_phys
+          wide_SGS%i_SGS_Lorentz =    i_phys
 !
         else if (field_name .eq. wide_SGS_vp_induction%name) then
-          wide_SGS_term%i_SGS_induction =   i_phys
+          wide_SGS%i_SGS_induction =   i_phys
         end if
       end if
 !
@@ -212,29 +212,29 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_double_SGS_term_addresses                          &
-     &         (i_phys, field_name, dble_SGS_term, flag)
+     &         (i_phys, field_name, dble_SGS, flag)
 !
       integer(kind = kint), intent(in) :: i_phys
       character(len = kchara), intent(in) :: field_name
 !
-      type(SGS_term_address), intent(inout) :: dble_SGS_term
+      type(SGS_term_address), intent(inout) :: dble_SGS
       logical, intent(inout) :: flag
 !
 !
       flag = check_double_SGS_vector_terms(field_name)
       if(flag) then
         if (field_name .eq. double_SGS_heat_flux%name) then
-          dble_SGS_term%i_SGS_h_flux =    i_phys
+          dble_SGS%i_SGS_h_flux =    i_phys
         else if (field_name .eq. double_SGS_composit_flux%name) then
-          dble_SGS_term%i_SGS_c_flux =    i_phys
+          dble_SGS%i_SGS_c_flux =    i_phys
 !
         else if (field_name .eq. double_SGS_inertia%name) then
-          dble_SGS_term%i_SGS_inertia =   i_phys
+          dble_SGS%i_SGS_inertia =   i_phys
         else if (field_name .eq. double_SGS_Lorentz%name) then
-          dble_SGS_term%i_SGS_Lorentz =    i_phys
+          dble_SGS%i_SGS_Lorentz =    i_phys
 !
         else if (field_name .eq. double_SGS_vp_induction%name) then
-          dble_SGS_term%i_SGS_induction =   i_phys
+          dble_SGS%i_SGS_induction =   i_phys
         end if
       end if
 !

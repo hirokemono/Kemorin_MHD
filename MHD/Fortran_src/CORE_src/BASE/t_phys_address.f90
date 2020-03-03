@@ -252,9 +252,6 @@
 !!         @f$ \partial_{i} \left( \overline{B_{i}B_{j}}
 !!            - \bar{B}_{i}\bar{B}_{j} \right) @f$
         integer (kind=kint) :: i_wide_SGS_Lorentz =     izero
-!>        start address for SGS induction for vector potential by wider filter
-!!         @f$e_{ijk}\left(\overline{u_{j}B_{k}} - \bar{u}_{j}\bar{B}_{k} \right) @f$
-        integer (kind=kint) :: i_wide_SGS_vp_induct =   izero
 !
 !
 !      SGS terms by double filtering
@@ -569,6 +566,10 @@
 !>        Structure of SGS energy fluxes
         type(SGS_ene_flux_address) :: SGS_ene_flux
 !
+!>        Structure of wide filtered SGS terms
+        type(SGS_term_address) :: wide_SGS
+!>        Structure of double filtered SGS terms
+        type(SGS_term_address) :: dble_SGS
       end type phys_address
 !
 !

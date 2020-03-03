@@ -51,6 +51,7 @@
       use m_rot_filtered_force_labels
       use m_div_filtered_force_labels
       use m_diff_filter_vect_labels
+      use m_wide_SGS_term_labels
 !
       integer(kind = kint), intent(in) :: istart_adress
       integer(kind = kint), intent(in) :: num_field
@@ -213,6 +214,8 @@
         call set_rot_SGS_term_addresses                                 &
      &     (i0, field_name(i), iphys%rot_SGS, flag)
 !
+        call set_wide_SGS_term_addresses                                &
+     &     (i0, field_name(i), iphys%wide_SGS, flag)
 !
         if ( field_name(i) .eq. wide_SGS_heat_flux%name ) then
           iphys%i_wide_SGS_h_flux =    i0
@@ -222,8 +225,6 @@
           iphys%i_wide_SGS_inertia =   i0
         else if ( field_name(i) .eq. wide_SGS_Lorentz%name ) then
           iphys%i_wide_SGS_Lorentz =   i0
-        else if (field_name(i) .eq. wide_SGS_vp_induction%name) then
-          iphys%i_wide_SGS_vp_induct = i0
 !
         else if ( field_name(i) .eq. double_SGS_heat_flux%name ) then
           iphys%i_dbl_SGS_h_flux =    i0
