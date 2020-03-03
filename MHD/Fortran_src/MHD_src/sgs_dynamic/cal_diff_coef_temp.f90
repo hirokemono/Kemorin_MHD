@@ -132,12 +132,12 @@
      &    diff_coefs%num_field, iak_diff_t, diff_coefs%ak)
       call clear_work_4_dynamic_model(iphys, nod_fld)
 !
-!   take gradient of filtered temperature (to iphys%i_sgs_simi)
+!   take gradient of filtered temperature (to iphys%SGS_wk%i_simi)
 !
       if (iflag_debug.gt.0) write(*,*) 'cal_gradent_in_fluid',          &
-     &        iphys%i_sgs_simi, ifield_f
+     &        iphys%SGS_wk%i_simi, ifield_f
       call choose_cal_gradient                                          &
-     &   (iflag_supg, num_int, dt, ifield_f, iphys%i_sgs_simi,          &
+     &   (iflag_supg, num_int, dt, ifield_f, iphys%SGS_wk%i_simi,       &
      &    fluid%istack_ele_fld_smp, mlump_fl,                           &
      &    nod_comm, node, ele, iphys_ele, ele_fld, jacs%g_FEM,          &
      &    jacs%jac_3d,  rhs_tbl, fem_wk, f_l, f_nl, nod_fld)
@@ -158,13 +158,13 @@
      &   (SGS_par%filter_p, nod_comm, node, filtering,                  &
      &    iphys%i_sgs_grad, iphys%i_sgs_grad, wk_filter, nod_fld)
 !
-!    take difference (to iphys%i_sgs_simi)
+!    take difference (to iphys%SGS_wk%i_simi)
 !
       call subtract_2_nod_vectors(nod_fld,                              &
-     &    iphys%i_sgs_grad, iphys%i_sgs_simi, iphys%i_sgs_simi)
+     &    iphys%i_sgs_grad, iphys%SGS_wk%i_simi, iphys%SGS_wk%i_simi)
 !
 !      call check_nodal_data                                            &
-!     &   ((50+my_rank), nod_fld, n_vector, iphys%i_sgs_simi)
+!     &   ((50+my_rank), nod_fld, n_vector, iphys%SGS_wk%i_simi)
 !
 !    modeled commutative error by second filter ( to iphys%i_sgs_grad_f)
 !

@@ -135,7 +135,7 @@
 !
       i_sgs_grad_p =  iphys%i_sgs_grad   + 3
       i_sgs_grad_fp = iphys%i_sgs_grad_f + 3
-      i_sgs_simi_p =  iphys%i_sgs_simi   + 3
+      i_sgs_simi_p =  iphys%SGS_wk%i_simi   + 3
 !
 !    reset model coefficients
 !
@@ -151,13 +151,14 @@
      &   (SGS_par%filter_p, nod_comm, node, filtering,                  &
      &    i_sgs_grad_fp, iphys%i_press, wk_filter, nod_fld)
 !
-!   take rotation and gradient of filtered velocity(to iphys%i_sgs_simi)
+!   take rotation and gradient of filtered velocity
+!                              (to iphys%SGS_wk%i_simi)
 !
       if (iflag_debug.gt.0)  write(*,*) 'cal_rotation_in_fluid',        &
-     &                      iphys%i_sgs_simi, iphys%i_sgs_grad_f
+     &                      iphys%SGS_wk%i_simi, iphys%i_sgs_grad_f
       call choose_cal_rotation                                          &
      &   (FEM_prm%iflag_velo_supg, FEM_prm%npoint_t_evo_int, dt,        &
-     &    iphys%i_filter_velo, iphys%i_sgs_simi,                        &
+     &    iphys%i_filter_velo, iphys%SGS_wk%i_simi,                     &
      &    fluid%istack_ele_fld_smp, mlump_fl, nod_comm, node, ele,      &
      &    iphys_ele, ele_fld, jacs%g_FEM, jacs%jac_3d,                  &
      &    rhs_tbl, fem_wk, f_nl, nod_fld)
@@ -197,15 +198,15 @@
 !     &   (SGS_par%filter_p, nod_comm, node, filtering,                 &
 !     &    iphys%i_sgs_grad+6, iphys%i_sgs_grad+6, wk_filter, nod_fld)
 !
-!    take difference (to iphys%i_sgs_simi)
+!    take difference (to iphys%SGS_wk%i_simi)
 !
       call subtract_2_nod_tensors(nod_fld,                              &
-     &    iphys%i_sgs_grad, iphys%i_sgs_simi, iphys%i_sgs_simi)
-!      call subtract_2_nod_scalars(nod_fld,                             &
-!     &    iphys%i_sgs_grad+6, iphys%i_sgs_simi+6, iphys%i_sgs_simi+6)
+     &    iphys%i_sgs_grad, iphys%SGS_wk%i_simi, iphys%SGS_wk%i_simi)
+!      call subtract_2_nod_scalars(nod_fld, iphys%i_sgs_grad+6,         &
+!     &    iphys%SGS_wk%i_simi+6, iphys%SGS_wk%i_simi+6)
 !
 !      call check_nodal_data                                            &
-!     &   ((50+my_rank), nod_fld, n_sym_tensor, iphys%i_sgs_simi)
+!     &   ((50+my_rank), nod_fld, n_sym_tensor, iphys%SGS_wk%i_simi)
 !
 !    obtain modeled commutative error  ( to iphys%i_sgs_grad_f)
 !

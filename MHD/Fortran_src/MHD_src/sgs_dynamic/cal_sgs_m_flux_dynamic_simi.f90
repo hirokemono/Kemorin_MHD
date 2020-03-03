@@ -114,9 +114,9 @@
 !    copy to work array
 !
        call copy_tensor_component(nod_fld,                              &
-     &     iphys%SGS_term%i_SGS_m_flux, iphys%i_sgs_simi)
+     &     iphys%SGS_term%i_SGS_m_flux, iphys%SGS_wk%i_simi)
 !      call check_nodal_data                                            &
-!     &   ((50+my_rank), nod_fld, n_sym_tensor, iphys%i_sgs_simi)
+!     &   ((50+my_rank), nod_fld, n_sym_tensor, iphys%SGS_wk%i_simi)
 !
 !      filtering
 !
@@ -220,7 +220,7 @@
 !    copy to work array
 !
        call copy_tensor_component(nod_fld,                              &
-     &     iphys%SGS_term%i_SGS_maxwell, iphys%i_sgs_simi)
+     &     iphys%SGS_term%i_SGS_maxwell, iphys%SGS_wk%i_simi)
 !
 !    filtering
 !

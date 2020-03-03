@@ -52,7 +52,7 @@
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-      call clear_field_data(nod_fld, n_sym_tensor, iphys%i_sgs_simi)
+      call clear_field_data(nod_fld, n_sym_tensor, iphys%SGS_wk%i_simi)
       call clear_field_data(nod_fld, n_sym_tensor, iphys%i_sgs_grad)
       call clear_field_data(nod_fld, n_sym_tensor, iphys%i_sgs_grad_f)
 !

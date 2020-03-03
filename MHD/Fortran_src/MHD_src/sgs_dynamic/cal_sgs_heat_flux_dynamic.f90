@@ -119,7 +119,7 @@
 !
 !    copy to work array
 !
-      call copy_vector_component(nod_fld, i_sgs, iphys%i_sgs_simi)
+      call copy_vector_component(nod_fld, i_sgs, iphys%SGS_wk%i_simi)
 !
 !   gradient model by filtered field
 !

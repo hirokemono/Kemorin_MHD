@@ -53,13 +53,13 @@
         call convert_dynamic_vectors_2_sph                              &
      &     (node%numnod, node%istack_nod_smp, node%xx,                  &
      &      node%rr, node%ss, node%a_r, node%a_s,                       &
-     &      nod_fld%ntot_phys, iphys%i_sgs_simi, iphys%i_sgs_grad,      &
+     &      nod_fld%ntot_phys, iphys%SGS_wk%i_simi, iphys%i_sgs_grad,   &
      &      iphys%i_sgs_grad_f, nod_fld%d_fld)
       else if(SGS_param%icoord_Csim .eq. iflag_cylindrical) then
         call convert_dynamic_vectors_2_cyl                              &
      &     (node%numnod, node%istack_nod_smp, node%xx,                  &
      &      node%ss, node%a_s, nod_fld%ntot_phys,                       &
-     &      iphys%i_sgs_simi, iphys%i_sgs_grad, iphys%i_sgs_grad_f,     &
+     &      iphys%SGS_wk%i_simi, iphys%i_sgs_grad, iphys%i_sgs_grad_f,  &
      &      nod_fld%d_fld)
       end if
 !
@@ -87,13 +87,13 @@
         call convert_dynamic_tensors_2_sph                              &
      &     (node%numnod, node%istack_nod_smp, node%xx,                  &
      &      node%rr, node%ss, node%a_r, node%a_s,                       &
-     &      nod_fld%ntot_phys, iphys%i_sgs_simi, iphys%i_sgs_grad,      &
+     &      nod_fld%ntot_phys, iphys%SGS_wk%i_simi, iphys%i_sgs_grad,   &
      &      iphys%i_sgs_grad_f, nod_fld%d_fld)
       else if(SGS_param%icoord_Csim .eq. iflag_cylindrical) then
       call convert_dynamic_tensors_2_cyl                                &
      &     (node%numnod, node%istack_nod_smp, node%xx,                  &
      &      node%ss, node%a_s, nod_fld%ntot_phys,                       &
-     &      iphys%i_sgs_simi, iphys%i_sgs_grad, iphys%i_sgs_grad_f,     &
+     &      iphys%SGS_wk%i_simi, iphys%i_sgs_grad, iphys%i_sgs_grad_f,  &
      &      nod_fld%d_fld)
       end if
 !

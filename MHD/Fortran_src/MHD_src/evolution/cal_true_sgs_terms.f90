@@ -212,33 +212,33 @@
            if(iflag_debug.gt.0) write(*,*)                              &
      &                         'lead  ', trim(nod_fld%phys_name(i) )
            call cal_div_sgs_s_flux_true_post(iphys%i_SGS_div_hf_true,   &
-     &         iphys%i_h_flux_div, iphys%i_sgs_simi, filter_param,      &
+     &         iphys%i_h_flux_div, iphys%SGS_wk%i_simi, filter_param,   &
      &         nod_comm, node, filtering, wk_filter, nod_fld)
          else if(nod_fld%phys_name(i).eq.fhd_SGS_div_c_flux_true) then
            if(iflag_debug.gt.0) write(*,*)                              &
      &                         'lead  ', trim(nod_fld%phys_name(i) )
            call cal_div_sgs_s_flux_true_post(iphys%i_SGS_div_cf_true,   &
-     &         iphys%i_c_flux_div, iphys%i_sgs_simi, filter_param,      &
+     &         iphys%i_c_flux_div, iphys%SGS_wk%i_simi, filter_param,   &
      &         nod_comm, node, filtering, wk_filter, nod_fld)
          else if ( nod_fld%phys_name(i).eq.fhd_SGS_div_m_flux_true)     &
      &          then
            if(iflag_debug.gt.0) write(*,*)                              &
      &                         'lead  ', trim(nod_fld%phys_name(i) )
            call cal_div_sgs_tensor_true_post(iphys%i_SGS_div_mf_true,   &
-     &         iphys%i_m_flux_div, iphys%i_sgs_simi, filter_param,      &
+     &         iphys%i_m_flux_div, iphys%SGS_wk%i_simi, filter_param,   &
      &         nod_comm, node, filtering, wk_filter, nod_fld)
          else if ( nod_fld%phys_name(i).eq.fhd_SGS_Lorentz_true) then
            if(iflag_debug.gt.0) write(*,*)                              &
      &                         'lead  ', trim(nod_fld%phys_name(i) )
            call cal_div_sgs_tensor_true_post(iphys%i_SGS_Lor_true,      &
-     &         iphys%i_maxwell_div, iphys%i_sgs_simi, filter_param,     &
+     &         iphys%i_maxwell_div, iphys%SGS_wk%i_simi, filter_param,  &
      &         nod_comm, node, filtering, wk_filter, nod_fld)
          else if ( nod_fld%phys_name(i).eq.fhd_SGS_mag_induct_true)     &
      &          then
            if(iflag_debug.gt.0) write(*,*)                              &
      &                         'lead  ', trim(nod_fld%phys_name(i) )
            call cal_div_sgs_tensor_true_post(iphys%i_SGS_idct_true,     &
-     &         iphys%i_induct_div, iphys%i_sgs_simi, filter_param,      &
+     &         iphys%i_induct_div, iphys%SGS_wk%i_simi, filter_param,   &
      &         nod_comm, node, filtering, wk_filter, nod_fld)
          end if
        end do

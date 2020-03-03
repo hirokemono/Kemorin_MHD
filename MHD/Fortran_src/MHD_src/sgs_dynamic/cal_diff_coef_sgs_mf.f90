@@ -126,10 +126,10 @@
      &    sgs_coefs, fem_int%rhs_tbl, mk_MHD%mlump_fl, rhs_mat%fem_wk,  &
      &    mhd_fem_wk, nod_fld)
 !
-!   take divergence of filtered heat flux (to iphys%i_sgs_simi)
+!   take divergence of filtered heat flux (to iphys%SGS_wk%i_simi)
 !
       if (iflag_debug.gt.0)  write(*,*) 'cal_div_sgs_filter_mf_simi'
-      call cal_div_sgs_mf_simi(iphys%i_sgs_simi,                        &
+      call cal_div_sgs_mf_simi(iphys%SGS_wk%i_simi,                     &
      &    iphys%i_sgs_grad_f, iphys%i_filter_velo, dt,                  &
      &    FEM_prm, mesh%nod_comm, mesh%node, mesh%ele, fluid,           &
      &    iphys_ele, ele_fld, fem_int%jcs, fem_int%rhs_tbl,             &
@@ -153,15 +153,15 @@
      &    iphys%i_sgs_grad, iphys%i_sgs_grad, FEM_SGS_wk%wk_filter,     &
      &    nod_fld)
 !
-!    take difference (to iphys%i_sgs_simi)
+!    take difference (to iphys%SGS_wk%i_simi)
 !
       call subtract_2_nod_vectors(nod_fld,                              &
-     &    iphys%i_sgs_grad, iphys%i_sgs_simi, iphys%i_sgs_simi)
+     &    iphys%i_sgs_grad, iphys%SGS_wk%i_simi, iphys%SGS_wk%i_simi)
       call delete_field_by_fixed_v_bc                                   &
-     &   (Vnod_bcs, iphys%i_sgs_simi, nod_fld)
+     &   (Vnod_bcs, iphys%SGS_wk%i_simi, nod_fld)
 !
 !      call check_nodal_data                                            &
-!     &   ((50+my_rank), nod_fld, n_vector, iphys%i_sgs_simi)
+!     &   ((50+my_rank), nod_fld, n_vector, iphys%SGS_wk%i_simi)
 !
 !    obtain modeled commutative error  ( to iphys%i_sgs_grad_f)
 !

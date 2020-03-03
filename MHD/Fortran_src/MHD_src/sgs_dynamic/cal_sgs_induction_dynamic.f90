@@ -110,10 +110,10 @@
      &   (mesh%ele, FEM_filters%layer_tbl, icomp_sgs_uxb, sgs_coefs)
       call clear_work_4_dynamic_model(iphys, nod_fld)
 !
-!    SGS term by similarity model (to iphys%i_sgs_simi)
+!    SGS term by similarity model (to iphys%SGS_wk%i_simi)
 !
       if (iflag_debug.gt.0) write(*,*) 'cal_sgs_uxb_simi'
-      call cal_sgs_uxb_simi(iphys%i_sgs_simi, iphys%i_velo,             &
+      call cal_sgs_uxb_simi(iphys%SGS_wk%i_simi, iphys%i_velo,          &
      &    iphys%i_magne, iphys%i_filter_velo, iphys%i_filter_magne,     &
      &    SGS_par%filter_p, mesh%nod_comm, mesh%node,                   &
      &    FEM_filters%filtering,FEM_SGS_wk%wk_filter, nod_fld)
@@ -227,7 +227,7 @@
 !    copy to work array
 !
        call copy_vector_component(nod_fld,                              &
-      &    iphys%SGS_term%i_SGS_induct_t, iphys%i_sgs_simi)
+      &    iphys%SGS_term%i_SGS_induct_t, iphys%SGS_wk%i_simi)
 !
 !   gradient model by filtered field
 !

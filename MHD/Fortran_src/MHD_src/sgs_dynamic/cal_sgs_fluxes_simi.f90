@@ -252,7 +252,7 @@
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-      call cal_sgs_uxb_simi(iphys%i_sgs_simi, iphys%i_velo,             &
+      call cal_sgs_uxb_simi(iphys%SGS_wk%i_simi, iphys%i_velo,          &
      &    iphys%i_magne, iphys%i_filter_velo, iphys%i_filter_magne,     &
      &    filter_param, nod_comm, node, filtering, wk_filter, nod_fld)
 !

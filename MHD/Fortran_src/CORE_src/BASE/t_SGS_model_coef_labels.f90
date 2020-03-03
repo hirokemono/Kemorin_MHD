@@ -156,7 +156,7 @@
 !>       Structure of start address for dynamic model's work area
       type dynamic_SGS_work_address
 !>        start address of SGS term by scale similarity method
-        integer (kind=kint) :: i_sgs_simi =        izero
+        integer (kind=kint) :: i_simi =        izero
 !>        start address of SGS term by nonlinear gradient method
         integer (kind=kint) :: i_sgs_grad =        izero
 !>        start address of SGS term by nonlinear gradient method
@@ -273,7 +273,7 @@
       flag = check_SGS_moedel_coefs(field_name)
       if(flag) then
         if (field_name .eq. SGS_simi%name) then
-          SGS_wk%i_sgs_simi =     i_phys
+          SGS_wk%i_simi =     i_phys
         else if (field_name .eq. SGS_grad%name) then
           SGS_wk%i_sgs_grad =     i_phys
         else if (field_name .eq. SGS_grad_f%name ) then

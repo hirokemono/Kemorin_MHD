@@ -115,7 +115,7 @@
 !    copy to work array
 !
        call copy_tensor_component(nod_fld,                              &
-     &     iphys%SGS_term%i_SGS_maxwell, iphys%i_sgs_simi)
+     &     iphys%SGS_term%i_SGS_maxwell, iphys%SGS_wk%i_simi)
 !
 !   gradient model by filtered field
 !

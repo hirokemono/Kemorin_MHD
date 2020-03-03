@@ -92,13 +92,13 @@
      &    SGS_par%filter_p, mesh%nod_comm, mesh%node,                   &
      &    FEM_filters%wide_filtering, FEM_SGS_wk%wk_filter, nod_fld)
 !      call check_nodal_data                                            &
-!     &   ((50+my_rank), nod_fld, n_vector, iphys%i_sgs_simi)
+!     &   ((50+my_rank), nod_fld, n_vector, iphys%SGS_wk%i_simi)
 !
-!    SGS term by similarity model (to iphys%i_sgs_simi)
+!    SGS term by similarity model (to iphys%SGS_wk%i_simi)
 !
       if (iflag_debug.gt.0)                                             &
      &     write(*,*) 'cal_sgs_uxb_simi'
-      call cal_sgs_uxb_simi(iphys%i_sgs_simi, iphys%i_velo,             &
+      call cal_sgs_uxb_simi(iphys%SGS_wk%i_simi, iphys%i_velo,          &
      &    iphys%i_magne, iphys%i_filter_velo, iphys%i_filter_magne,     &
      &    SGS_par%filter_p, mesh%nod_comm, mesh%node,                   &
      &    FEM_filters%filtering, FEM_SGS_wk%wk_filter, nod_fld)
@@ -107,7 +107,7 @@
 !
       call cal_filtered_vector_whole                                    &
      &   (SGS_par%filter_p, mesh%nod_comm, mesh%node,                   &
-     &    FEM_filters%filtering, iphys%i_sgs_grad, iphys%i_sgs_simi,    &
+     &    FEM_filters%filtering, iphys%i_sgs_grad, iphys%SGS_wk%i_simi, &
      &    FEM_SGS_wk%wk_filter, nod_fld)
 !
 !   Change coordinate
@@ -194,7 +194,7 @@
 !    copy to work array
 !
        call copy_vector_component(nod_fld,                              &
-     &     iphys%SGS_term%i_SGS_induct_t, iphys%i_sgs_simi)
+     &     iphys%SGS_term%i_SGS_induct_t, iphys%SGS_wk%i_simi)
 !
 !      filtering
 !

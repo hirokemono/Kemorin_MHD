@@ -21,6 +21,7 @@
       use t_diff_vector_labels
       use t_SGS_term_labels
       use t_SGS_enegy_flux_labels
+      use t_SGS_model_coef_labels
 !
       implicit  none
 ! 
@@ -325,8 +326,6 @@
 !>        Square of composition @f$ C^{2} @f$
       integer (kind=kint) :: i_square_c = izero
 !
-!>        start address for SGS term by scale similarity method
-        integer (kind=kint) :: i_sgs_simi =        izero
 !>        start address for SGS term by nonlinear gradient method
         integer (kind=kint) :: i_sgs_grad =        izero
 !>        start address for SGS term by nonlinear gradient method
@@ -506,6 +505,8 @@
         type(SGS_ene_flux_address) :: SGS_ene_flux
 !>        Structure of model coefficients
         type(SGS_term_address) :: Csim
+!>        Structure of work area for dynamic model
+        type(dynamic_SGS_work_address) :: SGS_wk
 !
 !>        Structure of wide filtered SGS terms
         type(SGS_term_address) :: wide_SGS

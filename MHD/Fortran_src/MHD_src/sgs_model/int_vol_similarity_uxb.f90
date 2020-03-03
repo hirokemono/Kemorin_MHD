@@ -90,7 +90,7 @@
 ! -------- loop for shape function for the phsical values
       do k2 = 1, ele%nnod_4_ele
         call vector_phys_2_each_element(node, ele, nod_fld,             &
-     &      k2, iphys%i_sgs_simi, fem_wk%vector_1)
+     &      k2, iphys%SGS_wk%i_simi, fem_wk%vector_1)
         call fem_skv_vector_field                                       &
      &     (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,                 &
      &      conduct%istack_ele_fld_smp,  &
@@ -146,7 +146,7 @@
 !
       do k2 = 1, ele%nnod_4_ele
         call vector_phys_2_each_element(node, ele, nod_fld,             &
-     &      k2, iphys%i_sgs_simi, fem_wk%vector_1)
+     &      k2, iphys%SGS_wk%i_simi, fem_wk%vector_1)
 !
         call fem_skv_vector_field_upwind(conduct%istack_ele_fld_smp,    &
      &      num_int, k2, dt, d_ele(1,iele_magne), ele, g_FEM, jac_3d,   &
