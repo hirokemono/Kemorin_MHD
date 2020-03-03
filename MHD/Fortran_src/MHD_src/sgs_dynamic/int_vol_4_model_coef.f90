@@ -91,7 +91,7 @@
      &        layer_tbl%e_grp%istack_grp_smp,                           &
      &        layer_tbl%e_grp%item_grp,                                 &
      &        nod_fld%ntot_phys, nod_fld%d_fld, iphys%SGS_wk%i_simi,    &
-     &        iphys%SGS_wk%i_nlg, iphys%i_sgs_grad_f,                   &
+     &        iphys%SGS_wk%i_nlg, iphys%SGS_wk%i_wd_nlg,                &
      &        wk_lsq%slocal_smp, wk_lsq%slocal, wk_lsq%wlocal)
         else
           call int_vol_model_coef_l(node%numnod, ele%numele,            &
@@ -102,7 +102,7 @@
      &        layer_tbl%e_grp%istack_grp_smp,                           &
      &        layer_tbl%e_grp%item_grp,                                 &
      &        nod_fld%ntot_phys, nod_fld%d_fld, iphys%SGS_wk%i_simi,    &
-     &        iphys%SGS_wk%i_nlg, iphys%i_sgs_grad_f,                   &
+     &        iphys%SGS_wk%i_nlg, iphys%SGS_wk%i_wd_nlg,                &
      &        wk_lsq%slocal_smp, wk_lsq%slocal, wk_lsq%wlocal)
         end if
 !
@@ -119,7 +119,7 @@
      &        layer_tbl%istack_item_layer_d_smp,                        &
      &        layer_tbl%e_grp%item_grp,                                 &
      &        nod_fld%ntot_phys, nod_fld%d_fld, iphys%SGS_wk%i_simi,    &
-     &        iphys%SGS_wk%i_nlg, iphys%i_sgs_grad_f,                   &
+     &        iphys%SGS_wk%i_nlg, iphys%SGS_wk%i_wd_nlg,                &
      &        wk_lsq%slocal_smp, wk_lsq%slocal, wk_lsq%wlocal)
         else
           call int_vol_model_coef_grpsmp_l(node%numnod, ele%numele,     &
@@ -131,7 +131,7 @@
      &        layer_tbl%istack_item_layer_d_smp,                        &
      &        layer_tbl%e_grp%item_grp,                                 &
      &        nod_fld%ntot_phys, nod_fld%d_fld, iphys%SGS_wk%i_simi,    &
-     &        iphys%SGS_wk%i_nlg, iphys%i_sgs_grad_f,                   &
+     &        iphys%SGS_wk%i_nlg, iphys%SGS_wk%i_wd_nlg,                &
      &        wk_lsq%slocal_smp, wk_lsq%slocal, wk_lsq%wlocal)
         end if
       end if
@@ -169,7 +169,7 @@
      &      g_FEM%owe3d, jac_3d_q%ntot_int, n_int, jac_3d_q%xjac,       &
      &      jac_3d_q%an, nod_fld%ntot_phys, nod_fld%d_fld,              &
      &      iphys%SGS_wk%i_simi, iphys%SGS_wk%i_nlg,                    &
-     &      iphys%i_sgs_grad_f, wk_lsq%slocal_smp, wk_lsq%wlocal)
+     &      iphys%SGS_wk%i_wd_nlg, wk_lsq%slocal_smp, wk_lsq%wlocal)
         else
         call int_vol_diff_coef_l(node%numnod, ele%numele,               &
      &      ele%ie, ele%interior_ele, iele_fsmp_stack, numdir,          &
@@ -177,7 +177,7 @@
      &      g_FEM%owe3d, jac_3d_l%ntot_int, n_int, jac_3d_l%xjac,       &
      &      jac_3d_l%an, nod_fld%ntot_phys, nod_fld%d_fld,              &
      &      iphys%SGS_wk%i_simi, iphys%SGS_wk%i_nlg,                    &
-     &      iphys%i_sgs_grad_f, wk_lsq%slocal_smp, wk_lsq%wlocal)
+     &      iphys%SGS_wk%i_wd_nlg, wk_lsq%slocal_smp, wk_lsq%wlocal)
       end if
 !
       end subroutine int_vol_diff_coef
@@ -217,7 +217,7 @@
      &        layer_tbl%e_grp%istack_grp_smp,                           &
      &        layer_tbl%e_grp%item_grp,                                 &
      &        nod_fld%ntot_phys, nod_fld%d_fld, iphys%SGS_wk%i_simi,    &
-     &        iphys%SGS_wk%i_nlg, iphys%i_sgs_grad_f,                   &
+     &        iphys%SGS_wk%i_nlg, iphys%SGS_wk%i_wd_nlg,                &
      &        wk_cor%ncomp_dble, wk_cor%ave_l_smp, wk_cor%rms_l_smp,    &
      &        wk_cor%ave_l, wk_cor%rms_l, wk_cor%ave_w, wk_cor%rms_w)
         else
@@ -230,7 +230,7 @@
      &        layer_tbl%e_grp%istack_grp_smp,                           &
      &        layer_tbl%e_grp%item_grp,                                 &
      &        nod_fld%ntot_phys, nod_fld%d_fld, iphys%SGS_wk%i_simi,    &
-     &        iphys%SGS_wk%i_nlg, iphys%i_sgs_grad_f,                   &
+     &        iphys%SGS_wk%i_nlg, iphys%SGS_wk%i_wd_nlg,                &
      &        wk_cor%ncomp_dble, wk_cor%ave_l_smp, wk_cor%rms_l_smp,    &
      &        wk_cor%ave_l, wk_cor%rms_l, wk_cor%ave_w, wk_cor%rms_w)
         end if
@@ -247,7 +247,7 @@
      &      layer_tbl%istack_item_layer_d_smp,                          &
      &      layer_tbl%e_grp%item_grp,                                   &
      &      nod_fld%ntot_phys, nod_fld%d_fld, iphys%SGS_wk%i_simi,      &
-     &      iphys%SGS_wk%i_nlg, iphys%i_sgs_grad_f,                     &
+     &      iphys%SGS_wk%i_nlg, iphys%SGS_wk%i_wd_nlg,                  &
      &      wk_cor%ncomp_dble, wk_cor%ave_l_smp, wk_cor%rms_l_smp,      &
      &      wk_cor%ave_l, wk_cor%rms_l, wk_cor%ave_w, wk_cor%rms_w)
         else
@@ -260,7 +260,7 @@
      &      layer_tbl%istack_item_layer_d_smp,                          &
      &      layer_tbl%e_grp%item_grp,                                   &
      &      nod_fld%ntot_phys, nod_fld%d_fld, iphys%SGS_wk%i_simi,      &
-     &      iphys%SGS_wk%i_nlg, iphys%i_sgs_grad_f,                     &
+     &      iphys%SGS_wk%i_nlg, iphys%SGS_wk%i_wd_nlg,                  &
      &      wk_cor%ncomp_dble, wk_cor%ave_l_smp, wk_cor%rms_l_smp,      &
      &      wk_cor%ave_l, wk_cor%rms_l, wk_cor%ave_w, wk_cor%rms_w)
         end if
@@ -297,7 +297,7 @@
      &      g_FEM%owe3d, jac_3d_q%ntot_int, n_int, jac_3d_q%xjac,       &
      &      jac_3d_q%an, nod_fld%ntot_phys, nod_fld%d_fld,              &
      &      iphys%SGS_wk%i_simi, iphys%SGS_wk%i_nlg,                    &
-     &      iphys%i_sgs_grad_f, wk_cor%ncomp_dble,                      &
+     &      iphys%SGS_wk%i_wd_nlg, wk_cor%ncomp_dble,                   &
      &      wk_cor%ave_l_smp, wk_cor%rms_l_smp,                         &
      &      wk_cor%ave_w, wk_cor%rms_w)
       else
@@ -307,7 +307,7 @@
      &      g_FEM%owe3d, jac_3d_l%ntot_int, n_int, jac_3d_l%xjac,       &
      &      jac_3d_l%an, nod_fld%ntot_phys, nod_fld%d_fld,              &
      &      iphys%SGS_wk%i_simi, iphys%SGS_wk%i_nlg,                    &
-     &      iphys%i_sgs_grad_f, wk_cor%ncomp_dble,                      &
+     &      iphys%SGS_wk%i_wd_nlg, wk_cor%ncomp_dble,                   &
      &      wk_cor%ave_l_smp, wk_cor%rms_l_smp,                         &
      &      wk_cor%ave_w, wk_cor%rms_w)
       end if
@@ -353,7 +353,7 @@
      &        layer_tbl%e_grp%istack_grp_smp, layer_tbl%e_grp%item_grp, &
      &        ave_s, ave_g, nod_fld%ntot_phys, nod_fld%d_fld,           &
      &        iphys%SGS_wk%i_simi, iphys%SGS_wk%i_nlg,                  &
-     &        iphys%i_sgs_grad_f,                                       &
+     &        iphys%SGS_wk%i_wd_nlg,                                    &
      &        wk_cor%ncomp_sgl, wk_cor%ncomp_dble,                      &
      &        wk_cor%sig_l_smp, wk_cor%cor_l_smp, wk_cor%sig_l,         &
      &        wk_cor%cov_l, wk_cor%sig_w,  wk_cor%cov_w)
@@ -367,7 +367,7 @@
      &        layer_tbl%e_grp%istack_grp_smp, layer_tbl%e_grp%item_grp, &
      &        ave_s, ave_g, nod_fld%ntot_phys, nod_fld%d_fld,           &
      &        iphys%SGS_wk%i_simi, iphys%SGS_wk%i_nlg,                  &
-     &        iphys%i_sgs_grad_f,                                       &
+     &        iphys%SGS_wk%i_wd_nlg,                                    &
      &        wk_cor%ncomp_sgl, wk_cor%ncomp_dble,                      &
      &        wk_cor%sig_l_smp, wk_cor%cor_l_smp, wk_cor%sig_l,         &
      &        wk_cor%cov_l, wk_cor%sig_w, wk_cor%cov_w)
@@ -386,7 +386,7 @@
      &      layer_tbl%e_grp%item_grp,                                   &
      &      ave_s, ave_g, nod_fld%ntot_phys, nod_fld%d_fld,             &
      &      iphys%SGS_wk%i_simi, iphys%SGS_wk%i_nlg,                    &
-     &      iphys%i_sgs_grad_f, wk_cor%ncomp_sgl, wk_cor%ncomp_dble,    &
+     &      iphys%SGS_wk%i_wd_nlg, wk_cor%ncomp_sgl, wk_cor%ncomp_dble, &
      &      wk_cor%sig_l_smp, wk_cor%cor_l_smp, wk_cor%sig_l,           &
      &      wk_cor%cov_l, wk_cor%sig_w, wk_cor%cov_w)
         else
@@ -400,7 +400,7 @@
      &      layer_tbl%e_grp%item_grp,                                   &
      &      ave_s, ave_g, nod_fld%ntot_phys, nod_fld%d_fld,             &
      &      iphys%SGS_wk%i_simi, iphys%SGS_wk%i_nlg,                    &
-     &      iphys%i_sgs_grad_f, wk_cor%ncomp_sgl, wk_cor%ncomp_dble,    &
+     &      iphys%SGS_wk%i_wd_nlg, wk_cor%ncomp_sgl, wk_cor%ncomp_dble, &
      &      wk_cor%sig_l_smp, wk_cor%cor_l_smp, wk_cor%sig_l,           &
      &      wk_cor%cov_l, wk_cor%sig_w, wk_cor%cov_w)
         end if
@@ -443,7 +443,7 @@
      &      jac_3d_q%ntot_int, n_int, jac_3d_q%xjac, jac_3d_q%an,       &
      &      ave_s, ave_g, nod_fld%ntot_phys, nod_fld%d_fld,             &
      &      iphys%SGS_wk%i_simi, iphys%SGS_wk%i_nlg,                    &
-     &      iphys%i_sgs_grad_f,                                         &
+     &      iphys%SGS_wk%i_wd_nlg,                                      &
      &      wk_cor%ncomp_sgl, wk_cor%ncomp_dble, wk_cor%sig_l_smp,      &
      &      wk_cor%cor_l_smp, wk_cor%sig_w, wk_cor%cov_w)
         else
@@ -454,7 +454,7 @@
      &      jac_3d_l%ntot_int, n_int, jac_3d_l%xjac, jac_3d_l%an,       &
      &      ave_s, ave_g, nod_fld%ntot_phys, nod_fld%d_fld,             &
      &      iphys%SGS_wk%i_simi, iphys%SGS_wk%i_nlg,                    &
-     &      iphys%i_sgs_grad_f,                                         &
+     &      iphys%SGS_wk%i_wd_nlg,                                      &
      &      wk_cor%ncomp_sgl, wk_cor%ncomp_dble, wk_cor%sig_l_smp,      &
      &      wk_cor%cor_l_smp, wk_cor%sig_w, wk_cor%cov_w)
       end if

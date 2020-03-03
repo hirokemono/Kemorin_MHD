@@ -122,7 +122,7 @@
 !
       if (iflag_debug.gt.0)  write(*,*) 'cal_sgs_filter_uxb_grad_4_dyn'
       call cal_sgs_vp_induct_grad_no_coef                               &
-     &   (ifilter_4delta, iphys%i_sgs_grad_f, iphys%i_filter_magne,     &
+     &   (ifilter_4delta, iphys%SGS_wk%i_wd_nlg, iphys%i_filter_magne,  &
      &    ie_dfvx, dt, FEM_prm, mesh%nod_comm, mesh%node, mesh%ele,     &
      &    conduct, cd_prop, iphys_ele, ele_fld,                         &
      &    fem_int%jcs, fem_int%rhs_tbl, FEM_filters%FEM_elens,          &
@@ -233,7 +233,7 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'cal_sgs_filter_idt_grad_4_dyn'
       call cal_sgs_induct_t_grad_no_coef                                &
-     &   (ifilter_4delta, iphys%i_sgs_grad_f, iphys%i_filter_velo,      &
+     &   (ifilter_4delta, iphys%SGS_wk%i_wd_nlg, iphys%i_filter_velo,   &
      &    iphys%i_filter_magne, ie_dfvx, ie_dfbx, dt, FEM_prm,          &
      &    mesh%nod_comm, mesh%node, mesh%ele, conduct, cd_prop,         &
      &    iphys_ele, ele_fld, fem_int%jcs,                              &

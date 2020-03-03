@@ -130,8 +130,8 @@
       integer (kind=kint) :: i_sgs_grad_p, i_sgs_grad_fp, i_sgs_simi_p
 !
 !
-      i_sgs_grad_p =  iphys%SGS_wk%i_nlg +   3
-      i_sgs_grad_fp = iphys%i_sgs_grad_f + 3
+      i_sgs_grad_p =  iphys%SGS_wk%i_nlg +    3
+      i_sgs_grad_fp = iphys%SGS_wk%i_wd_nlg + 3
       i_sgs_simi_p =  iphys%SGS_wk%i_simi +   3
 !
 !    reset model coefficients
@@ -140,23 +140,24 @@
      &    diff_coefs%num_field, iak_diff_b, diff_coefs%ak)
       call clear_work_4_dynamic_model(iphys, nod_fld)
 !
-!    get filtered scalar potential(to iphys%i_sgs_grad_f)
+!    get filtered scalar potential(to iphys%SGS_wk%i_wd_nlg)
 !
       call copy_vector_component(nod_fld,                               &
-     &    iphys%i_filter_vecp, iphys%i_sgs_grad_f)
+     &    iphys%i_filter_vecp, iphys%SGS_wk%i_wd_nlg)
       call cal_filtered_scalar_whole                                    &
      &   (SGS_par%filter_p, nod_comm, node, filtering,                  &
      &    i_sgs_grad_fp, iphys%i_mag_p, wk_filter, nod_fld)
 !
 !   take rotation and gradient of filtered A (to iphys%SGS_wk%i_simi)
 !
-      if (iflag_debug.gt.0)  write(*,*)                                 &
-     &   'cal_rotation_whole', iphys%SGS_wk%i_simi, iphys%i_sgs_grad_f
+      if (iflag_debug.gt.0)  write(*,*) 'cal_rotation_whole',           &
+     &                     iphys%SGS_wk%i_simi, iphys%SGS_wk%i_wd_nlg
       call choose_cal_rotation                                          &
      &   (FEM_prm%iflag_magne_supg, FEM_prm%npoint_t_evo_int, dt,       &
-     &    iphys%i_sgs_grad_f, iphys%SGS_wk%i_simi, ele%istack_ele_smp,  &
-     &    m_lump, nod_comm, node, ele, iphys_ele, ele_fld,              &
-     &    jacs%g_FEM, jacs%jac_3d, rhs_tbl, fem_wk, f_nl, nod_fld)
+     &    iphys%SGS_wk%i_wd_nlg, iphys%SGS_wk%i_simi,                   &
+     &    ele%istack_ele_smp, m_lump, nod_comm, node, ele,              &
+     &    iphys_ele, ele_fld, jacs%g_FEM, jacs%jac_3d, rhs_tbl,         &
+     &    fem_wk, f_nl, nod_fld)
       if (iflag_debug.gt.0)                                             &
      &   write(*,*) 'cal_gradent_whole', i_sgs_simi_p, i_sgs_grad_fp
       call choose_cal_gradient                                          &
@@ -203,14 +204,14 @@
 !      call check_nodal_data                                            &
 !     &   ((50+my_rank), nod_fld, n_sym_tensor, iphys%SGS_wk%i_simi)
 !
-!    obtain modeled commutative error  ( to iphys%i_sgs_grad_f)
+!    obtain modeled commutative error  ( to iphys%SGS_wk%i_wd_nlg)
 !
       call cal_rotation_commute                                         &
      &   (FEM_prm%npoint_t_evo_int, ele%istack_ele_smp,                 &
      &    m_lump, node, ele, surf, sf_grp,                              &
      &    jacs%g_FEM, jacs%jac_3d, jacs%jac_sf_grp,                     &
      &    rhs_tbl, FEM_elens, Asf_bcs%sgs, ifilter_4delta,              &
-     &    iphys%i_sgs_grad_f, iphys%i_sgs_grad_f,                       &
+     &    iphys%SGS_wk%i_wd_nlg, iphys%SGS_wk%i_wd_nlg,                 &
      &    fem_wk, surf_wk, f_l, f_nl, nod_fld)
       call cal_grad_commute                                             &
      &   (FEM_prm%npoint_t_evo_int, ele%istack_ele_smp,                 &
@@ -221,10 +222,10 @@
      &    f_l, f_nl, nod_fld)
 !
       call sym_tensor_send_recv                                         &
-     &   (iphys%i_sgs_grad_f, nod_comm, nod_fld)
+     &   (iphys%SGS_wk%i_wd_nlg, nod_comm, nod_fld)
 !
 !      call check_nodal_data                                            &
-!     &   ((50+my_rank), nod_fld, n_sym_tensor, iphys%i_sgs_grad_f)
+!     &   ((50+my_rank), nod_fld, n_sym_tensor, iphys%SGS_wk%i_wd_nlg)
 !
 !    obtain modeled commutative error  ( to iphys%SGS_wk%i_nlg)
 !

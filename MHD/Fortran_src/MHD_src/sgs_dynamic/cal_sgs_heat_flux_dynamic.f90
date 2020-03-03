@@ -126,7 +126,7 @@
       if (iflag_debug.gt.0)  write(*,*) 'cal_sgs_filter_hf_grad_4_dyn'
       call cal_sgs_s_flux_grad_no_coef                                  &
      &   (iflag_supg, num_int, dt, ifilter_4delta,                      &
-     &    iphys%i_sgs_grad_f, ifield_f, ie_dfvx,                        &
+     &    iphys%SGS_wk%i_wd_nlg, ifield_f, ie_dfvx,                     &
      &    mesh%nod_comm, mesh%node, mesh%ele, fluid, iphys_ele,         &
      &    ele_fld, fem_int%jcs, fem_int%rhs_tbl, FEM_filters%FEM_elens, &
      &    mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%f_l,     &

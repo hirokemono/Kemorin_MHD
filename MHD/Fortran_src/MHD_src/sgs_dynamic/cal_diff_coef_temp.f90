@@ -166,21 +166,23 @@
 !      call check_nodal_data                                            &
 !     &   ((50+my_rank), nod_fld, n_vector, iphys%SGS_wk%i_simi)
 !
-!    modeled commutative error by second filter ( to iphys%i_sgs_grad_f)
+!    modeled commutative error by second filter
+!                               (to iphys%SGS_wk%i_wd_nlg)
 !
       if (iflag_debug.gt.0)                                             &
-     &   write(*,*) 'cal_commute_error_f_temp', iphys%i_sgs_grad_f
+     &   write(*,*) 'cal_commute_error_f_temp', iphys%SGS_wk%i_wd_nlg
       call cal_grad_commute(num_int, fluid%istack_ele_fld_smp,          &
      &    mlump_fl, node, ele, surf, sf_grp,                            &
      &    jacs%g_FEM, jacs%jac_3d, jacs%jac_sf_grp, rhs_tbl,            &
-     &    FEM_elens, Tsf_bcs%sgs, ifilter_4delta, iphys%i_sgs_grad_f,   &
-     &    ifield_f, fem_wk, surf_wk, f_l, f_nl, nod_fld)
+     &    FEM_elens, Tsf_bcs%sgs, ifilter_4delta,                       &
+     &    iphys%SGS_wk%i_wd_nlg, ifield_f, fem_wk, surf_wk,             &
+     &    f_l, f_nl, nod_fld)
 !
       call vector_send_recv                                             &
-     &   (iphys%i_sgs_grad_f, nod_comm, nod_fld)
+     &   (iphys%SGS_wk%i_wd_nlg, nod_comm, nod_fld)
 !
 !      call check_nodal_data                                            &
-!     &   ((50+my_rank), nod_fld, n_vector, iphys%i_sgs_grad_f)
+!     &   ((50+my_rank), nod_fld, n_vector, iphys%SGS_wk%i_wd_nlg)
 !
 !    modeled commutative error by grid filter ( to iphys%SGS_wk%i_nlg)
 !
