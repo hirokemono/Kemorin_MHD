@@ -326,8 +326,6 @@
 !>        Square of composition @f$ C^{2} @f$
       integer (kind=kint) :: i_square_c = izero
 !
-!>        start address for temperature to obatin commutation error
-        integer (kind=kint) :: i_sgs_temp =        izero
 !>        start address for composition variation
 !!        to obatin commutation error
         integer (kind=kint) :: i_sgs_composit =    izero

@@ -105,17 +105,17 @@
       iflag_dmc = dynamic_SGS_flag(i_step, SGS_par)
 !
 !
-      if (iphys%i_sgs_temp .gt. 0) then
+      if (iphys%SGS_wk%i_sgs_temp .gt. 0) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &      write(*,*) 'iflag_SGS_parterbuation',                       &
      &                  SGS_par%model_p%iflag_parterbuation
         if(SGS_par%model_p%iflag_parterbuation .eq. id_SGS_REFERENCE)   &
      &   then
           call copy_scalar_component(nod_fld,                           &
-     &        iphys%i_per_temp, iphys%i_sgs_temp)
+     &        iphys%i_per_temp, iphys%SGS_wk%i_sgs_temp)
         else
           call copy_scalar_component(nod_fld,                           &
-     &        iphys%i_temp, iphys%i_sgs_temp)
+     &        iphys%i_temp, iphys%SGS_wk%i_sgs_temp)
         end if
       end if
 !
@@ -141,7 +141,7 @@
             if (iflag_debug.gt.0) write(*,*) 'cal_filtered_temperature'
             call cal_filtered_scalar_whole(SGS_par%filter_p,            &
      &         mesh%nod_comm, mesh%node, FEM_filters%filtering,         &
-     &          iphys%i_filter_temp, iphys%i_sgs_temp,                  &
+     &          iphys%i_filter_temp, iphys%SGS_wk%i_sgs_temp,           &
      &          FEM_SGS_wk%wk_filter, nod_fld)
             nod_fld%iflag_update(iphys%i_filter_temp) = 1
           end if
@@ -189,7 +189,7 @@
      &            write(*,*) 's_cal_diff_coef_scalar temp'
                call s_cal_diff_coef_scalar                              &
      &            (FEM_prm%iflag_temp_supg, FEM_prm%npoint_t_evo_int,   &
-     &             dt, iphys%i_sgs_temp, iphys%i_filter_temp,           &
+     &             dt, iphys%SGS_wk%i_sgs_temp, iphys%i_filter_temp,    &
      &             iak_diff_t, icomp_diff_t, SGS_par,                   &
      &             mesh%nod_comm, mesh%node, mesh%ele, mesh%surf,       &
      &             group%surf_grp, sf_bcs, iphys, iphys_ele, ele_fld,   &
