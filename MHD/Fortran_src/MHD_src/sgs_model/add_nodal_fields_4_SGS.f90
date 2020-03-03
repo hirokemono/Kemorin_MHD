@@ -40,10 +40,10 @@
 !   work area for SGS model
 !
       if (SGS_param%iflag_SGS_h_flux .ne. id_SGS_none) then
-        call add_phys_name_ctl(fhd_SGS_temp, field_ctl)
+        call add_phys_name_ctl(temp_4_SGS%name, field_ctl)
       end if
       if (SGS_param%iflag_SGS_c_flux .ne. id_SGS_none) then
-        call add_phys_name_ctl(fhd_SGS_comp, field_ctl)
+        call add_phys_name_ctl(comp_4_SGS%name, field_ctl)
       end if
 !
       if (SGS_param%iflag_SGS_gravity .ne. id_SGS_none) then
@@ -64,14 +64,14 @@
 !
       if(      SGS_param%iflag_dynamic.eq.id_SGS_DYNAMIC_OFF            &
      &   .and. SGS_param%iflag_SGS.eq.id_SGS_NL_grad) then
-        call add_phys_name_ctl(fhd_SGS_grad, field_ctl)
+        call add_phys_name_ctl(SGS_grad%name, field_ctl)
       else if (SGS_param%iflag_dynamic.eq.id_SGS_DYNAMIC_OFF            &
      &     .and. SGS_param%iflag_SGS.eq.id_SGS_similarity) then
-        call add_phys_name_ctl(fhd_SGS_simi, field_ctl)
+        call add_phys_name_ctl(SGS_simi%name, field_ctl)
       else if (SGS_param%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
-        call add_phys_name_ctl(fhd_SGS_grad, field_ctl)
-        call add_phys_name_ctl(fhd_SGS_simi, field_ctl)
-        call add_phys_name_ctl(fhd_SGS_grad_f, field_ctl)
+        call add_phys_name_ctl(SGS_grad%name, field_ctl)
+        call add_phys_name_ctl(SGS_simi%name, field_ctl)
+        call add_phys_name_ctl(SGS_grad_f%name, field_ctl)
       end if
 !
 !
@@ -154,7 +154,7 @@
 !   field labels for turbulence diffusivity
 !
       if (SGS_param%iflag_SGS .eq. id_SGS_diffusion) then
-        call add_phys_name_ctl(fhd_SGS_diffuse, field_ctl)
+        call add_phys_name_ctl(SGS_diffuse%name, field_ctl)
       end if
 !
       end subroutine add_work_area_4_sgs_model

@@ -199,8 +199,8 @@
       if (    (phys_nod_name_ctl .eq. fhd_filter_temp         )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_filter_pert_temp    )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_filter_comp         )         &
-     &   .or. (phys_nod_name_ctl .eq. fhd_SGS_temp            )         &
-     &   .or. (phys_nod_name_ctl .eq. fhd_SGS_comp            )         &
+     &   .or. (phys_nod_name_ctl .eq. temp_4_SGS%name         )         &
+     &   .or. (phys_nod_name_ctl .eq. comp_4_SGS%name         )         &
      &      )   iflag = 1
 !
       if (    (phys_nod_name_ctl .eq. fhd_square_t            )         &
@@ -254,7 +254,7 @@
      &   .or. (phys_nod_name_ctl .eq. fhd_Csim_SGS_Lorentz   )          &
      &   .or. (phys_nod_name_ctl .eq. fhd_Csim_SGS_induction )          &
      &   .or. (phys_nod_name_ctl .eq. fhd_Csim_SGS_buoyancy  )          &
-     &   .or. (phys_nod_name_ctl .eq. fhd_Csim_SGS_comp_buo  )          &
+     &   .or. (phys_nod_name_ctl .eq. Csim_SGS_composit_buo%name  )     &
      &       ) iflag = 1
 !
       if (    (phys_nod_name_ctl .eq. fhd_pre_heat            )         &
@@ -347,10 +347,10 @@
         num_nod_component = 3
       end if
 !
-      if (   (phys_nod_name_ctl .eq. fhd_SGS_simi   )                   &
-     &  .or. (phys_nod_name_ctl .eq. fhd_SGS_grad   )                   &
-     &  .or. (phys_nod_name_ctl .eq. fhd_SGS_grad_f )                   &
-     &  .or. (phys_nod_name_ctl .eq. fhd_SGS_diffuse)                   &
+      if (   (phys_nod_name_ctl .eq. SGS_simi%name   )                   &
+     &  .or. (phys_nod_name_ctl .eq. SGS_grad%name   )                   &
+     &  .or. (phys_nod_name_ctl .eq. SGS_grad_f%name )                   &
+     &  .or. (phys_nod_name_ctl .eq. SGS_diffuse%name)                  &
      &      ) then
 !
         iflag = 1

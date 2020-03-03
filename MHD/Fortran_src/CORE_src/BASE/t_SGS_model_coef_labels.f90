@@ -8,6 +8,17 @@
 !> @brief Labels and addresses for SGS terms
 !!
 !!@verbatim
+!!      logical function check_SGS_moedel_coefs(field_name)
+!!      logical function check_dynamic_SGS_work(field_name)
+!!      logical function check_commute_SGS_work(field_name)
+!!
+!!      subroutine set_SGS_model_coef_addresses                         &
+!!     &         (i_phys, field_name, Csim, flag)
+!!        type(SGS_term_address), intent(inout) :: Csim
+!!      subroutine set_dynamic_SGS_work_addresses                       &
+!!     &         (i_phys, field_name, SGS_wk, flag)
+!!        type(dynamic_SGS_work_address), intent(inout) :: SGS_wk
+!!
 !!      integer(kind = kint) function num_SGS_model_coefs()
 !!      integer(kind = kint) function num_dynamic_SGS_work()
 !!      subroutine set_SGS_model_coefs_labels(n_comps, names, maths)
@@ -17,16 +28,20 @@
 !!
 !! field names 
 !!
-!!   Csim_SGS_inertia    [i_SGS_inertia]: SGS inertia
-!!   Csim_SGS_Lorentz   [i_SGS_Lorentz]:   SGS Lorentz force
+!!   Csim_SGS_heat_flux       [Csim%i_SGS_h_flux]: SGS heat flux
+!!   Csim_SGS_composit_flux   [Csim%i_SGS_c_flux]: SGS composition flux
 !!
-!!   Csim_SGS_buoyancy  [i_SGS_buoyancy]:  SGS Thermal buoyancy
-!!   Csim_SGS_composit_buo [i_SGS_comp_buo]:  SGS compositional buoyancy
+!!   Csim_SGS_inertia         [Csim%i_SGS_m_flux]: SGS inertia
+!!   Csim_SGS_Lorentz         [Csim%i_SGS_Lorentz]: SGS Lorentz force
 !!
-!!   Csim_SGS_vp_induction   [i_SGS_vp_induct]: SGS induction  u \times 
+!!   Csim_SGS_buoyancy        [Csim%i_SGS_buoyancy]:
+!!                                            SGS Thermal buoyancy
+!!   Csim_SGS_composit_buo    [Csim%i_SGS_comp_buo]:
+!!                                            SGS compositional buoyancy
 !!
-!!   Csim_SGS_heat_flux       [i_SGS_h_flux]:   SGS heat flux
-!!   Csim_SGS_composit_flux   [i_SGS_c_flux]:   SGS composition flux
+!!   Csim_SGS_induction       [Csim%i_SGS_induction]:
+!!                                            SGS induction  u \times 
+!!
 !!
 !!
 !!   SGS_simi    []:
@@ -46,6 +61,7 @@
       use m_precision
       use m_phys_constants
       use t_field_labels
+      use t_SGS_term_labels
 !
       implicit  none
 ! 
@@ -88,10 +104,10 @@
 !>        Field label for model coefficient of SGS induction
 !!         @f$ C^{sim}_{\alphs} @f$
       character(len=kchara), parameter                                  &
-     &             :: fhd_Csim_SGS_induction = 'Csim_SGS_vp_induction'
-      type(field_def), parameter :: Csim_SGS_vp_induction               &
+     &             :: fhd_Csim_SGS_induction = 'Csim_SGS_induction'
+      type(field_def), parameter :: Csim_SGS_induction                  &
      &    = field_def(n_comp = n_scalar,                                &
-     &                name = 'Csim_SGS_vp_induction',                   &
+     &                name = 'Csim_SGS_induction',                      &
      &                math = '$ C^{sim}_{\alpha}} $')
 !>        Field label for model coefficient of SGS buoyancy
 !!         @f$ C^{sim}_{buo} @f$
@@ -113,14 +129,12 @@
 !
 !>        Field label for SGS term by scale similarity method
 !!         @f$ \mathcal{L} @f$
-      character(len=kchara), parameter :: fhd_SGS_simi =   'SGS_simi'
       type(field_def), parameter :: SGS_simi                            &
      &    = field_def(n_comp = n_sym_tensor,                            &
      &                name = 'SGS_simi',                                &
      &                math = '$  \mathcal{L} $')
 !>        Field label for SGS term by nonlinear gradient method
 !!         @f$ I_{i} @f$
-      character(len=kchara), parameter :: fhd_SGS_grad =   'SGS_grad'
       type(field_def), parameter :: SGS_grad                            &
      &    = field_def(n_comp = n_sym_tensor,                            &
      &                name = 'SGS_grad',                                &
@@ -128,7 +142,6 @@
 !>        Field label for SGS term by nonlinear gradient method
 !>        using fileterd field
 !!         @f$ I_{i}^{2\Delta} @f$
-      character(len=kchara), parameter :: fhd_SGS_grad_f = 'SGS_grad_f'
       type(field_def), parameter :: SGS_grad_f                          &
      &    = field_def(n_comp = n_sym_tensor,                            &
      &                name = 'SGS_grad_f',                              &
@@ -136,30 +149,161 @@
 !
 !>        Field label for SGS term by turbulence diffusivity
 !!         @f$ I_{\nu} @f$
-      character(len=kchara), parameter                                  &
-     &              :: fhd_SGS_diffuse = 'SGS_diffuse'
       type(field_def), parameter :: SGS_diffuse                         &
      &    = field_def(n_comp = n_sym_tensor,                            &
      &                name = 'SGS_diffuse',                             &
      &                math = '$ I_{\nu} $')
 !
 !>        Field label for temperature to obatin commutation error
-      character(len=kchara), parameter :: fhd_SGS_temp =   'temp_4_SGS'
       type(field_def), parameter :: temp_4_SGS                          &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'temp_4_SGS',                              &
      &                math = '$ T $')
 !>        Field label for composition variation
 !!        to obatin commutation error
-      character(len=kchara), parameter :: fhd_SGS_comp =   'comp_4_SGS'
       type(field_def), parameter :: comp_4_SGS                          &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'comp_4_SGS',                              &
      &                math = '$ C $')
 !
+!
+!>       Structure of start address for dynamic model's work area
+      type dynamic_SGS_work_address
+!>        start address of SGS term by scale similarity method
+        integer (kind=kint) :: i_sgs_simi =        izero
+!>        start address of SGS term by nonlinear gradient method
+        integer (kind=kint) :: i_sgs_grad =        izero
+!>        start address of SGS term by nonlinear gradient method
+!!        using fileterd field
+        integer (kind=kint) :: i_sgs_grad_f =      izero
+!>        start address of SGS term by turbulence diffusivity
+        integer (kind=kint) :: i_sgs_diffuse =     izero
+!
+!>        start address of temperature to obatin commutation error
+        integer (kind=kint) :: i_sgs_temp =        izero
+!>        start address of composition variation
+!!        to obatin commutation error
+        integer (kind=kint) :: i_sgs_composit =    izero
+      end type dynamic_SGS_work_address
+!
 ! ----------------------------------------------------------------------
 !
       contains
+!
+! ----------------------------------------------------------------------
+!
+      logical function check_SGS_moedel_coefs(field_name)
+!
+      character(len = kchara), intent(in) :: field_name
+!
+!
+      check_SGS_moedel_coefs                                            &
+     &   =    (field_name .eq. Csim_SGS_heat_flux%name)                 &
+     &   .or. (field_name .eq. Csim_SGS_composit_flux%name)             &
+     &   .or. (field_name .eq. Csim_SGS_inertia%name)                   &
+     &   .or. (field_name .eq. Csim_SGS_Lorentz%name)                   &
+     &   .or. (field_name .eq. Csim_SGS_induction%name)                 &
+     &   .or. (field_name .eq. Csim_SGS_buoyancy%name)                  &
+     &   .or. (field_name .eq. Csim_SGS_composit_buo%name)
+!
+      end function check_SGS_moedel_coefs
+!
+! ----------------------------------------------------------------------
+!
+      logical function check_dynamic_SGS_work(field_name)
+!
+      character(len = kchara), intent(in) :: field_name
+!
+!
+      check_dynamic_SGS_work                                            &
+     &   =    (field_name .eq. SGS_simi%name)                           &
+     &   .or. (field_name .eq. SGS_grad%name)                           &
+     &   .or. (field_name .eq. SGS_grad_f%name)                         &
+     &   .or. (field_name .eq. SGS_diffuse%name)
+!
+      end function check_dynamic_SGS_work
+!
+! ----------------------------------------------------------------------
+!
+      logical function check_commute_SGS_work(field_name)
+!
+      character(len = kchara), intent(in) :: field_name
+!
+!
+      check_commute_SGS_work                                            &
+     &   =    (field_name .eq. temp_4_SGS%name)                         &
+     &   .or. (field_name .eq. comp_4_SGS%name)
+!
+      end function check_commute_SGS_work
+!
+! ----------------------------------------------------------------------
+!
+      subroutine set_SGS_model_coef_addresses                           &
+     &         (i_phys, field_name, Csim, flag)
+!
+      integer(kind = kint), intent(in) :: i_phys
+      character(len = kchara), intent(in) :: field_name
+!
+      type(SGS_term_address), intent(inout) :: Csim
+      logical, intent(inout) :: flag
+!
+!
+      flag = check_SGS_moedel_coefs(field_name)
+      if(flag) then
+        if (field_name .eq. Csim_SGS_heat_flux%name) then
+          Csim%i_SGS_h_flux =    i_phys
+        else if (field_name .eq. Csim_SGS_composit_flux%name) then
+          Csim%i_SGS_c_flux =    i_phys
+!
+        else if (field_name .eq. Csim_SGS_inertia%name ) then
+          Csim%i_SGS_m_flux =     i_phys
+        else if (field_name .eq. Csim_SGS_Lorentz%name ) then
+          Csim%i_SGS_Lorentz =    i_phys
+!
+        else if (field_name .eq. Csim_SGS_buoyancy%name) then
+          Csim%i_SGS_buoyancy =   i_phys
+        else if (field_name .eq. Csim_SGS_composit_buo%name) then
+          Csim%i_SGS_comp_buo =   i_phys
+!
+        else if (field_name .eq. Csim_SGS_induction%name) then
+          Csim%i_SGS_induction =   i_phys
+        end if
+      end if
+!
+      end subroutine set_SGS_model_coef_addresses
+!
+! ----------------------------------------------------------------------
+!
+      subroutine set_dynamic_SGS_work_addresses                         &
+     &         (i_phys, field_name, SGS_wk, flag)
+!
+      integer(kind = kint), intent(in) :: i_phys
+      character(len = kchara), intent(in) :: field_name
+!
+      type(dynamic_SGS_work_address), intent(inout) :: SGS_wk
+      logical, intent(inout) :: flag
+!
+!
+      flag = check_SGS_moedel_coefs(field_name)
+      if(flag) then
+        if (field_name .eq. SGS_simi%name) then
+          SGS_wk%i_sgs_simi =     i_phys
+        else if (field_name .eq. SGS_grad%name) then
+          SGS_wk%i_sgs_grad =     i_phys
+        else if (field_name .eq. SGS_grad_f%name ) then
+          SGS_wk%i_sgs_grad_f =   i_phys
+!
+        else if (field_name .eq. SGS_diffuse%name ) then
+          SGS_wk%i_sgs_diffuse =  i_phys
+!
+        else if (field_name .eq. temp_4_SGS%name) then
+          SGS_wk%i_sgs_temp =     i_phys
+        else if (field_name .eq. comp_4_SGS%name) then
+          SGS_wk%i_sgs_composit = i_phys
+        end if
+      end if
+!
+      end subroutine set_dynamic_SGS_work_addresses
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
@@ -193,7 +337,7 @@
      &    n_comps( 3), names( 3), maths( 3))
       call set_field_labels(Csim_SGS_Lorentz,                           &
      &    n_comps( 4), names( 4), maths( 4))
-      call set_field_labels(Csim_SGS_vp_induction,                      &
+      call set_field_labels(Csim_SGS_induction,                         &
      &    n_comps( 5), names( 5), maths( 5))
 !
       call set_field_labels(Csim_SGS_buoyancy,                          &

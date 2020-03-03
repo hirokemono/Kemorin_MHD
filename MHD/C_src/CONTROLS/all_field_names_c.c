@@ -236,7 +236,7 @@ const struct field_def field_props[NUM_FIELD] = {
 			{1, "Csim_SGS_composit_flux", "$$    $$"},
 			{1, "Csim_SGS_inertia", "$$    $$"},
 			{1, "Csim_SGS_Lorentz", "$$    $$"},
-			{1, "Csim_SGS_vp_induction", "$$    $$"},
+			{1, "Csim_SGS_induction", "$$    $$"},
 			{1, "Csim_SGS_buoyancy", "$$    $$"},
 			{1, "Csim_SGS_composit_buo", "$$    $$"},
 			

@@ -127,7 +127,7 @@
      &                     // ' - \tilde{u}_{j}\tilde{B}_{k}) $')
 !
 !
-!>       Structure for start address for SGS terms
+!>       Structure of start address for SGS terms
       type SGS_term_address
 !>        start address for SGS momentum flux
 !!         @f$ \widetilde{u_{i}u_{j}} - \tilde{u}_{i}\tilde{u}_{j} @f$

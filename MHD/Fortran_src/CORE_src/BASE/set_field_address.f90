@@ -231,7 +231,7 @@
           iphys%i_Csim_SGS_induction = i0
         else if ( field_name(i) .eq. fhd_Csim_SGS_buoyancy ) then
           iphys%i_Csim_SGS_buoyancy = i0
-        else if ( field_name(i) .eq. fhd_Csim_SGS_comp_buo ) then
+        else if ( field_name(i) .eq. Csim_SGS_composit_buo%name ) then
           iphys%i_Csim_SGS_comp_buo = i0
         end if
 !
@@ -317,17 +317,17 @@
         call set_diff_filter_vect_addresses                             &
      &     (i0, field_name(i), iphys%diff_fil_vect, flag)
 !
-        if ( field_name(i) .eq. fhd_SGS_simi ) then
+        if ( field_name(i) .eq. SGS_simi%name ) then
           iphys%i_sgs_simi =     i0
-        else if ( field_name(i) .eq. fhd_SGS_grad ) then
+        else if ( field_name(i) .eq. SGS_grad%name ) then
           iphys%i_sgs_grad =     i0
-        else if ( field_name(i) .eq. fhd_SGS_grad_f ) then
+        else if ( field_name(i) .eq. SGS_grad_f%name ) then
           iphys%i_sgs_grad_f =   i0
-        else if ( field_name(i) .eq. fhd_SGS_diffuse) then
+        else if ( field_name(i) .eq. SGS_diffuse%name) then
           iphys%i_sgs_diffuse =  i0
-        else if ( field_name(i) .eq. fhd_SGS_temp) then
+        else if ( field_name(i) .eq. temp_4_SGS%name) then
           iphys%i_sgs_temp =     i0
-        else if ( field_name(i) .eq. fhd_SGS_comp) then
+        else if ( field_name(i) .eq. comp_4_SGS%name) then
           iphys%i_sgs_composit = i0
         end if
 !

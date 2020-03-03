@@ -13,25 +13,6 @@
 !! field names 
 !!
 !!   viscous_diffusion    []:
-!!   Csim_SGS_Lorentz   [i_SGS_Lorentz]:
-!!
-!!   Csim_SGS_buoyancy  [i_SGS_buoyancy]:
-!!   Csim_SGS_composit_buo [i_SGS_comp_buo]:
-!!
-!!   Csim_SGS_vp_induction   [i_SGS_vp_induct]:
-!!
-!!   Csim_SGS_heat_flux       [i_SGS_h_flux]:
-!!   Csim_SGS_composit_flux   [i_SGS_c_flux]:
-!!
-!!
-!!   fhd_SGS_simi    []:
-!!   fhd_SGS_grad    []:
-!!   fhd_SGS_grad_f  []:
-!!
-!!   SGS_diffuse     []:
-!!
-!!   temp_4_SGS      []:
-!!   temp_4_SGS      []:
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!@endverbatim

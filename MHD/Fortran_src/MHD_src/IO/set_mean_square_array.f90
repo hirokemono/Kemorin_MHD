@@ -608,7 +608,7 @@
      &         (field_name, num_comps, iphys%i_Csim_SGS_buoyancy,       &
      &          i_rms%i_Csim_SGS_buoyancy, j_ave%i_Csim_SGS_buoyancy,   &
      &          msq_list)
-          else if ( field_name .eq. fhd_Csim_SGS_comp_buo ) then
+          else if ( field_name .eq. Csim_SGS_composit_buo%name ) then
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_Csim_SGS_comp_buo,       &
      &          i_rms%i_Csim_SGS_comp_buo, j_ave%i_Csim_SGS_comp_buo,   &
