@@ -267,14 +267,14 @@ const struct field_def field_props[NUM_FIELD] = {
 			
 			{3, "SGS_div_m_flux_true", "$$    $$"},
 			{3, "SGS_Lorentz_true", "$$    $$"},
-			{3, "SGS_mag_induct_true", "$$    $$"},
+			{3, "SGS_mag_induction_true", "$$    $$"},
 			{1, "SGS_div_h_flux_true", "$$    $$"},
 			{1, "SGS_div_c_flux_true", "$$    $$"},
 			{1, "SGS_Lorentz_work_true", "$$    $$"},
 			{1, "Reynolds_work_true", "$$    $$"},
-			{1, "SGS_temp_gen_true", "$$    $$"},
-			{1, "SGS_comp_gen_true", "$$    $$"},
-			{1, "SGS_m_ene_gen_true", "$$    $$"},
+			{1, "SGS_temp_flux_gen_true", "$$    $$"},
+			{1, "SGS_comp_flux_gen_true", "$$    $$"},
+			{1, "SGS_mag_induction_flux_true", "$$    $$"},
 			
 			{3, "wide_filter_velocity", "$$    $$"},
 			{3, "wide_filter_vorticity", "$$    $$"},

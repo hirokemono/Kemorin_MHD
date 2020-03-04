@@ -104,10 +104,10 @@
 !!
 !! termes for direct estimation
 !!   SGS_div_h_flux_true
-!!   SGS_div_m_flux_true, SGS_Lorentz_true, SGS_mag_induct_true
+!!   SGS_div_m_flux_true, SGS_Lorentz_true, SGS_mag_induction_true
 !!
 !!   SGS_Lorentz_work_true   Reynolds_work_true
-!!   SGS_temp_gen_true       SGS_m_ene_gen_true
+!!   SGS_temp_flux_gen_true  SGS_mag_induction_flux_true
 !!
 !!   velocity_scale   temperature_scale
 !!   magnetic_scale   composition_scale
@@ -146,7 +146,6 @@
       use t_SGS_term_labels
       use t_SGS_enegy_flux_labels
       use t_SGS_model_coef_labels
-      use t_true_SGS_term_labels
 !
       use m_diff_force_labels
       use m_filtered_field_labels
@@ -160,6 +159,7 @@
       use m_grad_filter_field_labels
       use m_diff_SGS_term_labels
       use m_force_w_SGS_labels
+      use m_true_SGS_term_labels
       use m_wide_SGS_term_labels
 !
       implicit none

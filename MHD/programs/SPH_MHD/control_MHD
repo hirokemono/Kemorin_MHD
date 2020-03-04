@@ -135,10 +135,10 @@ begin MHD_control
 !
 ! termes for direct estimation
 !   SGS_div_h_flux_true
-!   SGS_div_m_flux_true, SGS_Lorentz_true, SGS_mag_induct_true
+!   SGS_div_m_flux_true, SGS_Lorentz_true, SGS_mag_induction_true
 !
 !   SGS_Lorentz_work_true   Reynolds_work_true
-!   SGS_temp_gen_true       SGS_m_ene_gen_true
+!   SGS_temp_flux_gen_true  SGS_mag_induction_flux_true
 !   
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     begin phys_values_ctl

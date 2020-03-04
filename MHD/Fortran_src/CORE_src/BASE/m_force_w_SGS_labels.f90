@@ -23,18 +23,18 @@
 !!
 !! field names 
 !!
-!!   momentum_flux_w_SGS    [%i_SGS_m_flux]
-!!   maxwell_tensor_w_SGS   [%i_SGS_maxwell]
-!!   induction_tensor_w_SGS [%i_SGS_induct_t]
+!!   momentum_flux_w_SGS    [frc_w_SGS%i_SGS_m_flux]
+!!   maxwell_tensor_w_SGS   [frc_w_SGS%i_SGS_maxwell]
+!!   induction_tensor_w_SGS [frc_w_SGS%i_SGS_induct_t]
 !!
-!!   heat_flux_w_SGS        [%i_SGS_h_flux]
-!!   compostion_flux_w_SGS  [%i_SGS_c_flux]
+!!   heat_flux_w_SGS        [frc_w_SGS%i_SGS_h_flux]
+!!   compostion_flux_w_SGS  [frc_w_SGS%i_SGS_c_flux]
 !!
-!!   intertia_w_SGS         [%i_SGS_inertia]
-!!   Lorentz_w_SGS          [%i_SGS_Lorentz]
+!!   intertia_w_SGS         [frc_w_SGS%i_SGS_inertia]
+!!   Lorentz_w_SGS          [frc_w_SGS%i_SGS_Lorentz]
 !!
-!!   vecp_induction_w_SGS   [%i_SGS_vp_induct]
-!!   induction_w_SGS        [%i_SGS_induction]
+!!   vecp_induction_w_SGS   [frc_w_SGS%i_SGS_vp_induct]
+!!   induction_w_SGS        [frc_w_SGS%i_SGS_induction]
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!@endverbatim

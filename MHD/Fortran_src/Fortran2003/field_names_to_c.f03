@@ -93,6 +93,12 @@
 !!      subroutine set_force_with_SGS_labels_f                          &
 !!     &         (n_comps_c, field_name_c, field_math_c)                &
 !!     &          bind(c, name="set_force_with_SGS_labels_f")
+!!
+!!      integer(c_int) function num_true_SGS_terms_f()                  &
+!!     &          bind(c, name="num_true_SGS_terms_f")
+!!      subroutine set_true_SGS_term_labels_f                           &
+!!     &         (n_comps_c, field_name_c, field_math_c)                &
+!!     &          bind(c, name="set_true_SGS_term_labels_f")
 !
       module field_names_to_c
 !
@@ -663,31 +669,31 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      integer(c_int) function num_force_w_SGS_f()                       &
-     &          bind(c, name="num_force_w_SGS_f")
+      integer(c_int) function num_true_SGS_terms_f()                    &
+     &          bind(c, name="num_true_SGS_terms_f")
 !
-      use m_force_w_SGS_labels
+      use m_true_SGS_term_labels
 !
-      num_force_w_SGS_f = num_force_w_SGS()
+      num_true_SGS_terms_f = num_true_SGS_terms()
       return
-      end function num_force_w_SGS_f
+      end function num_true_SGS_terms_f
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_force_with_SGS_labels_f                            &
+      subroutine set_true_SGS_term_labels_f                             &
      &         (n_comps_c, field_name_c, field_math_c)                  &
-     &          bind(c, name="set_force_with_SGS_labels_f")
+     &          bind(c, name="set_true_SGS_term_labels_f")
 !
-      use m_force_w_SGS_labels
+      use m_true_SGS_term_labels
 !
       integer(c_int), intent(inout) :: n_comps_c(*)
       character(C_CHAR), intent(inout) :: field_name_c(*)
       character(C_CHAR), intent(inout) :: field_math_c(*)
 !
-      call set_force_with_SGS_labels                                    &
+      call set_true_SGS_term_labels                                     &
      &   (n_comps_c(1), field_name_c(1), field_math_c(1))
 !
-      end subroutine set_force_with_SGS_labels_f
+      end subroutine set_true_SGS_term_labels_f
 !
 ! ----------------------------------------------------------------------
 !
