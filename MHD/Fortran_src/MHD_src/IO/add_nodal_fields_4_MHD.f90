@@ -69,6 +69,10 @@
      &    'add_field_ctl_4_grad_wide_SGS end'
       end if
 !
+      call add_field_ctl_4_force_w_SGS(field_ctl)
+      if (iflag_debug .ge. iflag_routine_msg) write(*,*)                &
+     &    'add_field_ctl_4_force_w_SGS end'
+!
       call add_field_ctl_4_SGS_ene_fluxes(field_ctl)
       if (iflag_debug .ge. iflag_routine_msg) write(*,*)                &
      &    'add_field_ctl_4_SGS_ene_fluxes end'

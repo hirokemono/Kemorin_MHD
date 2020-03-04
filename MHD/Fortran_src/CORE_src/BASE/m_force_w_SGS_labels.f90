@@ -150,8 +150,6 @@
 !
       check_force_w_SGS                                                 &
      &   =    (field_name .eq. heat_flux_w_SGS%name)                    &
-     &   .or. (field_name .eq. SGS_Lorentz%name)                        &
-!
      &   .or. (field_name .eq. compostion_flux_w_SGS%name)              &
      &   .or. (field_name .eq. intertia_w_SGS%name)                     &
      &   .or. (field_name .eq. Lorentz_w_SGS%name)                      &

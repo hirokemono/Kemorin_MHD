@@ -107,13 +107,6 @@
       if (   (phys_nod_name_ctl .eq. fhd_SGS_div_m_flux_true)           &
      &  .or. (phys_nod_name_ctl .eq. fhd_SGS_Lorentz_true   )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_SGS_mag_induct_true)           &
-     &  .or. (phys_nod_name_ctl .eq. heat_flux_w_SGS%name       )           &
-     &  .or. (phys_nod_name_ctl .eq. compostion_flux_w_SGS%name       )           &
-     &  .or. (phys_nod_name_ctl .eq. intertia_w_SGS%name      )           &
-     &  .or. (phys_nod_name_ctl .eq. Lorentz_w_SGS%name      )           &
-     &  .or. (phys_nod_name_ctl .eq. vecp_induction_w_SGS%name    )           &
-     &  .or. (phys_nod_name_ctl .eq. induction_w_SGS%name   )           &
-
      &      )   iflag = 1
 !
       if (   (phys_nod_name_ctl .eq. fhd_pre_mom            )           &
@@ -131,6 +124,7 @@
      &   .or. check_SGS_vector_terms(phys_nod_name_ctl)                 &
      &   .or. check_div_SGS_flux_tensor(phys_nod_name_ctl)              &
      &   .or. check_rot_SGS_terms(phys_nod_name_ctl)                    &
+     &   .or. check_force_w_SGS(phys_nod_name_ctl)                      &
      &   .or. check_filtered_force(phys_nod_name_ctl)                   &
      &   .or. check_rot_fil_force(phys_nod_name_ctl)                    &
      &   .or. check_wide_filter_vector(phys_nod_name_ctl)               &
@@ -315,32 +309,26 @@
 !
       if (iflag .gt. 0) return
 !
-       if (   check_SGS_tensor_terms(phys_nod_name_ctl)                 &
-     &   .or. (phys_nod_name_ctl .eq. momentum_flux_w_SGS%name )              &
-     &   .or. (phys_nod_name_ctl .eq. maxwell_tensor_w_SGS%name)              &
-     &       ) iflag = 1
-!
-      if(     check_flux_tensors(phys_nod_name_ctl)                     &
-     &   .or. check_filtered_flux_tensor(phys_nod_name_ctl)) iflag = 1
-!
-      if (iflag .eq. 1) then
+      if(     check_SGS_tensor_terms(phys_nod_name_ctl)                 &
+     &   .or. check_flux_tensor_w_SGS(phys_nod_name_ctl)                &
+     &   .or. check_flux_tensors(phys_nod_name_ctl)                     &
+     &   .or. check_filtered_flux_tensor(phys_nod_name_ctl)) then
         iflag = 1
         icou = icou + 1
         phys_nod_name = phys_nod_name_ctl
-        num_nod_component = 6
+        num_nod_component = n_sym_tensor
       end if
 !
-       if (  check_asym_flux_tensors(phys_nod_name_ctl)                 &
+      if(    check_asym_flux_tensors(phys_nod_name_ctl)                 &
      &  .or. check_SGS_induction_tensor(phys_nod_name_ctl)              &
-     &       ) then
-!
+     &  .or. check_induction_tensor_w_SGS(phys_nod_name_ctl)) then
         iflag = 1
         icou = icou + 1
         phys_nod_name = phys_nod_name_ctl
         num_nod_component = 3
       end if
 !
-      if (check_dynamic_SGS_work(phys_nod_name_ctl)) then
+      if(check_dynamic_SGS_work(phys_nod_name_ctl)) then
         iflag = 1
         icou = icou + 1
         phys_nod_name = phys_nod_name_ctl
