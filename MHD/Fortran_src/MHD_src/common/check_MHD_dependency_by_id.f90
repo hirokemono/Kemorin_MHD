@@ -311,38 +311,6 @@
         end if
       end do
 !
-      do i = 1, fld%num_phys
-        i_start = fld%istack_component(i-1) + 1
-        if(i_start .eq. iphys%i_inertia_w_sgs) then 
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%forces%i_m_advect, inertia%name)
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%SGS_term%i_SGS_inertia, SGS_inertia%name)
-        else if(i_start .eq. iphys%i_Lorentz_w_sgs) then 
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%forces%i_lorentz, Lorentz_force%name)
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%SGS_term%i_SGS_Lorentz, SGS_Lorentz%name)
-        else if(i_start .eq. iphys%i_Lorentz_w_sgs) then 
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%forces%i_lorentz, Lorentz_force%name)
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%SGS_term%i_SGS_Lorentz, SGS_Lorentz%name)
-        else if(i_start .eq. iphys%i_vp_induct_w_sgs) then 
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%forces%i_vp_induct, vecp_induction%name)
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%SGS_term%i_SGS_vp_induct, SGS_vecp_induction%name)
-        else if(i_start .eq. iphys%i_mag_induct_w_sgs) then 
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%forces%i_induction, magnetic_induction%name)
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%SGS_term%i_SGS_induction, SGS_induction%name)
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%SGS_term%i_SGS_maxwell, SGS_maxwell_tensor%name)
-        end if
-      end do
-!
       end subroutine check_dependencies_by_id
 !
 ! -----------------------------------------------------------------------

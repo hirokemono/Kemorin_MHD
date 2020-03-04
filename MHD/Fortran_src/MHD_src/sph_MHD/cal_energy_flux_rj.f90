@@ -79,28 +79,28 @@
      &      ipol%frc_w_SGS%i_SGS_c_flux)
       end if
 !
-      if(ipol%i_inertia_w_sgs .gt. 0) then
+      if(ipol%frc_w_SGS%i_SGS_inertia .gt. 0) then
         call add_2_nod_vectors                                          &
      &     (rj_fld, ipol%forces%i_m_advect,                             &
-     &      ipol%SGS_term%i_SGS_inertia, ipol%i_inertia_w_sgs)
+     &      ipol%SGS_term%i_SGS_inertia, ipol%frc_w_SGS%i_SGS_inertia)
       end if
 !
-      if(ipol%i_Lorentz_w_sgs .gt. 0) then
+      if(ipol%frc_w_SGS%i_SGS_Lorentz .gt. 0) then
         call add_2_nod_vectors                                          &
      &     (rj_fld, ipol%forces%i_lorentz, ipol%SGS_term%i_SGS_Lorentz, &
-     &      ipol%i_Lorentz_w_sgs)
+     &      ipol%frc_w_SGS%i_SGS_Lorentz)
       end if
 !
-      if(ipol%i_vp_induct_w_sgs .gt. 0) then
-        call add_2_nod_vectors                                          &
-     &     (rj_fld, ipol%forces%i_vp_induct,                            &
-     &      ipol%SGS_term%i_SGS_vp_induct, ipol%i_vp_induct_w_sgs)
+      if(ipol%frc_w_SGS%i_SGS_vp_induct .gt. 0) then
+        call add_2_nod_vectors(rj_fld, ipol%forces%i_vp_induct,         &
+     &      ipol%SGS_term%i_SGS_vp_induct,                              &
+     &      ipol%frc_w_SGS%i_SGS_vp_induct)
       end if
 !
-      if(ipol%i_mag_induct_w_sgs .gt. 0) then
-        call add_2_nod_vectors                                          &
-     &     (rj_fld, ipol%forces%i_induction,                            &
-     &      ipol%SGS_term%i_SGS_induction, ipol%i_mag_induct_w_sgs)
+      if(ipol%frc_w_SGS%i_SGS_induction .gt. 0) then
+        call add_2_nod_vectors(rj_fld, ipol%forces%i_induction,         &
+     &      ipol%SGS_term%i_SGS_induction,                              &
+     &      ipol%frc_w_SGS%i_SGS_induction)
       end if
 !
       if(ipol%frc_w_SGS%i_SGS_m_flux .gt. 0) then

@@ -271,29 +271,6 @@
 !!         @f$ -2 e_{ijk} \Omega_{j} u_{k} + \partial_{i} p @f$
       integer (kind=kint) :: i_geostrophic = izero
 !
-!>        Field address for advection for momentum
-!!         @f$ u_{j} \partial_{j} u_{i}
-!!           + e_{ijk}\left(\overline{\omega_{j}u_{k}}
-!!            - \bar{\omega}_{j}\bar{u}_{k} \right) @f$
-      integer (kind=kint) :: i_inertia_w_sgs = izero
-!>        Field address for Lorentz force
-!!         @f$ e_{ijk} J_{j} B_{k}
-!!           + e_{ijk}\left(\overline{B{j}u_{k}}
-!!            - \bar{J}_{j}\bar{B}_{k} \right) @f$
-      integer (kind=kint) :: i_Lorentz_w_sgs = izero
-!
-!>        Field address for inductino for vector potential
-!!         @f$ e_{ijk} u_{j} B_{k} @f$
-!!           + e_{ijk}\left(\overline{u{j}B_{k}}
-!!            - \bar{u}_{j}\bar{B}_{k} \right) @f$
-      integer (kind=kint) :: i_vp_induct_w_sgs = izero
-!>        Field address for magnetic induction
-!!         @f$ e_{ijk} \partial_{j}\left(e_{klm}u_{l}B_{m} \right)@f$
-!!           + e_{ijk} \partial_{j}(e_{klm}\left(\overline{u{l}B_{m}}
-!!                              - \bar{u}_{l}\bar{B}_{m} \right)) @f$
-      integer (kind=kint) :: i_mag_induct_w_sgs = izero
-!
-!
 !  Square of each component of fields
 !
 !>        Square of velocity @f$ u_{i}^{2} @f$

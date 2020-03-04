@@ -120,20 +120,26 @@
      &    trns_back)
       call add_field_name_4_sph_trns_snap                               &
      &   (intertia_w_SGS%name, intertia_w_SGS%n_comp,                   &
-     &    ipol%i_inertia_w_sgs, itor%i_inertia_w_sgs,                   &
-     &    iphys%i_inertia_w_sgs, b_trns%i_inertia_w_sgs, trns_back)
+     &    ipol%frc_w_SGS%i_SGS_inertia, itor%frc_w_SGS%i_SGS_inertia,   &
+     &    iphys%frc_w_SGS%i_SGS_inertia,                                &
+     &    b_trns%frc_w_SGS%i_SGS_inertia, trns_back)
       call add_field_name_4_sph_trns_snap                               &
      &   (Lorentz_w_SGS%name, Lorentz_w_SGS%n_comp,                     &
-     &    ipol%i_Lorentz_w_sgs, itor%i_Lorentz_w_sgs,                   &
-     &    iphys%i_Lorentz_w_sgs, b_trns%i_Lorentz_w_sgs, trns_back)
+     &    ipol%frc_w_SGS%i_SGS_Lorentz, itor%frc_w_SGS%i_SGS_Lorentz,   &
+     &    iphys%frc_w_SGS%i_SGS_Lorentz,                                &
+     &    b_trns%frc_w_SGS%i_SGS_Lorentz, trns_back)
       call add_field_name_4_sph_trns_snap                               &
      &   (vecp_induction_w_SGS%name, vecp_induction_w_SGS%n_comp,       &
-     &    ipol%i_vp_induct_w_sgs, itor%i_vp_induct_w_sgs,               &
-     &    iphys%i_vp_induct_w_sgs, b_trns%i_vp_induct_w_sgs, trns_back)
+     &    ipol%frc_w_SGS%i_SGS_vp_induct,                               &
+     &    itor%frc_w_SGS%i_SGS_vp_induct,                               &
+     &    iphys%frc_w_SGS%i_SGS_vp_induct,                              &
+     &    b_trns%frc_w_SGS%i_SGS_vp_induct, trns_back)
       call add_field_name_4_sph_trns_snap                               &
      &   (induction_w_SGS%name, induction_w_SGS%n_comp,                 &
-     &    ipol%i_mag_induct_w_sgs, itor%i_mag_induct_w_sgs,             &
-     &    iphys%i_mag_induct_w_sgs, b_trns%i_mag_induct_w_sgs,          &
+     &    ipol%frc_w_SGS%i_SGS_induction,                               &
+     &    itor%frc_w_SGS%i_SGS_induction,                               &
+     &    iphys%frc_w_SGS%i_SGS_induction,                              &
+     &    b_trns%frc_w_SGS%i_SGS_induction,                             &
      &    trns_back)
 !
       call add_field_name_4_sph_trns_snap                               &

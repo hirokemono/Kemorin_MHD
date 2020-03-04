@@ -234,13 +234,13 @@
         else if ( field_name(i) .eq. compostion_flux_w_SGS%name ) then
           iphys%frc_w_SGS%i_SGS_c_flux =  i0
         else if ( field_name(i) .eq. intertia_w_SGS%name ) then
-          iphys%i_inertia_w_sgs =  i0
+          iphys%frc_w_SGS%i_SGS_inertia =  i0
         else if ( field_name(i) .eq. Lorentz_w_SGS%name ) then
-          iphys%i_Lorentz_w_sgs =  i0
+          iphys%frc_w_SGS%i_SGS_Lorentz =  i0
         else if ( field_name(i) .eq. vecp_induction_w_SGS%name ) then
-          iphys%i_vp_induct_w_sgs =  i0
+          iphys%frc_w_SGS%i_SGS_vp_induct =  i0
         else if ( field_name(i) .eq. induction_w_SGS%name ) then
-          iphys%i_mag_induct_w_sgs =  i0
+          iphys%frc_w_SGS%i_SGS_induction =  i0
         else if ( field_name(i) .eq. momentum_flux_w_SGS%name ) then
           iphys%frc_w_SGS%i_SGS_m_flux =  i0
         else if ( field_name(i) .eq. maxwell_tensor_w_SGS%name ) then
