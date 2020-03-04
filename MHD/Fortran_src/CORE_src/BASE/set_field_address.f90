@@ -221,7 +221,7 @@
      &     (i0, field_name(i), iphys%dble_SGS, flag)
 !
         call set_SGS_model_coef_addresses                               &
-     &     (i0, field_name(i), iphys%dble_SGS, flag)
+     &     (i0, field_name(i), iphys%Csim, flag)
 !
         call set_SGS_ene_flux_addresses                                 &
      &     (i0, field_name(i), iphys%SGS_ene_flux, flag)
