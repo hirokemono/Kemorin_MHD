@@ -104,9 +104,9 @@
      &  .or. (phys_nod_name_ctl .eq. fhd_geostrophic        )           &
      &      )   iflag = 1
 !
-      if (   (phys_nod_name_ctl .eq. fhd_SGS_div_m_flux_true)           &
-     &  .or. (phys_nod_name_ctl .eq. fhd_SGS_Lorentz_true   )           &
-     &  .or. (phys_nod_name_ctl .eq. fhd_SGS_mag_induct_true)           &
+      if (   (phys_nod_name_ctl .eq. SGS_div_m_flux_true%name)           &
+     &  .or. (phys_nod_name_ctl .eq. SGS_Lorentz_true%name   )           &
+     &  .or. (phys_nod_name_ctl .eq. SGS_mag_induction_true%name)           &
      &      )   iflag = 1
 !
       if (   (phys_nod_name_ctl .eq. fhd_pre_mom            )           &
@@ -224,13 +224,13 @@
      &   .or. (phys_nod_name_ctl .eq. fhd_part_comp_gen       )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_vis_ene_diffuse     )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_mag_ene_diffuse     )         &
-     &   .or. (phys_nod_name_ctl .eq. fhd_SGS_div_h_flux_true )         &
-     &   .or. (phys_nod_name_ctl .eq. fhd_SGS_div_c_flux_true )         &
-     &   .or. (phys_nod_name_ctl .eq. fhd_SGS_Lorentz_wk_true )         &
-     &   .or. (phys_nod_name_ctl .eq. fhd_Reynolds_work_true  )         &
-     &   .or. (phys_nod_name_ctl .eq. fhd_SGS_temp_gen_true   )         &
-     &   .or. (phys_nod_name_ctl .eq. fhd_SGS_comp_gen_true   )         &
-     &   .or. (phys_nod_name_ctl .eq. fhd_SGS_m_ene_gen_true  )         &
+     &   .or. (phys_nod_name_ctl .eq. SGS_div_h_flux_true%name )         &
+     &   .or. (phys_nod_name_ctl .eq. SGS_div_c_flux_true%name )         &
+     &   .or. (phys_nod_name_ctl .eq. SGS_Lorentz_work_true%name )         &
+     &   .or. (phys_nod_name_ctl .eq. Reynolds_work_true%name  )         &
+     &   .or. (phys_nod_name_ctl .eq. SGS_temp_flux_gen_true%name   )         &
+     &   .or. (phys_nod_name_ctl .eq. SGS_comp_flux_gen_true%name   )         &
+     &   .or. (phys_nod_name_ctl .eq. SGS_mag_induction_flux_true%name  )         &
      &      )   iflag = 1
 !
       if (    (phys_nod_name_ctl .eq. fhd_div_inertia         )         &

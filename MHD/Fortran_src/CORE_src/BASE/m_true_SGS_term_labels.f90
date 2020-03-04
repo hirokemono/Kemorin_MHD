@@ -63,8 +63,6 @@
 !>        Field label for true divergence of SGS Maxwell tensor
 !!         @f$ e_{ijk}\left(\widetilde{J_{j}B_{k}}
 !!            - \tilde{J}_{j}\tilde{B}_{k} \right) @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_SGS_Lorentz_true =    'SGS_Lorentz_true'
       type(field_def), parameter :: SGS_Lorentz_true                    &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'SGS_Lorentz_true',                        &
@@ -74,8 +72,6 @@
 !>            of SGS magnetic induction tensor
 !!         @f$ e_{ijk} \partual_{j} e_{klm} (\widetilde{u_{l}B_{m}}
 !!            - \tilde{u}_{l}\tilde{B}_{m} ) @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_SGS_mag_induct_true = 'SGS_mag_induction_true'
       type(field_def), parameter :: SGS_mag_induction_true              &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'SGS_mag_induction_true',                  &
@@ -86,8 +82,6 @@
 !>        Field label for true divergence of SGS momentum flux
 !!         @f$ \partial_{i} ( \widetilde{u_{i}u_{j}}
 !!             - \tilde{u}_{i}\tilde{u}_{j}) @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_SGS_div_m_flux_true = 'SGS_div_m_flux_true'
       type(field_def), parameter :: SGS_div_m_flux_true                 &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'SGS_div_m_flux_true',                     &
@@ -96,8 +90,6 @@
 !>        Field label for true divergence of SGS heat flux
 !!         @f$ \partial_{i} \left( \widetilde{u_{i}T}
 !!            - \tilde{u}_{i}\tilde{T} \right) @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_SGS_div_h_flux_true = 'SGS_div_h_flux_true'
       type(field_def), parameter :: SGS_div_h_flux_true                 &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'SGS_div_h_flux_true',                     &
@@ -106,8 +98,6 @@
 !>        Field label for true divergence of SGS heat flux
 !!         @f$ \partial_{i} \left( \widetilde{u_{i}C}
 !!            - \tilde{u}_{i}\tilde{C} \right) @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_SGS_div_c_flux_true = 'SGS_div_c_flux_true'
       type(field_def), parameter :: SGS_div_c_flux_true                 &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'SGS_div_c_flux_true',                     &
@@ -117,8 +107,6 @@
 !>        Field label for work of true SGS Reynolds stress
 !!         @f$ -u_{i} e_{ijk} (\widetilde{\omega_{j}u_{k}}
 !!            - \tilde{\omega}_{j}\tilde{u}_{k}) @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_Reynolds_work_true =  'Reynolds_work_true'
       type(field_def), parameter :: Reynolds_work_true                  &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'Reynolds_work_true',                      &
@@ -128,8 +116,6 @@
 !>        Field label for work of true SGS Lorentz force
 !!         @f$  u_{i} e_{ijk} (\widetilde{J_{j}B_{k}}
 !!            - \tilde{J}_{j}\tilde{B}_{k}) @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_SGS_Lorentz_wk_true = 'SGS_Lorentz_work_true'
       type(field_def), parameter :: SGS_Lorentz_work_true               &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'SGS_Lorentz_work_true',                   &
@@ -139,8 +125,6 @@
 !>        Field label for energy flux of true SGS induction
 !!         @f$ B_{i} e_{ijk} \partual_{j} e_{klm} 
 !!            (\widetilde{u_{l}B_{m}} - \tilde{u}_{l}\tilde{B}_{m} ) @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_SGS_m_ene_gen_true = 'SGS_induction_flux_true'
       type(field_def), parameter :: SGS_mag_induction_flux_true         &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'SGS_mag_induction_flux_true',             &
@@ -151,8 +135,6 @@
 !!                   by true SGS heat flux
 !!         @f$ T \partial_{i} \left( \widetilde{u_{i}T}
 !!            - \tilde{u}_{i}\tilde{T} \right) @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_SGS_temp_gen_true =   'SGS_temp_flux_gen_true'
       type(field_def), parameter :: SGS_temp_flux_gen_true              &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'SGS_temp_flux_gen_true',                  &
@@ -163,8 +145,6 @@
 !!                   by true SGS compostion flux
 !!         @f$ C \partial_{i} \left( \widetilde{u_{i}C}
 !!            - \tilde{u}_{i}\tilde{C} \right) @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_SGS_comp_gen_true =   'SGS_comp_flux_gen_true'
       type(field_def), parameter :: SGS_comp_flux_gen_true              &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'SGS_comp_flux_gen_true',                  &
