@@ -8,22 +8,33 @@
 !> @brief Labels and addresses for basic forces
 !!
 !!@verbatim
+!!      logical function check_force_w_SGS(field_name)
+!!      logical function check_flux_tensor_w_SGS(field_name)
+!!      logical function check_induction_tensor_w_SGS(field_name)
+!!
+!!      subroutine set_force_w_SGS_addresses                            &
+!!     &         (i_phys, field_name, frc_w_SGS, flag)
+!!        type(SGS_term_address), intent(inout) :: frc_w_SGS
+!!
+!!      integer(kind = kint) function num_force_w_SGS()
+!!      subroutine set_force_with_SGS_labels(n_comps, names, maths)
+!!
 !! !!!!!  force include SGS terms names  !!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!
 !! field names 
 !!
-!!   momentum_flux_w_SGS    [i_SGS_m_flux]
-!!   maxwell_tensor_w_SGS   [i_SGS_maxwell]
-!!   induction_tensor_w_SGS [i_SGS_induct_t]
+!!   momentum_flux_w_SGS    [%i_SGS_m_flux]
+!!   maxwell_tensor_w_SGS   [%i_SGS_maxwell]
+!!   induction_tensor_w_SGS [%i_SGS_induct_t]
 !!
-!!   heat_flux_w_SGS        [i_SGS_h_flux]
-!!   comp_flux_w_SGS        [i_SGS_c_flux]
+!!   heat_flux_w_SGS        [%i_SGS_h_flux]
+!!   compostion_flux_w_SGS  [%i_SGS_c_flux]
 !!
-!!   intertia_w_SGS         [i_SGS_inertia]
-!!   Lorentz_w_SGS          [i_SGS_Lorentz]
+!!   intertia_w_SGS         [%i_SGS_inertia]
+!!   Lorentz_w_SGS          [%i_SGS_Lorentz]
 !!
-!!   vecp_induction_w_SGS   [i_SGS_vp_induct]
-!!   induction_w_SGS        [i_SGS_induction]
+!!   vecp_induction_w_SGS   [%i_SGS_vp_induct]
+!!   induction_w_SGS        [%i_SGS_induction]
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!@endverbatim
@@ -33,11 +44,11 @@
       use m_precision
       use m_phys_constants
       use t_field_labels
-      use t_base_force_labels
+      use t_SGS_term_labels
 !
       implicit  none
 ! 
-      integer(kind = kint), parameter, private :: nforce_w_SGS = 23
+      integer(kind = kint), parameter, private :: nforce_w_SGS = 9
 !
 !>        Field label of momentum flux with SGS term
 !!         @f$ u_{i} u_{j}
@@ -147,6 +158,134 @@
 ! ----------------------------------------------------------------------
 !
       contains
+!
+! ----------------------------------------------------------------------
+!
+      logical function check_force_w_SGS(field_name)
+!
+      character(len = kchara), intent(in) :: field_name
+!
+!
+      check_force_w_SGS                                                 &
+     &   =    (field_name .eq. heat_flux_w_SGS%name)                    &
+     &   .or. (field_name .eq. SGS_Lorentz%name)                        &
+!
+     &   .or. (field_name .eq. compostion_flux_w_SGS%name)              &
+     &   .or. (field_name .eq. intertia_w_SGS%name)                     &
+     &   .or. (field_name .eq. Lorentz_w_SGS%name)                      &
+!
+     &   .or. (field_name .eq. vecp_induction_w_SGS%name)               &
+     &   .or. (field_name .eq. induction_w_SGS%name)
+!
+      end function check_force_w_SGS
+!
+! ----------------------------------------------------------------------
+!
+      logical function check_flux_tensor_w_SGS(field_name)
+!
+      character(len = kchara), intent(in) :: field_name
+!
+!
+      check_flux_tensor_w_SGS                                           &
+     &   =    (field_name .eq. momentum_flux_w_SGS%name)                &
+     &   .or. (field_name .eq. maxwell_tensor_w_SGS%name)
+!
+      end function check_flux_tensor_w_SGS
+!
+! ----------------------------------------------------------------------
+!
+      logical function check_induction_tensor_w_SGS(field_name)
+!
+      character(len = kchara), intent(in) :: field_name
+!
+!
+      check_induction_tensor_w_SGS                                      &
+     &   =    (field_name .eq. induction_tensor_w_SGS%name)
+!
+      end function check_induction_tensor_w_SGS
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine set_force_w_SGS_addresses                              &
+     &         (i_phys, field_name, frc_w_SGS, flag)
+!
+      integer(kind = kint), intent(in) :: i_phys
+      character(len = kchara), intent(in) :: field_name
+!
+      type(SGS_term_address), intent(inout) :: frc_w_SGS
+      logical, intent(inout) :: flag
+!
+!
+      flag = check_force_w_SGS(field_name)                              &
+     &    .or. check_flux_tensor_w_SGS(field_name)                      &
+     &    .or. check_induction_tensor_w_SGS(field_name)
+      if(flag) then
+        if (field_name .eq. momentum_flux_w_SGS%name ) then
+          frc_w_SGS%i_SGS_m_flux =     i_phys
+        else if (field_name .eq. maxwell_tensor_w_SGS%name ) then
+          frc_w_SGS%i_SGS_maxwell =    i_phys
+        else if (field_name .eq. induction_tensor_w_SGS%name ) then
+          frc_w_SGS%i_SGS_induct_t =    i_phys
+!
+        else if (field_name .eq. heat_flux_w_SGS%name) then
+          frc_w_SGS%i_SGS_h_flux =    i_phys
+        else if (field_name .eq. compostion_flux_w_SGS%name) then
+          frc_w_SGS%i_SGS_c_flux =    i_phys
+!
+        else if (field_name .eq. intertia_w_SGS%name) then
+          frc_w_SGS%i_SGS_inertia =   i_phys
+        else if (field_name .eq. Lorentz_w_SGS%name) then
+          frc_w_SGS%i_SGS_Lorentz =    i_phys
+!
+        else if (field_name .eq. vecp_induction_w_SGS%name) then
+          frc_w_SGS%i_SGS_vp_induct = i_phys
+        else if (field_name .eq. induction_w_SGS%name) then
+          frc_w_SGS%i_SGS_induction = i_phys
+        end if
+      end if
+!
+      end subroutine set_force_w_SGS_addresses
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      integer(kind = kint) function num_force_w_SGS()
+      num_force_w_SGS = nforce_w_SGS
+      return
+      end function num_force_w_SGS
+!
+! ----------------------------------------------------------------------
+!
+      subroutine set_force_with_SGS_labels(n_comps, names, maths)
+!
+      integer(kind = kint), intent(inout) :: n_comps(nforce_w_SGS)
+      character(len = kchara), intent(inout) :: names(nforce_w_SGS)
+      character(len = kchara), intent(inout) :: maths(nforce_w_SGS)
+!
+!
+      call set_field_labels(momentum_flux_w_SGS,                        &
+     &    n_comps( 1), names( 1), maths( 1))
+      call set_field_labels(maxwell_tensor_w_SGS,                       &
+     &    n_comps( 2), names( 2), maths( 2))
+      call set_field_labels(induction_tensor_w_SGS,                     &
+     &    n_comps( 3), names( 3), maths( 3))
+!
+      call set_field_labels(heat_flux_w_SGS,                            &
+     &    n_comps( 4), names( 4), maths( 4))
+      call set_field_labels(compostion_flux_w_SGS,                      &
+     &    n_comps( 5), names( 5), maths( 5))
+!
+      call set_field_labels(intertia_w_SGS,                             &
+     &    n_comps( 6), names( 6), maths( 6))
+      call set_field_labels(Lorentz_w_SGS,                              &
+     &    n_comps( 7), names( 7), maths( 7))
+      call set_field_labels(vecp_induction_w_SGS,                       &
+     &    n_comps( 8), names( 8), maths( 8))
+      call set_field_labels(induction_w_SGS,                            &
+     &    n_comps( 9), names( 9), maths( 9))
+!
+      end subroutine set_force_with_SGS_labels
 !
 ! ----------------------------------------------------------------------
 !
