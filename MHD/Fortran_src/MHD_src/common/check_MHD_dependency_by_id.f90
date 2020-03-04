@@ -347,7 +347,7 @@
           call check_missing_field                                      &
      &       (fld, i_start, iphys%forces%i_induction, magnetic_induction%name)
           call check_missing_field                                      &
-     &       (fld, i_start, iphys%rot_SGS%i_SGS_vp_induct, SGS_induction%name)
+     &       (fld, i_start, iphys%SGS_term%i_SGS_induction, SGS_induction%name)
         else if(i_start .eq. iphys%i_mom_flux_w_sgs) then 
           call check_missing_field                                      &
      &       (fld, i_start, iphys%forces%i_m_flux, momentum_flux%name)

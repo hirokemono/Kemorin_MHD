@@ -35,6 +35,7 @@
 !!   SGS_composit_buoyancy [i_SGS_comp_buo]:  SGS compositional buoyancy
 !!
 !!   SGS_vecp_induction   [i_SGS_vp_induct]: SGS induction  u \times 
+!!   SGS_induction        [i_SGS_induction]: SGS magneitic induction
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!@endverbatim
@@ -47,7 +48,7 @@
 !
       implicit  none
 ! 
-      integer(kind = kint), parameter, private :: nterms_SGS = 10
+      integer(kind = kint), parameter, private :: nterms_SGS = 11
 !
 !>        Field label for SGS momentum flux
 !!         @f$ \widetilde{u_{i}u_{j}} - \tilde{u}_{i}\tilde{u}_{j} @f$
@@ -127,6 +128,15 @@
      &                name = 'SGS_vecp_induction',                      &
      &                math = '$ e_{ijk} (\widetilde{u_{j}B_{k}}'        &
      &                     // ' - \tilde{u}_{j}\tilde{B}_{k}) $')
+!>        Field label for SGS magnetic induction
+!!         @f$ e_{ijk} \partual_{j} e_{klm} (\widetilde{u_{l}B_{m}}
+!!            - \tilde{u}_{l}\tilde{B}_{m} ) @f$
+      type(field_def), parameter :: SGS_induction                       &
+     &    = field_def(n_comp = n_vector,                                &
+     &                name = 'SGS_induction',                           &
+     &                math = '$ e_{ijk} \partual_{j} e_{klm}'           &
+     &                     // ' (\widetilde{u_{l}B_{m}}'                &
+     &                     // ' - \tilde{u}_{j}\tilde{B}_{k}) $')
 !
 !
 !>       Structure of start address for SGS terms
@@ -166,6 +176,11 @@
 !!         @f$ e_{ijk} (\widetilde{u_{j}B_{k}}
 !!            - \tilde{u}_{j}\tilde{B}_{k}) @f$
         integer (kind=kint) :: i_SGS_vp_induct =   izero
+!
+!>        start address for SGS induction for vector potential
+!!         @f$ e_{ijk} \partual_{j} e_{klm} (\widetilde{u_{l}B_{m}}
+!!            - \tilde{u}_{l}\tilde{B}_{m} ) @f$
+        integer (kind=kint) :: i_SGS_induction =   izero
       end type SGS_term_address
 !
 ! ----------------------------------------------------------------------
@@ -186,7 +201,8 @@
      &   .or. (field_name .eq. SGS_composit_buoyancy%name)              &
      &   .or. (field_name .eq. SGS_vecp_induction%name)                 &
      &   .or. (field_name .eq. SGS_heat_flux%name)                      &
-     &   .or. (field_name .eq. SGS_composit_flux%name)
+     &   .or. (field_name .eq. SGS_composit_flux%name)                  &
+     &   .or. (field_name .eq. SGS_induction%name)
 !
       end function check_SGS_vector_terms
 !
@@ -256,6 +272,8 @@
 !
         else if (field_name .eq. SGS_vecp_induction%name) then
           SGS_term%i_SGS_vp_induct =   i_phys
+        else if (field_name .eq. SGS_induction%name) then
+          SGS_term%i_SGS_induction = i_phys
         end if
       end if
 !
@@ -301,6 +319,8 @@
 !
       call set_field_labels(SGS_vecp_induction,                         &
      &    n_comps(10), names(10), maths(10))
+      call set_field_labels(SGS_induction,                              &
+     &    n_comps(11), names(11), maths(11))
 !
       end subroutine set_SGS_term_labels
 !

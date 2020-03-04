@@ -110,11 +110,11 @@
 !     &    mlump_cd%ml, nod_fld%ntot_phys, iphys%i_magne, nod_fld%d_fld)
        call cal_ff_smp_2_vector                                         &
      &    (node, rhs_tbl, f_nl%ff_smp, mlump_cd%ml,                     &
-     &     nod_fld%ntot_phys, iphys%rot_SGS%i_SGS_vp_induct,            &
+     &     nod_fld%ntot_phys, iphys%SGS_term%i_SGS_induction,           &
      &     nod_fld%d_fld)
 !
        call vector_send_recv                                            &
-     &    (iphys%rot_SGS%i_SGS_vp_induct, nod_comm, nod_fld)
+     &    (iphys%SGS_term%i_SGS_induction, nod_comm, nod_fld)
 !
       end subroutine int_vol_sgs_induction
 !

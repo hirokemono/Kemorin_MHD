@@ -140,11 +140,11 @@
      &    iphys%rot_SGS%i_SGS_Lorentz, b_trns%rot_SGS%i_SGS_Lorentz,    &
      &    trns_back)
 !
-      call add_field_name_4_sph_trns(ipol%rot_SGS%i_SGS_vp_induct,      &
+      call add_field_name_4_sph_trns(ipol%SGS_term%i_SGS_induction,     &
      &    SGS_induction%name, SGS_induction%n_comp,                     &
-     &    ipol%rot_SGS%i_SGS_vp_induct, itor%rot_SGS%i_SGS_vp_induct,   &
-     &    iphys%rot_SGS%i_SGS_vp_induct,                                &
-     &    b_trns%rot_SGS%i_SGS_vp_induct, trns_back)
+     &    ipol%SGS_term%i_SGS_induction, itor%SGS_term%i_SGS_induction, &
+     &    iphys%SGS_term%i_SGS_induction,                               &
+     &    b_trns%SGS_term%i_SGS_induction, trns_back)
 !
       call add_field_name_4_sph_trns_snap                               &
      &   (pressure_gradient%name, pressure_gradient%n_comp,             &

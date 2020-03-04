@@ -38,8 +38,6 @@
 !!   rot_SGS_inertia  [rot_SGS%i_SGS_inertia]: SGS inertia
 !!   rot_SGS_Lorentz  [rot_SGS%i_SGS_Lorentz]:   SGS Lorentz force
 !!
-!!   SGS_induction    [rot_SGS%i_SGS_vp_induct]: SGS magneitic induction
-!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!@endverbatim
 !!
@@ -52,7 +50,7 @@
 !
       implicit  none
 ! 
-      integer(kind = kint), parameter, private :: ndiff_SGS = 8
+      integer(kind = kint), parameter, private :: ndiff_SGS = 7
 !
 !
 !>        Field label for divergence of SGS momentum flux
@@ -118,16 +116,6 @@
      &                     // ' (\widetilde{J_{n}B_{m}}'                &
      &                     // ' - \tilde{J}_{n}\tilde{B}_{m}) $')
 !
-!>        Field label for SGS magnetic induction
-!!         @f$ e_{ijk} \partual_{j} e_{klm} (\widetilde{u_{l}B_{m}}
-!!            - \tilde{u}_{l}\tilde{B}_{m} ) @f$
-      type(field_def), parameter :: SGS_induction                       &
-     &    = field_def(n_comp = n_vector,                                &
-     &                name = 'SGS_induction',                           &
-     &                math = '$ e_{ijk} \partual_{j} e_{klm}'           &
-     &                     // ' (\widetilde{u_{l}B_{m}}'                &
-     &                     // ' - \tilde{u}_{j}\tilde{B}_{k}) $')
-!
 ! ----------------------------------------------------------------------
 !
       contains
@@ -169,8 +157,7 @@
 !
       check_rot_SGS_terms                                               &
      &   =    (field_name .eq. rot_SGS_inertia%name)                    &
-     &   .or. (field_name .eq. rot_SGS_Lorentz%name)                    &
-     &   .or. (field_name .eq. SGS_induction%name)
+     &   .or. (field_name .eq. rot_SGS_Lorentz%name)
 !
       end function check_rot_SGS_terms
 !
@@ -224,9 +211,6 @@
           rot_SGS%i_SGS_inertia =   i_phys
         else if (field_name .eq. rot_SGS_Lorentz%name) then
           rot_SGS%i_SGS_Lorentz =   i_phys
-!
-        else if (field_name .eq. SGS_induction%name) then
-          rot_SGS%i_SGS_vp_induct = i_phys
         end if
       end if
 !
@@ -265,9 +249,6 @@
      &    n_comps( 6), names( 6), maths( 6))
       call set_field_labels(rot_SGS_Lorentz,                            &
      &    n_comps( 7), names( 7), maths( 7))
-!
-      call set_field_labels(SGS_induction,                              &
-     &    n_comps( 8), names( 8), maths( 8))
 !
       end subroutine set_diff_SGS_term_labels
 !

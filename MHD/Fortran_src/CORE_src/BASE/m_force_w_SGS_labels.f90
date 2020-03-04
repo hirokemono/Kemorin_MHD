@@ -12,18 +12,18 @@
 !!
 !! field names 
 !!
-!!   momentum_flux_w_SGS    [i_m_advect]
-!!   maxwell_tensor_w_SGS   [i_m_flux]
-!!   induction_tensor_w_SGS [i_lorentz]
+!!   momentum_flux_w_SGS    [i_SGS_m_flux]
+!!   maxwell_tensor_w_SGS   [i_SGS_maxwell]
+!!   induction_tensor_w_SGS [i_SGS_induct_t]
 !!
-!!   heat_flux_w_SGS        [i_h_flux]
-!!   comp_flux_w_SGS        [i_c_flux]
+!!   heat_flux_w_SGS        [i_SGS_h_flux]
+!!   comp_flux_w_SGS        [i_SGS_c_flux]
 !!
-!!   intertia_w_SGS         [i_maxwell]
-!!   Lorentz_w_SGS          [i_induct_t]
+!!   intertia_w_SGS         [i_SGS_inertia]
+!!   Lorentz_w_SGS          [i_SGS_Lorentz]
 !!
-!!   vecp_induction_w_SGS   [i_vp_induct]
-!!   induction_w_SGS        [i_induction]
+!!   vecp_induction_w_SGS   [i_SGS_vp_induct]
+!!   induction_w_SGS        [i_SGS_induction]
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!@endverbatim
@@ -143,5 +143,11 @@
      &                    // ' + e_{ijk} \partial_{j}(e_{klm}'          &
      &                    // ' (\widetilde{u{l}B_{m}}'                  &
      &                    // ' - \tilde{u}_{l}\tilde{B}_{m})) $')
+!
+! ----------------------------------------------------------------------
+!
+      contains
+!
+! ----------------------------------------------------------------------
 !
       end module m_force_w_SGS_labels

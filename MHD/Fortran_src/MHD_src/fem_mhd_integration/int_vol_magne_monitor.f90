@@ -117,7 +117,7 @@
      &      conduct%istack_ele_fld_smp, num_int,                        &
      &      iphys%forces%i_induct_t, fem_wk, f_nl)
 !
-      else if (i_field .eq. iphys%rot_SGS%i_SGS_vp_induct) then
+      else if (i_field .eq. iphys%SGS_term%i_SGS_induction) then
         if(cmt_param%iflag_c_uxb .eq. id_SGS_commute_ON) then
           call int_vol_div_SGS_idct_mod_pg(node, ele, nod_fld, iphys,   &
      &        g_FEM, jac_3d, rhs_tbl, FEM_elen, diff_coefs,             &
@@ -187,7 +187,7 @@
      &      iphys%forces%i_induct_t, ele_fld%ntot_phys,                 &
      &      iphys_ele%i_magne, ele_fld%d_fld, fem_wk, f_nl)
 !
-      else if (i_field .eq. iphys%rot_SGS%i_SGS_vp_induct) then
+      else if (i_field .eq. iphys%SGS_term%i_SGS_induction) then
         if(cmt_param%iflag_c_uxb .eq. id_SGS_commute_ON) then
           call int_vol_div_SGS_idct_mod_upm(node, ele, nod_fld, iphys,  &
      &        g_FEM, jac_3d, rhs_tbl, FEM_elen, diff_coefs,             &
