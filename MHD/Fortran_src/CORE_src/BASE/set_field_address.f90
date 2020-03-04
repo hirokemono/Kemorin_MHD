@@ -226,25 +226,11 @@
         call set_SGS_ene_flux_addresses                                 &
      &     (i0, field_name(i), iphys%SGS_ene_flux, flag)
 !
+        call set_force_w_SGS_addresses                                  &
+     &     (i0, field_name(i), iphys%frc_w_SGS, flag)
+!
         if ( field_name(i) .eq. fhd_geostrophic ) then
           iphys%i_geostrophic =  i0
-!
-        else if ( field_name(i) .eq. heat_flux_w_SGS%name ) then
-          iphys%frc_w_SGS%i_SGS_h_flux =  i0
-        else if ( field_name(i) .eq. compostion_flux_w_SGS%name ) then
-          iphys%frc_w_SGS%i_SGS_c_flux =  i0
-        else if ( field_name(i) .eq. intertia_w_SGS%name ) then
-          iphys%frc_w_SGS%i_SGS_inertia =  i0
-        else if ( field_name(i) .eq. Lorentz_w_SGS%name ) then
-          iphys%frc_w_SGS%i_SGS_Lorentz =  i0
-        else if ( field_name(i) .eq. vecp_induction_w_SGS%name ) then
-          iphys%frc_w_SGS%i_SGS_vp_induct =  i0
-        else if ( field_name(i) .eq. induction_w_SGS%name ) then
-          iphys%frc_w_SGS%i_SGS_induction =  i0
-        else if ( field_name(i) .eq. momentum_flux_w_SGS%name ) then
-          iphys%frc_w_SGS%i_SGS_m_flux =  i0
-        else if ( field_name(i) .eq. maxwell_tensor_w_SGS%name ) then
-          iphys%frc_w_SGS%i_SGS_maxwell =  i0
 !
         else if ( field_name(i) .eq. fhd_SGS_div_h_flux_true ) then
           iphys%i_SGS_div_hf_true = i0
