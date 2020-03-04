@@ -108,26 +108,31 @@
      &    ipol%i_geostrophic, itor%i_geostrophic, iphys%i_geostrophic,  &
      &    b_trns%i_geostrophic, trns_back)
 !
-      call add_field_name_4_sph_trns_snap(fhd_h_flux_w_sgs, n_vector,   &
+      call add_field_name_4_sph_trns_snap                               &
+     &   (heat_flux_w_SGS%name, heat_flux_w_SGS%n_comp,                 &
      &    ipol%i_h_flux_w_sgs, itor%i_h_flux_w_sgs,                     &
      &    iphys%i_h_flux_w_sgs, b_trns%i_h_flux_w_sgs, trns_back)
-      call add_field_name_4_sph_trns_snap(fhd_c_flux_w_sgs, n_vector,   &
+      call add_field_name_4_sph_trns_snap                               &
+     &   (compostion_flux_w_SGS%name, compostion_flux_w_SGS%n_comp,     &
      &    ipol%i_c_flux_w_sgs, itor%i_c_flux_w_sgs,                     &
      &    iphys%i_c_flux_w_sgs, b_trns%i_c_flux_w_sgs, trns_back)
-      call add_field_name_4_sph_trns_snap(fhd_inertia_w_sgs, n_vector,  &
+      call add_field_name_4_sph_trns_snap                               &
+     &   (intertia_w_SGS%name, intertia_w_SGS%n_comp,                   &
      &    ipol%i_inertia_w_sgs, itor%i_inertia_w_sgs,                   &
      &    iphys%i_inertia_w_sgs, b_trns%i_inertia_w_sgs, trns_back)
-      call add_field_name_4_sph_trns_snap(fhd_Lorentz_w_sgs, n_vector,  &
+      call add_field_name_4_sph_trns_snap                               &
+     &   (Lorentz_w_SGS%name, Lorentz_w_SGS%n_comp,                     &
      &    ipol%i_Lorentz_w_sgs, itor%i_Lorentz_w_sgs,                   &
      &    iphys%i_Lorentz_w_sgs, b_trns%i_Lorentz_w_sgs, trns_back)
       call add_field_name_4_sph_trns_snap                               &
-     &   (fhd_vp_induct_w_sgs, n_vector, ipol%i_vp_induct_w_sgs,        &
-     &    itor%i_vp_induct_w_sgs, iphys%i_vp_induct_w_sgs,              &
-     &    b_trns%i_vp_induct_w_sgs, trns_back)
+     &   (vecp_induction_w_SGS%name, vecp_induction_w_SGS%n_comp,       &
+     &    ipol%i_vp_induct_w_sgs, itor%i_vp_induct_w_sgs,               &
+     &    iphys%i_vp_induct_w_sgs, b_trns%i_vp_induct_w_sgs, trns_back)
       call add_field_name_4_sph_trns_snap                               &
-     &   (fhd_mag_induct_w_sgs, n_vector, ipol%i_mag_induct_w_sgs,      &
-     &    itor%i_mag_induct_w_sgs, iphys%i_mag_induct_w_sgs,            &
-     &    b_trns%i_mag_induct_w_sgs, trns_back)
+     &   (induction_w_SGS%name, induction_w_SGS%n_comp,                 &
+     &    ipol%i_mag_induct_w_sgs, itor%i_mag_induct_w_sgs,             &
+     &    iphys%i_mag_induct_w_sgs, b_trns%i_mag_induct_w_sgs,          &
+     &    trns_back)
 !
       call add_field_name_4_sph_trns_snap                               &
      &   (rot_SGS_inertia%name, rot_SGS_inertia%n_comp,                 &

@@ -107,12 +107,12 @@
       if (   (phys_nod_name_ctl .eq. fhd_SGS_div_m_flux_true)           &
      &  .or. (phys_nod_name_ctl .eq. fhd_SGS_Lorentz_true   )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_SGS_mag_induct_true)           &
-     &  .or. (phys_nod_name_ctl .eq. fhd_h_flux_w_sgs       )           &
-     &  .or. (phys_nod_name_ctl .eq. fhd_c_flux_w_sgs       )           &
-     &  .or. (phys_nod_name_ctl .eq. fhd_inertia_w_sgs      )           &
-     &  .or. (phys_nod_name_ctl .eq. fhd_Lorentz_w_sgs      )           &
-     &  .or. (phys_nod_name_ctl .eq. fhd_vp_induct_w_sgs    )           &
-     &  .or. (phys_nod_name_ctl .eq. fhd_mag_induct_w_sgs   )           &
+     &  .or. (phys_nod_name_ctl .eq. heat_flux_w_SGS%name       )           &
+     &  .or. (phys_nod_name_ctl .eq. compostion_flux_w_SGS%name       )           &
+     &  .or. (phys_nod_name_ctl .eq. intertia_w_SGS%name      )           &
+     &  .or. (phys_nod_name_ctl .eq. Lorentz_w_SGS%name      )           &
+     &  .or. (phys_nod_name_ctl .eq. vecp_induction_w_SGS%name    )           &
+     &  .or. (phys_nod_name_ctl .eq. induction_w_SGS%name   )           &
 
      &      )   iflag = 1
 !
@@ -316,8 +316,8 @@
       if (iflag .gt. 0) return
 !
        if (   check_SGS_tensor_terms(phys_nod_name_ctl)                 &
-     &   .or. (phys_nod_name_ctl .eq. fhd_mom_flux_w_sgs )              &
-     &   .or. (phys_nod_name_ctl .eq. fhd_maxwell_t_w_sgs)              &
+     &   .or. (phys_nod_name_ctl .eq. momentum_flux_w_SGS%name )              &
+     &   .or. (phys_nod_name_ctl .eq. maxwell_tensor_w_SGS%name)              &
      &       ) iflag = 1
 !
       if(     check_flux_tensors(phys_nod_name_ctl)                     &

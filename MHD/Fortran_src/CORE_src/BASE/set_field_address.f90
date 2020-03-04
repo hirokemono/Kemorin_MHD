@@ -229,21 +229,21 @@
         if ( field_name(i) .eq. fhd_geostrophic ) then
           iphys%i_geostrophic =  i0
 !
-        else if ( field_name(i) .eq. fhd_h_flux_w_sgs ) then
+        else if ( field_name(i) .eq. heat_flux_w_SGS%name ) then
           iphys%i_h_flux_w_sgs =  i0
-        else if ( field_name(i) .eq. fhd_c_flux_w_sgs ) then
+        else if ( field_name(i) .eq. compostion_flux_w_SGS%name ) then
           iphys%i_c_flux_w_sgs =  i0
-        else if ( field_name(i) .eq. fhd_inertia_w_sgs ) then
+        else if ( field_name(i) .eq. intertia_w_SGS%name ) then
           iphys%i_inertia_w_sgs =  i0
-        else if ( field_name(i) .eq. fhd_Lorentz_w_sgs ) then
+        else if ( field_name(i) .eq. Lorentz_w_SGS%name ) then
           iphys%i_Lorentz_w_sgs =  i0
-        else if ( field_name(i) .eq. fhd_vp_induct_w_sgs ) then
+        else if ( field_name(i) .eq. vecp_induction_w_SGS%name ) then
           iphys%i_vp_induct_w_sgs =  i0
-        else if ( field_name(i) .eq. fhd_mag_induct_w_sgs ) then
+        else if ( field_name(i) .eq. induction_w_SGS%name ) then
           iphys%i_mag_induct_w_sgs =  i0
-        else if ( field_name(i) .eq. fhd_mom_flux_w_sgs ) then
+        else if ( field_name(i) .eq. momentum_flux_w_SGS%name ) then
           iphys%i_mom_flux_w_sgs =  i0
-        else if ( field_name(i) .eq. fhd_maxwell_t_w_sgs ) then
+        else if ( field_name(i) .eq. maxwell_tensor_w_SGS%name ) then
           iphys%i_maxwell_t_w_sgs =  i0
 !
         else if ( field_name(i) .eq. fhd_SGS_div_h_flux_true ) then

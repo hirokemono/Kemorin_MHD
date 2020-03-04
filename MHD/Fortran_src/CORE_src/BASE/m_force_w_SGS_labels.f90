@@ -53,8 +53,6 @@
 !>        Field label of momentum flux with SGS term
 !!         @f$ u_{i} u_{j}
 !!            + (\widetilde{u_{i}u_{j}} - \tilde{u}_{i}\tilde{u}_{j})@f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_mom_flux_w_sgs = 'momentum_flux_w_SGS'
       type(field_def), parameter :: momentum_flux_w_SGS                 &
      &    = field_def(n_comp = n_sym_tensor,                            &
      &                name = 'momentum_flux_w_SGS',                     &
@@ -63,8 +61,6 @@
 !>        Field label of momentum flux with SGS term
 !!         @f$ B_{i} B_{j}
 !!            + (\widetilde{B_{i}B_{j}} - \tilde{B}_{i}\tilde{B}_{j}) @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_maxwell_t_w_sgs = 'maxwell_tensor_w_SGS'
       type(field_def), parameter :: maxwell_tensor_w_SGS                &
      &    = field_def(n_comp = n_sym_tensor,                            &
      &                name = 'maxwell_tensor_w_SGS',                    &
@@ -74,8 +70,6 @@
 !!         @f$ u_{i} B_{j}  - B_{i} u_{J}
 !!         @f$ + \widetilde{u_{i}B_{j}} - \tilde{u}_{i}\tilde{B}_{j}
 !!             - \widetilde{B_{i}u_{j}} + \tilde{B}_{i}\tilde{u}_{j} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_induct_t_w_sgs =   'induction_tensor_w_SGS'
       type(field_def), parameter :: induction_tensor_w_SGS              &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'induction_tensor_w_SGS',                  &
@@ -87,8 +81,6 @@
 !
 !>        Field label of heat flux with SGS term
 !!         @f$ u_{i}T + (\widetilde{u_{i}T} - \tilde{u}_{i}\tilde{T}) @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_h_flux_w_sgs =  'heat_flux_w_SGS'
       type(field_def), parameter :: heat_flux_w_SGS                     &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'heat_flux_w_SGS',                         &
@@ -96,8 +88,6 @@
      &                             // ' - \tilde{u}_{i}\tilde{T}) $')
 !>        Field label of compositinoal flux with SGS term
 !!         @f$ u_{i} C + (\widetilde{u_{i}C} - \tilde{u}_{i}\tilde{C}) @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_c_flux_w_sgs =  'compostion_flux_w_SGS'
       type(field_def), parameter :: compostion_flux_w_SGS               &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'compostion_flux_w_SGS',                   &
@@ -108,8 +98,6 @@
 !!         @f$ e_{ijk} \omega_{j} u_{k}
 !!           + e_{ijk} (\widetilde{\omega_{j}u_{k}}
 !!            - \tilde{\omega}_{j}\tilde{u}_{k}) @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_inertia_w_sgs = 'intertia_w_SGS'
       type(field_def), parameter :: intertia_w_SGS                      &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'intertia_w_SGS',                          &
@@ -120,8 +108,6 @@
 !!         @f$ e_{ijk} J_{j} B_{k}
 !!           + e_{ijk} (\widetilde{J_{j}B_{k}}
 !!            - \tilde{J}_{j}\tilde{B}_{k} \right) @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_Lorentz_w_sgs = 'Lorentz_w_SGS'
       type(field_def), parameter :: Lorentz_w_SGS                       &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'Lorentz_w_SGS',                           &
@@ -133,8 +119,6 @@
 !!         @f$ e_{ijk} u_{j} B_{k} @f$
 !!           + e_{ijk} (\widetilde{u{j}B_{k}}
 !!            - \tilde{u}_{j}\tilde{B}_{k}) @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_vp_induct_w_sgs = 'vecp_induction_w_SGS'
       type(field_def), parameter :: vecp_induction_w_SGS                &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'vecp_induction_w_SGS',                    &
@@ -145,8 +129,6 @@
 !!         @f$ e_{ijk} \partial_{j} (e_{klm}u_{l}B_{m})  
 !!           + e_{ijk} \partial_{j}(e_{klm} (\widetilde{u{l}B_{m}}
 !!                              - \tilde{u}_{l}\tilde{B}_{m})) @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_mag_induct_w_sgs = 'induction_w_SGS'
       type(field_def), parameter :: induction_w_SGS                     &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'induction_w_SGS',                         &
