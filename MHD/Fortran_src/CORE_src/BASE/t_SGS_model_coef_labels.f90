@@ -42,16 +42,16 @@
 !!   Csim_SGS_induction       [Csim%i_SGS_induction]:
 !!                                            SGS induction  u \times 
 !!
+!! Work area for dynamic model in FEM_MHD
 !!
+!!   SGS_simi    [i_simi]
+!!   SGS_grad    [i_nlg]
+!!   SGS_grad_f  [i_wd_nlg]
 !!
-!!   SGS_simi    []:
-!!   SGS_grad    []:
-!!   SGS_grad_f  []:
+!!   SGS_diffuse     [i_wk_diffuse]
 !!
-!!   SGS_diffuse     []:
-!!
-!!   temp_4_SGS      []:
-!!   temp_4_SGS      []:
+!!   temp_4_SGS      [i_sgs_temp]
+!!   temp_4_SGS      [i_sgs_composit]
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!@endverbatim
