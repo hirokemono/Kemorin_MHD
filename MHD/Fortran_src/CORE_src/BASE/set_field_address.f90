@@ -384,7 +384,7 @@
         end if
 !
 !   Old field label... Should be deleted later!!
-        if (field_name(i) .eq. fhd_buoyancy_work) then
+        if (field_name(i) .eq. buoyancy_work%name) then
           iphys%i_buo_gen =   i0
         end if
 !

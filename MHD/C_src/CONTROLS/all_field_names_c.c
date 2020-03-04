@@ -123,8 +123,8 @@ const struct field_def field_props[NUM_FIELD] = {
 			{1, "temp_generation", "$$    $$"},
 			{1, "part_temp_gen", "$$    $$"},
 			{1, "part_comp_gen", "$$    $$"},
-			{1, "vis_ene_diffuse", "$$    $$"},
-			{1, "mag_ene_diffuse", "$$    $$"},
+			{1, "viscous_ene_diffusion", "$$    $$"},
+			{1, "magnetic_ene_diffusion", "$$    $$"},
 			{1, "pressure_work", "$$    $$"},
 			{1, "m_potential_work", "$$    $$"},
 			

@@ -39,6 +39,7 @@
       subroutine add_energy_fluxes_ctl(field_name, field_ctl)
 !
       use t_control_array_character3
+      use t_diffusion_term_labels
       use add_nodal_fields_ctl
 !
       character(len = kchara), intent(in) :: field_name
@@ -83,12 +84,18 @@
         call add_phys_name_ctl(fhd_part_light, field_ctl)
         call add_phys_name_ctl(pert_comp_advect%name, field_ctl)
 !
-!      else if( (field_name .eq. fhd_vis_ene_diffuse)) then
-!        call add_phys_name_ctl(fhd_velo, field_ctl)
-!        call add_phys_name_ctl(fhd_viscous, field_ctl)
-!      else if( (field_name .eq. fhd_mag_ene_diffuse)) then
-!        call add_phys_name_ctl(fhd_magne, field_ctl)
-!        call add_phys_name_ctl(fhd_mag_diffuse, field_ctl)
+      else if( (field_name .eq. fhd_vis_ene_diffuse)) then
+        call add_phys_name_ctl(fhd_velo, field_ctl)
+        call add_phys_name_ctl(fhd_viscous, field_ctl)
+      else if( (field_name .eq. fhd_mag_ene_diffuse)) then
+        call add_phys_name_ctl(fhd_magne, field_ctl)
+        call add_phys_name_ctl(fhd_mag_diffuse, field_ctl)
+!
+      else if( (field_name .eq. pressure_work%name)) then
+        call add_phys_name_ctl(fhd_press, field_ctl)
+      else if( (field_name .eq. m_potential_work%name)) then
+        call add_phys_name_ctl(fhd_magne, field_ctl)
+        call add_phys_name_ctl(fhd_mag_diffuse, field_ctl)
       end if
 !
       end subroutine add_energy_fluxes_ctl

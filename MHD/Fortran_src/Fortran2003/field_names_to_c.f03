@@ -4,6 +4,10 @@
 !!      subroutine set_base_force_labels_f                              &
 !!     &         (n_comps_c, field_name_c, field_math_c) bind(c)
 !!
+!!      integer(c_int) function num_energy_fluxes_f() bind(c)
+!!      subroutine set_energy_flux_names_f                              &
+!!     &         (n_comps_c, field_name_c, field_math_c) bind(c)
+!!
 !!      integer(c_int) function num_divergence_fields_f() bind(c)
 !!      subroutine set_divergence_field_labels_f                        &
 !!     &         (n_comps_c, field_name_c, field_math_c) bind(c)
@@ -168,6 +172,33 @@
      &   (n_comps_c(1), field_name_c(1), field_math_c(1))
 !
       end subroutine set_base_force_labels_f
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      integer(c_int) function num_energy_fluxes_f() bind(c)
+!
+      use t_energy_flux_labels
+!
+      num_energy_fluxes_f = num_energy_fluxes()
+      return
+      end function num_energy_fluxes_f
+!
+! ----------------------------------------------------------------------
+!
+      subroutine set_energy_flux_names_f                                &
+     &         (n_comps_c, field_name_c, field_math_c) bind(c)
+!
+      use t_energy_flux_labels
+!
+      integer(c_int), intent(inout) :: n_comps_c(*)
+      character(C_CHAR), intent(inout) :: field_name_c(*)
+      character(C_CHAR), intent(inout) :: field_math_c(*)
+!
+      call set_energy_flux_names                                        &
+     &   (n_comps_c(1), field_name_c(1), field_math_c(1))
+!
+      end subroutine set_energy_flux_names_f
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------

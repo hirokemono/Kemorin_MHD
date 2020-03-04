@@ -57,7 +57,7 @@ begin MHD_control
 !   buoyancy_flux, Lorentz_work, mag_tension_work
 !   magnetic_ene_generation, work_against_Lorentz
 !   temp_generation, part_temp_gen
-!   vis_ene_diffuse, mag_ene_diffuse
+!   viscous_ene_diffusion, magnetic_ene_diffusion
 !   filtered_buoyancy_flux
 !
 !   thermal_diffusion, viscous_diffusion

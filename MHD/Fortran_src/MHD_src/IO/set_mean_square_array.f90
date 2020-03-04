@@ -517,10 +517,8 @@
           end if
 !
 !   Old field label... Should be deleted later!!
-          if ( field_name .eq. fhd_buoyancy_work ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_buo_gen,                 &
-     &          i_rms%i_buo_gen, j_ave%i_buo_gen, msq_list)
+          if(field_name .eq. buoyancy_work%name) then
+            call set_rms_address_list(i, nod_fld, msq_list)
           end if
 !
         else

@@ -13,17 +13,11 @@
 !!     &         (i_phys, field_name, base_force, flag)
 !!        type(energy_flux_address), intent(inout) :: ene_flux
 !!
-!!      subroutine energy_fluxes_monitor_address                        &
-!!     &         (field_name, i_field, numrms, numave,                  &
-!!     &          rms_ene_flux, ave_ene_flux, flag)
-!!        type(energy_flux_address), intent(inout) :: rms_ene_flux
-!!        type(energy_flux_address), intent(inout) :: ave_ene_flux
-!!
 !!      integer(kind = kint) function num_energy_fluxes()
-!!      subroutine set_energy_flux_names(field_names)
-!! !!!!!  Base field names  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!      subroutine set_energy_flux_names(n_comps, names, maths)
+!! !!!!!  energy flux names  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!
-!! field names 
+!! field names  [address]
 !!
 !!   inertia_work:  Work of Reynolds stress   u \cdot (\omega \times u)
 !!   Lorentz_work:  Work of Lorentz force     u \cdot (J \times B)
@@ -49,14 +43,14 @@
 !!   pert_comp_advect:   perturbation of composition advection flux
 !!                                     C (u \cdot \nabla) (C-C_0)
 !!
-!!   vis_ene_diffuse:  Energy dissipation by Viscousity
+!!   viscous_ene_diffusion:  Energy dissipation by Viscousity
 !!                                     u ( \nabla^{2} u)
-!!   mag_ene_diffuse:  Energy dissipation by Ohmic dissipation
+!!   magnetic_ene_diffusion:  Energy dissipation by Ohmic dissipation
 !!                                     B ( \nabla^{2} B)
 !!
-!!   pressure_work:  work of pressure gradient
+!!   pressure_work     [i_vis_e_diffuse]:  work of pressure gradient
 !!                                     u ( \nabla p)
-!!   m_potential_work: energy flux of scalar potential
+!!   m_potential_work  [i_mag_e_diffuse]: energy flux of scalar potential
 !!                                     B ( \nabla \phi)
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -65,9 +59,8 @@
       module t_energy_flux_labels
 !
       use m_precision
-      use m_constants
-      use t_base_field_labels
-      use t_base_force_labels
+      use m_phys_constants
+      use t_field_labels
 !
       implicit  none
 ! 
@@ -75,82 +68,148 @@
       integer(kind = kint), parameter, private :: nene_flux = 16
 !
 !>        Field label of work of inertia
-!!         @f$ u_{i} (u_{j} \partial_{j} u_{i}) @f$
+!!         @f$ -u_{i} (e_{ijk} \omega_{j} u_{k}) @f$
       character(len=kchara), parameter                                  &
      &             :: fhd_inertia_work = 'inertia_work'
-!
+      type(field_def), parameter :: inertia_work                        &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                name = 'inertia_work',                            &
+     &                math = '$ -u_{i} (e_{ijk} \omega_{j} u_{k}) $')
 !>        Field label of work against Lorentz force
-!!         @f$ - u_{i} \left( e_{ijk} J_{j} B_{k} \right) @f$
+!!         @f$ - u_{i} (e_{ijk} J_{j} B_{k}) @f$
       character(len=kchara), parameter                                  &
      &             :: fhd_work_agst_Lorentz = 'work_against_Lorentz'
+      type(field_def), parameter :: work_against_Lorentz                &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                name = 'work_against_Lorentz',                    &
+     &                math = '$ -u_{i} (e_{ijk} J_{j} B_{k}) $')
 !>        Field label of work of Lorentz force
 !!         @f$ u_{i} \left( e_{ijk} J_{j} B_{k} \right) @f$
       character(len=kchara), parameter                                  &
      &             :: fhd_Lorentz_work =      'Lorentz_work'
+      type(field_def), parameter :: Lorentz_work                        &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                name = 'Lorentz_work',                            &
+     &                math = '$  u_{i} (e_{ijk} J_{j} B_{k}) $')
 !>        Field address of work of magnetic tension
 !!         @f$ u_{i} (B_{j} \partial_{j}) B_{i} @f$
       character(len=kchara), parameter                                  &
      &             :: fhd_mag_tension_work =  'mag_tension_work'
+      type(field_def), parameter :: mag_tension_work                    &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                name = 'mag_tension_work',                        &
+     &                math = '$ u_{i} (B_{j} \partial_{j}) B_{i} $')
 !
 !>        Field label of buoyancy flux
 !!         @f$ -u_{i} \alpha_{T} g_{i} T @f$
       character(len=kchara), parameter                                  &
      &             :: fhd_buoyancy_flux =     'buoyancy_flux'
+      type(field_def), parameter :: buoyancy_flux                       &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                name = 'buoyancy_flux',                           &
+     &                math = '$ -u_{i} \alpha_{T} g_{i} T $')
 !>        Field label of compositional buoyancy flux
 !!         @f$ -u_{i} \alpha_{c} g_{i} C @f$
       character(len=kchara), parameter                                  &
      &             :: fhd_comp_buo_flux =     'composite_buoyancy_flux'
+      type(field_def), parameter :: composite_buoyancy_flux             &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                name = 'composite_buoyancy_flux',                 &
+     &                math = '$ -u_{i} \alpha_{C} g_{i} C $')
 !!
 !>        Field label of magnetic energy flux
-!>       @f$ B_{i}e_{ijk} \partial_{j} \left(e_{klm}u_{l}B_{m}\right) @f$
+!>       @f$ B_{i}e_{ijk} \partial_{j} (e_{klm}u_{l}B_{m}) @f$
       character(len=kchara), parameter                                  &
      &             :: fhd_mag_ene_gen =       'magnetic_ene_generation'
+      type(field_def), parameter :: magnetic_ene_generation             &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                name = 'magnetic_ene_generation',                 &
+     &                math = '$ B_{i}e_{ijk} \partial_{j}'              &
+     &                    // ' (e_{klm}u_{l}B_{m}) $')
 !>        Field label of energy flux of magnetic stretch term
-!!       @f$ u_{i} \left(B_{j} \partial_{j} u_{i} \right)@f$
+!!       @f$ B_{i} (B_{j} \partial_{j} u_{i}) @f$
       character(len=kchara), parameter                                  &
      &             :: fhd_mag_stretch_flux =   'magnetic_stretch_flux'
+      type(field_def), parameter :: magnetic_stretch_flux               &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                name = 'magnetic_stretch_flux',                   &
+     &                math = '$ B_{i} (B_{j} \partial_{j} u_{i} $')
 !
 !>        Field label of temperature flux
 !!         @f$ T (u_{i} \partial_{i}) T @f$
       character(len=kchara), parameter                                  &
      &             :: fhd_temp_generation =   'temp_generation'
+      type(field_def), parameter :: temp_generation                     &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                name = 'temp_generation',                         &
+     &                math = '$ T (u_{i} \partial_{i}) T $')
 !>        Field label of perturbation temperature flux
 !!         @f$ \Theta (u_{i} \partial_{i}) \Theta @f$
       character(len=kchara), parameter                                  &
      &             :: fhd_part_temp_gen =     'part_temp_gen'
+      type(field_def), parameter :: part_temp_gen                       &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                name = 'part_temp_gen',                           &
+     &                math = '$ \Theta (u_{i} \partial_{i}) \Theta $')
 !>        Field label of composition flux
 !!         @f$ C (u_{i} \partial_{i}) @f$
       character(len=kchara), parameter                                  &
      &             :: fhd_comp_generation =   'comp_generation'
+      type(field_def), parameter :: comp_generation                     &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                name = 'comp_generation',                         &
+     &                math = '$ C (u_{i} \partial_{i}) C $')
 !>        Field label of perturbation composition flux
 !!         @f$ (C - C_0) (u_{i} \partial_{i}) (C - C_0) @f$
       character(len=kchara), parameter                                  &
      &             :: fhd_part_comp_gen =     'part_comp_gen'
+      type(field_def), parameter :: part_comp_gen                       &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                name = 'part_comp_gen',                           &
+     &          math = '$ \Theta_C} (u_{i} \partial_{i}) \Theta_{C} $')
 !
 !>        Field label of energy flux by viscous diffusion
-!!         @f$ u_{i} \left( \partial_{j}\partial_{j} u_{i} \right) @f$
+!!         @f$ u_{i} (\partial_{j}\partial_{j} u_{i}) @f$
       character(len=kchara), parameter                                  &
-     &             :: fhd_vis_ene_diffuse =   'vis_ene_diffuse'
+     &             :: fhd_vis_ene_diffuse =   'viscous_ene_diffusion'
+      type(field_def), parameter :: viscous_ene_diffusion               &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                name = 'viscous_ene_diffusion',                   &
+     &             math = '$ u_{i} (\partial_{j}\partial_{j} u_{i}) $')
 !>        Field label of energy flux by magnetic diffusion
 !!         @f$ B_{i} \left( \partial_{j}\partial_{j} B_{i} \right) @f$
       character(len=kchara), parameter                                  &
-     &             :: fhd_mag_ene_diffuse =   'mag_ene_diffuse'
+     &             :: fhd_mag_ene_diffuse =   'magnetic_ene_diffusion'
+      type(field_def), parameter :: magnetic_ene_diffusion              &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                name = 'magnetic_ene_diffusion',                  &
+     &             math = '$ B_{i} (\partial_{j}\partial_{j} B_{i}) $')
 !
-!>        Field label for potential in momentum euqaion
-!!         @f$  \varphi @f$
+!>        Field label of work area for pressure
+!!         @f$ \varphi @f$
       character(len=kchara), parameter                                  &
      &             :: fhd_press_work =      'pressure_work'
-!>        Field label for potential in induction euqaion
-!!         @f$  \varphi @f$
+      type(field_def), parameter :: pressure_work                       &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                name = 'pressure_work',                           &
+     &                math = '$ \varphi $')
+!>        Field label of work area for scalar potential
+!!         @f$ \varphi @f$
       character(len=kchara), parameter                                  &
      &             :: fhd_m_potential_work = 'm_potential_work'
+      type(field_def), parameter :: m_potential_work                    &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                name = 'm_potential_work',                        &
+     &                math = '$ \varphi $')
 !
 !   --------------------------------------------------------------------
 !
 !>        Old Field label for buoyancy flux
 !!         @f$ -u_{i} \alpha_{T} g_{i} T @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_buoyancy_work =     'buoyancy_work'
+      type(field_def), parameter :: buoyancy_work                       &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                name = 'buoyancy_work',                           &
+     &                math = '$ -u_{i} \alpha_{T} g_{i} T $')
 !
 !>       Structure of start address of base forces
       type energy_flux_address
@@ -177,7 +236,7 @@
 !>       @f$ B_{i}e_{ijk} \partial_{j} \left(e_{klm}u_{l}B_{m}\right) @f$
         integer (kind=kint) :: i_me_gen =           izero
 !>        Field label of energy flux of magnetic stretch term
-!!       @f$ u_{i} \left(B_{j} \partial_{j} u_{i} \right)@f$
+!!       @f$ B_{i} \left(B_{j} \partial_{j} u_{i} \right)@f$
         integer (kind=kint) :: i_mag_stretch_flux = izero
 !
 !>        Field address of temperature flux
@@ -199,6 +258,13 @@
 !>        Field address of energy flux by magnetic diffusion
 !!         @f$ B_{i} \left( \partial_{j}\partial_{j} B_{i} \right) @f$
         integer (kind=kint) :: i_mag_e_diffuse =   izero
+!
+!>        Field label of energy flux by potential in momentum euqaion
+!!         @f$ \varphi @f$
+        integer (kind=kint) :: i_p_phi =           izero
+!>        Field address of energy flux by potential in induction euqaion
+!!         @f$ \varphi @f$
+        integer (kind=kint) :: i_m_phi =           izero
       end type energy_flux_address
 !
 ! ----------------------------------------------------------------------
@@ -213,20 +279,25 @@
 !
 !
       check_enegy_fluxes = .FALSE.
-      if (    (field_name .eq. fhd_inertia_work)                        &
-     &   .or. (field_name .eq. fhd_work_agst_Lorentz)                   &
-     &   .or. (field_name .eq. fhd_Lorentz_work)                        &
-     &   .or. (field_name .eq. fhd_mag_tension_work)                    &
-     &   .or. (field_name .eq. fhd_buoyancy_flux)                       &
-     &   .or. (field_name .eq. fhd_comp_buo_flux)                       &
-     &   .or. (field_name .eq. fhd_mag_ene_gen)                         &
-     &   .or. (field_name .eq. fhd_mag_stretch_flux)                    &
-     &   .or. (field_name .eq. fhd_temp_generation)                     &
-     &   .or. (field_name .eq. fhd_part_temp_gen)                       &
-     &   .or. (field_name .eq. fhd_comp_generation)                     &
-     &   .or. (field_name .eq. fhd_part_comp_gen)                       &
-!     &   .or. (field_name .eq. fhd_vis_ene_diffuse)                    &
-!     &   .or. (field_name .eq. fhd_mag_ene_diffuse)                    &
+      if (    (field_name .eq. inertia_work%name)                       &
+     &   .or. (field_name .eq. work_against_Lorentz%name)               &
+     &   .or. (field_name .eq. Lorentz_work%name)                       &
+     &   .or. (field_name .eq. mag_tension_work%name)                   &
+     &   .or. (field_name .eq. buoyancy_flux%name)                      &
+     &   .or. (field_name .eq. composite_buoyancy_flux%name)            &
+!
+     &   .or. (field_name .eq. magnetic_ene_generation%name)            &
+     &   .or. (field_name .eq. magnetic_stretch_flux%name)              &
+!
+     &   .or. (field_name .eq. temp_generation%name)                    &
+     &   .or. (field_name .eq. part_temp_gen%name)                      &
+     &   .or. (field_name .eq. comp_generation%name)                    &
+     &   .or. (field_name .eq. part_comp_gen%name)                      &
+!
+     &   .or. (field_name .eq. viscous_ene_diffusion%name)              &
+     &   .or. (field_name .eq. magnetic_ene_diffusion%name)             &
+     &   .or. (field_name .eq. pressure_work%name)                      &
+     &   .or. (field_name .eq. m_potential_work%name)                   &
      &      )   check_enegy_fluxes = .TRUE.
 !
       end function check_enegy_fluxes
@@ -245,72 +316,48 @@
 !
       flag = check_enegy_fluxes(field_name)
       if(flag) then
-        if (field_name .eq. fhd_inertia_work) then
+        if (field_name .eq. inertia_work%name) then
           ene_flux%i_m_advect_work = i_phys
-        else if (field_name .eq. fhd_work_agst_Lorentz) then
+        else if (field_name .eq. work_against_Lorentz%name) then
           ene_flux%i_nega_ujb =      i_phys
-        else if (field_name .eq. fhd_Lorentz_work) then
+        else if (field_name .eq. Lorentz_work%name) then
           ene_flux%i_ujb =           i_phys
-        else if (field_name .eq. fhd_mag_tension_work) then
+        else if (field_name .eq. mag_tension_work%name) then
           ene_flux%i_m_tension_wk =  i_phys
 !
-        else if (field_name .eq. fhd_buoyancy_flux) then
+        else if (field_name .eq. buoyancy_flux%name) then
           ene_flux%i_buo_gen =       i_phys
-        else if (field_name .eq. fhd_comp_buo_flux) then
+        else if (field_name .eq. composite_buoyancy_flux%name) then
           ene_flux%i_c_buo_gen =     i_phys
 !
-        else if (field_name .eq. fhd_mag_ene_gen) then
+        else if (field_name .eq. magnetic_ene_generation%name) then
           ene_flux%i_me_gen =           i_phys
-        else if (field_name .eq. fhd_mag_stretch_flux) then
+        else if (field_name .eq. magnetic_stretch_flux%name) then
           ene_flux%i_mag_stretch_flux = i_phys
 !
-        else if (field_name .eq. fhd_temp_generation) then
+        else if (field_name .eq. temp_generation%name) then
           ene_flux%i_temp_gen =  i_phys
-        else if (field_name .eq. fhd_part_temp_gen) then
+        else if (field_name .eq. part_temp_gen%name) then
           ene_flux%i_par_t_gen = i_phys
 !
-        else if (field_name .eq. fhd_comp_generation) then
+        else if (field_name .eq. comp_generation%name) then
           ene_flux%i_comp_gen =  i_phys
-        else if (field_name .eq. fhd_part_comp_gen) then
+        else if (field_name .eq. part_comp_gen%name) then
           ene_flux%i_par_c_gen = i_phys
 !
-!        else if (field_name .eq. fhd_vis_ene_diffuse) then
-!          ene_flux%i_vis_e_diffuse = i_phys
-!        else if (field_name .eq. fhd_mag_ene_diffuse) then
-!          ene_flux%i_mag_e_diffuse = i_phys
+        else if (field_name .eq. viscous_ene_diffusion%name) then
+          ene_flux%i_vis_e_diffuse = i_phys
+        else if (field_name .eq. magnetic_ene_diffusion%name) then
+          ene_flux%i_mag_e_diffuse = i_phys
+!
+        else if (field_name .eq. pressure_work%name) then
+          ene_flux%i_p_phi = i_phys
+        else if (field_name .eq. m_potential_work%name) then
+          ene_flux%i_m_phi = i_phys
         end if
       end if
 !
       end subroutine set_enegy_fluxe_addresses
-!
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      subroutine energy_fluxes_monitor_address                          &
-     &         (field_name, i_field, numrms, numave,                    &
-     &          rms_ene_flux, ave_ene_flux, flag)
-!
-      character(len = kchara), intent(in):: field_name
-      integer(kind = kint), intent(in) :: i_field
-      integer(kind = kint), intent(in) :: numrms, numave
-!
-      type(energy_flux_address), intent(inout) :: rms_ene_flux
-      type(energy_flux_address), intent(inout) :: ave_ene_flux
-      logical, intent(inout) :: flag
-!
-      logical :: flag_a, flag_r
-!
-!
-      flag = .FALSE.
-!
-      if(i_field .eq. 0) return
-      call set_enegy_fluxe_addresses                                    &
-     &   ((numrms+1), field_name, rms_ene_flux, flag_r)
-      call set_enegy_fluxe_addresses                                    &
-     &   ((numave+1), field_name, ave_ene_flux, flag_a)
-      flag = (flag_r .and. flag_a)
-!
-      end subroutine energy_fluxes_monitor_address
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
@@ -322,39 +369,49 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_energy_flux_names(field_names)
+      subroutine set_energy_flux_names(n_comps, names, maths)
 !
-      character(len = kchara), intent(inout) :: field_names(nene_flux)
+      integer(kind = kint), intent(inout) :: n_comps(nene_flux)
+      character(len = kchara), intent(inout) :: names(nene_flux)
+      character(len = kchara), intent(inout) :: maths(nene_flux)
 !
 !
-      write(field_names( 1),'(a,a1)') trim(fhd_inertia_work), CHAR(0)
-      write(field_names( 2),'(a,a1)')                                   &
-     &                   trim(fhd_work_agst_Lorentz), CHAR(0)
-      write(field_names( 3),'(a,a1)') trim(fhd_Lorentz_work), CHAR(0)
-      write(field_names( 4),'(a,a1)')                                   &
-     &                   trim(fhd_mag_tension_work), CHAR(0)
+      call set_field_labels(inertia_work,                               &
+     &    n_comps( 1), names( 1), maths( 1))
+      call set_field_labels(work_against_Lorentz,                       &
+     &    n_comps( 2), names( 2), maths( 2))
+      call set_field_labels(Lorentz_work,                               &
+     &    n_comps( 3), names( 3), maths( 3))
+      call set_field_labels(mag_tension_work,                           &
+     &    n_comps( 4), names( 4), maths( 4))
+      call set_field_labels(buoyancy_flux,                              &
+     &    n_comps( 5), names( 5), maths( 5))
+      call set_field_labels(composite_buoyancy_flux,                    &
+     &    n_comps( 6), names( 6), maths( 6))
 !
-      write(field_names( 5),'(a,a1)') trim(fhd_buoyancy_flux), CHAR(0)
-      write(field_names( 6),'(a,a1)') trim(fhd_comp_buo_flux), CHAR(0)
+      call set_field_labels(magnetic_ene_generation,                    &
+     &    n_comps( 7), names( 7), maths( 7))
+      call set_field_labels(magnetic_stretch_flux,                      &
+     &    n_comps( 8), names( 8), maths( 8))
 !
-      write(field_names( 7),'(a,a1)') trim(fhd_mag_ene_gen), CHAR(0)
-      write(field_names( 8),'(a,a1)')                                   &
-     &                   trim(fhd_mag_stretch_flux), CHAR(0)
+      call set_field_labels(temp_generation,                            &
+     &    n_comps( 9), names( 9), maths( 9))
+      call set_field_labels(part_temp_gen,                              &
+     &    n_comps(10), names(10), maths(10))
+      call set_field_labels(comp_generation,                            &
+     &    n_comps(11), names(11), maths(11))
+      call set_field_labels(part_comp_gen,                              &
+     &    n_comps(12), names(12), maths(12))
 !
-      write(field_names( 9),'(a,a1)')                                   &
-     &                   trim(fhd_temp_generation), CHAR(0)
-      write(field_names(10),'(a,a1)') trim(fhd_part_temp_gen), CHAR(0)
-      write(field_names(11),'(a,a1)')                                   &
-     &                   trim(fhd_comp_generation), CHAR(0)
-      write(field_names(12),'(a,a1)') trim(fhd_part_comp_gen), CHAR(0)
+      call set_field_labels(viscous_ene_diffusion,                      &
+     &    n_comps(13), names(13), maths(13))
+      call set_field_labels(magnetic_ene_diffusion,                     &
+     &    n_comps(14), names(14), maths(14))
 !
-      write(field_names(13),'(a,a1)') trim(fhd_vis_ene_diffuse), CHAR(0)
-      write(field_names(14),'(a,a1)')                                   &
-     &                   trim(fhd_mag_ene_diffuse), CHAR(0)
-!
-      write(field_names(15),'(a,a1)') trim(fhd_press_work), CHAR(0)
-      write(field_names(16),'(a,a1)')                                   &
-     &                   trim(fhd_m_potential_work), CHAR(0)
+      call set_field_labels(pressure_work,                              &
+     &    n_comps(15), names(15), maths(15))
+      call set_field_labels(m_potential_work,                           &
+     &    n_comps(16), names(16), maths(16))
 !
       end subroutine set_energy_flux_names
 !

@@ -275,7 +275,7 @@
       end if
 !
 !   Old field label... Should be deleted later!!
-      if (     phys_nod_name_ctl .eq. fhd_buoyancy_work       ) then
+      if(phys_nod_name_ctl .eq. buoyancy_work%name) then
         iflag = 1
         icou = icou + 1
         phys_nod_name = fhd_buoyancy_flux
