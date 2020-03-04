@@ -106,9 +106,9 @@
      &    wk_sgs%ave_grad, wk_sgs%corrilate, wk_sgs%covariant,          &
      &    wk_sgs%corrilate_w, wk_sgs%covariant_w, wk_cor)
 !
-      call cal_model_coef_4_flux                                        &
-     &   (SGS_par%model_p%iflag_Csim_marging, layer_tbl, node, ele,     &
-     &    iphys, nod_fld, jacs%g_FEM, jacs%jac_3d, jacs%jac_3d_l,       &
+      call cal_model_coef_4_flux(SGS_par%model_p%iflag_Csim_marging,    &
+     &    layer_tbl, node, ele, iphys%SGS_wk, nod_fld,                  &
+     &    jacs%g_FEM, jacs%jac_3d, jacs%jac_3d_l,                       &
      &    n_tensor, ifield_d, icomp_f, n_int,                           &
      &    wk_sgs%nlayer, wk_sgs%num_kinds, wk_sgs%ntot_comp,            &
      &    wk_sgs%corrilate, wk_sgs%corrilate_w, wk_sgs%fld_coef,        &
@@ -296,7 +296,7 @@
 !
       call cal_model_coef_4_flux                                        &
     &    (SGS_par%model_p%iflag_Csim_marging, layer_tbl,                &
-     &    node, ele, iphys, nod_fld, g_FEM, jac_3d_q, jac_3d_l,         &
+     &    node, ele, iphys%SGS_wk, nod_fld, g_FEM, jac_3d_q, jac_3d_l,  &
      &    numdir, ifield_d, icomp_f, n_int,                             &
      &    wk_diff%nlayer, wk_diff%num_kinds, wk_diff%ntot_comp,         &
      &    wk_diff%corrilate, wk_diff%corrilate_w, wk_diff%fld_coef,     &
@@ -359,7 +359,7 @@
 !
       call cal_lsq_diff_coef                                            &
      &   (SGS_par%model_p%iflag_Csim_marging, iele_fsmp_stack,          &
-     &    node, ele, iphys, nod_fld, g_FEM, jac_3d_q, jac_3d_l,         &
+     &    node, ele, iphys%SGS_wk, nod_fld, g_FEM, jac_3d_q, jac_3d_l,  &
      &    numdir, ifield_d, icomp_f, n_int,                             &
      &    wk_diff%num_kinds, wk_diff%ntot_comp, wk_diff%corrilate_w,    &
      &    wk_diff%fld_whole, wk_diff%comp_whole, wk_lsq)

@@ -7,12 +7,12 @@
 !> @brief Change coordinate system for dynamic model
 !
 !!      subroutine cvt_vector_dynamic_scheme_coord                      &
-!!     &         (SGS_param, node, iphys, nod_fld)
+!!     &         (SGS_param, node, iSGS_wk, nod_fld)
 !!      subroutine cvt_tensor_dynamic_scheme_coord                      &
-!!     &         (SGS_param, node, iphys, nod_fld)
+!!     &         (SGS_param, node, iSGS_wk, nod_fld)
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(node_data), intent(in) :: node
-!!        type(phys_address), intent(in) :: iphys
+!!        type(dynamic_SGS_work_address), intent(in) :: iSGS_wk
 !!        type(phys_data), intent(inout) :: nod_fld
 !
       module cvt_dynamic_scheme_coord
@@ -34,33 +34,33 @@
 !  ---------------------------------------------------------------------
 !
       subroutine cvt_vector_dynamic_scheme_coord                        &
-     &         (SGS_param, node, iphys, nod_fld)
+     &         (SGS_param, node, iSGS_wk, nod_fld)
 !
 !
       use m_geometry_constants
       use t_SGS_control_parameter
       use t_geometry_data
-      use t_phys_address
+      use t_SGS_model_coef_labels
       use t_phys_data
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(node_data), intent(in) :: node
-      type(phys_address), intent(in) :: iphys
+      type(dynamic_SGS_work_address), intent(in) :: iSGS_wk
       type(phys_data), intent(inout) :: nod_fld
 !
 !
       if(SGS_param%icoord_Csim .eq. iflag_spherical) then
         call convert_dynamic_vectors_2_sph                              &
      &     (node%numnod, node%istack_nod_smp, node%xx,                  &
-     &      node%rr, node%ss, node%a_r, node%a_s,                       &
-     &      nod_fld%ntot_phys, iphys%SGS_wk%i_simi, iphys%SGS_wk%i_nlg, &
-     &      iphys%SGS_wk%i_wd_nlg, nod_fld%d_fld)
+     &      node%rr, node%ss, node%a_r, node%a_s, nod_fld%ntot_phys,    &
+     &      iSGS_wk%i_simi, iSGS_wk%i_nlg, iSGS_wk%i_wd_nlg,            &
+     &      nod_fld%d_fld)
       else if(SGS_param%icoord_Csim .eq. iflag_cylindrical) then
         call convert_dynamic_vectors_2_cyl                              &
      &     (node%numnod, node%istack_nod_smp, node%xx,                  &
      &      node%ss, node%a_s, nod_fld%ntot_phys,                       &
-     &      iphys%SGS_wk%i_simi, iphys%SGS_wk%i_nlg,                    &
-     &      iphys%SGS_wk%i_wd_nlg, nod_fld%d_fld)
+     &      iSGS_wk%i_simi, iSGS_wk%i_nlg, iSGS_wk%i_wd_nlg,            &
+     &      nod_fld%d_fld)
       end if
 !
       end subroutine cvt_vector_dynamic_scheme_coord
@@ -68,33 +68,33 @@
 !  ---------------------------------------------------------------------
 !
       subroutine cvt_tensor_dynamic_scheme_coord                        &
-     &         (SGS_param, node, iphys, nod_fld)
+     &         (SGS_param, node, iSGS_wk, nod_fld)
 !
       use m_machine_parameter
       use m_geometry_constants
       use t_SGS_control_parameter
       use t_geometry_data
-      use t_phys_address
+      use t_SGS_model_coef_labels
       use t_phys_data
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(node_data), intent(in) :: node
-      type(phys_address), intent(in) :: iphys
+      type(dynamic_SGS_work_address), intent(in) :: iSGS_wk
       type(phys_data), intent(inout) :: nod_fld
 !
 !
       if(SGS_param%icoord_Csim .eq. iflag_spherical) then
         call convert_dynamic_tensors_2_sph                              &
      &     (node%numnod, node%istack_nod_smp, node%xx,                  &
-     &      node%rr, node%ss, node%a_r, node%a_s,                       &
-     &      nod_fld%ntot_phys, iphys%SGS_wk%i_simi, iphys%SGS_wk%i_nlg, &
-     &      iphys%SGS_wk%i_wd_nlg, nod_fld%d_fld)
+     &      node%rr, node%ss, node%a_r, node%a_s, nod_fld%ntot_phys,    &
+     &      iSGS_wk%i_simi, iSGS_wk%i_nlg, iSGS_wk%i_wd_nlg,            &
+     &      nod_fld%d_fld)
       else if(SGS_param%icoord_Csim .eq. iflag_cylindrical) then
       call convert_dynamic_tensors_2_cyl                                &
      &     (node%numnod, node%istack_nod_smp, node%xx,                  &
      &      node%ss, node%a_s, nod_fld%ntot_phys,                       &
-     &      iphys%SGS_wk%i_simi, iphys%SGS_wk%i_nlg,                    &
-     &      iphys%SGS_wk%i_wd_nlg, nod_fld%d_fld)
+     &      iSGS_wk%i_simi, iSGS_wk%i_nlg, iSGS_wk%i_wd_nlg,            &
+     &      nod_fld%d_fld)
       end if
 !
       end subroutine cvt_tensor_dynamic_scheme_coord

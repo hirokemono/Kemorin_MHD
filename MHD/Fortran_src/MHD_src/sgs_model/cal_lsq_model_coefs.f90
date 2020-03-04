@@ -3,22 +3,23 @@
 !
 !     Written by H. Matsui on Oct. 2005
 !
-!!      subroutine cal_model_coef_4_flux(iflag_Csim_marging, layer_tbl, &
-!!     &          node, ele, iphys, nod_fld, g_FEM, jac_3d_q, jac_3d_l, &
+!!      subroutine cal_model_coef_4_flux                                &
+!!     &         (iflag_Csim_marging, layer_tbl, node, ele,             &
+!!     &          iSGS_wk, nod_fld, g_FEM, jac_3d_q, jac_3d_l,          &
 !!     &          numdir, ifield_d, icomp_f, n_int,                     &
 !!     &          nlayer_SGS, num_sgs_kinds, num_sgs_coefs,             &
 !!     &          cor_sgs, cor_sgs_w, sgs_f_coef, sgs_c_coef,           &
 !!     &          sgs_f_whole, sgs_c_whole, wk_lsq)
 !!      subroutine cal_lsq_diff_coef                                    &
-!!     &         (iflag_Csim_marging, iele_fsmp_stack,                  &
-!!     &          node, ele, iphys, nod_fld, g_FEM, jac_3d_q, jac_3d_l, &
+!!     &         (iflag_Csim_marging, iele_fsmp_stack, node, ele,       &
+!!     &          iSGS_wk, nod_fld, g_FEM, jac_3d_q, jac_3d_l,          &
 !!     &          numdir, ifield_d, icomp_f, n_int,                     &
 !!     &          num_diff_kinds, num_diff_coefs, cor_diff_w,           &
 !!     &          diff_f_whole, diff_c_whole, wk_lsq)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(layering_tbl), intent(in) :: layer_tbl
-!!        type(phys_address), intent(in) :: iphys
+!!        type(dynamic_SGS_work_address), intent(in) :: iSGS_wk
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
 !!        type(SGS_coefficients_type), intent(inout) :: diff_coefs
@@ -32,7 +33,7 @@
       use m_machine_parameter
 !
       use t_geometry_data
-      use t_phys_address
+      use t_SGS_model_coef_labels
       use t_phys_data
       use t_layering_ele_list
       use t_fem_gauss_int_coefs
@@ -53,8 +54,9 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine cal_model_coef_4_flux(iflag_Csim_marging, layer_tbl,   &
-     &          node, ele, iphys, nod_fld, g_FEM, jac_3d_q, jac_3d_l,   &
+      subroutine cal_model_coef_4_flux                                  &
+     &         (iflag_Csim_marging, layer_tbl, node, ele,               &
+     &          iSGS_wk, nod_fld, g_FEM, jac_3d_q, jac_3d_l,            &
      &          numdir, ifield_d, icomp_f, n_int,                       &
      &          nlayer_SGS, num_sgs_kinds, num_sgs_coefs,               &
      &          cor_sgs, cor_sgs_w, sgs_f_coef, sgs_c_coef,             &
@@ -66,7 +68,7 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(layering_tbl), intent(in) :: layer_tbl
-      type(phys_address), intent(in) :: iphys
+      type(dynamic_SGS_work_address), intent(in) :: iSGS_wk
       type(phys_data), intent(in) :: nod_fld
       type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
@@ -91,7 +93,7 @@
 !
 !
 !  Volume integration:                      int_vol_model_coef
-      call int_vol_model_coef(layer_tbl, node, ele, iphys%SGS_wk,       &
+      call int_vol_model_coef(layer_tbl, node, ele, iSGS_wk,            &
      &    nod_fld, g_FEM, jac_3d_q, jac_3d_l, numdir, n_int, wk_lsq)
 !
 !    model coefficients for each components: sum_lsq_coefs_4_comps
@@ -114,8 +116,8 @@
 !  ---------------------------------------------------------------------
 !
       subroutine cal_lsq_diff_coef                                      &
-     &         (iflag_Csim_marging, iele_fsmp_stack,                    &
-     &          node, ele, iphys, nod_fld, g_FEM, jac_3d_q, jac_3d_l,   &
+     &         (iflag_Csim_marging, iele_fsmp_stack, node, ele,         &
+     &          iSGS_wk, nod_fld, g_FEM, jac_3d_q, jac_3d_l,            &
      &          numdir, ifield_d, icomp_f, n_int,                       &
      &          num_diff_kinds, num_diff_coefs, cor_diff_w,             &
      &          diff_f_whole, diff_c_whole, wk_lsq)
@@ -124,7 +126,7 @@
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
-      type(phys_address), intent(in) :: iphys
+      type(dynamic_SGS_work_address), intent(in) :: iSGS_wk
       type(phys_data), intent(in) :: nod_fld
       type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
@@ -143,7 +145,7 @@
 !
 !
 !  Volume integration: int_vol_diff_coef
-      call int_vol_diff_coef(iele_fsmp_stack, node, ele, iphys%SGS_wk,  &
+      call int_vol_diff_coef(iele_fsmp_stack, node, ele, iSGS_wk,       &
      &    nod_fld, g_FEM, jac_3d_q, jac_3d_l, numdir, n_int, wk_lsq)
 !
       call sum_lsq_whole_coefs(ncomp_lsq, wk_lsq)

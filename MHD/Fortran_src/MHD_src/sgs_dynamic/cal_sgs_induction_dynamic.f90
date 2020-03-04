@@ -150,7 +150,7 @@
 !   Change coordinate
 !
       call cvt_vector_dynamic_scheme_coord                              &
-     &   (SGS_par%model_p, mesh%node, iphys, nod_fld)
+     &   (SGS_par%model_p, mesh%node, iphys%SGS_wk, nod_fld)
 !
 !     obtain model coefficient
 !
@@ -261,7 +261,7 @@
 !   Change coordinate
 !
       call cvt_vector_dynamic_scheme_coord                              &
-     &   (SGS_par%model_p, mesh%node, iphys, nod_fld)
+     &   (SGS_par%model_p, mesh%node, iphys%SGS_wk, nod_fld)
 !
 !     obtain model coefficient
 !
