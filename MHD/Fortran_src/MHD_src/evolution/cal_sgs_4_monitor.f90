@@ -419,31 +419,31 @@
 !$omp parallel
       if (iphys%true_SGS_eflux%i_SGS_Lor_wk .gt. 0) then
           call cal_phys_dot_product                                     &
-     &       (iphys%i_filter_velo, iphys%i_SGS_Lor_true,                &
+     &       (iphys%i_filter_velo, iphys%true_SGS%i_SGS_Lorentz,        &
      &        iphys%true_SGS_eflux%i_SGS_Lor_wk, nod_fld)
       end if
 !
       if (iphys%true_SGS_eflux%i_reynolds_wk .gt. 0) then
           call cal_phys_dot_product                                     &
-     &       (iphys%i_filter_velo, iphys%i_SGS_div_mf_true,             &
+     &       (iphys%i_filter_velo, iphys%true_div_SGS%i_SGS_m_flux,     &
      &        iphys%true_SGS_eflux%i_reynolds_wk, nod_fld)
       end if
 !
       if (iphys%true_SGS_eflux%i_SGS_temp_gen .gt. 0) then
           call cal_phys_product_4_scalar                                &
-     &       (iphys%i_filter_temp, iphys%i_SGS_div_hf_true,             &
+     &       (iphys%i_filter_temp, iphys%true_div_SGS%i_SGS_h_flux,     &
      &        iphys%true_SGS_eflux%i_SGS_temp_gen, nod_fld)
       end if
 !
       if (iphys%true_SGS_eflux%i_SGS_comp_gen .gt. 0) then
           call cal_phys_product_4_scalar                                &
-     &       (iphys%i_filter_temp, iphys%i_SGS_div_cf_true,             &
+     &       (iphys%i_filter_temp, iphys%true_div_SGS%i_SGS_c_flux,     &
      &        iphys%true_SGS_eflux%i_SGS_comp_gen, nod_fld)
       end if
 !
       if (iphys%true_SGS_eflux%i_SGS_me_gen .gt. 0) then
           call cal_phys_dot_product                                     &
-     &       (iphys%i_filter_magne, iphys%i_SGS_idct_true,              &
+     &       (iphys%i_filter_magne, iphys%true_SGS%i_SGS_induction,     &
      &        iphys%true_SGS_eflux%i_SGS_me_gen, nod_fld)
       end if
 !$omp end parallel

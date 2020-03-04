@@ -232,19 +232,12 @@
 !
         if ( field_name(i) .eq. fhd_geostrophic ) then
           iphys%i_geostrophic =  i0
-!
-        else if ( field_name(i) .eq. SGS_div_h_flux_true%name ) then
-          iphys%i_SGS_div_hf_true = i0
-        else if ( field_name(i) .eq. SGS_div_c_flux_true%name ) then
-          iphys%i_SGS_div_cf_true = i0
-        else if ( field_name(i) .eq. SGS_div_m_flux_true%name ) then
-          iphys%i_SGS_div_mf_true = i0
-        else if ( field_name(i) .eq. SGS_Lorentz_true%name ) then
-          iphys%i_SGS_Lor_true =    i0
-        else if ( field_name(i) .eq. SGS_mag_induction_true%name ) then
-          iphys%i_SGS_idct_true =   i0
         end if
 !
+        call set_true_SGS_term_addresses                                &
+     &     (i0, field_name(i), iphys%true_SGS, flag)
+        call set_true_div_SGS_term_addresses                            &
+     &     (i0, field_name(i), iphys%true_div_SGS, flag)
         call set_true_SGS_ene_flux_addresses                            &
      &     (i0, field_name(i), iphys%true_SGS_eflux, flag)
 !

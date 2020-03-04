@@ -134,8 +134,9 @@
          if ( nod_fld%phys_name(i) .eq. SGS_div_h_flux_true%name) then
            if(iflag_debug.gt.0) write(*,*)                              &
      &                         'lead  ', trim(nod_fld%phys_name(i) )
-           call cal_div_sgs_s_flux_true_pre(FEM_prm%iflag_temp_supg,    &
-     &         FEM_prm%npoint_t_evo_int, dt, iphys%i_SGS_div_hf_true,   &
+           call cal_div_sgs_s_flux_true_pre                             &
+     &        (FEM_prm%iflag_temp_supg, FEM_prm%npoint_t_evo_int, dt,   &
+     &         iphys%true_div_SGS%i_SGS_h_flux,                         &
      &         iphys%forces%i_h_flux, iphys%i_h_flux_div,               &
      &         iphys%i_filter_temp, iphys%i_filter_velo, FEM_prm,       &
      &         nod_comm, node, ele, fluid, ht_prop, nod_bcs%Tnod_bcs,   &
@@ -144,8 +145,9 @@
          else if(nod_fld%phys_name(i).eq.SGS_div_c_flux_true%name) then
            if(iflag_debug.gt.0) write(*,*)                              &
      &                         'lead  ', trim(nod_fld%phys_name(i) )
-           call cal_div_sgs_s_flux_true_pre(FEM_prm%iflag_comp_supg,    &
-     &         FEM_prm%npoint_t_evo_int, dt, iphys%i_SGS_div_cf_true,   &
+           call cal_div_sgs_s_flux_true_pre                             &
+     &        (FEM_prm%iflag_comp_supg, FEM_prm%npoint_t_evo_int, dt,   &
+     &         iphys%true_div_SGS%i_SGS_c_flux,                         &
      &         iphys%forces%i_c_flux, iphys%i_c_flux_div,               &
      &         iphys%i_filter_comp, iphys%i_filter_velo, FEM_prm,       &
      &         nod_comm, node, ele, fluid, cp_prop, nod_bcs%Cnod_bcs,   &
@@ -211,33 +213,38 @@
          if ( nod_fld%phys_name(i).eq.SGS_div_h_flux_true%name) then
            if(iflag_debug.gt.0) write(*,*)                              &
      &                         'lead  ', trim(nod_fld%phys_name(i) )
-           call cal_div_sgs_s_flux_true_post(iphys%i_SGS_div_hf_true,   &
+           call cal_div_sgs_s_flux_true_post                            &
+     &        (iphys%true_div_SGS%i_SGS_h_flux,                         &
      &         iphys%i_h_flux_div, iphys%SGS_wk%i_simi, filter_param,   &
      &         nod_comm, node, filtering, wk_filter, nod_fld)
          else if(nod_fld%phys_name(i).eq.SGS_div_c_flux_true%name) then
            if(iflag_debug.gt.0) write(*,*)                              &
      &                         'lead  ', trim(nod_fld%phys_name(i) )
-           call cal_div_sgs_s_flux_true_post(iphys%i_SGS_div_cf_true,   &
+           call cal_div_sgs_s_flux_true_post                            &
+     &        (iphys%true_div_SGS%i_SGS_c_flux,                         &
      &         iphys%i_c_flux_div, iphys%SGS_wk%i_simi, filter_param,   &
      &         nod_comm, node, filtering, wk_filter, nod_fld)
          else if ( nod_fld%phys_name(i).eq.SGS_div_m_flux_true%name)    &
      &          then
            if(iflag_debug.gt.0) write(*,*)                              &
      &                         'lead  ', trim(nod_fld%phys_name(i) )
-           call cal_div_sgs_tensor_true_post(iphys%i_SGS_div_mf_true,   &
+           call cal_div_sgs_tensor_true_post                            &
+     &        (iphys%true_div_SGS%i_SGS_m_flux,                         &
      &         iphys%i_m_flux_div, iphys%SGS_wk%i_simi, filter_param,   &
      &         nod_comm, node, filtering, wk_filter, nod_fld)
          else if(nod_fld%phys_name(i) .eq. SGS_Lorentz_true%name) then
            if(iflag_debug.gt.0) write(*,*)                              &
      &                         'lead  ', trim(nod_fld%phys_name(i) )
-           call cal_div_sgs_tensor_true_post(iphys%i_SGS_Lor_true,      &
+           call cal_div_sgs_tensor_true_post                            &
+     &        (iphys%true_SGS%i_SGS_Lorentz,                            &
      &         iphys%i_maxwell_div, iphys%SGS_wk%i_simi, filter_param,  &
      &         nod_comm, node, filtering, wk_filter, nod_fld)
          else if(nod_fld%phys_name(i) .eq. SGS_mag_induction_true%name) &
      &          then
            if(iflag_debug.gt.0) write(*,*)                              &
      &                         'lead  ', trim(nod_fld%phys_name(i) )
-           call cal_div_sgs_tensor_true_post(iphys%i_SGS_idct_true,     &
+           call cal_div_sgs_tensor_true_post                            &
+     &        (iphys%true_SGS%i_SGS_induction,                          &
      &         iphys%i_induct_div, iphys%SGS_wk%i_simi, filter_param,   &
      &         nod_comm, node, filtering, wk_filter, nod_fld)
          end if
@@ -348,7 +355,7 @@
      &    FEM_elens, diff_coefs, mlump_fl, mhd_fem_wk,                  &
      &    rhs_mat, nod_fld, ele_fld)
       call copy_vector_component(nod_fld,                               &
-     &    iphys%i_m_flux_div, iphys%i_SGS_div_mf_true)
+     &    iphys%i_m_flux_div, iphys%true_div_SGS%i_SGS_m_flux)
 !
       end subroutine cal_div_sgs_m_flux_true_pre
 !
@@ -403,7 +410,7 @@
      &    FEM_elens, diff_coefs, mlump_fl, mhd_fem_wk,                  &
      &    rhs_mat, nod_fld, ele_fld)
       call copy_vector_component(nod_fld,                               &
-     &   iphys%i_maxwell_div, iphys%i_SGS_Lor_true)
+     &   iphys%i_maxwell_div, iphys%true_SGS%i_SGS_Lorentz)
 !
       end subroutine cal_div_sgs_maxwell_true_pre
 !
@@ -460,7 +467,7 @@
      &    fem_int, FEM_elens, diff_coefs, mlump_cd,                     &
      &    mhd_fem_wk, rhs_mat, nod_fld)
       call copy_vector_component(nod_fld,                               &
-     &    iphys%i_induct_div, iphys%i_SGS_idct_true)
+     &    iphys%i_induct_div, iphys%true_SGS%i_SGS_induction)
 !
       end subroutine cal_div_sgs_induct_true_pre
 !

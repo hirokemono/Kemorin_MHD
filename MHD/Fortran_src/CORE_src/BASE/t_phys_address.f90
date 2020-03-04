@@ -239,23 +239,6 @@
 !!         @f$ \partial_{i} \left(e_{ijk} u_{j} B_{k} \right) @f$
         integer (kind=kint) :: i_induct_div =      izero
 !
-!>        start address for true divergence of SGS heat flux
-!!         @f$ \partial_{i} \left( \overline{u_{i}T} - \bar{u}_{i}\bar{T} \right) @f$
-        integer (kind=kint) :: i_SGS_div_hf_true = izero
-!>        start address for true divergence of SGS compostion flux
-!!         @f$ \partial_{i} \left( \overline{u_{i}C} - \bar{u}_{i}\bar{C} \right) @f$
-        integer (kind=kint) :: i_SGS_div_cf_true = izero
-!>        start address for true divergence of SGS momentum flux
-!!         @f$ \partial_{i} \left( \overline{u_{i}u_{j}} - \bar{u}_{i}\bar{u}_{j} \right) @f$
-        integer (kind=kint) :: i_SGS_div_mf_true = izero
-!>        start address for true divergence of SGS Maxwell tensor
-!!         @f$ \partial_{i} \left( \overline{B_{i}B_{j}} - \bar{B}_{i}\bar{B}_{j} \right) @f$
-        integer (kind=kint) :: i_SGS_Lor_true =    izero
-!>        start address for true divergence
-!>            of SGS magnetic induction tensor
-        integer (kind=kint) :: i_SGS_idct_true =   izero
-!
-!
 !>        Field address for geostrophic balance
 !!         @f$ -2 e_{ijk} \Omega_{j} u_{k} + \partial_{i} p @f$
       integer (kind=kint) :: i_geostrophic = izero

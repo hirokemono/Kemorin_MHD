@@ -335,17 +335,20 @@
      &                        field_ctl)) then
         call add_phys_name_ctl(fhd_filter_velo, field_ctl)
         call add_phys_name_ctl(fhd_filter_magne, field_ctl)
+        call add_phys_name_ctl(fhd_div_induct_t, field_ctl)
       end if
 !
       if(check_field_list_ctl(SGS_div_h_flux_true%name,              &
      &                        field_ctl)) then
         call add_phys_name_ctl(fhd_filter_velo, field_ctl)
         call add_phys_name_ctl(fhd_filter_temp, field_ctl)
-      end if
+        call add_phys_name_ctl(fhd_div_h_flux, field_ctl)
+        end if
       if(check_field_list_ctl(SGS_div_c_flux_true%name,              &
      &                        field_ctl)) then
         call add_phys_name_ctl(fhd_filter_velo, field_ctl)
         call add_phys_name_ctl(fhd_filter_comp, field_ctl)
+        call add_phys_name_ctl(fhd_div_c_flux, field_ctl)
       end if
 !
       end subroutine add_field_ctl_4_true_SGS

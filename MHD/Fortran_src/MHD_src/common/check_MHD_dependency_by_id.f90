@@ -250,38 +250,6 @@
         else if(i_start .eq. iphys%i_pc_flux_div) then 
           call check_missing_field                                      &
      &       (fld, i_start, iphys%forces%i_pc_flux, pert_comp_flux%name)
-!
-        else if(i_start .eq. iphys%i_SGS_div_hf_true) then 
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_filter_velo, fhd_filter_velo)
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_filter_temp, fhd_filter_temp)
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_h_flux_div, fhd_div_h_flux)
-        else if(i_start .eq. iphys%i_SGS_div_cf_true) then 
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_filter_velo, fhd_filter_velo)
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_filter_comp, fhd_filter_comp)
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_c_flux_div, fhd_div_c_flux)
-        else if(i_start .eq. iphys%i_SGS_div_mf_true) then 
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_filter_velo, fhd_filter_velo)
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_m_flux_div, fhd_div_m_flux)
-        else if(i_start .eq. iphys%i_SGS_Lor_true) then 
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_filter_magne, fhd_filter_magne)
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_maxwell_div, fhd_div_maxwell_t)
-        else if(i_start .eq. iphys%i_SGS_idct_true) then 
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_filter_velo, fhd_filter_velo)
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_filter_magne, fhd_filter_magne)
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_induct_div, fhd_div_induct_t)
         end if
       end do
 !

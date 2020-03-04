@@ -184,7 +184,7 @@
       flag = check_true_SGS_vector_terms(field_name)
       if(flag) then
         if(field_name .eq. SGS_Lorentz_true%name) then
-          true_SGS%i_SGS_Lorentz =    i_phys
+          true_SGS%i_SGS_Lorentz =   i_phys
         else if (field_name .eq. SGS_mag_induction_true%name) then
           true_SGS%i_SGS_induction = i_phys
         end if
