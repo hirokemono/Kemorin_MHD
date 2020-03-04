@@ -255,17 +255,6 @@
 !>            of SGS magnetic induction tensor
         integer (kind=kint) :: i_SGS_idct_true =   izero
 !
-!>        start address for temperature generation by true SGS heat flux
-        integer (kind=kint) :: i_SGS_t_gen_tr =    izero
-!>        start address for temperature generation by true SGS compostion flux
-        integer (kind=kint) :: i_SGS_c_gen_tr =    izero
-!>        start address for energy flux of true SGS induction
-        integer (kind=kint) :: i_SGS_me_gen_tr =   izero
-!>        start address for work of true SGS Lorentz force
-        integer (kind=kint) :: i_SGS_Lor_wk_tr =   izero
-!>        start address for work of true SGS Reynolds stress
-        integer (kind=kint) :: i_reynolds_wk_tr =  izero
-!
 !
 !>        Field address for geostrophic balance
 !!         @f$ -2 e_{ijk} \Omega_{j} u_{k} + \partial_{i} p @f$

@@ -282,29 +282,6 @@
      &       (fld, i_start, iphys%i_filter_magne, fhd_filter_magne)
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_induct_div, fhd_div_induct_t)
-        else if(i_start .eq. iphys%i_SGS_Lor_wk_tr) then 
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_velo, fhd_velo)
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_SGS_Lor_true, SGS_Lorentz_true%name)
-        else if(i_start .eq. iphys%i_reynolds_wk_tr) then 
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_velo, fhd_velo)
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_SGS_div_mf_true,                    &
-     &        SGS_div_m_flux_true%name)
-        else if(i_start .eq. iphys%i_SGS_t_gen_tr) then 
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_temp, fhd_temp)
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_SGS_div_hf_true,                    &
-     &        SGS_div_h_flux_true%name)
-        else if(i_start .eq. iphys%i_SGS_c_gen_tr) then 
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_light, fhd_light)
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_SGS_div_cf_true,                    &
-     &        SGS_div_c_flux_true%name)
         end if
       end do
 !

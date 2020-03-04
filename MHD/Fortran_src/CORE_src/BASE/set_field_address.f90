@@ -53,6 +53,7 @@
       use m_div_filtered_force_labels
       use m_diff_filter_vect_labels
       use m_wide_SGS_term_labels
+      use m_true_SGS_term_labels
 !
       integer(kind = kint), intent(in) :: istart_adress
       integer(kind = kint), intent(in) :: num_field
@@ -242,18 +243,10 @@
           iphys%i_SGS_Lor_true =    i0
         else if ( field_name(i) .eq. SGS_mag_induction_true%name ) then
           iphys%i_SGS_idct_true =   i0
-!
-        else if ( field_name(i) .eq. SGS_Lorentz_work_true%name ) then
-          iphys%i_SGS_Lor_wk_tr =  i0
-        else if ( field_name(i) .eq. Reynolds_work_true%name ) then
-          iphys%i_reynolds_wk_tr = i0
-        else if ( field_name(i) .eq. SGS_temp_flux_gen_true%name ) then
-          iphys%i_SGS_t_gen_tr =   i0
-        else if ( field_name(i) .eq. SGS_comp_flux_gen_true%name ) then
-          iphys%i_SGS_c_gen_tr =   i0
-        else if ( field_name(i) .eq. SGS_mag_induction_flux_true%name ) then
-          iphys%i_SGS_me_gen_tr =  i0
         end if
+!
+        call set_true_SGS_ene_flux_addresses                            &
+     &     (i0, field_name(i), iphys%true_SGS_eflux, flag)
 !
         if ( field_name(i) .eq. fhd_press_work ) then
           iphys%i_p_phi = i0
