@@ -88,11 +88,11 @@
      &    iphys%SGS_term%i_SGS_Lorentz, b_trns%SGS_term%i_SGS_Lorentz,  &
      &    trns_back)
 !   filtered induction
-      call add_field_name_4_sph_trns(ipol%SGS_term%i_SGS_induction,     &
+      call add_field_name_4_sph_trns(ipol%SGS_term%i_SGS_vp_induct,     &
      &    SGS_vecp_induction%name, SGS_vecp_induction%n_comp,           &
-     &    ipol%SGS_term%i_SGS_induction, itor%SGS_term%i_SGS_induction, &
-     &    iphys%SGS_term%i_SGS_induction,                               &
-     &    b_trns%SGS_term%i_SGS_induction, trns_back)
+     &    ipol%SGS_term%i_SGS_vp_induct, itor%SGS_term%i_SGS_vp_induct, &
+     &    iphys%SGS_term%i_SGS_vp_induct,                               &
+     &    b_trns%SGS_term%i_SGS_vp_induct, trns_back)
 !   filtered heat flux
       call add_field_name_4_sph_trns(ipol%SGS_term%i_SGS_h_flux,        &
      &    SGS_heat_flux%name, SGS_heat_flux%n_comp,                     &
@@ -168,11 +168,11 @@
      &    iphys%wide_SGS%i_SGS_Lorentz, b_trns%wide_SGS%i_SGS_Lorentz,  &
      &    trns_back)
 !   wide filtered induction
-      call add_field_name_4_sph_trns(ipol%wide_SGS%i_SGS_induction,     &
+      call add_field_name_4_sph_trns(ipol%wide_SGS%i_SGS_vp_induct,     &
      &    wide_SGS_vp_induction%name, wide_SGS_vp_induction%n_comp,     &
-     &    ipol%wide_SGS%i_SGS_induction, itor%wide_SGS%i_SGS_induction, &
-     &    iphys%wide_SGS%i_SGS_induction,                               &
-     &    b_trns%wide_SGS%i_SGS_induction, trns_back)
+     &    ipol%wide_SGS%i_SGS_vp_induct, itor%wide_SGS%i_SGS_vp_induct, &
+     &    iphys%wide_SGS%i_SGS_vp_induct,                               &
+     &    b_trns%wide_SGS%i_SGS_vp_induct, trns_back)
 !   wide filtered heat flux
       call add_field_name_4_sph_trns(ipol%wide_SGS%i_SGS_h_flux,        &
      &    wide_SGS_heat_flux%name, wide_SGS_heat_flux%n_comp,           &
@@ -211,11 +211,11 @@
      &    iphys%dble_SGS%i_SGS_Lorentz, b_trns%dble_SGS%i_SGS_Lorentz,  &
      &    trns_back)
 !   dual filtered induction
-      call add_field_name_4_sph_trns(ipol%dble_SGS%i_SGS_induction,     &
+      call add_field_name_4_sph_trns(ipol%dble_SGS%i_SGS_vp_induct,     &
      &    double_SGS_vp_induction%name, double_SGS_vp_induction%n_comp, &
-     &    ipol%dble_SGS%i_SGS_induction, itor%dble_SGS%i_SGS_induction, &
-     &    iphys%dble_SGS%i_SGS_induction,                               &
-     &    b_trns%dble_SGS%i_SGS_induction, trns_back)
+     &    ipol%dble_SGS%i_SGS_vp_induct, itor%dble_SGS%i_SGS_vp_induct, &
+     &    iphys%dble_SGS%i_SGS_vp_induct,                               &
+     &    b_trns%dble_SGS%i_SGS_vp_induct, trns_back)
 !   dual filtered heat flux
       call add_field_name_4_sph_trns(ipol%dble_SGS%i_SGS_h_flux,        &
      &    double_SGS_heat_flux%name, double_SGS_heat_flux%n_comp,       &

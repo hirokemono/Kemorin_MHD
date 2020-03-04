@@ -39,7 +39,7 @@
 !!   Csim_SGS_composit_buo    [Csim%i_SGS_comp_buo]:
 !!                                            SGS compositional buoyancy
 !!
-!!   Csim_SGS_induction       [Csim%i_SGS_induction]:
+!!   Csim_SGS_induction       [Csim%i_SGS_vp_induct]:
 !!                                            SGS induction  u \times 
 !!
 !! Work area for dynamic model in FEM_MHD
@@ -252,7 +252,7 @@
           Csim%i_SGS_comp_buo =   i_phys
 !
         else if (field_name .eq. Csim_SGS_induction%name) then
-          Csim%i_SGS_induction =   i_phys
+          Csim%i_SGS_vp_induct =   i_phys
         end if
       end if
 !

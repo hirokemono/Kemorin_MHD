@@ -26,7 +26,7 @@
 !!   wide_SGS_inertia           [wide_SGS%i_SGS_inertia]
 !!   wide_SGS_Lorentz           [wide_SGS%i_SGS_Lorentz]
 !!
-!!   wide_SGS_vp_induction      [wide_SGS%i_SGS_induction]
+!!   wide_SGS_vp_induction      [wide_SGS%i_SGS_vp_induct]
 !!
 !!   wide_SGS_heat_flux         [wide_SGS%i_SGS_h_flux]
 !!   wide_SGS_composit_flux     [wide_SGS%i_SGS_c_flux]
@@ -35,7 +35,7 @@
 !!   double_SGS_inertia         [dble_SGS%i_SGS_inertia]
 !!   double_SGS_Lorentz         [dble_SGS%i_SGS_Lorentz]
 !!
-!!   double_SGS_vp_induction    [dble_SGS%i_SGS_induction]
+!!   double_SGS_vp_induction    [dble_SGS%i_SGS_vp_induct]
 !!
 !!   double_SGS_heat_flux       [dble_SGS%i_SGS_h_flux]
 !!   double_SGS_composit_flux   [dble_SGS%i_SGS_c_flux]
@@ -203,7 +203,7 @@
           wide_SGS%i_SGS_Lorentz =    i_phys
 !
         else if (field_name .eq. wide_SGS_vp_induction%name) then
-          wide_SGS%i_SGS_induction =   i_phys
+          wide_SGS%i_SGS_vp_induct =   i_phys
         end if
       end if
 !
@@ -234,7 +234,7 @@
           dble_SGS%i_SGS_Lorentz =   i_phys
 !
         else if (field_name .eq. double_SGS_vp_induction%name) then
-          dble_SGS%i_SGS_induction = i_phys
+          dble_SGS%i_SGS_vp_induct = i_phys
         end if
       end if
 !

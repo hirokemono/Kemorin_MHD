@@ -11,15 +11,15 @@
 !!     &          bg_trns, fg_trns, trns_b_SGS, trns_f_SGS)
 !!       Input ::  fil_rtp(1,il_frc)
 !!               il_frc = SGS_term%i_SGS_inertia, SGS_term%i_SGS_Lorentz,
-!!                        SGS_term%i_SGS_induction, 
+!!                        SGS_term%i_SGS_vp_induct, 
 !!                        SGS_term%i_SGS_h_flux, SGS_term%i_SGS_c_flux
 !!                 frc_rtp(1,if_frc)
 !!               if_frc = SGS_term%i_SGS_inertia, SGS_term%i_SGS_Lorentz,
-!!                        SGS_term%i_SGS_induction, 
+!!                        SGS_term%i_SGS_vp_induct, 
 !!                        SGS_term%i_SGS_h_flux, SGS_term%i_SGS_c_flux
 !!       Output ::  fSGS_rtp(1,ig_frc)
 !!               ig_frc = SGS_term%i_SGS_inertia, SGS_term%i_SGS_Lorentz,
-!!                        SGS_term%i_SGS_induction,
+!!                        SGS_term%i_SGS_vp_induct,
 !!                        SGS_term%i_SGS_h_flux, SGS_term%i_SGS_c_flux
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(phys_address), intent(in) :: f_trns
@@ -31,7 +31,7 @@
 !!     &         (sph_rtp, MHD_prop, bd_trns, trns_b_DYNS)
 !!       Input ::  fil_rtp(1,il_frc)
 !!             il_frc = wide_SGS%i_SGS_inertia, wide_SGS%i_SGS_Lorentz,
-!!                      wide_SGS%i_SGS_induction, wide_SGS%i_SGS_h_flux, 
+!!                      wide_SGS%i_SGS_vp_induct, wide_SGS%i_SGS_h_flux, 
 !!                      wide_SGS%i_SGS_c_flux
 !!                 fld_rtp(1,ib_frc)
 !!             ib_frc = wide_filter_fld%i_velo, wide_filter_fld%i_vort,
@@ -39,7 +39,7 @@
 !!                   wide_filter_fld%i_temp, wide_filter_fld%i_light
 !!       Output ::  fil_rtp(1,il_frc)
 !!               il_frc = wide_SGS%i_SGS_inertia, wide_SGS%i_SGS_Lorentz,
-!!                        wide_SGS%i_SGS_induction, wide_SGS%i_SGS_h_flux, 
+!!                        wide_SGS%i_SGS_vp_induct, wide_SGS%i_SGS_h_flux, 
 !!                        wide_SGS%i_SGS_c_flux
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
@@ -115,13 +115,13 @@
      &      trns_f_SGS%fld_rtp(1,fg_trns%SGS_term%i_SGS_Lorentz))
       end if
 !
-      if(fg_trns%SGS_term%i_SGS_induction .gt. 0) then
+      if(fg_trns%SGS_term%i_SGS_vp_induct .gt. 0) then
         call subcract_X_product_w_coef_smp                              &
      &     (sph_rtp%nnod_rtp, MHD_prop%cd_prop%coef_induct,             &
-     &      trns_b_SGS%fld_rtp(1,bg_trns%SGS_term%i_SGS_induction),     &
+     &      trns_b_SGS%fld_rtp(1,bg_trns%SGS_term%i_SGS_vp_induct),     &
      &      trns_b_SGS%fld_rtp(1,bg_trns%i_filter_velo),                &
      &      trns_b_SGS%fld_rtp(1,bg_trns%i_filter_magne),               &
-     &      trns_f_SGS%fld_rtp(1,fg_trns%SGS_term%i_SGS_induction))
+     &      trns_f_SGS%fld_rtp(1,fg_trns%SGS_term%i_SGS_vp_induct))
       end if
 !
       if(fg_trns%SGS_term%i_SGS_h_flux .gt. 0) then
@@ -190,12 +190,12 @@
      &      trns_b_DYNS%fld_rtp(1,bd_trns%wide_SGS%i_SGS_Lorentz))
       end if
 !
-      if(bd_trns%wide_SGS%i_SGS_induction .gt. 0) then
+      if(bd_trns%wide_SGS%i_SGS_vp_induct .gt. 0) then
         call overwrt_sub_X_prod_w_coef_smp                              &
      &     (sph_rtp%nnod_rtp, MHD_prop%cd_prop%coef_induct,             &
      &      trns_b_DYNS%fld_rtp(1,bd_trns%wide_filter_fld%i_velo),      &
      &      trns_b_DYNS%fld_rtp(1,bd_trns%wide_filter_fld%i_magne),     &
-     &      trns_b_DYNS%fld_rtp(1,bd_trns%wide_SGS%i_SGS_induction))
+     &      trns_b_DYNS%fld_rtp(1,bd_trns%wide_SGS%i_SGS_vp_induct))
       end if
 !
       if(bd_trns%wide_SGS%i_SGS_h_flux .gt. 0) then

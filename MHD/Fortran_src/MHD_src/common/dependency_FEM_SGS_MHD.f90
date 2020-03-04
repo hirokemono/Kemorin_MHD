@@ -125,7 +125,7 @@
           call check_missing_field_w_msg                                &
      &       (fld, msg, iphys%SGS_term%i_SGS_induct_t)
           call check_missing_field_w_msg                                &
-     &       (fld, msg, iphys%SGS_term%i_SGS_induction)
+     &       (fld, msg, iphys%SGS_term%i_SGS_vp_induct)
         end if
       end if
 !
@@ -134,7 +134,7 @@
         if ( SGS_param%iflag_SGS_uxb .ne. id_SGS_none) then
           msg = 'solving SGS induction needs'
           call check_missing_field_w_msg                                &
-     &       (fld, msg, iphys%SGS_term%i_SGS_induction)
+     &       (fld, msg, iphys%SGS_term%i_SGS_vp_induct)
         end if
       end if
 !

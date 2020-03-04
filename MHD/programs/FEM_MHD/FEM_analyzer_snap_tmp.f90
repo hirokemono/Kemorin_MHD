@@ -360,7 +360,7 @@
      &    iphys%i_velo, n_vector, nod_fld%d_fld)
 !$omp end parallel
 !
-      if (iphys%SGS_term%i_SGS_induction .gt. 0) then
+      if (iphys%SGS_term%i_SGS_vp_induct .gt. 0) then
         if(iflag_debug.gt.0) write(*,*)                                 &
      &        'lead ', trim(SGS_vecp_induction%name)
         call cal_sgs_uxb_2_monitor                                      &
@@ -376,7 +376,7 @@
 
       end if
 !
-      if (iphys%rot_SGS%i_SGS_induction .gt. 0) then
+      if (iphys%rot_SGS%i_SGS_vp_induct .gt. 0) then
         if(iflag_debug.gt.0) write(*,*)                                 &
      &        'lead ', trim(SGS_induction%name)
         call int_vol_sgs_induction(FEM_prm, mesh%nod_comm,              &
@@ -389,7 +389,7 @@
 !$omp parallel
       if (iphys%SGS_ene_flux%i_SGS_me_gen .gt. 0) then
         call cal_phys_dot_product                                       &
-     &     (iphys%i_magne, iphys%rot_SGS%i_SGS_induction,               &
+     &     (iphys%i_magne, iphys%rot_SGS%i_SGS_vp_induct,               &
      &      iphys%SGS_ene_flux%i_SGS_me_gen, nod_fld)
       end if
 !$omp end parallel

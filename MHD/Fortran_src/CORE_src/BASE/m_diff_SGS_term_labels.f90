@@ -38,7 +38,7 @@
 !!   rot_SGS_inertia  [rot_SGS%i_SGS_inertia]: SGS inertia
 !!   rot_SGS_Lorentz  [rot_SGS%i_SGS_Lorentz]:   SGS Lorentz force
 !!
-!!   SGS_induction    [rot_SGS%i_SGS_induction]: SGS magneitic induction
+!!   SGS_induction    [rot_SGS%i_SGS_vp_induct]: SGS magneitic induction
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!@endverbatim
@@ -226,7 +226,7 @@
           rot_SGS%i_SGS_Lorentz =   i_phys
 !
         else if (field_name .eq. SGS_induction%name) then
-          rot_SGS%i_SGS_induction = i_phys
+          rot_SGS%i_SGS_vp_induct = i_phys
         end if
       end if
 !

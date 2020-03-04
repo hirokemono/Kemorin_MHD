@@ -64,13 +64,15 @@
      &                math = '$ \widetilde{B_{i}B_{j}}'                 &
      &                     // '  - \tilde{B}_{i}\tilde{B}_{j} $')
 !>        Field label for SGS magnetic induction tensor
+!!         @f$ \widetilde{u_{i}B_{j}} - \tilde{u}_{i}\tilde{B}_{j}
+!!           - \widetilde{B_{i}u_{j}} + \tilde{B}_{i}\tilde{u}_{j} @f$
       type(field_def), parameter :: SGS_induct_tensor                   &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'SGS_induct_tensor',                       &
      &                math = '$ \widetilde{u_{i}B_{j}}'                 &
-     &                     // '  - \tilde{u}_{i}\tilde{B}_{j}'          &
+     &                     // ' - \tilde{u}_{i}\tilde{B}_{j}'           &
      &                     // ' - \widetilde{B_{i}u_{j}}'               &
-     &                     // '  + \tilde{B}_{i}\tilde{u}_{j} $')
+     &                     // ' + \tilde{B}_{i}\tilde{u}_{j} $')
 !
 !>        Field label for SGS heat flux
 !!         @f$ \widetilde{u_{i}T} - \tilde{u}_{i}\tilde{T} @f$
@@ -163,7 +165,7 @@
 !>        start address for SGS induction for vector potential
 !!         @f$ e_{ijk} (\widetilde{u_{j}B_{k}}
 !!            - \tilde{u}_{j}\tilde{B}_{k}) @f$
-        integer (kind=kint) :: i_SGS_induction =   izero
+        integer (kind=kint) :: i_SGS_vp_induct =   izero
       end type SGS_term_address
 !
 ! ----------------------------------------------------------------------
@@ -253,7 +255,7 @@
           SGS_term%i_SGS_comp_buo =   i_phys
 !
         else if (field_name .eq. SGS_vecp_induction%name) then
-          SGS_term%i_SGS_induction =   i_phys
+          SGS_term%i_SGS_vp_induct =   i_phys
         end if
       end if
 !

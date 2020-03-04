@@ -111,7 +111,7 @@
      &      trns_f_SGS%fld_rtp)
       end if
 !
-      if(fg_trns%SGS_term%i_SGS_induction .gt. 0) then
+      if(fg_trns%SGS_term%i_SGS_vp_induct .gt. 0) then
         call sel_sph_SGS_induct_nl_gradient                             &
      &     (sph%sph_rtp, sph_filters, MHD_prop%cd_prop%coef_induct,     &
      &      b_trns%i_velo, b_trns%i_magne,                              &
@@ -123,7 +123,7 @@
      &      bn_trns%diff_vector%i_grad_by,                              &
      &      bn_trns%diff_vector%i_grad_bz,                              &
      &      trns_b_NLGD%ncomp, trns_b_NLGD%fld_rtp,                     &
-     &      fg_trns%SGS_term%i_SGS_induction, trns_f_SGS%ncomp,         &
+     &      fg_trns%SGS_term%i_SGS_vp_induct, trns_f_SGS%ncomp,         &
      &      trns_f_SGS%fld_rtp)
       end if
 !
@@ -216,7 +216,7 @@
      &      trns_f_DYNS%fld_rtp)
       end if
 !
-      if(fd_trns%wide_SGS%i_SGS_induction .gt. 0) then
+      if(fd_trns%wide_SGS%i_SGS_vp_induct .gt. 0) then
         call sel_sph_SGS_induct_nl_gradient                             &
      &     (sph%sph_rtp, wide_filters, MHD_prop%cd_prop%coef_induct,    &
      &      bg_trns%i_filter_velo, bg_trns%i_filter_magne,              &
@@ -228,7 +228,7 @@
      &      bd_trns%diff_fil_vect%i_grad_by,                            &
      &      bd_trns%diff_fil_vect%i_grad_bz,                            &
      &      trns_b_DYNG%ncomp, trns_b_DYNG%fld_rtp,                     &
-     &      fd_trns%wide_SGS%i_SGS_induction, trns_f_DYNS%ncomp,        &
+     &      fd_trns%wide_SGS%i_SGS_vp_induct, trns_f_DYNS%ncomp,        &
      &      trns_f_DYNS%fld_rtp)
       end if
 !

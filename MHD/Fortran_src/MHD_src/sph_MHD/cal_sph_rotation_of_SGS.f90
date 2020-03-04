@@ -176,8 +176,8 @@
       if(ipol%forces%i_induction .gt. 0) then
         if (iflag_debug .gt. 0) write(*,*) 'obtain magnetic induction'
         call const_sph_rotation_uxb(sph_rj, r_2nd, sph_bc_B, g_sph_rj,  &
-     &      ipol%SGS_term%i_SGS_induction,                              &
-     &      ipol%rot_SGS%i_SGS_induction, rj_fld)
+     &      ipol%SGS_term%i_SGS_vp_induct,                              &
+     &      ipol%rot_SGS%i_SGS_vp_induct, rj_fld)
       end if
 !
       end subroutine cal_rot_of_SGS_induction_sph
