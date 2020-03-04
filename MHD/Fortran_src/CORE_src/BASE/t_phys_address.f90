@@ -326,19 +326,6 @@
 !>        Square of composition @f$ C^{2} @f$
       integer (kind=kint) :: i_square_c = izero
 !
-!>        start address for SGS term by nonlinear gradient method
-!!        using fileterd field
-        integer (kind=kint) :: i_sgs_grad_f =      izero
-!>        start address for SGS term by turbulence diffusivity
-        integer (kind=kint) :: i_sgs_diffuse =     izero
-!
-!>        start address for temperature to obatin commutation error
-        integer (kind=kint) :: i_sgs_temp =        izero
-!>        start address for composition variation
-!!        to obatin commutation error
-        integer (kind=kint) :: i_sgs_composit =    izero
-!
-!
 !  divergence of momentum equations
 !
 !>        start address for divergence of advection

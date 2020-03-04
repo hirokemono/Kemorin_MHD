@@ -185,7 +185,7 @@
         call load_local_FEM_field_4_merge(istep,                        &
      &      asbl_param_u%org_fld_file,  ndomain_org, t_IO_m, org_fIO)
 !
-		call share_time_step_data(t_IO_m)
+        call share_time_step_data(t_IO_m)
         call assemble_field_data                                        &
      &     (ndomain_org, asbl_comm_u, new_fld, org_fIO)
 !

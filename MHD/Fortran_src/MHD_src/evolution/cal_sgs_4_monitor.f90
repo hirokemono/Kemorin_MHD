@@ -141,7 +141,7 @@
         call cal_sgs_heat_flux                                          &
      &     (FEM_prm%iflag_temp_supg, FEM_prm%npoint_t_evo_int, dt,      &
      &      SGS_param%iflag_SGS_h_flux, SGS_param%itype_Csym_h_flux,    &
-     &      iphys%i_sgs_temp, iphys%i_filter_temp,                      &
+     &      iphys%SGS_wk%i_sgs_temp, iphys%i_filter_temp,               &
      &      iphys%i_velo, iphys%i_filter_velo,                          &
      &      iphys%SGS_term%i_SGS_h_flux,                                &
      &      icomp_sgs%i_heat_flux, iphys_elediff%i_velo,                &
@@ -157,7 +157,7 @@
         call cal_sgs_heat_flux                                          &
      &     (FEM_prm%iflag_comp_supg, FEM_prm%npoint_t_evo_int, dt,      &
      &      SGS_param%iflag_SGS_c_flux, SGS_param%itype_Csym_c_flux,    &
-     &      iphys%i_sgs_composit, iphys%i_filter_comp,                  &
+     &      iphys%SGS_wk%i_sgs_composit, iphys%i_filter_comp,           &
      &      iphys%i_velo, iphys%i_filter_velo,                          &
      &      iphys%SGS_term%i_SGS_c_flux,                                &
      &      icomp_sgs%i_comp_flux, iphys_elediff%i_velo,                &

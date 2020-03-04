@@ -93,13 +93,13 @@
 !
       if (iflag_debug.eq.1)                                             &
      &     write(*,*) 'cal_sgs_sf_simi wide_filter_fld%i_temp'
-      call cal_sgs_sf_simi(iphys%i_sgs_grad_f,                          &
+      call cal_sgs_sf_simi(iphys%SGS_wk%i_wd_nlg,                       &
      &    ifield_f, ifield_w, ivelo, ivelo_f, icomp_sgs_flux,           &
      &    SGS_par%filter_p, mesh%nod_comm, mesh%node,                   &
      &    FEM_filters%wide_filtering, sgs_coefs_nod,                    &
      &    FEM_SGS_wk%wk_filter, nod_fld)
 !      call check_nodal_data                                            &
-!     &   ((50+my_rank), nod_fld, n_vector, iphys%i_sgs_grad_f)
+!     &   ((50+my_rank), nod_fld, n_vector, iphys%SGS_wk%i_wd_nlg)
 !
 !    SGS term by similarity model
 !

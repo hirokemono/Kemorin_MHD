@@ -227,7 +227,7 @@
         if (iflag_debug.eq.1) write(*,*) 'cal_sgs_m_flux_diffuse',      &
      &                                  iphys%SGS_term%i_SGS_m_flux
         call cal_sgs_m_flux_diffuse(iphys%i_velo,                       &
-     &      iphys%i_sgs_diffuse, iphys%SGS_term%i_SGS_m_flux, dt,       &
+     &      iphys%SGS_wk%i_wk_diffuse, iphys%SGS_term%i_SGS_m_flux, dt, &
      &      FEM_prm, nod_comm, node, ele, fluid, iphys_ele, ele_fld,    &
      &      jacs%g_FEM, jacs%jac_3d, rhs_tbl, mlump_fl, fem_wk,         &
      &      f_l, f_nl, nod_fld)
@@ -297,7 +297,7 @@
         if (iflag_debug.eq.1) write(*,*) 'cal_sgs_m_flux_diffuse',      &
      &                                  iphys%SGS_term%i_SGS_maxwell
         call cal_sgs_m_flux_diffuse(iphys%i_magne,                      &
-     &     iphys%i_sgs_diffuse, iphys%SGS_term%i_SGS_maxwell, dt,       &
+     &     iphys%SGS_wk%i_wk_diffuse, iphys%SGS_term%i_SGS_maxwell, dt, &
      &     FEM_prm, nod_comm, node, ele, fluid, iphys_ele, ele_fld,     &
      &     jacs%g_FEM, jacs%jac_3d, rhs_tbl, mlump_fl, fem_wk,          &
      &     f_l, f_nl, nod_fld)

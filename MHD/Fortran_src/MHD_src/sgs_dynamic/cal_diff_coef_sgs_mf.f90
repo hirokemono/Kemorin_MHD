@@ -115,11 +115,11 @@
      &    diff_coefs%num_field, iak_diff_mf, diff_coefs%ak)
       call clear_work_4_dynamic_model(iphys, nod_fld)
 !
-!   gradient model by filtered field (to iphys%i_sgs_grad_f)
+!   gradient model by filtered field (to iphys%SGS_wk%i_wd_nlg)
 !
       if (iflag_debug.gt.0)  write(*,*) 'cal_sgs_filter_m_flux_grad'
       call cal_sgs_m_flux_grad_w_coef                                   &
-     &   (ifilter_4delta, icomp_sgs_mf, iphys%i_sgs_grad_f,             &
+     &   (ifilter_4delta, icomp_sgs_mf, iphys%SGS_wk%i_wd_nlg,          &
      &    iphys%i_filter_velo, ie_dfvx, dt, FEM_prm, SGS_par%model_p,   &
      &    mesh%nod_comm, mesh%node, mesh%ele, fluid,                    &
      &    iphys_ele, ele_fld, fem_int%jcs, FEM_filters%FEM_elens,       &
@@ -130,7 +130,7 @@
 !
       if (iflag_debug.gt.0)  write(*,*) 'cal_div_sgs_filter_mf_simi'
       call cal_div_sgs_mf_simi(iphys%SGS_wk%i_simi,                     &
-     &    iphys%i_sgs_grad_f, iphys%i_filter_velo, dt,                  &
+     &    iphys%SGS_wk%i_wd_nlg, iphys%i_filter_velo, dt,               &
      &    FEM_prm, mesh%nod_comm, mesh%node, mesh%ele, fluid,           &
      &    iphys_ele, ele_fld, fem_int%jcs, fem_int%rhs_tbl,             &
      &    rhs_mat%fem_wk, mk_MHD%mlump_fl, rhs_mat%f_l, rhs_mat%f_nl,   &
@@ -163,7 +163,7 @@
 !      call check_nodal_data                                            &
 !     &   ((50+my_rank), nod_fld, n_vector, iphys%SGS_wk%i_simi)
 !
-!    obtain modeled commutative error  ( to iphys%i_sgs_grad_f)
+!    obtain modeled commutative error  ( to iphys%SGS_wk%i_wd_nlg)
 !
       if (iflag_debug.gt.0)  write(*,*) 'cal_commute_error_4_filter_mf'
       call cal_commute_error_4_mf                                       &
@@ -171,22 +171,22 @@
      &    mk_MHD%mlump_fl, mesh%node, mesh%ele, mesh%surf,              &
      &    group%surf_grp, fem_int%jcs, fem_int%rhs_tbl,                 &
      &    FEM_filters%FEM_elens, Vsf_bcs%sgs, ifilter_4delta,           &
-     &    iphys%i_sgs_grad_f, iphys%i_sgs_grad_f, iphys%i_filter_velo,  &
-     &    rhs_mat%fem_wk, rhs_mat%surf_wk, rhs_mat%f_l, rhs_mat%f_nl,   &
-     &    nod_fld)
+     &    iphys%SGS_wk%i_wd_nlg, iphys%SGS_wk%i_wd_nlg,                 &
+     &    iphys%i_filter_velo, rhs_mat%fem_wk, rhs_mat%surf_wk,         &
+     &    rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
 !
       if (iflag_debug.gt.0) write(*,*) 'delete_field_by_fixed_v_bc',    &
-     &                     iphys%i_sgs_grad_f
+     &                     iphys%SGS_wk%i_wd_nlg
       call delete_field_by_fixed_v_bc                                   &
-     &   (Vnod_bcs, iphys%i_sgs_grad_f, nod_fld)
+     &   (Vnod_bcs, iphys%SGS_wk%i_wd_nlg, nod_fld)
 !
       if (iflag_debug.gt.0)  write(*,*)                                 &
-     &      'vector_send_recv', iphys%i_sgs_grad_f
+     &      'vector_send_recv', iphys%SGS_wk%i_wd_nlg
       call vector_send_recv                                             &
-     &   (iphys%i_sgs_grad_f, mesh%nod_comm, nod_fld)
+     &   (iphys%SGS_wk%i_wd_nlg, mesh%nod_comm, nod_fld)
 !
 !      call check_nodal_data                                            &
-!     &   ((50+my_rank), nod_fld, n_vector, iphys%i_sgs_grad_f)
+!     &   ((50+my_rank), nod_fld, n_vector, iphys%SGS_wk%i_wd_nlg)
 !
 !    obtain modeled commutative error  ( to iphys%SGS_wk%i_nlg)
 !
