@@ -305,19 +305,8 @@
         call set_diff_filter_vect_addresses                             &
      &     (i0, field_name(i), iphys%diff_fil_vect, flag)
 !
-        if ( field_name(i) .eq. SGS_simi%name ) then
-          iphys%SGS_wk%i_simi =  i0
-        else if ( field_name(i) .eq. SGS_grad%name ) then
-          iphys%SGS_wk%i_nlg =   i0
-        else if ( field_name(i) .eq. SGS_grad_f%name ) then
-          iphys%SGS_wk%i_wd_nlg = i0
-        else if ( field_name(i) .eq. SGS_diffuse%name) then
-          iphys%SGS_wk%i_wk_diffuse =  i0
-        else if ( field_name(i) .eq. temp_4_SGS%name) then
-          iphys%SGS_wk%i_sgs_temp =    i0
-        else if ( field_name(i) .eq. comp_4_SGS%name) then
-          iphys%SGS_wk%i_sgs_composit = i0
-        end if
+        call set_dynamic_SGS_work_addresses                             &
+     &     (i0, field_name(i), iphys%SGS_wk, flag)
 !
         call set_wide_fil_vector_addresses                              &
      &     (i0, field_name(i), iphys%wide_filter_fld, flag)
