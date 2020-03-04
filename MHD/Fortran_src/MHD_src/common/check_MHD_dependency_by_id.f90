@@ -305,9 +305,6 @@
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_SGS_div_cf_true,                    &
      &        SGS_div_c_flux_true%name)
-        else if(i_start .eq. iphys%i_SGS_idct_true) then 
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_magne, fhd_magne)
         end if
       end do
 !

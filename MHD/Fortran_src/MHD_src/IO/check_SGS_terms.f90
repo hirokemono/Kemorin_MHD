@@ -13,6 +13,7 @@
 !!      subroutine add_field_ctl_4_SGS_ene_fluxes(field_ctl)
 !!      subroutine add_field_ctl_4_model_coefs(field_ctl)
 !!      subroutine add_field_ctl_4_force_w_SGS(field_ctl)
+!!      subroutine add_field_ctl_4_true_SGS(field_ctl)
 !!        type(ctl_array_c3), intent(inout) :: field_ctl
 !!@endverbatim
 !!
@@ -277,6 +278,77 @@
       end if
 !
       end subroutine add_field_ctl_4_force_w_SGS
+!
+! -----------------------------------------------------------------------
+!
+      subroutine add_field_ctl_4_true_SGS(field_ctl)
+!
+      use t_control_array_character3
+      use t_SGS_term_labels
+      use t_SGS_enegy_flux_labels
+      use m_true_SGS_term_labels
+      use m_diff_SGS_term_labels
+      use m_filtered_field_labels
+      use m_diff_force_labels
+      use add_nodal_fields_ctl
+!
+      type(ctl_array_c3), intent(inout) :: field_ctl
+!
+!
+      if(check_field_list_ctl(Reynolds_work_true%name, field_ctl)) then
+        call add_phys_name_ctl(fhd_filter_velo, field_ctl)
+        call add_phys_name_ctl(SGS_div_m_flux_true%name, field_ctl)
+      end if
+      if(check_field_list_ctl(SGS_Lorentz_work_true%name,               &
+     &                        field_ctl)) then
+        call add_phys_name_ctl(fhd_filter_velo, field_ctl)
+        call add_phys_name_ctl(SGS_Lorentz_true%name, field_ctl)
+      end if
+      if(check_field_list_ctl(SGS_mag_induction_flux_true%name,         &
+     &                        field_ctl)) then
+        call add_phys_name_ctl(fhd_filter_magne, field_ctl)
+        call add_phys_name_ctl(SGS_mag_induction_true%name, field_ctl)
+      end if
+!
+      if(check_field_list_ctl(SGS_temp_flux_gen_true%name,              &
+     &                        field_ctl)) then
+        call add_phys_name_ctl(fhd_filter_temp, field_ctl)
+        call add_phys_name_ctl(SGS_div_h_flux_true%name, field_ctl)
+      end if
+      if(check_field_list_ctl(SGS_comp_flux_gen_true%name,              &
+     &                        field_ctl)) then
+        call add_phys_name_ctl(fhd_filter_comp, field_ctl)
+        call add_phys_name_ctl(SGS_div_c_flux_true%name, field_ctl)
+      end if
+!
+!
+      if(check_field_list_ctl(SGS_div_m_flux_true%name, field_ctl)) then
+        call add_phys_name_ctl(fhd_filter_velo, field_ctl)
+        call add_phys_name_ctl(fhd_div_m_flux, field_ctl)
+      end if
+      if(check_field_list_ctl(SGS_Lorentz_true%name,               &
+     &                        field_ctl)) then
+        call add_phys_name_ctl(fhd_filter_magne, field_ctl)
+        call add_phys_name_ctl(fhd_div_maxwell_t, field_ctl)
+      end if
+      if(check_field_list_ctl(SGS_mag_induction_true%name,         &
+     &                        field_ctl)) then
+        call add_phys_name_ctl(fhd_filter_velo, field_ctl)
+        call add_phys_name_ctl(fhd_filter_magne, field_ctl)
+      end if
+!
+      if(check_field_list_ctl(SGS_div_h_flux_true%name,              &
+     &                        field_ctl)) then
+        call add_phys_name_ctl(fhd_filter_velo, field_ctl)
+        call add_phys_name_ctl(fhd_filter_temp, field_ctl)
+      end if
+      if(check_field_list_ctl(SGS_div_c_flux_true%name,              &
+     &                        field_ctl)) then
+        call add_phys_name_ctl(fhd_filter_velo, field_ctl)
+        call add_phys_name_ctl(fhd_filter_comp, field_ctl)
+      end if
+!
+      end subroutine add_field_ctl_4_true_SGS
 !
 ! -----------------------------------------------------------------------
 !

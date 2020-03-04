@@ -51,6 +51,7 @@
 !
       use t_SGS_term_labels
 !
+      use m_true_SGS_term_labels
       use m_rot_filtered_force_labels
       use m_div_filtered_force_labels
       use m_grad_filter_field_labels
@@ -104,11 +105,6 @@
      &  .or. (phys_nod_name_ctl .eq. fhd_geostrophic        )           &
      &      )   iflag = 1
 !
-      if (   (phys_nod_name_ctl .eq. SGS_div_m_flux_true%name)           &
-     &  .or. (phys_nod_name_ctl .eq. SGS_Lorentz_true%name   )           &
-     &  .or. (phys_nod_name_ctl .eq. SGS_mag_induction_true%name)           &
-     &      )   iflag = 1
-!
       if (   (phys_nod_name_ctl .eq. fhd_pre_mom            )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_pre_uxb            )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_chk_mom            )           &
@@ -125,6 +121,8 @@
      &   .or. check_div_SGS_flux_tensor(phys_nod_name_ctl)              &
      &   .or. check_rot_SGS_terms(phys_nod_name_ctl)                    &
      &   .or. check_force_w_SGS(phys_nod_name_ctl)                      &
+     &   .or. check_true_SGS_vector_terms(phys_nod_name_ctl)            &
+     &   .or. check_true_div_SGS_flux_tensor(phys_nod_name_ctl)         &
      &   .or. check_filtered_force(phys_nod_name_ctl)                   &
      &   .or. check_rot_fil_force(phys_nod_name_ctl)                    &
      &   .or. check_wide_filter_vector(phys_nod_name_ctl)               &
@@ -155,6 +153,7 @@
       use t_SGS_term_labels
       use t_SGS_model_coef_labels
 !
+      use m_true_SGS_term_labels
       use m_div_filtered_force_labels
       use m_grad_filter_field_labels
 !
@@ -224,13 +223,6 @@
      &   .or. (phys_nod_name_ctl .eq. fhd_part_comp_gen       )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_vis_ene_diffuse     )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_mag_ene_diffuse     )         &
-     &   .or. (phys_nod_name_ctl .eq. SGS_div_h_flux_true%name )         &
-     &   .or. (phys_nod_name_ctl .eq. SGS_div_c_flux_true%name )         &
-     &   .or. (phys_nod_name_ctl .eq. SGS_Lorentz_work_true%name )         &
-     &   .or. (phys_nod_name_ctl .eq. Reynolds_work_true%name  )         &
-     &   .or. (phys_nod_name_ctl .eq. SGS_temp_flux_gen_true%name   )         &
-     &   .or. (phys_nod_name_ctl .eq. SGS_comp_flux_gen_true%name   )         &
-     &   .or. (phys_nod_name_ctl .eq. SGS_mag_induction_flux_true%name  )         &
      &      )   iflag = 1
 !
       if (    (phys_nod_name_ctl .eq. fhd_div_inertia         )         &
@@ -266,6 +258,8 @@
      &   .or. check_div_SGS_flux_vector(phys_nod_name_ctl)              &
      &   .or. check_SGS_ene_fluxes(phys_nod_name_ctl)                   &
      &   .or. check_SGS_moedel_coefs(phys_nod_name_ctl)                 &
+     &   .or. check_true_div_SGS_flux_vector(phys_nod_name_ctl)         &
+     &   .or. check_true_SGS_ene_fluxes(phys_nod_name_ctl)              &
      &   .or. check_filtered_scallar_flux(phys_nod_name_ctl)            &
      &   .or. check_div_fil_force(phys_nod_name_ctl)                    &
      &   .or. check_filter_enegy_fluxes(phys_nod_name_ctl)              &

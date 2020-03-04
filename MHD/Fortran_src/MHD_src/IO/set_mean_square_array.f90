@@ -45,6 +45,7 @@
       use m_phys_constants
       use m_volume_average_labels
       use m_diff_SGS_term_labels
+      use m_true_SGS_term_labels
       use m_filtered_force_labels
       use m_dble_filter_field_labels
       use m_filtered_ene_flux_labels
@@ -456,52 +457,11 @@
             call set_rms_address_list(i, nod_fld, msq_list)
           end if
 !
-          if (field_name .eq. SGS_div_h_flux_true%name) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_SGS_div_hf_true,         &
-     &          i_rms%i_SGS_div_hf_true, j_ave%i_SGS_div_hf_true,       &
-     &          msq_list)
-          else if (field_name .eq. SGS_div_c_flux_true%name) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_SGS_div_cf_true,         &
-     &          i_rms%i_SGS_div_cf_true, j_ave%i_SGS_div_cf_true,       &
-     &          msq_list)
-          else if (field_name .eq. SGS_div_m_flux_true%name) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_SGS_div_mf_true,         &
-     &          i_rms%i_SGS_div_mf_true, j_ave%i_SGS_div_mf_true,       &
-     &          msq_list)
-          else if ( field_name .eq. SGS_Lorentz_true%name ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_SGS_Lor_true,            &
-     &          i_rms%i_SGS_Lor_true, j_ave%i_SGS_Lor_true, msq_list)
-          else if ( field_name .eq. SGS_mag_induction_true%name ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_SGS_idct_true,           &
-     &          i_rms%i_SGS_idct_true, j_ave%i_SGS_idct_true, msq_list)
-          end if
-!
-          if ( field_name .eq. SGS_Lorentz_work_true%name ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_SGS_Lor_wk_tr,           &
-     &          i_rms%i_SGS_Lor_wk_tr, j_ave%i_SGS_Lor_wk_tr, msq_list)
-          else if ( field_name .eq. Reynolds_work_true%name ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_reynolds_wk_tr,          &
-     &          i_rms%i_reynolds_wk_tr, j_ave%i_reynolds_wk_tr,         &
-     &          msq_list)
-          else if ( field_name .eq. SGS_temp_flux_gen_true%name ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_SGS_t_gen_tr,            &
-     &          i_rms%i_SGS_t_gen_tr, j_ave%i_SGS_t_gen_tr, msq_list)
-          else if ( field_name .eq. SGS_comp_flux_gen_true%name ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_SGS_c_gen_tr,            &
-     &          i_rms%i_SGS_c_gen_tr, j_ave%i_SGS_c_gen_tr, msq_list)
-          else if ( field_name .eq. SGS_mag_induction_flux_true%name ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_SGS_me_gen_tr,           &
-     &          i_rms%i_SGS_me_gen_tr, j_ave%i_SGS_me_gen_tr, msq_list)
+          if(      check_true_SGS_vector_terms(field_name)              &
+     &        .or. check_true_div_SGS_flux_vector(field_name)           &
+     &        .or. check_true_div_SGS_flux_tensor(field_name)           &
+     &        .or. check_true_SGS_ene_fluxes(field_name)) then
+            call set_rms_address_list(i, nod_fld, msq_list)
           end if
 !
           if ( field_name .eq. fhd_filter_vort ) then
