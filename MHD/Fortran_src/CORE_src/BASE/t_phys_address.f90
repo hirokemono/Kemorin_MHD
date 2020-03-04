@@ -452,10 +452,17 @@
         type(SGS_ene_flux_address) :: SGS_ene_flux
 !>        Structure of model coefficients
         type(SGS_term_address) :: Csim
-!>        Structure of force with SGS term
-        type(SGS_term_address) :: frc_w_SGS
 !>        Structure of work area for dynamic model
         type(dynamic_SGS_work_address) :: SGS_wk
+!
+!>        Structure of forces with SGS terms
+        type(SGS_term_address) :: frc_w_SGS
+!>        Structure of true SGS terms
+        type(SGS_term_address) :: true_SGS
+!>        Structure of divergence of true SGS terms
+        type(SGS_term_address) :: true_div_SGS
+!>        Structure of true SGS energy fluxes
+        type(SGS_ene_flux_address) :: true_SGS_eflux
 !
 !>        Structure of wide filtered SGS terms
         type(SGS_term_address) :: wide_SGS
