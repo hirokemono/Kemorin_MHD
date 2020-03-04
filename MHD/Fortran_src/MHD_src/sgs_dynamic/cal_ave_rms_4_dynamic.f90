@@ -89,7 +89,7 @@
       type(dynamic_correlation_data), intent(inout) :: wk_cor
 !
 !
-      call int_vol_rms_ave_dynamic(layer_tbl, node, ele, iphys,         &
+      call int_vol_rms_ave_dynamic(layer_tbl, node, ele, iphys%SGS_wk,  &
      &    nod_fld, g_FEM, jac_3d_q, jac_3d_l, numdir, n_int, wk_cor)
 !
       call sum_layerd_averages(layer_tbl%e_grp%num_grp, wk_cor)
@@ -149,7 +149,7 @@
 !
 !
       call int_vol_rms_ave_diff(iele_fsmp_stack,                        &
-     &    node, ele, iphys, nod_fld, g_FEM, jac_3d_q, jac_3d_l,         &
+     &    node, ele, iphys%SGS_wk, nod_fld, g_FEM, jac_3d_q, jac_3d_l,  &
      &    numdir, n_int, wk_cor)
 !
       call sum_whole_averages(wk_cor)

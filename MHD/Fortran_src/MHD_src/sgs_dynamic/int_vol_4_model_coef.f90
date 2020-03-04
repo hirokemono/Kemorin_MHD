@@ -1,36 +1,41 @@
-!
-!      module int_vol_4_model_coef
-!
-!     Written by H. Matsui on June, 2006
-!
-!  Volume integration: int_vol_model_coef
-!!      subroutine int_vol_model_coef(layer_tbl,                        &
-!!     &          node, ele, iphys, nod_fld, g_FEM, jac_3d_q, jac_3d_l, &
+!>@file   int_vol_4_model_coef.f90
+!!        module int_vol_4_model_coef
+!!
+!! @author H. Matsui
+!! @date   Programmed in June, 2006
+!!
+!!
+!> @brief Volume integration to evaluate model coefficients
+!!
+!!@verbatim
+!!      subroutine int_vol_model_coef(layer_tbl, node, ele,             &
+!!     &          iSGS_wk, nod_fld, g_FEM, jac_3d_q, jac_3d_l,          &
 !!     &          n_tensor, n_int, wk_lsq)
-!!      subroutine int_vol_diff_coef(iele_fsmp_stack,                   &
-!!     &          node, ele, iphys, nod_fld, g_FEM, jac_3d_q, jac_3d_l, &
+!!      subroutine int_vol_diff_coef(iele_fsmp_stack, node, ele,        &
+!!     &          iSGS_wk, nod_fld, g_FEM, jac_3d_q, jac_3d_l,          &
 !!     &          numdir, n_int, wk_lsq)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(layering_tbl), intent(in) :: layer_tbl
-!!        type(phys_address), intent(in) :: iphys
+!!        type(dynamic_SGS_work_address), intent(in) :: iSGS_wk
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
 !!        type(layering_tbl), intent(in) :: layer_tbl
 !!        type(dynamic_least_suare_data), intent(inout) :: wk_lsq
-!!      subroutine int_vol_rms_ave_dynamic(layer_tbl,                   &
-!!     &          node, ele, iphys, nod_fld, g_FEM, jac_3d_q, jac_3d_l, &
+!!      subroutine int_vol_rms_ave_dynamic(layer_tbl, node, ele,        &
+!!     &          iSGS_wk, nod_fld, g_FEM, jac_3d_q, jac_3d_l,          &
 !!     &          n_tensor, n_int, wk_cor)
-!!      subroutine int_vol_rms_ave_diff(iele_fsmp_stack,                &
-!!     &          node, ele, iphys, nod_fld, g_FEM, jac_3d_q, jac_3d_l, &
+!!      subroutine int_vol_rms_ave_diff(iele_fsmp_stack, node, ele,     &
+!!     &          iSGS_wk, nod_fld, g_FEM, jac_3d_q, jac_3d_l,          &
 !!     &          n_tensor, n_int, wk_cor)
-!!      subroutine int_vol_layer_correlate (layer_tbl,                  &
-!!     &          node, ele, iphys, nod_fld, g_FEM, jac_3d_q, jac_3d_l, &
+!!      subroutine int_vol_layer_correlate(layer_tbl, node, ele,        &
+!!     &          iSGS_wk, nod_fld, g_FEM, jac_3d_q, jac_3d_l,          &
 !!     &          n_tensor, n_int, ave_s, ave_g, wk_cor)
-!!      subroutine int_vol_diff_correlate(iele_fsmp_stack,              &
-!!     &          node, ele, iphys, nod_fld, g_FEM, jac_3d_q, jac_3d_l, &
+!!      subroutine int_vol_diff_correlate(iele_fsmp_stack, node, ele,   &
+!!     &          iSGS_wk, nod_fld, g_FEM, jac_3d_q, jac_3d_l,          &
 !!     &          numdir, n_int, ave_s, ave_g, wk_cor)
 !!        type(dynamic_correlation_data), intent(inout) :: wk_cor
+!!@endverbatim
 !
       module int_vol_4_model_coef
 !
@@ -41,7 +46,7 @@
       use m_geometry_constants
 !
       use t_geometry_data
-      use t_phys_address
+      use t_SGS_model_coef_labels
       use t_phys_data
       use t_layering_ele_list
       use t_fem_gauss_int_coefs
@@ -57,8 +62,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine int_vol_model_coef(layer_tbl,                          &
-     &          node, ele, iphys, nod_fld, g_FEM, jac_3d_q, jac_3d_l,   &
+      subroutine int_vol_model_coef(layer_tbl, node, ele,               &
+     &          iSGS_wk, nod_fld, g_FEM, jac_3d_q, jac_3d_l,            &
      &          n_tensor, n_int, wk_lsq)
 !
       use int_vol_model_coef_smp
@@ -68,7 +73,7 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(layering_tbl), intent(in) :: layer_tbl
-      type(phys_address), intent(in) :: iphys
+      type(dynamic_SGS_work_address), intent(in) :: iSGS_wk
       type(phys_data), intent(in) :: nod_fld
       type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
@@ -90,8 +95,8 @@
      &        layer_tbl%e_grp%num_grp, layer_tbl%e_grp%num_item,        &
      &        layer_tbl%e_grp%istack_grp_smp,                           &
      &        layer_tbl%e_grp%item_grp,                                 &
-     &        nod_fld%ntot_phys, nod_fld%d_fld, iphys%SGS_wk%i_simi,    &
-     &        iphys%SGS_wk%i_nlg, iphys%SGS_wk%i_wd_nlg,                &
+     &        nod_fld%ntot_phys, nod_fld%d_fld,                         &
+     &        iSGS_wk%i_simi, iSGS_wk%i_nlg, iSGS_wk%i_wd_nlg,          &
      &        wk_lsq%slocal_smp, wk_lsq%slocal, wk_lsq%wlocal)
         else
           call int_vol_model_coef_l(node%numnod, ele%numele,            &
@@ -101,8 +106,8 @@
      &        layer_tbl%e_grp%num_grp, layer_tbl%e_grp%num_item,        &
      &        layer_tbl%e_grp%istack_grp_smp,                           &
      &        layer_tbl%e_grp%item_grp,                                 &
-     &        nod_fld%ntot_phys, nod_fld%d_fld, iphys%SGS_wk%i_simi,    &
-     &        iphys%SGS_wk%i_nlg, iphys%SGS_wk%i_wd_nlg,                &
+     &        nod_fld%ntot_phys, nod_fld%d_fld,                         &
+     &        iSGS_wk%i_simi, iSGS_wk%i_nlg, iSGS_wk%i_wd_nlg,          &
      &        wk_lsq%slocal_smp, wk_lsq%slocal, wk_lsq%wlocal)
         end if
 !
@@ -118,8 +123,8 @@
      &        layer_tbl%e_grp%istack_grp,                               &
      &        layer_tbl%istack_item_layer_d_smp,                        &
      &        layer_tbl%e_grp%item_grp,                                 &
-     &        nod_fld%ntot_phys, nod_fld%d_fld, iphys%SGS_wk%i_simi,    &
-     &        iphys%SGS_wk%i_nlg, iphys%SGS_wk%i_wd_nlg,                &
+     &        nod_fld%ntot_phys, nod_fld%d_fld,                         &
+     &        iSGS_wk%i_simi, iSGS_wk%i_nlg, iSGS_wk%i_wd_nlg,          &
      &        wk_lsq%slocal_smp, wk_lsq%slocal, wk_lsq%wlocal)
         else
           call int_vol_model_coef_grpsmp_l(node%numnod, ele%numele,     &
@@ -130,8 +135,8 @@
      &        layer_tbl%e_grp%istack_grp,                               &
      &        layer_tbl%istack_item_layer_d_smp,                        &
      &        layer_tbl%e_grp%item_grp,                                 &
-     &        nod_fld%ntot_phys, nod_fld%d_fld, iphys%SGS_wk%i_simi,    &
-     &        iphys%SGS_wk%i_nlg, iphys%SGS_wk%i_wd_nlg,                &
+     &        nod_fld%ntot_phys, nod_fld%d_fld,                         &
+     &        iSGS_wk%i_simi, iSGS_wk%i_nlg, iSGS_wk%i_wd_nlg,          &
      &        wk_lsq%slocal_smp, wk_lsq%slocal, wk_lsq%wlocal)
         end if
       end if
@@ -141,8 +146,8 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine int_vol_diff_coef(iele_fsmp_stack,                     &
-     &          node, ele, iphys, nod_fld, g_FEM, jac_3d_q, jac_3d_l,   &
+      subroutine int_vol_diff_coef(iele_fsmp_stack, node, ele,          &
+     &          iSGS_wk, nod_fld, g_FEM, jac_3d_q, jac_3d_l,            &
      &          numdir, n_int, wk_lsq)
 !
       use int_vol_4_diff_coef
@@ -151,7 +156,7 @@
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
-      type(phys_address), intent(in) :: iphys
+      type(dynamic_SGS_work_address), intent(in) :: iSGS_wk
       type(phys_data), intent(in) :: nod_fld
       type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
@@ -168,16 +173,16 @@
      &      g_FEM%max_int_point, g_FEM%maxtot_int_3d, g_FEM%int_start3, &
      &      g_FEM%owe3d, jac_3d_q%ntot_int, n_int, jac_3d_q%xjac,       &
      &      jac_3d_q%an, nod_fld%ntot_phys, nod_fld%d_fld,              &
-     &      iphys%SGS_wk%i_simi, iphys%SGS_wk%i_nlg,                    &
-     &      iphys%SGS_wk%i_wd_nlg, wk_lsq%slocal_smp, wk_lsq%wlocal)
+     &      iSGS_wk%i_simi, iSGS_wk%i_nlg, iSGS_wk%i_wd_nlg,            &
+     &      wk_lsq%slocal_smp, wk_lsq%wlocal)
         else
         call int_vol_diff_coef_l(node%numnod, ele%numele,               &
      &      ele%ie, ele%interior_ele, iele_fsmp_stack, numdir,          &
      &      g_FEM%max_int_point, g_FEM%maxtot_int_3d, g_FEM%int_start3, &
      &      g_FEM%owe3d, jac_3d_l%ntot_int, n_int, jac_3d_l%xjac,       &
      &      jac_3d_l%an, nod_fld%ntot_phys, nod_fld%d_fld,              &
-     &      iphys%SGS_wk%i_simi, iphys%SGS_wk%i_nlg,                    &
-     &      iphys%SGS_wk%i_wd_nlg, wk_lsq%slocal_smp, wk_lsq%wlocal)
+     &      iSGS_wk%i_simi, iSGS_wk%i_nlg, iSGS_wk%i_wd_nlg,            &
+     &      wk_lsq%slocal_smp, wk_lsq%wlocal)
       end if
 !
       end subroutine int_vol_diff_coef
@@ -185,8 +190,8 @@
 !-----------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine int_vol_rms_ave_dynamic(layer_tbl,                     &
-     &          node, ele, iphys, nod_fld, g_FEM, jac_3d_q, jac_3d_l,   &
+      subroutine int_vol_rms_ave_dynamic(layer_tbl, node, ele,          &
+     &          iSGS_wk, nod_fld, g_FEM, jac_3d_q, jac_3d_l,            &
      &          n_tensor, n_int, wk_cor)
 !
       use int_vol_rms_dynamic_smp
@@ -194,7 +199,7 @@
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
-      type(phys_address), intent(in) :: iphys
+      type(dynamic_SGS_work_address), intent(in) :: iSGS_wk
       type(phys_data), intent(in) :: nod_fld
       type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
@@ -216,8 +221,8 @@
      &        layer_tbl%e_grp%num_grp, layer_tbl%e_grp%num_item,        &
      &        layer_tbl%e_grp%istack_grp_smp,                           &
      &        layer_tbl%e_grp%item_grp,                                 &
-     &        nod_fld%ntot_phys, nod_fld%d_fld, iphys%SGS_wk%i_simi,    &
-     &        iphys%SGS_wk%i_nlg, iphys%SGS_wk%i_wd_nlg,                &
+     &        nod_fld%ntot_phys, nod_fld%d_fld,                         &
+     &        iSGS_wk%i_simi, iSGS_wk%i_nlg, iSGS_wk%i_wd_nlg,          &
      &        wk_cor%ncomp_dble, wk_cor%ave_l_smp, wk_cor%rms_l_smp,    &
      &        wk_cor%ave_l, wk_cor%rms_l, wk_cor%ave_w, wk_cor%rms_w)
         else
@@ -229,8 +234,8 @@
      &        layer_tbl%e_grp%num_grp, layer_tbl%e_grp%num_item,        &
      &        layer_tbl%e_grp%istack_grp_smp,                           &
      &        layer_tbl%e_grp%item_grp,                                 &
-     &        nod_fld%ntot_phys, nod_fld%d_fld, iphys%SGS_wk%i_simi,    &
-     &        iphys%SGS_wk%i_nlg, iphys%SGS_wk%i_wd_nlg,                &
+     &        nod_fld%ntot_phys, nod_fld%d_fld,                         &
+     &        iSGS_wk%i_simi, iSGS_wk%i_nlg, iSGS_wk%i_wd_nlg,          &
      &        wk_cor%ncomp_dble, wk_cor%ave_l_smp, wk_cor%rms_l_smp,    &
      &        wk_cor%ave_l, wk_cor%rms_l, wk_cor%ave_w, wk_cor%rms_w)
         end if
@@ -246,8 +251,8 @@
      &      layer_tbl%e_grp%num_item, layer_tbl%e_grp%istack_grp,       &
      &      layer_tbl%istack_item_layer_d_smp,                          &
      &      layer_tbl%e_grp%item_grp,                                   &
-     &      nod_fld%ntot_phys, nod_fld%d_fld, iphys%SGS_wk%i_simi,      &
-     &      iphys%SGS_wk%i_nlg, iphys%SGS_wk%i_wd_nlg,                  &
+     &      nod_fld%ntot_phys, nod_fld%d_fld,                           &
+     &      iSGS_wk%i_simi, iSGS_wk%i_nlg, iSGS_wk%i_wd_nlg,            &
      &      wk_cor%ncomp_dble, wk_cor%ave_l_smp, wk_cor%rms_l_smp,      &
      &      wk_cor%ave_l, wk_cor%rms_l, wk_cor%ave_w, wk_cor%rms_w)
         else
@@ -259,8 +264,8 @@
      &      layer_tbl%e_grp%num_item, layer_tbl%e_grp%istack_grp,       &
      &      layer_tbl%istack_item_layer_d_smp,                          &
      &      layer_tbl%e_grp%item_grp,                                   &
-     &      nod_fld%ntot_phys, nod_fld%d_fld, iphys%SGS_wk%i_simi,      &
-     &      iphys%SGS_wk%i_nlg, iphys%SGS_wk%i_wd_nlg,                  &
+     &      nod_fld%ntot_phys, nod_fld%d_fld,                           &
+     &      iSGS_wk%i_simi, iSGS_wk%i_nlg, iSGS_wk%i_wd_nlg,            &
      &      wk_cor%ncomp_dble, wk_cor%ave_l_smp, wk_cor%rms_l_smp,      &
      &      wk_cor%ave_l, wk_cor%rms_l, wk_cor%ave_w, wk_cor%rms_w)
         end if
@@ -271,8 +276,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine int_vol_rms_ave_diff(iele_fsmp_stack,                  &
-     &          node, ele, iphys, nod_fld, g_FEM, jac_3d_q, jac_3d_l,   &
+      subroutine int_vol_rms_ave_diff(iele_fsmp_stack, node, ele,       &
+     &          iSGS_wk, nod_fld, g_FEM, jac_3d_q, jac_3d_l,            &
      &          n_tensor, n_int, wk_cor)
 !
       use t_work_layer_correlate
@@ -280,7 +285,7 @@
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
-      type(phys_address), intent(in) :: iphys
+      type(dynamic_SGS_work_address), intent(in) :: iSGS_wk
       type(phys_data), intent(in) :: nod_fld
       type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
@@ -296,9 +301,8 @@
      &      g_FEM%max_int_point, g_FEM%maxtot_int_3d, g_FEM%int_start3, &
      &      g_FEM%owe3d, jac_3d_q%ntot_int, n_int, jac_3d_q%xjac,       &
      &      jac_3d_q%an, nod_fld%ntot_phys, nod_fld%d_fld,              &
-     &      iphys%SGS_wk%i_simi, iphys%SGS_wk%i_nlg,                    &
-     &      iphys%SGS_wk%i_wd_nlg, wk_cor%ncomp_dble,                   &
-     &      wk_cor%ave_l_smp, wk_cor%rms_l_smp,                         &
+     &      iSGS_wk%i_simi, iSGS_wk%i_nlg, iSGS_wk%i_wd_nlg,            &
+     &      wk_cor%ncomp_dble, wk_cor%ave_l_smp, wk_cor%rms_l_smp,      &
      &      wk_cor%ave_w, wk_cor%rms_w)
       else
         call int_vol_rms_ave_d_l(node%numnod, ele%numele, ele%ie,       &
@@ -306,9 +310,8 @@
      &      g_FEM%max_int_point, g_FEM%maxtot_int_3d, g_FEM%int_start3, &
      &      g_FEM%owe3d, jac_3d_l%ntot_int, n_int, jac_3d_l%xjac,       &
      &      jac_3d_l%an, nod_fld%ntot_phys, nod_fld%d_fld,              &
-     &      iphys%SGS_wk%i_simi, iphys%SGS_wk%i_nlg,                    &
-     &      iphys%SGS_wk%i_wd_nlg, wk_cor%ncomp_dble,                   &
-     &      wk_cor%ave_l_smp, wk_cor%rms_l_smp,                         &
+     &      iSGS_wk%i_simi, iSGS_wk%i_nlg, iSGS_wk%i_wd_nlg,            &
+     &      wk_cor%ncomp_dble, wk_cor%ave_l_smp, wk_cor%rms_l_smp,      &
      &      wk_cor%ave_w, wk_cor%rms_w)
       end if
 !
@@ -316,8 +319,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine int_vol_layer_correlate (layer_tbl,                    &
-     &          node, ele, iphys, nod_fld, g_FEM, jac_3d_q, jac_3d_l,   &
+      subroutine int_vol_layer_correlate(layer_tbl, node, ele,          &
+     &          iSGS_wk, nod_fld, g_FEM, jac_3d_q, jac_3d_l,            &
      &          n_tensor, n_int, ave_s, ave_g, wk_cor)
 !
       use t_work_layer_correlate
@@ -326,7 +329,7 @@
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
-      type(phys_address), intent(in) :: iphys
+      type(dynamic_SGS_work_address), intent(in) :: iSGS_wk
       type(phys_data), intent(in) :: nod_fld
       type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
@@ -352,8 +355,7 @@
      &        layer_tbl%e_grp%num_grp, layer_tbl%e_grp%num_item,        &
      &        layer_tbl%e_grp%istack_grp_smp, layer_tbl%e_grp%item_grp, &
      &        ave_s, ave_g, nod_fld%ntot_phys, nod_fld%d_fld,           &
-     &        iphys%SGS_wk%i_simi, iphys%SGS_wk%i_nlg,                  &
-     &        iphys%SGS_wk%i_wd_nlg,                                    &
+     &        iSGS_wk%i_simi, iSGS_wk%i_nlg, iSGS_wk%i_wd_nlg,          &
      &        wk_cor%ncomp_sgl, wk_cor%ncomp_dble,                      &
      &        wk_cor%sig_l_smp, wk_cor%cor_l_smp, wk_cor%sig_l,         &
      &        wk_cor%cov_l, wk_cor%sig_w,  wk_cor%cov_w)
@@ -366,8 +368,7 @@
      &        layer_tbl%e_grp%num_grp, layer_tbl%e_grp%num_item,        &
      &        layer_tbl%e_grp%istack_grp_smp, layer_tbl%e_grp%item_grp, &
      &        ave_s, ave_g, nod_fld%ntot_phys, nod_fld%d_fld,           &
-     &        iphys%SGS_wk%i_simi, iphys%SGS_wk%i_nlg,                  &
-     &        iphys%SGS_wk%i_wd_nlg,                                    &
+     &        iSGS_wk%i_simi, iSGS_wk%i_nlg, iSGS_wk%i_wd_nlg,          &
      &        wk_cor%ncomp_sgl, wk_cor%ncomp_dble,                      &
      &        wk_cor%sig_l_smp, wk_cor%cor_l_smp, wk_cor%sig_l,         &
      &        wk_cor%cov_l, wk_cor%sig_w, wk_cor%cov_w)
@@ -385,10 +386,10 @@
      &      layer_tbl%istack_item_layer_d_smp,                          &
      &      layer_tbl%e_grp%item_grp,                                   &
      &      ave_s, ave_g, nod_fld%ntot_phys, nod_fld%d_fld,             &
-     &      iphys%SGS_wk%i_simi, iphys%SGS_wk%i_nlg,                    &
-     &      iphys%SGS_wk%i_wd_nlg, wk_cor%ncomp_sgl, wk_cor%ncomp_dble, &
-     &      wk_cor%sig_l_smp, wk_cor%cor_l_smp, wk_cor%sig_l,           &
-     &      wk_cor%cov_l, wk_cor%sig_w, wk_cor%cov_w)
+     &      iSGS_wk%i_simi, iSGS_wk%i_nlg, iSGS_wk%i_wd_nlg,            &
+     &      wk_cor%ncomp_sgl, wk_cor%ncomp_dble, wk_cor%sig_l_smp,      &
+     &      wk_cor%cor_l_smp, wk_cor%sig_l, wk_cor%cov_l,               &
+     &      wk_cor%sig_w, wk_cor%cov_w)
         else
           call int_vol_layer_cor_grpsmp_l(node%numnod,                  &
      &      ele%numele, ele%ie, ele%interior_ele, n_tensor,             &
@@ -399,10 +400,10 @@
      &      layer_tbl%istack_item_layer_d_smp,                          &
      &      layer_tbl%e_grp%item_grp,                                   &
      &      ave_s, ave_g, nod_fld%ntot_phys, nod_fld%d_fld,             &
-     &      iphys%SGS_wk%i_simi, iphys%SGS_wk%i_nlg,                    &
-     &      iphys%SGS_wk%i_wd_nlg, wk_cor%ncomp_sgl, wk_cor%ncomp_dble, &
-     &      wk_cor%sig_l_smp, wk_cor%cor_l_smp, wk_cor%sig_l,           &
-     &      wk_cor%cov_l, wk_cor%sig_w, wk_cor%cov_w)
+     &      iSGS_wk%i_simi, iSGS_wk%i_nlg, iSGS_wk%i_wd_nlg,            &
+     &      wk_cor%ncomp_sgl, wk_cor%ncomp_dble, wk_cor%sig_l_smp,      &
+     &      wk_cor%cor_l_smp, wk_cor%sig_l, wk_cor%cov_l,               &
+     &      wk_cor%sig_w, wk_cor%cov_w)
         end if
 !
       end if
@@ -411,15 +412,15 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_vol_diff_correlate(iele_fsmp_stack,                &
-     &          node, ele, iphys, nod_fld, g_FEM, jac_3d_q, jac_3d_l,   &
+      subroutine int_vol_diff_correlate(iele_fsmp_stack, node, ele,     &
+     &          iSGS_wk, nod_fld, g_FEM, jac_3d_q, jac_3d_l,            &
      &          numdir, n_int, ave_s, ave_g, wk_cor)
 !
       use int_vol_diff_correlate_smp
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
-      type(phys_address), intent(in) :: iphys
+      type(dynamic_SGS_work_address), intent(in) :: iSGS_wk
       type(phys_data), intent(in) :: nod_fld
       type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
@@ -442,8 +443,7 @@
      &      g_FEM%maxtot_int_3d, g_FEM%int_start3, g_FEM%owe3d,         &
      &      jac_3d_q%ntot_int, n_int, jac_3d_q%xjac, jac_3d_q%an,       &
      &      ave_s, ave_g, nod_fld%ntot_phys, nod_fld%d_fld,             &
-     &      iphys%SGS_wk%i_simi, iphys%SGS_wk%i_nlg,                    &
-     &      iphys%SGS_wk%i_wd_nlg,                                      &
+     &      iSGS_wk%i_simi, iSGS_wk%i_nlg, iSGS_wk%i_wd_nlg,            &
      &      wk_cor%ncomp_sgl, wk_cor%ncomp_dble, wk_cor%sig_l_smp,      &
      &      wk_cor%cor_l_smp, wk_cor%sig_w, wk_cor%cov_w)
         else
@@ -453,8 +453,7 @@
      &      g_FEM%maxtot_int_3d, g_FEM%int_start3, g_FEM%owe3d,         &
      &      jac_3d_l%ntot_int, n_int, jac_3d_l%xjac, jac_3d_l%an,       &
      &      ave_s, ave_g, nod_fld%ntot_phys, nod_fld%d_fld,             &
-     &      iphys%SGS_wk%i_simi, iphys%SGS_wk%i_nlg,                    &
-     &      iphys%SGS_wk%i_wd_nlg,                                      &
+     &      iSGS_wk%i_simi, iSGS_wk%i_nlg, iSGS_wk%i_wd_nlg,            &
      &      wk_cor%ncomp_sgl, wk_cor%ncomp_dble, wk_cor%sig_l_smp,      &
      &      wk_cor%cor_l_smp, wk_cor%sig_w, wk_cor%cov_w)
       end if

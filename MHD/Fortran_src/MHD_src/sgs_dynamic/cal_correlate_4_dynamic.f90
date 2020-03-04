@@ -83,9 +83,9 @@
       type(dynamic_correlation_data), intent(inout) :: wk_cor
 !
 !
-!  Volume integration:                        int_vol_layer_correlate
+!  Volume integration: int_vol_layer_correlate
       call int_vol_layer_correlate(layer_tbl,                           &
-     &    node, ele, iphys, nod_fld, g_FEM, jac_3d_q, jac_3d_l,         &
+     &    node, ele, iphys%SGS_wk, nod_fld, g_FEM, jac_3d_q, jac_3d_l,  &
      &    n_tensor, n_int, ave_sgs_simi(1,icomp_f),                     &
      &    ave_sgs_grad(1,icomp_f), wk_cor)
 !
@@ -136,7 +136,7 @@
 !
 !  Volume integration:                      int_vol_diff_correlate
       call int_vol_diff_correlate(iele_fsmp_stack,                      &
-     &    node, ele, iphys, nod_fld, g_FEM, jac_3d_q, jac_3d_l,         &
+     &    node, ele, iphys%SGS_wk, nod_fld, g_FEM, jac_3d_q, jac_3d_l,  &
      &    n_tensor, n_int, ave_diff_simi_w(icomp_f),                    &
      &    ave_diff_grad_w(icomp_f), wk_cor)
 !

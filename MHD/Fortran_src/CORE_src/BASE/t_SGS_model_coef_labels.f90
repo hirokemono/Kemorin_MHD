@@ -270,7 +270,8 @@
       logical, intent(inout) :: flag
 !
 !
-      flag = check_SGS_moedel_coefs(field_name)
+      flag =    check_dynamic_SGS_work(field_name)                      &
+     &    .or.  check_commute_SGS_work(field_name)
       if(flag) then
         if (field_name .eq. SGS_simi%name) then
           SGS_wk%i_simi =     i_phys
