@@ -230,9 +230,9 @@
           iphys%i_geostrophic =  i0
 !
         else if ( field_name(i) .eq. heat_flux_w_SGS%name ) then
-          iphys%i_h_flux_w_sgs =  i0
+          iphys%frc_w_SGS%i_SGS_h_flux =  i0
         else if ( field_name(i) .eq. compostion_flux_w_SGS%name ) then
-          iphys%i_c_flux_w_sgs =  i0
+          iphys%frc_w_SGS%i_SGS_c_flux =  i0
         else if ( field_name(i) .eq. intertia_w_SGS%name ) then
           iphys%i_inertia_w_sgs =  i0
         else if ( field_name(i) .eq. Lorentz_w_SGS%name ) then
@@ -242,9 +242,9 @@
         else if ( field_name(i) .eq. induction_w_SGS%name ) then
           iphys%i_mag_induct_w_sgs =  i0
         else if ( field_name(i) .eq. momentum_flux_w_SGS%name ) then
-          iphys%i_mom_flux_w_sgs =  i0
+          iphys%frc_w_SGS%i_SGS_m_flux =  i0
         else if ( field_name(i) .eq. maxwell_tensor_w_SGS%name ) then
-          iphys%i_maxwell_t_w_sgs =  i0
+          iphys%frc_w_SGS%i_SGS_maxwell =  i0
 !
         else if ( field_name(i) .eq. fhd_SGS_div_h_flux_true ) then
           iphys%i_SGS_div_hf_true = i0

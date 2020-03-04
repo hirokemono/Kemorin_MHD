@@ -67,16 +67,16 @@
       end if
 !
 !
-      if(ipol%i_h_flux_w_sgs .gt. 0) then
+      if(ipol%frc_w_SGS%i_SGS_h_flux .gt. 0) then
         call add_2_nod_vectors                                          &
      &     (rj_fld, ipol%forces%i_h_flux, ipol%SGS_term%i_SGS_h_flux,   &
-     &      ipol%i_h_flux_w_sgs)
+     &      ipol%frc_w_SGS%i_SGS_h_flux)
       end if
 !
-      if(ipol%i_c_flux_w_sgs .gt. 0) then
+      if(ipol%frc_w_SGS%i_SGS_c_flux .gt. 0) then
         call add_2_nod_vectors                                          &
      &     (rj_fld, ipol%forces%i_c_flux, ipol%SGS_term%i_SGS_c_flux,   &
-     &      ipol%i_c_flux_w_sgs)
+     &      ipol%frc_w_SGS%i_SGS_c_flux)
       end if
 !
       if(ipol%i_inertia_w_sgs .gt. 0) then
@@ -103,18 +103,23 @@
      &      ipol%SGS_term%i_SGS_induction, ipol%i_mag_induct_w_sgs)
       end if
 !
-      if(ipol%i_mom_flux_w_sgs .gt. 0) then
+      if(ipol%frc_w_SGS%i_SGS_m_flux .gt. 0) then
         call add_2_nod_tensors                                          &
      &     (rj_fld, ipol%forces%i_m_flux, ipol%SGS_term%i_SGS_m_flux,   &
-     &      ipol%i_mom_flux_w_sgs)
+     &      ipol%frc_w_SGS%i_SGS_m_flux)
       end if
 !
-      if(ipol%i_maxwell_t_w_sgs .gt. 0) then
+      if(ipol%frc_w_SGS%i_SGS_maxwell .gt. 0) then
         call add_2_nod_tensors                                          &
      &     (rj_fld, ipol%forces%i_maxwell, ipol%SGS_term%i_SGS_maxwell, &
-     &      ipol%i_maxwell_t_w_sgs)
+     &      ipol%frc_w_SGS%i_SGS_maxwell)
       end if
 !
+      if(ipol%frc_w_SGS%i_SGS_induct_t .gt. 0) then
+        call add_2_nod_tensors(rj_fld,                                  &
+     &      ipol%forces%i_induct_t, ipol%SGS_term%i_SGS_induct_t,       &
+     &      ipol%frc_w_SGS%i_SGS_induct_t)
+      end if
 !
       if(ipol%i_truncated_B .gt. 0) then
         call truncate_magnetic_field_4_view(ltr_crust, sph_rj, rj_fld,  &

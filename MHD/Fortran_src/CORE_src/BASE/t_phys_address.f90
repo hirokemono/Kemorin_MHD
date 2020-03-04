@@ -271,13 +271,6 @@
 !!         @f$ -2 e_{ijk} \Omega_{j} u_{k} + \partial_{i} p @f$
       integer (kind=kint) :: i_geostrophic = izero
 !
-!>        Field address for heat flux
-!!         @f$ u_{i} T + (\overline{u_{i}T} - \bar{u}_{i}\bar{T}) @f$
-      integer (kind=kint) :: i_h_flux_w_sgs = izero
-!>        Field address for compositinoal flux
-!!         @f$ u_{i} C + (\overline{u_{i}C} - \bar{u}_{i}\bar{C}) @f$
-      integer (kind=kint) :: i_c_flux_w_sgs = izero
-!
 !>        Field address for advection for momentum
 !!         @f$ u_{j} \partial_{j} u_{i}
 !!           + e_{ijk}\left(\overline{\omega_{j}u_{k}}
@@ -300,14 +293,6 @@
 !!                              - \bar{u}_{l}\bar{B}_{m} \right)) @f$
       integer (kind=kint) :: i_mag_induct_w_sgs = izero
 !
-!>        Field address for momentum flux
-!!         @f$ u_{i} u_{j}
-!!            + (\overline{u_{i}u_{j}} - \bar{u}_{i}\bar{u}_{j})@f$
-      integer (kind=kint) :: i_mom_flux_w_sgs = izero
-!>        Field address for momentum flux
-!!         @f$ B_{i} B_{j}
-!!            + (\overline{B_{i}B_{j}} - \bar{B}_{i}\bar{B}_{j})@f$
-      integer (kind=kint) :: i_maxwell_t_w_sgs = izero
 !
 !  Square of each component of fields
 !
@@ -490,6 +475,8 @@
         type(SGS_ene_flux_address) :: SGS_ene_flux
 !>        Structure of model coefficients
         type(SGS_term_address) :: Csim
+!>        Structure of force with SGS term
+        type(SGS_term_address) :: frc_w_SGS
 !>        Structure of work area for dynamic model
         type(dynamic_SGS_work_address) :: SGS_wk
 !

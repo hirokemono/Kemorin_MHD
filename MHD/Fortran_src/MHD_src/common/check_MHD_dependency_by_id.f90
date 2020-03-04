@@ -313,17 +313,7 @@
 !
       do i = 1, fld%num_phys
         i_start = fld%istack_component(i-1) + 1
-        if(i_start .eq. iphys%i_h_flux_w_sgs) then 
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%forces%i_h_flux, heat_flux%name)
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%SGS_term%i_SGS_h_flux, SGS_heat_flux%name)
-        else if(i_start .eq. iphys%i_c_flux_w_sgs) then 
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%forces%i_c_flux, composite_flux%name)
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%SGS_term%i_SGS_c_flux, SGS_composit_flux%name)
-        else if(i_start .eq. iphys%i_inertia_w_sgs) then 
+        if(i_start .eq. iphys%i_inertia_w_sgs) then 
           call check_missing_field                                      &
      &       (fld, i_start, iphys%forces%i_m_advect, inertia%name)
           call check_missing_field                                      &
@@ -348,14 +338,6 @@
      &       (fld, i_start, iphys%forces%i_induction, magnetic_induction%name)
           call check_missing_field                                      &
      &       (fld, i_start, iphys%SGS_term%i_SGS_induction, SGS_induction%name)
-        else if(i_start .eq. iphys%i_mom_flux_w_sgs) then 
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%forces%i_m_flux, momentum_flux%name)
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%SGS_term%i_SGS_m_flux, SGS_momentum_flux%name)
-        else if(i_start .eq. iphys%i_maxwell_t_w_sgs) then 
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%forces%i_maxwell, maxwell_tensor%name)
           call check_missing_field                                      &
      &       (fld, i_start, iphys%SGS_term%i_SGS_maxwell, SGS_maxwell_tensor%name)
         end if

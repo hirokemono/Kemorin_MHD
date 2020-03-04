@@ -110,12 +110,14 @@
 !
       call add_field_name_4_sph_trns_snap                               &
      &   (heat_flux_w_SGS%name, heat_flux_w_SGS%n_comp,                 &
-     &    ipol%i_h_flux_w_sgs, itor%i_h_flux_w_sgs,                     &
-     &    iphys%i_h_flux_w_sgs, b_trns%i_h_flux_w_sgs, trns_back)
+     &    ipol%frc_w_SGS%i_SGS_h_flux, itor%frc_w_SGS%i_SGS_h_flux,     &
+     &    iphys%frc_w_SGS%i_SGS_h_flux, b_trns%frc_w_SGS%i_SGS_h_flux,  &
+     &    trns_back)
       call add_field_name_4_sph_trns_snap                               &
      &   (compostion_flux_w_SGS%name, compostion_flux_w_SGS%n_comp,     &
-     &    ipol%i_c_flux_w_sgs, itor%i_c_flux_w_sgs,                     &
-     &    iphys%i_c_flux_w_sgs, b_trns%i_c_flux_w_sgs, trns_back)
+     &    ipol%frc_w_SGS%i_SGS_c_flux, itor%frc_w_SGS%i_SGS_c_flux,     &
+     &    iphys%frc_w_SGS%i_SGS_c_flux, b_trns%frc_w_SGS%i_SGS_c_flux,  &
+     &    trns_back)
       call add_field_name_4_sph_trns_snap                               &
      &   (intertia_w_SGS%name, intertia_w_SGS%n_comp,                   &
      &    ipol%i_inertia_w_sgs, itor%i_inertia_w_sgs,                   &
