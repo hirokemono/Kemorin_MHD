@@ -185,7 +185,7 @@
 !
         call set_base_force_addresses                                   &
      &     (i0, field_name(i), iphys%forces, flag)
-        call set_enegy_fluxe_addresses                                  &
+        call set_enegy_fluxes_addresses                                 &
      &     (i0, field_name(i), iphys%ene_flux, flag)
 !
         call set_SGS_term_addresses                                     &
@@ -220,20 +220,18 @@
         call set_true_SGS_ene_flux_addresses                            &
      &     (i0, field_name(i), iphys%true_SGS_eflux, flag)
 !
-        if ( field_name(i) .eq. pressure_work%name ) then
-          iphys%ene_flux%i_p_phi = i0
-        else if ( field_name(i) .eq. m_potential_work%name ) then
-          iphys%i_m_phi = i0
-        else if ( field_name(i) .eq. fhd_ref_temp ) then
+        if ( field_name(i) .eq. fhd_ref_temp ) then
           iphys%i_ref_t = i0
         else if ( field_name(i) .eq. fhd_ref_light ) then
           iphys%i_ref_c = i0
         end if
+        call set_work_4_poisson_addresses                               &
+     &     (i0, field_name(i), iphys%ene_flux, flag)
 !
         call set_gradient_field_addresses                               &
-      &     (i0, field_name(i), iphys%grad_fld, flag)
+     &     (i0, field_name(i), iphys%grad_fld, flag)
         call set_diff_vector_addresses                                  &
-      &     (i0, field_name(i), iphys%diff_vector, flag)
+     &     (i0, field_name(i), iphys%diff_vector, flag)
 !
         if      ( field_name(i) .eq. fhd_square_v ) then
           iphys%i_square_v = i0

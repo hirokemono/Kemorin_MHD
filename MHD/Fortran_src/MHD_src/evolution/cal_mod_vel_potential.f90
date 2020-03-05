@@ -260,9 +260,9 @@
      &    node, ele, surf, sf_grp, nod_fld, jacs%g_FEM,                 &
      &    jacs%jac_sf_grp_l, rhs_tbl, fem_wk, surf_wk, f_l)
 !
-      call int_vol_sk_mp_bc                                             &
-     &   (cmt_param%iflag_c_magne, SGS_param%ifilter_final,             &
-     &    FEM_prm%npoint_poisson_int, iphys%i_m_phi, iak_diff_b,        &
+      call int_vol_sk_mp_bc(cmt_param%iflag_c_magne,                    &
+     &    SGS_param%ifilter_final, FEM_prm%npoint_poisson_int,          &
+     &    iphys%ene_flux%i_m_phi, iak_diff_b,                           &
      &    node, ele, nod_fld, jacs%g_FEM, jacs%jac_3d_l, rhs_tbl,       &
      &    FEM_elens, diff_coefs, Bnod_bcs%nod_bc_f, fem_wk, f_l)
 !
@@ -275,11 +275,12 @@
      &    Fmatrix%MG_DJDS_table, Fmatrix%mat_MG_DJDS,                   &
      &    FEM_PRM%CG11_param%METHOD, FEM_PRM%CG11_param%PRECOND,        &
      &    FEM_prm%CG11_param%EPS, FEM_prm%CG11_param%MAXIT,             &
-     &    iphys%i_m_phi, MG_vector, f_l, b_vec, x_vec, nod_fld)
+     &    iphys%ene_flux%i_m_phi, MG_vector, f_l, b_vec, x_vec,         &
+     &    nod_fld)
 !
       if (iflag_debug .gt. 0)  write(*,*) 'set_boundary_m_phi'
       call set_boundary_scalar                                          &
-     &   (Bnod_bcs%nod_bc_f, iphys%i_m_phi, nod_fld)
+     &   (Bnod_bcs%nod_bc_f, iphys%ene_flux%i_m_phi, nod_fld)
 !
       end subroutine cal_electric_potential
 !
@@ -355,9 +356,9 @@
      &    jacs%g_FEM, jacs%jac_sf_grp_l, rhs_tbl,                       &
      &    Fsf_bcs%grad, FEM_prm%npoint_poisson_int, fem_wk, f_l)
 !
-      call int_vol_sk_mp_bc                                             &
-     &   (cmt_param%iflag_c_magne, SGS_param%ifilter_final,             &
-     &    FEM_prm%npoint_poisson_int, iphys%i_m_phi, iak_diff_b,        &
+      call int_vol_sk_mp_bc(cmt_param%iflag_c_magne,                    &
+     &    SGS_param%ifilter_final, FEM_prm%npoint_poisson_int,          &
+     &    iphys%ene_flux%i_m_phi, iak_diff_b,                           &
      &    node, ele, nod_fld, jacs%g_FEM, jacs%jac_3d_l, rhs_tbl,       &
      &    FEM_elens, diff_coefs, Bnod_bcs%nod_bc_f, fem_wk, f_l)
 !
@@ -369,10 +370,11 @@
      &    Fmatrix%MG_DJDS_table, Fmatrix%mat_MG_DJDS,                   &
      &    FEM_PRM%CG11_param%METHOD, FEM_PRM%CG11_param%PRECOND,        &
      &    FEM_prm%CG11_param%EPS, FEM_prm%CG11_param%MAXIT,             &
-     &    iphys%i_m_phi, MG_vector, f_l, b_vec, x_vec, nod_fld)
+     &    iphys%ene_flux%i_m_phi, MG_vector, f_l, b_vec, x_vec,         &
+     &    nod_fld)
 !
       call set_boundary_scalar                                          &
-     &   (Bnod_bcs%nod_bc_f, iphys%i_m_phi, nod_fld)
+     &   (Bnod_bcs%nod_bc_f, iphys%ene_flux%i_m_phi, nod_fld)
 !
       end subroutine cal_mag_potential
 !

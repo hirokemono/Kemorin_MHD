@@ -9,7 +9,7 @@
 !!
 !!@verbatim
 !!      logical function check_enegy_fluxes(field_name)
-!!      subroutine set_enegy_fluxe_addresses                            &
+!!      subroutine set_enegy_fluxes_addresses                           &
 !!     &         (i_phys, field_name, base_force, flag)
 !!        type(energy_flux_address), intent(inout) :: ene_flux
 !!
@@ -274,7 +274,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_enegy_fluxe_addresses                              &
+      subroutine set_enegy_fluxes_addresses                             &
      &         (i_phys, field_name, ene_flux, flag)
 !
       integer(kind = kint), intent(in) :: i_phys
@@ -322,7 +322,7 @@
         end if
       end if
 !
-      end subroutine set_enegy_fluxe_addresses
+      end subroutine set_enegy_fluxes_addresses
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------

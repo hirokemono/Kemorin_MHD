@@ -93,10 +93,6 @@
 !!         @f$ q_{S} @f$
         integer (kind=kint) :: i_entropy_source =  izero
 !
-!
-!>        start address for induction equation's potential
-!!         @f$  \varphi @f$
-        integer (kind=kint) :: i_m_phi =           izero
 !>        start address for reference temperature
 !!         @f$  T_{0} @f$
         integer (kind=kint) :: i_ref_t =           izero
