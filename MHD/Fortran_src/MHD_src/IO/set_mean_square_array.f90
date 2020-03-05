@@ -383,31 +383,7 @@
             call set_rms_address_list(i, nod_fld, msq_list)
           end if
 !
-          if ( field_name .eq. magnetic_ene_generation%name ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_me_gen,                  &
-     &          i_rms%i_me_gen, j_ave%i_me_gen, msq_list)
-          else if ( field_name .eq. Lorentz_work%name ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_ujb,                     &
-     &          i_rms%i_ujb, j_ave%i_ujb, msq_list)
-          else if ( field_name .eq. work_against_Lorentz%name ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_nega_ujb,                &
-     &          i_rms%i_nega_ujb, j_ave%i_nega_ujb, msq_list)
-          else if ( field_name .eq. mag_tension_work%name ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_m_tension_wk,            &
-     &          i_rms%i_m_tension_wk, j_ave%i_m_tension_wk, msq_list)
-          else if ( field_name .eq. buoyancy_flux%name ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_buo_gen,                 &
-     &          i_rms%i_buo_gen, j_ave%i_buo_gen, msq_list)
-          else if ( field_name .eq. composite_buoyancy_flux%name ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_c_buo_gen,               &
-     &          i_rms%i_c_buo_gen, j_ave%i_c_buo_gen, msq_list)
-          else if(check_filter_enegy_fluxes(field_name)) then
+          if(set_enegy_fluxe_addresses(field_name)) then
             call set_rms_address_list(i, nod_fld, msq_list)
           end if
 !
@@ -415,15 +391,11 @@
             call set_rms_address_list(i, nod_fld, msq_list)
           end if
 !
-          if ( field_name .eq. viscous_ene_diffusion%name ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_vis_e_diffuse,           &
-     &          i_rms%i_vis_e_diffuse, j_ave%i_vis_e_diffuse, msq_list)
-          else if ( field_name .eq. magnetic_ene_diffusion%name ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_mag_e_diffuse,           &
-     &          i_rms%i_mag_e_diffuse, j_ave%i_mag_e_diffuse, msq_list)
-          else if ( field_name .eq. fhd_div_h_flux ) then
+          if(check_filter_enegy_fluxes(field_name)) then
+            call set_rms_address_list(i, nod_fld, msq_list)
+          end if
+!
+          if ( field_name .eq. fhd_div_h_flux ) then
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_h_flux_div,              &
      &          i_rms%i_h_flux_div, j_ave%i_h_flux_div, msq_list)
@@ -439,18 +411,6 @@
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_pc_flux_div,             &
      &          i_rms%i_pc_flux_div, j_ave%i_pc_flux_div, msq_list)
-          else if ( field_name .eq. temp_generation%name ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_temp_gen,                &
-     &          i_rms%i_temp_gen, j_ave%i_temp_gen, msq_list)
-          else if ( field_name .eq. part_temp_gen%name ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_par_t_gen,               &
-     &          i_rms%i_par_t_gen, j_ave%i_par_t_gen, msq_list)
-          else if ( field_name .eq. part_comp_gen%name ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_par_c_gen,               &
-     &          i_rms%i_par_c_gen, j_ave%i_par_c_gen, msq_list)
           end if
 !
           if(check_SGS_ene_fluxes(field_name)) then
