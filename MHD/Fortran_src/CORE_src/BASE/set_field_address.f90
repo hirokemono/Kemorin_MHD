@@ -163,7 +163,7 @@
         else if (field_name(i) .eq. mag_tension_work%name) then
           iphys%ene_flux%i_m_tension_wk = i0
         else if (field_name(i) .eq. buoyancy_flux%name) then
-          iphys%i_buo_gen =   i0
+          iphys%ene_flux%i_buo_gen =   i0
         else if (field_name(i) .eq. composite_buoyancy_flux%name) then
           iphys%i_c_buo_gen = i0
         else if (field_name(i) .eq. viscous_ene_diffusion%name) then
@@ -385,7 +385,7 @@
 !
 !   Old field label... Should be deleted later!!
         if (field_name(i) .eq. buoyancy_work%name) then
-          iphys%i_buo_gen =   i0
+          iphys%ene_flux%i_buo_gen =   i0
         end if
 !
         i0 = i0 + num_component(i)

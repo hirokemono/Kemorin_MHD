@@ -170,9 +170,6 @@
 !>        start address for magnetic enerfy flux
 !>       @f$ B_{i}e_{ijk} \partial_{j} \left(e_{klm}u_{l}B_{m}\right) @f$
         integer (kind=kint) :: i_me_gen =          izero
-!>        start address for buoyancy flux
-!!         @f$ -u_{i} \alpha_{T} g_{i} T @f$
-        integer (kind=kint) :: i_buo_gen =         izero
 !>        start address for compositional buoyancy flux
 !!         @f$ -u_{i} \alpha_{c} g_{i} C @f$
         integer (kind=kint) :: i_c_buo_gen =       izero

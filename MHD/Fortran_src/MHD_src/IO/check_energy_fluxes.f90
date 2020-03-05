@@ -61,6 +61,7 @@
 !
       else if( (field_name .eq. buoyancy_flux%name)) then
         call add_phys_name_ctl(fhd_velo, field_ctl)
+        call add_phys_name_ctl(fhd_temp, field_ctl)
         call add_phys_name_ctl(buoyancy%name, field_ctl)
       else if( (field_name .eq. composite_buoyancy_flux%name)) then
         call add_phys_name_ctl(fhd_velo, field_ctl)
