@@ -317,10 +317,10 @@
      &      iphys%ene_flux%i_temp_gen, nod_fld)
       end if
 !
-      if (iphys%i_par_t_gen .gt. izero) then
+      if (iphys%ene_flux%i_par_c_gen .gt. izero) then
         call cal_phys_product_4_scalar                                  &
      &     (iphys%forces%i_ph_advect, iphys%i_per_temp,                 &
-     &      iphys%i_par_t_gen, nod_fld)
+     &      iphys%ene_flux%i_par_c_gen, nod_fld)
       end if
 !
       if (iphys%i_par_c_gen .gt. izero) then

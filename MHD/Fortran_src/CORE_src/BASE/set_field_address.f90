@@ -173,7 +173,7 @@
         else if (field_name(i) .eq. temp_generation%name) then
           iphys%ene_flux%i_temp_gen = i0
         else if (field_name(i) .eq. pert_temp_generation%name) then
-          iphys%i_par_t_gen = i0
+          iphys%ene_flux%i_par_c_gen = i0
         else if (field_name(i) .eq. pert_comp_generation%name) then
           iphys%i_par_c_gen = i0
 !
