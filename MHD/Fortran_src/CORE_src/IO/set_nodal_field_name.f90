@@ -179,8 +179,8 @@
      &      )   iflag = 1
 !
       if (    (phys_nod_name_ctl .eq. fhd_ref_temp            )         &
-     &   .or. (phys_nod_name_ctl .eq. fhd_press_work          )         &
-     &   .or. (phys_nod_name_ctl .eq. fhd_m_potential_work    )         &
+     &   .or. (phys_nod_name_ctl .eq. pressure_work%name          )         &
+     &   .or. (phys_nod_name_ctl .eq. m_potential_work%name    )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_density             )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_ref_light           )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_part_light          )         &
@@ -211,18 +211,18 @@
      &   .or. (phys_nod_name_ctl .eq. fhd_div_ph_flux         )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_div_c_flux          )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_div_pc_flux         )         &
-     &   .or. (phys_nod_name_ctl .eq. fhd_mag_ene_gen         )         &
-     &   .or. (phys_nod_name_ctl .eq. fhd_work_agst_Lorentz   )         &
-     &   .or. (phys_nod_name_ctl .eq. fhd_Lorentz_work        )         &
-     &   .or. (phys_nod_name_ctl .eq. fhd_mag_tension_work    )         &
-     &   .or. (phys_nod_name_ctl .eq. fhd_buoyancy_flux       )         &
-     &   .or. (phys_nod_name_ctl .eq. fhd_comp_buo_flux       )         &
-     &   .or. (phys_nod_name_ctl .eq. fhd_temp_generation     )         &
-     &   .or. (phys_nod_name_ctl .eq. fhd_part_temp_gen       )         &
+     &   .or. (phys_nod_name_ctl .eq. magnetic_ene_generation%name         )         &
+     &   .or. (phys_nod_name_ctl .eq. work_against_Lorentz%name   )         &
+     &   .or. (phys_nod_name_ctl .eq. Lorentz_work%name        )         &
+     &   .or. (phys_nod_name_ctl .eq. mag_tension_work%name    )         &
+     &   .or. (phys_nod_name_ctl .eq. buoyancy_flux%name       )         &
+     &   .or. (phys_nod_name_ctl .eq. composite_buoyancy_flux%name       )         &
+     &   .or. (phys_nod_name_ctl .eq. temp_generation%name     )         &
+     &   .or. (phys_nod_name_ctl .eq. part_temp_gen%name       )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_part_temp           )         &
-     &   .or. (phys_nod_name_ctl .eq. fhd_part_comp_gen       )         &
-     &   .or. (phys_nod_name_ctl .eq. fhd_vis_ene_diffuse     )         &
-     &   .or. (phys_nod_name_ctl .eq. fhd_mag_ene_diffuse     )         &
+     &   .or. (phys_nod_name_ctl .eq. part_comp_gen%name       )         &
+     &   .or. (phys_nod_name_ctl .eq. viscous_ene_diffusion%name     )         &
+     &   .or. (phys_nod_name_ctl .eq. magnetic_ene_diffusion%name     )         &
      &      )   iflag = 1
 !
       if (    (phys_nod_name_ctl .eq. fhd_div_inertia         )         &
@@ -278,7 +278,7 @@
       if(phys_nod_name_ctl .eq. buoyancy_work%name) then
         iflag = 1
         icou = icou + 1
-        phys_nod_name = fhd_buoyancy_flux
+        phys_nod_name = buoyancy_flux%name
         num_nod_component = 1
       end if
 !

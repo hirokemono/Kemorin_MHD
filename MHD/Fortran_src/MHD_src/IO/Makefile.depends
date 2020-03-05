@@ -22,7 +22,7 @@ check_double_filter_field.o: $(MHD_IO_DIR)/check_double_filter_field.f90 m_preci
 	$(F90) -c $(F90OPTFLAGS) $<
 check_ene_flux_w_symmetry.o: $(MHD_IO_DIR)/check_ene_flux_w_symmetry.f90 m_precision.o m_constants.o t_base_field_labels.o m_field_w_symmetry_labels.o m_energy_flux_w_sym_labels.o t_control_array_character3.o add_nodal_fields_ctl.o
 	$(F90) -c $(F90OPTFLAGS) $<
-check_energy_fluxes.o: $(MHD_IO_DIR)/check_energy_fluxes.f90 m_precision.o m_constants.o t_base_field_labels.o t_base_force_labels.o t_energy_flux_labels.o t_control_array_character3.o add_nodal_fields_ctl.o
+check_energy_fluxes.o: $(MHD_IO_DIR)/check_energy_fluxes.f90 m_precision.o m_constants.o t_base_field_labels.o t_base_force_labels.o t_energy_flux_labels.o t_control_array_character3.o t_diffusion_term_labels.o add_nodal_fields_ctl.o
 	$(F90) -c $(F90OPTFLAGS) $<
 check_field_w_symmetry.o: $(MHD_IO_DIR)/check_field_w_symmetry.f90 m_precision.o m_constants.o t_base_field_labels.o m_field_w_symmetry_labels.o t_control_array_character3.o add_nodal_fields_ctl.o
 	$(F90) -c $(F90OPTFLAGS) $<

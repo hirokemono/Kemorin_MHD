@@ -46,54 +46,48 @@
       type(ctl_array_c3), intent(inout) :: field_ctl
 !
 !
-      if( (field_name .eq. fhd_inertia_work) ) then
+      if( (field_name .eq. inertia_work%name) ) then
         call add_phys_name_ctl(fhd_velo, field_ctl)
         call add_phys_name_ctl(inertia%name, field_ctl)
-      else if( (field_name .eq. fhd_work_agst_Lorentz)                  &
-     &    .or. (field_name .eq. fhd_Lorentz_work)) then
+      else if( (field_name .eq. work_against_Lorentz%name)              &
+     &    .or. (field_name .eq. Lorentz_work%name)) then
         call add_phys_name_ctl(fhd_velo, field_ctl)
         call add_phys_name_ctl(Lorentz_force%name, field_ctl)
-      else if( (field_name .eq. fhd_mag_tension_work)) then
+      else if( (field_name .eq. mag_tension_work%name)) then
         call add_phys_name_ctl(fhd_velo, field_ctl)
         call add_phys_name_ctl(magnetic_tension%name, field_ctl)
 !
-      else if( (field_name .eq. fhd_buoyancy_flux)) then
+      else if( (field_name .eq. buoyancy_flux%name)) then
         call add_phys_name_ctl(fhd_velo, field_ctl)
         call add_phys_name_ctl(buoyancy%name, field_ctl)
-      else if( (field_name .eq. fhd_comp_buo_flux)) then
+      else if( (field_name .eq. composite_buoyancy_flux%name)) then
         call add_phys_name_ctl(fhd_velo, field_ctl)
         call add_phys_name_ctl(composite_buoyancy%name, field_ctl)
 !
-      else if( (field_name .eq. fhd_mag_ene_gen)) then
+      else if( (field_name .eq. magnetic_ene_generation%name)) then
         call add_phys_name_ctl(fhd_magne, field_ctl)
         call add_phys_name_ctl(magnetic_induction%name, field_ctl)
-      else if( (field_name .eq. fhd_mag_stretch_flux)) then
+      else if( (field_name .eq. magnetic_stretch_flux%name)) then
         call add_phys_name_ctl(fhd_magne, field_ctl)
         call add_phys_name_ctl(magnetic_stretch%name, field_ctl)
 !
-      else if( (field_name .eq. fhd_temp_generation)) then
+      else if( (field_name .eq. temp_generation%name)) then
         call add_phys_name_ctl(fhd_temp, field_ctl)
         call add_phys_name_ctl(heat_advect%name, field_ctl)
-      else if( (field_name .eq. fhd_part_temp_gen)) then
+      else if( (field_name .eq. part_temp_gen%name)) then
         call add_phys_name_ctl(fhd_part_temp, field_ctl)
         call add_phys_name_ctl(pert_heat_advect%name, field_ctl)
-      else if( (field_name .eq. fhd_comp_generation)) then
+      else if( (field_name .eq. comp_generation%name)) then
         call add_phys_name_ctl(fhd_light, field_ctl)
         call add_phys_name_ctl(composition_advect%name, field_ctl)
-      else if( (field_name .eq. fhd_part_comp_gen)) then
+      else if( (field_name .eq. part_comp_gen%name)) then
         call add_phys_name_ctl(fhd_part_light, field_ctl)
         call add_phys_name_ctl(pert_comp_advect%name, field_ctl)
 !
-      else if( (field_name .eq. fhd_vis_ene_diffuse)) then
+      else if( (field_name .eq. viscous_ene_diffusion%name)) then
         call add_phys_name_ctl(fhd_velo, field_ctl)
         call add_phys_name_ctl(fhd_viscous, field_ctl)
-      else if( (field_name .eq. fhd_mag_ene_diffuse)) then
-        call add_phys_name_ctl(fhd_magne, field_ctl)
-        call add_phys_name_ctl(fhd_mag_diffuse, field_ctl)
-!
-      else if( (field_name .eq. pressure_work%name)) then
-        call add_phys_name_ctl(fhd_press, field_ctl)
-      else if( (field_name .eq. m_potential_work%name)) then
+      else if( (field_name .eq. magnetic_ene_diffusion%name)) then
         call add_phys_name_ctl(fhd_magne, field_ctl)
         call add_phys_name_ctl(fhd_mag_diffuse, field_ctl)
       end if

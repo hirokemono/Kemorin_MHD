@@ -1,5 +1,5 @@
-!> @file  buoyancy_flux.f90
-!!      module buoyancy_flux
+!> @file  cal_buoyancy_flux.f90
+!!      module cal_buoyancy_flux
 !!
 !! @author  H. Matsui
 !! @date Programmed in June, 2005
@@ -7,13 +7,13 @@
 !> @brief Evaluate buoyancy flux
 !!
 !!@verbatim
-!!      subroutine cal_gravity_flux(node, i_grav, coef, grav,           &
+!!      subroutine sel_buoyancy_flux(node, i_grav, coef, grav,          &
 !!     &          i_velo, i_scalar, i_flux, nod_fld)
 !!        type(node_data), intent(in) :: node
 !!        type(phys_data), intent(inout) :: nod_fld
 !!@endverbatim
 !
-      module buoyancy_flux
+      module cal_buoyancy_flux
 !
       use m_precision
       use m_machine_parameter
@@ -29,7 +29,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_gravity_flux(node, i_grav, coef, grav,             &
+      subroutine sel_buoyancy_flux(node, i_grav, coef, grav,            &
      &          i_velo, i_scalar, i_flux, nod_fld)
 !
       use t_geometry_data
@@ -62,7 +62,7 @@
      &      nod_fld%d_fld)
       end if
 !
-      end subroutine cal_gravity_flux
+      end subroutine sel_buoyancy_flux
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
@@ -162,4 +162,4 @@
 !
 ! -----------------------------------------------------------------------
 !
-      end module buoyancy_flux
+      end module cal_buoyancy_flux

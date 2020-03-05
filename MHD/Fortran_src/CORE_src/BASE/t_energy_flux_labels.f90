@@ -69,32 +69,24 @@
 !
 !>        Field label of work of inertia
 !!         @f$ -u_{i} (e_{ijk} \omega_{j} u_{k}) @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_inertia_work = 'inertia_work'
       type(field_def), parameter :: inertia_work                        &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'inertia_work',                            &
      &                math = '$ -u_{i} (e_{ijk} \omega_{j} u_{k}) $')
 !>        Field label of work against Lorentz force
 !!         @f$ - u_{i} (e_{ijk} J_{j} B_{k}) @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_work_agst_Lorentz = 'work_against_Lorentz'
       type(field_def), parameter :: work_against_Lorentz                &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'work_against_Lorentz',                    &
      &                math = '$ -u_{i} (e_{ijk} J_{j} B_{k}) $')
 !>        Field label of work of Lorentz force
 !!         @f$ u_{i} \left( e_{ijk} J_{j} B_{k} \right) @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_Lorentz_work =      'Lorentz_work'
       type(field_def), parameter :: Lorentz_work                        &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'Lorentz_work',                            &
      &                math = '$  u_{i} (e_{ijk} J_{j} B_{k}) $')
 !>        Field address of work of magnetic tension
 !!         @f$ u_{i} (B_{j} \partial_{j}) B_{i} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_mag_tension_work =  'mag_tension_work'
       type(field_def), parameter :: mag_tension_work                    &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'mag_tension_work',                        &
@@ -102,16 +94,12 @@
 !
 !>        Field label of buoyancy flux
 !!         @f$ -u_{i} \alpha_{T} g_{i} T @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_buoyancy_flux =     'buoyancy_flux'
       type(field_def), parameter :: buoyancy_flux                       &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'buoyancy_flux',                           &
      &                math = '$ -u_{i} \alpha_{T} g_{i} T $')
 !>        Field label of compositional buoyancy flux
 !!         @f$ -u_{i} \alpha_{c} g_{i} C @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_comp_buo_flux =     'composite_buoyancy_flux'
       type(field_def), parameter :: composite_buoyancy_flux             &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'composite_buoyancy_flux',                 &
@@ -119,8 +107,6 @@
 !!
 !>        Field label of magnetic energy flux
 !>       @f$ B_{i}e_{ijk} \partial_{j} (e_{klm}u_{l}B_{m}) @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_mag_ene_gen =       'magnetic_ene_generation'
       type(field_def), parameter :: magnetic_ene_generation             &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'magnetic_ene_generation',                 &
@@ -128,8 +114,6 @@
      &                    // ' (e_{klm}u_{l}B_{m}) $')
 !>        Field label of energy flux of magnetic stretch term
 !!       @f$ B_{i} (B_{j} \partial_{j} u_{i}) @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_mag_stretch_flux =   'magnetic_stretch_flux'
       type(field_def), parameter :: magnetic_stretch_flux               &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'magnetic_stretch_flux',                   &
@@ -137,32 +121,24 @@
 !
 !>        Field label of temperature flux
 !!         @f$ T (u_{i} \partial_{i}) T @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_temp_generation =   'temp_generation'
       type(field_def), parameter :: temp_generation                     &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'temp_generation',                         &
      &                math = '$ T (u_{i} \partial_{i}) T $')
 !>        Field label of perturbation temperature flux
 !!         @f$ \Theta (u_{i} \partial_{i}) \Theta @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_part_temp_gen =     'part_temp_gen'
       type(field_def), parameter :: part_temp_gen                       &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'part_temp_gen',                           &
      &                math = '$ \Theta (u_{i} \partial_{i}) \Theta $')
 !>        Field label of composition flux
 !!         @f$ C (u_{i} \partial_{i}) @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_comp_generation =   'comp_generation'
       type(field_def), parameter :: comp_generation                     &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'comp_generation',                         &
      &                math = '$ C (u_{i} \partial_{i}) C $')
 !>        Field label of perturbation composition flux
 !!         @f$ (C - C_0) (u_{i} \partial_{i}) (C - C_0) @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_part_comp_gen =     'part_comp_gen'
       type(field_def), parameter :: part_comp_gen                       &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'part_comp_gen',                           &
@@ -170,16 +146,12 @@
 !
 !>        Field label of energy flux by viscous diffusion
 !!         @f$ u_{i} (\partial_{j}\partial_{j} u_{i}) @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_vis_ene_diffuse =   'viscous_ene_diffusion'
       type(field_def), parameter :: viscous_ene_diffusion               &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'viscous_ene_diffusion',                   &
      &             math = '$ u_{i} (\partial_{j}\partial_{j} u_{i}) $')
 !>        Field label of energy flux by magnetic diffusion
 !!         @f$ B_{i} \left( \partial_{j}\partial_{j} B_{i} \right) @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_mag_ene_diffuse =   'magnetic_ene_diffusion'
       type(field_def), parameter :: magnetic_ene_diffusion              &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'magnetic_ene_diffusion',                  &
@@ -187,16 +159,12 @@
 !
 !>        Field label of work area for pressure
 !!         @f$ \varphi @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_press_work =      'pressure_work'
       type(field_def), parameter :: pressure_work                       &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'pressure_work',                           &
      &                math = '$ \varphi $')
 !>        Field label of work area for scalar potential
 !!         @f$ \varphi @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_m_potential_work = 'm_potential_work'
       type(field_def), parameter :: m_potential_work                    &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'm_potential_work',                        &

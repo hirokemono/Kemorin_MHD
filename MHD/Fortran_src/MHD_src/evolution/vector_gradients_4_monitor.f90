@@ -198,7 +198,7 @@
      &         (FEM_prm, nod_comm, node, ele, fl_prop, cd_prop, iphys,  &
      &          fem_int, mk_MHD, mhd_fem_wk, rhs_mat, nod_fld)
 !
-      use buoyancy_flux
+      use cal_buoyancy_flux
       use products_nodal_fields_smp
       use copy_nodal_fields
       use int_magne_diffusion
@@ -275,16 +275,16 @@
 !
       if (iphys%i_buo_gen .gt. izero) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
-     &             write(*,*) 'lead  ', trim(fhd_buoyancy_flux)
-        call cal_gravity_flux(node,                                     &
+     &             write(*,*) 'lead  ', trim(buoyancy_flux%name)
+        call sel_buoyancy_flux(node,                                    &
      &      fl_prop%i_grav, fl_prop%coef_buo, fl_prop%grav,             &
      &      iphys%i_velo,  iphys%i_temp, iphys%i_buo_gen, nod_fld)
       end if
 !
       if (iphys%i_c_buo_gen .gt. izero) then
-        if(iflag_debug .ge. iflag_routine_msg)                          &
-     &             write(*,*) 'lead  ', trim(fhd_comp_buo_flux)
-        call cal_gravity_flux(node,                                     &
+        if(iflag_debug .ge. iflag_routine_msg)  write(*,*) 'lead  ',    &
+     &                trim(composite_buoyancy_flux%name)
+        call sel_buoyancy_flux(node,                                    &
      &      fl_prop%i_grav, fl_prop%coef_comp_buo, fl_prop%grav,        &
      &      iphys%i_velo, iphys%i_light,  iphys%i_c_buo_gen, nod_fld)
       end if
@@ -292,7 +292,7 @@
       if (iphys%eflux_by_filter%i_buo_gen .gt. izero) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &      write(*,*) 'lead  ', trim(filtered_buoyancy_flux%name)
-        call cal_gravity_flux(node,                                     &
+        call sel_buoyancy_flux(node,                                    &
      &      fl_prop%i_grav, fl_prop%coef_buo, fl_prop%grav,             &
      &      iphys%i_velo, iphys%i_filter_temp,                          &
      &      iphys%eflux_by_filter%i_buo_gen, nod_fld)
@@ -302,7 +302,7 @@
       if (iphys%eflux_by_filter%i_c_buo_gen .gt. izero) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &      write(*,*) 'lead  ', trim(filtered_comp_buoyancy_flux%name)
-        call cal_gravity_flux(node,                                     &
+        call sel_buoyancy_flux(node,                                    &
      &      fl_prop%i_grav, fl_prop%coef_comp_buo, fl_prop%grav,        &
      &      iphys%i_velo, iphys%i_filter_comp,                          &
      &      iphys%eflux_by_filter%i_c_buo_gen, nod_fld)

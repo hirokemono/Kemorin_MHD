@@ -257,11 +257,11 @@
 !    set work fields for potentials
 !
       if(fl_prop%iflag_scheme .gt. id_no_evolution) then
-        call add_phys_name_ctl(fhd_press_work, field_ctl)
+        call add_phys_name_ctl(pressure_work%name, field_ctl)
       end if
       if (cd_prop%iflag_Bevo_scheme .gt. id_no_evolution                &
      &   .or. cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
-        call add_phys_name_ctl(fhd_m_potential_work, field_ctl)
+        call add_phys_name_ctl(m_potential_work%name, field_ctl)
       end if
 !
       end subroutine add_work_area_4_potentials

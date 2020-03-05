@@ -154,27 +154,27 @@
         else if ( field_name(i) .eq. fhd_cross_helicity ) then
           iphys%i_x_heli = i0
 !
-        else if (field_name(i) .eq. fhd_mag_ene_gen) then
+        else if (field_name(i) .eq. magnetic_ene_generation%name) then
           iphys%i_me_gen =   i0
-        else if (field_name(i) .eq. fhd_Lorentz_work) then
+        else if (field_name(i) .eq. Lorentz_work%name) then
           iphys%i_ujb =      i0
-        else if (field_name(i) .eq. fhd_work_agst_Lorentz) then
+        else if (field_name(i) .eq. work_against_Lorentz%name) then
           iphys%i_nega_ujb = i0
-        else if (field_name(i) .eq. fhd_mag_tension_work) then
+        else if (field_name(i) .eq. mag_tension_work%name) then
           iphys%i_m_tension_wk = i0
-        else if (field_name(i) .eq. fhd_buoyancy_flux) then
+        else if (field_name(i) .eq. buoyancy_flux%name) then
           iphys%i_buo_gen =   i0
-        else if (field_name(i) .eq. fhd_comp_buo_flux) then
+        else if (field_name(i) .eq. composite_buoyancy_flux%name) then
           iphys%i_c_buo_gen = i0
-        else if (field_name(i) .eq. fhd_vis_ene_diffuse) then
+        else if (field_name(i) .eq. viscous_ene_diffusion%name) then
           iphys%i_vis_e_diffuse = i0
-        else if (field_name(i) .eq. fhd_mag_ene_diffuse) then
+        else if (field_name(i) .eq. magnetic_ene_diffusion%name) then
           iphys%i_mag_e_diffuse = i0
-        else if (field_name(i) .eq. fhd_temp_generation) then
+        else if (field_name(i) .eq. temp_generation%name) then
           iphys%i_temp_gen = i0
-        else if (field_name(i) .eq. fhd_part_temp_gen) then
+        else if (field_name(i) .eq. part_temp_gen%name) then
           iphys%i_par_t_gen = i0
-        else if (field_name(i) .eq. fhd_part_comp_gen) then
+        else if (field_name(i) .eq. part_comp_gen%name) then
           iphys%i_par_c_gen = i0
 !
         else if (field_name(i) .eq. fhd_thermal_diffusion) then
@@ -241,9 +241,9 @@
         call set_true_SGS_ene_flux_addresses                            &
      &     (i0, field_name(i), iphys%true_SGS_eflux, flag)
 !
-        if ( field_name(i) .eq. fhd_press_work ) then
+        if ( field_name(i) .eq. pressure_work%name ) then
           iphys%i_p_phi = i0
-        else if ( field_name(i) .eq. fhd_m_potential_work ) then
+        else if ( field_name(i) .eq. m_potential_work%name ) then
           iphys%i_m_phi = i0
         else if ( field_name(i) .eq. fhd_ref_temp ) then
           iphys%i_ref_t = i0

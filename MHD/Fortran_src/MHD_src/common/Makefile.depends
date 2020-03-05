@@ -1,4 +1,4 @@
-buoyancy_flux.o: $(MHD_COMMON_DIR)/buoyancy_flux.f90 m_precision.o m_machine_parameter.o t_geometry_data.o t_phys_data.o t_physical_property.o
+cal_buoyancy_flux.o: $(MHD_COMMON_DIR)/cal_buoyancy_flux.f90 m_precision.o m_machine_parameter.o t_geometry_data.o t_phys_data.o t_physical_property.o
 	$(F90) -c $(F90OPTFLAGS) $<
 check_MHD_dependency_by_id.o: $(MHD_COMMON_DIR)/check_MHD_dependency_by_id.f90 m_precision.o m_error_IDs.o m_phys_labels.o calypso_mpi.o t_physical_property.o t_phys_address.o t_phys_data.o
 	$(F90) -c $(F90OPTFLAGS) $<

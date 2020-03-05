@@ -60,15 +60,6 @@
       character(len=kchara), parameter                                  &
      &     :: fhd_wk_agst_sym_jxB = 'work_against_sym_jxB'
 !
-!>        Field label for buoyancy flux
-!!         @f$ -u_{i} \alpha_{T} g_{i} T @f$
-      character(len=kchara), parameter                                  &
-     &       :: fhd_buoyancy_flux = 'symmetic_thermal_buoyancy_flux'
-!>        Field label for compositional buoyancy flux
-!!         @f$ -u_{i} \alpha_{c} g_{i} C @f$
-      character(len=kchara), parameter                                  &
-     &       :: fhd_comp_buo_flux = 'symmetic_composite_buoyancy_flux'
-!
 !>        Field label for symmetric buoyancy flux
 !!         @f$ -u_{s} \cdot (\alpha_{T} g T_{s}) @f$
       character(len=kchara), parameter                                  &

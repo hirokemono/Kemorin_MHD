@@ -93,19 +93,23 @@
       type(phys_address), intent(inout) :: f_trns
 !
 !
-      call add_field_name_4_sph_trns_snap(fhd_mag_ene_gen, n_scalar,    &
+      call add_field_name_4_sph_trns_snap                               &
+     &   (magnetic_ene_generation%name, magnetic_ene_generation%n_comp, &
      &    ipol%i_me_gen, itor%i_me_gen, iphys%i_me_gen,                 &
      &    f_trns%i_me_gen, trns_fwd)
-      call add_field_name_4_sph_trns_snap(fhd_Lorentz_work, n_scalar,   &
+      call add_field_name_4_sph_trns_snap                               &
+     &   (Lorentz_work%name, Lorentz_work%n_comp,                       &
      &    ipol%i_ujb, itor%i_ujb, iphys%i_ujb, f_trns%i_ujb, trns_fwd)
       call add_field_name_4_sph_trns_snap                               &
-     &   (fhd_work_agst_Lorentz, n_scalar,                              &
+     &   (work_against_Lorentz%name, work_against_Lorentz%n_comp,       &
      &    ipol%i_nega_ujb, itor%i_nega_ujb, iphys%i_nega_ujb,           &
      &    f_trns%i_nega_ujb, trns_fwd)
-      call add_field_name_4_sph_trns_snap(fhd_buoyancy_flux, n_scalar,  &
+      call add_field_name_4_sph_trns_snap                               &
+     &   (buoyancy_flux%name, buoyancy_flux%n_comp,                     &
      &    ipol%i_buo_gen, itor%i_buo_gen, iphys%i_buo_gen,              &
      &    f_trns%i_buo_gen, trns_fwd)
-      call add_field_name_4_sph_trns_snap(fhd_comp_buo_flux, n_scalar,  &
+      call add_field_name_4_sph_trns_snap                               &
+     &   (composite_buoyancy_flux%name, composite_buoyancy_flux%n_comp, &
      &    ipol%i_c_buo_gen, itor%i_c_buo_gen, iphys%i_c_buo_gen,        &
      &    f_trns%i_c_buo_gen, trns_fwd)
       call add_field_name_4_sph_trns_snap                               &
