@@ -167,8 +167,6 @@
 !!         @f$ H_{x} = u_{i} B{i} @f$
         integer (kind=kint) :: i_x_heli =          izero
 !
-!>        start address for perturbation composition flux
-        integer (kind=kint) :: i_par_c_gen =       izero
 !>        start address for energy flux by viscous diffusion
 !!         @f$ u_{i} \left( \partial_{j}\partial_{j} u_{i} \right) @f$
         integer (kind=kint) :: i_vis_e_diffuse =   izero
