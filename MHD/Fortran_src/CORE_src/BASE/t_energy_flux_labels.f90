@@ -23,34 +23,40 @@
 !!
 !! field names  [address]
 !!
-!!   inertia_work:  Work of Reynolds stress   u \cdot (\omega \times u)
-!!   Lorentz_work:  Work of Lorentz force     u \cdot (J \times B)
-!!   work_against_Lorentz:  Work against Lorentz force
+!!   inertia_work             [i_m_advect_work]:  Work of Reynolds stress
+!!                                           -u \cdot (\omega \times u)
+!!   Lorentz_work             [i_ujb]:  Work of Lorentz force
+!!                                            u \cdot (J \times B)
+!!   work_against_Lorentz     [i_nega_ujb]:  Work against Lorentz force
 !!                                           -u \cdot (J \times B)
-!!   mag_tension_work: Work of magnetic tension
+!!   mag_tension_work         [i_m_tension_wk]: Work of magnetic tension
 !!                                            u \cdot( (B \nabla) B)
-!!   buoyancy_flux:       Thermal buoyancy flux
+!!   buoyancy_flux            [i_buo_gen]:       Thermal buoyancy flux
 !!                                           -u \cdot (\alpha_{T} g T)
-!!   composite_buoyancy_flux: Compositional buoyancy flux
+!!   composite_buoyancy_flux  [i_c_buo_gen]:  Compositional buoyancy flux
 !!                                           -u \cdot (\alpha_{C} g C)
 !!
-!!   magnetic_ene_generation: energy flux by magneitic induction
+!!   magnetic_ene_generation  [i_me_gen]:
+!!           energy flux by magneitic induction
 !!                              B \cdot (\nabla \times (u \times B))
-!!   magnetic_stretch_flux:   energy flux by magneitic streatch 
-!!                              B \cdot ((B \nabla) u)
+!!   magnetic_stretch_flux  [i_mag_stretch_flux]:
+!!           energy flux by magneitic streatch  B \cdot ((B \nabla) u)
 !!
-!!   temp_generation: heat advection flux   T (u \cdot \nabla) T
-!!   pert_temp_generation:  perturbation of heat advection flux
+!!   temp_generation       [i_temp_gen]: heat advection flux
+!!                                     T (u \cdot \nabla) T
+!!   pert_temp_generation  [i_par_t_gen]:
+!!           perturbation of heat advection flux
 !!                                     \Theta (u \cdot \nabla) \Theta
-!!   composition_gen:    composition advection flux 
+!!   comp_generation       [i_comp_gen]:    composition advection flux 
 !!                                     C (u \cdot \nabla) C
-!!   pert_comp_advect:   perturbation of composition advection flux
+!!   pert_comp_generation  [i_par_c_gen]:
+!!          perturbation of composition advection flux
 !!                                     C (u \cdot \nabla) (C-C_0)
 !!
-!!   viscous_ene_diffusion:  Energy dissipation by Viscousity
-!!                                     u ( \nabla^{2} u)
-!!   magnetic_ene_diffusion:  Energy dissipation by Ohmic dissipation
-!!                                     B ( \nabla^{2} B)
+!!   viscous_ene_diffusion   [i_vis_e_diffuse]:
+!!         Energy dissipation by Viscousity   u ( \nabla^{2} u)
+!!   magnetic_ene_diffusion  [i_mag_e_diffuse]:
+!!         Energy dissipation by Ohmic dissipation  B ( \nabla^{2} B)
 !!
 !!   pressure_work     [i_vis_e_diffuse]:  work of pressure gradient
 !!                                     u ( \nabla p)

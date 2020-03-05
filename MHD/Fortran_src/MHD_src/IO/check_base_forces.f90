@@ -9,6 +9,7 @@
 !!
 !!@verbatim
 !!      subroutine add_field_ctl_4_forces(field_ctl)
+!!      subroutine add_field_ctl_4_rot_forces(field_ctl)
 !!        type(ctl_array_c3), intent(in) :: field_ctl
 !!@endverbatim
 !!
@@ -99,6 +100,30 @@
       end if
 !
       end subroutine add_field_ctl_4_forces
+!
+! -----------------------------------------------------------------------
+!
+      subroutine add_field_ctl_4_rot_forces(field_ctl)
+!
+      use m_rot_force_labels
+      use add_nodal_fields_ctl
+!
+      type(ctl_array_c3), intent(inout) :: field_ctl
+!
+!
+      if    (check_field_list_ctl(rot_inertia%name, field_ctl))         &
+     &   call add_phys_name_ctl(inertia%name, field_ctl)
+      if    (check_field_list_ctl(rot_Coriolis_force%name, field_ctl))  &
+     &   call add_phys_name_ctl(Coriolis_force%name, field_ctl)
+      if(check_field_list_ctl(rot_Lorentz_force%name, field_ctl))       &
+     &   call add_phys_name_ctl(Lorentz_force%name, field_ctl)
+!
+      if(check_field_list_ctl(rot_buoyancy%name, field_ctl))            &
+     &   call add_phys_name_ctl(buoyancy%name, field_ctl)
+      if(check_field_list_ctl(rot_composite_buoyancy%name, field_ctl))  &
+     &   call add_phys_name_ctl(composite_buoyancy%name, field_ctl)
+!
+      end subroutine add_field_ctl_4_rot_forces
 !
 ! -----------------------------------------------------------------------
 !

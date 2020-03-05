@@ -55,7 +55,7 @@
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'rot_Lorentz_force_by_filtered',           &
      &                math = '$ e_{ijk} \partial_{j}'                   &
-     &                    // '(e_{kkm} \tilde{J}_{l} \tilde{B}_{m})$')
+     &                    // '(e_{kkm} \tilde{J}_{l} \tilde{B}_{m}) $')
 !
 !>        Field label for curl of filtered buoyancy
 !!        @f$ -e_{ijk} \partial_{j} \alpha_{T} \tilde{T} g_{k}$') @f$
@@ -74,12 +74,12 @@
 !
 !>        Field label for magnetic induction
 !!        @f$ e_{ijk} \partial_{j}
-!!            (e_{klm} \tilde{u}_{l} \tilde{B}_{m}$ @f$
+!!            (e_{klm} \tilde{u}_{l} \tilde{B}_{m}) @f$
       type(field_def), parameter :: magnetic_induction_by_filtered      &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'magnetic_induction_by_filtered',          &
      &                math = '$ e_{ijk} \partial_{j} '                  &
-     &                    // '(e_{klm} \tilde{u}_{l} \tilde{B}_{m}$')
+     &                    // '(e_{klm} \tilde{u}_{l} \tilde{B}_{m}) $')
 !
 ! ----------------------------------------------------------------------
 !

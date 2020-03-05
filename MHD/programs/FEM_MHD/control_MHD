@@ -73,7 +73,7 @@ begin MHD_control
 !
 !   heat_advect, pert_heat_advect
 !   inertia,  
-!   div_h_flux, div_part_h_flux
+!   div_heat_flux, div_pert_heat_flux
 !   div_m_flux, div_maxwell_t
 !
 !   induction_tensor, div_induct_t

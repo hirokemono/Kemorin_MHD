@@ -4,6 +4,10 @@
 !!      subroutine set_base_force_labels_f                              &
 !!     &         (n_comps_c, field_name_c, field_math_c) bind(c)
 !!
+!!      integer(c_int) function num_rot_forces_f() bind(c)
+!!      subroutine set_rot_force_labels_f                               &
+!!     &         (n_comps_c, field_name_c, field_math_c) bind(c)
+!!
 !!      integer(c_int) function num_energy_fluxes_f() bind(c)
 !!      subroutine set_energy_flux_names_f                              &
 !!     &         (n_comps_c, field_name_c, field_math_c) bind(c)
@@ -172,6 +176,33 @@
      &   (n_comps_c(1), field_name_c(1), field_math_c(1))
 !
       end subroutine set_base_force_labels_f
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      integer(c_int) function num_rot_forces_f() bind(c)
+!
+      use m_rot_force_labels
+!
+      num_rot_forces_f = num_rot_forces()
+      return
+      end function num_rot_forces_f
+!
+! ----------------------------------------------------------------------
+!
+      subroutine set_rot_force_labels_f                                 &
+     &         (n_comps_c, field_name_c, field_math_c) bind(c)
+!
+      use m_rot_force_labels
+!
+      integer(c_int), intent(inout) :: n_comps_c(*)
+      character(C_CHAR), intent(inout) :: field_name_c(*)
+      character(C_CHAR), intent(inout) :: field_math_c(*)
+!
+      call set_rot_force_labels                                         &
+     &   (n_comps_c(1), field_name_c(1), field_math_c(1))
+!
+      end subroutine set_rot_force_labels_f
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------

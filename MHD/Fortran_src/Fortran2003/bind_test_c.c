@@ -5,6 +5,7 @@
 int lengthchara_f();
 
 int num_base_forces_f();
+int num_rot_forces_f();
 int num_energy_fluxes_f();
 int num_divergence_fields_f();
 int num_gradient_fields_f();
@@ -31,6 +32,7 @@ int num_force_w_SGS_f();
 int num_true_SGS_terms_f();
 
 void set_base_force_labels_f(int *ncomp1, char *name1, char *math1);
+void set_rot_force_labels_f(int *ncomp1, char *name1, char *math1);
 void set_energy_flux_names_f(int *ncomp1, char *name1, char *math1);
 void set_divergence_field_labels_f(int *ncomp1, char *name1, char *math1);
 void set_gradient_field_labels_f(int *ncomp1, char *name1, char *math1);
@@ -65,8 +67,10 @@ int main(int argc, char **argv)
 	int len_f = lengthchara_f();
 	
 	int ist_base_forces = 0;
-	int ist_energy_fluxes = ist_base_forces
+	int ist_rot_forces = ist_base_forces
 			+ num_base_forces_f();
+	int ist_energy_fluxes = ist_rot_forces
+			+ num_rot_forces_f();
 	int ist_divergence_fields = ist_energy_fluxes
 			+ num_energy_fluxes_f();
 	int ist_gradient_fields = ist_divergence_fields
@@ -132,6 +136,9 @@ int main(int argc, char **argv)
 	set_base_force_labels_f(&ncomp[ist_base_forces], 
 								&name1[len_f*ist_base_forces],
 								&math1[len_f*ist_base_forces]);
+	set_rot_force_labels_f(&ncomp[ist_rot_forces], 
+								&name1[len_f*ist_rot_forces],
+								&math1[len_f*ist_rot_forces]);
 	set_energy_flux_names_f(&ncomp[ist_energy_fluxes], 
 								&name1[len_f*ist_energy_fluxes],
 								&math1[len_f*ist_energy_fluxes]);
