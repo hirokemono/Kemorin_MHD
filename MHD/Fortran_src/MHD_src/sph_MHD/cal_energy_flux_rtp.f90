@@ -240,7 +240,7 @@
         end if
       end if
 !
-      if(fs_trns%i_c_buo_gen .gt. 0) then
+      if(fs_trns%ene_flux%i_c_buo_gen .gt. 0) then
         if    (ref_param_C%iflag_reference .eq. id_sphere_ref_temp      &
      &    .or. ref_param_C%iflag_reference .eq. id_takepiro_temp) then
           call cal_buoyancy_flux_rtp_smp(np_smp, sph_rtp%nnod_rtp,      &
@@ -248,14 +248,14 @@
      &        sph_rtp%radius_1d_rtp_r, fl_prop%coef_comp_buo,           &
      &        trns_b_snap%fld_rtp(1,bs_trns%i_per_light),               &
      &        trns_b_snap%fld_rtp(1,bs_trns%i_velo),                    &
-     &        trns_f_snap%fld_rtp(1,fs_trns%i_c_buo_gen))
+     &        trns_f_snap%fld_rtp(1,fs_trns%ene_flux%i_c_buo_gen))
         else
           call cal_buoyancy_flux_rtp_smp(np_smp, sph_rtp%nnod_rtp,      &
      &        sph_rtp%nidx_rtp(1), sph_rtp%istack_inod_rtp_smp,         &
      &        sph_rtp%radius_1d_rtp_r, fl_prop%coef_comp_buo,           &
      &        trns_b_snap%fld_rtp(1,bs_trns%i_light),                   &
      &        trns_b_snap%fld_rtp(1,bs_trns%i_velo),                    &
-     &        trns_f_snap%fld_rtp(1,fs_trns%i_c_buo_gen) )
+     &        trns_f_snap%fld_rtp(1,fs_trns%ene_flux%i_c_buo_gen) )
         end if
       end if
 !

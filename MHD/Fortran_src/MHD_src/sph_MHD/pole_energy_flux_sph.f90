@@ -191,22 +191,22 @@
         end if
       end if
 !
-      if(iphys%i_c_buo_gen .gt. 0) then
+      if(iphys%ene_flux%i_c_buo_gen .gt. 0) then
         if    (ref_param_C%iflag_reference .eq. id_sphere_ref_temp      &
      &    .or. ref_param_C%iflag_reference .eq. id_takepiro_temp) then
           call pole_sph_buoyancy_flux                                   &
      &       (node%numnod, node%internal_node, node%xx,                 &
      &        sph_rtp%nnod_rtp, sph_rtp%nidx_rtp(1),                    &
      &        fl_prop%coef_comp_buo, nod_fld%ntot_phys,                 &
-     &        iphys%i_per_light, iphys%i_velo, iphys%i_c_buo_gen,       &
-     &        nod_fld%d_fld)
+     &        iphys%i_per_light, iphys%i_velo,                          &
+     &        iphys%ene_flux%i_c_buo_gen, nod_fld%d_fld)
         else
           call pole_sph_buoyancy_flux                                   &
      &       (node%numnod, node%internal_node, node%xx,                 &
      &        sph_rtp%nnod_rtp, sph_rtp%nidx_rtp(1),                    &
      &        fl_prop%coef_comp_buo, nod_fld%ntot_phys,                 &
-     &        iphys%i_light, iphys%i_velo, iphys%i_c_buo_gen,           &
-     &        nod_fld%d_fld)
+     &        iphys%i_light, iphys%i_velo,                              &
+     &        iphys%ene_flux%i_c_buo_gen, nod_fld%d_fld)
         end if
       end if
 !

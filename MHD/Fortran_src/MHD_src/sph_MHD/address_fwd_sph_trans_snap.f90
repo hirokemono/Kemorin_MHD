@@ -113,8 +113,9 @@
      &    trns_fwd)
       call add_field_name_4_sph_trns_snap                               &
      &   (composite_buoyancy_flux%name, composite_buoyancy_flux%n_comp, &
-     &    ipol%i_c_buo_gen, itor%i_c_buo_gen, iphys%i_c_buo_gen,        &
-     &    f_trns%i_c_buo_gen, trns_fwd)
+     &    ipol%ene_flux%i_c_buo_gen, itor%ene_flux%i_c_buo_gen,         &
+     &    iphys%ene_flux%i_c_buo_gen, f_trns%ene_flux%i_c_buo_gen,      &
+     &    trns_fwd)
       call add_field_name_4_sph_trns_snap                               &
      &   (filtered_buoyancy_flux%name, n_scalar,                        &
      &    ipol%eflux_by_filter%i_buo_gen,                               &

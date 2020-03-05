@@ -282,12 +282,13 @@
      &      nod_fld)
       end if
 !
-      if (iphys%i_c_buo_gen .gt. izero) then
+      if (iphys%ene_flux%i_c_buo_gen .gt. izero) then
         if(iflag_debug .ge. iflag_routine_msg)  write(*,*) 'lead  ',    &
      &                trim(composite_buoyancy_flux%name)
         call sel_buoyancy_flux(node,                                    &
      &      fl_prop%i_grav, fl_prop%coef_comp_buo, fl_prop%grav,        &
-     &      iphys%i_velo, iphys%i_light,  iphys%i_c_buo_gen, nod_fld)
+     &      iphys%i_velo, iphys%i_light,  iphys%ene_flux%i_c_buo_gen,   &
+     &      nod_fld)
       end if
 !
       if (iphys%eflux_by_filter%i_buo_gen .gt. izero) then

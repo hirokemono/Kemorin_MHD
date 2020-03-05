@@ -129,11 +129,6 @@
           call check_missing_field                                      &
      &       (fld, i_start, iphys%diff_vector%i_grad_vz, grad_v_3%name)
 !
-        else if(i_start .eq. iphys%i_c_buo_gen) then 
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_velo, fhd_velo)
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_light, fhd_light)
         else if(i_start .eq. iphys%i_temp_gen) then 
           call check_missing_field                                      &
      &       (fld, i_start, iphys%forces%i_h_advect, heat_advect%name)

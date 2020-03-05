@@ -65,6 +65,7 @@
         call add_phys_name_ctl(buoyancy%name, field_ctl)
       else if( (field_name .eq. composite_buoyancy_flux%name)) then
         call add_phys_name_ctl(fhd_velo, field_ctl)
+        call add_phys_name_ctl(fhd_light, field_ctl)
         call add_phys_name_ctl(composite_buoyancy%name, field_ctl)
 !
       else if( (field_name .eq. magnetic_ene_generation%name)) then
