@@ -313,7 +313,7 @@
         else if (field_name .eq. comp_generation%name) then
           ene_flux%i_comp_gen =  i_phys
         else if (field_name .eq. pert_comp_generation%name) then
-          ene_flux%i_par_c_gen = i_phys
+          ene_flux%i_par_t_gen = i_phys
 !
         else if (field_name .eq. viscous_ene_diffusion%name) then
           ene_flux%i_vis_e_diffuse = i_phys
