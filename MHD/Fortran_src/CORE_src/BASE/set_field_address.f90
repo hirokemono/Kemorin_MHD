@@ -171,7 +171,7 @@
         else if (field_name(i) .eq. magnetic_ene_diffusion%name) then
           iphys%i_mag_e_diffuse = i0
         else if (field_name(i) .eq. temp_generation%name) then
-          iphys%i_temp_gen = i0
+          iphys%ene_flux%i_temp_gen = i0
         else if (field_name(i) .eq. pert_temp_generation%name) then
           iphys%i_par_t_gen = i0
         else if (field_name(i) .eq. pert_comp_generation%name) then

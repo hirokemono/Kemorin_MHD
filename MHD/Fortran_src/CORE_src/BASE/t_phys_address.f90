@@ -167,8 +167,6 @@
 !!         @f$ H_{x} = u_{i} B{i} @f$
         integer (kind=kint) :: i_x_heli =          izero
 !
-!>        start address for temperature flux
-        integer (kind=kint) :: i_temp_gen =        izero
 !>        start address for perturbation temperature flux
         integer (kind=kint) :: i_par_t_gen =       izero
 !>        start address for perturbation composition flux
