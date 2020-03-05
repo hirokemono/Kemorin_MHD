@@ -263,10 +263,10 @@
      &      iphys%ene_flux%i_nega_ujb, fl_prop%coef_lor, nod_fld)
       end if
 !
-      if (iphys%i_me_gen .gt. izero) then
+      if (iphys%ene_flux%i_me_gen .gt. izero) then
         call cal_phys_dot_product                                       &
      &     (iphys%forces%i_induction, iphys%i_magne,                    &
-     &      iphys%i_me_gen, nod_fld)
+     &      iphys%ene_flux%i_me_gen, nod_fld)
       end if
 !$omp end parallel
 !

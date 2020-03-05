@@ -145,12 +145,12 @@
      &       iphys%ene_flux%i_nega_ujb, nod_fld%d_fld)
       end if
 !
-      if( (iphys%forces%i_induction * iphys%i_me_gen) .gt. 0) then
+      if(iphys%ene_flux%i_me_gen .gt. 0) then
         call pole_fld_cst_dot_prod                                      &
      &     (node%numnod, node%internal_node, node%xx,                   &
      &      sph_rtp%nnod_rtp, sph_rtp%nidx_rtp(1), one,                 &
      &      nod_fld%ntot_phys, iphys%forces%i_induction, iphys%i_magne, &
-     &      iphys%i_me_gen, nod_fld%d_fld)
+     &      iphys%ene_flux%i_me_gen, nod_fld%d_fld)
       end if
 !
 !

@@ -95,8 +95,8 @@
 !
       call add_field_name_4_sph_trns_snap                               &
      &   (magnetic_ene_generation%name, magnetic_ene_generation%n_comp, &
-     &    ipol%i_me_gen, itor%i_me_gen, iphys%i_me_gen,                 &
-     &    f_trns%i_me_gen, trns_fwd)
+     &    ipol%ene_flux%i_me_gen, itor%ene_flux%i_me_gen,               &
+     &    iphys%ene_flux%i_me_gen, f_trns%ene_flux%i_me_gen, trns_fwd)
       call add_field_name_4_sph_trns_snap                               &
      &   (Lorentz_work%name, Lorentz_work%n_comp,                       &
      &    ipol%ene_flux%i_ujb, itor%ene_flux%i_ujb,                     &
