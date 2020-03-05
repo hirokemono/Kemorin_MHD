@@ -13,6 +13,10 @@
 !!     &         (i_phys, field_name, base_force, flag)
 !!        type(energy_flux_address), intent(inout) :: ene_flux
 !!
+!!      logical function check_work_4_poisson(field_name)
+!!      subroutine set_work_4_poisson_addresses                         &
+!!     &         (i_phys, field_name, ene_flux, flag)
+!!
 !!      integer(kind = kint) function num_energy_fluxes()
 !!      subroutine set_energy_flux_names(n_comps, names, maths)
 !! !!!!!  energy flux names  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -264,8 +268,6 @@
 !
      &   .or. (field_name .eq. viscous_ene_diffusion%name)              &
      &   .or. (field_name .eq. magnetic_ene_diffusion%name)             &
-     &   .or. (field_name .eq. pressure_work%name)                      &
-     &   .or. (field_name .eq. m_potential_work%name)                   &
      &      )   check_enegy_fluxes = .TRUE.
 !
       end function check_enegy_fluxes
@@ -317,15 +319,48 @@
           ene_flux%i_vis_e_diffuse = i_phys
         else if (field_name .eq. magnetic_ene_diffusion%name) then
           ene_flux%i_mag_e_diffuse = i_phys
+        end if
+      end if
 !
-        else if (field_name .eq. pressure_work%name) then
+      end subroutine set_enegy_fluxe_addresses
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      logical function check_work_4_poisson(field_name)
+!
+      character(len = kchara), intent(in) :: field_name
+!
+!
+      check_work_4_poisson = .FALSE.
+      if (    (field_name .eq. pressure_work%name)                      &
+     &   .or. (field_name .eq. m_potential_work%name)                   &
+     &      )   check_work_4_poisson = .TRUE.
+!
+      end function check_work_4_poisson
+!
+! ----------------------------------------------------------------------
+!
+      subroutine set_work_4_poisson_addresses                           &
+     &         (i_phys, field_name, ene_flux, flag)
+!
+      integer(kind = kint), intent(in) :: i_phys
+      character(len = kchara), intent(in) :: field_name
+!
+      type(energy_flux_address), intent(inout) :: ene_flux
+      logical, intent(inout) :: flag
+!
+!
+      flag = check_work_4_poisson(field_name)
+      if(flag) then
+        if (field_name .eq. pressure_work%name) then
           ene_flux%i_p_phi = i_phys
         else if (field_name .eq. m_potential_work%name) then
           ene_flux%i_m_phi = i_phys
         end if
       end if
 !
-      end subroutine set_enegy_fluxe_addresses
+      end subroutine set_work_4_poisson_addresses
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------

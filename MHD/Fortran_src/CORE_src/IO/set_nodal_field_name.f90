@@ -254,6 +254,7 @@
      &   .or. check_wide_filter_scalar(phys_nod_name_ctl)               &
      &   .or. check_double_filter_scalar(phys_nod_name_ctl)             &
      &   .or. check_div_filter_field(phys_nod_name_ctl)                 &
+     &   .or. check_work_4_poisson(phys_nod_name_ctl)                   &
      &   .or. check_commute_SGS_work(phys_nod_name_ctl)) iflag = 1
 !
       if (iflag .eq. 1) then
