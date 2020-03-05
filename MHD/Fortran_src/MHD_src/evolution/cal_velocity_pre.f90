@@ -380,15 +380,15 @@
       if (iflag_debug.eq.1) write(*,*) 'int_vol_velo_co'
       call int_vol_solenoid_co(FEM_prm%npoint_poisson_int,              &
      &    SGS_par%model_p%ifilter_final, fluid%istack_ele_fld_smp,      &
-     &    iphys%i_p_phi, ifld_diff%i_velo, node, ele, nod_fld,          &
+     &    iphys%ene_flux%i_p_phi, ifld_diff%i_velo, node, ele, nod_fld, &
      &    fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%jcs%jac_3d_l,  &
      &    fem_int%rhs_tbl, FEM_elens, diff_coefs,                       &
      &    rhs_mat%fem_wk, rhs_mat%f_nl)
 !
       if (SGS_par%commute_p%iflag_c_velo .eq. id_SGS_commute_ON         &
      &     .and. Psf_bcs%sgs%ngrp_sf_dat.gt.0) then
-        if (iflag_debug.eq.1) write(*,*)                                &
-                             'int_surf_sgs_velo_co_ele', iphys%i_p_phi
+        if (iflag_debug.eq.1) write(*,*) 'int_surf_sgs_velo_co_ele',    &
+                             iphys%ene_flux%i_p_phi
         call int_surf_sgs_velo_co_ele                                   &
      &     (node, ele, surf, sf_grp, nod_fld,                           &
      &      fem_int%jcs%g_FEM, fem_int%jcs%jac_sf_grp,                  &
@@ -396,7 +396,7 @@
      &      FEM_elens, FEM_prm%npoint_poisson_int,                      &
      &      Psf_bcs%sgs%ngrp_sf_dat, Psf_bcs%sgs%id_grp_sf_dat,         &
      &      SGS_par%model_p%ifilter_final, diff_coefs%num_field,        &
-     &      ifld_diff%i_velo, diff_coefs%ak, iphys%i_p_phi,             &
+     &      ifld_diff%i_velo, diff_coefs%ak, iphys%ene_flux%i_p_phi,    &
      &      rhs_mat%fem_wk, rhs_mat%surf_wk, rhs_mat%f_nl)
       end if
 !
@@ -413,7 +413,7 @@
      &      mlump_fl, Vmatrix, MG_vector, mhd_fem_wk,                   &
      &      rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
       else
-        call cal_velocity_co_exp(iphys%i_velo, iphys%i_p_phi,           &
+        call cal_velocity_co_exp(iphys%i_velo, iphys%ene_flux%i_p_phi,  &
      &      FEM_prm, nod_comm, node, ele, fluid, fem_int%jcs%g_FEM,     &
      &      fem_int%jcs%jac_3d, fem_int%rhs_tbl, mlump_fl, mhd_fem_wk,  &
      &      rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld)

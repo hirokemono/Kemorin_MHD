@@ -166,9 +166,9 @@
 !
 !   add boundary term for fixed velocity
 !
-      call int_vol_sk_po_bc                                             &
-     &   (cmt_param%iflag_c_velo, SGS_param%ifilter_final,              &
-     &    FEM_prm%npoint_poisson_int, iphys%i_p_phi, iak_diff_v,        &
+      call int_vol_sk_po_bc(cmt_param%iflag_c_velo,                     &
+     &    SGS_param%ifilter_final, FEM_prm%npoint_poisson_int,          &
+     &    iphys%ene_flux%i_p_phi, iak_diff_v,                           &
      &    node, ele, nod_fld, jacs%g_FEM, jacs%jac_3d_l, rhs_tbl,       &
      &    FEM_elens, diff_coefs, Vnod_bcs%nod_bc_p, fem_wk, f_l)
 !
@@ -184,10 +184,11 @@
      &    Pmatrix%MG_DJDS_table, Pmatrix%mat_MG_DJDS,                   &
      &    FEM_PRM%CG11_param%METHOD, FEM_PRM%CG11_param%PRECOND,        &
      &    FEM_prm%CG11_param%EPS, FEM_prm%CG11_param%MAXIT,             &
-     &    iphys%i_p_phi, MG_vector, f_l, b_vec, x_vec, nod_fld)
+     &    iphys%ene_flux%i_p_phi, MG_vector, f_l, b_vec, x_vec,         &
+     &    nod_fld)
 !
       call set_boundary_scalar                                          &
-     &   (Vnod_bcs%nod_bc_p, iphys%i_p_phi, nod_fld)
+     &   (Vnod_bcs%nod_bc_p, iphys%ene_flux%i_p_phi, nod_fld)
 !
       end subroutine cal_mod_potential
 !

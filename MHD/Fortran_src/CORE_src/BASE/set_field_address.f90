@@ -221,7 +221,7 @@
      &     (i0, field_name(i), iphys%true_SGS_eflux, flag)
 !
         if ( field_name(i) .eq. pressure_work%name ) then
-          iphys%i_p_phi = i0
+          iphys%ene_flux%i_p_phi = i0
         else if ( field_name(i) .eq. m_potential_work%name ) then
           iphys%i_m_phi = i0
         else if ( field_name(i) .eq. fhd_ref_temp ) then

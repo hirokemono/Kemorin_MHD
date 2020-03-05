@@ -94,9 +94,6 @@
         integer (kind=kint) :: i_entropy_source =  izero
 !
 !
-!>        start address for momentum equation's potential
-!!         @f$  \varphi @f$
-        integer (kind=kint) :: i_p_phi =           izero
 !>        start address for induction equation's potential
 !!         @f$  \varphi @f$
         integer (kind=kint) :: i_m_phi =           izero
