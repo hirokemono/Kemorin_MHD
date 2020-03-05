@@ -159,7 +159,7 @@
         else if (field_name(i) .eq. Lorentz_work%name) then
           iphys%i_ujb =      i0
         else if (field_name(i) .eq. work_against_Lorentz%name) then
-          iphys%i_nega_ujb = i0
+          iphys%ene_flux%i_nega_ujb = i0
         else if (field_name(i) .eq. mag_tension_work%name) then
           iphys%i_m_tension_wk = i0
         else if (field_name(i) .eq. buoyancy_flux%name) then

@@ -102,8 +102,9 @@
      &    ipol%i_ujb, itor%i_ujb, iphys%i_ujb, f_trns%i_ujb, trns_fwd)
       call add_field_name_4_sph_trns_snap                               &
      &   (work_against_Lorentz%name, work_against_Lorentz%n_comp,       &
-     &    ipol%i_nega_ujb, itor%i_nega_ujb, iphys%i_nega_ujb,           &
-     &    f_trns%i_nega_ujb, trns_fwd)
+     &    ipol%ene_flux%i_nega_ujb, itor%ene_flux%i_nega_ujb,           &
+     &    iphys%ene_flux%i_nega_ujb, f_trns%ene_flux%i_nega_ujb,        &
+     &    trns_fwd)
       call add_field_name_4_sph_trns_snap                               &
      &   (buoyancy_flux%name, buoyancy_flux%n_comp,                     &
      &    ipol%i_buo_gen, itor%i_buo_gen, iphys%i_buo_gen,              &

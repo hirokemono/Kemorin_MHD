@@ -185,9 +185,6 @@
 !>        start address for work of Lorentz force
 !!         @f$ u_{i} \left( e_{ijk} J_{j} B_{k} \right) @f$
         integer (kind=kint) :: i_ujb =             izero
-!>        start address for work against Lorentz force
-!!         @f$ - u_{i} \left( e_{ijk} J_{j} B_{k} \right) @f$
-        integer (kind=kint) :: i_nega_ujb =        izero
 !>        start address for work of divergence of Maxwell tensor
 !!         @f$ u_{i} \partial_{j} \left( B_{j} B_{i} \right) @f$
         integer (kind=kint) :: i_m_tension_wk  =   izero
@@ -383,6 +380,8 @@
 !
 !>        Structure of forces
         type(base_force_address) :: forces
+!>        Structure of energy fluxes
+        type(energy_flux_address) :: ene_flux
 !>        Structure of gradient of fields
         type(gradient_field_address) :: grad_fld
 !
