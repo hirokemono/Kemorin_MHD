@@ -38,6 +38,7 @@
      &         (nod_fld, iphys, i_rms, j_ave, ifld_msq, msq_list)
 !
       use t_base_field_labels
+      use t_energy_flux_labels
       use t_diff_vector_labels
       use t_SGS_term_labels
       use t_SGS_enegy_flux_labels
@@ -383,7 +384,7 @@
             call set_rms_address_list(i, nod_fld, msq_list)
           end if
 !
-          if(set_enegy_fluxe_addresses(field_name)) then
+          if(check_enegy_fluxes(field_name)) then
             call set_rms_address_list(i, nod_fld, msq_list)
           end if
 !

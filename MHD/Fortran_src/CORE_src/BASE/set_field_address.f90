@@ -172,9 +172,9 @@
           iphys%i_mag_e_diffuse = i0
         else if (field_name(i) .eq. temp_generation%name) then
           iphys%i_temp_gen = i0
-        else if (field_name(i) .eq. part_temp_gen%name) then
+        else if (field_name(i) .eq. pert_temp_generation%name) then
           iphys%i_par_t_gen = i0
-        else if (field_name(i) .eq. part_comp_gen%name) then
+        else if (field_name(i) .eq. pert_comp_generation%name) then
           iphys%i_par_c_gen = i0
 !
         else if (field_name(i) .eq. fhd_thermal_diffusion) then

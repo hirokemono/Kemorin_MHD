@@ -55,7 +55,7 @@
 !!   buoyancy_flux, Lorentz_work, mag_tension_work,
 !!   composite_buoyancy_flux, filtered_buoyancy_flux
 !!   magnetic_ene_generation, work_against_Lorentz
-!!   temp_generation, part_temp_gen
+!!   temp_generation, pert_temp_generation
 !!   viscous_ene_diffusion, magnetic_ene_diffusion
 !!
 !!   thermal_diffusion, viscous_diffusion, vorticity_diffusion

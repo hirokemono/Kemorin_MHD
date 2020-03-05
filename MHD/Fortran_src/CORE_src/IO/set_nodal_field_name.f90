@@ -179,8 +179,6 @@
      &      )   iflag = 1
 !
       if (    (phys_nod_name_ctl .eq. fhd_ref_temp            )         &
-     &   .or. (phys_nod_name_ctl .eq. pressure_work%name          )         &
-     &   .or. (phys_nod_name_ctl .eq. m_potential_work%name    )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_density             )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_ref_light           )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_part_light          )         &
@@ -211,18 +209,7 @@
      &   .or. (phys_nod_name_ctl .eq. fhd_div_ph_flux         )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_div_c_flux          )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_div_pc_flux         )         &
-     &   .or. (phys_nod_name_ctl .eq. magnetic_ene_generation%name         )         &
-     &   .or. (phys_nod_name_ctl .eq. work_against_Lorentz%name   )         &
-     &   .or. (phys_nod_name_ctl .eq. Lorentz_work%name        )         &
-     &   .or. (phys_nod_name_ctl .eq. mag_tension_work%name    )         &
-     &   .or. (phys_nod_name_ctl .eq. buoyancy_flux%name       )         &
-     &   .or. (phys_nod_name_ctl .eq. composite_buoyancy_flux%name       )         &
-     &   .or. (phys_nod_name_ctl .eq. temp_generation%name     )         &
-     &   .or. (phys_nod_name_ctl .eq. part_temp_gen%name       )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_part_temp           )         &
-     &   .or. (phys_nod_name_ctl .eq. part_comp_gen%name       )         &
-     &   .or. (phys_nod_name_ctl .eq. viscous_ene_diffusion%name     )         &
-     &   .or. (phys_nod_name_ctl .eq. magnetic_ene_diffusion%name     )         &
      &      )   iflag = 1
 !
       if (    (phys_nod_name_ctl .eq. fhd_div_inertia         )         &
@@ -253,7 +240,8 @@
      &   .or. (phys_nod_name_ctl .eq. fhd_composition_scale   )         &
      &       ) iflag = 1
 !
-      if(     check_scalar_advection(phys_nod_name_ctl)                 &
+      if(     check_enegy_fluxes(phys_nod_name_ctl)                     &
+     &   .or. check_scalar_advection(phys_nod_name_ctl)                 &
      &   .or. check_divergence_field(phys_nod_name_ctl)                 &
      &   .or. check_div_SGS_flux_vector(phys_nod_name_ctl)              &
      &   .or. check_SGS_ene_fluxes(phys_nod_name_ctl)                   &

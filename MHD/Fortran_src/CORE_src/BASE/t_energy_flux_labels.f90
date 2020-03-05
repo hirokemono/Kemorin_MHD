@@ -36,7 +36,7 @@
 !!                              B \cdot ((B \nabla) u)
 !!
 !!   temp_generation: heat advection flux   T (u \cdot \nabla) T
-!!   part_temp_gen:  perturbation of heat advection flux
+!!   pert_temp_generation:  perturbation of heat advection flux
 !!                                     \Theta (u \cdot \nabla) \Theta
 !!   composition_gen:    composition advection flux 
 !!                                     C (u \cdot \nabla) C
@@ -127,9 +127,9 @@
      &                math = '$ T (u_{i} \partial_{i}) T $')
 !>        Field label of perturbation temperature flux
 !!         @f$ \Theta (u_{i} \partial_{i}) \Theta @f$
-      type(field_def), parameter :: part_temp_gen                       &
+      type(field_def), parameter :: pert_temp_generation                &
      &    = field_def(n_comp = n_scalar,                                &
-     &                name = 'part_temp_gen',                           &
+     &                name = 'pert_temp_generation',                    &
      &                math = '$ \Theta (u_{i} \partial_{i}) \Theta $')
 !>        Field label of composition flux
 !!         @f$ C (u_{i} \partial_{i}) @f$
@@ -139,9 +139,9 @@
      &                math = '$ C (u_{i} \partial_{i}) C $')
 !>        Field label of perturbation composition flux
 !!         @f$ (C - C_0) (u_{i} \partial_{i}) (C - C_0) @f$
-      type(field_def), parameter :: part_comp_gen                       &
+      type(field_def), parameter :: pert_comp_generation                &
      &    = field_def(n_comp = n_scalar,                                &
-     &                name = 'part_comp_gen',                           &
+     &                name = 'pert_comp_generation',                    &
      &          math = '$ \Theta_C} (u_{i} \partial_{i}) \Theta_{C} $')
 !
 !>        Field label of energy flux by viscous diffusion
@@ -258,9 +258,9 @@
      &   .or. (field_name .eq. magnetic_stretch_flux%name)              &
 !
      &   .or. (field_name .eq. temp_generation%name)                    &
-     &   .or. (field_name .eq. part_temp_gen%name)                      &
+     &   .or. (field_name .eq. pert_temp_generation%name)               &
      &   .or. (field_name .eq. comp_generation%name)                    &
-     &   .or. (field_name .eq. part_comp_gen%name)                      &
+     &   .or. (field_name .eq. pert_comp_generation%name)               &
 !
      &   .or. (field_name .eq. viscous_ene_diffusion%name)              &
      &   .or. (field_name .eq. magnetic_ene_diffusion%name)             &
@@ -305,12 +305,12 @@
 !
         else if (field_name .eq. temp_generation%name) then
           ene_flux%i_temp_gen =  i_phys
-        else if (field_name .eq. part_temp_gen%name) then
+        else if (field_name .eq. pert_temp_generation%name) then
           ene_flux%i_par_t_gen = i_phys
 !
         else if (field_name .eq. comp_generation%name) then
           ene_flux%i_comp_gen =  i_phys
-        else if (field_name .eq. part_comp_gen%name) then
+        else if (field_name .eq. pert_comp_generation%name) then
           ene_flux%i_par_c_gen = i_phys
 !
         else if (field_name .eq. viscous_ene_diffusion%name) then
@@ -364,11 +364,11 @@
 !
       call set_field_labels(temp_generation,                            &
      &    n_comps( 9), names( 9), maths( 9))
-      call set_field_labels(part_temp_gen,                              &
+      call set_field_labels(pert_temp_generation,                       &
      &    n_comps(10), names(10), maths(10))
       call set_field_labels(comp_generation,                            &
      &    n_comps(11), names(11), maths(11))
-      call set_field_labels(part_comp_gen,                              &
+      call set_field_labels(pert_comp_generation,                       &
      &    n_comps(12), names(12), maths(12))
 !
       call set_field_labels(viscous_ene_diffusion,                      &

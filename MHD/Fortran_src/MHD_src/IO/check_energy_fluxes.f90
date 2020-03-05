@@ -74,13 +74,13 @@
       else if( (field_name .eq. temp_generation%name)) then
         call add_phys_name_ctl(fhd_temp, field_ctl)
         call add_phys_name_ctl(heat_advect%name, field_ctl)
-      else if( (field_name .eq. part_temp_gen%name)) then
+      else if( (field_name .eq. pert_temp_generation%name)) then
         call add_phys_name_ctl(fhd_part_temp, field_ctl)
         call add_phys_name_ctl(pert_heat_advect%name, field_ctl)
       else if( (field_name .eq. comp_generation%name)) then
         call add_phys_name_ctl(fhd_light, field_ctl)
         call add_phys_name_ctl(composition_advect%name, field_ctl)
-      else if( (field_name .eq. part_comp_gen%name)) then
+      else if( (field_name .eq. pert_comp_generation%name)) then
         call add_phys_name_ctl(fhd_part_light, field_ctl)
         call add_phys_name_ctl(pert_comp_advect%name, field_ctl)
 !
