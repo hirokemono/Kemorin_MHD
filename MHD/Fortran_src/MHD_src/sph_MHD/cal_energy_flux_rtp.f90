@@ -165,11 +165,11 @@
      &      trns_f_snap%fld_rtp(1,fs_trns%forces%i_coriolis))
       end if
 !
-      if(fs_trns%i_ujb .gt. 0) then
+      if(fs_trns%ene_flux%i_ujb .gt. 0) then
         call cal_dot_prod_no_coef_smp(sph_rtp%nnod_rtp,                 &
      &      trns_f_MHD%fld_rtp(1,f_trns%forces%i_lorentz),              &
      &      trns_b_snap%fld_rtp(1,bs_trns%i_velo),                      &
-     &      trns_f_snap%fld_rtp(1,fs_trns%i_ujb) )
+     &      trns_f_snap%fld_rtp(1,fs_trns%ene_flux%i_ujb) )
       end if
 !
       if(fs_trns%ene_flux%i_nega_ujb .gt. 0) then

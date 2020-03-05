@@ -251,10 +251,10 @@
      &      iphys%forces%i_vp_induct, iphys%i_electric, nod_fld%d_fld)
       end if
 !
-      if (iphys%i_ujb .gt. izero) then
+      if (iphys%ene_flux%i_ujb .gt. izero) then
         call cal_tri_product_4_scalar                                   &
-     &     (iphys%i_velo, iphys%i_current, iphys%i_magne, iphys%i_ujb,  &
-     &      fl_prop%coef_lor, nod_fld)
+     &     (iphys%i_velo, iphys%i_current, iphys%i_magne,               &
+     &      iphys%ene_flux%i_ujb, fl_prop%coef_lor, nod_fld)
       end if
 !
       if (iphys%ene_flux%i_nega_ujb .gt. izero) then

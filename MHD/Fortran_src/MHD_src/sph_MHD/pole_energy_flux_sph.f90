@@ -129,12 +129,12 @@
 !
 !
 !$omp parallel
-      if( (iphys%forces%i_lorentz * iphys%i_ujb) .gt. 0) then
+      if(iphys%ene_flux%i_ujb .gt. 0) then
         call pole_fld_cst_dot_prod                                      &
      &     (node%numnod, node%internal_node, node%xx,                   &
      &      sph_rtp%nnod_rtp, sph_rtp%nidx_rtp(1), one,                 &
      &      nod_fld%ntot_phys, iphys%forces%i_lorentz, iphys%i_velo,    &
-     &      iphys%i_ujb, nod_fld%d_fld)
+     &      iphys%ene_flux%i_ujb, nod_fld%d_fld)
       end if
 !
       if(iphys%ene_flux%i_nega_ujb .gt. 0) then

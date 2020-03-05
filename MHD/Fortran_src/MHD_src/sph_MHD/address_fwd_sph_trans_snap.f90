@@ -99,7 +99,8 @@
      &    f_trns%i_me_gen, trns_fwd)
       call add_field_name_4_sph_trns_snap                               &
      &   (Lorentz_work%name, Lorentz_work%n_comp,                       &
-     &    ipol%i_ujb, itor%i_ujb, iphys%i_ujb, f_trns%i_ujb, trns_fwd)
+     &    ipol%ene_flux%i_ujb, itor%ene_flux%i_ujb,                     &
+     &    iphys%ene_flux%i_ujb, f_trns%ene_flux%i_ujb, trns_fwd)
       call add_field_name_4_sph_trns_snap                               &
      &   (work_against_Lorentz%name, work_against_Lorentz%n_comp,       &
      &    ipol%ene_flux%i_nega_ujb, itor%ene_flux%i_nega_ujb,           &

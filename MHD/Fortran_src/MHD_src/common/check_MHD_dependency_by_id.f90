@@ -192,13 +192,6 @@
      &       (fld, i_start, iphys%i_magne, fhd_magne)
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_b_diffuse, fhd_mag_diffuse)
-        else if(i_start .eq. iphys%i_ujb) then 
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_velo, fhd_velo)
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_magne, fhd_magne)
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_current, fhd_current)
         else if(i_start .eq. iphys%i_density) then 
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_velo, fhd_velo)

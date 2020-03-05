@@ -52,6 +52,8 @@
       else if( (field_name .eq. work_against_Lorentz%name)              &
      &    .or. (field_name .eq. Lorentz_work%name)) then
         call add_phys_name_ctl(fhd_velo, field_ctl)
+        call add_phys_name_ctl(fhd_magne, field_ctl)
+        call add_phys_name_ctl(fhd_current, field_ctl)
         call add_phys_name_ctl(Lorentz_force%name, field_ctl)
       else if( (field_name .eq. mag_tension_work%name)) then
         call add_phys_name_ctl(fhd_velo, field_ctl)

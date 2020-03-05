@@ -182,9 +182,6 @@
         integer (kind=kint) :: i_par_t_gen =       izero
 !>        start address for perturbation composition flux
         integer (kind=kint) :: i_par_c_gen =       izero
-!>        start address for work of Lorentz force
-!!         @f$ u_{i} \left( e_{ijk} J_{j} B_{k} \right) @f$
-        integer (kind=kint) :: i_ujb =             izero
 !>        start address for work of divergence of Maxwell tensor
 !!         @f$ u_{i} \partial_{j} \left( B_{j} B_{i} \right) @f$
         integer (kind=kint) :: i_m_tension_wk  =   izero
