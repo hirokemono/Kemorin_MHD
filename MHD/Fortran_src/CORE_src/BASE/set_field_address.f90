@@ -167,7 +167,7 @@
         else if (field_name(i) .eq. composite_buoyancy_flux%name) then
           iphys%ene_flux%i_c_buo_gen = i0
         else if (field_name(i) .eq. viscous_ene_diffusion%name) then
-          iphys%i_vis_e_diffuse = i0
+          iphys%ene_flux%i_vis_e_diffuse = i0
         else if (field_name(i) .eq. magnetic_ene_diffusion%name) then
           iphys%i_mag_e_diffuse = i0
         else if (field_name(i) .eq. temp_generation%name) then

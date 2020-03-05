@@ -150,12 +150,7 @@
 !
       do i = 1, fld%num_phys
         i_start = fld%istack_component(i-1) + 1
-        if(i_start .eq. iphys%i_vis_e_diffuse) then 
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_velo, fhd_velo)
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_v_diffuse, fhd_viscous)
-        else if(i_start .eq. iphys%i_mag_e_diffuse) then 
+        if(i_start .eq. iphys%i_mag_e_diffuse) then 
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_magne, fhd_magne)
           call check_missing_field                                      &
