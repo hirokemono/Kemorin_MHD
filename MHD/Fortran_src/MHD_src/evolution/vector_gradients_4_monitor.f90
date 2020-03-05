@@ -339,10 +339,9 @@
      &      nod_fld)
       end if
 !
-      if (iphys%i_m_tension_wk .gt. izero) then
-        call cal_phys_dot_product                                       &
-     &     (iphys%i_electric, iphys%i_magne, iphys%i_m_tension_wk,      &
-     &      nod_fld)
+      if (iphys%ene_flux%i_m_tension_wk .gt. izero) then
+        call cal_phys_dot_product(iphys%i_velo, iphys%i_magne,          &
+     &      iphys%ene_flux%i_m_tension_wk, nod_fld)
       end if
 !
       if (iphys%forces%i_mag_stretch .gt. izero) then

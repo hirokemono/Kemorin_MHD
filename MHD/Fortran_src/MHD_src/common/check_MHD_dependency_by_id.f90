@@ -177,11 +177,6 @@
      &       (fld, i_start, iphys%i_magne, fhd_magne)
           call check_missing_field                                      &
      &       (fld, i_start, iphys%forces%i_induction, magnetic_induction%name)
-        else if(i_start .eq. iphys%i_m_tension_wk) then 
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_velo, fhd_velo)
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%forces%i_m_tension, magnetic_tension%name)
         else if(i_start .eq. iphys%i_vis_e_diffuse) then 
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_velo, fhd_velo)
