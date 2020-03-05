@@ -335,10 +335,10 @@
      &      iphys%ene_flux%i_vis_e_diffuse, nod_fld)
       end if
 !
-      if (iphys%i_mag_e_diffuse .gt. izero) then
+      if (iphys%ene_flux%i_mag_e_diffuse .gt. izero) then
         call cal_phys_dot_product                                       &
-     &     (iphys%i_magne, iphys%i_b_diffuse, iphys%i_mag_e_diffuse,    &
-     &      nod_fld)
+     &     (iphys%i_magne, iphys%i_b_diffuse,                           &
+     &      iphys%ene_flux%i_mag_e_diffuse, nod_fld)
       end if
 !
       if (iphys%ene_flux%i_m_tension_wk .gt. izero) then
