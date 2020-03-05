@@ -154,29 +154,6 @@
         else if ( field_name(i) .eq. fhd_cross_helicity ) then
           iphys%i_x_heli = i0
 !
-        else if (field_name(i) .eq. magnetic_ene_generation%name) then
-          iphys%ene_flux%i_me_gen =   i0
-        else if (field_name(i) .eq. Lorentz_work%name) then
-          iphys%ene_flux%i_ujb =      i0
-        else if (field_name(i) .eq. work_against_Lorentz%name) then
-          iphys%ene_flux%i_nega_ujb = i0
-        else if (field_name(i) .eq. mag_tension_work%name) then
-          iphys%ene_flux%i_m_tension_wk = i0
-        else if (field_name(i) .eq. buoyancy_flux%name) then
-          iphys%ene_flux%i_buo_gen =   i0
-        else if (field_name(i) .eq. composite_buoyancy_flux%name) then
-          iphys%ene_flux%i_c_buo_gen = i0
-        else if (field_name(i) .eq. viscous_ene_diffusion%name) then
-          iphys%ene_flux%i_vis_e_diffuse = i0
-        else if (field_name(i) .eq. magnetic_ene_diffusion%name) then
-          iphys%ene_flux%i_mag_e_diffuse = i0
-        else if (field_name(i) .eq. temp_generation%name) then
-          iphys%ene_flux%i_temp_gen = i0
-        else if (field_name(i) .eq. pert_temp_generation%name) then
-          iphys%ene_flux%i_par_t_gen = i0
-        else if (field_name(i) .eq. pert_comp_generation%name) then
-          iphys%ene_flux%i_par_c_gen = i0
-!
         else if (field_name(i) .eq. fhd_thermal_diffusion) then
           iphys%i_t_diffuse =  i0
         else if (field_name(i) .eq. fhd_viscous) then
@@ -208,6 +185,8 @@
 !
         call set_base_force_addresses                                   &
      &     (i0, field_name(i), iphys%forces, flag)
+        call set_enegy_fluxe_addresses                                  &
+     &     (i0, field_name(i), iphys%ene_flux, flag)
 !
         call set_SGS_term_addresses                                     &
      &     (i0, field_name(i), iphys%SGS_term, flag)
