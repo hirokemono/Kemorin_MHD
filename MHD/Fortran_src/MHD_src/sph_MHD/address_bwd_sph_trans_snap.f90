@@ -329,8 +329,9 @@
 !
       call add_field_name_4_sph_trns_snap                               &
      &   (div_Coriolis_force%name, div_Coriolis_force%n_comp,           &
-     &    ipol%i_div_Coriolis, itor%i_div_Coriolis,                     &
-     &    iphys%i_div_Coriolis, b_trns%i_div_Coriolis, trns_back)
+     &    ipol%div_forces%i_Coriolis, itor%div_forces%i_Coriolis,       &
+     &    iphys%div_forces%i_Coriolis, b_trns%div_forces%i_Coriolis,    &
+     &    trns_back)
 !
       call add_field_name_4_sph_trns_snap                               &
      &   (div_SGS_inertia%name, div_SGS_inertia%n_comp,                 &

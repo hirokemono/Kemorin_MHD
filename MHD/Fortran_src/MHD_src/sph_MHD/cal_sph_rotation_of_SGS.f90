@@ -138,14 +138,14 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      if(ipol%i_div_inertia .gt. 0) then
+      if(ipol%div_forces%i_m_flux .gt. 0) then
         call const_sph_div_force                                        &
      &     (sph_rj, r_2nd, sph_MHD_bc%sph_bc_U, g_sph_rj,               &
      &      ipol%SGS_term%i_SGS_inertia, ipol%div_SGS%i_SGS_inertia,    &
      &      rj_fld)
       end if
 !
-      if(ipol%i_div_Lorentz .gt. 0) then
+      if(ipol%div_forces%i_lorentz .gt. 0) then
         call const_sph_div_force                                        &
      &     (sph_rj, r_2nd, sph_MHD_bc%sph_bc_U, g_sph_rj,               &
      &      ipol%SGS_term%i_SGS_Lorentz, ipol%div_SGS%i_SGS_Lorentz,    &

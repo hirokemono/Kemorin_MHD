@@ -143,18 +143,18 @@
 !
       call const_sph_div_force                                          &
      &   (sph_rj, r_2nd, sph_MHD_bc%sph_bc_U, g_sph_rj,                 &
-     &    ipol%forces%i_m_advect, ipol%i_div_inertia, rj_fld)
+     &    ipol%forces%i_m_advect, ipol%div_forces%i_m_flux, rj_fld)
 !
       if(MHD_prop%fl_prop%iflag_4_lorentz .gt. id_turn_OFF) then
         call const_sph_div_force                                        &
      &     (sph_rj, r_2nd, sph_MHD_bc%sph_bc_U, g_sph_rj,               &
-     &      ipol%forces%i_lorentz, ipol%i_div_Lorentz, rj_fld)
+     &      ipol%forces%i_lorentz, ipol%div_forces%i_lorentz, rj_fld)
       end if
 !
       if(MHD_prop%fl_prop%iflag_4_coriolis .gt. id_turn_OFF) then
         call const_sph_div_force                                        &
      &     (sph_rj, r_2nd, sph_MHD_bc%sph_bc_U, g_sph_rj,               &
-     &      ipol%forces%i_coriolis, ipol%i_div_Coriolis, rj_fld)
+     &      ipol%forces%i_coriolis, ipol%div_forces%i_Coriolis, rj_fld)
       end if
 !
       if(MHD_prop%fl_prop%iflag_4_gravity .gt. id_turn_OFF) then

@@ -224,12 +224,6 @@
 !
 !  divergence of momentum equations
 !
-!>        start address for divergence of advection
-        integer (kind=kint) :: i_div_inertia =    izero
-!>        start address for divergence of Lorentz force
-        integer (kind=kint) :: i_div_Lorentz =    izero
-!>        start address for divergence of Coriolis force
-        integer (kind=kint) :: i_div_Coriolis =   izero
 !>        start address for divergence of buoyancy
         integer (kind=kint) :: i_div_buoyancy =   izero
 !>        start address for divergence of compositional buoyancy

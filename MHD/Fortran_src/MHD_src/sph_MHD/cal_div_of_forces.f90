@@ -84,11 +84,11 @@
         call set_div_advection_to_force                                 &
      &     (ipol, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         if(fl_prop%iflag_4_coriolis .ne. id_turn_OFF) then
-          call add_term_to_div_force(ipol, ipol%i_div_Coriolis,         &
+          call add_term_to_div_force(ipol, ipol%div_forces%i_Coriolis,  &
      &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         end if
         if(fl_prop%iflag_4_lorentz .ne. id_turn_OFF) then
-          call add_term_to_div_force(ipol, ipol%i_div_Lorentz,          &
+          call add_term_to_div_force(ipol, ipol%div_forces%i_lorentz,   &
      &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         end if
         if(fl_prop%iflag_4_gravity .ne. id_turn_OFF) then
@@ -132,11 +132,11 @@
       else
 !
         if(ipol%rot_SGS%i_SGS_inertia .ne. id_turn_OFF) then
-          call add_term_to_div_force(ipol, ipol%i_div_inertia,          &
+          call add_term_to_div_force(ipol, ipol%div_forces%i_m_flux,    &
      &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         end if
         if(ipol%rot_SGS%i_SGS_Lorentz .ne. izero) then
-          call add_term_to_div_force(ipol, ipol%i_div_Lorentz,          &
+          call add_term_to_div_force(ipol, ipol%div_forces%i_lorentz,   &
      &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         end if
       end if
@@ -159,11 +159,12 @@
 !
 !$omp do private (inod)
       do inod = 1, nnod_rj
-        d_rj(inod,ipol%i_press) =  - d_rj(inod,ipol%i_div_inertia)      &
-     &                             + d_rj(inod,ipol%i_div_Coriolis)     &
-     &                             + d_rj(inod,ipol%i_div_Lorentz)      &
-     &                             + d_rj(inod,ipol%i_div_buoyancy)     &
-     &                             + d_rj(inod,ipol%i_div_comp_buo)
+        d_rj(inod,ipol%i_press)                                         &
+     &        =  - d_rj(inod,ipol%div_forces%i_m_flux)                  &
+     &           + d_rj(inod,ipol%div_forces%i_Coriolis)                &
+     &           + d_rj(inod,ipol%div_forces%i_lorentz)                 &
+     &           + d_rj(inod,ipol%i_div_buoyancy)     &
+     &           + d_rj(inod,ipol%i_div_comp_buo)
       end do
 !$omp end do nowait
 !
@@ -184,10 +185,11 @@
 !
 !$omp do private (inod)
       do inod = 1, nnod_rj
-        d_rj(inod,ipol%i_press) =  - d_rj(inod,ipol%i_div_inertia)      &
-     &                             + d_rj(inod,ipol%i_div_Coriolis)     &
-     &                             + d_rj(inod,ipol%i_div_Lorentz)      &
-     &                             + d_rj(inod,is_div_buo)
+        d_rj(inod,ipol%i_press)                                         &
+     &        =  - d_rj(inod,ipol%div_forces%i_m_flux)                  &
+     &           + d_rj(inod,ipol%div_forces%i_Coriolis)                &
+     &           + d_rj(inod,ipol%div_forces%i_lorentz)                 &
+     &           + d_rj(inod,is_div_buo)
       end do
 !$omp end do nowait
 !
@@ -207,10 +209,11 @@
 !
 !$omp do private (inod)
       do inod = 1, nnod_rj
-        d_rj(inod,ipol%i_press) =  - d_rj(inod,ipol%i_div_inertia)      &
-     &                             + d_rj(inod,ipol%i_div_Coriolis)     &
-     &                             + d_rj(inod,ipol%i_div_buoyancy)     &
-     &                             + d_rj(inod,ipol%i_div_comp_buo)
+        d_rj(inod,ipol%i_press)                                         &
+     &        =  - d_rj(inod,ipol%div_forces%i_m_flux)                  &
+     &           + d_rj(inod,ipol%div_forces%i_Coriolis)                &
+     &           + d_rj(inod,ipol%i_div_buoyancy)     &
+     &           + d_rj(inod,ipol%i_div_comp_buo)
       end do
 !$omp end do nowait
 !
@@ -231,9 +234,10 @@
 !
 !$omp do private (inod)
       do inod = 1, nnod_rj
-        d_rj(inod,ipol%i_press) =  - d_rj(inod,ipol%i_div_inertia)      &
-     &                             + d_rj(inod,ipol%i_div_Coriolis)     &
-     &                             + d_rj(inod,is_div_buo)
+        d_rj(inod,ipol%i_press)                                         &
+     &        =  - d_rj(inod,ipol%div_forces%i_m_flux)                  &
+     &           + d_rj(inod,ipol%div_forces%i_Coriolis)                &
+     &           + d_rj(inod,is_div_buo)
       end do
 !$omp end do nowait
 !
@@ -254,7 +258,8 @@
 !
 !$omp do private (inod)
       do inod = 1, nnod_rj
-!        d_rj(inod,ipol%i_press) = - d_rj(inod,ipol%i_div_inertia)
+!        d_rj(inod,ipol%i_press)                                        &
+!     &        = - d_rj(inod,ipol%div_forces%i_m_flux)
         d_rj(inod,ipol%i_press) = zero
       end do
 !$omp end do nowait

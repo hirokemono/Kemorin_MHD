@@ -126,10 +126,11 @@
 !
 !
 !   divergence of Coriolis flux flag
-      call add_field_name_4_sph_trns(ipol%i_div_Coriolis,               &
+      call add_field_name_4_sph_trns(ipol%div_forces%i_Coriolis,        &
      &    div_Coriolis_force%name, div_Coriolis_force%n_comp,           &
-     &    ipol%i_div_Coriolis, itor%i_div_Coriolis,                     &
-     &    iphys%i_div_Coriolis, f_trns%i_div_Coriolis, trns_fwd)
+     &    ipol%div_forces%i_Coriolis, itor%div_forces%i_Coriolis,       &
+     &    iphys%div_forces%i_Coriolis, f_trns%div_forces%i_Coriolis,    &
+     &    trns_fwd)
       trns_fwd%num_scalar = trns_fwd%nfield - trns_fwd%num_vector
 !
       end subroutine f_trans_address_scalar_MHD
