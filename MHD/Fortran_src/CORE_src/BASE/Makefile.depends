@@ -80,6 +80,8 @@ m_diff_force_labels.o: $(BASEDIR)/m_diff_force_labels.f90 m_precision.o m_phys_c
 	$(F90) -c $(F90OPTFLAGS) $<
 m_div_filtered_force_labels.o: $(BASEDIR)/m_div_filtered_force_labels.f90 m_precision.o m_phys_constants.o t_field_labels.o t_base_force_labels.o
 	$(F90) -c $(F90OPTFLAGS) $<
+m_div_force_labels.o: $(BASEDIR)/m_div_force_labels.f90 m_precision.o m_phys_constants.o t_field_labels.o t_base_force_labels.o
+	$(F90) -c $(F90OPTFLAGS) $<
 m_energy_flux_w_sym_labels.o: $(BASEDIR)/m_energy_flux_w_sym_labels.f90 m_precision.o m_constants.o t_base_field_labels.o t_base_force_labels.o t_energy_flux_labels.o m_field_w_symmetry_labels.o m_force_w_sym_labels.o
 	$(F90) -c $(F90OPTFLAGS) $<
 m_error_IDs.o: $(BASEDIR)/m_error_IDs.f90 m_precision.o

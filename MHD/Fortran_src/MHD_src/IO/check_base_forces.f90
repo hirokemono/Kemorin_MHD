@@ -10,6 +10,7 @@
 !!@verbatim
 !!      subroutine add_field_ctl_4_forces(field_ctl)
 !!      subroutine add_field_ctl_4_rot_forces(field_ctl)
+!!      subroutine add_field_ctl_4_div_forces(field_ctl)
 !!        type(ctl_array_c3), intent(in) :: field_ctl
 !!@endverbatim
 !!
@@ -124,6 +125,48 @@
      &   call add_phys_name_ctl(composite_buoyancy%name, field_ctl)
 !
       end subroutine add_field_ctl_4_rot_forces
+!
+! -----------------------------------------------------------------------
+!
+      subroutine add_field_ctl_4_div_forces(field_ctl)
+!
+      use t_control_array_character3
+      use m_div_force_labels
+      use add_nodal_fields_ctl
+!
+      type(ctl_array_c3), intent(inout) :: field_ctl
+!
+!
+      if(check_field_list_ctl(div_inertia%name, field_ctl))             &
+     &   call add_phys_name_ctl(inertia%name, field_ctl)
+      if(check_field_list_ctl(div_Coriolis_force%name, field_ctl))      &
+     &   call add_phys_name_ctl(Coriolis_force%name, field_ctl)
+      if(check_field_list_ctl(div_Lorentz_force%name, field_ctl))       &
+     &   call add_phys_name_ctl(Lorentz_force%name, field_ctl)
+!
+      if(check_field_list_ctl(div_buoyancy%name, field_ctl))            &
+        call add_phys_name_ctl(buoyancy%name, field_ctl)
+      if(check_field_list_ctl(div_composite_buoyancy%name, field_ctl))  &
+        call add_phys_name_ctl(composite_buoyancy%name, field_ctl)
+!
+      if(check_field_list_ctl(div_m_flux%name, field_ctl))              &
+        call add_phys_name_ctl(momentum_flux%name, field_ctl)
+      if(check_field_list_ctl(div_maxwell_t%name, field_ctl))           &
+        call add_phys_name_ctl(maxwell_tensor%name, field_ctl)
+      if(check_field_list_ctl(div_induct_t%name, field_ctl))            &
+        call add_phys_name_ctl(induction_tensor%name, field_ctl)
+!
+      if(check_field_list_ctl(div_heat_flux%name, field_ctl))           &
+        call add_phys_name_ctl(div_pert_heat_flux%name, field_ctl)
+      if(check_field_list_ctl(pert_heat_flux%name, field_ctl))          &
+        call add_phys_name_ctl(div_composition_flux%name, field_ctl)
+      if(check_field_list_ctl(composite_flux%name, field_ctl))          &
+        call add_phys_name_ctl(induction_tensor%name, field_ctl)
+      if(check_field_list_ctl(div_pert_composition_flux%name,           &
+     &                        field_ctl))                               &
+        call add_phys_name_ctl(pert_comp_flux%name, field_ctl)
+!
+      end subroutine add_field_ctl_4_div_forces
 !
 ! -----------------------------------------------------------------------
 !

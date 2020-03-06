@@ -96,7 +96,7 @@
       type(field_def), parameter :: div_m_flux_by_filtered              &
      &    = field_def(n_comp = n_vector,                                &
      &             name = 'div_m_flux_by_filtered',                     &
-     &          math = '$-\partial_{j} (\tilde{B}_{i} \tilde{B}_{j})$')
+     &          math = '$-\partial_{j} (\tilde{u}_{i} \tilde{u}_{j})$')
 !>        Field label for divergence of Maxwell stress
 !!         @f$ \partial_{j} (\tilde{B}_{i} \tilde{B}_{j}) @f$
       type(field_def), parameter :: div_maxwell_t_by_filtered           &

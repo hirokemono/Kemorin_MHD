@@ -29,8 +29,8 @@
 !!   div_heat_flux           [i_h_flux]:    heat flux          uT
 !!   div_pert_heat_flux      [i_ph_flux]:  perturbation of heat flux 
 !!                                    u\Theta
-!!   div_c_flux     [i_c_flux]:     composition flux         uC
-!!   div_part_c_flux  [i_pc_flux]:  perturbation of composition flux
+!!   div_composition_flux     [i_c_flux]:     composition flux         uC
+!!   div_pert_composition_flux  [i_pc_flux]:  perturbation of composition flux
 !!                                      u(C-C_0)
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -101,10 +101,10 @@
 !>        Field label for divergence of composition flux
 !!         @f$ \partial_{i} \left( u_{i} C \right) @f$
       character(len=kchara), parameter                                  &
-     &             :: fhd_div_c_flux =        'div_c_flux'
+     &             :: fhd_div_c_flux =        'div_composition_flux'
 !>        Field label for divergence of perturbation of compopstion flux
 !!         @f$ \partial_{i} \left( u_{i} \Theta_C \right) @f$
       character(len=kchara), parameter                                  &
-     &             :: fhd_div_pc_flux =       'div_part_c_flux'
+     &             :: fhd_div_pc_flux =       'div_pert_composition_flux'
 !
       end module m_diff_force_labels

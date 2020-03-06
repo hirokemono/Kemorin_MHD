@@ -108,8 +108,8 @@ const struct field_def field_props[NUM_FIELD] = {
 			{1, "div_pert_heat_flux", "$$    $$"},
 			{1, "composition_advect", "$$    $$"},
 			{1, "pert_comp_advect", "$$    $$"},
-			{1, "div_c_flux", "$$    $$"},
-			{1, "div_part_c_flux", "$$    $$"},
+			{1, "div_composition_flux", "$$    $$"},
+			{1, "div_pert_composition_flux", "$$    $$"},
 			
 			{3, "electric_field", "$$    $$"},
 			{3, "poynting_flux", "$$    $$"},
