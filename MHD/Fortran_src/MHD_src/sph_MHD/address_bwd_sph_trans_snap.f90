@@ -79,19 +79,24 @@
      &    ipol%i_b_diffuse, itor%i_b_diffuse, iphys%i_b_diffuse,        &
      &    b_trns%i_b_diffuse, trns_back)
 !
-      call add_field_name_4_sph_trns_snap(fhd_rot_inertia, n_vector,    &
+      call add_field_name_4_sph_trns_snap                               &
+     &   (rot_inertia%name, rot_inertia%n_comp,                         &
      &    ipol%i_rot_inertia, itor%i_rot_inertia, iphys%i_rot_inertia,  &
      &    b_trns%i_rot_inertia, trns_back)
-      call add_field_name_4_sph_trns_snap(fhd_rot_Coriolis, n_vector,   &
+      call add_field_name_4_sph_trns_snap                               &
+     &   (rot_Coriolis_force%name, rot_Coriolis_force%n_comp,           &
      &    ipol%i_rot_Coriolis, itor%i_rot_Coriolis,                     &
      &    iphys%i_rot_Coriolis, b_trns%i_rot_Coriolis, trns_back)
-      call add_field_name_4_sph_trns_snap(fhd_rot_Lorentz, n_vector,    &
+      call add_field_name_4_sph_trns_snap                               &
+     &   (rot_Lorentz_force%name, rot_Lorentz_force%n_comp,             &
      &    ipol%i_rot_Lorentz, itor%i_rot_Lorentz, iphys%i_rot_Lorentz,  &
      &    b_trns%i_rot_Lorentz, trns_back)
-      call add_field_name_4_sph_trns_snap(fhd_rot_buoyancy, n_vector,   &
+      call add_field_name_4_sph_trns_snap                               &
+     &   (rot_buoyancy%name, rot_buoyancy%n_comp,                       &
      &    ipol%i_rot_buoyancy, itor%i_rot_buoyancy,                     &
      &    iphys%i_rot_buoyancy, b_trns%i_rot_buoyancy, trns_back)
-      call add_field_name_4_sph_trns_snap(fhd_rot_comp_buo, n_vector,   &
+      call add_field_name_4_sph_trns_snap                               &
+     &   (rot_composite_buoyancy%name, rot_composite_buoyancy%n_comp,   &
      &    ipol%i_rot_comp_buo, itor%i_rot_comp_buo,                     &
      &    iphys%i_rot_comp_buo, b_trns%i_rot_comp_buo, trns_back)
 !
@@ -317,7 +322,8 @@
      &    ipol%forces%i_c_advect, itor%forces%i_c_advect,               &
      &    iphys%forces%i_c_advect, b_trns%forces%i_c_advect, trns_back)
 !
-      call add_field_name_4_sph_trns_snap(fhd_div_Coriolis, n_scalar,   &
+      call add_field_name_4_sph_trns_snap                               &
+     &   (div_Coriolis_force%name, div_Coriolis_force%n_comp,           &
      &    ipol%i_div_Coriolis, itor%i_div_Coriolis,                     &
      &    iphys%i_div_Coriolis, b_trns%i_div_Coriolis, trns_back)
 !

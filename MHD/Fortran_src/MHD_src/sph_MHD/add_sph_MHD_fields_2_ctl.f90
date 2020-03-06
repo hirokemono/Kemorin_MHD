@@ -36,6 +36,8 @@
      &         (fl_prop, cd_prop, ht_prop, cp_prop, field_ctl)
 !
       use add_nodal_fields_ctl
+      use m_rot_force_labels
+      use m_div_force_labels
 !
       type(fluid_property), intent(in) :: fl_prop
       type(conductive_property), intent(in) :: cd_prop
@@ -82,32 +84,34 @@
         call add_phys_name_ctl(fhd_w_viscous, field_ctl)
 !
         call add_phys_name_ctl(inertia%name, field_ctl)
-        call add_phys_name_ctl(fhd_rot_inertia, field_ctl)
-        call add_phys_name_ctl(fhd_div_inertia, field_ctl)
+        call add_phys_name_ctl(rot_inertia%name, field_ctl)
+        call add_phys_name_ctl(div_inertia%name, field_ctl)
 !
 !   Coriolis flag
         if(fl_prop%iflag_4_coriolis .gt. id_turn_OFF) then
           call add_phys_name_ctl(Coriolis_force%name, field_ctl)
-          call add_phys_name_ctl(fhd_rot_Coriolis, field_ctl)
-          call add_phys_name_ctl(fhd_div_Coriolis, field_ctl)
+          call add_phys_name_ctl(rot_Coriolis_force%name, field_ctl)
+          call add_phys_name_ctl(div_Coriolis_force%name, field_ctl)
         end if
 !   Lorentz flag
         if(fl_prop%iflag_4_lorentz .gt. id_turn_OFF) then
           call add_phys_name_ctl(Lorentz_force%name, field_ctl)
-          call add_phys_name_ctl(fhd_rot_Lorentz, field_ctl)
-          call add_phys_name_ctl(fhd_div_Lorentz, field_ctl)
+          call add_phys_name_ctl(rot_Lorentz_force%name, field_ctl)
+          call add_phys_name_ctl(div_Lorentz_force%name, field_ctl)
         end if
 !   thermal buoyancy flag
         if(fl_prop%iflag_4_gravity .gt. id_turn_OFF) then
           call add_phys_name_ctl(buoyancy%name, field_ctl)
-          call add_phys_name_ctl(fhd_rot_buoyancy, field_ctl)
-          call add_phys_name_ctl(fhd_div_buoyancy, field_ctl)
+          call add_phys_name_ctl(rot_buoyancy%name, field_ctl)
+          call add_phys_name_ctl(div_buoyancy%name, field_ctl)
         end if
 !   compositional buoyancy flag
         if(fl_prop%iflag_4_composit_buo .gt. id_turn_OFF) then
           call add_phys_name_ctl(composite_buoyancy%name, field_ctl)
-          call add_phys_name_ctl(fhd_div_comp_buo, field_ctl)
-          call add_phys_name_ctl(fhd_rot_comp_buo, field_ctl)
+          call add_phys_name_ctl                                        &
+     &       (div_composite_buoyancy%name, field_ctl)
+          call add_phys_name_ctl                                        &
+     &       (rot_composite_buoyancy%name, field_ctl)
         end if
 !   filtered thermal buoyancy flag
         if(fl_prop%iflag_4_filter_gravity .gt. id_turn_OFF) then

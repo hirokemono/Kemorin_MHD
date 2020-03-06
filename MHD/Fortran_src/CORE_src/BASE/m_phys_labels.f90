@@ -74,9 +74,9 @@
 !!   heat_advect, pert_heat_advect
 !!   inertia,  
 !!   div_heat_flux, div_pert_heat_flux
-!!   div_m_flux, div_maxwell_t
+!!   div_momentum_flux, div_maxwell_tensor
 !!
-!!   induction_tensor, div_induct_t
+!!   induction_tensor, div_induction_tensor
 !!
 !!   SGS_heat_flux, SGS_composit_flux
 !!   SGS_momentum_flux, SGS_maxwell_tensor
@@ -148,7 +148,7 @@
       use t_SGS_model_coef_labels
 !
       use m_rot_force_labels
-      use m_diff_force_labels
+      use m_div_force_labels
       use m_filtered_field_labels
       use m_filtered_force_labels
       use m_filtered_ene_flux_labels

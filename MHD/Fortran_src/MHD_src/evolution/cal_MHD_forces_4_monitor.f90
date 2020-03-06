@@ -224,7 +224,7 @@
 !
       if(iphys%i_h_flux_div .gt. izero) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
-     &             write(*,*) 'lead  ', trim(fhd_div_h_flux)
+     &             write(*,*) 'lead  ', trim(div_heat_flux%name)
         call cal_div_of_scalar_flux                                     &
      &     (iphys%i_h_flux_div, iphys%forces%i_h_flux,                  &
      &      FEM_prm%iflag_temp_supg, FEM_prm%npoint_t_evo_int, dt,      &
@@ -235,7 +235,7 @@
 !
       if(iphys%i_ph_flux_div .gt. izero) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
-     &             write(*,*) 'lead  ', trim(fhd_div_ph_flux)
+     &             write(*,*) 'lead  ', trim(div_pert_heat_flux%name)
         call cal_div_of_scalar_flux                                     &
      &     (iphys%i_ph_flux_div, iphys%forces%i_ph_flux,                &
      &      FEM_prm%iflag_temp_supg, FEM_prm%npoint_t_evo_int, dt,      &
@@ -269,7 +269,7 @@
 !
       if(iphys%i_c_flux_div .gt. izero) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
-     &             write(*,*) 'lead  ', trim(fhd_div_c_flux)
+     &             write(*,*) 'lead  ', trim(div_composition_flux%name)
         call cal_div_of_scalar_flux                                     &
      &     (iphys%i_c_flux_div, iphys%forces%i_c_flux,                  &
      &      FEM_prm%iflag_comp_supg, FEM_prm%npoint_t_evo_int, dt,      &
@@ -279,8 +279,8 @@
       end if
 !
       if(iphys%i_pc_flux_div .gt. izero) then
-        if(iflag_debug .ge. iflag_routine_msg)                          &
-     &             write(*,*) 'lead  ', trim(fhd_div_pc_flux)
+        if(iflag_debug .ge. iflag_routine_msg) write(*,*) 'lead  ',     &
+     &              trim(div_pert_composition_flux%name)
         call cal_div_of_scalar_flux                                     &
      &     (iphys%i_pc_flux_div, iphys%forces%i_pc_flux,                &
      &      FEM_prm%iflag_comp_supg, FEM_prm%npoint_t_evo_int, dt,      &

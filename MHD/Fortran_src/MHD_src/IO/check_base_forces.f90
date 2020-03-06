@@ -149,11 +149,11 @@
       if(check_field_list_ctl(div_composite_buoyancy%name, field_ctl))  &
         call add_phys_name_ctl(composite_buoyancy%name, field_ctl)
 !
-      if(check_field_list_ctl(div_m_flux%name, field_ctl))              &
+      if(check_field_list_ctl(div_momentum_flux%name, field_ctl))       &
         call add_phys_name_ctl(momentum_flux%name, field_ctl)
-      if(check_field_list_ctl(div_maxwell_t%name, field_ctl))           &
+      if(check_field_list_ctl(div_maxwell_tensor%name, field_ctl))      &
         call add_phys_name_ctl(maxwell_tensor%name, field_ctl)
-      if(check_field_list_ctl(div_induct_t%name, field_ctl))            &
+      if(check_field_list_ctl(div_induction_tensor%name, field_ctl))    &
         call add_phys_name_ctl(induction_tensor%name, field_ctl)
 !
       if(check_field_list_ctl(div_heat_flux%name, field_ctl))           &

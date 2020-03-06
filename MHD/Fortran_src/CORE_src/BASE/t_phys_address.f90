@@ -345,6 +345,10 @@
 !
 !>        Structure of forces
         type(base_force_address) :: forces
+!>        Structure of forces
+        type(base_force_address) :: rot_forces
+!>        Structure of forces
+        type(base_force_address) :: div_forces
 !>        Structure of energy fluxes
         type(energy_flux_address) :: ene_flux
 !>        Structure of gradient of fields

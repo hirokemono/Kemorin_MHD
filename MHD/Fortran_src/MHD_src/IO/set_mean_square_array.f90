@@ -45,6 +45,8 @@
       use t_SGS_model_coef_labels
       use m_phys_constants
       use m_volume_average_labels
+      use m_rot_force_labels
+      use m_div_force_labels
       use m_diff_SGS_term_labels
       use m_true_SGS_term_labels
       use m_filtered_force_labels
@@ -304,19 +306,16 @@
             call set_rms_address_list(i, nod_fld, msq_list)
           end if
 !
-          if ( field_name .eq. fhd_div_m_flux ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_m_flux_div,              &
-     &          i_rms%i_m_flux_div, j_ave%i_m_flux_div, msq_list)
-          else if ( field_name .eq. fhd_div_maxwell_t ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_maxwell_div,             &
-     &          i_rms%i_maxwell_div, j_ave%i_maxwell_div, msq_list)
-          else if ( field_name .eq. fhd_div_induct_t ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_induct_div,              &
-     &          i_rms%i_induct_div, j_ave%i_induct_div, msq_list)
-          else if(check_filtered_force(field_name)) then
+          if(check_rot_force(field_name)) then
+            call set_rms_address_list(i, nod_fld, msq_list)
+          end if
+          if(     check_div_force(field_name)                           &
+     &       .or. check_div_flux_tensor(field_name)                     &
+     &       .or. check_div_scalar_flux(field_name)) then
+           call set_rms_address_list(i, nod_fld, msq_list)
+         end if
+!
+          if(check_filtered_force(field_name)) then
             call set_rms_address_list(i, nod_fld, msq_list)
           end if
 !
@@ -394,24 +393,6 @@
 !
           if(check_filter_enegy_fluxes(field_name)) then
             call set_rms_address_list(i, nod_fld, msq_list)
-          end if
-!
-          if ( field_name .eq. fhd_div_h_flux ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_h_flux_div,              &
-     &          i_rms%i_h_flux_div, j_ave%i_h_flux_div, msq_list)
-          else if ( field_name .eq. fhd_div_ph_flux ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_ph_flux_div,             &
-     &          i_rms%i_ph_flux_div, j_ave%i_ph_flux_div, msq_list)
-          else if ( field_name .eq. fhd_div_c_flux ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_c_flux_div,              &
-     &          i_rms%i_c_flux_div, j_ave%i_c_flux_div, msq_list)
-          else if ( field_name .eq. fhd_div_pc_flux ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_pc_flux_div,             &
-     &          i_rms%i_pc_flux_div, j_ave%i_pc_flux_div, msq_list)
           end if
 !
           if(check_SGS_ene_fluxes(field_name)) then

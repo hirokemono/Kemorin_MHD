@@ -71,8 +71,8 @@
      &        trns_fwd)
         end if
         if(fl_prop%iflag_4_coriolis .gt. id_turn_OFF) then
-          call add_field_name_4_sph_trns                                &
-     &       (ipol%i_rot_Coriolis, fhd_rot_Coriolis, n_vector,          &
+          call add_field_name_4_sph_trns(ipol%i_rot_Coriolis,           &
+     &        rot_Coriolis_force%name, rot_Coriolis_force%n_comp,       &
      &        ipol%i_rot_Coriolis, itor%i_rot_Coriolis,                 &
      &        iphys%i_rot_Coriolis, f_trns%i_rot_Coriolis, trns_fwd)
         end if
@@ -125,8 +125,8 @@
 !
 !
 !   divergence of Coriolis flux flag
-      call add_field_name_4_sph_trns                                    &
-     &   (ipol%i_div_Coriolis, fhd_div_Coriolis, n_scalar,              &
+      call add_field_name_4_sph_trns(ipol%i_div_Coriolis,               &
+     &    div_Coriolis_force%name, div_Coriolis_force%n_comp,           &
      &    ipol%i_div_Coriolis, itor%i_div_Coriolis,                     &
      &    iphys%i_div_Coriolis, f_trns%i_div_Coriolis, trns_fwd)
       trns_fwd%num_scalar = trns_fwd%nfield - trns_fwd%num_vector

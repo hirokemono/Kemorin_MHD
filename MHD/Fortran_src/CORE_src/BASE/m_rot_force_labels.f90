@@ -9,8 +9,8 @@
 !!@verbatim
 !!      logical function check_rot_force(field_name)
 !!      subroutine set_rot_force_addresses                              &
-!!     &         (i_phys, field_name, rot_force, flag)
-!!        type(base_force_address), intent(inout) :: rot_force
+!!     &         (i_phys, field_name, rot_forces, flag)
+!!        type(base_force_address), intent(inout) :: rot_forces
 !!
 !!      integer(kind = kint) function num_rot_forces()
 !!      subroutine set_rot_force_labels(n_comps, names, maths)
@@ -19,11 +19,11 @@
 !!
 !!    Field name [Address]
 !!
-!!   rot_inertia              [rot_force%i_m_advect]
-!!   rot_Coriolis_force       [rot_force%i_Coriolis]
-!!   rot_Lorentz_force        [rot_force%i_lorentz]
-!!   rot_buoyancy             [rot_force%i_buoyancy]
-!!   rot_composite_buoyancy   [rot_force%i_comp_buo]
+!!   rot_inertia              [rot_forces%i_m_advect]
+!!   rot_Coriolis_force       [rot_forces%i_Coriolis]
+!!   rot_Lorentz_force        [rot_forces%i_lorentz]
+!!   rot_buoyancy             [rot_forces%i_buoyancy]
+!!   rot_composite_buoyancy   [rot_forces%i_comp_buo]
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!@endverbatim
@@ -101,28 +101,28 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_rot_force_addresses                                &
-     &         (i_phys, field_name, rot_force, flag)
+     &         (i_phys, field_name, rot_forces, flag)
 !
       integer(kind = kint), intent(in) :: i_phys
       character(len = kchara), intent(in) :: field_name
 !
-      type(base_force_address), intent(inout) :: rot_force
+      type(base_force_address), intent(inout) :: rot_forces
       logical, intent(inout) :: flag
 !
 !
       flag = check_rot_force(field_name)
       if(flag) then
         if (field_name .eq. rot_inertia%name) then
-          rot_force%i_m_advect =   i_phys
+          rot_forces%i_m_advect =   i_phys
         else if (field_name .eq. rot_Coriolis_force%name) then
-          rot_force%i_Coriolis =   i_phys
+          rot_forces%i_Coriolis =   i_phys
         else if (field_name .eq. rot_Lorentz_force%name) then
-          rot_force%i_lorentz =    i_phys
+          rot_forces%i_lorentz =    i_phys
 !
         else if (field_name .eq. rot_buoyancy%name) then
-          rot_force%i_buoyancy =   i_phys
+          rot_forces%i_buoyancy =   i_phys
         else if (field_name .eq. rot_composite_buoyancy%name) then
-          rot_force%i_comp_buo =   i_phys
+          rot_forces%i_comp_buo =   i_phys
         end if
       end if
 !

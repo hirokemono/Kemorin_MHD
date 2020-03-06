@@ -51,6 +51,8 @@
 !
       use t_SGS_term_labels
 !
+      use m_rot_force_labels
+      use m_div_force_labels
       use m_true_SGS_term_labels
       use m_rot_filtered_force_labels
       use m_div_filtered_force_labels
@@ -94,14 +96,6 @@
      &  .or. (phys_nod_name_ctl .eq. fhd_w_viscous          )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_vecp_diffuse       )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_mag_diffuse        )           &
-     &  .or. (phys_nod_name_ctl .eq. fhd_div_m_flux         )           &
-     &  .or. (phys_nod_name_ctl .eq. fhd_div_maxwell_t      )           &
-     &  .or. (phys_nod_name_ctl .eq. fhd_div_induct_t       )           &
-     &  .or. (phys_nod_name_ctl .eq. fhd_rot_inertia        )           &
-     &  .or. (phys_nod_name_ctl .eq. fhd_rot_Lorentz        )           &
-     &  .or. (phys_nod_name_ctl .eq. fhd_rot_Coriolis       )           &
-     &  .or. (phys_nod_name_ctl .eq. fhd_rot_buoyancy       )           &
-     &  .or. (phys_nod_name_ctl .eq. fhd_rot_comp_buo       )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_geostrophic        )           &
      &      )   iflag = 1
 !
@@ -116,6 +110,8 @@
      &      )   iflag = 1
 !
       if(     check_force_vectors(phys_nod_name_ctl)                    &
+     &   .or. check_rot_force(phys_nod_name_ctl)                        &
+     &   .or. check_div_flux_tensor(phys_nod_name_ctl)                  &
      &   .or. check_gradient_field(phys_nod_name_ctl)                   &
      &   .or. check_SGS_vector_terms(phys_nod_name_ctl)                 &
      &   .or. check_div_SGS_flux_tensor(phys_nod_name_ctl)              &
@@ -153,6 +149,7 @@
       use t_SGS_term_labels
       use t_SGS_model_coef_labels
 !
+      use m_div_force_labels
       use m_true_SGS_term_labels
       use m_div_filtered_force_labels
       use m_grad_filter_field_labels
@@ -205,19 +202,10 @@
 !
       if (    (phys_nod_name_ctl .eq. fhd_thermal_diffusion   )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_c_diffuse           )         &
-     &   .or. (phys_nod_name_ctl .eq. fhd_div_h_flux          )         &
-     &   .or. (phys_nod_name_ctl .eq. fhd_div_ph_flux         )         &
-     &   .or. (phys_nod_name_ctl .eq. fhd_div_c_flux          )         &
-     &   .or. (phys_nod_name_ctl .eq. fhd_div_pc_flux         )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_part_temp           )         &
      &      )   iflag = 1
 !
-      if (    (phys_nod_name_ctl .eq. fhd_div_inertia         )         &
-     &   .or. (phys_nod_name_ctl .eq. fhd_div_Lorentz         )         &
-     &   .or. (phys_nod_name_ctl .eq. fhd_div_Coriolis        )         &
-     &   .or. (phys_nod_name_ctl .eq. fhd_div_buoyancy        )         &
-     &   .or. (phys_nod_name_ctl .eq. fhd_div_comp_buo        )         &
-     &   .or. (phys_nod_name_ctl .eq. fhd_div_viscous         )         &
+      if (    (phys_nod_name_ctl .eq. fhd_div_viscous         )         &
      &      )   iflag = 1
 !
       if (    (phys_nod_name_ctl .eq. fhd_pre_heat            )         &
@@ -242,6 +230,8 @@
 !
       if(     check_enegy_fluxes(phys_nod_name_ctl)                     &
      &   .or. check_scalar_advection(phys_nod_name_ctl)                 &
+     &   .or. check_div_force(phys_nod_name_ctl)                        &
+     &   .or. check_div_scalar_flux(phys_nod_name_ctl)                  &
      &   .or. check_divergence_field(phys_nod_name_ctl)                 &
      &   .or. check_div_SGS_flux_vector(phys_nod_name_ctl)              &
      &   .or. check_SGS_ene_fluxes(phys_nod_name_ctl)                   &

@@ -22,20 +22,20 @@
 !!
 !!    Field name [Address]
 !!
-!!   div_inertia                [div_force%i_m_advect]
-!!   div_Coriolis_force         [div_force%i_Coriolis]
-!!   div_Lorentz_force          [div_force%i_lorentz]
-!!   div_buoyancy               [div_force%i_buoyancy]
-!!   div_composite_buoyancy     [div_force%i_comp_buo]
+!!   div_inertia                [div_forces%i_m_advect]
+!!   div_Coriolis_force         [div_forces%i_Coriolis]
+!!   div_Lorentz_force          [div_forces%i_lorentz]
+!!   div_buoyancy               [div_forces%i_buoyancy]
+!!   div_composite_buoyancy     [div_forces%i_comp_buo]
 !!
-!!   div_m_flux                 [div_force%i_m_flux]
-!!   div_maxwell_t              [div_force%i_maxwell]
-!!   div_induct_t               [div_force%i_induct_t]
+!!   div_momentum_flux          [div_forces%i_m_flux]
+!!   div_maxwell_tensor         [div_forces%i_maxwell]
+!!   div_induction_tensor       [div_forces%i_induct_t]
 !!
-!!   div_heat_flux              [div_force%i_h_flux]
-!!   div_pert_heat_flux         [div_force%i_ph_flux]
-!!   div_composition_flux       [div_force%i_c_flux]
-!!   div_pert_composition_flux  [div_force%i_pc_flux]
+!!   div_heat_flux              [div_forces%i_h_flux]
+!!   div_pert_heat_flux         [div_forces%i_ph_flux]
+!!   div_composition_flux       [div_forces%i_c_flux]
+!!   div_pert_composition_flux  [div_forces%i_pc_flux]
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!@endverbatim
@@ -91,21 +91,21 @@
 !
 !>        Field label for divergence of momentum flux
 !!         @f$ \partial_{j} (u_{i} u_{j}) @f$
-      type(field_def), parameter :: div_m_flux                          &
+      type(field_def), parameter :: div_momentum_flux                   &
      &    = field_def(n_comp = n_vector,                                &
-     &                name = 'div_m_flux',                              &
+     &                name = 'div_momentum_flux',                       &
      &                math = '$-\partial_{j} (u_{i} u_{j})$')
 !>        Field label for divergence of Maxwell stress
 !!         @f$ \partial_{j} (B_{i} B_{j}) @f$
-      type(field_def), parameter :: div_maxwell_t                       &
+      type(field_def), parameter :: div_maxwell_tensor                  &
      &    = field_def(n_comp = n_vector,                                &
-     &                name = 'div_maxwell_t',                           &
+     &                name = 'div_maxwell_tensor',                      &
      &                math = '$ \partial_{j} (B_{i} B_{j})$')
 !>        Field label for divergence of magnetic induction
 !!         @f$ \partial_{i} (u_{i} B_{j} - B_{i} u]_{J}) @f$
-      type(field_def), parameter :: div_induct_t                        &
+      type(field_def), parameter :: div_induction_tensor                &
      &    = field_def(n_comp = n_vector,                                &
-     &                name = 'div_induct_t',                            &
+     &                name = 'div_induction_tensor',                    &
      &                math = '$ \partial_{i} (u_{i} B_{j}'              &
      &                  //' - B_{i} u_{J})$')
 !
@@ -163,9 +163,9 @@
 !
 !
       check_div_flux_tensor                                             &
-     &   =    (field_name .eq. div_m_flux%name)                         &
-     &   .or. (field_name .eq. div_maxwell_t%name)                      &
-     &   .or. (field_name .eq. div_induct_t%name)
+     &   =    (field_name .eq. div_momentum_flux%name)                  &
+     &   .or. (field_name .eq. div_maxwell_tensor%name)                 &
+     &   .or. (field_name .eq. div_induction_tensor%name)
 !
       end function check_div_flux_tensor
 !
@@ -188,12 +188,12 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_div_force_addresses                                &
-     &         (i_phys, field_name, div_force, flag)
+     &         (i_phys, field_name, div_forces, flag)
 !
       integer(kind = kint), intent(in) :: i_phys
       character(len = kchara), intent(in) :: field_name
 !
-      type(base_force_address), intent(inout) :: div_force
+      type(base_force_address), intent(inout) :: div_forces
       logical, intent(inout) :: flag
 !
 !
@@ -202,33 +202,33 @@
      &      .or. check_div_scalar_flux(field_name)
       if(flag) then
         if (field_name .eq. div_inertia%name) then
-          div_force%i_m_advect =   i_phys
+          div_forces%i_m_advect =   i_phys
         else if (field_name .eq. div_Coriolis_force%name) then
-          div_force%i_Coriolis =   i_phys
+          div_forces%i_Coriolis =   i_phys
         else if (field_name .eq. div_Lorentz_force%name) then
-          div_force%i_lorentz =    i_phys
+          div_forces%i_lorentz =    i_phys
 !
         else if (field_name .eq. div_buoyancy%name) then
-          div_force%i_buoyancy =   i_phys
+          div_forces%i_buoyancy =   i_phys
         else if (field_name .eq. div_composite_buoyancy%name) then
-          div_force%i_comp_buo =   i_phys
+          div_forces%i_comp_buo =   i_phys
 !
         else if (field_name .eq. div_heat_flux%name) then
-          div_force%i_h_flux =    i_phys
+          div_forces%i_h_flux =    i_phys
         else if (field_name .eq. div_pert_heat_flux%name) then
-          div_force%i_ph_flux =   i_phys
+          div_forces%i_ph_flux =   i_phys
 !
         else if (field_name .eq. div_composition_flux%name) then
-          div_force%i_c_flux =    i_phys
+          div_forces%i_c_flux =    i_phys
         else if (field_name .eq. div_pert_composition_flux%name) then
-          div_force%i_pc_flux =   i_phys
+          div_forces%i_pc_flux =   i_phys
 !
-        else if (field_name .eq. div_m_flux%name) then
-          div_force%i_m_flux =   i_phys
-        else if (field_name .eq. div_maxwell_t%name) then
-          div_force%i_maxwell =  i_phys
-        else if (field_name .eq. div_induct_t%name) then
-          div_force%i_induct_t = i_phys
+        else if (field_name .eq. div_momentum_flux%name) then
+          div_forces%i_m_flux =   i_phys
+        else if (field_name .eq. div_maxwell_tensor%name) then
+          div_forces%i_maxwell =  i_phys
+        else if (field_name .eq. div_induction_tensor%name) then
+          div_forces%i_induct_t = i_phys
         end if
       end if
 !
@@ -265,11 +265,11 @@
       call set_field_labels(div_composite_buoyancy,                     &
      &    n_comps( 5), names( 5), maths( 5))
 !
-      call set_field_labels(div_m_flux,                                 &
+      call set_field_labels(div_momentum_flux,                          &
      &    n_comps( 6), names( 6), maths( 6))
-      call set_field_labels(div_maxwell_t,                              &
+      call set_field_labels(div_maxwell_tensor,                         &
      &    n_comps( 7), names( 7), maths( 7))
-      call set_field_labels(div_induct_t,                               &
+      call set_field_labels(div_induction_tensor,                       &
      &    n_comps( 8), names( 8), maths( 8))
 !
       call set_field_labels(div_heat_flux,                              &

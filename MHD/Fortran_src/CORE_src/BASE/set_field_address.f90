@@ -49,6 +49,8 @@
       use t_SGS_term_labels
       use t_SGS_enegy_flux_labels
       use t_SGS_model_coef_labels
+      use m_rot_force_labels
+      use m_div_force_labels
       use m_rot_filtered_force_labels
       use m_div_filtered_force_labels
       use m_diff_filter_vect_labels
@@ -167,19 +169,19 @@
         else if (field_name(i) .eq. fhd_c_diffuse) then
           iphys%i_c_diffuse =  i0
 !
-        else if (field_name(i) .eq. fhd_div_h_flux ) then
+        else if (field_name(i) .eq. div_heat_flux%name ) then
           iphys%i_h_flux_div =  i0
-        else if (field_name(i) .eq. fhd_div_ph_flux ) then
+        else if (field_name(i) .eq. div_pert_heat_flux%name ) then
           iphys%i_ph_flux_div = i0
-        else if (field_name(i) .eq. fhd_div_c_flux ) then
+        else if (field_name(i) .eq. div_composition_flux%name ) then
           iphys%i_c_flux_div =  i0
-        else if (field_name(i) .eq. fhd_div_pc_flux ) then
+        else if (field_name(i) .eq. div_pert_composition_flux%name) then
           iphys%i_pc_flux_div = i0
-        else if (field_name(i) .eq. fhd_div_m_flux) then
+        else if (field_name(i) .eq. div_momentum_flux%name) then
           iphys%i_m_flux_div =  i0
-        else if (field_name(i) .eq. fhd_div_maxwell_t) then
+        else if (field_name(i) .eq. div_maxwell_tensor%name) then
           iphys%i_maxwell_div = i0
-        else if (field_name(i) .eq. fhd_div_induct_t) then
+        else if (field_name(i) .eq. div_induction_tensor%name) then
           iphys%i_induct_div =  i0
         end if
 !
@@ -271,28 +273,28 @@
         call set_dble_fil_grad_addresses                                &
      &     (i0, field_name(i), iphys%dbl_filter_grad, flag)
 !
-        if ( field_name(i) .eq. fhd_div_inertia ) then
+        if ( field_name(i) .eq. div_inertia%name ) then
           iphys%i_div_inertia =    i0
-        else if ( field_name(i) .eq. fhd_div_Lorentz ) then
+        else if ( field_name(i) .eq. div_Lorentz_force%name ) then
           iphys%i_div_Lorentz =    i0
-        else if ( field_name(i) .eq. fhd_div_Coriolis ) then
+        else if ( field_name(i) .eq. div_Coriolis_force%name ) then
           iphys%i_div_Coriolis =   i0
-        else if ( field_name(i) .eq. fhd_div_buoyancy ) then
+        else if ( field_name(i) .eq. div_buoyancy%name ) then
           iphys%i_div_buoyancy =   i0
-        else if ( field_name(i) .eq. fhd_div_comp_buo ) then
+        else if ( field_name(i) .eq. div_composite_buoyancy%name ) then
           iphys%i_div_comp_buo =   i0
         else if ( field_name(i) .eq. fhd_div_viscous ) then
           iphys%i_div_viscous =    i0
 !
-        else if ( field_name(i) .eq. fhd_rot_inertia ) then
+        else if ( field_name(i) .eq. rot_inertia%name ) then
           iphys%i_rot_inertia =    i0
-        else if ( field_name(i) .eq. fhd_rot_Lorentz ) then
+        else if ( field_name(i) .eq. rot_Lorentz_force%name ) then
           iphys%i_rot_Lorentz =    i0
-        else if ( field_name(i) .eq. fhd_rot_Coriolis ) then
+        else if ( field_name(i) .eq. rot_Coriolis_force%name ) then
           iphys%i_rot_Coriolis =   i0
-        else if ( field_name(i) .eq. fhd_rot_buoyancy ) then
+        else if ( field_name(i) .eq. rot_buoyancy%name ) then
           iphys%i_rot_buoyancy =   i0
-        else if ( field_name(i) .eq. fhd_rot_comp_buo ) then
+        else if ( field_name(i) .eq. rot_composite_buoyancy%name ) then
           iphys%i_rot_comp_buo =   i0
 !
         else if ( field_name(i) .eq. fhd_forces ) then

@@ -286,10 +286,11 @@
       use t_control_array_character3
       use t_SGS_term_labels
       use t_SGS_enegy_flux_labels
+      use m_div_force_labels
       use m_true_SGS_term_labels
       use m_diff_SGS_term_labels
       use m_filtered_field_labels
-      use m_diff_force_labels
+      use m_div_force_labels
       use add_nodal_fields_ctl
 !
       type(ctl_array_c3), intent(inout) :: field_ctl
@@ -324,31 +325,30 @@
 !
       if(check_field_list_ctl(SGS_div_m_flux_true%name, field_ctl)) then
         call add_phys_name_ctl(fhd_filter_velo, field_ctl)
-        call add_phys_name_ctl(fhd_div_m_flux, field_ctl)
+        call add_phys_name_ctl(div_momentum_flux%name, field_ctl)
       end if
-      if(check_field_list_ctl(SGS_Lorentz_true%name,               &
-     &                        field_ctl)) then
+      if(check_field_list_ctl(SGS_Lorentz_true%name, field_ctl)) then
         call add_phys_name_ctl(fhd_filter_magne, field_ctl)
-        call add_phys_name_ctl(fhd_div_maxwell_t, field_ctl)
+        call add_phys_name_ctl(div_maxwell_tensor%name, field_ctl)
       end if
-      if(check_field_list_ctl(SGS_mag_induction_true%name,         &
+      if(check_field_list_ctl(SGS_mag_induction_true%name,              &
      &                        field_ctl)) then
         call add_phys_name_ctl(fhd_filter_velo, field_ctl)
         call add_phys_name_ctl(fhd_filter_magne, field_ctl)
-        call add_phys_name_ctl(fhd_div_induct_t, field_ctl)
+        call add_phys_name_ctl(div_induction_tensor%name, field_ctl)
       end if
 !
-      if(check_field_list_ctl(SGS_div_h_flux_true%name,              &
+      if(check_field_list_ctl(SGS_div_h_flux_true%name,                 &
      &                        field_ctl)) then
         call add_phys_name_ctl(fhd_filter_velo, field_ctl)
         call add_phys_name_ctl(fhd_filter_temp, field_ctl)
-        call add_phys_name_ctl(fhd_div_h_flux, field_ctl)
+        call add_phys_name_ctl(div_heat_flux%name, field_ctl)
         end if
-      if(check_field_list_ctl(SGS_div_c_flux_true%name,              &
+      if(check_field_list_ctl(SGS_div_c_flux_true%name,                 &
      &                        field_ctl)) then
         call add_phys_name_ctl(fhd_filter_velo, field_ctl)
         call add_phys_name_ctl(fhd_filter_comp, field_ctl)
-        call add_phys_name_ctl(fhd_div_c_flux, field_ctl)
+        call add_phys_name_ctl(div_composition_flux%name, field_ctl)
       end if
 !
       end subroutine add_field_ctl_4_true_SGS

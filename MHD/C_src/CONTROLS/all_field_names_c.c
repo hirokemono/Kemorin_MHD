@@ -94,13 +94,13 @@ const struct field_def field_props[NUM_FIELD] = {
 			{3, "composite_buoyancy", "$$    $$"},
 			{3, "induction_tensor", "$$    $$"},
 			
-			{3, "div_m_flux", "$$    $$"},
-			{3, "div_maxwell_t", "$$    $$"},
+			{3, "div_momentum_flux", "$$    $$"},
+			{3, "div_maxwell_tensor", "$$    $$"},
 			
 			{3, "vecp_induction", "$$    $$"},
 			{3, "magnetic_induction", "$$    $$"},
 			{3, "magnetic_stretch", "$$    $$"},
-			{1, "div_induct_t", "$$    $$"},
+			{1, "div_induction_tensor", "$$    $$"},
 			
 			{1, "heat_advect", "$$    $$"},
 			{1, "pert_heat_advect", "$$    $$"},

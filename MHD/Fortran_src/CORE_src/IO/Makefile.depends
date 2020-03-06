@@ -102,7 +102,7 @@ set_mesh_extensions.o: $(IO_DIR)/set_mesh_extensions.f90 m_precision.o set_paral
 	$(F90) -c $(F90OPTFLAGS) $<
 set_mesh_file_names.o: $(IO_DIR)/set_mesh_file_names.f90 m_precision.o m_constants.o set_parallel_file_name.o m_file_format_switch.o set_mesh_extensions.o set_sph_extensions.o
 	$(F90) -c $(F90OPTFLAGS) $<
-set_nodal_field_name.o: $(IO_DIR)/set_nodal_field_name.f90 m_precision.o m_phys_labels.o t_SGS_term_labels.o m_true_SGS_term_labels.o m_rot_filtered_force_labels.o m_div_filtered_force_labels.o m_grad_filter_field_labels.o t_SGS_model_coef_labels.o skip_comment_f.o
+set_nodal_field_name.o: $(IO_DIR)/set_nodal_field_name.f90 m_precision.o m_phys_labels.o t_SGS_term_labels.o m_rot_force_labels.o m_div_force_labels.o m_true_SGS_term_labels.o m_rot_filtered_force_labels.o m_div_filtered_force_labels.o m_grad_filter_field_labels.o t_SGS_model_coef_labels.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
 set_parallel_file_name.o: $(IO_DIR)/set_parallel_file_name.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<
