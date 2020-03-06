@@ -101,18 +101,18 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      if( (ipol%forces%i_m_advect * ipol%i_rot_inertia) .gt. 0) then
+      if(ipol%rot_forces%i_m_advect .gt. 0) then
         if (iflag_debug .gt. 0) write(*,*) 'take rotation of advection'
         call const_sph_force_rot2(sph_rj, r_2nd,                        &
      &      sph_bc_U, fdm2_free_ICB, fdm2_free_CMB, g_sph_rj,           &
-     &      ipol%forces%i_m_advect, ipol%i_rot_inertia, rj_fld)
+     &      ipol%forces%i_m_advect, ipol%rot_forces%i_m_advect, rj_fld)
       end if
 !
-      if( (ipol%forces%i_lorentz * ipol%i_rot_Lorentz) .gt. 0) then
+      if(ipol%rot_forces%i_lorentz .gt. 0) then
         if (iflag_debug .gt. 0) write(*,*) 'take rotation of Lorentz'
         call const_sph_force_rot2(sph_rj, r_2nd,                        &
      &      sph_bc_U, fdm2_free_ICB, fdm2_free_CMB, g_sph_rj,           &
-     &      ipol%forces%i_lorentz, ipol%i_rot_Lorentz, rj_fld)
+     &      ipol%forces%i_lorentz, ipol%rot_forces%i_lorentz, rj_fld)
 !
         if(sph_bc_U%iflag_icb .eq. iflag_rotatable_ic) then
           call int_icore_toroidal_lorentz                               &

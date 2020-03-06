@@ -169,15 +169,14 @@
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_current, fhd_current)
 !
-        else if(i_start .eq. iphys%i_div_Lorentz                        &
-     &     .or. i_start .eq. iphys%i_rot_Lorentz) then 
+        else if(i_start .eq. iphys%i_div_Lorentz) then 
           call check_missing_field                                      &
      &       (fld, i_start, iphys%forces%i_lorentz, Lorentz_force%name)
         else if(i_start .eq. iphys%i_geostrophic) then 
           call check_missing_field                                      &
      &       (fld, i_start, iphys%forces%i_coriolis, Coriolis_force%name)
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%forces%i_press_grad, pressure_gradient%name)
+          call check_missing_field(fld, i_start,                        &
+     &        iphys%forces%i_press_grad, pressure_gradient%name)
 !
         else if(i_start .eq. iphys%i_m_flux_div) then 
           call check_missing_field                                      &

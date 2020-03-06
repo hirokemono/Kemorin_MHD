@@ -52,11 +52,11 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      if(ipol%i_rot_Coriolis .gt. 0) then
+      if(ipol%rot_forces%i_Coriolis .gt. 0) then
         call const_grad_poloidal_moment                                 &
      &     (sph_rj, r_2nd, sph_MHD_bc%sph_bc_U, sph_MHD_bc%bcs_U,       &
      &      sph_MHD_bc%fdm2_free_ICB, sph_MHD_bc%fdm2_free_CMB,         &
-     &      ipol%i_rot_Coriolis, rj_fld)
+     &      ipol%rot_forces%i_Coriolis, rj_fld)
       end if
 !
 !

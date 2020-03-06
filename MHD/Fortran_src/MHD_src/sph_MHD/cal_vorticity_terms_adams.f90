@@ -137,13 +137,15 @@
 !
 !$omp parallel do private (inod)
       do inod = 1, nnod_rj
-        d_rj(inod,ipol%i_forces) = - d_rj(inod,ipol%i_rot_inertia)      &
-     &                             + d_rj(inod,ipol%i_rot_Coriolis)     &
-     &                             + d_rj(inod,ipol%i_rot_Lorentz)
-        d_rj(inod,itor%i_forces) = - d_rj(inod,itor%i_rot_inertia)      &
-     &                             + d_rj(inod,itor%i_rot_Coriolis)     &
-     &                             + d_rj(inod,itor%i_rot_Lorentz)      &
-     &                             + d_rj(inod,it_rot_buo)
+        d_rj(inod,ipol%i_forces)                                        &
+     &        = - d_rj(inod,ipol%rot_forces%i_m_advect)                 &
+     &          + d_rj(inod,ipol%rot_forces%i_Coriolis)                 &
+     &          + d_rj(inod,ipol%rot_forces%i_lorentz)
+        d_rj(inod,itor%i_forces)                                        &
+     &        = - d_rj(inod,itor%rot_forces%i_m_advect)                 &
+     &          + d_rj(inod,itor%rot_forces%i_Coriolis)                 &
+     &          + d_rj(inod,itor%rot_forces%i_lorentz)                  &
+     &          + d_rj(inod,it_rot_buo)
       end do
 !$omp end parallel do
 !
@@ -164,11 +166,13 @@
 !
 !$omp parallel do private (inod)
       do inod = 1, nnod_rj
-        d_rj(inod,ipol%i_forces) = - d_rj(inod,ipol%i_rot_inertia)      &
-     &                             + d_rj(inod,ipol%i_rot_Coriolis)
-        d_rj(inod,itor%i_forces) = - d_rj(inod,itor%i_rot_inertia)      &
-     &                             + d_rj(inod,itor%i_rot_Coriolis)     &
-     &                             + d_rj(inod,it_rot_buo)
+        d_rj(inod,ipol%i_forces)                                        &
+     &        = - d_rj(inod,ipol%rot_forces%i_m_advect)                 &
+     &          + d_rj(inod,ipol%rot_forces%i_Coriolis)
+        d_rj(inod,itor%i_forces)                                        &
+     &        = - d_rj(inod,itor%rot_forces%i_m_advect)                 &
+     &          + d_rj(inod,itor%rot_forces%i_Coriolis)                 &
+     &          + d_rj(inod,it_rot_buo)
       end do
 !$omp end parallel do
 !
@@ -216,8 +220,10 @@
 !
 !$omp do private (inod)
       do inod = 1, nnod_rj
-        d_rj(inod,ipol%i_forces) = - d_rj(inod,ipol%i_rot_inertia)
-        d_rj(inod,itor%i_forces) = - d_rj(inod,itor%i_rot_inertia)
+        d_rj(inod,ipol%i_forces)                                        &
+     &        = - d_rj(inod,ipol%rot_forces%i_m_advect)
+        d_rj(inod,itor%i_forces)                                        &
+     &        = - d_rj(inod,itor%rot_forces%i_m_advect)
       end do
 !$omp end do nowait
 !
@@ -238,9 +244,9 @@
 !$omp do private (inod)
       do inod = 1, nnod_rj
         d_rj(inod,ipol%i_forces) = d_rj(inod,ipol%i_forces)             &
-     &                           + d_rj(inod,ipol%i_rot_Coriolis)
+     &                          + d_rj(inod,ipol%rot_forces%i_Coriolis)
         d_rj(inod,itor%i_forces) = d_rj(inod,itor%i_forces)             &
-     &                           + d_rj(inod,itor%i_rot_Coriolis)
+     &                          + d_rj(inod,itor%rot_forces%i_Coriolis)
       end do
 !$omp end do nowait
 !
@@ -283,9 +289,9 @@
 !$omp do private (inod)
       do inod = 1, nnod_rj
         d_rj(inod,ipol%i_forces) = d_rj(inod,ipol%i_forces)             &
-     &                           + d_rj(inod,ipol%i_rot_Lorentz)
+     &                           + d_rj(inod,ipol%rot_forces%i_lorentz)
         d_rj(inod,itor%i_forces) = d_rj(inod,itor%i_forces)             &
-     &                           + d_rj(inod,itor%i_rot_Lorentz)
+     &                           + d_rj(inod,itor%rot_forces%i_lorentz)
        end do
 !$omp end do nowait
 !

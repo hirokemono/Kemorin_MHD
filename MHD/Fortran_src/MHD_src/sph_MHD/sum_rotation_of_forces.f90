@@ -74,7 +74,7 @@
      &      sph_rj%nnod_rj, rj_fld%ntot_phys, rj_fld%d_fld)
       else
 !$omp parallel
-        if((ipol%i_forces*ipol%i_rot_inertia) .gt. 0) then
+        if(ipol%rot_forces%i_m_advect .gt. 0) then
           call set_rot_advection_to_force                               &
      &     (ipol, itor, sph_rj%nnod_rj, rj_fld%ntot_phys, rj_fld%d_fld)
         end if

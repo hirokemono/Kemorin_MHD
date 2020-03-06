@@ -165,12 +165,12 @@
      &    itor%force_by_filter%i_comp_buo,                              &
      &    idpdr%force_by_filter%i_comp_buo)
 !
-      call set_vect_sph_address(ipol%i_rot_inertia,                     &
-     &    itor%i_rot_inertia, idpdr%i_rot_inertia)
-      call set_vect_sph_address(ipol%i_rot_Lorentz,                     &
-     &    itor%i_rot_Lorentz, idpdr%i_rot_Lorentz)
-      call set_vect_sph_address(ipol%i_rot_Coriolis,                    &
-     &    itor%i_rot_Coriolis, idpdr%i_rot_Coriolis)
+      call set_vect_sph_address(ipol%rot_forces%i_m_advect,             &
+     &    itor%rot_forces%i_m_advect, idpdr%rot_forces%i_m_advect)
+      call set_vect_sph_address(ipol%rot_forces%i_lorentz,              &
+     &    itor%rot_forces%i_lorentz, idpdr%rot_forces%i_lorentz)
+      call set_vect_sph_address(ipol%rot_forces%i_Coriolis,             &
+     &    itor%rot_forces%i_Coriolis, idpdr%rot_forces%i_Coriolis)
       call set_vect_sph_address(ipol%i_rot_buoyancy,                    &
      &    itor%i_rot_buoyancy, idpdr%i_rot_buoyancy)
       call set_vect_sph_address(ipol%i_rot_comp_buo,                    &

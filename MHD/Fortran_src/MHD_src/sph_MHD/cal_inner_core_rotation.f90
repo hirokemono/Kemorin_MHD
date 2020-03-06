@@ -173,7 +173,7 @@
           i1 = sph_rj%idx_rj_degree_one(m)                              &
      &        + (sph_bc_U%kr_in-1)*sph_rj%nidx_rj(2)
           rj_fld%d_fld(i1,itor%forces%i_coriolis)                       &
-     &           = rj_fld%d_fld(i1,ipol%i_rot_Coriolis)
+     &           = rj_fld%d_fld(i1,ipol%rot_forces%i_Coriolis)
         end if
       end do
 !
@@ -206,25 +206,25 @@
       i10c = idx_rj_degree_one( 0) + (kr_in-1)*jmax
       i11c = idx_rj_degree_one( 1) + (kr_in-1)*jmax
 !
-      d_rj(i11s,ipol%i_rot_Coriolis)                                    &
+      d_rj(i11s,ipol%rot_forces%i_Coriolis)                             &
      &       =  omega_rj(kr_in,0,2)*d_rj(i11c,ipol%i_vort)              &
      &        - omega_rj(kr_in,0,3)*d_rj(i10c,ipol%i_vort)
-      d_rj(i11c,ipol%i_rot_Coriolis)                                    &
+      d_rj(i11c,ipol%rot_forces%i_Coriolis)                             &
      &       =  omega_rj(kr_in,0,1)*d_rj(i10c,ipol%i_vort)              &
      &        - omega_rj(kr_in,0,2)*d_rj(i11s,ipol%i_vort)
-      d_rj(i10c,ipol%i_rot_Coriolis)                                    &
+      d_rj(i10c,ipol%rot_forces%i_Coriolis)                             &
      &       =  omega_rj(kr_in,0,3)*d_rj(i11s,ipol%i_vort)              &
      &        - omega_rj(kr_in,0,1)*d_rj(i11c,ipol%i_vort)
 !
-      d_rj(i11s,ipol%i_rot_Coriolis)                                    &
+      d_rj(i11s,ipol%rot_forces%i_Coriolis)                             &
      &       = -two*coef_cor*radius_1d_rj_r(kr_in)                      &
-     &        * d_rj(i11s,ipol%i_rot_Coriolis)
-      d_rj(i11c,ipol%i_rot_Coriolis)                                    &
+     &        * d_rj(i11s,ipol%rot_forces%i_Coriolis)
+      d_rj(i11c,ipol%rot_forces%i_Coriolis)                             &
      &       = -two*coef_cor*radius_1d_rj_r(kr_in)                      &
-     &        * d_rj(i11c,ipol%i_rot_Coriolis)
-      d_rj(i10c,ipol%i_rot_Coriolis)                                    &
+     &        * d_rj(i11c,ipol%rot_forces%i_Coriolis)
+      d_rj(i10c,ipol%rot_forces%i_Coriolis)                             &
      &       = -two*coef_cor*radius_1d_rj_r(kr_in)                      &
-     &        * d_rj(i10c,ipol%i_rot_Coriolis)
+     &        * d_rj(i10c,ipol%rot_forces%i_Coriolis)
 !
       end subroutine inner_core_coriolis_rj
 !
@@ -405,7 +405,7 @@
       i10c_o = idx_rj_l0 + (kr_in-1)*jmax
       d_rj(i10c_o,itor%forces%i_lorentz) = half * five * sk_10c         &
      &                           * ar_1d_rj(kr_in,1)**3
-      d_rj(i10c_o,ipol%i_rot_Lorentz)                                   &
+      d_rj(i10c_o,ipol%rot_forces%i_lorentz)                            &
      &      = d_rj(i10c_o,itor%forces%i_lorentz)
 !
       end subroutine int_icore_tor_lorentz_l1

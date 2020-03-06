@@ -238,13 +238,6 @@
         integer (kind=kint) :: i_div_viscous =    izero
 !
 !  curl of momentum equations
-!
-!>        start address for curl of advection
-        integer (kind=kint) :: i_rot_inertia =  izero
-!>        start address for curl of Lorentz force
-        integer (kind=kint) :: i_rot_Lorentz =  izero
-!>        start address for curl of Coriolis term
-        integer (kind=kint) :: i_rot_Coriolis = izero
 !>        start address for curl of buoyancy
         integer (kind=kint) :: i_rot_buoyancy = izero
 !>        start address for curl of compositional buoyancy

@@ -71,10 +71,11 @@
      &        trns_fwd)
         end if
         if(fl_prop%iflag_4_coriolis .gt. id_turn_OFF) then
-          call add_field_name_4_sph_trns(ipol%i_rot_Coriolis,           &
+          call add_field_name_4_sph_trns(ipol%rot_forces%i_Coriolis,    &
      &        rot_Coriolis_force%name, rot_Coriolis_force%n_comp,       &
-     &        ipol%i_rot_Coriolis, itor%i_rot_Coriolis,                 &
-     &        iphys%i_rot_Coriolis, f_trns%i_rot_Coriolis, trns_fwd)
+     &        ipol%rot_forces%i_Coriolis, itor%rot_forces%i_Coriolis,   &
+     &        iphys%rot_forces%i_Coriolis,                              &
+     &        f_trns%rot_forces%i_Coriolis, trns_fwd)
         end if
 !   Lorentz flag
         if(fl_prop%iflag_4_lorentz .gt. id_turn_OFF) then

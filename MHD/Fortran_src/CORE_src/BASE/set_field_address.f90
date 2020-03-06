@@ -287,11 +287,11 @@
           iphys%i_div_viscous =    i0
 !
         else if ( field_name(i) .eq. rot_inertia%name ) then
-          iphys%i_rot_inertia =    i0
+          iphys%rot_forces%i_m_advect =    i0
         else if ( field_name(i) .eq. rot_Lorentz_force%name ) then
-          iphys%i_rot_Lorentz =    i0
+          iphys%rot_forces%i_lorentz =    i0
         else if ( field_name(i) .eq. rot_Coriolis_force%name ) then
-          iphys%i_rot_Coriolis =   i0
+          iphys%rot_forces%i_Coriolis =   i0
         else if ( field_name(i) .eq. rot_buoyancy%name ) then
           iphys%i_rot_buoyancy =   i0
         else if ( field_name(i) .eq. rot_composite_buoyancy%name ) then

@@ -81,16 +81,19 @@
 !
       call add_field_name_4_sph_trns_snap                               &
      &   (rot_inertia%name, rot_inertia%n_comp,                         &
-     &    ipol%i_rot_inertia, itor%i_rot_inertia, iphys%i_rot_inertia,  &
-     &    b_trns%i_rot_inertia, trns_back)
+     &    ipol%rot_forces%i_m_advect, itor%rot_forces%i_m_advect,       &
+     &    iphys%rot_forces%i_m_advect, b_trns%rot_forces%i_m_advect,    &
+     &    trns_back)
       call add_field_name_4_sph_trns_snap                               &
      &   (rot_Coriolis_force%name, rot_Coriolis_force%n_comp,           &
-     &    ipol%i_rot_Coriolis, itor%i_rot_Coriolis,                     &
-     &    iphys%i_rot_Coriolis, b_trns%i_rot_Coriolis, trns_back)
+     &    ipol%rot_forces%i_Coriolis, itor%rot_forces%i_Coriolis,       &
+     &    iphys%rot_forces%i_Coriolis, b_trns%rot_forces%i_Coriolis,    &
+     &    trns_back)
       call add_field_name_4_sph_trns_snap                               &
      &   (rot_Lorentz_force%name, rot_Lorentz_force%n_comp,             &
-     &    ipol%i_rot_Lorentz, itor%i_rot_Lorentz, iphys%i_rot_Lorentz,  &
-     &    b_trns%i_rot_Lorentz, trns_back)
+     &    ipol%rot_forces%i_lorentz, itor%rot_forces%i_lorentz,         &
+     &    iphys%rot_forces%i_lorentz, b_trns%rot_forces%i_lorentz,      &
+     &    trns_back)
       call add_field_name_4_sph_trns_snap                               &
      &   (rot_buoyancy%name, rot_buoyancy%n_comp,                       &
      &    ipol%i_rot_buoyancy, itor%i_rot_buoyancy,                     &
