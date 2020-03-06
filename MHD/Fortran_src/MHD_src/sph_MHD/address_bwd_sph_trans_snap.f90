@@ -96,12 +96,14 @@
      &    trns_back)
       call add_field_name_4_sph_trns_snap                               &
      &   (rot_buoyancy%name, rot_buoyancy%n_comp,                       &
-     &    ipol%i_rot_buoyancy, itor%i_rot_buoyancy,                     &
-     &    iphys%i_rot_buoyancy, b_trns%i_rot_buoyancy, trns_back)
+     &    ipol%rot_forces%i_buoyancy, itor%rot_forces%i_buoyancy,       &
+     &    iphys%rot_forces%i_buoyancy, b_trns%rot_forces%i_buoyancy,    &
+     &    trns_back)
       call add_field_name_4_sph_trns_snap                               &
      &   (rot_composite_buoyancy%name, rot_composite_buoyancy%n_comp,   &
-     &    ipol%i_rot_comp_buo, itor%i_rot_comp_buo,                     &
-     &    iphys%i_rot_comp_buo, b_trns%i_rot_comp_buo, trns_back)
+     &    ipol%rot_forces%i_comp_buo, itor%rot_forces%i_comp_buo,       &
+     &    iphys%rot_forces%i_comp_buo, b_trns%rot_forces%i_comp_buo,    &
+     &    trns_back)
 !
       call add_field_name_4_sph_trns_snap                               &
      &   (buoyancy%name, buoyancy%n_comp,                               &

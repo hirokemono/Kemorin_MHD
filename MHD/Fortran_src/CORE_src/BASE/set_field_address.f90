@@ -286,17 +286,6 @@
         else if ( field_name(i) .eq. fhd_div_viscous ) then
           iphys%i_div_viscous =    i0
 !
-        else if ( field_name(i) .eq. rot_inertia%name ) then
-          iphys%rot_forces%i_m_advect =    i0
-        else if ( field_name(i) .eq. rot_Lorentz_force%name ) then
-          iphys%rot_forces%i_lorentz =    i0
-        else if ( field_name(i) .eq. rot_Coriolis_force%name ) then
-          iphys%rot_forces%i_Coriolis =   i0
-        else if ( field_name(i) .eq. rot_buoyancy%name ) then
-          iphys%i_rot_buoyancy =   i0
-        else if ( field_name(i) .eq. rot_composite_buoyancy%name ) then
-          iphys%i_rot_comp_buo =   i0
-!
         else if ( field_name(i) .eq. fhd_forces ) then
           iphys%i_forces =     i0
         else if ( field_name(i) .eq. fhd_rot_forces ) then
@@ -304,6 +293,9 @@
         else if ( field_name(i) .eq. fhd_div_forces ) then
           iphys%i_div_forces = i0
         end if
+!
+        call set_rot_force_addresses(i0, field_name(i),                 &
+     &      iphys%rot_forces, flag)
 !
         call set_filtered_force_addresses(i0, field_name(i),            &
      &      iphys%rot_frc_by_filter, flag)

@@ -237,12 +237,6 @@
 !>        start address for divergence of viscousity
         integer (kind=kint) :: i_div_viscous =    izero
 !
-!  curl of momentum equations
-!>        start address for curl of buoyancy
-        integer (kind=kint) :: i_rot_buoyancy = izero
-!>        start address for curl of compositional buoyancy
-        integer (kind=kint) :: i_rot_comp_buo = izero
-!
 !  arrays for current forces
 !
 !>        start address for total forces
