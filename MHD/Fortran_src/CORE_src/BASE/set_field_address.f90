@@ -180,9 +180,9 @@
         else if (field_name(i) .eq. div_momentum_flux%name) then
           iphys%div_forces%i_m_flux =  i0
         else if (field_name(i) .eq. div_maxwell_tensor%name) then
-          iphys%i_maxwell_div = i0
+          iphys%div_forces%i_maxwell = i0
         else if (field_name(i) .eq. div_induction_tensor%name) then
-          iphys%i_induct_div =  i0
+          iphys%div_forces%i_induct_t =  i0
         end if
 !
         call set_base_force_addresses                                   &

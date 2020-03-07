@@ -294,7 +294,7 @@
         i_fld = nod_fld%istack_component(i-1) + 1
         if(     i_fld .eq. iphys%forces%i_m_advect                      &
      &     .or. i_fld .eq. iphys%div_forces%i_m_flux                    &
-     &     .or. i_fld .eq. iphys%i_maxwell_div                          &
+     &     .or. i_fld .eq. iphys%div_forces%i_maxwell                   &
      &     .or. i_fld .eq. iphys%forces%i_m_tension                     &
      &     .or. i_fld .eq. iphys%forces%i_lorentz                       &
      &     .or. i_fld .eq. iphys%forces%i_buoyancy                      &
@@ -317,7 +317,7 @@
 !
       do i = 1, nod_fld%num_phys
         i_fld = nod_fld%istack_component(i-1) + 1
-        if(     i_fld .eq. iphys%i_induct_div                           &
+        if(     i_fld .eq. iphys%div_forces%i_induct_t                  &
      &     .or. (i_fld.eq.iphys%forces%i_induction                      &
      &      .and. cd_prop%iflag_Bevo_scheme.gt.id_no_evolution)) then
           if(iflag_debug .ge. iflag_routine_msg)                        &

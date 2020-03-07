@@ -138,10 +138,10 @@
      &    itor%forces%i_m_advect, idpdr%forces%i_m_advect)
       call set_vect_sph_address(ipol%div_forces%i_m_flux,               &
      &    itor%div_forces%i_m_flux, idpdr%div_forces%i_m_flux)
-      call set_vect_sph_address(ipol%i_maxwell_div, itor%i_maxwell_div, &
-     &    idpdr%i_maxwell_div)
-      call set_vect_sph_address(ipol%i_induct_div, itor%i_induct_div,   &
-     &    idpdr%i_induct_div)
+      call set_vect_sph_address(ipol%div_forces%i_maxwell,              &
+     &    itor%div_forces%i_maxwell, idpdr%div_forces%i_maxwell)
+      call set_vect_sph_address(ipol%div_forces%i_induct_t,             &
+     &    itor%div_forces%i_induct_t, idpdr%div_forces%i_induct_t)
       call set_vect_sph_address(ipol%forces%i_induction,                &
      &    itor%forces%i_induction, idpdr%forces%i_induction)
       call set_vect_sph_address(ipol%forces%i_vp_induct,                &

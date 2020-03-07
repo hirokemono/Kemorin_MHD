@@ -174,16 +174,6 @@
      &       (fld, i_start, iphys%forces%i_coriolis, Coriolis_force%name)
           call check_missing_field(fld, i_start,                        &
      &        iphys%forces%i_press_grad, pressure_gradient%name)
-!
-        else if(i_start .eq. iphys%i_maxwell_div) then 
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%forces%i_maxwell, maxwell_tensor%name)
-        else if(i_start .eq. iphys%i_induct_div) then 
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%forces%i_induct_t, induction_tensor%name)
-        else if(i_start .eq. iphys%div_forces%i_pc_flux) then 
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%forces%i_pc_flux, pert_comp_flux%name)
         end if
       end do
 !

@@ -179,33 +179,26 @@
 !!         @f$ \kappa \partial_{i}\partial_{i} C @f$
         integer (kind=kint) :: i_c_diffuse =       izero
 !
-!>        start address for divergence of Maxwell stress
-!!         @f$ \partial_{j} \left( B_{i} B_{j} \right) @f$
-        integer (kind=kint) :: i_maxwell_div =     izero
-!>        start address for divergence of magnetic induction
-!!         @f$ \partial_{i} \left(e_{ijk} u_{j} B_{k} \right) @f$
-        integer (kind=kint) :: i_induct_div =      izero
-!
 !>        Field address for geostrophic balance
 !!         @f$ -2 e_{ijk} \Omega_{j} u_{k} + \partial_{i} p @f$
-      integer (kind=kint) :: i_geostrophic = izero
+        integer (kind=kint) :: i_geostrophic = izero
 !
 !  Square of each component of fields
 !
 !>        Square of velocity @f$ u_{i}^{2} @f$
-      integer (kind=kint) :: i_square_v = izero
+        integer (kind=kint) :: i_square_v = izero
 !>        Square of vorticity @f$ \omega_{i}^{2} @f$
-      integer (kind=kint) :: i_square_w = izero
+        integer (kind=kint) :: i_square_w = izero
 !>        Square of magnetic field @f$ B_{i}^{2} @f$
-      integer (kind=kint) :: i_square_b = izero
+        integer (kind=kint) :: i_square_b = izero
 !>        Square of magnetic vector potential @f$ A_{i}^{2} @f$
-      integer (kind=kint) :: i_square_a = izero
+        integer (kind=kint) :: i_square_a = izero
 !>        Square of current density @f$ J_{i}^{2} @f$
-      integer (kind=kint) :: i_square_j = izero
+        integer (kind=kint) :: i_square_j = izero
 !>        Square of temperature @f$ T^{2} @f$
-      integer (kind=kint) :: i_square_t = izero
+        integer (kind=kint) :: i_square_t = izero
 !>        Square of composition @f$ C^{2} @f$
-      integer (kind=kint) :: i_square_c = izero
+        integer (kind=kint) :: i_square_c = izero
 !
 !  divergence of momentum equations
 !

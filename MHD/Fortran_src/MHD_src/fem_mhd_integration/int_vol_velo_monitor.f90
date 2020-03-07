@@ -190,7 +190,7 @@
         end if
       end if
 !
-      if(i_field .eq. iphys%i_maxwell_div) then
+      if(i_field .eq. iphys%div_forces%i_maxwell) then
         call int_vol_div_tsr_w_const                                    &
      &     (node, ele, g_FEM, jac_3d, rhs_tbl, nod_fld,                 &
      &      fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,         &
@@ -357,7 +357,7 @@
       end if
 !
 !
-      if(i_field .eq. iphys%i_maxwell_div)  then
+      if(i_field .eq. iphys%div_forces%i_maxwell)  then
         call int_vol_div_tsr_w_const_upw                                &
      &     (node, ele, g_FEM, jac_3d, rhs_tbl, nod_fld,                 &
      &      fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int, dt,     &

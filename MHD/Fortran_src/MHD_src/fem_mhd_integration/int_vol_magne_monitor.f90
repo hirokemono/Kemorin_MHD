@@ -111,7 +111,7 @@
      &      conduct%istack_ele_fld_smp, num_int,                        &
      &      ele_fld%ntot_phys, ele_fld%d_fld, fem_wk, mhd_fem_wk, f_nl)
 !
-      else if (i_field .eq. iphys%i_induct_div) then
+      else if (i_field .eq. iphys%div_forces%i_induct_t) then
         call int_vol_div_asym_tsr                                       &
      &     (node, ele, g_FEM, jac_3d, rhs_tbl, nod_fld,                 &
      &      conduct%istack_ele_fld_smp, num_int,                        &
@@ -180,7 +180,7 @@
      &      conduct%istack_ele_fld_smp, num_int, dt,                    &
      &      ele_fld%ntot_phys, ele_fld%d_fld, fem_wk, mhd_fem_wk, f_nl)
 !
-      else if (i_field .eq. iphys%i_induct_div) then
+      else if (i_field .eq. iphys%div_forces%i_induct_t) then
         call int_vol_div_as_tsr_upw                                     &
      &     (node, ele, g_FEM, jac_3d, rhs_tbl, nod_fld,                 &
      &      conduct%istack_ele_fld_smp, num_int, dt,                    &
