@@ -189,8 +189,8 @@
      &     (i0, field_name(i), iphys%forces, flag)
         call set_enegy_fluxes_addresses                                 &
      &     (i0, field_name(i), iphys%ene_flux, flag)
-!        call set_div_force_addresses                                    &
-!     &     (i0, field_name(i), iphys%div_forces, flag)
+        call set_div_force_addresses                                    &
+     &     (i0, field_name(i), iphys%div_forces, flag)
 !
         call set_SGS_term_addresses                                     &
      &     (i0, field_name(i), iphys%SGS_term, flag)
@@ -275,13 +275,13 @@
         call set_dble_fil_grad_addresses                                &
      &     (i0, field_name(i), iphys%dbl_filter_grad, flag)
 !
-        if ( field_name(i) .eq. div_inertia%name ) then
-          iphys%div_forces%i_m_flux =    i0
-        else if ( field_name(i) .eq. div_Lorentz_force%name ) then
-          iphys%div_forces%i_lorentz =    i0
-        else if ( field_name(i) .eq. div_Coriolis_force%name ) then
-          iphys%div_forces%i_Coriolis =   i0
-        else if ( field_name(i) .eq. div_buoyancy%name ) then
+!        if ( field_name(i) .eq. div_inertia%name ) then
+!          iphys%div_forces%i_m_flux =    i0
+!        else if ( field_name(i) .eq. div_Lorentz_force%name ) then
+!          iphys%div_forces%i_lorentz =    i0
+!        else if ( field_name(i) .eq. div_Coriolis_force%name ) then
+!          iphys%div_forces%i_Coriolis =   i0
+        if ( field_name(i) .eq. div_buoyancy%name ) then
           iphys%i_div_buoyancy =   i0
         else if ( field_name(i) .eq. div_composite_buoyancy%name ) then
           iphys%i_div_comp_buo =   i0
