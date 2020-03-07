@@ -168,21 +168,6 @@
           iphys%i_b_diffuse = i0
         else if (field_name(i) .eq. fhd_c_diffuse) then
           iphys%i_c_diffuse =  i0
-!
-        else if (field_name(i) .eq. div_heat_flux%name ) then
-          iphys%div_forces%i_h_flux =  i0
-        else if (field_name(i) .eq. div_pert_heat_flux%name ) then
-          iphys%div_forces%i_ph_flux = i0
-        else if (field_name(i) .eq. div_composition_flux%name ) then
-          iphys%div_forces%i_c_flux =  i0
-        else if (field_name(i) .eq. div_pert_composition_flux%name) then
-          iphys%div_forces%i_pc_flux = i0
-        else if (field_name(i) .eq. div_momentum_flux%name) then
-          iphys%div_forces%i_m_flux =  i0
-        else if (field_name(i) .eq. div_maxwell_tensor%name) then
-          iphys%div_forces%i_maxwell = i0
-        else if (field_name(i) .eq. div_induction_tensor%name) then
-          iphys%div_forces%i_induct_t =  i0
         end if
 !
         call set_base_force_addresses                                   &
@@ -281,7 +266,7 @@
 !          iphys%div_forces%i_lorentz =    i0
 !        else if ( field_name(i) .eq. div_Coriolis_force%name ) then
 !          iphys%div_forces%i_Coriolis =   i0
-        if ( field_name(i) .eq. div_buoyancy%name ) then
+!        if ( field_name(i) .eq. div_buoyancy%name ) then
           iphys%i_div_buoyancy =   i0
         else if ( field_name(i) .eq. div_composite_buoyancy%name ) then
           iphys%i_div_comp_buo =   i0
