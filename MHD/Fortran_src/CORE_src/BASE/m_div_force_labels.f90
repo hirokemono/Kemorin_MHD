@@ -208,10 +208,10 @@
         else if (field_name .eq. div_Lorentz_force%name) then
           div_forces%i_lorentz =    i_phys
 !
-!        else if (field_name .eq. div_buoyancy%name) then
-!          div_forces%i_buoyancy =   i_phys
-!        else if (field_name .eq. div_composite_buoyancy%name) then
-!          div_forces%i_comp_buo =   i_phys
+        else if (field_name .eq. div_buoyancy%name) then
+          div_forces%i_buoyancy =   i_phys
+        else if (field_name .eq. div_composite_buoyancy%name) then
+          div_forces%i_comp_buo =   i_phys
 !
         else if (field_name .eq. div_heat_flux%name) then
           div_forces%i_h_flux =    i_phys

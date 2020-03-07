@@ -260,11 +260,7 @@
         call set_dble_fil_grad_addresses                                &
      &     (i0, field_name(i), iphys%dbl_filter_grad, flag)
 !
-        if ( field_name(i) .eq. div_buoyancy%name ) then
-          iphys%div_forces%i_buoyancy =   i0
-        else if ( field_name(i) .eq. div_composite_buoyancy%name ) then
-          iphys%div_forces%i_comp_buo =   i0
-        else if ( field_name(i) .eq. fhd_div_viscous ) then
+        if ( field_name(i) .eq. fhd_div_viscous ) then
           iphys%i_div_viscous =    i0
 !
         else if ( field_name(i) .eq. fhd_forces ) then
