@@ -89,7 +89,7 @@
         call cal_div_double_cst_buo_sph                                 &
      &     (sph_bc_U%kr_in, sph_bc_U%kr_out, fl_prop%coef_buo,          &
      &      ipol_temp, igrad_temp, fl_prop%coef_comp_buo,               &
-     &      ipol_comp, igrad_comp, ipol%i_div_buoyancy,                 &
+     &      ipol_comp, igrad_comp, ipol%div_forces%i_buoyancy,          &
      &      sph_rj%nidx_rj, sph_rj%a_r_1d_rj_r,                         &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
@@ -97,7 +97,7 @@
         if (iflag_debug.eq.1) write(*,*) 'cal_div_cst_buo_sph'
         call cal_div_cst_buo_sph                                        &
      &     (sph_bc_U%kr_in, sph_bc_U%kr_out, fl_prop%coef_buo,          &
-     &      ipol_temp, igrad_temp, ipol%i_div_buoyancy,                 &
+     &      ipol_temp, igrad_temp, ipol%div_forces%i_buoyancy,          &
      &      sph_rj%nidx_rj, sph_rj%a_r_1d_rj_r,                         &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !

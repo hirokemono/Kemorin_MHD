@@ -202,8 +202,6 @@
 !
 !  divergence of momentum equations
 !
-!>        start address for divergence of buoyancy
-        integer (kind=kint) :: i_div_buoyancy =   izero
 !>        start address for divergence of viscousity
         integer (kind=kint) :: i_div_viscous =    izero
 !

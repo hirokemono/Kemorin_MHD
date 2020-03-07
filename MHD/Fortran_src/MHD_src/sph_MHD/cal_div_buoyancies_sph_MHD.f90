@@ -88,7 +88,7 @@
         call cal_div_double_buoyancy_sph_MHD                            &
      &     (sph_bc_U%kr_in, sph_bc_U%kr_out, fl_prop%coef_buo,          &
      &      ipol_temp, igrad_temp, fl_prop%coef_comp_buo,               &
-     &      ipol_comp, igrad_comp, ipol%i_div_buoyancy,                 &
+     &      ipol_comp, igrad_comp, ipol%div_forces%i_buoyancy,          &
      &      sph_rj%nidx_rj, sph_rj%radius_1d_rj_r,                      &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
@@ -97,7 +97,7 @@
      &    'cal_div_buoyancy_sph_MHD by pert. temperature'
         call cal_div_buoyancy_sph_MHD                                   &
      &     (sph_bc_U%kr_in, sph_bc_U%kr_out, fl_prop%coef_buo,          &
-     &      ipol_temp, igrad_temp, ipol%i_div_buoyancy,                 &
+     &      ipol_temp, igrad_temp, ipol%div_forces%i_buoyancy,          &
      &      sph_rj%nidx_rj, sph_rj%radius_1d_rj_r,                      &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
@@ -106,7 +106,7 @@
      &      'cal_div_buoyancy_sph_MHD by composition'
         call cal_div_buoyancy_sph_MHD                                   &
      &     (sph_bc_U%kr_in, sph_bc_U%kr_out, fl_prop%coef_comp_buo,     &
-     &      ipol_comp, igrad_comp, ipol%i_div_buoyancy,                 &
+     &      ipol_comp, igrad_comp, ipol%div_forces%i_buoyancy,          &
      &      sph_rj%nidx_rj, sph_rj%radius_1d_rj_r,                      &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
