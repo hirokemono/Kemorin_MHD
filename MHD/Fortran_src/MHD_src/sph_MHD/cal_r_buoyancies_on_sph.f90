@@ -90,7 +90,7 @@
       else if (fl_prop%iflag_4_composit_buo .gt. id_turn_OFF) then
         if (iflag_debug.eq.1) write(*,*) 'cal_r_buoyancy_on_sph'
         call cal_r_buoyancy_on_sph(kr, fl_prop%coef_comp_buo,           &
-     &      ipol_comp, ipol%i_div_comp_buo,                             &
+     &      ipol_comp, ipol%div_forces%i_comp_buo,                      &
      &      sph_rj%nidx_rj, sph_rj%radius_1d_rj_r,                      &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if

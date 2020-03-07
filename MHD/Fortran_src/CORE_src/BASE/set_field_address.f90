@@ -263,7 +263,7 @@
         if ( field_name(i) .eq. div_buoyancy%name ) then
           iphys%i_div_buoyancy =   i0
         else if ( field_name(i) .eq. div_composite_buoyancy%name ) then
-          iphys%i_div_comp_buo =   i0
+          iphys%div_forces%i_comp_buo =   i0
         else if ( field_name(i) .eq. fhd_div_viscous ) then
           iphys%i_div_viscous =    i0
 !

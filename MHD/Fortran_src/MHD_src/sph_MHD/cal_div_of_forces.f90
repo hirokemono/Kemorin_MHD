@@ -59,7 +59,8 @@
      &   .and. fl_prop%iflag_4_composit_buo .ne. id_turn_OFF            &
      &   .and. fl_prop%iflag_4_coriolis .ne.     id_turn_OFF            &
      &   .and. fl_prop%iflag_4_lorentz  .ne.     id_turn_OFF) then
-        call set_MHD_terms_to_div_force(ipol, ipol%i_div_comp_buo,      &
+        call set_MHD_terms_to_div_force                                 &
+     &     (ipol, ipol%div_forces%i_comp_buo,                           &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       else if( fl_prop%iflag_4_gravity  .ne. id_turn_OFF                &
      &   .and. fl_prop%iflag_4_composit_buo .ne. id_turn_OFF            &
@@ -77,7 +78,8 @@
      &   .and. fl_prop%iflag_4_composit_buo .ne. id_turn_OFF            &
      &   .and. fl_prop%iflag_4_coriolis .ne. id_turn_OFF                &
      &   .and. fl_prop%iflag_4_lorentz  .eq. id_turn_OFF) then
-        call set_div_cv_terms_to_force(ipol, ipol%i_div_comp_buo,       &
+        call set_div_cv_terms_to_force                                  &
+     &     (ipol, ipol%div_forces%i_comp_buo,                           &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       else
 !
@@ -95,7 +97,7 @@
           call add_term_to_div_force(ipol, ipol%i_div_buoyancy,         &
      &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         else if(fl_prop%iflag_4_composit_buo .ne. id_turn_OFF) then
-          call add_term_to_div_force(ipol, ipol%i_div_comp_buo,         &
+          call add_term_to_div_force(ipol, ipol%div_forces%i_comp_buo,  &
      &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         else if(fl_prop%iflag_4_filter_gravity .ne. id_turn_OFF) then
           call add_term_to_div_force                                    &
@@ -163,8 +165,8 @@
      &        =  - d_rj(inod,ipol%div_forces%i_m_flux)                  &
      &           + d_rj(inod,ipol%div_forces%i_Coriolis)                &
      &           + d_rj(inod,ipol%div_forces%i_lorentz)                 &
-     &           + d_rj(inod,ipol%i_div_buoyancy)     &
-     &           + d_rj(inod,ipol%i_div_comp_buo)
+     &           + d_rj(inod,ipol%i_div_buoyancy)       &
+     &           + d_rj(inod,ipol%div_forces%i_comp_buo)
       end do
 !$omp end do nowait
 !
@@ -213,7 +215,7 @@
      &        =  - d_rj(inod,ipol%div_forces%i_m_flux)                  &
      &           + d_rj(inod,ipol%div_forces%i_Coriolis)                &
      &           + d_rj(inod,ipol%i_div_buoyancy)     &
-     &           + d_rj(inod,ipol%i_div_comp_buo)
+     &           + d_rj(inod,ipol%div_forces%i_comp_buo)
       end do
 !$omp end do nowait
 !

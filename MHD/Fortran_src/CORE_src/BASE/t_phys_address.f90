@@ -204,8 +204,6 @@
 !
 !>        start address for divergence of buoyancy
         integer (kind=kint) :: i_div_buoyancy =   izero
-!>        start address for divergence of compositional buoyancy
-        integer (kind=kint) :: i_div_comp_buo =   izero
 !>        start address for divergence of viscousity
         integer (kind=kint) :: i_div_viscous =    izero
 !
