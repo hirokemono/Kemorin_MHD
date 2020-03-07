@@ -233,11 +233,11 @@
      &      mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat, nod_fld)
       end if
 !
-      if(iphys%i_ph_flux_div .gt. izero) then
+      if(iphys%div_forces%i_ph_flux .gt. izero) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &             write(*,*) 'lead  ', trim(div_pert_heat_flux%name)
         call cal_div_of_scalar_flux                                     &
-     &     (iphys%i_ph_flux_div, iphys%forces%i_ph_flux,                &
+     &     (iphys%div_forces%i_ph_flux, iphys%forces%i_ph_flux,         &
      &      FEM_prm%iflag_temp_supg, FEM_prm%npoint_t_evo_int, dt,      &
      &      FEM_prm, nod_comm, node, ele, fluid, ht_prop,               &
      &      nod_bcs%Tnod_bcs, iphys_ele, ele_fld, fem_int,              &
@@ -267,22 +267,22 @@
      &      mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat, nod_fld)
       end if
 !
-      if(iphys%i_c_flux_div .gt. izero) then
+      if(iphys%div_forces%i_c_flux .gt. izero) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &             write(*,*) 'lead  ', trim(div_composition_flux%name)
         call cal_div_of_scalar_flux                                     &
-     &     (iphys%i_c_flux_div, iphys%forces%i_c_flux,                  &
+     &     (iphys%div_forces%i_c_flux, iphys%forces%i_c_flux,           &
      &      FEM_prm%iflag_comp_supg, FEM_prm%npoint_t_evo_int, dt,      &
      &      FEM_prm, nod_comm, node, ele, fluid, cp_prop,               &
      &      nod_bcs%Tnod_bcs, iphys_ele, ele_fld, fem_int,              &
      &      mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat, nod_fld)
       end if
 !
-      if(iphys%i_pc_flux_div .gt. izero) then
+      if(iphys%div_forces%i_pc_flux .gt. izero) then
         if(iflag_debug .ge. iflag_routine_msg) write(*,*) 'lead  ',     &
      &              trim(div_pert_composition_flux%name)
         call cal_div_of_scalar_flux                                     &
-     &     (iphys%i_pc_flux_div, iphys%forces%i_pc_flux,                &
+     &     (iphys%div_forces%i_pc_flux, iphys%forces%i_pc_flux,         &
      &      FEM_prm%iflag_comp_supg, FEM_prm%npoint_t_evo_int, dt,      &
      &      FEM_prm, nod_comm, node, ele, fluid, cp_prop,               &
      &      nod_bcs%Tnod_bcs, iphys_ele, ele_fld, fem_int,              &

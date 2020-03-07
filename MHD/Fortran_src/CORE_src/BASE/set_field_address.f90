@@ -172,11 +172,11 @@
         else if (field_name(i) .eq. div_heat_flux%name ) then
           iphys%div_forces%i_h_flux =  i0
         else if (field_name(i) .eq. div_pert_heat_flux%name ) then
-          iphys%i_ph_flux_div = i0
+          iphys%div_forces%i_ph_flux = i0
         else if (field_name(i) .eq. div_composition_flux%name ) then
-          iphys%i_c_flux_div =  i0
+          iphys%div_forces%i_c_flux =  i0
         else if (field_name(i) .eq. div_pert_composition_flux%name) then
-          iphys%i_pc_flux_div = i0
+          iphys%div_forces%i_pc_flux = i0
         else if (field_name(i) .eq. div_momentum_flux%name) then
           iphys%i_m_flux_div =  i0
         else if (field_name(i) .eq. div_maxwell_tensor%name) then

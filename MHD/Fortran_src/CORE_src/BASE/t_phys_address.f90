@@ -179,15 +179,6 @@
 !!         @f$ \kappa \partial_{i}\partial_{i} C @f$
         integer (kind=kint) :: i_c_diffuse =       izero
 !
-!>        start address for divergence of perturbation of heat flux
-!!         @f$ \partial_{i} \left( u_{i} \Theta \right) @f$
-        integer (kind=kint) :: i_ph_flux_div =     izero
-!>        start address for divergence of heat flux
-!!         @f$ \partial_{i} \left( u_{i} C \right) @f$
-        integer (kind=kint) :: i_c_flux_div =      izero
-!>        start address for divergence of perturbation of heat flux
-!!         @f$ \partial_{i} \left( u_{i} \Theta_C \right) @f$
-        integer (kind=kint) :: i_pc_flux_div =     izero
 !>        start address for divergence of momentum flux
 !!         @f$ \partial_{j} \left( u_{i} u_{j} \right) @f$
         integer (kind=kint) :: i_m_flux_div =      izero
