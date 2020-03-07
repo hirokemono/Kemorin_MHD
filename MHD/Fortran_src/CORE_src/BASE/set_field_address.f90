@@ -178,7 +178,7 @@
         else if (field_name(i) .eq. div_pert_composition_flux%name) then
           iphys%div_forces%i_pc_flux = i0
         else if (field_name(i) .eq. div_momentum_flux%name) then
-          iphys%i_m_flux_div =  i0
+          iphys%div_forces%i_m_flux =  i0
         else if (field_name(i) .eq. div_maxwell_tensor%name) then
           iphys%i_maxwell_div = i0
         else if (field_name(i) .eq. div_induction_tensor%name) then

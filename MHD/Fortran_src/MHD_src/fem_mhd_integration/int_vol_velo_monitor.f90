@@ -132,7 +132,7 @@
      &        ele_fld%d_fld, fl_prop%coef_nega_v, fem_wk, f_nl)
         end if
 !
-      else if(i_field .eq. iphys%i_m_flux_div) then
+      else if(i_field .eq. iphys%div_forces%i_m_flux) then
         call int_vol_div_tsr_w_const                                    &
      &     (node, ele, g_FEM, jac_3d, rhs_tbl, nod_fld,                 &
      &      fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,         &
@@ -292,7 +292,7 @@
      &        fem_wk, f_nl)
         end if
 !
-      else if(i_field .eq. iphys%i_m_flux_div) then
+      else if(i_field .eq. iphys%div_forces%i_m_flux) then
         call int_vol_div_tsr_w_const_upw                                &
      &     (node, ele, g_FEM, jac_3d, rhs_tbl, nod_fld,                 &
      &      fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int, dt,     &

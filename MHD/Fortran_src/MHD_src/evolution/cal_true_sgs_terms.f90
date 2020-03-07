@@ -232,8 +232,9 @@
      &                         'lead  ', trim(nod_fld%phys_name(i) )
            call cal_div_sgs_tensor_true_post                            &
      &        (iphys%true_div_SGS%i_SGS_m_flux,                         &
-     &         iphys%i_m_flux_div, iphys%SGS_wk%i_simi, filter_param,   &
-     &         nod_comm, node, filtering, wk_filter, nod_fld)
+     &         iphys%div_forces%i_m_flux, iphys%SGS_wk%i_simi,          &
+     &         filter_param, nod_comm, node, filtering, wk_filter,      &
+     &         nod_fld)
          else if(nod_fld%phys_name(i) .eq. SGS_Lorentz_true%name) then
            if(iflag_debug.gt.0) write(*,*)                              &
      &                         'lead  ', trim(nod_fld%phys_name(i) )
@@ -350,14 +351,14 @@
      &   (iphys%i_filter_velo, iphys%i_filter_velo,                     &
      &    iphys%forces%i_m_flux, nod_fld)
       call cal_terms_4_momentum                                         &
-     &   (iphys%i_m_flux_div, iak_diff_mf, iak_diff_lor, dt,            &
+     &   (iphys%div_forces%i_m_flux, iak_diff_mf, iak_diff_lor, dt,     &
      &    FEM_prm, SGS_par%model_p, SGS_par%commute_p,                  &
      &    nod_comm, node, ele, surf, sf_grp, fluid, fl_prop, cd_prop,   &
      &    Vsf_bcs, Bsf_bcs, iphys, iphys_ele, ak_MHD, fem_int,          &
      &    FEM_elens, diff_coefs, mlump_fl, mhd_fem_wk,                  &
      &    rhs_mat, nod_fld, ele_fld)
       call copy_vector_component(nod_fld,                               &
-     &    iphys%i_m_flux_div, iphys%true_div_SGS%i_SGS_m_flux)
+     &    iphys%div_forces%i_m_flux, iphys%true_div_SGS%i_SGS_m_flux)
 !
       end subroutine cal_div_sgs_m_flux_true_pre
 !

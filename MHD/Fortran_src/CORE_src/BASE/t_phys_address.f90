@@ -179,9 +179,6 @@
 !!         @f$ \kappa \partial_{i}\partial_{i} C @f$
         integer (kind=kint) :: i_c_diffuse =       izero
 !
-!>        start address for divergence of momentum flux
-!!         @f$ \partial_{j} \left( u_{i} u_{j} \right) @f$
-        integer (kind=kint) :: i_m_flux_div =      izero
 !>        start address for divergence of Maxwell stress
 !!         @f$ \partial_{j} \left( B_{i} B_{j} \right) @f$
         integer (kind=kint) :: i_maxwell_div =     izero

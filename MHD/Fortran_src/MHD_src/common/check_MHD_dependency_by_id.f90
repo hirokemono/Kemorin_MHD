@@ -175,9 +175,6 @@
           call check_missing_field(fld, i_start,                        &
      &        iphys%forces%i_press_grad, pressure_gradient%name)
 !
-        else if(i_start .eq. iphys%i_m_flux_div) then 
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%forces%i_m_flux, momentum_flux%name)
         else if(i_start .eq. iphys%i_maxwell_div) then 
           call check_missing_field                                      &
      &       (fld, i_start, iphys%forces%i_maxwell, maxwell_tensor%name)
