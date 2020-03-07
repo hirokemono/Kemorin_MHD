@@ -222,11 +222,11 @@
      &      mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat, nod_fld)
       end if
 !
-      if(iphys%i_h_flux_div .gt. izero) then
+      if(iphys%div_forces%i_h_flux .gt. izero) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &             write(*,*) 'lead  ', trim(div_heat_flux%name)
         call cal_div_of_scalar_flux                                     &
-     &     (iphys%i_h_flux_div, iphys%forces%i_h_flux,                  &
+     &     (iphys%div_forces%i_h_flux, iphys%forces%i_h_flux,           &
      &      FEM_prm%iflag_temp_supg, FEM_prm%npoint_t_evo_int, dt,      &
      &      FEM_prm, nod_comm, node, ele, fluid, ht_prop,               &
      &      nod_bcs%Tnod_bcs, iphys_ele, ele_fld, fem_int,              &

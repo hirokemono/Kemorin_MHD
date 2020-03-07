@@ -137,7 +137,7 @@
            call cal_div_sgs_s_flux_true_pre                             &
      &        (FEM_prm%iflag_temp_supg, FEM_prm%npoint_t_evo_int, dt,   &
      &         iphys%true_div_SGS%i_SGS_h_flux,                         &
-     &         iphys%forces%i_h_flux, iphys%i_h_flux_div,               &
+     &         iphys%forces%i_h_flux, iphys%div_forces%i_h_flux,        &
      &         iphys%i_filter_temp, iphys%i_filter_velo, FEM_prm,       &
      &         nod_comm, node, ele, fluid, ht_prop, nod_bcs%Tnod_bcs,   &
      &         iphys_ele, ele_fld, fem_int, mk_MHD%mlump_fl,            &
@@ -215,8 +215,9 @@
      &                         'lead  ', trim(nod_fld%phys_name(i) )
            call cal_div_sgs_s_flux_true_post                            &
      &        (iphys%true_div_SGS%i_SGS_h_flux,                         &
-     &         iphys%i_h_flux_div, iphys%SGS_wk%i_simi, filter_param,   &
-     &         nod_comm, node, filtering, wk_filter, nod_fld)
+     &         iphys%div_forces%i_h_flux, iphys%SGS_wk%i_simi,          &
+     &         filter_param, nod_comm, node, filtering, wk_filter,      &
+     &         nod_fld)
          else if(nod_fld%phys_name(i).eq.SGS_div_c_flux_true%name) then
            if(iflag_debug.gt.0) write(*,*)                              &
      &                         'lead  ', trim(nod_fld%phys_name(i) )

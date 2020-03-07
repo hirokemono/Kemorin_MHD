@@ -184,9 +184,6 @@
         else if(i_start .eq. iphys%i_induct_div) then 
           call check_missing_field                                      &
      &       (fld, i_start, iphys%forces%i_induct_t, induction_tensor%name)
-        else if(i_start .eq. iphys%i_h_flux_div) then 
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%forces%i_h_flux, heat_flux%name)
         else if(i_start .eq. iphys%i_ph_flux_div) then 
           call check_missing_field                                      &
      &       (fld, i_start, iphys%forces%i_ph_flux, pert_heat_flux%name)
