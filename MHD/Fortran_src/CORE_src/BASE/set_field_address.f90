@@ -260,13 +260,7 @@
         call set_dble_fil_grad_addresses                                &
      &     (i0, field_name(i), iphys%dbl_filter_grad, flag)
 !
-!        if ( field_name(i) .eq. div_inertia%name ) then
-!          iphys%div_forces%i_m_flux =    i0
-!        else if ( field_name(i) .eq. div_Lorentz_force%name ) then
-!          iphys%div_forces%i_lorentz =    i0
-!        else if ( field_name(i) .eq. div_Coriolis_force%name ) then
-!          iphys%div_forces%i_Coriolis =   i0
-!        if ( field_name(i) .eq. div_buoyancy%name ) then
+        if ( field_name(i) .eq. div_buoyancy%name ) then
           iphys%i_div_buoyancy =   i0
         else if ( field_name(i) .eq. div_composite_buoyancy%name ) then
           iphys%i_div_comp_buo =   i0
