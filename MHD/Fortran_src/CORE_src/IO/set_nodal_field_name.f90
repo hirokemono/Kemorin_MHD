@@ -73,8 +73,6 @@
      &  .or. (phys_nod_name_ctl .eq. fhd_magne              )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_vecp               )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_current            )           &
-     &  .or. (phys_nod_name_ctl .eq. electric_field%name            )           &
-     &  .or. (phys_nod_name_ctl .eq. poynting_flux%name           )           &
      &      )   iflag = 1
 !
       if (   (phys_nod_name_ctl .eq. fhd_filter_velo        )           &
@@ -82,7 +80,6 @@
      &  .or. (phys_nod_name_ctl .eq. fhd_filter_vecp        )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_filter_magne       )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_filter_current     )           &
-     &  .or. (phys_nod_name_ctl .eq. truncated_magnetic_field%name        )           &
      &      )   iflag = 1
 !
       if (   (phys_nod_name_ctl .eq. fhd_square_v           )           &
@@ -96,8 +93,7 @@
      &  .or. (phys_nod_name_ctl .eq. fhd_w_viscous          )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_vecp_diffuse       )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_mag_diffuse        )           &
-     &  .or. (phys_nod_name_ctl .eq. rest_of_geostrophic%name)           &
-     &  .or. (phys_nod_name_ctl .eq. geostrophic_balance%name)           &
+     &  .or. (phys_nod_name_ctl .eq. geostrophic_balance%name)          &
      &      )   iflag = 1
 !
       if (   (phys_nod_name_ctl .eq. fhd_pre_mom            )           &
@@ -114,6 +110,7 @@
      &   .or. check_rot_force(phys_nod_name_ctl)                        &
      &   .or. check_div_flux_tensor(phys_nod_name_ctl)                  &
      &   .or. check_gradient_field(phys_nod_name_ctl)                   &
+     &   .or. check_field_product_vectors(phys_nod_name_ctl)            &
      &   .or. check_SGS_vector_terms(phys_nod_name_ctl)                 &
      &   .or. check_div_SGS_flux_tensor(phys_nod_name_ctl)              &
      &   .or. check_rot_SGS_terms(phys_nod_name_ctl)                    &
