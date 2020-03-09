@@ -234,9 +234,9 @@
           iphys%i_square_a = i0
         else if ( field_name(i) .eq. square_current%name ) then
           iphys%i_square_j = i0
-        else if ( field_name(i) .eq. fhd_square_t ) then
+        else if ( field_name(i) .eq. square_temperature%name ) then
           iphys%i_square_t = i0
-        else if ( field_name(i) .eq. fhd_square_c ) then
+        else if ( field_name(i) .eq. square_composition%name ) then
           iphys%i_square_c = i0
         end if
 !
@@ -323,13 +323,13 @@
           iphys%i_chk_potential_2 = i0
         end if
 !
-        if ( field_name(i) .eq. fhd_velocity_scale) then
+        if ( field_name(i) .eq. velocity_scale%name) then
           iphys%i_velo_scale =  i0
-        else if ( field_name(i) .eq. fhd_magnetic_scale) then
+        else if ( field_name(i) .eq. magnetic_scale%name) then
           iphys%i_magne_scale = i0
-        else if ( field_name(i) .eq. fhd_temp_scale) then
+        else if ( field_name(i) .eq. temperature_scale%name) then
           iphys%i_temp_scale =  i0
-        else if ( field_name(i) .eq. fhd_composition_scale) then
+        else if ( field_name(i) .eq. composition_scale%name) then
           iphys%i_comp_scale =  i0
         end if
 !

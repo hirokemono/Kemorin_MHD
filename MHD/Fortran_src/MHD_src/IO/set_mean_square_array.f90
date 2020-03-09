@@ -253,11 +253,11 @@
             call set_rms_address_list(i, nod_fld, msq_list)
           end if
 !
-          if ( field_name .eq. fhd_square_t ) then
+          if ( field_name .eq. square_temperature%name ) then
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_square_t,                &
      &          i_rms%i_square_t, j_ave%i_square_t, msq_list)
-          else if ( field_name .eq. fhd_square_c ) then
+          else if ( field_name .eq. square_composition%name ) then
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_square_c,                &
      &          i_rms%i_square_c, j_ave%i_square_c, msq_list)
@@ -407,19 +407,19 @@
             call set_rms_address_list(i, nod_fld, msq_list)
           end if
 !
-          if ( field_name .eq. fhd_velocity_scale ) then
+          if ( field_name .eq. velocity_scale%name ) then
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_velo_scale,              &
      &          i_rms%i_velo_scale, j_ave%i_velo_scale, msq_list)
-          else if ( field_name .eq. fhd_magnetic_scale ) then
+          else if ( field_name .eq. magnetic_scale%name ) then
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_magne_scale,             &
      &          i_rms%i_magne_scale, j_ave%i_magne_scale, msq_list)
-          else if ( field_name .eq. fhd_temp_scale ) then
+          else if ( field_name .eq. temperature_scale%name ) then
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_temp_scale,              &
      &          i_rms%i_temp_scale, j_ave%i_temp_scale, msq_list)
-          else if ( field_name .eq. fhd_composition_scale ) then
+          else if ( field_name .eq. composition_scale%name ) then
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_comp_scale,              &
      &          i_rms%i_comp_scale, j_ave%i_comp_scale, msq_list)

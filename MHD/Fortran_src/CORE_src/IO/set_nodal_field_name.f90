@@ -181,8 +181,8 @@
      &   .or. (phys_nod_name_ctl .eq. fhd_filter_comp         )         &
      &      )   iflag = 1
 !
-      if (    (phys_nod_name_ctl .eq. fhd_square_t            )         &
-     &   .or. (phys_nod_name_ctl .eq. fhd_square_c            )         &
+      if (    (phys_nod_name_ctl .eq. square_temperature%name            )         &
+     &   .or. (phys_nod_name_ctl .eq. square_composition%name            )         &
      &      )   iflag = 1
 !
       if (    (phys_nod_name_ctl .eq. kinetic_helicity%name    )         &
@@ -213,10 +213,10 @@
      &   .or. (phys_nod_name_ctl .eq. fhd_div_forces          )         &
      &      )   iflag = 1
 !
-      if (    (phys_nod_name_ctl .eq. fhd_velocity_scale      )         &
-     &   .or. (phys_nod_name_ctl .eq. fhd_magnetic_scale      )         &
-     &   .or. (phys_nod_name_ctl .eq. fhd_temp_scale          )         &
-     &   .or. (phys_nod_name_ctl .eq. fhd_composition_scale   )         &
+      if (    (phys_nod_name_ctl .eq. velocity_scale%name      )         &
+     &   .or. (phys_nod_name_ctl .eq. magnetic_scale%name      )         &
+     &   .or. (phys_nod_name_ctl .eq. temperature_scale%name          )         &
+     &   .or. (phys_nod_name_ctl .eq. composition_scale%name   )         &
      &       ) iflag = 1
 !
       if(     check_enegy_fluxes(phys_nod_name_ctl)                     &

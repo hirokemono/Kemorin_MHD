@@ -140,15 +140,11 @@
      &                math = '$ J_{i}^{2} $')
 !
 !>        Square of temperature @f$ T^{2} @f$
-      character(len=kchara), parameter                                  &
-     &      :: fhd_square_t = 'square_temperature'
       type(field_def), parameter :: square_temperature                  &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'square_temperature',                      &
      &                math = '$ T^{2} $')
 !>        Square of composition @f$ C^{2} @f$
-      character(len=kchara), parameter                                  &
-     &      :: fhd_square_c = 'square_composition'
       type(field_def), parameter :: square_composition                  &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'square_composition',                      &
@@ -156,29 +152,21 @@
 !
 !
 !>        Field label for velocity length scale  @f$ L_{u} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_velocity_scale =    'velocity_scale'
       type(field_def), parameter :: velocity_scale                      &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'velocity_scale',                          &
      &                math = '$ L_{u} $')
 !>        Field label for magnetic field length scale  @f$ L_{B} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_magnetic_scale =    'magnetic_scale'
       type(field_def), parameter :: magnetic_scale                      &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'magnetic_scale',                          &
      &                math = '$ L_{B} $')
 !>        Field label for temperature length scale  @f$ L_{T} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_temp_scale =        'temperature_scale'
       type(field_def), parameter :: temperature_scale                   &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'temperature_scale',                       &
      &                math = '$ L_{T} $')
 !>        Field label for composition length scale @f$ L_{C} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_composition_scale = 'composition_scale'
       type(field_def), parameter :: composition_scale                   &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'composition_scale',                       &

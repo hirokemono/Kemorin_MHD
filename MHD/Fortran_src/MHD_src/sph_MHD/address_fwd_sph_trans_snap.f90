@@ -219,24 +219,29 @@
      &    iphys%Csim%i_SGS_comp_buo, f_trns%Csim%i_SGS_comp_buo,        &
      &    trns_fwd)
 !
-      call add_field_name_4_sph_trns_snap(fhd_velocity_scale, n_scalar, &
+      call add_field_name_4_sph_trns_snap                               &
+     &   (velocity_scale%name, velocity_scale%n_comp,                   &
      &    ipol%i_velo_scale, itor%i_velo_scale, iphys%i_velo_scale,     &
      &    f_trns%i_velo_scale, trns_fwd)
-      call add_field_name_4_sph_trns_snap(fhd_magnetic_scale, n_scalar, &
+      call add_field_name_4_sph_trns_snap                               &
+     &   (magnetic_scale%name, magnetic_scale%n_comp,                   &
      &    ipol%i_magne_scale, itor%i_magne_scale, iphys%i_magne_scale,  &
      &    f_trns%i_magne_scale, trns_fwd)
-      call add_field_name_4_sph_trns_snap(fhd_temp_scale, n_scalar,     &
+      call add_field_name_4_sph_trns_snap                               &
+     &   (temperature_scale%name, temperature_scale%n_comp,             &
      &    ipol%i_temp_scale, itor%i_temp_scale, iphys%i_temp_scale,     &
      &    f_trns%i_temp_scale, trns_fwd)
       call add_field_name_4_sph_trns_snap                               &
-     &   (fhd_composition_scale, n_scalar,                              &
+     &   (composition_scale%name, composition_scale%n_comp,             &
      &    ipol%i_comp_scale, itor%i_comp_scale, iphys%i_comp_scale,     &
      &    f_trns%i_comp_scale, trns_fwd)
 !
-      call add_field_name_4_sph_trns_snap(fhd_square_t, n_scalar,       &
+      call add_field_name_4_sph_trns_snap                               &
+     &   (square_temperature%name, square_temperature%n_comp,           &
      &    ipol%i_square_t, itor%i_square_t, iphys%i_square_t,           &
      &    f_trns%i_square_t, trns_fwd)
-      call add_field_name_4_sph_trns_snap(fhd_square_c, n_scalar,       &
+      call add_field_name_4_sph_trns_snap                               &
+     &   (square_composition%name, square_composition%n_comp,           &
      &    ipol%i_square_c, itor%i_square_c, iphys%i_square_c,           &
      &    f_trns%i_square_c, trns_fwd)
 !

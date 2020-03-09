@@ -100,7 +100,7 @@
       icou = 0
       if(iphys%i_temp  .gt. 0) then
         icou = icou + 1
-        ucd%phys_name(icou) = fhd_temp_scale
+        ucd%phys_name(icou) = temperature_scale%name
         call cal_length_scale_by_diffuse1                               &
      &     (iphys%i_temp, iphys%i_t_diffuse, node, nod_fld)
         call set_one_field_to_udt_data                                  &
@@ -109,7 +109,7 @@
 !
       if(iphys%i_velo  .gt. 0) then
         icou = icou + 1
-        ucd%phys_name(icou) = fhd_velocity_scale
+        ucd%phys_name(icou) = velocity_scale%name
         call cal_vect_length_scale_by_rot                               &
      &     (iphys%i_velo, iphys%i_vort, node, nod_fld)
         call set_one_field_to_udt_data                                  &
@@ -118,7 +118,7 @@
 !
       if(iphys%i_magne .gt. 0) then
         icou = icou + 1
-        ucd%phys_name(3) =    fhd_magnetic_scale
+        ucd%phys_name(3) =    magnetic_scale%name
         call cal_vect_length_scale_by_rot                               &
      &     (iphys%i_magne, iphys%i_current, node, nod_fld)
         call set_one_field_to_udt_data                                  &
