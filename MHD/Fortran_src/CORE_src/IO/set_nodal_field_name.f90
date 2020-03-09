@@ -181,16 +181,6 @@
      &   .or. (phys_nod_name_ctl .eq. fhd_filter_comp         )         &
      &      )   iflag = 1
 !
-      if (    (phys_nod_name_ctl .eq. square_temperature%name            )         &
-     &   .or. (phys_nod_name_ctl .eq. square_composition%name            )         &
-     &      )   iflag = 1
-!
-      if (    (phys_nod_name_ctl .eq. kinetic_helicity%name    )         &
-     &   .or. (phys_nod_name_ctl .eq. magnetic_helicity%name   )         &
-     &   .or. (phys_nod_name_ctl .eq. current_helicity%name    )         &
-     &   .or. (phys_nod_name_ctl .eq. cross_helicity%name      )         &
-     &      )   iflag = 1
-!
       if (    (phys_nod_name_ctl .eq. fhd_thermal_diffusion   )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_c_diffuse           )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_part_temp           )         &
@@ -213,17 +203,12 @@
      &   .or. (phys_nod_name_ctl .eq. fhd_div_forces          )         &
      &      )   iflag = 1
 !
-      if (    (phys_nod_name_ctl .eq. velocity_scale%name      )         &
-     &   .or. (phys_nod_name_ctl .eq. magnetic_scale%name      )         &
-     &   .or. (phys_nod_name_ctl .eq. temperature_scale%name          )         &
-     &   .or. (phys_nod_name_ctl .eq. composition_scale%name   )         &
-     &       ) iflag = 1
-!
       if(     check_enegy_fluxes(phys_nod_name_ctl)                     &
      &   .or. check_scalar_advection(phys_nod_name_ctl)                 &
      &   .or. check_div_force(phys_nod_name_ctl)                        &
      &   .or. check_div_scalar_flux(phys_nod_name_ctl)                  &
      &   .or. check_divergence_field(phys_nod_name_ctl)                 &
+     &   .or. check_field_product_scalars(phys_nod_name_ctl)            &
      &   .or. check_div_SGS_flux_vector(phys_nod_name_ctl)              &
      &   .or. check_SGS_ene_fluxes(phys_nod_name_ctl)                   &
      &   .or. check_SGS_moedel_coefs(phys_nod_name_ctl)                 &
