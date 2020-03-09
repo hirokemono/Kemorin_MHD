@@ -154,7 +154,7 @@
         else if ( field_name(i) .eq. current_helicity%name ) then
           iphys%prod_fld%i_c_heli = i0
         else if ( field_name(i) .eq. cross_helicity%name ) then
-          iphys%i_x_heli = i0
+          iphys%prod_fld%i_x_heli = i0
 !
         else if (field_name(i) .eq. fhd_thermal_diffusion) then
           iphys%i_t_diffuse =  i0

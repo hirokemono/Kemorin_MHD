@@ -191,11 +191,11 @@
      &      trns_b_snap%fld_rtp(1,bs_trns%i_current),                   &
      &      trns_f_snap%fld_rtp(1,fs_trns%prod_fld%i_c_heli))
       end if
-      if(fs_trns%i_x_heli .gt. 0) then
+      if(fs_trns%prod_fld%i_x_heli .gt. 0) then
         call cal_dot_prod_no_coef_smp(sph_rtp%nnod_rtp,                 &
      &      trns_b_snap%fld_rtp(1,bs_trns%i_velo),                      &
      &      trns_b_snap%fld_rtp(1,bs_trns%i_magne),                     &
-     &      trns_f_snap%fld_rtp(1,fs_trns%i_x_heli))
+     &      trns_f_snap%fld_rtp(1,fs_trns%prod_fld%i_x_heli))
       end if
 !
       if(fs_trns%ene_flux%i_me_gen .gt. 0) then

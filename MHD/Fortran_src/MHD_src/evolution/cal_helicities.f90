@@ -52,9 +52,10 @@
      &       nod_fld)
       end if
 !
-      if (iphys%i_x_heli .gt. izero) then
+      if (iphys%prod_fld%i_x_heli .gt. izero) then
          call cal_phys_dot_product                                      &
-     &      (iphys%i_velo, iphys%i_magne, iphys%i_x_heli, nod_fld)
+     &      (iphys%i_velo, iphys%i_magne, iphys%prod_fld%i_x_heli,      &
+     &       nod_fld)
       end if
 !$omp end parallel
 !

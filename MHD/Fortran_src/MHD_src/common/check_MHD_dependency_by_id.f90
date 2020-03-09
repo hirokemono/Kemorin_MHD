@@ -131,11 +131,6 @@
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_ref_entropy, fhd_ref_entropy)
 !
-        else if(i_start .eq. iphys%i_x_heli) then 
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_velo, fhd_velo)
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_magne, fhd_magne)
         else if(i_start .eq. iphys%i_entropy) then 
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_velo, fhd_velo)
