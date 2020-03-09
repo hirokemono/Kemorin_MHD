@@ -130,7 +130,7 @@
      &                math = '$ B_{i}^{2} $')
 !>        Square of magnetic vector potential @f$ A_{i}^{2} @f$
       type(field_def), parameter :: square_vector_potential             &
-     &    = field_def(n_comp = n_scalar,                                &
+     &    = field_def(n_comp = n_vector,                                &
      &                name = 'square_vector_potential',                 &
      &                math = '$ A_{i}^{2} $')
 !>        Square of current density @f$ J_{i}^{2} @f$
