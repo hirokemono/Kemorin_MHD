@@ -40,9 +40,10 @@
      &       nod_fld)
       end if
 !
-      if (iphys%i_m_heli .gt. izero) then
+      if (iphys%prod_fld%i_m_heli .gt. izero) then
          call cal_phys_dot_product                                      &
-     &      (iphys%i_vecp, iphys%i_magne, iphys%i_m_heli, nod_fld)
+     &      (iphys%i_vecp, iphys%i_magne, iphys%prod_fld%i_m_heli,      &
+     &       nod_fld)
       end if
 !
       if (iphys%i_c_heli .gt. izero) then

@@ -150,7 +150,7 @@
         else if ( field_name(i) .eq. kinetic_helicity%name ) then
           iphys%prod_fld%i_k_heli = i0
         else if ( field_name(i) .eq. magnetic_helicity%name ) then
-          iphys%i_m_heli = i0
+          iphys%prod_fld%i_m_heli = i0
         else if ( field_name(i) .eq. current_helicity%name ) then
           iphys%i_c_heli = i0
         else if ( field_name(i) .eq. cross_helicity%name ) then

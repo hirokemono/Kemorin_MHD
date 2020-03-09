@@ -139,9 +139,6 @@
 !!         @f$ \partial_{i} \bar{A}_{i} @f$
         integer (kind=kint) :: i_div_filter_a =    izero
 !
-!>        start address for magnetic helicity
-!!         @f$ H_{B} = B_{i} A_{i} @f$
-        integer (kind=kint) :: i_m_heli =          izero
 !>        start address for current helicity
 !!         @f$ H_{J} = J_{i} B_{i} @f$
         integer (kind=kint) :: i_c_heli =          izero

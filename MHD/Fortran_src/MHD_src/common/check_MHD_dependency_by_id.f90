@@ -71,7 +71,6 @@
      &       (fld, i_start, iphys%i_magne, fhd_magne)
         else if(i_start .eq. iphys%i_filter_vecp                        &
      &     .or. i_start .eq. iphys%i_scalar_p                           &
-     &     .or. i_start .eq. iphys%i_m_heli                             &
      &     .or. i_start .eq. iphys%i_vp_diffuse                         &
      &     .or. i_start .eq. iphys%i_square_a) then
           call check_missing_field                                      &
