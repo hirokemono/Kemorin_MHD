@@ -87,13 +87,11 @@
         else if(i_start .eq. iphys%i_t_diffuse                          &
      &     .or. i_start .eq. iphys%i_per_temp                           &
      &     .or. i_start .eq. iphys%i_filter_temp                        &
-     &     .or. i_start .eq. iphys%i_heat_source                        &
-     &     .or. i_start .eq. iphys%i_square_t) then 
+     &     .or. i_start .eq. iphys%i_heat_source) then 
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_temp, fhd_temp)
         else if(i_start .eq. iphys%i_filter_comp                        &
      &     .or. i_start .eq. iphys%i_c_diffuse                          &
-     &     .or. i_start .eq. iphys%i_square_c                           &
      &     .or. i_start .eq. iphys%i_light_source) then 
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_light, fhd_light)

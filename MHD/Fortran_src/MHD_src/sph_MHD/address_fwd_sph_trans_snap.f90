@@ -245,12 +245,14 @@
 !
       call add_field_name_4_sph_trns_snap                               &
      &   (square_temperature%name, square_temperature%n_comp,           &
-     &    ipol%i_square_t, itor%i_square_t, iphys%i_square_t,           &
-     &    f_trns%i_square_t, trns_fwd)
+     &    ipol%prod_fld%i_square_t, itor%prod_fld%i_square_t,           &
+     &    iphys%prod_fld%i_square_t, f_trns%prod_fld%i_square_t,        &
+     &    trns_fwd)
       call add_field_name_4_sph_trns_snap                               &
      &   (square_composition%name, square_composition%n_comp,           &
-     &    ipol%i_square_c, itor%i_square_c, iphys%i_square_c,           &
-     &    f_trns%i_square_c, trns_fwd)
+     &    ipol%prod_fld%i_square_c, itor%prod_fld%i_square_c,           &
+     &    iphys%prod_fld%i_square_c, f_trns%prod_fld%i_square_c,        &
+     &    trns_fwd)
 !
       trns_fwd%num_scalar = trns_fwd%nfield - trns_fwd%num_vector
 !

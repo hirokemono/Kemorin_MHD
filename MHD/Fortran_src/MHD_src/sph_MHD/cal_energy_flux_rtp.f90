@@ -338,17 +338,17 @@
      &      trns_b_snap%fld_rtp(1,bs_trns%i_current),                   &
      &      trns_f_snap%fld_rtp(1,fs_trns%prod_fld%i_square_j))
       end if
-      if(fs_trns%i_square_t .gt. 0) then
+      if(fs_trns%prod_fld%i_square_t .gt. 0) then
         call cal_scalar_prod_no_coef_smp(sph_rtp%nnod_rtp,              &
      &      trns_b_snap%fld_rtp(1,bs_trns%i_temp),                      &
      &      trns_b_snap%fld_rtp(1,bs_trns%i_temp),                      &
-     &      trns_f_snap%fld_rtp(1,fs_trns%i_square_t))
+     &      trns_f_snap%fld_rtp(1,fs_trns%prod_fld%i_square_t))
       end if
-      if(fs_trns%i_square_c .gt. 0) then
+      if(fs_trns%prod_fld%i_square_c .gt. 0) then
         call cal_scalar_prod_no_coef_smp(sph_rtp%nnod_rtp,              &
      &      trns_b_snap%fld_rtp(1,bs_trns%i_light),                     &
      &      trns_b_snap%fld_rtp(1,bs_trns%i_light),                     &
-     &      trns_f_snap%fld_rtp(1,fs_trns%i_square_c))
+     &      trns_f_snap%fld_rtp(1,fs_trns%prod_fld%i_square_c))
       end if
 !$omp end parallel
 !

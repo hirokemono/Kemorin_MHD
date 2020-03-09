@@ -235,9 +235,9 @@
         else if ( field_name(i) .eq. square_current%name ) then
           iphys%prod_fld%i_square_j = i0
         else if ( field_name(i) .eq. square_temperature%name ) then
-          iphys%i_square_t = i0
+          iphys%prod_fld%i_square_t = i0
         else if ( field_name(i) .eq. square_composition%name ) then
-          iphys%i_square_c = i0
+          iphys%prod_fld%i_square_c = i0
         end if
 !
         call set_grad_filter_field_addresses                            &

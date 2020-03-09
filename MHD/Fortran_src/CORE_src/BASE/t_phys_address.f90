@@ -158,13 +158,6 @@
 !!         @f$ \kappa \partial_{i}\partial_{i} C @f$
         integer (kind=kint) :: i_c_diffuse =       izero
 !
-!  Square of each component of fields
-!
-!>        Square of temperature @f$ T^{2} @f$
-        integer (kind=kint) :: i_square_t = izero
-!>        Square of composition @f$ C^{2} @f$
-        integer (kind=kint) :: i_square_c = izero
-!
 !  divergence of momentum equations
 !
 !>        start address for divergence of viscousity
