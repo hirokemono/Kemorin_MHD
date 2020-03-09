@@ -96,7 +96,7 @@
 !!   SGS_temp_flux_gen     SGS_mag_induction_flux
 !!   SGS_buoyancy_flux     SGS_comp_buoyancy_flux
 !!
-!!   geostrophic_balance
+!!   rest_of_geostrophic
 !!   heat_flux_w_SGS, comp_flux_w_SGS
 !!   intertia_w_SGS, Lorentz_w_SGS
 !!   momentum_flux_w_SGS, maxwell_tensor_w_SGS

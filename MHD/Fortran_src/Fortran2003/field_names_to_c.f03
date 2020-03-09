@@ -24,6 +24,10 @@
 !!      subroutine set_gradient_field_labels_f                          &
 !!     &         (n_comps_c, field_name_c, field_math_c) bind(c)
 !!
+!!      integer(c_int) function num_field_products_f() bind(c)
+!!      subroutine set_field_product_labels_f                           &
+!!     &         (n_comps_c, field_name_c, field_math_c) bind(c)
+!!
 !!      integer(c_int) function num_SGS_terms_f()                       &
 !!     &              bind(c, name="num_SGS_terms_f")
 !!      subroutine set_SGS_term_labels_f                                &
@@ -315,6 +319,33 @@
      &   (n_comps_c(1), field_name_c(1), field_math_c(1))
 !
       end subroutine set_gradient_field_labels_f
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      integer(c_int) function num_field_products_f() bind(c)
+!
+      use t_field_product_labels
+!
+      num_field_products_f = num_field_products()
+      return
+      end function num_field_products_f
+!
+! ----------------------------------------------------------------------
+!
+      subroutine set_field_product_labels_f                             &
+     &         (n_comps_c, field_name_c, field_math_c) bind(c)
+!
+      use t_field_product_labels
+!
+      integer(c_int), intent(inout) :: n_comps_c(*)
+      character(C_CHAR), intent(inout) :: field_name_c(*)
+      character(C_CHAR), intent(inout) :: field_math_c(*)
+!
+      call set_field_product_labels                                     &
+     &   (n_comps_c(1), field_name_c(1), field_math_c(1))
+!
+      end subroutine set_field_product_labels_f
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
