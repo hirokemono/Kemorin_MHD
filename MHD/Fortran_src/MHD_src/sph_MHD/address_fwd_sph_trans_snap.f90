@@ -148,8 +148,8 @@
      &    iphys%prod_fld%i_m_heli, f_trns%prod_fld%i_m_heli, trns_fwd)
       call add_field_name_4_sph_trns_snap                               &
      &   (current_helicity%name, current_helicity%n_comp,               &
-     &    ipol%i_c_heli, itor%i_c_heli, iphys%i_c_heli,                 &
-     &    f_trns%i_c_heli, trns_fwd)
+     &    ipol%prod_fld%i_c_heli, itor%prod_fld%i_c_heli,               &
+     &    iphys%prod_fld%i_c_heli, f_trns%prod_fld%i_c_heli, trns_fwd)
       call add_field_name_4_sph_trns_snap                               &
      &   (cross_helicity%name, cross_helicity%n_comp,                   &
      &    ipol%i_x_heli, itor%i_x_heli, iphys%i_x_heli,                 &

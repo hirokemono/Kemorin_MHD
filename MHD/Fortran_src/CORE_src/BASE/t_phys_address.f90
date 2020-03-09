@@ -139,9 +139,6 @@
 !!         @f$ \partial_{i} \bar{A}_{i} @f$
         integer (kind=kint) :: i_div_filter_a =    izero
 !
-!>        start address for current helicity
-!!         @f$ H_{J} = J_{i} B_{i} @f$
-        integer (kind=kint) :: i_c_heli =          izero
 !>        start address for cross helicity
 !!         @f$ H_{x} = u_{i} B{i} @f$
         integer (kind=kint) :: i_x_heli =          izero
