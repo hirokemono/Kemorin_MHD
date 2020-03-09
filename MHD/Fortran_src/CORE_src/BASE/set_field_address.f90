@@ -227,7 +227,7 @@
         if      ( field_name(i) .eq. square_velocity%name ) then
           iphys%prod_fld%i_square_v = i0
         else if ( field_name(i) .eq. square_vorticity%name ) then
-          iphys%i_square_w = i0
+          iphys%prod_fld%i_square_w = i0
         else if ( field_name(i) .eq. square_magne%name ) then
           iphys%i_square_b = i0
         else if ( field_name(i) .eq. square_vector_potential%name) then

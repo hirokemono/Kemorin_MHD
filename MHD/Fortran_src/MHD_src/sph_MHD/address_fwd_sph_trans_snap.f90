@@ -74,8 +74,9 @@
      &    trns_fwd)
       call add_field_name_4_sph_trns_snap                               &
      &   (square_vorticity%name, square_vorticity%n_comp,               &
-     &    ipol%i_square_w, itor%i_square_w, iphys%i_square_w,           &
-     &    f_trns%i_square_w, trns_fwd)
+     &    ipol%prod_fld%i_square_w, itor%prod_fld%i_square_w,           &
+     &    iphys%prod_fld%i_square_w, f_trns%prod_fld%i_square_w,        &
+     &    trns_fwd)
       call add_field_name_4_sph_trns_snap                               &
      &   (square_magne%name, square_magne%n_comp,                       &
      &    ipol%i_square_b, itor%i_square_b, iphys%i_square_b,           &

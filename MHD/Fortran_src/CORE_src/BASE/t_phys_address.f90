@@ -160,8 +160,6 @@
 !
 !  Square of each component of fields
 !
-!>        Square of vorticity @f$ \omega_{i}^{2} @f$
-        integer (kind=kint) :: i_square_w = izero
 !>        Square of magnetic field @f$ B_{i}^{2} @f$
         integer (kind=kint) :: i_square_b = izero
 !>        Square of magnetic vector potential @f$ A_{i}^{2} @f$

@@ -56,8 +56,7 @@
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_velo, fhd_velo)
         else if(i_start .eq. iphys%i_filter_vort                        &
-     &     .or. i_start .eq. iphys%i_velo_scale                         &
-     &     .or. i_start .eq. iphys%i_square_w) then 
+     &     .or. i_start .eq. iphys%i_velo_scale) then 
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_vort, fhd_vort)
 !

@@ -314,11 +314,11 @@
      &      trns_b_snap%fld_rtp(1,bs_trns%i_velo),                      &
      &      trns_f_snap%fld_rtp(1,fs_trns%prod_fld%i_square_v))
       end if
-      if(fs_trns%i_square_w .gt. 0) then
+      if(fs_trns%prod_fld%i_square_w .gt. 0) then
         call vector_vector_prod_smp(sph_rtp%nnod_rtp,                   &
      &      trns_b_snap%fld_rtp(1,bs_trns%i_vort),                      &
      &      trns_b_snap%fld_rtp(1,bs_trns%i_vort),                      &
-     &      trns_f_snap%fld_rtp(1,fs_trns%i_square_w))
+     &      trns_f_snap%fld_rtp(1,fs_trns%prod_fld%i_square_w))
       end if
       if(fs_trns%i_square_b .gt. 0) then
         call vector_vector_prod_smp(sph_rtp%nnod_rtp,                   &
