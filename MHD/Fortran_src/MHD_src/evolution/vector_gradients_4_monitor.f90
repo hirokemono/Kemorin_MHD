@@ -243,12 +243,13 @@
       end if
 !
 !$omp parallel
-      if (iphys%i_electric .gt. izero) then
+      if (iphys%prod_fld%i_electric .gt. izero) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &             write(*,*) 'lead  ', trim(electric_field%name)
         call cal_nod_electric_field_smp(node, cd_prop%coef_diffuse,     &
      &      nod_fld%ntot_phys, iphys%i_current,                         &
-     &      iphys%forces%i_vp_induct, iphys%i_electric, nod_fld%d_fld)
+     &      iphys%forces%i_vp_induct, iphys%prod_fld%i_electric,        &
+     &      nod_fld%d_fld)
       end if
 !
       if (iphys%ene_flux%i_ujb .gt. izero) then

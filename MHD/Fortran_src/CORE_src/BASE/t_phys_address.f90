@@ -61,9 +61,6 @@
 !>        start address for current density
 !!         @f$ J_{i} = e_{ijk} \partial_{j} B_{k} @f$
         integer (kind=kint) :: i_current =         izero
-!>        start address for electric field
-!!         @f$ E_{i} @f$
-        integer (kind=kint) :: i_electric =        izero
 !>        start address for magnetic potential
 !!         @f$ W @f$
         integer (kind=kint) :: i_mag_p =           izero

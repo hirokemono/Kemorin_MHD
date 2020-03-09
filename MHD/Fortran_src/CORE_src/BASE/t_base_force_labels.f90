@@ -241,12 +241,6 @@
 !>        start address for magnetic stretch term
 !!         @f$ B_{j} \partial_{j} u_{i} @f$
         integer (kind=kint) :: i_mag_stretch =     izero
-!>        start address for electric field
-!!         @f$ E_{i} @f$
-        integer (kind=kint) :: i_electric =        izero
-!>        start address for poynting flux
-!!         @f$  e_{ijk} E_{j} B_{k} @f$
-        integer (kind=kint) :: i_poynting =        izero
 !
 !>        start address for advection for temperature
 !!         @f$ u_{i} \partial_{i} T @f$

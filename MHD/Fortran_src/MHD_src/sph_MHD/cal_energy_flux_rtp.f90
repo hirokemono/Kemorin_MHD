@@ -204,12 +204,12 @@
      &      trns_b_snap%fld_rtp(1,bs_trns%i_magne),                     &
      &      trns_f_snap%fld_rtp(1,fs_trns%ene_flux%i_me_gen))
       end if
-      if(fs_trns%i_electric .gt. 0) then
+      if(fs_trns%prod_fld%i_electric .gt. 0) then
         call cal_electric_field_smp(np_smp, sph_rtp%nnod_rtp,           &
      &      sph_rtp%istack_inod_rtp_smp, cd_prop%coef_diffuse,          &
      &      trns_b_snap%fld_rtp(1,bs_trns%i_current),                   &
      &      trns_f_MHD%fld_rtp(1,f_trns%forces%i_vp_induct),            &
-     &      trns_f_snap%fld_rtp(1,fs_trns%i_electric))
+     &      trns_f_snap%fld_rtp(1,fs_trns%prod_fld%i_electric))
       end if
 !
       if(fs_trns%i_poynting .gt. 0) then

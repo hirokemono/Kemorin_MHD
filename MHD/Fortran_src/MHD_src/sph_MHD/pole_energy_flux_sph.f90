@@ -154,13 +154,13 @@
       end if
 !
 !
-      if((iphys%i_current * iphys%forces%i_vp_induct                    &
-     &    * iphys%i_electric) .gt. 0) then
+      if(iphys%prod_fld%i_electric .gt. 0) then
         call cal_pole_electric_field_smp                                &
      &     (node%numnod, node%internal_node, node%xx,                   &
      &      sph_rtp%nnod_rtp, sph_rtp%nidx_rtp(1),                      &
      &      cd_prop%coef_diffuse, nod_fld%ntot_phys, iphys%i_current,   &
-     &      iphys%forces%i_vp_induct, iphys%i_electric, nod_fld%d_fld)
+     &      iphys%forces%i_vp_induct, iphys%prod_fld%i_electric,        &
+     &      nod_fld%d_fld)
       end if
 !
       if((iphys%i_current * iphys%forces%i_vp_induct                    &

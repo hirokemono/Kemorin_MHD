@@ -96,7 +96,7 @@
         else if ( field_name(i) .eq. fhd_current ) then
           iphys%i_current = i0
         else if ( field_name(i) .eq. electric_field%name ) then
-          iphys%i_electric = i0
+          iphys%prod_fld%i_electric = i0
         else if ( field_name(i) .eq. poynting_flux%name ) then
           iphys%i_poynting = i0
         else if ( field_name(i) .eq. fhd_entropy ) then
