@@ -253,7 +253,7 @@
             call set_rms_address_list(i, nod_fld, msq_list)
           end if
 !
-          else if ( field_name .eq. fhd_square_t ) then
+          if ( field_name .eq. fhd_square_t ) then
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_square_t,                &
      &          i_rms%i_square_t, j_ave%i_square_t, msq_list)
