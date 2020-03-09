@@ -229,11 +229,11 @@
         else if ( field_name(i) .eq. square_vorticity%name ) then
           iphys%prod_fld%i_square_w = i0
         else if ( field_name(i) .eq. square_magne%name ) then
-          iphys%i_square_b = i0
+          iphys%prod_fld%i_square_b = i0
         else if ( field_name(i) .eq. square_vector_potential%name) then
-          iphys%i_square_a = i0
+          iphys%prod_fld%i_square_a = i0
         else if ( field_name(i) .eq. square_current%name ) then
-          iphys%i_square_j = i0
+          iphys%prod_fld%i_square_j = i0
         else if ( field_name(i) .eq. square_temperature%name ) then
           iphys%i_square_t = i0
         else if ( field_name(i) .eq. square_composition%name ) then

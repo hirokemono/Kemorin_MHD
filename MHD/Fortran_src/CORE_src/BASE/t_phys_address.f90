@@ -160,12 +160,6 @@
 !
 !  Square of each component of fields
 !
-!>        Square of magnetic field @f$ B_{i}^{2} @f$
-        integer (kind=kint) :: i_square_b = izero
-!>        Square of magnetic vector potential @f$ A_{i}^{2} @f$
-        integer (kind=kint) :: i_square_a = izero
-!>        Square of current density @f$ J_{i}^{2} @f$
-        integer (kind=kint) :: i_square_j = izero
 !>        Square of temperature @f$ T^{2} @f$
         integer (kind=kint) :: i_square_t = izero
 !>        Square of composition @f$ C^{2} @f$

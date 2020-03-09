@@ -79,16 +79,19 @@
      &    trns_fwd)
       call add_field_name_4_sph_trns_snap                               &
      &   (square_magne%name, square_magne%n_comp,                       &
-     &    ipol%i_square_b, itor%i_square_b, iphys%i_square_b,           &
-     &    f_trns%i_square_b, trns_fwd)
+     &    ipol%prod_fld%i_square_b, itor%prod_fld%i_square_b,           &
+     &    iphys%prod_fld%i_square_b, f_trns%prod_fld%i_square_b,        &
+     &    trns_fwd)
       call add_field_name_4_sph_trns_snap                               &
      &   (square_vector_potential%name, square_vector_potential%n_comp, &
-     &    ipol%i_square_a, itor%i_square_a, iphys%i_square_a,           &
-     &    f_trns%i_square_a, trns_fwd)
+     &    ipol%prod_fld%i_square_a, itor%prod_fld%i_square_a,           &
+     &    iphys%prod_fld%i_square_a, f_trns%prod_fld%i_square_a,        &
+     &    trns_fwd)
       call add_field_name_4_sph_trns_snap                               &
      &   (square_current%name, square_current%n_comp,                   &
-     &    ipol%i_square_j, itor%i_square_j, iphys%i_square_j,           &
-     &    f_trns%i_square_j, trns_fwd)
+     &    ipol%prod_fld%i_square_j, itor%prod_fld%i_square_j,           &
+     &    iphys%prod_fld%i_square_j, f_trns%prod_fld%i_square_j,        &
+     &    trns_fwd)
 !
       trns_fwd%num_vector = trns_fwd%nfield
 !

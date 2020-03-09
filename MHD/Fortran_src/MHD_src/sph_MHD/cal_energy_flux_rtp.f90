@@ -320,23 +320,23 @@
      &      trns_b_snap%fld_rtp(1,bs_trns%i_vort),                      &
      &      trns_f_snap%fld_rtp(1,fs_trns%prod_fld%i_square_w))
       end if
-      if(fs_trns%i_square_b .gt. 0) then
+      if(fs_trns%prod_fld%i_square_b .gt. 0) then
         call vector_vector_prod_smp(sph_rtp%nnod_rtp,                   &
      &      trns_b_snap%fld_rtp(1,bs_trns%i_magne),                     &
      &      trns_b_snap%fld_rtp(1,bs_trns%i_magne),                     &
-     &      trns_f_snap%fld_rtp(1,fs_trns%i_square_b))
+     &      trns_f_snap%fld_rtp(1,fs_trns%prod_fld%i_square_b))
       end if
-      if(fs_trns%i_square_a .gt. 0) then
+      if(fs_trns%prod_fld%i_square_a .gt. 0) then
         call vector_vector_prod_smp(sph_rtp%nnod_rtp,                   &
      &      trns_b_snap%fld_rtp(1,bs_trns%i_vecp),                      &
      &      trns_b_snap%fld_rtp(1,bs_trns%i_vecp),                      &
-     &      trns_f_snap%fld_rtp(1,fs_trns%i_square_a))
+     &      trns_f_snap%fld_rtp(1,fs_trns%prod_fld%i_square_a))
       end if
-      if(fs_trns%i_square_j .gt. 0) then
+      if(fs_trns%prod_fld%i_square_j .gt. 0) then
         call vector_vector_prod_smp(sph_rtp%nnod_rtp,                   &
      &      trns_b_snap%fld_rtp(1,bs_trns%i_current),                   &
      &      trns_b_snap%fld_rtp(1,bs_trns%i_current),                   &
-     &      trns_f_snap%fld_rtp(1,fs_trns%i_square_j))
+     &      trns_f_snap%fld_rtp(1,fs_trns%prod_fld%i_square_j))
       end if
       if(fs_trns%i_square_t .gt. 0) then
         call cal_scalar_prod_no_coef_smp(sph_rtp%nnod_rtp,              &
