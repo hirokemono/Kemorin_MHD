@@ -361,7 +361,7 @@
         end if
       end if
 !
-      end subroutine set_enegy_fluxes_addresses
+      end subroutine set_field_product_addresses
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
