@@ -73,8 +73,8 @@
      &  .or. (phys_nod_name_ctl .eq. fhd_magne              )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_vecp               )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_current            )           &
-     &  .or. (phys_nod_name_ctl .eq. fhd_e_field            )           &
-     &  .or. (phys_nod_name_ctl .eq. fhd_poynting           )           &
+     &  .or. (phys_nod_name_ctl .eq. electric_field%name            )           &
+     &  .or. (phys_nod_name_ctl .eq. poynting_flux%name           )           &
      &      )   iflag = 1
 !
       if (   (phys_nod_name_ctl .eq. fhd_filter_velo        )           &
@@ -82,7 +82,7 @@
      &  .or. (phys_nod_name_ctl .eq. fhd_filter_vecp        )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_filter_magne       )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_filter_current     )           &
-     &  .or. (phys_nod_name_ctl .eq. fhd_truncated_B        )           &
+     &  .or. (phys_nod_name_ctl .eq. truncated_magnetic_field%name        )           &
      &      )   iflag = 1
 !
       if (   (phys_nod_name_ctl .eq. fhd_square_v           )           &
@@ -96,7 +96,8 @@
      &  .or. (phys_nod_name_ctl .eq. fhd_w_viscous          )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_vecp_diffuse       )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_mag_diffuse        )           &
-     &  .or. (phys_nod_name_ctl .eq. fhd_geostrophic        )           &
+     &  .or. (phys_nod_name_ctl .eq. rest_of_geostrophic%name)           &
+     &  .or. (phys_nod_name_ctl .eq. geostrophic_balance%name)           &
      &      )   iflag = 1
 !
       if (   (phys_nod_name_ctl .eq. fhd_pre_mom            )           &

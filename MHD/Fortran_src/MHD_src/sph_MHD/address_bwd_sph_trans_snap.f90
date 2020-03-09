@@ -114,7 +114,8 @@
      &    ipol%forces%i_comp_buo, itor%forces%i_comp_buo,               &
      &    iphys%forces%i_comp_buo, b_trns%forces%i_comp_buo, trns_back)
 !
-      call add_field_name_4_sph_trns_snap(fhd_geostrophic, n_vector,    &
+      call add_field_name_4_sph_trns_snap                               &
+     &   (rest_of_geostrophic%name, rest_of_geostrophic%n_comp,         &
      &    ipol%i_geostrophic, itor%i_geostrophic, iphys%i_geostrophic,  &
      &    b_trns%i_geostrophic, trns_back)
 !
@@ -272,9 +273,10 @@
      &    trns_back)
 !
       call add_field_name_4_sph_trns_snap                               &
-     &   (fhd_truncated_B, n_vector, ipol%i_truncated_B,                &
-     &    itor%i_truncated_B, iphys%i_truncated_B,                      &
-     &    b_trns%i_truncated_B, trns_back)
+     &   (truncated_magnetic_field%name,                                &
+     &    truncated_magnetic_field%n_comp,                              &
+     &    ipol%i_truncated_B, itor%i_truncated_B,                       &
+     &    iphys%i_truncated_B, b_trns%i_truncated_B, trns_back)
 !
       trns_back%num_vector = trns_back%nfield
 !

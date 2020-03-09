@@ -51,10 +51,12 @@
      &   (Coriolis_force%name, Coriolis_force%n_comp,                   &
      &    ipol%forces%i_coriolis, itor%forces%i_coriolis,               &
      &    iphys%forces%i_coriolis, f_trns%forces%i_coriolis, trns_fwd)
-      call add_field_name_4_sph_trns_snap(fhd_e_field, n_vector,        &
+      call add_field_name_4_sph_trns_snap                               &
+     &   (electric_field%name, electric_field%n_comp,                   &
      &    ipol%i_electric, itor%i_electric, iphys%i_electric,           &
      &    f_trns%i_electric, trns_fwd)
-      call add_field_name_4_sph_trns_snap(fhd_poynting, n_vector,       &
+      call add_field_name_4_sph_trns_snap                               &
+     &   (poynting_flux%name, poynting_flux%n_comp,                     &
      &    ipol%i_poynting, itor%i_poynting, iphys%i_poynting,           &
      &    f_trns%i_poynting, trns_fwd)
       call add_field_name_4_sph_trns_snap                               &

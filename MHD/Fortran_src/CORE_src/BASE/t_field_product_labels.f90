@@ -60,8 +60,6 @@
 !
 !>        Field label for ageostrophic balance
 !!         @f$ -2 e_{ijk} \Omega_{j} u_{k} - \partial_{i} p @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_geostrophic =  'rest_of_geostrophic'
       type(field_def), parameter :: rest_of_geostrophic                 &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'rest_of_geostrophic',                     &
@@ -70,24 +68,18 @@
 !
 !>        Field label for truncated magnetic field
 !!         @f$ B_{i} @f$
-      character(len=kchara), parameter                                  &
-     &            :: fhd_truncated_B = 'truncated_magnetic_field'
       type(field_def), parameter :: truncated_magnetic_field            &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'truncated_magnetic_field',                &
      &                math = '$ B_{i} $')
 !>        Field label for electric field
 !!         @f$ E_{i} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_e_field = 'electric_field'
       type(field_def), parameter :: electric_field                      &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'electric_field',                          &
      &                math = '$ E_{i} $')
 !>        Field label for poynting flux
 !!         @f$  e_{ijk} E_{j} B_{k} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_poynting = 'poynting_flux'
       type(field_def), parameter :: poynting_flux                       &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'poynting_flux',                           &

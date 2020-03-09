@@ -95,9 +95,9 @@
           iphys%i_scalar_p = i0
         else if ( field_name(i) .eq. fhd_current ) then
           iphys%i_current = i0
-        else if ( field_name(i) .eq. fhd_e_field ) then
+        else if ( field_name(i) .eq. electric_field%name ) then
           iphys%i_electric = i0
-        else if ( field_name(i) .eq. fhd_poynting ) then
+        else if ( field_name(i) .eq. poynting_flux%name ) then
           iphys%i_poynting = i0
         else if ( field_name(i) .eq. fhd_entropy ) then
           iphys%i_entropy = i0
@@ -137,7 +137,7 @@
         else if ( field_name(i) .eq. fhd_filter_comp ) then
           iphys%i_filter_comp =    i0
 !
-        else if ( field_name(i) .eq. fhd_truncated_B) then
+        else if ( field_name(i) .eq. truncated_magnetic_field%name) then
           iphys%i_truncated_B =    i0
 !
         else if ( field_name(i) .eq. div_filtered_velo%name ) then
@@ -198,7 +198,9 @@
         call set_force_w_SGS_addresses                                  &
      &     (i0, field_name(i), iphys%frc_w_SGS, flag)
 !
-        if ( field_name(i) .eq. fhd_geostrophic ) then
+        if ( field_name(i) .eq. rest_of_geostrophic%name ) then
+          iphys%i_geostrophic =  i0
+        else if ( field_name(i) .eq. geostrophic_balance%name ) then
           iphys%i_geostrophic =  i0
         end if
 !

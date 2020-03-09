@@ -174,11 +174,11 @@
             msq_list%numave = msq_list%numave + 6
           end if
 !
-          if ( field_name .eq. fhd_e_field ) then
+          if ( field_name .eq. electric_field%name ) then
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_electric,                &
      &          i_rms%i_electric, j_ave%i_electric, msq_list)
-          else if ( field_name .eq. fhd_poynting ) then
+          else if ( field_name .eq. poynting_flux%name ) then
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_poynting,                &
      &          i_rms%i_poynting, j_ave%i_poynting, msq_list)
@@ -373,7 +373,12 @@
             call set_rms_address_list(i, nod_fld, msq_list)
           end if
 !
-          if ( field_name .eq. fhd_geostrophic ) then
+          if ( field_name .eq. rest_of_geostrophic%name ) then
+            call set_rms_address                                        &
+     &         (field_name, num_comps, iphys%i_geostrophic,             &
+     &          i_rms%i_geostrophic, j_ave%i_geostrophic, msq_list)
+          end if
+          if ( field_name .eq. geostrophic_balance%name ) then
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_geostrophic,             &
      &          i_rms%i_geostrophic, j_ave%i_geostrophic, msq_list)
@@ -415,7 +420,7 @@
      &         (field_name, num_comps, iphys%i_filter_current,          &
      &          i_rms%i_filter_current, j_ave%i_filter_current,         &
      &          msq_list)
-          else if(field_name .eq. fhd_truncated_B) then
+          else if(field_name .eq. truncated_magnetic_field%name) then
             call set_rms_address                                        &
      &         (field_name, n_scalar, iphys%i_truncated_B,              &
      &          i_rms%i_truncated_B, j_ave%i_truncated_B, msq_list)
