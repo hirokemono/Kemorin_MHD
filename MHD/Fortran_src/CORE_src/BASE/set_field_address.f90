@@ -225,7 +225,7 @@
      &     (i0, field_name(i), iphys%diff_vector, flag)
 !
         if      ( field_name(i) .eq. square_velocity%name ) then
-          iphys%i_square_v = i0
+          iphys%prod_fld%i_square_v = i0
         else if ( field_name(i) .eq. square_vorticity%name ) then
           iphys%i_square_w = i0
         else if ( field_name(i) .eq. square_magne%name ) then

@@ -308,11 +308,11 @@
 !$omp end parallel
 !
 !$omp parallel
-      if(fs_trns%i_square_v .gt. 0) then
+      if(fs_trns%prod_fld%i_square_v .gt. 0) then
         call vector_vector_prod_smp(sph_rtp%nnod_rtp,                   &
      &      trns_b_snap%fld_rtp(1,bs_trns%i_velo),                      &
      &      trns_b_snap%fld_rtp(1,bs_trns%i_velo),                      &
-     &      trns_f_snap%fld_rtp(1,fs_trns%i_square_v))
+     &      trns_f_snap%fld_rtp(1,fs_trns%prod_fld%i_square_v))
       end if
       if(fs_trns%i_square_w .gt. 0) then
         call vector_vector_prod_smp(sph_rtp%nnod_rtp,                   &

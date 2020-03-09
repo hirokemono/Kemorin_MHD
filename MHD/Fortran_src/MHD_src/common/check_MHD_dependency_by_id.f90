@@ -52,8 +52,7 @@
      &     .or. i_start .eq. iphys%i_magne                              &
      &     .or. i_start .eq. iphys%i_temp                               &
      &     .or. i_start .eq. iphys%i_light                              &
-     &     .or. i_start .eq. iphys%i_v_diffuse                          &
-     &     .or. i_start .eq. iphys%i_square_v) then
+     &     .or. i_start .eq. iphys%i_v_diffuse) then
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_velo, fhd_velo)
         else if(i_start .eq. iphys%i_filter_vort                        &
