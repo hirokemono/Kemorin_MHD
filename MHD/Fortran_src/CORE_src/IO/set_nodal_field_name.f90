@@ -82,13 +82,6 @@
      &  .or. (phys_nod_name_ctl .eq. fhd_filter_current     )           &
      &      )   iflag = 1
 !
-      if (   (phys_nod_name_ctl .eq. fhd_square_v           )           &
-     &  .or. (phys_nod_name_ctl .eq. fhd_square_w           )           &
-     &  .or. (phys_nod_name_ctl .eq. fhd_square_b           )           &
-     &  .or. (phys_nod_name_ctl .eq. fhd_square_a           )           &
-     &  .or. (phys_nod_name_ctl .eq. fhd_square_j           )           &
-     &      )   iflag = 1
-!
       if (   (phys_nod_name_ctl .eq. fhd_viscous            )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_w_viscous          )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_vecp_diffuse       )           &
@@ -192,10 +185,10 @@
      &   .or. (phys_nod_name_ctl .eq. fhd_square_c            )         &
      &      )   iflag = 1
 !
-      if (    (phys_nod_name_ctl .eq. fhd_kinetic_helicity    )         &
-     &   .or. (phys_nod_name_ctl .eq. fhd_magnetic_helicity   )         &
-     &   .or. (phys_nod_name_ctl .eq. fhd_current_helicity    )         &
-     &   .or. (phys_nod_name_ctl .eq. fhd_cross_helicity      )         &
+      if (    (phys_nod_name_ctl .eq. kinetic_helicity%name    )         &
+     &   .or. (phys_nod_name_ctl .eq. magnetic_helicity%name   )         &
+     &   .or. (phys_nod_name_ctl .eq. current_helicity%name    )         &
+     &   .or. (phys_nod_name_ctl .eq. cross_helicity%name      )         &
      &      )   iflag = 1
 !
       if (    (phys_nod_name_ctl .eq. fhd_thermal_diffusion   )         &

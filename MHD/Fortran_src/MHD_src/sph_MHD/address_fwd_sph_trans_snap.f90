@@ -65,19 +65,24 @@
      &    iphys%forces%i_mag_stretch, f_trns%forces%i_mag_stretch,      &
      &    trns_fwd)
 !
-      call add_field_name_4_sph_trns_snap(fhd_square_v, n_vector,       &
+      call add_field_name_4_sph_trns_snap                               &
+     &   (square_velocity%name, square_velocity%n_comp,                 &
      &    ipol%i_square_v, itor%i_square_v, iphys%i_square_v,           &
      &    f_trns%i_square_v, trns_fwd)
-      call add_field_name_4_sph_trns_snap(fhd_square_w, n_vector,       &
+      call add_field_name_4_sph_trns_snap                               &
+     &   (square_vorticity%name, square_vorticity%name%n_comp,          &
      &    ipol%i_square_w, itor%i_square_w, iphys%i_square_w,           &
      &    f_trns%i_square_w, trns_fwd)
-      call add_field_name_4_sph_trns_snap(fhd_square_b, n_vector,       &
+      call add_field_name_4_sph_trns_snap                               &
+     &   (square_magne%name, square_magne%n_comp,                       &
      &    ipol%i_square_b, itor%i_square_b, iphys%i_square_b,           &
      &    f_trns%i_square_b, trns_fwd)
-      call add_field_name_4_sph_trns_snap(fhd_square_a, n_vector,       &
+      call add_field_name_4_sph_trns_snap                               &
+     &   (square_vector_potential%name, square_vector_potential%n_comp, &
      &    ipol%i_square_a, itor%i_square_a, iphys%i_square_a,           &
      &    f_trns%i_square_a, trns_fwd)
-      call add_field_name_4_sph_trns_snap(fhd_square_j, n_vector,       &
+      call add_field_name_4_sph_trns_snap                               &
+     &   (square_current%name, square_current%n_comp,                   &
      &    ipol%i_square_j, itor%i_square_j, iphys%i_square_j,           &
      &    f_trns%i_square_j, trns_fwd)
 !
@@ -132,15 +137,19 @@
      &    f_trns%eflux_by_filter%i_c_buo_gen, trns_fwd)
 !
       call add_field_name_4_sph_trns_snap                               &
-     &   (fhd_magnetic_helicity, n_scalar,                              &
+     &   (kinetic_helicity%name, kinetic_helicity%n_comp,               &
      &    ipol%i_k_heli, itor%i_k_heli, iphys%i_k_heli,                 &
      &    f_trns%i_k_heli, trns_fwd)
       call add_field_name_4_sph_trns_snap                               &
-     &   (fhd_current_helicity, n_scalar,                               &
+     &   (magnetic_helicity%name, magnetic_helicity%n_comp,             &
+     &    ipol%i_m_heli, itor%i_m_heli, iphys%i_m_heli,                 &
+     &    f_trns%i_m_heli, trns_fwd)
+      call add_field_name_4_sph_trns_snap                               &
+     &   (current_helicity%name, current_helicity%n_comp,               &
      &    ipol%i_c_heli, itor%i_c_heli, iphys%i_c_heli,                 &
      &    f_trns%i_c_heli, trns_fwd)
       call add_field_name_4_sph_trns_snap                               &
-     &   (fhd_cross_helicity, n_scalar,                                 &
+     &   (cross_helicity%name, cross_helicity%n_comp,                   &
      &    ipol%i_x_heli, itor%i_x_heli, iphys%i_x_heli,                 &
      &    f_trns%i_x_heli, trns_fwd)
 !

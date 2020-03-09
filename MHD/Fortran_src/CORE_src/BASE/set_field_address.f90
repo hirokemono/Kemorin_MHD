@@ -147,13 +147,13 @@
         else if ( field_name(i) .eq. div_filtered_vector_potential%name ) then
           iphys%i_div_filter_a =    i0
 !
-        else if ( field_name(i) .eq. fhd_kinetic_helicity ) then
+        else if ( field_name(i) .eq. kinetic_helicity%name ) then
           iphys%i_k_heli = i0
-        else if ( field_name(i) .eq. fhd_magnetic_helicity ) then
+        else if ( field_name(i) .eq. magnetic_helicity%name ) then
           iphys%i_m_heli = i0
-        else if ( field_name(i) .eq. fhd_current_helicity ) then
+        else if ( field_name(i) .eq. current_helicity%name ) then
           iphys%i_c_heli = i0
-        else if ( field_name(i) .eq. fhd_cross_helicity ) then
+        else if ( field_name(i) .eq. cross_helicity%name ) then
           iphys%i_x_heli = i0
 !
         else if (field_name(i) .eq. fhd_thermal_diffusion) then
@@ -224,15 +224,15 @@
         call set_diff_vector_addresses                                  &
      &     (i0, field_name(i), iphys%diff_vector, flag)
 !
-        if      ( field_name(i) .eq. fhd_square_v ) then
+        if      ( field_name(i) .eq. square_velocity%name ) then
           iphys%i_square_v = i0
-        else if ( field_name(i) .eq. fhd_square_w ) then
+        else if ( field_name(i) .eq. square_vorticity%name ) then
           iphys%i_square_w = i0
-        else if ( field_name(i) .eq. fhd_square_b ) then
+        else if ( field_name(i) .eq. square_magne%name ) then
           iphys%i_square_b = i0
-        else if ( field_name(i) .eq. fhd_square_a ) then
+        else if ( field_name(i) .eq. square_vector_potential%name) then
           iphys%i_square_a = i0
-        else if ( field_name(i) .eq. fhd_square_j ) then
+        else if ( field_name(i) .eq. square_current%name ) then
           iphys%i_square_j = i0
         else if ( field_name(i) .eq. fhd_square_t ) then
           iphys%i_square_t = i0

@@ -253,26 +253,6 @@
             call set_rms_address_list(i, nod_fld, msq_list)
           end if
 !
-          if      ( field_name .eq. fhd_square_v ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_square_v,                &
-     &          i_rms%i_square_v, j_ave%i_square_v, msq_list)
-          else if ( field_name .eq. fhd_square_w ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_square_w,                &
-     &          i_rms%i_square_w, j_ave%i_square_w, msq_list)
-          else if ( field_name .eq. fhd_square_b ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_square_b,                &
-     &          i_rms%i_square_b, j_ave%i_square_b, msq_list)
-          else if ( field_name .eq. fhd_square_a ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_square_a,                &
-     &          i_rms%i_square_a, j_ave%i_square_a, msq_list)
-          else if ( field_name .eq. fhd_square_j ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_square_j,                &
-     &          i_rms%i_square_j, j_ave%i_square_j, msq_list)
           else if ( field_name .eq. fhd_square_t ) then
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_square_t,                &

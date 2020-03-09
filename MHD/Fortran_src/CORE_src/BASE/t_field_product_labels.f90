@@ -88,32 +88,24 @@
 !
 !>        Field label for kinetic helicity
 !!         @f$ H_{u} = u_{i} \omega_{i} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_kinetic_helicity =  'kinetic_helicity'
       type(field_def), parameter :: kinetic_helicity                    &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'kinetic_helicity',                        &
      &                math = '$ u_{i} \omega_{i} $')
 !>        Field label for magnetic helicity
 !!         @f$ H_{B} = B_{i} A_{i} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_magnetic_helicity = 'magnetic_helicity'
       type(field_def), parameter :: magnetic_helicity                   &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'magnetic_helicity',                       &
      &                math = '$ B_{i} A_{i} $')
 !>        Field label for current helicity
 !!         @f$ H_{J} = J_{i} B_{i} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_current_helicity =  'current_helicity'
       type(field_def), parameter :: current_helicity                    &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'current_helicity',                        &
      &                math = '$ J_{i} B_{i} $')
 !>        Field label for cross helicity
 !!         @f$ H_{x} = u_{i} B{i} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_cross_helicity =    'cross_helicity'
       type(field_def), parameter :: cross_helicity                      &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'cross_helicity',                          &
@@ -121,41 +113,32 @@
 !
 !  Square of each component of fields
 !
-!>        Square of velocity @f$ u^{2} @f$
-      character(len=kchara), parameter                                  &
-     &      :: fhd_square_v = 'square_velocity'
+!>        Square of velocity @f$ u_{i}^{2} @f$
       type(field_def), parameter :: square_velocity                     &
-     &    = field_def(n_comp = n_scalar,                                &
+     &    = field_def(n_comp = n_vector,                                &
      &                name = 'square_velocity',                         &
-     &                math = '$ u^{2} $')
-!>        Square of vorticity @f$ \omega^{2} @f$
-      character(len=kchara), parameter                                  &
-     &      :: fhd_square_w = 'square_vorticity'
+     &                math = '$ u_{i}^{2} $')
+!>        Square of vorticity @f$ \omega_{i}^{2} @f$
       type(field_def), parameter :: square_vorticity                    &
-     &    = field_def(n_comp = n_scalar,                                &
+     &    = field_def(n_comp = n_vector,                                &
      &                name = 'square_vorticity',                        &
-     &                math = '$ \omega^{2} $')
-!>        Square of magnetic field @f$ B^{2} @f$
-      character(len=kchara), parameter                                  &
-     &      :: fhd_square_b = 'square_magne'
+     &                math = '$ \omega_{i}^{2} $')
+!>        Square of magnetic field @f$ B_{i}^{2} @f$
       type(field_def), parameter :: square_magne                        &
-     &    = field_def(n_comp = n_scalar,                                &
+     &    = field_def(n_comp = n_vector,                                &
      &                name = 'square_magne',                            &
-     &                math = '$ B^{2} $')
-!>        Square of magnetic vector potential @f$ A^{2} @f$
-      character(len=kchara), parameter                                  &
-     &      :: fhd_square_a = 'square_vector_potential'
+     &                math = '$ B_{i}^{2} $')
+!>        Square of magnetic vector potential @f$ A_{i}^{2} @f$
       type(field_def), parameter :: square_vector_potential             &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'square_vector_potential',                 &
-     &                math = '$ A^{2} $')
-!>        Square of current density @f$ J^{2} @f$
-      character(len=kchara), parameter                                  &
-     &      :: fhd_square_j = 'square_current'
+     &                math = '$ A_{i}^{2} $')
+!>        Square of current density @f$ J_{i}^{2} @f$
       type(field_def), parameter :: square_current                      &
-     &    = field_def(n_comp = n_scalar,                                &
+     &    = field_def(n_comp = n_vector,                                &
      &                name = 'square_current',                          &
-     &                math = '$ J^{2} $')
+     &                math = '$ J_{i}^{2} $')
+!
 !>        Square of temperature @f$ T^{2} @f$
       character(len=kchara), parameter                                  &
      &      :: fhd_square_t = 'square_temperature'
@@ -285,6 +268,12 @@
      &   .or. (field_name .eq. truncated_magnetic_field%name)           &
      &   .or. (field_name .eq. electric_field%name)                     &
      &   .or. (field_name .eq. poynting_flux%name)                      &
+!
+     &   .or. (field_name .eq. square_velocity%name)                    &
+     &   .or. (field_name .eq. square_vorticity%name)                   &
+     &   .or. (field_name .eq. square_magne%name)                       &
+     &   .or. (field_name .eq. square_vector_potential%name)            &
+     &   .or. (field_name .eq. square_current%name)                     &
      &      )   check_field_product_vectors = .TRUE.
 !
       end function check_field_product_vectors
@@ -302,11 +291,6 @@
      &   .or. (field_name .eq. current_helicity%name)                   &
      &   .or. (field_name .eq. cross_helicity%name)                     &
 !
-     &   .or. (field_name .eq. square_velocity%name)                    &
-     &   .or. (field_name .eq. square_vorticity%name)                   &
-     &   .or. (field_name .eq. square_magne%name)                       &
-     &   .or. (field_name .eq. square_vector_potential%name)            &
-     &   .or. (field_name .eq. square_current%name)                     &
      &   .or. (field_name .eq. square_temperature%name)                 &
      &   .or. (field_name .eq. square_composition%name)                 &
 !
