@@ -34,6 +34,7 @@
       subroutine add_field_ctl_4_forces(field_ctl)
 !
       use t_control_array_character3
+      use t_diff_vector_labels
       use add_nodal_fields_ctl
 !
       type(ctl_array_c3), intent(inout) :: field_ctl
@@ -51,6 +52,7 @@
         call add_phys_name_ctl(fhd_vort, field_ctl)
         call add_phys_name_ctl(fhd_press, field_ctl)
       end if
+!
       if(check_field_list_ctl(Lorentz_force%name, field_ctl)) then
         call add_phys_name_ctl(fhd_current, field_ctl)
         call add_phys_name_ctl(fhd_press, field_ctl)
@@ -69,11 +71,16 @@
         call add_phys_name_ctl(fhd_magne, field_ctl)
 !
       if(      check_field_list_ctl(vecp_induction%name, field_ctl)     &
-     &    .or. check_field_list_ctl(magnetic_stretch%name, field_ctl)   &
      &    .or. check_field_list_ctl(induction_tensor%name, field_ctl)   &
      &      ) then
         call add_phys_name_ctl(fhd_velo, field_ctl)
         call add_phys_name_ctl(fhd_magne, field_ctl)
+      end if
+      if(check_field_list_ctl(magnetic_stretch%name, field_ctl)) then
+        call add_phys_name_ctl(fhd_magne, field_ctl)
+        call add_phys_name_ctl(grad_v_1%name, field_ctl)
+        call add_phys_name_ctl(grad_v_2%name, field_ctl)
+        call add_phys_name_ctl(grad_v_3%name, field_ctl)
       end if
 !
       if(      check_field_list_ctl(heat_advect%name, field_ctl)        &

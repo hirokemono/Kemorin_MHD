@@ -328,9 +328,9 @@
         else if ( field_name(i) .eq. magnetic_scale%name) then
           iphys%prod_fld%i_magne_scale = i0
         else if ( field_name(i) .eq. temperature_scale%name) then
-          iphys%i_temp_scale =  i0
+          iphys%prod_fld%i_temp_scale =  i0
         else if ( field_name(i) .eq. composition_scale%name) then
-          iphys%i_comp_scale =  i0
+          iphys%prod_fld%i_comp_scale =  i0
         end if
 !
 !   Old field label... Should be deleted later!!

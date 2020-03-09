@@ -219,12 +219,6 @@
         integer (kind=kint) :: i_chk_potential_2 = izero
 !
 !
-!>        start address for temperature length scale
-        integer (kind=kint) :: i_temp_scale =       izero
-!>        start address for composition length scale
-        integer (kind=kint) :: i_comp_scale =       izero
-!
-!
 !>        start address for viscosity   @f$ \mu @f$
         integer (kind=kint) :: i_viscosity =   izero
 !>        start address for thermal diffusivity @f$ k @f$

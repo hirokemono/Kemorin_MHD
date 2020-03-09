@@ -101,23 +101,7 @@
 !
       do i = 1, fld%num_phys
         i_start = fld%istack_component(i-1) + 1
-        if(i_start .eq. iphys%i_temp_scale) then 
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_t_diffuse, fhd_thermal_diffusion)
-        else if(i_start .eq. iphys%i_comp_scale) then 
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_c_diffuse, fhd_c_diffuse)
-        else if(i_start .eq. iphys%forces%i_mag_stretch) then 
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_magne, fhd_magne)
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%diff_vector%i_grad_vx, grad_v_1%name)
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%diff_vector%i_grad_vy, grad_v_2%name)
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%diff_vector%i_grad_vz, grad_v_3%name)
-!
-        else if(i_start .eq. iphys%i_per_entropy) then 
+        if(i_start .eq. iphys%i_per_entropy) then 
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_entropy, fhd_per_entropy)
           call check_missing_field                                      &

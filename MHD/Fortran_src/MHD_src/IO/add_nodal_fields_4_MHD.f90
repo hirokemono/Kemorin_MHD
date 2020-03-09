@@ -127,13 +127,6 @@
       type(ctl_array_c3), intent(inout) :: field_ctl
 !
 !
-      call add_field_ctl_4_diff_vector(field_ctl)
-      if (iflag_debug .ge. iflag_routine_msg) write(*,*)                &
-     &    'add_field_ctl_4_diff_vector end'
-      call add_field_ctl_4_grad_field(field_ctl)
-      if (iflag_debug .ge. iflag_routine_msg) write(*,*)                &
-     &    'add_field_ctl_4_grad_field end'
-!
       call add_field_ctl_4_field_products(field_ctl)
       if (iflag_debug .ge. iflag_routine_msg) write(*,*)                &
      &    'add_field_ctl_4_field_products end'
@@ -147,6 +140,13 @@
       call add_field_ctl_4_forces(field_ctl)
       if (iflag_debug .ge. iflag_routine_msg) write(*,*)                &
      &    'add_field_ctl_4_forces end'
+!
+      call add_field_ctl_4_diff_vector(field_ctl)
+      if (iflag_debug .ge. iflag_routine_msg) write(*,*)                &
+     &    'add_field_ctl_4_diff_vector end'
+      call add_field_ctl_4_grad_field(field_ctl)
+      if (iflag_debug .ge. iflag_routine_msg) write(*,*)                &
+     &    'add_field_ctl_4_grad_field end'
 !
       end subroutine add_dependent_field
 !

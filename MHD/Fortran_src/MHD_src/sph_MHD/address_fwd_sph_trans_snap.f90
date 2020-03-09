@@ -238,12 +238,14 @@
      &    trns_fwd)
       call add_field_name_4_sph_trns_snap                               &
      &   (temperature_scale%name, temperature_scale%n_comp,             &
-     &    ipol%i_temp_scale, itor%i_temp_scale, iphys%i_temp_scale,     &
-     &    f_trns%i_temp_scale, trns_fwd)
+     &    ipol%prod_fld%i_temp_scale, itor%prod_fld%i_temp_scale,       &
+     &    iphys%prod_fld%i_temp_scale, f_trns%prod_fld%i_temp_scale,    &
+     &    trns_fwd)
       call add_field_name_4_sph_trns_snap                               &
      &   (composition_scale%name, composition_scale%n_comp,             &
-     &    ipol%i_comp_scale, itor%i_comp_scale, iphys%i_comp_scale,     &
-     &    f_trns%i_comp_scale, trns_fwd)
+     &    ipol%prod_fld%i_comp_scale, itor%prod_fld%i_comp_scale,       &
+     &    iphys%prod_fld%i_comp_scale, f_trns%prod_fld%i_comp_scale,    &
+     &    trns_fwd)
 !
       call add_field_name_4_sph_trns_snap                               &
      &   (square_temperature%name, square_temperature%n_comp,           &
