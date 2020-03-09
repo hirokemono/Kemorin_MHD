@@ -103,9 +103,6 @@
 !>        start address for reference entropy
 !!         @f$  S_{0} @f$
         integer (kind=kint) :: i_ref_entropy =     izero
-!>        start address for poynting flux
-!!         @f$  e_{ijk} E_{j} B_{k} @f$
-        integer (kind=kint) :: i_poynting =        izero
 !
 !>        Start address for filtered velocity
 !!         @f$ \bar{u}_{i} @f$

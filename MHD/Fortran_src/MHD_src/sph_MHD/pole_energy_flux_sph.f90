@@ -163,14 +163,13 @@
      &      nod_fld%d_fld)
       end if
 !
-      if((iphys%i_current * iphys%forces%i_vp_induct                    &
-     &    * iphys%i_poynting) .gt. 0) then
+      if(iphys%prod_fld%i_poynting .gt. 0) then
         call cal_pole_poynting_flux_smp                                 &
      &     (node%numnod, node%internal_node, node%xx,                   &
      &      sph_rtp%nnod_rtp, sph_rtp%nidx_rtp(1),                      &
      &      cd_prop%coef_diffuse, nod_fld%ntot_phys, iphys%i_current,   &
-     &      iphys%forces%i_vp_induct, iphys%i_magne, iphys%i_poynting,  &
-     &      nod_fld%d_fld)
+     &      iphys%forces%i_vp_induct, iphys%i_magne,                    &
+     &      iphys%prod_fld%i_poynting, nod_fld%d_fld)
       end if
 !
 !

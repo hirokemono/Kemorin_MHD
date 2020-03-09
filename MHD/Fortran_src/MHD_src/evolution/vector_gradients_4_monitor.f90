@@ -359,11 +359,11 @@
      &      nod_fld)
       end if
 !
-      if (iphys%i_poynting .gt. izero) then
+      if (iphys%prod_fld%i_poynting .gt. izero) then
         call cal_nod_poynting_flux_smp(node, cd_prop%coef_diffuse,      &
      &      nod_fld%ntot_phys, iphys%i_current,                         &
      &      iphys%forces%i_vp_induct, iphys%i_magne,                    &
-     &      iphys%i_poynting, nod_fld%d_fld)
+     &      iphys%prod_fld%i_poynting, nod_fld%d_fld)
       end if
 !$omp end parallel
 !

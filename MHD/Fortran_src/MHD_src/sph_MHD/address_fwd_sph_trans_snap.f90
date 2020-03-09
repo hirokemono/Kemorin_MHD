@@ -58,8 +58,9 @@
      &    trns_fwd)
       call add_field_name_4_sph_trns_snap                               &
      &   (poynting_flux%name, poynting_flux%n_comp,                     &
-     &    ipol%i_poynting, itor%i_poynting, iphys%i_poynting,           &
-     &    f_trns%i_poynting, trns_fwd)
+     &    ipol%prod_fld%i_poynting, itor%prod_fld%i_poynting,           &
+     &    iphys%prod_fld%i_poynting, f_trns%prod_fld%i_poynting,        &
+     &    trns_fwd)
       call add_field_name_4_sph_trns_snap                               &
      &   (magnetic_stretch%name, magnetic_stretch%n_comp,               &
      &    ipol%forces%i_mag_stretch, itor%forces%i_mag_stretch,         &

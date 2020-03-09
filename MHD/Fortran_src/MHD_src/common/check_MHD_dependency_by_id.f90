@@ -161,11 +161,6 @@
      &       (fld, i_start, iphys%i_density, fhd_density)
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_ref_density, fhd_ref_density)
-        else if(i_start .eq. iphys%i_poynting) then 
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%forces%i_vp_induct, vecp_induction%name)
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_current, fhd_current)
         end if
       end do
 !

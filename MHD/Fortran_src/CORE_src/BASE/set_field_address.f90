@@ -98,7 +98,7 @@
         else if ( field_name(i) .eq. electric_field%name ) then
           iphys%prod_fld%i_electric = i0
         else if ( field_name(i) .eq. poynting_flux%name ) then
-          iphys%i_poynting = i0
+          iphys%prod_fld%i_poynting = i0
         else if ( field_name(i) .eq. fhd_entropy ) then
           iphys%i_entropy = i0
         else if ( field_name(i) .eq. fhd_per_entropy ) then
