@@ -18,6 +18,7 @@
       use t_base_force_labels
       use t_energy_flux_labels
       use t_grad_field_labels
+      use t_field_product_labels
       use t_diff_vector_labels
       use t_SGS_term_labels
       use t_SGS_enegy_flux_labels
@@ -179,10 +180,6 @@
 !!         @f$ \kappa \partial_{i}\partial_{i} C @f$
         integer (kind=kint) :: i_c_diffuse =       izero
 !
-!>        Field address for geostrophic balance
-!!         @f$ -2 e_{ijk} \Omega_{j} u_{k} + \partial_{i} p @f$
-        integer (kind=kint) :: i_geostrophic = izero
-!
 !  Square of each component of fields
 !
 !>        Square of velocity @f$ u_{i}^{2} @f$
@@ -328,6 +325,8 @@
 !
 !>        Structure of energy fluxes by filtered field
         type(energy_flux_address) :: eflux_by_filter
+!>        Structure of energy fluxes by filtered field
+        type(phys_products_address) :: prod_fld
 !
 !>        Structure of difference of vector
         type(diff_vector_address) :: diff_vector
