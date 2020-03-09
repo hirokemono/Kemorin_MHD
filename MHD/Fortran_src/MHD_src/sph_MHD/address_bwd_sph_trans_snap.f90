@@ -116,8 +116,9 @@
 !
       call add_field_name_4_sph_trns_snap                               &
      &   (rest_of_geostrophic%name, rest_of_geostrophic%n_comp,         &
-     &    ipol%i_geostrophic, itor%i_geostrophic, iphys%i_geostrophic,  &
-     &    b_trns%i_geostrophic, trns_back)
+     &    ipol%prod_fld%i_geostrophic, itor%prod_fld%i_geostrophic,     &
+     &    iphys%prod_fld%i_geostrophic, b_trns%prod_fld%i_geostrophic,  &
+     &    trns_back)
 !
       call add_field_name_4_sph_trns_snap                               &
      &   (heat_flux_w_SGS%name, heat_flux_w_SGS%n_comp,                 &

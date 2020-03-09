@@ -199,9 +199,9 @@
      &     (i0, field_name(i), iphys%frc_w_SGS, flag)
 !
         if ( field_name(i) .eq. rest_of_geostrophic%name ) then
-          iphys%i_geostrophic =  i0
+          iphys%prod_fld%i_geostrophic =  i0
         else if ( field_name(i) .eq. geostrophic_balance%name ) then
-          iphys%i_geostrophic =  i0
+          iphys%prod_fld%i_geostrophic =  i0
         end if
 !
         call set_true_SGS_term_addresses                                &

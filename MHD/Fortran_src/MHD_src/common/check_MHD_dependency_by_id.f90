@@ -168,12 +168,6 @@
      &       (fld, i_start, iphys%forces%i_vp_induct, vecp_induction%name)
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_current, fhd_current)
-!
-        else if(i_start .eq. iphys%i_geostrophic) then 
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%forces%i_coriolis, Coriolis_force%name)
-          call check_missing_field(fld, i_start,                        &
-     &        iphys%forces%i_press_grad, pressure_gradient%name)
         end if
       end do
 !

@@ -342,12 +342,6 @@
             call set_rms_address_list(i, nod_fld, msq_list)
           end if
 !
-          if ( field_name .eq. geostrophic_balance%name ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_geostrophic,             &
-     &          i_rms%i_geostrophic, j_ave%i_geostrophic, msq_list)
-          end if
-!
           if(check_force_w_SGS(field_name)) then
             call set_rms_address_list(i, nod_fld, msq_list)
           end if
