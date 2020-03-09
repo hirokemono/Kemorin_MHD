@@ -55,8 +55,7 @@
      &     .or. i_start .eq. iphys%i_v_diffuse) then
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_velo, fhd_velo)
-        else if(i_start .eq. iphys%i_filter_vort                        &
-     &     .or. i_start .eq. iphys%i_velo_scale) then 
+        else if(i_start .eq. iphys%i_filter_vort) then 
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_vort, fhd_vort)
 !
@@ -72,8 +71,7 @@
      &     .or. i_start .eq. iphys%prod_fld%i_square_a) then
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_vecp, fhd_vecp)
-        else if(i_start .eq. iphys%i_filter_current                     &
-     &     .or. i_start .eq. iphys%i_magne_scale) then 
+        else if(i_start .eq. iphys%i_filter_current) then 
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_current, fhd_current)
         else if(i_start .eq. iphys%i_vecp) then

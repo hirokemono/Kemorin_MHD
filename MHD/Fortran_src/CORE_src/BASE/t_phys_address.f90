@@ -219,10 +219,6 @@
         integer (kind=kint) :: i_chk_potential_2 = izero
 !
 !
-!>        start address for velocity length scale
-        integer (kind=kint) :: i_velo_scale =       izero
-!>        start address for magnetic field length scale
-        integer (kind=kint) :: i_magne_scale =      izero
 !>        start address for temperature length scale
         integer (kind=kint) :: i_temp_scale =       izero
 !>        start address for composition length scale

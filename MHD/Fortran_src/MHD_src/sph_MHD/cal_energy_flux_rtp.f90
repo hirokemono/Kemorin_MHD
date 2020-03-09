@@ -277,19 +277,19 @@
      &      trns_f_snap%fld_rtp(1,fs_trns%eflux_by_filter%i_c_buo_gen))
       end if
 !
-      if(fs_trns%i_velo_scale .gt. 0) then
+      if(fs_trns%prod_fld%i_velo_scale .gt. 0) then
         call cal_len_scale_by_rot_smp                                   &
      &      (np_smp, sph_rtp%nnod_rtp, sph_rtp%istack_inod_rtp_smp,     &
      &      trns_b_snap%fld_rtp(1,bs_trns%i_velo),                      &
      &      trns_b_snap%fld_rtp(1,bs_trns%i_vort),                      &
-     &      trns_f_snap%fld_rtp(1,fs_trns%i_velo_scale))
+     &      trns_f_snap%fld_rtp(1,fs_trns%prod_fld%i_velo_scale))
       end if
-      if(fs_trns%i_magne_scale .gt. 0) then
+      if(fs_trns%prod_fld%i_magne_scale .gt. 0) then
         call cal_len_scale_by_rot_smp                                   &
      &     (np_smp, sph_rtp%nnod_rtp, sph_rtp%istack_inod_rtp_smp,      &
      &      trns_b_snap%fld_rtp(1,bs_trns%i_magne),                     &
      &      trns_b_snap%fld_rtp(1,bs_trns%i_current),                   &
-     &      trns_f_snap%fld_rtp(1,fs_trns%i_magne_scale))
+     &      trns_f_snap%fld_rtp(1,fs_trns%prod_fld%i_magne_scale))
       end if
       if(fs_trns%i_temp_scale .gt. 0) then
         call cal_len_scale_by_diffuse_smp                               &

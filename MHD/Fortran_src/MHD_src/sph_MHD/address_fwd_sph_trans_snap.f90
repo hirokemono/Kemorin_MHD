@@ -228,12 +228,14 @@
 !
       call add_field_name_4_sph_trns_snap                               &
      &   (velocity_scale%name, velocity_scale%n_comp,                   &
-     &    ipol%i_velo_scale, itor%i_velo_scale, iphys%i_velo_scale,     &
-     &    f_trns%i_velo_scale, trns_fwd)
+     &    ipol%prod_fld%i_velo_scale, itor%prod_fld%i_velo_scale,       &
+     &    iphys%prod_fld%i_velo_scale, f_trns%prod_fld%i_velo_scale,    &
+     &    trns_fwd)
       call add_field_name_4_sph_trns_snap                               &
      &   (magnetic_scale%name, magnetic_scale%n_comp,                   &
-     &    ipol%i_magne_scale, itor%i_magne_scale, iphys%i_magne_scale,  &
-     &    f_trns%i_magne_scale, trns_fwd)
+     &    ipol%prod_fld%i_magne_scale, itor%prod_fld%i_magne_scale,     &
+     &    iphys%prod_fld%i_magne_scale, f_trns%prod_fld%i_magne_scale,  &
+     &    trns_fwd)
       call add_field_name_4_sph_trns_snap                               &
      &   (temperature_scale%name, temperature_scale%n_comp,             &
      &    ipol%i_temp_scale, itor%i_temp_scale, iphys%i_temp_scale,     &
