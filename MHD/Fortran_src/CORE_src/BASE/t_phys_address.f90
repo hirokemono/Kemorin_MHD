@@ -134,9 +134,6 @@
 !>        Start address for filtered conposition
 !!         @f$ \bar{C} @f$
         integer (kind=kint) :: i_filter_comp =     izero
-!>        Start address for truncated magnetic field
-!!         @f$ \bar{B}_{i} @f$
-         integer (kind=kint) :: i_truncated_B =    izero
 !
 !>        start address for filtered velocity
 !!         @f$ \partial_{i} \bar{u}_{i} @f$

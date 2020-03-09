@@ -11,6 +11,7 @@
 !!      subroutine add_field_ctl_4_forces(field_ctl)
 !!      subroutine add_field_ctl_4_rot_forces(field_ctl)
 !!      subroutine add_field_ctl_4_div_forces(field_ctl)
+!!      subroutine add_field_ctl_4_field_products(field_ctl)
 !!        type(ctl_array_c3), intent(in) :: field_ctl
 !!@endverbatim
 !!
@@ -167,6 +168,74 @@
         call add_phys_name_ctl(pert_comp_flux%name, field_ctl)
 !
       end subroutine add_field_ctl_4_div_forces
+!
+! -----------------------------------------------------------------------
+!
+      subroutine add_field_ctl_4_field_products(field_ctl)
+!
+      use t_control_array_character3
+      use t_field_product_labels
+      use add_nodal_fields_ctl
+!
+      type(ctl_array_c3), intent(inout) :: field_ctl
+!
+!
+      if(check_field_list_ctl(rest_of_geostrophic%name,                 &
+     &                        field_ctl)) then
+        call add_phys_name_ctl(Coriolis_force%name, field_ctl)
+        call add_phys_name_ctl(pressure_gradient%name, field_ctl)
+      end if
+!
+      if(check_field_list_ctl(poynting_flux%name, field_ctl)) then
+        call add_phys_name_ctl(electric_field%name, field_ctl)
+        call add_phys_name_ctl(fhd_magne, field_ctl)
+      end if
+      if(check_field_list_ctl(electric_field%name, field_ctl)) then
+        call add_phys_name_ctl(vecp_induction%name, field_ctl)
+        call add_phys_name_ctl(fhd_current, field_ctl)
+      end if
+!
+      if(check_field_list_ctl(truncated_magnetic_field%name,            &
+     &                        field_ctl))                               &
+     &   call add_phys_name_ctl(fhd_magne, field_ctl)
+!
+      if(check_field_list_ctl(kinetic_helicity%name, field_ctl)) then
+        call add_phys_name_ctl(fhd_velo, field_ctl)
+        call add_phys_name_ctl(fhd_vort, field_ctl)
+      end if
+      if(check_field_list_ctl(magnetic_helicity%name, field_ctl)) then
+        call add_phys_name_ctl(fhd_vecp, field_ctl)
+        call add_phys_name_ctl(fhd_magne, field_ctl)
+      end if
+      if(check_field_list_ctl(current_helicity%name, field_ctl)) then
+        call add_phys_name_ctl(fhd_magne, field_ctl)
+        call add_phys_name_ctl(fhd_current, field_ctl)
+      end if
+      if(check_field_list_ctl(cross_helicity%name, field_ctl)) then
+        call add_phys_name_ctl(fhd_velo, field_ctl)
+        call add_phys_name_ctl(fhd_magne, field_ctl)
+      end if
+!
+      if(      check_field_list_ctl(square_velocity%name, field_ctl)    &
+     &    .or. check_field_list_ctl(velocity_scale%name, field_ctl))    &
+     &   call add_phys_name_ctl(fhd_velo, field_ctl)
+      if(check_field_list_ctl(square_vorticity%name, field_ctl))        &
+     &   call add_phys_name_ctl(fhd_vort, field_ctl)
+      if(      check_field_list_ctl(square_magne%name, field_ctl)       &
+     &    .or. check_field_list_ctl(magnetic_scale%name, field_ctl))    &
+     &   call add_phys_name_ctl(fhd_magne, field_ctl)
+      if(check_field_list_ctl(square_vector_potential%name, field_ctl)) &
+     &   call add_phys_name_ctl(fhd_vecp, field_ctl)
+      if(check_field_list_ctl(square_current%name, field_ctl))          &
+     &   call add_phys_name_ctl(fhd_current, field_ctl)
+      if(      check_field_list_ctl(square_temperature%name, field_ctl) &
+     &    .or. check_field_list_ctl(temperature_scale%name, field_ctl)) &
+     &   call add_phys_name_ctl(fhd_temp, field_ctl)
+      if(      check_field_list_ctl(square_composition%name, field_ctl) &
+     &    .or. check_field_list_ctl(composition_scale%name, field_ctl)) &
+     &   call add_phys_name_ctl(fhd_light, field_ctl)
+!
+      end subroutine add_field_ctl_4_field_products
 !
 ! -----------------------------------------------------------------------
 !

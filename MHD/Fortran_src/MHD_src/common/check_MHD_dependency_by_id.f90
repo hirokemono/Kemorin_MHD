@@ -67,8 +67,7 @@
      &     .or. i_start .eq. iphys%i_current                            &
      &     .or. i_start .eq. iphys%i_b_diffuse                          &
      &     .or. i_start .eq. iphys%i_mag_p                              &
-     &     .or. i_start .eq. iphys%i_square_b                           &
-     &     .or. i_start .eq. iphys%i_truncated_B) then
+     &     .or. i_start .eq. iphys%i_square_b) then
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_magne, fhd_magne)
         else if(i_start .eq. iphys%i_filter_vecp                        &

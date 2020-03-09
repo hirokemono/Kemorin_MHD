@@ -134,6 +134,10 @@
       if (iflag_debug .ge. iflag_routine_msg) write(*,*)                &
      &    'add_field_ctl_4_grad_field end'
 !
+      call add_field_ctl_4_field_products(field_ctl)
+      if (iflag_debug .ge. iflag_routine_msg) write(*,*)                &
+     &    'add_field_ctl_4_field_products end'
+!
       call add_field_ctl_4_div_forces(field_ctl)
       if (iflag_debug .ge. iflag_routine_msg) write(*,*)                &
      &    'add_field_ctl_4_div_forces end'

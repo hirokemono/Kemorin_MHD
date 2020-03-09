@@ -121,9 +121,9 @@
      &      ipol%frc_w_SGS%i_SGS_induct_t)
       end if
 !
-      if(ipol%i_truncated_B .gt. 0) then
+      if(ipol%prod_fld%i_truncated_B .gt. 0) then
         call truncate_magnetic_field_4_view(ltr_crust, sph_rj, rj_fld,  &
-     &      ipol%i_magne, ipol%i_truncated_B)
+     &      ipol%i_magne, ipol%prod_fld%i_truncated_B)
       end if
 !
 !

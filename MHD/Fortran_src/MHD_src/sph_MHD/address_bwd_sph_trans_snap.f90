@@ -276,8 +276,9 @@
       call add_field_name_4_sph_trns_snap                               &
      &   (truncated_magnetic_field%name,                                &
      &    truncated_magnetic_field%n_comp,                              &
-     &    ipol%i_truncated_B, itor%i_truncated_B,                       &
-     &    iphys%i_truncated_B, b_trns%i_truncated_B, trns_back)
+     &    ipol%prod_fld%i_truncated_B, itor%prod_fld%i_truncated_B,     &
+     &    iphys%prod_fld%i_truncated_B, b_trns%prod_fld%i_truncated_B,  &
+     &    trns_back)
 !
       trns_back%num_vector = trns_back%nfield
 !

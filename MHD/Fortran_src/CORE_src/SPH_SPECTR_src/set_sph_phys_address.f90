@@ -80,8 +80,8 @@
       call set_vect_sph_address(ipol%i_filter_current,                  &
      &    itor%i_filter_current, idpdr%i_filter_current)
 !
-      call set_vect_sph_address(ipol%i_truncated_B,                     &
-     &    itor%i_truncated_B, idpdr%i_truncated_B)
+      call set_vect_sph_address(ipol%prod_fld%i_truncated_B,            &
+     &    itor%prod_fld%i_truncated_B, idpdr%prod_fld%i_truncated_B)
 !
       call set_vect_sph_address(ipol%wide_filter_fld%i_velo,            &
      &    itor%wide_filter_fld%i_velo, idpdr%wide_filter_fld%i_velo)

@@ -138,7 +138,7 @@
           iphys%i_filter_comp =    i0
 !
         else if ( field_name(i) .eq. truncated_magnetic_field%name) then
-          iphys%i_truncated_B =    i0
+          iphys%prod_fld%i_truncated_B =    i0
 !
         else if ( field_name(i) .eq. div_filtered_velo%name ) then
           iphys%i_div_filter_v =    i0
