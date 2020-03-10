@@ -8,7 +8,7 @@
 !> @brief Labels and addresses for basic fields
 !!
 !!@verbatim
-!!      subroutine add_filter_field_ctl(field_ctl)
+!!      subroutine add_field_ctl_4_filterd_field(field_ctl)
 !!        type(ctl_array_c3), intent(in) :: field_ctl
 !!
 !!      subroutine add_field_ctl_4_grad_fil_field(field_ctl)
@@ -31,7 +31,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine add_filter_field_ctl(field_ctl)
+      subroutine add_field_ctl_4_filterd_field(field_ctl)
 !
       use t_control_array_character3
       use add_nodal_fields_ctl
@@ -82,7 +82,7 @@
         call add_phys_name_ctl(fhd_per_entropy, field_ctl)
       end if
 !
-      end subroutine add_filter_field_ctl
+      end subroutine add_field_ctl_4_filterd_field
 !
 ! -----------------------------------------------------------------------
 ! ----------------------------------------------------------------------

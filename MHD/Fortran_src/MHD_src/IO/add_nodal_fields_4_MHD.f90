@@ -115,6 +115,10 @@
       if (iflag_debug .ge. iflag_routine_msg) write(*,*)                &
      &    'add_field_ctl_4_filter_forces end'
 !
+      call add_field_ctl_4_filterd_field(field_ctl)
+      if (iflag_debug .ge. iflag_routine_msg) write(*,*)                &
+     &    'add_field_ctl_4_filterd_field end'
+!
       end subroutine add_dependent_SGS_field
 !
 ! -----------------------------------------------------------------------

@@ -43,9 +43,9 @@
 !!   parturbation_composition:  C - C_0
 !!   perturbation_entropy:      S - S_0
 !!
-!!   filter_velo, filter_vorticity
-!!   filter_temp, filter_pert_temp, filter_composition
-!!   filter_vecp, filter_magne, filter_current
+!!   filter_velocity, filter_vorticity
+!!   filter_temperature, filter_pert_temperature, filter_composition
+!!   filter_vector_potential, filter_magne, filter_current
 !!
 !!   truncated_magnetic_field
 !!

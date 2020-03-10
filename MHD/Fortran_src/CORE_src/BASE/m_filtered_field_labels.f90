@@ -10,47 +10,37 @@
 !!@verbatim
 !!      logical function check_filter_vector(field_name)
 !!      logical function check_filter_scalar(field_name)
-!!      subroutine set_filter_vector_addresses                          &
-!!     &         (i_phys, field_name, filter_fld, flag)
-!!      subroutine set_filter_scalar_addresses                          &
+!!      subroutine set_filter_field_addresses                           &
 !!     &         (i_phys, field_name, filter_fld, flag)
 !!        type(base_field_address), intent(inout) :: filter_fld
 !!
-!!      subroutine filter_vector_monitor_address                        &
-!!     &         (field_name, i_field, numrms, numave,                  &
-!!     &          rms_filter_fld, ave_filter_fld, flag)
-!!      subroutine filter_scalar_monitor_address                        &
-!!     &         (field_name, i_field, numrms, numave,                  &
-!!     &          rms_filter_fld, ave_filter_fld, flag)
-!!        type(base_field_address), intent(inout) :: rms_filter_fld
-!!        type(base_field_address), intent(inout) :: ave_filter_fld
-!!
 !!      integer(kind = kint) function num_filter_fields()
-!!      subroutine set_filter_field_names(field_names)
+!!      subroutine set_filter_field_labels(n_comps, names, maths)
 !!
 !! !!!!!  Filtered field names  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!
 !! field names (Single filtered, wide filtered, double filtered)
 !!
-!!   filter_velo   [i_velo]:     filtered velocity    u
-!!   filter_vorticity   [i_vort]: 
+!!   filter_velocity    [filter_fld%i_velo]:     filtered velocity    u
+!!   filter_vorticity   [filter_fld%i_vort]: 
 !!            filtered vorticity   \omega = \nabra \times v
 !!
-!!   filter_vecp  [i_vecp]: 
+!!   filter_vector_potential  [filter_fld%i_vecp]: 
 !!            filtered vector potential \nabla \times A = B
-!!   filter_magne  [i_magne]:     filtered magnetic field   B
-!!   filter_current   [i_current]: 
+!!   filter_magne      [filter_fld%i_magne]: filtered magnetic field   B
+!!   filter_current    [filter_fld%i_current]: 
 !!            filtered current density  J = \nabla \times B
 !!
-!!   filter_temp    [i_temp]:  filtered temperature              T
-!!   filter_composition  [i_light]:   filtered Composition anormally   C
-!!   filter_density    [i_density]: filtered density              \rho
-!!   filter_entropy    [i_entropy]: filtered Entropy               S
+!!   filter_temperature  [filter_fld%i_temp]:  filtered temperature              T
+!!   filter_composition  [filter_fld%i_light]:
+!!                              filtered Composition anormally   C
+!!   filter_density      [filter_fld%i_density]: filtered density  \rho
+!!   filter_entropy      [filter_fld%i_entropy]: filtered Entropy  S
 !!
-!!   filter_pert_temp            [i_per_temp]:    \Theta = T - T_0
-!!   filter_pert_comp            [i_per_light]:    C - C_0
-!!   filter_pert_density         [i_per_density]:  \rho - \rho_0
-!!   filter_pert_entropy         [i_per_entropy]:  S - S_0
+!!   filter_pert_temperature   [filter_fld%i_per_temp]: \Theta = T - T_0
+!!   filter_pert_composition   [filter_fld%i_per_light]:    C - C_0
+!!   filter_pert_density       [filter_fld%i_per_density]: \rho - \rho_0
+!!   filter_pert_entropy       [filter_fld%i_per_entropy]:  S - S_0
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!@endverbatim
@@ -58,7 +48,8 @@
       module m_filtered_field_labels
 !
       use m_precision
-      use m_constants
+      use m_phys_constants
+      use t_field_labels
       use t_base_field_labels
 !
       implicit  none
@@ -69,63 +60,115 @@
 !  filtered field
 !
 !>        Field label for filtered velocity
-!!         @f$ \bar{u}_{i} @f$
+!!         @f$ \tilde{u}_{i} @f$
       character(len=kchara), parameter                                  &
-     &            :: fhd_filter_velo = 'filter_velo'
+     &            :: fhd_filter_velo = 'filter_velocity'
+      type(field_def), parameter :: filter_velocity                     &
+     &    = field_def(n_comp = n_vector,                                &
+     &                name = 'filter_velocity',                         &
+     &                math = '$ \tilde{u}_{i} $')
 !>        Field label for filtered velocity
-!!         @f$ \bar{\omega}_{i} @f$
+!!         @f$ \tilde{\omega}_{i} @f$
       character(len=kchara), parameter                                  &
      &            :: fhd_filter_vort = 'filter_vorticity'
+      type(field_def), parameter :: filter_vorticity                    &
+     &    = field_def(n_comp = n_vector,                                &
+     &                name = 'filter_vorticity',                        &
+     &                math = '$ \tilde{\omega}_{i} $')
 !!
 !>        Field label for filtered magnetic field
-!!         @f$ \bar{B}_{i} @f$
+!!         @f$ \tilde{B}_{i} @f$
       character(len=kchara), parameter                                  &
      &            :: fhd_filter_magne = 'filter_magne'
-!>        Field label for filtered magnetic field
-!!         @f$ \bar{B}_{i} @f$
+      type(field_def), parameter :: filter_magne                        &
+     &    = field_def(n_comp = n_vector,                                &
+     &                name = 'filter_magne',                            &
+     &                math = '$ \tilde{B}_{i} $')
+!>        Field label for filtered current density
+!!         @f$ \tilde{J}_{i} @f$
       character(len=kchara), parameter                                  &
      &            :: fhd_filter_current = 'filter_current'
+      type(field_def), parameter :: filter_current                      &
+     &    = field_def(n_comp = n_vector,                                &
+     &                name = 'filter_current',                          &
+     &                math = '$ \tilde{J}_{i} $')
 !>        Field label for filtered vetor potential
-!!         @f$ \bar{A}_{i} @f$
+!!         @f$ \tilde{A}_{i} @f$
       character(len=kchara), parameter                                  &
-     &            :: fhd_filter_vecp = 'filter_vecp'
+     &            :: fhd_filter_vecp = 'filter_vector_potential'
+      type(field_def), parameter :: filter_vector_potential             &
+     &    = field_def(n_comp = n_vector,                                &
+     &                name = 'filter_vector_potential',                 &
+     &                math = '$ \tilde{A}_{i} $')
 !
 !
 !>        Field label for filtered temperature
-!!         @f$ \bar{T} @f$
+!!         @f$ \tilde{T} @f$
       character(len=kchara), parameter                                  &
-     &             :: fhd_filter_temp =       'filter_temp'
+     &             :: fhd_filter_temp =       'filter_temperature'
+      type(field_def), parameter :: filter_temperature                  &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                name = 'filter_temperature',                      &
+     &                math = '$ \tilde{T} $')
 !>        Field label for filtered perturbation of temperature
-!!         @f$ \bar{\Theta} @f$
+!!         @f$ \tilde{\Theta} @f$
       character(len=kchara), parameter                                  &
-     &             :: fhd_filter_pert_temp =  'filter_pert_temp'
+     &             :: fhd_filter_pert_temp =  'filter_pert_temperature'
+      type(field_def), parameter :: filter_pert_temperature             &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                name = 'filter_pert_temperature',                 &
+     &                math = '$ \tilde{\Theta} $')
 !
 !>        Field label for filtered conposition
-!!         @f$ \bar{C} @f$
+!!         @f$ \tilde{C} @f$
       character(len=kchara), parameter                                  &
      &             :: fhd_filter_comp =       'filter_composition'
+      type(field_def), parameter :: filter_composition                  &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                name = 'filter_composition',                      &
+     &                math = '$ \tilde{C} $')
 !>        Field label for filtered conposition
-!!         @f$ \bar{C} - C_{0} @f$
+!!         @f$ \tilde{C} - C_{0} @f$
       character(len=kchara), parameter                                  &
-     &             :: fhd_filter_pert_comp =  'filter_pert_comp'
+     &             :: fhd_filter_pert_comp =  'filter_pert_composition'
+      type(field_def), parameter :: filter_pert_composition             &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                name = 'filter_pert_composition',                 &
+     &                math = '$ \tilde{\Theta}_{C} $')
 !
-!>        Field label for filtered conposition
-!!         @f$ \bar{\rho} @f$
+!>        Field label for filtered density
+!!         @f$ \tilde{\rho} @f$
       character(len=kchara), parameter                                  &
      &             :: fhd_filter_density =       'filter_density'
-!>        Field label for filtered conposition
-!!         @f$ \bar{\rho} - rho_{0} @f$
+      type(field_def), parameter :: filter_density                      &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                name = 'filter_density',                          &
+     &                math = '$ \tilde{\rho} $')
+!>        Field label for filtered perturbation of density
+!!         @f$ \tilde{\rho} - rho_{0} @f$
       character(len=kchara), parameter                                  &
      &             :: fhd_filter_pert_density =  'filter_pert_density'
+      type(field_def), parameter :: filter_pert_density                 &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                name = 'filter_pert_density',                     &
+     &                math = '$ \tilde{\Theta}_{\rho} $')
 !
 !>        Field label for filtered entropy
-!!         @f$ \bar{S} @f$
+!!         @f$ \tilde{S} @f$
       character(len=kchara), parameter                                  &
      &             :: fhd_filter_entropy =       'filter_entropy'
+      type(field_def), parameter :: filter_entropy                      &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                name = 'filter_entropy',                          &
+     &                math = '$ \tilde{S} $')
 !>        Field label for filtered perturbation of entropy
-!!         @f$ \bar{S} - S_{0} @f$
+!!         @f$ \tilde{S} - S_{0} @f$
       character(len=kchara), parameter                                  &
      &             :: fhd_filter_pert_entropy =  'filter_pert_entropy'
+      type(field_def), parameter :: filter_pert_entropy                 &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                name = 'filter_pert_entropy',                     &
+     &                math = '$ \tilde{\Theta}_{S} $')
 !
 ! ----------------------------------------------------------------------
 !
@@ -139,11 +182,11 @@
 !
 !
       check_filter_vector = .FALSE.
-      if (    (field_name .eq. fhd_filter_velo)                         &
-     &   .or. (field_name .eq. fhd_filter_vort)                         &
-     &   .or. (field_name .eq. fhd_filter_magne)                        &
-     &   .or. (field_name .eq. fhd_filter_vecp)                         &
-     &   .or. (field_name .eq. fhd_filter_current)                      &
+      if (    (field_name .eq. filter_velocity%name)                    &
+     &   .or. (field_name .eq. filter_vorticity%name)                   &
+     &   .or. (field_name .eq. filter_magne%name)                       &
+     &   .or. (field_name .eq. filter_vector_potential%name)            &
+     &   .or. (field_name .eq. filter_current%name)                     &
      &      )   check_filter_vector = .TRUE.
 !
       end function check_filter_vector
@@ -156,21 +199,21 @@
 !
 !
       check_filter_scalar                                               &
-     &   =    (field_name .eq. fhd_filter_temp)                         &
-     &   .or. (field_name .eq. fhd_filter_comp)                         &
-     &   .or. (field_name .eq. fhd_filter_density)                      &
-     &   .or. (field_name .eq. fhd_filter_entropy)                      &
+     &   =    (field_name .eq. filter_temperature%name)                 &
+     &   .or. (field_name .eq. filter_composition%name)                 &
+     &   .or. (field_name .eq. filter_density%name)                     &
+     &   .or. (field_name .eq. filter_entropy%name)                     &
 !
-     &   .or. (field_name .eq. fhd_filter_pert_temp)                    &
-     &   .or. (field_name .eq. fhd_filter_pert_comp)                    &
-     &   .or. (field_name .eq. fhd_filter_pert_density)                 &
-     &   .or. (field_name .eq. fhd_filter_pert_entropy)
+     &   .or. (field_name .eq. filter_pert_temperature%name)            &
+     &   .or. (field_name .eq. filter_pert_composition%name)            &
+     &   .or. (field_name .eq. filter_pert_density%name)                &
+     &   .or. (field_name .eq. filter_pert_entropy%name)
 !
       end function check_filter_scalar
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_filter_vector_addresses                            &
+      subroutine set_filter_field_addresses                             &
      &         (i_phys, field_name, filter_fld, flag)
 !
       integer(kind = kint), intent(in) :: i_phys
@@ -180,118 +223,44 @@
       logical, intent(inout) :: flag
 !
 !
-      flag = check_filter_vector(field_name)
+      flag =    check_filter_vector(field_name)                         &
+     &     .or. check_filter_scalar(field_name)
       if(flag) then
-        if (field_name .eq. fhd_filter_velo) then
+        if (field_name .eq. filter_velocity%name) then
           filter_fld%i_velo = i_phys
-        else if (field_name .eq. fhd_filter_vort) then
+        else if (field_name .eq. filter_vorticity%name) then
           filter_fld%i_vort = i_phys
 !
-        else if (field_name .eq. fhd_filter_magne) then
+        else if (field_name .eq. filter_magne%name) then
           filter_fld%i_magne =    i_phys
-        else if (field_name .eq. fhd_filter_vecp) then
+        else if (field_name .eq. filter_vector_potential%name) then
           filter_fld%i_vecp =     i_phys
-        else if (field_name .eq. fhd_filter_current) then
+        else if (field_name .eq. filter_current%name) then
           filter_fld%i_current =  i_phys
-        end if
-      end if
 !
-      end subroutine set_filter_vector_addresses
-!
-! ----------------------------------------------------------------------
-!
-      subroutine set_filter_scalar_addresses                            &
-     &         (i_phys, field_name, filter_fld, flag)
-!
-      integer(kind = kint), intent(in) :: i_phys
-      character(len = kchara), intent(in) :: field_name
-!
-      type(base_field_address), intent(inout) :: filter_fld
-      logical, intent(inout) :: flag
-!
-!
-      flag = check_filter_scalar(field_name)
-      if(flag) then
-        if      (field_name .eq. fhd_filter_temp) then
+        else if (field_name .eq. filter_temperature%name) then
           filter_fld%i_temp =            i_phys
-        else if (field_name .eq. fhd_filter_pert_temp) then
+        else if (field_name .eq. filter_pert_temperature%name) then
           filter_fld%i_per_temp =        i_phys
 !
-        else if (field_name .eq. fhd_filter_comp) then
+        else if (field_name .eq. filter_composition%name) then
           filter_fld%i_light =          i_phys
-        else if (field_name .eq. fhd_filter_pert_comp) then
+        else if (field_name .eq. filter_pert_composition%name) then
           filter_fld%i_per_light =      i_phys
 !
-        else if (field_name .eq. fhd_filter_density) then
+        else if (field_name .eq. filter_density%name) then
           filter_fld%i_density =        i_phys
-        else if (field_name .eq. fhd_filter_pert_density) then
+        else if (field_name .eq. filter_pert_density%name) then
           filter_fld%i_per_density =    i_phys
 !
-        else if (field_name .eq. fhd_filter_entropy) then
+        else if (field_name .eq. filter_entropy%name) then
           filter_fld%i_entropy =        i_phys
-        else if (field_name .eq. fhd_filter_pert_entropy) then
+        else if (field_name .eq. filter_pert_entropy%name) then
           filter_fld%i_per_entropy =    i_phys
         end if
       end if  
 !
-      end subroutine set_filter_scalar_addresses
-!
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      subroutine filter_vector_monitor_address                          &
-     &         (field_name, i_field, numrms, numave,                    &
-     &          rms_filter_fld, ave_filter_fld, flag)
-!
-      character(len = kchara), intent(in):: field_name
-      integer(kind = kint), intent(in) :: i_field
-      integer(kind = kint), intent(in) :: numrms, numave
-!
-      type(base_field_address), intent(inout) :: rms_filter_fld
-      type(base_field_address), intent(inout) :: ave_filter_fld
-      logical, intent(inout) :: flag
-!
-      logical :: flag_a, flag_r
-!
-!
-      flag = .FALSE.
-!
-      if(i_field .eq. 0) return
-      call set_filter_vector_addresses                                  &
-     &   ((numrms+1), field_name, rms_filter_fld, flag_r)
-      call set_filter_vector_addresses                                  &
-     &   ((numave+1), field_name, ave_filter_fld, flag_a)
-      flag = (flag_r .and. flag_a)
-!
-      end subroutine filter_vector_monitor_address
-!
-! ----------------------------------------------------------------------
-!
-      subroutine filter_scalar_monitor_address                          &
-     &         (field_name, i_field, numrms, numave,                    &
-     &          rms_filter_fld, ave_filter_fld, flag)
-!
-      character(len = kchara), intent(in):: field_name
-      integer(kind = kint), intent(in) :: i_field
-      integer(kind = kint), intent(in) :: numrms, numave
-!
-      type(base_field_address), intent(inout) :: rms_filter_fld
-      type(base_field_address), intent(inout) :: ave_filter_fld
-      logical, intent(inout) :: flag
-!
-      logical :: flag_a, flag_r
-!
-!
-      flag = .FALSE.
-!
-      if(i_field .eq. 0) return
-      call set_filter_scalar_addresses                                  &
-     &   ((numrms+1), field_name, rms_filter_fld, flag_r)
-      call set_filter_scalar_addresses                                  &
-     &   ((numave+1), field_name, ave_filter_fld, flag_a)
-      flag = (flag_r .and. flag_a)
-!
-      end subroutine filter_scalar_monitor_address
+      end subroutine set_filter_field_addresses
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
@@ -303,34 +272,46 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_filter_field_names(field_names)
+      subroutine set_filter_field_labels(n_comps, names, maths)
 !
-      character(len = kchara), intent(inout)                            &
-     &                         :: field_names(nfld_filter)
+      integer(kind = kint), intent(inout) :: n_comps(nfld_filter)
+      character(len = kchara), intent(inout) :: names(nfld_filter)
+      character(len = kchara), intent(inout) :: maths(nfld_filter)
 !
 !
-      write(field_names( 1),'(a,a1)') trim(fhd_filter_velo), CHAR(0)
-      write(field_names( 2),'(a,a1)') trim(fhd_filter_vort), CHAR(0)
+      call set_field_labels(filter_velocity,                            &
+     &    n_comps( 1), names( 1), maths( 1))
+      call set_field_labels(filter_vorticity,                           &
+     &    n_comps( 2), names( 2), maths( 2))
 !
-      write(field_names( 3),'(a,a1)') trim(fhd_filter_magne), CHAR(0)
-      write(field_names( 4),'(a,a1)') trim(fhd_filter_vecp), CHAR(0)
-      write(field_names( 5),'(a,a1)') trim(fhd_filter_current), CHAR(0)
+      call set_field_labels(filter_magne,                               &
+     &    n_comps( 3), names( 3), maths( 3))
+      call set_field_labels(filter_current,                             &
+     &    n_comps( 4), names( 4), maths( 4))
+      call set_field_labels(filter_vector_potential,                    &
+     &    n_comps( 5), names( 5), maths( 5))
 !
-      write(field_names( 6),'(a,a1)') trim(fhd_filter_temp), CHAR(0)
-      write(field_names( 7),'(a,a1)') trim(fhd_filter_comp), CHAR(0)
-      write(field_names( 8),'(a,a1)') trim(fhd_filter_density), CHAR(0)
-      write(field_names( 9),'(a,a1)') trim(fhd_filter_entropy), CHAR(0)
+      call set_field_labels(filter_temperature,                         &
+     &    n_comps( 6), names( 6), maths( 6))
+      call set_field_labels(filter_pert_temperature,                    &
+     &    n_comps( 7), names( 7), maths( 7))
 !
-      write(field_names(10),'(a,a1)')                                   &
-     &                   trim(fhd_filter_pert_temp), CHAR(0)
-      write(field_names(11),'(a,a1)')                                   &
-     &                   trim(fhd_filter_pert_comp), CHAR(0)
-      write(field_names(12),'(a,a1)')                                   &
-     &                   trim(fhd_filter_pert_density), CHAR(0)
-      write(field_names(13),'(a,a1)')                                   &
-     &                   trim(fhd_filter_pert_entropy), CHAR(0)
+      call set_field_labels(filter_composition,                         &
+     &    n_comps( 8), names( 8), maths( 8))
+      call set_field_labels(filter_pert_composition,                    &
+     &    n_comps( 9), names( 9), maths( 9))
 !
-      end subroutine set_filter_field_names
+      call set_field_labels(filter_density,                             &
+     &    n_comps(10), names(10), maths(10))
+      call set_field_labels(filter_pert_density,                        &
+     &    n_comps(11), names(11), maths(11))
+!
+      call set_field_labels(filter_entropy,                             &
+     &    n_comps(12), names(12), maths(12))
+      call set_field_labels(filter_pert_entropy,                        &
+     &    n_comps(13), names(13), maths(13))
+!
+      end subroutine set_filter_field_labels
 !
 ! ----------------------------------------------------------------------
 !

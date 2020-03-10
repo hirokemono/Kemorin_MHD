@@ -48,8 +48,8 @@ begin fluid_control
 !   electric_field, poynting_flux
 !   composition, perturbation_temp
 !
-!   filter_velo, filter_temp, filter_pert_temp
-!   filter_vecp, filter_magne
+!   filter_velocity, filter_temperature, filter_pert_temperature
+!   filter_vector_potential, filter_magne
 !
 !   kinetic_helicity, magnetic_helicity
 !   current_helicity, cross_helicity

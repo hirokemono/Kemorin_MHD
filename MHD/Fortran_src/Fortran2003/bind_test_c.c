@@ -19,8 +19,9 @@ int num_diff_SGS_terms_f();
 int num_SGS_energy_fluxes_f();
 int num_SGS_model_coefs_f();
 int num_dynamic_SGS_work_f();
-
 int num_dynamic_SGS_work_f();
+
+int num_filter_fields_f();
 int num_div_filter_fields_f();
 int num_grad_filter_fields_f();
 int num_filtered_forces_f();
@@ -45,15 +46,15 @@ void set_base_diffusion_labels_f(int *ncomp1, char *name1, char *math1);
 void set_base_diffusivity_labels_f(int *ncomp1, char *name1, char *math1);
 void set_field_product_labels_f(int *ncomp1, char *name1, char *math1);
 
-void set_div_filter_field_labels_f(int *ncomp1, char *name1, char *math1);
-void set_grad_filter_field_labels_f(int *ncomp1, char *name1, char *math1);
-
 void set_SGS_term_labels_f(int *ncomp1, char *name1, char *math1);
 void set_diff_SGS_term_labels_f(int *ncomp1, char *name1, char *math1);
 void set_SGS_energy_flux_labels_f(int *ncomp1, char *name1, char *math1);
 void set_SGS_model_coefs_labels_f(int *ncomp1, char *name1, char *math1);
 void set_dynamic_SGS_work_labels_f(int *ncomp1, char *name1, char *math1);
 
+void set_filter_field_labels_f(int *ncomp1, char *name1, char *math1);
+void set_div_filter_field_labels_f(int *ncomp1, char *name1, char *math1);
+void set_grad_filter_field_labels_f(int *ncomp1, char *name1, char *math1);
 void set_filtered_force_labels_f(int *ncomp1, char *name1, char *math1);
 void rot_filtered_force_labels_f(int *ncomp1, char *name1, char *math1);
 void div_filtered_force_labels_f(int *ncomp1, char *name1, char *math1);
@@ -109,9 +110,11 @@ int main(int argc, char **argv)
 			+ num_diff_SGS_terms_f();
 	int ist_SGS_model_coefs = ist_SGS_energy_fluxes
 			+ num_SGS_energy_fluxes_f();
-	int ist_div_filter_fields = ist_SGS_model_coefs
+	int ist_filter_fields = ist_SGS_model_coefs
 			+ num_SGS_model_coefs_f();
 	
+	int ist_div_filter_fields = ist_filter_fields
+			+ num_filter_fields_f();
 	int ist_grad_filter_fields = ist_div_filter_fields
 			+ num_div_filter_fields_f();
 	int ist_wide_filter_fields = ist_grad_filter_fields
@@ -203,6 +206,9 @@ int main(int argc, char **argv)
 								&name1[len_f*ist_filtered_ene_fluxes], 
 								&math1[len_f*ist_filtered_ene_fluxes]);
 	
+	set_filter_field_labels_f(&ncomp[ist_filter_fields], 
+								&name1[len_f*ist_filter_fields],
+								&math1[len_f*ist_filter_fields]);
 	set_div_filter_field_labels_f(&ncomp[ist_div_filter_fields], 
 								&name1[len_f*ist_div_filter_fields],
 								&math1[len_f*ist_div_filter_fields]);

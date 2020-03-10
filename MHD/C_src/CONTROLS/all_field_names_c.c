@@ -179,13 +179,13 @@ const struct field_def field_props[NUM_FIELD] = {
 			{3, "system_Rotation", "$$    $$"},
 			{3, "background_B", "$$    $$"},
 	/* Filtered field */
-			{3, "filter_velo", "$$    $$"},
+			{3, "filter_velocity", "$$    $$"},
 			{3, "filter_vorticity", "$$    $$"},
 			{3, "filter_magne", "$$    $$"},
 			{3, "filter_current", "$$    $$"},
-			{3, "filter_vecp", "$$    $$"},
-			{1, "filter_temp", "$$    $$"},
-			{1, "filter_pert_temp", "$$    $$"},
+			{3, "filter_vector_potential", "$$    $$"},
+			{1, "filter_temperature", "$$    $$"},
+			{1, "filter_pert_temperature", "$$    $$"},
 			{1, "filter_composition", "$$    $$"},
 			
 			{3, "grad_filtered_temp", "$$    $$"},
