@@ -159,7 +159,7 @@
             msq_list%numave = msq_list%numave + 4
           end if
 !
-          if ( field_name .eq. fhd_filter_magne ) then
+          if ( field_name .eq. filter_magne%name ) then
             num_comps = num_comps + n_vector + n_scalar
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_filter_magne,            &
@@ -355,7 +355,7 @@
             call set_rms_address_list(i, nod_fld, msq_list)
           end if
 !
-          if ( field_name .eq. fhd_filter_vort ) then
+          if ( field_name .eq. filter_vorticity%name ) then
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_filter_vort,             &
      &          i_rms%i_filter_vort, j_ave%i_filter_vort, msq_list)
@@ -410,7 +410,7 @@
             call set_rms_address                                        &
      &         (e_hd_fil_div_v, n_scalar, iphys%i_filter_velo,          &
      &          i_rms%i_div_filter_v, j_ave%i_div_filter_v, msq_list)
-          else if ( field_name .eq. fhd_filter_magne ) then
+          else if ( field_name .eq. filter_magne%name ) then
             call set_rms_address                                        &
      &         (e_hd_fil_div_b, n_scalar, iphys%i_filter_magne,         &
      &          i_rms%i_div_filter_b, j_ave%i_div_filter_b, msq_list)

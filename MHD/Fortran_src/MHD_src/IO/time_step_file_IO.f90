@@ -119,11 +119,11 @@
           end if
 !
         else if(msq_list%ifld_msq(i) .eq. iphys%i_filter_magne) then
-          if(msq_list%field_name(i) .eq. fhd_filter_magne) then
+          if(msq_list%field_name(i) .eq. filter_magne%name) then
             call write_three_labels(id_msq,                             &
      &            e_hd_fil_m_ene, e_hd_fil_m_ene_cd, e_hd_fil_div_b)
 !
-            call set_vector_label(fhd_filter_magne, vector_label)
+            call set_vector_label(filter_magne%name, vector_label)
             call write_vector_label(id_ave, vector_label)
             call write_vector_label(id_ave, e_hd_fil_bvec_cd)
             call write_one_label(id_ave, e_hd_fil_div_b)

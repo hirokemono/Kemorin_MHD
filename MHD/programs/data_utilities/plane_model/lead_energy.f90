@@ -386,7 +386,7 @@
         if (   fft_name(j) .eq. fhd_velo                                &
      &    .or. fft_name(j) .eq. fhd_magne                               &
      &    .or. fft_name(j) .eq. filter_velocity%name                    &
-     &    .or. fft_name(j) .eq. fhd_filter_magne                        &
+     &    .or. fft_name(j) .eq. filter_magne%name                       &
      &     ) then
           do iy = 1, ny_2
             do ix = 1, nx_2

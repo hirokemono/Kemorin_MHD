@@ -307,7 +307,7 @@
       end if
       if(check_field_list_ctl(SGS_mag_induction_flux_true%name,         &
      &                        field_ctl)) then
-        call add_phys_name_ctl(fhd_filter_magne, field_ctl)
+        call add_phys_name_ctl(filter_magne%name, field_ctl)
         call add_phys_name_ctl(SGS_mag_induction_true%name, field_ctl)
       end if
 !
@@ -328,13 +328,13 @@
         call add_phys_name_ctl(div_momentum_flux%name, field_ctl)
       end if
       if(check_field_list_ctl(SGS_Lorentz_true%name, field_ctl)) then
-        call add_phys_name_ctl(fhd_filter_magne, field_ctl)
+        call add_phys_name_ctl(filter_magne%name, field_ctl)
         call add_phys_name_ctl(div_maxwell_tensor%name, field_ctl)
       end if
       if(check_field_list_ctl(SGS_mag_induction_true%name,              &
      &                        field_ctl)) then
         call add_phys_name_ctl(filter_velocity%name, field_ctl)
-        call add_phys_name_ctl(fhd_filter_magne, field_ctl)
+        call add_phys_name_ctl(filter_magne%name, field_ctl)
         call add_phys_name_ctl(div_induction_tensor%name, field_ctl)
       end if
 !

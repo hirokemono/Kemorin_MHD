@@ -54,7 +54,7 @@
           iphys_ele%i_magne = i0
         else if (ele_fld%phys_name(i) .eq. fhd_current) then
           iphys_ele%i_current = i0
-        else if (ele_fld%phys_name(i) .eq. fhd_filter_magne) then
+        else if (ele_fld%phys_name(i) .eq. filter_magne%name) then
           iphys_ele%i_filter_magne = i0
 !
         else if (ele_fld%phys_name(i) .eq. fhd_temp) then
@@ -150,7 +150,7 @@
           if     (SGS_param%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF       &
      &       .or. SGS_param%iflag_SGS.eq.id_SGS_similarity) then
             ele_fld%num_component(j) = 3
-            ele_fld%phys_name(j) = fhd_filter_magne
+            ele_fld%phys_name(j) = filter_magne%name
             j = j + 1
           end if
         end if

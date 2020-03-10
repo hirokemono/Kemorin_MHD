@@ -77,9 +77,9 @@
      &      )   iflag = 1
 !
       if (   (phys_nod_name_ctl .eq. filter_velocity%name        )           &
-     &  .or. (phys_nod_name_ctl .eq. fhd_filter_vort        )           &
+     &  .or. (phys_nod_name_ctl .eq. filter_vorticity%name        )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_filter_vecp        )           &
-     &  .or. (phys_nod_name_ctl .eq. fhd_filter_magne       )           &
+     &  .or. (phys_nod_name_ctl .eq. filter_magne%name       )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_filter_current     )           &
      &      )   iflag = 1
 !

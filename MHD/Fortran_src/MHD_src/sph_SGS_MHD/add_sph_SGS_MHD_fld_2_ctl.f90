@@ -74,7 +74,7 @@
 !
       if(SGS_param%iflag_SGS_m_flux .eq. id_SGS_similarity) then
         call add_phys_name_ctl(filter_velocity%name, field_ctl)
-        call add_phys_name_ctl(fhd_filter_vort, field_ctl)
+        call add_phys_name_ctl(filter_vorticity%name, field_ctl)
       else if(SGS_param%iflag_SGS_m_flux .eq. id_SGS_NL_grad) then
         call add_phys_name_ctl(grad_v_1%name, field_ctl)
         call add_phys_name_ctl(grad_v_2%name, field_ctl)
@@ -85,7 +85,7 @@
       end if
 !
       if(SGS_param%iflag_SGS_lorentz .eq. id_SGS_similarity) then
-        call add_phys_name_ctl(fhd_filter_magne, field_ctl)
+        call add_phys_name_ctl(filter_magne%name, field_ctl)
         call add_phys_name_ctl(fhd_filter_current, field_ctl)
       else if(SGS_param%iflag_SGS_lorentz .eq. id_SGS_NL_grad) then
         call add_phys_name_ctl(grad_j_1%name, field_ctl)
@@ -98,7 +98,7 @@
 !
       if(SGS_param%iflag_SGS_uxb .eq. id_SGS_similarity) then
         call add_phys_name_ctl(filter_velocity%name, field_ctl)
-        call add_phys_name_ctl(fhd_filter_magne, field_ctl)
+        call add_phys_name_ctl(filter_magne%name, field_ctl)
       else if(SGS_param%iflag_SGS_uxb .eq. id_SGS_NL_grad) then
         call add_phys_name_ctl(grad_v_1%name, field_ctl)
         call add_phys_name_ctl(grad_v_2%name, field_ctl)
@@ -178,14 +178,14 @@
         call add_phys_name_ctl(wide_filter_vorticity%name, field_ctl)
       else if(SGS_param%iflag_SGS_m_flux .eq. id_SGS_NL_grad) then
         call add_phys_name_ctl(filter_velocity%name, field_ctl)
-        call add_phys_name_ctl(fhd_filter_vort, field_ctl)
+        call add_phys_name_ctl(filter_vorticity%name, field_ctl)
       end if
 !
       if(SGS_param%iflag_SGS_lorentz .eq. id_SGS_similarity) then
         call add_phys_name_ctl(wide_filter_magne%name, field_ctl)
         call add_phys_name_ctl(wide_filter_current%name, field_ctl)
       else if(SGS_param%iflag_SGS_lorentz .eq. id_SGS_NL_grad) then
-        call add_phys_name_ctl(fhd_filter_magne, field_ctl)
+        call add_phys_name_ctl(filter_magne%name, field_ctl)
         call add_phys_name_ctl(fhd_filter_current, field_ctl)
       end if
 !
@@ -194,7 +194,7 @@
         call add_phys_name_ctl(wide_filter_magne%name, field_ctl)
       else if(SGS_param%iflag_SGS_uxb .eq. id_SGS_NL_grad) then
         call add_phys_name_ctl(filter_velocity%name, field_ctl)
-        call add_phys_name_ctl(fhd_filter_magne, field_ctl)
+        call add_phys_name_ctl(filter_magne%name, field_ctl)
       end if
 !
       if(SGS_param%iflag_SGS_h_flux .eq. id_SGS_similarity) then

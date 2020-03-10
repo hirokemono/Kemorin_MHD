@@ -71,7 +71,7 @@
         call add_phys_name_ctl(grad_filtered_v_3%name, field_ctl)
       end if
       if(check_field_list_ctl(wide_SGS_Lorentz%name, field_ctl)) then
-        call add_phys_name_ctl(fhd_filter_magne, field_ctl)
+        call add_phys_name_ctl(filter_magne%name, field_ctl)
         call add_phys_name_ctl(grad_filtered_j_1%name, field_ctl)
         call add_phys_name_ctl(grad_filtered_j_2%name, field_ctl)
         call add_phys_name_ctl(grad_filtered_j_3%name, field_ctl)
@@ -82,7 +82,7 @@
 !
       if(check_field_list_ctl(wide_SGS_vp_induction%name,               &
      &                        field_ctl)) then
-        call add_phys_name_ctl(fhd_filter_magne, field_ctl)
+        call add_phys_name_ctl(filter_magne%name, field_ctl)
         call add_phys_name_ctl(grad_filtered_v_1%name, field_ctl)
         call add_phys_name_ctl(grad_filtered_v_2%name, field_ctl)
         call add_phys_name_ctl(grad_filtered_v_3%name, field_ctl)

@@ -67,8 +67,6 @@
      &                math = '$ \tilde{u}_{i} $')
 !>        Field label for filtered velocity
 !!         @f$ \tilde{\omega}_{i} @f$
-      character(len=kchara), parameter                                  &
-     &            :: fhd_filter_vort = 'filter_vorticity'
       type(field_def), parameter :: filter_vorticity                    &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'filter_vorticity',                        &
@@ -76,8 +74,6 @@
 !!
 !>        Field label for filtered magnetic field
 !!         @f$ \tilde{B}_{i} @f$
-      character(len=kchara), parameter                                  &
-     &            :: fhd_filter_magne = 'filter_magne'
       type(field_def), parameter :: filter_magne                        &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'filter_magne',                            &

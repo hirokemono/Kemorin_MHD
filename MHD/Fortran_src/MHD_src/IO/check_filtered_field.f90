@@ -39,17 +39,17 @@
       type(ctl_array_c3), intent(inout) :: field_ctl
 !
 !
-      if(check_field_list_ctl(fhd_filter_vort, field_ctl)) then
+      if(check_field_list_ctl(filter_vorticity%name, field_ctl)) then
         call add_phys_name_ctl(filter_velocity%name, field_ctl)
       end if
       if(check_field_list_ctl(fhd_filter_current, field_ctl)) then
-        call add_phys_name_ctl(fhd_filter_magne, field_ctl)
+        call add_phys_name_ctl(filter_magne%name, field_ctl)
       end if
 !
       if(check_field_list_ctl(filter_velocity%name, field_ctl)) then
         call add_phys_name_ctl(fhd_velo, field_ctl)
       end if
-      if(check_field_list_ctl(fhd_filter_magne, field_ctl)) then
+      if(check_field_list_ctl(filter_magne%name, field_ctl)) then
         call add_phys_name_ctl(fhd_magne, field_ctl)
       end if
       if(check_field_list_ctl(fhd_filter_vecp, field_ctl)) then
@@ -99,7 +99,7 @@
       if(check_field_list_ctl(div_filtered_velo%name, field_ctl))       &
      &   call add_phys_name_ctl(filter_velocity%name, field_ctl)
       if(check_field_list_ctl(div_filtered_magne%name, field_ctl))      &
-     &   call add_phys_name_ctl(fhd_filter_magne, field_ctl)
+     &   call add_phys_name_ctl(filter_magne%name, field_ctl)
       if(check_field_list_ctl(div_filtered_vector_potential%name,       &
      &                        field_ctl))                               &
      &   call add_phys_name_ctl(fhd_filter_vecp, field_ctl)
@@ -146,12 +146,12 @@
       if(   check_field_list_ctl(grad_filtered_w_1%name, field_ctl)     &
      & .or. check_field_list_ctl(grad_filtered_w_2%name, field_ctl)     &
      & .or. check_field_list_ctl(grad_filtered_w_3%name, field_ctl))    &
-     &  call add_phys_name_ctl(fhd_filter_vort, field_ctl)
+     &  call add_phys_name_ctl(filter_vorticity%name, field_ctl)
 !
       if(   check_field_list_ctl(grad_filtered_b_1%name, field_ctl)     &
      & .or. check_field_list_ctl(grad_filtered_b_2%name, field_ctl)     &
      & .or. check_field_list_ctl(grad_filtered_b_3%name, field_ctl))    &
-     &  call add_phys_name_ctl(fhd_filter_magne, field_ctl)
+     &  call add_phys_name_ctl(filter_magne%name, field_ctl)
       if(   check_field_list_ctl(grad_filtered_a_1%name, field_ctl)     &
      & .or. check_field_list_ctl(grad_filtered_a_2%name, field_ctl)     &
      & .or. check_field_list_ctl(grad_filtered_a_3%name, field_ctl))    &
