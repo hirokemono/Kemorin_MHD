@@ -73,7 +73,8 @@
 !
       call int_vol_rotation                                             &
      &  (node, ele, g_FEM, jac_3d, rhs_tbl, nod_fld,                    &
-     &   ele%istack_ele_smp, num_int, iphys%i_vp_diffuse, fem_wk, f_nl)
+     &   ele%istack_ele_smp, num_int, iphys%diffusion%i_vp_diffuse,     &
+     &   fem_wk, f_nl)
 !
 !      call cal_multi_pass_4_vector_ff                                  &
 !     &   (ele%istack_ele_smp, FEM_prm, m_lump, nod_comm, node, ele,    &

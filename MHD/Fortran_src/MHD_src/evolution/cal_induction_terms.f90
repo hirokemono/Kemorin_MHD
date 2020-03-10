@@ -191,9 +191,10 @@
 !
       call cal_ff_2_vector(node%numnod, node%istack_nod_smp,            &
      &    rhs_mat%f_l%ff, mlump_cd%ml, nod_fld%ntot_phys,               &
-     &    iphys%i_vp_diffuse, nod_fld%d_fld)
+     &    iphys%diffusion%i_vp_diffuse, nod_fld%d_fld)
 !
-      call vector_send_recv(iphys%i_vp_diffuse, nod_comm, nod_fld)
+      call vector_send_recv                                             &
+     &   (iphys%diffusion%i_vp_diffuse, nod_comm, nod_fld)
 !
       end subroutine cal_vecp_diffusion
 !

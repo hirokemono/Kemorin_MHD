@@ -378,7 +378,7 @@
      &      mk_MHD%mlump_fl, rhs_mat, nod_fld)
       end if
 !
-      if (iphys%i_vp_diffuse .gt. izero) then
+      if (iphys%diffusion%i_vp_diffuse .gt. izero) then
         if(iflag_debug .ge. iflag_routine_msg) write(*,*) 'lead  ',     &
      &                     trim(vector_potential_diffusion%name)
         call cal_vecp_diffusion(ifld_diff%i_magne, ak_MHD%ak_d_magne,   &

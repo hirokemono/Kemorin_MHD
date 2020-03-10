@@ -146,9 +146,6 @@
 !>        start address for diffusion of vorticity
 !!         @f$ \nu \partial_{j}\partial_{j} \omega_{i} @f$
         integer (kind=kint) :: i_w_diffuse =       izero
-!>        start address for diffusion of vetor potential
-!!         @f$ -J_{i} = \eta \partial_{j}\partial_{j} A_{i} @f$
-        integer (kind=kint) :: i_vp_diffuse =      izero
 
 !  arrays for current forces
 !

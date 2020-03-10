@@ -77,8 +77,9 @@
       call add_field_name_4_sph_trns_snap                               &
      &   (vector_potential_diffusion%name,                              &
      &    vector_potential_diffusion%n_comp,                            &
-     &    ipol%i_vp_diffuse, itor%i_vp_diffuse, iphys%i_vp_diffuse,     &
-     &    b_trns%i_vp_diffuse, trns_back)
+     &    ipol%diffusion%i_vp_diffuse, itor%diffusion%i_vp_diffuse,     &
+     &    iphys%diffusion%i_vp_diffuse, b_trns%diffusion%i_vp_diffuse,  &
+     &    trns_back)
       call add_field_name_4_sph_trns_snap                               &
      &   (magnetic_diffusion%name, magnetic_diffusion%n_comp,           &
      &    ipol%diffusion%i_b_diffuse, itor%diffusion%i_b_diffuse,       &
