@@ -132,7 +132,7 @@
 !
 !   induction flag
       if(cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
-        call add_phys_name_ctl(fhd_mag_diffuse, field_ctl)
+        call add_phys_name_ctl(magnetic_diffusion%name, field_ctl)
 !
         call add_phys_name_ctl(magnetic_induction%name, field_ctl)
         call add_phys_name_ctl(vecp_induction%name, field_ctl)

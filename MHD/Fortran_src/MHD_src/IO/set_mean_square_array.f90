@@ -39,6 +39,7 @@
 !
       use t_base_field_labels
       use t_energy_flux_labels
+      use t_diffusion_term_labels
       use t_diff_vector_labels
       use t_SGS_term_labels
       use t_SGS_enegy_flux_labels
@@ -288,19 +289,10 @@
             call set_rms_address_list(i, nod_fld, msq_list)
           end if
 !
-          if ( field_name .eq. viscous_diffusion%name ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_v_diffuse,               &
-     &          i_rms%i_v_diffuse, j_ave%i_v_diffuse, msq_list)
-          else if ( field_name .eq. fhd_vecp_diffuse ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_vp_diffuse,              &
-     &          i_rms%i_vp_diffuse, j_ave%i_vp_diffuse, msq_list)
-          else if ( field_name .eq. fhd_mag_diffuse ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_b_diffuse,               &
-     &          i_rms%i_b_diffuse, j_ave%i_b_diffuse, msq_list)
-          else if ( field_name .eq. fhd_thermal_diffusion ) then
+          if(check_vector_diffusion(field_name)) then
+            call set_rms_address_list(i, nod_fld, msq_list)
+          end if
+          if ( field_name .eq. fhd_thermal_diffusion ) then
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_t_diffuse,               &
      &          i_rms%i_t_diffuse, j_ave%i_t_diffuse, msq_list)

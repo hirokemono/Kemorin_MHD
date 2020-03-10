@@ -49,6 +49,7 @@
       subroutine set_vector_field_name(phys_nod_name_ctl, icou,         &
      &          phys_nod_name, num_nod_component, iflag)
 !
+      use t_diffusion_term_labels
       use t_SGS_term_labels
 !
       use m_rot_force_labels
@@ -82,11 +83,7 @@
      &  .or. (phys_nod_name_ctl .eq. fhd_filter_current     )           &
      &      )   iflag = 1
 !
-      if (   (phys_nod_name_ctl .eq. viscous_diffusion%name            )           &
-     &  .or. (phys_nod_name_ctl .eq. vorticity_diffusion%name          )           &
-     &  .or. (phys_nod_name_ctl .eq. fhd_vecp_diffuse       )           &
-     &  .or. (phys_nod_name_ctl .eq. fhd_mag_diffuse        )           &
-     &  .or. (phys_nod_name_ctl .eq. geostrophic_balance%name)          &
+      if (   (phys_nod_name_ctl .eq. geostrophic_balance%name)          &
      &      )   iflag = 1
 !
       if (   (phys_nod_name_ctl .eq. fhd_pre_mom            )           &
@@ -103,6 +100,7 @@
      &   .or. check_rot_force(phys_nod_name_ctl)                        &
      &   .or. check_div_flux_tensor(phys_nod_name_ctl)                  &
      &   .or. check_gradient_field(phys_nod_name_ctl)                   &
+     &   .or. check_vector_diffusion(phys_nod_name_ctl)                 &
      &   .or. check_field_product_vectors(phys_nod_name_ctl)            &
      &   .or. check_SGS_vector_terms(phys_nod_name_ctl)                 &
      &   .or. check_div_SGS_flux_tensor(phys_nod_name_ctl)              &

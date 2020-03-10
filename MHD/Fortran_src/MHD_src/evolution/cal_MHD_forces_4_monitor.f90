@@ -379,8 +379,8 @@
       end if
 !
       if (iphys%i_vp_diffuse .gt. izero) then
-        if(iflag_debug .ge. iflag_routine_msg)                          &
-     &             write(*,*) 'lead  ', trim(fhd_vecp_diffuse)
+        if(iflag_debug .ge. iflag_routine_msg) write(*,*) 'lead  ',     &
+     &                     trim(vector_potential_diffusion%name)
         call cal_vecp_diffusion(ifld_diff%i_magne, ak_MHD%ak_d_magne,   &
      &      FEM_prm, SGS_par%model_p, nod_comm, node, ele, surf,        &
      &      sf_grp, nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs, iphys, fem_int, &
@@ -391,7 +391,7 @@
       if (iphys%i_b_diffuse .gt. izero                                  &
      &      .and. cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
-     &             write(*,*) 'lead  ', trim(fhd_mag_diffuse)
+     &             write(*,*) 'lead  ', trim(magnetic_diffusion%name)
         call cal_magnetic_diffusion(ifld_diff%i_magne,                  &
      &      ifld_diff%i_induction, ak_MHD%ak_d_magne,                   &
      &      FEM_prm, SGS_par%model_p, SGS_par%commute_p,                &

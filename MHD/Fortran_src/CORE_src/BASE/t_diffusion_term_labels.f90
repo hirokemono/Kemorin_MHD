@@ -76,8 +76,6 @@
      &                    // ' \omega_{i} $')
 !>        Field label for diffusion of vetor potential
 !!         @f$ -J_{i} = \eta \partial_{j}\partial_{j} A_{i} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_vecp_diffuse = 'vector_potential_diffusion'
       type(field_def), parameter :: vector_potential_diffusion          &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'vector_potential_diffusion',              &
@@ -85,8 +83,6 @@
      &                   // ' = \eta \partial_{j}\partial_{j} A_{i} $')
 !>        Field label for magnetic diffusion
 !!         @f$ \nu \partial_{j}\partial_{j} B_{i} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_mag_diffuse = 'magnetic_diffusion'
       type(field_def), parameter :: magnetic_diffusion                  &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'magnetic_diffusion',                      &

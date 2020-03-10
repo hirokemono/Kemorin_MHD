@@ -147,9 +147,9 @@
           iphys%i_v_diffuse =  i0
         else if (field_name(i) .eq. vorticity_diffusion%name) then
           iphys%i_w_diffuse =  i0
-        else if (field_name(i) .eq. fhd_vecp_diffuse) then
+        else if (field_name(i) .eq. vector_potential_diffusion%name) then
           iphys%i_vp_diffuse = i0
-        else if (field_name(i) .eq. fhd_mag_diffuse) then
+        else if (field_name(i) .eq. magnetic_diffusion%name) then
           iphys%i_b_diffuse = i0
         else if (field_name(i) .eq. fhd_c_diffuse) then
           iphys%i_c_diffuse =  i0
