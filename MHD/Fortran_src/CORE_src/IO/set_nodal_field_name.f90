@@ -55,6 +55,7 @@
       use m_rot_force_labels
       use m_div_force_labels
       use m_true_SGS_term_labels
+      use m_filtered_field_labels
       use m_rot_filtered_force_labels
       use m_div_filtered_force_labels
       use m_grad_filter_field_labels
@@ -74,13 +75,6 @@
      &  .or. (phys_nod_name_ctl .eq. fhd_magne              )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_vecp               )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_current            )           &
-     &      )   iflag = 1
-!
-      if (   (phys_nod_name_ctl .eq. filter_velocity%name        )           &
-     &  .or. (phys_nod_name_ctl .eq. filter_vorticity%name        )           &
-     &  .or. (phys_nod_name_ctl .eq. filter_vector_potential%name        )           &
-     &  .or. (phys_nod_name_ctl .eq. filter_magne%name       )           &
-     &  .or. (phys_nod_name_ctl .eq. filter_current%name     )           &
      &      )   iflag = 1
 !
       if (   (phys_nod_name_ctl .eq. geostrophic_balance%name)          &
@@ -108,6 +102,7 @@
      &   .or. check_force_w_SGS(phys_nod_name_ctl)                      &
      &   .or. check_true_SGS_vector_terms(phys_nod_name_ctl)            &
      &   .or. check_true_div_SGS_flux_tensor(phys_nod_name_ctl)         &
+     &   .or. check_filter_vector(phys_nod_name_ctl)                    &
      &   .or. check_filtered_force(phys_nod_name_ctl)                   &
      &   .or. check_rot_fil_force(phys_nod_name_ctl)                    &
      &   .or. check_wide_filter_vector(phys_nod_name_ctl)               &
@@ -166,6 +161,7 @@
      &      )   iflag = 1
 !
       if (    (phys_nod_name_ctl .eq. fhd_ref_temp            )         &
+     &   .or. (phys_nod_name_ctl .eq. fhd_part_temp           )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_density             )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_ref_light           )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_part_light          )         &
@@ -173,14 +169,6 @@
      &   .or. (phys_nod_name_ctl .eq. fhd_ref_density         )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_per_entropy         )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_ref_entropy         )         &
-     &      )   iflag = 1
-!
-      if (    (phys_nod_name_ctl .eq. filter_temperature%name         )         &
-     &   .or. (phys_nod_name_ctl .eq. filter_pert_temperature%name    )         &
-     &   .or. (phys_nod_name_ctl .eq. filter_composition%name         )         &
-     &      )   iflag = 1
-!
-      if (    (phys_nod_name_ctl .eq. fhd_part_temp           )         &
      &      )   iflag = 1
 !
       if (    (phys_nod_name_ctl .eq. fhd_pre_heat            )         &
@@ -209,6 +197,7 @@
      &   .or. check_SGS_moedel_coefs(phys_nod_name_ctl)                 &
      &   .or. check_true_div_SGS_flux_vector(phys_nod_name_ctl)         &
      &   .or. check_true_SGS_ene_fluxes(phys_nod_name_ctl)              &
+     &   .or. check_filter_scalar(phys_nod_name_ctl)                    &
      &   .or. check_filtered_scallar_flux(phys_nod_name_ctl)            &
      &   .or. check_div_fil_force(phys_nod_name_ctl)                    &
      &   .or. check_filter_enegy_fluxes(phys_nod_name_ctl)              &

@@ -63,7 +63,7 @@
       if(check_field_list_ctl(wide_filter_density%name, field_ctl))     &
      &  call add_phys_name_ctl(filter_density%name, field_ctl)
       if(check_field_list_ctl(wide_filter_entropy%name, field_ctl))     &
-     &  call add_phys_name_ctl(fhd_filter_entropy, field_ctl)
+     &  call add_phys_name_ctl(filter_entropy%name, field_ctl)
 !
       if(check_field_list_ctl(wide_filter_pert_temp%name, field_ctl))   &
      &  call add_phys_name_ctl(filter_pert_temperature%name, field_ctl)
@@ -71,10 +71,10 @@
      &  call add_phys_name_ctl(filter_pert_composition%name, field_ctl)
       if(check_field_list_ctl(wide_filter_pert_density%name,            &
      &                        field_ctl))                               &
-     &  call add_phys_name_ctl(fhd_filter_pert_density, field_ctl)
+     &  call add_phys_name_ctl(filter_pert_density%name, field_ctl)
       if(check_field_list_ctl(wide_filter_pert_entropy%name,            &
      &                        field_ctl))                               &
-     &  call add_phys_name_ctl(fhd_filter_pert_entropy, field_ctl)
+     &  call add_phys_name_ctl(filter_pert_entropy%name, field_ctl)
 !
       end subroutine add_field_ctl_4_wide_fil_field
 !
@@ -116,7 +116,7 @@
       if(check_field_list_ctl(double_filter_density%name, field_ctl))   &
      &  call add_phys_name_ctl(filter_density%name, field_ctl)
       if(check_field_list_ctl(double_filter_entropy%name, field_ctl))   &
-     &  call add_phys_name_ctl(fhd_filter_entropy, field_ctl)
+     &  call add_phys_name_ctl(filter_entropy%name, field_ctl)
 !
       if(check_field_list_ctl(double_filter_pert_temp%name, field_ctl)) &
      &  call add_phys_name_ctl(filter_pert_temperature%name, field_ctl)
@@ -124,10 +124,10 @@
      &  call add_phys_name_ctl(filter_pert_composition%name, field_ctl)
       if(check_field_list_ctl(double_filter_pert_density%name,          &
      &                        field_ctl))                               &
-     &  call add_phys_name_ctl(fhd_filter_pert_density, field_ctl)
+     &  call add_phys_name_ctl(filter_pert_density%name, field_ctl)
       if(check_field_list_ctl(double_filter_pert_entropy%name,          &
      &                        field_ctl))                               &
-     &  call add_phys_name_ctl(fhd_filter_pert_entropy, field_ctl)
+     &  call add_phys_name_ctl(filter_pert_entropy%name, field_ctl)
 !
       end subroutine add_field_ctl_4_dbl_fil_field
 !

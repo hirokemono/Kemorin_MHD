@@ -66,7 +66,7 @@
       if(check_field_list_ctl(filter_density%name, field_ctl)) then
         call add_phys_name_ctl(fhd_density, field_ctl)
       end if
-      if(check_field_list_ctl(fhd_filter_entropy, field_ctl)) then
+      if(check_field_list_ctl(filter_entropy%name, field_ctl)) then
         call add_phys_name_ctl(fhd_entropy, field_ctl)
       end if
 !
@@ -78,10 +78,12 @@
      &                        field_ctl)) then
         call add_phys_name_ctl(fhd_part_light, field_ctl)
       end if
-      if(check_field_list_ctl(fhd_filter_pert_density, field_ctl)) then
+      if(check_field_list_ctl(filter_pert_density%name,                 &
+     &                        field_ctl)) then
         call add_phys_name_ctl(fhd_per_density, field_ctl)
       end if
-      if(check_field_list_ctl(fhd_filter_pert_entropy, field_ctl)) then
+      if(check_field_list_ctl(filter_pert_entropy%name,                 &
+     &                        field_ctl)) then
         call add_phys_name_ctl(fhd_per_entropy, field_ctl)
       end if
 !
@@ -123,13 +125,13 @@
      &   call add_phys_name_ctl(filter_density%name, field_ctl)
       if(check_field_list_ctl(grad_filtered_pert_density%name,          &
      &                        field_ctl))                               &
-     &   call add_phys_name_ctl(fhd_filter_pert_density, field_ctl)
+     &   call add_phys_name_ctl(filter_pert_density%name, field_ctl)
 !
       if(check_field_list_ctl(grad_filtered_entropy%name, field_ctl))   &
-     &   call add_phys_name_ctl(fhd_filter_entropy, field_ctl)
+     &   call add_phys_name_ctl(filter_entropy%name, field_ctl)
       if(check_field_list_ctl(grad_filtered_pert_entropy%name,          &
      &                        field_ctl))                               &
-     &   call add_phys_name_ctl(fhd_filter_pert_entropy, field_ctl)
+     &   call add_phys_name_ctl(filter_pert_entropy%name, field_ctl)
 !
       end subroutine add_field_ctl_4_grad_fil_field
 !

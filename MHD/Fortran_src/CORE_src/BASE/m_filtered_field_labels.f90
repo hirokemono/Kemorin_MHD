@@ -125,8 +125,6 @@
      &                math = '$ \tilde{\rho} $')
 !>        Field label for filtered perturbation of density
 !!         @f$ \tilde{\rho} - rho_{0} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_filter_pert_density =  'filter_pert_density'
       type(field_def), parameter :: filter_pert_density                 &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'filter_pert_density',                     &
@@ -134,16 +132,12 @@
 !
 !>        Field label for filtered entropy
 !!         @f$ \tilde{S} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_filter_entropy =       'filter_entropy'
       type(field_def), parameter :: filter_entropy                      &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'filter_entropy',                          &
      &                math = '$ \tilde{S} $')
 !>        Field label for filtered perturbation of entropy
 !!         @f$ \tilde{S} - S_{0} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_filter_pert_entropy =  'filter_pert_entropy'
       type(field_def), parameter :: filter_pert_entropy                 &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'filter_pert_entropy',                     &

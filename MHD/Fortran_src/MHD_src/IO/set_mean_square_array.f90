@@ -50,6 +50,7 @@
       use m_div_force_labels
       use m_diff_SGS_term_labels
       use m_true_SGS_term_labels
+      use m_filtered_field_labels
       use m_filtered_force_labels
       use m_dble_filter_field_labels
       use m_filtered_ene_flux_labels
@@ -133,46 +134,48 @@
             msq_list%numave = msq_list%numave + 3
           end if
 !
-          if ( field_name .eq. filter_velocity%name ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_filter_velo,             &
-     &          i_rms%i_filter_velo, j_ave%i_filter_velo, msq_list)
+          if(check_filter_vector(field_name)) then
+            if(field_name .eq. filter_velocity%name) then
+              call set_rms_address                                      &
+     &           (field_name, num_comps, iphys%i_filter_velo,           &
+     &            i_rms%i_filter_velo, j_ave%i_filter_velo, msq_list)
 !
-            i_rms%i_div_filter_v = msq_list%numrms + 1
-            j_ave%i_div_filter_v = msq_list%numave + 1
+              i_rms%i_div_filter_v = msq_list%numrms + 1
+              j_ave%i_div_filter_v = msq_list%numave + 1
 !
-            ifld_msq%jr_amom_f = msq_list%numave + 2
+              ifld_msq%jr_amom_f = msq_list%numave + 2
 !
-            msq_list%numrms = msq_list%numrms + 1
-            msq_list%numave = msq_list%numave + 4
-          end if
+              msq_list%numrms = msq_list%numrms + 1
+              msq_list%numave = msq_list%numave + 4
+            else if(field_name .eq. filter_vector_potential%name) then
+              call set_rms_address                                      &
+     &           (field_name, n_scalar, iphys%i_filter_vecp,            &
+     &            i_rms%i_filter_vecp, j_ave%i_filter_vecp, msq_list)
 !
-          if(field_name .eq. filter_vector_potential%name) then
-            call set_rms_address                                        &
-     &         (field_name, n_scalar, iphys%i_filter_vecp,              &
-     &          i_rms%i_filter_vecp, j_ave%i_filter_vecp, msq_list)
+              i_rms%i_div_filter_a = msq_list%numrms + 1
+              j_ave%i_div_filter_a = msq_list%numave + 1
 !
-            i_rms%i_div_filter_a = msq_list%numrms + 1
-            j_ave%i_div_filter_a = msq_list%numave + 1
+              msq_list%numrms = msq_list%numrms + 1
+              msq_list%numave = msq_list%numave + 4
+            else if(field_name .eq. filter_magne%name) then
+              num_comps = num_comps + n_vector + n_scalar
+              call set_rms_address                                      &
+     &           (field_name, num_comps, iphys%i_filter_magne,          &
+     &            i_rms%i_filter_magne, j_ave%i_filter_magne, msq_list)
 !
-            msq_list%numrms = msq_list%numrms + 1
-            msq_list%numave = msq_list%numave + 4
-          end if
+              ifld_msq%ir_me_f_ic =  msq_list%numrms + 1
+              ifld_msq%ja_mag_f_ic = msq_list%numave + 1
 !
-          if ( field_name .eq. filter_magne%name ) then
-            num_comps = num_comps + n_vector + n_scalar
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_filter_magne,            &
-     &          i_rms%i_filter_magne, j_ave%i_filter_magne, msq_list)
+              i_rms%i_div_filter_b = msq_list%numrms + 2
+              j_ave%i_div_filter_b = msq_list%numave + 4
 !
-            ifld_msq%ir_me_f_ic =  msq_list%numrms + 1
-            ifld_msq%ja_mag_f_ic = msq_list%numave + 1
-!
-            i_rms%i_div_filter_b = msq_list%numrms + 2
-            j_ave%i_div_filter_b = msq_list%numave + 4
-!
-            msq_list%numrms = msq_list%numrms + 2
-            msq_list%numave = msq_list%numave + 6
+              msq_list%numrms = msq_list%numrms + 2
+              msq_list%numave = msq_list%numave + 6
+            else
+!            else if(field_name .eq. filter_vorticity%name) then
+!            else if(field_name .eq. filter_current%name) then
+              call set_rms_address_list(i, nod_fld, msq_list)
+            end if
           end if
 !
           if ( field_name .eq. fhd_temp ) then
@@ -353,17 +356,6 @@
      &        .or. check_true_div_SGS_flux_tensor(field_name)           &
      &        .or. check_true_SGS_ene_fluxes(field_name)) then
             call set_rms_address_list(i, nod_fld, msq_list)
-          end if
-!
-          if ( field_name .eq. filter_vorticity%name ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_filter_vort,             &
-     &          i_rms%i_filter_vort, j_ave%i_filter_vort, msq_list)
-          else if ( field_name .eq. filter_current%name ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_filter_current,          &
-     &          i_rms%i_filter_current, j_ave%i_filter_current,         &
-     &          msq_list)
           end if
 !
           if(check_wide_filter_vector(field_name)) then
