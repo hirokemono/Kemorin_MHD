@@ -82,8 +82,8 @@
      &  .or. (phys_nod_name_ctl .eq. fhd_filter_current     )           &
      &      )   iflag = 1
 !
-      if (   (phys_nod_name_ctl .eq. fhd_viscous            )           &
-     &  .or. (phys_nod_name_ctl .eq. fhd_w_viscous          )           &
+      if (   (phys_nod_name_ctl .eq. viscous_diffusion%name            )           &
+     &  .or. (phys_nod_name_ctl .eq. vorticity_diffusion%name          )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_vecp_diffuse       )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_mag_diffuse        )           &
      &  .or. (phys_nod_name_ctl .eq. geostrophic_balance%name)          &

@@ -63,16 +63,12 @@
 !
 !>        Field label for viscous diffusion
 !!         @f$ \nu \partial_{j}\partial_{j} u_{i} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_viscous = 'viscous_diffusion'
       type(field_def), parameter :: viscous_diffusion                   &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'viscous_diffusion',                       &
      &                math = '$ \nu \partial_{j}\partial_{j} u_{i} $')
 !>        Field label for diffusion of vorticity
 !!         @f$ \nu \partial_{j}\partial_{j} \omega_{i} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_w_viscous = 'vorticity_diffusion'
       type(field_def), parameter :: vorticity_diffusion                 &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'vorticity_diffusion',                     &

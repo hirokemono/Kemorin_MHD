@@ -66,10 +66,12 @@
      &    b_trns%i_current, trns_back)
 !      end if
 !
-      call add_field_name_4_sph_trns_snap(fhd_viscous, n_vector,        &
+      call add_field_name_4_sph_trns_snap                               &
+     &   (viscous_diffusion%name, viscous_diffusion%n_comp,             &
      &    ipol%i_v_diffuse, itor%i_v_diffuse, iphys%i_v_diffuse,        &
      &    b_trns%i_v_diffuse, trns_back)
-      call add_field_name_4_sph_trns_snap(fhd_w_viscous, n_vector,      &
+      call add_field_name_4_sph_trns_snap                               &
+     &   (vorticity_diffusion%name, vorticity_diffusion%n_comp,         &
      &    ipol%i_w_diffuse, itor%i_w_diffuse, iphys%i_w_diffuse,        &
      &    b_trns%i_w_diffuse, trns_back)
       call add_field_name_4_sph_trns_snap(fhd_vecp_diffuse, n_vector,   &

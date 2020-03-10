@@ -368,7 +368,7 @@
 !
       if (iphys%i_v_diffuse .gt. izero) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
-     &             write(*,*) 'lead  ', trim(fhd_viscous)
+     &             write(*,*) 'lead  ', trim(viscous_diffusion%name)
         call cal_viscous_diffusion                                      &
      &     (ifld_diff%i_velo, ifld_diff%i_velo, ifld_diff%i_lorentz,    &
      &      FEM_prm, SGS_par%model_p, SGS_par%commute_p,                &

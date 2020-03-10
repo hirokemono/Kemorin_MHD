@@ -143,9 +143,9 @@
 !
         else if (field_name(i) .eq. fhd_thermal_diffusion) then
           iphys%i_t_diffuse =  i0
-        else if (field_name(i) .eq. fhd_viscous) then
+        else if (field_name(i) .eq. viscous_diffusion%name) then
           iphys%i_v_diffuse =  i0
-        else if (field_name(i) .eq. fhd_w_viscous) then
+        else if (field_name(i) .eq. vorticity_diffusion%name) then
           iphys%i_w_diffuse =  i0
         else if (field_name(i) .eq. fhd_vecp_diffuse) then
           iphys%i_vp_diffuse = i0

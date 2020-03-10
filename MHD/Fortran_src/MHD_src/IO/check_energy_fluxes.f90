@@ -90,7 +90,7 @@
 !
       else if( (field_name .eq. viscous_ene_diffusion%name)) then
         call add_phys_name_ctl(fhd_velo, field_ctl)
-        call add_phys_name_ctl(fhd_viscous, field_ctl)
+        call add_phys_name_ctl(viscous_diffusion%name, field_ctl)
       else if( (field_name .eq. magnetic_ene_diffusion%name)) then
         call add_phys_name_ctl(fhd_magne, field_ctl)
         call add_phys_name_ctl(fhd_mag_diffuse, field_ctl)

@@ -288,7 +288,7 @@
             call set_rms_address_list(i, nod_fld, msq_list)
           end if
 !
-          if ( field_name .eq. fhd_viscous ) then
+          if ( field_name .eq. viscous_diffusion%name ) then
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_v_diffuse,               &
      &          i_rms%i_v_diffuse, j_ave%i_v_diffuse, msq_list)

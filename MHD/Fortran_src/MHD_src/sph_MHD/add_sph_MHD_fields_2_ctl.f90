@@ -79,9 +79,9 @@
 !
 !   advection flag
       if(fl_prop%iflag_scheme .gt. id_no_evolution) then
-        call add_phys_name_ctl(fhd_viscous, field_ctl)
+        call add_phys_name_ctl(viscous_diffusion%name, field_ctl)
         call add_phys_name_ctl(fhd_div_viscous, field_ctl)
-        call add_phys_name_ctl(fhd_w_viscous, field_ctl)
+        call add_phys_name_ctl(vorticity_diffusion%name, field_ctl)
 !
         call add_phys_name_ctl(inertia%name, field_ctl)
         call add_phys_name_ctl(rot_inertia%name, field_ctl)
