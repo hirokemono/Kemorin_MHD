@@ -231,7 +231,7 @@
      &     nod_fld)
       end if
 !
-      if (iphys%i_b_diffuse .gt. izero                                  &
+      if (iphys%diffusion%i_b_diffuse .gt. izero                        &
      &      .and. cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &             write(*,*) 'lead  ', trim(magnetic_diffusion%name)
@@ -338,7 +338,7 @@
 !
       if (iphys%ene_flux%i_mag_e_diffuse .gt. izero) then
         call cal_phys_dot_product                                       &
-     &     (iphys%i_magne, iphys%i_b_diffuse,                           &
+     &     (iphys%i_magne, iphys%diffusion%i_b_diffuse,                 &
      &      iphys%ene_flux%i_mag_e_diffuse, nod_fld)
       end if
 !

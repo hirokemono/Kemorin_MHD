@@ -119,7 +119,7 @@
 !   magnetic diffusion flag
       if(cd_prop%iflag_Bevo_scheme .gt. id_turn_OFF) then
         nvector_rj_2_xyz = nvector_rj_2_xyz + 1
-        b_hbd_trns%i_b_diffuse = 3*nvector_rj_2_xyz - 2
+        b_hbd_trns%diffusion%i_b_diffuse = 3*nvector_rj_2_xyz - 2
       end if
 !    magnetic induction flag
       if(cd_prop%iflag_Bevo_scheme .gt. id_turn_OFF) then
@@ -173,9 +173,10 @@
       if(b_hbd_trns%i_current .gt. 0) write(*,*)                        &
      &        'b_hbd_trns%i_current ', b_hbd_trns%i_current,            &
      &        ipol%i_current, itor%i_current, idpdr%i_current
-      if(b_hbd_trns%i_b_diffuse .gt. 0) write(*,*)                      &
-     &        'b_hbd_trns%i_b_diffuse ', b_hbd_trns%i_b_diffuse,        &
-     &        ipol%i_b_diffuse, itor%i_b_diffuse, idpdr%i_b_diffuse
+      if(b_hbd_trns%diffusion%i_b_diffuse .gt. 0) write(*,*)            &
+     &        'b_hbd_trns%diffusion%i_b_diffuse ',                      &
+     &    b_hbd_trns%diffusion%i_b_diffuse, ipol%diffusion%i_b_diffuse, &
+     &    itor%diffusion%i_b_diffuse, idpdr%diffusion%i_b_diffuse
       if(b_hbd_trns%forces%i_induction .gt. 0) write(*,*)               &
      &        'b_hbd_trns%forces%i_induction ',                         &
      &        b_hbd_trns%forces%i_induction,                            &

@@ -155,7 +155,7 @@
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
 !
 !
-      if (i_field .eq. iphys%i_b_diffuse) then
+      if (i_field .eq. iphys%diffusion%i_b_diffuse) then
         call int_sf_grad_velocity                                       &
      &     (node, ele, surf, sf_grp, g_FEM, jac_sf_grp,                 &
      &      rhs_tbl, Bsf_bcs%grad, num_int, ak_d_magne, fem_wk, f_l)

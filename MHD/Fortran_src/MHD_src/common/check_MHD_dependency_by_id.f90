@@ -61,7 +61,6 @@
 !
         else if(i_start .eq. iphys%i_filter_magne                       &
      &     .or. i_start .eq. iphys%i_current                            &
-     &     .or. i_start .eq. iphys%i_b_diffuse                          &
      &     .or. i_start .eq. iphys%i_mag_p) then
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_magne, fhd_magne)

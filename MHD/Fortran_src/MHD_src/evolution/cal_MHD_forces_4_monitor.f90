@@ -388,7 +388,7 @@
      &      rhs_mat, nod_fld)
       end if
 !
-      if (iphys%i_b_diffuse .gt. izero                                  &
+      if (iphys%diffusion%i_b_diffuse .gt. izero                        &
      &      .and. cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &             write(*,*) 'lead  ', trim(magnetic_diffusion%name)

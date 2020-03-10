@@ -285,12 +285,14 @@
 !
 !
 !       Input:    ipol%i_current, itor%i_current
-!       Solution: ipol%i_b_diffuse, itor%i_b_diffuse, idpdr%i_b_diffuse
-      if(ipol%i_b_diffuse .gt. 0) then
+!       Solution: ipol%diffusion%i_b_diffuse, itor%diffusion%i_b_diffuse,
+!                 idpdr%diffusion%i_b_diffuse
+      if(ipol%diffusion%i_b_diffuse .gt. 0) then
         if(iflag_debug .gt. 0) write(*,*) 'const_sph_mag_diffuse_by_j'
         call const_sph_mag_diffuse_by_j(sph_rj, r_2nd, sph_bc_B,        &
      &      leg%g_sph_rj, cd_prop%coef_diffuse,                         &
-     &      ipol%i_magne, ipol%i_current, ipol%i_b_diffuse, rj_fld)
+     &      ipol%i_magne, ipol%i_current, ipol%diffusion%i_b_diffuse,   &
+     &      rj_fld)
       end if
 !
       end subroutine update_after_magne_sph

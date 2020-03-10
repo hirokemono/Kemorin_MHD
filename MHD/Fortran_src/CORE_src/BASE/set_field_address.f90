@@ -150,9 +150,9 @@
         else if (field_name(i) .eq. vector_potential_diffusion%name) then
           iphys%i_vp_diffuse = i0
         else if (field_name(i) .eq. magnetic_diffusion%name) then
-          iphys%i_b_diffuse = i0
+          iphys%diffusion%i_b_diffuse = i0
         else if (field_name(i) .eq. composition_diffusion%name) then
-          iphys%diffusion%i_c_diffuse =  i0
+          iphys%diffusion%i_c_diffuse = i0
         end if
 !
         call set_base_force_addresses                                   &

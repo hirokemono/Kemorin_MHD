@@ -45,7 +45,8 @@
 !!     &         (sph_rj, r_2nd, sph_bc_B, g_sph_rj, coef_diffuse,      &
 !!     &          is_magne, is_current, is_ohmic, rj_fld)
 !!        Input:    ipol%i_current, itor%i_current
-!!        Solution: ipol%i_b_diffuse, itor%i_b_diffuse, idpdr%i_b_diffuse
+!!        Solution: ipol%diffusion%i_b_diffuse, 
+!!               itor%diffusion%i_b_diffuse, idpdr%diffusion%i_b_diffuse
 !!
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(fdm_matrices), intent(in) :: r_2nd

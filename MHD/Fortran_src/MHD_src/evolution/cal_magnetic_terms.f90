@@ -212,7 +212,7 @@
 !
       call int_surf_magne_monitor                                       &
      &  (SGS_param, cmt_param, FEM_prm%npoint_t_evo_int,                &
-     &   iphys%i_b_diffuse, iak_diff_uxb, ak_d_magne,                   &
+     &   iphys%diffusion%i_b_diffuse, iak_diff_uxb, ak_d_magne,         &
      &   node, ele, surf, sf_grp, Asf_bcs, Bsf_bcs, iphys, nod_fld,     &
      &   fem_int%jcs%g_FEM, fem_int%jcs%jac_sf_grp, fem_int%rhs_tbl,    &
      &   FEM_elens, diff_coefs, rhs_mat%fem_wk, rhs_mat%surf_wk,        &
@@ -225,9 +225,10 @@
      &   (node, Bnod_bcs%nod_bc_b, rhs_mat%f_l, rhs_mat%f_nl)
 !
       call cal_ff_2_vector(node%numnod, node%istack_nod_smp,            &
-     &    rhs_mat%f_l%ff, fem_int%m_lump%ml,                            &
-     &    nod_fld%ntot_phys, iphys%i_b_diffuse, nod_fld%d_fld)
-      call vector_send_recv(iphys%i_b_diffuse, nod_comm, nod_fld)
+     &    rhs_mat%f_l%ff, fem_int%m_lump%ml, nod_fld%ntot_phys,         &
+     &    iphys%diffusion%i_b_diffuse, nod_fld%d_fld)
+      call vector_send_recv                                             &
+     &   (iphys%diffusion%i_b_diffuse, nod_comm, nod_fld)
 !
       end subroutine cal_magnetic_diffusion
 !

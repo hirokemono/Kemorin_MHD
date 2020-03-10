@@ -71,7 +71,8 @@
       call copy_pole_vec_fld_from_trans(m_folding, sph_rtp, node,       &
      &    fls_pl(1,bs_trns%i_vp_diffuse), iphys%i_vp_diffuse, nod_fld)
       call copy_pole_vec_fld_from_trans(m_folding, sph_rtp, node,       &
-     &    fls_pl(1,bs_trns%i_b_diffuse), iphys%i_b_diffuse, nod_fld)
+     &    fls_pl(1,bs_trns%diffusion%i_b_diffuse),                      &
+     &    iphys%diffusion%i_b_diffuse, nod_fld)
 !
       call copy_pole_vec_fld_from_trans(m_folding, sph_rtp, node,       &
      &    fls_pl(1,bs_trns%forces%i_induction),                         &

@@ -81,8 +81,9 @@
      &    b_trns%i_vp_diffuse, trns_back)
       call add_field_name_4_sph_trns_snap                               &
      &   (magnetic_diffusion%name, magnetic_diffusion%n_comp,           &
-     &    ipol%i_b_diffuse, itor%i_b_diffuse, iphys%i_b_diffuse,        &
-     &    b_trns%i_b_diffuse, trns_back)
+     &    ipol%diffusion%i_b_diffuse, itor%diffusion%i_b_diffuse,       &
+     &    iphys%diffusion%i_b_diffuse, b_trns%diffusion%i_b_diffuse,    &
+     &    trns_back)
 !
       call add_field_name_4_sph_trns_snap                               &
      &   (rot_inertia%name, rot_inertia%n_comp,                         &

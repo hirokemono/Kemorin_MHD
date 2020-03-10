@@ -149,10 +149,7 @@
 !>        start address for diffusion of vetor potential
 !!         @f$ -J_{i} = \eta \partial_{j}\partial_{j} A_{i} @f$
         integer (kind=kint) :: i_vp_diffuse =      izero
-!>        start address for magnetic diffusion
-!!         @f$ \nu \partial_{j}\partial_{j} B_{i} @f$
-        integer (kind=kint) :: i_b_diffuse =       izero
-!
+
 !  arrays for current forces
 !
 !>        start address for total forces
