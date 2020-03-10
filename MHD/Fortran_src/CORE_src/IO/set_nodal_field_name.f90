@@ -135,6 +135,7 @@
       subroutine set_scalar_field_name(phys_nod_name_ctl, icou,         &
      &          phys_nod_name, num_nod_component, iflag)
 !
+      use t_diffusion_term_labels
       use t_SGS_term_labels
       use t_SGS_model_coef_labels
 !
@@ -179,12 +180,7 @@
      &   .or. (phys_nod_name_ctl .eq. fhd_filter_comp         )         &
      &      )   iflag = 1
 !
-      if (    (phys_nod_name_ctl .eq. fhd_thermal_diffusion   )         &
-     &   .or. (phys_nod_name_ctl .eq. fhd_c_diffuse           )         &
-     &   .or. (phys_nod_name_ctl .eq. fhd_part_temp           )         &
-     &      )   iflag = 1
-!
-      if (    (phys_nod_name_ctl .eq. fhd_div_viscous         )         &
+      if (    (phys_nod_name_ctl .eq. fhd_part_temp           )         &
      &      )   iflag = 1
 !
       if (    (phys_nod_name_ctl .eq. fhd_pre_heat            )         &
@@ -206,6 +202,7 @@
      &   .or. check_div_force(phys_nod_name_ctl)                        &
      &   .or. check_div_scalar_flux(phys_nod_name_ctl)                  &
      &   .or. check_divergence_field(phys_nod_name_ctl)                 &
+     &   .or. check_scalar_diffusion(phys_nod_name_ctl)                 &
      &   .or. check_field_product_scalars(phys_nod_name_ctl)            &
      &   .or. check_div_SGS_flux_vector(phys_nod_name_ctl)              &
      &   .or. check_SGS_ene_fluxes(phys_nod_name_ctl)                   &

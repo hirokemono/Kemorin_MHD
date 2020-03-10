@@ -320,10 +320,11 @@
      &    ipol%i_filter_temp, itor%i_filter_temp, iphys%i_filter_temp,  &
      &    b_trns%i_filter_temp, trns_back)
       call add_field_name_4_sph_trns_snap                               &
-     &   (fhd_thermal_diffusion, n_scalar,                              &
+     &   (thermal_diffusion%name, thermal_diffusion%n_comp,             &
      &    ipol%i_t_diffuse, itor%i_t_diffuse, iphys%i_t_diffuse,        &
      &    b_trns%i_t_diffuse, trns_back)
-      call add_field_name_4_sph_trns_snap(fhd_c_diffuse, n_scalar,      &
+      call add_field_name_4_sph_trns_snap                               &
+     &   (composition_diffusion%name, composition_diffusion%n_comp,     &
      &    ipol%i_c_diffuse, itor%i_c_diffuse, iphys%i_c_diffuse,        &
      &    b_trns%i_c_diffuse, trns_back)
 !

@@ -89,16 +89,12 @@
      &                math = '$ \eta \partial_{j}\partial_{j} B_{i} $')
 !>        Field label for thermal diffusion
 !!         @f$ \kappa \partial_{i}\partial_{i} T @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_thermal_diffusion = 'thermal_diffusion'
       type(field_def), parameter :: thermal_diffusion                   &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'thermal_diffusion',                       &
      &              math = '$ \kappa_{T} \partial_{j}\partial_{j} T $')
 !>        Field label for compositional diffusion
 !!         @f$ \kappa \partial_{i}\partial_{i} C @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_c_diffuse = 'composition_diffusion'
       type(field_def), parameter :: composition_diffusion               &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'composition_diffusion',                   &
@@ -107,8 +103,6 @@
 !
 !>        Field label for divergence of viscousity
 !!          @f$ \nu \partial_{i} \partial_{j}\partial_{j} u_{i} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_div_viscous =    'div_viscousity'
       type(field_def), parameter :: div_viscousity                      &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'div_viscousity',                          &

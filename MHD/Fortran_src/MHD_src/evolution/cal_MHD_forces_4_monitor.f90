@@ -346,7 +346,7 @@
 !
       if (iphys%i_t_diffuse .gt. izero) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
-     &             write(*,*) 'lead  ', trim(fhd_thermal_diffusion)
+     &             write(*,*) 'lead  ', trim(thermal_diffusion%name)
         call cal_thermal_diffusion                                      &
           (iphys%i_t_diffuse, iphys%i_temp, ifld_diff%i_temp,           &
      &     ak_MHD%ak_d_temp, FEM_prm%npoint_t_evo_int,                  &
@@ -356,8 +356,8 @@
       end if
 !
       if (iphys%i_c_diffuse .gt. izero) then
-        if(iflag_debug .ge. iflag_routine_msg)                          &
-     &             write(*,*) 'lead  ', trim(fhd_c_diffuse)
+        if(iflag_debug .ge. iflag_routine_msg) write(*,*) 'lead  ',     &
+     &                     trim(composition_diffusion%name)
         call cal_thermal_diffusion                                      &
      &     (iphys%i_c_diffuse, iphys%i_light, ifld_diff%i_light,        &
      &      ak_MHD%ak_d_composit, FEM_prm%npoint_t_evo_int,             &

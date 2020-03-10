@@ -141,7 +141,7 @@
         else if ( field_name(i) .eq. div_filtered_vector_potential%name ) then
           iphys%i_div_filter_a =    i0
 !
-        else if (field_name(i) .eq. fhd_thermal_diffusion) then
+        else if (field_name(i) .eq. thermal_diffusion%name) then
           iphys%i_t_diffuse =  i0
         else if (field_name(i) .eq. viscous_diffusion%name) then
           iphys%i_v_diffuse =  i0
@@ -151,7 +151,7 @@
           iphys%i_vp_diffuse = i0
         else if (field_name(i) .eq. magnetic_diffusion%name) then
           iphys%i_b_diffuse = i0
-        else if (field_name(i) .eq. fhd_c_diffuse) then
+        else if (field_name(i) .eq. composition_diffusion%name) then
           iphys%i_c_diffuse =  i0
         end if
 !
@@ -231,7 +231,7 @@
         call set_dble_fil_grad_addresses                                &
      &     (i0, field_name(i), iphys%dbl_filter_grad, flag)
 !
-        if ( field_name(i) .eq. fhd_div_viscous ) then
+        if ( field_name(i) .eq. div_viscousity%name ) then
           iphys%i_div_viscous =    i0
 !
         else if ( field_name(i) .eq. fhd_forces ) then

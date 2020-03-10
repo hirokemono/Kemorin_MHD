@@ -161,7 +161,7 @@
           iphys%i_current =   nod_fld%istack_component(i_fld-1) + 1
         else if(nod_fld%phys_name(i_fld) .eq. fhd_temp) then
           iphys%i_temp =      nod_fld%istack_component(i_fld-1) + 1
-        else if(nod_fld%phys_name(i_fld) .eq. fhd_thermal_diffusion)   &
+        else if(nod_fld%phys_name(i_fld) .eq. thermal_diffusion%name)   &
      &      then
           iphys%i_t_diffuse = nod_fld%istack_component(i_fld-1) + 1
         end if

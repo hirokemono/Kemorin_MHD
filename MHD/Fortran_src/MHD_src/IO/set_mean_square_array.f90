@@ -292,14 +292,8 @@
           if(check_vector_diffusion(field_name)) then
             call set_rms_address_list(i, nod_fld, msq_list)
           end if
-          if ( field_name .eq. fhd_thermal_diffusion ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_t_diffuse,               &
-     &          i_rms%i_t_diffuse, j_ave%i_t_diffuse, msq_list)
-          else if ( field_name .eq. fhd_c_diffuse) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_c_diffuse,               &
-     &          i_rms%i_c_diffuse, j_ave%i_c_diffuse, msq_list)
+          if(check_scalar_diffusion(field_name)) then
+            call set_rms_address_list(i, nod_fld, msq_list)
           end if
 !
           if(check_SGS_vector_terms(field_name)) then

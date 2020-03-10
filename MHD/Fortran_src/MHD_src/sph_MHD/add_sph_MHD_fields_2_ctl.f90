@@ -80,7 +80,7 @@
 !   advection flag
       if(fl_prop%iflag_scheme .gt. id_no_evolution) then
         call add_phys_name_ctl(viscous_diffusion%name, field_ctl)
-        call add_phys_name_ctl(fhd_div_viscous, field_ctl)
+        call add_phys_name_ctl(div_viscousity%name, field_ctl)
         call add_phys_name_ctl(vorticity_diffusion%name, field_ctl)
 !
         call add_phys_name_ctl(inertia%name, field_ctl)
@@ -140,14 +140,14 @@
 !
 !   divergence of heat flux flag
       if(ht_prop%iflag_scheme .gt. id_no_evolution) then
-        call add_phys_name_ctl(fhd_thermal_diffusion, field_ctl)
+        call add_phys_name_ctl(thermal_diffusion%name, field_ctl)
         call add_phys_name_ctl(heat_flux%name, field_ctl)
         call add_phys_name_ctl(heat_advect%name, field_ctl)
       end if
 !
 !   divergence of dummy scalar flag
       if(cp_prop%iflag_scheme .gt. id_no_evolution) then
-        call add_phys_name_ctl(fhd_c_diffuse, field_ctl)
+        call add_phys_name_ctl(composition_diffusion%name, field_ctl)
         call add_phys_name_ctl(composite_flux%name, field_ctl)
         call add_phys_name_ctl(composition_advect%name, field_ctl)
       end if
