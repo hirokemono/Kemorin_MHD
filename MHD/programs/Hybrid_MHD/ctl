@@ -66,7 +66,7 @@ begin MHD_control
 !   filtered_buoyancy_flux
 !
 !   thermal_diffusion, viscous_diffusion
-!   diffuse_vector_p, magnetic_diffusion
+!   vector_potential_diffusion, magnetic_diffusion
 !   magnetic_tension, Lorentz_force
 !   Coriolis_force, buoyancy
 !

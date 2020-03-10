@@ -44,7 +44,7 @@ begin marge_control
 !   temp_generation
 !
 !   thermal_diffusion, viscous_diffusion
-!   diffuse_vector_p, magnetic_diffusion
+!   vector_potential_diffusion, magnetic_diffusion
 !   magnetic_tension, Lorentz_force, Coriolis_force
 !
 !   heat_flux, momentum_flux, magnetic_induction, vecp_induction

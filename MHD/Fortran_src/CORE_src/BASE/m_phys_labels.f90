@@ -59,7 +59,7 @@
 !!   viscous_ene_diffusion, magnetic_ene_diffusion
 !!
 !!   thermal_diffusion, viscous_diffusion, vorticity_diffusion
-!!   diffuse_vector_p, magnetic_diffusion, composition_diffusion
+!!   vector_potential_diffusion, magnetic_diffusion, composition_diffusion
 !!   magnetic_tension, Lorentz_force, pressure_gradient
 !!   Coriolis_force, buoyancy, composite_buoyancy, filtered_buoyancy
 !!

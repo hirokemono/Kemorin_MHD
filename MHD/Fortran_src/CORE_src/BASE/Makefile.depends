@@ -146,7 +146,7 @@ t_base_force_labels.o: $(BASEDIR)/t_base_force_labels.f90 m_precision.o m_phys_c
 	$(F90) -c $(F90OPTFLAGS) $<
 t_diff_vector_labels.o: $(BASEDIR)/t_diff_vector_labels.f90 m_precision.o m_phys_constants.o t_field_labels.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_diffusion_term_labels.o: $(BASEDIR)/t_diffusion_term_labels.f90 m_precision.o m_constants.o t_base_field_labels.o
+t_diffusion_term_labels.o: $(BASEDIR)/t_diffusion_term_labels.f90 m_precision.o m_phys_constants.o t_field_labels.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_ene_flux_w_sym_address.o: $(BASEDIR)/t_ene_flux_w_sym_address.f90 m_precision.o m_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<

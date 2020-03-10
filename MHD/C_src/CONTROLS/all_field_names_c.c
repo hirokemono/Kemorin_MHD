@@ -72,7 +72,7 @@ const struct field_def field_props[NUM_FIELD] = {
 			/* Diffusions */
 			{3, "viscous_diffusion", "$$    $$"},
 			{3, "vorticity_diffusion", "$$    $$"},
-			{3, "diffuse_vector_p", "$$    $$"},
+			{3, "vector_potential_diffusion", "$$    $$"},
 			{3, "magnetic_diffusion", "$$    $$"},
 			{1, "composition_diffusion", "$$    $$"},
 			{1, "thermal_diffusion", "$$    $$"},
