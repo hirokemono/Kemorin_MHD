@@ -313,7 +313,7 @@
 !
       if(check_field_list_ctl(SGS_temp_flux_gen_true%name,              &
      &                        field_ctl)) then
-        call add_phys_name_ctl(fhd_filter_temp, field_ctl)
+        call add_phys_name_ctl(filter_temperature%name, field_ctl)
         call add_phys_name_ctl(SGS_div_h_flux_true%name, field_ctl)
       end if
       if(check_field_list_ctl(SGS_comp_flux_gen_true%name,              &
@@ -341,7 +341,7 @@
       if(check_field_list_ctl(SGS_div_h_flux_true%name,                 &
      &                        field_ctl)) then
         call add_phys_name_ctl(filter_velocity%name, field_ctl)
-        call add_phys_name_ctl(fhd_filter_temp, field_ctl)
+        call add_phys_name_ctl(filter_temperature%name, field_ctl)
         call add_phys_name_ctl(div_heat_flux%name, field_ctl)
         end if
       if(check_field_list_ctl(SGS_div_c_flux_true%name,                 &

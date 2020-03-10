@@ -57,7 +57,7 @@
      &  call add_phys_name_ctl(filter_vector_potential%name, field_ctl)
 !
       if(check_field_list_ctl(wide_filter_temp%name, field_ctl))        &
-     &  call add_phys_name_ctl(fhd_filter_temp, field_ctl)
+     &  call add_phys_name_ctl(filter_temperature%name, field_ctl)
       if(check_field_list_ctl(wide_filter_composition%name, field_ctl)) &
      &  call add_phys_name_ctl(fhd_filter_comp, field_ctl)
       if(check_field_list_ctl(wide_filter_density%name, field_ctl))     &
@@ -66,7 +66,7 @@
      &  call add_phys_name_ctl(fhd_filter_entropy, field_ctl)
 !
       if(check_field_list_ctl(wide_filter_pert_temp%name, field_ctl))   &
-     &  call add_phys_name_ctl(fhd_filter_pert_temp, field_ctl)
+     &  call add_phys_name_ctl(filter_pert_temperature%name, field_ctl)
       if(check_field_list_ctl(wide_filter_pert_comp%name, field_ctl))   &
      &  call add_phys_name_ctl(fhd_filter_pert_comp, field_ctl)
       if(check_field_list_ctl(wide_filter_pert_density%name,            &
@@ -109,7 +109,7 @@
      &  call add_phys_name_ctl(filter_vector_potential%name, field_ctl)
 !
       if(check_field_list_ctl(double_filter_temp%name, field_ctl))      &
-     &  call add_phys_name_ctl(fhd_filter_temp, field_ctl)
+     &  call add_phys_name_ctl(filter_temperature%name, field_ctl)
       if(check_field_list_ctl(double_filter_composition%name,           &
      &                        field_ctl))                               &
      &  call add_phys_name_ctl(fhd_filter_comp, field_ctl)
@@ -119,7 +119,7 @@
      &  call add_phys_name_ctl(fhd_filter_entropy, field_ctl)
 !
       if(check_field_list_ctl(double_filter_pert_temp%name, field_ctl)) &
-     &  call add_phys_name_ctl(fhd_filter_pert_temp, field_ctl)
+     &  call add_phys_name_ctl(filter_pert_temperature%name, field_ctl)
       if(check_field_list_ctl(double_filter_pert_comp%name, field_ctl)) &
      &  call add_phys_name_ctl(fhd_filter_pert_comp, field_ctl)
       if(check_field_list_ctl(double_filter_pert_density%name,          &

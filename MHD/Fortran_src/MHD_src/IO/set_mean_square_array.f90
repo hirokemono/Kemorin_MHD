@@ -243,7 +243,7 @@
             call set_rms_address_list(i, nod_fld, msq_list)
           end if
 !
-          if ( field_name .eq. fhd_filter_temp ) then
+          if ( field_name .eq. filter_temperature%name ) then
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_filter_temp,             &
      &          i_rms%i_filter_temp, j_ave%i_filter_temp, msq_list)

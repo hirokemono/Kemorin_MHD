@@ -175,8 +175,8 @@
      &   .or. (phys_nod_name_ctl .eq. fhd_ref_entropy         )         &
      &      )   iflag = 1
 !
-      if (    (phys_nod_name_ctl .eq. fhd_filter_temp         )         &
-     &   .or. (phys_nod_name_ctl .eq. fhd_filter_pert_temp    )         &
+      if (    (phys_nod_name_ctl .eq. filter_temperature%name         )         &
+     &   .or. (phys_nod_name_ctl .eq. filter_pert_temperature%name    )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_filter_comp         )         &
      &      )   iflag = 1
 !

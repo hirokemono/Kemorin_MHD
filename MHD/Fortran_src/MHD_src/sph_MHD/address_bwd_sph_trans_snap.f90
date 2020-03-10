@@ -320,7 +320,8 @@
       call add_field_name_4_sph_trns_nofld(fhd_part_temp, n_scalar,     &
      &    ipol%i_per_temp, itor%i_per_temp, iphys%i_per_temp,           &
      &    b_trns%i_per_temp, trns_back)
-      call add_field_name_4_sph_trns_snap(fhd_filter_temp, n_scalar,    &
+      call add_field_name_4_sph_trns_snap                               &
+     &   (filter_temperature%name, filter_temperature%n_comp,           &
      &    ipol%i_filter_temp, itor%i_filter_temp, iphys%i_filter_temp,  &
      &    b_trns%i_filter_temp, trns_back)
       call add_field_name_4_sph_trns_snap                               &

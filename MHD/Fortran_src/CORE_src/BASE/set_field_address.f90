@@ -122,7 +122,7 @@
           iphys%i_filter_velo =    i0
         else if ( field_name(i) .eq. filter_vorticity%name ) then
           iphys%i_filter_vort =    i0
-        else if ( field_name(i) .eq. fhd_filter_temp ) then
+        else if ( field_name(i) .eq. filter_temperature%name ) then
           iphys%i_filter_temp =    i0
         else if ( field_name(i) .eq. filter_vector_potential%name ) then
           iphys%i_filter_vecp =    i0
@@ -130,7 +130,7 @@
           iphys%i_filter_magne =   i0
         else if ( field_name(i) .eq. filter_current%name ) then
           iphys%i_filter_current = i0
-        else if ( field_name(i) .eq. fhd_filter_pert_temp ) then
+        else if ( field_name(i) .eq. filter_pert_temperature%name ) then
           iphys%i_filter_par_t =   i0
         else if ( field_name(i) .eq. fhd_filter_comp ) then
           iphys%i_filter_comp =    i0

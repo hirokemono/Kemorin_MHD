@@ -59,7 +59,7 @@
 !
         else if (ele_fld%phys_name(i) .eq. fhd_temp) then
           iphys_ele%i_temp = i0
-        else if (ele_fld%phys_name(i) .eq. fhd_filter_temp) then
+        else if (ele_fld%phys_name(i) .eq. filter_temperature%name) then
           iphys_ele%i_filter_temp = i0
 !
         else if (ele_fld%phys_name(i) .eq. fhd_light) then
@@ -162,7 +162,7 @@
           if    (SGS_param%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF        &
      &     .or.  SGS_param%iflag_SGS.eq.id_SGS_similarity) then
             ele_fld%num_component(j) = 1
-            ele_fld%phys_name(j) = fhd_filter_temp
+            ele_fld%phys_name(j) = filter_temperature%name
             j = j + 1
           end if
         end if

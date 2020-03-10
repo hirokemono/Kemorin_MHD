@@ -93,16 +93,12 @@
 !
 !>        Field label for filtered temperature
 !!         @f$ \tilde{T} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_filter_temp =       'filter_temperature'
       type(field_def), parameter :: filter_temperature                  &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'filter_temperature',                      &
      &                math = '$ \tilde{T} $')
 !>        Field label for filtered perturbation of temperature
 !!         @f$ \tilde{\Theta} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_filter_pert_temp =  'filter_pert_temperature'
       type(field_def), parameter :: filter_pert_temperature             &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'filter_pert_temperature',                 &

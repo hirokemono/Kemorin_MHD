@@ -57,7 +57,7 @@
         call add_phys_name_ctl(fhd_vecp, field_ctl)
       end if
 !
-      if(check_field_list_ctl(fhd_filter_temp, field_ctl)) then
+      if(check_field_list_ctl(filter_temperature%name, field_ctl)) then
         call add_phys_name_ctl(fhd_temp, field_ctl)
       end if
       if(check_field_list_ctl(fhd_filter_comp, field_ctl)) then
@@ -70,7 +70,8 @@
         call add_phys_name_ctl(fhd_entropy, field_ctl)
       end if
 !
-      if(check_field_list_ctl(fhd_filter_pert_temp, field_ctl)) then
+      if(check_field_list_ctl(filter_pert_temperature%name,             &
+     &                        field_ctl)) then
         call add_phys_name_ctl(fhd_part_temp, field_ctl)
       end if
       if(check_field_list_ctl(fhd_filter_pert_comp, field_ctl)) then
@@ -107,9 +108,10 @@
      &                          field_ctl)
 !
       if(check_field_list_ctl(grad_filtered_temp%name, field_ctl))      &
-     &   call add_phys_name_ctl(fhd_filter_temp, field_ctl)
+     &   call add_phys_name_ctl(filter_temperature%name, field_ctl)
       if(check_field_list_ctl(grad_filtered_pert_temp%name, field_ctl)) &
-     &   call add_phys_name_ctl(fhd_filter_pert_temp, field_ctl)
+     &   call add_phys_name_ctl(filter_pert_temperature%name,           &
+     &                          field_ctl)
 !
       if(check_field_list_ctl(grad_filtered_comp%name, field_ctl))      &
      &   call add_phys_name_ctl(fhd_filter_comp, field_ctl)
