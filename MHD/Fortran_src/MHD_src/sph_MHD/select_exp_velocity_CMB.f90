@@ -28,7 +28,8 @@
 !!     &          fdm2_free_CMB, g_sph_rj, coef_diffuse,                &
 !!     &          is_velo, it_velo, is_viscous, ids_viscous, rj_fld)
 !!        Input:    ipol%i_velo, itor%i_velo
-!!        Solution: ipol%i_v_diffuse, itor%i_v_diffuse, idpdr%i_v_diffuse
+!!        Solution: ipol%diffusion%i_v_diffuse, 
+!!              itor%diffusion%i_v_diffuse, idpdr%diffusion%i_v_diffuse
 !!      subroutine sel_CMB_sph_vort_diffusion(sph_rj, sph_bc_U,         &
 !!     &          fdm2_free_CMB, g_sph_rj, coef_diffuse,                &
 !!     &          is_vort, is_w_diffuse, ids_w_diffuse, rj_fld)

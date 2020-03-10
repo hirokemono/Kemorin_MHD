@@ -332,7 +332,7 @@
 !
       if (iphys%ene_flux%i_vis_e_diffuse .gt. izero) then
         call cal_phys_dot_product                                       &
-     &     (iphys%i_velo, iphys%i_v_diffuse,                            &
+     &     (iphys%i_velo, iphys%diffusion%i_v_diffuse,                  &
      &      iphys%ene_flux%i_vis_e_diffuse, nod_fld)
       end if
 !

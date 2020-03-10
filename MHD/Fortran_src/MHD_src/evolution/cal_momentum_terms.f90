@@ -224,7 +224,7 @@
      &    iphys%i_velo, rhs_mat%fem_wk, rhs_mat%f_l)
 !
       call int_surf_velo_monitor                                        &
-     &  (iphys%i_v_diffuse, iak_diff_mf, iak_diff_lor,                  &
+     &  (iphys%diffusion%i_v_diffuse, iak_diff_mf, iak_diff_lor,        &
      &   ak_MHD%ak_d_velo, FEM_prm%npoint_t_evo_int,                    &
      &   SGS_param, cmt_param, node, ele, surf,                         &
      &   sf_grp, fl_prop, Vsf_bcs, Bsf_bcs, iphys, nod_fld,             &
@@ -240,9 +240,10 @@
 !
       call cal_ff_2_vector(node%numnod, node%istack_nod_smp,            &
      &    rhs_mat%f_l%ff, mlump_fl%ml, nod_fld%ntot_phys,               &
-     &    iphys%i_v_diffuse, nod_fld%d_fld)
+     &    iphys%diffusion%i_v_diffuse, nod_fld%d_fld)
 !
-      call vector_send_recv(iphys%i_v_diffuse, nod_comm, nod_fld)
+      call vector_send_recv                                             &
+     &   (iphys%diffusion%i_v_diffuse, nod_comm, nod_fld)
 !
       end subroutine cal_viscous_diffusion
 !

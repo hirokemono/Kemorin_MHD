@@ -246,13 +246,15 @@
       end if
 !
 !       Input: ipol%i_vort, itor%i_vort
-!       Solution: ipol%i_v_diffuse, itor%i_v_diffuse, idpdr%i_v_diffuse
-      if(ipol%i_v_diffuse .gt. 0) then
+!       Solution: ipol%diffusion%i_v_diffuse, itor%diffusion%i_v_diffuse,
+!                 idpdr%diffusion%i_v_diffuse
+      if(ipol%diffusion%i_v_diffuse .gt. 0) then
         if(iflag_debug.gt.0) write(*,*) 'const_sph_viscous_by_vort2'
         call const_sph_viscous_by_vort2(sph_rj, r_2nd,                  &
      &      sph_bc_U, fdm2_free_ICB, fdm2_free_CMB,                     &
      &      leg%g_sph_rj, fl_prop%coef_diffuse,                         &
-     &      ipol%i_velo, ipol%i_vort, ipol%i_v_diffuse, rj_fld)
+     &      ipol%i_velo, ipol%i_vort, ipol%diffusion%i_v_diffuse,       &
+     &      rj_fld)
       end if
 !
 !       Input:    ipol%i_vort, itor%i_vort

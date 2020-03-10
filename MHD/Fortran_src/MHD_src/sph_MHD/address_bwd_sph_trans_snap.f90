@@ -68,8 +68,9 @@
 !
       call add_field_name_4_sph_trns_snap                               &
      &   (viscous_diffusion%name, viscous_diffusion%n_comp,             &
-     &    ipol%i_v_diffuse, itor%i_v_diffuse, iphys%i_v_diffuse,        &
-     &    b_trns%i_v_diffuse, trns_back)
+     &    ipol%diffusion%i_v_diffuse, itor%diffusion%i_v_diffuse,       &
+     &    iphys%diffusion%i_v_diffuse, b_trns%diffusion%i_v_diffuse,    &
+     &    trns_back)
       call add_field_name_4_sph_trns_snap                               &
      &   (vorticity_diffusion%name, vorticity_diffusion%n_comp,         &
      &    ipol%diffusion%i_w_diffuse, itor%diffusion%i_w_diffuse,       &

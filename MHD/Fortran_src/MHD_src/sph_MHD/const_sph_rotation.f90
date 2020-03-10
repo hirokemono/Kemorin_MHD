@@ -39,7 +39,8 @@
 !!     &          g_sph_rj, coef_diffuse, is_velo, is_vort, is_viscous, &
 !!     &          rj_fld)
 !!        Input:    ipol%i_vort, itor%i_vort
-!!        Solution: ipol%i_v_diffuse, itor%i_v_diffuse, idpdr%i_v_diffuse
+!!        Solution: ipol%diffusion%i_v_diffuse, 
+!!              itor%diffusion%i_v_diffuse, idpdr%diffusion%i_v_diffuse
 !!
 !!      subroutine const_sph_mag_diffuse_by_j                           &
 !!     &         (sph_rj, r_2nd, sph_bc_B, g_sph_rj, coef_diffuse,      &

@@ -12,7 +12,8 @@
 !!     &          g_sph_rj, coef_diffuse, is_velo, it_velo, is_viscous, &
 !!     &          rj_fld)
 !!        Input:    ipol%i_velo, itor%i_velo
-!!        Solution: ipol%i_v_diffuse, itor%i_v_diffuse, idpdr%i_v_diffuse
+!!        Solution: ipol%diffusion%i_v_diffuse,
+!!               itor%diffusion%i_v_diffuse, idpdr%diffusion%i_v_diffuse
 !!      subroutine const_sph_vorticirty_diffusion                       &
 !!     &         (sph_rj, r_2nd, sph_bc_U, fdm2_free_ICB, fdm2_free_CMB,&
 !!     &          g_sph_rj, coef_diffuse, is_vort, is_w_diffuse, rj_fld)

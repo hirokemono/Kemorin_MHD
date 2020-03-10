@@ -140,10 +140,6 @@
 !!         @f$ \partial_{i} \bar{A}_{i} @f$
         integer (kind=kint) :: i_div_filter_a =    izero
 !
-!>        start address for viscous diffusion
-!!         @f$ \nu \partial_{j}\partial_{j} u_{i} @f$
-        integer (kind=kint) :: i_v_diffuse =       izero
-
 !  arrays for current forces
 !
 !>        start address for total forces

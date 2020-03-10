@@ -199,7 +199,7 @@
       end if
 !
 !
-      if (i_field .eq. iphys%i_v_diffuse) then
+      if (i_field .eq. iphys%diffusion%i_v_diffuse) then
         call int_sf_grad_velocity(node, ele, surf, sf_grp,              &
      &      g_FEM, jac_sf_grp, rhs_tbl, Vsf_bcs%grad,                   &
      &      num_int, ak_d_velo, fem_wk, f_l)

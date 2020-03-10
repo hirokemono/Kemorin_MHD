@@ -366,7 +366,7 @@
      &      diff_coefs, mk_MHD%mlump_fl, rhs_mat, nod_fld)
       end if
 !
-      if (iphys%i_v_diffuse .gt. izero) then
+      if (iphys%diffusion%i_v_diffuse .gt. izero) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &             write(*,*) 'lead  ', trim(viscous_diffusion%name)
         call cal_viscous_diffusion                                      &

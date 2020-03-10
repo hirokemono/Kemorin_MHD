@@ -116,8 +116,8 @@
      &    itor%dbl_filter_grad%i_grad_composit,                         &
      &    idpdr%dbl_filter_grad%i_grad_composit)
 !
-      call set_vect_sph_address(ipol%i_v_diffuse, itor%i_v_diffuse,     &
-     &    idpdr%i_v_diffuse)
+      call set_vect_sph_address(ipol%diffusion%i_v_diffuse,             &
+     &    itor%diffusion%i_v_diffuse, idpdr%diffusion%i_v_diffuse)
       call set_vect_sph_address(ipol%diffusion%i_w_diffuse,             &
      &    itor%diffusion%i_w_diffuse, idpdr%diffusion%i_w_diffuse)
       call set_vect_sph_address(ipol%diffusion%i_vp_diffuse,            &

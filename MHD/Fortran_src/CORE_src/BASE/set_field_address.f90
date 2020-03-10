@@ -47,6 +47,7 @@
       use t_base_force_labels
       use t_diff_vector_labels
       use t_field_product_labels
+      use t_diffusion_term_labels
       use t_SGS_term_labels
       use t_SGS_enegy_flux_labels
       use t_SGS_model_coef_labels
@@ -140,19 +141,6 @@
           iphys%i_div_filter_b =    i0
         else if ( field_name(i) .eq. div_filtered_vector_potential%name ) then
           iphys%i_div_filter_a =    i0
-!
-        else if (field_name(i) .eq. thermal_diffusion%name) then
-          iphys%diffusion%i_t_diffuse =  i0
-        else if (field_name(i) .eq. viscous_diffusion%name) then
-          iphys%i_v_diffuse =  i0
-        else if (field_name(i) .eq. vorticity_diffusion%name) then
-          iphys%diffusion%i_w_diffuse =  i0
-        else if (field_name(i) .eq. vector_potential_diffusion%name) then
-          iphys%diffusion%i_vp_diffuse = i0
-        else if (field_name(i) .eq. magnetic_diffusion%name) then
-          iphys%diffusion%i_b_diffuse =  i0
-        else if (field_name(i) .eq. composition_diffusion%name) then
-          iphys%diffusion%i_c_diffuse =  i0
         end if
 !
         call set_base_force_addresses                                   &
@@ -161,6 +149,8 @@
      &     (i0, field_name(i), iphys%ene_flux, flag)
         call set_div_force_addresses                                    &
      &     (i0, field_name(i), iphys%div_forces, flag)
+        call set_base_diffusion_addresses                               &
+     &     (i0, field_name(i), iphys%diffusion, flag)
         call set_field_product_addresses                                &
      &     (i0, field_name(i), iphys%prod_fld, flag)
 !
@@ -231,10 +221,7 @@
         call set_dble_fil_grad_addresses                                &
      &     (i0, field_name(i), iphys%dbl_filter_grad, flag)
 !
-        if ( field_name(i) .eq. div_viscousity%name ) then
-          iphys%diffusion%i_div_viscous =    i0
-!
-        else if ( field_name(i) .eq. fhd_forces ) then
+        if ( field_name(i) .eq. fhd_forces ) then
           iphys%i_forces =     i0
         else if ( field_name(i) .eq. fhd_rot_forces ) then
           iphys%i_rot_forces = i0
