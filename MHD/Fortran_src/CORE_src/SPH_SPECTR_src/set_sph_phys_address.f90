@@ -118,8 +118,8 @@
 !
       call set_vect_sph_address(ipol%i_v_diffuse, itor%i_v_diffuse,     &
      &    idpdr%i_v_diffuse)
-      call set_vect_sph_address(ipol%i_w_diffuse, itor%i_w_diffuse,     &
-     &    idpdr%i_w_diffuse)
+      call set_vect_sph_address(ipol%diffusion%i_w_diffuse,             &
+     &    itor%diffusion%i_w_diffuse, idpdr%diffusion%i_w_diffuse)
       call set_vect_sph_address(ipol%diffusion%i_vp_diffuse,            &
      &    itor%diffusion%i_vp_diffuse, idpdr%diffusion%i_vp_diffuse)
       call set_vect_sph_address(ipol%diffusion%i_b_diffuse,             &

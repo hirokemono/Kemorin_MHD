@@ -143,9 +143,6 @@
 !>        start address for viscous diffusion
 !!         @f$ \nu \partial_{j}\partial_{j} u_{i} @f$
         integer (kind=kint) :: i_v_diffuse =       izero
-!>        start address for diffusion of vorticity
-!!         @f$ \nu \partial_{j}\partial_{j} \omega_{i} @f$
-        integer (kind=kint) :: i_w_diffuse =       izero
 
 !  arrays for current forces
 !

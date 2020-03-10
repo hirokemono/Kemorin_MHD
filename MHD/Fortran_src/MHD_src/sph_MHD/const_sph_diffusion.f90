@@ -18,7 +18,8 @@
 !!     &          g_sph_rj, coef_diffuse, is_vort, is_w_diffuse, rj_fld)
 !!     &          is_vort, is_w_diffuse, rj_fld)
 !!        Input:    ipol%i_vort, itor%i_vort
-!!        Solution: ipol%i_w_diffuse, itor%i_w_diffuse, idpdr%i_w_diffuse
+!!        Solution: ipol%diffusion%i_w_diffuse,
+!!               itor%diffusion%i_w_diffuse, idpdr%diffusion%i_w_diffuse
 !!
 !!      subroutine const_sph_magnetic_diffusion(sph_rj, r_2nd, sph_bc_B,&
 !!     &          g_sph_rj, coef_diffuse, is_magne, is_ohmic, rj_fld)

@@ -77,13 +77,13 @@
 !$omp parallel do private (inod)
       do inod = ist, ied
         d_rj(inod,ipol%i_vort) = d_rj(inod,ipol%i_vort)                 &
-     &                 + dt * (coef_exp * d_rj(inod,ipol%i_w_diffuse)   &
-     &                         + adam_0 * d_rj(inod,ipol%i_forces)      &
-     &                         + adam_1 * d_rj(inod,ipol%i_pre_mom))
+     &         + dt * (coef_exp * d_rj(inod,ipol%diffusion%i_w_diffuse) &
+     &                 + adam_0 * d_rj(inod,ipol%i_forces)              &
+     &                 + adam_1 * d_rj(inod,ipol%i_pre_mom))
         d_rj(inod,itor%i_vort) = d_rj(inod,itor%i_vort)                 &
-     &                 + dt * (coef_exp * d_rj(inod,itor%i_w_diffuse)   &
-     &                         + adam_0 * d_rj(inod,itor%i_forces)      &
-     &                         + adam_1 * d_rj(inod,itor%i_pre_mom))
+     &         + dt * (coef_exp * d_rj(inod,itor%diffusion%i_w_diffuse) &
+     &                 + adam_0 * d_rj(inod,itor%i_forces)              &
+     &                 + adam_1 * d_rj(inod,itor%i_pre_mom))
 !
         d_rj(inod,ipol%i_pre_mom) = d_rj(inod,ipol%i_forces)
         d_rj(inod,itor%i_pre_mom) = d_rj(inod,itor%i_forces)
@@ -110,12 +110,12 @@
 !$omp parallel do private (inod)
       do inod = ist, ied
         d_rj(inod,ipol%i_vort) = d_rj(inod,ipol%i_vort)                 &
-     &               + dt * (coef_exp *  d_rj(inod,ipol%i_w_diffuse)    &
-     &                                 + d_rj(inod,ipol%i_forces) )
+     &        + dt * (coef_exp *  d_rj(inod,ipol%diffusion%i_w_diffuse) &
+     &                          + d_rj(inod,ipol%i_forces) )
 !
         d_rj(inod,itor%i_vort) = d_rj(inod,itor%i_vort)                 &
-     &               + dt * (coef_exp *  d_rj(inod,itor%i_w_diffuse)    &
-     &                                 + d_rj(inod,itor%i_forces) )
+     &        + dt * (coef_exp *  d_rj(inod,itor%diffusion%i_w_diffuse) &
+     &                          + d_rj(inod,itor%i_forces) )
        end do
 !$omp end parallel do
 !

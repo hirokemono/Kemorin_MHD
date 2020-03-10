@@ -33,7 +33,8 @@
 !!     &          fdm2_free_CMB, g_sph_rj, coef_diffuse,                &
 !!     &          is_vort, is_w_diffuse, ids_w_diffuse, rj_fld)
 !!        Input:    ipol%i_vort, itor%i_vort
-!!        Solution: ipol%i_w_diffuse, itor%i_w_diffuse, idpdr%i_w_diffuse
+!!        Solution: ipol%diffusion%i_w_diffuse, 
+!!              itor%diffusion%i_w_diffuse, idpdr%diffusion%i_w_diffuse
 !!          type(sph_rj_grid), intent(in) :: sph_rj
 !!          type(sph_boundary_type), intent(in) :: sph_bc_U
 !!          type(sph_vector_BC_coef), intent(in) :: CMB_Uspec

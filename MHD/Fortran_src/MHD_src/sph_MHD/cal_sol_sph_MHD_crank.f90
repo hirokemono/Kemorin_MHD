@@ -256,13 +256,14 @@
       end if
 !
 !       Input:    ipol%i_vort, itor%i_vort
-!       Solution: ipol%i_w_diffuse, itor%i_w_diffuse, idpdr%i_w_diffuse
-      if(ipol%i_w_diffuse .gt. 0) then
+!       Solution: ipol%diffusion%i_w_diffuse, itor%diffusion%i_w_diffuse,
+!                 idpdr%diffusion%i_w_diffuse
+      if(ipol%diffusion%i_w_diffuse .gt. 0) then
         if(iflag_debug.gt.0) write(*,*)'const_sph_vorticirty_diffusion'
         call const_sph_vorticirty_diffusion(sph_rj, r_2nd,              &
      &      sph_bc_U, fdm2_free_ICB, fdm2_free_CMB,                     &
      &      leg%g_sph_rj, fl_prop%coef_diffuse,                         &
-     &      ipol%i_vort, ipol%i_w_diffuse, rj_fld)
+     &      ipol%i_vort, ipol%diffusion%i_w_diffuse, rj_fld)
       end if
 !
       end subroutine update_after_vorticity_sph
