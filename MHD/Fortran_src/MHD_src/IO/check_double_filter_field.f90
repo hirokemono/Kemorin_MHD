@@ -54,7 +54,7 @@
      &  call add_phys_name_ctl(filter_magne%name, field_ctl)
       if(check_field_list_ctl(wide_filter_vector_potential%name,        &
      &                        field_ctl))                               &
-     &  call add_phys_name_ctl(fhd_filter_vecp, field_ctl)
+     &  call add_phys_name_ctl(filter_vector_potential%name, field_ctl)
 !
       if(check_field_list_ctl(wide_filter_temp%name, field_ctl))        &
      &  call add_phys_name_ctl(fhd_filter_temp, field_ctl)
@@ -106,7 +106,7 @@
      &  call add_phys_name_ctl(filter_magne%name, field_ctl)
       if(check_field_list_ctl(double_filter_vector_potential%name,      &
      &                        field_ctl))                               &
-     &  call add_phys_name_ctl(fhd_filter_vecp, field_ctl)
+     &  call add_phys_name_ctl(filter_vector_potential%name, field_ctl)
 !
       if(check_field_list_ctl(double_filter_temp%name, field_ctl))      &
      &  call add_phys_name_ctl(fhd_filter_temp, field_ctl)

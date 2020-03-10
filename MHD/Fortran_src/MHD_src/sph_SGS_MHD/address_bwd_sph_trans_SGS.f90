@@ -70,8 +70,8 @@
      &    ipol%i_filter_magne, itor%i_filter_magne,                     &
      &    iphys%i_filter_magne, b_trns%i_filter_magne, trns_back)
 !   filtered current density
-      call add_field_name_4_sph_trns                                    &
-     &   (ipol%i_filter_current, fhd_filter_current, n_vector,          &
+      call add_field_name_4_sph_trns(ipol%i_filter_current,             &
+     &    filter_current%name, filter_current%n_comp,                   &
      &    ipol%i_filter_current, itor%i_filter_current,                 &
      &    iphys%i_filter_current, b_trns%i_filter_current, trns_back)
 !

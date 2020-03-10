@@ -80,21 +80,16 @@
      &                math = '$ \tilde{B}_{i} $')
 !>        Field label for filtered current density
 !!         @f$ \tilde{J}_{i} @f$
-      character(len=kchara), parameter                                  &
-     &            :: fhd_filter_current = 'filter_current'
       type(field_def), parameter :: filter_current                      &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'filter_current',                          &
      &                math = '$ \tilde{J}_{i} $')
 !>        Field label for filtered vetor potential
 !!         @f$ \tilde{A}_{i} @f$
-      character(len=kchara), parameter                                  &
-     &            :: fhd_filter_vecp = 'filter_vector_potential'
       type(field_def), parameter :: filter_vector_potential             &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'filter_vector_potential',                 &
      &                math = '$ \tilde{A}_{i} $')
-!
 !
 !>        Field label for filtered temperature
 !!         @f$ \tilde{T} @f$

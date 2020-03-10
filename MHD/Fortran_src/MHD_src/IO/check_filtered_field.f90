@@ -42,7 +42,7 @@
       if(check_field_list_ctl(filter_vorticity%name, field_ctl)) then
         call add_phys_name_ctl(filter_velocity%name, field_ctl)
       end if
-      if(check_field_list_ctl(fhd_filter_current, field_ctl)) then
+      if(check_field_list_ctl(filter_current%name, field_ctl)) then
         call add_phys_name_ctl(filter_magne%name, field_ctl)
       end if
 !
@@ -52,7 +52,8 @@
       if(check_field_list_ctl(filter_magne%name, field_ctl)) then
         call add_phys_name_ctl(fhd_magne, field_ctl)
       end if
-      if(check_field_list_ctl(fhd_filter_vecp, field_ctl)) then
+      if(check_field_list_ctl(filter_vector_potential%name,             &
+     &                        field_ctl)) then
         call add_phys_name_ctl(fhd_vecp, field_ctl)
       end if
 !
@@ -102,7 +103,8 @@
      &   call add_phys_name_ctl(filter_magne%name, field_ctl)
       if(check_field_list_ctl(div_filtered_vector_potential%name,       &
      &                        field_ctl))                               &
-     &   call add_phys_name_ctl(fhd_filter_vecp, field_ctl)
+     &   call add_phys_name_ctl(filter_vector_potential%name,           &
+     &                          field_ctl)
 !
       if(check_field_list_ctl(grad_filtered_temp%name, field_ctl))      &
      &   call add_phys_name_ctl(fhd_filter_temp, field_ctl)
@@ -155,11 +157,11 @@
       if(   check_field_list_ctl(grad_filtered_a_1%name, field_ctl)     &
      & .or. check_field_list_ctl(grad_filtered_a_2%name, field_ctl)     &
      & .or. check_field_list_ctl(grad_filtered_a_3%name, field_ctl))    &
-     &  call add_phys_name_ctl(fhd_filter_vecp, field_ctl)
+     &  call add_phys_name_ctl(filter_vector_potential%name, field_ctl)
       if(   check_field_list_ctl(grad_filtered_j_1%name, field_ctl)     &
      & .or. check_field_list_ctl(grad_filtered_j_2%name, field_ctl)     &
      & .or. check_field_list_ctl(grad_filtered_j_3%name, field_ctl))    &
-     &  call add_phys_name_ctl(fhd_filter_current, field_ctl)
+     &  call add_phys_name_ctl(filter_current%name, field_ctl)
 !
       end subroutine add_field_ctl_4_diff_fil_vect
 !

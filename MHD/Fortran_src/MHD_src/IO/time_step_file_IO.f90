@@ -111,8 +111,10 @@
           end if
 !
         else if(msq_list%ifld_msq(i) .eq. iphys%i_filter_vecp) then
-          if(msq_list%field_name(i) .eq. fhd_filter_vecp) then
-            call vector_label_4_step(id_ave, id_msq, fhd_filter_vecp)
+          if(msq_list%field_name(i)                                     &
+     &                      .eq. filter_vector_potential%name) then
+            call vector_label_4_step                                    &
+     &         (id_ave, id_msq, filter_vector_potential%name)
             call scalar_label_4_step(id_ave, id_msq, e_hd_fil_div_a)
           else if(msq_list%field_name(i) .eq. e_hd_fil_div_a) then
             call scalar_label_4_step(id_ave, id_msq, e_hd_fil_div_a)

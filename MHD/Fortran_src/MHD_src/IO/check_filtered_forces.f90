@@ -51,7 +51,7 @@
       if(check_field_list_ctl(Lorentz_force_by_filtered%name,           &
      &                        field_ctl)) then
          call add_phys_name_ctl(filter_magne%name, field_ctl)
-         call add_phys_name_ctl(fhd_filter_current, field_ctl)
+         call add_phys_name_ctl(filter_current%name, field_ctl)
       end if
       if(     check_field_list_ctl(magnetic_tension_by_filtered%name,   &
      &                             field_ctl)                           &

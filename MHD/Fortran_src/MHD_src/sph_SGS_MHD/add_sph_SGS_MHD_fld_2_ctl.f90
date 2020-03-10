@@ -86,7 +86,7 @@
 !
       if(SGS_param%iflag_SGS_lorentz .eq. id_SGS_similarity) then
         call add_phys_name_ctl(filter_magne%name, field_ctl)
-        call add_phys_name_ctl(fhd_filter_current, field_ctl)
+        call add_phys_name_ctl(filter_current%name, field_ctl)
       else if(SGS_param%iflag_SGS_lorentz .eq. id_SGS_NL_grad) then
         call add_phys_name_ctl(grad_j_1%name, field_ctl)
         call add_phys_name_ctl(grad_j_2%name, field_ctl)
@@ -186,7 +186,7 @@
         call add_phys_name_ctl(wide_filter_current%name, field_ctl)
       else if(SGS_param%iflag_SGS_lorentz .eq. id_SGS_NL_grad) then
         call add_phys_name_ctl(filter_magne%name, field_ctl)
-        call add_phys_name_ctl(fhd_filter_current, field_ctl)
+        call add_phys_name_ctl(filter_current%name, field_ctl)
       end if
 !
       if(SGS_param%iflag_SGS_uxb .eq. id_SGS_similarity) then

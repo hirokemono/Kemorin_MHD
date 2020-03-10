@@ -110,7 +110,8 @@
           if(      field_ctl%c1_tbl(i) .eq. fhd_velo) then
             call add_phys_name_ctl(filter_velocity%name, field_ctl)
           else if( field_ctl%c1_tbl(i) .eq. fhd_vecp) then
-            call add_phys_name_ctl(fhd_filter_vecp, field_ctl)
+            call add_phys_name_ctl                                      &
+     &         (filter_vector_potential%name, field_ctl)
           else if( field_ctl%c1_tbl(i) .eq. fhd_magne) then
             call add_phys_name_ctl(filter_magne%name, field_ctl)
           else if( field_ctl%c1_tbl(i) .eq. fhd_temp) then
@@ -129,7 +130,8 @@
           if(      field_ctl%c1_tbl(i) .eq. filter_velocity%name) then
             call add_phys_name_ctl                                      &
      &         (wide_filter_velocity%name, field_ctl)
-          else if( field_ctl%c1_tbl(i) .eq. fhd_filter_vecp) then
+          else if( field_ctl%c1_tbl(i)                                  &
+     &                         .eq. filter_vector_potential%name) then
             call add_phys_name_ctl                                      &
      &         (wide_filter_vector_potential%name, field_ctl)
           else if( field_ctl%c1_tbl(i) .eq. filter_magne%name) then

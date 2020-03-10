@@ -78,9 +78,9 @@
 !
       if (   (phys_nod_name_ctl .eq. filter_velocity%name        )           &
      &  .or. (phys_nod_name_ctl .eq. filter_vorticity%name        )           &
-     &  .or. (phys_nod_name_ctl .eq. fhd_filter_vecp        )           &
+     &  .or. (phys_nod_name_ctl .eq. filter_vector_potential%name        )           &
      &  .or. (phys_nod_name_ctl .eq. filter_magne%name       )           &
-     &  .or. (phys_nod_name_ctl .eq. fhd_filter_current     )           &
+     &  .or. (phys_nod_name_ctl .eq. filter_current%name     )           &
      &      )   iflag = 1
 !
       if (   (phys_nod_name_ctl .eq. geostrophic_balance%name)          &

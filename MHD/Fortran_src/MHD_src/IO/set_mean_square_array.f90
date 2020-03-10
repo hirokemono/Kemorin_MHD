@@ -147,7 +147,7 @@
             msq_list%numave = msq_list%numave + 4
           end if
 !
-          if(field_name .eq. fhd_filter_vecp) then
+          if(field_name .eq. filter_vector_potential%name) then
             call set_rms_address                                        &
      &         (field_name, n_scalar, iphys%i_filter_vecp,              &
      &          i_rms%i_filter_vecp, j_ave%i_filter_vecp, msq_list)
@@ -359,7 +359,7 @@
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_filter_vort,             &
      &          i_rms%i_filter_vort, j_ave%i_filter_vort, msq_list)
-          else if ( field_name .eq. fhd_filter_current ) then
+          else if ( field_name .eq. filter_current%name ) then
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_filter_current,          &
      &          i_rms%i_filter_current, j_ave%i_filter_current,         &
@@ -414,7 +414,7 @@
             call set_rms_address                                        &
      &         (e_hd_fil_div_b, n_scalar, iphys%i_filter_magne,         &
      &          i_rms%i_div_filter_b, j_ave%i_div_filter_b, msq_list)
-          else if ( field_name .eq. fhd_filter_vecp ) then
+          else if ( field_name .eq. filter_vector_potential%name ) then
             call set_rms_address                                        &
      &         (e_hd_fil_div_a, n_scalar, iphys%i_div_filter_a,         &
      &          i_rms%i_div_filter_a, j_ave%i_div_filter_a, msq_list)
