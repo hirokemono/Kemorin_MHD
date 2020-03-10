@@ -18,6 +18,7 @@
       use t_base_force_labels
       use t_energy_flux_labels
       use t_grad_field_labels
+      use t_diffusion_term_labels
       use t_field_product_labels
       use t_diff_vector_labels
       use t_SGS_term_labels
@@ -223,6 +224,7 @@
         integer (kind=kint) :: i_viscosity =   izero
 !>        start address for thermal diffusivity @f$ k @f$
         integer (kind=kint) :: i_T_conductivity =   izero
+        integer (kind=kint) :: i_C_conductivity =   izero
 !
 !>        start address for kinetic viscosity
         integer (kind=kint) :: i_K_viscosity =   izero
@@ -273,6 +275,11 @@
         type(base_force_address) :: rot_frc_by_filter
 !>        Structure of divergence of forces by filtered field
         type(base_force_address) :: div_frc_by_filter
+!
+!>        Structure of diffusion terms
+        type(diffusion_address) :: diffusion
+!>        Structure of diffusivities
+        type(diffusivity_adress) :: diffusivity
 !
 !>        Structure of energy fluxes by filtered field
         type(energy_flux_address) :: eflux_by_filter

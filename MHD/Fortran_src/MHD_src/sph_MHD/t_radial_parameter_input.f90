@@ -315,18 +315,15 @@
       subroutine set_num_comp_r_params(field_name, ncomp)
 !
       use m_phys_labels
+      use t_diffusion_term_labels
       use skip_comment_f
 !
       character(len=kchara), intent(in) :: field_name
       integer(kind = kint), intent(inout) :: ncomp
 !
 !
-      if(    cmp_no_case(field_name, fhd_K_viscosity)                   &
-     &  .or. cmp_no_case(field_name, fhd_T_diffusivity)                 &
-     &  .or. cmp_no_case(field_name, fhd_C_diffusivity)                 &
-     &  .or. cmp_no_case(field_name, fhd_B_diffusivity)                 &
-     &  .or. cmp_no_case(field_name, fhd_ref_density))                  &
-     &      ncomp = 3
+      if(check_diffusivity(field_name)) ncomp = 3
+      if(cmp_no_case(field_name, fhd_ref_density)) ncomp = 3
 !
       if(    cmp_no_case(field_name, fhd_ref_temp)                      &
      &  .or. cmp_no_case(field_name, fhd_ref_light))                    &

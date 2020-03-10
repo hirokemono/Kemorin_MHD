@@ -28,21 +28,23 @@
 !!
 !! field names 
 !!
-!!   viscous_diffusion    [i_v_diffuse]:
-!!   viscous_diffusion    [i_w_diffuse]:
-!!   viscous_diffusion    [i_vp_diffuse]:
-!!   viscous_diffusion    [i_b_diffuse]:
-!!   viscous_diffusion    [i_t_diffuse]:
-!!   viscous_diffusion    [i_c_diffuse]:
+!!   viscous_diffusion             [diffusion%i_v_diffuse]:
+!!   vorticity_diffusion           [diffusion%i_w_diffuse]:
+!!   vector_potential_diffusion    [diffusion%i_vp_diffuse]:
+!!   magnetic_diffusion            [diffusion%i_b_diffuse]:
+!!   thermal_diffusion             [diffusion%i_t_diffuse]:
+!!   composition_diffusion         [diffusion%i_c_diffuse]:
 !!
-!!   viscous_diffusion    [i_div_viscous]:
+!!   div_viscousity                [diffusion%i_div_viscous]:
 !!
-!!   viscous_diffusion    [i_viscosity]:
-!!   viscous_diffusion    [i_T_conductivity]:
-!!   viscous_diffusion    [i_K_viscosity]:
-!!   viscous_diffusion    [i_B_diffusivity]:
-!!   viscous_diffusion    [i_T_diffusivity]:
-!!   viscous_diffusion    [i_C_diffusivity]:
+!!   viscosity                     [diffusivity%i_viscosity]:
+!!   thermal_conductivity          [diffusivity%i_T_conductivity]:
+!!   chemical_conductivity         [diffusivity%i_C_conductivity]:
+!!
+!!   kinetic_viscosity             [diffusivity%i_K_viscosity]:
+!!   magnetic_diffusivity          [diffusivity%i_B_diffusivity]:
+!!   thermal_diffusivity           [diffusivity%i_T_diffusivity]:
+!!   chemical_diffusivity          [diffusivity%i_C_diffusivity]:
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!@endverbatim
@@ -58,7 +60,7 @@
 !>      Numbder of diffusion terms
       integer(kind = kint), parameter, private :: ndiffusion = 7
 !>      Numbder of diffusivities
-      integer(kind = kint), parameter, private :: ndiffusivities= 6
+      integer(kind = kint), parameter, private :: ndiffusivities = 7
 !
 !
 !>        Field label for viscous diffusion
@@ -113,50 +115,44 @@
 !
 !>        Field label for kinetic viscosity
 !>                               @f$ \nu = \mu / \bar{\rho} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_K_viscosity =      'kinetic_viscosity'
       type(field_def), parameter :: kinetic_viscosity                   &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'kinetic_viscosity',                       &
      &                math = '$ \nu = \mu / \bar{\rho} $')
 !
 !>        Field label for magnetic diffusivity @f$ \eta @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_B_diffusivity =    'magnetic_diffusivity'
       type(field_def), parameter :: magnetic_diffusivity                &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'magnetic_diffusivity',                    &
      &                math = '$ \eta $')
 !>        Field label for thermal diffusivity 
 !!                               @f$ \kappa_{T} = k / \bar{\rho} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_T_diffusivity =    'thermal_diffusivity'
+
       type(field_def), parameter :: thermal_diffusivity                 &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'thermal_diffusivity',                     &
      &                math = '$ \kappa_{T} = k / \bar{\rho} $')
 !>        Field label for chemical diffusivity  @f$ \kappa_{C} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_C_diffusivity =    'chemical_diffusivity'
       type(field_def), parameter :: chemical_diffusivity                &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'chemical_diffusivity',                    &
      &                math = '$ \kappa_{C} $')
 !
 !>        Field label for viscosity   @f$ \mu @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_viscosity =        'viscosity'
       type(field_def), parameter :: viscosity                           &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'viscosity',                               &
      &                math = '$ \mu $')
 !>        Field label for thermal diffusivity @f$ k_{T} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_T_conductivity =   'thermal_conductivity'
       type(field_def), parameter :: thermal_conductivity                &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'thermal_conductivity',                    &
      &                math = '$ k_{T} $')
+!>        Field label for chemical diffusivity @f$ k_{C} @f$
+      type(field_def), parameter :: chemical_conductivity               &
+     &    = field_def(n_comp = n_vector,                                &
+     &                name = 'chemical_conductivity',                   &
+     &                math = '$ k_{C} $')
 !
 !
       type diffusion_address
@@ -187,8 +183,10 @@
       type diffusivity_adress
 !>        start address for viscosity   @f$ \mu @f$
         integer (kind=kint) :: i_viscosity =   izero
-!>        start address for thermal diffusivity @f$ k @f$
+!>        start address for thermal diffusivity @f$ k_{T} @f$
         integer (kind=kint) :: i_T_conductivity =   izero
+!>        start address for thermal diffusivity @f$ k_{C} @f$
+        integer (kind=kint) :: i_C_conductivity =   izero
 !
 !>        start address for kinetic viscosity
         integer (kind=kint) :: i_K_viscosity =   izero
@@ -246,7 +244,8 @@
      &   .or. (field_name .eq. thermal_diffusivity%name)                &
      &   .or. (field_name .eq. chemical_diffusivity%name)               &
      &   .or. (field_name .eq. viscosity%name)                          &
-     &   .or. (field_name .eq. thermal_conductivity%name)
+     &   .or. (field_name .eq. thermal_conductivity%name)               &
+     &   .or. (field_name .eq. chemical_conductivity%name)
 !
       end function check_diffusivity
 !
@@ -313,6 +312,8 @@
           diffusivity%i_viscosity =      i_phys
         else if (field_name .eq. thermal_conductivity%name) then
           diffusivity%i_T_conductivity = i_phys
+        else if (field_name .eq. chemical_conductivity%name) then
+          diffusivity%i_C_conductivity = i_phys
         end if
       end if
 !
@@ -383,6 +384,8 @@
      &    n_comps( 5), names( 5), maths( 5))
       call set_field_labels(thermal_conductivity,                       &
      &    n_comps( 6), names( 6), maths( 6))
+      call set_field_labels(chemical_conductivity,                      &
+     &    n_comps( 7), names( 7), maths( 7))
 !
       end subroutine set_base_diffusivity_labels
 !

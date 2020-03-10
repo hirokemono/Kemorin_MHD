@@ -308,11 +308,11 @@ t_poloidal_rotation.o: $(MHD_SPH_DIR)/t_poloidal_rotation.f90 m_precision.o m_co
 	$(F90) -c $(F90OPTFLAGS) $<
 t_radial_fem_jacobian.o: $(MHD_SPH_DIR)/t_radial_fem_jacobian.f90 m_precision.o m_constants.o t_fem_gauss_int_coefs.o t_shape_functions.o cal_shape_function_1d.o cal_jacobian_1d.o m_gauss_int_parameters.o set_integration_indices.o set_gauss_int_parameters.o m_geometry_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_radial_field.o: $(MHD_SPH_DIR)/t_radial_field.f90 m_precision.o m_constants.o m_machine_parameter.o m_phys_constants.o t_phys_data.o t_phys_address.o t_physical_property.o t_reference_scalar_param.o t_radial_parameter_input.o skip_comment_f.o m_phys_labels.o
+t_radial_field.o: $(MHD_SPH_DIR)/t_radial_field.f90 m_precision.o m_constants.o m_machine_parameter.o m_phys_constants.o t_phys_data.o t_phys_address.o t_physical_property.o t_reference_scalar_param.o t_radial_parameter_input.o skip_comment_f.o m_phys_labels.o t_diffusion_term_labels.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_radial_matrices_sph_MHD.o: $(MHD_SPH_DIR)/t_radial_matrices_sph_MHD.f90 m_precision.o t_spheric_rj_data.o t_sph_matrices.o t_sph_matrix.o check_sph_radial_mat.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_radial_parameter_input.o: $(MHD_SPH_DIR)/t_radial_parameter_input.f90 m_precision.o m_machine_parameter.o skip_comment_f.o t_boundary_params_sph_MHD.o m_phys_labels.o
+t_radial_parameter_input.o: $(MHD_SPH_DIR)/t_radial_parameter_input.f90 m_precision.o m_machine_parameter.o skip_comment_f.o t_boundary_params_sph_MHD.o m_phys_labels.o t_diffusion_term_labels.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_radial_reference_temp.o: $(MHD_SPH_DIR)/t_radial_reference_temp.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<

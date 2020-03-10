@@ -156,6 +156,7 @@
      &         (rfld, d_rad, irad, icou)
 !
       use m_phys_labels
+      use t_diffusion_term_labels
       use t_radial_parameter_input
       use skip_comment_f
 !
@@ -171,14 +172,22 @@
         d_rad%istack_component(icou) = d_rad%istack_component(icou-1)   &
      &                                + d_rad%num_component(icou)
 !
-      if(cmp_no_case(rfld%r_param_name, fhd_K_viscosity))               &
+      if(cmp_no_case(rfld%r_param_name, viscosity%name))        &
+     &      irad%i_viscosity =   d_rad%istack_component(icou-1) + 1
+      if(cmp_no_case(rfld%r_param_name, thermal_conductivity%name))     &
+     &      irad%i_T_conductivity =   d_rad%istack_component(icou-1) + 1
+      if(cmp_no_case(rfld%r_param_name, chemical_conductivity%name))    &
+     &      irad%i_C_conductivity =   d_rad%istack_component(icou-1) + 1
+!
+      if(cmp_no_case(rfld%r_param_name, kinetic_viscosity%name))        &
      &      irad%i_K_viscosity =   d_rad%istack_component(icou-1) + 1
-      if(cmp_no_case(rfld%r_param_name, fhd_T_diffusivity))             &
+      if(cmp_no_case(rfld%r_param_name, thermal_diffusivity%name))      &
      &      irad%i_T_diffusivity = d_rad%istack_component(icou-1) + 1
-      if(cmp_no_case(rfld%r_param_name, fhd_C_diffusivity))             &
+      if(cmp_no_case(rfld%r_param_name, chemical_diffusivity%name))     &
      &      irad%i_C_diffusivity = d_rad%istack_component(icou-1) + 1
-      if(cmp_no_case(rfld%r_param_name, fhd_B_diffusivity))             &
+      if(cmp_no_case(rfld%r_param_name, magnetic_diffusivity%name))     &
      &      irad%i_B_diffusivity = d_rad%istack_component(icou-1) + 1
+!
       if(cmp_no_case(rfld%r_param_name, fhd_ref_density))               &
      &      irad%i_ref_density =   d_rad%istack_component(icou-1) + 1
 !
