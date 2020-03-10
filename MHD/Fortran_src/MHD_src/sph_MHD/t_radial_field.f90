@@ -165,28 +165,19 @@
       type(phys_address), intent(inout) :: irad
       integer(kind = kint), intent(inout) :: icou
 !
+      integer(kind = kint) :: i_phys
+      logical :: flag
 !
-        icou = icou + 1
-        d_rad%phys_name(icou) = rfld%r_param_name
-        d_rad%num_component(icou) = rfld%ncomp_r_param
-        d_rad%istack_component(icou) = d_rad%istack_component(icou-1)   &
+!
+      icou = icou + 1
+      d_rad%phys_name(icou) = rfld%r_param_name
+      d_rad%num_component(icou) = rfld%ncomp_r_param
+      d_rad%istack_component(icou) = d_rad%istack_component(icou-1)     &
      &                                + d_rad%num_component(icou)
+      i_phys = d_rad%istack_component(icou-1) + 1
 !
-      if(cmp_no_case(rfld%r_param_name, viscosity%name))        &
-     &      irad%i_viscosity =   d_rad%istack_component(icou-1) + 1
-      if(cmp_no_case(rfld%r_param_name, thermal_conductivity%name))     &
-     &      irad%i_T_conductivity =   d_rad%istack_component(icou-1) + 1
-      if(cmp_no_case(rfld%r_param_name, chemical_conductivity%name))    &
-     &      irad%i_C_conductivity =   d_rad%istack_component(icou-1) + 1
-!
-      if(cmp_no_case(rfld%r_param_name, kinetic_viscosity%name))        &
-     &      irad%i_K_viscosity =   d_rad%istack_component(icou-1) + 1
-      if(cmp_no_case(rfld%r_param_name, thermal_diffusivity%name))      &
-     &      irad%i_T_diffusivity = d_rad%istack_component(icou-1) + 1
-      if(cmp_no_case(rfld%r_param_name, chemical_diffusivity%name))     &
-     &      irad%i_C_diffusivity = d_rad%istack_component(icou-1) + 1
-      if(cmp_no_case(rfld%r_param_name, magnetic_diffusivity%name))     &
-     &      irad%i_B_diffusivity = d_rad%istack_component(icou-1) + 1
+      call set_diffusivity_addresses                                    &
+     &   (i_phys, rfld%r_param_name, irad%diffusivity, flag)
 !
       if(cmp_no_case(rfld%r_param_name, fhd_ref_density))               &
      &      irad%i_ref_density =   d_rad%istack_component(icou-1) + 1

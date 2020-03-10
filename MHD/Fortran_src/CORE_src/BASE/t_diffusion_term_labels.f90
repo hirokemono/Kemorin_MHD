@@ -5,7 +5,7 @@
 !! @date   Programmed in Jan., 2020
 !!
 !!
-!> @brief Labels and addresses for SGS terms
+!> @brief Labels and addresses for diffusion terms and diffusivities
 !!
 !!@verbatim
 !!      logical function check_vector_diffusion(field_name)

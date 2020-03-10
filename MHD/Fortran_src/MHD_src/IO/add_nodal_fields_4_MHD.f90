@@ -131,6 +131,10 @@
       if (iflag_debug .ge. iflag_routine_msg) write(*,*)                &
      &    'add_field_ctl_4_field_products end'
 !
+      call add_field_ctl_4_diffusions(field_ctl)
+      if (iflag_debug .ge. iflag_routine_msg) write(*,*)                &
+     &    'add_field_ctl_4_diffusions end'
+!
       call add_field_ctl_4_div_forces(field_ctl)
       if (iflag_debug .ge. iflag_routine_msg) write(*,*)                &
      &    'add_field_ctl_4_div_forces end'

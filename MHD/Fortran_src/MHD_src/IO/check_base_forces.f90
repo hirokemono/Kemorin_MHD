@@ -12,6 +12,7 @@
 !!      subroutine add_field_ctl_4_rot_forces(field_ctl)
 !!      subroutine add_field_ctl_4_div_forces(field_ctl)
 !!      subroutine add_field_ctl_4_field_products(field_ctl)
+!!      subroutine add_field_ctl_4_diffusions(field_ctl)
 !!        type(ctl_array_c3), intent(in) :: field_ctl
 !!@endverbatim
 !!
@@ -261,7 +262,7 @@
 !
       if(check_field_list_ctl(viscous_diffusion%name, field_ctl))       &
      &   call add_phys_name_ctl(fhd_velo, field_ctl)
-      if(check_field_list_ctl(viscous_diffusion%name, field_ctl))       &
+      if(check_field_list_ctl(vorticity_diffusion%name, field_ctl))     &
      &   call add_phys_name_ctl(fhd_vort, field_ctl)
       if(check_field_list_ctl(magnetic_diffusion%name, field_ctl))      &
      &   call add_phys_name_ctl(fhd_magne, field_ctl)
@@ -274,36 +275,6 @@
      &   call add_phys_name_ctl(fhd_light, field_ctl)
 !
       end subroutine add_field_ctl_4_diffusions
-!
-! -----------------------------------------------------------------------
-!
-      subroutine add_field_ctl_4_diffusivities(field_ctl)
-!
-      use t_control_array_character3
-      use t_diffusion_term_labels
-      use add_nodal_fields_ctl
-!
-      type(ctl_array_c3), intent(inout) :: field_ctl
-!
-!
-      if(check_field_list_ctl(div_viscousity%name, field_ctl))          &
-     &   call add_phys_name_ctl(viscous_diffusion%name, field_ctl)
-!
-      if(check_field_list_ctl(viscous_diffusion%name, field_ctl))       &
-     &   call add_phys_name_ctl(fhd_velo, field_ctl)
-      if(check_field_list_ctl(viscous_diffusion%name, field_ctl))       &
-     &   call add_phys_name_ctl(fhd_vort, field_ctl)
-      if(check_field_list_ctl(magnetic_diffusion%name, field_ctl))      &
-     &   call add_phys_name_ctl(fhd_magne, field_ctl)
-      if(check_field_list_ctl(vector_potential_diffusion%name,          &
-     &                        field_ctl))                               &
-     &   call add_phys_name_ctl(fhd_vecp, field_ctl)
-      if(check_field_list_ctl(thermal_diffusion%name, field_ctl))       &
-     &   call add_phys_name_ctl(fhd_temp, field_ctl)
-      if(check_field_list_ctl(composition_diffusion%name, field_ctl))  &
-     &   call add_phys_name_ctl(fhd_light, field_ctl)
-!
-      end subroutine add_field_ctl_4_diffusivities
 !
 ! -----------------------------------------------------------------------
 !

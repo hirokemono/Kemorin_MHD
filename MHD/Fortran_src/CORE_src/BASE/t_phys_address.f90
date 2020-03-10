@@ -219,22 +219,6 @@
 !!        for 2nd check
         integer (kind=kint) :: i_chk_potential_2 = izero
 !
-!
-!>        start address for viscosity   @f$ \mu @f$
-        integer (kind=kint) :: i_viscosity =   izero
-!>        start address for thermal diffusivity @f$ k @f$
-        integer (kind=kint) :: i_T_conductivity =   izero
-        integer (kind=kint) :: i_C_conductivity =   izero
-!
-!>        start address for kinetic viscosity
-        integer (kind=kint) :: i_K_viscosity =   izero
-!>        start address for thermal diffusivity
-        integer (kind=kint) :: i_T_diffusivity = izero
-!>        start address for chemical diffusivity
-        integer (kind=kint) :: i_C_diffusivity = izero
-!>        start address for magnetic diffusivity
-        integer (kind=kint) :: i_B_diffusivity = izero
-!
 !>        start address for rotation of ststem @f$ Omega @f$
 !!          i_omega:   poloidal component
 !!          i_omega+1: radial derivative of poloidal component
