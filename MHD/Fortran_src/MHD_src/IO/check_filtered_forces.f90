@@ -41,12 +41,12 @@
 !
       if(check_field_list_ctl(inertia_by_filtered%name,                 &
      &                        field_ctl)) then
-         call add_phys_name_ctl(fhd_filter_velo, field_ctl)
+         call add_phys_name_ctl(filter_velocity%name, field_ctl)
          call add_phys_name_ctl(fhd_filter_vort, field_ctl)
       end if
       if(check_field_list_ctl(momentum_flux_by_filtered%name,           &
      &        field_ctl))                                               &
-     &   call add_phys_name_ctl(fhd_filter_velo, field_ctl)
+     &   call add_phys_name_ctl(filter_velocity%name, field_ctl)
 !
       if(check_field_list_ctl(Lorentz_force_by_filtered%name,           &
      &                        field_ctl)) then
@@ -71,35 +71,35 @@
      &                             field_ctl)                           &
      &   .or. check_field_list_ctl(induction_tensor_by_filtered%name,   &
      &                             field_ctl)) then
-         call add_phys_name_ctl(fhd_filter_velo, field_ctl)
+         call add_phys_name_ctl(filter_velocity%name, field_ctl)
          call add_phys_name_ctl(fhd_filter_magne, field_ctl)
       end if
 !
       if(check_field_list_ctl(heat_advect_by_filtered%name, field_ctl)  &
      &   .or. check_field_list_ctl(heat_flux_by_filtered%name,          &
      &                             field_ctl)) then
-         call add_phys_name_ctl(fhd_filter_velo, field_ctl)
+         call add_phys_name_ctl(filter_velocity%name, field_ctl)
          call add_phys_name_ctl(fhd_filter_temp, field_ctl)
       end if
       if(     check_field_list_ctl(pert_h_advect_by_filtered%name,      &
      &                             field_ctl)                           &
      &   .or. check_field_list_ctl(pert_h_flux_by_filtered%name,        &
      &                             field_ctl)) then
-         call add_phys_name_ctl(fhd_filter_velo, field_ctl)
+         call add_phys_name_ctl(filter_velocity%name, field_ctl)
          call add_phys_name_ctl(fhd_filter_pert_temp, field_ctl)
       end if
 !
       if(check_field_list_ctl(comp_advect_by_filtered%name, field_ctl)  &
      &   .or. check_field_list_ctl(composite_flux_by_filtered%name,     &
      &                             field_ctl)) then
-         call add_phys_name_ctl(fhd_filter_velo, field_ctl)
+         call add_phys_name_ctl(filter_velocity%name, field_ctl)
          call add_phys_name_ctl(fhd_filter_comp, field_ctl)
       end if
       if(     check_field_list_ctl(pert_c_advect_by_filtered%name,      &
      &                             field_ctl)                           &
      &   .or. check_field_list_ctl(pert_c_flux_by_filtered%name,        &
      &                             field_ctl)) then
-         call add_phys_name_ctl(fhd_filter_velo, field_ctl)
+         call add_phys_name_ctl(filter_velocity%name, field_ctl)
          call add_phys_name_ctl(fhd_filter_pert_comp, field_ctl)
       end if
 !

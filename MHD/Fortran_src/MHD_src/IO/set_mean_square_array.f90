@@ -133,7 +133,7 @@
             msq_list%numave = msq_list%numave + 3
           end if
 !
-          if ( field_name .eq. fhd_filter_velo ) then
+          if ( field_name .eq. filter_velocity%name ) then
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_filter_velo,             &
      &          i_rms%i_filter_velo, j_ave%i_filter_velo, msq_list)
@@ -406,7 +406,7 @@
      &         (e_hd_div_a, n_scalar, iphys%i_vecp,                     &
      &          i_rms%grad_fld%i_div_a, j_ave%grad_fld%i_div_a,         &
      &          msq_list)
-          else if ( field_name .eq. fhd_filter_velo ) then
+          else if ( field_name .eq. filter_velocity%name ) then
             call set_rms_address                                        &
      &         (e_hd_fil_div_v, n_scalar, iphys%i_filter_velo,          &
      &          i_rms%i_div_filter_v, j_ave%i_div_filter_v, msq_list)

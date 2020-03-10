@@ -297,12 +297,12 @@
 !
 !
       if(check_field_list_ctl(Reynolds_work_true%name, field_ctl)) then
-        call add_phys_name_ctl(fhd_filter_velo, field_ctl)
+        call add_phys_name_ctl(filter_velocity%name, field_ctl)
         call add_phys_name_ctl(SGS_div_m_flux_true%name, field_ctl)
       end if
       if(check_field_list_ctl(SGS_Lorentz_work_true%name,               &
      &                        field_ctl)) then
-        call add_phys_name_ctl(fhd_filter_velo, field_ctl)
+        call add_phys_name_ctl(filter_velocity%name, field_ctl)
         call add_phys_name_ctl(SGS_Lorentz_true%name, field_ctl)
       end if
       if(check_field_list_ctl(SGS_mag_induction_flux_true%name,         &
@@ -324,7 +324,7 @@
 !
 !
       if(check_field_list_ctl(SGS_div_m_flux_true%name, field_ctl)) then
-        call add_phys_name_ctl(fhd_filter_velo, field_ctl)
+        call add_phys_name_ctl(filter_velocity%name, field_ctl)
         call add_phys_name_ctl(div_momentum_flux%name, field_ctl)
       end if
       if(check_field_list_ctl(SGS_Lorentz_true%name, field_ctl)) then
@@ -333,20 +333,20 @@
       end if
       if(check_field_list_ctl(SGS_mag_induction_true%name,              &
      &                        field_ctl)) then
-        call add_phys_name_ctl(fhd_filter_velo, field_ctl)
+        call add_phys_name_ctl(filter_velocity%name, field_ctl)
         call add_phys_name_ctl(fhd_filter_magne, field_ctl)
         call add_phys_name_ctl(div_induction_tensor%name, field_ctl)
       end if
 !
       if(check_field_list_ctl(SGS_div_h_flux_true%name,                 &
      &                        field_ctl)) then
-        call add_phys_name_ctl(fhd_filter_velo, field_ctl)
+        call add_phys_name_ctl(filter_velocity%name, field_ctl)
         call add_phys_name_ctl(fhd_filter_temp, field_ctl)
         call add_phys_name_ctl(div_heat_flux%name, field_ctl)
         end if
       if(check_field_list_ctl(SGS_div_c_flux_true%name,                 &
      &                        field_ctl)) then
-        call add_phys_name_ctl(fhd_filter_velo, field_ctl)
+        call add_phys_name_ctl(filter_velocity%name, field_ctl)
         call add_phys_name_ctl(fhd_filter_comp, field_ctl)
         call add_phys_name_ctl(div_composition_flux%name, field_ctl)
       end if

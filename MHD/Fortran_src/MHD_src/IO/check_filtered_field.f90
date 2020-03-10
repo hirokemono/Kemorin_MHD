@@ -40,13 +40,13 @@
 !
 !
       if(check_field_list_ctl(fhd_filter_vort, field_ctl)) then
-        call add_phys_name_ctl(fhd_filter_velo, field_ctl)
+        call add_phys_name_ctl(filter_velocity%name, field_ctl)
       end if
       if(check_field_list_ctl(fhd_filter_current, field_ctl)) then
         call add_phys_name_ctl(fhd_filter_magne, field_ctl)
       end if
 !
-      if(     check_field_list_ctl(fhd_filter_velo, field_ctl)) then
+      if(check_field_list_ctl(filter_velocity%name, field_ctl)) then
         call add_phys_name_ctl(fhd_velo, field_ctl)
       end if
       if(check_field_list_ctl(fhd_filter_magne, field_ctl)) then
@@ -97,7 +97,7 @@
 !
 !
       if(check_field_list_ctl(div_filtered_velo%name, field_ctl))       &
-     &   call add_phys_name_ctl(fhd_filter_velo, field_ctl)
+     &   call add_phys_name_ctl(filter_velocity%name, field_ctl)
       if(check_field_list_ctl(div_filtered_magne%name, field_ctl))      &
      &   call add_phys_name_ctl(fhd_filter_magne, field_ctl)
       if(check_field_list_ctl(div_filtered_vector_potential%name,       &
@@ -142,7 +142,7 @@
       if(   check_field_list_ctl(grad_filtered_v_1%name, field_ctl)     &
      & .or. check_field_list_ctl(grad_filtered_v_2%name, field_ctl)     &
      & .or. check_field_list_ctl(grad_filtered_v_3%name, field_ctl))    &
-     &  call add_phys_name_ctl(fhd_filter_velo, field_ctl)
+     &  call add_phys_name_ctl(filter_velocity%name, field_ctl)
       if(   check_field_list_ctl(grad_filtered_w_1%name, field_ctl)     &
      & .or. check_field_list_ctl(grad_filtered_w_2%name, field_ctl)     &
      & .or. check_field_list_ctl(grad_filtered_w_3%name, field_ctl))    &

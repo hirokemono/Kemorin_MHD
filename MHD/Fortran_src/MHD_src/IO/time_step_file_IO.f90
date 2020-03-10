@@ -98,11 +98,11 @@
           call write_one_label(id_msq, e_hd_rms_j_cd)
 !
         else if(msq_list%ifld_msq(i) .eq. iphys%i_filter_velo) then
-          if(msq_list%field_name(i) .eq. fhd_filter_velo) then
+          if(msq_list%field_name(i) .eq. filter_velocity%name) then
             call write_one_label(id_msq, e_hd_fil_k_ene)
             call write_one_label(id_msq, e_hd_fil_div_v)
 !
-            call set_vector_label(fhd_filter_velo, vector_label)
+            call set_vector_label(filter_velocity%name, vector_label)
             call write_vector_label(id_ave, vector_label)
             call write_one_label(id_ave, e_hd_fil_div_v)
             call write_vector_label(id_ave, e_hd_fil_lvec)

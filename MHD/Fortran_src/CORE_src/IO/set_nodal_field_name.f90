@@ -76,7 +76,7 @@
      &  .or. (phys_nod_name_ctl .eq. fhd_current            )           &
      &      )   iflag = 1
 !
-      if (   (phys_nod_name_ctl .eq. fhd_filter_velo        )           &
+      if (   (phys_nod_name_ctl .eq. filter_velocity%name        )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_filter_vort        )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_filter_vecp        )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_filter_magne       )           &

@@ -303,7 +303,7 @@
         write(labels(2),'(a)')   'M_ene_tor'
         write(labels(3),'(a)')   'M_ene'
 !
-      else if (rms_name .eq. fhd_filter_velo) then
+      else if (rms_name .eq. filter_velocity%name) then
         write(labels(1),'(a)')   'filter_KE_pol'
         write(labels(2),'(a)')   'filter_KE_tor'
         write(labels(3),'(a)')   'filter_KE'

@@ -55,8 +55,8 @@
 !
 !
 !   filtered velocity
-      call add_field_name_4_sph_trns                                    &
-     &   (ipol%i_filter_velo, fhd_filter_velo, n_vector,                &
+      call add_field_name_4_sph_trns(ipol%i_filter_velo,                &
+     &    filter_velocity%name, filter_velocity%n_comp,                 &
      &    ipol%i_filter_velo, itor%i_filter_velo, iphys%i_filter_velo,  &
      &    b_trns%i_filter_velo, trns_back)
 !   filtered vorticity

@@ -49,7 +49,7 @@
      &  call add_phys_name_ctl(wide_filter_composition%name, field_ctl)
 !
       if(check_field_list_ctl(wide_filter_velocity%name, field_ctl))    &
-     &  call add_phys_name_ctl(fhd_filter_velo, field_ctl)
+     &  call add_phys_name_ctl(filter_velocity%name, field_ctl)
       if(check_field_list_ctl(wide_filter_magne%name, field_ctl))       &
      &  call add_phys_name_ctl(fhd_filter_magne, field_ctl)
       if(check_field_list_ctl(wide_filter_vector_potential%name,        &
@@ -101,7 +101,7 @@
      &     (double_filter_composition%name, field_ctl)
 !
       if(check_field_list_ctl(double_filter_velocity%name, field_ctl))  &
-     &  call add_phys_name_ctl(fhd_filter_velo, field_ctl)
+     &  call add_phys_name_ctl(filter_velocity%name, field_ctl)
       if(check_field_list_ctl(double_filter_magne%name, field_ctl))     &
      &  call add_phys_name_ctl(fhd_filter_magne, field_ctl)
       if(check_field_list_ctl(double_filter_vector_potential%name,      &

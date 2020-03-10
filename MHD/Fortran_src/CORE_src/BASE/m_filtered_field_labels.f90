@@ -61,8 +61,6 @@
 !
 !>        Field label for filtered velocity
 !!         @f$ \tilde{u}_{i} @f$
-      character(len=kchara), parameter                                  &
-     &            :: fhd_filter_velo = 'filter_velocity'
       type(field_def), parameter :: filter_velocity                     &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'filter_velocity',                         &

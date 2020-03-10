@@ -46,7 +46,7 @@
 !
       if(check_field_list_ctl(wide_SGS_heat_flux%name,                  &
      &                        field_ctl)) then
-        call add_phys_name_ctl(fhd_filter_velo, field_ctl)
+        call add_phys_name_ctl(filter_velocity%name, field_ctl)
         call add_phys_name_ctl(grad_filtered_v_1%name, field_ctl)
         call add_phys_name_ctl(grad_filtered_v_2%name, field_ctl)
         call add_phys_name_ctl(grad_filtered_v_3%name, field_ctl)
@@ -54,7 +54,7 @@
       end if
       if(check_field_list_ctl(wide_SGS_composit_flux%name,              &
      &                        field_ctl)) then
-        call add_phys_name_ctl(fhd_filter_velo, field_ctl)
+        call add_phys_name_ctl(filter_velocity%name, field_ctl)
         call add_phys_name_ctl(grad_filtered_v_1%name, field_ctl)
         call add_phys_name_ctl(grad_filtered_v_2%name, field_ctl)
         call add_phys_name_ctl(grad_filtered_v_3%name, field_ctl)
@@ -62,7 +62,7 @@
       end if
 !
       if(check_field_list_ctl(wide_SGS_inertia%name, field_ctl)) then
-        call add_phys_name_ctl(fhd_filter_velo, field_ctl)
+        call add_phys_name_ctl(filter_velocity%name, field_ctl)
         call add_phys_name_ctl(grad_filtered_w_1%name, field_ctl)
         call add_phys_name_ctl(grad_filtered_w_2%name, field_ctl)
         call add_phys_name_ctl(grad_filtered_w_3%name, field_ctl)

@@ -118,7 +118,7 @@
           iphys%i_entropy_source = i0
         end if
 !
-        if ( field_name(i) .eq. fhd_filter_velo ) then
+        if ( field_name(i) .eq. filter_velocity%name ) then
           iphys%i_filter_velo =    i0
         else if ( field_name(i) .eq. fhd_filter_vort ) then
           iphys%i_filter_vort =    i0
