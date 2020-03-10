@@ -102,7 +102,7 @@
         icou = icou + 1
         ucd%phys_name(icou) = temperature_scale%name
         call cal_length_scale_by_diffuse1                               &
-     &     (iphys%i_temp, iphys%i_t_diffuse, node, nod_fld)
+     &     (iphys%i_temp, iphys%diffusion%i_t_diffuse, node, nod_fld)
         call set_one_field_to_udt_data                                  &
      &     (node%numnod, ione, icou, d_mag(1), ucd)
       end if
@@ -149,7 +149,7 @@
       iphys%i_magne =     0
       iphys%i_current =   0
       iphys%i_temp =      0
-      iphys%i_t_diffuse = 0
+      iphys%diffusion%i_t_diffuse = 0
       do i_fld = 1, nod_fld%num_phys
         if(nod_fld%phys_name(i_fld) .eq. fhd_velo) then
           iphys%i_velo =      nod_fld%istack_component(i_fld-1) + 1
@@ -163,7 +163,8 @@
           iphys%i_temp =      nod_fld%istack_component(i_fld-1) + 1
         else if(nod_fld%phys_name(i_fld) .eq. thermal_diffusion%name)   &
      &      then
-          iphys%i_t_diffuse = nod_fld%istack_component(i_fld-1) + 1
+          iphys%diffusion%i_t_diffuse                                   &
+     &         = nod_fld%istack_component(i_fld-1) + 1
         end if
       end do
 !

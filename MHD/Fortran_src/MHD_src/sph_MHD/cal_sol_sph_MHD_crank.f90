@@ -322,14 +322,14 @@
      &      ipol%i_temp, ipol%grad_fld%i_grad_temp, rj_fld)
       end if
 !
-!         Input: ipol%i_temp,  Solution: ipol%i_t_diffuse
-      if(ipol%i_t_diffuse .gt. 0) then
+!         Input: ipol%i_temp,  Solution: ipol%diffusion%i_t_diffuse
+      if(ipol%diffusion%i_t_diffuse .gt. 0) then
         if(iflag_debug .gt. 0)  write(*,*)                              &
-     &           'const_sph_scalar_diffusion', ipol%i_t_diffuse
+     &         'const_sph_scalar_diffusion', ipol%diffusion%i_t_diffuse
         call const_sph_scalar_diffusion                                 &
      &     (sph_rj, r_2nd, sph_bc_T, bcs_T, fdm2_center,                &
      &      leg%g_sph_rj, ht_prop%coef_diffuse,                         &
-     &      ipol%i_temp, ipol%i_t_diffuse, rj_fld)
+     &      ipol%i_temp, ipol%diffusion%i_t_diffuse, rj_fld)
       end if
 !
       end subroutine update_after_heat_sph

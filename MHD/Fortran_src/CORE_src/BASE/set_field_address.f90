@@ -142,7 +142,7 @@
           iphys%i_div_filter_a =    i0
 !
         else if (field_name(i) .eq. thermal_diffusion%name) then
-          iphys%i_t_diffuse =  i0
+          iphys%diffusion%i_t_diffuse =  i0
         else if (field_name(i) .eq. viscous_diffusion%name) then
           iphys%i_v_diffuse =  i0
         else if (field_name(i) .eq. vorticity_diffusion%name) then

@@ -133,10 +133,10 @@
           if(iflag_debug .gt. 0) write(*,*)                             &
      &                'sel_scalar_diff_adv_src_adams temperature'
         call sel_scalar_diff_adv_src_adams                              &
-     &     (sph_bc_T%kr_in, sph_bc_T%kr_out, ipol%i_t_diffuse,          &
-     &      ipol%forces%i_h_advect, ipol%i_heat_source, ipol%i_temp,    &
-     &      ipol%i_pre_heat, dt, ht_prop%coef_exp, ht_prop%coef_source, &
-     &      sph_rj, rj_fld)
+     &    (sph_bc_T%kr_in, sph_bc_T%kr_out, ipol%diffusion%i_t_diffuse, &
+     &     ipol%forces%i_h_advect, ipol%i_heat_source, ipol%i_temp,     &
+     &     ipol%i_pre_heat, dt, ht_prop%coef_exp, ht_prop%coef_source,  &
+     &     sph_rj, rj_fld)
       end if
 !
       if(cp_prop%iflag_scheme .gt. id_no_evolution) then
@@ -156,7 +156,7 @@
         if(iflag_debug .gt. 0) write(*,*)                               &
      &                'sel_ctr_scl_diff_adv_src_adams temperature'
         call sel_ctr_scl_diff_adv_src_adams                             &
-     &     (ipol%i_t_diffuse, ipol%forces%i_h_advect,                   &
+     &     (ipol%diffusion%i_t_diffuse, ipol%forces%i_h_advect,         &
      &      ipol%i_heat_source, ipol%i_temp, ipol%i_pre_heat,           &
      &      dt, ht_prop%coef_exp, ht_prop%coef_source, sph_rj, rj_fld)
       end if
@@ -216,10 +216,10 @@
         if(iflag_debug .gt. 0) write(*,*)                               &
      &                'sel_scalar_diff_adv_src_euler temperature'
         call sel_scalar_diff_adv_src_euler                              &
-     &     (sph_bc_T%kr_in, sph_bc_T%kr_out, ipol%i_t_diffuse,          &
-     &      ipol%forces%i_h_advect, ipol%i_heat_source, ipol%i_temp,    &
-     &      dt, ht_prop%coef_exp, ht_prop%coef_advect,                  &
-     &      ht_prop%coef_source, sph_rj, rj_fld)
+     &    (sph_bc_T%kr_in, sph_bc_T%kr_out, ipol%diffusion%i_t_diffuse, &
+     &     ipol%forces%i_h_advect, ipol%i_heat_source, ipol%i_temp,     &
+     &     dt, ht_prop%coef_exp, ht_prop%coef_advect,                   &
+     &     ht_prop%coef_source, sph_rj, rj_fld)
       end if
 !
       if(cp_prop%iflag_scheme .gt. id_no_evolution) then
@@ -238,7 +238,7 @@
       if(ht_prop%iflag_scheme .gt.     id_no_evolution) then
         if(iflag_debug .gt. 0) write(*,*)                               &
      &                'sel_ctr_scl_diff_adv_src_euler temperature'
-        call sel_ctr_scl_diff_adv_src_euler(ipol%i_t_diffuse,           &
+        call sel_ctr_scl_diff_adv_src_euler(ipol%diffusion%i_t_diffuse, &
      &      ipol%forces%i_h_advect, ipol%i_heat_source,                 &
      &      ipol%i_temp, dt, ht_prop%coef_exp, ht_prop%coef_advect,     &
      &      ht_prop%coef_source, sph_rj, rj_fld)

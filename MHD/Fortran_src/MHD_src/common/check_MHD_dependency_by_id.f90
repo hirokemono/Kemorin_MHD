@@ -82,8 +82,7 @@
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_mag_p, fhd_mag_potential)
 !
-        else if(i_start .eq. iphys%i_t_diffuse                          &
-     &     .or. i_start .eq. iphys%i_per_temp                           &
+        else if(i_start .eq. iphys%i_per_temp                           &
      &     .or. i_start .eq. iphys%i_filter_temp                        &
      &     .or. i_start .eq. iphys%i_heat_source) then 
           call check_missing_field                                      &

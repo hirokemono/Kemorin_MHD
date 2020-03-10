@@ -295,7 +295,7 @@
         call cal_len_scale_by_diffuse_smp                               &
      &     (np_smp, sph_rtp%nnod_rtp, sph_rtp%istack_inod_rtp_smp,      &
      &      trns_b_snap%fld_rtp(1,bs_trns%i_temp),                      &
-     &      trns_b_snap%fld_rtp(1,bs_trns%i_t_diffuse),                 &
+     &      trns_b_snap%fld_rtp(1,bs_trns%diffusion%i_t_diffuse),       &
      &      trns_f_snap%fld_rtp(1,fs_trns%prod_fld%i_temp_scale))
       end if
       if(fs_trns%prod_fld%i_comp_scale .gt. 0) then

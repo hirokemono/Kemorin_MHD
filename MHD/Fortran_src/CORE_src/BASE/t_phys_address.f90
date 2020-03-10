@@ -140,9 +140,6 @@
 !!         @f$ \partial_{i} \bar{A}_{i} @f$
         integer (kind=kint) :: i_div_filter_a =    izero
 !
-!>        start address for thermal diffusion
-!!         @f$ \kappa \partial_{i}\partial_{i} T @f$
-        integer (kind=kint) :: i_t_diffuse =       izero
 !>        start address for viscous diffusion
 !!         @f$ \nu \partial_{j}\partial_{j} u_{i} @f$
         integer (kind=kint) :: i_v_diffuse =       izero
