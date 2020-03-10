@@ -302,7 +302,7 @@
         call cal_len_scale_by_diffuse_smp                               &
      &     (np_smp, sph_rtp%nnod_rtp, sph_rtp%istack_inod_rtp_smp,      &
      &      trns_b_snap%fld_rtp(1,bs_trns%i_light),                     &
-     &      trns_b_snap%fld_rtp(1,bs_trns%i_c_diffuse),                 &
+     &      trns_b_snap%fld_rtp(1,bs_trns%diffusion%i_c_diffuse),       &
      &      trns_f_snap%fld_rtp(1,fs_trns%prod_fld%i_comp_scale))
       end if
 !$omp end parallel

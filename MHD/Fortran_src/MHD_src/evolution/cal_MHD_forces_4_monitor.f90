@@ -355,11 +355,11 @@
      &     diff_coefs, mk_MHD%mlump_fl, rhs_mat, nod_fld)
       end if
 !
-      if (iphys%i_c_diffuse .gt. izero) then
+      if (iphys%diffusion%i_c_diffuse .gt. izero) then
         if(iflag_debug .ge. iflag_routine_msg) write(*,*) 'lead  ',     &
      &                     trim(composition_diffusion%name)
-        call cal_thermal_diffusion                                      &
-     &     (iphys%i_c_diffuse, iphys%i_light, ifld_diff%i_light,        &
+        call cal_thermal_diffusion(iphys%diffusion%i_c_diffuse,         &
+     &      iphys%i_light, ifld_diff%i_light,                           &
      &      ak_MHD%ak_d_composit, FEM_prm%npoint_t_evo_int,             &
      &      SGS_par%model_p, nod_comm, node, ele, surf, fluid, sf_grp,  &
      &      nod_bcs%Cnod_bcs, surf_bcs%Csf_bcs, fem_int, FEM_elens,     &

@@ -360,14 +360,14 @@
      &      rj_fld)
       end if
 !
-!         Input: ipol%i_light,  Solution: ipol%i_c_diffuse
-      if(ipol%i_c_diffuse .gt. 0) then
+!         Input: ipol%i_light,  Solution: ipol%diffusion%i_c_diffuse
+      if(ipol%diffusion%i_c_diffuse .gt. 0) then
         if(iflag_debug .gt. 0)  write(*,*)                              &
-     &           'const_sph_scalar_diffusion', ipol%i_c_diffuse
+     &         'const_sph_scalar_diffusion', ipol%diffusion%i_c_diffuse
         call const_sph_scalar_diffusion                                 &
      &     (sph_rj, r_2nd, sph_bc_C, bcs_C, fdm2_center,                &
      &      leg%g_sph_rj, cp_prop%coef_diffuse, ipol%i_light,           &
-     &      ipol%i_c_diffuse, rj_fld)
+     &      ipol%diffusion%i_c_diffuse, rj_fld)
       end if
 !
       end subroutine update_after_composit_sph

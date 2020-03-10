@@ -152,7 +152,7 @@
         else if (field_name(i) .eq. magnetic_diffusion%name) then
           iphys%i_b_diffuse = i0
         else if (field_name(i) .eq. composition_diffusion%name) then
-          iphys%i_c_diffuse =  i0
+          iphys%diffusion%i_c_diffuse =  i0
         end if
 !
         call set_base_force_addresses                                   &
@@ -232,7 +232,7 @@
      &     (i0, field_name(i), iphys%dbl_filter_grad, flag)
 !
         if ( field_name(i) .eq. div_viscousity%name ) then
-          iphys%i_div_viscous =    i0
+          iphys%diffusion%i_div_viscous =    i0
 !
         else if ( field_name(i) .eq. fhd_forces ) then
           iphys%i_forces =     i0

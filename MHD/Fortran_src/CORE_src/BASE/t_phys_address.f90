@@ -155,14 +155,6 @@
 !>        start address for magnetic diffusion
 !!         @f$ \nu \partial_{j}\partial_{j} B_{i} @f$
         integer (kind=kint) :: i_b_diffuse =       izero
-!>        start address for compositional diffusion
-!!         @f$ \kappa \partial_{i}\partial_{i} C @f$
-        integer (kind=kint) :: i_c_diffuse =       izero
-!
-!  divergence of momentum equations
-!
-!>        start address for divergence of viscousity
-        integer (kind=kint) :: i_div_viscous =    izero
 !
 !  arrays for current forces
 !

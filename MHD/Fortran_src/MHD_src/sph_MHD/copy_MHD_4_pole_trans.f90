@@ -98,7 +98,8 @@
       call copy_pole_scl_fld_from_trans(m_folding, sph_rtp, node,       &
      &    fls_pl(1,bs_trns%i_t_diffuse), iphys%i_t_diffuse, nod_fld)
       call copy_pole_scl_fld_from_trans(m_folding, sph_rtp, node,       &
-     &    fls_pl(1,bs_trns%i_c_diffuse), iphys%i_c_diffuse, nod_fld)
+     &    fls_pl(1,bs_trns%diffusion%i_c_diffuse),                      &
+     &    iphys%diffusion%i_c_diffuse, nod_fld)
 !
       end subroutine copy_snap_vec_from_pole_trans
 !
