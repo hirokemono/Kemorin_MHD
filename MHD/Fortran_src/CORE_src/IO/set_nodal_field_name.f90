@@ -177,7 +177,7 @@
 !
       if (    (phys_nod_name_ctl .eq. filter_temperature%name         )         &
      &   .or. (phys_nod_name_ctl .eq. filter_pert_temperature%name    )         &
-     &   .or. (phys_nod_name_ctl .eq. fhd_filter_comp         )         &
+     &   .or. (phys_nod_name_ctl .eq. filter_composition%name         )         &
      &      )   iflag = 1
 !
       if (    (phys_nod_name_ctl .eq. fhd_part_temp           )         &

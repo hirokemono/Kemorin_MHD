@@ -249,8 +249,8 @@
      &    ipol%i_filter_temp, itor%i_filter_temp, iphys%i_filter_temp,  &
      &    b_trns%i_filter_temp, trns_back)
 !   filtered composition
-      call add_field_name_4_sph_trns                                    &
-     &   (ipol%i_filter_comp, fhd_filter_comp, n_scalar,                &
+      call add_field_name_4_sph_trns(ipol%i_filter_comp,                &
+     &    filter_composition%name, filter_composition%n_comp,           &
      &    ipol%i_filter_comp, itor%i_filter_comp, iphys%i_filter_comp,  &
      &    b_trns%i_filter_comp, trns_back)
 !

@@ -247,7 +247,7 @@
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_filter_temp,             &
      &          i_rms%i_filter_temp, j_ave%i_filter_temp, msq_list)
-          else if ( field_name .eq. fhd_filter_comp ) then
+          else if ( field_name .eq. filter_composition%name ) then
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_filter_comp,             &
      &          i_rms%i_filter_comp, j_ave%i_filter_comp, msq_list)

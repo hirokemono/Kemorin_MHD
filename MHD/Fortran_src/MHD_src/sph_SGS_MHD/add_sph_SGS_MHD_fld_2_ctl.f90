@@ -120,7 +120,7 @@
 !
       if(SGS_param%iflag_SGS_c_flux .eq. id_SGS_similarity) then
         call add_phys_name_ctl(filter_velocity%name, field_ctl)
-        call add_phys_name_ctl(fhd_filter_comp, field_ctl)
+        call add_phys_name_ctl(filter_composition%name, field_ctl)
       else if(SGS_param%iflag_SGS_c_flux .eq. id_SGS_NL_grad) then
         call add_phys_name_ctl(grad_v_1%name, field_ctl)
         call add_phys_name_ctl(grad_v_2%name, field_ctl)
@@ -210,7 +210,7 @@
         call add_phys_name_ctl(wide_filter_composition%name, field_ctl)
       else if(SGS_param%iflag_SGS_c_flux .eq. id_SGS_NL_grad) then
         call add_phys_name_ctl(filter_velocity%name, field_ctl)
-        call add_phys_name_ctl(fhd_filter_comp, field_ctl)
+        call add_phys_name_ctl(filter_composition%name, field_ctl)
       end if
 !
 !

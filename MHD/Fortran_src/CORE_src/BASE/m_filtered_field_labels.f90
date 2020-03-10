@@ -106,16 +106,12 @@
 !
 !>        Field label for filtered conposition
 !!         @f$ \tilde{C} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_filter_comp =       'filter_composition'
       type(field_def), parameter :: filter_composition                  &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'filter_composition',                      &
      &                math = '$ \tilde{C} $')
 !>        Field label for filtered conposition
 !!         @f$ \tilde{C} - C_{0} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_filter_pert_comp =  'filter_pert_composition'
       type(field_def), parameter :: filter_pert_composition             &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'filter_pert_composition',                 &
@@ -123,8 +119,6 @@
 !
 !>        Field label for filtered density
 !!         @f$ \tilde{\rho} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_filter_density =       'filter_density'
       type(field_def), parameter :: filter_density                      &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'filter_density',                          &

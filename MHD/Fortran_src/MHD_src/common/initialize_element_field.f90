@@ -45,26 +45,26 @@
 !
         if      (ele_fld%phys_name(i) .eq. fhd_velo) then
           iphys_ele%i_velo = i0
-        else if (ele_fld%phys_name(i) .eq. fhd_vort) then
+        else if(ele_fld%phys_name(i) .eq. fhd_vort) then
           iphys_ele%i_vort = i0
-        else if (ele_fld%phys_name(i) .eq. filter_velocity%name) then
+        else if(ele_fld%phys_name(i) .eq. filter_velocity%name) then
           iphys_ele%i_filter_velo = i0
 !
-        else if (ele_fld%phys_name(i) .eq. fhd_magne) then
+        else if(ele_fld%phys_name(i) .eq. fhd_magne) then
           iphys_ele%i_magne = i0
-        else if (ele_fld%phys_name(i) .eq. fhd_current) then
+        else if(ele_fld%phys_name(i) .eq. fhd_current) then
           iphys_ele%i_current = i0
-        else if (ele_fld%phys_name(i) .eq. filter_magne%name) then
+        else if(ele_fld%phys_name(i) .eq. filter_magne%name) then
           iphys_ele%i_filter_magne = i0
 !
-        else if (ele_fld%phys_name(i) .eq. fhd_temp) then
+        else if(ele_fld%phys_name(i) .eq. fhd_temp) then
           iphys_ele%i_temp = i0
-        else if (ele_fld%phys_name(i) .eq. filter_temperature%name) then
+        else if(ele_fld%phys_name(i) .eq. filter_temperature%name) then
           iphys_ele%i_filter_temp = i0
 !
-        else if (ele_fld%phys_name(i) .eq. fhd_light) then
+        else if(ele_fld%phys_name(i) .eq. fhd_light) then
           iphys_ele%i_light = i0
-        else if (ele_fld%phys_name(i) .eq. fhd_filter_comp) then
+        else if(ele_fld%phys_name(i) .eq. filter_composition%name) then
           iphys_ele%i_filter_comp = i0
         end if
 !
@@ -174,7 +174,7 @@
           if     (SGS_param%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF       &
      &       .or. SGS_param%iflag_SGS.eq.id_SGS_similarity) then
             ele_fld%num_component(j) = 1
-            ele_fld%phys_name(j) = fhd_filter_comp
+            ele_fld%phys_name(j) = filter_composition%name
             j = j + 1
           end if
         end if

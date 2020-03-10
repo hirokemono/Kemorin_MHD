@@ -132,7 +132,7 @@
           iphys%i_filter_current = i0
         else if ( field_name(i) .eq. filter_pert_temperature%name ) then
           iphys%i_filter_par_t =   i0
-        else if ( field_name(i) .eq. fhd_filter_comp ) then
+        else if ( field_name(i) .eq. filter_composition%name ) then
           iphys%i_filter_comp =    i0
 !
         else if ( field_name(i) .eq. div_filtered_velo%name ) then
