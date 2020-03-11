@@ -84,8 +84,7 @@
      &     .or. i_start .eq. iphys%i_heat_source) then 
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_temp, temperature%name)
-        else if(i_start .eq. iphys%i_filter_comp                        &
-     &     .or. i_start .eq. iphys%i_light_source) then 
+        else if(i_start .eq. iphys%i_filter_comp) then 
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_light, composition%name)
         end if

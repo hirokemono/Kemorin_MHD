@@ -73,9 +73,6 @@
 !>        start address for heat source
 !!         @f$ q_{T} @f$
         integer (kind=kint) :: i_heat_source =     izero
-!>        start address for composion source
-!!         @f$ q_{C} @f$
-        integer (kind=kint) :: i_light_source =    izero
 !
 !>        start address for reference temperature
 !!         @f$  T_{0} @f$

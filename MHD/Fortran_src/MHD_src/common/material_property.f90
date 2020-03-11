@@ -327,7 +327,7 @@
      &              cp_prop%coef_advect
           write(*,*) 'coefficient for composite diffusion: ',           &
      &              cp_prop%coef_diffuse
-          if(iphys%i_light_source .gt. 0) write(*,*)                    &
+          if(iphys%base%i_light_source .gt. 0) write(*,*)               &
      &         'coefficient for light element source:',                 &
      &              cp_prop%coef_source
         end if

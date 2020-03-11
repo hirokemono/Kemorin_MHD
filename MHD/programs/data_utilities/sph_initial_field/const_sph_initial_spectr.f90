@@ -31,7 +31,7 @@
 !!       Toroidal magnetic field :: d_rj(:,itor%i_magne)
 !!
 !!       Heat source ::          d_rj(:,ipol%i_heat_source)
-!!       Light element source :: d_rj(:,ipol%i_light_source)
+!!       Light element source :: d_rj(:,ipol%base%i_light_source)
 !!
 !!       sph_bc_*%kr_in :: radial ID for inner boundary of each evolution
 !!       sph_bc_*%kr_out :: radial ID for outer boundary
@@ -540,11 +540,11 @@
       integer :: jj, k
 !
 !
-      if(ipol%i_light_source .eq. izero) return
+      if(ipol%base%i_light_source .eq. izero) return
 !
 !$omp parallel do
       do inod = 1, nnod_rj(sph)
-        rj_fld%d_fld(inod,ipol%i_light_source) = zero
+        rj_fld%d_fld(inod,ipol%base%i_light_source) = zero
       end do
 !$omp end parallel do
 !
@@ -561,14 +561,14 @@
           inod = local_sph_data_address(sph, k, jj)
 !          rr = radius_1d_rj_r(sph, k)
 !    Substitute initial heat source
-          rj_fld%d_fld(inod,ipol%i_light_source) = 1.0d0
+          rj_fld%d_fld(inod,ipol%base%i_light_source) = 1.0d0
         end do
       end if
 !
 !    Center
       i_center = inod_rj_center(sph)
       if(i_center .gt. 0) then
-        rj_fld%d_fld(i_center,ipol%i_light_source) = 1.0d0
+        rj_fld%d_fld(i_center,ipol%base%i_light_source) = 1.0d0
       end if
 !
       end subroutine set_initial_light_source_sph
