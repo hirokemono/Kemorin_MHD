@@ -223,7 +223,7 @@
         d_rad%num_component(icou) = n_vector
         d_rad%istack_component(icou) = d_rad%istack_component(icou-1)   &
      &                                + d_rad%num_component(icou)
-        irad%i_ref_t = d_rad%istack_component(icou-1) + 1
+        irad%base%i_ref_t = d_rad%istack_component(icou-1) + 1
       end if
       if(ref_param_C%iflag_reference .eq. id_sphere_ref_temp) then
         icou = icou + 1

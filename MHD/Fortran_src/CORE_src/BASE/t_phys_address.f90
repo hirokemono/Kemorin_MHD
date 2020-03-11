@@ -67,10 +67,6 @@
 !!         @f$ \Theta = T - T_{0} @f$
         integer (kind=kint) :: i_per_temp =        izero
 !
-!>        start address for reference temperature
-!!         @f$  T_{0} @f$
-        integer (kind=kint) :: i_ref_t =           izero
-!
 !>        Start address for filtered velocity
 !!         @f$ \bar{u}_{i} @f$
         integer (kind=kint) :: i_filter_velo  =    izero

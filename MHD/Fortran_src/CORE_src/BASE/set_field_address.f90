@@ -119,7 +119,7 @@
           iphys%base%i_entropy_source = i0
         end if
         if ( field_name(i) .eq. reference_temperature%name ) then
-          iphys%i_ref_t = i0
+          iphys%base%i_ref_t = i0
         else if ( field_name(i) .eq. reference_composition%name ) then
           iphys%base%i_ref_c = i0
         end if

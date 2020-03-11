@@ -171,9 +171,9 @@
 !
       if (iflag_debug.eq.1) write(*,*)' set_reference_temp'
       call set_reference_temp                                           &
-     &   (MHD_prop%ref_param_T, MHD_prop%takepito_T, mesh%node,         &
-     &    MHD_mesh%fluid, iphys%i_ref_t, iphys%grad_fld%i_grad_ref_t,   &
-     &    nod_fld)
+     &   (MHD_prop%ref_param_T, MHD_prop%takepito_T,                    &
+     &    mesh%node, MHD_mesh%fluid,                                    &
+     &    iphys%base%i_ref_t, iphys%grad_fld%i_grad_ref_t, nod_fld)
       call set_reference_temp                                           &
      &   (MHD_prop%ref_param_C, MHD_prop%takepito_C,                    &
      &    mesh%node, MHD_mesh%fluid,                                    &

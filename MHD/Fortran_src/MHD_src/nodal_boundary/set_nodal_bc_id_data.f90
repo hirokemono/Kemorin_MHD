@@ -86,8 +86,8 @@
       if (ht_prop%iflag_scheme .gt. id_no_evolution) then
         if (ref_param_T%iflag_reference .ne. id_no_ref_temp) then
           call set_fixed_bc_per_scalar                                  &
-     &       (mesh%node%numnod, nod_fld%ntot_phys,                      &
-     &        iphys%i_ref_t, nod_fld%d_fld, nod_bcs%Tnod_bcs%nod_bc_s)
+     &       (mesh%node%numnod, nod_fld%ntot_phys, iphys%base%i_ref_t,  &
+     &        nod_fld%d_fld, nod_bcs%Tnod_bcs%nod_bc_s)
         end if
 !
         call set_boundary_scalar                                        &

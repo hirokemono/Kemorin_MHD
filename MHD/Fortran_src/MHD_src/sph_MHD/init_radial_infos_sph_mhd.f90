@@ -137,7 +137,7 @@
       call init_reference_temps                                         &
      &   (MHD_prop%ref_param_T, MHD_prop%takepito_T,                    &
      &    sph%sph_params, sph%sph_rj,                                   &
-     &    ipol%i_ref_t, ipol%grad_fld%i_grad_ref_t,                     &
+     &    ipol%base%i_ref_t, ipol%grad_fld%i_grad_ref_t,                &
      &    ref_temp, rj_fld, sph_MHD_bc%sph_bc_T, sph_MHD_bc%bcs_T)
       call init_reference_temps                                         &
      &   (MHD_prop%ref_param_C, MHD_prop%takepito_C,                    &

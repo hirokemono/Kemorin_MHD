@@ -213,7 +213,7 @@
      &       SGS_MHD_wk%rhs_mat, nod_fld)
 !
           call add_2_nod_scalars(nod_fld,                               &
-     &        iphys%i_ref_t, iphys%i_per_temp, iphys%i_temp)
+     &        iphys%base%i_ref_t, iphys%i_per_temp, iphys%i_temp)
         else
 !          call check_surface_param_smp('cal_temperature_field start',  &
 !     &        my_rank, sf_grp, fem%group%surf_nod_grp)
@@ -233,7 +233,7 @@
 !
         if (iphys%i_per_temp .gt. 0) then
           call subtract_2_nod_scalars(nod_fld,                          &
-     &        iphys%i_temp, iphys%i_ref_t, iphys%i_per_temp)
+     &        iphys%i_temp, iphys%base%i_ref_t, iphys%i_per_temp)
         end if
       end if
 !
@@ -489,7 +489,7 @@
      &       SGS_MHD_wk%rhs_mat, nod_fld)
 !
           call add_2_nod_scalars(nod_fld,                               &
-     &        iphys%i_ref_t, iphys%i_per_temp, iphys%i_temp)
+     &        iphys%base%i_ref_t, iphys%i_per_temp, iphys%i_temp)
         else
           if (iflag_debug.eq.1) write(*,*) 'cal_temperature_field'
           call cal_temperature_field(iphys%i_temp, time_d%dt,           &
@@ -506,7 +506,7 @@
 !
           if (iphys%i_per_temp .gt. 0) then
             call subtract_2_nod_scalars(nod_fld,                        &
-     &          iphys%i_temp, iphys%i_ref_t, iphys%i_per_temp)
+     &          iphys%i_temp, iphys%base%i_ref_t, iphys%i_per_temp)
           end if
         end if
 !
@@ -613,8 +613,8 @@
 !
       if(MHD_prop%ref_param_T%iflag_reference .ne. id_no_ref_temp) then
         if (iflag_debug.eq.1)  write(*,*) 'set_2_perturbation_temp'
-        call subtract_2_nod_scalars                                     &
-     &     (nod_fld, iphys%i_temp, iphys%i_ref_t, iphys%i_per_temp)
+        call subtract_2_nod_scalars(nod_fld, iphys%i_temp,              &
+     &      iphys%base%i_ref_t, iphys%i_per_temp)
       end if
       if(MHD_prop%ref_param_C%iflag_reference .ne. id_no_ref_temp) then
         if (iflag_debug.eq.1)  write(*,*) 'set_2_perturbation_comp'
