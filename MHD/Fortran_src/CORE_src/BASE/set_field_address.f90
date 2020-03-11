@@ -187,9 +187,9 @@
         call set_true_SGS_ene_flux_addresses                            &
      &     (i0, field_name(i), iphys%true_SGS_eflux, flag)
 !
-        if ( field_name(i) .eq. fhd_ref_temp ) then
+        if ( field_name(i) .eq. reference_temperature%name ) then
           iphys%i_ref_t = i0
-        else if ( field_name(i) .eq. fhd_ref_light ) then
+        else if ( field_name(i) .eq. reference_composition%name ) then
           iphys%i_ref_c = i0
         end if
         call set_work_4_poisson_addresses                               &

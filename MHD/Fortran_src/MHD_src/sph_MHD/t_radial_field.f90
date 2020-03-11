@@ -219,7 +219,7 @@
       end if
       if(ref_param_T%iflag_reference .eq. id_sphere_ref_temp) then
         icou = icou + 1
-        d_rad%phys_name(icou) = fhd_ref_temp
+        d_rad%phys_name(icou) = reference_temperature%name
         d_rad%num_component(icou) = n_vector
         d_rad%istack_component(icou) = d_rad%istack_component(icou-1)   &
      &                                + d_rad%num_component(icou)
@@ -227,7 +227,7 @@
       end if
       if(ref_param_C%iflag_reference .eq. id_sphere_ref_temp) then
         icou = icou + 1
-        d_rad%phys_name(icou) = fhd_ref_light
+        d_rad%phys_name(icou) = reference_composition%name
         d_rad%num_component(icou) = n_vector
         d_rad%istack_component(icou) = d_rad%istack_component(icou-1)   &
      &                                + d_rad%num_component(icou)

@@ -155,10 +155,10 @@
      &  .or. (phys_nod_name_ctl .eq. fhd_entropy_source       )         &
      &      )   iflag = 1
 !
-      if (    (phys_nod_name_ctl .eq. fhd_ref_temp            )         &
+      if (    (phys_nod_name_ctl .eq. reference_temperature%name            )         &
      &   .or. (phys_nod_name_ctl .eq. perturbation_temp%name           )         &
      &   .or. (phys_nod_name_ctl .eq. density%name             )         &
-     &   .or. (phys_nod_name_ctl .eq. fhd_ref_light           )         &
+     &   .or. (phys_nod_name_ctl .eq. reference_composition%name           )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_part_light          )         &
      &   .or. (phys_nod_name_ctl .eq. perturbation_density%name         )         &
      &   .or. (phys_nod_name_ctl .eq. reference_density%name         )         &

@@ -153,8 +153,6 @@
      &                math = '$ \Theta = T - T_{0} $')
 !>        Field label for reference temperature
 !!         @f$  T_{0} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_ref_temp =  'reference_temperature'
       type(field_def), parameter :: reference_temperature               &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'reference_temperature',                   &
@@ -177,8 +175,6 @@
      &                math = '$ \Thera_{C} = C - C_{0} $')
 !>        Field label for reference composition
 !!         @f$  C_{0} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_ref_light =  'reference_composition'
       type(field_def), parameter :: reference_composition               &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'reference_composition',                   &
@@ -370,11 +366,11 @@
 !
      &   .or. (field_name .eq. temperature%name)                        &
      &   .or. (field_name .eq. perturbation_temp%name)                  &
-     &   .or. (field_name .eq. fhd_ref_temp)                            &
+     &   .or. (field_name .eq. reference_temperature%name)              &
 !
      &   .or. (field_name .eq. fhd_light)                               &
      &   .or. (field_name .eq. fhd_part_light)                          &
-     &   .or. (field_name .eq. fhd_ref_light)                           &
+     &   .or. (field_name .eq. reference_composition%name)              &
 !
      &   .or. (field_name .eq. fhd_entropy)                             &
      &   .or. (field_name .eq. fhd_per_entropy)                         &
@@ -441,14 +437,14 @@
           base_fld%i_temp =            i_phys
         else if (field_name .eq. perturbation_temp%name) then
           base_fld%i_per_temp =        i_phys
-        else if (field_name .eq. fhd_ref_temp) then
+        else if (field_name .eq. reference_temperature%name) then
           base_fld%i_ref_t =           i_phys
 !
         else if (field_name .eq. fhd_light) then
           base_fld%i_light =          i_phys
         else if (field_name .eq. fhd_part_light) then
           base_fld%i_per_light =      i_phys
-        else if (field_name .eq. fhd_ref_light) then
+        else if (field_name .eq. reference_composition%name) then
           base_fld%i_ref_c =          i_phys
 !
         else if (field_name .eq. density%name) then

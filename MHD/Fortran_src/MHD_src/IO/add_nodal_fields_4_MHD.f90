@@ -217,12 +217,12 @@
 !
 !
       if (ref_param_T%iflag_reference .ne. id_no_ref_temp) then
-        call add_phys_name_ctl(fhd_ref_temp, field_ctl)
+        call add_phys_name_ctl(reference_temperature%name, field_ctl)
         call add_phys_name_ctl(grad_reference_temp%name, field_ctl)
       end if
 !
       if (ref_param_C%iflag_reference .ne. id_no_ref_temp) then
-        call add_phys_name_ctl(fhd_ref_light, field_ctl)
+        call add_phys_name_ctl(reference_composition%name, field_ctl)
         call add_phys_name_ctl(grad_reference_composition%name,         &
      &      field_ctl)
       end if

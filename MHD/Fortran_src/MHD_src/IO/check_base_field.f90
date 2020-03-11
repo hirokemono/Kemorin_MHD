@@ -37,12 +37,12 @@
 !
 !
       if(   check_field_list_ctl(perturbation_temp%name, field_ctl)     &
-     & .or. check_field_list_ctl(fhd_ref_temp, field_ctl)               &
+     & .or. check_field_list_ctl(reference_temperature%name, field_ctl) &
      & .or. check_field_list_ctl(fhd_heat_source, field_ctl)) then
         call add_phys_name_ctl(temperature%name, field_ctl)
       end if
       if(   check_field_list_ctl(fhd_part_light, field_ctl)             &
-     & .or. check_field_list_ctl(fhd_ref_light, field_ctl)              &
+     & .or. check_field_list_ctl(reference_composition%name, field_ctl) &
      & .or. check_field_list_ctl(fhd_light_source, field_ctl)) then
         call add_phys_name_ctl(fhd_light, field_ctl)
       end if
@@ -99,8 +99,8 @@
      &   call add_phys_name_ctl(temperature%name, field_ctl)
       if(check_field_list_ctl(grad_pert_temp%name, field_ctl))          &
      &   call add_phys_name_ctl(perturbation_temp%name, field_ctl)
-      if(check_field_list_ctl(grad_reference_temp%name, field_ctl))    &
-     &   call add_phys_name_ctl(fhd_ref_temp, field_ctl)
+      if(check_field_list_ctl(grad_reference_temp%name, field_ctl))     &
+     &   call add_phys_name_ctl(reference_temperature%name, field_ctl)
 !
       if(check_field_list_ctl(grad_composition%name, field_ctl))        &
      &   call add_phys_name_ctl(fhd_light, field_ctl)
@@ -108,7 +108,7 @@
      &   call add_phys_name_ctl(fhd_part_light, field_ctl)
       if(check_field_list_ctl(grad_reference_composition%name,          &
      &                        field_ctl))                               &
-     &   call add_phys_name_ctl(fhd_ref_light, field_ctl)
+     &   call add_phys_name_ctl(reference_composition%name, field_ctl)
 !
       if(check_field_list_ctl(grad_density%name, field_ctl))            &
      &   call add_phys_name_ctl(density%name, field_ctl)
