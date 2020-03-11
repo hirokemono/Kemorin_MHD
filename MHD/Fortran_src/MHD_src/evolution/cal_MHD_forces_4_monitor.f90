@@ -147,7 +147,7 @@
      &     (iphys%i_magne, iphys%i_velo,                                &
      &      iphys%forces%i_induct_t, nod_fld)
       else if (iphys%i_density .gt. izero) then
-        if(iflag_debug.gt.0) write(*,*) 'lead  ', trim(fhd_density)
+        if(iflag_debug.gt.0) write(*,*) 'lead  ', trim(density%name)
         call set_boussinesq_density_at_node                             &
      &     (node, fl_prop, iphys, nod_fld)
       end if

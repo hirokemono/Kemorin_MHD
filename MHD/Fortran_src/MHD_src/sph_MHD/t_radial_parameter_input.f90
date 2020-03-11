@@ -323,7 +323,7 @@
 !
 !
       if(check_diffusivity(field_name)) ncomp = 3
-      if(cmp_no_case(field_name, fhd_ref_density)) ncomp = 3
+      if(cmp_no_case(field_name, reference_density%name)) ncomp = 3
 !
       if(    cmp_no_case(field_name, fhd_ref_temp)                      &
      &  .or. cmp_no_case(field_name, fhd_ref_light))                    &

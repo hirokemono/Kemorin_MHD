@@ -212,11 +212,11 @@
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_per_entropy,             &
      &          i_rms%i_per_entropy, j_ave%i_per_entropy, msq_list)
-          else if ( field_name .eq. fhd_density ) then
+          else if ( field_name .eq. density%name ) then
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_density,                 &
      &          i_rms%i_density, j_ave%i_density, msq_list)
-          else if ( field_name .eq. fhd_per_density ) then
+          else if ( field_name .eq. perturbation_density%name ) then
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_per_density,             &
      &          i_rms%i_per_density, j_ave%i_per_density, msq_list)

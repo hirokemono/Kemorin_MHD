@@ -76,7 +76,7 @@
         call add_phys_name_ctl(fhd_light, field_ctl)
       else if( (field_name .eq. fhd_sym_density)                        &
      &    .or. (field_name .eq. fhd_asym_density)) then 
-        call add_phys_name_ctl(fhd_density, field_ctl)
+        call add_phys_name_ctl(density%name, field_ctl)
       else if( (field_name .eq. fhd_sym_entropy)                        &
      &    .or. (field_name .eq. fhd_asym_entropy)) then 
         call add_phys_name_ctl(fhd_entropy, field_ctl)
@@ -89,7 +89,7 @@
         call add_phys_name_ctl(fhd_part_light, field_ctl)
       else if( (field_name .eq. fhd_sym_per_density)                    &
      &    .or. (field_name .eq. fhd_asym_per_density)) then 
-        call add_phys_name_ctl(fhd_per_density, field_ctl)
+        call add_phys_name_ctl(perturbation_density%name, field_ctl)
       else if( (field_name .eq. fhd_sym_per_entropy)                    &
      &    .or. (field_name .eq. fhd_asym_per_entropy)) then 
         call add_phys_name_ctl(fhd_per_entropy, field_ctl)

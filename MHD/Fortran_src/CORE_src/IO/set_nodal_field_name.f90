@@ -157,11 +157,11 @@
 !
       if (    (phys_nod_name_ctl .eq. fhd_ref_temp            )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_part_temp           )         &
-     &   .or. (phys_nod_name_ctl .eq. fhd_density             )         &
+     &   .or. (phys_nod_name_ctl .eq. density%name             )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_ref_light           )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_part_light          )         &
-     &   .or. (phys_nod_name_ctl .eq. fhd_per_density         )         &
-     &   .or. (phys_nod_name_ctl .eq. fhd_ref_density         )         &
+     &   .or. (phys_nod_name_ctl .eq. perturbation_density%name         )         &
+     &   .or. (phys_nod_name_ctl .eq. reference_density%name         )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_per_entropy         )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_ref_entropy         )         &
      &      )   iflag = 1

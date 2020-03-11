@@ -51,9 +51,10 @@
      & .or. check_field_list_ctl(fhd_entropy_source, field_ctl)) then
         call add_phys_name_ctl(fhd_entropy, field_ctl)
       end if
-      if(   check_field_list_ctl(fhd_per_density, field_ctl)            &
-     & .or. check_field_list_ctl(fhd_ref_density, field_ctl)) then 
-        call add_phys_name_ctl(fhd_density, field_ctl)
+      if(   check_field_list_ctl(perturbation_density%name, field_ctl)  &
+     & .or. check_field_list_ctl(reference_density%name,                &
+     &                           field_ctl)) then 
+        call add_phys_name_ctl(density%name, field_ctl)
       end if
 !
       if( check_field_list_ctl(vector_potential%name, field_ctl)        &
@@ -69,7 +70,7 @@
      & .or. check_field_list_ctl(magnetic_field%name, field_ctl)        &
      & .or. check_field_list_ctl(fhd_temp, field_ctl)                   &
      & .or. check_field_list_ctl(fhd_light, field_ctl)                  &
-     & .or. check_field_list_ctl(fhd_density, field_ctl)                &
+     & .or. check_field_list_ctl(density%name, field_ctl)               &
      & .or. check_field_list_ctl(fhd_entropy, field_ctl)) then
         call add_phys_name_ctl(velocity%name, field_ctl)
       end if
@@ -110,11 +111,11 @@
      &   call add_phys_name_ctl(fhd_ref_light, field_ctl)
 !
       if(check_field_list_ctl(grad_density%name, field_ctl))            &
-     &   call add_phys_name_ctl(fhd_density, field_ctl)
+     &   call add_phys_name_ctl(density%name, field_ctl)
       if(check_field_list_ctl(grad_pert_density%name, field_ctl))       &
-     &   call add_phys_name_ctl(fhd_per_density, field_ctl)
+     &   call add_phys_name_ctl(perturbation_density%name, field_ctl)
       if(check_field_list_ctl(grad_reference_density%name, field_ctl))  &
-     &   call add_phys_name_ctl(fhd_ref_density, field_ctl)
+     &   call add_phys_name_ctl(reference_density%name, field_ctl)
 !
       if(check_field_list_ctl(grad_entropy%name, field_ctl))            &
      &   call add_phys_name_ctl(fhd_entropy, field_ctl)

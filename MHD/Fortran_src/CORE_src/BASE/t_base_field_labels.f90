@@ -122,23 +122,18 @@
 !!
 !>        Field label for density
 !!         @f$ \rho @f$
-      character(len=kchara), parameter :: fhd_density =  'density'
       type(field_def), parameter :: density                             &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'density',                                 &
      &                math = '$ \rho $')
 !>        Field label for perturbation of density
 !!         @f$  \Thera_{\rho} = \rho - \rho_{0} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_per_density = 'perturbation_density'
       type(field_def), parameter :: perturbation_density                &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'perturbation_density',                    &
      &                math = '$ \Thera_{\rho} = \rho - \rho_{0} $')
 !>        Field label for reference density
 !!         @f$  \rho_{0} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_ref_density =  'reference_density'
       type(field_def), parameter :: reference_density                   &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'reference_density',                       &
@@ -372,9 +367,9 @@
      &   .or. (field_name .eq. magnetic_potential%name)                 &
      &   .or. (field_name .eq. scalar_potential%name)                   &
 !
-     &   .or. (field_name .eq. fhd_density)                             &
-     &   .or. (field_name .eq. fhd_per_density)                         &
-     &   .or. (field_name .eq. fhd_ref_density)                         &
+     &   .or. (field_name .eq. density%name)                            &
+     &   .or. (field_name .eq. perturbation_density%name)               &
+     &   .or. (field_name .eq. reference_density%name)                  &
 !
      &   .or. (field_name .eq. fhd_temp)                                &
      &   .or. (field_name .eq. fhd_part_temp)                           &
@@ -459,11 +454,11 @@
         else if (field_name .eq. fhd_ref_light) then
           base_fld%i_ref_c =          i_phys
 !
-        else if (field_name .eq. fhd_density) then
+        else if (field_name .eq. density%name) then
           base_fld%i_density =        i_phys
-        else if (field_name .eq. fhd_per_density) then
+        else if (field_name .eq. perturbation_density%name) then
           base_fld%i_per_density =    i_phys
-        else if (field_name .eq. fhd_ref_density) then
+        else if (field_name .eq. reference_density%name) then
           base_fld%i_ref_density =    i_phys
 !
         else if (field_name .eq. fhd_entropy) then

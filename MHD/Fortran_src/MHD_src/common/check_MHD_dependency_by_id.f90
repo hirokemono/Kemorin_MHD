@@ -121,9 +121,9 @@
      &       (fld, i_start, iphys%i_light, fhd_light)
         else if(i_start .eq. iphys%i_per_density) then 
           call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_density, fhd_density)
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_ref_density, fhd_ref_density)
+     &       (fld, i_start, iphys%i_density, density%name)
+          call check_missing_field(fld, i_start,                        &
+     &        iphys%i_ref_density, reference_density%name)
         end if
       end do
 !

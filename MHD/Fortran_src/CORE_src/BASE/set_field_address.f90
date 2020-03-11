@@ -104,11 +104,11 @@
           iphys%i_per_entropy = i0
         else if ( field_name(i) .eq. fhd_ref_entropy ) then
           iphys%i_ref_entropy = i0
-        else if ( field_name(i) .eq. fhd_density ) then
+        else if ( field_name(i) .eq. density%name ) then
           iphys%i_density = i0
-        else if ( field_name(i) .eq. fhd_per_density ) then
+        else if ( field_name(i) .eq. perturbation_density%name ) then
           iphys%i_per_density = i0
-        else if ( field_name(i) .eq. fhd_ref_density ) then
+        else if ( field_name(i) .eq. reference_density%name ) then
           iphys%i_ref_density = i0
 !
         else if ( field_name(i) .eq. fhd_heat_source ) then
