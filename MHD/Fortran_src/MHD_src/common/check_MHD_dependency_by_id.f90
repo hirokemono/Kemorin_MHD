@@ -79,8 +79,7 @@
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_mag_p, magnetic_potential%name)
 !
-        else if(i_start .eq. iphys%i_per_temp                           &
-     &     .or. i_start .eq. iphys%i_filter_temp) then 
+        else if(i_start .eq. iphys%i_filter_temp) then 
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_temp, temperature%name)
         else if(i_start .eq. iphys%i_filter_comp) then 

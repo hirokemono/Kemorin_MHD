@@ -64,7 +64,7 @@
 !
       if    (ref_param_T%iflag_reference .eq. id_sphere_ref_temp        &
      &  .or. ref_param_T%iflag_reference .eq. id_takepiro_temp) then
-        ipol_temp =  ipol%i_per_temp
+        ipol_temp =  ipol%base%i_per_temp
       else
         ipol_temp =  ipol%i_temp
       end if

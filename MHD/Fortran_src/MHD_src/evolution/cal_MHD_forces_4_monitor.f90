@@ -107,7 +107,7 @@
      &                      trim(pert_heat_flux%name)
 !$omp parallel
         call cal_phys_scalar_product_vector                             &
-     &     (iphys%i_velo, iphys%i_per_temp,                             &
+     &     (iphys%i_velo, iphys%base%i_per_temp,                        &
      &      iphys%forces%i_ph_flux, nod_fld)
 !$omp end parallel
 !
@@ -215,7 +215,7 @@
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &             write(*,*) 'lead  ', trim(pert_heat_advect%name)
         call cal_terms_4_advect                                         &
-     &     (iphys%forces%i_ph_advect, iphys%i_per_temp,                 &
+     &     (iphys%forces%i_ph_advect, iphys%base%i_per_temp,            &
      &      FEM_prm%iflag_temp_supg, FEM_prm%npoint_t_evo_int, dt,      &
      &      FEM_prm, nod_comm, node, ele, fluid, ht_prop,               &
      &      nod_bcs%Tnod_bcs, iphys_ele, ele_fld, fem_int,              &

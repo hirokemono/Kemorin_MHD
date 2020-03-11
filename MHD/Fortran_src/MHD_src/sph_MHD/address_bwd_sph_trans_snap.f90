@@ -307,7 +307,7 @@
       type(phys_address), intent(inout) :: b_trns
 !
 !
-!      if(b_trns%i_temp.eq.0 .or. ipol%i_per_temp.gt.0) then
+!      if(b_trns%i_temp.eq.0 .or. ipol%base%i_per_temp.gt.0) then
       call add_field_name_4_sph_trns_snap                               &
      &   (temperature%name, temperature%n_comp,                         &
      &    ipol%i_temp, itor%i_temp, iphys%i_temp,                       &
@@ -326,8 +326,8 @@
      &    b_trns%i_press, trns_back)
       call add_field_name_4_sph_trns_nofld                              &
      &   (perturbation_temp%name, perturbation_temp%n_comp,             &
-     &    ipol%i_per_temp, itor%i_per_temp, iphys%i_per_temp,           &
-     &    b_trns%i_per_temp, trns_back)
+     &    ipol%base%i_per_temp, itor%base%i_per_temp,                   &
+     &    iphys%base%i_per_temp, b_trns%base%i_per_temp, trns_back)
       call add_field_name_4_sph_trns_snap                               &
      &   (filter_temperature%name, filter_temperature%n_comp,           &
      &    ipol%i_filter_temp, itor%i_filter_temp, iphys%i_filter_temp,  &

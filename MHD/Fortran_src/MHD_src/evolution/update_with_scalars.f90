@@ -112,7 +112,7 @@
         if(SGS_par%model_p%iflag_parterbuation .eq. id_SGS_REFERENCE)   &
      &   then
           call copy_scalar_component(nod_fld,                           &
-     &        iphys%i_per_temp, iphys%SGS_wk%i_sgs_temp)
+     &        iphys%base%i_per_temp, iphys%SGS_wk%i_sgs_temp)
         else
           call copy_scalar_component(nod_fld,                           &
      &        iphys%i_temp, iphys%SGS_wk%i_sgs_temp)

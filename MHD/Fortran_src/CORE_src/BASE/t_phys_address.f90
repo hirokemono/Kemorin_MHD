@@ -63,10 +63,6 @@
 !!         @f$ \varphi @f$
         integer (kind=kint) :: i_scalar_p =        izero
 !
-!>        start address for perturbation of temperature
-!!         @f$ \Theta = T - T_{0} @f$
-        integer (kind=kint) :: i_per_temp =        izero
-!
 !>        Start address for filtered velocity
 !!         @f$ \bar{u}_{i} @f$
         integer (kind=kint) :: i_filter_velo  =    izero
