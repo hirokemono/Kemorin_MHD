@@ -166,8 +166,6 @@
      &                math = '$ C $')
 !>        Field label for perturbation of composition
 !!         @f$  C - C_{0} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_part_light = 'perturbation_composition'
       type(field_def), parameter :: perturbation_composition            &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'perturbation_composition',                &
@@ -181,23 +179,18 @@
 !
 !>        Field label for entropy
 !!         @f$ S @f$
-      character(len=kchara), parameter :: fhd_entropy =  'entropy'
       type(field_def), parameter :: entropy                             &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'entropy',                                 &
      &                math = '$ S $')
 !>        Field label for perturbation of entropy
 !!         @f$  S - S_{0} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_per_entropy = 'perturbation_entropy'
       type(field_def), parameter :: perturbation_entropy                &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'perturbation_entropy',                    &
      &                math = '$ \Thera_{S} = S - S_{0} $')
 !>        Field label for reference entropy
 !!         @f$  S_{0} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_ref_entropy =  'reference_entropy'
       type(field_def), parameter :: reference_entropy                   &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'reference_entropy',                       &
@@ -368,12 +361,12 @@
      &   .or. (field_name .eq. reference_temperature%name)              &
 !
      &   .or. (field_name .eq. composition%name)                        &
-     &   .or. (field_name .eq. fhd_part_light)                          &
+     &   .or. (field_name .eq. perturbation_composition%name)           &
      &   .or. (field_name .eq. reference_composition%name)              &
 !
-     &   .or. (field_name .eq. fhd_entropy)                             &
-     &   .or. (field_name .eq. fhd_per_entropy)                         &
-     &   .or. (field_name .eq. fhd_ref_entropy)                         &
+     &   .or. (field_name .eq. entropy%name)                            &
+     &   .or. (field_name .eq. perturbation_entropy%name)               &
+     &   .or. (field_name .eq. reference_entropy%name)                  &
 !
      &   .or. (field_name .eq. fhd_heat_source)                         &
      &   .or. (field_name .eq. fhd_light_source)                        &
@@ -441,7 +434,7 @@
 !
         else if (field_name .eq. composition%name) then
           base_fld%i_light =          i_phys
-        else if (field_name .eq. fhd_part_light) then
+        else if (field_name .eq. perturbation_composition%name) then
           base_fld%i_per_light =      i_phys
         else if (field_name .eq. reference_composition%name) then
           base_fld%i_ref_c =          i_phys
@@ -453,11 +446,11 @@
         else if (field_name .eq. reference_density%name) then
           base_fld%i_ref_density =    i_phys
 !
-        else if (field_name .eq. fhd_entropy) then
+        else if (field_name .eq. entropy%name) then
           base_fld%i_entropy =        i_phys
-        else if (field_name .eq. fhd_per_entropy) then
+        else if (field_name .eq. perturbation_entropy%name) then
           base_fld%i_per_entropy =    i_phys
-        else if (field_name .eq. fhd_ref_entropy) then
+        else if (field_name .eq. reference_entropy%name) then
           base_fld%i_ref_entropy =    i_phys
 !
         else if (field_name .eq. fhd_heat_source) then

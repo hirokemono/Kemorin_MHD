@@ -249,7 +249,8 @@
       end if
 !
       if (ref_param_C%iflag_reference .ne. id_no_ref_temp) then
-        call add_phys_name_ctl(fhd_part_light, field_ctl)
+        call add_phys_name_ctl                                          &
+     &     (perturbation_composition%name, field_ctl)
       end if
 !
       if (fl_prop%iflag_4_coriolis .gt. id_turn_OFF)                    &

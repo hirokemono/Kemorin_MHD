@@ -106,7 +106,8 @@
      &    .or. check_field_list_ctl(pert_comp_flux%name, field_ctl)     &
      &      ) then
         call add_phys_name_ctl(velocity%name, field_ctl)
-        call add_phys_name_ctl(fhd_part_light, field_ctl)
+        call add_phys_name_ctl(perturbation_composition%name,           &
+     &                         field_ctl)
       end if
 !
       end subroutine add_field_ctl_4_forces

@@ -200,15 +200,15 @@
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_light,                   &
      &          i_rms%i_light, j_ave%i_light, msq_list)
-          else if ( field_name .eq. fhd_part_light ) then
+          else if(field_name .eq. perturbation_composition%name) then
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_per_light,               &
      &          i_rms%i_per_light, j_ave%i_per_light, msq_list)
-          else if ( field_name .eq. fhd_entropy ) then
+          else if ( field_name .eq. entropy%name ) then
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_entropy,                 &
      &          i_rms%i_entropy, j_ave%i_entropy, msq_list)
-          else if ( field_name .eq. fhd_per_entropy ) then
+          else if ( field_name .eq. perturbation_entropy%name ) then
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_per_entropy,             &
      &          i_rms%i_per_entropy, j_ave%i_per_entropy, msq_list)

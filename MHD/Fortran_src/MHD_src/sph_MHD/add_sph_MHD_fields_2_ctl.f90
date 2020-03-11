@@ -71,7 +71,8 @@
 !   gradient of dummy scalar flag
       if(cp_prop%iflag_scheme .gt. id_no_evolution) then
         call add_phys_name_ctl(grad_composition%name, field_ctl)
-        call add_phys_name_ctl(fhd_part_light, field_ctl)
+        call add_phys_name_ctl(perturbation_composition%name,           &
+    &       field_ctl)
         call add_phys_name_ctl(grad_pert_composition%name, field_ctl)
       end if
 !

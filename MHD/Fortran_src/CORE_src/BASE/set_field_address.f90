@@ -84,31 +84,31 @@
         else if ( field_name(i) .eq. current_density%name ) then
           iphys%i_current = i0
 !
-        else if ( field_name(i) .eq. pressure%name ) then
+        else if (field_name(i) .eq. pressure%name ) then
           iphys%i_press = i0
-        else if ( field_name(i) .eq. temperature%name ) then
+        else if (field_name(i) .eq. temperature%name ) then
           iphys%i_temp = i0
-        else if ( field_name(i) .eq. perturbation_temp%name ) then
+        else if (field_name(i) .eq. perturbation_temp%name ) then
           iphys%i_per_temp = i0
-        else if ( field_name(i) .eq. composition%name ) then
+        else if (field_name(i) .eq. composition%name ) then
           iphys%i_light = i0
-        else if ( field_name(i) .eq. fhd_part_light ) then
+        else if (field_name(i) .eq. perturbation_composition%name) then
           iphys%i_per_light = i0
-        else if ( field_name(i) .eq. magnetic_potential%name ) then
+        else if (field_name(i) .eq. magnetic_potential%name ) then
           iphys%i_mag_p = i0
-        else if ( field_name(i) .eq. scalar_potential%name ) then
+        else if (field_name(i) .eq. scalar_potential%name ) then
           iphys%i_scalar_p = i0
-        else if ( field_name(i) .eq. fhd_entropy ) then
+        else if (field_name(i) .eq. entropy%name ) then
           iphys%i_entropy = i0
-        else if ( field_name(i) .eq. fhd_per_entropy ) then
+        else if (field_name(i) .eq. perturbation_entropy%name ) then
           iphys%i_per_entropy = i0
-        else if ( field_name(i) .eq. fhd_ref_entropy ) then
+        else if (field_name(i) .eq. reference_entropy%name ) then
           iphys%i_ref_entropy = i0
-        else if ( field_name(i) .eq. density%name ) then
+        else if (field_name(i) .eq. density%name ) then
           iphys%i_density = i0
-        else if ( field_name(i) .eq. perturbation_density%name ) then
+        else if (field_name(i) .eq. perturbation_density%name ) then
           iphys%i_per_density = i0
-        else if ( field_name(i) .eq. reference_density%name ) then
+        else if (field_name(i) .eq. reference_density%name ) then
           iphys%i_ref_density = i0
 !
         else if ( field_name(i) .eq. fhd_heat_source ) then

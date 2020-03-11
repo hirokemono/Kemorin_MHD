@@ -215,7 +215,7 @@
      &        .or. rj_fld%phys_name(i_fld) .eq. composition%name        &
      &        .or. rj_fld%phys_name(i_fld) .eq. magnetic_field%name     &
      &        .or. rj_fld%phys_name(i_fld) .eq. magnetic_potential%name &
-     &        .or. rj_fld%phys_name(i_fld) .eq. fhd_entropy             &
+     &        .or. rj_fld%phys_name(i_fld) .eq. entropy%name            &
      &        .or. rj_fld%phys_name(i_fld) .eq. fhd_pre_mom             &
      &        .or. rj_fld%phys_name(i_fld) .eq. fhd_pre_uxb             &
      &        .or. rj_fld%phys_name(i_fld) .eq. fhd_pre_heat            &

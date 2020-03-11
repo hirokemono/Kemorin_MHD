@@ -67,7 +67,7 @@
         call add_phys_name_ctl(density%name, field_ctl)
       end if
       if(check_field_list_ctl(filter_entropy%name, field_ctl)) then
-        call add_phys_name_ctl(fhd_entropy, field_ctl)
+        call add_phys_name_ctl(entropy%name, field_ctl)
       end if
 !
       if(check_field_list_ctl(filter_pert_temperature%name,             &
@@ -76,7 +76,8 @@
       end if
       if(check_field_list_ctl(filter_pert_composition%name,             &
      &                        field_ctl)) then
-        call add_phys_name_ctl(fhd_part_light, field_ctl)
+        call add_phys_name_ctl(perturbation_composition%name,           &
+     &                         field_ctl)
       end if
       if(check_field_list_ctl(filter_pert_density%name,                 &
      &                        field_ctl)) then
@@ -84,7 +85,7 @@
       end if
       if(check_field_list_ctl(filter_pert_entropy%name,                 &
      &                        field_ctl)) then
-        call add_phys_name_ctl(fhd_per_entropy, field_ctl)
+        call add_phys_name_ctl(perturbation_entropy%name, field_ctl)
       end if
 !
       end subroutine add_field_ctl_4_filterd_field

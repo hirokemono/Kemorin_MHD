@@ -149,7 +149,7 @@
      &  .or. (phys_nod_name_ctl .eq. composition%name                )         &
      &  .or. (phys_nod_name_ctl .eq. magnetic_potential%name        )         &
      &  .or. (phys_nod_name_ctl .eq. scalar_potential%name     )         &
-     &  .or. (phys_nod_name_ctl .eq. fhd_entropy              )         &
+     &  .or. (phys_nod_name_ctl .eq. entropy%name              )         &
      &  .or. (phys_nod_name_ctl .eq. fhd_heat_source          )         &
      &  .or. (phys_nod_name_ctl .eq. fhd_light_source         )         &
      &  .or. (phys_nod_name_ctl .eq. fhd_entropy_source       )         &
@@ -159,11 +159,11 @@
      &   .or. (phys_nod_name_ctl .eq. perturbation_temp%name           )         &
      &   .or. (phys_nod_name_ctl .eq. density%name             )         &
      &   .or. (phys_nod_name_ctl .eq. reference_composition%name           )         &
-     &   .or. (phys_nod_name_ctl .eq. fhd_part_light          )         &
+     &   .or. (phys_nod_name_ctl .eq. perturbation_composition%name          )         &
      &   .or. (phys_nod_name_ctl .eq. perturbation_density%name         )         &
      &   .or. (phys_nod_name_ctl .eq. reference_density%name         )         &
-     &   .or. (phys_nod_name_ctl .eq. fhd_per_entropy         )         &
-     &   .or. (phys_nod_name_ctl .eq. fhd_ref_entropy         )         &
+     &   .or. (phys_nod_name_ctl .eq. perturbation_entropy%name         )         &
+     &   .or. (phys_nod_name_ctl .eq. reference_entropy%name         )         &
      &      )   iflag = 1
 !
       if (    (phys_nod_name_ctl .eq. fhd_pre_heat            )         &

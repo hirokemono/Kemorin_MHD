@@ -85,7 +85,8 @@
         call add_phys_name_ctl(composition%name, field_ctl)
         call add_phys_name_ctl(composition_advect%name, field_ctl)
       else if( (field_name .eq. pert_comp_generation%name)) then
-        call add_phys_name_ctl(fhd_part_light, field_ctl)
+        call add_phys_name_ctl(perturbation_composition%name,           &
+     &                         field_ctl)
         call add_phys_name_ctl(pert_comp_advect%name, field_ctl)
 !
       else if( (field_name .eq. viscous_ene_diffusion%name)) then

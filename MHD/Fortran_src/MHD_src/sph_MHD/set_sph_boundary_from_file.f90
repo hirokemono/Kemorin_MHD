@@ -51,7 +51,7 @@
 !
       if(      cmp_no_case(label, temperature%name)                     &
      &    .or. cmp_no_case(label, composition%name)                     &
-     &    .or. cmp_no_case(label, fhd_entropy)                          &
+     &    .or. cmp_no_case(label, entropy%name)                         &
      &    .or. cmp_no_case(label, heat_flux%name)                       &
      &    .or. cmp_no_case(label, composite_flux%name)) num_comp = 1
 !
@@ -79,7 +79,7 @@
       find_scalar_bc_label                                              &
      &     =    find_bc_label(label, temperature%name, postfix)         &
      &     .or. find_bc_label(label, composition%name, postfix)         &
-     &     .or. find_bc_label(label, fhd_entropy, postfix)              &
+     &     .or. find_bc_label(label, entropy%name, postfix)             &
      &     .or. find_bc_label(label, heat_flux%name, postfix)           &
      &     .or. find_bc_label(label, composite_flux%name, postfix)
 !

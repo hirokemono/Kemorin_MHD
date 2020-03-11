@@ -90,7 +90,7 @@
      &       (fld, i_start, iphys%i_light, composition%name)
         else if(i_start .eq. iphys%i_entropy_source) then 
           call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_entropy, fhd_entropy)
+     &       (fld, i_start, iphys%i_entropy, entropy%name)
         end if
       end do
 !
@@ -98,9 +98,9 @@
         i_start = fld%istack_component(i-1) + 1
         if(i_start .eq. iphys%i_per_entropy) then 
           call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_entropy, fhd_per_entropy)
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_ref_entropy, fhd_ref_entropy)
+     &       (fld, i_start, iphys%i_entropy, perturbation_entropy%name)
+          call check_missing_field(fld, i_start,                        &
+     &        iphys%i_ref_entropy, reference_entropy%name)
 !
         else if(i_start .eq. iphys%i_entropy) then 
           call check_missing_field                                      &
