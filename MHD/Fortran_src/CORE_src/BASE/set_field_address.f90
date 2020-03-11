@@ -93,7 +93,7 @@
         else if (field_name(i) .eq. composition%name ) then
           iphys%i_light = i0
         else if (field_name(i) .eq. perturbation_composition%name) then
-          iphys%i_per_light = i0
+          iphys%base%i_per_light = i0
         else if (field_name(i) .eq. magnetic_potential%name ) then
           iphys%i_mag_p = i0
         else if (field_name(i) .eq. scalar_potential%name ) then
@@ -117,6 +117,11 @@
           iphys%base%i_light_source = i0
         else if ( field_name(i) .eq. entropy_source%name ) then
           iphys%base%i_entropy_source = i0
+        end if
+        if ( field_name(i) .eq. reference_temperature%name ) then
+          iphys%i_ref_t = i0
+        else if ( field_name(i) .eq. reference_composition%name ) then
+          iphys%i_ref_c = i0
         end if
 !
         if ( field_name(i) .eq. filter_velocity%name ) then
@@ -187,11 +192,6 @@
         call set_true_SGS_ene_flux_addresses                            &
      &     (i0, field_name(i), iphys%true_SGS_eflux, flag)
 !
-        if ( field_name(i) .eq. reference_temperature%name ) then
-          iphys%i_ref_t = i0
-        else if ( field_name(i) .eq. reference_composition%name ) then
-          iphys%i_ref_c = i0
-        end if
         call set_work_4_poisson_addresses                               &
      &     (i0, field_name(i), iphys%ene_flux, flag)
 !

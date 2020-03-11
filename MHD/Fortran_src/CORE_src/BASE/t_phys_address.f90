@@ -66,9 +66,6 @@
 !>        start address for perturbation of temperature
 !!         @f$ \Theta = T - T_{0} @f$
         integer (kind=kint) :: i_per_temp =        izero
-!>        start address for perturbation of composition
-!!         @f$  C - C_{0} @f$
-        integer (kind=kint) :: i_per_light =       izero
 !
 !>        start address for reference temperature
 !!         @f$  T_{0} @f$

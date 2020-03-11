@@ -326,7 +326,7 @@
 !
       if (iphys%ene_flux%i_par_c_gen .gt. izero) then
         call cal_phys_product_4_scalar                                  &
-     &     (iphys%forces%i_pc_advect, iphys%i_per_light,                &
+     &     (iphys%forces%i_pc_advect, iphys%base%i_per_light,           &
      &      iphys%ene_flux%i_par_c_gen, nod_fld)
       end if
 !
