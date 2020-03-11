@@ -70,7 +70,7 @@
      &       (fld, i_start, iphys%i_vecp, vector_potential%name)
         else if(i_start .eq. iphys%i_filter_current) then 
           call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_current, fhd_current)
+     &       (fld, i_start, iphys%i_current, current_density%name)
         else if(i_start .eq. iphys%i_vecp) then
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_velo, velocity%name)

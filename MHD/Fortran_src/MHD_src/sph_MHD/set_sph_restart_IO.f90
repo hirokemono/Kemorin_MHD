@@ -79,7 +79,7 @@
        do i_fld = 1, rj_fld%num_phys
          if   ( rj_fld%phys_name(i_fld) .eq. velocity%name              &
 !     &     .or. rj_fld%phys_name(i_fld) .eq. vorticity%name            &
-!     &     .or. rj_fld%phys_name(i_fld) .eq. fhd_press                 &
+!     &     .or. rj_fld%phys_name(i_fld) .eq. pressure%name             &
      &     .or. rj_fld%phys_name(i_fld) .eq. fhd_temp                   &
      &     .or. rj_fld%phys_name(i_fld) .eq. fhd_light                  &
      &     .or. rj_fld%phys_name(i_fld) .eq. magnetic_field%name        &
@@ -129,7 +129,7 @@
      &                                 + fld_IO%num_comp_IO(icou)
         else if    (rj_fld%phys_name(i_fld) .eq. fhd_temp               &
      &         .or. rj_fld%phys_name(i_fld) .eq. fhd_light              &
-!     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_press             &
+!     &         .or. rj_fld%phys_name(i_fld) .eq. pressure%name         &
      &         .or. rj_fld%phys_name(i_fld) .eq. fhd_entropy            &
 !     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_mag_potential     &
      &         .or. rj_fld%phys_name(i_fld) .eq. fhd_pre_heat           &
@@ -179,7 +179,7 @@
 !
             else if(rj_fld%phys_name(i_fld) .eq. fhd_temp               &
      &         .or. rj_fld%phys_name(i_fld) .eq. fhd_light              &
-!     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_press             &
+!     &         .or. rj_fld%phys_name(i_fld) .eq. pressure%name         &
      &         .or. rj_fld%phys_name(i_fld) .eq. fhd_entropy            &
 !     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_mag_potential     &
      &         .or. rj_fld%phys_name(i_fld) .eq. fhd_pre_heat           &
@@ -232,7 +232,7 @@
 !
             else if(rj_fld%phys_name(i_fld) .eq. fhd_temp               &
      &         .or. rj_fld%phys_name(i_fld) .eq. fhd_light              &
-!     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_press             &
+!     &         .or. rj_fld%phys_name(i_fld) .eq. pressure%name         &
      &         .or. rj_fld%phys_name(i_fld) .eq. fhd_entropy            &
 !     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_mag_potential     &
      &         .or. rj_fld%phys_name(i_fld) .eq. fhd_pre_heat           &

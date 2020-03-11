@@ -64,7 +64,8 @@
      &    b_trns%i_magne, trns_back)
 !      end if
 !      if(b_trns%i_current .eq. 0) then
-      call add_field_name_4_sph_trns_snap(fhd_current, n_vector,        &
+      call add_field_name_4_sph_trns_snap                               &
+     &   (current_density%name, current_density%n_comp,                 &
      &    ipol%i_current, itor%i_current, iphys%i_current,              &
      &    b_trns%i_current, trns_back)
 !      end if
@@ -317,7 +318,8 @@
      &    b_trns%i_light, trns_back)
 !      end if
 !
-      call add_field_name_4_sph_trns_snap(fhd_press, n_scalar,          &
+      call add_field_name_4_sph_trns_snap                               &
+     &   (pressure%name, pressure%n_comp,                               &
      &    ipol%i_press, itor%i_press, iphys%i_press,                    &
      &    b_trns%i_press, trns_back)
       call add_field_name_4_sph_trns_nofld(fhd_part_temp, n_scalar,     &

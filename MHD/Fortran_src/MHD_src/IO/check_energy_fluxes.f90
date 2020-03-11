@@ -53,7 +53,7 @@
      &    .or. (field_name .eq. Lorentz_work%name)) then
         call add_phys_name_ctl(velocity%name, field_ctl)
         call add_phys_name_ctl(magnetic_field%name, field_ctl)
-        call add_phys_name_ctl(fhd_current, field_ctl)
+        call add_phys_name_ctl(current_density%name, field_ctl)
         call add_phys_name_ctl(Lorentz_force%name, field_ctl)
       else if( (field_name .eq. mag_tension_work%name)) then
         call add_phys_name_ctl(velocity%name, field_ctl)

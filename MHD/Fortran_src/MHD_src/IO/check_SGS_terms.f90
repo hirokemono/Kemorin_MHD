@@ -60,7 +60,7 @@
         call add_phys_name_ctl(velocity%name, field_ctl)
       end if
       if(check_field_list_ctl(SGS_Lorentz%name, field_ctl)) then
-        call add_phys_name_ctl(fhd_current, field_ctl)
+        call add_phys_name_ctl(current_density%name, field_ctl)
         call add_phys_name_ctl(magnetic_field%name, field_ctl)
       end if
 !

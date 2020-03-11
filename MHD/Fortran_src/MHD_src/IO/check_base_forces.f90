@@ -48,15 +48,15 @@
       end if
 !
       if(check_field_list_ctl(pressure_gradient%name, field_ctl))       &
-        call add_phys_name_ctl(fhd_press, field_ctl)
+        call add_phys_name_ctl(pressure%name, field_ctl)
       if(check_field_list_ctl(inertia%name, field_ctl)) then
         call add_phys_name_ctl(vorticity%name, field_ctl)
-        call add_phys_name_ctl(fhd_press, field_ctl)
+        call add_phys_name_ctl(pressure%name, field_ctl)
       end if
 !
       if(check_field_list_ctl(Lorentz_force%name, field_ctl)) then
-        call add_phys_name_ctl(fhd_current, field_ctl)
-        call add_phys_name_ctl(fhd_press, field_ctl)
+        call add_phys_name_ctl(current_density%name, field_ctl)
+        call add_phys_name_ctl(pressure%name, field_ctl)
       end if
 !
       if(check_field_list_ctl(buoyancy%name, field_ctl))                &
@@ -200,7 +200,7 @@
       end if
       if(check_field_list_ctl(electric_field%name, field_ctl)) then
         call add_phys_name_ctl(vecp_induction%name, field_ctl)
-        call add_phys_name_ctl(fhd_current, field_ctl)
+        call add_phys_name_ctl(current_density%name, field_ctl)
       end if
 !
       if(check_field_list_ctl(truncated_magnetic_field%name,            &
@@ -217,7 +217,7 @@
       end if
       if(check_field_list_ctl(current_helicity%name, field_ctl)) then
         call add_phys_name_ctl(magnetic_field%name, field_ctl)
-        call add_phys_name_ctl(fhd_current, field_ctl)
+        call add_phys_name_ctl(current_density%name, field_ctl)
       end if
       if(check_field_list_ctl(cross_helicity%name, field_ctl)) then
         call add_phys_name_ctl(velocity%name, field_ctl)
@@ -235,7 +235,7 @@
       if(check_field_list_ctl(square_vector_potential%name, field_ctl)) &
      &   call add_phys_name_ctl(vector_potential%name, field_ctl)
       if(check_field_list_ctl(square_current%name, field_ctl))          &
-     &   call add_phys_name_ctl(fhd_current, field_ctl)
+     &   call add_phys_name_ctl(current_density%name, field_ctl)
       if(      check_field_list_ctl(square_temperature%name, field_ctl) &
      &    .or. check_field_list_ctl(temperature_scale%name, field_ctl)) &
      &   call add_phys_name_ctl(fhd_temp, field_ctl)

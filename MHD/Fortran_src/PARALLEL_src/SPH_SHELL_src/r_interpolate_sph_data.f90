@@ -210,7 +210,7 @@
           if(rj_fld%phys_name(i_fld) .eq. fld_IO%fld_name(j_fld)) then
             if     (rj_fld%phys_name(i_fld) .eq. velocity%name          &
      &         .or. rj_fld%phys_name(i_fld) .eq. vorticity%name         &
-     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_press              &
+     &         .or. rj_fld%phys_name(i_fld) .eq. pressure%name          &
      &         .or. rj_fld%phys_name(i_fld) .eq. fhd_temp               &
      &         .or. rj_fld%phys_name(i_fld) .eq. fhd_light              &
      &         .or. rj_fld%phys_name(i_fld) .eq. magnetic_field%name    &

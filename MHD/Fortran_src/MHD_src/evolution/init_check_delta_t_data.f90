@@ -133,7 +133,7 @@
         flex_data%i_drmax_p =         flex_data%istack_comp(icou-1) + 1
         flex_data%istack_comp(icou) = flex_data%istack_comp(icou-1) + 1
         flex_data%num_comp(icou) =    flex_data%num_comp(icou) +      1
-        flex_data%fld_name(icou) =    fhd_press
+        flex_data%fld_name(icou) =    pressure%name
       end if
 !
 !

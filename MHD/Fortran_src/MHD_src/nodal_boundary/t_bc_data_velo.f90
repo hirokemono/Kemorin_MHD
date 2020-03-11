@@ -164,7 +164,7 @@
       call alloc_scalar_nod_bc_type(node%numnod, Vnod_bcs%nod_bc_p)
       call alloc_scalar_nod_bc_type(node%numnod, Vnod_bcs%sgs_bc_p)
 !
-      Vnod_bcs%nod_bc_p%scalar_bc_name = fhd_press
+      Vnod_bcs%nod_bc_p%scalar_bc_name = pressure%name
       call set_bc_fixed_temp_id(IO_bc, node, nod_grp, press_nod,        &
      &    Vnod_bcs%nod_bc_p, Vnod_bcs%sgs_bc_p)
 !

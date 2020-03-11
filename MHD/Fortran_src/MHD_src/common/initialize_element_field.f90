@@ -52,7 +52,7 @@
 !
         else if(ele_fld%phys_name(i) .eq. magnetic_field%name) then
           iphys_ele%i_magne = i0
-        else if(ele_fld%phys_name(i) .eq. fhd_current) then
+        else if(ele_fld%phys_name(i) .eq. current_density%name) then
           iphys_ele%i_current = i0
         else if(ele_fld%phys_name(i) .eq. filter_magne%name) then
           iphys_ele%i_filter_magne = i0
@@ -144,7 +144,7 @@
           j = j + 1
           if ( FEM_prm%iflag_rotate_form .eq. id_turn_ON ) then
             ele_fld%num_component(j) = 3
-            ele_fld%phys_name(j) = fhd_current
+            ele_fld%phys_name(j) = current_density%name
             j = j + 1
           end if
           if     (SGS_param%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF       &

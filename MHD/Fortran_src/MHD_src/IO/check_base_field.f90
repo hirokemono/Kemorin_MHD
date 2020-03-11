@@ -57,14 +57,14 @@
       end if
 !
       if( check_field_list_ctl(vector_potential%name, field_ctl)        &
-     & .or. check_field_list_ctl(fhd_current, field_ctl)                &
+     & .or. check_field_list_ctl(current_density%name, field_ctl)       &
      & .or. check_field_list_ctl(fhd_mag_potential, field_ctl)          &
      & .or. check_field_list_ctl(fhd_scalar_potential, field_ctl)) then
         call add_phys_name_ctl(magnetic_field%name, field_ctl)
       end if
 !
       if(   check_field_list_ctl(vorticity%name, field_ctl)             &
-     & .or. check_field_list_ctl(fhd_press, field_ctl)                  &
+     & .or. check_field_list_ctl(pressure%name, field_ctl)              &
      & .or. check_field_list_ctl(magnetic_field%name, field_ctl)        &
      & .or. check_field_list_ctl(fhd_temp, field_ctl)                   &
      & .or. check_field_list_ctl(fhd_light, field_ctl)                  &
@@ -154,7 +154,7 @@
       if(   check_field_list_ctl(grad_j_1%name, field_ctl)              &
      & .or. check_field_list_ctl(grad_j_2%name, field_ctl)              &
      & .or. check_field_list_ctl(grad_j_3%name, field_ctl))             &
-     &  call add_phys_name_ctl(fhd_current, field_ctl)
+     &  call add_phys_name_ctl(current_density%name, field_ctl)
 !
       end subroutine add_field_ctl_4_diff_vector
 !

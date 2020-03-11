@@ -157,7 +157,8 @@
           iphys%i_vort =      nod_fld%istack_component(i_fld-1) + 1
         else if(nod_fld%phys_name(i_fld) .eq. magnetic_field%name) then
           iphys%i_magne =     nod_fld%istack_component(i_fld-1) + 1
-        else if(nod_fld%phys_name(i_fld) .eq. fhd_current) then
+        else if(nod_fld%phys_name(i_fld)                                &
+     &          .eq. current_density%name) then
           iphys%i_current =   nod_fld%istack_component(i_fld-1) + 1
         else if(nod_fld%phys_name(i_fld) .eq. fhd_temp) then
           iphys%i_temp =      nod_fld%istack_component(i_fld-1) + 1

@@ -119,7 +119,7 @@
             msq_list%numrms = msq_list%numrms + 1
           end if
 !
-          if ( field_name .eq. fhd_current ) then
+          if(field_name .eq. current_density%name) then
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_current,                 &
      &          i_rms%i_current, j_ave%i_current, msq_list)
@@ -182,7 +182,7 @@
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_temp,                    &
      &          i_rms%i_temp, j_ave%i_temp, msq_list)
-          else if ( field_name .eq. fhd_press ) then
+          else if ( field_name .eq. pressure%name ) then
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_press,                   &
      &          i_rms%i_press, j_ave%i_press, msq_list)

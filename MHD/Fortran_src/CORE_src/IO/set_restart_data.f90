@@ -257,7 +257,7 @@
 !
       iflag = 0
       if    (d_name .eq. velocity%name                                  &
-     &  .or. d_name .eq. fhd_press                                      &
+     &  .or. d_name .eq. pressure%name                                  &
      &  .or. d_name .eq. fhd_pre_mom) then
         iflag = 1
         return
@@ -306,7 +306,7 @@
      &     .or. rst_name .eq. fhd_chk_uxb   ) then
         numdir = 3
 !
-      else if  (rst_name .eq. fhd_press                                 &
+      else if  (rst_name .eq. pressure%name                             &
      &     .or. rst_name .eq. fhd_temp                                  &
      &     .or. rst_name .eq. fhd_light                                 &
      &     .or. rst_name .eq. fhd_mag_potential                         &

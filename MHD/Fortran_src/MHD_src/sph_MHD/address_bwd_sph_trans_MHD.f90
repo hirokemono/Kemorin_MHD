@@ -81,8 +81,8 @@
       end if
 !   current density flag
       if(fl_prop%iflag_4_lorentz .gt. id_turn_OFF) then
-        call add_field_name_4_sph_trns                                  &
-     &     (ipol%i_current, fhd_current, n_vector,                      &
+        call add_field_name_4_sph_trns(ipol%i_current,                  &
+     &      current_density%name, current_density%n_comp,               &
      &      ipol%i_current, itor%i_current, iphys%i_current,            &
      &      b_trns%i_current, trns_back)
       end if

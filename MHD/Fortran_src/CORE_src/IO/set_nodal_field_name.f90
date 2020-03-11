@@ -49,6 +49,7 @@
       subroutine set_vector_field_name(phys_nod_name_ctl, icou,         &
      &          phys_nod_name, num_nod_component, iflag)
 !
+      use t_base_field_labels
       use t_diffusion_term_labels
       use t_SGS_term_labels
 !
@@ -70,13 +71,6 @@
 !
       if (iflag .gt. 0) return
 !
-      if (   (phys_nod_name_ctl .eq. velocity%name               )           &
-     &  .or. (phys_nod_name_ctl .eq. vorticity%name               )           &
-     &  .or. (phys_nod_name_ctl .eq. magnetic_field%name              )           &
-     &  .or. (phys_nod_name_ctl .eq. vector_potential%name               )           &
-     &  .or. (phys_nod_name_ctl .eq. fhd_current            )           &
-     &      )   iflag = 1
-!
       if (   (phys_nod_name_ctl .eq. geostrophic_balance%name)          &
      &      )   iflag = 1
 !
@@ -90,7 +84,8 @@
      &  .or. (phys_nod_name_ctl .eq. fhd_rot_forces         )           &
      &      )   iflag = 1
 !
-      if(     check_force_vectors(phys_nod_name_ctl)                    &
+      if(     check_base_vector(phys_nod_name_ctl)                      &
+     &   .or. check_force_vectors(phys_nod_name_ctl)                    &
      &   .or. check_rot_force(phys_nod_name_ctl)                        &
      &   .or. check_div_flux_tensor(phys_nod_name_ctl)                  &
      &   .or. check_gradient_field(phys_nod_name_ctl)                   &
@@ -149,7 +144,7 @@
 !
       if (iflag .gt. 0) return
 !
-      if (   (phys_nod_name_ctl .eq. fhd_press                )         &
+      if (   (phys_nod_name_ctl .eq. pressure%name                )         &
      &  .or. (phys_nod_name_ctl .eq. fhd_temp                 )         &
      &  .or. (phys_nod_name_ctl .eq. fhd_light                )         &
      &  .or. (phys_nod_name_ctl .eq. fhd_mag_potential        )         &

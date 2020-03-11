@@ -85,7 +85,7 @@
             call add_phys_name_ctl(grad_b_1%name, field_ctl)
             call add_phys_name_ctl(grad_b_2%name, field_ctl)
             call add_phys_name_ctl(grad_b_3%name, field_ctl)
-!          else if(field_ctl%c1_tbl(i) .eq. fhd_current) then
+!          else if(field_ctl%c1_tbl(i) .eq. current_density%name) then
 !            call add_phys_name_ctl(grad_j_1%name, field_ctl)
 !            call add_phys_name_ctl(grad_j_2%name, field_ctl)
 !            call add_phys_name_ctl(grad_j_3%name, field_ctl)

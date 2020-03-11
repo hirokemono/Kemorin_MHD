@@ -158,7 +158,7 @@
 !     &    rayleigh_WK%rayleigh_fd(1,1))
 !
         if    (new_sph_phys%phys_name(i_fld) .eq. velocity%name         &
-     &   .or. new_sph_phys%phys_name(i_fld) .eq. fhd_press              &
+     &   .or. new_sph_phys%phys_name(i_fld) .eq. pressure%name          &
      &   .or. new_sph_phys%phys_name(i_fld) .eq. fhd_temp               &
      &   .or. new_sph_phys%phys_name(i_fld) .eq. magnetic_field%name)   &
      &       then

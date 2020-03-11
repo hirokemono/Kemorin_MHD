@@ -130,7 +130,7 @@
       end if
       if(iflag_magne .gt. 0) then
         field_ctl%c1_tbl(ifld+1) = magnetic_field%name
-        field_ctl%c1_tbl(ifld+2) = fhd_current
+        field_ctl%c1_tbl(ifld+2) = current_density%name
         ifld = ifld+2
       end if
 !

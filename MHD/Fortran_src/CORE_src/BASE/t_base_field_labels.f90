@@ -84,7 +84,6 @@
      &                math = '$ \omega_{i}'                             &
      &                    // ' = e_{ijk} \partial_{j} u_{k} $')
 !>        Field label for pressure @f$ p @f$
-      character(len=kchara), parameter :: fhd_press = 'pressure'
       type(field_def), parameter :: pressure                            &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'pressure',                                &
@@ -104,8 +103,6 @@
      &                math = '$ B_{i} = e_{ijk} \partial_{j} A_{k} $')
 !>        Field label for current density
 !!         @f$ J_{i} = e_{ijk} \partial_{j} B_{k} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_current = 'current_density'
       type(field_def), parameter :: current_density                     &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'current_density',                         &
@@ -363,7 +360,7 @@
      &   .or. (field_name .eq. vorticity%name)                          &
      &   .or. (field_name .eq. magnetic_field%name)                     &
      &   .or. (field_name .eq. vector_potential%name)                   &
-     &   .or. (field_name .eq. fhd_current)
+     &   .or. (field_name .eq. current_density%name)
 !
       end function check_base_vector
 !
@@ -375,7 +372,7 @@
 !
 !
       check_base_scalar                                                 &
-     &   =    (field_name .eq. fhd_press)                               &
+     &   =    (field_name .eq. pressure%name)                           &
      &   .or. (field_name .eq. fhd_mag_potential)                       &
      &   .or. (field_name .eq. fhd_scalar_potential)                    &
 !
@@ -424,7 +421,7 @@
           base_fld%i_magne =    i_phys
         else if (field_name .eq. vector_potential%name) then
           base_fld%i_vecp =     i_phys
-        else if (field_name .eq. fhd_current) then
+        else if (field_name .eq. current_density%name) then
           base_fld%i_current =  i_phys
         end if
       end if
@@ -445,7 +442,7 @@
 !
       flag = check_base_scalar(field_name)
       if(flag) then
-        if (field_name .eq. fhd_press) then
+        if (field_name .eq. pressure%name) then
           base_fld%i_press = i_phys
         else if (field_name .eq. fhd_mag_potential) then
           base_fld%i_mag_p =    i_phys

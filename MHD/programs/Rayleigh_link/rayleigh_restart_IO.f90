@@ -119,7 +119,7 @@
       call add_vector_field_4_raylegh(dir, i_step, wchar, zchar,        &
      &    velocity%name, icou, fld_IO)
       call add_scalar_field_4_raylegh(dir, i_step, pchar,               &
-     &    fhd_press, icou, fld_IO)
+     &    pressure%name, icou, fld_IO)
       call add_scalar_field_4_raylegh(dir, i_step, tchar,               &
      &    fhd_temp, icou, fld_IO)
       call add_vector_field_4_raylegh(dir, i_step, cchar, achar,        &

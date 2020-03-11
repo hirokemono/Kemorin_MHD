@@ -133,7 +133,7 @@
         field_ctl%c3_tbl(ifld) = 'Monitor_Off'
 !
         ifld = ifld+1
-        field_ctl%c1_tbl(ifld) = fhd_press
+        field_ctl%c1_tbl(ifld) = pressure%name
         field_ctl%c2_tbl(ifld) = 'Viz_On'
         field_ctl%c3_tbl(ifld) = 'Monitor_Off'
       end if
@@ -222,7 +222,7 @@
       do i = 1, rj_fld%num_phys
         if     (rj_fld%phys_name(i) .eq. velocity%name) then
           i_velo =  istack_comp(i- 1) + 1
-        else if(rj_fld%phys_name(i) .eq. fhd_press) then
+        else if(rj_fld%phys_name(i) .eq. pressure%name) then
           i_press = istack_comp(i- 1) + 1
         end if
       end do

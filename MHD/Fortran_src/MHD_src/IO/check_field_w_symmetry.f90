@@ -56,11 +56,11 @@
         call add_phys_name_ctl(vector_potential%name, field_ctl)
       else if( (field_name .eq. fhd_sym_current)                        &
      &    .or. (field_name .eq. fhd_asym_current)) then 
-        call add_phys_name_ctl(fhd_current, field_ctl)
+        call add_phys_name_ctl(current_density%name, field_ctl)
 !
       else if( (field_name .eq. fhd_sym_press)                          &
      &    .or. (field_name .eq. fhd_asym_press)) then 
-        call add_phys_name_ctl(fhd_press, field_ctl)
+        call add_phys_name_ctl(pressure%name, field_ctl)
       else if( (field_name .eq. fhd_sym_mag_potential)                  &
      &    .or. (field_name .eq. fhd_asym_mag_potential)) then 
         call add_phys_name_ctl(fhd_mag_potential, field_ctl)

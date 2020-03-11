@@ -58,7 +58,7 @@
       if(cd_prop%iflag_Bevo_scheme .gt. id_no_evolution                 &
      &     .or. fl_prop%iflag_4_lorentz .gt. id_turn_OFF) then
         call add_phys_name_ctl(magnetic_field%name, field_ctl)
-        call add_phys_name_ctl(fhd_current, field_ctl)
+        call add_phys_name_ctl(current_density%name, field_ctl)
       end if
 !
 !   gradient of temperature flag

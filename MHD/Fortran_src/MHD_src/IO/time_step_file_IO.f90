@@ -93,7 +93,8 @@
           end if
 !
         else if(msq_list%ifld_msq(i) .eq. iphys%i_current) then
-          call vector_label_4_step(id_ave, id_msq, fhd_current)
+          call vector_label_4_step                                      &
+     &       (id_ave, id_msq, current_density%name)
           call vector_label_4_step(id_ave, id_msq, e_hd_sq_j_cd)
           call write_one_label(id_msq, e_hd_rms_j)
           call write_one_label(id_msq, e_hd_rms_j_cd)

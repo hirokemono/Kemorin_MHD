@@ -75,28 +75,29 @@
 !
         if      ( field_name(i) .eq. velocity%name ) then
           iphys%i_velo = i0
-        else if ( field_name(i) .eq. fhd_press ) then
+        else if ( field_name(i) .eq. vorticity%name ) then
+          iphys%i_vort = i0
+        else if ( field_name(i) .eq. magnetic_field%name ) then
+          iphys%i_magne = i0
+        else if ( field_name(i) .eq. vector_potential%name ) then
+          iphys%i_vecp = i0
+        else if ( field_name(i) .eq. current_density%name ) then
+          iphys%i_current = i0
+!
+        else if ( field_name(i) .eq. pressure%name ) then
           iphys%i_press = i0
         else if ( field_name(i) .eq. fhd_temp ) then
           iphys%i_temp = i0
         else if ( field_name(i) .eq. fhd_part_temp ) then
           iphys%i_per_temp = i0
-        else if ( field_name(i) .eq. vorticity%name ) then
-          iphys%i_vort = i0
         else if ( field_name(i) .eq. fhd_light ) then
           iphys%i_light = i0
         else if ( field_name(i) .eq. fhd_part_light ) then
           iphys%i_per_light = i0
-        else if ( field_name(i) .eq. magnetic_field%name ) then
-          iphys%i_magne = i0
-        else if ( field_name(i) .eq. vector_potential%name ) then
-          iphys%i_vecp = i0
         else if ( field_name(i) .eq. fhd_mag_potential ) then
           iphys%i_mag_p = i0
         else if ( field_name(i) .eq. fhd_scalar_potential ) then
           iphys%i_scalar_p = i0
-        else if ( field_name(i) .eq. fhd_current ) then
-          iphys%i_current = i0
         else if ( field_name(i) .eq. fhd_entropy ) then
           iphys%i_entropy = i0
         else if ( field_name(i) .eq. fhd_per_entropy ) then

@@ -222,7 +222,7 @@
         iflag_ncomp = 2
         file_name(1) =  set_rayleigh_file_name(dir, i_step, wchar)
         file_name(2) =  set_rayleigh_file_name(dir, i_step, zchar)
-      else if(field_name .eq. fhd_press) then
+      else if(field_name .eq. pressure%name) then
         iflag_ncomp = 1
         file_name(1) =  set_rayleigh_file_name(dir, i_step, pchar)
       else if(field_name .eq. fhd_temp) then
