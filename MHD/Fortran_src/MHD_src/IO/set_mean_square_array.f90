@@ -196,7 +196,7 @@
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_per_temp,                &
      &          i_rms%i_per_temp, j_ave%i_per_temp, msq_list)
-          else if ( field_name .eq. fhd_light ) then
+          else if ( field_name .eq. composition%name ) then
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_light,                   &
      &          i_rms%i_light, j_ave%i_light, msq_list)

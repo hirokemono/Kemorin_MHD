@@ -312,7 +312,7 @@
      &      .and. cmt_param%iflag_c_light .eq. id_SGS_commute_ON) then
             icomp_diff%i_light = id
             ifld_diff%i_light = jd
-            wk_diff%name(jd) = fhd_light
+            wk_diff%name(jd) = composition%name
             diff_coefs%num_comps(jd) = 3
             id = id + diff_coefs%num_comps(jd)
             jd = jd + 1

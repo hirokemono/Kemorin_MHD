@@ -65,7 +65,7 @@
         call add_phys_name_ctl(buoyancy%name, field_ctl)
       else if( (field_name .eq. composite_buoyancy_flux%name)) then
         call add_phys_name_ctl(velocity%name, field_ctl)
-        call add_phys_name_ctl(fhd_light, field_ctl)
+        call add_phys_name_ctl(composition%name, field_ctl)
         call add_phys_name_ctl(composite_buoyancy%name, field_ctl)
 !
       else if( (field_name .eq. magnetic_ene_generation%name)) then
@@ -82,7 +82,7 @@
         call add_phys_name_ctl(perturbation_temp%name, field_ctl)
         call add_phys_name_ctl(pert_heat_advect%name, field_ctl)
       else if( (field_name .eq. comp_generation%name)) then
-        call add_phys_name_ctl(fhd_light, field_ctl)
+        call add_phys_name_ctl(composition%name, field_ctl)
         call add_phys_name_ctl(composition_advect%name, field_ctl)
       else if( (field_name .eq. pert_comp_generation%name)) then
         call add_phys_name_ctl(fhd_part_light, field_ctl)

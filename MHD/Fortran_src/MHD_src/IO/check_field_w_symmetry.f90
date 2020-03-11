@@ -73,7 +73,7 @@
         call add_phys_name_ctl(temperature%name, field_ctl)
       else if( (field_name .eq. fhd_sym_light)                          &
      &    .or. (field_name .eq. fhd_asym_light)) then 
-        call add_phys_name_ctl(fhd_light, field_ctl)
+        call add_phys_name_ctl(composition%name, field_ctl)
       else if( (field_name .eq. fhd_sym_density)                        &
      &    .or. (field_name .eq. fhd_asym_density)) then 
         call add_phys_name_ctl(density%name, field_ctl)

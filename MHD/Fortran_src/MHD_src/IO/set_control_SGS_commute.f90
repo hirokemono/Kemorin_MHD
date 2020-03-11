@@ -72,7 +72,7 @@
             cmt_param%iflag_c_magne =     id_SGS_commute_ON
           else if(tmpchara .eq. vector_potential%name) then
             cmt_param%iflag_c_magne =     id_SGS_commute_ON
-          else if(tmpchara .eq. fhd_light) then
+          else if(tmpchara .eq. composition%name) then
             cmt_param%iflag_c_cf =    id_SGS_commute_ON
 !
           else if(tmpchara .eq. thd_heat_flux) then

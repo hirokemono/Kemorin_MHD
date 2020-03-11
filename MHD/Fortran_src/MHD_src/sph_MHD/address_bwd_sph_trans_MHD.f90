@@ -111,7 +111,7 @@
 !   composition flag
       if(cp_prop%iflag_scheme .gt. id_no_evolution) then
         call add_field_name_4_sph_trns                                  &
-     &     (ipol%i_light, fhd_light, n_scalar,                          &
+     &     (ipol%i_light, composition%name, composition%n_comp,         &
      &      ipol%i_light, itor%i_light, iphys%i_light,                  &
      &      b_trns%i_light, trns_back)
       end if

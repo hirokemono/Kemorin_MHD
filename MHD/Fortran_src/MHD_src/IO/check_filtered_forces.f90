@@ -271,7 +271,7 @@
 !
       if(check_field_list_ctl(comp_generation_by_filtered%name,         &
      &                        field_ctl)) then
-         call add_phys_name_ctl(fhd_light, field_ctl)
+         call add_phys_name_ctl(composition%name, field_ctl)
          call add_phys_name_ctl                                         &
      &      (comp_advect_by_filtered%name, field_ctl)
       end if

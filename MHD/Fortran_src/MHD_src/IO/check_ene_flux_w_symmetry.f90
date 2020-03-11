@@ -72,7 +72,7 @@
         call add_phys_name_ctl(fhd_usym_nabla_pTsym, field_ctl)
 !
       else if( (field_name .eq. fhd_C_usym_nabla_Csym)) then
-        call add_phys_name_ctl(fhd_light, field_ctl)
+        call add_phys_name_ctl(composition%name, field_ctl)
         call add_phys_name_ctl(fhd_usym_nabla_Csym, field_ctl)
       else if( (field_name .eq. fhd_pC_usym_nabla_pCsym)) then
         call add_phys_name_ctl(fhd_part_light, field_ctl)
@@ -126,7 +126,7 @@
         call add_phys_name_ctl(fhd_uasym_nabla_pTasym,field_ctl)
 !
       else if( (field_name .eq. fhd_C_uasym_nabla_Casym)) then
-        call add_phys_name_ctl(fhd_light, field_ctl)
+        call add_phys_name_ctl(composition%name, field_ctl)
         call add_phys_name_ctl(fhd_uasym_nabla_Casym,field_ctl)
       else if( (field_name .eq. fhd_pC_uasym_nabla_pCasym)) then
         call add_phys_name_ctl(fhd_part_light, field_ctl)
@@ -172,7 +172,7 @@
         call add_phys_name_ctl(fhd_usym_nabla_pTasym,field_ctl)
 !
       else if( (field_name .eq. fhd_C_usym_nabla_Casym)) then
-        call add_phys_name_ctl(fhd_light, field_ctl)
+        call add_phys_name_ctl(composition%name, field_ctl)
         call add_phys_name_ctl(fhd_usym_nabla_Casym, field_ctl)
       else if( (field_name .eq. fhd_pC_usym_nabla_pCasym)) then
         call add_phys_name_ctl(fhd_part_light, field_ctl)
@@ -206,7 +206,7 @@
         call add_phys_name_ctl(fhd_uasym_nabla_pTsym,field_ctl)
 !
       else if( (field_name .eq. fhd_C_uasym_nabla_Csym)) then
-        call add_phys_name_ctl(fhd_light, field_ctl)
+        call add_phys_name_ctl(composition%name, field_ctl)
         call add_phys_name_ctl(fhd_uasym_nabla_Csym, field_ctl)
       else if( (field_name .eq. fhd_pC_uasym_nabla_pCsym)) then
         call add_phys_name_ctl(fhd_part_light, field_ctl)

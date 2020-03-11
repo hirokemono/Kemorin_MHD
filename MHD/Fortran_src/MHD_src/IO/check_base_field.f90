@@ -44,7 +44,7 @@
       if(   check_field_list_ctl(fhd_part_light, field_ctl)             &
      & .or. check_field_list_ctl(reference_composition%name, field_ctl) &
      & .or. check_field_list_ctl(fhd_light_source, field_ctl)) then
-        call add_phys_name_ctl(fhd_light, field_ctl)
+        call add_phys_name_ctl(composition%name, field_ctl)
       end if
       if(   check_field_list_ctl(fhd_per_entropy, field_ctl)            &
      & .or. check_field_list_ctl(fhd_ref_entropy, field_ctl)            &
@@ -69,7 +69,7 @@
      & .or. check_field_list_ctl(pressure%name, field_ctl)              &
      & .or. check_field_list_ctl(magnetic_field%name, field_ctl)        &
      & .or. check_field_list_ctl(temperature%name, field_ctl)           &
-     & .or. check_field_list_ctl(fhd_light, field_ctl)                  &
+     & .or. check_field_list_ctl(composition%name, field_ctl)           &
      & .or. check_field_list_ctl(density%name, field_ctl)               &
      & .or. check_field_list_ctl(fhd_entropy, field_ctl)) then
         call add_phys_name_ctl(velocity%name, field_ctl)
@@ -103,7 +103,7 @@
      &   call add_phys_name_ctl(reference_temperature%name, field_ctl)
 !
       if(check_field_list_ctl(grad_composition%name, field_ctl))        &
-     &   call add_phys_name_ctl(fhd_light, field_ctl)
+     &   call add_phys_name_ctl(composition%name, field_ctl)
       if(check_field_list_ctl(grad_pert_composition%name, field_ctl))   &
      &   call add_phys_name_ctl(fhd_part_light, field_ctl)
       if(check_field_list_ctl(grad_reference_composition%name,          &

@@ -94,7 +94,7 @@
           else if(field_ctl%c1_tbl(i)                                   &
      &             .eq. reference_temperature%name) then
             call add_phys_name_ctl(grad_pert_temp%name, field_ctl)
-          else if(field_ctl%c1_tbl(i) .eq. fhd_light) then
+          else if(field_ctl%c1_tbl(i) .eq. composition%name) then
             call add_phys_name_ctl(grad_composition%name, field_ctl)
           else if(field_ctl%c1_tbl(i)                                   &
      &              .eq. reference_composition%name) then
@@ -118,7 +118,7 @@
             call add_phys_name_ctl(filter_magne%name, field_ctl)
           else if(field_ctl%c1_tbl(i) .eq. temperature%name) then
             call add_phys_name_ctl(filter_temperature%name, field_ctl)
-          else if(field_ctl%c1_tbl(i) .eq. fhd_light) then
+          else if(field_ctl%c1_tbl(i) .eq. composition%name) then
             call add_phys_name_ctl(filter_composition%name, field_ctl)
           end if
         end do

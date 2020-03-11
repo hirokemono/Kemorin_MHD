@@ -90,7 +90,7 @@
           iphys%i_temp = i0
         else if ( field_name(i) .eq. perturbation_temp%name ) then
           iphys%i_per_temp = i0
-        else if ( field_name(i) .eq. fhd_light ) then
+        else if ( field_name(i) .eq. composition%name ) then
           iphys%i_light = i0
         else if ( field_name(i) .eq. fhd_part_light ) then
           iphys%i_per_light = i0

@@ -87,7 +87,7 @@
         else if(i_start .eq. iphys%i_filter_comp                        &
      &     .or. i_start .eq. iphys%i_light_source) then 
           call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_light, fhd_light)
+     &       (fld, i_start, iphys%i_light, composition%name)
         else if(i_start .eq. iphys%i_entropy_source) then 
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_entropy, fhd_entropy)
@@ -118,7 +118,7 @@
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_temp, temperature%name)
           call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_light, fhd_light)
+     &       (fld, i_start, iphys%i_light, composition%name)
         else if(i_start .eq. iphys%i_per_density) then 
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_density, density%name)

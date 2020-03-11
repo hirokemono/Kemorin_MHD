@@ -181,7 +181,7 @@
         flex_data%i_drmax_d =         flex_data%istack_comp(icou-1) + 1
         flex_data%istack_comp(icou) = flex_data%istack_comp(icou-1) + 1
         flex_data%num_comp(icou) =    flex_data%num_comp(icou) +      1
-        flex_data%fld_name(icou) =    fhd_light
+        flex_data%fld_name(icou) =    composition%name
       end if
 !
       end subroutine set_check_delta_t_data

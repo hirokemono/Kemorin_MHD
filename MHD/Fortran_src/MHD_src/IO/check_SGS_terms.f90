@@ -84,7 +84,7 @@
       end if
       if(check_field_list_ctl(SGS_composit_flux%name, field_ctl)) then
         call add_phys_name_ctl(velocity%name, field_ctl)
-        call add_phys_name_ctl(fhd_light, field_ctl)
+        call add_phys_name_ctl(composition%name, field_ctl)
       end if
 !
       end subroutine add_field_ctl_4_SGS_terms
@@ -161,7 +161,7 @@
         call add_phys_name_ctl(SGS_heat_flux%name, field_ctl)
       end if
       if(check_field_list_ctl(SGS_comp_flux_gen%name, field_ctl)) then
-        call add_phys_name_ctl(fhd_light, field_ctl)
+        call add_phys_name_ctl(composition%name, field_ctl)
         call add_phys_name_ctl(SGS_composit_flux%name, field_ctl)
       end if
 !

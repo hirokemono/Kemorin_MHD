@@ -62,7 +62,7 @@
         else if(ele_fld%phys_name(i) .eq. filter_temperature%name) then
           iphys_ele%i_filter_temp = i0
 !
-        else if(ele_fld%phys_name(i) .eq. fhd_light) then
+        else if(ele_fld%phys_name(i) .eq. composition%name) then
           iphys_ele%i_light = i0
         else if(ele_fld%phys_name(i) .eq. filter_composition%name) then
           iphys_ele%i_filter_comp = i0
@@ -100,7 +100,7 @@
       do i = 1, nod_fld%num_phys
        if (  nod_fld%phys_name(i) .eq. velocity%name                    &
      &  .or. nod_fld%phys_name(i) .eq. magnetic_field%name              &
-     &  .or. nod_fld%phys_name(i) .eq. fhd_light                        &
+     &  .or. nod_fld%phys_name(i) .eq. composition%name                 &
      &  .or. nod_fld%phys_name(i) .eq. temperature%name) then
         ele_fld%num_phys = ele_fld%num_phys + 1
         if ( FEM_prm%iflag_rotate_form .eq. id_turn_ON ) then
@@ -167,9 +167,9 @@
           end if
         end if
 !
-        if ( nod_fld%phys_name(i) .eq. fhd_light ) then
+        if ( nod_fld%phys_name(i) .eq. composition%name ) then
           ele_fld%num_component(j) = 1
-          ele_fld%phys_name(j) = fhd_light
+          ele_fld%phys_name(j) = composition%name
           j = j + 1
           if     (SGS_param%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF       &
      &       .or. SGS_param%iflag_SGS.eq.id_SGS_similarity) then

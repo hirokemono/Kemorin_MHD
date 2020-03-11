@@ -178,7 +178,8 @@
      &       (temperature%name,  sph_MHD_bc%sph_bc_T)
         end if
         if(MHD_prop%cp_prop%iflag_scheme .gt. id_no_evolution) then
-          call check_fdm_coefs_4_BC2(fhd_light, sph_MHD_bc%sph_bc_C)
+          call check_fdm_coefs_4_BC2                                    &
+     &       (composition%name, sph_MHD_bc%sph_bc_C)
         end if
 !
         call check_coef_fdm_fix_dr_2ctr(sph_MHD_bc%fdm2_center)

@@ -278,7 +278,7 @@
         return
       end if
 !
-      if    (d_name .eq. fhd_light                                      &
+      if    (d_name .eq. composition%name                               &
      &  .or. d_name .eq. fhd_pre_composit                               &
      &  .or. d_name .eq. fhd_light_source) then
         iflag = 1
@@ -308,7 +308,7 @@
 !
       else if  (rst_name .eq. pressure%name                             &
      &     .or. rst_name .eq. temperature%name                          &
-     &     .or. rst_name .eq. fhd_light                                 &
+     &     .or. rst_name .eq. composition%name                          &
      &     .or. rst_name .eq. magnetic_potential%name                   &
      &     .or. rst_name .eq. fhd_pre_heat                              &
      &     .or. rst_name .eq. fhd_pre_composit                          &

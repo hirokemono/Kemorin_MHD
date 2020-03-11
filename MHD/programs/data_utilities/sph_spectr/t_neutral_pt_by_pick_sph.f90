@@ -129,7 +129,7 @@
       end do
 !
       do i = 1, pick_IO%ntot_comp
-        if(pick_IO%spectr_name(i) .eq. fhd_light) then
+        if(pick_IO%spectr_name(i) .eq. composition%name) then
           ntl%icomp_light =  i
           exit
         end if

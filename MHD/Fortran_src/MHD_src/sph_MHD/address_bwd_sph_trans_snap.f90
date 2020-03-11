@@ -314,7 +314,8 @@
      &    b_trns%i_temp, trns_back)
 !      end if
 !      if(b_trns%i_light .eq. 0) then
-      call add_field_name_4_sph_trns_snap(fhd_light, n_scalar,          &
+      call add_field_name_4_sph_trns_snap                               &
+     &   (composition%name, composition%n_comp,                         &
      &    ipol%i_light, itor%i_light, iphys%i_light,                    &
      &    b_trns%i_light, trns_back)
 !      end if

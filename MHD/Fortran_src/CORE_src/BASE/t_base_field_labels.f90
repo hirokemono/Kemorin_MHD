@@ -160,7 +160,6 @@
 !
 !>        Field label for compostiion variation
 !!         @f$ C @f$
-      character(len=kchara), parameter :: fhd_light = 'composition'
       type(field_def), parameter :: composition                         &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'composition',                             &
@@ -368,7 +367,7 @@
      &   .or. (field_name .eq. perturbation_temp%name)                  &
      &   .or. (field_name .eq. reference_temperature%name)              &
 !
-     &   .or. (field_name .eq. fhd_light)                               &
+     &   .or. (field_name .eq. composition%name)                        &
      &   .or. (field_name .eq. fhd_part_light)                          &
      &   .or. (field_name .eq. reference_composition%name)              &
 !
@@ -440,7 +439,7 @@
         else if (field_name .eq. reference_temperature%name) then
           base_fld%i_ref_t =           i_phys
 !
-        else if (field_name .eq. fhd_light) then
+        else if (field_name .eq. composition%name) then
           base_fld%i_light =          i_phys
         else if (field_name .eq. fhd_part_light) then
           base_fld%i_per_light =      i_phys

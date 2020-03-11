@@ -98,7 +98,7 @@
           MHD_prop%fl_prop%iflag_scheme =   MHD_prop%iflag_all_scheme
         else if (tmpchara .eq. temperature%name ) then
           MHD_prop%ht_prop%iflag_scheme =   MHD_prop%iflag_all_scheme
-        else if (tmpchara .eq. fhd_light ) then
+        else if (tmpchara .eq. composition%name ) then
           MHD_prop%cp_prop%iflag_scheme =   MHD_prop%iflag_all_scheme
         else if (tmpchara .eq. magnetic_field%name ) then
           MHD_prop%cd_prop%iflag_Bevo_scheme                            &

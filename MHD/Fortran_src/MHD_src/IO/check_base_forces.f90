@@ -62,7 +62,7 @@
       if(check_field_list_ctl(buoyancy%name, field_ctl))                &
         call add_phys_name_ctl(temperature%name, field_ctl)
       if(check_field_list_ctl(composite_buoyancy%name, field_ctl))      &
-        call add_phys_name_ctl(fhd_light, field_ctl)
+        call add_phys_name_ctl(composition%name, field_ctl)
 !
       if(      check_field_list_ctl(Coriolis_force%name, field_ctl)     &
      &    .or. check_field_list_ctl(momentum_flux%name, field_ctl))     &
@@ -100,7 +100,7 @@
      &    .or. check_field_list_ctl(composite_flux%name, field_ctl)     &
      &      ) then
         call add_phys_name_ctl(velocity%name, field_ctl)
-        call add_phys_name_ctl(fhd_light, field_ctl)
+        call add_phys_name_ctl(composition%name, field_ctl)
       end if
       if(      check_field_list_ctl(pert_comp_advect%name, field_ctl)   &
      &    .or. check_field_list_ctl(pert_comp_flux%name, field_ctl)     &
@@ -241,7 +241,7 @@
      &   call add_phys_name_ctl(temperature%name, field_ctl)
       if(      check_field_list_ctl(square_composition%name, field_ctl) &
      &    .or. check_field_list_ctl(composition_scale%name, field_ctl)) &
-     &   call add_phys_name_ctl(fhd_light, field_ctl)
+     &   call add_phys_name_ctl(composition%name, field_ctl)
 !
       end subroutine add_field_ctl_4_field_products
 !
@@ -272,7 +272,7 @@
       if(check_field_list_ctl(thermal_diffusion%name, field_ctl))       &
      &   call add_phys_name_ctl(temperature%name, field_ctl)
       if(check_field_list_ctl(composition_diffusion%name, field_ctl))  &
-     &   call add_phys_name_ctl(fhd_light, field_ctl)
+     &   call add_phys_name_ctl(composition%name, field_ctl)
 !
       end subroutine add_field_ctl_4_diffusions
 !

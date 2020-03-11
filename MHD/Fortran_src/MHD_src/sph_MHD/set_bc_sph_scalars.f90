@@ -154,7 +154,7 @@
       type(sph_scalar_boundary_data), intent(inout) :: bcs_C
 !
 !
-      call set_sph_bc_scalar_sph(fhd_light, composite_flux%name,        &
+      call set_sph_bc_scalar_sph(composition%name, composite_flux%name, &
      &    bc_IO, sph_rj, radial_rj_grp, light_nod, light_surf,          &
      &    sph_bc_C, bcs_C)
 !

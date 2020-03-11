@@ -373,7 +373,7 @@
           write(file_id,'(a)') 'dBx_dx, dBx_dy, dBx_dz, '
           write(file_id,'(a)') 'dBy_dx, dBy_dy, dBy_dz, '
           write(file_id,'(a)') 'dBz_dx, dBz_dy, dBz_dz, '
-        else if ( wk_diff%name(i) .eq. fhd_light ) then
+        else if ( wk_diff%name(i) .eq. composition%name ) then
           write(file_id,'(a)')                                          &
      &         'composition_x, composition_y, composition_z, '
         else if ( wk_diff%name(i) .eq. SGS_heat_flux%name ) then
