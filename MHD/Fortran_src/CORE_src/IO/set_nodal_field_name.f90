@@ -125,6 +125,7 @@
       subroutine set_scalar_field_name(phys_nod_name_ctl, icou,         &
      &          phys_nod_name, num_nod_component, iflag)
 !
+      use t_base_field_labels
       use t_diffusion_term_labels
       use t_SGS_term_labels
       use t_SGS_model_coef_labels
@@ -144,28 +145,6 @@
 !
       if (iflag .gt. 0) return
 !
-      if (   (phys_nod_name_ctl .eq. pressure%name                )         &
-     &  .or. (phys_nod_name_ctl .eq. temperature%name                 )         &
-     &  .or. (phys_nod_name_ctl .eq. composition%name                )         &
-     &  .or. (phys_nod_name_ctl .eq. magnetic_potential%name        )         &
-     &  .or. (phys_nod_name_ctl .eq. scalar_potential%name     )         &
-     &  .or. (phys_nod_name_ctl .eq. entropy%name              )         &
-     &  .or. (phys_nod_name_ctl .eq. heat_source%name          )         &
-     &  .or. (phys_nod_name_ctl .eq. composition_source%name         )         &
-     &  .or. (phys_nod_name_ctl .eq. entropy_source%name       )         &
-     &      )   iflag = 1
-!
-      if (    (phys_nod_name_ctl .eq. reference_temperature%name            )         &
-     &   .or. (phys_nod_name_ctl .eq. perturbation_temp%name           )         &
-     &   .or. (phys_nod_name_ctl .eq. density%name             )         &
-     &   .or. (phys_nod_name_ctl .eq. reference_composition%name           )         &
-     &   .or. (phys_nod_name_ctl .eq. perturbation_composition%name          )         &
-     &   .or. (phys_nod_name_ctl .eq. perturbation_density%name         )         &
-     &   .or. (phys_nod_name_ctl .eq. reference_density%name         )         &
-     &   .or. (phys_nod_name_ctl .eq. perturbation_entropy%name         )         &
-     &   .or. (phys_nod_name_ctl .eq. reference_entropy%name         )         &
-     &      )   iflag = 1
-!
       if (    (phys_nod_name_ctl .eq. fhd_pre_heat            )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_pre_composit        )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_pre_press           )         &
@@ -180,7 +159,8 @@
      &   .or. (phys_nod_name_ctl .eq. fhd_div_forces          )         &
      &      )   iflag = 1
 !
-      if(     check_enegy_fluxes(phys_nod_name_ctl)                     &
+      if(     check_base_scalar(phys_nod_name_ctl)                      &
+     &   .or. check_enegy_fluxes(phys_nod_name_ctl)                     &
      &   .or. check_scalar_advection(phys_nod_name_ctl)                 &
      &   .or. check_div_force(phys_nod_name_ctl)                        &
      &   .or. check_div_scalar_flux(phys_nod_name_ctl)                  &

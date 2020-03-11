@@ -71,69 +71,6 @@
         field_name = nod_fld%phys_name(i)
         num_comps =  nod_fld%num_component(i)
         if (nod_fld%iflag_monitor(i) .eq. 1) then
-          if(field_name .eq. velocity%name) then
-            call set_rms_address(field_name, num_comps, iphys%i_velo,   &
-     &          i_rms%i_velo, j_ave%i_velo, msq_list)
-!
-            i_rms%grad_fld%i_div_v = msq_list%numrms + 1
-            j_ave%grad_fld%i_div_v = msq_list%numave + 1
-!
-            ifld_msq%ja_amom = msq_list%numave + 2
-!
-            msq_list%numrms = msq_list%numrms + 1
-            msq_list%numave = msq_list%numave + 4
-          end if
-!
-          if ( field_name .eq. magnetic_field%name ) then
-            call set_rms_address(field_name, num_comps, iphys%i_magne,  &
-     &          i_rms%i_magne, j_ave%i_magne, msq_list)
-!
-            ifld_msq%ir_me_ic =  msq_list%numrms + 1
-            ifld_msq%ja_mag_ic = msq_list%numave + 1
-!
-            i_rms%grad_fld%i_div_b = msq_list%numrms + 2
-            j_ave%grad_fld%i_div_b = msq_list%numave + 4
-!
-            msq_list%numrms = msq_list%numrms + 2
-            msq_list%numave = msq_list%numave + 4
-          end if
-!
-          if ( field_name .eq. vector_potential%name ) then
-            call set_rms_address(field_name, num_comps, iphys%i_vecp,   &
-     &          i_rms%i_vecp, j_ave%i_vecp, msq_list)
-!
-            i_rms%grad_fld%i_div_a =  msq_list%numrms + 1
-            j_ave%grad_fld%i_div_a = msq_list%numave + 1
-!
-            msq_list%numrms = msq_list%numrms + 1
-            msq_list%numave = msq_list%numave + 1
-          end if
-!
-          if ( field_name .eq. vorticity%name ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_vort,                    &
-     &          i_rms%i_vort, j_ave%i_vort, msq_list)
-!
-            ifld_msq%ir_rms_w = msq_list%numrms + 1
-!
-            msq_list%numrms = msq_list%numrms + 1
-          end if
-!
-          if(field_name .eq. current_density%name) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_current,                 &
-     &          i_rms%i_current, j_ave%i_current, msq_list)
-!
-            ifld_msq%ir_sqj_ic = msq_list%numrms + 1
-            ifld_msq%ja_j_ic = msq_list%numave + 1
-!
-            ifld_msq%ir_rms_j =    msq_list%numrms + 2
-            ifld_msq%ir_rms_j_ic = msq_list%numrms + 3
-!
-            msq_list%numrms = msq_list%numrms + 3
-            msq_list%numave = msq_list%numave + 3
-          end if
-!
           if(check_filter_vector(field_name)) then
             if(field_name .eq. filter_velocity%name) then
               call set_rms_address                                      &
@@ -178,62 +115,79 @@
             end if
           end if
 !
-          if ( field_name .eq. temperature%name ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_temp,                    &
-     &          i_rms%i_temp, j_ave%i_temp, msq_list)
-          else if ( field_name .eq. pressure%name ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_press,                   &
-     &          i_rms%i_press, j_ave%i_press, msq_list)
-          else if ( field_name .eq. magnetic_potential%name ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_mag_p,                   &
-     &          i_rms%i_mag_p, j_ave%i_mag_p, msq_list)
+          if(check_base_vector(field_name)) then
+            if(field_name .eq. velocity%name) then
+              call set_rms_address(field_name, num_comps, iphys%i_velo, &
+     &            i_rms%i_velo, j_ave%i_velo, msq_list)
+!
+              i_rms%grad_fld%i_div_v = msq_list%numrms + 1
+              j_ave%grad_fld%i_div_v = msq_list%numave + 1
+!
+              ifld_msq%ja_amom = msq_list%numave + 2
+!
+              msq_list%numrms = msq_list%numrms + 1
+              msq_list%numave = msq_list%numave + 4
+!
+            else if(field_name .eq. magnetic_field%name) then
+              call set_rms_address                                      &
+     &           (field_name, num_comps, iphys%i_magne,                 &
+     &            i_rms%i_magne, j_ave%i_magne, msq_list)
+!
+              ifld_msq%ir_me_ic =  msq_list%numrms + 1
+              ifld_msq%ja_mag_ic = msq_list%numave + 1
+!
+              i_rms%grad_fld%i_div_b = msq_list%numrms + 2
+              j_ave%grad_fld%i_div_b = msq_list%numave + 4
+!
+              msq_list%numrms = msq_list%numrms + 2
+              msq_list%numave = msq_list%numave + 4
+!
+            else if(field_name .eq. vector_potential%name) then
+              call set_rms_address(field_name, num_comps, iphys%i_vecp, &
+     &            i_rms%i_vecp, j_ave%i_vecp, msq_list)
+!
+              i_rms%grad_fld%i_div_a =  msq_list%numrms + 1
+              j_ave%grad_fld%i_div_a = msq_list%numave + 1
+!
+              msq_list%numrms = msq_list%numrms + 1
+              msq_list%numave = msq_list%numave + 1
+!
+            else if(field_name .eq. vorticity%name) then
+              call set_rms_address                                      &
+     &           (field_name, num_comps, iphys%i_vort,                  &
+     &            i_rms%i_vort, j_ave%i_vort, msq_list)
+!
+              ifld_msq%ir_rms_w = msq_list%numrms + 1
+              msq_list%numrms = msq_list%numrms + 1
+!
+            else if(field_name .eq. current_density%name) then
+              call set_rms_address                                      &
+     &           (field_name, num_comps, iphys%i_current,               &
+     &            i_rms%i_current, j_ave%i_current, msq_list)
+!
+              ifld_msq%ir_sqj_ic = msq_list%numrms + 1
+              ifld_msq%ja_j_ic = msq_list%numave + 1
+!
+              ifld_msq%ir_rms_j =    msq_list%numrms + 2
+              ifld_msq%ir_rms_j_ic = msq_list%numrms + 3
+!
+              msq_list%numrms = msq_list%numrms + 3
+              msq_list%numave = msq_list%numave + 3
+            end if
           end if
 !
-          if ( field_name .eq. perturbation_temp%name ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_per_temp,                &
-     &          i_rms%i_per_temp, j_ave%i_per_temp, msq_list)
-          else if ( field_name .eq. composition%name ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_light,                   &
-     &          i_rms%i_light, j_ave%i_light, msq_list)
-          else if(field_name .eq. perturbation_composition%name) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_per_light,               &
-     &          i_rms%i_per_light, j_ave%i_per_light, msq_list)
-          else if ( field_name .eq. entropy%name ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_entropy,                 &
-     &          i_rms%i_entropy, j_ave%i_entropy, msq_list)
-          else if ( field_name .eq. perturbation_entropy%name ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_per_entropy,             &
-     &          i_rms%i_per_entropy, j_ave%i_per_entropy, msq_list)
-          else if ( field_name .eq. density%name ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_density,                 &
-     &          i_rms%i_density, j_ave%i_density, msq_list)
-          else if ( field_name .eq. perturbation_density%name ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_per_density,             &
-     &          i_rms%i_per_density, j_ave%i_per_density, msq_list)
-!
-          else if ( field_name .eq. heat_source%name ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_heat_source,             &
-     &          i_rms%i_heat_source, j_ave%i_heat_source, msq_list)
-          else if ( field_name .eq. composition_source%name ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_light_source,            &
-     &          i_rms%i_light_source, j_ave%i_light_source, msq_list)
-          else if ( field_name .eq. entropy_source%name ) then
-            call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_entropy_source,          &
-     &          i_rms%i_entropy_source, j_ave%i_entropy_source,         &
-     &          msq_list)
+          if(check_base_scalar(field_name)) then
+            if ( field_name .eq. pressure%name ) then
+              call set_rms_address                                      &
+     &           (field_name, num_comps, iphys%i_press,                 &
+     &            i_rms%i_press, j_ave%i_press, msq_list)
+            else if ( field_name .eq. magnetic_potential%name ) then
+              call set_rms_address                                      &
+     &           (field_name, num_comps, iphys%i_mag_p,                 &
+     &            i_rms%i_mag_p, j_ave%i_mag_p, msq_list)
+            else
+              call set_rms_address_list(i, nod_fld, msq_list)
+            end if
           end if
 !
           if(check_force_vectors(field_name)) then
