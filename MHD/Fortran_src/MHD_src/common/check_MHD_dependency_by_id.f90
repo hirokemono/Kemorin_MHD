@@ -91,23 +91,6 @@
         end if
       end do
 !
-      do i = 1, fld%num_phys
-        i_start = fld%istack_component(i-1) + 1
-        if(i_start .eq. iphys%i_density) then 
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_velo, velocity%name)
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_temp, temperature%name)
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_light, composition%name)
-        else if(i_start .eq. iphys%i_per_density) then 
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_density, density%name)
-          call check_missing_field(fld, i_start,                        &
-     &        iphys%i_ref_density, reference_density%name)
-        end if
-      end do
-!
       end subroutine check_dependencies_by_id
 !
 ! -----------------------------------------------------------------------

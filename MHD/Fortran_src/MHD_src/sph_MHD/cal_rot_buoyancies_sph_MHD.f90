@@ -191,7 +191,7 @@
       do inod = ist, ied
         j = mod((inod-1),nidx_rj(2)) + 1
         k = 1 + (inod- j) / nidx_rj(2)
-        d_rj(inod,ipol%i_density)                                       &
+        d_rj(inod,ipol%base%i_density)                                  &
      &          = -(d_rj(inod,ipol%i_temp)                              &
      &           + coef_comp_buo/coef_buo * d_rj(inod,ipol%i_light))
       end do

@@ -46,9 +46,6 @@
 !>        start address for compostiion variation
 !!         @f$ C @f$
         integer (kind=kint) :: i_light =           izero
-!>        start address for density
-!!         @f$ \rho @f$
-        integer (kind=kint) :: i_density =         izero
 !
 !>        start address for magnetic field
 !!         @f$ B_{i} @f$
@@ -72,9 +69,6 @@
 !>        start address for perturbation of composition
 !!         @f$  C - C_{0} @f$
         integer (kind=kint) :: i_per_light =       izero
-!>        start address for perturbation of density
-!!         @f$  \rho - \rho_{0} @f$
-        integer (kind=kint) :: i_per_density =     izero
 !
 !>        start address for heat source
 !!         @f$ q_{T} @f$
@@ -89,9 +83,6 @@
 !>        start address for reference temperature
 !!         @f$  C_{0} @f$
         integer (kind=kint) :: i_ref_c =           izero
-!>        start address for reference density
-!!         @f$  \rho_{0} @f$
-        integer (kind=kint) :: i_ref_density =     izero
 !
 !>        Start address for filtered velocity
 !!         @f$ \bar{u}_{i} @f$

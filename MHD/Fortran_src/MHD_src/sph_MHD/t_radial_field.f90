@@ -180,7 +180,7 @@
      &   (i_phys, rfld%r_param_name, irad%diffusivity, flag)
 !
       if(cmp_no_case(rfld%r_param_name, reference_density%name))        &
-     &      irad%i_ref_density =   d_rad%istack_component(icou-1) + 1
+     &     irad%base%i_ref_density = d_rad%istack_component(icou-1) + 1
 !
       end subroutine each_radial_field_name_by_file
 !

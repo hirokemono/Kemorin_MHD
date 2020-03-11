@@ -105,11 +105,11 @@
         else if (field_name(i) .eq. reference_entropy%name ) then
           iphys%base%i_ref_entropy = i0
         else if (field_name(i) .eq. density%name ) then
-          iphys%i_density = i0
+          iphys%base%i_density = i0
         else if (field_name(i) .eq. perturbation_density%name ) then
-          iphys%i_per_density = i0
+          iphys%base%i_per_density = i0
         else if (field_name(i) .eq. reference_density%name ) then
-          iphys%i_ref_density = i0
+          iphys%base%i_ref_density = i0
 !
         else if ( field_name(i) .eq. heat_source%name ) then
           iphys%i_heat_source = i0

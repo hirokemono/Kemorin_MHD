@@ -234,7 +234,7 @@
      &   (node%numnod, node%istack_nod_smp,                             &
      &    fl_prop%coef_buo, fl_prop%coef_comp_buo,                      &
      &    nod_fld%ntot_phys, iphys%i_temp, iphys%i_light,               &
-     &    iphys%i_density, nod_fld%d_fld)
+     &    iphys%base%i_density, nod_fld%d_fld)
 !
       end subroutine set_boussinesq_density_at_node
 !

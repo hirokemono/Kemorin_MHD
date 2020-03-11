@@ -77,6 +77,11 @@
         call add_phys_name_ctl(magnetic_field%name, field_ctl)
       end if
 !
+      if(check_field_list_ctl(density%name, field_ctl)) then 
+        call add_phys_name_ctl(temperature%name, field_ctl)
+        call add_phys_name_ctl(composition%name, field_ctl)
+      end if
+!
       if(   check_field_list_ctl(vorticity%name, field_ctl)             &
      & .or. check_field_list_ctl(pressure%name, field_ctl)              &
      & .or. check_field_list_ctl(magnetic_field%name, field_ctl)        &
