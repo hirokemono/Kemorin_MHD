@@ -174,7 +174,8 @@
 !
         do np = pini_p1%num_rst_org+1, pini_p1%num_rst_new
           jst = mgd_mesh_pl%merged_fld%istack_component(np-1)
-          if (mgd_mesh_pl%merged_fld%phys_name(np) .eq. fhd_vecp) then
+          if(mgd_mesh_pl%merged_fld%phys_name(np)                       &
+     &                                 .eq. vector_potential%name) then
             do inod = 1, mgd_mesh_pl%merged%node%numnod
               mgd_mesh_pl%merged_fld%d_fld(inod,jst+1)                  &
      &                = 0.01d0*sin( pi*node_plane%xx(inod,3)            &

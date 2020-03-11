@@ -93,13 +93,13 @@
       if(numele .gt. 0) mhd_fem_wk%rr_e = 0.0d0
 !
       do i = 1, nod_fld%num_phys
-        if      ( nod_fld%phys_name(i) .eq. velocity%name ) then
+        if     (nod_fld%phys_name(i) .eq. velocity%name) then
           allocate(mhd_fem_wk%velo_1(numele,3))
           if(numele .gt. 0) mhd_fem_wk%velo_1 = 0.0d0
-        else if ( nod_fld%phys_name(i) .eq. magnetic_field%name ) then
+        else if(nod_fld%phys_name(i) .eq. magnetic_field%name) then
           allocate(mhd_fem_wk%magne_1(numele,3))
           if(numele .gt. 0) mhd_fem_wk%magne_1 = 0.0d0
-        else if ( nod_fld%phys_name(i) .eq. fhd_vecp ) then
+        else if(nod_fld%phys_name(i) .eq. vector_potential%name) then
           allocate(mhd_fem_wk%vecp_1(numele,3))
           if(numele .gt. 0) mhd_fem_wk%vecp_1 = 0.0d0
         end if
@@ -145,11 +145,11 @@
       deallocate(mhd_fem_wk%xx_e, mhd_fem_wk%rr_e)
 !
       do i = 1, nod_fld%num_phys
-        if      ( nod_fld%phys_name(i) .eq. velocity%name ) then
+        if     (nod_fld%phys_name(i) .eq. velocity%name) then
           deallocate(mhd_fem_wk%velo_1)
-        else if ( nod_fld%phys_name(i) .eq. magnetic_field%name ) then
+        else if(nod_fld%phys_name(i) .eq. magnetic_field%name) then
           deallocate(mhd_fem_wk%magne_1)
-        else if ( nod_fld%phys_name(i) .eq. fhd_vecp ) then
+        else if(nod_fld%phys_name(i) .eq. vector_potential%name) then
           deallocate(mhd_fem_wk%vecp_1)
         end if
       end do

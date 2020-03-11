@@ -98,7 +98,6 @@
      &                math = '$ B_{i} $')
 !>        Field label for magnetic vector potential
 !!         @f$ B_{i} = e_{ijk} \partial_{j} A_{k} @f$
-      character(len=kchara), parameter :: fhd_vecp = 'vector_potential'
       type(field_def), parameter :: vector_potential                    &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'vector_potential',                        &
@@ -363,7 +362,7 @@
      &   =    (field_name .eq. velocity%name)                           &
      &   .or. (field_name .eq. vorticity%name)                          &
      &   .or. (field_name .eq. magnetic_field%name)                     &
-     &   .or. (field_name .eq. fhd_vecp)                                &
+     &   .or. (field_name .eq. vector_potential%name)                   &
      &   .or. (field_name .eq. fhd_current)
 !
       end function check_base_vector
@@ -423,7 +422,7 @@
 !
         else if (field_name .eq. magnetic_field%name) then
           base_fld%i_magne =    i_phys
-        else if (field_name .eq. fhd_vecp) then
+        else if (field_name .eq. vector_potential%name) then
           base_fld%i_vecp =     i_phys
         else if (field_name .eq. fhd_current) then
           base_fld%i_current =  i_phys

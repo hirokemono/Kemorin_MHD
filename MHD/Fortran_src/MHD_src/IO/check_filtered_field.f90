@@ -54,7 +54,7 @@
       end if
       if(check_field_list_ctl(filter_vector_potential%name,             &
      &                        field_ctl)) then
-        call add_phys_name_ctl(fhd_vecp, field_ctl)
+        call add_phys_name_ctl(vector_potential%name, field_ctl)
       end if
 !
       if(check_field_list_ctl(filter_temperature%name, field_ctl)) then

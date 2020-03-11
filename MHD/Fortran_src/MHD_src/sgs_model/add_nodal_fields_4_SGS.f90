@@ -77,7 +77,7 @@
 !            call add_phys_name_ctl(grad_w_1%name, field_ctl)
 !            call add_phys_name_ctl(grad_w_2%name, field_ctl)
 !            call add_phys_name_ctl(grad_w_3%name, field_ctl)
-!          else if( field_ctl%c1_tbl(i) .eq. fhd_vecp) then
+!          else if(field_ctl%c1_tbl(i) .eq. vector_potential%name) then
 !            call add_phys_name_ctl(grad_a_1%name, field_ctl)
 !            call add_phys_name_ctl(grad_a_2%name, field_ctl)
 !            call add_phys_name_ctl(grad_a_3%name, field_ctl)
@@ -85,7 +85,7 @@
             call add_phys_name_ctl(grad_b_1%name, field_ctl)
             call add_phys_name_ctl(grad_b_2%name, field_ctl)
             call add_phys_name_ctl(grad_b_3%name, field_ctl)
-!          else if( field_ctl%c1_tbl(i) .eq. fhd_current) then
+!          else if(field_ctl%c1_tbl(i) .eq. fhd_current) then
 !            call add_phys_name_ctl(grad_j_1%name, field_ctl)
 !            call add_phys_name_ctl(grad_j_2%name, field_ctl)
 !            call add_phys_name_ctl(grad_j_3%name, field_ctl)
@@ -109,14 +109,14 @@
         do i = 1, field_ctl%num
           if(      field_ctl%c1_tbl(i) .eq. velocity%name) then
             call add_phys_name_ctl(filter_velocity%name, field_ctl)
-          else if( field_ctl%c1_tbl(i) .eq. fhd_vecp) then
+          else if(field_ctl%c1_tbl(i) .eq. vector_potential%name) then
             call add_phys_name_ctl                                      &
      &         (filter_vector_potential%name, field_ctl)
-          else if( field_ctl%c1_tbl(i) .eq. magnetic_field%name) then
+          else if(field_ctl%c1_tbl(i) .eq. magnetic_field%name) then
             call add_phys_name_ctl(filter_magne%name, field_ctl)
-          else if( field_ctl%c1_tbl(i) .eq. fhd_temp) then
+          else if(field_ctl%c1_tbl(i) .eq. fhd_temp) then
             call add_phys_name_ctl(filter_temperature%name, field_ctl)
-          else if( field_ctl%c1_tbl(i) .eq. fhd_light) then
+          else if(field_ctl%c1_tbl(i) .eq. fhd_light) then
             call add_phys_name_ctl(filter_composition%name, field_ctl)
           end if
         end do

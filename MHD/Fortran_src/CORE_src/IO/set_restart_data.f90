@@ -263,7 +263,7 @@
         return
       end if
 !
-      if    (d_name .eq. fhd_vecp                                       &
+      if    (d_name .eq. vector_potential%name                          &
      &  .or. d_name .eq. magnetic_field%name                            &
      &  .or. d_name .eq. fhd_mag_potential                              &
      &  .or. d_name .eq. fhd_pre_uxb) then
@@ -298,7 +298,7 @@
 !
 !
       if (      rst_name .eq. velocity%name                             &
-     &     .or. rst_name .eq. fhd_vecp                                  &
+     &     .or. rst_name .eq. vector_potential%name                     &
      &     .or. rst_name .eq. magnetic_field%name                       &
      &     .or. rst_name .eq. fhd_pre_mom                               &
      &     .or. rst_name .eq. fhd_pre_uxb                               &

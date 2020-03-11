@@ -89,7 +89,7 @@
           iphys%i_per_light = i0
         else if ( field_name(i) .eq. magnetic_field%name ) then
           iphys%i_magne = i0
-        else if ( field_name(i) .eq. fhd_vecp ) then
+        else if ( field_name(i) .eq. vector_potential%name ) then
           iphys%i_vecp = i0
         else if ( field_name(i) .eq. fhd_mag_potential ) then
           iphys%i_mag_p = i0

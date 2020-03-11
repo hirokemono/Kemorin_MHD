@@ -144,7 +144,7 @@
           flex_data%istack_comp(icou)                                   &
      &                        = flex_data%istack_comp(icou-1) + 3
           flex_data%num_comp(icou) = flex_data%num_comp(icou) + 3
-          flex_data%fld_name(icou) = fhd_vecp
+          flex_data%fld_name(icou) = vector_potential%name
         end if
       end if
 !

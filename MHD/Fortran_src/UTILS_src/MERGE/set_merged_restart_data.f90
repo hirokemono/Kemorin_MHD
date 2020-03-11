@@ -31,7 +31,7 @@
 !
       if(b_ratio.eq.0.0d0 .or. b_ratio.eq.1.0d0) return
       do i = 1, fld%num_phys
-        if (    fld%phys_name(i) .eq. fhd_vecp                          &
+        if (    fld%phys_name(i) .eq. vector_potential%name             &
      &     .or. fld%phys_name(i) .eq. magnetic_field%name               &
      &     .or. fld%phys_name(i) .eq. fhd_mag_potential                 &
      &     .or. fld%phys_name(i) .eq. fhd_pre_uxb                       &

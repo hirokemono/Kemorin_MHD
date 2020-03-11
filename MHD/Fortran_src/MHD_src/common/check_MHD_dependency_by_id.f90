@@ -67,7 +67,7 @@
      &     .or. i_start .eq. iphys%i_scalar_p                           &
      &     .or. i_start .eq. iphys%prod_fld%i_square_a) then
           call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_vecp, fhd_vecp)
+     &       (fld, i_start, iphys%i_vecp, vector_potential%name)
         else if(i_start .eq. iphys%i_filter_current) then 
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_current, fhd_current)

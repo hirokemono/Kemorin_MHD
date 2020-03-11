@@ -177,7 +177,8 @@
               end if
             end do
 !
-          else if (merged_fld%phys_name(ip) .eq. fhd_vecp) then
+          else if(merged_fld%phys_name(ip)                              &
+     &            .eq. vector_potential%name) then
 !
             do inod = 1, merged%node%numnod
               merged_fld%d_fld(inod,jst+1)                              &

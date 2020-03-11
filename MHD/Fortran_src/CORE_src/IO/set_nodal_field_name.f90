@@ -73,7 +73,7 @@
       if (   (phys_nod_name_ctl .eq. velocity%name               )           &
      &  .or. (phys_nod_name_ctl .eq. vorticity%name               )           &
      &  .or. (phys_nod_name_ctl .eq. magnetic_field%name              )           &
-     &  .or. (phys_nod_name_ctl .eq. fhd_vecp               )           &
+     &  .or. (phys_nod_name_ctl .eq. vector_potential%name               )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_current            )           &
      &      )   iflag = 1
 !

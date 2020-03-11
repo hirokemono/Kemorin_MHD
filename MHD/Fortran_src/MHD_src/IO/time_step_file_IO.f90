@@ -71,8 +71,9 @@
             call write_one_label(id_msq, e_hd_rms_w)
 !
         else if(msq_list%ifld_msq(i) .eq. iphys%i_vecp) then
-          if(msq_list%field_name(i) .eq. fhd_vecp) then
-            call vector_label_4_step(id_ave, id_msq, fhd_vecp)
+          if(msq_list%field_name(i) .eq. vector_potential%name) then
+            call vector_label_4_step                                    &
+     &         (id_ave, id_msq, vector_potential%name)
             call scalar_label_4_step(id_ave, id_msq, e_hd_div_a)
           else if(msq_list%field_name(i) .eq. e_hd_div_a) then
             call scalar_label_4_step(id_ave, id_msq, e_hd_div_a)

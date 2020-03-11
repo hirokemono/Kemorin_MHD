@@ -70,7 +70,7 @@
             cmt_param%iflag_c_velo =      id_SGS_commute_ON
           else if(tmpchara .eq. magnetic_field%name) then
             cmt_param%iflag_c_magne =     id_SGS_commute_ON
-          else if(tmpchara .eq. fhd_vecp) then
+          else if(tmpchara .eq. vector_potential%name) then
             cmt_param%iflag_c_magne =     id_SGS_commute_ON
           else if(tmpchara .eq. fhd_light) then
             cmt_param%iflag_c_cf =    id_SGS_commute_ON

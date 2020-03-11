@@ -103,7 +103,7 @@
         else if (tmpchara .eq. magnetic_field%name ) then
           MHD_prop%cd_prop%iflag_Bevo_scheme                            &
      &          =  MHD_prop%iflag_all_scheme
-        else if (tmpchara .eq. fhd_vecp ) then
+        else if (tmpchara .eq. vector_potential%name ) then
           MHD_prop%cd_prop%iflag_Aevo_scheme                            &
      &          = MHD_prop%iflag_all_scheme
         end if

@@ -53,7 +53,7 @@
         call add_phys_name_ctl(magnetic_field%name, field_ctl)
       else if( (field_name .eq. fhd_sym_vecp)                           &
      &    .or. (field_name .eq. fhd_asym_vecp)) then 
-        call add_phys_name_ctl(fhd_vecp, field_ctl)
+        call add_phys_name_ctl(vector_potential%name, field_ctl)
       else if( (field_name .eq. fhd_sym_current)                        &
      &    .or. (field_name .eq. fhd_asym_current)) then 
         call add_phys_name_ctl(fhd_current, field_ctl)

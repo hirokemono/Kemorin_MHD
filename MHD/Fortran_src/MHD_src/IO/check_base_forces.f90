@@ -212,7 +212,7 @@
         call add_phys_name_ctl(vorticity%name, field_ctl)
       end if
       if(check_field_list_ctl(magnetic_helicity%name, field_ctl)) then
-        call add_phys_name_ctl(fhd_vecp, field_ctl)
+        call add_phys_name_ctl(vector_potential%name, field_ctl)
         call add_phys_name_ctl(magnetic_field%name, field_ctl)
       end if
       if(check_field_list_ctl(current_helicity%name, field_ctl)) then
@@ -233,7 +233,7 @@
      &    .or. check_field_list_ctl(magnetic_scale%name, field_ctl))    &
      &   call add_phys_name_ctl(magnetic_field%name, field_ctl)
       if(check_field_list_ctl(square_vector_potential%name, field_ctl)) &
-     &   call add_phys_name_ctl(fhd_vecp, field_ctl)
+     &   call add_phys_name_ctl(vector_potential%name, field_ctl)
       if(check_field_list_ctl(square_current%name, field_ctl))          &
      &   call add_phys_name_ctl(fhd_current, field_ctl)
       if(      check_field_list_ctl(square_temperature%name, field_ctl) &
@@ -268,7 +268,7 @@
      &   call add_phys_name_ctl(magnetic_field%name, field_ctl)
       if(check_field_list_ctl(vector_potential_diffusion%name,          &
      &                        field_ctl))                               &
-     &   call add_phys_name_ctl(fhd_vecp, field_ctl)
+     &   call add_phys_name_ctl(vector_potential%name, field_ctl)
       if(check_field_list_ctl(thermal_diffusion%name, field_ctl))       &
      &   call add_phys_name_ctl(fhd_temp, field_ctl)
       if(check_field_list_ctl(composition_diffusion%name, field_ctl))  &

@@ -47,7 +47,7 @@
       write(*,*) ' 1: ', trim(velocity%name)
       write(*,*) ' 2: ', trim(fhd_temp)
       write(*,*) ' 3: ', trim(fhd_press)
-      write(*,*) ' 4: ', trim(fhd_vecp)
+      write(*,*) ' 4: ', trim(vector_potential%name)
       write(*,*) ' 5: ', trim(magnetic_field%name)
       write(*,*) ' 6: ', trim(fhd_mag_potential)
       write(*,*) ''
@@ -74,7 +74,7 @@
           merged_fld%phys_name(np) = fhd_press
           merged_fld%num_component(np) = 1
         else if(pini_p%n_phys_id(np) .eq. 4 ) then
-          merged_fld%phys_name(np) = fhd_vecp
+          merged_fld%phys_name(np) = vector_potential%name
           merged_fld%num_component(np) = 3
         else if(pini_p%n_phys_id(np) .eq. 5 ) then
           merged_fld%phys_name(np) = magnetic_field%name
@@ -121,7 +121,7 @@
 !
 !
       write(*,*) 'aviable physical values for initial value'
-      write(*,*) ' 4: ', trim(fhd_vecp)
+      write(*,*) ' 4: ', trim(vector_potential%name)
       write(*,*) ' 5: ', trim(magnetic_field%name)
       write(*,*) ' 6: ', trim(fhd_mag_potential)
 !
@@ -134,7 +134,7 @@
       do np = 1, num_added_merge
         nq = pini_p%num_rst_org + np
         if(pini_p%n_phys_id(np) .eq. 4 ) then
-          merged_fld%phys_name(nq) = fhd_vecp
+          merged_fld%phys_name(nq) = vector_potential%name
           merged_fld%num_component(nq) = 3
         else if(pini_p%n_phys_id(np) .eq. 5 ) then
           merged_fld%phys_name(nq) = magnetic_field%name
