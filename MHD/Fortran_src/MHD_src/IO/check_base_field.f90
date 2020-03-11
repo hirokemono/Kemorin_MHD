@@ -36,25 +36,36 @@
       type(ctl_array_c3), intent(inout) :: field_ctl
 !
 !
-      if(   check_field_list_ctl(perturbation_temp%name, field_ctl)     &
-     & .or. check_field_list_ctl(reference_temperature%name, field_ctl) &
+      if(check_field_list_ctl(perturbation_temp%name, field_ctl)) then
+        call add_phys_name_ctl(reference_temperature%name, field_ctl)
+      end if
+      if(check_field_list_ctl(perturbation_composition%name, field_ctl) &
+     &     ) then
+        call add_phys_name_ctl(reference_composition%name, field_ctl)
+      end if
+      if(   check_field_list_ctl(perturbation_entropy%name, field_ctl)  &
+     &     ) then
+        call add_phys_name_ctl(reference_entropy%name, field_ctl)
+      end if
+      if(   check_field_list_ctl(perturbation_density%name, field_ctl)  &
+     &     ) then
+        call add_phys_name_ctl(reference_density%name, field_ctl)
+      end if
+!
+      if(   check_field_list_ctl(reference_temperature%name, field_ctl) &
      & .or. check_field_list_ctl(heat_source%name, field_ctl)) then
         call add_phys_name_ctl(temperature%name, field_ctl)
       end if
-      if(check_field_list_ctl(perturbation_composition%name, field_ctl) &
-     & .or. check_field_list_ctl(reference_composition%name, field_ctl) &
+      if(   check_field_list_ctl(reference_composition%name, field_ctl) &
      & .or. check_field_list_ctl(composition_source%name, field_ctl)    &
      &     ) then
         call add_phys_name_ctl(composition%name, field_ctl)
       end if
-      if(   check_field_list_ctl(perturbation_entropy%name, field_ctl)  &
-     & .or. check_field_list_ctl(reference_entropy%name, field_ctl)     &
+      if(   check_field_list_ctl(reference_entropy%name, field_ctl)     &
      & .or. check_field_list_ctl(entropy_source%name, field_ctl)) then
         call add_phys_name_ctl(entropy%name, field_ctl)
       end if
-      if(   check_field_list_ctl(perturbation_density%name, field_ctl)  &
-     & .or. check_field_list_ctl(reference_density%name,                &
-     &                           field_ctl)) then 
+      if(check_field_list_ctl(reference_density%name, field_ctl)) then 
         call add_phys_name_ctl(density%name, field_ctl)
       end if
 !

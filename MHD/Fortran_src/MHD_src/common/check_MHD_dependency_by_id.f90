@@ -88,25 +88,6 @@
      &     .or. i_start .eq. iphys%i_light_source) then 
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_light, composition%name)
-        else if(i_start .eq. iphys%i_entropy_source) then 
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_entropy, entropy%name)
-        end if
-      end do
-!
-      do i = 1, fld%num_phys
-        i_start = fld%istack_component(i-1) + 1
-        if(i_start .eq. iphys%i_per_entropy) then 
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_entropy, perturbation_entropy%name)
-          call check_missing_field(fld, i_start,                        &
-     &        iphys%i_ref_entropy, reference_entropy%name)
-!
-        else if(i_start .eq. iphys%i_entropy) then 
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_velo, velocity%name)
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_temp, temperature%name)
         end if
       end do
 !

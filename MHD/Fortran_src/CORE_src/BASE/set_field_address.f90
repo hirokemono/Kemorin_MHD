@@ -99,11 +99,11 @@
         else if (field_name(i) .eq. scalar_potential%name ) then
           iphys%i_scalar_p = i0
         else if (field_name(i) .eq. entropy%name ) then
-          iphys%i_entropy = i0
+          iphys%base%i_entropy = i0
         else if (field_name(i) .eq. perturbation_entropy%name ) then
-          iphys%i_per_entropy = i0
+          iphys%base%i_per_entropy = i0
         else if (field_name(i) .eq. reference_entropy%name ) then
-          iphys%i_ref_entropy = i0
+          iphys%base%i_ref_entropy = i0
         else if (field_name(i) .eq. density%name ) then
           iphys%i_density = i0
         else if (field_name(i) .eq. perturbation_density%name ) then
@@ -116,7 +116,7 @@
         else if ( field_name(i) .eq. composition_source%name ) then
           iphys%i_light_source = i0
         else if ( field_name(i) .eq. entropy_source%name ) then
-          iphys%i_entropy_source = i0
+          iphys%base%i_entropy_source = i0
         end if
 !
         if ( field_name(i) .eq. filter_velocity%name ) then

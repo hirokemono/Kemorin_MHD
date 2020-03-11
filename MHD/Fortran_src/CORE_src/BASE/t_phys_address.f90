@@ -49,9 +49,6 @@
 !>        start address for density
 !!         @f$ \rho @f$
         integer (kind=kint) :: i_density =         izero
-!>        start address for entropy
-!!         @f$ S @f$
-        integer (kind=kint) :: i_entropy =         izero
 !
 !>        start address for magnetic field
 !!         @f$ B_{i} @f$
@@ -78,9 +75,6 @@
 !>        start address for perturbation of density
 !!         @f$  \rho - \rho_{0} @f$
         integer (kind=kint) :: i_per_density =     izero
-!>        start address for perturbation of entropy
-!!         @f$  S - S_{0} @f$
-        integer (kind=kint) :: i_per_entropy =     izero
 !
 !>        start address for heat source
 !!         @f$ q_{T} @f$
@@ -88,9 +82,6 @@
 !>        start address for composion source
 !!         @f$ q_{C} @f$
         integer (kind=kint) :: i_light_source =    izero
-!>        start address for entropysource
-!!         @f$ q_{S} @f$
-        integer (kind=kint) :: i_entropy_source =  izero
 !
 !>        start address for reference temperature
 !!         @f$  T_{0} @f$
@@ -101,9 +92,6 @@
 !>        start address for reference density
 !!         @f$  \rho_{0} @f$
         integer (kind=kint) :: i_ref_density =     izero
-!>        start address for reference entropy
-!!         @f$  S_{0} @f$
-        integer (kind=kint) :: i_ref_entropy =     izero
 !
 !>        Start address for filtered velocity
 !!         @f$ \bar{u}_{i} @f$
@@ -208,6 +196,8 @@
         integer (kind=kint) :: i_back_B = izero
 !
 !
+!>        Structure of base fields
+        type(base_field_address) :: base
 !>        Structure of forces
         type(base_force_address) :: forces
 !>        Structure of forces
