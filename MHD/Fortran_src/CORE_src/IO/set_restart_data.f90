@@ -256,7 +256,7 @@
 !
 !
       iflag = 0
-      if    (d_name .eq. velocity%name                                       &
+      if    (d_name .eq. velocity%name                                  &
      &  .or. d_name .eq. fhd_press                                      &
      &  .or. d_name .eq. fhd_pre_mom) then
         iflag = 1
@@ -264,7 +264,7 @@
       end if
 !
       if    (d_name .eq. fhd_vecp                                       &
-     &  .or. d_name .eq. fhd_magne                                      &
+     &  .or. d_name .eq. magnetic_field%name                            &
      &  .or. d_name .eq. fhd_mag_potential                              &
      &  .or. d_name .eq. fhd_pre_uxb) then
         iflag = 1
@@ -297,9 +297,9 @@
       character(len=kchara), intent(in) :: rst_name
 !
 !
-      if (      rst_name .eq. velocity%name                                  &
+      if (      rst_name .eq. velocity%name                             &
      &     .or. rst_name .eq. fhd_vecp                                  &
-     &     .or. rst_name .eq. fhd_magne                                 &
+     &     .or. rst_name .eq. magnetic_field%name                       &
      &     .or. rst_name .eq. fhd_pre_mom                               &
      &     .or. rst_name .eq. fhd_pre_uxb                               &
      &     .or. rst_name .eq. fhd_chk_mom                               &

@@ -298,7 +298,7 @@
         write(labels(2),'(a)')   'K_ene_tor'
         write(labels(3),'(a)')   'K_ene'
 !
-      else if (rms_name .eq. fhd_magne) then
+      else if (rms_name .eq. magnetic_field%name) then
         write(labels(1),'(a)')   'M_ene_pol'
         write(labels(2),'(a)')   'M_ene_tor'
         write(labels(3),'(a)')   'M_ene'

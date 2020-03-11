@@ -73,7 +73,7 @@
             call add_phys_name_ctl(grad_v_1%name, field_ctl)
             call add_phys_name_ctl(grad_v_2%name, field_ctl)
             call add_phys_name_ctl(grad_v_3%name, field_ctl)
-!          if(      field_ctl%c1_tbl(i) .eq. fhd_vort) then
+!          if(      field_ctl%c1_tbl(i) .eq. vorticity%name) then
 !            call add_phys_name_ctl(grad_w_1%name, field_ctl)
 !            call add_phys_name_ctl(grad_w_2%name, field_ctl)
 !            call add_phys_name_ctl(grad_w_3%name, field_ctl)
@@ -81,7 +81,7 @@
 !            call add_phys_name_ctl(grad_a_1%name, field_ctl)
 !            call add_phys_name_ctl(grad_a_2%name, field_ctl)
 !            call add_phys_name_ctl(grad_a_3%name, field_ctl)
-          else if(field_ctl%c1_tbl(i) .eq. fhd_magne) then
+          else if(field_ctl%c1_tbl(i) .eq. magnetic_field%name) then
             call add_phys_name_ctl(grad_b_1%name, field_ctl)
             call add_phys_name_ctl(grad_b_2%name, field_ctl)
             call add_phys_name_ctl(grad_b_3%name, field_ctl)
@@ -112,7 +112,7 @@
           else if( field_ctl%c1_tbl(i) .eq. fhd_vecp) then
             call add_phys_name_ctl                                      &
      &         (filter_vector_potential%name, field_ctl)
-          else if( field_ctl%c1_tbl(i) .eq. fhd_magne) then
+          else if( field_ctl%c1_tbl(i) .eq. magnetic_field%name) then
             call add_phys_name_ctl(filter_magne%name, field_ctl)
           else if( field_ctl%c1_tbl(i) .eq. fhd_temp) then
             call add_phys_name_ctl(filter_temperature%name, field_ctl)

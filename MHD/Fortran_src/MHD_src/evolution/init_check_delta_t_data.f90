@@ -155,7 +155,7 @@
           flex_data%istack_comp(icou)                                   &
      &                       = flex_data%istack_comp(icou-1) +  3
           flex_data%num_comp(icou) = flex_data%num_comp(icou) + 3
-          flex_data%fld_name(icou) = fhd_magne
+          flex_data%fld_name(icou) = magnetic_field%name
         end if
       end if
 !

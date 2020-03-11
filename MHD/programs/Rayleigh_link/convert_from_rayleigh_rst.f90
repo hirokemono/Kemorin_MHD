@@ -158,16 +158,17 @@
 !     &    rayleigh_WK%rayleigh_fd(1,1))
 !
         if    (new_sph_phys%phys_name(i_fld) .eq. velocity%name         &
-      &   .or. new_sph_phys%phys_name(i_fld) .eq. fhd_press             &
-      &   .or. new_sph_phys%phys_name(i_fld) .eq. fhd_temp              &
-      &   .or. new_sph_phys%phys_name(i_fld) .eq. fhd_magne) then
+     &   .or. new_sph_phys%phys_name(i_fld) .eq. fhd_press              &
+     &   .or. new_sph_phys%phys_name(i_fld) .eq. fhd_temp               &
+     &   .or. new_sph_phys%phys_name(i_fld) .eq. magnetic_field%name)   &
+     &       then
           call rescaling_for_chebyshev_FFT                              &
-      &      (ra_rst%nri_org, rayleigh_WK%rayleigh_in(1,1),             &
-      &       rayleigh_WK%nri_tgt, rayleigh_WK%rayleigh_tg(1,1))
+     &      (ra_rst%nri_org, rayleigh_WK%rayleigh_in(1,1),              &
+     &       rayleigh_WK%nri_tgt, rayleigh_WK%rayleigh_tg(1,1))
           call COST1B(rayleigh_WK%nri_tgt, ione,                        &
-      &       rayleigh_WK%rayleigh_tg(1,1), rayleigh_WK%nri_tgt+1,      &
-      &       fcheby_WK%WSAVE, fcheby_WK%LENSAV, fcheby_WK%WORK,        &
-      &       rayleigh_WK%nri_tgt+1, ierr)
+     &       rayleigh_WK%rayleigh_tg(1,1), rayleigh_WK%nri_tgt+1,       &
+     &       fcheby_WK%WSAVE, fcheby_WK%LENSAV, fcheby_WK%WORK,         &
+     &       rayleigh_WK%nri_tgt+1, ierr)
 !
           call copy_from_chebyshev_trans(new_sph_mesh%sph%sph_rj,       &
      &        r_itp, j, i_comp,  rayleigh_WK%nri_tgt,                   &

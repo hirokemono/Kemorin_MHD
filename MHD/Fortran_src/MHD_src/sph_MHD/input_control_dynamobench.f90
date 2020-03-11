@@ -155,7 +155,8 @@
         if(fld_ctl%c1_tbl(ifld) .eq. fhd_temp) bench%ibench_temp =   1
         if(fld_ctl%c1_tbl(ifld) .eq. velocity%name)                     &
      &                                   bench%ibench_velo =   1
-        if(fld_ctl%c1_tbl(ifld) .eq. fhd_magne) bench%ibench_magne = 1
+        if(fld_ctl%c1_tbl(ifld) .eq. magnetic_field%name)               &
+     &                                   bench%ibench_magne = 1
       end do
 !
       d_circle%num_phys = bench%ibench_velo + bench%ibench_temp         &
@@ -182,7 +183,7 @@
       if(bench%ibench_magne .gt. 0) then
         ifld = ifld + 1
         bench%ibench_magne = d_circle%istack_component(ifld-1) + 1
-        d_circle%phys_name(ifld) =     fhd_magne
+        d_circle%phys_name(ifld) =     magnetic_field%name
         d_circle%num_component(ifld) = n_vector
         d_circle%istack_component(ifld)                                 &
      &        = d_circle%istack_component(ifld-1) + n_vector

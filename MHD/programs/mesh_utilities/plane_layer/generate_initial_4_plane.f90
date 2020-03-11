@@ -185,7 +185,8 @@
      &             / (c_size%zmax - c_size%zmin))
             end do
 !
-          else if (merged_fld%phys_name(ip) .eq. fhd_magne) then
+          else if(merged_fld%phys_name(ip)                              &
+     &            .eq. magnetic_field%name) then
 !
             do inod = 1, merged%node%numnod
               merged_fld%d_fld(inod,jst+2) = (0.01d0*pi/two)            &

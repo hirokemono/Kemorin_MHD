@@ -50,7 +50,7 @@
         call add_phys_name_ctl(velocity%name, field_ctl)
       end if
       if(check_field_list_ctl(filter_magne%name, field_ctl)) then
-        call add_phys_name_ctl(fhd_magne, field_ctl)
+        call add_phys_name_ctl(magnetic_field%name, field_ctl)
       end if
       if(check_field_list_ctl(filter_vector_potential%name,             &
      &                        field_ctl)) then

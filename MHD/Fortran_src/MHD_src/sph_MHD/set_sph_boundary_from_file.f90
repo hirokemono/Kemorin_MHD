@@ -46,8 +46,8 @@
       integer(kind = kint) :: num_comp = 0
 !
       if(      cmp_no_case(label, velocity%name)                        &
-     &    .or. cmp_no_case(label, fhd_vort)                             &
-     &    .or. cmp_no_case(label, fhd_magne)) num_comp = 3
+     &    .or. cmp_no_case(label, vorticity%name)                       &
+     &    .or. cmp_no_case(label, magnetic_field%name)) num_comp = 3
 !
       if(      cmp_no_case(label, fhd_temp)                             &
      &    .or. cmp_no_case(label, fhd_light)                            &
@@ -91,9 +91,9 @@
       character(len = kchara), intent(in) :: label, postfix
 !
       find_vector_bc_label                                              &
-     &     = find_bc_label(label, velocity%name, postfix)               &
-     &                   .or. find_bc_label(label, fhd_vort, postfix)   &
-     &                   .or. find_bc_label(label, fhd_magne, postfix)
+     &     =    find_bc_label(label, velocity%name, postfix)            &
+     &     .or. find_bc_label(label, vorticity%name, postfix)           &
+     &     .or. find_bc_label(label, magnetic_field%name, postfix)
 !
       end function find_vector_bc_label
 !

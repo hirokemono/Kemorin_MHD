@@ -55,7 +55,7 @@
       end do
 !
       do i_fld = 1, pwr%num_fld_sq
-        if(pwr%pwr_name(i_fld) .eq. fhd_magne) then
+        if(pwr%pwr_name(i_fld) .eq. magnetic_field%name) then
           i_comp = pwr%istack_comp_sq(i_fld-1) + 1
           ME_bench(1) = pwr%v_spectr(1)%v_sq(i_comp  )
           ME_bench(2) = pwr%v_spectr(1)%v_sq(i_comp+1)
@@ -80,7 +80,7 @@
 !
 !
       do i_fld = 1, pwr%num_fld_sq
-        if(pwr%pwr_name(i_fld) .eq. fhd_magne) then
+        if(pwr%pwr_name(i_fld) .eq. magnetic_field%name) then
           i_comp = pwr%istack_comp_sq(i_fld-1) + 1
           mene_icore(1) = pwr%v_spectr(1)%v_sq(i_comp  )
           mene_icore(2) = pwr%v_spectr(1)%v_sq(i_comp+1)

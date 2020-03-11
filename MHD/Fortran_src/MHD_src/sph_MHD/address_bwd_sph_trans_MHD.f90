@@ -66,7 +66,8 @@
       end if
 !   vorticity flag
       if(       fl_prop%iflag_scheme .gt. id_no_evolution) then
-        call add_field_name_4_sph_trns(ipol%i_vort, fhd_vort, n_vector, &
+        call add_field_name_4_sph_trns(ipol%i_vort,                     &
+     &      vorticity%name, vorticity%n_comp,                           &
      &      ipol%i_vort, itor%i_vort, iphys%i_vort,                     &
      &      b_trns%i_vort, trns_back)
       end if
@@ -74,7 +75,7 @@
       if(       cd_prop%iflag_Bevo_scheme .gt. id_no_evolution          &
      &     .or. fl_prop%iflag_4_lorentz .gt.     id_turn_OFF) then
         call add_field_name_4_sph_trns                                  &
-     &     (ipol%i_magne, fhd_magne, n_vector,                          &
+     &     (ipol%i_magne, magnetic_field%name, magnetic_field%n_comp,   &
      &      ipol%i_magne, itor%i_magne, iphys%i_magne,                  &
      &      b_trns%i_magne, trns_back)
       end if

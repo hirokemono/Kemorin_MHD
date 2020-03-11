@@ -322,7 +322,7 @@
 !
        do j = 1, num_fft
         if (   fft_name(j) .eq. velocity%name                           &
-     &    .or. fft_name(j) .eq. fhd_magne                               &
+     &    .or. fft_name(j) .eq. magnetic_field%name                     &
      &    .or. fft_name(j) .eq. filter_velocity%name                    &
      &    .or. fft_name(j) .eq. filter_magne%name                       &
      &     ) then

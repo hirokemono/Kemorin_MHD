@@ -100,7 +100,7 @@
           MHD_prop%ht_prop%iflag_scheme =   MHD_prop%iflag_all_scheme
         else if (tmpchara .eq. fhd_light ) then
           MHD_prop%cp_prop%iflag_scheme =   MHD_prop%iflag_all_scheme
-        else if (tmpchara .eq. fhd_magne ) then
+        else if (tmpchara .eq. magnetic_field%name ) then
           MHD_prop%cd_prop%iflag_Bevo_scheme                            &
      &          =  MHD_prop%iflag_all_scheme
         else if (tmpchara .eq. fhd_vecp ) then

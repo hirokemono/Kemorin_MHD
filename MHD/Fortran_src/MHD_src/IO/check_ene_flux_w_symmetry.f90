@@ -58,10 +58,10 @@
         call add_phys_name_ctl(fhd_sym_comp_buo, field_ctl)
 !
       else if((field_name .eq. fhd_B_rot_Bsym_x_usym)) then
-        call add_phys_name_ctl(fhd_magne, field_ctl)
+        call add_phys_name_ctl(magnetic_field%name, field_ctl)
         call add_phys_name_ctl(fhd_rot_usym_x_Bsym, field_ctl)
       else if((field_name .eq. fhd_Bdot_Bsym_nabla_usym)) then
-        call add_phys_name_ctl(fhd_magne, field_ctl)
+        call add_phys_name_ctl(magnetic_field%name, field_ctl)
         call add_phys_name_ctl(fhd_Bsym_nabla_usym, field_ctl)
 !
       else if( (field_name .eq. fhd_T_usym_nabla_Tsym)) then
@@ -111,11 +111,11 @@
         call add_phys_name_ctl(fhd_asym_comp_buo, field_ctl)
 !
       else if( (field_name .eq. fhd_B_rot_Basym_x_uasym)) then
-        call add_phys_name_ctl(fhd_magne, field_ctl)
+        call add_phys_name_ctl(magnetic_field%name, field_ctl)
         call add_phys_name_ctl(fhd_rot_uasym_x_Basym,field_ctl)
       else if( (field_name .eq. fhd_Bdot_Basym_nabla_uasym))            &
      &    then
-        call add_phys_name_ctl(fhd_magne, field_ctl)
+        call add_phys_name_ctl(magnetic_field%name, field_ctl)
         call add_phys_name_ctl(fhd_Basym_nabla_uasym,field_ctl)
 !
       else if( (field_name .eq. fhd_T_uasym_nabla_Tasym)) then
@@ -158,10 +158,10 @@
         call add_phys_name_ctl(fhd_Bsym_nabla_Basym, field_ctl)
 !
       else if( (field_name .eq. fhd_B_rot_Bsym_x_uasym)) then
-        call add_phys_name_ctl(fhd_magne, field_ctl)
+        call add_phys_name_ctl(magnetic_field%name, field_ctl)
         call add_phys_name_ctl(fhd_rot_usym_x_Basym, field_ctl)
       else if( (field_name .eq. fhd_Bdot_Bsym_nabla_uasym)) then
-        call add_phys_name_ctl(fhd_magne, field_ctl)
+        call add_phys_name_ctl(magnetic_field%name, field_ctl)
         call add_phys_name_ctl(fhd_Bsym_nabla_uasym, field_ctl)
 !
       else if( (field_name .eq. fhd_T_usym_nabla_Tasym)) then
@@ -192,10 +192,10 @@
         call add_phys_name_ctl(fhd_Basym_nabla_Bsym, field_ctl)
 !
       else if( (field_name .eq. fhd_B_rot_Basym_x_usym)) then
-        call add_phys_name_ctl(fhd_magne, field_ctl)
+        call add_phys_name_ctl(magnetic_field%name, field_ctl)
         call add_phys_name_ctl(fhd_rot_uasym_x_Bsym, field_ctl)
       else if( (field_name .eq. fhd_Bdot_Basym_nabla_usym)) then
-        call add_phys_name_ctl(fhd_magne, field_ctl)
+        call add_phys_name_ctl(magnetic_field%name, field_ctl)
         call add_phys_name_ctl(fhd_Basym_nabla_usym, field_ctl)
 !
       else if( (field_name .eq. fhd_T_uasym_nabla_Tsym)) then

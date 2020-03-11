@@ -180,8 +180,8 @@
      &                = 0.01d0*sin( pi*node_plane%xx(inod,3)            &
      &                 / (c_size1%zmax - c_size1%zmin))
             end do
-          else if(mgd_mesh_pl%merged_fld%phys_name(np) .eq. fhd_magne)  &
-     &        then
+          else if(mgd_mesh_pl%merged_fld%phys_name(np)                  &
+     &            .eq. magnetic_field%name) then
             do inod = 1, mgd_mesh_pl%merged%node%numnod
               mgd_mesh_pl%merged_fld%d_fld(inod,jst+2)                  &
      &              = (0.01d0*pi/two) * cos( pi*node_plane%xx(inod,3)   &

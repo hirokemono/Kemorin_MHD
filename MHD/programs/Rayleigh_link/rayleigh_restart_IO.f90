@@ -123,7 +123,7 @@
       call add_scalar_field_4_raylegh(dir, i_step, tchar,               &
      &    fhd_temp, icou, fld_IO)
       call add_vector_field_4_raylegh(dir, i_step, cchar, achar,        &
-     &    fhd_magne, icou, fld_IO)
+     &    magnetic_field%name, icou, fld_IO)
 !
 !
       call add_vector_field_4_raylegh(dir, i_step, wabchar, zabchar,    &

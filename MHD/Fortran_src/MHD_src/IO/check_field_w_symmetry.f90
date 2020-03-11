@@ -47,10 +47,10 @@
         call add_phys_name_ctl(velocity%name, field_ctl)
       else if( (field_name .eq. fhd_sym_vort)                           &
      &    .or. (field_name .eq. fhd_asym_vort)) then 
-        call add_phys_name_ctl(fhd_vort, field_ctl)
+        call add_phys_name_ctl(vorticity%name, field_ctl)
       else if( (field_name .eq. fhd_sym_magne)                          &
      &    .or. (field_name .eq. fhd_asym_magne)) then 
-        call add_phys_name_ctl(fhd_magne, field_ctl)
+        call add_phys_name_ctl(magnetic_field%name, field_ctl)
       else if( (field_name .eq. fhd_sym_vecp)                           &
      &    .or. (field_name .eq. fhd_asym_vecp)) then 
         call add_phys_name_ctl(fhd_vecp, field_ctl)

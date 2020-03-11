@@ -83,7 +83,7 @@
         call dealloc_pick_sph_mode(gauss_list)
       end if
 !
-      gauss_coef%spectr_name(1) = fhd_magne
+      gauss_coef%spectr_name(1) = magnetic_field%name
       gauss_coef%istack_comp_rj(1) = 1
       gauss_coef%ifield_monitor_rj(1) = 1
       call alloc_gauss_coef_monitor_lc(gauss_coef)

@@ -113,7 +113,8 @@
       iflag_magne = 0
       do ifld = 1, field_ctl%num
         if(field_ctl%c1_tbl(ifld) .eq. velocity%name)  iflag_velo =  2
-        if(field_ctl%c1_tbl(ifld) .eq. fhd_magne) iflag_magne = 2
+        if(field_ctl%c1_tbl(ifld) .eq. magnetic_field%name)             &
+     &                                                 iflag_magne = 2
       end do
 !
       call dealloc_control_array_c3(field_ctl)
@@ -124,11 +125,11 @@
       ifld = 0
       if(iflag_velo .gt. 0) then
         field_ctl%c1_tbl(ifld+1) = velocity%name
-        field_ctl%c1_tbl(ifld+2) = fhd_vort
+        field_ctl%c1_tbl(ifld+2) = vorticity%name
         ifld = ifld+2
       end if
       if(iflag_magne .gt. 0) then
-        field_ctl%c1_tbl(ifld+1) = fhd_magne
+        field_ctl%c1_tbl(ifld+1) = magnetic_field%name
         field_ctl%c1_tbl(ifld+2) = fhd_current
         ifld = ifld+2
       end if

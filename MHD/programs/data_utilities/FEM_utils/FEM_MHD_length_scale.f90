@@ -153,9 +153,9 @@
       do i_fld = 1, nod_fld%num_phys
         if(nod_fld%phys_name(i_fld) .eq. velocity%name) then
           iphys%i_velo =      nod_fld%istack_component(i_fld-1) + 1
-        else if(nod_fld%phys_name(i_fld) .eq. fhd_vort) then
+        else if(nod_fld%phys_name(i_fld) .eq. vorticity%name) then
           iphys%i_vort =      nod_fld%istack_component(i_fld-1) + 1
-        else if(nod_fld%phys_name(i_fld) .eq. fhd_magne) then
+        else if(nod_fld%phys_name(i_fld) .eq. magnetic_field%name) then
           iphys%i_magne =     nod_fld%istack_component(i_fld-1) + 1
         else if(nod_fld%phys_name(i_fld) .eq. fhd_current) then
           iphys%i_current =   nod_fld%istack_component(i_fld-1) + 1

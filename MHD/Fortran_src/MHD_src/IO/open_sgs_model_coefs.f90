@@ -369,7 +369,7 @@
           write(file_id,'(a)') 'dVz_dx, dVz_dy, dVz_dz, '
         else if ( wk_diff%name(i) .eq. fhd_temp ) then
           write(file_id,'(a)') 'dT_dx, dT_dy, dT_dz, '
-        else if ( wk_diff%name(i) .eq. fhd_magne ) then
+        else if ( wk_diff%name(i) .eq. magnetic_field%name ) then
           write(file_id,'(a)') 'dBx_dx, dBx_dy, dBx_dz, '
           write(file_id,'(a)') 'dBy_dx, dBy_dy, dBy_dz, '
           write(file_id,'(a)') 'dBz_dx, dBz_dy, dBz_dz, '

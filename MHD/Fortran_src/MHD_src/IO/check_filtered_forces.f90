@@ -245,13 +245,13 @@
 !
       if(check_field_list_ctl(mag_ene_generation_by_filtered%name,      &
      &                        field_ctl)) then
-         call add_phys_name_ctl(fhd_magne, field_ctl)
+         call add_phys_name_ctl(magnetic_field%name, field_ctl)
          call add_phys_name_ctl                                         &
      &      (vecp_induction_by_filtered%name, field_ctl)
       end if
       if(check_field_list_ctl(mag_stretch_flux_by_filtered%name,        &
      &                        field_ctl)) then
-         call add_phys_name_ctl(fhd_magne, field_ctl)
+         call add_phys_name_ctl(magnetic_field%name, field_ctl)
          call add_phys_name_ctl                                         &
      &      (magnetic_stretch_by_filtered%name, field_ctl)
       end if

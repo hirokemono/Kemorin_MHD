@@ -45,12 +45,12 @@
 !
         if      (ele_fld%phys_name(i) .eq. velocity%name) then
           iphys_ele%i_velo = i0
-        else if(ele_fld%phys_name(i) .eq. fhd_vort) then
+        else if(ele_fld%phys_name(i) .eq. vorticity%name) then
           iphys_ele%i_vort = i0
         else if(ele_fld%phys_name(i) .eq. filter_velocity%name) then
           iphys_ele%i_filter_velo = i0
 !
-        else if(ele_fld%phys_name(i) .eq. fhd_magne) then
+        else if(ele_fld%phys_name(i) .eq. magnetic_field%name) then
           iphys_ele%i_magne = i0
         else if(ele_fld%phys_name(i) .eq. fhd_current) then
           iphys_ele%i_current = i0
@@ -98,8 +98,8 @@
       ele_fld%num_phys =     0
       ele_fld%num_phys_viz = 0
       do i = 1, nod_fld%num_phys
-       if (  nod_fld%phys_name(i) .eq. velocity%name                         &
-     &  .or. nod_fld%phys_name(i) .eq. fhd_magne                        &
+       if (  nod_fld%phys_name(i) .eq. velocity%name                    &
+     &  .or. nod_fld%phys_name(i) .eq. magnetic_field%name              &
      &  .or. nod_fld%phys_name(i) .eq. fhd_light                        &
      &  .or. nod_fld%phys_name(i) .eq. fhd_temp     ) then
         ele_fld%num_phys = ele_fld%num_phys + 1
@@ -127,7 +127,7 @@
 !
           if ( FEM_prm%iflag_rotate_form .eq. id_turn_ON ) then
             ele_fld%num_component(j) = 3
-            ele_fld%phys_name(j) = fhd_vort
+            ele_fld%phys_name(j) = vorticity%name
             j = j + 1
           end if
           if     (SGS_param%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF       &
@@ -138,9 +138,9 @@
           end if
         end if
 !
-        if (  nod_fld%phys_name(i) .eq. fhd_magne ) then
+        if (  nod_fld%phys_name(i) .eq. magnetic_field%name ) then
           ele_fld%num_component(j) = 3
-          ele_fld%phys_name(j) = fhd_magne
+          ele_fld%phys_name(j) = magnetic_field%name
           j = j + 1
           if ( FEM_prm%iflag_rotate_form .eq. id_turn_ON ) then
             ele_fld%num_component(j) = 3

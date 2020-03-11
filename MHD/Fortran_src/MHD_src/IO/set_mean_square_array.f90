@@ -84,7 +84,7 @@
             msq_list%numave = msq_list%numave + 4
           end if
 !
-          if ( field_name .eq. fhd_magne ) then
+          if ( field_name .eq. magnetic_field%name ) then
             call set_rms_address(field_name, num_comps, iphys%i_magne,  &
      &          i_rms%i_magne, j_ave%i_magne, msq_list)
 !
@@ -109,7 +109,7 @@
             msq_list%numave = msq_list%numave + 1
           end if
 !
-          if ( field_name .eq. fhd_vort ) then
+          if ( field_name .eq. vorticity%name ) then
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_vort,                    &
      &          i_rms%i_vort, j_ave%i_vort, msq_list)
@@ -388,7 +388,7 @@
      &         (e_hd_div_v, n_scalar, iphys%i_velo,                     &
      &          i_rms%grad_fld%i_div_v, j_ave%grad_fld%i_div_v,         &
      &          msq_list)
-          else if ( field_name .eq. fhd_magne ) then
+          else if ( field_name .eq. magnetic_field%name ) then
             call set_rms_address                                        &
      &         (e_hd_div_b, n_scalar, iphys%i_magne,                    &
      &          i_rms%grad_fld%i_div_b, j_ave%grad_fld%i_div_b,         &

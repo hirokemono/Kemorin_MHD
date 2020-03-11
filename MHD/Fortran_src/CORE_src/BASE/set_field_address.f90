@@ -81,13 +81,13 @@
           iphys%i_temp = i0
         else if ( field_name(i) .eq. fhd_part_temp ) then
           iphys%i_per_temp = i0
-        else if ( field_name(i) .eq. fhd_vort ) then
+        else if ( field_name(i) .eq. vorticity%name ) then
           iphys%i_vort = i0
         else if ( field_name(i) .eq. fhd_light ) then
           iphys%i_light = i0
         else if ( field_name(i) .eq. fhd_part_light ) then
           iphys%i_per_light = i0
-        else if ( field_name(i) .eq. fhd_magne ) then
+        else if ( field_name(i) .eq. magnetic_field%name ) then
           iphys%i_magne = i0
         else if ( field_name(i) .eq. fhd_vecp ) then
           iphys%i_vecp = i0

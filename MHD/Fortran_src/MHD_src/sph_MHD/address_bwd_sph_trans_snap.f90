@@ -52,12 +52,14 @@
      &    b_trns%i_velo, trns_back)
 !      end if
 !      if(b_trns%i_vort .eq. 0) then
-      call add_field_name_4_sph_trns_snap(fhd_vort, n_vector,           &
+      call add_field_name_4_sph_trns_snap                               &
+     &   (vorticity%name, vorticity%n_comp,                             &
      &    ipol%i_vort, itor%i_vort, iphys%i_vort,                       &
      &    b_trns%i_vort, trns_back)
 !      end if
 !      if(b_trns%i_magne .eq. 0) then
-      call add_field_name_4_sph_trns_snap(fhd_magne, n_vector,          &
+      call add_field_name_4_sph_trns_snap                               &
+     &   (magnetic_field%name, magnetic_field%n_comp,                   &
      &    ipol%i_magne, itor%i_magne, iphys%i_magne,                    &
      &    b_trns%i_magne, trns_back)
 !      end if

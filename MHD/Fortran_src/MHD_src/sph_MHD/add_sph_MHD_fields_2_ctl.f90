@@ -52,12 +52,12 @@
       end if
 !   vorticity flag
       if(fl_prop%iflag_scheme .gt. id_no_evolution) then
-        call add_phys_name_ctl(fhd_vort, field_ctl)
+        call add_phys_name_ctl(vorticity%name, field_ctl)
       end if
 !   magnetic field flag
       if(cd_prop%iflag_Bevo_scheme .gt. id_no_evolution                 &
      &     .or. fl_prop%iflag_4_lorentz .gt. id_turn_OFF) then
-        call add_phys_name_ctl(fhd_magne, field_ctl)
+        call add_phys_name_ctl(magnetic_field%name, field_ctl)
         call add_phys_name_ctl(fhd_current, field_ctl)
       end if
 !

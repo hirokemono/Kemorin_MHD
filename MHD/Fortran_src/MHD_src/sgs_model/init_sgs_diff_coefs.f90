@@ -336,7 +336,7 @@
      &      .and. cmt_param%iflag_c_magne .eq. id_SGS_commute_ON) then
             icomp_diff%i_magne = id
             ifld_diff%i_magne = jd
-            wk_diff%name(jd) = fhd_magne
+            wk_diff%name(jd) = magnetic_field%name
             diff_coefs%num_comps(jd) = 9
             id = id + diff_coefs%num_comps(jd)
             jd = jd + 1
@@ -348,7 +348,7 @@
      &      .and. cmt_param%iflag_c_magne .eq. id_SGS_commute_ON) then
             icomp_diff%i_magne = id
             ifld_diff%i_magne = jd
-            wk_diff%name(jd) = fhd_magne
+            wk_diff%name(jd) = magnetic_field%name
             diff_coefs%num_comps(jd) = 9
             id = id + diff_coefs%num_comps(jd)
             jd = jd + 1

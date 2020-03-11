@@ -78,11 +78,11 @@
       fld_IO%num_field_IO = 0
        do i_fld = 1, rj_fld%num_phys
          if   ( rj_fld%phys_name(i_fld) .eq. velocity%name              &
-!     &     .or. rj_fld%phys_name(i_fld) .eq. fhd_vort                  &
+!     &     .or. rj_fld%phys_name(i_fld) .eq. vorticity%name            &
 !     &     .or. rj_fld%phys_name(i_fld) .eq. fhd_press                 &
      &     .or. rj_fld%phys_name(i_fld) .eq. fhd_temp                   &
      &     .or. rj_fld%phys_name(i_fld) .eq. fhd_light                  &
-     &     .or. rj_fld%phys_name(i_fld) .eq. fhd_magne                  &
+     &     .or. rj_fld%phys_name(i_fld) .eq. magnetic_field%name        &
 !     &     .or. rj_fld%phys_name(i_fld) .eq. fhd_mag_potential         &
      &     .or. rj_fld%phys_name(i_fld) .eq. fhd_entropy                &
      &     .or. rj_fld%phys_name(i_fld) .eq. fhd_pre_mom                &
@@ -117,8 +117,8 @@
       fld_IO%istack_comp_IO(0) = 0
       do i_fld = 1, rj_fld%num_phys
         if         (rj_fld%phys_name(i_fld) .eq. velocity%name          &
-!     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_vort              &
-     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_magne              &
+!     &         .or. rj_fld%phys_name(i_fld) .eq. vorticity%name        &
+     &         .or. rj_fld%phys_name(i_fld) .eq. magnetic_field%name    &
      &         .or. rj_fld%phys_name(i_fld) .eq. fhd_pre_mom            &
      &         .or. rj_fld%phys_name(i_fld) .eq. fhd_pre_uxb            &
      &         ) then
@@ -169,8 +169,8 @@
         do j_IO = 1, fld_IO%num_field_IO
           if (rj_fld%phys_name(i_fld) .eq. fld_IO%fld_name(j_IO)) then
             if     (rj_fld%phys_name(i_fld) .eq. velocity%name          &
-!     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_vort              &
-     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_magne              &
+!     &         .or. rj_fld%phys_name(i_fld) .eq. vorticity%name        &
+     &         .or. rj_fld%phys_name(i_fld) .eq. magnetic_field%name    &
      &         .or. rj_fld%phys_name(i_fld) .eq. fhd_pre_mom            &
      &         .or. rj_fld%phys_name(i_fld) .eq. fhd_pre_uxb            &
      &         ) then
@@ -222,8 +222,8 @@
           if (rj_fld%phys_name(i_fld) .eq. fld_IO%fld_name(j_IO)) then
             iflag = 1
             if     (rj_fld%phys_name(i_fld) .eq. velocity%name          &
- !    &         .or. rj_fld%phys_name(i_fld) .eq. fhd_vort              &
-     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_magne              &
+ !    &         .or. rj_fld%phys_name(i_fld) .eq. vorticity%name        &
+     &         .or. rj_fld%phys_name(i_fld) .eq. magnetic_field%name    &
      &         .or. rj_fld%phys_name(i_fld) .eq. fhd_pre_mom            &
      &         .or. rj_fld%phys_name(i_fld) .eq. fhd_pre_uxb            &
      &         ) then

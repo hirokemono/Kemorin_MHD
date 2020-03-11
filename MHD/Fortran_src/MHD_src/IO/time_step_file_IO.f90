@@ -67,7 +67,7 @@
           end if
 !
         else if(msq_list%ifld_msq(i) .eq. iphys%i_vort) then
-            call vector_label_4_step(id_ave, id_msq, fhd_vort)
+            call vector_label_4_step(id_ave, id_msq, vorticity%name)
             call write_one_label(id_msq, e_hd_rms_w)
 !
         else if(msq_list%ifld_msq(i) .eq. iphys%i_vecp) then
@@ -79,11 +79,11 @@
           end if
 !
         else if(msq_list%ifld_msq(i) .eq. iphys%i_magne) then
-          if(msq_list%field_name(i) .eq. fhd_magne) then
+          if(msq_list%field_name(i) .eq. magnetic_field%name) then
             call write_three_labels                                     &
      &         (id_msq, e_hd_m_ene, e_hd_m_ene_cd, e_hd_div_b)
 !
-            call set_vector_label(fhd_magne, vector_label)
+            call set_vector_label(magnetic_field%name, vector_label)
             call write_vector_label(id_ave, vector_label)
             call write_vector_label(id_ave, e_hd_bvec_cd)
             call write_one_label(id_ave, e_hd_div_b)

@@ -78,7 +78,6 @@
      &                math = '$ u_{i} $')
 !>        Field label for vorticity
 !!         @f$ \omega_{i} = e_{ijk} \partial_{j} u_{k} @f$
-      character(len=kchara), parameter :: fhd_vort = 'vorticity'
       type(field_def), parameter :: vorticity                           &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'vorticity',                               &
@@ -93,7 +92,6 @@
 !!
 !>        Field label for magnetic field
 !!         @f$ B_{i} @f$
-      character(len=kchara), parameter :: fhd_magne = 'magnetic_field'
       type(field_def), parameter :: magnetic_field                      &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'magnetic_field',                          &
@@ -363,8 +361,8 @@
 !
       check_base_vector                                                 &
      &   =    (field_name .eq. velocity%name)                           &
-     &   .or. (field_name .eq. fhd_vort)                                &
-     &   .or. (field_name .eq. fhd_magne)                               &
+     &   .or. (field_name .eq. vorticity%name)                          &
+     &   .or. (field_name .eq. magnetic_field%name)                     &
      &   .or. (field_name .eq. fhd_vecp)                                &
      &   .or. (field_name .eq. fhd_current)
 !
@@ -420,10 +418,10 @@
       if(flag) then
         if (field_name .eq. velocity%name) then
           base_fld%i_velo = i_phys
-        else if (field_name .eq. fhd_vort) then
+        else if (field_name .eq. vorticity%name) then
           base_fld%i_vort = i_phys
 !
-        else if (field_name .eq. fhd_magne) then
+        else if (field_name .eq. magnetic_field%name) then
           base_fld%i_magne =    i_phys
         else if (field_name .eq. fhd_vecp) then
           base_fld%i_vecp =     i_phys

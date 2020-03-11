@@ -79,7 +79,7 @@
       end do
 !
       do i = 1, pwr%num_fld_sq
-        if (pwr%pwr_name(i) .eq. fhd_magne) then
+        if (pwr%pwr_name(i) .eq. magnetic_field%name) then
           icomp = pwr%istack_comp_sq(i)
           write(*,'(a,1pe15.8)',advance='no')                           &
      &              '  E_mag = ', pwr%v_spectr(1)%v_sq(icomp)

@@ -68,7 +68,7 @@
             cmt_param%iflag_c_temp =      id_SGS_commute_ON
           else if(tmpchara .eq. velocity%name) then
             cmt_param%iflag_c_velo =      id_SGS_commute_ON
-          else if(tmpchara .eq. fhd_magne) then
+          else if(tmpchara .eq. magnetic_field%name) then
             cmt_param%iflag_c_magne =     id_SGS_commute_ON
           else if(tmpchara .eq. fhd_vecp) then
             cmt_param%iflag_c_magne =     id_SGS_commute_ON

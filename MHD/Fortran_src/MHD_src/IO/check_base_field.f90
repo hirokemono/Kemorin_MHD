@@ -8,7 +8,9 @@
 !> @brief Labels and addresses for basic fields
 !!
 !!@verbatim
-!!      subroutine add_base_field_ctl(field_name, field_ctl)
+!!      subroutine add_field_ctl_4_base_field(field_ctl)
+!!      subroutine add_field_ctl_4_grad_field(field_ctl)
+!!      subroutine add_field_ctl_4_diff_vector(field_ctl)
 !!        type(ctl_array_c3), intent(in) :: field_ctl
 !!@endverbatim
 !!
@@ -17,6 +19,7 @@
       use m_precision
       use m_constants
       use t_base_field_labels
+      use t_control_array_character3
 !
       implicit  none
 ! 
@@ -26,48 +29,134 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine add_base_field_ctl(field_name, field_ctl)
+      subroutine add_field_ctl_4_base_field(field_ctl)
 !
-      use t_control_array_character3
       use add_nodal_fields_ctl
 !
-      character(len = kchara), intent(in) :: field_name
       type(ctl_array_c3), intent(inout) :: field_ctl
 !
 !
-      if(      (field_name .eq. fhd_vort)                               &
-     &   .and. (field_name .eq. fhd_press)                              &
-     &   .and. (field_name .eq. fhd_magne)                              &
-     &   .and. (field_name .eq. fhd_temp)                               &
-     &   .and. (field_name .eq. fhd_light)                              &
-     &   .and. (field_name .eq. fhd_density)                            &
-     &   .and. (field_name .eq. fhd_entropy)) then
-        call add_phys_name_ctl(velocity%name, field_ctl)
-       
-      else if( (field_name .eq. fhd_vecp)                               &
-     &   .and. (field_name .eq. fhd_current)                            &
-     &   .and. (field_name .eq. fhd_mag_potential)                      &
-     &   .and. (field_name .eq. fhd_scalar_potential)) then
-        call add_phys_name_ctl(fhd_magne, field_ctl)
-!
-      else if( (field_name .eq. fhd_part_temp)                          &
-     &   .and. (field_name .eq. fhd_ref_temp)                           &
-     &   .and. (field_name .eq. fhd_heat_source)) then
+      if(   check_field_list_ctl(fhd_part_temp, field_ctl)              &
+     & .or. check_field_list_ctl(fhd_ref_temp, field_ctl)               &
+     & .or. check_field_list_ctl(fhd_heat_source, field_ctl)) then
         call add_phys_name_ctl(fhd_temp, field_ctl)
-      else if( (field_name .eq. fhd_part_light)                         &
-     &   .and. (field_name .eq. fhd_ref_light)                          &
-     &   .and. (field_name .eq. fhd_light_source)) then
+      end if
+      if(   check_field_list_ctl(fhd_part_light, field_ctl)             &
+     & .or. check_field_list_ctl(fhd_ref_light, field_ctl)              &
+     & .or. check_field_list_ctl(fhd_light_source, field_ctl)) then
         call add_phys_name_ctl(fhd_light, field_ctl)
-      else if( (field_name .eq. fhd_per_entropy)                        &
-     &   .and. (field_name .eq. fhd_ref_entropy)                        &
-     &   .and. (field_name .eq. fhd_entropy_source)) then
+      end if
+      if(   check_field_list_ctl(fhd_per_entropy, field_ctl)            &
+     & .or. check_field_list_ctl(fhd_ref_entropy, field_ctl)            &
+     & .or. check_field_list_ctl(fhd_entropy_source, field_ctl)) then
         call add_phys_name_ctl(fhd_entropy, field_ctl)
-      else if( (field_name .eq. fhd_per_density)                        &
-     &   .and. (field_name .eq. fhd_ref_density)) then 
+      end if
+      if(   check_field_list_ctl(fhd_per_density, field_ctl)            &
+     & .or. check_field_list_ctl(fhd_ref_density, field_ctl)) then 
         call add_phys_name_ctl(fhd_density, field_ctl)
       end if
 !
-      end subroutine add_base_field_ctl
+      if( check_field_list_ctl(fhd_vecp, field_ctl)                     &
+     & .or. check_field_list_ctl(fhd_current, field_ctl)                &
+     & .or. check_field_list_ctl(fhd_mag_potential, field_ctl)          &
+     & .or. check_field_list_ctl(fhd_scalar_potential, field_ctl)) then
+        call add_phys_name_ctl(magnetic_field%name, field_ctl)
+      end if
+!
+      if(   check_field_list_ctl(vorticity%name, field_ctl)             &
+     & .or. check_field_list_ctl(fhd_press, field_ctl)                  &
+     & .or. check_field_list_ctl(magnetic_field%name, field_ctl)        &
+     & .or. check_field_list_ctl(fhd_temp, field_ctl)                   &
+     & .or. check_field_list_ctl(fhd_light, field_ctl)                  &
+     & .or. check_field_list_ctl(fhd_density, field_ctl)                &
+     & .or. check_field_list_ctl(fhd_entropy, field_ctl)) then
+        call add_phys_name_ctl(velocity%name, field_ctl)
+      end if
+!
+      end subroutine add_field_ctl_4_base_field
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine add_field_ctl_4_grad_field(field_ctl)
+!
+      use t_grad_field_labels
+      use add_nodal_fields_ctl
+!
+      type(ctl_array_c3), intent(inout) :: field_ctl
+!
+!
+      if(check_field_list_ctl(div_velocity%name, field_ctl))            &
+     &   call add_phys_name_ctl(velocity%name, field_ctl)
+      if(check_field_list_ctl(div_magnetic%name, field_ctl))            &
+     &   call add_phys_name_ctl(magnetic_field%name, field_ctl)
+      if(check_field_list_ctl(div_vector_potential%name, field_ctl))    &
+     &   call add_phys_name_ctl(fhd_vecp, field_ctl)
+!
+      if(check_field_list_ctl(grad_temp%name, field_ctl))               &
+     &   call add_phys_name_ctl(fhd_temp, field_ctl)
+      if(check_field_list_ctl(grad_pert_temp%name, field_ctl))          &
+     &   call add_phys_name_ctl(fhd_part_temp, field_ctl)
+      if(check_field_list_ctl(grad_reference_temp%name, field_ctl))    &
+     &   call add_phys_name_ctl(fhd_ref_temp, field_ctl)
+!
+      if(check_field_list_ctl(grad_composition%name, field_ctl))        &
+     &   call add_phys_name_ctl(fhd_light, field_ctl)
+      if(check_field_list_ctl(grad_pert_composition%name, field_ctl))   &
+     &   call add_phys_name_ctl(fhd_part_light, field_ctl)
+      if(check_field_list_ctl(grad_reference_composition%name,          &
+     &                        field_ctl))                               &
+     &   call add_phys_name_ctl(fhd_ref_light, field_ctl)
+!
+      if(check_field_list_ctl(grad_density%name, field_ctl))            &
+     &   call add_phys_name_ctl(fhd_density, field_ctl)
+      if(check_field_list_ctl(grad_pert_density%name, field_ctl))       &
+     &   call add_phys_name_ctl(fhd_per_density, field_ctl)
+      if(check_field_list_ctl(grad_reference_density%name, field_ctl))  &
+     &   call add_phys_name_ctl(fhd_ref_density, field_ctl)
+!
+      if(check_field_list_ctl(grad_entropy%name, field_ctl))            &
+     &   call add_phys_name_ctl(fhd_entropy, field_ctl)
+      if(check_field_list_ctl(grad_pert_entropy%name, field_ctl))       &
+     &   call add_phys_name_ctl(fhd_per_entropy, field_ctl)
+      if(check_field_list_ctl(grad_reference_entropy%name, field_ctl))  &
+     &   call add_phys_name_ctl(fhd_ref_entropy, field_ctl)
+!
+      end subroutine add_field_ctl_4_grad_field
+!
+! -----------------------------------------------------------------------
+!
+      subroutine add_field_ctl_4_diff_vector(field_ctl)
+!
+      use t_diff_vector_labels
+      use add_nodal_fields_ctl
+!
+      type(ctl_array_c3), intent(inout) :: field_ctl
+!
+!
+      if(   check_field_list_ctl(grad_v_1%name, field_ctl)              &
+     & .or. check_field_list_ctl(grad_v_2%name, field_ctl)              &
+     & .or. check_field_list_ctl(grad_v_3%name, field_ctl))             &
+     &  call add_phys_name_ctl(velocity%name, field_ctl)
+      if(   check_field_list_ctl(grad_w_1%name, field_ctl)              &
+     & .or. check_field_list_ctl(grad_w_2%name, field_ctl)              &
+     & .or. check_field_list_ctl(grad_w_3%name, field_ctl))             &
+     &  call add_phys_name_ctl(vorticity%name, field_ctl)
+!
+      if(   check_field_list_ctl(grad_b_1%name, field_ctl)              &
+     & .or. check_field_list_ctl(grad_b_2%name, field_ctl)              &
+     & .or. check_field_list_ctl(grad_b_3%name, field_ctl))             &
+     &  call add_phys_name_ctl(magnetic_field%name, field_ctl)
+      if(   check_field_list_ctl(grad_a_1%name, field_ctl)              &
+     & .or. check_field_list_ctl(grad_a_2%name, field_ctl)              &
+     & .or. check_field_list_ctl(grad_a_3%name, field_ctl))             &
+     &  call add_phys_name_ctl(fhd_vecp, field_ctl)
+      if(   check_field_list_ctl(grad_j_1%name, field_ctl)              &
+     & .or. check_field_list_ctl(grad_j_2%name, field_ctl)              &
+     & .or. check_field_list_ctl(grad_j_3%name, field_ctl))             &
+     &  call add_phys_name_ctl(fhd_current, field_ctl)
+!
+      end subroutine add_field_ctl_4_diff_vector
 !
 ! -----------------------------------------------------------------------
 !
