@@ -89,9 +89,9 @@
      &     .or. rj_fld%phys_name(i_fld) .eq. fhd_pre_uxb                &
      &     .or. rj_fld%phys_name(i_fld) .eq. fhd_pre_heat               &
      &     .or. rj_fld%phys_name(i_fld) .eq. fhd_pre_composit           &
-     &     .or. rj_fld%phys_name(i_fld) .eq. fhd_heat_source            &
-     &     .or. rj_fld%phys_name(i_fld) .eq. fhd_light_source           &
-     &     .or. rj_fld%phys_name(i_fld) .eq. fhd_entropy_source         &
+     &     .or. rj_fld%phys_name(i_fld) .eq. heat_source%name           &
+     &     .or. rj_fld%phys_name(i_fld) .eq. composition_source%name    &
+     &     .or. rj_fld%phys_name(i_fld) .eq. entropy_source%name        &
 !
      &     .or. check_SGS_moedel_coefs(rj_fld%phys_name(i_fld))         &
      &     ) then
@@ -134,9 +134,9 @@
 !     &      .or. rj_fld%phys_name(i_fld) .eq. magnetic_potential%name  &
      &      .or. rj_fld%phys_name(i_fld) .eq. fhd_pre_heat              &
      &      .or. rj_fld%phys_name(i_fld) .eq. fhd_pre_composit          &
-     &      .or. rj_fld%phys_name(i_fld) .eq. fhd_heat_source           &
-     &      .or. rj_fld%phys_name(i_fld) .eq. fhd_light_source          &
-     &      .or. rj_fld%phys_name(i_fld) .eq. fhd_entropy_source        &
+     &      .or. rj_fld%phys_name(i_fld) .eq. heat_source%name          &
+     &      .or. rj_fld%phys_name(i_fld) .eq. composition_source%name   &
+     &      .or. rj_fld%phys_name(i_fld) .eq. entropy_source%name       &
 !
      &      .or. check_SGS_moedel_coefs(rj_fld%phys_name(i_fld))        &
      &         ) then
@@ -184,9 +184,9 @@
 !     &       .or. rj_fld%phys_name(i_fld) .eq. magnetic_potential%name &
      &       .or. rj_fld%phys_name(i_fld) .eq. fhd_pre_heat             &
      &       .or. rj_fld%phys_name(i_fld) .eq. fhd_pre_composit         &
-     &       .or. rj_fld%phys_name(i_fld) .eq. fhd_heat_source          &
-     &       .or. rj_fld%phys_name(i_fld) .eq. fhd_light_source         &
-     &       .or. rj_fld%phys_name(i_fld) .eq. fhd_entropy_source       &
+     &       .or. rj_fld%phys_name(i_fld) .eq. heat_source%name         &
+     &       .or. rj_fld%phys_name(i_fld) .eq. composition_source%name  &
+     &       .or. rj_fld%phys_name(i_fld) .eq. entropy_source%name      &
 !
      &       .or. check_SGS_moedel_coefs(rj_fld%phys_name(i_fld))       &
      &         ) then
@@ -237,9 +237,9 @@
 !     &       .or. rj_fld%phys_name(i_fld) .eq. magnetic_potential%name &
      &       .or. rj_fld%phys_name(i_fld) .eq. fhd_pre_heat             &
      &       .or. rj_fld%phys_name(i_fld) .eq. fhd_pre_composit         &
-     &       .or. rj_fld%phys_name(i_fld) .eq. fhd_heat_source          &
-     &       .or. rj_fld%phys_name(i_fld) .eq. fhd_light_source         &
-     &       .or. rj_fld%phys_name(i_fld) .eq. fhd_entropy_source       &
+     &       .or. rj_fld%phys_name(i_fld) .eq. heat_source%name         &
+     &       .or. rj_fld%phys_name(i_fld) .eq. composition_source%name  &
+     &       .or. rj_fld%phys_name(i_fld) .eq. entropy_source%name      &
 !
      &       .or. check_SGS_moedel_coefs(rj_fld%phys_name(i_fld))       &
      &         ) then

@@ -150,9 +150,9 @@
      &  .or. (phys_nod_name_ctl .eq. magnetic_potential%name        )         &
      &  .or. (phys_nod_name_ctl .eq. scalar_potential%name     )         &
      &  .or. (phys_nod_name_ctl .eq. entropy%name              )         &
-     &  .or. (phys_nod_name_ctl .eq. fhd_heat_source          )         &
-     &  .or. (phys_nod_name_ctl .eq. fhd_light_source         )         &
-     &  .or. (phys_nod_name_ctl .eq. fhd_entropy_source       )         &
+     &  .or. (phys_nod_name_ctl .eq. heat_source%name          )         &
+     &  .or. (phys_nod_name_ctl .eq. composition_source%name         )         &
+     &  .or. (phys_nod_name_ctl .eq. entropy_source%name       )         &
      &      )   iflag = 1
 !
       if (    (phys_nod_name_ctl .eq. reference_temperature%name            )         &

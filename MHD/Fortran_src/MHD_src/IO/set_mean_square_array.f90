@@ -221,15 +221,15 @@
      &         (field_name, num_comps, iphys%i_per_density,             &
      &          i_rms%i_per_density, j_ave%i_per_density, msq_list)
 !
-          else if ( field_name .eq. fhd_heat_source ) then
+          else if ( field_name .eq. heat_source%name ) then
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_heat_source,             &
      &          i_rms%i_heat_source, j_ave%i_heat_source, msq_list)
-          else if ( field_name .eq. fhd_light_source ) then
+          else if ( field_name .eq. composition_source%name ) then
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_light_source,            &
      &          i_rms%i_light_source, j_ave%i_light_source, msq_list)
-          else if ( field_name .eq. fhd_entropy_source ) then
+          else if ( field_name .eq. entropy_source%name ) then
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_entropy_source,          &
      &          i_rms%i_entropy_source, j_ave%i_entropy_source,         &

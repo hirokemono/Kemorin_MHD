@@ -355,7 +355,7 @@
 !
 !    Turn Off Nusselt number if heat source is there
       do i = 1, rj_fld%num_phys
-        if(rj_fld%phys_name(i) .eq. fhd_heat_source) then
+        if(rj_fld%phys_name(i) .eq. heat_source%name) then
           Nu_type%iflag_no_source_Nu = 0
           exit
         end if

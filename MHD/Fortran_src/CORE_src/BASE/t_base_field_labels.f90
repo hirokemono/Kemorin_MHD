@@ -198,24 +198,18 @@
 !
 !>        Field label for heat source
 !!         @f$ q_{T} @f$
-      character(len=kchara), parameter                                  &
-     &              :: fhd_heat_source =  'heat_source'
       type(field_def), parameter :: heat_source                         &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'heat_source',                             &
      &                math = '$ q_{T} $')
 !>        Field label for composion source
 !!         @f$ q_{C} @f$
-      character(len=kchara), parameter                                  &
-     &              :: fhd_light_source =  'composition_source'
       type(field_def), parameter :: composition_source                  &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'composition_source',                      &
      &                math = '$ q_{C} $')
 !>        Field label for entropysource
 !!         @f$ q_{S} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_entropy_source =  'entropy_source'
       type(field_def), parameter :: entropy_source                      &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'entropy_source',                          &
@@ -368,9 +362,9 @@
      &   .or. (field_name .eq. perturbation_entropy%name)               &
      &   .or. (field_name .eq. reference_entropy%name)                  &
 !
-     &   .or. (field_name .eq. fhd_heat_source)                         &
-     &   .or. (field_name .eq. fhd_light_source)                        &
-     &   .or. (field_name .eq. fhd_entropy_source)
+     &   .or. (field_name .eq. heat_source%name)                        &
+     &   .or. (field_name .eq. composition_source%name)                 &
+     &   .or. (field_name .eq. entropy_source%name)
 !
       end function check_base_scalar
 !
@@ -453,11 +447,11 @@
         else if (field_name .eq. reference_entropy%name) then
           base_fld%i_ref_entropy =    i_phys
 !
-        else if (field_name .eq. fhd_heat_source) then
+        else if (field_name .eq. heat_source%name) then
           base_fld%i_heat_source =    i_phys
-        else if (field_name .eq. fhd_light_source) then
+        else if (field_name .eq. composition_source%name) then
           base_fld%i_light_source =   i_phys
-        else if (field_name .eq. fhd_entropy_source) then
+        else if (field_name .eq. entropy_source%name) then
           base_fld%i_entropy_source = i_phys
         end if
       end if  

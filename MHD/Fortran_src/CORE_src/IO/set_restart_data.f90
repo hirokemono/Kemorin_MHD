@@ -273,14 +273,14 @@
 !
       if    (d_name .eq. temperature%name                               &
      &  .or. d_name .eq. fhd_pre_heat                                   &
-     &  .or. d_name .eq. fhd_heat_source) then
+     &  .or. d_name .eq. heat_source%name) then
         iflag = 1
         return
       end if
 !
       if    (d_name .eq. composition%name                               &
      &  .or. d_name .eq. fhd_pre_composit                               &
-     &  .or. d_name .eq. fhd_light_source) then
+     &  .or. d_name .eq. composition_source%name) then
         iflag = 1
         return
       end if

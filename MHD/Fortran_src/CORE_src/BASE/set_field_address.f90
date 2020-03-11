@@ -111,11 +111,11 @@
         else if (field_name(i) .eq. reference_density%name ) then
           iphys%i_ref_density = i0
 !
-        else if ( field_name(i) .eq. fhd_heat_source ) then
+        else if ( field_name(i) .eq. heat_source%name ) then
           iphys%i_heat_source = i0
-        else if ( field_name(i) .eq. fhd_light_source ) then
+        else if ( field_name(i) .eq. composition_source%name ) then
           iphys%i_light_source = i0
-        else if ( field_name(i) .eq. fhd_entropy_source ) then
+        else if ( field_name(i) .eq. entropy_source%name ) then
           iphys%i_entropy_source = i0
         end if
 !

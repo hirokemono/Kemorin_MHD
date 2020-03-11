@@ -220,9 +220,9 @@
      &        .or. rj_fld%phys_name(i_fld) .eq. fhd_pre_uxb             &
      &        .or. rj_fld%phys_name(i_fld) .eq. fhd_pre_heat            &
      &        .or. rj_fld%phys_name(i_fld) .eq. fhd_pre_composit        &
-     &        .or. rj_fld%phys_name(i_fld) .eq. fhd_heat_source         &
-     &        .or. rj_fld%phys_name(i_fld) .eq. fhd_light_source        &
-     &        .or. rj_fld%phys_name(i_fld) .eq. fhd_entropy_source      &
+     &        .or. rj_fld%phys_name(i_fld) .eq. heat_source%name        &
+     &        .or. rj_fld%phys_name(i_fld) .eq. composition_source%name &
+     &        .or. rj_fld%phys_name(i_fld) .eq. entropy_source%name     &
      &         ) then
               call set_org_rj_phys_data_from_IO                         &
      &           (j_fld, fld_IO, n_rj_org, d_rj_org)
