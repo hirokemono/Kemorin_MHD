@@ -88,7 +88,7 @@
           iphys%i_press = i0
         else if ( field_name(i) .eq. temperature%name ) then
           iphys%i_temp = i0
-        else if ( field_name(i) .eq. fhd_part_temp ) then
+        else if ( field_name(i) .eq. perturbation_temp%name ) then
           iphys%i_per_temp = i0
         else if ( field_name(i) .eq. fhd_light ) then
           iphys%i_light = i0

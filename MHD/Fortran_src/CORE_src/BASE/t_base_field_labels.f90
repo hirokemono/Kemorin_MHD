@@ -147,8 +147,6 @@
      &                math = '$ T $')
 !>        Field label for perturbation of temperature
 !!         @f$ \Theta = T - T_{0} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_part_temp = 'perturbation_temp'
       type(field_def), parameter :: perturbation_temp                   &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'perturbation_temp',                       &
@@ -371,7 +369,7 @@
      &   .or. (field_name .eq. reference_density%name)                  &
 !
      &   .or. (field_name .eq. temperature%name)                        &
-     &   .or. (field_name .eq. fhd_part_temp)                           &
+     &   .or. (field_name .eq. perturbation_temp%name)                  &
      &   .or. (field_name .eq. fhd_ref_temp)                            &
 !
      &   .or. (field_name .eq. fhd_light)                               &
@@ -441,7 +439,7 @@
 !
         else if (field_name .eq. temperature%name) then
           base_fld%i_temp =            i_phys
-        else if (field_name .eq. fhd_part_temp) then
+        else if (field_name .eq. perturbation_temp%name) then
           base_fld%i_per_temp =        i_phys
         else if (field_name .eq. fhd_ref_temp) then
           base_fld%i_ref_t =           i_phys

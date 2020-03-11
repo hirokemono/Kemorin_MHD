@@ -72,7 +72,7 @@
 !
       if(check_field_list_ctl(filter_pert_temperature%name,             &
      &                        field_ctl)) then
-        call add_phys_name_ctl(fhd_part_temp, field_ctl)
+        call add_phys_name_ctl(perturbation_temp%name, field_ctl)
       end if
       if(check_field_list_ctl(filter_pert_composition%name,             &
      &                        field_ctl)) then

@@ -94,7 +94,7 @@
      &    .or. check_field_list_ctl(pert_heat_flux%name, field_ctl)     &
      &      ) then
         call add_phys_name_ctl(velocity%name, field_ctl)
-        call add_phys_name_ctl(fhd_part_temp, field_ctl)
+        call add_phys_name_ctl(perturbation_temp%name, field_ctl)
       end if
       if(      check_field_list_ctl(composition_advect%name, field_ctl) &
      &    .or. check_field_list_ctl(composite_flux%name, field_ctl)     &

@@ -36,7 +36,7 @@
       type(ctl_array_c3), intent(inout) :: field_ctl
 !
 !
-      if(   check_field_list_ctl(fhd_part_temp, field_ctl)              &
+      if(   check_field_list_ctl(perturbation_temp%name, field_ctl)     &
      & .or. check_field_list_ctl(fhd_ref_temp, field_ctl)               &
      & .or. check_field_list_ctl(fhd_heat_source, field_ctl)) then
         call add_phys_name_ctl(temperature%name, field_ctl)
@@ -98,7 +98,7 @@
       if(check_field_list_ctl(grad_temp%name, field_ctl))               &
      &   call add_phys_name_ctl(temperature%name, field_ctl)
       if(check_field_list_ctl(grad_pert_temp%name, field_ctl))          &
-     &   call add_phys_name_ctl(fhd_part_temp, field_ctl)
+     &   call add_phys_name_ctl(perturbation_temp%name, field_ctl)
       if(check_field_list_ctl(grad_reference_temp%name, field_ctl))    &
      &   call add_phys_name_ctl(fhd_ref_temp, field_ctl)
 !

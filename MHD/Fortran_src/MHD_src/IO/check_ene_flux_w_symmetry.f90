@@ -68,7 +68,7 @@
         call add_phys_name_ctl(temperature%name, field_ctl)
         call add_phys_name_ctl(fhd_usym_nabla_Tsym, field_ctl)
       else if( (field_name .eq. fhd_pT_usym_nabla_pTsym)) then
-        call add_phys_name_ctl(fhd_part_temp, field_ctl)
+        call add_phys_name_ctl(perturbation_temp%name, field_ctl)
         call add_phys_name_ctl(fhd_usym_nabla_pTsym, field_ctl)
 !
       else if( (field_name .eq. fhd_C_usym_nabla_Csym)) then
@@ -122,7 +122,7 @@
         call add_phys_name_ctl(temperature%name, field_ctl)
         call add_phys_name_ctl(fhd_uasym_nabla_Tasym,field_ctl)
       else if( (field_name .eq. fhd_pT_uasym_nabla_pTasym)) then
-        call add_phys_name_ctl(fhd_part_temp, field_ctl)
+        call add_phys_name_ctl(perturbation_temp%name, field_ctl)
         call add_phys_name_ctl(fhd_uasym_nabla_pTasym,field_ctl)
 !
       else if( (field_name .eq. fhd_C_uasym_nabla_Casym)) then
@@ -168,7 +168,7 @@
         call add_phys_name_ctl(temperature%name, field_ctl)
         call add_phys_name_ctl(fhd_usym_nabla_Tasym, field_ctl)
       else if( (field_name .eq. fhd_pT_usym_nabla_pTasym)) then
-        call add_phys_name_ctl(fhd_part_temp, field_ctl)
+        call add_phys_name_ctl(perturbation_temp%name, field_ctl)
         call add_phys_name_ctl(fhd_usym_nabla_pTasym,field_ctl)
 !
       else if( (field_name .eq. fhd_C_usym_nabla_Casym)) then
@@ -202,7 +202,7 @@
         call add_phys_name_ctl(temperature%name, field_ctl)
         call add_phys_name_ctl(fhd_usym_nabla_Tasym, field_ctl)
       else if( (field_name .eq. fhd_pT_uasym_nabla_pTsym)) then
-        call add_phys_name_ctl(fhd_part_temp, field_ctl)
+        call add_phys_name_ctl(perturbation_temp%name, field_ctl)
         call add_phys_name_ctl(fhd_uasym_nabla_pTsym,field_ctl)
 !
       else if( (field_name .eq. fhd_C_uasym_nabla_Csym)) then

@@ -323,7 +323,8 @@
      &   (pressure%name, pressure%n_comp,                               &
      &    ipol%i_press, itor%i_press, iphys%i_press,                    &
      &    b_trns%i_press, trns_back)
-      call add_field_name_4_sph_trns_nofld(fhd_part_temp, n_scalar,     &
+      call add_field_name_4_sph_trns_nofld                              &
+     &   (perturbation_temp%name, perturbation_temp%n_comp,             &
      &    ipol%i_per_temp, itor%i_per_temp, iphys%i_per_temp,           &
      &    b_trns%i_per_temp, trns_back)
       call add_field_name_4_sph_trns_snap                               &

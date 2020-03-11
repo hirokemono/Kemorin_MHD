@@ -79,7 +79,7 @@
         call add_phys_name_ctl(temperature%name, field_ctl)
         call add_phys_name_ctl(heat_advect%name, field_ctl)
       else if( (field_name .eq. pert_temp_generation%name)) then
-        call add_phys_name_ctl(fhd_part_temp, field_ctl)
+        call add_phys_name_ctl(perturbation_temp%name, field_ctl)
         call add_phys_name_ctl(pert_heat_advect%name, field_ctl)
       else if( (field_name .eq. comp_generation%name)) then
         call add_phys_name_ctl(fhd_light, field_ctl)

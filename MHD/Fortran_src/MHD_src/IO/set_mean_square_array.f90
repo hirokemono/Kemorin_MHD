@@ -192,7 +192,7 @@
      &          i_rms%i_mag_p, j_ave%i_mag_p, msq_list)
           end if
 !
-          if ( field_name .eq. fhd_part_temp ) then
+          if ( field_name .eq. perturbation_temp%name ) then
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_per_temp,                &
      &          i_rms%i_per_temp, j_ave%i_per_temp, msq_list)

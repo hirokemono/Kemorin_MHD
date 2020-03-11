@@ -156,7 +156,7 @@
      &      )   iflag = 1
 !
       if (    (phys_nod_name_ctl .eq. fhd_ref_temp            )         &
-     &   .or. (phys_nod_name_ctl .eq. fhd_part_temp           )         &
+     &   .or. (phys_nod_name_ctl .eq. perturbation_temp%name           )         &
      &   .or. (phys_nod_name_ctl .eq. density%name             )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_ref_light           )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_part_light          )         &

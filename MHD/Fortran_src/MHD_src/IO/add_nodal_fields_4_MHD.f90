@@ -245,7 +245,7 @@
 !
 !
       if (ref_param_T%iflag_reference .ne. id_no_ref_temp) then
-        call add_phys_name_ctl(fhd_part_temp, field_ctl)
+        call add_phys_name_ctl(perturbation_temp%name, field_ctl)
       end if
 !
       if (ref_param_C%iflag_reference .ne. id_no_ref_temp) then

@@ -64,7 +64,7 @@
 !   gradient of temperature flag
       if(ht_prop%iflag_scheme .gt. id_no_evolution) then
         call add_phys_name_ctl(grad_temp%name, field_ctl)
-        call add_phys_name_ctl(fhd_part_temp, field_ctl)
+        call add_phys_name_ctl(perturbation_temp%name, field_ctl)
         call add_phys_name_ctl(grad_pert_temp%name, field_ctl)
       end if
 !

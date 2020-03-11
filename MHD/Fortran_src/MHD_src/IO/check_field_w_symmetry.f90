@@ -83,7 +83,7 @@
 !
       else if( (field_name .eq. fhd_sym_per_temp)                       &
      &    .or. (field_name .eq. fhd_asym_per_temp)) then 
-        call add_phys_name_ctl(fhd_part_temp, field_ctl)
+        call add_phys_name_ctl(perturbation_temp%name, field_ctl)
       else if( (field_name .eq. fhd_sym_per_light)                      &
      &    .or. (field_name .eq. fhd_asym_per_light)) then 
         call add_phys_name_ctl(fhd_part_light, field_ctl)
