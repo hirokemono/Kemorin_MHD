@@ -73,7 +73,7 @@
 !
       ipsf_temp = 0
       do ifld = 1, psf_u%psf_phys%num_phys
-        if(psf_u%psf_phys%phys_name(ifld) .eq. fhd_temp) then
+        if(psf_u%psf_phys%phys_name(ifld) .eq. temperature%name) then
           ipsf_temp = psf_u%psf_phys%istack_component(ifld-1) + 1
           exit
         end if

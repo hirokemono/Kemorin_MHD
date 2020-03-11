@@ -80,7 +80,7 @@
 !
       if(check_field_list_ctl(SGS_heat_flux%name, field_ctl)) then
         call add_phys_name_ctl(velocity%name, field_ctl)
-        call add_phys_name_ctl(fhd_temp, field_ctl)
+        call add_phys_name_ctl(temperature%name, field_ctl)
       end if
       if(check_field_list_ctl(SGS_composit_flux%name, field_ctl)) then
         call add_phys_name_ctl(velocity%name, field_ctl)
@@ -157,7 +157,7 @@
       end if
 !
       if(check_field_list_ctl(SGS_temp_flux_gen%name, field_ctl)) then
-        call add_phys_name_ctl(fhd_temp, field_ctl)
+        call add_phys_name_ctl(temperature%name, field_ctl)
         call add_phys_name_ctl(SGS_heat_flux%name, field_ctl)
       end if
       if(check_field_list_ctl(SGS_comp_flux_gen%name, field_ctl)) then

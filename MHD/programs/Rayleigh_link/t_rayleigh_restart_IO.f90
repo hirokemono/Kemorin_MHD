@@ -225,7 +225,7 @@
       else if(field_name .eq. pressure%name) then
         iflag_ncomp = 1
         file_name(1) =  set_rayleigh_file_name(dir, i_step, pchar)
-      else if(field_name .eq. fhd_temp) then
+      else if(field_name .eq. temperature%name) then
         iflag_ncomp = 1
         file_name(1) =  set_rayleigh_file_name(dir, i_step, tchar)
       else if(field_name .eq. magnetic_field%name) then

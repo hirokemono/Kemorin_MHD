@@ -122,7 +122,7 @@
       integer(kind = kint) :: i
 !
       do i = 1, pick_IO%ntot_comp
-        if(pick_IO%spectr_name(i) .eq. fhd_temp) then
+        if(pick_IO%spectr_name(i) .eq. temperature%name) then
           ntl%icomp_temp =  i
           exit
         end if

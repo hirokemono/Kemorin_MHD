@@ -86,7 +86,7 @@
 !
         else if ( field_name(i) .eq. pressure%name ) then
           iphys%i_press = i0
-        else if ( field_name(i) .eq. fhd_temp ) then
+        else if ( field_name(i) .eq. temperature%name ) then
           iphys%i_temp = i0
         else if ( field_name(i) .eq. fhd_part_temp ) then
           iphys%i_per_temp = i0

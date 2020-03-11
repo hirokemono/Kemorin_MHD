@@ -300,7 +300,7 @@
      &      .and. cmt_param%iflag_c_temp .eq. id_SGS_commute_ON) then
             icomp_diff%i_temp = id
             ifld_diff%i_temp = jd
-            wk_diff%name(jd) = fhd_temp
+            wk_diff%name(jd) = temperature%name
             diff_coefs%num_comps(jd) = 3
             id = id + diff_coefs%num_comps(jd)
             jd = jd + 1

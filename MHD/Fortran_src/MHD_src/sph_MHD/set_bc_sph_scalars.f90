@@ -106,7 +106,7 @@
       type(sph_scalar_boundary_data), intent(inout) :: bcs_T
 !
 !
-      call set_sph_bc_scalar_sph(fhd_temp, heat_flux%name,              &
+      call set_sph_bc_scalar_sph(temperature%name, heat_flux%name,      &
      &    bc_IO, sph_rj, radial_rj_grp, temp_nod, h_flux_surf,          &
      &    sph_bc_T, bcs_T)
 !

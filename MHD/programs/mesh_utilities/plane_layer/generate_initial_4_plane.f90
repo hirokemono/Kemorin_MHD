@@ -157,7 +157,7 @@
           jst = merged_fld%istack_component(ip-1)
           jed = merged_fld%istack_component(ip)
 !
-          if (merged_fld%phys_name(ip) .eq. fhd_temp) then
+          if (merged_fld%phys_name(ip) .eq. temperature%name) then
 !
             do inod = 1, merged%node%numnod
               if (node_plane%xx(inod,3) .eq. c_size%zmin) then

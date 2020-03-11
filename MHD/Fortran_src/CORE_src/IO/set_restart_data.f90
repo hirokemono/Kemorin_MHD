@@ -271,7 +271,7 @@
         return
       end if
 !
-      if    (d_name .eq. fhd_temp                                       &
+      if    (d_name .eq. temperature%name                               &
      &  .or. d_name .eq. fhd_pre_heat                                   &
      &  .or. d_name .eq. fhd_heat_source) then
         iflag = 1
@@ -307,7 +307,7 @@
         numdir = 3
 !
       else if  (rst_name .eq. pressure%name                             &
-     &     .or. rst_name .eq. fhd_temp                                  &
+     &     .or. rst_name .eq. temperature%name                          &
      &     .or. rst_name .eq. fhd_light                                 &
      &     .or. rst_name .eq. magnetic_potential%name                   &
      &     .or. rst_name .eq. fhd_pre_heat                              &

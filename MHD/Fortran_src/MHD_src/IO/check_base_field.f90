@@ -39,7 +39,7 @@
       if(   check_field_list_ctl(fhd_part_temp, field_ctl)              &
      & .or. check_field_list_ctl(fhd_ref_temp, field_ctl)               &
      & .or. check_field_list_ctl(fhd_heat_source, field_ctl)) then
-        call add_phys_name_ctl(fhd_temp, field_ctl)
+        call add_phys_name_ctl(temperature%name, field_ctl)
       end if
       if(   check_field_list_ctl(fhd_part_light, field_ctl)             &
      & .or. check_field_list_ctl(fhd_ref_light, field_ctl)              &
@@ -68,7 +68,7 @@
       if(   check_field_list_ctl(vorticity%name, field_ctl)             &
      & .or. check_field_list_ctl(pressure%name, field_ctl)              &
      & .or. check_field_list_ctl(magnetic_field%name, field_ctl)        &
-     & .or. check_field_list_ctl(fhd_temp, field_ctl)                   &
+     & .or. check_field_list_ctl(temperature%name, field_ctl)           &
      & .or. check_field_list_ctl(fhd_light, field_ctl)                  &
      & .or. check_field_list_ctl(density%name, field_ctl)               &
      & .or. check_field_list_ctl(fhd_entropy, field_ctl)) then
@@ -96,7 +96,7 @@
      &   call add_phys_name_ctl(vector_potential%name, field_ctl)
 !
       if(check_field_list_ctl(grad_temp%name, field_ctl))               &
-     &   call add_phys_name_ctl(fhd_temp, field_ctl)
+     &   call add_phys_name_ctl(temperature%name, field_ctl)
       if(check_field_list_ctl(grad_pert_temp%name, field_ctl))          &
      &   call add_phys_name_ctl(fhd_part_temp, field_ctl)
       if(check_field_list_ctl(grad_reference_temp%name, field_ctl))    &

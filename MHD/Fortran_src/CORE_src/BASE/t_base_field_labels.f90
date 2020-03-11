@@ -141,7 +141,6 @@
 !
 !>        Field label for temperature
 !!         @f$ T @f$
-      character(len=kchara), parameter :: fhd_temp =  'temperature'
       type(field_def), parameter :: temperature                         &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'temperature',                             &
@@ -371,7 +370,7 @@
      &   .or. (field_name .eq. perturbation_density%name)               &
      &   .or. (field_name .eq. reference_density%name)                  &
 !
-     &   .or. (field_name .eq. fhd_temp)                                &
+     &   .or. (field_name .eq. temperature%name)                        &
      &   .or. (field_name .eq. fhd_part_temp)                           &
      &   .or. (field_name .eq. fhd_ref_temp)                            &
 !
@@ -440,7 +439,7 @@
         else if (field_name .eq. scalar_potential%name) then
           base_fld%i_scalar_p = i_phys
 !
-        else if (field_name .eq. fhd_temp) then
+        else if (field_name .eq. temperature%name) then
           base_fld%i_temp =            i_phys
         else if (field_name .eq. fhd_part_temp) then
           base_fld%i_per_temp =        i_phys

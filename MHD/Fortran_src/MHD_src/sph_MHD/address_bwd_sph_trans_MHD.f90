@@ -103,7 +103,8 @@
 !
 !   temperature flag
       if(ht_prop%iflag_scheme .gt. id_no_evolution) then
-        call add_field_name_4_sph_trns(ipol%i_temp, fhd_temp, n_scalar, &
+        call add_field_name_4_sph_trns(ipol%i_temp,                     &
+     &      temperature%name, temperature%n_comp,                       &
      &      ipol%i_temp, itor%i_temp, iphys%i_temp,                     &
      &      b_trns%i_temp, trns_back)
       end if

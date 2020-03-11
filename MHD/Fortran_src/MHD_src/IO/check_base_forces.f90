@@ -60,7 +60,7 @@
       end if
 !
       if(check_field_list_ctl(buoyancy%name, field_ctl))                &
-        call add_phys_name_ctl(fhd_temp, field_ctl)
+        call add_phys_name_ctl(temperature%name, field_ctl)
       if(check_field_list_ctl(composite_buoyancy%name, field_ctl))      &
         call add_phys_name_ctl(fhd_light, field_ctl)
 !
@@ -88,7 +88,7 @@
      &    .or. check_field_list_ctl(heat_flux%name, field_ctl)          &
      &      ) then
         call add_phys_name_ctl(velocity%name, field_ctl)
-        call add_phys_name_ctl(fhd_temp, field_ctl)
+        call add_phys_name_ctl(temperature%name, field_ctl)
       end if
       if(      check_field_list_ctl(pert_heat_advect%name, field_ctl)   &
      &    .or. check_field_list_ctl(pert_heat_flux%name, field_ctl)     &
@@ -238,7 +238,7 @@
      &   call add_phys_name_ctl(current_density%name, field_ctl)
       if(      check_field_list_ctl(square_temperature%name, field_ctl) &
      &    .or. check_field_list_ctl(temperature_scale%name, field_ctl)) &
-     &   call add_phys_name_ctl(fhd_temp, field_ctl)
+     &   call add_phys_name_ctl(temperature%name, field_ctl)
       if(      check_field_list_ctl(square_composition%name, field_ctl) &
      &    .or. check_field_list_ctl(composition_scale%name, field_ctl)) &
      &   call add_phys_name_ctl(fhd_light, field_ctl)
@@ -270,7 +270,7 @@
      &                        field_ctl))                               &
      &   call add_phys_name_ctl(vector_potential%name, field_ctl)
       if(check_field_list_ctl(thermal_diffusion%name, field_ctl))       &
-     &   call add_phys_name_ctl(fhd_temp, field_ctl)
+     &   call add_phys_name_ctl(temperature%name, field_ctl)
       if(check_field_list_ctl(composition_diffusion%name, field_ctl))  &
      &   call add_phys_name_ctl(fhd_light, field_ctl)
 !

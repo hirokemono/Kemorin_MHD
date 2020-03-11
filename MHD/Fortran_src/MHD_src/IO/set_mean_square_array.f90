@@ -178,7 +178,7 @@
             end if
           end if
 !
-          if ( field_name .eq. fhd_temp ) then
+          if ( field_name .eq. temperature%name ) then
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_temp,                    &
      &          i_rms%i_temp, j_ave%i_temp, msq_list)

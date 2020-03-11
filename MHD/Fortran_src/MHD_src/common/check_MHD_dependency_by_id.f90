@@ -83,7 +83,7 @@
      &     .or. i_start .eq. iphys%i_filter_temp                        &
      &     .or. i_start .eq. iphys%i_heat_source) then 
           call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_temp, fhd_temp)
+     &       (fld, i_start, iphys%i_temp, temperature%name)
         else if(i_start .eq. iphys%i_filter_comp                        &
      &     .or. i_start .eq. iphys%i_light_source) then 
           call check_missing_field                                      &
@@ -106,7 +106,7 @@
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_velo, velocity%name)
           call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_temp, fhd_temp)
+     &       (fld, i_start, iphys%i_temp, temperature%name)
         end if
       end do
 !
@@ -116,7 +116,7 @@
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_velo, velocity%name)
           call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_temp, fhd_temp)
+     &       (fld, i_start, iphys%i_temp, temperature%name)
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_light, fhd_light)
         else if(i_start .eq. iphys%i_per_density) then 

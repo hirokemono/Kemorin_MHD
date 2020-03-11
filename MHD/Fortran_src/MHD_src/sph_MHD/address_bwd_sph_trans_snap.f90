@@ -308,7 +308,8 @@
 !
 !
 !      if(b_trns%i_temp.eq.0 .or. ipol%i_per_temp.gt.0) then
-      call add_field_name_4_sph_trns_snap(fhd_temp, n_scalar,           &
+      call add_field_name_4_sph_trns_snap                               &
+     &   (temperature%name, temperature%n_comp,                         &
      &    ipol%i_temp, itor%i_temp, iphys%i_temp,                       &
      &    b_trns%i_temp, trns_back)
 !      end if

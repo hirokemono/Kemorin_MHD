@@ -152,7 +152,8 @@
       end if
 !
       do ifld = 1, fld_ctl%num
-        if(fld_ctl%c1_tbl(ifld) .eq. fhd_temp) bench%ibench_temp =   1
+        if(fld_ctl%c1_tbl(ifld) .eq. temperature%name)                  &
+     &                                   bench%ibench_temp =   1
         if(fld_ctl%c1_tbl(ifld) .eq. velocity%name)                     &
      &                                   bench%ibench_velo =   1
         if(fld_ctl%c1_tbl(ifld) .eq. magnetic_field%name)               &
@@ -167,7 +168,7 @@
       if(bench%ibench_temp .gt. 0) then
         ifld = ifld + 1
         bench%ibench_temp = d_circle%istack_component(ifld-1) + 1
-        d_circle%phys_name(ifld) =     fhd_temp
+        d_circle%phys_name(ifld) =     temperature%name
         d_circle%num_component(ifld) = n_scalar
         d_circle%istack_component(ifld)                                 &
      &        = d_circle%istack_component(ifld-1) + n_scalar

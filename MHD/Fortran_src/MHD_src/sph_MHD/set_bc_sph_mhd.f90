@@ -174,7 +174,8 @@
      &       (magnetic_field%name, sph_MHD_bc%sph_bc_B)
         end if
         if(MHD_prop%ht_prop%iflag_scheme .gt. id_no_evolution) then
-          call check_fdm_coefs_4_BC2(fhd_temp,  sph_MHD_bc%sph_bc_T)
+          call check_fdm_coefs_4_BC2                                    &
+     &       (temperature%name,  sph_MHD_bc%sph_bc_T)
         end if
         if(MHD_prop%cp_prop%iflag_scheme .gt. id_no_evolution) then
           call check_fdm_coefs_4_BC2(fhd_light, sph_MHD_bc%sph_bc_C)

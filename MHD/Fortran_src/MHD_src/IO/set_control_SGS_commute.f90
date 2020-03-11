@@ -64,7 +64,7 @@
       if (sgs_ctl%commutate_fld_ctl%icou .gt. 0) then
         do i = 1, sgs_ctl%commutate_fld_ctl%num
           tmpchara = sgs_ctl%commutate_fld_ctl%c_tbl(i)
-          if(     tmpchara .eq. fhd_temp) then
+          if(     tmpchara .eq. temperature%name) then
             cmt_param%iflag_c_temp =      id_SGS_commute_ON
           else if(tmpchara .eq. velocity%name) then
             cmt_param%iflag_c_velo =      id_SGS_commute_ON

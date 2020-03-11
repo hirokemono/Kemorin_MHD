@@ -121,7 +121,7 @@
       call add_scalar_field_4_raylegh(dir, i_step, pchar,               &
      &    pressure%name, icou, fld_IO)
       call add_scalar_field_4_raylegh(dir, i_step, tchar,               &
-     &    fhd_temp, icou, fld_IO)
+     &    temperature%name, icou, fld_IO)
       call add_vector_field_4_raylegh(dir, i_step, cchar, achar,        &
      &    magnetic_field%name, icou, fld_IO)
 !

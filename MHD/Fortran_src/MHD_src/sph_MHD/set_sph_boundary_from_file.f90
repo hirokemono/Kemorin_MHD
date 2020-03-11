@@ -49,7 +49,7 @@
      &    .or. cmp_no_case(label, vorticity%name)                       &
      &    .or. cmp_no_case(label, magnetic_field%name)) num_comp = 3
 !
-      if(      cmp_no_case(label, fhd_temp)                             &
+      if(      cmp_no_case(label, temperature%name)                     &
      &    .or. cmp_no_case(label, fhd_light)                            &
      &    .or. cmp_no_case(label, fhd_entropy)                          &
      &    .or. cmp_no_case(label, heat_flux%name)                       &
@@ -76,11 +76,12 @@
 !
       character(len = kchara), intent(in) :: label, postfix
 !
-      find_scalar_bc_label = find_bc_label(label, fhd_temp, postfix)    &
-     &                  .or. find_bc_label(label, fhd_light, postfix)   &
-     &                  .or. find_bc_label(label, fhd_entropy, postfix) &
-     &         .or. find_bc_label(label, heat_flux%name, postfix)       &
-     &         .or. find_bc_label(label, composite_flux%name, postfix)
+      find_scalar_bc_label                                              &
+     &     =    find_bc_label(label, temperature%name, postfix)         &
+     &     .or. find_bc_label(label, fhd_light, postfix)                &
+     &     .or. find_bc_label(label, fhd_entropy, postfix)              &
+     &     .or. find_bc_label(label, heat_flux%name, postfix)           &
+     &     .or. find_bc_label(label, composite_flux%name, postfix)
 !
       end function find_scalar_bc_label
 !

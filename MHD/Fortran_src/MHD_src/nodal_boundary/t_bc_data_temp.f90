@@ -65,7 +65,7 @@
       call alloc_scalar_nod_bc_type(node%numnod, Snod_bcs%nod_bc_s)
       call alloc_scalar_nod_bc_type(node%numnod, Snod_bcs%sgs_bc_s)
 !
-      Snod_bcs%nod_bc_s%scalar_bc_name = fhd_temp
+      Snod_bcs%nod_bc_s%scalar_bc_name = temperature%name
       call set_bc_fixed_temp_id(IO_bc, node, nod_grp, temp_nod,         &
      &    Snod_bcs%nod_bc_s, Snod_bcs%sgs_bc_s)
 !

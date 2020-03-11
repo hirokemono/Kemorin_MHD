@@ -173,7 +173,7 @@
         flex_data%i_drmax_t =         flex_data%istack_comp(icou-1) + 1
         flex_data%istack_comp(icou) = flex_data%istack_comp(icou-1) + 1
         flex_data%num_comp(icou) =    flex_data%num_comp(icou) +      1
-        flex_data%fld_name(icou) =    fhd_temp
+        flex_data%fld_name(icou) =    temperature%name
       end if
 !
       if( (iphys%i_light*iphys%i_chk_composit) .gt. izero) then

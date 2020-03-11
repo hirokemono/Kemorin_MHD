@@ -45,7 +45,7 @@
 !
       write(*,*) 'Physical values for initial value'
       write(*,*) ' 1: ', trim(velocity%name)
-      write(*,*) ' 2: ', trim(fhd_temp)
+      write(*,*) ' 2: ', trim(temperature%name)
       write(*,*) ' 3: ', trim(pressure%name)
       write(*,*) ' 4: ', trim(vector_potential%name)
       write(*,*) ' 5: ', trim(magnetic_field%name)
@@ -68,7 +68,7 @@
           merged_fld%phys_name(np) = velocity%name
           merged_fld%num_component(np) = 3
         else if(pini_p%n_phys_id(np) .eq. 2 ) then
-          merged_fld%phys_name(np) = fhd_temp
+          merged_fld%phys_name(np) = temperature%name
           merged_fld%num_component(np) = 1
         else if(pini_p%n_phys_id(np) .eq. 3 ) then
           merged_fld%phys_name(np) = pressure%name

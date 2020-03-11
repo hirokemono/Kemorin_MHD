@@ -145,7 +145,7 @@
       if (iflag .gt. 0) return
 !
       if (   (phys_nod_name_ctl .eq. pressure%name                )         &
-     &  .or. (phys_nod_name_ctl .eq. fhd_temp                 )         &
+     &  .or. (phys_nod_name_ctl .eq. temperature%name                 )         &
      &  .or. (phys_nod_name_ctl .eq. fhd_light                )         &
      &  .or. (phys_nod_name_ctl .eq. magnetic_potential%name        )         &
      &  .or. (phys_nod_name_ctl .eq. scalar_potential%name     )         &

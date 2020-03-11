@@ -80,7 +80,7 @@
          if   ( rj_fld%phys_name(i_fld) .eq. velocity%name              &
 !     &     .or. rj_fld%phys_name(i_fld) .eq. vorticity%name            &
 !     &     .or. rj_fld%phys_name(i_fld) .eq. pressure%name             &
-     &     .or. rj_fld%phys_name(i_fld) .eq. fhd_temp                   &
+     &     .or. rj_fld%phys_name(i_fld) .eq. temperature%name           &
      &     .or. rj_fld%phys_name(i_fld) .eq. fhd_light                  &
      &     .or. rj_fld%phys_name(i_fld) .eq. magnetic_field%name        &
 !     &     .or. rj_fld%phys_name(i_fld) .eq. magnetic_potential%name   &
@@ -127,7 +127,7 @@
           fld_IO%num_comp_IO(icou) = n_vector
           fld_IO%istack_comp_IO(icou) = fld_IO%istack_comp_IO(icou-1)   &
      &                                 + fld_IO%num_comp_IO(icou)
-        else if (rj_fld%phys_name(i_fld) .eq. fhd_temp                  &
+        else if (rj_fld%phys_name(i_fld) .eq. temperature%name          &
      &      .or. rj_fld%phys_name(i_fld) .eq. fhd_light                 &
 !     &      .or. rj_fld%phys_name(i_fld) .eq. pressure%name            &
      &      .or. rj_fld%phys_name(i_fld) .eq. fhd_entropy               &
@@ -177,7 +177,7 @@
               call copy_each_sph_vector_to_IO                           &
      &           (rj_fld, fld_IO, i_fld, j_IO)
 !
-            else if(rj_fld%phys_name(i_fld) .eq. fhd_temp               &
+            else if(rj_fld%phys_name(i_fld) .eq. temperature%name       &
      &       .or. rj_fld%phys_name(i_fld) .eq. fhd_light                &
 !     &       .or. rj_fld%phys_name(i_fld) .eq. pressure%name           &
      &       .or. rj_fld%phys_name(i_fld) .eq. fhd_entropy              &
@@ -230,7 +230,7 @@
               call copy_each_sph_vector_from_IO                         &
      &           (fld_IO, rj_fld, i_fld, j_IO)
 !
-            else if(rj_fld%phys_name(i_fld) .eq. fhd_temp               &
+            else if(rj_fld%phys_name(i_fld) .eq. temperature%name       &
      &       .or. rj_fld%phys_name(i_fld) .eq. fhd_light                &
 !     &       .or. rj_fld%phys_name(i_fld) .eq. pressure%name           &
      &       .or. rj_fld%phys_name(i_fld) .eq. fhd_entropy              &

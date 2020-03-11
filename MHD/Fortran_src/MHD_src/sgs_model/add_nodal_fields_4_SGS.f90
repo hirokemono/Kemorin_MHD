@@ -89,7 +89,7 @@
 !            call add_phys_name_ctl(grad_j_1%name, field_ctl)
 !            call add_phys_name_ctl(grad_j_2%name, field_ctl)
 !            call add_phys_name_ctl(grad_j_3%name, field_ctl)
-          else if(field_ctl%c1_tbl(i) .eq. fhd_temp) then
+          else if(field_ctl%c1_tbl(i) .eq. temperature%name) then
             call add_phys_name_ctl(grad_temp%name, field_ctl)
           else if(field_ctl%c1_tbl(i) .eq. fhd_ref_temp) then
             call add_phys_name_ctl(grad_pert_temp%name, field_ctl)
@@ -114,7 +114,7 @@
      &         (filter_vector_potential%name, field_ctl)
           else if(field_ctl%c1_tbl(i) .eq. magnetic_field%name) then
             call add_phys_name_ctl(filter_magne%name, field_ctl)
-          else if(field_ctl%c1_tbl(i) .eq. fhd_temp) then
+          else if(field_ctl%c1_tbl(i) .eq. temperature%name) then
             call add_phys_name_ctl(filter_temperature%name, field_ctl)
           else if(field_ctl%c1_tbl(i) .eq. fhd_light) then
             call add_phys_name_ctl(filter_composition%name, field_ctl)
