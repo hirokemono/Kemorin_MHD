@@ -30,7 +30,7 @@
 !!       Poloidal magnetic field :: d_rj(:,ipol%i_magne)
 !!       Toroidal magnetic field :: d_rj(:,itor%i_magne)
 !!
-!!       Heat source ::          d_rj(:,ipol%i_heat_source)
+!!       Heat source ::          d_rj(:,ipol%base%i_heat_source)
 !!       Light element source :: d_rj(:,ipol%base%i_light_source)
 !!
 !!       sph_bc_*%kr_in :: radial ID for inner boundary of each evolution
@@ -492,11 +492,11 @@
       integer :: jj, k
 !
 !
-      if(ipol%i_heat_source .eq. izero) return
+      if(ipol%base%i_heat_source .eq. izero) return
 !
 !$omp parallel do
       do inod = 1, nnod_rj(sph)
-        rj_fld%d_fld(inod,ipol%i_heat_source) = zero
+        rj_fld%d_fld(inod,ipol%base%i_heat_source) = zero
       end do
 !$omp end parallel do
 !
@@ -513,13 +513,13 @@
           inod = local_sph_data_address(sph, k, jj)
           rr = radius_1d_rj_r(sph, k)
 !   Substitute initial heat source
-          rj_fld%d_fld(inod,ipol%i_heat_source)  = q
+          rj_fld%d_fld(inod,ipol%base%i_heat_source)  = q
         end do
       end if
 !    Center
       i_center = inod_rj_center(sph)
       if(i_center .gt. 0) then
-        rj_fld%d_fld(i_center,ipol%i_heat_source) = q
+        rj_fld%d_fld(i_center,ipol%base%i_heat_source) = q
       end if
 !
       end subroutine set_initial_heat_source_sph
@@ -631,11 +631,11 @@
       integer :: jj, k
 !
 !
-      if(ipol%i_heat_source .eq. izero) return
+      if(ipol%base%i_heat_source .eq. izero) return
 !
 !$omp parallel do
       do inod = 1, nnod_rj(sph)
-        rj_fld%d_fld(inod,ipol%i_heat_source) = zero
+        rj_fld%d_fld(inod,ipol%base%i_heat_source) = zero
       end do
 !$omp end parallel do
 !
@@ -653,7 +653,7 @@
           inod = local_sph_data_address(sph, k, jj)
           rr = radius_1d_rj_r(sph, k)
 !   Substitute initial heat source
-          rj_fld%d_fld(inod,ipol%i_heat_source)  = q
+          rj_fld%d_fld(inod,ipol%base%i_heat_source)  = q
         end do
       end if
 !
@@ -674,11 +674,11 @@
       integer :: jj, k
 !
 !
-      if(ipol%i_heat_source*ipol%i_temp .eq. izero) return
+      if(ipol%base%i_heat_source*ipol%i_temp .eq. izero) return
 !
 !$omp parallel do
       do inod = 1, nnod_rj(sph)
-        rj_fld%d_fld(inod,ipol%i_heat_source) = zero
+        rj_fld%d_fld(inod,ipol%base%i_heat_source) = zero
       end do
 !$omp end parallel do
 !
@@ -698,7 +698,7 @@
           inod = local_sph_data_address(sph, k, jj)
           rr = radius_1d_rj_r(sph, k)
 !   Substitute initial heat source
-          rj_fld%d_fld(inod,ipol%i_heat_source) = q
+          rj_fld%d_fld(inod,ipol%base%i_heat_source) = q
 !   Fill inner core temperature
           rj_fld%d_fld(inod,ipol%i_temp) = T_ICB                        &
      &       + half * f_ICB * (r_ICB(sph)**2 - rr**2) / r_ICB(sph)
@@ -708,7 +708,7 @@
 !    Center
       i_center = inod_rj_center(sph)
       if(i_center .gt. 0) then
-        rj_fld%d_fld(i_center,ipol%i_heat_source) = q
+        rj_fld%d_fld(i_center,ipol%base%i_heat_source) = q
         rj_fld%d_fld(i_center,ipol%i_temp)                              &
      &         = T_ICB + half * f_ICB * r_ICB(sph)
       end if
@@ -730,11 +730,11 @@
       integer :: jj, k
 !
 !
-      if(ipol%i_heat_source .eq. izero) return
+      if(ipol%base%i_heat_source .eq. izero) return
 !
 !$omp parallel do
       do inod = 1, nnod_rj(sph)
-        rj_fld%d_fld(inod,ipol%i_heat_source) = zero
+        rj_fld%d_fld(inod,ipol%base%i_heat_source) = zero
       end do
 !$omp end parallel do
 !
@@ -756,7 +756,7 @@
           inod = local_sph_data_address(sph, k, jj)
           rr = radius_1d_rj_r(sph, k)
 !   Substitute initial heat source
-          rj_fld%d_fld(inod,ipol%i_heat_source) = q
+          rj_fld%d_fld(inod,ipol%base%i_heat_source) = q
         end do
 !
         do k = 1, nlayer_ICB(sph)
@@ -771,7 +771,7 @@
 !    Center
       i_center = inod_rj_center(sph)
       if(i_center .gt. 0) then
-        rj_fld%d_fld(i_center,ipol%i_heat_source) = q
+        rj_fld%d_fld(i_center,ipol%base%i_heat_source) = q
         rj_fld%d_fld(i_center,ipol%i_temp)                              &
      &         = T_ICB + half * f_ICB * r_ICB(sph)
       end if

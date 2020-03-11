@@ -274,7 +274,7 @@
      &              ht_prop%coef_advect
           write(*,*) 'coefficient for thermal diffusion:   ',           &
      &              ht_prop%coef_diffuse
-          if(iphys%i_heat_source .gt. 0) write(*,*)                     &
+          if(iphys%base%i_heat_source .gt. 0) write(*,*)                &
      &         'coefficient for heat source:         ',                 &
      &              ht_prop%coef_source
         end if

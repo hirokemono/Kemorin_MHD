@@ -70,10 +70,6 @@
 !!         @f$  C - C_{0} @f$
         integer (kind=kint) :: i_per_light =       izero
 !
-!>        start address for heat source
-!!         @f$ q_{T} @f$
-        integer (kind=kint) :: i_heat_source =     izero
-!
 !>        start address for reference temperature
 !!         @f$  T_{0} @f$
         integer (kind=kint) :: i_ref_t =           izero
