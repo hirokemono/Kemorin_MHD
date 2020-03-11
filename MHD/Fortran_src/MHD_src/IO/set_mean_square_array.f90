@@ -186,7 +186,7 @@
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_press,                   &
      &          i_rms%i_press, j_ave%i_press, msq_list)
-          else if ( field_name .eq. fhd_mag_potential ) then
+          else if ( field_name .eq. magnetic_potential%name ) then
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_mag_p,                   &
      &          i_rms%i_mag_p, j_ave%i_mag_p, msq_list)
@@ -410,7 +410,7 @@
             call set_rms_address                                        &
      &         (e_hd_fil_div_a, n_scalar, iphys%i_div_filter_a,         &
      &          i_rms%i_div_filter_a, j_ave%i_div_filter_a, msq_list)
-          else if ( field_name .eq. fhd_mag_potential ) then
+          else if ( field_name .eq. magnetic_potential%name ) then
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_mag_p,                   &
      &          i_rms%i_mag_p, j_ave%i_mag_p, msq_list)

@@ -202,7 +202,7 @@
       call alloc_scalar_nod_bc_type(node%numnod, Bnod_bcs%nod_bc_f)
       call alloc_scalar_nod_bc_type(node%numnod, Bnod_bcs%sgs_bc_f)
 !
-      Bnod_bcs%nod_bc_f%scalar_bc_name = fhd_mag_potential
+      Bnod_bcs%nod_bc_f%scalar_bc_name = magnetic_potential%name
 !
       call set_bc_fixed_m_potential_id(IO_bc, node, nod_grp,            &
      &    e_potential_nod, Bnod_bcs%nod_bc_f, Bnod_bcs%sgs_bc_f)

@@ -109,16 +109,12 @@
      &                math = '$ J_{i} = e_{ijk} \partial_{j} B_{k} $')
 !>        Field label for magnetic potential
 !!         @f$ W @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_mag_potential =     'magnetic_potential'
       type(field_def), parameter :: magnetic_potential                  &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'magnetic_potential',                      &
      &                math = '$ W $')
 !>        Field label for electric potential
 !!         @f$ \varphi @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_scalar_potential =  'scalar_potential'
       type(field_def), parameter :: scalar_potential                    &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'scalar_potential',                        &
@@ -373,8 +369,8 @@
 !
       check_base_scalar                                                 &
      &   =    (field_name .eq. pressure%name)                           &
-     &   .or. (field_name .eq. fhd_mag_potential)                       &
-     &   .or. (field_name .eq. fhd_scalar_potential)                    &
+     &   .or. (field_name .eq. magnetic_potential%name)                 &
+     &   .or. (field_name .eq. scalar_potential%name)                   &
 !
      &   .or. (field_name .eq. fhd_density)                             &
      &   .or. (field_name .eq. fhd_per_density)                         &
@@ -444,9 +440,9 @@
       if(flag) then
         if (field_name .eq. pressure%name) then
           base_fld%i_press = i_phys
-        else if (field_name .eq. fhd_mag_potential) then
+        else if (field_name .eq. magnetic_potential%name) then
           base_fld%i_mag_p =    i_phys
-        else if (field_name .eq. fhd_scalar_potential) then
+        else if (field_name .eq. scalar_potential%name) then
           base_fld%i_scalar_p = i_phys
 !
         else if (field_name .eq. fhd_temp) then

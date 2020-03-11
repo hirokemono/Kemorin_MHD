@@ -94,9 +94,9 @@
           iphys%i_light = i0
         else if ( field_name(i) .eq. fhd_part_light ) then
           iphys%i_per_light = i0
-        else if ( field_name(i) .eq. fhd_mag_potential ) then
+        else if ( field_name(i) .eq. magnetic_potential%name ) then
           iphys%i_mag_p = i0
-        else if ( field_name(i) .eq. fhd_scalar_potential ) then
+        else if ( field_name(i) .eq. scalar_potential%name ) then
           iphys%i_scalar_p = i0
         else if ( field_name(i) .eq. fhd_entropy ) then
           iphys%i_entropy = i0

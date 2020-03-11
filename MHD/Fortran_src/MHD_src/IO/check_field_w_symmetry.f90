@@ -63,10 +63,10 @@
         call add_phys_name_ctl(pressure%name, field_ctl)
       else if( (field_name .eq. fhd_sym_mag_potential)                  &
      &    .or. (field_name .eq. fhd_asym_mag_potential)) then 
-        call add_phys_name_ctl(fhd_mag_potential, field_ctl)
+        call add_phys_name_ctl(magnetic_potential%name, field_ctl)
       else if( (field_name .eq. fhd_sym_scalar_potential)               &
      &    .or. (field_name .eq. fhd_asym_scalar_potential)) then 
-        call add_phys_name_ctl(fhd_scalar_potential, field_ctl)
+        call add_phys_name_ctl(scalar_potential%name, field_ctl)
 !
       else if( (field_name .eq. fhd_sym_temp)                           &
      &    .or. (field_name .eq. fhd_asym_temp)) then 

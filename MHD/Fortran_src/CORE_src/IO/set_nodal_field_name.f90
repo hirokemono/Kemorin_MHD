@@ -147,8 +147,8 @@
       if (   (phys_nod_name_ctl .eq. pressure%name                )         &
      &  .or. (phys_nod_name_ctl .eq. fhd_temp                 )         &
      &  .or. (phys_nod_name_ctl .eq. fhd_light                )         &
-     &  .or. (phys_nod_name_ctl .eq. fhd_mag_potential        )         &
-     &  .or. (phys_nod_name_ctl .eq. fhd_scalar_potential     )         &
+     &  .or. (phys_nod_name_ctl .eq. magnetic_potential%name        )         &
+     &  .or. (phys_nod_name_ctl .eq. scalar_potential%name     )         &
      &  .or. (phys_nod_name_ctl .eq. fhd_entropy              )         &
      &  .or. (phys_nod_name_ctl .eq. fhd_heat_source          )         &
      &  .or. (phys_nod_name_ctl .eq. fhd_light_source         )         &

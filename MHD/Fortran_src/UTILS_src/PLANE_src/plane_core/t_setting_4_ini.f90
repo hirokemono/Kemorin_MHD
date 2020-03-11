@@ -49,7 +49,7 @@
       write(*,*) ' 3: ', trim(pressure%name)
       write(*,*) ' 4: ', trim(vector_potential%name)
       write(*,*) ' 5: ', trim(magnetic_field%name)
-      write(*,*) ' 6: ', trim(fhd_mag_potential)
+      write(*,*) ' 6: ', trim(magnetic_potential%name)
       write(*,*) ''
 !
       write(*,*) 'number of physical values'
@@ -80,7 +80,7 @@
           merged_fld%phys_name(np) = magnetic_field%name
           merged_fld%num_component(np) = 3
         else if(pini_p%n_phys_id(np) .eq. 6 ) then
-          merged_fld%phys_name(np) = fhd_mag_potential
+          merged_fld%phys_name(np) = magnetic_potential%name
           merged_fld%num_component(np) = 1
         end if
 !
@@ -123,7 +123,7 @@
       write(*,*) 'aviable physical values for initial value'
       write(*,*) ' 4: ', trim(vector_potential%name)
       write(*,*) ' 5: ', trim(magnetic_field%name)
-      write(*,*) ' 6: ', trim(fhd_mag_potential)
+      write(*,*) ' 6: ', trim(magnetic_potential%name)
 !
       write(*,*) ' select physical values'
       do np = 1, num_added_merge
@@ -140,7 +140,7 @@
           merged_fld%phys_name(nq) = magnetic_field%name
           merged_fld%num_component(nq) = 3
         else if(pini_p%n_phys_id(np) .eq. 6 ) then
-          merged_fld%phys_name(nq) = fhd_mag_potential
+          merged_fld%phys_name(nq) = magnetic_potential%name
           merged_fld%num_component(nq) = 1
         end if
         merged_fld%istack_component(nq)                                 &

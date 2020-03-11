@@ -47,11 +47,12 @@
             call cal_pressure_on_edge(node%numnod,                      &
      &          edge%numedge, edge%nnod_4_edge, edge%ie_edge,           &
      &          nod_fld%ntot_phys, iphys%i_press, nod_fld%d_fld)
-          else if(nod_fld%phys_name(i) .eq. fhd_mag_potential) then
+          else if(nod_fld%phys_name(i)                                  &
+     &             .eq. magnetic_potential%name) then
             call cal_pressure_on_edge(node%numnod,                      &
      &          edge%numedge, edge%nnod_4_edge, edge%ie_edge,           &
      &          nod_fld%ntot_phys, iphys%i_mag_p, nod_fld%d_fld)
-          else if(nod_fld%phys_name(i) .eq. fhd_scalar_potential) then
+          else if(nod_fld%phys_name(i) .eq. scalar_potential%name) then
             call cal_pressure_on_edge(node%numnod,                      &
      &          edge%numedge, edge%nnod_4_edge, edge%ie_edge,           &
      &          nod_fld%ntot_phys, iphys%i_scalar_p, nod_fld%d_fld)

@@ -208,21 +208,21 @@
       do i_fld = 1, rj_fld%ntot_phys
         do j_fld = 1, fld_IO%num_field_IO
           if(rj_fld%phys_name(i_fld) .eq. fld_IO%fld_name(j_fld)) then
-            if     (rj_fld%phys_name(i_fld) .eq. velocity%name          &
-     &         .or. rj_fld%phys_name(i_fld) .eq. vorticity%name         &
-     &         .or. rj_fld%phys_name(i_fld) .eq. pressure%name          &
-     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_temp               &
-     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_light              &
-     &         .or. rj_fld%phys_name(i_fld) .eq. magnetic_field%name    &
-     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_mag_potential      &
-     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_entropy            &
-     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_pre_mom            &
-     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_pre_uxb            &
-     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_pre_heat           &
-     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_pre_composit       &
-     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_heat_source        &
-     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_light_source       &
-     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_entropy_source     &
+            if    (rj_fld%phys_name(i_fld) .eq. velocity%name           &
+     &        .or. rj_fld%phys_name(i_fld) .eq. vorticity%name          &
+     &        .or. rj_fld%phys_name(i_fld) .eq. pressure%name           &
+     &        .or. rj_fld%phys_name(i_fld) .eq. fhd_temp                &
+     &        .or. rj_fld%phys_name(i_fld) .eq. fhd_light               &
+     &        .or. rj_fld%phys_name(i_fld) .eq. magnetic_field%name     &
+     &        .or. rj_fld%phys_name(i_fld) .eq. magnetic_potential%name &
+     &        .or. rj_fld%phys_name(i_fld) .eq. fhd_entropy             &
+     &        .or. rj_fld%phys_name(i_fld) .eq. fhd_pre_mom             &
+     &        .or. rj_fld%phys_name(i_fld) .eq. fhd_pre_uxb             &
+     &        .or. rj_fld%phys_name(i_fld) .eq. fhd_pre_heat            &
+     &        .or. rj_fld%phys_name(i_fld) .eq. fhd_pre_composit        &
+     &        .or. rj_fld%phys_name(i_fld) .eq. fhd_heat_source         &
+     &        .or. rj_fld%phys_name(i_fld) .eq. fhd_light_source        &
+     &        .or. rj_fld%phys_name(i_fld) .eq. fhd_entropy_source      &
      &         ) then
               call set_org_rj_phys_data_from_IO                         &
      &           (j_fld, fld_IO, n_rj_org, d_rj_org)

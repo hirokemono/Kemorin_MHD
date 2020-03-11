@@ -83,7 +83,7 @@
      &     .or. rj_fld%phys_name(i_fld) .eq. fhd_temp                   &
      &     .or. rj_fld%phys_name(i_fld) .eq. fhd_light                  &
      &     .or. rj_fld%phys_name(i_fld) .eq. magnetic_field%name        &
-!     &     .or. rj_fld%phys_name(i_fld) .eq. fhd_mag_potential         &
+!     &     .or. rj_fld%phys_name(i_fld) .eq. magnetic_potential%name   &
      &     .or. rj_fld%phys_name(i_fld) .eq. fhd_entropy                &
      &     .or. rj_fld%phys_name(i_fld) .eq. fhd_pre_mom                &
      &     .or. rj_fld%phys_name(i_fld) .eq. fhd_pre_uxb                &
@@ -127,18 +127,18 @@
           fld_IO%num_comp_IO(icou) = n_vector
           fld_IO%istack_comp_IO(icou) = fld_IO%istack_comp_IO(icou-1)   &
      &                                 + fld_IO%num_comp_IO(icou)
-        else if    (rj_fld%phys_name(i_fld) .eq. fhd_temp               &
-     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_light              &
-!     &         .or. rj_fld%phys_name(i_fld) .eq. pressure%name         &
-     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_entropy            &
-!     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_mag_potential     &
-     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_pre_heat           &
-     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_pre_composit       &
-     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_heat_source        &
-     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_light_source       &
-     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_entropy_source     &
+        else if (rj_fld%phys_name(i_fld) .eq. fhd_temp                  &
+     &      .or. rj_fld%phys_name(i_fld) .eq. fhd_light                 &
+!     &      .or. rj_fld%phys_name(i_fld) .eq. pressure%name            &
+     &      .or. rj_fld%phys_name(i_fld) .eq. fhd_entropy               &
+!     &      .or. rj_fld%phys_name(i_fld) .eq. magnetic_potential%name  &
+     &      .or. rj_fld%phys_name(i_fld) .eq. fhd_pre_heat              &
+     &      .or. rj_fld%phys_name(i_fld) .eq. fhd_pre_composit          &
+     &      .or. rj_fld%phys_name(i_fld) .eq. fhd_heat_source           &
+     &      .or. rj_fld%phys_name(i_fld) .eq. fhd_light_source          &
+     &      .or. rj_fld%phys_name(i_fld) .eq. fhd_entropy_source        &
 !
-     &         .or. check_SGS_moedel_coefs(rj_fld%phys_name(i_fld))     &
+     &      .or. check_SGS_moedel_coefs(rj_fld%phys_name(i_fld))        &
      &         ) then
           icou = icou + 1
           fld_IO%fld_name(icou) = rj_fld%phys_name(i_fld)
@@ -178,17 +178,17 @@
      &           (rj_fld, fld_IO, i_fld, j_IO)
 !
             else if(rj_fld%phys_name(i_fld) .eq. fhd_temp               &
-     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_light              &
-!     &         .or. rj_fld%phys_name(i_fld) .eq. pressure%name         &
-     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_entropy            &
-!     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_mag_potential     &
-     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_pre_heat           &
-     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_pre_composit       &
-     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_heat_source        &
-     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_light_source       &
-     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_entropy_source     &
+     &       .or. rj_fld%phys_name(i_fld) .eq. fhd_light                &
+!     &       .or. rj_fld%phys_name(i_fld) .eq. pressure%name           &
+     &       .or. rj_fld%phys_name(i_fld) .eq. fhd_entropy              &
+!     &       .or. rj_fld%phys_name(i_fld) .eq. magnetic_potential%name &
+     &       .or. rj_fld%phys_name(i_fld) .eq. fhd_pre_heat             &
+     &       .or. rj_fld%phys_name(i_fld) .eq. fhd_pre_composit         &
+     &       .or. rj_fld%phys_name(i_fld) .eq. fhd_heat_source          &
+     &       .or. rj_fld%phys_name(i_fld) .eq. fhd_light_source         &
+     &       .or. rj_fld%phys_name(i_fld) .eq. fhd_entropy_source       &
 !
-     &         .or. check_SGS_moedel_coefs(rj_fld%phys_name(i_fld))     &
+     &       .or. check_SGS_moedel_coefs(rj_fld%phys_name(i_fld))       &
      &         ) then
               call copy_each_sph_field_to_IO                            &
      &           (rj_fld, fld_IO, i_fld, j_IO)
@@ -231,17 +231,17 @@
      &           (fld_IO, rj_fld, i_fld, j_IO)
 !
             else if(rj_fld%phys_name(i_fld) .eq. fhd_temp               &
-     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_light              &
-!     &         .or. rj_fld%phys_name(i_fld) .eq. pressure%name         &
-     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_entropy            &
-!     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_mag_potential     &
-     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_pre_heat           &
-     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_pre_composit       &
-     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_heat_source        &
-     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_light_source       &
-     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_entropy_source     &
+     &       .or. rj_fld%phys_name(i_fld) .eq. fhd_light                &
+!     &       .or. rj_fld%phys_name(i_fld) .eq. pressure%name           &
+     &       .or. rj_fld%phys_name(i_fld) .eq. fhd_entropy              &
+!     &       .or. rj_fld%phys_name(i_fld) .eq. magnetic_potential%name &
+     &       .or. rj_fld%phys_name(i_fld) .eq. fhd_pre_heat             &
+     &       .or. rj_fld%phys_name(i_fld) .eq. fhd_pre_composit         &
+     &       .or. rj_fld%phys_name(i_fld) .eq. fhd_heat_source          &
+     &       .or. rj_fld%phys_name(i_fld) .eq. fhd_light_source         &
+     &       .or. rj_fld%phys_name(i_fld) .eq. fhd_entropy_source       &
 !
-     &         .or. check_SGS_moedel_coefs(rj_fld%phys_name(i_fld))     &
+     &       .or. check_SGS_moedel_coefs(rj_fld%phys_name(i_fld))       &
      &         ) then
               call copy_each_sph_field_from_IO                          &
      &           (fld_IO, rj_fld, i_fld, j_IO)

@@ -164,7 +164,7 @@
         flex_data%i_drmax_f =         flex_data%istack_comp(icou-1) + 1
         flex_data%istack_comp(icou) = flex_data%istack_comp(icou-1) + 1
         flex_data%num_comp(icou) = flex_data%num_comp(icou) + 1
-        flex_data%fld_name(icou) = fhd_mag_potential
+        flex_data%fld_name(icou) = magnetic_potential%name
       end if
 !
 !

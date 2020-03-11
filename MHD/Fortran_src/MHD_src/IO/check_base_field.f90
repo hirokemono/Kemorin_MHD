@@ -58,8 +58,9 @@
 !
       if( check_field_list_ctl(vector_potential%name, field_ctl)        &
      & .or. check_field_list_ctl(current_density%name, field_ctl)       &
-     & .or. check_field_list_ctl(fhd_mag_potential, field_ctl)          &
-     & .or. check_field_list_ctl(fhd_scalar_potential, field_ctl)) then
+     & .or. check_field_list_ctl(magnetic_potential%name, field_ctl)    &
+     & .or. check_field_list_ctl(scalar_potential%name,                 &
+     &                           field_ctl)) then
         call add_phys_name_ctl(magnetic_field%name, field_ctl)
       end if
 !

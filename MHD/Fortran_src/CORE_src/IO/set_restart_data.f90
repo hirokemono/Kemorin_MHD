@@ -265,7 +265,7 @@
 !
       if    (d_name .eq. vector_potential%name                          &
      &  .or. d_name .eq. magnetic_field%name                            &
-     &  .or. d_name .eq. fhd_mag_potential                              &
+     &  .or. d_name .eq. magnetic_potential%name                        &
      &  .or. d_name .eq. fhd_pre_uxb) then
         iflag = 1
         return
@@ -309,7 +309,7 @@
       else if  (rst_name .eq. pressure%name                             &
      &     .or. rst_name .eq. fhd_temp                                  &
      &     .or. rst_name .eq. fhd_light                                 &
-     &     .or. rst_name .eq. fhd_mag_potential                         &
+     &     .or. rst_name .eq. magnetic_potential%name                   &
      &     .or. rst_name .eq. fhd_pre_heat                              &
      &     .or. rst_name .eq. fhd_pre_composit                          &
      &     .or. rst_name .eq. fhd_chk_heat                              &
