@@ -148,7 +148,7 @@
       integer(kind = kint), intent(in) :: ids_grad_t, ids_grad_part_t
 !
       type(reference_scalar_param), intent(in) :: ref_param
-      type(reference_temperature), intent(in) :: reference
+      type(reference_field), intent(in) :: reference
 !
       type(phys_data), intent(inout) :: rj_fld
 !
@@ -175,7 +175,7 @@
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(reference_scalar_param), intent(in) :: ref_param
-      type(reference_temperature), intent(in) :: reference
+      type(reference_field), intent(in) :: reference
 !
       integer(kind = kint), intent(in) :: is_temp, is_par_temp
       integer(kind = kint), intent(in) :: is_grad_t, is_grad_part_t

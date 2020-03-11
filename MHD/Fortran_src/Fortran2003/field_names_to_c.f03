@@ -1,5 +1,11 @@
 !
 !
+!!      integer(c_int) function lengthchara_f() bind(c)
+!!
+!!      integer(c_int) function num_base_fields_f() bind(c)
+!!      subroutine set_base_field_names_f                               &
+!!     &         (n_comps_c, field_name_c, field_math_c) bind(c)
+!!
 !!      integer(c_int) function num_base_forces_f() bind(c)
 !!      subroutine set_base_force_labels_f                              &
 !!     &         (n_comps_c, field_name_c, field_math_c) bind(c)
@@ -142,8 +148,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      integer(c_int) function lengthchara_f()  &
-     &       bind(c, name='lengthchara_f')
+      integer(c_int) function lengthchara_f() bind(c)
 !
       lengthchara_f = kchara
       return
@@ -154,19 +159,25 @@
 !
       integer(c_int) function num_base_fields_f() bind(c)
 !
+      use t_base_field_labels
+!
       num_base_fields_f = num_base_fields()
       return
       end function num_base_fields_f
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_base_field_names_f(field_name_c) bind(c)
+      subroutine set_base_field_names_f                                 &
+     &         (n_comps_c, field_name_c, field_math_c) bind(c)
 !
       use t_base_field_labels
 !
+      integer(c_int), intent(inout) :: n_comps_c(*)
       character(C_CHAR), intent(inout) :: field_name_c(*)
+      character(C_CHAR), intent(inout) :: field_math_c(*)
 !
-      call set_base_field_names(field_name_c(1))
+      call set_base_field_names                                         &
+     &   (n_comps_c(1), field_name_c(1), field_math_c(1))
 !
       end subroutine set_base_field_names_f
 !

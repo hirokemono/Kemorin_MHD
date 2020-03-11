@@ -41,8 +41,8 @@
 !!        type(phys_address), intent(in) :: ipol, itor
 !!        type(works_4_sph_trans_MHD), intent(inout) :: WK
 !!        type(phys_data), intent(inout) :: rj_fld
-!!        type(reference_temperature), intent(in) :: ref_temp
-!!        type(reference_temperature), intent(in) :: ref_comp
+!!        type(reference_field), intent(in) :: ref_temp
+!!        type(reference_field), intent(in) :: ref_comp
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
 !!        type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
 !!@endverbatim
@@ -206,7 +206,7 @@
       type(sph_rotation), intent(in) :: omega_sph
       type(parameters_4_sph_trans), intent(in) :: trans_p
       type(phys_address), intent(in) :: ipol, itor
-      type(reference_temperature), intent(in) :: ref_temp, ref_comp
+      type(reference_field), intent(in) :: ref_temp, ref_comp
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
 !

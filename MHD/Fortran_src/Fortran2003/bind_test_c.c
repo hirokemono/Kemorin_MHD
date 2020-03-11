@@ -4,6 +4,7 @@
 
 int lengthchara_f();
 
+int num_base_fields_f();
 int num_base_forces_f();
 int num_rot_forces_f();
 int num_div_forces_f();
@@ -36,6 +37,7 @@ int num_wide_SGS_terms_f();
 int num_force_w_SGS_f();
 int num_true_SGS_terms_f();
 
+void set_base_field_names_f(int *ncomp1, char *name1, char *math1);
 void set_base_force_labels_f(int *ncomp1, char *name1, char *math1);
 void set_rot_force_labels_f(int *ncomp1, char *name1, char *math1);
 void set_div_force_labels_f(int *ncomp1, char *name1, char *math1);
@@ -75,7 +77,9 @@ int main(int argc, char **argv)
 	
 	int len_f = lengthchara_f();
 	
-	int ist_base_forces = 0;
+	int ist_base_fields = 0;
+	int ist_base_forces = ist_base_fields
+			+ num_base_fields_f();
 	int ist_rot_forces = ist_base_forces
 			+ num_base_forces_f();
 	int ist_div_forces = ist_rot_forces
@@ -152,6 +156,9 @@ int main(int argc, char **argv)
 	}
 	
 	
+	set_base_field_names_f(&ncomp[ist_base_fields], 
+								&name1[len_f*ist_base_fields],
+								&math1[len_f*ist_base_fields]);
 	set_base_force_labels_f(&ncomp[ist_base_forces], 
 								&name1[len_f*ist_base_forces],
 								&math1[len_f*ist_base_forces]);

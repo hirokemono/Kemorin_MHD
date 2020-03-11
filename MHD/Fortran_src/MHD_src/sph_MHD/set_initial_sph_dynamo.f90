@@ -136,7 +136,7 @@
       type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rj_grid), intent(in) :: sph_rj
       type(MHD_evolution_param), intent(in) :: MHD_prop
-      type(reference_temperature), intent(in) :: ref_temp
+      type(reference_field), intent(in) :: ref_temp
       type(phys_address), intent(in) :: ipol, idpdr, itor
 !
       type(phys_data), intent(inout) :: rj_fld
@@ -206,7 +206,7 @@
       type(sph_rj_grid), intent(in) :: sph_rj
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
-      type(reference_temperature), intent(in) :: ref_temp, ref_comp
+      type(reference_field), intent(in) :: ref_temp, ref_comp
       type(phys_address), intent(in) :: ipol, idpdr, itor
 !
       type(phys_data), intent(inout) :: rj_fld
@@ -253,7 +253,7 @@
       type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rj_grid), intent(in) :: sph_rj
       type(MHD_evolution_param), intent(in) :: MHD_prop
-      type(reference_temperature), intent(in) :: ref_temp
+      type(reference_field), intent(in) :: ref_temp
       type(phys_address), intent(in) :: ipol
 !
       type(phys_data), intent(inout) :: rj_fld

@@ -33,8 +33,8 @@
 !!        type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
 !!        type(legendre_4_sph_trans), intent(in) :: leg
 !!        type(phys_address), intent(in) :: ipol
-!!        type(reference_temperature), intent(in) :: ref_temp
-!!        type(reference_temperature), intent(in) :: ref_comp
+!!        type(reference_field), intent(in) :: ref_temp
+!!        type(reference_field), intent(in) :: ref_comp
 !!        type(phys_data), intent(inout) :: rj_fld
 !!      subroutine add_reference_advect_sph                             &
 !!     &         (kr_in, kr_out, nidx_rj, ar_1d_rj, g_sph_rj,           &
@@ -152,8 +152,8 @@
       type(legendre_4_sph_trans), intent(in) :: leg
       type(phys_address), intent(in) :: ipol
 !
-      type(reference_temperature), intent(in) :: ref_temp
-      type(reference_temperature), intent(in) :: ref_comp
+      type(reference_field), intent(in) :: ref_temp
+      type(reference_field), intent(in) :: ref_comp
 !
       type(phys_data), intent(inout) :: rj_fld
 !

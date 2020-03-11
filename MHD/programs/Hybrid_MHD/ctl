@@ -51,7 +51,7 @@ begin MHD_control
 !   velocity, temperature, pressure, vorticity
 !   vector_potential, magnetic_field, current_density, magnetic_potential
 !   electric_field, poynting_flux
-!   composition, perturbation_temp, parturbation_composition
+!   composition, perturbation_temp, perturbation_composition
 !
 !   filter_velocity, filter_temperature, filter_pert_temperature
 !   filter_vector_potential, filter_magne

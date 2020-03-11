@@ -20,7 +20,7 @@ const struct field_def field_props[NUM_FIELD] = {
 			{1, "perturbation_temp", "$$  \\Theta = T-T_{0}  $$"},
 			{1, "reference_temperature", "$$  T_{0}  $$"},
 			{1, "composition", "$$  C  $$"},
-			{1, "parturbation_composition", "$$  \\Delta C = C-C_{0}  $$"},
+			{1, "perturbation_composition", "$$  \\Delta C = C-C_{0}  $$"},
 			{1, "reference_composition", "$$  C_{0}  $$"},
 			{1, "entropy", "$$  S  $$"},
 			{1, "perturbation_entropy", "$$  \\Delta S = S-S_{0}  $$"},

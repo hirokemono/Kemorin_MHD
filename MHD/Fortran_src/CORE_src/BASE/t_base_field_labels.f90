@@ -19,17 +19,9 @@
 !!     &         (i_phys, field_name, base_fld, flag)
 !!        type(base_field_address), intent(inout) :: base_fld
 !!
-!!      subroutine base_vector_monitor_address                          &
-!!     &         (field_name, i_field, numrms, numave,                  &
-!!     &          rms_base, ave_base, flag)
-!!      subroutine base_scalar_monitor_address                          &
-!!     &         (field_name, i_field, numrms, numave,                  &
-!!     &          rms_base, ave_base, flag)
-!!        type(base_field_address), intent(inout) :: rms_base
-!!        type(base_field_address), intent(inout) :: ave_base
-!!
 !!      integer(kind = kint) function num_base_fields()
-!!      subroutine set_base_field_names(field_names)
+!!      subroutine set_base_scalar_addresses                            &
+!!     &         (i_phys, field_name, base_fld, flag)
 !!
 !! !!!!!  Base field names  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!
@@ -44,8 +36,6 @@
 !!   current_density [i_current]:    current density  J = \nabla \times B
 !!   magnetic_potential [i_mag_p]:   potential       \phi
 !!   scalar_potential [i_scalar_p]:  scalar potential   \phi
-!!   electric_field []:     electric field   E
-!!   poynting_flux []:      Poynting flux    S = E \times B
 !!
 !!   temperature [i_temp]:  temperature T
 !!   composition [i_light]:  Composition anormally C
@@ -58,7 +48,7 @@
 !!   reference_entropy [i_ref_entropy]:       S_0
 !!
 !!   perturbation_temp [i_per_temp]:         \Theta = T - T_0
-!!   parturbation_composition [i_per_light]:  C - C_0
+!!   perturbation_composition [i_per_light]:  C - C_0
 !!   perturbation_density [i_per_density]:      \rho - \rho_0
 !!   perturbation_entropy [i_per_entropy]:      S - S_0
 !!
@@ -72,7 +62,8 @@
       module t_base_field_labels
 !
       use m_precision
-      use m_constants
+      use m_phys_constants
+      use t_field_labels
 !
       implicit  none
 ! 
@@ -82,91 +73,185 @@
 !>        Field label for velocity
 !!         @f$ u_{i} @f$
       character(len=kchara), parameter :: fhd_velo = 'velocity' 
+      type(field_def), parameter :: velocity                            &
+     &    = field_def(n_comp = n_vector,                                &
+     &                name = 'velocity',                                &
+     &                math = '$ u_{i} $')
 !>        Field label for vorticity
 !!         @f$ \omega_{i} = e_{ijk} \partial_{j} u_{k} @f$
       character(len=kchara), parameter :: fhd_vort = 'vorticity'
+      type(field_def), parameter :: vorticity                           &
+     &    = field_def(n_comp = n_vector,                                &
+     &                name = 'vorticity',                               &
+     &                math = '$ \omega_{i}'                             &
+     &                    // ' = e_{ijk} \partial_{j} u_{k} $')
 !>        Field label for pressure @f$ p @f$
       character(len=kchara), parameter :: fhd_press = 'pressure'
+      type(field_def), parameter :: pressure                            &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                name = 'pressure',                                &
+     &                math = '$ u_{i} $')
 !!
 !>        Field label for magnetic field
 !!         @f$ B_{i} @f$
       character(len=kchara), parameter :: fhd_magne = 'magnetic_field'
+      type(field_def), parameter :: magnetic_field                      &
+     &    = field_def(n_comp = n_vector,                                &
+     &                name = 'magnetic_field',                          &
+     &                math = '$ B_{i} $')
 !>        Field label for magnetic vector potential
 !!         @f$ B_{i} = e_{ijk} \partial_{j} A_{k} @f$
       character(len=kchara), parameter :: fhd_vecp = 'vector_potential'
+      type(field_def), parameter :: vector_potential                    &
+     &    = field_def(n_comp = n_vector,                                &
+     &                name = 'vector_potential',                        &
+     &                math = '$ B_{i} = e_{ijk} \partial_{j} A_{k} $')
 !>        Field label for current density
 !!         @f$ J_{i} = e_{ijk} \partial_{j} B_{k} @f$
       character(len=kchara), parameter                                  &
      &             :: fhd_current = 'current_density'
+      type(field_def), parameter :: current_density                     &
+     &    = field_def(n_comp = n_vector,                                &
+     &                name = 'current_density',                         &
+     &                math = '$ J_{i} = e_{ijk} \partial_{j} B_{k} $')
 !>        Field label for magnetic potential
 !!         @f$ W @f$
       character(len=kchara), parameter                                  &
      &             :: fhd_mag_potential =     'magnetic_potential'
+      type(field_def), parameter :: magnetic_potential                  &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                name = 'magnetic_potential',                      &
+     &                math = '$ W $')
 !>        Field label for electric potential
 !!         @f$ \varphi @f$
       character(len=kchara), parameter                                  &
      &             :: fhd_scalar_potential =  'scalar_potential'
+      type(field_def), parameter :: scalar_potential                    &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                name = 'scalar_potential',                        &
+     &                math = '$ \varphi $')
 !!
 !>        Field label for density
 !!         @f$ \rho @f$
       character(len=kchara), parameter :: fhd_density =  'density'
+      type(field_def), parameter :: density                             &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                name = 'density',                                 &
+     &                math = '$ \rho $')
 !>        Field label for perturbation of density
-!!         @f$  \rho - \rho_{0} @f$
+!!         @f$  \Thera_{\rho} = \rho - \rho_{0} @f$
       character(len=kchara), parameter                                  &
      &             :: fhd_per_density = 'perturbation_density'
+      type(field_def), parameter :: perturbation_density                &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                name = 'perturbation_density',                    &
+     &                math = '$ \Thera_{\rho} = \rho - \rho_{0} $')
 !>        Field label for reference density
 !!         @f$  \rho_{0} @f$
       character(len=kchara), parameter                                  &
      &             :: fhd_ref_density =  'reference_density'
+      type(field_def), parameter :: reference_density                   &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                name = 'reference_density',                       &
+     &                math = '$ \rho_{0} $')
 !
 !>        Field label for temperature
 !!         @f$ T @f$
       character(len=kchara), parameter :: fhd_temp =  'temperature'
+      type(field_def), parameter :: temperature                         &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                name = 'temperature',                             &
+     &                math = '$ T $')
 !>        Field label for perturbation of temperature
 !!         @f$ \Theta = T - T_{0} @f$
       character(len=kchara), parameter                                  &
      &             :: fhd_part_temp = 'perturbation_temp'
+      type(field_def), parameter :: perturbation_temp                   &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                name = 'perturbation_temp',                       &
+     &                math = '$ \Theta = T - T_{0} $')
 !>        Field label for reference temperature
 !!         @f$  T_{0} @f$
       character(len=kchara), parameter                                  &
      &             :: fhd_ref_temp =  'reference_temperature'
+      type(field_def), parameter :: reference_temperature               &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                name = 'reference_temperature',                   &
+     &                math = '$ T_{0} $')
 !
 !>        Field label for compostiion variation
 !!         @f$ C @f$
       character(len=kchara), parameter :: fhd_light = 'composition'
+      type(field_def), parameter :: composition                         &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                name = 'composition',                             &
+     &                math = '$ C $')
 !>        Field label for perturbation of composition
 !!         @f$  C - C_{0} @f$
       character(len=kchara), parameter                                  &
-     &             :: fhd_part_light = 'parturbation_composition'
+     &             :: fhd_part_light = 'perturbation_composition'
+      type(field_def), parameter :: perturbation_composition            &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                name = 'perturbation_composition',                &
+     &                math = '$ \Thera_{C} = C - C_{0} $')
 !>        Field label for reference composition
 !!         @f$  C_{0} @f$
       character(len=kchara), parameter                                  &
      &             :: fhd_ref_light =  'reference_composition'
+      type(field_def), parameter :: reference_composition               &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                name = 'reference_composition',                   &
+     &                math = '$ C_{0} $')
 !
 !>        Field label for entropy
 !!         @f$ S @f$
       character(len=kchara), parameter :: fhd_entropy =  'entropy'
+      type(field_def), parameter :: entropy                             &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                name = 'entropy',                                 &
+     &                math = '$ S $')
 !>        Field label for perturbation of entropy
 !!         @f$  S - S_{0} @f$
       character(len=kchara), parameter                                  &
      &             :: fhd_per_entropy = 'perturbation_entropy'
+      type(field_def), parameter :: perturbation_entropy                &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                name = 'perturbation_entropy',                    &
+     &                math = '$ \Thera_{S} = S - S_{0} $')
 !>        Field label for reference entropy
 !!         @f$  S_{0} @f$
       character(len=kchara), parameter                                  &
      &             :: fhd_ref_entropy =  'reference_entropy'
+      type(field_def), parameter :: reference_entropy                   &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                name = 'reference_entropy',                       &
+     &                math = '$ S_{0} $')
 !
 !>        Field label for heat source
 !!         @f$ q_{T} @f$
       character(len=kchara), parameter                                  &
      &              :: fhd_heat_source =  'heat_source'
+      type(field_def), parameter :: heat_source                         &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                name = 'heat_source',                             &
+     &                math = '$ q_{T} $')
 !>        Field label for composion source
 !!         @f$ q_{C} @f$
       character(len=kchara), parameter                                  &
      &              :: fhd_light_source =  'composition_source'
+      type(field_def), parameter :: composition_source                  &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                name = 'composition_source',                      &
+     &                math = '$ q_{C} $')
 !>        Field label for entropysource
 !!         @f$ q_{S} @f$
       character(len=kchara), parameter                                  &
      &             :: fhd_entropy_source =  'entropy_source'
+      type(field_def), parameter :: entropy_source                      &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                name = 'entropy_source',                          &
+     &                math = '$ q_{S} $')
+!>        Field label for entropysource
 !!
 !!
 !>       Structure for start address for base fields
@@ -413,63 +498,6 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine base_vector_monitor_address                            &
-     &         (field_name, i_field, numrms, numave,                    &
-     &          rms_base, ave_base, flag)
-!
-      character(len = kchara), intent(in):: field_name
-      integer(kind = kint), intent(in) :: i_field
-      integer(kind = kint), intent(in) :: numrms, numave
-!
-      type(base_field_address), intent(inout) :: rms_base
-      type(base_field_address), intent(inout) :: ave_base
-      logical, intent(inout) :: flag
-!
-      logical :: flag_a, flag_r
-!
-!
-      flag = .FALSE.
-!
-      if(i_field .eq. 0) return
-      call set_base_vector_addresses                                    &
-     &   ((numrms+1), field_name, rms_base, flag_r)
-      call set_base_vector_addresses                                    &
-     &   ((numave+1), field_name, ave_base, flag_a)
-      flag = (flag_r .and. flag_a)
-!
-      end subroutine base_vector_monitor_address
-!
-! ----------------------------------------------------------------------
-!
-      subroutine base_scalar_monitor_address                            &
-     &         (field_name, i_field, numrms, numave,                    &
-     &          rms_base, ave_base, flag)
-!
-      character(len = kchara), intent(in):: field_name
-      integer(kind = kint), intent(in) :: i_field
-      integer(kind = kint), intent(in) :: numrms, numave
-!
-      type(base_field_address), intent(inout) :: rms_base
-      type(base_field_address), intent(inout) :: ave_base
-      logical, intent(inout) :: flag
-!
-      logical :: flag_a, flag_r
-!
-!
-      flag = .FALSE.
-!
-      if(i_field .eq. 0) return
-      call set_base_scalar_addresses                                    &
-     &   ((numrms+1), field_name, rms_base, flag_r)
-      call set_base_scalar_addresses                                    &
-     &   ((numave+1), field_name, ave_base, flag_a)
-      flag = (flag_r .and. flag_a)
-!
-      end subroutine base_scalar_monitor_address
-!
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
       integer(kind = kint) function num_base_fields()
       num_base_fields = nfld_base
       return
@@ -477,38 +505,64 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_base_field_names(field_names)
+      subroutine set_base_field_names(n_comps, names, maths)
 !
-      character(len = kchara), intent(inout) :: field_names(nfld_base)
+      integer(kind = kint), intent(inout) :: n_comps(nfld_base)
+      character(len = kchara), intent(inout) :: names(nfld_base)
+      character(len = kchara), intent(inout) :: maths(nfld_base)
 !
 !
-      write(field_names( 1),'(a,a1)') trim(fhd_velo), CHAR(0)
-      write(field_names( 2),'(a,a1)') trim(fhd_vort), CHAR(0)
-      write(field_names( 3),'(a,a1)') trim(fhd_press), CHAR(0)
+      call set_field_labels(velocity,                                   &
+     &    n_comps( 1), names( 1), maths( 1))
+      call set_field_labels(vorticity,                                  &
+     &    n_comps( 2), names( 2), maths( 2))
+      call set_field_labels(pressure,                                   &
+     &    n_comps( 3), names( 3), maths( 3))
 !
-      write(field_names( 4),'(a,a1)') trim(fhd_magne), CHAR(0)
-      write(field_names( 5),'(a,a1)') trim(fhd_vecp), CHAR(0)
-      write(field_names( 6),'(a,a1)') trim(fhd_current), CHAR(0)
-      write(field_names( 7),'(a,a1)') trim(fhd_mag_potential), CHAR(0)
-      write(field_names( 8),'(a,a1)')                                   &
-     &                            trim(fhd_scalar_potential), CHAR(0)
+      call set_field_labels(magnetic_field,                             &
+     &    n_comps( 4), names( 4), maths( 4))
+      call set_field_labels(vector_potential,                           &
+     &    n_comps( 5), names( 5), maths( 5))
+      call set_field_labels(current_density,                            &
+     &    n_comps( 6), names( 6), maths( 6))
+      call set_field_labels(magnetic_potential,                         &
+     &    n_comps( 7), names( 7), maths( 7))
+      call set_field_labels(scalar_potential,                           &
+     &    n_comps( 8), names( 8), maths( 8))
 !
-      write(field_names( 9),'(a,a1)') trim(fhd_temp), CHAR(0)
-      write(field_names(10),'(a,a1)') trim(fhd_part_temp), CHAR(0)
-      write(field_names(11),'(a,a1)') trim(fhd_ref_temp), CHAR(0)
-      write(field_names(12),'(a,a1)') trim(fhd_light), CHAR(0)
-      write(field_names(13),'(a,a1)') trim(fhd_part_light), CHAR(0)
-      write(field_names(14),'(a,a1)') trim(fhd_ref_light), CHAR(0)
-      write(field_names(15),'(a,a1)') trim(fhd_entropy), CHAR(0)
-      write(field_names(16),'(a,a1)') trim(fhd_per_entropy), CHAR(0)
-      write(field_names(17),'(a,a1)') trim(fhd_ref_entropy), CHAR(0)
-      write(field_names(18),'(a,a1)') trim(fhd_density), CHAR(0)
-      write(field_names(19),'(a,a1)') trim(fhd_per_density), CHAR(0)
-      write(field_names(20),'(a,a1)') trim(fhd_ref_density), CHAR(0)
+      call set_field_labels(temperature,                                &
+     &    n_comps( 9), names( 9), maths( 9))
+      call set_field_labels(perturbation_temp,                          &
+     &    n_comps(10), names(10), maths(10))
+      call set_field_labels(reference_temperature,                      &
+     &    n_comps(11), names(11), maths(11))
+      call set_field_labels(heat_source,                                &
+     &    n_comps(12), names(12), maths(12))
 !
-      write(field_names(21),'(a,a1)') trim(fhd_heat_source), CHAR(0)
-      write(field_names(22),'(a,a1)') trim(fhd_light_source), CHAR(0)
-      write(field_names(23),'(a,a1)') trim(fhd_entropy_source), CHAR(0)
+      call set_field_labels(composition,                                &
+     &    n_comps(13), names(13), maths(13))
+      call set_field_labels(perturbation_composition,                   &
+     &    n_comps(14), names(14), maths(14))
+      call set_field_labels(reference_composition,                      &
+     &    n_comps(15), names(15), maths(15))
+      call set_field_labels(composition_source,                         &
+     &    n_comps(16), names(16), maths(16))
+!
+      call set_field_labels(entropy,                                    &
+     &    n_comps(17), names(17), maths(17))
+      call set_field_labels(perturbation_entropy,                       &
+     &    n_comps(18), names(18), maths(18))
+      call set_field_labels(reference_entropy,                          &
+     &    n_comps(19), names(19), maths(19))
+      call set_field_labels(entropy_source,                             &
+     &    n_comps(20), names(20), maths(20))
+!
+      call set_field_labels(density,                                    &
+     &    n_comps(21), names(21), maths(21))
+      call set_field_labels(perturbation_density,                       &
+     &    n_comps(22), names(22), maths(22))
+      call set_field_labels(reference_density,                          &
+     &    n_comps(23), names(23), maths(23))
 !
       end subroutine set_base_field_names
 !

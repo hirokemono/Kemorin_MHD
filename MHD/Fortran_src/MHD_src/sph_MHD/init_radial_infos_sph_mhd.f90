@@ -111,7 +111,7 @@
 !
       type(sph_grids), intent(inout) :: sph
       type(sph_rotation), intent(inout) :: omega_sph
-      type(reference_temperature), intent(inout) :: ref_temp, ref_comp
+      type(reference_field), intent(inout) :: ref_temp, ref_comp
       type(MHD_evolution_param), intent(inout) :: MHD_prop
       type(sph_MHD_boundary_data), intent(inout) :: sph_MHD_bc
       type(phys_data), intent(inout) :: rj_fld
@@ -202,7 +202,7 @@
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(sph_boundary_type), intent(in) :: sph_bc_S
 !
-      type(reference_temperature), intent(inout) :: reftemp
+      type(reference_field), intent(inout) :: reftemp
       type(sph_scalar_boundary_data), intent(inout) :: bcs_S
       type(phys_data), intent(inout) :: rj_fld
 !

@@ -40,7 +40,7 @@
 !!
 !!   perturbation_temp:         \Theta = T - T_0
 !!   perturbation_density:      \rho - \rho_0
-!!   parturbation_composition:  C - C_0
+!!   perturbation_composition:  C - C_0
 !!   perturbation_entropy:      S - S_0
 !!
 !!   filter_velocity, filter_vorticity
