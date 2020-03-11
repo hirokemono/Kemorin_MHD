@@ -265,8 +265,8 @@
      &       s_package%Cmatrix, ak_MHD, MGCG_WK, SGS_MHD_wk%FEM_SGS_wk, &
      &       SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat, nod_fld)
 !
-          call add_2_nod_scalars(nod_fld,                               &
-     &        iphys%i_ref_c, iphys%base%i_per_light, iphys%i_light)
+          call add_2_nod_scalars(nod_fld, iphys%base%i_ref_c,           &
+     &        iphys%base%i_per_light, iphys%i_light)
         else
           if(iflag_debug.eq.1) write(*,*) 's_cal_light_element C'
           call s_cal_light_element(iphys%i_light, time_d%dt,            &
@@ -282,8 +282,8 @@
      &       SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat, nod_fld)
 !
           if (iphys%base%i_per_light .gt. 0) then
-            call subtract_2_nod_scalars(nod_fld,                        &
-     &          iphys%i_light, iphys%i_ref_c, iphys%base%i_per_light)
+            call subtract_2_nod_scalars(nod_fld, iphys%i_light,         &
+     &          iphys%base%i_ref_c, iphys%base%i_per_light)
           end if
         end if
 !
@@ -538,8 +538,8 @@
      &       s_package%Cmatrix, ak_MHD, MGCG_WK, SGS_MHD_wk%FEM_SGS_wk, &
      &       SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat, nod_fld)
 !
-          call add_2_nod_scalars(nod_fld,                               &
-     &        iphys%i_ref_c, iphys%base%i_per_light, iphys%i_light)
+          call add_2_nod_scalars(nod_fld, iphys%base%i_ref_c,           &
+     &        iphys%base%i_per_light, iphys%i_light)
         else
           if (iflag_debug.eq.1) write(*,*) 's_cal_light_element'
           call s_cal_light_element(iphys%i_light, time_d%dt,            &
@@ -555,8 +555,8 @@
      &       SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat, nod_fld)
 !
           if (iphys%base%i_per_light .gt. 0) then
-            call subtract_2_nod_scalars(nod_fld,                        &
-     &          iphys%i_light, iphys%i_ref_c, iphys%base%i_per_light)
+            call subtract_2_nod_scalars(nod_fld, iphys%i_light,         &
+     &          iphys%base%i_ref_c, iphys%base%i_per_light)
           end if
         end if
 !
@@ -619,7 +619,7 @@
       if(MHD_prop%ref_param_C%iflag_reference .ne. id_no_ref_temp) then
         if (iflag_debug.eq.1)  write(*,*) 'set_2_perturbation_comp'
         call subtract_2_nod_scalars                                     &
-     &     (nod_fld, iphys%i_light, iphys%i_ref_c,                      &
+     &     (nod_fld, iphys%i_light, iphys%base%i_ref_c,                 &
      &      iphys%base%i_per_light)
       end if
 !

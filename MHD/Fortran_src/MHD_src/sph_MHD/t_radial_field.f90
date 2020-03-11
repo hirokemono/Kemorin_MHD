@@ -231,7 +231,7 @@
         d_rad%num_component(icou) = n_vector
         d_rad%istack_component(icou) = d_rad%istack_component(icou-1)   &
      &                                + d_rad%num_component(icou)
-        irad%i_ref_c = d_rad%istack_component(icou-1) + 1
+        irad%base%i_ref_c = d_rad%istack_component(icou-1) + 1
       end if
 !
       end subroutine each_radial_field_name_by_model

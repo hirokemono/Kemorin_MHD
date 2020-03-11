@@ -142,7 +142,7 @@
       call init_reference_temps                                         &
      &   (MHD_prop%ref_param_C, MHD_prop%takepito_C,                    &
      &    sph%sph_params, sph%sph_rj,                                   &
-     &    ipol%i_ref_c, ipol%grad_fld%i_grad_ref_c,                     &
+     &    ipol%base%i_ref_c, ipol%grad_fld%i_grad_ref_c,                &
      &    ref_comp, rj_fld, sph_MHD_bc%sph_bc_C, sph_MHD_bc%bcs_C)
 !
       end subroutine init_r_infos_sph_mhd
