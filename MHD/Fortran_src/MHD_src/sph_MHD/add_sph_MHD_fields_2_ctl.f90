@@ -48,7 +48,7 @@
 !   velocity flag
       if(fl_prop%iflag_scheme .gt. id_no_evolution                      &
      &     .or. cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
-        call add_phys_name_ctl(fhd_velo, field_ctl)
+        call add_phys_name_ctl(velocity%name, field_ctl)
       end if
 !   vorticity flag
       if(fl_prop%iflag_scheme .gt. id_no_evolution) then

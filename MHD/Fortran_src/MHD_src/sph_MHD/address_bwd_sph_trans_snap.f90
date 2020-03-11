@@ -46,7 +46,8 @@
       call alloc_sph_trns_field_name(trns_back)
 !
 !      if(b_trns%i_velo .eq. 0) then
-      call add_field_name_4_sph_trns_snap(fhd_velo, n_vector,           &
+      call add_field_name_4_sph_trns_snap                               &
+     &   (velocity%name, velocity%n_comp,                               &
      &    ipol%i_velo, itor%i_velo, iphys%i_velo,                       &
      &    b_trns%i_velo, trns_back)
 !      end if

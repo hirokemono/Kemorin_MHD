@@ -208,7 +208,7 @@
       do i_fld = 1, rj_fld%ntot_phys
         do j_fld = 1, fld_IO%num_field_IO
           if(rj_fld%phys_name(i_fld) .eq. fld_IO%fld_name(j_fld)) then
-            if     (rj_fld%phys_name(i_fld) .eq. fhd_velo               &
+            if     (rj_fld%phys_name(i_fld) .eq. velocity%name          &
      &         .or. rj_fld%phys_name(i_fld) .eq. fhd_vort               &
      &         .or. rj_fld%phys_name(i_fld) .eq. fhd_press              &
      &         .or. rj_fld%phys_name(i_fld) .eq. fhd_temp               &

@@ -94,7 +94,7 @@
 !
       do i = 1, evo_ctl%t_evo_field_ctl%num
         tmpchara = evo_ctl%t_evo_field_ctl%c_tbl(i)
-        if (tmpchara .eq. fhd_velo ) then
+        if (tmpchara .eq. velocity%name ) then
           MHD_prop%fl_prop%iflag_scheme =   MHD_prop%iflag_all_scheme
         else if (tmpchara .eq. fhd_temp ) then
           MHD_prop%ht_prop%iflag_scheme =   MHD_prop%iflag_all_scheme

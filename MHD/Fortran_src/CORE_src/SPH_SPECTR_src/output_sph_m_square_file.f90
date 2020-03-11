@@ -70,7 +70,7 @@
      &     'time step=', time_d%i_time_step, 'time=', time_d%time
 !
       do i = 1, pwr%num_fld_sq
-        if (pwr%pwr_name(i) .eq. fhd_velo) then
+        if (pwr%pwr_name(i) .eq. velocity%name) then
           icomp = pwr%istack_comp_sq(i)
           write(*,'(a,1pe15.8)',advance='no')                           &
      &              '  E_kin = ', pwr%v_spectr(1)%v_sq(icomp)

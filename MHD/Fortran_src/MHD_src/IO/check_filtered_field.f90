@@ -47,7 +47,7 @@
       end if
 !
       if(check_field_list_ctl(filter_velocity%name, field_ctl)) then
-        call add_phys_name_ctl(fhd_velo, field_ctl)
+        call add_phys_name_ctl(velocity%name, field_ctl)
       end if
       if(check_field_list_ctl(filter_magne%name, field_ctl)) then
         call add_phys_name_ctl(fhd_magne, field_ctl)

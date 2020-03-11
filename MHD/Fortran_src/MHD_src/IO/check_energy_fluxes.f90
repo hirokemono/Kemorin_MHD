@@ -47,24 +47,24 @@
 !
 !
       if( (field_name .eq. inertia_work%name) ) then
-        call add_phys_name_ctl(fhd_velo, field_ctl)
+        call add_phys_name_ctl(velocity%name, field_ctl)
         call add_phys_name_ctl(inertia%name, field_ctl)
       else if( (field_name .eq. work_against_Lorentz%name)              &
      &    .or. (field_name .eq. Lorentz_work%name)) then
-        call add_phys_name_ctl(fhd_velo, field_ctl)
+        call add_phys_name_ctl(velocity%name, field_ctl)
         call add_phys_name_ctl(fhd_magne, field_ctl)
         call add_phys_name_ctl(fhd_current, field_ctl)
         call add_phys_name_ctl(Lorentz_force%name, field_ctl)
       else if( (field_name .eq. mag_tension_work%name)) then
-        call add_phys_name_ctl(fhd_velo, field_ctl)
+        call add_phys_name_ctl(velocity%name, field_ctl)
         call add_phys_name_ctl(magnetic_tension%name, field_ctl)
 !
       else if( (field_name .eq. buoyancy_flux%name)) then
-        call add_phys_name_ctl(fhd_velo, field_ctl)
+        call add_phys_name_ctl(velocity%name, field_ctl)
         call add_phys_name_ctl(fhd_temp, field_ctl)
         call add_phys_name_ctl(buoyancy%name, field_ctl)
       else if( (field_name .eq. composite_buoyancy_flux%name)) then
-        call add_phys_name_ctl(fhd_velo, field_ctl)
+        call add_phys_name_ctl(velocity%name, field_ctl)
         call add_phys_name_ctl(fhd_light, field_ctl)
         call add_phys_name_ctl(composite_buoyancy%name, field_ctl)
 !
@@ -89,7 +89,7 @@
         call add_phys_name_ctl(pert_comp_advect%name, field_ctl)
 !
       else if( (field_name .eq. viscous_ene_diffusion%name)) then
-        call add_phys_name_ctl(fhd_velo, field_ctl)
+        call add_phys_name_ctl(velocity%name, field_ctl)
         call add_phys_name_ctl(viscous_diffusion%name, field_ctl)
       else if( (field_name .eq. magnetic_ene_diffusion%name)) then
         call add_phys_name_ctl(fhd_magne, field_ctl)

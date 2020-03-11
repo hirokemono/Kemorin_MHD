@@ -72,7 +72,6 @@
 !
 !>        Field label for velocity
 !!         @f$ u_{i} @f$
-      character(len=kchara), parameter :: fhd_velo = 'velocity' 
       type(field_def), parameter :: velocity                            &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'velocity',                                &
@@ -363,7 +362,7 @@
 !
 !
       check_base_vector                                                 &
-     &   =    (field_name .eq. fhd_velo)                                &
+     &   =    (field_name .eq. velocity%name)                           &
      &   .or. (field_name .eq. fhd_vort)                                &
      &   .or. (field_name .eq. fhd_magne)                               &
      &   .or. (field_name .eq. fhd_vecp)                                &
@@ -419,7 +418,7 @@
 !
       flag = check_base_vector(field_name)
       if(flag) then
-        if (field_name .eq. fhd_velo) then
+        if (field_name .eq. velocity%name) then
           base_fld%i_velo = i_phys
         else if (field_name .eq. fhd_vort) then
           base_fld%i_vort = i_phys

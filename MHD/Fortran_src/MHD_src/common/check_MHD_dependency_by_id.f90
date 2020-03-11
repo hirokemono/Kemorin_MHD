@@ -53,7 +53,7 @@
      &     .or. i_start .eq. iphys%i_temp                               &
      &     .or. i_start .eq. iphys%i_light) then
           call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_velo, fhd_velo)
+     &       (fld, i_start, iphys%i_velo, velocity%name)
         else if(i_start .eq. iphys%i_filter_vort) then 
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_vort, fhd_vort)
@@ -73,7 +73,7 @@
      &       (fld, i_start, iphys%i_current, fhd_current)
         else if(i_start .eq. iphys%i_vecp) then
           call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_velo, fhd_velo)
+     &       (fld, i_start, iphys%i_velo, velocity%name)
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_magne, fhd_magne)
           call check_missing_field                                      &
@@ -104,7 +104,7 @@
 !
         else if(i_start .eq. iphys%i_entropy) then 
           call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_velo, fhd_velo)
+     &       (fld, i_start, iphys%i_velo, velocity%name)
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_temp, fhd_temp)
         end if
@@ -114,7 +114,7 @@
         i_start = fld%istack_component(i-1) + 1
         if(i_start .eq. iphys%i_density) then 
           call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_velo, fhd_velo)
+     &       (fld, i_start, iphys%i_velo, velocity%name)
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_temp, fhd_temp)
           call check_missing_field                                      &

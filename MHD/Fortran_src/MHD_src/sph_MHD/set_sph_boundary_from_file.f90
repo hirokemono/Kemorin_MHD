@@ -45,7 +45,7 @@
 !
       integer(kind = kint) :: num_comp = 0
 !
-      if(      cmp_no_case(label, fhd_velo)                             &
+      if(      cmp_no_case(label, velocity%name)                        &
      &    .or. cmp_no_case(label, fhd_vort)                             &
      &    .or. cmp_no_case(label, fhd_magne)) num_comp = 3
 !
@@ -90,7 +90,8 @@
 !
       character(len = kchara), intent(in) :: label, postfix
 !
-      find_vector_bc_label  = find_bc_label(label, fhd_velo, postfix)   &
+      find_vector_bc_label                                              &
+     &     = find_bc_label(label, velocity%name, postfix)               &
      &                   .or. find_bc_label(label, fhd_vort, postfix)   &
      &                   .or. find_bc_label(label, fhd_magne, postfix)
 !

@@ -162,7 +162,8 @@
 !
       if (iflag_debug .eq. iflag_full_msg) then
         if (MHD_prop%fl_prop%iflag_scheme .gt. id_no_evolution) then
-          call check_fdm_coefs_4_BC2(fhd_velo,  sph_MHD_bc%sph_bc_U)
+          call check_fdm_coefs_4_BC2                                    &
+     &       (velocity%name, sph_MHD_bc%sph_bc_U)
           call check_coef_fdm_free_ICB(sph_MHD_bc%fdm2_free_ICB)
           call check_coef_fdm_free_CMB(sph_MHD_bc%fdm2_free_CMB)
         end if

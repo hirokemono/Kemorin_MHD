@@ -213,7 +213,7 @@
 !
       if(check_field_list_ctl(inertia_work_by_filtered%name,            &
      &                        field_ctl)) then
-         call add_phys_name_ctl(fhd_velo, field_ctl)
+         call add_phys_name_ctl(velocity%name, field_ctl)
          call add_phys_name_ctl(inertia_by_filtered%name, field_ctl)
       end if
 !
@@ -221,25 +221,25 @@
      &                        field_ctl)                                &
      &     .or. check_field_list_ctl(Lorentz_work_by_filtered%name,     &
      &                        field_ctl)) then
-         call add_phys_name_ctl(fhd_velo, field_ctl)
+         call add_phys_name_ctl(velocity%name, field_ctl)
          call add_phys_name_ctl                                         &
      &      (Lorentz_force_by_filtered%name, field_ctl)
       end if
       if(check_field_list_ctl(mag_tension_work_by_filtered%name,        &
      &                        field_ctl)) then
-         call add_phys_name_ctl(fhd_velo, field_ctl)
+         call add_phys_name_ctl(velocity%name, field_ctl)
          call add_phys_name_ctl                                         &
      &      (magnetic_tension_by_filtered%name, field_ctl)
       end if
 !
       if(check_field_list_ctl(filtered_buoyancy_flux%name,              &
      &                        field_ctl)) then
-         call add_phys_name_ctl(fhd_velo, field_ctl)
+         call add_phys_name_ctl(velocity%name, field_ctl)
          call add_phys_name_ctl(filtered_buoyancy%name, field_ctl)
       end if
       if(check_field_list_ctl(filtered_comp_buoyancy_flux%name,         &
      &                        field_ctl)) then
-         call add_phys_name_ctl(fhd_velo, field_ctl)
+         call add_phys_name_ctl(velocity%name, field_ctl)
          call add_phys_name_ctl(filtered_comp_buoyancy%name, field_ctl)
       end if
 !

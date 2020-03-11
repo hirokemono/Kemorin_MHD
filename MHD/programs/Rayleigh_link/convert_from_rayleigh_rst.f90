@@ -157,7 +157,7 @@
 !     &    ra_rst%Cheby_fwd(1,1), rayleigh_WK%rayleigh_tg(1,1),         &
 !     &    rayleigh_WK%rayleigh_fd(1,1))
 !
-        if    (new_sph_phys%phys_name(i_fld) .eq. fhd_velo              &
+        if    (new_sph_phys%phys_name(i_fld) .eq. velocity%name         &
       &   .or. new_sph_phys%phys_name(i_fld) .eq. fhd_press             &
       &   .or. new_sph_phys%phys_name(i_fld) .eq. fhd_temp              &
       &   .or. new_sph_phys%phys_name(i_fld) .eq. fhd_magne) then

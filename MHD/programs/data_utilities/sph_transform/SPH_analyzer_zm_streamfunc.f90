@@ -112,7 +112,7 @@
       iflag_velo =  0
       iflag_magne = 0
       do ifld = 1, field_ctl%num
-        if(field_ctl%c1_tbl(ifld) .eq. fhd_velo)  iflag_velo =  2
+        if(field_ctl%c1_tbl(ifld) .eq. velocity%name)  iflag_velo =  2
         if(field_ctl%c1_tbl(ifld) .eq. fhd_magne) iflag_magne = 2
       end do
 !
@@ -123,7 +123,7 @@
 !
       ifld = 0
       if(iflag_velo .gt. 0) then
-        field_ctl%c1_tbl(ifld+1) = fhd_velo
+        field_ctl%c1_tbl(ifld+1) = velocity%name
         field_ctl%c1_tbl(ifld+2) = fhd_vort
         ifld = ifld+2
       end if

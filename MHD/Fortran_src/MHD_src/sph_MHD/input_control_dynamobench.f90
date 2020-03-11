@@ -153,7 +153,8 @@
 !
       do ifld = 1, fld_ctl%num
         if(fld_ctl%c1_tbl(ifld) .eq. fhd_temp) bench%ibench_temp =   1
-        if(fld_ctl%c1_tbl(ifld) .eq. fhd_velo) bench%ibench_velo =   1
+        if(fld_ctl%c1_tbl(ifld) .eq. velocity%name)                     &
+     &                                   bench%ibench_velo =   1
         if(fld_ctl%c1_tbl(ifld) .eq. fhd_magne) bench%ibench_magne = 1
       end do
 !
@@ -173,7 +174,7 @@
       if(bench%ibench_velo .gt. 0) then
         ifld = ifld + 1
         bench%ibench_velo = d_circle%istack_component(ifld-1) + 1
-        d_circle%phys_name(ifld) =     fhd_velo
+        d_circle%phys_name(ifld) =     velocity%name
         d_circle%num_component(ifld) = n_vector
         d_circle%istack_component(ifld)                                 &
      &        = d_circle%istack_component(ifld-1) + n_vector

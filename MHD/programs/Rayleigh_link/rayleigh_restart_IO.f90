@@ -117,7 +117,7 @@
 !
       icou = 0
       call add_vector_field_4_raylegh(dir, i_step, wchar, zchar,        &
-     &    fhd_velo, icou, fld_IO)
+     &    velocity%name, icou, fld_IO)
       call add_scalar_field_4_raylegh(dir, i_step, pchar,               &
      &    fhd_press, icou, fld_IO)
       call add_scalar_field_4_raylegh(dir, i_step, tchar,               &

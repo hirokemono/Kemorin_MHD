@@ -73,7 +73,7 @@
       i0 = istart_adress
       do i = 1, num_field
 !
-        if      ( field_name(i) .eq. fhd_velo ) then
+        if      ( field_name(i) .eq. velocity%name ) then
           iphys%i_velo = i0
         else if ( field_name(i) .eq. fhd_press ) then
           iphys%i_press = i0

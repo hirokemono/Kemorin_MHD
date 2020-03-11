@@ -363,7 +363,7 @@
 !
 !
       do i = 1, wk_diff%num_kinds
-        if ( wk_diff%name(i) .eq. fhd_velo ) then
+        if ( wk_diff%name(i) .eq. velocity%name ) then
           write(file_id,'(a)') 'dVx_dx, dVx_dy, dVx_dz, '
           write(file_id,'(a)') 'dVy_dx, dVy_dy, dVy_dz, '
           write(file_id,'(a)') 'dVz_dx, dVz_dy, dVz_dz, '

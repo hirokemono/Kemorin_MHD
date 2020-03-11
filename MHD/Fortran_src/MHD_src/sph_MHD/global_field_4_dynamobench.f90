@@ -45,7 +45,7 @@
 !
 !
       do i_fld = 1, pwr%num_fld_sq
-        if(pwr%pwr_name(i_fld) .eq. fhd_velo) then
+        if(pwr%pwr_name(i_fld) .eq. velocity%name) then
           i_comp = pwr%istack_comp_sq(i_fld-1) + 1
           KE_bench(1) = pwr%v_spectr(1)%v_sq(i_comp  )
           KE_bench(2) = pwr%v_spectr(1)%v_sq(i_comp+1)

@@ -324,7 +324,7 @@
      &      .and. cmt_param%iflag_c_velo .eq. id_SGS_commute_ON) then
             icomp_diff%i_velo = id
             ifld_diff%i_velo = jd
-            wk_diff%name(jd) = fhd_velo
+            wk_diff%name(jd) = velocity%name
             diff_coefs%num_comps(jd) = 9
             id = id + diff_coefs%num_comps(jd)
             jd = jd + 1

@@ -93,7 +93,7 @@
       if(numele .gt. 0) mhd_fem_wk%rr_e = 0.0d0
 !
       do i = 1, nod_fld%num_phys
-        if      ( nod_fld%phys_name(i) .eq. fhd_velo ) then
+        if      ( nod_fld%phys_name(i) .eq. velocity%name ) then
           allocate(mhd_fem_wk%velo_1(numele,3))
           if(numele .gt. 0) mhd_fem_wk%velo_1 = 0.0d0
         else if ( nod_fld%phys_name(i) .eq. fhd_magne ) then
@@ -145,7 +145,7 @@
       deallocate(mhd_fem_wk%xx_e, mhd_fem_wk%rr_e)
 !
       do i = 1, nod_fld%num_phys
-        if      ( nod_fld%phys_name(i) .eq. fhd_velo ) then
+        if      ( nod_fld%phys_name(i) .eq. velocity%name ) then
           deallocate(mhd_fem_wk%velo_1)
         else if ( nod_fld%phys_name(i) .eq. fhd_magne ) then
           deallocate(mhd_fem_wk%magne_1)

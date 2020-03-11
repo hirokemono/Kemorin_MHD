@@ -70,7 +70,7 @@
 !
       if (iflag .gt. 0) return
 !
-      if (   (phys_nod_name_ctl .eq. fhd_velo               )           &
+      if (   (phys_nod_name_ctl .eq. velocity%name               )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_vort               )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_magne              )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_vecp               )           &

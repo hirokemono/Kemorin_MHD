@@ -117,7 +117,7 @@
 !
       iflag_velo =  0
       do ifld = 1, field_ctl%num
-        if(field_ctl%c1_tbl(ifld) .eq. fhd_velo)  iflag_velo =  2
+        if(field_ctl%c1_tbl(ifld) .eq. velocity%name)  iflag_velo =  2
       end do
 !
       call dealloc_control_array_c3(field_ctl)
@@ -128,7 +128,7 @@
       ifld = 0
       if(iflag_velo .gt. 0) then
         ifld = ifld+1
-        field_ctl%c1_tbl(ifld) = fhd_velo
+        field_ctl%c1_tbl(ifld) = velocity%name
         field_ctl%c2_tbl(ifld) = 'Viz_On'
         field_ctl%c3_tbl(ifld) = 'Monitor_Off'
 !
@@ -155,7 +155,7 @@
 !
 !
       do i = 1, rj_fld%num_phys
-        if(rj_fld%phys_name(i) .eq. fhd_velo) then
+        if(rj_fld%phys_name(i) .eq. velocity%name) then
           ist_fld = rj_fld%istack_component(i-1)+1
 !$omp parallel do private(j,inod)
           do k = 1, sph_rj%nidx_rj(1)
@@ -187,7 +187,7 @@
 !
 !
       do i = 1, rj_fld%num_phys
-        if     (rj_fld%phys_name(i) .eq. fhd_velo) then
+        if     (rj_fld%phys_name(i) .eq. velocity%name) then
           ist_fld = rj_fld%istack_component(i-1)+1
           call delete_zonal_mean_rj_field                               &
      &       (n_vector, ist_fld, sph%sph_rj, rj_fld)
@@ -220,7 +220,7 @@
       i_velo = 0
       i_press = 0
       do i = 1, rj_fld%num_phys
-        if     (rj_fld%phys_name(i) .eq. fhd_velo) then
+        if     (rj_fld%phys_name(i) .eq. velocity%name) then
           i_velo =  istack_comp(i- 1) + 1
         else if(rj_fld%phys_name(i) .eq. fhd_press) then
           i_press = istack_comp(i- 1) + 1

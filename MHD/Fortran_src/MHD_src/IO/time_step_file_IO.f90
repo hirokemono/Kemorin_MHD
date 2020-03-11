@@ -55,8 +55,8 @@
 !
       do i = 1, msq_list%nfield
         if     (msq_list%ifld_msq(i) .eq. iphys%i_velo) then
-          if(msq_list%field_name(i) .eq. fhd_velo) then
-            call set_vector_label(fhd_velo, vector_label)
+          if(msq_list%field_name(i) .eq. velocity%name) then
+            call set_vector_label(velocity%name, vector_label)
             call write_vector_label(id_ave, vector_label)
             call write_one_label(id_msq, e_hd_k_ene)
 !

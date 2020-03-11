@@ -256,7 +256,7 @@
 !
 !
       iflag = 0
-      if    (d_name .eq. fhd_velo                                       &
+      if    (d_name .eq. velocity%name                                       &
      &  .or. d_name .eq. fhd_press                                      &
      &  .or. d_name .eq. fhd_pre_mom) then
         iflag = 1
@@ -297,7 +297,7 @@
       character(len=kchara), intent(in) :: rst_name
 !
 !
-      if (      rst_name .eq. fhd_velo                                  &
+      if (      rst_name .eq. velocity%name                                  &
      &     .or. rst_name .eq. fhd_vecp                                  &
      &     .or. rst_name .eq. fhd_magne                                 &
      &     .or. rst_name .eq. fhd_pre_mom                               &

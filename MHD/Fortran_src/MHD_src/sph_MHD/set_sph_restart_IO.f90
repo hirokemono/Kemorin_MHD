@@ -77,7 +77,7 @@
 !
       fld_IO%num_field_IO = 0
        do i_fld = 1, rj_fld%num_phys
-         if   ( rj_fld%phys_name(i_fld) .eq. fhd_velo                   &
+         if   ( rj_fld%phys_name(i_fld) .eq. velocity%name              &
 !     &     .or. rj_fld%phys_name(i_fld) .eq. fhd_vort                  &
 !     &     .or. rj_fld%phys_name(i_fld) .eq. fhd_press                 &
      &     .or. rj_fld%phys_name(i_fld) .eq. fhd_temp                   &
@@ -116,7 +116,7 @@
       icou = 0
       fld_IO%istack_comp_IO(0) = 0
       do i_fld = 1, rj_fld%num_phys
-        if         (rj_fld%phys_name(i_fld) .eq. fhd_velo               &
+        if         (rj_fld%phys_name(i_fld) .eq. velocity%name          &
 !     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_vort              &
      &         .or. rj_fld%phys_name(i_fld) .eq. fhd_magne              &
      &         .or. rj_fld%phys_name(i_fld) .eq. fhd_pre_mom            &
@@ -168,7 +168,7 @@
       do i_fld = 1, rj_fld%num_phys
         do j_IO = 1, fld_IO%num_field_IO
           if (rj_fld%phys_name(i_fld) .eq. fld_IO%fld_name(j_IO)) then
-            if     (rj_fld%phys_name(i_fld) .eq. fhd_velo               &
+            if     (rj_fld%phys_name(i_fld) .eq. velocity%name          &
 !     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_vort              &
      &         .or. rj_fld%phys_name(i_fld) .eq. fhd_magne              &
      &         .or. rj_fld%phys_name(i_fld) .eq. fhd_pre_mom            &
@@ -221,7 +221,7 @@
         do i_fld = 1, rj_fld%num_phys
           if (rj_fld%phys_name(i_fld) .eq. fld_IO%fld_name(j_IO)) then
             iflag = 1
-            if     (rj_fld%phys_name(i_fld) .eq. fhd_velo               &
+            if     (rj_fld%phys_name(i_fld) .eq. velocity%name          &
  !    &         .or. rj_fld%phys_name(i_fld) .eq. fhd_vort              &
      &         .or. rj_fld%phys_name(i_fld) .eq. fhd_magne              &
      &         .or. rj_fld%phys_name(i_fld) .eq. fhd_pre_mom            &

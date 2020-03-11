@@ -293,7 +293,7 @@
       character(len = kchara), intent(inout) :: labels(num_rms_comp)
 !
 !
-      if ( rms_name .eq. fhd_velo) then
+      if ( rms_name .eq. velocity%name) then
         write(labels(1),'(a)')   'K_ene_pol'
         write(labels(2),'(a)')   'K_ene_tor'
         write(labels(3),'(a)')   'K_ene'

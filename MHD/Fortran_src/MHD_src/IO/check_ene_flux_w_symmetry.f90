@@ -40,21 +40,21 @@
       type(ctl_array_c3), intent(inout) :: field_ctl
 !
       if(      (field_name .eq. fhd_u_dot_wsym_x_usym)) then
-        call add_phys_name_ctl(fhd_velo, field_ctl)
+        call add_phys_name_ctl(velocity%name, field_ctl)
         call add_phys_name_ctl(fhd_wsym_x_usym, field_ctl)
       else if( (field_name .eq. fhd_urev_Jsym_x_Bsym)                   &
      &    .or. (field_name .eq. fhd_u_dot_Jsym_x_Bsym)) then
-        call add_phys_name_ctl(fhd_velo, field_ctl)
+        call add_phys_name_ctl(velocity%name, field_ctl)
         call add_phys_name_ctl(fhd_Jsym_x_Bsym, field_ctl)
       else if( (field_name .eq. fhd_u_dot_Bsym_nabla_Bsym)) then
-        call add_phys_name_ctl(fhd_velo, field_ctl)
+        call add_phys_name_ctl(velocity%name, field_ctl)
         call add_phys_name_ctl(fhd_Bsym_nabla_Bsym, field_ctl)
 !
       else if( (field_name .eq. fhd_sym_buo_flux)) then
-        call add_phys_name_ctl(fhd_velo, field_ctl)
+        call add_phys_name_ctl(velocity%name, field_ctl)
         call add_phys_name_ctl(fhd_sym_buoyancy, field_ctl)
       else if( (field_name .eq. fhd_sym_comp_buo_flux)) then
-        call add_phys_name_ctl(fhd_velo, field_ctl)
+        call add_phys_name_ctl(velocity%name, field_ctl)
         call add_phys_name_ctl(fhd_sym_comp_buo, field_ctl)
 !
       else if((field_name .eq. fhd_B_rot_Bsym_x_usym)) then
@@ -93,21 +93,21 @@
 !
 !
       if(      (field_name .eq. fhd_u_dot_wasym_x_uasym)) then
-        call add_phys_name_ctl(fhd_velo, field_ctl)
+        call add_phys_name_ctl(velocity%name, field_ctl)
         call add_phys_name_ctl(fhd_wasym_x_uasym, field_ctl)
       else if( (field_name .eq. fhd_urev_Jasym_x_Basym)                 &
      &    .or. (field_name .eq. fhd_u_dot_Jasym_x_Basym)) then
-        call add_phys_name_ctl(fhd_velo, field_ctl)
+        call add_phys_name_ctl(velocity%name, field_ctl)
         call add_phys_name_ctl(fhd_Jasym_x_Basym, field_ctl)
       else if((field_name .eq. fhd_u_dot_Basym_nabla_Basym)) then
-        call add_phys_name_ctl(fhd_velo, field_ctl)
+        call add_phys_name_ctl(velocity%name, field_ctl)
         call add_phys_name_ctl(fhd_Basym_nabla_Basym,field_ctl)
 !
       else if( (field_name .eq. fhd_asym_buo_flux)) then
-        call add_phys_name_ctl(fhd_velo, field_ctl)
+        call add_phys_name_ctl(velocity%name, field_ctl)
         call add_phys_name_ctl(fhd_asym_buoyancy, field_ctl)
       else if( (field_name .eq. fhd_asym_comp_buo_flux)) then
-        call add_phys_name_ctl(fhd_velo, field_ctl)
+        call add_phys_name_ctl(velocity%name, field_ctl)
         call add_phys_name_ctl(fhd_asym_comp_buo, field_ctl)
 !
       else if( (field_name .eq. fhd_B_rot_Basym_x_uasym)) then
@@ -147,14 +147,14 @@
 !
 !
       if(      (field_name .eq. fhd_u_dot_wsym_x_uasym)) then
-        call add_phys_name_ctl(fhd_velo, field_ctl)
+        call add_phys_name_ctl(velocity%name, field_ctl)
         call add_phys_name_ctl(fhd_wsym_x_uasym, field_ctl)
       else if( (field_name .eq. fhd_urev_Jsym_x_Basym)                  &
      &    .or. (field_name .eq. fhd_u_dot_Jsym_x_Basym)  ) then
-        call add_phys_name_ctl(fhd_velo, field_ctl)
+        call add_phys_name_ctl(velocity%name, field_ctl)
         call add_phys_name_ctl(fhd_Jsym_x_Basym, field_ctl)
       else if( (field_name .eq. fhd_u_dot_Bsym_nabla_Basym)) then
-        call add_phys_name_ctl(fhd_velo, field_ctl)
+        call add_phys_name_ctl(velocity%name, field_ctl)
         call add_phys_name_ctl(fhd_Bsym_nabla_Basym, field_ctl)
 !
       else if( (field_name .eq. fhd_B_rot_Bsym_x_uasym)) then
@@ -180,15 +180,15 @@
 !
 !
       else if( (field_name .eq. fhd_u_dot_wasym_x_usym)) then
-        call add_phys_name_ctl(fhd_velo, field_ctl)
+        call add_phys_name_ctl(velocity%name, field_ctl)
         call add_phys_name_ctl(fhd_wasym_x_uaym, field_ctl)
 !
       else if( (field_name .eq. fhd_urev_Jasym_x_Bsym)                  &
      &    .or. (field_name .eq. fhd_u_dot_Jasym_x_Bsym) ) then
-        call add_phys_name_ctl(fhd_velo, field_ctl)
+        call add_phys_name_ctl(velocity%name, field_ctl)
         call add_phys_name_ctl(fhd_Jasym_x_Bsym, field_ctl)
       else if( (field_name .eq. fhd_u_dot_Basym_nabla_Bsym)) then
-        call add_phys_name_ctl(fhd_velo, field_ctl)
+        call add_phys_name_ctl(velocity%name, field_ctl)
         call add_phys_name_ctl(fhd_Basym_nabla_Bsym, field_ctl)
 !
       else if( (field_name .eq. fhd_B_rot_Basym_x_usym)) then

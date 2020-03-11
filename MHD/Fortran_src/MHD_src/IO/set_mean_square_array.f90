@@ -71,7 +71,7 @@
         field_name = nod_fld%phys_name(i)
         num_comps =  nod_fld%num_component(i)
         if (nod_fld%iflag_monitor(i) .eq. 1) then
-          if(field_name .eq. fhd_velo) then
+          if(field_name .eq. velocity%name) then
             call set_rms_address(field_name, num_comps, iphys%i_velo,   &
      &          i_rms%i_velo, j_ave%i_velo, msq_list)
 !
@@ -383,7 +383,7 @@
           end if
 !
         else
-          if ( field_name .eq. fhd_velo) then
+          if ( field_name .eq. velocity%name) then
             call set_rms_address                                        &
      &         (e_hd_div_v, n_scalar, iphys%i_velo,                     &
      &          i_rms%grad_fld%i_div_v, j_ave%grad_fld%i_div_v,         &

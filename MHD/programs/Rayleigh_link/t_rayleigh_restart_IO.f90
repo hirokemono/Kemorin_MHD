@@ -218,7 +218,7 @@
       integer(kind = kint), intent(inout) :: iflag_ncomp
       character(len = kchara), intent(inout) :: file_name(2)
 !
-      if(field_name .eq. fhd_velo) then
+      if(field_name .eq. velocity%name) then
         iflag_ncomp = 2
         file_name(1) =  set_rayleigh_file_name(dir, i_step, wchar)
         file_name(2) =  set_rayleigh_file_name(dir, i_step, zchar)

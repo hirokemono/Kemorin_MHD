@@ -42,7 +42,7 @@
 !
 !
       if(check_field_list_ctl(magnetic_induction%name, field_ctl)) then
-        call add_phys_name_ctl(fhd_velo, field_ctl)
+        call add_phys_name_ctl(velocity%name, field_ctl)
         call add_phys_name_ctl(fhd_magne, field_ctl)
         call add_phys_name_ctl(vecp_induction%name, field_ctl)
       end if
@@ -66,7 +66,7 @@
 !
       if(      check_field_list_ctl(Coriolis_force%name, field_ctl)     &
      &    .or. check_field_list_ctl(momentum_flux%name, field_ctl))     &
-        call add_phys_name_ctl(fhd_velo, field_ctl)
+        call add_phys_name_ctl(velocity%name, field_ctl)
       if(      check_field_list_ctl(magnetic_tension%name, field_ctl)   &
       &    .or. check_field_list_ctl(maxwell_tensor%name, field_ctl))   &
         call add_phys_name_ctl(fhd_magne, field_ctl)
@@ -74,7 +74,7 @@
       if(      check_field_list_ctl(vecp_induction%name, field_ctl)     &
      &    .or. check_field_list_ctl(induction_tensor%name, field_ctl)   &
      &      ) then
-        call add_phys_name_ctl(fhd_velo, field_ctl)
+        call add_phys_name_ctl(velocity%name, field_ctl)
         call add_phys_name_ctl(fhd_magne, field_ctl)
       end if
       if(check_field_list_ctl(magnetic_stretch%name, field_ctl)) then
@@ -87,25 +87,25 @@
       if(      check_field_list_ctl(heat_advect%name, field_ctl)        &
      &    .or. check_field_list_ctl(heat_flux%name, field_ctl)          &
      &      ) then
-        call add_phys_name_ctl(fhd_velo, field_ctl)
+        call add_phys_name_ctl(velocity%name, field_ctl)
         call add_phys_name_ctl(fhd_temp, field_ctl)
       end if
       if(      check_field_list_ctl(pert_heat_advect%name, field_ctl)   &
      &    .or. check_field_list_ctl(pert_heat_flux%name, field_ctl)     &
      &      ) then
-        call add_phys_name_ctl(fhd_velo, field_ctl)
+        call add_phys_name_ctl(velocity%name, field_ctl)
         call add_phys_name_ctl(fhd_part_temp, field_ctl)
       end if
       if(      check_field_list_ctl(composition_advect%name, field_ctl) &
      &    .or. check_field_list_ctl(composite_flux%name, field_ctl)     &
      &      ) then
-        call add_phys_name_ctl(fhd_velo, field_ctl)
+        call add_phys_name_ctl(velocity%name, field_ctl)
         call add_phys_name_ctl(fhd_light, field_ctl)
       end if
       if(      check_field_list_ctl(pert_comp_advect%name, field_ctl)   &
      &    .or. check_field_list_ctl(pert_comp_flux%name, field_ctl)     &
      &      ) then
-        call add_phys_name_ctl(fhd_velo, field_ctl)
+        call add_phys_name_ctl(velocity%name, field_ctl)
         call add_phys_name_ctl(fhd_part_light, field_ctl)
       end if
 !
@@ -208,7 +208,7 @@
      &   call add_phys_name_ctl(fhd_magne, field_ctl)
 !
       if(check_field_list_ctl(kinetic_helicity%name, field_ctl)) then
-        call add_phys_name_ctl(fhd_velo, field_ctl)
+        call add_phys_name_ctl(velocity%name, field_ctl)
         call add_phys_name_ctl(fhd_vort, field_ctl)
       end if
       if(check_field_list_ctl(magnetic_helicity%name, field_ctl)) then
@@ -220,13 +220,13 @@
         call add_phys_name_ctl(fhd_current, field_ctl)
       end if
       if(check_field_list_ctl(cross_helicity%name, field_ctl)) then
-        call add_phys_name_ctl(fhd_velo, field_ctl)
+        call add_phys_name_ctl(velocity%name, field_ctl)
         call add_phys_name_ctl(fhd_magne, field_ctl)
       end if
 !
       if(      check_field_list_ctl(square_velocity%name, field_ctl)    &
      &    .or. check_field_list_ctl(velocity_scale%name, field_ctl))    &
-     &   call add_phys_name_ctl(fhd_velo, field_ctl)
+     &   call add_phys_name_ctl(velocity%name, field_ctl)
       if(check_field_list_ctl(square_vorticity%name, field_ctl))        &
      &   call add_phys_name_ctl(fhd_vort, field_ctl)
       if(      check_field_list_ctl(square_magne%name, field_ctl)       &
@@ -261,7 +261,7 @@
      &   call add_phys_name_ctl(viscous_diffusion%name, field_ctl)
 !
       if(check_field_list_ctl(viscous_diffusion%name, field_ctl))       &
-     &   call add_phys_name_ctl(fhd_velo, field_ctl)
+     &   call add_phys_name_ctl(velocity%name, field_ctl)
       if(check_field_list_ctl(vorticity_diffusion%name, field_ctl))     &
      &   call add_phys_name_ctl(fhd_vort, field_ctl)
       if(check_field_list_ctl(magnetic_diffusion%name, field_ctl))      &

@@ -45,19 +45,19 @@
      &   call add_phys_name_ctl(SGS_vecp_induction%name, field_ctl)
 !
       if(check_field_list_ctl(SGS_buoyancy%name, field_ctl)) then
-        call add_phys_name_ctl(fhd_velo, field_ctl)
+        call add_phys_name_ctl(velocity%name, field_ctl)
         call add_phys_name_ctl(SGS_heat_flux%name, field_ctl)
       end if
       if(check_field_list_ctl(SGS_composit_buoyancy%name,               &
      &                        field_ctl)) then
-        call add_phys_name_ctl(fhd_velo, field_ctl)
+        call add_phys_name_ctl(velocity%name, field_ctl)
         call add_phys_name_ctl(SGS_composit_flux%name, field_ctl)
       end if
 !
 !
       if(check_field_list_ctl(SGS_inertia%name, field_ctl)) then
         call add_phys_name_ctl(fhd_vort, field_ctl)
-        call add_phys_name_ctl(fhd_velo, field_ctl)
+        call add_phys_name_ctl(velocity%name, field_ctl)
       end if
       if(check_field_list_ctl(SGS_Lorentz%name, field_ctl)) then
         call add_phys_name_ctl(fhd_current, field_ctl)
@@ -65,7 +65,7 @@
       end if
 !
       if(check_field_list_ctl(SGS_momentum_flux%name, field_ctl)) then
-        call add_phys_name_ctl(fhd_velo, field_ctl)
+        call add_phys_name_ctl(velocity%name, field_ctl)
       end if
       if(check_field_list_ctl(SGS_maxwell_tensor%name, field_ctl)) then
         call add_phys_name_ctl(fhd_magne, field_ctl)
@@ -74,16 +74,16 @@
       if(     check_field_list_ctl(SGS_vecp_induction%name, field_ctl)  &
      &   .or. check_field_list_ctl(SGS_induct_tensor%name,              &
      &                             field_ctl)) then
-        call add_phys_name_ctl(fhd_velo, field_ctl)
+        call add_phys_name_ctl(velocity%name, field_ctl)
         call add_phys_name_ctl(fhd_magne, field_ctl)
       end if
 !
       if(check_field_list_ctl(SGS_heat_flux%name, field_ctl)) then
-        call add_phys_name_ctl(fhd_velo, field_ctl)
+        call add_phys_name_ctl(velocity%name, field_ctl)
         call add_phys_name_ctl(fhd_temp, field_ctl)
       end if
       if(check_field_list_ctl(SGS_composit_flux%name, field_ctl)) then
-        call add_phys_name_ctl(fhd_velo, field_ctl)
+        call add_phys_name_ctl(velocity%name, field_ctl)
         call add_phys_name_ctl(fhd_light, field_ctl)
       end if
 !
@@ -133,20 +133,20 @@
 !
 !
       if(check_field_list_ctl(Reynolds_work%name, field_ctl)) then
-        call add_phys_name_ctl(fhd_velo, field_ctl)
+        call add_phys_name_ctl(velocity%name, field_ctl)
         call add_phys_name_ctl(SGS_inertia%name, field_ctl)
       end if
       if(check_field_list_ctl(SGS_Lorentz_work%name, field_ctl)) then
-        call add_phys_name_ctl(fhd_velo, field_ctl)
+        call add_phys_name_ctl(velocity%name, field_ctl)
         call add_phys_name_ctl(SGS_Lorentz%name, field_ctl)
       end if
       if(check_field_list_ctl(SGS_buoyancy_flux%name, field_ctl)) then
-        call add_phys_name_ctl(fhd_velo, field_ctl)
+        call add_phys_name_ctl(velocity%name, field_ctl)
         call add_phys_name_ctl(SGS_buoyancy%name, field_ctl)
       end if
       if(check_field_list_ctl(SGS_comp_buoyancy_flux%name,              &
      &                        field_ctl)) then
-        call add_phys_name_ctl(fhd_velo, field_ctl)
+        call add_phys_name_ctl(velocity%name, field_ctl)
         call add_phys_name_ctl(SGS_composit_buoyancy%name, field_ctl)
       end if
 !
@@ -207,12 +207,12 @@
 !
       if(check_field_list_ctl(Csim_SGS_buoyancy%name, field_ctl)) then
         call add_phys_name_ctl(SGS_heat_flux%name, field_ctl)
-        call add_phys_name_ctl(fhd_velo, field_ctl)
+        call add_phys_name_ctl(velocity%name, field_ctl)
       end if
       if(check_field_list_ctl(Csim_SGS_composit_buo%name,               &
      &                        field_ctl)) then
         call add_phys_name_ctl(SGS_composit_flux%name, field_ctl)
-        call add_phys_name_ctl(fhd_velo, field_ctl)
+        call add_phys_name_ctl(velocity%name, field_ctl)
       end if
 !
       end subroutine add_field_ctl_4_model_coefs

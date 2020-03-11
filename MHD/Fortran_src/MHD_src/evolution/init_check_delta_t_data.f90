@@ -125,7 +125,7 @@
         flex_data%i_drmax_v =         flex_data%istack_comp(icou-1) + 1
         flex_data%istack_comp(icou) = flex_data%istack_comp(icou-1) + 3
         flex_data%num_comp(icou) =    flex_data%num_comp(icou) +      3
-        flex_data%fld_name(icou) =    fhd_velo
+        flex_data%fld_name(icou) =    velocity%name
       end if
 !
       if( (iphys%i_press*iphys%i_chk_press) .gt. izero) then

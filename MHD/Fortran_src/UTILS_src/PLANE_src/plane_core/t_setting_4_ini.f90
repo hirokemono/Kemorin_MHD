@@ -44,7 +44,7 @@
       integer(kind=kint) :: np
 !
       write(*,*) 'Physical values for initial value'
-      write(*,*) ' 1: ', trim(fhd_velo)
+      write(*,*) ' 1: ', trim(velocity%name)
       write(*,*) ' 2: ', trim(fhd_temp)
       write(*,*) ' 3: ', trim(fhd_press)
       write(*,*) ' 4: ', trim(fhd_vecp)
@@ -65,7 +65,7 @@
       merged_fld%istack_component(0) = 0
       do np = 1, merged_fld%num_phys
         if (pini_p%n_phys_id(np) .eq. 1 ) then
-          merged_fld%phys_name(np) = fhd_velo
+          merged_fld%phys_name(np) = velocity%name
           merged_fld%num_component(np) = 3
         else if(pini_p%n_phys_id(np) .eq. 2 ) then
           merged_fld%phys_name(np) = fhd_temp

@@ -43,7 +43,7 @@
        i0 = 1
        do i = 1, ele_fld%num_phys
 !
-        if      (ele_fld%phys_name(i) .eq. fhd_velo) then
+        if      (ele_fld%phys_name(i) .eq. velocity%name) then
           iphys_ele%i_velo = i0
         else if(ele_fld%phys_name(i) .eq. fhd_vort) then
           iphys_ele%i_vort = i0
@@ -98,7 +98,7 @@
       ele_fld%num_phys =     0
       ele_fld%num_phys_viz = 0
       do i = 1, nod_fld%num_phys
-       if (  nod_fld%phys_name(i) .eq. fhd_velo                         &
+       if (  nod_fld%phys_name(i) .eq. velocity%name                         &
      &  .or. nod_fld%phys_name(i) .eq. fhd_magne                        &
      &  .or. nod_fld%phys_name(i) .eq. fhd_light                        &
      &  .or. nod_fld%phys_name(i) .eq. fhd_temp     ) then
@@ -120,9 +120,9 @@
 !
       j = 1
       do i = 1, nod_fld%num_phys
-        if (  nod_fld%phys_name(i) .eq. fhd_velo  ) then
+        if (  nod_fld%phys_name(i) .eq. velocity%name  ) then
           ele_fld%num_component(j) = 3
-          ele_fld%phys_name(j) = fhd_velo
+          ele_fld%phys_name(j) = velocity%name
           j = j + 1
 !
           if ( FEM_prm%iflag_rotate_form .eq. id_turn_ON ) then

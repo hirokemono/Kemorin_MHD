@@ -151,7 +151,7 @@
       iphys%i_temp =      0
       iphys%diffusion%i_t_diffuse = 0
       do i_fld = 1, nod_fld%num_phys
-        if(nod_fld%phys_name(i_fld) .eq. fhd_velo) then
+        if(nod_fld%phys_name(i_fld) .eq. velocity%name) then
           iphys%i_velo =      nod_fld%istack_component(i_fld-1) + 1
         else if(nod_fld%phys_name(i_fld) .eq. fhd_vort) then
           iphys%i_vort =      nod_fld%istack_component(i_fld-1) + 1
