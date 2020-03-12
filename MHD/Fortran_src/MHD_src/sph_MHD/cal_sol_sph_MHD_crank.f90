@@ -129,7 +129,7 @@
      &      leg%g_sph_rj, ipol, itor, rj_fld)
         call const_grad_bp_and_current                                  &
      &     (sph_rj, r_2nd, sph_MHD_bc%sph_bc_B, sph_MHD_bc%bcs_B,       &
-     &      leg%g_sph_rj, ipol%i_magne, ipol%i_current, rj_fld)
+     &      leg%g_sph_rj, ipol%i_magne, ipol%base%i_current, rj_fld)
       end if
 !
 !*  ---- update after evolution ------------------
@@ -209,10 +209,10 @@
      &    sph_MHD_bc%sph_bc_C, sph_MHD_bc%bcs_C,                        &
      &    sph_MHD_bc%fdm2_center, leg, ipol, rj_fld)
 !
-      if(ipol%i_magne*ipol%i_current .gt. 0) then
+      if(ipol%base%i_current .gt. 0) then
         call const_grad_bp_and_current                                  &
      &     (sph_rj, r_2nd, sph_MHD_bc%sph_bc_B, sph_MHD_bc%bcs_B,       &
-     &      leg%g_sph_rj, ipol%i_magne, ipol%i_current, rj_fld)
+     &      leg%g_sph_rj, ipol%i_magne, ipol%base%i_current, rj_fld)
       end if
 !
       call update_after_magne_sph(sph_rj, r_2nd, MHD_prop%cd_prop,      &
@@ -287,15 +287,15 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-!       Input:    ipol%i_current, itor%i_current
+!       Input:    ipol%base%i_current, itor%base%i_current
 !       Solution: ipol%diffusion%i_b_diffuse, itor%diffusion%i_b_diffuse,
 !                 idpdr%diffusion%i_b_diffuse
       if(ipol%diffusion%i_b_diffuse .gt. 0) then
         if(iflag_debug .gt. 0) write(*,*) 'const_sph_mag_diffuse_by_j'
         call const_sph_mag_diffuse_by_j(sph_rj, r_2nd, sph_bc_B,        &
      &      leg%g_sph_rj, cd_prop%coef_diffuse,                         &
-     &      ipol%i_magne, ipol%i_current, ipol%diffusion%i_b_diffuse,   &
-     &      rj_fld)
+     &      ipol%i_magne, ipol%base%i_current,                          &
+     &      ipol%diffusion%i_b_diffuse, rj_fld)
       end if
 !
       end subroutine update_after_magne_sph

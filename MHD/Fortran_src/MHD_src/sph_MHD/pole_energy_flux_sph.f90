@@ -73,7 +73,7 @@
         call pole_fld_cst_cross_prod                                    &
      &     (node%numnod, node%internal_node, node%xx,                   &
      &      sph_rtp%nnod_rtp, sph_rtp%nidx_rtp(1), fl_prop%coef_lor,    &
-     &      nod_fld%ntot_phys, iphys%i_current, iphys%i_velo,           &
+     &      nod_fld%ntot_phys, iphys%base%i_current, iphys%i_velo,      &
      &      iphys%forces%i_lorentz, nod_fld%d_fld)
       end if
 !
@@ -158,18 +158,18 @@
         call cal_pole_electric_field_smp                                &
      &     (node%numnod, node%internal_node, node%xx,                   &
      &      sph_rtp%nnod_rtp, sph_rtp%nidx_rtp(1),                      &
-     &      cd_prop%coef_diffuse, nod_fld%ntot_phys, iphys%i_current,   &
-     &      iphys%forces%i_vp_induct, iphys%prod_fld%i_electric,        &
-     &      nod_fld%d_fld)
+     &      cd_prop%coef_diffuse, nod_fld%ntot_phys,                    &
+     &      iphys%base%i_current, iphys%forces%i_vp_induct,             &
+     &      iphys%prod_fld%i_electric, nod_fld%d_fld)
       end if
 !
       if(iphys%prod_fld%i_poynting .gt. 0) then
         call cal_pole_poynting_flux_smp                                 &
      &     (node%numnod, node%internal_node, node%xx,                   &
      &      sph_rtp%nnod_rtp, sph_rtp%nidx_rtp(1),                      &
-     &      cd_prop%coef_diffuse, nod_fld%ntot_phys, iphys%i_current,   &
-     &      iphys%forces%i_vp_induct, iphys%i_magne,                    &
-     &      iphys%prod_fld%i_poynting, nod_fld%d_fld)
+     &      cd_prop%coef_diffuse, nod_fld%ntot_phys,                    &
+     &      iphys%base%i_current, iphys%forces%i_vp_induct,             &
+     &      iphys%i_magne, iphys%prod_fld%i_poynting, nod_fld%d_fld)
       end if
 !
 !

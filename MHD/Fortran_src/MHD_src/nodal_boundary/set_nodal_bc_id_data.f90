@@ -115,7 +115,7 @@
      &     (nod_bcs%Bnod_bcs%nod_bc_f, iphys%ene_flux%i_m_phi, nod_fld)
         if (iflag_debug.eq.1) write(*,*) 'set_boundary_vect current'
         call set_boundary_vect                                          &
-     &     (nod_bcs%Bnod_bcs%nod_bc_j, iphys%i_current, nod_fld)
+     &     (nod_bcs%Bnod_bcs%nod_bc_j, iphys%base%i_current, nod_fld)
       end if
 !
       if (cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then

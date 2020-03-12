@@ -43,9 +43,6 @@
 !>        start address for magnetic vector potential
 !!         @f$ B_{i} = e_{ijk} \partial_{j} A_{k} @f$
         integer (kind=kint) :: i_vecp =            izero
-!>        start address for current density
-!!         @f$ J_{i} = e_{ijk} \partial_{j} B_{k} @f$
-        integer (kind=kint) :: i_current =         izero
 !
 !>        Start address for filtered velocity
 !!         @f$ \bar{u}_{i} @f$

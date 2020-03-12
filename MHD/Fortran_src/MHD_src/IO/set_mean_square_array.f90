@@ -162,8 +162,8 @@
 !
             else if(field_name .eq. current_density%name) then
               call set_rms_address                                      &
-     &           (field_name, num_comps, iphys%i_current,               &
-     &            i_rms%i_current, j_ave%i_current, msq_list)
+     &           (field_name, num_comps, iphys%base%i_current,          &
+     &            i_rms%base%i_current, j_ave%base%i_current, msq_list)
 !
               ifld_msq%ir_sqj_ic = msq_list%numrms + 1
               ifld_msq%ja_j_ic = msq_list%numave + 1

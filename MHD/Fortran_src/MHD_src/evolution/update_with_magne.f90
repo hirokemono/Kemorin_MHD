@@ -204,12 +204,12 @@
         end if
       end if
 !
-      if (iphys_ele%i_current .ne. 0                                    &
+      if (iphys_ele%base%i_current .ne. 0                               &
      &     .and. FEM_prm%iflag_rotate_form .eq. id_turn_ON) then
          if (iflag_debug.gt.0)  write(*,*) 'current_on_element'
         call rotation_on_element_1st(mesh%node, mesh%ele, fem_int%jcs,  &
      &      conduct%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,       &
-     &      iphys%i_magne, nod_fld, iphys_ele%i_current, ele_fld)
+     &      iphys%i_magne, nod_fld, iphys_ele%base%i_current, ele_fld)
       end if
 !
 !      call rotation_on_element_1st(mesh%node, mesh%ele, fem_int%jcs,   &

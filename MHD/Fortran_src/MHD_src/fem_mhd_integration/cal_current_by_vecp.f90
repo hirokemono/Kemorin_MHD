@@ -130,11 +130,11 @@
      &    fem_wk, f_l, f_nl)
       call cal_ff_2_vector(node%numnod, node%istack_nod_smp,            &
      &    f_l%ff, m_lump%ml, nod_fld%ntot_phys,                         &
-     &    iphys%i_current, nod_fld%d_fld)
+     &    iphys%base%i_current, nod_fld%d_fld)
 !
 !    communication
 !
-      call vector_send_recv(iphys%i_current, nod_comm, nod_fld)
+      call vector_send_recv(iphys%base%i_current, nod_comm, nod_fld)
 !
       end subroutine int_current_diffuse
 !

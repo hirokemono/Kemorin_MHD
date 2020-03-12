@@ -63,11 +63,11 @@
      &    ipol%i_magne, itor%i_magne, iphys%i_magne,                    &
      &    b_trns%i_magne, trns_back)
 !      end if
-!      if(b_trns%i_current .eq. 0) then
+!      if(b_trns%base%i_current .eq. 0) then
       call add_field_name_4_sph_trns_snap                               &
      &   (current_density%name, current_density%n_comp,                 &
-     &    ipol%i_current, itor%i_current, iphys%i_current,              &
-     &    b_trns%i_current, trns_back)
+     &    ipol%base%i_current, itor%base%i_current,                     &
+     &    iphys%base%i_current, b_trns%base%i_current, trns_back)
 !      end if
 !
       call add_field_name_4_sph_trns_snap                               &

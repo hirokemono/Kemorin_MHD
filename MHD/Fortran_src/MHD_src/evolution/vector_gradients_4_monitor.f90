@@ -171,11 +171,11 @@
      &     .or. i_fld .eq. iphys%diff_vector%i_grad_jy                  &
      &     .or. i_fld .eq. iphys%diff_vector%i_grad_jz) then
           if(i_fld .eq. iphys%diff_vector%i_grad_jx) then
-            i_src = iphys%i_current
+            i_src = iphys%base%i_current
           else if(i_fld .eq. iphys%diff_vector%i_grad_jy) then
-            i_src = iphys%i_current + 1
+            i_src = iphys%base%i_current + 1
           else if(i_fld .eq. iphys%diff_vector%i_grad_jz) then
-            i_src = iphys%i_current + 2
+            i_src = iphys%base%i_current + 2
           end if
 !
           if(iflag_debug .ge. iflag_routine_msg)                        &
@@ -247,20 +247,20 @@
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &             write(*,*) 'lead  ', trim(electric_field%name)
         call cal_nod_electric_field_smp(node, cd_prop%coef_diffuse,     &
-     &      nod_fld%ntot_phys, iphys%i_current,                         &
+     &      nod_fld%ntot_phys, iphys%base%i_current,                    &
      &      iphys%forces%i_vp_induct, iphys%prod_fld%i_electric,        &
      &      nod_fld%d_fld)
       end if
 !
       if (iphys%ene_flux%i_ujb .gt. izero) then
         call cal_tri_product_4_scalar                                   &
-     &     (iphys%i_velo, iphys%i_current, iphys%i_magne,               &
+     &     (iphys%i_velo, iphys%base%i_current, iphys%i_magne,          &
      &      iphys%ene_flux%i_ujb, fl_prop%coef_lor, nod_fld)
       end if
 !
       if (iphys%ene_flux%i_nega_ujb .gt. izero) then
         call cal_tri_product_4_scalar                                   &
-     &     (iphys%i_velo, iphys%i_magne, iphys%i_current,               &
+     &     (iphys%i_velo, iphys%i_magne, iphys%base%i_current,          &
      &      iphys%ene_flux%i_nega_ujb, fl_prop%coef_lor, nod_fld)
       end if
 !
@@ -361,7 +361,7 @@
 !
       if (iphys%prod_fld%i_poynting .gt. izero) then
         call cal_nod_poynting_flux_smp(node, cd_prop%coef_diffuse,      &
-     &      nod_fld%ntot_phys, iphys%i_current,                         &
+     &      nod_fld%ntot_phys, iphys%base%i_current,                    &
      &      iphys%forces%i_vp_induct, iphys%i_magne,                    &
      &      iphys%prod_fld%i_poynting, nod_fld%d_fld)
       end if

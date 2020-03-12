@@ -10,7 +10,7 @@
 !!      subroutine nonlinear_terms_in_rtp(sph_rtp, MHD_prop, leg,       &
 !!     &          b_trns, f_trns, trns_b_MHD, trns_f_MHD)
 !!       Input ::  trns_b_MHD%fld_rtp(1,ib_fld)
-!!               ib_fld = i_velo, i_vort, i_magne, i_current,
+!!               ib_fld = i_velo, i_vort, i_magne, base%i_current,
 !!                        base%i_temp, base%i_light
 !!       Output :: trns_f_MHD%fld_rtp(1,if_frc)
 !!               if_frc = forces%i_m_advect, forces%i_lorentz, 
@@ -99,7 +99,7 @@
       if(f_trns%forces%i_lorentz .gt. 0) then
         call cal_cross_prod_w_coef_smp                                  &
      &     (sph_rtp%nnod_rtp, MHD_prop%fl_prop%coef_lor,                &
-     &      trns_b_MHD%fld_rtp(1,b_trns%i_current),                     &
+     &      trns_b_MHD%fld_rtp(1,b_trns%base%i_current),                &
      &      trns_b_MHD%fld_rtp(1,b_trns%i_magne),                       &
      &      trns_f_MHD%fld_rtp(1,f_trns%forces%i_lorentz) )
       end if

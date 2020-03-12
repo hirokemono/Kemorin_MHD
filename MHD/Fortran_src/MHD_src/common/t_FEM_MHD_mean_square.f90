@@ -170,7 +170,7 @@
      &    .or. nd .eq. fem_sq%i_rms%i_magne                             &
      &    .or. nd .eq. fem_sq%i_msq%ir_me_ic                            &
      &    .or. nd .eq. fem_sq%i_rms%i_vort                              &
-     &    .or. nd .eq. fem_sq%i_rms%i_current                           &
+     &    .or. nd .eq. fem_sq%i_rms%base%i_current                      &
      &    .or. nd .eq. fem_sq%i_msq%ir_sqj_ic                           &
      &    .or. nd .eq. fem_sq%i_rms%i_filter_velo                       &
      &    .or. nd .eq. fem_sq%i_rms%i_filter_magne                      &

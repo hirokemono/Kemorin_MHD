@@ -61,7 +61,7 @@
 !
 !
       iphys_sph%i_magne =      1
-      iphys_sph%i_current =    4
+      iphys_sph%base%i_current =    4
       iphys_sph%diffusion%i_b_diffuse =  7
       iphys_sph%forces%i_vp_induct = 10
       iphys_sph%forces%i_induction = 13
@@ -300,7 +300,8 @@
       call sel_sph_rj_vector_to_send(ncomp_rj_2_xyz,                    &
      &    ipol%i_magne, b_hbd_trns%i_magne, rj_fld, n_WS, WS)
       call sel_sph_rj_vector_to_send(ncomp_rj_2_xyz,                    &
-     &    ipol%i_current, b_hbd_trns%i_current, rj_fld, n_WS, WS)
+     &    ipol%base%i_current, b_hbd_trns%base%i_current,               &
+     &    rj_fld, n_WS, WS)
       call sel_sph_rj_vector_to_send(ncomp_rj_2_xyz,                    &
      &    ipol%diffusion%i_b_diffuse, b_hbd_trns%diffusion%i_b_diffuse, &
      &    rj_fld, n_WS, WS)
@@ -325,8 +326,8 @@
      &    iphys_sph%i_magne, mesh_sph%node, sph_fld)
       call copy_nod_vec_from_trans_wpole                                &
      &   (sph%sph_rtp, sph%sph_params%m_folding, nvector_rj_2_xyz,      &
-     &    b_hbd_trns%i_current, fld_hbd_rtp(1,1), fld_hbd_pole,         &
-     &    iphys_sph%i_current, mesh_sph%node, sph_fld)
+     &    b_hbd_trns%base%i_current, fld_hbd_rtp(1,1), fld_hbd_pole,    &
+     &    iphys_sph%base%i_current, mesh_sph%node, sph_fld)
       call copy_nod_vec_from_trans_wpole                                &
      &   (sph%sph_rtp, sph%sph_params%m_folding, nvector_rj_2_xyz,      &
      &    b_hbd_trns%diffusion%i_b_diffuse, fld_hbd_rtp(1,1),           &
@@ -350,7 +351,7 @@
      &   (iphys_sph%i_magne, iphys%i_magne,                             &
      &    itp_SPH_2_FEM, mesh_sph, mesh_fem, sph_fld, fem_fld)
       call interpolate_vector_type                                      &
-     &   (iphys_sph%i_current, iphys%i_current,                         &
+     &   (iphys_sph%base%i_current, iphys%i_current,                    &
      &    itp_SPH_2_FEM, mesh_sph, mesh_fem, sph_fld, fem_fld)
       call interpolate_vector_type                                      &
      &   (iphys_sph%diffusion%i_b_diffuse, iphys%diffusion%i_b_diffuse, &

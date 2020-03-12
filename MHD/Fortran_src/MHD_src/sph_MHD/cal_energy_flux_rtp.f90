@@ -85,7 +85,7 @@
      &                                                 .gt. 0) then
         call cal_cross_prod_w_coef_smp                                  &
      &     (sph_rtp%nnod_pole, fl_prop%coef_lor,                        &
-     &      trns_b_MHD%fld_pole(1,bs_trns%i_current),                   &
+     &      trns_b_MHD%fld_pole(1,bs_trns%base%i_current),              &
      &      trns_b_MHD%fld_pole(1,bs_trns%i_magne),                     &
      &      trns_f_MHD%fld_pole(1,f_trns%forces%i_lorentz) )
       end if
@@ -188,7 +188,7 @@
       if(fs_trns%prod_fld%i_c_heli .gt. 0) then
         call cal_dot_prod_no_coef_smp(sph_rtp%nnod_rtp,                 &
      &      trns_b_snap%fld_rtp(1,bs_trns%i_magne),                     &
-     &      trns_b_snap%fld_rtp(1,bs_trns%i_current),                   &
+     &      trns_b_snap%fld_rtp(1,bs_trns%base%i_current),              &
      &      trns_f_snap%fld_rtp(1,fs_trns%prod_fld%i_c_heli))
       end if
       if(fs_trns%prod_fld%i_x_heli .gt. 0) then
@@ -207,7 +207,7 @@
       if(fs_trns%prod_fld%i_electric .gt. 0) then
         call cal_electric_field_smp(np_smp, sph_rtp%nnod_rtp,           &
      &      sph_rtp%istack_inod_rtp_smp, cd_prop%coef_diffuse,          &
-     &      trns_b_snap%fld_rtp(1,bs_trns%i_current),                   &
+     &      trns_b_snap%fld_rtp(1,bs_trns%base%i_current),              &
      &      trns_f_MHD%fld_rtp(1,f_trns%forces%i_vp_induct),            &
      &      trns_f_snap%fld_rtp(1,fs_trns%prod_fld%i_electric))
       end if
@@ -215,7 +215,7 @@
       if(fs_trns%prod_fld%i_poynting .gt. 0) then
         call cal_poynting_flux_smp(np_smp, sph_rtp%nnod_rtp,            &
      &      sph_rtp%istack_inod_rtp_smp, cd_prop%coef_diffuse,          &
-     &      trns_b_snap%fld_rtp(1,bs_trns%i_current),                   &
+     &      trns_b_snap%fld_rtp(1,bs_trns%base%i_current),              &
      &      trns_f_MHD%fld_rtp(1,f_trns%forces%i_vp_induct),            &
      &      trns_b_snap%fld_rtp(1,bs_trns%i_magne),                     &
      &      trns_f_snap%fld_rtp(1,fs_trns%prod_fld%i_poynting))
@@ -288,7 +288,7 @@
         call cal_len_scale_by_rot_smp                                   &
      &     (np_smp, sph_rtp%nnod_rtp, sph_rtp%istack_inod_rtp_smp,      &
      &      trns_b_snap%fld_rtp(1,bs_trns%i_magne),                     &
-     &      trns_b_snap%fld_rtp(1,bs_trns%i_current),                   &
+     &      trns_b_snap%fld_rtp(1,bs_trns%base%i_current),              &
      &      trns_f_snap%fld_rtp(1,fs_trns%prod_fld%i_magne_scale))
       end if
       if(fs_trns%prod_fld%i_temp_scale .gt. 0) then
@@ -334,8 +334,8 @@
       end if
       if(fs_trns%prod_fld%i_square_j .gt. 0) then
         call vector_vector_prod_smp(sph_rtp%nnod_rtp,                   &
-     &      trns_b_snap%fld_rtp(1,bs_trns%i_current),                   &
-     &      trns_b_snap%fld_rtp(1,bs_trns%i_current),                   &
+     &      trns_b_snap%fld_rtp(1,bs_trns%base%i_current),              &
+     &      trns_b_snap%fld_rtp(1,bs_trns%base%i_current),              &
      &      trns_f_snap%fld_rtp(1,fs_trns%prod_fld%i_square_j))
       end if
       if(fs_trns%prod_fld%i_square_t .gt. 0) then

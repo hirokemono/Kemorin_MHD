@@ -107,7 +107,7 @@
      &        ifld_msq%ir_me_ic, ifld_msq%ja_mag_ic, iphys%i_magne,     &
      &        mesh, nod_fld, jacs, fem_wk, fem_msq)
 !
-        else if(msq_list%ifld_msq(i) .eq. iphys%i_current) then
+        else if(msq_list%ifld_msq(i) .eq. iphys%base%i_current) then
           call int_all_4_vector                                         &
      &       (fluid%istack_ele_fld_smp, npoint_integrate,               &
      &        msq_list%irms_msq(i), msq_list%jave_msq(i),               &
@@ -115,8 +115,9 @@
      &        fem_wk, fem_msq)
           call int_all_4_vector                                         &
      &       (conduct%istack_ele_fld_smp, npoint_integrate,             &
-     &        ifld_msq%ir_sqj_ic, ifld_msq%ja_j_ic, iphys%i_current,    &
-     &        mesh, nod_fld, jacs, fem_wk, fem_msq)
+     &        ifld_msq%ir_sqj_ic, ifld_msq%ja_j_ic,                     &
+     &        iphys%base%i_current, mesh, nod_fld, jacs,                &
+     &        fem_wk, fem_msq)
 !
         else if(msq_list%ifld_msq(i) .eq. iphys%base%i_mag_p) then
           call int_all_4_scalar                                         &
@@ -211,7 +212,7 @@
       end if
       if(ifld_msq%ir_rms_j .gt. 0) then
         fem_msq%rms_local(ifld_msq%ir_rms_j)                            &
-     &      =  fem_msq%rms_local(i_rms%i_current)
+     &      =  fem_msq%rms_local(i_rms%base%i_current)
       end if
       if(ifld_msq%ir_rms_j_ic .gt. 0) then
         fem_msq%rms_local(ifld_msq%ir_rms_j_ic)                         &

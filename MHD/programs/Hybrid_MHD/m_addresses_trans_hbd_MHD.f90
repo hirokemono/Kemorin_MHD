@@ -114,7 +114,7 @@
 !   current density flag
       if(fl_prop%iflag_4_lorentz .gt. id_turn_OFF) then
         nvector_rj_2_xyz = nvector_rj_2_xyz + 1
-        b_hbd_trns%i_current = 3*nvector_rj_2_xyz - 2
+        b_hbd_trns%base%i_current = 3*nvector_rj_2_xyz - 2
       end if
 !   magnetic diffusion flag
       if(cd_prop%iflag_Bevo_scheme .gt. id_turn_OFF) then
@@ -170,9 +170,10 @@
       if(b_hbd_trns%i_magne .gt. 0) write(*,*)                          &
      &        'b_hbd_trns%i_magne ', b_hbd_trns%i_magne,                &
      &        ipol%i_magne, itor%i_magne, idpdr%i_magne
-      if(b_hbd_trns%i_current .gt. 0) write(*,*)                        &
-     &        'b_hbd_trns%i_current ', b_hbd_trns%i_current,            &
-     &        ipol%i_current, itor%i_current, idpdr%i_current
+      if(b_hbd_trns%base%i_current .gt. 0) write(*,*)                   &
+     &        'b_hbd_trns%base%i_current ', b_hbd_trns%base%i_current,  &
+     &        ipol%base%i_current, itor%base%i_current,                 &
+     &        idpdr%base%i_current
       if(b_hbd_trns%diffusion%i_b_diffuse .gt. 0) write(*,*)            &
      &        'b_hbd_trns%diffusion%i_b_diffuse ',                      &
      &    b_hbd_trns%diffusion%i_b_diffuse, ipol%diffusion%i_b_diffuse, &

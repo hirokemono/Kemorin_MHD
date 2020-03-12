@@ -119,14 +119,15 @@
         end if
       end if
 !
-      if(iphys%i_current .gt. izero)then
-        if(nod_fld%iflag_update(iphys%i_current) .eq.0 ) then
+      if(iphys%base%i_current .gt. izero)then
+        if(nod_fld%iflag_update(iphys%base%i_current) .eq.0 ) then
           if(cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
             if (iflag_debug .ge. iflag_routine_msg)                     &
      &        write(*,*) 'cal_current_density'
-              call choose_cal_rotation_sgs(cmt_param%iflag_c_magne,     &
-     &           FEM_prm%iflag_magne_supg, FEM_prm%npoint_t_evo_int,    &
-     &           dt, ifld_diff%i_magne, iphys%i_magne, iphys%i_current, &
+              call choose_cal_rotation_sgs                              &
+     &          (cmt_param%iflag_c_magne, FEM_prm%iflag_magne_supg,     &
+     &           FEM_prm%npoint_t_evo_int, dt, ifld_diff%i_magne,       &
+     &           iphys%i_magne, iphys%base%i_current,                   &
      &           mesh%ele%istack_ele_smp, fem_int%m_lump, SGS_param,    &
      &           mesh%nod_comm, mesh%node, mesh%ele, mesh%surf,         &
      &           group%surf_grp, iphys_ele, ele_fld, fem_int%jcs,       &
@@ -134,9 +135,10 @@
      &           surf_bcs%Bsf_bcs%sgs, fem_int%rhs_tbl, rhs_mat%fem_wk, &
      &           rhs_mat%surf_wk, rhs_mat%f_nl, nod_fld)
 !
-!             call choose_cal_rotation_sgs(cmt_param%iflag_c_magne,     &
-!     &          FEM_prm%iflag_magne_supg, FEM_prm%npoint_t_evo_int,    &
-!     &          dt, ifld_diff%i_magne, iphys%i_magne, iphys%i_current, &
+!             call choose_cal_rotation_sgs                              &
+!     &         (cmt_param%iflag_c_magne, FEM_prm%iflag_magne_supg,     &
+!     &          FEM_prm%npoint_t_evo_int, dt, ifld_diff%i_magne,       &
+!     &          iphys%i_magne, iphys%base%i_current,                   &
 !     &          conduct%istack_ele_fld_smp, mk_MHD%mlump_cd, SGS_param,&
 !     &          mesh%nod_comm, mesh%node, mesh%ele, mesh%surf,         &
 !     &          group%surf_grp, iphys_ele, ele_fld, fem_int%jcs,       &
@@ -152,9 +154,10 @@
           else
             if (iflag_debug .ge. iflag_routine_msg)                     &
      &        write(*,*) 'cal_current_density'
-            call choose_cal_rotation_sgs(cmt_param%iflag_c_magne,       &
-     &         FEM_prm%iflag_magne_supg, FEM_prm%npoint_t_evo_int,      &
-     &         dt, ifld_diff%i_magne, iphys%i_magne, iphys%i_current,   &
+            call choose_cal_rotation_sgs                                &
+     &        (cmt_param%iflag_c_magne, FEM_prm%iflag_magne_supg,       &
+     &         FEM_prm%npoint_t_evo_int, dt, ifld_diff%i_magne,         &
+     &         iphys%i_magne, iphys%base%i_current,                     &
      &         mesh%ele%istack_ele_smp, fem_int%m_lump, SGS_param,      &
      &         mesh%nod_comm, mesh%node, mesh%ele, mesh%surf,           &
      &         group%surf_grp, iphys_ele, ele_fld, fem_int%jcs,         &
@@ -163,7 +166,7 @@
      &         rhs_mat%surf_wk, rhs_mat%f_nl, nod_fld)
 !           call choose_cal_rotation_sgs(cmt_param%iflag_c_magne,       &
 !     &         FEM_prm%iflag_magne_supg, FEM_prm%npoint_t_evo_int, dt, &
-!     &         ifld_diff%i_magne, iphys%i_magne, iphys%i_current,      &
+!     &         ifld_diff%i_magne, iphys%i_magne, iphys%base%i_current, &
 !     &         conduct%istack_ele_fld_smp, mk_MHD%mlump_cd, SGS_param, &
 !     &         mesh%nod_comm, mesh%node, mesh%ele, mesh%surf,          &
 !     &         group%surf_grp,iphys_ele, ele_fld, fem_int%jcs,         &

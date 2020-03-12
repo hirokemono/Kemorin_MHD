@@ -30,7 +30,8 @@
 !!     &          is_magne, is_current, rj_fld)
 !!        Input:    ipol%i_magne, itor%i_magne
 !!        Solution: idpdr%i_magne,
-!!                  ipol%i_current, itor%i_current, idpdr%i_current
+!!                  ipol%base%i_current, itor%base%i_current,
+!!                  idpdr%base%i_current
 !!
 !!      subroutine const_grad_poloidal_moment                           &
 !!     &         (sph_rj, r_2nd, sph_bc_U, bcs_U,                       &

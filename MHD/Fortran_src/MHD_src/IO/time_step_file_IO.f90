@@ -92,7 +92,7 @@
             call scalar_label_4_step(id_ave, id_msq, e_hd_div_b)
           end if
 !
-        else if(msq_list%ifld_msq(i) .eq. iphys%i_current) then
+        else if(msq_list%ifld_msq(i) .eq. iphys%base%i_current) then
           call vector_label_4_step                                      &
      &       (id_ave, id_msq, current_density%name)
           call vector_label_4_step(id_ave, id_msq, e_hd_sq_j_cd)

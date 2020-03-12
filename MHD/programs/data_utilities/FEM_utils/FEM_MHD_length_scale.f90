@@ -121,7 +121,7 @@
         icou = icou + 1
         ucd%phys_name(3) =    magnetic_scale%name
         call cal_vect_length_scale_by_rot                               &
-     &     (iphys%i_magne, iphys%i_current, node, nod_fld)
+     &     (iphys%i_magne, iphys%base%i_current, node, nod_fld)
         call set_one_field_to_udt_data                                  &
      &     (node%numnod, ione, icou, d_mag(1), ucd)
       end if
@@ -148,7 +148,7 @@
       iphys%i_velo =      0
       iphys%i_vort =      0
       iphys%i_magne =     0
-      iphys%i_current =   0
+      iphys%base%i_current =   0
       iphys%base%i_temp =      0
       iphys%diffusion%i_t_diffuse = 0
       do i_fld = 1, nod_fld%num_phys
@@ -160,7 +160,7 @@
           iphys%i_magne =     nod_fld%istack_component(i_fld-1) + 1
         else if(nod_fld%phys_name(i_fld)                                &
      &          .eq. current_density%name) then
-          iphys%i_current =   nod_fld%istack_component(i_fld-1) + 1
+          iphys%base%i_current = nod_fld%istack_component(i_fld-1) + 1
         else if(nod_fld%phys_name(i_fld) .eq. temperature%name) then
           iphys%base%i_temp = nod_fld%istack_component(i_fld-1) + 1
         else if(nod_fld%phys_name(i_fld) .eq. thermal_diffusion%name)   &

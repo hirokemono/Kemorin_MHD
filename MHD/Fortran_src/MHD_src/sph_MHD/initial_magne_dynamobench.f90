@@ -59,9 +59,9 @@
         d_rj(is,ipol%i_magne  ) = zero
         d_rj(is,ipol%i_magne+1) = zero
         d_rj(is,ipol%i_magne+2) = zero
-        d_rj(is,ipol%i_current  ) = zero
-        d_rj(is,ipol%i_current+1) = zero
-        d_rj(is,ipol%i_current+2) = zero
+        d_rj(is,ipol%base%i_current  ) = zero
+        d_rj(is,ipol%base%i_current+1) = zero
+        d_rj(is,ipol%base%i_current+2) = zero
       end do
 !$omp end parallel do
 !
@@ -74,7 +74,7 @@
      &                     + four * r_CMB * rr**2 - r_ICB**4 / rr)
           d_rj(is,idpdr%i_magne) = (five / eight) * (-dnine * rr**2     &
      &                       + eight * r_CMB * rr + r_ICB**4 / rr**2)
-          d_rj(is,itor%i_current) =  (five*three / two) * rr
+          d_rj(is,itor%base%i_current) =  (five*three / two) * rr
         end do
       end if
 !
@@ -83,8 +83,8 @@
           it = jt + (k-1) * sph_rj%nidx_rj(2)
           rr = sph_rj%radius_1d_rj_r(k)
           d_rj(it,itor%i_magne) = (ten/three) * rr * sin(pi*(rr-r_ICB))
-          d_rj(it,ipol%i_current) =  d_rj(it,itor%i_magne)
-          d_rj(it,idpdr%i_current)                                      &
+          d_rj(it,ipol%base%i_current) =  d_rj(it,itor%i_magne)
+          d_rj(it,idpdr%base%i_current)                                 &
      &             = (ten / three) * (sin(pi*(rr-r_ICB))                &
      &              + pi * rr * cos(pi*(rr-r_ICB)) )
         end do
@@ -119,9 +119,9 @@
         d_rj(is,ipol%i_magne  ) = zero
         d_rj(is,ipol%i_magne+1) = zero
         d_rj(is,ipol%i_magne+2) = zero
-        d_rj(is,ipol%i_current  ) = zero
-        d_rj(is,ipol%i_current+1) = zero
-        d_rj(is,ipol%i_current+2) = zero
+        d_rj(is,ipol%base%i_current  ) = zero
+        d_rj(is,ipol%base%i_current+1) = zero
+        d_rj(is,ipol%base%i_current+2) = zero
       end do
 !$omp end parallel do
 !
@@ -133,7 +133,7 @@
      &                       * (four*r_CMB - three*rr) / (r_CMB+three)
           d_rj(is,idpdr%i_magne) = (five / two) * rr                    &
      &                       * (eight*r_CMB - dnine*rr) / (r_CMB+three)
-          d_rj(is,itor%i_current) =  five*six * rr / (three +r_CMB)
+          d_rj(is,itor%base%i_current) = five*six * rr / (three +r_CMB)
         end do
       end if
 !
@@ -143,9 +143,9 @@
           rr = sph_rj%radius_1d_rj_r(k)
 !
           d_rj(it,itor%i_magne) = (ten / three) * rr * sin(pi*rr/r_CMB)
-          d_rj(it,ipol%i_current) =  d_rj(it,itor%i_magne)
-          d_rj(it,idpdr%i_current)                                      &
-     &              = (ten / three) * (sin(pi*rr/r_CMB)      &
+          d_rj(it,ipol%base%i_current) =  d_rj(it,itor%i_magne)
+          d_rj(it,idpdr%base%i_current)                                 &
+     &              = (ten / three) * (sin(pi*rr/r_CMB)                 &
      &               + (pi/r_CMB) * rr * cos(pi*rr/r_CMB) )
         end do
       end if

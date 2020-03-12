@@ -16,7 +16,8 @@
 !!      subroutine const_sph_current(sph_rj, r_2nd, sph_bc_B, g_sph_rj, &
 !!     &          is_magne, is_current, rj_fld)
 !!        Input:    ipol%i_magne, itor%i_magne
-!!        Solution: ipol%i_current, itor%i_current, idpdr%i_current
+!!        Solution: ipol%base%i_current, itor%base%i_current,
+!!                  idpdr%base%i_current
 !!
 !!      subroutine const_sph_rotation_uxb(sph_rj, r_2nd, sph_bc_B,      &
 !!     &          g_sph_rj, is_fld, is_rot, rj_fld)
@@ -45,7 +46,7 @@
 !!      subroutine const_sph_mag_diffuse_by_j                           &
 !!     &         (sph_rj, r_2nd, sph_bc_B, g_sph_rj, coef_diffuse,      &
 !!     &          is_magne, is_current, is_ohmic, rj_fld)
-!!        Input:    ipol%i_current, itor%i_current
+!!        Input:    ipol%base%i_current, itor%base%i_current
 !!        Solution: ipol%diffusion%i_b_diffuse, 
 !!               itor%diffusion%i_b_diffuse, idpdr%diffusion%i_b_diffuse
 !!

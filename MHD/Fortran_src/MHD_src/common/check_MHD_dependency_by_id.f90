@@ -56,7 +56,7 @@
      &       (fld, i_start, iphys%i_vort, vorticity%name)
 !
         else if(i_start .eq. iphys%i_filter_magne                       &
-     &     .or. i_start .eq. iphys%i_current) then
+     &     .or. i_start .eq. iphys%base%i_current) then
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_magne, magnetic_field%name)
         else if(i_start .eq. iphys%i_filter_vecp) then
@@ -64,7 +64,7 @@
      &       (fld, i_start, iphys%i_vecp, vector_potential%name)
         else if(i_start .eq. iphys%i_filter_current) then 
           call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_current, current_density%name)
+     &       (fld, i_start, iphys%base%i_current, current_density%name)
         else if(i_start .eq. iphys%i_vecp) then
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_velo, velocity%name)

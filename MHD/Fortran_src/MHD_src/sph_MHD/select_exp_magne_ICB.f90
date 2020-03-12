@@ -12,7 +12,8 @@
 !!     &          is_magne, is_current, rj_fld)
 !!        Input:    ipol%i_magne, itor%i_magne
 !!        Solution: idpdr%i_magne,
-!!                  ipol%i_current, itor%i_current, idpdr%i_current
+!!                  ipol%base%i_current, itor%base%i_current,
+!!                  idpdr%base%i_current
 !!      subroutine sel_ICB_grad_poloidal_magne                          &
 !!     &         (sph_rj, r_2nd, sph_bc_B, ICB_Bspec, g_sph_rj,         &
 !!     &          is_magne, rj_fld)
@@ -23,7 +24,8 @@
 !!     &         (sph_rj, r_2nd, sph_bc_B, g_sph_rj,                    &
 !!     &          is_magne, is_current, rj_fld)
 !!        Input:    ipol%i_magne, itor%i_magne
-!!        Solution: ipol%i_current, itor%i_current, idpdr%i_current
+!!        Solution: ipol%base%i_current, itor%base%i_current,
+!!                  idpdr%base%i_current
 !!      subroutine sel_ICB_sph_rotation_uxb                             &
 !!     &         (sph_rj, r_2nd, sph_bc_B, g_sph_rj,                    &
 !!     &          is_fld, is_rot, rj_fld)

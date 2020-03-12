@@ -48,8 +48,8 @@
 !
       if (iphys%prod_fld%i_c_heli .gt. izero) then
          call cal_phys_dot_product                                      &
-     &      (iphys%i_magne, iphys%i_current, iphys%prod_fld%i_c_heli,   &
-     &       nod_fld)
+     &      (iphys%i_magne, iphys%base%i_current,                       &
+     &       iphys%prod_fld%i_c_heli, nod_fld)
       end if
 !
       if (iphys%prod_fld%i_x_heli .gt. izero) then
