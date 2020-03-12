@@ -92,7 +92,7 @@
      &      write(*,*) 'check_scalar_evo_by_previous mag_p'
         call check_scalar_evo_by_previous                               &
      &     (node%numnod, node%istack_nod_smp, nod_fld%ntot_phys,        &
-     &      iphys%i_mag_p, iphys%i_chk_potential,                       &
+     &      iphys%base%i_mag_p, iphys%i_chk_potential,                  &
      &      iphys%i_chk_potential_2, flex_data%i_drmax_f,               &
      &      nod_fld%d_fld, flex_data)
       end if

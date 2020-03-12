@@ -352,7 +352,7 @@
       call set_boundary_vect(Bnod_bcs%nod_bc_b, iphys%i_magne, nod_fld)
 !
       call vector_send_recv(iphys%i_magne, nod_comm, nod_fld)
-      call scalar_send_recv(iphys%i_mag_p, nod_comm, nod_fld)
+      call scalar_send_recv(iphys%base%i_mag_p, nod_comm, nod_fld)
 !
       end subroutine cal_magnetic_co
 !
@@ -404,7 +404,7 @@
 !
       call int_vol_solenoid_co                                          &
      &   (FEM_prm%npoint_poisson_int, SGS_param%ifilter_final,          &
-     &    insulate%istack_ele_fld_smp, iphys%i_mag_p, iak_diff_b,       &
+     &    insulate%istack_ele_fld_smp, iphys%base%i_mag_p, iak_diff_b,  &
      &    node, ele, nod_fld, jacs%g_FEM, jacs%jac_3d, jacs%jac_3d_l,   &
      &    rhs_tbl, FEM_elens, diff_coefs, fem_wk, f_nl)
 !

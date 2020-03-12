@@ -183,8 +183,8 @@
      &            i_rms%i_press, j_ave%i_press, msq_list)
             else if ( field_name .eq. magnetic_potential%name ) then
               call set_rms_address                                      &
-     &           (field_name, num_comps, iphys%i_mag_p,                 &
-     &            i_rms%i_mag_p, j_ave%i_mag_p, msq_list)
+     &           (field_name, num_comps, iphys%base%i_mag_p,            &
+     &            i_rms%base%i_mag_p, j_ave%base%i_mag_p, msq_list)
             else
               call set_rms_address_list(i, nod_fld, msq_list)
             end if
@@ -366,8 +366,8 @@
      &          i_rms%i_div_filter_a, j_ave%i_div_filter_a, msq_list)
           else if ( field_name .eq. magnetic_potential%name ) then
             call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_mag_p,                   &
-     &          i_rms%i_mag_p, j_ave%i_mag_p, msq_list)
+     &         (field_name, num_comps, iphys%base%i_mag_p,              &
+     &          i_rms%base%i_mag_p, j_ave%base%i_mag_p, msq_list)
           end if
 
         end if

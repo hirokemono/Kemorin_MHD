@@ -60,7 +60,7 @@
 !
         else if(i_start .eq. iphys%i_filter_magne                       &
      &     .or. i_start .eq. iphys%i_current                            &
-     &     .or. i_start .eq. iphys%i_mag_p) then
+     &     .or. i_start .eq. iphys%base%i_mag_p) then
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_magne, magnetic_field%name)
         else if(i_start .eq. iphys%i_filter_vecp                        &
@@ -77,7 +77,7 @@
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_magne, magnetic_field%name)
           call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_mag_p, magnetic_potential%name)
+     &       (fld, i_start, iphys%base%i_mag_p, magnetic_potential%name)
 !
         else if(i_start .eq. iphys%i_filter_temp) then 
           call check_missing_field                                      &

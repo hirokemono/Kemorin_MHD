@@ -354,7 +354,7 @@
       if (iflag_debug.eq.1) write(*,*) 'vector_send_recv for vector_p'
       call vector_send_recv(iphys%i_vecp, nod_comm, nod_fld)
       if (iflag_debug.eq.1) write(*,*) 'scalar_send_recv for potential'
-      call scalar_send_recv(iphys%i_mag_p, nod_comm, nod_fld)
+      call scalar_send_recv(iphys%base%i_mag_p, nod_comm, nod_fld)
 !
       end subroutine cal_vector_p_co
 !

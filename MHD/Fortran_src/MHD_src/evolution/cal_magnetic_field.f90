@@ -145,7 +145,7 @@
       call init_sol_potential                                           &
      &   (mesh%node%numnod, mesh%node%istack_nod_smp,                   &
      &    dt, cd_prop%coef_mag_p, nod_fld%ntot_phys,                    &
-     &    iphys%ene_flux%i_m_phi, iphys%i_mag_p, nod_fld%d_fld)
+     &    iphys%ene_flux%i_m_phi, iphys%base%i_mag_p, nod_fld%d_fld)
 !
 !     --------------------- 
 !
@@ -174,7 +174,7 @@
       call init_sol_potential                                           &
      &   (mesh%node%numnod, mesh%node%istack_nod_smp,                   &
      &    dt, cd_prop%coef_mag_p, nod_fld%ntot_phys,                    &
-     &    iphys%ene_flux%i_m_phi, iphys%i_mag_p,nod_fld%d_fld)
+     &    iphys%ene_flux%i_m_phi, iphys%base%i_mag_p, nod_fld%d_fld)
 !
       do iloop = 0, FEM_prm%maxiter_coulomb
 !
@@ -190,8 +190,8 @@
         if (iflag_debug.gt.0) write(*,*) 'cal_sol_m_potential', iloop
         call cal_sol_m_potential                                        &
      &     (mesh%node%numnod, mesh%node%istack_internal_smp,            &
-     &      nod_fld%ntot_phys, iphys%ene_flux%i_m_phi, iphys%i_mag_p,   &
-     &      nod_fld%d_fld)
+     &      nod_fld%ntot_phys, iphys%ene_flux%i_m_phi,                  &
+     &      iphys%base%i_mag_p, nod_fld%d_fld)
 !
         if (iflag_debug.gt.0) write(*,*) 'vector_potential_correct'
         call cal_vector_p_co(ifld_diff%i_magne, ak_d_magne, dt,         &
@@ -205,8 +205,9 @@
 !
 !
         if (iflag_debug.gt.0) write(*,*) 'cal_rms_scalar_potential'
-        call cal_rms_scalar_potential(iloop, mesh%ele%istack_ele_smp,   &
-     &      iphys%i_mag_p, fem_sq%i_rms%i_mag_p, fem_sq%j_ave%i_mag_p,  &
+        call cal_rms_scalar_potential                                   &
+     &     (iloop, mesh%ele%istack_ele_smp, iphys%base%i_mag_p,         &
+     &      fem_sq%i_rms%base%i_mag_p, fem_sq%j_ave%base%i_mag_p,       &
      &      mesh, nod_fld, fem_int%jcs, rhs_mat%fem_wk,                 &
      &      fem_sq%msq, rel_correct, ave_mp0, rms_mp0)
 !
@@ -295,7 +296,7 @@
       call init_sol_potential                                           &
      &   (mesh%node%numnod, mesh%node%istack_nod_smp,                   &
      &    dt, cd_prop%coef_mag_p, nod_fld%ntot_phys,                    &
-     &    iphys%ene_flux%i_m_phi, iphys%i_mag_p, nod_fld%d_fld)
+     &    iphys%ene_flux%i_m_phi, iphys%base%i_mag_p, nod_fld%d_fld)
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_magnetic_field_pre'
       call cal_magnetic_field_pre                                       &
@@ -331,8 +332,8 @@
 !
         call cal_sol_m_potential                                        &
      &     (mesh%node%numnod, mesh%node%istack_internal_smp,            &
-     &      nod_fld%ntot_phys, iphys%ene_flux%i_m_phi, iphys%i_mag_p,   &
-     &      nod_fld%d_fld)
+     &      nod_fld%ntot_phys, iphys%ene_flux%i_m_phi,                  &
+     &      iphys%base%i_mag_p, nod_fld%d_fld)
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'magnetic_correction'
@@ -345,8 +346,9 @@
      &      MGCG_WK%MG_vector, mhd_fem_wk, rhs_mat%fem_wk,              &
      &      rhs_mat%surf_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
 !
-        call cal_rms_scalar_potential(iloop, mesh%ele%istack_ele_smp,   &
-     &      iphys%i_mag_p, fem_sq%i_rms%i_mag_p, fem_sq%j_ave%i_mag_p,  &
+        call cal_rms_scalar_potential                                   &
+     &     (iloop, mesh%ele%istack_ele_smp, iphys%base%i_mag_p,         &
+     &      fem_sq%i_rms%base%i_mag_p, fem_sq%j_ave%base%i_mag_p,       &
      &      mesh, nod_fld, fem_int%jcs, rhs_mat%fem_wk,                 &
      &      fem_sq%msq, rel_correct, ave_mp0, rms_mp0)
 !

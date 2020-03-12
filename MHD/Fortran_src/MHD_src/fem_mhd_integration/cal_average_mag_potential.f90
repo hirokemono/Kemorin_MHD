@@ -65,7 +65,7 @@
      &      g_FEM%max_int_point, g_FEM%maxtot_int_3d, g_FEM%int_start3, &
      &      g_FEM%owe3d, jac_3d_l%ntot_int, FEM_prm%npoint_t_evo_int,   &
      &      jac_3d_l%xjac, jac_3d_l%an,                                 &
-     &      nod_fld%ntot_phys, nod_fld%d_fld, iphys%i_mag_p,            &
+     &      nod_fld%ntot_phys, nod_fld%d_fld, iphys%base%i_mag_p,       &
      &      ave_mp_core_local)
 !
         call MPI_allREDUCE (ave_mp_core_local, ave_mp_core, 1,          &

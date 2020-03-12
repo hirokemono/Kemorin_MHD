@@ -95,7 +95,7 @@
         else if (field_name(i) .eq. perturbation_composition%name) then
           iphys%base%i_per_light = i0
         else if (field_name(i) .eq. magnetic_potential%name ) then
-          iphys%i_mag_p = i0
+          iphys%base%i_mag_p = i0
         else if (field_name(i) .eq. scalar_potential%name ) then
           iphys%base%i_scalar_p = i0
         else if (field_name(i) .eq. entropy%name ) then

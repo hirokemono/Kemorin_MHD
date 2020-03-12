@@ -92,9 +92,9 @@
         end if
       end if
 !
-      if( (iphys%i_chk_potential*iphys%i_mag_p) .gt. izero) then
+      if( (iphys%i_chk_potential * iphys%base%i_mag_p) .gt. izero) then
         call copy_scalar_component(nod_fld,                             &
-     &      iphys%i_mag_p, iphys%i_chk_potential)
+     &      iphys%base%i_mag_p, iphys%i_chk_potential)
       end if
 !
 !
