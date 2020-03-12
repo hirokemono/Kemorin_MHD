@@ -246,7 +246,7 @@
       call cal_sgs_induct_t_grad_no_coef                                &
      &   (ifilter_2delta,  iphys%SGS_term%i_SGS_induct_t,               &
      &    iphys%i_velo, iphys%base%i_magne, ie_dvx, ie_dbx,             &
-     &    Fdt, EM_prm, mesh%nod_comm, mesh%node, mesh%ele, conduct,     &
+     &    dt, FEM_prm, mesh%nod_comm, mesh%node, mesh%ele, conduct,     &
      &    cd_prop, iphys_ele, ele_fld, fem_int%jcs,                     &
      &    fem_int%rhs_tbl, FEM_filters%FEM_elens, mk_MHD%mlump_cd,      &
      &    rhs_mat%fem_wk, mhd_fem_wk, rhs_mat%f_l, nod_fld)
