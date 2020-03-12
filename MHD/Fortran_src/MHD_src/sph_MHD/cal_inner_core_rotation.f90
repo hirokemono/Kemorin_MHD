@@ -207,14 +207,14 @@
       i11c = idx_rj_degree_one( 1) + (kr_in-1)*jmax
 !
       d_rj(i11s,ipol%rot_forces%i_Coriolis)                             &
-     &       =  omega_rj(kr_in,0,2)*d_rj(i11c,ipol%i_vort)              &
-     &        - omega_rj(kr_in,0,3)*d_rj(i10c,ipol%i_vort)
+     &       =  omega_rj(kr_in,0,2)*d_rj(i11c,ipol%base%i_vort)         &
+     &        - omega_rj(kr_in,0,3)*d_rj(i10c,ipol%base%i_vort)
       d_rj(i11c,ipol%rot_forces%i_Coriolis)                             &
-     &       =  omega_rj(kr_in,0,1)*d_rj(i10c,ipol%i_vort)              &
-     &        - omega_rj(kr_in,0,2)*d_rj(i11s,ipol%i_vort)
+     &       =  omega_rj(kr_in,0,1)*d_rj(i10c,ipol%base%i_vort)         &
+     &        - omega_rj(kr_in,0,2)*d_rj(i11s,ipol%base%i_vort)
       d_rj(i10c,ipol%rot_forces%i_Coriolis)                             &
-     &       =  omega_rj(kr_in,0,3)*d_rj(i11s,ipol%i_vort)              &
-     &        - omega_rj(kr_in,0,1)*d_rj(i11c,ipol%i_vort)
+     &       =  omega_rj(kr_in,0,3)*d_rj(i11s,ipol%base%i_vort)         &
+     &        - omega_rj(kr_in,0,1)*d_rj(i11c,ipol%base%i_vort)
 !
       d_rj(i11s,ipol%rot_forces%i_Coriolis)                             &
      &       = -two*coef_cor*radius_1d_rj_r(kr_in)                      &
@@ -317,15 +317,17 @@
         ratio = radius_1d_rj_r(k)*radius_1d_rj_r(k) * ar_1d_rj(kr_in,2)
 !
         d_rj(i10c,itor%i_velo) =   ratio * d_rj(i10c_ri,itor%i_velo)
-        d_rj(i10c,ipol%i_vort) =   ratio * d_rj(i10c_ri,ipol%i_vort)
-        d_rj(i10c,ipol%i_vort+1) = two *   d_rj(i10c_ri,ipol%i_vort)    &
-     &                            * radius_1d_rj_r(k)*ar_1d_rj(kr_in,2)
+        d_rj(i10c,ipol%base%i_vort)                                     &
+     &           = ratio * d_rj(i10c_ri,ipol%base%i_vort)
+        d_rj(i10c,ipol%base%i_vort+1)                                   &
+     &           = two *   d_rj(i10c_ri,ipol%base%i_vort)               &
+     &                  * radius_1d_rj_r(k)*ar_1d_rj(kr_in,2)
       end do
 !$omp end parallel do
 !
       i10c = idx_rj_l0 + (kr_in-1)*jmax
-      d_rj(i10c,ipol%i_vort+1) = two *   d_rj(i10c_ri,ipol%i_vort)      &
-     &                          * ar_1d_rj(kr_in,1)
+      d_rj(i10c,ipol%base%i_vort+1)                                     &
+     &     = two * d_rj(i10c_ri,ipol%base%i_vort) * ar_1d_rj(kr_in,1)
 !
       end subroutine set_inner_core_rot_l1
 !

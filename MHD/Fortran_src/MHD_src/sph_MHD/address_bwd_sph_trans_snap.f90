@@ -51,11 +51,11 @@
      &    ipol%i_velo, itor%i_velo, iphys%i_velo,                       &
      &    b_trns%i_velo, trns_back)
 !      end if
-!      if(b_trns%i_vort .eq. 0) then
+!      if(b_trns%base%i_vort .eq. 0) then
       call add_field_name_4_sph_trns_snap                               &
      &   (vorticity%name, vorticity%n_comp,                             &
-     &    ipol%i_vort, itor%i_vort, iphys%i_vort,                       &
-     &    b_trns%i_vort, trns_back)
+     &    ipol%base%i_vort, itor%base%i_vort, iphys%base%i_vort,        &
+     &    b_trns%base%i_vort, trns_back)
 !      end if
 !      if(b_trns%i_magne .eq. 0) then
       call add_field_name_4_sph_trns_snap                               &

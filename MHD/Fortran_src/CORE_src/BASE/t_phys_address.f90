@@ -33,9 +33,6 @@
 !>        Start address for velocity
 !!         \f$ u_{i} \f$
         integer (kind=kint) :: i_velo  =           izero
-!>        Start address for vorticity
-!!         @f$ \omega_{i} = e_{ijk} \partial_{j} u_{k} @f$
-        integer (kind=kint) :: i_vort  =           izero
 !
 !>        start address for magnetic field
 !!         @f$ B_{i} @f$

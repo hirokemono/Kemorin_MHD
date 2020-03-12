@@ -57,8 +57,9 @@
      &      trns_b_MHD%ncomp, trns_f_ngSGS%ncomp,                       &
      &      trns_b_MHD%fld_rtp, trns_f_ngSGS%fld_rtp)
       end if
-      if(b_trns%i_vort .gt. 0) then
-        call copy_vect_to_grad_vect_rtp(sph%sph_rtp, b_trns%i_vort,     &
+      if(b_trns%base%i_vort .gt. 0) then
+        call copy_vect_to_grad_vect_rtp(sph%sph_rtp,                    &
+     &      b_trns%base%i_vort,                                         &
      &      fn_trns%diff_vector%i_grad_wx,                              &
      &      fn_trns%diff_vector%i_grad_wy,                              &
      &      fn_trns%diff_vector%i_grad_wz,                              &

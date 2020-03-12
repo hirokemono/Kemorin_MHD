@@ -352,14 +352,14 @@
       call take_zonal_mean_rj_field                                     &
      &   (ithree, ipol%i_velo, sph%sph_rj, rj_fld)
       call take_zonal_mean_rj_field                                     &
-     &   (ithree, ipol%i_vort, sph%sph_rj, rj_fld)
+     &   (ithree, ipol%base%i_vort, sph%sph_rj, rj_fld)
       if (my_rank.eq.0) write(*,*) 'delete zonam mean toroidal'
       call delete_zonal_mean_rj_field                                   &
      &   (ione, ipol%i_velo, sph%sph_rj, rj_fld)
       call delete_zonal_mean_rj_field                                   &
      &   (ione, idpdr%i_velo, sph%sph_rj, rj_fld)
       call delete_zonal_mean_rj_field                                   &
-     &   (ione, itor%i_vort, sph%sph_rj, rj_fld)
+     &   (ione, itor%base%i_vort, sph%sph_rj, rj_fld)
 !
       end subroutine set_special_rj_fields
 !

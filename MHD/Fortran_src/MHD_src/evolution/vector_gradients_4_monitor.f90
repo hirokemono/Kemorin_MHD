@@ -108,11 +108,11 @@
      &     .or. i_fld .eq. iphys%diff_vector%i_grad_wy                  &
      &     .or. i_fld .eq. iphys%diff_vector%i_grad_wz) then
           if(i_fld .eq. iphys%diff_vector%i_grad_wx) then
-            i_src = iphys%i_vort
+            i_src = iphys%base%i_vort
           else if(i_fld .eq. iphys%diff_vector%i_grad_wy) then
-            i_src = iphys%i_vort + 1
+            i_src = iphys%base%i_vort + 1
           else if(i_fld .eq. iphys%diff_vector%i_grad_wz) then
-            i_src = iphys%i_vort + 2
+            i_src = iphys%base%i_vort + 2
           end if
 !
           if(iflag_debug .ge. iflag_routine_msg)                        &

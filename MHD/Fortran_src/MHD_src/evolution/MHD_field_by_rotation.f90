@@ -102,13 +102,13 @@
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-      if(iphys%i_vort .gt. izero)then
-        if(nod_fld%iflag_update(iphys%i_vort) .eq. izero) then
+      if(iphys%base%i_vort .gt. izero)then
+        if(nod_fld%iflag_update(iphys%base%i_vort) .eq. izero) then
           if (iflag_debug .ge. iflag_routine_msg)                       &
      &        write(*,*) 'cal_vorticity'
           call choose_cal_rotation_sgs(cmt_param%iflag_c_velo,          &
      &       FEM_prm%iflag_velo_supg, FEM_prm%npoint_t_evo_int, dt,     &
-     &       ifld_diff%i_velo, iphys%i_velo, iphys%i_vort,              &
+     &       ifld_diff%i_velo, iphys%i_velo, iphys%base%i_vort,         &
      &       fluid%istack_ele_fld_smp, mk_MHD%mlump_fl,                 &
      &       SGS_param,  mesh%nod_comm, mesh%node,                      &
      &       mesh%ele, mesh%surf, group%surf_grp,                       &

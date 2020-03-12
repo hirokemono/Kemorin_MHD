@@ -86,7 +86,7 @@
 !      call check_ws_spectr(sph_rj, ipol, idpdr, itor, rj_fld)
 !
       if(MHD_prop%fl_prop%iflag_scheme .gt. id_no_evolution) then
-!         Input:    ipol%i_vort, itor%i_vort
+!         Input:    ipol%base%i_vort, itor%base%i_vort
 !         Solution: ipol%i_velo, itor%i_velo, idpdr%i_velo
         if (iflag_debug .gt. 0)                                         &
      &       write(*,*) 'cal_sol_velo_by_vort_sph_crank'
@@ -98,7 +98,7 @@
         call const_grad_vp_and_vorticity                                &
      &     (sph_rj, r_2nd, sph_MHD_bc%sph_bc_U, sph_MHD_bc%bcs_U,       &
      &      sph_MHD_bc%fdm2_free_ICB, sph_MHD_bc%fdm2_free_CMB,         &
-     &      leg%g_sph_rj, ipol%i_velo, ipol%i_vort, rj_fld)
+     &      leg%g_sph_rj, ipol%i_velo, ipol%base%i_vort, rj_fld)
       end if
 !
 !  Input: ipol%base%i_temp,  Solution: ipol%base%i_temp
@@ -181,11 +181,11 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      if(ipol%i_velo*ipol%i_vort .gt. 0) then
+      if(ipol%base%i_vort .gt. 0) then
         call const_grad_vp_and_vorticity                                &
      &     (sph_rj, r_2nd, sph_MHD_bc%sph_bc_U, sph_MHD_bc%bcs_U,       &
      &      sph_MHD_bc%fdm2_free_ICB, sph_MHD_bc%fdm2_free_CMB,         &
-     &      leg%g_sph_rj, ipol%i_velo, ipol%i_vort, rj_fld)
+     &      leg%g_sph_rj, ipol%i_velo, ipol%base%i_vort, rj_fld)
       end if
 !
       if(MHD_prop%fl_prop%iflag_scheme .gt. id_no_evolution) then
@@ -245,7 +245,7 @@
      &     (sph_bc_U%kr_in, sph_rj, ipol, itor, rj_fld)
       end if
 !
-!       Input: ipol%i_vort, itor%i_vort
+!       Input: ipol%base%i_vort, itor%base%i_vort
 !       Solution: ipol%diffusion%i_v_diffuse, itor%diffusion%i_v_diffuse,
 !                 idpdr%diffusion%i_v_diffuse
       if(ipol%diffusion%i_v_diffuse .gt. 0) then
@@ -253,11 +253,11 @@
         call const_sph_viscous_by_vort2(sph_rj, r_2nd,                  &
      &      sph_bc_U, fdm2_free_ICB, fdm2_free_CMB,                     &
      &      leg%g_sph_rj, fl_prop%coef_diffuse,                         &
-     &      ipol%i_velo, ipol%i_vort, ipol%diffusion%i_v_diffuse,       &
+     &      ipol%i_velo, ipol%base%i_vort, ipol%diffusion%i_v_diffuse,  &
      &      rj_fld)
       end if
 !
-!       Input:    ipol%i_vort, itor%i_vort
+!       Input:    ipol%base%i_vort, itor%base%i_vort
 !       Solution: ipol%diffusion%i_w_diffuse, itor%diffusion%i_w_diffuse,
 !                 idpdr%diffusion%i_w_diffuse
       if(ipol%diffusion%i_w_diffuse .gt. 0) then
@@ -265,7 +265,7 @@
         call const_sph_vorticirty_diffusion(sph_rj, r_2nd,              &
      &      sph_bc_U, fdm2_free_ICB, fdm2_free_CMB,                     &
      &      leg%g_sph_rj, fl_prop%coef_diffuse,                         &
-     &      ipol%i_vort, ipol%diffusion%i_w_diffuse, rj_fld)
+     &      ipol%base%i_vort, ipol%diffusion%i_w_diffuse, rj_fld)
       end if
 !
       end subroutine update_after_vorticity_sph
@@ -418,9 +418,9 @@
          do k = 1, sph_rj%nidx_rj(1)
           inod = j + (k-1) * sph_rj%nidx_rj(2)
           write(150+my_rank,'(2i16,1p20E25.15e3)') j, k,                &
-     &        rj_fld%d_fld(inod,ipol%i_vort),                           &
-     &        rj_fld%d_fld(inod,idpdr%i_vort),                          &
-     &        rj_fld%d_fld(inod,itor%i_vort)
+     &        rj_fld%d_fld(inod,ipol%base%i_vort),                      &
+     &        rj_fld%d_fld(inod,idpdr%base%i_vort),                     &
+     &        rj_fld%d_fld(inod,itor%base%i_vort)
         end do
       end do
 !

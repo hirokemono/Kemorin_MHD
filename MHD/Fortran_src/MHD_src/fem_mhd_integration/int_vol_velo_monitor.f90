@@ -122,7 +122,7 @@
           call int_vol_rot_inertia                                      &
      &       (node, ele, g_FEM, jac_3d, rhs_tbl, nod_fld,               &
      &        fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,       &
-     &        iphys%i_velo, ele_fld%ntot_phys, iphys_ele%i_vort,        &
+     &        iphys%i_velo, ele_fld%ntot_phys, iphys_ele%base%i_vort,   &
      &        ele_fld%d_fld, fl_prop%coef_nega_v, fem_wk, f_nl)
         else
           call int_vol_vector_inertia                                   &
@@ -280,7 +280,7 @@
           call int_vol_rot_inertia_upw                                  &
      &       (node, ele, g_FEM, jac_3d, rhs_tbl, nod_fld,               &
      &        fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int, dt,   &
-     &        iphys%i_velo, ele_fld%ntot_phys, iphys_ele%i_vort,        &
+     &        iphys%i_velo, ele_fld%ntot_phys, iphys_ele%base%i_vort,   &
      &        iv_upw, ele_fld%d_fld, fl_prop%coef_nega_v,               &
      &        fem_wk, f_nl)
         else

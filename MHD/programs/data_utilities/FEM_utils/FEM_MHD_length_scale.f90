@@ -112,7 +112,7 @@
         icou = icou + 1
         ucd%phys_name(icou) = velocity_scale%name
         call cal_vect_length_scale_by_rot                               &
-     &     (iphys%i_velo, iphys%i_vort, node, nod_fld)
+     &     (iphys%i_velo, iphys%base%i_vort, node, nod_fld)
         call set_one_field_to_udt_data                                  &
      &     (node%numnod, ione, icou, d_mag(1), ucd)
       end if
@@ -146,7 +146,7 @@
 !
 !
       iphys%i_velo =      0
-      iphys%i_vort =      0
+      iphys%base%i_vort =      0
       iphys%i_magne =     0
       iphys%base%i_current =   0
       iphys%base%i_temp =      0
@@ -155,7 +155,7 @@
         if(nod_fld%phys_name(i_fld) .eq. velocity%name) then
           iphys%i_velo =      nod_fld%istack_component(i_fld-1) + 1
         else if(nod_fld%phys_name(i_fld) .eq. vorticity%name) then
-          iphys%i_vort =      nod_fld%istack_component(i_fld-1) + 1
+          iphys%base%i_vort = nod_fld%istack_component(i_fld-1) + 1
         else if(nod_fld%phys_name(i_fld) .eq. magnetic_field%name) then
           iphys%i_magne =     nod_fld%istack_component(i_fld-1) + 1
         else if(nod_fld%phys_name(i_fld)                                &

@@ -127,7 +127,7 @@
 !
       if (fl_prop%iflag_scheme .gt. id_no_evolution) then
         msg = 'time integration for vorticity equation needs'
-        call check_missing_field_w_msg(fld, msg, iphys%i_vort)
+        call check_missing_field_w_msg(fld, msg, iphys%base%i_vort)
       end if
 !
       if (ht_prop%iflag_scheme .gt. id_no_evolution) then
@@ -217,7 +217,7 @@
 !
       if (fl_prop%iflag_scheme .gt. id_no_evolution) then
         msg = 'time integration for velocity needs'
-        call check_missing_field_w_msg(fld, msg, iphys%i_vort)
+        call check_missing_field_w_msg(fld, msg, iphys%base%i_vort)
       end if
 !
       end subroutine check_dependence_SPH_evo

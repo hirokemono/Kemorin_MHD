@@ -23,7 +23,8 @@
 !!     &          sph_bc_U, bcs_U, fdm2_free_ICB, fdm2_free_CMB,        &
 !!     &          g_sph_rj, is_velo, is_vort, rj_fld)
 !!        Input:    ipol%i_velo, itor%i_velo
-!!        Solution: idpdr%i_velo, ipol%i_vort, itor%i_vort, idpdr%i_vort
+!!        Solution: idpdr%i_velo, ipol%base%i_vort, itor%base%i_vort,
+!!                                idpdr%base%i_vort
 !!
 !!      subroutine const_grad_bp_and_current                            &
 !!     &         (sph_rj, r_2nd, sph_bc_B, bcs_B, g_sph_rj,             &

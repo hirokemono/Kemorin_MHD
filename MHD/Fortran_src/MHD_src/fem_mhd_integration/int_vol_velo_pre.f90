@@ -154,7 +154,7 @@
      &            g_FEM%max_int_point, g_FEM%maxtot_int_3d,             &
      &            g_FEM%int_start3, g_FEM%owe3d, num_int, k2,           &
      &            jac_3d%ntot_int, jac_3d%xjac, jac_3d%an, jac_3d%an,   &
-     &            mhd_fem_wk%velo_1, d_ele(1,iphys_ele%i_vort),         &
+     &            mhd_fem_wk%velo_1, d_ele(1,iphys_ele%base%i_vort),    &
      &            fem_wk%sk6)
               call fem_skv_div_sgs_tensor(fluid%istack_ele_fld_smp,     &
      &            num_int, k2, SGS_param%ifilter_final,                 &
@@ -168,7 +168,7 @@
               call fem_skv_inertia_rot_sgs_pg                           &
      &           (fluid%istack_ele_fld_smp, num_int, k2,                &
      &            ele, g_FEM, jac_3d, mhd_fem_wk%velo_1,                &
-     &            mhd_fem_wk%sgs_t1, d_ele(1,iphys_ele%i_vort),         &
+     &            mhd_fem_wk%sgs_t1, d_ele(1,iphys_ele%base%i_vort),    &
      &            fem_wk%sk6)
             else
               call fem_skv_rot_inertia                                  &
@@ -177,7 +177,7 @@
      &            g_FEM%max_int_point, g_FEM%maxtot_int_3d,             &
      &            g_FEM%int_start3, g_FEM%owe3d, num_int, k2,           &
      &            jac_3d%ntot_int, jac_3d%xjac, jac_3d%an, jac_3d%an,   &
-     &            mhd_fem_wk%velo_1, d_ele(1,iphys_ele%i_vort),         &
+     &            mhd_fem_wk%velo_1, d_ele(1,iphys_ele%base%i_vort),    &
      &            fem_wk%sk6)
             end if
 !
@@ -446,7 +446,7 @@
 !
               call fem_skv_rot_inertia_upwind                           &
      &           (fluid%istack_ele_fld_smp, num_int, k2, dt,            &
-     &            mhd_fem_wk%velo_1, d_ele(1,iphys_ele%i_vort),         &
+     &            mhd_fem_wk%velo_1, d_ele(1,iphys_ele%base%i_vort),    &
      &            d_ele(1,ie_upw), ele, g_FEM, jac_3d, fem_wk%sk6)
               call fem_skv_div_sgs_tensor_upwind                        &
      &           (fluid%istack_ele_fld_smp, num_int,                    &
@@ -466,7 +466,7 @@
             else
               call fem_skv_rot_inertia_upwind                           &
      &           (fluid%istack_ele_fld_smp, num_int, k2, dt,            &
-     &            mhd_fem_wk%velo_1, d_ele(1,iphys_ele%i_vort),         &
+     &            mhd_fem_wk%velo_1, d_ele(1,iphys_ele%base%i_vort),    &
      &            d_ele(1,ie_upw), ele, g_FEM, jac_3d, fem_wk%sk6)
             end if
 !

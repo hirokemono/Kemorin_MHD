@@ -155,8 +155,8 @@
 !
             else if(field_name .eq. vorticity%name) then
               call set_rms_address                                      &
-     &           (field_name, num_comps, iphys%i_vort,                  &
-     &            i_rms%i_vort, j_ave%i_vort, msq_list)
+     &           (field_name, num_comps, iphys%base%i_vort,             &
+     &            i_rms%base%i_vort, j_ave%base%i_vort, msq_list)
 !
               ifld_msq%ir_rms_w = msq_list%numrms + 1
               msq_list%numrms = msq_list%numrms + 1

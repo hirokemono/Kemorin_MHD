@@ -66,7 +66,7 @@
             call scalar_label_4_step(id_ave, id_msq, e_hd_div_v)
           end if
 !
-        else if(msq_list%ifld_msq(i) .eq. iphys%i_vort) then
+        else if(msq_list%ifld_msq(i) .eq. iphys%base%i_vort) then
             call vector_label_4_step(id_ave, id_msq, vorticity%name)
             call write_one_label(id_msq, e_hd_rms_w)
 !

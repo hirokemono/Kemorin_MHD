@@ -66,10 +66,10 @@
       end if
 !   vorticity flag
       if(       fl_prop%iflag_scheme .gt. id_no_evolution) then
-        call add_field_name_4_sph_trns(ipol%i_vort,                     &
+        call add_field_name_4_sph_trns(ipol%base%i_vort,                &
      &      vorticity%name, vorticity%n_comp,                           &
-     &      ipol%i_vort, itor%i_vort, iphys%i_vort,                     &
-     &      b_trns%i_vort, trns_back)
+     &      ipol%base%i_vort, itor%base%i_vort, iphys%base%i_vort,      &
+     &      b_trns%base%i_vort, trns_back)
       end if
 !   magnetic field flag
       if(       cd_prop%iflag_Bevo_scheme .gt. id_no_evolution          &

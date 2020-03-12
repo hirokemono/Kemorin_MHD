@@ -208,7 +208,7 @@
 !
       if(ifld_msq%ir_rms_w .gt. 0) then
         fem_msq%rms_local(ifld_msq%ir_rms_w)                            &
-     &      = fem_msq%rms_local(i_rms%i_vort)
+     &      = fem_msq%rms_local(i_rms%base%i_vort)
       end if
       if(ifld_msq%ir_rms_j .gt. 0) then
         fem_msq%rms_local(ifld_msq%ir_rms_j)                            &

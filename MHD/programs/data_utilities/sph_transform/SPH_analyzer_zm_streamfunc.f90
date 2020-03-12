@@ -223,10 +223,10 @@
         do k = 1, sph_rj%nidx_rj(1)
           do j = 1, sph_rj%nidx_rj(2)
             inod = (k-1)*sph_rj%nidx_rj(2) + j
-            rj_fld%d_fld(inod,itor%i_vort )                             &
+            rj_fld%d_fld(inod,itor%base%i_vort )                        &
      &           =  rj_fld%d_fld(inod,itor%i_velo)
-            rj_fld%d_fld(inod,ipol%i_vort ) =  zero
-            rj_fld%d_fld(inod,idpdr%i_vort) =  zero
+            rj_fld%d_fld(inod,ipol%base%i_vort ) =  zero
+            rj_fld%d_fld(inod,idpdr%base%i_vort) =  zero
 !
             rj_fld%d_fld(inod,itor%i_velo )                             &
      &           =  rj_fld%d_fld(inod,ipol%i_velo)

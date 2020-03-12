@@ -64,7 +64,7 @@
         call pole_fld_cst_cross_prod                                    &
      &     (node%numnod, node%internal_node, node%xx,                   &
      &      sph_rtp%nnod_rtp, sph_rtp%nidx_rtp(1), fl_prop%coef_velo,   &
-     &      nod_fld%ntot_phys, iphys%i_vort, iphys%i_velo,              &
+     &      nod_fld%ntot_phys, iphys%base%i_vort, iphys%i_velo,         &
      &      iphys%forces%i_m_advect, nod_fld%d_fld)
       end if
 !

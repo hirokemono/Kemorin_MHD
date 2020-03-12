@@ -36,7 +36,7 @@
 !$omp parallel
       if (iphys%prod_fld%i_k_heli .gt. izero) then
          call cal_phys_dot_product                                      &
-     &      (iphys%i_velo, iphys%i_vort, iphys%prod_fld%i_k_heli,       &
+     &      (iphys%i_velo, iphys%base%i_vort, iphys%prod_fld%i_k_heli,  &
      &       nod_fld)
       end if
 !

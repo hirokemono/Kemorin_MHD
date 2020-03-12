@@ -11,7 +11,8 @@
 !!     &          sph_bc_U, ICB_Uspec, fdm2_free_ICB, g_sph_rj,         &
 !!     &          is_velo, is_vort, rj_fld)
 !!        Input:    ipol%i_velo, itor%i_velo
-!!        Solution: idpdr%i_velo, ipol%i_vort, itor%i_vort, idpdr%i_vort
+!!        Solution: idpdr%i_velo, 
+!!                  ipol%base%i_vort, itor%base%i_vort, idpdr%base%i_vort
 !!      subroutine sel_ICB_grad_poloidal_moment                         &
 !!     &         (sph_rj, r_2nd, sph_bc_U, ICB_Uspec, fdm2_free_ICB,    &
 !!     &          is_fld, rj_fld)
@@ -22,7 +23,7 @@
 !!     &         (sph_rj, r_2nd, sph_bc_U, fdm2_free_ICB, g_sph_rj,     &
 !!     &          is_fld, is_rot, rj_fld)
 !!        Input:    ipol%i_velo, itor%i_velo
-!!        Solution: ipol%i_vort, itor%i_vort, idpdr%i_vort
+!!        Solution: ipol%base%i_vort, itor%base%i_vort, idpdr%base%i_vort
 !!
 !!      subroutine sel_ICB_sph_viscous_diffusion(sph_rj, r_2nd,         &
 !!     &          sph_bc_U, fdm2_free_ICB, g_sph_rj, coef_diffuse,      &
@@ -33,7 +34,7 @@
 !!      subroutine sel_ICB_sph_vort_diffusion(sph_rj, r_2nd,            &
 !!     &          sph_bc_U, fdm2_free_ICB, g_sph_rj, coef_diffuse,      &
 !!     &          is_vort, is_w_diffuse, rj_fld)
-!!        Input:    ipol%i_vort, itor%i_vort
+!!        Input:    ipol%base%i_vort, itor%base%i_vort
 !!        Solution: ipol%diffusion%i_w_diffuse, 
 !!               itor%diffusion%i_w_diffuse, idpdr%diffusion%i_w_diffuse
 !!          type(sph_rj_grid), intent(in) :: sph_rj

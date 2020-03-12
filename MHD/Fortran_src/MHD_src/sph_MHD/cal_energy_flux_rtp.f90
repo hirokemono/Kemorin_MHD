@@ -76,7 +76,7 @@
      &                                               .gt. 0) then
         call cal_cross_prod_w_coef_smp                                  &
      &     (sph_rtp%nnod_pole, fl_prop%coef_velo,                       &
-     &      trns_b_MHD%fld_pole(1,bs_trns%i_vort),                      &
+     &      trns_b_MHD%fld_pole(1,bs_trns%base%i_vort),                 &
      &      trns_b_MHD%fld_pole(1,bs_trns%i_velo),                      &
      &      trns_f_MHD%fld_pole(1,f_trns%forces%i_m_advect) )
       end if
@@ -281,7 +281,7 @@
         call cal_len_scale_by_rot_smp                                   &
      &      (np_smp, sph_rtp%nnod_rtp, sph_rtp%istack_inod_rtp_smp,     &
      &      trns_b_snap%fld_rtp(1,bs_trns%i_velo),                      &
-     &      trns_b_snap%fld_rtp(1,bs_trns%i_vort),                      &
+     &      trns_b_snap%fld_rtp(1,bs_trns%base%i_vort),                 &
      &      trns_f_snap%fld_rtp(1,fs_trns%prod_fld%i_velo_scale))
       end if
       if(fs_trns%prod_fld%i_magne_scale .gt. 0) then
@@ -316,8 +316,8 @@
       end if
       if(fs_trns%prod_fld%i_square_w .gt. 0) then
         call vector_vector_prod_smp(sph_rtp%nnod_rtp,                   &
-     &      trns_b_snap%fld_rtp(1,bs_trns%i_vort),                      &
-     &      trns_b_snap%fld_rtp(1,bs_trns%i_vort),                      &
+     &      trns_b_snap%fld_rtp(1,bs_trns%base%i_vort),                 &
+     &      trns_b_snap%fld_rtp(1,bs_trns%base%i_vort),                 &
      &      trns_f_snap%fld_rtp(1,fs_trns%prod_fld%i_square_w))
       end if
       if(fs_trns%prod_fld%i_square_b .gt. 0) then

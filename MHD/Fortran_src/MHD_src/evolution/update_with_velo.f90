@@ -115,12 +115,12 @@
       end if
 !
       if( FEM_prm%iflag_rotate_form .eq. id_turn_ON                     &
-     &      .and. iphys_ele%i_vort .ne. 0) then
+     &      .and. iphys_ele%base%i_vort .ne. 0) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &                 write(*,*) 'vorticity_on_element'
         call rotation_on_element_1st(mesh%node, mesh%ele, fem_int%jcs,  &
      &      fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,         &
-     &      iphys%i_velo, nod_fld, iphys_ele%i_vort, ele_fld)
+     &      iphys%i_velo, nod_fld, iphys_ele%base%i_vort, ele_fld)
       end if
 !
 !   required field for explicit filtering

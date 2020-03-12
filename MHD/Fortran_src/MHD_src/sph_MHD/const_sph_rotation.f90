@@ -11,7 +11,7 @@
 !!     &          fdm2_free_ICB, fdm2_free_CMB, g_sph_rj,               &
 !!     &          is_velo, is_vort, rj_fld)
 !!        Input:    ipol%i_velo, itor%i_velo
-!!        Solution: ipol%i_vort, itor%i_vort, idpdr%i_vort
+!!        Solution: ipol%base%i_vort, itor%base%i_vort, idpdr%base%i_vort
 !!
 !!      subroutine const_sph_current(sph_rj, r_2nd, sph_bc_B, g_sph_rj, &
 !!     &          is_magne, is_current, rj_fld)
@@ -39,7 +39,7 @@
 !!     &         (sph_rj, r_2nd, sph_bc_U, fdm2_free_ICB, fdm2_free_CMB,&
 !!     &          g_sph_rj, coef_diffuse, is_velo, is_vort, is_viscous, &
 !!     &          rj_fld)
-!!        Input:    ipol%i_vort, itor%i_vort
+!!        Input:    ipol%base%i_vort, itor%base%i_vort
 !!        Solution: ipol%diffusion%i_v_diffuse, 
 !!              itor%diffusion%i_v_diffuse, idpdr%diffusion%i_v_diffuse
 !!
