@@ -361,7 +361,7 @@
 !
 !
 !
-      if (iphys%i_velo .ne. 0) then
+      if(iphys%i_velo .ne. 0) then
         call update_with_velocity                                       &
      &     (ifld_diff%i_velo, icomp_diff%i_velo, iphys_elediff%i_velo,  &
      &      iphys_elediff%i_filter_velo, time_d%i_time_step, time_d%dt, &
@@ -373,7 +373,7 @@
      &      nod_fld, SGS_MHD_wk%ele_fld, diff_coefs)
       end if
 !
-      if (iphys%base%i_temp .ne. 0) then
+      if(iphys%base%i_temp .ne. 0) then
         call update_with_temperature                                    &
      &     (ifld_diff%i_temp, icomp_diff%i_temp, time_d%i_time_step,    &
      &      time_d%dt, FEM_prm, SGS_par, fem%mesh, fem%group,           &
@@ -384,7 +384,7 @@
      &      diff_coefs)
       end if
 !
-      if (iphys%base%i_light .ne. 0) then
+      if(iphys%base%i_light .ne. 0) then
         call update_with_dummy_scalar                                   &
      &     (ifld_diff%i_light, icomp_diff%i_light, time_d%i_time_step,  &
      &      time_d%dt, FEM_prm, SGS_par, fem%mesh, fem%group,           &
@@ -395,7 +395,7 @@
      &      nod_fld, diff_coefs)
       end if
 !
-      if (iphys%base%i_vecp .ne. 0) then
+      if(iphys%base%i_vecp .ne. 0) then
         call update_with_vector_potential                               &
      &    (ifld_diff%i_magne, icomp_diff%i_magne,                       &
      &     iphys_elediff%i_magne, iphys_elediff%i_filter_magne,         &
@@ -406,7 +406,7 @@
      &     FEM_filters, SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%mhd_fem_wk,   &
      &     SGS_MHD_wk%rhs_mat, nod_fld, SGS_MHD_wk%ele_fld,             &
      &     diff_coefs)
-      else if (iphys%i_magne.ne.0) then
+      else if(iphys%base%i_magne.ne.0) then
         call update_with_magnetic_field                                 &
      &    (ifld_diff%i_magne, icomp_diff%i_magne,                       &
      &     iphys_elediff%i_magne, iphys_elediff%i_filter_magne,         &
