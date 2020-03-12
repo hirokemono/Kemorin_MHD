@@ -92,7 +92,7 @@
         call int_div_sgs_mf_simi_upwind                                 &
      &     (i_flux, i_vect, FEM_prm%npoint_t_evo_int, dt,               &
      &      node, ele, fluid, nod_fld, jacs%g_FEM, jacs%jac_3d,         &
-     &      rhs_tbl, ele_fld%ntot_phys, iphys_ele%i_magne,              &
+     &      rhs_tbl, ele_fld%ntot_phys, iphys_ele%base%i_magne,         &
      &      ele_fld%d_fld,  fem_wk, f_nl)
       else if (FEM_prm%iflag_velo_supg .eq. id_turn_ON) then
         call int_div_sgs_mf_simi_upwind                                 &

@@ -278,8 +278,9 @@
       if (    SGS_param%iflag_SGS_lorentz .eq. id_SGS_NL_grad) then
         if (iflag_debug.eq.1)                                           &
      &    write(*,*) 'cal_sgs_maxwell_grad', SGS_param%ifilter_final
-        call cal_sgs_m_flux_grad_w_coef(SGS_param%ifilter_final,        &
-     &      icomp_sgs_lor, iphys%SGS_term%i_SGS_maxwell, iphys%i_magne, &
+        call cal_sgs_m_flux_grad_w_coef                                 &
+     &     (SGS_param%ifilter_final, icomp_sgs_lor,                     &
+     &      iphys%SGS_term%i_SGS_maxwell, iphys%base%i_magne,           &
      &      ie_dbx, dt, FEM_prm, SGS_param, nod_comm, node, ele, fluid, &
      &      iphys_ele, ele_fld, jacs, FEM_elens, sgs_coefs, rhs_tbl,    &
      &      mlump_fl, fem_wk, mhd_fem_wk, nod_fld)
@@ -289,14 +290,14 @@
         if (iflag_debug.eq.1)                                           &
      &     write(*,*) 'cal_sgs_mf_simi',  iphys%SGS_term%i_SGS_maxwell
         call cal_sgs_mf_simi(iphys%SGS_term%i_SGS_maxwell,              &
-     &      iphys%i_magne, iphys%i_filter_magne, icomp_sgs_lor,         &
+     &      iphys%base%i_magne, iphys%i_filter_magne, icomp_sgs_lor,    &
      &      filter_param, nod_comm, node, filtering, sgs_coefs_nod,     &
      &      wk_filter, nod_fld)
 !
       else if(SGS_param%iflag_SGS_lorentz .eq. id_SGS_diffusion) then
         if (iflag_debug.eq.1) write(*,*) 'cal_sgs_m_flux_diffuse',      &
      &                                  iphys%SGS_term%i_SGS_maxwell
-        call cal_sgs_m_flux_diffuse(iphys%i_magne,                      &
+        call cal_sgs_m_flux_diffuse(iphys%base%i_magne,                 &
      &     iphys%SGS_wk%i_wk_diffuse, iphys%SGS_term%i_SGS_maxwell, dt, &
      &     FEM_prm, nod_comm, node, ele, fluid, iphys_ele, ele_fld,     &
      &     jacs%g_FEM, jacs%jac_3d, rhs_tbl, mlump_fl, fem_wk,          &
@@ -352,7 +353,7 @@
      &    write(*,*) 'cal_sgs_induct_t_grad'
         call cal_sgs_induct_t_grad_w_coef(SGS_param%ifilter_final,      &
      &      icomp_sgs_uxb, iphys%SGS_term%i_SGS_induct_t,               &
-     &      iphys%i_velo, iphys%i_magne, ie_dvx, ie_dbx, dt,            &
+     &      iphys%i_velo, iphys%base%i_magne, ie_dvx, ie_dbx, dt,       &
      &      FEM_prm, SGS_param, nod_comm, node, ele, conduct, cd_prop,  &
      &      iphys_ele, ele_fld, jacs, rhs_tbl, FEM_elens, sgs_coefs,    &
      &      mlump_cd, fem_wk, mhd_fem_wk, f_l, nod_fld)
@@ -360,8 +361,8 @@
       else if(SGS_param%iflag_SGS_uxb .eq. id_SGS_similarity) then
         if (iflag_debug.eq.1)                                           &
      &      write(*,*) 'cal_sgs_induct_t_simi'
-        call cal_sgs_induct_t_simi                                      &
-     &     (iphys%SGS_term%i_SGS_induct_t, iphys%i_velo, iphys%i_magne, &
+        call cal_sgs_induct_t_simi(iphys%SGS_term%i_SGS_induct_t,       &
+     &      iphys%i_velo, iphys%base%i_magne,                           &
      &      iphys%i_filter_velo, iphys%i_filter_magne, icomp_sgs_uxb,   &
      &      filter_param, nod_comm, node, filtering, sgs_coefs_nod,     &
      &      wk_filter, nod_fld)
@@ -430,7 +431,7 @@
      &      write(*,*) 'choose_int_vol_rotations'
          call choose_int_vol_rotations                                  &
      &      (FEM_prm%iflag_magne_supg, FEM_prm%npoint_t_evo_int, dt,    &
-     &       conduct%istack_ele_fld_smp, iphys%i_magne,                 &
+     &       conduct%istack_ele_fld_smp, iphys%base%i_magne,            &
      &       node, ele, nod_fld, iphys_ele, ele_fld,                    &
      &       jacs%g_FEM, jacs%jac_3d, rhs_tbl, fem_wk, f_nl)
       end if

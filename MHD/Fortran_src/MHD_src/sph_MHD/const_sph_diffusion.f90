@@ -24,7 +24,7 @@
 !!
 !!      subroutine const_sph_magnetic_diffusion(sph_rj, r_2nd, sph_bc_B,&
 !!     &          g_sph_rj, coef_diffuse, is_magne, is_ohmic, rj_fld)
-!!        Input:    ipol%i_magne, itor%i_magne
+!!        Input:    ipol%base%i_magne, itor%base%i_magne
 !!        Solution: ipol%diffusion%i_b_diffuse, 
 !!                itor%diffusion%i_b_diffuse, idpdr%diffusion%i_b_diffuse
 !!

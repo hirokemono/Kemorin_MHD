@@ -92,7 +92,7 @@
 !
 !$omp parallel
       call add_const_to_vector_smp                                      &
-     &   (ele%numele, d_ele(1,iphys_ele%i_magne),                       &
+     &   (ele%numele, d_ele(1,iphys_ele%base%i_magne),                  &
      &    cd_prop%ex_magne, mhd_fem_wk%magne_1)
 !$omp end parallel
 !
@@ -101,7 +101,7 @@
         call vector_phys_2_each_element(node, ele, nod_fld,             &
      &      k2, iphys_nod%i_velo,  mhd_fem_wk%velo_1)
         call vector_phys_2_each_element(node, ele, nod_fld,             &
-     &      k2, iphys_nod%i_magne, fem_wk%vector_1)
+     &      k2, iphys_nod%base%i_magne, fem_wk%vector_1)
 !
         call fem_skv_induction_pg                                       &
      &     (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,                 &
@@ -157,7 +157,7 @@
 !
 !$omp parallel
       call add_const_to_vector_smp                                      &
-     &   (ele%numele, d_ele(1,iphys_ele%i_magne),                       &
+     &   (ele%numele, d_ele(1,iphys_ele%base%i_magne),                  &
      &    cd_prop%ex_magne, mhd_fem_wk%magne_1)
 !$omp end parallel
 !
@@ -166,7 +166,7 @@
         call vector_phys_2_each_element(node, ele, nod_fld,             &
      &      k2, iphys_nod%i_velo,  mhd_fem_wk%velo_1)
         call vector_phys_2_each_element(node, ele, nod_fld,             &
-     &      k2, iphys_nod%i_magne, fem_wk%vector_1)
+     &      k2, iphys_nod%base%i_magne, fem_wk%vector_1)
 !
         call fem_skv_induction_upm                                      &
      &     (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,                 &
@@ -176,7 +176,7 @@
      &      jac_3d%an, jac_3d%dnx, jac_3d%dnx,                          &
      &      mhd_fem_wk%velo_1, fem_wk%vector_1,                         &
      &      d_ele(1,iphys_ele%i_velo), mhd_fem_wk%magne_1,              &
-     &      d_ele(1,iphys_ele%i_magne), cd_prop%coef_induct,            &
+     &      d_ele(1,iphys_ele%base%i_magne), cd_prop%coef_induct,       &
      &      fem_wk%sk6)
       end do
 !

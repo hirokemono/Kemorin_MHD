@@ -79,7 +79,7 @@
             call scalar_label_4_step(id_ave, id_msq, e_hd_div_a)
           end if
 !
-        else if(msq_list%ifld_msq(i) .eq. iphys%i_magne) then
+        else if(msq_list%ifld_msq(i) .eq. iphys%base%i_magne) then
           if(msq_list%field_name(i) .eq. magnetic_field%name) then
             call write_three_labels                                     &
      &         (id_msq, e_hd_m_ene, e_hd_m_ene_cd, e_hd_div_b)

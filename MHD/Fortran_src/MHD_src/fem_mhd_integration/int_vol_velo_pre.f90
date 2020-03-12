@@ -228,7 +228,7 @@
      &          iphys%base%i_vecp, fl_prop%coef_lor, mhd_fem_wk%vecp_1)
 !$omp parallel
             call add_const_to_vector_smp(ele%numele,                    &
-     &          d_ele(1,iphys_ele%i_magne), cd_prop%ex_magne,           &
+     &          d_ele(1,iphys_ele%base%i_magne), cd_prop%ex_magne,      &
      &          fem_wk%vector_1)
 !$omp end parallel
 !
@@ -240,11 +240,12 @@
      &          jac_3d%dnx, jac_3d%dnx, mhd_fem_wk%vecp_1,              &
      &          fem_wk%vector_1, fem_wk%sk6)
           else if (iflag_4_rotate .eq. id_turn_OFF) then
-            call vector_cst_phys_2_each_ele(node, ele, nod_fld, k2,     &
-     &          iphys%i_magne, fl_prop%coef_lor, mhd_fem_wk%magne_1)
+            call vector_cst_phys_2_each_ele                             &
+     &         (node, ele, nod_fld, k2, iphys%base%i_magne,             &
+     &          fl_prop%coef_lor, mhd_fem_wk%magne_1)
 !$omp parallel
             call add_const_to_vector_smp(ele%numele,                    &
-     &          d_ele(1,iphys_ele%i_magne), cd_prop%ex_magne,           &
+     &          d_ele(1,iphys_ele%base%i_magne), cd_prop%ex_magne,      &
      &          fem_wk%vector_1)
 !$omp end parallel
 !
@@ -262,7 +263,7 @@
           if (SGS_param%iflag_SGS_lorentz .ne. id_SGS_none) then
             if(cmt_param%iflag_c_lorentz .eq. id_SGS_commute_ON) then
               call SGS_const_tensor_each_ele(node, ele, nod_fld, k2,    &
-     &            iphys%i_magne, iphys%SGS_term%i_SGS_maxwell,          &
+     &            iphys%base%i_magne, iphys%SGS_term%i_SGS_maxwell,     &
      &            fl_prop%coef_lor, mhd_fem_wk%sgs_t1, fem_wk%tensor_1)
               call fem_skv_div_sgs_tensor(fluid%istack_ele_fld_smp,     &
      &            num_int, k2, SGS_param%ifilter_final,                 &
@@ -541,7 +542,7 @@
      &          iphys%base%i_vecp, fl_prop%coef_lor, mhd_fem_wk%vecp_1)
 !$omp parallel
             call add_const_to_vector_smp(ele%numele,                    &
-     &          d_ele(1,iphys_ele%i_magne), cd_prop%ex_magne,           &
+     &          d_ele(1,iphys_ele%base%i_magne), cd_prop%ex_magne,      &
      &          fem_wk%vector_1)
 !$omp end parallel
 !
@@ -553,11 +554,12 @@
      &          jac_3d%dnx, jac_3d%dnx, mhd_fem_wk%vecp_1,              &
      &          fem_wk%vector_1, fem_wk%sk6)
           else
-            call vector_cst_phys_2_each_ele(node, ele, nod_fld, k2,     &
-     &          iphys%i_magne, fl_prop%coef_lor, mhd_fem_wk%magne_1)
+            call vector_cst_phys_2_each_ele                             &
+     &         (node, ele, nod_fld, k2, iphys%base%i_magne,             &
+     &          fl_prop%coef_lor, mhd_fem_wk%magne_1)
 !$omp parallel
             call add_const_to_vector_smp(ele%numele,                    &
-     &          d_ele(1,iphys_ele%i_magne), cd_prop%ex_magne,           &
+     &          d_ele(1,iphys_ele%base%i_magne), cd_prop%ex_magne,      &
      &          fem_wk%vector_1)
 !$omp end parallel
 !
@@ -572,7 +574,7 @@
           if (SGS_param%iflag_SGS_lorentz .ne. id_SGS_none) then
             if (cmt_param%iflag_c_lorentz .eq. id_SGS_commute_ON) then
               call SGS_const_tensor_each_ele(node, ele, nod_fld, k2,    &
-     &            iphys%i_magne, iphys%SGS_term%i_SGS_maxwell,          &
+     &            iphys%base%i_magne, iphys%SGS_term%i_SGS_maxwell,     &
      &            fl_prop%coef_lor, mhd_fem_wk%sgs_t1, fem_wk%tensor_1)
               call fem_skv_div_sgs_tensor_upwind                        &
      &           (fluid%istack_ele_fld_smp, num_int,                    &

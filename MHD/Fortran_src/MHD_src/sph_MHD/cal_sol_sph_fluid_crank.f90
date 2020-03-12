@@ -23,8 +23,8 @@
 !!      subroutine cal_sol_magne_sph_crank(sph_rj, r_2nd,               &
 !!     &          sph_bc_B, bcs_B, band_bp_evo, band_bt_evo,            &
 !!     &          g_sph_rj, ipol, itor, rj_fld)
-!!        Input address:    ipol%i_magne, itor%i_magne
-!!        Solution address: ipol%i_magne, itor%i_magne
+!!        Input address:    ipol%base%i_magne, itor%base%i_magne
+!!        Solution address: ipol%base%i_magne, itor%base%i_magne
 !!        type(sph_boundary_type), intent(in) :: sph_bc_B
 !!        type(sph_vector_boundary_data), intent(in) :: bcs_B
 !!
@@ -171,17 +171,19 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      call delete_zero_degree_vect(ipol%i_magne,                        &
+      call delete_zero_degree_vect(ipol%base%i_magne,                   &
      &    sph_rj%idx_rj_degree_zero, rj_fld%n_point, sph_rj%nidx_rj,    &
      &    rj_fld%ntot_phys, rj_fld%d_fld)
 !
       call sel_ICB_grad_poloidal_magne(sph_rj, r_2nd,                   &
-     &    sph_bc_B, bcs_B%ICB_Vspec, g_sph_rj, ipol%i_magne, rj_fld)
+     &    sph_bc_B, bcs_B%ICB_Vspec, g_sph_rj, ipol%base%i_magne,       &
+     &    rj_fld)
       call sel_CMB_grad_poloidal_magne(sph_rj,                          &
-     &    sph_bc_B, bcs_B%CMB_Vspec, g_sph_rj, ipol%i_magne, rj_fld)
+     &    sph_bc_B, bcs_B%CMB_Vspec, g_sph_rj, ipol%base%i_magne,       &
+     &    rj_fld)
 !
-      call solve_magne_sph_crank                                        &
-     &   (sph_rj, band_bp_evo, band_bt_evo, ipol%i_magne, itor%i_magne, &
+      call solve_magne_sph_crank(sph_rj, band_bp_evo, band_bt_evo,      &
+     &    ipol%base%i_magne, itor%base%i_magne,                         &
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
       end subroutine cal_sol_magne_sph_crank

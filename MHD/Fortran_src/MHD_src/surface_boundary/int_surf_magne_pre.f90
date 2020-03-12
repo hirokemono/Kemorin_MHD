@@ -106,7 +106,7 @@
      &       SGS_param%ifilter_final, diff_coefs%num_field,             &
      &       iak_diff_uxb, diff_coefs%ak,                               &
      &       iphys%SGS_term%i_SGS_induct_t,                             &
-     &       iphys%i_velo, iphys%i_magne, fem_wk, surf_wk, f_nl)
+     &       iphys%i_velo, iphys%base%i_magne, fem_wk, surf_wk, f_nl)
       end if
 !
 !      call int_free_slip_surf_sph_out(node, ele, surf, sf_grp,         &
@@ -170,7 +170,7 @@
      &        SGS_param%ifilter_final, diff_coefs%num_field,            &
      &        iak_diff_uxb, diff_coefs%ak,                              &
      &        iphys%SGS_term%i_SGS_induct_t,                            &
-     &        iphys%i_velo, iphys%i_magne, fem_wk, surf_wk, f_nl)
+     &        iphys%i_velo, iphys%base%i_magne, fem_wk, surf_wk, f_nl)
         end if
       end if
 !

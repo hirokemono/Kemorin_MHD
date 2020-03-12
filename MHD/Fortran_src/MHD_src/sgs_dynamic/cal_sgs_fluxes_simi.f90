@@ -253,8 +253,8 @@
 !
 !
       call cal_sgs_uxb_simi(iphys%SGS_wk%i_simi, iphys%i_velo,          &
-     &    iphys%i_magne, iphys%i_filter_velo, iphys%i_filter_magne,     &
-     &    filter_param, nod_comm, node, filtering, wk_filter, nod_fld)
+     &   iphys%base%i_magne, iphys%i_filter_velo, iphys%i_filter_magne, &
+     &   filter_param, nod_comm, node, filtering, wk_filter, nod_fld)
 !
 !
       if (FEM_prm%iflag_magne_supg .eq. id_turn_ON) then
@@ -262,7 +262,7 @@
      &     (FEM_prm%npoint_t_evo_int, dt, icomp_sgs_uxb,                &
      &      node, ele, conduct, iphys, nod_fld,                         &
      &      g_FEM, jac_3d, rhs_tbl, sgs_coefs,                          &
-     &      ele_fld%ntot_phys, iphys_ele%i_magne, ele_fld%d_fld,        &
+     &      ele_fld%ntot_phys, iphys_ele%base%i_magne, ele_fld%d_fld,   &
      &      fem_wk, f_nl)
       else
         call int_simi_vp_induct                                         &

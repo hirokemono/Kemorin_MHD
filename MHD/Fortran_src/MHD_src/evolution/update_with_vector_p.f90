@@ -168,11 +168,11 @@
 !
 !   lead magnetic field
 !
-      if (iphys%i_magne .ne. 0) then
+      if (iphys%base%i_magne .ne. 0) then
         if (iflag_debug.gt.0) write(*,*) 'cal_magnetic_f_by_vect_p'
         call choose_cal_rotation_sgs(SGS_par%commute_p%iflag_c_magne,   &
      &      FEM_prm%iflag_magne_supg, FEM_prm%npoint_t_evo_int, dt,     &
-     &      iak_diff_b, iphys%base%i_vecp, iphys%i_magne,               &
+     &      iak_diff_b, iphys%base%i_vecp, iphys%base%i_magne,          &
      &      mesh%ele%istack_ele_smp, fem_int%m_lump, SGS_par%model_p,   &
      &      mesh%nod_comm, mesh%node, mesh%ele, mesh%surf,              &
      &      group%surf_grp, iphys_ele, ele_fld, fem_int%jcs,            &
@@ -180,11 +180,12 @@
      &      Asf_bcs%sgs, fem_int%rhs_tbl, rhs_mat%fem_wk,               &
      &      rhs_mat%surf_wk, rhs_mat%f_nl, nod_fld)
       end if
-      if (iphys_ele%i_magne .ne. 0) then
+      if (iphys_ele%base%i_magne .ne. 0) then
         if (iflag_debug.gt.0) write(*,*) 'rot_magne_on_element'
         call rotation_on_element_1st(mesh%node, mesh%ele, fem_int%jcs,  &
      &      mesh%ele%istack_ele_smp, FEM_prm%npoint_t_evo_int,          &
-     &      iphys%base%i_vecp, nod_fld, iphys_ele%i_magne, ele_fld)
+     &      iphys%base%i_vecp, nod_fld, iphys_ele%base%i_magne,         &
+     &      ele_fld)
       end if
 !
       if (iphys_ele%base%i_current .ne. 0                               &
@@ -192,7 +193,8 @@
         if (iflag_debug.gt.0) write(*,*) 'current_on_element'
         call rotation_on_element_1st(mesh%node, mesh%ele, fem_int%jcs,  &
      &      conduct%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,       &
-     &      iphys%i_magne, nod_fld, iphys_ele%base%i_current, ele_fld)
+     &      iphys%base%i_magne, nod_fld, iphys_ele%base%i_current,      &
+     &      ele_fld)
       end if
 !
 !   required field for explicit filtering
@@ -229,7 +231,7 @@
      &        write(*,*) 'cal_filtered_vector', iphys%i_filter_magne
            call cal_filtered_vector_whole(SGS_par%filter_p,             &
      &         mesh%nod_comm, mesh%node, FEM_filters%filtering,         &
-     &         iphys%i_filter_magne, iphys%i_magne,                     &
+     &         iphys%i_filter_magne, iphys%base%i_magne,                &
      &         FEM_SGS_wk%wk_filter, nod_fld)
            nod_fld%iflag_update(iphys%i_filter_magne  ) = 1
            nod_fld%iflag_update(iphys%i_filter_magne+1) = 1
@@ -274,7 +276,7 @@
          if ( ie_dbx.ne.0 ) then
            if (iflag_debug.gt.0) write(*,*) 'diff_magne_on_ele'
            call sel_int_diff_vector_on_ele(FEM_prm%npoint_t_evo_int,    &
-     &        mesh%ele%istack_ele_smp, iphys%i_magne, ie_dbx,           &
+     &        mesh%ele%istack_ele_smp, iphys%base%i_magne, ie_dbx,      &
      &        mesh%node, mesh%ele, nod_fld, fem_int%jcs, mhd_fem_wk)
         end if
        end if

@@ -42,19 +42,19 @@
 !
       if (iphys%prod_fld%i_m_heli .gt. izero) then
          call cal_phys_dot_product                                      &
-     &      (iphys%base%i_vecp, iphys%i_magne, iphys%prod_fld%i_m_heli, &
-     &       nod_fld)
+     &      (iphys%base%i_vecp, iphys%base%i_magne,                     &
+     &       iphys%prod_fld%i_m_heli, nod_fld)
       end if
 !
       if (iphys%prod_fld%i_c_heli .gt. izero) then
          call cal_phys_dot_product                                      &
-     &      (iphys%i_magne, iphys%base%i_current,                       &
+     &      (iphys%base%i_magne, iphys%base%i_current,                  &
      &       iphys%prod_fld%i_c_heli, nod_fld)
       end if
 !
       if (iphys%prod_fld%i_x_heli .gt. izero) then
          call cal_phys_dot_product                                      &
-     &      (iphys%i_velo, iphys%i_magne, iphys%prod_fld%i_x_heli,      &
+     &      (iphys%i_velo, iphys%base%i_magne, iphys%prod_fld%i_x_heli, &
      &       nod_fld)
       end if
 !$omp end parallel

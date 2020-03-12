@@ -65,7 +65,7 @@
       gauss_coef%num_field_rj = 1
       gauss_coef%ntot_comp_rj = 1
 !
-      if (ipol%i_magne .gt. 0) then
+      if (ipol%base%i_magne .gt. 0) then
         if(gauss_list%num_degree .eq. -9999) then
           gauss_list%num_degree = sph_params%l_truncation + 1
           call alloc_pick_sph_l(gauss_list)
@@ -124,7 +124,7 @@
           l = gauss_coef%idx_out(inum,1)
           i = gauss_coef%idx_out(inum,4)                                &
      &          + (sph_params%nlayer_CMB-1) * sph_rj%nidx_rj(2)
-          d_rj_out(inum) = rj_fld%d_fld(i,ipol%i_magne)                 &
+          d_rj_out(inum) = rj_fld%d_fld(i,ipol%base%i_magne)            &
      &                    * dble(l) * rcmb_to_Re**l *a2r_4_gauss
         end do
 !$omp end parallel do
@@ -137,7 +137,7 @@
           l = gauss_coef%idx_out(inum,1)
           i = gauss_coef%idx_out(inum,4)                                &
      &          + (sph_params%nlayer_ICB-1) * sph_rj%nidx_rj(2)
-          d_rj_out(inum) = - rj_fld%d_fld(i,ipol%i_magne)               &
+          d_rj_out(inum) = - rj_fld%d_fld(i,ipol%base%i_magne)          &
      &                  * dble(l+1) * a2r_4_gauss * ricb_to_Rref**(l-1)
         end do
 !$omp end parallel do

@@ -109,7 +109,7 @@
       if(       cd_prop%iflag_Bevo_scheme .gt. id_no_evolution          &
      &     .or. fl_prop%iflag_4_lorentz .gt. id_turn_OFF) then
         nvector_rj_2_xyz = nvector_rj_2_xyz + 1
-        b_hbd_trns%i_magne = 3*nvector_rj_2_xyz - 2
+        b_hbd_trns%base%i_magne = 3*nvector_rj_2_xyz - 2
       end if
 !   current density flag
       if(fl_prop%iflag_4_lorentz .gt. id_turn_OFF) then
@@ -167,9 +167,9 @@
       write(*,*) 'ncomp_xyz_2_rj  ', ncomp_xyz_2_rj
 !
       write(*,*) 'nvector_rj_2_xyz  ', nvector_rj_2_xyz
-      if(b_hbd_trns%i_magne .gt. 0) write(*,*)                          &
-     &        'b_hbd_trns%i_magne ', b_hbd_trns%i_magne,                &
-     &        ipol%i_magne, itor%i_magne, idpdr%i_magne
+      if(b_hbd_trns%base%i_magne .gt. 0) write(*,*)                     &
+     &        'b_hbd_trns%base%i_magne ', b_hbd_trns%base%i_magne,      &
+     &        ipol%base%i_magne, itor%base%i_magne, idpdr%base%i_magne
       if(b_hbd_trns%base%i_current .gt. 0) write(*,*)                   &
      &        'b_hbd_trns%base%i_current ', b_hbd_trns%base%i_current,  &
      &        ipol%base%i_current, itor%base%i_current,                 &

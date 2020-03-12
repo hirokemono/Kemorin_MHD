@@ -54,9 +54,9 @@
 !
 !$omp parallel do
       do is = 1, n_point
-        d_rj(is,ipol%i_magne  ) = zero
-        d_rj(is,ipol%i_magne+1) = zero
-        d_rj(is,ipol%i_magne+2) = zero
+        d_rj(is,ipol%base%i_magne  ) = zero
+        d_rj(is,ipol%base%i_magne+1) = zero
+        d_rj(is,ipol%base%i_magne+2) = zero
         d_rj(is,ipol%base%i_current  ) = zero
         d_rj(is,ipol%base%i_current+1) = zero
         d_rj(is,ipol%base%i_current+2) = zero
@@ -68,13 +68,13 @@
           is = js + (k-1) * sph_rj%nidx_rj(2)
           rr = sph_rj%radius_1d_rj_r(k)
 !
-          d_rj(is,ipol%i_magne)                                         &
+          d_rj(is,ipol%base%i_magne)                                    &
      &      =  (five / eight) * (dnine*half * rr**4                     &
      &        - (three*r_ICB + three*r_CMB + four) * two * rr**3        &
      &        + (four*r_ICB + four*r_CMB + three*r_ICB*r_CMB)           &
      &         * three * rr**2                                          &
      &        - four*six * r_ICB*r_CMB * rr)
-          d_rj(is,idpdr%i_magne)                                        &
+          d_rj(is,idpdr%base%i_magne)                                   &
      &      =  (five / eight) * (two*dnine * rr**3                      &
      &        - (three*r_ICB + three*r_CMB + four) * six * rr**2        &
      &        + (four*r_ICB + four*r_CMB + three*r_ICB*r_CMB)*six * rr  &
@@ -90,8 +90,9 @@
         do k = nlayer_ICB, nlayer_CMB
           it = jt + (k-1) * sph_rj%nidx_rj(2)
           rr = sph_rj%radius_1d_rj_r(k)
-          d_rj(it,itor%i_magne) = (ten/eight) * rr * sin(pi*(rr-r_ICB))
-          d_rj(it,ipol%base%i_current) =  d_rj(it,itor%i_magne)
+          d_rj(it,itor%base%i_magne)                                    &
+     &             = (ten/eight) * rr * sin(pi*(rr-r_ICB))
+          d_rj(it,ipol%base%i_current) =  d_rj(it,itor%base%i_magne)
           d_rj(it,idpdr%base%i_current)                                 &
      &             = (ten / eight) * (sin(pi*(rr-r_ICB))                &
      &              + pi * rr * cos(pi*(rr-r_ICB)) )

@@ -95,7 +95,8 @@
 !
       call reset_sk6(n_vector, ele, fem_wk%sk6)
 !
-      call sel_int_vol_sgs_uxb(i_filter, iphys%i_magne, ie_dvx, dt,     &
+      call sel_int_vol_sgs_uxb                                          &
+     &   (i_filter, iphys%base%i_magne, ie_dvx, dt,                     &
      &    FEM_prm, node, ele, conduct, nod_fld, iphys_ele, ele_fld,     &
      &    jacs%g_FEM, jacs%jac_3d, FEM_elens, fem_wk, mhd_fem_wk)
 !

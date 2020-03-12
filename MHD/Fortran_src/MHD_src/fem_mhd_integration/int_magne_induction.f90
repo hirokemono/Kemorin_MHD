@@ -81,7 +81,7 @@
 !     &    fem_wk, f_l, f_nl)
 !      call cal_ff_2_vector(node%numnod, node%istack_nod_smp,           &
 !     &   f_l%ff, mlump_cd%ml, nod_fld%ntot_phys,                       &
-!     &   iphys%i_magne, nod_fld%d_fld)
+!     &   iphys%base%i_magne, nod_fld%d_fld)
       call cal_ff_smp_2_vector(node, rhs_tbl, f_nl%ff_smp, mlump_cd%ml, &
      &    nod_fld%ntot_phys, iphys%forces%i_induction, nod_fld%d_fld)
 !

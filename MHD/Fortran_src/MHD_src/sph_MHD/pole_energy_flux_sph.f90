@@ -149,8 +149,8 @@
         call pole_fld_cst_dot_prod                                      &
      &     (node%numnod, node%internal_node, node%xx,                   &
      &      sph_rtp%nnod_rtp, sph_rtp%nidx_rtp(1), one,                 &
-     &      nod_fld%ntot_phys, iphys%forces%i_induction, iphys%i_magne, &
-     &      iphys%ene_flux%i_me_gen, nod_fld%d_fld)
+     &      nod_fld%ntot_phys, iphys%forces%i_induction,                &
+     &      iphys%base%i_magne, iphys%ene_flux%i_me_gen, nod_fld%d_fld)
       end if
 !
 !
@@ -169,7 +169,8 @@
      &      sph_rtp%nnod_rtp, sph_rtp%nidx_rtp(1),                      &
      &      cd_prop%coef_diffuse, nod_fld%ntot_phys,                    &
      &      iphys%base%i_current, iphys%forces%i_vp_induct,             &
-     &      iphys%i_magne, iphys%prod_fld%i_poynting, nod_fld%d_fld)
+     &      iphys%base%i_magne, iphys%prod_fld%i_poynting,              &
+     &      nod_fld%d_fld)
       end if
 !
 !

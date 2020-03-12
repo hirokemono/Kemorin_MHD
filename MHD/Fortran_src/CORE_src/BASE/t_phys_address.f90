@@ -34,10 +34,6 @@
 !!         \f$ u_{i} \f$
         integer (kind=kint) :: i_velo  =           izero
 !
-!>        start address for magnetic field
-!!         @f$ B_{i} @f$
-        integer (kind=kint) :: i_magne =           izero
-!
 !>        Start address for filtered velocity
 !!         @f$ \bar{u}_{i} @f$
         integer (kind=kint) :: i_filter_velo  =    izero

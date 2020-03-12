@@ -184,13 +184,13 @@
       if (FEM_prm%iflag_magne_supg .gt. id_turn_OFF) then
         call int_vol_vect_p_pre_ele_upm(FEM_prm%npoint_t_evo_int, dt,   &
      &      node, ele, conduct, cd_prop, iphys, nod_fld,                &
-     &      ele_fld%ntot_phys, iphys_ele%i_magne, ele_fld%d_fld,        &
+     &      ele_fld%ntot_phys, iphys_ele%base%i_magne, ele_fld%d_fld,   &
      &      jacs%g_FEM, jacs%jac_3d, rhs_tbl, mhd_fem_wk,               &
      &      fem_wk, f_nl)
       else
         call int_vol_vect_p_pre_ele(FEM_prm%npoint_t_evo_int,           &
      &      node, ele, conduct, cd_prop, iphys, nod_fld,                &
-     &      ele_fld%ntot_phys, iphys_ele%i_magne, ele_fld%d_fld,        &
+     &      ele_fld%ntot_phys, iphys_ele%base%i_magne, ele_fld%d_fld,   &
      &      jacs%g_FEM, jacs%jac_3d, rhs_tbl, mhd_fem_wk,               &
      &      fem_wk, f_nl)
       end if
@@ -203,7 +203,7 @@
 !      call check_nodal_data                                            &
 !     &   ((50+my_rank), nod_fld, n_vector, iphys%i_velo)
 !      call check_nodal_data                                            &
-!     &   ((50+my_rank), ele_fld, n_vector, iphys_ele%i_magne)
+!     &   ((50+my_rank), ele_fld, n_vector, iphys_ele%base%i_magne)
 !      call check_ff_smp(my_rank, n_vector, node%max_nod_smp, f_l)
 !      call check_ff_smp(my_rank, n_vector, node%max_nod_smp, f_nl)
 !

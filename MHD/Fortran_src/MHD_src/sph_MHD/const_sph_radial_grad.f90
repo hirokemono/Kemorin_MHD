@@ -29,8 +29,8 @@
 !!      subroutine const_grad_bp_and_current                            &
 !!     &         (sph_rj, r_2nd, sph_bc_B, bcs_B, g_sph_rj,             &
 !!     &          is_magne, is_current, rj_fld)
-!!        Input:    ipol%i_magne, itor%i_magne
-!!        Solution: idpdr%i_magne,
+!!        Input:    ipol%base%i_magne, itor%base%i_magne
+!!        Solution: idpdr%base%i_magne,
 !!                  ipol%base%i_current, itor%base%i_current,
 !!                  idpdr%base%i_current
 !!
@@ -42,8 +42,8 @@
 !!
 !!      subroutine const_grad_poloidal_magne(sph_rj, r_2nd,             &
 !!     &          sph_bc_B, bcs_B, g_sph_rj, is_magne, rj_fld)
-!!        Input:    ipol%i_magne, itor%i_magne
-!!        Solution: idpdr%i_magne
+!!        Input:    ipol%base%i_magne, itor%base%i_magne
+!!        Solution: idpdr%base%i_magne
 !!
 !!      subroutine const_pressure_gradient(sph_rj, r_2nd, sph_bc_U,     &
 !!     &          g_sph_rj, coef_press, is_press, is_grad, rj_fld)

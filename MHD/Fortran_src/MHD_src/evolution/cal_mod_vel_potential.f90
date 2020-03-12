@@ -333,7 +333,7 @@
 !
       call int_vol_fractional_div_ele                                   &
      &   (SGS_param%ifilter_final, ele%istack_ele_smp,                  &
-     &    FEM_prm%npoint_poisson_int, iphys%i_magne, iak_diff_b,        &
+     &    FEM_prm%npoint_poisson_int, iphys%base%i_magne, iak_diff_b,   &
      &    node, ele, nod_fld, jacs%g_FEM, jacs%jac_3d, jacs%jac_3d_l,   &
      &    rhs_tbl, FEM_elens, diff_coefs, fem_wk, f_l)
 !
@@ -344,11 +344,11 @@
 !     &      Bsf_bcs%sgs%nmax_sf_dat, Bsf_bcs%sgs%ngrp_sf_dat,          &
 !     &      Bsf_bcs%sgs%id_grp_sf_dat, SGS_param%ifilter_final,        &
 !     &      diff_coefs%num_field, iak_diff_b, diff_coefs%ak,           &
-!     &      iphys%i_magne, fem_wk, surf_wk, f_l)
+!     &      iphys%base%i_magne, fem_wk, surf_wk, f_l)
 !      end if
 !
       call int_surf_normal_vector                                       &
-     &   (iphys%i_magne, FEM_prm%npoint_poisson_int,                    &
+     &   (iphys%base%i_magne, FEM_prm%npoint_poisson_int,               &
      &    Fsf_bcs%wall, Fsf_bcs%sph_in, Fsf_bcs%sph_out,                &
      &    node, ele, surf, sf_grp, nod_fld, jacs%g_FEM,                 &
      &    jacs%jac_sf_grp_l, rhs_tbl, fem_wk, surf_wk, f_l)

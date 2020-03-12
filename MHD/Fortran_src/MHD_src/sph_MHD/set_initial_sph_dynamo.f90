@@ -166,20 +166,20 @@
         end if
 !
         if(iflag_restart .eq. i_rst_dbench1) then
-          if(ipol%i_magne .gt. 0) then
+          if(ipol%base%i_magne .gt. 0) then
             call initial_b_dynamobench_1(sph_rj, ipol, idpdr, itor,     &
      &          sph_params%radius_ICB, sph_params%radius_CMB,           &
      &          sph_params%nlayer_ICB, sph_params%nlayer_CMB,           &
      &          rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
           end if
         else if(iflag_restart .eq. i_rst_dbench2) then
-          if(ipol%i_magne .gt. 0) then
+          if(ipol%base%i_magne .gt. 0) then
             call initial_b_dynamobench_2(sph_rj, ipol, idpdr, itor,     &
      &          sph_params%nlayer_CMB, sph_params%radius_CMB,           &
      &          rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
           end if
         else if(iflag_restart .eq. i_rst_dbench_qcv) then
-          if(ipol%i_magne .gt. 0) then
+          if(ipol%base%i_magne .gt. 0) then
            call initial_b_dynamobench_qcv(sph_rj, ipol, idpdr, itor,    &
      &         sph_params%radius_ICB, sph_params%radius_CMB,            &
      &         sph_params%nlayer_ICB, sph_params%nlayer_CMB,            &
@@ -226,7 +226,7 @@
      &        sph_params%nlayer_ICB, sph_params%nlayer_CMB,             &
      &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         end if
-        if(ipol%i_magne .gt. 0) then
+        if(ipol%base%i_magne .gt. 0) then
           call set_initial_magne_sph                                    &
      &       (sph_rj, sph_MHD_bc%sph_bc_B, ipol, idpdr, itor,           &
      &        sph_params%radius_ICB, sph_params%radius_CMB,             &
@@ -318,9 +318,9 @@
 !
 !$omp parallel do
       do is = 1, n_point
-        d_rj(is,ipol%i_magne  ) = zero
-        d_rj(is,ipol%i_magne+1) = zero
-        d_rj(is,ipol%i_magne+2) = zero
+        d_rj(is,ipol%base%i_magne  ) = zero
+        d_rj(is,ipol%base%i_magne+1) = zero
+        d_rj(is,ipol%base%i_magne+2) = zero
         d_rj(is,ipol%base%i_current  ) = zero
         d_rj(is,ipol%base%i_current+1) = zero
         d_rj(is,ipol%base%i_current+2) = zero
@@ -334,10 +334,10 @@
             is = js + (k-1) * sph_rj%nidx_rj(2)
             rr = sph_rj%radius_1d_rj_r(k)
 !
-            d_rj(is,ipol%i_magne) =  (five / eight) * (-three * rr**3   &
-     &                       + four * r_CMB * rr**2 - r_ICB**4 / rr)
-            d_rj(is,idpdr%i_magne) = (five / eight) * (-dnine * rr**2   &
-     &                         + eight * r_CMB * rr + r_ICB**4 / rr**2)
+            d_rj(is,ipol%base%i_magne) =  (five / eight)                &
+     &        * (-three * rr**3 + four * r_CMB * rr**2 - r_ICB**4/rr)
+            d_rj(is,idpdr%base%i_magne) = (five / eight)                &
+     &        * (-dnine * rr**2 + eight * r_CMB * rr + r_ICB**4/rr**2)
             d_rj(is,itor%base%i_current) =  (five*three / two) * rr
           end do
         end if
@@ -346,9 +346,9 @@
           do k = nlayer_ICB, nlayer_CMB
             it = jt + (k-1) * sph_rj%nidx_rj(2)
             rr = sph_rj%radius_1d_rj_r(k)
-            d_rj(it,itor%i_magne)                                       &
+            d_rj(it,itor%base%i_magne)                                  &
      &            =  (ten/three) * rr * sin(pi*(rr-r_ICB))
-            d_rj(it,ipol%base%i_current) =  d_rj(it,itor%i_magne)
+            d_rj(it,ipol%base%i_current) =  d_rj(it,itor%base%i_magne)
             d_rj(it,idpdr%base%i_current)                               &
      &            = (ten / three) * (sin(pi*(rr-r_ICB))  &
      &                          + pi * rr * cos(pi*(rr-r_ICB)) )
@@ -361,9 +361,9 @@
           do k = 1, nlayer_CMB
             is = js + (k-1) * sph_rj%nidx_rj(2)
             rr = sph_rj%radius_1d_rj_r(k)
-            d_rj(is,ipol%i_magne) =  (five / two) * rr**2               &
+            d_rj(is,ipol%base%i_magne) =  (five / two) * rr**2          &
      &                       * (four*r_CMB - three*rr) / (r_CMB+three)
-            d_rj(is,idpdr%i_magne) = (five / two) * rr                  &
+            d_rj(is,idpdr%base%i_magne) = (five / two) * rr             &
      &                       * (eight*r_CMB - dnine*rr) / (r_CMB+three)
             d_rj(is,itor%base%i_current)                                &
      &         =  five*six * rr / (three +r_CMB)
@@ -375,9 +375,9 @@
             it = jt + (k-1) * sph_rj%nidx_rj(2)
             rr = sph_rj%radius_1d_rj_r(k)
 !
-            d_rj(it,itor%i_magne)                                       &
+            d_rj(it,itor%base%i_magne)                                  &
      &          =  (ten / three) * rr * sin(pi*rr/r_CMB)
-            d_rj(it,ipol%base%i_current) =  d_rj(it,itor%i_magne)
+            d_rj(it,ipol%base%i_current) =  d_rj(it,itor%base%i_magne)
             d_rj(it,idpdr%base%i_current)                               &
      &          = (ten / three) * (sin(pi*rr/r_CMB)                     &
      &                          + (pi/r_CMB) * rr * cos(pi*rr/r_CMB) )
@@ -403,9 +403,12 @@
 !
 !$omp parallel do
       do is = 1, nnod_rj
-        d_rj(is,ipol%i_magne  ) = 1.0d-3 * d_rj(is,ipol%i_magne  )
-        d_rj(is,ipol%i_magne+1) = 1.0d-3 * d_rj(is,ipol%i_magne+1)
-        d_rj(is,ipol%i_magne+2) = 1.0d-3 * d_rj(is,ipol%i_magne+2)
+        d_rj(is,ipol%base%i_magne  )                                    &
+     &         = 1.0d-3 * d_rj(is,ipol%base%i_magne  )
+        d_rj(is,ipol%base%i_magne+1)                                    &
+     &         = 1.0d-3 * d_rj(is,ipol%base%i_magne+1)
+        d_rj(is,ipol%base%i_magne+2)                                    &
+     &         = 1.0d-3 * d_rj(is,ipol%base%i_magne+2)
         d_rj(is,ipol%base%i_current  )                                  &
      &         = 1.0d-3 * d_rj(is,ipol%base%i_current  )
         d_rj(is,ipol%base%i_current+1)                                  &

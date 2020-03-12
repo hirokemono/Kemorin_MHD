@@ -250,7 +250,7 @@
      &     (FEM_prm%iflag_rotate_form, FEM_prm%npoint_t_evo_int, dt,    &
      &      SGS_par%model_p, SGS_par%commute_p, node, ele, fluid,       &
      &      fl_prop, cd_prop, iphys, nod_fld, ak_MHD,                   &
-     &      ele_fld%ntot_phys, iphys_ele%i_magne, ele_fld%d_fld,        &
+     &      ele_fld%ntot_phys, iphys_ele%base%i_magne, ele_fld%d_fld,   &
      &      iphys_ele, ifld_diff%i_mom_flux, ifld_diff%i_lorentz,       &
      &      fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,     &
      &      FEM_elens, diff_coefs,                                      &

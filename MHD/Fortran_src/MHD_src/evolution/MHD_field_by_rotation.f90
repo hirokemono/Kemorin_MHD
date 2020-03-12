@@ -127,7 +127,7 @@
               call choose_cal_rotation_sgs                              &
      &          (cmt_param%iflag_c_magne, FEM_prm%iflag_magne_supg,     &
      &           FEM_prm%npoint_t_evo_int, dt, ifld_diff%i_magne,       &
-     &           iphys%i_magne, iphys%base%i_current,                   &
+     &           iphys%base%i_magne, iphys%base%i_current,              &
      &           mesh%ele%istack_ele_smp, fem_int%m_lump, SGS_param,    &
      &           mesh%nod_comm, mesh%node, mesh%ele, mesh%surf,         &
      &           group%surf_grp, iphys_ele, ele_fld, fem_int%jcs,       &
@@ -138,7 +138,7 @@
 !             call choose_cal_rotation_sgs                              &
 !     &         (cmt_param%iflag_c_magne, FEM_prm%iflag_magne_supg,     &
 !     &          FEM_prm%npoint_t_evo_int, dt, ifld_diff%i_magne,       &
-!     &          iphys%i_magne, iphys%base%i_current,                   &
+!     &          iphys%base%i_magne, iphys%base%i_current,              &
 !     &          conduct%istack_ele_fld_smp, mk_MHD%mlump_cd, SGS_param,&
 !     &          mesh%nod_comm, mesh%node, mesh%ele, mesh%surf,         &
 !     &          group%surf_grp, iphys_ele, ele_fld, fem_int%jcs,       &
@@ -157,7 +157,7 @@
             call choose_cal_rotation_sgs                                &
      &        (cmt_param%iflag_c_magne, FEM_prm%iflag_magne_supg,       &
      &         FEM_prm%npoint_t_evo_int, dt, ifld_diff%i_magne,         &
-     &         iphys%i_magne, iphys%base%i_current,                     &
+     &         iphys%base%i_magne, iphys%base%i_current,                &
      &         mesh%ele%istack_ele_smp, fem_int%m_lump, SGS_param,      &
      &         mesh%nod_comm, mesh%node, mesh%ele, mesh%surf,           &
      &         group%surf_grp, iphys_ele, ele_fld, fem_int%jcs,         &
@@ -165,8 +165,9 @@
      &         surf_bcs%Bsf_bcs%sgs, fem_int%rhs_tbl, rhs_mat%fem_wk,   &
      &         rhs_mat%surf_wk, rhs_mat%f_nl, nod_fld)
 !           call choose_cal_rotation_sgs(cmt_param%iflag_c_magne,       &
-!     &         FEM_prm%iflag_magne_supg, FEM_prm%npoint_t_evo_int, dt, &
-!     &         ifld_diff%i_magne, iphys%i_magne, iphys%base%i_current, &
+!     &         FEM_prm%iflag_magne_supg, FEM_prm%npoint_t_evo_int,     &
+!     &         dt, ifld_diff%i_magne,                                  &
+!     &         iphys%base%i_magne, iphys%base%i_current,               &
 !     &         conduct%istack_ele_fld_smp, mk_MHD%mlump_cd, SGS_param, &
 !     &         mesh%nod_comm, mesh%node, mesh%ele, mesh%surf,          &
 !     &         group%surf_grp,iphys_ele, ele_fld, fem_int%jcs,         &

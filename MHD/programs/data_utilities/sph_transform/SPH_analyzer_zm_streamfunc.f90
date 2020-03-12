@@ -237,20 +237,20 @@
 !$omp end parallel do
       end if
 !
-      if(ipol%i_magne .gt. 0) then
+      if(ipol%base%i_magne .gt. 0) then
 !$omp parallel do private(j,inod)
         do k = 1, sph_rj%nidx_rj(1)
           do j = 1, sph_rj%nidx_rj(2)
             inod = (k-1)*sph_rj%nidx_rj(2) + j
             rj_fld%d_fld(inod,itor%base%i_current )                     &
-     &           =  rj_fld%d_fld(inod,itor%i_magne)
+     &           =  rj_fld%d_fld(inod,itor%base%i_magne)
             rj_fld%d_fld(inod,ipol%base%i_current ) =  zero
             rj_fld%d_fld(inod,idpdr%base%i_current) =  zero
 !
-            rj_fld%d_fld(inod,itor%i_magne )                            &
-     &           =  rj_fld%d_fld(inod,ipol%i_magne)
-            rj_fld%d_fld(inod,ipol%i_magne ) =  zero
-            rj_fld%d_fld(inod,idpdr%i_magne) =  zero
+            rj_fld%d_fld(inod,itor%base%i_magne )                       &
+     &           =  rj_fld%d_fld(inod,ipol%base%i_magne)
+            rj_fld%d_fld(inod,ipol%base%i_magne ) =  zero
+            rj_fld%d_fld(inod,idpdr%base%i_magne) =  zero
            end do
         end do
 !$omp end parallel do

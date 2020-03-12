@@ -251,16 +251,16 @@
           call cal_sol_pressure_w_mag_ene                               &
      &      (dt, node%numnod, node%istack_internal_smp,                 &
      &       fl_prop%coef_press, fl_prop%acoef_press, fl_prop%coef_lor, &
-     &       nod_fld%ntot_phys, iphys%ene_flux%i_p_phi, iphys%i_magne,  &
-     &       iphys%base%i_press, nod_fld%d_fld)
+     &       nod_fld%ntot_phys, iphys%ene_flux%i_p_phi,                 &
+     &       iphys%base%i_magne, iphys%base%i_press, nod_fld%d_fld)
         else if (cd_prop%iflag_magneto_cv .eq. id_turn_ON               &
      &     .and. FEM_prm%iflag_rotate_form .eq. id_turn_OFF) then
           call cal_sol_pressure_mcv                                     &
      &       (dt, node%numnod, node%istack_internal_smp,                &
      &        fl_prop%coef_press, fl_prop%acoef_press,                  &
      &        fl_prop%coef_lor, cd_prop%ex_magne,                       &
-     &        nod_fld%ntot_phys, iphys%ene_flux%i_p_phi, iphys%i_magne, &
-     &        iphys%base%i_press, nod_fld%d_fld)
+     &        nod_fld%ntot_phys, iphys%ene_flux%i_p_phi,                &
+     &        iphys%base%i_magne, iphys%base%i_press, nod_fld%d_fld)
         else
           call init_sol_potential(node%numnod, node%istack_nod_smp,     &
      &        dt, fl_prop%coef_press, nod_fld%ntot_phys,                &

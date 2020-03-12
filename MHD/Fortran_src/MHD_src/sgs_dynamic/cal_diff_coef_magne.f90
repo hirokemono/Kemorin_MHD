@@ -170,10 +170,10 @@
 !   take rotation and gradient of B (to iphys%SGS_wk%i_nlg)
 !
       if (iflag_debug.gt.0) write(*,*) 'cal_rotation_whole',            &
-     &                     iphys%SGS_wk%i_nlg, iphys%i_magne
+     &                     iphys%SGS_wk%i_nlg, iphys%base%i_magne
       call choose_cal_rotation                                          &
      &   (FEM_prm%iflag_magne_supg, FEM_prm%npoint_t_evo_int, dt,       &
-     &    iphys%i_magne, iphys%SGS_wk%i_nlg, ele%istack_ele_smp,        &
+     &    iphys%base%i_magne, iphys%SGS_wk%i_nlg, ele%istack_ele_smp,   &
      &    m_lump, nod_comm, node, ele, iphys_ele, ele_fld,              &
      &    jacs%g_FEM, jacs%jac_3d, rhs_tbl, fem_wk, f_nl, nod_fld)
       if (iflag_debug.gt.0) write(*,*) 'cal_gradent_in_fluid',          &
@@ -228,7 +228,7 @@
      &    m_lump, node, ele, surf, sf_grp,                              &
      &    jacs%g_FEM, jacs%jac_3d, jacs%jac_sf_grp,                     &
      &    rhs_tbl, FEM_elens, Bsf_bcs%sgs, ifilter_2delta,              &
-     &    iphys%SGS_wk%i_nlg, iphys%i_magne,                            &
+     &    iphys%SGS_wk%i_nlg, iphys%base%i_magne,                       &
      &    fem_wk, surf_wk, f_l, f_nl, nod_fld)
       call cal_grad_commute                                             &
      &   (FEM_prm%npoint_t_evo_int, ele%istack_ele_smp,                 &

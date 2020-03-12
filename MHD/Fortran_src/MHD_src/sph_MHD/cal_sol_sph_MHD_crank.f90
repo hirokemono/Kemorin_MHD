@@ -119,8 +119,8 @@
      &      ipol%base%i_light, rj_fld, sph_MHD_mat%x00_w_center)
       end if
 !
-!  Input: ipol%i_magne, itor%i_magne
-!  Solution: ipol%i_magne, itor%i_magne, idpdr%i_magne
+!  Input: ipol%base%i_magne, itor%base%i_magne
+!  Solution: ipol%base%i_magne, itor%base%i_magne, idpdr%base%i_magne
       if(iflag_debug.gt.0) write(*,*) 'cal_sol_magne_sph_crank'
       if(MHD_prop%cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
         call cal_sol_magne_sph_crank                                    &
@@ -129,7 +129,8 @@
      &      leg%g_sph_rj, ipol, itor, rj_fld)
         call const_grad_bp_and_current                                  &
      &     (sph_rj, r_2nd, sph_MHD_bc%sph_bc_B, sph_MHD_bc%bcs_B,       &
-     &      leg%g_sph_rj, ipol%i_magne, ipol%base%i_current, rj_fld)
+     &      leg%g_sph_rj, ipol%base%i_magne, ipol%base%i_current,       &
+     &      rj_fld)
       end if
 !
 !*  ---- update after evolution ------------------
@@ -212,7 +213,8 @@
       if(ipol%base%i_current .gt. 0) then
         call const_grad_bp_and_current                                  &
      &     (sph_rj, r_2nd, sph_MHD_bc%sph_bc_B, sph_MHD_bc%bcs_B,       &
-     &      leg%g_sph_rj, ipol%i_magne, ipol%base%i_current, rj_fld)
+     &      leg%g_sph_rj, ipol%base%i_magne, ipol%base%i_current,       &
+     &      rj_fld)
       end if
 !
       call update_after_magne_sph(sph_rj, r_2nd, MHD_prop%cd_prop,      &
@@ -294,7 +296,7 @@
         if(iflag_debug .gt. 0) write(*,*) 'const_sph_mag_diffuse_by_j'
         call const_sph_mag_diffuse_by_j(sph_rj, r_2nd, sph_bc_B,        &
      &      leg%g_sph_rj, cd_prop%coef_diffuse,                         &
-     &      ipol%i_magne, ipol%base%i_current,                          &
+     &      ipol%base%i_magne, ipol%base%i_current,                     &
      &      ipol%diffusion%i_b_diffuse, rj_fld)
       end if
 !

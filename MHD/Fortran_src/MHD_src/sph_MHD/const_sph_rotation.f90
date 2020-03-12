@@ -15,7 +15,7 @@
 !!
 !!      subroutine const_sph_current(sph_rj, r_2nd, sph_bc_B, g_sph_rj, &
 !!     &          is_magne, is_current, rj_fld)
-!!        Input:    ipol%i_magne, itor%i_magne
+!!        Input:    ipol%base%i_magne, itor%base%i_magne
 !!        Solution: ipol%base%i_current, itor%base%i_current,
 !!                  idpdr%base%i_current
 !!

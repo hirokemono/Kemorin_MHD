@@ -81,7 +81,7 @@
       end if
 !
       if(cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
-        if((iphys%i_magne*iphys%i_chk_uxb) .gt. izero) then
+        if((iphys%base%i_magne * iphys%i_chk_uxb) .gt. izero) then
           flex_data%num_fld = flex_data%num_fld + 1
           flex_data%ntot_comp = flex_data%ntot_comp + 3
         end if
@@ -149,7 +149,7 @@
       end if
 !
       if(cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
-        if((iphys%i_magne * iphys%i_chk_uxb) .gt. izero) then
+        if((iphys%base%i_magne * iphys%i_chk_uxb) .gt. izero) then
           icou = icou + 1
           flex_data%i_drmax_b = flex_data%istack_comp(icou-1) + 1
           flex_data%istack_comp(icou)                                   &

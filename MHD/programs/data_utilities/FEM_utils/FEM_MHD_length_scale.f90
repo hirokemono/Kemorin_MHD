@@ -87,7 +87,7 @@
       ucd%num_field = 0
       if(iphys%base%i_temp  .gt. 0) ucd%num_field = ucd%num_field+1
       if(iphys%i_velo  .gt. 0) ucd%num_field = ucd%num_field+1
-      if(iphys%i_magne .gt. 0) ucd%num_field = ucd%num_field+1
+      if(iphys%base%i_magne .gt. 0) ucd%num_field = ucd%num_field+1
 !
       call allocate_ucd_phys_name(ucd)
 !
@@ -117,11 +117,11 @@
      &     (node%numnod, ione, icou, d_mag(1), ucd)
       end if
 !
-      if(iphys%i_magne .gt. 0) then
+      if(iphys%base%i_magne .gt. 0) then
         icou = icou + 1
         ucd%phys_name(3) =    magnetic_scale%name
         call cal_vect_length_scale_by_rot                               &
-     &     (iphys%i_magne, iphys%base%i_current, node, nod_fld)
+     &     (iphys%base%i_magne, iphys%base%i_current, node, nod_fld)
         call set_one_field_to_udt_data                                  &
      &     (node%numnod, ione, icou, d_mag(1), ucd)
       end if
@@ -147,7 +147,7 @@
 !
       iphys%i_velo =      0
       iphys%base%i_vort =      0
-      iphys%i_magne =     0
+      iphys%base%i_magne =     0
       iphys%base%i_current =   0
       iphys%base%i_temp =      0
       iphys%diffusion%i_t_diffuse = 0
@@ -157,7 +157,7 @@
         else if(nod_fld%phys_name(i_fld) .eq. vorticity%name) then
           iphys%base%i_vort = nod_fld%istack_component(i_fld-1) + 1
         else if(nod_fld%phys_name(i_fld) .eq. magnetic_field%name) then
-          iphys%i_magne =     nod_fld%istack_component(i_fld-1) + 1
+          iphys%base%i_magne = nod_fld%istack_component(i_fld-1) + 1
         else if(nod_fld%phys_name(i_fld)                                &
      &          .eq. current_density%name) then
           iphys%base%i_current = nod_fld%istack_component(i_fld-1) + 1

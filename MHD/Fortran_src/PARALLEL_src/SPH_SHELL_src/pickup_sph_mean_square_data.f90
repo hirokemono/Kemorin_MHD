@@ -193,7 +193,7 @@
         i_fld = picked%ifield_monitor_rj(j_fld)
         jcou = picked%istack_comp_rj(j_fld-1)
         if (   i_fld .eq. ipol%i_velo                                   &
-     &      .or. i_fld .eq. ipol%i_magne                                &
+     &      .or. i_fld .eq. ipol%base%i_magne                           &
      &      .or. i_fld .eq. ipol%i_filter_velo                          &
      &      .or. i_fld .eq. ipol%i_filter_magne                         &
      &      .or. i_fld .eq. ipol%wide_filter_fld%i_velo                 &

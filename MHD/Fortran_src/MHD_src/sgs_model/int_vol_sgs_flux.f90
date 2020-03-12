@@ -78,7 +78,7 @@
      &     (num_int, dt, i_filter, numdir, i_field,                     &
      &      node, ele, fluid, nod_fld, g_FEM, jac_3d, FEM_elens,        &
      &      mhd_fem_wk%n_dvx, id_dx, mhd_fem_wk%dvx,                    &
-     &      ele_fld%ntot_phys, iphys_ele%i_magne, ele_fld%d_fld,        &
+     &      ele_fld%ntot_phys, iphys_ele%base%i_magne, ele_fld%d_fld,   &
      &      fem_wk)
       else if ( iflag_4_supg .eq. id_turn_ON) then
         call int_vol_sgs_flux_upwind                                    &

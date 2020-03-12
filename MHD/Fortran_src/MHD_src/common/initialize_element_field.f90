@@ -51,7 +51,7 @@
           iphys_ele%i_filter_velo = i0
 !
         else if(ele_fld%phys_name(i) .eq. magnetic_field%name) then
-          iphys_ele%i_magne = i0
+          iphys_ele%base%i_magne = i0
         else if(ele_fld%phys_name(i) .eq. current_density%name) then
           iphys_ele%base%i_current = i0
         else if(ele_fld%phys_name(i) .eq. filter_magne%name) then

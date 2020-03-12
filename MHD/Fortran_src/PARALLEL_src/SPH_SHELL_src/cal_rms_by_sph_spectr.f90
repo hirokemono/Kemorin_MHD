@@ -77,7 +77,7 @@
         end if
 !
         if (   icomp_rj .eq. ipol%i_velo                                &
-     &      .or. icomp_rj .eq. ipol%i_magne                             &
+     &      .or. icomp_rj .eq. ipol%base%i_magne                        &
      &      .or. icomp_rj .eq. ipol%i_filter_velo                       &
      &      .or. icomp_rj .eq. ipol%i_filter_magne                      &
      &      .or. icomp_rj .eq. ipol%wide_filter_fld%i_velo              &
@@ -124,7 +124,7 @@
      &      rms_sph_rj(0,1,1))
 !
         if (   icomp_rj .eq. ipol%i_velo                                &
-     &      .or. icomp_rj .eq. ipol%i_magne                             &
+     &      .or. icomp_rj .eq. ipol%base%i_magne                        &
      &      .or. icomp_rj .eq. ipol%i_filter_velo                       &
      &      .or. icomp_rj .eq. ipol%i_filter_magne                      &
      &      .or. icomp_rj .eq. ipol%wide_filter_fld%i_velo              &

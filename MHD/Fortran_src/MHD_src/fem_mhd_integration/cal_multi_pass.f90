@@ -104,8 +104,8 @@
      &        nod_comm, node, ele, ele_fld, g_FEM, jac_3d, rhs_tbl,     &
      &        ff_m_smp, fem_wk, f_nl)
         else if (iflag_4_supg .eq. id_magnetic_SUPG) then
-          call int_multi_pass_vector_upw                                &
-     &       (iele_fsmp_stack, iphys_ele%i_magne, dt, FEM_prm, m_lump,  &
+          call int_multi_pass_vector_upw(iele_fsmp_stack,               &
+     &        iphys_ele%base%i_magne, dt, FEM_prm, m_lump,              &
      &        nod_comm, node, ele, ele_fld, g_FEM, jac_3d, rhs_tbl,     &
      &        ff_m_smp, fem_wk, f_nl)
         else
@@ -158,8 +158,8 @@
      &         nod_comm, node, ele, ele_fld, g_FEM, jac_3d, rhs_tbl,    &
      &         ff_m_smp, fem_wk, f_nl)
         else if (iflag_4_supg .eq. id_magnetic_SUPG) then
-          call int_multi_pass_scalar_upw                                &
-     &        (iele_fsmp_stack, iphys_ele%i_magne, dt, FEM_prm, m_lump, &
+          call int_multi_pass_scalar_upw(iele_fsmp_stack,               &
+     &         iphys_ele%base%i_magne, dt, FEM_prm, m_lump,             &
      &         nod_comm, node, ele, ele_fld, g_FEM, jac_3d, rhs_tbl,    &
      &         ff_m_smp, fem_wk, f_nl)
         else
@@ -209,8 +209,8 @@
      &      n_vector, f_nl%ff_smp, ff_m_smp)
 !
         if (iflag_4_supg .gt. id_turn_OFF) then
-          call int_multi_pass_vector_upw                                &
-     &       (iele_fsmp_stack, iphys_ele%i_magne, dt, FEM_prm, m_lump,  &
+          call int_multi_pass_vector_upw(iele_fsmp_stack,               &
+     &        iphys_ele%base%i_magne, dt, FEM_prm, m_lump,              &
      &        nod_comm, node, ele, ele_fld, g_FEM, jac_3d, rhs_tbl,     &
      &        ff_m_smp, fem_wk, f_nl)
         else
@@ -259,8 +259,8 @@
      &      n_scalar, f_nl%ff_smp, ff_m_smp)
 !
         if (iflag_4_supg .gt. id_turn_OFF) then
-          call int_multi_pass_scalar_upw                                &
-     &       (iele_fsmp_stack, iphys_ele%i_magne, dt, FEM_prm, m_lump,  &
+          call int_multi_pass_scalar_upw(iele_fsmp_stack,               &
+     &        iphys_ele%base%i_magne, dt, FEM_prm, m_lump,              &
      &        nod_comm, node, ele, ele_fld, g_FEM, jac_3d, rhs_tbl,     &
      &        ff_m_smp, fem_wk, f_nl)
         else

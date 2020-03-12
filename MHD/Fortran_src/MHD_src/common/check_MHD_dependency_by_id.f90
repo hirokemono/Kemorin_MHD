@@ -46,18 +46,16 @@
 !
       do i = 1, fld%num_phys
         i_start = fld%istack_component(i-1) + 1
-        if(     i_start .eq. iphys%i_filter_velo                        &
-     &     .or. i_start .eq. iphys%i_magne) then
+        if(     i_start .eq. iphys%i_filter_velo) then
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_velo, velocity%name)
         else if(i_start .eq. iphys%i_filter_vort) then 
           call check_missing_field                                      &
      &       (fld, i_start, iphys%base%i_vort, vorticity%name)
 !
-        else if(i_start .eq. iphys%i_filter_magne                       &
-     &     .or. i_start .eq. iphys%base%i_current) then
+        else if(i_start .eq. iphys%i_filter_magne) then
           call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_magne, magnetic_field%name)
+     &       (fld, i_start, iphys%base%i_magne, magnetic_field%name)
         else if(i_start .eq. iphys%i_filter_vecp) then
           call check_missing_field                                      &
      &       (fld, i_start, iphys%base%i_vecp, vector_potential%name)

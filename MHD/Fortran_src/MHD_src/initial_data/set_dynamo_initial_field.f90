@@ -173,13 +173,13 @@
         isig = 0
         if (cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
           call set_initial_vect_p                                       &
-     &       (isig, ref_param_T, node, nod_fld%ntot_phys,               &
-     &        iphys%base%i_vecp, iphys%i_magne, iphys%base%i_mag_p,     &
-     &        nod_fld%d_fld)
+     &      (isig, ref_param_T, node, nod_fld%ntot_phys,                &
+     &       iphys%base%i_vecp, iphys%base%i_magne, iphys%base%i_mag_p, &
+     &       nod_fld%d_fld)
         else
           call set_initial_magne                                        &
      &       (isig, ref_param_T, node, nod_fld%ntot_phys,               &
-     &        iphys%i_magne, iphys%base%i_mag_p, nod_fld%d_fld)
+     &        iphys%base%i_magne, iphys%base%i_mag_p, nod_fld%d_fld)
         end if
 !
       else if (iflag_restart .le. -100) then
@@ -209,18 +209,18 @@
       else if (iflag_restart .eq. i_rst_kinematic) then
         call set_initial_kinematic(node, fluid%numnod_fld,              &
      &      fluid%inod_fld, nod_fld%ntot_phys,                          &
-     &      iphys%i_velo, iphys%base%i_press, iphys%i_magne,            &
+     &      iphys%i_velo, iphys%base%i_press, iphys%base%i_magne,       &
      &      nod_fld%d_fld)
         isig = 2000
         if (cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
           call set_initial_vect_p                                       &
-     &       (isig, ref_param_T, node, nod_fld%ntot_phys,               &
-     &        iphys%base%i_vecp, iphys%i_magne, iphys%base%i_mag_p,     &
-     &        nod_fld%d_fld)
+     &      (isig, ref_param_T, node, nod_fld%ntot_phys,                &
+     &       iphys%base%i_vecp, iphys%base%i_magne, iphys%base%i_mag_p, &
+     &       nod_fld%d_fld)
         else
           call set_initial_magne                                        &
      &       (isig, ref_param_T, node, nod_fld%ntot_phys,               &
-     &        iphys%i_magne, iphys%base%i_mag_p, nod_fld%d_fld)
+     &        iphys%base%i_magne, iphys%base%i_mag_p, nod_fld%d_fld)
         end if
 !
       else if ( iflag_restart .ge. 1000  ) then
@@ -232,12 +232,12 @@
         if (cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
           call set_initial_vect_p                                       &
      &       (iflag_restart, ref_param_T, node,                         &
-     &        nod_fld%ntot_phys, iphys%base%i_vecp, iphys%i_magne,      &
+     &        nod_fld%ntot_phys, iphys%base%i_vecp, iphys%base%i_magne, &
      &        iphys%base%i_mag_p, nod_fld%d_fld)
         else
           call set_initial_magne(iflag_restart, ref_param_T, node,      &
-     &        nod_fld%ntot_phys, iphys%i_magne, iphys%base%i_mag_p,     &
-     &        nod_fld%d_fld)
+     &       nod_fld%ntot_phys, iphys%base%i_magne, iphys%base%i_mag_p, &
+     &       nod_fld%d_fld)
         end if
 !
       else if (iflag_restart .ne. i_rst_no_file                         &

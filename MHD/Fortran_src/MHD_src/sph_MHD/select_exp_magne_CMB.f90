@@ -10,19 +10,19 @@
 !!      subroutine sel_CMB_grad_bp_and_current                          &
 !!     &         (sph_rj, sph_bc_B, CMB_Bspec, g_sph_rj,                &
 !!     &          is_magne, is_current, rj_fld)
-!!        Input:    ipol%i_magne, itor%i_magne
-!!        Solution: idpdr%i_magne,
+!!        Input:    ipol%base%i_magne, itor%base%i_magne
+!!        Solution: idpdr%base%i_magne,
 !!                  ipol%base%i_current, itor%base%i_current,
 !!                  idpdr%base%i_current
 !!      subroutine sel_CMB_grad_poloidal_magne                          &
 !!     &         (sph_rj, sph_bc_B, CMB_Bspec, g_sph_rj,                &
 !!     &          is_magne, rj_fld)
-!!        Input:    ipol%i_magne, itor%i_magne
-!!        Solution: idpdr%i_magne
+!!        Input:    ipol%base%i_magne, itor%base%i_magne
+!!        Solution: idpdr%base%i_magne
 !!
 !!      subroutine sel_CMB_sph_current(sph_rj, sph_bc_B, g_sph_rj,      &
 !!     &          is_magne, is_current, rj_fld)
-!!        Input:    ipol%i_magne, itor%i_magne
+!!        Input:    ipol%base%i_magne, itor%base%i_magne
 !!        Solution: ipol%base%i_current, itor%base%i_current,
 !!                  idpdr%base%i_current
 !!      subroutine sel_CMB_sph_rotation_uxb(sph_rj, sph_bc_B, g_sph_rj, &
@@ -32,7 +32,7 @@
 !!      subroutine sel_CMB_sph_magnetic_diffusion                       &
 !!     &         (sph_rj, sph_bc_B, g_sph_rj, coef_diffuse,             &
 !!     &          is_magne, is_ohmic, ids_ohmic, rj_fld)
-!!        Input:    ipol%i_magne, itor%i_magne
+!!        Input:    ipol%base%i_magne, itor%base%i_magne
 !!        Solution: ipol%diffusion%i_b_diffuse, 
 !!               itor%diffusion%i_b_diffuse, idpdr%diffusion%i_b_diffuse
 !!          type(sph_boundary_type), intent(in) :: sph_bc_B

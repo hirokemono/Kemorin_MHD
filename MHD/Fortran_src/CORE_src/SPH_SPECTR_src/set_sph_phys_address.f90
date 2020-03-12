@@ -64,8 +64,8 @@
       call set_vect_sph_address(ipol%base%i_vort,                       &
      &    itor%base%i_vort, idpdr%base%i_vort)
 !
-      call set_vect_sph_address(ipol%i_magne,                           &
-     &    itor%i_magne, idpdr%i_magne)
+      call set_vect_sph_address(ipol%base%i_magne,                      &
+     &    itor%base%i_magne, idpdr%base%i_magne)
       call set_vect_sph_address(ipol%base%i_vecp,                       &
      &    itor%base%i_vecp,idpdr%base%i_vecp)
       call set_vect_sph_address(ipol%base%i_current,                    &

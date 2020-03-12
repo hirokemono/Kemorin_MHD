@@ -389,7 +389,7 @@
 !$omp parallel
       if (iphys%SGS_ene_flux%i_SGS_me_gen .gt. 0) then
         call cal_phys_dot_product                                       &
-     &     (iphys%i_magne, iphys%SGS_term%i_SGS_induction,              &
+     &     (iphys%base%i_magne, iphys%SGS_term%i_SGS_induction,         &
      &      iphys%SGS_ene_flux%i_SGS_me_gen, nod_fld)
       end if
 !$omp end parallel

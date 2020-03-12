@@ -116,7 +116,7 @@
      &        nod_fld, g_FEM, jac_sf_grp, rhs_tbl, FEM_elens,           &
      &        Bsf_bcs%sgs, num_int, SGS_param%ifilter_final,            &
      &        iphys%SGS_term%i_SGS_maxwell,                             &
-     &        iphys%i_magne, iphys%i_magne,                             &
+     &        iphys%base%i_magne, iphys%base%i_magne,                   &
      &        diff_coefs%num_field, iak_diff_lor, diff_coefs%ak,        &
      &        (-fl_prop%coef_lor), fem_wk, surf_wk, f_nl)
         end if
@@ -192,7 +192,7 @@
      &        nod_fld, g_FEM, jac_sf_grp, rhs_tbl, FEM_elens,           &
      &        Bsf_bcs%sgs, num_int, SGS_param%ifilter_final,            &
      &        iphys%SGS_term%i_SGS_maxwell,                             &
-     &        iphys%i_magne, iphys%i_magne,                             &
+     &        iphys%base%i_magne, iphys%base%i_magne,                   &
      &        diff_coefs%num_field, iak_diff_lor, diff_coefs%ak,        &
      &        (-fl_prop%coef_lor), fem_wk, surf_wk, f_nl)
         end if

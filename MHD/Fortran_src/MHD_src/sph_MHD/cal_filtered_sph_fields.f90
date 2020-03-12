@@ -19,7 +19,7 @@
 !!      subroutine cal_sph_base_filtering_fields                        &
 !!     &         (sph_rj, ipol, sph_base_f, rj_fld)
 !!       Input:   rj_fld(1:is_fld)
-!!          is_fld = i_velo, base%i_vort, i_magne, base%i_current,
+!!          is_fld = i_velo, base%i_vort, base%i_magne, base%i_current,
 !!                                   base%i_temp, base%i_light
 !!       Output:  rj_fld(1:is_fld)
 !!                  i_filter_current, i_filter_temp, i_filter_comp, 
@@ -27,11 +27,11 @@
 !!      subroutine cal_sph_wide_filtering_fields                        &
 !!     &         (sph_rj, ipol, sph_wide_f, rj_fld)
 !!       Input:   rj_fld(1:is_fld)
-!!          is_fld = i_velo, base%i_vort, i_magne, base%i_current,
+!!          is_fld = i_velo, base%i_vort, base%i_magne, base%i_current,
 !!                                   base%i_temp, base%i_light
 !!       Output:  rj_fld(1:is_fld)
 !!           wide_filter_fld%i_velo, wide_filter_fld%i_vort,
-!!           wide_filter_fld%i_magne, wide_filter_fld%i_current, 
+!!           wide_filter_fld%base%i_magne, wide_filter_fld%i_current, 
 !!           wide_filter_fld%i_temp, wide_filter_fld%i_light
 !!
 !!      subroutine cal_sph_base_filtering_forces                        &
@@ -117,7 +117,7 @@
       call vector_sph_filter(ipol%base%i_vort, ipol%i_filter_vort,      &
      &    sph_rj, sph_base_f%r_filter, sph_base_f%sph_filter, rj_fld)
 !
-      call vector_sph_filter(ipol%i_magne, ipol%i_filter_magne,         &
+      call vector_sph_filter(ipol%base%i_magne, ipol%i_filter_magne,    &
      &    sph_rj, sph_base_f%r_filter, sph_base_f%sph_filter, rj_fld)
 !
       call vector_sph_filter                                            &
@@ -163,7 +163,7 @@
      &    sph_rj, sph_wide_f%r_filter, sph_wide_f%sph_filter, rj_fld)
 !
       call vector_sph_filter                                            &
-     &   (ipol%i_magne, ipol%wide_filter_fld%i_magne,                   &
+     &   (ipol%base%i_magne, ipol%wide_filter_fld%i_magne,              &
      &    sph_rj, sph_wide_f%r_filter, sph_wide_f%sph_filter, rj_fld)
 !
       call vector_sph_filter                                            &

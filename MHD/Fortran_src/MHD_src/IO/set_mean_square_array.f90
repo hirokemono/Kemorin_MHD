@@ -130,8 +130,8 @@
 !
             else if(field_name .eq. magnetic_field%name) then
               call set_rms_address                                      &
-     &           (field_name, num_comps, iphys%i_magne,                 &
-     &            i_rms%i_magne, j_ave%i_magne, msq_list)
+     &           (field_name, num_comps, iphys%base%i_magne,            &
+     &            i_rms%base%i_magne, j_ave%base%i_magne, msq_list)
 !
               ifld_msq%ir_me_ic =  msq_list%numrms + 1
               ifld_msq%ja_mag_ic = msq_list%numave + 1
@@ -345,7 +345,7 @@
      &          msq_list)
           else if ( field_name .eq. magnetic_field%name ) then
             call set_rms_address                                        &
-     &         (e_hd_div_b, n_scalar, iphys%i_magne,                    &
+     &         (e_hd_div_b, n_scalar, iphys%base%i_magne,               &
      &          i_rms%grad_fld%i_div_b, j_ave%grad_fld%i_div_b,         &
      &          msq_list)
           else if ( field_name .eq. vector_potential%name ) then

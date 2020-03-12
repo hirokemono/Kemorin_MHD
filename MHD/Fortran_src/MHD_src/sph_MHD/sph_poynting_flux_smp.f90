@@ -75,8 +75,9 @@
      &      trns_b_MHD%ncomp, trns_f_ngSGS%ncomp,                       &
      &      trns_b_MHD%fld_rtp, trns_f_ngSGS%fld_rtp)
       end if
-      if(b_trns%i_magne .gt. 0) then
-        call copy_vect_to_grad_vect_rtp(sph%sph_rtp, b_trns%i_magne,    &
+      if(b_trns%base%i_magne .gt. 0) then
+        call copy_vect_to_grad_vect_rtp(sph%sph_rtp,                    &
+     &      b_trns%base%i_magne,                                        &
      &      fn_trns%diff_vector%i_grad_bx,                              &
      &      fn_trns%diff_vector%i_grad_by,                              &
      &      fn_trns%diff_vector%i_grad_bz,                              &

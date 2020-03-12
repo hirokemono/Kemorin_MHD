@@ -144,7 +144,7 @@
 !
       if (cd_prop%iflag_Bevo_scheme .ne. id_no_evolution) then
         msg = 'Time integration for magnetic induction equation needs'
-        call check_missing_field_w_msg(fld, msg, iphys%i_magne)
+        call check_missing_field_w_msg(fld, msg, iphys%base%i_magne)
         call check_missing_field_w_msg(fld, msg, iphys%i_velo)
       end if
 !
@@ -178,7 +178,7 @@
 !
         if (fl_prop%iflag_4_lorentz .gt. id_turn_OFF) then
           msg = 'Lorentz force needs'
-          call check_missing_field_w_msg(fld, msg, iphys%i_magne)
+          call check_missing_field_w_msg(fld, msg, iphys%base%i_magne)
         end if
       end if
 !

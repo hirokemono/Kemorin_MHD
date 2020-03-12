@@ -96,16 +96,16 @@
      &        npoint_integrate, ifld_msq%ja_amom, iphys%i_velo,         &
      &        mesh, nod_fld, jacs, mhd_fem_wk, fem_wk, fem_msq)
 !
-        else if(msq_list%ifld_msq(i) .eq. iphys%i_magne) then
+        else if(msq_list%ifld_msq(i) .eq. iphys%base%i_magne) then
           call int_all_4_vector                                         &
      &       (fluid%istack_ele_fld_smp, npoint_integrate,               &
      &        msq_list%irms_msq(i), msq_list%jave_msq(i),               &
      &        msq_list%ifld_msq(i), mesh, nod_fld, jacs,                &
      &        fem_wk, fem_msq)
           call int_all_4_vector                                         &
-     &       (conduct%istack_ele_fld_smp, npoint_integrate,             &
-     &        ifld_msq%ir_me_ic, ifld_msq%ja_mag_ic, iphys%i_magne,     &
-     &        mesh, nod_fld, jacs, fem_wk, fem_msq)
+     &      (conduct%istack_ele_fld_smp, npoint_integrate,              &
+     &       ifld_msq%ir_me_ic, ifld_msq%ja_mag_ic, iphys%base%i_magne, &
+     &       mesh, nod_fld, jacs, fem_wk, fem_msq)
 !
         else if(msq_list%ifld_msq(i) .eq. iphys%base%i_current) then
           call int_all_4_vector                                         &
@@ -184,9 +184,9 @@
         fem_msq%rms_local(i_rms%i_velo)                                 &
      &      = half * fem_msq%rms_local(i_rms%i_velo)
       end if
-      if(i_rms%i_magne .gt. 0) then
-        fem_msq%rms_local(i_rms%i_magne)                                &
-     &      = half * fem_msq%rms_local(i_rms%i_magne)
+      if(i_rms%base%i_magne .gt. 0) then
+        fem_msq%rms_local(i_rms%base%i_magne)                           &
+     &      = half * fem_msq%rms_local(i_rms%base%i_magne)
       end if
       if(ifld_msq%ir_me_ic .gt. 0) then
         fem_msq%rms_local(ifld_msq%ir_me_ic)                            &
@@ -276,13 +276,13 @@
       if      (cd_prop%iflag_Bevo_scheme .gt. id_no_evolution           &
      &    .or. cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
         call int_norm_divergence                                        &
-     &    (mesh%ele%istack_ele_smp, iphys%i_magne, mesh%node, mesh%ele, &
-     &     nod_fld, jacs%g_FEM, jacs%jac_3d, fem_wk,                    &
-     &     fem_msq%ave_local(j_ave%grad_fld%i_div_b))
+     &    (mesh%ele%istack_ele_smp, iphys%base%i_magne,                 &
+     &     mesh%node, mesh%ele, nod_fld, jacs%g_FEM, jacs%jac_3d,       &
+     &     fem_wk, fem_msq%ave_local(j_ave%grad_fld%i_div_b))
         call int_rms_divergence                                         &
-     &    (mesh%ele%istack_ele_smp, iphys%i_magne, mesh%node, mesh%ele, &
-     &     nod_fld, jacs%g_FEM, jacs%jac_3d, fem_wk,                    &
-     &     fem_msq%rms_local(i_rms%grad_fld%i_div_b))
+     &    (mesh%ele%istack_ele_smp, iphys%base%i_magne,                 &
+     &     mesh%node, mesh%ele, nod_fld, jacs%g_FEM, jacs%jac_3d,       &
+     &     fem_wk, fem_msq%rms_local(i_rms%grad_fld%i_div_b))
       end if
 !
       if(iphys%i_filter_velo .gt. 0) then

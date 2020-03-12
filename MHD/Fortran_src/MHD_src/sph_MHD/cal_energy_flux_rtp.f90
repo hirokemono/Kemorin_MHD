@@ -86,7 +86,7 @@
         call cal_cross_prod_w_coef_smp                                  &
      &     (sph_rtp%nnod_pole, fl_prop%coef_lor,                        &
      &      trns_b_MHD%fld_pole(1,bs_trns%base%i_current),              &
-     &      trns_b_MHD%fld_pole(1,bs_trns%i_magne),                     &
+     &      trns_b_MHD%fld_pole(1,bs_trns%base%i_magne),                &
      &      trns_f_MHD%fld_pole(1,f_trns%forces%i_lorentz) )
       end if
 !
@@ -97,7 +97,7 @@
         call cal_cross_prod_w_coef_smp                                  &
      &     (sph_rtp%nnod_pole, cd_prop%coef_induct,                     &
      &      trns_b_MHD%fld_pole(1,bs_trns%i_velo),                      &
-     &      trns_b_MHD%fld_pole(1,bs_trns%i_magne),                     &
+     &      trns_b_MHD%fld_pole(1,bs_trns%base%i_magne),                &
      &      trns_f_MHD%fld_pole(1,f_trns%forces%i_vp_induct) )
       end if
 !
@@ -182,26 +182,26 @@
       if(fs_trns%prod_fld%i_k_heli .gt. 0) then
         call cal_dot_prod_no_coef_smp(sph_rtp%nnod_rtp,                 &
      &      trns_b_snap%fld_rtp(1,bs_trns%i_velo),                      &
-     &      trns_b_snap%fld_rtp(1,bs_trns%i_magne),                     &
+     &      trns_b_snap%fld_rtp(1,bs_trns%base%i_magne),                &
      &      trns_f_snap%fld_rtp(1,fs_trns%prod_fld%i_k_heli))
       end if
       if(fs_trns%prod_fld%i_c_heli .gt. 0) then
         call cal_dot_prod_no_coef_smp(sph_rtp%nnod_rtp,                 &
-     &      trns_b_snap%fld_rtp(1,bs_trns%i_magne),                     &
+     &      trns_b_snap%fld_rtp(1,bs_trns%base%i_magne),                &
      &      trns_b_snap%fld_rtp(1,bs_trns%base%i_current),              &
      &      trns_f_snap%fld_rtp(1,fs_trns%prod_fld%i_c_heli))
       end if
       if(fs_trns%prod_fld%i_x_heli .gt. 0) then
         call cal_dot_prod_no_coef_smp(sph_rtp%nnod_rtp,                 &
      &      trns_b_snap%fld_rtp(1,bs_trns%i_velo),                      &
-     &      trns_b_snap%fld_rtp(1,bs_trns%i_magne),                     &
+     &      trns_b_snap%fld_rtp(1,bs_trns%base%i_magne),                &
      &      trns_f_snap%fld_rtp(1,fs_trns%prod_fld%i_x_heli))
       end if
 !
       if(fs_trns%ene_flux%i_me_gen .gt. 0) then
         call cal_dot_prod_no_coef_smp(sph_rtp%nnod_rtp,                 &
      &      trns_b_snap%fld_rtp(1,bs_trns%forces%i_induction),          &
-     &      trns_b_snap%fld_rtp(1,bs_trns%i_magne),                     &
+     &      trns_b_snap%fld_rtp(1,bs_trns%base%i_magne),                &
      &      trns_f_snap%fld_rtp(1,fs_trns%ene_flux%i_me_gen))
       end if
       if(fs_trns%prod_fld%i_electric .gt. 0) then
@@ -217,7 +217,7 @@
      &      sph_rtp%istack_inod_rtp_smp, cd_prop%coef_diffuse,          &
      &      trns_b_snap%fld_rtp(1,bs_trns%base%i_current),              &
      &      trns_f_MHD%fld_rtp(1,f_trns%forces%i_vp_induct),            &
-     &      trns_b_snap%fld_rtp(1,bs_trns%i_magne),                     &
+     &      trns_b_snap%fld_rtp(1,bs_trns%base%i_magne),                &
      &      trns_f_snap%fld_rtp(1,fs_trns%prod_fld%i_poynting))
       end if
 !
@@ -287,7 +287,7 @@
       if(fs_trns%prod_fld%i_magne_scale .gt. 0) then
         call cal_len_scale_by_rot_smp                                   &
      &     (np_smp, sph_rtp%nnod_rtp, sph_rtp%istack_inod_rtp_smp,      &
-     &      trns_b_snap%fld_rtp(1,bs_trns%i_magne),                     &
+     &      trns_b_snap%fld_rtp(1,bs_trns%base%i_magne),                &
      &      trns_b_snap%fld_rtp(1,bs_trns%base%i_current),              &
      &      trns_f_snap%fld_rtp(1,fs_trns%prod_fld%i_magne_scale))
       end if
@@ -322,8 +322,8 @@
       end if
       if(fs_trns%prod_fld%i_square_b .gt. 0) then
         call vector_vector_prod_smp(sph_rtp%nnod_rtp,                   &
-     &      trns_b_snap%fld_rtp(1,bs_trns%i_magne),                     &
-     &      trns_b_snap%fld_rtp(1,bs_trns%i_magne),                     &
+     &      trns_b_snap%fld_rtp(1,bs_trns%base%i_magne),                &
+     &      trns_b_snap%fld_rtp(1,bs_trns%base%i_magne),                &
      &      trns_f_snap%fld_rtp(1,fs_trns%prod_fld%i_square_b))
       end if
       if(fs_trns%prod_fld%i_square_a .gt. 0) then
@@ -359,7 +359,7 @@
      &     (np_smp, sph_rtp%nnod_rtp, sph_rtp%istack_inod_rtp_smp,      &
      &      sph_rtp%nidx_rtp(1), sph_rtp%nidx_rtp(2),                   &
      &      sph_rtp%a_r_1d_rtp_r, sph_rtp%cot_theta_1d_rtp,             &
-     &      trns_b_snap%fld_rtp(1,bs_trns%i_magne),                     &
+     &      trns_b_snap%fld_rtp(1,bs_trns%base%i_magne),                &
      &      trns_b_snap%fld_rtp(1,bs_trns%i_velo),                      &
      &      trns_b_snap%fld_rtp(1,bs_trns%diff_vector%i_grad_vx),       &
      &      trns_b_snap%fld_rtp(1,bs_trns%diff_vector%i_grad_vy),       &

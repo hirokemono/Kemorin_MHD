@@ -27,8 +27,8 @@
 !!
 !!       Poloidal velocity ::       d_rj(:,ipol%i_velo)
 !!       Toroidal velocity ::       d_rj(:,itor%i_velo)
-!!       Poloidal magnetic field :: d_rj(:,ipol%i_magne)
-!!       Toroidal magnetic field :: d_rj(:,itor%i_magne)
+!!       Poloidal magnetic field :: d_rj(:,ipol%base%i_magne)
+!!       Toroidal magnetic field :: d_rj(:,itor%base%i_magne)
 !!
 !!       Heat source ::          d_rj(:,ipol%base%i_heat_source)
 !!       Light element source :: d_rj(:,ipol%base%i_light_source)
@@ -404,13 +404,13 @@
       integer :: js, jt, k
 !
 !
-      if(ipol%i_magne .eq. izero) return
+      if(ipol%base%i_magne .eq. izero) return
       pi = four * atan(one)
 !
 !$omp parallel do
       do is = 1, nnod_rj(sph)
-        rj_fld%d_fld(is,ipol%i_magne) = zero
-        rj_fld%d_fld(is,itor%i_magne) = zero
+        rj_fld%d_fld(is,ipol%base%i_magne) = zero
+        rj_fld%d_fld(is,itor%base%i_magne) = zero
       end do
 !$omp end parallel do
 !
@@ -423,7 +423,7 @@
           is = local_sph_data_address(sph, k, js)
           rr = radius_1d_rj_r(sph, k)
 !   Substitute poloidal mangetic field
-          rj_fld%d_fld(is,ipol%i_magne)                                 &
+          rj_fld%d_fld(is,ipol%base%i_magne)                            &
      &                           =  (5.0d0/8.0d0) * (-3.0d0 * rr**3     &
      &                             + 4.0d0 * sph_bc_B%r_CMB(0) * rr**2  &
      &                             - sph_bc_B%r_ICB(0)**4 / rr)
@@ -435,8 +435,8 @@
           is = local_sph_data_address(sph, k, js)
           rr = radius_1d_rj_r(sph, k) / sph_bc_B%r_ICB(0)
 !   Substitute poloidal mangetic field
-          rj_fld%d_fld(is,ipol%i_magne)                                 &
-     &       =  rj_fld%d_fld(is_ICB,ipol%i_magne) * rr**(ione+1)
+          rj_fld%d_fld(is,ipol%base%i_magne)                            &
+     &       =  rj_fld%d_fld(is_ICB,ipol%base%i_magne) * rr**(ione+1)
         end do
 !
 !   Fill potential field if external of the core exist
@@ -445,8 +445,8 @@
           is = local_sph_data_address(sph, k, js)
           rr = radius_1d_rj_r(sph, k) / sph_bc_B%r_CMB(0)
 !   Substitute poloidal mangetic field
-          rj_fld%d_fld(is,ipol%i_magne)                                 &
-     &       =  rj_fld%d_fld(is_CMB,ipol%i_magne) * rr**(-ione)
+          rj_fld%d_fld(is,ipol%base%i_magne)                            &
+     &       =  rj_fld%d_fld(is_CMB,ipol%base%i_magne) * rr**(-ione)
         end do
       end if
 !
@@ -459,7 +459,7 @@
           it = local_sph_data_address(sph, k, jt)
           rr = radius_1d_rj_r(sph, k)
 !   Substitute totoidal mangetic field
-          rj_fld%d_fld(it,itor%i_magne)                                 &
+          rj_fld%d_fld(it,itor%base%i_magne)                            &
      &       = (10.0d0/3.0d0) * rr * sin(pi*(rr - sph_bc_B%r_ICB(0)))
         end do
       end if
@@ -467,10 +467,10 @@
 !
 !$omp parallel do
       do is = 1, nnod_rj(sph)
-        rj_fld%d_fld(is,ipol%i_magne)                                   &
-     &        = b_adjust * rj_fld%d_fld(is,ipol%i_magne)
-        rj_fld%d_fld(is,itor%i_magne)                                   &
-     &        = b_adjust * rj_fld%d_fld(is,itor%i_magne)
+        rj_fld%d_fld(is,ipol%base%i_magne)                              &
+     &        = b_adjust * rj_fld%d_fld(is,ipol%base%i_magne)
+        rj_fld%d_fld(is,itor%base%i_magne)                              &
+     &        = b_adjust * rj_fld%d_fld(is,itor%base%i_magne)
       end do
 !$omp end parallel do
 !

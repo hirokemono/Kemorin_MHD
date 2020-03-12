@@ -86,9 +86,9 @@
      &        iphys%base%i_vecp, iphys%i_chk_uxb)
         end if
       else
-        if( (iphys%i_chk_uxb*iphys%i_magne) .gt. izero) then
+        if( (iphys%i_chk_uxb * iphys%base%i_magne) .gt. izero) then
           call copy_vector_component(nod_fld,                           &
-     &        iphys%i_magne, iphys%i_chk_uxb)
+     &        iphys%base%i_magne, iphys%i_chk_uxb)
         end if
       end if
 !

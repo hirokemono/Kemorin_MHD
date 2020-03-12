@@ -345,7 +345,7 @@
 !      call pick_degree_sph_spectr(ltr_half, ipick_degree,              &
 !     &    ithree, ipol%i_velo, sph%sph_rj, rj_fld)
 !      call pick_degree_sph_spectr(ltr_half, ipick_degree,              &
-!     &    ithree, ipol%i_magne)
+!     &    ithree, ipol%base%i_magne)
 !      deallocate(ipick_degree, sph%sph_rj, rj_fld)
 
       if (my_rank.eq.0) write(*,*) 'delete zonam mean velocity'

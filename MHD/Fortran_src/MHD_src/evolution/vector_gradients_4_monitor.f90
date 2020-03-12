@@ -150,11 +150,11 @@
      &     .or. i_fld .eq. iphys%diff_vector%i_grad_by                  &
      &     .or. i_fld .eq. iphys%diff_vector%i_grad_bz) then
           if(i_fld .eq. iphys%diff_vector%i_grad_bx) then
-            i_src = iphys%i_magne
+            i_src = iphys%base%i_magne
           else if(i_fld .eq. iphys%diff_vector%i_grad_by) then
-            i_src = iphys%i_magne + 1
+            i_src = iphys%base%i_magne + 1
           else if(i_fld .eq. iphys%diff_vector%i_grad_bz) then
-            i_src = iphys%i_magne + 2
+            i_src = iphys%base%i_magne + 2
           end if
 !
           if(iflag_debug .ge. iflag_routine_msg)                        &
@@ -254,19 +254,19 @@
 !
       if (iphys%ene_flux%i_ujb .gt. izero) then
         call cal_tri_product_4_scalar                                   &
-     &     (iphys%i_velo, iphys%base%i_current, iphys%i_magne,          &
+     &     (iphys%i_velo, iphys%base%i_current, iphys%base%i_magne,     &
      &      iphys%ene_flux%i_ujb, fl_prop%coef_lor, nod_fld)
       end if
 !
       if (iphys%ene_flux%i_nega_ujb .gt. izero) then
         call cal_tri_product_4_scalar                                   &
-     &     (iphys%i_velo, iphys%i_magne, iphys%base%i_current,          &
+     &     (iphys%i_velo, iphys%base%i_magne, iphys%base%i_current,     &
      &      iphys%ene_flux%i_nega_ujb, fl_prop%coef_lor, nod_fld)
       end if
 !
       if (iphys%ene_flux%i_me_gen .gt. izero) then
         call cal_phys_dot_product                                       &
-     &     (iphys%forces%i_induction, iphys%i_magne,                    &
+     &     (iphys%forces%i_induction, iphys%base%i_magne,               &
      &      iphys%ene_flux%i_me_gen, nod_fld)
       end if
 !$omp end parallel
@@ -338,31 +338,31 @@
 !
       if (iphys%ene_flux%i_mag_e_diffuse .gt. izero) then
         call cal_phys_dot_product                                       &
-     &     (iphys%i_magne, iphys%diffusion%i_b_diffuse,                 &
+     &     (iphys%base%i_magne, iphys%diffusion%i_b_diffuse,            &
      &      iphys%ene_flux%i_mag_e_diffuse, nod_fld)
       end if
 !
       if (iphys%ene_flux%i_m_tension_wk .gt. izero) then
-        call cal_phys_dot_product(iphys%i_velo, iphys%i_magne,          &
+        call cal_phys_dot_product(iphys%i_velo, iphys%base%i_magne,     &
      &      iphys%ene_flux%i_m_tension_wk, nod_fld)
       end if
 !
       if (iphys%forces%i_mag_stretch .gt. izero) then
         call cal_phys_dot_product(iphys%diff_vector%i_grad_vx,          &
-     &      iphys%i_magne, iphys%forces%i_mag_stretch,                  &
+     &      iphys%base%i_magne, (iphys%forces%i_mag_stretch  ),         &
      &      nod_fld)
         call cal_phys_dot_product(iphys%diff_vector%i_grad_vy,          &
-     &      iphys%i_magne, (iphys%forces%i_mag_stretch+1),              &
+     &      iphys%base%i_magne, (iphys%forces%i_mag_stretch+1),         &
      &      nod_fld)
         call cal_phys_dot_product(iphys%diff_vector%i_grad_vz,          &
-     &      iphys%i_magne, (iphys%forces%i_mag_stretch+2),              &
+     &      iphys%base%i_magne, (iphys%forces%i_mag_stretch+2),         &
      &      nod_fld)
       end if
 !
       if (iphys%prod_fld%i_poynting .gt. izero) then
         call cal_nod_poynting_flux_smp(node, cd_prop%coef_diffuse,      &
      &      nod_fld%ntot_phys, iphys%base%i_current,                    &
-     &      iphys%forces%i_vp_induct, iphys%i_magne,                    &
+     &      iphys%forces%i_vp_induct, iphys%base%i_magne,               &
      &      iphys%prod_fld%i_poynting, nod_fld%d_fld)
       end if
 !$omp end parallel

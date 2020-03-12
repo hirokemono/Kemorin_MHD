@@ -114,9 +114,9 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'cal_sgs_uxb_simi'
       call cal_sgs_uxb_simi(iphys%SGS_wk%i_simi, iphys%i_velo,          &
-     &    iphys%i_magne, iphys%i_filter_velo, iphys%i_filter_magne,     &
-     &    SGS_par%filter_p, mesh%nod_comm, mesh%node,                   &
-     &    FEM_filters%filtering,FEM_SGS_wk%wk_filter, nod_fld)
+     &   iphys%base%i_magne, iphys%i_filter_velo, iphys%i_filter_magne, &
+     &   SGS_par%filter_p, mesh%nod_comm, mesh%node,                    &
+     &   FEM_filters%filtering,FEM_SGS_wk%wk_filter, nod_fld)
 !
 !   gradient model by filtered field
 !
@@ -133,7 +133,7 @@
 !
       if (iflag_debug.gt.0)  write(*,*) 'cal_sgs_uxb_grad_4_dyn'
       call cal_sgs_vp_induct_grad_no_coef(ifilter_2delta,               &
-     &    iphys%SGS_term%i_SGS_vp_induct, iphys%i_magne,                &
+     &    iphys%SGS_term%i_SGS_vp_induct, iphys%base%i_magne,           &
      &    ie_dvx, dt, FEM_prm, mesh%nod_comm, mesh%node, mesh%ele,      &
      &    conduct, cd_prop, iphys_ele, ele_fld,                         &
      &    fem_int%jcs, fem_int%rhs_tbl, FEM_filters%FEM_elens,          &
@@ -217,8 +217,8 @@
 !    SGS term by similarity model
 !
       if (iflag_debug.gt.0)  write(*,*) 'cal_sgs_induct_t_simi'
-      call cal_sgs_induct_t_simi                                        &
-     &   (iphys%SGS_term%i_SGS_induct_t, iphys%i_velo, iphys%i_magne,   &
+      call cal_sgs_induct_t_simi(iphys%SGS_term%i_SGS_induct_t,         &
+     &    iphys%i_velo, iphys%base%i_magne,                             &
      &    iphys%i_filter_velo, iphys%i_filter_magne, icomp_sgs_uxb,     &
      &    SGS_par%filter_p, mesh%nod_comm, mesh%node,                   &
      &    FEM_filters%filtering, sgs_coefs_nod, FEM_SGS_wk%wk_filter,   &
@@ -245,9 +245,9 @@
       if (iflag_debug.gt.0)  write(*,*) 'cal_sgs_induct_t_grad_4_dyn'
       call cal_sgs_induct_t_grad_no_coef                                &
      &   (ifilter_2delta,  iphys%SGS_term%i_SGS_induct_t,               &
-     &    iphys%i_velo, iphys%i_magne, ie_dvx, ie_dbx, dt, FEM_prm,     &
-     &    mesh%nod_comm, mesh%node, mesh%ele, conduct, cd_prop,         &
-     &    iphys_ele, ele_fld, fem_int%jcs,                              &
+     &    iphys%i_velo, iphys%base%i_magne, ie_dvx, ie_dbx,             &
+     &    Fdt, EM_prm, mesh%nod_comm, mesh%node, mesh%ele, conduct,     &
+     &    cd_prop, iphys_ele, ele_fld, fem_int%jcs,                     &
      &    fem_int%rhs_tbl, FEM_filters%FEM_elens, mk_MHD%mlump_cd,      &
      &    rhs_mat%fem_wk, mhd_fem_wk, rhs_mat%f_l, nod_fld)
 !

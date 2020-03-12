@@ -82,7 +82,7 @@
      &      write(*,*) 'check_vector_evo_by_previous magne'
           call check_vector_evo_by_previous                             &
      &       (node%numnod, node%istack_nod_smp, nod_fld%ntot_phys,      &
-     &        iphys%i_magne, iphys%i_chk_uxb, iphys%i_chk_uxb_2,        &
+     &        iphys%base%i_magne, iphys%i_chk_uxb, iphys%i_chk_uxb_2,   &
      &        flex_data%i_drmax_b, nod_fld%d_fld, flex_data)
         end if
       end if

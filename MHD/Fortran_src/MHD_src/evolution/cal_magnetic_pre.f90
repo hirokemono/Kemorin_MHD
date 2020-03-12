@@ -189,7 +189,7 @@
      &      conduct%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,       &
      &      node, ele, nod_fld, jacs%g_FEM, jacs%jac_3d, rhs_tbl,       &
      &      FEM_elens, diff_coefs, iak_diff_b, cd_prop%coef_exp,        &
-     &      ak_d_magne, iphys%i_magne, fem_wk, f_l)
+     &      ak_d_magne, iphys%base%i_magne, fem_wk, f_l)
       end if
 !
 ! lead induction terms
@@ -219,38 +219,40 @@
      &    fem_wk, surf_wk, f_l, f_nl)
 !
       if(cd_prop%iflag_Bevo_scheme .eq. id_explicit_euler) then
-        call cal_magne_pre_euler(iphys%i_magne, dt,                     &
+        call cal_magne_pre_euler(iphys%base%i_magne, dt,                &
      &      FEM_prm, nod_comm, node, ele, conduct, iphys_ele, ele_fld,  &
      &      jacs%g_FEM, jacs%jac_3d, rhs_tbl, mlump_cd, mhd_fem_wk,     &
      &      fem_wk, f_l, f_nl, nod_fld)
       else if(cd_prop%iflag_Bevo_scheme .eq. id_explicit_adams2) then
-        call cal_magne_pre_adams(iphys%i_magne, iphys%i_pre_uxb, dt,    &
+        call cal_magne_pre_adams                                        &
+     &     (iphys%base%i_magne, iphys%i_pre_uxb, dt,                    &
      &      FEM_prm, nod_comm, node, ele, conduct, iphys_ele, ele_fld,  &
      &      jacs%g_FEM, jacs%jac_3d, rhs_tbl, mlump_cd,                 &
      &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       else if(cd_prop%iflag_Bevo_scheme .eq. id_Crank_nicolson) then
         call cal_magne_pre_lumped_crank                                 &
      &     (cmt_param%iflag_c_magne, SGS_param%ifilter_final,           &
-     &      iphys%i_magne, iphys%i_pre_uxb, iak_diff_b, ak_d_magne,     &
-     &      Bnod_bcs%nod_bc_b, dt, FEM_prm, nod_comm, node, ele,        &
-     &      conduct, cd_prop, iphys_ele, ele_fld, jacs%g_FEM,           &
-     &      jacs%jac_3d, rhs_tbl, FEM_elens, diff_coefs, mlump_cd, &
+     &      iphys%base%i_magne, iphys%i_pre_uxb,                        &
+     &      iak_diff_b, ak_d_magne, Bnod_bcs%nod_bc_b, dt,              &
+     &      FEM_prm, nod_comm, node, ele, conduct, cd_prop,             &
+     &      iphys_ele, ele_fld, jacs%g_FEM, jacs%jac_3d,                &
+     &      rhs_tbl, FEM_elens, diff_coefs, mlump_cd,                   &
      &      Bmatrix, MG_vector, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       else if(cd_prop%iflag_Bevo_scheme .eq. id_Crank_nicolson_cmass)   &
      & then
         call cal_magne_pre_consist_crank                                &
-     &     (cmt_param%iflag_c_magne, SGS_param%ifilter_final,           &
-     &      iphys%i_magne, iphys%i_pre_uxb, iak_diff_b, ak_d_magne,     &
-     &      Bnod_bcs%nod_bc_b, dt, FEM_prm, node, ele, conduct,         &
-     &      cd_prop, jacs%g_FEM, jacs%jac_3d, rhs_tbl, FEM_elens,       &
-     &      diff_coefs, Bmatrix, MG_vector, mhd_fem_wk, fem_wk,         &
-     &      f_l, f_nl, nod_fld)
+     &    (cmt_param%iflag_c_magne, SGS_param%ifilter_final,            &
+     &     iphys%base%i_magne, iphys%i_pre_uxb, iak_diff_b, ak_d_magne, &
+     &     Bnod_bcs%nod_bc_b, dt, FEM_prm, node, ele, conduct,          &
+     &     cd_prop, jacs%g_FEM, jacs%jac_3d, rhs_tbl, FEM_elens,        &
+     &     diff_coefs, Bmatrix, MG_vector, mhd_fem_wk, fem_wk,          &
+     &     f_l, f_nl, nod_fld)
       end if
 !
       call set_boundary_vect                                            &
-     &   (Bnod_bcs%nod_bc_b, iphys%i_magne, nod_fld)
+     &   (Bnod_bcs%nod_bc_b, iphys%base%i_magne, nod_fld)
 !
-      call vector_send_recv(iphys%i_magne, nod_comm, nod_fld)
+      call vector_send_recv(iphys%base%i_magne, nod_comm, nod_fld)
 !
       end subroutine cal_magnetic_field_pre
 !
@@ -335,23 +337,25 @@
       if (   FEM_prm%iflag_imp_correct .eq. id_Crank_nicolson           &
      &  .or. FEM_prm%iflag_imp_correct .eq. id_Crank_nicolson_cmass)    &
      & then
-        call cal_magnetic_co_imp(iphys%i_magne, iak_diff_b, ak_d_magne, &
+        call cal_magnetic_co_imp                                        &
+     &     (iphys%base%i_magne, iak_diff_b, ak_d_magne,                 &
      &      dt, FEM_prm, SGS_param, cmt_param, nod_comm, node, ele,     &
      &      conduct, cd_prop, Bnod_bcs, iphys_ele, ele_fld, jacs%g_FEM, &
      &      jacs%jac_3d, rhs_tbl, FEM_elens, diff_coefs, m_lump,        &
      &      Bmatrix, MG_vector, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       else
         call cal_magnetic_co_exp                                        &
-     &     (iphys%i_magne, FEM_prm, nod_comm, node, ele, jacs%g_FEM,    &
-     &      jacs%jac_3d, rhs_tbl, m_lump, mhd_fem_wk, fem_wk,           &
-     &      f_l, f_nl, nod_fld)
+     &     (iphys%base%i_magne, FEM_prm, nod_comm, node, ele,           &
+     &      jacs%g_FEM, jacs%jac_3d, rhs_tbl, m_lump,                   &
+     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
 !
       if (iflag_debug.eq.1)   write(*,*) 'set_boundary_vect magne'
-      call set_boundary_vect(Bnod_bcs%nod_bc_b, iphys%i_magne, nod_fld)
+      call set_boundary_vect                                            &
+     &   (Bnod_bcs%nod_bc_b, iphys%base%i_magne, nod_fld)
 !
-      call vector_send_recv(iphys%i_magne, nod_comm, nod_fld)
+      call vector_send_recv(iphys%base%i_magne, nod_comm, nod_fld)
       call scalar_send_recv(iphys%base%i_mag_p, nod_comm, nod_fld)
 !
       end subroutine cal_magnetic_co
@@ -431,11 +435,12 @@
       call cal_sol_magne_insulate                                       &
      &   (nod_fld%n_point, insulate%istack_inter_fld_smp,               &
      &    insulate%numnod_fld, insulate%inod_fld, f_l%ff,               &
-     &    nod_fld%ntot_phys, iphys%i_magne, nod_fld%d_fld)
+     &    nod_fld%ntot_phys, iphys%base%i_magne, nod_fld%d_fld)
 !
-      call set_boundary_vect(Bnod_bcs%nod_bc_b, iphys%i_magne, nod_fld)
+      call set_boundary_vect                                            &
+     &   (Bnod_bcs%nod_bc_b, iphys%base%i_magne, nod_fld)
 !
-      call vector_send_recv(iphys%i_magne, nod_comm, nod_fld)
+      call vector_send_recv(iphys%base%i_magne, nod_comm, nod_fld)
 !
       end subroutine cal_magnetic_co_outside
 !
