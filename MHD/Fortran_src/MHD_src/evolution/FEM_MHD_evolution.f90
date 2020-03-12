@@ -213,12 +213,13 @@
      &       SGS_MHD_wk%rhs_mat, nod_fld)
 !
           call add_2_nod_scalars(nod_fld,                               &
-     &        iphys%base%i_ref_t, iphys%base%i_per_temp, iphys%i_temp)
+     &        iphys%base%i_ref_t, iphys%base%i_per_temp,                &
+     &        iphys%base%i_temp)
         else
 !          call check_surface_param_smp('cal_temperature_field start',  &
 !     &        my_rank, sf_grp, fem%group%surf_nod_grp)
           if (iflag_debug.eq.1) write(*,*) 'cal_temperature_field T'
-          call cal_temperature_field(iphys%i_temp, time_d%dt,           &
+          call cal_temperature_field(iphys%base%i_temp, time_d%dt,      &
      &       FEM_prm, SGS_par, fem%mesh, fem%group,                     &
      &       MHD_mesh%fluid, MHD_prop%ht_prop, MHD_prop%ref_param_T,    &
      &       nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs,                        &
@@ -233,7 +234,8 @@
 !
         if (iphys%base%i_per_temp .gt. 0) then
           call subtract_2_nod_scalars(nod_fld,                          &
-     &        iphys%i_temp, iphys%base%i_ref_t, iphys%base%i_per_temp)
+     &        iphys%base%i_temp, iphys%base%i_ref_t,                    &
+     &        iphys%base%i_per_temp)
         end if
       end if
 !
@@ -371,7 +373,7 @@
      &      nod_fld, SGS_MHD_wk%ele_fld, diff_coefs)
       end if
 !
-      if (iphys%i_temp .ne. 0) then
+      if (iphys%base%i_temp .ne. 0) then
         call update_with_temperature                                    &
      &     (ifld_diff%i_temp, icomp_diff%i_temp, time_d%i_time_step,    &
      &      time_d%dt, FEM_prm, SGS_par, fem%mesh, fem%group,           &
@@ -489,10 +491,11 @@
      &       SGS_MHD_wk%rhs_mat, nod_fld)
 !
           call add_2_nod_scalars(nod_fld,                               &
-     &        iphys%base%i_ref_t, iphys%base%i_per_temp, iphys%i_temp)
+     &        iphys%base%i_ref_t, iphys%base%i_per_temp,                &
+     &        iphys%base%i_temp)
         else
           if (iflag_debug.eq.1) write(*,*) 'cal_temperature_field'
-          call cal_temperature_field(iphys%i_temp, time_d%dt,           &
+          call cal_temperature_field(iphys%base%i_temp, time_d%dt,      &
      &       FEM_prm, SGS_par, fem%mesh, fem%group,                     &
      &       fluid, MHD_prop%ht_prop, MHD_prop%ref_param_T,             &
      &       nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs,                        &
@@ -505,7 +508,7 @@
      &       SGS_MHD_wk%rhs_mat, nod_fld)
 !
           if (iphys%base%i_per_temp .gt. 0) then
-            call subtract_2_nod_scalars(nod_fld, iphys%i_temp,          &
+            call subtract_2_nod_scalars(nod_fld, iphys%base%i_temp,     &
      &          iphys%base%i_ref_t, iphys%base%i_per_temp)
           end if
         end if
@@ -613,7 +616,7 @@
 !
       if(MHD_prop%ref_param_T%iflag_reference .ne. id_no_ref_temp) then
         if (iflag_debug.eq.1)  write(*,*) 'set_2_perturbation_temp'
-        call subtract_2_nod_scalars(nod_fld, iphys%i_temp,              &
+        call subtract_2_nod_scalars(nod_fld, iphys%base%i_temp,         &
      &      iphys%base%i_ref_t, iphys%base%i_per_temp)
       end if
       if(MHD_prop%ref_param_C%iflag_reference .ne. id_no_ref_temp) then

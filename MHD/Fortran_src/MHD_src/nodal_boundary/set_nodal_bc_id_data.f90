@@ -91,7 +91,7 @@
         end if
 !
         call set_boundary_scalar                                        &
-     &     (nod_bcs%Tnod_bcs%nod_bc_s, iphys%i_temp, nod_fld)
+     &     (nod_bcs%Tnod_bcs%nod_bc_s, iphys%base%i_temp, nod_fld)
       end if
 !
       if (cp_prop%iflag_scheme .gt. id_no_evolution) then

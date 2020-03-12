@@ -308,7 +308,7 @@
      &     .and. fl_prop%iflag_4_composit_buo .eq. id_FORCE_ele_int)    &
      &     then
             call set_double_gvec_each_ele(node, ele, nod_fld, k2,       &
-     &          iphys%i_temp, iphys%base%i_light,                       &
+     &          iphys%base%i_temp, iphys%base%i_light,                  &
      &          fl_prop%i_grav, fl_prop%grav,                           &
      &          ak_MHD%ak_buo, ak_MHD%ak_comp_buo, fem_wk%vector_1)
           else if(fl_prop%iflag_4_filter_gravity .eq. id_FORCE_ele_int  &
@@ -322,7 +322,7 @@
      &     .and. fl_prop%iflag_4_filter_comp_buo .eq. id_FORCE_ele_int) &
      &     then
             call set_double_gvec_each_ele(node, ele, nod_fld, k2,       &
-     &          iphys%i_temp, iphys%i_filter_comp,                      &
+     &          iphys%base%i_temp, iphys%i_filter_comp,                 &
      &          fl_prop%i_grav, fl_prop%grav,                           &
      &          ak_MHD%ak_buo, ak_MHD%ak_comp_buo, fem_wk%vector_1)
           else if(fl_prop%iflag_4_filter_gravity .eq. id_FORCE_ele_int  &
@@ -335,7 +335,7 @@
 !
           else if (fl_prop%iflag_4_gravity .eq. id_FORCE_ele_int) then
             call set_gravity_vec_each_ele(node, ele, nod_fld, k2,       &
-     &          iphys%i_temp, fl_prop%i_grav, fl_prop%grav,             &
+     &          iphys%base%i_temp, fl_prop%i_grav, fl_prop%grav,        &
      &          ak_MHD%ak_buo, fem_wk%vector_1)
           else if(fl_prop%iflag_4_composit_buo .eq. id_FORCE_ele_int)   &
      &        then
@@ -615,7 +615,7 @@
      &     .and. fl_prop%iflag_4_composit_buo .eq. id_FORCE_ele_int)    &
      &     then
             call set_double_gvec_each_ele(node, ele, nod_fld, k2,       &
-     &          iphys%i_temp, iphys%base%i_light,                       &
+     &          iphys%base%i_temp, iphys%base%i_light,                  &
      &          fl_prop%i_grav, fl_prop%grav,                           &
      &          ak_MHD%ak_buo, ak_MHD%ak_comp_buo, fem_wk%vector_1)
           else if(fl_prop%iflag_4_filter_gravity .eq. id_FORCE_ele_int  &
@@ -629,7 +629,7 @@
      &     .and. fl_prop%iflag_4_filter_comp_buo .eq. id_FORCE_ele_int) &
      &     then
             call set_double_gvec_each_ele(node, ele, nod_fld, k2,       &
-     &           iphys%i_temp, iphys%i_filter_comp,                     &
+     &           iphys%base%i_temp, iphys%i_filter_comp,                &
      &          fl_prop%i_grav, fl_prop%grav,                           &
      &          ak_MHD%ak_buo, ak_MHD%ak_comp_buo, fem_wk%vector_1)
           else if(fl_prop%iflag_4_filter_gravity .eq. id_FORCE_ele_int  &
@@ -642,7 +642,7 @@
 !
           else if (fl_prop%iflag_4_gravity .eq. id_FORCE_ele_int) then
             call set_gravity_vec_each_ele(node, ele, nod_fld, k2,       &
-     &          iphys%i_temp, fl_prop%i_grav, fl_prop%grav,             &
+     &          iphys%base%i_temp, fl_prop%i_grav, fl_prop%grav,        &
      &          ak_MHD%ak_buo, fem_wk%vector_1)
           else if (fl_prop%iflag_4_composit_buo .eq. id_FORCE_ele_int)  &
      &      then

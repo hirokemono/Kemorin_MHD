@@ -93,7 +93,7 @@
       end if
 !
 !
-      if( (iphys%i_temp*iphys%i_chk_heat) .gt. izero) then
+      if( (iphys%base%i_temp * iphys%i_chk_heat) .gt. izero) then
         flex_data%num_fld = flex_data%num_fld + 1
         flex_data%ntot_comp = flex_data%ntot_comp + 1
       end if
@@ -168,7 +168,7 @@
       end if
 !
 !
-      if( (iphys%i_temp*iphys%i_chk_heat) .gt. izero) then
+      if( (iphys%base%i_temp * iphys%i_chk_heat) .gt. izero) then
         icou = icou + 1
         flex_data%i_drmax_t =         flex_data%istack_comp(icou-1) + 1
         flex_data%istack_comp(icou) = flex_data%istack_comp(icou-1) + 1

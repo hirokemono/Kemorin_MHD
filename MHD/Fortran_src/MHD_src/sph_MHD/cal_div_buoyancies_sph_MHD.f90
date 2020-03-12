@@ -68,7 +68,7 @@
         ipol_temp =  ipol%base%i_per_temp
         igrad_temp = ipol%grad_fld%i_grad_per_t
       else
-        ipol_temp =  ipol%i_temp
+        ipol_temp =  ipol%base%i_temp
         igrad_temp = ipol%grad_fld%i_grad_temp
       end if
 !

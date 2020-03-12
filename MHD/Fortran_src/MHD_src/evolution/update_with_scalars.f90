@@ -115,7 +115,7 @@
      &        iphys%base%i_per_temp, iphys%SGS_wk%i_sgs_temp)
         else
           call copy_scalar_component(nod_fld,                           &
-     &        iphys%i_temp, iphys%SGS_wk%i_sgs_temp)
+     &        iphys%base%i_temp, iphys%SGS_wk%i_sgs_temp)
         end if
       end if
 !
@@ -161,8 +161,8 @@
           if (iflag_debug.gt.0) write(*,*) 'filter temp for buoyancy'
           call cal_filtered_scalar_whole(SGS_par%filter_p,              &
      &        mesh%nod_comm, mesh%node, FEM_filters%filtering,          &
-     &        iphys%i_filter_temp, iphys%i_temp, FEM_SGS_wk%wk_filter,  &
-     &        nod_fld)
+     &        iphys%i_filter_temp, iphys%base%i_temp,                   &
+     &        FEM_SGS_wk%wk_filter, nod_fld)
           nod_fld%iflag_update(iphys%i_filter_temp) = 1
         end if
 !

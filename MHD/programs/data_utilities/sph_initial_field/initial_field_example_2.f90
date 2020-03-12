@@ -59,11 +59,11 @@
       real(kind= kreal) :: r_from_base, r_strat
 !
 !
-      if(ipol%i_temp .eq. izero) return
+      if(ipol%base%i_temp .eq. izero) return
 !
 !$omp parallel do
       do inod = 1, nnod_rj(sph)
-        rj_fld%d_fld(inod,ipol%i_temp) = zero
+        rj_fld%d_fld(inod,ipol%base%i_temp) = zero
       end do
 !$omp end parallel do
 !
@@ -79,7 +79,7 @@
       if (jj .gt. 0) then
         do k = 1, sph_bc_T%kr_in-1
           inod = local_sph_data_address(sph, k, jj)
-          rj_fld%d_fld(inod,ipol%i_temp) = 0.0d0
+          rj_fld%d_fld(inod,ipol%base%i_temp) = 0.0d0
         end do
         do k = sph_bc_T%kr_in, sph_bc_T%kr_out
           inod = local_sph_data_address(sph, k, jj)
@@ -87,9 +87,9 @@
 !
           r_from_base = rr - (sph_bc_T%r_CMB(0) - r_strat)
           if(rr .gt. (sph_bc_T%r_CMB(0) - r_strat)) then
-            rj_fld%d_fld(inod,ipol%i_temp) = r_from_base / r_strat
+            rj_fld%d_fld(inod,ipol%base%i_temp) = r_from_base / r_strat
           else
-            rj_fld%d_fld(inod,ipol%i_temp) = 0.0d0
+            rj_fld%d_fld(inod,ipol%base%i_temp) = 0.0d0
           end if
         end do
       end if

@@ -98,9 +98,9 @@
       end if
 !
 !
-      if( (iphys%i_chk_heat*iphys%i_temp) .gt. izero) then
+      if( (iphys%i_chk_heat*iphys%base%i_temp) .gt. izero) then
         call copy_scalar_component(nod_fld,                             &
-     &      iphys%i_temp, iphys%i_chk_heat)
+     &      iphys%base%i_temp, iphys%i_chk_heat)
       end if
 !
       if((iphys%i_chk_composit * iphys%base%i_light) .gt. izero) then

@@ -22,7 +22,7 @@
 !!        for dynamo benchmark case 1
 !!
 !!
-!!       Temperature :: d_rj(:,ipol%i_temp)
+!!       Temperature :: d_rj(:,ipol%base%i_temp)
 !!       Composition :: d_rj(:,ipol%base%i_light)
 !!
 !!       Poloidal velocity ::       d_rj(:,ipol%i_velo)
@@ -254,11 +254,11 @@
       real(kind = kreal), parameter :: A_temp = 0.1d0
 !
 !
-      if(ipol%i_temp .eq. izero) return
+      if(ipol%base%i_temp .eq. izero) return
 !
 !$omp parallel do
       do inod = 1, nnod_rj(sph)
-        rj_fld%d_fld(inod,ipol%i_temp) = zero
+        rj_fld%d_fld(inod,ipol%base%i_temp) = zero
       end do
 !$omp end parallel do
 !
@@ -272,12 +272,12 @@
       if (jj .gt. 0) then
         do k = 1, sph_bc_T%kr_in-1
           inod = local_sph_data_address(sph, k, jj)
-          rj_fld%d_fld(inod,ipol%i_temp) = 1.0d0
+          rj_fld%d_fld(inod,ipol%base%i_temp) = 1.0d0
         end do
         do k = sph_bc_T%kr_in, sph_bc_T%kr_out
           inod = local_sph_data_address(sph, k, jj)
           rr = radius_1d_rj_r(sph, k)
-          rj_fld%d_fld(inod,ipol%i_temp)                                &
+          rj_fld%d_fld(inod,ipol%base%i_temp)                           &
      &         = ((20.d0/13.0d0) / rr  - 1.0d0 ) * 7.0d0 / 13.0d0
         end do
       end if
@@ -300,7 +300,7 @@
 !    set initial temperature
           xr = two * rr                                                 &
      &        - one * (sph_bc_T%r_CMB(0) + sph_bc_T%r_ICB(0)) / shell
-          rj_fld%d_fld(inod,ipol%i_temp)                                &
+          rj_fld%d_fld(inod,ipol%base%i_temp)                           &
      &       = (one-three*xr**2+three*xr**4-xr**6)                      &
      &        * A_temp * three / (sqrt(two*pi))
         end do
@@ -311,8 +311,8 @@
       if(i_center .gt. 0) then
         jj = find_local_sph_mode_address(sph, 0, 0)
         inod = local_sph_data_address(sph, 1, jj)
-        rj_fld%d_fld(i_center,ipol%i_temp)                              &
-     &                 = rj_fld%d_fld(inod,ipol%i_temp)
+        rj_fld%d_fld(i_center,ipol%base%i_temp)                         &
+     &                 = rj_fld%d_fld(inod,ipol%base%i_temp)
       end if
 !
       end subroutine set_initial_temperature
@@ -587,7 +587,7 @@
       real (kind = kreal) :: temp_CMB = 0.0d0
 !
 !
-      if(ipol%i_temp .eq. izero) return
+      if(ipol%base%i_temp .eq. izero) return
 !
 !   search address for (l = m = 0)
       jj = find_local_sph_mode_address(sph, 0, 0)
@@ -595,12 +595,12 @@
 !   set reference temperature if (l = m = 0) mode is there
       if (jj .gt. 0) then
         inod = local_sph_data_address(sph, int(sph_bc_T%kr_out), jj)
-        temp_CMB = rj_fld%d_fld(inod,ipol%i_temp)
+        temp_CMB = rj_fld%d_fld(inod,ipol%base%i_temp)
 !
         do k = 1, nidx_rj(sph,1)
           inod = local_sph_data_address(sph, k, jj)
-          rj_fld%d_fld(inod,ipol%i_temp)                                &
-     &            = rj_fld%d_fld(inod,ipol%i_temp) - temp_CMB
+          rj_fld%d_fld(inod,ipol%base%i_temp)                           &
+     &            = rj_fld%d_fld(inod,ipol%base%i_temp) - temp_CMB
         end do
       end if
 !
@@ -609,8 +609,8 @@
       if(i_center .gt. 0) then
         jj = find_local_sph_mode_address(sph, 0, 0)
         inod = local_sph_data_address(sph, 1, jj)
-        rj_fld%d_fld(i_center,ipol%i_temp)                             &
-     &              = rj_fld%d_fld(inod,ipol%i_temp) - temp_CMB
+        rj_fld%d_fld(i_center,ipol%base%i_temp)                         &
+     &              = rj_fld%d_fld(inod,ipol%base%i_temp) - temp_CMB
       end if
 !
       end subroutine adjust_by_CMB_temp
@@ -674,7 +674,7 @@
       integer :: jj, k
 !
 !
-      if(ipol%base%i_heat_source*ipol%i_temp .eq. izero) return
+      if(ipol%base%i_heat_source * ipol%base%i_temp .eq. izero) return
 !
 !$omp parallel do
       do inod = 1, nnod_rj(sph)
@@ -692,7 +692,7 @@
         q = three * f_ICB / r_ICB(sph)
 !
         inod = local_sph_data_address(sph, nlayer_ICB(sph), jj)
-        T_ICB = rj_fld%d_fld(inod,ipol%i_temp)
+        T_ICB = rj_fld%d_fld(inod,ipol%base%i_temp)
 !
         do k = 1, nlayer_ICB(sph)
           inod = local_sph_data_address(sph, k, jj)
@@ -700,7 +700,7 @@
 !   Substitute initial heat source
           rj_fld%d_fld(inod,ipol%base%i_heat_source) = q
 !   Fill inner core temperature
-          rj_fld%d_fld(inod,ipol%i_temp) = T_ICB                        &
+          rj_fld%d_fld(inod,ipol%base%i_temp) = T_ICB                   &
      &       + half * f_ICB * (r_ICB(sph)**2 - rr**2) / r_ICB(sph)
         end do
       end if
@@ -709,7 +709,7 @@
       i_center = inod_rj_center(sph)
       if(i_center .gt. 0) then
         rj_fld%d_fld(i_center,ipol%base%i_heat_source) = q
-        rj_fld%d_fld(i_center,ipol%i_temp)                              &
+        rj_fld%d_fld(i_center,ipol%base%i_temp)                         &
      &         = T_ICB + half * f_ICB * r_ICB(sph)
       end if
 !
@@ -750,7 +750,7 @@
         write(*,*) 'flux_ICB', f_ICB
 !
         inod = local_sph_data_address(sph, nlayer_ICB(sph), jj)
-        T_ICB = rj_fld%d_fld(inod,ipol%i_temp)
+        T_ICB = rj_fld%d_fld(inod,ipol%base%i_temp)
 !
         do k = 1, sph_bc_T%kr_out
           inod = local_sph_data_address(sph, k, jj)
@@ -763,7 +763,7 @@
           inod = local_sph_data_address(sph, k, jj)
           rr = radius_1d_rj_r(sph, k)
 !   Fill inner core temperature
-          rj_fld%d_fld(inod,ipol%i_temp) = T_ICB                        &
+          rj_fld%d_fld(inod,ipol%base%i_temp) = T_ICB                   &
      &       + half * f_ICB * (r_ICB(sph)**2 - rr**2) / r_ICB(sph)
         end do
       end if
@@ -772,7 +772,7 @@
       i_center = inod_rj_center(sph)
       if(i_center .gt. 0) then
         rj_fld%d_fld(i_center,ipol%base%i_heat_source) = q
-        rj_fld%d_fld(i_center,ipol%i_temp)                              &
+        rj_fld%d_fld(i_center,ipol%base%i_temp)                         &
      &         = T_ICB + half * f_ICB * r_ICB(sph)
       end if
 !

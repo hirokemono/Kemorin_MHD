@@ -92,7 +92,7 @@
         call pole_fld_cst_vec_scalar_prod                               &
      &     (node%numnod, node%internal_node, node%xx,                   &
      &      sph_rtp%nnod_rtp, sph_rtp%nidx_rtp(1), cd_prop%coef_induct, &
-     &      nod_fld%ntot_phys, iphys%i_velo, iphys%i_temp,              &
+     &      nod_fld%ntot_phys, iphys%i_velo, iphys%base%i_temp,         &
      &      iphys%forces%i_h_flux, nod_fld%d_fld)
       end if
 !
@@ -185,7 +185,7 @@
           call pole_sph_buoyancy_flux                                   &
      &       (node%numnod, node%internal_node, node%xx,                 &
      &        sph_rtp%nnod_rtp, sph_rtp%nidx_rtp(1), fl_prop%coef_buo,  &
-     &        nod_fld%ntot_phys, iphys%i_temp ,iphys%i_velo,            &
+     &        nod_fld%ntot_phys, iphys%base%i_temp ,iphys%i_velo,       &
      &        iphys%ene_flux%i_buo_gen, nod_fld%d_fld)
         end if
       end if

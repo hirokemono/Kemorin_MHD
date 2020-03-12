@@ -91,7 +91,7 @@
 !
 !
       call copy_pole_scl_fld_from_trans(m_folding, sph_rtp, node,       &
-     &    fls_pl(1,bs_trns%i_temp), iphys%i_temp, nod_fld)
+     &    fls_pl(1,bs_trns%base%i_temp), iphys%base%i_temp, nod_fld)
       call copy_pole_scl_fld_from_trans(m_folding, sph_rtp, node,       &
      &    fls_pl(1,bs_trns%base%i_light), iphys%base%i_light, nod_fld)
 !

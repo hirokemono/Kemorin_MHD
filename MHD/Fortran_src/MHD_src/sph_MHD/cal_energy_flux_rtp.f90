@@ -106,7 +106,7 @@
         call cal_vec_scalar_prod_w_coef_smp                             &
      &     (sph_rtp%nnod_pole, ht_prop%coef_advect,                     &
      &      trns_b_MHD%fld_pole(1,bs_trns%i_velo),                      &
-     &      trns_b_MHD%fld_pole(1,bs_trns%i_temp),                      &
+     &      trns_b_MHD%fld_pole(1,bs_trns%base%i_temp),                 &
      &      trns_f_MHD%fld_pole(1,f_trns%forces%i_h_flux) )
       end if
 !
@@ -234,7 +234,7 @@
           call cal_buoyancy_flux_rtp_smp(np_smp, sph_rtp%nnod_rtp,      &
      &        sph_rtp%nidx_rtp(1), sph_rtp%istack_inod_rtp_smp,         &
      &        sph_rtp%radius_1d_rtp_r,  fl_prop%coef_buo,               &
-     &        trns_b_snap%fld_rtp(1,bs_trns%i_temp),                    &
+     &        trns_b_snap%fld_rtp(1,bs_trns%base%i_temp),               &
      &        trns_b_snap%fld_rtp(1,bs_trns%i_velo),                    &
      &        trns_f_snap%fld_rtp(1,fs_trns%ene_flux%i_buo_gen))
         end if
@@ -294,7 +294,7 @@
       if(fs_trns%prod_fld%i_temp_scale .gt. 0) then
         call cal_len_scale_by_diffuse_smp                               &
      &     (np_smp, sph_rtp%nnod_rtp, sph_rtp%istack_inod_rtp_smp,      &
-     &      trns_b_snap%fld_rtp(1,bs_trns%i_temp),                      &
+     &      trns_b_snap%fld_rtp(1,bs_trns%base%i_temp),                 &
      &      trns_b_snap%fld_rtp(1,bs_trns%diffusion%i_t_diffuse),       &
      &      trns_f_snap%fld_rtp(1,fs_trns%prod_fld%i_temp_scale))
       end if
@@ -340,8 +340,8 @@
       end if
       if(fs_trns%prod_fld%i_square_t .gt. 0) then
         call cal_scalar_prod_no_coef_smp(sph_rtp%nnod_rtp,              &
-     &      trns_b_snap%fld_rtp(1,bs_trns%i_temp),                      &
-     &      trns_b_snap%fld_rtp(1,bs_trns%i_temp),                      &
+     &      trns_b_snap%fld_rtp(1,bs_trns%base%i_temp),                 &
+     &      trns_b_snap%fld_rtp(1,bs_trns%base%i_temp),                 &
      &      trns_f_snap%fld_rtp(1,fs_trns%prod_fld%i_square_t))
       end if
       if(fs_trns%prod_fld%i_square_c .gt. 0) then

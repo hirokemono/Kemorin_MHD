@@ -267,7 +267,7 @@
         if(iflag_debug.gt.0) write(*,*)                                 &
      &        'lead ', trim(div_SGS_h_flux%name)
         call cal_terms_4_heat(iphys%div_SGS%i_SGS_h_flux,               &
-     &      iphys%i_velo, iphys%i_temp,                                 &
+     &      iphys%i_velo, iphys%base%i_temp,                            &
      &      iphys%SGS_term%i_SGS_h_flux, ifld_diff%i_heat_flux,         &
      &      FEM_prm%iflag_temp_supg, FEM_prm%npoint_t_evo_int,          &
      &      SGS_param%ifilter_final, SGS_param%iflag_SGS_h_flux,        &
@@ -368,7 +368,7 @@
 !$omp parallel
       if (iphys%SGS_ene_flux%i_SGS_temp_gen .gt. 0) then
         call cal_phys_product_4_scalar                                  &
-     &     (iphys%i_temp, iphys%div_SGS%i_SGS_h_flux,                   &
+     &     (iphys%base%i_temp, iphys%div_SGS%i_SGS_h_flux,              &
      &      iphys%SGS_ene_flux%i_SGS_temp_gen, nod_fld)
       end if
       if (iphys%SGS_ene_flux%i_SGS_comp_gen .gt. 0) then

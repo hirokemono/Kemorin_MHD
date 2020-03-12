@@ -158,7 +158,7 @@
      &     (isig, ref_param_T%depth_top, ref_param_T%depth_bottom,      &
      &      node, fluid%numnod_fld, fluid%inod_fld,                     &
      &      nod_fld%ntot_phys, iphys%i_velo, iphys%i_press,             &
-     &      iphys%i_temp, nod_fld%d_fld)
+     &      iphys%base%i_temp, nod_fld%d_fld)
 !
 !   for dynamo benchmark case 1
 !
@@ -169,7 +169,7 @@
      &     (isig, ref_param_T%depth_top, ref_param_T%depth_bottom,      &
      &      node, fluid%numnod_fld, fluid%inod_fld,                     &
      &      nod_fld%ntot_phys, iphys%i_velo, iphys%i_press,             &
-     &      iphys%i_temp, nod_fld%d_fld)
+     &      iphys%base%i_temp, nod_fld%d_fld)
         isig = 0
         if (cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
           call set_initial_vect_p                                       &
@@ -187,7 +187,7 @@
      &     ref_param_T%depth_top, ref_param_T%depth_bottom,             &
      &      node, fluid%numnod_fld, fluid%inod_fld,                     &
      &      nod_fld%ntot_phys, iphys%i_velo, iphys%i_press,             &
-     &      iphys%i_temp, nod_fld%d_fld)
+     &      iphys%base%i_temp, nod_fld%d_fld)
 !
       else if (iflag_restart .eq. i_rst_rotate_x) then
         call set_initial_velo_1(node%numnod, node%xx,                   &
@@ -227,7 +227,7 @@
      &      ref_param_T%depth_top, ref_param_T%depth_bottom,            &
      &      node, fluid%numnod_fld, fluid%inod_fld,                     &
      &      nod_fld%ntot_phys, iphys%i_velo, iphys%i_press,             &
-     &      iphys%i_temp, nod_fld%d_fld)
+     &      iphys%base%i_temp, nod_fld%d_fld)
         if (cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
           call set_initial_vect_p                                       &
      &       (iflag_restart, ref_param_T, node,                         &

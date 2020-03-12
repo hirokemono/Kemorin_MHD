@@ -101,13 +101,13 @@
      &      leg%g_sph_rj, ipol%i_velo, ipol%i_vort, rj_fld)
       end if
 !
-!  Input: ipol%i_temp,  Solution: ipol%i_temp
+!  Input: ipol%base%i_temp,  Solution: ipol%base%i_temp
       if(iflag_debug.gt.0) write(*,*) 'cal_sol_scalar_sph_crank'
       if(MHD_prop%ht_prop%iflag_scheme .gt. id_no_evolution) then
         call cal_sol_scalar_sph_crank(dt, sph_rj,                       &
      &      MHD_prop%ht_prop, sph_MHD_bc%sph_bc_T, sph_MHD_bc%bcs_T,    &
      &      sph_MHD_mat%band_temp_evo, sph_MHD_mat%band_temp00_evo,     &
-     &      ipol%i_temp, rj_fld, sph_MHD_mat%x00_w_center)
+     &      ipol%base%i_temp, rj_fld, sph_MHD_mat%x00_w_center)
       end if
 !g
 !  Input: ipol%base%i_light,  Solution: ipol%base%i_light
@@ -318,23 +318,23 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-!         Input: ipol%i_temp,  Solution: ipol%grad_fld%i_grad_temp
+!         Input: ipol%base%i_temp,  Solution: ipol%grad_fld%i_grad_temp
       if(iflag_debug .gt. 0)  write(*,*)                                &
      &           'const_radial_grad_temp', ipol%grad_fld%i_grad_temp
       if(ipol%grad_fld%i_grad_temp .gt. 0) then
         call const_radial_grad_scalar                                   &
      &     (sph_rj, r_2nd, sph_bc_T, bcs_T, fdm2_center, leg%g_sph_rj,  &
-     &      ipol%i_temp, ipol%grad_fld%i_grad_temp, rj_fld)
+     &      ipol%base%i_temp, ipol%grad_fld%i_grad_temp, rj_fld)
       end if
 !
-!         Input: ipol%i_temp,  Solution: ipol%diffusion%i_t_diffuse
+!         Input: ipol%base%i_temp,  Solution: ipol%diffusion%i_t_diffuse
       if(ipol%diffusion%i_t_diffuse .gt. 0) then
         if(iflag_debug .gt. 0)  write(*,*)                              &
      &         'const_sph_scalar_diffusion', ipol%diffusion%i_t_diffuse
         call const_sph_scalar_diffusion                                 &
      &     (sph_rj, r_2nd, sph_bc_T, bcs_T, fdm2_center,                &
      &      leg%g_sph_rj, ht_prop%coef_diffuse,                         &
-     &      ipol%i_temp, ipol%diffusion%i_t_diffuse, rj_fld)
+     &      ipol%base%i_temp, ipol%diffusion%i_t_diffuse, rj_fld)
       end if
 !
       end subroutine update_after_heat_sph

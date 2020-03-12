@@ -279,7 +279,7 @@
      &             write(*,*) 'lead  ', trim(buoyancy_flux%name)
         call sel_buoyancy_flux(node,                                    &
      &      fl_prop%i_grav, fl_prop%coef_buo, fl_prop%grav,             &
-     &      iphys%i_velo,  iphys%i_temp, iphys%ene_flux%i_buo_gen,      &
+     &      iphys%i_velo, iphys%base%i_temp, iphys%ene_flux%i_buo_gen,  &
      &      nod_fld)
       end if
 !
@@ -314,7 +314,7 @@
 !$omp parallel
       if (iphys%ene_flux%i_temp_gen .gt. izero) then
         call cal_phys_product_4_scalar                                  &
-     &     (iphys%forces%i_h_advect, iphys%i_temp,                      &
+     &     (iphys%forces%i_h_advect, iphys%base%i_temp,                 &
      &      iphys%ene_flux%i_temp_gen, nod_fld)
       end if
 !

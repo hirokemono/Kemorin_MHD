@@ -147,12 +147,12 @@
         isig = 400
         call set_initial_velo_sph(ipol%i_velo,                          &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
-        if(ipol%i_temp .gt. 0) then
-          call set_ini_reference_temp_sph                               &
-     &       (ipol%i_temp, ref_temp%t_rj, sph_rj, MHD_prop%ref_param_T, &
+        if(ipol%base%i_temp .gt. 0) then
+          call set_ini_reference_temp_sph(ipol%base%i_temp,             &
+     &        ref_temp%t_rj, sph_rj, MHD_prop%ref_param_T,              &
      &        sph_params%nlayer_ICB, sph_params%nlayer_CMB,             &
      &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
-          call set_initial_temp_sph(isig, ipol%i_temp, sph_rj,          &
+          call set_initial_temp_sph(isig, ipol%base%i_temp, sph_rj,     &
      &        sph_params%radius_ICB, sph_params%radius_CMB,             &
      &        sph_params%nlayer_ICB, sph_params%nlayer_CMB,             &
      &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
@@ -212,9 +212,9 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-        if(ipol%i_temp .gt. 0)  then
-          call set_noize_scalar_sph                                     &
-     &       (ipol%i_temp, ref_temp%t_rj, sph_rj, MHD_prop%ref_param_T, &
+        if(ipol%base%i_temp .gt. 0)  then
+          call set_noize_scalar_sph(ipol%base%i_temp, ref_temp%t_rj,    &
+     &        sph_rj, MHD_prop%ref_param_T,                             &
      &        sph_params%radius_ICB, sph_params%radius_CMB,             &
      &        sph_params%nlayer_ICB, sph_params%nlayer_CMB,             &
      &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
@@ -259,11 +259,11 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      call set_ini_reference_temp_sph                                   &
-     &     (ipol%i_temp, ref_temp%t_rj, sph_rj, MHD_prop%ref_param_T,   &
-     &      sph_params%nlayer_ICB, sph_params%nlayer_CMB,               &
-     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
-      call set_all_part_temp_sph(ipol%i_temp, sph_rj,                   &
+      call set_ini_reference_temp_sph(ipol%base%i_temp, ref_temp%t_rj,  &
+     &    sph_rj, MHD_prop%ref_param_T,                                 &
+     &    sph_params%nlayer_ICB, sph_params%nlayer_CMB,                 &
+     &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+      call set_all_part_temp_sph(ipol%base%i_temp, sph_rj,              &
      &      sph_params%radius_ICB, sph_params%radius_CMB,               &
      &      sph_params%nlayer_ICB, sph_params%nlayer_CMB,               &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)

@@ -307,11 +307,11 @@
       type(phys_address), intent(inout) :: b_trns
 !
 !
-!      if(b_trns%i_temp.eq.0 .or. ipol%base%i_per_temp.gt.0) then
+!      if(b_trns%base%i_temp.eq.0 .or. ipol%base%i_per_temp.gt.0) then
       call add_field_name_4_sph_trns_snap                               &
      &   (temperature%name, temperature%n_comp,                         &
-     &    ipol%i_temp, itor%i_temp, iphys%i_temp,                       &
-     &    b_trns%i_temp, trns_back)
+     &    ipol%base%i_temp, itor%base%i_temp, iphys%base%i_temp,        &
+     &    b_trns%base%i_temp, trns_back)
 !      end if
 !      if(b_trns%base%i_light .eq. 0) then
       call add_field_name_4_sph_trns_snap                               &

@@ -103,10 +103,10 @@
 !
 !   temperature flag
       if(ht_prop%iflag_scheme .gt. id_no_evolution) then
-        call add_field_name_4_sph_trns(ipol%i_temp,                     &
+        call add_field_name_4_sph_trns(ipol%base%i_temp,                &
      &      temperature%name, temperature%n_comp,                       &
-     &      ipol%i_temp, itor%i_temp, iphys%i_temp,                     &
-     &      b_trns%i_temp, trns_back)
+     &      ipol%base%i_temp, itor%base%i_temp, iphys%base%i_temp,      &
+     &      b_trns%base%i_temp, trns_back)
       end if
 !   composition flag
       if(cp_prop%iflag_scheme .gt. id_no_evolution) then

@@ -99,7 +99,8 @@
         if(iflag_debug.gt.0) write(*,*) 'lead  ', trim(heat_flux%name)
 !$omp parallel
         call cal_phys_scalar_product_vector                             &
-     &     (iphys%i_velo, iphys%i_temp, iphys%forces%i_h_flux, nod_fld)
+     &     (iphys%i_velo, iphys%base%i_temp, iphys%forces%i_h_flux,     &
+     &      nod_fld)
 !$omp end parallel
 !
       else if (iphys%forces%i_ph_flux .gt. izero) then
@@ -204,7 +205,7 @@
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &             write(*,*) 'lead  ', trim(heat_advect%name)
         call cal_terms_4_advect                                         &
-     &     (iphys%forces%i_h_advect, iphys%i_temp,                      &
+     &     (iphys%forces%i_h_advect, iphys%base%i_temp,                 &
      &      FEM_prm%iflag_temp_supg, FEM_prm%npoint_t_evo_int, dt,      &
      &      FEM_prm, nod_comm, node, ele, fluid, ht_prop,               &
      &      nod_bcs%Tnod_bcs, iphys_ele, ele_fld, fem_int,              &
@@ -347,12 +348,12 @@
       if (iphys%diffusion%i_t_diffuse .gt. izero) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &             write(*,*) 'lead  ', trim(thermal_diffusion%name)
-        call cal_thermal_diffusion                                      &
-          (iphys%diffusion%i_t_diffuse, iphys%i_temp, ifld_diff%i_temp, &
-     &     ak_MHD%ak_d_temp, FEM_prm%npoint_t_evo_int,                  &
-     &     SGS_par%model_p, nod_comm, node, ele, surf, fluid, sf_grp,   &
-     &     nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs, fem_int, FEM_elens,      &
-     &     diff_coefs, mk_MHD%mlump_fl, rhs_mat, nod_fld)
+        call cal_thermal_diffusion(iphys%diffusion%i_t_diffuse,         &
+     &      iphys%base%i_temp, ifld_diff%i_temp,                        &
+     &      ak_MHD%ak_d_temp, FEM_prm%npoint_t_evo_int,                 &
+     &      SGS_par%model_p, nod_comm, node, ele, surf, fluid, sf_grp,  &
+     &      nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs, fem_int, FEM_elens,     &
+     &      diff_coefs, mk_MHD%mlump_fl, rhs_mat, nod_fld)
       end if
 !
       if (iphys%diffusion%i_c_diffuse .gt. izero) then

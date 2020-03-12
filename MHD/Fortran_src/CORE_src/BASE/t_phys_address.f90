@@ -40,10 +40,6 @@
 !!         @f$ \omega_{i} = e_{ijk} \partial_{j} u_{k} @f$
         integer (kind=kint) :: i_vort  =           izero
 !
-!>        start address for temperature
-!!         @f$ T @f$
-        integer (kind=kint) :: i_temp  =           izero
-!
 !>        start address for magnetic field
 !!         @f$ B_{i} @f$
         integer (kind=kint) :: i_magne =           izero
