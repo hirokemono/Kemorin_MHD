@@ -174,7 +174,7 @@
         if (cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
           call set_initial_vect_p                                       &
      &       (isig, ref_param_T, node, nod_fld%ntot_phys,               &
-     &        iphys%i_vecp, iphys%i_magne, iphys%base%i_mag_p,          &
+     &        iphys%base%i_vecp, iphys%i_magne, iphys%base%i_mag_p,     &
      &        nod_fld%d_fld)
         else
           call set_initial_magne                                        &
@@ -215,7 +215,7 @@
         if (cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
           call set_initial_vect_p                                       &
      &       (isig, ref_param_T, node, nod_fld%ntot_phys,               &
-     &        iphys%i_vecp, iphys%i_magne, iphys%base%i_mag_p,          &
+     &        iphys%base%i_vecp, iphys%i_magne, iphys%base%i_mag_p,     &
      &        nod_fld%d_fld)
         else
           call set_initial_magne                                        &
@@ -232,7 +232,7 @@
         if (cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
           call set_initial_vect_p                                       &
      &       (iflag_restart, ref_param_T, node,                         &
-     &        nod_fld%ntot_phys, iphys%i_vecp, iphys%i_magne,           &
+     &        nod_fld%ntot_phys, iphys%base%i_vecp, iphys%i_magne,      &
      &        iphys%base%i_mag_p, nod_fld%d_fld)
         else
           call set_initial_magne(iflag_restart, ref_param_T, node,      &

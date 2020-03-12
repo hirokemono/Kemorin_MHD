@@ -224,8 +224,8 @@
         if (fl_prop%iflag_4_lorentz .ne. id_turn_OFF) then
           if (fl_prop%iflag_4_lorentz .eq. id_turn_ON                   &
      &         .and. iflag_4_rotate .eq. id_turn_ON) then
-            call vector_cst_phys_2_each_ele(node, ele, nod_fld,         &
-     &          k2, iphys%i_vecp, fl_prop%coef_lor, mhd_fem_wk%vecp_1)
+            call vector_cst_phys_2_each_ele(node, ele, nod_fld, k2,     &
+     &          iphys%base%i_vecp, fl_prop%coef_lor, mhd_fem_wk%vecp_1)
 !$omp parallel
             call add_const_to_vector_smp(ele%numele,                    &
      &          d_ele(1,iphys_ele%i_magne), cd_prop%ex_magne,           &
@@ -537,8 +537,8 @@
 !
         if (fl_prop%iflag_4_lorentz .gt. id_turn_OFF) then
           if (iflag_4_rotate .eq. id_turn_ON) then
-            call vector_cst_phys_2_each_ele(node, ele, nod_fld,         &
-     &          k2, iphys%i_vecp, fl_prop%coef_lor, mhd_fem_wk%vecp_1)
+            call vector_cst_phys_2_each_ele(node, ele, nod_fld, k2,     &
+     &          iphys%base%i_vecp, fl_prop%coef_lor, mhd_fem_wk%vecp_1)
 !$omp parallel
             call add_const_to_vector_smp(ele%numele,                    &
      &          d_ele(1,iphys_ele%i_magne), cd_prop%ex_magne,           &

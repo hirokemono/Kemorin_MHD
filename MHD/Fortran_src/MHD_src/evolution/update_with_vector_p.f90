@@ -121,8 +121,8 @@
           if (iflag_debug.gt.0) write(*,*) 'cal_filtered_vector_p'
           call cal_filtered_vector_whole(SGS_par%filter_p,              &
      &        mesh%nod_comm, mesh%node, FEM_filters%filtering,          &
-     &        iphys%i_filter_vecp, iphys%i_vecp, FEM_SGS_wk%wk_filter,  &
-     &        nod_fld)
+     &        iphys%i_filter_vecp, iphys%base%i_vecp,                   &
+     &        FEM_SGS_wk%wk_filter, nod_fld)
           nod_fld%iflag_update(iphys%i_filter_vecp  ) = 1
           nod_fld%iflag_update(iphys%i_filter_vecp+1) = 1
           nod_fld%iflag_update(iphys%i_filter_vecp+2) = 1
@@ -172,7 +172,7 @@
         if (iflag_debug.gt.0) write(*,*) 'cal_magnetic_f_by_vect_p'
         call choose_cal_rotation_sgs(SGS_par%commute_p%iflag_c_magne,   &
      &      FEM_prm%iflag_magne_supg, FEM_prm%npoint_t_evo_int, dt,     &
-     &      iak_diff_b, iphys%i_vecp, iphys%i_magne,                    &
+     &      iak_diff_b, iphys%base%i_vecp, iphys%i_magne,               &
      &      mesh%ele%istack_ele_smp, fem_int%m_lump, SGS_par%model_p,   &
      &      mesh%nod_comm, mesh%node, mesh%ele, mesh%surf,              &
      &      group%surf_grp, iphys_ele, ele_fld, fem_int%jcs,            &
@@ -184,7 +184,7 @@
         if (iflag_debug.gt.0) write(*,*) 'rot_magne_on_element'
         call rotation_on_element_1st(mesh%node, mesh%ele, fem_int%jcs,  &
      &      mesh%ele%istack_ele_smp, FEM_prm%npoint_t_evo_int,          &
-     &      iphys%i_vecp, nod_fld, iphys_ele%i_magne, ele_fld)
+     &      iphys%base%i_vecp, nod_fld, iphys_ele%i_magne, ele_fld)
       end if
 !
       if (iphys_ele%base%i_current .ne. 0                               &

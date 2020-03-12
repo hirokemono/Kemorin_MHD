@@ -40,9 +40,6 @@
 !>        start address for magnetic field
 !!         @f$ B_{i} @f$
         integer (kind=kint) :: i_magne =           izero
-!>        start address for magnetic vector potential
-!!         @f$ B_{i} = e_{ijk} \partial_{j} A_{k} @f$
-        integer (kind=kint) :: i_vecp =            izero
 !
 !>        Start address for filtered velocity
 !!         @f$ \bar{u}_{i} @f$

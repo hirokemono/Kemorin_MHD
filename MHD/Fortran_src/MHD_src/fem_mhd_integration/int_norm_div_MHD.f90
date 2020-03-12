@@ -148,7 +148,7 @@
       type(mean_square_values), intent(inout) :: fem_msq
 !
 !
-      call int_norm_divergence(ele%istack_ele_smp, iphys%i_vecp,        &
+      call int_norm_divergence(ele%istack_ele_smp, iphys%base%i_vecp,   &
      &    node, ele, nod_fld, jacs%g_FEM, jacs%jac_3d, fem_wk,          &
      &    fem_msq%ave_local(j_ave%grad_fld%i_div_a))
       call MPI_allREDUCE                                                &

@@ -143,8 +143,9 @@
               msq_list%numave = msq_list%numave + 4
 !
             else if(field_name .eq. vector_potential%name) then
-              call set_rms_address(field_name, num_comps, iphys%i_vecp, &
-     &            i_rms%i_vecp, j_ave%i_vecp, msq_list)
+              call set_rms_address                                      &
+     &           (field_name, num_comps, iphys%base%i_vecp,             &
+     &            i_rms%base%i_vecp, j_ave%base%i_vecp, msq_list)
 !
               i_rms%grad_fld%i_div_a =  msq_list%numrms + 1
               j_ave%grad_fld%i_div_a = msq_list%numave + 1
@@ -349,7 +350,7 @@
      &          msq_list)
           else if ( field_name .eq. vector_potential%name ) then
             call set_rms_address                                        &
-     &         (e_hd_div_a, n_scalar, iphys%i_vecp,                     &
+     &         (e_hd_div_a, n_scalar, iphys%base%i_vecp,                &
      &          i_rms%grad_fld%i_div_a, j_ave%grad_fld%i_div_a,         &
      &          msq_list)
           else if ( field_name .eq. filter_velocity%name ) then

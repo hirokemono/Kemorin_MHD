@@ -150,7 +150,7 @@
 !
       if (cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
         msg = 'Time integration for vector potential induction needs'
-        call check_missing_field_w_msg(fld, msg, iphys%i_vecp)
+        call check_missing_field_w_msg(fld, msg, iphys%base%i_vecp)
         call check_missing_field_w_msg(fld, msg, iphys%i_velo)
       end if
 !

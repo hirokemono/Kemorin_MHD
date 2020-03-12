@@ -113,12 +113,12 @@
 !     &    nod_fld, g_FEM, jac_sf_grp, rhs_tbl, n_int,                  &
 !     &    Asf_bcs%free_sph_out%ngrp_sf_dat,                            &
 !     &    Asf_bcs%free_sph_out%id_grp_sf_dat,                          &
-!     &    iphys%i_vecp, ak_d_magne, fem_wk, surf_wk, f_l)
+!     &    iphys%base%i_vecp, ak_d_magne, fem_wk, surf_wk, f_l)
 !      call int_free_slip_surf_sph_in(node, ele, surf, sf_grp,          &
 !     &    nod_fld, g_FEM, jac_sf_grp, rhs_tbl, n_int,                  &
 !     &    Asf_bcs%free_sph_in%ngrp_sf_dat,                             &
 !     &    Asf_bcs%free_sph_in%id_grp_sf_dat,                           &
-!     &    iphys%i_vecp, ak_d_magne, fem_wk, surf_wk, f_l)
+!     &    iphys%base%i_vecp, ak_d_magne, fem_wk, surf_wk, f_l)
 !
       end subroutine int_surf_magne_pre_ele
 !
@@ -178,12 +178,12 @@
 !     &    nod_fld, g_FEM, jac_sf_grp, rhs_tbl, n_int,                  &
 !     &    Asf_bcs%free_sph_out%ngrp_sf_dat,                            &
 !     &    Asf_bcs%free_sph_out%id_grp_sf_dat,                          &
-!     &    iphys%i_vecp, ak_d_magne, fem_wk, surf_wk, f_l)
+!     &    iphys%base%i_vecp, ak_d_magne, fem_wk, surf_wk, f_l)
 !      call int_free_slip_surf_sph_in(node, ele, surf, sf_grp,          &
 !     &    nod_fld, g_FEM, jac_sf_grp, rhs_tbl, n_int,                  &
 !     &    Asf_bcs%free_sph_in%ngrp_sf_dat,                             &
 !     &    Asf_bcs%free_sph_in%id_grp_sf_dat,                           &
-!     &    iphys%i_vecp, ak_d_magne, fem_wk, surf_wk, f_l)
+!     &    iphys%base%i_vecp, ak_d_magne, fem_wk, surf_wk, f_l)
 !
       end subroutine int_surf_magne_monitor
 !

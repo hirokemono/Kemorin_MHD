@@ -121,7 +121,7 @@
       if (cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
         if (iflag_debug .eq.1) write(*,*) 'set_boundary_vect vect_p'
         call set_boundary_vect                                          &
-     &     (nod_bcs%Bnod_bcs%nod_bc_a, iphys%i_vecp, nod_fld)
+     &     (nod_bcs%Bnod_bcs%nod_bc_a, iphys%base%i_vecp, nod_fld)
       end if
 !
       end subroutine set_bc_fields

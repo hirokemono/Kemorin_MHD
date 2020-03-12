@@ -80,7 +80,7 @@
         else if ( field_name(i) .eq. magnetic_field%name ) then
           iphys%i_magne = i0
         else if ( field_name(i) .eq. vector_potential%name ) then
-          iphys%i_vecp = i0
+          iphys%base%i_vecp = i0
         else if ( field_name(i) .eq. current_density%name ) then
           iphys%base%i_current = i0
 !

@@ -115,14 +115,16 @@
 !  Volume integration
 !
       call int_vol_current_diffuse                                      &
-     &   (iphys%i_vecp, FEM_prm%npoint_poisson_int, node, ele, nod_fld, &
-     &    jacs%g_FEM, jacs%jac_3d, rhs_tbl, fem_wk, f_nl)
+     &   (iphys%base%i_vecp, FEM_prm%npoint_poisson_int,                &
+     &    node, ele, nod_fld, jacs%g_FEM, jacs%jac_3d, rhs_tbl,         &
+     &    fem_wk, f_nl)
 !
 !  for boundary conditions
 !
       call int_surf_current_diffuse(node, ele, surf, sf_grp, nod_fld,   &
      &    jacs%g_FEM, jacs%jac_sf_grp, rhs_tbl, Asf_bcs%torque_lead,    &
-     &    FEM_prm%npoint_t_evo_int, iphys%i_vecp, fem_wk, surf_wk, f_l)
+     &    FEM_prm%npoint_t_evo_int, iphys%base%i_vecp,                  &
+     &    fem_wk, surf_wk, f_l)
 !
       call cal_multi_pass_4_vector_ff                                   &
      &   (ele%istack_ele_smp, FEM_prm, m_lump, nod_comm, node, ele,     &
@@ -274,7 +276,7 @@
       call int_surf_vect_diffuse_term(node, ele, surf, sf_grp,          &
      &    jacs%g_FEM, jacs%jac_sf_grp, nod_fld, rhs_tbl,                &
      &    Asf_bcs%torque_lead, FEM_prm%npoint_t_evo_int, ak_d_magne,    &
-     &    iphys%i_vecp, fem_wk, surf_wk, f_l)
+     &    iphys%base%i_vecp, fem_wk, surf_wk, f_l)
 !
       end subroutine int_surf_vector_p_diffuse
 !

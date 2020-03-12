@@ -42,7 +42,7 @@
 !
       if (iphys%prod_fld%i_m_heli .gt. izero) then
          call cal_phys_dot_product                                      &
-     &      (iphys%i_vecp, iphys%i_magne, iphys%prod_fld%i_m_heli,      &
+     &      (iphys%base%i_vecp, iphys%i_magne, iphys%prod_fld%i_m_heli, &
      &       nod_fld)
       end if
 !

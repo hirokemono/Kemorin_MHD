@@ -395,7 +395,7 @@
      &      nod_fld, diff_coefs)
       end if
 !
-      if (iphys%i_vecp .ne. 0) then
+      if (iphys%base%i_vecp .ne. 0) then
         call update_with_vector_potential                               &
      &    (ifld_diff%i_magne, icomp_diff%i_magne,                       &
      &     iphys_elediff%i_magne, iphys_elediff%i_filter_magne,         &

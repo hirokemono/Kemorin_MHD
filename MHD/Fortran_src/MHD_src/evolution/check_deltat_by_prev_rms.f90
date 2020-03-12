@@ -156,17 +156,17 @@
       if((flex_data%i_drmax_b * cd_prop%iflag_Aevo_scheme) .gt. izero)  &
      & then
         call int_ave_rms_4_scalar                                       &
-     &     (fluid%istack_ele_fld_smp, ione, (iphys%i_vecp  ),           &
+     &     (fluid%istack_ele_fld_smp, ione, (iphys%base%i_vecp  ),      &
      &      mesh, nod_fld, jacs, fem_wk,                                &
      &      flex_data%rms_dt_local(flex_data%i_drmax_b  ),              &
      &      flex_data%ave_dt_local(flex_data%i_drmax_b  ))
         call int_ave_rms_4_scalar                                       &
-     &     (fluid%istack_ele_fld_smp, ione, (iphys%i_vecp+1),           &
+     &     (fluid%istack_ele_fld_smp, ione, (iphys%base%i_vecp+1),      &
      &      mesh, nod_fld, jacs, fem_wk,                                &
      &      flex_data%rms_dt_local(flex_data%i_drmax_b+1),              &
      &      flex_data%ave_dt_local(flex_data%i_drmax_b+1))
         call int_ave_rms_4_scalar                                       &
-     &     (fluid%istack_ele_fld_smp, ione, (iphys%i_vecp+2),           &
+     &     (fluid%istack_ele_fld_smp, ione, (iphys%base%i_vecp+2),      &
      &      mesh, nod_fld, jacs, fem_wk,                                &
      &      flex_data%rms_dt_local(flex_data%i_drmax_b+2),              &
      &      flex_data%ave_dt_local(flex_data%i_drmax_b+2))

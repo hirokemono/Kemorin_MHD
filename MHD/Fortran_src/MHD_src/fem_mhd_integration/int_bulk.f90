@@ -264,13 +264,13 @@
 !
       if  (cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
         call int_norm_divergence                                        &
-     &     (mesh%ele%istack_ele_smp, iphys%i_vecp, mesh%node, mesh%ele, &
-     &      nod_fld, jacs%g_FEM, jacs%jac_3d, fem_wk,                   &
-     &      fem_msq%ave_local(j_ave%grad_fld%i_div_a))
+     &     (mesh%ele%istack_ele_smp, iphys%base%i_vecp,                 &
+     &      mesh%node, mesh%ele, nod_fld, jacs%g_FEM, jacs%jac_3d,      &
+     &      fem_wk, fem_msq%ave_local(j_ave%grad_fld%i_div_a))
         call int_rms_divergence                                         &
-     &     (mesh%ele%istack_ele_smp, iphys%i_vecp, mesh%node, mesh%ele, &
-     &      nod_fld, jacs%g_FEM, jacs%jac_3d, fem_wk,                   &
-     &      fem_msq%rms_local(i_rms%grad_fld%i_div_a))
+     &     (mesh%ele%istack_ele_smp, iphys%base%i_vecp,                 &
+     &      mesh%node, mesh%ele, nod_fld, jacs%g_FEM, jacs%jac_3d,      &
+     &      fem_wk, fem_msq%rms_local(i_rms%grad_fld%i_div_a))
       end if
 !
       if      (cd_prop%iflag_Bevo_scheme .gt. id_no_evolution           &
