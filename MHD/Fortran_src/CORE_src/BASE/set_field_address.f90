@@ -85,7 +85,7 @@
           iphys%i_current = i0
 !
         else if (field_name(i) .eq. pressure%name ) then
-          iphys%i_press = i0
+          iphys%base%i_press = i0
         else if (field_name(i) .eq. temperature%name ) then
           iphys%base%i_temp = i0
         else if (field_name(i) .eq. perturbation_temp%name ) then

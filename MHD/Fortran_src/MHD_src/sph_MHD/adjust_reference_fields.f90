@@ -67,7 +67,7 @@
 !
 !
       call adjust_by_ave_pressure_on_CMB(kr_in, kr_out,                 &
-     &    sph_rj%idx_rj_degree_zero, sph_rj%nidx_rj, ipol%i_press,      &
+     &    sph_rj%idx_rj_degree_zero, sph_rj%nidx_rj, ipol%base%i_press, &
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
       end subroutine adjust_press_by_average_on_CMB

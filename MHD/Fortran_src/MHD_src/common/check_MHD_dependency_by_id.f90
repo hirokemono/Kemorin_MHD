@@ -48,10 +48,7 @@
         i_start = fld%istack_component(i-1) + 1
         if(     i_start .eq. iphys%i_filter_velo                        &
      &     .or. i_start .eq. iphys%i_vort                               &
-     &     .or. i_start .eq. iphys%i_press                              &
-     &     .or. i_start .eq. iphys%i_magne                              &
-     &     .or. i_start .eq. iphys%base%i_temp                          &
-     &     .or. i_start .eq. iphys%base%i_light) then
+     &     .or. i_start .eq. iphys%i_magne) then
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_velo, velocity%name)
         else if(i_start .eq. iphys%i_filter_vort) then 
@@ -59,13 +56,10 @@
      &       (fld, i_start, iphys%i_vort, vorticity%name)
 !
         else if(i_start .eq. iphys%i_filter_magne                       &
-     &     .or. i_start .eq. iphys%i_current                            &
-     &     .or. i_start .eq. iphys%base%i_mag_p) then
+     &     .or. i_start .eq. iphys%i_current) then
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_magne, magnetic_field%name)
-        else if(i_start .eq. iphys%i_filter_vecp                        &
-     &     .or. i_start .eq. iphys%base%i_scalar_p                      &
-     &     .or. i_start .eq. iphys%prod_fld%i_square_a) then
+        else if(i_start .eq. iphys%i_filter_vecp) then
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_vecp, vector_potential%name)
         else if(i_start .eq. iphys%i_filter_current) then 

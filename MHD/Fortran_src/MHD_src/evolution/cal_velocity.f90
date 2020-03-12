@@ -186,7 +186,7 @@
         call cal_sol_pressure                                           &
      &     (dt, mesh%node%numnod, mesh%node%istack_internal_smp,        &
      &      fl_prop%acoef_press, nod_fld%ntot_phys,                     &
-     &      iphys%ene_flux%i_p_phi, iphys%i_press,  nod_fld%d_fld)
+     &      iphys%ene_flux%i_p_phi, iphys%base%i_press, nod_fld%d_fld)
 !
         call cal_velocity_co(time, dt, FEM_prm, SGS_par,                &
      &      mesh%nod_comm, mesh%node, mesh%ele, mesh%surf,              &
@@ -198,8 +198,8 @@
 !
 !
         call cal_rms_scalar_potential                                   &
-     &     (iloop, fluid%istack_ele_fld_smp, iphys%i_press,             &
-     &      fem_sq%i_rms%i_press, fem_sq%j_ave%i_press,                 &
+     &     (iloop, fluid%istack_ele_fld_smp, iphys%base%i_press,        &
+     &      fem_sq%i_rms%base%i_press, fem_sq%j_ave%base%i_press,       &
      &      mesh, nod_fld, fem_int%jcs, rhs_mat%fem_wk,                 &
      &      fem_sq%msq, rel_correct, ave_pr0, rms_pr0)
 !
@@ -252,7 +252,7 @@
      &      (dt, node%numnod, node%istack_internal_smp,                 &
      &       fl_prop%coef_press, fl_prop%acoef_press, fl_prop%coef_lor, &
      &       nod_fld%ntot_phys, iphys%ene_flux%i_p_phi, iphys%i_magne,  &
-     &       iphys%i_press, nod_fld%d_fld)
+     &       iphys%base%i_press, nod_fld%d_fld)
         else if (cd_prop%iflag_magneto_cv .eq. id_turn_ON               &
      &     .and. FEM_prm%iflag_rotate_form .eq. id_turn_OFF) then
           call cal_sol_pressure_mcv                                     &
@@ -260,16 +260,17 @@
      &        fl_prop%coef_press, fl_prop%acoef_press,                  &
      &        fl_prop%coef_lor, cd_prop%ex_magne,                       &
      &        nod_fld%ntot_phys, iphys%ene_flux%i_p_phi, iphys%i_magne, &
-     &        iphys%i_press, nod_fld%d_fld)
+     &        iphys%base%i_press, nod_fld%d_fld)
         else
           call init_sol_potential(node%numnod, node%istack_nod_smp,     &
      &        dt, fl_prop%coef_press, nod_fld%ntot_phys,                &
-     &        iphys%ene_flux%i_p_phi, iphys%i_press, nod_fld%d_fld)
+     &        iphys%ene_flux%i_p_phi, iphys%base%i_press,               &
+     &        nod_fld%d_fld)
         end if
       else
         call init_sol_potential(node%numnod, node%istack_nod_smp,       &
      &      dt, fl_prop%coef_press, nod_fld%ntot_phys,                  &
-     &      iphys%ene_flux%i_p_phi, iphys%i_press, nod_fld%d_fld)
+     &      iphys%ene_flux%i_p_phi, iphys%base%i_press, nod_fld%d_fld)
       end if
 !
       end subroutine sel_init_sol_potential
@@ -291,7 +292,7 @@
       if (FEM_prm%iflag_rotate_form .eq. id_turn_ON) then
         call cal_sol_pressure_rotate                                    &
      &     (node%numnod, node%istack_internal_smp, nod_fld%ntot_phys,   &
-     &      iphys%i_velo, iphys%i_press, nod_fld%d_fld)
+     &      iphys%i_velo, iphys%base%i_press, nod_fld%d_fld)
       end if
 !
       end subroutine sel_cal_sol_pressure_rotate

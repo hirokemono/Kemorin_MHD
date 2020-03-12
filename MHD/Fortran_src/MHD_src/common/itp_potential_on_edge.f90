@@ -46,7 +46,7 @@
           if     (nod_fld%phys_name(i) .eq. pressure%name) then
             call cal_pressure_on_edge(node%numnod,                      &
      &          edge%numedge, edge%nnod_4_edge, edge%ie_edge,           &
-     &          nod_fld%ntot_phys, iphys%i_press, nod_fld%d_fld)
+     &          nod_fld%ntot_phys, iphys%base%i_press, nod_fld%d_fld)
           else if(nod_fld%phys_name(i)                                  &
      &             .eq. magnetic_potential%name) then
             call cal_pressure_on_edge(node%numnod,                      &

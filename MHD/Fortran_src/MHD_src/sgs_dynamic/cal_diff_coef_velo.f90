@@ -149,7 +149,7 @@
      &    iphys%i_filter_velo, iphys%SGS_wk%i_wd_nlg)
       call cal_filtered_scalar_whole                                    &
      &   (SGS_par%filter_p, nod_comm, node, filtering,                  &
-     &    i_sgs_grad_fp, iphys%i_press, wk_filter, nod_fld)
+     &    i_sgs_grad_fp, iphys%base%i_press, wk_filter, nod_fld)
 !
 !   take rotation and gradient of filtered velocity
 !                              (to iphys%SGS_wk%i_simi)
@@ -180,11 +180,11 @@
      &    fluid%istack_ele_fld_smp, mlump_fl, nod_comm, node, ele,      &
      &    iphys_ele, ele_fld, jacs%g_FEM, jacs%jac_3d,                  &
      &    rhs_tbl, fem_wk, f_nl, nod_fld)
-      if (iflag_debug.gt.0)                                             &
-     &   write(*,*) 'cal_gradent_in_fluid', i_sgs_grad_p, iphys%i_press
+      if (iflag_debug.gt.0) write(*,*) 'cal_gradent_in_fluid',          &
+     &                     i_sgs_grad_p, iphys%base%i_press
       call choose_cal_gradient                                          &
      &   (FEM_prm%iflag_velo_supg, FEM_prm%npoint_t_evo_int, dt,        &
-     &    iphys%i_press, i_sgs_grad_p,                                  &
+     &    iphys%base%i_press, i_sgs_grad_p,                             &
      &    fluid%istack_ele_fld_smp, mlump_fl, nod_comm, node, ele,      &
      &    iphys_ele, ele_fld, jacs%g_FEM, jacs%jac_3d, rhs_tbl,         &
      &    fem_wk, f_l, f_nl, nod_fld)
@@ -246,7 +246,7 @@
      &    mlump_fl, node, ele, surf, sf_grp,                            &
      &    jacs%g_FEM, jacs%jac_3d, jacs%jac_sf_grp,                     &
      &    rhs_tbl, FEM_elen, Psf_bcs%sgs, ifilter_2delta,               &
-     &    i_sgs_grad_p, iphys%i_press, fem_wk, surf_wk,                 &
+     &    i_sgs_grad_p, iphys%base%i_press, fem_wk, surf_wk,            &
      &    f_l, f_nl, nod_fld)
 !
 !      call sym_tensor_send_recv                                        &

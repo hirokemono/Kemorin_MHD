@@ -163,7 +163,7 @@
 !
 !$omp do private (inod)
       do inod = 1, nnod_rj
-        d_rj(inod,ipol%i_press)                                         &
+        d_rj(inod,ipol%base%i_press)                                    &
      &        =  - d_rj(inod,ipol%div_forces%i_m_flux)                  &
      &           + d_rj(inod,ipol%div_forces%i_Coriolis)                &
      &           + d_rj(inod,ipol%div_forces%i_lorentz)                 &
@@ -189,7 +189,7 @@
 !
 !$omp do private (inod)
       do inod = 1, nnod_rj
-        d_rj(inod,ipol%i_press)                                         &
+        d_rj(inod,ipol%base%i_press)                                    &
      &        =  - d_rj(inod,ipol%div_forces%i_m_flux)                  &
      &           + d_rj(inod,ipol%div_forces%i_Coriolis)                &
      &           + d_rj(inod,ipol%div_forces%i_lorentz)                 &
@@ -213,7 +213,7 @@
 !
 !$omp do private (inod)
       do inod = 1, nnod_rj
-        d_rj(inod,ipol%i_press)                                         &
+        d_rj(inod,ipol%base%i_press)                                    &
      &        =  - d_rj(inod,ipol%div_forces%i_m_flux)                  &
      &           + d_rj(inod,ipol%div_forces%i_Coriolis)                &
      &           + d_rj(inod,ipol%div_forces%i_buoyancy)                &
@@ -238,7 +238,7 @@
 !
 !$omp do private (inod)
       do inod = 1, nnod_rj
-        d_rj(inod,ipol%i_press)                                         &
+        d_rj(inod,ipol%base%i_press)                                    &
      &        =  - d_rj(inod,ipol%div_forces%i_m_flux)                  &
      &           + d_rj(inod,ipol%div_forces%i_Coriolis)                &
      &           + d_rj(inod,is_div_buo)
@@ -262,9 +262,9 @@
 !
 !$omp do private (inod)
       do inod = 1, nnod_rj
-!        d_rj(inod,ipol%i_press)                                        &
+!        d_rj(inod,ipol%base%i_press)                                   &
 !     &        = - d_rj(inod,ipol%div_forces%i_m_flux)
-        d_rj(inod,ipol%i_press) = zero
+        d_rj(inod,ipol%base%i_press) = zero
       end do
 !$omp end do nowait
 !
@@ -285,8 +285,8 @@
 !
 !$omp do private (inod)
       do inod = 1, nnod_rj
-        d_rj(inod,ipol%i_press) = d_rj(inod,ipol%i_press)               &
-     &                          + d_rj(inod,is_div)
+        d_rj(inod,ipol%base%i_press) = d_rj(inod,ipol%base%i_press)     &
+     &                                + d_rj(inod,is_div)
        end do
 !$omp end do nowait
 !
@@ -306,7 +306,8 @@
 !
 !$omp do private (inod)
       do inod = 1, nnod_rj
-        d_rj(inod,ipol%i_press) =  d_rj(inod,ipol%i_press)              &
+        d_rj(inod,ipol%base%i_press)                                    &
+     &                        =  d_rj(inod,ipol%base%i_press)           &
      &                         - d_rj(inod,ipol%rot_SGS%i_SGS_inertia)  &
      &                         + d_rj(inod,ipol%rot_SGS%i_SGS_Lorentz)
       end do

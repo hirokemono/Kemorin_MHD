@@ -122,7 +122,7 @@
       if (fl_prop%iflag_scheme .gt. id_no_evolution) then
         msg = 'time integration for momentum equation needs'
         call check_missing_field_w_msg(fld, msg, iphys%i_velo)
-        call check_missing_field_w_msg(fld, msg, iphys%i_press)
+        call check_missing_field_w_msg(fld, msg, iphys%base%i_press)
       end if
 !
       if (fl_prop%iflag_scheme .gt. id_no_evolution) then
@@ -199,7 +199,7 @@
       if (fl_prop%iflag_scheme .gt. id_no_evolution) then
         msg = 'time integration for velocity needs'
         call check_missing_field_w_msg(fld, msg, iphys%i_velo)
-        call check_missing_field_w_msg(fld, msg, iphys%i_press)
+        call check_missing_field_w_msg(fld, msg, iphys%base%i_press)
       end if
 !
       end subroutine check_dependence_FEM_evo

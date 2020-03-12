@@ -210,7 +210,7 @@
         call const_pressure_gradient                                    &
      &     (sph_rj, r_2nd, sph_MHD_bc%sph_bc_U,                         &
      &      leg%g_sph_rj, MHD_prop%fl_prop%coef_press,                  &
-     &      ipol%i_press, ipol%forces%i_press_grad, rj_fld)
+     &      ipol%base%i_press, ipol%forces%i_press_grad, rj_fld)
       end if
 !
       end subroutine pressure_4_sph_mhd

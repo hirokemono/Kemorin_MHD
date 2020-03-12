@@ -64,7 +64,7 @@
      &      write(*,*) 'check_scalar_evo_by_previous press'
         call check_scalar_evo_by_previous                               &
      &     (node%numnod, node%istack_nod_smp, nod_fld%ntot_phys,        &
-     &      iphys%i_press, iphys%i_chk_press, iphys%i_chk_press_2,      &
+     &      iphys%base%i_press, iphys%i_chk_press, iphys%i_chk_press_2, &
      &      flex_data%i_drmax_p, nod_fld%d_fld, flex_data)
       end if
 !

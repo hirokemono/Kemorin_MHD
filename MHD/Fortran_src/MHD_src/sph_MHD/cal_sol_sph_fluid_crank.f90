@@ -17,7 +17,7 @@
 !!
 !!      subroutine cal_sol_pressure_by_div_v                            &
 !!     &         (sph_rj, sph_bc_U, band_p_poisson, ipol, rj_fld)
-!!        Solution address: ipol%i_press
+!!        Solution address: ipol%base%i_press
 !!
 !!
 !!      subroutine cal_sol_magne_sph_crank(sph_rj, r_2nd,               &
@@ -136,12 +136,12 @@
 !
 !
       call solve_pressure_by_div_v                                      &
-     &   (sph_rj, band_p_poisson, ipol%i_press,                         &
+     &   (sph_rj, band_p_poisson, ipol%base%i_press,                    &
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
       call adjust_by_ave_pressure_on_CMB                                &
      &   (sph_bc_U%kr_in, sph_bc_U%kr_out, sph_rj%idx_rj_degree_zero,   &
-     &    sph_rj%nidx_rj, ipol%i_press,                                 &
+     &    sph_rj%nidx_rj, ipol%base%i_press,                            &
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
       end subroutine cal_sol_pressure_by_div_v

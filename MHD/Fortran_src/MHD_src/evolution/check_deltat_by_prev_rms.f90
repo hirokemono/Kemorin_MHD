@@ -146,7 +146,7 @@
 !
       if(flex_data%i_drmax_p .gt. izero) then
         call int_ave_rms_4_scalar                                       &
-     &     (fluid%istack_ele_fld_smp, ione, iphys%i_press,              &
+     &     (fluid%istack_ele_fld_smp, ione, iphys%base%i_press,         &
      &      mesh, nod_fld, jacs, fem_wk,                                &
      &      flex_data%rms_dt_local(flex_data%i_drmax_p),                &
      &      flex_data%ave_dt_local(flex_data%i_drmax_p))

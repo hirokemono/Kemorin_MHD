@@ -179,8 +179,8 @@
           if(check_base_scalar(field_name)) then
             if ( field_name .eq. pressure%name ) then
               call set_rms_address                                      &
-     &           (field_name, num_comps, iphys%i_press,                 &
-     &            i_rms%i_press, j_ave%i_press, msq_list)
+     &           (field_name, num_comps, iphys%base%i_press,            &
+     &            i_rms%base%i_press, j_ave%base%i_press, msq_list)
             else if ( field_name .eq. magnetic_potential%name ) then
               call set_rms_address                                      &
      &           (field_name, num_comps, iphys%base%i_mag_p,            &

@@ -322,8 +322,8 @@
 !
       call add_field_name_4_sph_trns_snap                               &
      &   (pressure%name, pressure%n_comp,                               &
-     &    ipol%i_press, itor%i_press, iphys%i_press,                    &
-     &    b_trns%i_press, trns_back)
+     &    ipol%base%i_press, itor%base%i_press, iphys%base%i_press,     &
+     &    b_trns%base%i_press, trns_back)
       call add_field_name_4_sph_trns_nofld                              &
      &   (perturbation_temp%name, perturbation_temp%n_comp,             &
      &    ipol%base%i_per_temp, itor%base%i_per_temp,                   &
