@@ -100,7 +100,7 @@
         call pole_fld_cst_vec_scalar_prod                               &
      &     (node%numnod, node%internal_node, node%xx,                   &
      &      sph_rtp%nnod_rtp, sph_rtp%nidx_rtp(1), cd_prop%coef_induct, &
-     &      nod_fld%ntot_phys, iphys%i_velo, iphys%i_light,             &
+     &      nod_fld%ntot_phys, iphys%i_velo, iphys%base%i_light,        &
      &      iphys%forces%i_c_flux, nod_fld%d_fld)
       end if
 !
@@ -204,7 +204,7 @@
      &       (node%numnod, node%internal_node, node%xx,                 &
      &        sph_rtp%nnod_rtp, sph_rtp%nidx_rtp(1),                    &
      &        fl_prop%coef_comp_buo, nod_fld%ntot_phys,                 &
-     &        iphys%i_light, iphys%i_velo,                              &
+     &        iphys%base%i_light, iphys%i_velo,                         &
      &        iphys%ene_flux%i_c_buo_gen, nod_fld%d_fld)
         end if
       end if

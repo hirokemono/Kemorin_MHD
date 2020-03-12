@@ -145,7 +145,7 @@
         call sel_scalar_diff_adv_src_adams                              &
      &    (sph_bc_C%kr_in, sph_bc_C%kr_out,                             &
      &     ipol%diffusion%i_c_diffuse, ipol%forces%i_c_advect,          &
-     &     ipol%base%i_light_source, ipol%i_light,                      &
+     &     ipol%base%i_light_source, ipol%base%i_light,                 &
      &     ipol%i_pre_composit, dt, cp_prop%coef_exp,                   &
      &     cp_prop%coef_source, sph_rj, rj_fld)
       end if
@@ -167,7 +167,7 @@
      &                'sel_ctr_scl_diff_adv_src_adams composition'
         call sel_ctr_scl_diff_adv_src_adams(ipol%diffusion%i_c_diffuse, &
      &      ipol%forces%i_c_advect, ipol%base%i_light_source,           &
-     &      ipol%i_light, ipol%i_pre_composit,                          &
+     &      ipol%base%i_light, ipol%i_pre_composit,                     &
      &      dt, cp_prop%coef_exp, cp_prop%coef_source, sph_rj, rj_fld)
       end if
 !
@@ -230,7 +230,7 @@
         call sel_scalar_diff_adv_src_euler                              &
      &    (sph_bc_C%kr_in, sph_bc_C%kr_out,                             &
      &     ipol%diffusion%i_c_diffuse, ipol%forces%i_c_advect,          &
-     &     ipol%base%i_light_source, ipol%i_light,                      &
+     &     ipol%base%i_light_source, ipol%base%i_light,                 &
      &     dt, cp_prop%coef_exp, cp_prop%coef_advect,                   &
      &     cp_prop%coef_source, sph_rj, rj_fld)
       end if
@@ -252,7 +252,7 @@
      &                'sel_ctr_scl_diff_adv_src_euler composition'
         call sel_ctr_scl_diff_adv_src_euler                             &
      &     (ipol%diffusion%i_c_diffuse, ipol%forces%i_c_advect,         &
-     &      ipol%base%i_light_source, ipol%i_light, dt,                 &
+     &      ipol%base%i_light_source, ipol%base%i_light, dt,            &
      &      cp_prop%coef_exp, cp_prop%coef_advect, cp_prop%coef_source, &
      &      sph_rj, rj_fld)
       end if

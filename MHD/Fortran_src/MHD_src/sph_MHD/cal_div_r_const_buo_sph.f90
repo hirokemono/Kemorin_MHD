@@ -78,7 +78,7 @@
         ipol_comp =  ipol%base%i_per_light
         igrad_comp = ipol%grad_fld%i_grad_per_c
       else
-        ipol_comp =  ipol%i_light
+        ipol_comp =  ipol%base%i_light
         igrad_comp = ipol%grad_fld%i_grad_composit
       end if
 !

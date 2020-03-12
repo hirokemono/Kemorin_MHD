@@ -157,8 +157,8 @@
      &        sph_params%nlayer_ICB, sph_params%nlayer_CMB,             &
      &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         end if
-        if(ipol%i_light .gt. 0) then
-          call set_initial_light_sph(isig, ipol%i_light, sph_rj,        &
+        if(ipol%base%i_light .gt. 0) then
+          call set_initial_light_sph(isig, ipol%base%i_light, sph_rj,   &
      &        sph_params%radius_ICB, sph_params%radius_CMB,             &
      &        sph_params%nlayer_ICB, sph_params%nlayer_CMB,             &
      &        ref_temp%t_rj, rj_fld%n_point, rj_fld%ntot_phys,          &
@@ -219,8 +219,8 @@
      &        sph_params%nlayer_ICB, sph_params%nlayer_CMB,             &
      &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         end if
-        if(ipol%i_light .gt. 0) then
-          call set_noize_scalar_sph(ipol%i_light,                       &
+        if(ipol%base%i_light .gt. 0) then
+          call set_noize_scalar_sph(ipol%base%i_light,                  &
      &        ref_comp%t_rj, sph_rj, MHD_prop%ref_param_C,              &
      &        sph_params%radius_ICB, sph_params%radius_CMB,             &
      &        sph_params%nlayer_ICB, sph_params%nlayer_CMB,             &

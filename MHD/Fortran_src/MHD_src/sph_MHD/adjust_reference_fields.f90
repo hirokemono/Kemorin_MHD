@@ -94,7 +94,7 @@
 !
       call sync_scalar_by_pert_sph                                      &
      &   (sph_rj, SPH_model%ref_comp, SPH_model%MHD_prop%ref_param_C,   &
-     &    ipol%i_light, ipol%grad_fld%i_grad_composit,                  &
+     &    ipol%base%i_light, ipol%grad_fld%i_grad_composit,             &
      &    idpdr%grad_fld%i_grad_composit, ipol%base%i_per_light,        &
      &    ipol%grad_fld%i_grad_per_c, idpdr%grad_fld%i_grad_per_c,      &
      &    rj_fld)
@@ -125,7 +125,7 @@
 !
         call trans_pert_to_scalar_sph                                   &
      &     (sph_rj, SPH_model%ref_comp, SPH_model%MHD_prop%ref_param_C, &
-     &      ipol%i_light, ipol%grad_fld%i_grad_composit,                &
+     &      ipol%base%i_light, ipol%grad_fld%i_grad_composit,           &
      &      idpdr%grad_fld%i_grad_composit, ipol%base%i_per_light,      &
      &      ipol%grad_fld%i_grad_per_c, idpdr%grad_fld%i_grad_per_c,    &
      &      rj_fld)

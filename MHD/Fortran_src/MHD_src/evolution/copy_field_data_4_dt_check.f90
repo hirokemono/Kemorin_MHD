@@ -103,9 +103,9 @@
      &      iphys%i_temp, iphys%i_chk_heat)
       end if
 !
-      if( (iphys%i_chk_composit*iphys%i_light) .gt. izero) then
+      if((iphys%i_chk_composit * iphys%base%i_light) .gt. izero) then
         call copy_scalar_component(nod_fld,                             &
-     &      iphys%i_light, iphys%i_chk_composit)
+     &      iphys%base%i_light, iphys%i_chk_composit)
       end if
 !
       end subroutine s_copy_field_data_for_dt_check

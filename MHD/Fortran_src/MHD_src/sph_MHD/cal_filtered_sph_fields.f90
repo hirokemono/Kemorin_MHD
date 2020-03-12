@@ -19,14 +19,16 @@
 !!      subroutine cal_sph_base_filtering_fields                        &
 !!     &         (sph_rj, ipol, sph_base_f, rj_fld)
 !!       Input:   rj_fld(1:is_fld)
-!!          is_fld = i_velo, i_vort, i_magne, i_current, i_temp, i_light
+!!          is_fld = i_velo, i_vort, i_magne, i_current,
+!!                                   i_temp, base%i_light
 !!       Output:  rj_fld(1:is_fld)
 !!                  i_filter_current, i_filter_temp, i_filter_comp, 
 !!          is_fld = i_filter_velo, i_filter_vort, i_filter_magne, 
 !!      subroutine cal_sph_wide_filtering_fields                        &
 !!     &         (sph_rj, ipol, sph_wide_f, rj_fld)
 !!       Input:   rj_fld(1:is_fld)
-!!          is_fld = i_velo, i_vort, i_magne, i_current, i_temp, i_light
+!!          is_fld = i_velo, i_vort, i_magne, i_current,
+!!                                   i_temp, base%i_light
 !!       Output:  rj_fld(1:is_fld)
 !!           wide_filter_fld%i_velo, wide_filter_fld%i_vort,
 !!           wide_filter_fld%i_magne, wide_filter_fld%i_current, 
@@ -125,7 +127,7 @@
       call scalar_sph_filter(ipol%i_temp, ipol%i_filter_temp,           &
      &    sph_rj, sph_base_f%r_filter, sph_base_f%sph_filter, rj_fld)
 !
-      call scalar_sph_filter(ipol%i_light, ipol%i_filter_comp,          &
+      call scalar_sph_filter(ipol%base%i_light, ipol%i_filter_comp,     &
      &    sph_rj, sph_base_f%r_filter, sph_base_f%sph_filter, rj_fld)
 !
       end subroutine cal_sph_base_filtering_fields
@@ -171,7 +173,7 @@
      &    sph_rj, sph_wide_f%r_filter, sph_wide_f%sph_filter, rj_fld)
 !
       call scalar_sph_filter                                            &
-     &   (ipol%i_light, ipol%wide_filter_fld%i_light,                   &
+     &   (ipol%base%i_light, ipol%wide_filter_fld%i_light,              &
      &    sph_rj, sph_wide_f%r_filter, sph_wide_f%sph_filter, rj_fld)
 !
       end subroutine cal_sph_wide_filtering_fields

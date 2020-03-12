@@ -110,7 +110,7 @@
       if(flex_data%i_drmax_d .gt. izero) then
         call check_scalar_evo_by_previous                               &
      &     (node%numnod, node%istack_nod_smp, nod_fld%ntot_phys,        &
-     &      iphys%i_light, iphys%i_chk_composit,                        &
+     &      iphys%base%i_light, iphys%i_chk_composit,                   &
      &      iphys%i_chk_composit_2, flex_data%i_drmax_d,                &
      &      nod_fld%d_fld, flex_data)
       end if

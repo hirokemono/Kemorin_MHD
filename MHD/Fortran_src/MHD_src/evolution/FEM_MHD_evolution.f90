@@ -266,10 +266,10 @@
      &       SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat, nod_fld)
 !
           call add_2_nod_scalars(nod_fld, iphys%base%i_ref_c,           &
-     &        iphys%base%i_per_light, iphys%i_light)
+     &        iphys%base%i_per_light, iphys%base%i_light)
         else
           if(iflag_debug.eq.1) write(*,*) 's_cal_light_element C'
-          call s_cal_light_element(iphys%i_light, time_d%dt,            &
+          call s_cal_light_element(iphys%base%i_light, time_d%dt,       &
      &       FEM_prm, SGS_par, fem%mesh, fem%group,                     &
      &       MHD_mesh%fluid, MHD_prop%cp_prop, MHD_prop%ref_param_C,    &
      &       nod_bcs%Cnod_bcs, surf_bcs%Csf_bcs,                        &
@@ -282,7 +282,7 @@
      &       SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat, nod_fld)
 !
           if (iphys%base%i_per_light .gt. 0) then
-            call subtract_2_nod_scalars(nod_fld, iphys%i_light,         &
+            call subtract_2_nod_scalars(nod_fld, iphys%base%i_light,    &
      &          iphys%base%i_ref_c, iphys%base%i_per_light)
           end if
         end if
@@ -382,7 +382,7 @@
      &      diff_coefs)
       end if
 !
-      if (iphys%i_light .ne. 0) then
+      if (iphys%base%i_light .ne. 0) then
         call update_with_dummy_scalar                                   &
      &     (ifld_diff%i_light, icomp_diff%i_light, time_d%i_time_step,  &
      &      time_d%dt, FEM_prm, SGS_par, fem%mesh, fem%group,           &
@@ -539,10 +539,10 @@
      &       SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat, nod_fld)
 !
           call add_2_nod_scalars(nod_fld, iphys%base%i_ref_c,           &
-     &        iphys%base%i_per_light, iphys%i_light)
+     &        iphys%base%i_per_light, iphys%base%i_light)
         else
           if (iflag_debug.eq.1) write(*,*) 's_cal_light_element'
-          call s_cal_light_element(iphys%i_light, time_d%dt,            &
+          call s_cal_light_element(iphys%base%i_light, time_d%dt,       &
      &       FEM_prm, SGS_par, fem%mesh, fem%group,                     &
      &       fluid, MHD_prop%cp_prop, MHD_prop%ref_param_C,             &
      &       nod_bcs%Cnod_bcs, surf_bcs%Csf_bcs,                        &
@@ -555,7 +555,7 @@
      &       SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat, nod_fld)
 !
           if (iphys%base%i_per_light .gt. 0) then
-            call subtract_2_nod_scalars(nod_fld, iphys%i_light,         &
+            call subtract_2_nod_scalars(nod_fld, iphys%base%i_light,    &
      &          iphys%base%i_ref_c, iphys%base%i_per_light)
           end if
         end if
@@ -619,7 +619,7 @@
       if(MHD_prop%ref_param_C%iflag_reference .ne. id_no_ref_temp) then
         if (iflag_debug.eq.1)  write(*,*) 'set_2_perturbation_comp'
         call subtract_2_nod_scalars                                     &
-     &     (nod_fld, iphys%i_light, iphys%base%i_ref_c,                 &
+     &     (nod_fld, iphys%base%i_light, iphys%base%i_ref_c,            &
      &      iphys%base%i_per_light)
       end if
 !

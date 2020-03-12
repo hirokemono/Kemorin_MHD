@@ -43,9 +43,6 @@
 !>        start address for temperature
 !!         @f$ T @f$
         integer (kind=kint) :: i_temp  =           izero
-!>        start address for compostiion variation
-!!         @f$ C @f$
-        integer (kind=kint) :: i_light =           izero
 !
 !>        start address for magnetic field
 !!         @f$ B_{i} @f$

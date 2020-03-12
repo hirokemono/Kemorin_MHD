@@ -91,7 +91,7 @@
         call const_radial_grad_scalar(sph%sph_rj, r_2nd,                &
      &      sph_MHD_bc%sph_bc_C, sph_MHD_bc%bcs_C,                      &
      &      sph_MHD_bc%fdm2_center, leg%g_sph_rj,                       &
-     &      ipol%i_light, ipol%grad_fld%i_grad_composit, rj_fld)
+     &      ipol%base%i_light, ipol%grad_fld%i_grad_composit, rj_fld)
       end if
 !
       end subroutine overwrt_grad_of_vectors_sph

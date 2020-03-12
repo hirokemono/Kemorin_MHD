@@ -38,8 +38,8 @@
 !!        type(band_matrices_type), intent(in) :: band_comp_evo
 !!        type(phys_address), intent(in) :: ipol
 !!        type(phys_data), intent(inout) :: rj_fld
-!!        Input address:    ipol%i_light
-!!        Solution address: ipol%i_light
+!!        Input address:    ipol%base%i_light
+!!        Solution address: ipol%base%i_light
 !!@endverbatim
 !!
 !!@n @param ntot_phys_rj   Total number of components

@@ -116,7 +116,7 @@
      &                       trim(composite_flux%name)
 !$omp parallel
         call cal_phys_scalar_product_vector                             &
-     &     (iphys%i_velo, iphys%i_light,                                &
+     &     (iphys%i_velo, iphys%base%i_light,                           &
      &      iphys%forces%i_c_flux, nod_fld)
 !$omp end parallel
 !
@@ -249,7 +249,7 @@
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &             write(*,*) 'lead  ', trim(composition_advect%name)
         call cal_terms_4_advect                                         &
-     &     (iphys%forces%i_c_advect, iphys%i_light,                     &
+     &     (iphys%forces%i_c_advect, iphys%base%i_light,                &
      &      FEM_prm%iflag_comp_supg, FEM_prm%npoint_t_evo_int, dt,      &
      &      FEM_prm, nod_comm, node, ele, fluid, cp_prop,               &
      &      nod_bcs%Tnod_bcs, iphys_ele, ele_fld, fem_int,              &
@@ -359,7 +359,7 @@
         if(iflag_debug .ge. iflag_routine_msg) write(*,*) 'lead  ',     &
      &                     trim(composition_diffusion%name)
         call cal_thermal_diffusion(iphys%diffusion%i_c_diffuse,         &
-     &      iphys%i_light, ifld_diff%i_light,                           &
+     &      iphys%base%i_light, ifld_diff%i_light,                      &
      &      ak_MHD%ak_d_composit, FEM_prm%npoint_t_evo_int,             &
      &      SGS_par%model_p, nod_comm, node, ele, surf, fluid, sf_grp,  &
      &      nod_bcs%Cnod_bcs, surf_bcs%Csf_bcs, fem_int, FEM_elens,     &

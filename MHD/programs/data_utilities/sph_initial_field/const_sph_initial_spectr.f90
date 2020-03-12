@@ -23,7 +23,7 @@
 !!
 !!
 !!       Temperature :: d_rj(:,ipol%i_temp)
-!!       Composition :: d_rj(:,ipol%i_light)
+!!       Composition :: d_rj(:,ipol%base%i_light)
 !!
 !!       Poloidal velocity ::       d_rj(:,ipol%i_velo)
 !!       Toroidal velocity ::       d_rj(:,itor%i_velo)
@@ -332,14 +332,14 @@
       real(kind = kreal), parameter :: A_light = 0.1d0
 !
 !
-      if(ipol%i_light .eq. izero) return
+      if(ipol%base%i_light .eq. izero) return
 !
       pi = four * atan(one)
       shell = sph_bc_C%r_CMB(0) - sph_bc_C%r_ICB(0)
 !
 !$omp parallel do
       do inod = 1, nnod_rj(sph)
-        rj_fld%d_fld(inod,ipol%i_light) = zero
+        rj_fld%d_fld(inod,ipol%base%i_light) = zero
       end do
 !$omp end parallel do
 !
@@ -351,12 +351,12 @@
       if (jj .gt. 0) then
         do k = 1, sph_bc_C%kr_in-1
           inod = local_sph_data_address(sph, k, jj)
-          rj_fld%d_fld(inod,ipol%i_light) = 1.0d0
+          rj_fld%d_fld(inod,ipol%base%i_light) = 1.0d0
         end do
         do k = sph_bc_C%kr_in, sph_bc_C%kr_out
           inod = local_sph_data_address(sph, k, jj)
           rr = radius_1d_rj_r(sph, k)
-          rj_fld%d_fld(inod,ipol%i_light)                               &
+          rj_fld%d_fld(inod,ipol%base%i_light)                          &
      &         = ((20.d0/13.0d0) / rr  - 1.0d0 ) * 7.0d0 / 13.0d0
         end do
       end if
@@ -370,7 +370,7 @@
           inod = local_sph_data_address(sph, k, jj)
           xr = two * radius_1d_rj_r(sph, k)                             &
      &        - one * (sph_bc_C%r_CMB(0) + sph_bc_C%r_ICB(0)) / shell
-          rj_fld%d_fld(inod,ipol%i_light)                               &
+          rj_fld%d_fld(inod,ipol%base%i_light)                          &
      &       = (one-three*xr**2+three*xr**4-xr**6)                      &
      &        * A_light * three / (sqrt(two*pi))
         end do
@@ -381,8 +381,8 @@
       if(i_center .gt. 0) then
         jj = find_local_sph_mode_address(sph, 0, 0)
         inod = local_sph_data_address(sph, 1, jj)
-        rj_fld%d_fld(i_center,ipol%i_light)                             &
-     &              = rj_fld%d_fld(inod,ipol%i_light)
+        rj_fld%d_fld(i_center,ipol%base%i_light)                        &
+     &              = rj_fld%d_fld(inod,ipol%base%i_light)
       end if
 !
       end subroutine set_initial_composition
@@ -555,7 +555,7 @@
       if (jj .gt. 0) then
         do k = 1, sph_bc_C%kr_in-1
           inod = local_sph_data_address(sph, k, jj)
-          rj_fld%d_fld(inod,ipol%i_light) = 1.0d0
+          rj_fld%d_fld(inod,ipol%base%i_light) = 1.0d0
         end do
         do k = sph_bc_C%kr_in, sph_bc_C%kr_out
           inod = local_sph_data_address(sph, k, jj)

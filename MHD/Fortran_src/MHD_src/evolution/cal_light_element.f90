@@ -258,7 +258,7 @@
         call int_vol_temp_ele_upw                                       &
      &     (SGS_param%iflag_SGS_c_flux, cmt_param%iflag_c_cf,           &
      &      SGS_param%ifilter_final, FEM_prm%npoint_t_evo_int,          &
-     &      dt, iphys%i_light, iphys%i_velo,                            &
+     &      dt, iphys%base%i_light, iphys%i_velo,                       &
      &      iphys%SGS_term%i_SGS_c_flux, ifld_diff%i_comp_flux,         &
      &      mesh%node, mesh%ele, fluid, property, nod_fld,              &
      &      jacs%g_FEM, jacs%jac_3d, rhs_tbl, FEM_elens, diff_coefs,    &
@@ -268,7 +268,7 @@
         call int_vol_temp_ele                                           &
      &     (SGS_param%iflag_SGS_c_flux, cmt_param%iflag_c_cf,           &
      &      SGS_param%ifilter_final, FEM_prm%npoint_t_evo_int,          &
-     &      iphys%i_light, iphys%i_velo,                                &
+     &      iphys%base%i_light, iphys%i_velo,                           &
      &      iphys%SGS_term%i_SGS_c_flux, ifld_diff%i_comp_flux,         &
      &      mesh%node, mesh%ele, fluid, property, nod_fld,              &
      &      jacs%g_FEM, jacs%jac_3d, rhs_tbl, FEM_elens, diff_coefs,    &
@@ -289,7 +289,7 @@
      &      rhs_tbl, FEM_elens, FEM_prm%npoint_t_evo_int,               &
      &      sf_bcs%sgs%ngrp_sf_dat, sf_bcs%sgs%id_grp_sf_dat,           &
      &      SGS_param%ifilter_final, iphys%SGS_term%i_SGS_c_flux,       &
-     &      iphys%i_velo, iphys%i_light,                                &
+     &      iphys%i_velo, iphys%base%i_light,                           &
      &      diff_coefs%num_field, ifld_diff%i_comp_flux,                &
      &      diff_coefs%ak, property%coef_advect, fem_wk, surf_wk, f_nl)
       end if

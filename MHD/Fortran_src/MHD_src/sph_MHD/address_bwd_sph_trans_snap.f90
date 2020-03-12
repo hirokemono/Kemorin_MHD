@@ -313,11 +313,11 @@
      &    ipol%i_temp, itor%i_temp, iphys%i_temp,                       &
      &    b_trns%i_temp, trns_back)
 !      end if
-!      if(b_trns%i_light .eq. 0) then
+!      if(b_trns%base%i_light .eq. 0) then
       call add_field_name_4_sph_trns_snap                               &
      &   (composition%name, composition%n_comp,                         &
-     &    ipol%i_light, itor%i_light, iphys%i_light,                    &
-     &    b_trns%i_light, trns_back)
+     &    ipol%base%i_light, itor%base%i_light, iphys%base%i_light,     &
+     &    b_trns%base%i_light, trns_back)
 !      end if
 !
       call add_field_name_4_sph_trns_snap                               &

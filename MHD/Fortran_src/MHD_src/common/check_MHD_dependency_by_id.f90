@@ -51,7 +51,7 @@
      &     .or. i_start .eq. iphys%i_press                              &
      &     .or. i_start .eq. iphys%i_magne                              &
      &     .or. i_start .eq. iphys%i_temp                               &
-     &     .or. i_start .eq. iphys%i_light) then
+     &     .or. i_start .eq. iphys%base%i_light) then
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_velo, velocity%name)
         else if(i_start .eq. iphys%i_filter_vort) then 
@@ -84,7 +84,7 @@
      &       (fld, i_start, iphys%i_temp, temperature%name)
         else if(i_start .eq. iphys%i_filter_comp) then 
           call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_light, composition%name)
+     &       (fld, i_start, iphys%base%i_light, composition%name)
         end if
       end do
 !

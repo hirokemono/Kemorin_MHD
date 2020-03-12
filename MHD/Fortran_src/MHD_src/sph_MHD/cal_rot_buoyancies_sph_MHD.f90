@@ -67,7 +67,7 @@
           call cal_rot_double_buoyancy_sph_MHD                          &
      &       (sph_bc_U%kr_in, sph_bc_U%kr_out,                          &
      &        fl_prop%coef_buo, ipol%i_temp, fl_prop%coef_comp_buo,     &
-     &        ipol%i_light, itor%rot_forces%i_buoyancy,                 &
+     &        ipol%base%i_light, itor%rot_forces%i_buoyancy,            &
      &        sph_rj%nidx_rj, sph_rj%radius_1d_rj_r,                    &
      &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
@@ -82,9 +82,9 @@
 !
       else if (fl_prop%iflag_4_composit_buo .gt. id_turn_OFF) then
         if (iflag_debug.eq.1) write(*,*)                                &
-     &      'cal_rot_buoyancy_sph_MHD', ipol%i_light
+     &      'cal_rot_buoyancy_sph_MHD', ipol%base%i_light
         call cal_rot_buoyancy_sph_MHD(sph_bc_U%kr_in, sph_bc_U%kr_out,  &
-     &      fl_prop%coef_comp_buo, ipol%i_light,                        &
+     &      fl_prop%coef_comp_buo, ipol%base%i_light,                   &
      &      itor%rot_forces%i_comp_buo,                                 &
      &      sph_rj%nidx_rj, sph_rj%radius_1d_rj_r,                      &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
@@ -192,8 +192,8 @@
         j = mod((inod-1),nidx_rj(2)) + 1
         k = 1 + (inod- j) / nidx_rj(2)
         d_rj(inod,ipol%base%i_density)                                  &
-     &          = -(d_rj(inod,ipol%i_temp)                              &
-     &           + coef_comp_buo/coef_buo * d_rj(inod,ipol%i_light))
+     &        = -(d_rj(inod,ipol%i_temp)                                &
+     &         + coef_comp_buo/coef_buo * d_rj(inod,ipol%base%i_light))
       end do
 !$omp end parallel do
 !

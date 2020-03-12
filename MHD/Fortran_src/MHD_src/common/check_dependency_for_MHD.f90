@@ -139,7 +139,7 @@
       if (cp_prop%iflag_scheme .ne. id_no_evolution) then
         msg =  'Time integration for composition equation needs'
         call check_missing_field_w_msg(fld, msg, iphys%i_velo)
-        call check_missing_field_w_msg(fld, msg, iphys%i_light)
+        call check_missing_field_w_msg(fld, msg, iphys%base%i_light)
       end if
 !
       if (cd_prop%iflag_Bevo_scheme .ne. id_no_evolution) then
@@ -163,7 +163,7 @@
 !
         if (fl_prop%iflag_4_composit_buo .gt. id_turn_OFF) then
           msg = 'Compositional buoyancy needs'
-          call check_missing_field_w_msg(fld, msg, iphys%i_light)
+          call check_missing_field_w_msg(fld, msg, iphys%base%i_light)
         end if
 !
         if (fl_prop%iflag_4_filter_gravity .gt. id_turn_OFF) then

@@ -111,9 +111,9 @@
 !   composition flag
       if(cp_prop%iflag_scheme .gt. id_no_evolution) then
         call add_field_name_4_sph_trns                                  &
-     &     (ipol%i_light, composition%name, composition%n_comp,         &
-     &      ipol%i_light, itor%i_light, iphys%i_light,                  &
-     &      b_trns%i_light, trns_back)
+     &     (ipol%base%i_light, composition%name, composition%n_comp,    &
+     &      ipol%base%i_light, itor%base%i_light, iphys%base%i_light,   &
+     &      b_trns%base%i_light, trns_back)
       end if
       trns_back%num_scalar = trns_back%nfield - trns_back%num_vector
 !

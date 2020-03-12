@@ -102,7 +102,7 @@
         end if
 !
         call set_boundary_scalar                                        &
-     &     (nod_bcs%Cnod_bcs%nod_bc_s, iphys%i_light, nod_fld)
+     &     (nod_bcs%Cnod_bcs%nod_bc_s, iphys%base%i_light, nod_fld)
       end if
 !
       if    (cd_prop%iflag_Bevo_scheme .gt. id_no_evolution             &

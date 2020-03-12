@@ -110,13 +110,13 @@
      &      ipol%i_temp, rj_fld, sph_MHD_mat%x00_w_center)
       end if
 !g
-!  Input: ipol%i_light,  Solution: ipol%i_light
+!  Input: ipol%base%i_light,  Solution: ipol%base%i_light
       if(iflag_debug.gt.0) write(*,*) 'cal_sol_scalar_sph_crank'
       if(MHD_prop%cp_prop%iflag_scheme .gt. id_no_evolution) then
         call cal_sol_scalar_sph_crank(dt, sph_rj,                       &
      &      MHD_prop%cp_prop, sph_MHD_bc%sph_bc_C, sph_MHD_bc%bcs_C,    &
      &      sph_MHD_mat%band_comp_evo, sph_MHD_mat%band_comp00_evo,     &
-     &      ipol%i_light, rj_fld, sph_MHD_mat%x00_w_center)
+     &      ipol%base%i_light, rj_fld, sph_MHD_mat%x00_w_center)
       end if
 !
 !  Input: ipol%i_magne, itor%i_magne
@@ -357,21 +357,23 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-!         Input: ipol%i_light,  Solution: ipol%grad_fld%i_grad_composit
+!         Input: ipol%base%i_light
+!         Solution: ipol%grad_fld%i_grad_composit
       if(ipol%grad_fld%i_grad_composit .gt. 0) then
         call const_radial_grad_scalar                                   &
-     &     (sph_rj, r_2nd, sph_bc_C, bcs_C, fdm2_center,                &
-     &      leg%g_sph_rj, ipol%i_light, ipol%grad_fld%i_grad_composit,  &
+     &     (sph_rj, r_2nd, sph_bc_C, bcs_C, fdm2_center, leg%g_sph_rj,  &
+     &      ipol%base%i_light, ipol%grad_fld%i_grad_composit,           &
      &      rj_fld)
       end if
 !
-!         Input: ipol%i_light,  Solution: ipol%diffusion%i_c_diffuse
+!         Input: ipol%base%i_light
+!         Solution: ipol%diffusion%i_c_diffuse
       if(ipol%diffusion%i_c_diffuse .gt. 0) then
         if(iflag_debug .gt. 0)  write(*,*)                              &
      &         'const_sph_scalar_diffusion', ipol%diffusion%i_c_diffuse
         call const_sph_scalar_diffusion                                 &
      &     (sph_rj, r_2nd, sph_bc_C, bcs_C, fdm2_center,                &
-     &      leg%g_sph_rj, cp_prop%coef_diffuse, ipol%i_light,           &
+     &      leg%g_sph_rj, cp_prop%coef_diffuse, ipol%base%i_light,      &
      &      ipol%diffusion%i_c_diffuse, rj_fld)
       end if
 !

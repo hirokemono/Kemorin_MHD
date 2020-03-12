@@ -76,7 +76,7 @@
      &  .or. ref_param_C%iflag_reference .eq. id_takepiro_temp) then
         ipol_comp =  ipol%base%i_per_light
       else
-        ipol_comp =  ipol%i_light
+        ipol_comp =  ipol%base%i_light
       end if
 !
       if (ipol_temp * ipol%forces%i_buoyancy .gt. 0) then
