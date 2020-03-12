@@ -59,9 +59,6 @@
 !>        start address for magnetic potential
 !!         @f$ W @f$
         integer (kind=kint) :: i_mag_p =           izero
-!>        start address for electric potential
-!!         @f$ \varphi @f$
-        integer (kind=kint) :: i_scalar_p =        izero
 !
 !>        Start address for filtered velocity
 !!         @f$ \bar{u}_{i} @f$
