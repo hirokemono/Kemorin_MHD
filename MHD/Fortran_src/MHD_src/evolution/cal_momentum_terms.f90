@@ -128,8 +128,8 @@
 !
       if(FEM_prm%iflag_velo_supg .eq. id_turn_ON) then
         call int_vol_velo_monitor_upwind                                &
-     &     (i_field, iak_diff_mf, iak_diff_lor, iphys_ele%i_velo, dt,   &
-     &      FEM_prm, SGS_param, cmt_param, node, ele, fluid,            &
+     &     (i_field, iak_diff_mf, iak_diff_lor, iphys_ele%base%i_velo,  &
+     &      dt, FEM_prm, SGS_param, cmt_param, node, ele, fluid,        &
      &      fl_prop, cd_prop, iphys, nod_fld, iphys_ele, ak_MHD,        &
      &      fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,     &
      &      FEM_elens, diff_coefs, mhd_fem_wk,                          &
@@ -221,7 +221,7 @@
      &    FEM_prm%npoint_t_evo_int, node, ele, nod_fld,                 &
      &    fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,       &
      &    FEM_elens, diff_coefs, iak_diff_v, one, ak_MHD%ak_d_velo,     &
-     &    iphys%i_velo, rhs_mat%fem_wk, rhs_mat%f_l)
+     &    iphys%base%i_velo, rhs_mat%fem_wk, rhs_mat%f_l)
 !
       call int_surf_velo_monitor                                        &
      &  (iphys%diffusion%i_v_diffuse, iak_diff_mf, iak_diff_lor,        &

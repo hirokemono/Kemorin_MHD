@@ -86,14 +86,14 @@
 ! ----- lead average in a element -------------
 !
       do i = 1, msq_list%nfield
-        if     (msq_list%ifld_msq(i) .eq. iphys%i_velo) then
+        if     (msq_list%ifld_msq(i) .eq. iphys%base%i_velo) then
           call int_all_4_vector                                         &
      &       (fluid%istack_ele_fld_smp, npoint_integrate,               &
      &        msq_list%irms_msq(i), msq_list%jave_msq(i),               &
      &        msq_list%ifld_msq(i), mesh, nod_fld, jacs,                &
      &        fem_wk, fem_msq)
           call int_all_angular_mom(fluid%istack_ele_fld_smp,            &
-     &        npoint_integrate, ifld_msq%ja_amom, iphys%i_velo,         &
+     &        npoint_integrate, ifld_msq%ja_amom, iphys%base%i_velo,    &
      &        mesh, nod_fld, jacs, mhd_fem_wk, fem_wk, fem_msq)
 !
         else if(msq_list%ifld_msq(i) .eq. iphys%base%i_magne) then
@@ -180,9 +180,9 @@
 !
 !       Adjust results
 !
-      if(i_rms%i_velo .gt. 0) then
-        fem_msq%rms_local(i_rms%i_velo)                                 &
-     &      = half * fem_msq%rms_local(i_rms%i_velo)
+      if(i_rms%base%i_velo .gt. 0) then
+        fem_msq%rms_local(i_rms%base%i_velo)                            &
+     &      = half * fem_msq%rms_local(i_rms%base%i_velo)
       end if
       if(i_rms%base%i_magne .gt. 0) then
         fem_msq%rms_local(i_rms%base%i_magne)                           &
@@ -251,15 +251,15 @@
 !
       if(fl_prop%iflag_scheme .gt. id_no_evolution) then
         call int_norm_divergence                                        &
-     &    (fluid%istack_ele_fld_smp, iphys%i_velo, mesh%node, mesh%ele, &
-     &     nod_fld, jacs%g_FEM, jacs%jac_3d, fem_wk,                    &
-     &     fem_msq%ave_local(j_ave%grad_fld%i_div_v))
+     &     (fluid%istack_ele_fld_smp, iphys%base%i_velo,                &
+     &      mesh%node, mesh%ele, nod_fld, jacs%g_FEM, jacs%jac_3d,      &
+     &      fem_wk, fem_msq%ave_local(j_ave%grad_fld%i_div_v))
         call int_rms_divergence                                         &
-     &    (fluid%istack_ele_fld_smp, iphys%i_velo, mesh%node, mesh%ele, &
-     &     nod_fld, jacs%g_FEM, jacs%jac_3d, fem_wk,                    &
-     &     fem_msq%rms_local(i_rms%grad_fld%i_div_v))
+     &     (fluid%istack_ele_fld_smp, iphys%base%i_velo,                &
+     &      mesh%node, mesh%ele, nod_fld, jacs%g_FEM, jacs%jac_3d,      &
+     &      fem_wk, fem_msq%rms_local(i_rms%grad_fld%i_div_v))
         call cal_stability_4_advect(i_step, dt, mesh%ele, fluid,        &
-     &      ele_fld%ntot_phys, iphys_ele%i_velo, ele_fld%d_fld)
+     &      ele_fld%ntot_phys, iphys_ele%base%i_velo, ele_fld%d_fld)
       end if
 !
       if  (cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then

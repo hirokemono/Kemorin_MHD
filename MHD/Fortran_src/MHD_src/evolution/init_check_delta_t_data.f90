@@ -62,7 +62,7 @@
 !
       flex_data%num_fld = 0
       flex_data%ntot_comp = 0
-      if((iphys%i_velo*iphys%i_chk_mom) .gt. izero) then
+      if((iphys%base%i_velo * iphys%i_chk_mom) .gt. izero) then
         flex_data%num_fld = flex_data%num_fld + 1
         flex_data%ntot_comp = flex_data%ntot_comp + 3
       end if
@@ -120,7 +120,7 @@
 !
       icou = 0
       flex_data%istack_comp(0) = 0
-      if((iphys%i_velo*iphys%i_chk_mom) .gt. izero) then
+      if((iphys%base%i_velo * iphys%i_chk_mom) .gt. izero) then
         icou = icou + 1
         flex_data%i_drmax_v =         flex_data%istack_comp(icou-1) + 1
         flex_data%istack_comp(icou) = flex_data%istack_comp(icou-1) + 3

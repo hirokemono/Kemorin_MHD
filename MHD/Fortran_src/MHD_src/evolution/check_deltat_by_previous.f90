@@ -55,7 +55,7 @@
      &      write(*,*) 'check_vector_evo_by_previous velo'
         call check_vector_evo_by_previous                               &
      &     (node%numnod, node%istack_nod_smp, nod_fld%ntot_phys,        &
-     &      iphys%i_velo, iphys%i_chk_mom, iphys%i_chk_mom_2,           &
+     &      iphys%base%i_velo, iphys%i_chk_mom, iphys%i_chk_mom_2,      &
      &      flex_data%i_drmax_v, nod_fld%d_fld, flex_data)
       end if
 !

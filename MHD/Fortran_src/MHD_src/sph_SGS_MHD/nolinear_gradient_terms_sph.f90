@@ -83,7 +83,7 @@
       if(fg_trns%SGS_term%i_SGS_inertia .gt. 0) then
         call sel_sph_SGS_induct_nl_gradient                             &
      &     (sph%sph_rtp, sph_filters, MHD_prop%fl_prop%coef_velo,       &
-     &      b_trns%base%i_vort, b_trns%i_velo,                          &
+     &      b_trns%base%i_vort, b_trns%base%i_velo,                     &
      &      trns_b_MHD%ncomp, trns_b_MHD%fld_rtp,                       &
      &      bn_trns%diff_vector%i_grad_wx,                              &
      &      bn_trns%diff_vector%i_grad_wy,                              &
@@ -115,7 +115,7 @@
       if(fg_trns%SGS_term%i_SGS_vp_induct .gt. 0) then
         call sel_sph_SGS_induct_nl_gradient                             &
      &     (sph%sph_rtp, sph_filters, MHD_prop%cd_prop%coef_induct,     &
-     &      b_trns%i_velo, b_trns%base%i_magne,                         &
+     &      b_trns%base%i_velo, b_trns%base%i_magne,                    &
      &      trns_b_MHD%ncomp, trns_b_MHD%fld_rtp,                       &
      &      bn_trns%diff_vector%i_grad_vx,                              &
      &      bn_trns%diff_vector%i_grad_vy,                              &
@@ -131,7 +131,7 @@
       if(fg_trns%SGS_term%i_SGS_h_flux .gt. 0) then
         call sel_SGS_s_flux_nl_gradient                                 &
      &     (sph%sph_rtp, sph_filters, MHD_prop%ht_prop%coef_advect,     &
-     &      b_trns%i_velo, trns_b_MHD%ncomp, trns_b_MHD%fld_rtp,        &
+     &      b_trns%base%i_velo, trns_b_MHD%ncomp, trns_b_MHD%fld_rtp,   &
      &      bn_trns%diff_vector%i_grad_vx,                              &
      &      bn_trns%diff_vector%i_grad_vy,                              &
      &      bn_trns%diff_vector%i_grad_vz,                              &
@@ -144,7 +144,7 @@
       if(fg_trns%SGS_term%i_SGS_c_flux .gt. 0) then
         call sel_SGS_s_flux_nl_gradient                                 &
      &     (sph%sph_rtp, sph_filters, MHD_prop%cp_prop%coef_advect,     &
-     &      b_trns%i_velo, trns_b_MHD%ncomp, trns_b_MHD%fld_rtp,        &
+     &      b_trns%base%i_velo, trns_b_MHD%ncomp, trns_b_MHD%fld_rtp,   &
      &      bn_trns%diff_vector%i_grad_vx,                              &
      &      bn_trns%diff_vector%i_grad_vy,                              &
      &      bn_trns%diff_vector%i_grad_vz,                              &

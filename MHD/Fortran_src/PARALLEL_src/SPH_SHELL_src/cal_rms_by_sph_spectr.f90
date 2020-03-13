@@ -76,7 +76,7 @@
      &        n_point, d_rj(1,icomp_rj), rms_sph_r(0,1))
         end if
 !
-        if (   icomp_rj .eq. ipol%i_velo                                &
+        if (     icomp_rj .eq. ipol%base%i_velo                         &
      &      .or. icomp_rj .eq. ipol%base%i_magne                        &
      &      .or. icomp_rj .eq. ipol%i_filter_velo                       &
      &      .or. icomp_rj .eq. ipol%i_filter_magne                      &
@@ -123,7 +123,7 @@
      &      sph_rj%a_r_1d_rj_r, g_sph_rj, n_point, d_rj(1,icomp_rj),    &
      &      rms_sph_rj(0,1,1))
 !
-        if (   icomp_rj .eq. ipol%i_velo                                &
+        if (     icomp_rj .eq. ipol%base%i_velo                         &
      &      .or. icomp_rj .eq. ipol%base%i_magne                        &
      &      .or. icomp_rj .eq. ipol%i_filter_velo                       &
      &      .or. icomp_rj .eq. ipol%i_filter_magne                      &

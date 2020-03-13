@@ -113,7 +113,7 @@
 !    SGS term by similarity model (to iphys%SGS_wk%i_simi)
 !
       if (iflag_debug.gt.0) write(*,*) 'cal_sgs_uxb_simi'
-      call cal_sgs_uxb_simi(iphys%SGS_wk%i_simi, iphys%i_velo,          &
+      call cal_sgs_uxb_simi(iphys%SGS_wk%i_simi, iphys%base%i_velo,     &
      &   iphys%base%i_magne, iphys%i_filter_velo, iphys%i_filter_magne, &
      &   SGS_par%filter_p, mesh%nod_comm, mesh%node,                    &
      &   FEM_filters%filtering,FEM_SGS_wk%wk_filter, nod_fld)
@@ -218,7 +218,7 @@
 !
       if (iflag_debug.gt.0)  write(*,*) 'cal_sgs_induct_t_simi'
       call cal_sgs_induct_t_simi(iphys%SGS_term%i_SGS_induct_t,         &
-     &    iphys%i_velo, iphys%base%i_magne,                             &
+     &    iphys%base%i_velo, iphys%base%i_magne,                        &
      &    iphys%i_filter_velo, iphys%i_filter_magne, icomp_sgs_uxb,     &
      &    SGS_par%filter_p, mesh%nod_comm, mesh%node,                   &
      &    FEM_filters%filtering, sgs_coefs_nod, FEM_SGS_wk%wk_filter,   &
@@ -245,7 +245,7 @@
       if (iflag_debug.gt.0)  write(*,*) 'cal_sgs_induct_t_grad_4_dyn'
       call cal_sgs_induct_t_grad_no_coef                                &
      &   (ifilter_2delta,  iphys%SGS_term%i_SGS_induct_t,               &
-     &    iphys%i_velo, iphys%base%i_magne, ie_dvx, ie_dbx,             &
+     &    iphys%base%i_velo, iphys%base%i_magne, ie_dvx, ie_dbx,        &
      &    dt, FEM_prm, mesh%nod_comm, mesh%node, mesh%ele, conduct,     &
      &    cd_prop, iphys_ele, ele_fld, fem_int%jcs,                     &
      &    fem_int%rhs_tbl, FEM_filters%FEM_elens, mk_MHD%mlump_cd,      &

@@ -245,7 +245,7 @@
       call int_surf_vect_diffuse_term(node, ele, surf, sf_grp,          &
      &    jacs%g_FEM, jacs%jac_sf_grp, nod_fld, rhs_tbl,                &
      &    Vsf_bcs%torque_lead, FEM_prm%npoint_t_evo_int,                &
-     &    ak_d_velo, iphys%i_velo, fem_wk, surf_wk, f_l)
+     &    ak_d_velo, iphys%base%i_velo, fem_wk, surf_wk, f_l)
 !
       end subroutine int_surf_velo_diffuse
 !

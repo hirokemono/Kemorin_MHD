@@ -11,7 +11,7 @@
 !!     &          sph_bc_U, bcs_U, fdm2_free_ICB, fdm2_free_CMB,        &
 !!     &          band_vp_evo, band_vt_evo, ipol, itor, rj_fld)
 !!        Input address:    ipol%base%i_vort, itor%base%i_vort
-!!        Solution address: ipol%i_velo, itor%i_velo
+!!        Solution address: ipol%base%i_velo, itor%base%i_velo
 !!        type(sph_boundary_type), intent(in) :: sph_bc_U
 !!        type(sph_scalar_boundary_data), intent(in) :: bcs_U
 !!
@@ -97,26 +97,27 @@
 !$omp parallel
       call copy_nod_scalar_smp(rj_fld%n_point,                          &
      &    rj_fld%d_fld(1,itor%base%i_vort),                             &
-     &    rj_fld%d_fld(1,ipol%i_velo))
+     &    rj_fld%d_fld(1,ipol%base%i_velo))
       call copy_nod_scalar_smp(rj_fld%n_point,                          &
      &    rj_fld%d_fld(1,ipol%base%i_vort),                             &
-     &    rj_fld%d_fld(1,itor%i_velo))
+     &    rj_fld%d_fld(1,itor%base%i_velo))
 !$omp end parallel
 !
       call delete_zero_degree_vect                                      &
-     &   (ipol%i_velo, sph_rj%idx_rj_degree_zero, rj_fld%n_point,       &
+     &   (ipol%base%i_velo, sph_rj%idx_rj_degree_zero, rj_fld%n_point,  &
      &    sph_rj%nidx_rj, rj_fld%ntot_phys, rj_fld%d_fld)
 !
       call sel_ICB_grad_poloidal_moment                                 &
      &   (sph_rj, r_2nd, sph_bc_U, bcs_U%ICB_Vspec, fdm2_free_ICB,      &
-     &    ipol%i_velo, rj_fld)
+     &    ipol%base%i_velo, rj_fld)
       call sel_CMB_grad_poloidal_moment                                 &
      &   (sph_rj, sph_bc_U, bcs_U%CMB_Vspec, fdm2_free_CMB,             &
-     &    ipol%i_velo, rj_fld)
+     &    ipol%base%i_velo, rj_fld)
 !
 !
       call solve_velo_by_vort_sph_crank                                 &
-     &   (sph_rj, band_vp_evo, band_vt_evo, ipol%i_velo, itor%i_velo,   &
+     &   (sph_rj, band_vp_evo, band_vt_evo,                             &
+     &    ipol%base%i_velo, itor%base%i_velo,                           &
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
       end subroutine cal_sol_velo_by_vort_sph_crank

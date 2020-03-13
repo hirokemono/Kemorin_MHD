@@ -135,7 +135,7 @@
         call int_vol_divergence_upw                                     &
      &     (node, ele, g_FEM, jac_3d, rhs_tbl, nod_fld,                 &
      &      iele_fsmp_stack, num_int, dt, i_vector,                     &
-     &      ele_fld%ntot_phys, iphys_ele%i_velo, ele_fld%d_fld,         &
+     &      ele_fld%ntot_phys, iphys_ele%base%i_velo, ele_fld%d_fld,    &
      &      fem_wk, f_nl)
       else
         call int_vol_divergence                                         &

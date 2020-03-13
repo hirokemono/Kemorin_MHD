@@ -157,7 +157,7 @@
       if (fl_prop%coef_imp .gt. zero) then
         call int_sk_4_fixed_velo                                        &
      &    (iflag_commute_velo, ifilter_final, FEM_prm%npoint_t_evo_int, &
-     &     iphys%i_velo, iak_diff_v, node, ele, nod_fld, fl_prop,       &
+     &     iphys%base%i_velo, iak_diff_v, node, ele, nod_fld, fl_prop,  &
      &     g_FEM, jac_3d, rhs_tbl, FEM_elens, diff_coefs,               &
      &     Vnod_bcs%nod_bc_v, Vnod_bcs%nod_bc_rot, ak_d_velo,           &
      &     fem_wk, f_l)
@@ -171,7 +171,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'int_coriolis_nod_exp'
       call int_coriolis_nod_exp(node, fl_prop, mlump_fl,                &
-     &    iphys%i_velo, nod_fld, f_l, f_nl)
+     &    iphys%base%i_velo, nod_fld, f_l, f_nl)
 !
       if (iflag_debug.eq.1)  write(*,*) 'int_buoyancy_nod_exp'
       call int_buoyancy_nod_exp                                         &
@@ -182,7 +182,7 @@
       call cal_sol_vec_fluid_linear                                     &
      &   (dt, node%numnod, node%istack_nod_smp,                         &
      &    mlump_fl%ml_o, f_nl%ff, nod_fld%ntot_phys, n_vector,          &
-     &    iphys%i_velo, iphys%i_pre_mom, nod_fld%d_fld, f_l%ff)
+     &    iphys%base%i_velo, iphys%i_pre_mom, nod_fld%d_fld, f_l%ff)
 !
       call solver_crank_vector                                          &
      &   (node, FEM_prm%MG_param, Vmatrix%nlevel_MG,                    &
@@ -190,7 +190,7 @@
      &    Vmatrix%MG_DJDS_table, Vmatrix%mat_MG_DJDS,                   &
      &    FEM_PRM%method_33, FEM_PRM%precond_33,                        &
      &    FEM_prm%eps_4_velo_crank, FEM_prm%CG11_param%MAXIT,           &
-     &    iphys%i_velo, MG_vector, f_l, b_vec, x_vec, nod_fld)
+     &    iphys%base%i_velo, MG_vector, f_l, b_vec, x_vec, nod_fld)
 !
       end subroutine cal_velo_pre_lumped_crank
 !

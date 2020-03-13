@@ -103,16 +103,16 @@
      &    fem_wk, f_l, f_nl)
 !
       if (iflag_debug.eq.1)  write(*,*) 'int_coriolis_nod_exp'
-      call int_coriolis_nod_exp                                         &
-     &   (node, fl_prop, mlump_fl, iphys%i_velo, nod_fld, f_l, f_nl)
+      call int_coriolis_nod_exp(node, fl_prop, mlump_fl,                &
+     &    iphys%base%i_velo, nod_fld, f_l, f_nl)
       if (iflag_debug.eq.1)  write(*,*) 'int_buoyancy_nod_exp'
       call int_buoyancy_nod_exp                                         &
      &   (node, fl_prop, mlump_fl, iphys, nod_fld, f_nl)
 !
       call cal_sol_vect_pre_fluid_adams                                 &
      &   (dt, node%numnod, node%istack_internal_smp, mlump_fl%ml,       &
-     &    f_l%ff, f_nl%ff, nod_fld%ntot_phys, n_vector, iphys%i_velo,   &
-     &    iphys%i_pre_mom, nod_fld%d_fld)
+     &    f_l%ff, f_nl%ff, nod_fld%ntot_phys, n_vector,                 &
+     &    iphys%base%i_velo, iphys%i_pre_mom, nod_fld%d_fld)
 !
       end subroutine cal_velo_pre_adams
 !

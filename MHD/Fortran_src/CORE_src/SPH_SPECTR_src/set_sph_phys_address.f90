@@ -60,7 +60,8 @@
       type(phys_address), intent(inout) :: ipol, idpdr, itor
 !
 !
-      call set_vect_sph_address(ipol%i_velo, itor%i_velo, idpdr%i_velo)
+      call set_vect_sph_address(ipol%base%i_velo,                       &
+     &    itor%base%i_velo, idpdr%base%i_velo)
       call set_vect_sph_address(ipol%base%i_vort,                       &
      &    itor%base%i_vort, idpdr%base%i_vort)
 !

@@ -229,7 +229,7 @@
      &     (FEM_prm%iflag_comp_supg, FEM_prm%npoint_t_evo_int, dt,      &
      &      SGS_param%iflag_SGS_c_flux, SGS_param%itype_Csym_c_flux,    &
      &      iphys%SGS_wk%i_sgs_composit, iphys%i_filter_comp,           &
-     &      iphys%i_velo, iphys%i_filter_velo,                          &
+     &      iphys%base%i_velo, iphys%i_filter_velo,                     &
      &      iphys%SGS_term%i_SGS_c_flux,                                &
      &      icomp_sgs%i_comp_flux, iphys_elediff%i_velo, SGS_param,     &
      &      filter_param, mesh%nod_comm, mesh%node, mesh%ele, fluid,    &
@@ -258,21 +258,21 @@
         call int_vol_temp_ele_upw                                       &
      &     (SGS_param%iflag_SGS_c_flux, cmt_param%iflag_c_cf,           &
      &      SGS_param%ifilter_final, FEM_prm%npoint_t_evo_int,          &
-     &      dt, iphys%base%i_light, iphys%i_velo,                       &
+     &      dt, iphys%base%i_light, iphys%base%i_velo,                  &
      &      iphys%SGS_term%i_SGS_c_flux, ifld_diff%i_comp_flux,         &
      &      mesh%node, mesh%ele, fluid, property, nod_fld,              &
      &      jacs%g_FEM, jacs%jac_3d, rhs_tbl, FEM_elens, diff_coefs,    &
-     &      ele_fld%ntot_phys, iphys_ele%i_velo, ele_fld%d_fld,         &
+     &      ele_fld%ntot_phys, iphys_ele%base%i_velo, ele_fld%d_fld,    &
      &      mhd_fem_wk, fem_wk, f_nl)
       else
         call int_vol_temp_ele                                           &
      &     (SGS_param%iflag_SGS_c_flux, cmt_param%iflag_c_cf,           &
      &      SGS_param%ifilter_final, FEM_prm%npoint_t_evo_int,          &
-     &      iphys%base%i_light, iphys%i_velo,                           &
+     &      iphys%base%i_light, iphys%base%i_velo,                      &
      &      iphys%SGS_term%i_SGS_c_flux, ifld_diff%i_comp_flux,         &
      &      mesh%node, mesh%ele, fluid, property, nod_fld,              &
      &      jacs%g_FEM, jacs%jac_3d, rhs_tbl, FEM_elens, diff_coefs,    &
-     &      ele_fld%ntot_phys, iphys_ele%i_velo, ele_fld%d_fld,         &
+     &      ele_fld%ntot_phys, iphys_ele%base%i_velo, ele_fld%d_fld,    &
      &      mhd_fem_wk, fem_wk, f_nl)
       end if
 !
@@ -289,7 +289,7 @@
      &      rhs_tbl, FEM_elens, FEM_prm%npoint_t_evo_int,               &
      &      sf_bcs%sgs%ngrp_sf_dat, sf_bcs%sgs%id_grp_sf_dat,           &
      &      SGS_param%ifilter_final, iphys%SGS_term%i_SGS_c_flux,       &
-     &      iphys%i_velo, iphys%base%i_light,                           &
+     &      iphys%base%i_velo, iphys%base%i_light,                      &
      &      diff_coefs%num_field, ifld_diff%i_comp_flux,                &
      &      diff_coefs%ak, property%coef_advect, fem_wk, surf_wk, f_nl)
       end if
@@ -303,14 +303,14 @@
           call cal_stratified_layer_upw                                 &
      &       (iphys%grad_fld%i_grad_ref_c, FEM_prm%npoint_t_evo_int,    &
      &        dt,  mesh%node, mesh%ele, fluid, nod_fld,                 &
-     &        ele_fld%ntot_phys, iphys_ele%i_velo, ele_fld%d_fld,       &
+     &        ele_fld%ntot_phys, iphys_ele%base%i_velo, ele_fld%d_fld,  &
      &        jacs%g_FEM, jacs%jac_3d, rhs_tbl, mhd_fem_wk,             &
      &        fem_wk, f_nl)
         else
           call cal_stratified_layer                                     &
      &       (iphys%grad_fld%i_grad_ref_t, FEM_prm%npoint_t_evo_int,    &
      &        mesh%node, mesh%ele, fluid, nod_fld,                      &
-     &        ele_fld%ntot_phys, iphys_ele%i_velo, ele_fld%d_fld,       &
+     &        ele_fld%ntot_phys, iphys_ele%base%i_velo, ele_fld%d_fld,  &
      &        jacs%g_FEM, jacs%jac_3d, rhs_tbl, mhd_fem_wk,             &
      &        fem_wk, f_nl)
         end if

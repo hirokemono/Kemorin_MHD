@@ -25,8 +25,8 @@
 !!       Temperature :: d_rj(:,ipol%base%i_temp)
 !!       Composition :: d_rj(:,ipol%base%i_light)
 !!
-!!       Poloidal velocity ::       d_rj(:,ipol%i_velo)
-!!       Toroidal velocity ::       d_rj(:,itor%i_velo)
+!!       Poloidal velocity ::       d_rj(:,ipol%base%i_velo)
+!!       Toroidal velocity ::       d_rj(:,itor%base%i_velo)
 !!       Poloidal magnetic field :: d_rj(:,ipol%base%i_magne)
 !!       Toroidal magnetic field :: d_rj(:,itor%base%i_magne)
 !!
@@ -203,15 +203,15 @@
 !      real(kind = kreal), parameter :: A_light = 0.1d0
 !
 !
-      if(ipol%i_velo .eq. izero) return
+      if(ipol%base%i_velo .eq. izero) return
 !
       pi = four * atan(one)
       shell = sph_bc_U%r_CMB(0) - sph_bc_U%r_ICB(0)
 !
 !$omp parallel do
       do inod = 1, nnod_rj(sph)
-        rj_fld%d_fld(inod,ipol%i_velo) = zero
-        rj_fld%d_fld(inod,itor%i_velo) = zero
+        rj_fld%d_fld(inod,ipol%base%i_velo) = zero
+        rj_fld%d_fld(inod,itor%base%i_velo) = zero
       end do
 !$omp end parallel do
 !
@@ -220,7 +220,7 @@
 !        do k = sph_bc_U%kr_in+1, sph_bc_U%kr_out
 !          rr = radius_1d_rj_r(sph, k)
 !          inod = local_sph_data_address(sph, k, jj)
-!          rj_fld%d_fld(inod,itor%i_velo) = half * rr*rr
+!          rj_fld%d_fld(inod,itor%base%i_velo) = half * rr*rr
 !        end do
 !      end if
 !
@@ -231,7 +231,7 @@
 !          inod = local_sph_data_address(sph, k, jj)
 !          xr = two * radius_1d_rj_r(sph, k)                            &
 !    &         - one * (sph_bc_U%r_CMB(0) + sph_bc_U%r_ICB(0)) / shell
-!          rj_fld%d_fld(inod,itor%i_velo)                               &
+!          rj_fld%d_fld(inod,itor%base%i_velo)                          &
 !    &        = (one-three*xr**2+three*xr**4-xr**6)                     &
 !    &         * A_light * three / (sqrt(two*pi))
 !        end do

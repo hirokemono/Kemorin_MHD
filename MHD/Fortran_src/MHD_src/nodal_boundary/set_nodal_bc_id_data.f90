@@ -79,8 +79,8 @@
 !
       if (fl_prop%iflag_scheme .gt. id_no_evolution) then
         if ( iflag_debug .eq.1) write(*,*)  'set boundary values 4 v'
-        call set_boundary_velo                                          &
-     &     (time, mesh%node, nod_bcs%Vnod_bcs, iphys%i_velo, nod_fld)
+        call set_boundary_velo(time, mesh%node,                         &
+     &      nod_bcs%Vnod_bcs, iphys%base%i_velo, nod_fld)
       end if
 !
       if (ht_prop%iflag_scheme .gt. id_no_evolution) then

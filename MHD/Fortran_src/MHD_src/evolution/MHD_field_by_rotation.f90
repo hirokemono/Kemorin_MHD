@@ -108,7 +108,7 @@
      &        write(*,*) 'cal_vorticity'
           call choose_cal_rotation_sgs(cmt_param%iflag_c_velo,          &
      &       FEM_prm%iflag_velo_supg, FEM_prm%npoint_t_evo_int, dt,     &
-     &       ifld_diff%i_velo, iphys%i_velo, iphys%base%i_vort,         &
+     &       ifld_diff%i_velo, iphys%base%i_velo, iphys%base%i_vort,    &
      &       fluid%istack_ele_fld_smp, mk_MHD%mlump_fl,                 &
      &       SGS_param,  mesh%nod_comm, mesh%node,                      &
      &       mesh%ele, mesh%surf, group%surf_grp,                       &

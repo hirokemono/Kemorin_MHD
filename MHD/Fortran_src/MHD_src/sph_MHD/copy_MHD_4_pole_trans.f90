@@ -56,7 +56,7 @@
 !
 !
       call copy_pole_vec_fld_from_trans(m_folding, sph_rtp, node,       &
-     &    fls_pl(1,bs_trns%i_velo), iphys%i_velo, nod_fld)
+     &    fls_pl(1,bs_trns%base%i_velo), iphys%base%i_velo, nod_fld)
       call copy_pole_vec_fld_from_trans(m_folding, sph_rtp, node,       &
      &    fls_pl(1,bs_trns%base%i_vort), iphys%base%i_vort, nod_fld)
       call copy_pole_vec_fld_from_trans(m_folding, sph_rtp, node,       &

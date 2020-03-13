@@ -99,7 +99,7 @@
 ! -------- loop for shape function for the phsical values
       do k2 = 1, ele%nnod_4_ele
         call vector_phys_2_each_element(node, ele, nod_fld,             &
-     &      k2, iphys_nod%i_velo,  mhd_fem_wk%velo_1)
+     &      k2, iphys_nod%base%i_velo, mhd_fem_wk%velo_1)
         call vector_phys_2_each_element(node, ele, nod_fld,             &
      &      k2, iphys_nod%base%i_magne, fem_wk%vector_1)
 !
@@ -109,7 +109,7 @@
      &      g_FEM%maxtot_int_3d, g_FEM%int_start3, g_FEM%owe3d,         &
      &      jac_3d%ntot_int, num_int, k2, jac_3d%xjac,                  &
      &      jac_3d%an, jac_3d%dnx, mhd_fem_wk%velo_1, fem_wk%vector_1,  &
-     &      d_ele(1,iphys_ele%i_velo), mhd_fem_wk%magne_1,              &
+     &      d_ele(1,iphys_ele%base%i_velo), mhd_fem_wk%magne_1,         &
      &      cd_prop%coef_induct, fem_wk%sk6)
       end do
 !
@@ -164,7 +164,7 @@
 ! -------- loop for shape function for the phsical values
       do k2 = 1, ele%nnod_4_ele
         call vector_phys_2_each_element(node, ele, nod_fld,             &
-     &      k2, iphys_nod%i_velo,  mhd_fem_wk%velo_1)
+     &      k2, iphys_nod%base%i_velo,  mhd_fem_wk%velo_1)
         call vector_phys_2_each_element(node, ele, nod_fld,             &
      &      k2, iphys_nod%base%i_magne, fem_wk%vector_1)
 !
@@ -175,7 +175,7 @@
      &      jac_3d%ntot_int, num_int, k2, dt, jac_3d%xjac,              &
      &      jac_3d%an, jac_3d%dnx, jac_3d%dnx,                          &
      &      mhd_fem_wk%velo_1, fem_wk%vector_1,                         &
-     &      d_ele(1,iphys_ele%i_velo), mhd_fem_wk%magne_1,              &
+     &      d_ele(1,iphys_ele%base%i_velo), mhd_fem_wk%magne_1,         &
      &      d_ele(1,iphys_ele%base%i_magne), cd_prop%coef_induct,       &
      &      fem_wk%sk6)
       end do

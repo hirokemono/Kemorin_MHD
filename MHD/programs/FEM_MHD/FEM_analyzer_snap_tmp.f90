@@ -343,21 +343,21 @@
 !$omp parallel
       if (iphys%SGS_ene_flux%i_reynolds_wk .gt. 0) then
         call cal_phys_dot_product                                       &
-     &     (iphys%i_velo, iphys%div_SGS%i_SGS_m_flux,                   &
+     &     (iphys%base%i_velo, iphys%div_SGS%i_SGS_m_flux,              &
      &      iphys%SGS_ene_flux%i_reynolds_wk, nod_fld)
       end if
 !
       call overwrite_nodal_xyz_2_sph_smp                                &
      &   (mesh%node, nod_fld%ntot_phys,                                 &
-     &    iphys%i_velo, n_vector, nod_fld%d_fld)
+     &    iphys%base%i_velo, n_vector, nod_fld%d_fld)
 !$omp end parallel
 
-      call clear_field_data(nod_fld, n_vector, iphys%i_velo)
+      call clear_field_data(nod_fld, n_vector, iphys%base%i_velo)
 !
 !$omp parallel
       call overwrite_nodal_sph_2_xyz_smp                                &
      &   (mesh%node, nod_fld%ntot_phys,                                 &
-     &    iphys%i_velo, n_vector, nod_fld%d_fld)
+     &    iphys%base%i_velo, n_vector, nod_fld%d_fld)
 !$omp end parallel
 !
       if (iphys%SGS_term%i_SGS_vp_induct .gt. 0) then

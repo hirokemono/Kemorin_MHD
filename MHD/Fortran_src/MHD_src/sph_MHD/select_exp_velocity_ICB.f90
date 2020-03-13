@@ -10,8 +10,8 @@
 !!      subroutine sel_ICB_grad_vp_and_vorticity(sph_rj, r_2nd,         &
 !!     &          sph_bc_U, ICB_Uspec, fdm2_free_ICB, g_sph_rj,         &
 !!     &          is_velo, is_vort, rj_fld)
-!!        Input:    ipol%i_velo, itor%i_velo
-!!        Solution: idpdr%i_velo, 
+!!        Input:    ipol%base%i_velo, itor%base%i_velo
+!!        Solution: idpdr%base%i_velo, 
 !!                  ipol%base%i_vort, itor%base%i_vort, idpdr%base%i_vort
 !!      subroutine sel_ICB_grad_poloidal_moment                         &
 !!     &         (sph_rj, r_2nd, sph_bc_U, ICB_Uspec, fdm2_free_ICB,    &
@@ -22,13 +22,13 @@
 !!      subroutine sel_ICB_sph_vorticity                                &
 !!     &         (sph_rj, r_2nd, sph_bc_U, fdm2_free_ICB, g_sph_rj,     &
 !!     &          is_fld, is_rot, rj_fld)
-!!        Input:    ipol%i_velo, itor%i_velo
+!!        Input:    ipol%base%i_velo, itor%base%i_velo
 !!        Solution: ipol%base%i_vort, itor%base%i_vort, idpdr%base%i_vort
 !!
 !!      subroutine sel_ICB_sph_viscous_diffusion(sph_rj, r_2nd,         &
 !!     &          sph_bc_U, fdm2_free_ICB, g_sph_rj, coef_diffuse,      &
 !!     &          is_velo, it_velo, is_viscous, ids_viscous, rj_fld)
-!!        Input:    ipol%i_velo, itor%i_velo
+!!        Input:    ipol%base%i_velo, itor%base%i_velo
 !!        Solution: ipol%diffusion%i_v_diffuse, 
 !!              itor%diffusion%i_v_diffuse, idpdr%diffusion%i_v_diffuse
 !!      subroutine sel_ICB_sph_vort_diffusion(sph_rj, r_2nd,            &

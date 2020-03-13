@@ -48,7 +48,7 @@
         i_start = fld%istack_component(i-1) + 1
         if(     i_start .eq. iphys%i_filter_velo) then
           call check_missing_field                                      &
-     &       (fld, i_start, iphys%i_velo, velocity%name)
+     &       (fld, i_start, iphys%base%i_velo, velocity%name)
         else if(i_start .eq. iphys%i_filter_vort) then 
           call check_missing_field                                      &
      &       (fld, i_start, iphys%base%i_vort, vorticity%name)

@@ -180,7 +180,7 @@
 !
 !$omp parallel
       call cal_phys_dot_product                                         &
-     &   (iphys%i_velo, iphys%div_SGS%i_SGS_m_flux,                     &
+     &   (iphys%base%i_velo, iphys%div_SGS%i_SGS_m_flux,                &
      &    iphys%SGS_ene_flux%i_reynolds_wk, nod_fld)
 !$omp end parallel
 !

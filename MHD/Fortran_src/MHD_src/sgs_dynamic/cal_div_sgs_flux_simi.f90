@@ -98,7 +98,7 @@
         call int_div_sgs_mf_simi_upwind                                 &
      &     (i_flux, i_vect, FEM_prm%npoint_t_evo_int, dt,               &
      &      node, ele, fluid, nod_fld, jacs%g_FEM, jacs%jac_3d,         &
-     &      rhs_tbl,  ele_fld%ntot_phys, iphys_ele%i_velo,              &
+     &      rhs_tbl,  ele_fld%ntot_phys, iphys_ele%base%i_velo,         &
      &      ele_fld%d_fld, fem_wk, f_nl)
       else
         call int_div_sgs_mf_simi_pg                                     &
@@ -155,7 +155,7 @@
           call int_div_sgs_sf_simi_upw                                  &
      &       (i_flux, i_vect, i_scalar, num_int, dt,                    &
      &        node, ele, fluid, nod_fld, jacs%g_FEM, jacs%jac_3d,       &
-     &        rhs_tbl,  ele_fld%ntot_phys, iphys_ele%i_velo,            &
+     &        rhs_tbl,  ele_fld%ntot_phys, iphys_ele%base%i_velo,       &
      &        ele_fld%d_fld, fem_wk, f_nl)
         else
           call int_div_sgs_sf_simi_pg                                   &
@@ -212,7 +212,7 @@
         call int_div_sgs_idct_simi_upw                                  &
      &     (i_flux, i_v, i_b, FEM_prm%npoint_t_evo_int, dt,             &
      &      node, ele, conduct, nod_fld, jacs%g_FEM, jacs%jac_3d,       &
-     &      rhs_tbl, ele_fld%ntot_phys, iphys_ele%i_velo,               &
+     &      rhs_tbl, ele_fld%ntot_phys, iphys_ele%base%i_velo,          &
      &      ele_fld%d_fld, fem_wk, f_nl)
       else
         call int_div_sgs_idct_simi_pg                                   &

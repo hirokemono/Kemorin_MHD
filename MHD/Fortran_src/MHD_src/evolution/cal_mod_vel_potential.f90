@@ -138,12 +138,12 @@
 !
       call int_vol_fractional_div_ele                                   &
      &   (SGS_param%ifilter_final, fluid%istack_ele_fld_smp,            &
-     &    FEM_prm%npoint_poisson_int, iphys%i_velo, iak_diff_v,         &
+     &    FEM_prm%npoint_poisson_int, iphys%base%i_velo, iak_diff_v,    &
      &    node, ele, nod_fld, jacs%g_FEM, jacs%jac_3d, jacs%jac_3d_l,   &
      &    rhs_tbl, FEM_elens, diff_coefs, fem_wk, f_l)
 !
       call int_surf_normal_vector                                       &
-     &   (iphys%i_velo, FEM_prm%npoint_poisson_int,                     &
+     &   (iphys%base%i_velo, FEM_prm%npoint_poisson_int,                &
      &    Psf_bcs%wall, Psf_bcs%sph_in, Psf_bcs%sph_out,                &
      &    node, ele, surf, sf_grp, nod_fld, jacs%g_FEM,                 &
      &    jacs%jac_sf_grp_l, rhs_tbl, fem_wk, surf_wk, f_l)
@@ -155,7 +155,7 @@
 !     &      FEM_prm%npoint_poisson_int, Vsf_bcs%sgs%nmax_sf_dat,       &
 !     &      Vsf_bcs%sgs%ngrp_sf_dat, Vsf_bcs%sgs%id_grp_sf_dat,        &
 !     &      SGS_param%ifilter_final, diff_coefs%num_field, iak_diff_v, &
-!     &      diff_coefs%ak,  iphys%i_velo, fem_wk, surf_wk, f_l)
+!     &      diff_coefs%ak, iphys%base%i_velo, fem_wk, surf_wk, f_l)
 !      end if
 !
 !   set boundary condition for wall

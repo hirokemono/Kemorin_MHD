@@ -59,10 +59,10 @@
      &     .or. cd_prop%iflag_Bevo_scheme .gt. id_no_evolution          &
      &     .or. ht_prop%iflag_scheme .gt. id_no_evolution               &
      &     .or. cp_prop%iflag_scheme .gt. id_no_evolution) then
-        call add_field_name_4_sph_trns(ipol%i_velo,                     &
+        call add_field_name_4_sph_trns(ipol%base%i_velo,                &
      &      velocity%name, velocity%n_comp,                             &
-     &      ipol%i_velo, itor%i_velo, iphys%i_velo,                     &
-     &      b_trns%i_velo, trns_back)
+     &      ipol%base%i_velo, itor%base%i_velo, iphys%base%i_velo,      &
+     &      b_trns%base%i_velo, trns_back)
       end if
 !   vorticity flag
       if(       fl_prop%iflag_scheme .gt. id_no_evolution) then

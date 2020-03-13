@@ -121,7 +121,7 @@
 !
       if (fl_prop%iflag_scheme .gt. id_no_evolution) then
         msg = 'time integration for momentum equation needs'
-        call check_missing_field_w_msg(fld, msg, iphys%i_velo)
+        call check_missing_field_w_msg(fld, msg, iphys%base%i_velo)
         call check_missing_field_w_msg(fld, msg, iphys%base%i_press)
       end if
 !
@@ -132,26 +132,26 @@
 !
       if (ht_prop%iflag_scheme .gt. id_no_evolution) then
         msg = 'Time integration for heat equation needs'
-        call check_missing_field_w_msg(fld, msg, iphys%i_velo)
+        call check_missing_field_w_msg(fld, msg, iphys%base%i_velo)
         call check_missing_field_w_msg(fld, msg, iphys%base%i_temp)
       end if
 !
       if (cp_prop%iflag_scheme .ne. id_no_evolution) then
         msg =  'Time integration for composition equation needs'
-        call check_missing_field_w_msg(fld, msg, iphys%i_velo)
+        call check_missing_field_w_msg(fld, msg, iphys%base%i_velo)
         call check_missing_field_w_msg(fld, msg, iphys%base%i_light)
       end if
 !
       if (cd_prop%iflag_Bevo_scheme .ne. id_no_evolution) then
         msg = 'Time integration for magnetic induction equation needs'
         call check_missing_field_w_msg(fld, msg, iphys%base%i_magne)
-        call check_missing_field_w_msg(fld, msg, iphys%i_velo)
+        call check_missing_field_w_msg(fld, msg, iphys%base%i_velo)
       end if
 !
       if (cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
         msg = 'Time integration for vector potential induction needs'
         call check_missing_field_w_msg(fld, msg, iphys%base%i_vecp)
-        call check_missing_field_w_msg(fld, msg, iphys%i_velo)
+        call check_missing_field_w_msg(fld, msg, iphys%base%i_velo)
       end if
 !
 !
@@ -198,7 +198,7 @@
 !
       if (fl_prop%iflag_scheme .gt. id_no_evolution) then
         msg = 'time integration for velocity needs'
-        call check_missing_field_w_msg(fld, msg, iphys%i_velo)
+        call check_missing_field_w_msg(fld, msg, iphys%base%i_velo)
         call check_missing_field_w_msg(fld, msg, iphys%base%i_press)
       end if
 !

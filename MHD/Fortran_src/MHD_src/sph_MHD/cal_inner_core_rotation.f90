@@ -316,7 +316,8 @@
 !
         ratio = radius_1d_rj_r(k)*radius_1d_rj_r(k) * ar_1d_rj(kr_in,2)
 !
-        d_rj(i10c,itor%i_velo) =   ratio * d_rj(i10c_ri,itor%i_velo)
+        d_rj(i10c,itor%base%i_velo)                                     &
+     &           = ratio * d_rj(i10c_ri,itor%base%i_velo)
         d_rj(i10c,ipol%base%i_vort)                                     &
      &           = ratio * d_rj(i10c_ri,ipol%base%i_vort)
         d_rj(i10c,ipol%base%i_vort+1)                                   &

@@ -87,11 +87,11 @@
      &     .or. i_fld .eq. iphys%diff_vector%i_grad_vy                  &
      &     .or. i_fld .eq. iphys%diff_vector%i_grad_vz) then
           if(i_fld .eq. iphys%diff_vector%i_grad_vx) then
-            i_src = iphys%i_velo
+            i_src = iphys%base%i_velo
           else if(i_fld .eq. iphys%diff_vector%i_grad_vy) then
-            i_src = iphys%i_velo + 1
+            i_src = iphys%base%i_velo + 1
           else if(i_fld .eq. iphys%diff_vector%i_grad_vz) then
-            i_src = iphys%i_velo + 2
+            i_src = iphys%base%i_velo + 2
           end if
 !
           if(iflag_debug .ge. iflag_routine_msg)                        &
@@ -253,14 +253,14 @@
       end if
 !
       if (iphys%ene_flux%i_ujb .gt. izero) then
-        call cal_tri_product_4_scalar                                   &
-     &     (iphys%i_velo, iphys%base%i_current, iphys%base%i_magne,     &
+        call cal_tri_product_4_scalar(iphys%base%i_velo,                &
+     &      iphys%base%i_current, iphys%base%i_magne,                   &
      &      iphys%ene_flux%i_ujb, fl_prop%coef_lor, nod_fld)
       end if
 !
       if (iphys%ene_flux%i_nega_ujb .gt. izero) then
-        call cal_tri_product_4_scalar                                   &
-     &     (iphys%i_velo, iphys%base%i_magne, iphys%base%i_current,     &
+        call cal_tri_product_4_scalar(iphys%base%i_velo,                &
+     &      iphys%base%i_magne, iphys%base%i_current,                   &
      &      iphys%ene_flux%i_nega_ujb, fl_prop%coef_lor, nod_fld)
       end if
 !
@@ -279,8 +279,8 @@
      &             write(*,*) 'lead  ', trim(buoyancy_flux%name)
         call sel_buoyancy_flux(node,                                    &
      &      fl_prop%i_grav, fl_prop%coef_buo, fl_prop%grav,             &
-     &      iphys%i_velo, iphys%base%i_temp, iphys%ene_flux%i_buo_gen,  &
-     &      nod_fld)
+     &      iphys%base%i_velo, iphys%base%i_temp,                       &
+     &      iphys%ene_flux%i_buo_gen, nod_fld)
       end if
 !
       if (iphys%ene_flux%i_c_buo_gen .gt. izero) then
@@ -288,7 +288,7 @@
      &                trim(composite_buoyancy_flux%name)
         call sel_buoyancy_flux(node,                                    &
      &      fl_prop%i_grav, fl_prop%coef_comp_buo, fl_prop%grav,        &
-     &      iphys%i_velo, iphys%base%i_light,                           &
+     &      iphys%base%i_velo, iphys%base%i_light,                      &
      &      iphys%ene_flux%i_c_buo_gen, nod_fld)
       end if
 !
@@ -297,7 +297,7 @@
      &      write(*,*) 'lead  ', trim(filtered_buoyancy_flux%name)
         call sel_buoyancy_flux(node,                                    &
      &      fl_prop%i_grav, fl_prop%coef_buo, fl_prop%grav,             &
-     &      iphys%i_velo, iphys%i_filter_temp,                          &
+     &      iphys%base%i_velo, iphys%i_filter_temp,                     &
      &      iphys%eflux_by_filter%i_buo_gen, nod_fld)
       end if
 !
@@ -307,7 +307,7 @@
      &      write(*,*) 'lead  ', trim(filtered_comp_buoyancy_flux%name)
         call sel_buoyancy_flux(node,                                    &
      &      fl_prop%i_grav, fl_prop%coef_comp_buo, fl_prop%grav,        &
-     &      iphys%i_velo, iphys%i_filter_comp,                          &
+     &      iphys%base%i_velo, iphys%i_filter_comp,                     &
      &      iphys%eflux_by_filter%i_c_buo_gen, nod_fld)
       end if
 !
@@ -332,7 +332,7 @@
 !
       if (iphys%ene_flux%i_vis_e_diffuse .gt. izero) then
         call cal_phys_dot_product                                       &
-     &     (iphys%i_velo, iphys%diffusion%i_v_diffuse,                  &
+     &     (iphys%base%i_velo, iphys%diffusion%i_v_diffuse,             &
      &      iphys%ene_flux%i_vis_e_diffuse, nod_fld)
       end if
 !
@@ -343,7 +343,8 @@
       end if
 !
       if (iphys%ene_flux%i_m_tension_wk .gt. izero) then
-        call cal_phys_dot_product(iphys%i_velo, iphys%base%i_magne,     &
+        call cal_phys_dot_product                                       &
+     &     (iphys%base%i_velo, iphys%base%i_magne,                      &
      &      iphys%ene_flux%i_m_tension_wk, nod_fld)
       end if
 !

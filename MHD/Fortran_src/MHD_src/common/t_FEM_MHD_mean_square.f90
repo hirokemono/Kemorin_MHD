@@ -166,7 +166,7 @@
      &                   / fem_sq%msq%rms_global(fem_sq%i_msq%ivol)
        end do
        do nd = 1, fem_sq%msq%num_rms - 1
-           if (nd .eq. fem_sq%i_rms%i_velo                              &
+           if (nd .eq. fem_sq%i_rms%base%i_velo                         &
      &    .or. nd .eq. fem_sq%i_rms%base%i_magne                        &
      &    .or. nd .eq. fem_sq%i_msq%ir_me_ic                            &
      &    .or. nd .eq. fem_sq%i_rms%base%i_vort                         &

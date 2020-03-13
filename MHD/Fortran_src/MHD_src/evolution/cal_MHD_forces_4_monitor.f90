@@ -99,8 +99,8 @@
         if(iflag_debug.gt.0) write(*,*) 'lead  ', trim(heat_flux%name)
 !$omp parallel
         call cal_phys_scalar_product_vector                             &
-     &     (iphys%i_velo, iphys%base%i_temp, iphys%forces%i_h_flux,     &
-     &      nod_fld)
+     &     (iphys%base%i_velo, iphys%base%i_temp,                       &
+     &      iphys%forces%i_h_flux, nod_fld)
 !$omp end parallel
 !
       else if (iphys%forces%i_ph_flux .gt. izero) then
@@ -108,7 +108,7 @@
      &                      trim(pert_heat_flux%name)
 !$omp parallel
         call cal_phys_scalar_product_vector                             &
-     &     (iphys%i_velo, iphys%base%i_per_temp,                        &
+     &     (iphys%base%i_velo, iphys%base%i_per_temp,                   &
      &      iphys%forces%i_ph_flux, nod_fld)
 !$omp end parallel
 !
@@ -117,7 +117,7 @@
      &                       trim(composite_flux%name)
 !$omp parallel
         call cal_phys_scalar_product_vector                             &
-     &     (iphys%i_velo, iphys%base%i_light,                           &
+     &     (iphys%base%i_velo, iphys%base%i_light,                      &
      &      iphys%forces%i_c_flux, nod_fld)
 !$omp end parallel
 !
@@ -126,7 +126,7 @@
      &                       trim(pert_comp_flux%name)
 !$omp parallel
         call cal_phys_scalar_product_vector                             &
-     &     (iphys%i_velo, iphys%base%i_per_light,                       &
+     &     (iphys%base%i_velo, iphys%base%i_per_light,                  &
      &      iphys%forces%i_pc_flux, nod_fld)
 !$omp end parallel
 !
@@ -134,7 +134,8 @@
         if(iflag_debug.gt.0) write(*,*) 'lead  ',                       &
      &                                 trim(momentum_flux%name)
         call cal_flux_tensor                                            &
-     &     (iphys%i_velo, iphys%i_velo, iphys%forces%i_m_flux, nod_fld)
+     &     (iphys%base%i_velo, iphys%base%i_velo,                       &
+     &      iphys%forces%i_m_flux, nod_fld)
       else if (iphys%forces%i_maxwell .gt. izero) then
         if(iflag_debug.gt.0) write(*,*) 'lead  ',                       &
      &                                 trim(maxwell_tensor%name)
@@ -145,7 +146,7 @@
         if(iflag_debug.gt.0) write(*,*) 'lead  ',                       &
      &                      trim(induction_tensor%name)
         call cal_induction_tensor                                       &
-     &     (iphys%base%i_magne, iphys%i_velo,                           &
+     &     (iphys%base%i_magne, iphys%base%i_velo,                      &
      &      iphys%forces%i_induct_t, nod_fld)
       else if (iphys%base%i_density .gt. izero) then
         if(iflag_debug.gt.0) write(*,*) 'lead  ', trim(density%name)

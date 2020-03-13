@@ -111,7 +111,7 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      call vector_sph_filter(ipol%i_velo, ipol%i_filter_velo,           &
+      call vector_sph_filter(ipol%base%i_velo, ipol%i_filter_velo,      &
      &    sph_rj, sph_base_f%r_filter, sph_base_f%sph_filter, rj_fld)
 !
       call vector_sph_filter(ipol%base%i_vort, ipol%i_filter_vort,      &
@@ -155,7 +155,8 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      call vector_sph_filter(ipol%i_velo, ipol%wide_filter_fld%i_velo,  &
+      call vector_sph_filter                                            &
+     &   (ipol%base%i_velo, ipol%wide_filter_fld%i_velo,                &
      &    sph_rj, sph_wide_f%r_filter, sph_wide_f%sph_filter, rj_fld)
 !
       call vector_sph_filter                                            &

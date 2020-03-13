@@ -74,7 +74,7 @@
       do i = 1, num_field
 !
         if      ( field_name(i) .eq. velocity%name ) then
-          iphys%i_velo = i0
+          iphys%base%i_velo = i0
         else if ( field_name(i) .eq. vorticity%name ) then
           iphys%base%i_vort = i0
         else if ( field_name(i) .eq. magnetic_field%name ) then

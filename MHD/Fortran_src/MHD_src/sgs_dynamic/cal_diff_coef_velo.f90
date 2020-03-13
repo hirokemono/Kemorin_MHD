@@ -173,10 +173,10 @@
 !   take rotation and gradient of velocity (to iphys%SGS_wk%i_nlg)
 !
       if (iflag_debug.gt.0) write(*,*) 'cal_rotation_in_fluid',         &
-     &                     iphys%SGS_wk%i_nlg, iphys%i_velo
+     &                     iphys%SGS_wk%i_nlg, iphys%base%i_velo
       call choose_cal_rotation                                          &
      &   (FEM_prm%iflag_velo_supg, FEM_prm%npoint_t_evo_int, dt,        &
-     &    iphys%i_velo, iphys%SGS_wk%i_nlg,                             &
+     &    iphys%base%i_velo, iphys%SGS_wk%i_nlg,                        &
      &    fluid%istack_ele_fld_smp, mlump_fl, nod_comm, node, ele,      &
      &    iphys_ele, ele_fld, jacs%g_FEM, jacs%jac_3d,                  &
      &    rhs_tbl, fem_wk, f_nl, nod_fld)
@@ -239,7 +239,7 @@
      &    mlump_fl, node, ele, surf, sf_grp,                            &
      &    jacs%g_FEM, jacs%jac_3d, jacs%jac_sf_grp,                     &
      &    rhs_tbl, FEM_elen, Vsf_bcs%sgs, ifilter_2delta,               &
-     &    iphys%SGS_wk%i_nlg, iphys%i_velo, fem_wk, surf_wk,            &
+     &    iphys%SGS_wk%i_nlg, iphys%base%i_velo, fem_wk, surf_wk,       &
      &    f_l, f_nl, nod_fld)
       call cal_grad_commute                                             &
      &   (FEM_prm%npoint_t_evo_int, fluid%istack_ele_fld_smp,           &

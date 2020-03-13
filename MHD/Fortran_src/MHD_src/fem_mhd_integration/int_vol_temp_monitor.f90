@@ -215,7 +215,7 @@
      &       g_FEM, jac_3d, rhs_tbl, FEM_elens, diff_coefs,             &
      &       fluid%istack_ele_fld_smp, num_int, dt,                     &
      &       i_velo, i_field, i_SGS_flux, ifilter_final, iak_diff_flux, &
-     &       ele_fld%ntot_phys, iphys_ele%i_velo, ele_fld%d_fld,        &
+     &       ele_fld%ntot_phys, iphys_ele%base%i_velo, ele_fld%d_fld,   &
      &       property%coef_nega_adv, fem_wk, mhd_fem_wk, f_nl)
         else
           call int_vol_div_SGS_vec_flux(node, ele, nod_fld,             &
@@ -229,7 +229,7 @@
           call int_vol_div_w_const_upw                                  &
      &       (node, ele, g_FEM, jac_3d, rhs_tbl, nod_fld,               &
               fluid%istack_ele_fld_smp, num_int, dt,                    &
-     &        i_SGS_flux, ele_fld%ntot_phys, iphys_ele%i_velo,          &
+     &        i_SGS_flux, ele_fld%ntot_phys, iphys_ele%base%i_velo,     &
      &        ele_fld%d_fld, property%coef_nega_adv, fem_wk, f_nl)
         else
           call int_vol_div_w_const                                      &

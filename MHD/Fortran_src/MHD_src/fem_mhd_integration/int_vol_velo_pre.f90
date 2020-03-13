@@ -134,7 +134,7 @@
 !
         if (fl_prop%coef_nega_v .ne. 0.0d0) then
           call vector_cst_phys_2_each_ele(node, ele, nod_fld, k2,       &
-     &        iphys%i_velo, fl_prop%coef_nega_v, mhd_fem_wk%velo_1)
+     &       iphys%base%i_velo, fl_prop%coef_nega_v, mhd_fem_wk%velo_1)
 !
 !  -----  Inertia including Reynolds stress by rotation form --------
 !
@@ -144,7 +144,7 @@
      &        .and. cmt_param%iflag_c_mf .eq. id_SGS_commute_ON)        &
      &       then
               call SGS_const_tensor_each_ele(node, ele, nod_fld, k2,    &
-     &            iphys%i_velo, iphys%SGS_term%i_SGS_m_flux,            &
+     &            iphys%base%i_velo, iphys%SGS_term%i_SGS_m_flux,       &
      &            fl_prop%coef_nega_v, mhd_fem_wk%sgs_t1,               &
      &            fem_wk%tensor_1)
 !
@@ -187,7 +187,7 @@
             if(SGS_param%iflag_SGS_m_flux .ne. id_SGS_none              &
      &        .and. cmt_param%iflag_c_mf .eq. id_SGS_commute_ON) then
               call SGS_const_tensor_each_ele(node, ele, nod_fld, k2,    &
-     &            iphys%i_velo, iphys%SGS_term%i_SGS_m_flux,            &
+     &            iphys%base%i_velo, iphys%SGS_term%i_SGS_m_flux,       &
      &            fl_prop%coef_nega_v, mhd_fem_wk%sgs_t1,               &
      &            fem_wk%tensor_1)
               call fem_skv_vec_inertia_modsgs_pg                        &
@@ -196,7 +196,7 @@
      &            diff_coefs%num_field, iak_diff_mf, diff_coefs%ak,     &
      &            ele, g_FEM, jac_3d, FEM_elens, mhd_fem_wk%velo_1,     &
      &            mhd_fem_wk%sgs_t1, fem_wk%tensor_1,                   &
-     &            d_ele(1,iphys_ele%i_velo), fem_wk%sk6)
+     &            d_ele(1,iphys_ele%base%i_velo), fem_wk%sk6)
             else if(SGS_param%iflag_SGS_m_flux .ne. id_SGS_none) then
               call tensor_cst_phys_2_each_ele(node, ele, nod_fld,       &
      &            k2, iphys%SGS_term%i_SGS_m_flux, fl_prop%coef_nega_v, &
@@ -204,7 +204,7 @@
               call fem_skv_vec_inertia_sgs_pg                           &
      &           (fluid%istack_ele_fld_smp, num_int, k2,                &
      &            ele, g_FEM, jac_3d, mhd_fem_wk%velo_1,                &
-     &            mhd_fem_wk%sgs_t1, d_ele(1,iphys_ele%i_velo),         &
+     &            mhd_fem_wk%sgs_t1, d_ele(1,iphys_ele%base%i_velo),    &
      &            fem_wk%sk6)
             else
               call fem_skv_vector_inertia                               &
@@ -213,7 +213,7 @@
      &            g_FEM%max_int_point, g_FEM%maxtot_int_3d,             &
      &            g_FEM%int_start3, g_FEM%owe3d, num_int, k2,           &
      &            jac_3d%ntot_int, jac_3d%xjac, jac_3d%an, jac_3d%dnx,  &
-     &            mhd_fem_wk%velo_1, d_ele(1,iphys_ele%i_velo),         &
+     &            mhd_fem_wk%velo_1, d_ele(1,iphys_ele%base%i_velo),    &
      &            fem_wk%sk6)
             end if
           end if
@@ -288,8 +288,8 @@
 !  --------  set coriolis force
 !
         if (fl_prop%iflag_4_coriolis .eq. id_FORCE_ele_int ) then
-          call vector_cst_phys_2_each_ele(node, ele, nod_fld,           &
-     &        k2, iphys%i_velo, fl_prop%coef_cor, mhd_fem_wk%velo_1)
+          call vector_cst_phys_2_each_ele(node, ele, nod_fld, k2,       &
+     &        iphys%base%i_velo, fl_prop%coef_cor, mhd_fem_wk%velo_1)
           call fem_skv_coriolis                                         &
      &       (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,               &
      &        np_smp, fluid%istack_ele_fld_smp, g_FEM%max_int_point,    &
@@ -433,7 +433,7 @@
 !
         if (fl_prop%coef_nega_v .ne. 0.0d0) then
           call vector_cst_phys_2_each_ele(node, ele, nod_fld, k2,       &
-     &        iphys%i_velo, fl_prop%coef_nega_v, mhd_fem_wk%velo_1)
+     &       iphys%base%i_velo, fl_prop%coef_nega_v, mhd_fem_wk%velo_1)
 !
 !  -----  Inertia including Reynolds stress by rotation form --------
 !
@@ -441,7 +441,7 @@
             if(SGS_param%iflag_SGS_m_flux .ne. id_SGS_none              &
      &        .and. cmt_param%iflag_c_mf .eq. id_SGS_commute_ON) then
               call SGS_const_tensor_each_ele(node, ele, nod_fld, k2,    &
-     &            iphys%i_velo, iphys%SGS_term%i_SGS_m_flux,            &
+     &            iphys%base%i_velo, iphys%SGS_term%i_SGS_m_flux,       &
      &            fl_prop%coef_nega_v, mhd_fem_wk%sgs_t1,               &
      &            fem_wk%tensor_1)
 !
@@ -477,7 +477,7 @@
             if(SGS_param%iflag_SGS_m_flux .ne. id_SGS_none              &
      &        .and. cmt_param%iflag_c_mf .eq. id_SGS_commute_ON) then
               call SGS_const_tensor_each_ele(node, ele, nod_fld, k2,    &
-     &            iphys%i_velo, iphys%SGS_term%i_SGS_m_flux,            &
+     &            iphys%base%i_velo, iphys%SGS_term%i_SGS_m_flux,       &
      &            fl_prop%coef_nega_v, mhd_fem_wk%sgs_t1,               &
      &            fem_wk%tensor_1)
               call fem_skv_vec_inertia_msgs_upw                         &
@@ -486,7 +486,7 @@
      &            diff_coefs%num_field, iak_diff_mf, diff_coefs%ak,     &
      &            ele, g_FEM, jac_3d, FEM_elens, mhd_fem_wk%velo_1,     &
      &            mhd_fem_wk%sgs_t1, fem_wk%tensor_1,                   &
-     &            d_ele(1,iphys_ele%i_velo), d_ele(1,ie_upw),           &
+     &            d_ele(1,iphys_ele%base%i_velo), d_ele(1,ie_upw),      &
      &            fem_wk%sk6)
             else if(SGS_param%iflag_SGS_m_flux .ne. id_SGS_none) then
               call tensor_cst_phys_2_each_ele(node, ele, nod_fld,       &
@@ -495,12 +495,12 @@
               call fem_skv_vcl_inertia_sgs_upwind                       &
      &           (fluid%istack_ele_fld_smp, num_int, k2, dt,            &
      &            ele, g_FEM, jac_3d, mhd_fem_wk%velo_1,                &
-     &            mhd_fem_wk%sgs_t1, d_ele(1,iphys_ele%i_velo),         &
+     &            mhd_fem_wk%sgs_t1, d_ele(1,iphys_ele%base%i_velo),    &
      &            d_ele(1,ie_upw), fem_wk%sk6)
             else
               call fem_skv_vector_inertia_upwind                        &
      &           (fluid%istack_ele_fld_smp, num_int, k2, dt,            &
-     &            mhd_fem_wk%velo_1, d_ele(1,iphys_ele%i_velo),         &
+     &            mhd_fem_wk%velo_1, d_ele(1,iphys_ele%base%i_velo),    &
      &            d_ele(1,ie_upw), ele, g_FEM, jac_3d, fem_wk%sk6)
             end if
           end if
@@ -510,7 +510,7 @@
           if ( SGS_param%iflag_SGS_m_flux .ne. id_SGS_none) then
             if (cmt_param%iflag_c_mf .eq. id_SGS_commute_ON) then
               call SGS_const_tensor_each_ele(node, ele, nod_fld, k2,    &
-     &            iphys%i_velo, iphys%SGS_term%i_SGS_m_flux,            &
+     &            iphys%base%i_velo, iphys%SGS_term%i_SGS_m_flux,       &
      &            fl_prop%coef_nega_v, mhd_fem_wk%sgs_t1,               &
      &            fem_wk%tensor_1)
               call fem_skv_div_sgs_tensor_upwind                        &
@@ -600,8 +600,8 @@
 !  --------  set coriolis force
 !
         if (fl_prop%iflag_4_coriolis .eq. id_FORCE_ele_int ) then
-          call vector_cst_phys_2_each_ele(node, ele, nod_fld,           &
-     &        k2, iphys%i_velo, fl_prop%coef_cor, mhd_fem_wk%velo_1)
+          call vector_cst_phys_2_each_ele(node, ele, nod_fld, k2,       &
+     &        iphys%base%i_velo, fl_prop%coef_cor, mhd_fem_wk%velo_1)
           call fem_skv_coriolis_upwind(fluid%istack_ele_fld_smp,        &
      &        num_int, k2, dt, mhd_fem_wk%velo_1, fl_prop%sys_rot,      &
      &        d_ele(1,ie_upw), ele, g_FEM, jac_3d, fem_wk%sk6)

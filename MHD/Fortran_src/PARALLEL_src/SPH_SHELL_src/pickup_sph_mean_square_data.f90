@@ -192,7 +192,7 @@
       do j_fld = 1, picked%num_field_rj
         i_fld = picked%ifield_monitor_rj(j_fld)
         jcou = picked%istack_comp_rj(j_fld-1)
-        if (   i_fld .eq. ipol%i_velo                                   &
+        if (     i_fld .eq. ipol%base%i_velo                            &
      &      .or. i_fld .eq. ipol%base%i_magne                           &
      &      .or. i_fld .eq. ipol%i_filter_velo                          &
      &      .or. i_fld .eq. ipol%i_filter_magne                         &

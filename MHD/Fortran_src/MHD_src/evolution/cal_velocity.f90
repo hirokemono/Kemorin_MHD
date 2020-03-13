@@ -292,7 +292,7 @@
       if (FEM_prm%iflag_rotate_form .eq. id_turn_ON) then
         call cal_sol_pressure_rotate                                    &
      &     (node%numnod, node%istack_internal_smp, nod_fld%ntot_phys,   &
-     &      iphys%i_velo, iphys%base%i_press, nod_fld%d_fld)
+     &      iphys%base%i_velo, iphys%base%i_press, nod_fld%d_fld)
       end if
 !
       end subroutine sel_cal_sol_pressure_rotate

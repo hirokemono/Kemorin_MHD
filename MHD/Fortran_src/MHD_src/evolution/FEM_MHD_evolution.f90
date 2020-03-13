@@ -361,7 +361,7 @@
 !
 !
 !
-      if(iphys%i_velo .ne. 0) then
+      if(iphys%base%i_velo .ne. 0) then
         call update_with_velocity                                       &
      &     (ifld_diff%i_velo, icomp_diff%i_velo, iphys_elediff%i_velo,  &
      &      iphys_elediff%i_filter_velo, time_d%i_time_step, time_d%dt, &

@@ -343,21 +343,21 @@
       end do
 !
 !      call pick_degree_sph_spectr(ltr_half, ipick_degree,              &
-!     &    ithree, ipol%i_velo, sph%sph_rj, rj_fld)
+!     &    ithree, ipol%base%i_velo, sph%sph_rj, rj_fld)
 !      call pick_degree_sph_spectr(ltr_half, ipick_degree,              &
 !     &    ithree, ipol%base%i_magne)
 !      deallocate(ipick_degree, sph%sph_rj, rj_fld)
 
       if (my_rank.eq.0) write(*,*) 'delete zonam mean velocity'
       call take_zonal_mean_rj_field                                     &
-     &   (ithree, ipol%i_velo, sph%sph_rj, rj_fld)
+     &   (ithree, ipol%base%i_velo, sph%sph_rj, rj_fld)
       call take_zonal_mean_rj_field                                     &
      &   (ithree, ipol%base%i_vort, sph%sph_rj, rj_fld)
       if (my_rank.eq.0) write(*,*) 'delete zonam mean toroidal'
       call delete_zonal_mean_rj_field                                   &
-     &   (ione, ipol%i_velo, sph%sph_rj, rj_fld)
+     &   (ione, ipol%base%i_velo, sph%sph_rj, rj_fld)
       call delete_zonal_mean_rj_field                                   &
-     &   (ione, idpdr%i_velo, sph%sph_rj, rj_fld)
+     &   (ione, idpdr%base%i_velo, sph%sph_rj, rj_fld)
       call delete_zonal_mean_rj_field                                   &
      &   (ione, itor%base%i_vort, sph%sph_rj, rj_fld)
 !

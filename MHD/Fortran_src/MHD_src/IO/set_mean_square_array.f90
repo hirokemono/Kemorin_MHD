@@ -117,8 +117,9 @@
 !
           if(check_base_vector(field_name)) then
             if(field_name .eq. velocity%name) then
-              call set_rms_address(field_name, num_comps, iphys%i_velo, &
-     &            i_rms%i_velo, j_ave%i_velo, msq_list)
+              call set_rms_address                                      &
+     &           (field_name, num_comps, iphys%base%i_velo,             &
+     &            i_rms%base%i_velo, j_ave%base%i_velo, msq_list)
 !
               i_rms%grad_fld%i_div_v = msq_list%numrms + 1
               j_ave%grad_fld%i_div_v = msq_list%numave + 1
@@ -340,7 +341,7 @@
         else
           if ( field_name .eq. velocity%name) then
             call set_rms_address                                        &
-     &         (e_hd_div_v, n_scalar, iphys%i_velo,                     &
+     &         (e_hd_div_v, n_scalar, iphys%base%i_velo,                &
      &          i_rms%grad_fld%i_div_v, j_ave%grad_fld%i_div_v,         &
      &          msq_list)
           else if ( field_name .eq. magnetic_field%name ) then

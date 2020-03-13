@@ -117,14 +117,14 @@
         call int_vol_scalar_inertia_upw(node, ele,                      &
      &      fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,     &
      &      nod_fld, fluid%istack_ele_fld_smp, num_int, dt, i_scalar,   &
-     &      ele_fld%ntot_phys, iphys_ele%i_velo, iphys_ele%i_velo,      &
-     &      ele_fld%d_fld, property%coef_nega_adv,                      &
-     &      rhs_mat%fem_wk, rhs_mat%f_nl)
+     &      ele_fld%ntot_phys, iphys_ele%base%i_velo,                   &
+     &      iphys_ele%base%i_velo, ele_fld%d_fld,                       &
+     &      property%coef_nega_adv, rhs_mat%fem_wk, rhs_mat%f_nl)
       else
         call int_vol_scalar_inertia (node, ele,                         &
      &      fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,     &
      &      nod_fld, fluid%istack_ele_fld_smp, num_int, i_scalar,       &
-     &      ele_fld%ntot_phys, iphys_ele%i_velo, ele_fld%d_fld,         &
+     &      ele_fld%ntot_phys, iphys_ele%base%i_velo, ele_fld%d_fld,    &
      &      property%coef_nega_adv, rhs_mat%fem_wk, rhs_mat%f_nl)
       end if
 !
@@ -192,7 +192,7 @@
         call int_vol_div_w_const_upw(node, ele,                         &
      &      fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,     &
      &      nod_fld, fluid%istack_ele_fld_smp, num_int, dt,             &
-     &      i_vector, ele_fld%ntot_phys, iphys_ele%i_velo,              &
+     &      i_vector, ele_fld%ntot_phys, iphys_ele%base%i_velo,         &
      &      ele_fld%d_fld, property%coef_nega_adv,                      &
      &      rhs_mat%fem_wk, rhs_mat%f_nl)
       end if

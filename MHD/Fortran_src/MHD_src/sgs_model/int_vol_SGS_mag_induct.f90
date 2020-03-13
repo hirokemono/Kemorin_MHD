@@ -90,7 +90,7 @@
 ! -------- loop for shape function for the phsical values
       do k2 = 1, ele%nnod_4_ele
         call SGS_const_induct_each_ele(node, ele, nod_fld, k2,          &
-     &      iphys%base%i_magne, iphys%i_velo,                           &
+     &      iphys%base%i_magne, iphys%base%i_velo,                      &
      &      iphys%SGS_term%i_SGS_induct_t,                              &
      &      coef_induct, mhd_fem_wk%sgs_v1, fem_wk%vector_1)
         call fem_skv_div_sgs_asym_tsr                                   &
@@ -147,7 +147,7 @@
 ! -------- loop for shape function for the phsical values
       do k2 = 1, ele%nnod_4_ele
         call SGS_const_induct_each_ele(node, ele, nod_fld, k2,          &
-     &      iphys%base%i_magne, iphys%i_velo,                           &
+     &      iphys%base%i_magne, iphys%base%i_velo,                      &
      &      iphys%SGS_term%i_SGS_induct_t,                              &
      &      coef_induct, mhd_fem_wk%sgs_v1, fem_wk%vector_1)
         call fem_skv_div_sgs_asym_t_upwind                              &

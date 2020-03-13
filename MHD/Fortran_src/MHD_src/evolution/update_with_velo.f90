@@ -106,12 +106,12 @@
 !
       iflag_dmc = dynamic_SGS_flag(i_step, SGS_par)
 !
-      if (iphys_ele%i_velo .ne. 0) then
+      if (iphys_ele%base%i_velo .ne. 0) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &                 write(*,*) 'velocity_on_element'
         call vector_on_element_1st(mesh%node, mesh%ele, fem_int%jcs,    &
      &      fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,         &
-     &      iphys%i_velo, nod_fld, iphys_ele%i_velo, ele_fld)
+     &      iphys%base%i_velo, nod_fld, iphys_ele%base%i_velo, ele_fld)
       end if
 !
       if( FEM_prm%iflag_rotate_form .eq. id_turn_ON                     &
@@ -120,7 +120,7 @@
      &                 write(*,*) 'vorticity_on_element'
         call rotation_on_element_1st(mesh%node, mesh%ele, fem_int%jcs,  &
      &      fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,         &
-     &      iphys%i_velo, nod_fld, iphys_ele%base%i_vort, ele_fld)
+     &      iphys%base%i_velo, nod_fld, iphys_ele%base%i_vort, ele_fld)
       end if
 !
 !   required field for explicit filtering
@@ -139,9 +139,9 @@
         if (iflag2 .eq. 1) then
           if(iflag_debug .ge. iflag_routine_msg)                        &
      &      write(*,*) 'cal_filtered_vector', iphys%i_filter_velo
-          call cal_filtered_vector_whole                                &
-     &       (SGS_par%filter_p, mesh%nod_comm, mesh%node,               &
-     &        FEM_filters%filtering, iphys%i_filter_velo, iphys%i_velo, &
+          call cal_filtered_vector_whole(SGS_par%filter_p,              &
+     &        mesh%nod_comm, mesh%node, FEM_filters%filtering,          &
+     &        iphys%i_filter_velo, iphys%base%i_velo,                   &
      &        FEM_SGS_wk%wk_filter, nod_fld)
           nod_fld%iflag_update(iphys%i_filter_velo  ) = 1
           nod_fld%iflag_update(iphys%i_filter_velo+1) = 1
@@ -204,7 +204,7 @@
      &                 write(*,*) 'diff_velocity_on_ele'
            call sel_int_diff_vector_on_ele                              &
      &        (FEM_prm%npoint_t_evo_int, fluid%istack_ele_fld_smp,      &
-     &        iphys%i_velo, ie_dvx,mesh%node, mesh%ele, nod_fld,        &
+     &        iphys%base%i_velo, ie_dvx,mesh%node, mesh%ele, nod_fld,   &
      &        fem_int%jcs, mhd_fem_wk)
          end if
        end if

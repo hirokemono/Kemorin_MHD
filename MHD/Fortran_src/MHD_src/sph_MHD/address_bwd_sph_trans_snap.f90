@@ -45,11 +45,11 @@
       trns_back%nfield = 0
       call alloc_sph_trns_field_name(trns_back)
 !
-!      if(b_trns%i_velo .eq. 0) then
+!      if(b_trns%base%i_velo .eq. 0) then
       call add_field_name_4_sph_trns_snap                               &
      &   (velocity%name, velocity%n_comp,                               &
-     &    ipol%i_velo, itor%i_velo, iphys%i_velo,                       &
-     &    b_trns%i_velo, trns_back)
+     &    ipol%base%i_velo, itor%base%i_velo, iphys%base%i_velo,        &
+     &    b_trns%base%i_velo, trns_back)
 !      end if
 !      if(b_trns%base%i_vort .eq. 0) then
       call add_field_name_4_sph_trns_snap                               &

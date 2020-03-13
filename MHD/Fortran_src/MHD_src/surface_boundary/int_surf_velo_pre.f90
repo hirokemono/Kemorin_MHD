@@ -104,7 +104,8 @@
           call int_sf_skv_sgs_div_t_flux(node, ele, surf, sf_grp,       &
      &        nod_fld, g_FEM, jac_sf_grp, rhs_tbl, FEM_elens,           &
      &        Vsf_bcs%sgs, num_int, SGS_param%ifilter_final,            &
-     &        iphys%SGS_term%i_SGS_m_flux, iphys%i_velo, iphys%i_velo,  &
+     &        iphys%SGS_term%i_SGS_m_flux,                              &
+     &        iphys%base%i_velo, iphys%base%i_velo,                     &
      &        diff_coefs%num_field, iak_diff_mf, diff_coefs%ak,         &
      &        fl_prop%coef_velo, fem_wk, surf_wk, f_nl)
         end if
@@ -130,12 +131,12 @@
      &      nod_fld, g_FEM, jac_sf_grp, rhs_tbl, num_int,               &
      &      Vsf_bcs%free_sph_in%ngrp_sf_dat,                            &
      &      Vsf_bcs%free_sph_in%id_grp_sf_dat,                          &
-     &      iphys%i_velo, ak_d_velo, fem_wk, surf_wk, f_l)
+     &      iphys%base%i_velo, ak_d_velo, fem_wk, surf_wk, f_l)
         call int_free_slip_surf_sph_out(node, ele, surf, sf_grp,        &
      &      nod_fld, g_FEM, jac_sf_grp, rhs_tbl, num_int,               &
      &      Vsf_bcs%free_sph_out%ngrp_sf_dat,                           &
      &      Vsf_bcs%free_sph_out%id_grp_sf_dat,                         &
-     &      iphys%i_velo, ak_d_velo, fem_wk, surf_wk, f_l)
+     &      iphys%base%i_velo, ak_d_velo, fem_wk, surf_wk, f_l)
 !
       end subroutine int_surf_velo_pre_ele
 !
@@ -180,7 +181,8 @@
           call int_sf_skv_sgs_div_t_flux(node, ele, surf, sf_grp,       &
      &        nod_fld, g_FEM, jac_sf_grp, rhs_tbl, FEM_elens,           &
      &        Vsf_bcs%sgs, num_int, SGS_param%ifilter_final,            &
-     &        iphys%SGS_term%i_SGS_m_flux, iphys%i_velo, iphys%i_velo,  &
+     &        iphys%SGS_term%i_SGS_m_flux,                              &
+     &        iphys%base%i_velo, iphys%base%i_velo,                     &
      &        diff_coefs%num_field, iak_diff_mf, diff_coefs%ak,         &
      &        fl_prop%coef_velo, fem_wk, surf_wk, f_nl)
         end if
@@ -207,12 +209,12 @@
      &      nod_fld, g_FEM, jac_sf_grp, rhs_tbl, num_int,               &
      &      Vsf_bcs%free_sph_in%ngrp_sf_dat,                            &
      &      Vsf_bcs%free_sph_in%id_grp_sf_dat,                          &
-     &      iphys%i_velo, ak_d_velo, fem_wk, surf_wk, f_l)
+     &      iphys%base%i_velo, ak_d_velo, fem_wk, surf_wk, f_l)
         call int_free_slip_surf_sph_out(node, ele, surf, sf_grp,        &
      &      nod_fld, g_FEM, jac_sf_grp, rhs_tbl, num_int,               &
      &      Vsf_bcs%free_sph_out%ngrp_sf_dat,                           &
      &      Vsf_bcs%free_sph_out%id_grp_sf_dat,                         &
-     &      iphys%i_velo, ak_d_velo, fem_wk, surf_wk, f_l)
+     &      iphys%base%i_velo, ak_d_velo, fem_wk, surf_wk, f_l)
       end if
 !
       end subroutine int_surf_velo_monitor

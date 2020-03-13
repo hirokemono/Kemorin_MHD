@@ -100,7 +100,8 @@
 !     set normal velocity
       call set_normal_velocity                                          &
      &   (group%surf_grp, group%surf_nod_grp, MHD_prop%fl_prop,         &
-     &    FEM_MHD_BCs%surf_bcs%Vsf_bcs%normal, iphys%i_velo, nod_fld)
+     &    FEM_MHD_BCs%surf_bcs%Vsf_bcs%normal, iphys%base%i_velo,       &
+     &    nod_fld)
 !
       end subroutine set_boundary_data
 !

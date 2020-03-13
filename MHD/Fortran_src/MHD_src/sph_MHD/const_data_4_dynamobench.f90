@@ -88,7 +88,7 @@
       if(sph_MHD_bc%sph_bc_U%iflag_icb .eq. iflag_rotatable_ic) then
         call pick_inner_core_rotation(sph_rj%idx_rj_degree_one,         &
      &      sph_rj%nidx_rj, sph_params%nlayer_ICB, sph_rj%ar_1d_rj,     &
-     &      itor%i_velo, rj_fld%n_point, rj_fld%ntot_phys,              &
+     &      itor%base%i_velo, rj_fld%n_point, rj_fld%ntot_phys,         &
      &      rj_fld%d_fld, bench%rotate_icore)
       end if
 !

@@ -49,8 +49,9 @@
       type(address_each_sph_trans), intent(inout) :: trns_f_ngSGS
 !
 !
-      if(b_trns%i_velo .gt. 0) then
-        call copy_vect_to_grad_vect_rtp(sph%sph_rtp, b_trns%i_velo,     &
+      if(b_trns%base%i_velo .gt. 0) then
+        call copy_vect_to_grad_vect_rtp                                 &
+     &     (sph%sph_rtp, b_trns%base%i_velo,                            &
      &      fn_trns%diff_vector%i_grad_vx,                              &
      &      fn_trns%diff_vector%i_grad_vy,                              &
      &      fn_trns%diff_vector%i_grad_vz,                              &

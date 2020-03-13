@@ -93,7 +93,7 @@
         call cal_cross_prod_w_coef_smp                                  &
      &     (sph_rtp%nnod_rtp, MHD_prop%fl_prop%coef_velo,               &
      &      trns_b_MHD%fld_rtp(1,b_trns%base%i_vort),                   &
-     &      trns_b_MHD%fld_rtp(1,b_trns%i_velo),                        &
+     &      trns_b_MHD%fld_rtp(1,b_trns%base%i_velo),                   &
      &      trns_f_MHD%fld_rtp(1,f_trns%forces%i_m_advect) )
       end if
 !
@@ -110,7 +110,7 @@
       if(f_trns%forces%i_vp_induct .gt. 0) then
         call cal_cross_prod_w_coef_smp                                  &
      &     (sph_rtp%nnod_rtp, MHD_prop%cd_prop%coef_induct,             &
-     &      trns_b_MHD%fld_rtp(1,b_trns%i_velo),                        &
+     &      trns_b_MHD%fld_rtp(1,b_trns%base%i_velo),                   &
      &      trns_b_MHD%fld_rtp(1,b_trns%base%i_magne),                  &
      &      trns_f_MHD%fld_rtp(1,f_trns%forces%i_vp_induct) )
       end if
@@ -119,7 +119,7 @@
       if(f_trns%forces%i_h_flux .gt. 0) then
         call cal_vec_scalar_prod_w_coef_smp                             &
      &     (sph_rtp%nnod_rtp, MHD_prop%ht_prop%coef_advect,             &
-     &      trns_b_MHD%fld_rtp(1,b_trns%i_velo),                        &
+     &      trns_b_MHD%fld_rtp(1,b_trns%base%i_velo),                   &
      &      trns_b_MHD%fld_rtp(1,b_trns%base%i_temp),                   &
      &      trns_f_MHD%fld_rtp(1,f_trns%forces%i_h_flux) )
       end if
@@ -127,7 +127,7 @@
       if(f_trns%forces%i_c_flux .gt. 0) then
         call cal_vec_scalar_prod_w_coef_smp                             &
      &     (sph_rtp%nnod_rtp, MHD_prop%cp_prop%coef_advect,             &
-     &      trns_b_MHD%fld_rtp(1,b_trns%i_velo),                        &
+     &      trns_b_MHD%fld_rtp(1,b_trns%base%i_velo),                   &
      &      trns_b_MHD%fld_rtp(1,b_trns%base%i_light),                  &
      &      trns_f_MHD%fld_rtp(1,f_trns%forces%i_c_flux) )
       end if
@@ -135,7 +135,7 @@
       if(f_trns%forces%i_coriolis .gt. 0) then
         call cal_wz_coriolis_rtp(sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,    &
      &      leg%g_colat_rtp, MHD_prop%fl_prop%coef_cor,                 &
-     &      trns_b_MHD%fld_rtp(1,b_trns%i_velo),                        &
+     &      trns_b_MHD%fld_rtp(1,b_trns%base%i_velo),                   &
      &      trns_f_MHD%fld_rtp(1,f_trns%forces%i_coriolis))
       end if
 !$omp end parallel
@@ -163,11 +163,13 @@
         call add_reference_advect_sph(sph_MHD_bc%sph_bc_T,              &
      &      MHD_prop%ht_prop, MHD_prop%ref_param_T,                     &
      &      sph_rj%nidx_rj, sph_rj%ar_1d_rj, leg%g_sph_rj,              &
-     &      ipol%forces%i_h_advect, ipol%i_velo, ref_temp%t_rj, rj_fld)
+     &      ipol%forces%i_h_advect, ipol%base%i_velo,                   &
+     &      ref_temp%t_rj, rj_fld)
         call add_reference_advect_sph(sph_MHD_bc%sph_bc_C,              &
      &      MHD_prop%cp_prop, MHD_prop%ref_param_C,                     &
      &      sph_rj%nidx_rj, sph_rj%ar_1d_rj, leg%g_sph_rj,              &
-     &      ipol%forces%i_c_advect, ipol%i_velo, ref_comp%t_rj, rj_fld)
+     &      ipol%forces%i_c_advect, ipol%base%i_velo,                   &
+     &      ref_comp%t_rj, rj_fld)
 !
       end subroutine add_ref_advect_sph_MHD
 !

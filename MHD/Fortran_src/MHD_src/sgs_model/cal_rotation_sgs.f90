@@ -185,7 +185,7 @@
      &     (node, ele, jacs%g_FEM, jacs%jac_3d, rhs_tbl, nod_fld,       &
      &      FEM_elens, iele_fsmp_stack, num_int, dt, ifilter_final,     &
      &      diff_coefs%num_field, iak_diff, diff_coefs%ak, i_vector,    &
-     &      ele_fld%ntot_phys, iphys_ele%i_velo, ele_fld%d_fld,         &
+     &      ele_fld%ntot_phys, iphys_ele%base%i_velo, ele_fld%d_fld,    &
      &      fem_wk, f_nl)
       else
         call int_sgs_rotation                                           &

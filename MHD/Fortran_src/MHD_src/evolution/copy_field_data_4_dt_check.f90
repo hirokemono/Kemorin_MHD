@@ -69,9 +69,9 @@
 !
 !
 !
-      if( (iphys%i_chk_mom*iphys%i_velo) .gt. izero) then
+      if( (iphys%i_chk_mom * iphys%base%i_velo) .gt. izero) then
         call copy_vector_component(nod_fld,                             &
-     &      iphys%i_velo, iphys%i_chk_mom)
+     &      iphys%base%i_velo, iphys%i_chk_mom)
       end if
 !
       if( (iphys%i_chk_press * iphys%base%i_press) .gt. izero) then

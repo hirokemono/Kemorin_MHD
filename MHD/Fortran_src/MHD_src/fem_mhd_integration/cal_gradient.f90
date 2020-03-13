@@ -193,7 +193,7 @@
         call int_vol_gradient_upw                                       &
      &     (node, ele, g_FEM, jac_3d, rhs_tbl, nod_fld,                 &
      &      iele_fsmp_stack, num_int, dt, i_scalar,                     &
-     &      ele_fld%ntot_phys, iphys_ele%i_velo, ele_fld%d_fld,         &
+     &      ele_fld%ntot_phys, iphys_ele%base%i_velo, ele_fld%d_fld,    &
      &      fem_wk, f_nl)
       else
         call int_vol_gradient                                           &
@@ -243,7 +243,7 @@
         call int_vol_grad_w_const_upw                                   &
      &     (node, ele, g_FEM, jac_3d, rhs_tbl, nod_fld,                 &
      &      iele_fsmp_stack, num_int, dt, i_scalar,                     &
-     &      ele_fld%ntot_phys, iphys_ele%i_velo, ele_fld%d_fld,         &
+     &      ele_fld%ntot_phys, iphys_ele%base%i_velo, ele_fld%d_fld,    &
      &      const, fem_wk, f_nl)
       else
         call int_vol_grad_w_const                                       &

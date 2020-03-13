@@ -10,7 +10,7 @@
 !!      subroutine const_sph_vorticity(sph_rj, r_2nd, sph_bc_U,         &
 !!     &          fdm2_free_ICB, fdm2_free_CMB, g_sph_rj,               &
 !!     &          is_velo, is_vort, rj_fld)
-!!        Input:    ipol%i_velo, itor%i_velo
+!!        Input:    ipol%base%i_velo, itor%base%i_velo
 !!        Solution: ipol%base%i_vort, itor%base%i_vort, idpdr%base%i_vort
 !!
 !!      subroutine const_sph_current(sph_rj, r_2nd, sph_bc_B, g_sph_rj, &

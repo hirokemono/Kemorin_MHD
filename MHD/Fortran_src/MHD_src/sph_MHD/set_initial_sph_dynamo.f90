@@ -145,7 +145,7 @@
 !
 !
         isig = 400
-        call set_initial_velo_sph(ipol%i_velo,                          &
+        call set_initial_velo_sph(ipol%base%i_velo,                     &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         if(ipol%base%i_temp .gt. 0) then
           call set_ini_reference_temp_sph(ipol%base%i_temp,             &
