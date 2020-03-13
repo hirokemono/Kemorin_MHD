@@ -79,7 +79,7 @@
         if (     icomp_rj .eq. ipol%base%i_velo                         &
      &      .or. icomp_rj .eq. ipol%base%i_magne                        &
      &      .or. icomp_rj .eq. ipol%filter_fld%i_velo                   &
-     &      .or. icomp_rj .eq. ipol%i_filter_magne                      &
+     &      .or. icomp_rj .eq. ipol%filter_fld%i_magne                  &
      &      .or. icomp_rj .eq. ipol%wide_filter_fld%i_velo              &
      &      .or. icomp_rj .eq. ipol%wide_filter_fld%i_magne) then
           call one_mode_mean_sq_to_energy                              &
@@ -126,7 +126,7 @@
         if (     icomp_rj .eq. ipol%base%i_velo                         &
      &      .or. icomp_rj .eq. ipol%base%i_magne                        &
      &      .or. icomp_rj .eq. ipol%filter_fld%i_velo                   &
-     &      .or. icomp_rj .eq. ipol%i_filter_magne                      &
+     &      .or. icomp_rj .eq. ipol%filter_fld%i_magne                  &
      &      .or. icomp_rj .eq. ipol%wide_filter_fld%i_velo              &
      &      .or. icomp_rj .eq. ipol%wide_filter_fld%i_magne) then
           call one_field_mean_sq_to_energy                              &

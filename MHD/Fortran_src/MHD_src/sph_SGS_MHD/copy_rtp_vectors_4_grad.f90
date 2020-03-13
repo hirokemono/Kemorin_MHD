@@ -65,15 +65,17 @@
       end if
       if(bs_trns%i_filter_vecp .gt. 0) then
         call copy_vect_to_grad_vect_rtp(sph%sph_rtp,                    &
-     &      bs_trns%i_filter_vecp, fd_trns%diff_fil_vect%i_grad_ax,     &
+     &      bs_trns%i_filter_vecp,                                      &
+     &      fd_trns%diff_fil_vect%i_grad_ax,                            &
      &      fd_trns%diff_fil_vect%i_grad_ay,                            &
      &      fd_trns%diff_fil_vect%i_grad_az,                            &
      &      trns_b_SGS%ncomp, trns_DYNG%ncomp,                          &
      &      trns_b_SGS%fld_rtp, trns_DYNG%fld_rtp)
       end if
-      if(bs_trns%i_filter_magne .gt. 0) then
+      if(bs_trns%filter_fld%i_magne .gt. 0) then
         call copy_vect_to_grad_vect_rtp(sph%sph_rtp,                    &
-     &      bs_trns%i_filter_magne, fd_trns%diff_fil_vect%i_grad_bx,    &
+     &      bs_trns%filter_fld%i_magne,                                 &
+     &      fd_trns%diff_fil_vect%i_grad_bx,                            &
      &      fd_trns%diff_fil_vect%i_grad_by,                            &
      &      fd_trns%diff_fil_vect%i_grad_bz,                            &
      &      trns_b_SGS%ncomp, trns_DYNG%ncomp,                          &
@@ -81,7 +83,8 @@
       end if
       if(bs_trns%i_filter_current .gt. 0) then
         call copy_vect_to_grad_vect_rtp(sph%sph_rtp,                    &
-     &      bs_trns%i_filter_current, fd_trns%diff_fil_vect%i_grad_jx,  &
+     &      bs_trns%i_filter_current,                                   &
+     &      fd_trns%diff_fil_vect%i_grad_jx,                            &
      &      fd_trns%diff_fil_vect%i_grad_jy,                            &
      &      fd_trns%diff_fil_vect%i_grad_jz,                            &
      &      trns_b_SGS%ncomp, trns_DYNG%ncomp,                          &

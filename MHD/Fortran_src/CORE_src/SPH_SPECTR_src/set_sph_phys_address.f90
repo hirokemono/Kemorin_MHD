@@ -78,8 +78,8 @@
      &    itor%filter_fld%i_vort, idpdr%filter_fld%i_vort)
       call set_vect_sph_address(ipol%i_filter_vecp, itor%i_filter_vecp, &
      &    idpdr%i_filter_vecp)
-      call set_vect_sph_address(ipol%i_filter_magne,                    &
-     &    itor%i_filter_magne, idpdr%i_filter_magne)
+      call set_vect_sph_address(ipol%filter_fld%i_magne,                &
+     &    itor%filter_fld%i_magne, idpdr%filter_fld%i_magne)
       call set_vect_sph_address(ipol%i_filter_current,                  &
      &    itor%i_filter_current, idpdr%i_filter_current)
 !

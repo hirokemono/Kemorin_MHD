@@ -226,40 +226,41 @@
          'flag for magnetic field filtering', iflag2
 !
        if (iflag2.eq.1 .or. iflag2.eq.2 .or. iflag2.eq.3) then
-         if (iphys%i_filter_magne .ne. 0) then
-           if (iflag_debug.gt.0)                                        &
-     &        write(*,*) 'cal_filtered_vector', iphys%i_filter_magne
+         if (iphys%filter_fld%i_magne .ne. 0) then
+           if (iflag_debug.gt.0) write(*,*) 'cal_filtered_vector',      &
+     &                          iphys%filter_fld%i_magne
            call cal_filtered_vector_whole(SGS_par%filter_p,             &
      &         mesh%nod_comm, mesh%node, FEM_filters%filtering,         &
-     &         iphys%i_filter_magne, iphys%base%i_magne,                &
+     &         iphys%filter_fld%i_magne, iphys%base%i_magne,            &
      &         FEM_SGS_wk%wk_filter, nod_fld)
-           nod_fld%iflag_update(iphys%i_filter_magne  ) = 1
-           nod_fld%iflag_update(iphys%i_filter_magne+1) = 1
-           nod_fld%iflag_update(iphys%i_filter_magne+2) = 1
+           nod_fld%iflag_update(iphys%filter_fld%i_magne  ) = 1
+           nod_fld%iflag_update(iphys%filter_fld%i_magne+1) = 1
+           nod_fld%iflag_update(iphys%filter_fld%i_magne+2) = 1
          end if
 !
-         if (iphys_ele%i_filter_magne .ne. 0) then
+         if (iphys_ele%filter_fld%i_magne .ne. 0) then
            if (iflag_debug .ge. iflag_routine_msg) write(*,*)           &
      &                         'filtered_magne_on_ele'
             call vector_on_element_1st                                  &
      &         (mesh%node, mesh%ele, fem_int%jcs,                       &
      &          mesh%ele%istack_ele_smp, FEM_prm%npoint_t_evo_int,      &
-     &          iphys%i_filter_magne, nod_fld,                          &
-     &          iphys_ele%i_filter_magne, ele_fld)
+     &          iphys%filter_fld%i_magne, nod_fld,                      &
+     &          iphys_ele%filter_fld%i_magne, ele_fld)
          end if
 !
          if(iflag2.eq.2 .and. ie_dfbx.ne.0) then
            if (iflag_debug .ge. iflag_routine_msg) write(*,*)           &
      &                         'diff_filter_b_on_ele'
-           call sel_int_diff_vector_on_ele(FEM_prm%npoint_t_evo_int,    &
-     &         mesh%ele%istack_ele_smp, iphys%i_filter_magne, ie_dfbx,  &
+           call sel_int_diff_vector_on_ele                              &
+     &        (FEM_prm%npoint_t_evo_int, mesh%ele%istack_ele_smp,       &
+     &         iphys%filter_fld%i_magne, ie_dfbx,                       &
      &         mesh%node, mesh%ele, nod_fld, fem_int%jcs, mhd_fem_wk)
          end if
 !
          if(iflag2.eq.3 .and. iphys%wide_filter_fld%i_magne.ne.0) then
            call cal_filtered_vector_whole(SGS_par%filter_p,             &
      &          mesh%nod_comm, mesh%node, FEM_filters%wide_filtering,   &
-     &         iphys%wide_filter_fld%i_magne, iphys%i_filter_magne,     &
+     &         iphys%wide_filter_fld%i_magne, iphys%filter_fld%i_magne, &
      &         FEM_SGS_wk%wk_filter, nod_fld)
            nod_fld%iflag_update(iphys%wide_filter_fld%i_magne  ) = 1
            nod_fld%iflag_update(iphys%wide_filter_fld%i_magne+1) = 1

@@ -195,7 +195,7 @@
         if (     i_fld .eq. ipol%base%i_velo                            &
      &      .or. i_fld .eq. ipol%base%i_magne                           &
      &      .or. i_fld .eq. ipol%filter_fld%i_velo                      &
-     &      .or. i_fld .eq. ipol%i_filter_magne                         &
+     &      .or. i_fld .eq. ipol%filter_fld%i_magne                     &
      &      .or. i_fld .eq. ipol%wide_filter_fld%i_velo                 &
      &      .or. i_fld .eq. ipol%wide_filter_fld%i_magne) then
           call one_point_mean_sq_to_energy(rms_out(jcou+1))

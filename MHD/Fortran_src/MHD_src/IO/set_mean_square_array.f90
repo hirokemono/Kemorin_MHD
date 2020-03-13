@@ -98,8 +98,9 @@
             else if(field_name .eq. filter_magne%name) then
               num_comps = num_comps + n_vector + n_scalar
               call set_rms_address                                      &
-     &           (field_name, num_comps, iphys%i_filter_magne,          &
-     &            i_rms%i_filter_magne, j_ave%i_filter_magne, msq_list)
+     &           (field_name, num_comps, iphys%filter_fld%i_magne,      &
+     &            i_rms%filter_fld%i_magne, j_ave%filter_fld%i_magne,   &
+     &            msq_list)
 !
               ifld_msq%ir_me_f_ic =  msq_list%numrms + 1
               ifld_msq%ja_mag_f_ic = msq_list%numave + 1
@@ -361,7 +362,7 @@
      &          i_rms%i_div_filter_v, j_ave%i_div_filter_v, msq_list)
           else if ( field_name .eq. filter_magne%name ) then
             call set_rms_address                                        &
-     &         (e_hd_fil_div_b, n_scalar, iphys%i_filter_magne,         &
+     &         (e_hd_fil_div_b, n_scalar, iphys%filter_fld%i_magne,     &
      &          i_rms%i_div_filter_b, j_ave%i_div_filter_b, msq_list)
           else if ( field_name .eq. filter_vector_potential%name ) then
             call set_rms_address                                        &

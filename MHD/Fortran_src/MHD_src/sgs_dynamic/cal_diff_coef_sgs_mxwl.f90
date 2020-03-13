@@ -119,7 +119,7 @@
       if (iflag_debug.gt.0) write(*,*) 'cal_sgs_filter_maxwell_grad'
       call cal_sgs_m_flux_grad_w_coef                                   &
      &   (ifilter_4delta, icomp_sgs_lor,                                &
-     &    iphys%SGS_wk%i_wd_nlg, iphys%i_filter_magne, ie_dfbx, dt,     &
+     &    iphys%SGS_wk%i_wd_nlg, iphys%filter_fld%i_magne, ie_dfbx, dt, &
      &    FEM_prm, SGS_par%model_p, mesh%nod_comm, mesh%node, mesh%ele, &
      &    fluid, iphys_ele, ele_fld, fem_int%jcs,                       &
      &    FEM_filters%FEM_elens, sgs_coefs, fem_int%rhs_tbl,            &
@@ -129,7 +129,7 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'cal_div_sgs_filter_mxwl_simi'
       call cal_div_sgs_mf_simi(iphys%SGS_wk%i_simi,                     &
-     &    iphys%SGS_wk%i_wd_nlg, iphys%i_filter_magne, dt,              &
+     &    iphys%SGS_wk%i_wd_nlg, iphys%filter_fld%i_magne, dt,          &
      &    FEM_prm, mesh%nod_comm, mesh%node, mesh%ele, fluid,           &
      &    iphys_ele, ele_fld, fem_int%jcs, fem_int%rhs_tbl,             &
      &    rhs_mat%fem_wk, mk_MHD%mlump_fl, rhs_mat%f_l, rhs_mat%f_nl,   &
@@ -170,7 +170,7 @@
      &    group%surf_grp, fem_int%jcs, fem_int%rhs_tbl,                 &
      &    FEM_filters%FEM_elens, Bsf_bcs%sgs, ifilter_4delta,           &
      &    iphys%SGS_wk%i_wd_nlg, iphys%SGS_wk%i_wd_nlg,                 &
-     &    iphys%i_filter_magne, rhs_mat%fem_wk, rhs_mat%surf_wk,        &
+     &    iphys%filter_fld%i_magne, rhs_mat%fem_wk, rhs_mat%surf_wk,    &
      &    rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
 !
       call vector_send_recv                                             &

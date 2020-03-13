@@ -443,7 +443,7 @@
 !
       if (iphys%true_SGS_eflux%i_SGS_me_gen .gt. 0) then
           call cal_phys_dot_product                                     &
-     &       (iphys%i_filter_magne, iphys%true_SGS%i_SGS_induction,     &
+     &       (iphys%filter_fld%i_magne, iphys%true_SGS%i_SGS_induction, &
      &        iphys%true_SGS_eflux%i_SGS_me_gen, nod_fld)
       end if
 !$omp end parallel

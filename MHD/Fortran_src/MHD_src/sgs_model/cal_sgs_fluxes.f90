@@ -290,8 +290,9 @@
       else if(SGS_param%iflag_SGS_lorentz .eq. id_SGS_similarity) then
         if (iflag_debug.eq.1)                                           &
      &     write(*,*) 'cal_sgs_mf_simi',  iphys%SGS_term%i_SGS_maxwell
-        call cal_sgs_mf_simi(iphys%SGS_term%i_SGS_maxwell,              &
-     &      iphys%base%i_magne, iphys%i_filter_magne, icomp_sgs_lor,    &
+        call cal_sgs_mf_simi                                            &
+     &     (iphys%SGS_term%i_SGS_maxwell, iphys%base%i_magne,           &
+     &      iphys%filter_fld%i_magne, icomp_sgs_lor,                    &
      &      filter_param, nod_comm, node, filtering, sgs_coefs_nod,     &
      &      wk_filter, nod_fld)
 !
@@ -364,7 +365,7 @@
      &      write(*,*) 'cal_sgs_induct_t_simi'
         call cal_sgs_induct_t_simi(iphys%SGS_term%i_SGS_induct_t,       &
      &      iphys%base%i_velo, iphys%base%i_magne,                      &
-     &      iphys%filter_fld%i_velo, iphys%i_filter_magne,              &
+     &      iphys%filter_fld%i_velo, iphys%filter_fld%i_magne,          &
      &      icomp_sgs_uxb, filter_param, nod_comm, node, filtering,     &
      &      sgs_coefs_nod, wk_filter, nod_fld)
       end if

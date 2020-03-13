@@ -55,7 +55,7 @@
         else if(ele_fld%phys_name(i) .eq. current_density%name) then
           iphys_ele%base%i_current = i0
         else if(ele_fld%phys_name(i) .eq. filter_magne%name) then
-          iphys_ele%i_filter_magne = i0
+          iphys_ele%filter_fld%i_magne = i0
 !
         else if(ele_fld%phys_name(i) .eq. temperature%name) then
           iphys_ele%base%i_temp = i0

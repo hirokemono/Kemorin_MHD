@@ -204,7 +204,7 @@
       if(fd_trns%wide_SGS%i_SGS_Lorentz .gt. 0) then
         call sel_sph_SGS_induct_nl_gradient                             &
      &     (sph%sph_rtp, wide_filters, MHD_prop%fl_prop%coef_lor,       &
-     &      bg_trns%i_filter_current, bg_trns%i_filter_magne,           &
+     &      bg_trns%i_filter_current, bg_trns%filter_fld%i_magne,       &
      &      trns_b_SGS%ncomp, trns_b_SGS%fld_rtp,                       &
      &      bd_trns%diff_fil_vect%i_grad_jx,                            &
      &      bd_trns%diff_fil_vect%i_grad_jy,                            &
@@ -220,7 +220,7 @@
       if(fd_trns%wide_SGS%i_SGS_vp_induct .gt. 0) then
         call sel_sph_SGS_induct_nl_gradient                             &
      &     (sph%sph_rtp, wide_filters, MHD_prop%cd_prop%coef_induct,    &
-     &      bg_trns%filter_fld%i_velo, bg_trns%i_filter_magne,          &
+     &      bg_trns%filter_fld%i_velo, bg_trns%filter_fld%i_magne,      &
      &      trns_b_SGS%ncomp, trns_b_SGS%fld_rtp,                       &
      &      bd_trns%diff_fil_vect%i_grad_vx,                            &
      &      bd_trns%diff_fil_vect%i_grad_vy,                            &

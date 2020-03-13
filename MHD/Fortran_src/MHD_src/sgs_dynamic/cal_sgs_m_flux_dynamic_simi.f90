@@ -201,7 +201,7 @@
       if (iflag_debug.gt.0)                                             &
      &     write(*,*) 'cal_sgs_mf_simi_wide wide_filter_fld%i_magne'
       call cal_sgs_mf_simi(iphys%SGS_wk%i_wd_nlg,                       &
-     &    iphys%i_filter_magne, iphys%wide_filter_fld%i_magne,          &
+     &    iphys%filter_fld%i_magne, iphys%wide_filter_fld%i_magne,      &
      &    icomp_sgs_lor, SGS_par%filter_p, mesh%nod_comm, mesh%node,    &
      &    FEM_filters%wide_filtering, sgs_coefs_nod,                    &
      &    FEM_SGS_wk%wk_filter, nod_fld)
@@ -215,7 +215,7 @@
      &     write(*,*) 'cal_sgs_mf_simi iphys%SGS_term%i_SGS_maxwell'
       call cal_sgs_mf_simi                                              &
      &   (iphys%SGS_term%i_SGS_maxwell, iphys%base%i_magne,             &
-     &    iphys%i_filter_magne, icomp_sgs_lor, SGS_par%filter_p,        &
+     &    iphys%filter_fld%i_magne, icomp_sgs_lor, SGS_par%filter_p,    &
      &    mesh%nod_comm, mesh%node, FEM_filters%filtering,              &
      &    sgs_coefs_nod, FEM_SGS_wk%wk_filter, nod_fld)
 !

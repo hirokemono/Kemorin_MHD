@@ -159,7 +159,7 @@
      &     .and. SGS_param%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
           msg = 'SGS Lorentz term needs'
           call check_missing_field_w_msg                                &
-     &       (fld, msg, iphys%i_filter_magne)
+     &       (fld, msg, iphys%filter_fld%i_magne)
         end if
       end if
 !
@@ -202,7 +202,7 @@
           call check_missing_field_w_msg                                &
      &       (fld, msg, iphys%filter_fld%i_velo)
           call check_missing_field_w_msg                                &
-     &       (fld, msg, iphys%i_filter_magne)
+     &       (fld, msg, iphys%filter_fld%i_magne)
         end if
       end if
 !

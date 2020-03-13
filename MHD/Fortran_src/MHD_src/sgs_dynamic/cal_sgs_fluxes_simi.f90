@@ -254,7 +254,7 @@
 !
       call cal_sgs_uxb_simi(iphys%SGS_wk%i_simi,                        &
      &    iphys%base%i_velo, iphys%base%i_magne,                        &
-     &    iphys%filter_fld%i_velo, iphys%i_filter_magne,                &
+     &    iphys%filter_fld%i_velo, iphys%filter_fld%i_magne,            &
      &    filter_param, nod_comm, node, filtering, wk_filter, nod_fld)
 !
 !
