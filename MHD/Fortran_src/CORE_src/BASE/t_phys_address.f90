@@ -30,10 +30,6 @@
 !>       Structure for start address for fields
       type phys_address
 !
-!>        Start address for velocity
-!!         \f$ u_{i} \f$
-        integer (kind=kint) :: i_velo  =           izero
-!
 !>        Start address for filtered velocity
 !!         @f$ \bar{u}_{i} @f$
         integer (kind=kint) :: i_filter_velo  =    izero

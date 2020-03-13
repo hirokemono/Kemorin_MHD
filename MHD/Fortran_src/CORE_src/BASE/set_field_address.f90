@@ -44,6 +44,7 @@
      &          field_name, num_component, iphys)
 !
       use m_phys_labels
+      use t_base_field_labels
       use t_base_force_labels
       use t_diff_vector_labels
       use t_field_product_labels
@@ -72,57 +73,10 @@
 !
       i0 = istart_adress
       do i = 1, num_field
-!
-        if      ( field_name(i) .eq. velocity%name ) then
-          iphys%base%i_velo = i0
-        else if ( field_name(i) .eq. vorticity%name ) then
-          iphys%base%i_vort = i0
-        else if ( field_name(i) .eq. magnetic_field%name ) then
-          iphys%base%i_magne = i0
-        else if ( field_name(i) .eq. vector_potential%name ) then
-          iphys%base%i_vecp = i0
-        else if ( field_name(i) .eq. current_density%name ) then
-          iphys%base%i_current = i0
-!
-        else if (field_name(i) .eq. pressure%name ) then
-          iphys%base%i_press = i0
-        else if (field_name(i) .eq. temperature%name ) then
-          iphys%base%i_temp = i0
-        else if (field_name(i) .eq. perturbation_temp%name ) then
-          iphys%base%i_per_temp = i0
-        else if (field_name(i) .eq. composition%name ) then
-          iphys%base%i_light = i0
-        else if (field_name(i) .eq. perturbation_composition%name) then
-          iphys%base%i_per_light = i0
-        else if (field_name(i) .eq. magnetic_potential%name ) then
-          iphys%base%i_mag_p = i0
-        else if (field_name(i) .eq. scalar_potential%name ) then
-          iphys%base%i_scalar_p = i0
-        else if (field_name(i) .eq. entropy%name ) then
-          iphys%base%i_entropy = i0
-        else if (field_name(i) .eq. perturbation_entropy%name ) then
-          iphys%base%i_per_entropy = i0
-        else if (field_name(i) .eq. reference_entropy%name ) then
-          iphys%base%i_ref_entropy = i0
-        else if (field_name(i) .eq. density%name ) then
-          iphys%base%i_density = i0
-        else if (field_name(i) .eq. perturbation_density%name ) then
-          iphys%base%i_per_density = i0
-        else if (field_name(i) .eq. reference_density%name ) then
-          iphys%base%i_ref_density = i0
-!
-        else if ( field_name(i) .eq. heat_source%name ) then
-          iphys%base%i_heat_source = i0
-        else if ( field_name(i) .eq. composition_source%name ) then
-          iphys%base%i_light_source = i0
-        else if ( field_name(i) .eq. entropy_source%name ) then
-          iphys%base%i_entropy_source = i0
-        end if
-        if ( field_name(i) .eq. reference_temperature%name ) then
-          iphys%base%i_ref_t = i0
-        else if ( field_name(i) .eq. reference_composition%name ) then
-          iphys%base%i_ref_c = i0
-        end if
+        call set_base_vector_addresses                                  &
+     &     (i0, field_name(i), iphys%base, flag)
+        call set_base_scalar_addresses                                  &
+     &     (i0, field_name(i), iphys%base, flag)
 !
         if ( field_name(i) .eq. filter_velocity%name ) then
           iphys%i_filter_velo =    i0
