@@ -14,6 +14,8 @@ int num_gradient_fields_f();
 int num_base_diffusions_f();
 int num_base_diffusivities_f();
 int num_field_products_f();
+int num_work_4_explicit_f();
+int num_check_fields_f();
 
 int num_SGS_terms_f();
 int num_diff_SGS_terms_f();
@@ -47,6 +49,8 @@ void set_gradient_field_labels_f(int *ncomp1, char *name1, char *math1);
 void set_base_diffusion_labels_f(int *ncomp1, char *name1, char *math1);
 void set_base_diffusivity_labels_f(int *ncomp1, char *name1, char *math1);
 void set_field_product_labels_f(int *ncomp1, char *name1, char *math1);
+void set_work_4_explicit_labels_f(int *ncomp1, char *name1, char *math1);
+void set_check_fields_labels_f(int *ncomp1, char *name1, char *math1);
 
 void set_SGS_term_labels_f(int *ncomp1, char *name1, char *math1);
 void set_diff_SGS_term_labels_f(int *ncomp1, char *name1, char *math1);
@@ -96,8 +100,12 @@ int main(int argc, char **argv)
 			+ num_base_diffusions_f();
 	int ist_field_products = ist_base_diffusivities
 			+ num_base_diffusivities_f();
-	int ist_filtered_forces = ist_field_products
+	int ist_work_4_explicit = ist_field_products
 			+ num_field_products_f();
+	int ist_check_fields = ist_work_4_explicit
+			+ num_work_4_explicit_f();
+	int ist_filtered_forces = ist_check_fields
+			+ num_check_fields_f();
 	
 	int ist_rot_filtered_forces = ist_filtered_forces
 			+ num_filtered_forces_f();
@@ -186,6 +194,12 @@ int main(int argc, char **argv)
 	set_field_product_labels_f(&ncomp[ist_field_products], 
 								&name1[len_f*ist_field_products],
 								&math1[len_f*ist_field_products]);
+	set_work_4_explicit_labels_f(&ncomp[ist_work_4_explicit], 
+								&name1[len_f*ist_work_4_explicit],
+								&math1[len_f*ist_work_4_explicit]);
+	set_check_fields_labels_f(&ncomp[ist_check_fields], 
+								&name1[len_f*ist_check_fields],
+								&math1[len_f*ist_check_fields]);
 	
 	set_SGS_term_labels_f(&ncomp[ist_SGS_terms], 
 								&name1[len_f*ist_SGS_terms],

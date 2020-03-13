@@ -42,6 +42,14 @@
 !!      subroutine set_base_diffusivity_labels_f                        &
 !!     &         (n_comps_c, field_name_c, field_math_c) bind(c)
 !!
+!!      integer(c_int) function num_work_4_explicit_f() bind(c)
+!!      subroutine set_work_4_explicit_labels_f                         &
+!!     &         (n_comps_c, field_name_c, field_math_c) bind(c)
+!!
+!!      integer(c_int) function num_check_fields_f() bind(c)
+!!      subroutine set_check_fields_labels_f                            &
+!!     &         (n_comps_c, field_name_c, field_math_c) bind(c)
+!!
 !!      integer(c_int) function num_SGS_terms_f()                       &
 !!     &              bind(c, name="num_SGS_terms_f")
 !!      subroutine set_SGS_term_labels_f                                &
@@ -423,6 +431,60 @@
      &   (n_comps_c(1), field_name_c(1), field_math_c(1))
 !
       end subroutine set_base_diffusivity_labels_f
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      integer(c_int) function num_work_4_explicit_f() bind(c)
+!
+      use t_explicit_term_labels
+!
+      num_work_4_explicit_f = num_work_4_explicit()
+      return
+      end function num_work_4_explicit_f
+!
+! ----------------------------------------------------------------------
+!
+      subroutine set_work_4_explicit_labels_f                           &
+     &         (n_comps_c, field_name_c, field_math_c) bind(c)
+!
+      use t_explicit_term_labels
+!
+      integer(c_int), intent(inout) :: n_comps_c(*)
+      character(C_CHAR), intent(inout) :: field_name_c(*)
+      character(C_CHAR), intent(inout) :: field_math_c(*)
+!
+      call set_work_4_explicit_labels                                   &
+     &   (n_comps_c(1), field_name_c(1), field_math_c(1))
+!
+      end subroutine set_work_4_explicit_labels_f
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      integer(c_int) function num_check_fields_f() bind(c)
+!
+      use t_explicit_term_labels
+!
+      num_check_fields_f = num_check_fields()
+      return
+      end function num_check_fields_f
+!
+! ----------------------------------------------------------------------
+!
+      subroutine set_check_fields_labels_f                              &
+     &         (n_comps_c, field_name_c, field_math_c) bind(c)
+!
+      use t_explicit_term_labels
+!
+      integer(c_int), intent(inout) :: n_comps_c(*)
+      character(C_CHAR), intent(inout) :: field_name_c(*)
+      character(C_CHAR), intent(inout) :: field_math_c(*)
+!
+      call set_check_fields_labels                                      &
+     &   (n_comps_c(1), field_name_c(1), field_math_c(1))
+!
+      end subroutine set_check_fields_labels_f
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
