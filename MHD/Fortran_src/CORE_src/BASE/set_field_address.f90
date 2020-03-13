@@ -91,7 +91,7 @@
         else if ( field_name(i) .eq. filter_current%name ) then
           iphys%filter_fld%i_current = i0
         else if ( field_name(i) .eq. filter_pert_temperature%name ) then
-          iphys%i_filter_par_t =   i0
+          iphys%filter_fld%i_per_temp =   i0
         else if ( field_name(i) .eq. filter_composition%name ) then
           iphys%filter_fld%i_light =    i0
 !

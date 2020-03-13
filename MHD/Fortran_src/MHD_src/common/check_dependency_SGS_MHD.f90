@@ -45,7 +45,6 @@
      &         (SGS_par, MHD_prop, SPH_MHD)
 !
       use set_sph_phys_address
-      use check_MHD_dependency_by_id
 !
       type(SGS_paremeters), intent(in) :: SGS_par
       type(MHD_evolution_param), intent(in) :: MHD_prop

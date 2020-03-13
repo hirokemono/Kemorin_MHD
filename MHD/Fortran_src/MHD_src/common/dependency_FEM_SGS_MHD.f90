@@ -52,7 +52,6 @@
 !
       use t_geometry_data
       use set_field_address
-      use check_MHD_dependency_by_id
       use initialize_element_field
 !
       type(SGS_model_control_params), intent(in) :: SGS_param

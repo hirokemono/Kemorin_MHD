@@ -30,10 +30,6 @@
 !>       Structure for start address for fields
       type phys_address
 !
-!>        Start address for filtered perturbation of temperature
-!!         @f$ \bar{\Theta} @f$
-        integer (kind=kint) :: i_filter_par_t =    izero
-!
 !>        start address for filtered velocity
 !!         @f$ \partial_{i} \bar{u}_{i} @f$
         integer (kind=kint) :: i_div_filter_v =    izero

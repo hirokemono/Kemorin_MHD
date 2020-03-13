@@ -47,7 +47,6 @@
 !
       use t_geometry_data
       use init_nodal_field_address
-      use check_MHD_dependency_by_id
 !
       type(node_data), intent(in) :: node
       type(MHD_evolution_param), intent(in) :: MHD_prop
@@ -62,7 +61,6 @@
       call check_field_dependencies                                     &
      &   (MHD_prop%fl_prop, MHD_prop%cd_prop,                           &
      &    MHD_prop%ht_prop, MHD_prop%cp_prop, iphys, nod_fld)
-      call check_dependencies_by_id(MHD_prop%cd_prop, iphys, nod_fld)
       call check_dependence_FEM_evo(MHD_prop%fl_prop, iphys, nod_fld)
 !
       end subroutine set_FEM_MHD_field_data
@@ -75,7 +73,6 @@
       use t_spheric_rj_data
 !
       use set_sph_phys_address
-      use check_MHD_dependency_by_id
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(MHD_evolution_param), intent(in) :: MHD_prop
@@ -90,7 +87,6 @@
       call check_field_dependencies                                     &
      &   (MHD_prop%fl_prop, MHD_prop%cd_prop,                           &
      &    MHD_prop%ht_prop, MHD_prop%cp_prop, ipol, rj_fld)
-      call check_dependencies_by_id(MHD_prop%cd_prop, ipol, rj_fld)
       call check_dependence_SPH_evo(MHD_prop%fl_prop, ipol, rj_fld)
 !
       end subroutine set_sph_MHD_sprctr_data
