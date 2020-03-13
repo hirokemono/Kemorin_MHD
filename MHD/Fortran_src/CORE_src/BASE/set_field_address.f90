@@ -54,6 +54,7 @@
       use t_SGS_model_coef_labels
       use m_rot_force_labels
       use m_div_force_labels
+      use m_filtered_field_labels
       use m_rot_filtered_force_labels
       use m_div_filtered_force_labels
       use m_diff_filter_vect_labels
@@ -78,24 +79,7 @@
         call set_base_scalar_addresses                                  &
      &     (i0, field_name(i), iphys%base, flag)
 !
-        if ( field_name(i) .eq. filter_velocity%name ) then
-          iphys%filter_fld%i_velo =    i0
-        else if ( field_name(i) .eq. filter_vorticity%name ) then
-          iphys%filter_fld%i_vort =    i0
-        else if ( field_name(i) .eq. filter_temperature%name ) then
-          iphys%filter_fld%i_temp =    i0
-        else if ( field_name(i) .eq. filter_vector_potential%name ) then
-          iphys%filter_fld%i_vecp =    i0
-        else if ( field_name(i) .eq. filter_magne%name ) then
-          iphys%filter_fld%i_magne =   i0
-        else if ( field_name(i) .eq. filter_current%name ) then
-          iphys%filter_fld%i_current = i0
-        else if ( field_name(i) .eq. filter_pert_temperature%name ) then
-          iphys%filter_fld%i_per_temp =   i0
-        else if ( field_name(i) .eq. filter_composition%name ) then
-          iphys%filter_fld%i_light =    i0
-!
-        else if ( field_name(i) .eq. div_filtered_velo%name ) then
+        if ( field_name(i) .eq. div_filtered_velo%name ) then
           iphys%i_div_filter_v =    i0
         else if ( field_name(i) .eq. div_filtered_magne%name ) then
           iphys%i_div_filter_b =    i0
@@ -114,6 +98,8 @@
         call set_field_product_addresses                                &
      &     (i0, field_name(i), iphys%prod_fld, flag)
 !
+        call set_filter_field_addresses                                 &
+     &     (i0, field_name(i), iphys%filter_fld, flag)
         call set_SGS_term_addresses                                     &
      &     (i0, field_name(i), iphys%SGS_term, flag)
         call set_div_SGS_term_addresses                                 &
