@@ -212,7 +212,8 @@
         if (   cmt_param%iflag_commute .gt. id_SGS_commute_OFF          &
      &   .and. SGS_param%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
           msg = 'filterd A is required for dynamic model'
-          call check_missing_field_w_msg(fld, msg, iphys%i_filter_vecp)
+          call check_missing_field_w_msg                                &
+     &       (fld, msg, iphys%filter_fld%i_vecp)
         end if
       end if
 !

@@ -114,18 +114,18 @@
 !
 !
       if (SGS_par%commute_p%iflag_c_magne .eq. id_SGS_commute_ON        &
-     &     .and. iphys%i_filter_vecp .ne. 0                             &
+     &     .and. iphys%filter_fld%i_vecp .ne. 0                         &
      &     .and. iflag_dmc .eq. 0) then
 !
         if(SGS_par%model_p%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
           if (iflag_debug.gt.0) write(*,*) 'cal_filtered_vector_p'
           call cal_filtered_vector_whole(SGS_par%filter_p,              &
      &        mesh%nod_comm, mesh%node, FEM_filters%filtering,          &
-     &        iphys%i_filter_vecp, iphys%base%i_vecp,                   &
+     &        iphys%filter_fld%i_vecp, iphys%base%i_vecp,               &
      &        FEM_SGS_wk%wk_filter, nod_fld)
-          nod_fld%iflag_update(iphys%i_filter_vecp  ) = 1
-          nod_fld%iflag_update(iphys%i_filter_vecp+1) = 1
-          nod_fld%iflag_update(iphys%i_filter_vecp+2) = 1
+          nod_fld%iflag_update(iphys%filter_fld%i_vecp  ) = 1
+          nod_fld%iflag_update(iphys%filter_fld%i_vecp+1) = 1
+          nod_fld%iflag_update(iphys%filter_fld%i_vecp+2) = 1
         end if
 !
         if     (SGS_par%model_p%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF   &
@@ -135,7 +135,7 @@
      &        write(*,*) 'cal_filtered_vector_p wide_filter_fld%i_vecp'
           call cal_filtered_vector_whole(SGS_par%filter_p,              &
      &        mesh%nod_comm, mesh%node, FEM_filters%wide_filtering,     &
-     &        iphys%wide_filter_fld%i_vecp, iphys%i_filter_vecp,        &
+     &        iphys%wide_filter_fld%i_vecp, iphys%filter_fld%i_vecp,    &
      &        FEM_SGS_wk%wk_filter, nod_fld)
           nod_fld%iflag_update(iphys%wide_filter_fld%i_vecp  ) = 1
           nod_fld%iflag_update(iphys%wide_filter_fld%i_vecp+1) = 1

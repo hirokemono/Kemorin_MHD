@@ -85,7 +85,7 @@
         else if ( field_name(i) .eq. filter_temperature%name ) then
           iphys%filter_fld%i_temp =    i0
         else if ( field_name(i) .eq. filter_vector_potential%name ) then
-          iphys%i_filter_vecp =    i0
+          iphys%filter_fld%i_vecp =    i0
         else if ( field_name(i) .eq. filter_magne%name ) then
           iphys%filter_fld%i_magne =   i0
         else if ( field_name(i) .eq. filter_current%name ) then

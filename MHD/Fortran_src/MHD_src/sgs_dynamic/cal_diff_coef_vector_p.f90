@@ -143,7 +143,7 @@
 !    get filtered scalar potential(to iphys%SGS_wk%i_wd_nlg)
 !
       call copy_vector_component(nod_fld,                               &
-     &    iphys%i_filter_vecp, iphys%SGS_wk%i_wd_nlg)
+     &    iphys%filter_fld%i_vecp, iphys%SGS_wk%i_wd_nlg)
       call cal_filtered_scalar_whole                                    &
      &   (SGS_par%filter_p, nod_comm, node, filtering,                  &
      &    i_sgs_grad_fp, iphys%base%i_mag_p, wk_filter, nod_fld)

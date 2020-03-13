@@ -76,8 +76,8 @@
      &    itor%filter_fld%i_velo, idpdr%filter_fld%i_velo)
       call set_vect_sph_address(ipol%filter_fld%i_vort,                 &
      &    itor%filter_fld%i_vort, idpdr%filter_fld%i_vort)
-      call set_vect_sph_address(ipol%i_filter_vecp, itor%i_filter_vecp, &
-     &    idpdr%i_filter_vecp)
+      call set_vect_sph_address(ipol%filter_fld%i_vecp,                 &
+     &    itor%filter_fld%i_vecp, idpdr%filter_fld%i_vecp)
       call set_vect_sph_address(ipol%filter_fld%i_magne,                &
      &    itor%filter_fld%i_magne, idpdr%filter_fld%i_magne)
       call set_vect_sph_address(ipol%filter_fld%i_current,              &

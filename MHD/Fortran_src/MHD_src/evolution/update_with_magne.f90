@@ -217,7 +217,7 @@
 !
 !      call rotation_on_element_1st(mesh%node, mesh%ele, fem_int%jcs,   &
 !     &    mesh%ele%istack_ele_smp, FEM_prm%npoint_t_evo_int,           &
-!     &    iphys%i_filter_vecp, nod_fld,                                &
+!     &    iphys%filter_fld%i_vecp, nod_fld,                            &
 !     &    iphys_ele%filter_fld%i_magne, ele_fld)
 !
        end subroutine update_with_magnetic_field

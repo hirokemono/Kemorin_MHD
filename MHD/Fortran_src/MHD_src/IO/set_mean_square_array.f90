@@ -87,8 +87,9 @@
               msq_list%numave = msq_list%numave + 4
             else if(field_name .eq. filter_vector_potential%name) then
               call set_rms_address                                      &
-     &           (field_name, n_scalar, iphys%i_filter_vecp,            &
-     &            i_rms%i_filter_vecp, j_ave%i_filter_vecp, msq_list)
+     &           (field_name, n_scalar, iphys%filter_fld%i_vecp,        &
+     &            i_rms%filter_fld%i_vecp, j_ave%filter_fld%i_vecp,     &
+     &            msq_list)
 !
               i_rms%i_div_filter_a = msq_list%numrms + 1
               j_ave%i_div_filter_a = msq_list%numave + 1

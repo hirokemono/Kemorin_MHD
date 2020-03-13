@@ -30,9 +30,6 @@
 !>       Structure for start address for fields
       type phys_address
 !
-!>        Start address for filtered vetor potential
-!!         @f$ \bar{A}_{i} @f$
-        integer (kind=kint) :: i_filter_vecp =     izero
 !>        Start address for filtered perturbation of temperature
 !!         @f$ \bar{\Theta} @f$
         integer (kind=kint) :: i_filter_par_t =    izero
