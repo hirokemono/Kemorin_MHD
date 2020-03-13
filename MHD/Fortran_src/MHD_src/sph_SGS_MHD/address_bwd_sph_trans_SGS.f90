@@ -251,10 +251,11 @@
      &    ipol%filter_fld%i_temp, itor%filter_fld%i_temp,               &
      &    iphys%filter_fld%i_temp, b_trns%filter_fld%i_temp, trns_back)
 !   filtered composition
-      call add_field_name_4_sph_trns(ipol%i_filter_comp,                &
+      call add_field_name_4_sph_trns(ipol%filter_fld%i_light,           &
      &    filter_composition%name, filter_composition%n_comp,           &
-     &    ipol%i_filter_comp, itor%i_filter_comp, iphys%i_filter_comp,  &
-     &    b_trns%i_filter_comp, trns_back)
+     &    ipol%filter_fld%i_light, itor%filter_fld%i_light,             &
+     &    iphys%filter_fld%i_light, b_trns%filter_fld%i_light,          &
+     &    trns_back)
 !
       end subroutine b_trans_scalar_similarity
 !

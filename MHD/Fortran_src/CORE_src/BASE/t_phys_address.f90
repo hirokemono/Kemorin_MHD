@@ -33,9 +33,6 @@
 !>        Start address for filtered perturbation of temperature
 !!         @f$ \bar{\Theta} @f$
         integer (kind=kint) :: i_filter_par_t =    izero
-!>        Start address for filtered conposition
-!!         @f$ \bar{C} @f$
-        integer (kind=kint) :: i_filter_comp =     izero
 !
 !>        start address for filtered velocity
 !!         @f$ \partial_{i} \bar{u}_{i} @f$

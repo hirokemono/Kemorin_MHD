@@ -65,7 +65,7 @@
         else if(ele_fld%phys_name(i) .eq. composition%name) then
           iphys_ele%base%i_light = i0
         else if(ele_fld%phys_name(i) .eq. filter_composition%name) then
-          iphys_ele%i_filter_comp = i0
+          iphys_ele%filter_fld%i_light = i0
         end if
 !
         i0 = i0 + ele_fld%num_component(i)

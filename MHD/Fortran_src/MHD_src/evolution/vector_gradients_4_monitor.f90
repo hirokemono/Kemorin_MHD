@@ -307,7 +307,7 @@
      &      write(*,*) 'lead  ', trim(filtered_comp_buoyancy_flux%name)
         call sel_buoyancy_flux(node,                                    &
      &      fl_prop%i_grav, fl_prop%coef_comp_buo, fl_prop%grav,        &
-     &      iphys%base%i_velo, iphys%i_filter_comp,                     &
+     &      iphys%base%i_velo, iphys%filter_fld%i_light,                &
      &      iphys%eflux_by_filter%i_c_buo_gen, nod_fld)
       end if
 !

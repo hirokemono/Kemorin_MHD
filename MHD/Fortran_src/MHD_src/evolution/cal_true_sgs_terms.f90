@@ -149,10 +149,10 @@
      &        (FEM_prm%iflag_comp_supg, FEM_prm%npoint_t_evo_int, dt,   &
      &         iphys%true_div_SGS%i_SGS_c_flux,                         &
      &         iphys%forces%i_c_flux, iphys%div_forces%i_c_flux,        &
-     &         iphys%i_filter_comp, iphys%filter_fld%i_velo, FEM_prm,   &
-     &         nod_comm, node, ele, fluid, cp_prop, nod_bcs%Cnod_bcs,   &
-     &         iphys_ele, ele_fld, fem_int, mk_MHD%mlump_fl,            &
-     &         mhd_fem_wk, rhs_mat, nod_fld)
+     &         iphys%filter_fld%i_light, iphys%filter_fld%i_velo,       &
+     &         FEM_prm, nod_comm, node, ele, fluid, cp_prop,            &
+     &         nod_bcs%Cnod_bcs, iphys_ele, ele_fld, fem_int,           &
+     &         mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat, nod_fld)
          else if ( nod_fld%phys_name(i).eq.SGS_div_m_flux_true%name)    &
      &          then
            if(iflag_debug.gt.0) write(*,*)                              &

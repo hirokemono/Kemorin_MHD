@@ -157,7 +157,7 @@
         call cal_sgs_heat_flux                                          &
      &     (FEM_prm%iflag_comp_supg, FEM_prm%npoint_t_evo_int, dt,      &
      &      SGS_param%iflag_SGS_c_flux, SGS_param%itype_Csym_c_flux,    &
-     &      iphys%SGS_wk%i_sgs_composit, iphys%i_filter_comp,           &
+     &      iphys%SGS_wk%i_sgs_composit, iphys%filter_fld%i_light,      &
      &      iphys%base%i_velo, iphys%filter_fld%i_velo,                 &
      &      iphys%SGS_term%i_SGS_c_flux,                                &
      &      icomp_sgs%i_comp_flux, iphys_elediff%i_velo,                &
@@ -437,8 +437,8 @@
 !
       if (iphys%true_SGS_eflux%i_SGS_comp_gen .gt. 0) then
           call cal_phys_product_4_scalar                                &
-     &       (iphys%i_filter_comp, iphys%true_div_SGS%i_SGS_c_flux,     &
-     &        iphys%true_SGS_eflux%i_SGS_comp_gen, nod_fld)
+     &      (iphys%filter_fld%i_light, iphys%true_div_SGS%i_SGS_c_flux, &
+     &       iphys%true_SGS_eflux%i_SGS_comp_gen, nod_fld)
       end if
 !
       if (iphys%true_SGS_eflux%i_SGS_me_gen .gt. 0) then

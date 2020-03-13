@@ -212,8 +212,9 @@
      &          msq_list)
           else if ( field_name .eq. filter_composition%name ) then
             call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_filter_comp,             &
-     &          i_rms%i_filter_comp, j_ave%i_filter_comp, msq_list)
+     &         (field_name, num_comps, iphys%filter_fld%i_light,        &
+     &          i_rms%filter_fld%i_light, j_ave%filter_fld%i_light,     &
+     &          msq_list)
           else if(check_wide_filter_scalar(field_name)) then
             call set_rms_address_list(i, nod_fld, msq_list)
           else if(check_double_filter_scalar(field_name)) then

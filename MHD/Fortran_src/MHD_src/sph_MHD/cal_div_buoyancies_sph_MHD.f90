@@ -127,7 +127,7 @@
      &      'cal_div_buoyancy_sph_MHD by filtrered composition'
         call cal_div_buoyancy_sph_MHD                                   &
      &     (sph_bc_U%kr_in, sph_bc_U%kr_out, fl_prop%coef_comp_buo,     &
-     &      ipol%i_filter_comp, ipol%grad_fil_fld%i_grad_composit,      &
+     &      ipol%filter_fld%i_light, ipol%grad_fil_fld%i_grad_composit, &
      &      ipol%div_frc_by_filter%i_comp_buo,                          &
      &      sph_rj%nidx_rj, sph_rj%radius_1d_rj_r,                      &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)

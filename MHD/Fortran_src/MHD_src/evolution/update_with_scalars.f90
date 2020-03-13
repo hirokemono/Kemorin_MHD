@@ -171,9 +171,9 @@
           if (iflag_debug.gt.0) write(*,*) 'filter temp for buoyancy'
           call cal_filtered_scalar_whole(SGS_par%filter_p,              &
      &        mesh%nod_comm, mesh%node, FEM_filters%filtering,          &
-     &        iphys%i_filter_comp, iphys%base%i_light,                  &
+     &        iphys%filter_fld%i_light, iphys%base%i_light,             &
      &        FEM_SGS_wk%wk_filter, nod_fld)
-          nod_fld%iflag_update(iphys%i_filter_comp) = 1
+          nod_fld%iflag_update(iphys%filter_fld%i_light) = 1
         end if
       end if
 !
@@ -263,14 +263,14 @@
       iflag2 = 0
 !
       if(SGS_par%model_p%iflag_SGS_c_flux .ne. id_SGS_none              &
-     &       .and. iphys%i_filter_comp .ne. 0) then
+     &       .and. iphys%filter_fld%i_light .ne. 0) then
         if (iflag2.eq.1) then
           if (iflag_debug.gt.0)   write(*,*) 'cal_filtered_composition'
           call cal_filtered_scalar_whole(SGS_par%filter_p,              &
      &        mesh%nod_comm, mesh%node, FEM_filters%filtering,          &
-     &        iphys%i_filter_comp, iphys%SGS_wk%i_sgs_composit,         &
+     &        iphys%filter_fld%i_light, iphys%SGS_wk%i_sgs_composit,    &
      &        FEM_SGS_wk%wk_filter, nod_fld)
-          nod_fld%iflag_update(iphys%i_filter_comp) = 1
+          nod_fld%iflag_update(iphys%filter_fld%i_light) = 1
         end if
 !
         if (iphys%wide_filter_fld%i_temp .ne. 0                         &
@@ -279,7 +279,7 @@
      &                         iphys%wide_filter_fld%i_temp
           call cal_filtered_scalar_whole (SGS_par%filter_p,             &
      &        mesh%nod_comm, mesh%node, FEM_filters%wide_filtering,     &
-     &        iphys%wide_filter_fld%i_temp, iphys%i_filter_comp,        &
+     &        iphys%wide_filter_fld%i_temp, iphys%filter_fld%i_light,   &
      &        FEM_SGS_wk%wk_filter, nod_fld)
         end if
       end if
@@ -297,7 +297,8 @@
      &                        's_cal_diff_coef_scalar composition'
                call s_cal_diff_coef_scalar(FEM_prm%iflag_comp_supg,     &
      &             FEM_prm%npoint_t_evo_int, dt,                        &
-     &             iphys%SGS_wk%i_sgs_composit, iphys%i_filter_comp,    &
+     &             iphys%SGS_wk%i_sgs_composit,                         &
+     &             iphys%filter_fld%i_light,                            &
      &             iak_diff_c, icomp_diff_c, SGS_par,                   &
      &             mesh%nod_comm, mesh%node, mesh%ele, mesh%surf,       &
      &             group%surf_grp, sf_bcs, iphys, iphys_ele, ele_fld,   &

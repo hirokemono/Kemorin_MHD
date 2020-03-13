@@ -49,7 +49,7 @@
         if(i_start .eq. iphys%filter_fld%i_magne) then
           call check_missing_field                                      &
      &       (fld, i_start, iphys%base%i_magne, magnetic_field%name)
-        else if(i_start .eq. iphys%i_filter_comp) then 
+        else if(i_start .eq. iphys%filter_fld%i_light) then 
           call check_missing_field                                      &
      &       (fld, i_start, iphys%base%i_light, composition%name)
         end if

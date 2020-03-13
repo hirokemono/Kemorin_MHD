@@ -182,7 +182,7 @@
      &       (FEM_prm%iflag_comp_supg, FEM_prm%npoint_t_evo_int,        &
      &        time_d%dt, SGS_par%model_p%itype_Csym_c_flux,             &
      &        SGS_par%model_p%SGS_cf_factor,                            &
-     &        iphys%SGS_wk%i_sgs_composit, iphys%i_filter_comp,         &
+     &        iphys%SGS_wk%i_sgs_composit, iphys%filter_fld%i_light,    &
      &        iphys%base%i_velo, iphys%filter_fld%i_velo,               &
      &        iphys%SGS_term%i_SGS_c_flux,                              &
      &        ifld_sgs%i_comp_flux, icomp_sgs%i_comp_flux,              &
@@ -201,7 +201,7 @@
           call s_cal_sgs_s_flux_dynamic_simi(FEM_prm%npoint_t_evo_int,  &
      &        SGS_par%model_p%itype_Csym_c_flux,                        &
      &        iphys%SGS_wk%i_sgs_composit,                              &
-     &        iphys%i_filter_comp, iphys%wide_filter_fld%i_light,       &
+     &        iphys%filter_fld%i_light, iphys%wide_filter_fld%i_light,  &
      &        iphys%base%i_velo, iphys%filter_fld%i_velo,               &
      &        iphys%SGS_term%i_SGS_c_flux,                              &
      &        ifld_sgs%i_comp_flux, icomp_sgs%i_comp_flux, SGS_par,     &
@@ -216,7 +216,7 @@
      &       (SGS_par%model_p%itype_Csym_c_flux,                        &
      &        FEM_prm%iflag_comp_supg, FEM_prm%npoint_t_evo_int,        &
      &        time_d%dt, iphys%SGS_wk%i_sgs_composit,                   &
-     &        iphys%i_filter_comp, iphys%base%i_velo,                   &
+     &        iphys%filter_fld%i_light, iphys%base%i_velo,              &
      &        iphys%filter_fld%i_velo, iphys%SGS_term%i_SGS_c_flux,     &
      &        ifld_diff%i_comp_flux, icomp_sgs%i_comp_flux,             &
      &        icomp_diff%i_comp_flux, iphys_elediff%i_filter_velo,      &

@@ -225,7 +225,7 @@
      &       (node%numnod, node%internal_node, node%xx,                 &
      &        sph_rtp%nnod_rtp, sph_rtp%nidx_rtp(1),                    &
      &        fl_prop%coef_comp_buo, nod_fld%ntot_phys,                 &
-     &        iphys%i_filter_comp, iphys%base%i_velo,                   &
+     &        iphys%filter_fld%i_light, iphys%base%i_velo,              &
      &        iphys%eflux_by_filter%i_c_buo_gen, nod_fld%d_fld)
       end if
 !$omp end parallel
