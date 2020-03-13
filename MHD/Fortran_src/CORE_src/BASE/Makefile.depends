@@ -128,7 +128,7 @@ primefac.o: $(BASEDIR)/primefac.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<
 quicksort.o: $(BASEDIR)/quicksort.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<
-set_field_address.o: $(BASEDIR)/set_field_address.f90 m_precision.o t_phys_address.o t_phys_data.o m_phys_labels.o t_base_force_labels.o t_diff_vector_labels.o t_field_product_labels.o t_diffusion_term_labels.o t_SGS_term_labels.o t_SGS_enegy_flux_labels.o t_SGS_model_coef_labels.o m_rot_force_labels.o m_div_force_labels.o m_rot_filtered_force_labels.o m_div_filtered_force_labels.o m_diff_filter_vect_labels.o m_wide_SGS_term_labels.o m_true_SGS_term_labels.o
+set_field_address.o: $(BASEDIR)/set_field_address.f90 m_precision.o t_phys_address.o t_phys_data.o m_phys_labels.o t_base_field_labels.o t_base_force_labels.o t_diff_vector_labels.o t_field_product_labels.o t_diffusion_term_labels.o t_SGS_term_labels.o t_SGS_enegy_flux_labels.o t_SGS_model_coef_labels.o m_rot_force_labels.o m_div_force_labels.o m_rot_filtered_force_labels.o m_div_filtered_force_labels.o m_diff_filter_vect_labels.o m_wide_SGS_term_labels.o m_true_SGS_term_labels.o
 	$(F90) -c $(F90OPTFLAGS) $<
 small_mat_mat_product.o: $(BASEDIR)/small_mat_mat_product.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -152,7 +152,7 @@ t_ene_flux_w_sym_address.o: $(BASEDIR)/t_ene_flux_w_sym_address.f90 m_precision.
 	$(F90) -c $(F90OPTFLAGS) $<
 t_energy_flux_labels.o: $(BASEDIR)/t_energy_flux_labels.f90 m_precision.o m_phys_constants.o t_field_labels.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_explicit_term_labels.o: $(BASEDIR)/t_explicit_term_labels.f90 m_precision.o m_constants.o
+t_explicit_term_labels.o: $(BASEDIR)/t_explicit_term_labels.f90 m_precision.o m_phys_constants.o t_field_labels.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_field_labels.o: $(BASEDIR)/t_field_labels.f90 m_precision.o m_constants.o m_phys_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<

@@ -206,8 +206,9 @@
 !
           if ( field_name .eq. filter_temperature%name ) then
             call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%i_filter_temp,             &
-     &          i_rms%i_filter_temp, j_ave%i_filter_temp, msq_list)
+     &         (field_name, num_comps, iphys%filter_fld%i_temp,         &
+     &          i_rms%filter_fld%i_temp, j_ave%filter_fld%i_temp,       &
+     &          msq_list)
           else if ( field_name .eq. filter_composition%name ) then
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_filter_comp,             &

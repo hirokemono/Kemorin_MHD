@@ -129,7 +129,7 @@
      &     (sph_rtp%nnod_rtp, MHD_prop%ht_prop%coef_advect,             &
      &      trns_b_SGS%fld_rtp(1,bg_trns%SGS_term%i_SGS_h_flux),        &
      &      trns_b_SGS%fld_rtp(1,bg_trns%filter_fld%i_velo),            &
-     &      trns_b_SGS%fld_rtp(1,bg_trns%i_filter_temp),                &
+     &      trns_b_SGS%fld_rtp(1,bg_trns%filter_fld%i_temp),            &
      &      trns_f_SGS%fld_rtp(1,fg_trns%SGS_term%i_SGS_h_flux))
       end if
 !
@@ -138,7 +138,7 @@
      &     (sph_rtp%nnod_rtp, MHD_prop%cp_prop%coef_advect,             &
      &      trns_b_SGS%fld_rtp(1,bg_trns%SGS_term%i_SGS_c_flux),        &
      &      trns_b_SGS%fld_rtp(1,bg_trns%filter_fld%i_velo),            &
-     &      trns_b_SGS%fld_rtp(1,bg_trns%i_filter_temp),                &
+     &      trns_b_SGS%fld_rtp(1,bg_trns%filter_fld%i_temp),            &
      &      trns_f_SGS%fld_rtp(1,fg_trns%SGS_term%i_SGS_c_flux))
       end if
 !$omp end parallel

@@ -120,10 +120,10 @@
       end if
 !
       if(iflag_debug .ge. iflag_routine_msg) write(*,*)                 &
-     &            'i_filter_temp', iphys%i_filter_temp
+     &            'filter_fld%i_temp', iphys%filter_fld%i_temp
       if(iflag_debug .ge. iflag_routine_msg) write(*,*)                 &
                   'iflag_SGS_heat', SGS_par%model_p%iflag_SGS_h_flux
-      if (iphys%i_filter_temp .gt. 0) then
+      if (iphys%filter_fld%i_temp .gt. 0) then
         if(SGS_par%model_p%iflag_SGS_h_flux .ne. id_SGS_none) then
 !
           if(SGS_par%model_p%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF      &
@@ -141,9 +141,9 @@
             if (iflag_debug.gt.0) write(*,*) 'cal_filtered_temperature'
             call cal_filtered_scalar_whole(SGS_par%filter_p,            &
      &         mesh%nod_comm, mesh%node, FEM_filters%filtering,         &
-     &          iphys%i_filter_temp, iphys%SGS_wk%i_sgs_temp,           &
+     &          iphys%filter_fld%i_temp, iphys%SGS_wk%i_sgs_temp,       &
      &          FEM_SGS_wk%wk_filter, nod_fld)
-            nod_fld%iflag_update(iphys%i_filter_temp) = 1
+            nod_fld%iflag_update(iphys%filter_fld%i_temp) = 1
           end if
 !
           if(iphys%wide_filter_fld%i_temp .ne. 0                        &
@@ -152,7 +152,7 @@
      &                           iphys%wide_filter_fld%i_temp
             call cal_filtered_scalar_whole(SGS_par%filter_p,            &
      &          mesh%nod_comm, mesh%node, FEM_filters%wide_filtering,   &
-     &          iphys%wide_filter_fld%i_temp, iphys%i_filter_temp,      &
+     &          iphys%wide_filter_fld%i_temp, iphys%filter_fld%i_temp,  &
      &          FEM_SGS_wk%wk_filter, nod_fld)
           end if
         end if
@@ -161,9 +161,9 @@
           if (iflag_debug.gt.0) write(*,*) 'filter temp for buoyancy'
           call cal_filtered_scalar_whole(SGS_par%filter_p,              &
      &        mesh%nod_comm, mesh%node, FEM_filters%filtering,          &
-     &        iphys%i_filter_temp, iphys%base%i_temp,                   &
+     &        iphys%filter_fld%i_temp, iphys%base%i_temp,               &
      &        FEM_SGS_wk%wk_filter, nod_fld)
-          nod_fld%iflag_update(iphys%i_filter_temp) = 1
+          nod_fld%iflag_update(iphys%filter_fld%i_temp) = 1
         end if
 !
         if((iphys%force_by_filter%i_comp_buo                            &
@@ -187,18 +187,18 @@
                if (iflag_debug.gt.0)                                    &
      &            write(*,*) 's_cal_diff_coef_scalar temp'
                call s_cal_diff_coef_scalar                              &
-     &            (FEM_prm%iflag_temp_supg, FEM_prm%npoint_t_evo_int,   &
-     &             dt, iphys%SGS_wk%i_sgs_temp, iphys%i_filter_temp,    &
-     &             iak_diff_t, icomp_diff_t, SGS_par,                   &
-     &             mesh%nod_comm, mesh%node, mesh%ele, mesh%surf,       &
-     &             group%surf_grp, sf_bcs, iphys, iphys_ele, ele_fld,   &
-     &             fluid, FEM_filters%layer_tbl,                        &
-     &             fem_int%jcs, fem_int%rhs_tbl,                        &
-     &             FEM_filters%FEM_elens, FEM_filters%filtering,        &
-     &             mk_MHD%mlump_fl, FEM_SGS_wk%wk_filter,               &
-     &             FEM_SGS_wk%wk_cor, FEM_SGS_wk%wk_lsq,                &
-     &             FEM_SGS_wk%wk_diff, rhs_mat%fem_wk, rhs_mat%surf_wk, &
-     &             rhs_mat%f_l, rhs_mat%f_nl, nod_fld, diff_coefs)
+     &           (FEM_prm%iflag_temp_supg, FEM_prm%npoint_t_evo_int,    &
+     &            dt, iphys%SGS_wk%i_sgs_temp, iphys%filter_fld%i_temp, &
+     &            iak_diff_t, icomp_diff_t, SGS_par,                    &
+     &            mesh%nod_comm, mesh%node, mesh%ele, mesh%surf,        &
+     &            group%surf_grp, sf_bcs, iphys, iphys_ele, ele_fld,    &
+     &            fluid, FEM_filters%layer_tbl,                         &
+     &            fem_int%jcs, fem_int%rhs_tbl,                         &
+     &            FEM_filters%FEM_elens, FEM_filters%filtering,         &
+     &            mk_MHD%mlump_fl, FEM_SGS_wk%wk_filter,                &
+     &            FEM_SGS_wk%wk_cor, FEM_SGS_wk%wk_lsq,                 &
+     &            FEM_SGS_wk%wk_diff, rhs_mat%fem_wk, rhs_mat%surf_wk,  &
+     &           rhs_mat%f_l, rhs_mat%f_nl, nod_fld, diff_coefs)
              end if
            end if
 !

@@ -56,9 +56,6 @@
           call check_missing_field                                      &
      &       (fld, i_start, iphys%base%i_current, current_density%name)
 !
-        else if(i_start .eq. iphys%i_filter_temp) then 
-          call check_missing_field                                      &
-     &       (fld, i_start, iphys%base%i_temp, temperature%name)
         else if(i_start .eq. iphys%i_filter_comp) then 
           call check_missing_field                                      &
      &       (fld, i_start, iphys%base%i_light, composition%name)

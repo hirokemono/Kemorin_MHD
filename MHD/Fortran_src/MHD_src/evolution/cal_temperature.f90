@@ -212,7 +212,7 @@
         call cal_sgs_heat_flux                                          &
      &     (FEM_prm%iflag_temp_supg, FEM_prm%npoint_t_evo_int, dt,      &
      &      SGS_param%iflag_SGS_h_flux, SGS_param%itype_Csym_h_flux,    &
-     &      i_field, iphys%i_filter_temp,                               &
+     &      i_field, iphys%filter_fld%i_temp,                           &
      &      iphys%base%i_velo, iphys%filter_fld%i_velo,                 &
      &      iphys%SGS_term%i_SGS_h_flux,                                &
      &      icomp_sgs%i_heat_flux, iphys_elediff%i_velo, SGS_param,     &

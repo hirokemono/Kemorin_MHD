@@ -30,9 +30,6 @@
 !>       Structure for start address for fields
       type phys_address
 !
-!>        Start address for filtered temperature
-!!         @f$ \bar{T} @f$
-        integer (kind=kint) :: i_filter_temp  =    izero
 !>        Start address for filtered current density
 !!         @f$ \bar{B}_{i} @f$
         integer (kind=kint) :: i_filter_current =  izero

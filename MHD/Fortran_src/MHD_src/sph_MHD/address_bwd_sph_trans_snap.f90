@@ -330,8 +330,8 @@
      &    iphys%base%i_per_temp, b_trns%base%i_per_temp, trns_back)
       call add_field_name_4_sph_trns_snap                               &
      &   (filter_temperature%name, filter_temperature%n_comp,           &
-     &    ipol%i_filter_temp, itor%i_filter_temp, iphys%i_filter_temp,  &
-     &    b_trns%i_filter_temp, trns_back)
+     &    ipol%filter_fld%i_temp, itor%filter_fld%i_temp,               &
+     &    iphys%filter_fld%i_temp, b_trns%filter_fld%i_temp, trns_back)
       call add_field_name_4_sph_trns_snap                               &
      &   (thermal_diffusion%name, thermal_diffusion%n_comp,             &
      &    ipol%diffusion%i_t_diffuse, itor%diffusion%i_t_diffuse,       &

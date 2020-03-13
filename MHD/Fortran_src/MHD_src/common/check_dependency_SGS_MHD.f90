@@ -165,7 +165,8 @@
         if    (SGS_param%iflag_SGS_h_flux .eq. id_SGS_similarity        &
      &   .and. SGS_param%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
           msg = 'SGS heat flux needs'
-          call check_missing_field_w_msg(fld, msg, iphys%i_filter_temp)
+          call check_missing_field_w_msg                                &
+     &       (fld, msg, iphys%filter_fld%i_temp)
         end if
       end if
 !

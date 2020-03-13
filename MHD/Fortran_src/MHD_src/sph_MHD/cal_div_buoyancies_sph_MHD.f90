@@ -116,7 +116,7 @@
      &      'cal_div_buoyancy_sph_MHD by filtrered temperature'
         call cal_div_buoyancy_sph_MHD                                   &
      &     (sph_bc_U%kr_in, sph_bc_U%kr_out, fl_prop%coef_buo,          &
-     &      ipol%i_filter_temp, ipol%grad_fil_fld%i_grad_temp,          &
+     &      ipol%filter_fld%i_temp, ipol%grad_fil_fld%i_grad_temp,      &
      &      ipol%div_frc_by_filter%i_buoyancy,                          &
      &      sph_rj%nidx_rj, sph_rj%radius_1d_rj_r,                      &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)

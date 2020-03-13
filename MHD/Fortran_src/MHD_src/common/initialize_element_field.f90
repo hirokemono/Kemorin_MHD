@@ -60,7 +60,7 @@
         else if(ele_fld%phys_name(i) .eq. temperature%name) then
           iphys_ele%base%i_temp = i0
         else if(ele_fld%phys_name(i) .eq. filter_temperature%name) then
-          iphys_ele%i_filter_temp = i0
+          iphys_ele%filter_fld%i_temp = i0
 !
         else if(ele_fld%phys_name(i) .eq. composition%name) then
           iphys_ele%base%i_light = i0

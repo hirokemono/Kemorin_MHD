@@ -245,10 +245,10 @@
 !
 !
 !   filtered temperature
-      call add_field_name_4_sph_trns(ipol%i_filter_temp,                &
+      call add_field_name_4_sph_trns(ipol%filter_fld%i_temp,            &
      &    filter_temperature%name, filter_temperature%n_comp,           &
-     &    ipol%i_filter_temp, itor%i_filter_temp, iphys%i_filter_temp,  &
-     &    b_trns%i_filter_temp, trns_back)
+     &    ipol%filter_fld%i_temp, itor%filter_fld%i_temp,               &
+     &    iphys%filter_fld%i_temp, b_trns%filter_fld%i_temp, trns_back)
 !   filtered composition
       call add_field_name_4_sph_trns(ipol%i_filter_comp,                &
      &    filter_composition%name, filter_composition%n_comp,           &

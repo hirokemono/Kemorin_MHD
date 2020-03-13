@@ -215,7 +215,7 @@
         call pole_sph_buoyancy_flux                                     &
      &       (node%numnod, node%internal_node, node%xx,                 &
      &        sph_rtp%nnod_rtp, sph_rtp%nidx_rtp(1), fl_prop%coef_buo,  &
-     &        nod_fld%ntot_phys, iphys%i_filter_temp,                   &
+     &        nod_fld%ntot_phys, iphys%filter_fld%i_temp,               &
      &        iphys%base%i_velo, iphys%eflux_by_filter%i_buo_gen,       &
      &        nod_fld%d_fld)
       end if

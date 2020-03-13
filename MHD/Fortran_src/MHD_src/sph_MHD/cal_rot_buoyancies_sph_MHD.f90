@@ -92,9 +92,9 @@
 !
       else if (fl_prop%iflag_4_filter_gravity .gt. id_turn_OFF) then
         if (iflag_debug.eq.1) write(*,*)                                &
-     &      'cal_rot_buoyancy_sph_MHD', ipol%i_filter_temp
+     &      'cal_rot_buoyancy_sph_MHD', ipol%filter_fld%i_temp
         call cal_rot_buoyancy_sph_MHD(sph_bc_U%kr_in, sph_bc_U%kr_out,  &
-     &      fl_prop%coef_buo, ipol%i_filter_temp,                       &
+     &      fl_prop%coef_buo, ipol%filter_fld%i_temp,                   &
      &      itor%rot_frc_by_filter%i_buoyancy, sph_rj%nidx_rj,          &
      &      sph_rj%radius_1d_rj_r, rj_fld%n_point, rj_fld%ntot_phys,    &
      &      rj_fld%d_fld)

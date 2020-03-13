@@ -128,7 +128,7 @@
      &       (FEM_prm%iflag_temp_supg, FEM_prm%npoint_t_evo_int,        &
      &        time_d%dt, SGS_par%model_p%itype_Csym_h_flux,             &
      &        SGS_par%model_p%SGS_hf_factor,                            &
-     &        iphys%SGS_wk%i_sgs_temp, iphys%i_filter_temp,             &
+     &        iphys%SGS_wk%i_sgs_temp, iphys%filter_fld%i_temp,         &
      &        iphys%base%i_velo, iphys%filter_fld%i_velo,               &
      &        iphys%SGS_term%i_SGS_h_flux,                              &
      &        ifld_sgs%i_heat_flux, icomp_sgs%i_heat_flux,              &
@@ -146,7 +146,7 @@
      &          write(*,*) 's_cal_sgs_s_flux_dynamic_simi temp'
           call s_cal_sgs_s_flux_dynamic_simi(FEM_prm%npoint_t_evo_int,  &
      &        SGS_par%model_p%itype_Csym_h_flux,                        &
-     &        iphys%SGS_wk%i_sgs_temp, iphys%i_filter_temp,             &
+     &        iphys%SGS_wk%i_sgs_temp, iphys%filter_fld%i_temp,         &
      &        iphys%wide_filter_fld%i_temp, iphys%base%i_velo,          &
      &        iphys%filter_fld%i_velo, iphys%SGS_term%i_SGS_h_flux,     &
      &        ifld_sgs%i_heat_flux, icomp_sgs%i_heat_flux, SGS_par,     &
@@ -160,9 +160,9 @@
           call s_cal_diff_coef_sgs_sf                                   &
      &       (SGS_par%model_p%itype_Csym_h_flux,                        &
      &        FEM_prm%iflag_temp_supg, FEM_prm%npoint_t_evo_int,        &
-     &        time_d%dt, iphys%SGS_wk%i_sgs_temp, iphys%i_filter_temp,  &
-     &        iphys%base%i_velo, iphys%filter_fld%i_velo,               &
-     &        iphys%SGS_term%i_SGS_h_flux,                              &
+     &        time_d%dt, iphys%SGS_wk%i_sgs_temp,                       &
+     &        iphys%filter_fld%i_temp, iphys%base%i_velo,               &
+     &        iphys%filter_fld%i_velo, iphys%SGS_term%i_SGS_h_flux,     &
      &        ifld_diff%i_heat_flux, icomp_sgs%i_heat_flux,             &
      &        icomp_diff%i_heat_flux, iphys_elediff%i_filter_velo,      &
      &        SGS_par, fem%mesh, fem%group,                             &

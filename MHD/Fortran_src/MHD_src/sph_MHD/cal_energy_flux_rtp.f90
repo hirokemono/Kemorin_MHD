@@ -263,7 +263,7 @@
         call cal_buoyancy_flux_rtp_smp(np_smp, sph_rtp%nnod_rtp,        &
      &      sph_rtp%nidx_rtp(1),  sph_rtp%istack_inod_rtp_smp,          &
      &      sph_rtp%radius_1d_rtp_r, fl_prop%coef_buo,                  &
-     &      trns_b_snap%fld_rtp(1,bs_trns%i_filter_temp),               &
+     &      trns_b_snap%fld_rtp(1,bs_trns%filter_fld%i_temp),           &
      &      trns_b_snap%fld_rtp(1,bs_trns%base%i_velo),                 &
      &      trns_f_snap%fld_rtp(1,fs_trns%eflux_by_filter%i_buo_gen))
       end if

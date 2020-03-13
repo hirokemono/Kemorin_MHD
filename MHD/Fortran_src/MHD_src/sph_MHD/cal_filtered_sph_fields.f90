@@ -22,7 +22,7 @@
 !!          is_fld = i_velo, base%i_vort, base%i_magne, base%i_current,
 !!                                   base%i_temp, base%i_light
 !!       Output:  rj_fld(1:is_fld)
-!!                  i_filter_current, i_filter_temp, i_filter_comp, 
+!!                  i_filter_current, filter_fld%i_temp, i_filter_comp, 
 !!          is_fld = filter_fld%i_velo, filter_fld%i_vort, 
 !!                   filter_fld%i_magne, 
 !!      subroutine cal_sph_wide_filtering_fields                        &
@@ -127,7 +127,7 @@
      &    sph_rj, sph_base_f%r_filter, sph_base_f%sph_filter, rj_fld)
 !
 !
-      call scalar_sph_filter(ipol%base%i_temp, ipol%i_filter_temp,      &
+      call scalar_sph_filter(ipol%base%i_temp, ipol%filter_fld%i_temp,  &
      &    sph_rj, sph_base_f%r_filter, sph_base_f%sph_filter, rj_fld)
 !
       call scalar_sph_filter(ipol%base%i_light, ipol%i_filter_comp,     &

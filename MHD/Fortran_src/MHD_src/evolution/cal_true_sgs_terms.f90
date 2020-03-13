@@ -138,10 +138,10 @@
      &        (FEM_prm%iflag_temp_supg, FEM_prm%npoint_t_evo_int, dt,   &
      &         iphys%true_div_SGS%i_SGS_h_flux,                         &
      &         iphys%forces%i_h_flux, iphys%div_forces%i_h_flux,        &
-     &         iphys%i_filter_temp, iphys%filter_fld%i_velo, FEM_prm,   &
-     &         nod_comm, node, ele, fluid, ht_prop, nod_bcs%Tnod_bcs,   &
-     &         iphys_ele, ele_fld, fem_int, mk_MHD%mlump_fl,            &
-     &         mhd_fem_wk, rhs_mat, nod_fld)
+     &         iphys%filter_fld%i_temp, iphys%filter_fld%i_velo,        &
+     &         FEM_prm, nod_comm, node, ele, fluid, ht_prop,            &
+     &         nod_bcs%Tnod_bcs, iphys_ele, ele_fld, fem_int,           &
+     &         mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat, nod_fld)
          else if(nod_fld%phys_name(i).eq.SGS_div_c_flux_true%name) then
            if(iflag_debug.gt.0) write(*,*)                              &
      &                         'lead  ', trim(nod_fld%phys_name(i) )

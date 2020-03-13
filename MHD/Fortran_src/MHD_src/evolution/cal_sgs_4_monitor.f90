@@ -141,7 +141,7 @@
         call cal_sgs_heat_flux                                          &
      &     (FEM_prm%iflag_temp_supg, FEM_prm%npoint_t_evo_int, dt,      &
      &      SGS_param%iflag_SGS_h_flux, SGS_param%itype_Csym_h_flux,    &
-     &      iphys%SGS_wk%i_sgs_temp, iphys%i_filter_temp,               &
+     &      iphys%SGS_wk%i_sgs_temp, iphys%filter_fld%i_temp,           &
      &      iphys%base%i_velo, iphys%filter_fld%i_velo,                 &
      &      iphys%SGS_term%i_SGS_h_flux,                                &
      &      icomp_sgs%i_heat_flux, iphys_elediff%i_velo,                &
@@ -431,13 +431,13 @@
 !
       if (iphys%true_SGS_eflux%i_SGS_temp_gen .gt. 0) then
           call cal_phys_product_4_scalar                                &
-     &       (iphys%i_filter_temp, iphys%true_div_SGS%i_SGS_h_flux,     &
+     &       (iphys%filter_fld%i_temp, iphys%true_div_SGS%i_SGS_h_flux, &
      &        iphys%true_SGS_eflux%i_SGS_temp_gen, nod_fld)
       end if
 !
       if (iphys%true_SGS_eflux%i_SGS_comp_gen .gt. 0) then
           call cal_phys_product_4_scalar                                &
-     &       (iphys%i_filter_temp, iphys%true_div_SGS%i_SGS_c_flux,     &
+     &       (iphys%i_filter_comp, iphys%true_div_SGS%i_SGS_c_flux,     &
      &        iphys%true_SGS_eflux%i_SGS_comp_gen, nod_fld)
       end if
 !

@@ -168,7 +168,8 @@
 !
         if (fl_prop%iflag_4_filter_gravity .gt. id_turn_OFF) then
           msg = 'Filtered thermal buoyancy needs'
-          call check_missing_field_w_msg(fld, msg, iphys%i_filter_temp)
+          call check_missing_field_w_msg                                &
+     &       (fld, msg, iphys%filter_fld%i_temp)
         end if
 !
         if (fl_prop%iflag_4_filter_comp_buo .gt. id_turn_OFF) then
