@@ -30,9 +30,6 @@
 !>       Structure for start address for fields
       type phys_address
 !
-!>        Start address for filtered current density
-!!         @f$ \bar{B}_{i} @f$
-        integer (kind=kint) :: i_filter_current =  izero
 !>        Start address for filtered vetor potential
 !!         @f$ \bar{A}_{i} @f$
         integer (kind=kint) :: i_filter_vecp =     izero

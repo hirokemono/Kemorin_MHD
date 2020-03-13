@@ -71,10 +71,11 @@
      &    iphys%filter_fld%i_magne, b_trns%filter_fld%i_magne,          &
      &    trns_back)
 !   filtered current density
-      call add_field_name_4_sph_trns(ipol%i_filter_current,             &
+      call add_field_name_4_sph_trns(ipol%filter_fld%i_current,         &
      &    filter_current%name, filter_current%n_comp,                   &
-     &    ipol%i_filter_current, itor%i_filter_current,                 &
-     &    iphys%i_filter_current, b_trns%i_filter_current, trns_back)
+     &    ipol%filter_fld%i_current, itor%filter_fld%i_current,         &
+     &    iphys%filter_fld%i_current, b_trns%filter_fld%i_current,      &
+     &    trns_back)
 !
 !   filtered Inertia
       call add_field_name_4_sph_trns(ipol%SGS_term%i_SGS_inertia,       &
