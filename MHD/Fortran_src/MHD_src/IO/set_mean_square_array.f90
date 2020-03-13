@@ -74,8 +74,9 @@
           if(check_filter_vector(field_name)) then
             if(field_name .eq. filter_velocity%name) then
               call set_rms_address                                      &
-     &           (field_name, num_comps, iphys%i_filter_velo,           &
-     &            i_rms%i_filter_velo, j_ave%i_filter_velo, msq_list)
+     &           (field_name, num_comps, iphys%filter_fld%i_velo,       &
+     &            i_rms%filter_fld%i_velo, j_ave%filter_fld%i_velo,     &
+     &            msq_list)
 !
               i_rms%i_div_filter_v = msq_list%numrms + 1
               j_ave%i_div_filter_v = msq_list%numave + 1
@@ -356,7 +357,7 @@
      &          msq_list)
           else if ( field_name .eq. filter_velocity%name ) then
             call set_rms_address                                        &
-     &         (e_hd_fil_div_v, n_scalar, iphys%i_filter_velo,          &
+     &         (e_hd_fil_div_v, n_scalar, iphys%filter_fld%i_velo,      &
      &          i_rms%i_div_filter_v, j_ave%i_div_filter_v, msq_list)
           else if ( field_name .eq. filter_magne%name ) then
             call set_rms_address                                        &

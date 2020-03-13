@@ -23,7 +23,7 @@
 !!                                   base%i_temp, base%i_light
 !!       Output:  rj_fld(1:is_fld)
 !!                  i_filter_current, i_filter_temp, i_filter_comp, 
-!!          is_fld = i_filter_velo, i_filter_vort, i_filter_magne, 
+!!          is_fld = filter_fld%i_velo, i_filter_vort, i_filter_magne, 
 !!      subroutine cal_sph_wide_filtering_fields                        &
 !!     &         (sph_rj, ipol, sph_wide_f, rj_fld)
 !!       Input:   rj_fld(1:is_fld)
@@ -111,7 +111,7 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      call vector_sph_filter(ipol%base%i_velo, ipol%i_filter_velo,      &
+      call vector_sph_filter(ipol%base%i_velo, ipol%filter_fld%i_velo,  &
      &    sph_rj, sph_base_f%r_filter, sph_base_f%sph_filter, rj_fld)
 !
       call vector_sph_filter(ipol%base%i_vort, ipol%i_filter_vort,      &

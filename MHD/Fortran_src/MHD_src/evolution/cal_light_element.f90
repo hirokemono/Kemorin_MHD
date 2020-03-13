@@ -229,7 +229,7 @@
      &     (FEM_prm%iflag_comp_supg, FEM_prm%npoint_t_evo_int, dt,      &
      &      SGS_param%iflag_SGS_c_flux, SGS_param%itype_Csym_c_flux,    &
      &      iphys%SGS_wk%i_sgs_composit, iphys%i_filter_comp,           &
-     &      iphys%base%i_velo, iphys%i_filter_velo,                     &
+     &      iphys%base%i_velo, iphys%filter_fld%i_velo,                 &
      &      iphys%SGS_term%i_SGS_c_flux,                                &
      &      icomp_sgs%i_comp_flux, iphys_elediff%i_velo, SGS_param,     &
      &      filter_param, mesh%nod_comm, mesh%node, mesh%ele, fluid,    &

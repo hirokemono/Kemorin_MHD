@@ -188,7 +188,7 @@
       if(fd_trns%wide_SGS%i_SGS_inertia .gt. 0) then
         call sel_sph_SGS_induct_nl_gradient                             &
      &     (sph%sph_rtp, wide_filters, MHD_prop%fl_prop%coef_velo,      &
-     &      bg_trns%i_filter_vort, bg_trns%i_filter_velo,               &
+     &      bg_trns%i_filter_vort, bg_trns%filter_fld%i_velo,           &
      &      trns_b_SGS%ncomp, trns_b_SGS%fld_rtp,                       &
      &      bd_trns%diff_fil_vect%i_grad_wx,                            &
      &      bd_trns%diff_fil_vect%i_grad_wy,                            &
@@ -220,7 +220,7 @@
       if(fd_trns%wide_SGS%i_SGS_vp_induct .gt. 0) then
         call sel_sph_SGS_induct_nl_gradient                             &
      &     (sph%sph_rtp, wide_filters, MHD_prop%cd_prop%coef_induct,    &
-     &      bg_trns%i_filter_velo, bg_trns%i_filter_magne,              &
+     &      bg_trns%filter_fld%i_velo, bg_trns%i_filter_magne,          &
      &      trns_b_SGS%ncomp, trns_b_SGS%fld_rtp,                       &
      &      bd_trns%diff_fil_vect%i_grad_vx,                            &
      &      bd_trns%diff_fil_vect%i_grad_vy,                            &
@@ -235,7 +235,7 @@
 !
       if(fd_trns%wide_SGS%i_SGS_h_flux .gt. 0) then
         call sel_SGS_s_flux_nl_gradient(sph%sph_rtp, wide_filters,      &
-     &      MHD_prop%ht_prop%coef_advect, bg_trns%i_filter_velo,        &
+     &      MHD_prop%ht_prop%coef_advect, bg_trns%filter_fld%i_velo,    &
      &      trns_b_SGS%ncomp, trns_b_SGS%fld_rtp,                       &
      &      bd_trns%diff_fil_vect%i_grad_vx,                            &
      &      bd_trns%diff_fil_vect%i_grad_vy,                            &
@@ -248,7 +248,7 @@
 !
       if(fd_trns%wide_SGS%i_SGS_c_flux .gt. 0) then
         call sel_SGS_s_flux_nl_gradient(sph%sph_rtp, wide_filters,      &
-     &      MHD_prop%cp_prop%coef_advect, bg_trns%i_filter_velo,        &
+     &      MHD_prop%cp_prop%coef_advect, bg_trns%filter_fld%i_velo,    &
      &      trns_b_SGS%ncomp, trns_b_SGS%fld_rtp,                       &
      &      bd_trns%diff_fil_vect%i_grad_vx,                            &
      &      bd_trns%diff_fil_vect%i_grad_vy,                            &

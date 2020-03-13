@@ -78,7 +78,7 @@
 !
         if (     icomp_rj .eq. ipol%base%i_velo                         &
      &      .or. icomp_rj .eq. ipol%base%i_magne                        &
-     &      .or. icomp_rj .eq. ipol%i_filter_velo                       &
+     &      .or. icomp_rj .eq. ipol%filter_fld%i_velo                   &
      &      .or. icomp_rj .eq. ipol%i_filter_magne                      &
      &      .or. icomp_rj .eq. ipol%wide_filter_fld%i_velo              &
      &      .or. icomp_rj .eq. ipol%wide_filter_fld%i_magne) then
@@ -125,7 +125,7 @@
 !
         if (     icomp_rj .eq. ipol%base%i_velo                         &
      &      .or. icomp_rj .eq. ipol%base%i_magne                        &
-     &      .or. icomp_rj .eq. ipol%i_filter_velo                       &
+     &      .or. icomp_rj .eq. ipol%filter_fld%i_velo                   &
      &      .or. icomp_rj .eq. ipol%i_filter_magne                      &
      &      .or. icomp_rj .eq. ipol%wide_filter_fld%i_velo              &
      &      .or. icomp_rj .eq. ipol%wide_filter_fld%i_magne) then

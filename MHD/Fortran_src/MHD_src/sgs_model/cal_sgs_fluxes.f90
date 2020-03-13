@@ -220,7 +220,7 @@
         if (iflag_debug.eq.1)                                           &
      &    write(*,*) 'cal_sgs_mf_simi', iphys%SGS_term%i_SGS_m_flux
         call cal_sgs_mf_simi(iphys%SGS_term%i_SGS_m_flux,               &
-     &      iphys%base%i_velo, iphys%i_filter_velo, icomp_sgs_mf,       &
+     &      iphys%base%i_velo, iphys%filter_fld%i_velo, icomp_sgs_mf,   &
      &      filter_param, nod_comm, node, filtering, sgs_coefs_nod,     &
      &      wk_filter, nod_fld)
 !
@@ -364,9 +364,9 @@
      &      write(*,*) 'cal_sgs_induct_t_simi'
         call cal_sgs_induct_t_simi(iphys%SGS_term%i_SGS_induct_t,       &
      &      iphys%base%i_velo, iphys%base%i_magne,                      &
-     &      iphys%i_filter_velo, iphys%i_filter_magne, icomp_sgs_uxb,   &
-     &      filter_param, nod_comm, node, filtering, sgs_coefs_nod,     &
-     &      wk_filter, nod_fld)
+     &      iphys%filter_fld%i_velo, iphys%i_filter_magne,              &
+     &      icomp_sgs_uxb, filter_param, nod_comm, node, filtering,     &
+     &      sgs_coefs_nod, wk_filter, nod_fld)
       end if
 !
       end subroutine cal_sgs_magne_induction

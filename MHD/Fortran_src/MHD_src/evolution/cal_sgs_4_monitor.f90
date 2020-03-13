@@ -142,7 +142,7 @@
      &     (FEM_prm%iflag_temp_supg, FEM_prm%npoint_t_evo_int, dt,      &
      &      SGS_param%iflag_SGS_h_flux, SGS_param%itype_Csym_h_flux,    &
      &      iphys%SGS_wk%i_sgs_temp, iphys%i_filter_temp,               &
-     &      iphys%base%i_velo, iphys%i_filter_velo,                     &
+     &      iphys%base%i_velo, iphys%filter_fld%i_velo,                 &
      &      iphys%SGS_term%i_SGS_h_flux,                                &
      &      icomp_sgs%i_heat_flux, iphys_elediff%i_velo,                &
      &      SGS_param, filter_param, nod_comm, node, ele, fluid,        &
@@ -158,7 +158,7 @@
      &     (FEM_prm%iflag_comp_supg, FEM_prm%npoint_t_evo_int, dt,      &
      &      SGS_param%iflag_SGS_c_flux, SGS_param%itype_Csym_c_flux,    &
      &      iphys%SGS_wk%i_sgs_composit, iphys%i_filter_comp,           &
-     &      iphys%base%i_velo, iphys%i_filter_velo,                     &
+     &      iphys%base%i_velo, iphys%filter_fld%i_velo,                 &
      &      iphys%SGS_term%i_SGS_c_flux,                                &
      &      icomp_sgs%i_comp_flux, iphys_elediff%i_velo,                &
      &      SGS_param, filter_param, nod_comm, node, ele, fluid,        &
@@ -419,13 +419,13 @@
 !$omp parallel
       if (iphys%true_SGS_eflux%i_SGS_Lor_wk .gt. 0) then
           call cal_phys_dot_product                                     &
-     &       (iphys%i_filter_velo, iphys%true_SGS%i_SGS_Lorentz,        &
+     &       (iphys%filter_fld%i_velo, iphys%true_SGS%i_SGS_Lorentz,    &
      &        iphys%true_SGS_eflux%i_SGS_Lor_wk, nod_fld)
       end if
 !
       if (iphys%true_SGS_eflux%i_reynolds_wk .gt. 0) then
           call cal_phys_dot_product                                     &
-     &       (iphys%i_filter_velo, iphys%true_div_SGS%i_SGS_m_flux,     &
+     &       (iphys%filter_fld%i_velo, iphys%true_div_SGS%i_SGS_m_flux, &
      &        iphys%true_SGS_eflux%i_reynolds_wk, nod_fld)
       end if
 !

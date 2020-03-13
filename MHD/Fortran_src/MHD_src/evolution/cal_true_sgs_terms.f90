@@ -138,7 +138,7 @@
      &        (FEM_prm%iflag_temp_supg, FEM_prm%npoint_t_evo_int, dt,   &
      &         iphys%true_div_SGS%i_SGS_h_flux,                         &
      &         iphys%forces%i_h_flux, iphys%div_forces%i_h_flux,        &
-     &         iphys%i_filter_temp, iphys%i_filter_velo, FEM_prm,       &
+     &         iphys%i_filter_temp, iphys%filter_fld%i_velo, FEM_prm,   &
      &         nod_comm, node, ele, fluid, ht_prop, nod_bcs%Tnod_bcs,   &
      &         iphys_ele, ele_fld, fem_int, mk_MHD%mlump_fl,            &
      &         mhd_fem_wk, rhs_mat, nod_fld)
@@ -149,7 +149,7 @@
      &        (FEM_prm%iflag_comp_supg, FEM_prm%npoint_t_evo_int, dt,   &
      &         iphys%true_div_SGS%i_SGS_c_flux,                         &
      &         iphys%forces%i_c_flux, iphys%div_forces%i_c_flux,        &
-     &         iphys%i_filter_comp, iphys%i_filter_velo, FEM_prm,       &
+     &         iphys%i_filter_comp, iphys%filter_fld%i_velo, FEM_prm,   &
      &         nod_comm, node, ele, fluid, cp_prop, nod_bcs%Cnod_bcs,   &
      &         iphys_ele, ele_fld, fem_int, mk_MHD%mlump_fl,            &
      &         mhd_fem_wk, rhs_mat, nod_fld)
@@ -350,7 +350,7 @@
 !
 !
       call cal_flux_tensor                                              &
-     &   (iphys%i_filter_velo, iphys%i_filter_velo,                     &
+     &   (iphys%filter_fld%i_velo, iphys%filter_fld%i_velo,             &
      &    iphys%forces%i_m_flux, nod_fld)
       call cal_terms_4_momentum                                         &
      &   (iphys%div_forces%i_m_flux, iak_diff_mf, iak_diff_lor, dt,     &
@@ -462,7 +462,7 @@
 !
 !
       call cal_induction_tensor                                         &
-     &   (iphys%i_filter_magne, iphys%i_filter_velo,                    &
+     &   (iphys%i_filter_magne, iphys%filter_fld%i_velo,                &
      &    iphys%forces%i_induct_t, nod_fld)
       call cal_terms_4_magnetic                                         &
      &   (iphys%div_forces%i_induct_t, iak_diff_uxb, ak_MHD%ak_d_magne, &

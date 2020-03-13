@@ -31,9 +31,6 @@
       type phys_address
 !
 !>        Start address for filtered velocity
-!!         @f$ \bar{u}_{i} @f$
-        integer (kind=kint) :: i_filter_velo  =    izero
-!>        Start address for filtered velocity
 !!         @f$ \bar{\omega}_{i} @f$
         integer (kind=kint) :: i_filter_vort  =    izero
 !>        Start address for filtered temperature
@@ -145,6 +142,9 @@
         type(energy_flux_address) :: ene_flux
 !>        Structure of gradient of fields
         type(gradient_field_address) :: grad_fld
+!
+!>        Structure of filtered fields
+        type(base_field_address) :: filter_fld
 !
 !>        Structure of wide filtered field
         type(base_field_address) :: wide_filter_fld

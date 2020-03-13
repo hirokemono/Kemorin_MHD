@@ -87,7 +87,7 @@
       if (iflag_debug.gt.0)                                             &
      &     write(*,*) 'cal_sgs_uxb_simi_wide wide_filter_fld%i_velo'
       call cal_sgs_uxb_simi(iphys%SGS_wk%i_wd_nlg,                      &
-     &    iphys%i_filter_velo, iphys%i_filter_magne,                    &
+     &    iphys%filter_fld%i_velo, iphys%i_filter_magne,                &
      &    iphys%wide_filter_fld%i_velo, iphys%wide_filter_fld%i_magne,  &
      &    SGS_par%filter_p, mesh%nod_comm, mesh%node,                   &
      &    FEM_filters%wide_filtering, FEM_SGS_wk%wk_filter, nod_fld)
@@ -98,10 +98,11 @@
 !
       if (iflag_debug.gt.0)                                             &
      &     write(*,*) 'cal_sgs_uxb_simi'
-      call cal_sgs_uxb_simi(iphys%SGS_wk%i_simi, iphys%base%i_velo,     &
-     &   iphys%base%i_magne, iphys%i_filter_velo, iphys%i_filter_magne, &
-     &   SGS_par%filter_p, mesh%nod_comm, mesh%node,                    &
-     &   FEM_filters%filtering, FEM_SGS_wk%wk_filter, nod_fld)
+      call cal_sgs_uxb_simi(iphys%SGS_wk%i_simi,                        &
+     &    iphys%base%i_velo, iphys%base%i_magne,                        &
+     &    iphys%filter_fld%i_velo, iphys%i_filter_magne,                &
+     &    SGS_par%filter_p, mesh%nod_comm, mesh%node,                   &
+     &    FEM_filters%filtering, FEM_SGS_wk%wk_filter, nod_fld)
 !
 !      filtering
 !
@@ -173,7 +174,7 @@
       if (iflag_debug.gt.0)                                             &
      &   write(*,*) 'cal_sgs_induct_t_simi_wide wide_filter_fld%i_velo'
       call cal_sgs_induct_t_simi(iphys%SGS_wk%i_wd_nlg,                 &
-     &    iphys%i_filter_velo, iphys%i_filter_magne,                    &
+     &    iphys%filter_fld%i_velo, iphys%i_filter_magne,                &
      &    iphys%wide_filter_fld%i_velo, iphys%wide_filter_fld%i_magne,  &
      &    icomp_sgs_uxb, SGS_par%filter_p, mesh%nod_comm, mesh%node,    &
      &    FEM_filters%wide_filtering, sgs_coefs_nod,                    &
@@ -186,8 +187,9 @@
       if (iflag_debug.gt.0)                                             &
      &     write(*,*) 'cal_sgs_induct_t_simi'
       call cal_sgs_induct_t_simi(iphys%SGS_term%i_SGS_induct_t,         &
-     &    iphys%base%i_velo, iphys%base%i_magne, iphys%i_filter_velo,   &
-     &    iphys%i_filter_magne, icomp_sgs_uxb, SGS_par%filter_p,        &
+     &    iphys%base%i_velo, iphys%base%i_magne,                        &
+     &    iphys%filter_fld%i_velo, iphys%i_filter_magne,                &
+     &    icomp_sgs_uxb, SGS_par%filter_p,                              &
      &    mesh%nod_comm, mesh%node, FEM_filters%filtering,              &
      &    sgs_coefs_nod, FEM_SGS_wk%wk_filter, nod_fld)
 !

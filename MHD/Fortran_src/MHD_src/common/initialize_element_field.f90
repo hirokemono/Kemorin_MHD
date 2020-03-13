@@ -48,7 +48,7 @@
         else if(ele_fld%phys_name(i) .eq. vorticity%name) then
           iphys_ele%base%i_vort = i0
         else if(ele_fld%phys_name(i) .eq. filter_velocity%name) then
-          iphys_ele%i_filter_velo = i0
+          iphys_ele%filter_fld%i_velo = i0
 !
         else if(ele_fld%phys_name(i) .eq. magnetic_field%name) then
           iphys_ele%base%i_magne = i0

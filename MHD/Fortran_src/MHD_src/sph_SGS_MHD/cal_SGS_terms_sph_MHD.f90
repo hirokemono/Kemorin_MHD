@@ -102,7 +102,7 @@
      &     (sph_rtp%nnod_rtp, MHD_prop%fl_prop%coef_velo,               &
      &      trns_b_SGS%fld_rtp(1,bg_trns%SGS_term%i_SGS_inertia),       &
      &      trns_b_SGS%fld_rtp(1,bg_trns%i_filter_vort),                &
-     &      trns_b_SGS%fld_rtp(1,bg_trns%i_filter_velo),                &
+     &      trns_b_SGS%fld_rtp(1,bg_trns%filter_fld%i_velo),            &
      &      trns_f_SGS%fld_rtp(1,fg_trns%SGS_term%i_SGS_inertia))
       end if
 !
@@ -119,7 +119,7 @@
         call subcract_X_product_w_coef_smp                              &
      &     (sph_rtp%nnod_rtp, MHD_prop%cd_prop%coef_induct,             &
      &      trns_b_SGS%fld_rtp(1,bg_trns%SGS_term%i_SGS_vp_induct),     &
-     &      trns_b_SGS%fld_rtp(1,bg_trns%i_filter_velo),                &
+     &      trns_b_SGS%fld_rtp(1,bg_trns%filter_fld%i_velo),            &
      &      trns_b_SGS%fld_rtp(1,bg_trns%i_filter_magne),               &
      &      trns_f_SGS%fld_rtp(1,fg_trns%SGS_term%i_SGS_vp_induct))
       end if
@@ -128,7 +128,7 @@
         call subtract_scl_flux_w_coef_smp                               &
      &     (sph_rtp%nnod_rtp, MHD_prop%ht_prop%coef_advect,             &
      &      trns_b_SGS%fld_rtp(1,bg_trns%SGS_term%i_SGS_h_flux),        &
-     &      trns_b_SGS%fld_rtp(1,bg_trns%i_filter_velo),                &
+     &      trns_b_SGS%fld_rtp(1,bg_trns%filter_fld%i_velo),            &
      &      trns_b_SGS%fld_rtp(1,bg_trns%i_filter_temp),                &
      &      trns_f_SGS%fld_rtp(1,fg_trns%SGS_term%i_SGS_h_flux))
       end if
@@ -137,7 +137,7 @@
         call subtract_scl_flux_w_coef_smp                               &
      &     (sph_rtp%nnod_rtp, MHD_prop%cp_prop%coef_advect,             &
      &      trns_b_SGS%fld_rtp(1,bg_trns%SGS_term%i_SGS_c_flux),        &
-     &      trns_b_SGS%fld_rtp(1,bg_trns%i_filter_velo),                &
+     &      trns_b_SGS%fld_rtp(1,bg_trns%filter_fld%i_velo),            &
      &      trns_b_SGS%fld_rtp(1,bg_trns%i_filter_temp),                &
      &      trns_f_SGS%fld_rtp(1,fg_trns%SGS_term%i_SGS_c_flux))
       end if

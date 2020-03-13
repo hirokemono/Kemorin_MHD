@@ -45,9 +45,10 @@
       type(address_each_sph_trans), intent(inout) :: trns_DYNG
 !
 !
-      if(bs_trns%i_filter_velo .gt. 0) then
+      if(bs_trns%filter_fld%i_velo .gt. 0) then
         call copy_vect_to_grad_vect_rtp(sph%sph_rtp,                    &
-     &      bs_trns%i_filter_velo, fd_trns%diff_fil_vect%i_grad_vx,     &
+     &      bs_trns%filter_fld%i_velo,                                  &
+     &      fd_trns%diff_fil_vect%i_grad_vx,                            &
      &      fd_trns%diff_fil_vect%i_grad_vy,                            &
      &      fd_trns%diff_fil_vect%i_grad_vz,                            &
      &      trns_b_SGS%ncomp, trns_DYNG%ncomp,                          &

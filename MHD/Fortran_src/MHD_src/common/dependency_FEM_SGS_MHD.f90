@@ -151,7 +151,8 @@
         if ( SGS_param%iflag_SGS_m_flux .eq. id_SGS_similarity          &
      &     .and. SGS_param%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
           msg = 'SGS momentum flux needs'
-          call check_missing_field_w_msg(fld, msg, iphys%i_filter_velo)
+          call check_missing_field_w_msg                                &
+     &       (fld, msg, iphys%filter_fld%i_velo)
         end if
 !
         if (     SGS_param%iflag_SGS_lorentz .eq. id_SGS_similarity     &
@@ -198,7 +199,8 @@
         if    (SGS_param%iflag_SGS_uxb .eq. id_SGS_similarity           &
      &   .and. SGS_param%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
           msg = 'SGS induction needs'
-          call check_missing_field_w_msg(fld, msg, iphys%i_filter_velo)
+          call check_missing_field_w_msg                                &
+     &       (fld, msg, iphys%filter_fld%i_velo)
           call check_missing_field_w_msg                                &
      &       (fld, msg, iphys%i_filter_magne)
         end if

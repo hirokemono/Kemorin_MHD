@@ -99,7 +99,7 @@
           call write_one_label(id_msq, e_hd_rms_j)
           call write_one_label(id_msq, e_hd_rms_j_cd)
 !
-        else if(msq_list%ifld_msq(i) .eq. iphys%i_filter_velo) then
+        else if(msq_list%ifld_msq(i) .eq. iphys%filter_fld%i_velo) then
           if(msq_list%field_name(i) .eq. filter_velocity%name) then
             call write_one_label(id_msq, e_hd_fil_k_ene)
             call write_one_label(id_msq, e_hd_fil_div_v)

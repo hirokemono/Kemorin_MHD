@@ -172,7 +172,7 @@
      &    .or. nd .eq. fem_sq%i_rms%base%i_vort                         &
      &    .or. nd .eq. fem_sq%i_rms%base%i_current                      &
      &    .or. nd .eq. fem_sq%i_msq%ir_sqj_ic                           &
-     &    .or. nd .eq. fem_sq%i_rms%i_filter_velo                       &
+     &    .or. nd .eq. fem_sq%i_rms%filter_fld%i_velo                   &
      &    .or. nd .eq. fem_sq%i_rms%i_filter_magne                      &
      &    .or. nd .eq. fem_sq%i_msq%ir_me_f_ic) then
             fem_sq%msq%rms_global(nd) = fem_sq%msq%rms_global(nd)       &

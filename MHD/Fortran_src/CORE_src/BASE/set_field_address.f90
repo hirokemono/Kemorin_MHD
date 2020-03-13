@@ -79,7 +79,7 @@
      &     (i0, field_name(i), iphys%base, flag)
 !
         if ( field_name(i) .eq. filter_velocity%name ) then
-          iphys%i_filter_velo =    i0
+          iphys%filter_fld%i_velo =    i0
         else if ( field_name(i) .eq. filter_vorticity%name ) then
           iphys%i_filter_vort =    i0
         else if ( field_name(i) .eq. filter_temperature%name ) then

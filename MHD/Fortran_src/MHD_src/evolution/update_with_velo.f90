@@ -125,7 +125,7 @@
 !
 !   required field for explicit filtering
 !
-      if (iphys%i_filter_velo .ne. 0) then
+      if (iphys%filter_fld%i_velo .ne. 0) then
 !
         if (SGS_par%model_p%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF       &
      &      .and. iflag_dmc.eq.0) then
@@ -138,14 +138,14 @@
 !
         if (iflag2 .eq. 1) then
           if(iflag_debug .ge. iflag_routine_msg)                        &
-     &      write(*,*) 'cal_filtered_vector', iphys%i_filter_velo
+     &      write(*,*) 'cal_filtered_vector', iphys%filter_fld%i_velo
           call cal_filtered_vector_whole(SGS_par%filter_p,              &
      &        mesh%nod_comm, mesh%node, FEM_filters%filtering,          &
-     &        iphys%i_filter_velo, iphys%base%i_velo,                   &
+     &        iphys%filter_fld%i_velo, iphys%base%i_velo,               &
      &        FEM_SGS_wk%wk_filter, nod_fld)
-          nod_fld%iflag_update(iphys%i_filter_velo  ) = 1
-          nod_fld%iflag_update(iphys%i_filter_velo+1) = 1
-          nod_fld%iflag_update(iphys%i_filter_velo+2) = 1
+          nod_fld%iflag_update(iphys%filter_fld%i_velo  ) = 1
+          nod_fld%iflag_update(iphys%filter_fld%i_velo+1) = 1
+          nod_fld%iflag_update(iphys%filter_fld%i_velo+2) = 1
         end if
       end if
 !
@@ -155,7 +155,7 @@
      &   then
           call cal_filtered_vector_whole(SGS_par%filter_p,              &
      &        mesh%nod_comm, mesh%node, FEM_filters%wide_filtering,     &
-     &        iphys%wide_filter_fld%i_velo, iphys%i_filter_velo,        &
+     &        iphys%wide_filter_fld%i_velo, iphys%filter_fld%i_velo,    &
      &        FEM_SGS_wk%wk_filter, nod_fld)
           nod_fld%iflag_update(iphys%wide_filter_fld%i_velo  ) = 1
           nod_fld%iflag_update(iphys%wide_filter_fld%i_velo+1) = 1
@@ -169,11 +169,11 @@
      &    .and. SGS_par%model_p%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF   &
      &    .and. iflag_dmc.eq.0) then
 !
-         if (iphys_ele%i_filter_velo.ne.0) then
+         if (iphys_ele%filter_fld%i_velo.ne.0) then
            if(iflag_debug .ge. iflag_routine_msg)                       &
      &                 write(*,*) 'diff_filter_v_on_ele'
            call sel_int_diff_vector_on_ele(FEM_prm%npoint_t_evo_int,    &
-     &        fluid%istack_ele_fld_smp, iphys%i_filter_velo,            &
+     &        fluid%istack_ele_fld_smp, iphys%filter_fld%i_velo,        &
      &        ie_dfvx, mesh%node, mesh%ele, nod_fld, fem_int%jcs,       &
      &        mhd_fem_wk)
          end if

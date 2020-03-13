@@ -107,7 +107,7 @@
      &     write(*,*) 'cal_sgs_mf_simi iphys%SGS_term%i_SGS_m_flux'
       call cal_sgs_mf_simi                                              &
      &   (iphys%SGS_term%i_SGS_m_flux, iphys%base%i_velo,               &
-     &    iphys%i_filter_velo, icomp_sgs_mf, SGS_par%filter_p,          &
+     &    iphys%filter_fld%i_velo, icomp_sgs_mf, SGS_par%filter_p,      &
      &    mesh%nod_comm, mesh%node, FEM_filters%filtering,              &
      &    sgs_coefs_nod, FEM_SGS_wk%wk_filter, nod_fld)
 !
@@ -122,7 +122,7 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'cal_sgs_filter_mf_grad_4_dyn'
       call cal_sgs_m_flux_grad_no_coef(ifilter_4delta,                  &
-     &    iphys%SGS_wk%i_wd_nlg, iphys%i_filter_velo, ie_dfvx, dt,      &
+     &    iphys%SGS_wk%i_wd_nlg, iphys%filter_fld%i_velo, ie_dfvx, dt,  &
      &    FEM_prm, mesh%nod_comm, mesh%node, mesh%ele, fluid,           &
      &    iphys_ele, ele_fld, fem_int%jcs, FEM_filters%FEM_elens,       &
      &    fem_int%rhs_tbl, mk_MHD%mlump_fl, rhs_mat%fem_wk,             &

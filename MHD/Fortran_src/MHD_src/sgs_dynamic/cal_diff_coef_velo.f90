@@ -146,7 +146,7 @@
 !    get filtered pressure(to iphys%SGS_wk%i_wd_nlg)
 !
       call copy_vector_component(nod_fld,                               &
-     &    iphys%i_filter_velo, iphys%SGS_wk%i_wd_nlg)
+     &    iphys%filter_fld%i_velo, iphys%SGS_wk%i_wd_nlg)
       call cal_filtered_scalar_whole                                    &
      &   (SGS_par%filter_p, nod_comm, node, filtering,                  &
      &    i_sgs_grad_fp, iphys%base%i_press, wk_filter, nod_fld)
@@ -158,7 +158,7 @@
      &                      iphys%SGS_wk%i_simi, iphys%SGS_wk%i_wd_nlg
       call choose_cal_rotation                                          &
      &   (FEM_prm%iflag_velo_supg, FEM_prm%npoint_t_evo_int, dt,        &
-     &    iphys%i_filter_velo, iphys%SGS_wk%i_simi,                     &
+     &    iphys%filter_fld%i_velo, iphys%SGS_wk%i_simi,                 &
      &    fluid%istack_ele_fld_smp, mlump_fl, nod_comm, node, ele,      &
      &    iphys_ele, ele_fld, jacs%g_FEM, jacs%jac_3d,                  &
      &    rhs_tbl, fem_wk, f_nl, nod_fld)
