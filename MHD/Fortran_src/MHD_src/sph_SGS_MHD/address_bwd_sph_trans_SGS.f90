@@ -60,10 +60,10 @@
      &    ipol%filter_fld%i_velo, itor%filter_fld%i_velo,               &
      &    iphys%filter_fld%i_velo, b_trns%filter_fld%i_velo, trns_back)
 !   filtered vorticity
-      call add_field_name_4_sph_trns(ipol%i_filter_vort,                &
+      call add_field_name_4_sph_trns(ipol%filter_fld%i_vort,            &
      &    filter_vorticity%name, filter_vorticity%n_comp,               &
-     &    ipol%i_filter_vort, itor%i_filter_vort, iphys%i_filter_vort,  &
-     &    b_trns%i_filter_vort, trns_back)
+     &    ipol%filter_fld%i_vort, itor%filter_fld%i_vort,               &
+     &    iphys%filter_fld%i_vort, b_trns%filter_fld%i_vort, trns_back)
 !   filtered magnetic field
       call add_field_name_4_sph_trns(ipol%i_filter_magne,               &
      &    filter_magne%name, filter_magne%n_comp,                       &

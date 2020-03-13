@@ -101,7 +101,7 @@
         call subcract_X_product_w_coef_smp                              &
      &     (sph_rtp%nnod_rtp, MHD_prop%fl_prop%coef_velo,               &
      &      trns_b_SGS%fld_rtp(1,bg_trns%SGS_term%i_SGS_inertia),       &
-     &      trns_b_SGS%fld_rtp(1,bg_trns%i_filter_vort),                &
+     &      trns_b_SGS%fld_rtp(1,bg_trns%filter_fld%i_vort),            &
      &      trns_b_SGS%fld_rtp(1,bg_trns%filter_fld%i_velo),            &
      &      trns_f_SGS%fld_rtp(1,fg_trns%SGS_term%i_SGS_inertia))
       end if

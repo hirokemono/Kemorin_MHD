@@ -30,9 +30,6 @@
 !>       Structure for start address for fields
       type phys_address
 !
-!>        Start address for filtered velocity
-!!         @f$ \bar{\omega}_{i} @f$
-        integer (kind=kint) :: i_filter_vort  =    izero
 !>        Start address for filtered temperature
 !!         @f$ \bar{T} @f$
         integer (kind=kint) :: i_filter_temp  =    izero

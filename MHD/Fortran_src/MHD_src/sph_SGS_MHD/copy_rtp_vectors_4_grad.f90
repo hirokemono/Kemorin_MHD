@@ -54,9 +54,10 @@
      &      trns_b_SGS%ncomp, trns_DYNG%ncomp,                          &
      &      trns_b_SGS%fld_rtp, trns_DYNG%fld_rtp)
       end if
-      if(bs_trns%i_filter_vort .gt. 0) then
+      if(bs_trns%filter_fld%i_vort .gt. 0) then
         call copy_vect_to_grad_vect_rtp(sph%sph_rtp,                    &
-     &      bs_trns%i_filter_vort, fd_trns%diff_fil_vect%i_grad_wx,     &
+     &      bs_trns%filter_fld%i_vort,                                  &
+     &      fd_trns%diff_fil_vect%i_grad_wx,                            &
      &      fd_trns%diff_fil_vect%i_grad_wy,                            &
      &      fd_trns%diff_fil_vect%i_grad_wz,                            &
      &      trns_b_SGS%ncomp, trns_DYNG%ncomp,                          &

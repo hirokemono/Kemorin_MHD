@@ -188,7 +188,7 @@
       if(fd_trns%wide_SGS%i_SGS_inertia .gt. 0) then
         call sel_sph_SGS_induct_nl_gradient                             &
      &     (sph%sph_rtp, wide_filters, MHD_prop%fl_prop%coef_velo,      &
-     &      bg_trns%i_filter_vort, bg_trns%filter_fld%i_velo,           &
+     &      bg_trns%filter_fld%i_vort, bg_trns%filter_fld%i_velo,       &
      &      trns_b_SGS%ncomp, trns_b_SGS%fld_rtp,                       &
      &      bd_trns%diff_fil_vect%i_grad_wx,                            &
      &      bd_trns%diff_fil_vect%i_grad_wy,                            &
