@@ -80,8 +80,8 @@
      &  .or. (phys_nod_name_ctl .eq. fhd_chk_uxb            )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_chk_mom_2          )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_chk_uxb_2          )           &
-     &  .or. (phys_nod_name_ctl .eq. fhd_forces             )           &
-     &  .or. (phys_nod_name_ctl .eq. fhd_rot_forces         )           &
+     &  .or. (phys_nod_name_ctl .eq. sum_forces%name        )           &
+     &  .or. (phys_nod_name_ctl .eq. rot_sum_forces%name    )           &
      &      )   iflag = 1
 !
       if(     check_base_vector(phys_nod_name_ctl)                      &
@@ -156,7 +156,7 @@
      &   .or. (phys_nod_name_ctl .eq. fhd_chk_composit_2      )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_chk_press_2         )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_chk_potential_2     )         &
-     &   .or. (phys_nod_name_ctl .eq. fhd_div_forces          )         &
+     &   .or. (phys_nod_name_ctl .eq. div_sum_forces%name     )         &
      &      )   iflag = 1
 !
       if(     check_base_scalar(phys_nod_name_ctl)                      &

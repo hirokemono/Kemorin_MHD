@@ -162,11 +162,11 @@
         call set_dble_fil_grad_addresses                                &
      &     (i0, field_name(i), iphys%dbl_filter_grad, flag)
 !
-        if ( field_name(i) .eq. fhd_forces ) then
+        if ( field_name(i) .eq. sum_forces%name ) then
           iphys%i_forces =     i0
-        else if ( field_name(i) .eq. fhd_rot_forces ) then
+        else if ( field_name(i) .eq. rot_sum_forces%name ) then
           iphys%i_rot_forces = i0
-        else if ( field_name(i) .eq. fhd_div_forces ) then
+        else if ( field_name(i) .eq. div_sum_forces%name ) then
           iphys%i_div_forces = i0
         end if
 !

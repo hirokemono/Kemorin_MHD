@@ -306,8 +306,8 @@
         call add_phys_name_ctl(fhd_pre_mom, field_ctl)
         call add_phys_name_ctl(fhd_pre_press, field_ctl)
 !
-        call add_phys_name_ctl(fhd_forces, field_ctl)
-        call add_phys_name_ctl(fhd_div_forces, field_ctl)
+        call add_phys_name_ctl(sum_forces%name, field_ctl)
+        call add_phys_name_ctl(div_sum_forces%name, field_ctl)
       end if
       if      (cd_prop%iflag_Bevo_scheme .ne. id_no_evolution           &
      &    .or. cd_prop%iflag_Aevo_scheme .ne. id_no_evolution) then
