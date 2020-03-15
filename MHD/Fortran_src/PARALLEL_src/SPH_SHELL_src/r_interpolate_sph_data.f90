@@ -216,10 +216,10 @@
      &        .or. rj_fld%phys_name(i_fld) .eq. magnetic_field%name     &
      &        .or. rj_fld%phys_name(i_fld) .eq. magnetic_potential%name &
      &        .or. rj_fld%phys_name(i_fld) .eq. entropy%name            &
-     &        .or. rj_fld%phys_name(i_fld) .eq. fhd_pre_mom             &
-     &        .or. rj_fld%phys_name(i_fld) .eq. fhd_pre_uxb             &
-     &        .or. rj_fld%phys_name(i_fld) .eq. fhd_pre_heat            &
-     &        .or. rj_fld%phys_name(i_fld) .eq. fhd_pre_composit        &
+     &        .or. rj_fld%phys_name(i_fld) .eq. previous_momentum%name  &
+     &        .or. rj_fld%phys_name(i_fld) .eq. previous_induction%name &
+     &        .or. rj_fld%phys_name(i_fld) .eq. previous_heat%name      &
+     &        .or. rj_fld%phys_name(i_fld) .eq. previous_composition%name &
      &        .or. rj_fld%phys_name(i_fld) .eq. heat_source%name        &
      &        .or. rj_fld%phys_name(i_fld) .eq. composition_source%name &
      &        .or. rj_fld%phys_name(i_fld) .eq. entropy_source%name     &

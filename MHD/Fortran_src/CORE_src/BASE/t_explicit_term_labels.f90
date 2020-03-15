@@ -93,44 +93,32 @@
 !  arrays for previous evolution
 !
 !>        Field label for explicit term for momentum at previous step
-      character(len=kchara), parameter                                  &
-     &             :: fhd_pre_mom =        'previous_momentum'
       type(field_def), parameter :: previous_momentum                   &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'previous_momentum',                       &
      &                math = '$ F_{u}^{N-1} $')
 !>        Field label for explicit term for induction at previous step
-      character(len=kchara), parameter                                  &
-     &             :: fhd_pre_uxb =        'previous_induction'
       type(field_def), parameter :: previous_induction                  &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'previous_induction',                      &
      &                math = '$ F_{B}^{N-1} $')
 !>        Field label for explicit term for heat at previous step
-      character(len=kchara), parameter                                  &
-     &             :: fhd_pre_heat =       'previous_heat'
       type(field_def), parameter :: previous_heat                       &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'previous_heat',                           &
      &                math = '$ F_{T}^{N-1} $')
 !>        Field label for explicit term for composition
 !!        at previous step
-      character(len=kchara), parameter                                  &
-     &             :: fhd_pre_composit =   'previous_composition'
       type(field_def), parameter :: previous_composition                &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'previous_composition',                    &
      &                math = '$ F_{C}^{N-1} $')
 !>        Field label for explicit term for pressure at previous step
-      character(len=kchara), parameter                                  &
-     &             :: fhd_pre_press =      'previous_pressure'
       type(field_def), parameter :: previous_pressure                   &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'previous_pressure',                       &
      &                math = '$ P^{N-1} $')
 !>        Field label for explicit term for potential at previous step
-      character(len=kchara), parameter                                  &
-     &             :: fhd_pre_potential =  'previous_potential'
       type(field_def), parameter :: previous_potential                  &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'previous_potential',                      &

@@ -303,21 +303,21 @@
 !
 !
       if(fl_prop%iflag_scheme .ne. id_no_evolution) then
-        call add_phys_name_ctl(fhd_pre_mom, field_ctl)
-        call add_phys_name_ctl(fhd_pre_press, field_ctl)
+        call add_phys_name_ctl(previous_momentum%name, field_ctl)
+        call add_phys_name_ctl(previous_pressure%name, field_ctl)
 !
         call add_phys_name_ctl(sum_forces%name, field_ctl)
         call add_phys_name_ctl(div_sum_forces%name, field_ctl)
       end if
       if      (cd_prop%iflag_Bevo_scheme .ne. id_no_evolution           &
      &    .or. cd_prop%iflag_Aevo_scheme .ne. id_no_evolution) then
-        call add_phys_name_ctl(fhd_pre_uxb, field_ctl)
+        call add_phys_name_ctl(previous_induction%name, field_ctl)
       end if
       if(ht_prop%iflag_scheme .ne.  id_no_evolution) then
-        call add_phys_name_ctl(fhd_pre_heat, field_ctl)
+        call add_phys_name_ctl(previous_heat%name, field_ctl)
       end if
       if(cp_prop%iflag_scheme .ne.  id_no_evolution) then
-        call add_phys_name_ctl(fhd_pre_composit, field_ctl)
+        call add_phys_name_ctl(previous_composition%name, field_ctl)
       end if
 !
       end subroutine add_data_4_previous_step

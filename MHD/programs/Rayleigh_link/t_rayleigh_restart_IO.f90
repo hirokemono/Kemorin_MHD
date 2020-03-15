@@ -233,17 +233,17 @@
         file_name(1) =  set_rayleigh_file_name(dir, i_step, cchar)
         file_name(2) =  set_rayleigh_file_name(dir, i_step, achar)
 !
-      else if(field_name .eq. fhd_pre_mom) then
+      else if(field_name .eq. previous_momentum%name) then
         iflag_ncomp = 2
         file_name(1) =  set_rayleigh_file_name(dir, i_step, wabchar)
         file_name(2) =  set_rayleigh_file_name(dir, i_step, zabchar)
-!      else if(field_name .eq. fhd_pre_press) then
+!      else if(field_name .eq. previous_pressure%name) then
 !        iflag_ncomp = 1
 !        file_name(1) =  set_rayleigh_file_name(dir, i_step, cchar)
-      else if(field_name .eq. fhd_pre_heat) then
+      else if(field_name .eq. previous_heat%name) then
         iflag_ncomp = 1
         file_name(1) =  set_rayleigh_file_name(dir, i_step, tabchar)
-      else if(field_name .eq. fhd_pre_uxb) then
+      else if(field_name .eq. previous_induction%name) then
         iflag_ncomp = 2
         file_name(1) =  set_rayleigh_file_name(dir, i_step, cabchar)
         file_name(2) =  set_rayleigh_file_name(dir, i_step, aabchar)

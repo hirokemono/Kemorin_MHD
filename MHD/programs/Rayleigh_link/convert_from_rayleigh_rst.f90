@@ -173,9 +173,12 @@
           call copy_from_chebyshev_trans(new_sph_mesh%sph%sph_rj,       &
      &        r_itp, j, i_comp,  rayleigh_WK%nri_tgt,                   &
      &        rayleigh_WK%rayleigh_tg(1,1), new_sph_phys)
-        else if(new_sph_phys%phys_name(i_fld) .eq. fhd_pre_mom          &
-     &   .or. new_sph_phys%phys_name(i_fld) .eq. fhd_pre_heat           &
-     &   .or. new_sph_phys%phys_name(i_fld) .eq. fhd_pre_uxb) then
+        else if(new_sph_phys%phys_name(i_fld)                           &
+     &                             .eq. previous_momentum%name          &
+     &   .or. new_sph_phys%phys_name(i_fld)                             &
+     &                             .eq. previous_heat%name              &
+     &   .or. new_sph_phys%phys_name(i_fld)                             &
+     &                             .eq. previous_induction%name) then
           call radial_interpolation_rayleigh(r_itp,                     &
      &        ra_rst%nri_org, rayleigh_WK%rayleigh_in(1,1),             &
      &        rayleigh_WK%nri_tgt, rayleigh_WK%rayleigh_tg(1,1))

@@ -74,8 +74,8 @@
       if (   (phys_nod_name_ctl .eq. geostrophic_balance%name)          &
      &      )   iflag = 1
 !
-      if (   (phys_nod_name_ctl .eq. fhd_pre_mom            )           &
-     &  .or. (phys_nod_name_ctl .eq. fhd_pre_uxb            )           &
+      if (   (phys_nod_name_ctl .eq. previous_momentum%name            )           &
+     &  .or. (phys_nod_name_ctl .eq. previous_induction%name            )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_chk_mom            )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_chk_uxb            )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_chk_mom_2          )           &
@@ -145,9 +145,9 @@
 !
       if (iflag .gt. 0) return
 !
-      if (    (phys_nod_name_ctl .eq. fhd_pre_heat            )         &
-     &   .or. (phys_nod_name_ctl .eq. fhd_pre_composit        )         &
-     &   .or. (phys_nod_name_ctl .eq. fhd_pre_press           )         &
+      if (    (phys_nod_name_ctl .eq. previous_heat%name      )         &
+     &   .or. (phys_nod_name_ctl .eq. previous_composition%name)        &
+     &   .or. (phys_nod_name_ctl .eq. previous_pressure%name  )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_chk_heat            )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_chk_composit        )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_chk_press           )         &

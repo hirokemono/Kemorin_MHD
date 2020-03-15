@@ -258,7 +258,7 @@
       iflag = 0
       if    (d_name .eq. velocity%name                                  &
      &  .or. d_name .eq. pressure%name                                  &
-     &  .or. d_name .eq. fhd_pre_mom) then
+     &  .or. d_name .eq. previous_momentum%name) then
         iflag = 1
         return
       end if
@@ -266,20 +266,20 @@
       if    (d_name .eq. vector_potential%name                          &
      &  .or. d_name .eq. magnetic_field%name                            &
      &  .or. d_name .eq. magnetic_potential%name                        &
-     &  .or. d_name .eq. fhd_pre_uxb) then
+     &  .or. d_name .eq. previous_induction%name) then
         iflag = 1
         return
       end if
 !
       if    (d_name .eq. temperature%name                               &
-     &  .or. d_name .eq. fhd_pre_heat                                   &
+     &  .or. d_name .eq. previous_heat%name                             &
      &  .or. d_name .eq. heat_source%name) then
         iflag = 1
         return
       end if
 !
       if    (d_name .eq. composition%name                               &
-     &  .or. d_name .eq. fhd_pre_composit                               &
+     &  .or. d_name .eq. previous_composition%name                      &
      &  .or. d_name .eq. composition_source%name) then
         iflag = 1
         return
@@ -300,8 +300,8 @@
       if (      rst_name .eq. velocity%name                             &
      &     .or. rst_name .eq. vector_potential%name                     &
      &     .or. rst_name .eq. magnetic_field%name                       &
-     &     .or. rst_name .eq. fhd_pre_mom                               &
-     &     .or. rst_name .eq. fhd_pre_uxb                               &
+     &     .or. rst_name .eq. previous_momentum%name                    &
+     &     .or. rst_name .eq. previous_induction%name                   &
      &     .or. rst_name .eq. fhd_chk_mom                               &
      &     .or. rst_name .eq. fhd_chk_uxb   ) then
         numdir = 3
@@ -310,8 +310,8 @@
      &     .or. rst_name .eq. temperature%name                          &
      &     .or. rst_name .eq. composition%name                          &
      &     .or. rst_name .eq. magnetic_potential%name                   &
-     &     .or. rst_name .eq. fhd_pre_heat                              &
-     &     .or. rst_name .eq. fhd_pre_composit                          &
+     &     .or. rst_name .eq. previous_heat%name                        &
+     &     .or. rst_name .eq. previous_composition%name                 &
      &     .or. rst_name .eq. fhd_chk_heat                              &
      &     .or. rst_name .eq. fhd_chk_composit                          &
      &     .or. rst_name .eq. fhd_chk_press                             &

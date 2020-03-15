@@ -182,15 +182,15 @@
         call set_filter_ene_flux_addresses(i0, field_name(i),           &
      &      iphys%eflux_by_filter, flag)
 !
-        if ( field_name(i) .eq. fhd_pre_mom ) then
+        if ( field_name(i) .eq. previous_momentum%name ) then
           iphys%i_pre_mom =      i0
-        else if ( field_name(i) .eq. fhd_pre_uxb ) then
+        else if ( field_name(i) .eq. previous_induction%name ) then
           iphys%i_pre_uxb =      i0
-        else if ( field_name(i) .eq. fhd_pre_heat ) then
+        else if ( field_name(i) .eq. previous_heat%name ) then
           iphys%i_pre_heat =     i0
-        else if ( field_name(i) .eq. fhd_pre_composit ) then
+        else if ( field_name(i) .eq. previous_composition%name ) then
           iphys%i_pre_composit = i0
-        else if ( field_name(i) .eq. fhd_pre_press ) then
+        else if ( field_name(i) .eq. previous_pressure%name ) then
           iphys%i_pre_press =    i0
 !
         else if ( field_name(i) .eq. fhd_chk_mom ) then

@@ -127,13 +127,13 @@
 !
 !
       call add_vector_field_4_raylegh(dir, i_step, wabchar, zabchar,    &
-     &    fhd_pre_mom, icou, fld_IO)
+     &    previous_momentum%name, icou, fld_IO)
 !      call add_scalar_field_4_raylegh(dir, i_step, pabchar,            &
-!     &    fhd_pre_press, icou, fld_IO)
+!     &    previous_pressure%name, icou, fld_IO)
       call add_scalar_field_4_raylegh(dir, i_step, tabchar,             &
-     &    fhd_pre_heat, icou, fld_IO)
+     &    previous_heat%name, icou, fld_IO)
       call add_vector_field_4_raylegh(dir, i_step, cabchar, aabchar,    &
-     &    fhd_pre_uxb, icou, fld_IO)
+     &    previous_induction%name, icou, fld_IO)
 !
       end subroutine set_rayleigh_restart_field
 !
