@@ -160,45 +160,33 @@
      &                math = '$ \varphi^{N-1} $')
 !
 !>        Field label for explicit term for momentum for 2nd check
-      character(len=kchara), parameter                                  &
-     &             :: fhd_chk_mom_2 =       'check_momentum_2'
       type(field_def), parameter :: check_momentum_2                    &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'check_momentum_2',                        &
      &                math = '$ u_{i}^{N-2} $')
 !>        Field label for explicit term for induction for 2nd check
-      character(len=kchara), parameter                                  &
-     &             :: fhd_chk_uxb_2 =       'check_induction_2'
       type(field_def), parameter :: check_induction_2                   &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'check_induction_2',                       &
      &                math = '$ B_{i}^{N-2} $')
 !>        Field label for explicit term for heat for 2nd check
-      character(len=kchara), parameter                                  &
-     &             :: fhd_chk_heat_2 =      'check_heat_2'
       type(field_def), parameter :: check_heat_2                        &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'check_heat_2',                            &
      &                math = '$ T^{N-2} $')
 !>        Field label for explicit term for composition
 !!        for 2nd check
-      character(len=kchara), parameter                                  &
-     &             :: fhd_chk_composit_2 =  'check_composition_2'
       type(field_def), parameter :: check_composition_2                 &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'check_composition_2',                     &
      &                math = '$ C^{N-2} $')
 !>        Field label for explicit term for pressure for 2nd check
-      character(len=kchara), parameter                                  &
-     &             :: fhd_chk_press_2 =     'check_pressure_2'
       type(field_def), parameter :: check_pressure_2                    &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'check_pressure_2',                        &
      &                math = '$ P^{N-2} $')
 !>        Field label for explicit term for electric potential
 !!        for 2nd check
-      character(len=kchara), parameter                                  &
-     &             :: fhd_chk_potential_2 = 'check_potential_2'
       type(field_def), parameter :: check_potential_2                   &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'check_potential_2',                       &

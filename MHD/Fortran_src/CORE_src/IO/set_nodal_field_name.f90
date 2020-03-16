@@ -78,8 +78,8 @@
      &  .or. (phys_nod_name_ctl .eq. previous_induction%name            )           &
      &  .or. (phys_nod_name_ctl .eq. check_momentum%name            )           &
      &  .or. (phys_nod_name_ctl .eq. check_induction%name            )           &
-     &  .or. (phys_nod_name_ctl .eq. fhd_chk_mom_2          )           &
-     &  .or. (phys_nod_name_ctl .eq. fhd_chk_uxb_2          )           &
+     &  .or. (phys_nod_name_ctl .eq. check_momentum_2%name          )           &
+     &  .or. (phys_nod_name_ctl .eq. check_induction_2%name          )           &
      &  .or. (phys_nod_name_ctl .eq. sum_forces%name        )           &
      &  .or. (phys_nod_name_ctl .eq. rot_sum_forces%name    )           &
      &      )   iflag = 1
@@ -152,10 +152,10 @@
      &   .or. (phys_nod_name_ctl .eq. check_composition%name  )         &
      &   .or. (phys_nod_name_ctl .eq. check_pressure%name     )         &
      &   .or. (phys_nod_name_ctl .eq. check_potential%name    )         &
-     &   .or. (phys_nod_name_ctl .eq. fhd_chk_heat_2          )         &
-     &   .or. (phys_nod_name_ctl .eq. fhd_chk_composit_2      )         &
-     &   .or. (phys_nod_name_ctl .eq. fhd_chk_press_2         )         &
-     &   .or. (phys_nod_name_ctl .eq. fhd_chk_potential_2     )         &
+     &   .or. (phys_nod_name_ctl .eq. check_heat_2%name       )         &
+     &   .or. (phys_nod_name_ctl .eq. check_composition_2%name)         &
+     &   .or. (phys_nod_name_ctl .eq. check_pressure_2%name         )         &
+     &   .or. (phys_nod_name_ctl .eq. check_potential_2%name     )         &
      &   .or. (phys_nod_name_ctl .eq. div_sum_forces%name     )         &
      &      )   iflag = 1
 !

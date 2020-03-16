@@ -352,19 +352,19 @@
       end if
 !
 !      if(fl_prop%iflag_scheme .ge. id_Crank_nicolson) then
-!        call add_phys_name_ctl(fhd_chk_mom_2, field_ctl)
-!        call add_phys_name_ctl(fhd_chk_press_2, field_ctl)
+!        call add_phys_name_ctl(check_momentum_2%name, field_ctl)
+!        call add_phys_name_ctl(check_pressure_2%name, field_ctl)
 !      end if
 !      if     (cd_prop%iflag_Bevo_scheme .ge. id_Crank_nicolson         &
 !     &   .or. cd_prop%iflag_Aevo_scheme .ge. id_Crank_nicolson) then
-!        call add_phys_name_ctl(fhd_chk_uxb_2, field_ctl)
-!        call add_phys_name_ctl(fhd_chk_potential_2, field_ctl)
+!        call add_phys_name_ctl(check_induction_2%name, field_ctl)
+!        call add_phys_name_ctl(check_potential_2%name, field_ctl)
 !      end if
 !      if(ht_prop%iflag_scheme .ge. id_Crank_nicolson) then
-!        call add_phys_name_ctl(fhd_chk_heat_2, field_ctl)
+!        call add_phys_name_ctl(check_heat_2%name, field_ctl)
 !      end if
 !      if(cp_prop%iflag_scheme .ge. id_Crank_nicolson) then
-!        call add_phys_name_ctl(fhd_chk_composit_2, field_ctl)
+!        call add_phys_name_ctl(check_composition_2%name, field_ctl)
 !      end if
 !
       end subroutine add_data_4_check_step
