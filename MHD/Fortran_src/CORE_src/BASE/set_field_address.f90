@@ -193,17 +193,17 @@
         else if ( field_name(i) .eq. previous_pressure%name ) then
           iphys%i_pre_press =    i0
 !
-        else if ( field_name(i) .eq. fhd_chk_mom ) then
+        else if ( field_name(i) .eq. check_momentum%name ) then
           iphys%i_chk_mom =       i0
-        else if ( field_name(i) .eq. fhd_chk_uxb ) then
+        else if ( field_name(i) .eq. check_induction%name ) then
           iphys%i_chk_uxb =       i0
-        else if ( field_name(i) .eq. fhd_chk_heat ) then
+        else if ( field_name(i) .eq. check_heat%name ) then
           iphys%i_chk_heat =      i0
-        else if ( field_name(i) .eq. fhd_chk_composit ) then
+        else if ( field_name(i) .eq. check_composition%name ) then
           iphys%i_chk_composit =  i0
-        else if ( field_name(i) .eq. fhd_chk_press ) then
+        else if ( field_name(i) .eq. check_pressure%name ) then
           iphys%i_chk_press =     i0
-        else if ( field_name(i) .eq. fhd_chk_potential ) then
+        else if ( field_name(i) .eq. check_potential%name ) then
           iphys%i_chk_potential = i0
 !
         else if ( field_name(i) .eq. fhd_chk_mom_2 ) then

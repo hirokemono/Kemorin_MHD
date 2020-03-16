@@ -336,19 +336,19 @@
 !
 !
       if(fl_prop%iflag_scheme .ne. id_no_evolution) then
-        call add_phys_name_ctl(fhd_chk_mom, field_ctl)
-        call add_phys_name_ctl(fhd_chk_press, field_ctl)
+        call add_phys_name_ctl(check_momentum%name, field_ctl)
+        call add_phys_name_ctl(check_pressure%name, field_ctl)
       end if
       if(cd_prop%iflag_Bevo_scheme .ne. id_no_evolution                 &
      &     .or. cd_prop%iflag_Aevo_scheme .ne. id_no_evolution) then
-        call add_phys_name_ctl(fhd_chk_uxb, field_ctl)
-        call add_phys_name_ctl(fhd_chk_potential, field_ctl)
+        call add_phys_name_ctl(check_induction%name, field_ctl)
+        call add_phys_name_ctl(check_potential%name, field_ctl)
       end if
       if(ht_prop%iflag_scheme .ne.  id_no_evolution) then
-        call add_phys_name_ctl(fhd_chk_heat, field_ctl)
+        call add_phys_name_ctl(check_heat%name, field_ctl)
       end if
       if(cp_prop%iflag_scheme .ne.  id_no_evolution) then
-        call add_phys_name_ctl(fhd_chk_composit, field_ctl)
+        call add_phys_name_ctl(check_composition%name, field_ctl)
       end if
 !
 !      if(fl_prop%iflag_scheme .ge. id_Crank_nicolson) then

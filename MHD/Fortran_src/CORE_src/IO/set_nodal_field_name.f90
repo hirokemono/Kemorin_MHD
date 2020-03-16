@@ -76,8 +76,8 @@
 !
       if (   (phys_nod_name_ctl .eq. previous_momentum%name            )           &
      &  .or. (phys_nod_name_ctl .eq. previous_induction%name            )           &
-     &  .or. (phys_nod_name_ctl .eq. fhd_chk_mom            )           &
-     &  .or. (phys_nod_name_ctl .eq. fhd_chk_uxb            )           &
+     &  .or. (phys_nod_name_ctl .eq. check_momentum%name            )           &
+     &  .or. (phys_nod_name_ctl .eq. check_induction%name            )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_chk_mom_2          )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_chk_uxb_2          )           &
      &  .or. (phys_nod_name_ctl .eq. sum_forces%name        )           &
@@ -148,10 +148,10 @@
       if (    (phys_nod_name_ctl .eq. previous_heat%name      )         &
      &   .or. (phys_nod_name_ctl .eq. previous_composition%name)        &
      &   .or. (phys_nod_name_ctl .eq. previous_pressure%name  )         &
-     &   .or. (phys_nod_name_ctl .eq. fhd_chk_heat            )         &
-     &   .or. (phys_nod_name_ctl .eq. fhd_chk_composit        )         &
-     &   .or. (phys_nod_name_ctl .eq. fhd_chk_press           )         &
-     &   .or. (phys_nod_name_ctl .eq. fhd_chk_potential       )         &
+     &   .or. (phys_nod_name_ctl .eq. check_heat%name         )         &
+     &   .or. (phys_nod_name_ctl .eq. check_composition%name  )         &
+     &   .or. (phys_nod_name_ctl .eq. check_pressure%name     )         &
+     &   .or. (phys_nod_name_ctl .eq. check_potential%name    )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_chk_heat_2          )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_chk_composit_2      )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_chk_press_2         )         &

@@ -127,45 +127,33 @@
 !  arrays for evolution check
 !
 !>        Field label for explicit term for momentum for check
-      character(len=kchara), parameter                                  &
-     &             :: fhd_chk_mom =       'check_momentum'
       type(field_def), parameter :: check_momentum                      &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'check_momentum',                          &
      &                math = '$ u_{i}^{N-1} $')
 !>        Field label for explicit term for induction for check
-      character(len=kchara), parameter                                  &
-     &             :: fhd_chk_uxb =       'check_induction'
       type(field_def), parameter :: check_induction                     &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'check_induction',                         &
      &                math = '$ B_{i}^{N-1} $')
 !>        Field label for explicit term for heat for check
-      character(len=kchara), parameter                                  &
-     &             :: fhd_chk_heat =      'check_heat'
       type(field_def), parameter :: check_heat                          &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'check_heat',                              &
      &                math = '$ T^{N-1} $')
 !>        Field label for explicit term for composition
 !!        for check
-      character(len=kchara), parameter                                  &
-     &             :: fhd_chk_composit =  'check_composition'
       type(field_def), parameter :: check_composition                   &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'check_composition',                       &
      &                math = '$ C^{N-1} $')
 !>        Field label for explicit term for pressure for check
-      character(len=kchara), parameter                                  &
-     &             :: fhd_chk_press =     'check_pressure'
       type(field_def), parameter :: check_pressure                      &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'check_pressure',                          &
      &                math = '$ P^{N-1} $')
 !>        Field label for explicit term for electric potential
 !!        for check
-      character(len=kchara), parameter                                  &
-     &             :: fhd_chk_potential = 'check_potential'
       type(field_def), parameter :: check_potential                     &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'check_potential',                         &

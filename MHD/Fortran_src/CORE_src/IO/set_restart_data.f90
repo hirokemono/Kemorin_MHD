@@ -302,8 +302,8 @@
      &     .or. rst_name .eq. magnetic_field%name                       &
      &     .or. rst_name .eq. previous_momentum%name                    &
      &     .or. rst_name .eq. previous_induction%name                   &
-     &     .or. rst_name .eq. fhd_chk_mom                               &
-     &     .or. rst_name .eq. fhd_chk_uxb   ) then
+     &     .or. rst_name .eq. check_momentum%name                       &
+     &     .or. rst_name .eq. check_induction%name   ) then
         numdir = 3
 !
       else if  (rst_name .eq. pressure%name                             &
@@ -312,10 +312,10 @@
      &     .or. rst_name .eq. magnetic_potential%name                   &
      &     .or. rst_name .eq. previous_heat%name                        &
      &     .or. rst_name .eq. previous_composition%name                 &
-     &     .or. rst_name .eq. fhd_chk_heat                              &
-     &     .or. rst_name .eq. fhd_chk_composit                          &
-     &     .or. rst_name .eq. fhd_chk_press                             &
-     &     .or. rst_name .eq. fhd_chk_potential    ) then
+     &     .or. rst_name .eq. check_heat%name                           &
+     &     .or. rst_name .eq. check_composition%name                    &
+     &     .or. rst_name .eq. check_pressure%name                       &
+     &     .or. rst_name .eq. check_potential%name    ) then
         numdir = 1
       end if
 !

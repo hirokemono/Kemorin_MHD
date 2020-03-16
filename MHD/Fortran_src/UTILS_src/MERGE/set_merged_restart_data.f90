@@ -35,7 +35,7 @@
      &     .or. fld%phys_name(i) .eq. magnetic_field%name               &
      &     .or. fld%phys_name(i) .eq. magnetic_potential%name           &
      &     .or. fld%phys_name(i) .eq. previous_induction%name           &
-     &     .or. fld%phys_name(i) .eq. fhd_chk_uxb) then
+     &     .or. fld%phys_name(i) .eq. check_induction%name) then
         jst = fld%istack_component(i-1) + 1
         jed = fld%istack_component(i)
 !$omp parallel
