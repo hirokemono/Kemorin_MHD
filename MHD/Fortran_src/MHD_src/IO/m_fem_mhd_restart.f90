@@ -144,8 +144,9 @@
       type(field_IO), intent(inout) :: fem_fst_IO
 !
 !
-      if(iphys%i_pre_mom .gt. 0) then
-        call vector_send_recv(iphys%i_pre_mom, nod_comm, nod_fld)
+      if(iphys%exp_work%i_pre_mom .gt. 0) then
+        call vector_send_recv                                           &
+     &     (iphys%exp_work%i_pre_mom, nod_comm, nod_fld)
       end if
       if(iphys%exp_work%i_pre_uxb .gt. 0) then
         call vector_send_recv                                           &

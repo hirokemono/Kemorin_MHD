@@ -79,14 +79,14 @@
         d_rj(inod,ipol%base%i_vort) = d_rj(inod,ipol%base%i_vort)       &
      &         + dt * (coef_exp * d_rj(inod,ipol%diffusion%i_w_diffuse) &
      &                 + adam_0 * d_rj(inod,ipol%i_forces)              &
-     &                 + adam_1 * d_rj(inod,ipol%i_pre_mom))
+     &                 + adam_1 * d_rj(inod,ipol%exp_work%i_pre_mom))
         d_rj(inod,itor%base%i_vort) = d_rj(inod,itor%base%i_vort)       &
      &         + dt * (coef_exp * d_rj(inod,itor%diffusion%i_w_diffuse) &
      &                 + adam_0 * d_rj(inod,itor%i_forces)              &
-     &                 + adam_1 * d_rj(inod,itor%i_pre_mom))
+     &                 + adam_1 * d_rj(inod,itor%exp_work%i_pre_mom))
 !
-        d_rj(inod,ipol%i_pre_mom) = d_rj(inod,ipol%i_forces)
-        d_rj(inod,itor%i_pre_mom) = d_rj(inod,itor%i_forces)
+        d_rj(inod,ipol%exp_work%i_pre_mom) = d_rj(inod,ipol%i_forces)
+        d_rj(inod,itor%exp_work%i_pre_mom) = d_rj(inod,itor%i_forces)
       end do
 !$omp end parallel do
 !
@@ -361,8 +361,8 @@
 !
 !$omp parallel do private (inod)
       do inod = 1, nnod_rj
-        d_rj(inod,ipol%i_pre_mom) = d_rj(inod,ipol%i_forces)
-        d_rj(inod,itor%i_pre_mom) = d_rj(inod,itor%i_forces)
+        d_rj(inod,ipol%exp_work%i_pre_mom) = d_rj(inod,ipol%i_forces)
+        d_rj(inod,itor%exp_work%i_pre_mom) = d_rj(inod,itor%i_forces)
       end do
 !$omp end parallel do
 !

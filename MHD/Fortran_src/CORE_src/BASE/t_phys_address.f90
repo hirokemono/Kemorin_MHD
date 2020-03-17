@@ -50,11 +50,6 @@
 !>        start address for divergence of total forces
         integer (kind=kint) :: i_div_forces =   izero
 !
-!  arrays for previous evolution
-!
-!>        start address for explicit term for momentum at previous step
-        integer (kind=kint) :: i_pre_mom =      izero
-!
 !>        start address for rotation of ststem @f$ Omega @f$
 !!          i_omega:   poloidal component
 !!          i_omega+1: radial derivative of poloidal component

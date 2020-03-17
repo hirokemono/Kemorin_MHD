@@ -184,7 +184,7 @@
      &      iphys%eflux_by_filter, flag)
 !
         if ( field_name(i) .eq. previous_momentum%name ) then
-          iphys%i_pre_mom =      i0
+          iphys%exp_work%i_pre_mom =      i0
         else if ( field_name(i) .eq. previous_induction%name ) then
           iphys%exp_work%i_pre_uxb =      i0
         else if ( field_name(i) .eq. previous_heat%name ) then

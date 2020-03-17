@@ -305,12 +305,12 @@
       else if(fl_prop%iflag_scheme .eq. id_Crank_nicolson_cmass) then 
         call cal_velo_pre_consist_crank(SGS_par%commute_p%iflag_c_velo, &
      &      SGS_par%model_p%ifilter_final,                              &
-     &      iphys%base%i_velo, iphys%i_pre_mom, ifld_diff%i_velo,       &
-     &      ak_MHD%ak_d_velo, dt, FEM_prm, node, ele, fluid, fl_prop,   &
-     &      Vnod_bcs, fem_int%jcs%g_FEM, fem_int%jcs%jac_3d,            &
-     &      fem_int%rhs_tbl, FEM_elens, diff_coefs, Vmatrix,            &
-     &      MG_vector, mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%f_l,         &
-     &       rhs_mat%f_nl, nod_fld)
+     &      iphys%base%i_velo, iphys%exp_work%i_pre_mom,                &
+     &      ifld_diff%i_velo, ak_MHD%ak_d_velo, dt, FEM_prm,            &
+     &      node, ele, fluid, fl_prop, Vnod_bcs,                        &
+     &      fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,     &
+     &      FEM_elens, diff_coefs, Vmatrix, MG_vector, mhd_fem_wk,      &
+     &      rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
       end if
 !
       call set_boundary_velo                                            &

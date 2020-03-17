@@ -317,8 +317,8 @@
       call set_vect_sph_address(ipol%i_rot_forces, itor%i_rot_forces,   &
      &    idpdr%i_rot_forces)
 !
-      call set_vect_sph_address(ipol%i_pre_mom, itor%i_pre_mom,         &
-     &    idpdr%i_pre_mom)
+      call set_vect_sph_address(ipol%exp_work%i_pre_mom,                &
+     &    itor%exp_work%i_pre_mom, idpdr%exp_work%i_pre_mom)
       call set_vect_sph_address(ipol%exp_work%i_pre_uxb,                &
      &    itor%exp_work%i_pre_uxb, idpdr%exp_work%i_pre_uxb)
 !

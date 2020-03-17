@@ -182,7 +182,8 @@
       call cal_sol_vec_fluid_linear                                     &
      &   (dt, node%numnod, node%istack_nod_smp,                         &
      &    mlump_fl%ml_o, f_nl%ff, nod_fld%ntot_phys, n_vector,          &
-     &    iphys%base%i_velo, iphys%i_pre_mom, nod_fld%d_fld, f_l%ff)
+     &    iphys%base%i_velo, iphys%exp_work%i_pre_mom,                  &
+     &    nod_fld%d_fld, f_l%ff)
 !
       call solver_crank_vector                                          &
      &   (node, FEM_prm%MG_param, Vmatrix%nlevel_MG,                    &
