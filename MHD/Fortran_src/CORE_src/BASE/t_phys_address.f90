@@ -47,8 +47,6 @@
         integer (kind=kint) :: i_forces =       izero
 !>        start address for curl of total forces
         integer (kind=kint) :: i_rot_forces =   izero
-!>        start address for divergence of total forces
-        integer (kind=kint) :: i_div_forces =   izero
 !
 !>        start address for rotation of ststem @f$ Omega @f$
 !!          i_omega:   poloidal component

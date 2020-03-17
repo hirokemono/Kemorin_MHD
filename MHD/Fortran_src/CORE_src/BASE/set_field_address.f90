@@ -168,7 +168,7 @@
         else if ( field_name(i) .eq. rot_sum_forces%name ) then
           iphys%i_rot_forces = i0
         else if ( field_name(i) .eq. div_sum_forces%name ) then
-          iphys%i_div_forces = i0
+          iphys%exp_work%i_div_forces = i0
         end if
 !
         call set_rot_force_addresses(i0, field_name(i),                 &
