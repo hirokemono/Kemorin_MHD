@@ -90,8 +90,6 @@
 !>        start address for explicit term for composition
 !!        for 2nd check
         integer (kind=kint) :: i_chk_composit_2 =  izero
-!>        start address for explicit term for pressure for 2nd check
-        integer (kind=kint) :: i_chk_press_2 =     izero
 !
 !>        start address for rotation of ststem @f$ Omega @f$
 !!          i_omega:   poloidal component

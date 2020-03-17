@@ -39,9 +39,9 @@
      &      iphys%i_chk_mom, iphys%i_chk_mom_2)
       end if
 !
-      if((iphys%i_chk_press_2*iphys%i_chk_press) .gt. izero) then
+      if(iphys%check_fld2%i_pre_press .gt. izero) then
         call copy_scalar_component(nod_fld,                             &
-     &      iphys%i_chk_press, iphys%i_chk_press_2)
+     &      iphys%i_chk_press, iphys%check_fld2%i_pre_press)
       end if
 !
 !

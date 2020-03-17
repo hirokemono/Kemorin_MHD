@@ -63,8 +63,9 @@
         if(iflag_debug .gt. izero)                                      &
      &      write(*,*) 'check_scalar_evo_by_previous press'
         call check_scalar_evo_by_previous                               &
-     &     (node%numnod, node%istack_nod_smp, nod_fld%ntot_phys,        &
-     &      iphys%base%i_press, iphys%i_chk_press, iphys%i_chk_press_2, &
+     &     (node%numnod, node%istack_nod_smp,                           &
+     &      nod_fld%ntot_phys, iphys%base%i_press,                      &
+     &      iphys%i_chk_press, iphys%check_fld2%i_pre_press, &
      &      flex_data%i_drmax_p, nod_fld%d_fld, flex_data)
       end if
 !
