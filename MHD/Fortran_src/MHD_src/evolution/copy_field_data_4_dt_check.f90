@@ -56,14 +56,14 @@
       end if
 !
 !
-      if((iphys%i_chk_heat_2*iphys%i_chk_heat) .gt. izero) then
+      if(iphys%check_fld2%i_pre_heat .gt. izero) then
         call copy_scalar_component(nod_fld,                             &
-     &      iphys%i_chk_heat, iphys%i_chk_heat_2)
+     &      iphys%i_chk_heat, iphys%check_fld2%i_pre_heat)
       end if
 !
-      if((iphys%i_chk_composit_2*iphys%i_chk_composit) .gt. izero) then
+      if(iphys%check_fld2%i_pre_composit .gt. izero) then
         call copy_scalar_component(nod_fld,                             &
-     &      iphys%i_chk_composit, iphys%i_chk_composit_2)
+     &      iphys%i_chk_composit, iphys%check_fld2%i_pre_composit)
       end if
 !
 !

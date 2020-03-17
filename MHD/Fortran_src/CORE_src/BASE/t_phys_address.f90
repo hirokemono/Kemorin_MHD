@@ -85,11 +85,6 @@
         integer (kind=kint) :: i_chk_mom_2 =       izero
 !>        start address for explicit term for induction for 2nd check
         integer (kind=kint) :: i_chk_uxb_2 =       izero
-!>        start address for explicit term for heat for 2nd check
-        integer (kind=kint) :: i_chk_heat_2 =      izero
-!>        start address for explicit term for composition
-!!        for 2nd check
-        integer (kind=kint) :: i_chk_composit_2 =  izero
 !
 !>        start address for rotation of ststem @f$ Omega @f$
 !!          i_omega:   poloidal component
