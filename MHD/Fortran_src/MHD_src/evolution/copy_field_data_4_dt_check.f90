@@ -36,7 +36,7 @@
 !
       if(iphys%check_fld2%i_pre_mom .gt. izero) then
         call copy_vector_component(nod_fld,                             &
-     &      iphys%i_chk_mom, iphys%check_fld2%i_pre_mom)
+     &      iphys%check_fld1%i_pre_mom, iphys%check_fld2%i_pre_mom)
       end if
 !
       if(iphys%check_fld2%i_pre_press .gt. izero) then
@@ -69,9 +69,9 @@
 !
 !
 !
-      if( (iphys%i_chk_mom * iphys%base%i_velo) .gt. izero) then
+      if(iphys%check_fld1%i_pre_mom .gt. izero) then
         call copy_vector_component(nod_fld,                             &
-     &      iphys%base%i_velo, iphys%i_chk_mom)
+     &      iphys%base%i_velo, iphys%check_fld1%i_pre_mom)
       end if
 !
       if(iphys%check_fld1%i_pre_press .gt. izero) then

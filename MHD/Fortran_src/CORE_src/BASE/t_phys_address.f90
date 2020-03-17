@@ -64,11 +64,6 @@
 !>        start address for explicit term for pressure at previous step
         integer (kind=kint) :: i_pre_press =    izero
 !
-!  arrays for evolution check
-!
-!>        start address for explicit term for momentum for check
-        integer (kind=kint) :: i_chk_mom =       izero
-!
 !>        start address for rotation of ststem @f$ Omega @f$
 !!          i_omega:   poloidal component
 !!          i_omega+1: radial derivative of poloidal component

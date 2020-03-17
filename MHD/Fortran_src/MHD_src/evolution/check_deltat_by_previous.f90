@@ -56,7 +56,7 @@
         call check_vector_evo_by_previous                               &
      &     (node%numnod, node%istack_nod_smp,                           &
      &      nod_fld%ntot_phys, iphys%base%i_velo,                       &
-     &      iphys%i_chk_mom, iphys%check_fld2%i_pre_mom,      &
+     &      iphys%check_fld1%i_pre_mom, iphys%check_fld2%i_pre_mom,     &
      &      flex_data%i_drmax_v, nod_fld%d_fld, flex_data)
       end if
 !

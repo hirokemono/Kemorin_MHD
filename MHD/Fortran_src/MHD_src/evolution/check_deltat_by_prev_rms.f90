@@ -282,18 +282,18 @@
 !
 !
       if(flex_data%i_drmax_v .gt. izero) then
-        call int_ave_rms_4_scalar                                       &
-     &     (fluid%istack_ele_fld_smp, ione, (iphys%i_chk_mom  ),        &
+        call int_ave_rms_4_scalar(fluid%istack_ele_fld_smp,             &
+     &      ione, (iphys%check_fld1%i_pre_mom  ),                       &
      &      mesh, nod_fld, jacs, fem_wk,                                &
      &      flex_data%rms_dt_local(flex_data%i_drmax_v  ),              &
      &      flex_data%ave_dt_local(flex_data%i_drmax_v  ))
-        call int_ave_rms_4_scalar                                       &
-     &     (fluid%istack_ele_fld_smp, ione, (iphys%i_chk_mom+1),        &
+        call int_ave_rms_4_scalar(fluid%istack_ele_fld_smp,             &
+     &      ione, (iphys%check_fld1%i_pre_mom+1),                       &
      &      mesh, nod_fld, jacs, fem_wk,                                &
      &      flex_data%rms_dt_local(flex_data%i_drmax_v+1),              &
      &      flex_data%ave_dt_local(flex_data%i_drmax_v+1))
-        call int_ave_rms_4_scalar                                       &
-     &     (fluid%istack_ele_fld_smp, ione, (iphys%i_chk_mom+2),        &
+        call int_ave_rms_4_scalar(fluid%istack_ele_fld_smp,             &
+     &      ione, (iphys%check_fld1%i_pre_mom+2),                       &
      &      mesh, nod_fld, jacs, fem_wk,                                &
      &      flex_data%rms_dt_local(flex_data%i_drmax_v+2),              &
      &      flex_data%ave_dt_local(flex_data%i_drmax_v+2))
