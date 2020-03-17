@@ -22,6 +22,7 @@
       module set_surface_id_MHD
 !
       use m_precision
+      use calypso_mpi
 !
       use t_control_parameter
       use t_physical_property
@@ -76,7 +77,7 @@
       call count_num_surf_bc(IO_bc, sf_grp, sf_grp_nod,                 &
      &    MHD_BC, surf_bcs)
 !
-      call alloc_surf_bc_data_type                                      &
+      call alloc_surf_bc_data                                           &
      &   (MHD_prop%fl_prop, MHD_prop%cd_prop,                           &
      &    MHD_prop%ht_prop, MHD_prop%cp_prop, surf_bcs)
 !
@@ -107,47 +108,56 @@
       type(surface_boundarty_conditions), intent(inout) :: surf_bcs
 !
 !
+      call calypso_mpi_barrier
       if (iflag_debug.eq.1) write(*,*) 'count_num_bc_h_flux'
       call count_num_surf_gradient                                      &
      &   (name_hf, IO_bc, sf_grp, MHD_BC%temp_BC%surf_BC,               &
      &    surf_bcs%Tsf_bcs)
 !
+      call calypso_mpi_barrier
       if (iflag_debug.eq.1) write(*,*) 'count_num_bc_torque'
       call count_num_surf_grad_velo(name_svn, name_vg,                  &
      &    IO_bc, sf_grp, sf_grp_nod, MHD_BC%velo_BC%surf_BC,            &
      &    surf_bcs%Vsf_bcs)
 !
+      call calypso_mpi_barrier
       if (iflag_debug.eq.1) write(*,*) 'count_num_bc_press_sf'
       call count_num_wall_potential                                     &
      &   (name_pg, IO_bc, sf_grp, MHD_BC%press_BC%surf_BC,              &
      &    surf_bcs%Psf_bcs)
 !
+      call calypso_mpi_barrier
       if (iflag_debug.eq.1) write(*,*) 'count_num_bc_vecp_sf'
       call count_num_surf_grad_velo(name_san, name_ag,                  &
      &    IO_bc, sf_grp, sf_grp_nod, MHD_BC%a_potential_BC%surf_BC,     &
      &    surf_bcs%Asf_bcs)
 !
+      call calypso_mpi_barrier
       if (iflag_debug.eq.1) write(*,*) 'count_num_bc_magne_sf'
       call count_num_surf_grad_vector(name_sbn, name_bg,                &
      &    IO_bc, sf_grp, sf_grp_nod, MHD_BC%magne_BC%surf_BC,           &
      &    surf_bcs%Bsf_bcs)
 !
 !
+      call calypso_mpi_barrier
       if (iflag_debug.eq.1) write(*,*) 'count_num_bc_current_sf'
       call count_num_surf_grad_vector(name_sjn, name_jg,                &
      &    IO_bc, sf_grp, sf_grp_nod, MHD_BC%current_BC%surf_BC,         &
      &    surf_bcs%Jsf_bcs)
 !
+      call calypso_mpi_barrier
       if (iflag_debug.eq.1) write(*,*) 'count_num_surf_mag_p'
       call count_num_wall_potential                                     &
      &   (name_mpg, IO_bc, sf_grp, MHD_BC%e_potential_BC%surf_BC,       &
      &    surf_bcs%Fsf_bcs)
 !
 !
+      call calypso_mpi_barrier
       if (iflag_debug.eq.1) write(*,*) 'count_num_bc_d_scalar_sf'
       call count_num_surf_gradient                                      &
      &   (name_dsg, IO_bc, sf_grp, MHD_BC%light_BC%surf_BC,             &
      &    surf_bcs%Csf_bcs)
+      call calypso_mpi_barrier
 !
       end subroutine count_num_surf_bc
 !
@@ -179,6 +189,8 @@
       type(surface_boundarty_conditions), intent(inout) :: surf_bcs
 !
 !
+      call calypso_mpi_barrier
+      if (iflag_debug.eq.1) write(*,*) 'set_surf_grad_velo'
       if (fl_prop%iflag_scheme .gt. id_no_evolution) then
         call set_surf_grad_velo(name_svn, name_vg,                      &
      &      IO_bc, node, ele, surf, sf_grp, sf_grp_nod, sf_grp_v,       &
@@ -188,6 +200,8 @@
      &     (IO_bc, sf_grp, MHD_BC%press_BC%surf_BC, surf_bcs%Psf_bcs)
       end if
 !
+      call calypso_mpi_barrier
+      if (iflag_debug.eq.1) write(*,*) 'set_surf_grad_vector'
       if (cd_prop%iflag_Bevo_scheme .gt. id_no_evolution                &
      &      .or. cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
         call set_surf_grad_vector(name_sbn, name_bg,                    &
@@ -203,21 +217,28 @@
      &      surf_bcs%Fsf_bcs)
       end if
 !
+      call calypso_mpi_barrier
+      if (iflag_debug.eq.1) write(*,*) 'set_surf_grad_velo'
       if (cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
         call set_surf_grad_velo(name_san, name_ag,                      &
      &      IO_bc, node, ele, surf, sf_grp, sf_grp_nod, sf_grp_v,       &
      &      MHD_BC%a_potential_BC%surf_BC, surf_bcs%Asf_bcs)
       end if
 ! 
+      call calypso_mpi_barrier
+      if (iflag_debug.eq.1) write(*,*) 'set_surf_grad_scalar_id'
       if (ht_prop%iflag_scheme .gt. id_no_evolution) then
         call set_surf_grad_scalar_id                                    &
      &     (IO_bc, sf_grp, MHD_BC%temp_BC%surf_BC, surf_bcs%Tsf_bcs)
       end if
 !
+      call calypso_mpi_barrier
+      if (iflag_debug.eq.1) write(*,*) 'set_surf_grad_scalar_id'
       if (cp_prop%iflag_scheme .gt. id_no_evolution) then
         call set_surf_grad_scalar_id                                    &
      &     (IO_bc, sf_grp, MHD_BC%light_BC%surf_BC, surf_bcs%Csf_bcs)
       end if
+      call calypso_mpi_barrier
 !
       end subroutine set_surface_id
 !
