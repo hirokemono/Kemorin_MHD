@@ -68,45 +68,41 @@
       nnod_sf_dat_n = 0
 !
       do i = 1, sf_grp%num_grp
-!
-        if (num_bc_sf .gt. 0) then
-!
 ! ----------- loop for boundary conditions
-          do j=1, num_bc_sf
+        do j=1, num_bc_sf
 !
 ! ----------- check surface group
-            if (sf_grp%grp_name(i) .eq. bc_sf_name(j)) then
-              isig_s(1:3) = 0
+          if (sf_grp%grp_name(i) .eq. bc_sf_name(j)) then
+            isig_s(1:3) = 0
 !
 ! -----------set boundary from control file
-              do nd = 1, 3
+            do nd = 1, 3
 !
 ! -----------set boundary from control file
-                if ( ibc_sf_type(j) .eq. (iflag_bc_sgs+nd) ) then
-                  isig_s(nd) = 1
-                end if
-              end do
-!
-! -----------set boundary from control file
-              if (ibc_sf_type(j) .eq. iflag_fixed_norm) then
-                ngrp_sf_dat_n = ngrp_sf_dat_n + 1
-                nnod_sf_dat_n = nnod_sf_dat_n                           &
-     &                         + sf_grp_nod%inod_stack_sf_grp(i)        &
-     &                         - sf_grp_nod%inod_stack_sf_grp(i-1)
-                isig_s(1:3) = 1
-              else if (ibc_sf_type(j) .eq. -iflag_fixed_norm) then
-                call count_surf_nod_group_from_data                     &
-     &             (IO_bc, i, ngrp_sf_dat_n,                            &
-     &              nnod_sf_dat_n, field_name, sf_grp%num_grp,          &
-     &              sf_grp_nod%inod_stack_sf_grp, sf_grp%grp_name)
-                isig_s(1:3) = 1
+              if ( ibc_sf_type(j) .eq. (iflag_bc_sgs+nd) ) then
+                isig_s(nd) = 1
               end if
+            end do
 !
-              ngrp_sf_sgs(1:3) = ngrp_sf_sgs(1:3) + isig_s(1:3)
+! -----------set boundary from control file
+            if (ibc_sf_type(j) .eq. iflag_fixed_norm) then
+              ngrp_sf_dat_n = ngrp_sf_dat_n + 1
+              nnod_sf_dat_n = nnod_sf_dat_n                             &
+     &                       + sf_grp_nod%inod_stack_sf_grp(i)          &
+     &                       - sf_grp_nod%inod_stack_sf_grp(i-1)
+              isig_s(1:3) = 1
+            else if (ibc_sf_type(j) .eq. -iflag_fixed_norm) then
+              call count_surf_nod_group_from_data                       &
+     &           (IO_bc, i, ngrp_sf_dat_n,                              &
+     &            nnod_sf_dat_n, field_name, sf_grp%num_grp,            &
+     &            sf_grp_nod%inod_stack_sf_grp, sf_grp%grp_name)
+              isig_s(1:3) = 1
             end if
 !
-          end do
-        end if
+            ngrp_sf_sgs(1:3) = ngrp_sf_sgs(1:3) + isig_s(1:3)
+          end if
+!
+        end do
       end do
 !
       norm_sf%ngrp_sf_fix_fx =  ngrp_sf_dat_n
