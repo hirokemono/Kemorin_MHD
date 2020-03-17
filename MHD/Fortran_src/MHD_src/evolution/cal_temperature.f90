@@ -316,15 +316,15 @@
      &      iphys_ele, ele_fld, jacs%g_FEM, jacs%jac_3d, rhs_tbl,       &
      &      mlump_fl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       else if (property%iflag_scheme .eq. id_explicit_adams2) then
-        call cal_scalar_pre_adams                                       &
-     &     (FEM_prm%iflag_temp_supg, i_field, iphys%i_pre_heat, dt,     &
+        call cal_scalar_pre_adams(FEM_prm%iflag_temp_supg, i_field,     &
+     &      iphys%exp_work%i_pre_heat, dt,                              &
      &      FEM_prm, mesh%nod_comm, mesh%node, mesh%ele, fluid,         &
      &      iphys_ele, ele_fld, jacs%g_FEM, jacs%jac_3d, rhs_tbl,       &
      &      mlump_fl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       else if (property%iflag_scheme .eq. id_Crank_nicolson) then
         call cal_temp_pre_lumped_crank(FEM_prm%iflag_temp_supg,         &
      &      cmt_param%iflag_c_temp, SGS_param%ifilter_final,            &
-     &      i_field, iphys%i_pre_heat, ifld_diff%i_temp,                &
+     &      i_field, iphys%exp_work%i_pre_heat, ifld_diff%i_temp,       &
      &      ak_diffuse, FEM_prm%eps_4_temp_crank, dt, FEM_prm,          &
      &      mesh%nod_comm, mesh%node, mesh%ele, fluid, property,        &
      &      nod_bcs, iphys_ele, ele_fld, jacs%g_FEM, jacs%jac_3d,       &
@@ -333,7 +333,7 @@
       else if (property%iflag_scheme .eq. id_Crank_nicolson_cmass) then 
         call cal_temp_pre_consist_crank                                 &
      &     (cmt_param%iflag_c_temp, SGS_param%ifilter_final,            &
-     &      i_field, iphys%i_pre_heat, ifld_diff%i_temp,                &
+     &      i_field, iphys%exp_work%i_pre_heat, ifld_diff%i_temp,       &
      &      ak_diffuse, FEM_prm%eps_4_temp_crank, dt, FEM_prm,          &
      &      mesh%node, mesh%ele, fluid, property, nod_bcs, jacs%g_FEM,  &
      &      jacs%jac_3d, rhs_tbl, FEM_elens, diff_coefs, Smatrix,       &

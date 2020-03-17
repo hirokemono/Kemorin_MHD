@@ -188,7 +188,7 @@
         else if ( field_name(i) .eq. previous_induction%name ) then
           iphys%i_pre_uxb =      i0
         else if ( field_name(i) .eq. previous_heat%name ) then
-          iphys%i_pre_heat =     i0
+          iphys%exp_work%i_pre_heat =     i0
         else if ( field_name(i) .eq. previous_composition%name ) then
           iphys%exp_work%i_pre_composit = i0
         else if ( field_name(i) .eq. previous_pressure%name ) then
