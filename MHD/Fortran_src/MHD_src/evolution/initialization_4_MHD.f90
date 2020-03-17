@@ -276,6 +276,7 @@
 !
 !     ---------------------
 !
+      if (iflag_debug.eq.1) write(*,*) 'int_RHS_mass_matrices'
       call int_RHS_mass_matrices                                        &
      &   (FEM_prm%npoint_t_evo_int, mesh, MHD_mesh,                     &
      &    SGS_MHD_wk%rhs_mat%fem_wk, SGS_MHD_wk%rhs_mat%f_l,            &

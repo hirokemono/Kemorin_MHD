@@ -7,7 +7,7 @@
 !>    @brief flux boundary condition lists for MHD dynamo model
 !!
 !!@verbatim
-!!      subroutine alloc_surf_bc_data_type                              &
+!!      subroutine alloc_surf_bc_data                                   &
 !!     &         (fl_prop, cd_prop, ht_prop, cp_prop, surf_bcs)
 !!        type(fluid_property), intent(in) :: fl_prop
 !!        type(conductive_property), intent(in) :: cd_prop
@@ -42,7 +42,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine alloc_surf_bc_data_type                                &
+      subroutine alloc_surf_bc_data                                     &
      &         (fl_prop, cd_prop, ht_prop, cp_prop, surf_bcs)
 !
       use t_physical_property
@@ -76,8 +76,9 @@
       if (cp_prop%iflag_scheme .gt. id_no_evolution) then
         call alloc_surf_data_scalar(surf_bcs%Csf_bcs)
       end if
+      write(*,*) 'surf_bcs%Vsf_bcs%sgs', size(surf_bcs%Vsf_bcs%sgs)
 ! 
-      end subroutine alloc_surf_bc_data_type
+      end subroutine alloc_surf_bc_data
 !
 !-----------------------------------------------------------------------
 !
