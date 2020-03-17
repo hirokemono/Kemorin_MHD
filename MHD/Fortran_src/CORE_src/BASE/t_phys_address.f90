@@ -81,11 +81,6 @@
 !!        for check
         integer (kind=kint) :: i_chk_potential = izero
 !
-!>        start address for explicit term for momentum for 2nd check
-        integer (kind=kint) :: i_chk_mom_2 =       izero
-!>        start address for explicit term for induction for 2nd check
-        integer (kind=kint) :: i_chk_uxb_2 =       izero
-!
 !>        start address for rotation of ststem @f$ Omega @f$
 !!          i_omega:   poloidal component
 !!          i_omega+1: radial derivative of poloidal component

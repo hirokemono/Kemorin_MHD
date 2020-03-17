@@ -327,10 +327,10 @@
       call set_vect_sph_address(ipol%i_chk_uxb, itor%i_chk_uxb,         &
      &    idpdr%i_chk_uxb)
 !
-      call set_vect_sph_address(ipol%i_chk_mom_2, itor%i_chk_mom_2,     &
-     &    idpdr%i_chk_mom_2)
-      call set_vect_sph_address(ipol%i_chk_uxb_2, itor%i_chk_uxb_2,     &
-     &    idpdr%i_chk_uxb_2)
+      call set_vect_sph_address(ipol%check_fld2%i_pre_mom,              &
+     &    itor%check_fld2%i_pre_mom, idpdr%check_fld2%i_pre_mom)
+      call set_vect_sph_address(ipol%check_fld2%i_pre_uxb,              &
+     &    itor%check_fld2%i_pre_uxb, idpdr%check_fld2%i_pre_uxb)
 !
       end subroutine set_sph_vect_spec_address
 !

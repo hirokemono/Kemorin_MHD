@@ -34,9 +34,9 @@
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-      if((iphys%i_chk_mom_2*iphys%i_chk_mom) .gt. izero) then
+      if(iphys%check_fld2%i_pre_mom .gt. izero) then
         call copy_vector_component(nod_fld,                             &
-     &      iphys%i_chk_mom, iphys%i_chk_mom_2)
+     &      iphys%i_chk_mom, iphys%check_fld2%i_pre_mom)
       end if
 !
       if(iphys%check_fld2%i_pre_press .gt. izero) then
@@ -45,9 +45,9 @@
       end if
 !
 !
-      if((iphys%i_chk_uxb_2*iphys%i_chk_uxb) .gt. izero) then
+      if(iphys%check_fld2%i_pre_uxb .gt. izero) then
         call copy_vector_component(nod_fld,                             &
-     &      iphys%i_chk_uxb, iphys%i_chk_uxb_2)
+     &      iphys%i_chk_uxb, iphys%check_fld2%i_pre_uxb)
       end if
 !
       if(iphys%check_fld2%i_pre_phi .gt. izero) then

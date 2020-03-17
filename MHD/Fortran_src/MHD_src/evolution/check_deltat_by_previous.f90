@@ -54,8 +54,9 @@
         if(iflag_debug .gt. izero)                                      &
      &      write(*,*) 'check_vector_evo_by_previous velo'
         call check_vector_evo_by_previous                               &
-     &     (node%numnod, node%istack_nod_smp, nod_fld%ntot_phys,        &
-     &      iphys%base%i_velo, iphys%i_chk_mom, iphys%i_chk_mom_2,      &
+     &     (node%numnod, node%istack_nod_smp,                           &
+     &      nod_fld%ntot_phys, iphys%base%i_velo,                       &
+     &      iphys%i_chk_mom, iphys%check_fld2%i_pre_mom,      &
      &      flex_data%i_drmax_v, nod_fld%d_fld, flex_data)
       end if
 !
@@ -75,15 +76,17 @@
           if(iflag_debug .gt. izero)                                    &
      &      write(*,*) 'check_vector_evo_by_previous vecp'
           call check_vector_evo_by_previous                             &
-     &       (node%numnod, node%istack_nod_smp, nod_fld%ntot_phys,      &
-     &        iphys%base%i_vecp, iphys%i_chk_uxb, iphys%i_chk_uxb_2,    &
+     &       (node%numnod, node%istack_nod_smp,                         &
+     &        nod_fld%ntot_phys, iphys%base%i_vecp,                     &
+     &        iphys%i_chk_uxb, iphys%check_fld2%i_pre_uxb,              &
      &        flex_data%i_drmax_b, nod_fld%d_fld, flex_data)
         else
           if(iflag_debug .gt. izero)                                    &
      &      write(*,*) 'check_vector_evo_by_previous magne'
           call check_vector_evo_by_previous                             &
-     &       (node%numnod, node%istack_nod_smp, nod_fld%ntot_phys,      &
-     &        iphys%base%i_magne, iphys%i_chk_uxb, iphys%i_chk_uxb_2,   &
+     &       (node%numnod, node%istack_nod_smp,                         &
+     &        nod_fld%ntot_phys, iphys%base%i_magne,                    &
+     &        iphys%i_chk_uxb, iphys%check_fld2%i_pre_uxb,              &
      &        flex_data%i_drmax_b, nod_fld%d_fld, flex_data)
         end if
       end if

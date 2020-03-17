@@ -207,9 +207,9 @@
           iphys%i_chk_potential = i0
 !
         else if ( field_name(i) .eq. check_momentum_2%name ) then
-          iphys%i_chk_mom_2 =       i0
+          iphys%check_fld2%i_pre_mom =       i0
         else if ( field_name(i) .eq. check_induction_2%name ) then
-          iphys%i_chk_uxb_2 =       i0
+          iphys%check_fld2%i_pre_uxb =       i0
         else if ( field_name(i) .eq. check_heat_2%name ) then
           iphys%check_fld2%i_pre_heat =      i0
         else if ( field_name(i) .eq. check_composition_2%name ) then
