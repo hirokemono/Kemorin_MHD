@@ -31,16 +31,6 @@
 !>       Structure for start address for fields
       type phys_address
 !
-!>        start address for filtered velocity
-!!         @f$ \partial_{i} \bar{u}_{i} @f$
-        integer (kind=kint) :: i_div_filter_v =    izero
-!>        start address for filtered magnetic field
-!!         @f$ \partial_{i} \bar{B}_{i} @f$
-        integer (kind=kint) :: i_div_filter_b =    izero
-!>        start address for filtered magnetic vector potential
-!!         @f$ \partial_{i} \bar{A}_{i} @f$
-        integer (kind=kint) :: i_div_filter_a =    izero
-!
 !>        start address for rotation of ststem @f$ Omega @f$
 !!          i_omega:   poloidal component
 !!          i_omega+1: radial derivative of poloidal component

@@ -291,22 +291,22 @@
         call int_norm_divergence                                        &
      &    (fluid%istack_ele_fld_smp, iphys%filter_fld%i_velo,           &
      &     mesh%node, mesh%ele, nod_fld, jacs%g_FEM, jacs%jac_3d,       &
-     &     fem_wk, fem_msq%ave_local(j_ave%i_div_filter_v))
+     &     fem_wk, fem_msq%ave_local(j_ave%grad_fil_fld%i_div_v))
         call int_rms_divergence                                         &
      &    (fluid%istack_ele_fld_smp, iphys%filter_fld%i_velo,           &
      &     mesh%node, mesh%ele, nod_fld, jacs%g_FEM, jacs%jac_3d,       &
-     &     fem_wk, fem_msq%rms_local(i_rms%i_div_filter_v))
+     &     fem_wk, fem_msq%rms_local(i_rms%grad_fil_fld%i_div_v))
       end if
 !
       if(iphys%filter_fld%i_magne .gt. 0) then
         call int_norm_divergence                                        &
      &    (fluid%istack_ele_fld_smp, iphys%filter_fld%i_magne,          &
      &     mesh%node, mesh%ele, nod_fld, jacs%g_FEM, jacs%jac_3d,       &
-     &     fem_wk, fem_msq%ave_local(j_ave%i_div_filter_b))
+     &     fem_wk, fem_msq%ave_local(j_ave%grad_fil_fld%i_div_b))
         call int_rms_divergence                                         &
      &    (fluid%istack_ele_fld_smp, iphys%filter_fld%i_magne,          &
      &     mesh%node, mesh%ele, nod_fld, jacs%g_FEM, jacs%jac_3d,       &
-     &     fem_wk, fem_msq%rms_local(i_rms%i_div_filter_b))
+     &     fem_wk, fem_msq%rms_local(i_rms%grad_fil_fld%i_div_b))
       end if
 !
       end subroutine int_no_evo_mean_squares

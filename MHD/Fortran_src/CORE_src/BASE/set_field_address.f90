@@ -80,14 +80,6 @@
         call set_base_scalar_addresses                                  &
      &     (i0, field_name(i), iphys%base, flag)
 !
-        if ( field_name(i) .eq. div_filtered_velo%name ) then
-          iphys%i_div_filter_v =    i0
-        else if ( field_name(i) .eq. div_filtered_magne%name ) then
-          iphys%i_div_filter_b =    i0
-        else if ( field_name(i) .eq. div_filtered_vector_potential%name ) then
-          iphys%i_div_filter_a =    i0
-        end if
-!
         call set_base_force_addresses                                   &
      &     (i0, field_name(i), iphys%forces, flag)
         call set_enegy_fluxes_addresses                                 &

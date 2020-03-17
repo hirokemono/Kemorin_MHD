@@ -78,8 +78,8 @@
      &            i_rms%filter_fld%i_velo, j_ave%filter_fld%i_velo,     &
      &            msq_list)
 !
-              i_rms%i_div_filter_v = msq_list%numrms + 1
-              j_ave%i_div_filter_v = msq_list%numave + 1
+              i_rms%grad_fil_fld%i_div_v = msq_list%numrms + 1
+              j_ave%grad_fil_fld%i_div_v = msq_list%numave + 1
 !
               ifld_msq%jr_amom_f = msq_list%numave + 2
 !
@@ -91,8 +91,8 @@
      &            i_rms%filter_fld%i_vecp, j_ave%filter_fld%i_vecp,     &
      &            msq_list)
 !
-              i_rms%i_div_filter_a = msq_list%numrms + 1
-              j_ave%i_div_filter_a = msq_list%numave + 1
+              i_rms%grad_fil_fld%i_div_a = msq_list%numrms + 1
+              j_ave%grad_fil_fld%i_div_a = msq_list%numave + 1
 !
               msq_list%numrms = msq_list%numrms + 1
               msq_list%numave = msq_list%numave + 4
@@ -106,8 +106,8 @@
               ifld_msq%ir_me_f_ic =  msq_list%numrms + 1
               ifld_msq%ja_mag_f_ic = msq_list%numave + 1
 !
-              i_rms%i_div_filter_b = msq_list%numrms + 2
-              j_ave%i_div_filter_b = msq_list%numave + 4
+              i_rms%grad_fil_fld%i_div_b = msq_list%numrms + 2
+              j_ave%grad_fil_fld%i_div_b = msq_list%numave + 4
 !
               msq_list%numrms = msq_list%numrms + 2
               msq_list%numave = msq_list%numave + 6
@@ -362,15 +362,18 @@
           else if ( field_name .eq. filter_velocity%name ) then
             call set_rms_address                                        &
      &         (e_hd_fil_div_v, n_scalar, iphys%filter_fld%i_velo,      &
-     &          i_rms%i_div_filter_v, j_ave%i_div_filter_v, msq_list)
+     &          i_rms%grad_fil_fld%i_div_v, j_ave%grad_fil_fld%i_div_v, &
+     &          msq_list)
           else if ( field_name .eq. filter_magne%name ) then
             call set_rms_address                                        &
      &         (e_hd_fil_div_b, n_scalar, iphys%filter_fld%i_magne,     &
-     &          i_rms%i_div_filter_b, j_ave%i_div_filter_b, msq_list)
+     &          i_rms%grad_fil_fld%i_div_b, j_ave%grad_fil_fld%i_div_b, &
+     &          msq_list)
           else if ( field_name .eq. filter_vector_potential%name ) then
             call set_rms_address                                        &
-     &         (e_hd_fil_div_a, n_scalar, iphys%i_div_filter_a,         &
-     &          i_rms%i_div_filter_a, j_ave%i_div_filter_a, msq_list)
+     &         (e_hd_fil_div_a, n_scalar, iphys%grad_fil_fld%i_div_a,   &
+     &          i_rms%grad_fil_fld%i_div_a, j_ave%grad_fil_fld%i_div_a, &
+     &          msq_list)
           else if ( field_name .eq. magnetic_potential%name ) then
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%base%i_mag_p,              &
