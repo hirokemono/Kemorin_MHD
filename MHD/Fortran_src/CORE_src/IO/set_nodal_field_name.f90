@@ -71,19 +71,6 @@
 !
       if (iflag .gt. 0) return
 !
-      if (   (phys_nod_name_ctl .eq. geostrophic_balance%name)          &
-     &      )   iflag = 1
-!
-      if (   (phys_nod_name_ctl .eq. previous_momentum%name            )           &
-     &  .or. (phys_nod_name_ctl .eq. previous_induction%name            )           &
-     &  .or. (phys_nod_name_ctl .eq. check_momentum%name            )           &
-     &  .or. (phys_nod_name_ctl .eq. check_induction%name            )           &
-     &  .or. (phys_nod_name_ctl .eq. check_momentum_2%name          )           &
-     &  .or. (phys_nod_name_ctl .eq. check_induction_2%name          )           &
-     &  .or. (phys_nod_name_ctl .eq. sum_forces%name        )           &
-     &  .or. (phys_nod_name_ctl .eq. rot_sum_forces%name    )           &
-     &      )   iflag = 1
-!
       if(     check_base_vector(phys_nod_name_ctl)                      &
      &   .or. check_force_vectors(phys_nod_name_ctl)                    &
      &   .or. check_rot_force(phys_nod_name_ctl)                        &
@@ -91,6 +78,8 @@
      &   .or. check_gradient_field(phys_nod_name_ctl)                   &
      &   .or. check_vector_diffusion(phys_nod_name_ctl)                 &
      &   .or. check_field_product_vectors(phys_nod_name_ctl)            &
+     &   .or. check_vector_work_field(phys_nod_name_ctl)                &
+     &   .or. check_vector_check_field(phys_nod_name_ctl)               &
      &   .or. check_SGS_vector_terms(phys_nod_name_ctl)                 &
      &   .or. check_div_SGS_flux_tensor(phys_nod_name_ctl)              &
      &   .or. check_rot_SGS_terms(phys_nod_name_ctl)                    &
@@ -109,12 +98,17 @@
      &   .or. check_diff_filter_vectors(phys_nod_name_ctl)              &
      &   .or. check_wide_SGS_vector_terms(phys_nod_name_ctl)            &
      &   .or. check_double_SGS_vector_terms(phys_nod_name_ctl)          &
-     &        ) iflag = 1
-!
-
-      if (iflag .eq. 1) then
+     &        ) then
+        iflag = 1
         icou = icou + 1
         phys_nod_name = phys_nod_name_ctl
+        num_nod_component = 3
+      end if
+!
+      if(phys_nod_name_ctl .eq. geostrophic_balance%name) then
+        iflag = 1
+        icou = icou + 1
+        phys_nod_name = rest_of_geostrophic%name
         num_nod_component = 3
       end if
 !
@@ -145,20 +139,6 @@
 !
       if (iflag .gt. 0) return
 !
-      if (    (phys_nod_name_ctl .eq. previous_heat%name      )         &
-     &   .or. (phys_nod_name_ctl .eq. previous_composition%name)        &
-     &   .or. (phys_nod_name_ctl .eq. previous_pressure%name  )         &
-     &   .or. (phys_nod_name_ctl .eq. check_heat%name         )         &
-     &   .or. (phys_nod_name_ctl .eq. check_composition%name  )         &
-     &   .or. (phys_nod_name_ctl .eq. check_pressure%name     )         &
-     &   .or. (phys_nod_name_ctl .eq. check_potential%name    )         &
-     &   .or. (phys_nod_name_ctl .eq. check_heat_2%name       )         &
-     &   .or. (phys_nod_name_ctl .eq. check_composition_2%name)         &
-     &   .or. (phys_nod_name_ctl .eq. check_pressure_2%name         )         &
-     &   .or. (phys_nod_name_ctl .eq. check_potential_2%name     )         &
-     &   .or. (phys_nod_name_ctl .eq. div_sum_forces%name     )         &
-     &      )   iflag = 1
-!
       if(     check_base_scalar(phys_nod_name_ctl)                      &
      &   .or. check_enegy_fluxes(phys_nod_name_ctl)                     &
      &   .or. check_scalar_advection(phys_nod_name_ctl)                 &
@@ -167,6 +147,8 @@
      &   .or. check_divergence_field(phys_nod_name_ctl)                 &
      &   .or. check_scalar_diffusion(phys_nod_name_ctl)                 &
      &   .or. check_field_product_scalars(phys_nod_name_ctl)            &
+     &   .or. check_scalar_work_field(phys_nod_name_ctl)                &
+     &   .or. check_scalar_check_field(phys_nod_name_ctl)               &
      &   .or. check_div_SGS_flux_vector(phys_nod_name_ctl)              &
      &   .or. check_SGS_ene_fluxes(phys_nod_name_ctl)                   &
      &   .or. check_SGS_moedel_coefs(phys_nod_name_ctl)                 &
@@ -180,9 +162,8 @@
      &   .or. check_double_filter_scalar(phys_nod_name_ctl)             &
      &   .or. check_div_filter_field(phys_nod_name_ctl)                 &
      &   .or. check_work_4_poisson(phys_nod_name_ctl)                   &
-     &   .or. check_commute_SGS_work(phys_nod_name_ctl)) iflag = 1
-!
-      if (iflag .eq. 1) then
+     &   .or. check_commute_SGS_work(phys_nod_name_ctl)) then
+        iflag = 1
         icou = icou + 1
         phys_nod_name = phys_nod_name_ctl
         num_nod_component = 1
