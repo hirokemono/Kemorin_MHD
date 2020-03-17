@@ -312,10 +312,10 @@
       call set_vect_sph_address(ipol%rot_SGS%i_SGS_Lorentz,             &
      &    itor%rot_SGS%i_SGS_Lorentz, idpdr%rot_SGS%i_SGS_Lorentz)
 !
-      call set_vect_sph_address(ipol%i_forces, itor%i_forces,           &
-     &    idpdr%i_forces)
-      call set_vect_sph_address(ipol%i_rot_forces, itor%i_rot_forces,   &
-     &    idpdr%i_rot_forces)
+      call set_vect_sph_address(ipol%exp_work%i_forces,                 &
+     &    itor%exp_work%i_forces, idpdr%exp_work%i_forces)
+      call set_vect_sph_address(ipol%exp_work%i_rot_forces,             &
+     &    itor%exp_work%i_rot_forces, idpdr%exp_work%i_rot_forces)
 !
       call set_vect_sph_address(ipol%exp_work%i_pre_mom,                &
      &    itor%exp_work%i_pre_mom, idpdr%exp_work%i_pre_mom)

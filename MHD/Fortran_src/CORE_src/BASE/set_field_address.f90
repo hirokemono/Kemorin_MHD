@@ -164,9 +164,9 @@
      &     (i0, field_name(i), iphys%dbl_filter_grad, flag)
 !
         if ( field_name(i) .eq. sum_forces%name ) then
-          iphys%i_forces =     i0
+          iphys%exp_work%i_forces =     i0
         else if ( field_name(i) .eq. rot_sum_forces%name ) then
-          iphys%i_rot_forces = i0
+          iphys%exp_work%i_rot_forces = i0
         else if ( field_name(i) .eq. div_sum_forces%name ) then
           iphys%exp_work%i_div_forces = i0
         end if

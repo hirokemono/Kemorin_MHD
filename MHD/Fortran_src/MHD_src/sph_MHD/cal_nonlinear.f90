@@ -232,8 +232,8 @@
       if(ipol%forces%i_c_advect .gt. 0) then
         call clear_field_data(rj_fld, n_scalar, ipol%forces%i_c_advect)
       end if
-      if(ipol%i_forces .gt. 0) then
-        call clear_field_data(rj_fld, n_vector, ipol%i_forces)
+      if(ipol%exp_work%i_forces .gt. 0) then
+        call clear_field_data(rj_fld, n_vector, ipol%exp_work%i_forces)
       end if
 !
 !

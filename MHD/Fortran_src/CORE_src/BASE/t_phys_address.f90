@@ -41,13 +41,6 @@
 !!         @f$ \partial_{i} \bar{A}_{i} @f$
         integer (kind=kint) :: i_div_filter_a =    izero
 !
-!  arrays for current forces
-!
-!>        start address for total forces
-        integer (kind=kint) :: i_forces =       izero
-!>        start address for curl of total forces
-        integer (kind=kint) :: i_rot_forces =   izero
-!
 !>        start address for rotation of ststem @f$ Omega @f$
 !!          i_omega:   poloidal component
 !!          i_omega+1: radial derivative of poloidal component
