@@ -198,9 +198,9 @@
         else if ( field_name(i) .eq. check_induction%name ) then
           iphys%i_chk_uxb =       i0
         else if ( field_name(i) .eq. check_heat%name ) then
-          iphys%i_chk_heat =      i0
+          iphys%check_fld1%i_pre_heat =      i0
         else if ( field_name(i) .eq. check_composition%name ) then
-          iphys%i_chk_composit =  i0
+          iphys%check_fld1%i_pre_composit =  i0
         else if ( field_name(i) .eq. check_pressure%name ) then
           iphys%check_fld1%i_pre_press =     i0
         else if ( field_name(i) .eq. check_potential%name ) then

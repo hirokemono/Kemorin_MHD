@@ -108,14 +108,14 @@
         call check_scalar_evo_by_previous                               &
      &     (node%numnod, node%istack_nod_smp,                           &
      &      nod_fld%ntot_phys, iphys%base%i_temp,                       &
-     &      iphys%i_chk_heat, iphys%check_fld2%i_pre_heat,              &
+     &      iphys%check_fld1%i_pre_heat, iphys%check_fld2%i_pre_heat,   &
      &      flex_data%i_drmax_t, nod_fld%d_fld, flex_data)
       end if
 !
       if(flex_data%i_drmax_d .gt. izero) then
         call check_scalar_evo_by_previous                               &
      &     (node%numnod, node%istack_nod_smp, nod_fld%ntot_phys,        &
-     &      iphys%base%i_light, iphys%i_chk_composit,                   &
+     &      iphys%base%i_light, iphys%check_fld1%i_pre_composit,        &
      &      iphys%check_fld2%i_pre_composit, flex_data%i_drmax_d,       &
      &      nod_fld%d_fld, flex_data)
       end if

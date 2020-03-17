@@ -58,12 +58,13 @@
 !
       if(iphys%check_fld2%i_pre_heat .gt. izero) then
         call copy_scalar_component(nod_fld,                             &
-     &      iphys%i_chk_heat, iphys%check_fld2%i_pre_heat)
+     &      iphys%check_fld1%i_pre_heat, iphys%check_fld2%i_pre_heat)
       end if
 !
       if(iphys%check_fld2%i_pre_composit .gt. izero) then
         call copy_scalar_component(nod_fld,                             &
-     &      iphys%i_chk_composit, iphys%check_fld2%i_pre_composit)
+     &      iphys%check_fld1%i_pre_composit,                            &
+     &      iphys%check_fld2%i_pre_composit)
       end if
 !
 !
@@ -97,14 +98,14 @@
       end if
 !
 !
-      if( (iphys%i_chk_heat*iphys%base%i_temp) .gt. izero) then
+      if(iphys%check_fld1%i_pre_heat .gt. izero) then
         call copy_scalar_component(nod_fld,                             &
-     &      iphys%base%i_temp, iphys%i_chk_heat)
+     &      iphys%base%i_temp, iphys%check_fld1%i_pre_heat)
       end if
 !
-      if((iphys%i_chk_composit * iphys%base%i_light) .gt. izero) then
+      if(iphys%check_fld1%i_pre_composit .gt. izero) then
         call copy_scalar_component(nod_fld,                             &
-     &      iphys%base%i_light, iphys%i_chk_composit)
+     &      iphys%base%i_light, iphys%check_fld1%i_pre_composit)
       end if
 !
       end subroutine s_copy_field_data_for_dt_check
