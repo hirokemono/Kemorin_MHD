@@ -25,6 +25,7 @@
       module t_FEM_MHD_boundary_data
 !
       use m_precision
+      use m_machine_parameter
       use t_bc_data_MHD
       use t_surface_bc_data_MHD
 !
@@ -46,8 +47,6 @@
       subroutine set_boundary_data                                      &
      &         (time_d, IO_bc, mesh, MHD_mesh, group,                   &
      &          MHD_prop, MHD_BC, iphys, nod_fld, FEM_MHD_BCs)
-!
-      use m_machine_parameter
 !
       use t_time_data
       use t_control_parameter
@@ -92,12 +91,14 @@
      &    MHD_prop%ref_param_T, MHD_prop%ref_param_C,                   &
      &    iphys, nod_fld, FEM_MHD_BCs%nod_bcs)
 !
+      if (iflag_debug.eq.1) write(*,*)' set_bc_surface_data'
       call set_bc_surface_data                                          &
      &   (IO_bc, mesh%node, mesh%ele, mesh%surf,                        &
      &    group%surf_grp, group%surf_nod_grp, group%surf_grp_geom,      &
      &    MHD_prop, MHD_BC, FEM_MHD_BCs%surf_bcs)
 !
 !     set normal velocity
+      if (iflag_debug.eq.1) write(*,*)' set_normal_velocity'
       call set_normal_velocity                                          &
      &   (group%surf_grp, group%surf_nod_grp, MHD_prop%fl_prop,         &
      &    FEM_MHD_BCs%surf_bcs%Vsf_bcs%normal, iphys%base%i_velo,       &
