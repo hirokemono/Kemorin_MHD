@@ -147,7 +147,7 @@
      &     sph_bc_C%kr_in, sph_bc_C%kr_out, ipol%diffusion%i_c_diffuse, &
      &     ipol%forces%i_c_advect, ipol%div_SGS%i_SGS_c_flux,           &
      &     ipol%base%i_light_source, ipol%base%i_light,                 &
-     &     ipol%i_pre_composit, dt,                                     &
+     &     ipol%exp_work%i_pre_composit, dt,                            &
      &     cp_prop%coef_exp, cp_prop%coef_source, sph_rj, rj_fld)
       end if
 !
@@ -170,7 +170,7 @@
         call sel_ctr_scl_SGS_dadv_src_adms(SGS_param%iflag_SGS_c_flux,  &
      &      ipol%diffusion%i_c_diffuse, ipol%forces%i_c_advect,         &
      &      ipol%div_SGS%i_SGS_c_flux, ipol%base%i_light_source,        &
-     &      ipol%base%i_light, ipol%i_pre_composit,                     &
+     &      ipol%base%i_light, ipol%exp_work%i_pre_composit,            &
      &      dt, cp_prop%coef_exp, cp_prop%coef_source, sph_rj, rj_fld)
       end if
 !
@@ -302,7 +302,8 @@
         call sel_ini_adams_sscl_w_src_SGS(SGS_param%iflag_SGS_c_flux,   &
      &      sph_bc_C%kr_in, sph_bc_C%kr_out, ipol%forces%i_c_advect,    &
      &      ipol%div_SGS%i_SGS_c_flux, ipol%base%i_light_source,        &
-     &      ipol%i_pre_composit, cp_prop%coef_source, sph_rj, rj_fld)
+     &      ipol%exp_work%i_pre_composit, cp_prop%coef_source,          &
+     &      sph_rj, rj_fld)
       end if
 !
 !   Center evolution
@@ -318,7 +319,8 @@
         call sel_ctr_ini_adams_scl_w_src                                &
      &     (SGS_param%iflag_SGS_c_flux, ipol%forces%i_c_advect,         &
      &      ipol%div_SGS%i_SGS_c_flux, ipol%base%i_light_source,        &
-     &      ipol%i_pre_composit, cp_prop%coef_source, sph_rj, rj_fld)
+     &      ipol%exp_work%i_pre_composit, cp_prop%coef_source,          &
+     &      sph_rj, rj_fld)
       end if
 !
       end subroutine cal_first_SGS_prev_step_adams

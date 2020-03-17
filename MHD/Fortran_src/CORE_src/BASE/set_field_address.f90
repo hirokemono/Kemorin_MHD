@@ -190,9 +190,9 @@
         else if ( field_name(i) .eq. previous_heat%name ) then
           iphys%i_pre_heat =     i0
         else if ( field_name(i) .eq. previous_composition%name ) then
-          iphys%i_pre_composit = i0
+          iphys%exp_work%i_pre_composit = i0
         else if ( field_name(i) .eq. previous_pressure%name ) then
-          iphys%i_pre_press =    i0
+          iphys%exp_work%i_pre_press =    i0
         end if
 !
         call set_check_field_addresses(i0, field_name(i),               &

@@ -153,8 +153,9 @@
       if(iphys%i_pre_heat .gt. 0) then
         call scalar_send_recv(iphys%i_pre_heat, nod_comm, nod_fld)
       end if
-      if(iphys%i_pre_composit .gt. 0) then
-        call scalar_send_recv(iphys%i_pre_composit, nod_comm, nod_fld)
+      if(iphys%exp_work%i_pre_composit .gt. 0) then
+        call scalar_send_recv                                           &
+     &     (iphys%exp_work%i_pre_composit, nod_comm, nod_fld)
       end if
 !
       call copy_time_step_size_data(time_d, fem_time_IO)
