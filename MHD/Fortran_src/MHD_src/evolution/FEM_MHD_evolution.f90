@@ -99,6 +99,7 @@
      &          s_package, MGCG_WK, SGS_MHD_wk, nod_fld,                &
      &          sgs_coefs, sgs_coefs_nod, diff_coefs, fem_sq)
 !
+      use calypso_mpi
       use cal_temperature
       use cal_velocity
       use cal_magnetic_field
@@ -140,11 +141,12 @@
       if (iflag_debug.eq.1) write(*,*) 'reset_update_flag'
       call reset_update_flag                                            &
      &   (nod_fld, sgs_coefs, diff_coefs)
+      call calypso_mpi_barrier
 !
 !     ---- magnetic field update
 !
       if(MHD_prop%cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
-        if (iflag_debug.eq.1) write(*,*) 'cal_magne_vector_potential'
+        if (iflag_debug.eq.1) write(*,*) 'cal_vector_potential'
         call cal_vector_potential(time_d%dt, FEM_prm, SGS_par,          &
      &     fem%mesh, fem%group, MHD_mesh%conduct, MHD_prop%cd_prop,     &
      &     nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs, surf_bcs%Fsf_bcs,        &
@@ -154,6 +156,9 @@
      &     s_package%Bmatrix, s_package%Fmatrix, ak_MHD%ak_d_magne,     &
      &     MGCG_WK, SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%mhd_fem_wk,       &
      &     SGS_MHD_wk%rhs_mat, fem_sq, nod_fld)
+
+        call calypso_mpi_barrier
+        if (iflag_debug.eq.1) write(*,*) 'update_with_vector_potential'
         call update_with_vector_potential                               &
      &    (ifld_diff%i_magne, icomp_diff%i_magne,                       &
      &     iphys_elediff%i_magne, iphys_elediff%i_filter_magne,         &
