@@ -196,7 +196,7 @@
         else if ( field_name(i) .eq. check_momentum%name ) then
           iphys%i_chk_mom =       i0
         else if ( field_name(i) .eq. check_induction%name ) then
-          iphys%i_chk_uxb =       i0
+          iphys%check_fld1%i_pre_uxb =       i0
         else if ( field_name(i) .eq. check_heat%name ) then
           iphys%check_fld1%i_pre_heat =      i0
         else if ( field_name(i) .eq. check_composition%name ) then

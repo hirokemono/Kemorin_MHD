@@ -47,7 +47,7 @@
 !
       if(iphys%check_fld2%i_pre_uxb .gt. izero) then
         call copy_vector_component(nod_fld,                             &
-     &      iphys%i_chk_uxb, iphys%check_fld2%i_pre_uxb)
+     &      iphys%check_fld1%i_pre_uxb, iphys%check_fld2%i_pre_uxb)
       end if
 !
       if(iphys%check_fld2%i_pre_phi .gt. izero) then
@@ -80,15 +80,13 @@
       end if
 !
 !
-      if(cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
-        if( (iphys%i_chk_uxb * iphys%base%i_vecp) .gt. izero) then
+      if(iphys%check_fld1%i_pre_uxb .gt. izero) then
+        if(cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
           call copy_vector_component(nod_fld,                           &
-     &        iphys%base%i_vecp, iphys%i_chk_uxb)
-        end if
-      else
-        if( (iphys%i_chk_uxb * iphys%base%i_magne) .gt. izero) then
+     &        iphys%base%i_vecp, iphys%check_fld1%i_pre_uxb)
+        else
           call copy_vector_component(nod_fld,                           &
-     &        iphys%base%i_magne, iphys%i_chk_uxb)
+     &        iphys%base%i_magne, iphys%check_fld1%i_pre_uxb)
         end if
       end if
 !

@@ -68,8 +68,6 @@
 !
 !>        start address for explicit term for momentum for check
         integer (kind=kint) :: i_chk_mom =       izero
-!>        start address for explicit term for induction for check
-        integer (kind=kint) :: i_chk_uxb =       izero
 !
 !>        start address for rotation of ststem @f$ Omega @f$
 !!          i_omega:   poloidal component
