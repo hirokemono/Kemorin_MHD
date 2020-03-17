@@ -122,10 +122,6 @@
         call set_force_w_SGS_addresses                                  &
      &     (i0, field_name(i), iphys%frc_w_SGS, flag)
 !
-        if ( field_name(i) .eq. geostrophic_balance%name ) then
-          iphys%prod_fld%i_geostrophic =  i0
-        end if
-!
         call set_true_SGS_term_addresses                                &
      &     (i0, field_name(i), iphys%true_SGS, flag)
         call set_true_div_SGS_term_addresses                            &
@@ -163,14 +159,6 @@
         call set_dble_fil_grad_addresses                                &
      &     (i0, field_name(i), iphys%dbl_filter_grad, flag)
 !
-        if ( field_name(i) .eq. sum_forces%name ) then
-          iphys%exp_work%i_forces =     i0
-        else if ( field_name(i) .eq. rot_sum_forces%name ) then
-          iphys%exp_work%i_rot_forces = i0
-        else if ( field_name(i) .eq. div_sum_forces%name ) then
-          iphys%exp_work%i_div_forces = i0
-        end if
-!
         call set_rot_force_addresses(i0, field_name(i),                 &
      &      iphys%rot_forces, flag)
 !
@@ -183,24 +171,17 @@
         call set_filter_ene_flux_addresses(i0, field_name(i),           &
      &      iphys%eflux_by_filter, flag)
 !
-        if ( field_name(i) .eq. previous_momentum%name ) then
-          iphys%exp_work%i_pre_mom =      i0
-        else if ( field_name(i) .eq. previous_induction%name ) then
-          iphys%exp_work%i_pre_uxb =      i0
-        else if ( field_name(i) .eq. previous_heat%name ) then
-          iphys%exp_work%i_pre_heat =     i0
-        else if ( field_name(i) .eq. previous_composition%name ) then
-          iphys%exp_work%i_pre_composit = i0
-        else if ( field_name(i) .eq. previous_pressure%name ) then
-          iphys%exp_work%i_pre_press =    i0
-        end if
-!
+        call set_work_field_addresses(i0, field_name(i),                &
+     &      iphys%exp_work, flag)
         call set_check_field_addresses(i0, field_name(i),               &
      &      iphys%check_fld1, iphys%check_fld2, flag)
 !
 !   Old field label... Should be deleted later!!
         if (field_name(i) .eq. buoyancy_work%name) then
           iphys%ene_flux%i_buo_gen =   i0
+        end if
+        if ( field_name(i) .eq. geostrophic_balance%name ) then
+          iphys%prod_fld%i_geostrophic =  i0
         end if
 !
         i0 = i0 + num_component(i)

@@ -320,7 +320,7 @@
         call add_phys_name_ctl(previous_pressure%name, field_ctl)
 !
         call add_phys_name_ctl(sum_forces%name, field_ctl)
-        call add_phys_name_ctl(div_sum_forces%name, field_ctl)
+!        call add_phys_name_ctl(div_sum_forces%name, field_ctl)
       end if
       if      (cd_prop%iflag_Bevo_scheme .ne. id_no_evolution           &
      &    .or. cd_prop%iflag_Aevo_scheme .ne. id_no_evolution) then
