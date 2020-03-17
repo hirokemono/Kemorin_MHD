@@ -49,6 +49,7 @@
       use t_diff_vector_labels
       use t_field_product_labels
       use t_diffusion_term_labels
+      use t_explicit_term_labels
       use t_SGS_term_labels
       use t_SGS_enegy_flux_labels
       use t_SGS_model_coef_labels
@@ -192,33 +193,10 @@
           iphys%i_pre_composit = i0
         else if ( field_name(i) .eq. previous_pressure%name ) then
           iphys%i_pre_press =    i0
-!
-        else if ( field_name(i) .eq. check_momentum%name ) then
-          iphys%check_fld1%i_pre_mom =       i0
-        else if ( field_name(i) .eq. check_induction%name ) then
-          iphys%check_fld1%i_pre_uxb =       i0
-        else if ( field_name(i) .eq. check_heat%name ) then
-          iphys%check_fld1%i_pre_heat =      i0
-        else if ( field_name(i) .eq. check_composition%name ) then
-          iphys%check_fld1%i_pre_composit =  i0
-        else if ( field_name(i) .eq. check_pressure%name ) then
-          iphys%check_fld1%i_pre_press =     i0
-        else if ( field_name(i) .eq. check_potential%name ) then
-          iphys%check_fld1%i_pre_phi = i0
-!
-        else if ( field_name(i) .eq. check_momentum_2%name ) then
-          iphys%check_fld2%i_pre_mom =       i0
-        else if ( field_name(i) .eq. check_induction_2%name ) then
-          iphys%check_fld2%i_pre_uxb =       i0
-        else if ( field_name(i) .eq. check_heat_2%name ) then
-          iphys%check_fld2%i_pre_heat =      i0
-        else if ( field_name(i) .eq. check_composition_2%name ) then
-          iphys%check_fld2%i_pre_composit =  i0
-        else if ( field_name(i) .eq. check_pressure_2%name ) then
-          iphys%check_fld2%i_pre_press =     i0
-        else if ( field_name(i) .eq. check_potential_2%name ) then
-          iphys%check_fld2%i_pre_phi = i0
         end if
+!
+        call set_check_field_addresses(i0, field_name(i),               &
+     &      iphys%check_fld1, iphys%check_fld2, flag)
 !
 !   Old field label... Should be deleted later!!
         if (field_name(i) .eq. buoyancy_work%name) then
