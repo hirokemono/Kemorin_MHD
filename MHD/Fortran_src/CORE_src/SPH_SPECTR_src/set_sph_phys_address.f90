@@ -319,8 +319,8 @@
 !
       call set_vect_sph_address(ipol%i_pre_mom, itor%i_pre_mom,         &
      &    idpdr%i_pre_mom)
-      call set_vect_sph_address(ipol%i_pre_uxb, itor%i_pre_uxb,         &
-     &    idpdr%i_pre_uxb)
+      call set_vect_sph_address(ipol%exp_work%i_pre_uxb,                &
+     &    itor%exp_work%i_pre_uxb, idpdr%exp_work%i_pre_uxb)
 !
       call set_vect_sph_address(ipol%check_fld1%i_pre_mom,              &
      &    itor%check_fld1%i_pre_mom, idpdr%check_fld1%i_pre_mom)

@@ -54,8 +54,6 @@
 !
 !>        start address for explicit term for momentum at previous step
         integer (kind=kint) :: i_pre_mom =      izero
-!>        start address for explicit term for induction at previous step
-        integer (kind=kint) :: i_pre_uxb =      izero
 !
 !>        start address for rotation of ststem @f$ Omega @f$
 !!          i_omega:   poloidal component

@@ -219,7 +219,7 @@
 !  -----for Adams_Bashforth
       else if (cd_prop%iflag_Aevo_scheme .eq. id_explicit_adams2) then
         call cal_magne_pre_adams                                        &
-     &     (iphys%base%i_vecp, iphys%i_pre_uxb, dt,                     &
+     &     (iphys%base%i_vecp, iphys%exp_work%i_pre_uxb, dt,            &
      &      FEM_prm, nod_comm, node, ele, conduct, iphys_ele, ele_fld,  &
      &      jacs%g_FEM, jacs%jac_3d, rhs_tbl, mlump_cd,                 &
      &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
@@ -228,18 +228,20 @@
       else if (cd_prop%iflag_Aevo_scheme .eq. id_Crank_nicolson) then
         call cal_vect_p_pre_lumped_crank                                &
      &     (cmt_param%iflag_c_magne, SGS_param%ifilter_final,           &
-     &      iphys%base%i_vecp, iphys%i_pre_uxb, iak_diff_b, ak_d_magne, &
-     &      Bnod_bcs%nod_bc_a, dt, FEM_prm, nod_comm, node, ele,        &
-     &      conduct, cd_prop, iphys_ele, ele_fld, jacs%g_FEM,           &
-     &      jacs%jac_3d, rhs_tbl, FEM_elens, diff_coefs, mlump_cd,      &
+     &      iphys%base%i_vecp, iphys%exp_work%i_pre_uxb,                &
+     &      iak_diff_b, ak_d_magne, Bnod_bcs%nod_bc_a, dt,              &
+     &      FEM_prm, nod_comm, node, ele, conduct,                      &
+     &      cd_prop, iphys_ele, ele_fld, jacs%g_FEM, jacs%jac_3d,       &
+     &      rhs_tbl, FEM_elens, diff_coefs, mlump_cd,                   &
      &      Bmatrix, MG_vector, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       else if(cd_prop%iflag_Aevo_scheme .eq. id_Crank_nicolson_cmass)   &
      & then
         call cal_vect_p_pre_consist_crank                               &
      &     (cmt_param%iflag_c_magne, SGS_param%ifilter_final,           &
-     &      iphys%base%i_vecp, iphys%i_pre_uxb, iak_diff_b, ak_d_magne, &
-     &      Bnod_bcs%nod_bc_a, dt, FEM_prm, node, ele, conduct,         &
-     &      cd_prop, jacs%g_FEM, jacs%jac_3d, rhs_tbl, FEM_elens,       &
+     &      iphys%base%i_vecp, iphys%exp_work%i_pre_uxb,                &
+     &      iak_diff_b, ak_d_magne, Bnod_bcs%nod_bc_a, dt,              &
+     &      FEM_prm, node, ele, conduct, cd_prop,                       &
+     &      jacs%g_FEM, jacs%jac_3d, rhs_tbl, FEM_elens,                &
      &      diff_coefs, Bmatrix, MG_vector, mhd_fem_wk, fem_wk,         &
      &      f_l, f_nl, nod_fld)
       end if
