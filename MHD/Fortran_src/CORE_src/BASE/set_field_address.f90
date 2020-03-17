@@ -202,9 +202,9 @@
         else if ( field_name(i) .eq. check_composition%name ) then
           iphys%i_chk_composit =  i0
         else if ( field_name(i) .eq. check_pressure%name ) then
-          iphys%i_chk_press =     i0
+          iphys%check_fld1%i_pre_press =     i0
         else if ( field_name(i) .eq. check_potential%name ) then
-          iphys%i_chk_potential = i0
+          iphys%check_fld1%i_pre_phi = i0
 !
         else if ( field_name(i) .eq. check_momentum_2%name ) then
           iphys%check_fld2%i_pre_mom =       i0

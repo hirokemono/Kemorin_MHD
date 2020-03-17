@@ -41,7 +41,7 @@
 !
       if(iphys%check_fld2%i_pre_press .gt. izero) then
         call copy_scalar_component(nod_fld,                             &
-     &      iphys%i_chk_press, iphys%check_fld2%i_pre_press)
+     &      iphys%check_fld1%i_pre_press, iphys%check_fld2%i_pre_press)
       end if
 !
 !
@@ -52,7 +52,7 @@
 !
       if(iphys%check_fld2%i_pre_phi .gt. izero) then
         call copy_scalar_component(nod_fld,                             &
-     &      iphys%i_chk_potential, iphys%check_fld2%i_pre_phi)
+     &      iphys%check_fld1%i_pre_phi, iphys%check_fld2%i_pre_phi)
       end if
 !
 !
@@ -73,9 +73,9 @@
      &      iphys%base%i_velo, iphys%i_chk_mom)
       end if
 !
-      if( (iphys%i_chk_press * iphys%base%i_press) .gt. izero) then
+      if(iphys%check_fld1%i_pre_press .gt. izero) then
         call copy_scalar_component(nod_fld,                             &
-     &      iphys%base%i_press, iphys%i_chk_press)
+     &      iphys%base%i_press, iphys%check_fld1%i_pre_press)
       end if
 !
 !
@@ -91,9 +91,9 @@
         end if
       end if
 !
-      if( (iphys%i_chk_potential * iphys%base%i_mag_p) .gt. izero) then
+      if(iphys%check_fld1%i_pre_phi .gt. izero) then
         call copy_scalar_component(nod_fld,                             &
-     &      iphys%base%i_mag_p, iphys%i_chk_potential)
+     &      iphys%base%i_mag_p, iphys%check_fld1%i_pre_phi)
       end if
 !
 !

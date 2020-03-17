@@ -75,11 +75,6 @@
 !>        start address for explicit term for composition
 !!        for check
         integer (kind=kint) :: i_chk_composit =  izero
-!>        start address for explicit term for pressure for check
-        integer (kind=kint) :: i_chk_press =     izero
-!>        start address for explicit term for electric potential
-!!        for check
-        integer (kind=kint) :: i_chk_potential = izero
 !
 !>        start address for rotation of ststem @f$ Omega @f$
 !!          i_omega:   poloidal component

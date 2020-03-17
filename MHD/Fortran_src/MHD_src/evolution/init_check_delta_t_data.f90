@@ -67,7 +67,7 @@
         flex_data%ntot_comp = flex_data%ntot_comp + 3
       end if
 !
-      if((iphys%base%i_press * iphys%i_chk_press) .gt. izero) then
+      if(iphys%check_fld1%i_pre_press .gt. izero) then
         flex_data%num_fld = flex_data%num_fld + 1
         flex_data%ntot_comp = flex_data%ntot_comp + 1
       end if
@@ -87,7 +87,7 @@
         end if
       end if
 !
-      if((iphys%base%i_mag_p * iphys%i_chk_potential) .gt. izero) then
+      if(iphys%check_fld1%i_pre_phi .gt. izero) then
         flex_data%num_fld = flex_data%num_fld + 1
         flex_data%ntot_comp = flex_data%ntot_comp + 1
       end if
@@ -128,7 +128,7 @@
         flex_data%fld_name(icou) =    velocity%name
       end if
 !
-      if((iphys%base%i_press * iphys%i_chk_press) .gt. izero) then
+      if(iphys%check_fld1%i_pre_press .gt. izero) then
         icou = icou + 1
         flex_data%i_drmax_p =         flex_data%istack_comp(icou-1) + 1
         flex_data%istack_comp(icou) = flex_data%istack_comp(icou-1) + 1
@@ -159,7 +159,7 @@
         end if
       end if
 !
-      if( (iphys%base%i_mag_p * iphys%i_chk_potential) .gt. izero) then
+      if(iphys%check_fld1%i_pre_phi .gt. izero) then
         icou = icou + 1
         flex_data%i_drmax_f =         flex_data%istack_comp(icou-1) + 1
         flex_data%istack_comp(icou) = flex_data%istack_comp(icou-1) + 1
