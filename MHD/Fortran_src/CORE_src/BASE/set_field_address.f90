@@ -217,7 +217,7 @@
         else if ( field_name(i) .eq. check_pressure_2%name ) then
           iphys%i_chk_press_2 =     i0
         else if ( field_name(i) .eq. check_potential_2%name ) then
-          iphys%i_chk_potential_2 = i0
+          iphys%check_fld2%i_pre_phi = i0
         end if
 !
 !   Old field label... Should be deleted later!!

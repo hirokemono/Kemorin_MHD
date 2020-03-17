@@ -82,7 +82,7 @@
      &     (SGS_par%model_p, MHD_prop%fl_prop, field_ctl)
 !
         call add_dependent_SGS_field(SGS_par%model_p, field_ctl)
-        call add_dependent_field(field_ctl)
+        call add_dependent_field(MHD_prop, field_ctl)
 !
         if (iflag_debug .ge. iflag_routine_msg) write(*,*)              &
      &    'num_nod_phys after modified ', field_ctl%num

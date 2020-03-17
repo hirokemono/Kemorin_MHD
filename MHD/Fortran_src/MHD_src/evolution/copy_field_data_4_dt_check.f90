@@ -50,10 +50,9 @@
      &      iphys%i_chk_uxb, iphys%i_chk_uxb_2)
       end if
 !
-      if((iphys%i_chk_potential_2*iphys%i_chk_potential) .gt. izero)    &
-     &      then
+      if(iphys%check_fld2%i_pre_phi .gt. izero) then
         call copy_scalar_component(nod_fld,                             &
-     &      iphys%i_chk_potential, iphys%i_chk_potential_2)
+     &      iphys%i_chk_potential, iphys%check_fld2%i_pre_phi)
       end if
 !
 !

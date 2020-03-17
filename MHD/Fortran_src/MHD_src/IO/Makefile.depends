@@ -6,7 +6,7 @@ FEM_sgs_model_coefs_IO.o: $(MHD_IO_DIR)/FEM_sgs_model_coefs_IO.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<
 SPH_SGS_ini_model_coefs_IO.o: $(MHD_IO_DIR)/SPH_SGS_ini_model_coefs_IO.f90 m_precision.o calypso_mpi.o m_constants.o t_SGS_control_parameter.o t_sph_filtering.o t_SGS_model_coefs.o t_file_IO_parameter.o t_time_data.o t_ele_info_4_dynamic.o field_IO_select.o set_ini_sgs_model_coefs_IO.o cal_minmax_and_stacks.o
 	$(F90) -c $(F90OPTFLAGS) $<
-add_nodal_fields_4_MHD.o: $(MHD_IO_DIR)/add_nodal_fields_4_MHD.f90 m_precision.o m_machine_parameter.o m_phys_labels.o t_control_parameter.o t_physical_property.o add_nodal_fields_ctl.o calypso_mpi.o t_SGS_control_parameter.o check_wide_SGS_terms.o check_SGS_terms.o check_filtered_field.o check_filtered_forces.o check_double_filter_field.o check_base_forces.o check_base_field.o t_control_array_character3.o t_reference_scalar_param.o
+add_nodal_fields_4_MHD.o: $(MHD_IO_DIR)/add_nodal_fields_4_MHD.f90 m_precision.o m_machine_parameter.o m_phys_labels.o t_control_parameter.o t_physical_property.o add_nodal_fields_ctl.o calypso_mpi.o t_SGS_control_parameter.o check_wide_SGS_terms.o check_SGS_terms.o check_filtered_field.o check_filtered_forces.o check_double_filter_field.o check_base_forces.o check_base_field.o check_workarea_4_explicit.o t_control_array_character3.o t_reference_scalar_param.o
 	$(F90) -c $(F90OPTFLAGS) $<
 bcast_ctl_data_SGS_model.o: $(MHD_IO_DIR)/bcast_ctl_data_SGS_model.f90 m_precision.o calypso_mpi.o t_ctl_data_SGS_model.o t_ctl_data_SGS_filter.o bcast_4_filter_files_ctl.o bcast_control_arrays.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -33,6 +33,8 @@ check_forces_w_symmetry.o: $(MHD_IO_DIR)/check_forces_w_symmetry.f90 m_precision
 check_read_bc_file.o: $(MHD_IO_DIR)/check_read_bc_file.f90 m_precision.o t_bc_data_list.o t_control_parameter.o calypso_mpi.o t_physical_property.o
 	$(F90) -c $(F90OPTFLAGS) $<
 check_wide_SGS_terms.o: $(MHD_IO_DIR)/check_wide_SGS_terms.f90 m_precision.o m_constants.o t_base_field_labels.o t_control_array_character3.o t_SGS_term_labels.o m_filtered_field_labels.o m_wide_SGS_term_labels.o m_grad_filter_field_labels.o m_diff_filter_vect_labels.o add_nodal_fields_ctl.o t_base_force_labels.o m_wide_filter_field_labels.o
+	$(F90) -c $(F90OPTFLAGS) $<
+check_workarea_4_explicit.o: $(MHD_IO_DIR)/check_workarea_4_explicit.f90 m_precision.o t_control_array_character3.o t_explicit_term_labels.o t_base_field_labels.o add_nodal_fields_ctl.o
 	$(F90) -c $(F90OPTFLAGS) $<
 fem_mhd_rst_IO_control.o: $(MHD_IO_DIR)/fem_mhd_rst_IO_control.f90 m_precision.o calypso_mpi.o t_SGS_control_parameter.o t_time_data.o t_mesh_data.o t_phys_data.o t_field_data_IO.o t_layering_ele_list.o t_ele_info_4_dynamic.o t_flex_delta_t_data.o t_work_FEM_dynamic_SGS.o t_MHD_file_parameter.o t_IO_step_parameter.o m_fem_mhd_restart.o FEM_sgs_ini_model_coefs_IO.o t_geometry_data_MHD.o t_SGS_model_coefs.o
 	$(F90) -c $(F90OPTFLAGS) $<

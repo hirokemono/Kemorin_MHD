@@ -20,6 +20,7 @@
       use t_grad_field_labels
       use t_diffusion_term_labels
       use t_field_product_labels
+      use t_explicit_term_labels
       use t_diff_vector_labels
       use t_SGS_term_labels
       use t_SGS_enegy_flux_labels
@@ -91,9 +92,6 @@
         integer (kind=kint) :: i_chk_composit_2 =  izero
 !>        start address for explicit term for pressure for 2nd check
         integer (kind=kint) :: i_chk_press_2 =     izero
-!>        start address for explicit term for electric potential
-!!        for 2nd check
-        integer (kind=kint) :: i_chk_potential_2 = izero
 !
 !>        start address for rotation of ststem @f$ Omega @f$
 !!          i_omega:   poloidal component
@@ -120,6 +118,13 @@
         type(energy_flux_address) :: ene_flux
 !>        Structure of gradient of fields
         type(gradient_field_address) :: grad_fld
+!
+!>        Structure of work area
+        type(explicit_term_address) :: exp_work
+!>        First check work area
+        type(explicit_term_address) :: check_fld1
+!>        Second check work area
+        type(explicit_term_address) :: check_fld2
 !
 !>        Structure of filtered fields
         type(base_field_address) :: filter_fld

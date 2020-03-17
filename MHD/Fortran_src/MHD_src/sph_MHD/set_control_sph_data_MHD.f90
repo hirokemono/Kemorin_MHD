@@ -80,7 +80,7 @@
      &     (MHD_prop%fl_prop, MHD_prop%cd_prop,                         &
      &      MHD_prop%ht_prop, MHD_prop%cp_prop, field_ctl)
 !
-      call add_dependent_field(field_ctl)
+      call add_dependent_field(MHD_prop, field_ctl)
 !
 !    set nodal data
 !

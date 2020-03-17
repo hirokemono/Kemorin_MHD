@@ -7,6 +7,13 @@
 !> @brief Add missing field for MHD dynamo to field list
 !!
 !!@verbatim
+!!      subroutine add_dependent_SGS_field(SGS_param, field_ctl)
+!!        type(SGS_model_control_params), intent(in) :: SGS_param
+!!        type(ctl_array_c3), intent(inout) :: field_ctl
+!!      subroutine add_dependent_field(MHD_prop, field_ctl)
+!!        type(MHD_evolution_param), intent(in) :: MHD_prop
+!!        type(ctl_array_c3), intent(inout) :: field_ctl
+!!
 !!      subroutine add_field_name_4_mhd(MHD_prop, field_ctl)
 !!      subroutine add_ctl_4_ref_temp                                   &
 !!     &         (ref_param_T, ref_param_C, field_ctl)
@@ -123,13 +130,19 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine add_dependent_field(field_ctl)
+      subroutine add_dependent_field(MHD_prop, field_ctl)
 !
       use check_base_forces
       use check_base_field
+      use check_workarea_4_explicit
 !
+      type(MHD_evolution_param), intent(in) :: MHD_prop
       type(ctl_array_c3), intent(inout) :: field_ctl
 !
+!
+      call add_field_ctl_4_check_evo(MHD_prop%cd_prop, field_ctl)
+      if (iflag_debug .ge. iflag_routine_msg) write(*,*)                &
+     &    'add_field_ctl_4_check_evo end'
 !
       call add_field_ctl_4_field_products(field_ctl)
       if (iflag_debug .ge. iflag_routine_msg) write(*,*)                &
