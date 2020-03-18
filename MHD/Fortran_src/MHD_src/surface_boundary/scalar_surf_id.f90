@@ -108,6 +108,8 @@
       type(scaler_surf_bc_type),  intent(inout) :: Ssf_bcs
 !
 !
+      call alloc_surf_data_scalar(Ssf_bcs)
+!
       call s_set_surf_scalar_id(sf_grp%num_grp, sf_grp%grp_name,        &
      &   scalar_surf%num_bc, scalar_surf%bc_name, scalar_surf%ibc_type, &
      &   Ssf_bcs%sgs%ngrp_sf_dat, Ssf_bcs%sgs%id_grp_sf_dat)
@@ -138,6 +140,8 @@
       type(boundary_condition_list), intent(in) :: potential_surf
       type(potential_surf_bc_type),  intent(inout) :: Psf_bcs
 !
+!
+      call alloc_surf_potential(Psf_bcs)
 !
       call s_set_surf_scalar_id(sf_grp%num_grp, sf_grp%grp_name,        &
      &   potential_surf%num_bc, potential_surf%bc_name,                 &
