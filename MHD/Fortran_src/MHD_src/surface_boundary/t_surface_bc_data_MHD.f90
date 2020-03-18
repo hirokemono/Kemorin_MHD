@@ -7,6 +7,7 @@
 !>    @brief flux boundary condition lists for MHD dynamo model
 !!
 !!@verbatim
+!!      subroutine alloc_surf_bc_num(surf_bcs)
 !!      subroutine alloc_surf_bc_data                                   &
 !!     &         (fl_prop, cd_prop, ht_prop, cp_prop, surf_bcs)
 !!        type(fluid_property), intent(in) :: fl_prop
@@ -39,6 +40,20 @@
 !-----------------------------------------------------------------------
 !
       contains 
+!
+!-----------------------------------------------------------------------
+!
+      subroutine alloc_surf_bc_num(surf_bcs)
+!
+      type(surface_boundarty_conditions), intent(inout) :: surf_bcs
+!
+!
+      call alloc_surf_data_velo_num(surf_bcs%Vsf_bcs)
+      call alloc_surf_data_velo_num(surf_bcs%Asf_bcs)
+      call alloc_surf_data_vect_num(surf_bcs%Bsf_bcs)
+      call alloc_surf_data_vect_num(surf_bcs%Jsf_bcs)
+!
+      end subroutine alloc_surf_bc_num
 !
 !-----------------------------------------------------------------------
 !

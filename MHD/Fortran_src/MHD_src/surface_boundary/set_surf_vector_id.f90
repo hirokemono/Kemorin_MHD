@@ -72,20 +72,16 @@
         do j=1, num_bc_sf
 !
 ! ----------- check surface group
-          if (sf_grp%grp_name(i) .eq. bc_sf_name(j)) then
+          if(sf_grp%grp_name(i) .eq. bc_sf_name(j)) then
             isig_s(1:3) = 0
 !
 ! -----------set boundary from control file
             do nd = 1, 3
-!
-! -----------set boundary from control file
-              if ( ibc_sf_type(j) .eq. (iflag_bc_sgs+nd) ) then
-                isig_s(nd) = 1
-              end if
+              if(ibc_sf_type(j) .eq. (iflag_bc_sgs+nd)) isig_s(nd) = 1
             end do
 !
 ! -----------set boundary from control file
-            if (ibc_sf_type(j) .eq. iflag_fixed_norm) then
+            if(ibc_sf_type(j) .eq. iflag_fixed_norm) then
               ngrp_sf_dat_n = ngrp_sf_dat_n + 1
               nnod_sf_dat_n = nnod_sf_dat_n                             &
      &                       + sf_grp_nod%inod_stack_sf_grp(i)          &

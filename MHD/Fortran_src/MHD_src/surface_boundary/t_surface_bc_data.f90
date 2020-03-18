@@ -7,9 +7,11 @@
 !>    @brief flux boundary condition lists for MHD dynamo model
 !!
 !!@verbatim
+!!      subroutine alloc_surf_data_velo_num(Vsf_bcs)
 !!      subroutine alloc_surf_data_velo(Vsf_bcs)
 !!      subroutine dealloc_surf_data_velo(Vsf_bcs)
 !!        type(velocity_surf_bc_type),  intent(inout) :: Vsf_bcs
+!!      subroutine alloc_surf_data_vect_num(Bsf_bcs)
 !!      subroutine alloc_surf_vector(Bsf_bcs)
 !!      subroutine dealloc_surf_vector(Bsf_bcs)
 !!        type(velocity_surf_bc_type),  intent(inout) :: Bsf_bcs
@@ -98,7 +100,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine alloc_surf_data_velo(Vsf_bcs)
+      subroutine alloc_surf_data_velo_num(Vsf_bcs)
 !
       type(velocity_surf_bc_type),  intent(inout) :: Vsf_bcs
 !
@@ -106,6 +108,16 @@
       allocate(Vsf_bcs%sgs(3))
       allocate(Vsf_bcs%grad(3))
       allocate(Vsf_bcs%torque_lead(3))
+!
+      end subroutine alloc_surf_data_velo_num
+!
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      subroutine alloc_surf_data_velo(Vsf_bcs)
+!
+      type(velocity_surf_bc_type),  intent(inout) :: Vsf_bcs
+!
 !
       call alloc_surf_vector_num(Vsf_bcs%grad)
       call alloc_surf_scaler_num(Vsf_bcs%normal)
@@ -138,8 +150,9 @@
       end subroutine dealloc_surf_data_velo
 !
 !  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
 !
-      subroutine alloc_surf_vector(Bsf_bcs)
+      subroutine alloc_surf_data_vect_num(Bsf_bcs)
 !
       type(vector_surf_bc_type),  intent(inout) :: Bsf_bcs
 !
@@ -147,6 +160,16 @@
       allocate(Bsf_bcs%sgs(3))
       allocate(Bsf_bcs%grad(3))
       allocate(Bsf_bcs%torque_lead(3))
+!
+      end subroutine alloc_surf_data_vect_num
+!
+!-----------------------------------------------------------------------
+!
+      subroutine alloc_surf_vector(Bsf_bcs)
+!
+      type(vector_surf_bc_type),  intent(inout) :: Bsf_bcs
+!
+!
 !
       call alloc_surf_vector_num(Bsf_bcs%grad)
       call alloc_surf_vector_dat_type(Bsf_bcs%sgs)

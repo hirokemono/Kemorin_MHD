@@ -62,6 +62,7 @@
       type(velocity_surf_bc_type), intent(inout) :: Vsf_bcs
 !
 !
+      call alloc_surf_data_velo_num(Vsf_bcs)
       call s_count_num_surf_vector                                      &
      &   (IO_bc, sf_grp, sf_nod, vector_surf%num_bc,                    &
      &    vector_surf%bc_name, vector_surf%ibc_type, name_norm,         &
@@ -98,6 +99,7 @@
       type(vector_surf_bc_type), intent(inout) :: Bsf_bcs
 !
 !
+      call alloc_surf_data_vect_num(Bsf_bcs)
       call s_count_num_surf_vector(IO_bc, sf_grp, sf_nod,               &
      &   vector_surf%num_bc, vector_surf%bc_name, vector_surf%ibc_type, &
      &   name_norm, Bsf_bcs%sgs, Bsf_bcs%normal)

@@ -46,25 +46,15 @@
       do i=1, num_surf
 !
 ! ----------- loop for boundary conditions
-!
         do j=1, num_bc_sf
 !
 ! ----------- check surface group
-!
-          if (surf_name(i)==bc_sf_name(j)) then
-!
+          if(surf_name(i) .eq. bc_sf_name(j)) then
             isig_s = 0
 !
 ! -----------set boundary using SGS case
-!
-            if (ibc_sf_type(j) .eq. iflag_bc_sgs_s) then
-              isig_s = 1
-            end if
-!
-            if (isig_s .eq. 1) then
-              ngrp_sf_sgs = ngrp_sf_sgs + 1
-            end if
-!
+            if(ibc_sf_type(j) .eq. iflag_bc_sgs_s) isig_s = 1
+            if(isig_s .eq. 1) ngrp_sf_sgs = ngrp_sf_sgs + 1
           end if
         end do
       end do
@@ -100,13 +90,11 @@
          do j=1, num_bc_sf
 !
 ! ----------- check surface group
-          if (surf_name(i)==bc_sf_name(j)) then
-            isig_s = 0
+          if (surf_name(i) .eq. bc_sf_name(j)) then
 !
 ! -----------set boundary using SGS case
-            if (ibc_sf_type(j) .eq. iflag_bc_sgs_s) then
-              isig_s = 1
-            end if
+            isig_s = 0
+            if (ibc_sf_type(j) .eq. iflag_bc_sgs_s) isig_s = 1
 !
             if (isig_s .eq. 1) then
               l_s1 = l_s1 + 1
