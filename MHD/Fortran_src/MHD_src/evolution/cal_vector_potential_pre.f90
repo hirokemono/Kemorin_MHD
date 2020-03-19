@@ -251,7 +251,7 @@
      &   (Bnod_bcs%nod_bc_a, iphys%base%i_vecp, nod_fld)
 !
       call vector_send_recv(iphys%base%i_vecp, nod_comm, nod_fld)
-      call clear_field_data(nod_fld, n_scalar, iphys%ene_flux%i_m_phi)
+      call clear_field_data(nod_fld, n_scalar, iphys%exp_work%i_m_phi)
 !
 !      call check_nodal_data                                            &
 !     &   ((50+my_rank), nod_fld, n_vector, iphys%base%i_vecp)
@@ -317,21 +317,21 @@
       if (iflag_debug.eq.1) write(*,*) 'int_vol_magne_co'
       call int_vol_solenoid_co                                          &
      &   (FEM_prm%npoint_poisson_int, SGS_param%ifilter_final,          &
-     &    ele%istack_ele_smp, iphys%ene_flux%i_m_phi, iak_diff_b,       &
+     &    ele%istack_ele_smp, iphys%exp_work%i_m_phi, iak_diff_b,       &
      &    node, ele, nod_fld, jacs%g_FEM, jacs%jac_3d, jacs%jac_3d_l,   &
      &    rhs_tbl, FEM_elens, diff_coefs, fem_wk, f_nl)
 !
       if (cmt_param%iflag_c_magne .eq. id_SGS_commute_ON                &
      &     .and. Fsf_bcs%sgs%ngrp_sf_dat .gt. 0) then
         if (iflag_debug.eq.1) write(*,*) 'int_surf_sgs_velo_co_ele',    &
-                             iphys%ene_flux%i_m_phi
+                             iphys%exp_work%i_m_phi
          call int_surf_sgs_velo_co_ele                                  &
      &      (node, ele, surf, sf_grp, nod_fld,                          &
      &       jacs%g_FEM, jacs%jac_sf_grp, jacs%jac_sf_grp_l,            &
      &       rhs_tbl, FEM_elens, FEM_prm%npoint_poisson_int,            &
      &       Fsf_bcs%sgs%ngrp_sf_dat, Fsf_bcs%sgs%id_grp_sf_dat,        &
      &       SGS_param%ifilter_final, diff_coefs%num_field,             &
-     &       iak_diff_b, diff_coefs%ak, iphys%ene_flux%i_m_phi,         &
+     &       iak_diff_b, diff_coefs%ak, iphys%exp_work%i_m_phi,         &
      &       fem_wk, surf_wk, f_nl)
       end if
 !
@@ -346,7 +346,7 @@
      &      jacs%jac_3d, rhs_tbl, FEM_elens, diff_coefs, m_lump,        &
      &      Bmatrix, MG_vector, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
         call clear_field_data                                           &
-     &     (nod_fld, n_scalar, iphys%ene_flux%i_m_phi)
+     &     (nod_fld, n_scalar, iphys%exp_work%i_m_phi)
       else
         call cal_vector_p_co_exp                                        &
      &     (iphys%base%i_vecp, FEM_prm, nod_comm, node, ele,            &

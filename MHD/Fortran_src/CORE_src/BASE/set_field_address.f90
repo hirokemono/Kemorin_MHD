@@ -121,9 +121,6 @@
         call set_true_SGS_ene_flux_addresses                            &
      &     (i0, field_name(i), iphys%true_SGS_eflux, flag)
 !
-        call set_work_4_poisson_addresses                               &
-     &     (i0, field_name(i), iphys%ene_flux, flag)
-!
         call set_gradient_field_addresses                               &
      &     (i0, field_name(i), iphys%grad_fld, flag)
         call set_diff_vector_addresses                                  &

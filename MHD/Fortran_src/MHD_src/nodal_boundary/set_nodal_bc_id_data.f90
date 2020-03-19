@@ -112,7 +112,7 @@
      &     (nod_bcs%Bnod_bcs%nod_bc_b, iphys%base%i_magne, nod_fld)
         if (iflag_debug.eq.1) write(*,*) 'set boundary value 4 magne'
         call set_boundary_scalar                                        &
-     &     (nod_bcs%Bnod_bcs%nod_bc_f, iphys%ene_flux%i_m_phi, nod_fld)
+     &     (nod_bcs%Bnod_bcs%nod_bc_f, iphys%exp_work%i_m_phi, nod_fld)
         if (iflag_debug.eq.1) write(*,*) 'set_boundary_vect current'
         call set_boundary_vect                                          &
      &     (nod_bcs%Bnod_bcs%nod_bc_j, iphys%base%i_current, nod_fld)

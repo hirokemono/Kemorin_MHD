@@ -147,7 +147,7 @@
       call init_sol_potential                                           &
      &   (mesh%node%numnod, mesh%node%istack_nod_smp,                   &
      &    dt, cd_prop%coef_mag_p, nod_fld%ntot_phys,                    &
-     &    iphys%ene_flux%i_m_phi, iphys%base%i_mag_p, nod_fld%d_fld)
+     &    iphys%exp_work%i_m_phi, iphys%base%i_mag_p, nod_fld%d_fld)
 !
 !     --------------------- 
 !
@@ -176,7 +176,7 @@
       call init_sol_potential                                           &
      &   (mesh%node%numnod, mesh%node%istack_nod_smp,                   &
      &    dt, cd_prop%coef_mag_p, nod_fld%ntot_phys,                    &
-     &    iphys%ene_flux%i_m_phi, iphys%base%i_mag_p, nod_fld%d_fld)
+     &    iphys%exp_work%i_m_phi, iphys%base%i_mag_p, nod_fld%d_fld)
 !
       do iloop = 0, FEM_prm%maxiter_coulomb
 !
@@ -192,7 +192,7 @@
         if (iflag_debug.gt.0) write(*,*) 'cal_sol_m_potential', iloop
         call cal_sol_m_potential                                        &
      &     (mesh%node%numnod, mesh%node%istack_internal_smp,            &
-     &      nod_fld%ntot_phys, iphys%ene_flux%i_m_phi,                  &
+     &      nod_fld%ntot_phys, iphys%exp_work%i_m_phi,                  &
      &      iphys%base%i_mag_p, nod_fld%d_fld)
 !
         if (iflag_debug.gt.0) write(*,*) 'vector_potential_correct'
@@ -298,7 +298,7 @@
       call init_sol_potential                                           &
      &   (mesh%node%numnod, mesh%node%istack_nod_smp,                   &
      &    dt, cd_prop%coef_mag_p, nod_fld%ntot_phys,                    &
-     &    iphys%ene_flux%i_m_phi, iphys%base%i_mag_p, nod_fld%d_fld)
+     &    iphys%exp_work%i_m_phi, iphys%base%i_mag_p, nod_fld%d_fld)
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_magnetic_field_pre'
       call cal_magnetic_field_pre                                       &
@@ -334,7 +334,7 @@
 !
         call cal_sol_m_potential                                        &
      &     (mesh%node%numnod, mesh%node%istack_internal_smp,            &
-     &      nod_fld%ntot_phys, iphys%ene_flux%i_m_phi,                  &
+     &      nod_fld%ntot_phys, iphys%exp_work%i_m_phi,                  &
      &      iphys%base%i_mag_p, nod_fld%d_fld)
 !
 !

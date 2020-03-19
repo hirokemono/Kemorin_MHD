@@ -317,21 +317,21 @@
       if (iflag_debug.eq.1)  write(*,*) 'int_vol_magne_co'
       call int_vol_solenoid_co                                          &
      &   (FEM_prm%npoint_poisson_int, SGS_param%ifilter_final,          &
-     &    ele%istack_ele_smp, iphys%ene_flux%i_m_phi, iak_diff_b,       &
+     &    ele%istack_ele_smp, iphys%exp_work%i_m_phi, iak_diff_b,       &
      &    node, ele, nod_fld, jacs%g_FEM, jacs%jac_3d, jacs%jac_3d_l,   &
      &    rhs_tbl, FEM_elens, diff_coefs, fem_wk, f_nl)
 !
       if (cmt_param%iflag_c_magne .eq. id_SGS_commute_ON                &
      &     .and. Fsf_bcs%sgs%ngrp_sf_dat .gt. 0) then
         if (iflag_debug.eq.1) write(*,*) 'int_surf_sgs_velo_co_ele',    &
-                             iphys%ene_flux%i_m_phi
+                             iphys%exp_work%i_m_phi
          call int_surf_sgs_velo_co_ele                                  &
      &      (node, ele, surf, sf_grp, nod_fld,                          &
      &       jacs%g_FEM, jacs%jac_sf_grp, jacs%jac_sf_grp_l,            &
      &       rhs_tbl, FEM_elens, FEM_prm%npoint_poisson_int,            &
      &       Fsf_bcs%sgs%ngrp_sf_dat, Fsf_bcs%sgs%id_grp_sf_dat,        &
      &       SGS_param%ifilter_final, diff_coefs%num_field,             &
-     &       iak_diff_b, diff_coefs%ak, iphys%ene_flux%i_m_phi,         &
+     &       iak_diff_b, diff_coefs%ak, iphys%exp_work%i_m_phi,         &
      &       fem_wk, surf_wk, f_nl)
       end if
 !
@@ -418,14 +418,14 @@
       if (cmt_param%iflag_c_magne .eq. id_SGS_commute_ON                &
      &     .and. Fsf_bcs%sgs%ngrp_sf_dat .gt. 0) then
         if (iflag_debug.eq.1) write(*,*) 'int_surf_sgs_velo_co_ele',    &
-                             iphys%ene_flux%i_m_phi
+                             iphys%exp_work%i_m_phi
          call int_surf_sgs_velo_co_ele                                  &
      &     (node, ele, surf, sf_grp, nod_fld,                           &
      &      jacs%g_FEM, jacs%jac_sf_grp, jacs%jac_sf_grp_l,             &
      &      rhs_tbl, FEM_elens, FEM_prm%npoint_poisson_int,             &
      &      Fsf_bcs%sgs%ngrp_sf_dat, Fsf_bcs%sgs%id_grp_sf_dat,         &
      &      SGS_param%ifilter_final, diff_coefs%num_field, iak_diff_b,  &
-     &      diff_coefs%ak, iphys%ene_flux%i_m_phi,                      &
+     &      diff_coefs%ak, iphys%exp_work%i_m_phi,                      &
      &      fem_wk, surf_wk, f_nl)
       end if
 !

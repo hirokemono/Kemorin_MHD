@@ -13,10 +13,6 @@
 !!     &         (i_phys, field_name, base_force, flag)
 !!        type(energy_flux_address), intent(inout) :: ene_flux
 !!
-!!      logical function check_work_4_poisson(field_name)
-!!      subroutine set_work_4_poisson_addresses                         &
-!!     &         (i_phys, field_name, ene_flux, flag)
-!!
 !!      integer(kind = kint) function num_energy_fluxes()
 !!      subroutine set_energy_flux_names(n_comps, names, maths)
 !! !!!!!  energy flux names  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -58,11 +54,6 @@
 !!   magnetic_ene_diffusion  [i_mag_e_diffuse]:
 !!         Energy dissipation by Ohmic dissipation  B ( \nabla^{2} B)
 !!
-!!   pressure_work     [i_vis_e_diffuse]:  work of pressure gradient
-!!                                     u ( \nabla p)
-!!   m_potential_work  [i_mag_e_diffuse]: energy flux of scalar potential
-!!                                     B ( \nabla \phi)
-!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!@endverbatim
 !!
@@ -75,7 +66,7 @@
       implicit  none
 ! 
 !
-      integer(kind = kint), parameter, private :: nene_flux = 16
+      integer(kind = kint), parameter, private :: nene_flux = 14
 !
 !>        Field label of work of inertia
 !!         @f$ -u_{i} (e_{ijk} \omega_{j} u_{k}) @f$
@@ -167,19 +158,6 @@
      &                name = 'magnetic_ene_diffusion',                  &
      &             math = '$ B_{i} (\partial_{j}\partial_{j} B_{i}) $')
 !
-!>        Field label of work area for pressure
-!!         @f$ \varphi @f$
-      type(field_def), parameter :: pressure_work                       &
-     &    = field_def(n_comp = n_scalar,                                &
-     &                name = 'pressure_work',                           &
-     &                math = '$ \varphi $')
-!>        Field label of work area for scalar potential
-!!         @f$ \varphi @f$
-      type(field_def), parameter :: m_potential_work                    &
-     &    = field_def(n_comp = n_scalar,                                &
-     &                name = 'm_potential_work',                        &
-     &                math = '$ \varphi $')
-!
 !   --------------------------------------------------------------------
 !
 !>        Old Field label for buoyancy flux
@@ -236,13 +214,6 @@
 !>        Field address of energy flux by magnetic diffusion
 !!         @f$ B_{i} \left( \partial_{j}\partial_{j} B_{i} \right) @f$
         integer (kind=kint) :: i_mag_e_diffuse =   izero
-!
-!>        Field label of energy flux by potential in momentum euqaion
-!!         @f$ \varphi @f$
-        integer (kind=kint) :: i_p_phi =           izero
-!>        Field address of energy flux by potential in induction euqaion
-!!         @f$ \varphi @f$
-        integer (kind=kint) :: i_m_phi =           izero
       end type energy_flux_address
 !
 ! ----------------------------------------------------------------------
@@ -333,44 +304,6 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      logical function check_work_4_poisson(field_name)
-!
-      character(len = kchara), intent(in) :: field_name
-!
-!
-      check_work_4_poisson = .FALSE.
-      if (    (field_name .eq. pressure_work%name)                      &
-     &   .or. (field_name .eq. m_potential_work%name)                   &
-     &      )   check_work_4_poisson = .TRUE.
-!
-      end function check_work_4_poisson
-!
-! ----------------------------------------------------------------------
-!
-      subroutine set_work_4_poisson_addresses                           &
-     &         (i_phys, field_name, ene_flux, flag)
-!
-      integer(kind = kint), intent(in) :: i_phys
-      character(len = kchara), intent(in) :: field_name
-!
-      type(energy_flux_address), intent(inout) :: ene_flux
-      logical, intent(inout) :: flag
-!
-!
-      flag = check_work_4_poisson(field_name)
-      if(flag) then
-        if (field_name .eq. pressure_work%name) then
-          ene_flux%i_p_phi = i_phys
-        else if (field_name .eq. m_potential_work%name) then
-          ene_flux%i_m_phi = i_phys
-        end if
-      end if
-!
-      end subroutine set_work_4_poisson_addresses
-!
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
       integer(kind = kint) function num_energy_fluxes()
       num_energy_fluxes = nene_flux
       return
@@ -416,11 +349,6 @@
      &    n_comps(13), names(13), maths(13))
       call set_field_labels(magnetic_ene_diffusion,                     &
      &    n_comps(14), names(14), maths(14))
-!
-      call set_field_labels(pressure_work,                              &
-     &    n_comps(15), names(15), maths(15))
-      call set_field_labels(m_potential_work,                           &
-     &    n_comps(16), names(16), maths(16))
 !
       end subroutine set_energy_flux_names
 !

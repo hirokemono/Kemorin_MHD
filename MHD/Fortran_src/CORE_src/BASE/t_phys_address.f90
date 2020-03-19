@@ -30,20 +30,6 @@
 ! 
 !>       Structure for start address for fields
       type phys_address
-!
-!>        start address for rotation of ststem @f$ Omega @f$
-!!          i_omega:   poloidal component
-!!          i_omega+1: radial derivative of poloidal component
-!!          i_omega+2: 2nd radial derivative of poloidal component
-        integer (kind=kint) :: i_omega = izero
-!
-!>        start address for background magnetic field @f$ B_{0} @f$
-!!          i_back_B:   poloidal component
-!!          i_back_B+1: radial derivative of poloidal component
-!!          i_back_B+2: 2nd radial derivative of poloidal component
-        integer (kind=kint) :: i_back_B = izero
-!
-!
 !>        Structure of base fields
         type(base_field_address) :: base
 !>        Structure of forces
@@ -56,6 +42,16 @@
         type(energy_flux_address) :: ene_flux
 !>        Structure of gradient of fields
         type(gradient_field_address) :: grad_fld
+!>        Structure of difference of vector
+        type(diff_vector_address) :: diff_vector
+!
+!>        Structure of diffusion terms
+        type(diffusion_address) :: diffusion
+!>        Structure of diffusivities
+        type(diffusivity_adress) :: diffusivity
+!
+!>        Structure of products of fields
+        type(phys_products_address) :: prod_fld
 !
 !>        Structure of work area
         type(explicit_term_address) :: exp_work
@@ -84,18 +80,8 @@
 !>        Structure of divergence of forces by filtered field
         type(base_force_address) :: div_frc_by_filter
 !
-!>        Structure of diffusion terms
-        type(diffusion_address) :: diffusion
-!>        Structure of diffusivities
-        type(diffusivity_adress) :: diffusivity
-!
 !>        Structure of energy fluxes by filtered field
         type(energy_flux_address) :: eflux_by_filter
-!>        Structure of energy fluxes by filtered field
-        type(phys_products_address) :: prod_fld
-!
-!>        Structure of difference of vector
-        type(diff_vector_address) :: diff_vector
 !
 !>        Structure of gradient of filtered fields
         type(gradient_field_address) :: grad_fil_fld

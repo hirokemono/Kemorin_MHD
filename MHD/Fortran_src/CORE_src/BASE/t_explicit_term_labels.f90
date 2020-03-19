@@ -10,6 +10,7 @@
 !!@verbatim
 !!      logical function check_vector_work_field(field_name)
 !!      logical function check_scalar_work_field(field_name)
+!!      logical function check_work_4_poisson(field_name)
 !!      logical function check_vector_check_field(field_name)
 !!      logical function check_scalar_check_field(field_name)
 !!      subroutine set_work_field_addresses                             &
@@ -42,6 +43,10 @@
 !!    previous_pressure    [exp_work%i_pre_press]
 !!    previous_potential   [exp_work%i_pre_phi]
 !!
+!!
+!!    pressure_work     [i_p_phi]: work for pressure Poisson equation
+!!    m_potential_work  [i_m_phi]: work for potential Poisson equation
+!!
 !!      Check of explicit terms
 !!    check_momentum       [check_fld1%i_pre_mom]
 !!    check_induction      [check_fld1%i_pre_uxb]
@@ -69,7 +74,7 @@
 !
       implicit  none
 !
-      integer(kind = kint), parameter, private :: nexp_work =   9
+      integer(kind = kint), parameter, private :: nexp_work =  11
       integer(kind = kint), parameter, private :: ncheck_fld = 12
 !
 !  arrays for current forces
@@ -123,6 +128,21 @@
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'previous_potential',                      &
      &                math = '$ \varphi^{N-1} $')
+!
+!     Work area for Poisson equation
+!
+!>        Field label of work area for pressure
+!!         @f$ \varphi @f$
+      type(field_def), parameter :: pressure_work                       &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                name = 'pressure_work',                           &
+     &                math = '$ \varphi $')
+!>        Field label of work area for scalar potential
+!!         @f$ \varphi @f$
+      type(field_def), parameter :: m_potential_work                    &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                name = 'm_potential_work',                        &
+     &                math = '$ \varphi $')
 !
 !  arrays for evolution check
 !
@@ -216,6 +236,13 @@
         integer (kind=kint) :: i_pre_press =    izero
 !>        start address for explicit term for potential at previous step
         integer (kind=kint) :: i_pre_phi =    izero
+!
+!>        Field label of energy flux by potential in momentum euqaion
+!!         @f$ \varphi @f$
+        integer (kind=kint) :: i_p_phi =           izero
+!>        Field address of energy flux by potential in induction euqaion
+!!         @f$ \varphi @f$
+        integer (kind=kint) :: i_m_phi =           izero
       end type explicit_term_address
 !
 ! ----------------------------------------------------------------------
@@ -254,6 +281,20 @@
      &   .or. (field_name .eq. previous_potential%name)
 !
       end function check_scalar_work_field
+!
+! ----------------------------------------------------------------------
+!
+      logical function check_work_4_poisson(field_name)
+!
+      character(len = kchara), intent(in) :: field_name
+!
+!
+      check_work_4_poisson = .FALSE.
+      if (    (field_name .eq. pressure_work%name)                      &
+     &   .or. (field_name .eq. m_potential_work%name)                   &
+     &      )   check_work_4_poisson = .TRUE.
+!
+      end function check_work_4_poisson
 !
 ! ----------------------------------------------------------------------
 !
@@ -305,7 +346,8 @@
 !
 !
       flag =   check_vector_work_field(field_name)                      &
-     &    .or. check_scalar_work_field(field_name)
+     &    .or. check_scalar_work_field(field_name)                      &
+     &    .or. check_work_4_poisson(field_name)
       if(flag) then
         if (field_name .eq. sum_forces%name) then
           exp_work%i_forces =       i_phys
@@ -327,6 +369,11 @@
           exp_work%i_pre_press =    i_phys
         else if (field_name .eq. previous_potential%name) then
           exp_work%i_pre_phi =      i_phys
+!
+        else if (field_name .eq. pressure_work%name) then
+          exp_work%i_p_phi = i_phys
+        else if (field_name .eq. m_potential_work%name) then
+          exp_work%i_m_phi = i_phys
         end if
       end if  
 !
@@ -425,6 +472,11 @@
      &    n_comps( 8), names( 8), maths( 8))
       call set_field_labels(previous_potential,                         &
      &    n_comps( 9), names( 9), maths( 9))
+!
+      call set_field_labels(pressure_work,                              &
+     &    n_comps(10), names(10), maths(10))
+      call set_field_labels(m_potential_work,                           &
+     &    n_comps(11), names(11), maths(11))
 !
       end subroutine set_work_4_explicit_labels
 !

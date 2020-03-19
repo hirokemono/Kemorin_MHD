@@ -27,13 +27,16 @@
 !!
 !! field names 
 !!
-!!   velocity [i_velo]:     velocity    u
-!!   pressure [i_press]:     pressure    P
-!!   vorticity [i_vort]:    vorticity   \omega = \nabra \times v
+!!   velocity        [i_velo]:     velocity    u
+!!   pressure        [i_press]:     pressure    P
+!!   vorticity       [i_vort]:     vorticity   \omega = \nabra \times v
+!!   system_Rotation [i_omega]:    System rotation   \Omega
 !!
 !!   vector_potential [i_vecp] :   vector potential \nabla \times A = B
 !!   magnetic_field [i_magne]:     magnetic field   B
 !!   current_density [i_current]:    current density  J = \nabla \times B
+!!   background_B [i_back_B]: background magnetic field 
+!!                                                  B_{0}
 !!   magnetic_potential [i_mag_p]:   potential       \phi
 !!   scalar_potential [i_scalar_p]:  scalar potential   \phi
 !!
@@ -68,7 +71,7 @@
       implicit  none
 ! 
 !
-      integer(kind = kint), parameter, private :: nfld_base = 23
+      integer(kind = kint), parameter, private :: nfld_base = 25
 !
 !>        Field label for velocity
 !!         @f$ u_{i} @f$
@@ -89,6 +92,12 @@
      &                name = 'pressure',                                &
      &                math = '$ u_{i} $')
 !!
+!>        System rotation @f$ \Omega_{i} @f$
+      type(field_def), parameter :: system_Rotation                     &
+     &    = field_def(n_comp = n_vector,                                &
+     &                name = 'system_Rotation',                         &
+     &                math = '$ \Omega_{i} $')
+!
 !>        Field label for magnetic field
 !!         @f$ B_{i} @f$
       type(field_def), parameter :: magnetic_field                      &
@@ -107,6 +116,13 @@
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'current_density',                         &
      &                math = '$ J_{i} = e_{ijk} \partial_{j} B_{k} $')
+!>        Field label of backgroupnd  magnetic field
+!!         @f$ B_{0} @f$
+      type(field_def), parameter :: background_B                        &
+     &    = field_def(n_comp = n_vector,                                &
+     &                name = 'background_B',                            &
+     &                math = '$ B_{0} $')
+!
 !>        Field label for magnetic potential
 !!         @f$ W @f$
       type(field_def), parameter :: magnetic_potential                  &
@@ -228,6 +244,12 @@
 !>        Start address for pressure
 !!         @f$ p @f$
         integer (kind=kint) :: i_press =           izero
+!!
+!>        start address for rotation of ststem @f$ Omega @f$
+!!          i_omega:   poloidal component
+!!          i_omega+1: radial derivative of poloidal component
+!!          i_omega+2: 2nd radial derivative of poloidal component
+        integer (kind=kint) :: i_omega = izero
 !
 !>        start address for magnetic field
 !!         @f$ B_{i} @f$
@@ -244,6 +266,12 @@
 !>        start address for electric potential
 !!         @f$ \varphi @f$
         integer (kind=kint) :: i_scalar_p =        izero
+!
+!>        start address for background magnetic field @f$ B_{0} @f$
+!!          i_back_B:   poloidal component
+!!          i_back_B+1: radial derivative of poloidal component
+!!          i_back_B+2: 2nd radial derivative of poloidal component
+        integer (kind=kint) :: i_back_B = izero
 !
 !>        start address for temperature
 !!         @f$ T @f$
@@ -330,7 +358,9 @@
      &   .or. (field_name .eq. vorticity%name)                          &
      &   .or. (field_name .eq. magnetic_field%name)                     &
      &   .or. (field_name .eq. vector_potential%name)                   &
-     &   .or. (field_name .eq. current_density%name)
+     &   .or. (field_name .eq. current_density%name)                    &
+     &   .or. (field_name .eq. system_Rotation%name)                    &
+     &   .or. (field_name .eq. background_B%name)
 !
       end function check_base_vector
 !
@@ -393,6 +423,11 @@
           base_fld%i_vecp =     i_phys
         else if (field_name .eq. current_density%name) then
           base_fld%i_current =  i_phys
+!
+        else if (field_name .eq. system_Rotation%name) then
+          base_fld%i_omega =    i_phys
+        else if (field_name .eq. background_B%name) then
+          base_fld%i_back_B =   i_phys
         end if
       end if
 !
@@ -481,51 +516,55 @@
      &    n_comps( 2), names( 2), maths( 2))
       call set_field_labels(pressure,                                   &
      &    n_comps( 3), names( 3), maths( 3))
+      call set_field_labels(system_Rotation,                            &
+     &    n_comps( 4), names( 4), maths( 4))
 !
       call set_field_labels(magnetic_field,                             &
-     &    n_comps( 4), names( 4), maths( 4))
-      call set_field_labels(vector_potential,                           &
      &    n_comps( 5), names( 5), maths( 5))
-      call set_field_labels(current_density,                            &
+      call set_field_labels(vector_potential,                           &
      &    n_comps( 6), names( 6), maths( 6))
-      call set_field_labels(magnetic_potential,                         &
+      call set_field_labels(current_density,                            &
      &    n_comps( 7), names( 7), maths( 7))
-      call set_field_labels(scalar_potential,                           &
+      call set_field_labels(background_B,                               &
      &    n_comps( 8), names( 8), maths( 8))
+      call set_field_labels(magnetic_potential,                         &
+     &    n_comps( 9), names( 9), maths( 9))
+      call set_field_labels(scalar_potential,                           &
+     &    n_comps(10), names(10), maths(10))
 !
       call set_field_labels(temperature,                                &
-     &    n_comps( 9), names( 9), maths( 9))
-      call set_field_labels(perturbation_temp,                          &
-     &    n_comps(10), names(10), maths(10))
-      call set_field_labels(reference_temperature,                      &
      &    n_comps(11), names(11), maths(11))
-      call set_field_labels(heat_source,                                &
+      call set_field_labels(perturbation_temp,                          &
      &    n_comps(12), names(12), maths(12))
+      call set_field_labels(reference_temperature,                      &
+     &    n_comps(13), names(13), maths(13))
+      call set_field_labels(heat_source,                                &
+     &    n_comps(14), names(14), maths(14))
 !
       call set_field_labels(composition,                                &
-     &    n_comps(13), names(13), maths(13))
-      call set_field_labels(perturbation_composition,                   &
-     &    n_comps(14), names(14), maths(14))
-      call set_field_labels(reference_composition,                      &
      &    n_comps(15), names(15), maths(15))
-      call set_field_labels(composition_source,                         &
+      call set_field_labels(perturbation_composition,                   &
      &    n_comps(16), names(16), maths(16))
+      call set_field_labels(reference_composition,                      &
+     &    n_comps(17), names(17), maths(17))
+      call set_field_labels(composition_source,                         &
+     &    n_comps(18), names(18), maths(18))
 !
       call set_field_labels(entropy,                                    &
-     &    n_comps(17), names(17), maths(17))
-      call set_field_labels(perturbation_entropy,                       &
-     &    n_comps(18), names(18), maths(18))
-      call set_field_labels(reference_entropy,                          &
      &    n_comps(19), names(19), maths(19))
-      call set_field_labels(entropy_source,                             &
+      call set_field_labels(perturbation_entropy,                       &
      &    n_comps(20), names(20), maths(20))
+      call set_field_labels(reference_entropy,                          &
+     &    n_comps(21), names(21), maths(21))
+      call set_field_labels(entropy_source,                             &
+     &    n_comps(22), names(22), maths(22))
 !
       call set_field_labels(density,                                    &
-     &    n_comps(21), names(21), maths(21))
-      call set_field_labels(perturbation_density,                       &
-     &    n_comps(22), names(22), maths(22))
-      call set_field_labels(reference_density,                          &
      &    n_comps(23), names(23), maths(23))
+      call set_field_labels(perturbation_density,                       &
+     &    n_comps(24), names(24), maths(24))
+      call set_field_labels(reference_density,                          &
+     &    n_comps(25), names(25), maths(25))
 !
       end subroutine set_base_field_names
 !

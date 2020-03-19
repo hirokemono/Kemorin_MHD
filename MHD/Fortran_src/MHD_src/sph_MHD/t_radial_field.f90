@@ -203,19 +203,19 @@
 !
       if(fl_prop%iflag_4_coriolis .eq. id_turn_ON) then
         icou = icou + 1
-        d_rad%phys_name(icou) = fhd_omega
+        d_rad%phys_name(icou) = system_Rotation%name
         d_rad%num_component(icou) = n_vector
         d_rad%istack_component(icou) = d_rad%istack_component(icou-1)   &
      &                                + d_rad%num_component(icou)
-        irad%i_omega = d_rad%istack_component(icou-1) + 1
+        irad%base%i_omega = d_rad%istack_component(icou-1) + 1
       end if
       if(cd_prop%iflag_magneto_cv .eq. id_turn_ON) then
         icou = icou + 1
-        d_rad%phys_name(icou) = fhd_back_B
+        d_rad%phys_name(icou) = background_B%name
         d_rad%num_component(icou) = n_vector
         d_rad%istack_component(icou) = d_rad%istack_component(icou-1)   &
      &                                + d_rad%num_component(icou)
-        irad%i_back_B = d_rad%istack_component(icou-1) + 1
+        irad%base%i_back_B = d_rad%istack_component(icou-1) + 1
       end if
       if(ref_param_T%iflag_reference .eq. id_sphere_ref_temp) then
         icou = icou + 1
