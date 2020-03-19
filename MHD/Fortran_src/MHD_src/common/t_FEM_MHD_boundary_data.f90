@@ -63,7 +63,6 @@
       use t_bc_data_list
 !
       use set_nodal_bc_id_data
-      use set_surface_id_MHD
       use set_surface_values
       use set_normal_field
 !

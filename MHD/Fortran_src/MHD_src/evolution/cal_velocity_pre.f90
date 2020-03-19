@@ -118,7 +118,6 @@
       use nod_phys_send_recv
       use cal_sgs_fluxes
       use set_nodal_bc_id_data
-      use set_surface_id_MHD
       use int_vol_diffusion_ele
       use int_vol_velo_pre
       use int_surf_velo_pre
@@ -335,7 +334,6 @@
       use int_vol_solenoid_correct
       use int_surf_grad_sgs
       use set_nodal_bc_id_data
-      use set_surface_id_MHD
       use set_normal_field
       use cal_multi_pass
       use set_nodal_bc_id_data

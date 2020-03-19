@@ -80,18 +80,16 @@ set_surf_vector_id.o: $(MHD_SF_BC_DIR)/set_surf_vector_id.f90 m_precision.o m_bo
 	$(F90) -c $(F90OPTFLAGS) $<
 set_surface_bc.o: $(MHD_SF_BC_DIR)/set_surface_bc.f90 m_precision.o t_boundary_field_IO.o t_group_data.o set_surface_values.o t_geometry_data.o t_surface_data.o t_surface_group_connect.o t_surface_group_geometry.o
 	$(F90) -c $(F90OPTFLAGS) $<
-set_surface_id_MHD.o: $(MHD_SF_BC_DIR)/set_surface_id_MHD.f90 m_precision.o t_control_parameter.o t_physical_property.o t_geometry_data.o t_surface_data.o t_group_data.o t_surface_group_connect.o t_surface_group_geometry.o t_phys_data.o t_phys_address.o t_surface_bc_data_MHD.o t_boundary_field_IO.o t_bc_data_list.o m_machine_parameter.o set_surface_values.o set_normal_field.o scalar_surf_id.o vector_surf_id.o
-	$(F90) -c $(F90OPTFLAGS) $<
 set_surface_values.o: $(MHD_SF_BC_DIR)/set_surface_values.f90 m_precision.o t_geometry_data.o t_surface_data.o t_surface_group_geometry.o t_group_data.o t_surface_group_connect.o t_boundary_field_IO.o m_geometry_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
 set_wall_scalar_id.o: $(MHD_SF_BC_DIR)/set_wall_scalar_id.f90 m_precision.o m_boundary_condition_IDs.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_surface_bc_data.o: $(MHD_SF_BC_DIR)/t_surface_bc_data.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_surface_bc_data_MHD.o: $(MHD_SF_BC_DIR)/t_surface_bc_data_MHD.f90 m_precision.o t_surface_bc_data.o t_physical_property.o
+t_surface_bc_data_MHD.o: $(MHD_SF_BC_DIR)/t_surface_bc_data_MHD.f90 m_precision.o m_machine_parameter.o t_surface_bc_data.o t_control_parameter.o t_physical_property.o t_geometry_data.o t_surface_data.o t_group_data.o t_surface_group_connect.o t_surface_group_geometry.o t_phys_data.o t_phys_address.o t_boundary_field_IO.o t_bc_data_list.o set_surface_values.o set_normal_field.o scalar_surf_id.o vector_surf_id.o
 	$(F90) -c $(F90OPTFLAGS) $<
 tensor_2_each_surface.o: $(MHD_SF_BC_DIR)/tensor_2_each_surface.f90 m_precision.o m_constants.o m_machine_parameter.o m_phys_constants.o t_geometry_data.o t_surface_data.o t_group_data.o
 	$(F90) -c $(F90OPTFLAGS) $<
-vector_surf_id.o: $(MHD_SF_BC_DIR)/vector_surf_id.f90 m_precision.o m_header_4_surface_bc.o t_geometry_data.o t_surface_data.o t_group_data.o t_surface_group_connect.o t_surface_group_geometry.o t_surface_bc_data.o t_boundary_field_IO.o t_bc_data_list.o set_surf_vector_id.o set_sf_grad_vector_id.o set_stress_free_surf_id.o
+vector_surf_id.o: $(MHD_SF_BC_DIR)/vector_surf_id.f90 m_precision.o m_header_4_surface_bc.o t_geometry_data.o t_surface_data.o t_group_data.o t_surface_group_connect.o t_surface_group_geometry.o t_surface_bc_data.o t_boundary_field_IO.o t_bc_data_list.o set_surf_vector_id.o set_stress_free_surf_id.o set_sf_grad_vector_id.o
 	$(F90) -c $(F90OPTFLAGS) $<
 

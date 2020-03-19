@@ -78,7 +78,6 @@
       use set_djds_connect_type_MHD
       use set_normal_vectors
       use int_surface_params_MHD
-      use set_surface_id_MHD
       use int_type_mass_matrices
       use set_MHD_idx_4_mat_type
       use link_MG_MHD_mesh_data
