@@ -49,7 +49,6 @@
         type(scaler_surf_bc_data_type), allocatable :: torque_lead(:)
       end type vector_surf_bc_type
 !
-      private :: alloc_surf_data_velo_num, alloc_surf_data_velo
       private :: alloc_surf_data_vect_num, alloc_surf_vector
 !
 !-----------------------------------------------------------------------
