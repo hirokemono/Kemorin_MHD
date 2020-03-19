@@ -143,7 +143,7 @@
 !
       subroutine dealloc_surf_bc_data(MHD_prop, surf_bcs)
 !
-      use t_physical_property
+      use t_control_parameter
 !
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(surface_boundarty_conditions), intent(inout) :: surf_bcs
