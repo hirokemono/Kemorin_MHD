@@ -53,7 +53,7 @@
       use t_int_surface_data
       use t_MHD_finite_element_mat
       use t_filter_elength
-      use t_surface_bc_data
+      use t_surface_bc_vector
 !
       implicit none
 !

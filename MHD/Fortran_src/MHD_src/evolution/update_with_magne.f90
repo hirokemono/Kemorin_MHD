@@ -49,7 +49,8 @@
       use t_jacobians
       use t_MHD_finite_element_mat
       use t_FEM_MHD_filter_data
-      use t_surface_bc_data
+      use t_surface_bc_scalar
+      use t_surface_bc_vector
       use t_material_property
       use t_work_layer_correlate
       use t_work_FEM_integration

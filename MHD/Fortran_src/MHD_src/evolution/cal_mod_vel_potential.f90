@@ -76,7 +76,9 @@
       use t_vector_for_solver
       use t_bc_data_velo
       use t_bc_data_magne
-      use t_surface_bc_data
+      use t_surface_bc_scalar
+      use t_surface_bc_vector
+      use t_surface_bc_velocity
 !
       implicit none
 !

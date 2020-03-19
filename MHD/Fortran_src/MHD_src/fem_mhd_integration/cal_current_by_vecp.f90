@@ -66,7 +66,8 @@
       use t_finite_element_mat
       use t_int_surface_data
       use t_MHD_finite_element_mat
-      use t_surface_bc_data
+      use t_surface_bc_vector
+      use t_surface_bc_velocity
 !
       use m_machine_parameter
       use m_geometry_constants
@@ -191,7 +192,7 @@
      &          sf_grp, Tsf_bcs, iphys, nod_fld, jacs, rhs_tbl,         &
      &          ak_d_temp, fem_wk, surf_wk, f_l)
 !
-      use t_surface_bc_data
+      use t_surface_bc_scalar
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(node_data), intent(in) :: node
@@ -317,7 +318,7 @@
      &          sf_grp, Csf_bcs, iphys, nod_fld, jacs, rhs_tbl,         &
      &          ak_d_composit, fem_wk, surf_wk, f_l)
 !
-      use t_surface_bc_data
+      use t_surface_bc_scalar
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(node_data), intent(in) :: node

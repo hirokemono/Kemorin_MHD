@@ -62,6 +62,8 @@
       use t_filter_elength
       use t_filtering_data
       use t_bc_data_MHD
+      use t_surface_bc_vector
+      use t_surface_bc_velocity
       use t_surface_bc_data_MHD
       use t_material_property
       use t_SGS_model_coefs

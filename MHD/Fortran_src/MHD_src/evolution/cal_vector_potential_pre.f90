@@ -85,7 +85,8 @@
       use t_vector_for_solver
       use t_material_property
       use t_bc_data_magne
-      use t_surface_bc_data
+      use t_surface_bc_scalar
+      use t_surface_bc_velocity
       use t_physical_property
 !
       implicit none

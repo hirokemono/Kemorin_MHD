@@ -49,7 +49,8 @@
       use t_table_FEM_const
       use t_finite_element_mat
       use t_int_surface_data
-      use t_surface_bc_data
+      use t_surface_bc_vector
+      use t_surface_bc_velocity
       use t_material_property
       use t_SGS_model_coefs
       use t_physical_property

@@ -69,7 +69,9 @@
       use t_MHD_mass_matrices
       use t_FEM_MHD_filter_data
       use t_bc_data_magne
-      use t_surface_bc_data
+      use t_surface_bc_scalar
+      use t_surface_bc_vector
+      use t_surface_bc_velocity
       use t_material_property
       use t_SGS_model_coefs
       use t_solver_djds_MHD

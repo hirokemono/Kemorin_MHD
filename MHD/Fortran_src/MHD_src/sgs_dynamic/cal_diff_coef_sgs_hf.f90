@@ -48,6 +48,7 @@
       use t_MHD_mass_matrices
       use t_bc_data_temp
       use t_surface_bc_data
+      use t_surface_bc_scalar
       use t_work_FEM_integration
       use t_work_FEM_dynamic_SGS
 !

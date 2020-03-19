@@ -53,7 +53,8 @@
       use t_FEM_MHD_filter_data
       use t_material_property
       use t_work_FEM_dynamic_SGS
-      use t_surface_bc_data
+      use t_surface_bc_scalar
+      use t_surface_bc_velocity
 !
       implicit none
 !

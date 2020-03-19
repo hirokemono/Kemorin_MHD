@@ -28,6 +28,9 @@
       use m_precision
       use m_machine_parameter
       use t_surface_bc_data
+      use t_surface_bc_scalar
+      use t_surface_bc_vector
+      use t_surface_bc_velocity
 !
       implicit  none
 !
@@ -69,9 +72,6 @@
 !
       use set_surface_values
       use set_normal_field
-!
-      use scalar_surf_id
-      use vector_surf_id
 !
       type(IO_boundary), intent(in) :: IO_bc
       type(node_data), intent(in) :: node

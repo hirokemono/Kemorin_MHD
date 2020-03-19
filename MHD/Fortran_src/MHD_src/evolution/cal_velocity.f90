@@ -63,7 +63,9 @@
       use t_table_FEM_const
       use t_FEM_MHD_filter_data
       use t_bc_data_velo
-      use t_surface_bc_data
+      use t_surface_bc_scalar
+      use t_surface_bc_vector
+      use t_surface_bc_velocity
       use t_material_property
       use t_SGS_model_coefs
       use t_ele_info_4_dynamic

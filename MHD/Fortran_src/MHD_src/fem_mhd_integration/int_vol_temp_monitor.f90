@@ -63,6 +63,7 @@
       use t_filter_elength
       use t_bc_data_temp
       use t_surface_bc_data
+      use t_surface_bc_scalar
       use t_material_property
       use t_SGS_model_coefs
       use t_MHD_finite_element_mat

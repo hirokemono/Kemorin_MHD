@@ -141,7 +141,7 @@
      &          diff_coefs, mlump_cd, rhs_mat, nod_fld)
 !
       use t_SGS_control_parameter
-      use t_surface_bc_data
+      use t_surface_bc_velocity
 !
       use int_vol_diffusion_ele
       use int_surf_fixed_gradients
