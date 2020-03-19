@@ -3,11 +3,6 @@
 !
 !      Written by H. Matsui on Sep. 2005
 !
-!!      subroutine count_num_surf_grad_velo(name_norm, name_grad,       &
-!!     &          IO_bc, sf_grp, sf_nod, vector_surf, Vsf_bcs)
-!!      subroutine count_num_surf_grad_vector(name_norm, name_grad,     &
-!!     &          IO_bc, sf_grp, sf_nod, vector_surf, Bsf_bcs)
-!!
 !!      subroutine set_surf_grad_velo(name_norm, name_grad,             &
 !!     &          IO_bc, node, ele, surf, sf_grp, sf_grp_nod, sf_grp_v, &
 !!     &          vector_surf, Vsf_bcs)
@@ -46,75 +41,6 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine count_num_surf_grad_velo(name_norm, name_grad,         &
-     &          IO_bc, sf_grp, sf_nod, vector_surf, Vsf_bcs)
-!
-      use set_surf_vector_id
-      use set_sf_grad_vector_id
-      use set_stress_free_surf_id
-!
-      character(len=kchara), intent(in) :: name_norm
-      character(len=kchara), intent(in) :: name_grad(3)
-      type(IO_boundary), intent(in) :: IO_bc
-      type(surface_group_data), intent(in) :: sf_grp
-      type(surface_node_grp_data), intent(in) :: sf_nod
-      type(boundary_condition_list), intent(in) :: vector_surf
-      type(velocity_surf_bc_type), intent(inout) :: Vsf_bcs
-!
-!
-      call alloc_surf_data_velo_num(Vsf_bcs)
-!
-      call s_count_num_surf_vector                                      &
-     &   (IO_bc, sf_grp, sf_nod, vector_surf%num_bc,                    &
-     &    vector_surf%bc_name, vector_surf%ibc_type, name_norm,         &
-     &    Vsf_bcs%sgs, Vsf_bcs%normal)
-!
-      call count_num_stress_free_surf                                   &
-     &   (sf_grp%num_grp, sf_grp%grp_name, vector_surf%num_bc,          &
-     &    vector_surf%bc_name, vector_surf%ibc_type,                    &
-     &    iflag_surf_free_sph_in, iflag_surf_free_sph_out,              &
-     &    Vsf_bcs%free_sph_in%ngrp_sf_dat,                              &
-     &    Vsf_bcs%free_sph_out%ngrp_sf_dat)
-!
-      call count_num_sf_grad_vector                                     &
-     &   (IO_bc, sf_grp, vector_surf%num_bc, vector_surf%bc_name,       &
-     &    vector_surf%ibc_type, name_grad,                              &
-     &    Vsf_bcs%grad, Vsf_bcs%torque_lead)
-!
-      end subroutine count_num_surf_grad_velo
-!
-!-----------------------------------------------------------------------
-!
-      subroutine count_num_surf_grad_vector(name_norm, name_grad,       &
-     &          IO_bc, sf_grp, sf_nod, vector_surf, Bsf_bcs)
-!
-      use set_surf_vector_id
-      use set_sf_grad_vector_id
-!
-      character(len=kchara), intent(in) :: name_norm
-      character(len=kchara), intent(in) :: name_grad(3)
-      type(IO_boundary), intent(in) :: IO_bc
-      type(surface_group_data), intent(in) :: sf_grp
-      type(surface_node_grp_data), intent(in) :: sf_nod
-      type(boundary_condition_list), intent(in) :: vector_surf
-      type(vector_surf_bc_type), intent(inout) :: Bsf_bcs
-!
-!
-      call alloc_surf_data_vect_num(Bsf_bcs)
-!
-      call s_count_num_surf_vector(IO_bc, sf_grp, sf_nod,               &
-     &   vector_surf%num_bc, vector_surf%bc_name, vector_surf%ibc_type, &
-     &   name_norm, Bsf_bcs%sgs, Bsf_bcs%normal)
-      call count_num_sf_grad_vector                                     &
-     &    (IO_bc, sf_grp, vector_surf%num_bc, vector_surf%bc_name,      &
-     &     vector_surf%ibc_type, name_grad,                             &
-     &     Bsf_bcs%grad, Bsf_bcs%torque_lead)
-!
-      end subroutine count_num_surf_grad_vector
-!
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!
       subroutine set_surf_grad_velo(name_norm, name_grad,               &
      &          IO_bc, node, ele, surf, sf_grp, sf_grp_nod, sf_grp_v,   &
      &          vector_surf, Vsf_bcs)
@@ -135,6 +61,26 @@
       type(boundary_condition_list), intent(in) :: vector_surf
 !
       type(velocity_surf_bc_type), intent(inout) :: Vsf_bcs
+!
+!
+      call alloc_surf_data_velo_num(Vsf_bcs)
+!
+      call s_count_num_surf_vector                                      &
+     &   (IO_bc, sf_grp, sf_grp_nod, vector_surf%num_bc,                &
+     &    vector_surf%bc_name, vector_surf%ibc_type, name_norm,         &
+     &    Vsf_bcs%sgs, Vsf_bcs%normal)
+!
+      call count_num_stress_free_surf                                   &
+     &   (sf_grp%num_grp, sf_grp%grp_name, vector_surf%num_bc,          &
+     &    vector_surf%bc_name, vector_surf%ibc_type,                    &
+     &    iflag_surf_free_sph_in, iflag_surf_free_sph_out,              &
+     &    Vsf_bcs%free_sph_in%ngrp_sf_dat,                              &
+     &    Vsf_bcs%free_sph_out%ngrp_sf_dat)
+!
+      call count_num_sf_grad_vector                                     &
+     &   (IO_bc, sf_grp, vector_surf%num_bc, vector_surf%bc_name,       &
+     &    vector_surf%ibc_type, name_grad,                              &
+     &    Vsf_bcs%grad, Vsf_bcs%torque_lead)
 !
 !
       call alloc_surf_data_velo(Vsf_bcs)
@@ -182,6 +128,16 @@
       type(boundary_condition_list), intent(in) :: vector_surf
       type(vector_surf_bc_type), intent(inout) :: Bsf_bcs
 !
+!
+      call alloc_surf_data_vect_num(Bsf_bcs)
+!
+      call s_count_num_surf_vector(IO_bc, sf_grp, sf_grp_nod,           &
+     &   vector_surf%num_bc, vector_surf%bc_name, vector_surf%ibc_type, &
+     &   name_norm, Bsf_bcs%sgs, Bsf_bcs%normal)
+      call count_num_sf_grad_vector                                     &
+     &    (IO_bc, sf_grp, vector_surf%num_bc, vector_surf%bc_name,      &
+     &     vector_surf%ibc_type, name_grad,                             &
+     &     Bsf_bcs%grad, Bsf_bcs%torque_lead)
 !
       call alloc_surf_vector(Bsf_bcs)
 !
