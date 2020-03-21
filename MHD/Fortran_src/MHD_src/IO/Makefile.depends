@@ -62,7 +62,7 @@ read_filtering_data.o: $(MHD_IO_DIR)/read_filtering_data.f90 m_precision.o m_mac
 	$(F90) -c $(F90OPTFLAGS) $<
 set_FEM_sgs_model_coefs_IO.o: $(MHD_IO_DIR)/set_FEM_sgs_model_coefs_IO.f90 m_precision.o calypso_mpi.o m_constants.o t_ele_info_4_dynamic.o t_SGS_model_coefs.o t_time_data.o t_field_data_IO.o cal_minmax_and_stacks.o const_global_element_ids.o t_geometry_data.o t_group_data.o t_geometry_data_MHD.o t_SGS_control_parameter.o set_sgs_diff_model_coefs.o
 	$(F90) -c $(F90OPTFLAGS) $<
-set_control_4_SGS.o: $(MHD_IO_DIR)/set_control_4_SGS.f90 m_precision.o m_constants.o m_error_IDs.o m_machine_parameter.o calypso_mpi.o t_file_IO_parameter.o m_geometry_constants.o m_phys_labels.o m_file_format_switch.o t_SGS_control_parameter.o t_ctl_data_SGS_model.o t_field_data_IO.o t_control_elements.o
+set_control_4_SGS.o: $(MHD_IO_DIR)/set_control_4_SGS.f90 m_precision.o m_constants.o m_error_IDs.o m_machine_parameter.o calypso_mpi.o t_file_IO_parameter.o m_geometry_constants.o m_phys_labels.o m_file_format_switch.o m_force_control_labels.o t_SGS_control_parameter.o t_ctl_data_SGS_model.o t_field_data_IO.o skip_comment_f.o t_control_elements.o
 	$(F90) -c $(F90OPTFLAGS) $<
 set_control_4_composition.o: $(MHD_IO_DIR)/set_control_4_composition.f90 m_precision.o calypso_mpi.o m_machine_parameter.o t_physical_property.o t_control_array_chara2real.o t_bc_data_list.o set_node_group_types.o set_surface_group_types.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -100,7 +100,7 @@ set_control_FEM_MHD.o: $(MHD_IO_DIR)/set_control_FEM_MHD.f90 m_precision.o t_con
 	$(F90) -c $(F90OPTFLAGS) $<
 set_control_FEM_SGS.o: $(MHD_IO_DIR)/set_control_FEM_SGS.f90 m_precision.o m_error_IDs.o m_constants.o m_machine_parameter.o calypso_mpi.o m_geometry_constants.o m_file_format_switch.o m_phys_labels.o m_filter_file_names.o t_ctl_data_SGS_model.o t_ctl_data_filter_files.o t_ctl_data_ele_layering.o t_SGS_control_parameter.o set_control_ele_layering.o t_control_elements.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
-set_control_SGS_commute.o: $(MHD_IO_DIR)/set_control_SGS_commute.f90 m_precision.o m_error_IDs.o m_constants.o m_machine_parameter.o calypso_mpi.o t_file_IO_parameter.o m_phys_labels.o m_file_format_switch.o t_ctl_data_SGS_model.o t_SGS_control_parameter.o t_field_data_IO.o
+set_control_SGS_commute.o: $(MHD_IO_DIR)/set_control_SGS_commute.f90 m_precision.o m_error_IDs.o m_constants.o m_machine_parameter.o calypso_mpi.o t_file_IO_parameter.o m_phys_labels.o m_file_format_switch.o m_force_control_labels.o t_ctl_data_SGS_model.o t_SGS_control_parameter.o t_field_data_IO.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
 set_control_evo_layers.o: $(MHD_IO_DIR)/set_control_evo_layers.f90 m_precision.o m_machine_parameter.o t_physical_property.o t_ctl_data_mhd_evolution.o t_FEM_control_parameter.o
 	$(F90) -c $(F90OPTFLAGS) $<

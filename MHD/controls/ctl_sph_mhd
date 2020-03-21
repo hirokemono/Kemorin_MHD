@@ -562,7 +562,6 @@ begin fluid_control
 !
       array SGS_terms_ctl      5
         SGS_terms_ctl    heat              end
-        SGS_terms_ctl    parturbation_heat end
         SGS_terms_ctl    inertia           end
         SGS_terms_ctl    gravity           end
         SGS_terms_ctl    Lorentz           end

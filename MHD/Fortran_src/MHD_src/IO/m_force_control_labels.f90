@@ -31,8 +31,8 @@
 !!     composite_buoyancy   (Compositional_buoyancy, composite_gravity
 !!                           compositional_gravity)
 !!
-!!   filtered_buoyancy      (Filtered_gravity)
-!!   filtered_comp_buoyancy (Filtered_compositional_gravity)
+!!     filtered_buoyancy      (Filtered_gravity)
+!!     filtered_comp_buoyancy (Filtered_compositional_gravity)
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!@endverbatim

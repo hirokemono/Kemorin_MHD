@@ -171,29 +171,4 @@
 !!         @f$ t @f$
       character(len=kchara), parameter :: fhd_time =   'time'
 !
-!   --------------------------------------------------------------------
-!
-!>        Term label for heat equation
-      character(len=kchara), parameter                                  &
-     &             :: thd_heat_flux =  'heat'
-!>        Term label for advection term
-      character(len=kchara), parameter                                  &
-     &             :: thd_advection =  'inertia'
-!>        Term label for Lorentz term
-      character(len=kchara), parameter                                  &
-     &             :: thd_lorentz =    'Lorentz'
-!>        Term label for Coriolis term
-      character(len=kchara), parameter                                  &
-     &             :: thd_coriolis =   'Coriolis'
-!>        Term label for induction term
-      character(len=kchara), parameter                                  &
-     &             :: thd_induction =  'induction'
-!>        Term label for cpmpositional flux term
-      character(len=kchara), parameter                                  &
-     &             :: thd_comp_flux =  'comp_flux'
-!>        Term label for gravity
-      character(len=kchara), parameter                                  &
-     &             :: thd_gravity =    'gravity'
-!
-!
       end module m_phys_labels

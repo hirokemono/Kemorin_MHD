@@ -17,6 +17,18 @@
 !!        type(SGS_model_control_params), intent(inout) :: SGS_param
 !!        type(field_IO_params), intent(inout) :: Csim_file_IO
 !!        type(SGS_filtering_params), intent(inout) :: filter_param
+!!
+!! !!!!! Avaiable flag  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!
+!!    SGS_terms_ctl:
+!!       inertia
+!!       Lorentz_force        (Lorentz)
+!!       magnetic_induction   (induction)
+!!       heat_advect          (heat)
+!!       composition_advect   (comp_flux)
+!!       buoyancy             (gravity)
+!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!@endverbatim
 !
       module set_control_4_SGS
@@ -49,9 +61,13 @@
       use m_geometry_constants
       use m_phys_labels
       use m_file_format_switch
+      use m_force_control_labels
+!
       use t_SGS_control_parameter
       use t_ctl_data_SGS_model
       use t_field_data_IO
+!
+      use skip_comment_f
 !
       type(SGS_model_control), intent(in) :: sgs_ctl
       type(SGS_model_control_params), intent(inout) :: SGS_param
@@ -134,17 +150,22 @@
 !
           do i = 1, sgs_ctl%SGS_terms_ctl%num
             tmpchara = sgs_ctl%SGS_terms_ctl%c_tbl(i)
-            if(     tmpchara .eq. thd_heat_flux) then
+            if(     cmp_no_case(tmpchara, heat_advect%name)             &
+     &         .or. cmp_no_case(tmpchara, heat_flux_1)) then
               SGS_param%iflag_SGS_h_flux =  SGS_param%iflag_SGS
-            else if(tmpchara .eq. thd_advection) then
+            else if(cmp_no_case(tmpchara, inertia%name)) then
               SGS_param%iflag_SGS_m_flux =  SGS_param%iflag_SGS
-            else if(tmpchara .eq. thd_lorentz) then
+            else if(cmp_no_case(tmpchara, Lorentz_force%name)           &
+     &         .or. cmp_no_case(tmpchara, lorentz_e1)) then
               SGS_param%iflag_SGS_lorentz = SGS_param%iflag_SGS
-            else if(tmpchara .eq. thd_induction) then
+            else if(cmp_no_case(tmpchara, magnetic_induction%name)      &
+     &         .or. cmp_no_case(tmpchara, induction_1)) then
               SGS_param%iflag_SGS_uxb =     SGS_param%iflag_SGS
-            else if(tmpchara .eq. thd_gravity) then
+            else if(cmp_no_case(tmpchara, buoyancy%name)                &
+     &         .or. cmp_no_case(tmpchara, gravity_e1)) then
               SGS_param%iflag_SGS_gravity = SGS_param%iflag_SGS
-            else if(tmpchara .eq. thd_comp_flux) then
+            else if(cmp_no_case(tmpchara, composition_advect%name)      &
+     &         .or. cmp_no_case(tmpchara, comp_flux_1)) then
               SGS_param%iflag_SGS_c_flux =  SGS_param%iflag_SGS
             end if
           end do

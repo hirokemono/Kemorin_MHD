@@ -18,6 +18,23 @@
 !!        type(field_IO_params), intent(inout) :: Csim_file_IO
 !!        type(field_IO_params), intent(inout) :: Cdiff_file_IO
 !!        type(SGS_filtering_params), intent(inout) :: filter_param
+!!
+!! !!!!! Avaiable flag  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!
+!!   commutation_ctl:
+!!     velocity
+!!     magnetic_field
+!!     vector_potential
+!!     temperature
+!!     composition
+!!
+!!     inertia
+!!     Lorentz_force        (Lorentz)
+!!     magnetic_induction   (induction)
+!!     heat_advect          (heat)
+!!     composition_advect   (comp_flux)
+!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!@endverbatim
 !
       module set_control_SGS_commute
@@ -46,9 +63,12 @@
 !
       use m_phys_labels
       use m_file_format_switch
+      use m_force_control_labels
       use t_ctl_data_SGS_model
       use t_SGS_control_parameter
       use t_field_data_IO
+!
+      use skip_comment_f
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(SGS_model_control), intent(in) :: sgs_ctl
@@ -64,26 +84,30 @@
       if (sgs_ctl%commutate_fld_ctl%icou .gt. 0) then
         do i = 1, sgs_ctl%commutate_fld_ctl%num
           tmpchara = sgs_ctl%commutate_fld_ctl%c_tbl(i)
-          if(     tmpchara .eq. temperature%name) then
+          if(     cmp_no_case(tmpchara, temperature%name)) then
             cmt_param%iflag_c_temp =      id_SGS_commute_ON
-          else if(tmpchara .eq. velocity%name) then
+          else if(cmp_no_case(tmpchara, velocity%name)) then
             cmt_param%iflag_c_velo =      id_SGS_commute_ON
-          else if(tmpchara .eq. magnetic_field%name) then
+          else if(cmp_no_case(tmpchara, magnetic_field%name)) then
             cmt_param%iflag_c_magne =     id_SGS_commute_ON
-          else if(tmpchara .eq. vector_potential%name) then
+          else if(cmp_no_case(tmpchara, vector_potential%name)) then
             cmt_param%iflag_c_magne =     id_SGS_commute_ON
-          else if(tmpchara .eq. composition%name) then
+          else if(cmp_no_case(tmpchara, composition%name)) then
             cmt_param%iflag_c_cf =    id_SGS_commute_ON
 !
-          else if(tmpchara .eq. thd_heat_flux) then
+          else if(cmp_no_case(tmpchara, heat_advect%name)               &
+     &       .or. cmp_no_case(tmpchara, heat_flux_1)) then
             cmt_param%iflag_c_hf =   id_SGS_commute_ON
-          else if(tmpchara .eq. thd_advection) then
+          else if(cmp_no_case(tmpchara, inertia%name)) then
             cmt_param%iflag_c_mf =   id_SGS_commute_ON
-          else if(tmpchara .eq. thd_lorentz) then
+          else if(cmp_no_case(tmpchara, Lorentz_force%name)             &
+     &       .or. cmp_no_case(tmpchara, lorentz_e1)) then
             cmt_param%iflag_c_lorentz = id_SGS_commute_ON
-          else if(tmpchara .eq. thd_induction) then
+          else if(cmp_no_case(tmpchara, magnetic_induction%name)        &
+     &       .or. cmp_no_case(tmpchara, induction_1)) then
             cmt_param%iflag_c_uxb = id_SGS_commute_ON
-          else if(tmpchara .eq. thd_comp_flux) then
+          else if(cmp_no_case(tmpchara, composition_advect%name)        &
+     &       .or. cmp_no_case(tmpchara, comp_flux_1)) then
             cmt_param%iflag_c_light =  id_SGS_commute_ON
           end if
         end do

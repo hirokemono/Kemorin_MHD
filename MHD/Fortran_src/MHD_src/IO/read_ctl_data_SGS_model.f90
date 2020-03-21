@@ -54,25 +54,25 @@
 !!      delta_to_extend_ctl      1.0d-3
 !!
 !!      array SGS_terms_ctl
-!!        SGS_terms_ctl    heat
-!!        SGS_terms_ctl    parturbation_heat
+!!        SGS_terms_ctl    heat_advect          (heat)
+!!        SGS_terms_ctl    composition_advect   (comp_flux)
 !!        SGS_terms_ctl    inertia
-!!        SGS_terms_ctl    gravity
-!!        SGS_terms_ctl    Lorentz
-!!        SGS_terms_ctl    induction
+!!        SGS_terms_ctl    Lorentz_force        (Lorentz)
+!!        SGS_terms_ctl    magnetic_induction   (induction)
+!!        SGS_terms_ctl    buoyancy             (gravity)
 !!      end array SGS_terms_ctl
 !!
 !!      array commutation_ctl
 !!        commutation_ctl    velocity
 !!        commutation_ctl    vector_potential
 !!        commutation_ctl    temperature
-!!        commutation_ctl    dumnmy_scalar
+!!        commutation_ctl    composition
 !!
-!!        commutation_ctl    heat
 !!        commutation_ctl    inertia
-!!        commutation_ctl    Lorentz
-!!        commutation_ctl    induction
-!!        commutation_ctl    composit_flux
+!!        commutation_ctl    Lorentz_force        (Lorentz)
+!!        commutation_ctl    magnetic_induction   (induction)
+!!        commutation_ctl    heat_advect          (heat)
+!!        commutation_ctl    composition_advect   (comp_flux)
 !!      end array commutation_ctl
 !!
 !!      begin 3d_filtering_ctl
