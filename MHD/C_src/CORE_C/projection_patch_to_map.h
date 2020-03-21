@@ -4,7 +4,7 @@
 #define PROJECTION_PATCH_TO_MAP_
 
 #include <math.h>
-#include "kemosrc_param_c.h"
+#include "calypso_param_c.h"
 #include "coordinate_converter_c.h"
 
 /* prototypes */

@@ -4,7 +4,7 @@
 #ifndef KEMOVIEWER_PARAM_C_
 #define KEMOVIEWER_PARAM_C_
 
-#include "kemosrc_param_c.h"
+#include "calypso_param_c.h"
 #include "kemoviewer.h"
 
 /* color parameter */

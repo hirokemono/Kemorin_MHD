@@ -7,7 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "kemosrc_param_c.h"
+#include "calypso_param_c.h"
 #include "move_draw_objects_gl.h"
 #include "gl_buffer_2_png.h"
 #include "gl_buffer_2_bmp.h"

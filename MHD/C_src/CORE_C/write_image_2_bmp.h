@@ -7,7 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "kemosrc_param_c.h"
+#include "calypso_param_c.h"
 
 /* prototypes */
 void cvt_8bit_cl_int_2_chara(int ihpixf, int jvpixf, int *icl_tbl, unsigned char *rgb);

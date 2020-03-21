@@ -5,7 +5,7 @@
 #define M_SURFACE_MESH_4_VIEWER_
 
 #include <stdio.h>
-#include "kemosrc_param_c.h"
+#include "calypso_param_c.h"
 
 struct vect_m{
 	double xyz[3];

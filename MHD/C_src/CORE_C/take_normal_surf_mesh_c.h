@@ -11,7 +11,7 @@
 #define TAKE_NORMAL_SURF_MESH_C_
 
 #include <math.h>
-#include "kemosrc_param_c.h"
+#include "calypso_param_c.h"
 #include "m_surface_mesh_4_viewer_c.h"
 #include "cal_surface_center_normal_c.h"
 

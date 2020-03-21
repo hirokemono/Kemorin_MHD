@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "kemosrc_param_c.h"
+#include "calypso_param_c.h"
 
 /* prototypes */
 

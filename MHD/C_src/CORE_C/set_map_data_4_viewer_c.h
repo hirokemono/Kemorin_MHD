@@ -3,7 +3,7 @@
 #ifndef SET_MAP_DATA_4_VIEWER_C_
 #define SET_MAP_DATA_4_VIEWER_C_
 
-#include "kemosrc_param_c.h"
+#include "calypso_param_c.h"
 #include "m_psf_data_4_viewer_c.h"
 #include "m_map_data_4_viewer_c.h"
 

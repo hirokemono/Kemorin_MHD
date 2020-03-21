@@ -8,7 +8,7 @@
 #include <stdlib.h>
 
 #include "write_image_2_png.h"
-#include "kemosrc_param_c.h"
+#include "calypso_param_c.h"
 
 /* prototypes */
 

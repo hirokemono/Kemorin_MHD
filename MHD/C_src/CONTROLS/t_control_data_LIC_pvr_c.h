@@ -11,7 +11,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "kemosrc_param_c.h"
+#include "calypso_param_c.h"
 #include "control_elements_IO_c.h"
 #include "t_control_data_4_psf_c.h"
 #include "t_ctl_data_pvr_colormap_c.h"

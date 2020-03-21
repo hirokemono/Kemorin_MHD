@@ -9,7 +9,7 @@
 #include <string.h>
 #include <ctype.h>
 
-#include "kemosrc_param_c.h"
+#include "calypso_param_c.h"
 
 /* Prototypes */ 
 char* alloc_string(long lengthchara);

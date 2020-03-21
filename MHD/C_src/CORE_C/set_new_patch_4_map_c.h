@@ -4,7 +4,7 @@
 #ifndef SET_NEW_PATCH_4_MAP_C_
 #define SET_NEW_PATCH_4_MAP_C_
 
-#include "kemosrc_param_c.h"
+#include "calypso_param_c.h"
 #include "projection_patch_to_map.h"
 
 

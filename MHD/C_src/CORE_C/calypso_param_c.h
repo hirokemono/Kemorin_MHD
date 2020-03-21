@@ -1,5 +1,5 @@
 
-/*  kemosrc_param_c.h */
+/*  calypso_param_c.h */
 
 #ifndef KEMOSRC_PARAM_C_
 #define KEMOSRC_PARAM_C_

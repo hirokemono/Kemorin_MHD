@@ -5,7 +5,7 @@
 #define ALL_FIELD_NAMES_C_
 
 #include <stdlib.h>
-#include "kemosrc_param_c.h"
+#include "calypso_param_c.h"
 
 #define NUM_FIELD 263
 #define NCHARA_FIELD 30

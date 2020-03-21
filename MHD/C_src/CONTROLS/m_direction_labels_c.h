@@ -9,7 +9,7 @@
 #define m_direction_labels_c_h_
 
 #include <stdio.h>
-#include "kemosrc_param_c.h"
+#include "calypso_param_c.h"
 
 #define NUM_SCALAR_FLAG      1
 #define NUM_VECTOR_FLAG     11

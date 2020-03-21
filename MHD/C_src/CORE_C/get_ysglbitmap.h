@@ -4,7 +4,7 @@
 #ifndef GET_YSGLBITMAP_
 #define GET_YSGLBITMAP_
 
-#include "kemosrc_param_c.h"
+#include "calypso_param_c.h"
 #include "numbers_to_bin_c.h"
 #include "ysglfontdata.h"
 

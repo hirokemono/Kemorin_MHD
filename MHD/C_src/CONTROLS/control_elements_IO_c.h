@@ -8,7 +8,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "kemosrc_param_c.h"
+#include "calypso_param_c.h"
 #include "skip_comment_c.h"
 
 struct maxlen_2{

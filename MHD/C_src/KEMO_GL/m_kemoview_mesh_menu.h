@@ -8,7 +8,7 @@
 #include <stdlib.h>
 
 #include "kemoviewer.h"
-#include "kemosrc_param_c.h"
+#include "calypso_param_c.h"
 #include "kemoviewer_param_c.h"
 #include "kemoviewer_base.h"
 #include "m_surface_mesh_4_viewer_c.h"

@@ -4,7 +4,7 @@
 #ifndef SORT_BY_PATCH_DISTANCE_
 #define SORT_BY_PATCH_DISTANCE_
 
-#include "kemosrc_param_c.h"
+#include "calypso_param_c.h"
 #include "m_surface_mesh_4_viewer_c.h"
 #include "m_psf_data_4_viewer_c.h"
 #include "m_kemoview_psf_menu.h"

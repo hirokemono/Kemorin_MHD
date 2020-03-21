@@ -1,4 +1,1 @@
-
-/*  calypso_param_c.c */
-
-#include "calypso_param_c.h"
+../../../MHD/C_src/CORE_C/calypso_param_c.c

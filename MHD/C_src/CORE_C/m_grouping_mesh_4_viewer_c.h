@@ -4,7 +4,7 @@
 #ifndef M_GROUPING_MESH_4_VIEWER_
 #define M_GROUPING_MESH_4_VIEWER_
 
-#include "kemosrc_param_c.h"
+#include "calypso_param_c.h"
 
 struct grouping_data{
 	int numsurf_layer;

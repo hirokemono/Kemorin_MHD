@@ -14,7 +14,7 @@
 #define IFLAG_SURF_UDT_GZ   110
 #define IFLAG_SURF_UCD_GZ   111
 
-#include "kemosrc_param_c.h"
+#include "calypso_param_c.h"
 #include "skip_comment_c.h"
 
 

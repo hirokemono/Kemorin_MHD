@@ -6,7 +6,7 @@
 */
 
 #import <Cocoa/Cocoa.h>
-#include "kemosrc_param_c.h"
+#include "calypso_param_c.h"
 #include "t_control_chara_IO.h"
 #include "load_MHD_control_c.h"
 

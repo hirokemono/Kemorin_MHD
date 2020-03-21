@@ -7,7 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "kemosrc_param_c.h"
+#include "calypso_param_c.h"
 
 /* prototypes */
 int read_BMP_c(const char *fhead, int *ihpixf, int *jvpixf);

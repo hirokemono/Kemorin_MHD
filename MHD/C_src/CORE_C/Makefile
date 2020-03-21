@@ -8,7 +8,7 @@ SRC_KEMO_C = $(shell ls *.c)
 INC_KEMO_C = $(addsuffix .h,$(basename $(SRC_KEMO_C)) )
 
 OBJ_KEMO_C = \
- kemosrc_param_c.o \
+ calypso_param_c.o \
  \
  delete_file_c.o \
  numbers_to_bin_c.o \
@@ -55,7 +55,7 @@ OBJ_KEMO_C = \
 
 ifdef ZLIB_LIBS
   OBJ_KEMO_C += \
- kemo_zlib_io_c.o
+ calypso_zlib_io_c.o
 endif
 
 ifdef PNG_LIBS

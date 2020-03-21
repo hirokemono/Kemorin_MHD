@@ -8,7 +8,7 @@
   #include "fftw3.h"
 #endif
 
-#include "kemosrc_param_c.h"
+#include "calypso_param_c.h"
 
 /* prototypes */
 

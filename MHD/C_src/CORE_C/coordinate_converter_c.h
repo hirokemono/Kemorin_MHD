@@ -5,7 +5,7 @@
 
 #include <math.h>
 
-#include "kemosrc_param_c.h"
+#include "calypso_param_c.h"
 /*
     map projection using The Hammer-Aitoff equal-area projection
 */

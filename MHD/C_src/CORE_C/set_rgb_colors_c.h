@@ -5,7 +5,7 @@
 #ifndef SET_RGB_COLORS_C_
 #define SET_RGB_COLORS_C_
 
-#include "kemosrc_param_c.h"
+#include "calypso_param_c.h"
 
 /*  prototypes */
 

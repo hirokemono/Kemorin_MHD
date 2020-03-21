@@ -1,10 +1,12 @@
-!gz_field_data_IO.f90
-!      module gz_field_data_IO
-!
-!      Written by H. Matsui on Oct., 2007
-!
-!       zlib and kemo_zlib_io_c are required
-!
+!>@file  gz_field_data_IO.f90
+!!       module gz_field_data_IO
+!!
+!!@author H. Matsui
+!!@date   Programmed on Oct., 2007
+!!
+!>@brief zlib and calypso_zlib_io_c are required
+!!
+!!@verbatim
 !!      subroutine write_gz_step_data                                   &
 !!     &         (id_rank, i_time_step_IO, time_IO, delta_t_IO)
 !!      subroutine read_gz_step_data                                    &
@@ -14,7 +16,7 @@
 !!     &          ncomp_field, field_name, field_data)
 !!      subroutine read_gz_field_data(nnod64, num_field, ntot_comp,     &
 !!     &          ncomp_field, field_name, field_data)
-!!
+!!@endverbatim
 !
       module gz_field_data_IO
 !

@@ -10,7 +10,7 @@
 #ifndef SET_PSF_VIEWER_
 #define SET_PSF_VIEWER_
 
-#include "kemosrc_param_c.h"
+#include "calypso_param_c.h"
 #include "m_psf_data_4_viewer_c.h"
 #include "skip_comment_c.h"
 #include "set_new_patch_4_map_c.h"

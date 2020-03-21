@@ -4,7 +4,7 @@
 #ifndef ROTATE_ANIMATION_
 #define ROTATE_ANIMATION_
 
-#include "kemosrc_param_c.h"
+#include "calypso_param_c.h"
 #include "m_gl_transfer_matrix.h"
 
 /* prototypes */

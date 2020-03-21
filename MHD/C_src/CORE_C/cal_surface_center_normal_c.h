@@ -11,7 +11,7 @@
 #define CAL_SURFACE_CENTER_NORMAL_C_
 
 #include <math.h>
-#include "kemosrc_param_c.h"
+#include "calypso_param_c.h"
 
 /* prototypes */
 

@@ -13,7 +13,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "kemosrc_param_c.h"
+#include "calypso_param_c.h"
 #include "control_elements_IO_c.h"
 #include "t_control_chara_int_IO.h"
 #include "t_control_chara_int3_IO.h"
