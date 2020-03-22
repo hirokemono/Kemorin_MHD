@@ -3,7 +3,7 @@
 #
 
 BASEDIR = $$(CORE_SRCDIR)/BASE
-SOURCES = $(shell ls *.f90)
+SOURCES = $(shell ls *.f90 *.f03)
 MOD_BASE = $(addsuffix .o,$(basename $(SOURCES)) )
 
 #

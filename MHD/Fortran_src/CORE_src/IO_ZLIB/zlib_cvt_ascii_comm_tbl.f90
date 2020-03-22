@@ -135,7 +135,7 @@
 !
       if(num .le. 0) then
         ilen_in = int(zbuf%ilen_gz)
-        call gzip_infleat_once                                          &
+        call gzip_infleat_once_f                                     &
      &     (ilen_in, zbuf%gzip_buf(1), ione, textbuf(1), ilen_used)
         zbuf%ilen_gzipped = ilen_used
       else
@@ -157,7 +157,7 @@
 !     &         ist+1, ist+nitem_1, ist+nitem_2, ist+nitem_c,           &
 !     &         zbuf%ilen_gzipped+1, ilen_in
           if(nitem_1 .le. ncolumn) then
-            call gzip_infleat_once                                      &
+            call gzip_infleat_once_f                                 &
      &         (ilen_in, zbuf%gzip_buf(zbuf%ilen_gzipped+1),            &
      &          len_multi_int_textline(nitem_1), textbuf(1), ilen_used)
             call read_multi_int_textline                                &
@@ -311,7 +311,7 @@
 !
       if(num .le. 0) then
         ilen_in = int(zbuf%ilen_gz)
-        call gzip_infleat_once                                          &
+        call gzip_infleat_once_f                                     &
      &    (ilen_in, zbuf%gzip_buf(1), ione, textbuf(1), ilen_used)
         zbuf%ilen_gzipped = ilen_used
       else
@@ -331,7 +331,7 @@
 !     &         ist+1, ist+nitem_1, ist+nitem_2, ist+nitem_c,           &
 !     &         zbuf%ilen_gzipped+1, ilen_in
           if(nitem_1 .le. ncolumn) then
-            call gzip_infleat_once                                      &
+            call gzip_infleat_once_f                                 &
      &         (ilen_in, zbuf%gzip_buf(zbuf%ilen_gzipped+1),            &
      &          len_multi_6digit_line(nitem_1), textbuf(1), ilen_used)
             call read_mul_6digit_int_line                               &

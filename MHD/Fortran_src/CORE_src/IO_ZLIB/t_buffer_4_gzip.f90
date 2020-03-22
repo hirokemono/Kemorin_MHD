@@ -29,6 +29,7 @@
       use m_constants
       use m_machine_parameter
       use transfer_to_long_integers
+      use calypso_c_binding
 !
       implicit none
 !
@@ -209,7 +210,7 @@
 !
       ilen_in = int(zbuf%ilen_gz)
 !
-      call gzip_infleat_once                                          &
+      call gzip_infleat_once_f                                          &
      &   (ilen_in, zbuf%gzip_buf(1), kint, int_dat, ilen_used)
       iflag_swap = endian_check(id_rank, int_dat)
 !
@@ -239,7 +240,7 @@
         ilen_in = int(min(zbuf%ilen_gz-zbuf%ilen_gzipped, ilen_tmp))
         ilen_line = nline * kint_gl
 !
-        call gzip_infleat_once                                          &
+        call gzip_infleat_once_f                                        &
      &     (ilen_in, zbuf%gzip_buf(zbuf%ilen_gzipped+1),                &
      &      ilen_line, int8_dat(ist+1), ilen_used)
 !
@@ -273,7 +274,7 @@
         ilen_in = int(min(zbuf%ilen_gz-zbuf%ilen_gzipped, ilen_tmp))
         ilen_line = nline * kreal
 !
-        call gzip_infleat_once                                          &
+        call gzip_infleat_once_f                                        &
      &     (ilen_in, zbuf%gzip_buf(zbuf%ilen_gzipped+1),                &
      &     ilen_line, real_dat(ist+1), ilen_used)
 !
@@ -307,7 +308,7 @@
         ilen_in = int(min(zbuf%ilen_gz-zbuf%ilen_gzipped, ilen_tmp))
         ilen_line = nline * kchara
 !
-        call gzip_infleat_once                                          &
+        call gzip_infleat_once_f                                     &
      &     (ilen_in, zbuf%gzip_buf(zbuf%ilen_gzipped+1),                &
      &     ilen_line, chara_dat(ist+1), ilen_used)
 !

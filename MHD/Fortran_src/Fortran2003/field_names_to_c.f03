@@ -154,7 +154,7 @@
       module field_names_to_c
 !
       use m_precision
-      use iso_c_binding
+      use ISO_C_BINDING
       use t_base_field_labels
 !
       implicit none
