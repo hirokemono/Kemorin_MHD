@@ -13,7 +13,7 @@
   #include <zlib.h>               /* /usr(/local)/include/zlib.h */
 #endif
 
-#include "kemosrc_param_c.h"
+#include "calypso_param_c.h"
 #include "numbers_to_bin_c.h"
 
 
