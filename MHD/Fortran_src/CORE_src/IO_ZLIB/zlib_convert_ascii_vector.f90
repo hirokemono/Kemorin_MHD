@@ -168,23 +168,25 @@
 !
 !          if(my_rank .eq. 0) write(*,*) 'start ',                      &
 !     &      ist+1, ist+nline, nline, zbuf%ilen_gzipped+1,  ilen_in
-          call gzip_infleat_char_begin                                  &
+          call gzip_infleat_begin                                       &
      &       (ilen_in, zbuf%gzip_buf(zbuf%ilen_gzipped+1),              &
-     &        ilen_line, textbuf(1), z_buf)
+     &        ilen_line, textbuf(1), ilen_used)
           call read_int8_and_vector_textline                            &
      &       (textbuf(1), id_global(ist+1), numdir, xx_tmp)
           xx(ist+1,1:numdir) = xx_tmp(1:numdir)
 !
           do i = ist+2, ist+nline-1
-            call gzip_infleat_char_cont                                 &
-     &         (z_buf)
+            call gzip_infleat_cont                                      &
+     &         (ilen_in, ilen_line, textbuf(1), ilen_used)
             call read_int8_and_vector_textline                          &
      &         (textbuf(1), id_global(i), numdir, xx_tmp)
             xx(i,1:numdir) = xx_tmp(1:numdir)
           end do
 !
-          call gzip_infleat_char_last                                   &
-     &       (ilen_used, z_buf)
+          call gzip_infleat_last                                        &
+     &       (ilen_in, ilen_line, textbuf(1), ilen_used)
+!          if(my_rank .eq. 0) write(*,*) 'gzip_infleat_last',           &
+!     &                      ilen_used
           call read_int8_and_vector_textline                            &
      &       (textbuf(1), id_global(ist+nline), numdir, xx_tmp)
           xx(ist+nline,1:numdir) = xx_tmp(1:numdir)
@@ -324,21 +326,21 @@
           nline = int(min((nnod - ist), huge_30/ilen_line))
           ilen_in = int(min(zbuf%ilen_gz-zbuf%ilen_gzipped, ilen_tmp))
 !
-          call gzip_infleat_char_begin                                  &
+          call gzip_infleat_begin                                       &
      &       (ilen_in, zbuf%gzip_buf(zbuf%ilen_gzipped+1),              &
-     &        ilen_line, textbuf(1), z_buf)
+     &        ilen_line, textbuf(1), ilen_used)
           call read_vector_textline(textbuf(1), ndir, v1)
           vector(ist+1,1:ndir) = v1(1:ndir)
 !
           do i = ist+2, ist+nline-1
-            call gzip_infleat_char_cont                                 &
-     &         (z_buf)
+            call gzip_infleat_cont                                      &
+     &         (ilen_in, ilen_line, textbuf(1), ilen_used)
             call read_vector_textline(textbuf(1), ndir, v1)
             vector(i,1:ndir) = v1(1:ndir)
           end do
 !
-          call gzip_infleat_char_last                                   &
-     &       (ilen_used, z_buf)
+          call gzip_infleat_last                                        &
+     &       (ilen_in, ilen_line, textbuf(1), ilen_used)
           call read_vector_textline(textbuf(1), ndir, v1)
           vector(ist+nline,1:ndir) = v1(1:ndir)
 !
