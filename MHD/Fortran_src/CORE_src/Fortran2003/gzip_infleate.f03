@@ -253,7 +253,7 @@
       z_buf%gzipbuf_p => gzipbuf
       z_buf%buf_p => buf
 !
-      write(*,*) 'gzip_infleat_begin'
+      write(*,*) 'gzip_infleat_begin', z_buf%len_gzipbuf_c, z_buf%len_buf_c
       call gzip_infleat_begin                                           &
      &   (z_buf%len_gzipbuf_c, z_buf%gzipbuf_p, z_buf%len_buf_c,        &
      &    C_LOC(z_buf%buf_p), z_buf%len_gzipped_c)
@@ -268,7 +268,8 @@
       type(zlib_transfer), intent(inout) :: z_buf
 !
 !
-      write(*,*) 'gzip_infleat_cont'
+      write(*,*) 'gzip_infleat_cont',  z_buf%len_gzipbuf_c, &
+     &          z_buf%len_buf_c, z_buf%len_gzipped_c
       call gzip_infleat_cont(z_buf%len_gzipbuf_c, z_buf%len_buf_c,      &
      &    C_LOC(z_buf%buf_p), z_buf%len_gzipped_c)
 !
@@ -283,7 +284,8 @@
       type(zlib_transfer), intent(inout) :: z_buf
 !
 !
-      write(*,*) 'gzip_infleat_last'
+      write(*,*) 'gzip_infleat_last',  z_buf%len_gzipbuf_c, &
+     &          z_buf%len_buf_c, z_buf%len_gzipped_c
       call gzip_infleat_last(z_buf%len_gzipbuf_c, z_buf%len_buf_c,      &
      &    C_LOC(z_buf%buf_p), z_buf%len_gzipped_c)
       len_gzipped = int(z_buf%len_gzipped_c,KIND(len_gzipped))
