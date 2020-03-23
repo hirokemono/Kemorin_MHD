@@ -176,14 +176,14 @@
 !
             do i = ist+ncolumn+1, ist+nitem_c, ncolumn
               call gzip_infleat_char_cont                               &
-     &           (ilen_in, ilen_line, z_buf)
+     &           (ilen_in, z_buf)
               call read_multi_int_textline                              &
      &           (textbuf(1), ncolumn, int_dat(i))
             end do
 !
             nrest = nitem_2 - nitem_c
             call gzip_infleat_char_last                                 &
-     &         (ilen_in, len_multi_int_textline(nrest),                 &
+     &         (ilen_in,                 &
      &          ilen_used, z_buf)
             call read_multi_int_textline                                &
      &         (textbuf(1), nrest, int_dat(ist+nitem_c+1))
@@ -346,7 +346,7 @@
      &         (textbuf(1), ncolumn, int_dat(ist+1))
 !
             do i = ist+ncolumn+1, ist+nitem_c, ncolumn
-              call gzip_infleat_char_cont(ilen_in, ilen_line,           &
+              call gzip_infleat_char_cont(ilen_in,                      &
      &            textbuf(1), z_buf)
               call read_mul_6digit_int_line                             &
      &           (textbuf(1), ncolumn, int_dat(i))
@@ -354,8 +354,7 @@
 !
             nrest = nitem_2 - nitem_c
             call gzip_infleat_char_last                                 &
-     &         (ilen_in, len_multi_6digit_line(nrest),                  &
-     &          textbuf(1), ilen_used, z_buf)
+     &         (ilen_in, textbuf(1), ilen_used, z_buf)
             call read_mul_6digit_int_line                               &
      &         (textbuf(1), nrest, int_dat(ist+nitem_c+1))
 !

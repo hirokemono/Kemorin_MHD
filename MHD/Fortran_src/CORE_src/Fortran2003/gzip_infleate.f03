@@ -251,7 +251,7 @@
 !
 !
       len_gzipbuf_c = int(len_gzipbuf,KIND(len_gzipbuf_c))
-      z_buf%len_buf_c =     int(len_buf,KIND(z_buf%len_buf_c))
+      z_buf%len_buf_c = int(len_buf,KIND(z_buf%len_buf_c))
       z_buf%gzipbuf_p => gzipbuf
       z_buf%buf_p => buf
 !
@@ -265,10 +265,9 @@
 !  ---------------------------------------------------------------------
 !
       subroutine gzip_infleat_char_cont                                 &
-     &         (len_gzipbuf, len_buf, z_buf)
+     &         (len_gzipbuf, z_buf)
 !
       integer, intent(in) :: len_gzipbuf
-      integer, intent(in) :: len_buf
 !
       type(zlib_transfer), intent(inout) :: z_buf
 !
@@ -286,10 +285,9 @@
 !  ---------------------------------------------------------------------
 !
       subroutine gzip_infleat_char_last                                 &
-     &         (len_gzipbuf, len_buf, len_gzipped, z_buf)
+     &         (len_gzipbuf, len_gzipped, z_buf)
 !
       integer, intent(in) :: len_gzipbuf
-      integer, intent(in) :: len_buf
 !
       integer, intent(inout) :: len_gzipped
       type(zlib_transfer), intent(inout) :: z_buf
