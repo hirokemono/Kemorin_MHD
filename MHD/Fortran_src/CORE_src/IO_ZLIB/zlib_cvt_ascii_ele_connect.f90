@@ -134,12 +134,12 @@
 !
       if(nele .le. 0) then
         ilen_in = int(zbuf%ilen_gz)
-        call gzip_infleat_once_f                                     &
+        call gzip_infleat_char_once                                     &
      &    (ilen_in, zbuf%gzip_buf(1), ione, textbuf(1), ilen_used)
         zbuf%ilen_gzipped = ilen_used
       else if(nele .eq. 1) then
         ilen_in = int(zbuf%ilen_gz)
-        call gzip_infleat_once_f                                     &
+        call gzip_infleat_char_once                                     &
      &    (ilen_in, zbuf%gzip_buf(1), ilen_line, textbuf(1), ilen_used)
         call read_int8_and_mul_int8_textline                            &
      &     (textbuf(1), id_global(1), nnod_4_ele, ie_tmp)
@@ -286,12 +286,12 @@
 !
       if(nele .le. 0) then
         ilen_in = int(zbuf%ilen_gz)
-        call gzip_infleat_once_f                                     &
+        call gzip_infleat_char_once                                     &
      &    (ilen_in, zbuf%gzip_buf(1), ione, textbuf(1), ilen_used)
         zbuf%ilen_gzipped = ilen_used
       else if(nele .eq. 1) then
         ilen_in = int(zbuf%ilen_gz)
-        call gzip_infleat_once_f                                     &
+        call gzip_infleat_char_once                                     &
      &    (ilen_in, zbuf%gzip_buf(1), ilen_line, textbuf(1), ilen_used)
         call read_multi_int_textline(textbuf(1), ncomp, ivect(1,1))
         zbuf%ilen_gzipped = ilen_used
@@ -404,10 +404,10 @@
       allocate(textbuf(ilen_line))
 !
       if(nnod .le. 0) then
-        call gzip_infleat_once_f                                     &
+        call gzip_infleat_char_once                                     &
      &    (ilen_in, zbuf%gzip_buf(1), ione, textbuf(1), ilen_used)
       else if(nnod .eq. 1) then
-        call gzip_infleat_once_f                                     &
+        call gzip_infleat_char_once                                     &
      &    (ilen_in, zbuf%gzip_buf(1), ilen_line, textbuf(1), ilen_used)
         call read_multi_int_textline(textbuf(1), numdir, idx(1,1))
       else if(nnod .gt. 0) then

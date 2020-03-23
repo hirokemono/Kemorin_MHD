@@ -204,15 +204,15 @@
       integer, intent(inout) :: iflag_swap
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
-      integer :: int_dat
+      integer :: int_dat(1)
       integer :: ilen_in, ilen_used
 !
 !
       ilen_in = int(zbuf%ilen_gz)
 !
-      call gzip_infleat_once_f                                          &
-     &   (ilen_in, zbuf%gzip_buf(1), kint, int_dat, ilen_used)
-      iflag_swap = endian_check(id_rank, int_dat)
+      call gzip_infleat_int4_once                                       &
+     &   (ilen_in, zbuf%gzip_buf(1), ione, int_dat, ilen_used)
+      iflag_swap = endian_check(id_rank, int_dat(1))
 !
       zbuf%ilen_gzipped = ilen_used
       call dealloc_zip_buffer(zbuf)
@@ -229,7 +229,7 @@
 !
       integer(kind = kint_gl) :: ist, ilen_tmp
       integer :: nline
-      integer :: ilen_in, ilen_used, ilen_line
+      integer :: ilen_in, ilen_used
 !
 !
       ist = 0
@@ -238,11 +238,10 @@
       do
         nline = int(min((num - ist), huge_30/cast_long(kint_gl)))
         ilen_in = int(min(zbuf%ilen_gz-zbuf%ilen_gzipped, ilen_tmp))
-        ilen_line = nline * kint_gl
 !
-        call gzip_infleat_once_f                                        &
+        call gzip_infleat_int8_once                                     &
      &     (ilen_in, zbuf%gzip_buf(zbuf%ilen_gzipped+1),                &
-     &      ilen_line, int8_dat(ist+1), ilen_used)
+     &      nline, int8_dat(ist+1), ilen_used)
 !
         zbuf%ilen_gzipped = zbuf%ilen_gzipped + ilen_used
         ist = ist + nline
@@ -263,7 +262,7 @@
 !
       integer(kind = kint_gl) :: ist, ilen_tmp
       integer :: nline
-      integer :: ilen_in, ilen_used, ilen_line
+      integer :: ilen_in, ilen_used
 !
 !
       ist = 0
@@ -272,11 +271,10 @@
       do
         nline = int(min((num - ist), huge_30/cast_long(kreal)))
         ilen_in = int(min(zbuf%ilen_gz-zbuf%ilen_gzipped, ilen_tmp))
-        ilen_line = nline * kreal
 !
-        call gzip_infleat_once_f                                        &
+        call gzip_infleat_real_once                                     &
      &     (ilen_in, zbuf%gzip_buf(zbuf%ilen_gzipped+1),                &
-     &     ilen_line, real_dat(ist+1), ilen_used)
+     &     nline, real_dat(ist+1), ilen_used)
 !
         zbuf%ilen_gzipped = zbuf%ilen_gzipped + ilen_used
         ist = ist + nline
@@ -308,7 +306,7 @@
         ilen_in = int(min(zbuf%ilen_gz-zbuf%ilen_gzipped, ilen_tmp))
         ilen_line = nline * kchara
 !
-        call gzip_infleat_once_f                                     &
+        call gzip_infleat_char_once                                     &
      &     (ilen_in, zbuf%gzip_buf(zbuf%ilen_gzipped+1),                &
      &     ilen_line, chara_dat(ist+1), ilen_used)
 !

@@ -69,7 +69,7 @@ void gzip_defleat_cont(int *len_buf, const char *buf, int *len_gzipbuf, int *len
 void gzip_defleat_last(int *len_buf, const char *buf, int *len_gzipbuf, int *len_gzipped);
 
 void gzip_infleat_once(const int *len_gzipbuf, const char *gzipbuf, const int *len_buf, 
-                       char *buf, int *len_gzipped);
+                       void *buf, int *len_gzipped);
 void gzip_infleat_begin(int *len_gzipbuf, const char *gzipbuf, int *len_buf, 
                         char *buf, int *len_gzipped);
 void gzip_infleat_cont(int *len_gzipbuf, int *len_buf, const char *buf, int *len_gzipped);

@@ -68,7 +68,7 @@
 !
 !
       ilen_in = int(zbuf%ilen_gz)
-      call gzip_infleat_once_f(ilen_in, zbuf%gzip_buf(1),            &
+      call gzip_infleat_char_once(ilen_in, zbuf%gzip_buf(1),            &
      &    ilength, text, ilen_used)
       zbuf%ilen_gzipped = ilen_used
       call dealloc_zip_buffer(zbuf)
@@ -94,7 +94,7 @@
 !
 !
       ilen_in = int(zbuf%ilen_gz)
-      call gzip_infleat_once_f                                       &
+      call gzip_infleat_char_once                                       &
      &   (ilen_in, zbuf%gzip_buf(1), kchara, textbuf_c, ilen_used)
       zbuf%ilen_gzipped = ilen_used
 !
@@ -108,7 +108,7 @@
 !      write(*,*) 'word', ilength, trim(word)
 !
       allocate(textbuf(ilength))
-      call gzip_infleat_once_f                                       &
+      call gzip_infleat_char_once                                       &
      &   (ilen_in, zbuf%gzip_buf(1), ilength, textbuf(1), ilen_used)
       zbuf%ilen_gzipped = ilen_used
       deallocate(textbuf)
@@ -132,7 +132,7 @@
       allocate(chara_dat(ilength))
 !
       ilen_in = int(zbuf%ilen_gz)
-      call gzip_infleat_once_f(ilen_in, zbuf%gzip_buf(1),            &
+      call gzip_infleat_char_once(ilen_in, zbuf%gzip_buf(1),            &
      &    ilength, chara_dat(1), ilen_used)
       zbuf%ilen_gzipped = ilen_used
 !
