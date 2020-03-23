@@ -332,13 +332,13 @@
 !
           do i = ist+2, ist+nline-1
             call gzip_infleat_char_cont                                 &
-     &         (ilen_in, textbuf(1), z_buf)
+     &         (ilen_in, z_buf)
             call read_vector_textline(textbuf(1), ndir, v1)
             vector(i,1:ndir) = v1(1:ndir)
           end do
 !
           call gzip_infleat_char_last                                   &
-     &       (ilen_in, textbuf(1), ilen_used, z_buf)
+     &       (ilen_in, ilen_used, z_buf)
           call read_vector_textline(textbuf(1), ndir, v1)
           vector(ist+nline,1:ndir) = v1(1:ndir)
 !
