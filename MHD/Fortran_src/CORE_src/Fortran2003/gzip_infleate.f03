@@ -248,7 +248,7 @@
       type(zlib_transfer), intent(inout) :: z_buf
 !
 !
-      z_buf%len_gzipbuf_c = int(len_gzipbuf,KIND(len_gzipbuf_c))
+      z_buf%len_gzipbuf_c = int(len_gzipbuf,KIND(z_buf%len_gzipbuf_c))
       z_buf%len_buf_c = int(len_buf,KIND(z_buf%len_buf_c))
       z_buf%gzipbuf_p => gzipbuf
       z_buf%buf_p => buf
