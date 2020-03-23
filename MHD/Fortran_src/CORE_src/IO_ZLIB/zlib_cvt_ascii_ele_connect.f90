@@ -170,7 +170,7 @@
 !
           do i = ist+2, ist+nline-1
             call gzip_infleat_char_cont                                 &
-     &         (ilen_in, z_buf)
+     &         (z_buf)
             call read_int8_and_mul_int8_textline                        &
      &         (textbuf(1), id_global(i), nnod_4_ele, ie_tmp)
             ie(i,1:nnod_4_ele)                                          &
@@ -178,7 +178,7 @@
           end do
 !
           call gzip_infleat_char_last                                   &
-     &       (ilen_in, ilen_used, z_buf)
+     &       (ilen_used, z_buf)
           call read_int8_and_mul_int8_textline                          &
      &       (textbuf(1), id_global(ist+nline), nnod_4_ele, ie_tmp)
           ie(ist+nline,1:nnod_4_ele)                                    &
@@ -314,13 +314,13 @@
 !
           do i = ist+2, ist+nline-1
             call gzip_infleat_char_cont                                 &
-     &         (ilen_in, z_buf)
+     &         (z_buf)
             call read_multi_int_textline(textbuf(1), ncomp, ie_tmp)
             ivect(i,1:ncomp) = ie_tmp(1:ncomp)
           end do
 !
           call gzip_infleat_char_last                                   &
-     &       (ilen_in, ilen_used, z_buf)
+     &       (ilen_used, z_buf)
           call read_multi_int_textline(textbuf(1), ncomp, ie_tmp)
           ivect(ist+nline,1:ncomp) = ie_tmp(1:ncomp)
 !
@@ -423,13 +423,13 @@
 !
         do i = 2, nnod-1
           call gzip_infleat_char_cont                                   &
-     &       (ilen_in, z_buf)
+     &       (z_buf)
           call read_multi_int_textline(textbuf(1),  numdir, idx_tmp)
           idx(i,1:numdir) = idx_tmp(1:numdir)
         end do
 !
         call gzip_infleat_char_last                                     &
-     &     (ilen_in, ilen_used, z_buf)
+     &     (ilen_used, z_buf)
         call read_multi_int_textline(textbuf(1), numdir, idx_tmp)
         idx(nnod,1:numdir) = idx_tmp(1:numdir)
       end if
