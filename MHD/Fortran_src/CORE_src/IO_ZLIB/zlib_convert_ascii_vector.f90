@@ -177,14 +177,14 @@
 !
           do i = ist+2, ist+nline-1
             call gzip_infleat_char_cont                                 &
-     &         (ilen_in, ilen_line, textbuf(1), z_buf)
+     &         (ilen_in, ilen_line, z_buf)
             call read_int8_and_vector_textline                          &
      &         (textbuf(1), id_global(i), numdir, xx_tmp)
             xx(i,1:numdir) = xx_tmp(1:numdir)
           end do
 !
           call gzip_infleat_char_last                                   &
-     &       (ilen_in, ilen_line, textbuf(1), ilen_used, z_buf)
+     &       (ilen_in, ilen_line, ilen_used, z_buf)
           call read_int8_and_vector_textline                            &
      &       (textbuf(1), id_global(ist+nline), numdir, xx_tmp)
           xx(ist+nline,1:numdir) = xx_tmp(1:numdir)
