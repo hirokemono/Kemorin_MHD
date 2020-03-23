@@ -290,8 +290,8 @@ void gzip_infleat_once(const int *len_gzipbuf, const char *gzipbuf, const int *l
     return;
 }
 
-void gzip_infleat_begin(int *len_gzipbuf, const char *gzipbuf, int *len_buf, 
-                        char *buf, int *len_gzipped)
+void gzip_infleat_begin(const int *len_gzipbuf, const char *gzipbuf, const int *len_buf, 
+                        void *buf, int *len_gzipped)
 {
     
     strm_inflate_init (& strm_gl);
@@ -304,7 +304,8 @@ void gzip_infleat_begin(int *len_gzipbuf, const char *gzipbuf, int *len_buf,
     return;
 }
 
-void gzip_infleat_cont(int *len_gzipbuf, int *len_buf, const char *buf, int *len_gzipped)
+void gzip_infleat_cont(const int *len_gzipbuf, const int *len_buf, 
+                       void *buf, int *len_gzipped)
 {
     uInt avail_in_current;
     
@@ -318,7 +319,8 @@ void gzip_infleat_cont(int *len_gzipbuf, int *len_buf, const char *buf, int *len
     return;
 }
 
-void gzip_infleat_last(int *len_gzipbuf, int *len_buf, const char *buf, int *len_gzipped)
+void gzip_infleat_last(const int *len_gzipbuf, const int *len_buf,
+                       void *buf, int *len_gzipped)
 {
     uInt avail_in_current;
     

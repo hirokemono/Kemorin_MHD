@@ -70,10 +70,12 @@ void gzip_defleat_last(int *len_buf, const char *buf, int *len_gzipbuf, int *len
 
 void gzip_infleat_once(const int *len_gzipbuf, const char *gzipbuf, const int *len_buf, 
                        void *buf, int *len_gzipped);
-void gzip_infleat_begin(int *len_gzipbuf, const char *gzipbuf, int *len_buf, 
-                        char *buf, int *len_gzipped);
-void gzip_infleat_cont(int *len_gzipbuf, int *len_buf, const char *buf, int *len_gzipped);
-void gzip_infleat_last(int *len_gzipbuf, int *len_buf, const char *buf, int *len_gzipped);
+void gzip_infleat_begin(const int *len_gzipbuf, const char *gzipbuf, const int *len_buf, 
+                        void *buf, int *len_gzipped);
+void gzip_infleat_cont(const int *len_gzipbuf, const int *len_buf, 
+                       void *buf, int *len_gzipped);
+void gzip_infleat_last(const int *len_gzipbuf, const int *len_buf, 
+                       void *buf, int *len_gzipped);
 
 
 void compress_file(const char *txt_file_name, const char *gz_file_name);

@@ -59,6 +59,7 @@
       subroutine infleate_characters(ilength, text, zbuf)
 !
       use data_IO_to_textline
+      use gzip_infleate
 !
       integer, intent(in) :: ilength
       character(len=ilength), intent(inout) :: text
@@ -81,6 +82,7 @@
 !
       use field_data_IO
       use field_data_MPI_IO
+      use gzip_infleate
 !
       integer, intent(inout) :: ilength
       character(len=kchara), intent(inout) :: word
@@ -121,6 +123,8 @@
 ! -----------------------------------------------------------------------
 !
       subroutine infleate_skip_header(ilength, zbuf)
+!
+      use gzip_infleate
 !
       integer, intent(in) :: ilength
       type(buffer_4_gzip), intent(inout) :: zbuf

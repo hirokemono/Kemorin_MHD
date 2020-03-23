@@ -14,6 +14,8 @@ else
 endif
 
 SUBDIRS += \
+Fortran2003          \
+\
 BASE                 \
 MESH                 \
 MESH_type            \
@@ -73,6 +75,7 @@ lib_archve:
 mod_list:
 	@echo  MOD_CORE= \\ >> $(MAKENAME)
 	@echo  \
+	'$$(MOD_F2003)'       \
 	'$$(MOD_BASE)'        \
 	'$$(MOD_CTL)'         \
 	'$$(MOD_IO)'          \

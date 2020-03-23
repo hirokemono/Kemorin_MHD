@@ -51,14 +51,6 @@
 !void gzip_defleat_cont(int *len_buf, const char *buf, int *len_gzipbuf, int *len_gzipped);
 !void gzip_defleat_last(int *len_buf, const char *buf, int *len_gzipbuf, int *len_gzipped);
 !
-!void gzip_infleat_once(int *len_gzipbuf, const char *gzipbuf, int *len_buf, 
-!                       char *buf, int *len_gzipped);
-!void gzip_infleat_begin(int *len_gzipbuf, const char *gzipbuf, int *len_buf, 
-!                        char *buf, int *len_gzipped);
-!void gzip_infleat_cont(int *len_gzipbuf, int *len_buf, const char *buf, int *len_gzipped);
-!void gzip_infleat_last(int *len_gzipbuf, int *len_buf, const char *buf, int *len_gzipped);
-!
-!
 !void compress_file(const char *txt_file_name, const char *gz_file_name);
 !void decompress_file(const char *gz_file_name, const char *txt_file_name);
 !!

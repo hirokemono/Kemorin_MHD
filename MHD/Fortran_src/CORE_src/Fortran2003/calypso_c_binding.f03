@@ -1,4 +1,13 @@
-!
+!>@file   m_filtered_force_labels.f90
+!!        module m_filtered_force_labels
+!!
+!! @author H. Matsui
+!! @date   Programmed in Jan., 2020
+!!
+!!
+!> @brief Wrapper for decompression routines by zlib
+!!
+!!@verbatim
 !!      subroutine gzip_infleat_real_once                               &
 !!     &         (len_gzipbuf, gzipbuf, num, data, len_gzipped)
 !!      subroutine gzip_infleat_int8_once                               &
@@ -7,6 +16,14 @@
 !!     &         (len_gzipbuf, gzipbuf, num, int4_dat, len_gzipped)
 !!      subroutine gzip_infleat_char_once                               &
 !!     &         (len_gzipbuf, gzipbuf, len_buf, buf, len_gzipped)
+!!
+!!      subroutine gzip_infleat_char_begin                              &
+!!     &         (len_gzipbuf, gzipbuf, len_buf, buf, len_gzipped)
+!!      subroutine gzip_infleat_char_cont                               &
+!!     &         (len_gzipbuf, len_buf, buf, len_gzipped)
+!!      subroutine gzip_infleat_char_last                               &
+!!     &         (len_gzipbuf, len_buf, buf, len_gzipped)
+!!@endverbatim
 !
       module calypso_c_binding
 !
@@ -31,10 +48,59 @@
         character(C_char), intent(in) :: gzipbuf(*)
         integer(C_int), intent(in) :: len_buf
 !
-        type(C_ptr), value, intent(in) :: buf
+        type(C_ptr), value :: buf
         integer(C_int), intent(inout) :: len_gzipped
 !
         end subroutine gzip_infleat_once
+!
+!  ---------------------------------------------------------------------
+!
+        subroutine gzip_infleat_begin                                   &
+     &           (len_gzipbuf, gzipbuf, len_buf, buf, len_gzipped)      &
+     &            BIND(C, name = 'gzip_infleat_begin')
+!
+        use ISO_C_BINDING
+!
+        integer(C_int), intent(in) :: len_gzipbuf
+        character(C_char), intent(in) :: gzipbuf(*)
+        integer(C_int), intent(in) :: len_buf
+!
+        type(C_ptr), value :: buf
+        integer(C_int), intent(inout) :: len_gzipped
+!
+        end subroutine gzip_infleat_begin
+!
+!  ---------------------------------------------------------------------
+!
+        subroutine gzip_infleat_cont                                    &
+     &           (len_gzipbuf, len_buf, buf, len_gzipped)               &
+     &            BIND(C, name = 'gzip_infleat_begin')
+!
+        use ISO_C_BINDING
+!
+        integer(C_int), intent(in) :: len_gzipbuf
+        integer(C_int), intent(in) :: len_buf
+!
+        type(C_ptr), value :: buf
+        integer(C_int), intent(inout) :: len_gzipped
+!
+        end subroutine gzip_infleat_cont
+!
+!  ---------------------------------------------------------------------
+!
+        subroutine gzip_infleat_last                                    &
+     &           (len_gzipbuf, len_buf, buf, len_gzipped)               &
+     &            BIND(C, name = 'gzip_infleat_last')
+!
+        use ISO_C_BINDING
+!
+        integer(C_int), intent(in) :: len_gzipbuf
+        integer(C_int), intent(in) :: len_buf
+!
+        type(C_ptr), value :: buf
+        integer(C_int), intent(inout) :: len_gzipped
+!
+        end subroutine gzip_infleat_last
 !
 !  ---------------------------------------------------------------------
 !
@@ -154,6 +220,84 @@
       len_gzipped = int(len_gzipped_c,KIND(len_gzipped))
 !
       end subroutine gzip_infleat_char_once
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine gzip_infleat_char_begin                                &
+     &         (len_gzipbuf, gzipbuf, len_buf, buf, len_gzipped)
+!
+      integer, intent(in) :: len_gzipbuf
+      integer, intent(in) :: len_buf
+      character(len=1), target, intent(in) :: gzipbuf(len_gzipbuf)
+!
+      character(len=1), target, intent(inout) :: buf(len_buf)
+      integer, intent(inout) :: len_gzipped
+!
+      integer(C_int) :: len_gzipbuf_c, len_buf_c, len_gzipped_c
+      character(C_char), pointer :: gzipbuf_p(:), buf_p(:)
+!
+!
+      len_gzipbuf_c = int(len_gzipbuf,KIND(len_gzipbuf_c))
+      len_buf_c = int(len_buf,KIND(len_buf_c))
+      gzipbuf_p => gzipbuf
+      buf_p => buf
+!
+      call gzip_infleat_begin(len_gzipbuf_c, gzipbuf(1), len_buf_c,     &
+     &    C_LOC(buf_p), len_gzipped_c)
+      len_gzipped = int(len_gzipped_c,KIND(len_gzipped))
+!
+      end subroutine gzip_infleat_char_begin
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine gzip_infleat_char_cont                                 &
+     &         (len_gzipbuf, len_buf, buf, len_gzipped)
+!
+      integer, intent(in) :: len_gzipbuf
+      integer, intent(in) :: len_buf
+!
+      character(len=1), target, intent(inout) :: buf(len_buf)
+      integer, intent(inout) :: len_gzipped
+!
+      integer(C_int) :: len_gzipbuf_c, len_buf_c, len_gzipped_c
+      character(C_char), pointer :: buf_p(:)
+!
+!
+      len_gzipbuf_c = int(len_gzipbuf,KIND(len_gzipbuf_c))
+      len_buf_c = int(len_buf,KIND(len_buf_c))
+      buf_p => buf
+!
+      call gzip_infleat_cont(len_gzipbuf_c, len_buf_c,                  &
+     &    C_LOC(buf_p), len_gzipped_c)
+      len_gzipped = int(len_gzipped_c,KIND(len_gzipped))
+!
+      end subroutine gzip_infleat_char_cont
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine gzip_infleat_char_last                                 &
+     &         (len_gzipbuf, len_buf, buf, len_gzipped)
+!
+      integer, intent(in) :: len_gzipbuf
+      integer, intent(in) :: len_buf
+!
+      character(len=1), target, intent(inout) :: buf(len_buf)
+      integer, intent(inout) :: len_gzipped
+!
+      integer(C_int) :: len_gzipbuf_c, len_buf_c, len_gzipped_c
+      character(C_char), pointer :: buf_p(:)
+!
+!
+      len_gzipbuf_c = int(len_gzipbuf,KIND(len_gzipbuf_c))
+      len_buf_c = int(len_buf,KIND(len_buf_c))
+      buf_p => buf
+!
+      call gzip_infleat_last(len_gzipbuf_c, len_buf_c,                  &
+     &    C_LOC(buf_p), len_gzipped_c)
+      len_gzipped = int(len_gzipped_c,KIND(len_gzipped))
+!
+      end subroutine gzip_infleat_char_last
 !
 !  ---------------------------------------------------------------------
 !

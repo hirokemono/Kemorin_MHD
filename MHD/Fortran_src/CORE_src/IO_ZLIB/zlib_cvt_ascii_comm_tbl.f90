@@ -116,6 +116,8 @@
 !
       subroutine infleate_comm_table(ncolumn, num, int_dat, zbuf)
 !
+      use gzip_infleate
+!
       integer(kind=kint), intent(in) :: ncolumn
 !
       integer(kind = kint_gl), intent(in) :: num
@@ -165,7 +167,7 @@
             zbuf%ilen_gzipped = zbuf%ilen_gzipped + ilen_used
             exit
           else
-            call gzip_infleat_begin                                     &
+            call gzip_infleat_char_begin                                &
      &         (ilen_in, zbuf%gzip_buf(zbuf%ilen_gzipped+1),            &
      &          ilen_line, textbuf(1), ilen_used)
             call read_multi_int_textline                                &
@@ -174,7 +176,7 @@
 !     &                       ist+ncolumn, ilen_used
 !
             do i = ist+ncolumn+1, ist+nitem_c, ncolumn
-              call gzip_infleat_cont                                    &
+              call gzip_infleat_char_cont                               &
      &           (ilen_in, ilen_line, textbuf(1), ilen_used)
               call read_multi_int_textline                              &
      &           (textbuf(1), ncolumn, int_dat(i))
@@ -183,7 +185,7 @@
 !     &                       ist+nitem_c, ilen_used
 !
             nrest = nitem_2 - nitem_c
-            call gzip_infleat_last                                      &
+            call gzip_infleat_char_last                                 &
      &         (ilen_in, len_multi_int_textline(nrest),                 &
      &          textbuf(1), ilen_used)
             call read_multi_int_textline                                &
@@ -291,6 +293,8 @@
 !
       subroutine infleate_element_type(ncolumn, num, int_dat, zbuf)
 !
+      use gzip_infleate
+!
       integer(kind=kint), intent(in) :: ncolumn
 !
       integer(kind = kint_gl), intent(in) :: num
@@ -339,28 +343,28 @@
             zbuf%ilen_gzipped = zbuf%ilen_gzipped + ilen_used
             exit
           else
-            call gzip_infleat_begin                                     &
+            call gzip_infleat_char_begin                                &
      &         (ilen_in, zbuf%gzip_buf(zbuf%ilen_gzipped+1), ilen_line, &
      &          textbuf(1), ilen_used)
             call read_mul_6digit_int_line                               &
      &         (textbuf(1), ncolumn, int_dat(ist+1))
 !
             do i = ist+ncolumn+1, ist+nitem_c, ncolumn
-              call gzip_infleat_cont(ilen_in, ilen_line,                &
+              call gzip_infleat_char_cont(ilen_in, ilen_line,           &
      &            textbuf(1), ilen_used)
               call read_mul_6digit_int_line                             &
      &           (textbuf(1), ncolumn, int_dat(i))
             end do
-!            if(my_rank .eq. 0) write(*,*) 'gzip_infleat_cont',         &
+!            if(my_rank .eq. 0) write(*,*) 'gzip_infleat_char_cont',    &
 !     &                       ist+nitem_c, ilen_used
 !
             nrest = nitem_2 - nitem_c
-            call gzip_infleat_last                                      &
+            call gzip_infleat_char_last                                 &
      &         (ilen_in, len_multi_6digit_line(nrest),                  &
      &          textbuf(1), ilen_used)
             call read_mul_6digit_int_line                               &
      &         (textbuf(1), nrest, int_dat(ist+nitem_c+1))
-!            if(my_rank .eq. 0) write(*,*) 'gzip_infleat_last',         &
+!            if(my_rank .eq. 0) write(*,*) 'gzip_infleat_char_last',    &
 !     &                       ist+nitem_2, ilen_used
 !
             zbuf%ilen_gzipped = zbuf%ilen_gzipped + ilen_used

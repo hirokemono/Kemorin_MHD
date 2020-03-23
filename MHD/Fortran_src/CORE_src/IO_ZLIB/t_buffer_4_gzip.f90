@@ -29,7 +29,6 @@
       use m_constants
       use m_machine_parameter
       use transfer_to_long_integers
-      use calypso_c_binding
 !
       implicit none
 !
@@ -199,6 +198,7 @@
       subroutine infleate_endian_flag(id_rank, iflag_swap, zbuf)
 !
       use binary_IO
+      use gzip_infleate
 !
       integer, intent(in) :: id_rank
       integer, intent(inout) :: iflag_swap
@@ -222,6 +222,8 @@
 ! -----------------------------------------------------------------------
 !
       subroutine infleate_int8_vector_b(num, int8_dat, zbuf)
+!
+      use gzip_infleate
 !
       integer(kind = kint_gl), intent(in) :: num
       integer(kind = kint_gl), intent(inout) :: int8_dat(num)
@@ -256,6 +258,8 @@
 !
       subroutine infleate_1d_vector_b(num, real_dat, zbuf)
 !
+      use gzip_infleate
+!
       integer(kind = kint_gl), intent(in) :: num
       real(kind = kreal), intent(inout) :: real_dat(num)
       type(buffer_4_gzip), intent(inout) :: zbuf
@@ -288,6 +292,8 @@
 ! -----------------------------------------------------------------------
 !
       subroutine infleate_1d_character_b(num, chara_dat, zbuf)
+!
+      use gzip_infleate
 !
       integer(kind = kint_gl), intent(in) :: num
       character(len=kchara), intent(inout) :: chara_dat(num)
