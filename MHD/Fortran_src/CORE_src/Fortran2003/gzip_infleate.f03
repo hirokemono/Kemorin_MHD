@@ -128,11 +128,12 @@
 !
 !
       len_gzipbuf_c = int(len_gzipbuf,KIND(len_gzipbuf_c))
-      len_buf_c = int((num*kreal),KIND(len_buf_c))
+      len_buf_c =     int((num*kreal),KIND(len_buf_c))
+      len_gzipped_c = int(len_gzipped,KIND(len_gzipped_c))
       gzipbuf_p => gzipbuf
       dat_p => data
 !
-      call gzip_infleat_once(len_gzipbuf_c, gzipbuf(1), len_buf_c,      &
+      call gzip_infleat_once(len_gzipbuf_c, gzipbuf_p, len_buf_c,       &
      &    C_LOC(dat_p), len_gzipped_c)
       len_gzipped = int(len_gzipped_c,KIND(len_gzipped))
 !
@@ -156,11 +157,12 @@
 !
 !
       len_gzipbuf_c = int(len_gzipbuf,KIND(len_gzipbuf_c))
-      len_buf_c = int((num*kint_gl),KIND(len_buf_c))
+      len_buf_c =     int((num*kint_gl),KIND(len_buf_c))
+      len_gzipped_c = int(len_gzipped,KIND(len_gzipped_c))
       gzipbuf_p => gzipbuf
       idat8_p => int8_dat
 !
-      call gzip_infleat_once(len_gzipbuf_c, gzipbuf(1), len_buf_c,      &
+      call gzip_infleat_once(len_gzipbuf_c, gzipbuf_p, len_buf_c,       &
      &    C_LOC(idat8_p), len_gzipped_c)
       len_gzipped = int(len_gzipped_c,KIND(len_gzipped))
 !
@@ -184,11 +186,12 @@
 !
 !
       len_gzipbuf_c = int(len_gzipbuf,KIND(len_gzipbuf_c))
-      len_buf_c = int((num*4),KIND(len_buf_c))
+      len_buf_c =     int((num*4),KIND(len_buf_c))
+      len_gzipped_c = int(len_gzipped,KIND(len_gzipped_c))
       gzipbuf_p => gzipbuf
       idat4_p => int4_dat
 !
-      call gzip_infleat_once(len_gzipbuf_c, gzipbuf(1), len_buf_c,      &
+      call gzip_infleat_once(len_gzipbuf_c, gzipbuf_p, len_buf_c,       &
      &    C_LOC(idat4_p), len_gzipped_c)
       len_gzipped = int(len_gzipped_c,KIND(len_gzipped))
 !
@@ -211,11 +214,12 @@
 !
 !
       len_gzipbuf_c = int(len_gzipbuf,KIND(len_gzipbuf_c))
-      len_buf_c = int(len_buf,KIND(len_buf_c))
+      len_buf_c =     int(len_buf,KIND(len_buf_c))
+      len_gzipped_c = int(len_gzipped,KIND(len_gzipped_c))
       gzipbuf_p => gzipbuf
       buf_p => buf
 !
-      call gzip_infleat_once(len_gzipbuf_c, gzipbuf(1), len_buf_c,      &
+      call gzip_infleat_once(len_gzipbuf_c, gzipbuf_p, len_buf_c,       &
      &    C_LOC(buf_p), len_gzipped_c)
       len_gzipped = int(len_gzipped_c,KIND(len_gzipped))
 !
@@ -239,11 +243,13 @@
 !
 !
       len_gzipbuf_c = int(len_gzipbuf,KIND(len_gzipbuf_c))
-      len_buf_c = int(len_buf,KIND(len_buf_c))
+      len_buf_c =     int(len_buf,KIND(len_buf_c))
+      len_gzipped_c = int(len_gzipped,KIND(len_gzipped_c))
       gzipbuf_p => gzipbuf
       buf_p => buf
 !
-      call gzip_infleat_begin(len_gzipbuf_c, gzipbuf(1), len_buf_c,     &
+      write(*,*) 'gzip_infleat_begin'
+      call gzip_infleat_begin(len_gzipbuf_c, gzipbuf_p, len_buf_c,      &
      &    C_LOC(buf_p), len_gzipped_c)
       len_gzipped = int(len_gzipped_c,KIND(len_gzipped))
 !
@@ -265,9 +271,11 @@
 !
 !
       len_gzipbuf_c = int(len_gzipbuf,KIND(len_gzipbuf_c))
-      len_buf_c = int(len_buf,KIND(len_buf_c))
+      len_buf_c =     int(len_buf,KIND(len_buf_c))
+      len_gzipped_c = int(len_gzipped,KIND(len_gzipped_c))
       buf_p => buf
 !
+      write(*,*) 'gzip_infleat_cont'
       call gzip_infleat_cont(len_gzipbuf_c, len_buf_c,                  &
      &    C_LOC(buf_p), len_gzipped_c)
       len_gzipped = int(len_gzipped_c,KIND(len_gzipped))
@@ -290,9 +298,11 @@
 !
 !
       len_gzipbuf_c = int(len_gzipbuf,KIND(len_gzipbuf_c))
-      len_buf_c = int(len_buf,KIND(len_buf_c))
+      len_buf_c =     int(len_buf,KIND(len_buf_c))
+      len_gzipped_c = int(len_gzipped,KIND(len_gzipped_c))
       buf_p => buf
 !
+      write(*,*) 'gzip_infleat_last'
       call gzip_infleat_last(len_gzipbuf_c, len_buf_c,                  &
      &    C_LOC(buf_p), len_gzipped_c)
       len_gzipped = int(len_gzipped_c,KIND(len_gzipped))
