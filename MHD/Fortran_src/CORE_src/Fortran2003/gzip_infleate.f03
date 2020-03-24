@@ -40,7 +40,7 @@
         character(C_char), pointer :: gzipbuf_p(:)
         character(C_char), pointer :: buf_p(:)
 !
-        character(len=1), pointer :: textbuf(:)
+        character(len=1), allocatable :: textbuf(:)
       end type zlib_transfer
 !
 !  ---------------------------------------------------------------------
@@ -215,7 +215,6 @@
       type(zlib_transfer), intent(inout) :: z_buf
 !
 !
-      write(*,*) 'gzip_infleat_char_once'
       call gzip_infleat_once(z_buf%len_gzipbuf, z_buf%gzipbuf_p,        &
      &    z_buf%len_buf, C_LOC(z_buf%buf_p), z_buf%len_used)
 !
