@@ -250,7 +250,7 @@
       z_buf%gzipbuf_p => gzipbuf
 !
       write(*,*) 'gzip_infleat_begin'
-      call gzip_infleat_begin(z_buf%len_gzipbuf, gzipbuf,               &
+      call gzip_infleat_begin(z_buf%len_gzipbuf, z_buf%gzipbuf_p,       &
      &    z_buf%len_buf, z_buf%textbuf, z_buf%len_used)
 !
       end subroutine gzip_infleat_char_begin
