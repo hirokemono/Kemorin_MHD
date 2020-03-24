@@ -146,16 +146,18 @@
 !
       if(nnod .le. 0) then
         ilen_in = int(zbuf%ilen_gz)
-        call gzip_infleat_char_once                                     &
-     &    (ilen_in, zbuf%gzip_buf(1), ione, textbuf(1), ilen_used)
-        zbuf%ilen_gzipped = ilen_used
+        call link_pointer_for_zlib_buffer                               &
+     &    (ilen_in, zbuf%gzip_buf(1), ione, textbuf(1), z_buf)
+        call gzip_infleat_char_once(z_buf)
+        zbuf%ilen_gzipped = int(z_buf%len_used,KIND(zbuf%ilen_gzipped))
       else if(nnod .eq. 1) then
         ilen_in = int(zbuf%ilen_gz)
-        call gzip_infleat_char_once                                     &
-     &    (ilen_in, zbuf%gzip_buf(1), ilen_line, textbuf(1), ilen_used)
+        call link_pointer_for_zlib_buffer                               &
+     &    (ilen_in, zbuf%gzip_buf(1), ilen_line, textbuf(1), z_buf)
+        call gzip_infleat_char_once(z_buf)
         call read_int8_and_vector_textline                              &
      &     (textbuf(1), id_global(1), numdir, xx(1,1))
-        zbuf%ilen_gzipped = ilen_used
+        zbuf%ilen_gzipped = int(z_buf%len_used,KIND(zbuf%ilen_gzipped))
       else if(nnod .gt. 0) then
         ist = 0
         zbuf%ilen_gzipped = 0
@@ -308,14 +310,16 @@
 !
       if(nnod .le. 0 .and. iflag_blank .gt. 0) then
         ilen_in = int(zbuf%ilen_gz)
-        call gzip_infleat_char_once                                     &
-     &    (ilen_in, zbuf%gzip_buf(1), ione, textbuf(1), ilen_used)
-        zbuf%ilen_gzipped = ilen_used
+        call link_pointer_for_zlib_buffer                               &
+     &    (ilen_in, zbuf%gzip_buf(1), ione, textbuf(1), z_buf)
+        call gzip_infleat_char_once(z_buf)
+        zbuf%ilen_gzipped = int(z_buf%len_used,KIND(zbuf%ilen_gzipped))
       else if(nnod .eq. 1) then
         ilen_in = int(zbuf%ilen_gz)
-        call gzip_infleat_char_once(ilen_in, zbuf%gzip_buf(1),          &
-     &      ilen_line, textbuf(1), ilen_used)
-        zbuf%ilen_gzipped = ilen_used
+        call link_pointer_for_zlib_buffer(ilen_in, zbuf%gzip_buf(1),    &
+     &      ilen_line, textbuf(1), z_buf)
+        call gzip_infleat_char_once(z_buf)
+        zbuf%ilen_gzipped = int(z_buf%len_used,KIND(zbuf%ilen_gzipped))
         call read_vector_textline(textbuf(1), ndir, v1)
         vector(1,1:ndir) = v1(1:ndir)
       else if(nnod .gt. 0) then

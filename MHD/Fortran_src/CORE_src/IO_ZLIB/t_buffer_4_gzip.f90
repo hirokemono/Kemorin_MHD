@@ -301,7 +301,8 @@
 !
       integer(kind = kint_gl) :: ist, ilen_tmp
       integer :: nline
-      integer :: ilen_in, ilen_used, ilen_line
+      integer :: ilen_in, ilen_line
+      type(zlib_transfer) :: z_buf
 !
 !
       ist = 0
@@ -312,11 +313,13 @@
         ilen_in = int(min(zbuf%ilen_gz-zbuf%ilen_gzipped, ilen_tmp))
         ilen_line = nline * kchara
 !
-        call gzip_infleat_char_once                                     &
+        call link_pointer_for_zlib_buffer                               &
      &     (ilen_in, zbuf%gzip_buf(zbuf%ilen_gzipped+1),                &
-     &     ilen_line, chara_dat(ist+1), ilen_used)
+     &     ilen_line, chara_dat(ist+1), z_buf)
+        call gzip_infleat_char_once(z_buf)
 !
-        zbuf%ilen_gzipped = zbuf%ilen_gzipped + ilen_used
+        zbuf%ilen_gzipped = zbuf%ilen_gzipped                           &
+     &                   + int(z_buf%len_used,KIND(zbuf%ilen_gzipped))
         ist = ist + nline
         if(ist .ge. num) exit
       end do

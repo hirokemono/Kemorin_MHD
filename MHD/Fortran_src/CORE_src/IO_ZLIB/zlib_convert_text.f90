@@ -66,12 +66,14 @@
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
       integer :: ilen_in, ilen_used
+      type(zlib_transfer) :: z_buf
 !
 !
       ilen_in = int(zbuf%ilen_gz)
-      call gzip_infleat_char_once(ilen_in, zbuf%gzip_buf(1),            &
-     &    ilength, text, ilen_used)
-      zbuf%ilen_gzipped = ilen_used
+      call link_pointer_for_zlib_buffer(ilen_in, zbuf%gzip_buf(1),      &
+     &    ilength, text, z_buf)
+      call gzip_infleat_char_once(z_buf)
+      zbuf%ilen_gzipped = int(z_buf%len_used,KIND(zbuf%ilen_gzipped))
       call dealloc_zip_buffer(zbuf)
 !
       end subroutine infleate_characters
@@ -93,12 +95,14 @@
 !
       character(len=1), allocatable :: textbuf(:)
       character(len=kchara) :: textbuf_c
+      type(zlib_transfer) :: z_buf
 !
 !
       ilen_in = int(zbuf%ilen_gz)
-      call gzip_infleat_char_once                                       &
-     &   (ilen_in, zbuf%gzip_buf(1), kchara, textbuf_c, ilen_used)
-      zbuf%ilen_gzipped = ilen_used
+      call link_pointer_for_zlib_buffer                                 &
+     &   (ilen_in, zbuf%gzip_buf(1), kchara, textbuf_c, z_buf)
+      call gzip_infleat_char_once(z_buf)
+      zbuf%ilen_gzipped = int(z_buf%len_used,KIND(zbuf%ilen_gzipped))
 !
       call read_each_field_name_buffer(textbuf_c, word, ilength)
       ilength = ilength + 1
@@ -110,9 +114,10 @@
 !      write(*,*) 'word', ilength, trim(word)
 !
       allocate(textbuf(ilength))
-      call gzip_infleat_char_once                                       &
-     &   (ilen_in, zbuf%gzip_buf(1), ilength, textbuf(1), ilen_used)
-      zbuf%ilen_gzipped = ilen_used
+      call link_pointer_for_zlib_buffer                                 &
+     &   (ilen_in, zbuf%gzip_buf(1), ilength, textbuf(1), z_buf)
+      call gzip_infleat_char_once(z_buf)
+      zbuf%ilen_gzipped = int(z_buf%len_used,KIND(zbuf%ilen_gzipped))
       deallocate(textbuf)
 !
       call dealloc_zip_buffer(zbuf)
@@ -131,14 +136,16 @@
 !
       integer :: ilen_in, ilen_used
       character(len=1), allocatable :: chara_dat(:)
+      type(zlib_transfer) :: z_buf
 !
 !
       allocate(chara_dat(ilength))
 !
       ilen_in = int(zbuf%ilen_gz)
-      call gzip_infleat_char_once(ilen_in, zbuf%gzip_buf(1),            &
-     &    ilength, chara_dat(1), ilen_used)
-      zbuf%ilen_gzipped = ilen_used
+      call link_pointer_for_zlib_buffer(ilen_in, zbuf%gzip_buf(1),      &
+     &    ilength, chara_dat(1), z_buf)
+      call gzip_infleat_char_once(z_buf)
+      zbuf%ilen_gzipped = int(z_buf%len_used,KIND(zbuf%ilen_gzipped))
 !
       deallocate(chara_dat)
       call dealloc_zip_buffer(zbuf)

@@ -210,29 +210,14 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine gzip_infleat_char_once                                 &
-     &         (len_gzipbuf, gzipbuf, len_buf, buf, len_gzipped)
+      subroutine gzip_infleat_char_once(z_buf)
 !
-      integer, intent(in) :: len_gzipbuf
-      integer, intent(in) :: len_buf
-      character(len=1), target, intent(in) :: gzipbuf(len_gzipbuf)
-!
-      character(len=1), target, intent(inout) :: buf(len_buf)
-      integer, intent(inout) :: len_gzipped
-!
-      integer(C_int) :: len_gzipbuf_c, len_buf_c, len_gzipped_c
-      character(C_char), pointer :: gzipbuf_p(:), buf_p(:)
+      type(zlib_transfer), intent(inout) :: z_buf
 !
 !
-      len_gzipbuf_c = int(len_gzipbuf,KIND(len_gzipbuf_c))
-      len_buf_c =     int(len_buf,KIND(len_buf_c))
-      len_gzipped_c = int(len_gzipped,KIND(len_gzipped_c))
-      gzipbuf_p => gzipbuf
-      buf_p => buf
-!
-      call gzip_infleat_once(len_gzipbuf_c, gzipbuf_p, len_buf_c,       &
-     &    C_LOC(buf_p), len_gzipped_c)
-      len_gzipped = int(len_gzipped_c,KIND(len_gzipped))
+      write(*,*) 'gzip_infleat_char_once'
+      call gzip_infleat_once(z_buf%len_gzipbuf, z_buf%gzipbuf_p,        &
+     &    z_buf%len_buf, C_LOC(z_buf%buf_p), z_buf%len_used)
 !
       end subroutine gzip_infleat_char_once
 !
@@ -244,7 +229,6 @@
       type(zlib_transfer), intent(inout) :: z_buf
 !
 !
-      write(*,*) 'gzip_infleat_begin'
       call gzip_infleat_begin(z_buf%len_gzipbuf, z_buf%gzipbuf_p,       &
      &    z_buf%len_buf, C_LOC(z_buf%textbuf), z_buf%len_used)
 !
@@ -257,7 +241,6 @@
       type(zlib_transfer), intent(inout) :: z_buf
 !
 !
-      write(*,*) 'gzip_infleat_cont'
       call gzip_infleat_cont(z_buf%len_gzipbuf, z_buf%len_buf,          &
      &    C_LOC(z_buf%textbuf), z_buf%len_used)
 !
@@ -270,8 +253,6 @@
       type(zlib_transfer), intent(inout) :: z_buf
 !
 !
-      write(*,*) 'gzip_infleat_last',  z_buf%len_gzipbuf, &
-     &          z_buf%len_buf, z_buf%len_used
       call gzip_infleat_last(z_buf%len_gzipbuf, z_buf%len_buf,          &
      &    C_LOC(z_buf%textbuf), z_buf%len_used)
 !
