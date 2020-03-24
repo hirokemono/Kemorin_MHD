@@ -83,19 +83,19 @@
 !
 !  ---------------------------------------------------------------------
 !
-!        subroutine gzip_infleat_cont                                   &
-!     &           (len_gzipbuf, len_buf, buf, len_gzipped)              &
-!     &            BIND(C, name = 'gzip_infleat_begin')
+        subroutine gzip_infleat_cont                                    &
+     &           (len_gzipbuf, len_buf, buf, len_gzipped)               &
+     &            BIND(C, name = 'gzip_infleat_begin')
 !
-!        use ISO_C_BINDING
+        use ISO_C_BINDING
 !
-!        integer(C_int), intent(in) :: len_gzipbuf
-!        integer(C_int), intent(in) :: len_buf
+        integer(C_int), intent(in) :: len_gzipbuf
+        integer(C_int), intent(in) :: len_buf
 !
-!        type(C_ptr), value :: buf
-!        integer(C_int), intent(inout) :: len_gzipped
+        type(C_ptr), value :: buf
+        integer(C_int), intent(inout) :: len_gzipped
 !
-!        end subroutine gzip_infleat_cont
+        end subroutine gzip_infleat_cont
 !
 !  ---------------------------------------------------------------------
 !
@@ -259,7 +259,7 @@
 !
       write(*,*) 'gzip_infleat_cont'
       call gzip_infleat_cont(z_buf%len_gzipbuf, z_buf%len_buf,          &
-     &    z_buf%textbuf, z_buf%len_used)
+     &    C_LOC(z_buf%textbuf), z_buf%len_used)
 !
       end subroutine gzip_infleat_char_cont
 !
