@@ -70,9 +70,8 @@
 !
 !
       ilen_in = int(zbuf%ilen_gz)
-      call link_pointer_for_zlib_buffer(ilen_in, zbuf%gzip_buf(1),      &
+      call gzip_infleat_char_once(ilen_in, zbuf%gzip_buf(1),            &
      &    ilength, text, z_buf)
-      call gzip_infleat_char_once(z_buf)
       zbuf%ilen_gzipped = int(z_buf%len_used,KIND(zbuf%ilen_gzipped))
 !
       call unlink_pointer_for_zlib_buffer(z_buf)
@@ -101,9 +100,8 @@
 !
 !
       ilen_in = int(zbuf%ilen_gz)
-      call link_pointer_for_zlib_buffer                                 &
+      call gzip_infleat_char_once                                       &
      &   (ilen_in, zbuf%gzip_buf(1), kchara, textbuf_c, z_buf)
-      call gzip_infleat_char_once(z_buf)
       zbuf%ilen_gzipped = int(z_buf%len_used,KIND(zbuf%ilen_gzipped))
 !
       call read_each_field_name_buffer(textbuf_c, word, ilength)
@@ -117,9 +115,8 @@
 !      write(*,*) 'word', ilength, trim(word)
 !
       call alloc_textbuffer_for_zlib(ilength, z_buf)
-      call link_pointer_for_zlib_buffer                                 &
+      call gzip_infleat_char_once                                       &
      &   (ilen_in, zbuf%gzip_buf(1), ilength, z_buf%textbuf, z_buf)
-      call gzip_infleat_char_once(z_buf)
       zbuf%ilen_gzipped = int(z_buf%len_used,KIND(zbuf%ilen_gzipped))
 !
       call unlink_pointer_for_zlib_buffer(z_buf)
@@ -145,9 +142,8 @@
       call alloc_textbuffer_for_zlib(ilength, z_buf)
 !
       ilen_in = int(zbuf%ilen_gz)
-      call link_pointer_for_zlib_buffer(ilen_in, zbuf%gzip_buf(1),      &
+      call gzip_infleat_char_once(ilen_in, zbuf%gzip_buf(1),            &
      &    ilength, z_buf%textbuf, z_buf)
-      call gzip_infleat_char_once(z_buf)
       zbuf%ilen_gzipped = int(z_buf%len_used,KIND(zbuf%ilen_gzipped))
 !
       call unlink_pointer_for_zlib_buffer(z_buf)

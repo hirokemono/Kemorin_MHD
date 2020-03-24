@@ -205,16 +205,17 @@
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
       integer :: int_dat(1)
-      integer :: ilen_in, ilen_used
+      integer :: ilen_in
+      type(zlib_transfer) :: z_buf
 !
 !
       ilen_in = int(zbuf%ilen_gz)
 !
       call gzip_infleat_int4_once                                       &
-     &   (ilen_in, zbuf%gzip_buf(1), ione, int_dat, ilen_used)
+     &   (ilen_in, zbuf%gzip_buf(1), ione, int_dat, z_buf)
       iflag_swap = endian_check(id_rank, int_dat(1))
 !
-      zbuf%ilen_gzipped = ilen_used
+      zbuf%ilen_gzipped = int(z_buf%len_used,KIND(zbuf%ilen_gzipped))
       call dealloc_zip_buffer(zbuf)
 !
       end subroutine infleate_endian_flag
@@ -231,7 +232,8 @@
 !
       integer(kind = kint_gl) :: ist, ilen_tmp
       integer :: nline
-      integer :: ilen_in, ilen_used
+      integer :: ilen_in
+      type(zlib_transfer) :: z_buf
 !
 !
       ist = 0
@@ -243,9 +245,10 @@
 !
         call gzip_infleat_int8_once                                     &
      &     (ilen_in, zbuf%gzip_buf(zbuf%ilen_gzipped+1),                &
-     &      nline, int8_dat(ist+1), ilen_used)
+     &      nline, int8_dat(ist+1), z_buf)
 !
-        zbuf%ilen_gzipped = zbuf%ilen_gzipped + ilen_used
+        zbuf%ilen_gzipped = zbuf%ilen_gzipped                           &
+     &                   + int(z_buf%len_used,KIND(zbuf%ilen_gzipped))
         ist = ist + nline
         if(ist .ge. num) exit
       end do
@@ -266,7 +269,8 @@
 !
       integer(kind = kint_gl) :: ist, ilen_tmp
       integer :: nline
-      integer :: ilen_in, ilen_used
+      integer :: ilen_in
+      type(zlib_transfer) :: z_buf
 !
 !
       ist = 0
@@ -278,9 +282,10 @@
 !
         call gzip_infleat_real_once                                     &
      &     (ilen_in, zbuf%gzip_buf(zbuf%ilen_gzipped+1),                &
-     &     nline, real_dat(ist+1), ilen_used)
+     &     nline, real_dat(ist+1), z_buf)
 !
-        zbuf%ilen_gzipped = zbuf%ilen_gzipped + ilen_used
+        zbuf%ilen_gzipped = zbuf%ilen_gzipped                           &
+     &                   + int(z_buf%len_used,KIND(zbuf%ilen_gzipped))
         ist = ist + nline
         if(ist .ge. num) exit
       end do
@@ -313,10 +318,9 @@
         ilen_in = int(min(zbuf%ilen_gz-zbuf%ilen_gzipped, ilen_tmp))
         ilen_line = nline * kchara
 !
-        call link_pointer_for_zlib_buffer                               &
+        call gzip_infleat_char_once                                     &
      &     (ilen_in, zbuf%gzip_buf(zbuf%ilen_gzipped+1),                &
      &      ilen_line, chara_dat(ist+1), z_buf)
-        call gzip_infleat_char_once(z_buf)
 !
         zbuf%ilen_gzipped = zbuf%ilen_gzipped                           &
      &                   + int(z_buf%len_used,KIND(zbuf%ilen_gzipped))
