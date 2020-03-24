@@ -180,8 +180,7 @@
             end do
 !
             nrest = nitem_2 - nitem_c
-            call gzip_infleat_char_last                                 &
-     &         (ilen_in, len_multi_int_textline(nrest), z_buf)
+            call gzip_infleat_char_last(ilen_in, ilen_line, z_buf)
             call read_multi_int_textline                                &
      &         (z_buf%textbuf(1), nrest, int_dat(ist+nitem_c+1))
 !
@@ -352,8 +351,7 @@
             end do
 !
             nrest = nitem_2 - nitem_c
-            call gzip_infleat_char_last                                 &
-     &         (ilen_in, len_multi_6digit_line(nrest), z_buf)
+            call gzip_infleat_char_last(ilen_in, ilen_line, z_buf)
             call read_mul_6digit_int_line                               &
      &         (z_buf%textbuf(1), nrest, int_dat(ist+nitem_c+1))
 !
