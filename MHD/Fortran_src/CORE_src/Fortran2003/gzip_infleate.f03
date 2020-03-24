@@ -56,60 +56,6 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine alloc_textbuffer_for_zlib(len_buf, z_buf)
-!
-      integer, intent(in) :: len_buf
-      type(zlib_transfer), intent(inout) :: z_buf
-!
-      allocate(z_buf%textbuf(len_buf))
-!
-      end subroutine alloc_textbuffer_for_zlib
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine dealloc_textbuffer_for_zlib(z_buf)
-!
-      type(zlib_transfer), intent(inout) :: z_buf
-!
-      deallocate(z_buf%textbuf)
-!
-      end subroutine dealloc_textbuffer_for_zlib
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      subroutine link_pointer_for_zlib_buffer                           &
-     &         (len_gzipbuf, gzipbuf, len_buf, textbuf, z_buf)
-!
-      integer, intent(in) :: len_gzipbuf
-      character(len=1), target, intent(in) :: gzipbuf(len_gzipbuf)
-      integer, intent(in) :: len_buf
-      character(len=1), target, intent(in) :: textbuf(len_buf)
-!
-      type(zlib_transfer), intent(inout) :: z_buf
-!
-!
-      z_buf%len_gzipbuf = int(len_gzipbuf,KIND(z_buf%len_gzipbuf))
-      z_buf%gzipbuf_p => gzipbuf
-!
-      z_buf%len_buf = int(len_buf,KIND(z_buf%len_buf))
-      z_buf%buf_p => textbuf
-!
-      end subroutine link_pointer_for_zlib_buffer
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine unlink_pointer_for_zlib_buffer(z_buf)
-!
-      type(zlib_transfer), intent(inout) :: z_buf
-!
-      nullify(z_buf%gzipbuf_p, z_buf%buf_p)
-!
-      end subroutine unlink_pointer_for_zlib_buffer
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
         subroutine gzip_infleat_once                                    &
      &           (len_gzipbuf, gzipbuf, len_buf, buf, len_gzipped)      &
      &            BIND(C, name = 'gzip_infleat_once')
@@ -182,6 +128,60 @@
 !
       contains
 !
+!  ---------------------------------------------------------------------
+!
+      subroutine alloc_textbuffer_for_zlib(len_buf, z_buf)
+!
+      integer, intent(in) :: len_buf
+      type(zlib_transfer), intent(inout) :: z_buf
+!
+      allocate(z_buf%textbuf(len_buf))
+!
+      end subroutine alloc_textbuffer_for_zlib
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine dealloc_textbuffer_for_zlib(z_buf)
+!
+      type(zlib_transfer), intent(inout) :: z_buf
+!
+      deallocate(z_buf%textbuf)
+!
+      end subroutine dealloc_textbuffer_for_zlib
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine link_pointer_for_zlib_buffer                           &
+     &         (len_gzipbuf, gzipbuf, len_buf, textbuf, z_buf)
+!
+      integer, intent(in) :: len_gzipbuf
+      character(len=1), target, intent(in) :: gzipbuf(len_gzipbuf)
+      integer, intent(in) :: len_buf
+      character(len=1), target, intent(in) :: textbuf(len_buf)
+!
+      type(zlib_transfer), intent(inout) :: z_buf
+!
+!
+      z_buf%len_gzipbuf = int(len_gzipbuf,KIND(z_buf%len_gzipbuf))
+      z_buf%gzipbuf_p => gzipbuf
+!
+      z_buf%len_buf = int(len_buf,KIND(z_buf%len_buf))
+      z_buf%buf_p => textbuf
+!
+      end subroutine link_pointer_for_zlib_buffer
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine unlink_pointer_for_zlib_buffer(z_buf)
+!
+      type(zlib_transfer), intent(inout) :: z_buf
+!
+      nullify(z_buf%gzipbuf_p, z_buf%buf_p)
+!
+      end subroutine unlink_pointer_for_zlib_buffer
+!
+!  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
       subroutine gzip_infleat_real_once                                 &
