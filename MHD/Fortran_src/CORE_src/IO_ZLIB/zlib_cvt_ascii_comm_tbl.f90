@@ -167,19 +167,20 @@
             zbuf%ilen_gzipped = zbuf%ilen_gzipped + ilen_used
             exit
           else
+            z_buf%len_gzipbuf = int(ilen_in,KIND(z_buf%len_gzipbuf))
             call gzip_infleat_char_begin                                &
      &         (ilen_in, zbuf%gzip_buf(zbuf%ilen_gzipped+1), z_buf)
             call read_multi_int_textline                                &
      &         (z_buf%textbuf(1), ncolumn, int_dat(ist+1))
 !
             do i = ist+ncolumn+1, ist+nitem_c, ncolumn
-              call gzip_infleat_char_cont(ilen_in, z_buf)
+              call gzip_infleat_char_cont(z_buf)
               call read_multi_int_textline                              &
      &           (z_buf%textbuf(1), ncolumn, int_dat(i))
             end do
 !
             nrest = nitem_2 - nitem_c
-            call gzip_infleat_char_last(ilen_in, z_buf)
+            call gzip_infleat_char_last(z_buf)
             call read_multi_int_textline                                &
      &         (z_buf%textbuf(1), nrest, int_dat(ist+nitem_c+1))
 !
@@ -337,19 +338,20 @@
             zbuf%ilen_gzipped = zbuf%ilen_gzipped + ilen_used
             exit
           else
+            z_buf%len_gzipbuf = int(ilen_in,KIND(z_buf%len_gzipbuf))
             call gzip_infleat_char_begin                                &
      &         (ilen_in, zbuf%gzip_buf(zbuf%ilen_gzipped+1), z_buf)
             call read_mul_6digit_int_line                               &
      &         (z_buf%textbuf(1), ncolumn, int_dat(ist+1))
 !
             do i = ist+ncolumn+1, ist+nitem_c, ncolumn
-              call gzip_infleat_char_cont(ilen_in, z_buf)
+              call gzip_infleat_char_cont(z_buf)
               call read_mul_6digit_int_line                             &
      &           (z_buf%textbuf(1), ncolumn, int_dat(i))
             end do
 !
             nrest = nitem_2 - nitem_c
-            call gzip_infleat_char_last(ilen_in, z_buf)
+            call gzip_infleat_char_last(z_buf)
             call read_mul_6digit_int_line                               &
      &         (z_buf%textbuf(1), nrest, int_dat(ist+nitem_c+1))
 !
