@@ -239,15 +239,12 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine gzip_infleat_char_begin(len_gzipbuf, gzipbuf, z_buf)
+      subroutine gzip_infleat_char_begin(z_buf)
 !
       integer, intent(in) :: len_gzipbuf
-      character(len=1), target, intent(in) :: gzipbuf(len_gzipbuf)
 !
       type(zlib_transfer), intent(inout) :: z_buf
 !
-!
-      z_buf%gzipbuf_p => gzipbuf
 !
       write(*,*) 'gzip_infleat_begin'
       call gzip_infleat_begin(z_buf%len_gzipbuf, z_buf%gzipbuf_p,       &
