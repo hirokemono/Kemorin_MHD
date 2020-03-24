@@ -154,7 +154,7 @@
      &    (ilen_in, zbuf%gzip_buf(1), ilen_line, z_buf%textbuf, z_buf)
         call gzip_infleat_char_once(z_buf)
         call read_int8_and_vector_textline                              &
-     &     (z_buf%textbuf, id_global(1), numdir, xx(1,1))
+     &     (z_buf%textbuf(1), id_global(1), numdir, xx(1,1))
         zbuf%ilen_gzipped = int(z_buf%len_used,KIND(zbuf%ilen_gzipped))
       else if(nnod .gt. 0) then
         ist = 0
@@ -315,7 +315,7 @@
      &      ilen_line, z_buf%textbuf, z_buf)
         call gzip_infleat_char_once(z_buf)
         zbuf%ilen_gzipped = int(z_buf%len_used,KIND(zbuf%ilen_gzipped))
-        call read_vector_textline(z_buf%textbuf, ndir, v1)
+        call read_vector_textline(z_buf%textbuf(1), ndir, v1)
         vector(1,1:ndir) = v1(1:ndir)
       else if(nnod .gt. 0) then
         ist = 0
