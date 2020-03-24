@@ -311,7 +311,7 @@
       z_buf%gzipbuf_p => gzipbuf
 !
       z_buf%len_buf = int(len_buf,KIND(z_buf%len_buf))
-      z_buf%buf_p => z_buf%textbuf
+      z_buf%buf_p => textbuf
 !
       end subroutine link_pointer_for_zlib_buffer
 !
