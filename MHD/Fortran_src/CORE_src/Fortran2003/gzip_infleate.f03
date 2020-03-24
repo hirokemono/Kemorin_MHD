@@ -291,7 +291,7 @@
 !
 !
       write(*,*) 'gzip_infleat_last',  z_buf%len_gzipbuf_c, &
-     &          z_buf%len_buf_c, z_buf%len_gzipped_c
+     &          z_buf%len_buf_c, z_buf%len_used
       call gzip_infleat_last(len_gzipbuf, len_buf,          &
      &    buf, z_buf%len_used)
 !
