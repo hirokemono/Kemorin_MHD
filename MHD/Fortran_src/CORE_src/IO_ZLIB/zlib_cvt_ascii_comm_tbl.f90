@@ -168,9 +168,9 @@
             zbuf%ilen_gzipped = zbuf%ilen_gzipped + ilen_used
             exit
           else
-            call gzip_infleat_begin                                     &
+            call gzip_infleat_char_begin                                &
      &         (ilen_in, zbuf%gzip_buf(zbuf%ilen_gzipped+1),            &
-     &          ilen_line, textbuf(1), ilen_used)
+     &          ilen_line, textbuf(1), ilen_used, z_buf)
             call read_multi_int_textline                                &
      &         (textbuf(1), ncolumn, int_dat(ist+1))
 !
@@ -339,9 +339,9 @@
             zbuf%ilen_gzipped = zbuf%ilen_gzipped + ilen_used
             exit
           else
-            call gzip_infleat_begin                                     &
+            call gzip_infleat_char_begin                                &
      &         (ilen_in, zbuf%gzip_buf(zbuf%ilen_gzipped+1), ilen_line, &
-     &          textbuf(1), ilen_used)
+     &          textbuf(1), ilen_used, z_buf)
             call read_mul_6digit_int_line                               &
      &         (textbuf(1), ncolumn, int_dat(ist+1))
 !
