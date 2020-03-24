@@ -332,7 +332,7 @@
       integer, intent(in) :: len_buf
       type(zlib_transfer), intent(inout) :: z_buf
 !
-      allocate(z_buf%textbuf(z_buf%len_buf))
+      allocate(z_buf%textbuf(len_buf))
 !
       end subroutine alloc_textbuffer_for_zlib
 !
