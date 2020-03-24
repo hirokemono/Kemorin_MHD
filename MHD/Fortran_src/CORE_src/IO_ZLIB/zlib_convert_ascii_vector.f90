@@ -167,8 +167,9 @@
           nline = int(min((nnod - ist), huge_30/ilen_line))
           ilen_in = int(min(zbuf%ilen_gz-zbuf%ilen_gzipped, ilen_tmp))
 !
-          call set_pointer_for_zlib_buffer                              &
-     &       (ilen_in, zbuf%gzip_buf(zbuf%ilen_gzipped+1), z_buf)
+          call link_pointer_for_zlib_buffer                             &
+     &       (ilen_in, zbuf%gzip_buf(zbuf%ilen_gzipped+1),              &
+     &        ilen_line, z_buf%textbuf, z_buf)
           call gzip_infleat_char_begin(z_buf)
           call read_int8_and_vector_textline                            &
      &       (z_buf%textbuf(1), id_global(ist+1), numdir, xx_tmp)
@@ -188,6 +189,8 @@
 !
           zbuf%ilen_gzipped = zbuf%ilen_gzipped                         &
      &                    + int(z_buf%len_used,KIND(zbuf%ilen_gzipped))
+          call unlink_pointer_for_zlib_buffer(z_buf)
+!
           ist = ist + nline
           if(ist .ge. nnod) exit
         end do
@@ -324,8 +327,9 @@
           nline = int(min((nnod - ist), huge_30/ilen_line))
           ilen_in = int(min(zbuf%ilen_gz-zbuf%ilen_gzipped, ilen_tmp))
 !
-          call set_pointer_for_zlib_buffer                              &
-     &       (ilen_in, zbuf%gzip_buf(zbuf%ilen_gzipped+1), z_buf)
+          call link_pointer_for_zlib_buffer                             &
+     &       (ilen_in, zbuf%gzip_buf(zbuf%ilen_gzipped+1),              &
+     &        ilen_line, z_buf%textbuf, z_buf)
           call gzip_infleat_char_begin(z_buf)
           call read_vector_textline(z_buf%textbuf(1), ndir, v1)
           vector(ist+1,1:ndir) = v1(1:ndir)
@@ -342,6 +346,8 @@
 !
           zbuf%ilen_gzipped = zbuf%ilen_gzipped                         &
      &                    + int(z_buf%len_used,KIND(zbuf%ilen_gzipped))
+          call unlink_pointer_for_zlib_buffer(z_buf)
+!
           ist = ist + nline
           if(ist .ge. nnod) exit
         end do
