@@ -40,7 +40,7 @@
         character(C_char), pointer :: gzipbuf_p(:)
         character(C_char), pointer :: buf_p(:)
 !
-        character(len=1), allocatable, target :: textbuf(:)
+        character(len=1), pointer :: textbuf(:)
       end type zlib_transfer
 !
 !  ---------------------------------------------------------------------
