@@ -176,8 +176,8 @@
           xx(ist+1,1:numdir) = xx_tmp(1:numdir)
 !
           do i = ist+2, ist+nline-1
-            call gzip_infleat_cont                                      &
-     &         (ilen_in, ilen_line, textbuf(1), ilen_used)
+            call gzip_infleat_char_cont                                 &
+     &         (ilen_in, ilen_line, textbuf(1), ilen_used, z_buf)
             call read_int8_and_vector_textline                          &
      &         (textbuf(1), id_global(i), numdir, xx_tmp)
             xx(i,1:numdir) = xx_tmp(1:numdir)
@@ -333,8 +333,8 @@
           vector(ist+1,1:ndir) = v1(1:ndir)
 !
           do i = ist+2, ist+nline-1
-            call gzip_infleat_cont                                      &
-     &         (ilen_in, ilen_line, textbuf(1), ilen_used)
+            call gzip_infleat_char_cont                                 &
+     &         (ilen_in, ilen_line, textbuf(1), ilen_used, z_buf)
             call read_vector_textline(textbuf(1), ndir, v1)
             vector(i,1:ndir) = v1(1:ndir)
           end do

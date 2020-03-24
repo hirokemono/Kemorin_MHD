@@ -175,8 +175,8 @@
      &         (textbuf(1), ncolumn, int_dat(ist+1))
 !
             do i = ist+ncolumn+1, ist+nitem_c, ncolumn
-              call gzip_infleat_cont                                    &
-     &           (ilen_in, ilen_line, textbuf(1), ilen_used)
+              call gzip_infleat_char_cont                               &
+     &           (ilen_in, ilen_line, textbuf(1), ilen_used, z_buf)
               call read_multi_int_textline                              &
      &           (textbuf(1), ncolumn, int_dat(i))
             end do
@@ -346,8 +346,8 @@
      &         (textbuf(1), ncolumn, int_dat(ist+1))
 !
             do i = ist+ncolumn+1, ist+nitem_c, ncolumn
-              call gzip_infleat_cont(ilen_in, ilen_line,                &
-     &            textbuf(1), ilen_used)
+              call gzip_infleat_char_cont(ilen_in, ilen_line,           &
+     &            textbuf(1), ilen_used, z_buf)
               call read_mul_6digit_int_line                             &
      &           (textbuf(1), ncolumn, int_dat(i))
             end do

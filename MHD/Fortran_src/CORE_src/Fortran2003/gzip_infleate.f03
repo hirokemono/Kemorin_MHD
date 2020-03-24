@@ -264,15 +264,19 @@
 !  ---------------------------------------------------------------------
 !
       subroutine gzip_infleat_char_cont                                 &
-     &         (z_buf)
+     &         (len_gzipbuf, len_buf, buf, len_gzipped, z_buf)
 !
+      integer, intent(in) :: len_gzipbuf
+      integer, intent(in) :: len_buf
+!
+      character(len=1), target, intent(inout) :: buf(len_buf)
+      integer, intent(inout) :: len_gzipped
       type(zlib_transfer), intent(inout) :: z_buf
 !
 !
-      write(*,*) 'gzip_infleat_cont',  z_buf%len_gzipbuf_c, &
-     &          z_buf%len_buf_c, z_buf%len_gzipped_c
-!      call gzip_infleat_cont(z_buf%len_gzipbuf_c, z_buf%len_buf_c,      &
-!     &    C_LOC(z_buf%buf_p), z_buf%len_gzipped_c)
+      write(*,*) 'gzip_infleat_cont'
+      call gzip_infleat_cont(len_gzipbuf, len_buf,          &
+     &    buf, len_gzipped)
 !
       end subroutine gzip_infleat_char_cont
 !
