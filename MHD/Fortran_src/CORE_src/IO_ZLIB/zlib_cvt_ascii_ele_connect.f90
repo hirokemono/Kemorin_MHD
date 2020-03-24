@@ -162,22 +162,21 @@
 !          if(my_rank .eq. 0) write(*,*) 'start ',                      &
 !     &      ist+1, ist+nline, nline, zbuf%ilen_gzipped+1,  ilen_in
           call gzip_infleat_char_begin                                  &
-     &       (ilen_in, zbuf%gzip_buf(zbuf%ilen_gzipped+1),              &
-     &        ilen_line, z_buf)
+     &       (ilen_in, zbuf%gzip_buf(zbuf%ilen_gzipped+1), z_buf)
           call read_int8_and_mul_int8_textline                          &
      &       (z_buf%textbuf(1), id_global(ist+1), nnod_4_ele, ie_tmp)
           ie(ist+1,1:nnod_4_ele)                                        &
      &            = int(ie_tmp(1:nnod_4_ele), KIND(ie(1,1)))
 !
           do i = ist+2, ist+nline-1
-            call gzip_infleat_char_cont(ilen_in, ilen_line, z_buf)
+            call gzip_infleat_char_cont(ilen_in, z_buf)
             call read_int8_and_mul_int8_textline                        &
      &         (z_buf%textbuf(1), id_global(i), nnod_4_ele, ie_tmp)
             ie(i,1:nnod_4_ele)                                          &
      &            = int(ie_tmp(1:nnod_4_ele),KIND(ie(1,1)))
           end do
 !
-          call gzip_infleat_char_last(ilen_in, ilen_line, z_buf)
+          call gzip_infleat_char_last(ilen_in, z_buf)
           call read_int8_and_mul_int8_textline(z_buf%textbuf(1),        &
      &        id_global(ist+nline), nnod_4_ele, ie_tmp)
           ie(ist+nline,1:nnod_4_ele)                                    &
@@ -309,19 +308,18 @@
           ilen_in = int(min(zbuf%ilen_gz-zbuf%ilen_gzipped, ilen_tmp))
 !
           call gzip_infleat_char_begin                                  &
-     &       (ilen_in, zbuf%gzip_buf(zbuf%ilen_gzipped+1),              &
-     &        ilen_line, z_buf)
+     &       (ilen_in, zbuf%gzip_buf(zbuf%ilen_gzipped+1), z_buf)
           call read_multi_int_textline(z_buf%textbuf(1), ncomp, ie_tmp)
           ivect(ist+1,1:ncomp) = ie_tmp(1:ncomp)
 !
           do i = ist+2, ist+nline-1
-            call gzip_infleat_char_cont(ilen_in, ilen_line, z_buf)
+            call gzip_infleat_char_cont(ilen_in, z_buf)
             call read_multi_int_textline                                &
      &         (z_buf%textbuf(1), ncomp, ie_tmp)
             ivect(i,1:ncomp) = ie_tmp(1:ncomp)
           end do
 !
-          call gzip_infleat_char_last(ilen_in, ilen_line, z_buf)
+          call gzip_infleat_char_last(ilen_in, z_buf)
           call read_multi_int_textline(z_buf%textbuf(1), ncomp, ie_tmp)
           ivect(ist+nline,1:ncomp) = ie_tmp(1:ncomp)
 !
@@ -422,19 +420,18 @@
         call read_multi_int_textline(textbuf(1), numdir, idx(1,1))
         zbuf%ilen_gzipped = ilen_used
       else if(nnod .gt. 0) then
-        call gzip_infleat_char_begin(ilen_in, zbuf%gzip_buf(1),         &
-     &      ilen_line, z_buf)
+        call gzip_infleat_char_begin(ilen_in, zbuf%gzip_buf(1), z_buf)
         call read_multi_int_textline(z_buf%textbuf(1), numdir, idx_tmp)
         idx(1,1:numdir) = idx_tmp(1:numdir)
 !
         do i = 2, nnod-1
-          call gzip_infleat_char_cont(ilen_in, ilen_line, z_buf)
+          call gzip_infleat_char_cont(ilen_in, z_buf)
           call read_multi_int_textline                                  &
      &       (z_buf%textbuf(1), numdir, idx_tmp)
           idx(i,1:numdir) = idx_tmp(1:numdir)
         end do
 !
-        call gzip_infleat_char_last(ilen_in, ilen_line, z_buf)
+        call gzip_infleat_char_last(ilen_in, z_buf)
         call read_multi_int_textline(z_buf%textbuf(1), numdir, idx_tmp)
         idx(nnod,1:numdir) = idx_tmp(1:numdir)
         zbuf%ilen_gzipped = int(z_buf%len_used,KIND(zbuf%ilen_gzipped))

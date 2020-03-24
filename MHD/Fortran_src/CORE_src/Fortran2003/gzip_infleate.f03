@@ -34,7 +34,7 @@
 !
       type zlib_transfer
         integer(C_int) :: len_gzipbuf_c
-        integer(C_int) :: len_buf_c
+        integer(C_int) :: len_buf
         integer(C_int) :: len_used
 !
         character(C_char), pointer :: gzipbuf_p(:)
@@ -240,10 +240,9 @@
 !  ---------------------------------------------------------------------
 !
       subroutine gzip_infleat_char_begin                                &
-     &         (len_gzipbuf, gzipbuf, len_buf, z_buf)
+     &         (len_gzipbuf, gzipbuf, z_buf)
 !
       integer, intent(in) :: len_gzipbuf
-      integer, intent(in) :: len_buf
       character(len=1), target, intent(in) :: gzipbuf(len_gzipbuf)
 !
       type(zlib_transfer), intent(inout) :: z_buf
@@ -254,42 +253,38 @@
 !
       write(*,*) 'gzip_infleat_begin'
       call gzip_infleat_begin                                           &
-     &   (len_gzipbuf, gzipbuf, len_buf,                                &
+     &   (len_gzipbuf, gzipbuf, z_buf%len_buf,                          &
      &    z_buf%textbuf, z_buf%len_used)
 !
       end subroutine gzip_infleat_char_begin
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine gzip_infleat_char_cont                                 &
-     &         (len_gzipbuf, len_buf, z_buf)
+      subroutine gzip_infleat_char_cont(len_gzipbuf, z_buf)
 !
       integer, intent(in) :: len_gzipbuf
-      integer, intent(in) :: len_buf
 !
       type(zlib_transfer), intent(inout) :: z_buf
 !
 !
       write(*,*) 'gzip_infleat_cont'
-      call gzip_infleat_cont(len_gzipbuf, len_buf,          &
+      call gzip_infleat_cont(len_gzipbuf, z_buf%len_buf,          &
      &    z_buf%textbuf, z_buf%len_used)
 !
       end subroutine gzip_infleat_char_cont
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine gzip_infleat_char_last                                 &
-     &         (len_gzipbuf, len_buf, z_buf)
+      subroutine gzip_infleat_char_last(len_gzipbuf, z_buf)
 !
       integer, intent(in) :: len_gzipbuf
-      integer, intent(in) :: len_buf
 !
       type(zlib_transfer), intent(inout) :: z_buf
 !
 !
       write(*,*) 'gzip_infleat_last',  z_buf%len_gzipbuf_c, &
-     &          z_buf%len_buf_c, z_buf%len_used
-      call gzip_infleat_last(len_gzipbuf, len_buf,          &
+     &          z_buf%len_buf, z_buf%len_used
+      call gzip_infleat_last(len_gzipbuf, z_buf%len_buf,          &
      &    z_buf%textbuf, z_buf%len_used)
 !
       end subroutine gzip_infleat_char_last
@@ -302,8 +297,8 @@
       integer, intent(in) :: len_buf
       type(zlib_transfer), intent(inout) :: z_buf
 !
-      z_buf%len_buf_c = int(len_buf,KIND(z_buf%len_buf_c))
-      allocate(z_buf%textbuf(z_buf%len_buf_c))
+      z_buf%len_buf = int(len_buf,KIND(z_buf%len_buf))
+      allocate(z_buf%textbuf(z_buf%len_buf))
       z_buf%buf_p => z_buf%textbuf
 !
       end subroutine alloc_textbuffer_for_zlib
