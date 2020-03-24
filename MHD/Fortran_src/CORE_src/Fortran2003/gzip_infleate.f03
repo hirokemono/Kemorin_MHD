@@ -85,7 +85,7 @@
 !
         subroutine gzip_infleat_cont                                    &
      &           (len_gzipbuf, len_buf, buf, len_gzipped)               &
-     &            BIND(C, name = 'gzip_infleat_begin')
+     &            BIND(C, name = 'gzip_infleat_cont')
 !
         use ISO_C_BINDING
 !
