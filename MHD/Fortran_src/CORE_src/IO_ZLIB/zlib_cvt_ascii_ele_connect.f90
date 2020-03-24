@@ -158,10 +158,10 @@
         do
           nline = int(min((nele - ist), huge_30/ilen_line))
           ilen_in = int(min(zbuf%ilen_gz-zbuf%ilen_gzipped, ilen_tmp))
-          z_buf%len_gzipbuf = int(ilen_in,KIND(z_buf%len_gzipbuf))
 !
-          call gzip_infleat_char_begin                                  &
+          call set_pointer_for_zlib_buffer                              &
      &       (ilen_in, zbuf%gzip_buf(zbuf%ilen_gzipped+1), z_buf)
+          call gzip_infleat_char_begin(z_buf)
           call read_int8_and_mul_int8_textline                          &
      &       (z_buf%textbuf(1), id_global(ist+1), nnod_4_ele, ie_tmp)
           ie(ist+1,1:nnod_4_ele)                                        &
@@ -305,10 +305,10 @@
         do
           nline = int(min((nele - ist), huge_30/ilen_line))
           ilen_in = int(min(zbuf%ilen_gz-zbuf%ilen_gzipped, ilen_tmp))
-          z_buf%len_gzipbuf = int(ilen_in,KIND(z_buf%len_gzipbuf))
 !
-          call gzip_infleat_char_begin                                  &
+          call set_pointer_for_zlib_buffer                              &
      &       (ilen_in, zbuf%gzip_buf(zbuf%ilen_gzipped+1), z_buf)
+          call gzip_infleat_char_begin(z_buf)
           call read_multi_int_textline(z_buf%textbuf(1), ncomp, ie_tmp)
           ivect(ist+1,1:ncomp) = ie_tmp(1:ncomp)
 !
@@ -420,9 +420,9 @@
         call read_multi_int_textline(textbuf(1), numdir, idx(1,1))
         zbuf%ilen_gzipped = ilen_used
       else if(nnod .gt. 0) then
-        z_buf%len_gzipbuf = int(ilen_in,KIND(z_buf%len_gzipbuf))
-!
-        call gzip_infleat_char_begin(ilen_in, zbuf%gzip_buf(1), z_buf)
+        call set_pointer_for_zlib_buffer                                &
+     &     (ilen_in, zbuf%gzip_buf(1), z_buf)
+        call gzip_infleat_char_begin(z_buf)
         call read_multi_int_textline(z_buf%textbuf(1), numdir, idx_tmp)
         idx(1,1:numdir) = idx_tmp(1:numdir)
 !

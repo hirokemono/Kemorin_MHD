@@ -285,6 +285,22 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
+      subroutine set_pointer_for_zlib_buffer                            &
+     &         (len_gzipbuf, gzipbuf, z_buf)
+!
+      integer, intent(in) :: len_gzipbuf
+      character(len=1), target, intent(in) :: gzipbuf(len_gzipbuf)
+!
+      type(zlib_transfer), intent(inout) :: z_buf
+!
+!
+      z_buf%len_gzipbuf = int(len_gzipbuf,KIND(z_buf%len_gzipbuf))
+      z_buf%gzipbuf_p => gzipbuf
+!
+      end subroutine set_pointer_for_zlib_buffer
+!
+!  ---------------------------------------------------------------------
+!
       subroutine alloc_textbuffer_for_zlib(len_buf, z_buf)
 !
       integer, intent(in) :: len_buf
