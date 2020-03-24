@@ -268,7 +268,6 @@
 !
       integer, intent(in) :: len_gzipbuf
       integer, intent(in) :: len_buf
-      character(len=1), target, intent(in) :: gzipbuf(len_gzipbuf)
 !
       character(len=1), target, intent(inout) :: buf(len_buf)
       integer, intent(inout) :: len_gzipped
@@ -286,6 +285,10 @@
       subroutine gzip_infleat_char_last                                 &
      &         (len_gzipbuf, len_buf, buf, len_gzipped, z_buf)
 !
+      integer, intent(in) :: len_gzipbuf
+      integer, intent(in) :: len_buf
+!
+      character(len=1), target, intent(inout) :: buf(len_buf)
       integer, intent(inout) :: len_gzipped
       type(zlib_transfer), intent(inout) :: z_buf
 !
