@@ -74,6 +74,8 @@
      &    ilength, text, z_buf)
       call gzip_infleat_char_once(z_buf)
       zbuf%ilen_gzipped = int(z_buf%len_used,KIND(zbuf%ilen_gzipped))
+!
+      call unlink_pointer_for_zlib_buffer(z_buf)
       call dealloc_zip_buffer(zbuf)
 !
       end subroutine infleate_characters
@@ -105,6 +107,7 @@
       zbuf%ilen_gzipped = int(z_buf%len_used,KIND(zbuf%ilen_gzipped))
 !
       call read_each_field_name_buffer(textbuf_c, word, ilength)
+      call unlink_pointer_for_zlib_buffer(z_buf)
       ilength = ilength + 1
 !      do i = 1, kchara
 !        write(*,*) ilength, i, word(i:i),                              &
@@ -113,13 +116,14 @@
 !
 !      write(*,*) 'word', ilength, trim(word)
 !
-      allocate(textbuf(ilength))
+      call alloc_textbuffer_for_zlib(ilength, z_buf)
       call link_pointer_for_zlib_buffer                                 &
-     &   (ilen_in, zbuf%gzip_buf(1), ilength, textbuf(1), z_buf)
+     &   (ilen_in, zbuf%gzip_buf(1), ilength, z_buf%textbuf, z_buf)
       call gzip_infleat_char_once(z_buf)
       zbuf%ilen_gzipped = int(z_buf%len_used,KIND(zbuf%ilen_gzipped))
-      deallocate(textbuf)
 !
+      call unlink_pointer_for_zlib_buffer(z_buf)
+      call dealloc_textbuffer_for_zlib(z_buf)
       call dealloc_zip_buffer(zbuf)
 !
       end subroutine infleate_1word
@@ -135,19 +139,19 @@
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
       integer :: ilen_in, ilen_used
-      character(len=1), allocatable :: chara_dat(:)
       type(zlib_transfer) :: z_buf
 !
 !
-      allocate(chara_dat(ilength))
+      call alloc_textbuffer_for_zlib(ilength, z_buf)
 !
       ilen_in = int(zbuf%ilen_gz)
       call link_pointer_for_zlib_buffer(ilen_in, zbuf%gzip_buf(1),      &
-     &    ilength, chara_dat(1), z_buf)
+     &    ilength, z_buf%textbuf, z_buf)
       call gzip_infleat_char_once(z_buf)
       zbuf%ilen_gzipped = int(z_buf%len_used,KIND(zbuf%ilen_gzipped))
 !
-      deallocate(chara_dat)
+      call unlink_pointer_for_zlib_buffer(z_buf)
+      call dealloc_textbuffer_for_zlib(z_buf)
       call dealloc_zip_buffer(zbuf)
 !
       end subroutine infleate_skip_header

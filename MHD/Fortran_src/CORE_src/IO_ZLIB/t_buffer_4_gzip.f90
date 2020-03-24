@@ -315,7 +315,7 @@
 !
         call link_pointer_for_zlib_buffer                               &
      &     (ilen_in, zbuf%gzip_buf(zbuf%ilen_gzipped+1),                &
-     &     ilen_line, chara_dat(ist+1), z_buf)
+     &      ilen_line, chara_dat(ist+1), z_buf)
         call gzip_infleat_char_once(z_buf)
 !
         zbuf%ilen_gzipped = zbuf%ilen_gzipped                           &

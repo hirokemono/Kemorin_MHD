@@ -128,27 +128,24 @@
       integer(kind = kint) :: nitem_1, nitem_2, nitem_c, nrest
 !
       integer(kind = kint_gl) :: ilen_tmp
-      integer :: ilen_line, ilen_used, ilen_in
+      integer :: ilen_line, ilen_in
 !
-      character(len=1), allocatable :: textbuf(:)
       type(zlib_transfer) :: z_buf
 !
 !
-      allocate(textbuf(len_multi_int_textline(ncolumn)))
+      ilen_line = len_multi_int_textline(ncolumn)
+      call alloc_textbuffer_for_zlib(ilen_line, z_buf)
 !
       if(num .le. 0) then
         ilen_in = int(zbuf%ilen_gz)
         call link_pointer_for_zlib_buffer                               &
-     &     (ilen_in, zbuf%gzip_buf(1), ione, textbuf(1), z_buf)
+     &     (ilen_in, zbuf%gzip_buf(1), ione, z_buf%textbuf(1), z_buf)
         call gzip_infleat_char_once(z_buf)
         zbuf%ilen_gzipped = int(z_buf%len_used,KIND(zbuf%ilen_gzipped))
       else
         ist = 0
         zbuf%ilen_gzipped = 0
-        ilen_line = len_multi_int_textline(ncolumn)
         ilen_tmp = int(dble(huge_30)*1.01+24,KIND(ilen_tmp))
-!
-        call alloc_textbuffer_for_zlib(ilen_line, z_buf)
 !
         do
           nitem_1 = int(min(num-ist,ncolumn+1))
@@ -162,10 +159,10 @@
           if(nitem_1 .le. ncolumn) then
             call link_pointer_for_zlib_buffer                           &
      &         (ilen_in, zbuf%gzip_buf(zbuf%ilen_gzipped+1),            &
-     &          len_multi_int_textline(nitem_1), textbuf(1), z_buf)
+     &          len_multi_int_textline(nitem_1), z_buf%textbuf, z_buf)
             call gzip_infleat_char_once(z_buf)
             call read_multi_int_textline                                &
-     &         (textbuf(1), nitem_1, int_dat(ist+1))
+     &         (z_buf%textbuf(1), nitem_1, int_dat(ist+1))
             zbuf%ilen_gzipped = zbuf%ilen_gzipped                       &
      &                    + int(z_buf%len_used,KIND(zbuf%ilen_gzipped))
             exit
@@ -200,7 +197,6 @@
         call dealloc_textbuffer_for_zlib(z_buf)
       end if
 !
-      deallocate(textbuf)
       call dealloc_zip_buffer(zbuf)
 !
       end subroutine infleate_comm_table
@@ -304,20 +300,18 @@
       integer(kind = kint) :: nitem_1, nitem_2, nitem_c, nrest
 !
       integer(kind = kint_gl) :: ilen_tmp
-      integer :: ilen_line, ilen_used, ilen_in
+      integer :: ilen_line, ilen_in
 !
-      character(len=1), allocatable :: textbuf(:)
       type(zlib_transfer) :: z_buf
 !
 !
       ilen_line = len_multi_6digit_line(ncolumn)
-      allocate(textbuf(ilen_line))
       call alloc_textbuffer_for_zlib(ilen_line, z_buf)
 !
       if(num .le. 0) then
         ilen_in = int(zbuf%ilen_gz)
         call link_pointer_for_zlib_buffer                               &
-     &    (ilen_in, zbuf%gzip_buf(1), ione, textbuf(1), z_buf)
+     &    (ilen_in, zbuf%gzip_buf(1), ione, z_buf%textbuf(1), z_buf)
         call gzip_infleat_char_once(z_buf)
         zbuf%ilen_gzipped = int(z_buf%len_used,KIND(zbuf%ilen_gzipped))
       else
@@ -338,11 +332,11 @@
 !     &         zbuf%ilen_gzipped+1, ilen_in
           if(nitem_1 .le. ncolumn) then
             call link_pointer_for_zlib_buffer                           &
-     &         (ilen_in, zbuf%gzip_buf(zbuf%ilen_gzipped+1),            &
-     &          len_multi_6digit_line(nitem_1), textbuf(1), z_buf)
+     &        (ilen_in, zbuf%gzip_buf(zbuf%ilen_gzipped+1),             &
+     &         len_multi_6digit_line(nitem_1), z_buf%textbuf(1), z_buf)
             call gzip_infleat_char_once(z_buf)
             call read_mul_6digit_int_line                               &
-     &         (textbuf(1), nitem_1, int_dat(ist+1))
+     &         (z_buf%textbuf(1), nitem_1, int_dat(ist+1))
             zbuf%ilen_gzipped = zbuf%ilen_gzipped                       &
      &                    + int(z_buf%len_used,KIND(zbuf%ilen_gzipped))
             exit
@@ -376,7 +370,6 @@
 !        if(my_rank .eq. 0) write(*,*) 'all done ', zbuf%ilen_gzipped
       end if
 !
-      deallocate(textbuf)
       call dealloc_textbuffer_for_zlib(z_buf)
       call dealloc_zip_buffer(zbuf)
 !
