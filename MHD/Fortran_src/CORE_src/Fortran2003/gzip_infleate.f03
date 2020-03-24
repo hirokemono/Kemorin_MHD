@@ -241,8 +241,6 @@
 !
       subroutine gzip_infleat_char_begin(z_buf)
 !
-      integer, intent(in) :: len_gzipbuf
-!
       type(zlib_transfer), intent(inout) :: z_buf
 !
 !
