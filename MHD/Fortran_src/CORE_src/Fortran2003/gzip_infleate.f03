@@ -229,7 +229,7 @@
 !
 !
       call gzip_infleat_begin(z_buf%len_gzipbuf, z_buf%gzipbuf_p,       &
-     &    z_buf%len_buf, C_LOC(z_buf%textbuf), z_buf%len_used)
+     &    z_buf%len_buf, C_LOC(z_buf%buf_p), z_buf%len_used)
 !
       end subroutine gzip_infleat_char_begin
 !
@@ -241,7 +241,7 @@
 !
 !
       call gzip_infleat_cont(z_buf%len_gzipbuf, z_buf%len_buf,          &
-     &    C_LOC(z_buf%textbuf), z_buf%len_used)
+     &    C_LOC(z_buf%buf_p), z_buf%len_used)
 !
       end subroutine gzip_infleat_char_cont
 !
@@ -253,7 +253,7 @@
 !
 !
       call gzip_infleat_last(z_buf%len_gzipbuf, z_buf%len_buf,          &
-     &    C_LOC(z_buf%textbuf), z_buf%len_used)
+     &    C_LOC(z_buf%buf_p), z_buf%len_used)
 !
       end subroutine gzip_infleat_char_last
 !
