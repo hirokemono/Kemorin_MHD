@@ -71,9 +71,11 @@
 !
       subroutine defleate_endian_flag(zbuf)
 !
+      use gzip_defleate
+!
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
-      integer, parameter :: int_dat = i_UNIX
+      integer, parameter :: int_dat(1) = (/i_UNIX/)
       integer :: ilen_in, ilen_used
 !
 !
@@ -81,15 +83,17 @@
       zbuf%ilen_gz = ilen_in
       call alloc_zip_buffer(zbuf)
 !
-      call gzip_defleat_once(kint, int_dat, ilen_in,                    &
+      call gzip_defleat_int4_once(1, int_dat, ilen_in,                  &
      &    ilen_used, zbuf%gzip_buf(1))
-        zbuf%ilen_gzipped =  ilen_used
+      zbuf%ilen_gzipped =  ilen_used
 !
       end subroutine defleate_endian_flag
 !
 ! -----------------------------------------------------------------------
 !
       subroutine defleate_int8_vector_b(num, int8_dat, zbuf)
+!
+      use gzip_defleate
 !
       integer(kind = kint_gl), intent(in) :: num
       integer(kind = kint_gl), intent(in) :: int8_dat(num)
@@ -98,7 +102,7 @@
 !
       integer(kind = kint_gl) :: ist, ilen_tmp
       integer :: nline
-      integer :: ilen_in, ilen_used, ilen_line
+      integer :: ilen_in, ilen_used
 !
 !
       zbuf%ilen_gz = int(dble(num*kint_gl)*1.01+24,KIND(zbuf%ilen_gz))
@@ -110,9 +114,8 @@
       do
         nline = int(min((num - ist), huge_30/cast_long(kint_gl)))
         ilen_in = int(min(zbuf%ilen_gz-zbuf%ilen_gzipped, ilen_tmp))
-        ilen_line = nline * kint_gl
 !
-        call gzip_defleat_once(ilen_line, int8_dat(ist+1), ilen_in,     &
+        call gzip_defleat_int8_once(nline, int8_dat(ist+1), ilen_in,    &
      &      ilen_used, zbuf%gzip_buf(zbuf%ilen_gzipped+1))
 !
         zbuf%ilen_gzipped = zbuf%ilen_gzipped + ilen_used
@@ -126,6 +129,8 @@
 !
       subroutine defleate_1d_vector_b(num, real_dat, zbuf)
 !
+      use gzip_defleate
+!
       integer(kind = kint_gl), intent(in) :: num
       real(kind = kreal), intent(in) :: real_dat(num)
 !
@@ -133,7 +138,7 @@
 !
       integer(kind = kint_gl) :: ist, ilen_tmp
       integer :: nline
-      integer :: ilen_in, ilen_used, ilen_line
+      integer :: ilen_in, ilen_used
 !
 !
       zbuf%ilen_gz = int(dble(num*kreal)*1.01 + 24,KIND(zbuf%ilen_gz))
@@ -145,9 +150,8 @@
       do
         nline = int(min((num - ist), huge_30/cast_long(kreal)))
         ilen_in = int(min(zbuf%ilen_gz-zbuf%ilen_gzipped, ilen_tmp))
-        ilen_line = nline * kreal
 !
-        call gzip_defleat_once(ilen_line, real_dat(ist+1), ilen_in,     &
+        call gzip_defleat_real_once(nline, real_dat(ist+1), ilen_in,    &
      &      ilen_used, zbuf%gzip_buf(zbuf%ilen_gzipped+1))
 !
         zbuf%ilen_gzipped = zbuf%ilen_gzipped + ilen_used

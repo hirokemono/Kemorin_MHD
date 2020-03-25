@@ -138,6 +138,7 @@
 !      z_buf%gzipbuf_p => gzipbuf
       dat_p => data
 !
+      write(*,*) 'gzip_defleat_real_once'
       call gzip_defleat_once(num*kreal, data(1),               &
      &    len_gzipbuf, len_used, gzipbuf)
 !
@@ -164,6 +165,7 @@
 !      z_buf%gzipbuf_p => gzipbuf
       idat8_p => int8_dat
 !
+      write(*,*) 'gzip_defleat_int8_once'
       call gzip_defleat_once(num*kint_gl, int8_dat(1),            &
      &    len_gzipbuf, len_used, gzipbuf)
 !
@@ -190,6 +192,7 @@
 !      z_buf%gzipbuf_p => gzipbuf
       idat4_p => int4_dat
 !
+      write(*,*) 'gzip_defleat_int4_once'
       call gzip_defleat_once(num*4, int4_dat(1),        &
      &    len_gzipbuf, len_used, gzipbuf)
 !
