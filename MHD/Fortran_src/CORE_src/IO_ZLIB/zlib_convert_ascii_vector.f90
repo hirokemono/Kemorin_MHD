@@ -96,14 +96,14 @@
             xx_tmp(1:numdir) = xx(i,1:numdir)
             call gzip_defleat_char_cont(ilen_line,                      &
      &          int8_and_vector_textline(id_global(i), numdir, xx_tmp), &
-     &          ilen_in, z_buf)
+     &          z_buf)
           end do
 !
           xx_tmp(1:numdir) = xx(ist+nline,1:numdir)
           call gzip_defleat_char_last(ilen_line,                        &
      &       int8_and_vector_textline                                   &
      &          (id_global(ist+nline), numdir, xx_tmp),                 &
-     &       ilen_in, z_buf)
+     &       z_buf)
 !
           zbuf%ilen_gzipped = zbuf%ilen_gzipped                         &
      &                    + int(z_buf%len_used,KIND(zbuf%ilen_gzipped))

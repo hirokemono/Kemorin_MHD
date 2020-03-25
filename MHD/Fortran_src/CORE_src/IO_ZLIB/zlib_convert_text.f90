@@ -96,7 +96,6 @@
       integer :: ilen_in
 !      integer(kind = kint) :: i
 !
-      character(len=1), allocatable :: textbuf(:)
       character(len=kchara) :: textbuf_c
       type(zlib_transfer) :: z_buf
 !

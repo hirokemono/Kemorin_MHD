@@ -73,10 +73,10 @@
 !
           do inod = ist+2, ist+nline-1
             call gzip_defleat_char_cont(ilen_line,                      &
-     &          vtk_each_scalar(vect(inod)), ilen_in, z_buf)
+     &          vtk_each_scalar(vect(inod)), z_buf)
           end do
           call gzip_defleat_char_last(ilen_line,                        &
-     &        vtk_each_scalar(vect(ist+nline)), ilen_in, z_buf)
+     &        vtk_each_scalar(vect(ist+nline)), z_buf)
 !
           zbuf%ilen_gzipped = zbuf%ilen_gzipped                         &
      &                    + int(z_buf%len_used,KIND(zbuf%ilen_gzipped))
@@ -135,12 +135,12 @@
             call gzip_defleat_char_cont(ilen_line,                      &
      &          vtk_each_vector                                         &
      &                     (vect(inod,1),vect(inod,2),vect(inod,3)),    &
-     &          ilen_in, z_buf)
+     &          z_buf)
           end do
           call gzip_defleat_char_last(ilen_line,                        &
      &        vtk_each_vector                                           &
      &         (vect(ist+nline,1),vect(ist+nline,2),vect(ist+nline,3)), &
-     &        ilen_in, z_buf)
+     &        z_buf)
 !
           zbuf%ilen_gzipped = zbuf%ilen_gzipped                         &
      &                    + int(z_buf%len_used,KIND(zbuf%ilen_gzipped))
@@ -182,10 +182,10 @@
      &      ilen_in, z_buf, zbuf%gzip_buf(1))
         call gzip_defleat_char_cont(ilen_line,                          &
      &      vtk_each_vector(vect(1,2),vect(1,4),vect(1,5)),             &
-     &      ilen_in, z_buf)
+     &      z_buf)
         call gzip_defleat_char_last(ilen_line,                          &
      &      vtk_each_vector(vect(1,3),vect(1,5),vect(1,6)),             &
-     &      ilen_in, z_buf)
+     &      z_buf)
         zbuf%ilen_gzipped = int(z_buf%len_used,KIND(zbuf%ilen_gzipped))
 !
       else if(num .gt. 1) then
@@ -201,37 +201,37 @@
      &      ilen_in, z_buf, zbuf%gzip_buf(zbuf%ilen_gzipped+1))
           call gzip_defleat_char_cont(ilen_line,                        &
      &      vtk_each_vector(vect(ist+1,2),vect(ist+1,4),vect(ist+1,5)), &
-     &      ilen_in, z_buf)
+     &      z_buf)
           call gzip_defleat_char_cont(ilen_line,                        &
      &      vtk_each_vector(vect(ist+1,3),vect(ist+1,5),vect(ist+1,6)), &
-     &      ilen_in, z_buf)
+     &      z_buf)
 !
           do inod = ist+2, ist+nline-1
             call gzip_defleat_char_cont(ilen_line,                      &
      &          vtk_each_vector                                         &
      &                     (vect(inod,1),vect(inod,2),vect(inod,3)),    &
-     &          ilen_in, z_buf)
+     &          z_buf)
             call gzip_defleat_char_cont(ilen_line,                      &
      &          vtk_each_vector                                         &
      &                     (vect(inod,2),vect(inod,4),vect(inod,5)),    &
-     &          ilen_in, z_buf)
+     &          z_buf)
             call gzip_defleat_char_cont(ilen_line,                      &
      &          vtk_each_vector                                         &
      &                     (vect(inod,3),vect(inod,5),vect(inod,6)),    &
-     &          ilen_in, z_buf)
+     &          z_buf)
           end do
           call gzip_defleat_char_cont(ilen_line,                        &
      &        vtk_each_vector                                           &
      &         (vect(ist+nline,1),vect(ist+nline,2),vect(ist+nline,3)), &
-     &        ilen_in, z_buf)
+     &        z_buf)
           call gzip_defleat_char_cont(ilen_line,                        &
      &        vtk_each_vector                                           &
      &         (vect(ist+nline,2),vect(ist+nline,4),vect(ist+nline,5)), &
-     &        ilen_in, z_buf)
+     &        z_buf)
           call gzip_defleat_char_last(ilen_line,                        &
      &        vtk_each_vector                                           &
      &         (vect(ist+nline,3),vect(ist+nline,5),vect(ist+nline,6)), &
-     &        ilen_in, z_buf)
+     &        z_buf)
 !
           zbuf%ilen_gzipped = zbuf%ilen_gzipped                         &
      &                   + int(z_buf%len_used,KIND(zbuf%ilen_gzipped))
@@ -292,14 +292,12 @@
           do i = ist+2, ist+nline-1
             ie0(1:nnod_ele) = ie(i,1:nnod_ele) - 1
             call gzip_defleat_char_cont(ilen_line,                      &
-     &          vtk_each_connect(nnod_ele, ie0),                        &
-     &          ilen_in, z_buf)
+     &          vtk_each_connect(nnod_ele, ie0), z_buf)
           end do
 !
           ie0(1:nnod_ele) = ie(ist+nline,1:nnod_ele) - 1
           call gzip_defleat_char_last(ilen_line,                        &
-     &        vtk_each_connect(nnod_ele, ie0),                          &
-     &        ilen_in, z_buf)
+     &        vtk_each_connect(nnod_ele, ie0), z_buf)
 !
           zbuf%ilen_gzipped = zbuf%ilen_gzipped                         &
      &                    + int(z_buf%len_used,KIND(zbuf%ilen_gzipped))

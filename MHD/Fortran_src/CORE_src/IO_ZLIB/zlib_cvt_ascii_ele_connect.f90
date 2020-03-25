@@ -94,14 +94,14 @@
             call gzip_defleat_char_cont(ilen_line,                      &
      &          int8_and_mul_int8_textline                              &
      &              (id_global(i), nnod_4_ele, ie_tmp),                 &
-     &          ilen_in, z_buf)
+     &          z_buf)
           end do
 !
           ie_tmp(1:nnod_4_ele) = ie(ist+nline,1:nnod_4_ele)
           call gzip_defleat_char_last(ilen_line,                        &
      &        int8_and_mul_int8_textline                                &
      &             (id_global(ist+nline), nnod_4_ele, ie_tmp),          &
-     &        ilen_in, z_buf)
+     &        z_buf)
 !
           zbuf%ilen_gzipped = zbuf%ilen_gzipped                         &
      &                    + int(z_buf%len_used,KIND(zbuf%ilen_gzipped))
@@ -250,12 +250,12 @@
           do i = ist+2, ist+nline-1
             ie_tmp(1:ncomp) = ivect(i,1:ncomp)
             call gzip_defleat_char_cont(ilen_line,                      &
-     &         multi_int_textline(ncomp, ie_tmp), ilen_in, z_buf)
+     &         multi_int_textline(ncomp, ie_tmp), z_buf)
           end do
 !
           ie_tmp(1:ncomp) = ivect(ist+nline,1:ncomp)
           call gzip_defleat_char_last(ilen_line,                        &
-     &       multi_int_textline(ncomp, ie_tmp), ilen_in, z_buf)
+     &       multi_int_textline(ncomp, ie_tmp), z_buf)
 !
           zbuf%ilen_gzipped = zbuf%ilen_gzipped                         &
      &                    + int(z_buf%len_used,KIND(zbuf%ilen_gzipped))
@@ -385,13 +385,11 @@
         do i = 2, nnod - 1
           idx_tmp(1:numdir) = idx(i,1:numdir)
           call gzip_defleat_char_cont(ilen_line,                        &
-     &     multi_int_textline(numdir, idx_tmp),                         &
-     &        ilen_in, z_buf)
+     &        multi_int_textline(numdir, idx_tmp), z_buf)
         end do
         idx_tmp(1:numdir) = idx(nnod,1:numdir)
         call gzip_defleat_char_last(ilen_line,                          &
-     &     multi_int_textline(numdir, idx_tmp),                         &
-     &      ilen_in, z_buf)
+     &      multi_int_textline(numdir, idx_tmp), z_buf)
         zbuf%ilen_gzipped = int(z_buf%len_used,KIND(zbuf%ilen_gzipped))
       end if
 !

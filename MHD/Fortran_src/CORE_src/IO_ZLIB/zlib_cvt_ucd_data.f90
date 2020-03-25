@@ -86,14 +86,12 @@
             inod_gl =    inod + istack_merged_intnod
             dat_1(1:ntot_comp) = vect(inod,1:ntot_comp)
             call gzip_defleat_char_cont(ilen_line,                      &
-     &          ucd_each_field(inod_gl, ntot_comp, dat_1),              &
-     &          ilen_in, z_buf)
+     &          ucd_each_field(inod_gl, ntot_comp, dat_1), z_buf)
           end do
           inod_gl = ist + nline + istack_merged_intnod
           dat_1(1:ntot_comp) = vect(ist+nline,1:ntot_comp)
           call gzip_defleat_char_last(ilen_line,                        &
-     &        ucd_each_field(inod_gl, ntot_comp, dat_1),                &
-     &        ilen_in, z_buf)
+     &        ucd_each_field(inod_gl, ntot_comp, dat_1), z_buf)
 !
           zbuf%ilen_gzipped = zbuf%ilen_gzipped                         &
      &                     + int(z_buf%len_used,KIND(zbuf%ilen_gzipped))
@@ -161,15 +159,13 @@
             iele_gl = i + istack_merged_ele
             ie0(1:nnod_ele) = ie(i,1:nnod_ele)
             call gzip_defleat_char_cont(ilen_line,                      &
-     &          ucd_each_connect(iele_gl, nnod_ele, ie0),               &
-     &          ilen_in, z_buf)
+     &          ucd_each_connect(iele_gl, nnod_ele, ie0), z_buf)
           end do
 !
           iele_gl = ist+nline + istack_merged_ele
           ie0(1:nnod_ele) = ie(ist+nline,1:nnod_ele)
           call gzip_defleat_char_last(ilen_line,                        &
-     &      ucd_each_connect(iele_gl, nnod_ele, ie0),                   &
-     &        ilen_in, z_buf)
+     &        ucd_each_connect(iele_gl, nnod_ele, ie0), z_buf)
 !
           zbuf%ilen_gzipped = zbuf%ilen_gzipped                         &
      &                    + int(z_buf%len_used,KIND(zbuf%ilen_gzipped))
