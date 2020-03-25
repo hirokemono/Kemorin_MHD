@@ -211,7 +211,7 @@
 !
 !
       call gzip_defleat_once(len_buf, textbuf(1),       &
-     &    len_gzipbuf, len_used, z_buf%gzipbuf_p)
+     &    len_gzipbuf, len_used, gzipbuf)
 !
       end subroutine gzip_defleat_char_once
 !
