@@ -9,30 +9,30 @@
 !!
 !!@verbatim
 !!      subroutine alloc_zip_buffer(zbuf)
-!!      subroutine alloc_textbuffer_for_zlib(len_buf, z_buf)
+!!      subroutine alloc_textbuffer_for_zlib(len_buf, zbuf)
 !!      subroutine dealloc_zip_buffer(zbuf)
-!!      subroutine dealloc_textbuffer_for_zlib(z_buf)
+!!      subroutine dealloc_textbuffer_for_zlib(zbuf)
 !!        type(buffer_4_gzip), intent(inout) :: zbuf
-!!        type(zlib_transfer), intent(inout) :: z_buf
+!!        type(buffer_4_gzip), intent(inout) :: zbuf
 !!
 !!      subroutine link_pointer_for_zlib_buffer                         &
-!!     &         (len_gzipbuf, gzipbuf, len_buf, textbuf, z_buf)
-!!      subroutine unlink_pointer_for_zlib_buffer(z_buf)
-!!        type(zlib_transfer), intent(inout) :: z_buf
+!!     &         (len_gzipbuf, gzipbuf, len_buf, textbuf, zbuf)
+!!      subroutine unlink_pointer_for_zlib_buffer(zbuf)
+!!        type(buffer_4_gzip), intent(inout) :: zbuf
 !!
-!!      subroutine link_compressed_buffer(len_gzipbuf, gzipbuf, z_buf)
-!!      subroutine link_real_buffer_for_zlib(num, data, z_buf)
-!!      subroutine link_int8_buffer_for_zlib(num, int8_dat, z_buf)
-!!      subroutine link_int4_buffer_for_zlib(num, int4_dat, z_buf)
-!!      subroutine link_text_buffer_for_zlib(len_buf, textbuf, z_buf)
-!!        type(zlib_transfer), intent(inout) :: z_buf
+!!      subroutine link_compressed_buffer(len_gzipbuf, gzipbuf, zbuf)
+!!      subroutine link_real_buffer_for_zlib(num, data, zbuf)
+!!      subroutine link_int8_buffer_for_zlib(num, int8_dat, zbuf)
+!!      subroutine link_int4_buffer_for_zlib(num, int4_dat, zbuf)
+!!      subroutine link_text_buffer_for_zlib(len_buf, textbuf, zbuf)
+!!        type(buffer_4_gzip), intent(inout) :: zbuf
 !!
-!!      subroutine unlink_compressed_buffer(z_buf)
-!!      subroutine unlink_real_buffer_for_zlib(z_buf)
-!!      subroutine unlink_int8_buffer_for_zlib(z_buf)
-!!      subroutine unlink_int4_buffer_for_zlib(z_buf)
-!!      subroutine unlink_text_buffer_for_zlib(z_buf)
-!!        type(zlib_transfer), intent(inout) :: z_buf
+!!      subroutine unlink_compressed_buffer(zbuf)
+!!      subroutine unlink_real_buffer_for_zlib(zbuf)
+!!      subroutine unlink_int8_buffer_for_zlib(zbuf)
+!!      subroutine unlink_int4_buffer_for_zlib(zbuf)
+!!      subroutine unlink_text_buffer_for_zlib(zbuf)
+!!        type(buffer_4_gzip), intent(inout) :: zbuf
 !!@endverbatim
 !
       module t_buffer_4_gzip
@@ -50,9 +50,8 @@
         integer(kind = kint_gl) :: ilen_gz
 !>        Compressed data buffer
         character(len=1), allocatable :: gzip_buf(:)
-      end type buffer_4_gzip
 !
-      type zlib_transfer
+!
 !>        Size of compressed buffer to zlib
         integer(C_int) :: len_gzipbuf
 !>        Size of decompressed buffer to zlib
@@ -73,7 +72,7 @@
 !
 !>        decompressed text buffer
         character(len=1), allocatable :: textbuf(:)
-      end type zlib_transfer
+      end type buffer_4_gzip
 !
 !  ---------------------------------------------------------------------
 !
@@ -91,12 +90,12 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine alloc_textbuffer_for_zlib(len_buf, z_buf)
+      subroutine alloc_textbuffer_for_zlib(len_buf, zbuf)
 !
       integer, intent(in) :: len_buf
-      type(zlib_transfer), intent(inout) :: z_buf
+      type(buffer_4_gzip), intent(inout) :: zbuf
 !
-      allocate(z_buf%textbuf(len_buf))
+      allocate(zbuf%textbuf(len_buf))
 !
       end subroutine alloc_textbuffer_for_zlib
 !
@@ -112,11 +111,11 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine dealloc_textbuffer_for_zlib(z_buf)
+      subroutine dealloc_textbuffer_for_zlib(zbuf)
 !
-      type(zlib_transfer), intent(inout) :: z_buf
+      type(buffer_4_gzip), intent(inout) :: zbuf
 !
-      deallocate(z_buf%textbuf)
+      deallocate(zbuf%textbuf)
 !
       end subroutine dealloc_textbuffer_for_zlib
 !
@@ -124,155 +123,155 @@
 !  ---------------------------------------------------------------------
 !
       subroutine link_pointer_for_zlib_buffer                           &
-     &         (len_gzipbuf, gzipbuf, len_buf, textbuf, z_buf)
+     &         (len_gzipbuf, gzipbuf, len_buf, textbuf, zbuf)
 !
       integer, intent(in) :: len_gzipbuf
       character(len=1), target, intent(in) :: gzipbuf(len_gzipbuf)
       integer, intent(in) :: len_buf
       character(len=1), target, intent(in) :: textbuf(len_buf)
 !
-      type(zlib_transfer), intent(inout) :: z_buf
+      type(buffer_4_gzip), intent(inout) :: zbuf
 !
 !
-      call link_compressed_buffer(len_gzipbuf, gzipbuf, z_buf)
-      call link_text_buffer_for_zlib(len_buf, textbuf, z_buf)
+      call link_compressed_buffer(len_gzipbuf, gzipbuf, zbuf)
+      call link_text_buffer_for_zlib(len_buf, textbuf, zbuf)
 !
       end subroutine link_pointer_for_zlib_buffer
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine unlink_pointer_for_zlib_buffer(z_buf)
+      subroutine unlink_pointer_for_zlib_buffer(zbuf)
 !
-      type(zlib_transfer), intent(inout) :: z_buf
+      type(buffer_4_gzip), intent(inout) :: zbuf
 !
-      call unlink_compressed_buffer(z_buf)
-      call unlink_text_buffer_for_zlib(z_buf)
+      call unlink_compressed_buffer(zbuf)
+      call unlink_text_buffer_for_zlib(zbuf)
 !
       end subroutine unlink_pointer_for_zlib_buffer
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine link_compressed_buffer(len_gzipbuf, gzipbuf, z_buf)
+      subroutine link_compressed_buffer(len_gzipbuf, gzipbuf, zbuf)
 !
       integer, intent(in) :: len_gzipbuf
       character(len=1), target, intent(in) :: gzipbuf(len_gzipbuf)
 !
-      type(zlib_transfer), intent(inout) :: z_buf
+      type(buffer_4_gzip), intent(inout) :: zbuf
 !
 !
-      z_buf%len_gzipbuf = int(len_gzipbuf,KIND(z_buf%len_gzipbuf))
-      z_buf%gzipbuf_p => gzipbuf
+      zbuf%len_gzipbuf = int(len_gzipbuf,KIND(zbuf%len_gzipbuf))
+      zbuf%gzipbuf_p => gzipbuf
 !
       end subroutine link_compressed_buffer
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine link_real_buffer_for_zlib(num, data, z_buf)
+      subroutine link_real_buffer_for_zlib(num, data, zbuf)
 !
       integer, intent(in) :: num
       real(kind = kreal), target, intent(in) :: data(num)
 !
-      type(zlib_transfer), intent(inout) :: z_buf
+      type(buffer_4_gzip), intent(inout) :: zbuf
 !
 !
-      z_buf%len_buf = int((num*kreal),KIND(z_buf%len_buf))
-      z_buf%dat_p => data
+      zbuf%len_buf = int((num*kreal),KIND(zbuf%len_buf))
+      zbuf%dat_p => data
 !
       end subroutine link_real_buffer_for_zlib
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine link_int8_buffer_for_zlib(num, int8_dat, z_buf)
+      subroutine link_int8_buffer_for_zlib(num, int8_dat, zbuf)
 !
       integer, intent(in) :: num
       integer(kind = kint_gl), target, intent(in) :: int8_dat(num)
 !
-      type(zlib_transfer), intent(inout) :: z_buf
+      type(buffer_4_gzip), intent(inout) :: zbuf
 !
 !
-      z_buf%len_buf = int((num*kint_gl),KIND(z_buf%len_buf))
-      z_buf%idat8_p => int8_dat
+      zbuf%len_buf = int((num*kint_gl),KIND(zbuf%len_buf))
+      zbuf%idat8_p => int8_dat
 !
       end subroutine link_int8_buffer_for_zlib
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine link_int4_buffer_for_zlib(num, int4_dat, z_buf)
+      subroutine link_int4_buffer_for_zlib(num, int4_dat, zbuf)
 !
       integer, intent(in) :: num
       integer(kind = 4), target, intent(in) :: int4_dat(num)
 !
-      type(zlib_transfer), intent(inout) :: z_buf
+      type(buffer_4_gzip), intent(inout) :: zbuf
 !
 !
-      z_buf%len_buf = int((num*4),KIND(z_buf%len_buf))
-      z_buf%idat4_p => int4_dat
+      zbuf%len_buf = int((num*4),KIND(zbuf%len_buf))
+      zbuf%idat4_p => int4_dat
 !
       end subroutine link_int4_buffer_for_zlib
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine link_text_buffer_for_zlib(len_buf, textbuf, z_buf)
+      subroutine link_text_buffer_for_zlib(len_buf, textbuf, zbuf)
 !
       integer, intent(in) :: len_buf
       character(len=1), target, intent(in) :: textbuf(len_buf)
 !
-      type(zlib_transfer), intent(inout) :: z_buf
+      type(buffer_4_gzip), intent(inout) :: zbuf
 !
 !
-      z_buf%len_buf = int(len_buf,KIND(z_buf%len_buf))
-      z_buf%buf_p => textbuf
+      zbuf%len_buf = int(len_buf,KIND(zbuf%len_buf))
+      zbuf%buf_p => textbuf
 !
       end subroutine link_text_buffer_for_zlib
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine unlink_compressed_buffer(z_buf)
+      subroutine unlink_compressed_buffer(zbuf)
 !
-      type(zlib_transfer), intent(inout) :: z_buf
+      type(buffer_4_gzip), intent(inout) :: zbuf
 !
-      nullify(z_buf%gzipbuf_p)
+      nullify(zbuf%gzipbuf_p)
 !
       end subroutine unlink_compressed_buffer
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine unlink_real_buffer_for_zlib(z_buf)
+      subroutine unlink_real_buffer_for_zlib(zbuf)
 !
-      type(zlib_transfer), intent(inout) :: z_buf
+      type(buffer_4_gzip), intent(inout) :: zbuf
 !
-      nullify(z_buf%dat_p)
+      nullify(zbuf%dat_p)
 !
       end subroutine unlink_real_buffer_for_zlib
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine unlink_int8_buffer_for_zlib(z_buf)
+      subroutine unlink_int8_buffer_for_zlib(zbuf)
 !
-      type(zlib_transfer), intent(inout) :: z_buf
+      type(buffer_4_gzip), intent(inout) :: zbuf
 !
-      nullify(z_buf%idat8_p)
+      nullify(zbuf%idat8_p)
 !
       end subroutine unlink_int8_buffer_for_zlib
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine unlink_int4_buffer_for_zlib(z_buf)
+      subroutine unlink_int4_buffer_for_zlib(zbuf)
 !
-      type(zlib_transfer), intent(inout) :: z_buf
+      type(buffer_4_gzip), intent(inout) :: zbuf
 !
-      nullify(z_buf%idat4_p)
+      nullify(zbuf%idat4_p)
 !
       end subroutine unlink_int4_buffer_for_zlib
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine unlink_text_buffer_for_zlib(z_buf)
+      subroutine unlink_text_buffer_for_zlib(zbuf)
 !
-      type(zlib_transfer), intent(inout) :: z_buf
+      type(buffer_4_gzip), intent(inout) :: zbuf
 !
-      nullify(z_buf%buf_p)
+      nullify(zbuf%buf_p)
 !
       end subroutine unlink_text_buffer_for_zlib
 !

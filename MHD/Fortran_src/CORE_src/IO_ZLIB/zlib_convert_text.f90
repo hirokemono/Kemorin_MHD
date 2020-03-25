@@ -42,7 +42,6 @@
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
       integer :: ilen_in
-      type(zlib_transfer) :: z_buf
 !
 !
       zbuf%ilen_gz = int(dble(ilength) *1.01+24, KIND(zbuf%ilen_gz))
@@ -50,8 +49,8 @@
 !
       ilen_in = int(zbuf%ilen_gz)
       call gzip_defleat_char_once(ilength, chara_dat, ilen_in,          &
-     &    z_buf, zbuf%gzip_buf(1))
-      zbuf%ilen_gzipped = int(z_buf%len_used,KIND(zbuf%ilen_gzipped))
+     &    zbuf, zbuf%gzip_buf(1))
+      zbuf%ilen_gzipped = int(zbuf%len_used,KIND(zbuf%ilen_gzipped))
 !
       end subroutine defleate_characters
 !
@@ -68,15 +67,14 @@
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
       integer :: ilen_in
-      type(zlib_transfer) :: z_buf
 !
 !
       ilen_in = int(zbuf%ilen_gz)
       call gzip_infleat_char_once(ilen_in, zbuf%gzip_buf(1),            &
-     &    ilength, text, z_buf)
-      zbuf%ilen_gzipped = int(z_buf%len_used,KIND(zbuf%ilen_gzipped))
+     &    ilength, text, zbuf)
+      zbuf%ilen_gzipped = int(zbuf%len_used,KIND(zbuf%ilen_gzipped))
 !
-      call unlink_pointer_for_zlib_buffer(z_buf)
+      call unlink_pointer_for_zlib_buffer(zbuf)
       call dealloc_zip_buffer(zbuf)
 !
       end subroutine infleate_characters
@@ -97,16 +95,15 @@
 !      integer(kind = kint) :: i
 !
       character(len=kchara) :: textbuf_c
-      type(zlib_transfer) :: z_buf
 !
 !
       ilen_in = int(zbuf%ilen_gz)
       call gzip_infleat_char_once                                       &
-     &   (ilen_in, zbuf%gzip_buf(1), kchara, textbuf_c, z_buf)
-      zbuf%ilen_gzipped = int(z_buf%len_used,KIND(zbuf%ilen_gzipped))
+     &   (ilen_in, zbuf%gzip_buf(1), kchara, textbuf_c, zbuf)
+      zbuf%ilen_gzipped = int(zbuf%len_used,KIND(zbuf%ilen_gzipped))
 !
       call read_each_field_name_buffer(textbuf_c, word, ilength)
-      call unlink_pointer_for_zlib_buffer(z_buf)
+      call unlink_pointer_for_zlib_buffer(zbuf)
       ilength = ilength + 1
 !      do i = 1, kchara
 !        write(*,*) ilength, i, word(i:i),                              &
@@ -115,13 +112,13 @@
 !
 !      write(*,*) 'word', ilength, trim(word)
 !
-      call alloc_textbuffer_for_zlib(ilength, z_buf)
+      call alloc_textbuffer_for_zlib(ilength, zbuf)
       call gzip_infleat_char_once                                       &
-     &   (ilen_in, zbuf%gzip_buf(1), ilength, z_buf%textbuf, z_buf)
-      zbuf%ilen_gzipped = int(z_buf%len_used,KIND(zbuf%ilen_gzipped))
+     &   (ilen_in, zbuf%gzip_buf(1), ilength, zbuf%textbuf, zbuf)
+      zbuf%ilen_gzipped = int(zbuf%len_used,KIND(zbuf%ilen_gzipped))
 !
-      call unlink_pointer_for_zlib_buffer(z_buf)
-      call dealloc_textbuffer_for_zlib(z_buf)
+      call unlink_pointer_for_zlib_buffer(zbuf)
+      call dealloc_textbuffer_for_zlib(zbuf)
       call dealloc_zip_buffer(zbuf)
 !
       end subroutine infleate_1word
@@ -137,18 +134,17 @@
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
       integer :: ilen_in
-      type(zlib_transfer) :: z_buf
 !
 !
-      call alloc_textbuffer_for_zlib(ilength, z_buf)
+      call alloc_textbuffer_for_zlib(ilength, zbuf)
 !
       ilen_in = int(zbuf%ilen_gz)
       call gzip_infleat_char_once(ilen_in, zbuf%gzip_buf(1),            &
-     &    ilength, z_buf%textbuf, z_buf)
-      zbuf%ilen_gzipped = int(z_buf%len_used,KIND(zbuf%ilen_gzipped))
+     &    ilength, zbuf%textbuf, zbuf)
+      zbuf%ilen_gzipped = int(zbuf%len_used,KIND(zbuf%ilen_gzipped))
 !
-      call unlink_pointer_for_zlib_buffer(z_buf)
-      call dealloc_textbuffer_for_zlib(z_buf)
+      call unlink_pointer_for_zlib_buffer(zbuf)
+      call dealloc_textbuffer_for_zlib(zbuf)
       call dealloc_zip_buffer(zbuf)
 !
       end subroutine infleate_skip_header

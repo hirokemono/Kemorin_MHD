@@ -9,19 +9,19 @@
 !!
 !!@verbatim
 !!      subroutine gzip_defleat_real_once                               &
-!!     &         (len_gzipbuf, gzipbuf, num, data, z_buf)
+!!     &         (len_gzipbuf, gzipbuf, num, data, zbuf)
 !!      subroutine gzip_defleat_int8_once                               &
-!!     &         (len_gzipbuf, gzipbuf, num, int8_dat, z_buf)
+!!     &         (len_gzipbuf, gzipbuf, num, int8_dat, zbuf)
 !!      subroutine gzip_defleat_int4_once                               &
-!!     &         (len_gzipbuf, gzipbuf, num, int4_dat, z_buf)
+!!     &         (len_gzipbuf, gzipbuf, num, int4_dat, zbuf)
 !!      subroutine gzip_defleat_char_once                               &
-!!     &         (len_gzipbuf, gzipbuf, len_buf, buf, z_buf)
-!!        type(zlib_transfer), intent(inout) :: z_buf
+!!     &         (len_gzipbuf, gzipbuf, len_buf, buf, zbuf)
+!!        type(buffer_4_gzip), intent(inout) :: zbuf
 !!
-!!      subroutine gzip_defleat_char_begin(z_buf)
-!!      subroutine gzip_defleat_char_cont(z_buf)
-!!      subroutine gzip_defleat_char_last(z_buf)
-!!        type(zlib_transfer), intent(inout) :: z_buf
+!!      subroutine gzip_defleat_char_begin(zbuf)
+!!      subroutine gzip_defleat_char_cont(zbuf)
+!!      subroutine gzip_defleat_char_last(zbuf)
+!!        type(buffer_4_gzip), intent(inout) :: zbuf
 !!@endverbatim
 !
       module gzip_defleate
@@ -113,60 +113,60 @@
 !  ---------------------------------------------------------------------
 !
       subroutine gzip_defleat_real_once                                 &
-     &         (num, data, len_gzipbuf, z_buf, gzipbuf)
+     &         (num, data, len_gzipbuf, zbuf, gzipbuf)
 !
       integer, intent(in) :: num
       real(kind = kreal), target, intent(in) :: data(num)
       integer, intent(in) :: len_gzipbuf
 !
       character(len=1), target, intent(inout) :: gzipbuf(len_gzipbuf)
-      type(zlib_transfer), intent(inout) :: z_buf
+      type(buffer_4_gzip), intent(inout) :: zbuf
 !
 !
-      call link_compressed_buffer(len_gzipbuf, gzipbuf, z_buf)
-      call link_real_buffer_for_zlib(num, data, z_buf)
-      call gzip_defleat_once(z_buf%len_buf, C_LOC(z_buf%dat_p),         &
-     &    z_buf%len_gzipbuf, z_buf%len_used, z_buf%gzipbuf_p)
+      call link_compressed_buffer(len_gzipbuf, gzipbuf, zbuf)
+      call link_real_buffer_for_zlib(num, data, zbuf)
+      call gzip_defleat_once(zbuf%len_buf, C_LOC(zbuf%dat_p),           &
+     &    zbuf%len_gzipbuf, zbuf%len_used, zbuf%gzipbuf_p)
 !
       end subroutine gzip_defleat_real_once
 !
 !  ---------------------------------------------------------------------
 !
       subroutine gzip_defleat_int8_once                                 &
-     &         (num, int8_dat, len_gzipbuf, z_buf, gzipbuf)
+     &         (num, int8_dat, len_gzipbuf, zbuf, gzipbuf)
 !
       integer, intent(in) :: num
       integer(kind = kint_gl), target, intent(in) :: int8_dat(num)
       integer, intent(in) :: len_gzipbuf
 !
       character(len=1), target, intent(inout) :: gzipbuf(len_gzipbuf)
-      type(zlib_transfer), intent(inout) :: z_buf
+      type(buffer_4_gzip), intent(inout) :: zbuf
 !
 !
-      call link_compressed_buffer(len_gzipbuf, gzipbuf, z_buf)
-      call link_int8_buffer_for_zlib(num, int8_dat, z_buf)
-      call gzip_defleat_once(z_buf%len_buf, C_LOC(z_buf%idat8_p),       &
-     &    z_buf%len_gzipbuf, z_buf%len_used, z_buf%gzipbuf_p)
+      call link_compressed_buffer(len_gzipbuf, gzipbuf, zbuf)
+      call link_int8_buffer_for_zlib(num, int8_dat, zbuf)
+      call gzip_defleat_once(zbuf%len_buf, C_LOC(zbuf%idat8_p),         &
+     &    zbuf%len_gzipbuf, zbuf%len_used, zbuf%gzipbuf_p)
 !
       end subroutine gzip_defleat_int8_once
 !
 !  ---------------------------------------------------------------------
 !
       subroutine gzip_defleat_int4_once                                 &
-     &         (num, int4_dat, len_gzipbuf, z_buf, gzipbuf)
+     &         (num, int4_dat, len_gzipbuf, zbuf, gzipbuf)
 !
       integer, intent(in) :: num
       integer(kind = 4), target, intent(in) :: int4_dat(num)
       integer, intent(in) :: len_gzipbuf
 !
       character(len=1), target, intent(inout) :: gzipbuf(len_gzipbuf)
-      type(zlib_transfer), intent(inout) :: z_buf
+      type(buffer_4_gzip), intent(inout) :: zbuf
 !
 !
-      call link_compressed_buffer(len_gzipbuf, gzipbuf, z_buf)
-      call link_int4_buffer_for_zlib(num, int4_dat, z_buf)
-      call gzip_defleat_once(z_buf%len_buf, C_LOC(z_buf%idat4_p),       &
-     &    z_buf%len_gzipbuf, z_buf%len_used, z_buf%gzipbuf_p)
+      call link_compressed_buffer(len_gzipbuf, gzipbuf, zbuf)
+      call link_int4_buffer_for_zlib(num, int4_dat, zbuf)
+      call gzip_defleat_once(zbuf%len_buf, C_LOC(zbuf%idat4_p),         &
+     &    zbuf%len_gzipbuf, zbuf%len_used, zbuf%gzipbuf_p)
 !
       end subroutine gzip_defleat_int4_once
 !
@@ -174,20 +174,20 @@
 !  ---------------------------------------------------------------------
 !
       subroutine gzip_defleat_char_once                                 &
-     &         (len_buf, textbuf, len_gzipbuf, z_buf, gzipbuf)
+     &         (len_buf, textbuf, len_gzipbuf, zbuf, gzipbuf)
 !
       integer, intent(in) :: len_buf
       character(len=1), target, intent(in) :: textbuf(len_buf)
       integer, intent(in) :: len_gzipbuf
 !
       character(len=1), target, intent(inout) :: gzipbuf(len_gzipbuf)
-      type(zlib_transfer), intent(inout) :: z_buf
+      type(buffer_4_gzip), intent(inout) :: zbuf
 !
 !
-      call link_compressed_buffer(len_gzipbuf, gzipbuf, z_buf)
-      call link_text_buffer_for_zlib(len_buf, textbuf, z_buf)
-      call gzip_defleat_once(z_buf%len_buf, C_LOC(z_buf%buf_p),         &
-     &    z_buf%len_gzipbuf, z_buf%len_used, z_buf%gzipbuf_p)
+      call link_compressed_buffer(len_gzipbuf, gzipbuf, zbuf)
+      call link_text_buffer_for_zlib(len_buf, textbuf, zbuf)
+      call gzip_defleat_once(zbuf%len_buf, C_LOC(zbuf%buf_p),           &
+     &    zbuf%len_gzipbuf, zbuf%len_used, zbuf%gzipbuf_p)
 !
       end subroutine gzip_defleat_char_once
 !
@@ -195,49 +195,49 @@
 !  ---------------------------------------------------------------------
 !
       subroutine gzip_defleat_char_begin  &
-     &         (len_buf, textbuf, len_gzipbuf, z_buf, gzipbuf)
+     &         (len_buf, textbuf, len_gzipbuf, zbuf, gzipbuf)
 !
       integer, intent(in) :: len_buf
       character(len=1), target, intent(in) :: textbuf(len_buf)
       integer, intent(in) :: len_gzipbuf
       character(len=1), target, intent(inout) :: gzipbuf(len_gzipbuf)
-      type(zlib_transfer), intent(inout) :: z_buf
+      type(buffer_4_gzip), intent(inout) :: zbuf
 !
 !
-      call link_compressed_buffer(len_gzipbuf, gzipbuf, z_buf)
-      call link_text_buffer_for_zlib(len_buf, textbuf, z_buf)
-      call gzip_defleat_begin(z_buf%len_buf, C_LOC(z_buf%buf_p),        &
-     &    z_buf%len_gzipbuf, z_buf%len_used, z_buf%gzipbuf_p)
+      call link_compressed_buffer(len_gzipbuf, gzipbuf, zbuf)
+      call link_text_buffer_for_zlib(len_buf, textbuf, zbuf)
+      call gzip_defleat_begin(zbuf%len_buf, C_LOC(zbuf%buf_p),          &
+     &    zbuf%len_gzipbuf, zbuf%len_used, zbuf%gzipbuf_p)
 !
       end subroutine gzip_defleat_char_begin
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine gzip_defleat_char_cont(len_buf, textbuf, z_buf)
+      subroutine gzip_defleat_char_cont(len_buf, textbuf, zbuf)
 !
       integer, intent(in) :: len_buf
       character(len=1), target, intent(in) :: textbuf(len_buf)
-      type(zlib_transfer), intent(inout) :: z_buf
+      type(buffer_4_gzip), intent(inout) :: zbuf
 !
 !
-      call link_text_buffer_for_zlib(len_buf, textbuf, z_buf)
-      call gzip_defleat_cont(z_buf%len_buf, C_LOC(z_buf%buf_p),         &
-     &    z_buf%len_gzipbuf, z_buf%len_used)
+      call link_text_buffer_for_zlib(len_buf, textbuf, zbuf)
+      call gzip_defleat_cont(zbuf%len_buf, C_LOC(zbuf%buf_p),           &
+     &    zbuf%len_gzipbuf, zbuf%len_used)
 !
       end subroutine gzip_defleat_char_cont
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine gzip_defleat_char_last(len_buf, textbuf, z_buf)
+      subroutine gzip_defleat_char_last(len_buf, textbuf, zbuf)
 !
       integer, intent(in) :: len_buf
       character(len=1), target, intent(in) :: textbuf(len_buf)
-      type(zlib_transfer), intent(inout) :: z_buf
+      type(buffer_4_gzip), intent(inout) :: zbuf
 !
 !
-      call link_text_buffer_for_zlib(len_buf, textbuf, z_buf)
-      call gzip_defleat_last(z_buf%len_buf, C_LOC(z_buf%buf_p),         &
-     &    z_buf%len_gzipbuf, z_buf%len_used)
+      call link_text_buffer_for_zlib(len_buf, textbuf, zbuf)
+      call gzip_defleat_last(zbuf%len_buf, C_LOC(zbuf%buf_p),          &
+     &    zbuf%len_gzipbuf, zbuf%len_used)
 !
       end subroutine gzip_defleat_char_last
 !
