@@ -222,6 +222,8 @@
 !
       call gzip_infleat_last(zbuf%len_gzipbuf, zbuf%len_buf,            &
      &    C_LOC(zbuf%buf_p), zbuf%len_used)
+      zbuf%ilen_gzipped = zbuf%ilen_gzipped                             &
+     &                   + int(zbuf%len_used,KIND(zbuf%ilen_gzipped))
 !
       end subroutine gzip_infleat_char_last
 !

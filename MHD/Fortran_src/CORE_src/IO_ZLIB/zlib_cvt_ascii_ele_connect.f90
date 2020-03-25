@@ -101,9 +101,6 @@
      &        int8_and_mul_int8_textline                                &
      &             (id_global(ist+nline), nnod_4_ele, ie_tmp),          &
      &        zbuf)
-!
-          zbuf%ilen_gzipped = zbuf%ilen_gzipped                         &
-     &                    + int(zbuf%len_used,KIND(zbuf%ilen_gzipped))
           ist = ist + nline
           if(ist .ge. nele) exit
         end do
@@ -176,13 +173,10 @@
           call gzip_infleat_char_last(zbuf)
           call read_int8_and_mul_int8_textline(zbuf%textbuf(1),         &
      &        id_global(ist+nline), nnod_4_ele, ie_tmp)
-          ie(ist+nline,1:nnod_4_ele)                                    &
-     &             = int(ie_tmp(1:nnod_4_ele), KIND(ie(1,1)))
-!
-          zbuf%ilen_gzipped = zbuf%ilen_gzipped                         &
-     &                    + int(zbuf%len_used,KIND(zbuf%ilen_gzipped))
           call unlink_pointer_for_zlib_buffer(zbuf)
 !
+          ie(ist+nline,1:nnod_4_ele)                                    &
+     &             = int(ie_tmp(1:nnod_4_ele), KIND(ie(1,1)))
           ist = ist + nline
           if(ist .ge. nele) exit
         end do
@@ -252,9 +246,6 @@
           ie_tmp(1:ncomp) = ivect(ist+nline,1:ncomp)
           call gzip_defleat_char_last(ilen_line,                        &
      &       multi_int_textline(ncomp, ie_tmp), zbuf)
-!
-          zbuf%ilen_gzipped = zbuf%ilen_gzipped                         &
-     &                    + int(zbuf%len_used,KIND(zbuf%ilen_gzipped))
           ist = ist + nline
           if(ist .ge. nele) exit
         end do
@@ -321,11 +312,9 @@
 !
           call gzip_infleat_char_last(zbuf)
           call read_multi_int_textline(zbuf%textbuf(1), ncomp, ie_tmp)
-          ivect(ist+nline,1:ncomp) = ie_tmp(1:ncomp)
-!
-          zbuf%ilen_gzipped = zbuf%ilen_gzipped                         &
-     &                    + int(zbuf%len_used,KIND(zbuf%ilen_gzipped))
           call unlink_pointer_for_zlib_buffer(zbuf)
+!
+          ivect(ist+nline,1:ncomp) = ie_tmp(1:ncomp)
 !
           ist = ist + nline
           if(ist .ge. nele) exit
@@ -360,16 +349,17 @@
      &       = int(dble(nnod*ilen_line) *1.01 + 24,KIND(zbuf%ilen_gz))
       ilen_in = int(zbuf%ilen_gz)
       call alloc_zip_buffer(zbuf)
+      zbuf%ilen_gzipped = 0
 !
       if(nnod .le. 0) then
         call gzip_defleat_char_once(ione, char(10),                     &
      &      ilen_in, zbuf, zbuf%gzip_buf(1))
-        zbuf%ilen_gzipped = int(zbuf%len_used,KIND(zbuf%ilen_gzipped))
+        zbuf%ilen_gzipped = zbuf%ilen_gzipped + int(zbuf%len_used,KIND(zbuf%ilen_gzipped))
       else if(nnod .eq. 1) then
         call gzip_defleat_char_once(ilen_line,                          &
      &      multi_int_textline(numdir, idx(1,1)),                       &
      &      ilen_in, zbuf, zbuf%gzip_buf(1))
-        zbuf%ilen_gzipped = int(zbuf%len_used,KIND(zbuf%ilen_gzipped))
+        zbuf%ilen_gzipped = zbuf%ilen_gzipped + int(zbuf%len_used,KIND(zbuf%ilen_gzipped))
       else if(nnod .gt. 0) then
         idx_tmp(1:numdir) = idx(1,1:numdir)
         call gzip_defleat_char_begin(ilen_line,                         &
@@ -383,7 +373,6 @@
         idx_tmp(1:numdir) = idx(nnod,1:numdir)
         call gzip_defleat_char_last(ilen_line,                          &
      &      multi_int_textline(numdir, idx_tmp), zbuf)
-        zbuf%ilen_gzipped = int(zbuf%len_used,KIND(zbuf%ilen_gzipped))
       end if
 !
       end subroutine defleate_1d_global_address
@@ -408,17 +397,18 @@
       ilen_in = int(zbuf%ilen_gz)
       ilen_line = len_multi_int_textline(numdir)
       call alloc_textbuffer_for_zlib(ilen_line, zbuf)
+      zbuf%ilen_gzipped = 0
 !
       if(nnod .le. 0) then
         call gzip_infleat_char_once                                     &
      &    (ilen_in, zbuf%gzip_buf(1), ione, zbuf%textbuf, zbuf)
-        zbuf%ilen_gzipped = int(zbuf%len_used,KIND(zbuf%ilen_gzipped))
+        zbuf%ilen_gzipped = zbuf%ilen_gzipped +int(zbuf%len_used,KIND(zbuf%ilen_gzipped))
       else if(nnod .eq. 1) then
         call gzip_infleat_char_once                                     &
      &    (ilen_in, zbuf%gzip_buf(1), ilen_line, zbuf%textbuf, zbuf)
         call read_multi_int_textline                                    &
      &     (zbuf%textbuf(1), numdir, idx(1,1))
-        zbuf%ilen_gzipped = int(zbuf%len_used,KIND(zbuf%ilen_gzipped))
+        zbuf%ilen_gzipped = zbuf%ilen_gzipped + int(zbuf%len_used,KIND(zbuf%ilen_gzipped))
       else if(nnod .gt. 0) then
         call link_pointer_for_zlib_buffer                               &
      &     (ilen_in, zbuf%gzip_buf(1), ilen_line, zbuf%textbuf, zbuf)
@@ -435,10 +425,9 @@
 !
         call gzip_infleat_char_last(zbuf)
         call read_multi_int_textline(zbuf%textbuf(1), numdir, idx_tmp)
-        idx(nnod,1:numdir) = idx_tmp(1:numdir)
-        zbuf%ilen_gzipped = int(zbuf%len_used,KIND(zbuf%ilen_gzipped))
-!
         call unlink_pointer_for_zlib_buffer(zbuf)
+!
+        idx(nnod,1:numdir) = idx_tmp(1:numdir)
       end if
 !
       call dealloc_textbuffer_for_zlib(zbuf)

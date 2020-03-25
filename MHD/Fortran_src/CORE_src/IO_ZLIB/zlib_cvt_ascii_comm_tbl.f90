@@ -98,9 +98,6 @@
             call gzip_defleat_char_last(len_multi_int_textline(nrest),  &
      &          multi_int_textline(nrest, int_dat(ist+nitem_c+1)),      &
      &          zbuf)
-!
-            zbuf%ilen_gzipped = zbuf%ilen_gzipped                       &
-     &                    + int(zbuf%len_used,KIND(zbuf%ilen_gzipped))
             ist = ist + nitem_2
             if(ist .ge. num) exit
           end if
@@ -178,9 +175,6 @@
             call gzip_infleat_char_last(zbuf)
             call read_multi_int_textline                                &
      &         (zbuf%textbuf(1), nrest, int_dat(ist+nitem_c+1))
-!
-            zbuf%ilen_gzipped = zbuf%ilen_gzipped                       &
-     &                    + int(zbuf%len_used,KIND(zbuf%ilen_gzipped))
             call unlink_pointer_for_zlib_buffer(zbuf)
 !
             ist = ist + nitem_2
@@ -263,9 +257,6 @@
             call gzip_defleat_char_last(ilength,                        &
      &          mul_6digit_int_line(nrest, int_dat(ist+nitem_c+1)),     &
      &          zbuf)
-!
-            zbuf%ilen_gzipped = zbuf%ilen_gzipped                       &
-     &                    + int(zbuf%len_used,KIND(zbuf%ilen_gzipped))
             ist = ist + nitem_2
             if(ist .ge. num) exit
           end if
@@ -345,9 +336,6 @@
             call gzip_infleat_char_last(zbuf)
             call read_mul_6digit_int_line                               &
      &         (zbuf%textbuf(1), nrest, int_dat(ist+nitem_c+1))
-!
-            zbuf%ilen_gzipped = zbuf%ilen_gzipped                       &
-     &                    + int(zbuf%len_used,KIND(zbuf%ilen_gzipped))
             call unlink_pointer_for_zlib_buffer(zbuf)
 !
             ist = ist + nitem_2

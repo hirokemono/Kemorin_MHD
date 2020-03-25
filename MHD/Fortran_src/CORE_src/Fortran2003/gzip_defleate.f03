@@ -238,6 +238,9 @@
       call link_text_buffer_for_zlib(len_buf, textbuf, zbuf)
       call gzip_defleat_last(zbuf%len_buf, C_LOC(zbuf%buf_p),          &
      &    zbuf%len_gzipbuf, zbuf%len_used)
+      call unlink_pointer_for_zlib_buffer(zbuf)
+      zbuf%ilen_gzipped = zbuf%ilen_gzipped                             &
+     &                   + int(zbuf%len_used,KIND(zbuf%ilen_gzipped))
 !
       end subroutine gzip_defleat_char_last
 !
