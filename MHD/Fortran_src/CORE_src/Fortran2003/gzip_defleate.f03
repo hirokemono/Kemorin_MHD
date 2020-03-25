@@ -229,6 +229,7 @@
 !      type(zlib_transfer), intent(inout) :: z_buf
 !
 !
+      write(*,*) 'gzip_defleat_begin'
       call gzip_defleat_begin(len_buf, textbuf(1),       &
      &    len_gzipbuf, len_used, gzipbuf)
 !

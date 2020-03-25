@@ -83,7 +83,7 @@
           ilen_in = int(min(zbuf%ilen_gz-zbuf%ilen_gzipped, ilen_tmp))
 !
           ie_tmp(1:nnod_4_ele) = ie(ist+1,1:nnod_4_ele)
-          call gzip_defleat_begin(ilen_line,                            &
+          call gzip_defleat_char_begin(ilen_line,                       &
      &        int8_and_mul_int8_textline                                &
      &             (id_global(ist+1), nnod_4_ele, ie_tmp),              &
      &        ilen_in, ilen_used, zbuf%gzip_buf(zbuf%ilen_gzipped+1))
@@ -240,7 +240,7 @@
           ilen_in = int(min(zbuf%ilen_gz-zbuf%ilen_gzipped, ilen_tmp))
 !
           ie_tmp(1:ncomp) = ivect(ist+1,1:ncomp)
-          call gzip_defleat_begin(ilen_line,                            &
+          call gzip_defleat_char_begin(ilen_line,                       &
      &        multi_int_textline(ncomp, ie_tmp),                        &
      &       ilen_in, ilen_used, zbuf%gzip_buf(zbuf%ilen_gzipped+1))
 !
@@ -372,7 +372,7 @@
      &      ilen_in, ilen_used, zbuf%gzip_buf(1))
       else if(nnod .gt. 0) then
         idx_tmp(1:numdir) = idx(1,1:numdir)
-        call gzip_defleat_begin(ilen_line,                              &
+        call gzip_defleat_char_begin(ilen_line,                         &
      &     multi_int_textline(numdir, idx_tmp),                         &
      &     ilen_in, ilen_used, zbuf%gzip_buf(1))
         do i = 2, nnod - 1

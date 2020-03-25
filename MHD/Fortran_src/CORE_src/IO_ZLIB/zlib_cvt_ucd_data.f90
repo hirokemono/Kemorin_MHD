@@ -77,7 +77,7 @@
 !
           inod_gl = ist+1 + istack_merged_intnod
           dat_1(1:ntot_comp) = vect(ist+1,1:ntot_comp)
-          call gzip_defleat_begin(ilen_line,                            &
+          call gzip_defleat_char_begin(ilen_line,                       &
      &        ucd_each_field(inod_gl, ntot_comp, dat_1),                &
      &        ilen_in, ilen_used, zbuf%gzip_buf(zbuf%ilen_gzipped+1))
 !
@@ -151,7 +151,7 @@
 !
           iele_gl = ist+1 + istack_merged_ele
           ie0(1:nnod_ele) = ie(ist+1,1:nnod_ele)
-          call gzip_defleat_begin(ilen_line,                            &
+          call gzip_defleat_char_begin(ilen_line,                       &
      &      ucd_each_connect(iele_gl, nnod_ele, ie0),                   &
      &        ilen_in, ilen_used, zbuf%gzip_buf(zbuf%ilen_gzipped+1))
           do i = ist+2, ist+nline-1

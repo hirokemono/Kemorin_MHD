@@ -87,10 +87,9 @@
 !          if(my_rank .eq. 0) write(*,*) 'start ',                      &
 !     &      ist+1, ist+nline, nline, zbuf%ilen_gzipped+1, ilen_in
           xx_tmp(1:numdir) = xx(ist+1,1:numdir)
-          call gzip_defleat_begin(ilen_line,                            &
+          call gzip_defleat_char_begin(ilen_line,                       &
      &      int8_and_vector_textline(id_global(ist+1), numdir, xx_tmp), &
      &      ilen_in, ilen_used, zbuf%gzip_buf(zbuf%ilen_gzipped+1))
-!          if(my_rank .eq. 0) write(*,*) 'gzip_defleat_begin', ilen_used
 !
           do i = ist+2, ist+nline-1
             xx_tmp(1:numdir) = xx(i,1:numdir)
@@ -248,7 +247,8 @@
           ilen_in = int(min(zbuf%ilen_gz-zbuf%ilen_gzipped, ilen_tmp))
 !
           v1(1:ndir) = vector(ist+1,1:ndir)
-          call gzip_defleat_begin(ilen_line, vector_textline(ndir, v1), &
+          call gzip_defleat_char_begin(ilen_line,                       &
+     &        vector_textline(ndir, v1),                                &
      &        ilen_in, ilen_used, zbuf%gzip_buf(zbuf%ilen_gzipped+1))
 !
           do i = ist+2, ist+nline-1

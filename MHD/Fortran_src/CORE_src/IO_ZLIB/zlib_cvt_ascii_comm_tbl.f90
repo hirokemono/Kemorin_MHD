@@ -83,11 +83,9 @@
             zbuf%ilen_gzipped = zbuf%ilen_gzipped + ilen_used
             exit
           else
-            call gzip_defleat_begin(ilen_line,                          &
+            call gzip_defleat_char_begin(ilen_line,                     &
      &          multi_int_textline(ncolumn, int_dat(ist+1)),            &
      &          ilen_in, ilen_used, zbuf%gzip_buf(zbuf%ilen_gzipped+1))
-!            if(my_rank .eq. 0) write(*,*) 'gzip_defleat_begin',        &
-!     &                       ist+ncolumn, ilen_used
 !
             do i = ist+ncolumn+1, ist+nitem_c, ncolumn
               call gzip_defleat_char_cont(ilen_line,                    &
@@ -250,11 +248,9 @@
             zbuf%ilen_gzipped = zbuf%ilen_gzipped + ilen_used
             exit
           else
-            call gzip_defleat_begin(ilen_line,                          &
+            call gzip_defleat_char_begin(ilen_line,                     &
      &          mul_6digit_int_line(ncolumn, int_dat(ist+1)),           &
      &          ilen_in, ilen_used, zbuf%gzip_buf(zbuf%ilen_gzipped+1))
-!            if(my_rank .eq. 0) write(*,*) 'gzip_defleat_begin',        &
-!     &                       ist+ncolumn, ilen_used
 !
             do i = ist+ncolumn+1, ist+nitem_c, ncolumn
               call gzip_defleat_char_cont(ilen_line,                    &
