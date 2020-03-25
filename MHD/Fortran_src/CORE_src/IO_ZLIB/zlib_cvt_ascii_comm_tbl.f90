@@ -188,9 +188,9 @@
           end if
         end do
 !
-        call dealloc_textbuffer_for_zlib(zbuf)
       end if
 !
+      call dealloc_textbuffer_for_zlib(zbuf)
       call dealloc_zip_buffer(zbuf)
 !
       end subroutine infleate_comm_table
