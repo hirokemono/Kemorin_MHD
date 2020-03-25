@@ -256,7 +256,6 @@
 !
       subroutine gzip_defleat_char_last(len_buf, textbuf, z_buf)
 !
-      integer, intent(in) :: len_gzipbuf
       integer, intent(in) :: len_buf
       character(len=1), target, intent(in) :: textbuf(len_buf)
       type(zlib_transfer), intent(inout) :: z_buf
