@@ -92,6 +92,8 @@
 !
       subroutine gz_mpi_write_int8_vector_b(IO_param, num, int8_dat)
 !
+      use data_convert_by_zlib
+!
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
       integer(kind = kint_gl), intent(in) :: num
       integer(kind = kint_gl), intent(in) :: int8_dat(num)
@@ -120,6 +122,8 @@
 ! -----------------------------------------------------------------------
 !
       subroutine gz_mpi_write_1d_vector_b(IO_param, num, real_dat)
+!
+      use data_convert_by_zlib
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
       integer(kind = kint_gl), intent(in) :: num
@@ -209,6 +213,8 @@
 !
       subroutine gz_mpi_read_int8_vector_b(IO_param, num, int8_dat)
 !
+      use data_convert_by_zlib
+!
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !
       integer(kind = kint_gl), intent(in) :: num
@@ -249,6 +255,8 @@
 ! -----------------------------------------------------------------------
 !
       subroutine gz_mpi_read_1d_vector_b(IO_param, num, real_dat)
+!
+      use data_convert_by_zlib
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !

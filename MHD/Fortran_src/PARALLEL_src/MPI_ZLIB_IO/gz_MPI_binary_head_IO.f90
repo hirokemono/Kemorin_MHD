@@ -46,6 +46,8 @@
 !
       subroutine gz_mpi_write_byte_flag(IO_param)
 !
+      use data_convert_by_zlib
+!
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !
       integer(kind = MPI_OFFSET_KIND) :: ioffset
@@ -119,6 +121,8 @@
 !
       subroutine gz_mpi_write_mul_int8head_b(IO_param, num, int8_dat)
 !
+      use data_convert_by_zlib
+!
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
       integer(kind = kint_gl), intent(in) :: num
       integer(kind = kint_gl), intent(in) :: int8_dat(num)
@@ -143,6 +147,8 @@
 ! -----------------------------------------------------------------------
 !
       subroutine gz_mpi_write_mul_charahead_b(IO_param, num, chara_dat)
+!
+      use data_convert_by_zlib
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
       integer(kind = kint), intent(in) :: num
@@ -170,6 +176,8 @@
 ! -----------------------------------------------------------------------
 !
       subroutine gz_mpi_write_mul_realhead_b(IO_param, num, real_dat)
+!
+      use data_convert_by_zlib
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
       integer(kind = kint), intent(in) :: num
@@ -201,6 +209,7 @@
 !
       use transfer_to_long_integers
       use binary_IO
+      use data_convert_by_zlib
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !
@@ -282,6 +291,7 @@
       subroutine gz_mpi_read_mul_int8head_b(IO_param, num, int8_dat)
 !
       use transfer_to_long_integers
+      use data_convert_by_zlib
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
       integer(kind = kint_gl), intent(in) :: num
@@ -316,6 +326,7 @@
       subroutine gz_mpi_read_mul_charahead_b(IO_param, num, chara_dat)
 !
       use transfer_to_long_integers
+      use data_convert_by_zlib
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
       integer(kind=kint), intent(in) :: num
@@ -347,6 +358,7 @@
       subroutine gz_mpi_read_mul_realhead_b(IO_param, num, real_dat)
 !
       use transfer_to_long_integers
+      use data_convert_by_zlib
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
       integer(kind=kint), intent(in) :: num

@@ -141,6 +141,8 @@
 !
       subroutine defleat_int8_vector_mul(nloop, i8_array, zbuf)
 !
+      use data_convert_by_zlib
+!
       integer(kind = kint), intent(in) :: nloop
       type(int8array_IO), intent(in) ::  i8_array(nloop)
       type(buffer_4_gzip), intent(inout) :: zbuf(nloop)
@@ -160,6 +162,7 @@
       subroutine defleat_int_vector_mul(nloop, i_array, zbuf)
 !
       use transfer_to_long_integers
+      use data_convert_by_zlib
 !
       integer(kind = kint), intent(in) :: nloop
       type(intarray_IO), intent(in) ::  i_array(nloop)
@@ -183,6 +186,7 @@
       subroutine defleat_int2d_vector_mul(nloop, iv_array, zbuf)
 !
       use transfer_to_long_integers
+      use data_convert_by_zlib
 !
       integer(kind = kint), intent(in) :: nloop
       type(ivecarray_IO), intent(in) ::  iv_array(nloop)
@@ -207,6 +211,8 @@
 !
       subroutine defleat_1d_vector_mul(nloop, r_array, zbuf)
 !
+      use data_convert_by_zlib
+!
       integer(kind = kint), intent(in) :: nloop
       type(realarray_IO), intent(in) ::  r_array(nloop)
       type(buffer_4_gzip), intent(inout) :: zbuf(nloop)
@@ -224,6 +230,8 @@
 ! -----------------------------------------------------------------------
 !
       subroutine defleat_2d_vector_mul(nloop, v_array, zbuf)
+!
+      use data_convert_by_zlib
 !
       integer(kind = kint), intent(in) :: nloop
       type(vectarray_IO), intent(in) ::  v_array(nloop)
@@ -246,6 +254,8 @@
 !
       subroutine infleat_int8_vector_mul                                &
      &         (iflag_bin_swap, nloop, i8_array, zbuf)
+!
+      use data_convert_by_zlib
 !
       integer, intent(in) :: iflag_bin_swap
       integer(kind = kint), intent(in) :: nloop
@@ -275,6 +285,7 @@
      &         (iflag_bin_swap, nloop, i_array, zbuf)
 !
       use transfer_to_long_integers
+      use data_convert_by_zlib
 !
       integer, intent(in) :: iflag_bin_swap
       integer(kind = kint), intent(in) :: nloop
@@ -307,6 +318,7 @@
      &        (iflag_bin_swap, nloop, iv_array, zbuf)
 !
       use transfer_to_long_integers
+      use data_convert_by_zlib
 !
       integer, intent(in) :: iflag_bin_swap
       integer(kind = kint), intent(in) :: nloop
@@ -339,6 +351,8 @@
       subroutine infleat_1d_vector_mul                                  &
      &         (iflag_bin_swap, nloop, r_array, zbuf)
 !
+      use data_convert_by_zlib
+!
       integer, intent(in) :: iflag_bin_swap
       integer(kind = kint), intent(in) :: nloop
       type(realarray_IO), intent(inout) ::  r_array(nloop)
@@ -365,6 +379,8 @@
 !
       subroutine infleat_2d_vector_mul                                  &
      &         (iflag_bin_swap, nloop, v_array, zbuf)
+!
+      use data_convert_by_zlib
 !
       integer, intent(in) :: iflag_bin_swap
       integer(kind = kint), intent(in) :: nloop
