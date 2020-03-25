@@ -63,10 +63,12 @@ int skip_comment_gz_c(int *num_buffer, char *buf);
 
 void gzip_defleat_once(const int *len_buf, const void *buf, const int *len_gzipbuf, 
                        int *len_gzipped, char *gzipbuf);
-void gzip_defleat_begin(int *len_buf, const void *buf, int *len_gzipbuf, 
+void gzip_defleat_begin(const int *len_buf, const void *buf, const int *len_gzipbuf, 
                         int *len_gzipped, char *gzipbuf);
-void gzip_defleat_cont(int *len_buf, const void *buf, int *len_gzipbuf, int *len_gzipped);
-void gzip_defleat_last(int *len_buf, const void *buf, int *len_gzipbuf, int *len_gzipped);
+void gzip_defleat_cont(const int *len_buf, const void *buf, const int *len_gzipbuf, 
+                       int *len_gzipped);
+void gzip_defleat_last(const int *len_buf, const void *buf, const int *len_gzipbuf, 
+                       int *len_gzipped);
 
 void gzip_infleat_once(const int *len_gzipbuf, const char *gzipbuf, const int *len_buf, 
                        void *buf, int *len_gzipped);
