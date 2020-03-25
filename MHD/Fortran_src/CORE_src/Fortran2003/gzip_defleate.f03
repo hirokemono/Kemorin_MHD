@@ -46,69 +46,69 @@
 !
 !  ---------------------------------------------------------------------
 !
-!        subroutine gzip_defleat_once                                   &
-!     &           (len_buf, buf, len_gzipbuf, len_gzipped, gzipbuf)     &
-!     &            BIND(C, name = 'gzip_defleat_once')
+        subroutine gzip_defleat_once                                    &
+     &           (len_buf, buf, len_gzipbuf, len_gzipped, gzipbuf)      &
+     &            BIND(C, name = 'gzip_defleat_once')
 !
-!        use ISO_C_BINDING
+        use ISO_C_BINDING
 !
-!        integer(C_int), intent(in) :: len_gzipbuf
-!        character(C_char), intent(in) :: gzipbuf(*)
-!        integer(C_int), intent(in) :: len_buf
+        integer(C_int), intent(in) :: len_buf
+        type(C_ptr), value, intent(in) :: buf
 !
-!        type(C_ptr), value :: buf
-!        integer(C_int), intent(inout) :: len_gzipped
+        integer(C_int), intent(in) :: len_gzipbuf
+        character(C_char), intent(inout) :: gzipbuf(*)
+        integer(C_int), intent(inout) :: len_gzipped
 !
-!        end subroutine gzip_defleat_once
-!
-!  ---------------------------------------------------------------------
-!
-!        subroutine gzip_defleat_begin                                  &
-!     &           (len_buf, buf, len_gzipbuf, len_gzipped, gzipbuf)     &
-!     &            BIND(C, name = 'gzip_defleat_begin')
-!
-!        use ISO_C_BINDING
-!
-!        integer(C_int), intent(in) :: len_gzipbuf
-!        character(C_char), intent(in) :: gzipbuf(*)
-!        integer(C_int), intent(in) :: len_buf
-!
-!        type(C_ptr), value :: buf
-!        integer(C_int), intent(inout) :: len_gzipped
-!
-!        end subroutine gzip_defleat_begin
+        end subroutine gzip_defleat_once
 !
 !  ---------------------------------------------------------------------
 !
-!        subroutine gzip_defleat_cont                                   &
-!     &           (len_buf, buf, len_gzipbuf, len_gzipped)              &
-!     &            BIND(C, name = 'gzip_defleat_cont')
+        subroutine gzip_defleat_begin                                   &
+     &           (len_buf, buf, len_gzipbuf, len_gzipped, gzipbuf)      &
+     &            BIND(C, name = 'gzip_defleat_begin')
 !
-!        use ISO_C_BINDING
+        use ISO_C_BINDING
 !
-!        integer(C_int), intent(in) :: len_gzipbuf
-!        integer(C_int), intent(in) :: len_buf
+        integer(C_int), intent(in) :: len_buf
+        type(C_ptr), value, intent(in) :: buf
 !
-!        type(C_ptr), value :: buf
-!        integer(C_int), intent(inout) :: len_gzipped
+        integer(C_int), intent(in) :: len_gzipbuf
+        character(C_char), intent(inout) :: gzipbuf(*)
+        integer(C_int), intent(inout) :: len_gzipped
 !
-!        end subroutine gzip_defleat_cont
+        end subroutine gzip_defleat_begin
 !
 !  ---------------------------------------------------------------------
 !
-!        subroutine gzip_defleat_last                                   &
-!     &           (len_buf, buf, len_gzipbuf, len_gzipped)              &
-!     &            BIND(C, name = 'gzip_defleat_last')
+        subroutine gzip_defleat_cont                                    &
+     &           (len_buf, buf, len_gzipbuf, len_gzipped)               &
+     &            BIND(C, name = 'gzip_defleat_cont')
 !
-!        use ISO_C_BINDING
+        use ISO_C_BINDING
 !
-!        integer(C_int), intent(in) :: len_gzipbuf
-!        integer(C_int), intent(in) :: len_buf
+        integer(C_int), intent(in) :: len_buf
+        type(C_ptr), value, intent(in) :: buf
 !
-!        type(C_ptr), value :: buf
-!        integer(C_int), intent(inout) :: len_gzipped
+        integer(C_int), intent(in) :: len_gzipbuf
+        integer(C_int), intent(inout) :: len_gzipped
 !
-!        end subroutine gzip_defleat_last
+        end subroutine gzip_defleat_cont
+!
+!  ---------------------------------------------------------------------
+!
+        subroutine gzip_defleat_last                                    &
+     &           (len_buf, buf, len_gzipbuf, len_gzipped)               &
+     &            BIND(C, name = 'gzip_defleat_last')
+!
+        use ISO_C_BINDING
+!
+        integer(C_int), intent(in) :: len_buf
+        type(C_ptr), value, intent(in) :: buf
+!
+        integer(C_int), intent(in) :: len_gzipbuf
+        integer(C_int), intent(inout) :: len_gzipped
+!
+        end subroutine gzip_defleat_last
 !
 !  ---------------------------------------------------------------------
 !
@@ -123,11 +123,11 @@
       subroutine gzip_defleat_real_once                                 &
      &         (num, data, len_gzipbuf, z_buf, gzipbuf)
 !
-      integer, intent(in) :: len_gzipbuf
       integer, intent(in) :: num
-      character(len=1), target, intent(inout) :: gzipbuf(len_gzipbuf)
-!
       real(kind = kreal), target, intent(in) :: data(num)
+      integer, intent(in) :: len_gzipbuf
+!
+      character(len=1), target, intent(inout) :: gzipbuf(len_gzipbuf)
       type(zlib_transfer), intent(inout) :: z_buf
 !
       real(C_double), pointer :: dat_p(:)
@@ -139,7 +139,7 @@
       dat_p => data
 !
       write(*,*) 'gzip_defleat_real_once'
-      call gzip_defleat_once(z_buf%len_buf, data(1),               &
+      call gzip_defleat_once(z_buf%len_buf, C_LOC(dat_p),               &
      &    z_buf%len_gzipbuf, z_buf%len_used, z_buf%gzipbuf_p)
 !
       end subroutine gzip_defleat_real_once
@@ -149,11 +149,11 @@
       subroutine gzip_defleat_int8_once                                 &
      &         (num, int8_dat, len_gzipbuf, z_buf, gzipbuf)
 !
-      integer, intent(in) :: len_gzipbuf
       integer, intent(in) :: num
-      character(len=1), target, intent(inout) :: gzipbuf(len_gzipbuf)
-!
       integer(kind = kint_gl), target, intent(in) :: int8_dat(num)
+      integer, intent(in) :: len_gzipbuf
+!
+      character(len=1), target, intent(inout) :: gzipbuf(len_gzipbuf)
       type(zlib_transfer), intent(inout) :: z_buf
 !
       integer(C_long), pointer :: idat8_p(:)
@@ -165,7 +165,7 @@
       idat8_p => int8_dat
 !
       write(*,*) 'gzip_defleat_int8_once'
-      call gzip_defleat_once(z_buf%len_buf, int8_dat(1),            &
+      call gzip_defleat_once(z_buf%len_buf, C_LOC(idat8_p),             &
      &    z_buf%len_gzipbuf, z_buf%len_used, z_buf%gzipbuf_p)
 !
       end subroutine gzip_defleat_int8_once
@@ -175,11 +175,11 @@
       subroutine gzip_defleat_int4_once                                 &
      &         (num, int4_dat, len_gzipbuf, z_buf, gzipbuf)
 !
-      integer, intent(in) :: len_gzipbuf
       integer, intent(in) :: num
-      character(len=1), target, intent(inout) :: gzipbuf(len_gzipbuf)
-!
       integer(kind = 4), target, intent(in) :: int4_dat(num)
+      integer, intent(in) :: len_gzipbuf
+!
+      character(len=1), target, intent(inout) :: gzipbuf(len_gzipbuf)
       type(zlib_transfer), intent(inout) :: z_buf
 !
       integer(C_int), pointer :: idat4_p(:)
@@ -191,7 +191,7 @@
       idat4_p => int4_dat
 !
       write(*,*) 'gzip_defleat_int4_once'
-      call gzip_defleat_once(z_buf%len_buf, int4_dat(1),        &
+      call gzip_defleat_once(z_buf%len_buf, C_LOC(idat4_p),             &
      &    z_buf%len_gzipbuf, z_buf%len_used, z_buf%gzipbuf_p)
 !
       end subroutine gzip_defleat_int4_once
@@ -202,20 +202,21 @@
       subroutine gzip_defleat_char_once                                 &
      &         (len_buf, textbuf, len_gzipbuf, z_buf, gzipbuf)
 !
-      integer, intent(in) :: len_gzipbuf
-      character(len=1), target, intent(inout) :: gzipbuf(len_gzipbuf)
       integer, intent(in) :: len_buf
       character(len=1), target, intent(in) :: textbuf(len_buf)
+      integer, intent(in) :: len_gzipbuf
 !
+      character(len=1), target, intent(inout) :: gzipbuf(len_gzipbuf)
       type(zlib_transfer), intent(inout) :: z_buf
 !
 !
       z_buf%len_gzipbuf = int(len_gzipbuf,KIND(z_buf%len_gzipbuf))
       z_buf%gzipbuf_p => gzipbuf
       z_buf%len_buf =     int(len_buf,KIND(z_buf%len_buf))
+      z_buf%buf_p => textbuf
 !
       write(*,*) 'gzip_defleat_once'
-      call gzip_defleat_once(z_buf%len_buf, textbuf(1),       &
+      call gzip_defleat_once(z_buf%len_buf, C_LOC(z_buf%buf_p),         &
      &    z_buf%len_gzipbuf, z_buf%len_used, z_buf%gzipbuf_p)
 !
       end subroutine gzip_defleat_char_once
@@ -226,19 +227,20 @@
       subroutine gzip_defleat_char_begin  &
      &         (len_buf, textbuf, len_gzipbuf, z_buf, gzipbuf)
 !
-      integer, intent(in) :: len_gzipbuf
-      character(len=1), target, intent(inout) :: gzipbuf(len_gzipbuf)
       integer, intent(in) :: len_buf
       character(len=1), target, intent(in) :: textbuf(len_buf)
+      integer, intent(in) :: len_gzipbuf
+      character(len=1), target, intent(inout) :: gzipbuf(len_gzipbuf)
       type(zlib_transfer), intent(inout) :: z_buf
 !
 !
       z_buf%len_gzipbuf = int(len_gzipbuf,KIND(z_buf%len_gzipbuf))
       z_buf%gzipbuf_p => gzipbuf
       z_buf%len_buf =     int(len_buf,KIND(z_buf%len_buf))
+      z_buf%buf_p => textbuf
 !
       write(*,*) 'gzip_defleat_begin'
-      call gzip_defleat_begin(z_buf%len_buf, textbuf(1),       &
+      call gzip_defleat_begin(z_buf%len_buf, C_LOC(z_buf%buf_p),        &
      &    z_buf%len_gzipbuf, z_buf%len_used, z_buf%gzipbuf_p)
 !
       end subroutine gzip_defleat_char_begin
@@ -253,9 +255,10 @@
 !
 !
       z_buf%len_buf =     int(len_buf,KIND(z_buf%len_buf))
+      z_buf%buf_p => textbuf
 !
       write(*,*) 'gzip_defleat_cont'
-      call gzip_defleat_cont(z_buf%len_buf, textbuf(1),         &
+      call gzip_defleat_cont(z_buf%len_buf, C_LOC(z_buf%buf_p),         &
      &    z_buf%len_gzipbuf, z_buf%len_used)
 !
       end subroutine gzip_defleat_char_cont
@@ -270,9 +273,10 @@
 !
 !
       z_buf%len_buf =     int(len_buf,KIND(z_buf%len_buf))
+      z_buf%buf_p => textbuf
 !
       write(*,*) 'gzip_defleat_last'
-      call gzip_defleat_last(z_buf%len_buf, textbuf(1),  &
+      call gzip_defleat_last(z_buf%len_buf, C_LOC(z_buf%buf_p),         &
      &    z_buf%len_gzipbuf, z_buf%len_used)
 !
       end subroutine gzip_defleat_char_last
