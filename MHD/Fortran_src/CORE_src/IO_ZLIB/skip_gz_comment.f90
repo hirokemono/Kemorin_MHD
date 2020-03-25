@@ -133,6 +133,7 @@
       integer(kind = 4) :: num_word4, nchara4
 !
 !
+      write(*,*) 'get_one_line_from_gz'
       call get_one_line_from_gz(nbuf, num_word4, nchara4, textbuf)
       num_word = num_word4
       nchara = nchara4

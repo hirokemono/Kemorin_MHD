@@ -43,7 +43,6 @@
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
       integer, parameter :: int_dat(1) = (/i_UNIX/)
-      integer :: ilen_in
 !
 !
       zbuf%ilen_gzipped = 0
