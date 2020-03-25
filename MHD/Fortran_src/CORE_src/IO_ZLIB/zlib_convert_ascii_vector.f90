@@ -94,11 +94,10 @@
 !
           do i = ist+2, ist+nline-1
             xx_tmp(1:numdir) = xx(i,1:numdir)
-            call gzip_defleat_cont(ilen_line,                           &
+            call gzip_defleat_char_cont(ilen_line,                      &
      &          int8_and_vector_textline(id_global(i), numdir, xx_tmp), &
      &          ilen_in, ilen_used)
           end do
-!          if(my_rank .eq. 0) write(*,*) 'gzip_defleat_cont', ilen_used
 !
           xx_tmp(1:numdir) = xx(ist+nline,1:numdir)
           call gzip_defleat_char_last(ilen_line,                        &
@@ -254,7 +253,7 @@
 !
           do i = ist+2, ist+nline-1
             v1(1:ndir) = vector(i,1:ndir)
-            call gzip_defleat_cont(ilen_line,                           &
+            call gzip_defleat_char_cont(ilen_line,                      &
      &         vector_textline(ndir, v1), ilen_in, ilen_used)
           end do
 !

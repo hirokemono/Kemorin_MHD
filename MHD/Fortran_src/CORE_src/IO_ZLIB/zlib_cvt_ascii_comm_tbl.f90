@@ -90,12 +90,10 @@
 !     &                       ist+ncolumn, ilen_used
 !
             do i = ist+ncolumn+1, ist+nitem_c, ncolumn
-              call gzip_defleat_cont(ilen_line,                         &
+              call gzip_defleat_char_cont(ilen_line,                    &
      &            multi_int_textline(ncolumn, int_dat(i)),              &
      &            ilen_in, ilen_used)
             end do
-!            if(my_rank .eq. 0) write(*,*) 'gzip_defleat_cont',         &
-!     &                       ist+nitem_c, ilen_used
 !
             nrest = nitem_2 - nitem_c
             call gzip_defleat_char_last(len_multi_int_textline(nrest),  &
@@ -259,12 +257,10 @@
 !     &                       ist+ncolumn, ilen_used
 !
             do i = ist+ncolumn+1, ist+nitem_c, ncolumn
-              call gzip_defleat_cont(ilen_line,                         &
+              call gzip_defleat_char_cont(ilen_line,                    &
      &            mul_6digit_int_line(ncolumn, int_dat(i)),             &
      &            ilen_in, ilen_used)
             end do
-!            if(my_rank .eq. 0) write(*,*) 'gzip_defleat_cont',         &
-!     &                       ist+nitem_c, ilen_used
 !
             nrest = nitem_2 - nitem_c
             ilength = int(len_multi_6digit_line(nrest))

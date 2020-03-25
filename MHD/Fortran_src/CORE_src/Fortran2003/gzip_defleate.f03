@@ -246,6 +246,7 @@
 !      type(zlib_transfer), intent(inout) :: z_buf
 !
 !
+      write(*,*) 'gzip_defleat_cont'
       call gzip_defleat_cont(len_buf, textbuf(1),         &
      &    len_gzipbuf, len_used)
 !
