@@ -57,7 +57,6 @@
 !
 !
       call link_text_buffer_for_zlib(len_buf, textbuf, zbuf)
-      write(*,*) 'get_one_line_from_gz'
       call get_one_line_from_gz(zbuf%len_buf, zbuf%num_word,            &
      &    zbuf%len_used, zbuf%buf_p)
       call unlink_text_buffer_for_zlib(zbuf)

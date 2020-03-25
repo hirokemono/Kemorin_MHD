@@ -42,16 +42,6 @@
 !void gzread_64bit_f(int *iflag_swap, int *ilength, char *textbuf, int *ierr);
 !void gzwrite_f(int *ilength, char *textbuf, int *ierr);
 !
-!void get_one_line_from_gz(int *num_buffer, int *num_word, int *nchara, char *line_buf);
-!
-!void gzip_defleat_once(int *len_buf, const char *buf, int *len_gzipbuf, 
-!                       int *len_gzipped, char *gzipbuf);
-!void gzip_defleat_begin(int *len_buf, const char *buf, int *len_gzipbuf, 
-!                        int *len_gzipped, char *gzipbuf);
-!void gzip_defleat_cont(int *len_buf, const char *buf, int *len_gzipbuf, int *len_gzipped);
-!void gzip_defleat_last(int *len_buf, const char *buf, int *len_gzipbuf, int *len_gzipped);
-!
-!!
 !
 !void write_png_rgba_c(const char *fhead, int *num_x, int *num_y, 
 !			const unsigned char *cimage);

@@ -116,14 +116,14 @@
       integer (kind =kint) :: i, ist
 !
 !
-      read(textbuf,*) num_input, ncomp_in(1:num_word-1)
+      read(textbuf,*) num_input, ncomp_in(1:zbuf1%num_word-1)
 !
-      if(num_input .gt. num_word-1) then
-        ist = num_word-1
+      if(num_input .gt. zbuf1%num_word-1) then
+        ist = zbuf1%num_word-1
         do
           call get_one_line_from_gz_f
-          read(textbuf,*) ncomp_in(ist+1:ist+num_word)
-          ist = ist + num_word
+          read(textbuf,*) ncomp_in(ist+1:ist+zbuf1%num_word)
+          ist = ist + zbuf1%num_word
           if(ist .gt. num_input) exit
         end do
       end if
@@ -164,14 +164,14 @@
 !
       do inod = 1, nnod_in
         call get_one_line_from_gz_f
-        read(textbuf,*) itmp, dat_in(inod,1:num_word-1)
+        read(textbuf,*) itmp, dat_in(inod,1:zbuf1%num_word-1)
 !
-        if(ncomp_dat .gt. num_word-1) then
-          ist = num_word-1
+        if(ncomp_dat .gt. zbuf1%num_word-1) then
+          ist = zbuf1%num_word-1
           do
             call get_one_line_from_gz_f
-            read(textbuf,*) dat_in(inod,ist+1:ist+num_word)
-            ist = ist + num_word
+            read(textbuf,*) dat_in(inod,ist+1:ist+zbuf1%num_word)
+            ist = ist + zbuf1%num_word
             if(ist .gt. ncomp_dat) exit
           end do
         end if

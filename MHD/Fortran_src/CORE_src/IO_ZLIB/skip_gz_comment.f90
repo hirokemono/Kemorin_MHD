@@ -38,16 +38,15 @@
 !
       use m_precision
       use m_constants
+      use t_buffer_4_gzip
 !
       implicit none
 !
-      integer(kind = 4), parameter :: nbuf = 65535
-      integer (kind =kint) :: num_word, nchara
+      integer(kind = 4), parameter, private :: nbuf = 65535
       character(len=nbuf) :: textbuf
-      character(len=1), private :: chara_flag
 !
-      private :: nbuf
-      private :: nchara
+      type(buffer_4_gzip) :: zbuf1
+!
       private :: skip_gz_comment_get_nword
 !
 !------------------------------------------------------------------
@@ -131,15 +130,10 @@
 !
       subroutine get_one_line_from_gz_f
 !
-      use t_buffer_4_gzip
       use calypso_c_binding
 !
-      type(buffer_4_gzip) :: zbuf
 !
-!
-      call get_one_line_from_gz_f03(nbuf, textbuf, zbuf)
-      num_word = zbuf%num_word
-      nchara =   zbuf%len_used
+      call get_one_line_from_gz_f03(nbuf, textbuf, zbuf1)
 !
       end subroutine get_one_line_from_gz_f
 !
@@ -213,7 +207,7 @@
 !
       call skip_gz_comment_get_nword
 !
-      write(charaint,'(i8)') min(int(nchara-ione),int(kchara))
+      write(charaint,'(i8)') min(int(zbuf1%len_used - 1), int(kchara))
       write(fmtchara,'(a2,a,a1)')                                       &
      &          '(a', trim(ADJUSTL(charaint)),')'
 
@@ -253,11 +247,12 @@
 !
       subroutine skip_gz_comment_get_nword
 !
+      character(len=1) :: chara_flag
 !      character(len=nbuf) :: tbuf2
 !
       do
         call get_one_line_from_gz_f
-        if(nchara .le. ione) cycle
+        if(zbuf1%len_used .le. 1) cycle
 !
         write(chara_flag,'(a1)',err=1) adjustl(textbuf)
         if(chara_flag.eq.char(10) .or. chara_flag.eq.char(13)) cycle
@@ -265,10 +260,10 @@
    1    continue
       end do
 !
-!      write(charaint,'(i8)') nchara-ione
+!      write(charaint,'(i8)') zbuf1%len_used - 1
 !      write(fmtchara,'(a2,a,a4)')  '(a', trim(ADJUSTL(charaint)),',a1)'
 !      write(tbuf2,fmtchara) textbuf, char(32)
-!      do i = 1, nchara+ione
+!      do i = 1, zbuf1%len_used + 1
 !        write(*,*) i, ichar(textbuf(i:i)), ichar(tbuf2(i:i)),       &
 !     &              textbuf(i:i), tbuf2(i:i)
 !      end do
@@ -283,20 +278,22 @@
       integer(kind = kint), intent(in) :: num
       real(kind = kreal), intent(inout) :: real_input(num)
 !
-      integer(kind = kint) :: ist
+      integer(kind = kint) :: ist, ist2, ied2
 !
 !
       if(num .le. 0) return
 !
       call skip_gz_comment_get_nword
-      read(textbuf,*) real_input(1:num_word)
+      read(textbuf,*) real_input(1:zbuf1%num_word)
 !
-      if(num .gt. num_word) then
-        ist = num_word
+      if(num .gt. zbuf1%num_word) then
+        ist = zbuf1%num_word
         do
           call get_one_line_from_gz_f
-          read(textbuf,*) real_input(ist+1:ist+num_word)
-          ist = ist + num_word
+          ist2 = ist + 1
+          ied2 = ist + zbuf1%num_word
+          ist = ied2
+          read(textbuf,*) real_input(:ied2)
           if(ist .ge. num) exit
         end do
       end if
@@ -325,20 +322,22 @@
       integer(kind = kint), intent(in) :: num
       integer(kind = kint), intent(inout) :: int_input(num)
 !
-      integer(kind = kint) :: ist
+      integer(kind = kint) :: ist, ist2, ied2
 !
 !
       if(num .le. 0) return
 !
       call skip_gz_comment_get_nword
-      read(textbuf,*) int_input(1:num_word)
+      read(textbuf,*) int_input(1:zbuf1%num_word)
 !
-      if(num .gt. num_word) then
-        ist = num_word
+      if(num .gt. zbuf1%num_word) then
+        ist = zbuf1%num_word
         do
           call get_one_line_from_gz_f
-          read(textbuf,*) int_input(ist+1:ist+num_word)
-          ist = ist + num_word
+          ist2 = ist + 1
+          ied2 = ist + zbuf1%num_word
+          ist = ied2
+          read(textbuf,*) int_input(ist2:ied2)
           if(ist .ge. num) exit
         end do
       end if
@@ -353,20 +352,24 @@
       integer(kind = kint), intent(in) :: istack(0:1)
       integer(kind = kint), intent(inout) :: item_sf(2,ntot)
 !
-      integer(kind = kint) :: ist
+      integer(kind = kint) :: ist, ist2, ied2
 !
 !
       if((istack(1) - istack(0)) .le. 0) return
 !
       call skip_gz_comment_get_nword
-      read(textbuf,*) item_sf(is1,istack(0)+1:istack(0)+num_word)
+      ist2 = istack(0) + 1
+      ied2 = istack(0) + zbuf1%num_word
+      read(textbuf,*) item_sf(is1,ist2:ied2)
 !
-      if((istack(1) - istack(0)) .gt. num_word) then
-        ist = istack(0) + num_word
+      if((istack(1) - istack(0)) .gt. zbuf1%num_word) then
+        ist = istack(0) + zbuf1%num_word
         do
           call get_one_line_from_gz_f
-          read(textbuf,*) item_sf(is1,ist+1:ist+num_word)
-          ist = ist + num_word
+          ist2 = ist + 1
+          ied2 = ist + zbuf1%num_word
+          ist = ied2
+          read(textbuf,*) item_sf(is1,ist2:ied2)
           if(ist .ge. istack(1)) exit
         end do
       end if
@@ -380,20 +383,22 @@
       integer(kind = kint), intent(in) :: num
       integer(kind = kint_gl), intent(inout) :: int8_input(num)
 !
-      integer(kind = kint) :: ist
+      integer(kind = kint) :: ist, ist2, ied2
 !
 !
       if(num .le. 0) return
 !
       call skip_gz_comment_get_nword
-      read(textbuf,*) int8_input(1:num_word)
+      read(textbuf,*) int8_input(1:zbuf1%num_word)
 !
-      if(num .gt. num_word) then
-        ist = num_word
+      if(num .gt. zbuf1%num_word) then
+        ist = zbuf1%num_word
         do
           call get_one_line_from_gz_f
-          read(textbuf,*) int8_input(ist+1:ist+num_word)
-          ist = ist + num_word
+          ist2 = ist + 1
+          ied2 = ist + zbuf1%num_word
+          ist = ied2
+          read(textbuf,*) int8_input(ist2:ied2)
           if(ist .ge. num) exit
         end do
       end if
