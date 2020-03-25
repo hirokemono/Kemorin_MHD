@@ -74,7 +74,7 @@
 !
         subroutine gzip_infleat_cont                                    &
      &           (len_gzipbuf, len_buf, buf, len_gzipped)               &
-     &            BIND(C, name = 'gzip_infleat_begin')
+     &            BIND(C, name = 'gzip_infleat_cont')
 !
         use ISO_C_BINDING
 !
@@ -249,7 +249,7 @@
       buf_p => buf
 !
       write(*,*) 'gzip_infleat_begin'
-      call gzip_infleat_begin(len_gzipbuf_c, gzipbuf(1), len_buf_c,     &
+      call gzip_infleat_begin(len_gzipbuf_c, gzipbuf_p(1), len_buf_c,   &
      &    C_LOC(buf_p), len_gzipped_c)
       len_gzipped = int(len_gzipped_c,KIND(len_gzipped))
 !
