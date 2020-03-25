@@ -258,12 +258,12 @@
           do i = ist+2, ist+nline-1
             v1(1:ndir) = vector(i,1:ndir)
             call gzip_defleat_char_cont(ilen_line,                      &
-     &         vector_textline(ndir, v1), ilen_in, z_buf)
+     &          vector_textline(ndir, v1), z_buf)
           end do
 !
           v1(1:ndir) = vector(ist+nline,1:ndir)
           call gzip_defleat_char_last(ilen_line,                        &
-     &        vector_textline(ndir, v1), ilen_in, z_buf)
+     &        vector_textline(ndir, v1), z_buf)
 !
           zbuf%ilen_gzipped = zbuf%ilen_gzipped                         &
      &                    + int(z_buf%len_used,KIND(zbuf%ilen_gzipped))
