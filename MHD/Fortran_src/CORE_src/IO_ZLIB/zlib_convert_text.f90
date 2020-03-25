@@ -46,11 +46,11 @@
 !
       zbuf%ilen_gz = int(dble(ilength) *1.01+24, KIND(zbuf%ilen_gz))
       call alloc_zip_buffer(zbuf)
+      zbuf%ilen_gzipped = 0
 !
       ilen_in = int(zbuf%ilen_gz)
       call gzip_defleat_char_once(ilength, chara_dat, ilen_in,          &
      &    zbuf, zbuf%gzip_buf(1))
-      zbuf%ilen_gzipped = int(zbuf%len_used,KIND(zbuf%ilen_gzipped))
 !
       end subroutine defleate_characters
 !
@@ -70,9 +70,9 @@
 !
 !
       ilen_in = int(zbuf%ilen_gz)
+      zbuf%ilen_gzipped = 0
       call gzip_infleat_char_once(ilen_in, zbuf%gzip_buf(1),            &
      &    ilength, text, zbuf)
-      zbuf%ilen_gzipped = int(zbuf%len_used,KIND(zbuf%ilen_gzipped))
 !
       call unlink_pointer_for_zlib_buffer(zbuf)
       call dealloc_zip_buffer(zbuf)
@@ -98,9 +98,9 @@
 !
 !
       ilen_in = int(zbuf%ilen_gz)
+      zbuf%ilen_gzipped = 0
       call gzip_infleat_char_once                                       &
      &   (ilen_in, zbuf%gzip_buf(1), kchara, textbuf_c, zbuf)
-      zbuf%ilen_gzipped = int(zbuf%len_used,KIND(zbuf%ilen_gzipped))
 !
       call read_each_field_name_buffer(textbuf_c, word, ilength)
       call unlink_pointer_for_zlib_buffer(zbuf)
@@ -112,10 +112,10 @@
 !
 !      write(*,*) 'word', ilength, trim(word)
 !
+      zbuf%ilen_gzipped = 0
       call alloc_textbuffer_for_zlib(ilength, zbuf)
       call gzip_infleat_char_once                                       &
      &   (ilen_in, zbuf%gzip_buf(1), ilength, zbuf%textbuf, zbuf)
-      zbuf%ilen_gzipped = int(zbuf%len_used,KIND(zbuf%ilen_gzipped))
 !
       call unlink_pointer_for_zlib_buffer(zbuf)
       call dealloc_textbuffer_for_zlib(zbuf)
@@ -137,11 +137,11 @@
 !
 !
       call alloc_textbuffer_for_zlib(ilength, zbuf)
+      zbuf%ilen_gzipped = 0
 !
       ilen_in = int(zbuf%ilen_gz)
       call gzip_infleat_char_once(ilen_in, zbuf%gzip_buf(1),            &
      &    ilength, zbuf%textbuf, zbuf)
-      zbuf%ilen_gzipped = int(zbuf%len_used,KIND(zbuf%ilen_gzipped))
 !
       call unlink_pointer_for_zlib_buffer(zbuf)
       call dealloc_textbuffer_for_zlib(zbuf)

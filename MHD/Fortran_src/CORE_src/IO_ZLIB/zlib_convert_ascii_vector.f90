@@ -59,22 +59,20 @@
       zbuf%ilen_gz                                                      &
      &      = int(dble(nnod*ilen_line)*1.01+24,KIND(zbuf%ilen_gz ))
       call alloc_zip_buffer(zbuf)
+      zbuf%ilen_gzipped = 0
 !
       if(nnod .le. 0) then
         ilen_in = int(zbuf%ilen_gz)
         call gzip_defleat_char_once(ione, char(10),                     &
      &      ilen_in, zbuf, zbuf%gzip_buf(1))
-        zbuf%ilen_gzipped = int(zbuf%len_used,KIND(zbuf%ilen_gzipped))
       else if(nnod .eq. 1) then
         ilen_in = int(zbuf%ilen_gz)
         call gzip_defleat_char_once(ilen_line,                          &
      &      int8_and_vector_textline                                    &
      &         (id_global(1), numdir, xx(1,1)),                         &
      &      ilen_in, zbuf, zbuf%gzip_buf(1))
-        zbuf%ilen_gzipped = int(zbuf%len_used,KIND(zbuf%ilen_gzipped))
       else if(nnod .gt. 0) then
         ist = 0
-        zbuf%ilen_gzipped = 0
         ilen_tmp = int(dble(huge_30)*1.01+24, KIND(ilen_tmp))
 !        if(my_rank .eq. 0) write(*,*)                                  &
 !     &     'defleate_node_position start ',                            &
@@ -135,22 +133,20 @@
 !
       ilen_line = len_int8_and_vector_textline(numdir)
       call alloc_textbuffer_for_zlib(ilen_line, zbuf)
+      zbuf%ilen_gzipped = 0
 !
       if(nnod .le. 0) then
         ilen_in = int(zbuf%ilen_gz)
         call gzip_infleat_char_once                                     &
      &    (ilen_in, zbuf%gzip_buf(1), ione, zbuf%textbuf(1), zbuf)
-        zbuf%ilen_gzipped = int(zbuf%len_used,KIND(zbuf%ilen_gzipped))
       else if(nnod .eq. 1) then
         ilen_in = int(zbuf%ilen_gz)
         call gzip_infleat_char_once                                     &
      &    (ilen_in, zbuf%gzip_buf(1), ilen_line, zbuf%textbuf, zbuf)
         call read_int8_and_vector_textline                              &
      &     (zbuf%textbuf(1), id_global(1), numdir, xx(1,1))
-        zbuf%ilen_gzipped = int(zbuf%len_used,KIND(zbuf%ilen_gzipped))
       else if(nnod .gt. 0) then
         ist = 0
-        zbuf%ilen_gzipped = 0
         ilen_tmp = int(dble(huge_30)*1.01+24, KIND(ilen_tmp))
 !        if(my_rank .eq. 0) write(*,*) 'all start ',                    &
 !     &      nnod, ilen_line, zbuf%ilen_gz, ilen_tmp
@@ -219,23 +215,22 @@
       zbuf%ilen_gz                                                      &
      &     = int(dble(nnod*ilen_line)*1.01+24, KIND(zbuf%ilen_gz))
       call alloc_zip_buffer(zbuf)
+      zbuf%ilen_gzipped = 0
 !
       if(nnod .le. 0 .and. iflag_blank .gt. 0) then
         ilen_in = int(zbuf%ilen_gz)
         call gzip_defleat_char_once(ione, char(10),                     &
      &      ilen_in, zbuf, zbuf%gzip_buf(1))
-        zbuf%ilen_gzipped = int(zbuf%len_used,KIND(zbuf%ilen_gzipped))
+!
       else if(nnod .eq. 1) then
         ilen_in = int(zbuf%ilen_gz)
         v1(1:ndir) = vector(1,1:ndir)
         call gzip_defleat_char_once(ilen_line,                          &
      &      vector_textline(ndir, v1),                                  &
      &      ilen_in, zbuf, zbuf%gzip_buf(1))
-        zbuf%ilen_gzipped = int(zbuf%len_used,KIND(zbuf%ilen_gzipped))
 !
       else if(nnod .gt. 1) then
         ist = 0
-        zbuf%ilen_gzipped = 0
         ilen_tmp = int(dble(huge_30)*1.01+24, KIND(ilen_tmp))
         do
           nline = int(min((nnod - ist), huge_30/ilen_line))
@@ -258,8 +253,6 @@
           ist = ist + nline
           if(ist .ge. nnod) exit
         end do
-      else
-        zbuf%ilen_gzipped = 0
       end if
 !
       end subroutine defleate_vector_txt
@@ -290,22 +283,20 @@
 !
       ilen_line = len_vector_textline(ndir)
       call alloc_textbuffer_for_zlib(ilen_line, zbuf)
+      zbuf%ilen_gzipped = 0
 !
       if(nnod .le. 0 .and. iflag_blank .gt. 0) then
         ilen_in = int(zbuf%ilen_gz)
         call gzip_infleat_char_once                                     &
      &    (ilen_in, zbuf%gzip_buf(1), ione, zbuf%textbuf(1), zbuf)
-        zbuf%ilen_gzipped = int(zbuf%len_used,KIND(zbuf%ilen_gzipped))
       else if(nnod .eq. 1) then
         ilen_in = int(zbuf%ilen_gz)
         call gzip_infleat_char_once(ilen_in, zbuf%gzip_buf(1),          &
      &      ilen_line, zbuf%textbuf, zbuf)
-        zbuf%ilen_gzipped = int(zbuf%len_used,KIND(zbuf%ilen_gzipped))
         call read_vector_textline(zbuf%textbuf(1), ndir, v1)
         vector(1,1:ndir) = v1(1:ndir)
       else if(nnod .gt. 0) then
         ist = 0
-        zbuf%ilen_gzipped = 0
         ilen_tmp = int(dble(huge_30)*1.01+24, KIND(ilen_tmp))
 !
         do

@@ -188,6 +188,8 @@
       call link_text_buffer_for_zlib(len_buf, textbuf, zbuf)
       call gzip_defleat_once(zbuf%len_buf, C_LOC(zbuf%buf_p),           &
      &    zbuf%len_gzipbuf, zbuf%len_used, zbuf%gzipbuf_p)
+      zbuf%ilen_gzipped = zbuf%ilen_gzipped                             &
+     &                   + int(zbuf%len_used,KIND(zbuf%ilen_gzipped))
 !
       end subroutine gzip_defleat_char_once
 !

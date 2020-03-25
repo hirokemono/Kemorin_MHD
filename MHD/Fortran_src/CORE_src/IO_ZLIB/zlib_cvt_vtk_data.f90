@@ -50,17 +50,16 @@
       zbuf%ilen_gz                                                      &
      &      = int(real(num*ilen_line) * 1.01 + 24,KIND(zbuf%ilen_gz))
       call alloc_zip_buffer(zbuf)
+      zbuf%ilen_gzipped = 0
 !
       if(num .eq. 1) then
         ilen_in = int(zbuf%ilen_gz)
         call gzip_defleat_char_once(ilen_line,                          &
      &      vtk_each_scalar(vect(1)),                                   &
      &      ilen_in, zbuf, zbuf%gzip_buf(1))
-        zbuf%ilen_gzipped = int(zbuf%len_used,KIND(zbuf%ilen_gzipped))
 !
       else if(num .gt. 1) then
         ist = 0
-        zbuf%ilen_gzipped = 0
         ilen_tmp = int(dble(huge_30)*1.01+24,KIND(ilen_tmp))
         do
           nline = int(min((num - ist), huge_30/ilen_line))
@@ -79,8 +78,6 @@
           ist = ist + nline
           if(ist .ge. num) exit
         end do
-      else
-        zbuf%ilen_gzipped = 0
       end if
 !
       end subroutine defleate_vtk_scalar
@@ -106,17 +103,16 @@
       zbuf%ilen_gz                                                      &
      &     = int(dble(num*ilen_line) * 1.01 + 24,KIND(zbuf%ilen_gz))
       call alloc_zip_buffer(zbuf)
+      zbuf%ilen_gzipped = 0
 !
       if(num .eq. 1) then
         ilen_in = int(zbuf%ilen_gz)
         call gzip_defleat_char_once(ilen_line,                          &
      &      vtk_each_vector(vect(1,1),vect(1,2),vect(1,3)),             &
      &      ilen_in, zbuf, zbuf%gzip_buf(1))
-        zbuf%ilen_gzipped = int(zbuf%len_used,KIND(zbuf%ilen_gzipped))
 !
       else if(num .gt. 1) then
         ist = 0
-        zbuf%ilen_gzipped = 0
         ilen_tmp = int(dble(huge_30)*1.01+24,KIND(ilen_tmp))
         do
           nline = int(min((num - ist), huge_30/ilen_line))
@@ -139,8 +135,6 @@
           ist = ist + nline
           if(ist .ge. num) exit
         end do
-      else
-        zbuf%ilen_gzipped = 0
       end if
 !
       end subroutine defleate_vtk_vector
@@ -255,6 +249,7 @@
       zbuf%ilen_gz                                                      &
      &    = int(real(nele*ilen_line) * 1.01 + 24, KIND(zbuf%ilen_gz))
       call alloc_zip_buffer(zbuf)
+      zbuf%ilen_gzipped = 0
 !
       if(nele .eq. 1) then
         ilen_in = int(zbuf%ilen_gz)
@@ -262,11 +257,9 @@
         call gzip_defleat_char_once(ilen_line,                          &
      &      vtk_each_connect(nnod_ele, ie0),                            &
      &      ilen_in, zbuf, zbuf%gzip_buf(1))
-        zbuf%ilen_gzipped = int(zbuf%len_used,KIND(zbuf%ilen_gzipped))
 !
       else if(nele .gt. 1) then
         ist = 0
-        zbuf%ilen_gzipped = 0
         ilen_tmp = int(dble(huge_30)*1.01+24,KIND(ilen_tmp))
         do
           nline = min((nele - ist), huge_30/ilen_line)
@@ -288,8 +281,6 @@
           ist = ist + nline
           if(ist .ge. nele) exit
         end do
-      else
-        zbuf%ilen_gzipped = 0
       end if
 !
       end subroutine defleate_vtk_connect
@@ -316,17 +307,16 @@
       zbuf%ilen_gz                                                      &
      &      = int(dble(nele*ilen_line) * 1.01 + 24,KIND(zbuf%ilen_gz))
       call alloc_zip_buffer(zbuf)
+      zbuf%ilen_gzipped = 0
 !
       if(nele .eq. 1) then
         ilen_in = int(zbuf%ilen_gz)
         call gzip_defleat_char_once(ilen_line,                          &
      &      vtk_each_cell_type(icellid),                                &
      &      ilen_in, zbuf, zbuf%gzip_buf(1))
-        zbuf%ilen_gzipped = int(zbuf%len_used,KIND(zbuf%ilen_gzipped))
 !
       else if(nele .gt. 1) then
         ist = 0
-        zbuf%ilen_gzipped = 0
         ilen_tmp = int(dble(huge_30)*1.01+24,KIND(ilen_tmp))
         do
           nline = min((nele - ist), huge_30/ilen_line)
@@ -344,8 +334,6 @@
           ist = ist + nline
           if(ist .ge. nele) exit
         end do
-      else
-        zbuf%ilen_gzipped = 0
       end if
 !
       end subroutine defleate_vtk_celltype

@@ -159,9 +159,6 @@
 !
         call gzip_defleat_char_once(ilen_line, chara_dat(ist+1),        &
      &      ilen_in, zbuf, zbuf%gzip_buf(zbuf%ilen_gzipped+1))
-!
-        zbuf%ilen_gzipped = zbuf%ilen_gzipped                           &
-     &                   + int(zbuf%len_used,KIND(zbuf%ilen_gzipped))
         ist = ist + nline
         if(ist .ge. num) exit
       end do
@@ -294,8 +291,6 @@
      &     (ilen_in, zbuf%gzip_buf(zbuf%ilen_gzipped+1),                &
      &      ilen_line, chara_dat(ist+1), zbuf)
 !
-        zbuf%ilen_gzipped = zbuf%ilen_gzipped                           &
-     &                   + int(zbuf%len_used,KIND(zbuf%ilen_gzipped))
         ist = ist + nline
         if(ist .ge. num) exit
       end do

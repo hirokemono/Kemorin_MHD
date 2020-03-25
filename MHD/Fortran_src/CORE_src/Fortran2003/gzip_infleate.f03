@@ -188,6 +188,8 @@
      &   (len_gzipbuf, gzipbuf, len_buf, textbuf, zbuf)
       call gzip_infleat_once(zbuf%len_gzipbuf, zbuf%gzipbuf_p,          &
      &    zbuf%len_buf, C_LOC(zbuf%buf_p), zbuf%len_used)
+      zbuf%ilen_gzipped = zbuf%ilen_gzipped                             &
+     &                   + int(zbuf%len_used,KIND(zbuf%ilen_gzipped))
 !
       end subroutine gzip_infleat_char_once
 !
