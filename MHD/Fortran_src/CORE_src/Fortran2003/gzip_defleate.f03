@@ -237,7 +237,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine gzip_defleat_char_cont  &
+      subroutine gzip_defleat_char_cont   &
      &         (len_buf, textbuf, len_gzipbuf, len_used)
 !
       integer, intent(in) :: len_gzipbuf
