@@ -36,6 +36,7 @@
 !
       use ISO_C_BINDING
       use m_precision
+      use gzip_infleate
 !
       implicit none
 !
@@ -120,15 +121,14 @@
 !  ---------------------------------------------------------------------
 !
       subroutine gzip_defleat_real_once                                 &
-     &         (num, data, len_gzipbuf, len_used, gzipbuf)
+     &         (num, data, len_gzipbuf, z_buf, gzipbuf)
 !
       integer, intent(in) :: len_gzipbuf
       integer, intent(in) :: num
       character(len=1), target, intent(inout) :: gzipbuf(len_gzipbuf)
 !
       real(kind = kreal), target, intent(in) :: data(num)
-      integer, intent(inout) :: len_used
-!      type(zlib_transfer), intent(inout) :: z_buf
+      type(zlib_transfer), intent(inout) :: z_buf
 !
       real(C_double), pointer :: dat_p(:)
 !
@@ -140,22 +140,21 @@
 !
       write(*,*) 'gzip_defleat_real_once'
       call gzip_defleat_once(num*kreal, data(1),               &
-     &    len_gzipbuf, len_used, gzipbuf)
+     &    len_gzipbuf, z_buf%len_used, gzipbuf)
 !
       end subroutine gzip_defleat_real_once
 !
 !  ---------------------------------------------------------------------
 !
       subroutine gzip_defleat_int8_once                                 &
-     &         (num, int8_dat, len_gzipbuf, len_used, gzipbuf)
+     &         (num, int8_dat, len_gzipbuf, z_buf, gzipbuf)
 !
       integer, intent(in) :: len_gzipbuf
       integer, intent(in) :: num
       character(len=1), target, intent(inout) :: gzipbuf(len_gzipbuf)
 !
       integer(kind = kint_gl), target, intent(in) :: int8_dat(num)
-      integer, intent(inout) :: len_used
-!      type(zlib_transfer), intent(inout) :: z_buf
+      type(zlib_transfer), intent(inout) :: z_buf
 !
       integer(C_long), pointer :: idat8_p(:)
 !
@@ -167,22 +166,21 @@
 !
       write(*,*) 'gzip_defleat_int8_once'
       call gzip_defleat_once(num*kint_gl, int8_dat(1),            &
-     &    len_gzipbuf, len_used, gzipbuf)
+     &    len_gzipbuf, z_buf%len_used, gzipbuf)
 !
       end subroutine gzip_defleat_int8_once
 !
 !  ---------------------------------------------------------------------
 !
       subroutine gzip_defleat_int4_once                                 &
-     &         (num, int4_dat, len_gzipbuf, len_used, gzipbuf)
+     &         (num, int4_dat, len_gzipbuf, z_buf, gzipbuf)
 !
       integer, intent(in) :: len_gzipbuf
       integer, intent(in) :: num
       character(len=1), target, intent(inout) :: gzipbuf(len_gzipbuf)
 !
       integer(kind = 4), target, intent(in) :: int4_dat(num)
-      integer, intent(inout) :: len_used
-!      type(zlib_transfer), intent(inout) :: z_buf
+      type(zlib_transfer), intent(inout) :: z_buf
 !
       integer(C_int), pointer :: idat4_p(:)
 !
@@ -194,7 +192,7 @@
 !
       write(*,*) 'gzip_defleat_int4_once'
       call gzip_defleat_once(num*4, int4_dat(1),        &
-     &    len_gzipbuf, len_used, gzipbuf)
+     &    len_gzipbuf, z_buf%len_used, gzipbuf)
 !
       end subroutine gzip_defleat_int4_once
 !

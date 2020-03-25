@@ -76,7 +76,8 @@
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
       integer, parameter :: int_dat(1) = (/i_UNIX/)
-      integer :: ilen_in, ilen_used
+      integer :: ilen_in
+      type(zlib_transfer) :: z_buf
 !
 !
       ilen_in = int(dble(kint)*1.01 + 24)
@@ -84,8 +85,8 @@
       call alloc_zip_buffer(zbuf)
 !
       call gzip_defleat_int4_once(1, int_dat, ilen_in,                  &
-     &    ilen_used, zbuf%gzip_buf(1))
-      zbuf%ilen_gzipped =  ilen_used
+     &    z_buf, zbuf%gzip_buf(1))
+      zbuf%ilen_gzipped =  int(z_buf%len_used,KIND(zbuf%ilen_gzipped))
 !
       end subroutine defleate_endian_flag
 !
@@ -102,7 +103,8 @@
 !
       integer(kind = kint_gl) :: ist, ilen_tmp
       integer :: nline
-      integer :: ilen_in, ilen_used
+      integer :: ilen_in
+      type(zlib_transfer) :: z_buf
 !
 !
       zbuf%ilen_gz = int(dble(num*kint_gl)*1.01+24,KIND(zbuf%ilen_gz))
@@ -116,9 +118,10 @@
         ilen_in = int(min(zbuf%ilen_gz-zbuf%ilen_gzipped, ilen_tmp))
 !
         call gzip_defleat_int8_once(nline, int8_dat(ist+1), ilen_in,    &
-     &      ilen_used, zbuf%gzip_buf(zbuf%ilen_gzipped+1))
+     &      z_buf, zbuf%gzip_buf(zbuf%ilen_gzipped+1))
 !
-        zbuf%ilen_gzipped = zbuf%ilen_gzipped + ilen_used
+        zbuf%ilen_gzipped = zbuf%ilen_gzipped                           &
+     &                   + int(z_buf%len_used,KIND(zbuf%ilen_gzipped))
         ist = ist + nline
         if(ist .ge. num) exit
       end do
@@ -138,7 +141,8 @@
 !
       integer(kind = kint_gl) :: ist, ilen_tmp
       integer :: nline
-      integer :: ilen_in, ilen_used
+      integer :: ilen_in
+      type(zlib_transfer) :: z_buf
 !
 !
       zbuf%ilen_gz = int(dble(num*kreal)*1.01 + 24,KIND(zbuf%ilen_gz))
@@ -152,9 +156,10 @@
         ilen_in = int(min(zbuf%ilen_gz-zbuf%ilen_gzipped, ilen_tmp))
 !
         call gzip_defleat_real_once(nline, real_dat(ist+1), ilen_in,    &
-     &      ilen_used, zbuf%gzip_buf(zbuf%ilen_gzipped+1))
+     &      z_buf, zbuf%gzip_buf(zbuf%ilen_gzipped+1))
 !
-        zbuf%ilen_gzipped = zbuf%ilen_gzipped + ilen_used
+        zbuf%ilen_gzipped = zbuf%ilen_gzipped                           &
+     &                   + int(z_buf%len_used,KIND(zbuf%ilen_gzipped))
         ist = ist + nline
         if(ist .ge. num) exit
       end do
