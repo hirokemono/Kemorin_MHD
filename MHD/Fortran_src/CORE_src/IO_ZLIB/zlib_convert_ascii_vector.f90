@@ -62,12 +62,12 @@
 !
       if(nnod .le. 0) then
         ilen_in = int(zbuf%ilen_gz)
-        call gzip_defleat_once(ione, char(10),                          &
+        call gzip_defleat_char_once(ione, char(10),                     &
      &      ilen_in, ilen_used, zbuf%gzip_buf(1))
         zbuf%ilen_gzipped = ilen_used
       else if(nnod .eq. 1) then
         ilen_in = int(zbuf%ilen_gz)
-        call gzip_defleat_once(ilen_line,                               &
+        call gzip_defleat_char_once(ilen_line,                          &
      &      int8_and_vector_textline                                    &
      &         (id_global(1), numdir, xx(1,1)),                         &
      &      ilen_in, ilen_used, zbuf%gzip_buf(1))
@@ -228,13 +228,14 @@
 !
       if(nnod .le. 0 .and. iflag_blank .gt. 0) then
         ilen_in = int(zbuf%ilen_gz)
-        call gzip_defleat_once(ione, char(10),                          &
+        call gzip_defleat_char_once(ione, char(10),                     &
      &      ilen_in, ilen_used, zbuf%gzip_buf(1))
         zbuf%ilen_gzipped = ilen_used
       else if(nnod .eq. 1) then
         ilen_in = int(zbuf%ilen_gz)
         v1(1:ndir) = vector(1,1:ndir)
-        call gzip_defleat_once(ilen_line, vector_textline(ndir, v1),    &
+        call gzip_defleat_char_once(ilen_line,                          &
+     &      vector_textline(ndir, v1),                                  &
      &      ilen_in, ilen_used, zbuf%gzip_buf(1))
         zbuf%ilen_gzipped = ilen_used
 !

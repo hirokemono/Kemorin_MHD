@@ -62,7 +62,7 @@
         ilen_in = int(zbuf%ilen_gz)
         inod_gl = 1 + istack_merged_intnod
         dat_1(1:ntot_comp) = vect(1,1:ntot_comp)
-        call gzip_defleat_once(ilen_line,                               &
+        call gzip_defleat_char_once(ilen_line,                          &
      &      ucd_each_field(inod_gl, ntot_comp, dat_1),                  &
      &      ilen_in, ilen_used, zbuf%gzip_buf(1))
         zbuf%ilen_gzipped = ilen_used
@@ -136,7 +136,7 @@
         ilen_in = int(zbuf%ilen_gz)
         iele_gl = 1
         ie0(1:nnod_ele) = ie(1,1:nnod_ele)
-        call gzip_defleat_once(ilen_line,                               &
+        call gzip_defleat_char_once(ilen_line,                          &
      &      ucd_each_connect(iele_gl, nnod_ele, ie0),                   &
      &      ilen_in, ilen_used, zbuf%gzip_buf(1))
         zbuf%ilen_gzipped = ilen_used

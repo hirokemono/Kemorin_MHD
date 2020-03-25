@@ -63,13 +63,13 @@
 !
       if(nele .le. 0) then
         ilen_in = int(zbuf%ilen_gz)
-        call gzip_defleat_once(ione, char(10),                          &
+        call gzip_defleat_char_once(ione, char(10),                     &
      &      ilen_in, ilen_used, zbuf%gzip_buf(1))
         zbuf%ilen_gzipped = ilen_used
       else if(nele .eq. 1) then
         ilen_in = int(zbuf%ilen_gz)
         ie_tmp(1:nnod_4_ele) = ie(1,1:nnod_4_ele)
-        call gzip_defleat_once(ilen_line,                               &
+        call gzip_defleat_char_once(ilen_line,                          &
      &      int8_and_mul_int8_textline                                  &
      &         (id_global(1), nnod_4_ele, ie_tmp),                      &
      &      ilen_in, ilen_used, zbuf%gzip_buf(1))
@@ -222,12 +222,12 @@
 !
       if(nele .le. 0) then
         ilen_in = int(zbuf%ilen_gz)
-        call gzip_defleat_once(ione, char(10),                          &
+        call gzip_defleat_char_once(ione, char(10),                     &
      &      ilen_in, ilen_used, zbuf%gzip_buf(1))
         zbuf%ilen_gzipped = ilen_used
       else if(nele .eq. 1) then
         ilen_in = int(zbuf%ilen_gz)
-        call gzip_defleat_once(ilen_line,                               &
+        call gzip_defleat_char_once(ilen_line,                          &
      &      multi_int_textline(ncomp, ivect(1,1)),                      &
      &      ilen_in, ilen_used, zbuf%gzip_buf(1))
         zbuf%ilen_gzipped = ilen_used
@@ -364,10 +364,10 @@
       call alloc_zip_buffer(zbuf)
 !
       if(nnod .le. 0) then
-        call gzip_defleat_once(ione, char(10),                          &
+        call gzip_defleat_char_once(ione, char(10),                     &
      &      ilen_in, ilen_used, zbuf%gzip_buf(1))
       else if(nnod .eq. 1) then
-        call gzip_defleat_once(ilen_line,                               &
+        call gzip_defleat_char_once(ilen_line,                          &
      &      multi_int_textline(numdir, idx(1,1)),                       &
      &      ilen_in, ilen_used, zbuf%gzip_buf(1))
       else if(nnod .gt. 0) then

@@ -210,6 +210,7 @@
       integer, intent(inout) :: len_used
 !
 !
+      write(*,*) 'gzip_defleat_once'
       call gzip_defleat_once(len_buf, textbuf(1),       &
      &    len_gzipbuf, len_used, gzipbuf)
 !

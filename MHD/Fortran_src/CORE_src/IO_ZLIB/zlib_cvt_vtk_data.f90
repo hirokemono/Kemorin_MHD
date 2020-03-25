@@ -53,7 +53,8 @@
 !
       if(num .eq. 1) then
         ilen_in = int(zbuf%ilen_gz)
-        call gzip_defleat_once(ilen_line, vtk_each_scalar(vect(1)),    &
+        call gzip_defleat_char_once(ilen_line,                          &
+     &      vtk_each_scalar(vect(1)),                                   &
      &      ilen_in, ilen_used, zbuf%gzip_buf(1))
         zbuf%ilen_gzipped = ilen_used
 !
@@ -110,7 +111,7 @@
 !
       if(num .eq. 1) then
         ilen_in = int(zbuf%ilen_gz)
-        call gzip_defleat_once(ilen_line,                               &
+        call gzip_defleat_char_once(ilen_line,                          &
      &      vtk_each_vector(vect(1,1),vect(1,2),vect(1,3)),             &
      &      ilen_in, ilen_used, zbuf%gzip_buf(1))
         zbuf%ilen_gzipped = ilen_used
@@ -264,7 +265,7 @@
       if(nele .eq. 1) then
         ilen_in = int(zbuf%ilen_gz)
         ie0(1:nnod_ele) = ie(1,1:nnod_ele) - 1
-        call gzip_defleat_once(ilen_line,                               &
+        call gzip_defleat_char_once(ilen_line,                          &
      &      vtk_each_connect(nnod_ele, ie0),                            &
      &      ilen_in, ilen_used, zbuf%gzip_buf(1))
         zbuf%ilen_gzipped = ilen_used
@@ -328,7 +329,8 @@
 !
       if(nele .eq. 1) then
         ilen_in = int(zbuf%ilen_gz)
-        call gzip_defleat_once(ilen_line, vtk_each_cell_type(icellid),  &
+        call gzip_defleat_char_once(ilen_line,                          &
+     &      vtk_each_cell_type(icellid),                                &
      &      ilen_in, ilen_used, zbuf%gzip_buf(1))
         zbuf%ilen_gzipped = ilen_used
 !

@@ -182,8 +182,8 @@
         ilen_in = int(min(zbuf%ilen_gz-zbuf%ilen_gzipped, ilen_tmp))
         ilen_line = nline * kchara
 !
-        call gzip_defleat_once(ilen_line, chara_dat(ist+1), ilen_in,    &
-     &      ilen_used, zbuf%gzip_buf(zbuf%ilen_gzipped+1))
+        call gzip_defleat_char_once(ilen_line, chara_dat(ist+1),        &
+     &      ilen_in, ilen_used, zbuf%gzip_buf(zbuf%ilen_gzipped+1))
 !
         zbuf%ilen_gzipped = zbuf%ilen_gzipped + ilen_used
         ist = ist + nline

@@ -47,7 +47,7 @@
       call alloc_zip_buffer(zbuf)
 !
       ilen_in = int(zbuf%ilen_gz)
-      call gzip_defleat_once(ilength, chara_dat, ilen_in,               &
+      call gzip_defleat_char_once(ilength, chara_dat, ilen_in,          &
      &    ilen_used, zbuf%gzip_buf(1))
       zbuf%ilen_gzipped = ilen_used
 !

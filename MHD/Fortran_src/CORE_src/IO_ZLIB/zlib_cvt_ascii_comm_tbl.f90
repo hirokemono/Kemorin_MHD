@@ -55,7 +55,7 @@
 !
       if(num .le. 0) then
         ilen_in = int(zbuf%ilen_gz)
-        call gzip_defleat_once(ione, char(10),                          &
+        call gzip_defleat_char_once(ione, char(10),                     &
      &      ilen_in, ilen_used, zbuf%gzip_buf(1))
         zbuf%ilen_gzipped = ilen_used
       else
@@ -77,9 +77,10 @@
 !     &         ist+1, ist+nitem_1, ist+nitem_2, ist+nitem_c,           &
 !     &         zbuf%ilen_gzipped+1, ilen_in
           if(nitem_1 .le. ncolumn) then
-            call gzip_defleat_once(len_multi_int_textline(nitem_1),     &
-     &      multi_int_textline(nitem_1, int_dat(ist+1)),                &
-     &      ilen_in, ilen_used, zbuf%gzip_buf(zbuf%ilen_gzipped+1))
+            call gzip_defleat_char_once                                 &
+     &         (len_multi_int_textline(nitem_1),                        &
+     &          multi_int_textline(nitem_1, int_dat(ist+1)),            &
+     &          ilen_in, ilen_used, zbuf%gzip_buf(zbuf%ilen_gzipped+1))
             zbuf%ilen_gzipped = zbuf%ilen_gzipped + ilen_used
             exit
           else
@@ -220,7 +221,7 @@
 !
       if(num .le. 0) then
         ilen_in = int(zbuf%ilen_gz)
-        call gzip_defleat_once(ione, char(10),                          &
+        call gzip_defleat_char_once(ione, char(10),                     &
      &      ilen_in, ilen_used, zbuf%gzip_buf(1))
         zbuf%ilen_gzipped = ilen_used
       else
@@ -242,7 +243,7 @@
 !     &         zbuf%ilen_gzipped+1, ilen_in
           if(nitem_1 .le. ncolumn) then
             ilength = int(len_multi_6digit_line(nitem_1))
-            call gzip_defleat_once                                      &
+            call gzip_defleat_char_once                                 &
      &         (ilength, mul_6digit_int_line(nitem_1, int_dat(ist+1)),  &
      &          ilen_in, ilen_used, zbuf%gzip_buf(zbuf%ilen_gzipped+1))
             zbuf%ilen_gzipped = zbuf%ilen_gzipped + ilen_used
