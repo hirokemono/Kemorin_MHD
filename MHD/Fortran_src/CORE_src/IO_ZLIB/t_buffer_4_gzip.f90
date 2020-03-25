@@ -161,6 +161,8 @@
 !
       subroutine defleate_1d_character_b(num, chara_dat, zbuf)
 !
+      use gzip_defleate
+!
       integer(kind = kint_gl), intent(in) :: num
       character(len=kchara), intent(in) :: chara_dat(num)
 !

@@ -35,6 +35,7 @@
       subroutine defleate_characters(ilength, chara_dat, zbuf)
 !
       use data_IO_to_textline
+      use gzip_defleate
 !
       integer, intent(in) :: ilength
       character(len=ilength), intent(in) :: chara_dat
