@@ -354,10 +354,10 @@
      &        zbuf%gzip_buf(zbuf%ilen_gzipped+1))
           do i = ist+2, ist+nline-1
             call gzip_defleat_char_cont(ilen_line,                      &
-     &          vtk_each_cell_type(icellid), ilen_in, z_buf)
+     &          vtk_each_cell_type(icellid), z_buf)
           end do
           call gzip_defleat_char_last(ilen_line,                        &
-     &        vtk_each_cell_type(icellid), ilen_in, z_buf)
+     &        vtk_each_cell_type(icellid), z_buf)
 !
           zbuf%ilen_gzipped = zbuf%ilen_gzipped                         &
      &                    + int(z_buf%len_used,KIND(zbuf%ilen_gzipped))
