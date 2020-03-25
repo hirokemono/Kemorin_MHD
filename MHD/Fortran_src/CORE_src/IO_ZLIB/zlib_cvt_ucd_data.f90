@@ -34,6 +34,8 @@
       subroutine defleate_ucd_vector(nnod, num, ntot_comp, vect,        &
      &          istack_merged_intnod, zbuf)
 !
+      use gzip_defleate
+!
       integer(kind = kint_gl), intent(in) :: istack_merged_intnod
       integer(kind = kint_gl), intent(in) :: nnod, num
       integer(kind=kint), intent(in) :: ntot_comp
@@ -88,7 +90,7 @@
           end do
           inod_gl = ist + nline + istack_merged_intnod
           dat_1(1:ntot_comp) = vect(ist+nline,1:ntot_comp)
-          call gzip_defleat_last(ilen_line,                             &
+          call gzip_defleat_char_last(ilen_line,                        &
      &        ucd_each_field(inod_gl, ntot_comp, dat_1),                &
      &        ilen_in, ilen_used)
 !
@@ -106,6 +108,8 @@
 !
       subroutine defleate_ucd_connect                                   &
      &         (nele, ie, nnod_ele, istack_merged_ele, zbuf)
+!
+      use gzip_defleate
 !
       integer(kind = kint_gl), intent(in) :: istack_merged_ele
       integer(kind = kint_gl), intent(in) :: nele
@@ -160,7 +164,7 @@
 !
           iele_gl = ist+nline + istack_merged_ele
           ie0(1:nnod_ele) = ie(ist+nline,1:nnod_ele)
-          call gzip_defleat_last(ilen_line,                             &
+          call gzip_defleat_char_last(ilen_line,                        &
      &      ucd_each_connect(iele_gl, nnod_ele, ie0),                   &
      &        ilen_in, ilen_used)
 !

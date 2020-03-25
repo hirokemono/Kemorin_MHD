@@ -34,6 +34,8 @@
 !
       subroutine defleate_comm_table(ncolumn, num, int_dat, zbuf)
 !
+      use gzip_defleate
+!
       integer(kind = kint), intent(in) :: ncolumn
 !
       integer(kind = kint_gl), intent(in) :: num
@@ -96,11 +98,9 @@
 !     &                       ist+nitem_c, ilen_used
 !
             nrest = nitem_2 - nitem_c
-            call gzip_defleat_last(len_multi_int_textline(nrest),       &
+            call gzip_defleat_char_last(len_multi_int_textline(nrest),  &
      &          multi_int_textline(nrest, int_dat(ist+nitem_c+1)),      &
      &          ilen_in, ilen_used)
-!            if(my_rank .eq. 0) write(*,*) 'gzip_defleat_last',         &
-!     &                       ilen_used, ist + nitem_2, num
 !
             zbuf%ilen_gzipped = zbuf%ilen_gzipped + ilen_used
             ist = ist + nitem_2
@@ -204,6 +204,8 @@
 !
       subroutine defleate_element_type(ncolumn, num, int_dat, zbuf)
 !
+      use gzip_defleate
+!
       integer(kind = kint), intent(in) :: ncolumn
       integer(kind = kint_gl), intent(in) :: num
       integer(kind = kint), intent(in) :: int_dat(num)
@@ -266,11 +268,9 @@
 !
             nrest = nitem_2 - nitem_c
             ilength = int(len_multi_6digit_line(nrest))
-            call gzip_defleat_last(ilength,                             &
+            call gzip_defleat_char_last(ilength,                        &
      &          mul_6digit_int_line(nrest, int_dat(ist+nitem_c+1)),     &
      &          ilen_in, ilen_used)
-!            if(my_rank .eq. 0) write(*,*) 'gzip_defleat_last',         &
-!     &                       ilen_used, ist + nitem_2, num
 !
             zbuf%ilen_gzipped = zbuf%ilen_gzipped + ilen_used
             ist = ist + nitem_2

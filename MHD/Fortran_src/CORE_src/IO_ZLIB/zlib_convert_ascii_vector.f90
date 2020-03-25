@@ -39,6 +39,7 @@
      &         (nnod, numdir, id_global, xx, zbuf)
 !
       use data_IO_to_textline
+      use gzip_defleate
 !
       integer(kind = kint_gl), intent(in) :: nnod
       integer(kind = kint), intent(in) :: numdir
@@ -100,12 +101,10 @@
 !          if(my_rank .eq. 0) write(*,*) 'gzip_defleat_cont', ilen_used
 !
           xx_tmp(1:numdir) = xx(ist+nline,1:numdir)
-          call gzip_defleat_last(ilen_line,                             &
+          call gzip_defleat_char_last(ilen_line,                        &
      &       int8_and_vector_textline                                   &
      &          (id_global(ist+nline), numdir, xx_tmp),                 &
      &       ilen_in, ilen_used)
-!          if(my_rank .eq. 0) write(*,*) 'gzip_defleat_last',           &
-!     &        ilen_used, ist + nline, nnod
 !
           zbuf%ilen_gzipped = zbuf%ilen_gzipped + ilen_used
           ist = ist + nline
@@ -208,6 +207,7 @@
 !
       use field_data_IO
       use data_IO_to_textline
+      use gzip_defleate
 !
       integer(kind = kint), intent(in) :: iflag_blank
       integer(kind = kint_gl), intent(in) :: nnod
@@ -259,7 +259,7 @@
           end do
 !
           v1(1:ndir) = vector(ist+nline,1:ndir)
-          call gzip_defleat_last(ilen_line,                             &
+          call gzip_defleat_char_last(ilen_line,                        &
      &        vector_textline(ndir, v1), ilen_in, ilen_used)
 !
           zbuf%ilen_gzipped = zbuf%ilen_gzipped + ilen_used

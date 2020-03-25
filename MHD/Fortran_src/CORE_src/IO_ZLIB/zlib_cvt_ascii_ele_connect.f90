@@ -40,6 +40,8 @@
       subroutine defleate_ele_connect                                   &
      &         (nele, nnod_4_ele, id_global, ie, zbuf)
 !
+      use gzip_defleate
+!
       integer(kind = kint_gl), intent(in) :: nele
       integer(kind = kint), intent(in) :: nnod_4_ele
       integer(kind = kint_gl), intent(in) :: id_global(nele)
@@ -95,7 +97,7 @@
           end do
 !
           ie_tmp(1:nnod_4_ele) = ie(ist+nline,1:nnod_4_ele)
-          call gzip_defleat_last(ilen_line,                             &
+          call gzip_defleat_char_last(ilen_line,                        &
      &        int8_and_mul_int8_textline                                &
      &             (id_global(ist+nline), nnod_4_ele, ie_tmp),          &
      &        ilen_in, ilen_used)
@@ -198,6 +200,8 @@
 !
       subroutine defleate_ele_int_list(nele, ncomp, ivect, zbuf)
 !
+      use gzip_defleate
+!
       integer(kind = kint_gl), intent(in) :: nele
       integer(kind = kint), intent(in) :: ncomp
       integer(kind = kint), intent(in) :: ivect(nele,ncomp)
@@ -247,7 +251,7 @@
           end do
 !
           ie_tmp(1:ncomp) = ivect(ist+nline,1:ncomp)
-          call gzip_defleat_last(ilen_line,                             &
+          call gzip_defleat_char_last(ilen_line,                        &
      &       multi_int_textline(ncomp, ie_tmp), ilen_in, ilen_used)
 !
           zbuf%ilen_gzipped = zbuf%ilen_gzipped + ilen_used
@@ -340,6 +344,8 @@
 !
       subroutine defleate_1d_global_address(nnod, numdir, idx, zbuf)
 !
+      use gzip_defleate
+!
       integer(kind = kint_gl), intent(in) :: nnod
       integer(kind = kint), intent(in) :: numdir
       integer(kind = kint), intent(in) :: idx(nnod, numdir)
@@ -376,7 +382,7 @@
      &        ilen_in, ilen_used)
         end do
         idx_tmp(1:numdir) = idx(nnod,1:numdir)
-        call gzip_defleat_last(ilen_line,                               &
+        call gzip_defleat_char_last(ilen_line,                          &
      &     multi_int_textline(numdir, idx_tmp),                         &
      &      ilen_in, ilen_used)
       end if

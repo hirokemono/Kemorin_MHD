@@ -214,7 +214,7 @@ static void strm_inflate_init (z_stream *strm)
     return;
 }
 
-void gzip_defleat_once(int *len_buf, const char *buf, int *len_gzipbuf, 
+void gzip_defleat_once(const int *len_buf, void *buf, const int *len_gzipbuf, 
                        int *len_gzipped, char *gzipbuf)
 {
     z_stream strm;
@@ -231,7 +231,7 @@ void gzip_defleat_once(int *len_buf, const char *buf, int *len_gzipbuf,
     return;
 }
 
-void gzip_defleat_begin(int *len_buf, const char *buf, int *len_gzipbuf, 
+void gzip_defleat_begin(int *len_buf, const void *buf, int *len_gzipbuf, 
                         int *len_gzipped, char *gzipbuf)
 {
     
@@ -245,7 +245,7 @@ void gzip_defleat_begin(int *len_buf, const char *buf, int *len_gzipbuf,
     return;
 }
 
-void gzip_defleat_cont(int *len_buf, const char *buf, int *len_gzipbuf, int *len_gzipped)
+void gzip_defleat_cont(int *len_buf, const void *buf, int *len_gzipbuf, int *len_gzipped)
 {
     uInt avail_out_current;
     
@@ -258,7 +258,7 @@ void gzip_defleat_cont(int *len_buf, const char *buf, int *len_gzipbuf, int *len
     return;
 }
 
-void gzip_defleat_last(int *len_buf, const char *buf, int *len_gzipbuf, int *len_gzipped)
+void gzip_defleat_last(int *len_buf, const void *buf, int *len_gzipbuf, int *len_gzipped)
 {
     uInt avail_out_current;
     

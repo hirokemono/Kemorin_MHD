@@ -32,6 +32,8 @@
 !
       subroutine defleate_vtk_scalar(nnod, num, vect, zbuf)
 !
+      use gzip_defleate
+!
       integer(kind = kint_gl), intent(in) :: nnod, num
       real(kind = kreal), intent(in) :: vect(nnod)
 !
@@ -71,7 +73,7 @@
             call gzip_defleat_cont(ilen_line,                           &
      &          vtk_each_scalar(vect(inod)), ilen_in, ilen_used)
           end do
-          call gzip_defleat_last(ilen_line,                             &
+          call gzip_defleat_char_last(ilen_line,                        &
      &        vtk_each_scalar(vect(ist+nline)), ilen_in, ilen_used)
 !
           zbuf%ilen_gzipped = zbuf%ilen_gzipped + ilen_used
@@ -87,6 +89,8 @@
 ! -----------------------------------------------------------------------
 !
       subroutine defleate_vtk_vector(nnod, num, vect, zbuf)
+!
+      use gzip_defleate
 !
       integer(kind = kint_gl), intent(in) :: nnod, num
       real(kind = kreal), intent(in) :: vect(nnod,3)
@@ -129,7 +133,7 @@
      &                     (vect(inod,1),vect(inod,2),vect(inod,3)),    &
      &          ilen_in, ilen_used)
           end do
-          call gzip_defleat_last(ilen_line,                             &
+          call gzip_defleat_char_last(ilen_line,                        &
      &        vtk_each_vector                                           &
      &         (vect(ist+nline,1),vect(ist+nline,2),vect(ist+nline,3)), &
      &        ilen_in, ilen_used)
@@ -147,6 +151,8 @@
 ! -----------------------------------------------------------------------
 !
       subroutine defleate_vtk_tensor(nnod, num, vect, zbuf)
+!
+      use gzip_defleate
 !
       integer(kind = kint_gl), intent(in) :: nnod, num
       real(kind = kreal), intent(in) :: vect(nnod,6)
@@ -171,7 +177,7 @@
         call gzip_defleat_cont(ilen_line,                               &
      &      vtk_each_vector(vect(1,2),vect(1,4),vect(1,5)),             &
      &      ilen_in, ilen_used)
-        call gzip_defleat_last(ilen_line,                               &
+        call gzip_defleat_char_last(ilen_line,                          &
      &      vtk_each_vector(vect(1,3),vect(1,5),vect(1,6)),             &
      &      ilen_in, ilen_used)
         zbuf%ilen_gzipped = ilen_used
@@ -216,7 +222,7 @@
      &        vtk_each_vector                                           &
      &         (vect(ist+nline,2),vect(ist+nline,4),vect(ist+nline,5)), &
      &        ilen_in, ilen_used)
-          call gzip_defleat_last(ilen_line,                             &
+          call gzip_defleat_char_last(ilen_line,                        &
      &        vtk_each_vector                                           &
      &         (vect(ist+nline,3),vect(ist+nline,5),vect(ist+nline,6)), &
      &        ilen_in, ilen_used)
@@ -234,6 +240,8 @@
 ! -----------------------------------------------------------------------
 !
       subroutine defleate_vtk_connect(nele, ie, nnod_ele, zbuf)
+!
+      use gzip_defleate
 !
       integer(kind = kint_gl), intent(in) :: nele
       integer(kind = kint), intent(in) :: nnod_ele
@@ -281,7 +289,7 @@
           end do
 !
           ie0(1:nnod_ele) = ie(ist+nline,1:nnod_ele) - 1
-          call gzip_defleat_last(ilen_line,                             &
+          call gzip_defleat_char_last(ilen_line,                        &
      &        vtk_each_connect(nnod_ele, ie0),                          &
      &        ilen_in, ilen_used)
 !
@@ -298,6 +306,8 @@
 ! -----------------------------------------------------------------------
 !
       subroutine defleate_vtk_celltype(nele, nnod_ele, zbuf)
+!
+      use gzip_defleate
 !
       integer(kind = kint_gl), intent(in) :: nele
       integer(kind = kint), intent(in) :: nnod_ele
@@ -337,7 +347,7 @@
             call gzip_defleat_cont(ilen_line,                           &
      &          vtk_each_cell_type(icellid), ilen_in, ilen_used)
           end do
-          call gzip_defleat_last(ilen_line,                             &
+          call gzip_defleat_char_last(ilen_line,                        &
      &        vtk_each_cell_type(icellid), ilen_in, ilen_used)
 !
           zbuf%ilen_gzipped = zbuf%ilen_gzipped + ilen_used
