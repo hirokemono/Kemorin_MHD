@@ -43,7 +43,8 @@
       integer(kind = kint_gl) :: inod, ist
       integer :: nline
       integer(kind = kint_gl) :: ilen_tmp
-      integer :: ilen_line, ilen_used, ilen_in
+      integer :: ilen_line, ilen_in
+      type(zlib_transfer) :: z_buf
 !
 !
       ilen_line = len(vtk_each_scalar(zero))
@@ -55,8 +56,8 @@
         ilen_in = int(zbuf%ilen_gz)
         call gzip_defleat_char_once(ilen_line,                          &
      &      vtk_each_scalar(vect(1)),                                   &
-     &      ilen_in, ilen_used, zbuf%gzip_buf(1))
-        zbuf%ilen_gzipped = ilen_used
+     &      ilen_in, z_buf, zbuf%gzip_buf(1))
+        zbuf%ilen_gzipped = int(z_buf%len_used,KIND(zbuf%ilen_gzipped))
 !
       else if(num .gt. 1) then
         ist = 0
@@ -68,16 +69,17 @@
 !
           call gzip_defleat_char_begin                                  &
      &      (ilen_line, vtk_each_scalar(vect(ist+1)),                   &
-     &       ilen_in, ilen_used, zbuf%gzip_buf(zbuf%ilen_gzipped+1))
+     &       ilen_in, z_buf, zbuf%gzip_buf(zbuf%ilen_gzipped+1))
 !
           do inod = ist+2, ist+nline-1
             call gzip_defleat_char_cont(ilen_line,                      &
-     &          vtk_each_scalar(vect(inod)), ilen_in, ilen_used)
+     &          vtk_each_scalar(vect(inod)), ilen_in, z_buf)
           end do
           call gzip_defleat_char_last(ilen_line,                        &
-     &        vtk_each_scalar(vect(ist+nline)), ilen_in, ilen_used)
+     &        vtk_each_scalar(vect(ist+nline)), ilen_in, z_buf)
 !
-          zbuf%ilen_gzipped = zbuf%ilen_gzipped + ilen_used
+          zbuf%ilen_gzipped = zbuf%ilen_gzipped                         &
+     &                    + int(z_buf%len_used,KIND(zbuf%ilen_gzipped))
           ist = ist + nline
           if(ist .ge. num) exit
         end do
@@ -101,7 +103,8 @@
       integer(kind = kint_gl) :: inod, ist
       integer :: nline
       integer(kind = kint_gl) :: ilen_tmp
-      integer :: ilen_line, ilen_used, ilen_in
+      integer :: ilen_line, ilen_in
+      type(zlib_transfer) :: z_buf
 !
 !
       ilen_line = len(vtk_each_vector(zero, zero, zero))
@@ -113,8 +116,8 @@
         ilen_in = int(zbuf%ilen_gz)
         call gzip_defleat_char_once(ilen_line,                          &
      &      vtk_each_vector(vect(1,1),vect(1,2),vect(1,3)),             &
-     &      ilen_in, ilen_used, zbuf%gzip_buf(1))
-        zbuf%ilen_gzipped = ilen_used
+     &      ilen_in, z_buf, zbuf%gzip_buf(1))
+        zbuf%ilen_gzipped = int(z_buf%len_used,KIND(zbuf%ilen_gzipped))
 !
       else if(num .gt. 1) then
         ist = 0
@@ -126,20 +129,21 @@
 !
           call gzip_defleat_char_begin(ilen_line,                       &
      &      vtk_each_vector(vect(ist+1,1),vect(ist+1,2),vect(ist+1,3)), &
-     &      ilen_in, ilen_used, zbuf%gzip_buf(zbuf%ilen_gzipped+1))
+     &      ilen_in, z_buf, zbuf%gzip_buf(zbuf%ilen_gzipped+1))
 !
           do inod = ist+2, ist+nline-1
             call gzip_defleat_char_cont(ilen_line,                      &
      &          vtk_each_vector                                         &
      &                     (vect(inod,1),vect(inod,2),vect(inod,3)),    &
-     &          ilen_in, ilen_used)
+     &          ilen_in, z_buf)
           end do
           call gzip_defleat_char_last(ilen_line,                        &
      &        vtk_each_vector                                           &
      &         (vect(ist+nline,1),vect(ist+nline,2),vect(ist+nline,3)), &
-     &        ilen_in, ilen_used)
+     &        ilen_in, z_buf)
 !
-          zbuf%ilen_gzipped = zbuf%ilen_gzipped + ilen_used
+          zbuf%ilen_gzipped = zbuf%ilen_gzipped                         &
+     &                    + int(z_buf%len_used,KIND(zbuf%ilen_gzipped))
           ist = ist + nline
           if(ist .ge. num) exit
         end do
@@ -162,7 +166,7 @@
 !
       integer(kind = kint_gl) :: inod, ist, nline
       integer(kind = kint_gl) :: ilen_tmp
-      integer :: ilen_line, ilen_used, ilen_in
+      integer :: ilen_line, ilen_in
 !
 !
       ilen_line = len(vtk_each_vector(zero, zero, zero))
@@ -174,14 +178,14 @@
         ilen_in = int(zbuf%ilen_gz)
         call gzip_defleat_char_begin(ilen_line,                         &
      &      vtk_each_vector(vect(1,1),vect(1,2),vect(1,3)),             &
-     &      ilen_in, ilen_used, zbuf%gzip_buf(1))
+     &      ilen_in, z_buf, zbuf%gzip_buf(1))
         call gzip_defleat_char_cont(ilen_line,                          &
      &      vtk_each_vector(vect(1,2),vect(1,4),vect(1,5)),             &
-     &      ilen_in, ilen_used)
+     &      ilen_in, z_buf)
         call gzip_defleat_char_last(ilen_line,                          &
      &      vtk_each_vector(vect(1,3),vect(1,5),vect(1,6)),             &
-     &      ilen_in, ilen_used)
-        zbuf%ilen_gzipped = ilen_used
+     &      ilen_in, z_buf)
+        zbuf%ilen_gzipped = int(z_buf%len_used,KIND(zbuf%ilen_gzipped))
 !
       else if(num .gt. 1) then
         ist = 0
@@ -193,42 +197,43 @@
 !
           call gzip_defleat_char_begin(ilen_line,                       &
      &      vtk_each_vector(vect(ist+1,1),vect(ist+1,2),vect(ist+1,3)), &
-     &      ilen_in, ilen_used, zbuf%gzip_buf(zbuf%ilen_gzipped+1))
+     &      ilen_in, z_buf, zbuf%gzip_buf(zbuf%ilen_gzipped+1))
           call gzip_defleat_char_cont(ilen_line,                        &
      &      vtk_each_vector(vect(ist+1,2),vect(ist+1,4),vect(ist+1,5)), &
-     &      ilen_in, ilen_used)
+     &      ilen_in, z_buf)
           call gzip_defleat_char_cont(ilen_line,                        &
      &      vtk_each_vector(vect(ist+1,3),vect(ist+1,5),vect(ist+1,6)), &
-     &      ilen_in, ilen_used)
+     &      ilen_in, z_buf)
 !
           do inod = ist+2, ist+nline-1
             call gzip_defleat_char_cont(ilen_line,                      &
      &          vtk_each_vector                                         &
      &                     (vect(inod,1),vect(inod,2),vect(inod,3)),    &
-     &          ilen_in, ilen_used)
+     &          ilen_in, z_buf)
             call gzip_defleat_char_cont(ilen_line,                      &
      &          vtk_each_vector                                         &
      &                     (vect(inod,2),vect(inod,4),vect(inod,5)),    &
-     &          ilen_in, ilen_used)
+     &          ilen_in, z_buf)
             call gzip_defleat_char_cont(ilen_line,                      &
      &          vtk_each_vector                                         &
      &                     (vect(inod,3),vect(inod,5),vect(inod,6)),    &
-     &          ilen_in, ilen_used)
+     &          ilen_in, z_buf)
           end do
           call gzip_defleat_char_cont(ilen_line,                        &
      &        vtk_each_vector                                           &
      &         (vect(ist+nline,1),vect(ist+nline,2),vect(ist+nline,3)), &
-     &        ilen_in, ilen_used)
+     &        ilen_in, z_buf)
           call gzip_defleat_char_cont(ilen_line,                        &
      &        vtk_each_vector                                           &
      &         (vect(ist+nline,2),vect(ist+nline,4),vect(ist+nline,5)), &
-     &        ilen_in, ilen_used)
+     &        ilen_in, z_buf)
           call gzip_defleat_char_last(ilen_line,                        &
      &        vtk_each_vector                                           &
      &         (vect(ist+nline,3),vect(ist+nline,5),vect(ist+nline,6)), &
-     &        ilen_in, ilen_used)
+     &        ilen_in, z_buf)
 !
-          zbuf%ilen_gzipped = zbuf%ilen_gzipped + ilen_used
+          zbuf%ilen_gzipped = zbuf%ilen_gzipped                         &
+     &                   + int(z_buf%len_used,KIND(zbuf%ilen_gzipped))
           ist = ist + nline
           if(ist .ge. num) exit
         end do
@@ -253,7 +258,8 @@
       integer(kind = kint_gl) :: i, ist, nline
       integer(kind = kint_gl) :: ie0(nnod_ele)
       integer(kind = kint_gl) :: ilen_tmp
-      integer :: ilen_line, ilen_used, ilen_in
+      integer :: ilen_line, ilen_in
+      type(zlib_transfer) :: z_buf
 !
 !
       ie0(1:nnod_ele) = 0
@@ -267,8 +273,8 @@
         ie0(1:nnod_ele) = ie(1,1:nnod_ele) - 1
         call gzip_defleat_char_once(ilen_line,                          &
      &      vtk_each_connect(nnod_ele, ie0),                            &
-     &      ilen_in, ilen_used, zbuf%gzip_buf(1))
-        zbuf%ilen_gzipped = ilen_used
+     &      ilen_in, z_buf, zbuf%gzip_buf(1))
+        zbuf%ilen_gzipped = int(z_buf%len_used,KIND(zbuf%ilen_gzipped))
 !
       else if(nele .gt. 1) then
         ist = 0
@@ -281,20 +287,21 @@
           ie0(1:nnod_ele) = ie(ist+1,1:nnod_ele) - 1
           call gzip_defleat_char_begin(ilen_line,                       &
      &        vtk_each_connect(nnod_ele, ie0),                          &
-     &        ilen_in, ilen_used, zbuf%gzip_buf(zbuf%ilen_gzipped+1))
+     &        ilen_in, z_buf, zbuf%gzip_buf(zbuf%ilen_gzipped+1))
           do i = ist+2, ist+nline-1
             ie0(1:nnod_ele) = ie(i,1:nnod_ele) - 1
             call gzip_defleat_char_cont(ilen_line,                      &
      &          vtk_each_connect(nnod_ele, ie0),                        &
-     &          ilen_in, ilen_used)
+     &          ilen_in, z_buf)
           end do
 !
           ie0(1:nnod_ele) = ie(ist+nline,1:nnod_ele) - 1
           call gzip_defleat_char_last(ilen_line,                        &
      &        vtk_each_connect(nnod_ele, ie0),                          &
-     &        ilen_in, ilen_used)
+     &        ilen_in, z_buf)
 !
-          zbuf%ilen_gzipped = zbuf%ilen_gzipped + ilen_used
+          zbuf%ilen_gzipped = zbuf%ilen_gzipped                         &
+     &                    + int(z_buf%len_used,KIND(zbuf%ilen_gzipped))
           ist = ist + nline
           if(ist .ge. nele) exit
         end do
@@ -318,7 +325,8 @@
       integer(kind = kint) :: icellid
       integer(kind = kint_gl) :: i, ist, nline
       integer(kind = kint_gl) :: ilen_tmp
-      integer :: ilen_line, ilen_used, ilen_in
+      integer :: ilen_line, ilen_in
+      type(zlib_transfer) :: z_buf
 !
 !
       icellid = vtk_cell_type(nnod_ele)
@@ -331,8 +339,8 @@
         ilen_in = int(zbuf%ilen_gz)
         call gzip_defleat_char_once(ilen_line,                          &
      &      vtk_each_cell_type(icellid),                                &
-     &      ilen_in, ilen_used, zbuf%gzip_buf(1))
-        zbuf%ilen_gzipped = ilen_used
+     &      ilen_in, z_buf, zbuf%gzip_buf(1))
+        zbuf%ilen_gzipped = int(z_buf%len_used,KIND(zbuf%ilen_gzipped))
 !
       else if(nele .gt. 1) then
         ist = 0
@@ -343,16 +351,17 @@
           ilen_in = int(min(zbuf%ilen_gz-zbuf%ilen_gzipped, ilen_tmp))
 !
           call gzip_defleat_char_begin(ilen_line,                       &
-     &        vtk_each_cell_type(icellid), ilen_in, ilen_used,          &
+     &        vtk_each_cell_type(icellid), ilen_in, z_buf,              &
      &        zbuf%gzip_buf(zbuf%ilen_gzipped+1))
           do i = ist+2, ist+nline-1
             call gzip_defleat_char_cont(ilen_line,                      &
-     &          vtk_each_cell_type(icellid), ilen_in, ilen_used)
+     &          vtk_each_cell_type(icellid), ilen_in, z_buf)
           end do
           call gzip_defleat_char_last(ilen_line,                        &
-     &        vtk_each_cell_type(icellid), ilen_in, ilen_used)
+     &        vtk_each_cell_type(icellid), ilen_in, z_buf)
 !
-          zbuf%ilen_gzipped = zbuf%ilen_gzipped + ilen_used
+          zbuf%ilen_gzipped = zbuf%ilen_gzipped                         &
+     &                    + int(z_buf%len_used,KIND(zbuf%ilen_gzipped))
           ist = ist + nline
           if(ist .ge. nele) exit
         end do

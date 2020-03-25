@@ -179,7 +179,8 @@
 !
       integer(kind = kint_gl) :: ist, ilen_tmp
       integer :: nline
-      integer :: ilen_in, ilen_used, ilen_line
+      integer :: ilen_in, ilen_line
+      type(zlib_transfer) :: z_buf
 !
 !
       zbuf%ilen_gz = int(dble(num*kchara)*1.01 + 24,KIND(zbuf%ilen_gz))
@@ -194,9 +195,10 @@
         ilen_line = nline * kchara
 !
         call gzip_defleat_char_once(ilen_line, chara_dat(ist+1),        &
-     &      ilen_in, ilen_used, zbuf%gzip_buf(zbuf%ilen_gzipped+1))
+     &      ilen_in, z_buf, zbuf%gzip_buf(zbuf%ilen_gzipped+1))
 !
-        zbuf%ilen_gzipped = zbuf%ilen_gzipped + ilen_used
+        zbuf%ilen_gzipped = zbuf%ilen_gzipped                           &
+     &                   + int(z_buf%len_used,KIND(zbuf%ilen_gzipped))
         ist = ist + nline
         if(ist .ge. num) exit
       end do

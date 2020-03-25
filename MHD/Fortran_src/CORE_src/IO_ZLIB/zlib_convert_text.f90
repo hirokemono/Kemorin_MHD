@@ -41,7 +41,8 @@
       character(len=ilength), intent(in) :: chara_dat
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
-      integer :: ilen_in, ilen_used
+      integer :: ilen_in
+      type(zlib_transfer) :: z_buf
 !
 !
       zbuf%ilen_gz = int(dble(ilength) *1.01+24, KIND(zbuf%ilen_gz))
@@ -49,8 +50,8 @@
 !
       ilen_in = int(zbuf%ilen_gz)
       call gzip_defleat_char_once(ilength, chara_dat, ilen_in,          &
-     &    ilen_used, zbuf%gzip_buf(1))
-      zbuf%ilen_gzipped = ilen_used
+     &    z_buf, zbuf%gzip_buf(1))
+      zbuf%ilen_gzipped = int(z_buf%len_used,KIND(zbuf%ilen_gzipped))
 !
       end subroutine defleate_characters
 !
@@ -66,7 +67,7 @@
       character(len=ilength), intent(inout) :: text
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
-      integer :: ilen_in, ilen_used
+      integer :: ilen_in
       type(zlib_transfer) :: z_buf
 !
 !
@@ -92,7 +93,7 @@
       character(len=kchara), intent(inout) :: word
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
-      integer :: ilen_in, ilen_used
+      integer :: ilen_in
 !      integer(kind = kint) :: i
 !
       character(len=1), allocatable :: textbuf(:)
@@ -136,7 +137,7 @@
       integer, intent(in) :: ilength
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
-      integer :: ilen_in, ilen_used
+      integer :: ilen_in
       type(zlib_transfer) :: z_buf
 !
 !

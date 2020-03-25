@@ -46,7 +46,8 @@
       integer(kind = kint) :: nitem_1, nitem_2, nitem_c, nrest
 !
       integer(kind = kint_gl) :: ilen_tmp
-      integer :: ilen_line, ilen_used, ilen_in
+      integer :: ilen_line, ilen_in
+      type(zlib_transfer) :: z_buf
 !
 !
       zbuf%ilen_gz                                                     &
@@ -56,8 +57,8 @@
       if(num .le. 0) then
         ilen_in = int(zbuf%ilen_gz)
         call gzip_defleat_char_once(ione, char(10),                     &
-     &      ilen_in, ilen_used, zbuf%gzip_buf(1))
-        zbuf%ilen_gzipped = ilen_used
+     &      ilen_in, z_buf, zbuf%gzip_buf(1))
+        zbuf%ilen_gzipped = int(z_buf%len_used,KIND(zbuf%ilen_gzipped))
       else
         ist = 0
         zbuf%ilen_gzipped = 0
@@ -80,26 +81,28 @@
             call gzip_defleat_char_once                                 &
      &         (len_multi_int_textline(nitem_1),                        &
      &          multi_int_textline(nitem_1, int_dat(ist+1)),            &
-     &          ilen_in, ilen_used, zbuf%gzip_buf(zbuf%ilen_gzipped+1))
-            zbuf%ilen_gzipped = zbuf%ilen_gzipped + ilen_used
+     &          ilen_in, z_buf, zbuf%gzip_buf(zbuf%ilen_gzipped+1))
+            zbuf%ilen_gzipped = zbuf%ilen_gzipped                       &
+     &                    + int(z_buf%len_used,KIND(zbuf%ilen_gzipped))
             exit
           else
             call gzip_defleat_char_begin(ilen_line,                     &
      &          multi_int_textline(ncolumn, int_dat(ist+1)),            &
-     &          ilen_in, ilen_used, zbuf%gzip_buf(zbuf%ilen_gzipped+1))
+     &          ilen_in, z_buf, zbuf%gzip_buf(zbuf%ilen_gzipped+1))
 !
             do i = ist+ncolumn+1, ist+nitem_c, ncolumn
               call gzip_defleat_char_cont(ilen_line,                    &
      &            multi_int_textline(ncolumn, int_dat(i)),              &
-     &            ilen_in, ilen_used)
+     &            ilen_in, z_buf)
             end do
 !
             nrest = nitem_2 - nitem_c
             call gzip_defleat_char_last(len_multi_int_textline(nrest),  &
      &          multi_int_textline(nrest, int_dat(ist+nitem_c+1)),      &
-     &          ilen_in, ilen_used)
+     &          ilen_in, z_buf)
 !
-            zbuf%ilen_gzipped = zbuf%ilen_gzipped + ilen_used
+            zbuf%ilen_gzipped = zbuf%ilen_gzipped                       &
+     &                    + int(z_buf%len_used,KIND(zbuf%ilen_gzipped))
             ist = ist + nitem_2
             if(ist .ge. num) exit
           end if
@@ -212,7 +215,8 @@
       integer(kind = kint) :: nitem_1, nitem_2, nitem_c, nrest
 !
       integer(kind = kint_gl) :: ilen_tmp
-      integer :: ilen_line, ilen_used, ilen_in, ilength
+      integer :: ilen_line, ilen_in, ilength
+      type(zlib_transfer) :: z_buf
 !
 !
       zbuf%ilen_gz                                                      &
@@ -222,8 +226,8 @@
       if(num .le. 0) then
         ilen_in = int(zbuf%ilen_gz)
         call gzip_defleat_char_once(ione, char(10),                     &
-     &      ilen_in, ilen_used, zbuf%gzip_buf(1))
-        zbuf%ilen_gzipped = ilen_used
+     &      ilen_in, z_buf, zbuf%gzip_buf(1))
+        zbuf%ilen_gzipped = int(z_buf%len_used,KIND(zbuf%ilen_gzipped))
       else
         ist = 0
         zbuf%ilen_gzipped = 0
@@ -245,27 +249,29 @@
             ilength = int(len_multi_6digit_line(nitem_1))
             call gzip_defleat_char_once                                 &
      &         (ilength, mul_6digit_int_line(nitem_1, int_dat(ist+1)),  &
-     &          ilen_in, ilen_used, zbuf%gzip_buf(zbuf%ilen_gzipped+1))
-            zbuf%ilen_gzipped = zbuf%ilen_gzipped + ilen_used
+     &          ilen_in, z_buf, zbuf%gzip_buf(zbuf%ilen_gzipped+1))
+            zbuf%ilen_gzipped = zbuf%ilen_gzipped                       &
+     &                    + int(z_buf%len_used,KIND(zbuf%ilen_gzipped))
             exit
           else
             call gzip_defleat_char_begin(ilen_line,                     &
      &          mul_6digit_int_line(ncolumn, int_dat(ist+1)),           &
-     &          ilen_in, ilen_used, zbuf%gzip_buf(zbuf%ilen_gzipped+1))
+     &          ilen_in, z_buf, zbuf%gzip_buf(zbuf%ilen_gzipped+1))
 !
             do i = ist+ncolumn+1, ist+nitem_c, ncolumn
               call gzip_defleat_char_cont(ilen_line,                    &
      &            mul_6digit_int_line(ncolumn, int_dat(i)),             &
-     &            ilen_in, ilen_used)
+     &            ilen_in, z_buf)
             end do
 !
             nrest = nitem_2 - nitem_c
             ilength = int(len_multi_6digit_line(nrest))
             call gzip_defleat_char_last(ilength,                        &
      &          mul_6digit_int_line(nrest, int_dat(ist+nitem_c+1)),     &
-     &          ilen_in, ilen_used)
+     &          ilen_in, z_buf)
 !
-            zbuf%ilen_gzipped = zbuf%ilen_gzipped + ilen_used
+            zbuf%ilen_gzipped = zbuf%ilen_gzipped                       &
+     &                    + int(z_buf%len_used,KIND(zbuf%ilen_gzipped))
             ist = ist + nitem_2
             if(ist .ge. num) exit
           end if
