@@ -47,7 +47,6 @@
 !
       integer(kind = kint_gl) :: ilen_tmp
       integer :: ilen_line, ilen_in
-      type(zlib_transfer) :: zbuf
 !
 !
       zbuf%ilen_gz                                                     &
