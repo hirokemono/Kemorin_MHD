@@ -1,15 +1,12 @@
-!>@file  t_buffer_4_gzip.f90
-!!       module t_buffer_4_gzip
+!>@file  data_convert_by_zlib.f90
+!!       module data_convert_by_zlib
 !!
 !!@author H. Matsui
 !!@date   Programmed in Aug., 2016
 !
-!> @brief Output gzipped merged binary field file using MPI-IO
+!> @brief BAse routines to compress and decompress data
 !!
 !!@verbatim
-!!      subroutine alloc_zip_buffer(zbuf)
-!!      subroutine dealloc_zip_buffer(zbuf)
-!!
 !!      subroutine defleate_endian_flag(zbuf)
 !!      subroutine defleate_int8_vector_b(num, int8_dat, zbuf)
 !!      subroutine defleate_1d_vector_b(num, real_dat, zbuf)
@@ -23,50 +20,20 @@
 !!          type(buffer_4_gzip), intent(inout) :: zbuf
 !!@endverbatim
 !
-      module t_buffer_4_gzip
+      module data_convert_by_zlib
 !
       use m_precision
       use m_constants
       use m_machine_parameter
+      use t_buffer_4_gzip
       use transfer_to_long_integers
 !
       implicit none
-!
-!>      Structure of 
-      type buffer_4_gzip
-!>        Actual size of compressed data buffer
-        integer(kind = kint_gl) :: ilen_gzipped
-!>        Reserved size of compressed data buffer
-        integer(kind = kint_gl) :: ilen_gz
-!>        Compressed data buffer
-        character(len=1), allocatable :: gzip_buf(:)
-      end type buffer_4_gzip
 !
 !  ---------------------------------------------------------------------
 !
       contains
 !
-! -----------------------------------------------------------------------
-!
-      subroutine alloc_zip_buffer(zbuf)
-!
-      type(buffer_4_gzip), intent(inout) :: zbuf
-!
-      allocate(zbuf%gzip_buf(zbuf%ilen_gz))
-!
-      end subroutine alloc_zip_buffer
-!
-! -----------------------------------------------------------------------
-!
-      subroutine dealloc_zip_buffer(zbuf)
-!
-      type(buffer_4_gzip), intent(inout) :: zbuf
-!
-      deallocate(zbuf%gzip_buf)
-!
-      end subroutine dealloc_zip_buffer
-!
-! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
       subroutine defleate_endian_flag(zbuf)
@@ -347,4 +314,4 @@
 !
 ! -----------------------------------------------------------------------
 !
-      end module t_buffer_4_gzip
+      end module data_convert_by_zlib
