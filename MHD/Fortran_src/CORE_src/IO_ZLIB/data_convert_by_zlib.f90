@@ -48,7 +48,7 @@
 !
       zbuf%ilen_gzipped = 0
 !
-      call gzip_defleat_int4_once(1, int_dat, zbuf%ilen_gz,             &
+      call gzip_defleat_int4_once(1, int_dat, int(zbuf%ilen_gz),        &
      &    zbuf, zbuf%gzip_buf(1))
 !
       end subroutine defleate_endian_flag
