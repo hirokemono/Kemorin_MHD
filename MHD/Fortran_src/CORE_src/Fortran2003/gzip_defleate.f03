@@ -1,5 +1,4 @@
 !>@file   gzip_defleate.f03
-!>@file   gzip_defleate.f03
 !!        module gzip_defleate
 !!
 !! @author H. Matsui
@@ -139,8 +138,8 @@
 !      z_buf%gzipbuf_p => gzipbuf
       dat_p => data
 !
-      call gzip_defleat_once(z_buf%len_buf, C_LOC(dat_p),               &
-     &    z_buf%len_gzipbuf, z_buf%len_used, z_buf%gzipbuf_p)
+      call gzip_defleat_once(num*kreal, data(1),               &
+     &    len_gzipbuf, len_used, gzipbuf)
 !
       end subroutine gzip_defleat_real_once
 !
@@ -165,8 +164,8 @@
 !      z_buf%gzipbuf_p => gzipbuf
       idat8_p => int8_dat
 !
-      call gzip_defleat_once( z_buf%len_buf, C_LOC(idat8_p),            &
-     &    z_buf%len_gzipbuf, z_buf%len_used, z_buf%gzipbuf_p)
+      call gzip_defleat_once(num*kint_gl, int8_dat(1),            &
+     &    len_gzipbuf, len_used, gzipbuf)
 !
       end subroutine gzip_defleat_int8_once
 !
@@ -191,8 +190,8 @@
 !      z_buf%gzipbuf_p => gzipbuf
       idat4_p => int4_dat
 !
-      call gzip_defleat_once(z_buf%len_buf, C_LOC(idat4_p),        &
-     &    z_buf%len_gzipbuf, z_buf%len_used, z_buf%gzipbuf_p)
+      call gzip_defleat_once(num*4, int4_dat(1),        &
+     &    len_gzipbuf, len_used, gzipbuf)
 !
       end subroutine gzip_defleat_int4_once
 !
@@ -211,8 +210,8 @@
       integer, intent(inout) :: len_used
 !
 !
-      call gzip_defleat_once(z_buf%len_buf, C_LOC(z_buf%buf_p),       &
-     &    z_buf%len_gzipbuf, z_buf%len_used, z_buf%gzipbuf_p)
+      call gzip_defleat_once(len_buf, textbuf(1),       &
+     &    len_gzipbuf, len_used, z_buf%gzipbuf_p)
 !
       end subroutine gzip_defleat_char_once
 !
@@ -230,8 +229,8 @@
 !      type(zlib_transfer), intent(inout) :: z_buf
 !
 !
-      call gzip_defleat_begin(z_buf%len_buf, C_LOC(z_buf%buf_p),       &
-     &    z_buf%len_gzipbuf, z_buf%len_used, z_buf%gzipbuf_p)
+      call gzip_defleat_begin(len_buf, textbuf(1),       &
+     &    len_gzipbuf, len_used, gzipbuf)
 !
       end subroutine gzip_defleat_char_begin
 !
@@ -247,8 +246,8 @@
 !      type(zlib_transfer), intent(inout) :: z_buf
 !
 !
-      call gzip_defleat_cont(z_buf%len_buf, C_LOC(z_buf%buf_p),         &
-     &     z_buf%len_gzipbuf, z_buf%len_used)
+      call gzip_defleat_cont(len_buf, textbuf(1),         &
+     &    len_gzipbuf, len_used)
 !
       end subroutine gzip_defleat_char_cont
 !
@@ -265,8 +264,8 @@
 !
 !
       write(*,*) 'gzip_defleat_last'
-      call gzip_defleat_last(z_buf%len_buf, C_LOC(z_buf%buf_p),  &
-     &    z_buf%len_gzipbuf, z_buf%len_used)
+      call gzip_defleat_last(len_buf, textbuf(1),  &
+     &    len_gzipbuf, len_used)
 !
       end subroutine gzip_defleat_char_last
 !
