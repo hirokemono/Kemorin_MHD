@@ -46,13 +46,10 @@
       integer :: ilen_in
 !
 !
-      ilen_in = int(dble(kint)*1.01 + 24)
-      zbuf%ilen_gz = ilen_in
-      call alloc_zip_buffer(zbuf)
+      zbuf%ilen_gzipped = 0
 !
-      call gzip_defleat_int4_once(1, int_dat, ilen_in,                  &
+      call gzip_defleat_int4_once(1, int_dat, zbuf%ilen_gz,             &
      &    zbuf, zbuf%gzip_buf(1))
-      zbuf%ilen_gzipped =  int(zbuf%len_used,KIND(zbuf%ilen_gzipped))
 !
       end subroutine defleate_endian_flag
 !
@@ -74,9 +71,9 @@
 !
       zbuf%ilen_gz = int(dble(num*kint_gl)*1.01+24,KIND(zbuf%ilen_gz))
       call alloc_zip_buffer(zbuf)
+      zbuf%ilen_gzipped = 0
 !
       ist = 0
-      zbuf%ilen_gzipped = 0
       ilen_tmp = int(dble(huge_30) * 1.01 + 24,KIND(ilen_tmp))
       do
         nline = int(min((num - ist), huge_30/cast_long(kint_gl)))
@@ -85,8 +82,6 @@
         call gzip_defleat_int8_once(nline, int8_dat(ist+1), ilen_in,    &
      &      zbuf, zbuf%gzip_buf(zbuf%ilen_gzipped+1))
 !
-        zbuf%ilen_gzipped = zbuf%ilen_gzipped                           &
-     &                   + int(zbuf%len_used,KIND(zbuf%ilen_gzipped))
         ist = ist + nline
         if(ist .ge. num) exit
       end do
@@ -111,9 +106,9 @@
 !
       zbuf%ilen_gz = int(dble(num*kreal)*1.01 + 24,KIND(zbuf%ilen_gz))
       call alloc_zip_buffer(zbuf)
+      zbuf%ilen_gzipped = 0
 !
       ist = 0
-      zbuf%ilen_gzipped = 0
       ilen_tmp = int(dble(huge_30) * 1.01 + 24,KIND(ilen_tmp))
       do
         nline = int(min((num - ist), huge_30/cast_long(kreal)))
@@ -122,8 +117,6 @@
         call gzip_defleat_real_once(nline, real_dat(ist+1), ilen_in,    &
      &      zbuf, zbuf%gzip_buf(zbuf%ilen_gzipped+1))
 !
-        zbuf%ilen_gzipped = zbuf%ilen_gzipped                           &
-     &                   + int(zbuf%len_used,KIND(zbuf%ilen_gzipped))
         ist = ist + nline
         if(ist .ge. num) exit
       end do
@@ -148,9 +141,9 @@
 !
       zbuf%ilen_gz = int(dble(num*kchara)*1.01 + 24,KIND(zbuf%ilen_gz))
       call alloc_zip_buffer(zbuf)
+      zbuf%ilen_gzipped = 0
 !
       ist = 0
-      zbuf%ilen_gzipped = 0
       ilen_tmp = int(dble(huge_30) * 1.01 + 24,KIND(ilen_tmp))
       do
         nline = int(min((num - ist), huge_30/cast_long(kchara)))
@@ -181,14 +174,12 @@
       integer :: ilen_in
 !
 !
+      zbuf%ilen_gzipped = 0
       ilen_in = int(zbuf%ilen_gz)
 !
       call gzip_infleat_int4_once                                       &
      &   (ilen_in, zbuf%gzip_buf(1), ione, int_dat, zbuf)
       iflag_swap = endian_check(id_rank, int_dat(1))
-!
-      zbuf%ilen_gzipped = int(zbuf%len_used,KIND(zbuf%ilen_gzipped))
-      call dealloc_zip_buffer(zbuf)
 !
       end subroutine infleate_endian_flag
 !
@@ -218,13 +209,9 @@
      &     (ilen_in, zbuf%gzip_buf(zbuf%ilen_gzipped+1),                &
      &      nline, int8_dat(ist+1), zbuf)
 !
-        zbuf%ilen_gzipped = zbuf%ilen_gzipped                           &
-     &                   + int(zbuf%len_used,KIND(zbuf%ilen_gzipped))
         ist = ist + nline
         if(ist .ge. num) exit
       end do
-!
-      call dealloc_zip_buffer(zbuf)
 !
       end subroutine infleate_int8_vector_b
 !
@@ -254,13 +241,9 @@
      &     (ilen_in, zbuf%gzip_buf(zbuf%ilen_gzipped+1),                &
      &     nline, real_dat(ist+1), zbuf)
 !
-        zbuf%ilen_gzipped = zbuf%ilen_gzipped                           &
-     &                   + int(zbuf%len_used,KIND(zbuf%ilen_gzipped))
         ist = ist + nline
         if(ist .ge. num) exit
       end do
-!
-      call dealloc_zip_buffer(zbuf)
 !
       end subroutine infleate_1d_vector_b
 !
@@ -294,8 +277,6 @@
         ist = ist + nline
         if(ist .ge. num) exit
       end do
-!
-      call dealloc_zip_buffer(zbuf)
 !
       end subroutine infleate_1d_character_b
 !

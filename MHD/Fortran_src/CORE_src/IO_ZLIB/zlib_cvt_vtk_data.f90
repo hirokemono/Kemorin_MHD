@@ -159,9 +159,9 @@
       zbuf%ilen_gz                                                      &
      &     = int(real(3*num*ilen_line) * 1.01 + 24, KIND(zbuf%ilen_gz))
       call alloc_zip_buffer(zbuf)
+      zbuf%ilen_gzipped = 0
 !
       if(num .eq. 1) then
-        zbuf%ilen_gzipped = 0
         ilen_in = int(zbuf%ilen_gz)
         call gzip_defleat_char_begin(ilen_line,                         &
      &      vtk_each_vector(vect(1,1),vect(1,2),vect(1,3)),             &
@@ -175,7 +175,6 @@
 !
       else if(num .gt. 1) then
         ist = 0
-        zbuf%ilen_gzipped = 0
         ilen_tmp = int(dble(huge_30)*1.01+24,KIND(ilen_tmp))
         do
           nline = min((num - ist), huge_30/ilen_line)
@@ -220,8 +219,6 @@
           ist = ist + nline
           if(ist .ge. num) exit
         end do
-      else
-        zbuf%ilen_gzipped = 0
       end if
 !
       end subroutine defleate_vtk_tensor

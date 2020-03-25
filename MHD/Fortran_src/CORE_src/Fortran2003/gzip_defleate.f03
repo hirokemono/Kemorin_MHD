@@ -127,6 +127,8 @@
       call link_real_buffer_for_zlib(num, data, zbuf)
       call gzip_defleat_once(zbuf%len_buf, C_LOC(zbuf%dat_p),           &
      &    zbuf%len_gzipbuf, zbuf%len_used, zbuf%gzipbuf_p)
+      zbuf%ilen_gzipped = zbuf%ilen_gzipped                             &
+     &                   + int(zbuf%len_used,KIND(zbuf%ilen_gzipped))
 !
       end subroutine gzip_defleat_real_once
 !
@@ -147,6 +149,8 @@
       call link_int8_buffer_for_zlib(num, int8_dat, zbuf)
       call gzip_defleat_once(zbuf%len_buf, C_LOC(zbuf%idat8_p),         &
      &    zbuf%len_gzipbuf, zbuf%len_used, zbuf%gzipbuf_p)
+      zbuf%ilen_gzipped = zbuf%ilen_gzipped                             &
+     &                   + int(zbuf%len_used,KIND(zbuf%ilen_gzipped))
 !
       end subroutine gzip_defleat_int8_once
 !
@@ -167,6 +171,8 @@
       call link_int4_buffer_for_zlib(num, int4_dat, zbuf)
       call gzip_defleat_once(zbuf%len_buf, C_LOC(zbuf%idat4_p),         &
      &    zbuf%len_gzipbuf, zbuf%len_used, zbuf%gzipbuf_p)
+      zbuf%ilen_gzipped = zbuf%ilen_gzipped                             &
+     &                   + int(zbuf%len_used,KIND(zbuf%ilen_gzipped))
 !
       end subroutine gzip_defleat_int4_once
 !

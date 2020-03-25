@@ -54,6 +54,8 @@
 !
 !
       if(my_rank .eq. 0) then
+        zbuf%ilen_gz = int(dble(kint)*1.01 + 24)
+        call alloc_zip_buffer(zbuf)
         call defleate_endian_flag(zbuf)
 !
         ioffset = IO_param%ioff_gl
@@ -224,6 +226,7 @@
 !
         call infleate_endian_flag                                       &
      &     (my_rank, IO_param%iflag_bin_swap, zbuf)
+        call dealloc_zip_buffer(zbuf)
       end if
 !
       call MPI_BCAST(IO_param%iflag_bin_swap, 1, CALYPSO_FOUR_INT, 0,   &
@@ -303,11 +306,13 @@
       if(num .le. 0) return
       if(my_rank .eq. 0) then
         ioffset = IO_param%ioff_gl
-        zbuf%ilen_gz = int(dble(num*kint_gl)*1.01+24, KIND(zbuf%ilen_gz))
+        zbuf%ilen_gz                                                    &
+     &      = int(dble(num*kint_gl)*1.01+24, KIND(zbuf%ilen_gz))
         call alloc_zip_buffer(zbuf)
         call calypso_mpi_seek_read_gz(IO_param%id_file, ioffset, zbuf)
 !
         call infleate_int8_vector_b(num, int8_dat, zbuf)
+        call dealloc_zip_buffer(zbuf)
 !
         if(IO_param%iflag_bin_swap .eq. iendian_FLIP) then
           call byte_swap_64bit_f((num*kint_gl), int8_dat(1))
@@ -343,6 +348,7 @@
         call calypso_mpi_seek_read_gz(IO_param%id_file, ioffset, zbuf)
 !
         call infleate_1d_character_b(cast_long(num), chara_dat, zbuf)
+        call dealloc_zip_buffer(zbuf)
       end if
 !
       call calypso_mpi_bcast_character                                  &
@@ -375,6 +381,7 @@
         call calypso_mpi_seek_read_gz(IO_param%id_file, ioffset, zbuf)
 !
         call infleate_1d_vector_b(cast_long(num), real_dat, zbuf)
+        call dealloc_zip_buffer(zbuf)
 !
         if(IO_param%iflag_bin_swap .eq. iendian_FLIP) then
           call byte_swap_64bit_f(cast_long(num*kreal), real_dat(1))

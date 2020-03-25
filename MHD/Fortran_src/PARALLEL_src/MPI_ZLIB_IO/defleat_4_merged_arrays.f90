@@ -277,6 +277,10 @@
         end if
       end do
 !
+      do iloop = 1, nloop
+        call dealloc_zip_buffer(zbuf(iloop))
+      end do
+!
       end subroutine infleat_int8_vector_mul
 !
 ! -----------------------------------------------------------------------
@@ -310,6 +314,10 @@
         call dup_to_short_array(tmp64, i_array(iloop)%i_IO)
       end do
 !
+      do iloop = 1, nloop
+        call dealloc_zip_buffer(zbuf(iloop))
+      end do
+!
       end subroutine infleat_int_vector_mul
 !
 ! -----------------------------------------------------------------------
@@ -335,6 +343,7 @@
         num =  iv_array(iloop)%n1 * iv_array(iloop)%n2
         call alloc_1d_i8array(num, tmp64)
         call infleate_int8_vector_b(tmp64%n1, tmp64%id_a, zbuf(iloop))
+        call dealloc_zip_buffer(zbuf(iloop))
 !
         if(iflag_bin_swap .eq. iendian_FLIP) then
           l8_byte = tmp64%n1 * kint_gl
@@ -342,6 +351,10 @@
         end if
 !
         call dup_to_short_array(tmp64, iv_array(iloop)%iv_IO)
+      end do
+!
+      do iloop = 1, nloop
+        call dealloc_zip_buffer(zbuf(iloop))
       end do
 !
       end subroutine infleat_int2d_vector_mul
@@ -373,6 +386,10 @@
         end if
       end do
 !
+      do iloop = 1, nloop
+        call dealloc_zip_buffer(zbuf(iloop))
+      end do
+!
       end subroutine infleat_1d_vector_mul
 !
 ! -----------------------------------------------------------------------
@@ -401,6 +418,10 @@
           l8_byte = num * kreal
           call byte_swap_64bit_f(l8_byte, v_array(iloop)%v_IO(1,1))
         end if
+      end do
+!
+      do iloop = 1, nloop
+        call dealloc_zip_buffer(zbuf(iloop))
       end do
 !
       end subroutine infleat_2d_vector_mul
