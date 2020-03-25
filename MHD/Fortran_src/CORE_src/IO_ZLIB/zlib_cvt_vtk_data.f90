@@ -167,6 +167,7 @@
       integer(kind = kint_gl) :: inod, ist, nline
       integer(kind = kint_gl) :: ilen_tmp
       integer :: ilen_line, ilen_in
+      type(zlib_transfer) :: z_buf
 !
 !
       ilen_line = len(vtk_each_vector(zero, zero, zero))
