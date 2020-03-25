@@ -46,6 +46,7 @@
       character(len=nbuf) :: textbuf
       character(len=1), private :: chara_flag
 !
+      private :: nbuf
       private :: nchara
       private :: skip_gz_comment_get_nword
 !
@@ -130,13 +131,15 @@
 !
       subroutine get_one_line_from_gz_f
 !
-      integer(kind = 4) :: num_word4, nchara4
+      use t_buffer_4_gzip
+      use calypso_c_binding
+!
+      type(buffer_4_gzip) :: zbuf
 !
 !
-      write(*,*) 'get_one_line_from_gz'
-      call get_one_line_from_gz(nbuf, num_word4, nchara4, textbuf)
-      num_word = num_word4
-      nchara = nchara4
+      call get_one_line_from_gz_f03(nbuf, textbuf, zbuf)
+      num_word = zbuf%num_word
+      nchara =   zbuf%len_used
 !
       end subroutine get_one_line_from_gz_f
 !

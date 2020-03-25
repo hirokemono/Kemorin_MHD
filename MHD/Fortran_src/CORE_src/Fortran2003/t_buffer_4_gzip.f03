@@ -58,6 +58,8 @@
         integer(C_int) :: len_buf
 !>        Actual size of compressed buffer to zlib
         integer(C_int) :: len_used
+!>        Number of words from zlib read
+        integer(C_int) :: num_word
 !
 !>        Pointer of compressed data buffer
         character(C_char), pointer :: gzipbuf_p(:)
