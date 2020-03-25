@@ -51,8 +51,6 @@
 !void gzip_defleat_cont(int *len_buf, const char *buf, int *len_gzipbuf, int *len_gzipped);
 !void gzip_defleat_last(int *len_buf, const char *buf, int *len_gzipbuf, int *len_gzipped);
 !
-!void compress_file(const char *txt_file_name, const char *gz_file_name);
-!void decompress_file(const char *gz_file_name, const char *txt_file_name);
 !!
 !
 !void write_png_rgba_c(const char *fhead, int *num_x, int *num_y, 

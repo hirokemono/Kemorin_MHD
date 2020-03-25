@@ -28,8 +28,6 @@
   #define gzread_64bit_f            gzread_64bit_f_
   #define gzwrite_f                 gzwrite_f_
   #define get_one_line_from_gz      get_one_line_from_gz_
-  #define compress_file             compress_file_
-  #define decompress_file           decompress_file_
 
   #define write_png_rgba_c           write_png_rgba_c_
   #define write_png_rgb_c            write_png_rgb_c_
@@ -71,8 +69,6 @@
   #define gzread_64bit_f            GZREAD_64BIT_F
   #define gzwrite_f                 GZWRITE_F
   #define get_one_line_from_gz      GET_ONE_LINE_FROM_GZ
-  #define compress_file             COMPRESS_FILE
-  #define decompress_file           DECOMPRESS_FILE
 
   #define write_png_rgba_c           WRITE_PNG_RGBA_C
   #define write_png_rgb_c            WRITE_PNG_RGB_C
@@ -114,8 +110,6 @@
   #define gzread_64bit_f            GZREAD_64BIT_F
   #define gzwrite_f                 GZWRITE_F
   #define get_one_line_from_gz      GET_ONE_LINE_FROM_GZ
-  #define compress_file             COMPRESS_FILE
-  #define decompress_file           DECOMPRESS_FILE
 
   #define write_png_rgba_c           WRITE_PNG_RGBA_C
   #define write_png_rgb_c            WRITE_PNG_RGB_C
@@ -157,8 +151,6 @@
   #define gzread_64bit_f            gzread_64bit_f
   #define gzwrite_f                 gzwrite_f
   #define get_one_line_from_gz      get_one_line_from_gz
-  #define compress_file             compress_file
-  #define decompress_file           decompress_file
 
   #define write_png_rgba_c           write_png_rgba_c
   #define write_png_rgb_c            write_png_rgb_c
