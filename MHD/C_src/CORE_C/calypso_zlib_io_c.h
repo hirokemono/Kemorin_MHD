@@ -50,8 +50,8 @@ void close_gzfile(void);
 int open_rd_gzfile_w_flag(const char *gz_file_name);
 int check_gzfile_eof(void);
 
-void write_compress_txt(int *num_buffer, char *input_txt);
-void write_compress_txt_nolf(int *num_buffer, char *input_txt);
+void write_compress_txt(int *nchara, char *input_txt);
+void write_compress_txt_nolf(int *nchara, char *input_txt);
 
 void gzseek_go_fwd_f(int *ioffset, int *ierr);
 void gzread_32bit_f(int *iflag_swap, int *ilength, char *textbuf, int *ierr);

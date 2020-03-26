@@ -111,8 +111,9 @@
 !
       subroutine gz_write_textbuf_no_lf
 !
+      use calypso_c_binding
 !
-      call write_compress_txt_nolf(nbuf, textbuf)
+      call gz_write_textbuf_no_lf_f(nbuf, textbuf, zbuf1)
 !
       end subroutine gz_write_textbuf_no_lf
 !
@@ -120,8 +121,9 @@
 !
       subroutine gz_write_textbuf_w_lf
 !
+      use calypso_c_binding
 !
-      call write_compress_txt(nbuf, textbuf)
+      call gz_write_textbuf_w_lf_f(nbuf, textbuf, zbuf1)
 !
       end subroutine gz_write_textbuf_w_lf
 !
@@ -519,7 +521,7 @@
       character(len=kchara), intent(in) :: chara_output
 !
       write(textbuf,'(2a,a1)') trim(chara_output), '    ', CHAR(0)
-      call write_compress_txt_nolf(nbuf, textbuf)
+      call gz_write_textbuf_no_lf
 !
       end subroutine gz_write_chara_nolf
 !

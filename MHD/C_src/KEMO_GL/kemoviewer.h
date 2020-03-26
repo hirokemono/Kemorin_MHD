@@ -26,8 +26,6 @@
 #define open_rd_gzfile            open_rd_gzfile_
 #define close_gzfile              close_gzfile_
 #define check_gzfile_eof          check_gzfile_eof_
-#define write_compress_txt        write_compress_txt_
-#define write_compress_txt_nolf   write_compress_txt_nolf_
 #define gzseek_go_fwd_f           gzseek_go_fwd_f_
 #define gzread_32bit_f            gzread_32bit_f_
 #define gzread_64bit_f            gzread_64bit_f_
@@ -67,8 +65,6 @@
 #define open_rd_gzfile            OPEN_RD_GZFILE
 #define close_gzfile              CLOSE_GZFILE
 #define check_gzfile_eof          CHECK_GZFILE_EOF
-#define write_compress_txt        WRITE_COMPRESS_TXT
-#define write_compress_txt_nolf   WRITE_COMPRESS_TXT_NOLF
 #define gzseek_go_fwd_f           GZSEEK_GO_FWD_F
 #define gzread_32bit_f            GZREAD_32BIT_F
 #define gzread_64bit_f            GZREAD_64BIT_F
@@ -107,8 +103,6 @@
 #define open_rd_gzfile            OPEN_RD_GZFILE
 #define close_gzfile              CLOSE_GZFILE
 #define check_gzfile_eof          CHECK_GZFILE_EOF
-#define write_compress_txt        WRITE_COMPRESS_TXT
-#define write_compress_txt_nolf   WRITE_COMPRESS_TXT_NOLF
 #define gzseek_go_fwd_f           GZSEEK_GO_FWD_F
 #define gzread_32bit_f            GZREAD_32BIT_F
 #define gzread_64bit_f            GZREAD_64BIT_F
@@ -147,8 +141,6 @@
 #define open_rd_gzfile            open_rd_gzfile
 #define close_gzfile              close_gzfile
 #define check_gzfile_eof          check_gzfile_eof
-#define write_compress_txt        write_compress_txt
-#define write_compress_txt_nolf   write_compress_txt_nolf
 #define gzseek_go_fwd_f           gzseek_go_fwd_f
 #define gzread_32bit_f            gzread_32bit_f
 #define gzread_64bit_f            gzread_64bit_f

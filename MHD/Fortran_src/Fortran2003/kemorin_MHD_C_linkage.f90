@@ -34,9 +34,6 @@
 !
 !int check_gzfile_eof();
 !
-!void write_compress_txt(int *num_buffer, char *input_txt);
-!void write_compress_txt_nolf(int *num_buffer, char *input_txt);
-!
 !void gzseek_go_fwd_f(int *ioffset, int *ierr);
 !void gzread_32bit_f(int *iflag_swap, int *ilength, char *textbuf, int *ierr);
 !void gzread_64bit_f(int *iflag_swap, int *ilength, char *textbuf, int *ierr);

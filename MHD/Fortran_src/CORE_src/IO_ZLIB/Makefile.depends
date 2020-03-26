@@ -106,7 +106,7 @@ input_old_file_sel_4_zlib.o: $(ZLIB_IO_DIR)/input_old_file_sel_4_zlib.F90 m_prec
 	$(F90) -c $(F90FLAGS) $<
 itp_table_IO_select_4_zlib.o: $(ZLIB_IO_DIR)/itp_table_IO_select_4_zlib.F90 m_precision.o m_file_format_switch.o t_interpolate_tbl_org.o t_interpolate_tbl_dest.o t_interpolate_coefs_dest.o itp_table_file_IO.o itp_table_file_IO_b.o gz_itp_table_file_IO.o set_parallel_file_name.o
 	$(F90) -c $(F90FLAGS) $<
-skip_gz_comment.o: $(ZLIB_IO_DIR)/skip_gz_comment.f90 m_precision.o m_constants.o set_parallel_file_name.o t_buffer_4_gzip.o calypso_c_binding.o
+skip_gz_comment.o: $(ZLIB_IO_DIR)/skip_gz_comment.f90 m_precision.o m_constants.o t_buffer_4_gzip.o set_parallel_file_name.o calypso_c_binding.o
 	$(F90) -c $(F90OPTFLAGS) $<
 zlib_convert_ascii_vector.o: $(ZLIB_IO_DIR)/zlib_convert_ascii_vector.f90 m_precision.o m_constants.o t_buffer_4_gzip.o data_IO_to_textline.o gzip_defleate.o gzip_infleate.o field_data_IO.o field_data_MPI_IO.o
 	$(F90) -c $(F90OPTFLAGS) $<

@@ -158,7 +158,7 @@ int check_gzfile_eof(void){
     return gzeof(file_gz);
 }
 
-void write_compress_txt(int *num_buffer, char *input_txt){
+void write_compress_txt(int *nchara, char *input_txt){
 	int writelen, num_txt;
 	
 	
@@ -167,8 +167,8 @@ void write_compress_txt(int *num_buffer, char *input_txt){
 	input_txt[num_txt+1] = '\0';
 	num_txt = num_txt + 1;
 	/*
-	fprintf(stderr,"num_buffer: %d, num_txt %d,\n",
-			*num_buffer, num_txt);
+	fprintf(stderr,"nchara: %d, num_txt %d,\n",
+			*nchara, num_txt);
 	*/
 	writelen = gzwrite(file_gz, input_txt, num_txt);
 	if (writelen != num_txt) {
@@ -176,11 +176,11 @@ void write_compress_txt(int *num_buffer, char *input_txt){
 		exit(1);
 	}
 	
-	/*memset(input_txt, '\0', *num_buffer*sizeof(char));*/
+	/*memset(input_txt, '\0', *nchara*sizeof(char));*/
 	return;
 }
 
-void write_compress_txt_nolf(int *num_buffer, char *input_txt){
+void write_compress_txt_nolf(int *nchara, char *input_txt){
 	int writelen, num_txt;
 	
 	num_txt = (int) strlen(input_txt);
@@ -191,7 +191,7 @@ void write_compress_txt_nolf(int *num_buffer, char *input_txt){
 		exit(1);
 	}
 	
-	memset(input_txt, '\0', sizeof(*num_buffer));
+	memset(input_txt, '\0', sizeof(*nchara));
 	return;
 }
 
