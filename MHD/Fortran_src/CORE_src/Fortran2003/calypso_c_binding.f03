@@ -208,7 +208,7 @@
       iswap_c = iflag_swap
       call link_int8_buffer_for_zlib(num, int8_dat, zbuf)
       call gzread_64bit_f                                               &
-     &   (iswap_c, zbuf%len_buf , C_LOC(zbuf%dat_p), ierr_c)
+     &   (iswap_c, zbuf%len_buf , C_LOC(zbuf%idat8_p), ierr_c)
       call unlink_int8_buffer_for_zlib(zbuf)
       ierr = ierr_c
 !
