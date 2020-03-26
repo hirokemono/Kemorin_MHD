@@ -40,6 +40,8 @@
       subroutine read_gz_rst_file                                       &
      &         (id_rank, file_name, t_IO, fld_IO, ierr_IO)
 !
+      use calypso_c_binding
+!
       character(len=kchara), intent(in) :: file_name
       integer, intent(in) :: id_rank
 !
@@ -74,6 +76,8 @@
 !
       subroutine read_gz_rst_comps                                      &
      &          (id_rank, file_name, t_IO, fld_IO, ierr_IO)
+!
+      use calypso_c_binding
 !
       character(len=kchara), intent(in) :: file_name
       integer, intent(in) :: id_rank

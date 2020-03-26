@@ -19,9 +19,6 @@
   #define open_wt_gzfile            open_wt_gzfile_
   #define open_ad_gzfile            open_ad_gzfile_
   #define open_rd_gzfile            open_rd_gzfile_
-  #define close_gzfile              close_gzfile_
-  #define check_gzfile_eof          check_gzfile_eof_
-  #define gzseek_go_fwd_f           gzseek_go_fwd_f_
 
   #define write_png_rgba_c           write_png_rgba_c_
   #define write_png_rgb_c            write_png_rgb_c_
@@ -54,9 +51,6 @@
   #define open_wt_gzfile            OPEN_WT_GZFILE
   #define open_ad_gzfile            OPEN_AD_GZFILE
   #define open_rd_gzfile            OPEN_RD_GZFILE
-  #define close_gzfile              CLOSE_GZFILE
-  #define check_gzfile_eof          CHECK_GZFILE_EOF
-  #define gzseek_go_fwd_f           GZSEEK_GO_FWD_F
 
   #define write_png_rgba_c           WRITE_PNG_RGBA_C
   #define write_png_rgb_c            WRITE_PNG_RGB_C
@@ -89,9 +83,6 @@
   #define open_wt_gzfile            OPEN_WT_GZFILE
   #define open_ad_gzfile            OPEN_AD_GZFILE
   #define open_rd_gzfile            OPEN_RD_GZFILE
-  #define close_gzfile              CLOSE_GZFILE
-  #define check_gzfile_eof          CHECK_GZFILE_EOF
-  #define gzseek_go_fwd_f           GZSEEK_GO_FWD_F
 
   #define write_png_rgba_c           WRITE_PNG_RGBA_C
   #define write_png_rgb_c            WRITE_PNG_RGB_C
@@ -124,9 +115,6 @@
   #define open_wt_gzfile            open_wt_gzfile
   #define open_ad_gzfile            open_ad_gzfile
   #define open_rd_gzfile            open_rd_gzfile
-  #define close_gzfile              close_gzfile
-  #define check_gzfile_eof          check_gzfile_eof
-  #define gzseek_go_fwd_f           gzseek_go_fwd_f
 
   #define write_png_rgba_c           write_png_rgba_c
   #define write_png_rgb_c            write_png_rgb_c

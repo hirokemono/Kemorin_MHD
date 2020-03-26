@@ -49,6 +49,8 @@
 !
       subroutine write_gz_ucd_file(id_rank, gzip_name, ucd)
 !
+      use calypso_c_binding
+!
       character(len=kchara), intent(in) :: gzip_name
       integer, intent(in) :: id_rank
       type(ucd_data), intent(in) :: ucd
@@ -68,6 +70,8 @@
 !
       subroutine write_gz_udt_file(id_rank, gzip_name, ucd)
 !
+      use calypso_c_binding
+!
       character(len=kchara), intent(in) :: gzip_name
       integer, intent(in) :: id_rank
       type(ucd_data), intent(in) :: ucd
@@ -85,6 +89,8 @@
 !-----------------------------------------------------------------------
 !
       subroutine write_gz_grd_file(id_rank, gzip_name, ucd)
+!
+      use calypso_c_binding
 !
       character(len=kchara), intent(in) :: gzip_name
       integer, intent(in) :: id_rank
@@ -104,6 +110,8 @@
 !-----------------------------------------------------------------------
 !
       subroutine read_gz_udt_file(id_rank, gzip_name, ucd)
+!
+      use calypso_c_binding
 !
       character(len=kchara), intent(in) :: gzip_name
       integer, intent(in) :: id_rank
@@ -128,6 +136,8 @@
 !-----------------------------------------------------------------------
 !
       subroutine read_alloc_gz_udt_head(id_rank, gzip_name, ucd)
+!
+      use calypso_c_binding
 !
       character(len=kchara), intent(in) :: gzip_name
       integer, intent(in) :: id_rank
@@ -156,6 +166,8 @@
 !
       subroutine read_alloc_gz_udt_file(id_rank, gzip_name, ucd)
 !
+      use calypso_c_binding
+!
       character(len=kchara), intent(in) :: gzip_name
       integer, intent(in) :: id_rank
       type(ucd_data), intent(inout) :: ucd
@@ -183,6 +195,8 @@
 !
       subroutine read_alloc_gz_ucd_file                                 &
      &         (id_rank, gzip_name, nnod_ele, ucd)
+!
+      use calypso_c_binding
 !
       character(len=kchara), intent(in) :: gzip_name
       integer, intent(in) :: id_rank
@@ -220,6 +234,8 @@
 !-----------------------------------------------------------------------
 !
       subroutine read_gz_ucd_grd(id_rank, gzip_name, nnod_ele, ucd)
+!
+      use calypso_c_binding
 !
       character(len=kchara), intent(in) :: gzip_name
       integer, intent(in) :: id_rank

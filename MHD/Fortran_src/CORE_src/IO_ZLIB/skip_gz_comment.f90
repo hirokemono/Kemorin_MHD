@@ -6,7 +6,6 @@
 !!      subroutine open_wt_gzfile_f(gzip_name)
 !!      subroutine open_qd_gzfile_f(gzip_name)
 !!      subroutine open_rd_gzfile_f(gzip_name)
-!!      subroutine close_gzfile_f
 !!
 !!      subroutine gz_write_textbuf_no_lf
 !!      subroutine gz_write_textbuf_w_lf
@@ -97,14 +96,6 @@
       call open_rd_gzfile(file_name)
 !
       end subroutine open_rd_gzfile_f
-!
-!------------------------------------------------------------------
-!
-      subroutine close_gzfile_f
-!
-      call close_gzfile
-!
-      end subroutine close_gzfile_f
 !
 !------------------------------------------------------------------
 !------------------------------------------------------------------

@@ -31,6 +31,8 @@
 !
       subroutine output_surface_grid_gz(file_name, mgd_view_mesh)
 !
+      use calypso_c_binding
+!
       character(len = kchara), intent(in) :: file_name
       type(merged_viewer_mesh), intent(in) :: mgd_view_mesh
 !
@@ -77,6 +79,8 @@
 !
       subroutine read_surface_grid_gz                                   &
      &          (file_name, nnod_4_ele, mgd_view_mesh)
+!
+      use calypso_c_binding
 !
       character(len = kchara), intent(in) :: file_name
       integer(kind = kint), intent(in) :: nnod_4_ele

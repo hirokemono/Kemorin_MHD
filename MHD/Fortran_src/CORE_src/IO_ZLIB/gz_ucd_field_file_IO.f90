@@ -47,6 +47,8 @@
       subroutine write_ucd_2_gz_fld_file                                &
      &         (id_rank, gzip_name, t_IO, ucd)
 !
+      use calypso_c_binding
+!
       character(len=kchara), intent(in) :: gzip_name
       integer, intent(in) :: id_rank
 !
@@ -74,6 +76,8 @@
 !
       subroutine read_ucd_2_gz_fld_file                                 &
      &         (id_rank, gzip_name, t_IO, ucd, ierr_IO)
+!
+      use calypso_c_binding
 !
       character(len=kchara), intent(in) :: gzip_name
       integer, intent(in) :: id_rank
@@ -105,6 +109,8 @@
 !
       subroutine read_alloc_ucd_2_gz_fld_file                           &
      &         (id_rank, gzip_name, t_IO, ucd, ierr_IO)
+!
+      use calypso_c_binding
 !
       character(len=kchara), intent(in) :: gzip_name
       integer, intent(in) :: id_rank

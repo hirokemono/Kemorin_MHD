@@ -54,6 +54,7 @@
       subroutine gz_input_element_file_b                                &
      &         (id_rank, file_name, ele_mesh_IO, ierr)
 !
+      use calypso_c_binding
       use gz_element_data_IO_b
 !
       character(len=kchara), intent(in) :: file_name
@@ -80,6 +81,7 @@
       subroutine gz_input_surface_file_b                                &
      &         (id_rank, file_name, surf_mesh_IO, ierr)
 !
+      use calypso_c_binding
       use gz_surface_data_IO_b
 !
       character(len=kchara), intent(in) :: file_name
@@ -106,6 +108,7 @@
       subroutine gz_input_edge_file_b                                   &
      &         (id_rank, file_name, edge_mesh_IO, ierr)
 !
+      use calypso_c_binding
       use gz_edge_data_IO_b
 !
       character(len=kchara), intent(in) :: file_name
@@ -133,6 +136,7 @@
       subroutine gz_output_element_file_b                               &
      &         (id_rank, file_name, ele_mesh_IO)
 !
+      use calypso_c_binding
       use gz_element_data_IO_b
 !
       character(len=kchara), intent(in) :: file_name
@@ -157,6 +161,7 @@
       subroutine gz_output_surface_file_b                               &
      &         (id_rank, file_name, surf_mesh_IO)
 !
+      use calypso_c_binding
       use gz_surface_data_IO_b
 !
       character(len=kchara), intent(in) :: file_name
@@ -181,6 +186,7 @@
       subroutine gz_output_edge_file_b                                  &
      &         (id_rank, file_name, edge_mesh_IO)
 !
+      use calypso_c_binding
       use gz_edge_data_IO_b
 !
       character(len=kchara), intent(in) :: file_name

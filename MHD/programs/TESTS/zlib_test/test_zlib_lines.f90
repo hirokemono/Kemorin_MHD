@@ -5,6 +5,7 @@
       use t_buffer_4_gzip
       use calypso_c_binding
       use skip_gz_comment
+      use calypso_c_binding
 !
       implicit none
 !

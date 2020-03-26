@@ -44,6 +44,7 @@
      &          FEM_elens, FEM_moms)
 !
       use t_filter_moments
+      use calypso_c_binding
 !
       character(len=kchara), intent(in) :: file_name
       integer, intent(in) :: id_rank
@@ -75,6 +76,8 @@
       subroutine read_filter_elen_t_file_gz(file_name, id_rank,         &
      &          nnod, nele, FEM_elens, ierr)
 !
+      use calypso_c_binding
+!
       character(len=kchara), intent(in) :: file_name
       integer, intent(in) :: id_rank
       integer(kind = kint), intent(in) :: nnod, nele
@@ -104,6 +107,8 @@
 !
       subroutine write_filter_elen_t_file_gz(file_name, id_rank,        &
      &          FEM_elens)
+!
+      use calypso_c_binding
 !
       character(len=kchara), intent(in) :: file_name
       integer, intent(in) :: id_rank
@@ -135,6 +140,7 @@
      &          nnod, nele, FEM_elens, FEM_moms, ierr)
 !
       use t_filter_moments
+      use calypso_c_binding
 !
       character(len=kchara), intent(in) :: file_name
       integer, intent(in) :: id_rank
@@ -169,6 +175,7 @@
      &          FEM_elens, FEM_moms)
 !
       use t_filter_moments
+      use calypso_c_binding
 !
       character(len=kchara), intent(in) :: file_name
       integer, intent(in) :: id_rank

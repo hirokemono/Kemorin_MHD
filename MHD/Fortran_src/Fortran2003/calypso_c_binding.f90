@@ -61,31 +61,6 @@
         integer(C_INT) :: lenchara
       end subroutine rawwrite_f
 !
-!
-      subroutine open_wt_gzfile(gz_file_name)                           &
-     &          BIND(C, name = 'open_wt_gzfile')
-      use ISO_C_BINDING
-        character(*) :: gz_file_name
-      end subroutine open_wt_gzfile
-!
-      subroutine open_ad_gzfile(gz_file_name)                           &
-     &          BIND(C, name = 'open_ad_gzfile')
-      use ISO_C_BINDING
-        character(*) :: gz_file_name
-      end subroutine open_ad_gzfile
-!
-      subroutine open_rd_gzfile(gz_file_name)                           &
-     &          BIND(C, name = 'open_rd_gzfile')
-      use ISO_C_BINDING
-        character(*) :: gz_file_name
-      end subroutine open_rd_gzfile
-!
-      subroutine close_gzfile()  BIND(C, name = 'close_gzfile')
-      end subroutine close_gzfile
-!
-      subroutine check_gzfile_eof()  BIND(C, name = 'check_gzfile_eof')
-      end subroutine check_gzfile_eof
-!
       end interface
 !
       end module calypso_c_binding

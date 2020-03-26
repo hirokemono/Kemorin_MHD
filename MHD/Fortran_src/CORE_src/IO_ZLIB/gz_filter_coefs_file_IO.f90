@@ -43,6 +43,7 @@
 !
       use gz_mesh_data_IO
       use gz_filter_coef_IO
+      use calypso_c_binding
 !
       integer, intent(in) :: id_rank
       character(len=kchara), intent(in) :: file_name
@@ -77,6 +78,7 @@
 !
       use gz_mesh_data_IO
       use gz_filter_coef_IO
+      use calypso_c_binding
 !
       integer, intent(in) :: id_rank
       character(len=kchara), intent(in) :: file_name
@@ -112,6 +114,7 @@
      &         (file_name, id_rank, filter_IO, ierr)
 !
       use gz_mesh_data_IO
+      use calypso_c_binding
 !
       integer, intent(in) :: id_rank
       character(len=kchara), intent(in) :: file_name
@@ -141,6 +144,7 @@
      &         (file_name, id_rank, filter_IO)
 !
       use gz_mesh_data_IO
+      use calypso_c_binding
 !
       integer, intent(in) :: id_rank
       character(len=kchara), intent(in) :: file_name

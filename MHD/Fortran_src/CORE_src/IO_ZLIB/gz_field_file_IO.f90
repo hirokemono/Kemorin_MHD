@@ -49,6 +49,8 @@
       subroutine write_gz_step_field_file                               &
      &         (gzip_name, id_rank, t_IO, fld_IO)
 !
+      use calypso_c_binding
+!
       integer, intent(in) :: id_rank
       character(len=kchara), intent(in) :: gzip_name
       type(time_data), intent(in) :: t_IO
@@ -75,6 +77,8 @@
 !------------------------------------------------------------------
 !
       subroutine read_alloc_gz_field_file(gzip_name, id_rank, fld_IO)
+!
+      use calypso_c_binding
 !
       character(len=kchara), intent(in) :: gzip_name
       integer, intent(in) :: id_rank
@@ -108,6 +112,8 @@
       subroutine read_gz_step_field_file                                &
      &         (gzip_name, id_rank, t_IO, fld_IO, ierr_IO)
 !
+      use calypso_c_binding
+!
       integer, intent(in) :: id_rank
       character(len=kchara), intent(in) :: gzip_name
 !
@@ -140,6 +146,8 @@
 !
       subroutine read_alloc_gz_step_field_file                          &
      &          (gzip_name, id_rank, t_IO, fld_IO, ierr_IO)
+!
+      use calypso_c_binding
 !
       integer, intent(in) :: id_rank
       character(len=kchara), intent(in) :: gzip_name
@@ -179,6 +187,8 @@
 !
       subroutine read_alloc_gz_step_field_head                          &
      &         (gzip_name, id_rank, t_IO, fld_IO, ierr_IO)
+!
+      use calypso_c_binding
 !
       integer, intent(in) :: id_rank
       character(len=kchara), intent(in) :: gzip_name

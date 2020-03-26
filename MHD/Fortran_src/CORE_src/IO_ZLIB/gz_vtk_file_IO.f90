@@ -39,6 +39,7 @@
      &          ncomp_field, field_name, d_nod)
 !
       use set_parallel_file_name
+      use calypso_c_binding
 !
       character(len=kchara), intent(in) :: gzip_name
 !
@@ -68,6 +69,7 @@
      &          ntot_comp, ncomp_field, field_name, d_nod)
 !
       use set_parallel_file_name
+      use calypso_c_binding
 !
       character(len=kchara), intent(in) :: gzip_name
 !
@@ -91,6 +93,7 @@
      &          xx, ie)
 !
       use set_parallel_file_name
+      use calypso_c_binding
 !
       character(len=kchara), intent(in) :: gzip_name
 !

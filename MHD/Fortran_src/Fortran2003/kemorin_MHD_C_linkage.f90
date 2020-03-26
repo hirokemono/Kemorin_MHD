@@ -30,14 +30,6 @@
 !void open_wt_gzfile(const char *gz_file_name);
 !void open_ad_gzfile(const char *gz_file_name);
 !void open_rd_gzfile(const char *gz_file_name);
-!void close_gzfile();
-!
-!int check_gzfile_eof();
-!
-!void gzseek_go_fwd_f(int *ioffset, int *ierr);
-!void gzread_32bit_f(int *iflag_swap, int *ilength, char *textbuf, int *ierr);
-!void gzread_64bit_f(int *iflag_swap, int *ilength, char *textbuf, int *ierr);
-!
 !
 !void write_png_rgba_c(const char *fhead, int *num_x, int *num_y, 
 !			const unsigned char *cimage);

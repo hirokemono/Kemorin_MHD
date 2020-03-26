@@ -47,6 +47,8 @@
       subroutine gz_write_itp_table_file                                &
      &         (file_name, id_rank, IO_itp_org, IO_itp_dest)
 !
+      use calypso_c_binding
+!
       character(len=kchara), intent(in) :: file_name
       integer, intent(in) :: id_rank
 !
@@ -80,6 +82,8 @@
 !
       subroutine gz_read_itp_table_file                                 &
      &         (file_name, id_rank, IO_itp_org, IO_itp_dest, ierr)
+!
+      use calypso_c_binding
 !
       character(len=kchara), intent(in) :: file_name
       integer, intent(in) :: id_rank
@@ -118,6 +122,8 @@
       subroutine gz_write_itp_coefs_dest_file                           &
      &         (file_name, id_rank, IO_itp_dest, IO_itp_c_dest)
 !
+      use calypso_c_binding
+!
       character(len=kchara), intent(in) :: file_name
       integer, intent(in) :: id_rank
 !
@@ -145,6 +151,8 @@
 !
       subroutine gz_read_itp_coefs_dest_file                            &
      &         (file_name, id_rank, IO_itp_dest, IO_itp_c_dest, ierr)
+!
+      use calypso_c_binding
 !
       character(len=kchara), intent(in) :: file_name
       integer, intent(in) :: id_rank
@@ -174,6 +182,8 @@
       subroutine gz_read_itp_table_dest_file                            &
      &         (file_name, id_rank, IO_itp_dest, ierr)
 !
+      use calypso_c_binding
+!
       character(len=kchara), intent(in) :: file_name
       integer, intent(in) :: id_rank
 !
@@ -199,6 +209,8 @@
 !
       subroutine gz_read_itp_domain_dest_file                           &
      &         (file_name, id_rank, IO_itp_dest, ierr)
+!
+      use calypso_c_binding
 !
       character(len=kchara), intent(in) :: file_name
       integer, intent(in) :: id_rank
