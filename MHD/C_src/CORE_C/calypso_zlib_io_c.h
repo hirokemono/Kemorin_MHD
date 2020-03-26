@@ -54,9 +54,9 @@ void write_compress_txt(int *nchara, char *input_txt);
 void write_compress_txt_nolf(int *nchara, char *input_txt);
 
 void gzseek_go_fwd_f(int *ioffset, int *ierr);
-void gzread_32bit_f(int *iflag_swap, int *ilength, char *textbuf, int *ierr);
-void gzread_64bit_f(int *iflag_swap, int *ilength, char *textbuf, int *ierr);
-void gzwrite_f(int *ilength, char *textbuf, int *ierr);
+void gzread_32bit_f(const int *iflag_swap, int *ilength, char *textbuf, int *ierr);
+void gzread_64bit_f(const int *iflag_swap, int *ilength, char *textbuf, int *ierr);
+void gzwrite_f(int *ilength, void *buf, int *ierr);
 
 void get_one_line_from_gz(int *num_buffer, int *num_word, int *nchara, char *line_buf);
 int skip_comment_gz_c(int *num_buffer, char *buf);

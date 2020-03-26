@@ -39,6 +39,7 @@
       use m_constants
       use m_machine_parameter
       use m_error_IDs
+      use t_buffer_4_gzip
       use binary_IO
 !
       implicit none
@@ -90,10 +91,15 @@
 !
       subroutine gz_write_endian_flag(bflag)
 !
+      use calypso_c_binding
+!
       type(binary_IO_flags), intent(inout) :: bflag
 !
+      integer, parameter :: i_UNIX4(1) = (/i_UNIX/)
+      type(buffer_4_gzip) :: zbuf1
 !
-      call gzwrite_f(kint, i_UNIX, bflag%ierr_IO)
+!
+      call gzwrite_int4_f(1, i_UNIX4, zbuf1, bflag%ierr_IO)
       bflag%ierr_IO = bflag%ierr_IO - kint
 !
       end subroutine gz_write_endian_flag
@@ -103,12 +109,17 @@
       subroutine gz_write_one_integer_b(int_dat, bflag)
 !
       use transfer_to_long_integers
+      use calypso_c_binding
 !
       integer(kind = kint), intent(in) :: int_dat
       type(binary_IO_flags), intent(inout) :: bflag
 !
+      integer(kind = kint_gl) :: i8tmp(1)
+      type(buffer_4_gzip) :: zbuf1
 !
-      call gzwrite_f(kint_gl, cast_long(int_dat), bflag%ierr_IO)
+!
+      i8tmp(1) = cast_long(int_dat)
+      call gzwrite_int8_f(1, i8tmp, zbuf1, bflag%ierr_IO)
       bflag%ierr_IO = bflag%ierr_IO - kint_gl
 !
       end subroutine gz_write_one_integer_b
@@ -117,11 +128,17 @@
 !
       subroutine gz_write_one_real_b(real_dat, bflag)
 !
+      use calypso_c_binding
+!
       real(kind = kreal), intent(in) :: real_dat
       type(binary_IO_flags), intent(inout) :: bflag
 !
+      real(kind = kreal) :: rtmp(1)
+      type(buffer_4_gzip) :: zbuf1
 !
-      call gzwrite_f(kreal, real_dat, bflag%ierr_IO)
+!
+      rtmp(1) = real_dat
+      call gzwrite_real_f(1, rtmp, zbuf1, bflag%ierr_IO)
       bflag%ierr_IO = bflag%ierr_IO - kreal
 !
       end subroutine gz_write_one_real_b
@@ -131,22 +148,25 @@
 !
       subroutine gz_write_mul_int8_b(num, int8_dat, bflag)
 !
+      use calypso_c_binding
+!
       integer(kind = kint_gl), intent(in) :: num
       integer(kind = kint_gl), intent(in) :: int8_dat(num)
       type(binary_IO_flags), intent(inout) :: bflag
 !
       integer(kind = kint_gl) :: ist
-      integer :: lbyte, ilength
+      integer :: ilength
+      type(buffer_4_gzip) :: zbuf1
 !
 !
       ist = 0
       do
         ilength = int(min((num - ist), huge_20))
-        lbyte = ilength * kint_gl
 !
-        call gzwrite_f(lbyte, int8_dat(ist+1), bflag%ierr_IO)
+        call gzwrite_int8_f                                             &
+     &     (ilength, int8_dat(ist+1), zbuf1, bflag%ierr_IO)
         ist = ist + ilength
-        bflag%ierr_IO = bflag%ierr_IO - lbyte
+        bflag%ierr_IO = bflag%ierr_IO - ilength * kint_gl
         if(bflag%ierr_IO .ne. 0) return
         if(ist .ge. num) exit
       end do
@@ -191,12 +211,15 @@
 !
       subroutine gz_write_mul_character_b(num, chara_dat, bflag)
 !
+      use calypso_c_binding
+!
       integer(kind = kint_gl), intent(in) :: num
       character(len=kchara), intent(in) :: chara_dat(num)
       type(binary_IO_flags), intent(inout) :: bflag
 !
       integer(kind = kint_gl) ::  ist
       integer :: lbyte, ilength
+      type(buffer_4_gzip) :: zbuf1
 !
 !
       ist = 0
@@ -204,7 +227,8 @@
         ilength = int(min((num - ist), huge_20))
         lbyte = ilength * kchara
 !
-        call gzwrite_f(lbyte, chara_dat(ist+1), bflag%ierr_IO)
+        call gzwrite_chara_f                                            &
+     &     (lbyte, chara_dat(ist+1), zbuf1, bflag%ierr_IO)
         ist = ist + ilength
         bflag%ierr_IO = bflag%ierr_IO - lbyte
         if(bflag%ierr_IO .ne. 0) return
@@ -218,21 +242,24 @@
 !
       subroutine gz_write_1d_vector_b(num, real_dat, bflag)
 !
+      use calypso_c_binding
+!
       integer(kind = kint_gl), intent(in) :: num
       real(kind = kreal), intent(in) :: real_dat(num)
       type(binary_IO_flags), intent(inout) :: bflag
 !
       integer(kind = kint_gl) :: ist
-      integer :: lbyte, ilength
+      integer :: ilength
+      type(buffer_4_gzip) :: zbuf1
 !
 !
       ist = 0
       do
         ilength = int(min((num - ist), huge_20))
-        lbyte =  ilength * kreal
 !
-        call gzwrite_f(lbyte, real_dat(ist+1), bflag%ierr_IO)
-        bflag%ierr_IO = bflag%ierr_IO - lbyte
+        call gzwrite_real_f                                             &
+     &     (ilength, real_dat(ist+1), zbuf1, bflag%ierr_IO)
+        bflag%ierr_IO = bflag%ierr_IO - (ilength * kreal)
         if(bflag%ierr_IO .ne. 0) return
         ist = ist + ilength
         if(ist .ge. num) exit
@@ -266,16 +293,19 @@
       subroutine gz_read_endian_flag(id_rank, bflag)
 !
       use binary_IO
+      use calypso_c_binding
 !
       integer, intent(in) :: id_rank
       type(binary_IO_flags), intent(inout) :: bflag
 !
-      integer :: int_dat
+      integer :: int_dat(1)
+      type(buffer_4_gzip) :: zbuf1
 !
 !
-      call gzread_32bit_f(iendian_KEEP, kint, int_dat, bflag%ierr_IO)
+      call gzread_int4_f(iendian_KEEP, 1, int_dat,                      &
+     &    zbuf1, bflag%ierr_IO)
       bflag%ierr_IO = bflag%ierr_IO - kint
-      bflag%iflag_swap = endian_check(id_rank, int_dat)
+      bflag%iflag_swap = endian_check(id_rank, int_dat(1))
 !
       end subroutine gz_read_endian_flag
 !
@@ -283,17 +313,20 @@
 !
       subroutine gz_read_one_integer_b(bflag, int_dat)
 !
+      use calypso_c_binding
+!
       integer(kind = kint), intent(inout) :: int_dat
       type(binary_IO_flags), intent(inout) :: bflag
 !
-      integer(kind = kint_gl) :: int64
+      integer(kind = kint_gl) :: int64(1)
+      type(buffer_4_gzip) :: zbuf1
 !
 !
-      call gzread_64bit_f                                               &
-     &   (bflag%iflag_swap, kint_gl, int64, bflag%ierr_IO)
+      call gzread_int8_f                                                &
+     &   (bflag%iflag_swap, 1, int64, zbuf1, bflag%ierr_IO)
       bflag%ierr_IO = bflag%ierr_IO - kint_gl
 !
-      int_dat = int(int64,KIND(int_dat))
+      int_dat = int(int64(1),KIND(int_dat))
 !
       end subroutine gz_read_one_integer_b
 !
@@ -301,13 +334,18 @@
 !
       subroutine gz_read_one_real_b(bflag, real_dat)
 !
+      use calypso_c_binding
+!
       real(kind = kreal), intent(inout) :: real_dat
       type(binary_IO_flags), intent(inout) :: bflag
 !
+      real(kind = kreal) :: rtmp(1)
+      type(buffer_4_gzip) :: zbuf1
 !
-      call gzread_64bit_f                                               &
-     &   (bflag%iflag_swap, kreal, real_dat, bflag%ierr_IO)
+      call gzread_real_f                                                &
+     &   (bflag%iflag_swap, 1, rtmp, zbuf1, bflag%ierr_IO)
       bflag%ierr_IO = bflag%ierr_IO - kreal
+      real_dat = rtmp(1)
 !
       end subroutine gz_read_one_real_b
 !
@@ -316,12 +354,15 @@
 !
       subroutine gz_read_mul_int8_b(bflag, num, int8_dat)
 !
+      use calypso_c_binding
+!
       integer(kind = kint_gl), intent(in) :: num
       integer(kind = kint_gl), intent(inout) :: int8_dat(num)
       type(binary_IO_flags), intent(inout) :: bflag
 !
       integer(kind = kint) :: lbyte, ilength
       integer(kind = kint_gl) :: ist
+      type(buffer_4_gzip) :: zbuf1
 !
 !
       ist = 0
@@ -329,8 +370,8 @@
         ilength = int(min((num - ist), huge_20))
         lbyte = ilength * kint_gl
 !
-        call gzread_64bit_f                                             &
-     &     (bflag%iflag_swap, lbyte, int8_dat(ist+1), bflag%ierr_IO)
+        call gzread_int8_f(bflag%iflag_swap, ilength, int8_dat(ist+1),  &
+     &                     zbuf1, bflag%ierr_IO)
         bflag%ierr_IO = bflag%ierr_IO - lbyte
         if(bflag%ierr_IO .ne. 0) return
         ist = ist + ilength
@@ -386,6 +427,7 @@
 !
       integer(kind = kint) :: lbyte, ilength
       integer(kind = kint_gl) :: ist
+      type(buffer_4_gzip) :: zbuf1
 !
 !
       ist = 0
@@ -393,8 +435,8 @@
         ilength = int(min((num - ist), huge_20))
         lbyte = ilength * kchara
 !
-        call gzread_32bit_f                                             &
-     &     (iendian_KEEP, lbyte, chara_dat(ist+1), bflag%ierr_IO)
+        call gzread_chara_f                                             &
+     &     (iendian_KEEP, lbyte, chara_dat(ist+1), zbuf1, bflag%ierr_IO)
         bflag%ierr_IO = bflag%ierr_IO - lbyte
         if(bflag%ierr_IO .ne. 0) return
         ist = ist + ilength
@@ -407,22 +449,24 @@
 !
       subroutine gz_read_1d_vector_b(bflag, num, real_dat)
 !
+      use calypso_c_binding
+!
       integer(kind = kint_gl), intent(in) :: num
       real(kind = kreal), intent(inout) :: real_dat(num)
       type(binary_IO_flags), intent(inout) :: bflag
 !
-      integer(kind = kint) :: lbyte, ilength
+      integer(kind = kint) :: ilength
       integer(kind = kint_gl) :: ist
+      type(buffer_4_gzip) :: zbuf1
 !
 !
       ist = 0
       do
         ilength = int(min((num - ist), huge_20))
-        lbyte = ilength * kreal
 !
-        call gzread_64bit_f                                             &
-     &     (bflag%iflag_swap, lbyte, real_dat(ist+1), bflag%ierr_IO)
-        bflag%ierr_IO = bflag%ierr_IO - lbyte
+        call gzread_real_f(bflag%iflag_swap, ilength, real_dat(ist+1),  &
+     &                     zbuf1, bflag%ierr_IO)
+        bflag%ierr_IO = bflag%ierr_IO - (ilength * kreal)
         if(bflag%ierr_IO .ne. 0) return
         ist = ist + ilength
         if(ist .ge. num) exit

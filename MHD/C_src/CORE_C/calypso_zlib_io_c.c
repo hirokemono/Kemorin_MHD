@@ -407,20 +407,20 @@ void gzseek_go_fwd_f(int *ioffset, int *ierr){
     *ierr =  (int)ierr_z;
 }
 
-void gzread_32bit_f(int *iflag_swap, int *ilength, char *textbuf, int *ierr){
+void gzread_32bit_f(const int *iflag_swap, int *ilength, char *textbuf, int *ierr){
     *ierr =  gzread(file_gz, textbuf, (uInt) *ilength);
     if(*iflag_swap == IFLAG_SWAP) {byte_swap_4(*ilength, textbuf);};
     return;
 }
 
-void gzread_64bit_f(int *iflag_swap, int *ilength, char *textbuf, int *ierr){
+void gzread_64bit_f(const int *iflag_swap, int *ilength, char *textbuf, int *ierr){
     *ierr =  gzread(file_gz, textbuf, (uInt) *ilength);
     if(*iflag_swap == IFLAG_SWAP) {byte_swap_8(*ilength, textbuf);};
     return;
 }
 
-void gzwrite_f(int *ilength, char *textbuf, int *ierr){
-    *ierr =  gzwrite(file_gz, textbuf, (uInt) *ilength);
+void gzwrite_f(int *ilength, void *buf, int *ierr){
+    *ierr =  gzwrite(file_gz, buf, (uInt) *ilength);
     return;
 }
 

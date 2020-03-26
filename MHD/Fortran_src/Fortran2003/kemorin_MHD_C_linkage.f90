@@ -37,7 +37,6 @@
 !void gzseek_go_fwd_f(int *ioffset, int *ierr);
 !void gzread_32bit_f(int *iflag_swap, int *ilength, char *textbuf, int *ierr);
 !void gzread_64bit_f(int *iflag_swap, int *ilength, char *textbuf, int *ierr);
-!void gzwrite_f(int *ilength, char *textbuf, int *ierr);
 !
 !
 !void write_png_rgba_c(const char *fhead, int *num_x, int *num_y, 

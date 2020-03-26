@@ -27,9 +27,6 @@
 #define close_gzfile              close_gzfile_
 #define check_gzfile_eof          check_gzfile_eof_
 #define gzseek_go_fwd_f           gzseek_go_fwd_f_
-#define gzread_32bit_f            gzread_32bit_f_
-#define gzread_64bit_f            gzread_64bit_f_
-#define gzwrite_f                 gzwrite_f_
 
 #define write_png_rgba_c           write_png_rgba_c_
 #define write_png_rgb_c            write_png_rgb_c_
@@ -66,9 +63,6 @@
 #define close_gzfile              CLOSE_GZFILE
 #define check_gzfile_eof          CHECK_GZFILE_EOF
 #define gzseek_go_fwd_f           GZSEEK_GO_FWD_F
-#define gzread_32bit_f            GZREAD_32BIT_F
-#define gzread_64bit_f            GZREAD_64BIT_F
-#define gzwrite_f                 GZWRITE_F
 
 #define write_png_rgba_c           WRITE_PNG_RGBA_C
 #define write_png_rgb_c            WRITE_PNG_RGB_C
@@ -104,9 +98,6 @@
 #define close_gzfile              CLOSE_GZFILE
 #define check_gzfile_eof          CHECK_GZFILE_EOF
 #define gzseek_go_fwd_f           GZSEEK_GO_FWD_F
-#define gzread_32bit_f            GZREAD_32BIT_F
-#define gzread_64bit_f            GZREAD_64BIT_F
-#define gzwrite_f                 GZWRITE_F
 
 #define write_png_rgba_c           WRITE_PNG_RGBA_C
 #define write_png_rgb_c            WRITE_PNG_RGB_C
@@ -142,9 +133,6 @@
 #define close_gzfile              close_gzfile
 #define check_gzfile_eof          check_gzfile_eof
 #define gzseek_go_fwd_f           gzseek_go_fwd_f
-#define gzread_32bit_f            gzread_32bit_f
-#define gzread_64bit_f            gzread_64bit_f
-#define gzwrite_f                 gzwrite_f
 
 #define write_png_rgba_c           write_png_rgba_c
 #define write_png_rgb_c            write_png_rgb_c
