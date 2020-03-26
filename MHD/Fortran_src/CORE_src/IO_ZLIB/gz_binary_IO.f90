@@ -421,6 +421,8 @@
 !
       subroutine gz_read_mul_character_b(bflag, num, chara_dat)
 !
+      use calypso_c_binding
+!
       integer(kind = kint_gl), intent(in) :: num
       character(len=kchara), intent(inout) :: chara_dat(num)
       type(binary_IO_flags), intent(inout) :: bflag
