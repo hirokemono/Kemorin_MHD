@@ -67,21 +67,6 @@
       end subroutine open_wt_gzfile_f
 !
 !------------------------------------------------------------------
-!
-      subroutine open_ad_gzfile_f(gzip_name)
-!
-      use set_parallel_file_name
-!
-      character(len=kchara), intent(in) :: gzip_name
-      character(len=kchara) :: file_name
-!
-!
-      file_name = add_null_character(gzip_name)
-      call open_ad_gzfile(file_name)
-!
-      end subroutine open_ad_gzfile_f
-!
-!------------------------------------------------------------------
 !------------------------------------------------------------------
 !
       subroutine gz_write_textbuf_no_lf
