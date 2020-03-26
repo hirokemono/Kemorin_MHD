@@ -154,6 +154,7 @@
       subroutine open_rd_gzfile_f(gzip_name)
 !
       use t_buffer_4_gzip
+      use set_parallel_file_name
 !
       character(len = kchara), intent(in) :: gzip_name
       character(C_char) :: file_name_c(kchara+1)
