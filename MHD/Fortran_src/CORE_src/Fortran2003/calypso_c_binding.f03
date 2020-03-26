@@ -156,9 +156,13 @@
       character(len = kchara), intent(in) :: gzip_name
       character(C_char) :: file_name_c(kchara+1)
 !
+      type(buffer_4_gzip) :: zbuf
 !
-      write(file_name_c,'(a,a1)') trim(gzip_name), char(0)
-      call open_rd_gzfile(file_name_c)
+!
+      call link_text_buffer_for_zlib                                    &
+     &   (kchara, add_null_character(gzip_name), zbuf)
+      call open_rd_gzfile(zbuf%buf_p)
+      call unlink_text_buffer_for_zlib(zbuf)
 !
       end subroutine open_rd_gzfile_f
 !
