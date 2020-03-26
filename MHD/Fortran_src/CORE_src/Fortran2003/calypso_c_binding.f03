@@ -23,7 +23,19 @@
 !
 !  ---------------------------------------------------------------------
 !
+        subroutine open_rd_gzfile(gz_file_name)                         &
+     &           BIND(C, name = 'open_rd_gzfile')
+!
+        use ISO_C_BINDING
+!
+        character(C_char), intent(in) :: gz_file_name(*)
+!
+        end subroutine open_rd_gzfile
+!
+!  ---------------------------------------------------------------------
+!
         subroutine close_gzfile() BIND(C, name = 'close_gzfile')
+        use ISO_C_BINDING
         end subroutine close_gzfile
 !
 !  ---------------------------------------------------------------------
@@ -114,6 +126,19 @@
       contains
 !
 !  ---------------------------------------------------------------------
+!
+      subroutine open_rd_gzfile_f(gzip_name)
+!
+      character(len = kchara), intent(in) :: gzip_name
+      character(C_char) :: file_name_c(kchara)
+!
+!
+      file_name_c = trim(gzip_name) // char(0)
+      call open_rd_gzfile(file_name_c)
+!
+      end subroutine open_rd_gzfile_f
+!
+!------------------------------------------------------------------
 !
       subroutine close_gzfile_f()
 !

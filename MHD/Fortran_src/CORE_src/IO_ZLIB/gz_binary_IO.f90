@@ -73,6 +73,7 @@
 !
       use set_parallel_file_name
       use skip_gz_comment
+      use calypso_c_binding
 !
       integer, intent(in) :: id_rank
       character(len=kchara), intent(in) :: gzip_name
