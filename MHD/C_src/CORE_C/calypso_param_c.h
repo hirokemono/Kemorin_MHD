@@ -16,8 +16,6 @@
   #define rawwrite_f                rawwrite_f_
   #define rawseek_go_fwd_f          rawseek_go_fwd_f_
 
-  #define open_wt_gzfile            open_wt_gzfile_
-
   #define write_png_rgba_c           write_png_rgba_c_
   #define write_png_rgb_c            write_png_rgb_c_
   #define read_png_file_c            read_png_file_c_
@@ -45,8 +43,6 @@
   #define rawread_64bit_f           RAWREAD_64BIT_F
   #define rawwrite_f                RAWWRITE_F
   #define rawseek_go_fwd_f          RAWSEEK_GO_FWD_F
-
-  #define open_wt_gzfile            OPEN_WT_GZFILE
 
   #define write_png_rgba_c           WRITE_PNG_RGBA_C
   #define write_png_rgb_c            WRITE_PNG_RGB_C
@@ -76,8 +72,6 @@
   #define rawwrite_f                RAWWRITE_F
   #define rawseek_go_fwd_f          RAWSEEK_GO_FWD_F
 
-  #define open_wt_gzfile            OPEN_WT_GZFILE
-
   #define write_png_rgba_c           WRITE_PNG_RGBA_C
   #define write_png_rgb_c            WRITE_PNG_RGB_C
   #define read_png_file_c            READ_PNG_FILE_C
@@ -105,8 +99,6 @@
   #define rawread_64bit_f           rawread_64bit_f
   #define rawwrite_f                rawwrite_f
   #define rawseek_go_fwd_f          rawseek_go_fwd_f
-
-  #define open_wt_gzfile            open_wt_gzfile
 
   #define write_png_rgba_c           write_png_rgba_c
   #define write_png_rgb_c            write_png_rgb_c

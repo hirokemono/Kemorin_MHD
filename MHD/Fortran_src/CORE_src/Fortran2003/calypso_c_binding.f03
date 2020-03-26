@@ -23,6 +23,17 @@
 !
 !  ---------------------------------------------------------------------
 !
+        subroutine open_wt_gzfile(gz_file_name)                         &
+     &           BIND(C, name = 'open_wt_gzfile')
+!
+        use ISO_C_BINDING
+!
+        character(C_char), intent(in) :: gz_file_name(*)
+!
+        end subroutine open_wt_gzfile
+!
+!  ---------------------------------------------------------------------
+!
         subroutine open_ad_gzfile(gz_file_name)                         &
      &           BIND(C, name = 'open_ad_gzfile')
 !
@@ -138,14 +149,37 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine open_ad_gzfile_f(gzip_name)
+      subroutine open_wt_gzfile_f(gzip_name)
+!
+      use t_buffer_4_gzip
+      use set_parallel_file_name
 !
       character(len = kchara), intent(in) :: gzip_name
-      character(C_char) :: file_name_c(kchara+1)
+      type(buffer_4_gzip) :: zbuf
 !
 !
-      file_name_c = trim(gzip_name) // char(0)
-      call open_ad_gzfile(file_name_c)
+      call link_text_buffer_for_zlib                                    &
+     &   (kchara, add_null_character(gzip_name), zbuf)
+      call open_wt_gzfile(zbuf%buf_p)
+      call unlink_text_buffer_for_zlib(zbuf)
+!
+      end subroutine open_wt_gzfile_f
+!
+!------------------------------------------------------------------
+!
+      subroutine open_ad_gzfile_f(gzip_name)
+!
+      use t_buffer_4_gzip
+      use set_parallel_file_name
+!
+      character(len = kchara), intent(in) :: gzip_name
+      type(buffer_4_gzip) :: zbuf
+!
+!
+      call link_text_buffer_for_zlib                                    &
+     &   (kchara, add_null_character(gzip_name), zbuf)
+      call open_ad_gzfile(zbuf%buf_p)
+      call unlink_text_buffer_for_zlib(zbuf)
 !
       end subroutine open_ad_gzfile_f
 !
@@ -157,8 +191,6 @@
       use set_parallel_file_name
 !
       character(len = kchara), intent(in) :: gzip_name
-      character(C_char) :: file_name_c(kchara+1)
-!
       type(buffer_4_gzip) :: zbuf
 !
 !

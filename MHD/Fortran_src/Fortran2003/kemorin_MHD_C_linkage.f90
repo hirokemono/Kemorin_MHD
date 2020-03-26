@@ -27,9 +27,6 @@
 !void rawread_64bit_f(int *iflag_swap, int *ilength, char *textbuf, int *lenchara);
 !void rawwrite_f(int *ilength, char *textbuf, int *lenchara);
 !
-!void open_wt_gzfile(const char *gz_file_name);
-!void open_ad_gzfile(const char *gz_file_name);
-!void open_rd_gzfile(const char *gz_file_name);
 !
 !void write_png_rgba_c(const char *fhead, int *num_x, int *num_y, 
 !			const unsigned char *cimage);

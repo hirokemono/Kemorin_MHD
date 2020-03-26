@@ -56,6 +56,7 @@
 !
       use set_parallel_file_name
       use skip_gz_comment
+      use calypso_c_binding
 !
       character(len=kchara), intent(in) :: gzip_name
       type(binary_IO_flags), intent(inout) :: bflag
