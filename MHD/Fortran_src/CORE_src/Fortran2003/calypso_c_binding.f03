@@ -157,7 +157,7 @@
       character(C_char) :: file_name_c(kchara+1)
 !
 !
-      file_name_c = trim(gzip_name) // char(0)
+      write(file_name_c,'(a,a1)') trim(gzip_name), char(0)
       call open_rd_gzfile(file_name_c)
 !
       end subroutine open_rd_gzfile_f
