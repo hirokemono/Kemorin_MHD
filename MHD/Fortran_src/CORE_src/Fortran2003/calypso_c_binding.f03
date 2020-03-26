@@ -153,6 +153,8 @@
 !
       subroutine open_rd_gzfile_f(gzip_name)
 !
+      use t_buffer_4_gzip
+!
       character(len = kchara), intent(in) :: gzip_name
       character(C_char) :: file_name_c(kchara+1)
 !
