@@ -126,7 +126,6 @@ void open_ad_gzfile(const char *gz_file_name){
 	return;
 }
 void open_rd_gzfile(const char *gz_file_name){
-    printf("%s \n", gz_file_name);
 	file_gz = gzopen(gz_file_name, GZ_RD_MODE);
 	if (file_gz == NULL){
 		fprintf(stderr, "failed to gzopen\n");
@@ -410,18 +409,21 @@ void gzseek_go_fwd_f(int *ioffset, int *ierr){
 
 void gzread_32bit_f(const int *iflag_swap, int *ilength, char *textbuf, int *ierr){
     *ierr =  gzread(file_gz, textbuf, (uInt) *ilength);
+    *ierr = *ierr - *ilength;
     if(*iflag_swap == IFLAG_SWAP) {byte_swap_4(*ilength, textbuf);};
     return;
 }
 
 void gzread_64bit_f(const int *iflag_swap, int *ilength, char *textbuf, int *ierr){
     *ierr =  gzread(file_gz, textbuf, (uInt) *ilength);
+    *ierr = *ierr - *ilength;
     if(*iflag_swap == IFLAG_SWAP) {byte_swap_8(*ilength, textbuf);};
     return;
 }
 
 void gzwrite_f(int *ilength, void *buf, int *ierr){
-    *ierr =  gzwrite(file_gz, buf, (uInt) *ilength);
+    *ierr = gzwrite(file_gz, buf, (uInt) *ilength);
+    *ierr = *ierr - *ilength;
     return;
 }
 

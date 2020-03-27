@@ -101,8 +101,8 @@
       type(buffer_4_gzip) :: zbuf1
 !
 !
-      call gzwrite_int4_f(1, i_UNIX4, zbuf1, bflag%ierr_IO)
-      bflag%ierr_IO = bflag%ierr_IO - kint
+      call gzwrite_int4_f(1, i_UNIX4, zbuf1)
+      bflag%ierr_IO = int(zbuf1%ierr_zlib, KIND(bflag%ierr_IO))
 !
       end subroutine gz_write_endian_flag
 !
@@ -121,8 +121,8 @@
 !
 !
       i8tmp(1) = cast_long(int_dat)
-      call gzwrite_int8_f(1, i8tmp, zbuf1, bflag%ierr_IO)
-      bflag%ierr_IO = bflag%ierr_IO - kint_gl
+      call gzwrite_int8_f(1, i8tmp, zbuf1)
+      bflag%ierr_IO = int(zbuf1%ierr_zlib, KIND(bflag%ierr_IO))
 !
       end subroutine gz_write_one_integer_b
 !
@@ -140,8 +140,8 @@
 !
 !
       rtmp(1) = real_dat
-      call gzwrite_real_f(1, rtmp, zbuf1, bflag%ierr_IO)
-      bflag%ierr_IO = bflag%ierr_IO - kreal
+      call gzwrite_real_f(1, rtmp, zbuf1)
+      bflag%ierr_IO = int(zbuf1%ierr_zlib, KIND(bflag%ierr_IO))
 !
       end subroutine gz_write_one_real_b
 !
@@ -165,10 +165,9 @@
       do
         ilength = int(min((num - ist), huge_20))
 !
-        call gzwrite_int8_f                                             &
-     &     (ilength, int8_dat(ist+1), zbuf1, bflag%ierr_IO)
+        call gzwrite_int8_f(ilength, int8_dat(ist+1), zbuf1)
         ist = ist + ilength
-        bflag%ierr_IO = bflag%ierr_IO - ilength * kint_gl
+        bflag%ierr_IO = int(zbuf1%ierr_zlib, KIND(bflag%ierr_IO))
         if(bflag%ierr_IO .ne. 0) return
         if(ist .ge. num) exit
       end do
@@ -229,10 +228,9 @@
         ilength = int(min((num - ist), huge_20))
         lbyte = ilength * kchara
 !
-        call gzwrite_chara_f                                            &
-     &     (lbyte, chara_dat(ist+1), zbuf1, bflag%ierr_IO)
+        call gzwrite_chara_f(lbyte, chara_dat(ist+1), zbuf1)
         ist = ist + ilength
-        bflag%ierr_IO = bflag%ierr_IO - lbyte
+        bflag%ierr_IO = int(zbuf1%ierr_zlib, KIND(bflag%ierr_IO))
         if(bflag%ierr_IO .ne. 0) return
         if(ist .ge. num) exit
       end do
@@ -259,9 +257,8 @@
       do
         ilength = int(min((num - ist), huge_20))
 !
-        call gzwrite_real_f                                             &
-     &     (ilength, real_dat(ist+1), zbuf1, bflag%ierr_IO)
-        bflag%ierr_IO = bflag%ierr_IO - (ilength * kreal)
+        call gzwrite_real_f(ilength, real_dat(ist+1), zbuf1)
+        bflag%ierr_IO = int(zbuf1%ierr_zlib, KIND(bflag%ierr_IO))
         if(bflag%ierr_IO .ne. 0) return
         ist = ist + ilength
         if(ist .ge. num) exit
@@ -304,9 +301,9 @@
       type(buffer_4_gzip) :: zbuf1
 !
 !
-      call gzread_int4_f(iendian_KEEP, 1, int_dat,                      &
-     &    zbuf1, bflag%ierr_IO)
-      bflag%ierr_IO = bflag%ierr_IO - kint
+      zbuf1%iflag_swap = iendian_KEEP
+      call gzread_int4_f(1, int_dat, zbuf1)
+      bflag%ierr_IO = int(zbuf1%ierr_zlib, KIND(bflag%ierr_IO))
       bflag%iflag_swap = endian_check(id_rank, int_dat(1))
 !
       end subroutine gz_read_endian_flag
@@ -324,9 +321,9 @@
       type(buffer_4_gzip) :: zbuf1
 !
 !
-      call gzread_int8_f                                                &
-     &   (bflag%iflag_swap, 1, int64, zbuf1, bflag%ierr_IO)
-      bflag%ierr_IO = bflag%ierr_IO - kint_gl
+      zbuf1%iflag_swap = bflag%iflag_swap
+      call gzread_int8_f(1, int64, zbuf1)
+      bflag%ierr_IO = int(zbuf1%ierr_zlib, KIND(bflag%ierr_IO))
 !
       int_dat = int(int64(1),KIND(int_dat))
 !
@@ -344,9 +341,10 @@
       real(kind = kreal) :: rtmp(1)
       type(buffer_4_gzip) :: zbuf1
 !
-      call gzread_real_f                                                &
-     &   (bflag%iflag_swap, 1, rtmp, zbuf1, bflag%ierr_IO)
-      bflag%ierr_IO = bflag%ierr_IO - kreal
+!
+      zbuf1%iflag_swap = bflag%iflag_swap
+      call gzread_real_f(1, rtmp, zbuf1)
+      bflag%ierr_IO = int(zbuf1%ierr_zlib, KIND(bflag%ierr_IO))
       real_dat = rtmp(1)
 !
       end subroutine gz_read_one_real_b
@@ -367,14 +365,14 @@
       type(buffer_4_gzip) :: zbuf1
 !
 !
+      zbuf1%iflag_swap = bflag%iflag_swap
       ist = 0
       do
         ilength = int(min((num - ist), huge_20))
         lbyte = ilength * kint_gl
 !
-        call gzread_int8_f(bflag%iflag_swap, ilength, int8_dat(ist+1),  &
-     &                     zbuf1, bflag%ierr_IO)
-        bflag%ierr_IO = bflag%ierr_IO - lbyte
+        call gzread_int8_f(ilength, int8_dat(ist+1), zbuf1)
+        bflag%ierr_IO = int(zbuf1%ierr_zlib, KIND(bflag%ierr_IO))
         if(bflag%ierr_IO .ne. 0) return
         ist = ist + ilength
         if(ist .ge. num) exit
@@ -439,9 +437,9 @@
         ilength = int(min((num - ist), huge_20))
         lbyte = ilength * kchara
 !
-        call gzread_chara_f                                             &
-     &     (iendian_KEEP, lbyte, chara_dat(ist+1), zbuf1, bflag%ierr_IO)
-        bflag%ierr_IO = bflag%ierr_IO - lbyte
+        zbuf1%iflag_swap = iendian_KEEP
+        call gzread_chara_f(lbyte, chara_dat(ist+1), zbuf1)
+        bflag%ierr_IO = int(zbuf1%ierr_zlib, KIND(bflag%ierr_IO))
         if(bflag%ierr_IO .ne. 0) return
         ist = ist + ilength
         if(ist .ge. num) exit
@@ -464,13 +462,13 @@
       type(buffer_4_gzip) :: zbuf1
 !
 !
+      zbuf1%iflag_swap = bflag%iflag_swap
       ist = 0
       do
         ilength = int(min((num - ist), huge_20))
 !
-        call gzread_real_f(bflag%iflag_swap, ilength, real_dat(ist+1),  &
-     &                     zbuf1, bflag%ierr_IO)
-        bflag%ierr_IO = bflag%ierr_IO - (ilength * kreal)
+        call gzread_real_f(ilength, real_dat(ist+1), zbuf1)
+        bflag%ierr_IO = int(zbuf1%ierr_zlib, KIND(bflag%ierr_IO))
         if(bflag%ierr_IO .ne. 0) return
         ist = ist + ilength
         if(ist .ge. num) exit

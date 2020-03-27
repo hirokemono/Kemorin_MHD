@@ -51,6 +51,10 @@
 !>        Compressed data buffer
         character(len=1), allocatable :: gzip_buf(:)
 !
+!>        Error flag from zlib
+        integer(C_int) :: ierr_zlib
+!>        Byte swapping flag to zlib
+        integer(C_int) :: iflag_swap
 !
 !>        Size of compressed buffer to zlib
         integer(C_int) :: len_gzipbuf
