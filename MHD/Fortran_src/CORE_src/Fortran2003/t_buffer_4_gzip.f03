@@ -82,7 +82,7 @@
 !>        decompressed text buffer
         character(len=1), allocatable :: textbuf(:)
 !>        text buffer with fixed length
-        character(len=lbuf), allocatable :: fixbuf(:)
+        character(len=nbuf), allocatable :: fixbuf(:)
       end type buffer_4_gzip
 !
 !  ---------------------------------------------------------------------
