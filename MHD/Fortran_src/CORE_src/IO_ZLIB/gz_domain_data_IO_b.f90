@@ -46,7 +46,7 @@
 !
       integer, intent(in) :: id_rank
 !
-      type(binary_IO_flags), intent(inout) :: zbuf
+      type(buffer_4_gzip), intent(inout) :: zbuf
       type(communication_table), intent(inout) :: comm_IO
 !
       integer(kind = kint) :: irank_read
@@ -77,7 +77,7 @@
 !
       subroutine gz_read_import_data_b(zbuf, comm_IO)
 !
-      type(binary_IO_flags), intent(inout) :: zbuf
+      type(buffer_4_gzip), intent(inout) :: zbuf
       type(communication_table), intent(inout) :: comm_IO
 !
 !
@@ -105,7 +105,7 @@
 !
       subroutine gz_read_export_data_b(zbuf, comm_IO)
 !
-      type(binary_IO_flags), intent(inout) :: zbuf
+      type(buffer_4_gzip), intent(inout) :: zbuf
       type(communication_table), intent(inout) :: comm_IO
 !
 !

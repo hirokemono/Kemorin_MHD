@@ -83,7 +83,7 @@
       call open_rd_gzfile_f(gzip_name)
       call gz_read_endian_flag(id_rank, zbuf)
 !
-      if(zbuf%iflag_swap .eq. -1) zbuf%ierr_IO = ierr_file
+      if(zbuf%iflag_swap .eq. -1) zbuf%ierr_zlib = ierr_file
 !
       end subroutine open_rd_gzfile_b
 !

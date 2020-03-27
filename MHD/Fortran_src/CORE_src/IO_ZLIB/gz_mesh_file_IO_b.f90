@@ -72,9 +72,9 @@
       call open_rd_gzfile_b(file_name, id_rank, zbuf_mesh)
       if(zbuf_mesh%ierr_zlib .ne. 0) go to 99
 !
-      call gz_read_geometry_data_b(id_rank, zbuf, mesh_IO)
+      call gz_read_geometry_data_b(id_rank, zbuf_mesh, mesh_IO)
       if(zbuf_mesh%ierr_zlib .ne. 0) go to 99
-      call gz_read_mesh_groups_b(zbuf, group_IO)
+      call gz_read_mesh_groups_b(zbuf_mesh, group_IO)
 !
   99  continue
       call close_gzfile_f
