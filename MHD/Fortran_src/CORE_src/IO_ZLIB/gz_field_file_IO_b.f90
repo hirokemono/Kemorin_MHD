@@ -33,6 +33,7 @@
 !
       use t_time_data
       use t_field_data_IO
+      use t_buffer_4_gzip
       use gz_field_data_IO_b
       use gz_binary_IO
       use binary_IO
@@ -42,6 +43,7 @@
       implicit none
 !
       type(binary_IO_flags), private :: gz_fldflags
+      type(buffer_4_gzip), private :: zbuf_fld
 !
 !  ---------------------------------------------------------------------
 !
@@ -64,14 +66,14 @@
       if(id_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &   'Write gzipped binary data file: ', trim(gzip_name)
 !
-      call open_wt_gzfile_b(gzip_name, gz_fldflags)
+      call open_wt_gzfile_b(gzip_name, zbuf_fld)
 !
       call gz_write_step_data_b(id_rank,                                &
-     &    t_IO%i_time_step, t_IO%time, t_IO%dt, gz_fldflags)
+     &    t_IO%i_time_step, t_IO%time, t_IO%dt, zbuf_fld)
       call gz_write_field_data_b                                        &
      &   (cast_long(fld_IO%nnod_IO), fld_IO%num_field_IO,               &
      &    fld_IO%ntot_comp_IO, fld_IO%num_comp_IO, fld_IO%fld_name,     &
-     &    fld_IO%d_IO, gz_fldflags)
+     &    fld_IO%d_IO, zbuf_fld)
 !
       call close_gzfile_f
 !

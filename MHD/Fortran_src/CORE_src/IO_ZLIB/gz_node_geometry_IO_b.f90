@@ -7,11 +7,12 @@
 !> @brief Node data IO using zlib
 !!
 !!@verbatim
-!!      subroutine gz_write_geometry_info_b(nod_IO)
-!!      subroutine gz_write_scalar_in_element_b(nod_IO, sfed_IO)
-!!      subroutine gz_write_vector_in_element_b(nod_IO, sfed_IO, bflag)
+!!      subroutine gz_write_geometry_info_b(nod_IO, zbuf)
+!!      subroutine gz_write_scalar_in_element_b(nod_IO, sfed_IO, zbuf)
+!!      subroutine gz_write_vector_in_element_b(nod_IO, sfed_IO, zbuf)
 !!        type(node_data), intent(in) :: nod_IO
 !!        type(surf_edge_IO_data), intent(in) :: sfed_IO
+!!        type(buffer_4_gzip), intent(inout) :: zbuf
 !!
 !!      subroutine gz_read_number_of_node_b(bflag, nod_IO)
 !!      subroutine gz_read_geometry_info_b(bflag, nod_IO)
@@ -30,6 +31,7 @@
 !
       use t_geometry_data
       use t_surf_edge_IO
+      use t_buffer_4_gzip
       use binary_IO
       use skip_gz_comment
       use transfer_to_long_integers
@@ -42,69 +44,69 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine gz_write_geometry_info_b(nod_IO, bflag)
+      subroutine gz_write_geometry_info_b(nod_IO, zbuf)
 !
       use gz_binary_IO
 !
       type(node_data), intent(in) :: nod_IO
-      type(binary_IO_flags), intent(inout) :: bflag
+      type(buffer_4_gzip), intent(inout) :: zbuf
 !
 !
-      call gz_write_one_integer_b(nod_IO%numnod, bflag)
-      if(bflag%ierr_IO .ne. 0) return
-      call gz_write_one_integer_b(nod_IO%internal_node, bflag)
-      if(bflag%ierr_IO .ne. 0) return
+      call gz_write_one_integer_b(nod_IO%numnod, zbuf)
+      if(zbuf%ierr_zlib .ne. 0) return
+      call gz_write_one_integer_b(nod_IO%internal_node, zbuf)
+      if(zbuf%ierr_zlib .ne. 0) return
 !
       call gz_write_mul_int8_b                                          &
-     &   (cast_long(nod_IO%numnod), nod_IO%inod_global, bflag)
-      if(bflag%ierr_IO .ne. 0) return
+     &   (cast_long(nod_IO%numnod), nod_IO%inod_global, zbuf)
+      if(zbuf%ierr_zlib .ne. 0) return
       call gz_write_2d_vector_b                                         &
-     &   (cast_long(nod_IO%numnod), ithree, nod_IO%xx, bflag)
-      if(bflag%ierr_IO .ne. 0) return
+     &   (cast_long(nod_IO%numnod), ithree, nod_IO%xx, zbuf)
+      if(zbuf%ierr_zlib .ne. 0) return
 !
       end subroutine gz_write_geometry_info_b
 !
 !------------------------------------------------------------------
 !
-      subroutine gz_write_scalar_in_element_b(nod_IO, sfed_IO, bflag)
+      subroutine gz_write_scalar_in_element_b(nod_IO, sfed_IO, zbuf)
 !
       use gz_binary_IO
 !
       type(node_data), intent(in) :: nod_IO
       type(surf_edge_IO_data), intent(in) :: sfed_IO
-      type(binary_IO_flags), intent(inout) :: bflag
+      type(buffer_4_gzip), intent(inout) :: zbuf
 !
 !
-      call gz_write_one_integer_b(nod_IO%numnod, bflag)
-      if(bflag%ierr_IO .ne. 0) return
-      call gz_write_one_integer_b(nod_IO%internal_node, bflag)
-      if(bflag%ierr_IO .ne. 0) return
+      call gz_write_one_integer_b(nod_IO%numnod, zbuf)
+      if(zbuf%ierr_zlib .ne. 0) return
+      call gz_write_one_integer_b(nod_IO%internal_node, zbuf)
+      if(zbuf%ierr_zlib .ne. 0) return
 !
       call gz_write_1d_vector_b                                         &
-     &   (cast_long(nod_IO%numnod), sfed_IO%ele_scalar, bflag)
-      if(bflag%ierr_IO .ne. 0) return
+     &   (cast_long(nod_IO%numnod), sfed_IO%ele_scalar, zbuf)
+      if(zbuf%ierr_zlib .ne. 0) return
 !
       end subroutine gz_write_scalar_in_element_b
 !
 !------------------------------------------------------------------
 !
-      subroutine gz_write_vector_in_element_b(nod_IO, sfed_IO, bflag)
+      subroutine gz_write_vector_in_element_b(nod_IO, sfed_IO, zbuf)
 !
       use gz_binary_IO
 !
       type(node_data), intent(in) :: nod_IO
       type(surf_edge_IO_data), intent(in) :: sfed_IO
-      type(binary_IO_flags), intent(inout) :: bflag
+      type(buffer_4_gzi), intent(inout) :: zbuf
 !
 !
-      call gz_write_one_integer_b(nod_IO%numnod, bflag)
-      if(bflag%ierr_IO .ne. 0) return
-      call gz_write_one_integer_b(nod_IO%internal_node, bflag)
-      if(bflag%ierr_IO .ne. 0) return
+      call gz_write_one_integer_b(nod_IO%numnod, zbuf)
+      if(zbuf%ierr_zlib .ne. 0) return
+      call gz_write_one_integer_b(nod_IO%internal_node, zbuf)
+      if(zbuf%ierr_zlib .ne. 0) return
 !
       call gz_write_2d_vector_b(cast_long(nod_IO%numnod), n_vector,     &
-     &    sfed_IO%ele_scalar, bflag)
-      if(bflag%ierr_IO .ne. 0) return
+     &    sfed_IO%ele_scalar, zbuf)
+      if(zbuf%ierr_zlib .ne. 0) return
 !
       end subroutine gz_write_vector_in_element_b
 !

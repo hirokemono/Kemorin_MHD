@@ -4,15 +4,15 @@ gz_binary_IO.o: $(ZLIB_IO_DIR)/gz_binary_IO.f90 m_precision.o m_constants.o m_ma
 	$(F90) -c $(F90OPTFLAGS) $<
 gz_domain_data_IO.o: $(ZLIB_IO_DIR)/gz_domain_data_IO.f90 m_precision.o t_comm_table.o skip_gz_comment.o m_error_IDs.o m_sph_modes_grid_labels.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
-gz_domain_data_IO_b.o: $(ZLIB_IO_DIR)/gz_domain_data_IO_b.f90 m_precision.o t_comm_table.o binary_IO.o gz_binary_IO.o transfer_to_long_integers.o m_error_IDs.o
+gz_domain_data_IO_b.o: $(ZLIB_IO_DIR)/gz_domain_data_IO_b.f90 m_precision.o t_comm_table.o t_buffer_4_gzip.o binary_IO.o gz_binary_IO.o transfer_to_long_integers.o m_error_IDs.o
 	$(F90) -c $(F90OPTFLAGS) $<
 gz_edge_data_IO.o: $(ZLIB_IO_DIR)/gz_edge_data_IO.f90 m_precision.o t_comm_table.o t_geometry_data.o t_read_mesh_data.o t_surf_edge_IO.o m_fem_surface_labels.o m_fem_mesh_labels.o gz_domain_data_IO.o gz_element_connect_IO.o gz_node_geometry_IO.o
 	$(F90) -c $(F90OPTFLAGS) $<
-gz_edge_data_IO_b.o: $(ZLIB_IO_DIR)/gz_edge_data_IO_b.f90 m_precision.o t_comm_table.o t_geometry_data.o t_read_mesh_data.o t_surf_edge_IO.o binary_IO.o m_fem_surface_labels.o m_fem_mesh_labels.o gz_domain_data_IO_b.o gz_element_connect_IO_b.o gz_node_geometry_IO_b.o
+gz_edge_data_IO_b.o: $(ZLIB_IO_DIR)/gz_edge_data_IO_b.f90 m_precision.o t_comm_table.o t_geometry_data.o t_read_mesh_data.o t_surf_edge_IO.o t_buffer_4_gzip.o binary_IO.o m_fem_surface_labels.o m_fem_mesh_labels.o gz_domain_data_IO_b.o gz_element_connect_IO_b.o gz_node_geometry_IO_b.o
 	$(F90) -c $(F90OPTFLAGS) $<
 gz_element_connect_IO.o: $(ZLIB_IO_DIR)/gz_element_connect_IO.f90 m_precision.o t_geometry_data.o t_surf_edge_IO.o skip_gz_comment.o set_nnod_4_ele_by_type.o
 	$(F90) -c $(F90OPTFLAGS) $<
-gz_element_connect_IO_b.o: $(ZLIB_IO_DIR)/gz_element_connect_IO_b.f90 m_precision.o t_geometry_data.o t_surf_edge_IO.o binary_IO.o skip_gz_comment.o transfer_to_long_integers.o gz_binary_IO.o set_nnod_4_ele_by_type.o
+gz_element_connect_IO_b.o: $(ZLIB_IO_DIR)/gz_element_connect_IO_b.f90 m_precision.o t_geometry_data.o t_surf_edge_IO.o t_buffer_4_gzip.o binary_IO.o skip_gz_comment.o transfer_to_long_integers.o gz_binary_IO.o set_nnod_4_ele_by_type.o
 	$(F90) -c $(F90OPTFLAGS) $<
 gz_element_data_IO.o: $(ZLIB_IO_DIR)/gz_element_data_IO.f90 m_precision.o t_geometry_data.o t_read_mesh_data.o t_comm_table.o t_surf_edge_IO.o m_fem_surface_labels.o m_fem_mesh_labels.o gz_domain_data_IO.o gz_node_geometry_IO.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -20,15 +20,15 @@ gz_element_data_IO_b.o: $(ZLIB_IO_DIR)/gz_element_data_IO_b.f90 m_precision.o t_
 	$(F90) -c $(F90OPTFLAGS) $<
 gz_element_file_IO.o: $(ZLIB_IO_DIR)/gz_element_file_IO.f90 m_precision.o m_machine_parameter.o m_file_format_switch.o t_read_mesh_data.o skip_gz_comment.o calypso_c_binding.o gz_element_data_IO.o gz_surface_data_IO.o gz_edge_data_IO.o
 	$(F90) -c $(F90OPTFLAGS) $<
-gz_element_file_IO_b.o: $(ZLIB_IO_DIR)/gz_element_file_IO_b.f90 m_precision.o m_machine_parameter.o m_file_format_switch.o t_read_mesh_data.o set_mesh_file_names.o skip_gz_comment.o binary_IO.o calypso_c_binding.o gz_element_data_IO_b.o gz_surface_data_IO_b.o gz_edge_data_IO_b.o
+gz_element_file_IO_b.o: $(ZLIB_IO_DIR)/gz_element_file_IO_b.f90 m_precision.o m_machine_parameter.o m_file_format_switch.o t_read_mesh_data.o t_buffer_4_gzip.o set_mesh_file_names.o skip_gz_comment.o binary_IO.o calypso_c_binding.o gz_element_data_IO_b.o gz_surface_data_IO_b.o gz_edge_data_IO_b.o
 	$(F90) -c $(F90OPTFLAGS) $<
 gz_field_data_IO.o: $(ZLIB_IO_DIR)/gz_field_data_IO.f90 m_precision.o skip_gz_comment.o
 	$(F90) -c $(F90OPTFLAGS) $<
-gz_field_data_IO_b.o: $(ZLIB_IO_DIR)/gz_field_data_IO_b.f90 m_precision.o m_constants.o m_machine_parameter.o gz_binary_IO.o transfer_to_long_integers.o m_phys_constants.o m_error_IDs.o
+gz_field_data_IO_b.o: $(ZLIB_IO_DIR)/gz_field_data_IO_b.f90 m_precision.o m_constants.o m_machine_parameter.o t_buffer_4_gzip.o gz_binary_IO.o transfer_to_long_integers.o m_phys_constants.o m_error_IDs.o
 	$(F90) -c $(F90OPTFLAGS) $<
 gz_field_file_IO.o: $(ZLIB_IO_DIR)/gz_field_file_IO.f90 m_precision.o m_machine_parameter.o t_time_data.o t_field_data_IO.o gz_field_data_IO.o skip_gz_comment.o transfer_to_long_integers.o calypso_c_binding.o
 	$(F90) -c $(F90OPTFLAGS) $<
-gz_field_file_IO_b.o: $(ZLIB_IO_DIR)/gz_field_file_IO_b.f90 m_precision.o m_constants.o m_machine_parameter.o t_time_data.o t_field_data_IO.o gz_field_data_IO_b.o gz_binary_IO.o binary_IO.o skip_gz_comment.o transfer_to_long_integers.o calypso_c_binding.o
+gz_field_file_IO_b.o: $(ZLIB_IO_DIR)/gz_field_file_IO_b.f90 m_precision.o m_constants.o m_machine_parameter.o t_time_data.o t_field_data_IO.o t_buffer_4_gzip.o gz_field_data_IO_b.o gz_binary_IO.o binary_IO.o skip_gz_comment.o transfer_to_long_integers.o calypso_c_binding.o
 	$(F90) -c $(F90OPTFLAGS) $<
 gz_filter_coef_IO.o: $(ZLIB_IO_DIR)/gz_filter_coef_IO.f90 m_precision.o t_filter_coefficients.o skip_gz_comment.o cal_minmax_and_stacks.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -48,7 +48,7 @@ gz_group_data_IO.o: $(ZLIB_IO_DIR)/gz_group_data_IO.f90 m_precision.o m_constant
 	$(F90) -c $(F90OPTFLAGS) $<
 gz_groups_IO.o: $(ZLIB_IO_DIR)/gz_groups_IO.f90 m_precision.o t_group_data.o gz_group_data_IO.o skip_gz_comment.o
 	$(F90) -c $(F90OPTFLAGS) $<
-gz_groups_IO_b.o: $(ZLIB_IO_DIR)/gz_groups_IO_b.f90 m_precision.o m_machine_parameter.o t_group_data.o binary_IO.o gz_binary_IO.o transfer_to_long_integers.o
+gz_groups_IO_b.o: $(ZLIB_IO_DIR)/gz_groups_IO_b.f90 m_precision.o m_machine_parameter.o t_group_data.o t_buffer_4_gzip.o binary_IO.o gz_binary_IO.o transfer_to_long_integers.o
 	$(F90) -c $(F90OPTFLAGS) $<
 gz_itp_table_data_IO.o: $(ZLIB_IO_DIR)/gz_itp_table_data_IO.f90 m_precision.o m_constants.o m_machine_parameter.o skip_gz_comment.o t_interpolate_tbl_org.o t_interpolate_tbl_dest.o t_interpolate_coefs_dest.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -56,25 +56,25 @@ gz_itp_table_file_IO.o: $(ZLIB_IO_DIR)/gz_itp_table_file_IO.f90 m_precision.o m_
 	$(F90) -c $(F90OPTFLAGS) $<
 gz_mesh_data_IO.o: $(ZLIB_IO_DIR)/gz_mesh_data_IO.f90 m_precision.o t_mesh_data.o t_comm_table.o t_geometry_data.o skip_gz_comment.o gz_domain_data_IO.o gz_node_geometry_IO.o gz_element_connect_IO.o m_fem_mesh_labels.o gz_groups_IO.o
 	$(F90) -c $(F90OPTFLAGS) $<
-gz_mesh_data_IO_b.o: $(ZLIB_IO_DIR)/gz_mesh_data_IO_b.f90 m_precision.o m_constants.o t_mesh_data.o t_comm_table.o t_geometry_data.o binary_IO.o gz_domain_data_IO_b.o gz_node_geometry_IO_b.o gz_element_connect_IO_b.o gz_groups_IO_b.o
+gz_mesh_data_IO_b.o: $(ZLIB_IO_DIR)/gz_mesh_data_IO_b.f90 m_precision.o m_constants.o t_mesh_data.o t_comm_table.o t_geometry_data.o t_buffer_4_gzip.o binary_IO.o gz_domain_data_IO_b.o gz_node_geometry_IO_b.o gz_element_connect_IO_b.o gz_groups_IO_b.o
 	$(F90) -c $(F90OPTFLAGS) $<
 gz_mesh_file_IO.o: $(ZLIB_IO_DIR)/gz_mesh_file_IO.f90 m_precision.o m_machine_parameter.o t_mesh_data.o skip_gz_comment.o gz_mesh_data_IO.o calypso_c_binding.o
 	$(F90) -c $(F90OPTFLAGS) $<
-gz_mesh_file_IO_b.o: $(ZLIB_IO_DIR)/gz_mesh_file_IO_b.f90 m_precision.o m_machine_parameter.o t_mesh_data.o binary_IO.o gz_mesh_data_IO_b.o gz_binary_IO.o skip_gz_comment.o calypso_c_binding.o
+gz_mesh_file_IO_b.o: $(ZLIB_IO_DIR)/gz_mesh_file_IO_b.f90 m_precision.o m_machine_parameter.o t_mesh_data.o t_buffer_4_gzip.o binary_IO.o gz_mesh_data_IO_b.o gz_binary_IO.o skip_gz_comment.o calypso_c_binding.o
 	$(F90) -c $(F90OPTFLAGS) $<
 gz_node_geometry_IO.o: $(ZLIB_IO_DIR)/gz_node_geometry_IO.f90 m_precision.o t_geometry_data.o t_surf_edge_IO.o skip_gz_comment.o
 	$(F90) -c $(F90OPTFLAGS) $<
-gz_node_geometry_IO_b.o: $(ZLIB_IO_DIR)/gz_node_geometry_IO_b.f90 m_precision.o m_phys_constants.o t_geometry_data.o t_surf_edge_IO.o binary_IO.o skip_gz_comment.o transfer_to_long_integers.o gz_binary_IO.o
+gz_node_geometry_IO_b.o: $(ZLIB_IO_DIR)/gz_node_geometry_IO_b.f90 m_precision.o m_phys_constants.o t_geometry_data.o t_surf_edge_IO.o t_buffer_4_gzip.o binary_IO.o skip_gz_comment.o transfer_to_long_integers.o gz_binary_IO.o
 	$(F90) -c $(F90OPTFLAGS) $<
 gz_rst_data_IO_by_fld.o: $(ZLIB_IO_DIR)/gz_rst_data_IO_by_fld.f90 m_precision.o m_machine_parameter.o t_time_data.o t_field_data_IO.o gz_field_data_IO.o skip_gz_comment.o set_parallel_file_name.o transfer_to_long_integers.o calypso_c_binding.o set_restart_data.o
 	$(F90) -c $(F90OPTFLAGS) $<
 gz_sph_global_1d_idx_IO.o: $(ZLIB_IO_DIR)/gz_sph_global_1d_idx_IO.f90 m_precision.o t_node_id_spherical_IO.o skip_gz_comment.o m_sph_modes_grid_labels.o
 	$(F90) -c $(F90OPTFLAGS) $<
-gz_sph_global_1d_idx_IO_b.o: $(ZLIB_IO_DIR)/gz_sph_global_1d_idx_IO_b.f90 m_precision.o t_node_id_spherical_IO.o binary_IO.o gz_binary_IO.o transfer_to_long_integers.o
+gz_sph_global_1d_idx_IO_b.o: $(ZLIB_IO_DIR)/gz_sph_global_1d_idx_IO_b.f90 m_precision.o t_node_id_spherical_IO.o t_buffer_4_gzip.o binary_IO.o gz_binary_IO.o transfer_to_long_integers.o
 	$(F90) -c $(F90OPTFLAGS) $<
 gz_sph_modes_data_IO_b.o: $(ZLIB_IO_DIR)/gz_sph_modes_data_IO_b.f90 m_precision.o m_machine_parameter.o t_comm_table.o t_node_id_spherical_IO.o t_spheric_group.o gz_domain_data_IO_b.o gz_spherical_model_IO_b.o gz_sph_global_1d_idx_IO_b.o gz_binary_IO.o binary_IO.o skip_gz_comment.o gz_groups_IO_b.o
 	$(F90) -c $(F90OPTFLAGS) $<
-gz_sph_modes_file_IO_b.o: $(ZLIB_IO_DIR)/gz_sph_modes_file_IO_b.f90 m_precision.o m_machine_parameter.o t_spheric_data_IO.o gz_sph_modes_data_IO_b.o binary_IO.o skip_gz_comment.o gz_groups_IO_b.o calypso_c_binding.o
+gz_sph_modes_file_IO_b.o: $(ZLIB_IO_DIR)/gz_sph_modes_file_IO_b.f90 m_precision.o m_machine_parameter.o t_spheric_data_IO.o t_buffer_4_gzip.o gz_sph_modes_data_IO_b.o binary_IO.o skip_gz_comment.o gz_groups_IO_b.o calypso_c_binding.o
 	$(F90) -c $(F90OPTFLAGS) $<
 gz_sph_modes_grids_data_IO.o: $(ZLIB_IO_DIR)/gz_sph_modes_grids_data_IO.f90 m_precision.o m_machine_parameter.o m_sph_modes_grid_labels.o t_comm_table.o t_node_id_spherical_IO.o t_spheric_group.o gz_domain_data_IO.o gz_spherical_model_IO.o gz_sph_global_1d_idx_IO.o gz_groups_IO.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -82,11 +82,11 @@ gz_sph_modes_grids_file_IO.o: $(ZLIB_IO_DIR)/gz_sph_modes_grids_file_IO.f90 m_pr
 	$(F90) -c $(F90OPTFLAGS) $<
 gz_spherical_model_IO.o: $(ZLIB_IO_DIR)/gz_spherical_model_IO.f90 m_precision.o t_node_id_spherical_IO.o skip_gz_comment.o m_sph_modes_grid_labels.o
 	$(F90) -c $(F90OPTFLAGS) $<
-gz_spherical_model_IO_b.o: $(ZLIB_IO_DIR)/gz_spherical_model_IO_b.f90 m_precision.o t_node_id_spherical_IO.o gz_binary_IO.o binary_IO.o transfer_to_long_integers.o
+gz_spherical_model_IO_b.o: $(ZLIB_IO_DIR)/gz_spherical_model_IO_b.f90 m_precision.o t_node_id_spherical_IO.o t_buffer_4_gzip.o gz_binary_IO.o binary_IO.o transfer_to_long_integers.o
 	$(F90) -c $(F90OPTFLAGS) $<
 gz_surface_data_IO.o: $(ZLIB_IO_DIR)/gz_surface_data_IO.f90 m_precision.o t_comm_table.o t_geometry_data.o t_read_mesh_data.o t_surf_edge_IO.o m_fem_surface_labels.o m_fem_mesh_labels.o gz_domain_data_IO.o gz_element_connect_IO.o gz_node_geometry_IO.o
 	$(F90) -c $(F90OPTFLAGS) $<
-gz_surface_data_IO_b.o: $(ZLIB_IO_DIR)/gz_surface_data_IO_b.f90 m_precision.o t_comm_table.o t_geometry_data.o t_read_mesh_data.o t_surf_edge_IO.o m_fem_surface_labels.o binary_IO.o m_fem_mesh_labels.o gz_domain_data_IO_b.o gz_element_connect_IO_b.o gz_node_geometry_IO_b.o
+gz_surface_data_IO_b.o: $(ZLIB_IO_DIR)/gz_surface_data_IO_b.f90 m_precision.o t_comm_table.o t_geometry_data.o t_read_mesh_data.o t_surf_edge_IO.o t_buffer_4_gzip.o m_fem_surface_labels.o binary_IO.o m_fem_mesh_labels.o gz_domain_data_IO_b.o gz_element_connect_IO_b.o gz_node_geometry_IO_b.o
 	$(F90) -c $(F90OPTFLAGS) $<
 gz_ucd_data_IO.o: $(ZLIB_IO_DIR)/gz_ucd_data_IO.f90 m_precision.o m_constants.o skip_gz_comment.o ucd_data_to_buffer.o m_geometry_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<

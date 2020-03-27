@@ -12,10 +12,10 @@
 !!        type(binary_IO_flags), intent(inout) :: bflag
 !!        type(sph_IO_data), intent(inout) :: sph_IO
 !!
-!!      subroutine gz_write_rtp_gl_1d_table_b(sph_IO, bflag)
-!!      subroutine gz_write_rj_gl_1d_table_b(sph_IO, bflag)
+!!      subroutine gz_write_rtp_gl_1d_table_b(sph_IO, zbuf)
+!!      subroutine gz_write_rj_gl_1d_table_b(sph_IO, zbuf)
 !!        type(sph_IO_data), intent(in) :: sph_IO
-!!        type(binary_IO_flags), intent(inout) :: bflag
+!!        type(buffer_4_gzip), intent(inout) :: zbuf
 !!@endverbatim
 !
       module gz_sph_global_1d_idx_IO_b
@@ -23,6 +23,7 @@
       use m_precision
 !
       use t_node_id_spherical_IO
+      use t_buffer_4_gzip
       use binary_IO
       use gz_binary_IO
       use transfer_to_long_integers
@@ -134,71 +135,71 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine gz_write_rtp_gl_1d_table_b(sph_IO, bflag)
+      subroutine gz_write_rtp_gl_1d_table_b(sph_IO, zbuf)
 !
       type(sph_IO_data), intent(in) :: sph_IO
-      type(binary_IO_flags), intent(inout) :: bflag
+      type(buffer_4_gzip), intent(inout) :: zbuf
 !
       integer(kind = kint_gl) :: nvect
 !
 !
       call gz_write_mul_integer_b                                       &
-     &   (cast_long(sph_IO%numdir_sph), sph_IO%nidx_sph, bflag)
-      if(bflag%ierr_IO .ne. 0) return
+     &   (cast_long(sph_IO%numdir_sph), sph_IO%nidx_sph, zbuf)
+      if(zbuf%ierr_zlib .ne. 0) return
       call gz_write_mul_integer_b                                       &
-     &   (cast_long(sph_IO%numdir_sph), sph_IO%ist_sph, bflag)
-      if(bflag%ierr_IO .ne. 0) return
+     &   (cast_long(sph_IO%numdir_sph), sph_IO%ist_sph, zbuf)
+      if(zbuf%ierr_zlib .ne. 0) return
       call gz_write_mul_integer_b                                       &
-     &   (cast_long(sph_IO%numdir_sph), sph_IO%ied_sph, bflag)
-      if(bflag%ierr_IO .ne. 0) return
+     &   (cast_long(sph_IO%numdir_sph), sph_IO%ied_sph, zbuf)
+      if(zbuf%ierr_zlib .ne. 0) return
 !
       call gz_write_mul_integer_b                                       &
-     &   (cast_long(sph_IO%nidx_sph(1)), sph_IO%idx_gl_1, bflag)
-      if(bflag%ierr_IO .ne. 0) return
+     &   (cast_long(sph_IO%nidx_sph(1)), sph_IO%idx_gl_1, zbuf)
+      if(zbuf%ierr_zlib .ne. 0) return
       call gz_write_1d_vector_b                                         &
-     &   (cast_long(sph_IO%nidx_sph(1)), sph_IO%r_gl_1, bflag)
-      if(bflag%ierr_IO .ne. 0) return
+     &   (cast_long(sph_IO%nidx_sph(1)), sph_IO%r_gl_1, zbuf)
+      if(zbuf%ierr_zlib .ne. 0) return
 !
       nvect = sph_IO%nidx_sph(2) * sph_IO%ncomp_table_1d(2)
-      call gz_write_mul_integer_b(nvect, sph_IO%idx_gl_2, bflag)
-      if(bflag%ierr_IO .ne. 0) return
+      call gz_write_mul_integer_b(nvect, sph_IO%idx_gl_2, zbuf)
+      if(zbuf%ierr_zlib .ne. 0) return
 !
       nvect = sph_IO%nidx_sph(3) * sph_IO%ncomp_table_1d(3)
-      call gz_write_mul_integer_b(nvect, sph_IO%idx_gl_3, bflag)
-      if(bflag%ierr_IO .ne. 0) return
+      call gz_write_mul_integer_b(nvect, sph_IO%idx_gl_3, zbuf)
+      if(zbuf%ierr_zlib .ne. 0) return
 !
       end subroutine gz_write_rtp_gl_1d_table_b
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine gz_write_rj_gl_1d_table_b(sph_IO, bflag)
+      subroutine gz_write_rj_gl_1d_table_b(sph_IO, zbuf)
 !
       type(sph_IO_data), intent(in) :: sph_IO
-      type(binary_IO_flags), intent(inout) :: bflag
+      type(buffer_4_gzip), intent(inout) :: zbuf
 !
       integer(kind = kint_gl) :: nvect
 !
 !
       call gz_write_mul_integer_b                                       &
-     &   (cast_long(sph_IO%numdir_sph), sph_IO%nidx_sph, bflag)
-      if(bflag%ierr_IO .ne. 0) return
+     &   (cast_long(sph_IO%numdir_sph), sph_IO%nidx_sph, zbuf)
+      if(zbuf%ierr_zlib .ne. 0) return
       call gz_write_mul_integer_b                                       &
-     &   (cast_long(sph_IO%numdir_sph), sph_IO%ist_sph, bflag)
-      if(bflag%ierr_IO .ne. 0) return
+     &   (cast_long(sph_IO%numdir_sph), sph_IO%ist_sph, zbuf)
+      if(zbuf%ierr_zlib .ne. 0) return
       call gz_write_mul_integer_b                                       &
-     &   (cast_long(sph_IO%numdir_sph), sph_IO%ied_sph, bflag)
-      if(bflag%ierr_IO .ne. 0) return
+     &   (cast_long(sph_IO%numdir_sph), sph_IO%ied_sph, zbuf)
+      if(zbuf%ierr_zlib .ne. 0) return
 !
       call gz_write_mul_integer_b                                       &
-     &   (cast_long(sph_IO%nidx_sph(1)), sph_IO%idx_gl_1, bflag)
-      if(bflag%ierr_IO .ne. 0) return
+     &   (cast_long(sph_IO%nidx_sph(1)), sph_IO%idx_gl_1, zbuf)
+      if(zbuf%ierr_zlib .ne. 0) return
       call gz_write_1d_vector_b                                         &
-     &   (cast_long(sph_IO%nidx_sph(1)), sph_IO%r_gl_1, bflag)
-      if(bflag%ierr_IO .ne. 0) return
+     &   (cast_long(sph_IO%nidx_sph(1)), sph_IO%r_gl_1, zbuf)
+      if(zbuf%ierr_zlib .ne. 0) return
 !
       nvect = sph_IO%nidx_sph(2) * sph_IO%ncomp_table_1d(2)
-      call gz_write_mul_integer_b(nvect, sph_IO%idx_gl_2, bflag)
-      if(bflag%ierr_IO .ne. 0) return
+      call gz_write_mul_integer_b(nvect, sph_IO%idx_gl_2, zbuf)
+      if(zbuf%ierr_zlib .ne. 0) return
 !
       end subroutine gz_write_rj_gl_1d_table_b
 !

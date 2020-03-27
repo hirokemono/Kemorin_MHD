@@ -13,11 +13,12 @@
 !!        type(group_data), intent(inout) :: group_IO
 !!        type(surface_group_data), intent(inout) :: surf_grp_IO
 !!
-!!      subroutine gz_write_grp_data_b(group_IO, bflag)
-!!      subroutine gz_write_surf_grp_data_b(surf_grp_IO, bflag)
+!!      subroutine gz_write_grp_data_b(group_IO, zbuf)
+!!      subroutine gz_write_surf_grp_data_b(surf_grp_IO, zbuf)
 !!        type(group_data), intent(in) :: group_IO
 !!        type(surface_group_data), intent(in) :: surf_grp_IO
 !!        type(binary_IO_flags), intent(inout) :: bflag
+!!        type(buffer_4_gzip), intent(inout) :: zbuf
 !!@endverbatim
 !
       module gz_groups_IO_b
@@ -26,6 +27,7 @@
       use m_machine_parameter
 !
       use t_group_data
+      use t_buffer_4_gzip
 !
       use binary_IO
       use gz_binary_IO
@@ -112,50 +114,50 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine gz_write_grp_data_b(group_IO, bflag)
+      subroutine gz_write_grp_data_b(group_IO, zbuf)
 !
       type(group_data), intent(in) :: group_IO
-      type(binary_IO_flags), intent(inout) :: bflag
+      type(buffer_4_gzip), intent(inout) :: zbuf
 !
 !
-      call gz_write_one_integer_b(group_IO%num_grp, bflag)
-      if(bflag%ierr_IO .ne. 0) return
+      call gz_write_one_integer_b(group_IO%num_grp, zbuf)
+      if(zbuf%ierr_zlib .ne. 0) return
       call gz_write_integer_stack_b                                     &
-     &   (cast_long(group_IO%num_grp), group_IO%istack_grp, bflag)
-      if(bflag%ierr_IO .ne. 0) return
+     &   (cast_long(group_IO%num_grp), group_IO%istack_grp, zbuf)
+      if(zbuf%ierr_zlib .ne. 0) return
       call gz_write_mul_character_b                                     &
-     &   (cast_long(group_IO%num_grp), group_IO%grp_name, bflag)
-      if(bflag%ierr_IO .ne. 0) return
+     &   (cast_long(group_IO%num_grp), group_IO%grp_name, zbuf)
+      if(zbuf%ierr_zlib .ne. 0) return
 !
       call gz_write_mul_integer_b                                       &
-     &   (cast_long(group_IO%num_item), group_IO%item_grp, bflag)
-      if(bflag%ierr_IO .ne. 0) return
+     &   (cast_long(group_IO%num_item), group_IO%item_grp, zbuf)
+      if(zbuf%ierr_zlib .ne. 0) return
 !
       end subroutine gz_write_grp_data_b
 !
 !------------------------------------------------------------------
 !
-      subroutine gz_write_surf_grp_data_b(surf_grp_IO, bflag)
+      subroutine gz_write_surf_grp_data_b(surf_grp_IO, zbuf)
 !
       type(surface_group_data), intent(in) :: surf_grp_IO
-      type(binary_IO_flags), intent(inout) :: bflag
+      type(buffer_4_gzip), intent(inout) :: zbuf
 !
       integer(kind = kint_gl) :: nitem
 !
 !
-      call gz_write_one_integer_b(surf_grp_IO%num_grp, bflag)
-      if(bflag%ierr_IO .ne. 0) return
+      call gz_write_one_integer_b(surf_grp_IO%num_grp, zbuf)
+      if(zbuf%ierr_zlib .ne. 0) return
       call gz_write_integer_stack_b(cast_long(surf_grp_IO%num_grp),     &
-     &    surf_grp_IO%istack_grp, bflag)
-      if(bflag%ierr_IO .ne. 0) return
+     &    surf_grp_IO%istack_grp, zbuf)
+      if(zbuf%ierr_zlib .ne. 0) return
       call gz_write_mul_character_b                                     &
-     &   (cast_long(surf_grp_IO%num_grp), surf_grp_IO%grp_name, bflag)
-      if(bflag%ierr_IO .ne. 0) return
+     &   (cast_long(surf_grp_IO%num_grp), surf_grp_IO%grp_name, zbuf)
+      if(zbuf%ierr_zlib .ne. 0) return
 !
       nitem = 2 * surf_grp_IO%num_item
       call gz_write_mul_integer_b                                       &
-     &   (nitem, surf_grp_IO%item_sf_grp, bflag)
-      if(bflag%ierr_IO .ne. 0) return
+     &   (nitem, surf_grp_IO%item_sf_grp, zbuf)
+      if(zbuf%ierr_zlib .ne. 0) return
 !
       end subroutine gz_write_surf_grp_data_b
 !

@@ -37,6 +37,7 @@
       use m_machine_parameter
 !
       use t_spheric_data_IO
+      use t_buffer_4_gzip
       use gz_sph_modes_data_IO_b
       use binary_IO
       use skip_gz_comment
@@ -44,6 +45,7 @@
       implicit none
 !
       type(binary_IO_flags), private :: gz_sphflags
+      type(buffer_4_gzip), private :: zbuf_sph
 !
 !------------------------------------------------------------------
 !
@@ -179,9 +181,9 @@
 !
       if(id_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &      'Write gzipped binary grid file: ', trim(file_name)
-      call open_wt_gzfile_b(file_name, gz_sphflags)
+      call open_wt_gzfile_b(file_name, zbuf_sph)
       call gz_write_geom_rtp_data_b(id_rank, sph_file%comm_IO,          &
-     &    sph_file%sph_IO, sph_file%sph_grp_IO, gz_sphflags)
+     &    sph_file%sph_IO, sph_file%sph_grp_IO, zbuf_sph)
       call close_gzfile_f
 !
       end subroutine gz_write_geom_rtp_file_b
@@ -201,9 +203,9 @@
 !
       if(id_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &      'gzipped binary spectr modes file: ', trim(file_name)
-      call open_wt_gzfile_b(file_name, gz_sphflags)
+      call open_wt_gzfile_b(file_name, zbuf_sph)
       call gz_write_spectr_modes_rj_data_b(id_rank, sph_file%comm_IO,   &
-     &    sph_file%sph_IO, sph_file%sph_grp_IO, gz_sphflags)
+     &    sph_file%sph_IO, sph_file%sph_grp_IO, zbuf_sph)
       call close_gzfile_f
 !
       end subroutine gz_write_spectr_modes_rj_file_b
@@ -222,9 +224,9 @@
 !
       if(id_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &      'Write gzipped binary grid file: ', trim(file_name)
-      call open_wt_gzfile_b(file_name, gz_sphflags)
+      call open_wt_gzfile_b(file_name, zbuf_sph)
       call gz_write_geom_rtm_data_b                                     &
-     &   (id_rank, sph_file%comm_IO, sph_file%sph_IO, gz_sphflags)
+     &   (id_rank, sph_file%comm_IO, sph_file%sph_IO, zbuf_sph)
       call close_gzfile_f
 !
       end subroutine gz_write_geom_rtm_file_b
@@ -243,9 +245,9 @@
 !
       if(id_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &      'Write gzipped binary spectr modes file: ', trim(file_name)
-      call open_wt_gzfile_b(file_name, gz_sphflags)
+      call open_wt_gzfile_b(file_name, zbuf_sph)
       call gz_write_modes_rlm_data_b                                    &
-     &   (id_rank, sph_file%comm_IO, sph_file%sph_IO, gz_sphflags)
+     &   (id_rank, sph_file%comm_IO, sph_file%sph_IO, zbuf_sph)
       call close_gzfile_f
 !
       end subroutine gz_write_modes_rlm_file_b

@@ -37,6 +37,7 @@
       use m_machine_parameter
 !
       use t_mesh_data
+      use t_buffer_4_gzip
       use binary_IO
       use gz_mesh_data_IO_b
       use gz_binary_IO
@@ -45,6 +46,7 @@
       implicit none
 !
       type(binary_IO_flags) :: gz_meshflags
+      type(buffer_4_gzip), private :: zbuf_mesh
 !
 !  ---------------------------------------------------------------------
 !
@@ -182,9 +184,9 @@
       if(id_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &   'Write gzipped binary mesh file: ', trim(file_name)
 !
-      call open_wt_gzfile_b(file_name, gz_meshflags)
-      call gz_write_geometry_data_b(id_rank, mesh_IO, gz_meshflags)
-      call gz_write_mesh_groups_b(group_IO, gz_meshflags)
+      call open_wt_gzfile_b(file_name, zbuf_mesh)
+      call gz_write_geometry_data_b(id_rank, mesh_IO, zbuf_mesh)
+      call gz_write_mesh_groups_b(group_IO, zbuf_mesh)
       call close_gzfile_f
 !
       end subroutine gz_write_mesh_file_b
