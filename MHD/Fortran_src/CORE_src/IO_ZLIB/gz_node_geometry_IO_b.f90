@@ -162,14 +162,14 @@
       type(surf_edge_IO_data), intent(inout) :: sfed_IO
 !
 !
-      call gz_read_number_of_node_b(zbuf1, nod_IO)
-      if(zbuf1%ierr_zlib .ne. 0) return
+      call gz_read_number_of_node_b(zbuf, nod_IO)
+      if(zbuf%ierr_zlib .ne. 0) return
 !
       call alloc_ele_scalar_IO(nod_IO, sfed_IO)
 !
       call gz_read_1d_vector_b                                          &
-     &   (zbuf1, cast_long(nod_IO%numnod), sfed_IO%ele_scalar)
-      if(zbuf1%ierr_zlib .ne. 0) return
+     &   (zbuf, cast_long(nod_IO%numnod), sfed_IO%ele_scalar)
+      if(zbuf%ierr_zlib .ne. 0) return
 !
       end subroutine gz_read_scalar_in_element_b
 !
