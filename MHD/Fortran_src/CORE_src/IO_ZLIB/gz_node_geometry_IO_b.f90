@@ -96,7 +96,7 @@
 !
       type(node_data), intent(in) :: nod_IO
       type(surf_edge_IO_data), intent(in) :: sfed_IO
-      type(buffer_4_gzi), intent(inout) :: zbuf
+      type(buffer_4_gz), intent(inout) :: zbuf
 !
 !
       call gz_write_one_integer_b(nod_IO%numnod, zbuf)
