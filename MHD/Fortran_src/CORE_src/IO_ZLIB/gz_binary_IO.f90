@@ -180,7 +180,7 @@
       if(num .le. 0) return
       call dup_from_short_array(num, int_dat, tmp64)
       call gz_write_mul_int8_b(num, tmp64%id_a, zbuf)
-      if(zbuf%ierr_zlib .ne. 0) return
+      if(zbuf%ierr_zlib .ne.  0) return
       call dealloc_1d_i8array(tmp64)
 !
       end subroutine gz_write_mul_integer_b
@@ -192,7 +192,6 @@
       integer(kind = kint_gl), intent(in) :: num
       integer(kind = kint), intent(in) :: istack(0:num)
       type(buffer_4_gzip), intent(inout) :: zbuf
-!
 !
       call gz_write_mul_integer_b(num, istack(1), zbuf)
 !
