@@ -42,6 +42,9 @@
 !
       implicit none
 !
+!>      lengh of fixed text buffer
+      integer(kind = 4), parameter, private :: nbuf = 65535
+!
 !>      Structure of buffer for zlib
       type buffer_4_gzip
 !>        Actual size of compressed data buffer
@@ -78,6 +81,8 @@
 !
 !>        decompressed text buffer
         character(len=1), allocatable :: textbuf(:)
+!>        text buffer with fixed length
+        character(len=lbuf), allocatable :: fixbuf(:)
       end type buffer_4_gzip
 !
 !  ---------------------------------------------------------------------
@@ -107,6 +112,18 @@
 !
 !  ---------------------------------------------------------------------
 !
+      subroutine alloc_fixbuffer_for_zlib(len_buf, zbuf)
+!
+      integer, intent(in) :: len_buf
+      type(buffer_4_gzip), intent(inout) :: zbuf
+!
+      zbuf%len_buf = nbuf
+      allocate(zbuf%fixbuf(1))
+!
+      end subroutine alloc_fixbuffer_for_zlib
+!
+!  ---------------------------------------------------------------------
+!
       subroutine dealloc_zip_buffer(zbuf)
 !
       type(buffer_4_gzip), intent(inout) :: zbuf
@@ -124,6 +141,16 @@
       deallocate(zbuf%textbuf)
 !
       end subroutine dealloc_textbuffer_for_zlib
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine dealloc_fixbuffer_for_zlib(zbuf)
+!
+      type(buffer_4_gzip), intent(inout) :: zbuf
+!
+      deallocate(zbuf%fixbuf)
+!
+      end subroutine dealloc_fixbuffer_for_zlib
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
