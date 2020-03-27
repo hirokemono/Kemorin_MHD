@@ -1,4 +1,4 @@
-calypso_c_binding.o: $(F2003DIR)/calypso_c_binding.f03 m_precision.o t_buffer_4_gzip.o set_parallel_file_name.o
+calypso_c_binding.o: $(F2003DIR)/calypso_c_binding.f03 m_precision.o t_buffer_4_gzip.o set_parallel_file_name.o m_machine_parameter.o
 	$(F90) -c $(F90OPTFLAGS) $<
 gzip_defleate.o: $(F2003DIR)/gzip_defleate.f03 m_precision.o t_buffer_4_gzip.o
 	$(F90) -c $(F90OPTFLAGS) $<

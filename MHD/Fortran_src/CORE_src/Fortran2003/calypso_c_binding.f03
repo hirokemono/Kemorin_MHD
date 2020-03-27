@@ -274,14 +274,17 @@
 !
       subroutine gzread_chara_f(len_buf, textbuf, zbuf)
 !
+      use m_machine_parameter
+!
       integer, intent(in) :: len_buf
       character(len=1), target, intent(in) :: textbuf(len_buf)
 !
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
+      integer(C_int), parameter :: iflag_noswap = iendian_KEEP
 !
       call link_text_buffer_for_zlib(len_buf, textbuf, zbuf)
-      call gzread_32bit_f(zbuf%iflag_swap,                              &
+      call gzread_32bit_f(iflag_noswap,                                 &
      &    zbuf%len_buf, C_LOC(zbuf%buf_p), zbuf%ierr_zlib)
       call unlink_text_buffer_for_zlib(zbuf)
 !

@@ -44,8 +44,7 @@
 !
       implicit none
 !
-      type(binary_IO_flags), save :: gz_flags
-      type(buffer_4_gzip), private, save :: zbuf_ele
+      type(buffer_4_gzip), private :: zbuf_ele
 !
 !------------------------------------------------------------------
 !
@@ -68,13 +67,17 @@
       if(id_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &  'Read gzipped binary element comm file: ', trim(file_name)
 !
-      call open_rd_gzfile_b(file_name, id_rank, gz_flags)
+      call open_rd_gzfile_b(file_name, id_rank, zbuf_ele)
+      if(zbuf_ele%ierr_zlib .ne. 0) go to 99
       call gz_read_element_comm_table_b                                 &
-     &   (id_rank, gz_flags, ele_mesh_IO%comm)
+     &   (id_rank, zbuf_ele, ele_mesh_IO%comm)
+      if(zbuf_ele%ierr_zlib .ne. 0) go to 99
 !      call gz_read_element_geometry_b                                  &
-!     &   (gz_flags, ele_mesh_IO%node, ele_mesh_IO%sfed)
+!     &   (zbuf_ele, ele_mesh_IO%node, ele_mesh_IO%sfed)
+!
+  99  continue
       call close_gzfile_f
-      ierr = gz_flags%ierr_IO
+      ierr = zbuf_ele%ierr_zlib
 !
       end subroutine gz_input_element_file_b
 !
@@ -95,13 +98,17 @@
       if(id_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &  'Read gzipped binary surface mesh file: ', trim(file_name)
 !
-      call open_rd_gzfile_b(file_name, id_rank, gz_flags)
-      call gz_read_surface_connection_b(id_rank, gz_flags,              &
+      call open_rd_gzfile_b(file_name, id_rank, zbuf_ele)
+      if(zbuf_ele%ierr_zlib .ne. 0) go to 99
+      call gz_read_surface_connection_b(id_rank, zbuf_ele,              &
      &    surf_mesh_IO%comm, surf_mesh_IO%ele, surf_mesh_IO%sfed)
+      if(zbuf_ele%ierr_zlib .ne. 0) go to 99
 !      call gz_read_surface_geometry_b                                  &
-!     &   (gz_flags, surf_mesh_IO%node, surf_mesh_IO%sfed)
+!     &   (zbuf_ele, surf_mesh_IO%node, surf_mesh_IO%sfed)
+!
+  99  continue
       call close_gzfile_f
-      ierr = gz_flags%ierr_IO
+      ierr = zbuf_ele%ierr_zlib
 !
       end subroutine gz_input_surface_file_b
 !
@@ -122,13 +129,17 @@
       if(id_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &  'Read gzipped binary edge mesh file: ', trim(file_name)
 !
-      call open_rd_gzfile_b(file_name, id_rank, gz_flags)
-      call gz_read_edge_connection_b(id_rank, gz_flags,                 &
+      call open_rd_gzfile_b(file_name, id_rank, zbuf_ele)
+      if(zbuf_ele%ierr_zlib .ne. 0) go to 99
+      call gz_read_edge_connection_b(id_rank, zbuf_ele,                 &
      &    edge_mesh_IO%comm, edge_mesh_IO%ele, edge_mesh_IO%sfed)
+      if(zbuf_ele%ierr_zlib .ne. 0) go to 99
 !      call gz_read_edge_geometry_b                                     &
-!     &   (gz_flags, edge_mesh_IO%node, edge_mesh_IO%sfed)
+!     &   (zbuf_ele, edge_mesh_IO%node, edge_mesh_IO%sfed)
+!
+  99  continue
       call close_gzfile_f
-      ierr = gz_flags%ierr_IO
+      ierr = zbuf_ele%ierr_zlib
 !
       end subroutine gz_input_edge_file_b
 !
