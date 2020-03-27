@@ -180,7 +180,6 @@
       if(num .le. 0) return
       call dup_from_short_array(num, int_dat, tmp64)
       call gz_write_mul_int8_b(num, tmp64%id_a, zbuf)
-      bflag%ierr_IO = int(zbuf1%ierr_zlib, KIND(bflag%ierr_IO))
       if(zbuf%ierr_zlib .ne. 0) return
       call dealloc_1d_i8array(tmp64)
 !
