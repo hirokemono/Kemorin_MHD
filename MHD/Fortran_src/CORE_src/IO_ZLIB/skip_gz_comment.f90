@@ -80,9 +80,10 @@
 !
       length_of_c_text = -1
       do i = 1, nbuf
-      if(textbuf(i:i) .eq. char(0)) then
-        length_of_c_text = i-1
-        exit
+        if(textbuf(i:i) .eq. char(0)) then
+          length_of_c_text = i-1
+          exit
+        end if
       end do
       end function length_of_c_text
 !
