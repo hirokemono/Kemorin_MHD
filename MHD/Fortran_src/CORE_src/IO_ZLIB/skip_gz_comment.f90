@@ -22,9 +22,9 @@
 !!      subroutine read_gz_surf_group(is1, ntot, istack, item_sf)
 !!      subroutine read_gz_multi_int8(num, int8_input)
 !!      subroutine write_gz_surf_group(is1, ntot, istack, item_sf)
-!!      subroutine write_gz_multi_int_8i10(num, int_output)
-!!      subroutine write_gz_multi_int_10i8(num, int_output)
-!!      subroutine write_gz_multi_int_10i12(num, int_output)
+!!      subroutine write_gz_multi_int_8i10(num, int_data)
+!!      subroutine write_gz_multi_int_10i8(num, int_data)
+!!      subroutine write_gz_multi_int_10i12(num, int_data)
 !
 !!      subroutine write_gz_comment_string(comment)
 !!      subroutine gz_write_chara_nolf(chara_output)
@@ -54,7 +54,7 @@
 !
       use calypso_c_binding
 !
-      write(*,*) 'get_one_line_from_gz_f03', nbuf, len(textbuf)
+!      write(*,*) 'get_one_line_from_gz_f03', nbuf, len(textbuf)
       call gz_write_textbuf_no_lf_f(nbuf, textbuf, zbuf1)
 !
       end subroutine gz_write_textbuf_no_lf
@@ -66,7 +66,7 @@
       use calypso_c_binding
 !
 !
-      write(*,*) 'get_one_line_from_gz_f03', nbuf, len(textbuf)
+!      write(*,*) 'get_one_line_from_gz_f03', nbuf, len(textbuf)
       call gz_write_textbuf_w_lf_f(nbuf, textbuf, zbuf1)
 !
       end subroutine gz_write_textbuf_w_lf
@@ -76,7 +76,7 @@
 !
       integer function length_of_c_text(text)
       character(len=*) ::  text
-      integer :: i, n
+      integer :: i
 !
       length_of_c_text = -1
       do i = 1, nbuf
@@ -395,10 +395,10 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine write_gz_multi_int_8i10(num, int_output)
+      subroutine write_gz_multi_int_8i10(num, int_data)
 !
       integer(kind = kint) :: num
-      integer(kind = kint) :: int_output(num)
+      integer(kind = kint) :: int_data(num)
 !
       integer(kind = kint) :: ist, n
       character(len=kchara) :: fmt_txt
@@ -408,9 +408,9 @@
       do
         n = min(num-ist-ione,iseven) + 1
         write(fmt_txt,'(a1,i2,a7)') '(', n, 'i16,a1)'
-        write(textbuf,fmt_txt) int_output(ist+1:ist+n), char(0)
-        write(*,*) 'length', length_of_c_text(textbuf), (n*17+1)
-        call gz_write_textbuf_w_lf
+        write(textbuf,fmt_txt) int_data(ist+1:ist+n), char(10), char(0)
+        write(*,*) 'length', length_of_c_text(textbuf), (n*16+1)
+        call gz_write_textbuf_no_lf
         ist = ist + n
         if(ist .ge. num) exit
       end do
@@ -419,10 +419,10 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine write_gz_multi_int_10i8(num, int_output)
+      subroutine write_gz_multi_int_10i8(num, int_data)
 !
       integer(kind = kint) :: num
-      integer(kind = kint) :: int_output(num)
+      integer(kind = kint) :: int_data(num)
 !
       integer(kind = kint) :: ist, n
       character(len=kchara) :: fmt_txt
@@ -432,7 +432,7 @@
       do
         n = min(num-ist-ione,inine) + 1
         write(fmt_txt,'(a1,i3,a6)') '(', n, 'i8,a1)'
-        write(textbuf,fmt_txt) int_output(ist+1:ist+n), char(0)
+        write(textbuf,fmt_txt) int_data(ist+1:ist+n), char(0)
         call gz_write_textbuf_w_lf
         ist = ist + n
         if(ist .ge. num) exit
@@ -442,10 +442,10 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine write_gz_multi_int_10i12(num, int_output)
+      subroutine write_gz_multi_int_10i12(num, int_data)
 !
       integer(kind = kint) :: num
-      integer(kind = kint) :: int_output(num)
+      integer(kind = kint) :: int_data(num)
 !
       integer(kind = kint) :: ist, n
       character(len=kchara) :: fmt_txt
@@ -455,7 +455,7 @@
       do
         n = min(num-ist-ione,inine) + 1
         write(fmt_txt,'(a1,i3,a7)') '(', n, 'i12,a1)'
-        write(textbuf,fmt_txt) int_output(ist+1:ist+n), char(0)
+        write(textbuf,fmt_txt) int_data(ist+1:ist+n), char(0)
         call gz_write_textbuf_w_lf
         ist = ist + n
         if(ist .ge. num) exit
