@@ -75,7 +75,7 @@
 ! ----------------------------------------------------------------------
 !
       integer function length_of_c_text(text)
-      character(len=*) ::  text
+      character(len=*), intent(in) ::  text
       integer :: i
 !
       length_of_c_text = -1
@@ -407,7 +407,7 @@
       ist = 0
       do
         n = min(num-ist-ione,iseven) + 1
-        write(fmt_txt,'(a1,i2,a7)') '(', n, 'i16,a1)'
+        write(fmt_txt,'(a1,i2,a8)') '(', n, 'i16,2a1)'
         write(textbuf,fmt_txt) int_data(ist+1:ist+n), char(10), char(0)
         write(*,*) 'length', length_of_c_text(textbuf), (n*16+1)
         call gz_write_textbuf_no_lf
