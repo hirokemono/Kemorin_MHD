@@ -65,10 +65,26 @@
 !
       use calypso_c_binding
 !
+!
       write(*,*) 'get_one_line_from_gz_f03', nbuf, len(textbuf)
       call gz_write_textbuf_w_lf_f(nbuf, textbuf, zbuf1)
 !
       end subroutine gz_write_textbuf_w_lf
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      integer function length_of_c_text(text)
+      character(len=*) ::  text
+      integer :: i, n
+!
+      length_of_c_text = -1
+      do i = 1, nbuf
+      if(textbuf(i:i) .eq. char(0)) then
+        length_of_c_text = i-1
+        exit
+      end do
+      end function length_of_c_text
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
@@ -392,6 +408,7 @@
         n = min(num-ist-ione,iseven) + 1
         write(fmt_txt,'(a1,i2,a7)') '(', n, 'i16,a1)'
         write(textbuf,fmt_txt) int_output(ist+1:ist+n), char(0)
+        write(*,*) 'length', length_of_c_text(textbuf), (n*17+1)
         call gz_write_textbuf_w_lf
         ist = ist + n
         if(ist .ge. num) exit
