@@ -83,9 +83,9 @@
       call gz_write_textbuf_w_lf
 !
       if (IO_itp_org%num_dest_domain .gt. 0) then
-        call write_gz_multi_int_8i10(IO_itp_org%num_dest_domain,        &
+        call write_gz_multi_int_8i16(IO_itp_org%num_dest_domain,        &
      &     IO_itp_org%istack_nod_tbl_org(1:IO_itp_org%num_dest_domain))
-        call write_gz_multi_int_8i10(IO_itp_org%ntot_table_org,         &
+        call write_gz_multi_int_8i16(IO_itp_org%ntot_table_org,         &
      &     IO_itp_org%inod_itp_send)
       else
         write(textbuf,'(a1)') char(0)
@@ -121,7 +121,7 @@
       call gz_write_textbuf_w_lf
 !
       if (IO_itp_org%num_dest_domain .gt. 0) then
-        call write_gz_multi_int_8i10                                    &
+        call write_gz_multi_int_8i16                                    &
      &     (ifour, IO_itp_org%istack_itp_type_org(1:ifour) )
 !
         do inod = 1, IO_itp_org%ntot_table_org
@@ -256,9 +256,9 @@
       call gz_write_textbuf_w_lf
 !
       if (IO_itp_dest%num_org_domain .gt. 0) then
-        call write_gz_multi_int_8i10(IO_itp_dest%num_org_domain,        &
+        call write_gz_multi_int_8i16(IO_itp_dest%num_org_domain,        &
      &   IO_itp_dest%istack_nod_tbl_dest(1:IO_itp_dest%num_org_domain))
-        call write_gz_multi_int_8i10(IO_itp_dest%ntot_table_dest,       &
+        call write_gz_multi_int_8i16(IO_itp_dest%ntot_table_dest,       &
      &      IO_itp_dest%inod_dest_4_dest)
       else
         write(textbuf,'(a1)') char(0)
@@ -297,7 +297,7 @@
 !
       if (IO_itp_dest%num_org_domain .gt. 0) then
         do i = 1, IO_itp_dest%num_org_domain
-          call write_gz_multi_int_8i10(ifour,                           &
+          call write_gz_multi_int_8i16(ifour,                           &
      &        IO_itp_c_dest%istack_nod_tbl_wtype_dest(4*i-3:4*i))
         end do
 !

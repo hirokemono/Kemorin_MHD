@@ -22,7 +22,7 @@
 !!      subroutine read_gz_surf_group(is1, ntot, istack, item_sf)
 !!      subroutine read_gz_multi_int8(num, int8_input)
 !!      subroutine write_gz_surf_group(is1, ntot, istack, item_sf)
-!!      subroutine write_gz_multi_int_8i10(num, int_data)
+!!      subroutine write_gz_multi_int_8i16(num, int_data)
 !!      subroutine write_gz_multi_int_10i8(num, int_data)
 !!      subroutine write_gz_multi_int_10i12(num, int_data)
 !
@@ -416,7 +416,7 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine write_gz_multi_int_8i10(num, int_data)
+      subroutine write_gz_multi_int_8i16(num, int_data)
 !
       use calypso_c_binding
 !
@@ -440,7 +440,7 @@
         if(ist .ge. num) exit
       end do
 !
-      end subroutine write_gz_multi_int_8i10
+      end subroutine write_gz_multi_int_8i16
 !
 !------------------------------------------------------------------
 !
