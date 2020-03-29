@@ -56,14 +56,14 @@
       write(textbuf,'(i16,a1)') domain_grps%node_grp%num_item, char(0)
       call gz_write_textbuf_w_lf
 !
-      call write_gz_multi_int_8i16(id_gzip_txt_file_fmt, 19,            &
-     &    ngrp_pe, domain_grps%node_grp%istack_sf(1) )
+      call write_gz_multi_int_8i16                                      &
+     &   (ngrp_pe, domain_grps%node_grp%istack_sf(1) )
       do ip = 1, num_pe
         ist = domain_grps%node_grp%istack_sf(ip-1)
         num = domain_grps%node_grp%istack_sf(ip) - ist
         if(num .gt. 0) then
-          call write_gz_multi_int_8i16(id_gzip_txt_file_fmt, 19,        &
-     &                     num, domain_grps%node_grp%item_sf(ist+1))
+          call write_gz_multi_int_8i16                                  &
+     &       (num, domain_grps%node_grp%item_sf(ist+1))
         end if
       end do
 !
@@ -73,14 +73,14 @@
       write(textbuf,'(i16,a1)') domain_grps%surf_grp%num_item, char(0)
       call gz_write_textbuf_w_lf
 !
-      call write_gz_multi_int_8i16(id_gzip_txt_file_fmt, 19,            &
-     &    ngrp_pe, domain_grps%surf_grp%istack_sf(1) )
+      call write_gz_multi_int_8i16                                      &
+     &   (ngrp_pe, domain_grps%surf_grp%istack_sf(1) )
       do ip = 1, num_pe
         ist = domain_grps%surf_grp%istack_sf(ip-1)
         num = domain_grps%surf_grp%istack_sf(ip) - ist
         if(num .gt. 0) then
-          call write_gz_multi_int_8i16(id_gzip_txt_file_fmt, 19,        &
-     &        num, domain_grps%surf_grp%item_sf(ist+1))
+          call write_gz_multi_int_8i16                                  &
+     &       (num, domain_grps%surf_grp%item_sf(ist+1))
         end if
       end do
 !
@@ -90,14 +90,14 @@
       write(textbuf,'(i16,a1)') domain_grps%edge_grp%num_item, char(0)
       call gz_write_textbuf_w_lf
 !
-      call write_gz_multi_int_8i16(id_gzip_txt_file_fmt, 19,            &
-     &    ngrp_pe, domain_grps%edge_grp%istack_sf(1))
+      call write_gz_multi_int_8i16                                      &
+     &   (ngrp_pe, domain_grps%edge_grp%istack_sf(1))
       do ip = 1, num_pe
         ist = domain_grps%edge_grp%istack_sf(ip-1)
         num = domain_grps%edge_grp%istack_sf(ip) - ist
         if(num .gt. 0) then
-          call write_gz_multi_int_8i16(id_gzip_txt_file_fmt, 19,        &
-     &        num, domain_grps%edge_grp%item_sf(ist+1))
+          call write_gz_multi_int_8i16                                  &
+     &       (num, domain_grps%edge_grp%item_sf(ist+1))
       end do
 !
       end subroutine write_domain_group_viewer_gz
@@ -396,8 +396,8 @@
       ngrp_pe = int(num_pe, KIND(ngrp_pe))
       do i = 1, ngrp
         ist = (i-1) * num_pe
-        call write_gz_multi_int_8i16(id_gzip_txt_file_fmt, 19,          &
-     &      ngrp_pe, group%istack_sf(ist+1))
+        call write_gz_multi_int_8i16                                    &
+     &     (ngrp_pe, group%istack_sf(ist+1))
       end do
 !
       if (ngrp .gt. 0) then
@@ -416,8 +416,8 @@
               ist = group%istack_sf(num_pe*(i-1)+ip-1)
               num = group%istack_sf(num_pe*(i-1)+ip) - ist
               if(num .gt. 0) then
-                call write_gz_multi_int_8i16(id_gzip_txt_file_fmt, 19,  &
-     &              num, group%item_sf(ist+1))
+                call write_gz_multi_int_8i16                            &
+     &             (num, group%item_sf(ist+1))
               end if
             end do
           end if

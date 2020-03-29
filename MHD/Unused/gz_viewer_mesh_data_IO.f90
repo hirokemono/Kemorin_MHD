@@ -57,12 +57,12 @@
       write(textbuf,'(i16,a1)') num_pe_write, char(0)
       call gz_write_textbuf_w_lf
 !
-      call write_gz_multi_int_8i16(id_gzip_txt_file_fmt, 19,            &
-     &    num_pe_write, mgd_view_mesh%inod_sf_stack(1))
-      call write_gz_multi_int_8i16(id_gzip_txt_file_fmt, 19,            &
-     &    num_pe_write, mgd_view_mesh%isurf_sf_stack(1))
-      call write_gz_multi_int_8i16(id_gzip_txt_file_fmt, 19,            &
-     &    num_pe_write, mgd_view_mesh%iedge_sf_stack(1))
+      call write_gz_multi_int_8i16                                      &
+     &   (num_pe_write, mgd_view_mesh%inod_sf_stack(1))
+      call write_gz_multi_int_8i16                                      &
+     &   (num_pe_write, mgd_view_mesh%isurf_sf_stack(1))
+      call write_gz_multi_int_8i16                                      &
+     &   (num_pe_write, mgd_view_mesh%iedge_sf_stack(1))
 !
       end subroutine write_domain_data_viewer_gz
 !
