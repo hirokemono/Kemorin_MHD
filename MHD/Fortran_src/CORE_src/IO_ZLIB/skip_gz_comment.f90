@@ -398,8 +398,8 @@
 !
       subroutine write_gz_multi_int_8i16(num, int_data)
 !
-Z      integer(kind = kint) :: num
-      integer(kind = kint) :: int_data(num)
+      integer(kind = kint), intent(in) :: num
+      integer(kind = kint), intent(in) :: int_data(num)
 !
       integer(kind = kint) :: ist, n
       character(len=kchara) :: fmt_txt
@@ -421,8 +421,8 @@ Z      integer(kind = kint) :: num
 !
       subroutine write_gz_multi_int_10i8(num, int_data)
 !
-      integer(kind = kint) :: num
-      integer(kind = kint) :: int_data(num)
+      integer(kind = kint), intent(in) :: num
+      integer(kind = kint), intent(in) :: int_data(num)
 !
       integer(kind = kint) :: ist, n
       character(len=kchara) :: fmt_txt
@@ -445,8 +445,8 @@ Z      integer(kind = kint) :: num
 !
       subroutine write_gz_multi_int_10i12(num, int_data)
 !
-      integer(kind = kint) :: num
-      integer(kind = kint) :: int_data(num)
+      integer(kind = kint), intent(in) :: num
+      integer(kind = kint), intent(in) :: int_data(num)
 !
       integer(kind = kint) :: ist, n
       character(len=kchara) :: fmt_txt
