@@ -399,6 +399,8 @@
       subroutine sel_gz_write_textbuf                                   &
      &         (ifmt, id_file, lengh, fixbuf, zbuf)
 !
+      use calypso_c_binding
+!
       integer(kind = kint), intent(in) :: ifmt, id_file
       integer, intent(in) :: lengh
       character(len=lengh), intent(in) :: fixbuf
@@ -417,8 +419,6 @@
 !------------------------------------------------------------------
 !
       subroutine write_gz_multi_int_8i16(num, int_data)
-!
-      use calypso_c_binding
 !
       integer(kind = kint) :: num
       integer(kind = kint) :: int_data(num)
