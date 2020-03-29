@@ -398,6 +398,8 @@
 !
       subroutine write_gz_multi_int_8i16(num, int_data)
 !
+      use calypso_c_binding
+!
       integer(kind = kint), intent(in) :: num
       integer(kind = kint), intent(in) :: int_data(num)
 !
