@@ -79,7 +79,7 @@
       integer :: i
 !
       length_of_c_text = -1
-      do i = 1, nbuf
+      do i = 1, len(textbuf)
         if(textbuf(i:i) .eq. char(0)) then
           length_of_c_text = i
           exit
