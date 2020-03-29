@@ -113,8 +113,6 @@
       subroutine write_group_data(id_file, ngrp, ntot, istack, name,    &
      &          item)
 !
-      use skip_gz_comment
-!
       integer(kind = kint), intent(in) :: id_file
       integer(kind = kint), intent(in) :: ngrp, ntot
       integer(kind = kint), intent(in) :: istack(0:ngrp)
@@ -131,9 +129,7 @@
           ist = istack(i-1)+1
           ied = istack(i)
           write(id_file,'(a)') trim(name(i))
-!          write(id_file,'(8i16)') item(ist:ied)
-          call write_gz_multi_int_8i16(id_ascii_file_fmt, 19,           &
-     &       (ied-ist+1), item(ist))
+          write(id_file,'(8i16)') item(ist:ied)
         end do
       else
         write(id_file,*) ''
