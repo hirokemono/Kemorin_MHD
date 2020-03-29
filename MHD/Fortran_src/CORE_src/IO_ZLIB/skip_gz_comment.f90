@@ -33,6 +33,7 @@
 !
       use m_precision
       use m_constants
+      use m_file_format_switch
       use t_buffer_4_gzip
 !
       implicit none
@@ -395,6 +396,26 @@
 !
 !------------------------------------------------------------------
 !
+      subroutine sel_gz_write_textbuf                                   &
+     &         (ifmt, id_file, lengh, fixbuf, zbuf)
+!
+      integer(kind = kint), intent(in) :: ifmt, id_file
+      integer, intent(in) :: lengh
+      character(len=lengh), intent(in) :: fixbuf
+!
+      type(buffer_4_gzip), intent(inout) :: zbuf
+!
+!
+      if(ifmt .eq. id_gzip_txt_file_fmt) then
+        call gz_write_textbuf_no_lf_f(lengh, fixbuf, zbuf)
+      else
+        write(id_file,'(a)') fixbuf(1:lengh-1)
+      end if
+!
+      end subroutine sel_gz_write_textbuf
+!
+!------------------------------------------------------------------
+!
       subroutine write_gz_multi_int_8i10(num, int_data)
 !
       use calypso_c_binding
@@ -402,9 +423,9 @@
       integer(kind = kint) :: num
       integer(kind = kint) :: int_data(num)
 !
+      integer(kind = kint) :: id_file = 19
       integer(kind = kint) :: ist, n
       character(len=kchara) :: fmt_txt
-      character(len=ieight*16+2) :: fixbuf
 !
 !
       ist = 0
@@ -412,8 +433,9 @@
         n = min(num-ist-ione,iseven) + 1
         write(fmt_txt,'(a1,i2,a8)') '(', n, 'i16,2a1)'
         write(textbuf,fmt_txt) int_data(ist+1:ist+n), char(10), char(0)
-        write(*,*) 'length', length_of_c_text(textbuf), (n*16+2), num
-        call gz_write_textbuf_no_lf_f((n*16+2), textbuf, zbuf1)
+        write(*,*) 'sel_gz_write_textbuf', length_of_c_text(textbuf), (n*16+2)
+        call sel_gz_write_textbuf(id_gzip_txt_file_fmt, id_file,        &
+     &      (n*16+2), textbuf, zbuf1)
         ist = ist + n
         if(ist .ge. num) exit
       end do
