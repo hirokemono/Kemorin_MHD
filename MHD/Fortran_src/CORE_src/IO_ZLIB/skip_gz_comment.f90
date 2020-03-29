@@ -433,7 +433,7 @@
         n = min(num-ist-ione,inine) + 1
         write(fmt_txt,'(a1,i3,a6)') '(', n, 'i8,a1)'
         write(textbuf,fmt_txt) int_data(ist+1:ist+n), char(0)
-        write(*,*) ifmt, 'sel_gz_write_textbuf', length_of_c_text(textbuf), (n*8+2)
+        write(*,*) 'sel_gz_write_textbuf', length_of_c_text(textbuf), (n*8+2)
         call gz_write_textbuf_w_lf
         ist = ist + n
         if(ist .ge. num) exit
