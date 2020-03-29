@@ -412,7 +412,7 @@
         n = min(num-ist-ione,iseven) + 1
         write(fmt_txt,'(a1,i2,a8)') '(', n, 'i16,2a1)'
         write(fixbuf,fmt_txt) int_data(ist+1:ist+n), char(10), char(0)
-        write(*,*) 'length', length_of_c_text(fixbuf), (n*16+2)
+        write(*,*) 'length', length_of_c_text(fixbuf), (n*16+2), num
         call gz_write_textbuf_no_lf_f((n*16+2), fixbuf, zbuf1)
         ist = ist + n
         if(ist .ge. num) exit
