@@ -404,7 +404,7 @@
 !
       integer(kind = kint) :: ist, n
       character(len=kchara) :: fmt_txt
-      character(len=iseven*16+2) :: fixbuf
+      character(len=ieight*16+2) :: fixbuf
 !
 !
       ist = 0
