@@ -131,8 +131,8 @@
       call gz_write_textbuf_w_lf
 !
       if (comm_IO%num_neib .gt. 0) then
-        call write_gz_multi_int_8i16(comm_IO%num_neib,                  &
-     &      comm_IO%id_neib)
+        call write_gz_multi_int_8i16(id_ascii_file_fmt, 19,             &
+     &      comm_IO%num_neib, comm_IO%id_neib)
       else
         write(textbuf,'(a1)') char(0)
         call gz_write_textbuf_w_lf
@@ -198,7 +198,8 @@
       integer(kind = kint) :: i
 !
       if (num_sr .gt. 0) then
-        call write_gz_multi_int_8i16(num_sr, istack_sr(1))
+        call write_gz_multi_int_8i16(id_ascii_file_fmt, 19,             &
+     &      num_sr, istack_sr(1))
         do i = 1, ntot_sr
           write(textbuf,'(i16,a1)') inod_sr(i), char(0)
           call gz_write_textbuf_w_lf

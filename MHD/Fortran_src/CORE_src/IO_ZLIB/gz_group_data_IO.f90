@@ -97,7 +97,8 @@
       call gz_write_textbuf_w_lf
 !
       if (ngrp .gt. 0) then
-        call write_gz_multi_int_8i16(ngrp, istack(1))
+        call write_gz_multi_int_8i16(id_ascii_file_fmt, 19,             &
+     &      ngrp, istack(1))
 !
         do i = 1, ngrp
           ist = istack(i-1)+1
@@ -110,7 +111,8 @@
             write(textbuf,'(a1)') char(0)
             call gz_write_textbuf_w_lf
           else
-            call write_gz_multi_int_8i16(num, item(ist))
+            call write_gz_multi_int_8i16(id_ascii_file_fmt, 19,         &
+     &          num, item(ist))
           end if
 !
         end do
@@ -138,7 +140,8 @@
       call gz_write_textbuf_w_lf
 !
       if (ngrp .gt. 0) then
-        call write_gz_multi_int_8i16(ngrp, istack(1))
+        call write_gz_multi_int_8i16(id_ascii_file_fmt, 19,             &
+     &      ngrp, istack(1))
 !
         do i = 1, ngrp
           ist = istack(i-1)+1

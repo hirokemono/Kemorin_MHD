@@ -418,12 +418,12 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine write_gz_multi_int_8i16(num, int_data)
+      subroutine write_gz_multi_int_8i16(ifmt, id_file, num, int_data)
 !
+      integer(kind = kint), intent(in) :: ifmt, id_file
       integer(kind = kint) :: num
       integer(kind = kint) :: int_data(num)
 !
-      integer(kind = kint) :: id_file = 19
       integer(kind = kint) :: ist, n
       character(len=kchara) :: fmt_txt
 !
@@ -434,8 +434,8 @@
         write(fmt_txt,'(a1,i2,a8)') '(', n, 'i16,2a1)'
         write(textbuf,fmt_txt) int_data(ist+1:ist+n), char(10), char(0)
         write(*,*) 'sel_gz_write_textbuf', length_of_c_text(textbuf), (n*16+2)
-        call sel_gz_write_textbuf(id_gzip_txt_file_fmt, id_file,        &
-     &      (n*16+2), textbuf, zbuf1)
+        call sel_gz_write_textbuf                                       &
+     &     (ifmt, id_file, (n*16+2), textbuf, zbuf1)
         ist = ist + n
         if(ist .ge. num) exit
       end do
