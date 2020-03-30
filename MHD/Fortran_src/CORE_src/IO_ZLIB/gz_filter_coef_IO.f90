@@ -42,7 +42,7 @@
       call alloc_num_filtering_comb(ione, IO_filters)
 !
       call read_gz_multi_int(IO_filters%ngrp_node,                      &
-     &    IO_filters%istack_node(1:IO_filters%ngrp_node))
+     &    IO_filters%istack_node(1:IO_filters%ngrp_node), zbuf1)
 !
       call s_cal_numbers_from_stack(IO_filters%ngrp_node,               &
      &    IO_filters%num_node, IO_filters%istack_node)
@@ -116,7 +116,7 @@
      &                          char(10), char(0)
       call gz_write_textbuf_no_lf(zbuf1)
       call write_gz_multi_int_10i12(IO_filters%ngrp_node,               &
-     &    IO_filters%istack_node(1:IO_filters%ngrp_node) )
+     &    IO_filters%istack_node(1:IO_filters%ngrp_node), zbuf1)
 !
       do i = 1, IO_filters%ngrp_node
         ist = IO_filters%istack_node(i-1)+1

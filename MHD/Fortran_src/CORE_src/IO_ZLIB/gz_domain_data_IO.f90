@@ -61,7 +61,8 @@
       call alloc_neighbouring_id(comm_IO)
 !
       if (comm_IO%num_neib .gt. 0) then
-        call read_gz_multi_int(comm_IO%num_neib, comm_IO%id_neib)
+        call read_gz_multi_int                                          &
+     &     (comm_IO%num_neib, comm_IO%id_neib, zbuf1)
       end if
 !
       end subroutine gz_read_domain_info
@@ -78,7 +79,7 @@
       comm_IO%istack_import(0) = 0
       if (comm_IO%num_neib .gt. 0) then
         call read_gz_integer_stack(comm_IO%num_neib,                    &
-     &      comm_IO%istack_import, comm_IO%ntot_import)
+     &      comm_IO%istack_import, comm_IO%ntot_import, zbuf1)
 !
         call alloc_import_item(comm_IO)
         call read_send_recv_item_gz                                     &
@@ -102,7 +103,7 @@
       comm_IO%istack_export(0) = 0
       if (comm_IO%num_neib .gt. 0) then
         call read_gz_integer_stack(comm_IO%num_neib,                    &
-     &      comm_IO%istack_export, comm_IO%ntot_export)
+     &      comm_IO%istack_export, comm_IO%ntot_export, zbuf1)
 !
         call alloc_export_item(comm_IO)
         call read_send_recv_item_gz                                     &
@@ -132,7 +133,7 @@
 !
       if (comm_IO%num_neib .gt. 0) then
         call write_gz_multi_int_8i16                                    &
-     &     (comm_IO%num_neib, comm_IO%id_neib)
+     &     (comm_IO%num_neib, comm_IO%id_neib, zbuf1)
       else
         write(textbuf,'(2a1)') char(10), char(0)
         call gz_write_textbuf_no_lf(zbuf1)
@@ -198,7 +199,7 @@
       integer(kind = kint) :: i
 !
       if (num_sr .gt. 0) then
-        call write_gz_multi_int_8i16(num_sr, istack_sr(1))
+        call write_gz_multi_int_8i16(num_sr, istack_sr(1), zbuf1)
         do i = 1, ntot_sr
           write(textbuf,'(i16,2a1)') inod_sr(i), char(10), char(0)
           call gz_write_textbuf_no_lf(zbuf1)

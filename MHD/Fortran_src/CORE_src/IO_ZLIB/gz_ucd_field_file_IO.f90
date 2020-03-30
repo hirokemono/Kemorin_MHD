@@ -95,8 +95,8 @@
       call read_gz_step_data                                            &
      &   (id_rank, t_IO%i_time_step, t_IO%time, t_IO%dt, ierr_IO)
       if(ierr_IO .gt. 0) return
-      call skip_gz_comment_int8_int(ucd%nnod, ucd%num_field)
-      call read_gz_multi_int(ucd%num_field, ucd%num_comp)
+      call skip_gz_comment_int8_int(ucd%nnod, ucd%num_field, zbuf1)
+      call read_gz_multi_int(ucd%num_field, ucd%num_comp, zbuf1)
 !
       call read_gz_field_data(ucd%nnod, ucd%num_field, ucd%ntot_comp,   &
      &    ucd%num_comp, ucd%phys_name, ucd%d_ucd)
@@ -128,11 +128,11 @@
       call read_gz_step_data                                            &
      &   (id_rank, t_IO%i_time_step, t_IO%time, t_IO%dt, ierr_IO)
       if(ierr_IO .gt. 0) return
-      call skip_gz_comment_int8_int(ucd%nnod, ucd%num_field)
+      call skip_gz_comment_int8_int(ucd%nnod, ucd%num_field, zbuf1)
 !
       call allocate_ucd_phys_name(ucd)
 !
-      call read_gz_multi_int(ucd%num_field, ucd%num_comp)
+      call read_gz_multi_int(ucd%num_field, ucd%num_comp, zbuf1)
 !
       call cal_istack_ucd_component(ucd)
       call allocate_ucd_phys_data(ucd)

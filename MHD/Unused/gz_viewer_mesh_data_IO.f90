@@ -58,11 +58,11 @@
       call gz_write_textbuf_no_lf(zbuf1)
 !
       call write_gz_multi_int_8i16                                      &
-     &   (num_pe_write, mgd_view_mesh%inod_sf_stack(1))
+     &   (num_pe_write, mgd_view_mesh%inod_sf_stack(1), zbuf1)
       call write_gz_multi_int_8i16                                      &
-     &   (num_pe_write, mgd_view_mesh%isurf_sf_stack(1))
+     &   (num_pe_write, mgd_view_mesh%isurf_sf_stack(1), zbuf1)
       call write_gz_multi_int_8i16                                      &
-     &   (num_pe_write, mgd_view_mesh%iedge_sf_stack(1))
+     &   (num_pe_write, mgd_view_mesh%iedge_sf_stack(1), zbuf1)
 !
       end subroutine write_domain_data_viewer_gz
 !
@@ -80,11 +80,11 @@
       call alloc_num_mesh_sf(int(num_pe_read), mgd_view_mesh)
 !
       call read_gz_multi_int                                            &
-     &   (num_pe_read, mgd_view_mesh%inod_sf_stack)
+     &   (num_pe_read, mgd_view_mesh%inod_sf_stack, zbuf1)
       call read_gz_multi_int                                            &
-     &   (num_pe_read, mgd_view_mesh%isurf_sf_stack)
+     &   (num_pe_read, mgd_view_mesh%isurf_sf_stack, zbuf1)
       call read_gz_multi_int                                            &
-     &   (num_pe_read, mgd_view_mesh%iedge_sf_stack)
+     &   (num_pe_read, mgd_view_mesh%iedge_sf_stack, zbuf1)
 !
       end subroutine read_domain_data_viewer_gz
 !
@@ -158,7 +158,7 @@
         ist = isurf_sf_stack(i-1)
         num = isurf_sf_stack(i) - isurf_sf_stack(i-1)
         if(num .gt. 0)  call write_gz_multi_int_10i8                    &
-     &                     (num, view_mesh%surftyp_viewer(ist+1))
+     &                    (num, view_mesh%surftyp_viewer(ist+1), zbuf1)
       end do
 !
       write(fmt_txt,'(a5,i2,a10)')                                      &
@@ -194,7 +194,7 @@ end subroutine write_surf_connect_viewer_gz
       call alloc_surf_type_viewer(view_mesh)
 !
       call read_gz_multi_int                                            &
-     &   (view_mesh%nsurf_viewer, view_mesh%surftyp_viewer)
+     &   (view_mesh%nsurf_viewer, view_mesh%surftyp_viewer, zbuf1)
 !
       call set_3D_nnod_4_sfed_by_ele                                    &
      &   (nnod_4_ele, nnod_4_surf, nnod_4_edge)

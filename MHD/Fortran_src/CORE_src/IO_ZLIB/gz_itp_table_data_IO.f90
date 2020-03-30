@@ -68,7 +68,7 @@
 !
       if (IO_itp_org%num_dest_domain .gt. 0) then
         call write_gz_multi_int_10i8(IO_itp_org%num_dest_domain,        &
-     &      IO_itp_org%id_dest_domain)
+     &      IO_itp_org%id_dest_domain, zbuf1)
       else
         write(textbuf,'(2a1)') char(10), char(0)
         call gz_write_textbuf_no_lf(zbuf1)
@@ -88,9 +88,10 @@
 !
       if (IO_itp_org%num_dest_domain .gt. 0) then
         call write_gz_multi_int_8i16(IO_itp_org%num_dest_domain,        &
-     &     IO_itp_org%istack_nod_tbl_org(1:IO_itp_org%num_dest_domain))
+     &     IO_itp_org%istack_nod_tbl_org(1:IO_itp_org%num_dest_domain), &
+     &     zbuf1)
         call write_gz_multi_int_8i16                                    &
-     &     (IO_itp_org%ntot_table_org, IO_itp_org%inod_itp_send)
+     &     (IO_itp_org%ntot_table_org, IO_itp_org%inod_itp_send, zbuf1)
       else
         write(textbuf,'(2a1)') char(10), char(0)
         call gz_write_textbuf_no_lf(zbuf1)
@@ -130,7 +131,7 @@
 !
       if (IO_itp_org%num_dest_domain .gt. 0) then
         call write_gz_multi_int_8i16                                    &
-     &     (ifour, IO_itp_org%istack_itp_type_org(1:ifour) )
+     &     (ifour, IO_itp_org%istack_itp_type_org(1:ifour), zbuf1)
 !
         do inod = 1, IO_itp_org%ntot_table_org
           write(textbuf,'(3i16,1p3E25.15e3,2a1)')                       &
@@ -164,8 +165,8 @@
 !
       if (IO_itp_org%num_dest_domain .gt. 0) then
         call alloc_itp_num_org(np_smp, IO_itp_org)
-        call read_gz_multi_int                                          &
-     &     (IO_itp_org%num_dest_domain, IO_itp_org%id_dest_domain)
+        call read_gz_multi_int(IO_itp_org%num_dest_domain,              &
+     &      IO_itp_org%id_dest_domain, zbuf1)
       end if
 !
       end subroutine read_gz_itp_domain_org
@@ -182,13 +183,14 @@
       if (IO_itp_org%num_dest_domain .eq. 0) return
         IO_itp_org%istack_nod_tbl_org(0) = 0
         call read_gz_multi_int(IO_itp_org%num_dest_domain,              &
-     &     IO_itp_org%istack_nod_tbl_org(1:IO_itp_org%num_dest_domain))
+     &     IO_itp_org%istack_nod_tbl_org(1:IO_itp_org%num_dest_domain), &
+     &     zbuf1)
         IO_itp_org%ntot_table_org                                       &
      &      = IO_itp_org%istack_nod_tbl_org(IO_itp_org%num_dest_domain)
 !
         call alloc_itp_table_org(IO_itp_org)
         call read_gz_multi_int                                          &
-     &     (IO_itp_org%ntot_table_org, IO_itp_org%inod_itp_send)
+     &     (IO_itp_org%ntot_table_org, IO_itp_org%inod_itp_send, zbuf1)
 !
       end subroutine read_gz_itp_table_org
 !
@@ -206,7 +208,7 @@
 !
         IO_itp_org%istack_itp_type_org(0) = 0
         call read_gz_multi_int                                          &
-     &     (ifour, IO_itp_org%istack_itp_type_org(1:ifour) )
+     &     (ifour, IO_itp_org%istack_itp_type_org(1:ifour), zbuf1)
 !
         do inod = 1, IO_itp_org%ntot_table_org
           call get_one_line_from_gz_f(zbuf1)
@@ -250,7 +252,7 @@
 !
       if (IO_itp_dest%num_org_domain .gt. 0) then
         call write_gz_multi_int_10i8(IO_itp_dest%num_org_domain,        &
-     &     IO_itp_dest%id_org_domain)
+     &     IO_itp_dest%id_org_domain, zbuf1)
       else
         write(textbuf,'(2a1)') char(10), char(0)
         call gz_write_textbuf_no_lf(zbuf1)
@@ -269,9 +271,11 @@
 !
       if (IO_itp_dest%num_org_domain .gt. 0) then
         call write_gz_multi_int_8i16(IO_itp_dest%num_org_domain,        &
-     &   IO_itp_dest%istack_nod_tbl_dest(1:IO_itp_dest%num_org_domain))
+     &   IO_itp_dest%istack_nod_tbl_dest(1:IO_itp_dest%num_org_domain), &
+     &   zbuf1)
         call write_gz_multi_int_8i16                                    &
-     &     (IO_itp_dest%ntot_table_dest, IO_itp_dest%inod_dest_4_dest)
+     &     (IO_itp_dest%ntot_table_dest, IO_itp_dest%inod_dest_4_dest,  &
+     &      zbuf1)
       else
         write(textbuf,'(2a1)') char(10), char(0)
         call gz_write_textbuf_no_lf(zbuf1)
@@ -315,7 +319,7 @@
       if (IO_itp_dest%num_org_domain .gt. 0) then
         do i = 1, IO_itp_dest%num_org_domain
           call write_gz_multi_int_8i16(ifour,                           &
-     &        IO_itp_c_dest%istack_nod_tbl_wtype_dest(4*i-3:4*i))
+     &       IO_itp_c_dest%istack_nod_tbl_wtype_dest(4*i-3:4*i), zbuf1)
         end do
 !
         do inod = 1, IO_itp_dest%ntot_table_dest
@@ -351,8 +355,8 @@
 !
       if (IO_itp_dest%num_org_domain .gt. 0) then
         call alloc_itp_num_dest(IO_itp_dest)
-        call read_gz_multi_int                                          &
-     &     (IO_itp_dest%num_org_domain, IO_itp_dest%id_org_domain)
+        call read_gz_multi_int(IO_itp_dest%num_org_domain,              &
+     &      IO_itp_dest%id_org_domain, zbuf1)
       end if
 !
       end subroutine read_gz_itp_domain_dest
@@ -369,13 +373,15 @@
       if (IO_itp_dest%num_org_domain .eq. 0) return
       IO_itp_dest%istack_nod_tbl_dest(0) = 0
       call read_gz_multi_int(IO_itp_dest%num_org_domain,                &
-     &   IO_itp_dest%istack_nod_tbl_dest(1:IO_itp_dest%num_org_domain))
+     &   IO_itp_dest%istack_nod_tbl_dest(1:IO_itp_dest%num_org_domain), &
+     &   zbuf1)
       IO_itp_dest%ntot_table_dest                                       &
      &   = IO_itp_dest%istack_nod_tbl_dest(IO_itp_dest%num_org_domain)
 !
       call alloc_itp_table_dest(IO_itp_dest)
       call read_gz_multi_int                                            &
-     &   (IO_itp_dest%ntot_table_dest, IO_itp_dest%inod_dest_4_dest)
+     &   (IO_itp_dest%ntot_table_dest, IO_itp_dest%inod_dest_4_dest,    &
+     &    zbuf1)
 !
       end subroutine read_gz_itp_table_dest
 !
@@ -399,7 +405,7 @@
 !
         do i = 1, IO_itp_dest%num_org_domain
           call read_gz_multi_int(ifour,                                 &
-     &        IO_itp_c_dest%istack_nod_tbl_wtype_dest(4*i-3:4*i) )
+     &       IO_itp_c_dest%istack_nod_tbl_wtype_dest(4*i-3:4*i), zbuf1)
         end do
         num = 4*IO_itp_dest%num_org_domain
         IO_itp_dest%ntot_table_dest                                     &

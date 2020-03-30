@@ -90,10 +90,12 @@
 !
       call open_rd_gzfile_f(gzip_name)
 !
-      call skip_gz_comment_int2(fld_IO%nnod_IO, fld_IO%num_field_IO)
+      call skip_gz_comment_int2                                         &
+     &   (fld_IO%nnod_IO, fld_IO%num_field_IO, zbuf1)
       call alloc_phys_name_IO(fld_IO)
 !
-      call read_gz_multi_int(fld_IO%num_field_IO, fld_IO%num_comp_IO)
+      call read_gz_multi_int                                            &
+     &   (fld_IO%num_field_IO, fld_IO%num_comp_IO, zbuf1)
 !
       call cal_istack_phys_comp_IO(fld_IO)
       call alloc_phys_data_IO(fld_IO)
@@ -132,8 +134,10 @@
      &   (id_rank, t_IO%i_time_step, t_IO%time, t_IO%dt, ierr_IO)
       if(ierr_IO .gt. 0) return
 !
-      call skip_gz_comment_int2(fld_IO%nnod_IO, fld_IO%num_field_IO)
-      call read_gz_multi_int(fld_IO%num_field_IO, fld_IO%num_comp_IO)
+      call skip_gz_comment_int2                                         &
+     &   (fld_IO%nnod_IO, fld_IO%num_field_IO, zbuf1)
+      call read_gz_multi_int                                            &
+     &   (fld_IO%num_field_IO, fld_IO%num_comp_IO, zbuf1)
       call read_gz_field_data(cast_long(fld_IO%nnod_IO),                &
      &    fld_IO%num_field_IO, fld_IO%ntot_comp_IO,                     &
      &    fld_IO%num_comp_IO, fld_IO%fld_name, fld_IO%d_IO)
@@ -167,10 +171,12 @@
      &   (id_rank, t_IO%i_time_step, t_IO%time, t_IO%dt, ierr_IO)
       if(ierr_IO .gt. 0) return
 !
-      call skip_gz_comment_int2(fld_IO%nnod_IO, fld_IO%num_field_IO)
+      call skip_gz_comment_int2                                         &
+     &   (fld_IO%nnod_IO, fld_IO%num_field_IO, zbuf1)
       call alloc_phys_name_IO(fld_IO)
 !
-      call read_gz_multi_int(fld_IO%num_field_IO, fld_IO%num_comp_IO)
+      call read_gz_multi_int                                            &
+     &   (fld_IO%num_field_IO, fld_IO%num_comp_IO, zbuf1)
 !
       call cal_istack_phys_comp_IO(fld_IO)
       call alloc_phys_data_IO(fld_IO)
@@ -208,10 +214,12 @@
      &   (id_rank, t_IO%i_time_step, t_IO%time, t_IO%dt, ierr_IO)
       if(ierr_IO .gt. 0) return
 !
-      call skip_gz_comment_int2(fld_IO%nnod_IO, fld_IO%num_field_IO)
+      call skip_gz_comment_int2                                         &
+     &   (fld_IO%nnod_IO, fld_IO%num_field_IO, zbuf1)
 !
       call alloc_phys_name_IO(fld_IO)
-      call read_gz_multi_int(fld_IO%num_field_IO, fld_IO%num_comp_IO)
+      call read_gz_multi_int                                            &
+     &   (fld_IO%num_field_IO, fld_IO%num_comp_IO, zbuf1)
 !
       call close_gzfile_f
 !

@@ -48,7 +48,7 @@
 !
       write(textbuf,'(i16,2a1)') ele_IO%numele, char(10), char(0)
       call gz_write_textbuf_no_lf(zbuf1)
-      call write_gz_multi_int_10i8(ele_IO%numele, ele_IO%elmtyp)
+      call write_gz_multi_int_10i8(ele_IO%numele, ele_IO%elmtyp, zbuf1)
 !
       do i=1, ele_IO%numele
         write(fmt_txt,'(a5,i3,a8)')                                     &
@@ -126,7 +126,7 @@
 !
 !
        call alloc_element_types(ele_IO)
-       call read_gz_multi_int(ele_IO%numele, ele_IO%elmtyp)
+       call read_gz_multi_int(ele_IO%numele, ele_IO%elmtyp, zbuf1)
 !
        ele_IO%nnod_4_ele = 0
        do i = 1, ele_IO%numele

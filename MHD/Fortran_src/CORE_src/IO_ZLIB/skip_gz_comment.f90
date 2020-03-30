@@ -7,28 +7,30 @@
 !!      subroutine get_one_line_from_gz_f
 !!
 !!      subroutine skip_gz_comment_int(int_input)
-!!      subroutine skip_gz_comment_int2(int_input, int_input2)
-!!      subroutine skip_gz_comment_int8_int(i8_input, int_input2)
-!!      subroutine skip_gz_comment_real(real_input)
-!!      subroutine skip_gz_comment_real2(real_input, real_input2)
+!!      subroutine skip_gz_comment_int2(int_input, int_input2, zbuf)
+!!      subroutine skip_gz_comment_int8_int(i8_input, int_input2, zbuf)
+!!      subroutine skip_gz_comment_real(real_input, zbuf)
+!!      subroutine skip_gz_comment_real2(real_input, real_input2, zbuf)
 !!      subroutine skip_gz_comment_chara(chara_input, zbuf)
 !!      subroutine skip_gz_comment_chara_int                            &
 !!     &         (chara_input, int_input, zbuf)
 !!      subroutine skip_gz_comment_chara_lint                           &
 !!     &         (chara_input, int8_input, zbuf)
 !!
-!!      subroutine read_gz_multi_real(num, real_input)
-!!      subroutine read_gz_integer_stack(num, istack, ntot)
-!!      subroutine read_gz_multi_int(num, int_input)
-!!      subroutine read_gz_surf_group(is1, ntot, istack, item_sf)
-!!      subroutine read_gz_multi_int8(num, int8_input)
-!!      subroutine write_gz_surf_group(is1, ntot, istack, item_sf)
-!!      subroutine write_gz_multi_int_8i16(num, int_data)
-!!      subroutine write_gz_multi_int_10i8(num, int_data)
-!!      subroutine write_gz_multi_int_10i12(num, int_data)
+!!      subroutine read_gz_multi_real(num, real_input, zbuf)
+!!      subroutine read_gz_integer_stack(num, istack, ntot, zbuf)
+!!      subroutine read_gz_multi_int(num, int_input, zbuf)
+!!      subroutine read_gz_surf_group(is1, ntot, istack, item_sf, zbuf)
+!!      subroutine read_gz_multi_int8(num, int8_input, zbuf)
+!!
+!!      subroutine write_gz_surf_group(is1, ntot, istack, item_sf, zbuf)
+!!      subroutine write_gz_multi_int_8i16(num, int_data, zbuf)
+!!      subroutine write_gz_multi_int_10i8(num, int_data, zbuf)
+!!      subroutine write_gz_multi_int_10i12(num, int_data, zbuf)
 !
-!!      subroutine write_gz_comment_string(comment)
-!!      subroutine gz_write_chara_nolf(chara_output)
+!!      subroutine write_gz_comment_string(comment, zbuf)
+!!      subroutine gz_write_chara_nolf(chara_output, zbuf)
+!!        type(buffer_4_gzip), intent(inout):: zbuf
 !
       module skip_gz_comment
 !
@@ -108,47 +110,51 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine skip_gz_comment_int2(int_input, int_input2)
+      subroutine skip_gz_comment_int2(int_input, int_input2, zbuf)
 !
       integer(kind = kint), intent(inout) :: int_input, int_input2
+      type(buffer_4_gzip), intent(inout):: zbuf
 !
 !
-      call skip_gz_comment_get_nword(zbuf1)
+      call skip_gz_comment_get_nword(zbuf)
       read(textbuf,*) int_input, int_input2
 !
       end subroutine skip_gz_comment_int2
 !
 !------------------------------------------------------------------
 !
-      subroutine skip_gz_comment_int8_int(i8_input, int_input2)
+      subroutine skip_gz_comment_int8_int(i8_input, int_input2, zbuf)
 !
       integer(kind = kint_gl), intent(inout) :: i8_input
       integer(kind = kint), intent(inout) :: int_input2
+      type(buffer_4_gzip), intent(inout):: zbuf
 !
 !
-      call skip_gz_comment_get_nword(zbuf1)
+      call skip_gz_comment_get_nword(zbuf)
       read(textbuf,*) i8_input, int_input2
 !
       end subroutine skip_gz_comment_int8_int
 !
 !------------------------------------------------------------------
 !
-      subroutine skip_gz_comment_real(real_input)
+      subroutine skip_gz_comment_real(real_input, zbuf)
 !
       real(kind = kreal), intent(inout) :: real_input
+      type(buffer_4_gzip), intent(inout):: zbuf
 !
-      call skip_gz_comment_get_nword(zbuf1)
+      call skip_gz_comment_get_nword(zbuf)
       read(textbuf,*) real_input
 !
       end subroutine skip_gz_comment_real
 !
 !------------------------------------------------------------------
 !
-      subroutine skip_gz_comment_real2(real_input, real_input2)
+      subroutine skip_gz_comment_real2(real_input, real_input2, zbuf)
 !
       real(kind = kreal), intent(inout) :: real_input, real_input2
+      type(buffer_4_gzip), intent(inout):: zbuf
 !
-      call skip_gz_comment_get_nword(zbuf1)
+      call skip_gz_comment_get_nword(zbuf)
       read(textbuf,*) real_input, real_input2
 !
       end subroutine skip_gz_comment_real2
@@ -236,25 +242,26 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine read_gz_multi_real(num, real_input)
+      subroutine read_gz_multi_real(num, real_input, zbuf)
 !
       integer(kind = kint), intent(in) :: num
       real(kind = kreal), intent(inout) :: real_input(num)
+      type(buffer_4_gzip), intent(inout):: zbuf
 !
       integer(kind = kint) :: ist, ist2, ied2
 !
 !
       if(num .le. 0) return
 !
-      call skip_gz_comment_get_nword(zbuf1)
-      read(textbuf,*) real_input(1:zbuf1%num_word)
+      call skip_gz_comment_get_nword(zbuf)
+      read(textbuf,*) real_input(1:zbuf%num_word)
 !
-      if(num .gt. zbuf1%num_word) then
-        ist = zbuf1%num_word
+      if(num .gt. zbuf%num_word) then
+        ist = zbuf%num_word
         do
-          call get_one_line_from_gz_f(zbuf1)
+          call get_one_line_from_gz_f(zbuf)
           ist2 = ist + 1
-          ied2 = ist + zbuf1%num_word
+          ied2 = ist + zbuf%num_word
           ist = ied2
           read(textbuf,*) real_input(:ied2)
           if(ist .ge. num) exit
@@ -265,40 +272,42 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine read_gz_integer_stack(num, istack, ntot)
+      subroutine read_gz_integer_stack(num, istack, ntot, zbuf)
 !
       integer(kind = kint), intent(in) :: num
       integer(kind = kint), intent(inout) :: istack(0:num)
       integer(kind = kint), intent(inout) :: ntot
+      type(buffer_4_gzip), intent(inout):: zbuf
 !
 !
       istack(0) = 0
-      call read_gz_multi_int(num, istack(1))
+      call read_gz_multi_int(num, istack(1), zbuf)
       ntot = istack(num)
 !
       end subroutine read_gz_integer_stack
 !
 !------------------------------------------------------------------
 !
-      subroutine read_gz_multi_int(num, int_input)
+      subroutine read_gz_multi_int(num, int_input, zbuf)
 !
       integer(kind = kint), intent(in) :: num
       integer(kind = kint), intent(inout) :: int_input(num)
+      type(buffer_4_gzip), intent(inout):: zbuf
 !
       integer(kind = kint) :: ist, ist2, ied2
 !
 !
       if(num .le. 0) return
 !
-      call skip_gz_comment_get_nword(zbuf1)
-      read(textbuf,*) int_input(1:zbuf1%num_word)
+      call skip_gz_comment_get_nword(zbuf)
+      read(textbuf,*) int_input(1:zbuf%num_word)
 !
-      if(num .gt. zbuf1%num_word) then
-        ist = zbuf1%num_word
+      if(num .gt. zbuf%num_word) then
+        ist = zbuf%num_word
         do
-          call get_one_line_from_gz_f(zbuf1)
+          call get_one_line_from_gz_f(zbuf)
           ist2 = ist + 1
-          ied2 = ist + zbuf1%num_word
+          ied2 = ist + zbuf%num_word
           ist = ied2
           read(textbuf,*) int_input(ist2:ied2)
           if(ist .ge. num) exit
@@ -309,28 +318,29 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine read_gz_surf_group(is1, ntot, istack, item_sf)
+      subroutine read_gz_surf_group(is1, ntot, istack, item_sf, zbuf)
 !
       integer(kind = kint), intent(in) :: is1, ntot
       integer(kind = kint), intent(in) :: istack(0:1)
       integer(kind = kint), intent(inout) :: item_sf(2,ntot)
+      type(buffer_4_gzip), intent(inout):: zbuf
 !
       integer(kind = kint) :: ist, ist2, ied2
 !
 !
       if((istack(1) - istack(0)) .le. 0) return
 !
-      call skip_gz_comment_get_nword(zbuf1)
+      call skip_gz_comment_get_nword(zbuf)
       ist2 = istack(0) + 1
-      ied2 = istack(0) + zbuf1%num_word
+      ied2 = istack(0) + zbuf%num_word
       read(textbuf,*) item_sf(is1,ist2:ied2)
 !
-      if((istack(1) - istack(0)) .gt. zbuf1%num_word) then
-        ist = istack(0) + zbuf1%num_word
+      if((istack(1) - istack(0)) .gt. zbuf%num_word) then
+        ist = istack(0) + zbuf%num_word
         do
-          call get_one_line_from_gz_f(zbuf1)
+          call get_one_line_from_gz_f(zbuf)
           ist2 = ist + 1
-          ied2 = ist + zbuf1%num_word
+          ied2 = ist + zbuf%num_word
           ist = ied2
           read(textbuf,*) item_sf(is1,ist2:ied2)
           if(ist .ge. istack(1)) exit
@@ -341,25 +351,26 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine read_gz_multi_int8(num, int8_input)
+      subroutine read_gz_multi_int8(num, int8_input, zbuf)
 !
       integer(kind = kint), intent(in) :: num
       integer(kind = kint_gl), intent(inout) :: int8_input(num)
+      type(buffer_4_gzip), intent(inout):: zbuf
 !
       integer(kind = kint) :: ist, ist2, ied2
 !
 !
       if(num .le. 0) return
 !
-      call skip_gz_comment_get_nword(zbuf1)
-      read(textbuf,*) int8_input(1:zbuf1%num_word)
+      call skip_gz_comment_get_nword(zbuf)
+      read(textbuf,*) int8_input(1:zbuf%num_word)
 !
-      if(num .gt. zbuf1%num_word) then
-        ist = zbuf1%num_word
+      if(num .gt. zbuf%num_word) then
+        ist = zbuf%num_word
         do
-          call get_one_line_from_gz_f(zbuf1)
+          call get_one_line_from_gz_f(zbuf)
           ist2 = ist + 1
-          ied2 = ist + zbuf1%num_word
+          ied2 = ist + zbuf%num_word
           ist = ied2
           read(textbuf,*) int8_input(ist2:ied2)
           if(ist .ge. num) exit
@@ -371,13 +382,14 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine write_gz_surf_group(is1, ntot, istack, item_sf)
+      subroutine write_gz_surf_group(is1, ntot, istack, item_sf, zbuf)
 !
       use calypso_c_binding
 !
       integer(kind = kint), intent(in) :: is1, ntot
       integer(kind = kint), intent(in) :: istack(0:1)
       integer(kind = kint), intent(in) :: item_sf(2,ntot)
+      type(buffer_4_gzip), intent(inout):: zbuf
 !
       integer(kind = kint) :: ist, n
       character(len=kchara) :: fmt_txt
@@ -389,7 +401,7 @@
         write(fmt_txt,'(a1,i2,a8)') '(', n, 'i16,2a1)'
         write(textbuf,fmt_txt) item_sf(is1,ist+1:ist+n),                &
      &                        char(10), char(0)
-        call gz_write_textbuf_no_lf_f((n*16+2), textbuf, zbuf1)
+        call gz_write_textbuf_no_lf_f((n*16+2), textbuf, zbuf)
         ist = ist + n
         if(ist .ge. istack(1)) exit
       end do
@@ -398,12 +410,13 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine write_gz_multi_int_8i16(num, int_data)
+      subroutine write_gz_multi_int_8i16(num, int_data, zbuf)
 !
       use calypso_c_binding
 !
       integer(kind = kint), intent(in) :: num
       integer(kind = kint), intent(in) :: int_data(num)
+      type(buffer_4_gzip), intent(inout):: zbuf
 !
       integer(kind = kint) :: ist, n
       character(len=kchara) :: fmt_txt
@@ -414,7 +427,7 @@
         n = min(num-ist-ione,iseven) + 1
         write(fmt_txt,'(a1,i2,a8)') '(', n, 'i16,2a1)'
         write(textbuf,fmt_txt) int_data(ist+1:ist+n), char(10), char(0)
-        call gz_write_textbuf_no_lf_f((n*16+2), textbuf, zbuf1)
+        call gz_write_textbuf_no_lf_f((n*16+2), textbuf, zbuf)
         ist = ist + n
         if(ist .ge. num) exit
       end do
@@ -423,12 +436,13 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine write_gz_multi_int_10i8(num, int_data)
+      subroutine write_gz_multi_int_10i8(num, int_data, zbuf)
 !
       use calypso_c_binding
 !
       integer(kind = kint), intent(in) :: num
       integer(kind = kint), intent(in) :: int_data(num)
+      type(buffer_4_gzip), intent(inout):: zbuf
 !
       integer(kind = kint) :: ist, n
       character(len=kchara) :: fmt_txt
@@ -439,7 +453,7 @@
         n = min(num-ist-ione,inine) + 1
         write(fmt_txt,'(a1,i3,a7)') '(', n, 'i8,2a1)'
         write(textbuf,fmt_txt) int_data(ist+1:ist+n), char(10), char(0)
-        call gz_write_textbuf_no_lf_f((n*8+2), textbuf, zbuf1)
+        call gz_write_textbuf_no_lf_f((n*8+2), textbuf, zbuf)
         ist = ist + n
         if(ist .ge. num) exit
       end do
@@ -448,12 +462,13 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine write_gz_multi_int_10i12(num, int_data)
+      subroutine write_gz_multi_int_10i12(num, int_data, zbuf)
 !
       use calypso_c_binding
 !
       integer(kind = kint), intent(in) :: num
       integer(kind = kint), intent(in) :: int_data(num)
+      type(buffer_4_gzip), intent(inout):: zbuf
 !
       integer(kind = kint) :: ist, n
       character(len=kchara) :: fmt_txt
@@ -464,7 +479,7 @@
         n = min(num-ist-ione,inine) + 1
         write(fmt_txt,'(a1,i3,a8)') '(', n, 'i12,2a1)'
         write(textbuf,fmt_txt) int_data(ist+1:ist+n), char(10), char(0)
-        call gz_write_textbuf_no_lf_f((n*12+2), textbuf, zbuf1)
+        call gz_write_textbuf_no_lf_f((n*12+2), textbuf, zbuf)
         ist = ist + n
         if(ist .ge. num) exit
       end do
@@ -473,32 +488,34 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine write_gz_comment_string(comment)
+      subroutine write_gz_comment_string(comment, zbuf)
 !
       use calypso_c_binding
 !
       character(len=*), intent(in)  ::  comment
+      type(buffer_4_gzip), intent(inout):: zbuf
 !
 !
       write(textbuf,'(a,2a1)') comment, char(10), char(0)
       call gz_write_textbuf_no_lf_f(length_of_c_text(textbuf),          &
-     &    textbuf, zbuf1)
+     &    textbuf, zbuf)
 !
       end subroutine write_gz_comment_string
 !
 !------------------------------------------------------------------
 !
-      subroutine gz_write_chara_nolf(chara_output)
+      subroutine gz_write_chara_nolf(chara_output, zbuf)
 !
       use calypso_c_binding
 !
       character(len=kchara), intent(in) :: chara_output
+      type(buffer_4_gzip), intent(inout):: zbuf
 !
       integer(kind = kint) :: n
 !
       write(textbuf,'(2a,a1)') trim(chara_output), '    ', CHAR(0)
       n = len_trim(chara_output) + 4 + 1
-      call gz_write_textbuf_no_lf_f(n, textbuf, zbuf1)
+      call gz_write_textbuf_no_lf_f(n, textbuf, zbuf)
 !
       end subroutine gz_write_chara_nolf
 !

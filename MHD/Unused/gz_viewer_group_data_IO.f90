@@ -58,13 +58,13 @@
       call gz_write_textbuf_no_lf(zbuf1)
 !
       call write_gz_multi_int_8i16                                      &
-     &   (ngrp_pe, domain_grps%node_grp%istack_sf(1) )
+     &   (ngrp_pe, domain_grps%node_grp%istack_sf(1), zbuf1)
       do ip = 1, num_pe
         ist = domain_grps%node_grp%istack_sf(ip-1)
         num = domain_grps%node_grp%istack_sf(ip) - ist
         if(num .gt. 0) then
           call write_gz_multi_int_8i16                                  &
-     &       (num, domain_grps%node_grp%item_sf(ist+1))
+     &       (num, domain_grps%node_grp%item_sf(ist+1), zbuf1)
         end if
       end do
 !
@@ -76,13 +76,13 @@
       call gz_write_textbuf_no_lf(zbuf1)
 !
       call write_gz_multi_int_8i16                                      &
-     &   (ngrp_pe, domain_grps%surf_grp%istack_sf(1) )
+     &   (ngrp_pe, domain_grps%surf_grp%istack_sf(1), zbuf1)
       do ip = 1, num_pe
         ist = domain_grps%surf_grp%istack_sf(ip-1)
         num = domain_grps%surf_grp%istack_sf(ip) - ist
         if(num .gt. 0) then
           call write_gz_multi_int_8i16                                  &
-     &       (num, domain_grps%surf_grp%item_sf(ist+1))
+     &       (num, domain_grps%surf_grp%item_sf(ist+1), zbuf1)
         end if
       end do
 !
@@ -94,13 +94,13 @@
       call gz_write_textbuf_no_lf(zbuf1)
 !
       call write_gz_multi_int_8i16                                      &
-     &   (ngrp_pe, domain_grps%edge_grp%istack_sf(1))
+     &   (ngrp_pe, domain_grps%edge_grp%istack_sf(1), zbuf1)
       do ip = 1, num_pe
         ist = domain_grps%edge_grp%istack_sf(ip-1)
         num = domain_grps%edge_grp%istack_sf(ip) - ist
         if(num .gt. 0) then
           call write_gz_multi_int_8i16                                  &
-     &       (num, domain_grps%edge_grp%item_sf(ist+1))
+     &       (num, domain_grps%edge_grp%item_sf(ist+1), zbuf1)
       end do
 !
       end subroutine write_domain_group_viewer_gz
@@ -120,31 +120,31 @@
       ngrp_pe = int(num_pe, KIND(ngrp_pe))
       call skip_gz_comment_int(domain_grps%node_grp%num_item, zbuf1)
       call read_gz_multi_int                                            &
-     &   (ngrp_pe, domain_grps%node_grp%istack_sf(1))
+     &   (ngrp_pe, domain_grps%node_grp%istack_sf(1), zbuf1)
 !
       call alloc_merged_group_item(domain_grps%node_grp)
       call read_gz_multi_int(domain_grps%node_grp%num_item,             &
-     &    domain_grps%node_grp%item_sf)
+     &    domain_grps%node_grp%item_sf, zbuf1)
 !
 !      write(surface_id,'(a)') '! 3.1 surface ID for domain boundary'
 !
       call skip_gz_comment_int(domain_grps%surf_grp%num_item, zbuf1)
       call read_gz_multi_int                                            &
-     &   (ngrp_pe, domain_grps%surf_grp%istack_sf(1))
+     &   (ngrp_pe, domain_grps%surf_grp%istack_sf(1), zbuf1)
 !
       call alloc_merged_group_item(domain_grps%surf_grp)
-      call read_gz_multi_int                                            &
-     &   (domain_grps%surf_grp%num_item, domain_grps%surf_grp%item_sf)
+      call read_gz_multi_int(domain_grps%surf_grp%num_item,             &
+     &    domain_grps%surf_grp%item_sf, zbuf1)
 !
 !      write(surface_id,'(a)') '! 3.2 edge ID for domain boundary'
 !
       call skip_gz_comment_int(domain_grps%edge_grp%num_item, zbuf1)
       call read_gz_multi_int                                            &
-     &   (ngrp_pe, domain_grps%edge_grp%istack_sf(1))
+     &   (ngrp_pe, domain_grps%edge_grp%istack_sf(1), zbuf1)
 !
       call alloc_merged_group_item(domain_grps%edge_grp)
-      call read_gz_multi_int                                            &
-     &   (domain_grps%edge_grp%num_item, domain_grps%edge_grp%item_sf)
+      call read_gz_multi_int(domain_grps%edge_grp%num_item,             &
+     &    domain_grps%edge_grp%item_sf, zbuf1)
 !
       end subroutine read_domain_group_viewer_gz
 !
@@ -186,7 +186,7 @@
       call alloc_merged_node_grps_stack(num_pe, view_nod_grps)
 !
       call read_gz_multi_int((num_pe*view_nod_grps%num_grp),            &
-     &    view_nod_grps%node_grp%istack_sf(1))
+     &    view_nod_grps%node_grp%istack_sf(1), zbuf1)
 
       num = view_nod_grps%num_grp * num_pe
       view_nod_grps%node_grp%num_item                                   &
@@ -262,7 +262,7 @@
 !
       call alloc_merged_surf_grps_stack(num_pe, view_ele_grps)
       call read_gz_multi_int((num_pe*view_ele_grps%num_grp),            &
-     &    view_ele_grps%surf_grp%istack_sf(1))
+     &    view_ele_grps%surf_grp%istack_sf(1), zbuf1)
 !
       call read_viewer_group_item_gz(num_pe, view_ele_grps%num_grp,     &
      &    view_ele_grps%grp_name, view_ele_grps%surf_grp)
@@ -271,7 +271,7 @@
 !
       call skip_gz_comment_int(itmp, zbuf1)
       call read_gz_multi_int((num_pe*view_ele_grps%num_grp),            &
-     &    view_ele_grps%node_grp%istack_sf(1))
+     &    view_ele_grps%node_grp%istack_sf(1), zbuf1)
 !
       view_ele_grps%node_grp%num_item                                   &
      &    = view_ele_grps%node_grp%istack_sf(num)
@@ -283,7 +283,7 @@
 !
       call skip_gz_comment_int(itmp, zbuf1)
       call read_gz_multi_int((num_pe*view_ele_grps%num_grp),            &
-     &    view_ele_grps%edge_grp%istack_sf(1))
+     &    view_ele_grps%edge_grp%istack_sf(1), zbuf1)
 !
       view_ele_grps%edge_grp%num_item                                   &
      &    = view_ele_grps%edge_grp%istack_sf(num)
@@ -353,7 +353,7 @@
 !
       call alloc_merged_surf_grps_stack(num_pe, view_sf_grps)
       call read_gz_multi_int((num_pe*view_sf_grps%num_grp),             &
-     &    view_sf_grps%surf_grp%istack_sf(1))
+     &    view_sf_grps%surf_grp%istack_sf(1), zbuf1)
 !
       view_sf_grps%surf_grp%num_item                                    &
      &    = view_sf_grps%surf_grp%istack_sf(num)
@@ -365,7 +365,7 @@
 !
       call skip_gz_comment_int(itmp, zbuf1)
       call read_gz_multi_int((num_pe*view_sf_grps%num_grp),             &
-     &    view_sf_grps%node_grp%istack_sf(1))
+     &    view_sf_grps%node_grp%istack_sf(1), zbuf1)
 !
       view_sf_grps%node_grp%num_item                                    &
      &    = view_sf_grps%node_grp%istack_sf(num)
@@ -377,7 +377,7 @@
 !
       call skip_gz_comment_int(itmp, zbuf1)
       call read_gz_multi_int((num_pe*view_sf_grps%num_grp),             &
-     &    view_sf_grps%edge_grp%istack_sf(1))
+     &    view_sf_grps%edge_grp%istack_sf(1), zbuf1)
 !
       view_sf_grps%edge_grp%num_item                                    &
      &    = view_sf_grps%edge_grp%istack_sf(num)
@@ -407,7 +407,7 @@
       do i = 1, ngrp
         ist = (i-1) * num_pe
         call write_gz_multi_int_8i16                                    &
-     &     (ngrp_pe, group%istack_sf(ist+1))
+     &     (ngrp_pe, group%istack_sf(ist+1), zbuf1)
       end do
 !
       if (ngrp .gt. 0) then
@@ -427,7 +427,7 @@
               num = group%istack_sf(num_pe*(i-1)+ip) - ist
               if(num .gt. 0) then
                 call write_gz_multi_int_8i16                            &
-     &             (num, group%item_sf(ist+1))
+     &             (num, group%item_sf(ist+1), zbuf1)
               end if
             end do
           end if
@@ -459,7 +459,7 @@
         num = group%istack_sf(num_pe*i)                                 &
      &       - group%istack_sf(num_pe*(i-1))
         call skip_gz_comment_chara(name(i), zbuf1)
-        call read_gz_multi_int(num, group%item_sf(ist))
+        call read_gz_multi_int(num, group%item_sf(ist), zbuf1)
       end do
 !
       end subroutine read_viewer_group_item_gz

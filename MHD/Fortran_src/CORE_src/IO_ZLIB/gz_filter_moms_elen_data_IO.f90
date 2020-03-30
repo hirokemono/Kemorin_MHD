@@ -82,11 +82,11 @@
         read(textbuf,*) itmp, filter_type(ifil)
       end do
 !
-      call skip_gz_comment_real(f_width(1))
+      call skip_gz_comment_real(f_width(1), zbuf1)
       read(textbuf,*) f_width(1:zbuf1%num_word)
       if(nf_type .gt. zbuf1%num_word) then
         call read_gz_multi_real((nf_type - zbuf1%num_word),             &
-     &      f_width(zbuf1%num_word+1))
+     &      f_width(zbuf1%num_word+1), zbuf1)
       end if
 !
       do ifil = 1, nf_type

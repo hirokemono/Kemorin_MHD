@@ -45,7 +45,7 @@
 !
         call skip_gz_comment_chara(name(i), zbuf1)
 !
-        if(num .gt. 0) call read_gz_multi_int(num, item(ist))
+        if(num .gt. 0) call read_gz_multi_int(num, item(ist), zbuf1)
       end do
 !
       end subroutine read_group_item_gz
@@ -73,8 +73,10 @@
         call skip_gz_comment_chara(name(i), zbuf1)
 !
         if(num .gt. 0) then
-          call read_gz_surf_group(ione, ntot, istack(i-1), item_sf)
-          call read_gz_surf_group(itwo, ntot, istack(i-1), item_sf)
+          call read_gz_surf_group                                       &
+     &       (ione, ntot, istack(i-1), item_sf, zbuf1)
+          call read_gz_surf_group                                       &
+     &       (itwo, ntot, istack(i-1), item_sf, zbuf1)
         end if
       end do
 !
@@ -97,7 +99,7 @@
       call gz_write_textbuf_no_lf(zbuf1)
 !
       if (ngrp .gt. 0) then
-        call write_gz_multi_int_8i16(ngrp, istack(1))
+        call write_gz_multi_int_8i16(ngrp, istack(1), zbuf1)
 !
         do i = 1, ngrp
           ist = istack(i-1)+1
@@ -110,7 +112,7 @@
             write(textbuf,'(2a1)') char(10), char(0)
             call gz_write_textbuf_no_lf(zbuf1)
           else
-            call write_gz_multi_int_8i16(num, item(ist))
+            call write_gz_multi_int_8i16(num, item(ist), zbuf1)
           end if
 !
         end do
@@ -138,7 +140,7 @@
       call gz_write_textbuf_no_lf(zbuf1)
 !
       if (ngrp .gt. 0) then
-        call write_gz_multi_int_8i16(ngrp, istack(1))
+        call write_gz_multi_int_8i16(ngrp, istack(1), zbuf1)
 !
         do i = 1, ngrp
           ist = istack(i-1)+1
@@ -153,8 +155,10 @@
             write(textbuf,'(2a1)') char(10), char(0)
             call gz_write_textbuf_no_lf(zbuf1)
           else
-            call write_gz_surf_group(ione, ntot, istack(i-1), item_sf)
-            call write_gz_surf_group(itwo, ntot, istack(i-1), item_sf)
+            call write_gz_surf_group                                    &
+     &         (ione, ntot, istack(i-1), item_sf, zbuf1)
+            call write_gz_surf_group                                    &
+     &         (itwo, ntot, istack(i-1), item_sf, zbuf1)
           end if
 !
         end do

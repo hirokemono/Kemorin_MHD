@@ -45,7 +45,7 @@
 !
       if (grp_IO%num_grp .gt. 0) then
         call read_gz_integer_stack(grp_IO%num_grp,                      &
-     &      grp_IO%istack_grp, grp_IO%num_item)
+     &      grp_IO%istack_grp, grp_IO%num_item, zbuf1)
 !
         call alloc_group_item(grp_IO)
         call read_group_item_gz(grp_IO%num_grp,                         &
@@ -70,7 +70,7 @@
 !
       if (surf_grp_IO%num_grp .gt. 0) then
         call read_gz_integer_stack(surf_grp_IO%num_grp,                 &
-     &      surf_grp_IO%istack_grp, surf_grp_IO%num_item)
+     &      surf_grp_IO%istack_grp, surf_grp_IO%num_item, zbuf1)
 !
         call alloc_sf_group_item(surf_grp_IO)
         call read_surface_group_item_gz(surf_grp_IO%num_grp,            &
