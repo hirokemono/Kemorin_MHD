@@ -141,7 +141,6 @@
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
 !
-      call alloc_fixbuffer_for_zlib(zbuf)
       call link_text_buffer_for_zlib                                    &
      &   (kchara, add_null_character(gzip_name), zbuf)
       call open_wt_gzfile(zbuf%buf_p)
