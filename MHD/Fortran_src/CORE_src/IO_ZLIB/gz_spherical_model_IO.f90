@@ -121,7 +121,7 @@
      &                      char(10), char(0)
       call gz_write_textbuf_no_lf
 !
-      write(textbuf,'(i16,2a1)') sph_IO%ltr_gl, char(10), har(0)
+      write(textbuf,'(i16,2a1)') sph_IO%ltr_gl, char(10), char(0)
       call gz_write_textbuf_no_lf
 !
       end subroutine write_gl_resolution_sph_gz
