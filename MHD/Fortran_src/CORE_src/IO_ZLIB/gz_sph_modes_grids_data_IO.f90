@@ -198,7 +198,7 @@
       type(sph_group_data), intent(in) :: sph_grps_IO
 !
 !
-      textbuf = hd_sph_para() // char(0)
+      zbuf1%fixbuf(1) = hd_sph_para() // char(0)
       call gz_write_textbuf_no_lf(zbuf1)
       call gz_write_domain_info(id_rank, comm_IO)
 !
@@ -211,30 +211,30 @@
 !      write(*,*) '! global ID for each direction'
       call write_rtp_gl_1d_table_gz(sph_IO)
 !
-      textbuf = hd_rtp_glbl() // char(0)
+      zbuf1%fixbuf(1) = hd_rtp_glbl() // char(0)
       call gz_write_textbuf_no_lf(zbuf1)
       call write_gl_nodes_sph_gz(sph_IO)
 !
-      textbuf = hd_rtp_comm() // char(0)
+      zbuf1%fixbuf(1) = hd_rtp_comm() // char(0)
       call gz_write_textbuf_no_lf(zbuf1)
       call gz_write_import_data(comm_IO)
 !
-      textbuf = hd_grphd() // char(0)
+      zbuf1%fixbuf(1) = hd_grphd() // char(0)
       call gz_write_textbuf_no_lf(zbuf1)
 !
-      textbuf = hd_ngrphd() // char(0)
+      zbuf1%fixbuf(1) = hd_ngrphd() // char(0)
       call gz_write_textbuf_no_lf(zbuf1)
       call write_grp_data_gz(sph_grps_IO%bc_rtp_grp)
 !
-      textbuf = hd_rgrphd() // char(0)
+      zbuf1%fixbuf(1) = hd_rgrphd() // char(0)
       call gz_write_textbuf_no_lf(zbuf1)
       call write_grp_data_gz(sph_grps_IO%radial_rtp_grp)
 !
-      textbuf = hd_tgrphd() // char(0)
+      zbuf1%fixbuf(1) = hd_tgrphd() // char(0)
       call gz_write_textbuf_no_lf(zbuf1)
       call write_grp_data_gz(sph_grps_IO%theta_rtp_grp)
 !
-      textbuf = hd_pgrphd() // char(0)
+      zbuf1%fixbuf(1) = hd_pgrphd() // char(0)
       call gz_write_textbuf_no_lf(zbuf1)
       call write_grp_data_gz(sph_grps_IO%zonal_rtp_grp)
 !
@@ -253,7 +253,7 @@
       type(sph_group_data), intent(in) :: sph_grps_IO
 !
 !
-      textbuf = hd_sph_para() // char(0)
+      zbuf1%fixbuf(1) = hd_sph_para() // char(0)
       call gz_write_textbuf_no_lf(zbuf1)
       call gz_write_domain_info(id_rank, comm_IO)
 !
@@ -265,23 +265,23 @@
 !      write(*,*) '! global ID for each direction'
       call write_rj_gl_1d_table_gz(sph_IO)
 !
-      textbuf = hd_rj_glbl() // char(0)
+      zbuf1%fixbuf(1) = hd_rj_glbl() // char(0)
       call gz_write_textbuf_no_lf(zbuf1)
       call write_gl_nodes_sph_gz(sph_IO)
 !
-      textbuf = hd_rj_comm() // char(0)
+      zbuf1%fixbuf(1) = hd_rj_comm() // char(0)
       call gz_write_textbuf_no_lf(zbuf1)
       call gz_write_import_data(comm_IO)
 !
 !
-      textbuf = hd_grphd() // char(0)
+      zbuf1%fixbuf(1) = hd_grphd() // char(0)
       call gz_write_textbuf_no_lf(zbuf1)
 !
-      textbuf = hd_kgrphd() // char(0)
+      zbuf1%fixbuf(1) = hd_kgrphd() // char(0)
       call gz_write_textbuf_no_lf(zbuf1)
       call write_grp_data_gz(sph_grps_IO%radial_rj_grp)
 !
-      textbuf = hd_jgrphd() // char(0)
+      zbuf1%fixbuf(1) = hd_jgrphd() // char(0)
       call gz_write_textbuf_no_lf(zbuf1)
       call write_grp_data_gz(sph_grps_IO%sphere_rj_grp)
 !
@@ -296,7 +296,7 @@
       type(sph_IO_data), intent(in) :: sph_IO
 !
 !
-      textbuf = hd_sph_para() // char(0)
+      zbuf1%fixbuf(1) = hd_sph_para() // char(0)
       call gz_write_textbuf_no_lf(zbuf1)
       call gz_write_domain_info(id_rank, comm_IO)
 !
@@ -308,11 +308,11 @@
 !      write(*,*) '! global ID for each direction'
       call write_rtp_gl_1d_table_gz(sph_IO)
 !
-      textbuf = hd_rtp_glbl() // char(0)
+      zbuf1%fixbuf(1) = hd_rtp_glbl() // char(0)
       call gz_write_textbuf_no_lf(zbuf1)
       call write_gl_nodes_sph_gz(sph_IO)
 !
-      textbuf = hd_rtp_comm() // char(0)
+      zbuf1%fixbuf(1) = hd_rtp_comm() // char(0)
       call gz_write_textbuf_no_lf(zbuf1)
       call gz_write_import_data(comm_IO)
 !
@@ -327,7 +327,7 @@
       type(sph_IO_data), intent(in) :: sph_IO
 !
 !
-      textbuf = hd_sph_para() // char(0)
+      zbuf1%fixbuf(1) = hd_sph_para() // char(0)
       call gz_write_textbuf_no_lf(zbuf1)
       call gz_write_domain_info(id_rank, comm_IO)
 !
@@ -339,11 +339,11 @@
 !      write(*,*) '! global ID for each direction'
       call write_rj_gl_1d_table_gz(sph_IO)
 !
-      textbuf = hd_rlm_glbl() // char(0)
+      zbuf1%fixbuf(1) = hd_rlm_glbl() // char(0)
       call gz_write_textbuf_no_lf(zbuf1)
       call write_gl_nodes_sph_gz(sph_IO)
 !
-      textbuf = hd_rj_comm() // char(0)
+      zbuf1%fixbuf(1) = hd_rj_comm() // char(0)
       call gz_write_textbuf_no_lf(zbuf1)
       call gz_write_import_data(comm_IO)
 !

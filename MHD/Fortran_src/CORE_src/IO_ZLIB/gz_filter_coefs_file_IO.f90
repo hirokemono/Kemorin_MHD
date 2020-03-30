@@ -43,7 +43,7 @@
 !
       use gz_mesh_data_IO
       use gz_filter_coef_IO
-      use calypso_c_binding
+      use skip_gz_comment
 !
       integer, intent(in) :: id_rank
       character(len=kchara), intent(in) :: file_name
@@ -62,12 +62,12 @@
         write(*,*) 'Read gzipped filter files: ', trim(gzip_name)
       end if
 !
-      call open_rd_gzfile_f(gzip_name)
+      call open_rd_gzfile_a(gzip_name, zbuf1)
       call gz_read_filter_geometry                                     &
      &   (id_rank, filter_IO%nod_comm, filter_IO%node, ierr)
       call read_3d_filter_stack_gz(filter_IO%filters)
       call read_3d_filter_weights_coef_gz(filter_IO%filters)
-      call close_gzfile_f
+      call close_gzfile_a
 !
       end subroutine read_sort_filter_coef_file_gz
 !
@@ -78,7 +78,7 @@
 !
       use gz_mesh_data_IO
       use gz_filter_coef_IO
-      use calypso_c_binding
+      use skip_gz_comment
 !
       integer, intent(in) :: id_rank
       character(len=kchara), intent(in) :: file_name
@@ -94,14 +94,14 @@
         write(*,*) 'Write gzipped filter files: ', trim(gzip_name)
       end if
 !
-      call open_wt_gzfile_f(gzip_name)
+      call open_wt_gzfile_a(gzip_name, zbuf1)
 !
       call gz_write_filter_geometry                                     &
      &   (id_rank, filter_IO%nod_comm, filter_IO%node)
       call write_3d_filter_stack_gz(filter_IO%filters)
       call write_3d_filter_weights_coef_gz(filter_IO%filters)
 !
-      call close_gzfile_f
+      call close_gzfile_a
 !
       call dealloc_filter_geometry_data(filter_IO)
 !
@@ -114,7 +114,7 @@
      &         (file_name, id_rank, filter_IO, ierr)
 !
       use gz_mesh_data_IO
-      use calypso_c_binding
+      use skip_gz_comment
 !
       integer, intent(in) :: id_rank
       character(len=kchara), intent(in) :: file_name
@@ -131,10 +131,10 @@
         write(*,*) 'Read gzipped filter files: ', trim(gzip_name)
       end if
 !
-      call open_rd_gzfile_f(gzip_name)
+      call open_rd_gzfile_a(gzip_name, zbuf1)
       call gz_read_filter_geometry                                      &
      &  (id_rank, filter_IO%nod_comm, filter_IO%node, ierr)
-      call close_gzfile_f
+      call close_gzfile_a
 !
       end subroutine read_filter_geometry_file_gz
 !
@@ -144,7 +144,7 @@
      &         (file_name, id_rank, filter_IO)
 !
       use gz_mesh_data_IO
-      use calypso_c_binding
+      use skip_gz_comment
 !
       integer, intent(in) :: id_rank
       character(len=kchara), intent(in) :: file_name
@@ -160,10 +160,10 @@
         write(*,*) 'Write gzipped filter file: ', trim(gzip_name)
       end if
 !
-      call open_wt_gzfile_f(gzip_name)
+      call open_wt_gzfile_a(gzip_name, zbuf1)
       call gz_write_filter_geometry                                     &
      &   (id_rank, filter_IO%nod_comm, filter_IO%node)
-      call close_gzfile_f
+      call close_gzfile_a
 !
       call dealloc_filter_geometry_data(filter_IO)
 !

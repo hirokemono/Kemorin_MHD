@@ -39,7 +39,7 @@
 !
 !
       call skip_gz_comment_int(sph_IO%sph_rank(1), zbuf1)
-      read(textbuf,*) sph_IO%sph_rank(1:sph_IO%numdir_sph)
+      read(zbuf1%fixbuf(1),*) sph_IO%sph_rank(1:sph_IO%numdir_sph)
 !
       end subroutine read_rank_4_sph_gz
 !
@@ -51,7 +51,7 @@
 !
 !
       call skip_gz_comment_int(sph_IO%nidx_gl_sph(1), zbuf1)
-      read(textbuf,*) sph_IO%nidx_gl_sph(1:sph_IO%numdir_sph)
+      read(zbuf1%fixbuf(1),*) sph_IO%nidx_gl_sph(1:sph_IO%numdir_sph)
 !
       call skip_gz_comment_int(sph_IO%ltr_gl, zbuf1)
 !
@@ -72,7 +72,7 @@
 !
       do i = 1, sph_IO%numnod_sph
         call get_one_line_from_gz_f(zbuf1)
-        read(textbuf,*) sph_IO%inod_gl_sph(i),                          &
+        read(zbuf1%fixbuf(1),*) sph_IO%inod_gl_sph(i),                  &
      &                  sph_IO%idx_gl_sph(i,1:sph_IO%numdir_sph)
       end do
 !
@@ -90,13 +90,13 @@
       character(len=kchara) :: fmt_txt
 !
 !
-      textbuf = hd_segment() // char(0)
+      zbuf1%fixbuf(1) = hd_segment() // char(0)
       call gz_write_textbuf_no_lf(zbuf1)
 !
       write(fmt_txt,'(a1,i2,a10)')                                      &
-     &                '(', sph_IO%numdir_sph, '(i16),2a1)'
-      write(textbuf,fmt_txt) sph_IO%sph_rank(1:sph_IO%numdir_sph),      &
-     &                      char(10), char(0)
+     &         '(', sph_IO%numdir_sph, '(i16),2a1)'
+      write(zbuf1%fixbuf(1),fmt_txt)                                    &
+     &         sph_IO%sph_rank(1:sph_IO%numdir_sph), char(10), char(0)
       call gz_write_textbuf_no_lf(zbuf1)
 !
       end subroutine write_rank_4_sph_gz
@@ -112,16 +112,17 @@
       character(len=kchara) :: fmt_txt
 !
 !
-      textbuf = hd_trunc() // char(0)
+      zbuf1%fixbuf(1) = hd_trunc() // char(0)
       call gz_write_textbuf_no_lf(zbuf1)
 !
       write(fmt_txt,'(a1,i2,a10)')                                      &
-     &                '(', sph_IO%numdir_sph, '(i16),2a1)'
-      write(textbuf,fmt_txt) sph_IO%nidx_gl_sph(1:sph_IO%numdir_sph),   &
-     &                      char(10), char(0)
+     &       '(', sph_IO%numdir_sph, '(i16),2a1)'
+      write(zbuf1%fixbuf(1),fmt_txt)                                    &
+     &       sph_IO%nidx_gl_sph(1:sph_IO%numdir_sph), char(10), char(0)
       call gz_write_textbuf_no_lf(zbuf1)
 !
-      write(textbuf,'(i16,2a1)') sph_IO%ltr_gl, char(10), char(0)
+      write(zbuf1%fixbuf(1),'(i16,2a1)')                                &
+     &       sph_IO%ltr_gl, char(10), char(0)
       call gz_write_textbuf_no_lf(zbuf1)
 !
       end subroutine write_gl_resolution_sph_gz
@@ -136,13 +137,14 @@
       character(len=kchara) :: fmt_txt
 !
 !
-      write(textbuf,'(i16,2a1)') sph_IO%numnod_sph, char(10), char(0)
+      write(zbuf1%fixbuf(1),'(i16,2a1)')                                &
+     &        sph_IO%numnod_sph, char(10), char(0)
       call gz_write_textbuf_no_lf(zbuf1)
 !
       write(fmt_txt,'(a5,i2,a10)')                                      &
      &                '(i16,', sph_IO%numdir_sph, '(i16),2a1)'
       do i = 1, sph_IO%numnod_sph
-        write(textbuf,fmt_txt) sph_IO%inod_gl_sph(i),                   &
+        write(zbuf1%fixbuf(1),fmt_txt) sph_IO%inod_gl_sph(i),           &
      &      sph_IO%idx_gl_sph(i,1:sph_IO%numdir_sph), char(10), char(0)
         call gz_write_textbuf_no_lf(zbuf1)
       end do

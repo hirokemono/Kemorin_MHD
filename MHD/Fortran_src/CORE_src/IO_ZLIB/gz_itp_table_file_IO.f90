@@ -47,7 +47,7 @@
       subroutine gz_write_itp_table_file                                &
      &         (file_name, id_rank, IO_itp_org, IO_itp_dest)
 !
-      use calypso_c_binding
+      use skip_gz_comment
 !
       character(len=kchara), intent(in) :: file_name
       integer, intent(in) :: id_rank
@@ -57,14 +57,14 @@
 !
 !
       gzip_name = add_gzip_extension(file_name)
-      call open_wt_gzfile_f(gzip_name)
+      call open_wt_gzfile_a(gzip_name, zbuf1)
 !
       call write_gz_itp_table_dest(id_rank, IO_itp_dest)
 !
       call write_gz_itp_table_org(id_rank, IO_itp_org)
       call write_gz_itp_coefs_org(IO_itp_org)
 !
-      call close_gzfile_f
+      call close_gzfile_a
 !
       if (IO_itp_org%num_dest_domain .gt. 0) then
         call dealloc_itp_table_org(IO_itp_org)
@@ -83,7 +83,7 @@
       subroutine gz_read_itp_table_file                                 &
      &         (file_name, id_rank, IO_itp_org, IO_itp_dest, ierr)
 !
-      use calypso_c_binding
+      use skip_gz_comment
 !
       character(len=kchara), intent(in) :: file_name
       integer, intent(in) :: id_rank
@@ -96,7 +96,7 @@
 !
 !
       gzip_name = add_gzip_extension(file_name)
-      call open_rd_gzfile_f(gzip_name)
+      call open_rd_gzfile_a(gzip_name, zbuf1)
 !
 !        write(*,*) 'read_gz_itp_domain_dest', trim(file_name)
       call read_gz_itp_domain_dest(n_rank_file, IO_itp_dest)
@@ -109,7 +109,7 @@
       call read_gz_itp_table_org(IO_itp_org)
       call read_gz_itp_coefs_org(IO_itp_org)
 !
-      call close_gzfile_f
+      call close_gzfile_a
 !
       ierr = 0
       if (n_rank_file .ne. id_rank) ierr = n_rank_file
@@ -122,7 +122,7 @@
       subroutine gz_write_itp_coefs_dest_file                           &
      &         (file_name, id_rank, IO_itp_dest, IO_itp_c_dest)
 !
-      use calypso_c_binding
+      use skip_gz_comment
 !
       character(len=kchara), intent(in) :: file_name
       integer, intent(in) :: id_rank
@@ -132,11 +132,11 @@
 !
 !
       gzip_name = add_gzip_extension(file_name)
-      call open_wt_gzfile_f(gzip_name)
+      call open_wt_gzfile_a(gzip_name, zbuf1)
 !
       call write_gz_itp_table_dest(id_rank, IO_itp_dest)
       call write_gz_itp_coefs_dest(IO_itp_dest, IO_itp_c_dest)
-      call close_gzfile_f
+      call close_gzfile_a
 !
       if (IO_itp_dest%num_org_domain .gt. 0) then
         call dealloc_itp_coef_dest(IO_itp_c_dest)
@@ -152,7 +152,7 @@
       subroutine gz_read_itp_coefs_dest_file                            &
      &         (file_name, id_rank, IO_itp_dest, IO_itp_c_dest, ierr)
 !
-      use calypso_c_binding
+      use skip_gz_comment
 !
       character(len=kchara), intent(in) :: file_name
       integer, intent(in) :: id_rank
@@ -165,12 +165,12 @@
 !
 !
       gzip_name = add_gzip_extension(file_name)
-      call open_rd_gzfile_f(gzip_name)
+      call open_rd_gzfile_a(gzip_name, zbuf1)
 !
       call read_gz_itp_domain_dest(n_rank_file, IO_itp_dest)
       call read_gz_itp_table_dest(IO_itp_dest)
       call read_gz_itp_coefs_dest(IO_itp_dest, IO_itp_c_dest)
-      call close_gzfile_f
+      call close_gzfile_a
 !
       ierr = 0
       if (n_rank_file .ne. id_rank) ierr = ierr_file
@@ -182,7 +182,7 @@
       subroutine gz_read_itp_table_dest_file                            &
      &         (file_name, id_rank, IO_itp_dest, ierr)
 !
-      use calypso_c_binding
+      use skip_gz_comment
 !
       character(len=kchara), intent(in) :: file_name
       integer, intent(in) :: id_rank
@@ -194,11 +194,11 @@
 !
 !
       gzip_name = add_gzip_extension(file_name)
-      call open_rd_gzfile_f(gzip_name)
+      call open_rd_gzfile_a(gzip_name, zbuf1)
 !
       call read_gz_itp_domain_dest(n_rank_file, IO_itp_dest)
       call read_gz_itp_table_dest(IO_itp_dest)
-      call close_gzfile_f
+      call close_gzfile_a
 !
       ierr = 0
       if (n_rank_file .ne. id_rank) ierr = ierr_file
@@ -210,7 +210,7 @@
       subroutine gz_read_itp_domain_dest_file                           &
      &         (file_name, id_rank, IO_itp_dest, ierr)
 !
-      use calypso_c_binding
+      use skip_gz_comment
 !
       character(len=kchara), intent(in) :: file_name
       integer, intent(in) :: id_rank
@@ -222,10 +222,10 @@
 !
 !
       gzip_name = add_gzip_extension(file_name)
-      call open_rd_gzfile_f(gzip_name)
+      call open_rd_gzfile_a(gzip_name, zbuf1)
 !
       call read_gz_itp_domain_dest(n_rank_file, IO_itp_dest)
-      call close_gzfile_f
+      call close_gzfile_a
 !
       ierr = 0
       if (n_rank_file .ne. id_rank) ierr = ierr_file

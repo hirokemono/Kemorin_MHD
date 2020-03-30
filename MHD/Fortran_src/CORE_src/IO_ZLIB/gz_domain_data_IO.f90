@@ -56,7 +56,7 @@
       end if
 !
       call get_one_line_from_gz_f(zbuf1)
-      read(textbuf,*) comm_IO%num_neib
+      read(zbuf1%fixbuf(1),*) comm_IO%num_neib
 !
       call alloc_neighbouring_id(comm_IO)
 !
@@ -126,16 +126,17 @@
       type(communication_table), intent(in) :: comm_IO
 !
 !
-      write(textbuf,'(i16,2a1)') id_rank, char(10), char(0)
+      write(zbuf1%fixbuf(1),'(i16,2a1)') id_rank, char(10), char(0)
       call gz_write_textbuf_no_lf(zbuf1)
-      write(textbuf,'(i16,2a1)') comm_IO%num_neib, char(10), char(0)
+      write(zbuf1%fixbuf(1),'(i16,2a1)')                                &
+     &                          comm_IO%num_neib, char(10), char(0)
       call gz_write_textbuf_no_lf(zbuf1)
 !
       if (comm_IO%num_neib .gt. 0) then
         call write_gz_multi_int_8i16                                    &
      &     (comm_IO%num_neib, comm_IO%id_neib, zbuf1)
       else
-        write(textbuf,'(2a1)') char(10), char(0)
+        write(zbuf1%fixbuf(1),'(2a1)') char(10), char(0)
         call gz_write_textbuf_no_lf(zbuf1)
       end if
 !
@@ -182,7 +183,7 @@
       call skip_gz_comment_int(inod_sr(1), zbuf1)
       do i = 2, ntot_sr
         call get_one_line_from_gz_f(zbuf1)
-        read(textbuf,*) inod_sr(i)
+        read(zbuf1%fixbuf(1),*) inod_sr(i)
       end do
 !
       end subroutine read_send_recv_item_gz
@@ -201,11 +202,12 @@
       if (num_sr .gt. 0) then
         call write_gz_multi_int_8i16(num_sr, istack_sr(1), zbuf1)
         do i = 1, ntot_sr
-          write(textbuf,'(i16,2a1)') inod_sr(i), char(10), char(0)
+          write(zbuf1%fixbuf(1),'(i16,2a1)')                            &
+     &                              inod_sr(i), char(10), char(0)
           call gz_write_textbuf_no_lf(zbuf1)
         end do
       else
-        write(textbuf,'(2a1)') char(10), char(0)
+        write(zbuf1%fixbuf(1),'(2a1)') char(10), char(0)
         call gz_write_textbuf_no_lf(zbuf1)
       end if
 !

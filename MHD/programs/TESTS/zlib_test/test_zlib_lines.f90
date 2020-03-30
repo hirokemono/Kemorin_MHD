@@ -3,7 +3,6 @@
 !
       use m_precision
       use t_buffer_4_gzip
-      use calypso_c_binding
       use skip_gz_comment
       use calypso_c_binding
 !
@@ -30,7 +29,7 @@
       write(input_txt,'(100(i9,a1))') (j,char(10),j=1,99), j, char(0)
       num_txt = 10*100-1
       call write_compress_txt(nbuffer, input_txt, zbuf1)
-      call close_gzfile_f
+      call close_gzfile_a
 !
 !
       write(fname,'(a)') 'test_b.txt.gz'
@@ -45,7 +44,7 @@
         write(input_txt,'(i9,a1)') j, char(0)
         call write_compress_txt(nbuffer, input_txt, zbuf1)
       end do
-      call close_gzfile_f
+      call close_gzfile_a
 !
       write(fname,'(a)') 'test_f.txt.gz'
 !
@@ -63,9 +62,9 @@
 !
       end do
 !
-      call close_gzfile_f
+      call close_gzfile_a
 !
-      call open_rd_gzfile_f(fname)
+      call open_rd_gzfile_a(fname, zbuf1)
       call get_one_line_from_gz(nbuffer, nword, nchara, input_txt)
 !
       write(*,*) 'nword', nword

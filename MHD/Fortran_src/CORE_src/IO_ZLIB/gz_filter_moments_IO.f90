@@ -39,7 +39,7 @@
 !
 !
       call skip_gz_comment_int(nnod, zbuf1)
-      read(textbuf,*) nnod, nele
+      read(zbuf1%fixbuf(1),*) nnod, nele
       call skip_gz_comment_int(nf_type, zbuf1)
 !
       end subroutine read_filter_elen_head_gz
@@ -53,16 +53,16 @@
       integer (kind=kint), intent(in) :: nnod, nele, nf_type
 !
 !
-      write(textbuf,'(a,2a1)') '! number of node for filtering: ',      &
-     &                        char(10), char(0)
+      write(zbuf1%fixbuf(1),'(a,2a1)')                                  &
+     &     '! number of node for filtering: ', char(10), char(0)
       call gz_write_textbuf_no_lf(zbuf1)
-      write(textbuf,'(2i16,2a1)') nnod, nele, char(10), char(0)
+      write(zbuf1%fixbuf(1),'(2i16,2a1)') nnod, nele, char(10), char(0)
       call gz_write_textbuf_no_lf(zbuf1)
 !
-      write(textbuf,'(a,2a1)')  '! number of filter function ',         &
-     &                        char(10), char(0)
+      write(zbuf1%fixbuf(1),'(a,2a1)') '! number of filter function ',  &
+     &                                char(10), char(0)
       call gz_write_textbuf_no_lf(zbuf1)
-      write(textbuf,'(i16,2a1)') nf_type, char(10), char(0)
+      write(zbuf1%fixbuf(1),'(i16,2a1)') nf_type, char(10), char(0)
       call gz_write_textbuf_no_lf(zbuf1)
 !
       end subroutine write_filter_elen_head_gz
@@ -80,7 +80,7 @@
 !
 !
       call skip_gz_comment_int(nnod, zbuf1)
-      read(textbuf,*) nnod, nele, n_filter
+      read(zbuf1%fixbuf(1),*) nnod, nele, n_filter
       call skip_gz_comment_int(nf_type, zbuf1)
 !
       end subroutine read_filter_moms_head_gz
@@ -96,17 +96,17 @@
       integer (kind=kint), intent(in) :: n_filter, nf_type
 !
 !
-      write(textbuf,'(a,2a1)') '! number of node for filtering: ',      &
-     &                        char(10), char(0)
+      write(zbuf1%fixbuf(1),'(a,2a1)')                                  &
+     &            '! number of node for filtering: ', char(10), char(0)
       call gz_write_textbuf_no_lf(zbuf1)
-      write(textbuf,'(3i16,2a1)')  nnod, nele, n_filter,                &
-     &                           char(10), char(0)
+      write(zbuf1%fixbuf(1),'(3i16,2a1)') nnod, nele, n_filter,         &
+     &                                   char(10), char(0)
       call gz_write_textbuf_no_lf(zbuf1)
 !
-      write(textbuf,'(a,2a1)')  '! number of filter function ',         &
-     &                         char(10), char(0)
+      write(zbuf1%fixbuf(1),'(a,2a1)')  '! number of filter function ', &
+     &                                 char(10), char(0)
       call gz_write_textbuf_no_lf(zbuf1)
-      write(textbuf,'(i16,2a1)') nf_type, char(10), char(0)
+      write(zbuf1%fixbuf(1),'(i16,2a1)') nf_type, char(10), char(0)
       call gz_write_textbuf_no_lf(zbuf1)
 !
       end subroutine write_filter_moms_head_gz
@@ -125,10 +125,10 @@
 !
 !
       call skip_gz_comment_int(itmp, zbuf1)
-      read(textbuf,*) itmp, el1(1), el2(1), el3(1)
+      read(zbuf1%fixbuf(1),*) itmp, el1(1), el2(1), el3(1)
       do i = 2, num
         call get_one_line_from_gz_f(zbuf1)
-        read(textbuf,*) itmp, el1(i), el2(i), el3(i)
+        read(zbuf1%fixbuf(1),*) itmp, el1(i), el2(i), el3(i)
       end do
 !
       end subroutine read_elength_gz
@@ -148,10 +148,12 @@
 !
       do nd = 1, 3
         call skip_gz_comment_int(itmp, zbuf1)
-        read(textbuf,*) itmp, itmp, el1(1,nd), el2(1,nd), el3(1,nd)
+        read(zbuf1%fixbuf(1),*)                                         &
+     &         itmp, itmp, el1(1,nd), el2(1,nd), el3(1,nd)
         do i = 2, num
           call get_one_line_from_gz_f(zbuf1)
-          read(textbuf,*) itmp, itmp, el1(i,nd), el2(i,nd), el3(i,nd)
+          read(zbuf1%fixbuf(1),*)                                       &
+     &         itmp, itmp, el1(i,nd), el2(i,nd), el3(i,nd)
         end do
       end do
 !
@@ -170,7 +172,7 @@
       integer(kind = kint) :: i
 !
       do i = 1, num
-        write(textbuf,'(i16,1p3E25.15e3,2a1)')                          &
+        write(zbuf1%fixbuf(1),'(i16,1p3E25.15e3,2a1)')                  &
      &     i, el1(i), el2(i), el3(i), char(10), char(0)
         call gz_write_textbuf_no_lf(zbuf1)
       end do
@@ -191,7 +193,7 @@
 !
         do nd = 1, 3
           do i = 1, num
-            write(textbuf,'(2i16,1p3E25.15e3,2a1)')                     &
+            write(zbuf1%fixbuf(1),'(2i16,1p3E25.15e3,2a1)')             &
      &        nd, i, el1(i,nd), el2(i,nd), el3(i,nd), char(10), char(0)
             call gz_write_textbuf_no_lf(zbuf1)
           end do

@@ -45,27 +45,17 @@
       integer(kind = kint), intent(inout) :: ierr
 !
 !
-!      write(textbuf,'(a,a1)') '!' , char(0)
-!      write(textbuf,'(a,a1)') '!  element position ', char(0)
-!      write(textbuf,'(a,a1)') '!  and communication table ', char(0)
-!      write(textbuf,'(a,a1)') '!' , char(0)
-!      write(textbuf,'(a,a1)', advance='NO') hd_fem_para(), char(0)
-!
+!      write(zbuf1%fixbuf(1),'(a,a1)', advance='NO')                    &
+!     &                                   hd_fem_para(), char(0)
       call gz_read_domain_info(id_rank, comm_IO, ierr)
       if(ierr .ne. 0) return
 !
-!      write(textbuf,'(a,a1)') '!', char(0)
-!      write(textbuf,'(a,a1)') '! 2.import / export information ',      &
-!     &                       char(0)
-!      write(textbuf,'(a,a1)') '! 2.1 element ID for import ', char(0)
-!      write(textbuf,'(a,a1)') '!', char(0)
-!
+!      write(zbuf1%fixbuf(1),'(a,a1)')                                  &
+!     &                  '! 2.1 element ID for import ', char(0)
       call gz_read_import_data(comm_IO)
 !
-!      write(textbuf,'(a,a1)') '!', char(0)
-!      write(textbuf,'(a,a1)') '! 2.2 element ID for export ', char(0)
-!      write(textbuf,'(a,a1)') '! ', char(0)
-!
+!      write(zbuf1%fixbuf(1),'(a,a1)')                                  &
+!     &                  '! 2.2 element ID for export ', char(0)
       call gz_read_export_data(comm_IO)
 !
       end subroutine gz_read_element_comm_table
@@ -81,19 +71,19 @@
       type(communication_table), intent(in) :: comm_IO
 !
 !
-      textbuf = hd_ecomm_para() // char(0)
+      zbuf1%fixbuf(1) = hd_ecomm_para() // char(0)
       call gz_write_textbuf_no_lf(zbuf1)
-      textbuf = hd_fem_para() // char(0)
+      zbuf1%fixbuf(1) = hd_fem_para() // char(0)
       call gz_write_textbuf_no_lf(zbuf1)
 !
       call gz_write_domain_info(id_rank, comm_IO)
 !
-      textbuf = hd_ecomm_import() // char(0)
+      zbuf1%fixbuf(1) = hd_ecomm_import() // char(0)
       call gz_write_textbuf_no_lf(zbuf1)
 !
       call gz_write_import_data(comm_IO)
 !
-      textbuf = hd_ecomm_export() // char(0)
+      zbuf1%fixbuf(1) = hd_ecomm_export() // char(0)
       call gz_write_textbuf_no_lf(zbuf1)
 !
       call gz_write_export_data(comm_IO)
@@ -111,19 +101,13 @@
       type(surf_edge_IO_data), intent(inout) :: sfed_IO
 !
 !
-!      write(textbuf,'(a,a1)') '!', char(0)
-!      write(textbuf,'(a,a1)') '! 3.element information', char(0)
-!      write(textbuf,'(a,a1)') '!', char(0)
-!      write(textbuf,'(a,a1)') '! 3.1 center of element (position) ',   &
-!     &                       char(0)
-!      write(textbuf,'(a,a1)') '!', char(0)
-!
+!      write(zbuf1%fixbuf(1),'(a,a1)') '! 3.element information',       &
+!     &                                char(0)
       call gz_read_number_of_node(nod_IO)
       call gz_read_geometry_info(nod_IO)
 !
-!      write(textbuf,'(a,a1)') '!', char(0)
-!      write(textbuf,'(a,a1)') '! 3.2 Volume of element ', char(0)
-!      write(textbuf,'(a,a1)') '!', char(0)
+!      write(zbuf1%fixbuf(1),'(a,a1)') '! 3.2 Volume of element ',      &
+!     &                               char(0)
 !
       call gz_read_scalar_in_element(nod_IO, sfed_IO)
 !
@@ -139,12 +123,12 @@
       type(surf_edge_IO_data), intent(in) :: sfed_IO
 !
 !
-      textbuf = hd_ecomm_point() // char(0)
+      zbuf1%fixbuf(1) = hd_ecomm_point() // char(0)
       call gz_write_textbuf_no_lf(zbuf1)
 !
       call gz_write_geometry_info(nod_IO)
 !
-      textbuf = hd_ecomm_vol() // char(0)
+      zbuf1%fixbuf(1) = hd_ecomm_vol() // char(0)
       call gz_write_textbuf_no_lf(zbuf1)
 !
       call gz_write_scalar_in_element(nod_IO, sfed_IO)

@@ -133,14 +133,15 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine open_wt_gzfile_f(gzip_name)
+      subroutine open_wt_gzfile_f(gzip_name, zbuf)
 !
       use set_parallel_file_name
 !
       character(len = kchara), intent(in) :: gzip_name
-      type(buffer_4_gzip) :: zbuf
+      type(buffer_4_gzip), intent(inout) :: zbuf
 !
 !
+      call alloc_fixbuffer_for_zlib(zbuf)
       call link_text_buffer_for_zlib                                    &
      &   (kchara, add_null_character(gzip_name), zbuf)
       call open_wt_gzfile(zbuf%buf_p)
@@ -150,12 +151,12 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine open_ad_gzfile_f(gzip_name)
+      subroutine open_ad_gzfile_f(gzip_name, zbuf)
 !
       use set_parallel_file_name
 !
       character(len = kchara), intent(in) :: gzip_name
-      type(buffer_4_gzip) :: zbuf
+      type(buffer_4_gzip), intent(inout) :: zbuf
 !
 !
       call link_text_buffer_for_zlib                                    &
@@ -167,12 +168,12 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine open_rd_gzfile_f(gzip_name)
+      subroutine open_rd_gzfile_f(gzip_name, zbuf)
 !
       use set_parallel_file_name
 !
       character(len = kchara), intent(in) :: gzip_name
-      type(buffer_4_gzip) :: zbuf
+      type(buffer_4_gzip), intent(inout) :: zbuf
 !
 !
       call link_text_buffer_for_zlib                                    &
@@ -184,11 +185,12 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine close_gzfile_f()
+      subroutine close_gzfile_b()
+!
 !
       call close_gzfile()
 !
-      end subroutine close_gzfile_f
+      end subroutine close_gzfile_b
 !
 !------------------------------------------------------------------
 !

@@ -39,7 +39,7 @@
      &          ncomp_field, field_name, d_nod)
 !
       use set_parallel_file_name
-      use calypso_c_binding
+      use skip_gz_comment
 !
       character(len=kchara), intent(in) :: gzip_name
 !
@@ -54,12 +54,12 @@
       real(kind = kreal), intent(in) :: d_nod(nnod,ntot_comp)
 !
 !
-      call open_wt_gzfile_f(gzip_name)
+      call open_wt_gzfile_a(gzip_name, zbuf1)
       call write_gz_vtk_mesh(nnod, nele, nnod_ele, xx, ie)
       call write_gz_vtk_data(nnod, num_field, ntot_comp, ncomp_field,   &
      &    field_name, d_nod)
 !
-      call close_gzfile_f
+      call close_gzfile_a
 !
       end subroutine write_gz_vtk_file
 !
@@ -69,7 +69,7 @@
      &          ntot_comp, ncomp_field, field_name, d_nod)
 !
       use set_parallel_file_name
-      use calypso_c_binding
+      use skip_gz_comment
 !
       character(len=kchara), intent(in) :: gzip_name
 !
@@ -80,10 +80,10 @@
       real(kind = kreal), intent(in) :: d_nod(nnod,ntot_comp)
 !
 !
-      call open_wt_gzfile_f(gzip_name)
+      call open_wt_gzfile_a(gzip_name, zbuf1)
       call write_gz_vtk_data(nnod, num_field, ntot_comp, ncomp_field,   &
      &    field_name, d_nod)
-      call close_gzfile_f
+      call close_gzfile_a
 !
       end subroutine write_gz_vtk_phys
 !
@@ -93,7 +93,7 @@
      &          xx, ie)
 !
       use set_parallel_file_name
-      use calypso_c_binding
+      use skip_gz_comment
 !
       character(len=kchara), intent(in) :: gzip_name
 !
@@ -103,9 +103,9 @@
       real(kind = kreal), intent(in) :: xx(nnod,3)
 !
 !
-      call open_wt_gzfile_f(gzip_name)
+      call open_wt_gzfile_a(gzip_name, zbuf1)
       call write_gz_vtk_mesh(nnod, nele, nnod_ele, xx, ie)
-      call close_gzfile_f
+      call close_gzfile_a
 !
       end subroutine write_gz_vtk_grid
 !

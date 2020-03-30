@@ -95,7 +95,7 @@
       integer(kind = kint) :: i, ist, num
 !
 !
-      write(textbuf,'(i16,2a1)') ngrp, char(10), char(0)
+      write(zbuf1%fixbuf(1),'(i16,2a1)') ngrp, char(10), char(0)
       call gz_write_textbuf_no_lf(zbuf1)
 !
       if (ngrp .gt. 0) then
@@ -105,11 +105,12 @@
           ist = istack(i-1)+1
           num = istack(i) - istack(i-1)
 !
-          write(textbuf,'(a,2a1)') trim(name(i)), char(10), char(0)
+          write(zbuf1%fixbuf(1),'(a,2a1)')                              &
+     &                         trim(name(i)), char(10), char(0)
           call gz_write_textbuf_no_lf(zbuf1)
 !
           if(num .le. 0) then
-            write(textbuf,'(2a1)') char(10), char(0)
+            write(zbuf1%fixbuf(1),'(2a1)') char(10), char(0)
             call gz_write_textbuf_no_lf(zbuf1)
           else
             call write_gz_multi_int_8i16(num, item(ist), zbuf1)
@@ -117,7 +118,7 @@
 !
         end do
       else
-        write(textbuf,'(2a1)') char(10), char(0)
+        write(zbuf1%fixbuf(1),'(2a1)') char(10), char(0)
         call gz_write_textbuf_no_lf(zbuf1)
       end if
 !
@@ -136,7 +137,7 @@
       integer(kind = kint) :: i, ist, num
 !
 !
-      write(textbuf,'(i16,2a1)') ngrp, char(10), char(0)
+      write(zbuf1%fixbuf(1),'(i16,2a1)') ngrp, char(10), char(0)
       call gz_write_textbuf_no_lf(zbuf1)
 !
       if (ngrp .gt. 0) then
@@ -146,13 +147,14 @@
           ist = istack(i-1)+1
           num = istack(i) - istack(i-1)
 !
-          write(textbuf,'(a,2a1)') trim(name(i)), char(10), char(0)
+          write(zbuf1%fixbuf(1),'(a,2a1)')                              &
+     &                         trim(name(i)), char(10), char(0)
           call gz_write_textbuf_no_lf(zbuf1)
 !
           if(num .le. 0) then
-            write(textbuf,'(2a1)') char(10), char(0)
+            write(zbuf1%fixbuf(1),'(2a1)') char(10), char(0)
             call gz_write_textbuf_no_lf(zbuf1)
-            write(textbuf,'(2a1)') char(10), char(0)
+            write(zbuf1%fixbuf(1),'(2a1)') char(10), char(0)
             call gz_write_textbuf_no_lf(zbuf1)
           else
             call write_gz_surf_group                                    &
@@ -163,9 +165,9 @@
 !
         end do
       else
-        write(textbuf,'(2a1)') char(10), char(0)
+        write(zbuf1%fixbuf(1),'(2a1)') char(10), char(0)
         call gz_write_textbuf_no_lf(zbuf1)
-        write(textbuf,'(2a1)') char(10), char(0)
+        write(zbuf1%fixbuf(1),'(2a1)') char(10), char(0)
         call gz_write_textbuf_no_lf(zbuf1)
       end if
 !

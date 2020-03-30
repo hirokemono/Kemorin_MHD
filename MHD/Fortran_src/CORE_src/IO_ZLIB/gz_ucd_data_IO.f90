@@ -58,13 +58,13 @@
       write(fmt_txt,'(a7,i3,a9)')                                       &
      &                    '(i8,a2,', num_output, '(i4),2a1)'
 !
-      write(textbuf,fmt_txt) num_output,'  ', ncomp_out(1:num_output),  &
-     &                      char(10), char(0)
+      write(zbuf1%fixbuf(1),fmt_txt) num_output,'  ',                   &
+     &                       ncomp_out(1:num_output), char(10), char(0)
       call gz_write_textbuf_no_lf(zbuf1)
 !
       do j = 1, num_output
-        write(textbuf,'(a,a1,2a1)') trim(name_out(j)), ",",             &
-     &                             char(10), char(0)
+        write(zbuf1%fixbuf(1),'(a,a1,2a1)') trim(name_out(j)), ",",     &
+     &                                     char(10), char(0)
         call gz_write_textbuf_no_lf(zbuf1)
       end do
 !
@@ -86,8 +86,8 @@
 !
       do inod = 1, nnod
         dat_1(1:ncomp_dat) = dat_out(inod,1:ncomp_dat)
-        textbuf = ucd_each_field(inod_out(inod), ncomp_dat, dat_1)      &
-     &           // char(0)
+        zbuf1%fixbuf(1)                                                 &
+     &    = ucd_each_field(inod_out(inod), ncomp_dat, dat_1) // char(0)
         call gz_write_textbuf_no_lf(zbuf1)
       end do
 !
@@ -102,7 +102,7 @@
 !
 !
       call get_one_line_from_gz_f(zbuf1)
-      read(textbuf,*) num_input
+      read(zbuf1%fixbuf(1),*) num_input
 !
       end subroutine read_gz_udt_field_num
 !
@@ -117,13 +117,13 @@
       integer (kind =kint) :: i, ist
 !
 !
-      read(textbuf,*) num_input, ncomp_in(1:zbuf1%num_word-1)
+      read(zbuf1%fixbuf(1),*) num_input, ncomp_in(1:zbuf1%num_word-1)
 !
       if(num_input .gt. zbuf1%num_word-1) then
         ist = zbuf1%num_word-1
         do
           call get_one_line_from_gz_f(zbuf1)
-          read(textbuf,*) ncomp_in(ist+1:ist+zbuf1%num_word)
+          read(zbuf1%fixbuf(1),*) ncomp_in(ist+1:ist+zbuf1%num_word)
           ist = ist + zbuf1%num_word
           if(ist .gt. num_input) exit
         end do
@@ -131,7 +131,7 @@
 !
       do i = 1, num_input
         call get_one_line_from_gz_f(zbuf1)
-        read(textbuf,*) name_in(i)
+        read(zbuf1%fixbuf(1),*) name_in(i)
       end do
 !
       end subroutine read_gz_udt_field_name
@@ -165,13 +165,14 @@
 !
       do inod = 1, nnod_in
         call get_one_line_from_gz_f(zbuf1)
-        read(textbuf,*) itmp, dat_in(inod,1:zbuf1%num_word-1)
+        read(zbuf1%fixbuf(1),*) itmp, dat_in(inod,1:zbuf1%num_word-1)
 !
         if(ncomp_dat .gt. zbuf1%num_word-1) then
           ist = zbuf1%num_word-1
           do
             call get_one_line_from_gz_f(zbuf1)
-            read(textbuf,*) dat_in(inod,ist+1:ist+zbuf1%num_word)
+            read(zbuf1%fixbuf(1),*)                                     &
+     &                            dat_in(inod,ist+1:ist+zbuf1%num_word)
             ist = ist + zbuf1%num_word
             if(ist .gt. ncomp_dat) exit
           end do
@@ -192,7 +193,8 @@
 !
 !
       call get_one_line_from_gz_f(zbuf1)
-      read(textbuf,*) nnod_input, nele_in, ncomptot_in, itmp, itmp
+      read(zbuf1%fixbuf(1),*) nnod_input, nele_in, ncomptot_in,         &
+     &                       itmp, itmp
 !
       end subroutine read_gz_udt_mesh_header
 !
@@ -215,12 +217,12 @@
 !
       do inod = 1, nnod_in
         call get_one_line_from_gz_f(zbuf1)
-        read(textbuf,*) inod_gl(inod), xx_in(inod,1:3)
+        read(zbuf1%fixbuf(1),*) inod_gl(inod), xx_in(inod,1:3)
       end do
 !
       do iele = 1, nele_in
         call get_one_line_from_gz_f(zbuf1)
-        read(textbuf,*) iele_gl(iele), itmp, tmpchara,                  &
+        read(zbuf1%fixbuf(1),*) iele_gl(iele), itmp, tmpchara,          &
      &                  ie_in(iele,1:nnod_ele)
       end do
 !
@@ -236,7 +238,8 @@
       integer(kind = kint), intent(in) :: ncomp_output
 !
 !
-      textbuf = ucd_connect_head(nnod_output, nele_out, ncomp_output)   &
+      zbuf1%fixbuf(1)                                                   &
+     &        = ucd_connect_head(nnod_output, nele_out, ncomp_output)   &
      &         // char(0)
       call gz_write_textbuf_no_lf(zbuf1)
 !
@@ -261,7 +264,8 @@
 !
       do iele = 1, nele
         ie0(1:nnod_ele) = ie_gl(iele,1:nnod_ele)
-        textbuf = ucd_each_connect(iele_gl(iele), nnod_ele, ie0)        &
+        zbuf1%fixbuf(1)                                                 &
+     &          = ucd_each_connect(iele_gl(iele), nnod_ele, ie0)        &
      &           // char(0)
         call gz_write_textbuf_no_lf(zbuf1)
       end do

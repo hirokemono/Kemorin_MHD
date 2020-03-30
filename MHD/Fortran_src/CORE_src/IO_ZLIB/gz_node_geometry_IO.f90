@@ -44,13 +44,13 @@
       integer (kind = kint) :: i
 !
 !
-      write(textbuf,'(2i16,2a1)') nod_IO%numnod, nod_IO%internal_node,  &
-     &                           char(10), char(0)
+      write(zbuf1%fixbuf(1),'(2i16,2a1)')                               &
+     &       nod_IO%numnod, nod_IO%internal_node, char(10), char(0)
       call gz_write_textbuf_no_lf(zbuf1)
 !
       do i=1, nod_IO%numnod
-        write(textbuf,'(i16,1p3E25.15e3,2a1)')  nod_IO%inod_global(i),  &
-     &                           nod_IO%xx(i,1:3), char(10), char(0)
+        write(zbuf1%fixbuf(1),'(i16,1p3E25.15e3,2a1)')                  &
+     &       nod_IO%inod_global(i), nod_IO%xx(i,1:3), char(10), char(0)
         call gz_write_textbuf_no_lf(zbuf1)
       end do
 !
@@ -65,13 +65,13 @@
 !
       integer(kind = kint) :: i
 !
-      write(textbuf,'(2i16,2a1)')                                       &
+      write(zbuf1%fixbuf(1),'(2i16,2a1)')                               &
      &       nod_IO%numnod, nod_IO%internal_node, char(10), char(0)
       call gz_write_textbuf_no_lf(zbuf1)
 !
       do i = 1, nod_IO%numnod
-        write(textbuf,'(1p3e23.15,2a1)') sfed_IO%ele_scalar(i),         &
-     &                                  char(10), char(0)
+        write(zbuf1%fixbuf(1),'(1p3e23.15,2a1)') sfed_IO%ele_scalar(i), &
+     &                                          char(10), char(0)
         call gz_write_textbuf_no_lf(zbuf1)
       end do
 !
@@ -86,12 +86,12 @@
 !
       integer(kind = kint) :: i
 !
-      write(textbuf,'(2i16,2a1)')                                       &
+      write(zbuf1%fixbuf(1),'(2i16,2a1)')                               &
      &      nod_IO%numnod, nod_IO%internal_node, char(10), char(0)
       call gz_write_textbuf_no_lf(zbuf1)
 !
       do i = 1, nod_IO%numnod
-        write(textbuf,'(1p3e23.15,2a1)')                                &
+        write(zbuf1%fixbuf(1),'(1p3e23.15,2a1)')                        &
      &       sfed_IO%ele_vector(i,1:3), char(10), char(0)
         call gz_write_textbuf_no_lf(zbuf1)
       end do
@@ -107,7 +107,7 @@
 !
 !
       call skip_gz_comment_int(nod_IO%numnod, zbuf1)
-      read(textbuf,*) nod_IO%numnod, nod_IO%internal_node
+      read(zbuf1%fixbuf(1),*) nod_IO%numnod, nod_IO%internal_node
 !
       end subroutine gz_read_number_of_node
 !
@@ -124,7 +124,8 @@
 !
       do i=1, nod_IO%numnod
         call get_one_line_from_gz_f(zbuf1)
-        read(textbuf,*)  nod_IO%inod_global(i), (nod_IO%xx(i,k),k=1,3)
+        read(zbuf1%fixbuf(1),*)                                         &
+     &              nod_IO%inod_global(i), (nod_IO%xx(i,k),k=1,3)
       end do
 !
       end subroutine gz_read_geometry_info
@@ -140,12 +141,12 @@
 !
 !
       call skip_gz_comment_int(nod_IO%numnod, zbuf1)
-      read(textbuf,*) nod_IO%numnod, nod_IO%internal_node
+      read(zbuf1%fixbuf(1),*) nod_IO%numnod, nod_IO%internal_node
       call alloc_ele_scalar_IO(nod_IO, sfed_IO)
 !
       do i = 1, nod_IO%numnod
         call get_one_line_from_gz_f(zbuf1)
-        read(textbuf,*) sfed_IO%ele_scalar(i)
+        read(zbuf1%fixbuf(1),*) sfed_IO%ele_scalar(i)
       end do
 !
       end subroutine gz_read_scalar_in_element
@@ -161,12 +162,12 @@
 !
 !
       call skip_gz_comment_int(nod_IO%numnod, zbuf1)
-      read(textbuf,*) nod_IO%numnod, nod_IO%internal_node
+      read(zbuf1%fixbuf(1),*) nod_IO%numnod, nod_IO%internal_node
       call alloc_ele_vector_IO(nod_IO, sfed_IO)
 !
       do i = 1, nod_IO%numnod
         call get_one_line_from_gz_f(zbuf1)
-        read(textbuf,*) sfed_IO%ele_vector(i,1:3)
+        read(zbuf1%fixbuf(1),*) sfed_IO%ele_vector(i,1:3)
       end do
 !
       end subroutine gz_read_vector_in_element

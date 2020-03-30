@@ -47,7 +47,7 @@
       subroutine write_ucd_2_gz_fld_file                                &
      &         (id_rank, gzip_name, t_IO, ucd)
 !
-      use calypso_c_binding
+      use skip_gz_comment
 !
       character(len=kchara), intent(in) :: gzip_name
       integer, intent(in) :: id_rank
@@ -59,7 +59,7 @@
       if(id_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &      'Write gzipped step data file: ', trim(gzip_name)
 !
-      call open_wt_gzfile_f(gzip_name)
+      call open_wt_gzfile_a(gzip_name, zbuf1)
 !
       call write_gz_step_data                                           &
      &   (id_rank, t_IO%i_time_step, t_IO%time, t_IO%dt)
@@ -67,7 +67,7 @@
      &   (ucd%nnod, ucd%num_field, ucd%ntot_comp,                       &
      &    ucd%num_comp, ucd%phys_name, ucd%d_ucd)
 !
-      call close_gzfile_f
+      call close_gzfile_a
 !
       end subroutine write_ucd_2_gz_fld_file
 !
@@ -77,7 +77,7 @@
       subroutine read_ucd_2_gz_fld_file                                 &
      &         (id_rank, gzip_name, t_IO, ucd, ierr_IO)
 !
-      use calypso_c_binding
+      use skip_gz_comment
 !
       character(len=kchara), intent(in) :: gzip_name
       integer, intent(in) :: id_rank
@@ -90,7 +90,7 @@
       if(id_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &      'Read gzipped data file: ', trim(gzip_name)
 !
-      call open_rd_gzfile_f(gzip_name)
+      call open_rd_gzfile_a(gzip_name, zbuf1)
 !
       call read_gz_step_data                                            &
      &   (id_rank, t_IO%i_time_step, t_IO%time, t_IO%dt, ierr_IO)
@@ -101,7 +101,7 @@
       call read_gz_field_data(ucd%nnod, ucd%num_field, ucd%ntot_comp,   &
      &    ucd%num_comp, ucd%phys_name, ucd%d_ucd)
 !
-      call close_gzfile_f
+      call close_gzfile_a
 !
       end subroutine read_ucd_2_gz_fld_file
 !
@@ -110,7 +110,7 @@
       subroutine read_alloc_ucd_2_gz_fld_file                           &
      &         (id_rank, gzip_name, t_IO, ucd, ierr_IO)
 !
-      use calypso_c_binding
+      use skip_gz_comment
 !
       character(len=kchara), intent(in) :: gzip_name
       integer, intent(in) :: id_rank
@@ -123,7 +123,7 @@
       if(id_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &      'Read gzipped data file: ', trim(gzip_name)
 !
-      call open_rd_gzfile_f(gzip_name)
+      call open_rd_gzfile_a(gzip_name, zbuf1)
 !
       call read_gz_step_data                                            &
      &   (id_rank, t_IO%i_time_step, t_IO%time, t_IO%dt, ierr_IO)
@@ -141,7 +141,7 @@
      &   (ucd%nnod, ucd%num_field, ucd%ntot_comp,                       &
      &    ucd%num_comp, ucd%phys_name, ucd%d_ucd)
 !
-      call close_gzfile_f
+      call close_gzfile_a
 !
       end subroutine read_alloc_ucd_2_gz_fld_file
 !

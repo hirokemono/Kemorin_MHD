@@ -71,7 +71,7 @@
       integer(kind=kint_gl), intent(in) :: nnod
 !
 !
-      textbuf =  vtk_fields_head(nnod) // char(0)
+      zbuf1%fixbuf(1) =  vtk_fields_head(nnod) // char(0)
       call gz_write_textbuf_no_lf(zbuf1)
 !
       end subroutine write_gz_vtk_fields_head
@@ -87,11 +87,11 @@
 !
 !
       if (ncomp_field .eq. n_scalar) then
-        textbuf = vtk_scalar_head(field_name) // char(0)
+        zbuf1%fixbuf(1) = vtk_scalar_head(field_name) // char(0)
       else if (ncomp_field .eq. n_vector) then
-        textbuf =  vtk_vector_head(field_name) // char(0)
+        zbuf1%fixbuf(1) =  vtk_vector_head(field_name) // char(0)
       else if (ncomp_field .eq. n_sym_tensor) then
-        textbuf =  vtk_tensor_head(field_name) // char(0)
+        zbuf1%fixbuf(1) =  vtk_tensor_head(field_name) // char(0)
       end if
       call gz_write_textbuf_no_lf(zbuf1)
 !
@@ -113,7 +113,7 @@
 !
       if (ncomp_field .eq. n_sym_tensor) then
         do inod = 1, nnod
-          write(textbuf,'(3a,a1)')                                      &
+          write(zbuf1%fixbuf(1),'(3a,a1)')                              &
      &    vtk_each_vector(d_nod(inod,1), d_nod(inod,2), d_nod(inod,3)), &
      &    vtk_each_vector(d_nod(inod,2), d_nod(inod,4), d_nod(inod,5)), &
      &    vtk_each_vector(d_nod(inod,3), d_nod(inod,5), d_nod(inod,6)), &
@@ -122,13 +122,14 @@
         end do
       else if(ncomp_field .eq. n_vector) then
         do inod = 1, nnod
-          textbuf = vtk_each_vector(d_nod(inod,1), d_nod(inod,2),       &
+          zbuf1%fixbuf(1)                                               &
+     &            = vtk_each_vector(d_nod(inod,1), d_nod(inod,2),       &
      &                              d_nod(inod,3)) // char(0)
           call gz_write_textbuf_no_lf(zbuf1)
         end do
       else
         do inod = 1, nnod
-          textbuf = vtk_each_scalar(d_nod(inod,1)) // char(0)
+          zbuf1%fixbuf(1) = vtk_each_scalar(d_nod(inod,1)) // char(0)
           call gz_write_textbuf_no_lf(zbuf1)
         end do
       end if
@@ -143,7 +144,7 @@
       integer(kind = kint_gl), intent(in) :: nnod
 !
 !
-      textbuf =  vtk_node_head(nnod) // char(0)
+      zbuf1%fixbuf(1) =  vtk_node_head(nnod) // char(0)
       call gz_write_textbuf_no_lf(zbuf1)
 !
       end subroutine write_gz_vtk_node_head
@@ -157,7 +158,7 @@
       integer(kind = kint_gl), intent(in) :: nele
 !
 !
-      textbuf =  vtk_connect_head(nele, nnod_ele) // char(0)
+      zbuf1%fixbuf(1) =  vtk_connect_head(nele, nnod_ele) // char(0)
       call gz_write_textbuf_no_lf(zbuf1)
 !
       end subroutine write_gz_vtk_connect_head
@@ -177,11 +178,11 @@
 !
       icellid = vtk_cell_type(nnod_ele)
 !
-      textbuf = vtk_cell_type_head(nele) // char(0)
+      zbuf1%fixbuf(1) = vtk_cell_type_head(nele) // char(0)
       call gz_write_textbuf_no_lf(zbuf1)
 !
       do iele = 1, nele
-        textbuf =  vtk_each_cell_type(icellid) // char(0)
+        zbuf1%fixbuf(1) =  vtk_each_cell_type(icellid) // char(0)
         call gz_write_textbuf_no_lf(zbuf1)
       end do
 !
@@ -202,7 +203,7 @@
 !
       do iele = 1, nele
         ie0(1:nnod_ele) = ie(iele,1:nnod_ele) - 1
-        textbuf =  vtk_each_connect(nnod_ele,ie0) // char(0)
+        zbuf1%fixbuf(1) =  vtk_each_connect(nnod_ele,ie0) // char(0)
         call gz_write_textbuf_no_lf(zbuf1)
       end do
 !
@@ -236,9 +237,9 @@
 !
 !
       call get_one_line_from_gz_f(zbuf1)
-      if(len_trim(textbuf) .eq. izero) go to 99
+      if(len_trim(zbuf1%fixbuf(1)) .eq. izero) go to 99
 !
-      read(textbuf,*) vtk_fld_type, field_name
+      read(zbuf1%fixbuf(1),*) vtk_fld_type, field_name
       if(vtk_fld_type .eq. 'TENSORS') then
         ncomp_field = n_sym_tensor
       else if(vtk_fld_type .eq. 'VECTORS') then
@@ -274,16 +275,16 @@
       if (ncomp_field .eq. n_sym_tensor) then
         do inod = 1, nnod
           call get_one_line_from_gz_f(zbuf1)
-          read(textbuf,*) d_nod(inod,1:3)
+          read(zbuf1%fixbuf(1),*) d_nod(inod,1:3)
           call get_one_line_from_gz_f(zbuf1)
-          read(textbuf,*) rtmp, d_nod(inod,4:5)
+          read(zbuf1%fixbuf(1),*) rtmp, d_nod(inod,4:5)
           call get_one_line_from_gz_f(zbuf1)
-          read(textbuf,*) rtmp, rtmp, d_nod(inod,6)
+          read(zbuf1%fixbuf(1),*) rtmp, rtmp, d_nod(inod,6)
         end do
       else
         do inod = 1, nnod
           call get_one_line_from_gz_f(zbuf1)
-          read(textbuf,*) d_nod(inod,1:ncomp_field)
+          read(zbuf1%fixbuf(1),*) d_nod(inod,1:ncomp_field)
         end do
       end if
 !
@@ -304,7 +305,7 @@
       call get_one_line_from_gz_f(zbuf1)
 !
       call get_one_line_from_gz_f(zbuf1)
-      read(textbuf,'(a,i16,a)')  tmpchara, nnod
+      read(zbuf1%fixbuf(1),'(a,i16,a)')  tmpchara, nnod
 !
       end subroutine read_gz_vtk_node_head
 !
@@ -321,7 +322,7 @@
 !
 !
       call get_one_line_from_gz_f(zbuf1)
-      read(textbuf,*) tmpchara, nele, nums
+      read(zbuf1%fixbuf(1),*) tmpchara, nele, nums
       nnod_ele = int(nums/nele, KIND(nnod_ele)) - 1
 !
       end subroutine read_gz_vtk_connect_head
@@ -358,7 +359,7 @@
 !
       do iele = 1, nele
         call get_one_line_from_gz_f(zbuf1)
-        read(textbuf,*) itmp, ie(iele,1:nnod_ele)
+        read(zbuf1%fixbuf(1),*) itmp, ie(iele,1:nnod_ele)
         ie(iele,1:nnod_ele) = ie(iele,1:nnod_ele) + 1
       end do
 !

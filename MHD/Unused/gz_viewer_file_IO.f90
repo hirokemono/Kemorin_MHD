@@ -31,7 +31,7 @@
 !
       subroutine output_surface_grid_gz(file_name, mgd_view_mesh)
 !
-      use calypso_c_binding
+      use skip_gz_comment
 !
       character(len = kchara), intent(in) :: file_name
       type(merged_viewer_mesh), intent(in) :: mgd_view_mesh
@@ -39,7 +39,7 @@
 !
       gzip_name = add_gzip_extension(file_name)
       write(*,*) 'write gzipped viewer mesh file: ', trim(gzip_name)
-      call open_wt_gzfile_f(gzip_name)
+      call open_wt_gzfile_a(gzip_name, zbuf1)
 !
 !      write(*,*) 'write_domain_data_viewer_gz'
       call write_domain_data_viewer_gz(mgd_view_mesh)
@@ -71,7 +71,7 @@
       call write_surf_group_viewer_gz                                   &
      &   (mgd_view_mesh%num_pe_sf, mgd_view_mesh%view_sf_grps)
 !
-      call close_gzfile_f
+      call close_gzfile_a
 !
       end subroutine output_surface_grid_gz
 !
@@ -80,7 +80,7 @@
       subroutine read_surface_grid_gz                                   &
      &          (file_name, nnod_4_ele, mgd_view_mesh)
 !
-      use calypso_c_binding
+      use skip_gz_comment
 !
       character(len = kchara), intent(in) :: file_name
       integer(kind = kint), intent(in) :: nnod_4_ele
@@ -91,7 +91,7 @@
 !
       gzip_name = add_gzip_extension(file_name)
       write(*,*) 'read gzipped viewer mesh file: ', trim(gzip_name)
-      call open_rd_gzfile_f(gzip_name)
+      call open_rd_gzfile_a(gzip_name, zbuf1)
 !
 !      write(*,*) 'read_domain_data_viewer_gz'
       call read_domain_data_viewer_gz(mgd_view_mesh)
@@ -126,7 +126,7 @@
       call read_surf_group_viewer_gz                                    &
      &   (mgd_view_mesh%num_pe_sf, mgd_view_mesh%view_sf_grps)
 !
-      call close_gzfile_f
+      call close_gzfile_a
 !
       end subroutine read_surface_grid_gz
 !

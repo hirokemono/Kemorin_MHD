@@ -46,7 +46,7 @@
       subroutine gz_read_mesh                                           &
      &         (id_rank, file_name, mesh_IO, group_IO, ierr)
 !
-      use calypso_c_binding
+      use skip_gz_comment
 !
       integer, intent(in) :: id_rank
       character(len=kchara), intent(in) :: file_name
@@ -59,12 +59,12 @@
       if(id_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &   'Read gzipped mesh file: ', trim(file_name)
 !
-      call open_rd_gzfile_f(file_name)
+      call open_rd_gzfile_a(file_name, zbuf1)
 !
       call gz_read_geometry_data(id_rank, mesh_IO, ierr)
       call gz_read_mesh_groups(group_IO)
 !
-      call close_gzfile_f
+      call close_gzfile_a
 !
       end subroutine gz_read_mesh
 !
@@ -73,7 +73,7 @@
       subroutine gz_read_mesh_geometry                                  &
      &         (id_rank, file_name, mesh_IO, ierr)
 !
-      use calypso_c_binding
+      use skip_gz_comment
 !
       integer, intent(in) :: id_rank
       character(len=kchara), intent(in) :: file_name
@@ -85,9 +85,9 @@
       if(id_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &   'Read gzipped mesh file: ', trim(file_name)
 !
-      call open_rd_gzfile_f(file_name)
+      call open_rd_gzfile_a(file_name, zbuf1)
       call gz_read_geometry_data(id_rank, mesh_IO, ierr)
-      call close_gzfile_f
+      call close_gzfile_a
 !
       end subroutine gz_read_mesh_geometry
 !
@@ -96,7 +96,7 @@
       subroutine gz_read_node_size                                      &
      &         (id_rank, file_name, mesh_IO, ierr)
 !
-      use calypso_c_binding
+      use skip_gz_comment
 !
       integer, intent(in) :: id_rank
       character(len=kchara), intent(in) :: file_name
@@ -108,10 +108,10 @@
       if(id_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &    'Read gzipped mesh file: ', trim(file_name)
 !
-      call open_rd_gzfile_f(file_name)
+      call open_rd_gzfile_a(file_name, zbuf1)
 !
       call gz_read_num_node(id_rank, mesh_IO, ierr)
-      call close_gzfile_f
+      call close_gzfile_a
 !
       end subroutine gz_read_node_size
 !
@@ -120,7 +120,7 @@
       subroutine gz_read_geometry_size                                  &
      &         (id_rank, file_name, mesh_IO, ierr)
 !
-      use calypso_c_binding
+      use skip_gz_comment
 !
       integer, intent(in) :: id_rank
       character(len=kchara), intent(in) :: file_name
@@ -132,10 +132,10 @@
       if(id_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &   'Read gzipped mesh file: ', trim(file_name)
 !
-      call open_rd_gzfile_f(file_name)
+      call open_rd_gzfile_a(file_name, zbuf1)
 !
       call gz_read_num_node_ele(id_rank, mesh_IO, ierr)
-      call close_gzfile_f
+      call close_gzfile_a
 !
       end subroutine gz_read_geometry_size
 !
@@ -145,7 +145,7 @@
       subroutine gz_write_mesh_file                                     &
      &         (id_rank, file_name, mesh_IO, group_IO)
 !
-      use calypso_c_binding
+      use skip_gz_comment
 !
       integer, intent(in) :: id_rank
       character(len=kchara), intent(in) :: file_name
@@ -156,12 +156,12 @@
       if(id_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &   'Write gzipped mesh file: ', trim(file_name)
 !
-      call open_wt_gzfile_f(file_name)
+      call open_wt_gzfile_a(file_name, zbuf1)
 !
       call gz_write_geometry_data(id_rank, mesh_IO)
       call gz_write_mesh_groups(group_IO)
 !
-      call close_gzfile_f
+      call close_gzfile_a
 !
       end subroutine gz_write_mesh_file
 !

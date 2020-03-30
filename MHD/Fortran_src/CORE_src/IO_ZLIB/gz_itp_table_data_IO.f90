@@ -47,43 +47,45 @@
       type(interpolate_table_org), intent(in) :: IO_itp_org
 !
 !
-      write(textbuf,'(a,2a1)') '!', char(10), char(0)
+      write(zbuf1%fixbuf(1),'(a,2a1)') '!', char(10), char(0)
       call gz_write_textbuf_no_lf(zbuf1)
-      write(textbuf,'(a,2a1)') '!  domain ID ', char(10), char(0)
+      write(zbuf1%fixbuf(1),'(a,2a1)') '!  domain ID ',                 &
+     &                                char(10), char(0)
       call gz_write_textbuf_no_lf(zbuf1)
-      write(textbuf,'(a,2a1)') '!  number of domain to export',         &
-     &                        char(10), char(0)
+      write(zbuf1%fixbuf(1),'(a,2a1)') '!  number of domain to export', &
+     &                                char(10), char(0)
       call gz_write_textbuf_no_lf(zbuf1)
-      write(textbuf,'(a,2a1)') '!  domain IDs to export',               &
-     &                        char(10), char(0)
+      write(zbuf1%fixbuf(1),'(a,2a1)') '!  domain IDs to export',       &
+     &                                char(10), char(0)
       call gz_write_textbuf_no_lf(zbuf1)
-      write(textbuf,'(a,2a1)') '!', char(10), char(0)
+      write(zbuf1%fixbuf(1),'(a,2a1)') '!', char(10), char(0)
       call gz_write_textbuf_no_lf(zbuf1)
 !
-      write(textbuf,'(i16,2a1)') id_rank, char(10), char(0)
+      write(zbuf1%fixbuf(1),'(i16,2a1)') id_rank, char(10), char(0)
       call gz_write_textbuf_no_lf(zbuf1)
-      write(textbuf,'(i16,2a1)') IO_itp_org%num_dest_domain,            &
-     &                          char(10), char(0)
+      write(zbuf1%fixbuf(1),'(i16,2a1)') IO_itp_org%num_dest_domain,    &
+     &                                  char(10), char(0)
       call gz_write_textbuf_no_lf(zbuf1)
 !
       if (IO_itp_org%num_dest_domain .gt. 0) then
         call write_gz_multi_int_10i8(IO_itp_org%num_dest_domain,        &
      &      IO_itp_org%id_dest_domain, zbuf1)
       else
-        write(textbuf,'(2a1)') char(10), char(0)
+        write(zbuf1%fixbuf(1),'(2a1)') char(10), char(0)
         call gz_write_textbuf_no_lf(zbuf1)
       end if
 !
 !
 !
-      write(textbuf,'(a,2a1)') '!', char(10), char(0)
+      write(zbuf1%fixbuf(1),'(a,2a1)') '!', char(10), char(0)
       call gz_write_textbuf_no_lf(zbuf1)
-      write(textbuf,'(a,2a1)') '!  stack of node to export',            &
-     &                        char(10), char(0)
+      write(zbuf1%fixbuf(1),'(a,2a1)') '!  stack of node to export',    &
+     &                                char(10), char(0)
       call gz_write_textbuf_no_lf(zbuf1)
-      write(textbuf,'(a,2a1)') '!  exported node ID', char(10), char(0)
+      write(zbuf1%fixbuf(1),'(a,2a1)') '!  exported node ID',           &
+     &                                char(10), char(0)
       call gz_write_textbuf_no_lf(zbuf1)
-      write(textbuf,'(a,2a1)') '!', char(10), char(0)
+      write(zbuf1%fixbuf(1),'(a,2a1)') '!', char(10), char(0)
       call gz_write_textbuf_no_lf(zbuf1)
 !
       if (IO_itp_org%num_dest_domain .gt. 0) then
@@ -93,7 +95,7 @@
         call write_gz_multi_int_8i16                                    &
      &     (IO_itp_org%ntot_table_org, IO_itp_org%inod_itp_send, zbuf1)
       else
-        write(textbuf,'(2a1)') char(10), char(0)
+        write(zbuf1%fixbuf(1),'(2a1)') char(10), char(0)
         call gz_write_textbuf_no_lf(zbuf1)
       end if
 !
@@ -109,24 +111,24 @@
       integer(kind = kint) :: inod
 !
 !
-      write(textbuf,'(a,2a1)') '!', char(10), char(0)
+      write(zbuf1%fixbuf(1),'(a,2a1)') '!', char(10), char(0)
       call gz_write_textbuf_no_lf(zbuf1)
-      write(textbuf,'(a,2a1)') '!  stack by interpolation type',        &
-     &                        char(10), char(0)
+      write(zbuf1%fixbuf(1),'(a,2a1)') '!  stack by interpolation type', &
+     &                                char(10), char(0)
       call gz_write_textbuf_no_lf(zbuf1)
-      write(textbuf,'(a,2a1)') '!  destinate global node ID, ',         &
-     &                         char(10), char(0)
+      write(zbuf1%fixbuf(1),'(a,2a1)') '!  destinate global node ID, ', &
+     &                                char(10), char(0)
       call gz_write_textbuf_no_lf(zbuf1)
-      write(textbuf,'(a,2a1)') '!  local element ID for interpolation', &
-     &                        char(10), char(0)
+      write(zbuf1%fixbuf(1),'(a,2a1)')                                  &
+     &       '!  local element ID for interpolation', char(10), char(0)
       call gz_write_textbuf_no_lf(zbuf1)
-      write(textbuf,'(a,2a1)') '!  interpolation type ID ',             &
-     &                        char(10), char(0)
+      write(zbuf1%fixbuf(1),'(a,2a1)') '!  interpolation type ID ',     &
+     &                                char(10), char(0)
       call gz_write_textbuf_no_lf(zbuf1)
-      write(textbuf,'(a,2a1)') '!  generalized position ',              &
-     &                        char(10), char(0)
+      write(zbuf1%fixbuf(1),'(a,2a1)') '!  generalized position ',      &
+     &                                char(10), char(0)
       call gz_write_textbuf_no_lf(zbuf1)
-      write(textbuf,'(a,2a1)') '!', char(10), char(0)
+      write(zbuf1%fixbuf(1),'(a,2a1)') '!', char(10), char(0)
       call gz_write_textbuf_no_lf(zbuf1)
 !
       if (IO_itp_org%num_dest_domain .gt. 0) then
@@ -134,7 +136,7 @@
      &     (ifour, IO_itp_org%istack_itp_type_org(1:ifour), zbuf1)
 !
         do inod = 1, IO_itp_org%ntot_table_org
-          write(textbuf,'(3i16,1p3E25.15e3,2a1)')                       &
+          write(zbuf1%fixbuf(1),'(3i16,1p3E25.15e3,2a1)')               &
      &        IO_itp_org%inod_gl_dest_4_org(inod),                      &
      &        IO_itp_org%iele_org_4_org(inod),                          &
      &        IO_itp_org%itype_inter_org(inod),                         &
@@ -143,7 +145,7 @@
         end do
 !
       else
-        write(textbuf,'(2a1)') char(10), char(0)
+        write(zbuf1%fixbuf(1),'(2a1)') char(10), char(0)
         call gz_write_textbuf_no_lf(zbuf1)
       end if
 !
@@ -212,7 +214,7 @@
 !
         do inod = 1, IO_itp_org%ntot_table_org
           call get_one_line_from_gz_f(zbuf1)
-          read(textbuf,*) IO_itp_org%inod_gl_dest_4_org(inod),          &
+          read(zbuf1%fixbuf(1),*) IO_itp_org%inod_gl_dest_4_org(inod),  &
      &        IO_itp_org%iele_org_4_org(inod),                          &
      &        IO_itp_org%itype_inter_org(inod),                         &
      &        IO_itp_org%coef_inter_org(inod,1:3)
@@ -231,42 +233,44 @@
       integer, intent(in) :: id_rank
 !
 !
-      write(textbuf,'(a,2a1)') '!', char(10), char(0)
+      write(zbuf1%fixbuf(1),'(a,2a1)') '!', char(10), char(0)
       call gz_write_textbuf_no_lf(zbuf1)
-      write(textbuf,'(a,2a1)') '!  domain ID ', char(10), char(0)
+      write(zbuf1%fixbuf(1),'(a,2a1)') '!  domain ID ',                 &
+     &                                char(10), char(0)
       call gz_write_textbuf_no_lf(zbuf1)
-      write(textbuf,'(a,2a1)') '! number of domain to import',          &
-     &                        char(10), char(0)
+      write(zbuf1%fixbuf(1),'(a,2a1)') '! number of domain to import',  &
+     &                                char(10), char(0)
       call gz_write_textbuf_no_lf(zbuf1)
-      write(textbuf,'(a,2a1)') '!  domain IDs to import',               &
-     &                        char(10), char(0)
+      write(zbuf1%fixbuf(1),'(a,2a1)') '!  domain IDs to import',       &
+     &                                char(10), char(0)
       call gz_write_textbuf_no_lf(zbuf1)
-      write(textbuf,'(a,2a1)') '!', char(10), char(0)
+      write(zbuf1%fixbuf(1),'(a,2a1)') '!', char(10), char(0)
       call gz_write_textbuf_no_lf(zbuf1)
 !
-      write(textbuf,'(i16,2a1)') id_rank, char(10), char(0)
+      write(zbuf1%fixbuf(1),'(i16,2a1)') id_rank, char(10), char(0)
       call gz_write_textbuf_no_lf(zbuf1)
-      write(textbuf,'(i16,2a1)') IO_itp_dest%num_org_domain,            &
-     &                          char(10), char(0)
+      write(zbuf1%fixbuf(1),'(i16,2a1)') IO_itp_dest%num_org_domain,    &
+     &                                  char(10), char(0)
       call gz_write_textbuf_no_lf(zbuf1)
 !
       if (IO_itp_dest%num_org_domain .gt. 0) then
         call write_gz_multi_int_10i8(IO_itp_dest%num_org_domain,        &
      &     IO_itp_dest%id_org_domain, zbuf1)
       else
-        write(textbuf,'(2a1)') char(10), char(0)
+        write(zbuf1%fixbuf(1),'(2a1)') char(10), char(0)
         call gz_write_textbuf_no_lf(zbuf1)
       end if
 !
 !
-      write(textbuf,'(a,2a1)') '!', char(10), char(0)
+      write(zbuf1%fixbuf(1),'(a,2a1)') '!', char(10), char(0)
       call gz_write_textbuf_no_lf(zbuf1)
-      write(textbuf,'(a,2a1)') '!  stack of node to import',            &
-     &                        char(10), char(0)
+      write(zbuf1%fixbuf(1),'(a,2a1)') '!  stack of node to import',    &
+     &                                char(10), char(0)
       call gz_write_textbuf_no_lf(zbuf1)
-      write(textbuf,'(a,2a1)') '!  imported node ID', char(10), char(0)
+      write(zbuf1%fixbuf(1),'(a,2a1)') '!  imported node ID',           &
+     &                                char(10), char(0)
       call gz_write_textbuf_no_lf(zbuf1)
-      write(textbuf,'(a,2a1)') '!', char(10), char(0)
+      write(zbuf1%fixbuf(1),'(a,2a1)') '!', char(10), char(0)
       call gz_write_textbuf_no_lf(zbuf1)
 !
       if (IO_itp_dest%num_org_domain .gt. 0) then
@@ -277,7 +281,7 @@
      &     (IO_itp_dest%ntot_table_dest, IO_itp_dest%inod_dest_4_dest,  &
      &      zbuf1)
       else
-        write(textbuf,'(2a1)') char(10), char(0)
+        write(zbuf1%fixbuf(1),'(2a1)') char(10), char(0)
         call gz_write_textbuf_no_lf(zbuf1)
       end if
 !
@@ -296,24 +300,24 @@
       integer(kind = kint) :: i, inod
 !
 !
-      write(textbuf,'(a,2a1)') '!', char(10), char(0)
+      write(zbuf1%fixbuf(1),'(a,2a1)') '!', char(10), char(0)
       call gz_write_textbuf_no_lf(zbuf1)
-      write(textbuf,'(a,2a1)') '!  stack by interpolation type',        &
-     &                        char(10), char(0)
+      write(zbuf1%fixbuf(1),'(a,2a1)')                                  &
+     &              '!  stack by interpolation type', char(10), char(0)
       call gz_write_textbuf_no_lf(zbuf1)
-      write(textbuf,'(a,2a1)') '!  target global node ID, ',            &
-     &                        char(10), char(0)
+      write(zbuf1%fixbuf(1),'(a,2a1)') '!  target global node ID, ',    &
+     &                                char(10), char(0)
       call gz_write_textbuf_no_lf(zbuf1)
-      write(textbuf,'(a,2a1)') '!  belonged local element ID ',         &
-     &                        char(10), char(0)
+      write(zbuf1%fixbuf(1),'(a,2a1)') '!  belonged local element ID ', &
+     &                                char(10), char(0)
       call gz_write_textbuf_no_lf(zbuf1)
-      write(textbuf,'(a,2a1)') '!  interpolation type ID ',             &
-     &                        char(10), char(0)
+      write(zbuf1%fixbuf(1),'(a,2a1)') '!  interpolation type ID ',     &
+     &                                char(10), char(0)
       call gz_write_textbuf_no_lf(zbuf1)
-      write(textbuf,'(a,2a1)') '!  generalized position ',              &
-     &                        char(10), char(0)
+      write(zbuf1%fixbuf(1),'(a,2a1)') '!  generalized position ',      &
+     &                                char(10), char(0)
       call gz_write_textbuf_no_lf(zbuf1)
-      write(textbuf,'(a,2a1)') '!', char(10), char(0)
+      write(zbuf1%fixbuf(1),'(a,2a1)') '!', char(10), char(0)
       call gz_write_textbuf_no_lf(zbuf1)
 !
       if (IO_itp_dest%num_org_domain .gt. 0) then
@@ -323,7 +327,7 @@
         end do
 !
         do inod = 1, IO_itp_dest%ntot_table_dest
-          write(textbuf,'(3i16,1p3E25.15e3,2a1)')                       &
+          write(zbuf1%fixbuf(1),'(3i16,1p3E25.15e3,2a1)')               &
      &        IO_itp_c_dest%inod_gl_dest(inod),                         &
      &        IO_itp_c_dest%iele_org_4_dest(inod),                      &
      &        IO_itp_c_dest%itype_inter_dest(inod),                     &
@@ -333,7 +337,7 @@
         end do
 !
       else
-        write(textbuf,'(2a1)') char(10), char(0)
+        write(zbuf1%fixbuf(1),'(2a1)') char(10), char(0)
         call gz_write_textbuf_no_lf(zbuf1)
       end if
 !
@@ -415,7 +419,7 @@
 !
         do inod = 1, IO_itp_dest%ntot_table_dest
           call get_one_line_from_gz_f(zbuf1)
-          read(textbuf,*) IO_itp_c_dest%inod_gl_dest(inod),             &
+          read(zbuf1%fixbuf(1),*) IO_itp_c_dest%inod_gl_dest(inod),     &
      &        IO_itp_c_dest%iele_org_4_dest(inod),                      &
      &        IO_itp_c_dest%itype_inter_dest(inod),                     &
      &        IO_itp_c_dest%coef_inter_dest(inod,1:3)

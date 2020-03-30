@@ -52,7 +52,7 @@
       subroutine gz_read_geom_rtp_file                                  &
      &         (file_name, id_rank, sph_file, ierr)
 !
-      use calypso_c_binding
+      use skip_gz_comment
 !
       character(len=kchara), intent(in) :: file_name
       integer, intent(in) :: id_rank
@@ -64,10 +64,10 @@
       if(id_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &    'Read gzipped grid file: ', trim(file_name)
 !
-      call open_rd_gzfile_f(file_name)
+      call open_rd_gzfile_a(file_name, zbuf1)
       call read_geom_rtp_data_gz(id_rank,                               &
      &    sph_file%comm_IO, sph_file%sph_IO, sph_file%sph_grp_IO, ierr)
-      call close_gzfile_f
+      call close_gzfile_a
 !
       end subroutine gz_read_geom_rtp_file
 !
@@ -76,7 +76,7 @@
       subroutine gz_read_spectr_modes_rj_file                           &
      &         (file_name, id_rank, sph_file, ierr)
 !
-      use calypso_c_binding
+      use skip_gz_comment
 !
       character(len=kchara), intent(in) :: file_name
       integer, intent(in) :: id_rank
@@ -88,10 +88,10 @@
       if(id_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &    'Read gzipped spectr modes file: ', trim(file_name)
 !
-      call open_rd_gzfile_f(file_name)
+      call open_rd_gzfile_a(file_name, zbuf1)
       call read_spectr_modes_rj_data_gz(id_rank,                        &
      &    sph_file%comm_IO, sph_file%sph_IO, sph_file%sph_grp_IO, ierr)
-      call close_gzfile_f
+      call close_gzfile_a
 !
       end subroutine gz_read_spectr_modes_rj_file
 !
@@ -100,7 +100,7 @@
       subroutine gz_read_geom_rtm_file                                  &
      &         (file_name, id_rank, sph_file, ierr)
 !
-      use calypso_c_binding
+      use skip_gz_comment
 !
       character(len=kchara), intent(in) :: file_name
       integer, intent(in) :: id_rank
@@ -112,10 +112,10 @@
       if(id_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &    'Read gzipped grid file: ', trim(file_name)
 !
-      call open_rd_gzfile_f(file_name)
+      call open_rd_gzfile_a(file_name, zbuf1)
       call read_geom_rtm_data_gz                                        &
      &   (id_rank, sph_file%comm_IO, sph_file%sph_IO, ierr)
-      call close_gzfile_f
+      call close_gzfile_a
 !
       end subroutine gz_read_geom_rtm_file
 !
@@ -124,7 +124,7 @@
       subroutine gz_read_modes_rlm_file                                 &
      &         (file_name, id_rank, sph_file, ierr)
 !
-      use calypso_c_binding
+      use skip_gz_comment
 !
       character(len=kchara), intent(in) :: file_name
       integer, intent(in) :: id_rank
@@ -136,10 +136,10 @@
       if(id_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &    'Read gzipped spectr modes file: ', trim(file_name)
 !
-      call open_rd_gzfile_f(file_name)
+      call open_rd_gzfile_a(file_name, zbuf1)
       call read_spectr_modes_rlm_data_gz                                &
      &   (id_rank, sph_file%comm_IO, sph_file%sph_IO, ierr)
-      call close_gzfile_f
+      call close_gzfile_a
 !
       end subroutine gz_read_modes_rlm_file
 !
@@ -149,7 +149,7 @@
       subroutine gz_write_geom_rtp_file                                 &
      &         (file_name, id_rank, sph_file)
 !
-      use calypso_c_binding
+      use skip_gz_comment
 !
       character(len=kchara), intent(in) :: file_name
       integer, intent(in) :: id_rank
@@ -159,10 +159,10 @@
       if(id_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &    'Write gzipped grid file: ', trim(file_name)
 !
-      call open_wt_gzfile_f(file_name)
+      call open_wt_gzfile_a(file_name, zbuf1)
       call write_geom_rtp_data_gz(id_rank,                              &
      &    sph_file%comm_IO, sph_file%sph_IO, sph_file%sph_grp_IO)
-      call close_gzfile_f
+      call close_gzfile_a
 !
       end subroutine gz_write_geom_rtp_file
 !
@@ -171,7 +171,7 @@
       subroutine gz_write_spectr_modes_rj_file                          &
      &         (file_name, id_rank, sph_file)
 !
-      use calypso_c_binding
+      use skip_gz_comment
 !
       character(len=kchara), intent(in) :: file_name
       integer, intent(in) :: id_rank
@@ -181,10 +181,10 @@
       if(id_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &    'Write gzipped spectr modes file: ', trim(file_name)
 !
-      call open_wt_gzfile_f(file_name)
+      call open_wt_gzfile_a(file_name, zbuf1)
       call write_spectr_modes_rj_data_gz(id_rank,                       &
      &    sph_file%comm_IO, sph_file%sph_IO, sph_file%sph_grp_IO)
-      call close_gzfile_f
+      call close_gzfile_a
 !
       end subroutine gz_write_spectr_modes_rj_file
 !
@@ -193,7 +193,7 @@
       subroutine gz_write_geom_rtm_file                                 &
      &         (file_name, id_rank, sph_file)
 !
-      use calypso_c_binding
+      use skip_gz_comment
 !
       character(len=kchara), intent(in) :: file_name
       integer, intent(in) :: id_rank
@@ -203,10 +203,10 @@
       if(id_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &    'Write gzipped grid file: ', trim(file_name)
 !
-      call open_wt_gzfile_f(file_name)
+      call open_wt_gzfile_a(file_name, zbuf1)
       call write_geom_rtm_data_gz                                       &
      &   (id_rank, sph_file%comm_IO, sph_file%sph_IO)
-      call close_gzfile_f
+      call close_gzfile_a
 !
       end subroutine gz_write_geom_rtm_file
 !
@@ -215,7 +215,7 @@
       subroutine gz_write_modes_rlm_file                                &
      &         (file_name, id_rank, sph_file)
 !
-      use calypso_c_binding
+      use skip_gz_comment
 !
       character(len=kchara), intent(in) :: file_name
       integer, intent(in) :: id_rank
@@ -225,10 +225,10 @@
       if(id_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &    'Write gzipped spectr modes file: ', trim(file_name)
 !
-      call open_wt_gzfile_f(file_name)
+      call open_wt_gzfile_a(file_name, zbuf1)
       call write_modes_rlm_data_gz                                      &
      &   (id_rank, sph_file%comm_IO, sph_file%sph_IO)
-      call close_gzfile_f
+      call close_gzfile_a
 !
       end subroutine gz_write_modes_rlm_file
 !

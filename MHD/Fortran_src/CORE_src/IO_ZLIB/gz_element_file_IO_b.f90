@@ -76,7 +76,7 @@
 !     &   (zbuf_ele, ele_mesh_IO%node, ele_mesh_IO%sfed)
 !
   99  continue
-      call close_gzfile_f
+      call close_gzfile_b
       ierr = zbuf_ele%ierr_zlib
 !
       end subroutine gz_input_element_file_b
@@ -107,7 +107,7 @@
 !     &   (zbuf_ele, surf_mesh_IO%node, surf_mesh_IO%sfed)
 !
   99  continue
-      call close_gzfile_f
+      call close_gzfile_b
       ierr = zbuf_ele%ierr_zlib
 !
       end subroutine gz_input_surface_file_b
@@ -138,7 +138,7 @@
 !     &   (zbuf_ele, edge_mesh_IO%node, edge_mesh_IO%sfed)
 !
   99  continue
-      call close_gzfile_f
+      call close_gzfile_b
       ierr = zbuf_ele%ierr_zlib
 !
       end subroutine gz_input_edge_file_b
@@ -165,7 +165,7 @@
      &   (id_rank, ele_mesh_IO%comm, zbuf_ele)
 !      call gz_write_element_geometry_b                                 &
 !     &   (ele_mesh_IO%node, ele_mesh_IO%sfed, zbuf_ele)
-      call close_gzfile_f
+      call close_gzfile_b
 !
       end subroutine gz_output_element_file_b
 !
@@ -190,7 +190,7 @@
      &    surf_mesh_IO%ele, surf_mesh_IO%sfed, zbuf_ele)
 !      call gz_write_surface_geometry_b                                 &
 !     &   (surf_mesh_IO%node, surf_mesh_IO%sfed, zbuf_ele)
-      call close_gzfile_f
+      call close_gzfile_b
 !
       end subroutine gz_output_surface_file_b
 !
@@ -215,7 +215,7 @@
      &    edge_mesh_IO%ele, edge_mesh_IO%sfed, zbuf_ele)
 !      call gz_write_edge_geometry_b                                    &
 !     &   (edge_mesh_IO%node, edge_mesh_IO%sfed, zbuf_ele)
-      call close_gzfile_f
+      call close_gzfile_b
 !
       end subroutine gz_output_edge_file_b
 !

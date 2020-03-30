@@ -50,10 +50,10 @@
 !
 !
       ngrp_pe = int(num_pe, KIND(ngrp_pe))
-      textbuf = hd_domain_nod_grp() // char(0)
+      zbuf1%fixbuf(1) = hd_domain_nod_grp() // char(0)
       call gz_write_textbuf_no_lf(zbuf1)
 !
-      write(textbuf,'(i16,2a1)') domain_grps%node_grp%num_item,         &
+      write(zbuf1%fixbuf(1),'(i16,2a1)') domain_grps%node_grp%num_item, &
      &     char(10), char(0)
       call gz_write_textbuf_no_lf(zbuf1)
 !
@@ -68,10 +68,10 @@
         end if
       end do
 !
-      textbuf = hd_domain_surf_grp() // char(0)
+      zbuf1%fixbuf(1) = hd_domain_surf_grp() // char(0)
       call gz_write_textbuf_no_lf(zbuf1)
 !
-      write(textbuf,'(i16,2a1)') domain_grps%surf_grp%num_item,         &
+      write(zbuf1%fixbuf(1),'(i16,2a1)') domain_grps%surf_grp%num_item, &
      &     char(10), char(0)
       call gz_write_textbuf_no_lf(zbuf1)
 !
@@ -86,10 +86,10 @@
         end if
       end do
 !
-      textbuf = hd_domain_edge_grp() // char(0)
+      zbuf1%fixbuf(1) = hd_domain_edge_grp() // char(0)
       call gz_write_textbuf_no_lf(zbuf1)
 !
-      write(textbuf,'(i16,2a1)') domain_grps%edge_grp%num_item,         &
+      write(zbuf1%fixbuf(1),'(i16,2a1)') domain_grps%edge_grp%num_item, &
      &     char(10), char(0)
       call gz_write_textbuf_no_lf(zbuf1)
 !
@@ -159,10 +159,10 @@
       type(viewer_node_groups), intent(in) :: view_nod_grps
 !
 !
-      textbuf = hd_fem_nodgrp() // char(0)
+      zbuf1%fixbuf(1) = hd_fem_nodgrp() // char(0)
       call gz_write_textbuf_no_lf(zbuf1)
 !
-      write(textbuf,'(i16,2a1)') view_nod_grps%num_grp,                 &
+      write(zbuf1%fixbuf(1),'(i16,2a1)') view_nod_grps%num_grp,         &
      &     char(10), char(0)
       call gz_write_textbuf_no_lf(zbuf1)
 !
@@ -208,12 +208,12 @@
       type(viewer_surface_groups), intent(in) :: view_ele_grps
 !
 !
-      textbuf = hd_fem_elegrp() // char(0)
+      zbuf1%fixbuf(1) = hd_fem_elegrp() // char(0)
       call gz_write_textbuf_no_lf(zbuf1)
-      textbuf = hd_ele_surf_grp() // char(0)
+      zbuf1%fixbuf(1) = hd_ele_surf_grp() // char(0)
       call gz_write_textbuf_no_lf(zbuf1)
 !
-      write(textbuf,'(i16,2a1)') view_ele_grps%num_grp,                 &
+      write(zbuf1%fixbuf(1),'(i16,2a1)') view_ele_grps%num_grp,         &
      &                          char(10), char(0)
       call gz_write_textbuf_no_lf(zbuf1)
 !
@@ -221,19 +221,19 @@
      &    view_ele_grps%grp_name, view_ele_grps%surf_grp)
 !
 !
-      textbuf = hd_ele_nod_grp() // char(0)
+      zbuf1%fixbuf(1) = hd_ele_nod_grp() // char(0)
       call gz_write_textbuf_no_lf(zbuf1)
-      write(textbuf,'(i16,2a1)') view_ele_grps%num_grp,                 &
-     &                          char(10), char(0)
+      write(zbuf1%fixbuf(1),'(i16,2a1)') view_ele_grps%num_grp,         &
+     &                                  char(10), char(0)
       call gz_write_textbuf_no_lf(zbuf1)
 !
       call write_viewer_group_data_gz(num_pe, view_ele_grps%num_grp,    &
      &    view_ele_grps%grp_name, view_ele_grps%node_grp)
 !
-      textbuf = hd_ele_edge_grp() // char(0)
+      zbuf1%fixbuf(1) = hd_ele_edge_grp() // char(0)
       call gz_write_textbuf_no_lf(zbuf1)
-      write(textbuf,'(i16,2a1)') view_ele_grps%num_grp,                 &
-     &                          char(10), char(0)
+      write(zbuf1%fixbuf(1),'(i16,2a1)') view_ele_grps%num_grp,         &
+     &                                  char(10), char(0)
       call gz_write_textbuf_no_lf(zbuf1)
 !
       call write_viewer_group_data_gz(num_pe, view_ele_grps%num_grp,    &
@@ -254,7 +254,7 @@
 !      write(surface_id,'(a)') '! 4.2.1 element data'
 !
       call skip_gz_comment_int(view_ele_grps%num_grp, zbuf1)
-      read(textbuf,*) view_ele_grps%num_grp
+      read(zbuf1%fixbuf(1),*) view_ele_grps%num_grp
       num = num_pe * view_ele_grps%num_grp
 !
       view_ele_grps%surf_grp%num_item                                   &
@@ -303,30 +303,30 @@
       integer, intent(in) :: num_pe
       type(viewer_surface_groups), intent(in) :: view_sf_grps
 !
-      textbuf = hd_fem_sfgrp() // char(0)
+      zbuf1%fixbuf(1) = hd_fem_sfgrp() // char(0)
       call gz_write_textbuf_no_lf(zbuf1)
-      textbuf = hd_surf_surf_grp() // char(0)
+      zbuf1%fixbuf(1) = hd_surf_surf_grp() // char(0)
       call gz_write_textbuf_no_lf(zbuf1)
-      write(textbuf,'(i16,2a1)') view_sf_grps%num_grp,                  &
-     &                          char(10), char(0)
+      write(zbuf1%fixbuf(1),'(i16,2a1)') view_sf_grps%num_grp,          &
+     &                                  char(10), char(0)
       call gz_write_textbuf_no_lf(zbuf1)
 !
       call write_viewer_group_data_gz(num_pe, view_sf_grps%num_grp,     &
      &    view_sf_grps%grp_name, view_sf_grps%surf_grp)
 !
 !
-      textbuf = hd_surf_nod_grp() // char(0)
+      zbuf1%fixbuf(1) = hd_surf_nod_grp() // char(0)
       call gz_write_textbuf_no_lf(zbuf1)
-      write(textbuf,'(i16,2a1)') view_sf_grps%num_grp,                  &
+      write(zbuf1%fixbuf(1),'(i16,2a1)') view_sf_grps%num_grp,          &
      &                          char(10), char(0)
       call gz_write_textbuf_no_lf(zbuf1)
 !
       call write_viewer_group_data_gz(num_pe, view_sf_grps%num_grp,     &
      &    view_sf_grps%grp_name, view_sf_grps%node_grp)
 !
-      textbuf = hd_surf_edge_grp() // char(0)
+      zbuf1%fixbuf(1) = hd_surf_edge_grp() // char(0)
       call gz_write_textbuf_no_lf(zbuf1)
-      write(textbuf,'(i16,2a1)') view_sf_grps%num_grp,                  &
+      write(zbuf1%fixbuf(1),'(i16,2a1)') view_sf_grps%num_grp,          &
      &                          char(10), char(0)
       call gz_write_textbuf_no_lf(zbuf1)
 !
@@ -348,7 +348,7 @@
 !      write(surface_id,'(a)') '! 4.3.1 surface data'
 !
       call skip_gz_comment_int(view_sf_grps%num_grp, zbuf1)
-      read(textbuf,*) view_sf_grps%num_grp
+      read(zbuf1%fixbuf(1),*) view_sf_grps%num_grp
       num = num_pe * view_sf_grps%num_grp
 !
       call alloc_merged_surf_grps_stack(num_pe, view_sf_grps)
@@ -415,11 +415,12 @@
           num = group%istack_sf(num_pe*i)                               &
      &         - group%istack_sf(num_pe*(i-1))
 !
-          write(textbuf,'(a,2a1)') trim(name(i)), char(10), char(0)
+          write(zbuf1%fixbuf(1),'(a,2a1)')                              &
+     &                         trim(name(i)), char(10), char(0)
           call gz_write_textbuf_no_lf(zbuf1)
 !
           if(num .le. 0) then
-            write(textbuf,'(2a1)') char(10), char(0)
+            write(zbuf1%fixbuf(1),'(2a1)') char(10), char(0)
             call gz_write_textbuf_no_lf(zbuf1)
           else
             do ip = 1, num_pe
@@ -433,7 +434,7 @@
           end if
         end do
       else
-        write(textbuf,'(2a1)') char(10), char(0)
+        write(zbuf1%fixbuf(1),'(2a1)') char(10), char(0)
         call gz_write_textbuf_no_lf(zbuf1)
       end if
 !

@@ -77,7 +77,7 @@
       call gz_read_mesh_groups_b(zbuf_mesh, group_IO)
 !
   99  continue
-      call close_gzfile_f
+      call close_gzfile_b
       ierr = zbuf_mesh%ierr_zlib
 !
       end subroutine gz_read_mesh_file_b
@@ -105,7 +105,7 @@
       call gz_read_geometry_data_b(id_rank, zbuf_mesh, mesh_IO)
 !
   99  continue
-      call close_gzfile_f
+      call close_gzfile_b
       ierr = zbuf_mesh%ierr_zlib
 !
       end subroutine gz_read_mesh_geometry_b
@@ -133,7 +133,7 @@
       call gz_read_num_node_b(id_rank, zbuf_mesh, mesh_IO)
 !
   99  continue
-      call close_gzfile_f
+      call close_gzfile_b
       ierr = zbuf_mesh%ierr_zlib
 !
       end subroutine gz_read_node_size_b
@@ -161,7 +161,7 @@
       call gz_read_num_node_ele_b(id_rank, zbuf_mesh, mesh_IO)
 !
   99  continue
-      call close_gzfile_f
+      call close_gzfile_b
       ierr = zbuf_mesh%ierr_zlib
 !
       end subroutine gz_read_geometry_size_b
@@ -186,7 +186,7 @@
       call open_wt_gzfile_b(file_name, zbuf_mesh)
       call gz_write_geometry_data_b(id_rank, mesh_IO, zbuf_mesh)
       call gz_write_mesh_groups_b(group_IO, zbuf_mesh)
-      call close_gzfile_f
+      call close_gzfile_b
 !
       end subroutine gz_write_mesh_file_b
 !

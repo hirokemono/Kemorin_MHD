@@ -40,7 +40,7 @@
       subroutine read_gz_rst_file                                       &
      &         (id_rank, file_name, t_IO, fld_IO, ierr_IO)
 !
-      use calypso_c_binding
+      use skip_gz_comment
 !
       character(len=kchara), intent(in) :: file_name
       integer, intent(in) :: id_rank
@@ -57,7 +57,7 @@
       if(id_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &    'Read gzipped restart file: ', trim(gzip_name)
 !
-      call open_rd_gzfile_f(gzip_name)
+      call open_rd_gzfile_a(gzip_name, zbuf1)
 !
       call read_gz_step_data                                            &
      &   (id_rank, t_IO%i_time_step, t_IO%time, t_IO%dt, ierr_IO)
@@ -68,7 +68,7 @@
      &    fld_IO%num_field_IO, fld_IO%ntot_comp_IO,                     &
      &    fld_IO%num_comp_IO, fld_IO%fld_name, fld_IO%d_IO)
 !
-      call close_gzfile_f
+      call close_gzfile_a
 !
       end subroutine read_gz_rst_file
 !
@@ -77,7 +77,7 @@
       subroutine read_gz_rst_comps                                      &
      &          (id_rank, file_name, t_IO, fld_IO, ierr_IO)
 !
-      use calypso_c_binding
+      use skip_gz_comment
 !
       character(len=kchara), intent(in) :: file_name
       integer, intent(in) :: id_rank
@@ -94,7 +94,7 @@
       if(id_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &     'Read gzipped restart file: ', trim(gzip_name)
 !
-      call open_rd_gzfile_f(gzip_name)
+      call open_rd_gzfile_a(gzip_name, zbuf1)
 !
       call read_gz_step_data                                            &
      &   (id_rank, t_IO%i_time_step, t_IO%time, t_IO%dt, ierr_IO)
@@ -105,7 +105,7 @@
       call alloc_phys_name_IO(fld_IO)
       call read_gz_rst_field_comps(fld_IO)
 !
-      call close_gzfile_f
+      call close_gzfile_a
 !
       call cal_istack_phys_comp_IO(fld_IO)
 !

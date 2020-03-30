@@ -41,20 +41,22 @@
       real(kind = kreal), intent(in) :: time_IO, delta_t_IO
 !
 !
-      write(textbuf,'(a,2a1)'   )   '!  domain ID', char(10), char(0)
+      write(zbuf1%fixbuf(1),'(a,2a1)'   ) '!  domain ID',               &
+     &                                   char(10), char(0)
       call gz_write_textbuf_no_lf(zbuf1)
-      write(textbuf,'(i16,2a1)') id_rank, char(10), char(0)
+      write(zbuf1%fixbuf(1),'(i16,2a1)') id_rank, char(10), char(0)
       call gz_write_textbuf_no_lf(zbuf1)
-      write(textbuf,'(a,2a1)'   )   '!  time step number',              &
-     &                           char(10), char(0)
+      write(zbuf1%fixbuf(1),'(a,2a1)'   ) '!  time step number',        &
+     &                                   char(10), char(0)
       call gz_write_textbuf_no_lf(zbuf1)
-      write(textbuf,'(i16,2a1)') i_time_step_IO, char(10), char(0)
+      write(zbuf1%fixbuf(1),'(i16,2a1)' ) i_time_step_IO,               &
+     &                                   char(10), char(0)
       call gz_write_textbuf_no_lf(zbuf1)
-      write(textbuf,'(a,2a1)'   )   '!  time, Delta t',                 &
-     &                           char(10), char(0)
+      write(zbuf1%fixbuf(1),'(a,2a1)'   )   '!  time, Delta t',         &
+     &                                   char(10), char(0)
       call gz_write_textbuf_no_lf(zbuf1)
-      write(textbuf,'(1p2E25.15e3,2a1)') time_IO, delta_t_IO,           &
-     &                                  char(10), char(0)
+      write(zbuf1%fixbuf(1),'(1p2E25.15e3,2a1)') time_IO, delta_t_IO,   &
+     &                                          char(10), char(0)
       call gz_write_textbuf_no_lf(zbuf1)
 !
       end subroutine write_gz_step_data
@@ -106,15 +108,15 @@
       character(len=kchara) :: fmt_txt
 !
 !
-      write(textbuf,'(a,2a1)'   )                                       &
+      write(zbuf1%fixbuf(1),'(a,2a1)'   )                               &
      &          '! number of field and component', char(10), char(0)
       call gz_write_textbuf_no_lf(zbuf1)
-      write(textbuf,'(2i16,2a1)')                                       &
+      write(zbuf1%fixbuf(1),'(2i16,2a1)')                               &
      &           nnod64, num_field, char(10), char(0)
       call gz_write_textbuf_no_lf(zbuf1)
 !
       write(fmt_txt,'(a1,i3,a7)') '(', num_field, 'i4,2a1)'
-      write(textbuf,fmt_txt) ncomp_field(1:num_field),                  &
+      write(zbuf1%fixbuf(1),fmt_txt) ncomp_field(1:num_field),          &
      &                      char(10), char(0)
       call gz_write_textbuf_no_lf(zbuf1)
 !
@@ -167,12 +169,13 @@
       character(len=kchara) :: fmt_txt
 !
 !
-      write(textbuf,'(a,2a1)') trim(d_name), char(10), char(0)
+      write(zbuf1%fixbuf(1),'(a,2a1)') trim(d_name), char(10), char(0)
       call gz_write_textbuf_no_lf(zbuf1)
 !
       write(fmt_txt,'(a1,i3,a17)') '(', ndir, '(1pE25.15e3),2a1)'
       do i = 1, nnod64
-        write(textbuf,fmt_txt) vector(i,1:ndir), char(10), char(0)
+        write(zbuf1%fixbuf(1),fmt_txt) vector(i,1:ndir),                &
+     &                                char(10), char(0)
         call gz_write_textbuf_no_lf(zbuf1)
       end do
 !
@@ -191,7 +194,7 @@
 !
       do i = 1, nnod64
         call get_one_line_from_gz_f(zbuf1)
-        read(textbuf,*)  vector(i,1:ndir)
+        read(zbuf1%fixbuf(1),*)  vector(i,1:ndir)
       end do
 !
       end subroutine read_gz_field_vect

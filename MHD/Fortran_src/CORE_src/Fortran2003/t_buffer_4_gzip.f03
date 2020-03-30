@@ -112,12 +112,10 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine alloc_fixbuffer_for_zlib(len_buf, zbuf)
+      subroutine alloc_fixbuffer_for_zlib(zbuf)
 !
-      integer, intent(in) :: len_buf
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
-      zbuf%len_buf = nbuf
       allocate(zbuf%fixbuf(1))
 !
       end subroutine alloc_fixbuffer_for_zlib

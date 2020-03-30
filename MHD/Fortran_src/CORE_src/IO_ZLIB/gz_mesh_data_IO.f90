@@ -57,30 +57,30 @@
       type(mesh_geometry), intent(in) :: mesh_IO
 !
 !
-      textbuf = hd_fem_para() // char(0)
+      zbuf1%fixbuf(1) = hd_fem_para() // char(0)
       call gz_write_textbuf_no_lf(zbuf1)
       call gz_write_domain_info(id_rank, mesh_IO%nod_comm)
 !
 !
-      textbuf = hd_fem_node() // char(0)
+      zbuf1%fixbuf(1) = hd_fem_node() // char(0)
       call gz_write_textbuf_no_lf(zbuf1)
 !
       call gz_write_geometry_info(mesh_IO%node)
 !
 !
-      textbuf = hd_fem_elem() // char(0)
+      zbuf1%fixbuf(1) = hd_fem_elem() // char(0)
       call gz_write_textbuf_no_lf(zbuf1)
 !
       call gz_write_element_info(mesh_IO%ele)
 !
 !
-      textbuf = hd_fem_import() // char(0)
+      zbuf1%fixbuf(1) = hd_fem_import() // char(0)
       call gz_write_textbuf_no_lf(zbuf1)
 !
       call gz_write_import_data(mesh_IO%nod_comm)
 !
 !
-      textbuf = hd_fem_export() // char(0)
+      zbuf1%fixbuf(1) = hd_fem_export() // char(0)
       call gz_write_textbuf_no_lf(zbuf1)
 !
       call gz_write_export_data(mesh_IO%nod_comm)
@@ -98,17 +98,17 @@
 !
 !
 !   write node group
-      textbuf = hd_fem_nodgrp() // char(0)
+      zbuf1%fixbuf(1) = hd_fem_nodgrp() // char(0)
       call gz_write_textbuf_no_lf(zbuf1)
       call write_grp_data_gz(mesh_group_IO%nod_grp)
 !
 !  write element group
-      textbuf = hd_fem_elegrp() // char(0)
+      zbuf1%fixbuf(1) = hd_fem_elegrp() // char(0)
       call gz_write_textbuf_no_lf(zbuf1)
       call write_grp_data_gz(mesh_group_IO%ele_grp)
 !
 !  write surface group
-      textbuf = hd_fem_sfgrp() // char(0)
+      zbuf1%fixbuf(1) = hd_fem_sfgrp() // char(0)
       call gz_write_textbuf_no_lf(zbuf1)
       call write_surf_grp_data_gz(mesh_group_IO%surf_grp)
 !
@@ -125,24 +125,24 @@
       type(node_data), intent(in) :: nod_IO
 !
 !
-      textbuf = hd_fem_para() // char(0)
+      zbuf1%fixbuf(1) = hd_fem_para() // char(0)
       call gz_write_textbuf_no_lf(zbuf1)
       call gz_write_domain_info(id_rank, comm_IO)
 !
 !
-      textbuf = hd_fem_node() // char(0)
+      zbuf1%fixbuf(1) = hd_fem_node() // char(0)
       call gz_write_textbuf_no_lf(zbuf1)
 !
       call gz_write_geometry_info(nod_IO)
 !
 !
-      textbuf = hd_fem_import() // char(0)
+      zbuf1%fixbuf(1) = hd_fem_import() // char(0)
       call gz_write_textbuf_no_lf(zbuf1)
 !
       call gz_write_import_data(comm_IO)
 !
 !
-      textbuf = hd_fem_export() // char(0)
+      zbuf1%fixbuf(1) = hd_fem_export() // char(0)
       call gz_write_textbuf_no_lf(zbuf1)
 !
       call gz_write_export_data(comm_IO)

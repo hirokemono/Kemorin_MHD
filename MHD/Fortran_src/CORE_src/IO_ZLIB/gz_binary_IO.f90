@@ -62,7 +62,7 @@
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
 !
-      call open_wt_gzfile_f(gzip_name)
+      call open_wt_gzfile_f(gzip_name, zbuf)
       call gz_write_endian_flag(zbuf)
 !
       end subroutine open_wt_gzfile_b
@@ -80,7 +80,7 @@
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
 !
-      call open_rd_gzfile_f(gzip_name)
+      call open_rd_gzfile_f(gzip_name, zbuf)
       call gz_read_endian_flag(id_rank, zbuf)
 !
       if(zbuf%iflag_swap .eq. -1) zbuf%ierr_zlib = ierr_file

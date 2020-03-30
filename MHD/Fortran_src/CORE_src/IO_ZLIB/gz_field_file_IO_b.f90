@@ -74,7 +74,7 @@
      &    fld_IO%ntot_comp_IO, fld_IO%num_comp_IO, fld_IO%fld_name,     &
      &    fld_IO%d_IO, zbuf_fld)
 !
-      call close_gzfile_f
+      call close_gzfile_b
 !
       end subroutine gz_write_step_fld_file_b
 !
@@ -114,7 +114,7 @@
      &    fld_IO%ntot_comp_IO, fld_IO%fld_name, fld_IO%d_IO)
       if(zbuf_fld%ierr_zlib .ne. 0) go to 99
 !
-      call close_gzfile_f
+      call close_gzfile_b
       return
 !
   99  continue
@@ -162,7 +162,7 @@
      &    fld_IO%ntot_comp_IO, fld_IO%fld_name, fld_IO%d_IO)
       if(zbuf_fld%ierr_zlib .ne. 0) go to 99
 !
-      call close_gzfile_f
+      call close_gzfile_b
       return
 !
   99  continue
@@ -202,7 +202,7 @@
      &   (zbuf_fld, cast_long(fld_IO%num_field_IO), fld_IO%num_comp_IO)
       if(zbuf_fld%ierr_zlib .ne. 0) go to 99
 !
-      call close_gzfile_f
+      call close_gzfile_b
 !
       call cal_istack_phys_comp_IO(fld_IO)
       return

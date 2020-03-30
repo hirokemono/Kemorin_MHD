@@ -116,31 +116,31 @@
       type(surf_edge_IO_data), intent(in) :: sfed_IO
 !
 !
-      textbuf = hd_surf_para() // char(0)
+      zbuf1%fixbuf(1) = hd_surf_para() // char(0)
       call gz_write_textbuf_no_lf(zbuf1)
-      textbuf = hd_fem_para() // char(0)
+      zbuf1%fixbuf(1) = hd_fem_para() // char(0)
       call gz_write_textbuf_no_lf(zbuf1)
 !
       call gz_write_domain_info(id_rank, comm_IO)
 !
-      textbuf = hd_surf_connect() // char(0)
+      zbuf1%fixbuf(1) = hd_surf_connect() // char(0)
       call gz_write_textbuf_no_lf(zbuf1)
 !
       call gz_write_element_info(ele_IO)
 !
-      textbuf = hd_surf_on_ele() // char(0)
+      zbuf1%fixbuf(1) = hd_surf_on_ele() // char(0)
       call gz_write_textbuf_no_lf(zbuf1)
 !
       call gz_write_surface_4_element(sfed_IO)
 !
 !
 !
-      textbuf = hd_surf_import() // char(0)
+      zbuf1%fixbuf(1) = hd_surf_import() // char(0)
       call gz_write_textbuf_no_lf(zbuf1)
 !
       call gz_write_import_data(comm_IO)
 !
-      textbuf = hd_surf_export() // char(0)
+      zbuf1%fixbuf(1) = hd_surf_export() // char(0)
       call gz_write_textbuf_no_lf(zbuf1)
 !
       call gz_write_export_data(comm_IO)
@@ -191,17 +191,17 @@
       type(surf_edge_IO_data), intent(in) :: sfed_IO
 !
 !
-      textbuf = hd_surf_point() // char(0)
+      zbuf1%fixbuf(1) = hd_surf_point() // char(0)
       call gz_write_textbuf_no_lf(zbuf1)
 !
       call gz_write_geometry_info(nod_IO)
 !
-      textbuf = hd_surf_norm() // char(0)
+      zbuf1%fixbuf(1) = hd_surf_norm() // char(0)
       call gz_write_textbuf_no_lf(zbuf1)
 !
       call gz_write_vector_in_element(nod_IO, sfed_IO)
 !
-      textbuf = hd_surf_area() // char(0)
+      zbuf1%fixbuf(1) = hd_surf_area() // char(0)
       call gz_write_textbuf_no_lf(zbuf1)
 !
       call gz_write_scalar_in_element(nod_IO, sfed_IO)

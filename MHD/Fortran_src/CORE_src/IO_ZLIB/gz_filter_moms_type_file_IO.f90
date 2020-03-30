@@ -44,7 +44,7 @@
      &          FEM_elens, FEM_moms)
 !
       use t_filter_moments
-      use calypso_c_binding
+      use skip_gz_comment
 !
       character(len=kchara), intent(in) :: file_name
       integer, intent(in) :: id_rank
@@ -64,9 +64,9 @@
      &             trim(file_name)
       end if
 !
-      call open_rd_gzfile_f(gzip_name)
+      call open_rd_gzfile_a(gzip_name, zbuf1)
       call gz_read_filter_moment_num_type(FEM_elens, FEM_moms)
-      call close_gzfile_f
+      call close_gzfile_a
 !
       end subroutine read_num_filter_mom_t_file_gz
 !
@@ -76,7 +76,7 @@
       subroutine read_filter_elen_t_file_gz(file_name, id_rank,         &
      &          nnod, nele, FEM_elens, ierr)
 !
-      use calypso_c_binding
+      use skip_gz_comment
 !
       character(len=kchara), intent(in) :: file_name
       integer, intent(in) :: id_rank
@@ -97,9 +97,9 @@
      &             trim(file_name)
       end if
 !
-      call open_rd_gzfile_f(gzip_name)
+      call open_rd_gzfile_a(gzip_name, zbuf1)
       call gz_read_filter_elen_data_type(nnod, nele, FEM_elens, ierr)
-      call close_gzfile_f
+      call close_gzfile_a
 !
       end subroutine read_filter_elen_t_file_gz
 !
@@ -108,7 +108,7 @@
       subroutine write_filter_elen_t_file_gz(file_name, id_rank,        &
      &          FEM_elens)
 !
-      use calypso_c_binding
+      use skip_gz_comment
 !
       character(len=kchara), intent(in) :: file_name
       integer, intent(in) :: id_rank
@@ -127,9 +127,9 @@
      &             trim(file_name)
       end if
 !
-      call open_wt_gzfile_f(gzip_name)
+      call open_wt_gzfile_a(gzip_name, zbuf1)
       call gz_write_filter_elen_data_type(FEM_elens)
-      call close_gzfile_f
+      call close_gzfile_a
 !
       end subroutine write_filter_elen_t_file_gz
 !
@@ -140,7 +140,7 @@
      &          nnod, nele, FEM_elens, FEM_moms, ierr)
 !
       use t_filter_moments
-      use calypso_c_binding
+      use skip_gz_comment
 !
       character(len=kchara), intent(in) :: file_name
       integer, intent(in) :: id_rank
@@ -162,10 +162,10 @@
      &             trim(file_name)
       end if
 !
-      call open_rd_gzfile_f(gzip_name)
+      call open_rd_gzfile_a(gzip_name, zbuf1)
       call gz_read_filter_moms_data_type(nnod, nele,                    &
      &    FEM_elens, FEM_moms, ierr)
-      call close_gzfile_f
+      call close_gzfile_a
 !
       end subroutine read_filter_moms_t_file_gz
 !
@@ -175,7 +175,7 @@
      &          FEM_elens, FEM_moms)
 !
       use t_filter_moments
-      use calypso_c_binding
+      use skip_gz_comment
 !
       character(len=kchara), intent(in) :: file_name
       integer, intent(in) :: id_rank
@@ -195,9 +195,9 @@
      &             trim(file_name)
       end if
 !
-      call open_wt_gzfile_f(gzip_name)
+      call open_wt_gzfile_a(gzip_name, zbuf1)
       call gz_write_filter_moms_data_type(FEM_elens, FEM_moms)
-      call close_gzfile_f
+      call close_gzfile_a
 !
       end subroutine write_filter_moms_t_file_gz
 !
