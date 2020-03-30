@@ -40,7 +40,7 @@
       type(group_data), intent(inout) :: grp_IO
 !
 !
-      call skip_gz_comment_int(grp_IO%num_grp)
+      call skip_gz_comment_int(grp_IO%num_grp, zbuf1)
       call alloc_group_num(grp_IO)
 !
       if (grp_IO%num_grp .gt. 0) then
@@ -65,7 +65,7 @@
       type(surface_group_data), intent(inout) :: surf_grp_IO
 !
 !
-      call skip_gz_comment_int(surf_grp_IO%num_grp)
+      call skip_gz_comment_int(surf_grp_IO%num_grp, zbuf1)
       call alloc_sf_group_num(surf_grp_IO)
 !
       if (surf_grp_IO%num_grp .gt. 0) then

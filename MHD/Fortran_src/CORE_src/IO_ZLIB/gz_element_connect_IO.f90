@@ -109,7 +109,7 @@
       type(element_data), intent(inout) :: ele_IO
 !
 !
-      call skip_gz_comment_int(ele_IO%numele)
+      call skip_gz_comment_int(ele_IO%numele, zbuf1)
 !       write(*,*) ele_IO%numele
 !
       end subroutine gz_read_number_of_element
@@ -154,7 +154,7 @@
       integer(kind = kint) :: i, nsf_4_ele, nsurf_in_ele
 !
 !
-      call skip_gz_comment_int(nsf_4_ele)
+      call skip_gz_comment_int(nsf_4_ele, zbuf1)
       read(textbuf,*) nsf_4_ele, nsurf_in_ele
       call alloc_surface_connect_IO(nsf_4_ele, nsurf_in_ele, sfed_IO)
 !
@@ -174,7 +174,7 @@
       integer(kind = kint) :: i, ned_4_ele, nedge_in_ele
 !
 !
-      call skip_gz_comment_int(ned_4_ele)
+      call skip_gz_comment_int(ned_4_ele, zbuf1)
       read(textbuf,*) ned_4_ele, nedge_in_ele
       call alloc_edge_connect_IO(ned_4_ele, nedge_in_ele, sfed_IO)
 !

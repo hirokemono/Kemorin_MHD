@@ -11,9 +11,11 @@
 !!      subroutine skip_gz_comment_int8_int(i8_input, int_input2)
 !!      subroutine skip_gz_comment_real(real_input)
 !!      subroutine skip_gz_comment_real2(real_input, real_input2)
-!!      subroutine skip_gz_comment_chara(chara_input)
-!!      subroutine skip_gz_comment_chara_int(chara_input, int_input)
-!!      subroutine skip_gz_comment_chara_lint(chara_input, int8_input)
+!!      subroutine skip_gz_comment_chara(chara_input, zbuf)
+!!      subroutine skip_gz_comment_chara_int                            &
+!!     &         (chara_input, int_input, zbuf)
+!!      subroutine skip_gz_comment_chara_lint                           &
+!!     &         (chara_input, int8_input, zbuf)
 !!
 !!      subroutine read_gz_multi_real(num, real_input)
 !!      subroutine read_gz_integer_stack(num, istack, ntot)
@@ -93,12 +95,13 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine skip_gz_comment_int(int_input)
+      subroutine skip_gz_comment_int(int_input, zbuf)
 !
       integer(kind = kint), intent(inout) :: int_input
+      type(buffer_4_gzip) , intent(inout):: zbuf
 !
 !
-      call skip_gz_comment_get_nword
+      call skip_gz_comment_get_nword(zbuf)
       read(textbuf,*) int_input
 !
       end subroutine skip_gz_comment_int
@@ -110,7 +113,7 @@
       integer(kind = kint), intent(inout) :: int_input, int_input2
 !
 !
-      call skip_gz_comment_get_nword
+      call skip_gz_comment_get_nword(zbuf1)
       read(textbuf,*) int_input, int_input2
 !
       end subroutine skip_gz_comment_int2
@@ -123,7 +126,7 @@
       integer(kind = kint), intent(inout) :: int_input2
 !
 !
-      call skip_gz_comment_get_nword
+      call skip_gz_comment_get_nword(zbuf1)
       read(textbuf,*) i8_input, int_input2
 !
       end subroutine skip_gz_comment_int8_int
@@ -134,7 +137,7 @@
 !
       real(kind = kreal), intent(inout) :: real_input
 !
-      call skip_gz_comment_get_nword
+      call skip_gz_comment_get_nword(zbuf1)
       read(textbuf,*) real_input
 !
       end subroutine skip_gz_comment_real
@@ -145,22 +148,24 @@
 !
       real(kind = kreal), intent(inout) :: real_input, real_input2
 !
-      call skip_gz_comment_get_nword
+      call skip_gz_comment_get_nword(zbuf1)
       read(textbuf,*) real_input, real_input2
 !
       end subroutine skip_gz_comment_real2
 !
 !------------------------------------------------------------------
 !
-      subroutine skip_gz_comment_chara(chara_input)
+      subroutine skip_gz_comment_chara(chara_input, zbuf)
 !
       character(len = kchara), intent(inout) :: chara_input
+      type(buffer_4_gzip), intent(inout):: zbuf
+!
       character(len=kchara) :: charaint, fmtchara, tmpchara
 !
 !
-      call skip_gz_comment_get_nword
+      call skip_gz_comment_get_nword(zbuf)
 !
-      write(charaint,'(i8)') min(int(zbuf1%len_used - 1), int(kchara))
+      write(charaint,'(i8)') min(int(zbuf%len_used - 1), int(kchara))
       write(fmtchara,'(a2,a,a1)')                                       &
      &          '(a', trim(ADJUSTL(charaint)),')'
 
@@ -171,23 +176,27 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine skip_gz_comment_chara_int(chara_input, int_input)
+      subroutine skip_gz_comment_chara_int                              &
+     &         (chara_input, int_input, zbuf)
 !
       character(len = kchara), intent(inout) :: chara_input
       integer(kind = kint), intent(inout) :: int_input
+      type(buffer_4_gzip), intent(inout):: zbuf
 !
 !
-      call skip_gz_comment_get_nword
+      call skip_gz_comment_get_nword(zbuf)
       read(textbuf,*) chara_input, int_input
 !
       end subroutine skip_gz_comment_chara_int
 !
 !------------------------------------------------------------------
 !
-      subroutine skip_gz_comment_chara_lint(chara_input, int8_input)
+      subroutine skip_gz_comment_chara_lint                             &
+     &         (chara_input, int8_input, zbuf)
 !
       character(len = kchara), intent(inout) :: chara_input
       integer(kind = kint_gl), intent(inout) :: int8_input
+      type(buffer_4_gzip), intent(inout):: zbuf
 !
 !
       call skip_gz_comment_get_nword
@@ -198,14 +207,15 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine skip_gz_comment_get_nword
+      subroutine skip_gz_comment_get_nword(zbuf)
 !
+      type(buffer_4_gzip), intent(inout):: zbuf
       character(len=1) :: chara_flag
 !      character(len=nbuf) :: tbuf2
 !
       do
-        call get_one_line_from_gz_f(zbuf1)
-        if(zbuf1%len_used .le. 1) cycle
+        call get_one_line_from_gz_f(zbuf)
+        if(zbuf%len_used .le. 1) cycle
 !
         write(chara_flag,'(a1)',err=1) adjustl(textbuf)
         if(chara_flag.eq.char(10) .or. chara_flag.eq.char(13)) cycle
@@ -213,10 +223,10 @@
    1    continue
       end do
 !
-!      write(charaint,'(i8)') zbuf1%len_used - 1
+!      write(charaint,'(i8)') zbuf%len_used - 1
 !      write(fmtchara,'(a2,a,a4)')  '(a', trim(ADJUSTL(charaint)),',a1)'
 !      write(tbuf2,fmtchara) textbuf, char(32)
-!      do i = 1, zbuf1%len_used + 1
+!      do i = 1, zbuf%len_used + 1
 !        write(*,*) i, ichar(textbuf(i:i)), ichar(tbuf2(i:i)),       &
 !     &              textbuf(i:i), tbuf2(i:i)
 !      end do

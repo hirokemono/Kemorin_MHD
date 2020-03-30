@@ -75,7 +75,7 @@
       integer(kind = kint) :: num_pe_read
 !
 !
-      call skip_gz_comment_int(num_pe_read)
+      call skip_gz_comment_int(num_pe_read, zbuf1)
 !
       call alloc_num_mesh_sf(int(num_pe_read), mgd_view_mesh)
 !
@@ -123,7 +123,7 @@
       integer(kind = kint) :: i, itmp
 !
 !
-      call skip_gz_comment_int(itmp)
+      call skip_gz_comment_int(itmp, zbuf1)
 !
       call alloc_nod_position_viewer(view_mesh)
 !
@@ -189,7 +189,7 @@ end subroutine write_surf_connect_viewer_gz
       integer(kind = kint) :: nnod_4_surf
 !
 !
-      call skip_gz_comment_int(itmp)
+      call skip_gz_comment_int(itmp, zbuf1)
 !
       call alloc_surf_type_viewer(view_mesh)
 !
@@ -269,7 +269,7 @@ end subroutine write_surf_connect_viewer_gz
       integer(kind = kint) :: i, itmp
 !
 !
-      call skip_gz_comment_int(itmp)
+      call skip_gz_comment_int(itmp, zbuf1)
 !
       call alloc_edge_data_4_sf(nnod_4_edge, view_mesh)
 !
@@ -278,7 +278,7 @@ end subroutine write_surf_connect_viewer_gz
         read(textbuf,*) itmp, view_mesh%ie_edge_viewer(i,1:nnod_4_edge)
       end do
 !
-      call skip_gz_comment_int(itmp)
+      call skip_gz_comment_int(itmp, zbuf1)
 !
       do i = 1, view_mesh%nsurf_viewer
         call get_one_line_from_gz_f(zbuf1)

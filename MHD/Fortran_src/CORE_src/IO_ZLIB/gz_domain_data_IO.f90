@@ -47,7 +47,7 @@
       integer(kind = kint) :: irank_read
 !
 !
-      call skip_gz_comment_int(irank_read)
+      call skip_gz_comment_int(irank_read, zbuf1)
 !
       ierr = 0
       if(irank_read .ne. id_rank) then
@@ -178,7 +178,7 @@
 !
       integer(kind = kint) :: i
 !
-      call skip_gz_comment_int( inod_sr(1) )
+      call skip_gz_comment_int(inod_sr(1), zbuf1)
       do i = 2, ntot_sr
         call get_one_line_from_gz_f(zbuf1)
         read(textbuf,*) inod_sr(i)

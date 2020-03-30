@@ -45,7 +45,7 @@
 !
       call alloc_num_idx_sph_IO(sph_IO)
 !
-      call skip_gz_comment_int( sph_IO%nidx_sph(1) )
+      call skip_gz_comment_int(sph_IO%nidx_sph(1), zbuf1)
       read(textbuf,*) sph_IO%nidx_sph(1),                               &
      &                sph_IO%ist_sph(1), sph_IO%ied_sph(1)
       call alloc_idx_sph_1d1_IO(sph_IO)
@@ -55,7 +55,7 @@
         read(textbuf,*) sph_IO%idx_gl_1(i), sph_IO%r_gl_1(i)
       end do
 !
-      call skip_gz_comment_int( sph_IO%nidx_sph(2) )
+      call skip_gz_comment_int(sph_IO%nidx_sph(2), zbuf1)
       read(textbuf,*) sph_IO%nidx_sph(2),                               &
      &                sph_IO%ist_sph(2), sph_IO%ied_sph(2)
       call alloc_idx_sph_1d2_IO(sph_IO)
@@ -65,7 +65,7 @@
         read(textbuf,*) sph_IO%idx_gl_2(i,1:sph_IO%ncomp_table_1d(2))
       end do
 !
-      call skip_gz_comment_int( sph_IO%nidx_sph(3) )
+      call skip_gz_comment_int(sph_IO%nidx_sph(3), zbuf1)
       read(textbuf,*) sph_IO%nidx_sph(3),                               &
      &                sph_IO%ist_sph(3), sph_IO%ied_sph(3)
       call alloc_idx_sph_1d3_IO(sph_IO)
@@ -92,7 +92,7 @@
 !
       call alloc_num_idx_sph_IO(sph_IO)
 !
-      call skip_gz_comment_int( sph_IO%nidx_sph(1) )
+      call skip_gz_comment_int(sph_IO%nidx_sph(1), zbuf1)
       read(textbuf,*) sph_IO%nidx_sph(1),                               &
      &                sph_IO%ist_sph(1), sph_IO%ied_sph(1)
       call alloc_idx_sph_1d1_IO(sph_IO)
@@ -102,7 +102,7 @@
         read(textbuf,*) sph_IO%idx_gl_1(i), sph_IO%r_gl_1(i)
       end do
 !
-      call skip_gz_comment_int( sph_IO%nidx_sph(2) )
+      call skip_gz_comment_int(sph_IO%nidx_sph(2), zbuf1)
       read(textbuf,*) sph_IO%nidx_sph(2),                               &
      &                sph_IO%ist_sph(2), sph_IO%ied_sph(2)
       call alloc_idx_sph_1d2_IO(sph_IO)

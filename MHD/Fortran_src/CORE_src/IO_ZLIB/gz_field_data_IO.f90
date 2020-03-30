@@ -73,14 +73,14 @@
 !
 !
       ierr_IO = 0
-      call skip_gz_comment_int(irank_read)
+      call skip_gz_comment_int(irank_read, zbuf1)
       if(int(irank_read) .ne. id_rank) then
         ierr_IO = 1
         write(*,*) 'Domain ID is different between process and data'
       end if
 !
-      call skip_gz_comment_int(i_time_step_IO)
-      call skip_gz_comment_chara(tmpchara)
+      call skip_gz_comment_int(i_time_step_IO, zbuf1)
+      call skip_gz_comment_chara(tmpchara, zbuf1)
       read(tmpchara,*,err=99, end=99) time_IO, delta_t_IO
 !
       go to 10
@@ -145,7 +145,7 @@
       icou = 1
       do i_fld = 1, num_field
 !
-        call skip_gz_comment_chara(field_name(i_fld))
+        call skip_gz_comment_chara(field_name(i_fld), zbuf1)
         call read_gz_field_vect                                         &
      &     (nnod64, ncomp_field(i_fld), field_data(1,icou) )
         icou = icou + ncomp_field(i_fld)

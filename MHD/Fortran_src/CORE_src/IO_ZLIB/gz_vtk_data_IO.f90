@@ -218,7 +218,7 @@
       character(len=kchara)  :: label
 !
 !
-      call skip_gz_comment_chara_lint(label, nnod)
+      call skip_gz_comment_chara_lint(label, nnod, zbuf1)
 !
       end subroutine read_gz_vtk_fields_head
 !
@@ -299,7 +299,7 @@
       character(len=kchara) :: tmpchara
 !
 !
-      call skip_gz_comment_chara(tmpchara)
+      call skip_gz_comment_chara(tmpchara, zbuf1)
       call get_one_line_from_gz_f(zbuf1)
       call get_one_line_from_gz_f(zbuf1)
 !

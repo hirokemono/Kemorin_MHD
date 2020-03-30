@@ -116,11 +116,11 @@
      &              'Read gzipped integration file: ', trim(gzip_name)
       call open_rd_gzfile_f(gzip_name)
 !
-      call skip_gz_comment_int(ltr_cor_IO)
+      call skip_gz_comment_int(ltr_cor_IO, zbuf1)
       call allocate_int_sph_cor_IO
 !
       j1 = 2
-      call skip_gz_comment_int(itmp)
+      call skip_gz_comment_int(itmp, zbuf1)
       read(textbuf,*) itmp, jgl_kcor_IO(1,1,j1), itmp,                  &
      &                gk_cor_IO(1,1,j1)
       call get_one_line_from_gz_f(zbuf1)
@@ -134,7 +134,7 @@
         end do
       end do
 !
-      call skip_gz_comment_int(itmp)
+      call skip_gz_comment_int(itmp, zbuf1)
       read(textbuf,*) itmp, jgl_lcor_IO(1,1,j1), itmp,                  &
      &                el_cor_IO(1,1,j1)
       do j3 = 2 ,jmax_cor_IO
@@ -145,7 +145,7 @@
 !*
 !
       do j1 = 1, 3, 2
-        call skip_gz_comment_int(itmp)
+        call skip_gz_comment_int(itmp, zbuf1)
         read(textbuf,*) itmp, jgl_kcor_IO(1,1,j1), itmp,                &
      &                          gk_cor_IO(1,1,j1)
         do j2 = 2, 4
@@ -161,7 +161,7 @@
           end do
         end do
 !*
-        call skip_gz_comment_int(itmp)
+        call skip_gz_comment_int(itmp, zbuf1)
         read(textbuf,*) itmp, jgl_lcor_IO(1,1,j1), itmp,                &
      &                 el_cor_IO(1,1,j1)
         call get_one_line_from_gz_f(zbuf1)

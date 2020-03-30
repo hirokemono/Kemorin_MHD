@@ -38,7 +38,7 @@
       type(sph_IO_data), intent(inout) :: sph_IO
 !
 !
-      call skip_gz_comment_int( sph_IO%sph_rank(1) )
+      call skip_gz_comment_int(sph_IO%sph_rank(1), zbuf1)
       read(textbuf,*) sph_IO%sph_rank(1:sph_IO%numdir_sph)
 !
       end subroutine read_rank_4_sph_gz
@@ -50,10 +50,10 @@
       type(sph_IO_data), intent(inout) :: sph_IO
 !
 !
-      call skip_gz_comment_int( sph_IO%nidx_gl_sph(1) )
+      call skip_gz_comment_int(sph_IO%nidx_gl_sph(1), zbuf1)
       read(textbuf,*) sph_IO%nidx_gl_sph(1:sph_IO%numdir_sph)
 !
-      call skip_gz_comment_int( sph_IO%ltr_gl )
+      call skip_gz_comment_int(sph_IO%ltr_gl, zbuf1)
 !
       end subroutine read_gl_resolution_sph_gz
 !
@@ -66,7 +66,7 @@
       integer(kind = kint) :: i
 !
 !
-      call skip_gz_comment_int( sph_IO%numnod_sph )
+      call skip_gz_comment_int(sph_IO%numnod_sph, zbuf1)
 !
       call alloc_nod_id_sph_IO(sph_IO)
 !

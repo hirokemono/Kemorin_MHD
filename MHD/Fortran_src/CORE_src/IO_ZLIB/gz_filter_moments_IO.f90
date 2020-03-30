@@ -38,9 +38,9 @@
       integer (kind=kint), intent(inout) :: nnod, nele, nf_type
 !
 !
-      call skip_gz_comment_int(nnod)
+      call skip_gz_comment_int(nnod, zbuf1)
       read(textbuf,*) nnod, nele
-      call skip_gz_comment_int(nf_type)
+      call skip_gz_comment_int(nf_type, zbuf1)
 !
       end subroutine read_filter_elen_head_gz
 !
@@ -79,9 +79,9 @@
       integer (kind=kint), intent(inout) :: n_filter, nf_type
 !
 !
-      call skip_gz_comment_int(nnod)
+      call skip_gz_comment_int(nnod, zbuf1)
       read(textbuf,*) nnod, nele, n_filter
-      call skip_gz_comment_int(nf_type)
+      call skip_gz_comment_int(nf_type, zbuf1)
 !
       end subroutine read_filter_moms_head_gz
 !
@@ -124,7 +124,7 @@
       integer(kind = kint) :: i, itmp
 !
 !
-      call skip_gz_comment_int(itmp)
+      call skip_gz_comment_int(itmp, zbuf1)
       read(textbuf,*) itmp, el1(1), el2(1), el3(1)
       do i = 2, num
         call get_one_line_from_gz_f(zbuf1)
@@ -147,7 +147,7 @@
 !
 !
       do nd = 1, 3
-        call skip_gz_comment_int(itmp)
+        call skip_gz_comment_int(itmp, zbuf1)
         read(textbuf,*) itmp, itmp, el1(1,nd), el2(1,nd), el3(1,nd)
         do i = 2, num
           call get_one_line_from_gz_f(zbuf1)

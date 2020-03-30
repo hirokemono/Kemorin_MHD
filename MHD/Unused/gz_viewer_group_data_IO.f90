@@ -118,7 +118,7 @@
 !      write(surface_id,'(a)') '! 3. node ID for domain boundary'
 !
       ngrp_pe = int(num_pe, KIND(ngrp_pe))
-      call skip_gz_comment_int(domain_grps%node_grp%num_item)
+      call skip_gz_comment_int(domain_grps%node_grp%num_item, zbuf1)
       call read_gz_multi_int                                            &
      &   (ngrp_pe, domain_grps%node_grp%istack_sf(1))
 !
@@ -128,7 +128,7 @@
 !
 !      write(surface_id,'(a)') '! 3.1 surface ID for domain boundary'
 !
-      call skip_gz_comment_int(domain_grps%surf_grp%num_item)
+      call skip_gz_comment_int(domain_grps%surf_grp%num_item, zbuf1)
       call read_gz_multi_int                                            &
      &   (ngrp_pe, domain_grps%surf_grp%istack_sf(1))
 !
@@ -138,7 +138,7 @@
 !
 !      write(surface_id,'(a)') '! 3.2 edge ID for domain boundary'
 !
-      call skip_gz_comment_int(domain_grps%edge_grp%num_item)
+      call skip_gz_comment_int(domain_grps%edge_grp%num_item, zbuf1)
       call read_gz_multi_int                                            &
      &   (ngrp_pe, domain_grps%edge_grp%istack_sf(1))
 !
@@ -181,7 +181,7 @@
       integer(kind = kint) :: num
 !
 !
-      call skip_gz_comment_int(view_nod_grps%num_grp)
+      call skip_gz_comment_int(view_nod_grps%num_grp, zbuf1)
 !
       call alloc_merged_node_grps_stack(num_pe, view_nod_grps)
 !
@@ -253,7 +253,7 @@
 !      write(surface_id,'(a)') '! 4.2 element group'
 !      write(surface_id,'(a)') '! 4.2.1 element data'
 !
-      call skip_gz_comment_int(view_ele_grps%num_grp)
+      call skip_gz_comment_int(view_ele_grps%num_grp, zbuf1)
       read(textbuf,*) view_ele_grps%num_grp
       num = num_pe * view_ele_grps%num_grp
 !
@@ -269,7 +269,7 @@
 !
 !      write(surface_id,'(a)') '! 4.2.2 node data'
 !
-      call skip_gz_comment_int(itmp)
+      call skip_gz_comment_int(itmp, zbuf1)
       call read_gz_multi_int((num_pe*view_ele_grps%num_grp),            &
      &    view_ele_grps%node_grp%istack_sf(1))
 !
@@ -281,7 +281,7 @@
 !
 !      write(surface_id,'(a)') '! 4.2.3 edge data'
 !
-      call skip_gz_comment_int(itmp)
+      call skip_gz_comment_int(itmp, zbuf1)
       call read_gz_multi_int((num_pe*view_ele_grps%num_grp),            &
      &    view_ele_grps%edge_grp%istack_sf(1))
 !
@@ -347,7 +347,7 @@
 !      write(surface_id,'(a)') '! 4.3 surface group'
 !      write(surface_id,'(a)') '! 4.3.1 surface data'
 !
-      call skip_gz_comment_int(view_sf_grps%num_grp)
+      call skip_gz_comment_int(view_sf_grps%num_grp, zbuf1)
       read(textbuf,*) view_sf_grps%num_grp
       num = num_pe * view_sf_grps%num_grp
 !
@@ -363,7 +363,7 @@
 !
 !      write(surface_id,'(a)') '! 4.3.2 node data'
 !
-      call skip_gz_comment_int(itmp)
+      call skip_gz_comment_int(itmp, zbuf1)
       call read_gz_multi_int((num_pe*view_sf_grps%num_grp),             &
      &    view_sf_grps%node_grp%istack_sf(1))
 !
@@ -375,7 +375,7 @@
 !
 !      write(surface_id,'(a)') '! 4.3.3 edge data'
 !
-      call skip_gz_comment_int(itmp)
+      call skip_gz_comment_int(itmp, zbuf1)
       call read_gz_multi_int((num_pe*view_sf_grps%num_grp),             &
      &    view_sf_grps%edge_grp%istack_sf(1))
 !
@@ -458,7 +458,7 @@
         ist = group%istack_sf(num_pe*(i-1)) + 1
         num = group%istack_sf(num_pe*i)                                 &
      &       - group%istack_sf(num_pe*(i-1))
-        call skip_gz_comment_chara( name(i) )
+        call skip_gz_comment_chara(name(i), zbuf1)
         call read_gz_multi_int(num, group%item_sf(ist))
       end do
 !

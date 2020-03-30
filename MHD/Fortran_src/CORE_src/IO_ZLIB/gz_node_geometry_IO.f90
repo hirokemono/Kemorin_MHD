@@ -106,7 +106,7 @@
       type(node_data), intent(inout) :: nod_IO
 !
 !
-      call skip_gz_comment_int(nod_IO%numnod)
+      call skip_gz_comment_int(nod_IO%numnod, zbuf1)
       read(textbuf,*) nod_IO%numnod, nod_IO%internal_node
 !
       end subroutine gz_read_number_of_node
@@ -139,7 +139,7 @@
       integer(kind = kint) :: i
 !
 !
-      call skip_gz_comment_int(nod_IO%numnod)
+      call skip_gz_comment_int(nod_IO%numnod, zbuf1)
       read(textbuf,*) nod_IO%numnod, nod_IO%internal_node
       call alloc_ele_scalar_IO(nod_IO, sfed_IO)
 !
@@ -160,7 +160,7 @@
       integer(kind = kint) :: i
 !
 !
-      call skip_gz_comment_int(nod_IO%numnod)
+      call skip_gz_comment_int(nod_IO%numnod, zbuf1)
       read(textbuf,*) nod_IO%numnod, nod_IO%internal_node
       call alloc_ele_vector_IO(nod_IO, sfed_IO)
 !

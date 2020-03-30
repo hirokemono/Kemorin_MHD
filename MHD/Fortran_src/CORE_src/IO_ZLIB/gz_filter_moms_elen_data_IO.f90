@@ -78,7 +78,7 @@
 !
 !
       do ifil = 1, nf_type
-        call skip_gz_comment_int(itmp)
+        call skip_gz_comment_int(itmp, zbuf1)
         read(textbuf,*) itmp, filter_type(ifil)
       end do
 !
@@ -90,7 +90,7 @@
       end if
 !
       do ifil = 1, nf_type
-        call skip_gz_comment_int(itmp)
+        call skip_gz_comment_int(itmp, zbuf1)
         read(textbuf,*) itmp, xmom_1d_org(ifil,0:2)
       end do
 !

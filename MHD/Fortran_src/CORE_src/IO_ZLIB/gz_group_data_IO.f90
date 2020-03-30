@@ -43,7 +43,7 @@
         ist = istack(i-1)+1
         num = istack(i) - istack(i-1)
 !
-        call skip_gz_comment_chara( name(i) )
+        call skip_gz_comment_chara(name(i), zbuf1)
 !
         if(num .gt. 0) call read_gz_multi_int(num, item(ist))
       end do
@@ -70,7 +70,7 @@
         ist = istack(i-1)+1
         num = istack(i) - istack(i-1)
 !
-        call skip_gz_comment_chara( name(i) )
+        call skip_gz_comment_chara(name(i), zbuf1)
 !
         if(num .gt. 0) then
           call read_gz_surf_group(ione, ntot, istack(i-1), item_sf)

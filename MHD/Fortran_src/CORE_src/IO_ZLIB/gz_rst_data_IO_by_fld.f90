@@ -63,7 +63,7 @@
      &   (id_rank, t_IO%i_time_step, t_IO%time, t_IO%dt, ierr_IO)
       if(ierr_IO .gt. 0) return
 !
-      call skip_gz_comment_int(fld_IO%num_field_IO)
+      call skip_gz_comment_int(fld_IO%num_field_IO, zbuf1)
       call read_gz_field_data(cast_long(fld_IO%nnod_IO),                &
      &    fld_IO%num_field_IO, fld_IO%ntot_comp_IO,                     &
      &    fld_IO%num_comp_IO, fld_IO%fld_name, fld_IO%d_IO)
@@ -100,7 +100,7 @@
      &   (id_rank, t_IO%i_time_step, t_IO%time, t_IO%dt, ierr_IO)
       if(ierr_IO .gt. 0) return
 !
-      call skip_gz_comment_int(fld_IO%num_field_IO)
+      call skip_gz_comment_int(fld_IO%num_field_IO, zbuf1)
 !
       call alloc_phys_name_IO(fld_IO)
       call read_gz_rst_field_comps(fld_IO)
@@ -123,7 +123,7 @@
 !
 !
       do i = 1, fld_IO%num_field_IO
-        call skip_gz_comment_chara( fld_IO%fld_name(i) )
+        call skip_gz_comment_chara(fld_IO%fld_name(i), zbuf1)
         call set_num_comps_4_rst(fld_IO%fld_name(i),                    &
      &      fld_IO%num_comp_IO(i) )
 !

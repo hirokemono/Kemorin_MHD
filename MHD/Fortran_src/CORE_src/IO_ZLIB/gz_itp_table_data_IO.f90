@@ -159,8 +159,8 @@
       type(interpolate_table_org), intent(inout) :: IO_itp_org
 !
 !
-      call skip_gz_comment_int(n_rank)
-      call skip_gz_comment_int(IO_itp_org%num_dest_domain)
+      call skip_gz_comment_int(n_rank, zbuf1)
+      call skip_gz_comment_int(IO_itp_org%num_dest_domain, zbuf1)
 !
       if (IO_itp_org%num_dest_domain .gt. 0) then
         call alloc_itp_num_org(np_smp, IO_itp_org)
@@ -346,8 +346,8 @@
       type(interpolate_table_dest), intent(inout) :: IO_itp_dest
 !
 !
-      call skip_gz_comment_int(n_rank)
-      call skip_gz_comment_int(IO_itp_dest%num_org_domain)
+      call skip_gz_comment_int(n_rank, zbuf1)
+      call skip_gz_comment_int(IO_itp_dest%num_org_domain, zbuf1)
 !
       if (IO_itp_dest%num_org_domain .gt. 0) then
         call alloc_itp_num_dest(IO_itp_dest)

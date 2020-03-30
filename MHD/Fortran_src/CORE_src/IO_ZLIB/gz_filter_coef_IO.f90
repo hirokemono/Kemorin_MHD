@@ -37,7 +37,7 @@
       integer(kind = kint) :: i, j, ist, ied
 !
 !
-      call skip_gz_comment_int(IO_filters%ngrp_node)
+      call skip_gz_comment_int(IO_filters%ngrp_node, zbuf1)
 !
       call alloc_num_filtering_comb(ione, IO_filters)
 !
@@ -84,7 +84,7 @@
       call alloc_3d_filter_comb(IO_filters)
       call alloc_3d_filter_func(IO_filters)
 !
-      call skip_gz_comment_int(itmp)
+      call skip_gz_comment_int(itmp, zbuf1)
 !
       do j = 1, IO_filters%ntot_near_nod
         call get_one_line_from_gz_f(zbuf1)
