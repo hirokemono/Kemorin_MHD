@@ -76,6 +76,8 @@
 !
       subroutine open_wt_gzfile_a(gzip_name, zbuf)
 !
+      use calypso_c_binding
+!
       character(len = kchara), intent(in) :: gzip_name
       type(buffer_4_gzip) , intent(inout):: zbuf
 !
@@ -88,6 +90,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine open_ad_gzfile_a(gzip_name, zbuf)
+!
+      use calypso_c_binding
 !
       character(len = kchara), intent(in) :: gzip_name
       type(buffer_4_gzip) , intent(inout):: zbuf
@@ -102,6 +106,8 @@
 !
       subroutine open_rd_gzfile_a(gzip_name, zbuf)
 !
+      use calypso_c_binding
+!
       character(len = kchara), intent(in) :: gzip_name
       type(buffer_4_gzip) , intent(inout):: zbuf
 !
@@ -115,6 +121,7 @@
 !
       subroutine close_gzfile_a
 !
+      use calypso_c_binding
 !
       call close_gzfile_b()
       call dealloc_fixbuffer_for_zlib(zbuf1)
