@@ -94,7 +94,7 @@
 !
 !
       write(textbuf,'(i16,2a1)') ngrp, char(10), char(0)
-      call gz_write_textbuf_no_lf
+      call gz_write_textbuf_no_lf(zbuf1)
 !
       if (ngrp .gt. 0) then
         call write_gz_multi_int_8i16(ngrp, istack(1))
@@ -104,11 +104,11 @@
           num = istack(i) - istack(i-1)
 !
           write(textbuf,'(a,2a1)') trim(name(i)), char(10), char(0)
-          call gz_write_textbuf_no_lf
+          call gz_write_textbuf_no_lf(zbuf1)
 !
           if(num .le. 0) then
             write(textbuf,'(2a1)') char(10), char(0)
-            call gz_write_textbuf_no_lf
+            call gz_write_textbuf_no_lf(zbuf1)
           else
             call write_gz_multi_int_8i16(num, item(ist))
           end if
@@ -116,7 +116,7 @@
         end do
       else
         write(textbuf,'(2a1)') char(10), char(0)
-        call gz_write_textbuf_no_lf
+        call gz_write_textbuf_no_lf(zbuf1)
       end if
 !
       end subroutine write_group_data_gz
@@ -135,7 +135,7 @@
 !
 !
       write(textbuf,'(i16,2a1)') ngrp, char(10), char(0)
-      call gz_write_textbuf_no_lf
+      call gz_write_textbuf_no_lf(zbuf1)
 !
       if (ngrp .gt. 0) then
         call write_gz_multi_int_8i16(ngrp, istack(1))
@@ -145,13 +145,13 @@
           num = istack(i) - istack(i-1)
 !
           write(textbuf,'(a,2a1)') trim(name(i)), char(10), char(0)
-          call gz_write_textbuf_no_lf
+          call gz_write_textbuf_no_lf(zbuf1)
 !
           if(num .le. 0) then
             write(textbuf,'(2a1)') char(10), char(0)
-            call gz_write_textbuf_no_lf
+            call gz_write_textbuf_no_lf(zbuf1)
             write(textbuf,'(2a1)') char(10), char(0)
-            call gz_write_textbuf_no_lf
+            call gz_write_textbuf_no_lf(zbuf1)
           else
             call write_gz_surf_group(ione, ntot, istack(i-1), item_sf)
             call write_gz_surf_group(itwo, ntot, istack(i-1), item_sf)
@@ -160,9 +160,9 @@
         end do
       else
         write(textbuf,'(2a1)') char(10), char(0)
-        call gz_write_textbuf_no_lf
+        call gz_write_textbuf_no_lf(zbuf1)
         write(textbuf,'(2a1)') char(10), char(0)
-        call gz_write_textbuf_no_lf
+        call gz_write_textbuf_no_lf(zbuf1)
       end if
 !
       end subroutine write_surf_group_data_gz

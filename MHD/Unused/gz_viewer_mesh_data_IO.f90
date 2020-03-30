@@ -51,11 +51,11 @@
 !
 !
       textbuf = hd_ndomain_viewer() // char(0)
-      call gz_write_textbuf_no_lf
+      call gz_write_textbuf_no_lf(zbuf1)
 !
       num_pe_write = int(mgd_view_mesh%num_pe_sf,KIND(num_pe_write))
       write(textbuf,'(i16,2a1)') num_pe_write, char(10), char(0)
-      call gz_write_textbuf_no_lf
+      call gz_write_textbuf_no_lf(zbuf1)
 !
       call write_gz_multi_int_8i16                                      &
      &   (num_pe_write, mgd_view_mesh%inod_sf_stack(1))
@@ -99,17 +99,17 @@
 !
 !
       textbuf = hd_node_viewer() // char(0)
-      call gz_write_textbuf_no_lf
+      call gz_write_textbuf_no_lf(zbuf1)
 !
       write(textbuf,'(i16,2a1)') view_mesh%nnod_viewer,                 &
      &                          char(10), char(0)
-      call gz_write_textbuf_no_lf
+      call gz_write_textbuf_no_lf(zbuf1)
 !
       do i = 1, view_mesh%nnod_viewer
         write(textbuf,'(i16,1p3E25.15e3,2a1)')                          &
      &     view_mesh%inod_gl_view(i), view_mesh%xx_view(i,1:3),         &
      &     char(10), char(0)
-        call gz_write_textbuf_no_lf
+        call gz_write_textbuf_no_lf(zbuf1)
       end do
 !
       end subroutine write_node_data_viewer_gz
@@ -149,11 +149,11 @@
 !
 !
       textbuf = hd_surf_viewer() // char(0)
-      call gz_write_textbuf_no_lf
+      call gz_write_textbuf_no_lf(zbuf1)
 !
       write(textbuf,'(i16,2a1)') view_mesh%nsurf_viewer,                &
      &     char(10), char(0)
-      call gz_write_textbuf_no_lf
+      call gz_write_textbuf_no_lf(zbuf1)
       do i = 1, num_pe
         ist = isurf_sf_stack(i-1)
         num = isurf_sf_stack(i) - isurf_sf_stack(i-1)
@@ -167,7 +167,7 @@
         write(textbuf,fmt_txt)                                          &
      &      i, view_mesh%ie_sf_viewer(i,1:view_mesh%nnod_v_surf),       &
      &      char(10), char(0)
-        call gz_write_textbuf_no_lf
+        call gz_write_textbuf_no_lf(zbuf1)
       end do
 !
 end subroutine write_surf_connect_viewer_gz
@@ -223,11 +223,11 @@ end subroutine write_surf_connect_viewer_gz
 !
 !
       textbuf = hd_edge_viewer() // char(0)
-      call gz_write_textbuf_no_lf
+      call gz_write_textbuf_no_lf(zbuf1)
 !
       write(textbuf,'(i16,2a1)') view_mesh%nedge_viewer,                &
      &     char(10), char(0)
-      call gz_write_textbuf_no_lf
+      call gz_write_textbuf_no_lf(zbuf1)
 !
 !
       write(fmt_txt,'(a5,i2,a10)')                                      &
@@ -236,14 +236,14 @@ end subroutine write_surf_connect_viewer_gz
         write(textbuf,fmt_txt)                                          &
      &       i, view_mesh%ie_edge_viewer(i,1:view_mesh%nnod_v_edge),    &
      &       char(10), char(0)
-        call gz_write_textbuf_no_lf
+        call gz_write_textbuf_no_lf(zbuf1)
       end do
 !
       textbuf = hd_edge_on_sf_viewer() // char(0)
-      call gz_write_textbuf_no_lf
+      call gz_write_textbuf_no_lf(zbuf1)
       write(textbuf,'(i16,2a1)') view_mesh%nsurf_viewer,                &
      &     char(10), char(0)
-      call gz_write_textbuf_no_lf
+      call gz_write_textbuf_no_lf(zbuf1)
 !
       write(fmt_txt,'(a5,i2,a10)')                                      &
      &                '(i16,', nedge_4_surf, '(i16),2a1)'
@@ -251,7 +251,7 @@ end subroutine write_surf_connect_viewer_gz
         write(textbuf,fmt_txt)                                          &
      &      i, view_mesh%iedge_sf_viewer(i,1:nedge_4_surf),             &
      &      char(10), char(0)
-        call gz_write_textbuf_no_lf
+        call gz_write_textbuf_no_lf(zbuf1)
       end do
 !
       end subroutine write_edge_connect_viewer_gz

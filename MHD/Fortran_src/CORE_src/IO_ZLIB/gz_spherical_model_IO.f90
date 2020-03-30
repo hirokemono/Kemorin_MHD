@@ -91,13 +91,13 @@
 !
 !
       textbuf = hd_segment() // char(0)
-      call gz_write_textbuf_no_lf
+      call gz_write_textbuf_no_lf(zbuf1)
 !
       write(fmt_txt,'(a1,i2,a10)')                                      &
      &                '(', sph_IO%numdir_sph, '(i16),2a1)'
       write(textbuf,fmt_txt) sph_IO%sph_rank(1:sph_IO%numdir_sph),      &
      &                      char(10), char(0)
-      call gz_write_textbuf_no_lf
+      call gz_write_textbuf_no_lf(zbuf1)
 !
       end subroutine write_rank_4_sph_gz
 !
@@ -113,16 +113,16 @@
 !
 !
       textbuf = hd_trunc() // char(0)
-      call gz_write_textbuf_no_lf
+      call gz_write_textbuf_no_lf(zbuf1)
 !
       write(fmt_txt,'(a1,i2,a10)')                                      &
      &                '(', sph_IO%numdir_sph, '(i16),2a1)'
       write(textbuf,fmt_txt) sph_IO%nidx_gl_sph(1:sph_IO%numdir_sph),   &
      &                      char(10), char(0)
-      call gz_write_textbuf_no_lf
+      call gz_write_textbuf_no_lf(zbuf1)
 !
       write(textbuf,'(i16,2a1)') sph_IO%ltr_gl, char(10), char(0)
-      call gz_write_textbuf_no_lf
+      call gz_write_textbuf_no_lf(zbuf1)
 !
       end subroutine write_gl_resolution_sph_gz
 !
@@ -137,14 +137,14 @@
 !
 !
       write(textbuf,'(i16,2a1)') sph_IO%numnod_sph, char(10), char(0)
-      call gz_write_textbuf_no_lf
+      call gz_write_textbuf_no_lf(zbuf1)
 !
       write(fmt_txt,'(a5,i2,a10)')                                      &
      &                '(i16,', sph_IO%numdir_sph, '(i16),2a1)'
       do i = 1, sph_IO%numnod_sph
         write(textbuf,fmt_txt) sph_IO%inod_gl_sph(i),                   &
      &      sph_IO%idx_gl_sph(i,1:sph_IO%numdir_sph), char(10), char(0)
-        call gz_write_textbuf_no_lf
+        call gz_write_textbuf_no_lf(zbuf1)
       end do
 !
       end subroutine write_gl_nodes_sph_gz

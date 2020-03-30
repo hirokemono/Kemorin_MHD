@@ -113,31 +113,31 @@
 !
 !
       write(textbuf,'(a,2a1)') '! filter type ', char(10), char(0)
-      call gz_write_textbuf_no_lf
+      call gz_write_textbuf_no_lf(zbuf1)
       do ifil = 1, nf_type
         write(textbuf,'(i16,a,2a1)')                                    &
      &           ifil, trim(filter_type(ifil)), char(10), char(0)
-        call gz_write_textbuf_no_lf
+        call gz_write_textbuf_no_lf(zbuf1)
       end do
 !
       write(textbuf,'(a,2a1)') '! filter width ', char(10), char(0)
-      call gz_write_textbuf_no_lf
+      call gz_write_textbuf_no_lf(zbuf1)
 !
       write(fmt_txt,'(a3,i1,a13)') '(1p', nf_type, 'E25.15e3,2a1)'
       write(textbuf,fmt_txt) f_width(1:nf_type), char(10), char(0)
-      call gz_write_textbuf_no_lf
+      call gz_write_textbuf_no_lf(zbuf1)
 !
       write(textbuf,'(a,2a1)')                                          &
      &        '! original 1d-moment of filters ', char(10), char(0)
-      call gz_write_textbuf_no_lf
+      call gz_write_textbuf_no_lf(zbuf1)
       write(textbuf,'(a,2a1)')                                          &
      &        '! (filter No., 0th, 1st, 2nd moment)', char(10), char(0)
-      call gz_write_textbuf_no_lf
+      call gz_write_textbuf_no_lf(zbuf1)
 !
       do ifil = 1, nf_type
         write(textbuf,'(i5,1p3E25.15e3,2a1)')                           &
      &         ifil, xmom_1d_org(ifil,0:2), char(10), char(0)
-        call gz_write_textbuf_no_lf
+        call gz_write_textbuf_no_lf(zbuf1)
       end do
 !
       end subroutine write_ref_filter_param_gz
@@ -233,41 +233,41 @@
 !
       write(textbuf,'(a,2a1)') '! dx^2 for each node',                  &
      &                        char(10), char(0)
-      call gz_write_textbuf_no_lf
+      call gz_write_textbuf_no_lf(zbuf1)
       write(textbuf,'(a,2a1)') '! node ID, length of x, y, z',          &
      &                        char(10), char(0)
-      call gz_write_textbuf_no_lf
+      call gz_write_textbuf_no_lf(zbuf1)
 !
       call write_elength_gz(nnod, e_x2_nod, e_y2_nod, e_z2_nod )
 !
       write(textbuf,'(a,2a1)') '! dxdy for each node',                  &
      &                        char(10), char(0)
-      call gz_write_textbuf_no_lf
+      call gz_write_textbuf_no_lf(zbuf1)
       write(textbuf,'(a,2a1)') '! node ID, length of x, y, z',          &
      &                         char(10), char(0)
-      call gz_write_textbuf_no_lf
+      call gz_write_textbuf_no_lf(zbuf1)
 !
       call write_elength_gz(nnod, e_xy_nod, e_yz_nod, e_zx_nod)
 !
 !
       write(textbuf,'(a,2a1)')                                          &
      &      '! 1st derivative of dx^2 for each node', char(10), char(0)
-      call gz_write_textbuf_no_lf
+      call gz_write_textbuf_no_lf(zbuf1)
       write(textbuf,'(a,2a1)')                                          &
      &    '! direction of diffrenciate, node ID, length of x, y, z',    &
      &     char(10), char(0)
-      call gz_write_textbuf_no_lf
+      call gz_write_textbuf_no_lf(zbuf1)
 !
       call write_mom_coefs_dx_gz(nnod,                                  &
      &      e_x2_nod_dx, e_y2_nod_dx, e_z2_nod_dx)
 !
       write(textbuf,'(a,2a1)')                                          &
      &      '! 1st derivative of dxdy for each node', char(10), char(0)
-      call gz_write_textbuf_no_lf
+      call gz_write_textbuf_no_lf(zbuf1)
       write(textbuf,'(a,2a1)')                                          &
      &      '! direction of diffrenciate, node ID, length of x, y, z',  &
      &      char(10), char(0)
-      call gz_write_textbuf_no_lf
+      call gz_write_textbuf_no_lf(zbuf1)
 !
       call write_mom_coefs_dx_gz(nnod,                                  &
      &      e_xy_nod_dx, e_yz_nod_dx, e_zx_nod_dx)
@@ -319,19 +319,19 @@
 !
       write(textbuf,'(a,2a1)')  '! dx^2 for each element',              &
      &                         char(10), char(0)
-      call gz_write_textbuf_no_lf
+      call gz_write_textbuf_no_lf(zbuf1)
       write(textbuf,'(a,2a1)')                                          &
      &      '! element ID, length of x, y, z', char(10), char(0)
-      call gz_write_textbuf_no_lf
+      call gz_write_textbuf_no_lf(zbuf1)
 !
       call write_elength_gz(nele, e_x2_ele, e_y2_ele, e_z2_ele)
 !
       write(textbuf,'(a,2a1)')  '! dxdy for each element',              &
      &                        char(10), char(0)
-      call gz_write_textbuf_no_lf
+      call gz_write_textbuf_no_lf(zbuf1)
       write(textbuf,'(a,2a1)')                                          &
      &      '! element ID, length of x, y, z', char(10), char(0)
-      call gz_write_textbuf_no_lf
+      call gz_write_textbuf_no_lf(zbuf1)
 !
       call write_elength_gz(nele, e_xy_ele, e_yz_ele, e_zx_ele)
 !
@@ -339,11 +339,11 @@
       write(textbuf,'(a,2a1)')                                          &
      &      '! 1st derivative of dx^2 for each element',                &
      &      char(10), char(0)
-      call gz_write_textbuf_no_lf
+      call gz_write_textbuf_no_lf(zbuf1)
       write(textbuf,'(a,2a1)')                                          &
      &      '! direction of diffrenciate, ele ID, length of x, y, z',   &
      &      char(10), char(0)
-      call gz_write_textbuf_no_lf
+      call gz_write_textbuf_no_lf(zbuf1)
 !
       call write_mom_coefs_dx_gz(nele,                                  &
      &      e_x2_ele_dx, e_y2_ele_dx, e_z2_ele_dx)
@@ -351,11 +351,11 @@
       write(textbuf,'(a,2a1)')                                          &
      &      '! 1st derivative of dxdy for each element',                &
      &      char(10), char(0)
-      call gz_write_textbuf_no_lf
+      call gz_write_textbuf_no_lf(zbuf1)
       write(textbuf,'(a,2a1)')                                          &
      &      '! direction of diffrenciate, ele ID, length of x, y, z',   &
      &      char(10), char(0)
-      call gz_write_textbuf_no_lf
+      call gz_write_textbuf_no_lf(zbuf1)
 !
       call write_mom_coefs_dx_gz(nele,                                  &
      &      e_xy_ele_dx, e_yz_ele_dx, e_zx_ele_dx)
@@ -363,11 +363,11 @@
       write(textbuf,'(a,2a1)')                                          &
      &      '! 2nd derivative of dx^2 for each element',                &
      &      char(10), char(0)
-      call gz_write_textbuf_no_lf
+      call gz_write_textbuf_no_lf(zbuf1)
       write(textbuf,'(a,2a1)')                                          &
      &      '! direction of diffrenciate, ele ID, length of x, y, z',   &
      &      char(10), char(0)
-      call gz_write_textbuf_no_lf
+      call gz_write_textbuf_no_lf(zbuf1)
 !
       call write_mom_coefs_dx_gz(nele,                                  &
      &      e_x2_ele_dx2, e_y2_ele_dx2, e_z2_ele_dx2)
@@ -375,11 +375,11 @@
       write(textbuf,'(a,2a1)')                                          &
      &      '! 2nd derivative of dxdy for each element',                &
      &      char(10), char(0)
-      call gz_write_textbuf_no_lf
+      call gz_write_textbuf_no_lf(zbuf1)
       write(textbuf,'(a,2a1)')                                          &
      &      '! direction of diffrenciate, ele ID, length of x, y, z',   &
      &      char(10), char(0)
-      call gz_write_textbuf_no_lf
+      call gz_write_textbuf_no_lf(zbuf1)
 !
       call write_mom_coefs_dx_gz(nele,                                  &
      &      e_xy_ele_dx2, e_yz_ele_dx2, e_zx_ele_dx2)
@@ -523,30 +523,30 @@
       write(textbuf,'(a,2a1)')                                          &
      &      '! Second filter moments for each element',                 &
      &      char(10), char(0)
-      call gz_write_textbuf_no_lf
+      call gz_write_textbuf_no_lf(zbuf1)
       write(textbuf,'(a,2a1)')                                          &
      &      '! element ID, x, y, z direction', char(10), char(0)
-      call gz_write_textbuf_no_lf
+      call gz_write_textbuf_no_lf(zbuf1)
 !
       call write_elength_gz(nele, f_x2_ele, f_y2_ele, f_z2_ele )
 !
       write(textbuf,'(a,2a1)')                                          &
      &      '! product of first order moment in 2 direction',           &
      &      char(10), char(0)
-      call gz_write_textbuf_no_lf
+      call gz_write_textbuf_no_lf(zbuf1)
       write(textbuf,'(a,2a1)')                                          &
      &      '! element ID, x, y, z direction', char(10), char(0)
-      call gz_write_textbuf_no_lf
+      call gz_write_textbuf_no_lf(zbuf1)
 !
       call write_elength_gz(nele, f_xy_ele, f_yz_ele, f_zx_ele )
 !
       write(textbuf,'(a,2a1)')                                          &
      &      '! first filter moments for each element',                  &
      &      char(10), char(0)
-      call gz_write_textbuf_no_lf
+      call gz_write_textbuf_no_lf(zbuf1)
       write(textbuf,'(a,2a1)')                                          &
      &      '! element ID, x, y, z direction', char(10), char(0)
-      call gz_write_textbuf_no_lf
+      call gz_write_textbuf_no_lf(zbuf1)
 !
       call write_elength_gz(nele, f_x_ele, f_y_ele, f_z_ele )
 !
@@ -554,11 +554,11 @@
       write(textbuf,'(a,2a1)')                                          &
      &     '! 1st diff. of Second filter moments for each element',     &
      &     char(10), char(0)
-      call gz_write_textbuf_no_lf
+      call gz_write_textbuf_no_lf(zbuf1)
       write(textbuf,'(a,2a1)')                                          &
      &     '! direction of difference, element ID, x, y, z direction',  &
      &     char(10), char(0)
-      call gz_write_textbuf_no_lf
+      call gz_write_textbuf_no_lf(zbuf1)
 !
       call write_mom_coefs_dx_gz(nele,                                  &
      &    f_x2_ele_dx, f_y2_ele_dx, f_z2_ele_dx )
@@ -566,11 +566,11 @@
       write(textbuf,'(a,2a1)')                                          &
      &     '! 1st diff. of product of first order moments in 2-dir.',   &
      &     char(10), char(0)
-      call gz_write_textbuf_no_lf
+      call gz_write_textbuf_no_lf(zbuf1)
       write(textbuf,'(a,2a1)')                                          &
      &     '! direction of difference, element ID, x, y, z direction',  &
      &     char(10), char(0)
-      call gz_write_textbuf_no_lf
+      call gz_write_textbuf_no_lf(zbuf1)
 !
       call write_mom_coefs_dx_gz(nele,                                  &
      &    f_xy_ele_dx, f_yz_ele_dx, f_zx_ele_dx )
@@ -578,11 +578,11 @@
       write(textbuf,'(a,2a1)')                                          &
      &     '! 1st diff. of first filter moments for each element',      &
      &     char(10), char(0)
-      call gz_write_textbuf_no_lf
+      call gz_write_textbuf_no_lf(zbuf1)
       write(textbuf,'(a,2a1)')                                          &
      &     '! direction of difference, element ID, x, y, z direction',  &
      &     char(10), char(0)
-      call gz_write_textbuf_no_lf
+      call gz_write_textbuf_no_lf(zbuf1)
 !
       call write_mom_coefs_dx_gz(nele,                                  &
      &    f_x_ele_dx, f_y_ele_dx, f_z_ele_dx )
@@ -591,11 +591,11 @@
       write(textbuf,'(a,2a1)')                                          &
      &     '! 2nd diff. of Second filter moments for each element',     &
      &     char(10), char(0)
-      call gz_write_textbuf_no_lf
+      call gz_write_textbuf_no_lf(zbuf1)
       write(textbuf,'(a,2a1)')                                          &
      &     '! direction of difference, element ID, x, y, z direction',  &
      &     char(10), char(0)
-      call gz_write_textbuf_no_lf
+      call gz_write_textbuf_no_lf(zbuf1)
 !
       call write_mom_coefs_dx_gz(nele,                                  &
      &    f_x2_ele_dx2, f_y2_ele_dx2, f_z2_ele_dx2)
@@ -603,11 +603,11 @@
       write(textbuf,'(a,2a1)')                                          &
      &     '! 2nd diff. of product of first order moments in 2-dir.',   &
      &     char(10), char(0)
-      call gz_write_textbuf_no_lf
+      call gz_write_textbuf_no_lf(zbuf1)
       write(textbuf,'(a,2a1)')                                          &
      &     '! direction of difference, element ID, x, y, z direction',  &
      &     char(10), char(0)
-      call gz_write_textbuf_no_lf
+      call gz_write_textbuf_no_lf(zbuf1)
 !
       call write_mom_coefs_dx_gz(nele,                                  &
      &    f_xy_ele_dx2, f_yz_ele_dx2, f_zx_ele_dx2)
@@ -615,11 +615,11 @@
       write(textbuf,'(a,2a1)')                                          &
      &     '! 2nd diff. of first filter moments for each element',      &
      &     char(10), char(0)
-      call gz_write_textbuf_no_lf
+      call gz_write_textbuf_no_lf(zbuf1)
       write(textbuf,'(a,2a1)')                                          &
      &     '! direction of difference, element ID, x, y, z direction',  &
      &     char(10), char(0)
-      call gz_write_textbuf_no_lf
+      call gz_write_textbuf_no_lf(zbuf1)
 !
       call write_mom_coefs_dx_gz(nele,                                  &
      &    f_x_ele_dx2, f_y_ele_dx2, f_z_ele_dx2)

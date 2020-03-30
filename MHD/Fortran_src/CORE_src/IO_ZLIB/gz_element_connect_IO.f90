@@ -47,7 +47,7 @@
 !
 !
       write(textbuf,'(i16,2a1)') ele_IO%numele, char(10), char(0)
-      call gz_write_textbuf_no_lf
+      call gz_write_textbuf_no_lf(zbuf1)
       call write_gz_multi_int_10i8(ele_IO%numele, ele_IO%elmtyp)
 !
       do i=1, ele_IO%numele
@@ -55,7 +55,7 @@
      &         '(i16,', ele_IO%nodelm(i), 'i16,2a1)'
         write(textbuf,fmt_txt) ele_IO%iele_global(i),                   &
      &         ele_IO%ie(i,1:ele_IO%nodelm(i)), char(10), char(0)
-        call gz_write_textbuf_no_lf
+        call gz_write_textbuf_no_lf(zbuf1)
       end do
 !
       end subroutine gz_write_element_info
@@ -70,12 +70,12 @@
 !
       write(textbuf,'(2i16,2a1)')                                       &
      &     sfed_IO%nsf_4_ele, sfed_IO%nsurf_in_ele, char(10), char(0)
-      call gz_write_textbuf_no_lf
+      call gz_write_textbuf_no_lf(zbuf1)
 !
       do i = 1, sfed_IO%nsf_4_ele
         write(textbuf,'(6i16,2a1)')                                     &
      &         sfed_IO%isf_for_ele(i,1:sfed_IO%nsurf_in_ele), char(0)
-        call gz_write_textbuf_no_lf
+        call gz_write_textbuf_no_lf(zbuf1)
       end do
 !
       end subroutine gz_write_surface_4_element
@@ -90,13 +90,13 @@
 !
       write(textbuf,'(2i16,2a1)')                                       &
      &      sfed_IO%ned_4_ele, sfed_IO%nedge_in_ele, char(10), char(0)
-      call gz_write_textbuf_no_lf
+      call gz_write_textbuf_no_lf(zbuf1)
 !
       do i = 1, sfed_IO%ned_4_ele
         write(textbuf,'(12i16,2a1)')                                    &
      &        sfed_IO%iedge_for_ele(i,1:sfed_IO%nedge_in_ele),          &
      &        char(10), char(0)
-        call gz_write_textbuf_no_lf
+        call gz_write_textbuf_no_lf(zbuf1)
       end do
 !
       end subroutine gz_write_edge_4_element

@@ -72,7 +72,7 @@
 !
 !
       textbuf =  vtk_fields_head(nnod) // char(0)
-      call gz_write_textbuf_no_lf
+      call gz_write_textbuf_no_lf(zbuf1)
 !
       end subroutine write_gz_vtk_fields_head
 !
@@ -93,7 +93,7 @@
       else if (ncomp_field .eq. n_sym_tensor) then
         textbuf =  vtk_tensor_head(field_name) // char(0)
       end if
-      call gz_write_textbuf_no_lf
+      call gz_write_textbuf_no_lf(zbuf1)
 !
       end subroutine write_gz_vtk_each_field_head
 !
@@ -118,18 +118,18 @@
      &    vtk_each_vector(d_nod(inod,2), d_nod(inod,4), d_nod(inod,5)), &
      &    vtk_each_vector(d_nod(inod,3), d_nod(inod,5), d_nod(inod,6)), &
      &    char(0)
-          call gz_write_textbuf_no_lf
+          call gz_write_textbuf_no_lf(zbuf1)
         end do
       else if(ncomp_field .eq. n_vector) then
         do inod = 1, nnod
           textbuf = vtk_each_vector(d_nod(inod,1), d_nod(inod,2),       &
      &                              d_nod(inod,3)) // char(0)
-          call gz_write_textbuf_no_lf
+          call gz_write_textbuf_no_lf(zbuf1)
         end do
       else
         do inod = 1, nnod
           textbuf = vtk_each_scalar(d_nod(inod,1)) // char(0)
-          call gz_write_textbuf_no_lf
+          call gz_write_textbuf_no_lf(zbuf1)
         end do
       end if
 !
@@ -144,7 +144,7 @@
 !
 !
       textbuf =  vtk_node_head(nnod) // char(0)
-      call gz_write_textbuf_no_lf
+      call gz_write_textbuf_no_lf(zbuf1)
 !
       end subroutine write_gz_vtk_node_head
 !
@@ -158,7 +158,7 @@
 !
 !
       textbuf =  vtk_connect_head(nele, nnod_ele) // char(0)
-      call gz_write_textbuf_no_lf
+      call gz_write_textbuf_no_lf(zbuf1)
 !
       end subroutine write_gz_vtk_connect_head
 !
@@ -178,11 +178,11 @@
       icellid = vtk_cell_type(nnod_ele)
 !
       textbuf = vtk_cell_type_head(nele) // char(0)
-      call gz_write_textbuf_no_lf
+      call gz_write_textbuf_no_lf(zbuf1)
 !
       do iele = 1, nele
         textbuf =  vtk_each_cell_type(icellid) // char(0)
-        call gz_write_textbuf_no_lf
+        call gz_write_textbuf_no_lf(zbuf1)
       end do
 !
       end subroutine write_gz_vtk_cell_type
@@ -203,7 +203,7 @@
       do iele = 1, nele
         ie0(1:nnod_ele) = ie(iele,1:nnod_ele) - 1
         textbuf =  vtk_each_connect(nnod_ele,ie0) // char(0)
-        call gz_write_textbuf_no_lf
+        call gz_write_textbuf_no_lf(zbuf1)
       end do
 !
       end subroutine write_gz_vtk_connect_data

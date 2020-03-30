@@ -126,16 +126,16 @@
 !
 !
       write(textbuf,'(i16,2a1)') id_rank, char(10), char(0)
-      call gz_write_textbuf_no_lf
+      call gz_write_textbuf_no_lf(zbuf1)
       write(textbuf,'(i16,2a1)') comm_IO%num_neib, char(10), char(0)
-      call gz_write_textbuf_no_lf
+      call gz_write_textbuf_no_lf(zbuf1)
 !
       if (comm_IO%num_neib .gt. 0) then
         call write_gz_multi_int_8i16                                    &
      &     (comm_IO%num_neib, comm_IO%id_neib)
       else
         write(textbuf,'(2a1)') char(10), char(0)
-        call gz_write_textbuf_no_lf
+        call gz_write_textbuf_no_lf(zbuf1)
       end if
 !
       end subroutine gz_write_domain_info
@@ -201,11 +201,11 @@
         call write_gz_multi_int_8i16(num_sr, istack_sr(1))
         do i = 1, ntot_sr
           write(textbuf,'(i16,2a1)') inod_sr(i), char(10), char(0)
-          call gz_write_textbuf_no_lf
+          call gz_write_textbuf_no_lf(zbuf1)
         end do
       else
         write(textbuf,'(2a1)') char(10), char(0)
-        call gz_write_textbuf_no_lf
+        call gz_write_textbuf_no_lf(zbuf1)
       end if
 !
       end subroutine write_send_recv_data_gz

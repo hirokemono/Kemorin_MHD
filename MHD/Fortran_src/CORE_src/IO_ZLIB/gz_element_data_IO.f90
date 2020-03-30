@@ -82,19 +82,19 @@
 !
 !
       textbuf = hd_ecomm_para() // char(0)
-      call gz_write_textbuf_no_lf
+      call gz_write_textbuf_no_lf(zbuf1)
       textbuf = hd_fem_para() // char(0)
-      call gz_write_textbuf_no_lf
+      call gz_write_textbuf_no_lf(zbuf1)
 !
       call gz_write_domain_info(id_rank, comm_IO)
 !
       textbuf = hd_ecomm_import() // char(0)
-      call gz_write_textbuf_no_lf
+      call gz_write_textbuf_no_lf(zbuf1)
 !
       call gz_write_import_data(comm_IO)
 !
       textbuf = hd_ecomm_export() // char(0)
-      call gz_write_textbuf_no_lf
+      call gz_write_textbuf_no_lf(zbuf1)
 !
       call gz_write_export_data(comm_IO)
 !
@@ -140,12 +140,12 @@
 !
 !
       textbuf = hd_ecomm_point() // char(0)
-      call gz_write_textbuf_no_lf
+      call gz_write_textbuf_no_lf(zbuf1)
 !
       call gz_write_geometry_info(nod_IO)
 !
       textbuf = hd_ecomm_vol() // char(0)
-      call gz_write_textbuf_no_lf
+      call gz_write_textbuf_no_lf(zbuf1)
 !
       call gz_write_scalar_in_element(nod_IO, sfed_IO)
 !

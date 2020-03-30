@@ -60,12 +60,12 @@
 !
       write(textbuf,fmt_txt) num_output,'  ', ncomp_out(1:num_output),  &
      &                      char(10), char(0)
-      call gz_write_textbuf_no_lf
+      call gz_write_textbuf_no_lf(zbuf1)
 !
       do j = 1, num_output
         write(textbuf,'(a,a1,2a1)') trim(name_out(j)), ",",             &
      &                             char(10), char(0)
-        call gz_write_textbuf_no_lf
+        call gz_write_textbuf_no_lf(zbuf1)
       end do
 !
       end subroutine write_gz_udt_field_header
@@ -88,7 +88,7 @@
         dat_1(1:ncomp_dat) = dat_out(inod,1:ncomp_dat)
         textbuf = ucd_each_field(inod_out(inod), ncomp_dat, dat_1)      &
      &           // char(0)
-        call gz_write_textbuf_no_lf
+        call gz_write_textbuf_no_lf(zbuf1)
       end do
 !
       end subroutine  write_gz_ucd_field_data
@@ -238,7 +238,7 @@
 !
       textbuf = ucd_connect_head(nnod_output, nele_out, ncomp_output)   &
      &         // char(0)
-      call gz_write_textbuf_no_lf
+      call gz_write_textbuf_no_lf(zbuf1)
 !
       end subroutine write_gz_udt_mesh_header
 !
@@ -263,7 +263,7 @@
         ie0(1:nnod_ele) = ie_gl(iele,1:nnod_ele)
         textbuf = ucd_each_connect(iele_gl(iele), nnod_ele, ie0)        &
      &           // char(0)
-        call gz_write_textbuf_no_lf
+        call gz_write_textbuf_no_lf(zbuf1)
       end do
 !
       end subroutine  write_gz_ucd_mesh_connect
