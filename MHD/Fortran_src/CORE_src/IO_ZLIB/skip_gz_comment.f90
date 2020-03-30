@@ -4,9 +4,8 @@
 !     Written by H. Matsui on July, 2007
 !
 !!      subroutine gz_write_textbuf_no_lf
-!!      subroutine gz_write_textbuf_w_lf
-!!
 !!      subroutine get_one_line_from_gz_f
+!!
 !!      subroutine skip_gz_comment_int(int_input)
 !!      subroutine skip_gz_comment_int2(int_input, int_input2)
 !!      subroutine skip_gz_comment_int8_int(i8_input, int_input2)
@@ -59,18 +58,6 @@
       call gz_write_textbuf_no_lf_f(nbuf, textbuf, zbuf1)
 !
       end subroutine gz_write_textbuf_no_lf
-!
-! ----------------------------------------------------------------------
-!
-      subroutine gz_write_textbuf_w_lf
-!
-      use calypso_c_binding
-!
-!
-!      write(*,*) 'get_one_line_from_gz_f03', nbuf, len(textbuf)
-      call gz_write_textbuf_w_lf_f(nbuf, textbuf, zbuf1)
-!
-      end subroutine gz_write_textbuf_w_lf
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------

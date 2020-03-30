@@ -104,27 +104,30 @@
       integer(kind = kint) :: i, j, ist, ied
 !
 !
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)') '! nodes for filtering', char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
+      write(textbuf,'(a,2a1)') '!', char(10), char(0)
+      call gz_write_textbuf_no_lf
+      write(textbuf,'(a,2a1)') '! nodes for filtering',                 &
+     &                        char(10), char(0)
+      call gz_write_textbuf_no_lf
+      write(textbuf,'(a,2a1)') '!', char(10), char(0)
+      call gz_write_textbuf_no_lf
 !
-      write(textbuf,'(i12,a1)') IO_filters%ngrp_node, char(0)
-      call gz_write_textbuf_w_lf
+      write(textbuf,'(i12,2a1)') IO_filters%ngrp_node,                  &
+     &                          char(10), char(0)
+      call gz_write_textbuf_no_lf
       call write_gz_multi_int_10i12(IO_filters%ngrp_node,               &
      &    IO_filters%istack_node(1:IO_filters%ngrp_node) )
 !
       do i = 1, IO_filters%ngrp_node
         ist = IO_filters%istack_node(i-1)+1
         ied = IO_filters%istack_node(i)
-        write(textbuf,'(a,a1)') trim(IO_filters%group_name(i)), char(0)
-        call gz_write_textbuf_w_lf
+        write(textbuf,'(a,2a1)') trim(IO_filters%group_name(i)),        &
+     &                          char(10), char(0)
+        call gz_write_textbuf_no_lf
         do j = ist, ied
-          write(textbuf,'(3i12,a1)') IO_filters%inod_filter(j),         &
-     &                         IO_filters%istack_near_nod(j), char(0)
-          call gz_write_textbuf_w_lf
+          write(textbuf,'(3i12,2a1)') IO_filters%inod_filter(j),        &
+     &                 IO_filters%istack_near_nod(j), char(10), char(0)
+          call gz_write_textbuf_no_lf
         end do
       end do
 !
@@ -139,21 +142,23 @@
       integer(kind = kint) :: j
 !
 !
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)') '!   filter coefficients', char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
+      write(textbuf,'(a,2a1)') '!', char(10), char(0)
+      call gz_write_textbuf_no_lf
+      write(textbuf,'(a,2a1)') '!   filter coefficients',               &
+     &                        char(10), char(0)
+      call gz_write_textbuf_no_lf
+      write(textbuf,'(a,2a1)') '!', char(10), char(0)
+      call gz_write_textbuf_no_lf
 !
-      write(textbuf,'(i12)') IO_filters%ntot_near_nod
-      call gz_write_textbuf_w_lf
+      write(textbuf,'(i12,2a1)') IO_filters%ntot_near_nod,              &
+     &                          char(10), char(0)
+      call gz_write_textbuf_no_lf
 !
       do j = 1, IO_filters%ntot_near_nod
-        write(textbuf,'(2i12,1p2E25.15e3,a1)')                          &
+        write(textbuf,'(2i12,1p2E25.15e3,2a1)')                         &
      &     j, IO_filters%inod_near(j),                                  &
-     &     IO_filters%func(j), IO_filters%weight(j), char(0)
-        call gz_write_textbuf_w_lf
+     &     IO_filters%func(j), IO_filters%weight(j), char(10), char(0)
+        call gz_write_textbuf_no_lf
       end do
 !
       end subroutine write_3d_filter_weights_coef_gz

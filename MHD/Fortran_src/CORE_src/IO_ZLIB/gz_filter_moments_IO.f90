@@ -53,16 +53,17 @@
       integer (kind=kint), intent(in) :: nnod, nele, nf_type
 !
 !
-      write(textbuf,'(a,a1)') '! number of node for filtering: ',       &
-     &      char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(2i16,a1)') nnod, nele, char(0)
-      call gz_write_textbuf_w_lf
+      write(textbuf,'(a,2a1)') '! number of node for filtering: ',      &
+     &                        char(10), char(0)
+      call gz_write_textbuf_no_lf
+      write(textbuf,'(2i16,2a1)') nnod, nele, char(10), char(0)
+      call gz_write_textbuf_no_lf
 !
-      write(textbuf,'(a,a1)')  '! number of filter function ', char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(i16,a1)') nf_type, char(0)
-      call gz_write_textbuf_w_lf
+      write(textbuf,'(a,2a1)')  '! number of filter function ',         &
+     &                        char(10), char(0)
+      call gz_write_textbuf_no_lf
+      write(textbuf,'(i16,2a1)') nf_type, char(10), char(0)
+      call gz_write_textbuf_no_lf
 !
       end subroutine write_filter_elen_head_gz
 !
@@ -95,16 +96,18 @@
       integer (kind=kint), intent(in) :: n_filter, nf_type
 !
 !
-      write(textbuf,'(a,a1)') '! number of node for filtering: ',       &
-     &      char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(3i16,a1)')  nnod, nele, n_filter, char(0)
-      call gz_write_textbuf_w_lf
+      write(textbuf,'(a,2a1)') '! number of node for filtering: ',      &
+     &                        char(10), char(0)
+      call gz_write_textbuf_no_lf
+      write(textbuf,'(3i16,2a1)')  nnod, nele, n_filter,                &
+     &                           char(10), char(0)
+      call gz_write_textbuf_no_lf
 !
-      write(textbuf,'(a,a1)')  '! number of filter function ', char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(i16,a1)') nf_type, char(0)
-      call gz_write_textbuf_w_lf
+      write(textbuf,'(a,2a1)')  '! number of filter function ',         &
+     &                         char(10), char(0)
+      call gz_write_textbuf_no_lf
+      write(textbuf,'(i16,2a1)') nf_type, char(10), char(0)
+      call gz_write_textbuf_no_lf
 !
       end subroutine write_filter_moms_head_gz
 !
@@ -167,9 +170,9 @@
       integer(kind = kint) :: i
 !
       do i = 1, num
-        write(textbuf,'(i16,1p3E25.15e3,a1)') i,                        &
-     &                                el1(i), el2(i), el3(i), char(0)
-        call gz_write_textbuf_w_lf
+        write(textbuf,'(i16,1p3E25.15e3,2a1)')                          &
+     &     i, el1(i), el2(i), el3(i), char(10), char(0)
+        call gz_write_textbuf_no_lf
       end do
 !
       end subroutine write_elength_gz
@@ -188,9 +191,9 @@
 !
         do nd = 1, 3
           do i = 1, num
-            write(textbuf,'(2i16,1p3E25.15e3,a1)') nd, i, el1(i,nd),    &
-     &         el2(i,nd), el3(i,nd), char(0)
-            call gz_write_textbuf_w_lf
+            write(textbuf,'(2i16,1p3E25.15e3,2a1)')                     &
+     &        nd, i, el1(i,nd), el2(i,nd), el3(i,nd), char(10), char(0)
+            call gz_write_textbuf_no_lf
           end do
         end do
 !

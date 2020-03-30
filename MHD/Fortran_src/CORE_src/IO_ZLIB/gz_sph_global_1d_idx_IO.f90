@@ -130,45 +130,47 @@
       textbuf = hd_rgrid() // char(0)
       call gz_write_textbuf_no_lf
 !
-      write(textbuf,'(3i16,a1)') sph_IO%nidx_sph(1),                    &
-     &       sph_IO%ist_sph(1), sph_IO%ied_sph(1), char(0)
-      call gz_write_textbuf_w_lf
+      write(textbuf,'(3i16,2a1)') sph_IO%nidx_sph(1),                   &
+     &       sph_IO%ist_sph(1), sph_IO%ied_sph(1), char(10), char(0)
+      call gz_write_textbuf_no_lf
 !
       do i = 1, sph_IO%nidx_sph(1)
-        write(textbuf,'(i16,1pE25.15e3,a1)')                            &
-     &       sph_IO%idx_gl_1(i), sph_IO%r_gl_1(i), char(0)
-        call gz_write_textbuf_w_lf
+        write(textbuf,'(i16,1pE25.15e3,2a1)')                           &
+     &       sph_IO%idx_gl_1(i), sph_IO%r_gl_1(i), char(10), char(0)
+        call gz_write_textbuf_no_lf
       end do
 !
 !
       textbuf = hd_tgrid() // char(0)
       call gz_write_textbuf_no_lf
 !
-      write(textbuf,'(3i16,a1)') sph_IO%nidx_sph(2),                    &
-     &       sph_IO%ist_sph(2), sph_IO%ied_sph(2), char(0)
-      call gz_write_textbuf_w_lf
+      write(textbuf,'(3i16,2a1)') sph_IO%nidx_sph(2),                   &
+     &       sph_IO%ist_sph(2), sph_IO%ied_sph(2), char(10), char(0)
+      call gz_write_textbuf_no_lf
 !
-      write(fmt_txt,'(a1,i3,a9)')                                       &
-     &                '(', sph_IO%ncomp_table_1d(2), '(i16),a1)'
+      write(fmt_txt,'(a1,i3,a10)')                                      &
+     &                '(', sph_IO%ncomp_table_1d(2), '(i16),2a1)'
       do i = 1, sph_IO%nidx_sph(2)
         write(textbuf,fmt_txt)                                          &
-     &        sph_IO%idx_gl_2(i,1:sph_IO%ncomp_table_1d(2)), char(0)
-        call gz_write_textbuf_w_lf
+     &                   sph_IO%idx_gl_2(i,1:sph_IO%ncomp_table_1d(2)), &
+     &                   char(10), char(0)
+        call gz_write_textbuf_no_lf
       end do
 !
       textbuf = hd_pgrid() // char(0)
       call gz_write_textbuf_no_lf
 !
-      write(textbuf,'(3i16,a1)') sph_IO%nidx_sph(3),                    &
-     &       sph_IO%ist_sph(3), sph_IO%ied_sph(3), char(0)
-      call gz_write_textbuf_w_lf
+      write(textbuf,'(3i16,2a1)') sph_IO%nidx_sph(3),                   &
+     &       sph_IO%ist_sph(3), sph_IO%ied_sph(3), char(10), char(0)
+      call gz_write_textbuf_no_lf
 !
-      write(fmt_txt,'(a1,i3,a9)')                                       &
-     &                '(', sph_IO%ncomp_table_1d(3), '(i16),a1)'
+      write(fmt_txt,'(a1,i3,a10)')                                      &
+     &                '(', sph_IO%ncomp_table_1d(3), '(i16),2a1)'
       do i = 1, sph_IO%nidx_sph(3)
         write(textbuf,fmt_txt)                                          &
-     &       sph_IO%idx_gl_3(i,1:sph_IO%ncomp_table_1d(3)), char(0)
-        call gz_write_textbuf_w_lf
+     &       sph_IO%idx_gl_3(i,1:sph_IO%ncomp_table_1d(3)),             &
+     &       char(10), char(0)
+        call gz_write_textbuf_no_lf
       end do
 !
       end subroutine write_rtp_gl_1d_table_gz
@@ -188,29 +190,30 @@
       textbuf = hd_rgrid() // char(0)
       call gz_write_textbuf_no_lf
 !
-      write(textbuf,'(3i16,a1)') sph_IO%nidx_sph(1),                    &
-     &       sph_IO%ist_sph(1), sph_IO%ied_sph(1), char(0)
-      call gz_write_textbuf_w_lf
+      write(textbuf,'(3i16,2a1)') sph_IO%nidx_sph(1),                   &
+     &       sph_IO%ist_sph(1), sph_IO%ied_sph(1), char(10), char(0)
+      call gz_write_textbuf_no_lf
 !
       do i = 1, sph_IO%nidx_sph(1)
-        write(textbuf,'(i16,1pE25.15e3,a1)')                            &
-     &       sph_IO%idx_gl_1(i), sph_IO%r_gl_1(i), char(0)
-        call gz_write_textbuf_w_lf
+        write(textbuf,'(i16,1pE25.15e3,2a1)')                           &
+     &       sph_IO%idx_gl_1(i), sph_IO%r_gl_1(i), char(10), char(0)
+        call gz_write_textbuf_no_lf
       end do
 !
       textbuf = hd_jmode() // char(0)
       call gz_write_textbuf_no_lf
 !
-      write(textbuf,'(3i16,a1)') sph_IO%nidx_sph(2),                    &
-     &       sph_IO%ist_sph(2), sph_IO%ied_sph(2), char(0)
-      call gz_write_textbuf_w_lf
+      write(textbuf,'(3i16,2a1)') sph_IO%nidx_sph(2),                   &
+     &       sph_IO%ist_sph(2), sph_IO%ied_sph(2), char(10), char(0)
+      call gz_write_textbuf_no_lf
 !
-      write(fmt_txt,'(a1,i3,a9)')                                       &
-     &                '(', sph_IO%ncomp_table_1d(2), '(i16),a1)'
+      write(fmt_txt,'(a1,i3,a10)')                                      &
+     &                '(', sph_IO%ncomp_table_1d(2), '(i16),2a1)'
       do i = 1, sph_IO%nidx_sph(2)
         write(textbuf,fmt_txt)                                          &
-     &          sph_IO%idx_gl_2(i,1:sph_IO%ncomp_table_1d(2)), char(0)
-        call gz_write_textbuf_w_lf
+     &          sph_IO%idx_gl_2(i,1:sph_IO%ncomp_table_1d(2)),          &
+     &          char(10), char(0)
+        call gz_write_textbuf_no_lf
       end do
 !
       end subroutine write_rj_gl_1d_table_gz

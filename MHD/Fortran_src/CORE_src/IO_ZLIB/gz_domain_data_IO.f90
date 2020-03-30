@@ -125,17 +125,17 @@
       type(communication_table), intent(in) :: comm_IO
 !
 !
-      write(textbuf,'(i16,a1)') id_rank, char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(i16,a1)') comm_IO%num_neib, char(0)
-      call gz_write_textbuf_w_lf
+      write(textbuf,'(i16,2a1)') id_rank, char(10), char(0)
+      call gz_write_textbuf_no_lf
+      write(textbuf,'(i16,2a1)') comm_IO%num_neib, char(10), char(0)
+      call gz_write_textbuf_no_lf
 !
       if (comm_IO%num_neib .gt. 0) then
         call write_gz_multi_int_8i16                                    &
      &     (comm_IO%num_neib, comm_IO%id_neib)
       else
-        write(textbuf,'(a1)') char(0)
-        call gz_write_textbuf_w_lf
+        write(textbuf,'(2a1)') char(10), char(0)
+        call gz_write_textbuf_no_lf
       end if
 !
       end subroutine gz_write_domain_info
@@ -200,12 +200,12 @@
       if (num_sr .gt. 0) then
         call write_gz_multi_int_8i16(num_sr, istack_sr(1))
         do i = 1, ntot_sr
-          write(textbuf,'(i16,a1)') inod_sr(i), char(0)
-          call gz_write_textbuf_w_lf
+          write(textbuf,'(i16,2a1)') inod_sr(i), char(10), char(0)
+          call gz_write_textbuf_no_lf
         end do
       else
-        write(textbuf,'(a1)') char(0)
-        call gz_write_textbuf_w_lf
+        write(textbuf,'(2a1)') char(10), char(0)
+        call gz_write_textbuf_no_lf
       end if
 !
       end subroutine write_send_recv_data_gz

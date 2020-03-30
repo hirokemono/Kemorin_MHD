@@ -44,14 +44,14 @@
       integer (kind = kint) :: i
 !
 !
-      write(textbuf,'(2i16,a1)') nod_IO%numnod, nod_IO%internal_node,   &
-     &      char(0)
-      call gz_write_textbuf_w_lf
+      write(textbuf,'(2i16,2a1)') nod_IO%numnod, nod_IO%internal_node,  &
+     &                           char(10), char(0)
+      call gz_write_textbuf_no_lf
 !
       do i=1, nod_IO%numnod
-        write(textbuf,'(i16,1p3E25.15e3,a1)')  nod_IO%inod_global(i),   &
-     &        nod_IO%xx(i,1:3), char(0)
-        call gz_write_textbuf_w_lf
+        write(textbuf,'(i16,1p3E25.15e3,2a1)')  nod_IO%inod_global(i),  &
+     &                           nod_IO%xx(i,1:3), char(10), char(0)
+        call gz_write_textbuf_no_lf
       end do
 !
       end subroutine gz_write_geometry_info
@@ -65,13 +65,14 @@
 !
       integer(kind = kint) :: i
 !
-      write(textbuf,'(2i16,a1)')                                        &
-     &       nod_IO%numnod, nod_IO%internal_node, char(0)
-      call gz_write_textbuf_w_lf
+      write(textbuf,'(2i16,2a1)')                                       &
+     &       nod_IO%numnod, nod_IO%internal_node, char(10), char(0)
+      call gz_write_textbuf_no_lf
 !
       do i = 1, nod_IO%numnod
-        write(textbuf,'(1p3e23.15,a1)') sfed_IO%ele_scalar(i), char(0)
-        call gz_write_textbuf_w_lf
+        write(textbuf,'(1p3e23.15,2a1)') sfed_IO%ele_scalar(i),         &
+     &                                  char(10), char(0)
+        call gz_write_textbuf_no_lf
       end do
 !
       end subroutine gz_write_scalar_in_element
@@ -85,14 +86,14 @@
 !
       integer(kind = kint) :: i
 !
-      write(textbuf,'(2i16)')                                           &
-     &      nod_IO%numnod, nod_IO%internal_node, char(0)
-      call gz_write_textbuf_w_lf
+      write(textbuf,'(2i16,2a1)')                                       &
+     &      nod_IO%numnod, nod_IO%internal_node, char(10), char(0)
+      call gz_write_textbuf_no_lf
 !
       do i = 1, nod_IO%numnod
-        write(textbuf,'(1p3e23.15,a1)')                                 &
-     &       sfed_IO%ele_vector(i,1:3), char(0)
-        call gz_write_textbuf_w_lf
+        write(textbuf,'(1p3e23.15,2a1)')                                &
+     &       sfed_IO%ele_vector(i,1:3), char(10), char(0)
+        call gz_write_textbuf_no_lf
       end do
 !
       end subroutine gz_write_vector_in_element

@@ -65,23 +65,24 @@
       write(*,*) 'Write gzipped parallel VTK file: ', trim(gzip_name)
       call open_wt_gzfile_f(gzip_name)
 !
-      write(textbuf,'(a,a1)') '<File version="pvtk-1.0"', char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)')                                           &
-     &     '       dataType="vtkUnstructuredGrid"', char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,i6,a,a1)')                                      &
-     &     '       numberOfPieces="', nprocs, '" >', char(0)
-      call gz_write_textbuf_w_lf
+      write(textbuf,'(a,2a1)') '<File version="pvtk-1.0"',              &
+     &                        char(10), char(0)
+      call gz_write_textbuf_no_lf
+      write(textbuf,'(a,2a1)')                                          &
+     &     '       dataType="vtkUnstructuredGrid"', char(10), char(0)
+      call gz_write_textbuf_no_lf
+      write(textbuf,'(a,i6,a,2a1)')                                     &
+     &     '       numberOfPieces="', nprocs, '" >', char(10), char(0)
+      call gz_write_textbuf_no_lf
       do ip = 0, nprocs-1
         file_name = set_parallel_ucd_file_name(fname_nodir, iflag_vtk,  &
      &                                         ip, istep)
-        write(textbuf,'(3a,a1)') '   <Piece fileName="',                &
-     &                       trim(file_name), '" />', char(0)
-        call gz_write_textbuf_w_lf
+        write(textbuf,'(3a,2a1)') '   <Piece fileName="',               &
+     &                       trim(file_name), '" />', char(10), char(0)
+        call gz_write_textbuf_no_lf
       end do
-      write(textbuf,'(a,a1)') '</File>', char(0)
-      call gz_write_textbuf_w_lf
+      write(textbuf,'(a,2a1)') '</File>', char(10), char(0)
+      call gz_write_textbuf_no_lf
 !
       call close_gzfile_f
 !

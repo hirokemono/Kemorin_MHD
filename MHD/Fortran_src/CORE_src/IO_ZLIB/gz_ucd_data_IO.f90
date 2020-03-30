@@ -55,16 +55,17 @@
       character(len=kchara) :: fmt_txt
 !
 !
-      write(fmt_txt,'(a7,i3,a8)')                                       &
-     &                    '(i8,a2,', num_output, '(i4),a1)'
+      write(fmt_txt,'(a7,i3,a9)')                                       &
+     &                    '(i8,a2,', num_output, '(i4),2a1)'
 !
       write(textbuf,fmt_txt) num_output,'  ', ncomp_out(1:num_output),  &
-     &                      char(0)
-      call gz_write_textbuf_w_lf
+     &                      char(10), char(0)
+      call gz_write_textbuf_no_lf
 !
       do j = 1, num_output
-        write(textbuf,'(a,a1,a1)') trim(name_out(j)), ",", char(0)
-        call gz_write_textbuf_w_lf
+        write(textbuf,'(a,a1,2a1)') trim(name_out(j)), ",",             &
+     &                             char(10), char(0)
+        call gz_write_textbuf_no_lf
       end do
 !
       end subroutine write_gz_udt_field_header
