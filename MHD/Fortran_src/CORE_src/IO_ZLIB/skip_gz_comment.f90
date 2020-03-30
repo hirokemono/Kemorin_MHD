@@ -199,7 +199,7 @@
       type(buffer_4_gzip), intent(inout):: zbuf
 !
 !
-      call skip_gz_comment_get_nword
+      call skip_gz_comment_get_nword(zbuf)
       read(textbuf,*) chara_input, int8_input
 !
       end subroutine skip_gz_comment_chara_lint
@@ -246,7 +246,7 @@
 !
       if(num .le. 0) return
 !
-      call skip_gz_comment_get_nword
+      call skip_gz_comment_get_nword(zbuf1)
       read(textbuf,*) real_input(1:zbuf1%num_word)
 !
       if(num .gt. zbuf1%num_word) then
@@ -290,7 +290,7 @@
 !
       if(num .le. 0) return
 !
-      call skip_gz_comment_get_nword
+      call skip_gz_comment_get_nword(zbuf1)
       read(textbuf,*) int_input(1:zbuf1%num_word)
 !
       if(num .gt. zbuf1%num_word) then
@@ -320,7 +320,7 @@
 !
       if((istack(1) - istack(0)) .le. 0) return
 !
-      call skip_gz_comment_get_nword
+      call skip_gz_comment_get_nword(zbuf1)
       ist2 = istack(0) + 1
       ied2 = istack(0) + zbuf1%num_word
       read(textbuf,*) item_sf(is1,ist2:ied2)
@@ -351,7 +351,7 @@
 !
       if(num .le. 0) return
 !
-      call skip_gz_comment_get_nword
+      call skip_gz_comment_get_nword(zbuf1)
       read(textbuf,*) int8_input(1:zbuf1%num_word)
 !
       if(num .gt. zbuf1%num_word) then
