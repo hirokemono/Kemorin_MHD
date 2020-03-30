@@ -5,6 +5,7 @@
 !
 !!      subroutine gz_write_textbuf_no_lf(zbuf)
 !!      subroutine get_one_line_from_gz_f
+!!        type(buffer_4_gzip), intent(inout):: zbuf
 !!
 !!      subroutine skip_gz_comment_int(int_input)
 !!      subroutine skip_gz_comment_int2(int_input, int_input2, zbuf)
@@ -16,18 +17,21 @@
 !!     &         (chara_input, int_input, zbuf)
 !!      subroutine skip_gz_comment_chara_lint                           &
 !!     &         (chara_input, int8_input, zbuf)
+!!        type(buffer_4_gzip), intent(inout):: zbuf
 !!
 !!      subroutine read_gz_multi_real(num, real_input, zbuf)
 !!      subroutine read_gz_integer_stack(num, istack, ntot, zbuf)
 !!      subroutine read_gz_multi_int(num, int_input, zbuf)
 !!      subroutine read_gz_surf_group(is1, ntot, istack, item_sf, zbuf)
 !!      subroutine read_gz_multi_int8(num, int8_input, zbuf)
+!!        type(buffer_4_gzip), intent(inout):: zbuf
 !!
 !!      subroutine write_gz_surf_group(is1, ntot, istack, item_sf, zbuf)
 !!      subroutine write_gz_multi_int_8i16(num, int_data, zbuf)
 !!      subroutine write_gz_multi_int_10i8(num, int_data, zbuf)
 !!      subroutine write_gz_multi_int_10i12(num, int_data, zbuf)
-!
+!!        type(buffer_4_gzip), intent(inout):: zbuf
+!!
 !!      subroutine write_gz_comment_string(comment, zbuf)
 !!      subroutine gz_write_chara_nolf(chara_output, zbuf)
 !!        type(buffer_4_gzip), intent(inout):: zbuf
