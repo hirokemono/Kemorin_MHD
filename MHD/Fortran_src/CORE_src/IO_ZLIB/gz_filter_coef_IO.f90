@@ -55,11 +55,11 @@
         ist = IO_filters%istack_node(i-1)+1
         ied = IO_filters%istack_node(i)
 !
-        call get_one_line_from_gz_f
+        call get_one_line_from_gz_f(zbuf1)
         read(textbuf,*) IO_filters%group_name(i)
 !
         do j = ist, ied
-          call get_one_line_from_gz_f
+          call get_one_line_from_gz_f(zbuf1)
           read(textbuf,*) IO_filters%inod_filter(j),                    &
      &                    IO_filters%istack_near_nod(j)
         end do
@@ -87,7 +87,7 @@
       call skip_gz_comment_int(itmp)
 !
       do j = 1, IO_filters%ntot_near_nod
-        call get_one_line_from_gz_f
+        call get_one_line_from_gz_f(zbuf1)
         read(textbuf,*) itmp, IO_filters%inod_near(j),                  &
      &                  IO_filters%func(j), IO_filters%weight(j)
       end do

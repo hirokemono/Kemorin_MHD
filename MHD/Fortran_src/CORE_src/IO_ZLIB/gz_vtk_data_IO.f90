@@ -235,7 +235,7 @@
       character(len=kchara)  :: vtk_fld_type
 !
 !
-      call get_one_line_from_gz_f
+      call get_one_line_from_gz_f(zbuf1)
       if(len_trim(textbuf) .eq. izero) go to 99
 !
       read(textbuf,*) vtk_fld_type, field_name
@@ -244,7 +244,7 @@
       else if(vtk_fld_type .eq. 'VECTORS') then
         ncomp_field = n_vector
       else
-        call get_one_line_from_gz_f
+        call get_one_line_from_gz_f(zbuf1)
         ncomp_field = n_scalar
       end if
       iflag_end = izero
@@ -273,16 +273,16 @@
 !
       if (ncomp_field .eq. n_sym_tensor) then
         do inod = 1, nnod
-          call get_one_line_from_gz_f
+          call get_one_line_from_gz_f(zbuf1)
           read(textbuf,*) d_nod(inod,1:3)
-          call get_one_line_from_gz_f
+          call get_one_line_from_gz_f(zbuf1)
           read(textbuf,*) rtmp, d_nod(inod,4:5)
-          call get_one_line_from_gz_f
+          call get_one_line_from_gz_f(zbuf1)
           read(textbuf,*) rtmp, rtmp, d_nod(inod,6)
         end do
       else
         do inod = 1, nnod
-          call get_one_line_from_gz_f
+          call get_one_line_from_gz_f(zbuf1)
           read(textbuf,*) d_nod(inod,1:ncomp_field)
         end do
       end if
@@ -300,10 +300,10 @@
 !
 !
       call skip_gz_comment_chara(tmpchara)
-      call get_one_line_from_gz_f
-      call get_one_line_from_gz_f
+      call get_one_line_from_gz_f(zbuf1)
+      call get_one_line_from_gz_f(zbuf1)
 !
-      call get_one_line_from_gz_f
+      call get_one_line_from_gz_f(zbuf1)
       read(textbuf,'(a,i16,a)')  tmpchara, nnod
 !
       end subroutine read_gz_vtk_node_head
@@ -320,7 +320,7 @@
       character(len=kchara) :: tmpchara
 !
 !
-      call get_one_line_from_gz_f
+      call get_one_line_from_gz_f(zbuf1)
       read(textbuf,*) tmpchara, nele, nums
       nnod_ele = int(nums/nele, KIND(nnod_ele)) - 1
 !
@@ -335,10 +335,10 @@
       integer(kind = kint_gl) :: iele
 !
 !
-      call get_one_line_from_gz_f
+      call get_one_line_from_gz_f(zbuf1)
 !
       do iele = 1, nele
-        call get_one_line_from_gz_f
+        call get_one_line_from_gz_f(zbuf1)
       end do
 !
       end subroutine read_gz_vtk_cell_type
@@ -357,7 +357,7 @@
 !
 !
       do iele = 1, nele
-        call get_one_line_from_gz_f
+        call get_one_line_from_gz_f(zbuf1)
         read(textbuf,*) itmp, ie(iele,1:nnod_ele)
         ie(iele,1:nnod_ele) = ie(iele,1:nnod_ele) + 1
       end do

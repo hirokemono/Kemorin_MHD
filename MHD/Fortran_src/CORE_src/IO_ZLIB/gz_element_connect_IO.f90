@@ -138,7 +138,7 @@
        call alloc_ele_connectivity(ele_IO)
 !
        do i=1, ele_IO%numele
-        call get_one_line_from_gz_f
+        call get_one_line_from_gz_f(zbuf1)
         read(textbuf,*) ele_IO%iele_global(i),                          &
      &                 ele_IO%ie(i,1:ele_IO%nodelm(i))
        end do
@@ -159,7 +159,7 @@
       call alloc_surface_connect_IO(nsf_4_ele, nsurf_in_ele, sfed_IO)
 !
       do i = 1, sfed_IO%nsf_4_ele
-        call get_one_line_from_gz_f
+        call get_one_line_from_gz_f(zbuf1)
         read(textbuf,*) sfed_IO%isf_for_ele(i,1:sfed_IO%nsurf_in_ele)
       end do
 !
@@ -179,7 +179,7 @@
       call alloc_edge_connect_IO(ned_4_ele, nedge_in_ele, sfed_IO)
 !
       do i = 1, sfed_IO%ned_4_ele
-        call get_one_line_from_gz_f
+        call get_one_line_from_gz_f(zbuf1)
         read(textbuf,*)                                                 &
      &         sfed_IO%iedge_for_ele(i,1:sfed_IO%nedge_in_ele)
       end do

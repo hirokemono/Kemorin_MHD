@@ -190,7 +190,7 @@
 !
 !
       do i = 1, nnod64
-        call get_one_line_from_gz_f
+        call get_one_line_from_gz_f(zbuf1)
         read(textbuf,*)  vector(i,1:ndir)
       end do
 !

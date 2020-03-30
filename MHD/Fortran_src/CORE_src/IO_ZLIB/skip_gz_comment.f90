@@ -50,20 +50,6 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine gz_write_textbuf_no_lf(zbuf)
-!
-      use calypso_c_binding
-!
-      type(buffer_4_gzip) :: zbuf
-!
-!      write(*,*) 'get_one_line_from_gz_f03', nbuf, len(textbuf)
-      call gz_write_textbuf_no_lf_f(nbuf, textbuf, zbuf)
-!
-      end subroutine gz_write_textbuf_no_lf
-!
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
       integer function length_of_c_text(text)
       character(len=*), intent(in) ::  text
       integer :: i
@@ -80,13 +66,27 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine get_one_line_from_gz_f
+      subroutine gz_write_textbuf_no_lf(zbuf)
 !
       use calypso_c_binding
 !
+      type(buffer_4_gzip) , intent(inout):: zbuf
 !
-      write(*,*) 'get_one_line_from_gz_f03', nbuf, len(textbuf)
-      call get_one_line_from_gz_f03(nbuf, textbuf, zbuf1)
+!      write(*,*) 'get_one_line_from_gz_f03', nbuf, len(textbuf)
+      call gz_write_textbuf_no_lf_f(nbuf, textbuf, zbuf)
+!
+      end subroutine gz_write_textbuf_no_lf
+!
+! ----------------------------------------------------------------------
+!
+      subroutine get_one_line_from_gz_f(zbuf)
+!
+      use calypso_c_binding
+!
+      type(buffer_4_gzip) , intent(inout):: zbuf
+!
+!      write(*,*) 'get_one_line_from_gz_f03', nbuf, len(textbuf)
+      call get_one_line_from_gz_f03(nbuf, textbuf, zbuf)
 !
       end subroutine get_one_line_from_gz_f
 !
@@ -204,7 +204,7 @@
 !      character(len=nbuf) :: tbuf2
 !
       do
-        call get_one_line_from_gz_f
+        call get_one_line_from_gz_f(zbuf1)
         if(zbuf1%len_used .le. 1) cycle
 !
         write(chara_flag,'(a1)',err=1) adjustl(textbuf)
@@ -242,7 +242,7 @@
       if(num .gt. zbuf1%num_word) then
         ist = zbuf1%num_word
         do
-          call get_one_line_from_gz_f
+          call get_one_line_from_gz_f(zbuf1)
           ist2 = ist + 1
           ied2 = ist + zbuf1%num_word
           ist = ied2
@@ -286,7 +286,7 @@
       if(num .gt. zbuf1%num_word) then
         ist = zbuf1%num_word
         do
-          call get_one_line_from_gz_f
+          call get_one_line_from_gz_f(zbuf1)
           ist2 = ist + 1
           ied2 = ist + zbuf1%num_word
           ist = ied2
@@ -318,7 +318,7 @@
       if((istack(1) - istack(0)) .gt. zbuf1%num_word) then
         ist = istack(0) + zbuf1%num_word
         do
-          call get_one_line_from_gz_f
+          call get_one_line_from_gz_f(zbuf1)
           ist2 = ist + 1
           ied2 = ist + zbuf1%num_word
           ist = ied2
@@ -347,7 +347,7 @@
       if(num .gt. zbuf1%num_word) then
         ist = zbuf1%num_word
         do
-          call get_one_line_from_gz_f
+          call get_one_line_from_gz_f(zbuf1)
           ist2 = ist + 1
           ied2 = ist + zbuf1%num_word
           ist = ied2

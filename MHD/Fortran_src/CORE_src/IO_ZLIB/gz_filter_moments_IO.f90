@@ -127,7 +127,7 @@
       call skip_gz_comment_int(itmp)
       read(textbuf,*) itmp, el1(1), el2(1), el3(1)
       do i = 2, num
-        call get_one_line_from_gz_f
+        call get_one_line_from_gz_f(zbuf1)
         read(textbuf,*) itmp, el1(i), el2(i), el3(i)
       end do
 !
@@ -150,7 +150,7 @@
         call skip_gz_comment_int(itmp)
         read(textbuf,*) itmp, itmp, el1(1,nd), el2(1,nd), el3(1,nd)
         do i = 2, num
-          call get_one_line_from_gz_f
+          call get_one_line_from_gz_f(zbuf1)
           read(textbuf,*) itmp, itmp, el1(i,nd), el2(i,nd), el3(i,nd)
         end do
       end do

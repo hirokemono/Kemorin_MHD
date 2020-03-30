@@ -123,12 +123,12 @@
       call skip_gz_comment_int(itmp)
       read(textbuf,*) itmp, jgl_kcor_IO(1,1,j1), itmp,                  &
      &                gk_cor_IO(1,1,j1)
-      call get_one_line_from_gz_f
+      call get_one_line_from_gz_f(zbuf1)
       read(textbuf,*) itmp, jgl_kcor_IO(1,2,j1), itmp,                  &
      &                gk_cor_IO(1,2,j1)
       do j3 = 2 ,jmax_cor_IO
         do j2 = 1, 2
-          call get_one_line_from_gz_f
+          call get_one_line_from_gz_f(zbuf1)
           read(textbuf,*) itmp, jgl_kcor_IO(j3,j2,j1), itmp,            &
      &                gk_cor_IO(j3,j2,j1)
         end do
@@ -138,7 +138,7 @@
       read(textbuf,*) itmp, jgl_lcor_IO(1,1,j1), itmp,                  &
      &                el_cor_IO(1,1,j1)
       do j3 = 2 ,jmax_cor_IO
-        call get_one_line_from_gz_f
+        call get_one_line_from_gz_f(zbuf1)
         read(textbuf,*) itmp, jgl_lcor_IO(j3,1,j1), itmp,               &
      &                el_cor_IO(j3,1,j1)
       end do
@@ -149,13 +149,13 @@
         read(textbuf,*) itmp, jgl_kcor_IO(1,1,j1), itmp,                &
      &                          gk_cor_IO(1,1,j1)
         do j2 = 2, 4
-          call get_one_line_from_gz_f
+          call get_one_line_from_gz_f(zbuf1)
           read(textbuf,*) itmp, jgl_kcor_IO(1,j2,j1), itmp,             &
      &                gk_cor_IO(1,j2,j1)
         end do
         do j3 = 2, jmax_cor_IO
           do j2 = 1, 4
-            call get_one_line_from_gz_f
+            call get_one_line_from_gz_f(zbuf1)
             read(textbuf,*) itmp, jgl_kcor_IO(j3,j2,j1), itmp,          &
      &                gk_cor_IO(j3,j2,j1)
           end do
@@ -164,12 +164,12 @@
         call skip_gz_comment_int(itmp)
         read(textbuf,*) itmp, jgl_lcor_IO(1,1,j1), itmp,                &
      &                 el_cor_IO(1,1,j1)
-        call get_one_line_from_gz_f
+        call get_one_line_from_gz_f(zbuf1)
         read(textbuf,*) itmp, jgl_lcor_IO(1,2,j1), itmp,                &
      &                el_cor_IO(1,2,j1)
         do j3 = 2, jmax_cor_IO
           do j2 = 1, 2
-            call get_one_line_from_gz_f
+            call get_one_line_from_gz_f(zbuf1)
             read(textbuf,*) itmp, jgl_lcor_IO(j3,j2,j1), itmp,          &
      &                el_cor_IO(j3,j2,j1)
           end do

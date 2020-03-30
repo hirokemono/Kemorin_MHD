@@ -123,7 +123,7 @@
       call alloc_node_geometry_base(nod_IO)
 !
       do i=1, nod_IO%numnod
-        call get_one_line_from_gz_f
+        call get_one_line_from_gz_f(zbuf1)
         read(textbuf,*)  nod_IO%inod_global(i), (nod_IO%xx(i,k),k=1,3)
       end do
 !
@@ -144,7 +144,7 @@
       call alloc_ele_scalar_IO(nod_IO, sfed_IO)
 !
       do i = 1, nod_IO%numnod
-        call get_one_line_from_gz_f
+        call get_one_line_from_gz_f(zbuf1)
         read(textbuf,*) sfed_IO%ele_scalar(i)
       end do
 !
@@ -165,7 +165,7 @@
       call alloc_ele_vector_IO(nod_IO, sfed_IO)
 !
       do i = 1, nod_IO%numnod
-        call get_one_line_from_gz_f
+        call get_one_line_from_gz_f(zbuf1)
         read(textbuf,*) sfed_IO%ele_vector(i,1:3)
       end do
 !

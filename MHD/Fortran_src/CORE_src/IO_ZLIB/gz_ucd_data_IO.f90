@@ -101,7 +101,7 @@
       integer(kind = kint), intent(inout) :: num_input
 !
 !
-      call get_one_line_from_gz_f
+      call get_one_line_from_gz_f(zbuf1)
       read(textbuf,*) num_input
 !
       end subroutine read_gz_udt_field_num
@@ -122,7 +122,7 @@
       if(num_input .gt. zbuf1%num_word-1) then
         ist = zbuf1%num_word-1
         do
-          call get_one_line_from_gz_f
+          call get_one_line_from_gz_f(zbuf1)
           read(textbuf,*) ncomp_in(ist+1:ist+zbuf1%num_word)
           ist = ist + zbuf1%num_word
           if(ist .gt. num_input) exit
@@ -130,7 +130,7 @@
       end if
 !
       do i = 1, num_input
-        call get_one_line_from_gz_f
+        call get_one_line_from_gz_f(zbuf1)
         read(textbuf,*) name_in(i)
       end do
 !
@@ -145,7 +145,7 @@
       character(len = kchara), intent(inout) :: name_in(num_input)
 !
 !
-      call get_one_line_from_gz_f
+      call get_one_line_from_gz_f(zbuf1)
       call read_gz_udt_field_name(num_input, ncomp_in, name_in)
 !
       end subroutine read_gz_udt_field_header
@@ -164,13 +164,13 @@
 !
 !
       do inod = 1, nnod_in
-        call get_one_line_from_gz_f
+        call get_one_line_from_gz_f(zbuf1)
         read(textbuf,*) itmp, dat_in(inod,1:zbuf1%num_word-1)
 !
         if(ncomp_dat .gt. zbuf1%num_word-1) then
           ist = zbuf1%num_word-1
           do
-            call get_one_line_from_gz_f
+            call get_one_line_from_gz_f(zbuf1)
             read(textbuf,*) dat_in(inod,ist+1:ist+zbuf1%num_word)
             ist = ist + zbuf1%num_word
             if(ist .gt. ncomp_dat) exit
@@ -191,7 +191,7 @@
       integer(kind = kint) :: itmp
 !
 !
-      call get_one_line_from_gz_f
+      call get_one_line_from_gz_f(zbuf1)
       read(textbuf,*) nnod_input, nele_in, ncomptot_in, itmp, itmp
 !
       end subroutine read_gz_udt_mesh_header
@@ -214,12 +214,12 @@
 !
 !
       do inod = 1, nnod_in
-        call get_one_line_from_gz_f
+        call get_one_line_from_gz_f(zbuf1)
         read(textbuf,*) inod_gl(inod), xx_in(inod,1:3)
       end do
 !
       do iele = 1, nele_in
-        call get_one_line_from_gz_f
+        call get_one_line_from_gz_f(zbuf1)
         read(textbuf,*) iele_gl(iele), itmp, tmpchara,                  &
      &                  ie_in(iele,1:nnod_ele)
       end do
