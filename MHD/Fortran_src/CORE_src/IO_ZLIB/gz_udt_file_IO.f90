@@ -62,7 +62,7 @@
 !
       call write_gz_ucd_type_mesh(ucd)
       call write_gz_udt_type_fields(ucd)
-      call close_gzfile_a
+      call close_gzfile_a(zbuf1)
 !
       end subroutine write_gz_ucd_file
 !
@@ -82,7 +82,7 @@
       call open_wt_gzfile_a(gzip_name, zbuf1)
 !
       call write_gz_udt_type_fields(ucd)
-      call close_gzfile_a
+      call close_gzfile_a(zbuf1)
 !
       end subroutine write_gz_udt_file
 !
@@ -102,7 +102,7 @@
       call open_wt_gzfile_a(gzip_name, zbuf1)
 !
       call write_gz_ucd_type_mesh(ucd)
-      call close_gzfile_a
+      call close_gzfile_a(zbuf1)
 !
       end subroutine write_gz_grd_file
 !
@@ -129,7 +129,7 @@
       call cal_istack_ucd_component(ucd)
 !
       call read_gz_udt_field_data(ucd%nnod, ucd%ntot_comp, ucd%d_ucd)
-      call close_gzfile_a
+      call close_gzfile_a(zbuf1)
 !
       end subroutine read_gz_udt_file
 !
@@ -155,7 +155,7 @@
       call read_gz_udt_field_name(ucd%num_field, ucd%num_comp,          &
      &    ucd%phys_name)
 !
-      call close_gzfile_a
+      call close_gzfile_a(zbuf1)
 !
       call cal_istack_ucd_component(ucd)
       call allocate_ucd_phys_data(ucd)
@@ -187,7 +187,7 @@
       call allocate_ucd_phys_data(ucd)
 !
       call read_gz_udt_field_data(ucd%nnod, ucd%ntot_comp, ucd%d_ucd)
-      call close_gzfile_a
+      call close_gzfile_a(zbuf1)
 !
       end subroutine read_alloc_gz_udt_file
 !
@@ -227,7 +227,7 @@
       call allocate_ucd_phys_data(ucd)
 !
       call read_gz_udt_field_data(ucd%nnod, ucd%ntot_comp, ucd%d_ucd)
-      call close_gzfile_a
+      call close_gzfile_a(zbuf1)
 !
       end subroutine read_alloc_gz_ucd_file
 !
@@ -256,7 +256,7 @@
 !
       call read_gz_ucd_mesh_data(ucd%nnod, ucd%nele, ucd%nnod_4_ele,    &
      &    ucd%inod_global, ucd%iele_global, ucd%xx, ucd%ie)
-      call close_gzfile_a
+      call close_gzfile_a(zbuf1)
 !
       end subroutine read_gz_ucd_grd
 !

@@ -60,15 +60,15 @@
       call open_rd_gzfile_a(gzip_name, zbuf1)
 !
       call read_gz_step_data                                            &
-     &   (id_rank, t_IO%i_time_step, t_IO%time, t_IO%dt, ierr_IO)
+     &   (id_rank, t_IO%i_time_step, t_IO%time, t_IO%dt, zbuf1, ierr_IO)
       if(ierr_IO .gt. 0) return
 !
       call skip_gz_comment_int(fld_IO%num_field_IO, zbuf1)
       call read_gz_field_data(cast_long(fld_IO%nnod_IO),                &
      &    fld_IO%num_field_IO, fld_IO%ntot_comp_IO,                     &
-     &    fld_IO%num_comp_IO, fld_IO%fld_name, fld_IO%d_IO)
+     &    fld_IO%num_comp_IO, fld_IO%fld_name, fld_IO%d_IO, zbuf1)
 !
-      call close_gzfile_a
+      call close_gzfile_a(zbuf1)
 !
       end subroutine read_gz_rst_file
 !
@@ -97,7 +97,7 @@
       call open_rd_gzfile_a(gzip_name, zbuf1)
 !
       call read_gz_step_data                                            &
-     &   (id_rank, t_IO%i_time_step, t_IO%time, t_IO%dt, ierr_IO)
+     &   (id_rank, t_IO%i_time_step, t_IO%time, t_IO%dt, zbuf1, ierr_IO)
       if(ierr_IO .gt. 0) return
 !
       call skip_gz_comment_int(fld_IO%num_field_IO, zbuf1)
@@ -105,7 +105,7 @@
       call alloc_phys_name_IO(fld_IO)
       call read_gz_rst_field_comps(fld_IO)
 !
-      call close_gzfile_a
+      call close_gzfile_a(zbuf1)
 !
       call cal_istack_phys_comp_IO(fld_IO)
 !

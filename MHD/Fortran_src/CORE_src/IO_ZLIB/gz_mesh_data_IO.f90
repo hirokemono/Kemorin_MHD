@@ -59,31 +59,31 @@
 !
       zbuf1%fixbuf(1) = hd_fem_para() // char(0)
       call gz_write_textbuf_no_lf(zbuf1)
-      call gz_write_domain_info(id_rank, mesh_IO%nod_comm)
+      call gz_write_domain_info(id_rank, mesh_IO%nod_comm, zbuf1)
 !
 !
       zbuf1%fixbuf(1) = hd_fem_node() // char(0)
       call gz_write_textbuf_no_lf(zbuf1)
 !
-      call gz_write_geometry_info(mesh_IO%node)
+      call gz_write_geometry_info(mesh_IO%node, zbuf1)
 !
 !
       zbuf1%fixbuf(1) = hd_fem_elem() // char(0)
       call gz_write_textbuf_no_lf(zbuf1)
 !
-      call gz_write_element_info(mesh_IO%ele)
+      call gz_write_element_info(mesh_IO%ele, zbuf1)
 !
 !
       zbuf1%fixbuf(1) = hd_fem_import() // char(0)
       call gz_write_textbuf_no_lf(zbuf1)
 !
-      call gz_write_import_data(mesh_IO%nod_comm)
+      call gz_write_import_data(mesh_IO%nod_comm, zbuf1)
 !
 !
       zbuf1%fixbuf(1) = hd_fem_export() // char(0)
       call gz_write_textbuf_no_lf(zbuf1)
 !
-      call gz_write_export_data(mesh_IO%nod_comm)
+      call gz_write_export_data(mesh_IO%nod_comm, zbuf1)
 !
       end subroutine gz_write_geometry_data
 !
@@ -92,7 +92,7 @@
       subroutine gz_write_mesh_groups(mesh_group_IO)
 !
       use m_fem_mesh_labels
-      use gz_groups_IO
+      use gz_group_data_IO
 !
       type(mesh_groups), intent(in) ::   mesh_group_IO
 !
@@ -100,17 +100,17 @@
 !   write node group
       zbuf1%fixbuf(1) = hd_fem_nodgrp() // char(0)
       call gz_write_textbuf_no_lf(zbuf1)
-      call write_grp_data_gz(mesh_group_IO%nod_grp)
+      call write_group_data_gz(mesh_group_IO%nod_grp, zbuf1)
 !
 !  write element group
       zbuf1%fixbuf(1) = hd_fem_elegrp() // char(0)
       call gz_write_textbuf_no_lf(zbuf1)
-      call write_grp_data_gz(mesh_group_IO%ele_grp)
+      call write_group_data_gz(mesh_group_IO%ele_grp, zbuf1)
 !
 !  write surface group
       zbuf1%fixbuf(1) = hd_fem_sfgrp() // char(0)
       call gz_write_textbuf_no_lf(zbuf1)
-      call write_surf_grp_data_gz(mesh_group_IO%surf_grp)
+      call write_surf_group_data_gz(mesh_group_IO%surf_grp, zbuf1)
 !
       end subroutine gz_write_mesh_groups
 !
@@ -127,25 +127,25 @@
 !
       zbuf1%fixbuf(1) = hd_fem_para() // char(0)
       call gz_write_textbuf_no_lf(zbuf1)
-      call gz_write_domain_info(id_rank, comm_IO)
+      call gz_write_domain_info(id_rank, comm_IO, zbuf1)
 !
 !
       zbuf1%fixbuf(1) = hd_fem_node() // char(0)
       call gz_write_textbuf_no_lf(zbuf1)
 !
-      call gz_write_geometry_info(nod_IO)
+      call gz_write_geometry_info(nod_IO, zbuf1)
 !
 !
       zbuf1%fixbuf(1) = hd_fem_import() // char(0)
       call gz_write_textbuf_no_lf(zbuf1)
 !
-      call gz_write_import_data(comm_IO)
+      call gz_write_import_data(comm_IO, zbuf1)
 !
 !
       zbuf1%fixbuf(1) = hd_fem_export() // char(0)
       call gz_write_textbuf_no_lf(zbuf1)
 !
-      call gz_write_export_data(comm_IO)
+      call gz_write_export_data(comm_IO, zbuf1)
 !
       end subroutine gz_write_filter_geometry
 !
@@ -161,9 +161,9 @@
 !
 !
 !      write(*,*) 'gz_read_domain_info'
-       call gz_read_domain_info(id_rank, mesh_IO%nod_comm, ierr)
+       call gz_read_domain_info(id_rank, mesh_IO%nod_comm, zbuf1, ierr)
 !      write(*,*) 'gz_read_number_of_node'
-       call gz_read_number_of_node(mesh_IO%node)
+       call gz_read_number_of_node(mesh_IO%node, zbuf1)
 !
        end subroutine gz_read_num_node
 !
@@ -179,12 +179,12 @@
 !
       call gz_read_num_node(id_rank, mesh_IO, ierr)
 !      write(*,*) 'gz_read_geometry_info'
-      call gz_read_geometry_info(mesh_IO%node)
+      call gz_read_geometry_info(mesh_IO%node, zbuf1)
 !
 !  ----  read element data -------
 !
 !      write(*,*) 'gz_read_number_of_element'
-      call gz_read_number_of_element(mesh_IO%ele)
+      call gz_read_number_of_element(mesh_IO%ele, zbuf1)
 !
       end subroutine gz_read_num_node_ele
 !
@@ -203,14 +203,14 @@
 !  ----  read element data -------
 !
 !      write(*,*) 'gz_read_element_info'
-      call gz_read_element_info(mesh_IO%ele)
+      call gz_read_element_info(mesh_IO%ele, zbuf1)
 !
 ! ----  import & export 
 !
 !      write(*,*) 'gz_read_import_data'
-      call gz_read_import_data(mesh_IO%nod_comm)
+      call gz_read_import_data(mesh_IO%nod_comm, zbuf1)
 !      write(*,*) 'gz_read_export_data'
-      call gz_read_export_data(mesh_IO%nod_comm)
+      call gz_read_export_data(mesh_IO%nod_comm, zbuf1)
 !
       end subroutine gz_read_geometry_data
 !
@@ -219,17 +219,17 @@
       subroutine gz_read_mesh_groups(mesh_group_IO)
 !
       use m_fem_mesh_labels
-      use gz_groups_IO
+      use gz_group_data_IO
 !
       type(mesh_groups), intent(inout) ::   mesh_group_IO
 !
 !
 !   read node group
-      call read_group_data_gz(mesh_group_IO%nod_grp)
+      call read_group_data_gz(mesh_group_IO%nod_grp, zbuf1)
 !   read element group
-      call read_group_data_gz(mesh_group_IO%ele_grp)
+      call read_group_data_gz(mesh_group_IO%ele_grp, zbuf1)
 !   read surface group
-      call read_surf_grp_data_gz(mesh_group_IO%surf_grp)
+      call read_surface_group_data_gz(mesh_group_IO%surf_grp, zbuf1)
 !
       end subroutine gz_read_mesh_groups
 !
@@ -247,18 +247,18 @@
 !
 !
 !        write(*,*) 'gz_read_domain_info'
-        call gz_read_domain_info(id_rank, comm_IO, ierr)
+        call gz_read_domain_info(id_rank, comm_IO, zbuf1, ierr)
 !        write(*,*) 'gz_read_number_of_node'
-        call gz_read_number_of_node(nod_IO)
+        call gz_read_number_of_node(nod_IO, zbuf1)
 !        write(*,*) 'gz_read_geometry_info'
-        call gz_read_geometry_info(nod_IO)
+        call gz_read_geometry_info(nod_IO, zbuf1)
 !
 ! ----  import & export 
 !
 !        write(*,*) 'gz_read_import_data'
-        call gz_read_import_data(comm_IO)
+        call gz_read_import_data(comm_IO, zbuf1)
 !        write(*,*) 'gz_read_export_data'
-        call gz_read_export_data(comm_IO)
+        call gz_read_export_data(comm_IO, zbuf1)
 !
        end subroutine gz_read_filter_geometry
 !

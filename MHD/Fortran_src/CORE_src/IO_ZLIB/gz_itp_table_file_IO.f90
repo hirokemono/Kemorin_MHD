@@ -64,7 +64,7 @@
       call write_gz_itp_table_org(id_rank, IO_itp_org)
       call write_gz_itp_coefs_org(IO_itp_org)
 !
-      call close_gzfile_a
+      call close_gzfile_a(zbuf1)
 !
       if (IO_itp_org%num_dest_domain .gt. 0) then
         call dealloc_itp_table_org(IO_itp_org)
@@ -109,7 +109,7 @@
       call read_gz_itp_table_org(IO_itp_org)
       call read_gz_itp_coefs_org(IO_itp_org)
 !
-      call close_gzfile_a
+      call close_gzfile_a(zbuf1)
 !
       ierr = 0
       if (n_rank_file .ne. id_rank) ierr = n_rank_file
@@ -136,7 +136,7 @@
 !
       call write_gz_itp_table_dest(id_rank, IO_itp_dest)
       call write_gz_itp_coefs_dest(IO_itp_dest, IO_itp_c_dest)
-      call close_gzfile_a
+      call close_gzfile_a(zbuf1)
 !
       if (IO_itp_dest%num_org_domain .gt. 0) then
         call dealloc_itp_coef_dest(IO_itp_c_dest)
@@ -170,7 +170,7 @@
       call read_gz_itp_domain_dest(n_rank_file, IO_itp_dest)
       call read_gz_itp_table_dest(IO_itp_dest)
       call read_gz_itp_coefs_dest(IO_itp_dest, IO_itp_c_dest)
-      call close_gzfile_a
+      call close_gzfile_a(zbuf1)
 !
       ierr = 0
       if (n_rank_file .ne. id_rank) ierr = ierr_file
@@ -198,7 +198,7 @@
 !
       call read_gz_itp_domain_dest(n_rank_file, IO_itp_dest)
       call read_gz_itp_table_dest(IO_itp_dest)
-      call close_gzfile_a
+      call close_gzfile_a(zbuf1)
 !
       ierr = 0
       if (n_rank_file .ne. id_rank) ierr = ierr_file
@@ -225,7 +225,7 @@
       call open_rd_gzfile_a(gzip_name, zbuf1)
 !
       call read_gz_itp_domain_dest(n_rank_file, IO_itp_dest)
-      call close_gzfile_a
+      call close_gzfile_a(zbuf1)
 !
       ierr = 0
       if (n_rank_file .ne. id_rank) ierr = ierr_file

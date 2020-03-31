@@ -92,7 +92,7 @@
           end do
         end do
       end do
-      call close_gzfile_a
+      call close_gzfile_a(zbuf1)
 !
       call deallocate_int_sph_cor_IO
 !
@@ -177,7 +177,7 @@
         end do
       end do
 !
-      call close_gzfile_a
+      call close_gzfile_a(zbuf1)
 !
       end subroutine read_int_4_sph_coriolis_gz
 !

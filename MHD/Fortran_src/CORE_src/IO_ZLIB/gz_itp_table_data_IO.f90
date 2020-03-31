@@ -29,6 +29,7 @@
       use m_constants
       use m_machine_parameter
 !
+      use t_buffer_4_gzip
       use skip_gz_comment
 !
       implicit none

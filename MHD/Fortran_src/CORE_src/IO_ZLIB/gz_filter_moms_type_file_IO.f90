@@ -65,8 +65,8 @@
       end if
 !
       call open_rd_gzfile_a(gzip_name, zbuf1)
-      call gz_read_filter_moment_num_type(FEM_elens, FEM_moms)
-      call close_gzfile_a
+      call gz_read_filter_moment_num(FEM_elens, FEM_moms, zbuf1)
+      call close_gzfile_a(zbuf1)
 !
       end subroutine read_num_filter_mom_t_file_gz
 !
@@ -98,8 +98,8 @@
       end if
 !
       call open_rd_gzfile_a(gzip_name, zbuf1)
-      call gz_read_filter_elen_data_type(nnod, nele, FEM_elens, ierr)
-      call close_gzfile_a
+      call gz_read_filter_elen_data(nnod, nele, FEM_elens, zbuf1, ierr)
+      call close_gzfile_a(zbuf1)
 !
       end subroutine read_filter_elen_t_file_gz
 !
@@ -128,8 +128,8 @@
       end if
 !
       call open_wt_gzfile_a(gzip_name, zbuf1)
-      call gz_write_filter_elen_data_type(FEM_elens)
-      call close_gzfile_a
+      call gz_write_filter_elen_data(FEM_elens, zbuf1)
+      call close_gzfile_a(zbuf1)
 !
       end subroutine write_filter_elen_t_file_gz
 !
@@ -163,9 +163,9 @@
       end if
 !
       call open_rd_gzfile_a(gzip_name, zbuf1)
-      call gz_read_filter_moms_data_type(nnod, nele,                    &
-     &    FEM_elens, FEM_moms, ierr)
-      call close_gzfile_a
+      call gz_read_filter_moms_data                                     &
+     &   (nnod, nele, FEM_elens, FEM_moms, zbuf1, ierr)
+      call close_gzfile_a(zbuf1)
 !
       end subroutine read_filter_moms_t_file_gz
 !
@@ -196,8 +196,8 @@
       end if
 !
       call open_wt_gzfile_a(gzip_name, zbuf1)
-      call gz_write_filter_moms_data_type(FEM_elens, FEM_moms)
-      call close_gzfile_a
+      call gz_write_filter_moms_data(FEM_elens, FEM_moms, zbuf1)
+      call close_gzfile_a(zbuf1)
 !
       end subroutine write_filter_moms_t_file_gz
 !

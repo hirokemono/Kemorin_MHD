@@ -62,12 +62,12 @@
       call open_wt_gzfile_a(gzip_name, zbuf1)
 !
       call write_gz_step_data                                           &
-     &   (id_rank, t_IO%i_time_step, t_IO%time, t_IO%dt)
+     &   (id_rank, t_IO%i_time_step, t_IO%time, t_IO%dt, zbuf1)
       call write_gz_field_data                                          &
      &   (ucd%nnod, ucd%num_field, ucd%ntot_comp,                       &
-     &    ucd%num_comp, ucd%phys_name, ucd%d_ucd)
+     &    ucd%num_comp, ucd%phys_name, ucd%d_ucd, zbuf1)
 !
-      call close_gzfile_a
+      call close_gzfile_a(zbuf1)
 !
       end subroutine write_ucd_2_gz_fld_file
 !
@@ -93,15 +93,15 @@
       call open_rd_gzfile_a(gzip_name, zbuf1)
 !
       call read_gz_step_data                                            &
-     &   (id_rank, t_IO%i_time_step, t_IO%time, t_IO%dt, ierr_IO)
+     &   (id_rank, t_IO%i_time_step, t_IO%time, t_IO%dt, zbuf1, ierr_IO)
       if(ierr_IO .gt. 0) return
       call skip_gz_comment_int8_int(ucd%nnod, ucd%num_field, zbuf1)
       call read_gz_multi_int(ucd%num_field, ucd%num_comp, zbuf1)
 !
       call read_gz_field_data(ucd%nnod, ucd%num_field, ucd%ntot_comp,   &
-     &    ucd%num_comp, ucd%phys_name, ucd%d_ucd)
+     &    ucd%num_comp, ucd%phys_name, ucd%d_ucd, zbuf1)
 !
-      call close_gzfile_a
+      call close_gzfile_a(zbuf1)
 !
       end subroutine read_ucd_2_gz_fld_file
 !
@@ -126,7 +126,7 @@
       call open_rd_gzfile_a(gzip_name, zbuf1)
 !
       call read_gz_step_data                                            &
-     &   (id_rank, t_IO%i_time_step, t_IO%time, t_IO%dt, ierr_IO)
+     &   (id_rank, t_IO%i_time_step, t_IO%time, t_IO%dt, zbuf1, ierr_IO)
       if(ierr_IO .gt. 0) return
       call skip_gz_comment_int8_int(ucd%nnod, ucd%num_field, zbuf1)
 !
@@ -139,9 +139,9 @@
 !
       call read_gz_field_data                                           &
      &   (ucd%nnod, ucd%num_field, ucd%ntot_comp,                       &
-     &    ucd%num_comp, ucd%phys_name, ucd%d_ucd)
+     &    ucd%num_comp, ucd%phys_name, ucd%d_ucd, zbuf1)
 !
-      call close_gzfile_a
+      call close_gzfile_a(zbuf1)
 !
       end subroutine read_alloc_ucd_2_gz_fld_file
 !

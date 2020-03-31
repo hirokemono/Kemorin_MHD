@@ -59,7 +59,7 @@
       call write_gz_vtk_data(nnod, num_field, ntot_comp, ncomp_field,   &
      &    field_name, d_nod)
 !
-      call close_gzfile_a
+      call close_gzfile_a(zbuf1)
 !
       end subroutine write_gz_vtk_file
 !
@@ -83,7 +83,7 @@
       call open_wt_gzfile_a(gzip_name, zbuf1)
       call write_gz_vtk_data(nnod, num_field, ntot_comp, ncomp_field,   &
      &    field_name, d_nod)
-      call close_gzfile_a
+      call close_gzfile_a(zbuf1)
 !
       end subroutine write_gz_vtk_phys
 !
@@ -105,7 +105,7 @@
 !
       call open_wt_gzfile_a(gzip_name, zbuf1)
       call write_gz_vtk_mesh(nnod, nele, nnod_ele, xx, ie)
-      call close_gzfile_a
+      call close_gzfile_a(zbuf1)
 !
       end subroutine write_gz_vtk_grid
 !

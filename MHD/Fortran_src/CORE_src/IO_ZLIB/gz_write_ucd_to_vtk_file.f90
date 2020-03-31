@@ -84,7 +84,7 @@
       write(zbuf1%fixbuf(1),'(a,2a1)') '</File>', char(10), char(0)
       call gz_write_textbuf_no_lf(zbuf1)
 !
-      call close_gzfile_a
+      call close_gzfile_a(zbuf1)
 !
       end subroutine write_gz_parallel_vtk_file
 !

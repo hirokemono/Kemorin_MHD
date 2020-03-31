@@ -65,9 +65,9 @@
       call open_rd_gzfile_a(gzip_name, zbuf1)
       call gz_read_filter_geometry                                     &
      &   (id_rank, filter_IO%nod_comm, filter_IO%node, ierr)
-      call read_3d_filter_stack_gz(filter_IO%filters)
-      call read_3d_filter_weights_coef_gz(filter_IO%filters)
-      call close_gzfile_a
+      call read_3d_filter_stack_gz(filter_IO%filters, zbuf1)
+      call read_3d_filter_weights_coef_gz(filter_IO%filters, zbuf1)
+      call close_gzfile_a(zbuf1)
 !
       end subroutine read_sort_filter_coef_file_gz
 !
@@ -98,10 +98,10 @@
 !
       call gz_write_filter_geometry                                     &
      &   (id_rank, filter_IO%nod_comm, filter_IO%node)
-      call write_3d_filter_stack_gz(filter_IO%filters)
-      call write_3d_filter_weights_coef_gz(filter_IO%filters)
+      call write_3d_filter_stack_gz(filter_IO%filters, zbuf1)
+      call write_3d_filter_weights_coef_gz(filter_IO%filters, zbuf1)
 !
-      call close_gzfile_a
+      call close_gzfile_a(zbuf1)
 !
       call dealloc_filter_geometry_data(filter_IO)
 !
@@ -134,7 +134,7 @@
       call open_rd_gzfile_a(gzip_name, zbuf1)
       call gz_read_filter_geometry                                      &
      &  (id_rank, filter_IO%nod_comm, filter_IO%node, ierr)
-      call close_gzfile_a
+      call close_gzfile_a(zbuf1)
 !
       end subroutine read_filter_geometry_file_gz
 !
@@ -163,7 +163,7 @@
       call open_wt_gzfile_a(gzip_name, zbuf1)
       call gz_write_filter_geometry                                     &
      &   (id_rank, filter_IO%nod_comm, filter_IO%node)
-      call close_gzfile_a
+      call close_gzfile_a(zbuf1)
 !
       call dealloc_filter_geometry_data(filter_IO)
 !

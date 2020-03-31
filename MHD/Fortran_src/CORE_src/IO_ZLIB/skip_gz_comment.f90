@@ -7,6 +7,7 @@
 !!      subroutine get_one_line_from_gz_f
 !!        type(buffer_4_gzip), intent(inout):: zbuf
 !!
+!!      subroutine skip_gz_comment_int(int_input, zbuf)
 !!      subroutine skip_gz_comment_int(int_input)
 !!      subroutine skip_gz_comment_int2(int_input, int_input2, zbuf)
 !!      subroutine skip_gz_comment_int8_int(i8_input, int_input2, zbuf)
@@ -119,12 +120,14 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine close_gzfile_a
+      subroutine close_gzfile_a(zbuf)
 !
       use calypso_c_binding
 !
+      type(buffer_4_gzip) , intent(inout):: zbuf
+!
       call close_gzfile_b()
-      call dealloc_fixbuffer_for_zlib(zbuf1)
+      call dealloc_fixbuffer_for_zlib(zbuf)
 !
       end subroutine close_gzfile_a
 !
@@ -137,7 +140,6 @@
 !
       type(buffer_4_gzip) , intent(inout):: zbuf
 !
-!      write(*,*) 'get_one_line_from_gz_f03', nbuf, len(zbuf%fixbuf(1))
       call gz_write_textbuf_no_lf_f(nbuf, zbuf%fixbuf(1), zbuf)
 !
       end subroutine gz_write_textbuf_no_lf

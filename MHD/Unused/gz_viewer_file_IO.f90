@@ -71,7 +71,7 @@
       call write_surf_group_viewer_gz                                   &
      &   (mgd_view_mesh%num_pe_sf, mgd_view_mesh%view_sf_grps)
 !
-      call close_gzfile_a
+      call close_gzfile_a(zbuf1)
 !
       end subroutine output_surface_grid_gz
 !
@@ -126,7 +126,7 @@
       call read_surf_group_viewer_gz                                    &
      &   (mgd_view_mesh%num_pe_sf, mgd_view_mesh%view_sf_grps)
 !
-      call close_gzfile_a
+      call close_gzfile_a(zbuf1)
 !
       end subroutine read_surface_grid_gz
 !

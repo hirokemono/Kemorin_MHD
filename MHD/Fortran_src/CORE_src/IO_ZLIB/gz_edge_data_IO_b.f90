@@ -154,19 +154,19 @@
 !
 !
 !      textbuf = hd_edge_point() // char(0)
-      call gz_read_number_of_node_b(zbuf1, nod_IO)
-      if(zbuf1%ierr_zlib .ne. 0) return
+      call gz_read_number_of_node_b(zbuf, nod_IO)
+      if(zbuf%ierr_zlib .ne. 0) return
 !
-      call gz_read_geometry_info_b(zbuf1, nod_IO)
-      if(zbuf1%ierr_zlib .ne. 0) return
+      call gz_read_geometry_info_b(zbuf, nod_IO)
+      if(zbuf%ierr_zlib .ne. 0) return
 !
 !      textbuf = hd_edge_dir() // char(0)
-      call gz_read_vector_in_element_b(zbuf1, nod_IO, sfed_IO)
-      if(zbuf1%ierr_zlib .ne. 0) return
+      call gz_read_vector_in_element_b(zbuf, nod_IO, sfed_IO)
+      if(zbuf%ierr_zlib .ne. 0) return
 !
 !      textbuf = hd_edge_length() // char(0)
-      call gz_read_scalar_in_element_b(zbuf1, nod_IO, sfed_IO)
-      if(zbuf1%ierr_zlib .ne. 0) return
+      call gz_read_scalar_in_element_b(zbuf, nod_IO, sfed_IO)
+      if(zbuf%ierr_zlib .ne. 0) return
 !
       end subroutine gz_read_edge_geometry_b
 !
