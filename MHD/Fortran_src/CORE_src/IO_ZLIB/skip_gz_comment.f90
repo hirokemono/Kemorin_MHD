@@ -140,7 +140,7 @@
 !
       type(buffer_4_gzip) , intent(inout):: zbuf
 !
-      call gz_write_textbuf_no_lf_f(nbuf, zbuf%fixbuf(1), zbuf)
+      call gz_write_textbuf_no_lf_f(zbuf)
 !
       end subroutine gz_write_textbuf_no_lf
 !
@@ -153,7 +153,7 @@
       type(buffer_4_gzip) , intent(inout):: zbuf
 !
       write(*,*) 'get_one_line_from_gz_f03', nbuf, len(zbuf%fixbuf(1))
-      call get_one_line_from_gz_f03(nbuf, zbuf%fixbuf(1), zbuf)
+      call get_one_line_from_gz_f03(zbuf)
 !
       end subroutine get_one_line_from_gz_f
 !
@@ -464,7 +464,7 @@
         write(fmt_txt,'(a1,i2,a8)') '(', n, 'i16,2a1)'
         write(zbuf%fixbuf(1),fmt_txt) item_sf(is1,ist+1:ist+n),         &
      &                               char(10), char(0)
-        call gz_write_textbuf_no_lf_f((n*16+2), zbuf%fixbuf(1), zbuf)
+        call gz_write_textbuf_no_lf_f(zbuf)
         ist = ist + n
         if(ist .ge. istack(1)) exit
       end do
@@ -491,7 +491,7 @@
         write(fmt_txt,'(a1,i2,a8)') '(', n, 'i16,2a1)'
         write(zbuf%fixbuf(1),fmt_txt) int_data(ist+1:ist+n),            &
      &                               char(10), char(0)
-        call gz_write_textbuf_no_lf_f((n*16+2), zbuf%fixbuf(1), zbuf)
+        call gz_write_textbuf_no_lf_f(zbuf)
         ist = ist + n
         if(ist .ge. num) exit
       end do
@@ -518,7 +518,7 @@
         write(fmt_txt,'(a1,i3,a7)') '(', n, 'i8,2a1)'
         write(zbuf%fixbuf(1),fmt_txt) int_data(ist+1:ist+n),            &
      &                               char(10), char(0)
-        call gz_write_textbuf_no_lf_f((n*8+2), zbuf%fixbuf(1), zbuf)
+        call gz_write_textbuf_no_lf_f(zbuf)
         ist = ist + n
         if(ist .ge. num) exit
       end do
@@ -545,7 +545,7 @@
         write(fmt_txt,'(a1,i3,a8)') '(', n, 'i12,2a1)'
         write(zbuf%fixbuf(1),fmt_txt) int_data(ist+1:ist+n),            &
      &                               char(10), char(0)
-        call gz_write_textbuf_no_lf_f((n*12+2), zbuf%fixbuf(1), zbuf)
+        call gz_write_textbuf_no_lf_f(zbuf)
         ist = ist + n
         if(ist .ge. num) exit
       end do
@@ -563,8 +563,7 @@
 !
 !
       write(zbuf%fixbuf(1),'(a,2a1)') comment, char(10), char(0)
-      call gz_write_textbuf_no_lf_f(length_of_c_text(zbuf%fixbuf(1)),   &
-     &    zbuf%fixbuf(1), zbuf)
+      call gz_write_textbuf_no_lf_f(zbuf)
 !
       end subroutine write_gz_comment_string
 !
@@ -577,12 +576,10 @@
       character(len=kchara), intent(in) :: chara_output
       type(buffer_4_gzip), intent(inout):: zbuf
 !
-      integer(kind = kint) :: n
 !
       write(zbuf%fixbuf(1),'(2a,a1)') trim(chara_output), '    ',       &
      &                               CHAR(0)
-      n = len_trim(chara_output) + 4 + 1
-      call gz_write_textbuf_no_lf_f(n, zbuf%fixbuf(1), zbuf)
+      call gz_write_textbuf_no_lf_f(zbuf)
 !
       end subroutine gz_write_chara_nolf
 !
