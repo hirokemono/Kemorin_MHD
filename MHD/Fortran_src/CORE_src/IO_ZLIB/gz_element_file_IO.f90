@@ -39,9 +39,9 @@
       use t_read_mesh_data
       use skip_gz_comment
 !
-      type(buffer_4_gzip), private :: zbuf_e
-!
       implicit none
+!
+      type(buffer_4_gzip), private :: zbuf_e
 !
 !------------------------------------------------------------------
 !
