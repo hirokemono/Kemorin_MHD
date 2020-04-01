@@ -46,11 +46,6 @@
 !
       implicit none
 !
-      integer(kind = 4), parameter, private :: nbuf = 65535
-!      character(len=nbuf) :: textbuf
-!
-!      type(buffer_4_gzip) :: zbuf1
-!
       private :: skip_gz_comment_get_nword
 !
 !------------------------------------------------------------------
@@ -152,7 +147,6 @@
 !
       type(buffer_4_gzip) , intent(inout):: zbuf
 !
-      write(*,*) 'get_one_line_from_gz_f03', nbuf, len(zbuf%fixbuf(1))
       call get_one_line_from_gz_f03(zbuf)
 !
       end subroutine get_one_line_from_gz_f
