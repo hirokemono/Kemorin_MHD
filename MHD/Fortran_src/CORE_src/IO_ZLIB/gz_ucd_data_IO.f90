@@ -53,6 +53,8 @@
       subroutine write_gz_udt_field_header(num_output,                  &
      &          ncomp_out, name_out, zbuf)
 !
+      use gzip_file_access
+!
       integer(kind = kint), intent(in) :: num_output
       integer(kind = kint), intent(in) :: ncomp_out(num_output)
       character(len = kchara), intent(in) :: name_out(num_output)
@@ -83,6 +85,8 @@
       subroutine write_gz_ucd_field_data(ntot_nod, ncomp_dat, nnod,     &
      &          inod_out, dat_out, zbuf)
 !
+      use gzip_file_access
+!
       integer(kind = kint), intent(in) :: ncomp_dat
       integer(kind = kint_gl), intent(in) :: ntot_nod, nnod
       integer(kind = kint_gl), intent(in) :: inod_out(ntot_nod)
@@ -108,6 +112,8 @@
 !
       subroutine read_gz_udt_field_num(num_input, zbuf)
 !
+      use gzip_file_access
+!
       integer(kind = kint), intent(inout) :: num_input
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
@@ -121,6 +127,8 @@
 !
       subroutine read_gz_udt_field_name                                 &
      &         (num_input, ncomp_in, name_in, zbuf)
+!
+      use gzip_file_access
 !
       integer(kind = kint), intent(inout) :: num_input
       integer(kind = kint), intent(inout) :: ncomp_in(num_input)
@@ -154,6 +162,8 @@
       subroutine read_gz_udt_field_header                               &
      &         (num_input, ncomp_in, name_in, zbuf)
 !
+      use gzip_file_access
+!
       integer(kind = kint), intent(inout) :: num_input
       integer(kind = kint), intent(inout) :: ncomp_in(num_input)
       character(len = kchara), intent(inout) :: name_in(num_input)
@@ -169,6 +179,8 @@
 !
       subroutine read_gz_udt_field_data                                 &
      &         (nnod_in, ncomp_dat, dat_in, zbuf)
+!
+      use gzip_file_access
 !
       integer(kind = kint), intent(in) :: ncomp_dat
       integer(kind = kint_gl), intent(in) :: nnod_in
@@ -202,6 +214,8 @@
       subroutine read_gz_udt_mesh_header                                &
      &         (nnod_input, nele_in, ncomptot_in, zbuf)
 !
+      use gzip_file_access
+!
       integer(kind = kint_gl), intent(inout) :: nnod_input, nele_in
       integer(kind = kint), intent(inout) :: ncomptot_in
       type(buffer_4_gzip), intent(inout) :: zbuf
@@ -219,6 +233,8 @@
 !
       subroutine read_gz_ucd_mesh_data(nnod_in, nele_in,                &
      &          nnod_ele, inod_gl, iele_gl, xx_in, ie_in, zbuf)
+!
+      use gzip_file_access
 !
       integer(kind=kint), intent(in) :: nnod_ele
       integer(kind=kint_gl), intent(in) :: nnod_in, nele_in
@@ -253,6 +269,8 @@
       subroutine write_gz_udt_mesh_header                               &
      &         (nnod_output, nele_out, ncomp_output, zbuf)
 !
+      use gzip_file_access
+!
       integer(kind = kint_gl), intent(in) :: nnod_output, nele_out
       integer(kind = kint), intent(in) :: ncomp_output
 !
@@ -273,6 +291,7 @@
      &         (ntot_ele, nnod_ele, nele, iele_gl, ie_gl, zbuf)
 !
       use m_geometry_constants
+      use gzip_file_access
 !
       integer(kind=kint), intent(in) :: nnod_ele
       integer(kind=kint_gl), intent(in) :: ntot_ele, nele

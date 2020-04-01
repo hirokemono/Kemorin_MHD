@@ -56,7 +56,7 @@
       subroutine gz_read_mesh_file_b                                    &
      &         (id_rank, file_name, mesh_IO, group_IO, ierr)
 !
-      use calypso_c_binding
+      use gzip_file_access
 !
       integer, intent(in) :: id_rank
       character(len=kchara), intent(in) :: file_name
@@ -87,7 +87,7 @@
       subroutine gz_read_mesh_geometry_b                                &
      &         (id_rank, file_name, mesh_IO, ierr)
 !
-      use calypso_c_binding
+      use gzip_file_access
 !
       integer, intent(in) :: id_rank
       character(len=kchara), intent(in) :: file_name
@@ -115,7 +115,7 @@
       subroutine gz_read_node_size_b                                    &
      &         (id_rank, file_name, mesh_IO, ierr)
 !
-      use calypso_c_binding
+      use gzip_file_access
 !
       integer, intent(in) :: id_rank
       character(len=kchara), intent(in) :: file_name
@@ -143,7 +143,7 @@
       subroutine gz_read_geometry_size_b                                &
      &         (id_rank, file_name, mesh_IO, ierr)
 !
-      use calypso_c_binding
+      use gzip_file_access
 !
       integer, intent(in) :: id_rank
       character(len=kchara), intent(in) :: file_name
@@ -172,7 +172,7 @@
       subroutine gz_write_mesh_file_b                                   &
      &         (id_rank, file_name, mesh_IO, group_IO)
 !
-      use calypso_c_binding
+      use gzip_file_access
 !
       integer, intent(in) :: id_rank
       character(len=kchara), intent(in) :: file_name

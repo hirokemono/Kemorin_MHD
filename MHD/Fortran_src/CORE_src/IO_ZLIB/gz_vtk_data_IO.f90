@@ -64,6 +64,8 @@
 !
       subroutine write_gz_vtk_fields_head(nnod, zbuf)
 !
+      use gzip_file_access
+!
       integer(kind=kint_gl), intent(in) :: nnod
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
@@ -79,6 +81,7 @@
      &         (ncomp_field, field_name, zbuf)
 !
       use m_phys_constants
+      use gzip_file_access
 !
       integer(kind=kint ), intent(in) :: ncomp_field
       character(len=kchara), intent(in) :: field_name
@@ -103,6 +106,7 @@
      &         (ntot_nod, ncomp_field, nnod, d_nod, zbuf)
 !
       use m_phys_constants
+      use gzip_file_access
 !
       integer(kind=kint), intent(in) :: ncomp_field
       integer(kind=kint_gl), intent(in) :: ntot_nod, nnod
@@ -143,6 +147,8 @@
 !
       subroutine write_gz_vtk_node_head(nnod, zbuf)
 !
+      use gzip_file_access
+!
       integer(kind = kint_gl), intent(in) :: nnod
 !
       type(buffer_4_gzip), intent(inout) :: zbuf
@@ -157,6 +163,8 @@
 ! -----------------------------------------------------------------------
 !
       subroutine write_gz_vtk_connect_head(nele, nnod_ele, zbuf)
+!
+      use gzip_file_access
 !
       integer(kind = kint), intent(in) :: nnod_ele
       integer(kind = kint_gl), intent(in) :: nele
@@ -174,6 +182,7 @@
       subroutine write_gz_vtk_cell_type(nele, nnod_ele, zbuf)
 !
       use m_geometry_constants
+      use gzip_file_access
 !
       integer(kind = kint), intent(in) :: nnod_ele
       integer(kind = kint_gl), intent(in) :: nele
@@ -200,6 +209,8 @@
 !
       subroutine write_gz_vtk_connect_data                              &
      &         (ntot_ele, nnod_ele, nele, ie, zbuf)
+!
+      use gzip_file_access
 !
       integer(kind = kint), intent(in) :: nnod_ele
       integer(kind = kint_gl), intent(in) :: ntot_ele, nele
@@ -241,6 +252,7 @@
      &         (iflag_end, ncomp_field, field_name, zbuf)
 !
       use m_phys_constants
+      use gzip_file_access
 !
       integer(kind=kint ), intent(inout) :: iflag_end, ncomp_field
       character(len=kchara), intent(inout) :: field_name
@@ -276,6 +288,7 @@
      &         (ntot_nod, ncomp_field, nnod, d_nod, zbuf)
 !
       use m_phys_constants
+      use gzip_file_access
 !
       integer(kind=kint), intent(in) :: ncomp_field
       integer(kind=kint_gl), intent(in) :: ntot_nod, nnod
@@ -310,6 +323,8 @@
 !
       subroutine read_gz_vtk_node_head(nnod, zbuf)
 !
+      use gzip_file_access
+!
       integer(kind = kint), intent(inout) :: nnod
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
@@ -330,6 +345,8 @@
 !
       subroutine read_gz_vtk_connect_head(nele, nnod_ele, zbuf)
 !
+      use gzip_file_access
+!
       integer(kind = kint), intent(inout) :: nnod_ele
       integer(kind = kint_gl), intent(inout) :: nele
       type(buffer_4_gzip), intent(inout) :: zbuf
@@ -347,6 +364,8 @@
 ! -----------------------------------------------------------------------
 !
       subroutine read_gz_vtk_cell_type(nele, zbuf)
+!
+      use gzip_file_access
 !
       integer(kind = kint_gl), intent(in) :: nele
       type(buffer_4_gzip), intent(inout) :: zbuf
@@ -366,6 +385,8 @@
 !
       subroutine read_gz_vtk_connect_data                               &
      &         (ntot_ele, nnod_ele, nele, ie, zbuf)
+!
+      use gzip_file_access
 !
       integer(kind = kint_gl), intent(in) :: ntot_ele, nnod_ele
       integer(kind = kint), intent(in) :: nele

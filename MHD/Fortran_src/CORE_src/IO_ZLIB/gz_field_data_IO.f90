@@ -38,6 +38,8 @@
       subroutine write_gz_step_data                                     &
      &         (id_rank, i_time_step_IO, time_IO, delta_t_IO, zbuf)
 !
+      use gzip_file_access
+!
       integer, intent(in) :: id_rank
       integer(kind=kint), intent(in) :: i_time_step_IO
       real(kind = kreal), intent(in) :: time_IO, delta_t_IO
@@ -104,6 +106,8 @@
 !
       subroutine write_gz_field_data(nnod64, num_field, ntot_comp,      &
      &          ncomp_field, field_name, field_data, zbuf)
+!
+      use gzip_file_access
 !
       integer(kind=kint_gl), intent(in)  :: nnod64
       integer(kind=kint), intent(in)  :: num_field, ntot_comp
@@ -172,6 +176,8 @@
       subroutine write_gz_field_vect                                    &
      &         (d_name, nnod64, ndir, vector, zbuf)
 !
+      use gzip_file_access
+!
       integer(kind=kint_gl), intent(in) :: nnod64
       integer(kind=kint), intent(in) :: ndir
       real(kind = kreal), intent(in) :: vector(nnod64,ndir)
@@ -198,6 +204,8 @@
 !------------------------------------------------------------------
 !
       subroutine read_gz_field_vect(nnod64, ndir, vector, zbuf)
+!
+      use gzip_file_access
 !
       integer(kind=kint_gl), intent(in) :: nnod64
       integer(kind=kint), intent(in) :: ndir

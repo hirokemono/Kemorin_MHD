@@ -121,6 +121,7 @@
       subroutine read_gz_rst_field_comps(fld_IO, zbuf)
 !
       use set_restart_data
+      use gzip_file_access
 !
       integer(kind=kint)  :: i, inod, nchara
       type(field_IO), intent(inout) :: fld_IO

@@ -3,12 +3,7 @@
 !
 !     Written by H. Matsui on July, 2007
 !
-!!      subroutine gz_write_textbuf_no_lf(zbuf)
-!!      subroutine get_one_line_text_from_gz
-!!        type(buffer_4_gzip), intent(inout):: zbuf
-!!
 !!      subroutine skip_gz_comment_int(int_input, zbuf)
-!!      subroutine skip_gz_comment_int(int_input)
 !!      subroutine skip_gz_comment_int2(int_input, int_input2, zbuf)
 !!      subroutine skip_gz_comment_int8_int(i8_input, int_input2, zbuf)
 !!      subroutine skip_gz_comment_real(real_input, zbuf)
@@ -72,7 +67,7 @@
 !
       subroutine open_wt_gzfile_a(gzip_name, zbuf)
 !
-      use calypso_c_binding
+      use gzip_file_access
 !
       character(len = kchara), intent(in) :: gzip_name
       type(buffer_4_gzip) , intent(inout):: zbuf
@@ -87,7 +82,7 @@
 !
       subroutine open_ad_gzfile_a(gzip_name, zbuf)
 !
-      use calypso_c_binding
+      use gzip_file_access
 !
       character(len = kchara), intent(in) :: gzip_name
       type(buffer_4_gzip) , intent(inout):: zbuf
@@ -102,7 +97,7 @@
 !
       subroutine open_rd_gzfile_a(gzip_name, zbuf)
 !
-      use calypso_c_binding
+      use gzip_file_access
 !
       character(len = kchara), intent(in) :: gzip_name
       type(buffer_4_gzip) , intent(inout):: zbuf
@@ -117,7 +112,7 @@
 !
       subroutine close_gzfile_a(zbuf)
 !
-      use calypso_c_binding
+      use gzip_file_access
 !
       type(buffer_4_gzip) , intent(inout):: zbuf
 !
@@ -125,31 +120,6 @@
       call dealloc_fixbuffer_for_zlib(zbuf)
 !
       end subroutine close_gzfile_a
-!
-!------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      subroutine gz_write_textbuf_no_lf(zbuf)
-!
-      use calypso_c_binding
-!
-      type(buffer_4_gzip) , intent(inout):: zbuf
-!
-      call gz_write_textbuf_no_lf_f(zbuf)
-!
-      end subroutine gz_write_textbuf_no_lf
-!
-! ----------------------------------------------------------------------
-!
-      subroutine get_one_line_text_from_gz(zbuf)
-!
-      use calypso_c_binding
-!
-      type(buffer_4_gzip) , intent(inout):: zbuf
-!
-      call get_one_line_from_gz_f(zbuf)
-!
-      end subroutine get_one_line_text_from_gz
 !
 !------------------------------------------------------------------
 !------------------------------------------------------------------
@@ -272,6 +242,8 @@
 !
       subroutine skip_gz_comment_get_nword(zbuf)
 !
+      use gzip_file_access
+!
       type(buffer_4_gzip), intent(inout):: zbuf
       character(len=1) :: chara_flag
 !      character(len=65535) :: tbuf2
@@ -300,6 +272,8 @@
 !------------------------------------------------------------------
 !
       subroutine read_gz_multi_real(num, real_input, zbuf)
+!
+      use gzip_file_access
 !
       integer(kind = kint), intent(in) :: num
       real(kind = kreal), intent(inout) :: real_input(num)
@@ -347,6 +321,8 @@
 !
       subroutine read_gz_multi_int(num, int_input, zbuf)
 !
+      use gzip_file_access
+!
       integer(kind = kint), intent(in) :: num
       integer(kind = kint), intent(inout) :: int_input(num)
       type(buffer_4_gzip), intent(inout):: zbuf
@@ -376,6 +352,8 @@
 !------------------------------------------------------------------
 !
       subroutine read_gz_surf_group(is1, ntot, istack, item_sf, zbuf)
+!
+      use gzip_file_access
 !
       integer(kind = kint), intent(in) :: is1, ntot
       integer(kind = kint), intent(in) :: istack(0:1)
@@ -410,6 +388,8 @@
 !
       subroutine read_gz_multi_int8(num, int8_input, zbuf)
 !
+      use gzip_file_access
+!
       integer(kind = kint), intent(in) :: num
       integer(kind = kint_gl), intent(inout) :: int8_input(num)
       type(buffer_4_gzip), intent(inout):: zbuf
@@ -441,7 +421,7 @@
 !
       subroutine write_gz_surf_group(is1, ntot, istack, item_sf, zbuf)
 !
-      use calypso_c_binding
+      use gzip_file_access
 !
       integer(kind = kint), intent(in) :: is1, ntot
       integer(kind = kint), intent(in) :: istack(0:1)
@@ -458,7 +438,7 @@
         write(fmt_txt,'(a1,i2,a8)') '(', n, 'i16,2a1)'
         write(zbuf%fixbuf(1),fmt_txt) item_sf(is1,ist+1:ist+n),         &
      &                               char(10), char(0)
-        call gz_write_textbuf_no_lf_f(zbuf)
+        call gz_write_textbuf_no_lf(zbuf)
         ist = ist + n
         if(ist .ge. istack(1)) exit
       end do
@@ -469,7 +449,7 @@
 !
       subroutine write_gz_multi_int_8i16(num, int_data, zbuf)
 !
-      use calypso_c_binding
+      use gzip_file_access
 !
       integer(kind = kint), intent(in) :: num
       integer(kind = kint), intent(in) :: int_data(num)
@@ -485,7 +465,7 @@
         write(fmt_txt,'(a1,i2,a8)') '(', n, 'i16,2a1)'
         write(zbuf%fixbuf(1),fmt_txt) int_data(ist+1:ist+n),            &
      &                               char(10), char(0)
-        call gz_write_textbuf_no_lf_f(zbuf)
+        call gz_write_textbuf_no_lf(zbuf)
         ist = ist + n
         if(ist .ge. num) exit
       end do
@@ -496,7 +476,7 @@
 !
       subroutine write_gz_multi_int_10i8(num, int_data, zbuf)
 !
-      use calypso_c_binding
+      use gzip_file_access
 !
       integer(kind = kint), intent(in) :: num
       integer(kind = kint), intent(in) :: int_data(num)
@@ -512,7 +492,7 @@
         write(fmt_txt,'(a1,i3,a7)') '(', n, 'i8,2a1)'
         write(zbuf%fixbuf(1),fmt_txt) int_data(ist+1:ist+n),            &
      &                               char(10), char(0)
-        call gz_write_textbuf_no_lf_f(zbuf)
+        call gz_write_textbuf_no_lf(zbuf)
         ist = ist + n
         if(ist .ge. num) exit
       end do
@@ -523,7 +503,7 @@
 !
       subroutine write_gz_multi_int_10i12(num, int_data, zbuf)
 !
-      use calypso_c_binding
+      use gzip_file_access
 !
       integer(kind = kint), intent(in) :: num
       integer(kind = kint), intent(in) :: int_data(num)
@@ -539,7 +519,7 @@
         write(fmt_txt,'(a1,i3,a8)') '(', n, 'i12,2a1)'
         write(zbuf%fixbuf(1),fmt_txt) int_data(ist+1:ist+n),            &
      &                               char(10), char(0)
-        call gz_write_textbuf_no_lf_f(zbuf)
+        call gz_write_textbuf_no_lf(zbuf)
         ist = ist + n
         if(ist .ge. num) exit
       end do
@@ -550,14 +530,14 @@
 !
       subroutine write_gz_comment_string(comment, zbuf)
 !
-      use calypso_c_binding
+      use gzip_file_access
 !
       character(len=*), intent(in)  ::  comment
       type(buffer_4_gzip), intent(inout):: zbuf
 !
 !
       write(zbuf%fixbuf(1),'(a,2a1)') comment, char(10), char(0)
-      call gz_write_textbuf_no_lf_f(zbuf)
+      call gz_write_textbuf_no_lf(zbuf)
 !
       end subroutine write_gz_comment_string
 !
@@ -565,7 +545,7 @@
 !
       subroutine gz_write_chara_nolf(chara_output, zbuf)
 !
-      use calypso_c_binding
+      use gzip_file_access
 !
       character(len=kchara), intent(in) :: chara_output
       type(buffer_4_gzip), intent(inout):: zbuf
@@ -573,7 +553,7 @@
 !
       write(zbuf%fixbuf(1),'(2a,a1)') trim(chara_output), '    ',       &
      &                               CHAR(0)
-      call gz_write_textbuf_no_lf_f(zbuf)
+      call gz_write_textbuf_no_lf(zbuf)
 !
       end subroutine gz_write_chara_nolf
 !

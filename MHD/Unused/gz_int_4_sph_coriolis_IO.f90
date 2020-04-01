@@ -28,6 +28,7 @@
 !
       use m_int_4_sph_coriolis_IO
       use gz_node_geometry_IO
+      use gzip_file_access
 !
       integer(kind = kint) :: j3, j1, j2
       character(len=kchara) :: gzip_name
@@ -108,6 +109,7 @@
 !
       use m_int_4_sph_coriolis_IO
       use gz_node_geometry_IO
+      use gzip_file_access
 !
       integer(kind = kint) :: j3, j1, j2, itmp
       character(len=kchara) :: gzip_name

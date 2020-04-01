@@ -42,6 +42,8 @@
 !
       subroutine gz_write_geometry_info(nod_IO, zbuf)
 !
+      use gzip_file_access
+!
       type(node_data), intent(in) :: nod_IO
       type(buffer_4_gzip) , intent(inout) :: zbuf
 !
@@ -64,6 +66,8 @@
 !
       subroutine gz_write_scalar_in_element(nod_IO, sfed_IO, zbuf)
 !
+      use gzip_file_access
+!
       type(node_data), intent(in) :: nod_IO
       type(surf_edge_IO_data), intent(in) :: sfed_IO
       type(buffer_4_gzip) , intent(inout) :: zbuf
@@ -85,6 +89,8 @@
 !------------------------------------------------------------------
 !
       subroutine gz_write_vector_in_element(nod_IO, sfed_IO, zbuf)
+!
+      use gzip_file_access
 !
       type(node_data), intent(in) :: nod_IO
       type(surf_edge_IO_data), intent(in) :: sfed_IO
@@ -122,6 +128,8 @@
 !
       subroutine gz_read_geometry_info(nod_IO, zbuf)
 !
+      use gzip_file_access
+!
       type(node_data), intent(inout) :: nod_IO
       type(buffer_4_gzip) , intent(inout) :: zbuf
 !
@@ -141,6 +149,8 @@
 !------------------------------------------------------------------
 !
       subroutine gz_read_scalar_in_element(nod_IO, sfed_IO, zbuf)
+!
+      use gzip_file_access
 !
       type(node_data), intent(inout) :: nod_IO
       type(surf_edge_IO_data), intent(inout) :: sfed_IO
@@ -163,6 +173,8 @@
 !------------------------------------------------------------------
 !
       subroutine gz_read_vector_in_element(nod_IO, sfed_IO, zbuf)
+!
+      use gzip_file_access
 !
       type(node_data), intent(inout) :: nod_IO
       type(surf_edge_IO_data), intent(inout) :: sfed_IO

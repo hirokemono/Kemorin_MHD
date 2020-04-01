@@ -47,6 +47,7 @@
       subroutine write_gz_itp_table_org(id_rank, IO_itp_org, zbuf)
 !
       use t_interpolate_tbl_org
+      use gzip_file_access
 !
       integer, intent(in) :: id_rank
       type(interpolate_table_org), intent(in) :: IO_itp_org
@@ -113,6 +114,7 @@
       subroutine write_gz_itp_coefs_org(IO_itp_org, zbuf)
 !
       use t_interpolate_tbl_org
+      use gzip_file_access
 !
       type(interpolate_table_org), intent(in) :: IO_itp_org
       type(buffer_4_gzip), intent(inout) :: zbuf
@@ -212,6 +214,7 @@
       subroutine read_gz_itp_coefs_org(IO_itp_org, zbuf)
 !
       use t_interpolate_tbl_org
+      use gzip_file_access
 !
       type(interpolate_table_org), intent(inout) :: IO_itp_org
       type(buffer_4_gzip), intent(inout) :: zbuf
@@ -241,6 +244,7 @@
       subroutine write_gz_itp_table_dest(id_rank, IO_itp_dest, zbuf)
 !
       use t_interpolate_tbl_dest
+      use gzip_file_access
 !
       type(interpolate_table_dest), intent(in) :: IO_itp_dest
       integer, intent(in) :: id_rank
@@ -309,6 +313,7 @@
 !
       use t_interpolate_tbl_dest
       use t_interpolate_coefs_dest
+      use gzip_file_access
 !
       type(interpolate_table_dest), intent(in) :: IO_itp_dest
       type(interpolate_coefs_dest), intent(in) :: IO_itp_c_dest
@@ -416,6 +421,7 @@
 !
       use t_interpolate_tbl_dest
       use t_interpolate_coefs_dest
+      use gzip_file_access
 !
       type(interpolate_table_dest), intent(inout) :: IO_itp_dest
       type(interpolate_coefs_dest), intent(inout) :: IO_itp_c_dest

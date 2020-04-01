@@ -53,7 +53,7 @@
       subroutine gz_write_step_fld_file_b                               &
      &         (gzip_name, id_rank, t_IO, fld_IO)
 !
-      use calypso_c_binding
+      use gzip_file_access
 !
       character(len=kchara), intent(in) :: gzip_name
       integer, intent(in) :: id_rank
@@ -83,7 +83,7 @@
       subroutine gz_read_step_field_file_b                              &
      &         (gzip_name, id_rank, t_IO, fld_IO)
 !
-      use calypso_c_binding
+      use gzip_file_access
 !
       character(len=kchara), intent(in) :: gzip_name
       integer, intent(in) :: id_rank
@@ -127,7 +127,7 @@
       subroutine gz_rd_alloc_st_fld_file_b                              &
      &         (gzip_name, id_rank, t_IO, fld_IO)
 !
-      use calypso_c_binding
+      use gzip_file_access
 !
       character(len=kchara), intent(in) :: gzip_name
       integer, intent(in) :: id_rank
@@ -175,7 +175,7 @@
       subroutine gz_rd_alloc_st_fld_head_b                              &
      &         (gzip_name, id_rank, t_IO, fld_IO)
 !
-      use calypso_c_binding
+      use gzip_file_access
 !
       character(len=kchara), intent(in) :: gzip_name
       integer, intent(in) :: id_rank

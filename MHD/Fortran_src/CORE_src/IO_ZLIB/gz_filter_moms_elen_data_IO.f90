@@ -93,6 +93,7 @@
 !
       use t_filter_elength
       use skip_gz_comment
+      use gzip_file_access
 !
       type(filter_config_type), intent(in) ::  filter_conf
       type(buffer_4_gzip), intent(inout) :: zbuf
@@ -177,6 +178,7 @@
       use t_filter_elength
       use skip_gz_comment
       use gz_filter_moments_IO
+      use gzip_file_access
 !
       integer(kind = kint), intent(in) :: nele
 !
@@ -270,6 +272,7 @@
 !
       use skip_gz_comment
       use gz_filter_moments_IO
+      use gzip_file_access
 !
       integer(kind = kint), intent(in) :: nnod
       real(kind = kreal), intent(in) :: e_x2_nod(nnod)
@@ -385,6 +388,7 @@
       use skip_gz_comment
       use t_filter_moments
       use gz_filter_moments_IO
+      use gzip_file_access
 !
       integer(kind = kint), intent(in) :: nele
       type(filter_mom_type), intent(in) :: moms

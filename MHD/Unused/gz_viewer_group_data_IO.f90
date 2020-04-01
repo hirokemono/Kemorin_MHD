@@ -56,6 +56,8 @@
       subroutine write_domain_group_viewer_gz                           &
      &         (num_pe, domain_grps, zbuf)
 !
+      use gzip_file_access
+!
       integer, intent(in) :: num_pe
       type(viewer_surface_groups), intent(in) :: domain_grps
       type(buffer_4_gzip), intent(inout) :: zbuf
@@ -173,6 +175,7 @@
      &         (num_pe, view_nod_grps, zbuf)
 !
       use m_fem_mesh_labels
+      use gzip_file_access
 !
       integer, intent(in) :: num_pe
       type(viewer_node_groups), intent(in) :: view_nod_grps
@@ -226,6 +229,7 @@
      &         (num_pe, view_ele_grps, zbuf)
 !
       use m_fem_mesh_labels
+      use gzip_file_access
 !
       integer, intent(in) :: num_pe
       type(viewer_surface_groups), intent(in) :: view_ele_grps
@@ -326,6 +330,7 @@
      &         (num_pe, view_sf_grps, zbuf)
 !
       use m_fem_mesh_labels
+      use gzip_file_access
 !
       integer, intent(in) :: num_pe
       type(viewer_surface_groups), intent(in) :: view_sf_grps
@@ -423,6 +428,8 @@
 !
       subroutine write_viewer_group_data_gz                             &
      &         (num_pe, ngrp, name, group, zbuf)
+!
+      use gzip_file_access
 !
       integer, intent(in) :: num_pe
       integer(kind = kint), intent(in) :: ngrp

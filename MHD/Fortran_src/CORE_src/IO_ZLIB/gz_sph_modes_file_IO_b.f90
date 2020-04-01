@@ -56,7 +56,7 @@
      &         (file_name, id_rank, sph_file, ierr)
 !
       use gz_groups_IO_b
-      use calypso_c_binding
+      use gzip_file_access
 !
       character(len=kchara), intent(in) :: file_name
       integer, intent(in) :: id_rank
@@ -85,7 +85,7 @@
      &         (file_name, id_rank, sph_file, ierr)
 !
       use gz_groups_IO_b
-      use calypso_c_binding
+      use gzip_file_access
 !
       character(len=kchara), intent(in) :: file_name
       integer, intent(in) :: id_rank
@@ -113,7 +113,7 @@
       subroutine gz_read_geom_rtm_file_b                                &
      &         (file_name, id_rank, sph_file, ierr)
 !
-      use calypso_c_binding
+      use gzip_file_access
 !
       character(len=kchara), intent(in) :: file_name
       integer, intent(in) :: id_rank
@@ -141,7 +141,7 @@
       subroutine gz_read_modes_rlm_file_b                               &
      &         (file_name, id_rank, sph_file, ierr)
 !
-      use calypso_c_binding
+      use gzip_file_access
 !
       character(len=kchara), intent(in) :: file_name
       integer, intent(in) :: id_rank
@@ -171,7 +171,7 @@
      &         (file_name, id_rank, sph_file)
 !
       use gz_groups_IO_b
-      use calypso_c_binding
+      use gzip_file_access
 !
       character(len=kchara), intent(in) :: file_name
       integer, intent(in) :: id_rank
@@ -193,7 +193,7 @@
      &         (file_name, id_rank, sph_file)
 !
       use gz_groups_IO_b
-      use calypso_c_binding
+      use gzip_file_access
 !
       character(len=kchara), intent(in) :: file_name
       integer, intent(in) :: id_rank
@@ -214,7 +214,7 @@
       subroutine gz_write_geom_rtm_file_b                               &
      &         (file_name, id_rank, sph_file)
 !
-      use calypso_c_binding
+      use gzip_file_access
 !
       character(len=kchara), intent(in) :: file_name
       integer, intent(in) :: id_rank
@@ -235,7 +235,7 @@
       subroutine gz_write_modes_rlm_file_b                              &
      &         (file_name, id_rank, sph_file)
 !
-      use calypso_c_binding
+      use gzip_file_access
 !
       character(len=kchara), intent(in) :: file_name
       integer, intent(in) :: id_rank

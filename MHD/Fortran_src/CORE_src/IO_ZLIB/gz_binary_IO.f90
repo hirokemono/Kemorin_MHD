@@ -56,7 +56,7 @@
 !
       use set_parallel_file_name
       use skip_gz_comment
-      use calypso_c_binding
+      use gzip_file_access
 !
       character(len=kchara), intent(in) :: gzip_name
       type(buffer_4_gzip), intent(inout) :: zbuf
@@ -73,7 +73,7 @@
 !
       use set_parallel_file_name
       use skip_gz_comment
-      use calypso_c_binding
+      use gzip_file_access
 !
       integer, intent(in) :: id_rank
       character(len=kchara), intent(in) :: gzip_name
@@ -92,7 +92,7 @@
 !
       subroutine gz_write_endian_flag(zbuf)
 !
-      use calypso_c_binding
+      use gzip_file_access
 !
       type(buffer_4_gzip), intent(inout) :: zbuf
       integer, parameter :: i_UNIX4(1) = (/i_UNIX/)
@@ -107,7 +107,7 @@
       subroutine gz_write_one_integer_b(int_dat, zbuf)
 !
       use transfer_to_long_integers
-      use calypso_c_binding
+      use gzip_file_access
 !
       integer(kind = kint), intent(in) :: int_dat
       type(buffer_4_gzip), intent(inout) :: zbuf
@@ -125,7 +125,7 @@
 !
       subroutine gz_write_one_real_b(real_dat, zbuf)
 !
-      use calypso_c_binding
+      use gzip_file_access
 !
       real(kind = kreal), intent(in) :: real_dat
       type(buffer_4_gzip), intent(inout) :: zbuf
@@ -144,7 +144,7 @@
 !
       subroutine gz_write_mul_int8_b(num, int8_dat, zbuf)
 !
-      use calypso_c_binding
+      use gzip_file_access
 !
       integer(kind = kint_gl), intent(in) :: num
       integer(kind = kint_gl), intent(in) :: int8_dat(num)
@@ -203,7 +203,7 @@
 !
       subroutine gz_write_mul_character_b(num, chara_dat, zbuf)
 !
-      use calypso_c_binding
+      use gzip_file_access
 !
       integer(kind = kint_gl), intent(in) :: num
       character(len=kchara), intent(in) :: chara_dat(num)
@@ -231,7 +231,7 @@
 !
       subroutine gz_write_1d_vector_b(num, real_dat, zbuf)
 !
-      use calypso_c_binding
+      use gzip_file_access
 !
       integer(kind = kint_gl), intent(in) :: num
       real(kind = kreal), intent(in) :: real_dat(num)
@@ -279,7 +279,7 @@
       subroutine gz_read_endian_flag(id_rank, zbuf)
 !
       use binary_IO
-      use calypso_c_binding
+      use gzip_file_access
 !
       integer, intent(in) :: id_rank
       type(buffer_4_gzip), intent(inout) :: zbuf
@@ -297,7 +297,7 @@
 !
       subroutine gz_read_one_integer_b(zbuf, int_dat)
 !
-      use calypso_c_binding
+      use gzip_file_access
 !
       integer(kind = kint), intent(inout) :: int_dat
       type(buffer_4_gzip), intent(inout) :: zbuf
@@ -315,7 +315,7 @@
 !
       subroutine gz_read_one_real_b(zbuf, real_dat)
 !
-      use calypso_c_binding
+      use gzip_file_access
 !
       real(kind = kreal), intent(inout) :: real_dat
       type(buffer_4_gzip), intent(inout) :: zbuf
@@ -334,7 +334,7 @@
 !
       subroutine gz_read_mul_int8_b(zbuf, num, int8_dat)
 !
-      use calypso_c_binding
+      use gzip_file_access
 !
       integer(kind = kint_gl), intent(in) :: num
       integer(kind = kint_gl), intent(inout) :: int8_dat(num)
@@ -398,7 +398,7 @@
 !
       subroutine gz_read_mul_character_b(zbuf, num, chara_dat)
 !
-      use calypso_c_binding
+      use gzip_file_access
 !
       integer(kind = kint_gl), intent(in) :: num
       character(len=kchara), intent(inout) :: chara_dat(num)
@@ -425,7 +425,7 @@
 !
       subroutine gz_read_1d_vector_b(zbuf, num, real_dat)
 !
-      use calypso_c_binding
+      use gzip_file_access
 !
       integer(kind = kint_gl), intent(in) :: num
       real(kind = kreal), intent(inout) :: real_dat(num)

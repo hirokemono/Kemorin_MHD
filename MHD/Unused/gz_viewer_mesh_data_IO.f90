@@ -55,6 +55,8 @@
 !
       subroutine write_domain_data_viewer_gz(mgd_view_mesh, zbuf)
 !
+      use gzip_file_access
+!
       type(merged_viewer_mesh), intent(in) :: mgd_view_mesh
 !
       type(buffer_4_gzip), intent(inout) :: zbuf
@@ -107,6 +109,8 @@
 !
       subroutine write_node_data_viewer_gz(view_mesh, zbuf)
 !
+      use gzip_file_access
+!
       type(viewer_mesh_data), intent(in) :: view_mesh
 !
       type(buffer_4_gzip), intent(inout) :: zbuf
@@ -134,6 +138,8 @@
 !
       subroutine read_node_data_viewer_gz(view_mesh, zbuf)
 !
+      use gzip_file_access
+!
       type(viewer_mesh_data), intent(inout) :: view_mesh
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
@@ -156,6 +162,8 @@
 !
       subroutine write_surf_connect_viewer_gz                           &
      &         (num_pe, isurf_sf_stack, view_mesh, zbuf)
+!
+      use gzip_file_access
 !
       integer, intent(in) :: num_pe
       integer(kind = kint), intent(in) :: isurf_sf_stack(0:num_pe)
@@ -189,7 +197,7 @@
         call gz_write_textbuf_no_lf(zbuf)
       end do
 !
-end subroutine write_surf_connect_viewer_gz
+      end subroutine write_surf_connect_viewer_gz
 !
 !------------------------------------------------------------------
 !
@@ -199,6 +207,7 @@ end subroutine write_surf_connect_viewer_gz
       use m_geometry_constants
       use m_node_quad_2_linear_sf
       use set_nnod_4_ele_by_type
+      use gzip_file_access
 !
       integer(kind = kint), intent(in) :: nnod_4_ele
       integer(kind = kint), intent(inout) :: nnod_4_edge
@@ -236,6 +245,7 @@ end subroutine write_surf_connect_viewer_gz
       subroutine write_edge_connect_viewer_gz(view_mesh, zbuf)
 !
       use m_geometry_constants
+      use gzip_file_access
 !
       type(viewer_mesh_data), intent(in) :: view_mesh
 !
@@ -286,6 +296,7 @@ end subroutine write_surf_connect_viewer_gz
 !
       use m_geometry_constants
       use m_node_quad_2_linear_sf
+      use gzip_file_access
 !
       integer(kind = kint), intent(in) :: nnod_4_edge
       type(viewer_mesh_data), intent(inout) :: view_mesh

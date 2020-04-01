@@ -200,6 +200,7 @@
      &         (id_rank, comm_IO, sph_IO, sph_grps_IO, zbuf)
 !
       use gz_group_data_IO
+      use gzip_file_access
 !
       integer, intent(in) :: id_rank
       type(communication_table), intent(in) :: comm_IO
@@ -256,6 +257,7 @@
      &         (id_rank, comm_IO, sph_IO, sph_grps_IO, zbuf)
 !
       use gz_group_data_IO
+      use gzip_file_access
 !
       integer, intent(in) :: id_rank
       type(communication_table), intent(in) :: comm_IO
@@ -303,6 +305,8 @@
       subroutine write_geom_rtm_data_gz                                 &
      &         (id_rank, comm_IO, sph_IO, zbuf)
 !
+      use gzip_file_access
+!
       integer, intent(in) :: id_rank
       type(communication_table), intent(in) :: comm_IO
       type(sph_IO_data), intent(in) :: sph_IO
@@ -335,6 +339,8 @@
 !
       subroutine write_modes_rlm_data_gz                                &
      &         (id_rank, comm_IO, sph_IO, zbuf)
+!
+      use gzip_file_access
 !
       integer, intent(in) :: id_rank
       type(communication_table), intent(in) :: comm_IO

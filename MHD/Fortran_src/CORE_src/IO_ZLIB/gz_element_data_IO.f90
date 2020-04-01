@@ -72,6 +72,7 @@
 !
       use m_fem_mesh_labels
       use gz_domain_data_IO
+      use gzip_file_access
 !
       integer, intent(in) :: id_rank
       type(communication_table), intent(in) :: comm_IO
@@ -126,6 +127,7 @@
       subroutine gz_write_element_geometry(nod_IO, sfed_IO, zbuf)
 !
       use gz_node_geometry_IO
+      use gzip_file_access
 !
       type(node_data), intent(in) :: nod_IO
       type(surf_edge_IO_data), intent(in) :: sfed_IO

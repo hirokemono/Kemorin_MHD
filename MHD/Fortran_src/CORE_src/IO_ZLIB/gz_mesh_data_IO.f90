@@ -58,6 +58,7 @@
       subroutine gz_write_geometry_data(id_rank, mesh_IO, zbuf)
 !
       use m_fem_mesh_labels
+      use gzip_file_access
 !
       integer, intent(in) :: id_rank
       type(mesh_geometry), intent(in) :: mesh_IO
@@ -101,6 +102,7 @@
 !
       use m_fem_mesh_labels
       use gz_group_data_IO
+      use gzip_file_access
 !
       type(mesh_groups), intent(in) ::   mesh_group_IO
 !
@@ -129,6 +131,7 @@
      &         (id_rank, comm_IO, nod_IO, zbuf)
 !
       use m_fem_mesh_labels
+      use gzip_file_access
 !
       integer, intent(in) :: id_rank
       type(communication_table), intent(in) :: comm_IO

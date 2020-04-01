@@ -41,6 +41,7 @@
       subroutine gz_read_domain_info(id_rank, comm_IO, zbuf, ierr)
 !
       use m_error_IDs
+      use gzip_file_access
 !
       integer, intent(in) :: id_rank
 !
@@ -127,6 +128,7 @@
       subroutine gz_write_domain_info(id_rank, comm_IO, zbuf)
 !
       use m_sph_modes_grid_labels
+      use gzip_file_access
 !
       integer, intent(in) :: id_rank
       type(communication_table), intent(in) :: comm_IO
@@ -182,6 +184,7 @@
 !
       subroutine read_send_recv_item_gz(ntot_sr, inod_sr, zbuf)
 !
+      use gzip_file_access
       use skip_comment_f
 !
       integer(kind = kint), intent(in) :: ntot_sr
@@ -202,6 +205,8 @@
 !
       subroutine write_send_recv_data_gz                                &
      &         (num_sr, ntot_sr, istack_sr, inod_sr, zbuf)
+!
+      use gzip_file_access
 !
       integer(kind = kint), intent(in) :: num_sr, ntot_sr
       integer(kind = kint), intent(in) :: istack_sr(0:num_sr)

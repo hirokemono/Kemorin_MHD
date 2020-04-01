@@ -43,6 +43,8 @@
 !
       subroutine gz_write_element_info(ele_IO, zbuf)
 !
+      use gzip_file_access
+!
       type(element_data), intent(in) :: ele_IO
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
@@ -68,6 +70,8 @@
 !
       subroutine gz_write_surface_4_element(sfed_IO, zbuf)
 !
+      use gzip_file_access
+!
       type(surf_edge_IO_data), intent(in) :: sfed_IO
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
@@ -88,6 +92,8 @@
 !------------------------------------------------------------------
 !
       subroutine gz_write_edge_4_element(sfed_IO, zbuf)
+!
+      use gzip_file_access
 !
       type(surf_edge_IO_data), intent(in) :: sfed_IO
       type(buffer_4_gzip), intent(inout) :: zbuf
@@ -126,6 +132,7 @@
       subroutine gz_read_element_info(ele_IO, zbuf)
 !
       use set_nnod_4_ele_by_type
+      use gzip_file_access
 !
       type(element_data), intent(inout) :: ele_IO
       type(buffer_4_gzip), intent(inout) :: zbuf
@@ -157,6 +164,8 @@
 !
       subroutine gz_read_surface_4_element(sfed_IO, zbuf)
 !
+      use gzip_file_access
+!
       type(surf_edge_IO_data), intent(inout) :: sfed_IO
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
@@ -178,6 +187,8 @@
 !------------------------------------------------------------------
 !
       subroutine gz_read_edge_4_element(sfed_IO, zbuf)
+!
+      use gzip_file_access
 !
       type(surf_edge_IO_data), intent(inout) :: sfed_IO
       type(buffer_4_gzip), intent(inout) :: zbuf

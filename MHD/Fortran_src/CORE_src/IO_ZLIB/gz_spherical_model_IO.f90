@@ -66,6 +66,8 @@
 !
       subroutine read_gl_nodes_sph_gz(sph_IO, zbuf)
 !
+      use gzip_file_access
+!
       type(sph_IO_data), intent(inout) :: sph_IO
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
@@ -90,6 +92,7 @@
       subroutine write_rank_4_sph_gz(sph_IO, zbuf)
 !
       use m_sph_modes_grid_labels
+      use gzip_file_access
 !
       type(sph_IO_data), intent(in) :: sph_IO
       type(buffer_4_gzip), intent(inout) :: zbuf
@@ -113,6 +116,7 @@
       subroutine write_gl_resolution_sph_gz(sph_IO, zbuf)
 !
       use m_sph_modes_grid_labels
+      use gzip_file_access
 !
       type(sph_IO_data), intent(in) :: sph_IO
       type(buffer_4_gzip), intent(inout) :: zbuf
@@ -138,6 +142,8 @@
 ! -----------------------------------------------------------------------
 !
       subroutine write_gl_nodes_sph_gz(sph_IO, zbuf)
+!
+      use gzip_file_access
 !
       type(sph_IO_data), intent(in) :: sph_IO
       type(buffer_4_gzip), intent(inout) :: zbuf

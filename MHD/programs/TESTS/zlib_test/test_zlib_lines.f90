@@ -4,7 +4,7 @@
       use m_precision
       use t_buffer_4_gzip
       use skip_gz_comment
-      use calypso_c_binding
+      use gzip_file_access
 !
       implicit none
 !

@@ -107,6 +107,8 @@
 !
       subroutine write_group_data_gz(grp_IO, zbuf)
 !
+      use gzip_file_access
+!
       type(group_data), intent(in) :: grp_IO
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
@@ -148,6 +150,8 @@
 ! -----------------------------------------------------------------------
 !
       subroutine write_surf_group_data_gz(surf_grp_IO, zbuf)
+!
+      use gzip_file_access
 !
       type(surface_group_data), intent(in) :: surf_grp_IO
       type(buffer_4_gzip), intent(inout) :: zbuf
