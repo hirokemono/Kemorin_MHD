@@ -12,7 +12,6 @@
       use m_machine_parameter
       use set_parallel_file_name
       use t_buffer_4_gzip
-      use skip_gz_comment
 !
       implicit none
 !
@@ -29,6 +28,7 @@
       use m_int_4_sph_coriolis_IO
       use gz_node_geometry_IO
       use gzip_file_access
+      use skip_gz_comment
 !
       integer(kind = kint) :: j3, j1, j2
       character(len=kchara) :: gzip_name
@@ -110,6 +110,7 @@
       use m_int_4_sph_coriolis_IO
       use gz_node_geometry_IO
       use gzip_file_access
+      use skip_gz_comment
 !
       integer(kind = kint) :: j3, j1, j2, itmp
       character(len=kchara) :: gzip_name

@@ -40,7 +40,6 @@
 !
       use t_viewer_group
       use t_buffer_4_gzip
-      use skip_gz_comment
       use m_viewer_mesh_labels
 !
       implicit none
@@ -57,6 +56,7 @@
      &         (num_pe, domain_grps, zbuf)
 !
       use gzip_file_access
+      use gz_data_IO
 !
       integer, intent(in) :: num_pe
       type(viewer_surface_groups), intent(in) :: domain_grps
@@ -128,6 +128,9 @@
       subroutine read_domain_group_viewer_gz                            &
      &         (num_pe, domain_grps, zbuf)
 !
+      use gz_data_IO
+      use skip_gz_comment
+!
       integer, intent(in) :: num_pe
       type(viewer_surface_groups), intent(inout) :: domain_grps
       type(buffer_4_gzip), intent(inout) :: zbuf
@@ -198,6 +201,9 @@
 !------------------------------------------------------------------
 !
       subroutine read_nod_group_viewer_gz(num_pe, view_nod_grps, zbuf)
+!
+      use gz_data_IO
+      use skip_gz_comment
 !
       integer, intent(in) :: num_pe
       type(viewer_node_groups), intent(inout) :: view_nod_grps
@@ -273,6 +279,9 @@
 !------------------------------------------------------------------
 !
       subroutine read_ele_group_viewer_gz(num_pe, view_ele_grps, zbuf)
+!
+      use gz_data_IO
+      use skip_gz_comment
 !
       integer, intent(in) :: num_pe
       type(viewer_surface_groups), intent(inout) :: view_ele_grps
@@ -374,6 +383,9 @@
 !
       subroutine read_surf_group_viewer_gz(num_pe, view_sf_grps, zbuf)
 !
+      use gz_data_IO
+      use skip_gz_comment
+!
       integer, intent(in) :: num_pe
       type(viewer_surface_groups), intent(inout) :: view_sf_grps
       type(buffer_4_gzip), intent(inout) :: zbuf
@@ -430,6 +442,7 @@
      &         (num_pe, ngrp, name, group, zbuf)
 !
       use gzip_file_access
+      use gz_data_IO
 !
       integer, intent(in) :: num_pe
       integer(kind = kint), intent(in) :: ngrp
@@ -484,6 +497,9 @@
 !
       subroutine read_viewer_group_item_gz                              &
      &         (num_pe, ngrp, name, group, zbuf)
+!
+      use gz_data_IO
+      use skip_gz_comment
 !
       integer, intent(in) :: num_pe
       integer(kind = kint), intent(in) :: ngrp

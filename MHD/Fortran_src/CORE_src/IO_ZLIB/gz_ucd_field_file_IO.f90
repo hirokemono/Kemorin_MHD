@@ -33,7 +33,6 @@
       use t_ucd_data
 !
       use gz_field_data_IO
-      use skip_gz_comment
       use set_ucd_file_names
 !
       implicit none
@@ -80,6 +79,7 @@
      &         (id_rank, gzip_name, t_IO, ucd, ierr_IO)
 !
       use skip_gz_comment
+      use gz_data_IO
 !
       character(len=kchara), intent(in) :: gzip_name
       integer, intent(in) :: id_rank
@@ -114,6 +114,7 @@
      &         (id_rank, gzip_name, t_IO, ucd, ierr_IO)
 !
       use skip_gz_comment
+      use gz_data_IO
 !
       character(len=kchara), intent(in) :: gzip_name
       integer, intent(in) :: id_rank

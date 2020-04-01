@@ -39,7 +39,6 @@
       use t_spheric_data_IO
       use set_parallel_file_name
       use gz_sph_modes_grids_data_IO
-      use skip_gz_comment
 !
       implicit none
 !

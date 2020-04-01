@@ -32,7 +32,6 @@
       use t_surf_edge_IO
       use t_buffer_4_gzip
       use binary_IO
-      use skip_gz_comment
       use transfer_to_long_integers
 !
       implicit none

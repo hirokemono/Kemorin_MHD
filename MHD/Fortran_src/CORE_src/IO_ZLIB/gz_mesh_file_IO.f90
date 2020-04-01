@@ -32,7 +32,6 @@
       use m_machine_parameter
 !
       use t_mesh_data
-      use skip_gz_comment
       use gz_mesh_data_IO
 !
       implicit none

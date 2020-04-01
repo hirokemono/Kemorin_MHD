@@ -32,7 +32,6 @@
 !
       use set_parallel_file_name
       use gz_itp_table_data_IO
-      use skip_gz_comment
 !
       implicit none
 !

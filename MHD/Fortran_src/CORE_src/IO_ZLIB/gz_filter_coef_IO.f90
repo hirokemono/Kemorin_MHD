@@ -21,7 +21,6 @@
 !
       use t_filter_coefficients
       use t_buffer_4_gzip
-      use skip_gz_comment
 !
       implicit none
 !
@@ -35,6 +34,8 @@
 !
       use cal_minmax_and_stacks
       use gzip_file_access
+      use gz_data_IO
+      use skip_gz_comment
 !
       type(filter_coefficients_type), intent(inout) :: IO_filters
       type(buffer_4_gzip), intent(inout) :: zbuf
@@ -82,6 +83,7 @@
       subroutine read_3d_filter_weights_coef_gz(IO_filters, zbuf)
 !
       use gzip_file_access
+      use skip_gz_comment
 !
       type(filter_coefficients_type), intent(inout) :: IO_filters
       type(buffer_4_gzip), intent(inout) :: zbuf
@@ -108,6 +110,7 @@
       subroutine write_3d_filter_stack_gz(IO_filters, zbuf)
 !
       use gzip_file_access
+      use gz_data_IO
 !
       type(filter_coefficients_type), intent(in) :: IO_filters
       type(buffer_4_gzip), intent(inout) :: zbuf

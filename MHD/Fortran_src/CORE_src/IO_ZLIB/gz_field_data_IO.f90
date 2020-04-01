@@ -23,7 +23,6 @@
 !
       use m_precision
       use t_buffer_4_gzip
-      use skip_gz_comment
 !
       implicit none
 !
@@ -72,6 +71,8 @@
       subroutine read_gz_step_data                                      &
      &         (id_rank, i_time_step_IO, time_IO, delta_t_IO,           &
      &          zbuf, ierr_IO)
+!
+      use skip_gz_comment
 !
       integer, intent(in) :: id_rank
 !
@@ -147,6 +148,8 @@
 !
       subroutine read_gz_field_data(nnod64, num_field, ntot_comp,       &
      &          ncomp_field, field_name, field_data, zbuf)
+!
+      use skip_gz_comment
 !
       integer(kind=kint_gl), intent(in)  :: nnod64
       integer(kind=kint), intent(in)  :: num_field, ntot_comp

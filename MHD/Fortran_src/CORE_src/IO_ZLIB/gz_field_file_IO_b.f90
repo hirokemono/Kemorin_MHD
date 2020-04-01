@@ -37,7 +37,6 @@
       use gz_field_data_IO_b
       use gz_binary_IO
       use binary_IO
-      use skip_gz_comment
       use transfer_to_long_integers
 !
       implicit none

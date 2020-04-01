@@ -39,7 +39,6 @@
 !
       use m_constants
       use t_buffer_4_gzip
-      use skip_gz_comment
       use ucd_data_to_buffer
 !
       implicit  none

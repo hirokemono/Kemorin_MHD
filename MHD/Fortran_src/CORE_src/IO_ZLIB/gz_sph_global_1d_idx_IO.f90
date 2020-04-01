@@ -24,7 +24,6 @@
 !
       use t_node_id_spherical_IO
       use t_buffer_4_gzip
-      use skip_gz_comment
 !
       implicit none
 !
@@ -37,6 +36,7 @@
       subroutine read_rtp_gl_1d_table_gz(sph_IO, zbuf)
 !
       use gzip_file_access
+      use skip_gz_comment
 !
       type(sph_IO_data), intent(inout) :: sph_IO
       type(buffer_4_gzip), intent(inout) :: zbuf
@@ -90,6 +90,7 @@
       subroutine read_rj_gl_1d_table_gz(sph_IO, zbuf)
 !
       use gzip_file_access
+      use skip_gz_comment
 !
       type(sph_IO_data), intent(inout) :: sph_IO
       type(buffer_4_gzip), intent(inout) :: zbuf

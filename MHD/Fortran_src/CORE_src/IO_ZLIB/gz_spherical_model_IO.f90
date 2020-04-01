@@ -26,7 +26,6 @@
 !
       use t_node_id_spherical_IO
       use t_buffer_4_gzip
-      use skip_gz_comment
 !
       implicit none
 !
@@ -37,6 +36,8 @@
 ! -----------------------------------------------------------------------
 !
       subroutine read_rank_4_sph_gz(sph_IO, zbuf)
+!
+      use skip_gz_comment
 !
       type(sph_IO_data), intent(inout) :: sph_IO
       type(buffer_4_gzip), intent(inout) :: zbuf
@@ -50,6 +51,8 @@
 ! -----------------------------------------------------------------------
 !
       subroutine read_gl_resolution_sph_gz(sph_IO, zbuf)
+!
+      use skip_gz_comment
 !
       type(sph_IO_data), intent(inout) :: sph_IO
       type(buffer_4_gzip), intent(inout) :: zbuf
@@ -67,6 +70,7 @@
       subroutine read_gl_nodes_sph_gz(sph_IO, zbuf)
 !
       use gzip_file_access
+      use skip_gz_comment
 !
       type(sph_IO_data), intent(inout) :: sph_IO
       type(buffer_4_gzip), intent(inout) :: zbuf

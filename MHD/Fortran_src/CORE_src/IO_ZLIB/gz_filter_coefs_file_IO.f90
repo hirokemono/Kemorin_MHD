@@ -27,8 +27,8 @@
 !
       use t_filter_file_data
       use t_filter_coefficients
+      use t_buffer_4_gzip
       use set_parallel_file_name
-      use skip_gz_comment
 !
       implicit none
 !

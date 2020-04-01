@@ -42,7 +42,6 @@
       use t_merged_viewer_mesh
       use t_buffer_4_gzip
 !
-      use skip_gz_comment
       use m_viewer_mesh_labels
 !
       implicit none
@@ -56,6 +55,7 @@
       subroutine write_domain_data_viewer_gz(mgd_view_mesh, zbuf)
 !
       use gzip_file_access
+      use gz_data_IO
 !
       type(merged_viewer_mesh), intent(in) :: mgd_view_mesh
 !
@@ -84,6 +84,9 @@
 !------------------------------------------------------------------
 !
       subroutine read_domain_data_viewer_gz(mgd_view_mesh, zbuf)
+!
+      use gz_data_IO
+      use skip_gz_comment
 !
       type(merged_viewer_mesh), intent(inout) :: mgd_view_mesh
       type(buffer_4_gzip), intent(inout) :: zbuf
@@ -139,6 +142,7 @@
       subroutine read_node_data_viewer_gz(view_mesh, zbuf)
 !
       use gzip_file_access
+      use skip_gz_comment
 !
       type(viewer_mesh_data), intent(inout) :: view_mesh
       type(buffer_4_gzip), intent(inout) :: zbuf
@@ -208,6 +212,8 @@
       use m_node_quad_2_linear_sf
       use set_nnod_4_ele_by_type
       use gzip_file_access
+      use gz_data_IO
+      use skip_gz_comment
 !
       integer(kind = kint), intent(in) :: nnod_4_ele
       integer(kind = kint), intent(inout) :: nnod_4_edge
@@ -297,6 +303,7 @@
       use m_geometry_constants
       use m_node_quad_2_linear_sf
       use gzip_file_access
+      use skip_gz_comment
 !
       integer(kind = kint), intent(in) :: nnod_4_edge
       type(viewer_mesh_data), intent(inout) :: view_mesh

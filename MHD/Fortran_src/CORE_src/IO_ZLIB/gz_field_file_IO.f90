@@ -35,7 +35,6 @@
       use t_time_data
       use t_field_data_IO
       use gz_field_data_IO
-      use skip_gz_comment
       use transfer_to_long_integers
 !
       implicit none
@@ -81,6 +80,7 @@
       subroutine read_alloc_gz_field_file(gzip_name, id_rank, fld_IO)
 !
       use skip_gz_comment
+      use gz_data_IO
 !
       character(len=kchara), intent(in) :: gzip_name
       integer, intent(in) :: id_rank
@@ -117,6 +117,7 @@
      &         (gzip_name, id_rank, t_IO, fld_IO, ierr_IO)
 !
       use skip_gz_comment
+      use gz_data_IO
 !
       integer, intent(in) :: id_rank
       character(len=kchara), intent(in) :: gzip_name
@@ -155,6 +156,7 @@
      &          (gzip_name, id_rank, t_IO, fld_IO, ierr_IO)
 !
       use skip_gz_comment
+      use gz_data_IO
 !
       integer, intent(in) :: id_rank
       character(len=kchara), intent(in) :: gzip_name
@@ -199,6 +201,7 @@
      &         (gzip_name, id_rank, t_IO, fld_IO, ierr_IO)
 !
       use skip_gz_comment
+      use gz_data_IO
 !
       integer, intent(in) :: id_rank
       character(len=kchara), intent(in) :: gzip_name

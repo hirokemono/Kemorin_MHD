@@ -40,7 +40,6 @@
       use t_buffer_4_gzip
       use gz_sph_modes_data_IO_b
       use binary_IO
-      use skip_gz_comment
 !
       implicit none
 !

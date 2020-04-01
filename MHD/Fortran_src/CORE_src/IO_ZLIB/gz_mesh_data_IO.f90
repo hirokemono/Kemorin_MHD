@@ -42,7 +42,6 @@
       use t_comm_table
       use t_geometry_data
       use t_buffer_4_gzip
-      use skip_gz_comment
       use gz_domain_data_IO
       use gz_node_geometry_IO
       use gz_element_connect_IO

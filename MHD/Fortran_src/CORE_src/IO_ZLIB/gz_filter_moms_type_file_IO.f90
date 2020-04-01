@@ -28,7 +28,6 @@
 !
       use t_filter_elength
       use set_parallel_file_name
-      use skip_gz_comment
       use gz_mesh_data_IO
       use gz_filter_mom_type_data_IO
 !

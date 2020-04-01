@@ -31,7 +31,6 @@
       use m_precision
       use m_constants
       use t_buffer_4_gzip
-      use skip_gz_comment
 !
       implicit none
 !
@@ -42,6 +41,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine gz_write_one_label(label1, zbuf)
+!
+      use gz_data_IO
 !
       character(len=kchara), intent(in) :: label1
       type(buffer_4_gzip), intent(inout) :: zbuf
@@ -79,6 +80,8 @@
 !
       subroutine gz_write_two_labels(label1, label2, zbuf)
 !
+      use gz_data_IO
+!
       character(len=kchara), intent(in) :: label1, label2
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
@@ -90,6 +93,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine gz_write_three_labels(label1, label2, label3, zbuf)
+!
+      use gz_data_IO
 !
       character(len=kchara), intent(in) :: label1, label2, label3
       type(buffer_4_gzip), intent(inout) :: zbuf
@@ -104,6 +109,8 @@
 !
       subroutine gz_write_four_labels                                   &
      &         (label1, label2, label3, label4, zbuf)
+!
+      use gz_data_IO
 !
       character(len=kchara), intent(in) :: label1, label2
       character(len=kchara), intent(in) :: label3, label4
@@ -120,6 +127,8 @@
 !
       subroutine gz_write_six_labels(label1, label2,                    &
      &          label3, label4, label5, label6, zbuf)
+!
+      use gz_data_IO
 !
       character(len=kchara), intent(in) :: label1, label2, label3
       character(len=kchara), intent(in) :: label4, label5, label6
@@ -138,6 +147,8 @@
 !
       subroutine gz_write_multi_labels(nlabel, labels, zbuf)
 !
+      use gz_data_IO
+!
       integer(kind = kint), intent(in) :: nlabel
       character(len=kchara), intent(in) :: labels(nlabel)
       type(buffer_4_gzip), intent(inout) :: zbuf
@@ -155,6 +166,8 @@
 !
       subroutine gz_write_seven_labels(label1, label2,                  &
      &          label3, label4, label5, label6, label7, zbuf)
+!
+      use gz_data_IO
 !
       character(len=kchara), intent(in) :: label1, label2
       character(len=kchara), intent(in) :: label3, label4

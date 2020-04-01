@@ -54,7 +54,6 @@
 !
       subroutine write_filter_elen_head_gz(nnod, nele, nf_type, zbuf)
 !
-      use skip_gz_comment
       use gzip_file_access
 !
       integer (kind=kint), intent(in) :: nnod, nele, nf_type
@@ -99,7 +98,6 @@
       subroutine write_filter_moms_head_gz(nnod, nele,                  &
      &          n_filter, nf_type, zbuf)
 !
-      use skip_gz_comment
       use gzip_file_access
 !
       integer (kind=kint), intent(in) :: nnod, nele
@@ -179,7 +177,6 @@
 !
       subroutine write_elength_gz(num, el1, el2, el3, zbuf)
 !
-      use skip_gz_comment
       use gzip_file_access
 !
       integer(kind = kint), intent(in) :: num
@@ -200,7 +197,6 @@
 !
       subroutine write_mom_coefs_dx_gz(num, el1, el2, el3, zbuf)
 !
-      use skip_gz_comment
       use gzip_file_access
 !
       integer(kind = kint), intent(in) ::  num

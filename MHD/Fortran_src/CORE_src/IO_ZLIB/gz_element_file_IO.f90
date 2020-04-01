@@ -37,7 +37,7 @@
 !
       use m_file_format_switch
       use t_read_mesh_data
-      use skip_gz_comment
+      use t_buffer_4_gzip
 !
       implicit none
 !

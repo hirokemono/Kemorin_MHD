@@ -34,7 +34,6 @@
       use t_ucd_data
 !
       use set_ucd_file_names
-      use skip_gz_comment
       use gz_ucd_data_IO
 !
       implicit none

@@ -30,7 +30,6 @@
       use t_geometry_data
       use t_surf_edge_IO
       use t_buffer_4_gzip
-      use skip_gz_comment
 !
       implicit none
 !
@@ -115,6 +114,8 @@
 !
       subroutine gz_read_number_of_node(nod_IO, zbuf)
 !
+      use skip_gz_comment
+!
       type(node_data), intent(inout) :: nod_IO
       type(buffer_4_gzip) , intent(inout) :: zbuf
 !
@@ -151,6 +152,7 @@
       subroutine gz_read_scalar_in_element(nod_IO, sfed_IO, zbuf)
 !
       use gzip_file_access
+      use skip_gz_comment
 !
       type(node_data), intent(inout) :: nod_IO
       type(surf_edge_IO_data), intent(inout) :: sfed_IO
@@ -175,6 +177,7 @@
       subroutine gz_read_vector_in_element(nod_IO, sfed_IO, zbuf)
 !
       use gzip_file_access
+      use skip_gz_comment
 !
       type(node_data), intent(inout) :: nod_IO
       type(surf_edge_IO_data), intent(inout) :: sfed_IO

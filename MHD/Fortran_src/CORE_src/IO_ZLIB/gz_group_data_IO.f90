@@ -22,7 +22,6 @@
       use m_constants
       use t_group_data
       use t_buffer_4_gzip
-      use skip_gz_comment
 !
       implicit none
 !
@@ -33,6 +32,9 @@
 ! -----------------------------------------------------------------------
 !
       subroutine read_group_data_gz(grp_IO, zbuf)
+!
+      use gz_data_IO
+      use skip_gz_comment
 !
       type(group_data), intent(inout) :: grp_IO
       type(buffer_4_gzip), intent(inout) :: zbuf
@@ -66,6 +68,9 @@
 ! -----------------------------------------------------------------------
 !
       subroutine read_surface_group_data_gz(surf_grp_IO, zbuf)
+!
+      use gz_data_IO
+      use skip_gz_comment
 !
       type(surface_group_data), intent(inout) :: surf_grp_IO
       type(buffer_4_gzip), intent(inout) :: zbuf
@@ -108,6 +113,7 @@
       subroutine write_group_data_gz(grp_IO, zbuf)
 !
       use gzip_file_access
+      use gz_data_IO
 !
       type(group_data), intent(in) :: grp_IO
       type(buffer_4_gzip), intent(inout) :: zbuf
@@ -152,6 +158,7 @@
       subroutine write_surf_group_data_gz(surf_grp_IO, zbuf)
 !
       use gzip_file_access
+      use gz_data_IO
 !
       type(surface_group_data), intent(in) :: surf_grp_IO
       type(buffer_4_gzip), intent(inout) :: zbuf

@@ -51,7 +51,6 @@
       use m_constants
 !
       use t_buffer_4_gzip
-      use skip_gz_comment
       use vtk_data_to_buffer
 !
       implicit none
@@ -236,6 +235,8 @@
 !
       subroutine read_gz_vtk_fields_head(nnod, zbuf)
 !
+      use skip_gz_comment
+!
       integer(kind=kint_gl), intent(inout) :: nnod
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
@@ -324,6 +325,7 @@
       subroutine read_gz_vtk_node_head(nnod, zbuf)
 !
       use gzip_file_access
+      use skip_gz_comment
 !
       integer(kind = kint), intent(inout) :: nnod
       type(buffer_4_gzip), intent(inout) :: zbuf

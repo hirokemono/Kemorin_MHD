@@ -49,7 +49,6 @@
       use gz_sph_global_1d_idx_IO_b
       use gz_binary_IO
       use binary_IO
-      use skip_gz_comment
 !
 !
       implicit none

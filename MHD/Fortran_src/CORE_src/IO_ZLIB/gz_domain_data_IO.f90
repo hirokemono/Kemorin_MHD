@@ -26,7 +26,6 @@
 !
       use t_comm_table
       use t_buffer_4_gzip
-      use skip_gz_comment
 !
       implicit none
 !
@@ -42,6 +41,8 @@
 !
       use m_error_IDs
       use gzip_file_access
+      use gz_data_IO
+      use skip_gz_comment
 !
       integer, intent(in) :: id_rank
 !
@@ -76,6 +77,8 @@
 !
       subroutine gz_read_import_data(comm_IO, zbuf)
 !
+      use gz_data_IO
+!
       type(communication_table), intent(inout) :: comm_IO
       type(buffer_4_gzip) , intent(inout):: zbuf
 !
@@ -100,6 +103,8 @@
 ! -----------------------------------------------------------------------
 !
       subroutine gz_read_export_data(comm_IO, zbuf)
+!
+      use gz_data_IO
 !
       type(communication_table), intent(inout) :: comm_IO
       type(buffer_4_gzip) , intent(inout):: zbuf
@@ -129,6 +134,7 @@
 !
       use m_sph_modes_grid_labels
       use gzip_file_access
+      use gz_data_IO
 !
       integer, intent(in) :: id_rank
       type(communication_table), intent(in) :: comm_IO
@@ -185,7 +191,7 @@
       subroutine read_send_recv_item_gz(ntot_sr, inod_sr, zbuf)
 !
       use gzip_file_access
-      use skip_comment_f
+      use skip_gz_comment
 !
       integer(kind = kint), intent(in) :: ntot_sr
       integer(kind = kint), intent(inout) :: inod_sr(ntot_sr)
@@ -207,6 +213,7 @@
      &         (num_sr, ntot_sr, istack_sr, inod_sr, zbuf)
 !
       use gzip_file_access
+      use gz_data_IO
 !
       integer(kind = kint), intent(in) :: num_sr, ntot_sr
       integer(kind = kint), intent(in) :: istack_sr(0:num_sr)

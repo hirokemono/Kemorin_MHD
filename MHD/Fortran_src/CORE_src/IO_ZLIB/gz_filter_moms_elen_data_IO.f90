@@ -61,6 +61,7 @@
 !
       use t_filter_elength
       use skip_gz_comment
+      use gz_data_IO
 !
       type(filter_config_type), intent(inout) ::  filter_conf
       type(buffer_4_gzip), intent(inout) :: zbuf
@@ -92,7 +93,6 @@
       subroutine write_ref_filter_param_gz(filter_conf, zbuf)
 !
       use t_filter_elength
-      use skip_gz_comment
       use gzip_file_access
 !
       type(filter_config_type), intent(in) ::  filter_conf
@@ -176,7 +176,6 @@
      &         (nele, el_e, el_ediff, el_edif2, zbuf)
 !
       use t_filter_elength
-      use skip_gz_comment
       use gz_filter_moments_IO
       use gzip_file_access
 !
@@ -270,7 +269,6 @@
      &          e_x2_nod_dx, e_y2_nod_dx, e_z2_nod_dx,                  &
      &          e_xy_nod_dx, e_yz_nod_dx, e_zx_nod_dx, zbuf)
 !
-      use skip_gz_comment
       use gz_filter_moments_IO
       use gzip_file_access
 !
@@ -385,7 +383,6 @@
       subroutine write_filter_moms_ele_gz                               &
      &         (nele, moms, m_diff, m_diff2, zbuf)
 !
-      use skip_gz_comment
       use t_filter_moments
       use gz_filter_moments_IO
       use gzip_file_access

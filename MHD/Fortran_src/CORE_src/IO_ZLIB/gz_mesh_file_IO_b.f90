@@ -41,7 +41,6 @@
       use binary_IO
       use gz_mesh_data_IO_b
       use gz_binary_IO
-      use skip_gz_comment
 !
       implicit none
 !

@@ -18,7 +18,6 @@
       use set_parallel_file_name
       use gz_viewer_mesh_data_IO
       use gz_viewer_group_data_IO
-      use skip_gz_comment
 !
       implicit none
 !

@@ -34,7 +34,6 @@
       use m_machine_parameter
 !
       use t_buffer_4_gzip
-      use skip_gz_comment
 !
       implicit none
 !
@@ -48,6 +47,7 @@
 !
       use t_interpolate_tbl_org
       use gzip_file_access
+      use gz_data_IO
 !
       integer, intent(in) :: id_rank
       type(interpolate_table_org), intent(in) :: IO_itp_org
@@ -115,6 +115,7 @@
 !
       use t_interpolate_tbl_org
       use gzip_file_access
+      use gz_data_IO
 !
       type(interpolate_table_org), intent(in) :: IO_itp_org
       type(buffer_4_gzip), intent(inout) :: zbuf
@@ -168,6 +169,8 @@
       subroutine read_gz_itp_domain_org(n_rank, IO_itp_org, zbuf)
 !
       use t_interpolate_tbl_org
+      use gz_data_IO
+      use skip_gz_comment
 !
       integer(kind = kint), intent(inout) :: n_rank
       type(interpolate_table_org), intent(inout) :: IO_itp_org
@@ -190,6 +193,7 @@
       subroutine read_gz_itp_table_org(IO_itp_org, zbuf)
 !
       use t_interpolate_tbl_org
+      use gz_data_IO
 !
       type(interpolate_table_org), intent(inout) :: IO_itp_org
       type(buffer_4_gzip), intent(inout) :: zbuf
@@ -215,6 +219,7 @@
 !
       use t_interpolate_tbl_org
       use gzip_file_access
+      use gz_data_IO
 !
       type(interpolate_table_org), intent(inout) :: IO_itp_org
       type(buffer_4_gzip), intent(inout) :: zbuf
@@ -245,6 +250,7 @@
 !
       use t_interpolate_tbl_dest
       use gzip_file_access
+      use gz_data_IO
 !
       type(interpolate_table_dest), intent(in) :: IO_itp_dest
       integer, intent(in) :: id_rank
@@ -314,6 +320,7 @@
       use t_interpolate_tbl_dest
       use t_interpolate_coefs_dest
       use gzip_file_access
+      use gz_data_IO
 !
       type(interpolate_table_dest), intent(in) :: IO_itp_dest
       type(interpolate_coefs_dest), intent(in) :: IO_itp_c_dest
@@ -372,6 +379,8 @@
       subroutine read_gz_itp_domain_dest(n_rank, IO_itp_dest, zbuf)
 !
       use t_interpolate_tbl_dest
+      use gz_data_IO
+      use skip_gz_comment
 !
       integer(kind = kint), intent(inout) :: n_rank
       type(interpolate_table_dest), intent(inout) :: IO_itp_dest
@@ -394,6 +403,7 @@
       subroutine read_gz_itp_table_dest(IO_itp_dest, zbuf)
 !
       use t_interpolate_tbl_dest
+      use gz_data_IO
 !
       type(interpolate_table_dest), intent(inout) :: IO_itp_dest
       type(buffer_4_gzip), intent(inout) :: zbuf
@@ -422,6 +432,7 @@
       use t_interpolate_tbl_dest
       use t_interpolate_coefs_dest
       use gzip_file_access
+      use gz_data_IO
 !
       type(interpolate_table_dest), intent(inout) :: IO_itp_dest
       type(interpolate_coefs_dest), intent(inout) :: IO_itp_c_dest

@@ -23,7 +23,6 @@
       use t_time_data
       use t_field_data_IO
       use gz_field_data_IO
-      use skip_gz_comment
       use set_parallel_file_name
       use transfer_to_long_integers
 !
@@ -122,6 +121,7 @@
 !
       use set_restart_data
       use gzip_file_access
+      use skip_gz_comment
 !
       integer(kind=kint)  :: i, inod, nchara
       type(field_IO), intent(inout) :: fld_IO
