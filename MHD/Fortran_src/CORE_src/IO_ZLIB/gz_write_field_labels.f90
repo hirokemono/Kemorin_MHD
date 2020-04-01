@@ -46,7 +46,7 @@
       character(len=kchara), intent(in) :: label1
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
-      call gz_write_chara_nolf(label1, zbuf1)
+      call gz_write_chara_nolf(label1, zbuf)
 !
       end subroutine gz_write_one_label
 !
@@ -82,8 +82,8 @@
       character(len=kchara), intent(in) :: label1, label2
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
-      call gz_write_chara_nolf(label1, zbuf1)
-      call gz_write_chara_nolf(label2, zbuf1)
+      call gz_write_chara_nolf(label1, zbuf)
+      call gz_write_chara_nolf(label2, zbuf)
 !
       end subroutine gz_write_two_labels
 !

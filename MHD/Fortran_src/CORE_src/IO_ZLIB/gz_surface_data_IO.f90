@@ -163,6 +163,7 @@
       type(node_data), intent(inout) :: nod_IO
       type(surf_edge_IO_data), intent(inout) :: sfed_IO
 !
+      type(buffer_4_gzip), intent(inout) :: zbuf
 !
 !      write(id_file,'(a)') '!'
 !      write(id_file,'(a)') '! 4.  geometry of surface'
