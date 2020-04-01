@@ -65,7 +65,7 @@
       call close_gzfile_a(zbuf_test)
 !
       call open_rd_gzfile_a(fname, zbuf_test)
-      call get_one_line_from_gz_f(zbuf_test)
+      call get_one_line_text_from_gz(zbuf_test)
 !
       write(*,*) 'nword',  zbuf_test%num_word
       write(*,*) 'nchara', zbuf_test%len_used
@@ -73,7 +73,7 @@
       write(*,'(a)') trim(fname)
 !
       do i = 1, 10
-        call get_one_line_from_gz_f(zbuf_test)
+        call get_one_line_text_from_gz(zbuf_test)
         write(*,*) 'nword',  zbuf_test%num_word
         write(*,*) 'nchara', zbuf_test%len_used
         read(zbuf_test%fixbuf(1),*) k(1:zbuf_test%num_word)

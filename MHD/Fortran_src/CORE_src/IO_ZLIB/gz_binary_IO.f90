@@ -112,11 +112,12 @@
       integer(kind = kint), intent(in) :: int_dat
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
+      integer(kind = kint_gl), parameter :: ione64 = 1
       integer(kind = kint_gl) :: i8tmp(1)
 !
 !
       i8tmp(1) = cast_long(int_dat)
-      call gzwrite_int8_f(1, i8tmp, zbuf)
+      call gz_write_mul_int8_b(ione64, i8tmp, zbuf)
 !
       end subroutine gz_write_one_integer_b
 !
@@ -129,11 +130,12 @@
       real(kind = kreal), intent(in) :: real_dat
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
+      integer(kind = kint_gl), parameter :: ione64 = 1
       real(kind = kreal) :: rtmp(1)
 !
 !
       rtmp(1) = real_dat
-      call gzwrite_real_f(1, rtmp, zbuf)
+      call gz_write_1d_vector_b(ione64, rtmp, zbuf)
 !
       end subroutine gz_write_one_real_b
 !
@@ -300,10 +302,11 @@
       integer(kind = kint), intent(inout) :: int_dat
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
+      integer(kind = kint_gl), parameter :: ione64 = 1
       integer(kind = kint_gl) :: int64(1)
 !
 !
-      call gzread_int8_f(1, int64, zbuf)
+      call gz_read_mul_int8_b(zbuf, ione64, int64)
       int_dat = int(int64(1),KIND(int_dat))
 !
       end subroutine gz_read_one_integer_b
@@ -317,10 +320,11 @@
       real(kind = kreal), intent(inout) :: real_dat
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
+      integer(kind = kint_gl), parameter :: ione64 = 1
       real(kind = kreal) :: rtmp(1)
 !
 !
-      call gzread_real_f(1, rtmp, zbuf)
+      call gz_read_1d_vector_b(zbuf, ione64, rtmp)
       real_dat = rtmp(1)
 !
       end subroutine gz_read_one_real_b

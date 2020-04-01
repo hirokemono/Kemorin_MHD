@@ -77,7 +77,7 @@
       call alloc_nod_id_sph_IO(sph_IO)
 !
       do i = 1, sph_IO%numnod_sph
-        call get_one_line_from_gz_f(zbuf)
+        call get_one_line_text_from_gz(zbuf)
         read(zbuf%fixbuf(1),*) sph_IO%inod_gl_sph(i),                   &
      &                        sph_IO%idx_gl_sph(i,1:sph_IO%numdir_sph)
       end do

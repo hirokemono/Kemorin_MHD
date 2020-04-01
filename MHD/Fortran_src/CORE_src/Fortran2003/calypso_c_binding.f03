@@ -13,8 +13,7 @@
 !!      subroutine open_rd_gzfile_f(gzip_name)
 !!      subroutine close_gzfile_f()
 !!
-!!      subroutine get_one_line_from_gz_f03(len_buf, textbuf, zbuf)
-!!      subroutine gz_write_textbuf_w_lf_f(len_buf, textbuf, zbuf)
+!!      subroutine get_one_line_from_gz_f(len_buf, textbuf, zbuf)
 !!      subroutine gz_write_textbuf_no_lf_f(len_buf, textbuf, zbuf)
 !!        type(buffer_4_gzip), intent(inout) :: zbuf
 !!
@@ -185,7 +184,7 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine get_one_line_from_gz_f03(zbuf)
+      subroutine get_one_line_from_gz_f(zbuf)
 !
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
@@ -196,7 +195,7 @@
      &    zbuf%len_used, C_LOC(zbuf%buf_p))
       call unlink_text_buffer_for_zlib(zbuf)
 !
-      end subroutine get_one_line_from_gz_f03
+      end subroutine get_one_line_from_gz_f
 !
 !  ---------------------------------------------------------------------
 !

@@ -145,7 +145,7 @@
       call alloc_nod_position_viewer(view_mesh)
 !
       do i = 1, view_mesh%nnod_viewer
-        call get_one_line_from_gz_f(zbuf)
+        call get_one_line_text_from_gz(zbuf)
         read(zbuf%fixbuf(1),*) itmp, view_mesh%xx_view(i,1:3)
       end do
 !
@@ -223,7 +223,7 @@ end subroutine write_surf_connect_viewer_gz
       call alloc_surf_connect_viewer(nnod_4_surf, view_mesh)
 !
       do i = 1, view_mesh%nsurf_viewer
-        call get_one_line_from_gz_f(zbuf)
+        call get_one_line_text_from_gz(zbuf)
         read(zbuf%fixbuf(1),*)                                          &
      &            itmp, view_mesh%ie_sf_viewer(i,1:nnod_4_surf)
       end do
@@ -299,7 +299,7 @@ end subroutine write_surf_connect_viewer_gz
       call alloc_edge_data_4_sf(nnod_4_edge, view_mesh)
 !
       do i = 1, view_mesh%nedge_viewer
-        call get_one_line_from_gz_f(zbuf)
+        call get_one_line_text_from_gz(zbuf)
         read(zbuf%fixbuf(1),*)                                          &
      &                  itmp, view_mesh%ie_edge_viewer(i,1:nnod_4_edge)
       end do
@@ -307,7 +307,7 @@ end subroutine write_surf_connect_viewer_gz
       call skip_gz_comment_int(itmp, zbuf)
 !
       do i = 1, view_mesh%nsurf_viewer
-        call get_one_line_from_gz_f(zbuf)
+        call get_one_line_text_from_gz(zbuf)
         read(zbuf%fixbuf(1),*)                                          &
      &        itmp, view_mesh%iedge_sf_viewer(i,1:nedge_4_surf)
       end do

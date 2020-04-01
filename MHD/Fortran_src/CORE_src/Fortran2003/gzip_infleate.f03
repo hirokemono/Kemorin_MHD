@@ -36,8 +36,7 @@
 !
       interface
 !
-!  ---------------------------------------------------------------------
-!
+!  -----------------
         subroutine gzip_infleat_once                                    &
      &           (len_gzipbuf, gzipbuf, len_buf, buf, len_gzipped)      &
      &            BIND(C, name = 'gzip_infleat_once')
@@ -52,9 +51,7 @@
         integer(C_int), intent(inout) :: len_gzipped
 !
         end subroutine gzip_infleat_once
-!
-!  ---------------------------------------------------------------------
-!
+!  -----------------
         subroutine gzip_infleat_begin                                   &
      &           (len_gzipbuf, gzipbuf, len_buf, buf, len_gzipped)      &
      &            BIND(C, name = 'gzip_infleat_begin')
@@ -69,9 +66,7 @@
         integer(C_int), intent(inout) :: len_gzipped
 !
         end subroutine gzip_infleat_begin
-!
-!  ---------------------------------------------------------------------
-!
+!  -----------------
         subroutine gzip_infleat_cont                                    &
      &           (len_gzipbuf, len_buf, buf, len_gzipped)               &
      &            BIND(C, name = 'gzip_infleat_cont')
@@ -85,9 +80,7 @@
         integer(C_int), intent(inout) :: len_gzipped
 !
         end subroutine gzip_infleat_cont
-!
-!  ---------------------------------------------------------------------
-!
+!  -----------------
         subroutine gzip_infleat_last                                    &
      &           (len_gzipbuf, len_buf, buf, len_gzipped)               &
      &            BIND(C, name = 'gzip_infleat_last')

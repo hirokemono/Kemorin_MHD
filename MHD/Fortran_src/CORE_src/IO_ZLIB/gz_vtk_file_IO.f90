@@ -50,7 +50,6 @@
       use set_ucd_file_names
       use set_ucd_extensions
       use skip_gz_comment
-      use calypso_c_binding
 !
       character(len=kchara), intent(in) :: file_prefix
       integer, intent(in) :: id_rank, nprocs

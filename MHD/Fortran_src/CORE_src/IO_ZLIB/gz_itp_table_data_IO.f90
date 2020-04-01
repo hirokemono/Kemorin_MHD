@@ -226,7 +226,7 @@
      &     (ifour, IO_itp_org%istack_itp_type_org(1:ifour), zbuf)
 !
         do inod = 1, IO_itp_org%ntot_table_org
-          call get_one_line_from_gz_f(zbuf)
+          call get_one_line_text_from_gz(zbuf)
           read(zbuf%fixbuf(1),*) IO_itp_org%inod_gl_dest_4_org(inod),   &
      &        IO_itp_org%iele_org_4_org(inod),                          &
      &        IO_itp_org%itype_inter_org(inod),                         &
@@ -440,7 +440,7 @@
         call alloc_itp_coef_dest(IO_itp_dest, IO_itp_c_dest)
 !
         do inod = 1, IO_itp_dest%ntot_table_dest
-          call get_one_line_from_gz_f(zbuf)
+          call get_one_line_text_from_gz(zbuf)
           read(zbuf%fixbuf(1),*) IO_itp_c_dest%inod_gl_dest(inod),      &
      &        IO_itp_c_dest%iele_org_4_dest(inod),                      &
      &        IO_itp_c_dest%itype_inter_dest(inod),                     &

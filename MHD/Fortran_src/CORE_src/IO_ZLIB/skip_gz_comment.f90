@@ -4,7 +4,7 @@
 !     Written by H. Matsui on July, 2007
 !
 !!      subroutine gz_write_textbuf_no_lf(zbuf)
-!!      subroutine get_one_line_from_gz_f
+!!      subroutine get_one_line_text_from_gz
 !!        type(buffer_4_gzip), intent(inout):: zbuf
 !!
 !!      subroutine skip_gz_comment_int(int_input, zbuf)
@@ -141,15 +141,15 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine get_one_line_from_gz_f(zbuf)
+      subroutine get_one_line_text_from_gz(zbuf)
 !
       use calypso_c_binding
 !
       type(buffer_4_gzip) , intent(inout):: zbuf
 !
-      call get_one_line_from_gz_f03(zbuf)
+      call get_one_line_from_gz_f(zbuf)
 !
-      end subroutine get_one_line_from_gz_f
+      end subroutine get_one_line_text_from_gz
 !
 !------------------------------------------------------------------
 !------------------------------------------------------------------
@@ -277,7 +277,7 @@
 !      character(len=65535) :: tbuf2
 !
       do
-        call get_one_line_from_gz_f(zbuf)
+        call get_one_line_text_from_gz(zbuf)
         if(zbuf%len_used .le. 1) cycle
 !
         write(chara_flag,'(a1)',err=1) adjustl(zbuf%fixbuf(1))
@@ -316,7 +316,7 @@
       if(num .gt. zbuf%num_word) then
         ist = zbuf%num_word
         do
-          call get_one_line_from_gz_f(zbuf)
+          call get_one_line_text_from_gz(zbuf)
           ist2 = ist + 1
           ied2 = ist + zbuf%num_word
           ist = ied2
@@ -362,7 +362,7 @@
       if(num .gt. zbuf%num_word) then
         ist = zbuf%num_word
         do
-          call get_one_line_from_gz_f(zbuf)
+          call get_one_line_text_from_gz(zbuf)
           ist2 = ist + 1
           ied2 = ist + zbuf%num_word
           ist = ied2
@@ -395,7 +395,7 @@
       if((istack(1) - istack(0)) .gt. zbuf%num_word) then
         ist = istack(0) + zbuf%num_word
         do
-          call get_one_line_from_gz_f(zbuf)
+          call get_one_line_text_from_gz(zbuf)
           ist2 = ist + 1
           ied2 = ist + zbuf%num_word
           ist = ied2
@@ -425,7 +425,7 @@
       if(num .gt. zbuf%num_word) then
         ist = zbuf%num_word
         do
-          call get_one_line_from_gz_f(zbuf)
+          call get_one_line_text_from_gz(zbuf)
           ist2 = ist + 1
           ied2 = ist + zbuf%num_word
           ist = ied2

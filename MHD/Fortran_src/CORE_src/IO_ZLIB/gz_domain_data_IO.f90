@@ -59,7 +59,7 @@
         return
       end if
 !
-      call get_one_line_from_gz_f(zbuf)
+      call get_one_line_text_from_gz(zbuf)
       read(zbuf%fixbuf(1),*) comm_IO%num_neib
 !
       call alloc_neighbouring_id(comm_IO)
@@ -192,7 +192,7 @@
 !
       call skip_gz_comment_int(inod_sr(1), zbuf)
       do i = 2, ntot_sr
-        call get_one_line_from_gz_f(zbuf)
+        call get_one_line_text_from_gz(zbuf)
         read(zbuf%fixbuf(1),*) inod_sr(i)
       end do
 !

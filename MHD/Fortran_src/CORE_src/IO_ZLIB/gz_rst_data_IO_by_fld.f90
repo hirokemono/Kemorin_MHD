@@ -133,7 +133,7 @@
      &      fld_IO%num_comp_IO(i) )
 !
         do inod = 1, fld_IO%nnod_IO
-          call get_one_line_from_gz_f(zbuf)
+          call get_one_line_text_from_gz(zbuf)
         end do
       end do
 !

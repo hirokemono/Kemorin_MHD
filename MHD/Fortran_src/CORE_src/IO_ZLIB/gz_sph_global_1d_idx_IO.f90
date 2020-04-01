@@ -55,7 +55,7 @@
       call alloc_idx_sph_1d1_IO(sph_IO)
 !
       do i = 1, sph_IO%nidx_sph(1)
-        call get_one_line_from_gz_f(zbuf)
+        call get_one_line_text_from_gz(zbuf)
         read(zbuf%fixbuf(1),*) sph_IO%idx_gl_1(i), sph_IO%r_gl_1(i)
       end do
 !
@@ -65,7 +65,7 @@
       call alloc_idx_sph_1d2_IO(sph_IO)
 !
       do i = 1, sph_IO%nidx_sph(2)
-        call get_one_line_from_gz_f(zbuf)
+        call get_one_line_text_from_gz(zbuf)
         read(zbuf%fixbuf(1),*)                                          &
      &                sph_IO%idx_gl_2(i,1:sph_IO%ncomp_table_1d(2))
       end do
@@ -76,7 +76,7 @@
       call alloc_idx_sph_1d3_IO(sph_IO)
 !
       do i = 1, sph_IO%nidx_sph(3)
-        call get_one_line_from_gz_f(zbuf)
+        call get_one_line_text_from_gz(zbuf)
         read(zbuf%fixbuf(1),*)                                          &
      &                sph_IO%idx_gl_3(i,1:sph_IO%ncomp_table_1d(3))
       end do
@@ -105,7 +105,7 @@
       call alloc_idx_sph_1d1_IO(sph_IO)
 !
       do i = 1, sph_IO%nidx_sph(1)
-        call get_one_line_from_gz_f(zbuf)
+        call get_one_line_text_from_gz(zbuf)
         read(zbuf%fixbuf(1),*) sph_IO%idx_gl_1(i), sph_IO%r_gl_1(i)
       end do
 !
@@ -115,7 +115,7 @@
       call alloc_idx_sph_1d2_IO(sph_IO)
 !
       do i = 1, sph_IO%nidx_sph(2)
-        call get_one_line_from_gz_f(zbuf)
+        call get_one_line_text_from_gz(zbuf)
         read(zbuf%fixbuf(1),*)                                          &
      &        sph_IO%idx_gl_2(i,1:sph_IO%ncomp_table_1d(2))
       end do

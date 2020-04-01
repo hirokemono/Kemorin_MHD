@@ -18,9 +18,10 @@
 !!     &         (len_gzipbuf, gzipbuf, len_buf, buf, zbuf)
 !!        type(buffer_4_gzip), intent(inout) :: zbuf
 !!
-!!      subroutine gzip_defleat_char_begin(zbuf)
-!!      subroutine gzip_defleat_char_cont(zbuf)
-!!      subroutine gzip_defleat_char_last(zbuf)
+!!      subroutine gzip_defleat_char_begin                              &
+!!     &         (len_buf, textbuf, len_gzipbuf, zbuf, gzipbuf)
+!!      subroutine gzip_defleat_char_cont(len_buf, textbuf, zbuf)
+!!      subroutine gzip_defleat_char_last(len_buf, textbuf, zbuf)
 !!        type(buffer_4_gzip), intent(inout) :: zbuf
 !!@endverbatim
 !
@@ -36,8 +37,7 @@
 !
       interface
 !
-!  ---------------------------------------------------------------------
-!
+!  -----------------
         subroutine gzip_defleat_once                                    &
      &           (len_buf, buf, len_gzipbuf, len_gzipped, gzipbuf)      &
      &            BIND(C, name = 'gzip_defleat_once')
@@ -52,9 +52,7 @@
         integer(C_int), intent(inout) :: len_gzipped
 !
         end subroutine gzip_defleat_once
-!
-!  ---------------------------------------------------------------------
-!
+!  -----------------
         subroutine gzip_defleat_begin                                   &
      &           (len_buf, buf, len_gzipbuf, len_gzipped, gzipbuf)      &
      &            BIND(C, name = 'gzip_defleat_begin')
@@ -69,9 +67,7 @@
         integer(C_int), intent(inout) :: len_gzipped
 !
         end subroutine gzip_defleat_begin
-!
-!  ---------------------------------------------------------------------
-!
+!  -----------------
         subroutine gzip_defleat_cont                                    &
      &           (len_buf, buf, len_gzipbuf, len_gzipped)               &
      &            BIND(C, name = 'gzip_defleat_cont')
@@ -85,9 +81,7 @@
         integer(C_int), intent(inout) :: len_gzipped
 !
         end subroutine gzip_defleat_cont
-!
-!  ---------------------------------------------------------------------
-!
+!  -----------------
         subroutine gzip_defleat_last                                    &
      &           (len_buf, buf, len_gzipbuf, len_gzipped)               &
      &            BIND(C, name = 'gzip_defleat_last')
@@ -101,8 +95,7 @@
         integer(C_int), intent(inout) :: len_gzipped
 !
         end subroutine gzip_defleat_last
-!
-!  ---------------------------------------------------------------------
+!  -----------------
 !
       end interface
 !
@@ -202,7 +195,7 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine gzip_defleat_char_begin  &
+      subroutine gzip_defleat_char_begin                                &
      &         (len_buf, textbuf, len_gzipbuf, zbuf, gzipbuf)
 !
       integer, intent(in) :: len_buf
