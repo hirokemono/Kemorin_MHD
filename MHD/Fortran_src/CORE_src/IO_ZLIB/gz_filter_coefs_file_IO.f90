@@ -32,6 +32,8 @@
 !
       implicit none
 !
+      type(buffer_4_gzip), private :: zbuf_fil
+!
 !------------------------------------------------------------------
 !
       contains
@@ -62,12 +64,12 @@
         write(*,*) 'Read gzipped filter files: ', trim(gzip_name)
       end if
 !
-      call open_rd_gzfile_a(gzip_name, zbuf1)
+      call open_rd_gzfile_a(gzip_name, zbuf_fil)
       call gz_read_filter_geometry                                     &
-     &   (id_rank, filter_IO%nod_comm, filter_IO%node, zbuf1, ierr)
-      call read_3d_filter_stack_gz(filter_IO%filters, zbuf1)
-      call read_3d_filter_weights_coef_gz(filter_IO%filters, zbuf1)
-      call close_gzfile_a(zbuf1)
+     &   (id_rank, filter_IO%nod_comm, filter_IO%node, zbuf_fil, ierr)
+      call read_3d_filter_stack_gz(filter_IO%filters, zbuf_fil)
+      call read_3d_filter_weights_coef_gz(filter_IO%filters, zbuf_fil)
+      call close_gzfile_a(zbuf_fil)
 !
       end subroutine read_sort_filter_coef_file_gz
 !
@@ -94,14 +96,14 @@
         write(*,*) 'Write gzipped filter files: ', trim(gzip_name)
       end if
 !
-      call open_wt_gzfile_a(gzip_name, zbuf1)
+      call open_wt_gzfile_a(gzip_name, zbuf_fil)
 !
       call gz_write_filter_geometry                                     &
-     &   (id_rank, filter_IO%nod_comm, filter_IO%node, zbuf1)
-      call write_3d_filter_stack_gz(filter_IO%filters, zbuf1)
-      call write_3d_filter_weights_coef_gz(filter_IO%filters, zbuf1)
+     &   (id_rank, filter_IO%nod_comm, filter_IO%node, zbuf_fil)
+      call write_3d_filter_stack_gz(filter_IO%filters, zbuf_fil)
+      call write_3d_filter_weights_coef_gz(filter_IO%filters, zbuf_fil)
 !
-      call close_gzfile_a(zbuf1)
+      call close_gzfile_a(zbuf_fil)
 !
       call dealloc_filter_geometry_data(filter_IO)
 !
@@ -131,10 +133,10 @@
         write(*,*) 'Read gzipped filter files: ', trim(gzip_name)
       end if
 !
-      call open_rd_gzfile_a(gzip_name, zbuf1)
+      call open_rd_gzfile_a(gzip_name, zbuf_fil)
       call gz_read_filter_geometry                                      &
-     &  (id_rank, filter_IO%nod_comm, filter_IO%node, zbuf1, ierr)
-      call close_gzfile_a(zbuf1)
+     &  (id_rank, filter_IO%nod_comm, filter_IO%node, zbuf_fil, ierr)
+      call close_gzfile_a(zbuf_fil)
 !
       end subroutine read_filter_geometry_file_gz
 !
@@ -160,10 +162,10 @@
         write(*,*) 'Write gzipped filter file: ', trim(gzip_name)
       end if
 !
-      call open_wt_gzfile_a(gzip_name, zbuf1)
+      call open_wt_gzfile_a(gzip_name, zbuf_fil)
       call gz_write_filter_geometry                                     &
-     &   (id_rank, filter_IO%nod_comm, filter_IO%node, zbuf1)
-      call close_gzfile_a(zbuf1)
+     &   (id_rank, filter_IO%nod_comm, filter_IO%node, zbuf_fil)
+      call close_gzfile_a(zbuf_fil)
 !
       call dealloc_filter_geometry_data(filter_IO)
 !

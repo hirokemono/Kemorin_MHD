@@ -37,6 +37,7 @@
       implicit none
 !
       character(len=kchara), private  :: gzip_name
+      type(buffer_4_gzip), private :: zbuf_itp
 !
 !-----------------------------------------------------------------------
 !
@@ -57,14 +58,14 @@
 !
 !
       gzip_name = add_gzip_extension(file_name)
-      call open_wt_gzfile_a(gzip_name, zbuf1)
+      call open_wt_gzfile_a(gzip_name, zbuf_itp)
 !
-      call write_gz_itp_table_dest(id_rank, IO_itp_dest, zbuf1)
+      call write_gz_itp_table_dest(id_rank, IO_itp_dest, zbuf_itp)
 !
-      call write_gz_itp_table_org(id_rank, IO_itp_org, zbuf1)
-      call write_gz_itp_coefs_org(IO_itp_org, zbuf1)
+      call write_gz_itp_table_org(id_rank, IO_itp_org, zbuf_itp)
+      call write_gz_itp_coefs_org(IO_itp_org, zbuf_itp)
 !
-      call close_gzfile_a(zbuf1)
+      call close_gzfile_a(zbuf_itp)
 !
       if (IO_itp_org%num_dest_domain .gt. 0) then
         call dealloc_itp_table_org(IO_itp_org)
@@ -96,20 +97,20 @@
 !
 !
       gzip_name = add_gzip_extension(file_name)
-      call open_rd_gzfile_a(gzip_name, zbuf1)
+      call open_rd_gzfile_a(gzip_name, zbuf_itp)
 !
 !        write(*,*) 'read_gz_itp_domain_dest', trim(file_name)
-      call read_gz_itp_domain_dest(n_rank_file, IO_itp_dest, zbuf1)
+      call read_gz_itp_domain_dest(n_rank_file, IO_itp_dest, zbuf_itp)
 !        write(*,*) 'read_gz_itp_table_dest'
-      call read_gz_itp_table_dest(IO_itp_dest, zbuf1)
+      call read_gz_itp_table_dest(IO_itp_dest, zbuf_itp)
 !
 !        write(*,*) 'read_gz_itp_domain_org'
-      call read_gz_itp_domain_org(n_rank_file, IO_itp_org, zbuf1)
+      call read_gz_itp_domain_org(n_rank_file, IO_itp_org, zbuf_itp)
 !        write(*,*) 'read_gz_itp_coefs_org'
-      call read_gz_itp_table_org(IO_itp_org, zbuf1)
-      call read_gz_itp_coefs_org(IO_itp_org, zbuf1)
+      call read_gz_itp_table_org(IO_itp_org, zbuf_itp)
+      call read_gz_itp_coefs_org(IO_itp_org, zbuf_itp)
 !
-      call close_gzfile_a(zbuf1)
+      call close_gzfile_a(zbuf_itp)
 !
       ierr = 0
       if (n_rank_file .ne. id_rank) ierr = n_rank_file
@@ -132,11 +133,12 @@
 !
 !
       gzip_name = add_gzip_extension(file_name)
-      call open_wt_gzfile_a(gzip_name, zbuf1)
+      call open_wt_gzfile_a(gzip_name, zbuf_itp)
 !
-      call write_gz_itp_table_dest(id_rank, IO_itp_dest, zbuf1)
-      call write_gz_itp_coefs_dest(IO_itp_dest, IO_itp_c_dest, zbuf1)
-      call close_gzfile_a(zbuf1)
+      call write_gz_itp_table_dest(id_rank, IO_itp_dest, zbuf_itp)
+      call write_gz_itp_coefs_dest                                      &
+     &   (IO_itp_dest, IO_itp_c_dest, zbuf_itp)
+      call close_gzfile_a(zbuf_itp)
 !
       if (IO_itp_dest%num_org_domain .gt. 0) then
         call dealloc_itp_coef_dest(IO_itp_c_dest)
@@ -165,12 +167,12 @@
 !
 !
       gzip_name = add_gzip_extension(file_name)
-      call open_rd_gzfile_a(gzip_name, zbuf1)
+      call open_rd_gzfile_a(gzip_name, zbuf_itp)
 !
-      call read_gz_itp_domain_dest(n_rank_file, IO_itp_dest, zbuf1)
-      call read_gz_itp_table_dest(IO_itp_dest, zbuf1)
-      call read_gz_itp_coefs_dest(IO_itp_dest, IO_itp_c_dest, zbuf1)
-      call close_gzfile_a(zbuf1)
+      call read_gz_itp_domain_dest(n_rank_file, IO_itp_dest, zbuf_itp)
+      call read_gz_itp_table_dest(IO_itp_dest, zbuf_itp)
+      call read_gz_itp_coefs_dest(IO_itp_dest, IO_itp_c_dest, zbuf_itp)
+      call close_gzfile_a(zbuf_itp)
 !
       ierr = 0
       if (n_rank_file .ne. id_rank) ierr = ierr_file
@@ -194,11 +196,11 @@
 !
 !
       gzip_name = add_gzip_extension(file_name)
-      call open_rd_gzfile_a(gzip_name, zbuf1)
+      call open_rd_gzfile_a(gzip_name, zbuf_itp)
 !
-      call read_gz_itp_domain_dest(n_rank_file, IO_itp_dest, zbuf1)
-      call read_gz_itp_table_dest(IO_itp_dest, zbuf1)
-      call close_gzfile_a(zbuf1)
+      call read_gz_itp_domain_dest(n_rank_file, IO_itp_dest, zbuf_itp)
+      call read_gz_itp_table_dest(IO_itp_dest, zbuf_itp)
+      call close_gzfile_a(zbuf_itp)
 !
       ierr = 0
       if (n_rank_file .ne. id_rank) ierr = ierr_file
@@ -222,10 +224,10 @@
 !
 !
       gzip_name = add_gzip_extension(file_name)
-      call open_rd_gzfile_a(gzip_name, zbuf1)
+      call open_rd_gzfile_a(gzip_name, zbuf_itp)
 !
-      call read_gz_itp_domain_dest(n_rank_file, IO_itp_dest, zbuf1)
-      call close_gzfile_a(zbuf1)
+      call read_gz_itp_domain_dest(n_rank_file, IO_itp_dest, zbuf_itp)
+      call close_gzfile_a(zbuf_itp)
 !
       ierr = 0
       if (n_rank_file .ne. id_rank) ierr = ierr_file

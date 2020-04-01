@@ -43,6 +43,8 @@
 !
       implicit none
 !
+      type(buffer_4_gzip), private :: zbuf_s
+!
 !------------------------------------------------------------------
 !
       contains
@@ -64,11 +66,11 @@
       if(id_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &    'Read gzipped grid file: ', trim(file_name)
 !
-      call open_rd_gzfile_a(file_name, zbuf1)
+      call open_rd_gzfile_a(file_name, zbuf_s)
       call read_geom_rtp_data_gz(id_rank,                               &
      &    sph_file%comm_IO, sph_file%sph_IO, sph_file%sph_grp_IO,       &
-     &    zbuf1, ierr)
-      call close_gzfile_a(zbuf1)
+     &    zbuf_s, ierr)
+      call close_gzfile_a(zbuf_s)
 !
       end subroutine gz_read_geom_rtp_file
 !
@@ -89,11 +91,11 @@
       if(id_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &    'Read gzipped spectr modes file: ', trim(file_name)
 !
-      call open_rd_gzfile_a(file_name, zbuf1)
+      call open_rd_gzfile_a(file_name, zbuf_s)
       call read_spectr_modes_rj_data_gz(id_rank,                        &
      &    sph_file%comm_IO, sph_file%sph_IO, sph_file%sph_grp_IO,       &
-     &    zbuf1, ierr)
-      call close_gzfile_a(zbuf1)
+     &    zbuf_s, ierr)
+      call close_gzfile_a(zbuf_s)
 !
       end subroutine gz_read_spectr_modes_rj_file
 !
@@ -114,10 +116,10 @@
       if(id_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &    'Read gzipped grid file: ', trim(file_name)
 !
-      call open_rd_gzfile_a(file_name, zbuf1)
+      call open_rd_gzfile_a(file_name, zbuf_s)
       call read_geom_rtm_data_gz                                        &
-     &   (id_rank, sph_file%comm_IO, sph_file%sph_IO, zbuf1, ierr)
-      call close_gzfile_a(zbuf1)
+     &   (id_rank, sph_file%comm_IO, sph_file%sph_IO, zbuf_s, ierr)
+      call close_gzfile_a(zbuf_s)
 !
       end subroutine gz_read_geom_rtm_file
 !
@@ -138,10 +140,10 @@
       if(id_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &    'Read gzipped spectr modes file: ', trim(file_name)
 !
-      call open_rd_gzfile_a(file_name, zbuf1)
+      call open_rd_gzfile_a(file_name, zbuf_s)
       call read_spectr_modes_rlm_data_gz                                &
-     &   (id_rank, sph_file%comm_IO, sph_file%sph_IO, zbuf1, ierr)
-      call close_gzfile_a(zbuf1)
+     &   (id_rank, sph_file%comm_IO, sph_file%sph_IO, zbuf_s, ierr)
+      call close_gzfile_a(zbuf_s)
 !
       end subroutine gz_read_modes_rlm_file
 !
@@ -161,11 +163,11 @@
       if(id_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &    'Write gzipped grid file: ', trim(file_name)
 !
-      call open_wt_gzfile_a(file_name, zbuf1)
+      call open_wt_gzfile_a(file_name, zbuf_s)
       call write_geom_rtp_data_gz                                       &
      &   (id_rank, sph_file%comm_IO, sph_file%sph_IO,                   &
-     &    sph_file%sph_grp_IO, zbuf1)
-      call close_gzfile_a(zbuf1)
+     &    sph_file%sph_grp_IO, zbuf_s)
+      call close_gzfile_a(zbuf_s)
 !
       end subroutine gz_write_geom_rtp_file
 !
@@ -184,11 +186,11 @@
       if(id_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &    'Write gzipped spectr modes file: ', trim(file_name)
 !
-      call open_wt_gzfile_a(file_name, zbuf1)
+      call open_wt_gzfile_a(file_name, zbuf_s)
       call write_spectr_modes_rj_data_gz                                &
      &   (id_rank, sph_file%comm_IO, sph_file%sph_IO,                   &
-     &    sph_file%sph_grp_IO, zbuf1)
-      call close_gzfile_a(zbuf1)
+     &    sph_file%sph_grp_IO, zbuf_s)
+      call close_gzfile_a(zbuf_s)
 !
       end subroutine gz_write_spectr_modes_rj_file
 !
@@ -207,10 +209,10 @@
       if(id_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &    'Write gzipped grid file: ', trim(file_name)
 !
-      call open_wt_gzfile_a(file_name, zbuf1)
+      call open_wt_gzfile_a(file_name, zbuf_s)
       call write_geom_rtm_data_gz                                       &
-     &   (id_rank, sph_file%comm_IO, sph_file%sph_IO, zbuf1)
-      call close_gzfile_a(zbuf1)
+     &   (id_rank, sph_file%comm_IO, sph_file%sph_IO, zbuf_s)
+      call close_gzfile_a(zbuf_s)
 !
       end subroutine gz_write_geom_rtm_file
 !
@@ -229,10 +231,10 @@
       if(id_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &    'Write gzipped spectr modes file: ', trim(file_name)
 !
-      call open_wt_gzfile_a(file_name, zbuf1)
+      call open_wt_gzfile_a(file_name, zbuf_s)
       call write_modes_rlm_data_gz                                      &
-     &   (id_rank, sph_file%comm_IO, sph_file%sph_IO, zbuf1)
-      call close_gzfile_a(zbuf1)
+     &   (id_rank, sph_file%comm_IO, sph_file%sph_IO, zbuf_s)
+      call close_gzfile_a(zbuf_s)
 !
       end subroutine gz_write_modes_rlm_file
 !

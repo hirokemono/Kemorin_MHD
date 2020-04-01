@@ -37,6 +37,8 @@
 !
       implicit none
 !
+      type(buffer_4_gzip), private :: zbuf_m
+!
 !  ---------------------------------------------------------------------
 !
       contains
@@ -59,12 +61,12 @@
       if(id_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &   'Read gzipped mesh file: ', trim(file_name)
 !
-      call open_rd_gzfile_a(file_name, zbuf1)
+      call open_rd_gzfile_a(file_name, zbuf_m)
 !
-      call gz_read_geometry_data(id_rank, mesh_IO, zbuf1, ierr)
-      call gz_read_mesh_groups(group_IO, zbuf1)
+      call gz_read_geometry_data(id_rank, mesh_IO, zbuf_m, ierr)
+      call gz_read_mesh_groups(group_IO, zbuf_m)
 !
-      call close_gzfile_a(zbuf1)
+      call close_gzfile_a(zbuf_m)
 !
       end subroutine gz_read_mesh
 !
@@ -85,9 +87,9 @@
       if(id_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &   'Read gzipped mesh file: ', trim(file_name)
 !
-      call open_rd_gzfile_a(file_name, zbuf1)
-      call gz_read_geometry_data(id_rank, mesh_IO, zbuf1, ierr)
-      call close_gzfile_a(zbuf1)
+      call open_rd_gzfile_a(file_name, zbuf_m)
+      call gz_read_geometry_data(id_rank, mesh_IO, zbuf_m, ierr)
+      call close_gzfile_a(zbuf_m)
 !
       end subroutine gz_read_mesh_geometry
 !
@@ -108,10 +110,10 @@
       if(id_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &    'Read gzipped mesh file: ', trim(file_name)
 !
-      call open_rd_gzfile_a(file_name, zbuf1)
+      call open_rd_gzfile_a(file_name, zbuf_m)
 !
-      call gz_read_num_node(id_rank, mesh_IO, zbuf1, ierr)
-      call close_gzfile_a(zbuf1)
+      call gz_read_num_node(id_rank, mesh_IO, zbuf_m, ierr)
+      call close_gzfile_a(zbuf_m)
 !
       end subroutine gz_read_node_size
 !
@@ -132,10 +134,10 @@
       if(id_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &   'Read gzipped mesh file: ', trim(file_name)
 !
-      call open_rd_gzfile_a(file_name, zbuf1)
+      call open_rd_gzfile_a(file_name, zbuf_m)
 !
-      call gz_read_num_node_ele(id_rank, mesh_IO, zbuf1, ierr)
-      call close_gzfile_a(zbuf1)
+      call gz_read_num_node_ele(id_rank, mesh_IO, zbuf_m, ierr)
+      call close_gzfile_a(zbuf_m)
 !
       end subroutine gz_read_geometry_size
 !
@@ -156,12 +158,12 @@
       if(id_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &   'Write gzipped mesh file: ', trim(file_name)
 !
-      call open_wt_gzfile_a(file_name, zbuf1)
+      call open_wt_gzfile_a(file_name, zbuf_m)
 !
-      call gz_write_geometry_data(id_rank, mesh_IO, zbuf1)
-      call gz_write_mesh_groups(group_IO, zbuf1)
+      call gz_write_geometry_data(id_rank, mesh_IO, zbuf_m)
+      call gz_write_mesh_groups(group_IO, zbuf_m)
 !
-      call close_gzfile_a(zbuf1)
+      call close_gzfile_a(zbuf_m)
 !
       end subroutine gz_write_mesh_file
 !

@@ -33,6 +33,8 @@
 !
       implicit none
 !
+      type(buffer_4_gzip), private :: zbuf_vtk
+!
       private :: write_gz_vtk_data, write_gz_vtk_mesh
 !
 !  ---------------------------------------------------------------------
@@ -67,28 +69,28 @@
       gzip_name = add_gzip_extension(file_name)
 !
       write(*,*) 'Write gzipped parallel VTK file: ', trim(gzip_name)
-      call open_wt_gzfile_a(gzip_name, zbuf1)
+      call open_wt_gzfile_a(gzip_name, zbuf_vtk)
 !
-      write(zbuf1%fixbuf(1),'(a,2a1)') '<File version="pvtk-1.0"',      &
+      write(zbuf_vtk%fixbuf(1),'(a,2a1)') '<File version="pvtk-1.0"',   &
      &                        char(10), char(0)
-      call gz_write_textbuf_no_lf(zbuf1)
-      write(zbuf1%fixbuf(1),'(a,2a1)')                                  &
+      call gz_write_textbuf_no_lf(zbuf_vtk)
+      write(zbuf_vtk%fixbuf(1),'(a,2a1)')                               &
      &     '       dataType="vtkUnstructuredGrid"', char(10), char(0)
-      call gz_write_textbuf_no_lf(zbuf1)
-      write(zbuf1%fixbuf(1),'(a,i6,a,2a1)')                             &
+      call gz_write_textbuf_no_lf(zbuf_vtk)
+      write(zbuf_vtk%fixbuf(1),'(a,i6,a,2a1)')                          &
      &     '       numberOfPieces="', nprocs, '" >', char(10), char(0)
-      call gz_write_textbuf_no_lf(zbuf1)
+      call gz_write_textbuf_no_lf(zbuf_vtk)
       do ip = 0, nprocs-1
         file_name = set_parallel_ucd_file_name(fname_nodir, iflag_vtk,  &
      &                                         ip, istep)
-        write(zbuf1%fixbuf(1),'(3a,2a1)') '   <Piece fileName="',       &
+        write(zbuf_vtk%fixbuf(1),'(3a,2a1)') '   <Piece fileName="',    &
      &                       trim(file_name), '" />', char(10), char(0)
-        call gz_write_textbuf_no_lf(zbuf1)
+        call gz_write_textbuf_no_lf(zbuf_vtk)
       end do
-      write(zbuf1%fixbuf(1),'(a,2a1)') '</File>', char(10), char(0)
-      call gz_write_textbuf_no_lf(zbuf1)
+      write(zbuf_vtk%fixbuf(1),'(a,2a1)') '</File>', char(10), char(0)
+      call gz_write_textbuf_no_lf(zbuf_vtk)
 !
-      call close_gzfile_a(zbuf1)
+      call close_gzfile_a(zbuf_vtk)
 !
       end subroutine write_gz_parallel_vtk_file
 !
@@ -108,13 +110,13 @@
       if(id_rank.le.0) write(*,*)                                       &
      &    'Write gzipped VTK data: ', trim(gzip_name)
 !
-      call open_wt_gzfile_a(gzip_name, zbuf1)
+      call open_wt_gzfile_a(gzip_name, zbuf_vtk)
       call write_gz_vtk_mesh                                            &
-     &   (ucd%nnod, ucd%nele, ucd%nnod_4_ele, ucd%xx, ucd%ie, zbuf1)
+     &   (ucd%nnod, ucd%nele, ucd%nnod_4_ele, ucd%xx, ucd%ie, zbuf_vtk)
       call write_gz_vtk_data(ucd%nnod, ucd%num_field, ucd%ntot_comp,    &
-     &    ucd%num_comp, ucd%phys_name, ucd%d_ucd, zbuf1)
+     &    ucd%num_comp, ucd%phys_name, ucd%d_ucd, zbuf_vtk)
 !
-      call close_gzfile_a(zbuf1)
+      call close_gzfile_a(zbuf_vtk)
 !
       end subroutine write_gz_vtk_file
 !
@@ -133,10 +135,10 @@
       if(id_rank.le.0) write(*,*)                                       &
      &    'Write gzipped VTK field: ', trim(gzip_name)
 !
-      call open_wt_gzfile_a(gzip_name, zbuf1)
+      call open_wt_gzfile_a(gzip_name, zbuf_vtk)
       call write_gz_vtk_data(ucd%nnod, ucd%num_field, ucd%ntot_comp,    &
-     &    ucd%num_comp, ucd%phys_name, ucd%d_ucd, zbuf1)
-      call close_gzfile_a(zbuf1)
+     &    ucd%num_comp, ucd%phys_name, ucd%d_ucd, zbuf_vtk)
+      call close_gzfile_a(zbuf_vtk)
 !
       end subroutine write_gz_vtk_phys
 !
@@ -155,10 +157,10 @@
       if(id_rank.le.0) write(*,*)                                       &
      &    'Write gzipped VTK grid: ', trim(gzip_name)
 !
-      call open_wt_gzfile_a(gzip_name, zbuf1)
+      call open_wt_gzfile_a(gzip_name, zbuf_vtk)
       call write_gz_vtk_mesh                                            &
-     &   (ucd%nnod, ucd%nele, ucd%nnod_4_ele, ucd%xx, ucd%ie, zbuf1)
-      call close_gzfile_a(zbuf1)
+     &   (ucd%nnod, ucd%nele, ucd%nnod_4_ele, ucd%xx, ucd%ie, zbuf_vtk)
+      call close_gzfile_a(zbuf_vtk)
 !
       end subroutine write_gz_vtk_grid
 !
