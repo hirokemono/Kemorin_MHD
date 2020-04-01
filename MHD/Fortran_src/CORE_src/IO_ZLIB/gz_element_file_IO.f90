@@ -90,9 +90,9 @@
 !
       call open_rd_gzfile_a(file_name, zbuf1)
       call gz_read_surface_connection(id_rank, surf_mesh_IO%comm,       &
-     &   surf_mesh_IO%ele, surf_mesh_IO%sfed, ierr)
+     &   surf_mesh_IO%ele, surf_mesh_IO%sfed, zbuf1, ierr)
 !      call gz_read_surface_geometry                                    &
-!     &   (surf_mesh_IO%node, surf_mesh_IO%sfed)
+!     &   (surf_mesh_IO%node, surf_mesh_IO%sfed, zbuf1)
       call close_gzfile_a(zbuf1)
 !
       end subroutine gz_input_surface_file
@@ -166,9 +166,9 @@
 !
       call open_wt_gzfile_a(file_name, zbuf1)
       call gz_write_surface_connection(id_rank, surf_mesh_IO%comm,      &
-     &    surf_mesh_IO%ele, surf_mesh_IO%sfed)
+     &    surf_mesh_IO%ele, surf_mesh_IO%sfed, zbuf1)
 !      call gz_write_surface_geometry                                   &
-!     &   (surf_mesh_IO%node, surf_mesh_IO%sfed)
+!     &   (surf_mesh_IO%node, surf_mesh_IO%sfed, zbuf1)
       call close_gzfile_a(zbuf1)
 !
       end subroutine gz_output_surface_file
