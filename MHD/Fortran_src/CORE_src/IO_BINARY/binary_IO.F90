@@ -518,19 +518,23 @@
 !
       subroutine read_endian_flag(bflag, id_rank)
 !
+      use calypso_c_binding
+!
       type(binary_IO_flags), intent(inout) :: bflag
       integer, intent(in) :: id_rank
-      integer :: int_dat
+      integer :: int_dat(1)
 !
 !
 #ifdef ZLIB_IO
-      call rawread_32bit_f(iendian_KEEP, kint, int_dat, bflag%ierr_IO)
+      bbuf1%iflag_swap = iendian_KEEP
+      call rawread_int4_f(1, int_dat, bbuf1)
       if(bflag%ierr_IO .ne. kint) goto 99
-      bflag%iflag_swap = endian_check(id_rank, int_dat)
+      bbuf1%iflag_swap = endian_check(id_rank, int_dat(1))
 #else
       read(id_binary)  int_dat
-      bflag%iflag_swap = iendian_KEEP
+      bbuf1%iflag_swap = iendian_KEEP
 #endif
+      bflag%iflag_swap = bbuf1%iflag_swap
       bflag%ierr_IO = 0
       return
 !
@@ -544,19 +548,23 @@
 !
       subroutine read_one_integer_from_32bit(bflag, int_dat)
 !
+      use calypso_c_binding
+!
       type(binary_IO_flags), intent(inout) :: bflag
       integer(kind = len_4byte), intent(inout) :: int_dat
 !
+      integer(kind = len_4byte) :: itmp4(1)
 !
 #ifdef ZLIB_IO
-      call rawread_32bit_f                                              &
-     &    (bflag%iflag_swap, len_4byte, int_dat, bflag%ierr_IO)
-      if(bflag%ierr_IO .ne. len_4byte) goto 99
+      itmp4(1) = int_dat
+      bbuf1%iflag_swap = bflag%iflag_swap
+      call rawread_int4_f(1, itmp4, bbuf1)
+      if(bbuf1%ierr_bin .ne. 0) goto 99
 #else
       read(id_binary, err=99, end=99)  int_dat
 #endif
 !
-      bflag%ierr_IO = 0
+      bflag%ierr_IO = bbuf1%ierr_bin
       return
 !
   99  continue
@@ -622,12 +630,14 @@
 !
       subroutine read_mul_int_from_32bit(bflag, num, int_dat)
 !
+      use calypso_c_binding
+!
       integer(kind = kint_gl), intent(in) :: num
       integer(kind = len_4byte), intent(inout) :: int_dat(num)
       type(binary_IO_flags), intent(inout) :: bflag
 !
       integer(kind = kint_gl) :: ist
-      integer:: lbyte, ilength
+      integer:: ilength
 !
 !
       if(num .le. 0) return
@@ -635,12 +645,11 @@
       ist = 0
       do
         ilength = int(min((num - ist), huge_20))
-        lbyte = ilength * len_4byte
 !
-        call rawread_32bit_f                                            &
-     &     (bflag%iflag_swap, lbyte, int_dat(ist+1), bflag%ierr_IO)
+        bbuf1%iflag_swap = bflag%iflag_swap
+        call rawread_int4_f(ilength, int_dat(ist+1), bbuf1)
         ist = ist + ilength
-        bflag%ierr_IO = bflag%ierr_IO - lbyte
+        bflag%ierr_IO = bbuf1%ierr_bin
         if(bflag%ierr_IO .ne. 0) return
         if(ist .ge. num) exit
       end do

@@ -218,10 +218,12 @@
       type(binary_IO_buffer), intent(inout) :: bbuf
 !
 !
+      write(*,*) 'rawread_int4_f'
       call link_int4_buffer_for_bin(num, int4_dat, bbuf)
       call rawread_32bit_f(bbuf%iflag_swap,                               &
      &    bbuf%len_buf, C_LOC(bbuf%idat4_p), bbuf%len_used)
       call unlink_int4_buffer_for_bin(bbuf)
+      bbuf%ierr_bin = bbuf%len_buf - bbuf%len_used
 !
       end subroutine rawread_int4_f
 !
@@ -238,7 +240,6 @@
 !
       integer(C_int), parameter :: iflag_noswap = iendian_KEEP
 !
-      write(*,*) 'rawread_chara_f'
       call link_text_buffer_for_bin(len_buf, textbuf, bbuf)
       call rawread_32bit_f(iflag_noswap,                                  &
      &    bbuf%len_buf, C_LOC(bbuf%buf_p), bbuf%len_used)
