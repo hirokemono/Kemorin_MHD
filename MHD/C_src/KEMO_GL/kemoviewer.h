@@ -16,7 +16,6 @@
 #define open_ad_rawfile           open_ad_rawfile_
 #define open_rd_rawfile           open_rd_rawfile_
 #define close_rawfile             close_rawfile_
-#define rawread_32bit_f           rawread_32bit_f_
 #define rawread_64bit_f           rawread_64bit_f_
 #define rawseek_go_fwd_f          rawseek_go_fwd_f_
 
@@ -44,7 +43,6 @@
 #define open_ad_rawfile           OPEN_AD_RAWFILE
 #define open_rd_rawfile           OPEN_RD_RAWFILE
 #define close_rawfile             CLOSE_RAWFILE
-#define rawread_32bit_f           RAWREAD_32BIT_F
 #define rawread_64bit_f           RAWREAD_64BIT_F
 #define rawseek_go_fwd_f          RAWSEEK_GO_FWD_F
 
@@ -71,7 +69,6 @@
 #define open_ad_rawfile           OPEN_AD_RAWFILE
 #define open_rd_rawfile           OPEN_RD_RAWFILE
 #define close_rawfile             CLOSE_RAWFILE
-#define rawread_32bit_f           RAWREAD_32BIT_F
 #define rawread_64bit_f           RAWREAD_64BIT_F
 #define rawseek_go_fwd_f          RAWSEEK_GO_FWD_F
 
@@ -98,7 +95,6 @@
 #define open_ad_rawfile           open_ad_rawfile
 #define open_rd_rawfile           open_rd_rawfile
 #define close_rawfile             close_rawfile
-#define rawread_32bit_f           rawread_32bit_f
 #define rawread_64bit_f           rawread_64bit_f
 #define rawseek_go_fwd_f          rawseek_go_fwd_f
 

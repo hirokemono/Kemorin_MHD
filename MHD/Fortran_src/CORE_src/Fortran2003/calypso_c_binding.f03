@@ -72,14 +72,14 @@
 !
 !  -----------------
 !
-        subroutine rawread_32bit_f(iflag_swap, ilength, buf, ilen_read)   &
-     &            BIND(C, name = 'rawread_32bit_f_')
+        subroutine rawread_32bit(iflag_swap, ilength, buf, ilen_read)   &
+     &            BIND(C, name = 'rawread_32bit')
           use ISO_C_BINDING
 !
           integer(C_int), intent(in) :: iflag_swap, ilength
           type(C_ptr), value, intent(in) :: buf
           integer(C_int), intent(inout) :: ilen_read
-        end subroutine rawread_32bit_f
+        end subroutine rawread_32bit
 !  -----------------
         subroutine rawread_64bit_f(iflag_swap, ilength, buf, ilen_read)   &
      &            BIND(C, name = 'rawread_64bit_f_')
@@ -220,7 +220,7 @@
 !
       write(*,*) 'rawread_int4_f'
       call link_int4_buffer_for_bin(num, int4_dat, bbuf)
-      call rawread_32bit_f(bbuf%iflag_swap,                               &
+      call rawread_32bit(bbuf%iflag_swap,                               &
      &    bbuf%len_buf, C_LOC(bbuf%idat4_p), bbuf%len_used)
       call unlink_int4_buffer_for_bin(bbuf)
       bbuf%ierr_bin = bbuf%len_buf - bbuf%len_used
@@ -241,7 +241,7 @@
       integer(C_int), parameter :: iflag_noswap = iendian_KEEP
 !
       call link_text_buffer_for_bin(len_buf, textbuf, bbuf)
-      call rawread_32bit_f(iflag_noswap,                                  &
+      call rawread_32bit(iflag_noswap,                                  &
      &    bbuf%len_buf, C_LOC(bbuf%buf_p), bbuf%len_used)
       call unlink_text_buffer_for_bin(bbuf)
       bbuf%ierr_bin = bbuf%len_buf - bbuf%len_used

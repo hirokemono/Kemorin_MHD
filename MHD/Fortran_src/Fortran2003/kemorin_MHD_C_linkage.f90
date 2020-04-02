@@ -17,15 +17,6 @@
 !
 ! -----------------------------------------------------------------------
 !
-!void open_wt_rawfile(const char *file_name, int *ierr);
-!void open_ad_rawfile(const char *file_name, int *ierr);
-!void open_rd_rawfile(const char *file_name, int *ierr);
-!void close_rawfile();
-!
-!void rawseek_go_fwd_f(int *ioffset, int *ierr);
-!void rawread_32bit_f(int *iflag_swap, int *ilength, char *textbuf, int *lenchara);
-!void rawread_64bit_f(int *iflag_swap, int *ilength, char *textbuf, int *lenchara);
-!
 !
 !void write_png_rgba_c(const char *fhead, int *num_x, int *num_y, 
 !			const unsigned char *cimage);

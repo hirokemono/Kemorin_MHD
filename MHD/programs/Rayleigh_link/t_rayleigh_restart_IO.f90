@@ -116,6 +116,7 @@
       character(len = kchara) :: file_name
       integer(kind = kint) :: ierr_IO
       integer(kind = kint) :: int_tmp, ilength
+      integer :: int_tmp(1)
 !
 !
       write(*,*) 'i_step', i_step
@@ -125,54 +126,55 @@
      &          trim(file_name)
       call open_rd_rawfile(file_name, ierr_IO)
 !
-      ra_rst%iflag_swap = iendian_KEEP
-      call rawread_32bit_f(ra_rst%iflag_swap, kint, int_tmp, ierr_IO)
-      if(int_tmp .ne. 4) ra_rst%iflag_swap = iendian_FLIP
+      bbuf%iflag_swap = iendian_KEEP
+      call rawread_int4_f(1, int_tmp, bbuf)
+      if(int_tmp(1) .ne. 4) bbuf%iflag_swap = iendian_FLIP
+      ra_rst%iflag_swap = bbuf%iflag_swap
 !
-      call rawread_32bit_f                                              &
-     &   (ra_rst%iflag_swap, kint, ra_rst%nri_org, ierr_IO)
-      call rawread_32bit_f(ra_rst%iflag_swap, kint, int_tmp, ierr_IO)
+      call rawread_int4_f(1, int_tmp, bbuf)
+      ra_rst%nri_org = int(int_tmp(1),KIND(ra_rst%nri_org))
+      call rawread_int4_f(kint, int_tmp, bbuf)
 !
-      call rawread_32bit_f(ra_rst%iflag_swap, kint, int_tmp, ierr_IO)
-      call rawread_32bit_f(ra_rst%iflag_swap, kint,                     &
-     &               ra_rst%iflag_rtype, ierr_IO)
-      call rawread_32bit_f(ra_rst%iflag_swap, kint, int_tmp, ierr_IO)
+      call rawread_int4_f(1, int_tmp, bbuf)
+      call rawread_int4_f(1, int_tmp, bbuf)
+      ra_rst%iflag_rtype = int(int_tmp(1),KIND(ra_rst%nri_org))
+      call rawread_int4_f(1, int_tmp, bbuf)
 !
-      call rawread_32bit_f(ra_rst%iflag_swap, kint, int_tmp, ierr_IO)
-      call rawread_32bit_f                                              &
-     &   (ra_rst%iflag_swap, kint, ra_rst%ltr_org, ierr_IO)
-      call rawread_32bit_f(ra_rst%iflag_swap, kint, int_tmp, ierr_IO)
+      call rawread_int4_f(1, int_tmp, bbuf)
+      call rawread_int4_f(1, int_tmp, bbuf)
+      ra_rst%ltr_org = int(int_tmp(1),KIND(ra_rst%nri_org))
+      call rawread_int4_f(1, int_tmp, bbuf)
 !
-      call rawread_32bit_f(ra_rst%iflag_swap, kint, int_tmp, ierr_IO)
+      call rawread_int4_f(1, int_tmp, bbuf)
       call rawread_64bit_f                                              &
      &   (ra_rst%iflag_swap, kreal, ra_rst%dt_org, ierr_IO)
       write(*,*) 'ra_rst%dt_org', ra_rst%dt_org
-      call rawread_32bit_f(ra_rst%iflag_swap, kint, int_tmp, ierr_IO)
+      call rawread_int4_f(1, int_tmp, bbuf)
 !
-      call rawread_32bit_f(ra_rst%iflag_swap, kint, int_tmp, ierr_IO)
+      call rawread_int4_f(1, int_tmp, bbuf)
       call rawread_64bit_f                                              &
      &   (ra_rst%iflag_swap, kreal, ra_rst%dt_new, ierr_IO)
       write(*,*) 'ra_rst%dt_new', ra_rst%dt_new
-      call rawread_32bit_f(ra_rst%iflag_swap, kint, int_tmp, ierr_IO)
+      call rawread_int4_f(1, int_tmp, bbuf)
 !
-!      call rawread_32bit_f(ra_rst%iflag_swap, kint, int_tmp, ierr_IO)
+!      call rawread_int4_f(1, int_tmp, bbuf)
 !      call rawread_64bit_f(ra_rst%iflag_swap, kreal,                   &
 !     &    ra_rst%new_dt_org, ierr_IO)
-!      call rawread_32bit_f(ra_rst%iflag_swap, kint, int_tmp, ierr_IO)
+!      call rawread_int4_f(1, int_tmp, bbuf)
 !
       call alloc_rayleigh_radial_grid(ra_rst)
 !
       ilength =  ra_rst%nri_org * kreal
-      call rawread_32bit_f(ra_rst%iflag_swap, kint, int_tmp, ierr_IO)
+      call rawread_int4_f(1, int_tmp, bbuf)
       call rawread_64bit_f(ra_rst%iflag_swap, ilength,                  &
      &    ra_rst%r_org(1), ierr_IO)
-      call rawread_32bit_f(ra_rst%iflag_swap, kint, int_tmp, ierr_IO)
+      call rawread_int4_f(1, int_tmp, bbuf)
 !
-      call rawread_32bit_f(ra_rst%iflag_swap, kint, int_tmp, ierr_IO)
+      call rawread_int4_f(1, int_tmp, bbuf)
       call rawread_64bit_f(ra_rst%iflag_swap, kreal,                    &
      &   ra_rst%time_org, ierr_IO)
       write(*,*) 'ra_rst%time_org', ra_rst%time_org
-      call rawread_32bit_f(ra_rst%iflag_swap, kint, int_tmp, ierr_IO)
+      call rawread_int4_f(1, int_tmp, bbuf)
 !
       call close_binary_file
 !

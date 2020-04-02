@@ -65,7 +65,7 @@ void rawseek_go_fwd_f(int *ioffset, int *ierr){
     return;
 }
 
-void rawread_32bit_f(int *iflag_swap, int *ilength, void *buf, int *lenchara){
+void rawread_32bit(int *iflag_swap, int *ilength, void *buf, int *lenchara){
     *lenchara = (int) fread((char *) buf, sizeof(char), *ilength, fp_z);
     /*
     int i;
