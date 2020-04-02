@@ -371,6 +371,8 @@
 !
       subroutine write_mul_character_b(num, chara_dat, bflag)
 !
+      use calypso_c_binding
+!
       integer(kind = kint), intent(in) :: num
       character(len=kchara), intent(in) :: chara_dat(num)
       type(binary_IO_flags), intent(inout) :: bflag
@@ -386,9 +388,9 @@
         ilength = int(min((num - ist), huge_20))
         lbyte = ilength *  kchara
 !
-        call rawwrite_f(lbyte, chara_dat(ist+1), bflag%ierr_IO)
+        call rawwrite_chara_f(lbyte, chara_dat(ist+1), bbuf1)
         ist = ist + ilength
-        bflag%ierr_IO = bflag%ierr_IO - lbyte
+        bflag%ierr_IO = bbuf1%ierr_bin
         if(bflag%ierr_IO .ne. 0) return
         if(ist .ge. num) exit
       end do
@@ -402,6 +404,8 @@
 ! -----------------------------------------------------------------------
 !
       subroutine write_mul_one_character_b(num, chara_dat, bflag)
+!
+      use calypso_c_binding
 !
       integer(kind = kint_gl), intent(in) :: num
       character(len=1), intent(in) :: chara_dat(num)
@@ -418,9 +422,9 @@
         ilength = int(min((num - ist), huge_20))
         lbyte = ilength
 !
-        call rawwrite_f(lbyte, chara_dat(ist+1), bflag%ierr_IO)
+        call rawwrite_chara_f(lbyte, chara_dat(ist+1), bbuf1)
         ist = ist + ilength
-        bflag%ierr_IO = bflag%ierr_IO - lbyte
+        bflag%ierr_IO = bbuf1%ierr_bin
         if(bflag%ierr_IO .ne. 0) return
         if(ist .ge. num) exit
       end do

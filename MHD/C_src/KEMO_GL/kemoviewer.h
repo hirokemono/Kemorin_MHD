@@ -18,7 +18,6 @@
 #define close_rawfile             close_rawfile_
 #define rawread_32bit_f           rawread_32bit_f_
 #define rawread_64bit_f           rawread_64bit_f_
-#define rawwrite_f                rawwrite_f_
 #define rawseek_go_fwd_f          rawseek_go_fwd_f_
 
 #define write_png_rgba_c           write_png_rgba_c_
@@ -47,7 +46,6 @@
 #define close_rawfile             CLOSE_RAWFILE
 #define rawread_32bit_f           RAWREAD_32BIT_F
 #define rawread_64bit_f           RAWREAD_64BIT_F
-#define rawwrite_f                RAWWRITE_F
 #define rawseek_go_fwd_f          RAWSEEK_GO_FWD_F
 
 #define write_png_rgba_c           WRITE_PNG_RGBA_C
@@ -75,7 +73,6 @@
 #define close_rawfile             CLOSE_RAWFILE
 #define rawread_32bit_f           RAWREAD_32BIT_F
 #define rawread_64bit_f           RAWREAD_64BIT_F
-#define rawwrite_f                RAWWRITE_F
 #define rawseek_go_fwd_f          RAWSEEK_GO_FWD_F
 
 #define write_png_rgba_c           WRITE_PNG_RGBA_C
@@ -103,7 +100,6 @@
 #define close_rawfile             close_rawfile
 #define rawread_32bit_f           rawread_32bit_f
 #define rawread_64bit_f           rawread_64bit_f
-#define rawwrite_f                rawwrite_f
 #define rawseek_go_fwd_f          rawseek_go_fwd_f
 
 #define write_png_rgba_c           write_png_rgba_c

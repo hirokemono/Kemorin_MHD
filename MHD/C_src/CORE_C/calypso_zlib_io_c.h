@@ -40,7 +40,7 @@ void close_rawfile(void);
 void rawseek_go_fwd_f(int *ioffset, int *ierr);
 void rawread_32bit_f(int *iflag_swap, int *ilength, void *buf, int *lenchara);
 void rawread_64bit_f(int *iflag_swap, int *ilength, void *buf, int *lenchara);
-void rawwrite_f(int *ilength, void *buf, int *lenchara);
+void rawwrite(int *ilength, void *buf, int *lenchara);
 
 void open_wt_gzfile(const char *gz_file_name);
 void open_ad_gzfile(const char *gz_file_name);

@@ -90,14 +90,14 @@
           integer(C_int), intent(inout) :: ilen_read
         end subroutine rawread_64bit_f
 !  -----------------
-        subroutine rawwrite_f(ilength, buf, ilen_read)                    &
-     &            BIND(C, name = 'rawwrite_f_')
+        subroutine rawwrite(ilength, buf, ilen_read)                    &
+     &            BIND(C, name = 'rawwrite')
           use ISO_C_BINDING
 !
           integer(C_int), intent(in) :: ilength
           type(C_ptr), value, intent(in) :: buf
           integer(C_int), intent(inout) :: ilen_read
-        end subroutine rawwrite_f
+        end subroutine rawwrite
 !  -----------------
         subroutine rawseek_go_fwd_f(ioffset, ierr)                        &
      &            BIND(C, name = 'rawseek_go_fwd_f_')
@@ -256,9 +256,8 @@
       type(binary_IO_buffer), intent(inout) :: bbuf
 !
 !
-      write(*,*) 'rawwrite_real_f'
       call link_real_buffer_for_bin(num, data, bbuf)
-      call rawwrite_f(bbuf%len_buf , C_LOC(bbuf%dat_p), bbuf%len_used)
+      call rawwrite(bbuf%len_buf , C_LOC(bbuf%dat_p), bbuf%len_used)
       call unlink_real_buffer_for_bin(bbuf)
       bbuf%ierr_bin = bbuf%len_buf - bbuf%len_used
 !
@@ -275,7 +274,7 @@
 !
 !
       call link_int8_buffer_for_bin(num, int8_dat, bbuf)
-      call rawwrite_f(bbuf%len_buf, C_LOC(bbuf%idat8_p), bbuf%len_used)
+      call rawwrite(bbuf%len_buf, C_LOC(bbuf%idat8_p), bbuf%len_used)
       call unlink_int8_buffer_for_bin(bbuf)
       bbuf%ierr_bin = bbuf%len_buf - bbuf%len_used
 !
@@ -292,7 +291,7 @@
 !
 !
       call link_int4_buffer_for_bin(num, int4_dat, bbuf)
-      call rawwrite_f(bbuf%len_buf, C_LOC(bbuf%idat4_p), bbuf%len_used)
+      call rawwrite(bbuf%len_buf, C_LOC(bbuf%idat4_p), bbuf%len_used)
       call unlink_int4_buffer_for_bin(bbuf)
       bbuf%ierr_bin = bbuf%len_buf - bbuf%len_used
 !
@@ -308,9 +307,11 @@
       type(binary_IO_buffer), intent(inout) :: bbuf
 !
 !
+      write(*,*) 'rawwrite_chara_f'
       call link_text_buffer_for_bin(len_buf, textbuf, bbuf)
-      call rawwrite_f(bbuf%len_buf , C_LOC(bbuf%buf_p), bbuf%len_used)
+      call rawwrite(bbuf%len_buf , C_LOC(bbuf%buf_p), bbuf%len_used)
       call unlink_text_buffer_for_bin(bbuf)
+      bbuf%ierr_bin = bbuf%len_buf - bbuf%len_used
 !
       end subroutine rawwrite_chara_f
 !

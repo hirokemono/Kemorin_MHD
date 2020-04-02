@@ -101,7 +101,7 @@ void rawread_64bit_f(int *iflag_swap, int *ilength, void *buf, int *lenchara){
     return;
 }
 
-void rawwrite_f(int *ilength, void *buf, int *lenchara){
+void rawwrite(int *ilength, void *buf, int *lenchara){
     *lenchara = (int) fwrite((char *) buf, sizeof(char), *ilength, fp_z);
     return;
 }
