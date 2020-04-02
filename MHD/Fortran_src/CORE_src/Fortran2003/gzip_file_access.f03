@@ -8,10 +8,11 @@
 !> @brief Wrapper for decompression routines by zlib
 !!
 !!@verbatim
-!!      subroutine open_wt_gzfile_f(gzip_name)
-!!      subroutine open_ad_gzfile_f(gzip_name)
-!!      subroutine open_rd_gzfile_f(gzip_name)
+!!      subroutine open_wt_gzfile_f(gzip_name, zbuf)
+!!      subroutine open_ad_gzfile_f(gzip_name, zbuf)
+!!      subroutine open_rd_gzfile_f(gzip_name, zbuf)
 !!      subroutine close_gzfile_b()
+!!        type(buffer_4_gzip), intent(inout) :: zbuf
 !!
 !!      subroutine get_one_line_text_from_gz(len_buf, textbuf, zbuf)
 !!      subroutine gz_write_textbuf_no_lf(len_buf, textbuf, zbuf)

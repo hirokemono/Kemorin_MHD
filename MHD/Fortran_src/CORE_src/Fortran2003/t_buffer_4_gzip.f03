@@ -10,8 +10,10 @@
 !!@verbatim
 !!      subroutine alloc_zip_buffer(zbuf)
 !!      subroutine alloc_textbuffer_for_zlib(len_buf, zbuf)
+!!      subroutine alloc_fixbuffer_for_zlib(zbuf)
 !!      subroutine dealloc_zip_buffer(zbuf)
 !!      subroutine dealloc_textbuffer_for_zlib(zbuf)
+!!      subroutine dealloc_fixbuffer_for_zlib(zbuf)
 !!        type(buffer_4_gzip), intent(inout) :: zbuf
 !!        type(buffer_4_gzip), intent(inout) :: zbuf
 !!

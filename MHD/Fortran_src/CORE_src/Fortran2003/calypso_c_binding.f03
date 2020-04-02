@@ -8,33 +8,32 @@
 !> @brief Wrapper for decompression routines by zlib
 !!
 !!@verbatim
-!!      subroutine open_wt_gzfile_f(gzip_name)
-!!      subroutine open_ad_gzfile_f(gzip_name)
-!!      subroutine open_rd_gzfile_f(gzip_name)
-!!      subroutine close_gzfile_f()
+!!      subroutine open_wt_rawfile_f(file_name)
+!!      subroutine open_ad_rawfile_f(file_name)
+!!      subroutine open_rd_rawfile_f(file_name)
+!!      subroutine close_rawfile_f()
 !!
-!!      subroutine get_one_line_from_gz_f(len_buf, textbuf, zbuf)
-!!      subroutine gz_write_textbuf_no_lf_f(len_buf, textbuf, zbuf)
-!!        type(buffer_4_gzip), intent(inout) :: zbuf
+!!      subroutine rawread_real_f(num, data, bbuf)
+!!      subroutine rawread_int8_f(num, int8_dat, bbuf)
+!!      subroutine rawread_int4_f(num, int4_dat, bbuf)
+!!      subroutine rawread_chara_f(len_buf, textbuf, bbuf)
+!!        type(binary_IO_buffer), intent(inout) :: bbuf
 !!
-!!      subroutine gzread_real_f(num, data, zbuf)
-!!      subroutine gzread_int8_f(num, int8_dat, zbuf)
-!!      subroutine gzread_int4_f(num, int4_dat, zbuf)
-!!      subroutine gzread_chara_f(len_buf, textbuf, zbuf)
-!!        type(buffer_4_gzip), intent(inout) :: zbuf
+!!      subroutine rawwrite_real_f(num, data, bbuf)
+!!      subroutine rawwrite_int8_f(num, int8_dat, bbuf)
+!!      subroutine rawwrite_int4_f(num, int4_dat, bbuf)
+!!      subroutine rawwrite_chara_f(len_buf, textbuf, bbuf)
+!!        type(binary_IO_buffer), intent(inout) :: bbuf
 !!
-!!      subroutine gzwrite_real_f(num, data, zbuf)
-!!      subroutine gzwrite_int8_f(num, int8_dat, zbuf)
-!!      subroutine gzwrite_int4_f(num, int4_dat, zbuf)
-!!      subroutine gzwrite_chara_f(len_buf, textbuf, zbuf)
-!!        type(buffer_4_gzip), intent(inout) :: zbuf
+!!      subroutine rawseek_go_fwd_f(ioffset, bbuf)
+!!        type(binary_IO_buffer), intent(inout) :: bbuf
 !!@endverbatim
 !
       module calypso_c_binding
 !
       use ISO_C_BINDING
       use m_precision
-      use t_buffer_4_gzip
+      use t_binary_IO_buffer
 !
       implicit none
 !
@@ -43,78 +42,70 @@
       interface
 !
 !  -----------------
-        subroutine open_wt_gzfile(gz_file_name)                         &
-     &           BIND(C, name = 'open_wt_gzfile')
+        subroutine open_wt_rawfile(gz_file_name, ierr)                  &
+     &           BIND(C, name = 'open_wt_rawfile_')
           use ISO_C_BINDING
 !
           character(C_char), intent(in) :: gz_file_name(*)
-        end subroutine open_wt_gzfile
+          integer(C_int), intent(inout) :: ierr
+        end subroutine open_wt_rawfile
 !  -----------------
-        subroutine open_ad_gzfile(gz_file_name)                         &
-     &           BIND(C, name = 'open_ad_gzfile')
+        subroutine open_ad_rawfile(gz_file_name, ierr)                  &
+     &           BIND(C, name = 'open_ad_rawfile_')
         use ISO_C_BINDING
 !
           character(C_char), intent(in) :: gz_file_name(*)
-        end subroutine open_ad_gzfile
+          integer(C_int), intent(inout) :: ierr
+        end subroutine open_ad_rawfile
 !  -----------------
-        subroutine open_rd_gzfile(gz_file_name)                         &
-     &           BIND(C, name = 'open_rd_gzfile')
+        subroutine open_rd_rawfile(gz_file_name, ierr)                  &
+     &           BIND(C, name = 'open_rd_rawfile_')
           use ISO_C_BINDING
 !
           character(C_char), intent(in) :: gz_file_name(*)
-        end subroutine open_rd_gzfile
+          integer(C_int), intent(inout) :: ierr
+        end subroutine open_rd_rawfile
 !  -----------------
-        subroutine close_gzfile() BIND(C, name = 'close_gzfile')
+        subroutine close_rawfile() BIND(C, name = 'close_rawfile_')
           use ISO_C_BINDING
-        end subroutine close_gzfile
-!  -----------------
-        subroutine get_one_line_from_gz                                 &
-     &           (num_buffer, num_word, nchara, line_buf)               &
-     &            BIND(C, name = 'get_one_line_from_gz')
-          use ISO_C_BINDING
-!
-          integer(C_int), intent(in) :: num_buffer
-          integer(C_int), intent(inout) :: num_word
-          integer(C_int), intent(inout) :: nchara
-          type(C_ptr), value :: line_buf
-        end subroutine get_one_line_from_gz
-!  -----------------
-        subroutine write_compress_txt_nolf(nchara, line_buf)            &
-     &            BIND(C, name = 'write_compress_txt_nolf')
-          use ISO_C_BINDING
-!
-          integer(C_int), intent(in) :: nchara
-          type(C_ptr), value :: line_buf
-        end subroutine write_compress_txt_nolf
+        end subroutine close_rawfile
 !
 !  -----------------
 !
-        subroutine gzread_32bit_f(iflag_swap, ilength, buf, ierr)       &
-     &            BIND(C, name = 'gzread_32bit_f')
+        subroutine rawread_32bit_f(iflag_swap, ilength, buf, ilen_read)   &
+     &            BIND(C, name = 'rawread_32bit_f_')
           use ISO_C_BINDING
 !
           integer(C_int), intent(in) :: iflag_swap, ilength
           type(C_ptr), value, intent(in) :: buf
-          integer(C_int), intent(inout) :: ierr
-        end subroutine gzread_32bit_f
+          integer(C_int), intent(inout) :: ilen_read
+        end subroutine rawread_32bit_f
 !  -----------------
-        subroutine gzread_64bit_f(iflag_swap, ilength, buf, ierr)       &
-     &            BIND(C, name = 'gzread_64bit_f')
+        subroutine rawread_64bit_f(iflag_swap, ilength, buf, ilen_read)   &
+     &            BIND(C, name = 'rawread_64bit_f_')
           use ISO_C_BINDING
 !
           integer(C_int), intent(in) :: iflag_swap, ilength
           type(C_ptr), value, intent(in) :: buf
-          integer(C_int), intent(inout) :: ierr
-        end subroutine gzread_64bit_f
+          integer(C_int), intent(inout) :: ilen_read
+        end subroutine rawread_64bit_f
 !  -----------------
-        subroutine gzwrite_f(ilength, buf, ierr)                        &
-     &            BIND(C, name = 'gzwrite_f')
+        subroutine rawwrite_f(ilength, buf, ilen_read)                    &
+     &            BIND(C, name = 'rawwrite_f_')
           use ISO_C_BINDING
 !
           integer(C_int), intent(in) :: ilength
           type(C_ptr), value, intent(in) :: buf
+          integer(C_int), intent(inout) :: ilen_read
+        end subroutine rawwrite_f
+!  -----------------
+        subroutine rawseek_go_fwd_f(ioffset, ierr)                        &
+     &            BIND(C, name = 'rawseek_go_fwd_f_')
+          use ISO_C_BINDING
+!
+          integer(C_int), intent(in) :: ioffset
           integer(C_int), intent(inout) :: ierr
-        end subroutine gzwrite_f
+        end subroutine rawseek_go_fwd_f
 !  -----------------
       end interface
 !
@@ -124,229 +115,217 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine open_wt_gzfile_f(gzip_name, zbuf)
+      subroutine open_wt_rawfile_f(file_name, bbuf)
 !
       use set_parallel_file_name
 !
-      character(len = kchara), intent(in) :: gzip_name
-      type(buffer_4_gzip), intent(inout) :: zbuf
+      character(len = kchara), intent(in) :: file_name
+      type(binary_IO_buffer), intent(inout) :: bbuf
 !
 !
-      call link_text_buffer_for_zlib                                    &
-     &   (kchara, add_null_character(gzip_name), zbuf)
-      call open_wt_gzfile(zbuf%buf_p)
-      call unlink_text_buffer_for_zlib(zbuf)
+      call link_text_buffer_for_bin                                     &
+     &   (kchara, add_null_character(file_name), bbuf)
+      call open_wt_rawfile(bbuf%buf_p, bbuf%ierr_bin)
+      call unlink_text_buffer_for_bin(bbuf)
 !
-      end subroutine open_wt_gzfile_f
+      end subroutine open_wt_rawfile_f
 !
 !------------------------------------------------------------------
 !
-      subroutine open_ad_gzfile_f(gzip_name, zbuf)
+      subroutine open_ad_rawfile_f(file_name, bbuf)
 !
       use set_parallel_file_name
 !
-      character(len = kchara), intent(in) :: gzip_name
-      type(buffer_4_gzip), intent(inout) :: zbuf
+      character(len = kchara), intent(in) :: file_name
+      type(binary_IO_buffer), intent(inout) :: bbuf
 !
 !
-      call link_text_buffer_for_zlib                                    &
-     &   (kchara, add_null_character(gzip_name), zbuf)
-      call open_ad_gzfile(zbuf%buf_p)
-      call unlink_text_buffer_for_zlib(zbuf)
+      call link_text_buffer_for_bin                                     &
+     &   (kchara, add_null_character(file_name), bbuf)
+      call open_ad_rawfile(bbuf%buf_p, bbuf%ierr_bin)
+      call unlink_text_buffer_for_bin(bbuf)
 !
-      end subroutine open_ad_gzfile_f
+      end subroutine open_ad_rawfile_f
 !
 !------------------------------------------------------------------
 !
-      subroutine open_rd_gzfile_f(gzip_name, zbuf)
+      subroutine open_rd_rawfile_f(file_name, bbuf)
 !
       use set_parallel_file_name
 !
-      character(len = kchara), intent(in) :: gzip_name
-      type(buffer_4_gzip), intent(inout) :: zbuf
+      character(len = kchara), intent(in) :: file_name
+      type(binary_IO_buffer), intent(inout) :: bbuf
 !
 !
-      call link_text_buffer_for_zlib                                    &
-     &   (kchara, add_null_character(gzip_name), zbuf)
-      call open_rd_gzfile(zbuf%buf_p)
-      call unlink_text_buffer_for_zlib(zbuf)
+      call link_text_buffer_for_bin                                     &
+     &   (kchara, add_null_character(file_name), bbuf)
+      call open_rd_rawfile(bbuf%buf_p, bbuf%ierr_bin)
+      call unlink_text_buffer_for_bin(bbuf)
 !
-      end subroutine open_rd_gzfile_f
-!
-!------------------------------------------------------------------
-!
-      subroutine close_gzfile_b()
-!
-!
-      call close_gzfile()
-!
-      end subroutine close_gzfile_b
+      end subroutine open_rd_rawfile_f
 !
 !------------------------------------------------------------------
 !
-      subroutine get_one_line_from_gz_f(zbuf)
-!
-      type(buffer_4_gzip), intent(inout) :: zbuf
+      subroutine close_rawfile_f()
 !
 !
-      call link_text_buffer_for_zlib                                    &
-     &   (len(zbuf%fixbuf(1)), zbuf%fixbuf(1), zbuf)
-      call get_one_line_from_gz(zbuf%len_buf, zbuf%num_word,            &
-     &    zbuf%len_used, C_LOC(zbuf%buf_p))
-      call unlink_text_buffer_for_zlib(zbuf)
+      call close_rawfile()
 !
-      end subroutine get_one_line_from_gz_f
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine gz_write_textbuf_no_lf_f(zbuf)
-!
-      type(buffer_4_gzip), intent(inout) :: zbuf
-!
-!
-      call link_text_buffer_for_zlib                                    &
-     &   (len(zbuf%fixbuf(1)), zbuf%fixbuf(1), zbuf)
-      call write_compress_txt_nolf(zbuf%len_buf, C_LOC(zbuf%buf_p))
-      call unlink_text_buffer_for_zlib(zbuf)
-!
-      end subroutine gz_write_textbuf_no_lf_f
+      end subroutine close_rawfile_f
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine gzread_real_f(num, data, zbuf)
+      subroutine rawread_real_f(num, data, bbuf)
 !
       integer, intent(in) :: num
       real(kind = kreal), target, intent(inout) :: data(num)
 !
-      type(buffer_4_gzip), intent(inout) :: zbuf
+      type(binary_IO_buffer), intent(inout) :: bbuf
 !
 !
-      call link_real_buffer_for_zlib(num, data, zbuf)
-      call gzread_64bit_f(zbuf%iflag_swap,                              &
-     &    zbuf%len_buf, C_LOC(zbuf%dat_p), zbuf%ierr_zlib)
-      call unlink_real_buffer_for_zlib(zbuf)
+      call link_real_buffer_for_bin(num, data, bbuf)
+      call rawread_64bit_f(bbuf%iflag_swap,                               &
+     &    bbuf%len_buf, C_LOC(bbuf%dat_p), bbuf%len_used)
+      call unlink_real_buffer_for_bin(bbuf)
 !
-      end subroutine gzread_real_f
+      end subroutine rawread_real_f
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine gzread_int8_f(num, int8_dat, zbuf)
+      subroutine rawread_int8_f(num, int8_dat, bbuf)
 !
       integer, intent(in) :: num
       integer(kind = kint_gl), intent(inout) :: int8_dat(num)
 !
-      type(buffer_4_gzip), intent(inout) :: zbuf
+      type(binary_IO_buffer), intent(inout) :: bbuf
 !
 !
-      call link_int8_buffer_for_zlib(num, int8_dat, zbuf)
-      call gzread_64bit_f(zbuf%iflag_swap,                              &
-     &    zbuf%len_buf , C_LOC(zbuf%idat8_p), zbuf%ierr_zlib)
-      call unlink_int8_buffer_for_zlib(zbuf)
+      call link_int8_buffer_for_bin(num, int8_dat, bbuf)
+      call rawread_64bit_f(bbuf%iflag_swap,                               &
+     &    bbuf%len_buf , C_LOC(bbuf%idat8_p), bbuf%len_used)
+      call unlink_int8_buffer_for_bin(bbuf)
 !
-      end subroutine gzread_int8_f
+      end subroutine rawread_int8_f
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine gzread_int4_f(num, int4_dat, zbuf)
+      subroutine rawread_int4_f(num, int4_dat, bbuf)
 !
       integer, intent(in) :: num
       integer, target, intent(inout) :: int4_dat(num)
 !
-      type(buffer_4_gzip), intent(inout) :: zbuf
+      type(binary_IO_buffer), intent(inout) :: bbuf
 !
 !
-      call link_int4_buffer_for_zlib(num, int4_dat, zbuf)
-      call gzread_32bit_f(zbuf%iflag_swap,                              &
-     &    zbuf%len_buf, C_LOC(zbuf%idat4_p), zbuf%ierr_zlib)
-      call unlink_int4_buffer_for_zlib(zbuf)
+      call link_int4_buffer_for_bin(num, int4_dat, bbuf)
+      call rawread_32bit_f(bbuf%iflag_swap,                               &
+     &    bbuf%len_buf, C_LOC(bbuf%idat4_p), bbuf%len_used)
+      call unlink_int4_buffer_for_bin(bbuf)
 !
-      end subroutine gzread_int4_f
+      end subroutine rawread_int4_f
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine gzread_chara_f(len_buf, textbuf, zbuf)
+      subroutine rawread_chara_f(len_buf, textbuf, bbuf)
 !
       use m_machine_parameter
 !
       integer, intent(in) :: len_buf
       character(len=1), target, intent(in) :: textbuf(len_buf)
 !
-      type(buffer_4_gzip), intent(inout) :: zbuf
+      type(binary_IO_buffer), intent(inout) :: bbuf
 !
       integer(C_int), parameter :: iflag_noswap = iendian_KEEP
 !
-      call link_text_buffer_for_zlib(len_buf, textbuf, zbuf)
-      call gzread_32bit_f(iflag_noswap,                                 &
-     &    zbuf%len_buf, C_LOC(zbuf%buf_p), zbuf%ierr_zlib)
-      call unlink_text_buffer_for_zlib(zbuf)
+      call link_text_buffer_for_bin(len_buf, textbuf, bbuf)
+      call rawread_32bit_f(iflag_noswap,                                  &
+     &    bbuf%len_buf, C_LOC(bbuf%buf_p), bbuf%len_used)
+      call unlink_text_buffer_for_bin(bbuf)
 !
-      end subroutine gzread_chara_f
+      end subroutine rawread_chara_f
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine gzwrite_real_f(num, data, zbuf)
+      subroutine rawwrite_real_f(num, data, bbuf)
 !
       integer, intent(in) :: num
       real(kind = kreal), target, intent(in) :: data(num)
 !
-      type(buffer_4_gzip), intent(inout) :: zbuf
+      type(binary_IO_buffer), intent(inout) :: bbuf
 !
 !
-      call link_real_buffer_for_zlib(num, data, zbuf)
-      call gzwrite_f(zbuf%len_buf , C_LOC(zbuf%dat_p), zbuf%ierr_zlib)
-      call unlink_real_buffer_for_zlib(zbuf)
+      call link_real_buffer_for_bin(num, data, bbuf)
+      call rawwrite_f(bbuf%len_buf , C_LOC(bbuf%dat_p), bbuf%len_used)
+      call unlink_real_buffer_for_bin(bbuf)
 !
-      end subroutine gzwrite_real_f
+      end subroutine rawwrite_real_f
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine gzwrite_int8_f(num, int8_dat, zbuf)
+      subroutine rawwrite_int8_f(num, int8_dat, bbuf)
 !
       integer, intent(in) :: num
       integer(kind = kint_gl), intent(in) :: int8_dat(num)
 !
-      type(buffer_4_gzip), intent(inout) :: zbuf
+      type(binary_IO_buffer), intent(inout) :: bbuf
 !
 !
-      call link_int8_buffer_for_zlib(num, int8_dat, zbuf)
-      call gzwrite_f(zbuf%len_buf, C_LOC(zbuf%idat8_p), zbuf%ierr_zlib)
-      call unlink_int8_buffer_for_zlib(zbuf)
+      call link_int8_buffer_for_bin(num, int8_dat, bbuf)
+      call rawwrite_f(bbuf%len_buf, C_LOC(bbuf%idat8_p), bbuf%len_used)
+      call unlink_int8_buffer_for_bin(bbuf)
 !
-      end subroutine gzwrite_int8_f
+      end subroutine rawwrite_int8_f
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine gzwrite_int4_f(num, int4_dat, zbuf)
+      subroutine rawwrite_int4_f(num, int4_dat, bbuf)
 !
       integer, intent(in) :: num
       integer(kind = 4), target, intent(in) :: int4_dat(num)
 !
-      type(buffer_4_gzip), intent(inout) :: zbuf
+      type(binary_IO_buffer), intent(inout) :: bbuf
 !
 !
-      call link_int4_buffer_for_zlib(num, int4_dat, zbuf)
-      call gzwrite_f(zbuf%len_buf, C_LOC(zbuf%idat4_p), zbuf%ierr_zlib)
-      call unlink_int4_buffer_for_zlib(zbuf)
+      write(*,*) 'rawwrite_int4_f'
+      call link_int4_buffer_for_bin(num, int4_dat, bbuf)
+      call rawwrite_f(bbuf%len_buf, C_LOC(bbuf%idat4_p), bbuf%len_used)
+      call unlink_int4_buffer_for_bin(bbuf)
+      bbuf%ierr_bin = bbuf%len_buf - bbuf%len_used
 !
-      end subroutine gzwrite_int4_f
+      end subroutine rawwrite_int4_f
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine gzwrite_chara_f(len_buf, textbuf, zbuf)
+      subroutine rawwrite_chara_f(len_buf, textbuf, bbuf)
 !
       integer, intent(in) :: len_buf
       character(len=1), target, intent(in) :: textbuf(len_buf)
 !
-      type(buffer_4_gzip), intent(inout) :: zbuf
+      type(binary_IO_buffer), intent(inout) :: bbuf
 !
 !
-      call link_text_buffer_for_zlib(len_buf, textbuf, zbuf)
-      call gzwrite_f(zbuf%len_buf , C_LOC(zbuf%buf_p), zbuf%ierr_zlib)
-      call unlink_text_buffer_for_zlib(zbuf)
+      call link_text_buffer_for_bin(len_buf, textbuf, bbuf)
+      call rawwrite_f(bbuf%len_buf , C_LOC(bbuf%buf_p), bbuf%len_used)
+      call unlink_text_buffer_for_bin(bbuf)
 !
-      end subroutine gzwrite_chara_f
+      end subroutine rawwrite_chara_f
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine rawseek_go_fwd_f03(ioffset, bbuf)
+!
+      integer, intent(in) :: ioffset
+!
+      type(binary_IO_buffer), intent(inout) :: bbuf
+!
+!
+      bbuf%len_buf = int(ioffset,KIND(bbuf%len_buf))
+      call rawseek_go_fwd_f(bbuf%len_buf, bbuf%ierr_bin)
+!
+      end subroutine rawseek_go_fwd_f03
 !
 !  ---------------------------------------------------------------------
 !

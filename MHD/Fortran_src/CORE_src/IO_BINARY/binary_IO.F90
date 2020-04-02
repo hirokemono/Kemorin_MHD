@@ -49,6 +49,7 @@
       use m_constants
       use m_machine_parameter
       use m_error_IDs
+      use t_binary_IO_buffer
 !
       implicit none
 !
@@ -61,6 +62,7 @@
 !
       integer(kind = kint), parameter, private :: len_4byte = 4
       integer(kind = kint), parameter, private :: id_binary = 19
+      type(binary_IO_buffer) :: bbuf1
 !
       private :: write_endian_flag, read_endian_flag
 !
@@ -185,12 +187,16 @@
 !
       subroutine write_endian_flag(bflag)
 !
+      use calypso_c_binding
+!
       type(binary_IO_flags), intent(inout) :: bflag
 !
+      integer :: itmp4(1)
 !
 #ifdef ZLIB_IO
-      call rawwrite_f(kint, i_UNIX, bflag%ierr_IO)
-      bflag%ierr_IO = bflag%ierr_IO - kint
+      itmp4(1) = i_UNIX
+      call rawwrite_int4_f(1, itmp4, bbuf1)
+      bflag%ierr_IO = bbuf1%ierr_bin
 #else
       write(id_binary)  i_UNIX
 #endif
@@ -257,6 +263,8 @@
 !
       subroutine write_mul_int_to_32bit(num, int4_dat, bflag)
 !
+      use calypso_c_binding
+!
       integer(kind = kint_gl), intent(in) :: num
       integer(kind = len_4byte), intent(in) :: int4_dat(num)
       type(binary_IO_flags), intent(inout) :: bflag
@@ -272,9 +280,9 @@
         ilength = int(min((num - ist), huge_20))
         lbyte = ilength *  len_4byte
 !
-        call rawwrite_f(lbyte, int4_dat(ist+1), bflag%ierr_IO)
+        call rawwrite_int4_f(ilength, int4_dat(ist+1), bbuf1)
         ist = ist + ilength
-        bflag%ierr_IO = bflag%ierr_IO - lbyte
+        bflag%ierr_IO = bbuf1%ierr_bin
         if(bflag%ierr_IO .ne. 0) return
         if(ist .ge. num) exit
       end do
