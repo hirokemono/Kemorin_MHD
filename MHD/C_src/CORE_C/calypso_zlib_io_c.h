@@ -37,7 +37,7 @@ void open_ad_rawfile(const char *file_name, int *ierr);
 void open_rd_rawfile(const char *file_name, int *ierr);
 void close_rawfile(void);
 
-void rawseek_go_fwd_f(int *ioffset, int *ierr);
+void rawseek_go_fwd(int *ioffset, int *ierr);
 void rawread_32bit(int *iflag_swap, int *ilength, void *buf, int *lenchara);
 void rawread_64bit(int *iflag_swap, int *ilength, void *buf, int *lenchara);
 void rawwrite(int *ilength, void *buf, int *lenchara);

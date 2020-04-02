@@ -16,7 +16,6 @@
 #define open_ad_rawfile           open_ad_rawfile_
 #define open_rd_rawfile           open_rd_rawfile_
 #define close_rawfile             close_rawfile_
-#define rawseek_go_fwd_f          rawseek_go_fwd_f_
 
 #define write_png_rgba_c           write_png_rgba_c_
 #define write_png_rgb_c            write_png_rgb_c_
@@ -42,7 +41,6 @@
 #define open_ad_rawfile           OPEN_AD_RAWFILE
 #define open_rd_rawfile           OPEN_RD_RAWFILE
 #define close_rawfile             CLOSE_RAWFILE
-#define rawseek_go_fwd_f          RAWSEEK_GO_FWD_F
 
 #define write_png_rgba_c           WRITE_PNG_RGBA_C
 #define write_png_rgb_c            WRITE_PNG_RGB_C
@@ -67,7 +65,6 @@
 #define open_ad_rawfile           OPEN_AD_RAWFILE
 #define open_rd_rawfile           OPEN_RD_RAWFILE
 #define close_rawfile             CLOSE_RAWFILE
-#define rawseek_go_fwd_f          RAWSEEK_GO_FWD_F
 
 #define write_png_rgba_c           WRITE_PNG_RGBA_C
 #define write_png_rgb_c            WRITE_PNG_RGB_C
@@ -92,7 +89,6 @@
 #define open_ad_rawfile           open_ad_rawfile
 #define open_rd_rawfile           open_rd_rawfile
 #define close_rawfile             close_rawfile
-#define rawseek_go_fwd_f          rawseek_go_fwd_f
 
 #define write_png_rgba_c           write_png_rgba_c
 #define write_png_rgb_c            write_png_rgb_c

@@ -25,7 +25,7 @@
 !!      subroutine rawwrite_chara_f(len_buf, textbuf, bbuf)
 !!        type(binary_IO_buffer), intent(inout) :: bbuf
 !!
-!!      subroutine rawseek_go_fwd_f(ioffset, bbuf)
+!!      subroutine rawseek_go_fwd(ioffset, bbuf)
 !!        type(binary_IO_buffer), intent(inout) :: bbuf
 !!@endverbatim
 !
@@ -99,13 +99,13 @@
           integer(C_int), intent(inout) :: ilen_read
         end subroutine rawwrite
 !  -----------------
-        subroutine rawseek_go_fwd_f(ioffset, ierr)                        &
-     &            BIND(C, name = 'rawseek_go_fwd_f_')
+        subroutine rawseek_go_fwd(ioffset, ierr)                        &
+     &            BIND(C, name = 'rawseek_go_fwd')
           use ISO_C_BINDING
 !
           integer(C_int), intent(in) :: ioffset
           integer(C_int), intent(inout) :: ierr
-        end subroutine rawseek_go_fwd_f
+        end subroutine rawseek_go_fwd
 !  -----------------
       end interface
 !
@@ -184,7 +184,6 @@
       type(binary_IO_buffer), intent(inout) :: bbuf
 !
 !
-      write(*,*) 'rawread_real_f'
       call link_real_buffer_for_bin(num, data, bbuf)
       call rawread_64bit(bbuf%iflag_swap,                               &
      &    bbuf%len_buf, C_LOC(bbuf%dat_p), bbuf%len_used)
@@ -202,7 +201,6 @@
       type(binary_IO_buffer), intent(inout) :: bbuf
 !
 !
-      write(*,*) 'rawread_int8_f'
       call link_int8_buffer_for_bin(num, int8_dat, bbuf)
       call rawread_64bit(bbuf%iflag_swap,                               &
      &    bbuf%len_buf , C_LOC(bbuf%idat8_p), bbuf%len_used)
@@ -321,7 +319,7 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine rawseek_go_fwd_f03(ioffset, bbuf)
+      subroutine rawseek_go_fwd_f(ioffset, bbuf)
 !
       integer, intent(in) :: ioffset
 !
@@ -329,9 +327,9 @@
 !
 !
       bbuf%len_buf = int(ioffset,KIND(bbuf%len_buf))
-      call rawseek_go_fwd_f(bbuf%len_buf, bbuf%ierr_bin)
+      call rawseek_go_fwd(bbuf%len_buf, bbuf%ierr_bin)
 !
-      end subroutine rawseek_go_fwd_f03
+      end subroutine rawseek_go_fwd_f
 !
 !  ---------------------------------------------------------------------
 !

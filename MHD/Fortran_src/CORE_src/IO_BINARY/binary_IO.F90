@@ -161,9 +161,11 @@
 !
       subroutine seek_forward_binary_file(len_byte)
 !
+      use calypso_c_binding
+!
       integer(kind = kint_gl), intent(in) :: len_byte
 !
-      integer :: len_result, ilength
+      integer :: ilength
       character(len=1) :: tmpchara(len_byte)
       integer(kind = kint_gl) :: ist
 !
@@ -172,7 +174,7 @@
       ist = 0
       do
         ilength = int(min((len_byte - ist), huge_20))
-        call rawseek_go_fwd_f(ilength, len_result)
+        call rawseek_go_fwd_f(ilength, bbuf1)
         ist = ist + ilength
         if(ist .ge. len_byte) exit
       end do

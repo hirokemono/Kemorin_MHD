@@ -60,7 +60,7 @@ void close_rawfile(void){
     return;
 }
 
-void rawseek_go_fwd_f(int *ioffset, int *ierr){
+void rawseek_go_fwd(int *ioffset, int *ierr){
     *ierr = fseek(fp_z, *ioffset, SEEK_CUR);
     return;
 }
