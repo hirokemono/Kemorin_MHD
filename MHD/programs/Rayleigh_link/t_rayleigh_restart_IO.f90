@@ -118,7 +118,7 @@
       type(binary_IO_buffer) :: bbuf_rgh
       character(len = kchara) :: file_name
       integer(kind = kint) :: ierr_IO
-      integer(kind = kint) :: int_tmp, ilength
+      integer(kind = kint) :: ilength
       integer :: int_tmp(1)
       real(kind = kreal) :: rtmp(1)
 !
