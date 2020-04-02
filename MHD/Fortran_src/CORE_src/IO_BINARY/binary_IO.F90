@@ -577,21 +577,24 @@
 !
       subroutine read_one_integer_b(bflag, int_dat)
 !
+      use calypso_c_binding
+!
       type(binary_IO_flags), intent(inout) :: bflag
       integer(kind = kint), intent(inout) :: int_dat
 !
-      integer(kind = kint_gl) :: int64
+      integer(kind = kint_gl) :: int64(1)
 !
 !
 #ifdef ZLIB_IO
-      call rawread_64bit_f                                              &
-     &    (bflag%iflag_swap, kint_gl, int64, bflag%ierr_IO)
-      if(bflag%ierr_IO .ne. kint_gl) goto 99
+      bbuf1%iflag_swap = bflag%iflag_swap
+      call rawread_int8_f(1, int64, bbuf1)
+      bflag%ierr_IO = bbuf1%ierr_bin
+      if(bflag%ierr_IO .ne. 0) goto 99
 #else
-      read(id_binary, err=99, end=99)  int64
+      read(id_binary, err=99, end=99)  int64(1)
 #endif
 !
-      int_dat = int(int64,KIND(int_dat))
+      int_dat = int(int64(1),KIND(int_dat))
       bflag%ierr_IO = 0
       return
 !
@@ -605,14 +608,19 @@
 !
       subroutine read_one_real_b(bflag, real_dat)
 !
+      use calypso_c_binding
+!
       type(binary_IO_flags), intent(inout) :: bflag
       real(kind = kreal), intent(inout) :: real_dat
 !
+      real(kind = kreal) :: rtmp(1)
 !
 #ifdef ZLIB_IO
-      call rawread_64bit_f                                              &
-     &   (bflag%iflag_swap, kreal, real_dat, bflag%ierr_IO)
-      if(bflag%ierr_IO .ne. kreal) goto 99
+      bbuf1%iflag_swap = bflag%iflag_swap
+      call rawread_real_f(1, rtmp, bbuf1)
+      real_dat = rtmp(1)
+      bflag%ierr_IO = bbuf1%ierr_bin
+      if(bflag%ierr_IO .ne. 0) goto 99
 #else
       read(id_binary, err=99, end=99)  real_dat
 #endif
@@ -664,25 +672,26 @@
 !
       subroutine read_mul_int8_b(bflag, num, int_gl_dat)
 !
+      use calypso_c_binding
+!
       integer(kind = kint_gl), intent(in) :: num
       integer(kind = kint_gl), intent(inout) :: int_gl_dat(num)
       type(binary_IO_flags), intent(inout) :: bflag
 !
       integer(kind = kint_gl) :: ist
-      integer:: lbyte, ilength
+      integer:: ilength
 !
 !
+      bbuf1%iflag_swap = bflag%iflag_swap
       if(num .le. 0) return
 #ifdef ZLIB_IO
       ist = 0
       do
         ilength = int(min((num - ist), huge_20))
-        lbyte = ilength * kint_gl
 !
-        call rawread_64bit_f                                            &
-     &     (bflag%iflag_swap, lbyte, int_gl_dat(ist+1), bflag%ierr_IO)
+        call rawread_int8_f(ilength, int_gl_dat(ist+1), bbuf1)
         ist = ist + ilength
-        bflag%ierr_IO = bflag%ierr_IO - lbyte
+        bflag%ierr_IO = bbuf1%ierr_bin
         if(bflag%ierr_IO .ne. 0) return
         if(ist .ge. num) exit
       end do
@@ -804,25 +813,26 @@
 !
       subroutine read_1d_vector_b(bflag, num, real_dat)
 !
+      use calypso_c_binding
+!
       integer(kind = kint_gl), intent(in) :: num
       real(kind = kreal), intent(inout) :: real_dat(num)
       type(binary_IO_flags), intent(inout) :: bflag
 !
       integer(kind = kint_gl) :: ist
-      integer:: lbyte, ilength
+      integer:: ilength
 !
 !
+      bbuf1%iflag_swap = bflag%iflag_swap
       if(num .le. 0) return
 #ifdef ZLIB_IO
       ist = 0
       do
         ilength = int(min((num - ist), huge_20))
-        lbyte =  ilength * kreal
 !
-        call rawread_64bit_f                                            &
-     &     (bflag%iflag_swap, lbyte, real_dat(ist+1), bflag%ierr_IO)
+        call rawread_real_f(ilength, real_dat(ist+1), bbuf1)
         ist = ist + ilength
-        bflag%ierr_IO = bflag%ierr_IO - lbyte
+        bflag%ierr_IO = bbuf1%ierr_bin
         if(bflag%ierr_IO .ne. 0) return
         if(ist .ge. num) exit
       end do

@@ -107,16 +107,20 @@
      &         (dir, i_step, ra_rst)
 !
       use binary_IO
+      use t_binary_IO_buffer
+      use calypso_c_binding
 !
       integer(kind = kint), intent(in) :: i_step
       character(len = kchara), intent(in) :: dir
 !
       type(rayleigh_restart), intent(inout) :: ra_rst
 !
+      type(binary_IO_buffer) :: bbuf_rgh
       character(len = kchara) :: file_name
       integer(kind = kint) :: ierr_IO
       integer(kind = kint) :: int_tmp, ilength
       integer :: int_tmp(1)
+      real(kind = kreal) :: rtmp(1)
 !
 !
       write(*,*) 'i_step', i_step
@@ -126,55 +130,54 @@
      &          trim(file_name)
       call open_rd_rawfile(file_name, ierr_IO)
 !
-      bbuf%iflag_swap = iendian_KEEP
-      call rawread_int4_f(1, int_tmp, bbuf)
-      if(int_tmp(1) .ne. 4) bbuf%iflag_swap = iendian_FLIP
-      ra_rst%iflag_swap = bbuf%iflag_swap
+      bbuf_rgh%iflag_swap = iendian_KEEP
+      call rawread_int4_f(1, int_tmp, bbuf_rgh)
+      if(int_tmp(1) .ne. 4) bbuf_rgh%iflag_swap = iendian_FLIP
+      ra_rst%iflag_swap = bbuf_rgh%iflag_swap
 !
-      call rawread_int4_f(1, int_tmp, bbuf)
+      call rawread_int4_f(1, int_tmp, bbuf_rgh)
       ra_rst%nri_org = int(int_tmp(1),KIND(ra_rst%nri_org))
-      call rawread_int4_f(kint, int_tmp, bbuf)
+      call rawread_int4_f(kint, int_tmp, bbuf_rgh)
 !
-      call rawread_int4_f(1, int_tmp, bbuf)
-      call rawread_int4_f(1, int_tmp, bbuf)
+      call rawread_int4_f(1, int_tmp, bbuf_rgh)
+      call rawread_int4_f(1, int_tmp, bbuf_rgh)
       ra_rst%iflag_rtype = int(int_tmp(1),KIND(ra_rst%nri_org))
-      call rawread_int4_f(1, int_tmp, bbuf)
+      call rawread_int4_f(1, int_tmp, bbuf_rgh)
 !
-      call rawread_int4_f(1, int_tmp, bbuf)
-      call rawread_int4_f(1, int_tmp, bbuf)
+      call rawread_int4_f(1, int_tmp, bbuf_rgh)
+      call rawread_int4_f(1, int_tmp, bbuf_rgh)
       ra_rst%ltr_org = int(int_tmp(1),KIND(ra_rst%nri_org))
-      call rawread_int4_f(1, int_tmp, bbuf)
+      call rawread_int4_f(1, int_tmp, bbuf_rgh)
 !
-      call rawread_int4_f(1, int_tmp, bbuf)
-      call rawread_64bit_f                                              &
-     &   (ra_rst%iflag_swap, kreal, ra_rst%dt_org, ierr_IO)
+      call rawread_int4_f(1, int_tmp, bbuf_rgh)
+      call rawread_64bit_f(kreal, rtmp, bbuf_rgh)
+      ra_rst%dt_org = rtmp(1)
       write(*,*) 'ra_rst%dt_org', ra_rst%dt_org
-      call rawread_int4_f(1, int_tmp, bbuf)
+      call rawread_int4_f(1, int_tmp, bbuf_rgh)
 !
-      call rawread_int4_f(1, int_tmp, bbuf)
-      call rawread_64bit_f                                              &
-     &   (ra_rst%iflag_swap, kreal, ra_rst%dt_new, ierr_IO)
+      call rawread_int4_f(1, int_tmp, bbuf_rgh)
+      call rawread_64bit_f(kreal, rtmp, bbuf_rgh)
+      ra_rst%dt_new = rtmp(1)
       write(*,*) 'ra_rst%dt_new', ra_rst%dt_new
-      call rawread_int4_f(1, int_tmp, bbuf)
+      call rawread_int4_f(1, int_tmp, bbuf_rgh)
 !
-!      call rawread_int4_f(1, int_tmp, bbuf)
-!      call rawread_64bit_f(ra_rst%iflag_swap, kreal,                   &
-!     &    ra_rst%new_dt_org, ierr_IO)
-!      call rawread_int4_f(1, int_tmp, bbuf)
+!      call rawread_int4_f(1, int_tmp, bbuf_rgh)
+!      call rawread_64bit_f(1, rtmp, bbuf_rgh)
+!      ra_rst%new_dt_org = rtmp(1)
+!      call rawread_int4_f(1, int_tmp, bbuf_rgh)
 !
       call alloc_rayleigh_radial_grid(ra_rst)
 !
-      ilength =  ra_rst%nri_org * kreal
-      call rawread_int4_f(1, int_tmp, bbuf)
-      call rawread_64bit_f(ra_rst%iflag_swap, ilength,                  &
-     &    ra_rst%r_org(1), ierr_IO)
-      call rawread_int4_f(1, int_tmp, bbuf)
+      ilength =  int(ra_rst%nri_org)
+      call rawread_int4_f(1, int_tmp, bbuf_rgh)
+      call rawread_real_f(ilength, ra_rst%r_org(1), bbuf_rgh)
+      call rawread_int4_f(1, int_tmp, bbuf_rgh)
 !
-      call rawread_int4_f(1, int_tmp, bbuf)
-      call rawread_64bit_f(ra_rst%iflag_swap, kreal,                    &
-     &   ra_rst%time_org, ierr_IO)
+      call rawread_int4_f(1, int_tmp, bbuf_rgh)
+      call rawread_64bit_f(1, rtmp, bbuf_rgh)
+      ra_rst%time_org = rtmp(1)
       write(*,*) 'ra_rst%time_org', ra_rst%time_org
-      call rawread_int4_f(1, int_tmp, bbuf)
+      call rawread_int4_f(1, int_tmp, bbuf_rgh)
 !
       call close_binary_file
 !

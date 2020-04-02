@@ -184,6 +184,7 @@
       type(binary_IO_buffer), intent(inout) :: bbuf
 !
 !
+      write(*,*) 'rawread_real_f'
       call link_real_buffer_for_bin(num, data, bbuf)
       call rawread_64bit_f(bbuf%iflag_swap,                               &
      &    bbuf%len_buf, C_LOC(bbuf%dat_p), bbuf%len_used)
@@ -218,7 +219,6 @@
       type(binary_IO_buffer), intent(inout) :: bbuf
 !
 !
-      write(*,*) 'rawread_int4_f'
       call link_int4_buffer_for_bin(num, int4_dat, bbuf)
       call rawread_32bit(bbuf%iflag_swap,                               &
      &    bbuf%len_buf, C_LOC(bbuf%idat4_p), bbuf%len_used)
