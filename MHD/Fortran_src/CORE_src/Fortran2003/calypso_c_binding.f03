@@ -256,9 +256,11 @@
       type(binary_IO_buffer), intent(inout) :: bbuf
 !
 !
+      write(*,*) 'rawwrite_real_f'
       call link_real_buffer_for_bin(num, data, bbuf)
       call rawwrite_f(bbuf%len_buf , C_LOC(bbuf%dat_p), bbuf%len_used)
       call unlink_real_buffer_for_bin(bbuf)
+      bbuf%ierr_bin = bbuf%len_buf - bbuf%len_used
 !
       end subroutine rawwrite_real_f
 !
@@ -272,7 +274,6 @@
       type(binary_IO_buffer), intent(inout) :: bbuf
 !
 !
-      write(*,*) 'rawwrite_int8_f'
       call link_int8_buffer_for_bin(num, int8_dat, bbuf)
       call rawwrite_f(bbuf%len_buf, C_LOC(bbuf%idat8_p), bbuf%len_used)
       call unlink_int8_buffer_for_bin(bbuf)
