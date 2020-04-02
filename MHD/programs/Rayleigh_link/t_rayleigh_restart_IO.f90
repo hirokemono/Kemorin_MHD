@@ -150,19 +150,19 @@
       call rawread_int4_f(1, int_tmp, bbuf_rgh)
 !
       call rawread_int4_f(1, int_tmp, bbuf_rgh)
-      call rawread_64bit_f(kreal, rtmp, bbuf_rgh)
+      call rawread_real_f(1, rtmp, bbuf_rgh)
       ra_rst%dt_org = rtmp(1)
       write(*,*) 'ra_rst%dt_org', ra_rst%dt_org
       call rawread_int4_f(1, int_tmp, bbuf_rgh)
 !
       call rawread_int4_f(1, int_tmp, bbuf_rgh)
-      call rawread_64bit_f(kreal, rtmp, bbuf_rgh)
+      call rawread_real_f(1, rtmp, bbuf_rgh)
       ra_rst%dt_new = rtmp(1)
       write(*,*) 'ra_rst%dt_new', ra_rst%dt_new
       call rawread_int4_f(1, int_tmp, bbuf_rgh)
 !
 !      call rawread_int4_f(1, int_tmp, bbuf_rgh)
-!      call rawread_64bit_f(1, rtmp, bbuf_rgh)
+!      call rawread_real_f(1, rtmp, bbuf_rgh)
 !      ra_rst%new_dt_org = rtmp(1)
 !      call rawread_int4_f(1, int_tmp, bbuf_rgh)
 !
@@ -174,7 +174,7 @@
       call rawread_int4_f(1, int_tmp, bbuf_rgh)
 !
       call rawread_int4_f(1, int_tmp, bbuf_rgh)
-      call rawread_64bit_f(1, rtmp, bbuf_rgh)
+      call rawread_real_f(1, rtmp, bbuf_rgh)
       ra_rst%time_org = rtmp(1)
       write(*,*) 'ra_rst%time_org', ra_rst%time_org
       call rawread_int4_f(1, int_tmp, bbuf_rgh)

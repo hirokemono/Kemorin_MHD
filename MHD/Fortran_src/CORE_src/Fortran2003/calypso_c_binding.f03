@@ -202,6 +202,7 @@
       type(binary_IO_buffer), intent(inout) :: bbuf
 !
 !
+      write(*,*) 'rawread_int8_f'
       call link_int8_buffer_for_bin(num, int8_dat, bbuf)
       call rawread_64bit_f(bbuf%iflag_swap,                               &
      &    bbuf%len_buf , C_LOC(bbuf%idat8_p), bbuf%len_used)
