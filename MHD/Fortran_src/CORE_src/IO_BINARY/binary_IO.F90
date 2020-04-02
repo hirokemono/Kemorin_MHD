@@ -208,14 +208,18 @@
       subroutine write_one_integer_to_32bit(int_dat, bflag)
 !
       use transfer_to_long_integers
+      use calypso_c_binding
 !
       integer(kind = len_4byte), intent(in) :: int_dat
       type(binary_IO_flags), intent(inout) :: bflag
 !
+      integer(kind = kint_gl) :: itmp64(1)
+!
 !
 #ifdef ZLIB_IO
-      call rawwrite_f(kint_gl, int_dat, bflag%ierr_IO)
-      bflag%ierr_IO = bflag%ierr_IO - len_4byte
+      itmp64(1) = cast_long(int_dat)
+      call rawwrite_int8_f(1, itmp64, bbuf1)
+      bflag%ierr_IO = bbuf1%ierr_bin
 #else
       write(id_binary)  int_dat
 #endif
@@ -227,14 +231,18 @@
       subroutine write_one_integer_b(int_dat, bflag)
 !
       use transfer_to_long_integers
+      use calypso_c_binding
 !
       integer(kind = kint), intent(in) :: int_dat
       type(binary_IO_flags), intent(inout) :: bflag
 !
+      integer(kind = kint_gl) :: itmp64(1)
+!
 !
 #ifdef ZLIB_IO
-      call rawwrite_f(kint_gl, cast_long(int_dat), bflag%ierr_IO)
-      bflag%ierr_IO = bflag%ierr_IO - kint_gl
+      itmp64(1) = cast_long(int_dat)
+      call rawwrite_int8_f(1, itmp64, bbuf1)
+      bflag%ierr_IO = bbuf1%ierr_bin
 #else
       write(id_binary)  cast_long(int_dat)
 #endif
@@ -270,7 +278,7 @@
       type(binary_IO_flags), intent(inout) :: bflag
 !
       integer(kind = kint) :: ist
-      integer:: lbyte, ilength
+      integer:: ilength
 !
 !
       if(num .le. 0) return
@@ -278,7 +286,6 @@
       ist = 0
       do
         ilength = int(min((num - ist), huge_20))
-        lbyte = ilength *  len_4byte
 !
         call rawwrite_int4_f(ilength, int4_dat(ist+1), bbuf1)
         ist = ist + ilength
@@ -296,12 +303,14 @@
 !
       subroutine write_mul_int8_b(num, int_gl_dat, bflag)
 !
+      use calypso_c_binding
+!
       integer(kind = kint_gl), intent(in) :: num
       integer(kind = kint_gl), intent(in) :: int_gl_dat(num)
       type(binary_IO_flags), intent(inout) :: bflag
 !
       integer(kind = kint) :: ist
-      integer:: lbyte, ilength
+      integer:: ilength
 !
 !
       if(num .le. 0) return
@@ -309,11 +318,10 @@
       ist = 0
       do
         ilength = int(min((num - ist), huge_20))
-        lbyte = ilength *  kint_gl
 !
-        call rawwrite_f(lbyte, int_gl_dat(ist+1), bflag%ierr_IO)
+        call rawwrite_int8_f(ilength, int_gl_dat(ist+1), bbuf1)
         ist = ist + ilength
-        bflag%ierr_IO = bflag%ierr_IO - lbyte
+        bflag%ierr_IO = bbuf1%ierr_bin
         if(bflag%ierr_IO .ne. 0) return
         if(ist .ge. num) exit
       end do
