@@ -83,7 +83,7 @@ void rawread_32bit(int *iflag_swap, int *ilength, void *buf, int *lenchara){
     return;
 }
 
-void rawread_64bit_f(int *iflag_swap, int *ilength, void *buf, int *lenchara){
+void rawread_64bit(int *iflag_swap, int *ilength, void *buf, int *lenchara){
     *lenchara = (int) fread((char *) buf, sizeof(char), *ilength, fp_z);
     /*
      int i;

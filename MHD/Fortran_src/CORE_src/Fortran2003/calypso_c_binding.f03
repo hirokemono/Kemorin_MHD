@@ -81,14 +81,14 @@
           integer(C_int), intent(inout) :: ilen_read
         end subroutine rawread_32bit
 !  -----------------
-        subroutine rawread_64bit_f(iflag_swap, ilength, buf, ilen_read)   &
-     &            BIND(C, name = 'rawread_64bit_f_')
+        subroutine rawread_64bit(iflag_swap, ilength, buf, ilen_read)   &
+     &            BIND(C, name = 'rawread_64bit')
           use ISO_C_BINDING
 !
           integer(C_int), intent(in) :: iflag_swap, ilength
           type(C_ptr), value, intent(in) :: buf
           integer(C_int), intent(inout) :: ilen_read
-        end subroutine rawread_64bit_f
+        end subroutine rawread_64bit
 !  -----------------
         subroutine rawwrite(ilength, buf, ilen_read)                    &
      &            BIND(C, name = 'rawwrite')
@@ -186,7 +186,7 @@
 !
       write(*,*) 'rawread_real_f'
       call link_real_buffer_for_bin(num, data, bbuf)
-      call rawread_64bit_f(bbuf%iflag_swap,                               &
+      call rawread_64bit(bbuf%iflag_swap,                               &
      &    bbuf%len_buf, C_LOC(bbuf%dat_p), bbuf%len_used)
       call unlink_real_buffer_for_bin(bbuf)
 !
@@ -204,7 +204,7 @@
 !
       write(*,*) 'rawread_int8_f'
       call link_int8_buffer_for_bin(num, int8_dat, bbuf)
-      call rawread_64bit_f(bbuf%iflag_swap,                               &
+      call rawread_64bit(bbuf%iflag_swap,                               &
      &    bbuf%len_buf , C_LOC(bbuf%idat8_p), bbuf%len_used)
       call unlink_int8_buffer_for_bin(bbuf)
 !
