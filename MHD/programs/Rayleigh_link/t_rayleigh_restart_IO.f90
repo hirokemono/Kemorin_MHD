@@ -117,7 +117,6 @@
 !
       type(binary_IO_buffer) :: bbuf_rgh
       character(len = kchara) :: file_name
-      integer(kind = kint) :: ierr_IO
       integer(kind = kint) :: ilength
       integer :: int_tmp(1)
       real(kind = kreal) :: rtmp(1)
@@ -128,7 +127,7 @@
       file_name =  add_null_character(file_name)
       write(*,*) 'read Rayleigh checkpoint paramter file: ',            &
      &          trim(file_name)
-      call open_rd_rawfile(file_name, ierr_IO)
+      call open_rd_rawfile_f(file_name, bbuf_rgh)
 !
       bbuf_rgh%iflag_swap = iendian_KEEP
       call rawread_int4_f(1, int_tmp, bbuf_rgh)

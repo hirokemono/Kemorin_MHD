@@ -7,11 +7,6 @@
 #define KCHARA_C 256
 
 #ifdef FC_NAME_LOWER_USCORE
-  #define open_wt_rawfile           open_wt_rawfile_
-  #define open_ad_rawfile           open_ad_rawfile_
-  #define open_rd_rawfile           open_rd_rawfile_
-  #define close_rawfile             close_rawfile_
-
   #define write_png_rgba_c           write_png_rgba_c_
   #define write_png_rgb_c            write_png_rgb_c_
   #define read_png_file_c            read_png_file_c_
@@ -31,11 +26,6 @@
   #define kemo_fftw_execute_dft_c2r    kemo_fftw_execute_dft_c2r_
 
 #elif FC_NAME_UPPER
-  #define open_wt_rawfile           OPEN_WT_RAWFILE
-  #define open_ad_rawfile           OPEN_AD_RAWFILE
-  #define open_rd_rawfile           OPEN_RD_RAWFILE
-  #define close_rawfile             CLOSE_RAWFILE
-
   #define write_png_rgba_c           WRITE_PNG_RGBA_C
   #define write_png_rgb_c            WRITE_PNG_RGB_C
   #define read_png_file_c            READ_PNG_FILE_C
@@ -55,11 +45,6 @@
   #define kemo_fftw_execute_dft_c2r    KEMO_FFTW_EXECUTE_DFT_C2R
 
 #elif FC_NAME_UPPER_STDCALL
-  #define open_wt_rawfile           OPEN_WT_RAWFILE
-  #define open_ad_rawfile           OPEN_AD_RAWFILE
-  #define open_rd_rawfile           OPEN_RD_RAWFILE
-  #define close_rawfile             CLOSE_RAWFILE
-
   #define write_png_rgba_c           WRITE_PNG_RGBA_C
   #define write_png_rgb_c            WRITE_PNG_RGB_C
   #define read_png_file_c            READ_PNG_FILE_C
@@ -79,11 +64,6 @@
   #define kemo_fftw_execute_dft_c2r    KEMO_FFTW_EXECUTE_DFT_C2R
 
 #else
-  #define open_wt_rawfile           open_wt_rawfile
-  #define open_ad_rawfile           open_ad_rawfile
-  #define open_rd_rawfile           open_rd_rawfile
-  #define close_rawfile             close_rawfile
-
   #define write_png_rgba_c           write_png_rgba_c
   #define write_png_rgb_c            write_png_rgb_c
   #define read_png_file_c            read_png_file_c

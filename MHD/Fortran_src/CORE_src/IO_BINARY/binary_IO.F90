@@ -75,6 +75,7 @@
       subroutine open_write_binary_file(file_name, bflag)
 !
       use set_parallel_file_name
+      use calypso_c_binding
 !
       character(len=kchara), intent(in) :: file_name
       type(binary_IO_flags), intent(inout) :: bflag
@@ -85,7 +86,8 @@
       bflag%ierr_IO = 0
 #ifdef ZLIB_IO
       file_name_w_null = add_null_character(file_name)
-      call open_wt_rawfile(file_name_w_null, bflag%ierr_IO)
+      call open_wt_rawfile_f(file_name_w_null, bbuf1)
+      bflag%ierr_IO = bbuf1%ierr_bin
       if(bflag%ierr_IO .gt. 0) return
 #else
       open(id_binary, file = file_name, form='unformatted')
@@ -100,6 +102,7 @@
       subroutine open_append_binary_file(file_name, bflag)
 !
       use set_parallel_file_name
+      use calypso_c_binding
 !
       character(len=kchara), intent(in) :: file_name
       type(binary_IO_flags), intent(inout) :: bflag
@@ -110,7 +113,8 @@
       bflag%ierr_IO = 0
 #ifdef ZLIB_IO
       file_name_w_null = add_null_character(file_name)
-      call open_ad_rawfile(file_name_w_null, bflag%ierr_IO)
+      call open_ad_rawfile_f(file_name_w_null, bbuf1)
+      bflag%ierr_IO = bbuf1%ierr_bin
       if(bflag%ierr_IO .gt. 0) return
 #else
       open(id_binary, file = file_name, form='unformatted',             &
@@ -124,6 +128,7 @@
       subroutine open_read_binary_file(file_name, id_rank, bflag)
 !
       use set_parallel_file_name
+      use calypso_c_binding
 !
       integer, intent(in) :: id_rank
       character(len=kchara), intent(in) :: file_name
@@ -135,7 +140,8 @@
       bflag%ierr_IO = 0
 #ifdef ZLIB_IO
       file_name_w_null = add_null_character(file_name)
-      call open_rd_rawfile(file_name_w_null, bflag%ierr_IO)
+      call open_rd_rawfile_f(file_name_w_null, bbuf1)
+      bflag%ierr_IO = bbuf1%ierr_bin
       if(bflag%ierr_IO .gt. 0) return
 #else
       open(id_binary, file = file_name, form='unformatted')
@@ -149,8 +155,10 @@
 !
       subroutine close_binary_file
 !
+      use calypso_c_binding
+!
 #ifdef ZLIB_IO
-      call close_rawfile
+      call close_rawfile_f
 #else
       close(id_binary)
 #endif

@@ -38,6 +38,7 @@
      &         (filename, n_node_data, n_data_size, ierr)
 
       use t_noise_node_data
+      use calypso_c_binding
       use set_parallel_file_name
 
       character(len = kchara), intent(in) :: filename
@@ -52,7 +53,7 @@
 !
 !
       file_name = add_null_character(filename)
-      call open_rd_rawfile(file_name, ierr)
+      call open_rd_rawfile_f(file_name, bbuf1)
       if(ierr .eq. 0) then
 ! first line read 3 integer size data, byte 4
         call read_mul_int_from_32bit                                    &
@@ -72,7 +73,7 @@
 !          write(*,*) n_node_data(i)%n_value
         end do
       end if
-      call close_rawfile()
+      call close_rawfile_f()
 !
       end subroutine import_noise_nd_ary
 !
@@ -82,6 +83,7 @@
      &         (filename, n_raw_data, n_data_size, ierr)
 
       use set_parallel_file_name
+      use calypso_c_binding
 
       ! parameter for read noise data
       character(len = kchara), intent(in) :: filename
@@ -98,7 +100,7 @@
 !
       if(my_rank .eq. 0) then
         file_name = add_null_character(filename)
-        call open_rd_rawfile(file_name, ierr)
+        call open_rd_rawfile_f(file_name, bbuf1)
         if(ierr .eq. 0) then
 ! first line read 3 integer size data, byte 4
           bflag_noise%iflag_swap = iendian_KEEP
@@ -122,9 +124,9 @@
           if(iflag_debug .gt. 0) write(*,*)                             &
      &                       'iflag_swap', bflag_noise%iflag_swap
         end if
-        call close_rawfile()
+        call close_rawfile_f()
 !
-        call open_rd_rawfile(file_name, ierr)
+        call open_rd_rawfile_f(file_name, bbuf1)
         if(ierr .eq. 0) then
 ! first line read 3 integer size data, byte 4
           call read_mul_int_from_32bit                                  &
@@ -140,7 +142,7 @@
      &       (bflag_noise, d_size, n_raw_data)
           if(bflag_noise%ierr_IO .gt. 0) ierr = ierr_file
         end if
-        call close_rawfile()
+        call close_rawfile_f()
 !
         if(iflag_debug .gt. 0) then
           open(111, file='noise_text.dat')
@@ -173,6 +175,7 @@
      &         (filename, n_grad_data, n_data_size, ierr)
 !
       use set_parallel_file_name
+      use calypso_c_binding
 !
 ! parameter for read noise data
       character(len = kchara), intent(in) :: filename
@@ -185,7 +188,7 @@
 !
       if(my_rank .eq. 0) then
         file_name = add_null_character(filename)
-        call open_rd_rawfile(file_name, ierr)
+        call open_rd_rawfile_f(file_name, bbuf1)
         if(ierr .eq. 0) then
           d_size = n_data_size(1)*n_data_size(2)*n_data_size(3)*3
 !
@@ -195,7 +198,7 @@
      &       (bflag_noise, d_size, n_grad_data)
           if(bflag_noise%ierr_IO .gt. 0) ierr = ierr_file
         end if
-        call close_rawfile()
+        call close_rawfile_f()
       end if
 !
       call MPI_BCAST(ierr, 1,                                           &

@@ -43,7 +43,7 @@
 !
 !  -----------------
         subroutine open_wt_rawfile(gz_file_name, ierr)                  &
-     &           BIND(C, name = 'open_wt_rawfile_')
+     &           BIND(C, name = 'open_wt_rawfile')
           use ISO_C_BINDING
 !
           character(C_char), intent(in) :: gz_file_name(*)
@@ -51,7 +51,7 @@
         end subroutine open_wt_rawfile
 !  -----------------
         subroutine open_ad_rawfile(gz_file_name, ierr)                  &
-     &           BIND(C, name = 'open_ad_rawfile_')
+     &           BIND(C, name = 'open_ad_rawfile')
         use ISO_C_BINDING
 !
           character(C_char), intent(in) :: gz_file_name(*)
@@ -59,14 +59,14 @@
         end subroutine open_ad_rawfile
 !  -----------------
         subroutine open_rd_rawfile(gz_file_name, ierr)                  &
-     &           BIND(C, name = 'open_rd_rawfile_')
+     &           BIND(C, name = 'open_rd_rawfile')
           use ISO_C_BINDING
 !
           character(C_char), intent(in) :: gz_file_name(*)
           integer(C_int), intent(inout) :: ierr
         end subroutine open_rd_rawfile
 !  -----------------
-        subroutine close_rawfile() BIND(C, name = 'close_rawfile_')
+        subroutine close_rawfile() BIND(C, name = 'close_rawfile')
           use ISO_C_BINDING
         end subroutine close_rawfile
 !
