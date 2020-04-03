@@ -75,7 +75,7 @@
       subroutine open_write_binary_file(file_name, bflag)
 !
       use set_parallel_file_name
-      use calypso_c_binding
+      use binary_file_access
 !
       character(len=kchara), intent(in) :: file_name
       type(binary_IO_flags), intent(inout) :: bflag
@@ -102,7 +102,7 @@
       subroutine open_append_binary_file(file_name, bflag)
 !
       use set_parallel_file_name
-      use calypso_c_binding
+      use binary_file_access
 !
       character(len=kchara), intent(in) :: file_name
       type(binary_IO_flags), intent(inout) :: bflag
@@ -128,7 +128,7 @@
       subroutine open_read_binary_file(file_name, id_rank, bflag)
 !
       use set_parallel_file_name
-      use calypso_c_binding
+      use binary_file_access
 !
       integer, intent(in) :: id_rank
       character(len=kchara), intent(in) :: file_name
@@ -155,7 +155,7 @@
 !
       subroutine close_binary_file
 !
-      use calypso_c_binding
+      use binary_file_access
 !
 #ifdef ZLIB_IO
       call close_rawfile_f
@@ -169,7 +169,7 @@
 !
       subroutine seek_forward_binary_file(len_byte)
 !
-      use calypso_c_binding
+      use binary_file_access
 !
       integer(kind = kint_gl), intent(in) :: len_byte
 !
@@ -197,7 +197,7 @@
 !
       subroutine write_endian_flag(bflag)
 !
-      use calypso_c_binding
+      use binary_file_access
 !
       type(binary_IO_flags), intent(inout) :: bflag
 !
@@ -218,7 +218,7 @@
       subroutine write_one_integer_to_32bit(int_dat, bflag)
 !
       use transfer_to_long_integers
-      use calypso_c_binding
+      use binary_file_access
 !
       integer(kind = len_4byte), intent(in) :: int_dat
       type(binary_IO_flags), intent(inout) :: bflag
@@ -241,7 +241,7 @@
       subroutine write_one_integer_b(int_dat, bflag)
 !
       use transfer_to_long_integers
-      use calypso_c_binding
+      use binary_file_access
 !
       integer(kind = kint), intent(in) :: int_dat
       type(binary_IO_flags), intent(inout) :: bflag
@@ -263,7 +263,7 @@
 !
       subroutine write_one_real_b(real_dat, bflag)
 !
-      use calypso_c_binding
+      use binary_file_access
 !
       real(kind = kreal), intent(in) :: real_dat
       type(binary_IO_flags), intent(inout) :: bflag
@@ -285,7 +285,7 @@
 !
       subroutine write_mul_int_to_32bit(num, int4_dat, bflag)
 !
-      use calypso_c_binding
+      use binary_file_access
 !
       integer(kind = kint_gl), intent(in) :: num
       integer(kind = len_4byte), intent(in) :: int4_dat(num)
@@ -317,7 +317,7 @@
 !
       subroutine write_mul_int8_b(num, int_gl_dat, bflag)
 !
-      use calypso_c_binding
+      use binary_file_access
 !
       integer(kind = kint_gl), intent(in) :: num
       integer(kind = kint_gl), intent(in) :: int_gl_dat(num)
@@ -381,7 +381,7 @@
 !
       subroutine write_mul_character_b(num, chara_dat, bflag)
 !
-      use calypso_c_binding
+      use binary_file_access
 !
       integer(kind = kint), intent(in) :: num
       character(len=kchara), intent(in) :: chara_dat(num)
@@ -415,7 +415,7 @@
 !
       subroutine write_mul_one_character_b(num, chara_dat, bflag)
 !
-      use calypso_c_binding
+      use binary_file_access
 !
       integer(kind = kint_gl), intent(in) :: num
       character(len=1), intent(in) :: chara_dat(num)
@@ -449,7 +449,7 @@
 !
       subroutine write_1d_vector_b(num, real_dat, bflag)
 !
-      use calypso_c_binding
+      use binary_file_access
 !
       integer(kind = kint_gl), intent(in) :: num
       real(kind = kreal), intent(in) :: real_dat(num)
@@ -528,7 +528,7 @@
 !
       subroutine read_endian_flag(bflag, id_rank)
 !
-      use calypso_c_binding
+      use binary_file_access
 !
       type(binary_IO_flags), intent(inout) :: bflag
       integer, intent(in) :: id_rank
@@ -558,7 +558,7 @@
 !
       subroutine read_one_integer_from_32bit(bflag, int_dat)
 !
-      use calypso_c_binding
+      use binary_file_access
 !
       type(binary_IO_flags), intent(inout) :: bflag
       integer(kind = len_4byte), intent(inout) :: int_dat
@@ -587,7 +587,7 @@
 !
       subroutine read_one_integer_b(bflag, int_dat)
 !
-      use calypso_c_binding
+      use binary_file_access
 !
       type(binary_IO_flags), intent(inout) :: bflag
       integer(kind = kint), intent(inout) :: int_dat
@@ -618,7 +618,7 @@
 !
       subroutine read_one_real_b(bflag, real_dat)
 !
-      use calypso_c_binding
+      use binary_file_access
 !
       type(binary_IO_flags), intent(inout) :: bflag
       real(kind = kreal), intent(inout) :: real_dat
@@ -648,7 +648,7 @@
 !
       subroutine read_mul_int_from_32bit(bflag, num, int_dat)
 !
-      use calypso_c_binding
+      use binary_file_access
 !
       integer(kind = kint_gl), intent(in) :: num
       integer(kind = len_4byte), intent(inout) :: int_dat(num)
@@ -682,7 +682,7 @@
 !
       subroutine read_mul_int8_b(bflag, num, int_gl_dat)
 !
-      use calypso_c_binding
+      use binary_file_access
 !
       integer(kind = kint_gl), intent(in) :: num
       integer(kind = kint_gl), intent(inout) :: int_gl_dat(num)
@@ -755,7 +755,7 @@
 !
       subroutine read_mul_character_b(bflag, num, chara_dat)
 !
-      use calypso_c_binding
+      use binary_file_access
 !
       integer(kind = kint), intent(in) :: num
       character(len=kchara), intent(inout) :: chara_dat(num)
@@ -789,7 +789,7 @@
 !
       subroutine read_mul_one_character_b(bflag, num, chara_dat)
 !
-      use calypso_c_binding
+      use binary_file_access
 !
       integer(kind = kint_gl), intent(in) :: num
       character(len=1), intent(inout) :: chara_dat(num)
@@ -823,7 +823,7 @@
 !
       subroutine read_1d_vector_b(bflag, num, real_dat)
 !
-      use calypso_c_binding
+      use binary_file_access
 !
       integer(kind = kint_gl), intent(in) :: num
       real(kind = kreal), intent(inout) :: real_dat(num)

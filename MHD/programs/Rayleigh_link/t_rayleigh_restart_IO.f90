@@ -108,7 +108,7 @@
 !
       use binary_IO
       use t_binary_IO_buffer
-      use calypso_c_binding
+      use binary_file_access
 !
       integer(kind = kint), intent(in) :: i_step
       character(len = kchara), intent(in) :: dir

@@ -4,7 +4,7 @@ each_LIC_rendering.o: $(LIC_DIR)/each_LIC_rendering.f90 m_precision.o calypso_mp
 	$(F90) -c $(F90OPTFLAGS) $<
 lic_kernel_generator.o: $(LIC_DIR)/lic_kernel_generator.f90 m_precision.o m_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
-lic_noise_generator.o: $(LIC_DIR)/lic_noise_generator.f90 m_precision.o m_constants.o binary_IO.o calypso_mpi.o m_machine_parameter.o t_noise_node_data.o calypso_c_binding.o set_parallel_file_name.o
+lic_noise_generator.o: $(LIC_DIR)/lic_noise_generator.f90 m_precision.o m_constants.o binary_IO.o calypso_mpi.o m_machine_parameter.o t_noise_node_data.o binary_file_access.o set_parallel_file_name.o
 	$(F90) -c $(F90OPTFLAGS) $<
 lic_rgba_4_each_pixel.o: $(LIC_DIR)/lic_rgba_4_each_pixel.f90 m_precision.o m_constants.o t_control_params_4_pvr.o set_color_4_pvr.o set_rgba_4_each_pixel.o
 	$(F90) -c $(F90OPTFLAGS) $<

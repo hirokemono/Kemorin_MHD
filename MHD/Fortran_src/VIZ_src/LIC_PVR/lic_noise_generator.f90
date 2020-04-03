@@ -38,7 +38,7 @@
      &         (filename, n_node_data, n_data_size, ierr)
 
       use t_noise_node_data
-      use calypso_c_binding
+      use binary_file_access
       use set_parallel_file_name
 
       character(len = kchara), intent(in) :: filename
@@ -83,7 +83,7 @@
      &         (filename, n_raw_data, n_data_size, ierr)
 
       use set_parallel_file_name
-      use calypso_c_binding
+      use binary_file_access
 
       ! parameter for read noise data
       character(len = kchara), intent(in) :: filename
@@ -175,7 +175,7 @@
      &         (filename, n_grad_data, n_data_size, ierr)
 !
       use set_parallel_file_name
-      use calypso_c_binding
+      use binary_file_access
 !
 ! parameter for read noise data
       character(len = kchara), intent(in) :: filename
