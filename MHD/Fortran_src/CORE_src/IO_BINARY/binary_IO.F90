@@ -197,19 +197,13 @@
 !
       subroutine write_endian_flag(bflag)
 !
-      use binary_file_access
-!
       type(binary_IO_flags), intent(inout) :: bflag
 !
+      integer(kind = kint_gl), parameter :: ione64 = 1
       integer :: itmp4(1)
 !
-#ifdef ZLIB_IO
       itmp4(1) = i_UNIX
-      call rawwrite_int4_f(1, itmp4, bbuf1)
-      bflag%ierr_IO = bbuf1%ierr_bin
-#else
-      write(id_binary)  i_UNIX
-#endif
+      call write_mul_int_to_32bit(ione64, itmp4, bflag)
 !
       end subroutine write_endian_flag
 !
@@ -218,21 +212,16 @@
       subroutine write_one_integer_to_32bit(int_dat, bflag)
 !
       use transfer_to_long_integers
-      use binary_file_access
 !
       integer(kind = len_4byte), intent(in) :: int_dat
       type(binary_IO_flags), intent(inout) :: bflag
 !
+      integer(kind = kint_gl), parameter :: ione64 = 1
       integer(kind = kint_gl) :: itmp64(1)
 !
 !
-#ifdef ZLIB_IO
       itmp64(1) = cast_long(int_dat)
-      call rawwrite_int8_f(1, itmp64, bbuf1)
-      bflag%ierr_IO = bbuf1%ierr_bin
-#else
-      write(id_binary)  int_dat
-#endif
+      call write_mul_int8_b(ione64, itmp64, bflag)
 !
       end subroutine write_one_integer_to_32bit
 !
@@ -241,21 +230,16 @@
       subroutine write_one_integer_b(int_dat, bflag)
 !
       use transfer_to_long_integers
-      use binary_file_access
 !
       integer(kind = kint), intent(in) :: int_dat
       type(binary_IO_flags), intent(inout) :: bflag
 !
+      integer(kind = kint_gl), parameter :: ione64 = 1
       integer(kind = kint_gl) :: itmp64(1)
 !
 !
-#ifdef ZLIB_IO
       itmp64(1) = cast_long(int_dat)
-      call rawwrite_int8_f(1, itmp64, bbuf1)
-      bflag%ierr_IO = bbuf1%ierr_bin
-#else
-      write(id_binary)  cast_long(int_dat)
-#endif
+      call write_mul_int8_b(ione64, itmp64, bflag)
 !
       end subroutine write_one_integer_b
 !
@@ -263,20 +247,14 @@
 !
       subroutine write_one_real_b(real_dat, bflag)
 !
-      use binary_file_access
-!
       real(kind = kreal), intent(in) :: real_dat
       type(binary_IO_flags), intent(inout) :: bflag
 !
+      integer(kind = kint_gl), parameter :: ione64 = 1
       real(kind = kreal) :: rtmp(1)
 !
-#ifdef ZLIB_IO
       rtmp(1) = real_dat
-      call rawwrite_real_f(1, rtmp, bbuf1)
-      bflag%ierr_IO = bbuf1%ierr_bin
-#else
-      write(id_binary)  real_dat
-#endif
+      call write_1d_vector_b(ione64, rtmp, bflag)
 !
       end subroutine write_one_real_b
 !
@@ -528,29 +506,22 @@
 !
       subroutine read_endian_flag(bflag, id_rank)
 !
-      use binary_file_access
-!
       type(binary_IO_flags), intent(inout) :: bflag
       integer, intent(in) :: id_rank
+!
+      integer(kind = kint_gl), parameter :: ione64 = 1
       integer :: int_dat(1)
 !
+      bbuf1%iflag_swap = iendian_KEEP
+      call read_mul_int_from_32bit(bflag, ione64, int_dat)
 !
 #ifdef ZLIB_IO
-      bbuf1%iflag_swap = iendian_KEEP
-      call rawread_int4_f(1, int_dat, bbuf1)
-      if(bflag%ierr_IO .ne. kint) goto 99
       bbuf1%iflag_swap = endian_check(id_rank, int_dat(1))
 #else
-      read(id_binary)  int_dat
       bbuf1%iflag_swap = iendian_KEEP
 #endif
       bflag%iflag_swap = bbuf1%iflag_swap
       bflag%ierr_IO = 0
-      return
-!
-  99  continue
-      bflag%ierr_IO = ierr_file
-      return
 !
       end subroutine read_endian_flag
 !
@@ -558,28 +529,15 @@
 !
       subroutine read_one_integer_from_32bit(bflag, int_dat)
 !
-      use binary_file_access
-!
       type(binary_IO_flags), intent(inout) :: bflag
       integer(kind = len_4byte), intent(inout) :: int_dat
 !
-      integer(kind = len_4byte) :: itmp4(1)
+      integer(kind = kint_gl), parameter :: ione64 = 1
+      integer(kind = kint_gl) :: itmp64(1)
 !
-#ifdef ZLIB_IO
-      itmp4(1) = int_dat
-      bbuf1%iflag_swap = bflag%iflag_swap
-      call rawread_int4_f(1, itmp4, bbuf1)
-      if(bbuf1%ierr_bin .ne. 0) goto 99
-#else
-      read(id_binary, err=99, end=99)  int_dat
-#endif
 !
-      bflag%ierr_IO = bbuf1%ierr_bin
-      return
-!
-  99  continue
-      bflag%ierr_IO = ierr_file
-      return
+      call read_mul_int8_b(bflag, ione64, itmp64)
+      int_dat = int(itmp64(1),KIND(int_dat))
 !
       end subroutine read_one_integer_from_32bit
 !
@@ -587,30 +545,15 @@
 !
       subroutine read_one_integer_b(bflag, int_dat)
 !
-      use binary_file_access
-!
       type(binary_IO_flags), intent(inout) :: bflag
       integer(kind = kint), intent(inout) :: int_dat
 !
-      integer(kind = kint_gl) :: int64(1)
+      integer(kind = kint_gl), parameter :: ione64 = 1
+      integer(kind = kint_gl) :: itmp64(1)
 !
 !
-#ifdef ZLIB_IO
-      bbuf1%iflag_swap = bflag%iflag_swap
-      call rawread_int8_f(1, int64, bbuf1)
-      bflag%ierr_IO = bbuf1%ierr_bin
-      if(bflag%ierr_IO .ne. 0) goto 99
-#else
-      read(id_binary, err=99, end=99)  int64(1)
-#endif
-!
-      int_dat = int(int64(1),KIND(int_dat))
-      bflag%ierr_IO = 0
-      return
-!
-  99  continue
-      bflag%ierr_IO = ierr_file
-      return
+      call read_mul_int8_b(bflag, ione64, itmp64)
+      int_dat = int(itmp64(1),KIND(int_dat))
 !
       end subroutine read_one_integer_b
 !
@@ -618,28 +561,14 @@
 !
       subroutine read_one_real_b(bflag, real_dat)
 !
-      use binary_file_access
-!
       type(binary_IO_flags), intent(inout) :: bflag
       real(kind = kreal), intent(inout) :: real_dat
 !
+      integer(kind = kint_gl), parameter :: ione64 = 1
       real(kind = kreal) :: rtmp(1)
 !
-#ifdef ZLIB_IO
-      bbuf1%iflag_swap = bflag%iflag_swap
-      call rawread_real_f(1, rtmp, bbuf1)
+      call read_1d_vector_b(bflag, ione64, rtmp)
       real_dat = rtmp(1)
-      bflag%ierr_IO = bbuf1%ierr_bin
-      if(bflag%ierr_IO .ne. 0) goto 99
-#else
-      read(id_binary, err=99, end=99)  real_dat
-#endif
-      bflag%ierr_IO = 0
-      return
-!
-  99  continue
-      bflag%ierr_IO = ierr_file
-      return
 !
       end subroutine read_one_real_b
 !
