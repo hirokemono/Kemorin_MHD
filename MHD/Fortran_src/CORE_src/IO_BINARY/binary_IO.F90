@@ -282,7 +282,7 @@
         call rawwrite_int4_f(ilength, int4_dat(ist+1), bbuf1)
         ist = ist + ilength
         bflag%ierr_IO = bbuf1%ierr_bin
-        if(bflag%ierr_IO .ne. 0) return
+        if(bbuf1%ierr_bin .ne. 0) return
         if(ist .ge. num) exit
       end do
 #else
@@ -314,7 +314,7 @@
         call rawwrite_int8_f(ilength, int_gl_dat(ist+1), bbuf1)
         ist = ist + ilength
         bflag%ierr_IO = bbuf1%ierr_bin
-        if(bflag%ierr_IO .ne. 0) return
+        if(bbuf1%ierr_bin .ne. 0) return
         if(ist .ge. num) exit
       end do
 #else
@@ -379,7 +379,7 @@
         call rawwrite_chara_f(lbyte, chara_dat(ist+1), bbuf1)
         ist = ist + ilength
         bflag%ierr_IO = bbuf1%ierr_bin
-        if(bflag%ierr_IO .ne. 0) return
+        if(bbuf1%ierr_bin .ne. 0) return
         if(ist .ge. num) exit
       end do
 #else
@@ -413,7 +413,7 @@
         call rawwrite_chara_f(lbyte, chara_dat(ist+1), bbuf1)
         ist = ist + ilength
         bflag%ierr_IO = bbuf1%ierr_bin
-        if(bflag%ierr_IO .ne. 0) return
+        if(bbuf1%ierr_bin .ne. 0) return
         if(ist .ge. num) exit
       end do
 #else
@@ -446,7 +446,7 @@
         call rawwrite_real_f(ilength, real_dat(ist+1), bbuf1)
         ist = ist + ilength
         bflag%ierr_IO = bbuf1%ierr_bin
-        if(bflag%ierr_IO .ne. 0) return
+        if(bbuf1%ierr_bin .ne. 0) return
         if(ist .ge. num) exit
       end do
 #else
@@ -460,22 +460,19 @@
 !
       subroutine write_2d_vector_b(n1, n2, real_dat, bflag)
 !
+      use transfer_to_long_integers
+!
       integer(kind = kint_gl), intent(in) :: n1
       integer(kind = kint), intent(in) :: n2
       real(kind = kreal), intent(in) :: real_dat(n1,n2)
       type(binary_IO_flags), intent(inout) :: bflag
 !
-      integer(kind = kint) :: i2
+      integer(kind = kint_gl) :: num
 !
 !
-#ifdef ZLIB_IO
-      do i2 = 1, n2
-        call write_1d_vector_b(n1, real_dat(1,i2), bflag)
-        if(bflag%ierr_IO .ne. 0) return
-      end do
-#else
-      write(id_binary)  real_dat(1:n1,1:n2)
-#endif
+      num = n1 * cast_long(n2)
+      call write_1d_vector_b(num, real_dat(1,1), bflag)
+      bflag%ierr_IO = bbuf1%ierr_bin
 !
       end subroutine write_2d_vector_b
 !
@@ -597,7 +594,7 @@
         call rawread_int4_f(ilength, int_dat(ist+1), bbuf1)
         ist = ist + ilength
         bflag%ierr_IO = bbuf1%ierr_bin
-        if(bflag%ierr_IO .ne. 0) return
+        if(bbuf1%ierr_bin .ne. 0) return
         if(ist .ge. num) exit
       end do
 #else
@@ -631,7 +628,7 @@
         call rawread_int8_f(ilength, int_gl_dat(ist+1), bbuf1)
         ist = ist + ilength
         bflag%ierr_IO = bbuf1%ierr_bin
-        if(bflag%ierr_IO .ne. 0) return
+        if(bbuf1%ierr_bin .ne. 0) return
         if(ist .ge. num) exit
       end do
 #else
@@ -704,7 +701,7 @@
         call rawread_chara_f(lbyte, chara_dat(ist+1), bbuf1)
         ist = ist + ilength
         bflag%ierr_IO = bbuf1%ierr_bin
-        if(bflag%ierr_IO .ne. 0) return
+        if(bbuf1%ierr_bin .ne. 0) return
         if(ist .ge. num) exit
       end do
 #else
@@ -738,7 +735,7 @@
         call rawread_chara_f(lbyte, chara_dat(ist+1), bbuf1)
         ist = ist + ilength
         bflag%ierr_IO = bbuf1%ierr_bin
-        if(bflag%ierr_IO .ne. 0) return
+        if(bbuf1%ierr_bin .ne. 0) return
         if(ist .ge. num) exit
       end do
 #else
@@ -772,7 +769,7 @@
         call rawread_real_f(ilength, real_dat(ist+1), bbuf1)
         ist = ist + ilength
         bflag%ierr_IO = bbuf1%ierr_bin
-        if(bflag%ierr_IO .ne. 0) return
+        if(bbuf1%ierr_bin .ne. 0) return
         if(ist .ge. num) exit
       end do
 #else
@@ -786,22 +783,19 @@
 !
       subroutine read_2d_vector_b(bflag, n1, n2, real_dat)
 !
+      use transfer_to_long_integers
+!
       integer(kind = kint_gl), intent(in) :: n1
       integer(kind = kint), intent(in) :: n2
       real(kind = kreal), intent(inout) :: real_dat(n1,n2)
       type(binary_IO_flags), intent(inout) :: bflag
 !
-      integer(kind = kint) :: i2
+      integer(kind = kint_gl) :: num
 !
 !
-#ifdef ZLIB_IO
-      do i2 = 1, n2
-        call read_1d_vector_b(bflag, n1, real_dat(1,i2))
-        if(bflag%ierr_IO .ne. 0) return
-      end do
-#else
-      read(id_binary, err=99, end=99)  real_dat(1:n1,1:n2)
-#endif
+      num = n1 * cast_long(n2)
+      call read_1d_vector_b(bflag, num, real_dat(1,1))
+      bflag%ierr_IO = bbuf1%ierr_bin
 !
       end subroutine read_2d_vector_b
 !
