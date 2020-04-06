@@ -7,14 +7,6 @@
 #define KCHARA_C 256
 
 #ifdef FC_NAME_LOWER_USCORE
-  #define write_png_rgba_c           write_png_rgba_c_
-  #define write_png_rgb_c            write_png_rgb_c_
-  #define read_png_file_c            read_png_file_c_
-  #define copy_rgb_from_png_c        copy_rgb_from_png_c_
-  #define copy_rgba_from_png_c       copy_rgba_from_png_c_
-  #define copy_grayscale_from_png_c  copy_grayscale_from_png_c_
-  #define copy_grayalpha_from_png_c  copy_grayalpha_from_png_c_
-
   #define kemo_fftw_plan_dft_r2c_1d    kemo_fftw_plan_dft_r2c_1d_
   #define kemo_fftw_plan_dft_c2r_1d    kemo_fftw_plan_dft_c2r_1d_
   #define kemo_fftw_plan_many_dft_r2c  kemo_fftw_plan_many_dft_r2c_
@@ -26,14 +18,6 @@
   #define kemo_fftw_execute_dft_c2r    kemo_fftw_execute_dft_c2r_
 
 #elif FC_NAME_UPPER
-  #define write_png_rgba_c           WRITE_PNG_RGBA_C
-  #define write_png_rgb_c            WRITE_PNG_RGB_C
-  #define read_png_file_c            READ_PNG_FILE_C
-  #define copy_rgb_from_png_c        COPY_RGB_FROM_PNG_C
-  #define copy_rgba_from_png_c       COPY_RGBA_FROM_PNG_C
-  #define copy_grayscale_from_png_c  COPY_GRAYSCALE_FROM_PNG_C
-  #define copy_grayalpha_from_png_c  COPY_GRAYALPHA_FROM_PNG_C
-
   #define kemo_fftw_plan_dft_r2c_1d    KEMO_FFTW_PLAN_DFT_R2C_1D
   #define kemo_fftw_plan_dft_c2r_1d    KEMO_FFTW_PLAN_DFT_C2R_1D
   #define kemo_fftw_plan_many_dft_r2c  KEMO_FFTW_PLAN_MANY_DFT_R2C
@@ -45,14 +29,6 @@
   #define kemo_fftw_execute_dft_c2r    KEMO_FFTW_EXECUTE_DFT_C2R
 
 #elif FC_NAME_UPPER_STDCALL
-  #define write_png_rgba_c           WRITE_PNG_RGBA_C
-  #define write_png_rgb_c            WRITE_PNG_RGB_C
-  #define read_png_file_c            READ_PNG_FILE_C
-  #define copy_rgb_from_png_c        COPY_RGB_FROM_PNG_C
-  #define copy_rgba_from_png_c       COPY_RGBA_FROM_PNG_C
-  #define copy_grayscale_from_png_c  COPY_GRAYSCALE_FROM_PNG_C
-  #define copy_grayalpha_from_png_c  COPY_GRAYALPHA_FROM_PNG_C
-
   #define kemo_fftw_plan_dft_r2c_1d    KEMO_FFTW_PLAN_DFT_R2C_1D
   #define kemo_fftw_plan_dft_c2r_1d    KEMO_FFTW_PLAN_DFT_C2R_1D
   #define kemo_fftw_plan_many_dft_r2c  KEMO_FFTW_PLAN_MANY_DFT_R2C
@@ -64,14 +40,6 @@
   #define kemo_fftw_execute_dft_c2r    KEMO_FFTW_EXECUTE_DFT_C2R
 
 #else
-  #define write_png_rgba_c           write_png_rgba_c
-  #define write_png_rgb_c            write_png_rgb_c
-  #define read_png_file_c            read_png_file_c
-  #define copy_rgb_from_png_c        copy_rgb_from_png_c
-  #define copy_rgba_from_png_c       copy_rgba_from_png_c
-  #define copy_grayscale_from_png_c  copy_grayscale_from_png_c
-  #define copy_grayalpha_from_png_c  copy_grayalpha_from_png_c
-
   #define kemo_fftw_plan_dft_r2c_1d    kemo_fftw_plan_dft_r2c_1d
   #define kemo_fftw_plan_dft_c2r_1d    kemo_fftw_plan_dft_c2r_1d
   #define kemo_fftw_plan_many_dft_r2c  kemo_fftw_plan_many_dft_r2c

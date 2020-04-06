@@ -8,39 +8,43 @@
 !
       program png_to_bmp_f
 !
+      use t_png_file_access
       use write_bmp_image
 !
       character(len=kchara) :: file_prefix
-      character(len=kchara) :: file_tmp
 !
-      integer(kind = kint) :: iflag_rgba
       integer(kind = kint) :: npixel_x
       integer(kind = kint) :: npixel_y
       character(len=1), allocatable :: rgb(:,:,:)
       character(len=1), allocatable :: gray(:,:)
+!
+      type(buffer_4_png), private :: pbuf_t
 !
       integer(kind = kint) :: i
 !
 !
       write(*,*) 'Input image file prefix'
       read(*,*) file_prefix
-      write(file_tmp,'(a,a1)') trim(file_prefix), char(0)
 !#ifdef PNG_OUTPUT
-      call read_png_file_c(file_tmp, npixel_x, npixel_y, iflag_rgba)
+      call read_png_file_f(file_prefix, npixel_x, npixel_y, pbuf_t)
 !
-      if(iflag_rgba .eq.  1)  write(*,*) 'RGBA image file'
-      if(iflag_rgba .eq.  0)  write(*,*) 'RGB image'
-      if(iflag_rgba .eq. 11)  write(*,*) 'grayscale with alpha image'
-      if(iflag_rgba .eq. 10)  write(*,*) 'grayscale image'
+      if(pbuf_t%iflag_cmode .eq. iflag_rgba)                            &
+     &                     write(*,*) 'RGBA image file'
+      if(pbuf_t%iflag_cmode .eq. iflag_rgb)                             &
+     &                     write(*,*) 'RGB image'
+      if(pbuf_t%iflag_cmode .eq. iflag_ba)                              &
+     &                     write(*,*) 'grayscale with alpha image'
+      if(pbuf_t%iflag_cmode .eq. iflag_bw)                              &
+     &                     write(*,*) 'grayscale image'
 !
       allocate(rgb(3,npixel_x,npixel_y))
 !
 !   For grayscale image
-      if(iflag_rgba .ge. 10) then
+      if(pbuf_t%iflag_cmode .ge. iflag_bw) then
         allocate(gray(npixel_x,npixel_y))
 !
-        call copy_grayscale_from_png_c                                  &
-     &     (npixel_x, npixel_y, iflag_rgba, gray)
+        call copy_grayscale_from_png_f                                  &
+     &     (npixel_x, npixel_y, gray, pbuf_t)
 !
         write(*,*) 'pixel data along with x', npixel_x, npixel_y
         do i = 1, npixel_x
@@ -55,13 +59,10 @@
 !
 !   For color image
       else
-        call copy_rgb_from_png_c(npixel_x, npixel_y, iflag_rgba, rgb)
+        call copy_rgb_from_png_f(npixel_x, npixel_y, rgb, pbuf_t)
       end if
 !
       call pixout_BMP(file_prefix, npixel_x, npixel_y, rgb)
-!
-      if(iflag_rgba .ge. 10) then
-      end if
 !#endif
 !
       end program png_to_bmp_f

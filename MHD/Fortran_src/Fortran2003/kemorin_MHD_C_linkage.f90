@@ -16,14 +16,6 @@
       interface
 !
 ! -----------------------------------------------------------------------
-!
-!
-!void write_png_rgba_c(const char *fhead, int *num_x, int *num_y, 
-!			const unsigned char *cimage);
-!void write_png_rgb_c(const char *fhead, int *num_x, int *num_y, 
-!			const unsigned char *cimage);
-
-!
 !!
 !void kemo_fftw_plan_dft_r2c_1d(fftw_plan *plan, int *n_size,
 !			double *dble_in, fftw_complex *cplx_out, unsigned *flags);

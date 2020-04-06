@@ -137,8 +137,7 @@ void write_png_rgb(const char *file_name, png_uint_32 num_x, png_uint_32 num_y,
 	return;
 }
 
-void write_png_rgba_c(const char *fhead, int *num_x, int *num_y, 
-			const unsigned char *cimage){
+void write_png_rgba_c(const char *file_head, const int *num_x, const int *num_y, const char *cimage){
 	char fname[LENGTHBUF];
 	unsigned char **image;
 	png_uint_32 nx = (png_uint_32) *num_x;
@@ -151,14 +150,14 @@ void write_png_rgba_c(const char *fhead, int *num_x, int *num_y,
 	for (i = 0; i < nx; i++) {
 		for (j = 0; j < ny; j++) {
 			k = (ny-j-1)*nx + i;
-			image[j][4*i  ] = cimage[4*k];
-			image[j][4*i+1] = cimage[4*k+1];
-			image[j][4*i+2] = cimage[4*k+2];
-			image[j][4*i+3] = cimage[4*k+3];
+			image[j][4*i  ] = (unsigned char) cimage[4*k];
+			image[j][4*i+1] = (unsigned char) cimage[4*k+1];
+			image[j][4*i+2] = (unsigned char) cimage[4*k+2];
+			image[j][4*i+3] = (unsigned char) cimage[4*k+3];
 		}
 	}
 	
-	sprintf(fname,"%s.png",fhead);
+	sprintf(fname,"%s.png",file_head);
 	write_png_rgba(fname, nx, ny, image);
 	
 	for (j = 0; j < ny; j++) free(image[j]);
@@ -167,8 +166,7 @@ void write_png_rgba_c(const char *fhead, int *num_x, int *num_y,
 	return;
 }
 
-void write_png_rgb_c(const char *fhead, int *num_x, int *num_y, 
-			const unsigned char *cimage){
+void write_png_rgb_c(const char *file_head, const int *num_x, const int *num_y, const char *cimage){
 	char fname[LENGTHBUF];
 	unsigned char **image;
 	png_uint_32 nx = (png_uint_32) *num_x;
@@ -181,13 +179,13 @@ void write_png_rgb_c(const char *fhead, int *num_x, int *num_y,
 	for (i = 0; i < nx; i++) {
 		for (j = 0; j < ny; j++) {
 			k = (ny-j-1)*nx + i;
-			image[j][3*i  ] = cimage[3*k];
-			image[j][3*i+1] = cimage[3*k+1];
-			image[j][3*i+2] = cimage[3*k+2];
+			image[j][3*i  ] = (unsigned char) cimage[3*k];
+			image[j][3*i+1] = (unsigned char) cimage[3*k+1];
+			image[j][3*i+2] = (unsigned char) cimage[3*k+2];
 		}
 	}
 	
-	sprintf(fname, "%s.png",fhead);
+	sprintf(fname, "%s.png",file_head);
 	write_png_rgb(fname, nx, ny, image);
 	
 	for (j = 0; j < ny; j++) free(image[j]);

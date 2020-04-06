@@ -1,6 +1,6 @@
-fortran_png_test.o: $(GRAPHIC_TEST_DIR)/fortran_png_test.f90 convert_real_rgb_2_bite.o png_test_from_f.o
+fortran_png_test.o: $(GRAPHIC_TEST_DIR)/fortran_png_test.f90 m_precision.o t_png_file_access.o convert_real_rgb_2_bite.o png_test_from_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
-png_to_bmp_f.o: $(GRAPHIC_TEST_DIR)/png_to_bmp_f.F90 write_bmp_image.o
+png_to_bmp_f.o: $(GRAPHIC_TEST_DIR)/png_to_bmp_f.F90 t_png_file_access.o write_bmp_image.o
 	$(F90) -c $(F90FLAGS) $<
 test_bmp_images.o: $(GRAPHIC_TEST_DIR)/test_bmp_images.f90 m_precision.o write_bmp_image.o
 	$(F90) -c $(F90OPTFLAGS) $<

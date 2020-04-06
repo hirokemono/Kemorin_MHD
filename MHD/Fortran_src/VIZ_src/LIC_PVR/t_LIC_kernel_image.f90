@@ -19,6 +19,8 @@
       use m_machine_parameter
       use calypso_mpi
 !
+      use t_png_file_access
+!
       implicit  none
 !
 !>      Structure of LIC kernel image
@@ -30,6 +32,8 @@
 !>         grayscale data
         character(len=1), allocatable :: gray(:,:)
       end type LIC_kernel_image
+!
+      type(buffer_4_png), private :: pbuf_kernel
 !
       private :: alloc_lic_kernel_image
 !
@@ -45,23 +49,21 @@
       type(LIC_kernel_image), intent(inout) :: k_img
 !
       integer(kind = kint_gl) :: n_pixel
-      integer(kind = kint) :: iflag_rgba
-      character(len=kchara) :: file_tmp
 !
 !
       if(my_rank .eq. 0) then
 !#ifdef PNG_OUTPUT
-        write(file_tmp,'(a,a1)') trim(file_prefix), char(0)
-        call read_png_file_c                                            &
-     &     (file_tmp, k_img%npixel_x, k_img%npixel_y, iflag_rgba)
+        call read_png_file_f                                            &
+     &     (file_prefix, k_img%npixel_x, k_img%npixel_y, pbuf_kernel)
         write(*,*) 'kernel image is read from ',                        &
      &            trim(file_prefix), '.png'
 !#endif
         call alloc_lic_kernel_image(k_img)
 !
 !#ifdef PNG_OUTPUT
-        call copy_grayscale_from_png_c                                  &
-     &     (k_img%npixel_x, k_img%npixel_y, iflag_rgba, k_img%gray)
+        call copy_grayscale_from_png_f                                  &
+     &     (k_img%npixel_x, k_img%npixel_y, k_img%gray, pbuf_kernel)
+!#endif
 !#endif
       end if
 !

@@ -1,6 +1,13 @@
 !
       module png_test_from_f
 !
+      use m_precision
+      use t_png_file_access
+!
+      implicit none
+!
+      type(buffer_4_png), private :: pbuf_test
+!
 !  ---------------------------------------------------------------------
 !
       contains
@@ -15,8 +22,7 @@
       real(kind = kreal), allocatable :: rgba_real(:,:)
       character(len = 1), allocatable :: rgb_chara(:,:)
       character(len = 1), allocatable :: rgba_chara(:,:)
-      character(len=1024) ::  fname_img_v
-      integer :: npix4_x, npix4_y
+      character(len=kchara) :: fname_img_v
 !
 !
       num_pixel_x = 240
@@ -31,38 +37,30 @@
 !
       call cvt_double_rgba_to_char_rgba(npixel_xy, rgba_real,           &
      &    rgba_chara)
-      write(fname_img_v, '(a,a1)') 'rgba_test_1', CHAR(0)
-      npix4_x = int(num_pixel_x)
-      npix4_y = int(num_pixel_y)
-      call write_png_rgba_c(fname_img_v, npix4_x, npix4_y,              &
+      write(fname_img_v, '(a)') 'rgba_test_1'
+      call write_png_rgba_f(fname_img_v, num_pixel_x, num_pixel_y,      &
      &    rgba_chara(1,1))
 !
       call cvt_double_rgba_to_char_rgb(npixel_xy, rgba_real,            &
      &    rgb_chara)
-      write(fname_img_v, '(a,a1)') 'rgb_test_1', CHAR(0)
-      npix4_x = int(num_pixel_x)
-      npix4_y = int(num_pixel_y)
-      call write_png_rgb_c(fname_img_v, npix4_x, npix4_y,               &
-     &    rgb_chara(1,1))
+      write(fname_img_v, '(a)') 'rgb_test_1'
+      call write_png_rgb_f(fname_img_v, num_pixel_x, num_pixel_y,       &
+     &    rgb_chara(1,1), pbuf_test)
 !
 !
       call set_rgba_image_2(num_pixel_x, num_pixel_y, rgba_real)
 !
       call cvt_double_rgba_to_char_rgba(npixel_xy, rgba_real,           &
      &    rgba_chara)
-      write(fname_img_v, '(a,a1)') 'rgba_test_2', CHAR(0)
-      npix4_x = int(num_pixel_x)
-      npix4_y = int(num_pixel_y)
-      call write_png_rgba_c(fname_img_v, npix4_x, npix4_y,              &
+      write(fname_img_v, '(a)') 'rgba_test_2'
+      call write_png_rgba_f(fname_img_v, num_pixel_x, num_pixel_y,      &
      &    rgba_chara(1,1))
 !
       call cvt_double_rgba_to_char_rgb(npixel_xy, rgba_real,            &
      &    rgb_chara)
-      write(fname_img_v, '(a,a1)') 'rgb_test_2', CHAR(0)
-      npix4_x = int(num_pixel_x)
-      npix4_y = int(num_pixel_y)
-      call write_png_rgb_c(fname_img_v,npix4_x, npix4_y,                &
-     &    rgb_chara(1,1))
+      write(fname_img_v, '(a)') 'rgb_test_2'
+      call write_png_rgb_f(fname_img_v, num_pixel_x, num_pixel_y,       &
+     &    rgb_chara(1,1), pbuf_test)
 !
       end subroutine s_png_test_from_f
 !

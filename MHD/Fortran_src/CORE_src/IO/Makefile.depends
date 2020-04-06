@@ -86,7 +86,7 @@ node_geometry_IO.o: $(IO_DIR)/node_geometry_IO.f90 m_precision.o t_geometry_data
 	$(F90) -c $(F90OPTFLAGS) $<
 ordering_field_by_viz.o: $(IO_DIR)/ordering_field_by_viz.f90 m_precision.o m_constants.o t_control_array_character3.o set_nodal_field_name.o cal_minmax_and_stacks.o
 	$(F90) -c $(F90OPTFLAGS) $<
-output_image_sel_4_png.o: $(IO_DIR)/output_image_sel_4_png.F90 m_precision.o write_bmp_image.o
+output_image_sel_4_png.o: $(IO_DIR)/output_image_sel_4_png.F90 m_precision.o t_png_file_access.o write_bmp_image.o
 	$(F90) -c $(F90FLAGS) $<
 read_bmp_image.o: $(IO_DIR)/read_bmp_image.f90 m_precision.o write_bmp_image.o
 	$(F90) -c $(F90OPTFLAGS) $<

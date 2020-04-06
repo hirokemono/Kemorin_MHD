@@ -17,13 +17,15 @@
 !
       use m_precision
 !
+      use t_png_file_access
       use write_bmp_image
 !
       implicit none
 !
       integer(kind = kint), parameter :: iflag_BMP = 11
       integer(kind = kint), parameter :: iflag_PNG = 12
-      character(len=1024), private ::  fhead_img_v
+!
+      type(buffer_4_png), private :: pbuf
 !
 !------------------------------------------------------------------
 !
@@ -38,16 +40,12 @@
       integer(kind = kint), intent(in) :: npix_x, npix_y
       character(len=kchara), intent(in) :: img_head
       character(len = 1), intent(in) :: cimage(3,npix_x*npix_y)
-      integer :: npix4_x, npix4_y
 !
 !
 #ifdef PNG_OUTPUT
       if(id_file_type .eq. iflag_PNG) then
-        npix4_x = int(npix_x)
-        npix4_y = int(npix_y)
-        write(fhead_img_v, '(a,a1)') trim(img_head), CHAR(0)
-        call write_png_rgb_c(fhead_img_v, npix4_x, npix4_y,             &
-     &      cimage(1,1))
+        call write_png_rgb_f                                            &
+     &     (img_head, npix_x, npix_y, cimage(1,1), pbuf)
         return
       end if
 #endif
@@ -65,16 +63,12 @@
       integer(kind = kint), intent(in) :: npix_x, npix_y
       character(len=kchara), intent(in) :: img_head
       character(len = 1), intent(in) :: cimage(4,npix_x*npix_y)
-      integer :: npix4_x, npix4_y
 !
 !
 #ifdef PNG_OUTPUT
       if(id_file_type .eq. iflag_PNG) then
-        write(fhead_img_v, '(a,a1)') trim(img_head), CHAR(0)
-        npix4_x = int(npix_x)
-        npix4_y = int(npix_y)
-        call write_png_rgba_c(fhead_img_v, npix4_x, npix4_y,            &
-     &      cimage(1,1))
+        call write_png_rgba_f                                           &
+     &     (img_head, npix_x, npix_y, cimage(1,1), pbuf)
         return
       end if
 #endif
