@@ -28,7 +28,7 @@
       implicit  none
 !
 !>      Integer flag of endian swap
-      type(binary_IO_flags) :: bflag_noise
+      type(binary_IO_buffer), private :: bbuf_nze
 !
 !  ---------------------------------------------------------------------
 !
@@ -55,19 +55,19 @@
 !
 !
       file_name = add_null_character(filename)
-      call open_rd_rawfile_f(file_name, bbuf1)
-      if(bbuf1%ierr_bin .ne. 0) go to 99
+      call open_rd_rawfile_f(file_name, bbuf_nze)
+      if(bbuf_nze%ierr_bin .ne. 0) go to 99
 ! first line read 3 integer size data, byte 4
-      call read_mul_int_from_32bit(bbuf1, ithree64, n_data_size)
-      if(bbuf1%ierr_bin .ne. 0) go to 99
+      call read_mul_int_from_32bit(bbuf_nze, ithree64, n_data_size)
+      if(bbuf_nze%ierr_bin .ne. 0) go to 99
       d_size = n_data_size(1)*n_data_size(2)*n_data_size(3)
 !      write(*,*) d_size
       allocate(n_node_data(d_size))
       do i=1, d_size
 !  change 0 to any level to initial complex noise node tree
         call alloc_noise_node(n_node_data(i), itwo, izero)
-        call read_mul_one_character_b(bbuf1, ione64, noise_char)
-        if(bbuf1%ierr_bin .gt. 0) go to 99
+        call read_mul_one_character_b(bbuf_nze, ione64, noise_char)
+        if(bbuf_nze%ierr_bin .gt. 0) go to 99
 !
         n_node_data(i)%n_value = ichar(noise_char(1)) / 255.0
 !        write(*,*) n_node_data(i)%n_value
@@ -75,7 +75,7 @@
 !
   99  continue
       call close_rawfile_f()
-      ierr = bbuf1%ierr_bin
+      ierr = bbuf_nze%ierr_bin
 !
       end subroutine import_noise_nd_ary
 !
@@ -101,47 +101,47 @@
 !
 !
       if(my_rank .eq. 0) then
-        bflag_noise%iflag_swap = iendian_KEEP
+        bbuf_nze%iflag_swap = iendian_KEEP
         file_name = add_null_character(filename)
-        call open_rd_rawfile_f(file_name, bbuf1)
-        if(bbuf1%ierr_bin .ne. 0) go to 99
+        call open_rd_rawfile_f(file_name, bbuf_nze)
+        if(bbuf_nze%ierr_bin .ne. 0) go to 99
 ! first line read 3 integer size data, byte 4
-        bbuf1%iflag_swap = iendian_KEEP
-        call read_mul_int_from_32bit(bbuf1, ithree64, n_data_size)
-        if(bbuf1%ierr_bin .ne. 0) go to 99
+        bbuf_nze%iflag_swap = iendian_KEEP
+        call read_mul_int_from_32bit(bbuf_nze, ithree64, n_data_size)
+        if(bbuf_nze%ierr_bin .ne. 0) go to 99
 !
         d_size = n_data_size(1)*n_data_size(2)*n_data_size(3)
         if(iflag_debug .gt. 0) write(*,*) 'd_size',                     &
      &                           d_size, n_data_size(1:3)
 !
-        bbuf1%iflag_swap = iendian_KEEP
-        call seek_forward_binary_file(d_size-1, bbuf1)
-        call read_mul_one_character_b(bbuf1, ione64, one_chara)
-        if(bbuf1%ierr_bin .gt. 0) bflag_noise%iflag_swap = iendian_FLIP
-!          write(*,*) 'iflag_swap a', bflag_noise%iflag_swap
-        call read_mul_one_character_b(bbuf1, ione64, one_chara)
-        if(bbuf1%ierr_bin .eq. 0) bflag_noise%iflag_swap = iendian_FLIP
+        bbuf_nze%iflag_swap = iendian_KEEP
+        call seek_forward_binary_file(d_size-1, bbuf_nze)
+        call read_mul_one_character_b(bbuf_nze, ione64, one_chara)
+        if(bbuf_nze%ierr_bin .gt. 0) bbuf_nze%iflag_swap = iendian_FLIP
+!          write(*,*) 'iflag_swap a', bbuf_nze%iflag_swap
+        call read_mul_one_character_b(bbuf_nze, ione64, one_chara)
+        if(bbuf_nze%ierr_bin .eq. 0) bbuf_nze%iflag_swap = iendian_FLIP
         if(iflag_debug .gt. 0) write(*,*)                               &
-     &                       'iflag_swap', bflag_noise%iflag_swap
+     &                       'iflag_swap', bbuf_nze%iflag_swap
   99    continue
         call close_rawfile_f()
-        ierr = bbuf1%ierr_bin
+        ierr = bbuf_nze%ierr_bin
 !
-        call open_rd_rawfile_f(file_name, bbuf1)
-        if(bbuf1%ierr_bin .eq. 0) go to 98
+        call open_rd_rawfile_f(file_name, bbuf_nze)
+        if(bbuf_nze%ierr_bin .eq. 0) go to 98
 ! first line read 3 integer size data, byte 4
-        call read_mul_int_from_32bit(bbuf1, ithree64, n_data_size)
+        call read_mul_int_from_32bit(bbuf_nze, ithree64, n_data_size)
 !
         d_size = n_data_size(1)*n_data_size(2)*n_data_size(3)
         if(iflag_debug .gt. 0) write(*,*) 'd_size again',               &
      &                                     d_size, n_data_size(1:3)
 !
         allocate( n_raw_data(d_size))  ! allocate space for noise data
-        call read_mul_one_character_b(bbuf1, d_size, n_raw_data)
+        call read_mul_one_character_b(bbuf_nze, d_size, n_raw_data)
 !
   98    continue
         call close_rawfile_f()
-        ierr = bbuf1%ierr_bin
+        ierr = bbuf_nze%ierr_bin
 !
         if(iflag_debug .gt. 0) then
           open(111, file='noise_text.dat')
@@ -154,9 +154,9 @@
 !
       call MPI_BCAST(ierr, 1,                                           &
      &    CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(bflag_noise%ierr_IO, 1,                            &
+      call MPI_BCAST(bbuf_nze%ierr_bin, 1,                              &
      &    CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(bflag_noise%iflag_swap, 1,                         &
+      call MPI_BCAST(bbuf_nze%iflag_swap, 1,                            &
      &    CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
       call MPI_BCAST(n_data_size, 3,                                    &
      &    CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
@@ -187,16 +187,16 @@
 !
       if(my_rank .eq. 0) then
         file_name = add_null_character(filename)
-        call open_rd_rawfile_f(file_name, bbuf1)
-        if(bbuf1%ierr_bin .eq. 0) go to 99
+        call open_rd_rawfile_f(file_name, bbuf_nze)
+        if(bbuf_nze%ierr_bin .eq. 0) go to 99
 !
         d_size = n_data_size(1)*n_data_size(2)*n_data_size(3)*3
         allocate( n_grad_data(d_size)) 
-        call read_mul_one_character_b(bbuf1, d_size, n_grad_data)
+        call read_mul_one_character_b(bbuf_nze, d_size, n_grad_data)
 !
   99    continue
         call close_rawfile_f()
-        ierr = bbuf1%ierr_bin
+        ierr = bbuf_nze%ierr_bin
       end if
 !
       call MPI_BCAST(ierr, 1,                                           &

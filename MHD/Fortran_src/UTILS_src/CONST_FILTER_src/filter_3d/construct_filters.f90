@@ -40,6 +40,7 @@
       use t_element_list_4_filter
       use t_ctl_params_4_gen_filter
       use t_ctl_param_newdom_filter
+      use t_binary_IO_buffer
 !
       use cal_element_size
       use cal_filter_moms_ele_by_elen
@@ -49,8 +50,8 @@
       implicit none
 !
       character(len=kchara), parameter, private :: tmp_head = 'work'
-      type(binary_IO_flags), private :: bin_flflags
       type(binary_IO_buffer), private :: bbuf_org
+      type(binary_IO_buffer), private :: bbuf_new
 !
       integer(kind = kint), parameter, private                          &
      &                                :: id_new_filter_coef = 33
@@ -333,22 +334,22 @@
      &     (id_new_filter_coef, my_rank, comm_IO, nod_IO)
         close(id_new_filter_coef)
       else
-        call open_read_binary_file(file_name, my_rank, bbuf1)
-        if(bbuf1%ierr_bin .ne. 0) goto 99
+        call open_read_binary_file(file_name, my_rank, bbuf_new)
+        if(bbuf_new%ierr_bin .ne. 0) goto 99
         call read_filter_geometry_b                                     &
-     &     (my_rank, bbuf1, comm_IO, nod_IO)
+     &     (my_rank, bbuf_new, comm_IO, nod_IO)
 !
   99    continue
         call close_binary_file
 !
-        if(bbuf1%ierr_bin .gt. 0) then
+        if(bbuf_new%ierr_bin .gt. 0) then
           call calypso_mpi_abort(ierr, 'Filter data is wrong!!')
         end if
 !
-        call open_write_binary_file(fixed_file_name, bbuf1)
-        if(bbuf1%ierr_bin .gt. 0) go to 98
+        call open_write_binary_file(fixed_file_name, bbuf_new)
+        if(bbuf_new%ierr_bin .gt. 0) go to 98
         call write_filter_geometry_b                                    &
-     &     (my_rank, comm_IO, nod_IO, bbuf1)
+     &     (my_rank, comm_IO, nod_IO, bbuf_new)
 !
   98    continue
         call close_binary_file
@@ -478,22 +479,22 @@
      &     (id_new_filter_coef, my_rank, comm_IO, nod_IO)
         close(id_new_filter_coef)
       else
-        call open_read_binary_file(file_name, my_rank, bbuf1)
-        if(bbuf1%ierr_bin .ne. 0) goto 99
+        call open_read_binary_file(file_name, my_rank, bbuf_new)
+        if(bbuf_new%ierr_bin .ne. 0) goto 99
         call read_filter_geometry_b                                     &
-     &     (my_rank, bbuf1, comm_IO, nod_IO)
+     &     (my_rank, bbuf_new, comm_IO, nod_IO)
 !
   99    continue
         call close_binary_file
 !
-        if(bbuf1%ierr_bin .gt. 0) then
+        if(bbuf_new%ierr_bin .gt. 0) then
           call calypso_mpi_abort(ierr, 'Filter data is wrong!!')
         end if
 !
-        call open_write_binary_file(fixed_file_name, bbuf1)
-        if(bbuf1%ierr_bin .gt. 0) go to 98
+        call open_write_binary_file(fixed_file_name, bbuf_new)
+        if(bbuf_new%ierr_bin .gt. 0) go to 98
         call write_filter_geometry_b                                    &
-     &     (my_rank, comm_IO, nod_IO, bbuf1)
+     &     (my_rank, comm_IO, nod_IO, bbuf_new)
 !
   98    continue
         call close_binary_file

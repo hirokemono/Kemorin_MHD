@@ -33,7 +33,7 @@
 !
       implicit none
 !
-      type(binary_IO_flags), private :: bin_fcflags
+      type(binary_IO_buffer), private :: bbuf_fcoef
 !
       private :: read_3d_filter_stack_b, write_3d_filter_stack_b
       private :: read_3d_filter_weights_coef_b
@@ -61,21 +61,21 @@
         write(*,*) 'Read binary filter file: ', trim(file_name)
       end if
 !
-      call open_read_binary_file(file_name, id_rank, bbuf1)
-      if(bbuf1%ierr_bin .ne. 0) goto 99
+      call open_read_binary_file(file_name, id_rank, bbuf_fcoef)
+      if(bbuf_fcoef%ierr_bin .ne. 0) goto 99
       call read_filter_geometry_b                                       &
-     &   (id_rank, bbuf1, filter_IO%nod_comm, filter_IO%node)
-      if(bbuf1%ierr_bin .gt. 0)  goto 99
+     &   (id_rank, bbuf_fcoef, filter_IO%nod_comm, filter_IO%node)
+      if(bbuf_fcoef%ierr_bin .gt. 0)  goto 99
 !
-      call read_3d_filter_stack_b(bbuf1, filter_IO%filters)
-      if(bbuf1%ierr_bin .gt. 0) goto 99
+      call read_3d_filter_stack_b(bbuf_fcoef, filter_IO%filters)
+      if(bbuf_fcoef%ierr_bin .gt. 0) goto 99
 !
       call read_3d_filter_weights_coef_b                                &
-     &   (bbuf1, filter_IO%filters)
+     &   (bbuf_fcoef, filter_IO%filters)
 !
   99  continue
       call close_binary_file
-      ierr = bbuf1%ierr_bin
+      ierr = bbuf_fcoef%ierr_bin
 !
       end subroutine read_sorted_filter_coef_file_b
 !
@@ -96,19 +96,19 @@
         write(*,*) 'Write binary filter file: ', trim(file_name)
       end if
 !
-      call open_write_binary_file(file_name, bbuf1)
-      if(bbuf1%ierr_bin .gt. 0) go to 99
+      call open_write_binary_file(file_name, bbuf_fcoef)
+      if(bbuf_fcoef%ierr_bin .gt. 0) go to 99
       call write_filter_geometry_b                                      &
-     &   (id_rank, filter_IO%nod_comm, filter_IO%node, bbuf1)
-      if(bbuf1%ierr_bin .gt. 0) go to 99
-      call write_3d_filter_stack_b(filter_IO%filters, bbuf1)
-      if(bbuf1%ierr_bin .gt. 0) go to 99
+     &   (id_rank, filter_IO%nod_comm, filter_IO%node, bbuf_fcoef)
+      if(bbuf_fcoef%ierr_bin .gt. 0) go to 99
+      call write_3d_filter_stack_b(filter_IO%filters, bbuf_fcoef)
+      if(bbuf_fcoef%ierr_bin .gt. 0) go to 99
       call write_3d_filter_weights_coef_b                               &
-     &   (filter_IO%filters, bbuf1)
+     &   (filter_IO%filters, bbuf_fcoef)
 !
   99  continue
       call close_binary_file
-      ierr = bbuf1%ierr_bin
+      ierr = bbuf_fcoef%ierr_bin
 !
       call dealloc_filter_geometry_data(filter_IO)
 !
@@ -133,14 +133,14 @@
         write(*,*) 'Read binary filter file: ', trim(file_name)
       end if
 !
-      call open_read_binary_file(file_name, id_rank, bbuf1)
-      if(bbuf1%ierr_bin .ne. 0) goto 99
+      call open_read_binary_file(file_name, id_rank, bbuf_fcoef)
+      if(bbuf_fcoef%ierr_bin .ne. 0) goto 99
       call read_filter_geometry_b                                       &
-     &   (id_rank, bbuf1, filter_IO%nod_comm, filter_IO%node)
+     &   (id_rank, bbuf_fcoef, filter_IO%nod_comm, filter_IO%node)
 !
   99  continue
       call close_binary_file
-      ierr = bbuf1%ierr_bin
+      ierr = bbuf_fcoef%ierr_bin
 !
       end subroutine read_filter_geometry_file_b
 !
@@ -162,14 +162,14 @@
         write(*,*) 'Write binary filter file: ', trim(file_name)
       end if
 !
-      call open_write_binary_file(file_name, bbuf1)
-      if(bbuf1%ierr_bin .gt. 0) go to 99
+      call open_write_binary_file(file_name, bbuf_fcoef)
+      if(bbuf_fcoef%ierr_bin .gt. 0) go to 99
       call write_filter_geometry_b                                      &
-     &   (id_rank, filter_IO%nod_comm, filter_IO%node, bbuf1)
+     &   (id_rank, filter_IO%nod_comm, filter_IO%node, bbuf_fcoef)
 !
   99  continue
       call close_binary_file
-      ierr = bbuf1%ierr_bin
+      ierr = bbuf_fcoef%ierr_bin
 !
       call dealloc_filter_geometry_data(filter_IO)
 !

@@ -43,7 +43,7 @@
 !
       implicit none
 !
-      type(binary_IO_flags), private :: bin_ucdflags
+      type(binary_IO_buffer), private :: bbuf_ucd
 !
 !------------------------------------------------------------------
 !
@@ -64,19 +64,19 @@
       if(id_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &     'Write binary data file: ', trim(file_name)
 !
-      call open_write_binary_file(file_name, bbuf1)
-      if(bbuf1%ierr_bin .gt. 0) go to 99
+      call open_write_binary_file(file_name, bbuf_ucd)
+      if(bbuf_ucd%ierr_bin .gt. 0) go to 99
 !
-      call write_step_data_b(id_rank, t_IO, bbuf1)
-      if(bbuf1%ierr_bin .gt. 0) go to 99
+      call write_step_data_b(id_rank, t_IO, bbuf_ucd)
+      if(bbuf_ucd%ierr_bin .gt. 0) go to 99
       call write_field_data_b                                           &
      &   (ucd%num_field, ucd%phys_name, ucd%num_comp,                   &
-     &    ucd%nnod, ucd%ntot_comp, ucd%d_ucd, bbuf1)
-      if(bbuf1%ierr_bin .gt. 0) go to 99
+     &    ucd%nnod, ucd%ntot_comp, ucd%d_ucd, bbuf_ucd)
+      if(bbuf_ucd%ierr_bin .gt. 0) go to 99
 !
       99  continue
       call close_binary_file
-      ierr = bbuf1%ierr_bin
+      ierr = bbuf_ucd%ierr_bin
 !
       end subroutine write_ucd_2_fld_file_b
 !
@@ -98,27 +98,27 @@
       if(id_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &     'Read binary data file: ', trim(file_name)
 !
-      call open_read_binary_file(file_name, id_rank, bbuf1)
-      if(bbuf1%ierr_bin .ne. 0) goto 99
+      call open_read_binary_file(file_name, id_rank, bbuf_ucd)
+      if(bbuf_ucd%ierr_bin .ne. 0) goto 99
       call read_step_data_b                                             &
-     &   (bbuf1, t_IO, istack_merged, ucd%num_field)
+     &   (bbuf_ucd, t_IO, istack_merged, ucd%num_field)
       ucd%nnod = istack_merged(1)
-      if(bbuf1%ierr_bin .ne. 0) go to 99
+      if(bbuf_ucd%ierr_bin .ne. 0) go to 99
 !
       call read_mul_integer_b                                           &
-     &   (bbuf1, cast_long(ucd%num_field), ucd%num_comp)
-      if(bbuf1%ierr_bin .gt. 0) go to 99
+     &   (bbuf_ucd, cast_long(ucd%num_field), ucd%num_comp)
+      if(bbuf_ucd%ierr_bin .gt. 0) go to 99
       call read_field_data_b                                            &
-     &   (bbuf1, ucd%num_field, ucd%phys_name,                          &
+     &   (bbuf_ucd, ucd%num_field, ucd%phys_name,                       &
      &    ucd%nnod, ucd%ntot_comp, ucd%d_ucd)
-      if(bbuf1%ierr_bin .ne. 0) go to 99
+      if(bbuf_ucd%ierr_bin .ne. 0) go to 99
 !
       call close_binary_file
       ierr = 0
       return
 
   99  continue
-      ierr = ierr_file
+      ierr = bbuf_ucd%ierr_bin
       return
 !
       end subroutine read_ucd_2_fld_file_b
@@ -140,33 +140,33 @@
       if(id_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &     'Read binary data file: ', trim(file_name)
 !
-      call open_read_binary_file(file_name, id_rank, bbuf1)
-      if(bbuf1%ierr_bin .ne. 0) goto 99
+      call open_read_binary_file(file_name, id_rank, bbuf_ucd)
+      if(bbuf_ucd%ierr_bin .ne. 0) goto 99
       call read_step_data_b                                             &
-     &   (bbuf1, t_IO, istack_merged, ucd%num_field)
+     &   (bbuf_ucd, t_IO, istack_merged, ucd%num_field)
       ucd%nnod = istack_merged(1)
-      if(bbuf1%ierr_bin .ne. 0) goto 99
+      if(bbuf_ucd%ierr_bin .ne. 0) goto 99
 !
       call allocate_ucd_phys_name(ucd)
 !
       call read_mul_integer_b                                           &
-     &   (bbuf1, cast_long(ucd%num_field), ucd%num_comp)
-      if(bbuf1%ierr_bin .gt. 0) go to 99
+     &   (bbuf_ucd, cast_long(ucd%num_field), ucd%num_comp)
+      if(bbuf_ucd%ierr_bin .gt. 0) go to 99
 !
       call cal_istack_ucd_component(ucd)
       call allocate_ucd_phys_data(ucd)
 !
       call read_field_data_b                                            &
-     &   (bbuf1, ucd%num_field, ucd%phys_name,                          &
+     &   (bbuf_ucd, ucd%num_field, ucd%phys_name,                       &
      &    ucd%nnod, ucd%ntot_comp, ucd%d_ucd)
-      if(bbuf1%ierr_bin .ne. 0) goto 99
+      if(bbuf_ucd%ierr_bin .ne. 0) goto 99
 !
       call close_binary_file
       ierr = 0
       return
 !
   99  continue
-      ierr = ierr_file
+      ierr = bbuf_ucd%ierr_bin
       return
 !
       end subroutine read_alloc_ucd_2_fld_file_b
@@ -188,18 +188,18 @@
       if(id_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &     'Read binary data file: ', trim(file_name)
 !
-      call open_read_binary_file(file_name, id_rank, bbuf1)
-      if(bbuf1%ierr_bin .ne. 0) goto 99
+      call open_read_binary_file(file_name, id_rank, bbuf_ucd)
+      if(bbuf_ucd%ierr_bin .ne. 0) goto 99
       call read_step_data_b                                             &
-     &   (bbuf1, t_IO, istack_merged, ucd%num_field)
+     &   (bbuf_ucd, t_IO, istack_merged, ucd%num_field)
       ucd%nnod = istack_merged(1)
-      if(bbuf1%ierr_bin .ne. 0) go to 99
+      if(bbuf_ucd%ierr_bin .ne. 0) go to 99
 !
       call allocate_ucd_phys_name(ucd)
 !
       call read_mul_integer_b                                           &
-     &   (bbuf1, cast_long(ucd%num_field), ucd%num_comp)
-      if(bbuf1%ierr_bin .gt. 0) go to 99
+     &   (bbuf_ucd, cast_long(ucd%num_field), ucd%num_comp)
+      if(bbuf_ucd%ierr_bin .gt. 0) go to 99
 !
       call close_binary_file
       ierr = 0
@@ -209,7 +209,7 @@
       return
 !
   99  continue
-      ierr = ierr_file
+      ierr = bbuf_ucd%ierr_bin
       return
 !
       end subroutine read_alloc_ucd_2_fld_header_b

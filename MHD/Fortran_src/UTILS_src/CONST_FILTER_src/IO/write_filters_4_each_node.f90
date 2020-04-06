@@ -21,13 +21,14 @@
       use m_constants
       use calypso_mpi
       use t_filter_coefs
+      use t_binary_IO_buffer
       use m_filter_file_names
       use m_field_file_format
       use binary_IO
 !
       implicit none
 !
-      type(binary_IO_flags) :: bflag_flt
+      type(binary_IO_buffer), private :: bbuf_flt
 !
 ! -----------------------------------------------------------------------
 !
@@ -56,14 +57,14 @@
         call write_filter_coef_4_each(filter_coef_code, fil_coef)
 !
       else if (ifmt_3d_filter .eq. iflag_bin) then
-        call open_append_binary_file(file_name, bbuf1)
-        if(bbuf1%ierr_bin .gt. 0) go to 99
-        call write_filter_coef_4_each_b(fil_coef, bbuf1)
-        if(bbuf1%ierr_bin .gt. 0) go to 99
+        call open_append_binary_file(file_name, bbuf_flt)
+        if(bbuf_flt%ierr_bin .gt. 0) go to 99
+        call write_filter_coef_4_each_b(fil_coef, bbuf_flt)
+        if(bbuf_flt%ierr_bin .gt. 0) go to 99
 !
   99    continue
         call close_binary_file
-        ierr = bbuf1%ierr_bin
+        ierr = bbuf_flt%ierr_bin
       end if
 !
       end subroutine write_each_filter_stack_coef
@@ -86,16 +87,16 @@
      &           inod, fil_coef%nnod_4_1nod_w, izero
         close(org_filter_coef_code)
       else if (ifmt_3d_filter .eq. iflag_bin) then
-        call open_append_binary_file(file_name, bbuf1)
-        if(bbuf1%ierr_bin .gt. 0) go to 99
-        call write_one_integer_b(fil_coef%nnod_4_1nod_w, bbuf1)
-        if(bbuf1%ierr_bin .ne. 0) go to 99
-        call write_one_integer_b(izero, bbuf1)
-        if(bbuf1%ierr_bin .ne. 0) go to 99
+        call open_append_binary_file(file_name, bbuf_flt)
+        if(bbuf_flt%ierr_bin .gt. 0) go to 99
+        call write_one_integer_b(fil_coef%nnod_4_1nod_w, bbuf_flt)
+        if(bbuf_flt%ierr_bin .ne. 0) go to 99
+        call write_one_integer_b(izero, bbuf_flt)
+        if(bbuf_flt%ierr_bin .ne. 0) go to 99
 !
   99    continue
         call close_binary_file
-        ierr = bbuf1%ierr_bin
+        ierr = bbuf_flt%ierr_bin
       end if
 !
       end subroutine write_each_no_filter_coef
@@ -122,16 +123,16 @@
      &          (fil_coef%nnod_4_1nod_w), fil_coef%ilevel_exp_1nod_w
         close(org_filter_coef_code)
       else if (ifmt_3d_filter .eq. iflag_bin) then
-        call open_append_binary_file(file_name, bbuf1)
-        if(bbuf1%ierr_bin .gt. 0) go to 99
-        call write_one_integer_b(-fil_coef%nnod_4_1nod_w, bbuf1)
-        if(bbuf1%ierr_bin .gt. 0) go to 99
-        call write_one_integer_b(fil_coef%ilevel_exp_1nod_w, bbuf1)
-        if(bbuf1%ierr_bin .gt. 0) go to 99
+        call open_append_binary_file(file_name, bbuf_flt)
+        if(bbuf_flt%ierr_bin .gt. 0) go to 99
+        call write_one_integer_b(-fil_coef%nnod_4_1nod_w, bbuf_flt)
+        if(bbuf_flt%ierr_bin .gt. 0) go to 99
+        call write_one_integer_b(fil_coef%ilevel_exp_1nod_w, bbuf_flt)
+        if(bbuf_flt%ierr_bin .gt. 0) go to 99
 !
   99    continue
         call close_binary_file
-        ierr = bbuf1%ierr_bin
+        ierr = bbuf_flt%ierr_bin
       end if
 !
       end subroutine write_each_same_filter_coef

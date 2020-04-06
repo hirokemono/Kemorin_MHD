@@ -34,6 +34,7 @@
       use m_machine_parameter
 !
       use t_filter_elength
+      use t_binary_IO_buffer
       use m_file_format_switch
       use filter_mom_type_data_IO_b
       use set_parallel_file_name
@@ -41,7 +42,7 @@
 !
       implicit none
 !
-      type(binary_IO_flags), private :: bin_fmflags
+      type(binary_IO_buffer), private :: bbuf_fmom
 !
 !-----------------------------------------------------------------------
 !
@@ -66,14 +67,14 @@
      &             trim(file_name)
       end if
 !
-      call open_read_binary_file(file_name, id_rank, bbuf1)
-      if(bbuf1%ierr_bin .ne. 0) goto 99
-      call read_filter_moment_num_b(bbuf1, FEM_elens, FEM_moms)
-      if(bbuf1%ierr_bin .gt. 0) goto 99
+      call open_read_binary_file(file_name, id_rank, bbuf_fmom)
+      if(bbuf_fmom%ierr_bin .ne. 0) goto 99
+      call read_filter_moment_num_b(bbuf_fmom, FEM_elens, FEM_moms)
+      if(bbuf_fmom%ierr_bin .gt. 0) goto 99
 !
   99  continue
       call close_binary_file
-      ierr = bbuf1%ierr_bin
+      ierr = bbuf_fmom%ierr_bin
 !
       end subroutine read_num_filter_mom_type_file_b
 !
@@ -95,13 +96,13 @@
      &             trim(file_name)
       end if
 !
-      call open_read_binary_file(file_name, id_rank, bbuf1)
-      if(bbuf1%ierr_bin .ne. 0) goto 99
-      call read_filter_elen_data_b(nnod, nele, bbuf1, FEM_elens)
+      call open_read_binary_file(file_name, id_rank, bbuf_fmom)
+      if(bbuf_fmom%ierr_bin .ne. 0) goto 99
+      call read_filter_elen_data_b(nnod, nele, bbuf_fmom, FEM_elens)
 !
   99  continue
       call close_binary_file
-      ierr = bbuf1%ierr_bin
+      ierr = bbuf_fmom%ierr_bin
 !
       end subroutine read_filter_elen_type_file_b
 !
@@ -121,13 +122,13 @@
      &             trim(file_name)
       end if
 !
-      call open_write_binary_file(file_name, bbuf1)
-      if(bbuf1%ierr_bin .gt. 0) go to 99
-      call write_filter_elen_data_b(FEM_elens, bbuf1)
+      call open_write_binary_file(file_name, bbuf_fmom)
+      if(bbuf_fmom%ierr_bin .gt. 0) go to 99
+      call write_filter_elen_data_b(FEM_elens, bbuf_fmom)
 !
   99  continue
       call close_binary_file
-      ierr = bbuf1%ierr_bin
+      ierr = bbuf_fmom%ierr_bin
 !
       end subroutine write_filter_elen_type_file_b
 !
@@ -152,14 +153,14 @@
      &             trim(file_name)
       end if
 !
-      call open_read_binary_file(file_name, id_rank, bbuf1)
-      if(bbuf1%ierr_bin .ne. 0) goto 99
+      call open_read_binary_file(file_name, id_rank, bbuf_fmom)
+      if(bbuf_fmom%ierr_bin .ne. 0) goto 99
       call read_filter_moms_data_b                                      &
-     &   (nnod, nele, bbuf1, FEM_elens, FEM_moms)
+     &   (nnod, nele, bbuf_fmom, FEM_elens, FEM_moms)
 !
   99  continue
       call close_binary_file
-      ierr = bbuf1%ierr_bin
+      ierr = bbuf_fmom%ierr_bin
 !
       end subroutine read_filter_moms_type_file_b
 !
@@ -182,14 +183,14 @@
      &             trim(file_name)
       end if
 !
-      call open_write_binary_file(file_name, bbuf1)
-      if(bbuf1%ierr_bin .gt. 0) go to 99
+      call open_write_binary_file(file_name, bbuf_fmom)
+      if(bbuf_fmom%ierr_bin .gt. 0) go to 99
       call write_filter_moms_data_b                                     &
-     &   (FEM_elens, FEM_moms, bbuf1)
+     &   (FEM_elens, FEM_moms, bbuf_fmom)
 !
   99  continue
       call close_binary_file
-      ierr = bbuf1%ierr_bin
+      ierr = bbuf_fmom%ierr_bin
 !
       end subroutine write_filter_moms_type_file_b
 !

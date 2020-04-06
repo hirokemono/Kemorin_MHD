@@ -63,7 +63,6 @@
 !
       integer(kind = kint), parameter, private :: len_4byte = 4
       integer(kind = kint), parameter, private :: id_binary = 19
-      type(binary_IO_buffer) :: bbuf1
 !
       private :: write_endian_flag, read_endian_flag
 !

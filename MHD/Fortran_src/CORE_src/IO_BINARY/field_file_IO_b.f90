@@ -36,7 +36,7 @@
 !
       implicit none
 !
-      type(binary_IO_flags), private :: bin_fldflags
+      type(binary_IO_buffer), private :: bbuf_fld
 !
       private :: read_and_allocate_step_b
 !
@@ -62,20 +62,20 @@
       if(id_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &   'Write binary data file: ', trim(file_name)
 !
-      call open_write_binary_file(file_name, bbuf1)
-      if(bbuf1%ierr_bin .gt. 0) go to 99
+      call open_write_binary_file(file_name, bbuf_fld)
+      if(bbuf_fld%ierr_bin .gt. 0) go to 99
 !
-      call write_step_data_b(id_rank, t_IO, bbuf1)
-      if(bbuf1%ierr_bin .gt. 0) go to 99
+      call write_step_data_b(id_rank, t_IO, bbuf_fld)
+      if(bbuf_fld%ierr_bin .gt. 0) go to 99
       call write_field_data_b                                           &
      &   (fld_IO%num_field_IO, fld_IO%fld_name, fld_IO%num_comp_IO,     &
      &    cast_long(fld_IO%nnod_IO), fld_IO%ntot_comp_IO, fld_IO%d_IO,  &
-     &    bbuf1)
-      if(bbuf1%ierr_bin .gt. 0) go to 99
+     &    bbuf_fld)
+      if(bbuf_fld%ierr_bin .gt. 0) go to 99
 !
   99  continue
       call close_binary_file
-      ierr = bbuf1%ierr_bin
+      ierr = bbuf_fld%ierr_bin
 !
       end subroutine write_step_field_file_b
 !
@@ -100,23 +100,23 @@
       if(id_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &   'Read binary data file: ', trim(file_name)
 !
-      call open_read_binary_file(file_name, id_rank, bbuf1)
-      if(bbuf1%ierr_bin .ne. 0) goto 99
+      call open_read_binary_file(file_name, id_rank, bbuf_fld)
+      if(bbuf_fld%ierr_bin .ne. 0) goto 99
       call read_step_data_b                                             &
-     &   (bbuf1, t_IO, istack_merged, fld_IO%num_field_IO)
-      if(bbuf1%ierr_bin .ne. 0) goto 99
+     &   (bbuf_fld, t_IO, istack_merged, fld_IO%num_field_IO)
+      if(bbuf_fld%ierr_bin .ne. 0) goto 99
 !
       call read_mul_integer_b                                           &
-     &   (bbuf1, cast_long(fld_IO%num_field_IO), fld_IO%num_comp_IO)
-      if(bbuf1%ierr_bin .gt. 0)  goto 99
+     &   (bbuf_fld, cast_long(fld_IO%num_field_IO), fld_IO%num_comp_IO)
+      if(bbuf_fld%ierr_bin .gt. 0)  goto 99
 !
       call read_field_data_b                                            &
-     &   (bbuf1, fld_IO%num_field_IO, fld_IO%fld_name,                  &
+     &   (bbuf_fld, fld_IO%num_field_IO, fld_IO%fld_name,               &
      &    cast_long(fld_IO%nnod_IO), fld_IO%ntot_comp_IO, fld_IO%d_IO)
 !
   99  continue
       call close_binary_file
-      ierr = bin_fldflags%ierr_IO
+      ierr = bbuf_fld%ierr_bin
 !
       end subroutine read_step_field_file_b
 !
@@ -138,20 +138,20 @@
       if(id_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &   'Read binary data file: ', trim(file_name)
 !
-      call open_read_binary_file(file_name, id_rank, bbuf1)
-      if(bbuf1%ierr_bin .ne. 0) go to 99
-      call read_and_allocate_step_b(bbuf1, t_IO, fld_IO)
-      if(bbuf1%ierr_bin .ne. 0) go to 99
+      call open_read_binary_file(file_name, id_rank, bbuf_fld)
+      if(bbuf_fld%ierr_bin .ne. 0) go to 99
+      call read_and_allocate_step_b(bbuf_fld, t_IO, fld_IO)
+      if(bbuf_fld%ierr_bin .ne. 0) go to 99
 !
       call alloc_phys_data_IO(fld_IO)
 !
       call read_field_data_b                                            &
-     &   (bbuf1, fld_IO%num_field_IO, fld_IO%fld_name,                  &
+     &   (bbuf_fld, fld_IO%num_field_IO, fld_IO%fld_name,               &
      &    cast_long(fld_IO%nnod_IO), fld_IO%ntot_comp_IO, fld_IO%d_IO)
 !
   99  continue
       call close_binary_file
-      ierr = bin_fldflags%ierr_IO
+      ierr = bbuf_fld%ierr_bin
 !
       end subroutine read_and_allocate_step_field_b
 !
@@ -171,13 +171,13 @@
       if(id_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &   'Read binary data file: ', trim(file_name)
 !
-      call open_read_binary_file(file_name, id_rank, bbuf1)
-      if(bbuf1%ierr_bin .ne. 0) goto 99
-      call read_and_allocate_step_b(bbuf1, t_IO, fld_IO)
+      call open_read_binary_file(file_name, id_rank, bbuf_fld)
+      if(bbuf_fld%ierr_bin .ne. 0) goto 99
+      call read_and_allocate_step_b(bbuf_fld, t_IO, fld_IO)
 !
   99  continue
       call close_binary_file
-      ierr = bin_fldflags%ierr_IO
+      ierr = bbuf_fld%ierr_bin
 !
       end subroutine read_and_allocate_step_head_b
 !
@@ -196,14 +196,14 @@
 !
 !
       call read_step_data_b                                             &
-     &   (bbuf1, t_IO, istack_merged, fld_IO%num_field_IO)
+     &   (bbuf, t_IO, istack_merged, fld_IO%num_field_IO)
       fld_IO%nnod_IO = int(istack_merged(1), KIND(fld_IO%nnod_IO))
-      if(bbuf1%ierr_bin .ne. 0) return
+      if(bbuf%ierr_bin .ne. 0) return
 !
       call alloc_phys_name_IO(fld_IO)
 !
       call read_mul_integer_b                                           &
-     &   (bbuf1, cast_long(fld_IO%num_field_IO), fld_IO%num_comp_IO)
+     &   (bbuf, cast_long(fld_IO%num_field_IO), fld_IO%num_comp_IO)
 !
       call cal_istack_phys_comp_IO(fld_IO)
 !

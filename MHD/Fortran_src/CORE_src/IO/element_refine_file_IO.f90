@@ -23,6 +23,7 @@
       use t_element_refinement_IO
       use t_interpolate_tbl_dest
       use t_interpolate_tbl_org
+      use t_binary_IO_buffer
       use itp_table_data_IO
       use itp_table_data_IO_b
       use set_parallel_file_name
@@ -30,7 +31,7 @@
       implicit  none
 !
       integer(kind = kint), parameter, private :: id_refine_table = 19
-      type(binary_IO_flags), private :: bin_rfnflags
+      type(binary_IO_buffer), private :: bbuf_rfin
 !
 ! ----------------------------------------------------------------------
 !
@@ -59,29 +60,27 @@
       if (ifile_type .eq. 1) then
         write(*,*) 'binary element refine information: ',               &
      &            trim(refine_fname)
-        call open_read_binary_file(refine_fname, id_rank, bbuf1)
-        if(bbuf1%ierr_bin .ne. 0) goto 99
+        call open_read_binary_file(refine_fname, id_rank, bbuf_rfin)
+        if(bbuf_rfin%ierr_bin .ne. 0) goto 99
 !
-        call read_interpolate_table_dest_b(bbuf1, IO_itp_dest)
-        if(bbuf1%ierr_bin .ne. 0) goto 99
+        call read_interpolate_table_dest_b(bbuf_rfin, IO_itp_dest)
+        if(bbuf_rfin%ierr_bin .ne. 0) goto 99
 !
         call read_interpolate_domain_org_b                              &
-     &     (bbuf1, nrank_ref, IO_itp_org)
-        bin_rfnflags%ierr_IO = bbuf1%ierr_bin
-        if(bbuf1%ierr_bin .gt. 0) goto 99
+     &     (bbuf_rfin, nrank_ref, IO_itp_org)
+        if(bbuf_rfin%ierr_bin .gt. 0) goto 99
 !
-        call read_interpolate_table_org_b(bbuf1, IO_itp_org)
-        bin_rfnflags%ierr_IO = bbuf1%ierr_bin
-        if(bbuf1%ierr_bin .ne. 0) goto 99
+        call read_interpolate_table_org_b(bbuf_rfin, IO_itp_org)
+        if(bbuf_rfin%ierr_bin .ne. 0) goto 99
 !
-        call read_interpolate_coefs_org_b(bbuf1, IO_itp_org)
-        if(bbuf1%ierr_bin .ne. 0) goto 99
+        call read_interpolate_coefs_org_b(bbuf_rfin, IO_itp_org)
+        if(bbuf_rfin%ierr_bin .ne. 0) goto 99
 !
-        call read_element_refine_data_b(bbuf1, e_ref_IO)
+        call read_element_refine_data_b(bbuf_rfin, e_ref_IO)
 !
   99    continue
         call close_binary_file
-        if(bin_rfnflags%ierr_IO .ne. 0) stop "Reading error"
+        if(bbuf_rfin%ierr_bin .ne. 0) stop "Reading error"
       else
         write(*,*) 'element refine information: ',                      &
      &            trim(refine_fname)
@@ -119,26 +118,25 @@
       if (ifile_type .eq. 1) then
         write(*,*) 'binary element refine information: ',               &
      &            trim(refine_fname)
-        call open_write_binary_file(refine_fname, bbuf1)
-        if(bbuf1%ierr_bin .gt. 0) go to 99
+        call open_write_binary_file(refine_fname, bbuf_rfin)
+        if(bbuf_rfin%ierr_bin .gt. 0) go to 99
 !
         call write_interpolate_table_dest_b                             &
-     &     (id_rank, IO_itp_dest, bbuf1)
-        if(bbuf1%ierr_bin .ne. 0) go to 99
+     &     (id_rank, IO_itp_dest, bbuf_rfin)
+        if(bbuf_rfin%ierr_bin .ne. 0) go to 99
 !
         call write_interpolate_table_org_b                              &
-     &     (id_rank, IO_itp_org, bbuf1)
-        if(bbuf1%ierr_bin .ne. 0) go to 99
-        call write_interpolate_coefs_org_b(IO_itp_org, bbuf1)
-        if(bbuf1%ierr_bin .ne. 0) go to 99
+     &     (id_rank, IO_itp_org, bbuf_rfin)
+        if(bbuf_rfin%ierr_bin .ne. 0) go to 99
+        call write_interpolate_coefs_org_b(IO_itp_org, bbuf_rfin)
+        if(bbuf_rfin%ierr_bin .ne. 0) go to 99
 !
-        call write_element_refine_data_b(e_ref_IO, bbuf1)
-        if(bbuf1%ierr_bin .ne. 0) go to 99
+        call write_element_refine_data_b(e_ref_IO, bbuf_rfin)
+        if(bbuf_rfin%ierr_bin .ne. 0) go to 99
 !
   99    continue
         call close_binary_file
-        ierr = bbuf1%ierr_bin
-!
+        ierr = bbuf_rfin%ierr_bin
       else
         write(*,*) 'element refine information: ',                      &
      &            trim(refine_fname)

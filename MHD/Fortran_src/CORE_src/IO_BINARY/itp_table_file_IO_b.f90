@@ -29,13 +29,14 @@
       use t_interpolate_tbl_org
       use t_interpolate_tbl_dest
       use t_interpolate_coefs_dest
+      use t_binary_IO_buffer
 !
       use itp_table_data_IO_b
       use binary_IO
 !
       implicit none
 !
-      type(binary_IO_flags), private :: bin_itpflags
+      type(binary_IO_buffer), private :: bbuf_tbl
 !
 !-----------------------------------------------------------------------
 !
@@ -53,20 +54,21 @@
       integer(kind = kint), intent(inout) :: ierr
 !
 !
-      call open_write_binary_file(file_name, bbuf1)
-      if(bbuf1%ierr_bin .gt. 0) go to 99
-      call write_interpolate_table_dest_b(id_rank, IO_itp_dest, bbuf1)
-      if(bbuf1%ierr_bin .gt. 0) go to 99
+      call open_write_binary_file(file_name, bbuf_tbl)
+      if(bbuf_tbl%ierr_bin .gt. 0) go to 99
+      call write_interpolate_table_dest_b                               &
+     &   (id_rank, IO_itp_dest, bbuf_tbl)
+      if(bbuf_tbl%ierr_bin .gt. 0) go to 99
 !
       call write_interpolate_table_org_b                                &
-     &   (id_rank, IO_itp_org, bbuf1)
-      if(bbuf1%ierr_bin .gt. 0) go to 99
-      call write_interpolate_coefs_org_b(IO_itp_org, bbuf1)
-      if(bbuf1%ierr_bin .gt. 0) go to 99
+     &   (id_rank, IO_itp_org, bbuf_tbl)
+      if(bbuf_tbl%ierr_bin .gt. 0) go to 99
+      call write_interpolate_coefs_org_b(IO_itp_org, bbuf_tbl)
+      if(bbuf_tbl%ierr_bin .gt. 0) go to 99
 !
   99  continue
       call close_binary_file
-      ierr = bbuf1%ierr_bin
+      ierr = bbuf_tbl%ierr_bin
 !
       if (IO_itp_org%num_dest_domain .gt. 0) then
         call dealloc_itp_table_org(IO_itp_org)
@@ -95,27 +97,27 @@
       integer(kind = kint) :: n_rank_file
 !
 !
-      call open_read_binary_file(file_name, id_rank, bbuf1)
-      if(bbuf1%ierr_bin .ne. 0) goto 99
+      call open_read_binary_file(file_name, id_rank, bbuf_tbl)
+      if(bbuf_tbl%ierr_bin .ne. 0) goto 99
       call read_interpolate_domain_dest_b                               &
-     &   (bbuf1, n_rank_file, IO_itp_dest)
-      if(bbuf1%ierr_bin .gt. 0) goto 99
+     &   (bbuf_tbl, n_rank_file, IO_itp_dest)
+      if(bbuf_tbl%ierr_bin .gt. 0) goto 99
 !
-      call read_interpolate_table_dest_b(bbuf1, IO_itp_dest)
-      if(bbuf1%ierr_bin .ne. 0) goto 99
+      call read_interpolate_table_dest_b(bbuf_tbl, IO_itp_dest)
+      if(bbuf_tbl%ierr_bin .ne. 0) goto 99
 !
       call read_interpolate_domain_org_b                                &
-     &   (bbuf1, n_rank_file, IO_itp_org)
-      if(bbuf1%ierr_bin .gt. 0) goto 99
+     &   (bbuf_tbl, n_rank_file, IO_itp_org)
+      if(bbuf_tbl%ierr_bin .gt. 0) goto 99
 !
-      call read_interpolate_table_org_b(bbuf1, IO_itp_org)
-      if(bbuf1%ierr_bin .ne. 0) goto 99
+      call read_interpolate_table_org_b(bbuf_tbl, IO_itp_org)
+      if(bbuf_tbl%ierr_bin .ne. 0) goto 99
 !
-      call read_interpolate_coefs_org_b(bbuf1, IO_itp_org)
+      call read_interpolate_coefs_org_b(bbuf_tbl, IO_itp_org)
 !
   99  continue
       call close_binary_file
-      ierr = bbuf1%ierr_bin
+      ierr = bbuf_tbl%ierr_bin
 !
       if (n_rank_file .ne. id_rank) ierr = n_rank_file
 !
@@ -135,18 +137,18 @@
       integer(kind = kint), intent(inout) :: ierr
 !
 !
-      call open_write_binary_file(file_name, bbuf1)
-      if(bbuf1%ierr_bin .gt. 0) go to 99
+      call open_write_binary_file(file_name, bbuf_tbl)
+      if(bbuf_tbl%ierr_bin .gt. 0) go to 99
       call write_interpolate_table_dest_b                               &
-     &   (id_rank, IO_itp_dest, bbuf1)
-      if(bbuf1%ierr_bin .gt. 0) go to 99
+     &   (id_rank, IO_itp_dest, bbuf_tbl)
+      if(bbuf_tbl%ierr_bin .gt. 0) go to 99
 !
       call write_interpolate_coefs_dest_b                               &
-     &   (IO_itp_dest, IO_itp_c_dest, bbuf1)
+     &   (IO_itp_dest, IO_itp_c_dest, bbuf_tbl)
 !
   99  continue
       call close_binary_file
-      ierr = bbuf1%ierr_bin
+      ierr = bbuf_tbl%ierr_bin
 !
       if (IO_itp_dest%num_org_domain .gt. 0) then
         call dealloc_itp_coef_dest(IO_itp_c_dest)
@@ -172,21 +174,21 @@
       integer(kind = kint) :: n_rank_file
 !
 !
-      call open_read_binary_file(file_name, id_rank, bbuf1)
-      if(bbuf1%ierr_bin .ne. 0) goto 99
+      call open_read_binary_file(file_name, id_rank, bbuf_tbl)
+      if(bbuf_tbl%ierr_bin .ne. 0) goto 99
       call read_interpolate_domain_dest_b                               &
-     &   (bbuf1, n_rank_file, IO_itp_dest)
-      if(bbuf1%ierr_bin .gt. 0) goto 99
+     &   (bbuf_tbl, n_rank_file, IO_itp_dest)
+      if(bbuf_tbl%ierr_bin .gt. 0) goto 99
 !
-      call read_interpolate_table_dest_b(bbuf1, IO_itp_dest)
-      if(bbuf1%ierr_bin .ne. 0) goto 99
+      call read_interpolate_table_dest_b(bbuf_tbl, IO_itp_dest)
+      if(bbuf_tbl%ierr_bin .ne. 0) goto 99
 !
       call read_interpolate_coefs_dest_b                                &
-     &   (bbuf1, IO_itp_dest, IO_itp_c_dest)
+     &   (bbuf_tbl, IO_itp_dest, IO_itp_c_dest)
 !
   99  continue
       call close_binary_file
-      ierr = bbuf1%ierr_bin
+      ierr = bbuf_tbl%ierr_bin
 !
       if (n_rank_file .ne. id_rank) ierr = ierr_file
 !
@@ -206,17 +208,17 @@
       integer(kind = kint) :: n_rank_file
 !
 !
-      call open_read_binary_file(file_name, id_rank, bbuf1)
-      if(bbuf1%ierr_bin .ne. 0) goto 99
+      call open_read_binary_file(file_name, id_rank, bbuf_tbl)
+      if(bbuf_tbl%ierr_bin .ne. 0) goto 99
       call read_interpolate_domain_dest_b                               &
-     &   (bbuf1, n_rank_file, IO_itp_dest)
-      if(bbuf1%ierr_bin .gt. 0) goto 99
+     &   (bbuf_tbl, n_rank_file, IO_itp_dest)
+      if(bbuf_tbl%ierr_bin .gt. 0) goto 99
 !
-      call read_interpolate_table_dest_b(bbuf1, IO_itp_dest)
+      call read_interpolate_table_dest_b(bbuf_tbl, IO_itp_dest)
 !
   99  continue
       call close_binary_file
-      ierr = bin_itpflags%ierr_IO
+      ierr = bbuf_tbl%ierr_bin
 !
       if (n_rank_file .ne. id_rank) ierr = ierr_file
 !
@@ -236,14 +238,14 @@
       integer(kind = kint) :: n_rank_file
 !
 !
-      call open_read_binary_file(file_name, id_rank, bbuf1)
-      if(bbuf1%ierr_bin .ne. 0) goto 99
+      call open_read_binary_file(file_name, id_rank, bbuf_tbl)
+      if(bbuf_tbl%ierr_bin .ne. 0) goto 99
       call read_interpolate_domain_dest_b                               &
-     &   (bbuf1, n_rank_file, IO_itp_dest)
+     &   (bbuf_tbl, n_rank_file, IO_itp_dest)
 !
   99  continue
       call close_binary_file
-      ierr = bbuf1%ierr_bin
+      ierr = bbuf_tbl%ierr_bin
 !
       if (n_rank_file .ne. id_rank) ierr = ierr_file
 !
