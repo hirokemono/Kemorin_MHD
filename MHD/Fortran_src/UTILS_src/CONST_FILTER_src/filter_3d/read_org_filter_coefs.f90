@@ -79,14 +79,15 @@
         close(id_org_filter_coef)
       else if(ifile_type .eq. 1) then
         write(*,*) 'binary coefficients file name: ', trim(file_name)
-        call open_read_binary_file(file_name, id_rank, bin_flflags)
+        call open_read_binary_file(file_name, id_rank, bbuf1)
+        if(bbuf1%ierr_bin .ne. 0) goto 98
         call read_filter_geometry_b                                     &
-     &     (id_rank, bin_flflags, comm_IO, nod_IO)
-        if(bin_flflags%ierr_IO .gt. 0) go to 98
+     &     (id_rank, bbuf1, comm_IO, nod_IO)
+        if(bbuf1%ierr_bin .gt. 0) go to 98
 !
         inter_nod_3dfilter = nod_IO%internal_node
         call read_filter_coef_4_newdomain_b                             &
-     &     (bin_flflags, fil_coef, whole_fil_sort, fluid_fil_sort)
+     &     (bbuf1, fil_coef, whole_fil_sort, fluid_fil_sort)
 !
   98    continue
         call close_binary_file

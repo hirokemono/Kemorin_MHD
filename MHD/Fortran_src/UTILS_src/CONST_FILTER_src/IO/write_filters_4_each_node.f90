@@ -10,7 +10,8 @@
 !!     &         (file_name, inod, fil_coef, ierr)
 !!        type(each_filter_coef), intent(in) :: fil_coef
 !!
-!!      subroutine read_each_filter_stack_coef(id_file, fil_coef, ierr)
+!!      subroutine read_each_filter_stack_coef(id_file, fil_coef, bbuf)
+!!        type(binary_IO_buffer), intent(inout) :: bbuf
 !!        type(each_filter_coef), intent(inout) :: fil_coef
 !
       module write_filters_4_each_node
@@ -55,11 +56,14 @@
         call write_filter_coef_4_each(filter_coef_code, fil_coef)
 !
       else if (ifmt_3d_filter .eq. iflag_bin) then
-        call open_append_binary_file(file_name, bflag_flt)
-        if(bflag_flt%ierr_IO .gt. 0) ierr = ierr_file
-        call write_filter_coef_4_each_b(fil_coef, bflag_flt)
-        if(bflag_flt%ierr_IO .gt. 0) ierr = ierr_file
+        call open_append_binary_file(file_name, bbuf1)
+        if(bbuf1%ierr_bin .gt. 0) go to 99
+        call write_filter_coef_4_each_b(fil_coef, bbuf1)
+        if(bbuf1%ierr_bin .gt. 0) go to 99
+!
+  99    continue
         call close_binary_file
+        ierr = bbuf1%ierr_bin
       end if
 !
       end subroutine write_each_filter_stack_coef
@@ -82,13 +86,16 @@
      &           inod, fil_coef%nnod_4_1nod_w, izero
         close(org_filter_coef_code)
       else if (ifmt_3d_filter .eq. iflag_bin) then
-        call open_append_binary_file(file_name, bflag_flt)
-        if(bflag_flt%ierr_IO .gt. 0) ierr = ierr_file
-        call write_one_integer_b(fil_coef%nnod_4_1nod_w, bflag_flt)
-        if(bflag_flt%ierr_IO .gt. 0) ierr = ierr_file
-        call write_one_integer_b(izero, bflag_flt)
-        if(bflag_flt%ierr_IO .gt. 0) ierr = ierr_file
+        call open_append_binary_file(file_name, bbuf1)
+        if(bbuf1%ierr_bin .gt. 0) go to 99
+        call write_one_integer_b(fil_coef%nnod_4_1nod_w, bbuf1)
+        if(bbuf1%ierr_bin .ne. 0) go to 99
+        call write_one_integer_b(izero, bbuf1)
+        if(bbuf1%ierr_bin .ne. 0) go to 99
+!
+  99    continue
         call close_binary_file
+        ierr = bbuf1%ierr_bin
       end if
 !
       end subroutine write_each_no_filter_coef
@@ -115,13 +122,16 @@
      &          (fil_coef%nnod_4_1nod_w), fil_coef%ilevel_exp_1nod_w
         close(org_filter_coef_code)
       else if (ifmt_3d_filter .eq. iflag_bin) then
-        call open_append_binary_file(file_name, bflag_flt)
-        if(bflag_flt%ierr_IO .gt. 0) ierr = ierr_file
-        call write_one_integer_b(-fil_coef%nnod_4_1nod_w, bflag_flt)
-        if(bflag_flt%ierr_IO .gt. 0) ierr = ierr_file
-        call write_one_integer_b(fil_coef%ilevel_exp_1nod_w, bflag_flt)
-        if(bflag_flt%ierr_IO .gt. 0) ierr = ierr_file
+        call open_append_binary_file(file_name, bbuf1)
+        if(bbuf1%ierr_bin .gt. 0) go to 99
+        call write_one_integer_b(-fil_coef%nnod_4_1nod_w, bbuf1)
+        if(bbuf1%ierr_bin .gt. 0) go to 99
+        call write_one_integer_b(fil_coef%ilevel_exp_1nod_w, bbuf1)
+        if(bbuf1%ierr_bin .gt. 0) go to 99
+!
+  99    continue
         call close_binary_file
+        ierr = bbuf1%ierr_bin
       end if
 !
       end subroutine write_each_same_filter_coef
@@ -129,21 +139,22 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine read_each_filter_stack_coef(id_file, fil_coef, ierr)
+      subroutine read_each_filter_stack_coef(id_file, fil_coef, bbuf)
 !
+      use t_binary_IO_buffer
       use skip_comment_f
       use filter_IO_for_sorting
 !
       integer(kind = kint), intent(in) :: id_file
 !
       type(each_filter_coef), intent(inout) :: fil_coef
-      integer(kind = kint), intent(inout) :: ierr
+      type(binary_IO_buffer), intent(inout) :: bbuf
+!
 !
       if (ifmt_3d_filter .eq. iflag_ascii) then
         call read_filter_coef_4_each(id_file, fil_coef)
       else if (ifmt_3d_filter .eq. iflag_bin) then
-        call read_filter_coef_4_each_b(bflag_flt, fil_coef)
-        if(bflag_flt%ierr_IO .gt. 0) ierr = ierr_file
+        call read_filter_coef_4_each_b(bbuf, fil_coef)
       end if
 !
       end subroutine read_each_filter_stack_coef

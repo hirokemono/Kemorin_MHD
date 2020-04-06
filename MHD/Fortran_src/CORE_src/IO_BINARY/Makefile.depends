@@ -1,51 +1,51 @@
 binary_IO.o: $(BINARY_IO_DIR)/binary_IO.F90 m_precision.o m_constants.o m_machine_parameter.o m_error_IDs.o t_binary_IO_buffer.o set_parallel_file_name.o binary_file_access.o transfer_to_long_integers.o
 	$(F90) -c $(F90FLAGS) $<
-domain_data_IO_b.o: $(BINARY_IO_DIR)/domain_data_IO_b.f90 m_precision.o t_comm_table.o binary_IO.o transfer_to_long_integers.o m_error_IDs.o
+domain_data_IO_b.o: $(BINARY_IO_DIR)/domain_data_IO_b.f90 m_precision.o t_comm_table.o t_binary_IO_buffer.o binary_IO.o transfer_to_long_integers.o m_error_IDs.o
 	$(F90) -c $(F90OPTFLAGS) $<
-edge_data_IO_b.o: $(BINARY_IO_DIR)/edge_data_IO_b.f90 m_precision.o t_comm_table.o t_geometry_data.o t_read_mesh_data.o t_surf_edge_IO.o binary_IO.o m_fem_mesh_labels.o domain_data_IO_b.o element_connect_IO_b.o node_geometry_IO_b.o
+edge_data_IO_b.o: $(BINARY_IO_DIR)/edge_data_IO_b.f90 m_precision.o t_comm_table.o t_geometry_data.o t_read_mesh_data.o t_surf_edge_IO.o t_binary_IO_buffer.o binary_IO.o m_fem_mesh_labels.o domain_data_IO_b.o element_connect_IO_b.o node_geometry_IO_b.o
 	$(F90) -c $(F90OPTFLAGS) $<
-element_connect_IO_b.o: $(BINARY_IO_DIR)/element_connect_IO_b.f90 m_precision.o t_geometry_data.o t_surf_edge_IO.o t_read_mesh_data.o binary_IO.o set_nnod_4_ele_by_type.o transfer_to_long_integers.o
+element_connect_IO_b.o: $(BINARY_IO_DIR)/element_connect_IO_b.f90 m_precision.o t_geometry_data.o t_surf_edge_IO.o t_read_mesh_data.o t_binary_IO_buffer.o binary_IO.o set_nnod_4_ele_by_type.o transfer_to_long_integers.o
 	$(F90) -c $(F90OPTFLAGS) $<
-element_data_IO_b.o: $(BINARY_IO_DIR)/element_data_IO_b.f90 m_precision.o t_geometry_data.o t_read_mesh_data.o t_comm_table.o t_surf_edge_IO.o binary_IO.o m_fem_mesh_labels.o domain_data_IO_b.o node_geometry_IO_b.o
+element_data_IO_b.o: $(BINARY_IO_DIR)/element_data_IO_b.f90 m_precision.o t_geometry_data.o t_read_mesh_data.o t_comm_table.o t_surf_edge_IO.o t_binary_IO_buffer.o binary_IO.o m_fem_mesh_labels.o domain_data_IO_b.o node_geometry_IO_b.o
 	$(F90) -c $(F90OPTFLAGS) $<
 element_file_IO_b.o: $(BINARY_IO_DIR)/element_file_IO_b.f90 m_precision.o m_machine_parameter.o m_file_format_switch.o t_read_mesh_data.o set_mesh_file_names.o binary_IO.o element_data_IO_b.o surface_data_IO_b.o edge_data_IO_b.o
 	$(F90) -c $(F90OPTFLAGS) $<
-field_data_IO_b.o: $(BINARY_IO_DIR)/field_data_IO_b.f90 m_precision.o m_constants.o m_machine_parameter.o binary_IO.o t_time_data.o m_phys_constants.o transfer_to_long_integers.o
+field_data_IO_b.o: $(BINARY_IO_DIR)/field_data_IO_b.f90 m_precision.o m_constants.o m_machine_parameter.o t_time_data.o t_binary_IO_buffer.o binary_IO.o m_phys_constants.o transfer_to_long_integers.o
 	$(F90) -c $(F90OPTFLAGS) $<
-field_file_IO_b.o: $(BINARY_IO_DIR)/field_file_IO_b.f90 m_precision.o m_constants.o m_machine_parameter.o t_time_data.o t_field_data_IO.o field_data_IO_b.o binary_IO.o transfer_to_long_integers.o
+field_file_IO_b.o: $(BINARY_IO_DIR)/field_file_IO_b.f90 m_precision.o m_constants.o m_machine_parameter.o t_time_data.o t_field_data_IO.o t_binary_IO_buffer.o field_data_IO_b.o binary_IO.o transfer_to_long_integers.o
 	$(F90) -c $(F90OPTFLAGS) $<
-filter_coefs_file_IO_b.o: $(BINARY_IO_DIR)/filter_coefs_file_IO_b.f90 m_precision.o m_machine_parameter.o m_file_format_switch.o t_filter_file_data.o t_filter_coefficients.o binary_IO.o mesh_data_IO_b.o cal_minmax_and_stacks.o transfer_to_long_integers.o
+filter_coefs_file_IO_b.o: $(BINARY_IO_DIR)/filter_coefs_file_IO_b.f90 m_precision.o m_machine_parameter.o m_file_format_switch.o t_filter_file_data.o t_filter_coefficients.o t_binary_IO_buffer.o binary_IO.o mesh_data_IO_b.o cal_minmax_and_stacks.o transfer_to_long_integers.o
 	$(F90) -c $(F90OPTFLAGS) $<
-filter_mom_type_data_IO_b.o: $(BINARY_IO_DIR)/filter_mom_type_data_IO_b.f90 m_precision.o t_filter_elength.o transfer_to_long_integers.o filter_moments_IO_b.o filter_mom_type_on_ele_IO_b.o t_filter_moments.o
+filter_mom_type_data_IO_b.o: $(BINARY_IO_DIR)/filter_mom_type_data_IO_b.f90 m_precision.o t_filter_elength.o t_binary_IO_buffer.o transfer_to_long_integers.o filter_moments_IO_b.o filter_mom_type_on_ele_IO_b.o t_filter_moments.o
 	$(F90) -c $(F90OPTFLAGS) $<
-filter_mom_type_on_ele_IO_b.o: $(BINARY_IO_DIR)/filter_mom_type_on_ele_IO_b.f90 m_precision.o binary_IO.o t_filter_elength.o filter_moments_IO_b.o t_filter_moments.o
+filter_mom_type_on_ele_IO_b.o: $(BINARY_IO_DIR)/filter_mom_type_on_ele_IO_b.f90 m_precision.o t_binary_IO_buffer.o binary_IO.o t_filter_elength.o filter_moments_IO_b.o t_filter_moments.o
 	$(F90) -c $(F90OPTFLAGS) $<
-filter_moments_IO_b.o: $(BINARY_IO_DIR)/filter_moments_IO_b.f90 m_precision.o m_constants.o binary_IO.o
+filter_moments_IO_b.o: $(BINARY_IO_DIR)/filter_moments_IO_b.f90 m_precision.o m_constants.o t_binary_IO_buffer.o binary_IO.o
 	$(F90) -c $(F90OPTFLAGS) $<
 filter_moments_file_IO_b.o: $(BINARY_IO_DIR)/filter_moments_file_IO_b.f90 m_precision.o m_machine_parameter.o t_filter_elength.o m_file_format_switch.o filter_mom_type_data_IO_b.o set_parallel_file_name.o binary_IO.o t_filter_moments.o
 	$(F90) -c $(F90OPTFLAGS) $<
-groups_IO_b.o: $(BINARY_IO_DIR)/groups_IO_b.f90 m_precision.o m_machine_parameter.o t_group_data.o binary_IO.o transfer_to_long_integers.o
+groups_IO_b.o: $(BINARY_IO_DIR)/groups_IO_b.f90 m_precision.o m_machine_parameter.o t_group_data.o t_binary_IO_buffer.o binary_IO.o transfer_to_long_integers.o
 	$(F90) -c $(F90OPTFLAGS) $<
-itp_table_data_IO_b.o: $(BINARY_IO_DIR)/itp_table_data_IO_b.f90 m_precision.o m_machine_parameter.o binary_IO.o transfer_to_long_integers.o t_interpolate_tbl_org.o skip_comment_f.o t_interpolate_tbl_dest.o t_interpolate_coefs_dest.o
+itp_table_data_IO_b.o: $(BINARY_IO_DIR)/itp_table_data_IO_b.f90 m_precision.o m_machine_parameter.o t_binary_IO_buffer.o binary_IO.o transfer_to_long_integers.o t_interpolate_tbl_org.o skip_comment_f.o t_interpolate_tbl_dest.o t_interpolate_coefs_dest.o
 	$(F90) -c $(F90OPTFLAGS) $<
 itp_table_file_IO_b.o: $(BINARY_IO_DIR)/itp_table_file_IO_b.f90 m_precision.o m_error_IDs.o t_interpolate_tbl_org.o t_interpolate_tbl_dest.o t_interpolate_coefs_dest.o itp_table_data_IO_b.o binary_IO.o
 	$(F90) -c $(F90OPTFLAGS) $<
-mesh_data_IO_b.o: $(BINARY_IO_DIR)/mesh_data_IO_b.f90 m_precision.o m_constants.o t_mesh_data.o t_comm_table.o t_geometry_data.o domain_data_IO_b.o node_geometry_IO_b.o element_connect_IO_b.o groups_IO_b.o
+mesh_data_IO_b.o: $(BINARY_IO_DIR)/mesh_data_IO_b.f90 m_precision.o m_constants.o t_mesh_data.o t_comm_table.o t_geometry_data.o t_binary_IO_buffer.o domain_data_IO_b.o node_geometry_IO_b.o element_connect_IO_b.o groups_IO_b.o
 	$(F90) -c $(F90OPTFLAGS) $<
 mesh_file_IO_b.o: $(BINARY_IO_DIR)/mesh_file_IO_b.f90 m_precision.o m_machine_parameter.o t_mesh_data.o binary_IO.o mesh_data_IO_b.o
 	$(F90) -c $(F90OPTFLAGS) $<
-node_geometry_IO_b.o: $(BINARY_IO_DIR)/node_geometry_IO_b.f90 m_precision.o m_constants.o m_phys_constants.o t_geometry_data.o t_read_mesh_data.o t_surf_edge_IO.o binary_IO.o transfer_to_long_integers.o
+node_geometry_IO_b.o: $(BINARY_IO_DIR)/node_geometry_IO_b.f90 m_precision.o m_constants.o m_phys_constants.o t_geometry_data.o t_read_mesh_data.o t_surf_edge_IO.o t_binary_IO_buffer.o binary_IO.o transfer_to_long_integers.o
 	$(F90) -c $(F90OPTFLAGS) $<
-sph_global_1d_idx_IO_b.o: $(BINARY_IO_DIR)/sph_global_1d_idx_IO_b.f90 m_precision.o t_node_id_spherical_IO.o binary_IO.o
+sph_global_1d_idx_IO_b.o: $(BINARY_IO_DIR)/sph_global_1d_idx_IO_b.f90 m_precision.o t_node_id_spherical_IO.o t_binary_IO_buffer.o binary_IO.o
 	$(F90) -c $(F90OPTFLAGS) $<
-sph_modes_grids_data_IO_b.o: $(BINARY_IO_DIR)/sph_modes_grids_data_IO_b.f90 m_precision.o m_machine_parameter.o t_comm_table.o t_node_id_spherical_IO.o t_spheric_group.o domain_data_IO_b.o spherical_model_IO_b.o sph_global_1d_idx_IO_b.o binary_IO.o groups_IO_b.o
+sph_modes_grids_data_IO_b.o: $(BINARY_IO_DIR)/sph_modes_grids_data_IO_b.f90 m_precision.o m_machine_parameter.o t_comm_table.o t_node_id_spherical_IO.o t_spheric_group.o t_binary_IO_buffer.o domain_data_IO_b.o spherical_model_IO_b.o sph_global_1d_idx_IO_b.o binary_IO.o groups_IO_b.o
 	$(F90) -c $(F90OPTFLAGS) $<
 sph_modes_grids_file_IO_b.o: $(BINARY_IO_DIR)/sph_modes_grids_file_IO_b.f90 m_precision.o m_machine_parameter.o t_spheric_data_IO.o sph_modes_grids_data_IO_b.o binary_IO.o groups_IO_b.o
 	$(F90) -c $(F90OPTFLAGS) $<
-spherical_model_IO_b.o: $(BINARY_IO_DIR)/spherical_model_IO_b.f90 m_precision.o t_node_id_spherical_IO.o binary_IO.o transfer_to_long_integers.o
+spherical_model_IO_b.o: $(BINARY_IO_DIR)/spherical_model_IO_b.f90 m_precision.o t_node_id_spherical_IO.o t_binary_IO_buffer.o binary_IO.o transfer_to_long_integers.o
 	$(F90) -c $(F90OPTFLAGS) $<
-surface_data_IO_b.o: $(BINARY_IO_DIR)/surface_data_IO_b.f90 m_precision.o t_comm_table.o t_geometry_data.o t_read_mesh_data.o t_surf_edge_IO.o binary_IO.o m_fem_mesh_labels.o domain_data_IO_b.o element_connect_IO_b.o node_geometry_IO_b.o
+surface_data_IO_b.o: $(BINARY_IO_DIR)/surface_data_IO_b.f90 m_precision.o t_comm_table.o t_geometry_data.o t_read_mesh_data.o t_surf_edge_IO.o t_binary_IO_buffer.o binary_IO.o m_fem_mesh_labels.o domain_data_IO_b.o element_connect_IO_b.o node_geometry_IO_b.o
 	$(F90) -c $(F90OPTFLAGS) $<
-ucd_field_file_IO_b.o: $(BINARY_IO_DIR)/ucd_field_file_IO_b.f90 m_precision.o m_machine_parameter.o m_constants.o m_field_file_format.o t_time_data.o t_ucd_data.o set_ucd_file_names.o field_data_IO_b.o binary_IO.o transfer_to_long_integers.o
+ucd_field_file_IO_b.o: $(BINARY_IO_DIR)/ucd_field_file_IO_b.f90 m_precision.o m_machine_parameter.o m_constants.o m_field_file_format.o t_time_data.o t_ucd_data.o t_binary_IO_buffer.o set_ucd_file_names.o field_data_IO_b.o binary_IO.o transfer_to_long_integers.o
 	$(F90) -c $(F90OPTFLAGS) $<
 

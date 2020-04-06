@@ -9,6 +9,7 @@
       module int_4_sph_coriolis_IO_b
 !
       use m_precision
+      use t_binary_IO_buffer
 !
       implicit none
 !
@@ -31,44 +32,47 @@
 !
       write(*,'(a,a)') 'Write tri-integration data file: ',             &
      &                trim(sph_cor_file_name)
-      call open_write_binary_file(sph_cor_file_name, bin_corflags)
-      if(bin_corflags%ierr_IO .gt. 0) ierr = ierr_file
-      call write_one_integer_b(ltr_cor_IO, bin_corflags)
-      if(bin_corflags%ierr_IO .gt. 0) ierr = ierr_file
+      call open_write_binary_file(sph_cor_file_name, bbuf1)
+      if(bbuf1%ierr_bin .gt. 0) go to 99
+      call write_one_integer_b(ltr_cor_IO, bbuf1)
+      if(bbuf1%ierr_bin .gt. 0) go to 99
 !
       num64 = jmax_cor_IO * itwo
-      call write_mul_integer_b(num64, jgl_kcor_IO(1,1,2), bin_corflags)
-      if(bin_corflags%ierr_IO .gt. 0) return
+      call write_mul_integer_b(num64, jgl_kcor_IO(1,1,2), bbuf1)
+      if(bbuf1%ierr_bin .gt. 0) go to 99
 !
       num64 = jmax_cor_IO
       call write_2d_vector_b                                            &
-     &   (num64, itwo, gk_cor_IO(1,1,2), bin_corflags)
-      if(bin_corflags%ierr_IO .gt. 0) return
-      call write_mul_integer_b(num64, jgl_lcor_IO(1,1,2), bin_corflags)
-      if(bin_corflags%ierr_IO .gt. 0) return
+     &   (num64, itwo, gk_cor_IO(1,1,2), bbuf1)
+      if(bbuf1%ierr_bin .gt. 0) go to 99
+      call write_mul_integer_b(num64, jgl_lcor_IO(1,1,2), bbuf1)
+      if(bbuf1%ierr_bin .gt. 0) go to 99
       call write_2d_vector_b                                            &
-     &   (num64, ione, el_cor_IO(1,1,2), bin_corflags)
-      if(bin_corflags%ierr_IO .gt. 0) return
+     &   (num64, ione, el_cor_IO(1,1,2), bbuf1)
+      if(bbuf1%ierr_bin .gt. 0) go to 99
 !
       do j1 = 1, 3, 2
         num64 = jmax_cor_IO * ifour
         call write_mul_integer_b                                        &
-     &     (num64, jgl_kcor_IO(1,1,j1), bin_corflags)
-        if(bin_corflags%ierr_IO .gt. 0) return
+     &     (num64, jgl_kcor_IO(1,1,j1), bbuf1)
+        if(bbuf1%ierr_bin .gt. 0) go to 99
 !
         call write_2d_vector_b(trim_long(jmax_cor_IO), ifour,           &
-     &      gk_cor_IO(1,1,j1), bin_corflags)
-        if(bin_corflags%ierr_IO .gt. 0) return
+     &      gk_cor_IO(1,1,j1), bbuf1)
+        if(bbuf1%ierr_bin .gt. 0) go to 99
 !
         num64 = jmax_cor_IO * itwo
         call write_mul_integer_b                                        &
-     &     (num64, jgl_lcor_IO(1,1,j1), bin_corflags)
-        if(bin_corflags%ierr_IO .gt. 0) return
+     &     (num64, jgl_lcor_IO(1,1,j1), bbuf1)
+        if(bbuf1%ierr_bin .gt. 0) go to 99
 !
         call write_2d_vector_b(trim_long(jmax_cor_IO), itwo,            &
-     &      el_cor_IO(1,1,j1), bin_corflags)
+     &      el_cor_IO(1,1,j1), bbuf1)
+        if(bbuf1%ierr_bin .gt. 0) go to 99
       end do
+  99  contninue
       call close_binary_file
+      ierr = bbuf1%ierr_bin
 !
       call deallocate_int_sph_cor_IO
 !
@@ -92,46 +96,47 @@
       write(*,*) 'read integrals for coriolis: ',                       &
      &           trim(sph_cor_file_name)
       call open_read_binary_file                                        &
-     &   (sph_cor_file_name, my_rank, bin_corflags)
+     &   (sph_cor_file_name, my_rank, bbuf1)
+      if(bbuf1%ierr_bin .ne. 0) goto 99
 !
-      call read_one_integer_b(bin_corflags, ltr_cor_IO, bin_corflags)
-      if(bin_corflags%ierr_IO .gt. 0) return
+      call read_one_integer_b(bbuf1, ltr_cor_IO, bin_corflags)
+      if(bbuf1%ierr_bin .gt. 0) goto 99
 !
       call allocate_int_sph_cor_IO
 !
       num64 = jmax_cor_IO*itwo
-      call read_mul_integer_b(bin_corflags, num64, jgl_kcor_IO(1,1,2))
-      if(bin_corflags%ierr_IO .gt. 0) go to 99
+      call read_mul_integer_b(bbuf1, num64, jgl_kcor_IO(1,1,2))
+      if(bbuf1%ierr_bin .gt. 0)  go to 99
 !
       num64 = jmax_cor_IO
       call read_2d_vector_b                                             &
-     &   (bin_corflags, num64, itwo, gk_cor_IO(1,1,2))
-      if(bin_corflags%ierr_IO .gt. 0) go to 99
-      call read_mul_integer_b(bin_corflags, num64, jgl_lcor_IO(1,1,2))
-      if(bin_corflags%ierr_IO .gt. 0) go to 99
+     &   (bbuf1, num64, itwo, gk_cor_IO(1,1,2))
+      if(bbuf1%ierr_bin .gt. 0) go to 99
+      call read_mul_integer_b(bbuf1, num64, jgl_lcor_IO(1,1,2))
+      if(bbuf1%ierr_bin .gt. 0) go to 99
       call read_2d_vector_b                                             &
-     &   (bin_corflags, num64, ione, el_cor_IO(1,1,2))
-      if(bin_corflags%ierr_IO .gt. 0) goto 99
+     &   (bbuf1, num64, ione, el_cor_IO(1,1,2))
+      if(bbuf1%ierr_bin .gt. 0) goto 99
 !*
 !
       do j1 = 1, 3, 2
         num64 = jmax_cor_IO * ifour
         call read_mul_integer_b                                         &
-     &     (bin_corflags, num64, jgl_kcor_IO(1,1,j1))
-        if(bin_corflags%ierr_IO .gt. 0) go to 99
+     &     (bbuf1, num64, jgl_kcor_IO(1,1,j1))
+        if(bbuf1%ierr_bin .gt. 0) go to 99
 !
-        call read_2d_vector_b(bin_corflags,                             &
+        call read_2d_vector_b(bbuf1,                                    &
      &      cast_long(jmax_cor_IO), ifour, gk_cor_IO(1,1,j1))
-        if(bin_corflags%ierr_IO .gt. 0) goto 99
+        if(bbuf1%ierr_bin .gt. 0) goto 99
 !
         num64 = jmax_cor_IO * itwo
         call read_mul_integer_b                                         &
-     &     (bin_corflags, num64, jgl_lcor_IO(1,1,j1))
-        if(bin_corflags%ierr_IO .gt. 0) go to 99
+     &     (bbuf1, num64, jgl_lcor_IO(1,1,j1))
+        if(bbuf1%ierr_bin .gt. 0) go to 99
 !
-        call read_2d_vector_b(bin_corflags,                             &
+        call read_2d_vector_b(bbuf1,                                    &
      &      cast_long(jmax_cor_IO), itwo, el_cor_IO(1,1,j1))
-        if(bin_corflags%ierr_IO .gt. 0) goto 99
+        if(bbuf1%ierr_bin .gt. 0) goto 99
       end do
 !
   99  continue

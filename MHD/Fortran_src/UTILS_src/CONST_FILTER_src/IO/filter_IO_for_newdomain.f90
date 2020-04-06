@@ -14,8 +14,8 @@
 !!      subroutine read_filter_coef_4_newdomain                         &
 !!     &         (id_file, fil_coef, whole_fil_sort, fluid_fil_sort)
 !!      subroutine read_filter_coef_4_newdomain_b                       &
-!!     &         (bin_flags, fil_coef, whole_fil_sort, fluid_fil_sort)
-!!        type(binary_IO_flags), intent(inout) :: bin_flags
+!!     &         (bbuf, fil_coef, whole_fil_sort, fluid_fil_sort)
+!!        type(binary_IO_buffer), intent(inout) :: bbuf
 !!        type(each_filter_coef), intent(inout) :: fil_coef
 !!        type(filter_func_4_sorting), intent(inout) :: whole_fil_sort
 !!        type(filter_func_4_sorting), intent(inout) :: fluid_fil_sort
@@ -133,9 +133,9 @@
 !  ---------------------------------------------------------------------
 !
       subroutine read_filter_coef_4_newdomain_b                         &
-     &         (bin_flags, fil_coef, whole_fil_sort, fluid_fil_sort)
+     &         (bbuf, fil_coef, whole_fil_sort, fluid_fil_sort)
 !
-      type(binary_IO_flags), intent(inout) :: bin_flags
+      type(binary_IO_buffer), intent(inout) :: bbuf
       type(each_filter_coef), intent(inout) :: fil_coef
       type(filter_func_4_sorting), intent(inout) :: whole_fil_sort
       type(filter_func_4_sorting), intent(inout) :: fluid_fil_sort
@@ -147,8 +147,8 @@
       call alloc_filter_func_4_sort(whole_fil_sort)
 !
       do inod = 1, inter_nod_3dfilter
-        call read_filter_coef_4_each_b(bin_flags, fil_coef)
-        if(bin_flags%ierr_IO .gt. 0) return
+        call read_filter_coef_4_each_b(bbuf, fil_coef)
+        if(bbuf%ierr_bin .gt. 0) return
 !
         call set_w_filter_item_4_newdomain                              &
      &     (inod, fil_coef, whole_fil_sort)
@@ -159,8 +159,8 @@
       call alloc_filter_func_4_sort(fluid_fil_sort)
 !
       do inod = 1, inter_nod_3dfilter
-        call read_filter_coef_4_each_b(bin_flags, fil_coef)
-        if(bin_flags%ierr_IO .gt. 0) return
+        call read_filter_coef_4_each_b(bbuf, fil_coef)
+        if(bbuf%ierr_bin .gt. 0) return
 !
         call set_f_filter_item_4_newdomain                              &
      &     (inod, fil_coef, fluid_fil_sort)

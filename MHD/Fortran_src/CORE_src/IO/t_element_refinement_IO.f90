@@ -13,15 +13,16 @@
 !!      subroutine write_element_refine_data(id_file, e_ref_IO)
 !!      subroutine read_element_refine_data(id_file, e_ref_IO)
 !!
-!!      subroutine write_element_refine_data_b(e_ref_IO, bflag)
-!!      subroutine read_element_refine_data_b(bflag, e_ref_IO)
-!!        type(binary_IO_flags), intent(inout) :: bflag
+!!      subroutine write_element_refine_data_b(e_ref_IO, bbuf)
+!!      subroutine read_element_refine_data_b(bbuf, e_ref_IO)
+!!        type(binary_IO_buffer), intent(inout) :: bbuf
 !!        type(ele_refine_IO_type), intent(inout) :: e_ref_IO
 !!@endverbatim
 !
       module t_element_refinement_IO
 !
       use m_precision
+      use t_binary_IO_buffer
 !
       implicit  none
 !
@@ -147,72 +148,71 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine write_element_refine_data_b(e_ref_IO, bflag)
+      subroutine write_element_refine_data_b(e_ref_IO, bbuf)
 !
       use binary_IO
 !
       type(ele_refine_IO_type), intent(in) :: e_ref_IO
-      type(binary_IO_flags), intent(inout) :: bflag
+      type(binary_IO_buffer), intent(inout) :: bbuf
 !
       integer(kind = kint_gl) :: num64
 !
 !
-      call write_one_integer_b(e_ref_IO%max_refine_level, bflag)
-      if(bflag%ierr_IO .ne. 0) return
-      call write_one_integer_b(e_ref_IO%nele_ref, bflag)
-      if(bflag%ierr_IO .ne. 0) return
-      call write_one_integer_b(e_ref_IO%nele_org, bflag)
-      if(bflag%ierr_IO .ne. 0) return
+      call write_one_integer_b(e_ref_IO%max_refine_level, bbuf)
+      if(bbuf%ierr_bin .ne. 0) return
+      call write_one_integer_b(e_ref_IO%nele_ref, bbuf)
+      if(bbuf%ierr_bin .ne. 0) return
+      call write_one_integer_b(e_ref_IO%nele_org, bbuf)
+      if(bbuf%ierr_bin .ne. 0) return
 !
       num64 = e_ref_IO%nele_ref
-      call write_mul_integer_b(num64, e_ref_IO%iele_gl_new, bflag)
-      if(bflag%ierr_IO .ne. 0) return
-      call write_mul_integer_b(num64, e_ref_IO%ilevel_refine, bflag)
-      if(bflag%ierr_IO .ne. 0) return
-      call write_mul_integer_b(num64, e_ref_IO%iflag_refine_ele, bflag)
-      if(bflag%ierr_IO .ne. 0) return
-      call write_mul_integer_b(num64, e_ref_IO%iele_gl_org, bflag)
-      if(bflag%ierr_IO .ne. 0) return
-      call write_mul_integer_b(num64, e_ref_IO%icou_gl_org, bflag)
-      if(bflag%ierr_IO .ne. 0) return
+      call write_mul_integer_b(num64, e_ref_IO%iele_gl_new, bbuf)
+      if(bbuf%ierr_bin .ne. 0) return
+      call write_mul_integer_b(num64, e_ref_IO%ilevel_refine, bbuf)
+      if(bbuf%ierr_bin .ne. 0) return
+      call write_mul_integer_b(num64, e_ref_IO%iflag_refine_ele, bbuf)
+      if(bbuf%ierr_bin .ne. 0) return
+      call write_mul_integer_b(num64, e_ref_IO%iele_gl_org, bbuf)
+      if(bbuf%ierr_bin .ne. 0) return
+      call write_mul_integer_b(num64, e_ref_IO%icou_gl_org, bbuf)
 !
       end subroutine write_element_refine_data_b
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine read_element_refine_data_b(bflag, e_ref_IO)
+      subroutine read_element_refine_data_b(bbuf, e_ref_IO)
 !
       use binary_IO
       use transfer_to_long_integers
 !
-      type(binary_IO_flags), intent(inout) :: bflag
+      type(binary_IO_buffer), intent(inout) :: bbuf
       type(ele_refine_IO_type), intent(inout) :: e_ref_IO
 !
       integer(kind = kint_gl) :: num64
 !
 !
-      call read_one_integer_b(bflag, e_ref_IO%max_refine_level)
-      if(bflag%ierr_IO .ne. 0) return
+      call read_one_integer_b(bbuf, e_ref_IO%max_refine_level)
+      if(bbuf%ierr_bin .gt. 0) return
 !
-      call read_one_integer_b(bflag, e_ref_IO%nele_ref)
-      if(bflag%ierr_IO .ne. 0) return
+      call read_one_integer_b(bbuf, e_ref_IO%nele_ref)
+      if(bbuf%ierr_bin .gt. 0) return
 !
-      call read_one_integer_b(bflag, e_ref_IO%nele_org)
-      if(bflag%ierr_IO .ne. 0) return
+      call read_one_integer_b(bbuf, e_ref_IO%nele_org)
+      if(bbuf%ierr_bin .gt. 0) return
 !
       call alloc_element_refine_IO(e_ref_IO)
 !
       num64 = cast_long(e_ref_IO%nele_ref)
-      call read_mul_integer_b(bflag, num64, e_ref_IO%iele_gl_new)
-      if(bflag%ierr_IO .ne. 0) return
-      call read_mul_integer_b(bflag, num64, e_ref_IO%ilevel_refine)
-      if(bflag%ierr_IO .ne. 0) return
-      call read_mul_integer_b(bflag, num64, e_ref_IO%iflag_refine_ele)
-      if(bflag%ierr_IO .ne. 0) return
-      call read_mul_integer_b(bflag, num64, e_ref_IO%iele_gl_org)
-      if(bflag%ierr_IO .ne. 0) return
-      call read_mul_integer_b(bflag, num64, e_ref_IO%icou_gl_org)
-      if(bflag%ierr_IO .ne. 0) return
+      call read_mul_integer_b(bbuf, num64, e_ref_IO%iele_gl_new)
+      if(bbuf%ierr_bin .gt. 0) return
+      call read_mul_integer_b(bbuf, num64, e_ref_IO%ilevel_refine)
+      if(bbuf%ierr_bin .gt. 0) return
+      call read_mul_integer_b(bbuf, num64, e_ref_IO%iflag_refine_ele)
+      if(bbuf%ierr_bin .gt. 0) return
+      call read_mul_integer_b(bbuf, num64, e_ref_IO%iele_gl_org)
+      if(bbuf%ierr_bin .gt. 0) return
+      call read_mul_integer_b(bbuf, num64, e_ref_IO%icou_gl_org)
+      if(bbuf%ierr_bin .gt. 0) return
 !
       end subroutine read_element_refine_data_b
 !

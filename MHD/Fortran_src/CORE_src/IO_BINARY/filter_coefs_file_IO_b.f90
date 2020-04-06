@@ -28,6 +28,7 @@
       use m_file_format_switch
       use t_filter_file_data
       use t_filter_coefficients
+      use t_binary_IO_buffer
       use binary_IO
 !
       implicit none
@@ -60,20 +61,21 @@
         write(*,*) 'Read binary filter file: ', trim(file_name)
       end if
 !
-      call open_read_binary_file(file_name, id_rank, bin_fcflags)
+      call open_read_binary_file(file_name, id_rank, bbuf1)
+      if(bbuf1%ierr_bin .ne. 0) goto 99
       call read_filter_geometry_b                                       &
-     &   (id_rank, bin_fcflags, filter_IO%nod_comm, filter_IO%node)
-      if(bin_fcflags%ierr_IO .ne. 0) goto 99
+     &   (id_rank, bbuf1, filter_IO%nod_comm, filter_IO%node)
+      if(bbuf1%ierr_bin .gt. 0)  goto 99
 !
-      call read_3d_filter_stack_b(bin_fcflags, filter_IO%filters)
-      if(bin_fcflags%ierr_IO .ne. 0) goto 99
+      call read_3d_filter_stack_b(bbuf1, filter_IO%filters)
+      if(bbuf1%ierr_bin .gt. 0) goto 99
 !
       call read_3d_filter_weights_coef_b                                &
-     &   (bin_fcflags, filter_IO%filters)
+     &   (bbuf1, filter_IO%filters)
 !
   99  continue
       call close_binary_file
-      ierr = bin_fcflags%ierr_IO
+      ierr = bbuf1%ierr_bin
 !
       end subroutine read_sorted_filter_coef_file_b
 !
@@ -94,18 +96,19 @@
         write(*,*) 'Write binary filter file: ', trim(file_name)
       end if
 !
-      call open_write_binary_file(file_name, bin_fcflags)
-      if(bin_fcflags%ierr_IO .ne. 0) ierr = ierr_file
+      call open_write_binary_file(file_name, bbuf1)
+      if(bbuf1%ierr_bin .gt. 0) go to 99
       call write_filter_geometry_b                                      &
-     &   (id_rank, filter_IO%nod_comm, filter_IO%node, bin_fcflags)
-      if(bin_fcflags%ierr_IO .ne. 0) ierr = ierr_file
-      call write_3d_filter_stack_b(filter_IO%filters, bin_fcflags)
-      if(bin_fcflags%ierr_IO .ne. 0) ierr = ierr_file
+     &   (id_rank, filter_IO%nod_comm, filter_IO%node, bbuf1)
+      if(bbuf1%ierr_bin .gt. 0) go to 99
+      call write_3d_filter_stack_b(filter_IO%filters, bbuf1)
+      if(bbuf1%ierr_bin .gt. 0) go to 99
       call write_3d_filter_weights_coef_b                               &
-     &   (filter_IO%filters, bin_fcflags)
-      if(bin_fcflags%ierr_IO .ne. 0) ierr = ierr_file
+     &   (filter_IO%filters, bbuf1)
 !
+  99  continue
       call close_binary_file
+      ierr = bbuf1%ierr_bin
 !
       call dealloc_filter_geometry_data(filter_IO)
 !
@@ -130,11 +133,14 @@
         write(*,*) 'Read binary filter file: ', trim(file_name)
       end if
 !
-      call open_read_binary_file(file_name, id_rank, bin_fcflags)
+      call open_read_binary_file(file_name, id_rank, bbuf1)
+      if(bbuf1%ierr_bin .ne. 0) goto 99
       call read_filter_geometry_b                                       &
-     &   (id_rank, bin_fcflags, filter_IO%nod_comm, filter_IO%node)
+     &   (id_rank, bbuf1, filter_IO%nod_comm, filter_IO%node)
+!
+  99  continue
       call close_binary_file
-      ierr = bin_fcflags%ierr_IO
+      ierr = bbuf1%ierr_bin
 !
       end subroutine read_filter_geometry_file_b
 !
@@ -156,12 +162,14 @@
         write(*,*) 'Write binary filter file: ', trim(file_name)
       end if
 !
-      call open_write_binary_file(file_name, bin_fcflags)
-      if(bin_fcflags%ierr_IO .ne. 0) ierr = ierr_file
+      call open_write_binary_file(file_name, bbuf1)
+      if(bbuf1%ierr_bin .gt. 0) go to 99
       call write_filter_geometry_b                                      &
-     &   (id_rank, filter_IO%nod_comm, filter_IO%node, bin_fcflags)
-      if(bin_fcflags%ierr_IO .ne. 0) ierr = ierr_file
+     &   (id_rank, filter_IO%nod_comm, filter_IO%node, bbuf1)
+!
+  99  continue
       call close_binary_file
+      ierr = bbuf1%ierr_bin
 !
       call dealloc_filter_geometry_data(filter_IO)
 !
@@ -170,30 +178,30 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine read_3d_filter_stack_b(bflag, IO_filters)
+      subroutine read_3d_filter_stack_b(bbuf, IO_filters)
 !
       use cal_minmax_and_stacks
       use transfer_to_long_integers
       use binary_IO
 !
-      type(binary_IO_flags), intent(inout) :: bflag
+      type(binary_IO_buffer), intent(inout) :: bbuf
       type(filter_coefficients_type), intent(inout) :: IO_filters
 !
       integer(kind = kint_gl) :: num64
 !
 !
-      call read_one_integer_b(bflag, IO_filters%ngrp_node)
-      if(bflag%ierr_IO .ne. 0) return
+      call read_one_integer_b(bbuf, IO_filters%ngrp_node)
+      if(bbuf%ierr_bin .gt. 0) return
 !
       call alloc_num_filtering_comb(ione, IO_filters)
 !
-      call read_integer_stack_b(bflag, cast_long(IO_filters%ngrp_node), &
+      call read_integer_stack_b(bbuf, cast_long(IO_filters%ngrp_node),  &
      &    IO_filters%istack_node, IO_filters%ntot_nod)
-      if(bflag%ierr_IO .ne. 0) return
+      if(bbuf%ierr_bin .gt. 0) return
 !
       call read_mul_character_b                                         &
-     &   (bflag, IO_filters%ngrp_node, IO_filters%group_name)
-      if(bflag%ierr_IO .ne. 0) return
+     &   (bbuf, IO_filters%ngrp_node, IO_filters%group_name)
+      if(bbuf%ierr_bin .ne. 0) return
 !
       call s_cal_numbers_from_stack(IO_filters%ngrp_node,               &
      &    IO_filters%num_node, IO_filters%istack_node)
@@ -201,11 +209,11 @@
       call alloc_inod_filter_comb(IO_filters)
 !
       num64 = IO_filters%ntot_nod
-      call read_mul_integer_b(bflag, num64, IO_filters%inod_filter)
-      if(bflag%ierr_IO .ne. 0) return
-      call read_integer_stack_b(bflag, num64,                           &
+      call read_mul_integer_b(bbuf, num64, IO_filters%inod_filter)
+      if(bbuf%ierr_bin .gt. 0) return
+      call read_integer_stack_b(bbuf, num64,                            &
      &    IO_filters%istack_near_nod, IO_filters%ntot_near_nod)
-      if(bflag%ierr_IO .ne. 0) return
+      if(bbuf%ierr_bin .gt. 0) return
 !
       call s_cal_numbers_from_stack(IO_filters%ntot_nod,                &
      &    IO_filters%nnod_near, IO_filters%istack_near_nod)
@@ -215,11 +223,11 @@
 !  ---------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine read_3d_filter_weights_coef_b(bflag, IO_filters)
+      subroutine read_3d_filter_weights_coef_b(bbuf, IO_filters)
 !
       use binary_IO
 !
-      type(binary_IO_flags), intent(inout) :: bflag
+      type(binary_IO_buffer), intent(inout) :: bbuf
       type(filter_coefficients_type), intent(inout) :: IO_filters
 !
       integer(kind = kint_gl) :: num64
@@ -229,70 +237,69 @@
       call alloc_3d_filter_func(IO_filters)
 !
       num64 = IO_filters%ntot_near_nod
-      call read_mul_integer_b(bflag, num64, IO_filters%inod_near)
-      if(bflag%ierr_IO .ne. 0) return
+      call read_mul_integer_b(bbuf, num64, IO_filters%inod_near)
+      if(bbuf%ierr_bin .gt. 0) return
 !
       num64 = IO_filters%ntot_near_nod
-      call read_1d_vector_b(bflag, num64, IO_filters%func)
-      if(bflag%ierr_IO .ne. 0) return
-      call read_1d_vector_b(bflag, num64, IO_filters%weight)
-      if(bflag%ierr_IO .ne. 0) return
+      call read_1d_vector_b(bbuf, num64, IO_filters%func)
+      if(bbuf%ierr_bin .ne. 0) return
+      call read_1d_vector_b(bbuf, num64, IO_filters%weight)
+      if(bbuf%ierr_bin .ne. 0) return
 !
       end subroutine read_3d_filter_weights_coef_b
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine write_3d_filter_stack_b(IO_filters, bflag)
+      subroutine write_3d_filter_stack_b(IO_filters, bbuf)
 !
       use binary_IO
 !
       type(filter_coefficients_type), intent(in) :: IO_filters
-      type(binary_IO_flags), intent(inout) :: bflag
+      type(binary_IO_buffer), intent(inout) :: bbuf
 !
       integer(kind = kint_gl) :: num64
 !
 !
       num64 = IO_filters%ngrp_node
-      call write_one_integer_b(IO_filters%ngrp_node, bflag)
-      if(bflag%ierr_IO .ne. 0) return
+      call write_one_integer_b(IO_filters%ngrp_node, bbuf)
+      if(bbuf%ierr_bin .ne. 0) return
       call write_integer_stack_b                                        &
-     &   (num64, IO_filters%istack_node, bflag)
-      if(bflag%ierr_IO .ne. 0) return
+     &   (num64, IO_filters%istack_node, bbuf)
+      if(bbuf%ierr_bin .ne. 0) return
 !
       call write_mul_character_b                                        &
-     &   (IO_filters%ngrp_node, IO_filters%group_name, bflag)
-      if(bflag%ierr_IO .ne. 0) return
+     &   (IO_filters%ngrp_node, IO_filters%group_name, bbuf)
+      if(bbuf%ierr_bin .ne. 0) return
 !
       num64 = IO_filters%ntot_nod
       call write_mul_integer_b                                          &
-     &   (num64, IO_filters%inod_filter, bflag)
-      if(bflag%ierr_IO .ne. 0) return
+     &   (num64, IO_filters%inod_filter, bbuf)
+      if(bbuf%ierr_bin .ne. 0) return
       call write_integer_stack_b                                        &
-     &   (num64, IO_filters%istack_near_nod, bflag)
-      if(bflag%ierr_IO .ne. 0) return
+     &   (num64, IO_filters%istack_near_nod, bbuf)
+      if(bbuf%ierr_bin .ne. 0) return
 !
       end subroutine write_3d_filter_stack_b
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine write_3d_filter_weights_coef_b(IO_filters, bflag)
+      subroutine write_3d_filter_weights_coef_b(IO_filters, bbuf)
 !
       use binary_IO
 !
       type(filter_coefficients_type), intent(in) :: IO_filters
-      type(binary_IO_flags), intent(inout) :: bflag
+      type(binary_IO_buffer), intent(inout) :: bbuf
 !
       integer(kind = kint_gl) :: num64
 !
 !
       num64 = IO_filters%ntot_near_nod
-      call write_mul_integer_b(num64, IO_filters%inod_near, bflag)
-      if(bflag%ierr_IO .ne. 0) return
-      call write_1d_vector_b(num64, IO_filters%func, bflag)
-      if(bflag%ierr_IO .ne. 0) return
-      call write_1d_vector_b(num64, IO_filters%weight, bflag)
-      if(bflag%ierr_IO .ne. 0) return
+      call write_mul_integer_b(num64, IO_filters%inod_near, bbuf)
+      if(bbuf%ierr_bin .ne. 0) return
+      call write_1d_vector_b(num64, IO_filters%func, bbuf)
+      if(bbuf%ierr_bin .ne. 0) return
+      call write_1d_vector_b(num64, IO_filters%weight, bbuf)
 !
       end subroutine write_3d_filter_weights_coef_b
 !

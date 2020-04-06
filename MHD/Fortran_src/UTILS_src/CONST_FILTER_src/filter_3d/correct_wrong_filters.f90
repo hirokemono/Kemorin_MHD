@@ -6,11 +6,12 @@
 !!      subroutine s_correct_wrong_filters                              &
 !!     &         (id_org_filter, fixed_file_name, mesh, g_FEM, jac_3d,  &
 !!     &          FEM_elen, ref_m, gfil_p, dxidxs, mom_nod, fil_coef,   &
-!!     &          tmp_coef, whole_area, fluid_area, f_matrices)
+!!     &          tmp_coef, whole_area, fluid_area, f_matrices,         &
+!!     &          bbuf_org)
 !!      subroutine correct_wrong_fluid_filters                          &
 !!     &         (id_org_filter, fixed_file_name, gfil_p, mesh, g_FEM,  &
 !!     &          jac_3d, FEM_elen, ref_m, fil_elist, dxidxs, mom_nod,  &
-!!     &          fil_coef, tmp_coef, fluid_area, f_matrices)
+!!     &          fil_coef, tmp_coef, fluid_area, f_matrices, bbuf_org)
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(jacobians_3d), intent(in) :: jac_3d
 !!        type(gradient_model_data_type), intent(in) :: FEM_elen
@@ -21,6 +22,7 @@
 !!        type(nod_mom_diffs_type), intent(inout) :: mom_nod(2)
 !!        type(each_filter_coef), intent(inout) :: fil_coef, tmp_coef
 !!        type(matrices_4_filter), intent(inout) :: f_matrices
+!!        type(binary_IO_buffer), intent(inout) :: bbuf_org
 !
       module correct_wrong_filters
 !
@@ -39,6 +41,7 @@
       use t_matrix_4_filter
       use t_element_list_4_filter
       use t_ctl_params_4_gen_filter
+      use t_binary_IO_buffer
 !
       use binary_IO
       use expand_filter_area_4_1node
@@ -65,7 +68,8 @@
       subroutine s_correct_wrong_filters                                &
      &         (id_org_filter, fixed_file_name, mesh, g_FEM, jac_3d,    &
      &          FEM_elen, ref_m, gfil_p, dxidxs, mom_nod, fil_coef,     &
-     &          tmp_coef, whole_area, fluid_area, f_matrices)
+     &          tmp_coef, whole_area, fluid_area, f_matrices,           &
+     &          bbuf_org)
 !
       use set_simple_filters
 !
@@ -85,6 +89,8 @@
       type(filter_area_flag), intent(inout) :: whole_area, fluid_area
       type(matrices_4_filter), intent(inout) :: f_matrices
 !
+      type(binary_IO_buffer), intent(inout) :: bbuf_org
+!
       integer(kind = kint) :: inod, ierr2, ierr
 !
 !
@@ -100,7 +106,7 @@
 !
       do inod = gfil_p%inod_start_filter, gfil_p%inod_end_filter
         call read_each_filter_stack_coef                                &
-     &     (id_org_filter, fil_coef, ierr)
+     &     (id_org_filter, fil_coef, bbuf_org)
 !
         call cal_rms_filter_coefs(fil_coef, min_rms_weight, ierr2)
 !
@@ -160,7 +166,7 @@
       subroutine correct_wrong_fluid_filters                            &
      &         (id_org_filter, fixed_file_name, gfil_p, mesh, g_FEM,    &
      &          jac_3d, FEM_elen, ref_m, fil_elist, dxidxs, mom_nod,    &
-     &          fil_coef, tmp_coef, fluid_area, f_matrices)
+     &          fil_coef, tmp_coef, fluid_area, f_matrices, bbuf_org)
 !
       character(len = kchara), intent(in) :: fixed_file_name
       integer(kind = kint), intent(in) :: id_org_filter
@@ -179,6 +185,8 @@
       type(filter_area_flag), intent(inout) :: fluid_area
       type(matrices_4_filter), intent(inout) :: f_matrices
 !
+      type(binary_IO_buffer), intent(inout) :: bbuf_org
+!
       integer(kind = kint) :: inod, ierr2, ierr
 !
 !
@@ -189,7 +197,7 @@
 !
       do inod = gfil_p%inod_start_filter, gfil_p%inod_end_filter
         call read_each_filter_stack_coef                                &
-     &     (id_org_filter, fil_coef, ierr)
+     &     (id_org_filter, fil_coef, bbuf_org)
 !
         if ( fil_coef%nnod_4_1nod_w .gt. 0) then
           call cal_rms_filter_coefs(fil_coef, min_rms_weight, ierr2)

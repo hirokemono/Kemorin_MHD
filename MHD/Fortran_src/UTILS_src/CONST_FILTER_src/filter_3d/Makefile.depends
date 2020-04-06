@@ -44,7 +44,7 @@ copy_filters_4_sorting.o: $(FILTER_3D_MATDIR)/copy_filters_4_sorting.f90 m_preci
 	$(F90) -c $(F90OPTFLAGS) $<
 copy_moments_2_matrix.o: $(FILTER_3D_MATDIR)/copy_moments_2_matrix.f90 m_precision.o t_reference_moments.o t_filter_coefs.o t_matrix_4_filter.o
 	$(F90) -c $(F90OPTFLAGS) $<
-correct_wrong_filters.o: $(FILTER_3D_MATDIR)/correct_wrong_filters.f90 m_precision.o m_constants.o t_mesh_data.o t_fem_gauss_int_coefs.o t_jacobians.o t_next_node_ele_4_node.o t_filter_elength.o t_filter_dxdxi.o t_filter_moments.o t_reference_moments.o t_filter_coefs.o t_matrix_4_filter.o t_element_list_4_filter.o t_ctl_params_4_gen_filter.o binary_IO.o expand_filter_area_4_1node.o copy_moments_2_matrix.o cal_filter_func_each_node.o cal_simple_filter_each_node.o cal_3d_filter_4_each_node.o cal_filter_moments_again.o write_filters_4_each_node.o set_simple_filters.o
+correct_wrong_filters.o: $(FILTER_3D_MATDIR)/correct_wrong_filters.f90 m_precision.o m_constants.o t_mesh_data.o t_fem_gauss_int_coefs.o t_jacobians.o t_next_node_ele_4_node.o t_filter_elength.o t_filter_dxdxi.o t_filter_moments.o t_reference_moments.o t_filter_coefs.o t_matrix_4_filter.o t_element_list_4_filter.o t_ctl_params_4_gen_filter.o t_binary_IO_buffer.o binary_IO.o expand_filter_area_4_1node.o copy_moments_2_matrix.o cal_filter_func_each_node.o cal_simple_filter_each_node.o cal_3d_filter_4_each_node.o cal_filter_moments_again.o write_filters_4_each_node.o set_simple_filters.o
 	$(F90) -c $(F90OPTFLAGS) $<
 delete_small_weighting.o: $(FILTER_3D_MATDIR)/delete_small_weighting.f90 m_precision.o calypso_mpi.o t_filter_coefs.o quicksort.o
 	$(F90) -c $(F90OPTFLAGS) $<

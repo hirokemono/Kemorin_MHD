@@ -138,7 +138,7 @@ t_IO_step_parameter.o: $(IO_DIR)/t_IO_step_parameter.f90 m_precision.o m_constan
 	$(F90) -c $(F90OPTFLAGS) $<
 t_boundary_field_IO.o: $(IO_DIR)/t_boundary_field_IO.f90 m_precision.o t_group_data.o set_parallel_file_name.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_element_refinement_IO.o: $(IO_DIR)/t_element_refinement_IO.f90 m_precision.o skip_comment_f.o binary_IO.o transfer_to_long_integers.o
+t_element_refinement_IO.o: $(IO_DIR)/t_element_refinement_IO.f90 m_precision.o t_binary_IO_buffer.o skip_comment_f.o binary_IO.o transfer_to_long_integers.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_field_data_IO.o: $(IO_DIR)/t_field_data_IO.f90 m_precision.o m_constants.o cal_minmax_and_stacks.o
 	$(F90) -c $(F90OPTFLAGS) $<

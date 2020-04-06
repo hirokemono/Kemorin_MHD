@@ -59,14 +59,15 @@
       if(id_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &   'Read binary mesh file: ', trim(file_name)
 !
-      call open_read_binary_file(file_name, id_rank, bin_meshflags)
-      if(bin_meshflags%ierr_IO .ne. 0) return
+      call open_read_binary_file(file_name, id_rank, bbuf1)
+      if(bbuf1%ierr_bin .ne. 0) goto 99
 !
-      call read_geometry_data_b(id_rank, bin_meshflags, mesh_IO)
-      if(bin_meshflags%ierr_IO .ne. 0) return
+      call read_geometry_data_b(id_rank, bbuf1, mesh_IO)
+      if(bbuf1%ierr_bin .ne. 0) go to 99
 !
-      call read_mesh_groups_b(bin_meshflags, group_IO)
+      call read_mesh_groups_b(bbuf1, group_IO)
 !
+  99  continue
       call close_binary_file
       ierr = bin_meshflags%ierr_IO
 !
@@ -87,10 +88,11 @@
       if(id_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &   'Read binary mesh file: ', trim(file_name)
 !
-      call open_read_binary_file(file_name, id_rank, bin_meshflags)
-      if(bin_meshflags%ierr_IO .ne. 0) return
-      call read_geometry_data_b(id_rank, bin_meshflags, mesh_IO)
+      call open_read_binary_file(file_name, id_rank, bbuf1)
+      if(bbuf1%ierr_bin .ne. 0) goto 99
+      call read_geometry_data_b(id_rank, bbuf1, mesh_IO)
 !
+  99  continue
       call close_binary_file
       ierr = bin_meshflags%ierr_IO
 !
@@ -111,10 +113,13 @@
       if(id_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &   'Read binary mesh file: ', trim(file_name)
 !
-      call open_read_binary_file(file_name, id_rank, bin_meshflags)
-      call read_num_node_b(id_rank, bin_meshflags, mesh_IO)
+      call open_read_binary_file(file_name, id_rank, bbuf1)
+      if(bbuf1%ierr_bin .ne. 0) goto 99
+      call read_num_node_b(id_rank, bbuf1, mesh_IO)
+!
+  99  continue
       call close_binary_file
-      ierr = bin_meshflags%ierr_IO
+      ierr = bbuf1%ierr_bin
 !
       end subroutine read_node_size_b
 !
@@ -133,10 +138,13 @@
       if(id_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &   'Read binary mesh file: ', trim(file_name)
 !
-      call open_read_binary_file(file_name, id_rank, bin_meshflags)
-      call read_num_node_ele_b(id_rank, bin_meshflags, mesh_IO)
+      call open_read_binary_file(file_name, id_rank, bbuf1)
+      if(bbuf1%ierr_bin .ne. 0) goto 99
+      call read_num_node_ele_b(id_rank, bbuf1, mesh_IO)
+!
+  99  continue
       call close_binary_file
-      ierr = bin_meshflags%ierr_IO
+      ierr = bbuf1%ierr_bin
 !
       end subroutine read_geometry_size_b
 !
@@ -157,13 +165,15 @@
       if(id_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &   'Write binary mesh file: ', trim(file_name)
 !
-      call open_write_binary_file(file_name, bin_meshflags)
-      if(bin_meshflags%ierr_IO .ne. 0) ierr = ierr_file
-      call write_geometry_data_b(id_rank, mesh_IO, bin_meshflags)
-      if(bin_meshflags%ierr_IO .ne. 0) ierr = ierr_file
-      call write_mesh_groups_b(group_IO, bin_meshflags)
-      if(bin_meshflags%ierr_IO .ne. 0) ierr = ierr_file
+      call open_write_binary_file(file_name, bbuf1)
+      if(bbuf1%ierr_bin .gt. 0) go to 99
+      call write_geometry_data_b(id_rank, mesh_IO, bbuf1)
+      if(bbuf1%ierr_bin .gt. 0) go to 99
+      call write_mesh_groups_b(group_IO, bbuf1)
+!
+  99  continue
       call close_binary_file
+      ierr = bbuf1%ierr_bin
 !
       end subroutine write_mesh_file_b
 !

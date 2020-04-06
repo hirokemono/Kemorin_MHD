@@ -66,11 +66,14 @@
      &             trim(file_name)
       end if
 !
-      call open_read_binary_file(file_name, id_rank, bin_fmflags)
-      call read_filter_moment_num_type_b                                &
-     &   (bin_fmflags, FEM_elens, FEM_moms)
+      call open_read_binary_file(file_name, id_rank, bbuf1)
+      if(bbuf1%ierr_bin .ne. 0) goto 99
+      call read_filter_moment_num_b(bbuf1, FEM_elens, FEM_moms)
+      if(bbuf1%ierr_bin .gt. 0) goto 99
+!
+  99  continue
       call close_binary_file
-      ierr = bin_fmflags%ierr_IO
+      ierr = bbuf1%ierr_bin
 !
       end subroutine read_num_filter_mom_type_file_b
 !
@@ -92,11 +95,13 @@
      &             trim(file_name)
       end if
 !
-      call open_read_binary_file(file_name, id_rank, bin_fmflags)
-      call read_filter_elen_data_type_b                                 &
-     &   (nnod, nele, bin_fmflags, FEM_elens)
+      call open_read_binary_file(file_name, id_rank, bbuf1)
+      if(bbuf1%ierr_bin .ne. 0) goto 99
+      call read_filter_elen_data_b(nnod, nele, bbuf1, FEM_elens)
+!
+  99  continue
       call close_binary_file
-      ierr = bin_fmflags%ierr_IO
+      ierr = bbuf1%ierr_bin
 !
       end subroutine read_filter_elen_type_file_b
 !
@@ -116,11 +121,13 @@
      &             trim(file_name)
       end if
 !
-      call open_write_binary_file(file_name, bin_fmflags)
-      if(bin_fmflags%ierr_IO .ne. 0) ierr = ierr_file
-      call write_filter_elen_data_type_b(FEM_elens, bin_fmflags)
-      if(bin_fmflags%ierr_IO .ne. 0) ierr = ierr_file
+      call open_write_binary_file(file_name, bbuf1)
+      if(bbuf1%ierr_bin .gt. 0) go to 99
+      call write_filter_elen_data_b(FEM_elens, bbuf1)
+!
+  99  continue
       call close_binary_file
+      ierr = bbuf1%ierr_bin
 !
       end subroutine write_filter_elen_type_file_b
 !
@@ -145,11 +152,14 @@
      &             trim(file_name)
       end if
 !
-      call open_read_binary_file(file_name, id_rank, bin_fmflags)
-      call read_filter_moms_data_type_b                                 &
-     &   (nnod, nele, bin_fmflags, FEM_elens, FEM_moms)
+      call open_read_binary_file(file_name, id_rank, bbuf1)
+      if(bbuf1%ierr_bin .ne. 0) goto 99
+      call read_filter_moms_data_b                                      &
+     &   (nnod, nele, bbuf1, FEM_elens, FEM_moms)
+!
+  99  continue
       call close_binary_file
-      ierr = bin_fmflags%ierr_IO
+      ierr = bbuf1%ierr_bin
 !
       end subroutine read_filter_moms_type_file_b
 !
@@ -172,12 +182,14 @@
      &             trim(file_name)
       end if
 !
-      call open_write_binary_file(file_name, bin_fmflags)
-      if(bin_fmflags%ierr_IO .ne. 0) ierr = ierr_file
-      call write_filter_moms_data_type_b                                &
-     &   (FEM_elens, FEM_moms, bin_fmflags)
-      if(bin_fmflags%ierr_IO .ne. 0) ierr = ierr_file
+      call open_write_binary_file(file_name, bbuf1)
+      if(bbuf1%ierr_bin .gt. 0) go to 99
+      call write_filter_moms_data_b                                     &
+     &   (FEM_elens, FEM_moms, bbuf1)
+!
+  99  continue
       call close_binary_file
+      ierr = bbuf1%ierr_bin
 !
       end subroutine write_filter_moms_type_file_b
 !

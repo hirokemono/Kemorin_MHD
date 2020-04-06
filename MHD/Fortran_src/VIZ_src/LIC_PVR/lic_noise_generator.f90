@@ -19,9 +19,11 @@
 !
       use m_precision
       use m_constants
-      use binary_IO
       use calypso_mpi
       use m_machine_parameter
+!
+      use t_binary_IO_buffer
+      use binary_IO
 !
       implicit  none
 !
@@ -54,26 +56,26 @@
 !
       file_name = add_null_character(filename)
       call open_rd_rawfile_f(file_name, bbuf1)
-      if(ierr .eq. 0) then
+      if(bbuf1%ierr_bin .ne. 0) go to 99
 ! first line read 3 integer size data, byte 4
-        call read_mul_int_from_32bit                                    &
-     &     (bflag_noise, ithree64, n_data_size)
-        if(bflag_noise%ierr_IO .gt. 0) ierr = ierr_file
-        d_size = n_data_size(1)*n_data_size(2)*n_data_size(3)
-!        write(*,*) d_size
-        allocate(n_node_data(d_size))
-        do i=1, d_size
+      call read_mul_int_from_32bit(bbuf1, ithree64, n_data_size)
+      if(bbuf1%ierr_bin .ne. 0) go to 99
+      d_size = n_data_size(1)*n_data_size(2)*n_data_size(3)
+!      write(*,*) d_size
+      allocate(n_node_data(d_size))
+      do i=1, d_size
 !  change 0 to any level to initial complex noise node tree
-          call alloc_noise_node(n_node_data(i), itwo, izero)
-          call read_mul_one_character_b                                 &
-     &       (bflag_noise, ione64, noise_char)
-          if(bflag_noise%ierr_IO .gt. 0) ierr = ierr_file
+        call alloc_noise_node(n_node_data(i), itwo, izero)
+        call read_mul_one_character_b(bbuf1, ione64, noise_char)
+        if(bbuf1%ierr_bin .gt. 0) go to 99
 !
-          n_node_data(i)%n_value = ichar(noise_char(1)) / 255.0
-!          write(*,*) n_node_data(i)%n_value
-        end do
-      end if
+        n_node_data(i)%n_value = ichar(noise_char(1)) / 255.0
+!        write(*,*) n_node_data(i)%n_value
+      end do
+!
+  99  continue
       call close_rawfile_f()
+      ierr = bbuf1%ierr_bin
 !
       end subroutine import_noise_nd_ary
 !
@@ -99,50 +101,47 @@
 !
 !
       if(my_rank .eq. 0) then
+        bflag_noise%iflag_swap = iendian_KEEP
         file_name = add_null_character(filename)
         call open_rd_rawfile_f(file_name, bbuf1)
-        if(ierr .eq. 0) then
+        if(bbuf1%ierr_bin .ne. 0) go to 99
 ! first line read 3 integer size data, byte 4
-          bflag_noise%iflag_swap = iendian_KEEP
-          call read_mul_int_from_32bit                                  &
-     &       (bflag_noise, ithree64, n_data_size)
-          if(bflag_noise%ierr_IO .gt. 0) ierr = ierr_file
+        bbuf1%iflag_swap = iendian_KEEP
+        call read_mul_int_from_32bit(bbuf1, ithree64, n_data_size)
+        if(bbuf1%ierr_bin .ne. 0) go to 99
 !
-          d_size = n_data_size(1)*n_data_size(2)*n_data_size(3)
-          if(iflag_debug .gt. 0) write(*,*) 'd_size',                   &
+        d_size = n_data_size(1)*n_data_size(2)*n_data_size(3)
+        if(iflag_debug .gt. 0) write(*,*) 'd_size',                     &
      &                           d_size, n_data_size(1:3)
 !
-          bflag_noise%iflag_swap = iendian_KEEP
-          call seek_forward_binary_file(d_size-1)
-          call read_mul_one_character_b(bflag_noise, ione64, one_chara)
-          if(bflag_noise%ierr_IO .gt. 0)                                &
-     &                          bflag_noise%iflag_swap = iendian_FLIP
+        bbuf1%iflag_swap = iendian_KEEP
+        call seek_forward_binary_file(d_size-1, bbuf1)
+        call read_mul_one_character_b(bbuf1, ione64, one_chara)
+        if(bbuf1%ierr_bin .gt. 0) bflag_noise%iflag_swap = iendian_FLIP
 !          write(*,*) 'iflag_swap a', bflag_noise%iflag_swap
-          call read_mul_one_character_b(bflag_noise, ione64, one_chara)
-          if(bflag_noise%ierr_IO .eq. 0)                                &
-     &                          bflag_noise%iflag_swap = iendian_FLIP
-          if(iflag_debug .gt. 0) write(*,*)                             &
+        call read_mul_one_character_b(bbuf1, ione64, one_chara)
+        if(bbuf1%ierr_bin .eq. 0) bflag_noise%iflag_swap = iendian_FLIP
+        if(iflag_debug .gt. 0) write(*,*)                               &
      &                       'iflag_swap', bflag_noise%iflag_swap
-        end if
+  99    continue
         call close_rawfile_f()
+        ierr = bbuf1%ierr_bin
 !
         call open_rd_rawfile_f(file_name, bbuf1)
-        if(ierr .eq. 0) then
+        if(bbuf1%ierr_bin .eq. 0) go to 98
 ! first line read 3 integer size data, byte 4
-          call read_mul_int_from_32bit                                  &
-     &       (bflag_noise, ithree64, n_data_size)
-          if(bflag_noise%ierr_IO .gt. 0) ierr = ierr_file
+        call read_mul_int_from_32bit(bbuf1, ithree64, n_data_size)
 !
-          d_size = n_data_size(1)*n_data_size(2)*n_data_size(3)
-          if(iflag_debug .gt. 0) write(*,*) 'd_size again',             &
+        d_size = n_data_size(1)*n_data_size(2)*n_data_size(3)
+        if(iflag_debug .gt. 0) write(*,*) 'd_size again',               &
      &                                     d_size, n_data_size(1:3)
 !
-          allocate( n_raw_data(d_size))  ! allocate space for noise data
-          call read_mul_one_character_b                                 &
-     &       (bflag_noise, d_size, n_raw_data)
-          if(bflag_noise%ierr_IO .gt. 0) ierr = ierr_file
-        end if
+        allocate( n_raw_data(d_size))  ! allocate space for noise data
+        call read_mul_one_character_b(bbuf1, d_size, n_raw_data)
+!
+  98    continue
         call close_rawfile_f()
+        ierr = bbuf1%ierr_bin
 !
         if(iflag_debug .gt. 0) then
           open(111, file='noise_text.dat')
@@ -189,16 +188,15 @@
       if(my_rank .eq. 0) then
         file_name = add_null_character(filename)
         call open_rd_rawfile_f(file_name, bbuf1)
-        if(ierr .eq. 0) then
-          d_size = n_data_size(1)*n_data_size(2)*n_data_size(3)*3
+        if(bbuf1%ierr_bin .eq. 0) go to 99
 !
-! allocate space for noise data
-          allocate( n_grad_data(d_size)) 
-          call read_mul_one_character_b                                 &
-     &       (bflag_noise, d_size, n_grad_data)
-          if(bflag_noise%ierr_IO .gt. 0) ierr = ierr_file
-        end if
+        d_size = n_data_size(1)*n_data_size(2)*n_data_size(3)*3
+        allocate( n_grad_data(d_size)) 
+        call read_mul_one_character_b(bbuf1, d_size, n_grad_data)
+!
+  99    continue
         call close_rawfile_f()
+        ierr = bbuf1%ierr_bin
       end if
 !
       call MPI_BCAST(ierr, 1,                                           &

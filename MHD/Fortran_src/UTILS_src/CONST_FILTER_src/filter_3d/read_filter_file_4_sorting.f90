@@ -86,10 +86,11 @@
      &      fil_gen%nmax_nod_near_all_w)
         close(filter_coef_code)
       else if( ifile_type .eq. 1) then
-        call open_read_binary_file(file_name, id_rank, bin_flflags)
+        call open_read_binary_file(file_name, id_rank, bbuf1)
+        if(bbuf1%ierr_bin .ne. 0) goto 99
         call read_filter_geometry_b                                     &
-     &     (id_rank, bin_flflags, comm_IO, nod_IO)
-        if(bin_flflags%ierr_IO .gt. 0) go to 99
+     &     (id_rank, bbuf1, comm_IO, nod_IO)
+        if(bbuf1%ierr_bin .gt. 0) go to 99
 !
         call copy_comm_tbl_type(comm_IO, filtering%comm)
         call copy_filtering_geometry_from_IO(nod_IO)
@@ -99,13 +100,15 @@
 !
         fil_gen%nmax_nod_near_all_w = 0
         call read_filter_neib_4_sort_b                                  &
-     &     (bin_flflags, fil_gen%whole_area, whole_fil_sort,            &
+     &     (bbuf1, fil_gen%whole_area, whole_fil_sort,                  &
      &     fil_gen%nmax_nod_near_all_w)
-        if(bin_flflags%ierr_IO .gt. 0) go to 99
+        bin_flflags%ierr_IO = bbuf1%ierr_bin
+        if(bbuf1%ierr_bin .gt. 0) go to 99
         call read_filter_neib_4_sort_b                                  &
-     &     (bin_flflags, fil_gen%fluid_area, fluid_fil_sort,            &
+     &     (bbuf1, fil_gen%fluid_area, fluid_fil_sort,                  &
      &     fil_gen%nmax_nod_near_all_w)
-        if(bin_flflags%ierr_IO .gt. 0) go to 99
+        bin_flflags%ierr_IO = bbuf1%ierr_bin
+        if(bbuf1%ierr_bin .gt. 0) go to 99
 !
   99    continue
         call close_binary_file
@@ -158,28 +161,31 @@
      &      fil_gen%fil_coef, fil_gen%fil_sorted)
         close(filter_coef_code)
       else if( ifile_type .eq. 1) then
-        call open_read_binary_file(file_name, id_rank, bin_flflags)
+        call open_read_binary_file(file_name, id_rank, bbuf1)
+        if(bbuf1%ierr_bin .ne. 0) goto 98
         call read_filter_geometry_b                                     &
-     &     (id_rank, bin_flflags, comm_IO, nod_IO)
-        if(bin_flflags%ierr_IO .gt. 0) go to 98
+     &     (id_rank, bbuf1, comm_IO, nod_IO)
+        if(bbuf1%ierr_bin .gt. 0) go to 98
 !
         fil_gen%nmax_nod_near_all_w = 0
         call read_filter_neib_4_sort_b                                  &
-     &     (bin_flflags, fil_gen%whole_area, whole_fil_sort,            &
+     &     (bbuf1, fil_gen%whole_area, whole_fil_sort,                  &
      &     fil_gen%nmax_nod_near_all_w)
-        if(bin_flflags%ierr_IO .gt. 0) go to 98
+        bin_flflags%ierr_IO = bbuf1%ierr_bin
+        if(bbuf1%ierr_bin .gt. 0) go to 98
         call read_filter_neib_4_sort_b                                  &
-     &     (bin_flflags, fil_gen%fluid_area, fluid_fil_sort,            &
+     &     (bbuf1, fil_gen%fluid_area, fluid_fil_sort,                  &
      &     fil_gen%nmax_nod_near_all_w)
-        if(bin_flflags%ierr_IO .gt. 0) go to 98
+        bin_flflags%ierr_IO = bbuf1%ierr_bin
+        if(bbuf1%ierr_bin .gt. 0) go to 98
 !
-        call read_filter_coef_4_sort_b(bin_flflags, filtering%filter,   &
+        call read_filter_coef_4_sort_b(bbuf1, filtering%filter,         &
      &      fil_gen%whole_area, fil_gen%fluid_area,                     &
      &      fil_gen%fil_coef, fil_gen%fil_sorted)
 !
   98    continue
         call close_binary_file
-        if(bin_flflags%ierr_IO .gt. 0) stop "Error rading"
+        if(bbuf1%ierr_bin .gt. 0) stop "Error rading"
       end if
 !
       call dealloc_node_geometry_base(nod_IO)
