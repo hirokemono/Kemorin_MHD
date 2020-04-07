@@ -27,14 +27,6 @@ ifdef OPENGL_LIBS
     KEMO_GLUT
 endif
 
-ifdef FFTW3_C
-  OBJS_C+= \
-    $$(OBJ_FFTW_C)
-  SUBDIRS+=   \
-    FFTW_wrapper
-endif
-
-
 #
 #  -------------------------------------------------------------------------
 #
@@ -86,7 +78,6 @@ mod_list:
 		GMAKE='$(GMAKE)' \
 		ZLIB_LIBS='$(ZLIB_LIBS)'     \
 		PNG_LIBS='$(PNG_LIBS)'       \
-		FFTW3_C='$(FFTW3_C)'   \
 		GLFW_LIBS='$(GLFW_LIBS)'   \
 		MAKENAME='$(MAKENAME)' \
 		mod_list \

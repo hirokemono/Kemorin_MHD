@@ -71,10 +71,6 @@
       use m_machine_parameter
       use m_fftw_parameters
 !
-#ifdef FFTW3_C
-      use fftw_access
-#endif
-!
       implicit none
 !
 !>      Structure to use SNGLE FFTW
@@ -113,17 +109,10 @@
 !
       Nfft4 = int(nidx_rtp(3))
       do j = 1, np_smp
-#ifdef FFTW3_C
-        call kemo_fftw_plan_dft_r2c_1d_f(FFTW_t%plan_fwd(j), Nfft4,     &
-     &      FFTW_t%X(1,j), FFTW_t%C(1,j) , FFTW_ESTIMATE)
-        call kemo_fftw_plan_dft_c2r_1d_f(FFTW_t%plan_bwd(j), Nfft4,     &
-     &      FFTW_t%C(1,j), FFTW_t%X(1,j) , FFTW_ESTIMATE)
-#else
         call dfftw_plan_dft_r2c_1d(FFTW_t%plan_fwd(j), Nfft4,           &
      &      FFTW_t%X(1,j), FFTW_t%C(1,j) , FFTW_ESTIMATE)
         call dfftw_plan_dft_c2r_1d(FFTW_t%plan_bwd(j), Nfft4,           &
      &      FFTW_t%C(1,j), FFTW_t%X(1,j) , FFTW_ESTIMATE)
-#endif
       end do
       FFTW_t%aNfft = one / dble(nidx_rtp(3))
 !
@@ -138,19 +127,11 @@
       integer(kind = kint) :: j
 !
 !
-#ifdef FFTW3_C
-      do j = 1, np_smp
-        call kemo_fftw_destroy_plan_f(FFTW_t%plan_fwd(j))
-        call kemo_fftw_destroy_plan_f(FFTW_t%plan_bwd(j))
-        call kemo_fftw_cleanup_f
-      end do
-#else
       do j = 1, np_smp
         call dfftw_destroy_plan(FFTW_t%plan_fwd(j))
         call dfftw_destroy_plan(FFTW_t%plan_bwd(j))
         call dfftw_cleanup
       end do
-#endif
 !
       call dealloc_FFTW_plan(FFTW_t)
 !
@@ -212,11 +193,7 @@
           do j = ist, ied
             FFTW_t%X(1:nidx_rtp(3),ip) = X_rtp(j,1:nidx_rtp(3),nd)
 !
-#ifdef FFTW3_C
-            call kemo_fftw_execute_f(FFTW_t%plan_fwd(ip))
-#else
             call dfftw_execute(FFTW_t%plan_fwd(ip))
-#endif
 !            call cpu_time(rtmp(ip,2))
 !
 !   normalization
@@ -298,19 +275,15 @@
             ic_recv = nd + (irev_sr_rtp(ic_rtp) - 1) * ncomp
             FFTW_t%C(m,ip)                                              &
      &              = half * cmplx(WR(ic_recv), zero, kind(0d0))
-!          call cpu_time(rtmp(ip,3))
+!           call cpu_time(rtmp(ip,3))
 !
-!          call cpu_time(dummy(ip,2))
-#ifdef FFTW3_C
-           call kemo_fftw_execute_f(FFTW_t%plan_bwd(ip))
-#else
+!           call cpu_time(dummy(ip,2))
            call dfftw_execute(FFTW_t%plan_bwd(ip))
-#endif
-!        call cpu_time(rtmp(ip,2))
+!           call cpu_time(rtmp(ip,2))
 !
-!        call cpu_time(dummy(ip,1))
+!           call cpu_time(dummy(ip,1))
             X_rtp(j,1:nidx_rtp(3),nd) = FFTW_t%X(1:nidx_rtp(3),ip)
-!        call cpu_time(rtmp(ip,1))
+!           call cpu_time(rtmp(ip,1))
           end do
         end do
       end do

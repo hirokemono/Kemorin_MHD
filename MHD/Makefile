@@ -328,7 +328,6 @@ makemake:
 		ZLIB_LIBS='$(ZLIB_LIBS)'     \
 		PNG_LIBS='$(PNG_LIBS)'       \
 		FFTW3_LIBS='$(FFTW3_LIBS)'   \
-		FFTW3_C='$(FFTW3_C)'   \
 		GLFW_LIBS='$(GLFW_LIBS)'   \
 		MAKEDIR='$(MAKEDIR)' \
 		MAKENAME='$(MAKENAME)' \

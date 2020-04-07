@@ -78,10 +78,6 @@
       use m_constants
       use m_fftw_parameters
 !
-#ifdef FFTW3_C
-      use fftw_access
-#endif
-!
       implicit none
 !
 ! ------------------------------------------------------------------
@@ -109,17 +105,10 @@
 !
       Nfft4 = int(Nfft)
       do j = 1, Ncomp
-#ifdef FFTW3_C
-        call kemo_fftw_plan_dft_r2c_1d_f(plan_forward(j), Nfft4,        &
-     &      X_FFTW(1,j), C_FFTW(1,j) , FFTW_ESTIMATE)
-        call kemo_fftw_plan_dft_c2r_1d_f(plan_backward(j), Nfft4,       &
-     &      C_FFTW(1,j), X_FFTW(1,j) , FFTW_ESTIMATE)
-#else
         call dfftw_plan_dft_r2c_1d(plan_forward(j), Nfft4,              &
      &      X_FFTW(1,j), C_FFTW(1,j) , FFTW_ESTIMATE)
         call dfftw_plan_dft_c2r_1d(plan_backward(j), Nfft4,             &
      &      C_FFTW(1,j), X_FFTW(1,j) , FFTW_ESTIMATE)
-#endif
       end do
       aNfft = one / dble(Nfft)
 !
@@ -138,15 +127,9 @@
 !
 !
       do j = 1, Ncomp
-#ifdef FFTW3_C
-        call kemo_fftw_destroy_plan_f(plan_forward(j))
-        call kemo_fftw_destroy_plan_f(plan_backward(j))
-        call kemo_fftw_cleanup_f
-#else
         call dfftw_destroy_plan(plan_forward(j))
         call dfftw_destroy_plan(plan_backward(j))
         call dfftw_cleanup
-#endif
       end do
 !
       end subroutine destroy_FFTW_smp
@@ -183,11 +166,7 @@
 !
 !        call cpu_time(dummy(ip,2))
         do j = ist, ied
-#ifdef FFTW3_C
-          call kemo_fftw_execute_f(plan_forward(j))
-#else
           call dfftw_execute(plan_forward(j))
-#endif
         end do
 !        call cpu_time(rtmp(ip,2))
 !
@@ -251,11 +230,7 @@
 !
 !        call cpu_time(dummy(ip,2))
         do j = ist, ied
-#ifdef FFTW3_C
-          call kemo_fftw_execute_f(plan_backward(j))
-#else
           call dfftw_execute(plan_backward(j))
-#endif
         end do
 !        call cpu_time(rtmp(ip,2))
 !

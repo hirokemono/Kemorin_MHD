@@ -69,10 +69,6 @@
 !
       use FFTW3_wrapper
 !
-#ifdef FFTW3_C
-      use fftw_access
-#endif
-!
       implicit none
 !
 !>      structure for working data for FFTW
