@@ -3,7 +3,7 @@
 #
 
 SGS_MHD_SPH_DIR = $$(MHD_SRCDIR)/sph_SGS_MHD
-SOURCES = $(shell ls *.f90 *.F90)
+SOURCES = $(shell ls *.f90)
 MOD_SPH_SGS_MHD = $(addsuffix .o,$(basename $(SOURCES)) )
 
 #

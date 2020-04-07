@@ -7,7 +7,7 @@ MODIFY_MESHDIR =    $$(CORE_SRCDIR)/modify_MESH
 LIB_MODIFY_MESH =     -lmodify_mesh
 LIB_MODIFY_MESH_FILE = libmodify_mesh.a
 
-SOURCES = $(shell ls *.f90 *.F90)
+SOURCES = $(shell ls *.f90)
 MOD_MODIFY_MESH = $(addsuffix .o,$(basename $(SOURCES)) )
 
 #
