@@ -149,7 +149,6 @@
 !
 !
       write(png_buf%fhead_p, '(a,a1)') trim(img_head), CHAR(0)
-      write(*,*) 'write_png_rgb_f', png_buf%fhead_p
       call link_to_image_data_4_png                                     &
      &   (ifour, npix_x, npix_y, cimage, png_buf)
       call write_png_rgb_c(png_buf%fhead_p,                             &
@@ -171,7 +170,6 @@
 !
 !
       write(png_buf%fhead_p, '(a,a1)') trim(img_head), CHAR(0)
-      write(*,*) 'write_png_rgba_f', png_buf%fhead_p
       call link_to_image_data_4_png                                     &
      &   (ifour, npix_x, npix_y, cimage, png_buf)
       call write_png_rgba_c(png_buf%fhead_p,                            &
@@ -191,7 +189,6 @@
 !
 !
       write(png_buf%fhead_p, '(a,a1)') trim(img_head), CHAR(0)
-      write(*,*) 'read_png_file_c', png_buf%fhead_p
       call read_png_file_c(png_buf%fhead_p,                             &
      &    png_buf%npix4_x, png_buf%npix4_y, png_buf%iflag_cmode)
       call get_image_size_from_png(png_buf, npix_x, npix_y)
