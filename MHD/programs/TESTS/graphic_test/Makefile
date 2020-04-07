@@ -97,11 +97,11 @@ target_task:
 	'$$(OBJ_CPNG_READ_TEST)' \
 	'-L. $$(LIB_KEMO_C)  $$(PNG_LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
-	@echo '$$(TARGET_PNG_2_BMP_F)': '$$(OBJ_PNG_2_BMP_F)  $$(LIB_KEMO_C_FILE)' \
+	@echo '$$(TARGET_PNG_2_BMP_F)': '$$(OBJ_PNG_2_BMP_F) $$(LIB_MESH_FILE) $$(LIB_KEMO_C_FILE)' \
 	 >> $(MAKENAME)
 	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_PNG_2_BMP_F)' \
 	'$$(OBJ_PNG_2_BMP_F)' \
-	'-L. $$(LIB_KEMO_C)  $$(F90LIBS)' >> $(MAKENAME)
+	'-L. $$(LIB_MESH) $$(LIB_KEMO_C)  $$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 
 

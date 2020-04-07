@@ -1,6 +1,6 @@
 binary_file_access.o: $(F2003DIR)/binary_file_access.f03 m_precision.o t_binary_IO_buffer.o set_parallel_file_name.o m_machine_parameter.o
 	$(F90) -c $(F90OPTFLAGS) $<
-calypso_c_binding.o: $(F2003DIR)/calypso_c_binding.f03 m_precision.o t_binary_IO_buffer.o set_parallel_file_name.o m_machine_parameter.o
+fftw_access.o: $(F2003DIR)/fftw_access.f03 m_precision.o m_fftw_parameters.o
 	$(F90) -c $(F90OPTFLAGS) $<
 gzip_defleate.o: $(F2003DIR)/gzip_defleate.f03 m_precision.o t_buffer_4_gzip.o
 	$(F90) -c $(F90OPTFLAGS) $<

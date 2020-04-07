@@ -15,15 +15,15 @@
 int main(){
     double *x, *y, *z;
     double pi;
-    int nfld;
     int ngrid;
     int i, j, k;
     
-    fftw_plan plan[6];
+    int nfld = 6;
+	fftw_plan plan[nfld];
+	int *iflag;
     
     
     pi = 4.0*atan(1.0);
-    nfld = 6;
     ngrid = 512;
 	x = (double *)calloc(nfld*ngrid,sizeof(double));
 	y = (double *)calloc(nfld*ngrid,sizeof(double));
@@ -39,12 +39,11 @@ int main(){
                      + 1.5 * cos( 8.0*2.0*pi * ((double) (i-1)) / ((double) ngrid));
     }
     
-    for (j=0; j<nfld; j++) {
-        kemo_fftw_plan_dft_r2c_1d(plan[0], &nfld, x[], y[])
+	for (j=0; j<nfld; j++) {
+		plan[j] = fftw_plan_dft_r2c_1d(nfld, x, y, iflag);
     }
     
     for (i=0; i<ngrid*nfld; i++) z[i] = x[i];
-    
     for (i=0; i<ngrid*nfld; i++) y[i] = x[i];
     
     

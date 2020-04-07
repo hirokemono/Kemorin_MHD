@@ -12,32 +12,28 @@
 
 /* prototypes */
 
-void kemo_fftw_plan_dft_r2c_1d(fftw_plan *plan, int *n_size,
-			double *dble_in, fftw_complex *cplx_out, unsigned *flags);
-void kemo_fftw_plan_dft_c2r_1d(fftw_plan *plan, int *n_size, 
-			fftw_complex *cplx_in, double *dble_out, unsigned *flags);
+void kemo_fftw_plan_dft_r2c_1d(long *plan, int *n_size,
+			void *dble_in, void *cplx_out, int *iflag);
+void kemo_fftw_plan_dft_c2r_1d(long *plan, int *n_size, 
+			void *cplx_in, void *dble_out, int *iflag);
 
-void kemo_fftw_plan_many_dft_r2c(fftw_plan *plan, int rank,
-                                 int *n_size, int howmany,
-                                 double *dble_in, const int *inembed,
-                                 int istride, int idist,
-                                 fftw_complex *cplx_out, int *onembed,
-                                 int ostride, int odist,
-                                 unsigned *flags);
-void kemo_fftw_plan_many_dft_c2r(fftw_plan *plan, int rank, 
-                                 int *n_size, int howmany,
-                                 fftw_complex *cplx_in, const int *inembed,
-                                 int istride, int idist,
-                                 double *dble_out, int *onembed,
-                                 int ostride, int odist,
-                                 unsigned *flags);
+void kemo_fftw_plan_many_dft_r2c(long *plan, int *irank,
+                                 int *n_size, int *howmany,
+                                 void *dble_in, const int *inembed, int *istride, int *idist,
+                                 void *cplx_out, int *onembed, int ostride, int odist,
+                                 int *iflag);
+void kemo_fftw_plan_many_dft_c2r(long *plan, int *irank, 
+                                 int *n_size, int *howmany,
+                                 void *cplx_in, const int *inembed, int *istride, int *idist,
+                                 void *dble_out, int *onembed, int *ostride, int *odist,
+                                 int *iflag);
 
 
-void kemo_fftw_destroy_plan(fftw_plan *plan);
+void kemo_fftw_destroy_plan(long *plan);
 void kemo_fftw_cleanup();
 
-void kemo_fftw_execute(fftw_plan *plan);
-void kemo_fftw_execute_dft_r2c(fftw_plan *plan, double *dble_in, fftw_complex *cplx_out);
-void kemo_fftw_execute_dft_c2r(fftw_plan *plan, fftw_complex *cplx_in, double *dble_out);
+void kemo_fftw_execute(long *plan);
+void kemo_fftw_execute_dft_r2c(long *plan, void *dble_in, void *cplx_out);
+void kemo_fftw_execute_dft_c2r(long *plan, void *cplx_in, void *dble_out);
 
 #endif

@@ -276,7 +276,7 @@ sum_rotation_of_forces.o: $(MHD_SPH_DIR)/sum_rotation_of_forces.f90 m_precision.
 	$(F90) -c $(F90OPTFLAGS) $<
 swap_phi_order_4_sph_trans.o: $(MHD_SPH_DIR)/swap_phi_order_4_sph_trans.f90 m_precision.o m_machine_parameter.o t_spheric_rtp_data.o t_addresses_sph_transform.o m_FFT_selector.o swap_phi_4_sph_trans.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_MHD_multi_FFTW.o: $(MHD_SPH_DIR)/t_MHD_multi_FFTW.F90 m_precision.o m_constants.o m_machine_parameter.o t_sph_single_FFTW.o
+t_MHD_multi_FFTW.o: $(MHD_SPH_DIR)/t_MHD_multi_FFTW.F90 m_precision.o m_constants.o m_machine_parameter.o t_sph_single_FFTW.o fftw_access.o
 	$(F90) -c $(F90FLAGS) $<
 t_SPH_MHD_model_data.o: $(MHD_SPH_DIR)/t_SPH_MHD_model_data.f90 m_precision.o t_control_parameter.o t_poloidal_rotation.o t_radial_reference_temp.o t_boundary_data_sph_MHD.o t_bc_data_list.o t_sph_boundary_input_data.o
 	$(F90) -c $(F90OPTFLAGS) $<

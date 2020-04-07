@@ -54,13 +54,6 @@
 !
       implicit none
 !
-      type binary_IO_flags
-!>        integer flag for byte swapping
-        integer :: iflag_swap = -1
-!>        Error flag for data IO
-        integer(kind = kint) :: ierr_IO = 0
-      end type binary_IO_flags
-!
       integer(kind = kint), parameter, private :: len_4byte = 4
       integer(kind = kint), parameter, private :: id_binary = 19
 !

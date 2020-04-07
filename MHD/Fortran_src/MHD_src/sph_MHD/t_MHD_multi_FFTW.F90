@@ -72,6 +72,10 @@
       use m_machine_parameter
       use t_sph_single_FFTW
 !
+#ifdef FFTW3_C
+      use fftw_access
+#endif
+!
       implicit none
 !
       real(kind = kreal) :: elapsed_fftw(3) = (/0.0,0.0,0.0/)
@@ -118,7 +122,7 @@
         idist_c = int(nidx_rtp(3)/2+1)
 !
 #ifdef FFTW3_C
-        call kemo_fftw_plan_many_dft_r2c                                &
+        call kemo_fftw_plan_many_dft_r2c_f                              &
      &     (FFTW_t%plan_fwd(ip), IONE_4, Nfft4, howmany,                &
      &      X_rtp(1,j_st,nd_st), inembed, istride, idist_r,             &
      &      FFTW_t%C(1,ist), inembed, istride, idist_c,                 &
@@ -142,7 +146,7 @@
         idist_c = int(nidx_rtp(3)/2+1)
 !
 #ifdef FFTW3_C
-        call kemo_fftw_plan_many_dft_c2r                                &
+        call kemo_fftw_plan_many_dft_c2r_f                              &
      &     (FFTW_t%plan_bwd(ip), IONE_4, Nfft4, howmany,                &
      &      FFTW_t%C(1,ist), inembed, istride, idist_c,                 &
      &      X_rtp(1,j_st,nd_st), inembed, istride, idist_r,             &
@@ -169,9 +173,9 @@
 !
 #ifdef FFTW3_C
       do j = 1, np_smp
-        call kemo_fftw_destroy_plan(FFTW_t%plan_fwd(j))
-        call kemo_fftw_destroy_plan(FFTW_t%plan_bwd(j))
-        call kemo_fftw_cleanup
+        call kemo_fftw_destroy_plan_f(FFTW_t%plan_fwd(j))
+        call kemo_fftw_destroy_plan_f(FFTW_t%plan_bwd(j))
+        call kemo_fftw_cleanup_f
       end do
 #else
       do j = 1, np_smp
@@ -249,7 +253,7 @@
         nd_st = 1 + (j_st - j_st) / irt_rtp_smp_stack(np_smp)
 !
 #ifdef FFTW3_C
-        call kemo_fftw_execute_dft_r2c(FFTW_t%plan_fwd(ip),             &
+        call kemo_fftw_execute_dft_r2c_f(FFTW_t%plan_fwd(ip),           &
      &      X_rtp(1,j_st,nd_st), FFTW_t%C(1,ist))
 #else
         call dfftw_execute_dft_r2c(FFTW_t%plan_fwd(ip),                 &
@@ -341,7 +345,7 @@
 !
 !      call cpu_time(dummy(2))
 #ifdef FFTW3_C
-        call kemo_fftw_execute_dft_c2r(FFTW_t%plan_bwd(ip),             &
+        call kemo_fftw_execute_dft_c2r_f(FFTW_t%plan_bwd(ip),           &
      &      FFTW_t%C(1,ist), X_rtp(1,j_st,nd_st))
 #else
         call dfftw_execute_dft_c2r(FFTW_t%plan_bwd(ip),                 &

@@ -78,21 +78,13 @@
 !
       use m_precision
       use m_constants
+      use m_fftw_parameters
+!
+#ifdef FFTW3_C
+      use fftw_access
+#endif
 !
       implicit none
-!
-!>      plan ID for fftw
-      integer, parameter :: fftw_plan =    8
-!>      data size of complex for FFTW3
-      integer, parameter :: fftw_complex = 8
-!
-!>      Unit imaginary number
-      complex(kind = fftw_complex), parameter :: iu = (0.0d0,1.0d0)
-!
-!>      estimation flag for FFTW
-      integer(kind = 4), parameter :: FFTW_ESTIMATE = 64
-!>      Meajor flag for FFTW
-      integer(kind = 4), parameter :: FFTW_MEASURE = 0
 !
       real(kind = kreal) :: elapsed_fftw(3) = (/0.0,0.0,0.0/)
 !
@@ -100,8 +92,7 @@
       integer, parameter :: inembed = 0
       integer, parameter :: istride = 1
 !
-      private :: iu, IONE_4, inembed, istride
-      private :: FFTW_ESTIMATE
+      private :: IONE_4, inembed, istride
 !
 ! ------------------------------------------------------------------
 !
@@ -137,11 +128,11 @@
         idist_c = int(Nfft, KIND(idist_c))/2 + 1
 !
 #ifdef FFTW3_C
-        call kemo_fftw_plan_many_dft_r2c                                &
+        call kemo_fftw_plan_many_dft_r2c_f                              &
      &     (plan_forward_smp(ip), IONE_4, Nfft4, howmany,               &
      &      X_FFTW(1,ist), inembed, istride, idist_r,                   &
      &      C_FFTW(1,ist), inembed, istride, idist_c, FFTW_ESTIMATE)
-        call kemo_fftw_plan_many_dft_c2r                                &
+        call kemo_fftw_plan_many_dft_c2r_f                              &
      &     (plan_backward_smp(ip), IONE_4, Nfft4, howmany,              &
      &      C_FFTW(1,ist), inembed, istride, idist_c,                   &
      &      X_FFTW(1,ist), inembed, istride, idist_r, FFTW_ESTIMATE)
@@ -175,9 +166,9 @@
 !
       do j = 1, Nsmp
 #ifdef FFTW3_C
-        call kemo_fftw_destroy_plan(plan_forward(j))
-        call kemo_fftw_destroy_plan(plan_backward(j))
-        call kemo_fftw_cleanup
+        call kemo_fftw_destroy_plan_f(plan_forward(j))
+        call kemo_fftw_destroy_plan_f(plan_backward(j))
+        call kemo_fftw_cleanup_f
 #else
         call dfftw_destroy_plan(plan_forward(j))
         call dfftw_destroy_plan(plan_backward(j))
@@ -224,10 +215,10 @@
         ist = Nstacksmp(ip-1) + 1
         ied = Nstacksmp(ip)
 #ifdef FFTW3_C
-        call kemo_fftw_execute_dft_r2c(plan_forward_smp(ip),             &
+        call kemo_fftw_execute_dft_r2c_f(plan_forward_smp(ip),          &
      &        X_FFTW(1,ist), C_FFTW(1,ist))
 #else
-        call dfftw_execute_dft_r2c(plan_forward_smp(ip),                 &
+        call dfftw_execute_dft_r2c(plan_forward_smp(ip),                &
      &        X_FFTW(1,ist), C_FFTW(1,ist))
 #endif
       end do
@@ -298,7 +289,7 @@
         ist = Nstacksmp(ip-1) + 1
         ied = Nstacksmp(ip)
 #ifdef FFTW3_C
-        call kemo_fftw_execute_dft_c2r(plan_backward_smp(ip),           &
+        call kemo_fftw_execute_dft_c2r_f(plan_backward_smp(ip),         &
      &        C_FFTW(1,ist), X_FFTW(1,ist))
 #else
         call dfftw_execute_dft_c2r(plan_backward_smp(ip),               &

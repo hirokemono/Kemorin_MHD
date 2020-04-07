@@ -18,7 +18,7 @@
       character(len=1), allocatable :: rgb(:,:,:)
       character(len=1), allocatable :: gray(:,:)
 !
-      type(buffer_4_png), private :: pbuf_t
+      type(buffer_4_png) :: pbuf_t
 !
       integer(kind = kint) :: i
 !

@@ -16,16 +16,6 @@
 static int     turn = 1;
 static float   theta = 0.0;
 
-#ifdef FC_NAME_LOWER_USCORE
-#define GL_BUFFER_2_PNG    gl_buffer_2_png_
-#elif FC_NAME_UPPER
-#define GL_BUFFER_2_PNG    GL_BUFFER_2_PNG
-#elif FC_NAME_UPPER_STDCALL
-#define GL_BUFFER_2_PNG    GL_BUFFER_2_PNG
-#else
-#define GL_BUFFER_2_PNG    gl_buffer_2_png
-#endif
-
 //
 //  ウィンドウ再描画時に呼ばれるコールバック関数
 //

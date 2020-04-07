@@ -11,51 +11,6 @@
 #include<GL/gl.h>
 #endif
 
-#ifdef FC_NAME_LOWER_USCORE
-#define kemo_fftw_plan_dft_r2c_1d    kemo_fftw_plan_dft_r2c_1d_
-#define kemo_fftw_plan_dft_c2r_1d    kemo_fftw_plan_dft_c2r_1d_
-#define kemo_fftw_plan_many_dft_r2c  kemo_fftw_plan_many_dft_r2c_
-#define kemo_fftw_plan_many_dft_c2r  kemo_fftw_plan_many_dft_c2r_
-#define kemo_fftw_destroy_plan       kemo_fftw_destroy_plan_
-#define kemo_fftw_cleanup            kemo_fftw_cleanup_
-#define kemo_fftw_execute            kemo_fftw_execute_
-#define kemo_fftw_execute_dft_r2c    kemo_fftw_execute_dft_r2c_
-#define kemo_fftw_execute_dft_c2r    kemo_fftw_execute_dft_c2r_
-
-#elif FC_NAME_UPPER
-#define kemo_fftw_plan_dft_r2c_1d    KEMO_FFTW_PLAN_DFT_R2C_1D
-#define kemo_fftw_plan_dft_c2r_1d    KEMO_FFTW_PLAN_DFT_C2R_1D
-#define kemo_fftw_plan_many_dft_r2c  KEMO_FFTW_PLAN_MANY_DFT_R2C
-#define kemo_fftw_plan_many_dft_c2r  KEMO_FFTW_PLAN_MANY_DFT_C2R
-#define kemo_fftw_destroy_plan       KEMO_FFTW_DESTROY_PLAN
-#define kemo_fftw_cleanup            KEMO_FFTW_CLEANUP
-#define kemo_fftw_execute            KEMO_FFTW_EXECUTE
-#define kemo_fftw_execute_dft_r2c    KEMO_FFTW_EXECUTE_DFT_R2C
-#define kemo_fftw_execute_dft_c2r    KEMO_FFTW_EXECUTE_DFT_C2R
-
-#elif FC_NAME_UPPER_STDCALL
-#define kemo_fftw_plan_dft_r2c_1d    KEMO_FFTW_PLAN_DFT_R2C_1D
-#define kemo_fftw_plan_dft_c2r_1d    KEMO_FFTW_PLAN_DFT_C2R_1D
-#define kemo_fftw_plan_many_dft_r2c  KEMO_FFTW_PLAN_MANY_DFT_R2C
-#define kemo_fftw_plan_many_dft_c2r  KEMO_FFTW_PLAN_MANY_DFT_C2R
-#define kemo_fftw_destroy_plan       KEMO_FFTW_DESTROY_PLAN
-#define kemo_fftw_cleanup            KEMO_FFTW_CLEANUP
-#define kemo_fftw_execute            KEMO_FFTW_EXECUTE
-#define kemo_fftw_execute_dft_r2c    KEMO_FFTW_EXECUTE_DFT_R2C
-#define kemo_fftw_execute_dft_c2r    KEMO_FFTW_EXECUTE_DFT_C2R
-
-#else
-#define kemo_fftw_plan_dft_r2c_1d    kemo_fftw_plan_dft_r2c_1d
-#define kemo_fftw_plan_dft_c2r_1d    kemo_fftw_plan_dft_c2r_1d
-#define kemo_fftw_plan_many_dft_r2c  kemo_fftw_plan_many_dft_r2c
-#define kemo_fftw_plan_many_dft_c2r  kemo_fftw_plan_many_dft_c2r
-#define kemo_fftw_destroy_plan       kemo_fftw_destroy_plan
-#define kemo_fftw_cleanup            kemo_fftw_cleanup
-#define kemo_fftw_execute            kemo_fftw_execute
-#define kemo_fftw_execute_dft_r2c    kemo_fftw_execute_dft_r2c
-#define kemo_fftw_execute_dft_c2r    kemo_fftw_execute_dft_c2r
-#endif
-
 #define LENGTHBUF 4096     /* length of text buffer */
 
 #define INBUFSIZ   65536        /*  buffer size for original data (arbitraly) */
