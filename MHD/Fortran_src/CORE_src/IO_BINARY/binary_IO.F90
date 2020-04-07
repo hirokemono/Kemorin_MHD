@@ -54,8 +54,6 @@
 !
       implicit none
 !
-      integer(kind = kint), parameter, private :: len_4byte = 4
-!
       private :: write_endian_flag, read_endian_flag
 !
 !  ---------------------------------------------------------------------
@@ -200,7 +198,7 @@
 !
       use transfer_to_long_integers
 !
-      integer(kind = len_4byte), intent(in) :: int_dat
+      integer(kind = kint_4b), intent(in) :: int_dat
       type(binary_IO_buffer), intent(inout) :: bbuf
 !
       integer(kind = kint_gl), parameter :: ione64 = 1
@@ -253,7 +251,7 @@
       use binary_file_access
 !
       integer(kind = kint_gl), intent(in) :: num
-      integer(kind = len_4byte), intent(in) :: int4_dat(num)
+      integer(kind = kint_4b), intent(in) :: int4_dat(num)
       type(binary_IO_buffer), intent(inout) :: bbuf
 !
       integer(kind = kint) :: ist
@@ -508,7 +506,7 @@
       subroutine read_one_integer_from_32bit(bbuf, int_dat)
 !
       type(binary_IO_buffer), intent(inout) :: bbuf
-      integer(kind = len_4byte), intent(inout) :: int_dat
+      integer(kind = kint_4b), intent(inout) :: int_dat
 !
       integer(kind = kint_gl), parameter :: ione64 = 1
       integer(kind = kint_gl) :: itmp64(1)
@@ -558,7 +556,7 @@
       use binary_file_access
 !
       integer(kind = kint_gl), intent(in) :: num
-      integer(kind = len_4byte), intent(inout) :: int_dat(num)
+      integer(kind = kint_4b), intent(inout) :: int_dat(num)
       type(binary_IO_buffer), intent(inout) :: bbuf
 !
       integer(kind = kint_gl) :: ist
