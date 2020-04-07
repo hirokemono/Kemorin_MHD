@@ -55,7 +55,6 @@
       implicit none
 !
       integer(kind = kint), parameter, private :: len_4byte = 4
-      integer(kind = kint), parameter, private :: id_binary = 19
 !
       private :: write_endian_flag, read_endian_flag
 !
@@ -81,7 +80,7 @@
       call open_wt_rawfile_f(file_name_w_null, bbuf)
       if(bbuf%ierr_bin .gt. 0) return
 #else
-      open(id_binary, file = file_name, form='unformatted')
+      open(bbuf%id_binary, file = file_name, form='unformatted')
 #endif
 !
       call write_endian_flag(bbuf)
@@ -105,7 +104,7 @@
       file_name_w_null = add_null_character(file_name)
       call open_ad_rawfile_f(file_name_w_null, bbuf)
 #else
-      open(id_binary, file = file_name, form='unformatted',             &
+      open(bbuf%id_binary, file = file_name, form='unformatted',        &
      &      position='append')
 #endif
 !
@@ -131,7 +130,7 @@
       call open_rd_rawfile_f(file_name_w_null, bbuf)
       if(bbuf%ierr_bin .gt. 0) return
 #else
-      open(id_binary, file = file_name, form='unformatted')
+      open(bbuf%id_binary, file = file_name, form='unformatted')
 #endif
 !
       call read_endian_flag(bbuf, id_rank)
@@ -147,7 +146,7 @@
 #ifdef ZLIB_IO
       call close_rawfile_f
 #else
-      close(id_binary)
+      close(bbuf%id_binary)
 #endif
 !
       end subroutine close_binary_file
@@ -175,7 +174,7 @@
         if(ist .ge. len_byte) exit
       end do
 #else
-      read(id_binary) tmpchara(1:len_byte)
+      read(bbuf%id_binary) tmpchara(1:len_byte)
 #endif
 !
       end subroutine seek_forward_binary_file
@@ -273,7 +272,7 @@
         if(ist .ge. num) exit
       end do
 #else
-      write(id_binary)  int4_dat(1:num)
+      write(bbuf%id_binary)  int4_dat(1:num)
 #endif
 !
       end subroutine write_mul_int_to_32bit
@@ -304,7 +303,7 @@
         if(ist .ge. num) exit
       end do
 #else
-      write(id_binary)  int_gl_dat(1:num)
+      write(bbuf%id_binary)  int_gl_dat(1:num)
 #endif
 !
       end subroutine write_mul_int8_b
@@ -369,7 +368,7 @@
         if(ist .ge. num) exit
       end do
 #else
-      write(id_binary)  chara_dat(1:num)
+      write(bbuf%id_binary)  chara_dat(1:num)
 #endif
       return
 !
@@ -402,7 +401,7 @@
         if(ist .ge. num) exit
       end do
 #else
-      write(id_binary)  chara_dat(1:num)
+      write(bbuf%id_binary)  chara_dat(1:num)
 #endif
       return
 !
@@ -434,7 +433,7 @@
         if(ist .ge. num) exit
       end do
 #else
-      write(id_binary)  real_dat(1:num)
+      write(bbuf%id_binary)  real_dat(1:num)
 #endif
       return
 !
@@ -578,7 +577,7 @@
         if(ist .ge. num) exit
       end do
 #else
-      read(id_binary, err=99, end=99)  int_dat(1:num)
+      read(bbuf%id_binary, err=99, end=99)  int_dat(1:num)
 #endif
       return
 !
@@ -610,7 +609,7 @@
         if(ist .ge. num) exit
       end do
 #else
-      read(id_binary, err=99, end=99)  int_gl_dat(1:num)
+      read(bbuf%id_binary, err=99, end=99)  int_gl_dat(1:num)
 #endif
       return
 !
@@ -682,7 +681,7 @@
         if(ist .ge. num) exit
       end do
 #else
-      read(id_binary, err=99, end=99)  chara_dat(1:num)
+      read(bbuf%id_binary, err=99, end=99)  chara_dat(1:num)
 #endif
       return
 !
@@ -715,7 +714,7 @@
         if(ist .ge. num) exit
       end do
 #else
-      read(id_binary, err=99, end=99)  chara_dat(1:num)
+      read(bbuf%id_binary, err=99, end=99)  chara_dat(1:num)
 #endif
       return
 !
@@ -747,7 +746,7 @@
         if(ist .ge. num) exit
       end do
 #else
-      read(id_binary, err=99, end=99)  real_dat(1:num)
+      read(bbuf%id_binary, err=99, end=99)  real_dat(1:num)
 #endif
       return
 !

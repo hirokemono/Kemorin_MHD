@@ -28,8 +28,13 @@
 !
       implicit none
 !
+        integer(kind = kint), parameter, private :: id_bin = 19
+!
 !>      Structure of buffer for binary IO
       type binary_IO_buffer
+!>        Binary file ID
+        integer(kind = kint) :: id_binary = id_bin
+!
 !>        Error flag from binary IO
         integer(C_int) :: ierr_bin
 !>        Byte swapping flag to binary IO
