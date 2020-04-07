@@ -49,6 +49,8 @@
       subroutine b_trans_vector_similarity                              &
      &         (ipol, itor, iphys, b_trns, trns_back)
 !
+      use m_filtered_field_labels
+!
       type(phys_address), intent(in) :: ipol, itor, iphys
       type(address_each_sph_trans), intent(inout) :: trns_back
       type(phys_address), intent(inout) :: b_trns
@@ -115,6 +117,8 @@
       subroutine b_trans_vector_wide_filter_fld                         &
      &         (ipol, itor, iphys, b_trns, trns_back)
 !
+      use m_wide_filter_field_labels
+!
       type(phys_address), intent(in) :: ipol, itor, iphys
       type(address_each_sph_trans), intent(inout) :: trns_back
       type(phys_address), intent(inout) :: b_trns
@@ -151,6 +155,8 @@
 !
       subroutine b_trans_vector_wide_similarity                         &
      &         (ipol, itor, iphys, b_trns, trns_back)
+!
+      use m_wide_SGS_term_labels
 !
       type(phys_address), intent(in) :: ipol, itor, iphys
       type(address_each_sph_trans), intent(inout) :: trns_back
@@ -194,6 +200,8 @@
 !
       subroutine b_trans_vector_filtered_SGS                            &
      &         (ipol, itor, iphys, b_trns, trns_back)
+!
+      use m_wide_SGS_term_labels
 !
       type(phys_address), intent(in) :: ipol, itor, iphys
       type(address_each_sph_trans), intent(inout) :: trns_back
@@ -240,6 +248,8 @@
       subroutine b_trans_scalar_similarity                              &
      &         (ipol, itor, iphys, b_trns, trns_back)
 !
+      use m_filtered_field_labels
+!
       type(phys_address), intent(in) :: ipol, itor, iphys
       type(address_each_sph_trans), intent(inout) :: trns_back
       type(phys_address), intent(inout) :: b_trns
@@ -263,6 +273,8 @@
 !
       subroutine b_trans_scalar_wide_filter_fld                         &
      &         (ipol, itor, iphys, b_trns, trns_back)
+!
+      use m_wide_filter_field_labels
 !
       type(phys_address), intent(in) :: ipol, itor, iphys
       type(address_each_sph_trans), intent(inout) :: trns_back

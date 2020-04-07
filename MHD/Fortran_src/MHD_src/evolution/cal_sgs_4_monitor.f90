@@ -102,6 +102,7 @@
      &          sgs_coefs, sgs_coefs_nod, filtering, mk_MHD,            &
      &          wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
+      use t_SGS_term_labels
       use cal_sgs_fluxes
       use int_sgs_induction
 !
@@ -225,6 +226,7 @@
      &          ifld_diff, diff_coefs, mk_MHD,                          &
      &          mhd_fem_wk, rhs_mat, nod_fld, ele_fld)
 !
+      use m_diff_SGS_term_labels
       use cal_terms_for_heat
       use cal_momentum_terms
       use cal_magnetic_terms

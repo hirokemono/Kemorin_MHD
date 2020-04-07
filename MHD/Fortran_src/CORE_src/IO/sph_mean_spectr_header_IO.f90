@@ -285,6 +285,7 @@
 !
       subroutine set_sph_rms_labels(num_rms_comp, rms_name, labels)
 !
+      use m_filtered_field_labels
       use add_direction_labels
 !
       integer(kind = kint), intent(in) :: num_rms_comp

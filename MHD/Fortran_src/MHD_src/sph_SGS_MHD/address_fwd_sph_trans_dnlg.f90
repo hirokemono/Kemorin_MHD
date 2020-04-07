@@ -54,6 +54,8 @@
       subroutine f_trans_address_scalar_dnlg                            &
      &         (ipol, itor, iphys, f_trns, trns_fwd)
 !
+      use m_diff_filter_vect_labels
+!
       type(phys_address), intent(in) :: ipol, itor, iphys
       type(address_each_sph_trans), intent(inout) :: trns_fwd
       type(phys_address), intent(inout) :: f_trns

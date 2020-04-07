@@ -37,6 +37,9 @@
       subroutine b_trans_address_vector_snap                            &
      &         (ipol, itor, iphys, b_trns, trns_back)
 !
+      use m_diff_SGS_term_labels
+      use m_force_w_SGS_labels
+!
       type(phys_address), intent(in) :: ipol, itor, iphys
       type(address_each_sph_trans), intent(inout) :: trns_back
       type(phys_address), intent(inout) :: b_trns
@@ -301,6 +304,9 @@
 !
       subroutine b_trans_address_scalar_snap                            &
      &         (ipol, itor, iphys, b_trns, trns_back)
+!
+      use m_diff_SGS_term_labels
+      use m_filtered_field_labels
 !
       type(phys_address), intent(in) :: ipol, itor, iphys
       type(address_each_sph_trans), intent(inout) :: trns_back

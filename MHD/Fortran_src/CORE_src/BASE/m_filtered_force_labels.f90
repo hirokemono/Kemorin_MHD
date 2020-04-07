@@ -10,7 +10,7 @@
 !!@verbatim
 !!      logical function check_filtered_force(field_name)
 !!      logical function check_filtered_flux_tensor(field_name)
-!!      logical function check_filtered_scallar_flux(field_name)
+!!      logical function check_filtered_scalar_flux(field_name)
 !!
 !!      subroutine set_filtered_force_addresses                         &
 !!     &         (i_phys, field_name, force_by_filter, flag)
@@ -222,18 +222,18 @@
 !
 ! ----------------------------------------------------------------------
 !
-      logical function check_filtered_scallar_flux(field_name)
+      logical function check_filtered_scalar_flux(field_name)
 !
       character(len = kchara), intent(in) :: field_name
 !
 !
-      check_filtered_scallar_flux                                       &
+      check_filtered_scalar_flux                                        &
      &   =    (field_name .eq. heat_advect_by_filtered%name)            &
      &   .or. (field_name .eq. pert_h_advect_by_filtered%name)          &
      &   .or. (field_name .eq. comp_advect_by_filtered%name)            &
      &   .or. (field_name .eq. pert_c_advect_by_filtered%name)
 !
-      end function check_filtered_scallar_flux
+      end function check_filtered_scalar_flux
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
@@ -250,7 +250,7 @@
 !
       flag = check_filtered_force(field_name)                           &
      &      .or. check_filtered_flux_tensor(field_name)                 &
-     &      .or. check_filtered_scallar_flux(field_name)
+     &      .or. check_filtered_scalar_flux(field_name)
       if(flag) then
         if     (field_name .eq. inertia_by_filtered%name) then
           force_by_filter%i_m_advect =   i_phys

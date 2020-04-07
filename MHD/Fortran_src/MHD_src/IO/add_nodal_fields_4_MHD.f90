@@ -248,6 +248,7 @@
       subroutine add_ctl_4_forces                                       &
      &         (fl_prop, ref_param_T, ref_param_C, field_ctl)
 !
+      use m_filtered_force_labels
       use t_control_array_character3
       use t_reference_scalar_param
 !

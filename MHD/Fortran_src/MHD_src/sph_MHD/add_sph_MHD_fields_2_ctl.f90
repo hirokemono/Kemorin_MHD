@@ -39,6 +39,10 @@
       use m_rot_force_labels
       use m_div_force_labels
 !
+      use m_filtered_force_labels
+      use m_rot_filtered_force_labels
+      use m_div_filtered_force_labels
+!
       type(fluid_property), intent(in) :: fl_prop
       type(conductive_property), intent(in) :: cd_prop
       type(scalar_property), intent(in) :: ht_prop, cp_prop

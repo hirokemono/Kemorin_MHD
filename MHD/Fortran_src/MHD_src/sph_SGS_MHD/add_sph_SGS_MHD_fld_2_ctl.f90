@@ -36,6 +36,9 @@
 !
       subroutine add_field_name_4_SGS(SGS_param, field_ctl)
 !
+      use t_SGS_term_labels
+      use m_diff_SGS_term_labels
+      use m_filtered_field_labels
       use add_nodal_fields_ctl
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
@@ -135,6 +138,13 @@
       subroutine add_field_name_dynamic_SGS                             &
      &         (SGS_param, fl_prop, field_ctl)
 !
+      use t_SGS_model_coef_labels
+      use t_SGS_enegy_flux_labels
+      use m_filtered_field_labels
+      use m_grad_filter_field_labels
+      use m_diff_filter_vect_labels
+      use m_wide_filter_field_labels
+      use m_wide_SGS_term_labels
       use add_nodal_fields_ctl
 !
       type(SGS_model_control_params), intent(in) :: SGS_param

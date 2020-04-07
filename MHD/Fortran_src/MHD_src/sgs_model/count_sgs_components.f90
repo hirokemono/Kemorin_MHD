@@ -181,6 +181,7 @@
       use t_ele_info_4_dynamic
       use t_physical_property
       use t_SGS_model_coefs
+      use t_SGS_term_labels
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(fluid_property), intent(in) :: fl_prop

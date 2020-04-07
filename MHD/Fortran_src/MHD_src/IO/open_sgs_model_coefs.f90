@@ -282,6 +282,7 @@
       subroutine write_sgs_comps_head                                   &
      &         (file_id, icoord_Csim, cd_prop, wk_sgs)
 !
+      use t_SGS_term_labels
       use m_geometry_constants
       use m_phys_labels
 !
@@ -354,6 +355,7 @@
       subroutine write_diff_comps_head(file_id, cd_prop, wk_diff)
 !
       use m_phys_labels
+      use t_SGS_term_labels
 !
       integer(kind = kint), intent(in) :: file_id
       type(conductive_property), intent(in) :: cd_prop

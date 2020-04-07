@@ -33,6 +33,7 @@
       subroutine set_element_field_address(ele_fld, iphys_ele)
 !
       use m_phys_labels
+      use m_filtered_field_labels
 !
       type(phys_data), intent(in) :: ele_fld
       type(phys_address), intent(inout) :: iphys_ele
@@ -81,6 +82,7 @@
 !
       use m_machine_parameter
       use m_phys_labels
+      use m_filtered_field_labels
       use t_FEM_control_parameter
       use t_SGS_control_parameter
 !

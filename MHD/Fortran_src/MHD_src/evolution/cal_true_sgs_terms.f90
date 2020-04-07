@@ -100,6 +100,7 @@
 !
       use calypso_mpi
       use m_phys_labels
+      use m_true_SGS_term_labels
 !
       real(kind = kreal), intent(in) :: dt
 !
@@ -197,7 +198,9 @@
       subroutine cal_true_sgs_terms_post(filter_param,                  &
      &          nod_comm, node, iphys, filtering, wk_filter, nod_fld)
 !
+      use t_SGS_term_labels
       use m_phys_labels
+      use m_true_SGS_term_labels
 !
       type(SGS_filtering_params), intent(in) :: filter_param
       type(communication_table), intent(in) :: nod_comm

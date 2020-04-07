@@ -129,6 +129,9 @@
       subroutine b_trans_filter_vector_grads                            &
      &         (ipol, itor, iphys, b_trns, trns_back)
 !
+      use m_grad_filter_field_labels
+      use m_diff_filter_vect_labels
+!
       type(phys_address), intent(in) :: ipol, itor, iphys
       type(address_each_sph_trans), intent(inout) :: trns_back
       type(phys_address), intent(inout) :: b_trns

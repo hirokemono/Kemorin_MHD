@@ -274,6 +274,7 @@
      &        fem_int, FEM_elens, filtering, Csims_FEM_MHD, mk_MHD,     &
      &        FEM_SGS_wk, mhd_fem_wk, rhs_mat, nod_fld, ele_fld)
 !
+      use m_diff_SGS_term_labels
       use copy_nodal_fields
       use cvt_sph_vector_2_xyz_smp
       use cvt_xyz_vector_2_sph_smp

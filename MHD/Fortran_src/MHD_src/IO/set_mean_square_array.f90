@@ -45,6 +45,10 @@
       use t_SGS_enegy_flux_labels
       use t_SGS_model_coef_labels
       use m_phys_constants
+      use m_wide_filter_field_labels
+      use m_grad_filter_field_labels
+      use m_wide_SGS_term_labels
+      use m_force_w_SGS_labels
       use m_volume_average_labels
       use m_rot_force_labels
       use m_div_force_labels

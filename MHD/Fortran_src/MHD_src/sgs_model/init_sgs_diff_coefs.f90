@@ -214,6 +214,7 @@
       use t_layering_ele_list
       use t_ele_info_4_dynamic
       use t_material_property
+      use t_SGS_term_labels
       use t_SGS_model_coefs
 !
       type(fluid_property), intent(in) :: fl_prop
