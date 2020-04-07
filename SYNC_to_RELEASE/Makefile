@@ -18,14 +18,6 @@ MHDDIR =
 
 MAKENAME= $(MAKEDIR)/Makefile
 
-
-
-
-#
-# FC_NAME_MANGLE definition for Fortran-C connection
-#     FC_NAME_LOWER_USCORE, FC_NAME_UPPER, or FC_NAME_LOWER
-#
-FC_NAME_MANGLE = FC_NAME_LOWER_USCORE
 #
 #   zlib and libpng settings
 #
@@ -46,14 +38,12 @@ programs
 F_INCLUDE = -I.
 C_INCLUDE = -I.
 
-ifdef FC_NAME_MANGLE
-  CPP_FLAGS = -DCONNECT_TO_C
+CPP_FLAGS = -DCONNECT_TO_C
 
-  ifdef ZLIB_LIBS
-    CPP_FLAGS += -DZLIB_IO
-    C_INCLUDE+= $$(ZLIB_CFLAGS) 
-    F90LIBS+= $$(ZLIB_LIBS)
-  endif
+ifdef ZLIB_LIBS
+  CPP_FLAGS += -DZLIB_IO
+  C_INCLUDE+= $$(ZLIB_CFLAGS) 
+  F90LIBS+= $$(ZLIB_LIBS)
 endif
 
 ifdef FFTW3_LIBS
@@ -152,7 +142,7 @@ makemake:
 	@echo '#' >> $(MAKENAME)
 	@echo 'F90OPTFLAGS = $(F90OPTFLAGS)  $$(F_INCLUDE)' >> $(MAKENAME)
 	@echo 'F90CPPFLAGS = $(FORTRAN_C_CONNECT)'          >> $(MAKENAME)
-	@echo 'OPTFLAGS =    $(OPTFLAGS) $(FC_NAME_MANGLE)' >> $(MAKENAME)
+	@echo 'OPTFLAGS =    $(OPTFLAGS) ' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo 'F90FLAGS = $$(F90OPTFLAGS) $$(F90CPPFLAGS)'  >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)

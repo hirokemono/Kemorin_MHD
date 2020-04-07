@@ -19,11 +19,6 @@ MHDDIR =
 MAKENAME= $(MAKEDIR)/Makefile
 
 #
-# FC_NAME_MANGLE definition for Fortran-C connection
-#     FC_NAME_LOWER_USCORE, FC_NAME_UPPER, or FC_NAME_LOWER
-#
-FC_NAME_MANGLE = FC_NAME_LOWER_USCORE
-#
 #   zlib and libpng settings
 #
 ZLIB_CFLAGS =
@@ -48,27 +43,25 @@ programs
 F_INCLUDE = -I.
 C_INCLUDE = -I.
 
-ifdef FC_NAME_MANGLE
-  CPP_FLAGS = -DCONNECT_TO_C
-  C_INCLUDE += -I$(MHDDIR)/C_src/CORE_C
-  C_INCLUDE += -I$(MHDDIR)/C_src/CONTROLS
+CPP_FLAGS = -DCONNECT_TO_C
+C_INCLUDE += -I$(MHDDIR)/C_src/CORE_C
+C_INCLUDE += -I$(MHDDIR)/C_src/CONTROLS
 
-  ifdef PNG_LIBS
-    CPP_FLAGS += -DPNG_OUTPUT
-    C_INCLUDE+= $$(PNG_CFLAGS) 
-    F90LIBS+= $$(PNG_LIBS)
-  endif
-  ifdef ZLIB_LIBS
-    CPP_FLAGS += -DZLIB_IO
-    C_INCLUDE+= $$(ZLIB_CFLAGS) 
-    F90LIBS+= $$(ZLIB_LIBS)
-  endif
+ifdef PNG_LIBS
+  CPP_FLAGS += -DPNG_OUTPUT
+  C_INCLUDE+= $$(PNG_CFLAGS) 
+  F90LIBS+= $$(PNG_LIBS)
+endif
+ifdef ZLIB_LIBS
+  CPP_FLAGS += -DZLIB_IO
+  C_INCLUDE+= $$(ZLIB_CFLAGS) 
+  F90LIBS+= $$(ZLIB_LIBS)
+endif
 
-  ifdef FFTW3_LIBS
-    CPP_FLAGS+= -DFFTW3
-    C_INCLUDE+= $$(FFTW3_CFLAGS)
-    F90LIBS+= $$(FFTW3_LIBS)
-  endif
+ifdef FFTW3_LIBS
+  CPP_FLAGS+= -DFFTW3
+  C_INCLUDE+= $$(FFTW3_CFLAGS)
+  F90LIBS+= $$(FFTW3_LIBS)
 endif
 
 ifdef BLAS_LIBS
@@ -181,8 +174,8 @@ makemake:
 	@echo '#' >> $(MAKENAME)
 	@echo 'F90OPTFLAGS = $(F90OPTFLAGS)  $$(F_INCLUDE)' >> $(MAKENAME)
 	@echo 'F90CPPFLAGS = $(FORTRAN_C_CONNECT)'          >> $(MAKENAME)
-	@echo 'OPTFLAGS = $(OPTFLAGS) $(FC_NAME_MANGLE) $(COCOA_FLAG)' >> $(MAKENAME)
-	@echo 'CXXFLAGS = $(CXXFLAGS) $(COCOA_FLAG)'                   >> $(MAKENAME)
+	@echo 'OPTFLAGS = $(OPTFLAGS) $(COCOA_FLAG)' >> $(MAKENAME)
+	@echo 'CXXFLAGS = $(CXXFLAGS) $(COCOA_FLAG)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo 'F90FLAGS = $$(F90OPTFLAGS) $$(F90CPPFLAGS)'  >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)

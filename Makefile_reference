@@ -36,18 +36,13 @@ AR = ar
 RANLIB = ranlib
 
 #
-# FC_NAME_MANGLE definition for Fortran-C connection
-#     -DCONNECT_TO_C ... connect fortran source to C subroutines
-#    C routtine name mangle flag for Fortran connection
-#     -DFC_NAME_LOWER_USCORE, -DFC_NAME_UPPER, or -DFC_NAME_LOWER
-#
+# COCOA_FLAG is defined to use cocoa Framework
 #     -DPNG_OUTPUT ... connect libpng for images
 #     -DWITH_GLUT ...... generate binaries using OpenGL
 #     -DWITH_PGPLOT .... generate programs using PGPLOT
 #
 
 OPENMP_FCFLAGS = -fopenmp
-FC_NAME_MANGLE = -DCONNECT_TO_C -DFC_NAME_LOWER_USCORE
 COCOA_FLAG =     -D__APPLE__
 XL_FORTRAN =     -D__bgq__
 
@@ -156,7 +151,6 @@ makemake: mpif.h
 		HDF5_FFLAGS="$(HDF5_FFLAGS)" \
 		HDF5_LDFLAGS="$(HDF5_LDFLAGS)" \
 		HDF5_FLIBS="$(HDF5_FLIBS)" \
-		FC_NAME_MANGLE="$(FC_NAME_MANGLE)" \
 		COCOA_FLAG="$(COCOA_FLAG)" \
 		OPTFLAGS="$(OPTFLAGS)" \
 		F90OPTFLAGS="$(F90OPTFLAGS)" \
@@ -203,7 +197,6 @@ makemake64: $(MAKE_MOD_DEP)
 		HDF5_FFLAGS="$(HDF5_FFLAGS)" \
 		HDF5_LDFLAGS="$(HDF5_LDFLAGS)" \
 		HDF5_FLIBS="$(HDF5_FLIBS)" \
-		FC_NAME_MANGLE="$(FC_NAME_MANGLE)" \
 		COCOA_FLAG="$(COCOA_FLAG)" \
 		OPTFLAGS="$(OPTFLAGS)" \
 		F90OPTFLAGS="$(F90OPTFLAGS)" \
@@ -249,7 +242,6 @@ depends: $(MAKE_MOD_DEP)
 		HDF5_FFLAGS="$(HDF5_FFLAGS)" \
 		HDF5_LDFLAGS="$(HDF5_LDFLAGS)" \
 		HDF5_FLIBS="$(HDF5_FLIBS)" \
-		FC_NAME_MANGLE="$(FC_NAME_MANGLE)" \
 		COCOA_FLAG="$(COCOA_FLAG)" \
 		OPTFLAGS="$(OPTFLAGS)" \
 		F90OPTFLAGS="$(F90OPTFLAGS)" \

@@ -10,11 +10,6 @@ MHDDIR =
 MAKENAME= $(MAKEDIR)/Makefile
 
 #
-# FC_NAME_MANGLE definition for Fortran-C connection
-#     FC_NAME_LOWER_USCORE, FC_NAME_UPPER, or FC_NAME_LOWER
-#
-FC_NAME_MANGLE = FC_NAME_LOWER_USCORE
-#
 #   zlib and libpng settings
 #
 ZLIB_CFLAGS =
@@ -35,19 +30,17 @@ programs
 
 C_INCLUDE = -I.
 
-ifdef FC_NAME_MANGLE
-  CPP_FLAGS = -DCONNECT_TO_C
-  C_INCLUDE += -I$(MHDDIR)/C_src/CORE_C
-  C_INCLUDE += -I$(MHDDIR)/C_src/CONTROLS
+CPP_FLAGS = -DCONNECT_TO_C
+C_INCLUDE += -I$(MHDDIR)/C_src/CORE_C
+C_INCLUDE += -I$(MHDDIR)/C_src/CONTROLS
 
-  ifdef PNG_LIBS
-    CPP_FLAGS += -DPNG_OUTPUT
-    C_INCLUDE+= $$(PNG_CFLAGS) 
-  endif
-  ifdef ZLIB_LIBS
-    CPP_FLAGS += -DZLIB_IO
-    C_INCLUDE+= $$(ZLIB_CFLAGS) 
-  endif
+ifdef PNG_LIBS
+  CPP_FLAGS += -DPNG_OUTPUT
+  C_INCLUDE+= $$(PNG_CFLAGS) 
+endif
+ifdef ZLIB_LIBS
+  CPP_FLAGS += -DZLIB_IO
+  C_INCLUDE+= $$(ZLIB_CFLAGS) 
 endif
 
 ifdef OPENGL_LIBS
@@ -135,8 +128,8 @@ makemake:
 	@echo '#' >> $(MAKENAME)
 	@echo '# Compiler options' >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
-	@echo 'OPTFLAGS = $(OPTFLAGS) $(FC_NAME_MANGLE) $(COCOA_FLAG)' >> $(MAKENAME)
-	@echo 'CXXFLAGS = $(CXXFLAGS) $(COCOA_FLAG)'                   >> $(MAKENAME)
+	@echo 'OPTFLAGS = $(OPTFLAGS) $(COCOA_FLAG)' >> $(MAKENAME)
+	@echo 'CXXFLAGS = $(CXXFLAGS) $(COCOA_FLAG)' >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
 	@echo '# Libralies and includes settting' >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
