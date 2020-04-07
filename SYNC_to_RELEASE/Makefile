@@ -38,7 +38,7 @@ programs
 F_INCLUDE = -I.
 C_INCLUDE = -I.
 
-CPP_FLAGS = -DCONNECT_TO_C
+CPP_FLAGS =
 
 ifdef ZLIB_LIBS
   CPP_FLAGS += -DZLIB_IO

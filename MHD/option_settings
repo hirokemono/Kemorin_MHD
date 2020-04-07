@@ -620,13 +620,11 @@ RANLIB = ranlib -X64
 
 #
 # FORTRAN_C_CONNECT definition for Fortran-C connection
-#     -DCONNECT_TO_C ... connect fortran source to C subroutines
-#     -DFC_NAME_LOWER_USCORE, -DFC_NAME_UPPER, or -DFC_NAME_LOWER
 #     -DPNG_OUTPUT ... connect libpng for images
 #     (-DWITH_GLUT ...... generate binaries using OpenGL)
 #     (-DWITH_PGPLOT .... generate programs using PGPLOT)
 #
-FORTRAN_C_CONNECT = -DCONNECT_TO_C -DFC_NAME_UPPER -DPNG_OUTPUT
+FORTRAN_C_CONNECT = -DPNG_OUTPUT
 #
 #  optimization
 #
