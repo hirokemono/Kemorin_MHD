@@ -122,6 +122,12 @@ fluid:
 		fluid
 
 depends:
+	if [ ! -d $(MAKEDIR) ]; then \
+		mkdir $(MAKEDIR); \
+	fi
+	if [ ! -d $(BUILDDIR) ]; then \
+		mkdir $(BUILDDIR); \
+	fi
 	@for dir in $(SUBDIRS) ; do \
 		( \
 		cd $${dir};  \
