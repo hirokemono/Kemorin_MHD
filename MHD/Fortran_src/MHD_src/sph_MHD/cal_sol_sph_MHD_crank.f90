@@ -87,8 +87,8 @@
 !      call check_ws_spectr(sph_rj, ipol, rj_fld)
 !
       if(MHD_prop%fl_prop%iflag_scheme .gt. id_no_evolution) then
-!         Input:    ipol%base%i_vort, itor%base%i_vort
-!         Solution: ipol%base%i_velo, itor%base%i_velo, idpdr%base%i_velo
+!         Input:    ipol%base%i_vort to ipol%base%i_vort+2
+!         Solution: ipol%base%i_velo to ipol%base%i_velo+2
         if (iflag_debug .gt. 0)                                         &
      &       write(*,*) 'cal_sol_velo_by_vort_sph_crank'
         call cal_sol_velo_by_vort_sph_crank                             &
@@ -110,7 +110,7 @@
      &      sph_MHD_mat%band_temp_evo, sph_MHD_mat%band_temp00_evo,     &
      &      ipol%base%i_temp, rj_fld, sph_MHD_mat%x00_w_center)
       end if
-!g
+!
 !  Input: ipol%base%i_light,  Solution: ipol%base%i_light
       if(iflag_debug.gt.0) write(*,*) 'cal_sol_scalar_sph_crank'
       if(MHD_prop%cp_prop%iflag_scheme .gt. id_no_evolution) then
@@ -120,8 +120,8 @@
      &      ipol%base%i_light, rj_fld, sph_MHD_mat%x00_w_center)
       end if
 !
-!  Input: ipol%base%i_magne, itor%base%i_magne
-!  Solution: ipol%base%i_magne, itor%base%i_magne, idpdr%base%i_magne
+!  Input:    ipol%base%i_magne, to ipol%base%i_magne+2
+!  Solution: ipol%base%i_magne, to ipol%base%i_magne+2
       if(iflag_debug.gt.0) write(*,*) 'cal_sol_magne_sph_crank'
       if(MHD_prop%cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
         call cal_sol_magne_sph_crank                                    &
@@ -292,9 +292,9 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-!       Input:    ipol%base%i_current, itor%base%i_current
-!       Solution: ipol%diffusion%i_b_diffuse, itor%diffusion%i_b_diffuse,
-!                 idpdr%diffusion%i_b_diffuse
+!       Input:    ipol%base%i_current to ipol%base%i_current+2
+!       Solution: ipol%diffusion%i_b_diffuse
+!                to ipol%diffusion%i_b_diffuse+2
       if(ipol%diffusion%i_b_diffuse .gt. 0) then
         if(iflag_debug .gt. 0) write(*,*) 'const_sph_mag_diffuse_by_j'
         call const_sph_mag_diffuse_by_j(sph_rj, r_2nd, sph_bc_B,        &

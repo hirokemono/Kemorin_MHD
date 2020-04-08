@@ -130,7 +130,7 @@
 !
       if(iflag_debug.gt.0) write(*,*)' sync_temp_by_per_temp_sph'
       call sync_temp_by_per_temp_sph(SPH_model,                         &
-     &    SPH_MHD%sph%sph_rj, SPH_MHD%ipol, SPH_MHD%idpdr, SPH_MHD%fld)
+     &    SPH_MHD%sph%sph_rj, SPH_MHD%ipol, SPH_MHD%fld)
 !
 !  -------------------------------
 !
@@ -240,7 +240,7 @@
       if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+5)
       if(iflag_debug.gt.0) write(*,*) 'trans_per_temp_to_temp_sph'
       call trans_per_temp_to_temp_sph(SPH_model,                        &
-     &    SPH_MHD%sph%sph_rj, SPH_MHD%ipol, SPH_MHD%idpdr, SPH_MHD%fld)
+     &    SPH_MHD%sph%sph_rj, SPH_MHD%ipol, SPH_MHD%fld)
 !*
       if(lead_field_data_flag(i_step, MHD_step) .eq. 0) then
         if(iflag_debug.gt.0) write(*,*) 'lead_fields_4_SPH_SGS_MHD'
@@ -298,7 +298,7 @@
 !
       if(iflag_debug.gt.0) write(*,*) 'sync_temp_by_per_temp_sph'
       call sync_temp_by_per_temp_sph(SPH_model,                         &
-     &    SPH_MHD%sph%sph_rj, SPH_MHD%ipol, SPH_MHD%idpdr, SPH_MHD%fld)
+     &    SPH_MHD%sph%sph_rj, SPH_MHD%ipol, SPH_MHD%fld)
 !
       if(i_step .ge. MHD_step%finish_d%i_end_step                       &
      &    .and. MHD_step%finish_d%i_end_step .gt. 0) then
