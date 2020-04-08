@@ -9,9 +9,9 @@
 !!@verbatim
 !!      subroutine cal_sol_velo_by_vort_sph_crank(sph_rj, r_2nd,        &
 !!     &          sph_bc_U, bcs_U, fdm2_free_ICB, fdm2_free_CMB,        &
-!!     &          band_vp_evo, band_vt_evo, ipol, itor, rj_fld)
-!!        Input address:    ipol%base%i_vort, itor%base%i_vort
-!!        Solution address: ipol%base%i_velo, itor%base%i_velo
+!!     &          band_vp_evo, band_vt_evo, ipol, rj_fld)
+!!        Input address:    ipol%base%i_vort, ipol%base%i_vort+2
+!!        Solution address: ipol%base%i_velo, ipol%base%i_velo+2
 !!        type(sph_boundary_type), intent(in) :: sph_bc_U
 !!        type(sph_scalar_boundary_data), intent(in) :: bcs_U
 !!
@@ -22,9 +22,9 @@
 !!
 !!      subroutine cal_sol_magne_sph_crank(sph_rj, r_2nd,               &
 !!     &          sph_bc_B, bcs_B, band_bp_evo, band_bt_evo,            &
-!!     &          g_sph_rj, ipol, itor, rj_fld)
-!!        Input address:    ipol%base%i_magne, itor%base%i_magne
-!!        Solution address: ipol%base%i_magne, itor%base%i_magne
+!!     &          g_sph_rj, ipol, rj_fld)
+!!        Input address:    ipol%base%i_magne, ipol%base%i_magne+2
+!!        Solution address: ipol%base%i_magne, ipol%base%i_magne+2
 !!        type(sph_boundary_type), intent(in) :: sph_bc_B
 !!        type(sph_vector_boundary_data), intent(in) :: bcs_B
 !!
@@ -74,7 +74,7 @@
 !
       subroutine cal_sol_velo_by_vort_sph_crank(sph_rj, r_2nd,          &
      &          sph_bc_U, bcs_U, fdm2_free_ICB, fdm2_free_CMB,          &
-     &          band_vp_evo, band_vt_evo, ipol, itor, rj_fld)
+     &          band_vp_evo, band_vt_evo, ipol, rj_fld)
 !
       use copy_field_smp
       use solve_sph_fluid_crank
@@ -89,18 +89,18 @@
       type(sph_vector_boundary_data), intent(in) :: bcs_U
       type(fdm2_free_slip), intent(in) :: fdm2_free_ICB, fdm2_free_CMB
       type(band_matrices_type), intent(in) :: band_vp_evo, band_vt_evo
-      type(phys_address), intent(in) :: ipol, itor
+      type(phys_address), intent(in) :: ipol
 !
       type(phys_data), intent(inout) :: rj_fld
 !
 !
 !$omp parallel
       call copy_nod_scalar_smp(rj_fld%n_point,                          &
-     &    rj_fld%d_fld(1,itor%base%i_vort),                             &
-     &    rj_fld%d_fld(1,ipol%base%i_velo))
+     &    rj_fld%d_fld(1,ipol%base%i_vort+2),                           &
+     &    rj_fld%d_fld(1,ipol%base%i_velo  ))
       call copy_nod_scalar_smp(rj_fld%n_point,                          &
-     &    rj_fld%d_fld(1,ipol%base%i_vort),                             &
-     &    rj_fld%d_fld(1,itor%base%i_velo))
+     &    rj_fld%d_fld(1,ipol%base%i_vort  ),                           &
+     &    rj_fld%d_fld(1,ipol%base%i_velo+2))
 !$omp end parallel
 !
       call delete_zero_degree_vect                                      &
@@ -116,8 +116,7 @@
 !
 !
       call solve_velo_by_vort_sph_crank                                 &
-     &   (sph_rj, band_vp_evo, band_vt_evo,                             &
-     &    ipol%base%i_velo, itor%base%i_velo,                           &
+     &   (sph_rj, band_vp_evo, band_vt_evo, ipol%base%i_velo,           &
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
       end subroutine cal_sol_velo_by_vort_sph_crank
@@ -153,7 +152,7 @@
 !
       subroutine cal_sol_magne_sph_crank(sph_rj, r_2nd,                 &
      &          sph_bc_B, bcs_B, band_bp_evo, band_bt_evo,              &
-     &          g_sph_rj, ipol, itor, rj_fld)
+     &          g_sph_rj, ipol, rj_fld)
 !
       use solve_sph_fluid_crank
       use set_reference_sph_mhd
@@ -166,7 +165,7 @@
       type(sph_boundary_type), intent(in) :: sph_bc_B
       type(sph_vector_boundary_data), intent(in) :: bcs_B
       type(band_matrices_type), intent(in) :: band_bp_evo, band_bt_evo
-      type(phys_address), intent(in) :: ipol, itor
+      type(phys_address), intent(in) :: ipol
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
 !
       type(phys_data), intent(inout) :: rj_fld
@@ -183,8 +182,8 @@
      &    sph_bc_B, bcs_B%CMB_Vspec, g_sph_rj, ipol%base%i_magne,       &
      &    rj_fld)
 !
-      call solve_magne_sph_crank(sph_rj, band_bp_evo, band_bt_evo,      &
-     &    ipol%base%i_magne, itor%base%i_magne,                         &
+      call solve_magne_sph_crank(sph_rj,                                &
+     &    band_bp_evo, band_bt_evo, ipol%base%i_magne,                  &
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
       end subroutine cal_sol_magne_sph_crank

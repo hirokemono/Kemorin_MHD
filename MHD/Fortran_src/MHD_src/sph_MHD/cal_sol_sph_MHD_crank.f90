@@ -9,23 +9,29 @@
 !!@verbatim
 !!      subroutine s_cal_sol_sph_MHD_crank                              &
 !!     &         (dt, sph_rj, r_2nd, MHD_prop, sph_MHD_bc, leg,         &
-!!     &          ipol, idpdr, itor, sph_MHD_mat, rj_fld)
-!!      subroutine set_sph_field_to_start                               &
-!!     &         (sph_rj, r_2nd, MHD_prop, sph_MHD_bc, leg,             &
-!!     &          ipol, itor, rj_fld)
+!!     &          ipol, sph_MHD_mat, rj_fld)
+!!      subroutine set_sph_field_to_start(sph_rj, r_2nd,                &
+!!     &          MHD_prop, sph_MHD_bc, leg, ipol, rj_fld)
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(fdm_matrices), intent(in) :: r_2nd
 !!        type(legendre_4_sph_trans), intent(in) :: leg
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
 !!        type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
-!!        type(phys_address), intent(in) :: ipol, itor
+!!        type(phys_address), intent(in) :: ipol
 !!        type(MHD_radial_matrices), intent(inout) :: sph_MHD_mat
 !!        type(phys_data), intent(inout) :: rj_fld
 !!
 !!      subroutine check_vs_spectr(sph_rj, ipol, rj_fld)
 !!      subroutine check_ws_spectr(sph_rj, ipol, rj_fld)
 !!      subroutine update_after_magne_sph(sph_rj, r_2nd,                &
-!!     &          cd_prop, sph_bc_B, leg, ipol, itor, rj_fld)
+!!     &          cd_prop, sph_bc_B, leg, ipol, rj_fld)
+!!        type(sph_rj_grid), intent(in) ::  sph_rj
+!!        type(fdm_matrices), intent(in) :: r_2nd
+!!        type(conductive_property), intent(in) :: cd_prop
+!!        type(sph_boundary_type), intent(in) :: sph_bc_B
+!!        type(legendre_4_sph_trans), intent(in) :: leg
+!!        type(phys_address), intent(in) :: ipol
+!!        type(phys_data), intent(inout) :: rj_fld
 !!@endverbatim
 !
       module cal_sol_sph_MHD_crank
@@ -63,7 +69,7 @@
 !
       subroutine s_cal_sol_sph_MHD_crank                                &
      &         (dt, sph_rj, r_2nd, MHD_prop, sph_MHD_bc, leg,           &
-     &          ipol, idpdr, itor, sph_MHD_mat, rj_fld)
+     &          ipol, sph_MHD_mat, rj_fld)
 !
       use cal_rot_buoyancies_sph_MHD
       use cal_sol_sph_fluid_crank
@@ -75,7 +81,7 @@
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
       type(legendre_4_sph_trans), intent(in) :: leg
-      type(phys_address), intent(in) :: ipol, idpdr, itor
+      type(phys_address), intent(in) :: ipol
 !
       type(MHD_radial_matrices), intent(inout) :: sph_MHD_mat
       type(phys_data), intent(inout) :: rj_fld
@@ -95,7 +101,7 @@
      &     (sph_rj, r_2nd, sph_MHD_bc%sph_bc_U, sph_MHD_bc%bcs_U,       &
      &      sph_MHD_bc%fdm2_free_ICB, sph_MHD_bc%fdm2_free_CMB,         &
      &      sph_MHD_mat%band_vp_evo, sph_MHD_mat%band_vt_evo,           &
-     &      ipol, itor, rj_fld)
+     &      ipol, rj_fld)
         call const_grad_vp_and_vorticity                                &
      &     (sph_rj, r_2nd, sph_MHD_bc%sph_bc_U, sph_MHD_bc%bcs_U,       &
      &      sph_MHD_bc%fdm2_free_ICB, sph_MHD_bc%fdm2_free_CMB,         &
@@ -127,7 +133,7 @@
         call cal_sol_magne_sph_crank                                    &
      &     (sph_rj, r_2nd, sph_MHD_bc%sph_bc_B, sph_MHD_bc%bcs_B,       &
      &      sph_MHD_mat%band_bp_evo, sph_MHD_mat%band_bt_evo,           &
-     &      leg%g_sph_rj, ipol, itor, rj_fld)
+     &      leg%g_sph_rj, ipol, rj_fld)
         call const_grad_bp_and_current                                  &
      &     (sph_rj, r_2nd, sph_MHD_bc%sph_bc_B, sph_MHD_bc%bcs_B,       &
      &      leg%g_sph_rj, ipol%base%i_magne, ipol%base%i_current,       &
@@ -141,10 +147,9 @@
         call update_after_vorticity_sph                                 &
      &     (sph_rj, r_2nd, MHD_prop%fl_prop, sph_MHD_bc%sph_bc_U,       &
      &      sph_MHD_bc%fdm2_free_ICB, sph_MHD_bc%fdm2_free_CMB,         &
-     &      leg, ipol, itor, rj_fld)
-        call cal_rot_radial_self_gravity                                &
-     &     (sph_rj, ipol, itor, MHD_prop%fl_prop, sph_MHD_bc%sph_bc_U,  &
-     &      rj_fld)
+     &      leg, ipol, rj_fld)
+        call cal_rot_radial_self_gravity(sph_rj, ipol,                  &
+     &      MHD_prop%fl_prop, sph_MHD_bc%sph_bc_U, rj_fld)
       end if
 !
       if(MHD_prop%ht_prop%iflag_scheme .gt. id_no_evolution) then
@@ -159,7 +164,7 @@
       end if
       if(MHD_prop%cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
         call update_after_magne_sph(sph_rj, r_2nd, MHD_prop%cd_prop,    &
-     &      sph_MHD_bc%sph_bc_B, leg, ipol, itor, rj_fld)
+     &      sph_MHD_bc%sph_bc_B, leg, ipol, rj_fld)
       end if
 !
       end subroutine s_cal_sol_sph_MHD_crank
@@ -167,9 +172,8 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine set_sph_field_to_start                                 &
-     &         (sph_rj, r_2nd, MHD_prop, sph_MHD_bc, leg,               &
-     &          ipol, itor, rj_fld)
+      subroutine set_sph_field_to_start(sph_rj, r_2nd,                  &
+     &          MHD_prop, sph_MHD_bc, leg, ipol, rj_fld)
 !
       use const_sph_radial_grad
       use cal_rot_buoyancies_sph_MHD
@@ -179,7 +183,7 @@
       type(legendre_4_sph_trans), intent(in) :: leg
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
-      type(phys_address), intent(in) :: ipol, itor
+      type(phys_address), intent(in) :: ipol
       type(phys_data), intent(inout) :: rj_fld
 !
 !
@@ -195,11 +199,10 @@
         call update_after_vorticity_sph                                 &
      &     (sph_rj, r_2nd, MHD_prop%fl_prop, sph_MHD_bc%sph_bc_U,       &
      &      sph_MHD_bc%fdm2_free_ICB, sph_MHD_bc%fdm2_free_CMB,         &
-     &      leg, ipol, itor, rj_fld)
+     &      leg, ipol, rj_fld)
         if(iflag_debug.gt.0) write(*,*) 'cal_rot_radial_self_gravity'
-        call cal_rot_radial_self_gravity                                &
-     &     (sph_rj, ipol, itor, MHD_prop%fl_prop, sph_MHD_bc%sph_bc_U,  &
-     &      rj_fld)
+        call cal_rot_radial_self_gravity(sph_rj, ipol,                  &
+     &      MHD_prop%fl_prop, sph_MHD_bc%sph_bc_U, rj_fld)
       end if
 !
       if(iflag_debug.gt.0) write(*,*) 'update_after_heat_sph'
@@ -219,7 +222,7 @@
       end if
 !
       call update_after_magne_sph(sph_rj, r_2nd, MHD_prop%cd_prop,      &
-     &    sph_MHD_bc%sph_bc_B, leg, ipol, itor, rj_fld)
+     &    sph_MHD_bc%sph_bc_B, leg, ipol, rj_fld)
 !
       end subroutine set_sph_field_to_start
 !
@@ -228,7 +231,7 @@
 !
       subroutine update_after_vorticity_sph(sph_rj, r_2nd, fl_prop,     &
      &          sph_bc_U, fdm2_free_ICB, fdm2_free_CMB, leg,            &
-     &          ipol, itor, rj_fld)
+     &          ipol, rj_fld)
 !
       use t_physical_property
       use cal_inner_core_rotation
@@ -239,13 +242,13 @@
       type(sph_boundary_type), intent(in) :: sph_bc_U
       type(fdm2_free_slip), intent(in) :: fdm2_free_ICB, fdm2_free_CMB
       type(legendre_4_sph_trans), intent(in) :: leg
-      type(phys_address), intent(in) :: ipol, itor
+      type(phys_address), intent(in) :: ipol
       type(phys_data), intent(inout) :: rj_fld
 !
 !
       if(sph_bc_U%iflag_icb .eq. iflag_rotatable_ic) then
         call set_inner_core_rotation                                    &
-     &     (sph_bc_U%kr_in, sph_rj, ipol, itor, rj_fld)
+     &     (sph_bc_U%kr_in, sph_rj, ipol, rj_fld)
       end if
 !
 !       Input: ipol%base%i_vort, ipol%base%i_vort+2
@@ -279,7 +282,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine update_after_magne_sph(sph_rj, r_2nd,                  &
-     &          cd_prop, sph_bc_B, leg, ipol, itor, rj_fld)
+     &          cd_prop, sph_bc_B, leg, ipol, rj_fld)
 !
       use t_physical_property
 !
@@ -288,7 +291,7 @@
       type(conductive_property), intent(in) :: cd_prop
       type(sph_boundary_type), intent(in) :: sph_bc_B
       type(legendre_4_sph_trans), intent(in) :: leg
-      type(phys_address), intent(in) :: ipol, itor
+      type(phys_address), intent(in) :: ipol
       type(phys_data), intent(inout) :: rj_fld
 !
 !

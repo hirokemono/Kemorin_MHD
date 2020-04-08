@@ -9,8 +9,7 @@
 !!@verbatim
 !!      subroutine SGS_by_pseudo_sph(i_step, i_step_sgs_coefs,          &
 !!     &          SGS_param, sph, comms_sph, r_2nd, MHD_prop,           &
-!!     &          sph_MHD_bc, trans_p, WK, dynamic_SPH,                 &
-!!     &          ipol, itor, rj_fld)
+!!     &          sph_MHD_bc, trans_p, WK, dynamic_SPH, ipol, rj_fld)
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(sph_grids), intent(in) :: sph
 !!        type(sph_comm_tables), intent(in) :: comms_sph
@@ -18,7 +17,7 @@
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
 !!        type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
 !!        type(parameters_4_sph_trans), intent(in) :: trans_p
-!!        type(phys_address), intent(in) :: ipol, itor
+!!        type(phys_address), intent(in) :: ipol
 !!        type(works_4_sph_trans_MHD), intent(inout) :: WK
 !!        type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
 !!        type(phys_data), intent(inout) :: rj_fld
@@ -65,8 +64,7 @@
 !
       subroutine SGS_by_pseudo_sph(i_step, i_step_sgs_coefs,            &
      &          SGS_param, sph, comms_sph, r_2nd, MHD_prop,             &
-     &          sph_MHD_bc, trans_p, WK, dynamic_SPH,                   &
-     &          ipol, itor, rj_fld)
+     &          sph_MHD_bc, trans_p, WK, dynamic_SPH, ipol, rj_fld)
 !
       use sph_transforms_4_SGS
       use cal_sph_rotation_of_SGS
@@ -85,7 +83,7 @@
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
       type(parameters_4_sph_trans), intent(in) :: trans_p
-      type(phys_address), intent(in) :: ipol, itor
+      type(phys_address), intent(in) :: ipol
 !
       type(works_4_sph_trans_MHD), intent(inout) :: WK
       type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
@@ -193,7 +191,7 @@
 !
       if (iflag_debug.ge.1) write(*,*) 'rot_SGS_terms_exp_sph'
       call rot_SGS_terms_exp_sph(sph%sph_rj, r_2nd, sph_MHD_bc,         &
-     &    trans_p%leg, ipol, itor, rj_fld)
+     &    trans_p%leg, ipol, rj_fld)
       if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+12)
 !
       end subroutine SGS_by_pseudo_sph

@@ -11,7 +11,7 @@
 !!     &         (sph_rj, ipol, itor, fl_prop, sph_bc_U, rj_fld)
 !!        type(fluid_property), intent(in) :: fl_prop
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
-!!        type(phys_address), intent(in) :: ipol, itor
+!!        type(phys_address), intent(in) :: ipol
 !!        type(sph_boundary_type), intent(in) :: sph_bc_U
 !!        type(phys_data), intent(inout) :: rj_fld
 !!      subroutine cal_boussinesq_density_sph                           &
@@ -44,7 +44,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_rot_radial_self_gravity                            &
-     &         (sph_rj, ipol, itor, fl_prop, sph_bc_U, rj_fld)
+     &         (sph_rj, ipol, fl_prop, sph_bc_U, rj_fld)
 !
       use t_physical_property
       use t_spheric_rj_data
@@ -54,9 +54,11 @@
 !
       type(fluid_property), intent(in) :: fl_prop
       type(sph_rj_grid), intent(in) ::  sph_rj
-      type(phys_address), intent(in) :: ipol, itor
+      type(phys_address), intent(in) :: ipol
       type(sph_boundary_type), intent(in) :: sph_bc_U
       type(phys_data), intent(inout) :: rj_fld
+!
+      integer(kind = kint) :: it_rot_buo
 !
 !
       if ((fl_prop%iflag_4_gravity * fl_prop%iflag_4_composit_buo)      &
@@ -64,10 +66,11 @@
 !
         if (iflag_debug.eq.1)                                           &
      &    write(*,*)'cal_rot_double_buoyancy_sph_MHD', ipol%base%i_temp
+          it_rot_buo = ipol%rot_forces%i_buoyancy + 2
           call cal_rot_double_buoyancy_sph_MHD                          &
      &      (sph_bc_U%kr_in, sph_bc_U%kr_out,                           &
      &       fl_prop%coef_buo, ipol%base%i_temp, fl_prop%coef_comp_buo, &
-     &       ipol%base%i_light, itor%rot_forces%i_buoyancy,             &
+     &       ipol%base%i_light, it_rot_buo,                             &
      &       sph_rj%nidx_rj, sph_rj%radius_1d_rj_r,                     &
      &       rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
@@ -75,29 +78,30 @@
 !
         if (iflag_debug.eq.1) write(*,*)                                &
      &      'cal_rot_buoyancy_sph_MHD', ipol%base%i_temp
+        it_rot_buo = ipol%rot_forces%i_buoyancy + 2
         call cal_rot_buoyancy_sph_MHD                                   &
      &     (sph_bc_U%kr_in, sph_bc_U%kr_out, fl_prop%coef_buo,          &
-     &      ipol%base%i_temp, itor%rot_forces%i_buoyancy,               &
+     &      ipol%base%i_temp, it_rot_buo,                               &
      &      sph_rj%nidx_rj, sph_rj%radius_1d_rj_r,                      &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
       else if (fl_prop%iflag_4_composit_buo .gt. id_turn_OFF) then
         if (iflag_debug.eq.1) write(*,*)                                &
      &      'cal_rot_buoyancy_sph_MHD', ipol%base%i_light
+        it_rot_buo = ipol%rot_forces%i_comp_buo + 2
         call cal_rot_buoyancy_sph_MHD(sph_bc_U%kr_in, sph_bc_U%kr_out,  &
-     &      fl_prop%coef_comp_buo, ipol%base%i_light,                   &
-     &      itor%rot_forces%i_comp_buo,                                 &
+     &      fl_prop%coef_comp_buo, ipol%base%i_light, it_rot_buo,       &
      &      sph_rj%nidx_rj, sph_rj%radius_1d_rj_r,                      &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
       else if (fl_prop%iflag_4_filter_gravity .gt. id_turn_OFF) then
         if (iflag_debug.eq.1) write(*,*)                                &
      &      'cal_rot_buoyancy_sph_MHD', ipol%filter_fld%i_temp
+        it_rot_buo = ipol%rot_frc_by_filter%i_buoyancy + 2
         call cal_rot_buoyancy_sph_MHD(sph_bc_U%kr_in, sph_bc_U%kr_out,  &
-     &      fl_prop%coef_buo, ipol%filter_fld%i_temp,                   &
-     &      itor%rot_frc_by_filter%i_buoyancy, sph_rj%nidx_rj,          &
-     &      sph_rj%radius_1d_rj_r, rj_fld%n_point, rj_fld%ntot_phys,    &
-     &      rj_fld%d_fld)
+     &      fl_prop%coef_buo, ipol%filter_fld%i_temp, it_rot_buo,       &
+     &      sph_rj%nidx_rj, sph_rj%radius_1d_rj_r,                      &
+     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !
       end subroutine cal_rot_radial_self_gravity

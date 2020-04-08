@@ -124,7 +124,7 @@
         call SGS_by_pseudo_sph(i_step, SGS_par%i_step_sgs_coefs,        &
      &      SGS_par%model_p, SPH_MHD%sph, SPH_MHD%comms,                &
      &      r_2nd, SPH_model%MHD_prop, SPH_model%sph_MHD_bc, trans_p,   &
-     &      WK, dynamic_SPH, SPH_MHD%ipol, SPH_MHD%itor, SPH_MHD%fld)
+     &      WK, dynamic_SPH, SPH_MHD%ipol, SPH_MHD%fld)
       end if
 !
 !   ----  Lead advection of reference field
@@ -138,7 +138,7 @@
       if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+8)
       call copy_icore_rot_to_tor_coriolis                               &
      &   (SPH_model%sph_MHD_bc%sph_bc_U, SPH_MHD%sph%sph_rj,            &
-     &    SPH_MHD%ipol, SPH_MHD%itor, SPH_MHD%fld)
+     &    SPH_MHD%ipol, SPH_MHD%fld)
       if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+8)
 !
       if(iflag_debug .gt. 0) write(*,*) 'sum_forces_to_explicit'

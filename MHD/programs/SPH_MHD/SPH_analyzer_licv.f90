@@ -134,7 +134,7 @@
       if(iflag_debug .gt. 0) write(*,*) 'set_sph_field_to_start'
       call set_sph_field_to_start(SPH_MHD%sph%sph_rj, SPH_WK%r_2nd,     &
      &    SPH_model%MHD_prop, SPH_model%sph_MHD_bc, SPH_WK%trans_p%leg, &
-     &    SPH_MHD%ipol, SPH_MHD%itor, SPH_MHD%fld)
+     &    SPH_MHD%ipol, SPH_MHD%fld)
 !
 !*  ----------------lead nonlinear term ... ----------
 !*
@@ -196,8 +196,7 @@
       call s_cal_sol_sph_MHD_crank                                      &
      &   (MHD_step%time_d%dt, SPH_MHD%sph%sph_rj, SPH_WK%r_2nd,         &
      &    SPH_model%MHD_prop, SPH_model%sph_MHD_bc, SPH_WK%trans_p%leg, &
-     &    SPH_MHD%ipol, SPH_MHD%idpdr, SPH_MHD%itor,                    &
-     &    SPH_WK%MHD_mats, SPH_MHD%fld)
+     &    SPH_MHD%ipol, SPH_WK%MHD_mats, SPH_MHD%fld)
 !*
 !* ----  Update fields after time evolution ------------------------
 !*

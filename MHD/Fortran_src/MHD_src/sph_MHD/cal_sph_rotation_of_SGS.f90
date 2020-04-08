@@ -8,13 +8,13 @@
 !!
 !!@verbatim
 !!      subroutine rot_SGS_terms_exp_sph                                &
-!!     &         (sph_rj, r_2nd, sph_MHD_bc, leg, ipol, itor, rj_fld)
+!!     &         (sph_rj, r_2nd, sph_MHD_bc, leg, ipol, rj_fld)
 !!      subroutine cal_div_of_SGS_forces_sph_2                          &
 !!     &         (sph_rj, r_2nd, sph_MHD_bc, g_sph_rj, ipol, rj_fld)
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(fdm_matrices), intent(in) :: r_2nd
 !!        type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
-!!        type(phys_address), intent(in) :: ipol, itor
+!!        type(phys_address), intent(in) :: ipol
 !!        type(phys_data), intent(inout) :: rj_fld
 !!@endverbatim
 !
@@ -48,7 +48,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine rot_SGS_terms_exp_sph                                  &
-     &         (sph_rj, r_2nd, sph_MHD_bc, leg, ipol, itor, rj_fld)
+     &         (sph_rj, r_2nd, sph_MHD_bc, leg, ipol, rj_fld)
 !
       use calypso_mpi
 !
@@ -56,7 +56,7 @@
       type(fdm_matrices), intent(in) :: r_2nd
       type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
       type(legendre_4_sph_trans), intent(in) :: leg
-      type(phys_address), intent(in) :: ipol, itor
+      type(phys_address), intent(in) :: ipol
 !
       type(phys_data), intent(inout) :: rj_fld
 !
@@ -66,7 +66,7 @@
       call SGS_rot_of_SGS_forces_sph_2                                  &
      &   (sph_rj, r_2nd, leg%g_sph_rj, sph_MHD_bc%sph_bc_U,             &
      &    sph_MHD_bc%fdm2_free_ICB, sph_MHD_bc%fdm2_free_CMB,           &
-     &    ipol, itor, rj_fld)
+     &    ipol, rj_fld)
 !
       call cal_rot_of_SGS_induction_sph(sph_rj, r_2nd, leg%g_sph_rj,    &
      &    sph_MHD_bc%sph_bc_B, ipol, rj_fld)
@@ -84,8 +84,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine SGS_rot_of_SGS_forces_sph_2(sph_rj, r_2nd, g_sph_rj,   &
-     &          sph_bc_U, fdm2_free_ICB, fdm2_free_CMB,                 &
-     &          ipol, itor, rj_fld)
+     &          sph_bc_U, fdm2_free_ICB, fdm2_free_CMB, ipol, rj_fld)
 !
       use calypso_mpi
       use const_sph_radial_grad
@@ -96,7 +95,7 @@
       type(fdm_matrices), intent(in) :: r_2nd
       type(sph_boundary_type), intent(in) :: sph_bc_U
       type(fdm2_free_slip), intent(in) :: fdm2_free_ICB, fdm2_free_CMB
-      type(phys_address), intent(in) :: ipol, itor
+      type(phys_address), intent(in) :: ipol
 !
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
 !
