@@ -87,8 +87,7 @@
         end if
 !
         call set_rj_phys_for_zm_streamfunc                              &
-     &     (SPH_MHD%ipol, SPH_MHD%idpdr, SPH_MHD%itor,                  &
-     &      SPH_MHD%sph%sph_rj, SPH_MHD%fld)
+     &     (SPH_MHD%ipol, SPH_MHD%sph%sph_rj, SPH_MHD%fld)
         call zonal_mean_all_sph_spectr(SPH_MHD%sph%sph_rj, SPH_MHD%fld)
 !
 !  spherical transform for vector
@@ -202,15 +201,14 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_rj_phys_for_zm_streamfunc(ipol, idpdr, itor,       &
-     &          sph_rj, rj_fld)
+      subroutine set_rj_phys_for_zm_streamfunc(ipol, sph_rj, rj_fld)
 !
       use m_phys_labels
       use t_spheric_rj_data
       use t_phys_address
       use t_phys_data
 !
-      type(phys_address), intent(in) :: ipol, idpdr, itor
+      type(phys_address), intent(in) :: ipol
       type(sph_rj_grid), intent(in) :: sph_rj
 !
       type(phys_data), intent(inout) :: rj_fld
@@ -223,15 +221,15 @@
         do k = 1, sph_rj%nidx_rj(1)
           do j = 1, sph_rj%nidx_rj(2)
             inod = (k-1)*sph_rj%nidx_rj(2) + j
-            rj_fld%d_fld(inod,itor%base%i_vort )                        &
-     &           =  rj_fld%d_fld(inod,itor%base%i_velo)
-            rj_fld%d_fld(inod,ipol%base%i_vort ) =  zero
-            rj_fld%d_fld(inod,idpdr%base%i_vort) =  zero
+            rj_fld%d_fld(inod,ipol%base%i_vort+2)                       &
+     &           =  rj_fld%d_fld(inod,ipol%base%i_velo+2)
+            rj_fld%d_fld(inod,ipol%base%i_vort  ) =  zero
+            rj_fld%d_fld(inod,ipol%base%i_vort+1) =  zero
 !
-            rj_fld%d_fld(inod,itor%base%i_velo)                         &
+            rj_fld%d_fld(inod,ipol%base%i_velo+2)                       &
      &           =  rj_fld%d_fld(inod,ipol%base%i_velo)
-            rj_fld%d_fld(inod,ipol%base%i_velo ) =  zero
-            rj_fld%d_fld(inod,idpdr%base%i_velo) =  zero
+            rj_fld%d_fld(inod,ipol%base%i_velo  ) =  zero
+            rj_fld%d_fld(inod,ipol%base%i_velo+1) =  zero
            end do
         end do
 !$omp end parallel do
@@ -242,15 +240,15 @@
         do k = 1, sph_rj%nidx_rj(1)
           do j = 1, sph_rj%nidx_rj(2)
             inod = (k-1)*sph_rj%nidx_rj(2) + j
-            rj_fld%d_fld(inod,itor%base%i_current )                     &
-     &           =  rj_fld%d_fld(inod,itor%base%i_magne)
-            rj_fld%d_fld(inod,ipol%base%i_current ) =  zero
-            rj_fld%d_fld(inod,idpdr%base%i_current) =  zero
+            rj_fld%d_fld(inod,ipol%base%i_current+2)                    &
+     &           =  rj_fld%d_fld(inod,ipol%base%i_magne+2)
+            rj_fld%d_fld(inod,ipol%base%i_current  ) =  zero
+            rj_fld%d_fld(inod,ipol%base%i_current+1) =  zero
 !
-            rj_fld%d_fld(inod,itor%base%i_magne )                       &
+            rj_fld%d_fld(inod,ipol%base%i_magne+2)                      &
      &           =  rj_fld%d_fld(inod,ipol%base%i_magne)
-            rj_fld%d_fld(inod,ipol%base%i_magne ) =  zero
-            rj_fld%d_fld(inod,idpdr%base%i_magne) =  zero
+            rj_fld%d_fld(inod,ipol%base%i_magne  ) =  zero
+            rj_fld%d_fld(inod,ipol%base%i_magne+1) =  zero
            end do
         end do
 !$omp end parallel do

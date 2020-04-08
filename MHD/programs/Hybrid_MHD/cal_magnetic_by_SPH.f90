@@ -7,6 +7,8 @@
 !!      subroutine nonlinear_incuction_wSGS_SPH(FEM_prm, SGS_par,       &
 !!     &          mesh, sph, comms_sph, trans_p, conduct, MHD_prop,     &
 !!     &          fem_int, Csims_FEM_MHD, ipol, rj_fld)
+!!      subroutine cal_magneitc_field_by_SPH(SGS_param, cd_prop,        &
+!!     &          sph, comms_sph, trans_p, ipol, rj_fld)
 !
       use t_FEM_control_parameter
       use t_SGS_control_parameter
@@ -79,7 +81,7 @@
 !
       call set_addresses_trans_hbd_MHD(evo_magne, SGS_param)
       call allocate_hbd_trans_rtp(sph%sph_rtp)
-      call check_add_trans_hbd_MHD(ipol, idpdr, itor)
+      call check_add_trans_hbd_MHD(ipol)
 !
 !     ---------------------
 !
@@ -259,7 +261,7 @@
 !*   ------------------------------------------------------------------
 !
       subroutine cal_magneitc_field_by_SPH(SGS_param, cd_prop,          &
-     &          sph, comms_sph, trans_p, ipol, itor, rj_fld)
+     &          sph, comms_sph, trans_p, ipol, rj_fld)
 !
       use m_solver_SR
       use m_schmidt_poly_on_rtm
@@ -273,16 +275,16 @@
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
       type(parameters_4_sph_trans), intent(in) :: trans_p
-      type(phys_address), intent(in) :: ipol, itor
+      type(phys_address), intent(in) :: ipol
 !
       type(phys_data), intent(in) :: rj_fld
 !
       if ( SGS_param%iflag_SGS_uxb .ne. id_SGS_none) then
-        call cal_diff_induction_MHD_adams(dt, cd_prop%coef_exp,         &
-     &      ipol, itor, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+        call cal_diff_induction_MHD_adams(dt, cd_prop%coef_exp, ipol,   &
+     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       else
-        call cal_diff_induction_wSGS_adams(dt, cd_prop%coef_exp,        &
-     &      ipol, itor, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+        call cal_diff_induction_wSGS_adams(dt, cd_prop%coef_exp, ipol,  &
+     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !
       call cal_sol_magne_sph_crank(sph%sph_rj, sph_bc_B, bcs_B,         &
@@ -365,6 +367,8 @@
      &    iphys%SGS_term%i_SGS_induction,                               &
      &    itp_SPH_2_FEM, mesh_sph, mesh_fem, sph_fld, fem_fld)
       end if
+!
+!*   ------------------------------------------------------------------
 !
       end subroutine cal_magneitc_field_by_SPH
 

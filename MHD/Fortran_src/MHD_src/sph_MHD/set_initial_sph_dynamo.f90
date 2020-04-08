@@ -38,6 +38,7 @@
 !
       implicit none
 !
+      private :: sph_initial_data_4_benchmarks
       private :: set_initial_velo_sph, set_initial_magne_sph
       private :: reduce_initial_magne_sph, sph_initial_data_w_seed_B
 !
@@ -76,7 +77,6 @@
         call read_alloc_sph_restart_data                                &
      &     (MHD_files%fst_file_IO, MHD_step%init_d, SPH_MHD%fld,        &
      &      MHD_step%rst_step, sph_fst_IO)
-        if(iflag_debug .gt. 0) write(*,*) 'read_alloc_sph_restart_data end'
 !
 !   for dynamo benchmark
       else if(iflag_restart .eq. i_rst_dbench0                          &
@@ -86,7 +86,7 @@
         call sph_initial_data_4_benchmarks                              &
      &     (SPH_model%ref_temp, SPH_MHD%sph%sph_params,                 &
      &      SPH_MHD%sph%sph_rj, SPH_model%MHD_prop,                     &
-     &      SPH_MHD%ipol, SPH_MHD%idpdr, SPH_MHD%itor, SPH_MHD%fld)
+     &      SPH_MHD%ipol, SPH_MHD%fld)
 !
 !   set small seed magnetic field
       else if (iflag_restart .eq. i_rst_no_file) then
@@ -94,7 +94,7 @@
      &     (SPH_model%ref_temp, SPH_model%ref_comp,                     &
      &      SPH_MHD%sph%sph_params, SPH_MHD%sph%sph_rj,                 &
      &      SPH_model%MHD_prop, SPH_model%sph_MHD_bc,                   &
-     &      SPH_MHD%ipol, SPH_MHD%idpdr, SPH_MHD%itor, SPH_MHD%fld)
+     &      SPH_MHD%ipol, SPH_MHD%fld)
       else if (iflag_restart .eq. i_rst_licv) then
         call sph_initial_field_4_licv(SPH_model%ref_temp,               &
      &      SPH_MHD%sph%sph_params, SPH_MHD%sph%sph_rj,                 &
@@ -119,8 +119,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine sph_initial_data_4_benchmarks                          &
-     &         (ref_temp, sph_params, sph_rj,                           &
-     &          MHD_prop, ipol, idpdr, itor, rj_fld)
+     &         (ref_temp, sph_params, sph_rj, MHD_prop, ipol, rj_fld)
 !
       use m_machine_parameter
       use m_initial_field_control
@@ -137,7 +136,7 @@
       type(sph_rj_grid), intent(in) :: sph_rj
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(reference_field), intent(in) :: ref_temp
-      type(phys_address), intent(in) :: ipol, idpdr, itor
+      type(phys_address), intent(in) :: ipol
 !
       type(phys_data), intent(inout) :: rj_fld
 !
@@ -167,20 +166,20 @@
 !
         if(iflag_restart .eq. i_rst_dbench1) then
           if(ipol%base%i_magne .gt. 0) then
-            call initial_b_dynamobench_1(sph_rj, ipol, idpdr, itor,     &
+            call initial_b_dynamobench_1(sph_rj, ipol,                  &
      &          sph_params%radius_ICB, sph_params%radius_CMB,           &
      &          sph_params%nlayer_ICB, sph_params%nlayer_CMB,           &
      &          rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
           end if
         else if(iflag_restart .eq. i_rst_dbench2) then
           if(ipol%base%i_magne .gt. 0) then
-            call initial_b_dynamobench_2(sph_rj, ipol, idpdr, itor,     &
+            call initial_b_dynamobench_2(sph_rj, ipol,                  &
      &          sph_params%nlayer_CMB, sph_params%radius_CMB,           &
      &          rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
           end if
         else if(iflag_restart .eq. i_rst_dbench_qcv) then
           if(ipol%base%i_magne .gt. 0) then
-           call initial_b_dynamobench_qcv(sph_rj, ipol, idpdr, itor,    &
+           call initial_b_dynamobench_qcv(sph_rj, ipol,                 &
      &         sph_params%radius_ICB, sph_params%radius_CMB,            &
      &         sph_params%nlayer_ICB, sph_params%nlayer_CMB,            &
      &         rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
@@ -193,7 +192,7 @@
 !
       subroutine sph_initial_data_w_seed_B                              &
      &         (ref_temp, ref_comp, sph_params, sph_rj,                 &
-     &          MHD_prop, sph_MHD_bc, ipol, idpdr, itor, rj_fld)
+     &          MHD_prop, sph_MHD_bc, ipol, rj_fld)
 !
       use t_MHD_step_parameter
       use t_reference_scalar_param
@@ -207,7 +206,7 @@
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
       type(reference_field), intent(in) :: ref_temp, ref_comp
-      type(phys_address), intent(in) :: ipol, idpdr, itor
+      type(phys_address), intent(in) :: ipol
 !
       type(phys_data), intent(inout) :: rj_fld
 !
@@ -228,7 +227,7 @@
         end if
         if(ipol%base%i_magne .gt. 0) then
           call set_initial_magne_sph                                    &
-     &       (sph_rj, sph_MHD_bc%sph_bc_B, ipol, idpdr, itor,           &
+     &       (sph_rj, sph_MHD_bc%sph_bc_B, ipol,                        &
      &        sph_params%radius_ICB, sph_params%radius_CMB,             &
      &        sph_params%nlayer_ICB, sph_params%nlayer_CMB,             &
      &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
@@ -295,13 +294,13 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_initial_magne_sph                                  &
-     &         (sph_rj, sph_bc_B, ipol, idpdr, itor, r_ICB, r_CMB,      &
-     &          nlayer_ICB, nlayer_CMB, n_point, ntot_phys_rj, d_rj)
+      subroutine set_initial_magne_sph(sph_rj, sph_bc_B, ipol,          &
+     &          r_ICB, r_CMB, nlayer_ICB, nlayer_CMB,                   &
+     &          n_point, ntot_phys_rj, d_rj)
 !
       type(sph_boundary_type), intent(in) :: sph_bc_B
       type(sph_rj_grid), intent(in) :: sph_rj
-      type(phys_address), intent(in) :: ipol, idpdr, itor
+      type(phys_address), intent(in) :: ipol
       integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
       real(kind = kreal), intent(in) :: r_ICB, r_CMB
       integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
@@ -329,56 +328,62 @@
 !
       if (sph_bc_B%iflag_icb .eq. iflag_sph_fill_center) then
 !
+!         Poloidal magnetic field
         if (js .gt. 0) then
           do k = nlayer_ICB, nlayer_CMB
             is = js + (k-1) * sph_rj%nidx_rj(2)
             rr = sph_rj%radius_1d_rj_r(k)
 !
-            d_rj(is,ipol%base%i_magne) =  (five / eight)                &
+            d_rj(is,ipol%base%i_magne  ) =  (five / eight)              &
      &        * (-three * rr**3 + four * r_CMB * rr**2 - r_ICB**4/rr)
-            d_rj(is,idpdr%base%i_magne) = (five / eight)                &
+            d_rj(is,ipol%base%i_magne+1) = (five / eight)               &
      &        * (-dnine * rr**2 + eight * r_CMB * rr + r_ICB**4/rr**2)
-            d_rj(is,itor%base%i_current) =  (five*three / two) * rr
+            d_rj(is,ipol%base%i_current+2) = (five*three / two) * rr
           end do
         end if
 !
+!         Toroidal magnetic field
         if (jt .gt. 0) then
           do k = nlayer_ICB, nlayer_CMB
             it = jt + (k-1) * sph_rj%nidx_rj(2)
             rr = sph_rj%radius_1d_rj_r(k)
-            d_rj(it,itor%base%i_magne)                                  &
+            d_rj(it,ipol%base%i_magne+2)                                &
      &            =  (ten/three) * rr * sin(pi*(rr-r_ICB))
-            d_rj(it,ipol%base%i_current) =  d_rj(it,itor%base%i_magne)
-            d_rj(it,idpdr%base%i_current)                               &
-     &            = (ten / three) * (sin(pi*(rr-r_ICB))  &
+            d_rj(it,ipol%base%i_current  )                              &
+     &            = d_rj(it,ipol%base%i_magne+2)
+            d_rj(it,ipol%base%i_current+1)                              &
+     &            = (ten / three) * (sin(pi*(rr-r_ICB))                 &
      &                          + pi * rr * cos(pi*(rr-r_ICB)) )
           end do
         end if
 !
       else
 !
+!         Poloidal magnetic field
         if (js .gt. 0) then
           do k = 1, nlayer_CMB
             is = js + (k-1) * sph_rj%nidx_rj(2)
             rr = sph_rj%radius_1d_rj_r(k)
-            d_rj(is,ipol%base%i_magne) =  (five / two) * rr**2          &
+            d_rj(is,ipol%base%i_magne  ) =  (five / two) * rr**2        &
      &                       * (four*r_CMB - three*rr) / (r_CMB+three)
-            d_rj(is,idpdr%base%i_magne) = (five / two) * rr             &
+            d_rj(is,ipol%base%i_magne+1) = (five / two) * rr            &
      &                       * (eight*r_CMB - dnine*rr) / (r_CMB+three)
-            d_rj(is,itor%base%i_current)                                &
+            d_rj(is,ipol%base%i_current+2)                              &
      &         =  five*six * rr / (three +r_CMB)
           end do
         end if
 !
+!         Toroidal magnetic field
         if (jt .gt. 0) then
           do k = 1, nlayer_CMB
             it = jt + (k-1) * sph_rj%nidx_rj(2)
             rr = sph_rj%radius_1d_rj_r(k)
 !
-            d_rj(it,itor%base%i_magne)                                  &
+            d_rj(it,ipol%base%i_magne+2)                                &
      &          =  (ten / three) * rr * sin(pi*rr/r_CMB)
-            d_rj(it,ipol%base%i_current) =  d_rj(it,itor%base%i_magne)
-            d_rj(it,idpdr%base%i_current)                               &
+            d_rj(it,ipol%base%i_current  )                              &
+     &          = d_rj(it,ipol%base%i_magne+2)
+            d_rj(it,ipol%base%i_current+1)                              &
      &          = (ten / three) * (sin(pi*rr/r_CMB)                     &
      &                          + (pi/r_CMB) * rr * cos(pi*rr/r_CMB) )
           end do

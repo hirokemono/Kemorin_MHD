@@ -13,7 +13,8 @@
 !!
 !!      subroutine set_addresses_trans_hbd_MHD(SGS_param)
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
-!!      subroutine check_add_trans_hbd_MHD
+!!      subroutine check_add_trans_hbd_MHD(ipol)
+!!        type(phys_address), intent(in) :: ipol
 !!@endverbatim
 !
       module m_addresses_trans_hbd_MHD
@@ -158,9 +159,9 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine check_add_trans_hbd_MHD(ipol, idpdr, itor)
+      subroutine check_add_trans_hbd_MHD(ipol)
 !
-      type(phys_address), intent(in) :: ipol, idpdr, itor
+      type(phys_address), intent(in) :: ipol
 !
 !
       write(*,*) 'ncomp_rj_2_xyz  ', ncomp_rj_2_xyz
@@ -169,25 +170,21 @@
       write(*,*) 'nvector_rj_2_xyz  ', nvector_rj_2_xyz
       if(b_hbd_trns%base%i_magne .gt. 0) write(*,*)                     &
      &        'b_hbd_trns%base%i_magne ', b_hbd_trns%base%i_magne,      &
-     &        ipol%base%i_magne, itor%base%i_magne, idpdr%base%i_magne
+     &        ipol%base%i_magne
       if(b_hbd_trns%base%i_current .gt. 0) write(*,*)                   &
      &        'b_hbd_trns%base%i_current ', b_hbd_trns%base%i_current,  &
-     &        ipol%base%i_current, itor%base%i_current,                 &
-     &        idpdr%base%i_current
+     &        ipol%base%i_current
       if(b_hbd_trns%diffusion%i_b_diffuse .gt. 0) write(*,*)            &
      &        'b_hbd_trns%diffusion%i_b_diffuse ',                      &
-     &    b_hbd_trns%diffusion%i_b_diffuse, ipol%diffusion%i_b_diffuse, &
-     &    itor%diffusion%i_b_diffuse, idpdr%diffusion%i_b_diffuse
+     &    b_hbd_trns%diffusion%i_b_diffuse, ipol%diffusion%i_b_diffuse
       if(b_hbd_trns%forces%i_induction .gt. 0) write(*,*)               &
      &        'b_hbd_trns%forces%i_induction ',                         &
      &        b_hbd_trns%forces%i_induction,                            &
-     &        ipol%forces%i_induction, itor%forces%i_induction,         &
-     &        idpdr%forces%i_induction
+     &        ipol%forces%i_induction
       if(b_hbd_trns%SGS_term%i_SGS_induction .gt. 0) write(*,*)         &
      &   'b_hbd_trns%i_SGS_vp_induct ',                                 &
      &    b_hbd_trns%SGS_term%i_SGS_induction,                          &
-     &    ipol%SGS_term%i_SGS_induction, itor%SGS_term%i_SGS_induction, &
-     &    idpdr%SGS_term%i_SGS_induction
+     &    ipol%SGS_term%i_SGS_induction
       write(*,*)
 !
       write(*,*) 'nscalar_rj_2_xyz  ', nscalar_rj_2_xyz
@@ -196,14 +193,11 @@
       write(*,*) 'nvector_xyz_2_rj  ', nvector_xyz_2_rj
       if(f_hbd_trns%forces%i_vp_induct .gt. 0) write(*,*)               &
      &       'f_hbd_trns%forces%i_vp_induct ',                          &
-     &        f_hbd_trns%forces%i_vp_induct, ipol%forces%i_vp_induct,   &
-     &        itor%forces%i_vp_induct, idpdr%forces%i_vp_induct
+     &        f_hbd_trns%forces%i_vp_induct, ipol%forces%i_vp_induct
       if(f_hbd_trns%SGS_term%i_SGS_vp_induct .gt. 0) write(*,*)         &
      &       'f_hbd_trns%SGS_term%i_SGS_vp_induct',                     &
      &        f_hbd_trns%SGS_term%i_SGS_vp_induct,                      &
-     &        ipol%SGS_term%i_SGS_vp_induct,                            &
-     &        itor%SGS_term%i_SGS_vp_induct,                            &
-     &        idpdr%SGS_term%i_SGS_vp_induct
+     &        ipol%SGS_term%i_SGS_vp_induct
 !
       write(*,*) 'nscalar_xyz_2_rj  ', nscalar_xyz_2_rj
       write(*,*)

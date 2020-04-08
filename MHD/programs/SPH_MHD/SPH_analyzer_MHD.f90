@@ -184,7 +184,7 @@
       if(iflag_debug.gt.0) write(*,*) 'sel_explicit_sph'
       call sel_explicit_sph(i_step, MHD_step%time_d%dt,                 &
      &    SPH_model%MHD_prop, SPH_model%sph_MHD_bc, SPH_MHD%sph%sph_rj, &
-     &    SPH_MHD%ipol, SPH_MHD%itor, SPH_MHD%fld)
+     &    SPH_MHD%ipol, SPH_MHD%fld)
 !*
 !*  ----------  time evolution by inplicit method ----------
 !*

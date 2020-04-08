@@ -8,7 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine cal_rot_radial_self_gravity                          &
-!!     &         (sph_rj, ipol, itor, fl_prop, sph_bc_U, rj_fld)
+!!     &         (sph_rj, ipol, fl_prop, sph_bc_U, rj_fld)
 !!        type(fluid_property), intent(in) :: fl_prop
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(phys_address), intent(in) :: ipol

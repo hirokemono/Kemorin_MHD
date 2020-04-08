@@ -8,11 +8,11 @@
 !!
 !!@verbatim
 !!      subroutine SGS_forces_to_explicit                               &
-!!     &         (SGS_param, sph_rj, sph_bc_U, ipol, itor, rj_fld)
+!!     &         (SGS_param, sph_rj, sph_bc_U, ipol, rj_fld)
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(fluid_property), intent(in) :: fl_prop
-!!        type(phys_address), intent(in) :: ipol, itor
+!!        type(phys_address), intent(in) :: ipol
 !!        type(phys_data), intent(inout) :: rj_fld
 !!@endverbatim
 !
@@ -39,7 +39,7 @@
 !*   ------------------------------------------------------------------
 !
       subroutine SGS_forces_to_explicit                                 &
-     &         (SGS_param, sph_rj, sph_bc_U, ipol, itor, rj_fld)
+     &         (SGS_param, sph_rj, sph_bc_U, ipol, rj_fld)
 !
       use t_SGS_control_parameter
       use t_boundary_data_sph_MHD
@@ -48,7 +48,7 @@
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(sph_boundary_type), intent(in) :: sph_bc_U
-      type(phys_address), intent(in) :: ipol, itor
+      type(phys_address), intent(in) :: ipol
       type(phys_data), intent(inout) :: rj_fld
 !
       integer(kind = kint) :: ist, ied
@@ -60,13 +60,13 @@
 !$omp parallel
       if(      SGS_param%iflag_SGS_m_flux  .ne. id_turn_OFF             &
      &   .and. SGS_param%iflag_SGS_lorentz .ne. id_turn_OFF) then
-        call add_SGS_MHD_terms_to_force(ipol, itor, ist, ied,           &
+        call add_SGS_MHD_terms_to_force(ipol, ist, ied,                 &
      &      sph_rj%nnod_rj, rj_fld%ntot_phys, rj_fld%d_fld)
       else if(SGS_param%iflag_SGS_m_flux  .ne. id_turn_OFF) then
-        call add_SGS_inertia_to_vort_force(ipol, itor, ist, ied,        &
+        call add_SGS_inertia_to_vort_force(ipol, ist, ied,              &
      &      sph_rj%nnod_rj, rj_fld%ntot_phys, rj_fld%d_fld)
       else if(SGS_param%iflag_SGS_lorentz  .ne. id_turn_OFF) then
-        call add_SGS_lorentz_to_vort_force(ipol, itor, ist, ied,        &
+        call add_SGS_lorentz_to_vort_force(ipol, ist, ied,              &
      &      sph_rj%nnod_rj, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !$omp end parallel

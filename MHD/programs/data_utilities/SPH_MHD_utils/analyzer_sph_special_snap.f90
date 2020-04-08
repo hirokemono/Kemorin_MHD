@@ -36,6 +36,7 @@
       private :: SPH_analyze_special_snap
       private :: SPH_to_FEM_bridge_special_snap
       private :: lead_special_fields_4_sph_mhd
+      private :: set_special_rj_fields
 !
 ! ----------------------------------------------------------------------
 !
@@ -183,8 +184,7 @@
 !*  ----------------Modify spectr data ... ----------
 !*
       call set_special_rj_fields                                        &
-     &   (SPH_MHD%sph, SPH_MHD%ipol, SPH_MHD%idpdr, SPH_MHD%itor,       &
-     &    SPH_MHD%fld)
+     &   (SPH_MHD%sph, SPH_MHD%ipol, SPH_MHD%fld)
 !
 !*  ----------------lead nonlinear term ... ----------
 !*
@@ -319,7 +319,7 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine set_special_rj_fields(sph, ipol, idpdr, itor, rj_fld)
+      subroutine set_special_rj_fields(sph, ipol, rj_fld)
 !
       use t_spheric_parameter
       use t_phys_address
@@ -328,7 +328,7 @@
       use cal_zonal_mean_sph_spectr
 !
       type(sph_grids), intent(in) :: sph
-      type(phys_address), intent(inout) :: ipol, idpdr, itor
+      type(phys_address), intent(inout) :: ipol
       type(phys_data), intent(inout) :: rj_fld
 !
       integer (kind =kint), allocatable :: ipick_degree(:)
@@ -357,9 +357,9 @@
       call delete_zonal_mean_rj_field                                   &
      &   (ione, ipol%base%i_velo, sph%sph_rj, rj_fld)
       call delete_zonal_mean_rj_field                                   &
-     &   (ione, idpdr%base%i_velo, sph%sph_rj, rj_fld)
+     &   (ione, (ipol%base%i_velo+1), sph%sph_rj, rj_fld)
       call delete_zonal_mean_rj_field                                   &
-     &   (ione, itor%base%i_vort, sph%sph_rj, rj_fld)
+     &   (ione, (ipol%base%i_vort+2), sph%sph_rj, rj_fld)
 !
       end subroutine set_special_rj_fields
 !

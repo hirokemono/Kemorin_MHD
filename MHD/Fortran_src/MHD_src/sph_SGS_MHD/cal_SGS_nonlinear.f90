@@ -116,7 +116,7 @@
      &   (SPH_MHD%sph, SPH_MHD%comms, SPH_model%omega_sph, r_2nd,       &
      &    SPH_model%MHD_prop, SPH_model%sph_MHD_bc, trans_p,            &
      &    WK%gt_cor, WK%trns_MHD, WK%WK_sph, WK%cor_rlm,                &
-     &    SPH_MHD%ipol, SPH_MHD%itor, SPH_MHD%fld)
+     &    SPH_MHD%ipol, SPH_MHD%fld)
 !
 !   ----  Lead SGS terms
       if(SGS_par%model_p%iflag_SGS .gt. id_SGS_none) then
@@ -144,14 +144,14 @@
       if(iflag_debug .gt. 0) write(*,*) 'sum_forces_to_explicit'
       call sum_forces_to_explicit                                       &
      &   (SPH_MHD%sph%sph_rj, SPH_model%MHD_prop%fl_prop,               &
-     &    SPH_MHD%ipol, SPH_MHD%itor, SPH_MHD%fld)
+     &    SPH_MHD%ipol, SPH_MHD%fld)
 !
       if(SGS_par%model_p%iflag_SGS .gt. id_SGS_none) then
         if(iflag_debug .gt. 0) write(*,*)                               &
      &                'SGS_forces_to_explicit'
         call SGS_forces_to_explicit(SGS_par%model_p,                    &
      &     SPH_MHD%sph%sph_rj, SPH_model%sph_MHD_bc%sph_bc_U,           &
-     &     SPH_MHD%ipol, SPH_MHD%itor, SPH_MHD%fld)
+     &     SPH_MHD%ipol, SPH_MHD%fld)
       end if
 !
       end subroutine nonlinear_with_SGS

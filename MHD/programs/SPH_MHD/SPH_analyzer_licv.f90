@@ -142,8 +142,7 @@
       call licv_exp(SPH_model%ref_temp, SPH_model%ref_comp,             &
      &    SPH_model%MHD_prop, SPH_model%sph_MHD_bc,                     &
      &    SPH_MHD%sph, SPH_MHD%comms, SPH_model%omega_sph,              &
-     &    SPH_WK%trans_p, SPH_MHD%ipol, SPH_MHD%itor, SPH_WK%trns_WK,   &
-     &    SPH_MHD%fld)
+     &    SPH_WK%trans_p, SPH_MHD%ipol, SPH_WK%trns_WK, SPH_MHD%fld)
 !
 !* -----  Open Volume integration data files -----------------
 !*
@@ -185,7 +184,7 @@
       if(iflag_debug.gt.0) write(*,*) 'sel_explicit_sph'
       call sel_explicit_sph(i_step, MHD_step%time_d%dt,                 &
      &    SPH_model%MHD_prop, SPH_model%sph_MHD_bc, SPH_MHD%sph%sph_rj, &
-     &    SPH_MHD%ipol, SPH_MHD%itor, SPH_MHD%fld)
+     &    SPH_MHD%ipol, SPH_MHD%fld)
 !*
 !*  ----------  time evolution by inplicit method ----------
 !*
@@ -220,8 +219,7 @@
         call licv_exp(SPH_model%ref_temp, SPH_model%ref_comp,           &
      &     SPH_model%MHD_prop, SPH_model%sph_MHD_bc,                    &
      &     SPH_MHD%sph, SPH_MHD%comms, SPH_model%omega_sph,             &
-     &     SPH_WK%trans_p, SPH_MHD%ipol, SPH_MHD%itor, SPH_WK%trns_WK,  &
-     &     SPH_MHD%fld)
+     &     SPH_WK%trans_p, SPH_MHD%ipol, SPH_WK%trns_WK, SPH_MHD%fld)
 !
 !*  -----------  output restart data --------------
 !*

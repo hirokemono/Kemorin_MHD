@@ -15,7 +15,7 @@
 !!      subroutine nonlinear_by_pseudo_sph                              &
 !!     &         (sph, comms_sph, omega_sph, r_2nd, MHD_prop,           &
 !!     &          sph_MHD_bc, trans_p, gt_cor, trns_MHD, WK_sph,        &
-!!     &          cor_rlm, ipol, itor, rj_fld)
+!!     &          cor_rlm, ipol, rj_fld)
 !!        type(sph_grids), intent(in) :: sph
 !!        type(sph_comm_tables), intent(in) :: comms_sph
 !!        type(fdm_matrices), intent(in) :: r_2nd
@@ -24,21 +24,20 @@
 !!        type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
 !!        type(parameters_4_sph_trans), intent(in) :: trans_p
 !!        type(gaunt_coriolis_rlm), intent(in) :: gt_cor
-!!        type(phys_address), intent(in) :: ipol, itor
+!!        type(phys_address), intent(in) :: ipol
 !!        type(address_4_sph_trans), intent(inout) :: trns_MHD
 !!        type(spherical_trns_works), intent(inout) :: WK_sph
 !!        type(coriolis_rlm_data), intent(inout) :: cor_rlm
 !!        type(phys_data), intent(inout) :: rj_fld
 !!      subroutine licv_exp(ref_temp, ref_comp, MHD_prop, sph_MHD_bc,   &
-!!     &          sph, comms_sph, omega_sph, trans_p, ipol, itor,       &
-!!     &          WK, rj_fld)
+!!     &          sph, comms_sph, omega_sph, trans_p, ipol, WK, rj_fld)
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(sph_grids), intent(in) :: sph
 !!        type(sph_comm_tables), intent(in) :: comms_sph
 !!        type(sph_rotation), intent(in) :: omega_sph
 !!        type(fdm_matrices), intent(in) :: r_2nd
 !!        type(parameters_4_sph_trans), intent(in) :: trans_p
-!!        type(phys_address), intent(in) :: ipol, itor
+!!        type(phys_address), intent(in) :: ipol
 !!        type(works_4_sph_trans_MHD), intent(inout) :: WK
 !!        type(phys_data), intent(inout) :: rj_fld
 !!        type(reference_field), intent(in) :: ref_temp
@@ -103,7 +102,7 @@
      &   (SPH_MHD%sph, SPH_MHD%comms, SPH_model%omega_sph,              &
      &    r_2nd, SPH_model%MHD_prop, SPH_model%sph_MHD_bc, trans_p,     &
      &    WK%gt_cor, WK%trns_MHD, WK%WK_sph, WK%cor_rlm,                &
-     &    SPH_MHD%ipol, SPH_MHD%itor, SPH_MHD%fld)
+     &    SPH_MHD%ipol, SPH_MHD%fld)
 !
 !   ----  Lead advection of reference field
       call add_ref_advect_sph_MHD                                       &
@@ -122,7 +121,7 @@
       if(iflag_debug .gt. 0) write(*,*) 'sum_forces_to_explicit'
       call sum_forces_to_explicit                                       &
      &   (SPH_MHD%sph%sph_rj, SPH_model%MHD_prop%fl_prop,               &
-     &    SPH_MHD%ipol, SPH_MHD%itor, SPH_MHD%fld)
+     &    SPH_MHD%ipol, SPH_MHD%fld)
 !
       end subroutine nonlinear
 !*
@@ -131,7 +130,7 @@
       subroutine nonlinear_by_pseudo_sph                                &
      &         (sph, comms_sph, omega_sph, r_2nd, MHD_prop,             &
      &          sph_MHD_bc, trans_p, gt_cor, trns_MHD, WK_sph,          &
-     &          cor_rlm, ipol, itor, rj_fld)
+     &          cor_rlm, ipol, rj_fld)
 !
       use sph_transforms_4_MHD
       use cal_nonlinear_sph_MHD
@@ -148,7 +147,7 @@
       type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
       type(parameters_4_sph_trans), intent(in) :: trans_p
       type(gaunt_coriolis_rlm), intent(in) :: gt_cor
-      type(phys_address), intent(in) :: ipol, itor
+      type(phys_address), intent(in) :: ipol
 !
       type(address_4_sph_trans), intent(inout) :: trns_MHD
       type(spherical_trns_works), intent(inout) :: WK_sph
@@ -183,7 +182,7 @@
       if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+12)
       if (iflag_debug.ge.1) write(*,*) 'rot_momentum_eq_exp_sph'
       call rot_momentum_eq_exp_sph(sph%sph_rj, r_2nd, sph_MHD_bc,       &
-     &    trans_p%leg, ipol, itor, rj_fld)
+     &    trans_p%leg, ipol, rj_fld)
       if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+12)
 !
       end subroutine nonlinear_by_pseudo_sph
@@ -192,8 +191,7 @@
 !*   ------------------------------------------------------------------
 !*
       subroutine licv_exp(ref_temp, ref_comp, MHD_prop, sph_MHD_bc,     &
-     &          sph, comms_sph, omega_sph, trans_p, ipol, itor,         &
-     &          WK, rj_fld)
+     &          sph, comms_sph, omega_sph, trans_p, ipol, WK, rj_fld)
 !
       use m_phys_constants
       use sph_transforms_4_MHD
@@ -205,7 +203,7 @@
       type(sph_comm_tables), intent(in) :: comms_sph
       type(sph_rotation), intent(in) :: omega_sph
       type(parameters_4_sph_trans), intent(in) :: trans_p
-      type(phys_address), intent(in) :: ipol, itor
+      type(phys_address), intent(in) :: ipol
       type(reference_field), intent(in) :: ref_temp, ref_comp
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
@@ -242,7 +240,7 @@
      &    trans_p%leg, ref_temp, ref_comp, ipol, rj_fld)
 !
       call licv_forces_to_explicit                                      &
-     &   (sph%sph_rj, MHD_prop%fl_prop, ipol, itor, rj_fld)
+     &   (sph%sph_rj, MHD_prop%fl_prop, ipol, rj_fld)
 !
 !
       end subroutine licv_exp
