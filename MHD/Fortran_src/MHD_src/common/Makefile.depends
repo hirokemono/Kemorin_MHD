@@ -16,7 +16,7 @@ estimate_stabilities.o: $(MHD_COMMON_DIR)/estimate_stabilities.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<
 init_ele_material_property.o: $(MHD_COMMON_DIR)/init_ele_material_property.f90 m_precision.o m_machine_parameter.o t_control_parameter.o t_material_property.o t_physical_property.o
 	$(F90) -c $(F90OPTFLAGS) $<
-initialize_element_field.o: $(MHD_COMMON_DIR)/initialize_element_field.f90 m_precision.o t_phys_data.o t_phys_address.o t_material_property.o m_phys_labels.o m_machine_parameter.o t_FEM_control_parameter.o t_SGS_control_parameter.o
+initialize_element_field.o: $(MHD_COMMON_DIR)/initialize_element_field.f90 m_precision.o t_phys_data.o t_phys_address.o t_material_property.o m_phys_labels.o m_filtered_field_labels.o m_machine_parameter.o t_FEM_control_parameter.o t_SGS_control_parameter.o
 	$(F90) -c $(F90OPTFLAGS) $<
 itp_potential_on_edge.o: $(MHD_COMMON_DIR)/itp_potential_on_edge.f90 m_precision.o t_geometry_data.o t_edge_data.o t_phys_data.o m_geometry_constants.o m_phys_labels.o m_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<

@@ -22,7 +22,8 @@
 !!        type(MHD_radial_matrices), intent(inout) :: sph_MHD_mat
 !!        type(phys_data), intent(inout) :: rj_fld
 !!
-!!      subroutine check_ws_spectr(sph_rj, ipol, idpdr, itor, rj_fld)
+!!      subroutine check_vs_spectr(sph_rj, ipol, rj_fld)
+!!      subroutine check_ws_spectr(sph_rj, ipol, rj_fld)
 !!      subroutine update_after_magne_sph(sph_rj, r_2nd,                &
 !!     &          cd_prop, sph_bc_B, leg, ipol, itor, rj_fld)
 !!@endverbatim
@@ -83,7 +84,7 @@
 !
 !*-----  time evolution   -------------
 !*
-!      call check_ws_spectr(sph_rj, ipol, idpdr, itor, rj_fld)
+!      call check_ws_spectr(sph_rj, ipol, rj_fld)
 !
       if(MHD_prop%fl_prop%iflag_scheme .gt. id_no_evolution) then
 !         Input:    ipol%base%i_vort, itor%base%i_vort
@@ -134,7 +135,7 @@
       end if
 !
 !*  ---- update after evolution ------------------
-!      call check_vs_spectr(sph_rj, ipol, idpdr, itor, rj_fld)
+!      call check_vs_spectr(sph_rj, ipol, rj_fld)
 !
       if(MHD_prop%fl_prop%iflag_scheme .gt. id_no_evolution) then
         call update_after_vorticity_sph                                 &
@@ -247,9 +248,10 @@
      &     (sph_bc_U%kr_in, sph_rj, ipol, itor, rj_fld)
       end if
 !
-!       Input: ipol%base%i_vort, itor%base%i_vort
-!       Solution: ipol%diffusion%i_v_diffuse, itor%diffusion%i_v_diffuse,
-!                 idpdr%diffusion%i_v_diffuse
+!       Input: ipol%base%i_vort, ipol%base%i_vort+2
+!       Solution: ipol%diffusion%i_v_diffuse, 
+!                 ipol%diffusion%i_v_diffuse+2,
+!                 ipol%diffusion%i_v_diffuse+1
       if(ipol%diffusion%i_v_diffuse .gt. 0) then
         if(iflag_debug.gt.0) write(*,*) 'const_sph_viscous_by_vort2'
         call const_sph_viscous_by_vort2(sph_rj, r_2nd,                  &
@@ -259,9 +261,10 @@
      &      ipol%diffusion%i_v_diffuse, rj_fld)
       end if
 !
-!       Input:    ipol%base%i_vort, itor%base%i_vort
-!       Solution: ipol%diffusion%i_w_diffuse, itor%diffusion%i_w_diffuse,
-!                 idpdr%diffusion%i_w_diffuse
+!       Input:    ipol%base%i_vort, ipol%base%i_vort+2
+!       Solution: ipol%diffusion%i_w_diffuse
+!                 ipol%diffusion%i_w_diffuse+2,
+!                 ipol%diffusion%i_w_diffuse+1
       if(ipol%diffusion%i_w_diffuse .gt. 0) then
         if(iflag_debug.gt.0) write(*,*)'const_sph_vorticirty_diffusion'
         call const_sph_vorticirty_diffusion(sph_rj, r_2nd,              &
@@ -384,22 +387,22 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine check_vs_spectr(sph_rj, ipol, idpdr, itor, rj_fld)
+      subroutine check_vs_spectr(sph_rj, ipol, rj_fld)
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
-      type(phys_address), intent(in) :: ipol, idpdr, itor
+      type(phys_address), intent(in) :: ipol
       type(phys_data), intent(in) :: rj_fld
 !
       integer(kind = kint) :: j, k, inod
 !
-      write(150+my_rank,*) 'j, k, s_velo, ds_velo, t_velo, w_diffuse'
+      write(150+my_rank,*) 'j, k, s_velo, ds_velo, t_velo'
       do j = 1, sph_rj%nidx_rj(2)
          do k = 1, sph_rj%nidx_rj(1)
           inod = j + (k-1) * sph_rj%nidx_rj(2)
           write(150+my_rank,'(2i16,1p20E25.15e3)') j, k,                &
      &        rj_fld%d_fld(inod,ipol%base%i_velo),                      &
-     &        rj_fld%d_fld(inod,idpdr%base%i_velo),                     &
-     &        rj_fld%d_fld(inod,itor%base%i_velo)
+     &        rj_fld%d_fld(inod,ipol%base%i_velo+1),                    &
+     &        rj_fld%d_fld(inod,ipol%base%i_velo+2)
         end do
       end do
 !
@@ -407,10 +410,10 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine check_ws_spectr(sph_rj, ipol, idpdr, itor, rj_fld)
+      subroutine check_ws_spectr(sph_rj, ipol, rj_fld)
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
-      type(phys_address), intent(in) :: ipol, idpdr, itor
+      type(phys_address), intent(in) :: ipol
       type(phys_data), intent(in) :: rj_fld
 !
       integer(kind = kint) :: j, k, inod
@@ -421,8 +424,8 @@
           inod = j + (k-1) * sph_rj%nidx_rj(2)
           write(150+my_rank,'(2i16,1p20E25.15e3)') j, k,                &
      &        rj_fld%d_fld(inod,ipol%base%i_vort),                      &
-     &        rj_fld%d_fld(inod,idpdr%base%i_vort),                     &
-     &        rj_fld%d_fld(inod,itor%base%i_vort)
+     &        rj_fld%d_fld(inod,ipol%base%i_vort+1),                    &
+     &        rj_fld%d_fld(inod,ipol%base%i_vort+2)
         end do
       end do
 !

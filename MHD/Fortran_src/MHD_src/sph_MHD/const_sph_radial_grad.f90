@@ -16,44 +16,43 @@
 !!        type(sph_scalar_boundary_data), intent(in) :: bcs_S
 !!        type(fdm2_center_mat), intent(in) :: fdm2_center
 !!        type(phys_data), intent(inout) :: rj_fld
-!!        Input:    is_fld
-!!        Solution: is_grad
+!!        Address for input:    is_fld
+!!        Address for solution: is_grad
 !!
 !!      subroutine const_grad_vp_and_vorticity(sph_rj, r_2nd,           &
 !!     &          sph_bc_U, bcs_U, fdm2_free_ICB, fdm2_free_CMB,        &
 !!     &          g_sph_rj, is_velo, is_vort, rj_fld)
-!!        Input:    ipol%base%i_velo, itor%base%i_velo
-!!        Solution: idpdr%base%i_velo, 
-!!                  ipol%base%i_vort, itor%base%i_vort, idpdr%base%i_vort
+!!        Address for input:    is_velo, is_velo+2
+!!        Address for solution: is_velo+1, 
+!!                              is_vort, is_vort+2, is_vort+1
 !!
 !!      subroutine const_grad_bp_and_current                            &
 !!     &         (sph_rj, r_2nd, sph_bc_B, bcs_B, g_sph_rj,             &
 !!     &          is_magne, is_current, rj_fld)
-!!        Input:    ipol%base%i_magne, itor%base%i_magne
-!!        Solution: idpdr%base%i_magne,
-!!                  ipol%base%i_current, itor%base%i_current,
-!!                  idpdr%base%i_current
+!!        Address for input:    is_magne, is_magne+2
+!!        Address for solution: is_magne+1,
+!!                              is_current, is_current+2, is_current+1
 !!
 !!      subroutine const_grad_poloidal_moment                           &
 !!     &         (sph_rj, r_2nd, sph_bc_U, bcs_U,                       &
 !!     &          fdm2_free_ICB, fdm2_free_CMB, is_fld, rj_fld)
-!!        Input:    is_fld, is_fld+2
-!!        Solution: is_fld+1
+!!        Address for input:    is_fld, is_fld+2
+!!        Address for solution: is_fld+1
 !!
 !!      subroutine const_grad_poloidal_magne(sph_rj, r_2nd,             &
 !!     &          sph_bc_B, bcs_B, g_sph_rj, is_magne, rj_fld)
-!!        Input:    ipol%base%i_magne, itor%base%i_magne
-!!        Solution: idpdr%base%i_magne
+!!        Address for input:    is_magne, is_magne+2
+!!        Address for solution: is_magne+1
 !!
 !!      subroutine const_pressure_gradient(sph_rj, r_2nd, sph_bc_U,     &
 !!     &          g_sph_rj, coef_press, is_press, is_grad, rj_fld)
-!!        Input:    ipol%base%i_press
-!!        Solution: ipol%forces%i_press_grad
+!!        Address for input:    is_press
+!!        Address for solution: is_grad
 !!
 !!      subroutine const_sph_gradient_no_bc(sph_rj, r_2nd, sph_bc,      &
 !!     &          g_sph_rj, is_fld, is_grad, rj_fld)
-!!        Input:    is_fld
-!!        Solution: is_grad, it_grad, ids_grad
+!!        Address for input:    is_fld
+!!        Address for solution: is_grad, it_grad, ids_grad
 !!
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(fdm_matrices), intent(in) :: r_2nd
