@@ -1,6 +1,12 @@
 !!
 !!      subroutine induction_SPH_initialize(SGS_param,                  &
-!!     &         ipol, idpdr, itor, comms_sph, sph, trans_p, rj_fld)
+!!     &         ipol, comms_sph, sph, trans_p, rj_fld)
+!!        type(SGS_model_control_params), intent(in) :: SGS_param
+!!        type(phys_address), intent(in) :: ipol
+!!        type(sph_comm_tables), intent(in) :: comms_sph
+!!        type(sph_grids), intent(inout) :: sph
+!!        type(parameters_4_sph_trans), intent(inout) :: trans_p
+!!        type(phys_data), intent(inout) :: rj_fld
 !!      subroutine nonlinear_incuction_wSGS_SPH(FEM_prm, SGS_par,       &
 !!     &          mesh, sph, comms_sph, trans_p, conduct, jacobians,    &
 !!     &          Csims_FEM_MHD, ipol, rj_fld)
@@ -46,7 +52,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine induction_SPH_initialize(SGS_param,                    &
-     &         ipol, idpdr, itor, comms_sph, sph, trans_p, rj_fld)
+     &         ipol, comms_sph, sph, trans_p, rj_fld)
 !
       use t_work_4_sph_trans
       use m_addresses_trans_hbd_MHD
@@ -55,7 +61,7 @@
       use mpi_load_mesh_data
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
-      type(phys_address), intent(in) :: ipol, idpdr, itor
+      type(phys_address), intent(in) :: ipol
       type(sph_comm_tables), intent(in) :: comms_sph
       type(sph_grids), intent(inout) :: sph
       type(parameters_4_sph_trans), intent(inout) :: trans_p

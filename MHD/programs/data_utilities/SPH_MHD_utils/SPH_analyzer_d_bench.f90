@@ -198,8 +198,8 @@
       call s_const_data_4_dynamobench                                   &
      &   (MHD_step1%time_d%time, SPH_MHD%sph%sph_params,                &
      &    SPH_MHD%sph%sph_rj, SPH_model%sph_MHD_bc, SPH_WK%trans_p%leg, &
-     &    SPH_MHD%ipol, SPH_MHD%itor, SPH_MHD%fld,                      &
-     &    cdat, SPH_WK%monitor%pwr, bench, SPH_WK%monitor%WK_pwr)
+     &    SPH_MHD%ipol, SPH_MHD%fld, cdat, SPH_WK%monitor%pwr,          &
+     &    bench, SPH_WK%monitor%WK_pwr)
       call output_field_4_dynamobench(i_step, MHD_step1%time_d%time,    &
      &   SPH_model%sph_MHD_bc, SPH_MHD%ipol, bench)
       if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+7)

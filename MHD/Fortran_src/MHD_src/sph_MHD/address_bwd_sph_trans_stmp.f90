@@ -10,7 +10,7 @@
 !!@verbatim
 !!      subroutine b_trans_address_vector_stmp(trns_back)
 !!      subroutine b_trans_address_scalar_stmp(trns_back)
-!!        type(phys_address), intent(in) :: ipol, itor, iphys
+!!        type(phys_address), intent(in) :: ipol, iphys
 !!        type(address_each_sph_trans), intent(inout) :: trns_back
 !!        type(phys_address), intent(inout) :: b_trns
 !!@endverbatim
@@ -34,7 +34,7 @@
 !
       subroutine b_trans_address_vector_stmp(trns_back)
 !
-!      type(phys_address), intent(in) :: ipol, itor, iphys
+!      type(phys_address), intent(in) :: ipol, iphys
       type(address_each_sph_trans), intent(inout) :: trns_back
 !      type(phys_address), intent(inout) :: b_trns
 !
@@ -50,7 +50,7 @@
 !
       subroutine b_trans_address_scalar_stmp(trns_back)
 !
-!      type(phys_address), intent(in) :: ipol, itor, iphys
+!      type(phys_address), intent(in) :: ipol, iphys
       type(address_each_sph_trans), intent(inout) :: trns_back
 !      type(phys_address), intent(inout) :: b_trns
 !

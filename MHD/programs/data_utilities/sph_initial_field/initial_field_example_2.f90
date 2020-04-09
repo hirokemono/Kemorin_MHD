@@ -10,9 +10,11 @@
 !!      subroutine init_thermal_stratification                          &
 !!     &         (sph_bc_T, sph, ipol, rj_fld)
 !!      subroutine set_initial_dipole_magne                             &
-!!     &         (sph_bc_B, sph, ipol, itor, rj_fld)
+!!     &         (sph_bc_B, sph, ipol, rj_fld)
 !!      subroutine set_initial_homogeneous_magne                        &
-!!     &         (sph_bc_B, sph, ipol, itor, rj_fld)
+!!     &         (sph_bc_B, sph, ipol, rj_fld)
+!!       Poloidal magnetic field :: d_rj(:,ipol%base%i_magne  )
+!!       Toroidal magnetic field :: d_rj(:,ipol%base%i_magne+2)
 !!@endverbatim
 !
 !
@@ -100,11 +102,11 @@
 !-----------------------------------------------------------------------
 !
       subroutine set_initial_dipole_magne                               &
-     &         (sph_bc_B, sph, ipol, itor, rj_fld)
+     &         (sph_bc_B, sph, ipol, rj_fld)
 !
       type(sph_boundary_type), intent(in) :: sph_bc_B
       type(sph_grids), intent(in) :: sph
-      type(phys_address), intent(in) :: ipol, itor
+      type(phys_address), intent(in) :: ipol
       type(phys_data), intent(inout) :: rj_fld
 !
       real (kind = kreal), parameter :: Bnrm = 1.0d0
@@ -119,8 +121,9 @@
 !
 !$omp parallel do
       do is = 1, nnod_rj(sph)
-        rj_fld%d_fld(is,ipol%base%i_magne) = zero
-        rj_fld%d_fld(is,itor%base%i_magne) = zero
+        rj_fld%d_fld(is,ipol%base%i_magne  ) = zero
+        rj_fld%d_fld(is,ipol%base%i_magne+1) = zero
+        rj_fld%d_fld(is,ipol%base%i_magne+2) = zero
       end do
 !$omp end parallel do
 !
@@ -175,11 +178,11 @@
 !-----------------------------------------------------------------------
 !
       subroutine set_initial_homogeneous_magne                          &
-     &         (sph_bc_B, sph, ipol, itor, rj_fld)
+     &         (sph_bc_B, sph, ipol, rj_fld)
 !
       type(sph_boundary_type), intent(in) :: sph_bc_B
       type(sph_grids), intent(in) :: sph
-      type(phys_address), intent(in) :: ipol, itor
+      type(phys_address), intent(in) :: ipol
       type(phys_data), intent(inout) :: rj_fld
 !
       real (kind = kreal) :: pi, rr, mag
@@ -193,8 +196,9 @@
 !
 !$omp parallel do
       do is = 1, nnod_rj(sph)
-        rj_fld%d_fld(is,ipol%base%i_magne) = zero
-        rj_fld%d_fld(is,itor%base%i_magne) = zero
+        rj_fld%d_fld(is,ipol%base%i_magne  ) = zero
+        rj_fld%d_fld(is,ipol%base%i_magne+1) = zero
+        rj_fld%d_fld(is,ipol%base%i_magne+2) = zero
       end do
 !$omp end parallel do
 !
@@ -207,7 +211,8 @@
           is = local_sph_data_address(sph, k, js)
           rr = radius_1d_rj_r(sph, k)
 !   Substitute poloidal mangetic field
-          rj_fld%d_fld(is,ipol%base%i_magne) = mag * rr**2
+          rj_fld%d_fld(is,ipol%base%i_magne  ) = mag * rr**2
+          rj_fld%d_fld(is,ipol%base%i_magne+1) = two * mag * rr
         end do
       end if
 !
