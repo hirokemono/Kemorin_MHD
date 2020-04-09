@@ -45,29 +45,24 @@
 !
 !
 !   SGS advection flag
-      call add_field_name_4_sph_trns(ipol%SGS_term%i_SGS_inertia,       &
-     &    SGS_inertia%name, SGS_inertia%n_comp,                         &
+      call add_field_4_sph_trns_by_pol(SGS_inertia,                     &
      &    ipol%SGS_term%i_SGS_inertia, iphys%SGS_term%i_SGS_inertia,    &
      &    f_trns%SGS_term%i_SGS_inertia, trns_fwd)
 !   SGS Lorentz force flag
-      call add_field_name_4_sph_trns(ipol%SGS_term%i_SGS_Lorentz,       &
-     &    SGS_Lorentz%name, SGS_Lorentz%n_comp,                         &
+      call add_field_4_sph_trns_by_pol(SGS_Lorentz,                     &
      &    ipol%SGS_term%i_SGS_Lorentz, iphys%SGS_term%i_SGS_Lorentz,    &
      &    f_trns%SGS_term%i_SGS_Lorentz, trns_fwd)
 !   SGS induction flag
-      call add_field_name_4_sph_trns(ipol%SGS_term%i_SGS_vp_induct,     &
-     &    SGS_vecp_induction%name, SGS_vecp_induction%n_comp,           &
+      call add_field_4_sph_trns_by_pol(SGS_vecp_induction,              &
      &    ipol%SGS_term%i_SGS_vp_induct,                                &
      &    iphys%SGS_term%i_SGS_vp_induct,                               &
      &    f_trns%SGS_term%i_SGS_vp_induct, trns_fwd)
 !   SGS heat flux flag
-      call add_field_name_4_sph_trns(ipol%SGS_term%i_SGS_h_flux,        &
-     &    SGS_heat_flux%name, SGS_heat_flux%n_comp,                     &
+      call add_field_4_sph_trns_by_pol(SGS_heat_flux,                   &
      &    ipol%SGS_term%i_SGS_h_flux, iphys%SGS_term%i_SGS_h_flux,      &
      &    f_trns%SGS_term%i_SGS_h_flux, trns_fwd)
 !   SGS composition flux flag
-      call add_field_name_4_sph_trns(ipol%SGS_term%i_SGS_c_flux,        &
-     &    SGS_composit_flux%name, SGS_composit_flux%n_comp,             &
+      call add_field_4_sph_trns_by_pol(SGS_composit_flux,               &
      &    ipol%SGS_term%i_SGS_c_flux, iphys%SGS_term%i_SGS_c_flux,      &
      &    f_trns%SGS_term%i_SGS_c_flux, trns_fwd)
 !
@@ -84,21 +79,17 @@
 !
 !
 !   work of Reynolds stress
-      call add_field_name_4_sph_trns(ipol%SGS_ene_flux%i_reynolds_wk,   &
-     &    Reynolds_work%name, Reynolds_work%n_comp,                     &
+      call add_field_4_sph_trns_by_pol(Reynolds_work,                   &
      &    ipol%SGS_ene_flux%i_reynolds_wk,                              &
      &    iphys%SGS_ene_flux%i_reynolds_wk,                             &
      &    f_trns%SGS_ene_flux%i_reynolds_wk, trns_fwd)
 !   work of SGS buoyancy
-      call add_field_name_4_sph_trns(ipol%SGS_ene_flux%i_SGS_buo_wk,    &
-     &    SGS_buoyancy_flux%name, SGS_buoyancy_flux%n_comp,             &
+      call add_field_4_sph_trns_by_pol(SGS_buoyancy_flux,               &
      &    ipol%SGS_ene_flux%i_SGS_buo_wk,                               &
      &    iphys%SGS_ene_flux%i_SGS_buo_wk,                              &
      &    f_trns%SGS_ene_flux%i_SGS_buo_wk, trns_fwd)
 !   work of SGS compositional buoyancy
-      call add_field_name_4_sph_trns                                    &
-     &   (ipol%SGS_ene_flux%i_SGS_comp_buo_wk,                          &
-     &    SGS_comp_buoyancy_flux%name, SGS_comp_buoyancy_flux%n_comp,   &
+      call add_field_4_sph_trns_by_pol(SGS_comp_buoyancy_flux,          &
      &    ipol%SGS_ene_flux%i_SGS_comp_buo_wk,                          &
      &    iphys%SGS_ene_flux%i_SGS_comp_buo_wk,                         &
      &    f_trns%SGS_ene_flux%i_SGS_comp_buo_wk, trns_fwd)

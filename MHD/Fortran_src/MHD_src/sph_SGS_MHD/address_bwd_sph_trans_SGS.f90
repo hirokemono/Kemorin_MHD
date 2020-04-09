@@ -57,50 +57,41 @@
 !
 !
 !   filtered velocity
-      call add_field_name_4_sph_trns(ipol%filter_fld%i_velo,            &
-     &    filter_velocity%name, filter_velocity%n_comp,                 &
+      call add_field_4_sph_trns_by_pol(filter_velocity,                 &
      &    ipol%filter_fld%i_velo, iphys%filter_fld%i_velo,              &
      &    b_trns%filter_fld%i_velo, trns_back)
 !   filtered vorticity
-      call add_field_name_4_sph_trns(ipol%filter_fld%i_vort,            &
-     &    filter_vorticity%name, filter_vorticity%n_comp,               &
+      call add_field_4_sph_trns_by_pol(filter_vorticity,                &
      &    ipol%filter_fld%i_vort, iphys%filter_fld%i_vort,              &
      &    b_trns%filter_fld%i_vort, trns_back)
 !   filtered magnetic field
-      call add_field_name_4_sph_trns(ipol%filter_fld%i_magne,           &
-     &    filter_magne%name, filter_magne%n_comp,                       &
+      call add_field_4_sph_trns_by_pol(filter_magne,                    &
      &    ipol%filter_fld%i_magne, iphys%filter_fld%i_magne,            &
      &    b_trns%filter_fld%i_magne, trns_back)
 !   filtered current density
-      call add_field_name_4_sph_trns(ipol%filter_fld%i_current,         &
-     &    filter_current%name, filter_current%n_comp,                   &
+      call add_field_4_sph_trns_by_pol(filter_current,                  &
      &    ipol%filter_fld%i_current, iphys%filter_fld%i_current,        &
      &    b_trns%filter_fld%i_current, trns_back)
 !
 !   filtered Inertia
-      call add_field_name_4_sph_trns(ipol%SGS_term%i_SGS_inertia,       &
-     &    SGS_inertia%name, SGS_inertia%n_comp,                         &
+      call add_field_4_sph_trns_by_pol(SGS_inertia,                     &
      &    ipol%SGS_term%i_SGS_inertia, iphys%SGS_term%i_SGS_inertia,    &
      &    b_trns%SGS_term%i_SGS_inertia, trns_back)
 !   filtered Lorentz force
-      call add_field_name_4_sph_trns(ipol%SGS_term%i_SGS_Lorentz,       &
-     &    SGS_Lorentz%name, SGS_Lorentz%n_comp,                         &
+      call add_field_4_sph_trns_by_pol(SGS_Lorentz,                     &
      &    ipol%SGS_term%i_SGS_Lorentz, iphys%SGS_term%i_SGS_Lorentz,    &
      &    b_trns%SGS_term%i_SGS_Lorentz, trns_back)
 !   filtered induction
-      call add_field_name_4_sph_trns(ipol%SGS_term%i_SGS_vp_induct,     &
-     &    SGS_vecp_induction%name, SGS_vecp_induction%n_comp,           &
+      call add_field_4_sph_trns_by_pol(SGS_vecp_induction,              &
      &    ipol%SGS_term%i_SGS_vp_induct,                                &
      &    iphys%SGS_term%i_SGS_vp_induct,                               &
      &    b_trns%SGS_term%i_SGS_vp_induct, trns_back)
 !   filtered heat flux
-      call add_field_name_4_sph_trns(ipol%SGS_term%i_SGS_h_flux,        &
-     &    SGS_heat_flux%name, SGS_heat_flux%n_comp,                     &
+      call add_field_4_sph_trns_by_pol(SGS_heat_flux,                   &
      &    ipol%SGS_term%i_SGS_h_flux, iphys%SGS_term%i_SGS_h_flux,      &
      &    b_trns%SGS_term%i_SGS_h_flux, trns_back)
 !   filtered composition flux
-      call add_field_name_4_sph_trns(ipol%SGS_term%i_SGS_c_flux,        &
-     &    SGS_composit_flux%name, SGS_composit_flux%n_comp,             &
+      call add_field_4_sph_trns_by_pol(SGS_composit_flux,               &
      &    ipol%SGS_term%i_SGS_c_flux, iphys%SGS_term%i_SGS_c_flux,      &
      &    b_trns%SGS_term%i_SGS_c_flux, trns_back)
 !
@@ -118,23 +109,19 @@
       type(phys_address), intent(inout) :: b_trns
 !
 !   wide filtered velocity
-      call add_field_name_4_sph_trns(ipol%wide_filter_fld%i_velo,       &
-     &    wide_filter_velocity%name, wide_filter_velocity%n_comp,       &
+      call add_field_4_sph_trns_by_pol(wide_filter_velocity,            &
      &    ipol%wide_filter_fld%i_velo, iphys%wide_filter_fld%i_velo,    &
      &    b_trns%wide_filter_fld%i_velo, trns_back)
 !   wide filtered vorticity
-      call add_field_name_4_sph_trns(ipol%wide_filter_fld%i_vort,       &
-     &    wide_filter_vorticity%name, wide_filter_vorticity%n_comp,     &
+      call add_field_4_sph_trns_by_pol(wide_filter_vorticity,           &
      &    ipol%wide_filter_fld%i_vort, iphys%wide_filter_fld%i_vort,    &
      &    b_trns%wide_filter_fld%i_vort, trns_back)
 !   wide filtered magnetic field
-      call add_field_name_4_sph_trns(ipol%wide_filter_fld%i_magne,      &
-     &    wide_filter_magne%name, wide_filter_magne%n_comp,             &
+      call add_field_4_sph_trns_by_pol(wide_filter_magne,               &
      &    ipol%wide_filter_fld%i_magne, iphys%wide_filter_fld%i_magne,  &
      &    b_trns%wide_filter_fld%i_magne, trns_back)
 !   wide filtered current density
-      call add_field_name_4_sph_trns(ipol%wide_filter_fld%i_current,    &
-     &    wide_filter_current%name, wide_filter_current%n_comp,         &
+      call add_field_4_sph_trns_by_pol(wide_filter_current,             &
      &    ipol%wide_filter_fld%i_current,                               &
      &    iphys%wide_filter_fld%i_current,                              &
      &    b_trns%wide_filter_fld%i_current, trns_back)
@@ -154,29 +141,24 @@
 !
 !
 !   wide filtered Inertia
-      call add_field_name_4_sph_trns(ipol%wide_SGS%i_SGS_inertia,       &
-     &    wide_SGS_inertia%name, wide_SGS_inertia%n_comp,               &
+      call add_field_4_sph_trns_by_pol(wide_SGS_inertia,                &
      &    ipol%wide_SGS%i_SGS_inertia, iphys%wide_SGS%i_SGS_inertia,    &
      &    b_trns%wide_SGS%i_SGS_inertia, trns_back)
 !   wide filtered Lorentz force
-      call add_field_name_4_sph_trns(ipol%wide_SGS%i_SGS_Lorentz,       &
-     &    wide_SGS_Lorentz%name, wide_SGS_Lorentz%n_comp,               &
+      call add_field_4_sph_trns_by_pol(wide_SGS_Lorentz,                &
      &    ipol%wide_SGS%i_SGS_Lorentz, iphys%wide_SGS%i_SGS_Lorentz,    &
      &    b_trns%wide_SGS%i_SGS_Lorentz, trns_back)
 !   wide filtered induction
-      call add_field_name_4_sph_trns(ipol%wide_SGS%i_SGS_vp_induct,     &
-     &    wide_SGS_vp_induction%name, wide_SGS_vp_induction%n_comp,     &
+      call add_field_4_sph_trns_by_pol(wide_SGS_vp_induction,           &
      &    ipol%wide_SGS%i_SGS_vp_induct,                                &
      &    iphys%wide_SGS%i_SGS_vp_induct,                               &
      &    b_trns%wide_SGS%i_SGS_vp_induct, trns_back)
 !   wide filtered heat flux
-      call add_field_name_4_sph_trns(ipol%wide_SGS%i_SGS_h_flux,        &
-     &    wide_SGS_heat_flux%name, wide_SGS_heat_flux%n_comp,           &
+      call add_field_4_sph_trns_by_pol(wide_SGS_heat_flux,              &
      &    ipol%wide_SGS%i_SGS_h_flux, iphys%wide_SGS%i_SGS_h_flux,      &
      &    b_trns%wide_SGS%i_SGS_h_flux, trns_back)
 !   wide filtered composition flux
-      call add_field_name_4_sph_trns(ipol%wide_SGS%i_SGS_c_flux,        &
-     &    wide_SGS_composit_flux%name, wide_SGS_composit_flux%n_comp,   &
+      call add_field_4_sph_trns_by_pol(wide_SGS_composit_flux,          &
      &    ipol%wide_SGS%i_SGS_c_flux, iphys%wide_SGS%i_SGS_c_flux,      &
      &    b_trns%wide_SGS%i_SGS_c_flux, trns_back)
 !
@@ -195,30 +177,24 @@
 !
 !
 !   dual filtered Inertia
-      call add_field_name_4_sph_trns(ipol%dble_SGS%i_SGS_inertia,       &
-     &    double_SGS_inertia%name, double_SGS_inertia%n_comp,           &
+      call add_field_4_sph_trns_by_pol(double_SGS_inertia,              &
      &    ipol%dble_SGS%i_SGS_inertia, iphys%dble_SGS%i_SGS_inertia,    &
      &    b_trns%dble_SGS%i_SGS_inertia, trns_back)
 !   dual filtered Lorentz force
-      call add_field_name_4_sph_trns(ipol%dble_SGS%i_SGS_Lorentz,       &
-     &    double_SGS_Lorentz%name, double_SGS_Lorentz%n_comp,           &
+      call add_field_4_sph_trns_by_pol(double_SGS_Lorentz,              &
      &    ipol%dble_SGS%i_SGS_Lorentz, iphys%dble_SGS%i_SGS_Lorentz,    &
      &    b_trns%dble_SGS%i_SGS_Lorentz, trns_back)
 !   dual filtered induction
-      call add_field_name_4_sph_trns(ipol%dble_SGS%i_SGS_vp_induct,     &
-     &    double_SGS_vp_induction%name, double_SGS_vp_induction%n_comp, &
+      call add_field_4_sph_trns_by_pol(double_SGS_vp_induction,         &
      &    ipol%dble_SGS%i_SGS_vp_induct,                                &
      &    iphys%dble_SGS%i_SGS_vp_induct,                               &
      &    b_trns%dble_SGS%i_SGS_vp_induct, trns_back)
 !   dual filtered heat flux
-      call add_field_name_4_sph_trns(ipol%dble_SGS%i_SGS_h_flux,        &
-     &    double_SGS_heat_flux%name, double_SGS_heat_flux%n_comp,       &
+      call add_field_4_sph_trns_by_pol(double_SGS_heat_flux,            &
      &    ipol%dble_SGS%i_SGS_h_flux, iphys%dble_SGS%i_SGS_h_flux,      &
      &    b_trns%dble_SGS%i_SGS_h_flux, trns_back)
 !   dual filtered composition flux
-      call add_field_name_4_sph_trns(ipol%dble_SGS%i_SGS_c_flux,        &
-     &    double_SGS_composit_flux%name,                                &
-     &    double_SGS_composit_flux%n_comp,                              &
+      call add_field_4_sph_trns_by_pol(double_SGS_composit_flux,        &
      &    ipol%dble_SGS%i_SGS_c_flux, iphys%dble_SGS%i_SGS_c_flux,      &
      &    b_trns%dble_SGS%i_SGS_c_flux, trns_back)
 !
@@ -238,13 +214,11 @@
 !
 !
 !   filtered temperature
-      call add_field_name_4_sph_trns(ipol%filter_fld%i_temp,            &
-     &    filter_temperature%name, filter_temperature%n_comp,           &
+      call add_field_4_sph_trns_by_pol(filter_temperature,              &
      &    ipol%filter_fld%i_temp, iphys%filter_fld%i_temp,              &
      &    b_trns%filter_fld%i_temp, trns_back)
 !   filtered composition
-      call add_field_name_4_sph_trns(ipol%filter_fld%i_light,           &
-     &    filter_composition%name, filter_composition%n_comp,           &
+      call add_field_4_sph_trns_by_pol(filter_composition,              &
      &    ipol%filter_fld%i_light, iphys%filter_fld%i_light,            &
      &    b_trns%filter_fld%i_light, trns_back)
 !
@@ -263,14 +237,11 @@
 !
 !
 !   wide filtered temperature
-      call add_field_name_4_sph_trns(ipol%wide_filter_fld%i_temp,       &
-     &    wide_filter_temp%name, wide_filter_temp%n_comp,               &
+      call add_field_4_sph_trns_by_pol(wide_filter_temp,                &
      &    ipol%wide_filter_fld%i_temp, iphys%wide_filter_fld%i_temp,    &
      &    b_trns%wide_filter_fld%i_temp, trns_back)
 !   wide filtered composition
-      call add_field_name_4_sph_trns(ipol%wide_filter_fld%i_light,      &
-     &    wide_filter_composition%name,                                 &
-     &    wide_filter_composition%n_comp,                               &
+      call add_field_4_sph_trns_by_pol(wide_filter_composition,         &
      &    ipol%wide_filter_fld%i_light, iphys%wide_filter_fld%i_light,  &
      &    b_trns%wide_filter_fld%i_light, trns_back)
 !

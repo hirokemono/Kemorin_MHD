@@ -354,6 +354,25 @@
 !
 !-----------------------------------------------------------------------
 !
+      subroutine add_scalar_4_sph_trns_by_pol                           &
+     &         (field, i_pol, irtp, i_trns, each_trns)
+!
+      use t_field_labels
+!
+      type(field_def), intent(in) :: field
+      integer(kind = kint), intent(in) :: i_pol, irtp
+!
+      integer(kind = kint), intent(inout) :: i_trns
+      type(address_each_sph_trans), intent(inout) :: each_trns
+!
+!
+      call add_field_name_4_sph_trns(i_pol, field%name, n_scalar,       &
+     &    i_pol, irtp, i_trns, each_trns)
+!
+      end subroutine add_scalar_4_sph_trns_by_pol
+!
+!-----------------------------------------------------------------------
+!
       subroutine add_field_name_4_sph_trns                              &
      &         (iflag_add, field_name, num_component,                   &
      &          i_pol, irtp, i_trns, each_trns)

@@ -64,30 +64,26 @@
      &     .or. cd_prop%iflag_Bevo_scheme .gt. id_no_evolution          &
      &     .or. ht_prop%iflag_scheme .gt. id_no_evolution               &
      &     .or. cp_prop%iflag_scheme .gt. id_no_evolution) then
-        call add_field_name_4_sph_trns(ipol%base%i_velo,                &
-     &      velocity%name, velocity%n_comp,                             &
+        call add_field_4_sph_trns_by_pol(velocity,                      &
      &      ipol%base%i_velo, iphys%base%i_velo, b_trns%base%i_velo,    &
      &      trns_back)
       end if
 !   vorticity flag
       if(       fl_prop%iflag_scheme .gt. id_no_evolution) then
-        call add_field_name_4_sph_trns(ipol%base%i_vort,                &
-     &      vorticity%name, vorticity%n_comp,                           &
+        call add_field_4_sph_trns_by_pol(vorticity,                     &
      &      ipol%base%i_vort, iphys%base%i_vort, b_trns%base%i_vort,    &
      &      trns_back)
       end if
 !   magnetic field flag
       if(       cd_prop%iflag_Bevo_scheme .gt. id_no_evolution          &
      &     .or. fl_prop%iflag_4_lorentz .gt.     id_turn_OFF) then
-        call add_field_name_4_sph_trns(ipol%base%i_magne,               &
-     &      magnetic_field%name, magnetic_field%n_comp,                 &
+        call add_field_4_sph_trns_by_pol(magnetic_field,                &
      &      ipol%base%i_magne, iphys%base%i_magne, b_trns%base%i_magne, &
      &      trns_back)
       end if
 !   current density flag
       if(fl_prop%iflag_4_lorentz .gt. id_turn_OFF) then
-        call add_field_name_4_sph_trns(ipol%base%i_current,             &
-     &      current_density%name, current_density%n_comp,               &
+        call add_field_4_sph_trns_by_pol(current_density,               &
      &      ipol%base%i_current, iphys%base%i_current,                  &
      &      b_trns%base%i_current, trns_back)
       end if
@@ -108,15 +104,13 @@
 !
 !   temperature flag
       if(ht_prop%iflag_scheme .gt. id_no_evolution) then
-        call add_field_name_4_sph_trns(ipol%base%i_temp,                &
-     &      temperature%name, temperature%n_comp,                       &
+        call add_field_4_sph_trns_by_pol(temperature,                   &
      &      ipol%base%i_temp, iphys%base%i_temp, b_trns%base%i_temp,    &
      &      trns_back)
       end if
 !   composition flag
       if(cp_prop%iflag_scheme .gt. id_no_evolution) then
-        call add_field_name_4_sph_trns                                  &
-     &     (ipol%base%i_light, composition%name, composition%n_comp,    &
+        call add_field_4_sph_trns_by_pol(composition,                   &
      &      ipol%base%i_light, iphys%base%i_light, b_trns%base%i_light, &
      &      trns_back)
       end if
