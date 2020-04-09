@@ -73,7 +73,7 @@
       do i = 1, rj_fld%num_phys_viz
         i_fld = rj_fld%istack_component(i-1) + 1
         if(rj_fld%num_component(i) .eq. n_vector) then
-          call add_field_name_4_sph_trns_snap                           &
+          call add_field_4_sph_transform                                &
      &       (rj_fld%phys_name(i), n_vector, i_fld, i_fld, i_trns,      &
      &        each_trns)
         end if
@@ -83,7 +83,7 @@
       do i = 1, rj_fld%num_phys_viz
         i_fld = rj_fld%istack_component(i-1) + 1
         if(rj_fld%num_component(i) .eq. n_scalar) then
-          call add_field_name_4_sph_trns_snap                           &
+          call add_field_4_sph_transform                                &
      &       (rj_fld%phys_name(i), n_scalar, i_fld, i_fld, i_trns,      &
      &        each_trns)
         end if
@@ -93,7 +93,7 @@
       do i = 1, rj_fld%num_phys_viz
         i_fld = rj_fld%istack_component(i-1) + 1
         if(rj_fld%num_component(i) .eq. n_sym_tensor) then
-          call add_field_name_4_sph_trns_snap                           &
+          call add_field_4_sph_transform                                &
      &       (rj_fld%phys_name(i), n_sym_tensor, i_fld, i_fld, i_trns,  &
      &        each_trns)
         end if
@@ -102,6 +102,28 @@
      &                    - each_trns%num_vector - each_trns%num_scalar
 !
       end subroutine set_addresses_all_transform
+!
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      subroutine add_field_4_sph_transform                              &
+     &         (field_name, num_comp, i_pol, irtp, i_trns, each_trns)
+!
+      character(len = kchara), intent(in) :: field_name
+      integer(kind = kint), intent(in) :: num_comp
+      integer(kind = kint), intent(in) :: i_pol, irtp
+!
+      integer(kind = kint), intent(inout) :: i_trns
+      type(address_each_sph_trans), intent(inout) :: each_trns
+!
+      integer(kind = kint)  :: iflag_snap
+!
+!
+      iflag_snap = i_pol * irtp
+      call add_field_name_4_sph_trns(iflag_snap, field_name,            &
+     &    num_comp, i_pol, irtp, i_trns, each_trns)
+!
+      end subroutine add_field_4_sph_transform
 !
 !-----------------------------------------------------------------------
 !

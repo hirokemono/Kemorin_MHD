@@ -49,117 +49,91 @@
       call alloc_sph_trns_field_name(trns_back)
 !
 !      if(b_trns%base%i_velo .eq. 0) then
-      call add_field_name_4_sph_trns_snap                               &
-     &   (velocity%name, velocity%n_comp,                               &
+      call add_field_name_4_sph_trns_snap(velocity,                     &
      &    ipol%base%i_velo, iphys%base%i_velo, b_trns%base%i_velo,      &
      &    trns_back)
 !      end if
 !      if(b_trns%base%i_vort .eq. 0) then
-      call add_field_name_4_sph_trns_snap                               &
-     &   (vorticity%name, vorticity%n_comp,                             &
+      call add_field_name_4_sph_trns_snap(vorticity,                    &
      &    ipol%base%i_vort, iphys%base%i_vort, b_trns%base%i_vort,      &
      &    trns_back)
 !      end if
 !      if(b_trns%base%i_magne .eq. 0) then
-      call add_field_name_4_sph_trns_snap                               &
-     &   (magnetic_field%name, magnetic_field%n_comp,                   &
+      call add_field_name_4_sph_trns_snap(magnetic_field,               &
      &    ipol%base%i_magne, iphys%base%i_magne, b_trns%base%i_magne,   &
      &    trns_back)
 !      end if
 !      if(b_trns%base%i_current .eq. 0) then
-      call add_field_name_4_sph_trns_snap                               &
-     &   (current_density%name, current_density%n_comp,                 &
+      call add_field_name_4_sph_trns_snap(current_density,              &
      &    ipol%base%i_current, iphys%base%i_current,                    &
      &    b_trns%base%i_current, trns_back)
 !      end if
 !
-      call add_field_name_4_sph_trns_snap                               &
-     &   (viscous_diffusion%name, viscous_diffusion%n_comp,             &
+      call add_field_name_4_sph_trns_snap(viscous_diffusion,            &
      &    ipol%diffusion%i_v_diffuse, iphys%diffusion%i_v_diffuse,      &
      &    b_trns%diffusion%i_v_diffuse, trns_back)
-      call add_field_name_4_sph_trns_snap                               &
-     &   (vorticity_diffusion%name, vorticity_diffusion%n_comp,         &
+      call add_field_name_4_sph_trns_snap(vorticity_diffusion,          &
      &    ipol%diffusion%i_w_diffuse, iphys%diffusion%i_w_diffuse,      &
      &    b_trns%diffusion%i_w_diffuse, trns_back)
-      call add_field_name_4_sph_trns_snap                               &
-     &   (vector_potential_diffusion%name,                              &
-     &    vector_potential_diffusion%n_comp,                            &
+      call add_field_name_4_sph_trns_snap(vector_potential_diffusion,   &
      &    ipol%diffusion%i_vp_diffuse, iphys%diffusion%i_vp_diffuse,    &
      &    b_trns%diffusion%i_vp_diffuse, trns_back)
-      call add_field_name_4_sph_trns_snap                               &
-     &   (magnetic_diffusion%name, magnetic_diffusion%n_comp,           &
+      call add_field_name_4_sph_trns_snap(magnetic_diffusion,           &
      &    ipol%diffusion%i_b_diffuse, iphys%diffusion%i_b_diffuse,      &
      &    b_trns%diffusion%i_b_diffuse, trns_back)
 !
-      call add_field_name_4_sph_trns_snap                               &
-     &   (rot_inertia%name, rot_inertia%n_comp,                         &
+      call add_field_name_4_sph_trns_snap(rot_inertia,                  &
      &    ipol%rot_forces%i_m_advect, iphys%rot_forces%i_m_advect,      &
      &    b_trns%rot_forces%i_m_advect, trns_back)
-      call add_field_name_4_sph_trns_snap                               &
-     &   (rot_Coriolis_force%name, rot_Coriolis_force%n_comp,           &
+      call add_field_name_4_sph_trns_snap(rot_Coriolis_force,           &
      &    ipol%rot_forces%i_Coriolis, iphys%rot_forces%i_Coriolis,      &
      &    b_trns%rot_forces%i_Coriolis, trns_back)
-      call add_field_name_4_sph_trns_snap                               &
-     &   (rot_Lorentz_force%name, rot_Lorentz_force%n_comp,             &
+      call add_field_name_4_sph_trns_snap(rot_Lorentz_force,            &
      &    ipol%rot_forces%i_lorentz, iphys%rot_forces%i_lorentz,        &
      &    b_trns%rot_forces%i_lorentz, trns_back)
-      call add_field_name_4_sph_trns_snap                               &
-     &   (rot_buoyancy%name, rot_buoyancy%n_comp,                       &
+      call add_field_name_4_sph_trns_snap(rot_buoyancy,                 &
      &    ipol%rot_forces%i_buoyancy, iphys%rot_forces%i_buoyancy,      &
      &    b_trns%rot_forces%i_buoyancy, trns_back)
-      call add_field_name_4_sph_trns_snap                               &
-     &   (rot_composite_buoyancy%name, rot_composite_buoyancy%n_comp,   &
+      call add_field_name_4_sph_trns_snap(rot_composite_buoyancy,       &
      &    ipol%rot_forces%i_comp_buo, iphys%rot_forces%i_comp_buo,      &
      &    b_trns%rot_forces%i_comp_buo, trns_back)
 !
-      call add_field_name_4_sph_trns_snap                               &
-     &   (buoyancy%name, buoyancy%n_comp,                               &
+      call add_field_name_4_sph_trns_snap(buoyancy,                     &
      &    ipol%forces%i_buoyancy, iphys%forces%i_buoyancy,              &
      &    b_trns%forces%i_buoyancy, trns_back)
-      call add_field_name_4_sph_trns_snap                               &
-     &   (composite_buoyancy%name, composite_buoyancy%n_comp,           &
+      call add_field_name_4_sph_trns_snap(composite_buoyancy,           &
      &    ipol%forces%i_comp_buo, iphys%forces%i_comp_buo,              &
      &    b_trns%forces%i_comp_buo, trns_back)
 !
-      call add_field_name_4_sph_trns_snap                               &
-     &   (rest_of_geostrophic%name, rest_of_geostrophic%n_comp,         &
+      call add_field_name_4_sph_trns_snap(rest_of_geostrophic,          &
      &    ipol%prod_fld%i_geostrophic, iphys%prod_fld%i_geostrophic,    &
      &    b_trns%prod_fld%i_geostrophic, trns_back)
 !
-      call add_field_name_4_sph_trns_snap                               &
-     &   (heat_flux_w_SGS%name, heat_flux_w_SGS%n_comp,                 &
+      call add_field_name_4_sph_trns_snap(heat_flux_w_SGS,              &
      &    ipol%frc_w_SGS%i_SGS_h_flux, iphys%frc_w_SGS%i_SGS_h_flux,    &
      &    b_trns%frc_w_SGS%i_SGS_h_flux, trns_back)
-      call add_field_name_4_sph_trns_snap                               &
-     &   (compostion_flux_w_SGS%name, compostion_flux_w_SGS%n_comp,     &
+      call add_field_name_4_sph_trns_snap(compostion_flux_w_SGS,        &
      &    ipol%frc_w_SGS%i_SGS_c_flux, iphys%frc_w_SGS%i_SGS_c_flux,    &
      &    b_trns%frc_w_SGS%i_SGS_c_flux, trns_back)
-      call add_field_name_4_sph_trns_snap                               &
-     &   (intertia_w_SGS%name, intertia_w_SGS%n_comp,                   &
+      call add_field_name_4_sph_trns_snap(intertia_w_SGS,               &
      &    ipol%frc_w_SGS%i_SGS_inertia, iphys%frc_w_SGS%i_SGS_inertia,  &
      &    b_trns%frc_w_SGS%i_SGS_inertia, trns_back)
-      call add_field_name_4_sph_trns_snap                               &
-     &   (Lorentz_w_SGS%name, Lorentz_w_SGS%n_comp,                     &
+      call add_field_name_4_sph_trns_snap(Lorentz_w_SGS,                &
      &    ipol%frc_w_SGS%i_SGS_Lorentz, iphys%frc_w_SGS%i_SGS_Lorentz,  &
      &    b_trns%frc_w_SGS%i_SGS_Lorentz, trns_back)
-      call add_field_name_4_sph_trns_snap                               &
-     &   (vecp_induction_w_SGS%name, vecp_induction_w_SGS%n_comp,       &
+      call add_field_name_4_sph_trns_snap(vecp_induction_w_SGS,         &
      &    ipol%frc_w_SGS%i_SGS_vp_induct,                               &
      &    iphys%frc_w_SGS%i_SGS_vp_induct,                              &
      &    b_trns%frc_w_SGS%i_SGS_vp_induct, trns_back)
-      call add_field_name_4_sph_trns_snap                               &
-     &   (induction_w_SGS%name, induction_w_SGS%n_comp,                 &
+      call add_field_name_4_sph_trns_snap(induction_w_SGS,              &
      &    ipol%frc_w_SGS%i_SGS_induction,                               &
      &    iphys%frc_w_SGS%i_SGS_induction,                              &
-     &    b_trns%frc_w_SGS%i_SGS_induction,                             &
-     &    trns_back)
+     &    b_trns%frc_w_SGS%i_SGS_induction, trns_back)
 !
-      call add_field_name_4_sph_trns_snap                               &
-     &   (rot_SGS_inertia%name, rot_SGS_inertia%n_comp,                 &
+      call add_field_name_4_sph_trns_snap(rot_SGS_inertia,              &
      &    ipol%rot_SGS%i_SGS_inertia, iphys%rot_SGS%i_SGS_inertia,      &
      &    b_trns%rot_SGS%i_SGS_inertia, trns_back)
-      call add_field_name_4_sph_trns_snap                               &
-     &   (rot_SGS_Lorentz%name, rot_SGS_Lorentz%n_comp,                 &
+      call add_field_name_4_sph_trns_snap(rot_SGS_Lorentz,              &
      &    ipol%rot_SGS%i_SGS_Lorentz, iphys%rot_SGS%i_SGS_Lorentz,      &
      &    b_trns%rot_SGS%i_SGS_Lorentz, trns_back)
 !
@@ -169,21 +143,17 @@
      &    iphys%SGS_term%i_SGS_induction,                               &
      &    b_trns%SGS_term%i_SGS_induction, trns_back)
 !
-      call add_field_name_4_sph_trns_snap                               &
-     &   (pressure_gradient%name, pressure_gradient%n_comp,             &
+      call add_field_name_4_sph_trns_snap(pressure_gradient,            &
      &    ipol%forces%i_press_grad, iphys%forces%i_press_grad,          &
      &    b_trns%forces%i_press_grad, trns_back)
-      call add_field_name_4_sph_trns_snap                               &
-     &   (magnetic_induction%name, magnetic_induction%n_comp,           &
+      call add_field_name_4_sph_trns_snap(magnetic_induction,           &
      &    ipol%forces%i_induction, iphys%forces%i_induction,            &
      &    b_trns%forces%i_induction, trns_back)
 !
-      call add_field_name_4_sph_trns_snap                               &
-     &   (grad_temp%name, grad_temp%n_comp,                             &
+      call add_field_name_4_sph_trns_snap(grad_temp,                    &
      &    ipol%grad_fld%i_grad_temp, iphys%grad_fld%i_grad_temp,        &
      &    b_trns%grad_fld%i_grad_temp, trns_back)
-      call add_field_name_4_sph_trns_snap                               &
-     &   (grad_composition%name, grad_composition%n_comp,               &
+      call add_field_name_4_sph_trns_snap(grad_composition,             &
      &    ipol%grad_fld%i_grad_composit,                                &
      &    iphys%grad_fld%i_grad_composit,                               &
      &    b_trns%grad_fld%i_grad_composit, trns_back)
@@ -253,9 +223,7 @@
      &    ipol%diff_vector%i_grad_jz, iphys%diff_vector%i_grad_jz,      &
      &    b_trns%diff_vector%i_grad_jz, trns_back)
 !
-      call add_field_name_4_sph_trns_snap                               &
-     &   (truncated_magnetic_field%name,                                &
-     &    truncated_magnetic_field%n_comp,                              &
+      call add_field_name_4_sph_trns_snap(truncated_magnetic_field,     &
      &    ipol%prod_fld%i_truncated_B, iphys%prod_fld%i_truncated_B,    &
      &    b_trns%prod_fld%i_truncated_B, trns_back)
 !
@@ -277,67 +245,54 @@
 !
 !
 !      if(b_trns%base%i_temp.eq.0 .or. ipol%base%i_per_temp.gt.0) then
-      call add_field_name_4_sph_trns_snap                               &
-     &   (temperature%name, temperature%n_comp,                         &
+      call add_field_name_4_sph_trns_snap(temperature,                  &
      &    ipol%base%i_temp, iphys%base%i_temp, b_trns%base%i_temp,      &
      &    trns_back)
 !      end if
 !      if(b_trns%base%i_light .eq. 0) then
-      call add_field_name_4_sph_trns_snap                               &
-     &   (composition%name, composition%n_comp,                         &
+      call add_field_name_4_sph_trns_snap(composition,                  &
      &    ipol%base%i_light, iphys%base%i_light, b_trns%base%i_light,   &
      &    trns_back)
 !      end if
 !
-      call add_field_name_4_sph_trns_snap                               &
-     &   (pressure%name, pressure%n_comp,                               &
+      call add_field_name_4_sph_trns_snap(pressure,                     &
      &    ipol%base%i_press, iphys%base%i_press, b_trns%base%i_press,   &
      &    trns_back)
       call add_field_name_4_sph_trns_nofld                              &
      &   (perturbation_temp%name, perturbation_temp%n_comp,             &
      &    ipol%base%i_per_temp, iphys%base%i_per_temp,                  &
      &    b_trns%base%i_per_temp, trns_back)
-      call add_field_name_4_sph_trns_snap                               &
-     &   (filter_temperature%name, filter_temperature%n_comp,           &
+      call add_field_name_4_sph_trns_snap(filter_temperature,           &
      &    ipol%filter_fld%i_temp, iphys%filter_fld%i_temp,              &
      &    b_trns%filter_fld%i_temp, trns_back)
-      call add_field_name_4_sph_trns_snap                               &
-     &   (thermal_diffusion%name, thermal_diffusion%n_comp,             &
+      call add_field_name_4_sph_trns_snap(thermal_diffusion,            &
      &    ipol%diffusion%i_t_diffuse, iphys%diffusion%i_t_diffuse,      &
      &    b_trns%diffusion%i_t_diffuse, trns_back)
-      call add_field_name_4_sph_trns_snap                               &
-     &   (composition_diffusion%name, composition_diffusion%n_comp,     &
+      call add_field_name_4_sph_trns_snap(composition_diffusion,        &
      &    ipol%diffusion%i_c_diffuse, iphys%diffusion%i_c_diffuse,      &
      &    b_trns%diffusion%i_c_diffuse, trns_back)
 !
-      call add_field_name_4_sph_trns_snap                               &
-     &   (heat_advect%name, heat_advect%n_comp,                         &
+      call add_field_name_4_sph_trns_snap(heat_advect,                  &
      &    ipol%forces%i_h_advect, iphys%forces%i_h_advect,              &
      &    b_trns%forces%i_h_advect, trns_back)
-      call add_field_name_4_sph_trns_snap                               &
-     &   (composition_advect%name, composition_advect%n_comp,           &
+      call add_field_name_4_sph_trns_snap(composition_advect,           &
      &    ipol%forces%i_c_advect, iphys%forces%i_c_advect,              &
      &    b_trns%forces%i_c_advect, trns_back)
 !
-      call add_field_name_4_sph_trns_snap                               &
-     &   (div_Coriolis_force%name, div_Coriolis_force%n_comp,           &
+      call add_field_name_4_sph_trns_snap(div_Coriolis_force,           &
      &    ipol%div_forces%i_Coriolis, iphys%div_forces%i_Coriolis,      &
      &    b_trns%div_forces%i_Coriolis, trns_back)
 !
-      call add_field_name_4_sph_trns_snap                               &
-     &   (div_SGS_inertia%name, div_SGS_inertia%n_comp,                 &
+      call add_field_name_4_sph_trns_snap(div_SGS_inertia,              &
      &    ipol%div_SGS%i_SGS_inertia, iphys%div_SGS%i_SGS_inertia,      &
      &    b_trns%div_SGS%i_SGS_inertia, trns_back)
-      call add_field_name_4_sph_trns_snap                               &
-     &   (div_SGS_Lorentz%name, div_SGS_Lorentz%n_comp,                 &
+      call add_field_name_4_sph_trns_snap(div_SGS_Lorentz,              &
      &    ipol%div_SGS%i_SGS_Lorentz, iphys%div_SGS%i_SGS_Lorentz,      &
      &    b_trns%div_SGS%i_SGS_Lorentz, trns_back)
-      call add_field_name_4_sph_trns_snap                               &
-     &   (div_SGS_h_flux%name, div_SGS_h_flux%n_comp,                   &
+      call add_field_name_4_sph_trns_snap(div_SGS_h_flux,               &
      &    ipol%div_SGS%i_SGS_h_flux, iphys%div_SGS%i_SGS_h_flux,        &
      &    b_trns%div_SGS%i_SGS_h_flux, trns_back)
-      call add_field_name_4_sph_trns_snap                               &
-     &   (div_SGS_c_flux%name, div_SGS_c_flux%n_comp,                   &
+      call add_field_name_4_sph_trns_snap(div_SGS_c_flux,               &
      &    ipol%div_SGS%i_SGS_c_flux, iphys%div_SGS%i_SGS_c_flux,        &
      &    b_trns%div_SGS%i_SGS_c_flux, trns_back)
       trns_back%num_scalar = trns_back%nfield - trns_back%num_vector
