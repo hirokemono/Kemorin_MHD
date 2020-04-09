@@ -61,9 +61,8 @@
 !
 !  -------------------------------
 !
-      call set_sph_sprctr_data_address(SPH_dat_ss%sph%sph_rj,           &
-     &    SPH_dat_ss%ipol, SPH_dat_ss%idpdr, SPH_dat_ss%itor,           &
-     &    SPH_dat_ss%fld)
+      call set_sph_sprctr_data_address                                  &
+     &   (SPH_dat_ss%sph%sph_rj, SPH_dat_ss%ipol, SPH_dat_ss%fld)
 !
       call calypso_MPI_barrier
 !

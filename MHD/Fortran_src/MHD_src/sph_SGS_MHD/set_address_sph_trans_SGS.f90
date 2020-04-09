@@ -66,12 +66,12 @@
       trns_SIMI%backward%nfield = 0
       call alloc_sph_trns_field_name(trns_SIMI%backward)
 !
-      call b_trans_vector_similarity(SPH_MHD%ipol, SPH_MHD%itor,        &
-     &    iphys, trns_SIMI%b_trns, trns_SIMI%backward)
+      call b_trans_vector_similarity                                    &
+     &   (SPH_MHD%ipol, iphys, trns_SIMI%b_trns, trns_SIMI%backward)
       trns_SIMI%backward%num_vector = trns_SIMI%backward%nfield
 !
-      call b_trans_scalar_similarity(SPH_MHD%ipol, SPH_MHD%itor,        &
-     &    iphys, trns_SIMI%b_trns, trns_SIMI%backward)
+      call b_trans_scalar_similarity                                    &
+     &   (SPH_MHD%ipol, iphys, trns_SIMI%b_trns, trns_SIMI%backward)
       trns_SIMI%backward%num_scalar = trns_SIMI%backward%nfield         &
      &                              - trns_SIMI%backward%num_vector
       trns_SIMI%backward%num_tensor = 0
@@ -85,8 +85,8 @@
       trns_SIMI%forward%nfield = 0
       call alloc_sph_trns_field_name(trns_SIMI%forward)
 !
-      call f_trans_vector_SGS_terms(SPH_MHD%ipol, SPH_MHD%itor,         &
-     &    iphys, trns_SIMI%f_trns, trns_SIMI%forward)
+      call f_trans_vector_SGS_terms                                     &
+     &   (SPH_MHD%ipol, iphys, trns_SIMI%f_trns, trns_SIMI%forward)
       trns_SIMI%forward%num_vector = trns_SIMI%forward%nfield
       trns_SIMI%forward%num_scalar = trns_SIMI%forward%nfield           &
      &                              - trns_SIMI%forward%num_vector
@@ -134,16 +134,16 @@
       trns_DYNS%backward%nfield = 0
       call alloc_sph_trns_field_name(trns_DYNS%backward)
 !
-      call b_trans_vector_wide_filter_fld(SPH_MHD%ipol, SPH_MHD%itor,   &
-     &    iphys, trns_DYNS%b_trns, trns_DYNS%backward)
-      call b_trans_vector_wide_similarity(SPH_MHD%ipol, SPH_MHD%itor,   &
-     &    iphys, trns_DYNS%b_trns, trns_DYNS%backward)
-      call b_trans_vector_filtered_SGS(SPH_MHD%ipol, SPH_MHD%itor,      &
-     &    iphys, trns_DYNS%b_trns, trns_DYNS%backward)
+      call b_trans_vector_wide_filter_fld                               &
+     &   (SPH_MHD%ipol, iphys, trns_DYNS%b_trns, trns_DYNS%backward)
+      call b_trans_vector_wide_similarity                               &
+     &   (SPH_MHD%ipol, iphys, trns_DYNS%b_trns, trns_DYNS%backward)
+      call b_trans_vector_filtered_SGS                                  &
+     &   (SPH_MHD%ipol, iphys, trns_DYNS%b_trns, trns_DYNS%backward)
       trns_DYNS%backward%num_vector = trns_DYNS%backward%nfield
 !
-      call b_trans_scalar_wide_filter_fld(SPH_MHD%ipol, SPH_MHD%itor,   &
-     &    iphys, trns_DYNS%b_trns, trns_DYNS%backward)
+      call b_trans_scalar_wide_filter_fld                               &
+     &   (SPH_MHD%ipol, iphys, trns_DYNS%b_trns, trns_DYNS%backward)
       trns_DYNS%backward%num_scalar = trns_DYNS%backward%nfield         &
      &                               - trns_DYNS%backward%num_vector
       trns_DYNS%backward%num_tensor = 0
@@ -221,11 +221,11 @@
       call alloc_sph_trns_field_name(trns_Csim%forward)
 !
       trns_Csim%forward%num_vector = 0
-      call f_trans_address_scalar_Csim(SPH_MHD%ipol, SPH_MHD%itor,      &
-     &    iphys, trns_Csim%f_trns, trns_Csim%forward)
+      call f_trans_address_scalar_Csim                                  &
+     &   (SPH_MHD%ipol, iphys, trns_Csim%f_trns, trns_Csim%forward)
       if(SGS_param%iflag_SGS_gravity .ne. id_SGS_none) then
-        call f_trans_address_SGS_works(SPH_MHD%ipol, SPH_MHD%itor,      &
-     &      iphys, trns_Csim%f_trns, trns_Csim%forward)
+        call f_trans_address_SGS_works                                  &
+     &     (SPH_MHD%ipol, iphys, trns_Csim%f_trns, trns_Csim%forward)
       end if
       trns_Csim%forward%num_scalar = trns_Csim%forward%nfield           &
      &                              - trns_Csim%forward%num_vector

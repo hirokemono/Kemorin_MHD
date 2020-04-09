@@ -14,7 +14,11 @@
 !!        type(phys_address), intent(inout) :: iphys
 !!        type(phys_data), intent(inout) :: nod_fld
 !!      subroutine set_sph_MHD_sprctr_data                              &
-!!     &         (sph_rj, MHD_prop, ipol, idpdr, itor, rj_fld)
+!!     &         (sph_rj, MHD_prop, ipol, rj_fld)
+!!        type(sph_rj_grid), intent(in) :: sph_rj
+!!        type(MHD_evolution_param), intent(in) :: MHD_prop
+!!        type(phys_address), intent(inout) :: ipol
+!!        type(phys_data), intent(inout) :: rj_fld
 !!@endverbatim
 !
       module check_dependency_for_MHD
@@ -68,7 +72,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_sph_MHD_sprctr_data                                &
-     &         (sph_rj, MHD_prop, ipol, idpdr, itor, rj_fld)
+     &         (sph_rj, MHD_prop, ipol, rj_fld)
 !
       use t_spheric_rj_data
 !
@@ -77,12 +81,11 @@
       type(sph_rj_grid), intent(in) :: sph_rj
       type(MHD_evolution_param), intent(in) :: MHD_prop
 !
-      type(phys_address), intent(inout) :: ipol, idpdr, itor
+      type(phys_address), intent(inout) :: ipol
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      call set_sph_sprctr_data_address                                  &
-     &   (sph_rj, ipol, idpdr, itor, rj_fld)
+      call set_sph_sprctr_data_address(sph_rj, ipol, rj_fld)
 !
       call check_field_dependencies                                     &
      &   (MHD_prop%fl_prop, MHD_prop%cd_prop,                           &

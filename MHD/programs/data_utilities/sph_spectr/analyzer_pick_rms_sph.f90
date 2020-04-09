@@ -61,9 +61,8 @@
 !
 !  -------------------------------
 !
-      call set_sph_sprctr_data_address(SPH_dat_ss%sph%sph_rj,           &
-     &    SPH_dat_ss%ipol, SPH_dat_ss%idpdr, SPH_dat_ss%itor,           &
-     &    SPH_dat_ss%fld)
+      call set_sph_sprctr_data_address                                  &
+     &   (SPH_dat_ss%sph%sph_rj, SPH_dat_ss%ipol, SPH_dat_ss%fld)
 !
       call init_rms_4_sph_spectr                                        &
      &   (SPH_dat_ss%sph%sph_params, SPH_dat_ss%sph%sph_rj,             &

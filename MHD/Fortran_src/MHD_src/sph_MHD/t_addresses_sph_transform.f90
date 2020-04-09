@@ -23,16 +23,15 @@
 !!
 !!      subroutine count_num_fields_each_trans(each_trns,               &
 !!     &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
-!!      subroutine add_field_name_4_sph_trns_snap                       &
-!!     &         (field_name, num_component, i_pol, i_tor, irtp,        &
-!!     &          i_trns, each_trns)
+!!      subroutine add_field_name_4_sph_trns_snap(field_name,           &
+!!     &          num_component, i_pol, irtp, i_trns, each_trns)
 !!      subroutine add_field_name_4_sph_trns_nofld                      &
-!!     &         (field_name, num_component, i_pol, i_tor, irtp,        &
-!!     &          i_trns, each_trns)
+!!     &         (field_name, num_component, i_pol, irtp, i_trns,       &
+!!     &          each_trns)
 !!        type(address_each_sph_trans), intent(inout) :: each_trns
 !!      subroutine add_field_name_4_sph_trns                            &
 !!     &         (iflag_add, field_name, num_component,                 &
-!!     &          i_pol, i_tor, irtp, i_trns, each_trns)
+!!     &          i_pol, irtp, i_trns, each_trns)
 !!        type(address_each_sph_trans), intent(inout) :: each_trns
 !!@endverbatim
 !
@@ -288,13 +287,12 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine add_field_name_4_sph_trns_snap                         &
-     &         (field_name, num_component, i_pol, i_tor, irtp,          &
-     &          i_trns, each_trns)
+      subroutine add_field_name_4_sph_trns_snap(field_name,             &
+     &          num_component, i_pol, irtp, i_trns, each_trns)
 !
       character(len = kchara), intent(in) :: field_name
       integer(kind = kint), intent(in) :: num_component
-      integer(kind = kint), intent(in) :: i_pol, i_tor, irtp
+      integer(kind = kint), intent(in) :: i_pol, irtp
 !
       integer(kind = kint), intent(inout) :: i_trns
       type(address_each_sph_trans), intent(inout) :: each_trns
@@ -304,26 +302,26 @@
 !
       iflag_snap = i_pol * irtp
       call add_field_name_4_sph_trns(iflag_snap, field_name,            &
-     &    num_component, i_pol, i_tor, irtp, i_trns, each_trns)
+     &    num_component, i_pol, irtp, i_trns, each_trns)
 !
       end subroutine add_field_name_4_sph_trns_snap
 !
 !-----------------------------------------------------------------------
 !
       subroutine add_field_name_4_sph_trns_nofld                        &
-     &         (field_name, num_component, i_pol, i_tor, irtp,          &
-     &          i_trns, each_trns)
+     &         (field_name, num_component, i_pol, irtp, i_trns,         &
+     &          each_trns)
 !
       character(len = kchara), intent(in) :: field_name
       integer(kind = kint), intent(in) :: num_component
-      integer(kind = kint), intent(in) :: i_pol, i_tor, irtp
+      integer(kind = kint), intent(in) :: i_pol, irtp
 !
       integer(kind = kint), intent(inout) :: i_trns
       type(address_each_sph_trans), intent(inout) :: each_trns
 !
 !
       call add_field_name_4_sph_trns(i_pol, field_name,                 &
-     &    num_component, i_pol, i_tor, irtp, i_trns, each_trns)
+     &    num_component, i_pol, irtp, i_trns, each_trns)
 !
       end subroutine add_field_name_4_sph_trns_nofld
 !
@@ -331,13 +329,13 @@
 !
       subroutine add_field_name_4_sph_trns                              &
      &         (iflag_add, field_name, num_component,                   &
-     &          i_pol, i_tor, irtp, i_trns, each_trns)
+     &          i_pol, irtp, i_trns, each_trns)
 !
       use m_machine_parameter
 !
       character(len = kchara), intent(in) :: field_name
       integer(kind = kint), intent(in) :: iflag_add, num_component
-      integer(kind = kint), intent(in) :: i_pol, i_tor, irtp
+      integer(kind = kint), intent(in) :: i_pol, irtp
 !
       integer(kind = kint), intent(inout) :: i_trns
       type(address_each_sph_trans), intent(inout) :: each_trns
@@ -372,7 +370,7 @@
       write(*,'(i5,a2,a,a2,4i5)') each_trns%nfield, '. ',               &
      &    trim(each_trns%field_name(each_trns%nfield)), ': ',           &
      &    each_trns%ifld_trns(each_trns%nfield),                        &
-     &    each_trns%ifld_rj(each_trns%nfield), i_tor,                   &
+     &    each_trns%ifld_rj(each_trns%nfield),                          &
      &    each_trns%ifld_rtp(each_trns%nfield)
 !
       end subroutine add_field_name_4_sph_trns

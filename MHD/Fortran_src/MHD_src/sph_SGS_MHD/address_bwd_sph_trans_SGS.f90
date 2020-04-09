@@ -9,20 +9,20 @@
 !!
 !!@verbatim
 !!      subroutine b_trans_vector_similarity                            &
-!!     &         (ipol, itor, iphys, b_trns, trns_back)
+!!     &         (ipol, iphys, b_trns, trns_back)
 !!      subroutine b_trans_vector_wide_filter_fld                       &
-!!     &         (ipol, itor, iphys, b_trns, trns_back)
+!!     &         (ipol, iphys, b_trns, trns_back)
 !!      subroutine b_trans_vector_wide_similarity                       &
-!!     &         (ipol, itor, iphys, b_trns, trns_back)
+!!     &         (ipol, iphys, b_trns, trns_back)
 !!
 !!      subroutine b_trans_vector_filtered_SGS                          &
-!!     &         (ipol, itor, iphys, b_trns, trns_back)
+!!     &         (ipol, iphys, b_trns, trns_back)
 !!
 !!      subroutine b_trans_scalar_similarity                            &
-!!     &         (ipol, itor, iphys, b_trns, trns_back)
+!!     &         (ipol, iphys, b_trns, trns_back)
 !!      subroutine b_trans_scalar_wide_filter_fld                       &
-!!     &         (ipol, itor, iphys, b_trns, trns_back)
-!!        type(phys_address), intent(in) :: ipol, itor, iphys
+!!     &         (ipol, iphys, b_trns, trns_back)
+!!        type(phys_address), intent(in) :: ipol, iphys
 !!        type(address_each_sph_trans), intent(inout) :: trns_back
 !!        type(phys_address), intent(inout) :: b_trns
 !!@endverbatim
@@ -47,11 +47,11 @@
 !-----------------------------------------------------------------------
 !
       subroutine b_trans_vector_similarity                              &
-     &         (ipol, itor, iphys, b_trns, trns_back)
+     &         (ipol, iphys, b_trns, trns_back)
 !
       use m_filtered_field_labels
 !
-      type(phys_address), intent(in) :: ipol, itor, iphys
+      type(phys_address), intent(in) :: ipol, iphys
       type(address_each_sph_trans), intent(inout) :: trns_back
       type(phys_address), intent(inout) :: b_trns
 !
@@ -59,93 +59,83 @@
 !   filtered velocity
       call add_field_name_4_sph_trns(ipol%filter_fld%i_velo,            &
      &    filter_velocity%name, filter_velocity%n_comp,                 &
-     &    ipol%filter_fld%i_velo, itor%filter_fld%i_velo,               &
-     &    iphys%filter_fld%i_velo, b_trns%filter_fld%i_velo, trns_back)
+     &    ipol%filter_fld%i_velo, iphys%filter_fld%i_velo,              &
+     &    b_trns%filter_fld%i_velo, trns_back)
 !   filtered vorticity
       call add_field_name_4_sph_trns(ipol%filter_fld%i_vort,            &
      &    filter_vorticity%name, filter_vorticity%n_comp,               &
-     &    ipol%filter_fld%i_vort, itor%filter_fld%i_vort,               &
-     &    iphys%filter_fld%i_vort, b_trns%filter_fld%i_vort, trns_back)
+     &    ipol%filter_fld%i_vort, iphys%filter_fld%i_vort,              &
+     &    b_trns%filter_fld%i_vort, trns_back)
 !   filtered magnetic field
       call add_field_name_4_sph_trns(ipol%filter_fld%i_magne,           &
      &    filter_magne%name, filter_magne%n_comp,                       &
-     &    ipol%filter_fld%i_magne, itor%filter_fld%i_magne,             &
-     &    iphys%filter_fld%i_magne, b_trns%filter_fld%i_magne,          &
-     &    trns_back)
+     &    ipol%filter_fld%i_magne, iphys%filter_fld%i_magne,            &
+     &    b_trns%filter_fld%i_magne, trns_back)
 !   filtered current density
       call add_field_name_4_sph_trns(ipol%filter_fld%i_current,         &
      &    filter_current%name, filter_current%n_comp,                   &
-     &    ipol%filter_fld%i_current, itor%filter_fld%i_current,         &
-     &    iphys%filter_fld%i_current, b_trns%filter_fld%i_current,      &
-     &    trns_back)
+     &    ipol%filter_fld%i_current, iphys%filter_fld%i_current,        &
+     &    b_trns%filter_fld%i_current, trns_back)
 !
 !   filtered Inertia
       call add_field_name_4_sph_trns(ipol%SGS_term%i_SGS_inertia,       &
      &    SGS_inertia%name, SGS_inertia%n_comp,                         &
-     &    ipol%SGS_term%i_SGS_inertia, itor%SGS_term%i_SGS_inertia,     &
-     &    iphys%SGS_term%i_SGS_inertia, b_trns%SGS_term%i_SGS_inertia,  &
-     &    trns_back)
+     &    ipol%SGS_term%i_SGS_inertia, iphys%SGS_term%i_SGS_inertia,    &
+     &    b_trns%SGS_term%i_SGS_inertia, trns_back)
 !   filtered Lorentz force
       call add_field_name_4_sph_trns(ipol%SGS_term%i_SGS_Lorentz,       &
      &    SGS_Lorentz%name, SGS_Lorentz%n_comp,                         &
-     &    ipol%SGS_term%i_SGS_Lorentz, itor%SGS_term%i_SGS_Lorentz,     &
-     &    iphys%SGS_term%i_SGS_Lorentz, b_trns%SGS_term%i_SGS_Lorentz,  &
-     &    trns_back)
+     &    ipol%SGS_term%i_SGS_Lorentz, iphys%SGS_term%i_SGS_Lorentz,    &
+     &    b_trns%SGS_term%i_SGS_Lorentz, trns_back)
 !   filtered induction
       call add_field_name_4_sph_trns(ipol%SGS_term%i_SGS_vp_induct,     &
      &    SGS_vecp_induction%name, SGS_vecp_induction%n_comp,           &
-     &    ipol%SGS_term%i_SGS_vp_induct, itor%SGS_term%i_SGS_vp_induct, &
+     &    ipol%SGS_term%i_SGS_vp_induct,                                &
      &    iphys%SGS_term%i_SGS_vp_induct,                               &
      &    b_trns%SGS_term%i_SGS_vp_induct, trns_back)
 !   filtered heat flux
       call add_field_name_4_sph_trns(ipol%SGS_term%i_SGS_h_flux,        &
      &    SGS_heat_flux%name, SGS_heat_flux%n_comp,                     &
-     &    ipol%SGS_term%i_SGS_h_flux, itor%SGS_term%i_SGS_h_flux,       &
-     &    iphys%SGS_term%i_SGS_h_flux, b_trns%SGS_term%i_SGS_h_flux,    &
-     &    trns_back)
+     &    ipol%SGS_term%i_SGS_h_flux, iphys%SGS_term%i_SGS_h_flux,      &
+     &    b_trns%SGS_term%i_SGS_h_flux, trns_back)
 !   filtered composition flux
       call add_field_name_4_sph_trns(ipol%SGS_term%i_SGS_c_flux,        &
      &    SGS_composit_flux%name, SGS_composit_flux%n_comp,             &
-     &    ipol%SGS_term%i_SGS_c_flux, itor%SGS_term%i_SGS_c_flux,       &
-     &    iphys%SGS_term%i_SGS_c_flux, b_trns%SGS_term%i_SGS_c_flux,    &
-     &    trns_back)
+     &    ipol%SGS_term%i_SGS_c_flux, iphys%SGS_term%i_SGS_c_flux,      &
+     &    b_trns%SGS_term%i_SGS_c_flux, trns_back)
 !
       end subroutine b_trans_vector_similarity
 !
 !-----------------------------------------------------------------------
 !
       subroutine b_trans_vector_wide_filter_fld                         &
-     &         (ipol, itor, iphys, b_trns, trns_back)
+     &         (ipol, iphys, b_trns, trns_back)
 !
       use m_wide_filter_field_labels
 !
-      type(phys_address), intent(in) :: ipol, itor, iphys
+      type(phys_address), intent(in) :: ipol, iphys
       type(address_each_sph_trans), intent(inout) :: trns_back
       type(phys_address), intent(inout) :: b_trns
 !
 !   wide filtered velocity
       call add_field_name_4_sph_trns(ipol%wide_filter_fld%i_velo,       &
      &    wide_filter_velocity%name, wide_filter_velocity%n_comp,       &
-     &    ipol%wide_filter_fld%i_velo, itor%wide_filter_fld%i_velo,     &
-     &    iphys%wide_filter_fld%i_velo, b_trns%wide_filter_fld%i_velo,  &
-     &    trns_back)
+     &    ipol%wide_filter_fld%i_velo, iphys%wide_filter_fld%i_velo,    &
+     &    b_trns%wide_filter_fld%i_velo, trns_back)
 !   wide filtered vorticity
       call add_field_name_4_sph_trns(ipol%wide_filter_fld%i_vort,       &
      &    wide_filter_vorticity%name, wide_filter_vorticity%n_comp,     &
-     &    ipol%wide_filter_fld%i_vort, itor%wide_filter_fld%i_vort,     &
-     &    iphys%wide_filter_fld%i_vort, b_trns%wide_filter_fld%i_vort,  &
-     &    trns_back)
+     &    ipol%wide_filter_fld%i_vort, iphys%wide_filter_fld%i_vort,    &
+     &    b_trns%wide_filter_fld%i_vort, trns_back)
 !   wide filtered magnetic field
       call add_field_name_4_sph_trns(ipol%wide_filter_fld%i_magne,      &
      &    wide_filter_magne%name, wide_filter_magne%n_comp,             &
-     &    ipol%wide_filter_fld%i_magne, itor%wide_filter_fld%i_magne,   &
-     &    iphys%wide_filter_fld%i_magne,                                &
+     &    ipol%wide_filter_fld%i_magne, iphys%wide_filter_fld%i_magne,  &
      &    b_trns%wide_filter_fld%i_magne, trns_back)
 !   wide filtered current density
       call add_field_name_4_sph_trns(ipol%wide_filter_fld%i_current,    &
      &    wide_filter_current%name, wide_filter_current%n_comp,         &
      &    ipol%wide_filter_fld%i_current,                               &
-     &    itor%wide_filter_fld%i_current,                               &
      &    iphys%wide_filter_fld%i_current,                              &
      &    b_trns%wide_filter_fld%i_current, trns_back)
 !
@@ -154,11 +144,11 @@
 !-----------------------------------------------------------------------
 !
       subroutine b_trans_vector_wide_similarity                         &
-     &         (ipol, itor, iphys, b_trns, trns_back)
+     &         (ipol, iphys, b_trns, trns_back)
 !
       use m_wide_SGS_term_labels
 !
-      type(phys_address), intent(in) :: ipol, itor, iphys
+      type(phys_address), intent(in) :: ipol, iphys
       type(address_each_sph_trans), intent(inout) :: trns_back
       type(phys_address), intent(inout) :: b_trns
 !
@@ -166,44 +156,40 @@
 !   wide filtered Inertia
       call add_field_name_4_sph_trns(ipol%wide_SGS%i_SGS_inertia,       &
      &    wide_SGS_inertia%name, wide_SGS_inertia%n_comp,               &
-     &    ipol%wide_SGS%i_SGS_inertia, itor%wide_SGS%i_SGS_inertia,     &
-     &    iphys%wide_SGS%i_SGS_inertia, b_trns%wide_SGS%i_SGS_inertia,  &
-     &    trns_back)
+     &    ipol%wide_SGS%i_SGS_inertia, iphys%wide_SGS%i_SGS_inertia,    &
+     &    b_trns%wide_SGS%i_SGS_inertia, trns_back)
 !   wide filtered Lorentz force
       call add_field_name_4_sph_trns(ipol%wide_SGS%i_SGS_Lorentz,       &
      &    wide_SGS_Lorentz%name, wide_SGS_Lorentz%n_comp,               &
-     &    ipol%wide_SGS%i_SGS_Lorentz, itor%wide_SGS%i_SGS_Lorentz,     &
-     &    iphys%wide_SGS%i_SGS_Lorentz, b_trns%wide_SGS%i_SGS_Lorentz,  &
-     &    trns_back)
+     &    ipol%wide_SGS%i_SGS_Lorentz, iphys%wide_SGS%i_SGS_Lorentz,    &
+     &    b_trns%wide_SGS%i_SGS_Lorentz, trns_back)
 !   wide filtered induction
       call add_field_name_4_sph_trns(ipol%wide_SGS%i_SGS_vp_induct,     &
      &    wide_SGS_vp_induction%name, wide_SGS_vp_induction%n_comp,     &
-     &    ipol%wide_SGS%i_SGS_vp_induct, itor%wide_SGS%i_SGS_vp_induct, &
+     &    ipol%wide_SGS%i_SGS_vp_induct,                                &
      &    iphys%wide_SGS%i_SGS_vp_induct,                               &
      &    b_trns%wide_SGS%i_SGS_vp_induct, trns_back)
 !   wide filtered heat flux
       call add_field_name_4_sph_trns(ipol%wide_SGS%i_SGS_h_flux,        &
      &    wide_SGS_heat_flux%name, wide_SGS_heat_flux%n_comp,           &
-     &    ipol%wide_SGS%i_SGS_h_flux, itor%wide_SGS%i_SGS_h_flux,       &
-     &    iphys%wide_SGS%i_SGS_h_flux, b_trns%wide_SGS%i_SGS_h_flux,    &
-     &    trns_back)
+     &    ipol%wide_SGS%i_SGS_h_flux, iphys%wide_SGS%i_SGS_h_flux,      &
+     &    b_trns%wide_SGS%i_SGS_h_flux, trns_back)
 !   wide filtered composition flux
       call add_field_name_4_sph_trns(ipol%wide_SGS%i_SGS_c_flux,        &
      &    wide_SGS_composit_flux%name, wide_SGS_composit_flux%n_comp,   &
-     &    ipol%wide_SGS%i_SGS_c_flux, itor%wide_SGS%i_SGS_c_flux,       &
-     &    iphys%wide_SGS%i_SGS_c_flux, b_trns%wide_SGS%i_SGS_c_flux,    &
-     &    trns_back)
+     &    ipol%wide_SGS%i_SGS_c_flux, iphys%wide_SGS%i_SGS_c_flux,      &
+     &    b_trns%wide_SGS%i_SGS_c_flux, trns_back)
 !
       end subroutine b_trans_vector_wide_similarity
 !
 !-----------------------------------------------------------------------
 !
       subroutine b_trans_vector_filtered_SGS                            &
-     &         (ipol, itor, iphys, b_trns, trns_back)
+     &         (ipol, iphys, b_trns, trns_back)
 !
       use m_wide_SGS_term_labels
 !
-      type(phys_address), intent(in) :: ipol, itor, iphys
+      type(phys_address), intent(in) :: ipol, iphys
       type(address_each_sph_trans), intent(inout) :: trns_back
       type(phys_address), intent(inout) :: b_trns
 !
@@ -211,34 +197,30 @@
 !   dual filtered Inertia
       call add_field_name_4_sph_trns(ipol%dble_SGS%i_SGS_inertia,       &
      &    double_SGS_inertia%name, double_SGS_inertia%n_comp,           &
-     &    ipol%dble_SGS%i_SGS_inertia, itor%dble_SGS%i_SGS_inertia,     &
-     &    iphys%dble_SGS%i_SGS_inertia, b_trns%dble_SGS%i_SGS_inertia,  &
-     &    trns_back)
+     &    ipol%dble_SGS%i_SGS_inertia, iphys%dble_SGS%i_SGS_inertia,    &
+     &    b_trns%dble_SGS%i_SGS_inertia, trns_back)
 !   dual filtered Lorentz force
       call add_field_name_4_sph_trns(ipol%dble_SGS%i_SGS_Lorentz,       &
      &    double_SGS_Lorentz%name, double_SGS_Lorentz%n_comp,           &
-     &    ipol%dble_SGS%i_SGS_Lorentz, itor%dble_SGS%i_SGS_Lorentz,     &
-     &    iphys%dble_SGS%i_SGS_Lorentz, b_trns%dble_SGS%i_SGS_Lorentz,  &
-     &    trns_back)
+     &    ipol%dble_SGS%i_SGS_Lorentz, iphys%dble_SGS%i_SGS_Lorentz,    &
+     &    b_trns%dble_SGS%i_SGS_Lorentz, trns_back)
 !   dual filtered induction
       call add_field_name_4_sph_trns(ipol%dble_SGS%i_SGS_vp_induct,     &
      &    double_SGS_vp_induction%name, double_SGS_vp_induction%n_comp, &
-     &    ipol%dble_SGS%i_SGS_vp_induct, itor%dble_SGS%i_SGS_vp_induct, &
+     &    ipol%dble_SGS%i_SGS_vp_induct,                                &
      &    iphys%dble_SGS%i_SGS_vp_induct,                               &
      &    b_trns%dble_SGS%i_SGS_vp_induct, trns_back)
 !   dual filtered heat flux
       call add_field_name_4_sph_trns(ipol%dble_SGS%i_SGS_h_flux,        &
      &    double_SGS_heat_flux%name, double_SGS_heat_flux%n_comp,       &
-     &    ipol%dble_SGS%i_SGS_h_flux, itor%dble_SGS%i_SGS_h_flux,       &
-     &    iphys%dble_SGS%i_SGS_h_flux, b_trns%dble_SGS%i_SGS_h_flux,    &
-     &    trns_back)
+     &    ipol%dble_SGS%i_SGS_h_flux, iphys%dble_SGS%i_SGS_h_flux,      &
+     &    b_trns%dble_SGS%i_SGS_h_flux, trns_back)
 !   dual filtered composition flux
       call add_field_name_4_sph_trns(ipol%dble_SGS%i_SGS_c_flux,        &
      &    double_SGS_composit_flux%name,                                &
      &    double_SGS_composit_flux%n_comp,                              &
-     &    ipol%dble_SGS%i_SGS_c_flux, itor%dble_SGS%i_SGS_c_flux,       &
-     &    iphys%dble_SGS%i_SGS_c_flux, b_trns%dble_SGS%i_SGS_c_flux,    &
-     &    trns_back)
+     &    ipol%dble_SGS%i_SGS_c_flux, iphys%dble_SGS%i_SGS_c_flux,      &
+     &    b_trns%dble_SGS%i_SGS_c_flux, trns_back)
 !
       end subroutine b_trans_vector_filtered_SGS
 !
@@ -246,11 +228,11 @@
 !-----------------------------------------------------------------------
 !
       subroutine b_trans_scalar_similarity                              &
-     &         (ipol, itor, iphys, b_trns, trns_back)
+     &         (ipol, iphys, b_trns, trns_back)
 !
       use m_filtered_field_labels
 !
-      type(phys_address), intent(in) :: ipol, itor, iphys
+      type(phys_address), intent(in) :: ipol, iphys
       type(address_each_sph_trans), intent(inout) :: trns_back
       type(phys_address), intent(inout) :: b_trns
 !
@@ -258,25 +240,24 @@
 !   filtered temperature
       call add_field_name_4_sph_trns(ipol%filter_fld%i_temp,            &
      &    filter_temperature%name, filter_temperature%n_comp,           &
-     &    ipol%filter_fld%i_temp, itor%filter_fld%i_temp,               &
-     &    iphys%filter_fld%i_temp, b_trns%filter_fld%i_temp, trns_back)
+     &    ipol%filter_fld%i_temp, iphys%filter_fld%i_temp,              &
+     &    b_trns%filter_fld%i_temp, trns_back)
 !   filtered composition
       call add_field_name_4_sph_trns(ipol%filter_fld%i_light,           &
      &    filter_composition%name, filter_composition%n_comp,           &
-     &    ipol%filter_fld%i_light, itor%filter_fld%i_light,             &
-     &    iphys%filter_fld%i_light, b_trns%filter_fld%i_light,          &
-     &    trns_back)
+     &    ipol%filter_fld%i_light, iphys%filter_fld%i_light,            &
+     &    b_trns%filter_fld%i_light, trns_back)
 !
       end subroutine b_trans_scalar_similarity
 !
 !-----------------------------------------------------------------------
 !
       subroutine b_trans_scalar_wide_filter_fld                         &
-     &         (ipol, itor, iphys, b_trns, trns_back)
+     &         (ipol, iphys, b_trns, trns_back)
 !
       use m_wide_filter_field_labels
 !
-      type(phys_address), intent(in) :: ipol, itor, iphys
+      type(phys_address), intent(in) :: ipol, iphys
       type(address_each_sph_trans), intent(inout) :: trns_back
       type(phys_address), intent(inout) :: b_trns
 !
@@ -284,15 +265,13 @@
 !   wide filtered temperature
       call add_field_name_4_sph_trns(ipol%wide_filter_fld%i_temp,       &
      &    wide_filter_temp%name, wide_filter_temp%n_comp,               &
-     &    ipol%wide_filter_fld%i_temp, itor%wide_filter_fld%i_temp,     &
-     &    iphys%wide_filter_fld%i_temp, b_trns%wide_filter_fld%i_temp,  &
-     &    trns_back)
+     &    ipol%wide_filter_fld%i_temp, iphys%wide_filter_fld%i_temp,    &
+     &    b_trns%wide_filter_fld%i_temp, trns_back)
 !   wide filtered composition
       call add_field_name_4_sph_trns(ipol%wide_filter_fld%i_light,      &
      &    wide_filter_composition%name,                                 &
      &    wide_filter_composition%n_comp,                               &
-     &    ipol%wide_filter_fld%i_light, itor%wide_filter_fld%i_light,   &
-     &    iphys%wide_filter_fld%i_light,                                &
+     &    ipol%wide_filter_fld%i_light, iphys%wide_filter_fld%i_light,  &
      &    b_trns%wide_filter_fld%i_light, trns_back)
 !
       end subroutine b_trans_scalar_wide_filter_fld

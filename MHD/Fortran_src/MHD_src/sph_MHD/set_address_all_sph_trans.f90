@@ -74,8 +74,8 @@
         i_fld = rj_fld%istack_component(i-1) + 1
         if(rj_fld%num_component(i) .eq. n_vector) then
           call add_field_name_4_sph_trns_snap                           &
-     &       (rj_fld%phys_name(i), n_vector, i_fld, (i_fld+2),          &
-     &        i_fld, i_trns, each_trns)
+     &       (rj_fld%phys_name(i), n_vector, i_fld, i_fld, i_trns,      &
+     &        each_trns)
         end if
       end do
       each_trns%num_vector = each_trns%nfield
@@ -84,8 +84,8 @@
         i_fld = rj_fld%istack_component(i-1) + 1
         if(rj_fld%num_component(i) .eq. n_scalar) then
           call add_field_name_4_sph_trns_snap                           &
-     &       (rj_fld%phys_name(i), n_scalar, i_fld, (i_fld+2),          &
-     &        i_fld, i_trns, each_trns)
+     &       (rj_fld%phys_name(i), n_scalar, i_fld, i_fld, i_trns,      &
+     &        each_trns)
         end if
       end do
       each_trns%num_scalar = each_trns%nfield - each_trns%num_vector
@@ -94,8 +94,8 @@
         i_fld = rj_fld%istack_component(i-1) + 1
         if(rj_fld%num_component(i) .eq. n_sym_tensor) then
           call add_field_name_4_sph_trns_snap                           &
-     &       (rj_fld%phys_name(i), n_sym_tensor, i_fld, (i_fld+2),      &
-     &        i_fld, i_trns, each_trns)
+     &       (rj_fld%phys_name(i), n_sym_tensor, i_fld, i_fld, i_trns,  &
+     &        each_trns)
         end if
       end do
       each_trns%num_tensor = each_trns%nfield                           &

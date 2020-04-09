@@ -70,9 +70,8 @@
      &   (SPH_dat_ss%sph%sph_params, SPH_dat_ss%sph%sph_rj,             &
      &    SPH_dat_ss%fld, pwr_spec, WK_pwr_spec)
 !
-      call set_sph_sprctr_data_address(SPH_dat_ss%sph%sph_rj,           &
-     &    SPH_dat_ss%ipol, SPH_dat_ss%idpdr, SPH_dat_ss%itor,           &
-     &    SPH_dat_ss%fld)
+      call set_sph_sprctr_data_address                                  &
+     &   (SPH_dat_ss%sph%sph_rj, SPH_dat_ss%ipol, SPH_dat_ss%fld)
 !
       end subroutine initialize_pick_gauss_coef
 !

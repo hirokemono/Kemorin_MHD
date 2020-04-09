@@ -65,9 +65,8 @@
       call copy_time_data(spec_time_IO, t_SHR%init_d)
       call copy_rj_phys_name_from_IO(sph_fld_IN, SPH_dat_ss%fld)
 !
-      call set_sph_sprctr_data_address(SPH_dat_ss%sph%sph_rj,           &
-     &    SPH_dat_ss%ipol, SPH_dat_ss%idpdr, SPH_dat_ss%itor,           &
-     &    SPH_dat_ss%fld)
+      call set_sph_sprctr_data_address                                  &
+     &   (SPH_dat_ss%sph%sph_rj, SPH_dat_ss%ipol, SPH_dat_ss%fld)
 !
 !  -------------------------------
 !

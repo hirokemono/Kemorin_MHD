@@ -79,10 +79,10 @@
 !
       call b_trans_address_vector_MHD                                   &
      &   (MHD_prop%fl_prop, MHD_prop%cd_prop, MHD_prop%ht_prop,         &
-     &    MHD_prop%cp_prop,  SPH_MHD%ipol, SPH_MHD%itor, iphys,         &
+     &    MHD_prop%cp_prop, SPH_MHD%ipol, iphys,                        &
      &    trns_MHD%b_trns, trns_MHD%backward)
       call b_trans_address_scalar_MHD(MHD_prop%ht_prop,                 &
-     &    MHD_prop%cp_prop,  SPH_MHD%ipol, SPH_MHD%itor, iphys,         &
+     &    MHD_prop%cp_prop,  SPH_MHD%ipol, iphys,                       &
      &    trns_MHD%b_trns, trns_MHD%backward)
       trns_MHD%backward%num_tensor = 0
 !
@@ -93,11 +93,10 @@
 !
       call f_trans_address_vector_MHD                                   &
      &   (MHD_prop%fl_prop, MHD_prop%cd_prop, MHD_prop%ht_prop,         &
-     &    MHD_prop%cp_prop, SPH_MHD%ipol, SPH_MHD%itor, iphys,          &
+     &    MHD_prop%cp_prop, SPH_MHD%ipol, iphys,                        &
      &    trns_MHD%f_trns, trns_MHD%forward)
       call f_trans_address_scalar_MHD                                   &
-     &   (SPH_MHD%ipol, SPH_MHD%itor, iphys,                            &
-     &    trns_MHD%f_trns, trns_MHD%forward)
+     &   (SPH_MHD%ipol, iphys, trns_MHD%f_trns, trns_MHD%forward)
       trns_MHD%forward%num_tensor = 0
 !
       ncomp_sph_trans =   0

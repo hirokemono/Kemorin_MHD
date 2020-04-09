@@ -53,7 +53,7 @@
 !
 !
       call set_sph_MHD_sprctr_data(SPH_MHD%sph%sph_rj, MHD_prop,        &
-     &    SPH_MHD%ipol, SPH_MHD%idpdr, SPH_MHD%itor, SPH_MHD%fld)
+     &                             SPH_MHD%ipol, SPH_MHD%fld)
 !
       call check_dependence_4_SPH_SGS(SGS_par%model_p,                  &
      &    MHD_prop%fl_prop, MHD_prop%cd_prop,                           &

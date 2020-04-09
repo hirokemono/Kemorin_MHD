@@ -71,10 +71,10 @@
      &             'transform, poloidal, toroidal, grid data'
       end if
 !
-      call b_trans_address_vector_snap(SPH_MHD%ipol, SPH_MHD%itor,      &
-     &    iphys, trns_snap%b_trns, trns_snap%backward)
-      call b_trans_address_scalar_snap(SPH_MHD%ipol, SPH_MHD%itor,      &
-     &    iphys, trns_snap%b_trns, trns_snap%backward)
+      call b_trans_address_vector_snap                                  &
+     &   (SPH_MHD%ipol, iphys, trns_snap%b_trns, trns_snap%backward)
+      call b_trans_address_scalar_snap                                  &
+     &   (SPH_MHD%ipol, iphys, trns_snap%b_trns, trns_snap%backward)
       trns_snap%backward%num_tensor = 0
 !
      if(iflag_debug .gt. 0) then
@@ -82,10 +82,10 @@
      &             'transform, poloidal, toroidal, grid data'
       end if
 !
-      call f_trans_address_vector_snap(SPH_MHD%ipol, SPH_MHD%itor,      &
-     &    iphys, trns_snap%f_trns, trns_snap%forward)
-      call f_trans_address_scalar_snap(SPH_MHD%ipol, SPH_MHD%itor,      &
-     &    iphys, trns_snap%f_trns, trns_snap%forward)
+      call f_trans_address_vector_snap                                  &
+     &   (SPH_MHD%ipol, iphys, trns_snap%f_trns, trns_snap%forward)
+      call f_trans_address_scalar_snap                                  &
+     &   (SPH_MHD%ipol, iphys, trns_snap%f_trns, trns_snap%forward)
        trns_snap%forward%num_tensor = 0
 !
       call count_num_fields_each_trans(trns_snap%backward,              &
@@ -139,8 +139,8 @@
       end if
 !
       call f_trans_address_vector_stmp(trns_tmp%forward)
-      call f_trans_address_scalar_stmp(SPH_MHD%ipol, SPH_MHD%itor,      &
-     &   iphys, trns_tmp%f_trns, trns_tmp%forward)
+      call f_trans_address_scalar_stmp                                  &
+     &   (SPH_MHD%ipol, iphys, trns_tmp%f_trns, trns_tmp%forward)
       trns_tmp%forward%num_tensor = 0
 !
       call count_num_fields_each_trans(trns_tmp%backward,               &

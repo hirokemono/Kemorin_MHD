@@ -78,8 +78,8 @@
       trns_ngTMP%backward%nfield = 0
       call alloc_sph_trns_field_name(trns_ngTMP%backward)
 !
-      call b_trans_vector_gradients(SPH_MHD%ipol, SPH_MHD%itor,         &
-     &    iphys, trns_ngTMP%b_trns, trns_ngTMP%backward)
+      call b_trans_vector_gradients                                     &
+     &   (SPH_MHD%ipol, iphys, trns_ngTMP%b_trns, trns_ngTMP%backward)
       trns_ngTMP%backward%num_vector = trns_ngTMP%backward%nfield
       trns_ngTMP%backward%num_scalar = trns_ngTMP%backward%nfield       &
      &                              - trns_ngTMP%backward%num_vector
@@ -95,8 +95,8 @@
       call alloc_sph_trns_field_name(trns_ngTMP%forward)
 !
       trns_ngTMP%forward%num_vector = trns_ngTMP%forward%nfield
-      call f_trans_scalar_vector_grads(SPH_MHD%ipol, SPH_MHD%itor,      &
-     &    iphys, trns_ngTMP%f_trns, trns_ngTMP%forward)
+      call f_trans_scalar_vector_grads                                  &
+     &   (SPH_MHD%ipol, iphys, trns_ngTMP%f_trns, trns_ngTMP%forward)
       trns_ngTMP%forward%num_scalar = trns_ngTMP%forward%nfield         &
      &                               - trns_ngTMP%forward%num_vector
       trns_ngTMP%forward%num_tensor = 0
@@ -158,8 +158,8 @@
       trns_SGS%forward%nfield = 0
       call alloc_sph_trns_field_name(trns_SGS%forward)
 !
-      call f_trans_vector_SGS_terms(SPH_MHD%ipol, SPH_MHD%itor,         &
-     &    iphys, trns_SGS%f_trns, trns_SGS%forward)
+      call f_trans_vector_SGS_terms                                     &
+     &   (SPH_MHD%ipol, iphys, trns_SGS%f_trns, trns_SGS%forward)
       trns_SGS%forward%num_vector = trns_SGS%forward%nfield
       trns_SGS%forward%num_scalar = trns_SGS%forward%nfield             &
      &                              - trns_SGS%forward%num_vector
@@ -209,10 +209,10 @@
       trns_DYNG%backward%nfield = 0
       call alloc_sph_trns_field_name(trns_DYNG%backward)
 !
-      call b_trans_filter_vector_grads(SPH_MHD%ipol, SPH_MHD%itor,      &
-     &    iphys, trns_DYNG%b_trns, trns_DYNG%backward)
-      call b_trans_vector_filtered_SGS(SPH_MHD%ipol, SPH_MHD%itor,      &
-     &    iphys, trns_DYNG%b_trns, trns_DYNG%backward)
+      call b_trans_filter_vector_grads                                  &
+     &   (SPH_MHD%ipol, iphys, trns_DYNG%b_trns, trns_DYNG%backward)
+      call b_trans_vector_filtered_SGS                                  &
+     &   (SPH_MHD%ipol, iphys, trns_DYNG%b_trns, trns_DYNG%backward)
       trns_DYNG%backward%num_vector = trns_DYNG%backward%nfield
       trns_DYNG%backward%num_scalar = trns_DYNG%backward%nfield         &
      &                              - trns_DYNG%backward%num_vector
@@ -228,8 +228,8 @@
       call alloc_sph_trns_field_name(trns_DYNG%forward)
 !
       trns_DYNG%forward%num_vector = trns_DYNG%forward%nfield
-      call f_trans_scalar_filter_vec_grads(SPH_MHD%ipol, SPH_MHD%itor,  &
-     &    iphys, trns_DYNG%f_trns, trns_DYNG%forward)
+      call f_trans_scalar_filter_vec_grads                              &
+     &   (SPH_MHD%ipol, iphys, trns_DYNG%f_trns, trns_DYNG%forward)
       trns_DYNG%forward%num_scalar = trns_DYNG%forward%nfield           &
      &                               - trns_DYNG%forward%num_vector
       trns_DYNG%forward%num_tensor = 0
@@ -280,8 +280,8 @@
       trns_Csim%backward%nfield = 0
       call alloc_sph_trns_field_name(trns_Csim%backward)
 !
-      call b_trans_vector_wide_similarity(SPH_MHD%ipol, SPH_MHD%itor,   &
-     &    iphys, trns_Csim%b_trns, trns_Csim%backward)
+      call b_trans_vector_wide_similarity                               &
+     &   (SPH_MHD%ipol, iphys, trns_Csim%b_trns, trns_Csim%backward)
       trns_Csim%backward%num_vector = trns_Csim%backward%nfield
       trns_Csim%backward%num_scalar = trns_Csim%backward%nfield         &
      &                               - trns_Csim%backward%num_vector
@@ -297,11 +297,11 @@
       call alloc_sph_trns_field_name(trns_Csim%forward)
 !
       trns_Csim%forward%num_vector = 0
-      call f_trans_address_scalar_Csim(SPH_MHD%ipol, SPH_MHD%itor,      &
-     &    iphys, trns_Csim%f_trns, trns_Csim%forward)
+      call f_trans_address_scalar_Csim                                  &
+     &   (SPH_MHD%ipol, iphys, trns_Csim%f_trns, trns_Csim%forward)
       if(SGS_param%iflag_SGS_gravity .ne. id_SGS_none) then
-        call f_trans_address_SGS_works(SPH_MHD%ipol, SPH_MHD%itor,      &
-     &      iphys, trns_Csim%f_trns, trns_Csim%forward)
+        call f_trans_address_SGS_works                                  &
+     &     (SPH_MHD%ipol, iphys, trns_Csim%f_trns, trns_Csim%forward)
       end if
       trns_Csim%forward%num_scalar = trns_Csim%forward%nfield           &
      &                              - trns_Csim%forward%num_vector

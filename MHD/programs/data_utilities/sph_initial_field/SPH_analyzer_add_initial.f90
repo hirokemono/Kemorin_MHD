@@ -106,8 +106,8 @@
 !
 !   Allocate spectr field data
 !
-      call set_sph_sprctr_data_address(SPH_MHD%sph%sph_rj,              &
-     &    SPH_MHD%ipol, SPH_MHD%idpdr, SPH_MHD%itor, SPH_MHD%fld)
+      call set_sph_sprctr_data_address                                  &
+     &   (SPH_MHD%sph%sph_rj, SPH_MHD%ipol, SPH_MHD%fld)
 !
 ! ---------------------------------
 !

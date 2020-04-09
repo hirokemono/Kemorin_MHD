@@ -80,7 +80,7 @@
 !
       call set_sph_MHD_sprctr_data                                      &
      &   (SPH_MHD%sph%sph_rj, SPH_model%MHD_prop,                       &
-     &    SPH_MHD%ipol, SPH_MHD%idpdr, SPH_MHD%itor, SPH_MHD%fld)
+     &    SPH_MHD%ipol, SPH_MHD%fld)
 !
 ! ---------------------------------
 !
