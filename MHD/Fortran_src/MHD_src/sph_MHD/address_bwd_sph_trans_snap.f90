@@ -258,10 +258,11 @@
       call add_field_name_4_sph_trns_snap(pressure,                     &
      &    ipol%base%i_press, iphys%base%i_press, b_trns%base%i_press,   &
      &    trns_back)
-      call add_field_name_4_sph_trns_nofld                              &
-     &   (perturbation_temp%name, perturbation_temp%n_comp,             &
+!
+      call add_field_4_sph_trns_by_pol(perturbation_temp,               &
      &    ipol%base%i_per_temp, iphys%base%i_per_temp,                  &
      &    b_trns%base%i_per_temp, trns_back)
+!
       call add_field_name_4_sph_trns_snap(filter_temperature,           &
      &    ipol%filter_fld%i_temp, iphys%filter_fld%i_temp,              &
      &    b_trns%filter_fld%i_temp, trns_back)

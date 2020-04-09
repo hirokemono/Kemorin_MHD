@@ -29,9 +29,9 @@
 !!     &         (field, i_pol, irtp, i_trns, each_trns)
 !!        type(field_def), intent(in) :: field
 !!        type(address_each_sph_trans), intent(inout) :: each_trns
-!!      subroutine add_field_name_4_sph_trns_nofld                      &
-!!     &         (field_name, num_component, i_pol, irtp, i_trns,       &
-!!     &          each_trns)
+!!      subroutine add_field_4_sph_trns_by_pol                          &
+!!     &         (field, i_pol, irtp, i_trns, each_trns)
+!!        type(field_def), intent(in) :: field
 !!        type(address_each_sph_trans), intent(inout) :: each_trns
 !!      subroutine add_field_name_4_sph_trns                            &
 !!     &         (iflag_add, field_name, num_component,                 &
@@ -335,22 +335,22 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine add_field_name_4_sph_trns_nofld                        &
-     &         (field_name, num_component, i_pol, irtp, i_trns,         &
-     &          each_trns)
+      subroutine add_field_4_sph_trns_by_pol                            &
+     &         (field, i_pol, irtp, i_trns, each_trns)
 !
-      character(len = kchara), intent(in) :: field_name
-      integer(kind = kint), intent(in) :: num_component
+      use t_field_labels
+!
+      type(field_def), intent(in) :: field
       integer(kind = kint), intent(in) :: i_pol, irtp
 !
       integer(kind = kint), intent(inout) :: i_trns
       type(address_each_sph_trans), intent(inout) :: each_trns
 !
 !
-      call add_field_name_4_sph_trns(i_pol, field_name,                 &
-     &    num_component, i_pol, irtp, i_trns, each_trns)
+      call add_field_name_4_sph_trns(i_pol, field%name, field%n_comp,   &
+     &    i_pol, irtp, i_trns, each_trns)
 !
-      end subroutine add_field_name_4_sph_trns_nofld
+      end subroutine add_field_4_sph_trns_by_pol
 !
 !-----------------------------------------------------------------------
 !
