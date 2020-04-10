@@ -39,6 +39,8 @@
       subroutine f_trans_address_vector_snap                            &
      &         (ipol, iphys, f_trns, trns_fwd)
 !
+      use add_field_to_sph_trans_list
+!
       type(phys_address), intent(in) :: ipol, iphys
       type(address_each_sph_trans), intent(inout) :: trns_fwd
       type(phys_address), intent(inout) :: f_trns
@@ -86,6 +88,7 @@
      &         (ipol, iphys, f_trns, trns_fwd)
 !
       use m_filtered_ene_flux_labels
+      use add_field_to_sph_trans_list
 !
       type(phys_address), intent(in) :: ipol, iphys
       type(address_each_sph_trans), intent(inout) :: trns_fwd

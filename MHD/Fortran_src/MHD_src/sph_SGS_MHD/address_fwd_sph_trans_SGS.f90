@@ -39,6 +39,8 @@
       subroutine f_trans_vector_SGS_terms                               &
      &         (ipol, iphys, f_trns, trns_fwd)
 !
+      use add_field_to_sph_trans_list
+!
       type(phys_address), intent(in) :: ipol, iphys
       type(address_each_sph_trans), intent(inout) :: trns_fwd
       type(phys_address), intent(inout) :: f_trns
@@ -72,6 +74,8 @@
 !
       subroutine f_trans_address_SGS_works                              &
      &         (ipol, iphys, f_trns, trns_fwd)
+!
+      use add_field_to_sph_trans_list
 !
       type(phys_address), intent(in) :: ipol, iphys
       type(address_each_sph_trans), intent(inout) :: trns_fwd

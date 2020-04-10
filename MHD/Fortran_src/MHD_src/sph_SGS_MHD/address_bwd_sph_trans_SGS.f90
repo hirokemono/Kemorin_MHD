@@ -50,6 +50,7 @@
      &         (ipol, iphys, b_trns, trns_back)
 !
       use m_filtered_field_labels
+      use add_field_to_sph_trans_list
 !
       type(phys_address), intent(in) :: ipol, iphys
       type(address_each_sph_trans), intent(inout) :: trns_back
@@ -103,6 +104,7 @@
      &         (ipol, iphys, b_trns, trns_back)
 !
       use m_wide_filter_field_labels
+      use add_field_to_sph_trans_list
 !
       type(phys_address), intent(in) :: ipol, iphys
       type(address_each_sph_trans), intent(inout) :: trns_back
@@ -134,6 +136,7 @@
      &         (ipol, iphys, b_trns, trns_back)
 !
       use m_wide_SGS_term_labels
+      use add_field_to_sph_trans_list
 !
       type(phys_address), intent(in) :: ipol, iphys
       type(address_each_sph_trans), intent(inout) :: trns_back
@@ -170,6 +173,7 @@
      &         (ipol, iphys, b_trns, trns_back)
 !
       use m_wide_SGS_term_labels
+      use add_field_to_sph_trans_list
 !
       type(phys_address), intent(in) :: ipol, iphys
       type(address_each_sph_trans), intent(inout) :: trns_back
@@ -207,6 +211,7 @@
      &         (ipol, iphys, b_trns, trns_back)
 !
       use m_filtered_field_labels
+      use add_field_to_sph_trans_list
 !
       type(phys_address), intent(in) :: ipol, iphys
       type(address_each_sph_trans), intent(inout) :: trns_back
@@ -230,6 +235,7 @@
      &         (ipol, iphys, b_trns, trns_back)
 !
       use m_wide_filter_field_labels
+      use add_field_to_sph_trans_list
 !
       type(phys_address), intent(in) :: ipol, iphys
       type(address_each_sph_trans), intent(inout) :: trns_back

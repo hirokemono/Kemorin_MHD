@@ -39,6 +39,8 @@
 !
       use m_diff_SGS_term_labels
       use m_force_w_SGS_labels
+      use add_diff_vect_to_sph_trans
+      use add_field_to_sph_trans_list
 !
       type(phys_address), intent(in) :: ipol, iphys
       type(address_each_sph_trans), intent(inout) :: trns_back
@@ -149,63 +151,12 @@
      &    ipol%forces%i_induction, iphys%forces%i_induction,            &
      &    b_trns%forces%i_induction, trns_back)
 !
-      call add_field_name_4_sph_trns_snap(grad_temp,                    &
-     &    ipol%grad_fld%i_grad_temp, iphys%grad_fld%i_grad_temp,        &
-     &    b_trns%grad_fld%i_grad_temp, trns_back)
-      call add_field_name_4_sph_trns_snap(grad_composition,             &
-     &    ipol%grad_fld%i_grad_composit,                                &
-     &    iphys%grad_fld%i_grad_composit,                               &
-     &    b_trns%grad_fld%i_grad_composit, trns_back)
-!
-      call add_field_4_sph_trns_by_pol(grad_v_1,                        &
-     &    ipol%diff_vector%i_grad_vx, iphys%diff_vector%i_grad_vx,      &
-     &    b_trns%diff_vector%i_grad_vx, trns_back)
-      call add_field_4_sph_trns_by_pol(grad_v_2,                        &
-     &    ipol%diff_vector%i_grad_vy, iphys%diff_vector%i_grad_vy,      &
-     &    b_trns%diff_vector%i_grad_vy, trns_back)
-      call add_field_4_sph_trns_by_pol(grad_v_3,                        &
-     &    ipol%diff_vector%i_grad_vz, iphys%diff_vector%i_grad_vz,      &
-     &    b_trns%diff_vector%i_grad_vz, trns_back)
-!
-      call add_field_4_sph_trns_by_pol(grad_w_1,                        &
-     &    ipol%diff_vector%i_grad_wx, iphys%diff_vector%i_grad_wx,      &
-     &    b_trns%diff_vector%i_grad_wx, trns_back)
-      call add_field_4_sph_trns_by_pol(grad_w_2,                        &
-     &    ipol%diff_vector%i_grad_wy, iphys%diff_vector%i_grad_wy,      &
-     &    b_trns%diff_vector%i_grad_wy, trns_back)
-      call add_field_4_sph_trns_by_pol(grad_w_3,                        &
-     &    ipol%diff_vector%i_grad_wz, iphys%diff_vector%i_grad_wz,      &
-     &    b_trns%diff_vector%i_grad_wz, trns_back)
-!
-      call add_field_4_sph_trns_by_pol(grad_a_1,                        &
-     &    ipol%diff_vector%i_grad_ax, iphys%diff_vector%i_grad_ax,      &
-     &    b_trns%diff_vector%i_grad_ax, trns_back)
-      call add_field_4_sph_trns_by_pol(grad_a_2,                        &
-     &    ipol%diff_vector%i_grad_ay, iphys%diff_vector%i_grad_ay,      &
-     &    b_trns%diff_vector%i_grad_ay, trns_back)
-      call add_field_4_sph_trns_by_pol(grad_a_3,                        &
-     &    ipol%diff_vector%i_grad_az, iphys%diff_vector%i_grad_az,      &
-     &    b_trns%diff_vector%i_grad_az, trns_back)
-!
-      call add_field_4_sph_trns_by_pol(grad_b_1,                        &
-     &    ipol%diff_vector%i_grad_bx, iphys%diff_vector%i_grad_bx,      &
-     &    b_trns%diff_vector%i_grad_bx, trns_back)
-      call add_field_4_sph_trns_by_pol(grad_b_2,                        &
-     &    ipol%diff_vector%i_grad_by, iphys%diff_vector%i_grad_by,      &
-     &    b_trns%diff_vector%i_grad_by, trns_back)
-      call add_field_4_sph_trns_by_pol(grad_b_3,                        &
-     &    ipol%diff_vector%i_grad_bz, iphys%diff_vector%i_grad_bz,      &
-     &    b_trns%diff_vector%i_grad_bz, trns_back)
-!
-      call add_field_4_sph_trns_by_pol(grad_j_1,                        &
-     &    ipol%diff_vector%i_grad_jx, iphys%diff_vector%i_grad_jx,      &
-     &    b_trns%diff_vector%i_grad_jx, trns_back)
-      call add_field_4_sph_trns_by_pol(grad_j_2,                        &
-     &    ipol%diff_vector%i_grad_jy, iphys%diff_vector%i_grad_jy,      &
-     &    b_trns%diff_vector%i_grad_jy, trns_back)
-      call add_field_4_sph_trns_by_pol(grad_j_3,                        &
-     &    ipol%diff_vector%i_grad_jz, iphys%diff_vector%i_grad_jz,      &
-     &    b_trns%diff_vector%i_grad_jz, trns_back)
+!   Gradient of vector field
+      call add_diff_vect_sph_trns_by_pol                                &
+     &   (ipol%diff_vector, iphys%diff_vector, b_trns%diff_vector,      &
+     &    trns_back)
+      call add_grad_4_sph_trns_snap                                     &
+     &   (ipol%grad_fld, iphys%grad_fld, b_trns%grad_fld, trns_back)
 !
       call add_field_name_4_sph_trns_snap(truncated_magnetic_field,     &
      &    ipol%prod_fld%i_truncated_B, iphys%prod_fld%i_truncated_B,    &
@@ -222,6 +173,7 @@
 !
       use m_diff_SGS_term_labels
       use m_filtered_field_labels
+      use add_field_to_sph_trans_list
 !
       type(phys_address), intent(in) :: ipol, iphys
       type(address_each_sph_trans), intent(inout) :: trns_back

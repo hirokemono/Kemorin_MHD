@@ -8,19 +8,19 @@ SGS_buo_coefs_sph_MHD.o: $(SGS_MHD_SPH_DIR)/SGS_buo_coefs_sph_MHD.f90 m_precisio
 	$(F90) -c $(F90OPTFLAGS) $<
 SGS_diff_adv_src_explicit.o: $(SGS_MHD_SPH_DIR)/SGS_diff_adv_src_explicit.f90 m_precision.o m_constants.o m_t_step_parameter.o
 	$(F90) -c $(F90OPTFLAGS) $<
+add_Csim_4_sph_trns.o: $(SGS_MHD_SPH_DIR)/add_Csim_4_sph_trns.f90 m_precision.o t_SGS_term_labels.o t_addresses_sph_transform.o add_field_to_sph_trans_list.o
+	$(F90) -c $(F90OPTFLAGS) $<
+add_diff_fil_vec_to_trans.o: $(SGS_MHD_SPH_DIR)/add_diff_fil_vec_to_trans.f90 m_precision.o t_diff_vector_labels.o t_grad_field_labels.o t_addresses_sph_transform.o m_grad_filter_field_labels.o m_diff_filter_vect_labels.o add_field_to_sph_trans_list.o
+	$(F90) -c $(F90OPTFLAGS) $<
 add_sph_SGS_MHD_fld_2_ctl.o: $(SGS_MHD_SPH_DIR)/add_sph_SGS_MHD_fld_2_ctl.f90 m_precision.o m_phys_labels.o t_SGS_control_parameter.o t_control_array_character3.o t_physical_property.o t_SGS_term_labels.o m_diff_SGS_term_labels.o m_filtered_field_labels.o add_nodal_fields_ctl.o t_SGS_model_coef_labels.o t_SGS_enegy_flux_labels.o m_grad_filter_field_labels.o m_diff_filter_vect_labels.o m_wide_filter_field_labels.o m_wide_SGS_term_labels.o
 	$(F90) -c $(F90OPTFLAGS) $<
-address_bwd_sph_trans_SGS.o: $(SGS_MHD_SPH_DIR)/address_bwd_sph_trans_SGS.f90 m_precision.o m_phys_labels.o m_phys_constants.o t_phys_address.o t_addresses_sph_transform.o t_control_parameter.o t_physical_property.o m_filtered_field_labels.o m_wide_filter_field_labels.o m_wide_SGS_term_labels.o
+address_bwd_sph_trans_SGS.o: $(SGS_MHD_SPH_DIR)/address_bwd_sph_trans_SGS.f90 m_precision.o m_phys_labels.o m_phys_constants.o t_phys_address.o t_addresses_sph_transform.o t_control_parameter.o t_physical_property.o m_filtered_field_labels.o add_field_to_sph_trans_list.o m_wide_filter_field_labels.o m_wide_SGS_term_labels.o
 	$(F90) -c $(F90OPTFLAGS) $<
-address_bwd_sph_trans_ngSGS.o: $(SGS_MHD_SPH_DIR)/address_bwd_sph_trans_ngSGS.f90 m_precision.o m_phys_labels.o m_phys_constants.o t_phys_address.o t_addresses_sph_transform.o t_control_parameter.o t_physical_property.o m_grad_filter_field_labels.o m_diff_filter_vect_labels.o
+address_bwd_sph_trans_ngSGS.o: $(SGS_MHD_SPH_DIR)/address_bwd_sph_trans_ngSGS.f90 m_precision.o m_phys_labels.o m_phys_constants.o t_phys_address.o t_addresses_sph_transform.o t_control_parameter.o t_physical_property.o add_diff_vect_to_sph_trans.o add_field_to_sph_trans_list.o m_grad_filter_field_labels.o m_diff_filter_vect_labels.o
 	$(F90) -c $(F90OPTFLAGS) $<
-address_fwd_sph_trans_Csim.o: $(SGS_MHD_SPH_DIR)/address_fwd_sph_trans_Csim.f90 m_precision.o m_phys_labels.o m_phys_constants.o t_phys_address.o t_addresses_sph_transform.o t_control_parameter.o t_physical_property.o
+address_fwd_sph_trans_Csim.o: $(SGS_MHD_SPH_DIR)/address_fwd_sph_trans_Csim.f90 m_precision.o m_phys_labels.o m_phys_constants.o t_phys_address.o t_addresses_sph_transform.o t_control_parameter.o t_physical_property.o add_field_to_sph_trans_list.o
 	$(F90) -c $(F90OPTFLAGS) $<
-address_fwd_sph_trans_SGS.o: $(SGS_MHD_SPH_DIR)/address_fwd_sph_trans_SGS.f90 m_precision.o m_phys_labels.o m_phys_constants.o t_phys_address.o t_addresses_sph_transform.o t_control_parameter.o t_physical_property.o
-	$(F90) -c $(F90OPTFLAGS) $<
-address_fwd_sph_trans_dnlg.o: $(SGS_MHD_SPH_DIR)/address_fwd_sph_trans_dnlg.f90 m_precision.o m_phys_labels.o m_phys_constants.o t_phys_address.o t_addresses_sph_transform.o t_control_parameter.o t_physical_property.o m_diff_filter_vect_labels.o
-	$(F90) -c $(F90OPTFLAGS) $<
-address_fwd_sph_trans_ngSGS.o: $(SGS_MHD_SPH_DIR)/address_fwd_sph_trans_ngSGS.f90 m_precision.o m_phys_labels.o m_phys_constants.o t_phys_address.o t_addresses_sph_transform.o t_control_parameter.o t_physical_property.o m_diff_filter_vect_labels.o
+address_fwd_sph_trans_SGS.o: $(SGS_MHD_SPH_DIR)/address_fwd_sph_trans_SGS.f90 m_precision.o m_phys_labels.o m_phys_constants.o t_phys_address.o t_addresses_sph_transform.o t_control_parameter.o t_physical_property.o add_field_to_sph_trans_list.o
 	$(F90) -c $(F90OPTFLAGS) $<
 cal_SGS_buo_flux_sph_MHD.o: $(SGS_MHD_SPH_DIR)/cal_SGS_buo_flux_sph_MHD.f90 m_precision.o m_constants.o m_machine_parameter.o t_physical_property.o t_spheric_rtp_data.o t_phys_address.o t_addresses_sph_transform.o cal_products_smp.o m_FFT_selector.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -72,7 +72,7 @@ select_SGS_diff_adv_source.o: $(SGS_MHD_SPH_DIR)/select_SGS_diff_adv_source.f90 
 	$(F90) -c $(F90OPTFLAGS) $<
 set_address_sph_trans_SGS.o: $(SGS_MHD_SPH_DIR)/set_address_sph_trans_SGS.f90 m_precision.o t_phys_address.o t_SPH_mesh_field_data.o t_addresses_sph_transform.o address_bwd_sph_trans_SGS.o address_fwd_sph_trans_SGS.o t_SGS_control_parameter.o address_fwd_sph_trans_Csim.o
 	$(F90) -c $(F90OPTFLAGS) $<
-set_address_sph_trans_ngSGS.o: $(SGS_MHD_SPH_DIR)/set_address_sph_trans_ngSGS.f90 m_precision.o t_phys_address.o t_SPH_mesh_field_data.o t_addresses_sph_transform.o address_bwd_sph_trans_ngSGS.o address_fwd_sph_trans_ngSGS.o address_bwd_sph_trans_SGS.o address_fwd_sph_trans_SGS.o t_SGS_control_parameter.o address_fwd_sph_trans_Csim.o
+set_address_sph_trans_ngSGS.o: $(SGS_MHD_SPH_DIR)/set_address_sph_trans_ngSGS.f90 m_precision.o t_phys_address.o t_SPH_mesh_field_data.o t_addresses_sph_transform.o address_bwd_sph_trans_ngSGS.o add_diff_vect_to_sph_trans.o address_bwd_sph_trans_SGS.o address_fwd_sph_trans_SGS.o add_diff_fil_vec_to_trans.o t_SGS_control_parameter.o address_fwd_sph_trans_Csim.o
 	$(F90) -c $(F90OPTFLAGS) $<
 set_groups_sph_dynamic.o: $(SGS_MHD_SPH_DIR)/set_groups_sph_dynamic.f90 m_precision.o m_constants.o m_machine_parameter.o calypso_mpi.o t_groups_sph_dynamic.o t_work_sph_dynamic_grping.o t_SGS_control_parameter.o t_spheric_parameter.o t_spheric_rtp_data.o cal_minmax_and_stacks.o
 	$(F90) -c $(F90OPTFLAGS) $<

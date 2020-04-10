@@ -48,6 +48,8 @@
      &         (fl_prop, cd_prop, ht_prop, cp_prop,                     &
      &          ipol, iphys, b_trns, trns_back)
 !
+      use add_field_to_sph_trans_list
+!
       type(fluid_property), intent(in) :: fl_prop
       type(conductive_property), intent(in)  :: cd_prop
       type(scalar_property), intent(in) :: ht_prop, cp_prop
@@ -95,6 +97,8 @@
 !
       subroutine b_trans_address_scalar_MHD                             &
      &         (ht_prop, cp_prop, ipol, iphys, b_trns, trns_back)
+!
+      use add_field_to_sph_trans_list
 !
       type(scalar_property), intent(in) :: ht_prop, cp_prop
       type(phys_address), intent(in) :: ipol, iphys

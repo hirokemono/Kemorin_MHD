@@ -112,7 +112,7 @@
      &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
 !
       use address_bwd_sph_trans_stmp
-      use address_fwd_sph_trans_stmp
+      use add_diff_vect_to_sph_trans
 !
       type(SPH_mesh_field_data), intent(in) :: SPH_MHD
       type(phys_address), intent(in) :: iphys
@@ -138,9 +138,13 @@
      &             'transform, poloidal, toroidal, grid data'
       end if
 !
-      call f_trans_address_vector_stmp(trns_tmp%forward)
-      call f_trans_address_scalar_stmp                                  &
-     &   (SPH_MHD%ipol, iphys, trns_tmp%f_trns, trns_tmp%forward)
+      trns_tmp%forward%nfield = 0
+      call alloc_sph_trns_field_name(trns_tmp%forward)
+      trns_tmp%forward%num_vector = trns_tmp%forward%nfield
+!
+      call add_diff_vect_scalar_trns_snap                               &
+     &   (SPH_MHD%ipol%diff_vector, iphys%diff_vector,                  &
+     &    trns_tmp%f_trns%diff_vector, trns_tmp%forward)
       trns_tmp%forward%num_tensor = 0
 !
       call count_num_fields_each_trans(trns_tmp%backward,               &

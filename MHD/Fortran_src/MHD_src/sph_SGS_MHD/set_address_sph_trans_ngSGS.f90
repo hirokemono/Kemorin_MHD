@@ -58,7 +58,7 @@
      &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
 !
       use address_bwd_sph_trans_ngSGS
-      use address_fwd_sph_trans_ngSGS
+      use add_diff_vect_to_sph_trans
 !
       type(SPH_mesh_field_data), intent(in) :: SPH_MHD
       type(phys_address), intent(in) :: iphys
@@ -95,8 +95,9 @@
       call alloc_sph_trns_field_name(trns_ngTMP%forward)
 !
       trns_ngTMP%forward%num_vector = trns_ngTMP%forward%nfield
-      call f_trans_scalar_vector_grads                                  &
-     &   (SPH_MHD%ipol, iphys, trns_ngTMP%f_trns, trns_ngTMP%forward)
+      call add_diff_vect_scalar_trns_bpol                               &
+     &   (SPH_MHD%ipol%diff_vector, iphys%diff_vector,                  &
+     &    trns_ngTMP%f_trns%diff_vector, trns_ngTMP%forward)
       trns_ngTMP%forward%num_scalar = trns_ngTMP%forward%nfield         &
      &                               - trns_ngTMP%forward%num_vector
       trns_ngTMP%forward%num_tensor = 0
@@ -189,7 +190,7 @@
 !
       use address_bwd_sph_trans_SGS
       use address_bwd_sph_trans_ngSGS
-      use address_fwd_sph_trans_ngSGS
+      use add_diff_fil_vec_to_trans
 !
       type(SPH_mesh_field_data), intent(in) :: SPH_MHD
       type(phys_address), intent(in) :: iphys
@@ -228,8 +229,9 @@
       call alloc_sph_trns_field_name(trns_DYNG%forward)
 !
       trns_DYNG%forward%num_vector = trns_DYNG%forward%nfield
-      call f_trans_scalar_filter_vec_grads                              &
-     &   (SPH_MHD%ipol, iphys, trns_DYNG%f_trns, trns_DYNG%forward)
+      call add_diff_fil_vec_4_scalar_trns                               &
+     &   (SPH_MHD%ipol%diff_fil_vect, iphys%diff_fil_vect,              &
+     &    trns_DYNG%f_trns%diff_fil_vect, trns_DYNG%forward)
       trns_DYNG%forward%num_scalar = trns_DYNG%forward%nfield           &
      &                               - trns_DYNG%forward%num_vector
       trns_DYNG%forward%num_tensor = 0

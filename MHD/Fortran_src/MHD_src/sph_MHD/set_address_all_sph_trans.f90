@@ -109,6 +109,8 @@
       subroutine add_field_4_sph_transform                              &
      &         (field_name, num_comp, i_pol, irtp, i_trns, each_trns)
 !
+      use add_field_to_sph_trans_list
+!
       character(len = kchara), intent(in) :: field_name
       integer(kind = kint), intent(in) :: num_comp
       integer(kind = kint), intent(in) :: i_pol, irtp
