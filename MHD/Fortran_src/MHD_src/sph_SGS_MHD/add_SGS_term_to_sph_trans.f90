@@ -20,6 +20,20 @@
 !!        type(phys_address), intent(in) :: ipol_sef, iphys_sef
 !!        type(phys_address), intent(inout) :: f_trns_sef
 !!        type(address_each_sph_trans), intent(inout) :: trns
+!!      subroutine add_force_w_SGS_sph_trns_snap                        &
+!!     &         (ipol_frc_SGS, iphys_frc_SGS, b_trns_frc_SGS, trns)
+!!        type(SGS_term_address), intent(in) :: ipol_frc_SGS
+!!        type(SGS_term_address), intent(in) :: iphys_frc_SGS
+!!        type(SGS_term_address), intent(inout) :: b_trns_frc_SGS
+!!        type(address_each_sph_trans), intent(inout) :: trns
+!!      subroutine add_rot_SGS_4_sph_trns_snap                          &
+!!     &         (ipol_rot_SGS, iphys_rot_SGS, b_trns_rot_SGS, trns)
+!!      subroutine add_div_SGS_4_sph_trns_snap                          &
+!!     &         (ipol_div_SGS, iphys_div_SGS, b_trns_div_SGS, trns)
+!!        type(SGS_term_address), intent(in) :: ipol_div_SGS
+!!        type(SGS_term_address), intent(in) :: iphys_div_SGS
+!!        type(SGS_term_address), intent(inout) :: b_trns_div_SGS
+!!        type(address_each_sph_trans), intent(inout) :: trns
 !!
 !!      subroutine add_wide_SGS_term_4_sph_trns                         &
 !!     &         (ipol_wSGS, iphys_wSGS, b_trns_wSGS, trns)
@@ -142,6 +156,96 @@
      &    f_trns_sef%i_SGS_comp_buo_wk, trns)
 !
       end subroutine add_SGS_eflux_sph_trns_snap
+!
+!-----------------------------------------------------------------------
+!
+      subroutine add_force_w_SGS_sph_trns_snap                          &
+     &         (ipol_frc_SGS, iphys_frc_SGS, b_trns_frc_SGS, trns)
+!
+      use t_SGS_term_labels
+      use m_force_w_SGS_labels
+      use add_field_to_sph_trans_list
+!
+      type(SGS_term_address), intent(in) :: ipol_frc_SGS
+      type(SGS_term_address), intent(in) :: iphys_frc_SGS
+      type(SGS_term_address), intent(inout) :: b_trns_frc_SGS
+      type(address_each_sph_trans), intent(inout) :: trns
+!
+!
+      call add_field_name_4_sph_trns_snap(heat_flux_w_SGS,              &
+     &    ipol_frc_SGS%i_SGS_h_flux, iphys_frc_SGS%i_SGS_h_flux,        &
+     &    b_trns_frc_SGS%i_SGS_h_flux, trns)
+      call add_field_name_4_sph_trns_snap(compostion_flux_w_SGS,        &
+     &    ipol_frc_SGS%i_SGS_c_flux, iphys_frc_SGS%i_SGS_c_flux,        &
+     &    b_trns_frc_SGS%i_SGS_c_flux, trns)
+      call add_field_name_4_sph_trns_snap(intertia_w_SGS,               &
+     &    ipol_frc_SGS%i_SGS_inertia, iphys_frc_SGS%i_SGS_inertia,      &
+     &    b_trns_frc_SGS%i_SGS_inertia, trns)
+      call add_field_name_4_sph_trns_snap(Lorentz_w_SGS,                &
+     &    ipol_frc_SGS%i_SGS_Lorentz, iphys_frc_SGS%i_SGS_Lorentz,      &
+     &    b_trns_frc_SGS%i_SGS_Lorentz, trns)
+      call add_field_name_4_sph_trns_snap(vecp_induction_w_SGS,         &
+     &    ipol_frc_SGS%i_SGS_vp_induct, iphys_frc_SGS%i_SGS_vp_induct,  &
+     &    b_trns_frc_SGS%i_SGS_vp_induct, trns)
+      call add_field_name_4_sph_trns_snap(induction_w_SGS,              &
+     &    ipol_frc_SGS%i_SGS_induction, iphys_frc_SGS%i_SGS_induction,  &
+     &    b_trns_frc_SGS%i_SGS_induction, trns)
+!
+      end subroutine add_force_w_SGS_sph_trns_snap
+!
+!-----------------------------------------------------------------------
+!
+      subroutine add_rot_SGS_4_sph_trns_snap                            &
+     &         (ipol_rot_SGS, iphys_rot_SGS, b_trns_rot_SGS, trns)
+!
+      use t_SGS_term_labels
+      use m_diff_SGS_term_labels
+      use add_field_to_sph_trans_list
+!
+      type(SGS_term_address), intent(in) :: ipol_rot_SGS
+      type(SGS_term_address), intent(in) :: iphys_rot_SGS
+      type(SGS_term_address), intent(inout) :: b_trns_rot_SGS
+      type(address_each_sph_trans), intent(inout) :: trns
+!
+!
+      call add_field_name_4_sph_trns_snap(rot_SGS_inertia,              &
+     &    ipol_rot_SGS%i_SGS_inertia, iphys_rot_SGS%i_SGS_inertia,      &
+     &    b_trns_rot_SGS%i_SGS_inertia, trns)
+      call add_field_name_4_sph_trns_snap(rot_SGS_Lorentz,              &
+     &    ipol_rot_SGS%i_SGS_Lorentz, iphys_rot_SGS%i_SGS_Lorentz,      &
+     &    b_trns_rot_SGS%i_SGS_Lorentz, trns)
+!
+      end subroutine add_rot_SGS_4_sph_trns_snap
+!
+!-----------------------------------------------------------------------
+!
+      subroutine add_div_SGS_4_sph_trns_snap                            &
+     &         (ipol_div_SGS, iphys_div_SGS, b_trns_div_SGS, trns)
+!
+      use t_SGS_term_labels
+      use m_diff_SGS_term_labels
+      use add_field_to_sph_trans_list
+!
+      type(SGS_term_address), intent(in) :: ipol_div_SGS
+      type(SGS_term_address), intent(in) :: iphys_div_SGS
+      type(SGS_term_address), intent(inout) :: b_trns_div_SGS
+      type(address_each_sph_trans), intent(inout) :: trns
+!
+!
+      call add_field_name_4_sph_trns_snap(div_SGS_inertia,              &
+     &    ipol_div_SGS%i_SGS_inertia, iphys_div_SGS%i_SGS_inertia,      &
+     &    b_trns_div_SGS%i_SGS_inertia, trns)
+      call add_field_name_4_sph_trns_snap(div_SGS_Lorentz,              &
+     &    ipol_div_SGS%i_SGS_Lorentz, iphys_div_SGS%i_SGS_Lorentz,      &
+     &    b_trns_div_SGS%i_SGS_Lorentz, trns)
+      call add_field_name_4_sph_trns_snap(div_SGS_h_flux,               &
+     &    ipol_div_SGS%i_SGS_h_flux, iphys_div_SGS%i_SGS_h_flux,        &
+     &    b_trns_div_SGS%i_SGS_h_flux, trns)
+      call add_field_name_4_sph_trns_snap(div_SGS_c_flux,               &
+     &    ipol_div_SGS%i_SGS_c_flux, iphys_div_SGS%i_SGS_c_flux,        &
+     &    b_trns_div_SGS%i_SGS_c_flux, trns)
+!
+      end subroutine add_div_SGS_4_sph_trns_snap
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

@@ -57,12 +57,12 @@
       trns_fwd%nfield = 0
       call alloc_sph_trns_field_name(trns_fwd)
 !
-!   advection flag
+!   advection
       if(fl_prop%iflag_scheme .gt. id_no_evolution) then
         call add_field_4_sph_trns_by_pol(inertia,                       &
      &      ipol%forces%i_m_advect, iphys%forces%i_m_advect,            &
      &      f_trns%forces%i_m_advect, trns_fwd)
-!   Coriolis flag
+!   Coriolis force
         if(fl_prop%iflag_4_coriolis .gt. id_turn_OFF) then
           call add_field_4_sph_trns_by_pol(Coriolis_force,              &
      &        ipol%forces%i_coriolis, iphys%forces%i_coriolis,          &
@@ -73,7 +73,7 @@
      &        ipol%rot_forces%i_Coriolis, iphys%rot_forces%i_Coriolis,  &
      &        f_trns%rot_forces%i_Coriolis, trns_fwd)
         end if
-!   Lorentz flag
+!   Lorentz force
         if(fl_prop%iflag_4_lorentz .gt. id_turn_OFF) then
           call add_field_4_sph_trns_by_pol(Lorentz_force,               &
      &        ipol%forces%i_lorentz, iphys%forces%i_lorentz,            &
@@ -81,21 +81,21 @@
         end if
       end if
 !
-!   induction flag
+!   induction
       if(cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
         call add_field_4_sph_trns_by_pol(vecp_induction,                &
      &      ipol%forces%i_vp_induct, iphys%forces%i_vp_induct,          &
      &      f_trns%forces%i_vp_induct, trns_fwd)
       end if
 !
-!   heat flux flag
+!   heat flux
       if(ht_prop%iflag_scheme .gt. id_no_evolution) then
         call add_field_4_sph_trns_by_pol(heat_flux,                     &
      &      ipol%forces%i_h_flux, iphys%forces%i_h_flux,                &
      &      f_trns%forces%i_h_flux, trns_fwd)
       end if
 !
-!   composition flux flag
+!   composition flux
       if(cp_prop%iflag_scheme .gt. id_no_evolution) then
         call add_field_4_sph_trns_by_pol(composite_flux,                &
      &      ipol%forces%i_c_flux, iphys%forces%i_c_flux,                &
@@ -117,7 +117,7 @@
       type(phys_address), intent(inout) :: f_trns
 !
 !
-!   divergence of Coriolis flux flag
+!   divergence of Coriolis force
       call add_field_4_sph_trns_by_pol(div_Coriolis_force,              &
      &    ipol%div_forces%i_Coriolis, iphys%div_forces%i_Coriolis,      &
      &    f_trns%div_forces%i_Coriolis, trns_fwd)

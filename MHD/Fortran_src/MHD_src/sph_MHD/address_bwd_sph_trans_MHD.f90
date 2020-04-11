@@ -48,7 +48,7 @@
      &         (fl_prop, cd_prop, ht_prop, cp_prop,                     &
      &          ipol, iphys, b_trns, trns_back)
 !
-      use add_field_to_sph_trans_list
+      use add_base_field_4_sph_trns
 !
       type(fluid_property), intent(in) :: fl_prop
       type(conductive_property), intent(in)  :: cd_prop
@@ -61,34 +61,9 @@
       trns_back%nfield = 0
       call alloc_sph_trns_field_name(trns_back)
 !
-!   velocity flag
-      if(       fl_prop%iflag_scheme .gt. id_no_evolution               &
-     &     .or. cd_prop%iflag_Bevo_scheme .gt. id_no_evolution          &
-     &     .or. ht_prop%iflag_scheme .gt. id_no_evolution               &
-     &     .or. cp_prop%iflag_scheme .gt. id_no_evolution) then
-        call add_field_4_sph_trns_by_pol(velocity,                      &
-     &      ipol%base%i_velo, iphys%base%i_velo, b_trns%base%i_velo,    &
-     &      trns_back)
-      end if
-!   vorticity flag
-      if(       fl_prop%iflag_scheme .gt. id_no_evolution) then
-        call add_field_4_sph_trns_by_pol(vorticity,                     &
-     &      ipol%base%i_vort, iphys%base%i_vort, b_trns%base%i_vort,    &
-     &      trns_back)
-      end if
-!   magnetic field flag
-      if(       cd_prop%iflag_Bevo_scheme .gt. id_no_evolution          &
-     &     .or. fl_prop%iflag_4_lorentz .gt.     id_turn_OFF) then
-        call add_field_4_sph_trns_by_pol(magnetic_field,                &
-     &      ipol%base%i_magne, iphys%base%i_magne, b_trns%base%i_magne, &
-     &      trns_back)
-      end if
-!   current density flag
-      if(fl_prop%iflag_4_lorentz .gt. id_turn_OFF) then
-        call add_field_4_sph_trns_by_pol(current_density,               &
-     &      ipol%base%i_current, iphys%base%i_current,                  &
-     &      b_trns%base%i_current, trns_back)
-      end if
+      call add_base_vector_4_MHD_sph_trns                               &
+     &   (fl_prop, cd_prop, ht_prop, cp_prop,                           &
+     &    ipol%base, iphys%base, b_trns%base, trns_back)
       trns_back%num_vector = trns_back%nfield
 !
       end subroutine b_trans_address_vector_MHD
@@ -98,7 +73,7 @@
       subroutine b_trans_address_scalar_MHD                             &
      &         (ht_prop, cp_prop, ipol, iphys, b_trns, trns_back)
 !
-      use add_field_to_sph_trans_list
+      use add_base_field_4_sph_trns
 !
       type(scalar_property), intent(in) :: ht_prop, cp_prop
       type(phys_address), intent(in) :: ipol, iphys
@@ -106,18 +81,9 @@
       type(phys_address), intent(inout) :: b_trns
 !
 !
-!   temperature flag
-      if(ht_prop%iflag_scheme .gt. id_no_evolution) then
-        call add_field_4_sph_trns_by_pol(temperature,                   &
-     &      ipol%base%i_temp, iphys%base%i_temp, b_trns%base%i_temp,    &
-     &      trns_back)
-      end if
-!   composition flag
-      if(cp_prop%iflag_scheme .gt. id_no_evolution) then
-        call add_field_4_sph_trns_by_pol(composition,                   &
-     &      ipol%base%i_light, iphys%base%i_light, b_trns%base%i_light, &
-     &      trns_back)
-      end if
+      call add_base_scalar_4_MHD_sph_trns(ht_prop, cp_prop,             &
+     &    ipol%base, iphys%base, b_trns%base, trns_back)
+!
       trns_back%num_scalar = trns_back%nfield - trns_back%num_vector
 !
       end subroutine b_trans_address_scalar_MHD
