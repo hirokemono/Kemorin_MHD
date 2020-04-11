@@ -268,6 +268,7 @@
       use t_SGS_control_parameter
       use add_Csim_4_sph_trns
       use add_SGS_term_to_sph_trans
+      use add_SGS_eflux_to_sph_trans
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(SPH_mesh_field_data), intent(in) :: SPH_MHD

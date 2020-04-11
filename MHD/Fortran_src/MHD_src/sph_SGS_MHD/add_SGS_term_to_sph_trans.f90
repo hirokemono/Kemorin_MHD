@@ -13,18 +13,10 @@
 !!        type(SGS_term_address), intent(in) :: ipol_SGS, iphys_SGS
 !!        type(SGS_term_address), intent(inout) :: f_trns_SGS
 !!        type(address_each_sph_trans), intent(inout) :: trns
-!!      subroutine add_SGS_eflux_sph_trns_by_pol                        &
-!!     &         (ipol_sef, iphys_sef, f_trns_sef, trns)
-!!      subroutine add_SGS_eflux_sph_trns_snap                          &
-!!     &         (ipol_sef, iphys_sef, f_trns_sef, trns)
-!!        type(phys_address), intent(in) :: ipol_sef, iphys_sef
-!!        type(phys_address), intent(inout) :: f_trns_sef
-!!        type(address_each_sph_trans), intent(inout) :: trns
-!!      subroutine add_force_w_SGS_sph_trns_snap                        &
-!!     &         (ipol_frc_SGS, iphys_frc_SGS, b_trns_frc_SGS, trns)
-!!        type(SGS_term_address), intent(in) :: ipol_frc_SGS
-!!        type(SGS_term_address), intent(in) :: iphys_frc_SGS
-!!        type(SGS_term_address), intent(inout) :: b_trns_frc_SGS
+!!      subroutine add_SGS_induction_sph_trns_pol                       &
+!!     &         (ipol_SGS, iphys_SGS, b_trns_SGS, trns)
+!!        type(SGS_term_address), intent(in) :: ipol_SGS, iphys_SGS
+!!        type(SGS_term_address), intent(inout) :: b_trns_SGS
 !!        type(address_each_sph_trans), intent(inout) :: trns
 !!      subroutine add_rot_SGS_4_sph_trns_snap                          &
 !!     &         (ipol_rot_SGS, iphys_rot_SGS, b_trns_rot_SGS, trns)
@@ -65,7 +57,6 @@
       subroutine add_SGS_term_4_sph_trns_by_pol                         &
      &         (ipol_SGS, iphys_SGS, f_trns_SGS, trns)
 !
-      use t_SGS_term_labels
       use add_field_to_sph_trans_list
 !
       type(SGS_term_address), intent(in) :: ipol_SGS, iphys_SGS
@@ -98,71 +89,29 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine add_SGS_eflux_sph_trns_by_pol                          &
-     &         (ipol_sef, iphys_sef, f_trns_sef, trns)
+      subroutine add_SGS_induction_sph_trns_pol                         &
+     &         (ipol_SGS, iphys_SGS, b_trns_SGS, trns)
 !
-      use t_SGS_enegy_flux_labels
       use add_field_to_sph_trans_list
 !
-      type(SGS_ene_flux_address), intent(in) :: ipol_sef, iphys_sef
-      type(SGS_ene_flux_address), intent(inout) :: f_trns_sef
+      type(SGS_term_address), intent(in) :: ipol_SGS, iphys_SGS
+      type(SGS_term_address), intent(inout) :: b_trns_SGS
       type(address_each_sph_trans), intent(inout) :: trns
 !
 !
-!   work of Reynolds stress
-      call add_field_4_sph_trns_by_pol(Reynolds_work,                   &
-     &    ipol_sef%i_reynolds_wk, iphys_sef%i_reynolds_wk,              &
-     &    f_trns_sef%i_reynolds_wk, trns)
-!   work of SGS buoyancy
-      call add_field_4_sph_trns_by_pol(SGS_buoyancy_flux,               &
-     &    ipol_sef%i_SGS_buo_wk, iphys_sef%i_SGS_buo_wk,                &
-     &    f_trns_sef%i_SGS_buo_wk, trns)
-!   work of SGS compositional buoyancy
-      call add_field_4_sph_trns_by_pol(SGS_comp_buoyancy_flux,          &
-     &    ipol_sef%i_SGS_comp_buo_wk, iphys_sef%i_SGS_comp_buo_wk,      &
-     &    f_trns_sef%i_SGS_comp_buo_wk, trns)
+!   SGS magnetic induction flag
+      call add_field_4_sph_trns_by_pol(SGS_induction,                   &
+     &    ipol_SGS%i_SGS_induction, iphys_SGS%i_SGS_induction,          &
+     &    b_trns_SGS%i_SGS_induction, trns)
 !
-      end subroutine add_SGS_eflux_sph_trns_by_pol
+      end subroutine add_SGS_induction_sph_trns_pol
 !
 !-----------------------------------------------------------------------
-!
-      subroutine add_SGS_eflux_sph_trns_snap                           &
-     &         (ipol_sef, iphys_sef, f_trns_sef, trns)
-!
-      use t_SGS_enegy_flux_labels
-      use add_field_to_sph_trans_list
-!
-      type(SGS_ene_flux_address), intent(in) :: ipol_sef, iphys_sef
-      type(SGS_ene_flux_address), intent(inout) :: f_trns_sef
-      type(address_each_sph_trans), intent(inout) :: trns
-!
-!
-      call add_field_name_4_sph_trns_snap(Reynolds_work,                &
-     &    ipol_sef%i_reynolds_wk, iphys_sef%i_reynolds_wk,              &
-     &    f_trns_sef%i_reynolds_wk, trns)
-!
-      call add_field_name_4_sph_trns_snap(SGS_Lorentz_work,             &
-     &    ipol_sef%i_SGS_Lor_wk, iphys_sef%i_SGS_Lor_wk,                &
-     &    f_trns_sef%i_SGS_Lor_wk, trns)
-      call add_field_name_4_sph_trns_snap(SGS_mag_induction_flux,       &
-     &    ipol_sef%i_SGS_me_gen, iphys_sef%i_SGS_me_gen,                &
-     &    f_trns_sef%i_SGS_me_gen, trns)
-!
-      call add_field_name_4_sph_trns_snap(SGS_buoyancy_flux,            &
-     &    ipol_sef%i_SGS_buo_wk, iphys_sef%i_SGS_buo_wk,                &
-     &    f_trns_sef%i_SGS_buo_wk, trns)
-      call add_field_name_4_sph_trns_snap(SGS_comp_buoyancy_flux,       &
-     &    ipol_sef%i_SGS_comp_buo_wk, iphys_sef%i_SGS_comp_buo_wk,      &
-     &    f_trns_sef%i_SGS_comp_buo_wk, trns)
-!
-      end subroutine add_SGS_eflux_sph_trns_snap
-!
 !-----------------------------------------------------------------------
 !
       subroutine add_force_w_SGS_sph_trns_snap                          &
      &         (ipol_frc_SGS, iphys_frc_SGS, b_trns_frc_SGS, trns)
 !
-      use t_SGS_term_labels
       use m_force_w_SGS_labels
       use add_field_to_sph_trans_list
 !
@@ -198,7 +147,6 @@
       subroutine add_rot_SGS_4_sph_trns_snap                            &
      &         (ipol_rot_SGS, iphys_rot_SGS, b_trns_rot_SGS, trns)
 !
-      use t_SGS_term_labels
       use m_diff_SGS_term_labels
       use add_field_to_sph_trans_list
 !
@@ -222,7 +170,6 @@
       subroutine add_div_SGS_4_sph_trns_snap                            &
      &         (ipol_div_SGS, iphys_div_SGS, b_trns_div_SGS, trns)
 !
-      use t_SGS_term_labels
       use m_diff_SGS_term_labels
       use add_field_to_sph_trans_list
 !
