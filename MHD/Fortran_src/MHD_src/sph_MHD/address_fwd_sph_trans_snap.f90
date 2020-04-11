@@ -89,6 +89,8 @@
 !
       use m_filtered_ene_flux_labels
       use add_field_to_sph_trans_list
+      use add_SGS_term_to_sph_trans
+      use add_Csim_4_sph_trns
 !
       type(phys_address), intent(in) :: ipol, iphys
       type(address_each_sph_trans), intent(inout) :: trns_fwd
@@ -132,50 +134,14 @@
      &    ipol%prod_fld%i_x_heli, iphys%prod_fld%i_x_heli,              &
      &    f_trns%prod_fld%i_x_heli, trns_fwd)
 !
-      call add_field_name_4_sph_trns_snap(Reynolds_work,                &
-     &    ipol%SGS_ene_flux%i_reynolds_wk,                              &
-     &    iphys%SGS_ene_flux%i_reynolds_wk,                             &
-     &    f_trns%SGS_ene_flux%i_reynolds_wk, trns_fwd)
 !
-      call add_field_name_4_sph_trns_snap(SGS_Lorentz_work,             &
-     &    ipol%SGS_ene_flux%i_SGS_Lor_wk,                               &
-     &    iphys%SGS_ene_flux%i_SGS_Lor_wk,                              &
-     &    f_trns%SGS_ene_flux%i_SGS_Lor_wk, trns_fwd)
-      call add_field_name_4_sph_trns_snap(SGS_mag_induction_flux,       &
-     &    ipol%SGS_ene_flux%i_SGS_me_gen,                               &
-     &    iphys%SGS_ene_flux%i_SGS_me_gen,                              &
-     &    f_trns%SGS_ene_flux%i_SGS_me_gen, trns_fwd)
+      call add_SGS_eflux_sph_trns_snap                                  &
+     &   (ipol%SGS_ene_flux, iphys%SGS_ene_flux, f_trns%SGS_ene_flux,   &
+     &    trns_fwd)
 !
-      call add_field_name_4_sph_trns_snap(SGS_buoyancy_flux,            &
-     &    ipol%SGS_ene_flux%i_SGS_buo_wk,                               &
-     &    iphys%SGS_ene_flux%i_SGS_buo_wk,                              &
-     &    f_trns%SGS_ene_flux%i_SGS_buo_wk, trns_fwd)
-      call add_field_name_4_sph_trns_snap(SGS_comp_buoyancy_flux,       &
-     &    ipol%SGS_ene_flux%i_SGS_comp_buo_wk,                          &
-     &    iphys%SGS_ene_flux%i_SGS_comp_buo_wk,                         &
-     &    f_trns%SGS_ene_flux%i_SGS_comp_buo_wk, trns_fwd)
 !
-      call add_field_name_4_sph_trns_snap(Csim_SGS_heat_flux,           &
-     &    ipol%Csim%i_SGS_h_flux, iphys%Csim%i_SGS_h_flux,              &
-     &    f_trns%Csim%i_SGS_h_flux, trns_fwd)
-      call add_field_name_4_sph_trns_snap(Csim_SGS_composit_flux,       &
-     &    ipol%Csim%i_SGS_c_flux, iphys%Csim%i_SGS_c_flux,              &
-     &    f_trns%Csim%i_SGS_c_flux, trns_fwd)
-      call add_field_name_4_sph_trns_snap(Csim_SGS_inertia,             &
-     &    ipol%Csim%i_SGS_m_flux, iphys%Csim%i_SGS_m_flux,              &
-     &    f_trns%Csim%i_SGS_m_flux, trns_fwd)
-      call add_field_name_4_sph_trns_snap(Csim_SGS_Lorentz,             &
-     &    ipol%Csim%i_SGS_Lorentz, iphys%Csim%i_SGS_Lorentz,            &
-     &    f_trns%Csim%i_SGS_Lorentz, trns_fwd)
-      call add_field_name_4_sph_trns_snap(Csim_SGS_induction,           &
-     &    ipol%Csim%i_SGS_vp_induct, iphys%Csim%i_SGS_vp_induct,        &
-     &    f_trns%Csim%i_SGS_vp_induct, trns_fwd)
-      call add_field_name_4_sph_trns_snap(Csim_SGS_buoyancy,            &
-     &    ipol%Csim%i_SGS_buoyancy, iphys%Csim%i_SGS_buoyancy,          &
-     &    f_trns%Csim%i_SGS_buoyancy, trns_fwd)
-      call add_field_name_4_sph_trns_snap(Csim_SGS_composit_buo,        &
-     &    ipol%Csim%i_SGS_comp_buo, iphys%Csim%i_SGS_comp_buo,          &
-     &    f_trns%Csim%i_SGS_comp_buo, trns_fwd)
+      call add_Csim_4_sph_trns_snap                                     &
+     &   (ipol%Csim, iphys%Csim, f_trns%Csim, trns_fwd)
 !
       call add_field_name_4_sph_trns_snap(velocity_scale,               &
      &    ipol%prod_fld%i_velo_scale, iphys%prod_fld%i_velo_scale,      &
