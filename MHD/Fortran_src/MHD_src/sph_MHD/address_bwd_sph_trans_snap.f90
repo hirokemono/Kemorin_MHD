@@ -174,6 +174,7 @@
       use m_diff_SGS_term_labels
       use m_filtered_field_labels
       use add_field_to_sph_trans_list
+      use add_filter_fld_to_sph_trans
 !
       type(phys_address), intent(in) :: ipol, iphys
       type(address_each_sph_trans), intent(inout) :: trns_back
@@ -199,9 +200,10 @@
      &    ipol%base%i_per_temp, iphys%base%i_per_temp,                  &
      &    b_trns%base%i_per_temp, trns_back)
 !
-      call add_field_name_4_sph_trns_snap(filter_temperature,           &
-     &    ipol%filter_fld%i_temp, iphys%filter_fld%i_temp,              &
-     &    b_trns%filter_fld%i_temp, trns_back)
+      call add_fil_scalar_sph_trns_snap                                 &
+     &   (ipol%filter_fld, iphys%filter_fld, b_trns%filter_fld,         &
+     &    trns_back)
+!
       call add_field_name_4_sph_trns_snap(thermal_diffusion,            &
      &    ipol%diffusion%i_t_diffuse, iphys%diffusion%i_t_diffuse,      &
      &    b_trns%diffusion%i_t_diffuse, trns_back)

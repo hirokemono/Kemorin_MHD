@@ -57,7 +57,6 @@
      &         (SPH_MHD, iphys, trns_ngTMP,                             &
      &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
 !
-      use address_bwd_sph_trans_ngSGS
       use add_diff_vect_to_sph_trans
 !
       type(SPH_mesh_field_data), intent(in) :: SPH_MHD
@@ -78,8 +77,12 @@
       trns_ngTMP%backward%nfield = 0
       call alloc_sph_trns_field_name(trns_ngTMP%backward)
 !
-      call b_trans_vector_gradients                                     &
-     &   (SPH_MHD%ipol, iphys, trns_ngTMP%b_trns, trns_ngTMP%backward)
+      call add_diff_vect_sph_trns_by_pol                                &
+     &   (SPH_MHD%ipol%diff_vector, iphys%diff_vector,                  &
+     &    trns_ngTMP%b_trns%diff_vector, trns_ngTMP%backward)
+      call add_grad_4_sph_trns_by_pol                                   &
+     &   (SPH_MHD%ipol%grad_fld, iphys%grad_fld,                        &
+     &    trns_ngTMP%b_trns%grad_fld, trns_ngTMP%backward)
       trns_ngTMP%backward%num_vector = trns_ngTMP%backward%nfield
       trns_ngTMP%backward%num_scalar = trns_ngTMP%backward%nfield       &
      &                              - trns_ngTMP%backward%num_vector
@@ -124,7 +127,6 @@
      &         (SPH_MHD, iphys, trns_SGS,                               &
      &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
 !
-      use address_bwd_sph_trans_SGS
       use add_SGS_term_to_sph_trans
 !
       type(SPH_mesh_field_data), intent(in) :: SPH_MHD
@@ -189,8 +191,6 @@
      &         (SPH_MHD, iphys, trns_DYNG,                              &
      &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
 !
-      use address_bwd_sph_trans_SGS
-      use address_bwd_sph_trans_ngSGS
       use add_diff_fil_vec_to_trans
       use add_SGS_term_to_sph_trans
 !
@@ -212,8 +212,12 @@
       trns_DYNG%backward%nfield = 0
       call alloc_sph_trns_field_name(trns_DYNG%backward)
 !
-      call b_trans_filter_vector_grads                                  &
-     &   (SPH_MHD%ipol, iphys, trns_DYNG%b_trns, trns_DYNG%backward)
+      call add_diff_fil_vec_sph_trns_pol                                &
+     &   (SPH_MHD%ipol%diff_fil_vect, iphys%diff_fil_vect,              &
+     &    trns_DYNG%b_trns%diff_fil_vect, trns_DYNG%backward)
+      call add_grad_filter_fld_4_sph_trns                               &
+     &   (SPH_MHD%ipol%grad_fil_fld, iphys%grad_fil_fld,                &
+     &    trns_DYNG%b_trns%grad_fil_fld, trns_DYNG%backward)
       call add_double_SGS_term_4_sph_trns                               &
      &   (SPH_MHD%ipol%dble_SGS, iphys%dble_SGS,                        &
      &    trns_DYNG%b_trns%dble_SGS, trns_DYNG%backward)
@@ -262,7 +266,6 @@
      &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
 !
       use t_SGS_control_parameter
-      use address_bwd_sph_trans_SGS
       use add_Csim_4_sph_trns
       use add_SGS_term_to_sph_trans
 !

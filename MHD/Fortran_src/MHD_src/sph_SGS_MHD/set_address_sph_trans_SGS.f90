@@ -47,8 +47,8 @@
      &         (SPH_MHD, iphys, trns_SIMI,                              &
      &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
 !
-      use address_bwd_sph_trans_SGS
       use add_SGS_term_to_sph_trans
+      use add_filter_fld_to_sph_trans
 !
       type(SPH_mesh_field_data), intent(in) :: SPH_MHD
       type(phys_address), intent(in) :: iphys
@@ -66,12 +66,20 @@
       trns_SIMI%backward%nfield = 0
       call alloc_sph_trns_field_name(trns_SIMI%backward)
 !
-      call b_trans_vector_similarity                                    &
-     &   (SPH_MHD%ipol, iphys, trns_SIMI%b_trns, trns_SIMI%backward)
+!   filtered vector
+      call add_fil_vector_sph_trns_by_pol                               &
+     &   (SPH_MHD%ipol%filter_fld, iphys%filter_fld,                    &
+     &    trns_SIMI%b_trns%filter_fld, trns_SIMI%backward)
+!   filtered nonlinear terms
+      call add_SGS_term_4_sph_trns_by_pol                               &
+     &   (SPH_MHD%ipol%SGS_term, iphys%SGS_term,                        &
+     &    trns_SIMI%b_trns%SGS_term, trns_SIMI%backward)
       trns_SIMI%backward%num_vector = trns_SIMI%backward%nfield
 !
-      call b_trans_scalar_similarity                                    &
-     &   (SPH_MHD%ipol, iphys, trns_SIMI%b_trns, trns_SIMI%backward)
+!   filtered scalar
+      call add_fil_scalar_sph_trns_by_pol                               &
+     &   (SPH_MHD%ipol%filter_fld, iphys%filter_fld,                    &
+     &    trns_SIMI%b_trns%filter_fld, trns_SIMI%backward)
       trns_SIMI%backward%num_scalar = trns_SIMI%backward%nfield         &
      &                              - trns_SIMI%backward%num_vector
       trns_SIMI%backward%num_tensor = 0
@@ -114,8 +122,8 @@
       subroutine init_sph_trns_fld_dyn_simi(SPH_MHD, iphys, trns_DYNS,  &
      &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
 !
-      use address_bwd_sph_trans_SGS
       use add_SGS_term_to_sph_trans
+      use add_wide_f_fld_to_sph_trans
 !
       type(SPH_mesh_field_data), intent(in) :: SPH_MHD
       type(phys_address), intent(in) :: iphys
@@ -135,8 +143,9 @@
       trns_DYNS%backward%nfield = 0
       call alloc_sph_trns_field_name(trns_DYNS%backward)
 !
-      call b_trans_vector_wide_filter_fld                               &
-     &   (SPH_MHD%ipol, iphys, trns_DYNS%b_trns, trns_DYNS%backward)
+      call add_wide_fil_vector_sph_trns                                 &
+     &   (SPH_MHD%ipol%wide_filter_fld, iphys%wide_filter_fld,          &
+     &    trns_DYNS%b_trns%wide_filter_fld, trns_DYNS%backward)
       call add_wide_SGS_term_4_sph_trns                                 &
      &   (SPH_MHD%ipol%wide_SGS, iphys%wide_SGS,                        &
      &    trns_DYNS%b_trns%wide_SGS, trns_DYNS%backward)
@@ -145,8 +154,9 @@
      &    trns_DYNS%b_trns%dble_SGS, trns_DYNS%backward)
       trns_DYNS%backward%num_vector = trns_DYNS%backward%nfield
 !
-      call b_trans_scalar_wide_filter_fld                               &
-     &   (SPH_MHD%ipol, iphys, trns_DYNS%b_trns, trns_DYNS%backward)
+      call add_wide_fil_scalar_sph_trns                                 &
+     &   (SPH_MHD%ipol%wide_filter_fld, iphys%wide_filter_fld,          &
+     &    trns_DYNS%b_trns%wide_filter_fld, trns_DYNS%backward)
       trns_DYNS%backward%num_scalar = trns_DYNS%backward%nfield         &
      &                               - trns_DYNS%backward%num_vector
       trns_DYNS%backward%num_tensor = 0
