@@ -39,8 +39,8 @@
       subroutine f_trans_address_vector_snap                            &
      &         (ipol, iphys, f_trns, trns_fwd)
 !
+      use add_base_force_4_sph_trns
       use add_prod_field_4_sph_trns
-      use add_field_to_sph_trans_list
 !
       type(phys_address), intent(in) :: ipol, iphys
       type(address_each_sph_trans), intent(inout) :: trns_fwd
@@ -50,13 +50,8 @@
       trns_fwd%nfield = 0
       call alloc_sph_trns_field_name(trns_fwd)
 !
-      call add_field_name_4_sph_trns_snap(Coriolis_force,               &
-     &    ipol%forces%i_coriolis, iphys%forces%i_coriolis,              &
-     &    f_trns%forces%i_coriolis, trns_fwd)
-      call add_field_name_4_sph_trns_snap(magnetic_stretch,             &
-     &    ipol%forces%i_mag_stretch, iphys%forces%i_mag_stretch,        &
-     &    f_trns%forces%i_mag_stretch, trns_fwd)
-!
+      call add_base_force_fwd_trns_snap                                 &
+     &   (ipol%forces, iphys%forces, f_trns%forces, trns_fwd)
       call add_prod_vector_sph_trns_snap                                &
      &   (ipol%prod_fld, iphys%prod_fld, f_trns%prod_fld, trns_fwd)
 !

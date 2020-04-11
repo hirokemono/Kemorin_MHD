@@ -8,10 +8,10 @@
 !!       in MHD dynamo simulation
 !!
 !!@verbatim
-!!      subroutine b_trans_address_vector_MHD                           &
+!!      subroutine add_base_vector_4_MHD_sph_trns                       &
 !!     &         (fl_prop, cd_prop, ht_prop, cp_prop,                   &
 !!     &          ipol_base, iphys_base, b_trns_base, trns)
-!!      subroutine b_trans_address_scalar_MHD(ht_prop, cp_prop,         &
+!!      subroutine add_base_scalar_4_MHD_sph_trns(ht_prop, cp_prop,     &
 !!     &          ipol_base, iphys_base, b_trns_base, trns)
 !!        type(fluid_property), intent(in) :: fl_prop
 !!        type(conductive_property), intent(in)  :: cd_prop

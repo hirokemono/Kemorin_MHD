@@ -40,6 +40,7 @@
       use m_diff_SGS_term_labels
       use m_force_w_SGS_labels
       use add_base_field_4_sph_trns
+      use add_base_force_4_sph_trns
       use add_prod_field_4_sph_trns
       use add_diff_vect_to_sph_trans
       use add_field_to_sph_trans_list
@@ -69,35 +70,12 @@
      &    ipol%diffusion%i_b_diffuse, iphys%diffusion%i_b_diffuse,      &
      &    b_trns%diffusion%i_b_diffuse, trns_back)
 !
-      call add_field_name_4_sph_trns_snap(rot_inertia,                  &
-     &    ipol%rot_forces%i_m_advect, iphys%rot_forces%i_m_advect,      &
-     &    b_trns%rot_forces%i_m_advect, trns_back)
-      call add_field_name_4_sph_trns_snap(rot_Coriolis_force,           &
-     &    ipol%rot_forces%i_Coriolis, iphys%rot_forces%i_Coriolis,      &
-     &    b_trns%rot_forces%i_Coriolis, trns_back)
-      call add_field_name_4_sph_trns_snap(rot_Lorentz_force,            &
-     &    ipol%rot_forces%i_lorentz, iphys%rot_forces%i_lorentz,        &
-     &    b_trns%rot_forces%i_lorentz, trns_back)
-      call add_field_name_4_sph_trns_snap(rot_buoyancy,                 &
-     &    ipol%rot_forces%i_buoyancy, iphys%rot_forces%i_buoyancy,      &
-     &    b_trns%rot_forces%i_buoyancy, trns_back)
-      call add_field_name_4_sph_trns_snap(rot_composite_buoyancy,       &
-     &    ipol%rot_forces%i_comp_buo, iphys%rot_forces%i_comp_buo,      &
-     &    b_trns%rot_forces%i_comp_buo, trns_back)
+      call add_rot_force_4_sph_trns_snap                                &
+     &   (ipol%rot_forces, iphys%rot_forces, b_trns%rot_forces,         &
+     &    trns_back)
 !
-      call add_field_name_4_sph_trns_snap(buoyancy,                     &
-     &    ipol%forces%i_buoyancy, iphys%forces%i_buoyancy,              &
-     &    b_trns%forces%i_buoyancy, trns_back)
-      call add_field_name_4_sph_trns_snap(composite_buoyancy,           &
-     &    ipol%forces%i_comp_buo, iphys%forces%i_comp_buo,              &
-     &    b_trns%forces%i_comp_buo, trns_back)
-!
-      call add_field_name_4_sph_trns_snap(pressure_gradient,            &
-     &    ipol%forces%i_press_grad, iphys%forces%i_press_grad,          &
-     &    b_trns%forces%i_press_grad, trns_back)
-      call add_field_name_4_sph_trns_snap(magnetic_induction,           &
-     &    ipol%forces%i_induction, iphys%forces%i_induction,            &
-     &    b_trns%forces%i_induction, trns_back)
+      call add_base_force_bwd_trns_snap                                 &
+     &   (ipol%forces, iphys%forces, b_trns%forces, trns_back)
 !
       call add_force_w_SGS_sph_trns_snap                                &
      &   (ipol%frc_w_SGS, iphys%frc_w_SGS, b_trns%frc_w_SGS, trns_back)
@@ -132,6 +110,7 @@
       use m_diff_SGS_term_labels
       use m_filtered_field_labels
       use add_base_field_4_sph_trns
+      use add_base_force_4_sph_trns
       use add_field_to_sph_trans_list
       use add_filter_fld_to_sph_trans
       use add_SGS_term_to_sph_trans
@@ -155,16 +134,12 @@
      &    ipol%diffusion%i_c_diffuse, iphys%diffusion%i_c_diffuse,      &
      &    b_trns%diffusion%i_c_diffuse, trns_back)
 !
-      call add_field_name_4_sph_trns_snap(heat_advect,                  &
-     &    ipol%forces%i_h_advect, iphys%forces%i_h_advect,              &
-     &    b_trns%forces%i_h_advect, trns_back)
-      call add_field_name_4_sph_trns_snap(composition_advect,           &
-     &    ipol%forces%i_c_advect, iphys%forces%i_c_advect,              &
-     &    b_trns%forces%i_c_advect, trns_back)
+      call add_scalar_flux_bwd_trns_snap                                &
+     &   (ipol%forces, iphys%forces, b_trns%forces, trns_back)
 !
-      call add_field_name_4_sph_trns_snap(div_Coriolis_force,           &
-     &    ipol%div_forces%i_Coriolis, iphys%div_forces%i_Coriolis,      &
-     &    b_trns%div_forces%i_Coriolis, trns_back)
+      call add_div_force_4_sph_trns_snap                                &
+     &   (ipol%div_forces, iphys%div_forces, b_trns%div_forces,         &
+     &    trns_back)
 !
       call add_div_SGS_4_sph_trns_snap                                  &
      &   (ipol%div_SGS, iphys%div_SGS, b_trns%div_SGS, trns_back)
