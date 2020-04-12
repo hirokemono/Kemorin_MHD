@@ -32,6 +32,10 @@
 !
       implicit none
 !
+      private :: add_SGS_MHD_terms_to_force
+      private :: add_SGS_inertia_to_vort_force
+      private :: add_SGS_lorentz_to_vort_force
+!
 !*   ------------------------------------------------------------------
 !*
       contains
@@ -60,19 +64,113 @@
 !$omp parallel
       if(      SGS_param%iflag_SGS_m_flux  .ne. id_turn_OFF             &
      &   .and. SGS_param%iflag_SGS_lorentz .ne. id_turn_OFF) then
-        call add_SGS_MHD_terms_to_force(ipol, ist, ied,                 &
-     &      sph_rj%nnod_rj, rj_fld%ntot_phys, rj_fld%d_fld)
+        call add_SGS_MHD_terms_to_force(ipol%exp_work, ipol%rot_SGS,    &
+     &      ist, ied, sph_rj%nnod_rj, rj_fld%ntot_phys, rj_fld%d_fld)
       else if(SGS_param%iflag_SGS_m_flux  .ne. id_turn_OFF) then
-        call add_SGS_inertia_to_vort_force(ipol, ist, ied,              &
-     &      sph_rj%nnod_rj, rj_fld%ntot_phys, rj_fld%d_fld)
+        call add_SGS_inertia_to_vort_force(ipol%exp_work, ipol%rot_SGS, &
+     &      ist, ied, sph_rj%nnod_rj, rj_fld%ntot_phys, rj_fld%d_fld)
       else if(SGS_param%iflag_SGS_lorentz  .ne. id_turn_OFF) then
-        call add_SGS_lorentz_to_vort_force(ipol, ist, ied,              &
-     &      sph_rj%nnod_rj, rj_fld%ntot_phys, rj_fld%d_fld)
+        call add_SGS_lorentz_to_vort_force(ipol%exp_work, ipol%rot_SGS, &
+     &      ist, ied, sph_rj%nnod_rj, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !$omp end parallel
 !
       end subroutine SGS_forces_to_explicit
 !
-!*   ------------------------------------------------------------------
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine add_SGS_MHD_terms_to_force(ipol_exp, ipol_rot_SGS,     &
+     &          ist, ied, nnod_rj, ntot_phys_rj, d_rj)
+!
+      use t_explicit_term_labels
+      use t_SGS_term_labels
+!
+      type(explicit_term_address), intent(in) :: ipol_exp
+      type(SGS_term_address), intent(in) :: ipol_rot_SGS
+      integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
+      integer(kind = kint), intent(in) :: ist, ied
+      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
+!
+      integer(kind = kint) :: inod
+!
+!
+!$omp do private (inod)
+      do inod = ist, ied
+        d_rj(inod,ipol_exp%i_forces  )                                  &
+     &        =  d_rj(inod,ipol_exp%i_forces  )                         &
+     &         - d_rj(inod,ipol_rot_SGS%i_SGS_inertia  )                &
+     &         + d_rj(inod,ipol_rot_SGS%i_SGS_Lorentz  )
+        d_rj(inod,ipol_exp%i_forces+2)                                  &
+     &        =  d_rj(inod,ipol_exp%i_forces+2)                         &
+     &         - d_rj(inod,ipol_rot_SGS%i_SGS_inertia+2)                &
+     &         + d_rj(inod,ipol_rot_SGS%i_SGS_Lorentz+2)
+      end do
+!$omp end do nowait
+!
+      end subroutine add_SGS_MHD_terms_to_force
+!
+!
+! ----------------------------------------------------------------------
+!
+      subroutine add_SGS_inertia_to_vort_force(ipol_exp, ipol_rot_SGS,  &
+     &          ist, ied, nnod_rj, ntot_phys_rj, d_rj)
+!
+      use t_explicit_term_labels
+      use t_SGS_term_labels
+!
+      type(explicit_term_address), intent(in) :: ipol_exp
+      type(SGS_term_address), intent(in) :: ipol_rot_SGS
+      integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
+      integer(kind = kint), intent(in) :: ist, ied
+      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
+!
+      integer(kind = kint) :: inod
+!
+!
+!$omp do private (inod)
+      do inod = ist, ied
+        d_rj(inod,ipol_exp%i_forces  )                             &
+     &        =  d_rj(inod,ipol_exp%i_forces  )                    &
+     &         - d_rj(inod,ipol_rot_SGS%i_SGS_inertia  )
+        d_rj(inod,ipol_exp%i_forces+2)                             &
+     &        =  d_rj(inod,ipol_exp%i_forces+2)                    &
+     &         - d_rj(inod,ipol_rot_SGS%i_SGS_inertia+2)
+      end do
+!$omp end do nowait
+!
+      end subroutine add_SGS_inertia_to_vort_force
+!
+! ----------------------------------------------------------------------
+!
+      subroutine add_SGS_lorentz_to_vort_force(ipol_exp, ipol_rot_SGS,  &
+     &          ist, ied, nnod_rj, ntot_phys_rj, d_rj)
+!
+      use t_explicit_term_labels
+      use t_SGS_term_labels
+!
+      type(explicit_term_address), intent(in) :: ipol_exp
+      type(SGS_term_address), intent(in) :: ipol_rot_SGS
+      integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
+      integer(kind = kint), intent(in) :: ist, ied
+      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
+!
+      integer(kind = kint) :: inod
+!
+!
+!$omp do private (inod)
+      do inod = ist, ied
+        d_rj(inod,ipol_exp%i_forces  )                             &
+     &        =  d_rj(inod,ipol_exp%i_forces  )                    &
+     &         + d_rj(inod,ipol_rot_SGS%i_SGS_Lorentz  )
+        d_rj(inod,ipol_exp%i_forces+2)                             &
+     &        =  d_rj(inod,ipol_exp%i_forces+2)                    &
+     &         + d_rj(inod,ipol_rot_SGS%i_SGS_Lorentz+2)
+      end do
+!$omp end do nowait
+!
+      end subroutine add_SGS_lorentz_to_vort_force
+!
+! ----------------------------------------------------------------------
 !
       end module sum_rotation_of_SGS

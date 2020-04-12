@@ -121,7 +121,8 @@
         ist = (sph_bc_U%kr_in-1)*sph_rj%nidx_rj(2) + 1
         ied = sph_bc_U%kr_out * sph_rj%nidx_rj(2)
         call cal_vorticity_eq_adams                                     &
-     &     (ipol, ist, ied, dt, fl_prop%coef_exp,                       &
+     &     (ipol%base, ipol%exp_work, ipol%diffusion,                   &
+     &      ist, ied, dt, fl_prop%coef_exp,                             &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !
@@ -206,7 +207,8 @@
         ist = (sph_bc_U%kr_in-1)*sph_rj%nidx_rj(2) + 1
         ied = sph_bc_U%kr_out * sph_rj%nidx_rj(2)
         call cal_vorticity_eq_euler                                     &
-     &     (ipol, ist, ied, dt, fl_prop%coef_exp,                       &
+     &     (ipol%base, ipol%exp_work, ipol%diffusion,                   &
+     &      ist, ied, dt, fl_prop%coef_exp,                             &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !
@@ -284,8 +286,8 @@
       type(phys_data), intent(inout) :: rj_fld
 !
       if(fl_prop%iflag_scheme .gt.     id_no_evolution) then
-        call set_ini_adams_inertia                                      &
-     &     (ipol, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+        call set_ini_adams_inertia(ipol%exp_work,                       &
+     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !
       if(cd_prop%iflag_Bevo_scheme .gt.    id_no_evolution) then
