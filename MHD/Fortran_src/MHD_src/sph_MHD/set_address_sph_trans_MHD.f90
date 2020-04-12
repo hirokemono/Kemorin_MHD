@@ -59,8 +59,7 @@
      &         (MHD_prop, SPH_MHD, iphys, trns_MHD,                     &
      &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
 !
-      use address_bwd_sph_trans_MHD
-      use address_fwd_sph_trans_MHD
+      use address_sph_trans_MHD
 !
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(SPH_mesh_field_data), intent(in) :: SPH_MHD
@@ -73,31 +72,12 @@
 !
       if(iflag_debug .gt. 0) then
         write(*,*) 'Spherical transform field table for MHD'
-        write(*,*) 'Address for backward transform: ',                  &
-     &             'transform, poloidal, toroidal, grid data'
       end if
 !
-      call b_trans_address_vector_MHD                                   &
-     &   (MHD_prop%fl_prop, MHD_prop%cd_prop, MHD_prop%ht_prop,         &
-     &    MHD_prop%cp_prop, SPH_MHD%ipol, iphys,                        &
+      call bwd_trans_address_MHD(MHD_prop, SPH_MHD%ipol, iphys,         &
      &    trns_MHD%b_trns, trns_MHD%backward)
-      call b_trans_address_scalar_MHD(MHD_prop%ht_prop,                 &
-     &    MHD_prop%cp_prop,  SPH_MHD%ipol, iphys,                       &
-     &    trns_MHD%b_trns, trns_MHD%backward)
-      trns_MHD%backward%num_tensor = 0
-!
-      if(iflag_debug .gt. 0) then
-        write(*,*) 'Address for forward transform: ',                  &
-     &             'transform, poloidal, toroidal, grid data'
-      end if
-!
-      call f_trans_address_vector_MHD                                   &
-     &   (MHD_prop%fl_prop, MHD_prop%cd_prop, MHD_prop%ht_prop,         &
-     &    MHD_prop%cp_prop, SPH_MHD%ipol, iphys,                        &
+      call fwd_trans_address_MHD(MHD_prop, SPH_MHD%ipol, iphys,         &
      &    trns_MHD%f_trns, trns_MHD%forward)
-      call f_trans_address_scalar_MHD                                   &
-     &   (SPH_MHD%ipol, iphys, trns_MHD%f_trns, trns_MHD%forward)
-      trns_MHD%forward%num_tensor = 0
 !
       ncomp_sph_trans =   0
       nvector_sph_trans = 0

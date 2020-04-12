@@ -13,9 +13,9 @@
 !!        type(phys_products_address), intent(in) :: ipol_prd, iphys_prd
 !!        type(phys_products_address), intent(inout) :: b_trns_prd
 !!        type(address_each_sph_trans), intent(inout) :: trns
-!!      subroutine f_trans_address_vector_snap                          &
+!!      subroutine add_prod_vector_sph_trns_snap                        &
 !!     &         (ipol_prd, iphys_prd, f_trns_prd, trns)
-!!      subroutine f_trans_address_scalar_snap                          &
+!!      subroutine add_prod_scalar_sph_trns_snap                        &
 !!     &         (ipol_prd, iphys_prd, f_trns_prd, trns)
 !!        type(phys_products_address), intent(in) :: ipol_prd, iphys_prd
 !!        type(phys_products_address), intent(inout) :: f_trns_prd

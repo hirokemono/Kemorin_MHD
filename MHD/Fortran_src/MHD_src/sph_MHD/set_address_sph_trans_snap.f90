@@ -53,8 +53,7 @@
      &         (SPH_MHD, iphys, trns_snap,                              &
      &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
 !
-      use address_bwd_sph_trans_snap
-      use address_fwd_sph_trans_snap
+      use address_sph_trans_SGS_snap
 !
       type(SPH_mesh_field_data), intent(in) :: SPH_MHD
       type(phys_address), intent(in) :: iphys
@@ -67,26 +66,13 @@
       if(iflag_debug .gt. 0) then
         write(*,*)                                                      &
      &       'Spherical transform field table for snapshot (trns_snap)'
-        write(*,*) 'Address for backward transform: ',                  &
-     &             'transform, poloidal, toroidal, grid data'
       end if
 !
-      call b_trans_address_vector_snap                                  &
+      call bwd_trans_address_SGS_snap                                   &
      &   (SPH_MHD%ipol, iphys, trns_snap%b_trns, trns_snap%backward)
-      call b_trans_address_scalar_snap                                  &
-     &   (SPH_MHD%ipol, iphys, trns_snap%b_trns, trns_snap%backward)
-      trns_snap%backward%num_tensor = 0
 !
-     if(iflag_debug .gt. 0) then
-        write(*,*) 'Address for forward transform: ',                   &
-     &             'transform, poloidal, toroidal, grid data'
-      end if
-!
-      call f_trans_address_vector_snap                                  &
+      call fwd_trans_address_SGS_snap                                  &
      &   (SPH_MHD%ipol, iphys, trns_snap%f_trns, trns_snap%forward)
-      call f_trans_address_scalar_snap                                  &
-     &   (SPH_MHD%ipol, iphys, trns_snap%f_trns, trns_snap%forward)
-       trns_snap%forward%num_tensor = 0
 !
       call count_num_fields_each_trans(trns_snap%backward,              &
      &   ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
