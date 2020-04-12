@@ -338,6 +338,7 @@
      &         (iflag_SGS, dt, cd_prop, ipol, rj_fld)
 !
       use cal_explicit_terms
+      use cal_explicit_SGS_induction
 !
       integer(kind = kint), intent(in) :: iflag_SGS
       real(kind = kreal), intent(in) :: dt
@@ -350,13 +351,17 @@
       if(iflag_SGS .gt. id_SGS_none) then
         if(iflag_debug .gt. 0) write(*,*)                               &
      &              'cal_diff_induction_wSGS_adams'
-        call cal_diff_induction_wSGS_adams(dt, cd_prop%coef_exp, ipol,  &
+        call cal_diff_induction_wSGS_adams                              &
+     &     (ipol%base, ipol%exp_work, ipol%forces, ipol%diffusion,      &
+     &      ipol%SGS_term, dt, cd_prop%coef_exp,                        &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       else
         if(iflag_debug .gt. 0) write(*,*)                               &
      &              'cal_diff_induction_MHD_adams'
-        call cal_diff_induction_MHD_adams(dt, cd_prop%coef_exp, ipol,   &
-     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+        call cal_diff_induction_MHD_adams                               &
+     &     (ipol%base, ipol%exp_work, ipol%forces, ipol%diffusion, dt,  &
+     &      cd_prop%coef_exp, rj_fld%n_point, rj_fld%ntot_phys,         &
+     &      rj_fld%d_fld)
       end if
 !
       end subroutine sel_diff_induction_MHD_adams
@@ -367,6 +372,7 @@
      &         (iflag_SGS, dt, cd_prop, ipol, rj_fld)
 !
       use cal_explicit_terms
+      use cal_explicit_SGS_induction
 !
       integer(kind = kint), intent(in) :: iflag_SGS
       real(kind = kreal), intent(in) :: dt
@@ -378,13 +384,17 @@
       if(iflag_SGS .gt. id_SGS_none) then
         if(iflag_debug .gt. 0) write(*,*)                               &
      &              'cal_diff_induction_wSGS_euler'
-        call cal_diff_induction_wSGS_euler(dt, cd_prop%coef_exp, ipol,  &
-     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+        call cal_diff_induction_wSGS_euler                              &
+     &     (ipol%base, ipol%forces, ipol%diffusion, ipol%SGS_term, dt,  &
+     &      cd_prop%coef_exp, rj_fld%n_point, rj_fld%ntot_phys,         &
+     &      rj_fld%d_fld)
       else
         if(iflag_debug .gt. 0) write(*,*)                               &
      &                'cal_diff_induction_MHD_euler'
-        call cal_diff_induction_MHD_euler(dt, cd_prop%coef_exp, ipol,   &
-     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+        call cal_diff_induction_MHD_euler                               &
+     &     (ipol%base, ipol%forces, ipol%diffusion, dt,                 &
+     &      cd_prop%coef_exp, rj_fld%n_point, rj_fld%ntot_phys,         &
+     &      rj_fld%d_fld)
       end if
 !
       end subroutine sel_diff_induction_MHD_euler
@@ -394,6 +404,7 @@
       subroutine sel_ini_adams_mag_induct(iflag_SGS, ipol, rj_fld)
 !
       use cal_explicit_terms
+      use cal_explicit_SGS_induction
 !
       integer(kind = kint), intent(in) :: iflag_SGS
       type(phys_address), intent(in) :: ipol
@@ -404,12 +415,13 @@
         if(iflag_debug .gt. 0) write(*,*)                               &
      &              'SGS_ini_adams_mag_induct'
         call SGS_ini_adams_mag_induct                                   &
-     &     (ipol, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+     &     (ipol%exp_work, ipol%forces, ipol%SGS_term,                  &
+     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       else
         if(iflag_debug .gt. 0) write(*,*)                               &
      &              'set_ini_adams_mag_induct'
-        call set_ini_adams_mag_induct                                   &
-     &     (ipol, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+        call set_ini_adams_mag_induct(ipol%exp_work, ipol%forces,       &
+     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !
       end subroutine sel_ini_adams_mag_induct

@@ -125,8 +125,10 @@
       if(cd_prop%iflag_Bevo_scheme .gt.    id_no_evolution) then
         if(iflag_debug .gt. 0) write(*,*)                               &
      &              'cal_diff_induction_MHD_adams'
-        call cal_diff_induction_MHD_adams(dt, cd_prop%coef_exp, ipol,   &
-     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+        call cal_diff_induction_MHD_adams                               &
+     &     (ipol%base, ipol%exp_work, ipol%forces, ipol%diffusion, dt,  &
+     &      cd_prop%coef_exp, rj_fld%n_point, rj_fld%ntot_phys,         &
+     &      rj_fld%d_fld)
       end if
 !
       if(ht_prop%iflag_scheme .gt.     id_no_evolution) then
@@ -211,8 +213,10 @@
       if(cd_prop%iflag_Bevo_scheme .gt.    id_no_evolution) then
         if(iflag_debug .gt. 0) write(*,*)                               &
      &                'cal_diff_induction_MHD_euler'
-        call cal_diff_induction_MHD_euler(dt, cd_prop%coef_exp, ipol,   &
-     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+        call cal_diff_induction_MHD_euler                               &
+     &     (ipol%base, ipol%forces, ipol%diffusion, dt,                 &
+     &      cd_prop%coef_exp, rj_fld%n_point, rj_fld%ntot_phys,         &
+     &      rj_fld%d_fld)
       end if
 !
       if(ht_prop%iflag_scheme .gt.     id_no_evolution) then
@@ -287,8 +291,8 @@
       if(cd_prop%iflag_Bevo_scheme .gt.    id_no_evolution) then
         if(iflag_debug .gt. 0) write(*,*)                               &
      &              'set_ini_adams_mag_induct'
-        call set_ini_adams_mag_induct                                   &
-     &     (ipol, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+        call set_ini_adams_mag_induct(ipol%exp_work, ipol%forces,       &
+     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !
       if(ht_prop%iflag_scheme .gt.     id_no_evolution) then

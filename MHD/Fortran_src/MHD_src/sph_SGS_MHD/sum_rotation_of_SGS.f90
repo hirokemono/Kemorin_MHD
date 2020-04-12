@@ -47,7 +47,6 @@
 !
       use t_SGS_control_parameter
       use t_boundary_data_sph_MHD
-      use cal_vorticity_terms_adams
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(sph_rj_grid), intent(in) ::  sph_rj
