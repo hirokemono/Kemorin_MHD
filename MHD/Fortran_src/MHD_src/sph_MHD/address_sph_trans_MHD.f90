@@ -8,13 +8,13 @@
 !!       in MHD dynamo simulation
 !!
 !!@verbatim
-!!      subroutine set_bwd_trans_address_MHD                            &
+!!      subroutine bwd_trans_address_MHD                                &
 !!     &         (MHD_prop, ipol, iphys, b_trns, trns_back)
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
 !!        type(phys_address), intent(in) :: ipol, iphys
 !!        type(address_each_sph_trans), intent(inout) :: trns_back
 !!        type(phys_address), intent(inout) :: b_trns
-!!      subroutine set_fwd_trans_address_MHD                            &
+!!      subroutine fwd_trans_address_MHD                                &
 !!     &         (MHD_prop, ipol, iphys, f_trns, trns_fwd)
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
 !!        type(phys_address), intent(in) :: ipol, iphys
@@ -42,7 +42,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_bwd_trans_address_MHD                              &
+      subroutine bwd_trans_address_MHD                                  &
      &         (MHD_prop, ipol, iphys, b_trns, trns_back)
 !
       use add_base_field_4_sph_trns
@@ -54,7 +54,6 @@
 !
 !
       if(iflag_debug .gt. 0) then
-        write(*,*) 'Spherical transform field table for MHD'
         write(*,*) 'Address for backward transform: ',                  &
      &             'transform, poloidal, toroidal, grid data'
       end if
@@ -75,11 +74,11 @@
       trns_back%num_scalar = trns_back%nfield - trns_back%num_vector
       trns_back%num_tensor = 0
 !
-      end subroutine set_bwd_trans_address_MHD
+      end subroutine bwd_trans_address_MHD
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_fwd_trans_address_MHD                              &
+      subroutine fwd_trans_address_MHD                                  &
      &         (MHD_prop, ipol, iphys, f_trns, trns_fwd)
 !
       use add_base_force_4_sph_trns
@@ -116,7 +115,7 @@
       trns_fwd%num_scalar = trns_fwd%nfield - trns_fwd%num_vector
       trns_fwd%num_tensor = 0
 !
-      end subroutine set_fwd_trans_address_MHD
+      end subroutine fwd_trans_address_MHD
 !
 !-----------------------------------------------------------------------
 !
