@@ -12,7 +12,7 @@
 !!     &          ipol_bse, ipol_exp, ipol_frc, ipol_dif, rj_fld)
 !!      subroutine explicit_scalars_sph_euler                           &
 !!     &         (dt, sph_rj, ht_prop, cp_prop, sph_bc_T, sph_bc_C,     &
-!!     &          ipol_bse, ipol_exp, ipol_frc, ipol_dif, rj_fld)
+!!     &          ipol_bse, ipol_frc, ipol_dif, rj_fld)
 !!      subroutine first_scalars_prev_step_adams                        &
 !!     &         (sph_rj, ht_prop, cp_prop, sph_bc_T, sph_bc_C,         &
 !!     &          ipol_bse, ipol_exp, ipol_frc, rj_fld)
@@ -117,7 +117,7 @@
 !
       subroutine explicit_scalars_sph_euler                             &
      &         (dt, sph_rj, ht_prop, cp_prop, sph_bc_T, sph_bc_C,       &
-     &          ipol_bse, ipol_exp, ipol_frc, ipol_dif, rj_fld)
+     &          ipol_bse, ipol_frc, ipol_dif, rj_fld)
 !
       use select_diff_adv_source
 !
@@ -127,7 +127,6 @@
       type(scalar_property), intent(in) :: ht_prop, cp_prop
       type(sph_boundary_type), intent(in) :: sph_bc_T, sph_bc_C
       type(base_field_address), intent(in) :: ipol_bse
-      type(explicit_term_address), intent(in) :: ipol_exp
       type(base_force_address), intent(in) :: ipol_frc
       type(diffusion_address), intent(in) :: ipol_dif
       type(phys_data), intent(inout) :: rj_fld
