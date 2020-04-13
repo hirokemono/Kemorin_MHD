@@ -8,15 +8,15 @@
 !!
 !!@verbatim
 !!      subroutine cal_diff_induction_MHD_adams                         &
-!!     &         (cd_prop, ipol_bse, ipol_exp, ipol_frc, ipol_dif, dt,  &
+!!     &         (cd_prop, ipol_base, ipol_exp, ipol_frc, ipol_dif, dt, &
 !!     &          nnod_rj, ntot_phys_rj, d_rj)
 !!      subroutine cal_diff_induction_MHD_euler                         &
-!!     &         (cd_prop, ipol_bse, ipol_frc, ipol_dif, dt,            &
+!!     &         (cd_prop, ipol_base, ipol_frc, ipol_dif, dt,           &
 !!     &          nnod_rj, ntot_phys_rj, d_rj)
 !!      subroutine set_ini_adams_mag_induct                             &
 !!     &         (ipol_exp, ipol_frc, nnod_rj, ntot_phys_rj, d_rj)
 !!        type(conductive_property), intent(in) :: cd_prop
-!!        type(base_field_address), intent(in) :: ipol_bse
+!!        type(base_field_address), intent(in) :: ipol_base
 !!        type(explicit_term_address), intent(in) :: ipol_exp
 !!        type(base_force_address), intent(in) :: ipol_frc
 !!        type(diffusion_address), intent(in) :: ipol_dif
@@ -42,11 +42,11 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_diff_induction_MHD_adams                           &
-     &         (cd_prop, ipol_bse, ipol_exp, ipol_frc, ipol_dif, dt,    &
+     &         (cd_prop, ipol_base, ipol_exp, ipol_frc, ipol_dif, dt,   &
      &          nnod_rj, ntot_phys_rj, d_rj)
 !
       type(conductive_property), intent(in) :: cd_prop
-      type(base_field_address), intent(in) :: ipol_bse
+      type(base_field_address), intent(in) :: ipol_base
       type(explicit_term_address), intent(in) :: ipol_exp
       type(base_force_address), intent(in) :: ipol_frc
       type(diffusion_address), intent(in) :: ipol_dif
@@ -59,11 +59,11 @@
 !
 !$omp parallel do private (inod)
       do inod = 1, nnod_rj
-        d_rj(inod,ipol_bse%i_magne  ) = d_rj(inod,ipol_bse%i_magne  )   &
+        d_rj(inod,ipol_base%i_magne  ) = d_rj(inod,ipol_base%i_magne  ) &
      &       + dt*(cd_prop%coef_exp * d_rj(inod,ipol_dif%i_b_diffuse  ) &
      &                    + adam_0 * d_rj(inod,ipol_frc%i_induction  )  &
      &                 + adam_1 * d_rj(inod,ipol_exp%i_pre_uxb  ))
-        d_rj(inod,ipol_bse%i_magne+2) = d_rj(inod,ipol_bse%i_magne+2)   &
+        d_rj(inod,ipol_base%i_magne+2) = d_rj(inod,ipol_base%i_magne+2) &
      &       + dt*(cd_prop%coef_exp * d_rj(inod,ipol_dif%i_b_diffuse+2) &
      &                     + adam_0 * d_rj(inod,ipol_frc%i_induction+2) &
      &                     + adam_1 * d_rj(inod,ipol_exp%i_pre_uxb+2))
@@ -80,11 +80,11 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_diff_induction_MHD_euler                           &
-     &         (cd_prop, ipol_bse, ipol_frc, ipol_dif, dt,              &
+     &         (cd_prop, ipol_base, ipol_frc, ipol_dif, dt,             &
      &          nnod_rj, ntot_phys_rj, d_rj)
 !
       type(conductive_property), intent(in) :: cd_prop
-      type(base_field_address), intent(in) :: ipol_bse
+      type(base_field_address), intent(in) :: ipol_base
       type(base_force_address), intent(in) :: ipol_frc
       type(diffusion_address), intent(in) :: ipol_dif
       real(kind = kreal), intent(in) :: dt
@@ -96,10 +96,10 @@
 !
 !$omp parallel do private (inod)
       do inod = 1, nnod_rj
-        d_rj(inod,ipol_bse%i_magne  ) = d_rj(inod,ipol_bse%i_magne  )   &
+        d_rj(inod,ipol_base%i_magne  ) = d_rj(inod,ipol_base%i_magne  ) &
      &    + dt * (cd_prop%coef_exp * d_rj(inod,ipol_dif%i_b_diffuse  )  &
      &                             + d_rj(inod,ipol_frc%i_induction  ))
-        d_rj(inod,ipol_bse%i_magne+2) = d_rj(inod,ipol_bse%i_magne+2)   &
+        d_rj(inod,ipol_base%i_magne+2) = d_rj(inod,ipol_base%i_magne+2) &
      &    + dt * (cd_prop%coef_exp * d_rj(inod,ipol_dif%i_b_diffuse+2)  &
                                    + d_rj(inod,ipol_frc%i_induction+2))
       end do
