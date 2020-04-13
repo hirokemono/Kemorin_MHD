@@ -15,7 +15,6 @@
 !!        type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
 !!        type(legendre_4_sph_trans), intent(in) :: leg
 !!        type(phys_address), intent(in) :: ipol
-!!        type(base_field_address), intent(in) :: ipol_bse
 !!        type(phys_data), intent(inout) :: rj_fld
 !!@endverbatim
 !!
@@ -30,11 +29,6 @@
       use t_spheric_rj_data
 !
       use t_phys_address
-      use t_base_field_labels
-      use t_base_force_labels
-      use t_diffusion_term_labels
-      use t_explicit_term_labels
-!
       use t_phys_data
       use t_fdm_coefs
       use t_schmidt_poly_on_rtm
@@ -66,33 +60,18 @@
 !
 !
       if(MHD_prop%iflag_all_scheme .eq. id_explicit_euler) then
-        call cal_explicit_sph_euler(dt, sph_rj,                         &
-     &      MHD_prop%fl_prop, MHD_prop%cd_prop,                         &
-     &      MHD_prop%ht_prop, MHD_prop%cp_prop,                         &
-     &      sph_MHD_bc%sph_bc_U, sph_MHD_bc%sph_bc_T,                   &
-     &      sph_MHD_bc%sph_bc_C, ipol%base, ipol%exp_work,              &
-     &      ipol%forces, ipol%diffusion, rj_fld)
+        call cal_explicit_sph_euler                                     &
+     &     (dt, sph_rj, MHD_prop, sph_MHD_bc, ipol, rj_fld)
       else if(i_step .eq. 1) then
         if(iflag_debug.gt.0) write(*,*) 'cal_explicit_sph_euler'
-        call cal_explicit_sph_euler(dt, sph_rj,                         &
-     &      MHD_prop%fl_prop, MHD_prop%cd_prop,                         &
-     &      MHD_prop%ht_prop, MHD_prop%cp_prop,                         &
-     &      sph_MHD_bc%sph_bc_U, sph_MHD_bc%sph_bc_T,                   &
-     &      sph_MHD_bc%sph_bc_C, ipol%base, ipol%exp_work,              &
-     &      ipol%forces, ipol%diffusion, rj_fld)
-        call cal_first_prev_step_adams(sph_rj,                          &
-     &      MHD_prop%fl_prop, MHD_prop%cd_prop,                         &
-     &      MHD_prop%ht_prop, MHD_prop%cp_prop,                         &
-     &      sph_MHD_bc%sph_bc_T, sph_MHD_bc%sph_bc_C,                   &
-     &      ipol%base, ipol%exp_work, ipol%forces, rj_fld)
+        call cal_explicit_sph_euler                                     &
+     &     (dt, sph_rj, MHD_prop, sph_MHD_bc, ipol, rj_fld)
+        call cal_first_prev_step_adams                                  &
+     &     (sph_rj, MHD_prop, sph_MHD_bc, ipol, rj_fld)
       else
         if(iflag_debug.gt.0) write(*,*) 'cal_explicit_sph_adams'
-        call cal_explicit_sph_adams(dt, sph_rj,                         &
-     &      MHD_prop%fl_prop, MHD_prop%cd_prop,                         &
-     &      MHD_prop%ht_prop, MHD_prop%cp_prop,                         &
-     &      sph_MHD_bc%sph_bc_U, sph_MHD_bc%sph_bc_T,                   &
-     &      sph_MHD_bc%sph_bc_C, ipol%base, ipol%exp_work,              &
-     &      ipol%forces, ipol%diffusion, rj_fld)
+        call cal_explicit_sph_adams                                     &
+     &     (dt, sph_rj, MHD_prop, sph_MHD_bc, ipol, rj_fld)
       end if
 !
       end subroutine sel_explicit_sph
@@ -101,239 +80,111 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_explicit_sph_adams                                 &
-     &         (dt,sph_rj, fl_prop, cd_prop, ht_prop, cp_prop,          &
-     &          sph_bc_U, sph_bc_T, sph_bc_C,                           &
-     &          ipol_bse, ipol_exp, ipol_frc, ipol_dif, rj_fld)
+     &         (dt,sph_rj, MHD_prop, sph_MHD_bc, ipol, rj_fld)
 !
       use cal_vorticity_terms_adams
       use cal_nonlinear_sph_MHD
-      use select_diff_adv_source
       use cal_explicit_terms
+      use explicit_scalars_sph
 !
       real(kind = kreal), intent(in) :: dt
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
-      type(fluid_property), intent(in) :: fl_prop
-      type(conductive_property), intent(in) :: cd_prop
-      type(scalar_property), intent(in) :: ht_prop, cp_prop
-      type(sph_boundary_type), intent(in) :: sph_bc_U
-      type(sph_boundary_type), intent(in) :: sph_bc_T, sph_bc_C
-      type(base_field_address), intent(in) :: ipol_bse
-      type(explicit_term_address), intent(in) :: ipol_exp
-      type(base_force_address), intent(in) :: ipol_frc
-      type(diffusion_address), intent(in) :: ipol_dif
+      type(MHD_evolution_param), intent(in) :: MHD_prop
+      type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
+      type(phys_address), intent(in) :: ipol
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      call cal_vorticity_eq_adams(sph_rj, fl_prop, sph_bc_U,            &
-     &    ipol_bse, ipol_exp, ipol_dif,                                 &
+      call cal_vorticity_eq_adams                                       &
+     &   (sph_rj, MHD_prop%fl_prop, sph_MHD_bc%sph_bc_U,                &
+     &    ipol%base, ipol%exp_work, ipol%diffusion,                     &
      &    dt, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
-      if(cd_prop%iflag_Bevo_scheme .gt.    id_no_evolution) then
+      if(MHD_prop%cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
         if(iflag_debug .gt. 0) write(*,*)                               &
      &              'cal_diff_induction_MHD_adams'
-        call cal_diff_induction_MHD_adams                               &
-     &     (ipol_bse, ipol_exp, ipol_frc, ipol_dif, dt,                 &
-     &      cd_prop%coef_exp, rj_fld%n_point, rj_fld%ntot_phys,         &
-     &      rj_fld%d_fld)
+        call cal_diff_induction_MHD_adams(MHD_prop%cd_prop,             &
+     &      ipol%base, ipol%exp_work, ipol%forces, ipol%diffusion,      &
+     &      dt, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !
-      if(ht_prop%iflag_scheme .gt.     id_no_evolution) then
-          if(iflag_debug .gt. 0) write(*,*)                             &
-     &                'sel_scalar_diff_adv_src_adams temperature'
-        call sel_scalar_diff_adv_src_adams                              &
-     &     (sph_bc_T%kr_in, sph_bc_T%kr_out,                            &
-     &      ipol_dif%i_t_diffuse, ipol_frc%i_h_advect,                  &
-     &      ipol_bse%i_heat_source, ipol_bse%i_temp,                    &
-     &      ipol_exp%i_pre_heat, dt, ht_prop%coef_exp,                  &
-     &      ht_prop%coef_source, sph_rj, rj_fld)
-      end if
-!
-      if(cp_prop%iflag_scheme .gt. id_no_evolution) then
-          if(iflag_debug .gt. 0) write(*,*)                             &
-     &                'sel_scalar_diff_adv_src_adams composition'
-        call sel_scalar_diff_adv_src_adams                              &
-     &     (sph_bc_C%kr_in, sph_bc_C%kr_out,                            &
-     &      ipol_dif%i_c_diffuse, ipol_frc%i_c_advect,                  &
-     &      ipol_bse%i_light_source, ipol_bse%i_light,                  &
-     &      ipol_exp%i_pre_composit, dt, cp_prop%coef_exp,              &
-     &      cp_prop%coef_source, sph_rj, rj_fld)
-      end if
-!
-!  Center evolution
-!
-      if(sph_rj%inod_rj_center .eq. 0) return
-      if(ht_prop%iflag_scheme .gt.     id_no_evolution) then
-        if(iflag_debug .gt. 0) write(*,*)                               &
-     &                'sel_ctr_scl_diff_adv_src_adams temperature'
-        call sel_ctr_scl_diff_adv_src_adams                             &
-     &     (ipol_dif%i_t_diffuse, ipol_frc%i_h_advect,                  &
-     &      ipol_bse%i_heat_source, ipol_bse%i_temp,                    &
-     &      ipol_exp%i_pre_heat, dt, ht_prop%coef_exp,                  &
-     &      ht_prop%coef_source, sph_rj, rj_fld)
-      end if
-!
-      if(cp_prop%iflag_scheme .gt. id_no_evolution) then
-          if(iflag_debug .gt. 0) write(*,*)                             &
-     &                'sel_ctr_scl_diff_adv_src_adams composition'
-        call sel_ctr_scl_diff_adv_src_adams(ipol_dif%i_c_diffuse,       &
-     &      ipol_frc%i_c_advect, ipol_bse%i_light_source,               &
-     &      ipol_bse%i_light, ipol_exp%i_pre_composit,                  &
-     &      dt, cp_prop%coef_exp, cp_prop%coef_source, sph_rj, rj_fld)
-      end if
+      call explicit_scalars_sph_SGS_adams                               &
+     &   (dt, sph_rj, MHD_prop%ht_prop, MHD_prop%cp_prop,               &
+     &    sph_MHD_bc%sph_bc_T, sph_MHD_bc%sph_bc_C,                     &
+     &    ipol%base, ipol%exp_work, ipol%forces, ipol%diffusion,        &
+     &    rj_fld)
 !
       end subroutine cal_explicit_sph_adams
 !
 ! ----------------------------------------------------------------------
 !
       subroutine cal_explicit_sph_euler                                 &
-     &         (dt, sph_rj, fl_prop, cd_prop, ht_prop, cp_prop,         &
-     &          sph_bc_U, sph_bc_T, sph_bc_C,                           &
-     &          ipol_bse, ipol_exp, ipol_frc, ipol_dif, rj_fld)
+     &         (dt, sph_rj, MHD_prop, sph_MHD_bc, ipol, rj_fld)
 !
       use cal_vorticity_terms_adams
-      use select_diff_adv_source
       use cal_explicit_terms
+      use explicit_scalars_sph
 !
       real(kind = kreal), intent(in) :: dt
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
-      type(fluid_property), intent(in) :: fl_prop
-      type(conductive_property), intent(in) :: cd_prop
-      type(scalar_property), intent(in) :: ht_prop, cp_prop
-      type(sph_boundary_type), intent(in) :: sph_bc_U
-      type(sph_boundary_type), intent(in) :: sph_bc_T, sph_bc_C
-      type(base_field_address), intent(in) :: ipol_bse
-      type(explicit_term_address), intent(in) :: ipol_exp
-      type(base_force_address), intent(in) :: ipol_frc
-      type(diffusion_address), intent(in) :: ipol_dif
+      type(MHD_evolution_param), intent(in) :: MHD_prop
+      type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
+      type(phys_address), intent(in) :: ipol
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      call cal_vorticity_eq_euler(sph_rj, fl_prop, sph_bc_U,            &
-     &    ipol_bse, ipol_exp, ipol_dif,                                 &
+      call cal_vorticity_eq_euler                                       &
+     &   (sph_rj, MHD_prop%fl_prop, sph_MHD_bc%sph_bc_U,                &
+     &    ipol%base, ipol%exp_work, ipol%diffusion,                     &
      &    dt, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
-      if(cd_prop%iflag_Bevo_scheme .gt.    id_no_evolution) then
+      if(MHD_prop%cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
         if(iflag_debug .gt. 0) write(*,*)                               &
      &                'cal_diff_induction_MHD_euler'
-        call cal_diff_induction_MHD_euler(ipol_bse, ipol_frc, ipol_dif, &
-     &      dt, cd_prop%coef_exp, rj_fld%n_point, rj_fld%ntot_phys,     &
-     &      rj_fld%d_fld)
+        call cal_diff_induction_MHD_euler(MHD_prop%cd_prop,             &
+     &      ipol%base, ipol%forces, ipol%diffusion,                     &
+     &      dt, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !
-      if(ht_prop%iflag_scheme .gt.     id_no_evolution) then
-        if(iflag_debug .gt. 0) write(*,*)                               &
-     &                'sel_scalar_diff_adv_src_euler temperature'
-        call sel_scalar_diff_adv_src_euler                              &
-     &     (sph_bc_T%kr_in, sph_bc_T%kr_out,                            &
-     &      ipol_dif%i_t_diffuse, ipol_frc%i_h_advect,                  &
-     &      ipol_bse%i_heat_source, ipol_bse%i_temp,                    &
-     &      dt, ht_prop%coef_exp, ht_prop%coef_advect,                  &
-     &      ht_prop%coef_source, sph_rj, rj_fld)
-      end if
-!
-      if(cp_prop%iflag_scheme .gt. id_no_evolution) then
-        if(iflag_debug .gt. 0) write(*,*)                               &
-     &                'sel_scalar_diff_adv_src_euler composition'
-        call sel_scalar_diff_adv_src_euler                              &
-     &     (sph_bc_C%kr_in, sph_bc_C%kr_out,                            &
-     &      ipol_dif%i_c_diffuse, ipol_frc%i_c_advect,                  &
-     &      ipol_bse%i_light_source, ipol_bse%i_light,                  &
-     &      dt, cp_prop%coef_exp, cp_prop%coef_advect,                  &
-     &      cp_prop%coef_source, sph_rj, rj_fld)
-      end if
-!
-!   Center evolution
-!
-      if(sph_rj%inod_rj_center .eq. 0) return
-      if(ht_prop%iflag_scheme .gt.     id_no_evolution) then
-        if(iflag_debug .gt. 0) write(*,*)                               &
-     &                'sel_ctr_scl_diff_adv_src_euler temperature'
-        call sel_ctr_scl_diff_adv_src_euler(ipol_dif%i_t_diffuse,       &
-     &     ipol_frc%i_h_advect, ipol_bse%i_heat_source,                 &
-     &     ipol_bse%i_temp, dt, ht_prop%coef_exp, ht_prop%coef_advect,  &
-     &     ht_prop%coef_source, sph_rj, rj_fld)
-      end if
-!
-      if(cp_prop%iflag_scheme .gt. id_no_evolution) then
-        if(iflag_debug .gt. 0) write(*,*)                               &
-     &                'sel_ctr_scl_diff_adv_src_euler composition'
-        call sel_ctr_scl_diff_adv_src_euler                             &
-     &     (ipol_dif%i_c_diffuse, ipol_frc%i_c_advect,                  &
-     &      ipol_bse%i_light_source, ipol_bse%i_light, dt,              &
-     &      cp_prop%coef_exp, cp_prop%coef_advect, cp_prop%coef_source, &
-     &      sph_rj, rj_fld)
-      end if
+      call explicit_scalars_sph_euler                                   &
+     &   (dt, sph_rj, MHD_prop%ht_prop, MHD_prop%cp_prop,               &
+     &    sph_MHD_bc%sph_bc_T, sph_MHD_bc%sph_bc_C,                     &
+     &    ipol%base, ipol%forces, ipol%diffusion, rj_fld)
 !
       end subroutine cal_explicit_sph_euler
 !
 ! ----------------------------------------------------------------------
 !
       subroutine cal_first_prev_step_adams                              &
-     &         (sph_rj, fl_prop, cd_prop, ht_prop, cp_prop,             &
-     &          sph_bc_T, sph_bc_C, ipol_bse, ipol_exp, ipol_frc,       &
-     &          rj_fld)
+     &         (sph_rj, MHD_prop, sph_MHD_bc, ipol, rj_fld)
 !
       use cal_vorticity_terms_adams
-      use select_diff_adv_source
       use cal_explicit_terms
+      use explicit_scalars_sph
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
-      type(fluid_property), intent(in) :: fl_prop
-      type(conductive_property), intent(in) :: cd_prop
-      type(scalar_property), intent(in) :: ht_prop, cp_prop
-      type(sph_boundary_type), intent(in) :: sph_bc_T, sph_bc_C
-      type(base_field_address), intent(in) :: ipol_bse
-      type(explicit_term_address), intent(in) :: ipol_exp
-      type(base_force_address), intent(in) :: ipol_frc
+      type(MHD_evolution_param), intent(in) :: MHD_prop
+      type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
+      type(phys_address), intent(in) :: ipol
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      call set_ini_adams_inertia(fl_prop, ipol_exp,                     &
+      call set_ini_adams_inertia(MHD_prop%fl_prop, ipol%exp_work,       &
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
-      if(cd_prop%iflag_Bevo_scheme .gt.    id_no_evolution) then
+      if(MHD_prop%cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
         if(iflag_debug .gt. 0) write(*,*)                               &
      &              'set_ini_adams_mag_induct'
-        call set_ini_adams_mag_induct(ipol_exp, ipol_frc,               &
+        call set_ini_adams_mag_induct(ipol%exp_work, ipol%forces,       &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !
-      if(ht_prop%iflag_scheme .gt.     id_no_evolution) then
-        call sel_ini_adams_scalar_w_src                                 &
-     &     (sph_bc_T%kr_in, sph_bc_T%kr_out, ipol_frc%i_h_advect,       &
-     &      ipol_bse%i_heat_source, ipol_exp%i_pre_heat,                &
-     &      ht_prop%coef_source, sph_rj, rj_fld)
-      end if
-!
-      if(cp_prop%iflag_scheme .gt. id_no_evolution) then
-        call sel_ini_adams_scalar_w_src                                 &
-     &     (sph_bc_C%kr_in, sph_bc_C%kr_out, ipol_frc%i_c_advect,       &
-     &      ipol_bse%i_light_source, ipol_exp%i_pre_composit,           &
-     &      cp_prop%coef_source, sph_rj, rj_fld)
-      end if
-!
-!   Center evolution
-!
-      if(sph_rj%inod_rj_center .eq. 0) return
-      if(ht_prop%iflag_scheme .gt.     id_no_evolution                  &
-      &  .and. ipol_bse%i_heat_source .gt. izero) then
-        call center_ini_adams_scalar_w_src                              &
-     &     (sph_rj%inod_rj_center, ipol_frc%i_h_advect,                 &
-     &      ipol_bse%i_heat_source, ipol_exp%i_pre_heat,                &
-     &      ht_prop%coef_source, rj_fld%n_point, rj_fld%ntot_phys,      &
-     &      rj_fld%d_fld)
-      end if
-!
-      if(cp_prop%iflag_scheme .gt. id_no_evolution                      &
-     &  .and. ipol_bse%i_light_source .gt. izero) then
-        call center_ini_adams_scalar_w_src                              &
-     &     (sph_rj%inod_rj_center, ipol_frc%i_c_advect,                 &
-     &      ipol_bse%i_light_source, ipol_exp%i_pre_composit,           &
-     &      cp_prop%coef_source, rj_fld%n_point, rj_fld%ntot_phys,      &
-     &      rj_fld%d_fld)
-      end if
+      call first_scalars_prev_step_adams                                &
+     &   (sph_rj, MHD_prop%ht_prop, MHD_prop%cp_prop,                   &
+     &    sph_MHD_bc%sph_bc_T, sph_MHD_bc%sph_bc_C,                     &
+     &    ipol%base, ipol%exp_work, ipol%forces, rj_fld)
 !
       end subroutine cal_first_prev_step_adams
 !

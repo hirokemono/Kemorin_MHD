@@ -79,9 +79,8 @@
         if(iflag_debug .gt. 0) write(*,*)                               &
      &              'cal_diff_induction_MHD_adams'
         call cal_diff_induction_MHD_adams                               &
-     &     (ipol_bse, ipol_exp, ipol_frc, ipol_dif,                     &
-     &      dt, cd_prop%coef_exp, rj_fld%n_point, rj_fld%ntot_phys,     &
-     &      rj_fld%d_fld)
+     &     (cd_prop, ipol_bse, ipol_exp, ipol_frc, ipol_dif,            &
+     &      dt, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !
       end subroutine sel_diff_induction_MHD_adams
@@ -116,8 +115,8 @@
         if(iflag_debug .gt. 0) write(*,*)                               &
      &                'cal_diff_induction_MHD_euler'
         call cal_diff_induction_MHD_euler                               &
-     &     (ipol_bse, ipol_frc, ipol_dif, dt, cd_prop%coef_exp,         &
-     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+     &     (cd_prop, ipol_bse, ipol_frc, ipol_dif,                      &
+     &      dt, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !
       end subroutine sel_diff_induction_MHD_euler

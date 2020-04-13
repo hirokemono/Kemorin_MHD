@@ -75,8 +75,6 @@
       type(SGS_term_address), intent(in) :: ipol_div_SGS
       type(phys_data), intent(inout) :: rj_fld
 !
-      integer(kind = kint) :: ist, ied
-!
 !
       if(ht_prop%iflag_scheme .gt.     id_no_evolution) then
           if(iflag_debug .gt. 0) write(*,*)                             &
@@ -147,8 +145,6 @@
       type(diffusion_address), intent(in) :: ipol_dif
       type(SGS_term_address), intent(in) :: ipol_div_SGS
       type(phys_data), intent(inout) :: rj_fld
-!
-      integer(kind = kint) :: ist, ied
 !
 !
       if(ht_prop%iflag_scheme .gt.     id_no_evolution) then
