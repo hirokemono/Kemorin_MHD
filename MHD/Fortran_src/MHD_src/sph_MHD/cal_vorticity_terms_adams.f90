@@ -7,10 +7,15 @@
 !>@brief Evoluve the vorticity equation by explicit scheme 
 !!
 !!@verbatim
-!!      subroutine cal_vorticity_eq_adams(ipol_bse, ipol_exp, ipol_dif, &
-!!     &          ist, ied, dt, coef_exp, nnod_rj, ntot_phys_rj, d_rj)
-!!      subroutine cal_vorticity_eq_euler(ipol_bse, ipol_exp, ipol_dif, &
-!!     &          ist, ied, dt, coef_exp, nnod_rj, ntot_phys_rj, d_rj)
+!!      subroutine cal_vorticity_eq_adams(sph_rj, fl_prop, sph_bc_U,    &
+!!     &          ipol_bse, ipol_exp, ipol_dif,                         &
+!!     &          dt, nnod_rj, ntot_phys_rj, d_rj)
+!!      subroutine cal_vorticity_eq_euler(sph_rj, fl_prop, sph_bc_U,    &
+!!     &          ipol_bse, ipol_exp, ipol_dif,                         &
+!!     &          dt, nnod_rj, ntot_phys_rj, d_rj)
+!!        type(sph_rj_grid), intent(in) ::  sph_rj
+!!        type(fluid_property), intent(in) :: fl_prop
+!!        type(sph_boundary_type), intent(in) :: sph_bc_U
 !!        type(base_field_address), intent(in) :: ipol_bse
 !!        type(explicit_term_address), intent(in) :: ipol_exp
 !!        type(diffusion_address), intent(in) :: ipol_dif
@@ -36,7 +41,8 @@
 !!        type(base_force_address), intent(in) :: ipol_rot_frc
 !!
 !!      subroutine set_ini_adams_inertia                                &
-!!     &         (ipol_exp, nnod_rj, ntot_phys_rj, d_rj)
+!!     &         (fl_prop, ipol_exp, nnod_rj, ntot_phys_rj, d_rj)
+!!        type(fluid_property), intent(in) :: fl_prop
 !!        type(explicit_term_address), intent(in) :: ipol_exp
 !!@endverbatim
 !!
@@ -52,7 +58,11 @@
       module cal_vorticity_terms_adams
 !
       use m_precision
+!
       use m_t_step_parameter
+      use t_spheric_rj_data
+      use t_physical_property
+      use t_boundary_data_sph_MHD
       use t_base_field_labels
       use t_base_force_labels
       use t_diffusion_term_labels
@@ -66,29 +76,34 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_vorticity_eq_adams(ipol_bse, ipol_exp, ipol_dif,   &
-     &          ist, ied, dt, coef_exp, nnod_rj, ntot_phys_rj, d_rj)
+      subroutine cal_vorticity_eq_adams(sph_rj, fl_prop, sph_bc_U,      &
+     &          ipol_bse, ipol_exp, ipol_dif,                           &
+     &          dt, nnod_rj, ntot_phys_rj, d_rj)
 !
+      type(sph_rj_grid), intent(in) ::  sph_rj
+      type(fluid_property), intent(in) :: fl_prop
+      type(sph_boundary_type), intent(in) :: sph_bc_U
       type(base_field_address), intent(in) :: ipol_bse
       type(explicit_term_address), intent(in) :: ipol_exp
       type(diffusion_address), intent(in) :: ipol_dif
-      real(kind = kreal), intent(in) :: coef_exp
       real(kind = kreal), intent(in) :: dt
-      integer(kind = kint), intent(in) :: ist, ied
       integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
       real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
-      integer(kind = kint) :: inod
+      integer(kind = kint) :: inod, ist, ied
 !
 !
+      if(fl_prop%iflag_scheme .eq. id_no_evolution) return
+      ist = (sph_bc_U%kr_in-1) * sph_rj%nidx_rj(2) + 1
+      ied = sph_bc_U%kr_out *    sph_rj%nidx_rj(2)
 !$omp parallel do private (inod)
       do inod = ist, ied
         d_rj(inod,ipol_bse%i_vort  ) = d_rj(inod,ipol_bse%i_vort  )     &
-     &             + dt * (coef_exp * d_rj(inod,ipol_dif%i_w_diffuse  ) &
+     &     + dt * (fl_prop%coef_exp * d_rj(inod,ipol_dif%i_w_diffuse  ) &
      &                     + adam_0 * d_rj(inod,ipol_exp%i_forces  )    &
      &                     + adam_1 * d_rj(inod,ipol_exp%i_pre_mom  ))
         d_rj(inod,ipol_bse%i_vort+2) = d_rj(inod,ipol_bse%i_vort+2)     &
-     &             + dt * (coef_exp * d_rj(inod,ipol_dif%i_w_diffuse+2) &
+     &     + dt * (fl_prop%coef_exp * d_rj(inod,ipol_dif%i_w_diffuse+2) &
      &                     + adam_0 * d_rj(inod,ipol_exp%i_forces+2)    &
      &                     + adam_1 * d_rj(inod,ipol_exp%i_pre_mom+2))
 !
@@ -103,29 +118,34 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_vorticity_eq_euler(ipol_bse, ipol_exp, ipol_dif,   &
-     &          ist, ied, dt, coef_exp, nnod_rj, ntot_phys_rj, d_rj)
+      subroutine cal_vorticity_eq_euler(sph_rj, fl_prop, sph_bc_U,      &
+     &          ipol_bse, ipol_exp, ipol_dif,                           &
+     &          dt, nnod_rj, ntot_phys_rj, d_rj)
 !
+      type(sph_rj_grid), intent(in) ::  sph_rj
+      type(fluid_property), intent(in) :: fl_prop
+      type(sph_boundary_type), intent(in) :: sph_bc_U
       type(base_field_address), intent(in) :: ipol_bse
       type(explicit_term_address), intent(in) :: ipol_exp
       type(diffusion_address), intent(in) :: ipol_dif
-      real(kind = kreal), intent(in) :: coef_exp
       real(kind = kreal), intent(in) :: dt
-      integer(kind = kint), intent(in) :: ist, ied
       integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
       real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
-      integer(kind = kint) :: inod
+      integer(kind = kint) :: inod, ist, ied
 !
 !
+      if(fl_prop%iflag_scheme .eq. id_no_evolution) return
+      ist = (sph_bc_U%kr_in-1) * sph_rj%nidx_rj(2) + 1
+      ied =  sph_bc_U%kr_out *   sph_rj%nidx_rj(2)
 !$omp parallel do private (inod)
       do inod = ist, ied
         d_rj(inod,ipol_bse%i_vort  ) = d_rj(inod,ipol_bse%i_vort  )     &
-     &            + dt * (coef_exp *  d_rj(inod,ipol_dif%i_w_diffuse  ) &
+     &     + dt * (fl_prop%coef_exp * d_rj(inod,ipol_dif%i_w_diffuse  ) &
      &                              + d_rj(inod,ipol_exp%i_forces  ))
 !
         d_rj(inod,ipol_bse%i_vort+2) = d_rj(inod,ipol_bse%i_vort+2)     &
-     &            + dt * (coef_exp *  d_rj(inod,ipol_dif%i_w_diffuse+2) &
+     &     + dt * (fl_prop%coef_exp * d_rj(inod,ipol_dif%i_w_diffuse+2) &
      &                              + d_rj(inod,ipol_exp%i_forces+2))
        end do
 !$omp end parallel do
@@ -297,8 +317,9 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_ini_adams_inertia                                  &
-     &         (ipol_exp, nnod_rj, ntot_phys_rj, d_rj)
+     &         (fl_prop, ipol_exp, nnod_rj, ntot_phys_rj, d_rj)
 !
+      type(fluid_property), intent(in) :: fl_prop
       type(explicit_term_address), intent(in) :: ipol_exp
       integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
       real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
@@ -306,6 +327,7 @@
       integer(kind = kint) :: inod
 !
 !
+      if(fl_prop%iflag_scheme .eq. id_no_evolution) return
 !$omp parallel do private (inod)
       do inod = 1, nnod_rj
         d_rj(inod,ipol_exp%i_pre_mom  )                                 &
