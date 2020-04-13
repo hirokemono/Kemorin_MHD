@@ -65,67 +65,10 @@
      &     (rj_fld, ipol%forces%i_coriolis, ipol%forces%i_press_grad,   &
      &      ipol%prod_fld%i_geostrophic)
       end if
-!
-!
-      if(ipol%frc_w_SGS%i_SGS_h_flux .gt. 0) then
-        call add_2_nod_vectors                                          &
-     &     (rj_fld, ipol%forces%i_h_flux, ipol%SGS_term%i_SGS_h_flux,   &
-     &      ipol%frc_w_SGS%i_SGS_h_flux)
-      end if
-!
-      if(ipol%frc_w_SGS%i_SGS_c_flux .gt. 0) then
-        call add_2_nod_vectors                                          &
-     &     (rj_fld, ipol%forces%i_c_flux, ipol%SGS_term%i_SGS_c_flux,   &
-     &      ipol%frc_w_SGS%i_SGS_c_flux)
-      end if
-!
-      if(ipol%frc_w_SGS%i_SGS_inertia .gt. 0) then
-        call add_2_nod_vectors                                          &
-     &     (rj_fld, ipol%forces%i_m_advect,                             &
-     &      ipol%SGS_term%i_SGS_inertia, ipol%frc_w_SGS%i_SGS_inertia)
-      end if
-!
-      if(ipol%frc_w_SGS%i_SGS_Lorentz .gt. 0) then
-        call add_2_nod_vectors                                          &
-     &     (rj_fld, ipol%forces%i_lorentz, ipol%SGS_term%i_SGS_Lorentz, &
-     &      ipol%frc_w_SGS%i_SGS_Lorentz)
-      end if
-!
-      if(ipol%frc_w_SGS%i_SGS_vp_induct .gt. 0) then
-        call add_2_nod_vectors(rj_fld, ipol%forces%i_vp_induct,         &
-     &      ipol%SGS_term%i_SGS_vp_induct,                              &
-     &      ipol%frc_w_SGS%i_SGS_vp_induct)
-      end if
-!
-      if(ipol%frc_w_SGS%i_SGS_induction .gt. 0) then
-        call add_2_nod_vectors(rj_fld, ipol%forces%i_induction,         &
-     &      ipol%SGS_term%i_SGS_induction,                              &
-     &      ipol%frc_w_SGS%i_SGS_induction)
-      end if
-!
-      if(ipol%frc_w_SGS%i_SGS_m_flux .gt. 0) then
-        call add_2_nod_tensors                                          &
-     &     (rj_fld, ipol%forces%i_m_flux, ipol%SGS_term%i_SGS_m_flux,   &
-     &      ipol%frc_w_SGS%i_SGS_m_flux)
-      end if
-!
-      if(ipol%frc_w_SGS%i_SGS_maxwell .gt. 0) then
-        call add_2_nod_tensors                                          &
-     &     (rj_fld, ipol%forces%i_maxwell, ipol%SGS_term%i_SGS_maxwell, &
-     &      ipol%frc_w_SGS%i_SGS_maxwell)
-      end if
-!
-      if(ipol%frc_w_SGS%i_SGS_induct_t .gt. 0) then
-        call add_2_nod_tensors(rj_fld,                                  &
-     &      ipol%forces%i_induct_t, ipol%SGS_term%i_SGS_induct_t,       &
-     &      ipol%frc_w_SGS%i_SGS_induct_t)
-      end if
-!
       if(ipol%prod_fld%i_truncated_B .gt. 0) then
         call truncate_magnetic_field_4_view(ltr_crust, sph_rj, rj_fld,  &
      &      ipol%base%i_magne, ipol%prod_fld%i_truncated_B)
       end if
-!
 !
       end subroutine s_cal_energy_flux_rj
 !
