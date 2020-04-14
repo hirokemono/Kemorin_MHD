@@ -262,9 +262,9 @@
      &          ipol, trns_MHD, trns_snap,  WK_sph, rj_fld)
 !
       use sph_transforms_snapshot
-      use cal_energy_flux_rtp
       use cal_energy_flux_rj
       use cal_force_with_SGS_rj
+      use cal_energy_flux_w_SGS_rtp
 !
       integer(kind = kint), intent(in) :: ltr_crust
       type(sph_grids), intent(in) :: sph
@@ -293,8 +293,8 @@
      &    rj_fld, trns_snap%backward, WK_sph)
 !
 !      Evaluate fields for output in grid space
-      if (iflag_debug.eq.1) write(*,*) 's_cal_energy_flux_rtp'
-      call s_cal_energy_flux_rtp                                        &
+      if (iflag_debug.eq.1) write(*,*) 's_cal_energy_flux_w_SGS_rtp'
+      call s_cal_energy_flux_w_SGS_rtp                                  &
      &   (sph%sph_rtp, MHD_prop%fl_prop, MHD_prop%cd_prop,              &
      &    MHD_prop%ref_param_T, MHD_prop%ref_param_C, trans_p%leg,      &
      &    trns_MHD%f_trns, trns_snap%b_trns, trns_snap%f_trns,          &

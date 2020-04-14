@@ -27,6 +27,9 @@
 !!        type(address_each_sph_trans), intent(in) :: trns_f_MHD
 !!        type(address_each_sph_trans), intent(in) :: trns_b_snap
 !!        type(address_each_sph_trans), intent(inout) :: trns_f_snap
+!!
+!!      subroutine cal_buoyancy_flux_rtp_smp(np_smp, nnod, nr,          &
+!!     &          inod_smp_stack, radius, coef, scalar, vr, prod)
 !!@endverbatim
 !
       module cal_energy_flux_rtp
@@ -44,8 +47,6 @@
       use t_schmidt_poly_on_rtm
 !
       implicit  none
-!
-      private :: cal_buoyancy_flux_rtp_smp
 !
 ! -----------------------------------------------------------------------
 !
@@ -257,24 +258,6 @@
      &        trns_b_snap%fld_rtp(1,bs_trns%base%i_velo),               &
      &        trns_f_snap%fld_rtp(1,fs_trns%ene_flux%i_c_buo_gen) )
         end if
-      end if
-!
-      if(fs_trns%eflux_by_filter%i_buo_gen .gt. 0) then
-        call cal_buoyancy_flux_rtp_smp(np_smp, sph_rtp%nnod_rtp,        &
-     &      sph_rtp%nidx_rtp(1),  sph_rtp%istack_inod_rtp_smp,          &
-     &      sph_rtp%radius_1d_rtp_r, fl_prop%coef_buo,                  &
-     &      trns_b_snap%fld_rtp(1,bs_trns%filter_fld%i_temp),           &
-     &      trns_b_snap%fld_rtp(1,bs_trns%base%i_velo),                 &
-     &      trns_f_snap%fld_rtp(1,fs_trns%eflux_by_filter%i_buo_gen))
-      end if
-!
-      if(fs_trns%eflux_by_filter%i_c_buo_gen .gt. 0) then
-        call cal_buoyancy_flux_rtp_smp(np_smp, sph_rtp%nnod_rtp,        &
-     &      sph_rtp%nidx_rtp(1),  sph_rtp%istack_inod_rtp_smp,          &
-     &      sph_rtp%radius_1d_rtp_r, fl_prop%coef_comp_buo,             &
-     &      trns_b_snap%fld_rtp(1,bs_trns%filter_fld%i_light),          &
-     &      trns_b_snap%fld_rtp(1,bs_trns%base%i_velo),                 &
-     &      trns_f_snap%fld_rtp(1,fs_trns%eflux_by_filter%i_c_buo_gen))
       end if
 !
       if(fs_trns%prod_fld%i_velo_scale .gt. 0) then
