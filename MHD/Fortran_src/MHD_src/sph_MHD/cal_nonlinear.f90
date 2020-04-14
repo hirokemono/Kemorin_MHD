@@ -120,8 +120,7 @@
 !
       if(iflag_debug .gt. 0) write(*,*) 'sum_forces_to_explicit'
       call sum_forces_to_explicit                                       &
-     &   (SPH_MHD%sph%sph_rj, SPH_model%MHD_prop%fl_prop,               &
-     &    SPH_MHD%ipol, SPH_MHD%fld)
+     &   (SPH_model%MHD_prop%fl_prop, SPH_MHD%ipol, SPH_MHD%fld)
 !
       end subroutine nonlinear
 !*
@@ -239,8 +238,7 @@
      &   (sph%sph_rj, sph_MHD_bc, MHD_prop,                             &
      &    trans_p%leg, ref_temp, ref_comp, ipol, rj_fld)
 !
-      call licv_forces_to_explicit                                      &
-     &   (sph%sph_rj, MHD_prop%fl_prop, ipol, rj_fld)
+      call licv_forces_to_explicit(MHD_prop%fl_prop, ipol, rj_fld)
 !
 !
       end subroutine licv_exp

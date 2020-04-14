@@ -47,7 +47,7 @@
       use t_phys_address
       use t_phys_data
 !
-      use cal_r_buoyancies_on_sph
+      use self_buoyancy_w_fil_on_sph
 !
       type(fluid_property), intent(in) :: fl_prop
       type(sph_boundary_type), intent(in) :: sph_bc_U
@@ -61,9 +61,9 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      call s_cal_r_buoyancies_on_sph(sph_bc_U%kr_in, sph_rj, ipol,      &
+      call r_buoyancy_on_sphere_w_filter(sph_bc_U%kr_in, sph_rj, ipol,  &
      &    fl_prop, ref_param_T, ref_param_C, rj_fld)
-      call s_cal_r_buoyancies_on_sph(sph_bc_U%kr_out, sph_rj, ipol,     &
+      call r_buoyancy_on_sphere_w_filter(sph_bc_U%kr_out, sph_rj, ipol, &
      &    fl_prop, ref_param_T, ref_param_C, rj_fld)
 !
 !$omp parallel

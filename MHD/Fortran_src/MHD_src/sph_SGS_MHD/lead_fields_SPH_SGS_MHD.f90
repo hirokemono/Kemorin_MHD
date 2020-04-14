@@ -57,10 +57,10 @@
 !
       use t_sph_mhd_monitor_data_IO
       use sph_transforms_4_MHD
-      use cal_buoyancies_sph_MHD
       use cal_energy_flux_rtp
       use swap_phi_order_4_sph_trans
       use lead_fields_4_sph_mhd
+      use self_buoyancy_w_filter_sph
 !
       type(SGS_paremeters), intent(in) :: SGS_par
       type(sph_mhd_monitor_data), intent(in) :: monitor
@@ -75,10 +75,9 @@
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !
 !
-      call sel_buoyancies_sph_MHD                                       &
+      call cal_self_buoyancy_sph_SGS_MHD                                &
      &   (SPH_MHD%sph%sph_rj, trans_p%leg, SPH_MHD%ipol,                &
-     &    MHD_prop%fl_prop, MHD_prop%ref_param_T, MHD_prop%ref_param_C, &
-     &    sph_MHD_bc%sph_bc_U, SPH_MHD%fld)
+     &    MHD_prop, sph_MHD_bc%sph_bc_U, SPH_MHD%fld)
 !
       if(MHD_prop%fl_prop%iflag_scheme .gt. id_no_evolution) then
         call pressure_SGS_SPH_MHD                                       &
@@ -120,6 +119,7 @@
       use cal_div_of_SGS_forces
       use const_sph_radial_grad
       use cal_sph_rotation_of_SGS
+      use self_buoyancy_w_filter_sph
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(MHD_evolution_param), intent(in) :: MHD_prop
@@ -137,6 +137,9 @@
       call cal_div_of_forces_sph_2                                      &
      &   (sph%sph_rj, r_2nd, MHD_prop, sph_MHD_bc,                      &
      &    leg%g_sph_rj, ipol, rj_fld)
+      call cal_div_buoyancy_w_fil_sph_2                                 &
+     &   (sph%sph_rj, r_2nd, MHD_prop, sph_MHD_bc%sph_bc_U,             &
+     &   leg%g_sph_rj, ipol, rj_fld)
 !
       call s_const_radial_forces_on_bc(sph%sph_rj, leg%g_sph_rj,        &
      &    MHD_prop%fl_prop, sph_MHD_bc%sph_bc_U, MHD_prop%ref_param_T,  &

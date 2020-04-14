@@ -89,9 +89,9 @@
      &          ipol, sph_MHD_mat, WK, rj_fld)
 !
       use sph_transforms_4_MHD
-      use cal_buoyancies_sph_MHD
       use cal_energy_flux_rtp
       use swap_phi_order_4_sph_trans
+      use cal_self_buoyancies_sph
 !
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
@@ -108,8 +108,8 @@
 !
 !
       call sel_buoyancies_sph_MHD                                       &
-     &   (sph%sph_rj, trans_p%leg, ipol, MHD_prop%fl_prop,              &
-     &    MHD_prop%ref_param_T, MHD_prop%ref_param_C,                   &
+     &   (sph%sph_rj, trans_p%leg, ipol%base, ipol%forces,              &
+     &    MHD_prop%fl_prop, MHD_prop%ref_param_T, MHD_prop%ref_param_C, &
      &    sph_MHD_bc%sph_bc_U, rj_fld)
 !
       if(MHD_prop%fl_prop%iflag_scheme .gt. id_no_evolution) then
@@ -136,7 +136,6 @@
      &         (sph, comms_sph, MHD_prop, trans_p, WK, rj_fld)
 !
       use sph_transforms_4_MHD
-      use cal_buoyancies_sph_MHD
       use cal_energy_flux_rtp
       use swap_phi_order_4_sph_trans
 !

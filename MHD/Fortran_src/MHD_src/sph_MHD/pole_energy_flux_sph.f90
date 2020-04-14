@@ -21,6 +21,10 @@
 !!        type(reference_scalar_param), intent(in) :: ref_param_C
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_data), intent(inout) :: nod_fld
+!!
+!!      subroutine pole_sph_buoyancy_flux                               &
+!!     &        (numnod, internal_node, xx, nnod_rtp, nidx_rtp_r, coef, &
+!!     &         ncomp_nod, i_temp, i_velo, i_buo_flux, d_nod)
 !!@endverbatim
 !
       module pole_energy_flux_sph
@@ -35,8 +39,6 @@
       use t_phys_data
 !
       implicit  none
-!
-      private :: pole_sph_buoyancy_flux
 !
 ! -----------------------------------------------------------------------
 !

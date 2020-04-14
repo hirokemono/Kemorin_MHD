@@ -98,6 +98,7 @@
       use sum_rotation_of_forces
       use cal_nonlinear
       use cal_sph_dynamic_SGS
+      use add_filter_buoyancy_2_force
 !
       integer(kind = kint), intent(in) :: i_step
       type(SGS_paremeters), intent(in) :: SGS_par
@@ -143,8 +144,12 @@
 !
       if(iflag_debug .gt. 0) write(*,*) 'sum_forces_to_explicit'
       call sum_forces_to_explicit                                       &
-     &   (SPH_MHD%sph%sph_rj, SPH_model%MHD_prop%fl_prop,               &
-     &    SPH_MHD%ipol, SPH_MHD%fld)
+     &   (SPH_model%MHD_prop%fl_prop, SPH_MHD%ipol, SPH_MHD%fld)
+!
+!    ---- Add filtered rotation of forces
+      if(iflag_debug .gt. 0) write(*,*) 'add_filtered_buo_to_explicit'
+      call add_filtered_buo_to_explicit                                 &
+&       (SPH_model%MHD_prop%fl_prop, SPH_MHD%ipol, SPH_MHD%fld)
 !
       if(SGS_par%model_p%iflag_SGS .gt. id_SGS_none) then
         if(iflag_debug .gt. 0) write(*,*)                               &

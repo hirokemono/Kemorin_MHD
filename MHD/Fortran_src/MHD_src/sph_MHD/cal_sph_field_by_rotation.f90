@@ -128,7 +128,7 @@
 !
       use t_control_parameter
       use const_sph_divergence
-!      use diff_self_buoyancy_sph_SGS
+!      use div_self_buoyancies_sph
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
@@ -156,6 +156,34 @@
      &      ipol%forces%i_coriolis, ipol%div_forces%i_Coriolis, rj_fld)
       end if
 !
+      call cal_div_of_buoyancies_sph_2(sph_rj, r_2nd,                   &
+     &    MHD_prop, sph_MHD_bc, g_sph_rj, ipol, rj_fld)
+!
+!      call sel_div_buoyancies_sph_MHD                                  &
+!     &   (sph_rj, ipol%base, ipol%grad_fld, ipol%div_forces,           &
+!     &    MHD_prop%fl_prop, MHD_prop%ref_param_T, MHD_prop%ref_param_C,&
+!     &    sph_MHD_bc%sph_bc_U, rj_fld)
+!
+      end subroutine cal_div_of_forces_sph_2
+!
+! -----------------------------------------------------------------------
+!
+      subroutine cal_div_of_buoyancies_sph_2(sph_rj, r_2nd,             &
+     &          MHD_prop, sph_MHD_bc, g_sph_rj, ipol, rj_fld)
+!
+      use t_control_parameter
+      use const_sph_divergence
+!
+      type(sph_rj_grid), intent(in) ::  sph_rj
+      type(fdm_matrices), intent(in) :: r_2nd
+      type(MHD_evolution_param), intent(in) :: MHD_prop
+      type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
+      type(phys_address), intent(in) :: ipol
+      real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
+!
+      type(phys_data), intent(inout) :: rj_fld
+!
+!
       if(MHD_prop%fl_prop%iflag_4_gravity .gt. id_turn_OFF) then
         call const_sph_div_force                                        &
      &     (sph_rj, r_2nd, sph_MHD_bc%sph_bc_U, g_sph_rj,               &
@@ -168,26 +196,7 @@
      &      ipol%forces%i_comp_buo, ipol%div_forces%i_comp_buo, rj_fld)
       end if
 !
-!
-      if(MHD_prop%fl_prop%iflag_4_filter_gravity .gt. id_turn_OFF) then
-        call const_sph_div_force                                        &
-     &     (sph_rj, r_2nd, sph_MHD_bc%sph_bc_U, g_sph_rj,               &
-     &      ipol%force_by_filter%i_buoyancy,                            &
-     &      ipol%div_frc_by_filter%i_buoyancy, rj_fld)
-      end if
-!
-      if(MHD_prop%fl_prop%iflag_4_filter_comp_buo                       &
-     &                           .gt. id_turn_OFF) then
-        call const_sph_div_force                                        &
-     &     (sph_rj, r_2nd, sph_MHD_bc%sph_bc_U, g_sph_rj,               &
-     &      ipol%force_by_filter%i_comp_buo,                            &
-     &      ipol%div_frc_by_filter%i_comp_buo, rj_fld)
-      end if
-!
-!      call cal_div_self_buo_sph_SGS_MHD                                &
-!     &   (sph_rj, ipol, MHD_prop%, sph_MHD_bc%sph_bc_U, rj_fld)
-!
-      end subroutine cal_div_of_forces_sph_2
+      end subroutine cal_div_of_buoyancies_sph_2
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------

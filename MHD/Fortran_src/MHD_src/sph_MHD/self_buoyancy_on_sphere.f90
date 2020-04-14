@@ -1,5 +1,5 @@
-!>@file   cal_r_buoyancies_on_sph.f90
-!!@brief  module cal_r_buoyancies_on_sph
+!>@file   self_buoyancy_on_sphere.f90
+!!@brief  module self_buoyancy_on_sphere
 !!
 !!@author H. Matsui
 !!@date    programmed by H.Matsui in Oct., 2009
@@ -7,19 +7,24 @@
 !>@brief Evaluate buoyancy at specific radius
 !!
 !!@verbatim
-!!      subroutine s_cal_r_buoyancies_on_sph(kr, sph_rj, ipol,          &
+!!      subroutine r_buoyancy_on_sphere                                 &
+!!     &         (kr, sph_rj, ipol_base, ipol_div_frc,                  &
 !!     &          fl_prop, ref_param_T, ref_param_C, rj_fld)
 !!        type(fluid_property), intent(in) :: fl_prop
 !!        type(reference_scalar_param), intent(in) :: ref_param_T
 !!        type(reference_scalar_param), intent(in) :: ref_param_C
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
-!!        type(phys_address), intent(in) :: ipol
+!!        type(base_field_address), intent(in) :: ipol_base
+!!        type(base_force_address), intent(in) :: ipol_div_frc
 !!        type(phys_data), intent(inout) :: rj_fld
+!!
+!!      subroutine cal_r_buoyancy_on_sphere(kr, coef, is_fld, is_fr,    &
+!!     &          nidx_rj, radius_1d_rj_r, nnod_rj, ntot_phys_rj, d_rj)
 !!@endverbatim
 !!
 !!@param kr  Radial grid ID
 !
-      module cal_r_buoyancies_on_sph
+      module self_buoyancy_on_sphere
 !
       use m_precision
 !
@@ -28,7 +33,7 @@
 !
       implicit  none
 !
-      private :: cal_r_double_buoyancy_on_sph, cal_r_buoyancy_on_sph
+      private :: cal_r_double_buo_on_sphere
 !
 !-----------------------------------------------------------------------
 !
@@ -36,13 +41,15 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_cal_r_buoyancies_on_sph(kr, sph_rj, ipol,            &
+      subroutine r_buoyancy_on_sphere                                   &
+     &         (kr, sph_rj, ipol_base, ipol_div_frc,                    &
      &          fl_prop, ref_param_T, ref_param_C, rj_fld)
 !
       use t_physical_property
       use t_reference_scalar_param
       use t_spheric_rj_data
-      use t_phys_address
+      use t_base_field_labels
+      use t_base_force_labels
       use t_phys_data
 !
       integer(kind= kint), intent(in) :: kr
@@ -50,7 +57,8 @@
       type(reference_scalar_param), intent(in) :: ref_param_T
       type(reference_scalar_param), intent(in) :: ref_param_C
       type(sph_rj_grid), intent(in) ::  sph_rj
-      type(phys_address), intent(in) :: ipol
+      type(base_field_address), intent(in) :: ipol_base
+      type(base_force_address), intent(in) :: ipol_div_frc
       type(phys_data), intent(inout) :: rj_fld
 !
       integer(kind = kint) :: ipol_temp,  ipol_comp
@@ -58,65 +66,49 @@
 !
       if    (ref_param_T%iflag_reference .eq. id_sphere_ref_temp        &
      &  .or. ref_param_T%iflag_reference .eq. id_takepiro_temp) then
-        ipol_temp =  ipol%base%i_per_temp
+        ipol_temp =  ipol_base%i_per_temp
       else
-        ipol_temp =  ipol%base%i_temp
+        ipol_temp =  ipol_base%i_temp
       end if
 !
       if    (ref_param_C%iflag_reference .eq. id_sphere_ref_temp        &
      &  .or. ref_param_C%iflag_reference .eq. id_takepiro_temp) then
-        ipol_comp =  ipol%base%i_per_light
+        ipol_comp =  ipol_base%i_per_light
       else
-        ipol_comp =  ipol%base%i_light
+        ipol_comp =  ipol_base%i_light
       end if
 !
       if ((fl_prop%iflag_4_gravity * fl_prop%iflag_4_composit_buo)      &
      &       .gt. id_turn_OFF) then
         if (iflag_debug.eq.1)                                           &
-     &      write(*,*)'cal_r_double_buoyancy_on_sph', ipol_temp
-        call cal_r_double_buoyancy_on_sph                               &
+     &      write(*,*)'cal_r_double_buo_on_sphere', ipol_temp
+        call cal_r_double_buo_on_sphere                                 &
      &     (kr, fl_prop%coef_buo, fl_prop%coef_comp_buo,                &
-     &      ipol_temp, ipol_comp, ipol%div_forces%i_buoyancy,           &
+     &      ipol_temp, ipol_comp, ipol_div_frc%i_buoyancy,              &
      &      sph_rj%nidx_rj, sph_rj%radius_1d_rj_r,                      &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
       else if (fl_prop%iflag_4_gravity .gt. id_turn_OFF) then
-        if (iflag_debug.eq.1) write(*,*) 'cal_r_buoyancy_on_sph'
-        call cal_r_buoyancy_on_sph(kr, fl_prop%coef_buo,                &
-     &      ipol_temp, ipol%div_forces%i_buoyancy,                      &
+        if (iflag_debug.eq.1) write(*,*) 'cal_r_buoyancy_on_sphere'
+        call cal_r_buoyancy_on_sphere(kr, fl_prop%coef_buo,             &
+     &      ipol_temp, ipol_div_frc%i_buoyancy,                         &
      &      sph_rj%nidx_rj, sph_rj%radius_1d_rj_r,                      &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
       else if (fl_prop%iflag_4_composit_buo .gt. id_turn_OFF) then
-        if (iflag_debug.eq.1) write(*,*) 'cal_r_buoyancy_on_sph'
-        call cal_r_buoyancy_on_sph(kr, fl_prop%coef_comp_buo,           &
-     &      ipol_comp, ipol%div_forces%i_comp_buo,                      &
+        if (iflag_debug.eq.1) write(*,*) 'cal_r_buoyancy_on_sphere'
+        call cal_r_buoyancy_on_sphere(kr, fl_prop%coef_comp_buo,        &
+     &      ipol_comp, ipol_div_frc%i_comp_buo,                         &
      &      sph_rj%nidx_rj, sph_rj%radius_1d_rj_r,                      &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !
-      if (fl_prop%iflag_4_filter_gravity .gt. id_turn_OFF) then
-        if (iflag_debug.eq.1) write(*,*) 'cal_r_buoyancy_on_sph'
-        call cal_r_buoyancy_on_sph(kr, fl_prop%coef_buo,                &
-     &      ipol%filter_fld%i_temp, ipol%div_frc_by_filter%i_buoyancy,  &
-     &      sph_rj%nidx_rj, sph_rj%radius_1d_rj_r,                      &
-     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
-      end if
-!
-      if (fl_prop%iflag_4_filter_comp_buo .gt. id_turn_OFF) then
-        if (iflag_debug.eq.1) write(*,*) 'cal_r_buoyancy_on_sph'
-        call cal_r_buoyancy_on_sph(kr, fl_prop%coef_comp_buo,           &
-     &      ipol%filter_fld%i_light, ipol%div_frc_by_filter%i_comp_buo, &
-     &      sph_rj%nidx_rj, sph_rj%radius_1d_rj_r,                      &
-     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
-      end if
-!
-      end subroutine s_cal_r_buoyancies_on_sph
+      end subroutine r_buoyancy_on_sphere
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine cal_r_double_buoyancy_on_sph                           &
+      subroutine cal_r_double_buo_on_sphere                             &
      &         (kr, coef_buo, coef_comp_buo, is_t, is_c, is_fr,         &
      &          nidx_rj, radius_1d_rj_r, nnod_rj, ntot_phys_rj, d_rj)
 !
@@ -139,11 +131,11 @@
       end do
 !$omp end parallel do
 !
-      end subroutine cal_r_double_buoyancy_on_sph
+      end subroutine cal_r_double_buo_on_sphere
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_r_buoyancy_on_sph(kr, coef, is_fld, is_fr,         &
+      subroutine cal_r_buoyancy_on_sphere(kr, coef, is_fld, is_fr,      &
      &          nidx_rj, radius_1d_rj_r, nnod_rj, ntot_phys_rj, d_rj)
 !
       integer(kind= kint), intent(in) :: is_fld, is_fr, kr
@@ -163,8 +155,8 @@
       end do
 !$omp end parallel do
 !
-      end subroutine cal_r_buoyancy_on_sph
+      end subroutine cal_r_buoyancy_on_sphere
 !
 !-----------------------------------------------------------------------
 !
-      end module cal_r_buoyancies_on_sph
+      end module self_buoyancy_on_sphere

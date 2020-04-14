@@ -71,7 +71,7 @@
      &         (dt, sph_rj, r_2nd, MHD_prop, sph_MHD_bc, leg,           &
      &          ipol, sph_MHD_mat, rj_fld)
 !
-      use diff_self_buoyancy_sph_SGS
+      use self_buoyancy_w_filter_sph
       use cal_sol_sph_fluid_crank
       use const_sph_radial_grad
 !
@@ -176,7 +176,7 @@
      &          MHD_prop, sph_MHD_bc, leg, ipol, rj_fld)
 !
       use const_sph_radial_grad
-      use diff_self_buoyancy_sph_SGS
+      use self_buoyancy_w_filter_sph
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
