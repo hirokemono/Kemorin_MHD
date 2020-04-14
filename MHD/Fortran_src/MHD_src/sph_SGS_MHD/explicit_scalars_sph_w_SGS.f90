@@ -13,8 +13,7 @@
 !!     &          rj_fld)
 !!      subroutine explicit_scalars_sph_SGS_euler(dt, SGS_param,        &
 !!     &          sph_rj, ht_prop, cp_prop, sph_bc_T, sph_bc_C,         &
-!!     &          ipol_base, ipol_exp, ipol_frc, ipol_dif, ipol_div_SGS,&
-!!     &          rj_fld)
+!!     &          ipol_base, ipol_frc, ipol_dif, ipol_div_SGS, rj_fld)
 !!      subroutine first_scalars_SGS_prev_adams(SGS_param,              &
 !!     &          sph_rj, ht_prop, cp_prop, sph_bc_T, sph_bc_C,         &
 !!     &          ipol_base, ipol_exp, ipol_frc, ipol_div_SGS, rj_fld)
@@ -128,8 +127,7 @@
 !
       subroutine explicit_scalars_sph_SGS_euler(dt, SGS_param,          &
      &          sph_rj, ht_prop, cp_prop, sph_bc_T, sph_bc_C,           &
-     &          ipol_base, ipol_exp, ipol_frc, ipol_dif, ipol_div_SGS,  &
-     &          rj_fld)
+     &          ipol_base, ipol_frc, ipol_dif, ipol_div_SGS, rj_fld)
 !
       use select_SGS_diff_adv_source
 !
@@ -140,7 +138,6 @@
       type(scalar_property), intent(in) :: ht_prop, cp_prop
       type(sph_boundary_type), intent(in) :: sph_bc_T, sph_bc_C
       type(base_field_address), intent(in) :: ipol_base
-      type(explicit_term_address), intent(in) :: ipol_exp
       type(base_force_address), intent(in) :: ipol_frc
       type(diffusion_address), intent(in) :: ipol_dif
       type(SGS_term_address), intent(in) :: ipol_div_SGS

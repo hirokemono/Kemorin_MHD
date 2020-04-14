@@ -147,8 +147,7 @@
       call explicit_scalars_sph_SGS_euler(dt, SGS_param,                &
      &    sph_rj, MHD_prop%ht_prop, MHD_prop%cp_prop,                   &
      &    sph_MHD_bc%sph_bc_T, sph_MHD_bc%sph_bc_C,                     &
-     &    ipol%base, ipol%exp_work, ipol%forces, ipol%diffusion,        &
-     &    ipol%div_SGS, rj_fld)
+     &    ipol%base, ipol%forces, ipol%diffusion, ipol%div_SGS, rj_fld)
 !
       end subroutine cal_explicit_sph_SGS_euler
 !

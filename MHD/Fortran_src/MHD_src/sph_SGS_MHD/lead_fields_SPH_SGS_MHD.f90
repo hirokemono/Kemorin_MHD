@@ -117,6 +117,7 @@
       use cal_sph_field_by_rotation
       use const_radial_forces_on_bc
       use cal_div_of_forces
+      use cal_div_of_SGS_forces
       use const_sph_radial_grad
       use cal_sph_rotation_of_SGS
 !
@@ -137,24 +138,20 @@
      &   (sph%sph_rj, r_2nd, MHD_prop, sph_MHD_bc,                      &
      &    leg%g_sph_rj, ipol, rj_fld)
 !
-!   ----  Lead SGS terms
-      if(SGS_param%iflag_SGS .gt. id_SGS_none) then
-        call cal_div_of_SGS_forces_sph_2                                &
-     &     (sph%sph_rj, r_2nd, sph_MHD_bc, leg%g_sph_rj, ipol, rj_fld)
-        call sum_div_of_SGS_forces(MHD_prop%fl_prop, ipol, rj_fld)
-      end if
-!
       call s_const_radial_forces_on_bc(sph%sph_rj, leg%g_sph_rj,        &
      &    MHD_prop%fl_prop, sph_MHD_bc%sph_bc_U, MHD_prop%ref_param_T,  &
      &    MHD_prop%ref_param_C, ipol, rj_fld)
 !
-      call sum_div_of_forces(MHD_prop%fl_prop, ipol, rj_fld)
+      call sum_div_of_forces                                            &
+     &   (MHD_prop%fl_prop, ipol%base, ipol%div_forces, rj_fld)
+      call add_div_of_filtered_buoyancies                               &
+     &   (MHD_prop%fl_prop, ipol%base, ipol%div_frc_by_filter, rj_fld)
 !
-!   ----  Lead SGS terms
+!   ----  Add divegence of SGS terms
       if(SGS_param%iflag_SGS .gt. id_SGS_none) then
         call cal_div_of_SGS_forces_sph_2                                &
      &     (sph%sph_rj, r_2nd, sph_MHD_bc, leg%g_sph_rj, ipol, rj_fld)
-        call sum_div_of_SGS_forces(MHD_prop%fl_prop, ipol, rj_fld)
+        call sum_div_of_SGS_forces(ipol%base, ipol%div_SGS, rj_fld)
       end if
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_sol_pressure_by_div_v'

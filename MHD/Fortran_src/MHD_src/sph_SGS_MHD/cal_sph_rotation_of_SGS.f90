@@ -125,7 +125,6 @@
       subroutine cal_div_of_SGS_forces_sph_2                            &
      &         (sph_rj, r_2nd, sph_MHD_bc, g_sph_rj, ipol, rj_fld)
 !
-      use cal_div_buoyancies_sph_MHD
       use const_sph_divergence
 !
       type(sph_rj_grid), intent(in) ::  sph_rj

@@ -114,7 +114,7 @@
           call add_buoyancy_to_vort_force                               &
      &       (ipol%exp_work, ipol%rot_frc_by_filter%i_comp_buo,         &
      &        sph_rj%nnod_rj, rj_fld%ntot_phys, rj_fld%d_fld)
-      end if
+        end if
 !$omp end parallel
       end if
 !

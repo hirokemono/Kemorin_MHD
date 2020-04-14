@@ -34,11 +34,7 @@ cal_buoyancies_sph_MHD.o: $(MHD_SPH_DIR)/cal_buoyancies_sph_MHD.f90 m_precision.
 	$(F90) -c $(F90OPTFLAGS) $<
 cal_diff_adv_src_explicit.o: $(MHD_SPH_DIR)/cal_diff_adv_src_explicit.f90 m_precision.o m_constants.o m_t_step_parameter.o
 	$(F90) -c $(F90OPTFLAGS) $<
-cal_div_buoyancies_sph_MHD.o: $(MHD_SPH_DIR)/cal_div_buoyancies_sph_MHD.f90 m_precision.o m_machine_parameter.o m_constants.o t_physical_property.o t_reference_scalar_param.o t_spheric_rj_data.o t_phys_address.o t_phys_data.o t_boundary_params_sph_MHD.o
-	$(F90) -c $(F90OPTFLAGS) $<
-cal_div_of_forces.o: $(MHD_SPH_DIR)/cal_div_of_forces.f90 m_precision.o t_phys_address.o t_physical_property.o t_phys_data.o
-	$(F90) -c $(F90OPTFLAGS) $<
-cal_div_r_const_buo_sph.o: $(MHD_SPH_DIR)/cal_div_r_const_buo_sph.f90 m_precision.o m_machine_parameter.o m_constants.o t_physical_property.o t_reference_scalar_param.o t_spheric_rj_data.o t_phys_address.o t_phys_data.o t_boundary_params_sph_MHD.o
+cal_div_of_forces.o: $(MHD_SPH_DIR)/cal_div_of_forces.f90 m_precision.o t_base_field_labels.o t_base_force_labels.o t_physical_property.o t_phys_data.o
 	$(F90) -c $(F90OPTFLAGS) $<
 cal_energy_flux_rj.o: $(MHD_SPH_DIR)/cal_energy_flux_rj.f90 m_precision.o m_constants.o t_spheric_rj_data.o t_phys_address.o t_phys_data.o t_fdm_coefs.o t_boundary_data_sph_MHD.o const_sph_radial_grad.o copy_nodal_fields.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -60,11 +56,7 @@ cal_r_buoyancies_on_sph.o: $(MHD_SPH_DIR)/cal_r_buoyancies_on_sph.f90 m_precisio
 	$(F90) -c $(F90OPTFLAGS) $<
 cal_radial_filtering_data.o: $(MHD_SPH_DIR)/cal_radial_filtering_data.f90 m_precision.o m_constants.o m_machine_parameter.o calypso_mpi.o t_filter_coefficients.o t_spheric_parameter.o t_group_data.o radial_int_for_sph_spec.o m_ludcmp.o
 	$(F90) -c $(F90OPTFLAGS) $<
-cal_rot_buoyancies_sph_MHD.o: $(MHD_SPH_DIR)/cal_rot_buoyancies_sph_MHD.f90 m_precision.o m_machine_parameter.o m_constants.o t_physical_property.o t_spheric_rj_data.o t_phys_address.o t_phys_data.o t_boundary_params_sph_MHD.o
-	$(F90) -c $(F90OPTFLAGS) $<
-cal_rot_r_const_buo_sph.o: $(MHD_SPH_DIR)/cal_rot_r_const_buo_sph.f90 m_precision.o m_machine_parameter.o m_constants.o t_physical_property.o t_reference_scalar_param.o t_spheric_rj_data.o t_phys_address.o t_phys_data.o t_boundary_params_sph_MHD.o
-	$(F90) -c $(F90OPTFLAGS) $<
-cal_sol_sph_MHD_crank.o: $(MHD_SPH_DIR)/cal_sol_sph_MHD_crank.f90 m_precision.o calypso_mpi.o m_machine_parameter.o const_sph_radial_grad.o const_sph_rotation.o const_sph_diffusion.o t_control_parameter.o t_physical_property.o t_spheric_rj_data.o t_phys_address.o t_phys_data.o t_fdm_coefs.o t_boundary_data_sph_MHD.o t_boundary_params_sph_MHD.o t_radial_matrices_sph_MHD.o t_coef_fdm2_MHD_boundaries.o t_work_4_sph_trans.o cal_rot_buoyancies_sph_MHD.o cal_sol_sph_fluid_crank.o cal_inner_core_rotation.o
+cal_sol_sph_MHD_crank.o: $(MHD_SPH_DIR)/cal_sol_sph_MHD_crank.f90 m_precision.o calypso_mpi.o m_machine_parameter.o const_sph_radial_grad.o const_sph_rotation.o const_sph_diffusion.o t_control_parameter.o t_physical_property.o t_spheric_rj_data.o t_phys_address.o t_phys_data.o t_fdm_coefs.o t_boundary_data_sph_MHD.o t_boundary_params_sph_MHD.o t_radial_matrices_sph_MHD.o t_coef_fdm2_MHD_boundaries.o t_work_4_sph_trans.o diff_self_buoyancy_sph_SGS.o cal_sol_sph_fluid_crank.o cal_inner_core_rotation.o
 	$(F90) -c $(F90OPTFLAGS) $<
 cal_sol_sph_fluid_crank.o: $(MHD_SPH_DIR)/cal_sol_sph_fluid_crank.f90 m_precision.o calypso_mpi.o m_machine_parameter.o t_spheric_rj_data.o t_phys_address.o t_phys_data.o t_fdm_coefs.o t_sph_matrices.o t_boundary_sph_spectr.o t_boundary_data_sph_MHD.o t_coef_fdm2_MHD_boundaries.o set_reference_sph_mhd.o lubksb_357band_mul.o copy_field_smp.o solve_sph_fluid_crank.o set_evoluved_boundaries.o select_exp_velocity_ICB.o select_exp_velocity_CMB.o select_exp_magne_ICB.o select_exp_magne_CMB.o t_physical_property.o t_sph_center_matrix.o t_boundary_params_sph_MHD.o fill_scalar_field.o select_exp_scalar_ICB.o select_exp_scalar_CMB.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -92,7 +84,7 @@ cal_sph_exp_rotation.o: $(MHD_SPH_DIR)/cal_sph_exp_rotation.f90 m_precision.o m_
 	$(F90) -c $(F90OPTFLAGS) $<
 cal_sph_exp_rotation_s4t2.o: $(MHD_SPH_DIR)/cal_sph_exp_rotation_s4t2.f90 m_precision.o m_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
-cal_sph_field_by_rotation.o: $(MHD_SPH_DIR)/cal_sph_field_by_rotation.f90 m_precision.o m_constants.o m_machine_parameter.o t_spheric_rj_data.o t_phys_address.o t_phys_data.o t_fdm_coefs.o t_schmidt_poly_on_rtm.o t_boundary_data_sph_MHD.o t_boundary_params_sph_MHD.o t_coef_fdm2_MHD_boundaries.o calypso_mpi.o const_sph_radial_grad.o const_sph_rotation.o cal_inner_core_rotation.o t_control_parameter.o cal_div_buoyancies_sph_MHD.o const_sph_divergence.o
+cal_sph_field_by_rotation.o: $(MHD_SPH_DIR)/cal_sph_field_by_rotation.f90 m_precision.o m_constants.o m_machine_parameter.o t_spheric_rj_data.o t_phys_address.o t_phys_data.o t_fdm_coefs.o t_schmidt_poly_on_rtm.o t_boundary_data_sph_MHD.o t_boundary_params_sph_MHD.o t_coef_fdm2_MHD_boundaries.o calypso_mpi.o const_sph_radial_grad.o const_sph_rotation.o cal_inner_core_rotation.o t_control_parameter.o const_sph_divergence.o
 	$(F90) -c $(F90OPTFLAGS) $<
 cal_sph_model_coefs.o: $(MHD_SPH_DIR)/cal_sph_model_coefs.f90 m_precision.o m_constants.o m_machine_parameter.o calypso_mpi.o m_phys_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -146,6 +138,10 @@ copy_all_trans_send_recv.o: $(MHD_SPH_DIR)/copy_all_trans_send_recv.f90 m_precis
 	$(F90) -c $(F90OPTFLAGS) $<
 copy_fields_from_sph_trans.o: $(MHD_SPH_DIR)/copy_fields_from_sph_trans.f90 m_precision.o m_machine_parameter.o m_phys_constants.o t_geometry_data.o t_phys_address.o t_phys_data.o t_spheric_rtp_data.o t_addresses_sph_transform.o copy_nodal_fld_4_sph_trans.o
 	$(F90) -c $(F90OPTFLAGS) $<
+div_r_const_buoyancies_sph.o: $(MHD_SPH_DIR)/div_r_const_buoyancies_sph.f90 m_precision.o m_machine_parameter.o m_constants.o t_physical_property.o t_reference_scalar_param.o t_spheric_rj_data.o t_base_field_labels.o t_base_force_labels.o t_grad_field_labels.o t_phys_data.o t_boundary_params_sph_MHD.o
+	$(F90) -c $(F90OPTFLAGS) $<
+div_self_buoyancies_sph.o: $(MHD_SPH_DIR)/div_self_buoyancies_sph.f90 m_precision.o m_machine_parameter.o m_constants.o t_physical_property.o t_reference_scalar_param.o t_spheric_rj_data.o t_base_field_labels.o t_base_force_labels.o t_grad_field_labels.o t_phys_data.o t_boundary_params_sph_MHD.o
+	$(F90) -c $(F90OPTFLAGS) $<
 explicit_scalars_sph.o: $(MHD_SPH_DIR)/explicit_scalars_sph.f90 m_precision.o t_spheric_rj_data.o t_boundary_data_sph_MHD.o t_physical_property.o t_base_field_labels.o t_base_force_labels.o t_diffusion_term_labels.o t_explicit_term_labels.o t_phys_data.o select_diff_adv_source.o
 	$(F90) -c $(F90OPTFLAGS) $<
 field_at_mid_equator.o: $(MHD_SPH_DIR)/field_at_mid_equator.f90 m_precision.o m_constants.o m_machine_parameter.o t_field_on_circle.o t_circle_transform.o m_phys_labels.o t_spheric_parameter.o calypso_mpi.o t_phys_data.o
@@ -170,7 +166,7 @@ input_control_sph_MHD.o: $(MHD_SPH_DIR)/input_control_sph_MHD.f90 m_precision.o 
 	$(F90) -c $(F90OPTFLAGS) $<
 interact_coriolis_rlm.o: $(MHD_SPH_DIR)/interact_coriolis_rlm.f90 m_precision.o m_constants.o m_machine_parameter.o t_gaunt_coriolis_rlm.o cal_gaunt_itgs.o
 	$(F90) -c $(F90OPTFLAGS) $<
-lead_fields_4_sph_mhd.o: $(MHD_SPH_DIR)/lead_fields_4_sph_mhd.f90 m_precision.o m_machine_parameter.o t_control_parameter.o t_spheric_parameter.o t_sph_trans_comm_tbl.o t_phys_address.o t_phys_data.o t_fdm_coefs.o t_addresses_sph_transform.o t_sph_trans_arrays_MHD.o t_sph_matrices.o t_schmidt_poly_on_rtm.o t_work_4_sph_trans.o t_sph_transforms.o t_boundary_data_sph_MHD.o t_radial_matrices_sph_MHD.o t_sph_mhd_monitor_data_IO.o sph_transforms_4_MHD.o cal_buoyancies_sph_MHD.o cal_energy_flux_rtp.o swap_phi_order_4_sph_trans.o cal_sol_sph_fluid_crank.o cal_sph_field_by_rotation.o const_radial_forces_on_bc.o cal_div_of_forces.o const_sph_radial_grad.o sph_transforms_snapshot.o cal_energy_flux_rj.o cal_force_with_SGS_rj.o sph_poynting_flux_smp.o
+lead_fields_4_sph_mhd.o: $(MHD_SPH_DIR)/lead_fields_4_sph_mhd.f90 m_precision.o m_machine_parameter.o t_control_parameter.o t_spheric_parameter.o t_sph_trans_comm_tbl.o t_phys_address.o t_phys_data.o t_fdm_coefs.o t_addresses_sph_transform.o t_sph_trans_arrays_MHD.o t_sph_matrices.o t_schmidt_poly_on_rtm.o t_work_4_sph_trans.o t_sph_transforms.o t_boundary_data_sph_MHD.o t_radial_matrices_sph_MHD.o t_sph_mhd_monitor_data_IO.o sph_transforms_4_MHD.o cal_buoyancies_sph_MHD.o cal_energy_flux_rtp.o swap_phi_order_4_sph_trans.o cal_sol_sph_fluid_crank.o cal_sph_field_by_rotation.o const_radial_forces_on_bc.o cal_div_of_forces.o cal_div_of_SGS_forces.o const_sph_radial_grad.o sph_transforms_snapshot.o cal_energy_flux_rj.o cal_force_with_SGS_rj.o sph_poynting_flux_smp.o
 	$(F90) -c $(F90OPTFLAGS) $<
 m_SPH_MHD_model_data.o: $(MHD_SPH_DIR)/m_SPH_MHD_model_data.f90 m_precision.o t_SPH_MHD_model_data.o t_SPH_mesh_field_data.o t_FEM_mesh_field_data.o t_work_SPH_MHD.o t_viz_sections.o t_SPH_MHD_zonal_mean_viz.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -179,6 +175,10 @@ m_jacobians_VIZ.o: $(MHD_SPH_DIR)/m_jacobians_VIZ.f90 m_constants.o m_precision.
 pole_energy_flux_sph.o: $(MHD_SPH_DIR)/pole_energy_flux_sph.f90 m_precision.o m_constants.o t_physical_property.o t_spheric_rtp_data.o t_geometry_data.o t_phys_address.o t_phys_data.o m_machine_parameter.o products_at_poles.o t_reference_scalar_param.o pole_poynting_flux_smp.o
 	$(F90) -c $(F90OPTFLAGS) $<
 pole_poynting_flux_smp.o: $(MHD_SPH_DIR)/pole_poynting_flux_smp.f90 m_precision.o m_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
+rot_r_const_buoyancies_sph.o: $(MHD_SPH_DIR)/rot_r_const_buoyancies_sph.f90 m_precision.o m_machine_parameter.o m_constants.o t_physical_property.o t_reference_scalar_param.o t_spheric_rj_data.o t_base_field_labels.o t_base_force_labels.o t_phys_data.o t_boundary_params_sph_MHD.o
+	$(F90) -c $(F90OPTFLAGS) $<
+rot_self_buoyancies_sph.o: $(MHD_SPH_DIR)/rot_self_buoyancies_sph.f90 m_precision.o m_machine_parameter.o m_constants.o t_physical_property.o t_spheric_rj_data.o t_base_field_labels.o t_base_force_labels.o t_phys_data.o t_boundary_params_sph_MHD.o t_phys_address.o
 	$(F90) -c $(F90OPTFLAGS) $<
 sel_make_SPH_mesh_w_LIC.o: $(MHD_SPH_DIR)/sel_make_SPH_mesh_w_LIC.f90 m_precision.o m_machine_parameter.o calypso_mpi.o t_control_parameter.o t_const_spherical_grid.o t_MHD_file_parameter.o t_MHD_step_parameter.o t_spheric_parameter.o t_spheric_group.o t_mesh_data.o t_phys_data.o t_rms_4_sph_spectr.o t_file_IO_parameter.o t_sph_trans_arrays_MHD.o t_select_make_SPH_mesh.o m_error_IDs.o parallel_load_data_4_sph.o parallel_gen_sph_grids.o mesh_file_name_by_param.o copy_mesh_structures.o mpi_load_mesh_data.o set_loaded_data_4_sph.o t_comm_table.o t_geometry_data.o t_group_data.o m_spheric_constants.o const_FEM_mesh_sph_mhd.o gen_sph_grids_modes.o mesh_IO_select.o set_nnod_4_ele_by_type.o sph_file_IO_select.o para_const_kemoview_mesh.o parallel_sleeve_extension.o
 	$(F90) -c $(F90OPTFLAGS) $<

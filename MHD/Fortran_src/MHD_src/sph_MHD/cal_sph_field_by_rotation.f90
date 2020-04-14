@@ -127,8 +127,8 @@
      &          MHD_prop, sph_MHD_bc, g_sph_rj, ipol, rj_fld)
 !
       use t_control_parameter
-      use cal_div_buoyancies_sph_MHD
       use const_sph_divergence
+!      use diff_self_buoyancy_sph_SGS
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
@@ -184,9 +184,8 @@
      &      ipol%div_frc_by_filter%i_comp_buo, rj_fld)
       end if
 !
-!      call sel_div_buoyancies_sph_MHD(sph_rj, ipol,                    &
-!     &    MHD_prop%fl_prop, MHD_prop%ref_param_T, MHD_prop%ref_param_C,&
-!     &    sph_MHD_bc%sph_bc_U, rj_fld)
+!      call cal_div_self_buo_sph_SGS_MHD                                &
+!     &   (sph_rj, ipol, MHD_prop%, sph_MHD_bc%sph_bc_U, rj_fld)
 !
       end subroutine cal_div_of_forces_sph_2
 !

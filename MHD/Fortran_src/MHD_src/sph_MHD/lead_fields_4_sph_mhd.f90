@@ -178,6 +178,7 @@
       use cal_sph_field_by_rotation
       use const_radial_forces_on_bc
       use cal_div_of_forces
+      use cal_div_of_SGS_forces
       use const_sph_radial_grad
 !
       type(MHD_evolution_param), intent(in) :: MHD_prop
@@ -199,7 +200,10 @@
      &   (sph_rj, leg%g_sph_rj, MHD_prop%fl_prop, sph_MHD_bc%sph_bc_U,  &
      &    MHD_prop%ref_param_T, MHD_prop%ref_param_C, ipol, rj_fld)
 !
-      call sum_div_of_forces(MHD_prop%fl_prop, ipol, rj_fld)
+      call sum_div_of_forces                                            &
+     &    (MHD_prop%fl_prop, ipol%base, ipol%div_forces, rj_fld)
+      call add_div_of_filtered_buoyancies                               &
+     &   (MHD_prop%fl_prop, ipol%base, ipol%div_frc_by_filter, rj_fld)
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_sol_pressure_by_div_v'
       call cal_sol_pressure_by_div_v                                    &
@@ -282,8 +286,8 @@
       call s_cal_energy_flux_rj                                         &
      &   (ltr_crust, sph%sph_rj, r_2nd, sph_MHD_bc, ipol, rj_fld)
 !
-      call s_cal_force_with_SGS_rj(sph%sph_rj,                          &
-     &    ipol%forces, ipol%SGS_term, ipol%frc_w_SGS, rj_fld)
+      call s_cal_force_with_SGS_rj                                      &
+     &   (ipol%forces, ipol%SGS_term, ipol%frc_w_SGS, rj_fld)
 !
       if (iflag_debug.eq.1) write(*,*) 'sph_back_trans_snapshot_MHD'
       call sph_back_trans_snapshot_MHD(sph, comms_sph, trans_p,         &

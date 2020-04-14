@@ -9,8 +9,7 @@
 !!
 !!@verbatim
 !!      subroutine s_cal_force_with_SGS_rj                              &
-!!     &         (sph_rj, ipol_frc, ipol_SGS, ipol_frc_SGS, rj_fld)
-!!        type(sph_rj_grid), intent(in) ::  sph_rj
+!!     &         (ipol_frc, ipol_SGS, ipol_frc_SGS, rj_fld)
 !!        type(fdm_matrices), intent(in) :: r_2nd
 !!        type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
 !!        type(phys_address), intent(in) :: ipol
@@ -22,7 +21,6 @@
       use m_precision
       use m_constants
 !
-      use t_spheric_rj_data
       use t_base_force_labels
       use t_SGS_term_labels
       use t_phys_data
@@ -36,11 +34,10 @@
 ! -----------------------------------------------------------------------
 !
       subroutine s_cal_force_with_SGS_rj                                &
-     &         (sph_rj, ipol_frc, ipol_SGS, ipol_frc_SGS, rj_fld)
+     &         (ipol_frc, ipol_SGS, ipol_frc_SGS, rj_fld)
 !
       use copy_nodal_fields
 !
-      type(sph_rj_grid), intent(in) ::  sph_rj
       type(base_force_address), intent(in) :: ipol_frc
       type(SGS_term_address), intent(in) :: ipol_SGS
       type(SGS_term_address), intent(in) :: ipol_frc_SGS

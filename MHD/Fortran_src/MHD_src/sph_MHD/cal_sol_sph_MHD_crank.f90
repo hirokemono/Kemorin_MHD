@@ -71,7 +71,7 @@
      &         (dt, sph_rj, r_2nd, MHD_prop, sph_MHD_bc, leg,           &
      &          ipol, sph_MHD_mat, rj_fld)
 !
-      use cal_rot_buoyancies_sph_MHD
+      use diff_self_buoyancy_sph_SGS
       use cal_sol_sph_fluid_crank
       use const_sph_radial_grad
 !
@@ -148,8 +148,8 @@
      &     (sph_rj, r_2nd, MHD_prop%fl_prop, sph_MHD_bc%sph_bc_U,       &
      &      sph_MHD_bc%fdm2_free_ICB, sph_MHD_bc%fdm2_free_CMB,         &
      &      leg, ipol, rj_fld)
-        call cal_rot_radial_self_gravity(sph_rj, ipol,                  &
-     &      MHD_prop%fl_prop, sph_MHD_bc%sph_bc_U, rj_fld)
+        call cal_rot_self_buo_sph_SGS_MHD(sph_rj, ipol,                 &
+     &      MHD_prop, sph_MHD_bc%sph_bc_U, rj_fld)
       end if
 !
       if(MHD_prop%ht_prop%iflag_scheme .gt. id_no_evolution) then
@@ -176,7 +176,7 @@
      &          MHD_prop, sph_MHD_bc, leg, ipol, rj_fld)
 !
       use const_sph_radial_grad
-      use cal_rot_buoyancies_sph_MHD
+      use diff_self_buoyancy_sph_SGS
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
@@ -200,9 +200,9 @@
      &     (sph_rj, r_2nd, MHD_prop%fl_prop, sph_MHD_bc%sph_bc_U,       &
      &      sph_MHD_bc%fdm2_free_ICB, sph_MHD_bc%fdm2_free_CMB,         &
      &      leg, ipol, rj_fld)
-        if(iflag_debug.gt.0) write(*,*) 'cal_rot_radial_self_gravity'
-        call cal_rot_radial_self_gravity(sph_rj, ipol,                  &
-     &      MHD_prop%fl_prop, sph_MHD_bc%sph_bc_U, rj_fld)
+        if(iflag_debug.gt.0) write(*,*) 'cal_rot_self_buo_sph_SGS_MHD'
+        call cal_rot_self_buo_sph_SGS_MHD(sph_rj, ipol,                 &
+     &      MHD_prop, sph_MHD_bc%sph_bc_U, rj_fld)
       end if
 !
       if(iflag_debug.gt.0) write(*,*) 'update_after_heat_sph'

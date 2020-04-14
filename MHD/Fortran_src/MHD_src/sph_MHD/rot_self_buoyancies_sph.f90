@@ -1,5 +1,5 @@
-!>@file   cal_rot_buoyancies_sph_MHD.f90
-!!@brief  module cal_rot_buoyancies_sph_MHD
+!>@file   rot_self_buoyancies_sph.f90
+!!@brief  module rot_self_buoyancies_sph
 !!
 !!@author H. Matsui
 !!@date    programmed by H.Matsui in July, 2011
@@ -14,6 +14,10 @@
 !!        type(phys_address), intent(in) :: ipol
 !!        type(sph_boundary_type), intent(in) :: sph_bc_U
 !!        type(phys_data), intent(inout) :: rj_fld
+!!
+!!      subroutine cal_rot_buoyancy_sph_MHD(kr_in, kr_out, coef,        &
+!!     &          is_fld, it_res, nidx_rj, radius_1d_rj_r,              &
+!!     &          nnod_rj, ntot_phys_rj, d_rj)
 !!      subroutine cal_boussinesq_density_sph                           &
 !!     &         (ipol, kr_in, kr_out, coef_buo, coef_comp_buo,         &
 !!     &          nidx_rj, nnod_rj, ntot_phys_rj, d_rj)
@@ -25,7 +29,7 @@
 !!@param kr_in     Radial ID for inner boundary
 !!@param kr_out    Radial ID for outer boundary
 !
-      module cal_rot_buoyancies_sph_MHD
+      module rot_self_buoyancies_sph
 !
       use m_precision
 !
@@ -35,7 +39,6 @@
       implicit  none
 !
       private :: cal_rot_double_buoyancy_sph_MHD
-      private :: cal_rot_buoyancy_sph_MHD
 !
 !-----------------------------------------------------------------------
 !
@@ -43,18 +46,20 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_rot_radial_self_gravity                            &
-     &         (sph_rj, ipol, fl_prop, sph_bc_U, rj_fld)
+      subroutine sel_rot_self_buoyancy_sph(sph_rj,                      &
+     &          ipol_base, ipol_rot_frc, fl_prop, sph_bc_U, rj_fld)
 !
       use t_physical_property
       use t_spheric_rj_data
-      use t_phys_address
+      use t_base_field_labels
+      use t_base_force_labels
       use t_phys_data
       use t_boundary_params_sph_MHD
 !
       type(fluid_property), intent(in) :: fl_prop
       type(sph_rj_grid), intent(in) ::  sph_rj
-      type(phys_address), intent(in) :: ipol
+      type(base_field_address), intent(in) :: ipol_base
+      type(base_force_address), intent(in) :: ipol_rot_frc
       type(sph_boundary_type), intent(in) :: sph_bc_U
       type(phys_data), intent(inout) :: rj_fld
 !
@@ -65,46 +70,37 @@
      &     .gt. id_turn_OFF) then
 !
         if (iflag_debug.eq.1)                                           &
-     &    write(*,*)'cal_rot_double_buoyancy_sph_MHD', ipol%base%i_temp
-          it_rot_buo = ipol%rot_forces%i_buoyancy + 2
+     &    write(*,*)'cal_rot_double_buoyancy_sph_MHD', ipol_base%i_temp
+          it_rot_buo = ipol_rot_frc%i_buoyancy + 2
           call cal_rot_double_buoyancy_sph_MHD                          &
      &      (sph_bc_U%kr_in, sph_bc_U%kr_out,                           &
-     &       fl_prop%coef_buo, ipol%base%i_temp, fl_prop%coef_comp_buo, &
-     &       ipol%base%i_light, it_rot_buo,                             &
+     &       fl_prop%coef_buo, ipol_base%i_temp, fl_prop%coef_comp_buo, &
+     &       ipol_base%i_light, it_rot_buo,                             &
      &       sph_rj%nidx_rj, sph_rj%radius_1d_rj_r,                     &
      &       rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
       else if (fl_prop%iflag_4_gravity .gt. id_turn_OFF) then
 !
         if (iflag_debug.eq.1) write(*,*)                                &
-     &      'cal_rot_buoyancy_sph_MHD', ipol%base%i_temp
-        it_rot_buo = ipol%rot_forces%i_buoyancy + 2
+     &      'cal_rot_buoyancy_sph_MHD', ipol_base%i_temp
+        it_rot_buo = ipol_rot_frc%i_buoyancy + 2
         call cal_rot_buoyancy_sph_MHD                                   &
      &     (sph_bc_U%kr_in, sph_bc_U%kr_out, fl_prop%coef_buo,          &
-     &      ipol%base%i_temp, it_rot_buo,                               &
+     &      ipol_base%i_temp, it_rot_buo,                               &
      &      sph_rj%nidx_rj, sph_rj%radius_1d_rj_r,                      &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
       else if (fl_prop%iflag_4_composit_buo .gt. id_turn_OFF) then
         if (iflag_debug.eq.1) write(*,*)                                &
-     &      'cal_rot_buoyancy_sph_MHD', ipol%base%i_light
-        it_rot_buo = ipol%rot_forces%i_comp_buo + 2
+     &      'cal_rot_buoyancy_sph_MHD', ipol_base%i_light
+        it_rot_buo = ipol_rot_frc%i_comp_buo + 2
         call cal_rot_buoyancy_sph_MHD(sph_bc_U%kr_in, sph_bc_U%kr_out,  &
-     &      fl_prop%coef_comp_buo, ipol%base%i_light, it_rot_buo,       &
-     &      sph_rj%nidx_rj, sph_rj%radius_1d_rj_r,                      &
-     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
-!
-      else if (fl_prop%iflag_4_filter_gravity .gt. id_turn_OFF) then
-        if (iflag_debug.eq.1) write(*,*)                                &
-     &      'cal_rot_buoyancy_sph_MHD', ipol%filter_fld%i_temp
-        it_rot_buo = ipol%rot_frc_by_filter%i_buoyancy + 2
-        call cal_rot_buoyancy_sph_MHD(sph_bc_U%kr_in, sph_bc_U%kr_out,  &
-     &      fl_prop%coef_buo, ipol%filter_fld%i_temp, it_rot_buo,       &
+     &      fl_prop%coef_comp_buo, ipol_base%i_light, it_rot_buo,       &
      &      sph_rj%nidx_rj, sph_rj%radius_1d_rj_r,                      &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !
-      end subroutine cal_rot_radial_self_gravity
+      end subroutine sel_rot_self_buoyancy_sph
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
@@ -206,4 +202,4 @@
 !
 !-----------------------------------------------------------------------
 !
-      end module cal_rot_buoyancies_sph_MHD
+      end module rot_self_buoyancies_sph
