@@ -19,6 +19,15 @@
 !!          = r^{-2} [ l(l+1) / (2l+1) 
 !!           ( l(l+1)/r^2 (S_{l}^{m})^2 + (dS_{l}^{m}/dr)^2)
 !!            + (T_{l}^{m})^2 ) ]
+!!
+!!      subroutine cvt_mag_or_kin_ene_one_point                         &
+!!     &         (ipol_base, i_fld, rms_out)
+!!      subroutine cvt_mag_or_kin_ene_one_mode                          &
+!!     &         (sph_rj, ipol_base, icomp_rj, rms_sph_r)
+!!      subroutine cvt_mag_or_kin_ene_spectr                            &
+!!     &         (sph_rj, ipol_base, icomp_rj, rms_sph_rj)
+!!        type(sph_rj_grid), intent(in) :: sph_rj
+!!        type(base_field_address), intent(in) :: ipol_base
 !!@endverbatim
 !!
 !!@n @param  d_rj         spectrum data
@@ -75,17 +84,17 @@
      &        sph_rj%a_r_1d_rj_r, g_sph_rj(j,3), g_sph_rj(j,12),        &
      &        n_point, d_rj(1,icomp_rj), rms_sph_r(0,1))
         end if
-!
-        if (     icomp_rj .eq. ipol%base%i_velo                         &
-     &      .or. icomp_rj .eq. ipol%base%i_magne                        &
-     &      .or. icomp_rj .eq. ipol%filter_fld%i_velo                   &
-     &      .or. icomp_rj .eq. ipol%filter_fld%i_magne                  &
-     &      .or. icomp_rj .eq. ipol%wide_filter_fld%i_velo              &
-     &      .or. icomp_rj .eq. ipol%wide_filter_fld%i_magne) then
-          call one_mode_mean_sq_to_energy                              &
-     &       (sph_rj%nidx_rj(1), rms_sph_r(0,1))
-        end if
       end if
+!
+      call cvt_mag_or_kin_ene_one_mode                                  &
+     &   (sph_rj, ipol%base, icomp_rj, rms_sph_r(0,1))
+!
+      call cvt_mag_or_kin_ene_one_mode                                  &
+     &   (sph_rj, ipol%filter_fld, icomp_rj, rms_sph_r(0,1))
+      call cvt_mag_or_kin_ene_one_mode                                  &
+     &   (sph_rj, ipol%wide_filter_fld, icomp_rj, rms_sph_r(0,1))
+      call cvt_mag_or_kin_ene_one_mode                                  &
+     &   (sph_rj, ipol%dbl_filter_fld, icomp_rj, rms_sph_r(0,1))
 !
       end subroutine cal_rms_sph_spec_one_mode
 !
@@ -122,19 +131,91 @@
      &      sph_rj%idx_rj_degree_zero, sph_rj%inod_rj_center,           &
      &      sph_rj%a_r_1d_rj_r, g_sph_rj, n_point, d_rj(1,icomp_rj),    &
      &      rms_sph_rj(0,1,1))
-!
-        if (     icomp_rj .eq. ipol%base%i_velo                         &
-     &      .or. icomp_rj .eq. ipol%base%i_magne                        &
-     &      .or. icomp_rj .eq. ipol%filter_fld%i_velo                   &
-     &      .or. icomp_rj .eq. ipol%filter_fld%i_magne                  &
-     &      .or. icomp_rj .eq. ipol%wide_filter_fld%i_velo              &
-     &      .or. icomp_rj .eq. ipol%wide_filter_fld%i_magne) then
-          call one_field_mean_sq_to_energy                              &
-     &       (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), rms_sph_rj(0,1,1))
-        end if
       end if
 !
+      call cvt_mag_or_kin_ene_spectr                                    &
+     &         (sph_rj, ipol%base, icomp_rj, rms_sph_rj(0,1,1))
+!
+      call cvt_mag_or_kin_ene_spectr                                    &
+     &   (sph_rj, ipol%filter_fld, icomp_rj, rms_sph_rj(0,1,1))
+      call cvt_mag_or_kin_ene_spectr                                    &
+     &   (sph_rj, ipol%wide_filter_fld, icomp_rj, rms_sph_rj(0,1,1))
+      call cvt_mag_or_kin_ene_spectr                                    &
+     &   (sph_rj, ipol%dbl_filter_fld, icomp_rj, rms_sph_rj(0,1,1))
+!
       end subroutine cal_rms_sph_spec_one_field
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine cvt_mag_or_kin_ene_one_point                           &
+     &         (ipol_base, i_fld, rms_out)
+!
+      use t_base_field_labels
+      use single_pt_sph_mean_square
+!
+      integer(kind = kint), intent(in) :: i_fld
+      type(base_field_address), intent(in) :: ipol_base
+!
+      real(kind=kreal), intent(inout) :: rms_out(3)
+!
+!
+        if (     i_fld .eq. ipol_base%i_velo                            &
+     &      .or. i_fld .eq. ipol_base%i_magne) then
+          call one_point_mean_sq_to_energy(rms_out(1))
+        end if
+!
+      end subroutine cvt_mag_or_kin_ene_one_point
+!
+! -----------------------------------------------------------------------
+!
+      subroutine cvt_mag_or_kin_ene_one_mode                            &
+     &         (sph_rj, ipol_base, icomp_rj, rms_sph_r)
+!
+      use t_spheric_rj_data
+      use t_base_field_labels
+      use cal_sph_mean_square
+!
+      type(sph_rj_grid), intent(in) :: sph_rj
+      type(base_field_address), intent(in) :: ipol_base
+      integer(kind = kint), intent(in) :: icomp_rj
+!
+      real(kind = kreal), intent(inout)                                 &
+     &    :: rms_sph_r(0:sph_rj%nidx_rj(1),3)
+!
+!
+      if (     icomp_rj .eq. ipol_base%i_velo                           &
+     &    .or. icomp_rj .eq. ipol_base%i_magne) then
+        call one_mode_mean_sq_to_energy                                 &
+     &     (sph_rj%nidx_rj(1), rms_sph_r(0,1))
+      end if
+!
+      end subroutine cvt_mag_or_kin_ene_one_mode
+!
+! -----------------------------------------------------------------------
+!
+      subroutine cvt_mag_or_kin_ene_spectr                              &
+     &         (sph_rj, ipol_base, icomp_rj, rms_sph_rj)
+!
+      use t_spheric_rj_data
+      use t_base_field_labels
+      use cal_sph_mean_square
+!
+      type(sph_rj_grid), intent(in) :: sph_rj
+      type(base_field_address), intent(in) :: ipol_base
+      integer(kind = kint), intent(in) :: icomp_rj
+!
+      real(kind = kreal), intent(inout)                                 &
+     &    :: rms_sph_rj(0:sph_rj%nidx_rj(1),sph_rj%nidx_rj(2),3)
+!
+!
+      if (     icomp_rj .eq. ipol_base%i_velo                           &
+     &    .or. icomp_rj .eq. ipol_base%i_magne) then
+        call one_field_mean_sq_to_energy                                &
+     &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), rms_sph_rj(0,1,1))
+      end if
+!
+      end subroutine cvt_mag_or_kin_ene_spectr
 !
 ! -----------------------------------------------------------------------
 !

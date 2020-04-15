@@ -84,6 +84,8 @@ t_ctl_data_4_sph_utils.o \
 m_ctl_params_sph_utils.o \
 \
 pickup_sph_rms_spectr.o \
+pickup_sph_mean_square_data.o \
+MPI_picked_sph_mean_sq_IO.o \
 analyzer_pick_rms_vol.o \
 main_pick_rms_vol.o
 
@@ -93,6 +95,8 @@ t_ctl_data_4_sph_utils.o \
 m_ctl_params_sph_utils.o \
 \
 pickup_sph_rms_spectr.o \
+pickup_sph_mean_square_data.o \
+MPI_picked_sph_mean_sq_IO.o \
 analyzer_pick_rms_sph.o \
 main_pick_rms_sph.o
 

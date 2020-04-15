@@ -2,7 +2,7 @@ cal_ave_4_rms_vector_sph.o: $(SPH_COMMDIR)/cal_ave_4_rms_vector_sph.f90 m_precis
 	$(F90) -c $(F90OPTFLAGS) $<
 cal_circle_transform.o: $(SPH_COMMDIR)/cal_circle_transform.f90 m_precision.o m_constants.o m_machine_parameter.o t_FFT_selector.o
 	$(F90) -c $(F90OPTFLAGS) $<
-cal_rms_by_sph_spectr.o: $(SPH_COMMDIR)/cal_rms_by_sph_spectr.f90 m_precision.o m_constants.o t_spheric_rj_data.o t_phys_address.o m_phys_constants.o cal_sph_mean_square.o
+cal_rms_by_sph_spectr.o: $(SPH_COMMDIR)/cal_rms_by_sph_spectr.f90 m_precision.o m_constants.o t_spheric_rj_data.o t_phys_address.o m_phys_constants.o cal_sph_mean_square.o single_pt_sph_mean_square.o t_base_field_labels.o
 	$(F90) -c $(F90OPTFLAGS) $<
 cal_rms_fields_by_sph.o: $(SPH_COMMDIR)/cal_rms_fields_by_sph.f90 m_precision.o m_constants.o m_machine_parameter.o t_spheric_parameter.o t_phys_data.o t_phys_address.o t_sum_sph_rms_data.o t_rms_4_sph_spectr.o calypso_mpi.o sum_sph_rms_data.o volume_average_4_sph.o cal_ave_4_rms_vector_sph.o quicksort.o radial_int_for_sph_spec.o
 	$(F90) -c $(F90OPTFLAGS) $<

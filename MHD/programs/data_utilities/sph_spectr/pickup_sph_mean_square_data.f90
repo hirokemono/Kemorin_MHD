@@ -178,7 +178,7 @@
       subroutine convert_to_energy_sph__monitor                         &
      &         (ipol, picked, ntot_comp_monitor, rms_out)
 !
-      use single_pt_sph_mean_square
+      use cal_rms_by_sph_spectr
 !
       type(phys_address), intent(in) :: ipol
       type(picked_spectrum_data), intent(in) :: picked
@@ -191,15 +191,16 @@
 !
       do j_fld = 1, picked%num_field_rj
         i_fld = picked%ifield_monitor_rj(j_fld)
-        jcou = picked%istack_comp_rj(j_fld-1)
-        if (     i_fld .eq. ipol%base%i_velo                            &
-     &      .or. i_fld .eq. ipol%base%i_magne                           &
-     &      .or. i_fld .eq. ipol%filter_fld%i_velo                      &
-     &      .or. i_fld .eq. ipol%filter_fld%i_magne                     &
-     &      .or. i_fld .eq. ipol%wide_filter_fld%i_velo                 &
-     &      .or. i_fld .eq. ipol%wide_filter_fld%i_magne) then
-          call one_point_mean_sq_to_energy(rms_out(jcou+1))
-        end if
+        jcou = picked%istack_comp_rj(j_fld-1) + 1
+        call cvt_mag_or_kin_ene_one_point                               &
+     &     (ipol%base, i_fld, rms_out(jcou))
+!
+        call cvt_mag_or_kin_ene_one_point                               &
+     &     (ipol%filter_fld, i_fld, rms_out(jcou))
+        call cvt_mag_or_kin_ene_one_point                               &
+     &     (ipol%wide_filter_fld, i_fld, rms_out(jcou))
+        call cvt_mag_or_kin_ene_one_point                               &
+     &     (ipol%dbl_filter_fld, i_fld, rms_out(jcou))
       end do
 !
       end subroutine convert_to_energy_sph__monitor
