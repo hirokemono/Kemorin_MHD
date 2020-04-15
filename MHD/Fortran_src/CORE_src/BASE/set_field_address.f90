@@ -160,7 +160,7 @@
      &      iphys%rot_forces, flag)
 !
         call set_filtered_force_addresses(i0, field_name(i),            &
-     &      iphys%rot_frc_by_filter, flag)
+     &      iphys%force_by_filter, flag)
         call set_rot_fil_force_addresses(i0, field_name(i),             &
      &      iphys%rot_frc_by_filter, flag)
         call set_div_fil_force_addresses(i0, field_name(i),             &
