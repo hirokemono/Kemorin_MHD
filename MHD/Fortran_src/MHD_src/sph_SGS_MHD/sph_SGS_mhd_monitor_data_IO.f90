@@ -113,6 +113,7 @@
       use m_machine_parameter
 !
       use cal_write_sph_monitor_data
+      use cal_SGS_sph_rms_data
 !
       type(time_data), intent(in) :: time_d
       type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
@@ -122,7 +123,7 @@
       type(sph_mhd_monitor_data), intent(inout) :: monitor
 !
 !
-      call cal_sph_monitor_data                                         &
+      call cal_SGS_sph_monitor_data                                     &
      &   (SPH_MHD%sph%sph_params, SPH_MHD%sph%sph_rj,                   &
      &    sph_MHD_bc%sph_bc_U, leg, SPH_MHD%ipol, SPH_MHD%fld,          &
      &    monitor%pwr, monitor%WK_pwr, monitor%Nusselt)

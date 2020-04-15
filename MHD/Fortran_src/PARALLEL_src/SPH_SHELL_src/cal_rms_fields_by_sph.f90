@@ -17,6 +17,27 @@
 !!        type(phys_data), intent(in) :: rj_fld
 !!        type(sph_mean_squares), intent(inout) :: pwr
 !!        type(sph_mean_square_work), intent(inout) :: WK_pwr
+!!
+!!      subroutine global_sum_sph_layerd_square                         &
+!!     &         (l_truncation, WK_pwr, pwr)
+!!        type(sph_mean_square_work), intent(in) :: WK_pwr
+!!        type(sph_mean_squares), intent(inout) :: pwr
+!!      subroutine global_sum_sph_volume_square                         &
+!!     &         (l_truncation, ntot_rms_rj, WK_pwr,                    &
+!!     &          num_vol_spectr, v_pwr)
+!!        type(sph_mean_square_work), intent(in) :: WK_pwr
+!!      type(sph_vol_mean_squares), intent(inout)                       &
+!!     &                         :: v_pwr(num_vol_spectr)
+!!
+!!      subroutine sum_mean_square_on_sphere(sph_params, sph_rj, pwr)
+!!        type(sph_shell_parameters), intent(in) :: sph_params
+!!        type(sph_rj_grid), intent(in) ::  sph_rj
+!!        type(sph_mean_squares), intent(inout) :: pwr
+!!      subroutine sum_mean_square_on_volume                            &
+!!     &         (sph_params, ntot_rms_rj, num_vol_spectr, v_pwr)
+!!      type(sph_shell_parameters), intent(in) :: sph_params
+!!      type(sph_vol_mean_squares), intent(inout)                       &
+!!     &                         :: v_pwr(num_vol_spectr)
 !!@endverbatim
 !
       module cal_rms_fields_by_sph
@@ -33,8 +54,7 @@
 !
       implicit none
 !
-      private :: find_radial_grid_index, global_sum_sph_layerd_square
-      private :: global_sum_sph_volume_square
+      private :: find_radial_grid_index, set_domains_4_spectr_output
 !
 ! -----------------------------------------------------------------------
 !
@@ -177,8 +197,6 @@
       type(sph_mean_squares), intent(inout) :: pwr
       type(sph_mean_square_work), intent(inout) :: WK_pwr
 !
-      integer(kind = kint) :: i
-!
 !
       if(pwr%ntot_comp_sq .eq. 0) return
 !
@@ -223,8 +241,6 @@
 !
       type(sph_mean_squares), intent(inout) :: cor
       type(sph_mean_square_work), intent(inout) :: WK_pwr
-!
-      integer(kind = kint) :: i
 !
 !
       if(cor%ntot_comp_sq .eq. 0) return

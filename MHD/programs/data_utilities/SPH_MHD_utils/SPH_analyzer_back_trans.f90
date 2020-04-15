@@ -171,9 +171,9 @@
       use t_schmidt_poly_on_rtm
       use t_sph_mhd_monitor_data_IO
 !
-      use cal_rms_fields_by_sph
       use volume_average_4_sph
       use output_sph_m_square_file
+      use cal_SGS_sph_rms_data
 !
       type(MHD_step_param), intent(in) :: MHD_step
       type(sph_shell_parameters), intent(in) :: sph_params
@@ -192,7 +192,7 @@
       if(iflag .ne. 0) return
 !
       if(iflag_debug.gt.0)  write(*,*) 'cal_rms_sph_outer_core'
-      call cal_mean_squre_in_shell                                      &
+      call cal_mean_squre_w_SGS_in_shell                                &
      &   (sph_params, sph_rj, ipol, rj_fld, leg%g_sph_rj,               &
      &    monitor%pwr, monitor%WK_pwr)
 !

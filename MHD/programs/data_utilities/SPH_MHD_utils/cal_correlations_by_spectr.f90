@@ -138,6 +138,7 @@
      &         (sph, ipol, ref_rj_fld, rj_fld, trans_p, pwr, WK_pwr)
 !
       use cal_rms_fields_by_sph
+      use cal_SGS_sph_rms_data
 !
       type(sph_grids), intent(in) :: sph
       type(phys_address), intent(in) :: ipol
@@ -161,8 +162,8 @@
         allocate(cor_v(pwr%num_vol_spectr,pwr%ntot_comp_sq))
       end if
 !
-      if(iflag_debug.gt.0)  write(*,*) 'cal_rms_sph_outer_core'
-      call cal_mean_squre_in_shell                                      &
+      if(iflag_debug.gt.0)  write(*,*) 'cal_mean_squre_w_SGS_in_shell'
+      call cal_mean_squre_w_SGS_in_shell                                &
      &   (sph%sph_params, sph%sph_rj, ipol, ref_rj_fld,                 &
      &    trans_p%leg%g_sph_rj, pwr, WK_pwr)
 !
@@ -179,8 +180,8 @@
         end do
       end if
 !
-      if(iflag_debug.gt.0)  write(*,*) 'cal_rms_sph_outer_core'
-      call cal_mean_squre_in_shell                                      &
+      if(iflag_debug.gt.0)  write(*,*) 'cal_mean_squre_w_SGS_in_shell'
+      call cal_mean_squre_w_SGS_in_shell                                &
      &   (sph%sph_params, sph%sph_rj, ipol, rj_fld,                     &
      &    trans_p%leg%g_sph_rj, pwr, WK_pwr)
 !
@@ -243,7 +244,7 @@
       subroutine cal_sph_rms_ratios                                     &
      &         (sph, ipol, ref_rj_fld, rj_fld, trans_p, pwr, WK_pwr)
 !
-      use cal_rms_fields_by_sph
+      use cal_SGS_sph_rms_data
 !
       type(sph_grids), intent(in) :: sph
       type(phys_address), intent(in) :: ipol
@@ -264,8 +265,8 @@
         allocate(msq_v2(pwr%num_vol_spectr,pwr%ntot_comp_sq))
       end if
 !
-      if(iflag_debug.gt.0)  write(*,*) 'cal_rms_sph_outer_core'
-      call cal_mean_squre_in_shell                                      &
+      if(iflag_debug.gt.0)  write(*,*) 'cal_mean_squre_w_SGS_in_shell'
+      call cal_mean_squre_w_SGS_in_shell                                &
      &   (sph%sph_params, sph%sph_rj, ipol, ref_rj_fld,                 &
      &    trans_p%leg%g_sph_rj, pwr, WK_pwr)
 !
@@ -280,8 +281,8 @@
         end do
       end if
 !
-      if(iflag_debug.gt.0)  write(*,*) 'cal_rms_sph_outer_core'
-      call cal_mean_squre_in_shell                                      &
+      if(iflag_debug.gt.0)  write(*,*) 'cal_mean_squre_w_SGS_in_shell'
+      call cal_mean_squre_w_SGS_in_shell                                &
      &   (sph%sph_params, sph%sph_rj, ipol, rj_fld,                     &
      &    trans_p%leg%g_sph_rj, pwr, WK_pwr)
 !

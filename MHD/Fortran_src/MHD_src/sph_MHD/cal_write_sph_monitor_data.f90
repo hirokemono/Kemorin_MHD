@@ -13,10 +13,6 @@
 !!      subroutine output_sph_monitor_data(time_d, sph_params, sph_rj,  &
 !!     &          ipol, rj_fld, pwr, pick_coef, gauss_coef, Nusselt)
 !!
-!!      subroutine cal_write_sph_mean_square(time_d, sph_params, sph_rj,&
-!!     &          leg, ipol, rj_fld, pwr, WK_pwr)
-!!      subroutine cal_write_layerd_sph_rms(time_d, sph_params, sph_rj, &
-!!     &          leg, ipol, rj_fld, pwr, WK_pwr)
 !!      subroutine cal_write_no_heat_sourse_Nu(time_d, sph_rj,           &
 !!     &          sph_bc_U, ipol, rj_fld, Nusselt)
 !!        type(sph_shell_parameters), intent(in) :: sph_params
@@ -131,64 +127,6 @@
       end subroutine output_sph_monitor_data
 !
 !  --------------------------------------------------------------------
-!  --------------------------------------------------------------------
-!
-      subroutine cal_write_sph_mean_square(time_d, sph_params, sph_rj,  &
-     &          leg, ipol, rj_fld, pwr, WK_pwr)
-!
-      use cal_rms_fields_by_sph
-      use output_sph_m_square_file
-!
-      type(time_data), intent(in) :: time_d
-      type(sph_shell_parameters), intent(in) :: sph_params
-      type(sph_rj_grid), intent(in) ::  sph_rj
-      type(legendre_4_sph_trans), intent(in) :: leg
-      type(phys_address), intent(in) :: ipol
-      type(phys_data), intent(in) :: rj_fld
-!
-      type(sph_mean_squares), intent(inout) :: pwr
-      type(sph_mean_square_work), intent(inout) :: WK_pwr
-!
-!
-      call cal_mean_squre_in_shell                                      &
-     &   (sph_params, sph_rj, ipol, rj_fld, leg%g_sph_rj, pwr, WK_pwr)
-!
-      call write_sph_vol_ave_file(time_d, sph_params, sph_rj, pwr)
-      call write_sph_vol_ms_file                                        &
-     &   (my_rank, time_d, sph_params, sph_rj, pwr)
-      call write_sph_vol_ms_spectr_file                                 &
-     &   (my_rank, time_d, sph_params, sph_rj, pwr)
-      call write_sph_layer_ms_file(my_rank, time_d, sph_params, pwr)
-      call write_sph_layer_spectr_file                                  &
-     &   (my_rank, time_d, sph_params, pwr)
-!
-      end subroutine cal_write_sph_mean_square
-!
-!  --------------------------------------------------------------------
-!
-      subroutine cal_write_layerd_sph_rms(time_d, sph_params, sph_rj,   &
-     &          leg, ipol, rj_fld, pwr, WK_pwr)
-!
-      use cal_rms_fields_by_sph
-      use output_sph_m_square_file
-!
-      type(time_data), intent(in) :: time_d
-      type(sph_shell_parameters), intent(in) :: sph_params
-      type(sph_rj_grid), intent(in) ::  sph_rj
-      type(legendre_4_sph_trans), intent(in) :: leg
-      type(phys_address), intent(in) :: ipol
-      type(phys_data), intent(in) :: rj_fld
-!
-      type(sph_mean_squares), intent(inout) :: pwr
-      type(sph_mean_square_work), intent(inout) :: WK_pwr
-!
-!
-      call cal_mean_squre_in_shell                                      &
-     &   (sph_params, sph_rj, ipol, rj_fld, leg%g_sph_rj, pwr, WK_pwr)
-      call write_sph_layer_ms_file(my_rank, time_d, sph_params, pwr)
-!
-      end subroutine cal_write_layerd_sph_rms
-!
 !  --------------------------------------------------------------------
 !
       subroutine cal_write_no_heat_sourse_Nu(time_d, sph_rj,            &

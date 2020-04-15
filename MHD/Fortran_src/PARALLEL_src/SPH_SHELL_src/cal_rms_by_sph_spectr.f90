@@ -84,17 +84,10 @@
      &        sph_rj%a_r_1d_rj_r, g_sph_rj(j,3), g_sph_rj(j,12),        &
      &        n_point, d_rj(1,icomp_rj), rms_sph_r(0,1))
         end if
+!
+        call cvt_mag_or_kin_ene_one_mode                                &
+     &     (sph_rj, ipol%base, icomp_rj, rms_sph_r(0,1))
       end if
-!
-      call cvt_mag_or_kin_ene_one_mode                                  &
-     &   (sph_rj, ipol%base, icomp_rj, rms_sph_r(0,1))
-!
-      call cvt_mag_or_kin_ene_one_mode                                  &
-     &   (sph_rj, ipol%filter_fld, icomp_rj, rms_sph_r(0,1))
-      call cvt_mag_or_kin_ene_one_mode                                  &
-     &   (sph_rj, ipol%wide_filter_fld, icomp_rj, rms_sph_r(0,1))
-      call cvt_mag_or_kin_ene_one_mode                                  &
-     &   (sph_rj, ipol%dbl_filter_fld, icomp_rj, rms_sph_r(0,1))
 !
       end subroutine cal_rms_sph_spec_one_mode
 !
@@ -131,17 +124,10 @@
      &      sph_rj%idx_rj_degree_zero, sph_rj%inod_rj_center,           &
      &      sph_rj%a_r_1d_rj_r, g_sph_rj, n_point, d_rj(1,icomp_rj),    &
      &      rms_sph_rj(0,1,1))
-      end if
 !
-      call cvt_mag_or_kin_ene_spectr                                    &
+        call cvt_mag_or_kin_ene_spectr                                  &
      &         (sph_rj, ipol%base, icomp_rj, rms_sph_rj(0,1,1))
-!
-      call cvt_mag_or_kin_ene_spectr                                    &
-     &   (sph_rj, ipol%filter_fld, icomp_rj, rms_sph_rj(0,1,1))
-      call cvt_mag_or_kin_ene_spectr                                    &
-     &   (sph_rj, ipol%wide_filter_fld, icomp_rj, rms_sph_rj(0,1,1))
-      call cvt_mag_or_kin_ene_spectr                                    &
-     &   (sph_rj, ipol%dbl_filter_fld, icomp_rj, rms_sph_rj(0,1,1))
+      end if
 !
       end subroutine cal_rms_sph_spec_one_field
 !

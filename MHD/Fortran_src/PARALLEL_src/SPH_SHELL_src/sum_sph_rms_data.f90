@@ -24,6 +24,12 @@
 !!        type(phys_data), intent(in) :: rj_fld
 !!        type(sph_vol_mean_squares), intent(in) :: v_pwr(num_vol_spectr)
 !!        type(sph_mean_square_work), intent(inout) :: WK_pwr
+!!
+!!      subroutine sum_sph_v_rms_by_degree(ltr, nidx_j, istack_sum,     &
+!!     &          item_mode_4_sum, ncomp, rms_sph_vol_j, rms_sph_vlc)
+!!      subroutine sum_sph_rms_by_degree(ltr, nidx_rj, nri_rms,         &
+!!     &          kr_for_rms, istack_sum, item_mode_4_sum, ncomp,       &
+!!     &          rms_sph_rj, rms_sph_lc)
 !!@endverbatim
 !
       module sum_sph_rms_data
@@ -32,8 +38,6 @@
       use m_constants
 !
       implicit none
-!
-      private :: sum_sph_v_rms_by_degree, sum_sph_rms_by_degree
 !
 ! -----------------------------------------------------------------------
 !
