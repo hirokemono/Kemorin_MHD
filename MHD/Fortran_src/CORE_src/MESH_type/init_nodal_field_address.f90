@@ -42,8 +42,8 @@
 !
 !
       call alloc_phys_data_type(node%numnod, nod_fld)
-      call set_field_addresses(ione, nod_fld%num_phys,                  &
-     &    nod_fld%phys_name, nod_fld%num_component, iphys_nod)
+      call set_field_addresses(nod_fld%num_phys, nod_fld%phys_name,     &
+     &    nod_fld%istack_component, iphys_nod)
 !
       end subroutine init_nod_fld_address
 !
