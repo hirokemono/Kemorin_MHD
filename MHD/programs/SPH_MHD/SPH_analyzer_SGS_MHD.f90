@@ -83,6 +83,7 @@
       use sph_filtering
       use check_dependency_SGS_MHD
       use input_control_sph_MHD
+      use sph_SGS_mhd_monitor_data_IO
 !
       type(MHD_file_IO_params), intent(in) :: MHD_files
       type(phys_address), intent(in) :: iphys
@@ -164,9 +165,9 @@
 !
 !* -----  Open Volume integration data files -----------------
 !*
-      if(iflag_debug .gt. 0) write(*,*) 'open_sph_vol_rms_file_mhd'
+      if(iflag_debug .gt. 0) write(*,*) 'open_sph_vol_rms_file_SGS_mhd'
       if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+3)
-      call open_sph_vol_rms_file_mhd                                    &
+      call open_sph_vol_rms_file_SGS_mhd                                &
      &   (SPH_MHD%sph, SPH_MHD%ipol, SPH_MHD%fld, SPH_WK%monitor)
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)
       call calypso_mpi_barrier
@@ -187,6 +188,7 @@
       use lead_fields_SPH_SGS_MHD
       use sph_SGS_MHD_rst_IO_control
       use output_viz_file_control
+      use sph_SGS_mhd_monitor_data_IO
 !
       integer(kind = kint), intent(in) :: i_step
       type(MHD_file_IO_params), intent(in) :: MHD_files
@@ -289,8 +291,9 @@
       if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+7)
       iflag = output_IO_flag(i_step, MHD_step%rms_step)
       if(iflag .eq. 0) then
-        if(iflag_debug.gt.0)  write(*,*) 'output_rms_sph_mhd_control'
-        call output_rms_sph_mhd_control(MHD_step%time_d, SPH_MHD,       &
+        if(iflag_debug .gt. 0)                                          &
+     &                write(*,*) 'output_rms_sph_SGS_mhd_control'
+        call output_rms_sph_SGS_mhd_control(MHD_step%time_d, SPH_MHD,   &
      &      SPH_model%sph_MHD_bc, SPH_WK%trans_p%leg, SPH_WK%monitor)
       end if
       if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+7)

@@ -104,6 +104,7 @@
       use sph_mhd_rst_IO_control
       use input_control_sph_MHD
       use set_sph_restart_IO
+      use sph_SGS_mhd_monitor_data_IO
 !
       integer(kind = kint), intent(in) :: i_step
       type(field_IO_params), intent(in) :: fst_file_IO
@@ -147,8 +148,9 @@
       iflag = output_IO_flag(MHD_step%time_d%i_time_step,               &
      &                       MHD_step%rms_step)
       if(iflag .eq. 0) then
-        if(iflag_debug.gt.0)  write(*,*) 'output_rms_sph_mhd_control'
-        call output_rms_sph_mhd_control(MHD_step%time_d, SPH_MHD,       &
+        if(iflag_debug .gt. 0)                                          &
+     &                write(*,*) 'output_rms_sph_SGS_mhd_control'
+        call output_rms_sph_SGS_mhd_control(MHD_step%time_d, SPH_MHD,   &
      &      SPH_model%sph_MHD_bc, SPH_WK%trans_p%leg, SPH_WK%monitor)
       end if
       if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+7)

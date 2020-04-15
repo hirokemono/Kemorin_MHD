@@ -68,6 +68,7 @@
       use cal_rms_fields_by_sph
       use input_control_sph_MHD
       use back_sph_trans_4_all_field
+      use sph_SGS_mhd_monitor_data_IO
 !
       type(MHD_file_IO_params), intent(in) :: MHD_files
 !
@@ -99,7 +100,7 @@
 !
 ! ---------------------------------
 !
-      call init_rms_4_sph_spectr_4_mhd                                  &
+      call init_rms_4_sph_spectr_SGS_mhd                                &
      &   (SPH_MHD%sph, SPH_MHD%fld, SPH_WK%monitor)
 !
       end subroutine SPH_init_sph_back_trans
