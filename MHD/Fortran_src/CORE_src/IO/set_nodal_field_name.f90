@@ -44,7 +44,8 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_vector_field_name(i0, phys_name_ctl, fld, flag)
+      subroutine set_vector_field_name                                  &
+     &         (i0, phys_name_ctl, flag_monitor, fld, flag)
 !
       use t_base_field_labels
       use t_diffusion_term_labels
@@ -68,6 +69,7 @@
       use m_wide_SGS_term_labels
 !
       character(len = kchara), intent(in) :: phys_name_ctl
+      logical, intent(in) :: flag_monitor
       integer(kind = kint), intent(in) :: i0
       type(phys_data), intent(inout) :: fld
       logical, intent(inout) :: flag
@@ -106,6 +108,7 @@
       if(flag) then
         fld%phys_name(i0+1) = phys_name_ctl
         fld%num_component(i0+1) = n_vector
+        fld%flag_monitor(i0+1) =  flag_monitor
         return
       end if
 !
@@ -113,6 +116,7 @@
         flag = .TRUE.
         fld%phys_name(i0+1) = rest_of_geostrophic%name
         fld%num_component(i0+1) = n_vector
+        fld%flag_monitor(i0+1) =  flag_monitor
         return
       end if
 !
@@ -120,7 +124,8 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_scalar_field_name(i0, phys_name_ctl, fld, flag)
+      subroutine set_scalar_field_name                                  &
+     &         (i0, phys_name_ctl, flag_monitor, fld, flag)
 !
       use t_base_field_labels
       use t_diffusion_term_labels
@@ -141,6 +146,7 @@
       use m_dble_filter_field_labels
 !
       character(len = kchara), intent(in) :: phys_name_ctl
+      logical, intent(in) :: flag_monitor
       integer(kind = kint), intent(in) :: i0
       type(phys_data), intent(inout) :: fld
       logical, intent(inout) :: flag
@@ -176,6 +182,7 @@
       if(flag) then
         fld%phys_name(i0+1) = phys_name_ctl
         fld%num_component(i0+1) = n_scalar
+        fld%flag_monitor(i0+1) =  flag_monitor
         return
       end if
 !
@@ -184,6 +191,7 @@
         flag = .TRUE.
         fld%phys_name(i0+1) = buoyancy_flux%name
         fld%num_component(i0+1) = n_scalar
+        fld%flag_monitor(i0+1) =  flag_monitor
         return
       end if
 !
@@ -191,7 +199,8 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_tensor_field_name(i0, phys_name_ctl, fld, flag)
+      subroutine set_tensor_field_name                                  &
+     &         (i0, phys_name_ctl, flag_monitor, fld, flag)
 !
       use t_SGS_term_labels
       use t_SGS_model_coef_labels
@@ -199,6 +208,7 @@
       use m_force_w_SGS_labels
 !
       character(len = kchara), intent(in) :: phys_name_ctl
+      logical, intent(in) :: flag_monitor
       integer(kind = kint), intent(in) :: i0
       type(phys_data), intent(inout) :: fld
       logical, intent(inout) :: flag
@@ -215,6 +225,7 @@
       if(flag) then
         fld%phys_name(i0+1) = phys_name_ctl
         fld%num_component(i0+1) = n_sym_tensor
+        fld%flag_monitor(i0+1) =  flag_monitor
         return
       end if
 !
@@ -224,6 +235,7 @@
       if(flag) then
         fld%phys_name(i0+1) = phys_name_ctl
         fld%num_component(i0+1) = 3
+        fld%flag_monitor(i0+1) =  flag_monitor
         return
       end if
 !
@@ -231,6 +243,7 @@
       if(flag) then
         fld%phys_name(i0+1) = phys_name_ctl
         fld%num_component(i0+1) = n_sym_tensor
+        fld%flag_monitor(i0+1) =  flag_monitor
         return
       end if
 !

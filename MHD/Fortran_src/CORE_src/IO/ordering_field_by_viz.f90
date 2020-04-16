@@ -45,7 +45,7 @@
       type(phys_data), intent(inout) :: fld
 !
       integer(kind = kint) :: i, i0
-      logical :: flag
+      logical :: flag, flag_monitor
 !
 !
       fld%num_component = 0
@@ -54,15 +54,15 @@
       do i = 1, fld%num_phys
         if(check_vis_control_flag(field_ctl%c2_tbl(i))) then
           flag = .FALSE.
-          call set_vector_field_name(i0, field_ctl%c1_tbl(i), fld, flag)
-          call set_scalar_field_name(i0, field_ctl%c1_tbl(i), fld, flag)
-          call set_tensor_field_name(i0, field_ctl%c1_tbl(i), fld, flag)
-!
-          if(flag) then
-            fld%flag_monitor(i0+1)                                      &
-     &         = check_monitor_control_flag(field_ctl%c3_tbl(i))
-            i0 = i0 + 1
-          end if
+          
+          flag_monitor = check_monitor_control_flag(field_ctl%c3_tbl(i))
+          call set_vector_field_name                                    &
+     &       (i0, field_ctl%c1_tbl(i), flag_monitor, fld, flag)
+          call set_scalar_field_name                                    &
+     &       (i0, field_ctl%c1_tbl(i), flag_monitor, fld, flag)
+          call set_tensor_field_name                                    &
+     &       (i0, field_ctl%c1_tbl(i), flag_monitor, fld, flag)
+          if(flag) i0 = i0 + 1
 !
         end if
       end do
@@ -73,15 +73,14 @@
      &        fld%phys_name, field_ctl%c1_tbl(i))
         if(flag) cycle
 !
-        call set_vector_field_name(i0, field_ctl%c1_tbl(i), fld, flag)
-        call set_scalar_field_name(i0, field_ctl%c1_tbl(i), fld, flag)
-        call set_tensor_field_name(i0, field_ctl%c1_tbl(i), fld, flag)
-!
-        if(flag) then
-          fld%flag_monitor(i0+1)                                        &
-     &       = check_monitor_control_flag(field_ctl%c3_tbl(i))
-          i0 = i0 + 1
-        end if
+        flag_monitor = check_monitor_control_flag(field_ctl%c3_tbl(i))
+        call set_vector_field_name                                      &
+     &       (i0, field_ctl%c1_tbl(i), flag_monitor, fld, flag)
+        call set_scalar_field_name                                      &
+     &       (i0, field_ctl%c1_tbl(i), flag_monitor, fld, flag)
+        call set_tensor_field_name                                      &
+     &       (i0, field_ctl%c1_tbl(i), flag_monitor, fld, flag)
+        if(flag) i0 = i0 + 1
       end do
 !
       end subroutine s_ordering_field_by_viz
@@ -97,7 +96,7 @@
       type(phys_data), intent(inout) :: fld
 !
       integer(kind = kint) :: i, i0
-      logical :: flag
+      logical :: flag, flag_monitor
 !
 !
       fld%num_component = 0
@@ -106,39 +105,30 @@
       do i = 1, fld%num_phys
         if(check_vis_control_flag(field_ctl%c2_tbl(i))) then
           flag = .FALSE.
-          call set_vector_field_name(i0, field_ctl%c1_tbl(i), fld, flag)
-!
-          if(flag) then
-            fld%flag_monitor(i0+1)                                      &
-     &         = check_monitor_control_flag(field_ctl%c3_tbl(i))
-            i0 = i0 + 1
-          end if
+          flag_monitor = check_monitor_control_flag(field_ctl%c3_tbl(i))
+          call set_vector_field_name                                    &
+     &       (i0, field_ctl%c1_tbl(i), flag_monitor, fld, flag)
+          if(flag) i0 = i0 + 1
         end if
       end do
 !
       do i = 1, fld%num_phys
         if(check_vis_control_flag(field_ctl%c2_tbl(i))) then
           flag = .FALSE.
-          call set_scalar_field_name(i0, field_ctl%c1_tbl(i), fld, flag)
-!
-          if(flag) then
-            fld%flag_monitor(i0+1)                                      &
-     &         = check_monitor_control_flag(field_ctl%c3_tbl(i))
-            i0 = i0 + 1
-          end if
+          flag_monitor = check_monitor_control_flag(field_ctl%c3_tbl(i))
+          call set_scalar_field_name                                    &
+     &       (i0, field_ctl%c1_tbl(i), flag_monitor, fld, flag)
+          if(flag) i0 = i0 + 1
         end if
       end do
 !
       do i = 1, fld%num_phys
         if(check_vis_control_flag(field_ctl%c2_tbl(i))) then
           flag = .FALSE.
-          call set_tensor_field_name(i0, field_ctl%c1_tbl(i), fld, flag)
-!
-          if(flag) then
-            fld%flag_monitor(i0+1)                                      &
-     &         = check_monitor_control_flag(field_ctl%c3_tbl(i))
-            i0 = i0 + 1
-          end if
+          flag_monitor = check_monitor_control_flag(field_ctl%c3_tbl(i))
+          call set_tensor_field_name                                    &
+     &       (i0, field_ctl%c1_tbl(i), flag_monitor, fld, flag)
+          if(flag) i0 = i0 + 1
         end if
       end do
       fld%num_phys_viz = i0
@@ -148,13 +138,10 @@
      &        fld%phys_name, field_ctl%c1_tbl(i))
         if(flag) cycle
 !
-          call set_vector_field_name(i0, field_ctl%c1_tbl(i), fld, flag)
-!
-        if(flag) then
-          fld%flag_monitor(i0+1)                                        &
-     &       = check_monitor_control_flag(field_ctl%c3_tbl(i))
-          i0 = i0 + 1
-        end if
+        flag_monitor = check_monitor_control_flag(field_ctl%c3_tbl(i))
+        call set_vector_field_name                                      &
+     &     (i0, field_ctl%c1_tbl(i), flag_monitor, fld, flag)
+        if(flag) i0 = i0 + 1
       end do
 !
       do i = 1, fld%num_phys
@@ -162,13 +149,10 @@
      &        fld%phys_name, field_ctl%c1_tbl(i))
         if(flag) cycle
 !
-        call set_scalar_field_name(i0, field_ctl%c1_tbl(i), fld, flag)
-!
-        if(flag) then
-          fld%flag_monitor(i0+1)                                        &
-     &       = check_monitor_control_flag(field_ctl%c3_tbl(i))
-          i0 = i0 + 1
-        end if
+        flag_monitor = check_monitor_control_flag(field_ctl%c3_tbl(i))
+        call set_scalar_field_name                                      &
+     &       (i0, field_ctl%c1_tbl(i), flag_monitor, fld, flag)
+        if(flag) i0 = i0 + 1
       end do
 !
       do i = 1, fld%num_phys
@@ -176,13 +160,10 @@
      &        fld%phys_name, field_ctl%c1_tbl(i))
         if(flag) cycle
 !
-        call set_tensor_field_name(i0, field_ctl%c1_tbl(i), fld, flag)
-!
-        if(flag) then
-          fld%flag_monitor(i0+1)                                        &
-     &       = check_monitor_control_flag(field_ctl%c3_tbl(i))
-          i0 = i0 + 1
-        end if
+        flag_monitor = check_monitor_control_flag(field_ctl%c3_tbl(i))
+        call set_tensor_field_name                                      &
+     &       (i0, field_ctl%c1_tbl(i), flag_monitor, fld, flag)
+        if(flag) i0 = i0 + 1
       end do
 !
       end subroutine ordering_field_by_comp_viz
