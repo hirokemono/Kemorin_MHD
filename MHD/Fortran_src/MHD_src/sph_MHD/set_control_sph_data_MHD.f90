@@ -113,7 +113,6 @@
       use t_sph_boundary_input_data
 !
       use skip_comment_f
-      use set_control_field_data
       use add_nodal_fields_4_MHD
       use add_sph_MHD_fields_2_ctl
       use sph_mhd_rst_IO_control
@@ -168,7 +167,7 @@
       use t_control_array_character3
       use t_circle_transform
       use t_phys_data
-      use ordering_field_by_viz
+      use set_control_field_data
       use skip_comment_f
 !
       type(ctl_array_c3), intent(in) :: field_ctl
@@ -177,6 +176,7 @@
       type(phys_data), intent(inout) :: d_circle
 !
       character(len = kchara) :: tmpchara
+      integer(kind = kint) :: ierr = 0
 !
 !
       circle%iflag_circle_coord = iflag_circle_sph
@@ -206,10 +206,7 @@
         circle%z_circle = meq_ctl%pick_z_ctl%realvalue
       end if
 !
-      d_circle%num_phys = field_ctl%num
-      call alloc_phys_name_type(d_circle)
-      call s_ordering_field_by_viz(field_ctl, d_circle)
-      call set_istack_4_nodal_field(d_circle)
+      call s_set_control_field_data(field_ctl, d_circle, ierr)
 !
       end subroutine set_ctl_params_pick_circle
 !

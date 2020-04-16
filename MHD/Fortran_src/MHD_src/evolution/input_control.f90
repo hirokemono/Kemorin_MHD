@@ -91,8 +91,8 @@
       use set_control_FEM_MHD
       use mpi_load_mesh_data
       use skip_comment_f
-      use ordering_field_by_viz
       use node_monitor_IO
+      use set_control_field_data
 !
       type(MHD_file_IO_params), intent(inout) :: MHD_files
       type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
@@ -148,9 +148,10 @@
       use set_control_FEM_MHD
       use mpi_load_mesh_data
       use node_monitor_IO
-      use ordering_field_by_viz
+      use set_control_field_data
 !
       type(MHD_file_IO_params), intent(inout) :: MHD_files
+!
       type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
       type(SGS_paremeters), intent(inout) :: SGS_par
       type(mesh_data), intent(inout) :: femmesh

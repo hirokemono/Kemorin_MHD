@@ -34,8 +34,6 @@ radial_int_for_sph_spec.o: $(SPH_SPECTR_DIR)/radial_int_for_sph_spec.f90 m_preci
 	$(F90) -c $(F90OPTFLAGS) $<
 schmidt_poly_on_rtm_grid.o: $(SPH_SPECTR_DIR)/schmidt_poly_on_rtm_grid.f90 m_precision.o m_constants.o t_spheric_rtm_data.o t_spheric_rlm_data.o t_spheric_rj_data.o t_gauss_points.o t_work_4_sph_trans.o t_schmidt_poly_on_rtm.o spherical_harmonics.o m_machine_parameter.o schmidt_fix_m.o
 	$(F90) -c $(F90OPTFLAGS) $<
-set_control_sph_data.o: $(SPH_SPECTR_DIR)/set_control_sph_data.f90 m_precision.o m_constants.o t_phys_data.o m_machine_parameter.o t_control_array_character3.o cal_minmax_and_stacks.o ordering_field_by_viz.o
-	$(F90) -c $(F90OPTFLAGS) $<
 set_radial_grid_sph_shell.o: $(SPH_SPECTR_DIR)/set_radial_grid_sph_shell.f90 m_precision.o m_constants.o chebyshev_radial_grid.o half_chebyshev_radial_grid.o m_spheric_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
 set_radius_4_sph_dynamo.o: $(SPH_SPECTR_DIR)/set_radius_4_sph_dynamo.f90 m_precision.o m_constants.o m_machine_parameter.o m_spheric_constants.o t_spheric_parameter.o t_group_data.o set_radial_grid_sph_shell.o skip_comment_f.o

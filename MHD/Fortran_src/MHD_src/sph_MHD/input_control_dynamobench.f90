@@ -78,7 +78,6 @@
       use set_control_sph_mhd
       use set_control_sph_data_MHD
       use parallel_load_data_4_sph
-      use set_control_field_data
 !
       type(MHD_file_IO_params), intent(inout) :: MHD_files
       type(boundary_spectra), intent(inout) :: bc_IO

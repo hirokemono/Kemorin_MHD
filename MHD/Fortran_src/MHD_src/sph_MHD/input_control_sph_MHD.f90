@@ -68,7 +68,6 @@
       use set_control_sph_mhd
       use sph_file_IO_select
       use set_control_4_SPH_to_FEM
-      use set_control_field_data
 !
       type(MHD_file_IO_params), intent(inout) :: MHD_files
       type(DNS_mhd_simulation_control), intent(inout) :: DMHD_ctl

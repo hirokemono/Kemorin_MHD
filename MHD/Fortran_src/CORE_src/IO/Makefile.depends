@@ -84,8 +84,6 @@ mesh_file_name_by_param.o: $(IO_DIR)/mesh_file_name_by_param.f90 m_precision.o t
 	$(F90) -c $(F90OPTFLAGS) $<
 node_geometry_IO.o: $(IO_DIR)/node_geometry_IO.f90 m_precision.o t_geometry_data.o t_read_mesh_data.o t_surf_edge_IO.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
-ordering_field_by_viz.o: $(IO_DIR)/ordering_field_by_viz.f90 m_precision.o m_constants.o t_phys_data.o t_control_array_character3.o set_nodal_field_name.o cal_minmax_and_stacks.o
-	$(F90) -c $(F90OPTFLAGS) $<
 output_image_sel_4_png.o: $(IO_DIR)/output_image_sel_4_png.F90 m_precision.o t_png_file_access.o write_bmp_image.o
 	$(F90) -c $(F90FLAGS) $<
 read_bmp_image.o: $(IO_DIR)/read_bmp_image.f90 m_precision.o write_bmp_image.o
@@ -96,13 +94,15 @@ set_and_cal_udt_data.o: $(IO_DIR)/set_and_cal_udt_data.f90 m_precision.o t_ucd_d
 	$(F90) -c $(F90OPTFLAGS) $<
 set_components_flags.o: $(IO_DIR)/set_components_flags.f90 m_precision.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
+set_control_field_data.o: $(IO_DIR)/set_control_field_data.f90 m_precision.o m_constants.o m_machine_parameter.o m_error_IDs.o t_phys_data.o t_control_array_character3.o set_nodal_field_name.o
+	$(F90) -c $(F90OPTFLAGS) $<
 set_field_file_names.o: $(IO_DIR)/set_field_file_names.f90 m_precision.o m_constants.o m_field_file_format.o t_file_IO_parameter.o delete_data_files.o set_parallel_file_name.o set_mesh_extensions.o m_file_format_switch.o set_sph_extensions.o
 	$(F90) -c $(F90OPTFLAGS) $<
 set_mesh_extensions.o: $(IO_DIR)/set_mesh_extensions.f90 m_precision.o set_parallel_file_name.o
 	$(F90) -c $(F90OPTFLAGS) $<
 set_mesh_file_names.o: $(IO_DIR)/set_mesh_file_names.f90 m_precision.o m_constants.o set_parallel_file_name.o m_file_format_switch.o set_mesh_extensions.o set_sph_extensions.o
 	$(F90) -c $(F90OPTFLAGS) $<
-set_nodal_field_name.o: $(IO_DIR)/set_nodal_field_name.f90 m_precision.o m_phys_labels.o t_base_field_labels.o t_diffusion_term_labels.o t_SGS_term_labels.o m_rot_force_labels.o m_div_force_labels.o m_force_w_SGS_labels.o m_diff_SGS_term_labels.o m_true_SGS_term_labels.o m_filtered_field_labels.o m_filtered_force_labels.o m_diff_filter_vect_labels.o m_rot_filtered_force_labels.o m_div_filtered_force_labels.o m_grad_filter_field_labels.o m_dble_filter_field_labels.o m_wide_filter_field_labels.o m_wide_SGS_term_labels.o t_SGS_model_coef_labels.o m_filtered_ene_flux_labels.o skip_comment_f.o
+set_nodal_field_name.o: $(IO_DIR)/set_nodal_field_name.f90 m_precision.o m_phys_labels.o t_phys_data.o t_base_field_labels.o t_diffusion_term_labels.o t_SGS_term_labels.o m_rot_force_labels.o m_div_force_labels.o m_force_w_SGS_labels.o m_diff_SGS_term_labels.o m_true_SGS_term_labels.o m_filtered_field_labels.o m_filtered_force_labels.o m_diff_filter_vect_labels.o m_rot_filtered_force_labels.o m_div_filtered_force_labels.o m_grad_filter_field_labels.o m_dble_filter_field_labels.o m_wide_filter_field_labels.o m_wide_SGS_term_labels.o t_SGS_model_coef_labels.o m_filtered_ene_flux_labels.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
 set_parallel_file_name.o: $(IO_DIR)/set_parallel_file_name.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<

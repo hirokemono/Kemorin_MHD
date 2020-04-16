@@ -82,7 +82,6 @@
       use set_control_sph_mhd
       use set_controls_4_sph_shell
       use node_monitor_IO
-      use ordering_field_by_viz
 !
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(SGS_paremeters), intent(inout) :: SGS_par
