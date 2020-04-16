@@ -51,46 +51,49 @@
       integer(kind = kint), intent(inout) :: iflag_monitor(num_phys)
       character (len=kchara), intent(inout) :: phys_name(num_phys)
 !
-      integer(kind = kint) :: i, i0, iflag
-      integer(kind = kint) :: iflag_viz
+      integer(kind = kint) :: i, i0
+      logical :: flag
 !
 !
       num_component = 0
 !
       i0 = 0
       do i = 1, num_phys
-        call check_vis_control_flag(field_ctl%c2_tbl(i), iflag_viz)
+        if(check_vis_control_flag(field_ctl%c2_tbl(i))) then
+          flag = .FALSE.
+          call set_vector_field_name(field_ctl%c1_tbl(i),               &
+     &        phys_name(i0+1), num_component(i0+1), flag)
+          call set_scalar_field_name(field_ctl%c1_tbl(i),               &
+     &        phys_name(i0+1), num_component(i0+1), flag)
+          call set_tensor_field_name(field_ctl%c1_tbl(i),               &
+     &        phys_name(i0+1), num_component(i0+1), flag)
 !
-        if (iflag_viz .eq. 1) then
-          iflag = 0
-          call set_vector_field_name(field_ctl%c1_tbl(i), i0,           &
-     &        phys_name(i0+1), num_component(i0+1), iflag)
-          call set_scalar_field_name(field_ctl%c1_tbl(i), i0,           &
-     &        phys_name(i0+1), num_component(i0+1), iflag)
-          call set_tensor_field_name(field_ctl%c1_tbl(i), i0,           &
-     &        phys_name(i0+1), num_component(i0+1), iflag)
-!
-          call check_monitor_control_flag(iflag, field_ctl%c3_tbl(i),   &
-     &        iflag_monitor(i0))
+          if(flag) then
+            iflag_monitor(i0+1)                                         &
+     &         = check_monitor_control_flag(field_ctl%c3_tbl(i))
+            i0 = i0 + 1
+          end if
 !
         end if
       end do
       num_phys_viz = i0
 !
       do i = 1, num_phys
-        call mark_vis_checked_fields(num_phys, num_phys_viz, phys_name, &
-     &      field_ctl%c1_tbl(i), iflag)
+        flag = mark_vis_checked_fields(num_phys, num_phys_viz,          &
+     &                                 phys_name, field_ctl%c1_tbl(i))
+        if(flag) cycle
 !
-        if ( iflag .eq. 0 ) then
-          call set_vector_field_name(field_ctl%c1_tbl(i), i0,           &
-     &        phys_name(i0+1), num_component(i0+1), iflag)
-          call set_scalar_field_name(field_ctl%c1_tbl(i), i0,           &
-     &        phys_name(i0+1), num_component(i0+1), iflag)
-          call set_tensor_field_name(field_ctl%c1_tbl(i), i0,           &
-     &        phys_name(i0+1), num_component(i0+1), iflag)
+        call set_vector_field_name(field_ctl%c1_tbl(i),                 &
+     &      phys_name(i0+1), num_component(i0+1), flag)
+        call set_scalar_field_name(field_ctl%c1_tbl(i),                 &
+     &      phys_name(i0+1), num_component(i0+1), flag)
+        call set_tensor_field_name(field_ctl%c1_tbl(i),                 &
+     &      phys_name(i0+1), num_component(i0+1), flag)
 !
-          call check_monitor_control_flag(iflag, field_ctl%c3_tbl(i),   &
-     &         iflag_monitor(i0))
+        if(flag) then
+          iflag_monitor(i0+1)                                           &
+     &       = check_monitor_control_flag(field_ctl%c3_tbl(i))
+          i0 = i0 + 1
         end if
       end do
 !
@@ -112,49 +115,52 @@
       integer(kind = kint), intent(inout) :: iflag_monitor(num_phys)
       character (len=kchara), intent(inout) :: phys_name(num_phys)
 !
-      integer(kind = kint) :: i, i0, iflag
-      integer(kind = kint) :: iflag_viz
+      integer(kind = kint) :: i, i0
+      logical :: flag
 !
 !
       num_component = 0
 !
       i0 = 0
       do i = 1, num_phys
-        call check_vis_control_flag(field_ctl%c2_tbl(i), iflag_viz)
+        if(check_vis_control_flag(field_ctl%c2_tbl(i))) then
+          flag = .FALSE.
+          call set_vector_field_name(field_ctl%c1_tbl(i),               &
+     &        phys_name(i0+1), num_component(i0+1), flag)
 !
-        if (iflag_viz .eq. 1) then
-          iflag = 0
-          call set_vector_field_name(field_ctl%c1_tbl(i), i0,           &
-     &        phys_name(i0+1), num_component(i0+1), iflag)
-          call check_monitor_control_flag(iflag, field_ctl%c3_tbl(i),   &
-     &        iflag_monitor(i0))
-!
+          if(flag) then
+            iflag_monitor(i0+1)                                         &
+     &         = check_monitor_control_flag(field_ctl%c3_tbl(i))
+            i0 = i0 + 1
+          end if
         end if
       end do
 !
       do i = 1, num_phys
-        call check_vis_control_flag(field_ctl%c2_tbl(i), iflag_viz)
+        if(check_vis_control_flag(field_ctl%c2_tbl(i))) then
+          flag = .FALSE.
+          call set_scalar_field_name(field_ctl%c1_tbl(i),               &
+     &        phys_name(i0+1), num_component(i0+1), flag)
 !
-        if (iflag_viz .eq. 1) then
-          iflag = 0
-          call set_scalar_field_name(field_ctl%c1_tbl(i), i0,           &
-     &        phys_name(i0+1), num_component(i0+1), iflag)
-          call check_monitor_control_flag(iflag, field_ctl%c3_tbl(i),   &
-     &        iflag_monitor(i0))
-!
+          if(flag) then
+            iflag_monitor(i0+1)                                         &
+     &         = check_monitor_control_flag(field_ctl%c3_tbl(i))
+            i0 = i0 + 1
+          end if
         end if
       end do
 !
       do i = 1, num_phys
-        call check_vis_control_flag(field_ctl%c2_tbl(i), iflag_viz)
+        if(check_vis_control_flag(field_ctl%c2_tbl(i))) then
+          flag = .FALSE.
+          call set_tensor_field_name(field_ctl%c1_tbl(i),               &
+     &        phys_name(i0+1), num_component(i0+1), flag)
 !
-        if (iflag_viz .eq. 1) then
-          iflag = 0
-          call set_tensor_field_name(field_ctl%c1_tbl(i), i0,           &
-     &        phys_name(i0+1), num_component(i0+1), iflag)
-          call check_monitor_control_flag(iflag, field_ctl%c3_tbl(i),   &
-     &        iflag_monitor(i0))
-!
+          if(flag) then
+            iflag_monitor(i0+1)                                         &
+     &         = check_monitor_control_flag(field_ctl%c3_tbl(i))
+            i0 = i0 + 1
+          end if
         end if
       end do
 !
@@ -162,38 +168,47 @@
       num_phys_viz = i0
 !
       do i = 1, num_phys
-        call mark_vis_checked_fields(num_phys, num_phys_viz, phys_name, &
-     &      field_ctl%c1_tbl(i), iflag)
+        flag = mark_vis_checked_fields(num_phys, num_phys_viz,          &
+     &                                  phys_name, field_ctl%c1_tbl(i))
+        if(flag) cycle
 !
-        if (iflag .eq. 0) then
-          call set_vector_field_name(field_ctl%c1_tbl(i), i0,           &
-     &       phys_name(i0+1), num_component(i0+1), iflag)
-          call check_monitor_control_flag(iflag, field_ctl%c3_tbl(i),   &
-     &       iflag_monitor(i0))
+          call set_vector_field_name(field_ctl%c1_tbl(i),               &
+     &       phys_name(i0+1), num_component(i0+1), flag)
+!
+        if(flag) then
+          iflag_monitor(i0+1)                                           &
+     &       = check_monitor_control_flag(field_ctl%c3_tbl(i))
+          i0 = i0 + 1
         end if
       end do
 !
       do i = 1, num_phys
-        call mark_vis_checked_fields(num_phys, num_phys_viz, phys_name, &
-     &      field_ctl%c1_tbl(i), iflag)
+        flag = mark_vis_checked_fields(num_phys, num_phys_viz,          &
+     &                                  phys_name, field_ctl%c1_tbl(i))
+        if(flag) cycle
 !
-        if (iflag .eq. 0) then
-          call set_scalar_field_name(field_ctl%c1_tbl(i), i0,           &
-     &        phys_name(i0+1), num_component(i0+1), iflag)
-          call check_monitor_control_flag(iflag, field_ctl%c3_tbl(i),   &
-     &        iflag_monitor(i0))
+        call set_scalar_field_name(field_ctl%c1_tbl(i),                 &
+     &      phys_name(i0+1), num_component(i0+1), flag)
+!
+        if(flag) then
+          iflag_monitor(i0+1)                                           &
+     &       = check_monitor_control_flag(field_ctl%c3_tbl(i))
+          i0 = i0 + 1
         end if
       end do
 !
       do i = 1, num_phys
-        call mark_vis_checked_fields(num_phys, num_phys_viz, phys_name, &
-     &      field_ctl%c1_tbl(i), iflag)
+        flag = mark_vis_checked_fields(num_phys, num_phys_viz,          &
+     &                                  phys_name, field_ctl%c1_tbl(i))
+        if(flag) cycle
 !
-        if (iflag .eq. 0) then
-          call set_tensor_field_name(field_ctl%c1_tbl(i), i0,           &
-     &        phys_name(i0+1), num_component(i0+1), iflag)
-          call check_monitor_control_flag(iflag, field_ctl%c3_tbl(i),   &
-     &        iflag_monitor(i0))
+        call set_tensor_field_name(field_ctl%c1_tbl(i),                 &
+     &      phys_name(i0+1), num_component(i0+1), flag)
+!
+        if(flag) then
+          iflag_monitor(i0+1)                                           &
+     &       = check_monitor_control_flag(field_ctl%c3_tbl(i))
+          i0 = i0 + 1
         end if
       end do
 !
@@ -252,26 +267,25 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine mark_vis_checked_fields(num_phys, num_phys_viz,        &
-     &          phys_name, phys_nod_name_ctl, iflag)
+      logical function mark_vis_checked_fields                          &
+     &      (num_phys, num_phys_viz,  phys_name, phys_nod_name_ctl)
 !
       integer(kind = kint), intent(in) :: num_phys
       integer(kind = kint), intent(in) :: num_phys_viz
       character (len=kchara), intent(in) :: phys_name(num_phys)
 !
       character(len = kchara), intent(in) :: phys_nod_name_ctl
-      integer (kind = kint), intent(inout) :: iflag
       integer (kind = kint) :: i1
 !
-      iflag = 0
+      mark_vis_checked_fields = .FALSE.
       do i1 = 1, num_phys_viz
         if (phys_nod_name_ctl .eq. phys_name(i1) ) then
-          iflag = 1
+          mark_vis_checked_fields = .TRUE.
           exit
         end if
       end do
 !
-      end subroutine mark_vis_checked_fields
+      end function mark_vis_checked_fields
 !
 ! -----------------------------------------------------------------------
 !

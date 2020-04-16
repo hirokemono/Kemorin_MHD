@@ -9,16 +9,16 @@
 !>@brief  Set field names from control data
 !!
 !!@verbatim
-!!      subroutine set_vector_field_name(phys_nod_name_ctl, icou,       &
-!!     &          phys_nod_name, num_nod_component, iflag)
-!!      subroutine set_scalar_field_name(phys_nod_name_ctl, icou,       &
-!!     &          phys_nod_name, num_nod_component, iflag)
-!!      subroutine set_tensor_field_name(phys_nod_name_ctl, icou,       &
-!!     &          phys_nod_name, num_nod_component, iflag)
+!!      subroutine set_vector_field_name                                &
+!!     &         (phys_name_ctl, phys_name, num_component, flag)
+!!      subroutine set_scalar_field_name                                &
+!!     &         (phys_name_ctl, phys_name, num_component, flag)
+!!      subroutine set_tensor_field_name                                &
+!!     &         (phys_name_ctl, phys_name, num_component, flag)
 !!
-!!      subroutine check_vis_control_flag(visualize_ctl, iflag_viz)
-!!      subroutine check_monitor_control_flag(iflag, monitor_ctl,       &
-!!     &          iflag_fld_monitor)
+!!      logical function check_vis_control_flag(visualize_ctl)
+!!      integer(kind = kint) function check_monitor_control_flag        &
+!!     &                            (monitor_ctl)
 !!
 !!      subroutine set_vis_control_flag(iflag_viz, visualize_ctl)
 !!      subroutine set_monitor_control_flag                             &
@@ -46,8 +46,8 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_vector_field_name(phys_nod_name_ctl, icou,         &
-     &          phys_nod_name, num_nod_component, iflag)
+      subroutine set_vector_field_name                                  &
+     &         (phys_name_ctl, phys_name, num_component, flag)
 !
       use t_base_field_labels
       use t_diffusion_term_labels
@@ -70,63 +70,61 @@
       use m_wide_filter_field_labels
       use m_wide_SGS_term_labels
 !
-      character(len = kchara), intent(in) :: phys_nod_name_ctl
-      integer (kind = kint), intent(inout) :: icou
-      integer (kind = kint), intent(inout) :: num_nod_component
-      character(len = kchara), intent(inout) :: phys_nod_name
-      integer (kind = kint), intent(inout) :: iflag
+      character(len = kchara), intent(in) :: phys_name_ctl
+      integer (kind = kint), intent(inout) :: num_component
+      character(len = kchara), intent(inout) :: phys_name
+      logical, intent(inout) :: flag
 !
 !  set number of components ( vector and scalar )
 !
-      if (iflag .gt. 0) return
+      if(flag) return
 !
-      if(     check_base_vector(phys_nod_name_ctl)                      &
-     &   .or. check_force_vectors(phys_nod_name_ctl)                    &
-     &   .or. check_rot_force(phys_nod_name_ctl)                        &
-     &   .or. check_div_flux_tensor(phys_nod_name_ctl)                  &
-     &   .or. check_gradient_field(phys_nod_name_ctl)                   &
-     &   .or. check_vector_diffusion(phys_nod_name_ctl)                 &
-     &   .or. check_field_product_vectors(phys_nod_name_ctl)            &
-     &   .or. check_vector_work_field(phys_nod_name_ctl)                &
-     &   .or. check_vector_check_field(phys_nod_name_ctl)               &
-     &   .or. check_SGS_vector_terms(phys_nod_name_ctl)                 &
-     &   .or. check_div_SGS_flux_tensor(phys_nod_name_ctl)              &
-     &   .or. check_rot_SGS_terms(phys_nod_name_ctl)                    &
-     &   .or. check_force_w_SGS(phys_nod_name_ctl)                      &
-     &   .or. check_true_SGS_vector_terms(phys_nod_name_ctl)            &
-     &   .or. check_true_div_SGS_flux_tensor(phys_nod_name_ctl)         &
-     &   .or. check_filter_vector(phys_nod_name_ctl)                    &
-     &   .or. check_filtered_force(phys_nod_name_ctl)                   &
-     &   .or. check_rot_fil_force(phys_nod_name_ctl)                    &
-     &   .or. check_wide_filter_vector(phys_nod_name_ctl)               &
-     &   .or. check_wide_filter_grad(phys_nod_name_ctl)                 &
-     &   .or. check_double_filter_grad(phys_nod_name_ctl)               &
-     &   .or. check_double_filter_vector(phys_nod_name_ctl)             &
-     &   .or. check_difference_vectors(phys_nod_name_ctl)               &
-     &   .or. check_grad_filter_field(phys_nod_name_ctl)                &
-     &   .or. check_diff_filter_vectors(phys_nod_name_ctl)              &
-     &   .or. check_wide_SGS_vector_terms(phys_nod_name_ctl)            &
-     &   .or. check_double_SGS_vector_terms(phys_nod_name_ctl)          &
-     &        ) then
-        iflag = 1
-        icou = icou + 1
-        phys_nod_name = phys_nod_name_ctl
-        num_nod_component = 3
+      flag =  check_base_vector(phys_name_ctl)                          &
+     &   .or. check_force_vectors(phys_name_ctl)                        &
+     &   .or. check_rot_force(phys_name_ctl)                            &
+     &   .or. check_div_flux_tensor(phys_name_ctl)                      &
+     &   .or. check_gradient_field(phys_name_ctl)                       &
+     &   .or. check_vector_diffusion(phys_name_ctl)                     &
+     &   .or. check_field_product_vectors(phys_name_ctl)                &
+     &   .or. check_vector_work_field(phys_name_ctl)                    &
+     &   .or. check_vector_check_field(phys_name_ctl)                   &
+     &   .or. check_SGS_vector_terms(phys_name_ctl)                     &
+     &   .or. check_div_SGS_flux_tensor(phys_name_ctl)                  &
+     &   .or. check_rot_SGS_terms(phys_name_ctl)                        &
+     &   .or. check_force_w_SGS(phys_name_ctl)                          &
+     &   .or. check_true_SGS_vector_terms(phys_name_ctl)                &
+     &   .or. check_true_div_SGS_flux_tensor(phys_name_ctl)             &
+     &   .or. check_filter_vector(phys_name_ctl)                        &
+     &   .or. check_filtered_force(phys_name_ctl)                       &
+     &   .or. check_rot_fil_force(phys_name_ctl)                        &
+     &   .or. check_wide_filter_vector(phys_name_ctl)                   &
+     &   .or. check_wide_filter_grad(phys_name_ctl)                     &
+     &   .or. check_double_filter_grad(phys_name_ctl)                   &
+     &   .or. check_double_filter_vector(phys_name_ctl)                 &
+     &   .or. check_difference_vectors(phys_name_ctl)                   &
+     &   .or. check_grad_filter_field(phys_name_ctl)                    &
+     &   .or. check_diff_filter_vectors(phys_name_ctl)                  &
+     &   .or. check_wide_SGS_vector_terms(phys_name_ctl)                &
+     &   .or. check_double_SGS_vector_terms(phys_name_ctl)
+      if(flag) then
+        phys_name = phys_name_ctl
+        num_component = n_vector
+        return
       end if
 !
-      if(phys_nod_name_ctl .eq. geostrophic_balance%name) then
-        iflag = 1
-        icou = icou + 1
-        phys_nod_name = rest_of_geostrophic%name
-        num_nod_component = 3
+      if(phys_name_ctl .eq. geostrophic_balance%name) then
+        flag = .TRUE.
+        phys_name = rest_of_geostrophic%name
+        num_component = n_vector
+        return
       end if
 !
       end subroutine set_vector_field_name
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_scalar_field_name(phys_nod_name_ctl, icou,         &
-     &          phys_nod_name, num_nod_component, iflag)
+      subroutine set_scalar_field_name                                  &
+     &         (phys_name_ctl, phys_name, num_component, flag)
 !
       use t_base_field_labels
       use t_diffusion_term_labels
@@ -146,101 +144,99 @@
       use m_wide_filter_field_labels
       use m_dble_filter_field_labels
 !
-      character(len = kchara), intent(in) :: phys_nod_name_ctl
-      integer (kind = kint), intent(inout) :: icou
-      integer (kind = kint), intent(inout) :: num_nod_component
-      character(len = kchara), intent(inout) :: phys_nod_name
-      integer (kind = kint), intent(inout) :: iflag
+      character(len = kchara), intent(in) :: phys_name_ctl
+      integer (kind = kint), intent(inout) :: num_component
+      character(len = kchara), intent(inout) :: phys_name
+      logical, intent(inout) :: flag
 !
 !  set number of components ( vector and scalar )
 !
-      if (iflag .gt. 0) return
+      if(flag) return
 !
-      if(     check_base_scalar(phys_nod_name_ctl)                      &
-     &   .or. check_enegy_fluxes(phys_nod_name_ctl)                     &
-     &   .or. check_scalar_advection(phys_nod_name_ctl)                 &
-     &   .or. check_div_force(phys_nod_name_ctl)                        &
-     &   .or. check_div_scalar_flux(phys_nod_name_ctl)                  &
-     &   .or. check_divergence_field(phys_nod_name_ctl)                 &
-     &   .or. check_scalar_diffusion(phys_nod_name_ctl)                 &
-     &   .or. check_field_product_scalars(phys_nod_name_ctl)            &
-     &   .or. check_scalar_work_field(phys_nod_name_ctl)                &
-     &   .or. check_scalar_check_field(phys_nod_name_ctl)               &
-     &   .or. check_div_SGS_flux_vector(phys_nod_name_ctl)              &
-     &   .or. check_SGS_ene_fluxes(phys_nod_name_ctl)                   &
-     &   .or. check_SGS_moedel_coefs(phys_nod_name_ctl)                 &
-     &   .or. check_true_div_SGS_flux_vector(phys_nod_name_ctl)         &
-     &   .or. check_true_SGS_ene_fluxes(phys_nod_name_ctl)              &
-     &   .or. check_filter_scalar(phys_nod_name_ctl)                    &
-     &   .or. check_filtered_scalar_flux(phys_nod_name_ctl)             &
-     &   .or. check_div_fil_force(phys_nod_name_ctl)                    &
-     &   .or. check_filter_enegy_fluxes(phys_nod_name_ctl)              &
-     &   .or. check_wide_filter_scalar(phys_nod_name_ctl)               &
-     &   .or. check_double_filter_scalar(phys_nod_name_ctl)             &
-     &   .or. check_div_filter_field(phys_nod_name_ctl)                 &
-     &   .or. check_work_4_poisson(phys_nod_name_ctl)                   &
-     &   .or. check_commute_SGS_work(phys_nod_name_ctl)) then
-        iflag = 1
-        icou = icou + 1
-        phys_nod_name = phys_nod_name_ctl
-        num_nod_component = 1
+      flag =  check_base_scalar(phys_name_ctl)                          &
+     &   .or. check_enegy_fluxes(phys_name_ctl)                         &
+     &   .or. check_scalar_advection(phys_name_ctl)                     &
+     &   .or. check_div_force(phys_name_ctl)                            &
+     &   .or. check_div_scalar_flux(phys_name_ctl)                      &
+     &   .or. check_divergence_field(phys_name_ctl)                     &
+     &   .or. check_scalar_diffusion(phys_name_ctl)                     &
+     &   .or. check_field_product_scalars(phys_name_ctl)                &
+     &   .or. check_scalar_work_field(phys_name_ctl)                    &
+     &   .or. check_scalar_check_field(phys_name_ctl)                   &
+     &   .or. check_div_SGS_flux_vector(phys_name_ctl)                  &
+     &   .or. check_SGS_ene_fluxes(phys_name_ctl)                       &
+     &   .or. check_SGS_moedel_coefs(phys_name_ctl)                     &
+     &   .or. check_true_div_SGS_flux_vector(phys_name_ctl)             &
+     &   .or. check_true_SGS_ene_fluxes(phys_name_ctl)                  &
+     &   .or. check_filter_scalar(phys_name_ctl)                        &
+     &   .or. check_filtered_scalar_flux(phys_name_ctl)                 &
+     &   .or. check_div_fil_force(phys_name_ctl)                        &
+     &   .or. check_filter_enegy_fluxes(phys_name_ctl)                  &
+     &   .or. check_wide_filter_scalar(phys_name_ctl)                   &
+     &   .or. check_double_filter_scalar(phys_name_ctl)                 &
+     &   .or. check_div_filter_field(phys_name_ctl)                     &
+     &   .or. check_work_4_poisson(phys_name_ctl)                       &
+     &   .or. check_commute_SGS_work(phys_name_ctl)
+      if(flag) then
+        phys_name = phys_name_ctl
+        num_component = n_scalar
+        return
       end if
 !
 !   Old field label... Should be deleted later!!
-      if(phys_nod_name_ctl .eq. buoyancy_work%name) then
-        iflag = 1
-        icou = icou + 1
-        phys_nod_name = buoyancy_flux%name
-        num_nod_component = 1
+      if(phys_name_ctl .eq. buoyancy_work%name) then
+        flag = .TRUE.
+        phys_name = buoyancy_flux%name
+        num_component = n_scalar
+        return
       end if
 !
       end subroutine set_scalar_field_name
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_tensor_field_name(phys_nod_name_ctl, icou,         &
-     &          phys_nod_name, num_nod_component, iflag)
+      subroutine set_tensor_field_name                                  &
+     &         (phys_name_ctl, phys_name, num_component, flag)
 !
       use t_SGS_term_labels
       use t_SGS_model_coef_labels
       use m_filtered_force_labels
       use m_force_w_SGS_labels
 !
-      character(len = kchara), intent(in) :: phys_nod_name_ctl
-      integer (kind = kint), intent(inout) :: icou
-      integer (kind = kint), intent(inout) :: num_nod_component
-      character(len = kchara), intent(inout) :: phys_nod_name
-      integer (kind = kint), intent(inout) :: iflag
+      character(len = kchara), intent(in) :: phys_name_ctl
+      integer (kind = kint), intent(inout) :: num_component
+      character(len = kchara), intent(inout) :: phys_name
+      logical, intent(inout) :: flag
 !
 !
 !  set number of components ( vector and scalar )
 !
-      if (iflag .gt. 0) return
+      if(flag) return
 !
-      if(     check_SGS_tensor_terms(phys_nod_name_ctl)                 &
-     &   .or. check_flux_tensor_w_SGS(phys_nod_name_ctl)                &
-     &   .or. check_flux_tensors(phys_nod_name_ctl)                     &
-     &   .or. check_filtered_flux_tensor(phys_nod_name_ctl)) then
-        iflag = 1
-        icou = icou + 1
-        phys_nod_name = phys_nod_name_ctl
-        num_nod_component = n_sym_tensor
+      flag =  check_SGS_tensor_terms(phys_name_ctl)                     &
+     &   .or. check_flux_tensor_w_SGS(phys_name_ctl)                    &
+     &   .or. check_flux_tensors(phys_name_ctl)                         &
+     &   .or. check_filtered_flux_tensor(phys_name_ctl)
+      if(flag) then
+        phys_name = phys_name_ctl
+        num_component = n_sym_tensor
+        return
       end if
 !
-      if(    check_asym_flux_tensors(phys_nod_name_ctl)                 &
-     &  .or. check_SGS_induction_tensor(phys_nod_name_ctl)              &
-     &  .or. check_induction_tensor_w_SGS(phys_nod_name_ctl)) then
-        iflag = 1
-        icou = icou + 1
-        phys_nod_name = phys_nod_name_ctl
-        num_nod_component = 3
+      flag =  check_asym_flux_tensors(phys_name_ctl)                    &
+     &  .or. check_SGS_induction_tensor(phys_name_ctl)                  &
+     &  .or. check_induction_tensor_w_SGS(phys_name_ctl)
+      if(flag) then
+        phys_name = phys_name_ctl
+        num_component = 3
+        return
       end if
 !
-      if(check_dynamic_SGS_work(phys_nod_name_ctl)) then
-        iflag = 1
-        icou = icou + 1
-        phys_nod_name = phys_nod_name_ctl
-        num_nod_component = 6
+      flag =  check_dynamic_SGS_work(phys_name_ctl)
+      if(flag) then
+        phys_name = phys_name_ctl
+        num_component = 6
+        return
       end if
 !
       end subroutine set_tensor_field_name
@@ -248,40 +244,32 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine check_vis_control_flag(visualize_ctl, iflag_viz)
+      logical function check_vis_control_flag(visualize_ctl)
 !
       use skip_comment_f
 !
       character(len = kchara), intent(in) :: visualize_ctl
-      integer (kind = kint), intent(inout) :: iflag_viz
 !
-      if (cmp_no_case(visualize_ctl, cflag_viz_on)) then
-        iflag_viz = 1
-      else
-        iflag_viz = 0
-      end if
+      check_vis_control_flag = cmp_no_case(visualize_ctl, cflag_viz_on)
 !
-      end subroutine check_vis_control_flag
+      end function check_vis_control_flag
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine check_monitor_control_flag(iflag, monitor_ctl,         &
-     &          iflag_fld_monitor)
+      integer(kind = kint) function check_monitor_control_flag          &
+     &                            (monitor_ctl)
 !
       use skip_comment_f
 !
       character(len = kchara), intent(in) :: monitor_ctl
-      integer (kind = kint), intent(in) :: iflag
-      integer (kind = kint), intent(inout) :: iflag_fld_monitor
 !
-      if (iflag .eq. 0) return
       if(cmp_no_case(monitor_ctl, cflag_monitor_on)) then
-        iflag_fld_monitor = 1
+        check_monitor_control_flag = 1
       else
-        iflag_fld_monitor = 0
+        check_monitor_control_flag = 0
       end if
 !
-      end subroutine check_monitor_control_flag
+      end function check_monitor_control_flag
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
