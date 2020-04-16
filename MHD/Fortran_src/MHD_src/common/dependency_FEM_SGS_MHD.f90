@@ -51,7 +51,7 @@
      &          iphys, nod_fld, iphys_ele, ele_fld)
 !
       use t_geometry_data
-      use set_field_address
+      use set_control_field_data
       use initialize_element_field
 !
       type(SGS_model_control_params), intent(in) :: SGS_param

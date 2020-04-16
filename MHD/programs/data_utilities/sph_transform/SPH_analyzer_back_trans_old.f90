@@ -38,7 +38,7 @@
       use r_interpolate_sph_data
       use count_num_sph_smp
       use field_IO_select
-      use set_field_address
+      use set_control_field_data
       use init_sph_trans
       use pole_sph_transform
       use sph_transfer_all_field

@@ -31,7 +31,7 @@
 !
       use m_ctl_params_sph_utils
       use parallel_load_data_4_sph
-      use set_field_address
+      use set_control_field_data
       use copy_rj_phys_data_4_IO
       use count_num_sph_smp
 !

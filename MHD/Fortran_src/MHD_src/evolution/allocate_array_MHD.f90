@@ -61,7 +61,7 @@
       use t_SGS_model_coefs
       use t_FEM_MHD_mean_square
 !
-      use set_field_address
+      use set_control_field_data
       use count_sgs_components
       use node_monitor_IO
       use dependency_FEM_SGS_MHD

@@ -1,4 +1,4 @@
-FEM_analyzer_sph_MHD.o: $(MHD_SPH_DIR)/FEM_analyzer_sph_MHD.f90 m_precision.o m_constants.o m_machine_parameter.o calypso_mpi.o m_work_time.o t_time_data.o t_mesh_data.o t_phys_data.o t_phys_address.o t_MHD_step_parameter.o t_MHD_file_parameter.o t_MHD_IO_data.o m_array_for_send_recv.o t_cal_max_indices.o set_field_address.o nod_phys_send_recv.o node_monitor_IO.o parallel_FEM_mesh_init.o output_viz_file_control.o t_spheric_parameter.o t_sph_trans_arrays_MHD.o set_address_sph_trans_snap.o
+FEM_analyzer_sph_MHD.o: $(MHD_SPH_DIR)/FEM_analyzer_sph_MHD.f90 m_precision.o m_constants.o m_machine_parameter.o calypso_mpi.o m_work_time.o t_time_data.o t_mesh_data.o t_phys_data.o t_phys_address.o t_MHD_step_parameter.o t_MHD_file_parameter.o t_MHD_IO_data.o m_array_for_send_recv.o t_cal_max_indices.o set_control_field_data.o nod_phys_send_recv.o node_monitor_IO.o parallel_FEM_mesh_init.o output_viz_file_control.o t_spheric_parameter.o t_sph_trans_arrays_MHD.o set_address_sph_trans_snap.o
 	$(F90) -c $(F90OPTFLAGS) $<
 MHD_FFT_selector.o: $(MHD_SPH_DIR)/MHD_FFT_selector.F90 m_precision.o m_machine_parameter.o t_sph_FFTPACK5.o t_sph_ISPACK_FFT.o t_addresses_sph_transform.o m_FFT_selector.o t_sph_single_FFTW.o t_sph_field_FFTW.o t_sph_multi_FFTW.o t_sph_FFT_selector.o t_spheric_rtp_data.o t_sph_trans_comm_tbl.o
 	$(F90) -c $(F90FLAGS) $<
@@ -56,7 +56,7 @@ cal_write_sph_monitor_data.o: $(MHD_SPH_DIR)/cal_write_sph_monitor_data.f90 m_pr
 	$(F90) -c $(F90OPTFLAGS) $<
 center_sph_matrices.o: $(MHD_SPH_DIR)/center_sph_matrices.f90 m_precision.o m_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
-check_dependency_for_MHD.o: $(MHD_SPH_DIR)/check_dependency_for_MHD.f90 m_precision.o m_error_IDs.o m_machine_parameter.o calypso_mpi.o m_phys_labels.o t_control_parameter.o t_phys_data.o t_phys_address.o t_physical_property.o t_geometry_data.o set_field_address.o t_spheric_rj_data.o
+check_dependency_for_MHD.o: $(MHD_SPH_DIR)/check_dependency_for_MHD.f90 m_precision.o m_error_IDs.o m_machine_parameter.o calypso_mpi.o m_phys_labels.o t_control_parameter.o t_phys_data.o t_phys_address.o t_physical_property.o t_geometry_data.o set_control_field_data.o t_spheric_rj_data.o
 	$(F90) -c $(F90OPTFLAGS) $<
 coef_fdm2_free_CMB.o: $(MHD_SPH_DIR)/coef_fdm2_free_CMB.f90 m_precision.o m_constants.o t_coef_fdm2_MHD_boundaries.o cal_inverse_small_matrix.o
 	$(F90) -c $(F90OPTFLAGS) $<

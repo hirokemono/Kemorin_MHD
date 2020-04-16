@@ -87,7 +87,7 @@
       subroutine SPH_add_initial_field(SPH_model, SPH_MHD)
 !
       use set_control_sph_mhd
-      use set_field_address
+      use set_control_field_data
       use const_sph_initial_spectr
       use set_reference_sph_mhd
       use set_bc_sph_mhd

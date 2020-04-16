@@ -50,7 +50,7 @@
      &         (node, MHD_prop, iphys, nod_fld)
 !
       use t_geometry_data
-      use set_field_address
+      use set_control_field_data
 !
       type(node_data), intent(in) :: node
       type(MHD_evolution_param), intent(in) :: MHD_prop
@@ -76,7 +76,7 @@
 !
       use t_spheric_rj_data
 !
-      use set_field_address
+      use set_control_field_data
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(MHD_evolution_param), intent(in) :: MHD_prop

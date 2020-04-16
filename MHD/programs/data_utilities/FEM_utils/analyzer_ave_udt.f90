@@ -30,7 +30,7 @@
 !
       use m_array_for_send_recv
       use input_control_udt_diff
-      use set_field_address
+      use set_control_field_data
 !
 !
       if (my_rank.eq.0) then

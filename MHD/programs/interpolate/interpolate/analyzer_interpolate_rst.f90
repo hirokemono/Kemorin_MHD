@@ -56,7 +56,7 @@
 !
       subroutine initialize_itp_rst
 !
-      use set_field_address
+      use set_control_field_data
       use input_control_interpolate
       use const_mesh_information
       use set_size_4_smp_types

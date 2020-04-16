@@ -73,7 +73,7 @@
       use m_array_for_send_recv
       use t_cal_max_indices
 !
-      use set_field_address
+      use set_control_field_data
       use nod_phys_send_recv
       use node_monitor_IO
       use parallel_FEM_mesh_init

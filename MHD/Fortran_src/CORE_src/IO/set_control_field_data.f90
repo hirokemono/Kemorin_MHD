@@ -13,10 +13,17 @@
 !!        type(ctl_array_c3), intent(in) :: field_ctl
 !!        type(phys_data), intent(inout) :: fld
 !!
+!!      subroutine init_field_data(n_point, fld, iphys)
+!!        type(phys_data), intent(inout) :: fld
+!!        type(phys_address), intent(inout) :: iphys
+!!
 !!      subroutine count_field_4_monitor                                &
 !!     &         (fld, num_field_monitor, ntot_comp_monitor)
 !!        type(phys_data), intent(in) :: fld
 !!@endverbatim
+!!
+!!@n @param fld    structure of field data
+!!@n @param iphys  structure of field addresses
 !
       module set_control_field_data
 !
@@ -26,6 +33,7 @@
       use m_machine_parameter
       use m_error_IDs
 !
+      use t_phys_address
       use t_phys_data
       use t_control_array_character3
 !
@@ -47,7 +55,6 @@
 !
       integer(kind = kint), parameter :: id_six = 6
 !
-!   set physical values
 !
       ierr = 0
       if(field_ctl%icou .le. 0) then
@@ -78,7 +85,6 @@
 !
       integer(kind = kint), parameter :: id_six = 6
 !
-!   set physical values
 !
       ierr = 0
       if(field_ctl%icou .le. 0) then
@@ -98,6 +104,42 @@
       end if
 !
       end subroutine set_control_field_by_comp_viz
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine init_field_data(n_point, fld, iphys)
+!
+      use set_MHD_field_address
+      use set_SGS_MHD_field_address
+!
+      integer(kind = kint), intent(in) :: n_point
+      type(phys_data), intent(inout) :: fld
+!
+      type(phys_address), intent(inout) :: iphys
+!
+      integer(kind = kint) :: i, i_fld
+      logical :: flag
+!
+!
+      call alloc_phys_data_type(n_point, fld)
+!
+      do i = 1, fld%num_phys
+        i_fld = fld%istack_component(i-1) + 1
+!
+        call set_MHD_field_addresses                                    &
+     &     (i_fld, fld%phys_name(i), iphys, flag)
+        if(flag) cycle
+        call set_SGS_MHD_field_addresses                                &
+     &     (i_fld, fld%phys_name(i), iphys, flag)
+        if(flag) cycle
+!
+!   Old field label... Should be deleted later!!
+        call set_old_MHD_field_addresses                                &
+     &     (i_fld, fld%phys_name(i), iphys, flag)
+      end do
+!
+      end subroutine init_field_data
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------

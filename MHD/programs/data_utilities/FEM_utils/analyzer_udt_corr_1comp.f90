@@ -45,7 +45,7 @@
       use m_array_for_send_recv
       use m_2nd_pallalel_vector
 !
-      use set_field_address
+      use set_control_field_data
       use copy_mesh_structures
       use input_control_udt_diff
       use mpi_load_mesh_data

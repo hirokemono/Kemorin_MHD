@@ -30,7 +30,7 @@
 !
       use m_array_for_send_recv
       use m_phys_constants
-      use set_field_address
+      use set_control_field_data
       use input_control_udt_diff
 !
 !
