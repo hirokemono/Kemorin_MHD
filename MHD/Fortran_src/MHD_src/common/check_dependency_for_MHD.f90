@@ -50,7 +50,7 @@
      &         (node, MHD_prop, iphys, nod_fld)
 !
       use t_geometry_data
-      use init_nodal_field_address
+      use set_field_address
 !
       type(node_data), intent(in) :: node
       type(MHD_evolution_param), intent(in) :: MHD_prop
@@ -59,8 +59,8 @@
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-      if (iflag_debug.ge.1)  write(*,*) 'init_nod_fld_address'
-      call init_nod_fld_address(node, nod_fld, iphys)
+      if (iflag_debug.ge.1)  write(*,*) 'init_field_data'
+      call init_field_data(node%numnod, nod_fld, iphys)
 !
       call check_field_dependencies                                     &
      &   (MHD_prop%fl_prop, MHD_prop%cd_prop,                           &
@@ -76,7 +76,7 @@
 !
       use t_spheric_rj_data
 !
-      use set_sph_phys_address
+      use set_field_address
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(MHD_evolution_param), intent(in) :: MHD_prop
@@ -85,7 +85,7 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      call set_sph_sprctr_data_address(sph_rj, ipol, rj_fld)
+      call init_field_data(sph_rj%nnod_rj, rj_fld, ipol)
 !
       call check_field_dependencies                                     &
      &   (MHD_prop%fl_prop, MHD_prop%cd_prop,                           &

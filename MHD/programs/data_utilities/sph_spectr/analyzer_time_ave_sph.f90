@@ -32,7 +32,7 @@
 !
       use m_ctl_params_sph_utils
       use parallel_load_data_4_sph
-      use set_sph_phys_address
+      use set_field_address
       use copy_rj_phys_data_4_IO
       use count_num_sph_smp
 !
@@ -65,8 +65,8 @@
       call copy_time_data(spec_time_IO, t_SHR%init_d)
       call copy_rj_phys_name_from_IO(sph_fld_IN, SPH_dat_ss%fld)
 !
-      call set_sph_sprctr_data_address                                  &
-     &   (SPH_dat_ss%sph%sph_rj, SPH_dat_ss%ipol, SPH_dat_ss%fld)
+      call init_field_data(SPH_dat_ss%sph%sph_rj%nnod_rj,   &
+     &    SPH_dat_ss%fld, SPH_dat_ss%ipol)
 !
 !  -------------------------------
 !

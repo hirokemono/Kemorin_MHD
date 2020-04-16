@@ -30,7 +30,7 @@
       use m_ctl_params_sph_utils
       use m_legendre_transform_list
       use parallel_load_data_4_sph
-      use set_sph_phys_address
+      use set_field_address
       use copy_rj_phys_data_4_IO
       use count_num_sph_smp
       use init_sph_trans
@@ -70,8 +70,8 @@
      &   (SPH_dat_ss%sph%sph_params, SPH_dat_ss%sph%sph_rj,             &
      &    SPH_dat_ss%fld, pwr_spec, WK_pwr_spec)
 !
-      call set_sph_sprctr_data_address                                  &
-     &   (SPH_dat_ss%sph%sph_rj, SPH_dat_ss%ipol, SPH_dat_ss%fld)
+      call init_field_data(SPH_dat_ss%sph%sph_rj%nnod_rj,   &
+     &    SPH_dat_ss%fld, SPH_dat_ss%ipol)
 !
       end subroutine initialize_pick_gauss_coef
 !

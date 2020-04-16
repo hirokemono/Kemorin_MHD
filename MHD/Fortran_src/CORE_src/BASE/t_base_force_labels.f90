@@ -362,7 +362,8 @@
 !
       flag = check_force_vectors(field_name)                            &
      &      .or. check_scalar_advection(field_name)                     &
-     &      .or. check_flux_tensors(field_name)
+     &      .or. check_flux_tensors(field_name)                         &
+     &      .or. check_asym_flux_tensors(field_name)
       if(flag) then
         if (field_name .eq. pressure_gradient%name) then
           forces%i_press_grad = i_phys

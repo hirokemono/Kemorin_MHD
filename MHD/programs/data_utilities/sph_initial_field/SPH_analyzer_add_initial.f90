@@ -87,7 +87,7 @@
       subroutine SPH_add_initial_field(SPH_model, SPH_MHD)
 !
       use set_control_sph_mhd
-      use set_sph_phys_address
+      use set_field_address
       use const_sph_initial_spectr
       use set_reference_sph_mhd
       use set_bc_sph_mhd
@@ -106,8 +106,8 @@
 !
 !   Allocate spectr field data
 !
-      call set_sph_sprctr_data_address                                  &
-     &   (SPH_MHD%sph%sph_rj, SPH_MHD%ipol, SPH_MHD%fld)
+      call init_field_data                                  &
+     &   (SPH_MHD%sph%sph_rj%nnod_rj, SPH_MHD%fld, SPH_MHD%ipol)
 !
 ! ---------------------------------
 !

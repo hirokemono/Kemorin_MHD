@@ -57,7 +57,6 @@
       use t_sph_boundary_input_data
 !
       use set_control_sph_mhd
-      use set_sph_phys_address
       use const_fdm_coefs
       use set_initial_sph_dynamo
       use adjust_reference_fields

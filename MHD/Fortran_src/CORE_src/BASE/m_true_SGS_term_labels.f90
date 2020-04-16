@@ -9,7 +9,7 @@
 !!
 !!@verbatim
 !!      logical function check_true_SGS_vector_terms(field_name)
-!!      subroutine set_SGS_term_addresses                               &
+!!      subroutine set_true_SGS_term_addresses                          &
 !!     &         (i_phys, field_name, true_SGS, flag)
 !!        type(SGS_term_address), intent(inout) :: true_SGS
 !!
@@ -230,7 +230,7 @@
       logical, intent(inout) :: flag
 !
 !
-      flag = check_true_div_SGS_flux_tensor(field_name)                 &
+      flag = check_true_div_SGS_flux_vector(field_name)                 &
      &    .or. check_true_div_SGS_flux_tensor(field_name)
       if(flag) then
         if (field_name .eq. SGS_div_m_flux_true%name ) then

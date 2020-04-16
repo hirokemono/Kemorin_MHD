@@ -1,8 +1,8 @@
 cal_buoyancy_flux.o: $(MHD_COMMON_DIR)/cal_buoyancy_flux.f90 m_precision.o m_machine_parameter.o t_geometry_data.o t_phys_data.o t_physical_property.o
 	$(F90) -c $(F90OPTFLAGS) $<
-check_dependency_SGS_MHD.o: $(MHD_COMMON_DIR)/check_dependency_SGS_MHD.f90 m_precision.o m_error_IDs.o m_machine_parameter.o calypso_mpi.o m_phys_labels.o t_control_parameter.o t_SGS_control_parameter.o t_SPH_mesh_field_data.o t_physical_property.o check_dependency_for_MHD.o set_sph_phys_address.o
+check_dependency_SGS_MHD.o: $(MHD_COMMON_DIR)/check_dependency_SGS_MHD.f90 m_precision.o m_error_IDs.o m_machine_parameter.o calypso_mpi.o m_phys_labels.o t_control_parameter.o t_SGS_control_parameter.o t_SPH_mesh_field_data.o t_physical_property.o check_dependency_for_MHD.o
 	$(F90) -c $(F90OPTFLAGS) $<
-check_dependency_for_MHD.o: $(MHD_COMMON_DIR)/check_dependency_for_MHD.f90 m_precision.o m_error_IDs.o m_machine_parameter.o calypso_mpi.o m_phys_labels.o t_control_parameter.o t_phys_data.o t_phys_address.o t_physical_property.o t_geometry_data.o init_nodal_field_address.o t_spheric_rj_data.o set_sph_phys_address.o
+check_dependency_for_MHD.o: $(MHD_COMMON_DIR)/check_dependency_for_MHD.f90 m_precision.o m_error_IDs.o m_machine_parameter.o calypso_mpi.o m_phys_labels.o t_control_parameter.o t_phys_data.o t_phys_address.o t_physical_property.o t_geometry_data.o set_field_address.o t_spheric_rj_data.o
 	$(F90) -c $(F90OPTFLAGS) $<
 const_comm_table_fluid.o: $(MHD_COMMON_DIR)/const_comm_table_fluid.f90 m_precision.o m_machine_parameter.o t_vector_for_solver.o t_mesh_data.o t_geometry_data_MHD.o calypso_mpi.o t_comm_table.o t_geometry_data.o set_comm_table_fluid.o solver_SR_type.o
 	$(F90) -c $(F90OPTFLAGS) $<

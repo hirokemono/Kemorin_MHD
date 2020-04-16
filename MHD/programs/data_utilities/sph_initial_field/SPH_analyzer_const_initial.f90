@@ -86,7 +86,6 @@
       subroutine SPH_const_initial_field(SPH_model, SPH_MHD)
 !
       use set_control_sph_mhd
-      use set_sph_phys_address
       use parallel_load_data_4_sph
       use const_sph_initial_spectr
       use set_reference_sph_mhd

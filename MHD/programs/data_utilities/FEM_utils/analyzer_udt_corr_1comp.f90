@@ -45,7 +45,7 @@
       use m_array_for_send_recv
       use m_2nd_pallalel_vector
 !
-      use init_nodal_field_address
+      use set_field_address
       use copy_mesh_structures
       use input_control_udt_diff
       use mpi_load_mesh_data
@@ -94,9 +94,9 @@
 !
 !     --------------------- 
 !
-      if (iflag_debug.eq.1) write(*,*) 'init_nod_fld_address'
-      call init_nod_fld_address                                         &
-     &   (femmesh_p_FUT%mesh%node, field_FUTIL, iphys_FUTIL)
+      if (iflag_debug.eq.1) write(*,*) 'init_field_data'
+      call init_field_data                                              &
+     &   (femmesh_p_FUT%mesh%node%numnod, field_FUTIL, iphys_FUTIL)
 !
 !     --------------------- 
 !

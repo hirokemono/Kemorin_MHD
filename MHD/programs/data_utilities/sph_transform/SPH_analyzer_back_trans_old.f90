@@ -38,7 +38,7 @@
       use r_interpolate_sph_data
       use count_num_sph_smp
       use field_IO_select
-      use set_sph_phys_address
+      use set_field_address
       use init_sph_trans
       use pole_sph_transform
       use sph_transfer_all_field
@@ -74,8 +74,8 @@
 !
 !  ---- allocate spectr data
 !
-      call set_sph_sprctr_data_address                                  &
-     &   (SPH_MHD%sph%sph_rj, SPH_MHD%ipol, SPH_MHD%fld)
+      call init_field_data(SPH_MHD%sph%sph_rj%nnod_rj,      &
+     &    SPH_MHD%fld, SPH_MHD%ipol)
 !
 !  ---- initialize spherical harmonics transform
 !

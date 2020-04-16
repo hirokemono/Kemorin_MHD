@@ -44,8 +44,6 @@
       subroutine set_sph_SGS_MHD_spectr_data                            &
      &         (SGS_par, MHD_prop, SPH_MHD)
 !
-      use set_sph_phys_address
-!
       type(SGS_paremeters), intent(in) :: SGS_par
       type(MHD_evolution_param), intent(in) :: MHD_prop
 !
