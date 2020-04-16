@@ -84,7 +84,7 @@ mesh_file_name_by_param.o: $(IO_DIR)/mesh_file_name_by_param.f90 m_precision.o t
 	$(F90) -c $(F90OPTFLAGS) $<
 node_geometry_IO.o: $(IO_DIR)/node_geometry_IO.f90 m_precision.o t_geometry_data.o t_read_mesh_data.o t_surf_edge_IO.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
-ordering_field_by_viz.o: $(IO_DIR)/ordering_field_by_viz.f90 m_precision.o m_constants.o t_control_array_character3.o set_nodal_field_name.o cal_minmax_and_stacks.o
+ordering_field_by_viz.o: $(IO_DIR)/ordering_field_by_viz.f90 m_precision.o m_constants.o t_phys_data.o t_control_array_character3.o set_nodal_field_name.o cal_minmax_and_stacks.o
 	$(F90) -c $(F90OPTFLAGS) $<
 output_image_sel_4_png.o: $(IO_DIR)/output_image_sel_4_png.F90 m_precision.o t_png_file_access.o write_bmp_image.o
 	$(F90) -c $(F90FLAGS) $<

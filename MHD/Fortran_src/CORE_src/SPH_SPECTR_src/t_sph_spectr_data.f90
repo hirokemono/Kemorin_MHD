@@ -42,7 +42,7 @@
 !!          d_rj = rj_fld%d_fld
 !!      Integer flag for monitoring output
 !!       for spectr data @f$ f(r,j) @f$
-!!          iflag_monitor_rj = rj_fld%iflag_monitor
+!!          flag_monitor_rj = rj_fld%flag_monitor
 !!      Number of fields for visualization output
 !!       @f$ f(r,\theta,\phi) @f$
 !!          num_phys_rj_vis = rj_fld%num_phys_viz

@@ -10,7 +10,7 @@
 !!      subroutine set_control_sph_mhd_fields                           &
 !!     &        (MHD_prop, field_ctl, rj_fld)
 !!      subroutine s_set_control_sph_data_MHD                           &
-!!     &         (MHD_prop, plt, mevo_ctl, rj_org_param, rst_org_param, &
+!!     &         (plt, mevo_ctl, rj_org_param, rst_org_param,           &
 !!     &          fst_file_IO, bc_IO, WK_sph)
 !!        type(fluid_property), intent(in) :: fl_prop
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
@@ -55,7 +55,7 @@
 !
       use add_nodal_fields_4_MHD
       use add_sph_MHD_fields_2_ctl
-      use set_control_sph_data
+      use set_control_field_data
 !
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(ctl_array_c3), intent(inout) :: field_ctl
@@ -84,15 +84,15 @@
 !
 !    set nodal data
 !
-      if (iflag_debug.gt.0) write(*,*) 's_set_control_sph_data'
-      call s_set_control_sph_data(field_ctl, rj_fld, ierr)
+      if (iflag_debug.gt.0) write(*,*) 's_set_control_field_data'
+      call s_set_control_field_data(field_ctl, rj_fld, ierr)
 !
       end subroutine set_control_sph_mhd_fields
 !
 ! -----------------------------------------------------------------------
 !
       subroutine s_set_control_sph_data_MHD                             &
-     &         (MHD_prop, plt, mevo_ctl, rj_org_param, rst_org_param,   &
+     &         (plt, mevo_ctl, rj_org_param, rst_org_param,             &
      &          fst_file_IO, bc_IO, WK_sph)
 !
       use calypso_mpi
@@ -113,12 +113,11 @@
       use t_sph_boundary_input_data
 !
       use skip_comment_f
-      use set_control_sph_data
+      use set_control_field_data
       use add_nodal_fields_4_MHD
       use add_sph_MHD_fields_2_ctl
       use sph_mhd_rst_IO_control
 !
-      type(MHD_evolution_param), intent(in) :: MHD_prop
       type(platform_data_control), intent(in) :: plt
       type(mhd_evo_scheme_control), intent(in) :: mevo_ctl
       type(field_IO_params), intent(in) :: rj_org_param, rst_org_param
@@ -209,14 +208,8 @@
 !
       d_circle%num_phys = field_ctl%num
       call alloc_phys_name_type(d_circle)
-      call s_ordering_field_by_viz(field_ctl, d_circle%num_phys,        &
-     &    d_circle%num_phys_viz, d_circle%num_component,                &
-     &    d_circle%phys_name, d_circle%iflag_monitor)
-!
-      call set_istack_4_nodal_field(d_circle%num_phys,                  &
-     &    d_circle%num_phys_viz, d_circle%num_component,                &
-     &    d_circle%ntot_phys, d_circle%ntot_phys_viz,                   &
-     &    d_circle%istack_component)
+      call s_ordering_field_by_viz(field_ctl, d_circle)
+      call set_istack_4_nodal_field(d_circle)
 !
       end subroutine set_ctl_params_pick_circle
 !

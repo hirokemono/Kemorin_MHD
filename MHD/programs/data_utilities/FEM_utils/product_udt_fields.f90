@@ -84,7 +84,7 @@
 !
       nod_fld%num_component(1) =    ncomp_4_result
       nod_fld%istack_component(1) = ncomp_4_result
-      nod_fld%iflag_monitor(1) =    1
+      nod_fld%flag_monitor(1) =     .TRUE.
       nod_fld%phys_name(1) =        result_field_name
 !
       nod_fld%ntot_phys =     ncomp_4_result

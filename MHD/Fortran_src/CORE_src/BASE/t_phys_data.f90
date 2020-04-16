@@ -3,6 +3,7 @@
 !!
 !!@author H. Matsui
 !!@date Programmed in ????
+!!      Modified March, 2020
 !!
 !> @brief Structure of field data
 !!
@@ -15,7 +16,7 @@
 !!      subroutine dealloc_phys_data_type(fld)
 !!
 !!      subroutine append_field_name_list(iflag_add, field_name, numdir,&
-!!     &          iflag_viz, iflag_monitor, iorder_eletype, fld)
+!!     &          iflag_viz, flag_monitor, iorder_eletype, fld)
 !!        type(phys_data), intent(inout) :: fld
 !!
 !!      subroutine copy_field_name_type(org_fld, new_fld)
@@ -72,7 +73,7 @@
         integer (kind=kint) :: ntot_phys_viz
 !
 !>        flag to get average and RMS data
-        integer (kind=kint), allocatable:: iflag_monitor(:)
+        logical, allocatable:: flag_monitor(:)
       end type phys_data
 !
       private :: add_field_name_list_4_viz, add_field_name_list_noviz
@@ -92,14 +93,14 @@
       allocate( fld%num_component(fld%num_phys) )
       allocate( fld%istack_component(0:fld%num_phys) )
       allocate( fld%iorder_eletype(fld%num_phys) )
-      allocate( fld%iflag_monitor(fld%num_phys) )
+      allocate( fld%flag_monitor(fld%num_phys) )
 !
       if(fld%num_phys .gt. 0) then
         fld%phys_name = ''
         fld%num_component =    0
         fld%istack_component = 0
         fld%iorder_eletype =   1
-        fld%iflag_monitor =    0
+        fld%flag_monitor =  .FALSE.
       end if
 !
       end subroutine alloc_phys_name_type
@@ -130,7 +131,7 @@
       type(phys_data), intent(inout) :: fld
 !
 !
-      deallocate( fld%phys_name, fld%iorder_eletype, fld%iflag_monitor)
+      deallocate( fld%phys_name, fld%iorder_eletype, fld%flag_monitor)
       deallocate( fld%num_component, fld%istack_component )
 !
       end subroutine dealloc_phys_name_type
@@ -150,11 +151,12 @@
 ! -----------------------------------------------------------------------
 !
       subroutine append_field_name_list(iflag_add, field_name, numdir,  &
-     &          iflag_viz, iflag_monitor, iorder_eletype, fld)
+     &          iflag_viz, flag_monitor, iorder_eletype, fld)
 !
       character(len = kchara), intent(in) :: field_name
       integer(kind = kint), intent(in) :: iflag_add, numdir
-      integer(kind = kint), intent(in) :: iflag_viz, iflag_monitor
+      integer(kind = kint), intent(in) :: iflag_viz
+      logical, intent(in) :: flag_monitor
       integer(kind = kint), intent(in) :: iorder_eletype
 !
       type(phys_data), intent(inout) :: fld
@@ -176,12 +178,12 @@
 !
         call alloc_phys_name_type(fld)
         call add_field_name_list_4_viz                                  &
-     &     (field_name, numdir, iflag_monitor, iorder_eletype,          &
+     &     (field_name, numdir, flag_monitor, iorder_eletype,           &
      &      tmp_fld, fld)
       else
         call alloc_phys_name_type(fld)
         call add_field_name_list_noviz                                  &
-     &     (field_name, numdir, iflag_monitor, iorder_eletype,          &
+     &     (field_name, numdir, flag_monitor, iorder_eletype,           &
      &      tmp_fld, fld)
       end if
 !
@@ -210,8 +212,8 @@
      &             = org_fld%num_component(1:new_fld%num_phys)
       new_fld%phys_name(1:new_fld%num_phys)                             &
      &             = org_fld%phys_name(1:new_fld%num_phys)
-      new_fld%iflag_monitor(1:new_fld%num_phys)                         &
-     &             = org_fld%iflag_monitor(1:new_fld%num_phys)
+      new_fld%flag_monitor(1:new_fld%num_phys)                          &
+     &             = org_fld%flag_monitor(1:new_fld%num_phys)
       new_fld%iorder_eletype(1:new_fld%num_phys)                        &
      &             = org_fld%iorder_eletype(1:new_fld%num_phys)
       new_fld%istack_component(0:new_fld%num_phys)                      &
@@ -240,12 +242,13 @@
 ! -----------------------------------------------------------------------
 !
       subroutine add_field_name_list_4_viz                              &
-     &         (field_name, numdir, iflag_monitor, iorder_eletype,      &
+     &         (field_name, numdir, flag_monitor, iorder_eletype,       &
      &          org_fld, new_fld)
 !
       character(len = kchara), intent(in) :: field_name
       integer(kind = kint), intent(in) :: numdir
-      integer(kind = kint), intent(in) :: iflag_monitor, iorder_eletype
+      integer(kind = kint), intent(in) :: iorder_eletype
+      logical, intent(in) :: flag_monitor
 !
       type(phys_data), intent(in) :: org_fld
       type(phys_data),intent(inout) :: new_fld
@@ -256,19 +259,19 @@
       do i = 1, org_fld%num_phys_viz
         new_fld%num_component(i) = org_fld%num_component(i)
         new_fld%phys_name(i) = org_fld%phys_name(i)
-        new_fld%iflag_monitor(i) = org_fld%iflag_monitor(i)
+        new_fld%flag_monitor(i) = org_fld%flag_monitor(i)
         new_fld%iorder_eletype(i) = org_fld%iorder_eletype(i)
       end do
 !
       new_fld%num_component(new_fld%num_phys_viz) = numdir
       new_fld%phys_name(new_fld%num_phys_viz) =     field_name
-      new_fld%iflag_monitor(new_fld%num_phys_viz) = iflag_monitor
-      new_fld%iflag_monitor(new_fld%num_phys_viz) = iorder_eletype
+      new_fld%flag_monitor(new_fld%num_phys_viz) = flag_monitor
+      new_fld%iorder_eletype(new_fld%num_phys_viz) = iorder_eletype
 !
       do i = new_fld%num_phys_viz+1, new_fld%num_phys
         new_fld%num_component(i) = org_fld%num_component(i-1)
         new_fld%phys_name(i) = org_fld%phys_name(i-1)
-        new_fld%iflag_monitor(i) = org_fld%iflag_monitor(i-1)
+        new_fld%flag_monitor(i) = org_fld%flag_monitor(i-1)
         new_fld%iorder_eletype(i) = org_fld%iorder_eletype(i-1)
       end do
 !
@@ -283,12 +286,13 @@
 ! -----------------------------------------------------------------------
 !
       subroutine add_field_name_list_noviz                              &
-     &         (field_name, numdir, iflag_monitor, iorder_eletype,      &
+     &         (field_name, numdir, flag_monitor, iorder_eletype,       &
      &          org_fld, new_fld)
 !
       character(len = kchara), intent(in) :: field_name
       integer(kind = kint), intent(in) :: numdir
-      integer(kind = kint), intent(in) :: iflag_monitor, iorder_eletype
+      integer(kind = kint), intent(in) :: iorder_eletype
+      logical, intent(in) :: flag_monitor
 !
       type(phys_data), intent(in) :: org_fld
       type(phys_data),intent(inout) :: new_fld
@@ -299,13 +303,13 @@
       do i = 1, org_fld%num_phys
         new_fld%num_component(i) = org_fld%num_component(i)
         new_fld%phys_name(i) = org_fld%phys_name(i)
-        new_fld%iflag_monitor(i) = org_fld%iflag_monitor(i)
+        new_fld%flag_monitor(i) = org_fld%flag_monitor(i)
         new_fld%iorder_eletype(i) = org_fld%iorder_eletype(i)
       end do
 !
       new_fld%num_component(new_fld%num_phys) = numdir
       new_fld%phys_name(new_fld%num_phys) =     field_name
-      new_fld%iflag_monitor(new_fld%num_phys) = iflag_monitor
+      new_fld%flag_monitor(new_fld%num_phys) = flag_monitor
       new_fld%iorder_eletype(new_fld%num_phys) = iorder_eletype
 !
       new_fld%istack_component(0) = 0

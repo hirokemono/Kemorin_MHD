@@ -78,7 +78,7 @@
       use t_sph_mhd_monitor_data_IO
 !
       use set_control_sph_data_MHD
-      use set_control_nodal_data
+      use set_control_field_data
       use set_control_sph_mhd
       use set_controls_4_sph_shell
       use node_monitor_IO
@@ -99,8 +99,8 @@
 !
 !
 !       set nodal field list
-      if (iflag_debug.gt.0) write(*,*) 's_set_control_nodal_data'
-      call s_set_control_nodal_data                                     &
+      if (iflag_debug.gt.0) write(*,*) 's_set_control_field_data'
+      call s_set_control_field_data                                     &
      &   (model_ctl%fld_ctl%field_ctl, nod_fld, ierr)
 !
 !       set spectr field list
@@ -117,8 +117,7 @@
       call set_FEM_mesh_mode_4_SPH(psph_ctl%spctl, sph%sph_params)
 !
       call count_field_4_monitor                                        &
-     &   (rj_fld%num_phys, rj_fld%num_component,                        &
-     &    rj_fld%iflag_monitor, num_field_monitor, ntot_comp_monitor)
+     &   (rj_fld, num_field_monitor, ntot_comp_monitor)
 !
       end subroutine set_control_SGS_SPH_MHD_field
 !
@@ -141,7 +140,7 @@
       use set_control_4_SGS
       use set_control_SGS_commute
       use set_control_sph_data_MHD
-      use set_control_nodal_data
+      use set_control_field_data
       use set_control_sph_mhd
       use set_control_sph_filter
 !
@@ -206,7 +205,7 @@
       use add_sph_MHD_fields_2_ctl
       use add_sph_SGS_MHD_fld_2_ctl
       use add_sph_SGS_MHD_fld_2_ctl
-      use set_control_sph_data
+      use set_control_field_data
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(MHD_evolution_param), intent(in) :: MHD_prop
@@ -244,8 +243,8 @@
 !
 !    set nodal data
 !
-        if (iflag_debug.gt.0) write(*,*) 's_set_control_sph_data'
-        call s_set_control_sph_data(field_ctl, rj_fld, ierr)
+        if (iflag_debug.gt.0) write(*,*) 's_set_control_field_data'
+        call s_set_control_field_data(field_ctl, rj_fld, ierr)
       end if
 !
       end subroutine set_control_sph_sgs_mhd_fields
@@ -332,8 +331,7 @@
 !   set parameters for general information
 !
       if (iflag_debug.gt.0) write(*,*) 's_set_control_sph_data_MHD'
-      call s_set_control_sph_data_MHD                                   &
-     &   (MHD_prop, plt, smctl_ctl%mevo_ctl,                            &
+      call s_set_control_sph_data_MHD(plt, smctl_ctl%mevo_ctl,          &
      &    MHD_files%org_rj_file_IO, MHD_files%org_rst_file_IO,          &
      &    MHD_files%fst_file_IO, bc_IO, WK_sph)
 !

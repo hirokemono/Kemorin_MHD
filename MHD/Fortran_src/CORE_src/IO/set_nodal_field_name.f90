@@ -17,8 +17,7 @@
 !!     &         (phys_name_ctl, phys_name, num_component, flag)
 !!
 !!      logical function check_vis_control_flag(visualize_ctl)
-!!      integer(kind = kint) function check_monitor_control_flag        &
-!!     &                            (monitor_ctl)
+!!      logical function check_monitor_control_flag(monitor_ctl)
 !!
 !!      subroutine set_vis_control_flag(iflag_viz, visualize_ctl)
 !!      subroutine set_monitor_control_flag                             &
@@ -256,18 +255,14 @@
 !
 ! -----------------------------------------------------------------------
 !
-      integer(kind = kint) function check_monitor_control_flag          &
-     &                            (monitor_ctl)
+      logical function check_monitor_control_flag(monitor_ctl)
 !
       use skip_comment_f
 !
       character(len = kchara), intent(in) :: monitor_ctl
 !
-      if(cmp_no_case(monitor_ctl, cflag_monitor_on)) then
-        check_monitor_control_flag = 1
-      else
-        check_monitor_control_flag = 0
-      end if
+      check_monitor_control_flag                                        &
+     &      = cmp_no_case(monitor_ctl, cflag_monitor_on)
 !
       end function check_monitor_control_flag
 !

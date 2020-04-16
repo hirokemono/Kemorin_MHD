@@ -107,14 +107,14 @@
 !
       num_field = 0
       do i_fld = 1, rj_fld%num_phys
-        num_field = num_field + rj_fld%iflag_monitor(i_fld)
+        if(rj_fld%flag_monitor(i_fld)) num_field = num_field + 1
       end do
 !
       call alloc_rms_name_sph_spec(num_field, pwr)
 !
       j_fld = 0
       do i_fld = 1, rj_fld%num_phys
-        if(rj_fld%iflag_monitor(i_fld) .gt. 0) then
+        if(rj_fld%flag_monitor(i_fld)) then
           j_fld = j_fld + 1
           pwr%id_field(j_fld) =   i_fld
           pwr%num_comp_sq(j_fld) =    rj_fld%num_component(i_fld)

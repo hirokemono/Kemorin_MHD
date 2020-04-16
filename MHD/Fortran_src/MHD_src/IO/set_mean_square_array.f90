@@ -74,7 +74,7 @@
       do i = 1, nod_fld%num_phys
         field_name = nod_fld%phys_name(i)
         num_comps =  nod_fld%num_component(i)
-        if (nod_fld%iflag_monitor(i) .eq. 1) then
+        if (nod_fld%flag_monitor(i)) then
           if(check_filter_vector(field_name)) then
             if(field_name .eq. filter_velocity%name) then
               call set_rms_address                                      &

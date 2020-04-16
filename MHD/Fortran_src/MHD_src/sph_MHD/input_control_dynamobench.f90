@@ -78,7 +78,7 @@
       use set_control_sph_mhd
       use set_control_sph_data_MHD
       use parallel_load_data_4_sph
-      use set_control_nodal_data
+      use set_control_field_data
 !
       type(MHD_file_IO_params), intent(inout) :: MHD_files
       type(boundary_spectra), intent(inout) :: bc_IO
@@ -189,7 +189,7 @@
         d_circle%istack_component(ifld)                                 &
      &        = d_circle%istack_component(ifld-1) + n_vector
       end if
-      d_circle%iflag_monitor = ione
+      d_circle%flag_monitor = .TRUE.
       d_circle%ntot_phys =     d_circle%istack_component(ifld)
       d_circle%num_phys_viz =  d_circle%num_phys
       d_circle%ntot_phys_viz = d_circle%ntot_phys

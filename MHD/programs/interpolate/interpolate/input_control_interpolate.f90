@@ -124,14 +124,14 @@
       use calypso_mpi
       use t_phys_data
       use t_ctl_data_4_fields
-      use set_control_nodal_data
+      use set_control_field_data
 !
       type(field_control), intent(in) :: fld_ctl
       type(phys_data), intent(inout) :: nod_fld
       integer(kind = kint) :: ierr
 !
 !
-      call s_set_control_nodal_data(fld_ctl%field_ctl, nod_fld, ierr)
+      call s_set_control_field_data(fld_ctl%field_ctl, nod_fld, ierr)
       if (ierr .ne. 0) call calypso_MPI_abort(ierr, e_message)
 !
       end subroutine set_ctl_interpolate_udt

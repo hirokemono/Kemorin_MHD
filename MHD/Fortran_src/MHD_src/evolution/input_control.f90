@@ -134,8 +134,7 @@
      &     MHD_CG%MHD_mat,  MHD_CG%MGCG_WK,  MHD_CG%MGCG_FEM)
 !
       call count_field_4_monitor                                        &
-     &   (nod_fld%num_phys, nod_fld%num_component,                      &
-     &    nod_fld%iflag_monitor, num_field_monitor, ntot_comp_monitor)
+     &   (nod_fld, num_field_monitor, ntot_comp_monitor)
 !
       end subroutine input_control_4_FEM_MHD
 !
@@ -189,8 +188,7 @@
      &    FEM_filters, FEM_SGS_wk%wk_filter)
 !
       call count_field_4_monitor                                        &
-     &   (nod_fld%num_phys, nod_fld%num_component,                      &
-     &    nod_fld%iflag_monitor, num_field_monitor, ntot_comp_monitor)
+     &   (nod_fld, num_field_monitor, ntot_comp_monitor)
 !
       end subroutine input_control_4_FEM_snap
 !

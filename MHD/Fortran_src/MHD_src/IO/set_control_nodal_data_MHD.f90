@@ -43,7 +43,7 @@
       use t_FEM_control_parameter
       use t_SGS_control_parameter
 !
-      use set_control_nodal_data
+      use set_control_field_data
       use add_nodal_fields_4_MHD
       use add_nodal_fields_4_SGS
       use initialize_element_field
@@ -89,7 +89,7 @@
 !
 !    set nodal data
 !
-        call s_set_control_nodal_data(field_ctl, nod_fld, ierr)
+        call s_set_control_field_data(field_ctl, nod_fld, ierr)
       end if
 !
       call set_ele_field_names_MHD                                      &
