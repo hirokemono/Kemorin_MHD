@@ -9,12 +9,10 @@
 !>@brief  Set field names from control data
 !!
 !!@verbatim
-!!      subroutine set_vector_field_name                                &
-!!     &         (phys_name_ctl, phys_name, num_component, flag)
-!!      subroutine set_scalar_field_name                                &
-!!     &         (phys_name_ctl, phys_name, num_component, flag)
-!!      subroutine set_tensor_field_name                                &
-!!     &         (phys_name_ctl, phys_name, num_component, flag)
+!!      subroutine set_vector_field_name(i0, phys_name_ctl, fld, flag)
+!!      subroutine set_scalar_field_name(i0, phys_name_ctl, fld, flag)
+!!      subroutine set_tensor_field_name(i0, phys_name_ctl, fld, flag)
+!!        type(phys_data), intent(inout) :: fld
 !!
 !!      logical function check_vis_control_flag(visualize_ctl)
 !!      logical function check_monitor_control_flag(monitor_ctl)
@@ -28,6 +26,7 @@
 !
       use m_precision
       use m_phys_labels
+      use t_phys_data
 !
       implicit  none
 !
@@ -45,8 +44,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_vector_field_name                                  &
-     &         (phys_name_ctl, phys_name, num_component, flag)
+      subroutine set_vector_field_name(i0, phys_name_ctl, fld, flag)
 !
       use t_base_field_labels
       use t_diffusion_term_labels
@@ -70,8 +68,8 @@
       use m_wide_SGS_term_labels
 !
       character(len = kchara), intent(in) :: phys_name_ctl
-      integer (kind = kint), intent(inout) :: num_component
-      character(len = kchara), intent(inout) :: phys_name
+      integer(kind = kint), intent(in) :: i0
+      type(phys_data), intent(inout) :: fld
       logical, intent(inout) :: flag
 !
 !  set number of components ( vector and scalar )
@@ -106,15 +104,15 @@
      &   .or. check_wide_SGS_vector_terms(phys_name_ctl)                &
      &   .or. check_double_SGS_vector_terms(phys_name_ctl)
       if(flag) then
-        phys_name = phys_name_ctl
-        num_component = n_vector
+        fld%phys_name(i0+1) = phys_name_ctl
+        fld%num_component(i0+1) = n_vector
         return
       end if
 !
       if(phys_name_ctl .eq. geostrophic_balance%name) then
         flag = .TRUE.
-        phys_name = rest_of_geostrophic%name
-        num_component = n_vector
+        fld%phys_name(i0+1) = rest_of_geostrophic%name
+        fld%num_component(i0+1) = n_vector
         return
       end if
 !
@@ -122,8 +120,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_scalar_field_name                                  &
-     &         (phys_name_ctl, phys_name, num_component, flag)
+      subroutine set_scalar_field_name(i0, phys_name_ctl, fld, flag)
 !
       use t_base_field_labels
       use t_diffusion_term_labels
@@ -144,8 +141,8 @@
       use m_dble_filter_field_labels
 !
       character(len = kchara), intent(in) :: phys_name_ctl
-      integer (kind = kint), intent(inout) :: num_component
-      character(len = kchara), intent(inout) :: phys_name
+      integer(kind = kint), intent(in) :: i0
+      type(phys_data), intent(inout) :: fld
       logical, intent(inout) :: flag
 !
 !  set number of components ( vector and scalar )
@@ -177,16 +174,16 @@
      &   .or. check_work_4_poisson(phys_name_ctl)                       &
      &   .or. check_commute_SGS_work(phys_name_ctl)
       if(flag) then
-        phys_name = phys_name_ctl
-        num_component = n_scalar
+        fld%phys_name(i0+1) = phys_name_ctl
+        fld%num_component(i0+1) = n_scalar
         return
       end if
 !
 !   Old field label... Should be deleted later!!
       if(phys_name_ctl .eq. buoyancy_work%name) then
         flag = .TRUE.
-        phys_name = buoyancy_flux%name
-        num_component = n_scalar
+        fld%phys_name(i0+1) = buoyancy_flux%name
+        fld%num_component(i0+1) = n_scalar
         return
       end if
 !
@@ -194,8 +191,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_tensor_field_name                                  &
-     &         (phys_name_ctl, phys_name, num_component, flag)
+      subroutine set_tensor_field_name(i0, phys_name_ctl, fld, flag)
 !
       use t_SGS_term_labels
       use t_SGS_model_coef_labels
@@ -203,8 +199,8 @@
       use m_force_w_SGS_labels
 !
       character(len = kchara), intent(in) :: phys_name_ctl
-      integer (kind = kint), intent(inout) :: num_component
-      character(len = kchara), intent(inout) :: phys_name
+      integer(kind = kint), intent(in) :: i0
+      type(phys_data), intent(inout) :: fld
       logical, intent(inout) :: flag
 !
 !
@@ -217,8 +213,8 @@
      &   .or. check_flux_tensors(phys_name_ctl)                         &
      &   .or. check_filtered_flux_tensor(phys_name_ctl)
       if(flag) then
-        phys_name = phys_name_ctl
-        num_component = n_sym_tensor
+        fld%phys_name(i0+1) = phys_name_ctl
+        fld%num_component(i0+1) = n_sym_tensor
         return
       end if
 !
@@ -226,15 +222,15 @@
      &  .or. check_SGS_induction_tensor(phys_name_ctl)                  &
      &  .or. check_induction_tensor_w_SGS(phys_name_ctl)
       if(flag) then
-        phys_name = phys_name_ctl
-        num_component = 3
+        fld%phys_name(i0+1) = phys_name_ctl
+        fld%num_component(i0+1) = 3
         return
       end if
 !
       flag =  check_dynamic_SGS_work(phys_name_ctl)
       if(flag) then
-        phys_name = phys_name_ctl
-        num_component = 6
+        fld%phys_name(i0+1) = phys_name_ctl
+        fld%num_component(i0+1) = n_sym_tensor
         return
       end if
 !

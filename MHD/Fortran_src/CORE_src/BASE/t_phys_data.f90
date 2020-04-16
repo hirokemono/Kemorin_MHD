@@ -15,8 +15,8 @@
 !!      subroutine dealloc_phys_name_type(fld)
 !!      subroutine dealloc_phys_data_type(fld)
 !!
-!!      subroutine append_field_name_list(iflag_add, field_name, numdir,&
-!!     &          iflag_viz, flag_monitor, iorder_eletype, fld)
+!!      subroutine append_field_name_list(field_name, numdir,           &
+!!     &          flag_viz, flag_monitor, iorder_eletype, fld)
 !!        type(phys_data), intent(inout) :: fld
 !!
 !!      subroutine copy_field_name_type(org_fld, new_fld)
@@ -150,13 +150,12 @@
 !  --------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine append_field_name_list(iflag_add, field_name, numdir,  &
-     &          iflag_viz, flag_monitor, iorder_eletype, fld)
+      subroutine append_field_name_list(field_name, numdir,             &
+     &          flag_viz, flag_monitor, iorder_eletype, fld)
 !
       character(len = kchara), intent(in) :: field_name
-      integer(kind = kint), intent(in) :: iflag_add, numdir
-      integer(kind = kint), intent(in) :: iflag_viz
-      logical, intent(in) :: flag_monitor
+      integer(kind = kint), intent(in) :: numdir
+      logical, intent(in) :: flag_viz, flag_monitor
       integer(kind = kint), intent(in) :: iorder_eletype
 !
       type(phys_data), intent(inout) :: fld
@@ -164,15 +163,13 @@
       type(phys_data) :: tmp_fld
 !
 !
-      if(iflag_add .eq. 0) return
-!
       call copy_field_name_type(fld, tmp_fld)
       call dealloc_phys_name_type(fld)
 !
       fld%num_phys =      fld%num_phys + 1
       fld%ntot_phys =     fld%ntot_phys + numdir
 !
-      if(iflag_viz .gt. 0) then
+      if(flag_viz) then
         fld%num_phys_viz =  fld%num_phys_viz + 1
         fld%ntot_phys_viz = fld%ntot_phys_viz + numdir
 !

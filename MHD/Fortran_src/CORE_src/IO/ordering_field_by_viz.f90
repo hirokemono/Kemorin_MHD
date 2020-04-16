@@ -54,12 +54,9 @@
       do i = 1, fld%num_phys
         if(check_vis_control_flag(field_ctl%c2_tbl(i))) then
           flag = .FALSE.
-          call set_vector_field_name(field_ctl%c1_tbl(i),               &
-     &        fld%phys_name(i0+1), fld%num_component(i0+1), flag)
-          call set_scalar_field_name(field_ctl%c1_tbl(i),               &
-     &        fld%phys_name(i0+1), fld%num_component(i0+1), flag)
-          call set_tensor_field_name(field_ctl%c1_tbl(i),               &
-     &        fld%phys_name(i0+1), fld%num_component(i0+1), flag)
+          call set_vector_field_name(i0, field_ctl%c1_tbl(i), fld, flag)
+          call set_scalar_field_name(i0, field_ctl%c1_tbl(i), fld, flag)
+          call set_tensor_field_name(i0, field_ctl%c1_tbl(i), fld, flag)
 !
           if(flag) then
             fld%flag_monitor(i0+1)                                      &
@@ -76,12 +73,9 @@
      &        fld%phys_name, field_ctl%c1_tbl(i))
         if(flag) cycle
 !
-        call set_vector_field_name(field_ctl%c1_tbl(i),                 &
-     &      fld%phys_name(i0+1), fld%num_component(i0+1), flag)
-        call set_scalar_field_name(field_ctl%c1_tbl(i),                 &
-     &      fld%phys_name(i0+1), fld%num_component(i0+1), flag)
-        call set_tensor_field_name(field_ctl%c1_tbl(i),                 &
-     &      fld%phys_name(i0+1), fld%num_component(i0+1), flag)
+        call set_vector_field_name(i0, field_ctl%c1_tbl(i), fld, flag)
+        call set_scalar_field_name(i0, field_ctl%c1_tbl(i), fld, flag)
+        call set_tensor_field_name(i0, field_ctl%c1_tbl(i), fld, flag)
 !
         if(flag) then
           fld%flag_monitor(i0+1)                                        &
@@ -112,8 +106,7 @@
       do i = 1, fld%num_phys
         if(check_vis_control_flag(field_ctl%c2_tbl(i))) then
           flag = .FALSE.
-          call set_vector_field_name(field_ctl%c1_tbl(i),               &
-     &        fld%phys_name(i0+1), fld%num_component(i0+1), flag)
+          call set_vector_field_name(i0, field_ctl%c1_tbl(i), fld, flag)
 !
           if(flag) then
             fld%flag_monitor(i0+1)                                      &
@@ -126,8 +119,7 @@
       do i = 1, fld%num_phys
         if(check_vis_control_flag(field_ctl%c2_tbl(i))) then
           flag = .FALSE.
-          call set_scalar_field_name(field_ctl%c1_tbl(i),               &
-     &        fld%phys_name(i0+1), fld%num_component(i0+1), flag)
+          call set_scalar_field_name(i0, field_ctl%c1_tbl(i), fld, flag)
 !
           if(flag) then
             fld%flag_monitor(i0+1)                                      &
@@ -140,8 +132,7 @@
       do i = 1, fld%num_phys
         if(check_vis_control_flag(field_ctl%c2_tbl(i))) then
           flag = .FALSE.
-          call set_tensor_field_name(field_ctl%c1_tbl(i),               &
-     &        fld%phys_name(i0+1), fld%num_component(i0+1), flag)
+          call set_tensor_field_name(i0, field_ctl%c1_tbl(i), fld, flag)
 !
           if(flag) then
             fld%flag_monitor(i0+1)                                      &
@@ -157,8 +148,7 @@
      &        fld%phys_name, field_ctl%c1_tbl(i))
         if(flag) cycle
 !
-          call set_vector_field_name(field_ctl%c1_tbl(i),               &
-     &       fld%phys_name(i0+1), fld%num_component(i0+1), flag)
+          call set_vector_field_name(i0, field_ctl%c1_tbl(i), fld, flag)
 !
         if(flag) then
           fld%flag_monitor(i0+1)                                        &
@@ -172,8 +162,7 @@
      &        fld%phys_name, field_ctl%c1_tbl(i))
         if(flag) cycle
 !
-        call set_scalar_field_name(field_ctl%c1_tbl(i),                 &
-     &      fld%phys_name(i0+1), fld%num_component(i0+1), flag)
+        call set_scalar_field_name(i0, field_ctl%c1_tbl(i), fld, flag)
 !
         if(flag) then
           fld%flag_monitor(i0+1)                                        &
@@ -187,8 +176,7 @@
      &        fld%phys_name, field_ctl%c1_tbl(i))
         if(flag) cycle
 !
-        call set_tensor_field_name(field_ctl%c1_tbl(i),                 &
-     &      fld%phys_name(i0+1), fld%num_component(i0+1), flag)
+        call set_tensor_field_name(i0, field_ctl%c1_tbl(i), fld, flag)
 !
         if(flag) then
           fld%flag_monitor(i0+1)                                        &

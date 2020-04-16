@@ -3,7 +3,7 @@
 !
 !        programmed by H.Matsui on Sep., 2006
 !
-!!     subroutine s_set_control_nodal_data(field_ctl, fld, ierr)
+!!     subroutine s_set_control_field_data(field_ctl, fld, ierr)
 !!        type(ctl_array_c3), intent(in) :: field_ctl
 !!        type(phys_data), intent(inout) :: fld
 !!        integer (kind = kint), intent(inout) :: ierr
@@ -24,10 +24,11 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_set_control_nodal_data(field_ctl, fld, ierr)
+      subroutine s_set_control_field_data(field_ctl, fld, ierr)
 !
       use m_machine_parameter
       use m_error_IDs
+      use ordering_field_by_viz
 !
       type(ctl_array_c3), intent(in) :: field_ctl
       type(phys_data), intent(inout) :: fld
@@ -58,7 +59,7 @@
         end if
       end if
 !
-      end subroutine s_set_control_nodal_data
+      end subroutine s_set_control_field_data
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
