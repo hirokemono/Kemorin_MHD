@@ -57,10 +57,9 @@
       end if
 !
 !    set nodal data
+      call s_ordering_field_by_viz(field_ctl, fld)
 !
-      if(field_ctl%num .gt. 0) then
-        call s_ordering_field_by_viz(field_ctl, fld)
-!
+      if(fld%num_phys .gt. 0) then
         if(iflag_debug .ge. iflag_routine_msg) then
           write(*,*) 'check_nodal_field_name_type for fld'
           call check_nodal_field_name_type(id_six, fld)
@@ -89,10 +88,9 @@
       end if
 !
 !    set nodal data
+      call ordering_field_by_comp_viz(field_ctl, fld)
 !
-      if(field_ctl%num .gt. 0) then
-        call ordering_field_by_comp_viz(field_ctl, fld)
-!
+      if(fld%num_phys .gt. 0) then
         if(iflag_debug .ge. iflag_routine_msg) then
           write(*,*) 'check_nodal_field_name_type for fld'
           call check_nodal_field_name_type(id_six, fld)
@@ -118,7 +116,7 @@
       fld%num_phys = 0
       call alloc_phys_name_type(fld)
 !
-      do i = 1, fld%num_phys
+      do i = 1, field_ctl%icou
         flag = .FALSE.
         call set_vector_field_name(field_ctl%c1_tbl(i),                 &
      &      check_vis_control_flag(field_ctl%c2_tbl(i)),                &
@@ -131,7 +129,6 @@
         call set_tensor_field_name(field_ctl%c1_tbl(i),                 &
      &      check_vis_control_flag(field_ctl%c2_tbl(i)),                &
      &      check_monitor_control_flag(field_ctl%c3_tbl(i)), fld, flag)
-        end if
       end do
 !
       end subroutine s_ordering_field_by_viz
@@ -146,25 +143,25 @@
       type(phys_data), intent(inout) :: fld
 !
       integer(kind = kint) :: i
+      logical :: flag
 !
 !
       fld%num_phys = 0
       call alloc_phys_name_type(fld)
 !
-      do i = 1, fld%num_phys
+      do i = 1, field_ctl%icou
         call set_vector_field_name(field_ctl%c1_tbl(i),                 &
      &      check_vis_control_flag(field_ctl%c2_tbl(i)),                &
      &      check_monitor_control_flag(field_ctl%c3_tbl(i)), fld, flag)
-        end if
       end do
 !
-      do i = 1, fld%num_phys
+      do i = 1, field_ctl%icou
         call set_scalar_field_name(field_ctl%c1_tbl(i),                 &
      &      check_vis_control_flag(field_ctl%c2_tbl(i)),                &
      &      check_monitor_control_flag(field_ctl%c3_tbl(i)), fld, flag)
       end do
 !
-      do i = 1, fld%num_phys
+      do i = 1, field_ctl%icou
         call set_tensor_field_name(field_ctl%c1_tbl(i),                 &
      &      check_vis_control_flag(field_ctl%c2_tbl(i)),                &
      &      check_monitor_control_flag(field_ctl%c3_tbl(i)), fld, flag)
