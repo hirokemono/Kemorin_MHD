@@ -208,8 +208,9 @@
       if(SGS_param%iflag_SGS .gt. id_SGS_none) then
         if (iflag_debug.eq.1) write(*,*) 'SGS_fluxes_for_snapshot'
         call SGS_fluxes_for_snapshot                                    &
-     &     (sph%sph_rtp, MHD_prop%fl_prop, trns_MHD%b_trns,             &
-     &      trns_SGS%f_trns, trns_snap%b_trns, trns_snap%f_trns,        &
+     &     (sph%sph_rtp, MHD_prop%fl_prop, trns_MHD%b_trns%base,        &
+     &      trns_SGS%f_trns%SGS_term, trns_snap%b_trns%SGS_term,        &
+     &      trns_snap%f_trns%SGS_ene_flux, &
      &      trns_MHD%backward, trns_SGS%forward, trns_snap%backward,    &
      &      trns_snap%forward)
       end if

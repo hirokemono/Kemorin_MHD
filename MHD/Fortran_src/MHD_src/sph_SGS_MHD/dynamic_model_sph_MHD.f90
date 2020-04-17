@@ -146,8 +146,9 @@
       type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
 !
 !
-      call SGS_fluxes_for_buo_coefs(sph_rtp, fl_prop,                   &
-     &    trns_MHD%b_trns, trns_SGS%f_trns, trns_Csim%f_trns,           &
+      call SGS_fluxes_for_buo_coefs                                     &
+     &   (sph_rtp, fl_prop, trns_MHD%b_trns%base,                       &
+     &    trns_SGS%f_trns%SGS_term, trns_Csim%f_trns%SGS_ene_flux,      &
      &    trns_MHD%backward, trns_SGS%forward, trns_Csim%forward)
 !
       if(dynamic_SPH%ifld_sgs%i_buoyancy .gt. 0) then
