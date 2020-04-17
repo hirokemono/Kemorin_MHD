@@ -11,6 +11,7 @@ SUBDIRS = \
 BASE                 \
 IO                   \
 IO_ZLIB              \
+Fields               \
 spherical_harmonics  \
 gauss_integration    \
 FFT_wrapper          \

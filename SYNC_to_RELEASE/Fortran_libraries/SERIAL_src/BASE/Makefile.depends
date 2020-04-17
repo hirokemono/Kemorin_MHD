@@ -52,19 +52,11 @@ delete_field_smp.o: $(BASEDIR)/delete_field_smp.f90 m_precision.o m_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
 m_constants.o: $(BASEDIR)/m_constants.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<
-m_energy_flux_w_sym_labels.o: $(BASEDIR)/m_energy_flux_w_sym_labels.f90 m_precision.o m_constants.o t_base_field_labels.o t_base_force_labels.o t_energy_flux_labels.o m_field_w_symmetry_labels.o m_force_w_sym_labels.o
-	$(F90) -c $(F90OPTFLAGS) $<
 m_error_IDs.o: $(BASEDIR)/m_error_IDs.f90 m_precision.o
-	$(F90) -c $(F90OPTFLAGS) $<
-m_field_w_symmetry_labels.o: $(BASEDIR)/m_field_w_symmetry_labels.f90 m_precision.o m_constants.o t_base_field_labels.o
-	$(F90) -c $(F90OPTFLAGS) $<
-m_force_w_sym_labels.o: $(BASEDIR)/m_force_w_sym_labels.f90 m_precision.o m_constants.o t_base_field_labels.o t_base_force_labels.o m_field_w_symmetry_labels.o
 	$(F90) -c $(F90OPTFLAGS) $<
 m_machine_parameter.o: $(BASEDIR)/m_machine_parameter.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<
 m_phys_constants.o: $(BASEDIR)/m_phys_constants.f90 m_precision.o
-	$(F90) -c $(F90OPTFLAGS) $<
-m_phys_labels.o: $(BASEDIR)/m_phys_labels.f90 m_precision.o t_base_field_labels.o t_diffusion_term_labels.o t_base_force_labels.o t_energy_flux_labels.o t_grad_field_labels.o t_explicit_term_labels.o t_field_product_labels.o t_diff_vector_labels.o m_rot_force_labels.o m_div_force_labels.o
 	$(F90) -c $(F90OPTFLAGS) $<
 m_precision.o: $(BASEDIR)/m_precision.f90
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -81,14 +73,6 @@ primefac.o: $(BASEDIR)/primefac.f90 m_precision.o
 quicksort.o: $(BASEDIR)/quicksort.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<
 solver_33_array.o: $(BASEDIR)/solver_33_array.f90 m_precision.o
-	$(F90) -c $(F90OPTFLAGS) $<
-t_base_field_labels.o: $(BASEDIR)/t_base_field_labels.f90 m_precision.o m_phys_constants.o t_field_labels.o
-	$(F90) -c $(F90OPTFLAGS) $<
-t_base_force_labels.o: $(BASEDIR)/t_base_force_labels.f90 m_precision.o m_phys_constants.o t_field_labels.o
-	$(F90) -c $(F90OPTFLAGS) $<
-t_ene_flux_w_sym_address.o: $(BASEDIR)/t_ene_flux_w_sym_address.f90 m_precision.o m_constants.o
-	$(F90) -c $(F90OPTFLAGS) $<
-t_energy_flux_labels.o: $(BASEDIR)/t_energy_flux_labels.f90 m_precision.o m_phys_constants.o t_field_labels.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_group_data.o: $(BASEDIR)/t_group_data.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<
