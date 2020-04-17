@@ -19,6 +19,7 @@
 !!        type(mesh_data_MHD), intent(in) :: MHD_mesh
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
 !!        type(phys_address), intent(in) :: iphys
+!!        type(SGS_model_addresses), intent(in) :: iphys_LES
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(phys_address), intent(in) :: iphys_ele
 !!        type(phys_data), intent(in) :: ele_fld
@@ -35,6 +36,7 @@
       use m_precision
 !
       use t_phys_address
+!      use t_SGS_model_addresses
       use t_phys_data
       use t_mean_square_values
       use t_mean_square_filed_list
@@ -62,11 +64,6 @@
 !
 !>      strucutre of mean square data addresses
         type(mean_square_list) :: msq_list
-!
-!>        Structure for addresses of volume average
-        type(phys_address) :: i_rms
-!>        Structure for addresses of mean square
-        type(phys_address) :: j_ave
       end type FEM_MHD_mean_square
 !
 !
@@ -89,7 +86,7 @@
 !
       call alloc_mean_square_name(fem_sq%msq_list)
       call set_mean_square_values(nod_fld, iphys,                       &
-     &    fem_sq%i_rms, fem_sq%j_ave, fem_sq%i_msq, fem_sq%msq_list)
+     &    fem_sq%i_msq, fem_sq%msq_list)
 !
       fem_sq%msq%num_rms = fem_sq%msq_list%numrms
       fem_sq%msq%num_ave = fem_sq%msq_list%numave
@@ -128,6 +125,7 @@
       type(mesh_data_MHD), intent(in) :: MHD_mesh
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(phys_address), intent(in) :: iphys
+!      type(SGS_model_addresses), intent(in) :: iphys_LES
       type(phys_data), intent(in) :: nod_fld
       type(phys_address), intent(in) :: iphys_ele
       type(phys_data), intent(in) :: ele_fld
@@ -146,12 +144,12 @@
 !
       call s_int_mean_squares(FEM_prm%npoint_t_evo_int,                 &
      &    mesh, MHD_mesh%fluid, MHD_mesh%conduct, iphys, nod_fld, jacs, &
-     &    fem_sq%i_rms, fem_sq%i_msq, fem_sq%msq_list,                  &
-     &    rhs_mat%fem_wk, mhd_fem_wk, fem_sq%msq)
+     &    fem_sq%i_msq, fem_sq%msq_list, rhs_mat%fem_wk, mhd_fem_wk,    &
+     &   fem_sq%msq)
       call int_no_evo_mean_squares(time_d%i_time_step, time_d%dt,       &
      &    mesh, MHD_prop%fl_prop, MHD_prop%cd_prop,                     &
      &    iphys, nod_fld, iphys_ele, ele_fld, MHD_mesh%fluid,           &
-     &    jacs, fem_sq%i_rms, fem_sq%j_ave, rhs_mat%fem_wk, fem_sq%msq)
+     &    jacs, fem_sq%i_msq, rhs_mat%fem_wk, fem_sq%msq)
 !
       call calypso_mpi_allreduce_real                                   &
      &   (fem_sq%msq%ave_local, fem_sq%msq%ave_global,                  &
@@ -166,14 +164,14 @@
      &                   / fem_sq%msq%rms_global(fem_sq%i_msq%ivol)
        end do
        do nd = 1, fem_sq%msq%num_rms - 1
-           if (nd .eq. fem_sq%i_rms%base%i_velo                         &
-     &    .or. nd .eq. fem_sq%i_rms%base%i_magne                        &
+           if (nd .eq. fem_sq%i_msq%imsq_velo                           &
+     &    .or. nd .eq. fem_sq%i_msq%imsq_magne                          &
      &    .or. nd .eq. fem_sq%i_msq%ir_me_ic                            &
-     &    .or. nd .eq. fem_sq%i_rms%base%i_vort                         &
-     &    .or. nd .eq. fem_sq%i_rms%base%i_current                      &
+     &    .or. nd .eq. fem_sq%i_msq%imsq_vort                           &
+     &    .or. nd .eq. fem_sq%i_msq%imsq_current                        &
      &    .or. nd .eq. fem_sq%i_msq%ir_sqj_ic                           &
-     &    .or. nd .eq. fem_sq%i_rms%filter_fld%i_velo                   &
-     &    .or. nd .eq. fem_sq%i_rms%filter_fld%i_magne                  &
+     &    .or. nd .eq. fem_sq%i_msq%imsq_fil_velo                       &
+     &    .or. nd .eq. fem_sq%i_msq%imsq_fil_magne                      &
      &    .or. nd .eq. fem_sq%i_msq%ir_me_f_ic) then
             fem_sq%msq%rms_global(nd) = fem_sq%msq%rms_global(nd)       &
      &                    / fem_sq%msq%rms_global(fem_sq%i_msq%ivol)

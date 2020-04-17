@@ -13,9 +13,11 @@
 !!      subroutine dealloc_mean_square_values(fem_msq)
 !!        type(mean_square_values), intent(inout) :: fem_msq
 !!
-!!      subroutine output_monitor_file                                  &
-!!     &         (id_rank, i_step_MHD, time, iphys, fem_msq, msq_list)
+!!      subroutine output_monitor_file(id_rank, i_step_MHD, time,       &
+!!     &          iphys, fem_msq, msq_list)
 !!        real(kind = kreal), intent(in) :: time
+!!        type(phys_address), intent(in) :: iphys
+!!        type(SGS_model_addresses), intent(in) :: iphys_LES
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(mean_square_values), intent(in) :: fem_msq
 !!      subroutine skip_time_step_data                                  &
@@ -28,6 +30,7 @@
 !
       use m_precision
       use t_phys_address
+!      use t_SGS_model_addresses
       use t_mean_square_filed_list
 !
       implicit  none
@@ -84,9 +87,9 @@
 !>        Address for average of current density including inner core
         integer(kind=kint) :: ja_j_ic = 0
 !
-!>        Address for RMS of current density
+!>        Address for mean square of current density
         integer(kind=kint) :: ir_rms_j = 0
-!>        Address for RMS of current density including inner core
+!>        Address for mean square of current density including inner core
         integer(kind=kint) :: ir_rms_j_ic = 0
 !
 !>        Address for average of filtered angular momentum
@@ -97,6 +100,55 @@
 !>        Address for average filtererd magnetic field
 !!        including inner core
         integer(kind=kint) :: ja_mag_f_ic = 0
+!
+!>        Address for mean square of velocity
+        integer(kind=kint) :: imsq_velo = 0
+!>        Address for mean square of vorticity
+        integer(kind=kint) :: imsq_vort = 0
+!>        Address for mean square of magnetic field
+        integer(kind=kint) :: imsq_magne = 0
+!>        Address for mean square of current density
+        integer(kind=kint) :: imsq_current = 0
+!
+!>        Address for mean square of velocity
+        integer(kind=kint) :: imsq_fil_velo = 0
+!>        Address for mean square of filtered magnetic field
+        integer(kind=kint) :: imsq_fil_magne = 0
+!
+!>        Address for mean square of pressure
+        integer(kind=kint) :: imsq_press = 0
+!>        Address for average of pressure
+        integer(kind=kint) :: jave_press = 0
+!>        Address for mean square of magnetic potential
+        integer(kind=kint) :: imsq_mag_p = 0
+!>        Address for average of magnetic potential
+        integer(kind=kint) :: jave_mag_p = 0
+!
+!>        Address for mean square of divergence of velocity
+        integer(kind=kint) :: imsq_div_v = 0
+!>        Address for average of divergence of velocity
+        integer(kind=kint) :: jave_div_v = 0
+!>        Address for mean square of divergence of magnetic field
+        integer(kind=kint) :: imsq_div_b = 0
+!>        Address for average of divergence of magnetic field
+        integer(kind=kint) :: jave_div_b = 0
+!>        Address for mean square of divergence of vector potential
+        integer(kind=kint) :: imsq_div_a = 0
+!>        Address for average of divergance of vector potential
+        integer(kind=kint) :: jave_div_a = 0
+!
+!>        Address for mean square of divergence of filtered velocity
+        integer(kind=kint) :: imsq_div_fil_v = 0
+!>        Address for average of divergence of filtered velocity
+        integer(kind=kint) :: jave_div_fil_v = 0
+!>        Address for mean square of div. of filtered magnetic field
+        integer(kind=kint) :: imsq_div_fil_b = 0
+!>        Address for average of div. of filtered magnetic field
+        integer(kind=kint) :: jave_div_fil_b = 0
+!>        Address for mean square of div. of filtered vector potential
+        integer(kind=kint) :: imsq_div_fil_a = 0
+!>        Address for average of div. of filtered vector potential
+        integer(kind=kint) :: jave_div_fil_a = 0
 !
 !>        Address of volume of fluid area
         integer(kind=kint) :: ivol = 0
@@ -149,8 +201,8 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine output_monitor_file                                    &
-     &         (id_rank, i_step_MHD, time, iphys, fem_msq, msq_list)
+      subroutine output_monitor_file(id_rank, i_step_MHD, time,         &
+     &          iphys, fem_msq, msq_list)
 !
       use t_phys_data
 !
@@ -159,6 +211,7 @@
       real(kind = kreal), intent(in) :: time
 !
       type(phys_address), intent(in) :: iphys
+!      type(SGS_model_addresses), intent(in) :: iphys_LES
       type(mean_square_values), intent(in) :: fem_msq
       type(mean_square_list), intent(in) :: msq_list
 !
@@ -188,6 +241,7 @@
 !
       integer, intent(in) :: id_rank
       type(phys_address), intent(in) :: iphys
+!      type(SGS_model_addresses), intent(in) :: iphys_LES
       type(mean_square_list), intent(in) :: msq_list
       type(mean_square_values), intent(in) :: fem_msq
 !
@@ -214,7 +268,8 @@
      &      status='replace')
 !
       call write_SGS_MHD_monitor_labels                                 &
-     &   (time_step_data_code, rms_data_code, iphys, msq_list)
+     &   (time_step_data_code, rms_data_code, iphys,                    &
+     &    msq_list)
 !
       end subroutine open_monitor_file
 !

@@ -78,6 +78,7 @@
       use t_work_FEM_integration
       use t_work_FEM_dynamic_SGS
       use t_FEM_MHD_mean_square
+      use t_mean_square_values
 !
       implicit none
 !
@@ -170,11 +171,11 @@
 !
       iloop = -1
       call int_norm_div_v_monitor(iloop, mesh%node, mesh%ele, fluid,    &
-     &    iphys, nod_fld, fem_int%jcs, fem_sq%j_ave, rhs_mat%fem_wk,    &
-     &    fem_sq%msq, rel_correct)
+     &    iphys, nod_fld, fem_int%jcs, fem_sq%i_msq,                    &
+     &    rhs_mat%fem_wk, fem_sq%msq, rel_correct)
 !      call int_rms_div_v_monitor(iloop, mesh%node, mesh%ele, fluid,    &
-!     &    iphys, nod_fld, fem_int%jcs, fem_sqi_rms, rhs_mat%fem_wk,    &
-!     &    fem_sq%msq, rel_correct)
+!     &    iphys, nod_fld, fem_int%jcs, fem_sq%i_msq,                   &
+!     &    rhs_mat%fem_wk, fem_sq%msq, rel_correct)
 !
       do iloop = 0, FEM_prm%maxiter_stokes
         call cal_mod_potential(ifld_diff%i_velo,                        &
@@ -201,7 +202,7 @@
 !
         call cal_rms_scalar_potential                                   &
      &     (iloop, fluid%istack_ele_fld_smp, iphys%base%i_press,        &
-     &      fem_sq%i_rms%base%i_press, fem_sq%j_ave%base%i_press,       &
+     &      fem_sq%i_msq%imsq_press, fem_sq%i_msq%jave_press,           &
      &      mesh, nod_fld, fem_int%jcs, rhs_mat%fem_wk,                 &
      &      fem_sq%msq, rel_correct, ave_pr0, rms_pr0)
 !
@@ -212,11 +213,11 @@
 !
 !
         call int_norm_div_v_monitor(iloop, mesh%node, mesh%ele, fluid,  &
-     &      iphys, nod_fld, fem_int%jcs, fem_sq%j_ave, rhs_mat%fem_wk,  &
-     &      fem_sq%msq, rel_correct)
+     &      iphys, nod_fld, fem_int%jcs, fem_sq%i_msq,                  &
+     &      rhs_mat%fem_wk, fem_sq%msq, rel_correct)
 !        call int_rms_div_v_monitor(iloop, mesh%node, mesh%ele, fluid,  &
-!     &      iphys, nod_fld, fem_int%jcs, fem_sq%i_rms, rhs_mat%fem_wk, &
-!     &      fem_sq%msq, rel_correct)
+!     &      iphys, nod_fld, fem_int%jcs, fem_sq%i_msq,                 &
+!     &      rhs_mat%fem_wk, fem_sq%msq, rel_correct)
 !
         if (abs(rel_correct) .lt. FEM_prm%eps_4_stokes) go to 10
 !

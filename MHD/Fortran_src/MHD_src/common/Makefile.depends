@@ -48,7 +48,7 @@ set_reference_value.o: $(MHD_COMMON_DIR)/set_reference_value.f90 m_precision.o m
 	$(F90) -c $(F90OPTFLAGS) $<
 t_FEM_MHD_boundary_data.o: $(MHD_COMMON_DIR)/t_FEM_MHD_boundary_data.f90 m_precision.o m_machine_parameter.o t_bc_data_MHD.o t_surface_bc_data_MHD.o t_time_data.o t_control_parameter.o t_mesh_data.o t_geometry_data_MHD.o t_surface_group_connect.o t_surface_group_geometry.o t_phys_data.o t_phys_address.o t_boundary_field_IO.o t_physical_property.o t_reference_scalar_param.o t_bc_data_list.o set_nodal_bc_id_data.o set_surface_values.o set_normal_field.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_FEM_MHD_mean_square.o: $(MHD_COMMON_DIR)/t_FEM_MHD_mean_square.f90 m_precision.o t_phys_address.o t_phys_data.o t_mean_square_values.o t_mean_square_filed_list.o t_FEM_control_parameter.o t_control_parameter.o t_time_data.o t_flex_delta_t_data.o t_mesh_data.o t_geometry_data.o t_geometry_data_MHD.o t_jacobians.o t_finite_element_mat.o t_work_FEM_integration.o t_MHD_finite_element_mat.o t_IO_step_parameter.o calypso_mpi.o set_mean_square_array.o int_bulk.o time_step_file_IO.o transfer_to_long_integers.o
+t_FEM_MHD_mean_square.o: $(MHD_COMMON_DIR)/t_FEM_MHD_mean_square.f90 m_precision.o t_phys_address.o t_SGS_model_addresses.o t_phys_data.o t_mean_square_values.o t_mean_square_filed_list.o t_FEM_control_parameter.o t_control_parameter.o t_time_data.o t_flex_delta_t_data.o t_mesh_data.o t_geometry_data.o t_geometry_data_MHD.o t_jacobians.o t_finite_element_mat.o t_work_FEM_integration.o t_MHD_finite_element_mat.o t_IO_step_parameter.o calypso_mpi.o set_mean_square_array.o int_bulk.o time_step_file_IO.o transfer_to_long_integers.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_FEM_MHD_model_data.o: $(MHD_COMMON_DIR)/t_FEM_MHD_model_data.f90 m_precision.o t_control_parameter.o t_FEM_control_parameter.o t_geometry_data_MHD.o t_FEM_MHD_boundary_data.o t_bc_data_list.o t_boundary_field_IO.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -78,7 +78,7 @@ t_material_property.o: $(MHD_COMMON_DIR)/t_material_property.f90 m_precision.o m
 	$(F90) -c $(F90OPTFLAGS) $<
 t_mean_square_filed_list.o: $(MHD_COMMON_DIR)/t_mean_square_filed_list.f90 m_precision.o m_machine_parameter.o t_phys_data.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_mean_square_values.o: $(MHD_COMMON_DIR)/t_mean_square_values.f90 m_precision.o t_phys_address.o t_mean_square_filed_list.o t_phys_data.o time_step_file_IO.o t_IO_step_parameter.o
+t_mean_square_values.o: $(MHD_COMMON_DIR)/t_mean_square_values.f90 m_precision.o t_phys_address.o t_SGS_model_addresses.o t_mean_square_filed_list.o t_phys_data.o time_step_file_IO.o t_IO_step_parameter.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_normalize_parameter.o: $(MHD_COMMON_DIR)/t_normalize_parameter.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<

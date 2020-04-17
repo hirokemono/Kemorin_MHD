@@ -5,13 +5,13 @@
 !
 !!      subroutine int_norm_div_v_monitor                               &
 !!     &         (iloop, node, ele, fluid, iphys, nod_fld, jacs,        &
-!!     &          j_ave, fem_wk, fem_msq, rsig)
+!!     &          i_msq, fem_wk, fem_msq, rsig)
 !!      subroutine int_norm_div_b_monitor                               &
 !!     &         (iloop, node, ele, iphys, nod_fld, jacs,               &
-!!     &          j_ave, fem_wk, fem_msq, rsig)
+!!     &          i_msq, fem_wk, fem_msq, rsig)
 !!      subroutine int_norm_div_a_monitor                               &
 !!     &         (iloop, node, ele, iphys, nod_fld, jacs,               &
-!!     &          j_ave, fem_wk, fem_msq, rsig)
+!!     &          i_msq, fem_wk, fem_msq, rsig)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(phys_address), intent(in) :: iphys
@@ -20,7 +20,7 @@
 !!        type(jacobians_type), intent(in) :: jacs
 !!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
 !!        type(jacobians_3d), intent(in) :: jac_3d
-!!        type(phys_address), intent(in) :: j_ave
+!!        type(mean_square_address), intent(in) :: i_msq
 !!
 !!      subroutine int_norm_divergence(iele_fsmp_stack, i_field,        &
 !!     &          node, ele, nod_fld, g_FEM, jac_3d, fem_wk, res_norm)
@@ -54,7 +54,7 @@
 !
       subroutine int_norm_div_v_monitor                                 &
      &         (iloop, node, ele, fluid, iphys, nod_fld, jacs,          &
-     &          j_ave, fem_wk, fem_msq, rsig)
+     &          i_msq, fem_wk, fem_msq, rsig)
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -62,7 +62,7 @@
       type(field_geometry_data), intent(in) :: fluid
       type(phys_data), intent(in) :: nod_fld
       type(jacobians_type), intent(in) :: jacs
-      type(phys_address), intent(in) :: j_ave
+      type(mean_square_address), intent(in) :: i_msq
 !
       integer(kind = kint), intent(in) :: iloop
 !
@@ -74,9 +74,9 @@
       call int_norm_divergence                                          &
      &   (fluid%istack_ele_fld_smp, iphys%base%i_velo,                  &
      &    node, ele, nod_fld, jacs%g_FEM, jacs%jac_3d, fem_wk,          &
-     &    fem_msq%ave_local(j_ave%grad_fld%i_div_v))
+     &    fem_msq%ave_local(i_msq%jave_div_v))
       call MPI_allREDUCE                                                &
-     &   (fem_msq%ave_local(j_ave%grad_fld%i_div_v) , div_v_sig, 1,     &
+     &   (fem_msq%ave_local(i_msq%jave_div_v) , div_v_sig, 1,           &
      &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
 !
 !
@@ -95,14 +95,14 @@
 !
       subroutine int_norm_div_b_monitor                                 &
      &         (iloop, node, ele, iphys, nod_fld, jacs,                 &
-     &          j_ave, fem_wk, fem_msq, rsig)
+     &          i_msq, fem_wk, fem_msq, rsig)
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(phys_address), intent(in) :: iphys
       type(phys_data), intent(in) :: nod_fld
       type(jacobians_type), intent(in) :: jacs
-      type(phys_address), intent(in) :: j_ave
+      type(mean_square_address), intent(in) :: i_msq
 !
       integer(kind = kint), intent(in) :: iloop
 !
@@ -113,9 +113,9 @@
 !
       call int_norm_divergence(ele%istack_ele_smp, iphys%base%i_magne,  &
      &    node, ele, nod_fld, jacs%g_FEM, jacs%jac_3d, fem_wk,          &
-     &    fem_msq%ave_local(j_ave%grad_fld%i_div_b))
+     &    fem_msq%ave_local(i_msq%jave_div_b))
       call MPI_allREDUCE                                                &
-     &   (fem_msq%ave_local(j_ave%grad_fld%i_div_b) , div_b_sig, 1,     &
+     &   (fem_msq%ave_local(i_msq%jave_div_b) , div_b_sig, 1,           &
      &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
 !
       div_b_sig = abs(div_b_sig) / ele%volume
@@ -133,14 +133,14 @@
 !
       subroutine int_norm_div_a_monitor                                 &
      &         (iloop, node, ele, iphys, nod_fld, jacs,                 &
-     &          j_ave, fem_wk, fem_msq, rsig)
+     &          i_msq, fem_wk, fem_msq, rsig)
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(phys_address), intent(in) :: iphys
       type(phys_data), intent(in) :: nod_fld
       type(jacobians_type), intent(in) :: jacs
-      type(phys_address), intent(in) :: j_ave
+      type(mean_square_address), intent(in) :: i_msq
 !
       integer(kind = kint), intent(in) :: iloop
 !
@@ -151,9 +151,9 @@
 !
       call int_norm_divergence(ele%istack_ele_smp, iphys%base%i_vecp,   &
      &    node, ele, nod_fld, jacs%g_FEM, jacs%jac_3d, fem_wk,          &
-     &    fem_msq%ave_local(j_ave%grad_fld%i_div_a))
+     &    fem_msq%ave_local(i_msq%jave_div_a))
       call MPI_allREDUCE                                                &
-     &   (fem_msq%ave_local(j_ave%grad_fld%i_div_a) , div_a_sig, 1,     &
+     &   (fem_msq%ave_local(i_msq%jave_div_a) , div_a_sig, 1,           &
      &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
 !
       div_a_sig = abs(div_a_sig) / ele%volume

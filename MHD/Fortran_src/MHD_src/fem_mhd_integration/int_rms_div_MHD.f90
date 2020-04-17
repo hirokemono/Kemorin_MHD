@@ -5,13 +5,13 @@
 !
 !!      subroutine int_rms_div_v_monitor                                &
 !!     &         (iloop, node, ele, fluid, iphys, nod_fld, jacs,        &
-!!     &          i_rms, fem_wk, fem_msq, rsig)
+!!     &          i_msq, fem_wk, fem_msq, rsig)
 !!      subroutine int_rms_div_b_monitor                                &
 !!     &         (iloop, node, ele, iphys, nod_fld, jacs,               &
-!!     &          i_rms, fem_wk, fem_msq, rsig)
+!!     &          i_msq, fem_wk, fem_msq, rsig)
 !!      subroutine int_rms_div_a_monitor                                &
 !!     &         (iloop, node, ele, iphys, nod_fld, jacs,               &
-!!     &          i_rms, fem_wk, fem_msq, rsig)
+!!     &          i_msq, fem_wk, fem_msq, rsig)
 !!
 !!      subroutine int_rms_divergence(iele_fsmp_stack, i_field,         &
 !!     &          node, ele, nod_fld, g_FEM, jac_3d, fem_wk, res_sq)
@@ -23,7 +23,7 @@
 !!        type(jacobians_type), intent(in) :: jacs
 !!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
 !!        type(jacobians_3d), intent(in) :: jac_3d
-!!        type(phys_address), intent(in) :: i_rms
+!!        type(mean_square_address), intent(in) :: i_msq
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(mean_square_values), intent(inout) :: fem_msq
 !
@@ -56,7 +56,7 @@
 !
       subroutine int_rms_div_v_monitor                                  &
      &         (iloop, node, ele, fluid, iphys, nod_fld, jacs,          &
-     &          i_rms, fem_wk, fem_msq, rsig)
+     &          i_msq, fem_wk, fem_msq, rsig)
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -64,7 +64,7 @@
       type(phys_address), intent(in) :: iphys
       type(phys_data), intent(in) :: nod_fld
       type(jacobians_type), intent(in) :: jacs
-      type(phys_address), intent(in) :: i_rms
+      type(mean_square_address), intent(in) :: i_msq
 !
       integer(kind = kint), intent(in) :: iloop
       real(kind = kreal), intent(inout) :: rsig
@@ -75,10 +75,10 @@
       call int_rms_divergence                                           &
      &   (fluid%istack_ele_fld_smp, iphys%base%i_velo,                  &
      &    node, ele, nod_fld, jacs%g_FEM, jacs%jac_3d, fem_wk,          &
-     &    fem_msq%rms_local(i_rms%grad_fld%i_div_v))
+     &    fem_msq%rms_local(i_msq%imsq_div_v))
 !
       call MPI_allREDUCE                                                &
-     &   (fem_msq%rms_local(i_rms%grad_fld%i_div_v), rms_div_v_sig, 1,  &
+     &   (fem_msq%rms_local(i_msq%imsq_div_v), rms_div_v_sig, 1,        &
      &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
 !
       rms_div_v_sig = sqrt(rms_div_v_sig / fluid%volume)
@@ -97,14 +97,14 @@
 !
       subroutine int_rms_div_b_monitor                                  &
      &         (iloop, node, ele, iphys, nod_fld, jacs,                 &
-     &          i_rms, fem_wk, fem_msq, rsig)
+     &          i_msq, fem_wk, fem_msq, rsig)
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(phys_address), intent(in) :: iphys
       type(phys_data), intent(in) :: nod_fld
       type(jacobians_type), intent(in) :: jacs
-      type(phys_address), intent(in) :: i_rms
+      type(mean_square_address), intent(in) :: i_msq
 !
       integer(kind = kint), intent(in) :: iloop
       real(kind = kreal), intent(inout) :: rsig
@@ -114,10 +114,10 @@
 !
       call int_rms_divergence(ele%istack_ele_smp, iphys%base%i_magne,   &
      &    node, ele, nod_fld, jacs%g_FEM, jacs%jac_3d, fem_wk,          &
-     &    fem_msq%rms_local(i_rms%grad_fld%i_div_b))
+     &    fem_msq%rms_local(i_msq%imsq_div_b))
 !
       call MPI_allREDUCE                                                &
-     &   (fem_msq%rms_local(i_rms%grad_fld%i_div_b), rms_div_b_sig,     &
+     &   (fem_msq%rms_local(i_msq%imsq_div_b), rms_div_b_sig,           &
      &    1, CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
 !
       rms_div_b_sig = sqrt(rms_div_b_sig / ele%volume)
@@ -137,14 +137,14 @@
 !
       subroutine int_rms_div_a_monitor                                  &
      &         (iloop, node, ele, iphys, nod_fld, jacs,                 &
-     &          i_rms, fem_wk, fem_msq, rsig)
+     &          i_msq, fem_wk, fem_msq, rsig)
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(phys_address), intent(in) :: iphys
       type(phys_data), intent(in) :: nod_fld
       type(jacobians_type), intent(in) :: jacs
-      type(phys_address), intent(in) :: i_rms
+      type(mean_square_address), intent(in) :: i_msq
 !
       integer(kind = kint), intent(in) :: iloop
 !
@@ -155,10 +155,10 @@
 !
       call int_rms_divergence(ele%istack_ele_smp, iphys%base%i_vecp,    &
      &    node, ele, nod_fld, jacs%g_FEM, jacs%jac_3d, fem_wk,          &
-     &    fem_msq%rms_local(i_rms%grad_fld%i_div_a))
+     &    fem_msq%rms_local(i_msq%imsq_div_a))
 !
       call MPI_allREDUCE                                                &
-     &   (fem_msq%rms_local(i_rms%grad_fld%i_div_a) , rms_div_a_sig,    &
+     &   (fem_msq%rms_local(i_msq%imsq_div_a) , rms_div_a_sig,          &
      &    1, CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
 !
       rms_div_a_sig = sqrt(rms_div_a_sig / ele%volume)

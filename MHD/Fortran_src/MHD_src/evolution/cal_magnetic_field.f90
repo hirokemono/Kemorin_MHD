@@ -167,10 +167,10 @@
 !
       iloop = -1
       call int_norm_div_a_monitor(iloop, mesh%node, mesh%ele,           &
-     &    iphys, nod_fld, fem_int%jcs, fem_sq%j_ave,                    &
+     &    iphys, nod_fld, fem_int%jcs, fem_sq%i_msq,                    &
      &    rhs_mat%fem_wk,fem_sq%msq, rel_correct)
 !      call int_rms_div_a_monitor(iloop, mesh%node, mesh%ele,           &
-!     &    iphys, nod_fld, fem_int%jcs, fem_sq%i_rms,                   &
+!     &    iphys, nod_fld, fem_int%jcs, fem_sq%i_msq,                   &
 !     &    rhs_mat%fem_wk, fem_sq%msq, rel_correct)
 !
       call init_sol_potential                                           &
@@ -209,7 +209,7 @@
         if (iflag_debug.gt.0) write(*,*) 'cal_rms_scalar_potential'
         call cal_rms_scalar_potential                                   &
      &     (iloop, mesh%ele%istack_ele_smp, iphys%base%i_mag_p,         &
-     &      fem_sq%i_rms%base%i_mag_p, fem_sq%j_ave%base%i_mag_p,       &
+     &      fem_sq%i_msq%imsq_mag_p, fem_sq%i_msq%jave_mag_p,           &
      &      mesh, nod_fld, fem_int%jcs, rhs_mat%fem_wk,                 &
      &      fem_sq%msq, rel_correct, ave_mp0, rms_mp0)
 !
@@ -219,10 +219,10 @@
 !
         if (iflag_debug.gt.0) write(*,*) 'int_norm_div_a_monitor'
         call int_norm_div_a_monitor(iloop, mesh%node, mesh%ele,         &
-     &      iphys, nod_fld, fem_int%jcs, fem_sq%j_ave,                  &
+     &      iphys, nod_fld, fem_int%jcs, fem_sq%i_msq,                  &
      &      rhs_mat%fem_wk, fem_sq%msq, rel_correct)
 !        call int_rms_div_a_monitor(iloop, mesh%node, mesh%ele,         &
-!     &      iphys, nod_fld, fem_int%jcs, fem_sq%i_rms,                 &
+!     &      iphys, nod_fld, fem_int%jcs, fem_sq%i_msq,                 &
 !     &      rhs_mat%fem_wk, fem_sq%msq, rel_correct)
 !
         if(abs(rel_correct) .lt. FEM_prm%eps_4_coulomb) exit
@@ -319,7 +319,7 @@
 !
       iloop = -1
       call int_norm_div_b_monitor(iloop, mesh%node, mesh%ele,           &
-     &    iphys, nod_fld, fem_int%jcs, fem_sq%j_ave,                    &
+     &    iphys, nod_fld, fem_int%jcs, fem_sq%i_msq,                    &
      &    rhs_mat%fem_wk, fem_sq%msq, rel_correct)
 !
 !
@@ -350,7 +350,7 @@
 !
         call cal_rms_scalar_potential                                   &
      &     (iloop, mesh%ele%istack_ele_smp, iphys%base%i_mag_p,         &
-     &      fem_sq%i_rms%base%i_mag_p, fem_sq%j_ave%base%i_mag_p,       &
+     &      fem_sq%i_msq%imsq_mag_p, fem_sq%i_msq%jave_mag_p,           &
      &      mesh, nod_fld, fem_int%jcs, rhs_mat%fem_wk,                 &
      &      fem_sq%msq, rel_correct, ave_mp0, rms_mp0)
 !
@@ -360,10 +360,10 @@
 !
 !
         call int_norm_div_b_monitor(iloop, mesh%node, mesh%ele,         &
-     &      iphys, nod_fld, fem_int%jcs, fem_sq%j_ave,                  &
+     &      iphys, nod_fld, fem_int%jcs, fem_sq%i_msq,                  &
      &      rhs_mat%fem_wk, fem_sq%msq, rel_correct)
 !        call int_rms_div_b_monitor(iloop, mesh%node, mesh%ele,         &
-!     &      iphys, nod_fld, fem_int%jcs, fem_sq%i_rms,                 &
+!     &      iphys, nod_fld, fem_int%jcs, fem_sq%i_msq,                 &
 !     &      rhs_mat%fem_wk,fem_sq%msq, rel_correct)
 !
         if (abs(rel_correct) .lt. FEM_prm%eps_4_coulomb) exit
