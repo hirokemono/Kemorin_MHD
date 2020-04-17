@@ -213,7 +213,7 @@
       open (rms_data_code,file = fem_msq%volume_rms_file_name,          &
      &      status='replace')
 !
-      call write_monitor_labels                                         &
+      call write_SGS_MHD_monitor_labels                                 &
      &   (time_step_data_code, rms_data_code, iphys, msq_list)
 !
       end subroutine open_monitor_file

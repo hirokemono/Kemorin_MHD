@@ -28,9 +28,6 @@
 !
 !>       Structure of start addresses for SGS model
       type SGS_model_addresses
-!>        Structure of filtered fields
-        type(base_field_address) :: filter_fld
-!
 !>        Structure of wide filtered field
         type(base_field_address) :: wide_filter_fld
 !>        Structure of gradient of wide filtered field

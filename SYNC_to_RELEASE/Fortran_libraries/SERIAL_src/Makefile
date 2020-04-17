@@ -8,6 +8,8 @@ LIB_MESH =       -lcalypso_core
 LIB_MESH_FILE = libcalypso_core.a
 
 SUBDIRS = \
+Fortran2003          \
+\
 BASE                 \
 IO                   \
 IO_ZLIB              \
@@ -60,6 +62,7 @@ lib_archve:
 mod_list:
 	@echo  MOD_CORE= \\ >> $(MAKENAME)
 	@echo  \
+	'$$(MOD_F2003)'       \
 	'$$(MOD_BASE)'     \
 	'$$(MOD_IO)'       \
 	'$$(MOD_BINARY_IO)'  \

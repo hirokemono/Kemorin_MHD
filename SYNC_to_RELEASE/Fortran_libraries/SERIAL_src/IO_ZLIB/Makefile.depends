@@ -1,5 +1,7 @@
 gz_binary_IO.o: $(ZLIB_IO_DIR)/gz_binary_IO.f90 m_precision.o m_constants.o m_machine_parameter.o m_error_IDs.o t_buffer_4_gzip.o binary_IO.o set_parallel_file_name.o skip_gz_comment.o gzip_file_access.o transfer_to_long_integers.o
 	$(F90) -c $(F90OPTFLAGS) $<
+gz_data_IO.o: $(ZLIB_IO_DIR)/gz_data_IO.f90 m_precision.o m_constants.o m_file_format_switch.o t_buffer_4_gzip.o gzip_file_access.o skip_gz_comment.o
+	$(F90) -c $(F90OPTFLAGS) $<
 gz_domain_data_IO.o: $(ZLIB_IO_DIR)/gz_domain_data_IO.f90 m_precision.o t_comm_table.o t_buffer_4_gzip.o m_error_IDs.o gzip_file_access.o gz_data_IO.o skip_gz_comment.o m_sph_modes_grid_labels.o
 	$(F90) -c $(F90OPTFLAGS) $<
 gz_domain_data_IO_b.o: $(ZLIB_IO_DIR)/gz_domain_data_IO_b.f90 m_precision.o t_comm_table.o t_buffer_4_gzip.o binary_IO.o gz_binary_IO.o transfer_to_long_integers.o m_error_IDs.o
