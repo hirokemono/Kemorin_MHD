@@ -85,6 +85,7 @@ mod_list:
 	'$$(MOD_MPI_IO)'      \
 	'$$(MOD_MESH)'        \
 	'$$(MOD_MESH_T)'      \
+	'$$(MOD_FIELDS)'      \
 	'$$(MOD_GAUSS)'       \
 	'$$(MOD_JACOBI)'      \
 	'$$(MOD_SPH)'         \

@@ -65,6 +65,7 @@ mod_list:
 	'$$(MOD_BINARY_IO)'  \
 	'$$(MOD_ZLIB_IO)'    \
 	'$$(MOD_MPI_IO)'     \
+	'$$(MOD_FIELDS)'     \
 	'$$(MOD_GAUSS)'    \
 	'$$(MOD_SPH)'      \
 	'$$(MOD_FFT_WRAP)' \
