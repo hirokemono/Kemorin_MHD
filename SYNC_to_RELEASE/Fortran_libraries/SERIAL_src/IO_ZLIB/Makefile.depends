@@ -1,3 +1,5 @@
+data_convert_by_zlib.o: $(ZLIB_IO_DIR)/data_convert_by_zlib.f90 m_precision.o m_constants.o m_machine_parameter.o t_buffer_4_gzip.o transfer_to_long_integers.o gzip_defleate.o binary_IO.o gzip_infleate.o
+	$(F90) -c $(F90OPTFLAGS) $<
 gz_binary_IO.o: $(ZLIB_IO_DIR)/gz_binary_IO.f90 m_precision.o m_constants.o m_machine_parameter.o m_error_IDs.o t_buffer_4_gzip.o binary_IO.o set_parallel_file_name.o skip_gz_comment.o gzip_file_access.o transfer_to_long_integers.o
 	$(F90) -c $(F90OPTFLAGS) $<
 gz_data_IO.o: $(ZLIB_IO_DIR)/gz_data_IO.f90 m_precision.o m_constants.o m_file_format_switch.o t_buffer_4_gzip.o gzip_file_access.o skip_gz_comment.o
