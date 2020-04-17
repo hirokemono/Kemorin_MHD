@@ -245,7 +245,8 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'wider_similarity_SGS_rtp'
       call wider_similarity_SGS_rtp(sph%sph_rtp, MHD_prop,              &
-     &   trns_DYNS%b_trns, trns_DYNS%backward)
+     &    trns_DYNS%b_trns%wide_filter_fld, trns_DYNS%b_trns%wide_SGS,  &
+     &    trns_DYNS%backward)
 !
       if (iflag_debug.eq.1) write(*,*) 'SGS_param%stab_weight'
       call const_model_coefs_4_sph                                      &

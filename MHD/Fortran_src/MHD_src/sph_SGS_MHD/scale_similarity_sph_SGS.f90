@@ -95,8 +95,9 @@
 !
       if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+10)
       if (iflag_debug.eq.1) write(*,*) 'similarity_SGS_terms_rtp'
-      call similarity_SGS_terms_rtp(sph%sph_rtp, MHD_prop,              &
-     &    trns_SIMI%b_trns, trns_SIMI%f_trns,                           &
+      call similarity_SGS_terms_rtp                                     &
+     &   (sph%sph_rtp, MHD_prop, trns_SIMI%b_trns%filter_fld,           &
+     &    trns_SIMI%b_trns%SGS_term, trns_SIMI%f_trns%SGS_term,         &
      &    trns_SIMI%backward, trns_SIMI%forward)
       if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+10)
 !

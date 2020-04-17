@@ -121,7 +121,8 @@
       if (iflag_debug.eq.1) write(*,*) 'nl_gradient_SGS_terms_rtp'
       call nl_gradient_SGS_terms_rtp                                    &
      &    (sph, dynamic_SPH%sph_filters(1), MHD_prop,                   &
-     &    trns_MHD%b_trns, trns_ngTMP%b_trns, trns_SGS%f_trns,          &
+     &    trns_MHD%b_trns%base, trns_ngTMP%b_trns%grad_fld,             &
+     &    trns_ngTMP%b_trns%diff_vector, trns_SGS%f_trns%SGS_term,      &
      &    trns_MHD%backward, trns_ngTMP%backward, trns_SGS%forward)
 !
       end subroutine cal_nonlinear_gradient_sph_SGS
@@ -175,7 +176,8 @@
       if (iflag_debug.eq.1) write(*,*) 'wider_nl_grad_SGS_rtp'
       call wider_nl_grad_SGS_rtp                                        &
      &   (sph, dynamic_SPH%sph_filters(2), MHD_prop,                    &
-     &    trns_SIMI%b_trns, trns_DYNG%b_trns, trns_Csim%b_trns,         &
+     &    trns_SIMI%b_trns%filter_fld, trns_DYNG%b_trns%grad_fil_fld,   &
+     &    trns_DYNG%b_trns%diff_fil_vect, trns_Csim%b_trns%wide_SGS,    &
      &    trns_SIMI%backward, trns_DYNG%backward, trns_Csim%backward)
 !
       end subroutine cal_wide_nonlinear_grad_sph_SGS
