@@ -23,6 +23,7 @@ IO                   \
 IO_BINARY            \
 IO_ZLIB              \
 CONTROLS             \
+Fields               \
 \
 INTERPOLATE          \
 spherical_harmonics  \

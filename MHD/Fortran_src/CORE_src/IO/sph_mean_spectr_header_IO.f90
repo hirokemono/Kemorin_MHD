@@ -285,7 +285,6 @@
 !
       subroutine set_sph_rms_labels(num_rms_comp, rms_name, labels)
 !
-      use m_filtered_field_labels
       use add_direction_labels
 !
       integer(kind = kint), intent(in) :: num_rms_comp
@@ -293,39 +292,80 @@
 !
       character(len = kchara), intent(inout) :: labels(num_rms_comp)
 !
+      logical :: flag
+!
+!
+      if (num_rms_comp .eq. 1) then
+        write(labels(1),'(a)')   trim(rms_name)
+      else if (num_rms_comp .eq. 3) then
+        flag = .FALSE.
+        call set_sph_energy_labels(rms_name, labels(1), flag)
+        if(flag) return
+        call set_sph_filter_energy_labels(rms_name, labels(1), flag)
+        if(flag) return
+!
+        call add_vector_power_sph_label(rms_name,                       &
+     &      labels(1), labels(2), labels(3))
+      else if (num_rms_comp .eq. 6) then
+        call add_tensor_direction_label_rtp(rms_name,                   &
+     &      labels(1), labels(2), labels(3),                            &
+     &      labels(4), labels(5), labels(6))
+      end if
+!
+      end subroutine set_sph_rms_labels
+!
+!  --------------------------------------------------------------------
+!  --------------------------------------------------------------------
+!
+      subroutine set_sph_energy_labels(rms_name, labels, flag)
+!
+      use t_base_field_labels
+!
+      character(len = kchara), intent(in) :: rms_name
+!
+      character(len = kchara), intent(inout) :: labels(3)
+      logical, intent(inout) :: flag
+!
 !
       if ( rms_name .eq. velocity%name) then
         write(labels(1),'(a)')   'K_ene_pol'
         write(labels(2),'(a)')   'K_ene_tor'
         write(labels(3),'(a)')   'K_ene'
-!
+        flag = .TRUE.
       else if (rms_name .eq. magnetic_field%name) then
         write(labels(1),'(a)')   'M_ene_pol'
         write(labels(2),'(a)')   'M_ene_tor'
         write(labels(3),'(a)')   'M_ene'
+        flag = .TRUE.
+      end if
 !
-      else if (rms_name .eq. filter_velocity%name) then
+      end subroutine set_sph_energy_labels
+!
+!  --------------------------------------------------------------------
+!
+      subroutine set_sph_filter_energy_labels(rms_name, labels, flag)
+!
+      use m_filtered_field_labels
+!
+      character(len = kchara), intent(in) :: rms_name
+!
+      character(len = kchara), intent(inout) :: labels(3)
+      logical, intent(inout) :: flag
+!
+!
+      if(rms_name .eq. filter_velocity%name) then
         write(labels(1),'(a)')   'filter_KE_pol'
         write(labels(2),'(a)')   'filter_KE_tor'
         write(labels(3),'(a)')   'filter_KE'
-!
-      else if (rms_name .eq. filter_magne%name) then
+        flag = .TRUE.
+      else if(rms_name .eq. filter_magne%name) then
         write(labels(1),'(a)')   'filter_ME_pol'
         write(labels(2),'(a)')   'filter_ME_tor'
         write(labels(3),'(a)')   'filter_ME'
-!
-      else if (num_rms_comp .eq. 1) then
-        write(labels(1),'(a)')   trim(rms_name)
-      else if (num_rms_comp .eq. 3) then
-        call add_vector_power_sph_label(rms_name,                       &
-     &          labels(1), labels(2), labels(3))
-      else if (num_rms_comp .eq. 6) then
-        call add_tensor_direction_label_rtp(rms_name,                   &
-     &          labels(1), labels(2), labels(3), labels(4), labels(5),  &
-     &          labels(6))
+        flag = .TRUE.
       end if
 !
-      end subroutine set_sph_rms_labels
+      end subroutine set_sph_filter_energy_labels
 !
 !  --------------------------------------------------------------------
 !

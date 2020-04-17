@@ -149,7 +149,7 @@
 !
       use m_rot_force_labels
       use m_div_force_labels
-!      use m_filtered_field_labels
+      use m_filtered_field_labels
 !      use m_filtered_force_labels
 !      use m_filtered_ene_flux_labels
 !      use m_diff_filter_vect_labels

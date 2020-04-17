@@ -94,15 +94,11 @@ set_and_cal_udt_data.o: $(IO_DIR)/set_and_cal_udt_data.f90 m_precision.o t_ucd_d
 	$(F90) -c $(F90OPTFLAGS) $<
 set_components_flags.o: $(IO_DIR)/set_components_flags.f90 m_precision.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
-set_control_field_data.o: $(IO_DIR)/set_control_field_data.f90 m_precision.o m_constants.o m_machine_parameter.o m_error_IDs.o t_phys_address.o t_phys_data.o t_control_array_character3.o set_MHD_field_address.o set_SGS_MHD_field_address.o set_nodal_field_name.o
-	$(F90) -c $(F90OPTFLAGS) $<
 set_field_file_names.o: $(IO_DIR)/set_field_file_names.f90 m_precision.o m_constants.o m_field_file_format.o t_file_IO_parameter.o delete_data_files.o set_parallel_file_name.o set_mesh_extensions.o m_file_format_switch.o set_sph_extensions.o
 	$(F90) -c $(F90OPTFLAGS) $<
 set_mesh_extensions.o: $(IO_DIR)/set_mesh_extensions.f90 m_precision.o set_parallel_file_name.o
 	$(F90) -c $(F90OPTFLAGS) $<
 set_mesh_file_names.o: $(IO_DIR)/set_mesh_file_names.f90 m_precision.o m_constants.o set_parallel_file_name.o m_file_format_switch.o set_mesh_extensions.o set_sph_extensions.o
-	$(F90) -c $(F90OPTFLAGS) $<
-set_nodal_field_name.o: $(IO_DIR)/set_nodal_field_name.f90 m_precision.o m_phys_labels.o t_phys_data.o set_MHD_field_address.o set_SGS_MHD_field_address.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
 set_parallel_file_name.o: $(IO_DIR)/set_parallel_file_name.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -124,7 +120,7 @@ sph_global_1d_idx_IO.o: $(IO_DIR)/sph_global_1d_idx_IO.f90 m_precision.o t_node_
 	$(F90) -c $(F90OPTFLAGS) $<
 sph_mean_spectr_IO.o: $(IO_DIR)/sph_mean_spectr_IO.f90 m_precision.o sph_mean_spectr_header_IO.o
 	$(F90) -c $(F90OPTFLAGS) $<
-sph_mean_spectr_header_IO.o: $(IO_DIR)/sph_mean_spectr_header_IO.f90 m_precision.o m_phys_labels.o write_field_labels.o skip_comment_f.o m_filtered_field_labels.o add_direction_labels.o
+sph_mean_spectr_header_IO.o: $(IO_DIR)/sph_mean_spectr_header_IO.f90 m_precision.o m_phys_labels.o write_field_labels.o skip_comment_f.o add_direction_labels.o t_base_field_labels.o m_filtered_field_labels.o
 	$(F90) -c $(F90OPTFLAGS) $<
 sph_modes_grids_data_IO.o: $(IO_DIR)/sph_modes_grids_data_IO.f90 m_precision.o m_machine_parameter.o m_sph_modes_grid_labels.o t_comm_table.o t_node_id_spherical_IO.o t_spheric_group.o domain_data_IO.o spherical_model_IO.o sph_global_1d_idx_IO.o groups_IO.o
 	$(F90) -c $(F90OPTFLAGS) $<

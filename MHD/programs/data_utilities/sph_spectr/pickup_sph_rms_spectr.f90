@@ -115,7 +115,7 @@
         ist =   pwr%istack_comp_sq(i_fld-1)
         ncomp = pwr%num_comp_sq(i_fld)
         call set_sph_rms_labels(ncomp, pwr%pwr_name(i_fld),             &
-     &      pick_rms%spectr_name(ist+1:ist+ncomp))
+     &      pick_rms%spectr_name(ist+1))
       end do
       pick_rms%ntot_comp_rj = pwr%ntot_comp_sq
 !
