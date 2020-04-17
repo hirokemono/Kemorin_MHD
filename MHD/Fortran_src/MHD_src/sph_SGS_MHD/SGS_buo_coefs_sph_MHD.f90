@@ -7,7 +7,7 @@
 !>@brief Least square for model coefficients
 !!
 !!@verbatim
-!!      subroutine cal_SGS_buo_coefs_sph_MHD                            &
+!!      subroutine cal_SGS_buo_coef_sph_MHD                             &
 !!     &         (sph_rtp, sph_d_grp, stablize_weight, frc_rtp,         &
 !!     &          ncomp_snap_rtp_2_rj, if_trns_reynolds, if_trns_buo_wk,&
 !!     &          ifld_SGS_buo, icomp_SGS_buo, wk_sgs)
@@ -51,7 +51,7 @@
 !
       implicit none
 !
-      private :: sel_int_zonal_4_buo_coefs
+      private :: sel_int_zonal_4_buo_coef
       private :: sel_product_single_buo_coefs
       private :: sel_product_double_buo_coefs
 !
@@ -61,7 +61,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine cal_SGS_buo_coefs_sph_MHD                              &
+      subroutine cal_SGS_buo_coef_sph_MHD                               &
      &         (sph_rtp, sph_d_grp, stablize_weight, frc_rtp,           &
      &          ncomp_snap_rtp_2_rj, if_trns_reynolds, if_trns_buo_wk,  &
      &          ifld_SGS_buo, icomp_SGS_buo, wk_sgs)
@@ -85,17 +85,17 @@
       type(dynamic_model_data), intent(inout) :: wk_sgs
 !
 !
-      call sel_int_zonal_4_buo_coefs(sph_rtp, sph_d_grp,                &
+      call sel_int_zonal_4_buo_coef(sph_rtp, sph_d_grp,                 &
      &    frc_rtp(1,if_trns_reynolds), frc_rtp(1,if_trns_buo_wk),       &
      &    wk_sgs%comp_coef(1,icomp_SGS_buo),                            &
      &    wk_sgs%comp_clip(1,icomp_SGS_buo))
 !
-      call sel_sph_model_coefs(ione, sph_d_grp%ngrp_dynamic,            &
+      call sel_sph_model_coef(ione, sph_d_grp%ngrp_dynamic,             &
      &    stablize_weight, ifld_SGS_buo, icomp_SGS_buo,                 &
      &    wk_sgs%num_kinds, wk_sgs%ntot_comp, wk_sgs%comp_coef,         &
      &    wk_sgs%comp_clip, wk_sgs%fld_coef)
 !
-      end subroutine cal_SGS_buo_coefs_sph_MHD
+      end subroutine cal_SGS_buo_coef_sph_MHD
 !
 ! ----------------------------------------------------------------------
 !
@@ -136,7 +136,7 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine sel_int_zonal_4_buo_coefs(sph_rtp, sph_d_grp,          &
+      subroutine sel_int_zonal_4_buo_coef(sph_rtp, sph_d_grp,           &
      &          frc_simi, frc_wide, sgs_zl, sgs_zt)
 !
       use m_FFT_selector
@@ -163,7 +163,7 @@
      &      frc_simi, frc_wide, sgs_zl, sgs_zt)
       end if
 !
-      end subroutine sel_int_zonal_4_buo_coefs
+      end subroutine sel_int_zonal_4_buo_coef
 !
 ! ----------------------------------------------------------------------
 !

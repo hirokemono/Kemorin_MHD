@@ -228,11 +228,14 @@
       if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+11)
 !
       call cal_sph_wide_filtering_fields                                &
-     &   (sph%sph_rj, ipol, dynamic_SPH%sph_filters(2), rj_fld)
+     &   (sph%sph_rj, ipol%base, ipol%wide_filter_fld,                  &
+     &    dynamic_SPH%sph_filters(2), rj_fld)
       call cal_sph_wide_filtering_forces                                &
-     &   (sph%sph_rj, ipol, dynamic_SPH%sph_filters(2), rj_fld)
+     &   (sph%sph_rj, ipol%forces, ipol%wide_SGS,                       &
+     &    dynamic_SPH%sph_filters(2), rj_fld)
       call cal_sph_dble_filtering_forces                                &
-     &   (sph%sph_rj, ipol, dynamic_SPH%sph_filters(2), rj_fld)
+     &   (sph%sph_rj, ipol%SGS_term, ipol%dble_SGS,                     &
+     &    dynamic_SPH%sph_filters(2), rj_fld)
 !
       if (iflag_debug.eq.1) write(*,*) 'sph_back_trans_SGS_MHD dyns'
       if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+9)
@@ -245,8 +248,9 @@
      &   trns_DYNS%b_trns, trns_DYNS%backward)
 !
       if (iflag_debug.eq.1) write(*,*) 'SGS_param%stab_weight'
-      call const_model_coefs_4_sph(SGS_param, sph%sph_rtp,              &
-     &    trns_SGS%f_trns, trns_DYNS%b_trns, trns_DYNS%b_trns,          &
+      call const_model_coefs_4_sph                                      &
+     &   (SGS_param, sph%sph_rtp, trns_SGS%f_trns%SGS_term,             &
+     &    trns_DYNS%b_trns%wide_SGS, trns_DYNS%b_trns%dble_SGS,         &
      &    trns_SGS%forward, trns_DYNS%backward, trns_DYNS%backward,     &
      &    dynamic_SPH)
 !
@@ -300,7 +304,8 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_sph_dble_filtering_forces'
       call cal_sph_dble_filtering_forces                                &
-     &   (sph%sph_rj, ipol, dynamic_SPH%sph_filters(2), rj_fld)
+     &   (sph%sph_rj, ipol%SGS_term, ipol%dble_SGS,                     &
+     &    dynamic_SPH%sph_filters(2), rj_fld)
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_sph_dble_filtering_forces'
       call cal_wide_nonlinear_grad_sph_SGS                              &
@@ -309,8 +314,9 @@
      &    trns_DYNG, trns_Csim)
 !
       if (iflag_debug.eq.1) write(*,*) 'SGS_param%stab_weight'
-      call const_model_coefs_4_sph(SGS_param, sph%sph_rtp,              &
-     &    trns_SIMI%f_trns, trns_Csim%b_trns, trns_DYNG%b_trns,         &
+      call const_model_coefs_4_sph                                      &
+     &   (SGS_param, sph%sph_rtp, trns_SIMI%f_trns%SGS_term,            &
+     &    trns_Csim%b_trns%wide_SGS, trns_DYNG%b_trns%dble_SGS,         &
      &    trns_SIMI%forward, trns_Csim%backward, trns_DYNG%backward,    &
      &    dynamic_SPH)
 !

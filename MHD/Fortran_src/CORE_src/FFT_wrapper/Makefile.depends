@@ -10,8 +10,6 @@ m_FFT_selector.o: $(FFT_WRAP_DIR)/m_FFT_selector.f90 m_precision.o skip_comment_
 	$(F90) -c $(F90OPTFLAGS) $<
 m_fftw_parameters.o: $(FFT_WRAP_DIR)/m_fftw_parameters.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<
-set_nodal_field_name.o: $(FFT_WRAP_DIR)/set_nodal_field_name.f90 m_precision.o m_phys_labels.o t_phys_data.o set_MHD_field_address.o set_SGS_MHD_field_address.o skip_comment_f.o
-	$(F90) -c $(F90OPTFLAGS) $<
 t_FFTPACK5_wrapper.o: $(FFT_WRAP_DIR)/t_FFTPACK5_wrapper.f90 m_precision.o m_constants.o FFTPACK5_wrapper.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_FFTW_wrapper.o: $(FFT_WRAP_DIR)/t_FFTW_wrapper.f90 m_precision.o m_constants.o m_fftw_parameters.o FFTW3_wrapper.o

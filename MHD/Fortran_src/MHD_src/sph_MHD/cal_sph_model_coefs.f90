@@ -6,7 +6,7 @@
 !>@brief Least square for model coefficients
 !!
 !!@verbatim
-!!      subroutine sel_sph_model_coefs                                  &
+!!      subroutine sel_sph_model_coef                                   &
 !!     &         (numdir, ngrp_dynamic, stab_wt, ifld_sgs, icomp_sgs,   &
 !!     &          nfld_sgs, ncomp_sgs,  sgs_zl, sgs_zt, sgs_c)
 !!      subroutine cal_scalar_sph_model_coefs                           &
@@ -30,7 +30,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine sel_sph_model_coefs                                    &
+      subroutine sel_sph_model_coef                                     &
      &         (numdir, ngrp_dynamic, stab_wt, ifld_sgs, icomp_sgs,     &
      &          nfld_sgs, ncomp_sgs,  sgs_zl, sgs_zt, sgs_c)
 !
@@ -56,7 +56,7 @@
      &      sgs_c(1,ifld_sgs))
       end if
 !
-      end subroutine sel_sph_model_coefs
+      end subroutine sel_sph_model_coef
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------

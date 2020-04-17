@@ -78,11 +78,13 @@
       if (iflag_debug.ge.1) write(*,*)                                  &
      &                    'cal_sph_base_filtering_fields'
       call cal_sph_base_filtering_fields                                &
-     &   (sph%sph_rj, ipol, dynamic_SPH%sph_filters(1), rj_fld)
+     &   (sph%sph_rj, ipol%base, ipol%filter_fld,                       &
+     &    dynamic_SPH%sph_filters(1), rj_fld)
 !
       if (iflag_debug.ge.1) write(*,*) 'cal_sph_base_filtering_forces'
       call cal_sph_base_filtering_forces                                &
-     &   (sph%sph_rj, ipol, dynamic_SPH%sph_filters(1), rj_fld)
+     &   (sph%sph_rj, ipol%forces, ipol%SGS_term,                       &
+     &    dynamic_SPH%sph_filters(1), rj_fld)
       if(iflag_SGS_time) call end_elapsed_time(ist_elapsed_SGS+1)
 !
       if (iflag_debug.eq.1) write(*,*) 'sph_back_trans_SGS_MHD SGS'

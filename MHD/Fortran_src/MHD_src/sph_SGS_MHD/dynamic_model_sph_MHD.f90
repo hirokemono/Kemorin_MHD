@@ -8,11 +8,13 @@
 !!
 !!@verbatim
 !!      subroutine const_model_coefs_4_sph(SGS_param, sph_rtp,          &
-!!     &         fg_trns, bw_trns, bd_trns, trns_f_SIMI, trns_b_wide,   &
-!!     &         trns_b_dble, dynamic_SPH)
+!!     &          fg_trns_SGS, bw_trns_wSGS, bd_trns_dSGS,              &
+!!     &          trns_f_SIMI, trns_b_wide, trns_b_dble, dynamic_SPH)
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
-!!        type(phys_address), intent(in) :: fg_trns, bw_trns, bd_trns
+!!        type(SGS_term_address), intent(in) :: fg_trns_SGS
+!!        type(SGS_term_address), intent(in) :: bw_trns_wSGS
+!!        type(SGS_term_address), intent(in) :: bd_trns_dSGS
 !!        type(address_each_sph_trans), intent(in) :: trns_f_SIMI
 !!        type(address_each_sph_trans), intent(in) :: trns_b_wide
 !!        type(address_each_sph_trans), intent(in) :: trns_b_dble
@@ -40,6 +42,8 @@
       use t_SGS_control_parameter
       use t_spheric_rtp_data
       use t_groups_sph_dynamic
+      use t_SGS_term_labels
+      use t_SGS_enegy_flux_labels
       use t_phys_address
       use t_addresses_sph_transform
       use t_ele_info_4_dynamic
@@ -56,14 +60,16 @@
 !-----------------------------------------------------------------------
 !
       subroutine const_model_coefs_4_sph(SGS_param, sph_rtp,            &
-     &         fg_trns, bw_trns, bd_trns, trns_f_SIMI, trns_b_wide,     &
-     &         trns_b_dble, dynamic_SPH)
+     &          fg_trns_SGS, bw_trns_wSGS, bd_trns_dSGS,                &
+     &          trns_f_SIMI, trns_b_wide, trns_b_dble, dynamic_SPH)
 !
       use zonal_lsq_4_model_coefs
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(sph_rtp_grid), intent(in) :: sph_rtp
-      type(phys_address), intent(in) :: fg_trns, bw_trns, bd_trns
+      type(SGS_term_address), intent(in) :: fg_trns_SGS
+      type(SGS_term_address), intent(in) :: bw_trns_wSGS
+      type(SGS_term_address), intent(in) :: bd_trns_dSGS
       type(address_each_sph_trans), intent(in) :: trns_f_SIMI
       type(address_each_sph_trans), intent(in) :: trns_b_wide
       type(address_each_sph_trans), intent(in) :: trns_b_dble
@@ -76,9 +82,9 @@
         call cal_dynamic_SGS_4_sph_MHD                                  &
      &     (sph_rtp, dynamic_SPH%sph_d_grp, SGS_param%stab_weight,      &
      &      n_vector, dynamic_SPH%ifld_sgs%i_mom_flux,                  &
-     &      trns_f_SIMI%fld_rtp(1,fg_trns%SGS_term%i_SGS_inertia),      &
-     &      trns_b_wide%fld_rtp(1,bw_trns%wide_SGS%i_SGS_inertia),      &
-     &      trns_b_dble%fld_rtp(1,bd_trns%dble_SGS%i_SGS_inertia),      &
+     &      trns_f_SIMI%fld_rtp(1,fg_trns_SGS%i_SGS_inertia),           &
+     &      trns_b_wide%fld_rtp(1,bw_trns_wSGS%i_SGS_inertia),          &
+     &      trns_b_dble%fld_rtp(1,bd_trns_dSGS%i_SGS_inertia),          &
      &      dynamic_SPH%wk_sgs)
       end if
 !
@@ -87,9 +93,9 @@
         call cal_dynamic_SGS_4_sph_MHD                                  &
      &     (sph_rtp, dynamic_SPH%sph_d_grp, SGS_param%stab_weight,      &
      &      n_vector, dynamic_SPH%ifld_sgs%i_lorentz,                   &
-     &      trns_f_SIMI%fld_rtp(1,fg_trns%SGS_term%i_SGS_Lorentz),      &
-     &      trns_b_wide%fld_rtp(1,bw_trns%wide_SGS%i_SGS_Lorentz),      &
-     &      trns_b_dble%fld_rtp(1,bd_trns%dble_SGS%i_SGS_Lorentz),      &
+     &      trns_f_SIMI%fld_rtp(1,fg_trns_SGS%i_SGS_Lorentz),           &
+     &      trns_b_wide%fld_rtp(1,bw_trns_wSGS%i_SGS_Lorentz),          &
+     &      trns_b_dble%fld_rtp(1,bd_trns_dSGS%i_SGS_Lorentz),          &
      &      dynamic_SPH%wk_sgs)
       end if
 !
@@ -98,9 +104,9 @@
         call cal_dynamic_SGS_4_sph_MHD                                  &
      &     (sph_rtp, dynamic_SPH%sph_d_grp, SGS_param%stab_weight,      &
      &      n_vector, dynamic_SPH%ifld_sgs%i_induction,                 &
-     &      trns_f_SIMI%fld_rtp(1,fg_trns%SGS_term%i_SGS_vp_induct),    &
-     &      trns_b_wide%fld_rtp(1,bw_trns%wide_SGS%i_SGS_vp_induct),    &
-     &      trns_b_dble%fld_rtp(1,bd_trns%dble_SGS%i_SGS_vp_induct),    &
+     &      trns_f_SIMI%fld_rtp(1,fg_trns_SGS%i_SGS_vp_induct),         &
+     &      trns_b_wide%fld_rtp(1,bw_trns_wSGS%i_SGS_vp_induct),        &
+     &      trns_b_dble%fld_rtp(1,bd_trns_dSGS%i_SGS_vp_induct),        &
      &      dynamic_SPH%wk_sgs)
       end if
 !
@@ -109,9 +115,9 @@
         call cal_dynamic_SGS_4_sph_MHD                                  &
      &     (sph_rtp, dynamic_SPH%sph_d_grp, SGS_param%stab_weight,      &
      &      n_vector, dynamic_SPH%ifld_sgs%i_heat_flux,                 &
-     &      trns_f_SIMI%fld_rtp(1,fg_trns%SGS_term%i_SGS_h_flux),       &
-     &      trns_b_wide%fld_rtp(1,bw_trns%wide_SGS%i_SGS_h_flux),       &
-     &      trns_b_dble%fld_rtp(1,bd_trns%dble_SGS%i_SGS_h_flux),       &
+     &      trns_f_SIMI%fld_rtp(1,fg_trns_SGS%i_SGS_h_flux),            &
+     &      trns_b_wide%fld_rtp(1,bw_trns_wSGS%i_SGS_h_flux),           &
+     &      trns_b_dble%fld_rtp(1,bd_trns_dSGS%i_SGS_h_flux),           &
      &      dynamic_SPH%wk_sgs)
       end if
 !
@@ -120,9 +126,9 @@
         call cal_dynamic_SGS_4_sph_MHD                                  &
      &     (sph_rtp, dynamic_SPH%sph_d_grp, SGS_param%stab_weight,      &
      &      n_vector, dynamic_SPH%ifld_sgs%i_comp_flux,                 &
-     &      trns_f_SIMI%fld_rtp(1,fg_trns%SGS_term%i_SGS_c_flux),       &
-     &      trns_b_wide%fld_rtp(1,bw_trns%wide_SGS%i_SGS_c_flux),       &
-     &      trns_b_dble%fld_rtp(1,bd_trns%dble_SGS%i_SGS_c_flux),       &
+     &      trns_f_SIMI%fld_rtp(1,fg_trns_SGS%i_SGS_c_flux),            &
+     &      trns_b_wide%fld_rtp(1,bw_trns_wSGS%i_SGS_c_flux),           &
+     &      trns_b_dble%fld_rtp(1,bd_trns_dSGS%i_SGS_c_flux),           &
      &      dynamic_SPH%wk_sgs)
       end if
 !
@@ -133,7 +139,6 @@
       subroutine const_dynamic_SGS_4_buo_sph(stab_weight, sph_rtp,      &
      &          fl_prop, trns_MHD, trns_SGS, trns_Csim, dynamic_SPH)
 !
-      use SGS_buo_coefs_sph_MHD
       use cal_SGS_buo_flux_sph_MHD
 !
       real(kind = kreal), intent(in) :: stab_weight
@@ -151,27 +156,47 @@
      &    trns_SGS%f_trns%SGS_term, trns_Csim%f_trns%SGS_ene_flux,      &
      &    trns_MHD%backward, trns_SGS%forward, trns_Csim%forward)
 !
+      call cal_SGS_buo_coefs_sph_MHD(stab_weight, sph_rtp,              &
+     &    trns_Csim%f_trns%SGS_ene_flux, trns_Csim%forward,             &
+     &    dynamic_SPH)
+!
+      end subroutine const_dynamic_SGS_4_buo_sph 
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine cal_SGS_buo_coefs_sph_MHD(stab_weight, sph_rtp,        &
+     &          f_trns_sef, trns_Csim_fwd, dynamic_SPH)
+!
+      use SGS_buo_coefs_sph_MHD
+!
+      real(kind = kreal), intent(in) :: stab_weight
+      type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(SGS_ene_flux_address), intent(in) :: f_trns_sef
+      type(address_each_sph_trans), intent(in) :: trns_Csim_fwd
+!
+      type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
+!
+!
       if(dynamic_SPH%ifld_sgs%i_buoyancy .gt. 0) then
-        call cal_SGS_buo_coefs_sph_MHD                                  &
+        call cal_SGS_buo_coef_sph_MHD                                   &
      &     (sph_rtp, dynamic_SPH%sph_d_grp, stab_weight,                &
-     &      trns_Csim%forward%fld_rtp, trns_Csim%forward%ncomp,         &
-     &      trns_Csim%f_trns%SGS_ene_flux%i_reynolds_wk,                &
-     &      trns_Csim%f_trns%SGS_ene_flux%i_SGS_buo_wk,                 &
+     &      trns_Csim_fwd%fld_rtp, trns_Csim_fwd%ncomp,                 &
+     &      f_trns_sef%i_reynolds_wk, f_trns_sef%i_SGS_buo_wk,          &
      &      dynamic_SPH%ifld_sgs%i_buoyancy,                            &
      &      dynamic_SPH%icomp_sgs%i_buoyancy, dynamic_SPH%wk_sgs)
       end if
-!x
+!
       if(dynamic_SPH%ifld_sgs%i_comp_buoyancy .gt. 0) then
-        call cal_SGS_buo_coefs_sph_MHD                                  &
+        call cal_SGS_buo_coef_sph_MHD                                   &
      &     (sph_rtp, dynamic_SPH%sph_d_grp, stab_weight,                &
-     &      trns_Csim%forward%fld_rtp, trns_Csim%forward%ncomp,         &
-     &      trns_Csim%f_trns%SGS_ene_flux%i_reynolds_wk,                &
-     &      trns_Csim%f_trns%SGS_ene_flux%i_SGS_comp_buo_wk,            &
+     &      trns_Csim_fwd%fld_rtp, trns_Csim_fwd%ncomp,                 &
+     &      f_trns_sef%i_reynolds_wk, f_trns_sef%i_SGS_comp_buo_wk,     &
      &      dynamic_SPH%ifld_sgs%i_comp_buoyancy,                       &
      &      dynamic_SPH%icomp_sgs%i_comp_buoyancy, dynamic_SPH%wk_sgs)
       end if
 !
-      end subroutine const_dynamic_SGS_4_buo_sph 
+      end subroutine cal_SGS_buo_coefs_sph_MHD 
 !
 ! ----------------------------------------------------------------------
 !
