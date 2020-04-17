@@ -52,6 +52,7 @@
       use check_SGS_terms
       use check_filtered_field
       use check_filtered_forces
+      use check_diff_filtered_field
       use check_double_filter_field
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
