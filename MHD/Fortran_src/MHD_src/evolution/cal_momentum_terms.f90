@@ -130,23 +130,32 @@
       if(FEM_prm%iflag_velo_supg .eq. id_turn_ON) then
         call int_vol_velo_monitor_upwind                                &
      &     (i_field, iak_diff_mf, iak_diff_lor, iphys_ele%base%i_velo,  &
-     &      dt, FEM_prm, SGS_param, cmt_param, node, ele, fluid,        &
-     &      fl_prop, cd_prop, iphys, nod_fld, iphys_ele, ak_MHD,        &
+     &      dt, FEM_prm, SGS_param, cmt_param,                          &
+     &      node, ele, fluid, fl_prop, cd_prop,                         &
+     &      iphys%base, iphys%forces, iphys%div_forces,                 &
+     &      iphys%filter_fld, iphys%force_by_filter, iphys%SGS_term,    &
+     &      iphys%div_SGS, nod_fld, iphys_ele%base, ak_MHD,             &
      &      fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,     &
      &      FEM_elens, diff_coefs, mhd_fem_wk,                          &
      &      rhs_mat%fem_wk, rhs_mat%f_nl, ele_fld)
       else if (FEM_prm%iflag_velo_supg .eq. id_magnetic_SUPG) then
         call int_vol_velo_monitor_upwind                                &
      &     (i_field, iak_diff_mf, iak_diff_lor, iphys_ele%base%i_magne, &
-     &      dt, FEM_prm, SGS_param, cmt_param, node, ele, fluid,        &
-     &      fl_prop, cd_prop, iphys, nod_fld, iphys_ele, ak_MHD,        &
+     &      dt, FEM_prm, SGS_param, cmt_param,                          &
+     &      node, ele, fluid, fl_prop, cd_prop,                         &
+     &      iphys%base, iphys%forces, iphys%div_forces,                 &
+     &      iphys%filter_fld, iphys%force_by_filter, iphys%SGS_term,    &
+     &      iphys%div_SGS, nod_fld, iphys_ele%base, ak_MHD,             &
      &      fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,     &
      &      FEM_elens, diff_coefs, mhd_fem_wk,                          &
      &      rhs_mat%fem_wk, rhs_mat%f_nl, ele_fld)
       else
        call int_vol_velo_monitor_pg(i_field, iak_diff_mf, iak_diff_lor, &
-     &     FEM_prm, SGS_param, cmt_param, node, ele, fluid,             &
-     &     fl_prop, cd_prop, iphys, nod_fld, iphys_ele, ak_MHD,         &
+     &     FEM_prm, SGS_param, cmt_param,                               &
+     &     node, ele, fluid, fl_prop, cd_prop,                          &
+     &     iphys%base, iphys%forces, iphys%div_forces,                  &
+     &     iphys%filter_fld, iphys%force_by_filter, iphys%SGS_term,     &
+     &     iphys%div_SGS, nod_fld, iphys_ele%base, ak_MHD,              &
      &     fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,      &
      &     FEM_elens, diff_coefs, mhd_fem_wk,                           &
      &     rhs_mat%fem_wk, rhs_mat%f_nl, ele_fld)
@@ -155,7 +164,8 @@
       call int_surf_velo_monitor(i_field, iak_diff_mf, iak_diff_lor,    &
      &    ak_MHD%ak_d_velo, FEM_prm%npoint_t_evo_int,                   &
      &    SGS_param, cmt_param, node, ele, surf, sf_grp, fl_prop,       &
-     &    Vsf_bcs, Bsf_bcs, iphys, nod_fld,                             &
+     &    Vsf_bcs, Bsf_bcs, iphys%base, iphys%diffusion,                &
+     &    iphys%SGS_term, iphys%div_SGS, nod_fld,                       &
      &    fem_int%jcs%g_FEM, fem_int%jcs%jac_sf_grp, fem_int%rhs_tbl,   &
      &    FEM_elens, diff_coefs, rhs_mat%fem_wk, rhs_mat%surf_wk,       &
      &    rhs_mat%f_l, rhs_mat%f_nl)
@@ -227,8 +237,9 @@
       call int_surf_velo_monitor                                        &
      &  (iphys%diffusion%i_v_diffuse, iak_diff_mf, iak_diff_lor,        &
      &   ak_MHD%ak_d_velo, FEM_prm%npoint_t_evo_int,                    &
-     &   SGS_param, cmt_param, node, ele, surf,                         &
-     &   sf_grp, fl_prop, Vsf_bcs, Bsf_bcs, iphys, nod_fld,             &
+     &   SGS_param, cmt_param, node, ele, surf, sf_grp, fl_prop,        &
+     &   Vsf_bcs, Bsf_bcs, iphys%base, iphys%diffusion,                 &
+     &   iphys%SGS_term, iphys%div_SGS, nod_fld,                        &
      &   fem_int%jcs%g_FEM, fem_int%jcs%jac_sf_grp, fem_int%rhs_tbl,    &
      &   FEM_elens, diff_coefs, rhs_mat%fem_wk, rhs_mat%surf_wk,        &
      &   rhs_mat%f_l, rhs_mat%f_nl)
