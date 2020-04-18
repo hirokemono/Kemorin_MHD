@@ -54,6 +54,7 @@
 !!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(phys_data), intent(inout) :: ele_fld
+!!
 !
       module cal_sgs_4_monitor
 !
@@ -367,90 +368,99 @@
       end if
 !
 !
+      call cal_SGS_buoyancy_fluxes_FEM                                  &
+     &   (node, fl_prop, iphys%SGS_term, iphys%SGS_ene_flux, nod_fld)
+!
+      call work_of_SGS_terms(iphys%base, iphys%SGS_term, iphys%div_SGS, &
+     &    iphys%SGS_ene_flux, nod_fld)
+!
+      call work_of_SGS_terms(iphys%filter_fld, iphys%true_SGS,          &
+     &    iphys%true_div_SGS, iphys%true_SGS_eflux, nod_fld)
+!
+      end subroutine cal_work_4_sgs_terms
+!
+!-----------------------------------------------------------------------
+!
+      subroutine work_of_SGS_terms                                      &
+     &         (base, SGS_term, div_SGS, SGS_ene_flux, fld)
+!
+      use products_nodal_fields_smp
+!
+      type(base_field_address), intent(in) :: base
+      type(SGS_term_address), intent(in) :: SGS_term
+      type(SGS_term_address), intent(in) :: div_SGS
+      type(SGS_ene_flux_address), intent(in) :: SGS_ene_flux
+!
+      type(phys_data), intent(inout) :: fld
+!
+!
 !$omp parallel
-      if (iphys%SGS_ene_flux%i_SGS_temp_gen .gt. 0) then
+      if (SGS_ene_flux%i_SGS_Lor_wk .gt. 0) then
+        call cal_phys_dot_product                                       &
+     &     (base%i_velo, SGS_term%i_SGS_Lorentz,                        &
+     &      SGS_ene_flux%i_SGS_Lor_wk, fld)
+      end if
+!
+      if (SGS_ene_flux%i_reynolds_wk .gt. 0) then
+        call cal_phys_dot_product                                       &
+     &     (base%i_velo, div_SGS%i_SGS_m_flux,                          &
+     &      SGS_ene_flux%i_reynolds_wk, fld)
+      end if
+!
+      if (SGS_ene_flux%i_SGS_temp_gen .gt. 0) then
         call cal_phys_product_4_scalar                                  &
-     &     (iphys%base%i_temp, iphys%div_SGS%i_SGS_h_flux,              &
-     &      iphys%SGS_ene_flux%i_SGS_temp_gen, nod_fld)
+     &     (base%i_temp, div_SGS%i_SGS_h_flux,                          &
+     &      SGS_ene_flux%i_SGS_temp_gen, fld)
       end if
-      if (iphys%SGS_ene_flux%i_SGS_comp_gen .gt. 0) then
+!
+      if (SGS_ene_flux%i_SGS_comp_gen .gt. 0) then
         call cal_phys_product_4_scalar                                  &
-     &     (iphys%base%i_light, iphys%div_SGS%i_SGS_c_flux,             &
-     &      iphys%SGS_ene_flux%i_SGS_comp_gen, nod_fld)
+     &     (base%i_light, div_SGS%i_SGS_c_flux,                         &
+     &      SGS_ene_flux%i_SGS_comp_gen, fld)
       end if
 !
-!
-      if (iphys%SGS_ene_flux%i_reynolds_wk .gt. 0) then
+      if (SGS_ene_flux%i_SGS_me_gen .gt. 0) then
         call cal_phys_dot_product                                       &
-     &     (iphys%base%i_velo, iphys%div_SGS%i_SGS_m_flux,              &
-     &      iphys%SGS_ene_flux%i_reynolds_wk, nod_fld)
-      end if
-!
-      if (iphys%SGS_ene_flux%i_SGS_Lor_wk .gt. 0) then
-        call cal_phys_dot_product                                       &
-     &     (iphys%base%i_velo, iphys%SGS_term%i_SGS_Lorentz,            &
-     &      iphys%SGS_ene_flux%i_SGS_Lor_wk, nod_fld)
-      end if
-!
-      if (iphys%SGS_ene_flux%i_SGS_me_gen .gt. 0) then
-        call cal_phys_dot_product                                       &
-     &     (iphys%base%i_magne, iphys%SGS_term%i_SGS_induction,         &
-     &      iphys%SGS_ene_flux%i_SGS_me_gen, nod_fld)
+     &     (base%i_magne, SGS_term%i_SGS_induction,                     &
+     &      SGS_ene_flux%i_SGS_me_gen, fld)
       end if
 !$omp end parallel
 !
-      if (iphys%SGS_ene_flux%i_SGS_buo_wk .gt. 0) then
+      end subroutine work_of_SGS_terms
+!
+!-----------------------------------------------------------------------
+!
+      subroutine cal_SGS_buoyancy_fluxes_FEM                            &
+     &         (node, fl_prop, iphys_SGS, iphys_sef, nod_fld)
+!
+      use cal_sgs_buoyancy_flux
+!
+      type(node_data), intent(in) :: node
+      type(fluid_property), intent(in) :: fl_prop
+      type(SGS_term_address), intent(in) :: iphys_SGS
+      type(SGS_ene_flux_address), intent(in) :: iphys_sef
+!
+      type(phys_data), intent(inout) :: nod_fld
+!
+!
+      if (iphys_sef%i_SGS_buo_wk .gt. 0) then
         if(iflag_debug.gt.0) write(*,*)                                 &
      &        'lead ', trim(SGS_buoyancy_flux%name)
         call cal_SGS_gravity_flux                                       &
      &     (node, fl_prop%i_grav, fl_prop%coef_buo, fl_prop%grav,       &
-     &      iphys%SGS_term%i_SGS_h_flux,                                &
-     &      iphys%SGS_ene_flux%i_SGS_buo_wk, nod_fld)
+     &      iphys_SGS%i_SGS_h_flux, iphys_sef%i_SGS_buo_wk, nod_fld)
       end if
 !
-      if (iphys%SGS_ene_flux%i_SGS_comp_buo_wk .gt. 0) then
+      if (iphys_sef%i_SGS_comp_buo_wk .gt. 0) then
         if(iflag_debug.gt.0) write(*,*)                                 &
      &        'lead ', trim(SGS_comp_buoyancy_flux%name)
         call cal_SGS_gravity_flux                                       &
      &     (node, fl_prop%i_grav, fl_prop%coef_comp_buo, fl_prop%grav,  &
-     &      iphys%SGS_term%i_SGS_h_flux,                                &
-     &      iphys%SGS_ene_flux%i_SGS_comp_buo_wk, nod_fld)
+     &      iphys_SGS%i_SGS_h_flux, iphys_sef%i_SGS_comp_buo_wk,        &
+     &      nod_fld)
       end if
 !
-!
-!$omp parallel
-      if (iphys%true_SGS_eflux%i_SGS_Lor_wk .gt. 0) then
-          call cal_phys_dot_product                                     &
-     &       (iphys%filter_fld%i_velo, iphys%true_SGS%i_SGS_Lorentz,    &
-     &        iphys%true_SGS_eflux%i_SGS_Lor_wk, nod_fld)
-      end if
-!
-      if (iphys%true_SGS_eflux%i_reynolds_wk .gt. 0) then
-          call cal_phys_dot_product                                     &
-     &       (iphys%filter_fld%i_velo, iphys%true_div_SGS%i_SGS_m_flux, &
-     &        iphys%true_SGS_eflux%i_reynolds_wk, nod_fld)
-      end if
-!
-      if (iphys%true_SGS_eflux%i_SGS_temp_gen .gt. 0) then
-          call cal_phys_product_4_scalar                                &
-     &       (iphys%filter_fld%i_temp, iphys%true_div_SGS%i_SGS_h_flux, &
-     &        iphys%true_SGS_eflux%i_SGS_temp_gen, nod_fld)
-      end if
-!
-      if (iphys%true_SGS_eflux%i_SGS_comp_gen .gt. 0) then
-          call cal_phys_product_4_scalar                                &
-     &      (iphys%filter_fld%i_light, iphys%true_div_SGS%i_SGS_c_flux, &
-     &       iphys%true_SGS_eflux%i_SGS_comp_gen, nod_fld)
-      end if
-!
-      if (iphys%true_SGS_eflux%i_SGS_me_gen .gt. 0) then
-          call cal_phys_dot_product                                     &
-     &       (iphys%filter_fld%i_magne, iphys%true_SGS%i_SGS_induction, &
-     &        iphys%true_SGS_eflux%i_SGS_me_gen, nod_fld)
-      end if
-!$omp end parallel
-!
-      end subroutine cal_work_4_sgs_terms
+      end subroutine cal_SGS_buoyancy_fluxes_FEM
 !
 !-----------------------------------------------------------------------
 !
