@@ -336,7 +336,10 @@
      &      mesh%nod_comm, mesh%node, mesh%ele, mesh%surf,              &
      &      group%surf_grp, MHD_mesh%fluid,                             &
      &      MHD_prop%fl_prop, MHD_prop%cd_prop,                         &
-     &      sf_bcs%Vsf_bcs, sf_bcs%Bsf_bcs, iphys, iphys_ele, ak_MHD,   &
+     &      sf_bcs%Vsf_bcs, sf_bcs%Bsf_bcs, iphys%base, iphys%forces,   &
+     &      iphys%div_forces, iphys%diffusion,                          &
+     &      iphys%filter_fld, iphys%force_by_filter, iphys%SGS_term,    &
+     &      iphys%div_SGS, iphys_ele%base, ak_MHD,                      &
      &      fem_int, FEM_elens, Csims_FEM_MHD%diff_coefs,               &
      &      mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat, nod_fld, ele_fld)
       end if

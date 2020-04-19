@@ -8,12 +8,14 @@
 !        modified by H. Matsui on Oct., 2005
 !        modified by H. Matsui on Aug., 2007
 !
-!!      subroutine int_vol_div_SGS_idct_mod_pg(node, ele, nod_fld,      &
-!!     &          iphys, g_FEM, jac_3d, rhs_tbl, FEM_elens, diff_coefs, &
+!!      subroutine int_vol_div_SGS_idct_mod_pg                          &
+!!     &         (node, ele, nod_fld, iphys_base, iphys_SGS,            &
+!!     &          g_FEM, jac_3d, rhs_tbl, FEM_elens, diff_coefs,        &
 !!     &          iele_fsmp_stack, n_int, i_filter, iak_diff_uxb,       &
 !!     &          coef_induct, fem_wk, mhd_fem_wk, f_nl)
-!!      subroutine int_vol_div_SGS_idct_mod_upm(node, ele, nod_fld,     &
-!!     &          iphys, g_FEM, jac_3d, rhs_tbl, FEM_elens, diff_coefs, &
+!!      subroutine int_vol_div_SGS_idct_mod_upm                         &
+!!     &         (node, ele, nod_fld, iphys_base, iphys_SGS,            &
+!!     &          g_FEM, jac_3d, rhs_tbl, FEM_elens, diff_coefs,        &
 !!     &          iele_fsmp_stack, n_int, dt, i_filter, iak_diff_uxb,   &
 !!     &          coef_induct, ncomp_ele, i_magne, d_ele,               &
 !!     &          fem_wk, mhd_fem_wk, f_nl)
@@ -21,6 +23,8 @@
 !!        type(element_data), intent(in) :: ele
 !!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
 !!        type(jacobians_3d), intent(in) :: jac_3d
+!!        type(base_field_address), intent(in) :: iphys_base
+!!        type(SGS_term_address), intent(in) :: iphys_SGS
 !!        type(phys_data),    intent(in) :: nod_fld
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
@@ -37,7 +41,8 @@
       use m_phys_constants
 !
       use t_geometry_data
-      use t_phys_address
+      use t_base_field_labels
+      use t_SGS_term_labels
       use t_phys_data
       use t_fem_gauss_int_coefs
       use t_table_FEM_const
@@ -55,8 +60,9 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_vol_div_SGS_idct_mod_pg(node, ele, nod_fld,        &
-     &          iphys, g_FEM, jac_3d, rhs_tbl, FEM_elens, diff_coefs,   &
+      subroutine int_vol_div_SGS_idct_mod_pg                            &
+     &         (node, ele, nod_fld, iphys_base, iphys_SGS,              &
+     &          g_FEM, jac_3d, rhs_tbl, FEM_elens, diff_coefs,          &
      &          iele_fsmp_stack, n_int, i_filter, iak_diff_uxb,         &
      &          coef_induct, fem_wk, mhd_fem_wk, f_nl)
 !
@@ -69,7 +75,8 @@
       type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(phys_data),    intent(in) :: nod_fld
-      type(phys_address), intent(in) :: iphys
+      type(base_field_address), intent(in) :: iphys_base
+      type(SGS_term_address), intent(in) :: iphys_SGS
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(SGS_coefficients_type), intent(in) :: diff_coefs
@@ -90,8 +97,8 @@
 ! -------- loop for shape function for the phsical values
       do k2 = 1, ele%nnod_4_ele
         call SGS_const_induct_each_ele(node, ele, nod_fld, k2,          &
-     &      iphys%base%i_magne, iphys%base%i_velo,                      &
-     &      iphys%SGS_term%i_SGS_induct_t,                              &
+     &      iphys_base%i_magne, iphys_base%i_velo,                      &
+     &      iphys_SGS%i_SGS_induct_t,                                   &
      &      coef_induct, mhd_fem_wk%sgs_v1, fem_wk%vector_1)
         call fem_skv_div_sgs_asym_tsr                                   &
      &     (iele_fsmp_stack, n_int, k2, i_filter,                       &
@@ -107,8 +114,9 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_vol_div_SGS_idct_mod_upm(node, ele, nod_fld,       &
-     &          iphys, g_FEM, jac_3d, rhs_tbl, FEM_elens, diff_coefs,   &
+      subroutine int_vol_div_SGS_idct_mod_upm                           &
+     &         (node, ele, nod_fld, iphys_base, iphys_SGS,              &
+     &          g_FEM, jac_3d, rhs_tbl, FEM_elens, diff_coefs,          &
      &          iele_fsmp_stack, n_int, dt, i_filter, iak_diff_uxb,     &
      &          coef_induct, ncomp_ele, i_magne, d_ele,                 &
      &          fem_wk, mhd_fem_wk, f_nl)
@@ -122,7 +130,8 @@
       type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(phys_data),    intent(in) :: nod_fld
-      type(phys_address), intent(in) :: iphys
+      type(base_field_address), intent(in) :: iphys_base
+      type(SGS_term_address), intent(in) :: iphys_SGS
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(SGS_coefficients_type), intent(in) :: diff_coefs
@@ -147,8 +156,8 @@
 ! -------- loop for shape function for the phsical values
       do k2 = 1, ele%nnod_4_ele
         call SGS_const_induct_each_ele(node, ele, nod_fld, k2,          &
-     &      iphys%base%i_magne, iphys%base%i_velo,                      &
-     &      iphys%SGS_term%i_SGS_induct_t,                              &
+     &      iphys_base%i_magne, iphys_base%i_velo,                      &
+     &      iphys_SGS%i_SGS_induct_t,                                   &
      &      coef_induct, mhd_fem_wk%sgs_v1, fem_wk%vector_1)
         call fem_skv_div_sgs_asym_t_upwind                              &
      &     (iele_fsmp_stack, n_int, k2, i_filter, dt,                   &

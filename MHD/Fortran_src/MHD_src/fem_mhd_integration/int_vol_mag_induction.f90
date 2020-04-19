@@ -9,12 +9,12 @@
 !>@brief  Finite elememt integration for magnetic induction equation
 !!
 !!@verbatim
-!!      subroutine int_vol_mag_induct_pg(node, ele, cd_prop,            &
-!!     &          g_FEM, jac_3d,rhs_tbl, nod_fld, iphys_nod, iphys_ele, &
+!!      subroutine int_vol_mag_induct_pg(node, ele, cd_prop, g_FEM,     &
+!!     &          jac_3d,rhs_tbl, nod_fld, iphys_base, iphys_ele_base,  &
 !!     &          iele_fsmp_stack, num_int, ncomp_ele, d_ele,           &
 !!     &          fem_wk, mhd_fem_wk, f_nl)
-!!      subroutine int_vol_mag_induct_upm(node, ele, cd_prop,           &
-!!     &          g_FEM, jac_3d, rhs_tbl, nod_fld, iphys_nod, iphys_ele,&
+!!      subroutine int_vol_mag_induct_upm(node, ele, cd_prop, g_FEM,           &
+!!     &          jac_3d, rhs_tbl, nod_fld, iphys_base, iphys_ele_base, &
 !!     &          iele_fsmp_stack, num_int, dt, ncomp_ele, d_ele,       &
 !!     &          fem_wk, mhd_fem_wk, f_nl)
 !!        type(node_data), intent(in) :: node
@@ -23,8 +23,8 @@
 !!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
 !!        type(jacobians_3d), intent(in) :: jac_3d
 !!        type(phys_data),    intent(in) :: nod_fld
-!!        type(phys_address), intent(in) :: iphys_nod
-!!        type(phys_address), intent(in) :: iphys_ele
+!!        type(base_field_address), intent(in) :: iphys_base
+!!        type(base_field_address), intent(in) :: iphys_ele_base
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
@@ -40,7 +40,7 @@
 !
       use t_physical_property
       use t_geometry_data
-      use t_phys_address
+      use t_base_field_labels
       use t_phys_data
       use t_fem_gauss_int_coefs
       use t_jacobians
@@ -56,8 +56,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_vol_mag_induct_pg(node, ele, cd_prop,              &
-     &          g_FEM, jac_3d,rhs_tbl, nod_fld, iphys_nod, iphys_ele,   &
+      subroutine int_vol_mag_induct_pg(node, ele, cd_prop, g_FEM,       &
+     &          jac_3d,rhs_tbl, nod_fld, iphys_base, iphys_ele_base,    &
      &          iele_fsmp_stack, num_int, ncomp_ele, d_ele,             &
      &          fem_wk, mhd_fem_wk, f_nl)
 !
@@ -72,8 +72,8 @@
       type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(phys_data),    intent(in) :: nod_fld
-      type(phys_address), intent(in) :: iphys_nod
-      type(phys_address), intent(in) :: iphys_ele
+      type(base_field_address), intent(in) :: iphys_base
+      type(base_field_address), intent(in) :: iphys_ele_base
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !
       integer(kind = kint), intent(in) :: iele_fsmp_stack(0:np_smp)
@@ -92,16 +92,16 @@
 !
 !$omp parallel
       call add_const_to_vector_smp                                      &
-     &   (ele%numele, d_ele(1,iphys_ele%base%i_magne),                  &
+     &   (ele%numele, d_ele(1,iphys_ele_base%i_magne),                  &
      &    cd_prop%ex_magne, mhd_fem_wk%magne_1)
 !$omp end parallel
 !
 ! -------- loop for shape function for the phsical values
       do k2 = 1, ele%nnod_4_ele
         call vector_phys_2_each_element(node, ele, nod_fld,             &
-     &      k2, iphys_nod%base%i_velo, mhd_fem_wk%velo_1)
+     &      k2, iphys_base%i_velo, mhd_fem_wk%velo_1)
         call vector_phys_2_each_element(node, ele, nod_fld,             &
-     &      k2, iphys_nod%base%i_magne, fem_wk%vector_1)
+     &      k2, iphys_base%i_magne, fem_wk%vector_1)
 !
         call fem_skv_induction_pg                                       &
      &     (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,                 &
@@ -109,7 +109,7 @@
      &      g_FEM%maxtot_int_3d, g_FEM%int_start3, g_FEM%owe3d,         &
      &      jac_3d%ntot_int, num_int, k2, jac_3d%xjac,                  &
      &      jac_3d%an, jac_3d%dnx, mhd_fem_wk%velo_1, fem_wk%vector_1,  &
-     &      d_ele(1,iphys_ele%base%i_velo), mhd_fem_wk%magne_1,         &
+     &      d_ele(1,iphys_ele_base%i_velo), mhd_fem_wk%magne_1,         &
      &      cd_prop%coef_induct, fem_wk%sk6)
       end do
 !
@@ -120,8 +120,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_vol_mag_induct_upm(node, ele, cd_prop,             &
-     &          g_FEM, jac_3d, rhs_tbl, nod_fld, iphys_nod, iphys_ele,  &
+      subroutine int_vol_mag_induct_upm(node, ele, cd_prop, g_FEM,      &
+     &          jac_3d, rhs_tbl, nod_fld, iphys_base, iphys_ele_base,   &
      &          iele_fsmp_stack, num_int, dt, ncomp_ele, d_ele,         &
      &          fem_wk, mhd_fem_wk, f_nl)
 !
@@ -136,8 +136,8 @@
       type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(phys_data),    intent(in) :: nod_fld
-      type(phys_address), intent(in) :: iphys_nod
-      type(phys_address), intent(in) :: iphys_ele
+      type(base_field_address), intent(in) :: iphys_base
+      type(base_field_address), intent(in) :: iphys_ele_base
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !
       integer(kind = kint), intent(in) :: iele_fsmp_stack(0:np_smp)
@@ -157,16 +157,16 @@
 !
 !$omp parallel
       call add_const_to_vector_smp                                      &
-     &   (ele%numele, d_ele(1,iphys_ele%base%i_magne),                  &
+     &   (ele%numele, d_ele(1,iphys_ele_base%i_magne),                  &
      &    cd_prop%ex_magne, mhd_fem_wk%magne_1)
 !$omp end parallel
 !
 ! -------- loop for shape function for the phsical values
       do k2 = 1, ele%nnod_4_ele
         call vector_phys_2_each_element(node, ele, nod_fld,             &
-     &      k2, iphys_nod%base%i_velo,  mhd_fem_wk%velo_1)
+     &      k2, iphys_base%i_velo,  mhd_fem_wk%velo_1)
         call vector_phys_2_each_element(node, ele, nod_fld,             &
-     &      k2, iphys_nod%base%i_magne, fem_wk%vector_1)
+     &      k2, iphys_base%i_magne, fem_wk%vector_1)
 !
         call fem_skv_induction_upm                                      &
      &     (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,                 &
@@ -175,8 +175,8 @@
      &      jac_3d%ntot_int, num_int, k2, dt, jac_3d%xjac,              &
      &      jac_3d%an, jac_3d%dnx, jac_3d%dnx,                          &
      &      mhd_fem_wk%velo_1, fem_wk%vector_1,                         &
-     &      d_ele(1,iphys_ele%base%i_velo), mhd_fem_wk%magne_1,         &
-     &      d_ele(1,iphys_ele%base%i_magne), cd_prop%coef_induct,       &
+     &      d_ele(1,iphys_ele_base%i_velo), mhd_fem_wk%magne_1,         &
+     &      d_ele(1,iphys_ele_base%i_magne), cd_prop%coef_induct,       &
      &      fem_wk%sk6)
       end do
 !

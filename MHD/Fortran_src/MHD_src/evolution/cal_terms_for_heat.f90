@@ -128,8 +128,9 @@
      &      property%coef_nega_adv, rhs_mat%fem_wk, rhs_mat%f_nl)
       end if
 !
-      call cal_t_evo_4_scalar(iflag_supg, fluid%istack_ele_fld_smp, dt, &
-     &    FEM_prm, mlump_fl, nod_comm, node, ele, iphys_ele, ele_fld,   &
+      call cal_t_evo_4_scalar                                           &
+     &   (iflag_supg, fluid%istack_ele_fld_smp, dt, FEM_prm, mlump_fl,  &
+     &    nod_comm, node, ele, iphys_ele%base, ele_fld,                 &
      &    fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,       &
      &    mhd_fem_wk%ff_m_smp, rhs_mat%fem_wk,                          &
      &    rhs_mat%f_l, rhs_mat%f_nl)
@@ -199,7 +200,7 @@
 !
       call cal_t_evo_4_scalar                                           &
      &   (iflag_supg, fluid%istack_ele_fld_smp, dt, FEM_prm,            &
-     &    mlump_fl, nod_comm, node, ele, iphys_ele, ele_fld,            &
+     &    mlump_fl, nod_comm, node, ele, iphys_ele%base, ele_fld,       &
      &    fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,       &
      &    mhd_fem_wk%ff_m_smp, rhs_mat%fem_wk, rhs_mat%f_l,             &
      &    rhs_mat%f_nl)

@@ -306,7 +306,10 @@
      &       (i_fld, ifld_diff%i_mom_flux, ifld_diff%i_lorentz, dt,     &
      &        FEM_prm, SGS_param, cmt_param, nod_comm, node, ele, surf, &
      &        sf_grp, fluid, fl_prop, cd_prop,                          &
-     &        surf_bcs%Vsf_bcs, surf_bcs%Bsf_bcs, iphys, iphys_ele,     &
+     &        surf_bcs%Vsf_bcs, surf_bcs%Bsf_bcs, iphys%base,           &
+     &        iphys%forces, iphys%div_forces, iphys%diffusion,          &
+     &        iphys%filter_fld, iphys%force_by_filter,                  &
+     &        iphys%SGS_term, iphys%div_SGS, iphys_ele%base,            &
      &        ak_MHD, fem_int, FEM_elens, diff_coefs,                   &
      &        mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat,                     &
      &        nod_fld, ele_fld)
@@ -318,12 +321,14 @@
         if(iflag_debug.gt.0) write(*,*)                                 &
      &        'lead ', trim(SGS_induction%name)
         call cal_terms_4_magnetic(iphys%SGS_term%i_SGS_induction,       &
-     &      ifld_diff%i_induction, ak_MHD%ak_d_magne, dt,               &
-     &      FEM_prm, SGS_param, cmt_param, nod_comm, node, ele,         &
-     &      surf, conduct, sf_grp, cd_prop,                             &
-     &      nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs, surf_bcs%Bsf_bcs,       &
-     &      iphys, iphys_ele, ele_fld, fem_int, FEM_elens, diff_coefs,  &
-     &      mk_MHD%mlump_cd, mhd_fem_wk, rhs_mat, nod_fld)
+     &     ifld_diff%i_induction, ak_MHD%ak_d_magne, dt,                &
+     &     FEM_prm, SGS_param, cmt_param, nod_comm, node, ele,          &
+     &     surf, conduct, sf_grp, cd_prop,                              &
+     &     nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs, surf_bcs%Bsf_bcs,        &
+     &     iphys%base, iphys%forces, iphys%div_forces, iphys%diffusion, &
+     &     iphys%SGS_term, iphys_ele%base, ele_fld,                     &
+     &     fem_int, FEM_elens, diff_coefs, mk_MHD%mlump_cd,             &
+     &     mhd_fem_wk, rhs_mat, nod_fld)
       end if
 !
       end subroutine cal_diff_of_sgs_terms

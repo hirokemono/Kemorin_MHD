@@ -216,7 +216,8 @@
 !
       call int_surf_magne_pre_ele(SGS_param, cmt_param,                 &
      &    FEM_prm%npoint_t_evo_int, iak_diff_uxb, ak_d_magne,           &
-     &    node, ele, surf, sf_grp, Asf_bcs, Bsf_bcs, iphys, nod_fld,    &
+     &    node, ele, surf, sf_grp, Asf_bcs, Bsf_bcs,                    &
+     &    iphys%base, iphys%SGS_term, nod_fld,                          &
      &    jacs%g_FEM, jacs%jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,  &
      &    fem_wk, surf_wk, f_l, f_nl)
 !

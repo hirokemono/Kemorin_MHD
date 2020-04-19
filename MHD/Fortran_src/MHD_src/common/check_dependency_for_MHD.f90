@@ -33,6 +33,7 @@
       use t_control_parameter
       use t_phys_data
       use t_phys_address
+      use t_base_field_labels
       use t_physical_property
 !
       implicit none
@@ -64,7 +65,8 @@
 !
       call check_field_dependencies                                     &
      &   (MHD_prop%fl_prop, MHD_prop%cd_prop,                           &
-     &    MHD_prop%ht_prop, MHD_prop%cp_prop, iphys, nod_fld)
+     &    MHD_prop%ht_prop, MHD_prop%cp_prop,                           &
+     &    iphys%base, iphys%filter_fld, nod_fld)
       call check_dependence_FEM_evo(MHD_prop%fl_prop, iphys, nod_fld)
 !
       end subroutine set_FEM_MHD_field_data
@@ -89,7 +91,8 @@
 !
       call check_field_dependencies                                     &
      &   (MHD_prop%fl_prop, MHD_prop%cd_prop,                           &
-     &    MHD_prop%ht_prop, MHD_prop%cp_prop, ipol, rj_fld)
+     &    MHD_prop%ht_prop, MHD_prop%cp_prop,                           &
+     &    ipol%base, ipol%filter_fld, rj_fld)
       call check_dependence_SPH_evo(MHD_prop%fl_prop, ipol, rj_fld)
 !
       end subroutine set_sph_MHD_sprctr_data
@@ -98,12 +101,14 @@
 ! -----------------------------------------------------------------------
 !
       subroutine check_field_dependencies                               &
-     &         (fl_prop, cd_prop, ht_prop, cp_prop, iphys, fld)
+     &         (fl_prop, cd_prop, ht_prop, cp_prop,                     &
+     &          iphys_base, iphys_fil, fld)
 !
       type(fluid_property), intent(in) :: fl_prop
       type(conductive_property), intent(in) :: cd_prop
       type(scalar_property), intent(in) :: ht_prop, cp_prop
-      type(phys_address), intent(in) :: iphys
+      type(base_field_address), intent(in) :: iphys_base
+      type(base_field_address), intent(in) :: iphys_fil
       type(phys_data), intent(in) :: fld
 !
       character(len=kchara) :: msg
@@ -120,66 +125,64 @@
 !
       if (fl_prop%iflag_scheme .gt. id_no_evolution) then
         msg = 'time integration for momentum equation needs'
-        call check_missing_field_w_msg(fld, msg, iphys%base%i_velo)
-        call check_missing_field_w_msg(fld, msg, iphys%base%i_press)
+        call check_missing_field_w_msg(fld, msg, iphys_base%i_velo)
+        call check_missing_field_w_msg(fld, msg, iphys_base%i_press)
       end if
 !
       if (fl_prop%iflag_scheme .gt. id_no_evolution) then
         msg = 'time integration for vorticity equation needs'
-        call check_missing_field_w_msg(fld, msg, iphys%base%i_vort)
+        call check_missing_field_w_msg(fld, msg, iphys_base%i_vort)
       end if
 !
       if (ht_prop%iflag_scheme .gt. id_no_evolution) then
         msg = 'Time integration for heat equation needs'
-        call check_missing_field_w_msg(fld, msg, iphys%base%i_velo)
-        call check_missing_field_w_msg(fld, msg, iphys%base%i_temp)
+        call check_missing_field_w_msg(fld, msg, iphys_base%i_velo)
+        call check_missing_field_w_msg(fld, msg, iphys_base%i_temp)
       end if
 !
       if (cp_prop%iflag_scheme .ne. id_no_evolution) then
         msg =  'Time integration for composition equation needs'
-        call check_missing_field_w_msg(fld, msg, iphys%base%i_velo)
-        call check_missing_field_w_msg(fld, msg, iphys%base%i_light)
+        call check_missing_field_w_msg(fld, msg, iphys_base%i_velo)
+        call check_missing_field_w_msg(fld, msg, iphys_base%i_light)
       end if
 !
       if (cd_prop%iflag_Bevo_scheme .ne. id_no_evolution) then
         msg = 'Time integration for magnetic induction equation needs'
-        call check_missing_field_w_msg(fld, msg, iphys%base%i_magne)
-        call check_missing_field_w_msg(fld, msg, iphys%base%i_velo)
+        call check_missing_field_w_msg(fld, msg, iphys_base%i_magne)
+        call check_missing_field_w_msg(fld, msg, iphys_base%i_velo)
       end if
 !
       if (cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
         msg = 'Time integration for vector potential induction needs'
-        call check_missing_field_w_msg(fld, msg, iphys%base%i_vecp)
-        call check_missing_field_w_msg(fld, msg, iphys%base%i_velo)
+        call check_missing_field_w_msg(fld, msg, iphys_base%i_vecp)
+        call check_missing_field_w_msg(fld, msg, iphys_base%i_velo)
       end if
 !
 !
       if ( fl_prop%iflag_scheme .gt. id_no_evolution) then
         if (fl_prop%iflag_4_gravity .gt. id_turn_OFF) then
           msg = 'Buoyancy needs'
-          call check_missing_field_w_msg(fld, msg, iphys%base%i_temp)
+          call check_missing_field_w_msg(fld, msg, iphys_base%i_temp)
         end if
 !
         if (fl_prop%iflag_4_composit_buo .gt. id_turn_OFF) then
           msg = 'Compositional buoyancy needs'
-          call check_missing_field_w_msg(fld, msg, iphys%base%i_light)
+          call check_missing_field_w_msg(fld, msg, iphys_base%i_light)
         end if
 !
         if (fl_prop%iflag_4_filter_gravity .gt. id_turn_OFF) then
           msg = 'Filtered thermal buoyancy needs'
-          call check_missing_field_w_msg                                &
-     &       (fld, msg, iphys%filter_fld%i_temp)
+          call check_missing_field_w_msg(fld, msg, iphys_fil%i_temp)
         end if
 !
         if (fl_prop%iflag_4_filter_comp_buo .gt. id_turn_OFF) then
           msg = 'Filtered compositional buoyancy needs'
-          call check_missing_field_w_msg                                &
-     &       (fld, msg, iphys%filter_fld%i_light)
+          call check_missing_field_w_msg(fld, msg, iphys_fil%i_light)
         end if
 !
         if (fl_prop%iflag_4_lorentz .gt. id_turn_OFF) then
           msg = 'Lorentz force needs'
-          call check_missing_field_w_msg(fld, msg, iphys%base%i_magne)
+          call check_missing_field_w_msg(fld, msg, iphys_base%i_magne)
         end if
       end if
 !

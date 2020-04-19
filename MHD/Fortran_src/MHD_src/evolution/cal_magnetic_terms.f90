@@ -4,18 +4,19 @@
 !     Written by H. Matsui on June, 2005
 !
 !!      subroutine cal_terms_4_magnetic                                 &
-!!     &        (i_field, iak_diff_uxb, ak_d_magne, dt,                 &
-!!     &         FEM_prm, SGS_param, cmt_param,                         &
-!!     &         nod_comm, node, ele, surf, conduct, sf_grp, cd_prop,   &
-!!     &         Bnod_bcs, Asf_bcs, Bsf_bcs, iphys, iphys_ele, ele_fld, &
-!!     &         fem_int, FEM_elens, diff_coefs, mlump_cd,              &
-!!     &         mhd_fem_wk, rhs_mat, nod_fld)
+!!     &         (i_field, iak_diff_uxb, ak_d_magne, dt, FEM_prm,       &
+!!     &          SGS_param, cmt_param, nod_comm, node, ele, surf,      &
+!!     &          conduct, sf_grp, cd_prop, Bnod_bcs, Asf_bcs, Bsf_bcs, &
+!!     &          iphys_base, iphys_frc, iphys_div_frc, iphys_dif,      &
+!!     &          iphys_SGS, iphys_ele_base, ele_fld, fem_int,          &
+!!     &          FEM_elens, diff_coefs, mlump_cd, mhd_fem_wk,          &
+!!     &          rhs_mat, nod_fld)
 !!      subroutine cal_magnetic_diffusion                               &
 !!     &         (iak_diff_b, iak_diff_uxb, ak_d_magne,                 &
 !!     &          FEM_prm, SGS_param, cmt_param, nod_comm, node, ele,   &
 !!     &          surf, conduct, sf_grp, Bnod_bcs, Asf_bcs, Bsf_bcs,    &
-!!     &          iphys, fem_int, FEM_elens, diff_coefs,                &
-!!     &          rhs_mat, nod_fld)
+!!     &          iphys_base, iphys_dif, iphys_SGS, fem_int,            &
+!!     &          FEM_elens, diff_coefs, rhs_mat, nod_fld)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(commutation_control_params), intent(in) :: cmt_param
@@ -29,8 +30,12 @@
 !!        type(nodal_bcs_4_induction_type), intent(in) :: Bnod_bcs
 !!        type(velocity_surf_bc_type), intent(in) :: Asf_bcs
 !!        type(vector_surf_bc_type), intent(in) :: Bsf_bcs
-!!        type(phys_address), intent(in) :: iphys
-!!        type(phys_address), intent(in) :: iphys_ele
+!!        type(base_field_address), intent(in) :: iphys_base
+!!        type(base_force_address), intent(in) :: iphys_frc
+!!        type(base_force_address), intent(in) :: iphys_div_frc
+!!        type(diffusion_address), intent(in) :: iphys_dif
+!!        type(SGS_term_address), intent(in) :: iphys_SGS
+!!        type(base_field_address), intent(in) :: iphys_ele_base
 !!        type(phys_data), intent(in) :: ele_fld
 !!        type(finite_element_integration), intent(in) :: fem_int
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
@@ -55,7 +60,10 @@
       use t_surface_data
       use t_group_data
       use t_phys_data
-      use t_phys_address
+      use t_base_field_labels
+      use t_base_force_labels
+      use t_diffusion_term_labels
+      use t_SGS_term_labels
       use t_jacobians
       use t_table_FEM_const
       use t_finite_element_mat
@@ -83,12 +91,13 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_terms_4_magnetic                                   &
-     &        (i_field, iak_diff_uxb, ak_d_magne, dt,                   &
-     &         FEM_prm, SGS_param, cmt_param,                           &
-     &         nod_comm, node, ele, surf, conduct, sf_grp, cd_prop,     &
-     &         Bnod_bcs, Asf_bcs, Bsf_bcs, iphys, iphys_ele, ele_fld,   &
-     &         fem_int, FEM_elens, diff_coefs, mlump_cd,                &
-     &         mhd_fem_wk, rhs_mat, nod_fld)
+     &         (i_field, iak_diff_uxb, ak_d_magne, dt, FEM_prm,         &
+     &          SGS_param, cmt_param, nod_comm, node, ele, surf,        &
+     &          conduct, sf_grp, cd_prop, Bnod_bcs, Asf_bcs, Bsf_bcs,   &
+     &          iphys_base, iphys_frc, iphys_div_frc, iphys_dif,        &
+     &          iphys_SGS, iphys_ele_base, ele_fld, fem_int,            &
+     &          FEM_elens, diff_coefs, mlump_cd, mhd_fem_wk,            &
+     &          rhs_mat, nod_fld)
 !
       use int_vol_magne_monitor
       use set_boundary_scalars
@@ -106,8 +115,14 @@
       type(nodal_bcs_4_induction_type), intent(in) :: Bnod_bcs
       type(velocity_surf_bc_type), intent(in) :: Asf_bcs
       type(vector_surf_bc_type), intent(in) :: Bsf_bcs
-      type(phys_address), intent(in) :: iphys
-      type(phys_address), intent(in) :: iphys_ele
+!
+      type(base_field_address), intent(in) :: iphys_base
+      type(base_force_address), intent(in) :: iphys_frc
+      type(base_force_address), intent(in) :: iphys_div_frc
+      type(diffusion_address), intent(in) :: iphys_dif
+      type(SGS_term_address), intent(in) :: iphys_SGS
+!
+      type(base_field_address), intent(in) :: iphys_ele_base
       type(phys_data), intent(in) :: ele_fld
       type(finite_element_integration), intent(in) :: fem_int
       type(gradient_model_data_type), intent(in) :: FEM_elens
@@ -129,7 +144,8 @@
         call int_vol_magne_monitor_upm                                  &
      &     (i_field, iak_diff_uxb, FEM_prm%npoint_t_evo_int, dt,        &
      &      SGS_param, cmt_param, node, ele, conduct, cd_prop,          &
-     &      iphys, nod_fld, iphys_ele, ele_fld,                         &
+     &      iphys_base, iphys_frc, iphys_div_frc, iphys_SGS,            &
+     &      nod_fld, iphys_ele_base, ele_fld,                           &
      &      fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,     &
      &      FEM_elens, diff_coefs, mhd_fem_wk, rhs_mat%fem_wk,          &
      &      rhs_mat%f_nl)
@@ -137,7 +153,8 @@
         call int_vol_magne_monitor_pg                                   &
      &     (i_field, iak_diff_uxb, FEM_prm%npoint_t_evo_int,            &
      &      SGS_param, cmt_param, node, ele, conduct, cd_prop,          &
-     &      iphys, nod_fld, iphys_ele, ele_fld,                         &
+     &      iphys_base, iphys_frc, iphys_div_frc, iphys_SGS,            &
+     &      nod_fld, iphys_ele_base, ele_fld,                           &
      &      fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,     &
      &      FEM_elens, diff_coefs, mhd_fem_wk, rhs_mat%fem_wk,          &
      &      rhs_mat%f_nl)
@@ -145,14 +162,16 @@
 !
       call int_surf_magne_monitor(SGS_param, cmt_param,                 &
      &    FEM_prm%npoint_t_evo_int,i_field, iak_diff_uxb, ak_d_magne,   &
-     &    node, ele, surf, sf_grp, Asf_bcs, Bsf_bcs, iphys, nod_fld,    &
+     &    node, ele, surf, sf_grp, Asf_bcs, Bsf_bcs,                    &
+     &    iphys_base, iphys_dif, iphys_SGS, nod_fld,                    &
      &    fem_int%jcs%g_FEM, fem_int%jcs%jac_sf_grp, fem_int%rhs_tbl,   &
      &    FEM_elens, diff_coefs, rhs_mat%fem_wk, rhs_mat%surf_wk,       &
      &    rhs_mat%f_l, rhs_mat%f_nl)
 !
       call cal_t_evo_4_vector_cd                                        &
      &   (FEM_prm%iflag_magne_supg, conduct%istack_ele_fld_smp, dt,     &
-     &    FEM_prm, mlump_cd, nod_comm, node, ele, iphys_ele, ele_fld,   &
+     &    FEM_prm, mlump_cd, nod_comm, node, ele,                       &
+     &    iphys_ele_base, ele_fld,                                      &
      &    fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,       &
      &    mhd_fem_wk%ff_m_smp, rhs_mat%fem_wk,                          &
      &    rhs_mat%f_l, rhs_mat%f_nl)
@@ -172,8 +191,8 @@
      &         (iak_diff_b, iak_diff_uxb, ak_d_magne,                   &
      &          FEM_prm, SGS_param, cmt_param, nod_comm, node, ele,     &
      &          surf, conduct, sf_grp, Bnod_bcs, Asf_bcs, Bsf_bcs,      &
-     &          iphys, fem_int, FEM_elens, diff_coefs,                  &
-     &          rhs_mat, nod_fld)
+     &          iphys_base, iphys_dif, iphys_SGS, fem_int,              &
+     &          FEM_elens, diff_coefs, rhs_mat, nod_fld)
 !
       use int_vol_diffusion_ele
       use set_boundary_scalars
@@ -190,7 +209,11 @@
       type(nodal_bcs_4_induction_type), intent(in) :: Bnod_bcs
       type(velocity_surf_bc_type), intent(in) :: Asf_bcs
       type(vector_surf_bc_type), intent(in) :: Bsf_bcs
-      type(phys_address), intent(in) :: iphys
+!
+      type(base_field_address), intent(in) :: iphys_base
+      type(diffusion_address), intent(in) :: iphys_dif
+      type(SGS_term_address), intent(in) :: iphys_SGS
+!
       type(finite_element_integration), intent(in) :: fem_int
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(SGS_coefficients_type), intent(in) :: diff_coefs
@@ -209,12 +232,13 @@
      &    FEM_prm%npoint_t_evo_int, node, ele, nod_fld,                 &
      &    fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,       &
      &    FEM_elens, diff_coefs, iak_diff_b, one, ak_d_magne,           &
-     &    iphys%base%i_magne, rhs_mat%fem_wk, rhs_mat%f_l)
+     &    iphys_base%i_magne, rhs_mat%fem_wk, rhs_mat%f_l)
 !
       call int_surf_magne_monitor                                       &
      &  (SGS_param, cmt_param, FEM_prm%npoint_t_evo_int,                &
-     &   iphys%diffusion%i_b_diffuse, iak_diff_uxb, ak_d_magne,         &
-     &   node, ele, surf, sf_grp, Asf_bcs, Bsf_bcs, iphys, nod_fld,     &
+     &   iphys_dif%i_b_diffuse, iak_diff_uxb, ak_d_magne,               &
+     &   node, ele, surf, sf_grp, Asf_bcs, Bsf_bcs,                     &
+     &   iphys_base, iphys_dif, iphys_SGS, nod_fld,                     &
      &   fem_int%jcs%g_FEM, fem_int%jcs%jac_sf_grp, fem_int%rhs_tbl,    &
      &   FEM_elens, diff_coefs, rhs_mat%fem_wk, rhs_mat%surf_wk,        &
      &   rhs_mat%f_l, rhs_mat%f_nl)
@@ -227,9 +251,9 @@
 !
       call cal_ff_2_vector(node%numnod, node%istack_nod_smp,            &
      &    rhs_mat%f_l%ff, fem_int%m_lump%ml, nod_fld%ntot_phys,         &
-     &    iphys%diffusion%i_b_diffuse, nod_fld%d_fld)
+     &    iphys_dif%i_b_diffuse, nod_fld%d_fld)
       call vector_send_recv                                             &
-     &   (iphys%diffusion%i_b_diffuse, nod_comm, nod_fld)
+     &   (iphys_dif%i_b_diffuse, nod_comm, nod_fld)
 !
       end subroutine cal_magnetic_diffusion
 !

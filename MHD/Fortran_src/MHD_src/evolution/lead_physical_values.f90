@@ -211,7 +211,8 @@
      &    mhd_fem_wk, rhs_mat, nod_fld, ele_fld)
 !
       call cal_true_sgs_terms_post                                      &
-     &   (SGS_par%filter_p, mesh%nod_comm, mesh%node, iphys,            &
+     &   (SGS_par%filter_p, mesh%nod_comm, mesh%node, iphys%div_forces, &
+     &    iphys%true_SGS, iphys%true_div_SGS, iphys%SGS_wk,             &
      &    filtering, FEM_SGS_wk%wk_filter, nod_fld)
 !
       call cal_work_4_forces                                            &

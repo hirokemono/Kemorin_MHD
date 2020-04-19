@@ -118,7 +118,7 @@
 !
       call cal_t_evo_4_vector_cd(FEM_prm%iflag_magne_supg,              &
      &    conduct%istack_ele_fld_smp, dt, FEM_prm,                      &
-     &    mlump_cd, nod_comm, node, ele, iphys_ele, ele_fld,            &
+     &    mlump_cd, nod_comm, node, ele, iphys_ele%base, ele_fld,       &
      &    fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,       &
      &    mhd_fem_wk%ff_m_smp, rhs_mat%fem_wk,                          &
      &    rhs_mat%f_l, rhs_mat%f_nl)

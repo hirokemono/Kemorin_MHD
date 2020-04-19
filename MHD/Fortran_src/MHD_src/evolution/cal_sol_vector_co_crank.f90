@@ -96,9 +96,9 @@
       if (iflag_debug.eq.1) write(*,*) 'cal_t_evo_4_vector_fl'
       call cal_t_evo_4_vector                                           &
      &   (FEM_prm%iflag_velo_supg, fluid%istack_ele_fld_smp, dt,        &
-     &    FEM_prm, mlump_fl, nod_comm, node, ele, iphys_ele, fld_ele,   &
-     &    g_FEM, jac_3d, rhs_tbl, mhd_fem_wk%ff_m_smp,                  &
-     &    fem_wk, f_l, f_nl)
+     &    FEM_prm, mlump_fl, nod_comm, node, ele,                       &
+     &    iphys_ele%base, fld_ele, g_FEM, jac_3d, rhs_tbl,              &
+     &    mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)
 !
       if (iflag_debug.eq.1) write(*,*) 'int_coriolis_nod_exp'
       call int_coriolis_nod_exp                                         &
@@ -149,8 +149,9 @@
       if (iflag_debug.eq.1)  write(*,*) 'cal_t_evo_4_vector'
       call cal_t_evo_4_vector(FEM_prm%iflag_magne_supg,                 &
      &    ele%istack_ele_smp, dt, FEM_prm, m_lump,                      &
-     &    nod_comm, node, ele, iphys_ele, fld_ele, g_FEM, jac_3d,       &
-     &    rhs_tbl, mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)
+     &    nod_comm, node, ele, iphys_ele%base, fld_ele,                 &
+     &    g_FEM, jac_3d, rhs_tbl, mhd_fem_wk%ff_m_smp,                  &
+     &    fem_wk, f_l, f_nl)
 !
       if (iflag_debug.eq.1)   write(*,*) 'set_boundary_magne_4_rhs'
       call delete_vector_ffs_on_bc(node, nod_bc_b, f_l, f_nl)
