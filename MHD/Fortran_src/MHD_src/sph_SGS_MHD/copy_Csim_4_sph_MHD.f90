@@ -7,17 +7,17 @@
 !>@brief  Evaluate nonlinear terms in spherical coordinate grid
 !!
 !!@verbatim
-!!      subroutine copy_Csim_buo_4_sph_trans                            &
-!!     &         (sph_rtp, sph_d_grp, ifld_sgs,  wk_sgs, trns_DYNS)
-!!      subroutine copy_model_coefs_4_sph_snap                          &
-!!     &         (sph_rtp, sph_d_grp, ifld_sgs,  wk_sgs, trns_snap)
+!!      subroutine copy_Csim_buo_4_sph_trans(sph_rtp, sph_d_grp,        &
+!!     &          ifld_sgs, f_trns_Csim, wk_sgs, fwd_Csim)
+!!      subroutine copy_model_coefs_4_sph_snap(sph_rtp, sph_d_grp,      &
+!!     &          ifld_sgs, f_trns_Csim, wk_sgs, fwd_Csim)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(sph_dynamic_model_group), intent(in) :: sph_d_grp
-!!        type(phys_address), intent(in) :: bg_trns, fg_trns
-!!        type(SGS_terms_address), intent(in) :: ifld_sgs, icomp_sgs
+!!        type(SGS_terms_address), intent(in) :: ifld_sgs
+!!        type(SGS_term_address), intent(in) :: f_trns_Csim
 !!        type(dynamic_model_data), intent(inout) :: wk_sgs
-!!        type(address_4_sph_trans), intent(inout) :: trns_DYNS
-!!        type(address_4_sph_trans), intent(inout) :: trns_SIMI
+!!        type(address_4_sph_trans), intent(inout) :: trns_snap
+!!        type(address_each_sph_trans), intent(inout) :: fwd_Csim
 !!@endverbatim
 !
       module copy_Csim_4_sph_MHD
@@ -30,8 +30,7 @@
       use m_phys_constants
 !
       use t_spheric_rtp_data
-      use t_phys_address
-      use t_addresses_sph_transform
+      use t_SGS_model_coef_labels
       use t_ele_info_4_dynamic
       use t_addresses_sph_transform
       use t_SGS_model_coefs
@@ -47,111 +46,111 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine copy_Csim_buo_4_sph_trans                              &
-     &         (sph_rtp, sph_d_grp, ifld_sgs,  wk_sgs, trns_DYNS)
+      subroutine copy_Csim_buo_4_sph_trans(sph_rtp, sph_d_grp,          &
+     &          ifld_sgs, f_trns_Csim, wk_sgs, fwd_Csim)
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_dynamic_model_group), intent(in) :: sph_d_grp
       type(SGS_terms_address), intent(in) :: ifld_sgs
+      type(SGS_term_address), intent(in) :: f_trns_Csim
 !
       type(dynamic_model_data), intent(inout) :: wk_sgs
-      type(address_4_sph_trans), intent(inout) :: trns_DYNS
+      type(address_each_sph_trans), intent(inout) :: fwd_Csim
 !
 !
       if(iflag_debug .gt. 0) then
         write(*,*) 'ifld_sgs%i_buoyancy',                               &
-     &        ifld_sgs%i_buoyancy, trns_DYNS%f_trns%Csim%i_SGS_buoyancy
+     &        ifld_sgs%i_buoyancy, f_trns_Csim%i_SGS_buoyancy
         write(*,*) 'ifld_sgs%i_comp_buoyancy',                          &
-     &        ifld_sgs%i_comp_buoyancy,                                 &
-     &        trns_DYNS%f_trns%Csim%i_SGS_comp_buo
+     &        ifld_sgs%i_comp_buoyancy, f_trns_Csim%i_SGS_comp_buo
       end if
 !
       if(ifld_sgs%i_buoyancy .gt. 0) then
         call set_model_coefs_sph_snap(sph_rtp, sph_d_grp,               &
-     &      trns_DYNS%f_trns%Csim%i_SGS_buoyancy,                       &
-     &      ifld_sgs%i_buoyancy, wk_sgs, trns_DYNS%forward)
+     &      f_trns_Csim%i_SGS_buoyancy, ifld_sgs%i_buoyancy,            &
+     &      wk_sgs, fwd_Csim)
       end if
 !
       if(ifld_sgs%i_comp_buoyancy .gt. 0) then
         call set_model_coefs_sph_snap(sph_rtp, sph_d_grp,               &
-     &      trns_DYNS%f_trns%Csim%i_SGS_comp_buo,                       &
-     &      ifld_sgs%i_comp_buoyancy, wk_sgs, trns_DYNS%forward)
+     &      f_trns_Csim%i_SGS_comp_buo, ifld_sgs%i_comp_buoyancy,       &
+     &      wk_sgs, fwd_Csim)
       end if
 !
       end subroutine copy_Csim_buo_4_sph_trans
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine copy_model_coefs_4_sph_snap                            &
-     &         (sph_rtp, sph_d_grp, ifld_sgs,  wk_sgs, trns_snap)
+      subroutine copy_model_coefs_4_sph_snap(sph_rtp, sph_d_grp,        &
+     &          ifld_sgs, f_trns_Csim, wk_sgs, fwd_Csim)
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_dynamic_model_group), intent(in) :: sph_d_grp
       type(SGS_terms_address), intent(in) :: ifld_sgs
+      type(SGS_term_address), intent(in) :: f_trns_Csim
 !
       type(dynamic_model_data), intent(inout) :: wk_sgs
-      type(address_4_sph_trans), intent(inout) :: trns_snap
+      type(address_each_sph_trans), intent(inout) :: fwd_Csim
 !
 !
       if(iflag_debug .gt. 0) then
         write(*,*) 'ifld_sgs%i_mom_flux',                               &
-     &        ifld_sgs%i_mom_flux, trns_snap%f_trns%Csim%i_SGS_m_flux
+     &        ifld_sgs%i_mom_flux, f_trns_Csim%i_SGS_m_flux
         write(*,*) 'ifld_sgs%i_lorentz',                                &
-     &        ifld_sgs%i_lorentz, trns_snap%f_trns%Csim%i_SGS_Lorentz
+     &        ifld_sgs%i_lorentz, f_trns_Csim%i_SGS_Lorentz
         write(*,*) 'ifld_sgs%i_induction', ifld_sgs%i_induction,        &
-     &        trns_snap%f_trns%Csim%i_SGS_vp_induct
+     &        f_trns_Csim%i_SGS_vp_induct
         write(*,*) 'ifld_sgs%i_heat_flux',                              &
-     &        ifld_sgs%i_heat_flux, trns_snap%f_trns%Csim%i_SGS_h_flux
+     &        ifld_sgs%i_heat_flux, f_trns_Csim%i_SGS_h_flux
         write(*,*) 'ifld_sgs%i_comp_flux',                              &
-     &        ifld_sgs%i_comp_flux, trns_snap%f_trns%Csim%i_SGS_c_flux
+     &        ifld_sgs%i_comp_flux, f_trns_Csim%i_SGS_c_flux
         write(*,*) 'ifld_sgs%i_buoyancy',                               &
-     &        ifld_sgs%i_buoyancy, trns_snap%f_trns%Csim%i_SGS_buoyancy
+     &        ifld_sgs%i_buoyancy, f_trns_Csim%i_SGS_buoyancy
         write(*,*) 'ifld_sgs%i_comp_buoyancy',                          &
-     &        ifld_sgs%i_comp_buoyancy,                                 &
-     &        trns_snap%f_trns%Csim%i_SGS_comp_buo
+     &        ifld_sgs%i_comp_buoyancy, f_trns_Csim%i_SGS_comp_buo
       end if
 !
       if(ifld_sgs%i_mom_flux .gt. 0) then
         call set_model_coefs_sph_snap(sph_rtp, sph_d_grp,               &
-     &      trns_snap%f_trns%Csim%i_SGS_m_flux, ifld_sgs%i_mom_flux,    &
-     &      wk_sgs, trns_snap%forward)
+     &      f_trns_Csim%i_SGS_m_flux, ifld_sgs%i_mom_flux,              &
+     &      wk_sgs, fwd_Csim)
       end if
 !
       if(ifld_sgs%i_lorentz .gt. 0) then
         call set_model_coefs_sph_snap(sph_rtp, sph_d_grp,               &
-     &      trns_snap%f_trns%Csim%i_SGS_Lorentz, ifld_sgs%i_lorentz,    &
-     &      wk_sgs, trns_snap%forward)
+     &      f_trns_Csim%i_SGS_Lorentz, ifld_sgs%i_lorentz,              &
+     &      wk_sgs, fwd_Csim)
       end if
 !
       if(ifld_sgs%i_induction .gt. 0) then
         call set_model_coefs_sph_snap(sph_rtp, sph_d_grp,               &
-     &     trns_snap%f_trns%Csim%i_SGS_vp_induct, ifld_sgs%i_induction, &
-     &     wk_sgs, trns_snap%forward)
+     &     f_trns_Csim%i_SGS_vp_induct, ifld_sgs%i_induction,           &
+     &     wk_sgs, fwd_Csim)
       end if
 !
       if(ifld_sgs%i_heat_flux .gt. 0) then
         call set_model_coefs_sph_snap(sph_rtp, sph_d_grp,               &
-     &      trns_snap%f_trns%Csim%i_SGS_h_flux, ifld_sgs%i_heat_flux,   &
-     &      wk_sgs, trns_snap%forward)
+     &      f_trns_Csim%i_SGS_h_flux, ifld_sgs%i_heat_flux,             &
+     &      wk_sgs, fwd_Csim)
       end if
 !
       if(ifld_sgs%i_comp_flux .gt. 0) then
         call set_model_coefs_sph_snap(sph_rtp, sph_d_grp,               &
-     &      trns_snap%f_trns%Csim%i_SGS_c_flux, ifld_sgs%i_comp_flux,   &
-     &      wk_sgs, trns_snap%forward)
+     &      f_trns_Csim%i_SGS_c_flux, ifld_sgs%i_comp_flux,             &
+     &      wk_sgs, fwd_Csim)
       end if
 !
 !
       if(ifld_sgs%i_buoyancy .gt. 0) then
         call set_model_coefs_sph_snap(sph_rtp, sph_d_grp,               &
-     &      trns_snap%f_trns%Csim%i_SGS_buoyancy,                       &
-     &      ifld_sgs%i_buoyancy, wk_sgs, trns_snap%forward)
+     &      f_trns_Csim%i_SGS_buoyancy, ifld_sgs%i_buoyancy,            &
+     &      wk_sgs, fwd_Csim)
       end if
 !
       if(ifld_sgs%i_comp_buoyancy .gt. 0) then
         call set_model_coefs_sph_snap(sph_rtp, sph_d_grp,               &
-     &      trns_snap%f_trns%Csim%i_SGS_comp_buo,                       &
-     &      ifld_sgs%i_comp_buoyancy, wk_sgs, trns_snap%forward)
+     &      f_trns_Csim%i_SGS_comp_buo, ifld_sgs%i_comp_buoyancy,       &
+     &      wk_sgs, fwd_Csim)
       end if
 !
       end subroutine copy_model_coefs_4_sph_snap

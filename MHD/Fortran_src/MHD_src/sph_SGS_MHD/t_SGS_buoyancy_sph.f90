@@ -17,20 +17,20 @@
 !!      subroutine cal_volume_4_SGS_buoyancy                            &
 !!     &         (sph_params, sph_rj, wk_sgs_buo)
 !!      subroutine sphere_averaged_SGS_buoyancy                         &
-!!     &         (sph_rj, sph_rtp, ipol, rj_fld, trns_SGS, wk_sgs_buo)
+!!     &         (sph_rj, sph_rtp, ipol_Csim, rj_fld, wk_sgs_buo)
 !!      subroutine volume_averaged_SGS_buoyancy                         &
-!!     &         (sph_params, sph_rj, ipol, rj_fld, wk_sgs_buo)
+!!     &         (sph_params, sph_rj, ipol_Csim, rj_fld, wk_sgs_buo)
 !!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
-!!        type(phys_address), intent(in) :: ipol
+!!        type(SGS_term_address), intent(in) :: ipol_Csim
 !!        type(phys_data), intent(inout) :: rj_fld
 !!        type(address_4_sph_trans), intent(inout) :: trns_SGS
 !!        type(work_4_sph_SGS_buoyancy), intent(inout) :: wk_sgs_buo
 !!
 !!      subroutine magnify_sph_ave_SGS_buoyancy                         &
 !!     &         (sph_rtp, ifld_sgs, wk_sgs_buo, fg_trns, trns_f_SGS)
-!!      subroutine magnify_vol_ave_SGS_buoyancy(sph_rtp, ifld_sgs,     &
+!!      subroutine magnify_vol_ave_SGS_buoyancy(sph_rtp, ifld_sgs,      &
 !!     &          wk_sgs_buo, fg_trns, trns_f_SGS)
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
@@ -51,7 +51,7 @@
       use t_spheric_parameter
       use t_spheric_rj_data
       use t_spheric_rtp_data
-      use t_phys_address
+      use t_SGS_model_coef_labels
       use t_phys_data
       use t_addresses_sph_transform
 !
@@ -131,7 +131,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine sphere_averaged_SGS_buoyancy                           &
-     &         (sph_rj, sph_rtp, ipol, rj_fld, wk_sgs_buo)
+     &         (sph_rj, sph_rtp, ipol_Csim, rj_fld, wk_sgs_buo)
 !
       use t_rms_4_sph_spectr
       use t_spheric_parameter
@@ -142,7 +142,7 @@
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(sph_rtp_grid), intent(in) :: sph_rtp
-      type(phys_address), intent(in) :: ipol
+      type(SGS_term_address), intent(in) :: ipol_Csim
 !
       type(phys_data), intent(inout) :: rj_fld
       type(work_4_sph_SGS_buoyancy), intent(inout) :: wk_sgs_buo
@@ -155,17 +155,17 @@
       wk_sgs_buo%Cbuo_ave_sph_gl(0:sph_rj%nidx_rj(1),1:2) = 0.0d0
       if(sph_rj%idx_rj_degree_zero .gt. izero) then
 !
-        if(ipol%Csim%i_SGS_buoyancy .gt. 0) then
+        if(ipol_Csim%i_SGS_buoyancy .gt. 0) then
           call ave_one_scalar_sph_spectr                                &
-     &       (ipol%Csim%i_SGS_buoyancy, sph_rj%nidx_rj,                 &
+     &       (ipol_Csim%i_SGS_buoyancy, sph_rj%nidx_rj,                 &
      &        sph_rj%idx_rj_degree_zero, sph_rj%inod_rj_center,         &
      &        rj_fld, sph_rj%radius_1d_rj_r, sph_rj%nidx_rj(1),         &
      &        itwo, ione, wk_sgs_buo%Cbuo_ave_sph_lc)
         end if
 !
-        if(ipol%Csim%i_SGS_comp_buo .gt. 0) then
+        if(ipol_Csim%i_SGS_comp_buo .gt. 0) then
           call ave_one_scalar_sph_spectr                                &
-     &       (ipol%Csim%i_SGS_comp_buo, sph_rj%nidx_rj,                 &
+     &       (ipol_Csim%i_SGS_comp_buo, sph_rj%nidx_rj,                 &
      &        sph_rj%idx_rj_degree_zero, sph_rj%inod_rj_center,         &
      &        rj_fld, sph_rj%radius_1d_rj_r, sph_rj%nidx_rj(1),         &
      &        itwo, itwo, wk_sgs_buo%Cbuo_ave_sph_lc)
@@ -190,7 +190,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine volume_averaged_SGS_buoyancy                           &
-     &         (sph_params, sph_rj, ipol, rj_fld, wk_sgs_buo)
+     &         (sph_params, sph_rj, ipol_Csim, rj_fld, wk_sgs_buo)
 !
       use t_rms_4_sph_spectr
       use t_spheric_parameter
@@ -201,7 +201,7 @@
 !
       type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rj_grid), intent(in) :: sph_rj
-      type(phys_address), intent(in) :: ipol
+      type(SGS_term_address), intent(in) :: ipol_Csim
 !
       type(phys_data), intent(inout) :: rj_fld
       type(work_4_sph_SGS_buoyancy), intent(inout) :: wk_sgs_buo
@@ -212,19 +212,19 @@
       if(sph_rj%idx_rj_degree_zero .gt. izero) then
         wk_sgs_buo%Cbuo_ave_sph_lc(1:sph_rj%nidx_rj(1),1:2) = 0.0d0
 !
-        if(ipol%Csim%i_SGS_buoyancy .gt. 0) then
+        if(ipol_Csim%i_SGS_buoyancy .gt. 0) then
 !          write(*,*) 'ave_one_scalar_sph_spectr thermnal'
           call ave_one_scalar_sph_spectr                                &
-     &       (ipol%Csim%i_SGS_buoyancy, sph_rj%nidx_rj,                 &
+     &       (ipol_Csim%i_SGS_buoyancy, sph_rj%nidx_rj,                 &
      &        sph_rj%idx_rj_degree_zero, sph_rj%inod_rj_center,         &
      &        rj_fld, sph_rj%radius_1d_rj_r,  sph_rj%nidx_rj(1),        &
      &        itwo, ione, wk_sgs_buo%Cbuo_ave_sph_lc)
         end if
 !
-        if(ipol%Csim%i_SGS_comp_buo .gt. 0) then
+        if(ipol_Csim%i_SGS_comp_buo .gt. 0) then
 !          write(*,*) 'ave_one_scalar_sph_spectr composition'
           call ave_one_scalar_sph_spectr                                &
-     &       (ipol%Csim%i_SGS_comp_buo, sph_rj%nidx_rj,                 &
+     &       (ipol_Csim%i_SGS_comp_buo, sph_rj%nidx_rj,                 &
      &        sph_rj%idx_rj_degree_zero, sph_rj%inod_rj_center,         &
      &        rj_fld, sph_rj%radius_1d_rj_r,  sph_rj%nidx_rj(1),        &
      &        itwo, itwo, wk_sgs_buo%Cbuo_ave_sph_lc)

@@ -157,8 +157,9 @@
 !
         if(iflag_debug.ge.1) write(*,*) 'copy_model_coefs_4_sph_snap'
         call copy_model_coefs_4_sph_snap                                &
-     &    (sph%sph_rtp, dynamic_SPH%sph_d_grp, dynamic_SPH%ifld_sgs,    &
-     &     dynamic_SPH%wk_sgs, WK%trns_Csim)
+     &     (sph%sph_rtp, dynamic_SPH%sph_d_grp,                         &
+     &      dynamic_SPH%ifld_sgs, WK%trns_Csim%f_trns%Csim,             &
+     &      dynamic_SPH%wk_sgs, WK%trns_Csim%forward)
 !
         if(iflag_SMHD_time)                                             &
      &         call start_elapsed_time(ist_elapsed_SMHD+11)

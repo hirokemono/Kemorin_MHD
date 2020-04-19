@@ -77,7 +77,7 @@
           if (iflag_debug.eq.1) write(*,*)                              &
      &                      'sphere_averaged_SGS_buoyancy'
           call sphere_averaged_SGS_buoyancy(sph%sph_rj, sph%sph_rtp,    &
-     &        ipol, rj_fld, dynamic_SPH%wk_sgs_buo)
+     &        ipol%Csim, rj_fld, dynamic_SPH%wk_sgs_buo)
         end if
 !
 !        if(iflag_debug.eq.1) write(*,*)                                &
@@ -91,7 +91,7 @@
           if (iflag_debug.eq.1) write(*,*)                              &
      &                     'volume_averaged_SGS_buoyancy'
           call volume_averaged_SGS_buoyancy(sph%sph_params,             &
-     &        sph%sph_rj, ipol, rj_fld, dynamic_SPH%wk_sgs_buo)
+     &        sph%sph_rj, ipol%Csim, rj_fld, dynamic_SPH%wk_sgs_buo)
         end if
 !
 !        if(iflag_debug.eq.1) write(*,*)                                &
