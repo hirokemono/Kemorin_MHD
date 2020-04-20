@@ -299,8 +299,8 @@
       if (ht_prop%iflag_scheme .gt. id_no_evolution) then
         if(SGS_param%iflag_SGS .ne. id_SGS_none                        &
      &      .and. cmt_param%iflag_c_temp .eq. id_SGS_commute_ON) then
-            icomp_diff%i_temp = id
-            ifld_diff%i_temp = jd
+            icomp_diff%base%i_temp = id
+            ifld_diff%base%i_temp = jd
             wk_diff%name(jd) = temperature%name
             diff_coefs%num_comps(jd) = 3
             id = id + diff_coefs%num_comps(jd)
@@ -409,11 +409,11 @@
      &             trim(wk_diff%name(ifld_diff%SGS_term%i_SGS_induction))
         end if
 !
-        if(ifld_diff%i_temp .gt. 0) then
+        if(ifld_diff%base%i_temp .gt. 0) then
           write(*,*) 'iak_diff_t',                                      &
-     &             ifld_diff%i_temp, icomp_diff%i_temp,                 &
-     &             diff_coefs%num_comps(ifld_diff%i_temp),              &
-     &             trim(wk_diff%name(ifld_diff%i_temp))
+     &             ifld_diff%base%i_temp, icomp_diff%base%i_temp,                 &
+     &             diff_coefs%num_comps(ifld_diff%base%i_temp),              &
+     &             trim(wk_diff%name(ifld_diff%base%i_temp))
         end if
         if(ifld_diff%base%i_velo .gt. 0) then
           write(*,*) 'iak_diff_v', ifld_diff%base%i_velo, icomp_diff%base%i_velo, &

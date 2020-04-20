@@ -245,7 +245,7 @@
       end if
 !
         call update_with_temperature                                    &
-     &     (ifld_diff%i_temp, icomp_diff%i_temp,                        &
+     &     (ifld_diff%base%i_temp, icomp_diff%base%i_temp,                   &
      &      time_d%i_time_step, time_d%dt, FEM_prm, SGS_par,            &
      &      fem%mesh, fem%group, MHD_mesh%fluid,                        &
      &      surf_bcs%Tsf_bcs, iphys, SGS_MHD_wk%iphys_ele,              &
@@ -380,7 +380,7 @@
 !
       if(iphys%base%i_temp .ne. 0) then
         call update_with_temperature                                    &
-     &     (ifld_diff%i_temp, icomp_diff%i_temp, time_d%i_time_step,    &
+     &     (ifld_diff%base%i_temp, icomp_diff%base%i_temp, time_d%i_time_step,    &
      &      time_d%dt, FEM_prm, SGS_par, fem%mesh, fem%group,           &
      &      MHD_mesh%fluid, surf_bcs%Tsf_bcs, iphys,                    &
      &      SGS_MHD_wk%iphys_ele, SGS_MHD_wk%ele_fld,                   &
@@ -519,7 +519,7 @@
         end if
 !
         call update_with_temperature                                    &
-     &     (ifld_diff%i_temp, icomp_diff%i_temp,                        &
+     &     (ifld_diff%base%i_temp, icomp_diff%base%i_temp,                   &
      &      time_d%i_time_step, time_d%dt, FEM_prm, SGS_par,            &
      &      fem%mesh, fem%group, fluid, surf_bcs%Tsf_bcs,               &
      &      iphys, SGS_MHD_wk%iphys_ele, SGS_MHD_wk%ele_fld,            &

@@ -181,7 +181,7 @@
       if (ht_prop%iflag_scheme .ge. id_Crank_nicolson) then
         call choose_int_diffuse1_crank_mat(mesh%ele, g_FEM, jac_3d,     &
      &      rhs_tbl, MG_mat_fl_q, FEM_elens, num_int,                   &
-     &      diff_coefs%num_field, ifld_diff%i_temp, diff_coefs%ak,      &
+     &      diff_coefs%num_field, ifld_diff%base%i_temp, diff_coefs%ak, &
      &      dt, ht_prop%coef_imp, ak_MHD%ak_d_temp, ifilter_final,      &
      &      fem_wk, mat_temp)
       end if

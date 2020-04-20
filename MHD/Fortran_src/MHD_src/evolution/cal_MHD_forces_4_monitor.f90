@@ -354,7 +354,7 @@
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &             write(*,*) 'lead  ', trim(thermal_diffusion%name)
         call cal_thermal_diffusion(iphys%diffusion%i_t_diffuse,         &
-     &      iphys%base%i_temp, ifld_diff%i_temp,                        &
+     &      iphys%base%i_temp, ifld_diff%base%i_temp,                   &
      &      ak_MHD%ak_d_temp, FEM_prm%npoint_t_evo_int,                 &
      &      SGS_par%model_p, nod_comm, node, ele, surf, fluid, sf_grp,  &
      &      nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs, fem_int, FEM_elens,     &
