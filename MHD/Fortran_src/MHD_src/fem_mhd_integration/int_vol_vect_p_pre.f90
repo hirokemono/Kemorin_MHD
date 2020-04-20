@@ -10,17 +10,18 @@
 !!
 !!@verbatim
 !!      subroutine int_vol_vect_p_pre_ele                               &
-!!     &         (num_int, node, ele, conduct, cd_prop, iphys, nod_fld, &
-!!     &          ncomp_ele, iele_magne, d_ele,                         &
+!!     &         (num_int, node, ele, conduct, cd_prop,                 &
+!!     &          iphys_base, nod_fld, ncomp_ele, iphys_ele_base, d_ele,&
 !!     &          g_FEM, jac_3d, rhs_tbl, mhd_fem_wk, fem_wk, f_nl)
 !!      subroutine int_vol_vect_p_pre_ele_upm                           &
 !!     &         (num_int, dt, node, ele, conduct, cd_prop,             &
-!!     &          iphys, nod_fld, ncomp_ele, iele_magne, d_ele,         &
+!!     &          iphys_base, nod_fld, ncomp_ele, iphys_ele_base, d_ele,&
 !!     &          g_FEM, jac_3d, rhs_tbl, mhd_fem_wk, fem_wk, f_nl)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
-!!        type(phys_address), intent(in) :: iphys
+!!        type(base_field_address), intent(in) :: iphys_base
 !!        type(phys_data), intent(in) :: nod_fld
+!!        type(base_field_address), intent(in) :: iphys_ele_base
 !!        type(field_geometry_data), intent(in) :: conduct
 !!        type(conductive_property), intent(in) :: cd_prop
 !!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
@@ -42,7 +43,7 @@
       use t_geometry_data_MHD
       use t_geometry_data
       use t_phys_data
-      use t_phys_address
+      use t_base_field_labels
       use t_fem_gauss_int_coefs
       use t_jacobians
       use t_jacobian_3d
@@ -60,8 +61,8 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_vol_vect_p_pre_ele                                 &
-     &         (num_int, node, ele, conduct, cd_prop, iphys, nod_fld,   &
-     &          ncomp_ele, iele_magne, d_ele,                           &
+     &         (num_int, node, ele, conduct, cd_prop,                   &
+     &          iphys_base, nod_fld, ncomp_ele, iphys_ele_base, d_ele,  &
      &          g_FEM, jac_3d, rhs_tbl, mhd_fem_wk, fem_wk, f_nl)
 !
       use cal_add_smp
@@ -71,8 +72,9 @@
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
-      type(phys_address), intent(in) :: iphys
+      type(base_field_address), intent(in) :: iphys_base
       type(phys_data), intent(in) :: nod_fld
+      type(base_field_address), intent(in) :: iphys_ele_base
       type(field_geometry_data), intent(in) :: conduct
       type(conductive_property), intent(in) :: cd_prop
       type(FEM_gauss_int_coefs), intent(in) :: g_FEM
@@ -80,7 +82,7 @@
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !
       integer(kind = kint), intent(in) :: num_int
-      integer(kind = kint), intent(in) :: ncomp_ele, iele_magne
+      integer(kind = kint), intent(in) :: ncomp_ele
       real(kind = kreal), intent(in) :: d_ele(ele%numele,ncomp_ele)
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -94,14 +96,15 @@
 !
 !   include external magnetic field
 !$omp parallel
-      call add_const_to_vector_smp(ele%numele, d_ele(1,iele_magne),     &
+      call add_const_to_vector_smp                                      &
+     &   (ele%numele, d_ele(1,iphys_ele_base%i_magne),                  &
      &    cd_prop%ex_magne, fem_wk%vector_1)
 !$omp end parallel
 !
 ! -------- loop for shape function for the phsical values
       do k2 = 1, ele%nnod_4_ele
         call vector_cst_phys_2_each_ele(node, ele, nod_fld, k2,         &
-     &      iphys%base%i_velo, cd_prop%coef_induct, mhd_fem_wk%velo_1)
+     &      iphys_base%i_velo, cd_prop%coef_induct, mhd_fem_wk%velo_1)
 !
         call fem_skv_rot_inertia                                        &
      &     (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,                 &
@@ -121,7 +124,7 @@
 !
       subroutine int_vol_vect_p_pre_ele_upm                             &
      &         (num_int, dt, node, ele, conduct, cd_prop,               &
-     &          iphys, nod_fld, ncomp_ele, iele_magne, d_ele,           &
+     &          iphys_base, nod_fld, ncomp_ele, iphys_ele_base, d_ele,  &
      &          g_FEM, jac_3d, rhs_tbl, mhd_fem_wk, fem_wk, f_nl)
 !
       use cal_add_smp
@@ -131,8 +134,9 @@
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
-      type(phys_address), intent(in) :: iphys
+      type(base_field_address), intent(in) :: iphys_base
       type(phys_data), intent(in) :: nod_fld
+      type(base_field_address), intent(in) :: iphys_ele_base
       type(field_geometry_data), intent(in) :: conduct
       type(conductive_property), intent(in) :: cd_prop
       type(FEM_gauss_int_coefs), intent(in) :: g_FEM
@@ -140,7 +144,7 @@
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !
       integer(kind = kint), intent(in) :: num_int
-      integer(kind = kint), intent(in) :: ncomp_ele, iele_magne
+      integer(kind = kint), intent(in) :: ncomp_ele
       real(kind = kreal), intent(in) :: d_ele(ele%numele,ncomp_ele)
       real(kind = kreal), intent(in) :: dt
 !
@@ -154,18 +158,20 @@
       call reset_sk6(n_vector, ele, fem_wk%sk6)
 !
 !$omp parallel
-      call add_const_to_vector_smp(ele%numele, d_ele(1,iele_magne),     &
+      call add_const_to_vector_smp                                      &
+     &   (ele%numele, d_ele(1,iphys_ele_base%i_magne),                  &
      &    cd_prop%ex_magne, fem_wk%vector_1)
 !$omp end parallel
 !
 ! -------- loop for shape function for the phsical values
       do k2 = 1, ele%nnod_4_ele
         call vector_cst_phys_2_each_ele(node, ele, nod_fld, k2,         &
-     &      iphys%base%i_velo, cd_prop%coef_induct, mhd_fem_wk%velo_1)
+     &      iphys_base%i_velo, cd_prop%coef_induct, mhd_fem_wk%velo_1)
 !
         call fem_skv_rot_inertia_upwind(conduct%istack_ele_fld_smp,     &
      &      num_int, k2, dt, mhd_fem_wk%velo_1, fem_wk%vector_1,        &
-     &      d_ele(1,iele_magne), ele, g_FEM, jac_3d, fem_wk%sk6)
+     &      d_ele(1,iphys_ele_base%i_magne), ele, g_FEM, jac_3d,        &
+     &      fem_wk%sk6)
       end do
 !
       call sub3_skv_to_ff_v_smp(node, ele, rhs_tbl,                     &

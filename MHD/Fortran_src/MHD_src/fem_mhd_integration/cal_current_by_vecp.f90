@@ -10,23 +10,23 @@
 !!@verbatim
 !!      subroutine int_current_diffuse                                  &
 !!     &         (FEM_prm, nod_comm, node, ele, surf, sf_grp, Asf_bcs,  &
-!!     &          iphys, jacs, rhs_tbl, m_lump, mhd_fem_wk,             &
+!!     &          iphys_base, jacs, rhs_tbl, m_lump, mhd_fem_wk,        &
 !!     &          fem_wk, surf_wk, f_l, f_nl, nod_fld)
 !!
 !!      subroutine int_surf_temp_diffuse(FEM_prm, node, ele, surf,      &
-!!     &          sf_grp, Tsf_bcs, iphys, nod_fld, jacs, rhs_tbl,       &
+!!     &          sf_grp, Tsf_bcs, iphys_base, nod_fld, jacs, rhs_tbl,  &
 !!     &          ak_d_temp, fem_wk, surf_wk, f_l)
 !!      subroutine int_surf_velo_diffuse(FEM_prm, node, ele, surf,      &
-!!     &          sf_grp, Vsf_bcs, iphys, nod_fld, jacs, rhs_tbl,       &
+!!     &          sf_grp, Vsf_bcs, iphys_base, nod_fld, jacs, rhs_tbl,  &
 !!     &          ak_d_velo, fem_wk, surf_wk, f_l)
 !!      subroutine int_surf_vector_p_diffuse(FEM_prm, node, ele, surf,  &
-!!     &          sf_grp, Asf_bcs, iphys, nod_fld, jacs, rhs_tbl,       &
+!!     &          sf_grp, Asf_bcs, iphys_base, nod_fld, jacs, rhs_tbl,  &
 !!     &          ak_d_magne, fem_wk, surf_wk, f_l)
 !!      subroutine int_surf_magne_diffuse(FEM_prm, node, ele, surf,     &
-!!     &          sf_grp, Bsf_bcs, iphys, nod_fld, jacs, rhs_tbl,       &
+!!     &          sf_grp, Bsf_bcs, iphys_base, nod_fld, jacs, rhs_tbl,  &
 !!     &          ak_d_magne, fem_wk, surf_wk, f_l)
 !!      subroutine int_surf_composit_diffuse(FEM_prm, node, ele, surf,  &
-!!     &          sf_grp, Csf_bcs, iphys, nod_fld, jacs, rhs_tbl,       &
+!!     &          sf_grp, Csf_bcs, iphys_base, nod_fld, jacs, rhs_tbl,  &
 !!     &          ak_d_composit, fem_wk, surf_wk, f_l)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(communication_table), intent(in) :: nod_comm
@@ -39,7 +39,7 @@
 !!        type(vector_surf_bc_type), intent(in) :: Bsf_bcs
 !!        type(scaler_surf_bc_type), intent(in) :: Tsf_bcs
 !!        type(scaler_surf_bc_type), intent(in) :: Csf_bcs
-!!        type(phys_address), intent(in) :: iphys
+!!        type(base_field_address), intent(in) :: iphys_base
 !!        type(jacobians_type), intent(in) :: jacs
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(lumped_mass_matrices), intent(in) :: m_lump
@@ -59,7 +59,7 @@
       use t_geometry_data
       use t_surface_data
       use t_group_data
-      use t_phys_address
+      use t_base_field_labels
       use t_phys_data
       use t_jacobians
       use t_table_FEM_const
@@ -85,7 +85,7 @@
 !
       subroutine int_current_diffuse                                    &
      &         (FEM_prm, nod_comm, node, ele, surf, sf_grp, Asf_bcs,    &
-     &          iphys, jacs, rhs_tbl, m_lump, mhd_fem_wk,               &
+     &          iphys_base, jacs, rhs_tbl, m_lump, mhd_fem_wk,          &
      &          fem_wk, surf_wk, f_l, f_nl, nod_fld)
 !
       use cal_multi_pass
@@ -101,7 +101,7 @@
       type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
       type(velocity_surf_bc_type), intent(in) :: Asf_bcs
-      type(phys_address), intent(in) :: iphys
+      type(base_field_address), intent(in) :: iphys_base
       type(jacobians_type), intent(in) :: jacs
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(lumped_mass_matrices), intent(in) :: m_lump
@@ -116,7 +116,7 @@
 !  Volume integration
 !
       call int_vol_current_diffuse                                      &
-     &   (iphys%base%i_vecp, FEM_prm%npoint_poisson_int,                &
+     &   (iphys_base%i_vecp, FEM_prm%npoint_poisson_int,                &
      &    node, ele, nod_fld, jacs%g_FEM, jacs%jac_3d, rhs_tbl,         &
      &    fem_wk, f_nl)
 !
@@ -124,7 +124,7 @@
 !
       call int_surf_current_diffuse(node, ele, surf, sf_grp, nod_fld,   &
      &    jacs%g_FEM, jacs%jac_sf_grp, rhs_tbl, Asf_bcs%torque_lead,    &
-     &    FEM_prm%npoint_t_evo_int, iphys%base%i_vecp,                  &
+     &    FEM_prm%npoint_t_evo_int, iphys_base%i_vecp,                  &
      &    fem_wk, surf_wk, f_l)
 !
       call cal_multi_pass_4_vector_ff                                   &
@@ -133,11 +133,11 @@
      &    fem_wk, f_l, f_nl)
       call cal_ff_2_vector(node%numnod, node%istack_nod_smp,            &
      &    f_l%ff, m_lump%ml, nod_fld%ntot_phys,                         &
-     &    iphys%base%i_current, nod_fld%d_fld)
+     &    iphys_base%i_current, nod_fld%d_fld)
 !
 !    communication
 !
-      call vector_send_recv(iphys%base%i_current, nod_comm, nod_fld)
+      call vector_send_recv(iphys_base%i_current, nod_comm, nod_fld)
 !
       end subroutine int_current_diffuse
 !
@@ -189,7 +189,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_surf_temp_diffuse(FEM_prm, node, ele, surf,        &
-     &          sf_grp, Tsf_bcs, iphys, nod_fld, jacs, rhs_tbl,         &
+     &          sf_grp, Tsf_bcs, iphys_base, nod_fld, jacs, rhs_tbl,    &
      &          ak_d_temp, fem_wk, surf_wk, f_l)
 !
       use t_surface_bc_scalar
@@ -200,7 +200,7 @@
       type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
       type(scaler_surf_bc_type), intent(in) :: Tsf_bcs
-      type(phys_address), intent(in) :: iphys
+      type(base_field_address), intent(in) :: iphys_base
       type(phys_data),    intent(in) :: nod_fld
       type(jacobians_type), intent(in) :: jacs
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
@@ -215,14 +215,14 @@
       call int_surf_diffuse_term(node, ele, surf, sf_grp,               &
      &    nod_fld, jacs%g_FEM, jacs%jac_sf_grp, rhs_tbl,                &
      &    Tsf_bcs%flux_lead, FEM_prm%npoint_t_evo_int,                  &
-     &    ak_d_temp, iphys%base%i_temp, fem_wk, surf_wk, f_l)
+     &    ak_d_temp, iphys_base%i_temp, fem_wk, surf_wk, f_l)
 !
       end subroutine int_surf_temp_diffuse
 !
 !-----------------------------------------------------------------------
 !
       subroutine int_surf_velo_diffuse(FEM_prm, node, ele, surf,        &
-     &          sf_grp, Vsf_bcs, iphys, nod_fld, jacs, rhs_tbl,         &
+     &          sf_grp, Vsf_bcs, iphys_base, nod_fld, jacs, rhs_tbl,    &
      &          ak_d_velo, fem_wk, surf_wk, f_l)
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
@@ -231,7 +231,7 @@
       type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
       type(velocity_surf_bc_type), intent(in)  :: Vsf_bcs
-      type(phys_address), intent(in) :: iphys
+      type(base_field_address), intent(in) :: iphys_base
       type(phys_data),    intent(in) :: nod_fld
       type(jacobians_type), intent(in) :: jacs
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
@@ -246,14 +246,14 @@
       call int_surf_vect_diffuse_term(node, ele, surf, sf_grp,          &
      &    jacs%g_FEM, jacs%jac_sf_grp, nod_fld, rhs_tbl,                &
      &    Vsf_bcs%torque_lead, FEM_prm%npoint_t_evo_int,                &
-     &    ak_d_velo, iphys%base%i_velo, fem_wk, surf_wk, f_l)
+     &    ak_d_velo, iphys_base%i_velo, fem_wk, surf_wk, f_l)
 !
       end subroutine int_surf_velo_diffuse
 !
 !-----------------------------------------------------------------------
 !
       subroutine int_surf_vector_p_diffuse(FEM_prm, node, ele, surf,    &
-     &          sf_grp, Asf_bcs, iphys, nod_fld, jacs, rhs_tbl,         &
+     &          sf_grp, Asf_bcs, iphys_base, nod_fld, jacs, rhs_tbl,    &
      &          ak_d_magne, fem_wk, surf_wk, f_l)
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
@@ -262,7 +262,7 @@
       type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
       type(velocity_surf_bc_type), intent(in) :: Asf_bcs
-      type(phys_address), intent(in) :: iphys
+      type(base_field_address), intent(in) :: iphys_base
       type(phys_data),    intent(in) :: nod_fld
       type(jacobians_type), intent(in) :: jacs
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
@@ -277,14 +277,14 @@
       call int_surf_vect_diffuse_term(node, ele, surf, sf_grp,          &
      &    jacs%g_FEM, jacs%jac_sf_grp, nod_fld, rhs_tbl,                &
      &    Asf_bcs%torque_lead, FEM_prm%npoint_t_evo_int, ak_d_magne,    &
-     &    iphys%base%i_vecp, fem_wk, surf_wk, f_l)
+     &    iphys_base%i_vecp, fem_wk, surf_wk, f_l)
 !
       end subroutine int_surf_vector_p_diffuse
 !
 !-----------------------------------------------------------------------
 !
       subroutine int_surf_magne_diffuse(FEM_prm, node, ele, surf,       &
-     &          sf_grp, Bsf_bcs, iphys, nod_fld, jacs, rhs_tbl,         &
+     &          sf_grp, Bsf_bcs, iphys_base, nod_fld, jacs, rhs_tbl,    &
      &          ak_d_magne, fem_wk, surf_wk, f_l)
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
@@ -293,7 +293,7 @@
       type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
       type(vector_surf_bc_type), intent(in) :: Bsf_bcs
-      type(phys_address), intent(in) :: iphys
+      type(base_field_address), intent(in) :: iphys_base
       type(phys_data),    intent(in) :: nod_fld
       type(jacobians_type), intent(in) :: jacs
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
@@ -308,14 +308,14 @@
       call int_surf_vect_diffuse_term(node, ele, surf, sf_grp,          &
      &    jacs%g_FEM, jacs%jac_sf_grp, nod_fld, rhs_tbl,                &
      &    Bsf_bcs%torque_lead, FEM_prm%npoint_t_evo_int,                &
-     &    ak_d_magne, iphys%base%i_magne, fem_wk, surf_wk, f_l)
+     &    ak_d_magne, iphys_base%i_magne, fem_wk, surf_wk, f_l)
 !
       end subroutine int_surf_magne_diffuse
 !
 !-----------------------------------------------------------------------
 !
       subroutine int_surf_composit_diffuse(FEM_prm, node, ele, surf,    &
-     &          sf_grp, Csf_bcs, iphys, nod_fld, jacs, rhs_tbl,         &
+     &          sf_grp, Csf_bcs, iphys_base, nod_fld, jacs, rhs_tbl,    &
      &          ak_d_composit, fem_wk, surf_wk, f_l)
 !
       use t_surface_bc_scalar
@@ -326,7 +326,7 @@
       type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
       type(scaler_surf_bc_type), intent(in) :: Csf_bcs
-      type(phys_address), intent(in) :: iphys
+      type(base_field_address), intent(in) :: iphys_base
       type(phys_data),    intent(in) :: nod_fld
       type(jacobians_type), intent(in) :: jacs
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
@@ -340,7 +340,7 @@
 !
       call int_surf_diffuse_term(node, ele, surf, sf_grp, nod_fld,      &
      &    jacs%g_FEM, jacs%jac_sf_grp, rhs_tbl, Csf_bcs%flux_lead,      &
-     &    FEM_prm%npoint_t_evo_int, ak_d_composit, iphys%base%i_light,  &
+     &    FEM_prm%npoint_t_evo_int, ak_d_composit, iphys_base%i_light,  &
      &    fem_wk, surf_wk, f_l)
 !
       end subroutine int_surf_composit_diffuse

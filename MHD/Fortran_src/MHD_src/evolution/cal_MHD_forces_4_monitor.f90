@@ -307,14 +307,13 @@
           if(iflag_debug .ge. iflag_routine_msg)                        &
      &             write(*,*) 'lead  ', trim(nod_fld%phys_name(i))
           call cal_terms_4_momentum                                     &
-     &       (i_fld, ifld_diff%base%i_velo, ifld_diff%SGS_term%i_SGS_Lorentz, dt,         &
-     &        FEM_prm, SGS_par%model_p, SGS_par%commute_p, nod_comm,    &
-     &        node, ele, surf, sf_grp, fluid, fl_prop, cd_prop,         &
-     &        surf_bcs%Vsf_bcs, surf_bcs%Bsf_bcs, iphys%base,           &
-     &        iphys%forces, iphys%div_forces, iphys%diffusion,          &
-     &        iphys%filter_fld, iphys%force_by_filter, iphys%SGS_term,  &
-     &        iphys%div_SGS, iphys_ele%base,                            &
-     &        ak_MHD, fem_int, FEM_elens, diff_coefs,                   &
+     &       (i_fld, dt, FEM_prm, SGS_par%model_p, SGS_par%commute_p,   &
+     &        nod_comm, node, ele, surf, sf_grp, fluid,                 &
+     &        fl_prop, cd_prop, surf_bcs%Vsf_bcs, surf_bcs%Bsf_bcs,     &
+     &        iphys%base, iphys%forces, iphys%div_forces,               &
+     &        iphys%diffusion, iphys%filter_fld, iphys%force_by_filter, &
+     &        iphys%SGS_term, iphys%div_SGS, iphys_ele%base,            &
+     &        ak_MHD, fem_int, FEM_elens, ifld_diff, diff_coefs,        &
      &        mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat, nod_fld, ele_fld)
         end if
       end do
@@ -327,15 +326,14 @@
      &      .and. cd_prop%iflag_Bevo_scheme.gt.id_no_evolution)) then
           if(iflag_debug .ge. iflag_routine_msg)                        &
      &             write(*,*) 'lead  ', trim(nod_fld%phys_name(i))
-          call cal_terms_4_magnetic                                     &
-     &       (i_fld, ifld_diff%SGS_term%i_SGS_induction, ak_MHD%ak_d_magne, dt,      &
+          call cal_terms_4_magnetic(i_fld, ak_MHD%ak_d_magne, dt,       &
      &        FEM_prm, SGS_par%model_p, SGS_par%commute_p,              &
      &        nod_comm, node, ele, surf, conduct, sf_grp, cd_prop,      &
      &        nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs, surf_bcs%Bsf_bcs,     &
      &        iphys%base, iphys%forces, iphys%div_forces,               &
      &        iphys%diffusion, iphys%SGS_term, iphys_ele%base, ele_fld, &
-     &        fem_int, FEM_elens, diff_coefs, mk_MHD%mlump_cd,          &
-     &        mhd_fem_wk, rhs_mat, nod_fld)
+     &        fem_int, FEM_elens, ifld_diff, diff_coefs,                &
+     &        mk_MHD%mlump_cd, mhd_fem_wk, rhs_mat, nod_fld)
         end if
       end do
 !
@@ -376,12 +374,11 @@
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &             write(*,*) 'lead  ', trim(viscous_diffusion%name)
         call cal_viscous_diffusion                                      &
-     &     (ifld_diff%base%i_velo, ifld_diff%base%i_velo, ifld_diff%SGS_term%i_SGS_Lorentz,    &
-     &      FEM_prm, SGS_par%model_p, SGS_par%commute_p,                &
+     &     (FEM_prm, SGS_par%model_p, SGS_par%commute_p,                &
      &      nod_comm, node, ele, surf, sf_grp, fluid, fl_prop,          &
      &      nod_bcs%Vnod_bcs, surf_bcs%Vsf_bcs, surf_bcs%Bsf_bcs,       &
      &      iphys%base, iphys%diffusion, iphys%SGS_term, iphys%div_SGS, &
-     &      ak_MHD, fem_int, FEM_elens, diff_coefs,                     &
+     &      ak_MHD, fem_int, FEM_elens, ifld_diff, diff_coefs,          &
      &      mk_MHD%mlump_fl, rhs_mat, nod_fld)
       end if
 !
@@ -399,13 +396,12 @@
      &      .and. cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &             write(*,*) 'lead  ', trim(magnetic_diffusion%name)
-        call cal_magnetic_diffusion(ifld_diff%base%i_magne,             &
-     &      ifld_diff%SGS_term%i_SGS_induction, ak_MHD%ak_d_magne,      &
+        call cal_magnetic_diffusion(ak_MHD%ak_d_magne,                  &
      &      FEM_prm, SGS_par%model_p, SGS_par%commute_p,                &
      &      nod_comm, node, ele, surf, conduct, sf_grp,                 &
      &      nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs, surf_bcs%Bsf_bcs,       &
      &      iphys%base, iphys%diffusion, iphys%SGS_term, fem_int,       &
-     &      FEM_elens, diff_coefs, rhs_mat, nod_fld)
+     &      FEM_elens, ifld_diff, diff_coefs, rhs_mat, nod_fld)
       end if
 !
       end subroutine cal_forces_4_monitor

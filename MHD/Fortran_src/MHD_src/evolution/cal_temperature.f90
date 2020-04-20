@@ -133,7 +133,7 @@
      &    SGS_par%filter_p, mesh, group, fluid,                         &
      &    property, ref_param, nod_bcs, sf_bcs, iphys, iphys_ele,       &
      &    ele_fld, fem_int%jcs, fem_int%rhs_tbl, FEM_elens,             &
-     &    icomp_sgs, ifld_diff, iphys_elediff, sgs_coefs,               &
+     &    icomp_sgs, ifld_diff%base, ifld_diff%SGS_term, iphys_elediff, sgs_coefs,               &
      &    sgs_coefs_nod, diff_coefs, filtering, mk_MHD%mlump_fl,        &
      &    Smatrix, ak_MHD%ak_d_temp, MGCG_WK, FEM_SGS_wk%wk_filter,     &
      &    mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%surf_wk,                  &
@@ -147,7 +147,7 @@
      &          SGS_param, cmt_param, filter_param, mesh, group,        &
      &          fluid, property, ref_param, nod_bcs, sf_bcs,            &
      &          iphys, iphys_ele, ele_fld, jacs, rhs_tbl,               &
-     &          FEM_elens, icomp_sgs, ifld_diff, iphys_elediff,         &
+     &          FEM_elens, icomp_sgs, iak_diff_base, iak_diff_SGS, iphys_elediff,         &
      &          sgs_coefs, sgs_coefs_nod, diff_coefs, filtering,        &
      &          mlump_fl, Smatrix, ak_diffuse, MGCG_WK, wk_filter,      &
      &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
@@ -187,6 +187,8 @@
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(SGS_terms_address), intent(in) :: icomp_sgs
       type(SGS_terms_address), intent(in) :: ifld_diff
+      type(base_field_address), intent(in) :: iak_diff_base
+      type(SGS_term_address), intent(in) :: iak_diff_SGS
       type(SGS_terms_address), intent(in) :: iphys_elediff
       type(SGS_coefficients_type), intent(in) :: sgs_coefs
       type(SGS_coefficients_type), intent(in) :: sgs_coefs_nod
@@ -236,7 +238,7 @@
         call int_vol_scalar_diffuse_ele(SGS_param%ifilter_final,        &
      &      fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,         &
      &      mesh%node, mesh%ele, nod_fld, jacs%g_FEM, jacs%jac_3d,      &
-     &      rhs_tbl, FEM_elens, diff_coefs, ifld_diff%base%i_temp,      &
+     &      rhs_tbl, FEM_elens, diff_coefs, iak_diff_base%i_temp,       &
      &      property%coef_exp,  ak_diffuse, i_field, fem_wk, f_l)
       end if
 !
@@ -247,7 +249,7 @@
      &     (SGS_param%iflag_SGS_h_flux, cmt_param%iflag_c_hf,           &
      &      SGS_param%ifilter_final, FEM_prm%npoint_t_evo_int,          &
      &      dt, iphys%base%i_temp, iphys%base%i_velo,                   &
-     &      iphys%SGS_term%i_SGS_h_flux, ifld_diff%SGS_term%i_SGS_h_flux,         &
+     &      iphys%SGS_term%i_SGS_h_flux, iak_diff_SGS%i_SGS_h_flux,     &
      &      mesh%node, mesh%ele, fluid, property, nod_fld,              &
      &      jacs%g_FEM, jacs%jac_3d, rhs_tbl, FEM_elens, diff_coefs,    &
      &      ele_fld%ntot_phys, iphys_ele%base%i_velo, ele_fld%d_fld,    &
@@ -257,7 +259,7 @@
      &     (SGS_param%iflag_SGS_h_flux, cmt_param%iflag_c_hf,           &
      &      SGS_param%ifilter_final, FEM_prm%npoint_t_evo_int,          &
      &      iphys%base%i_temp, iphys%base%i_velo,                       &
-     &      iphys%SGS_term%i_SGS_h_flux, ifld_diff%SGS_term%i_SGS_h_flux,         &
+     &      iphys%SGS_term%i_SGS_h_flux, iak_diff_SGS%i_SGS_h_flux,     &
      &      mesh%node, mesh%ele, fluid, property, nod_fld,              &
      &      jacs%g_FEM, jacs%jac_3d, rhs_tbl, FEM_elens, diff_coefs,    &
      &      ele_fld%ntot_phys, iphys_ele%base%i_velo, ele_fld%d_fld,    &
@@ -280,7 +282,7 @@
      &      sf_bcs%sgs%ngrp_sf_dat, sf_bcs%sgs%id_grp_sf_dat,           &
      &      SGS_param%ifilter_final, iphys%SGS_term%i_SGS_h_flux,       &
      &      iphys%base%i_velo, iphys%base%i_temp,                       &
-     &      diff_coefs%num_field, ifld_diff%SGS_term%i_SGS_h_flux,                &
+     &      diff_coefs%num_field, iak_diff_SGS%i_SGS_h_flux,            &
      &      diff_coefs%ak, property%coef_advect, fem_wk, surf_wk, f_nl)
       end if
 !
@@ -324,7 +326,7 @@
       else if (property%iflag_scheme .eq. id_Crank_nicolson) then
         call cal_temp_pre_lumped_crank(FEM_prm%iflag_temp_supg,         &
      &      cmt_param%iflag_c_temp, SGS_param%ifilter_final,            &
-     &      i_field, iphys%exp_work%i_pre_heat, ifld_diff%base%i_temp,  &
+     &      i_field, iphys%exp_work%i_pre_heat, iak_diff_base%i_temp,   &
      &      ak_diffuse, FEM_prm%eps_4_temp_crank, dt, FEM_prm,          &
      &      mesh%nod_comm, mesh%node, mesh%ele, fluid, property,        &
      &      nod_bcs, iphys_ele, ele_fld, jacs%g_FEM, jacs%jac_3d,       &
@@ -333,7 +335,7 @@
       else if (property%iflag_scheme .eq. id_Crank_nicolson_cmass) then 
         call cal_temp_pre_consist_crank                                 &
      &     (cmt_param%iflag_c_temp, SGS_param%ifilter_final,            &
-     &      i_field, iphys%exp_work%i_pre_heat, ifld_diff%base%i_temp,  &
+     &      i_field, iphys%exp_work%i_pre_heat, iak_diff_base%i_temp,   &
      &      ak_diffuse, FEM_prm%eps_4_temp_crank, dt, FEM_prm,          &
      &      mesh%node, mesh%ele, fluid, property, nod_bcs, jacs%g_FEM,  &
      &      jacs%jac_3d, rhs_tbl, FEM_elens, diff_coefs, Smatrix,       &

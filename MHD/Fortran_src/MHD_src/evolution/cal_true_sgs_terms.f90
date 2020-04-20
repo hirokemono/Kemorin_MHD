@@ -165,41 +165,39 @@
      &          then
            if(iflag_debug.gt.0) write(*,*)                              &
      &                         'lead  ', trim(nod_fld%phys_name(i) )
-           call cal_div_sgs_m_flux_true_pre                             &
-     &       (ifld_diff%SGS_term%i_SGS_m_flux, ifld_diff%SGS_term%i_SGS_Lorentz, dt,            &
-     &        FEM_prm, SGS_par, nod_comm, node, ele,                    &
-     &        surf, sf_grp, fluid, fl_prop, cd_prop,                    &
-     &        surf_bcs%Vsf_bcs, surf_bcs%Bsf_bcs,                       &
+           call cal_div_sgs_m_flux_true_pre(dt, FEM_prm, SGS_par,       &
+     &        nod_comm, node, ele, surf, sf_grp, fluid,                 &
+     &        fl_prop, cd_prop, surf_bcs%Vsf_bcs, surf_bcs%Bsf_bcs,     &
      &        iphys%base, iphys%forces, iphys%div_forces,               &
      &        iphys%diffusion, iphys%filter_fld, iphys%force_by_filter, &
      &        iphys%SGS_term, iphys%div_SGS, iphys%true_div_SGS,        &
-     &        iphys_ele%base, ak_MHD, fem_int, FEM_elens, diff_coefs,   &
-     &        mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat, nod_fld, ele_fld)
+     &        iphys_ele%base, ak_MHD, fem_int, FEM_elens,               &
+     &        ifld_diff, diff_coefs, mk_MHD%mlump_fl,                   &
+     &        mhd_fem_wk, rhs_mat, nod_fld, ele_fld)
          else if(nod_fld%phys_name(i) .eq. SGS_Lorentz_true%name) then
            if(iflag_debug.gt.0) write(*,*)                              &
      &                         'lead  ', trim(nod_fld%phys_name(i) )
            call cal_div_sgs_maxwell_true_pre                            &
-     &        (ifld_diff%SGS_term%i_SGS_m_flux, ifld_diff%SGS_term%i_SGS_Lorentz, dt,           &
-     &         FEM_prm, SGS_par, nod_comm, node, ele,                   &
+     &        (dt, FEM_prm, SGS_par, nod_comm, node, ele,               &
      &         surf, sf_grp, fluid, fl_prop, cd_prop,                   &
      &         surf_bcs%Vsf_bcs, surf_bcs%Bsf_bcs, iphys%base,          &
      &         iphys%forces, iphys%div_forces, iphys%diffusion,         &
      &         iphys%filter_fld, iphys%force_by_filter,                 &
      &         iphys%SGS_term, iphys%div_SGS, iphys%true_SGS,           &
-     &         iphys_ele%base,  ak_MHD, fem_int, FEM_elens, diff_coefs, &
-     &         mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat, nod_fld, ele_fld)
+     &         iphys_ele%base, ak_MHD, fem_int, FEM_elens,              &
+     &         ifld_diff, diff_coefs, mk_MHD%mlump_fl,                  &
+     &         mhd_fem_wk, rhs_mat, nod_fld, ele_fld)
          else if(nod_fld%phys_name(i) .eq. SGS_mag_induction_true%name) &
      &          then
            if(iflag_debug.gt.0) write(*,*)                              &
      &                         'lead  ', trim(nod_fld%phys_name(i) )
-           call cal_div_sgs_induct_true_pre                             &
-     &       (ifld_diff%SGS_term%i_SGS_induction, dt, FEM_prm, SGS_par, &
+           call cal_div_sgs_induct_true_pre(dt, FEM_prm, SGS_par,       &
      &        nod_comm, node, ele, surf, sf_grp, conduct, cd_prop,      &
      &        nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs, surf_bcs%Bsf_bcs,     &
      &        iphys%base, iphys%forces, iphys%div_forces,               &
      &        iphys%diffusion, iphys%filter_fld, iphys%SGS_term,        &
      &        iphys%true_SGS, iphys_ele%base, ele_fld, ak_MHD, fem_int, &
-     &        FEM_elens, diff_coefs, mk_MHD%mlump_cd,                   &
+     &        FEM_elens, ifld_diff, diff_coefs, mk_MHD%mlump_cd,        &
      &        mhd_fem_wk, rhs_mat, nod_fld)
          end if
        end do
@@ -334,19 +332,17 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_div_sgs_m_flux_true_pre                            &
-     &         (iak_diff_mf, iak_diff_lor, dt,                          &
-     &          FEM_prm, SGS_par, nod_comm, node, ele, surf, sf_grp,    &
-     &          fluid, fl_prop, cd_prop, Vsf_bcs, Bsf_bcs,              &
+      subroutine cal_div_sgs_m_flux_true_pre(dt, FEM_prm, SGS_par,      &
+     &          nod_comm, node, ele, surf, sf_grp, fluid,               &
+     &          fl_prop, cd_prop, Vsf_bcs, Bsf_bcs,                     &
      &          iphys_base, iphys_frc, iphys_div_frc, iphys_dif,        &
      &          iphys_fil, iphys_fil_frc, iphys_SGS, iphys_div_SGS,     &
      &          iphys_tr_div_SGS, iphys_ele_base, ak_MHD, fem_int,      &
-     &          FEM_elens, diff_coefs, mlump_fl, mhd_fem_wk, rhs_mat,   &
-     &          nod_fld, ele_fld)
+     &          FEM_elens, ifld_diff, diff_coefs, mlump_fl,             &
+     &          mhd_fem_wk, rhs_mat, nod_fld, ele_fld)
 !
       use cal_momentum_terms
 !
-      integer(kind = kint), intent(in) :: iak_diff_mf, iak_diff_lor
       real(kind = kreal), intent(in) :: dt
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
@@ -376,6 +372,7 @@
       type(coefs_4_MHD_type), intent(in) :: ak_MHD
       type(finite_element_integration), intent(in) :: fem_int
       type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(SGS_terms_address), intent(in) :: ifld_diff
       type(SGS_coefficients_type), intent(in) :: diff_coefs
       type(lumped_mass_matrices), intent(in) :: mlump_fl
 !
@@ -387,15 +384,14 @@
 !
       call cal_flux_tensor(iphys_fil%i_velo, iphys_fil%i_velo,          &
      &    iphys_frc%i_m_flux, nod_fld)
-      call cal_terms_4_momentum                                         &
-     &   (iphys_div_frc%i_m_flux, iak_diff_mf, iak_diff_lor, dt,        &
+      call cal_terms_4_momentum(iphys_div_frc%i_m_flux, dt,             &
      &    FEM_prm, SGS_par%model_p, SGS_par%commute_p,                  &
      &    nod_comm, node, ele, surf, sf_grp, fluid, fl_prop, cd_prop,   &
      &    Vsf_bcs, Bsf_bcs, iphys_base, iphys_frc, iphys_div_frc,       &
      &    iphys_dif, iphys_fil, iphys_fil_frc,                          &
      &    iphys_SGS, iphys_div_SGS, iphys_ele_base,                     &
-     &    ak_MHD, fem_int, FEM_elens, diff_coefs, mlump_fl, mhd_fem_wk, &
-     &    rhs_mat, nod_fld, ele_fld)
+     &    ak_MHD, fem_int, FEM_elens, ifld_diff, diff_coefs, mlump_fl,  &
+     &    mhd_fem_wk, rhs_mat, nod_fld, ele_fld)
       call copy_vector_component(nod_fld,                               &
      &    iphys_div_frc%i_m_flux, iphys_tr_div_SGS%i_SGS_m_flux)
 !
@@ -404,18 +400,16 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_div_sgs_maxwell_true_pre                           &
-     &        (iak_diff_mf, iak_diff_lor, dt,                           &
-     &         FEM_prm, SGS_par, nod_comm, node, ele, surf, sf_grp,     &
+     &        (dt, FEM_prm, SGS_par, nod_comm, node, ele, surf, sf_grp, &
      &         fluid, fl_prop, cd_prop, Vsf_bcs, Bsf_bcs,               &
      &         iphys_base, iphys_frc, iphys_div_frc, iphys_dif,         &
      &         iphys_fil, iphys_fil_frc, iphys_SGS, iphys_div_SGS,      &
      &         iphys_trSGS, iphys_ele_base, ak_MHD, fem_int,            &
-     &         FEM_elens, diff_coefs, mlump_fl, mhd_fem_wk, rhs_mat,    &
-     &         nod_fld, ele_fld)
+     &         FEM_elens, ifld_diff, diff_coefs, mlump_fl,              &
+     &         mhd_fem_wk, rhs_mat, nod_fld, ele_fld)
 !
       use cal_momentum_terms
 !
-      integer(kind = kint), intent(in) :: iak_diff_mf, iak_diff_lor
       real(kind = kreal), intent(in) :: dt
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
@@ -445,6 +439,7 @@
       type(coefs_4_MHD_type), intent(in) :: ak_MHD
       type(finite_element_integration), intent(in) :: fem_int
       type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(SGS_terms_address), intent(in) :: ifld_diff
       type(SGS_coefficients_type), intent(in) :: diff_coefs
       type(lumped_mass_matrices), intent(in) :: mlump_fl
 !
@@ -456,14 +451,13 @@
 !
       call cal_maxwell_tensor(cd_prop%ex_magne,                         &
      &    iphys_fil%i_magne, iphys_frc%i_maxwell, nod_fld)
-      call cal_terms_4_momentum                                         &
-     &   (iphys_div_frc%i_maxwell, iak_diff_mf, iak_diff_lor, dt,       &
+      call cal_terms_4_momentum(iphys_div_frc%i_maxwell, dt,            &
      &    FEM_prm, SGS_par%model_p, SGS_par%commute_p,                  &
      &    nod_comm, node, ele, surf, sf_grp, fluid, fl_prop, cd_prop,   &
      &    Vsf_bcs, Bsf_bcs, iphys_base, iphys_frc, iphys_div_frc,       &
      &    iphys_dif, iphys_fil, iphys_fil_frc, iphys_SGS,               &
      &    iphys_div_SGS, iphys_ele_base, ak_MHD, fem_int,               &
-     &    FEM_elens, diff_coefs, mlump_fl, mhd_fem_wk,                  &
+     &    FEM_elens, ifld_diff, diff_coefs, mlump_fl, mhd_fem_wk,       &
      &    rhs_mat, nod_fld, ele_fld)
       call copy_vector_component(nod_fld,                               &
      &   iphys_div_frc%i_maxwell, iphys_trSGS%i_SGS_Lorentz)
@@ -472,20 +466,18 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_div_sgs_induct_true_pre                            &
-     &        (iak_diff_uxb, dt, FEM_prm, SGS_par,                      &
+      subroutine cal_div_sgs_induct_true_pre(dt, FEM_prm, SGS_par,      &
      &         nod_comm, node, ele, surf, sf_grp, conduct, cd_prop,     &
      &         Bnod_bcs, Asf_bcs, Bsf_bcs, iphys_base,                  &
      &         iphys_frc, iphys_div_frc, iphys_dif, iphys_fil,          &
      &         iphys_SGS, iphys_trSGS, iphys_ele_base, ele_fld,         &
-     &         ak_MHD, fem_int, FEM_elens, diff_coefs, mlump_cd,        &
-     &         mhd_fem_wk, rhs_mat, nod_fld)
+     &         ak_MHD, fem_int, FEM_elens, ifld_diff, diff_coefs,       &
+     &         mlump_cd, mhd_fem_wk, rhs_mat, nod_fld)
 !
       use t_bc_data_magne
       use t_surface_bc_data
       use cal_magnetic_terms
 !
-      integer(kind = kint), intent(in) :: iak_diff_uxb
       real(kind = kreal), intent(in) :: dt
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
@@ -514,6 +506,7 @@
       type(coefs_4_MHD_type), intent(in) :: ak_MHD
       type(finite_element_integration), intent(in) :: fem_int
       type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(SGS_terms_address), intent(in) :: ifld_diff
       type(SGS_coefficients_type), intent(in) :: diff_coefs
       type(lumped_mass_matrices), intent(in) :: mlump_cd
 !
@@ -525,13 +518,14 @@
       call cal_induction_tensor(iphys_fil%i_magne, iphys_fil%i_velo,    &
      &    iphys_frc%i_induct_t, nod_fld)
       call cal_terms_4_magnetic                                         &
-     &   (iphys_div_frc%i_induct_t, iak_diff_uxb, ak_MHD%ak_d_magne,    &
+     &   (iphys_div_frc%i_induct_t, ak_MHD%ak_d_magne,                  &
      &    dt, FEM_prm, SGS_par%model_p, SGS_par%commute_p,              &
      &    nod_comm, node, ele, surf, conduct, sf_grp, cd_prop,          &
      &    Bnod_bcs, Asf_bcs, Bsf_bcs, iphys_base, iphys_frc,            &
      &    iphys_div_frc, iphys_dif, iphys_SGS,                          &
-     &    iphys_ele_base, ele_fld, fem_int, FEM_elens, diff_coefs,      &
-     &    mlump_cd, mhd_fem_wk, rhs_mat, nod_fld)
+     &    iphys_ele_base, ele_fld, fem_int, FEM_elens,                  &
+     &    ifld_diff, diff_coefs, mlump_cd, mhd_fem_wk, rhs_mat,         &
+     &    nod_fld)
       call copy_vector_component(nod_fld, iphys_div_frc%i_induct_t,     &
      &    iphys_trSGS%i_SGS_induction)
 !

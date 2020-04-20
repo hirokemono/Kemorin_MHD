@@ -152,7 +152,7 @@
 !     --------------------- 
 !
       if (iflag_debug .gt. 0)  write(*,*) 'vector_p_pre'
-      call cal_vector_p_pre(ifld_diff%base%i_magne, icomp_sgs%SGS_term%i_SGS_induction,   &
+      call cal_vector_p_pre(ifld_diff%base, icomp_sgs%SGS_term,         &
      &    iphys_elediff%base%i_velo, ak_d_magne, dt, FEM_prm,           &
      &    SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,         &
      &    mesh%nod_comm, mesh%node, mesh%ele, mesh%surf, conduct,       &
@@ -196,10 +196,10 @@
      &      iphys%base%i_mag_p, nod_fld%d_fld)
 !
         if (iflag_debug.gt.0) write(*,*) 'vector_potential_correct'
-        call cal_vector_p_co(ifld_diff%base%i_magne, ak_d_magne, dt,    &
+        call cal_vector_p_co(ifld_diff%base, ak_d_magne, dt,            &
      &      FEM_prm, SGS_par%model_p, SGS_par%commute_p,                &
      &      mesh%nod_comm, mesh%node, mesh%ele, mesh%surf, conduct,     &
-     &      group%surf_grp, cd_prop, Bnod_bcs, Fsf_bcs, iphys,          &
+     &      group%surf_grp, cd_prop, Bnod_bcs, Fsf_bcs, iphys%base, iphys%exp_work,          &
      &      iphys_ele, ele_fld, fem_int%jcs, fem_int%rhs_tbl,           &
      &      FEM_filters%FEM_elens, diff_coefs, fem_int%m_lump, Bmatrix, &
      &      MGCG_WK%MG_vector, mhd_fem_wk, rhs_mat%fem_wk,              &
@@ -302,14 +302,14 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_magnetic_field_pre'
       call cal_magnetic_field_pre                                       &
-     &   (icomp_sgs%SGS_term%i_SGS_induction, ifld_diff%base%i_magne,   &
-     &    ifld_diff%SGS_term%i_SGS_induction, iphys_elediff%base%i_velo, &
+     &   (icomp_sgs%SGS_term%i_SGS_induction, iphys_elediff%base%i_velo, &
      &    iphys_elediff%base%i_magne, ak_d_magne, dt, FEM_prm,          &
      &    SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,         &
      &    mesh%nod_comm, mesh%node, mesh%ele, mesh%surf, conduct,       &
      &    group%surf_grp, cd_prop, Bnod_bcs, Asf_bcs, Bsf_bcs,          &
      &    iphys, iphys_ele, ele_fld, fem_int%jcs, fem_int%rhs_tbl,      &
-     &    FEM_filters%FEM_elens, sgs_coefs, sgs_coefs_nod, diff_coefs,  &
+     &    FEM_filters%FEM_elens, sgs_coefs, sgs_coefs_nod,              &
+     &    ifld_diff, diff_coefs,                                        &
      &    FEM_filters%filtering, mk_MHD%mlump_cd, Bmatrix,              &
      &    MGCG_WK%MG_vector, FEM_SGS_wk%wk_filter, mhd_fem_wk,          &
      &    rhs_mat%fem_wk, rhs_mat%surf_wk, rhs_mat%f_l, rhs_mat%f_nl,   &
@@ -339,14 +339,15 @@
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'magnetic_correction'
-        call cal_magnetic_co(ifld_diff%base%i_magne, ak_d_magne, dt,    &
-     &      FEM_prm, SGS_par%model_p, SGS_par%commute_p,                &
+        call cal_magnetic_co(ak_d_magne, dt, FEM_prm,                   &
+     &      SGS_par%model_p, SGS_par%commute_p,                         &
      &      mesh%nod_comm, mesh%node, mesh%ele, mesh%surf, conduct,     &
      &      group%surf_grp, cd_prop, Bnod_bcs, Fsf_bcs, iphys,          &
      &      iphys_ele, ele_fld, fem_int%jcs, fem_int%rhs_tbl,           &
-     &      FEM_filters%FEM_elens, diff_coefs, fem_int%m_lump, Bmatrix, &
-     &      MGCG_WK%MG_vector, mhd_fem_wk, rhs_mat%fem_wk,              &
-     &      rhs_mat%surf_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
+     &      FEM_filters%FEM_elens, ifld_diff, diff_coefs,               &
+     &      fem_int%m_lump, Bmatrix, MGCG_WK%MG_vector, mhd_fem_wk,     &
+     &      rhs_mat%fem_wk, rhs_mat%surf_wk, rhs_mat%f_l, rhs_mat%f_nl, &
+     &      nod_fld)
 !
         call cal_rms_scalar_potential                                   &
      &     (iloop, mesh%ele%istack_ele_smp, iphys%base%i_mag_p,         &

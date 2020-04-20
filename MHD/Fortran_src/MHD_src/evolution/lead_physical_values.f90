@@ -104,12 +104,12 @@
      &    nod_fld, Csims_FEM_MHD)
 !
       call cal_field_by_rotation(MHD_step%time_d%dt, FEM_prm,           &
-     &     SGS_par%model_p, SGS_par%commute_p, fem%mesh, fem%group,     &
+     &    SGS_par%model_p, SGS_par%commute_p, fem%mesh, fem%group,      &
      &    MHD_mesh%fluid, MHD_mesh%conduct, MHD_prop%cd_prop,           &
-     &    FEM_MHD_BCs%nod_bcs, FEM_MHD_BCs%surf_bcs, iphys,             &
+     &    FEM_MHD_BCs%nod_bcs, FEM_MHD_BCs%surf_bcs, iphys%base,        &
      &    SGS_MHD_wk%iphys_ele, SGS_MHD_wk%ele_fld,                     &
      &    SGS_MHD_wk%fem_int, FEM_filters%FEM_elens,                    &
-     &    Csims_FEM_MHD%ifld_diff, Csims_FEM_MHD%diff_coefs,            &
+     &    Csims_FEM_MHD%ifld_diff%base, Csims_FEM_MHD%diff_coefs,       &
      &    SGS_MHD_wk%mk_MHD, SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat, &
      &    nod_fld)
 !

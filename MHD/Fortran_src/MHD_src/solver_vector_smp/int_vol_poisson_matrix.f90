@@ -11,14 +11,14 @@
 !!      subroutine int_MHD_poisson_matrices                             &
 !!     &         (num_int, ifilter_final, iflag_commute_magne,          &
 !!     &          mesh, fl_prop, cd_prop, g_FEM, jac_3d_l, rhs_tbl,     &
-!!     &          MG_mat_linear, MG_mat_fl_l, FEM_elens,                &
-!!     &          ifld_diff, diff_coefs, fem_wk, mat_press, mat_magp)
+!!     &          MG_mat_linear, MG_mat_fl_l, FEM_elens, iak_diff_base, &
+!!     &          diff_coefs, fem_wk, mat_press, mat_magp)
 !!      subroutine int_MHD_crank_matrices                               &
 !!     &         (num_int, dt, ifilter_final, mesh,                     &
 !!     &          fl_prop, cd_prop, ht_prop, cp_prop, ak_MHD,           &
 !!     &          g_FEM, jac_3d, rhs_tbl,                               &
 !!     &          MG_mat_q, MG_mat_fl_q, MG_mat_full_cd_q,              &
-!!     &          FEM_elens, ifld_diff, diff_coefs, fem_wk,             &
+!!     &          FEM_elens, iak_diff_base, diff_coefs, fem_wk,         &
 !!     &          mat_velo, mat_magne, mat_temp, mat_light)
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(fluid_property), intent(in) :: fl_prop
@@ -33,6 +33,7 @@
 !!        type(table_mat_const), intent(in) :: MG_mat_q
 !!        type(table_mat_const), intent(in) :: MG_mat_fl_q
 !!        type(table_mat_const), intent(in) :: MG_mat_full_cd_q
+!!        type(base_field_address), intent(in) :: iak_diff_base
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(DJDS_MATRIX),  intent(inout) :: mat_press
@@ -52,6 +53,7 @@
       use t_SGS_control_parameter
       use t_mesh_data
       use t_geometry_data
+      use t_base_field_labels
       use t_fem_gauss_int_coefs
       use t_jacobians
       use t_table_FEM_const
@@ -77,8 +79,8 @@
       subroutine int_MHD_poisson_matrices                               &
      &         (num_int, ifilter_final, iflag_commute_magne,            &
      &          mesh, fl_prop, cd_prop, g_FEM, jac_3d_l, rhs_tbl,       &
-     &          MG_mat_linear, MG_mat_fl_l, FEM_elens,                  &
-     &          ifld_diff, diff_coefs, fem_wk, mat_press, mat_magp)
+     &          MG_mat_linear, MG_mat_fl_l, FEM_elens, iak_diff_base,   &
+     &          diff_coefs, fem_wk, mat_press, mat_magp)
 !
       integer(kind = kint), intent(in) :: num_int
       integer(kind = kint), intent(in) :: ifilter_final
@@ -92,7 +94,7 @@
       type(table_mat_const),  intent(in) :: MG_mat_linear
       type(table_mat_const),  intent(in) :: MG_mat_fl_l
       type(gradient_model_data_type), intent(in) :: FEM_elens
-      type(SGS_terms_address), intent(in) :: ifld_diff
+      type(base_field_address), intent(in) :: iak_diff_base
       type(SGS_coefficients_type), intent(in) :: diff_coefs
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -104,7 +106,7 @@
         call sel_int_poisson_mat                                        &
      &     (mesh%ele, g_FEM, jac_3d_l, rhs_tbl, MG_mat_fl_l,            &
      &      FEM_elens, iflag_commute_magne, num_int,                    &
-     &      diff_coefs%num_field, ifld_diff%base%i_velo, diff_coefs%ak,      &
+     &      diff_coefs%num_field, iak_diff_base%i_velo, diff_coefs%ak,  &
      &      ifilter_final, fem_wk, mat_press)
       end if
 !
@@ -113,7 +115,7 @@
         call sel_int_poisson_mat                                        &
      &     (mesh%ele, g_FEM, jac_3d_l, rhs_tbl, MG_mat_linear,          &
      &      FEM_elens, iflag_commute_magne, num_int,                    &
-     &      diff_coefs%num_field, ifld_diff%base%i_magne, diff_coefs%ak, &
+     &      diff_coefs%num_field, iak_diff_base%i_magne, diff_coefs%ak, &
      &      ifilter_final, fem_wk, mat_magp)
       end if
 !
@@ -127,7 +129,7 @@
      &          fl_prop, cd_prop, ht_prop, cp_prop, ak_MHD,             &
      &          g_FEM, jac_3d, rhs_tbl,                                 &
      &          MG_mat_q, MG_mat_fl_q, MG_mat_full_cd_q,                &
-     &          FEM_elens, ifld_diff, diff_coefs, fem_wk,               &
+     &          FEM_elens, iak_diff_base, diff_coefs, fem_wk,           &
      &          mat_velo, mat_magne, mat_temp, mat_light)
 !
       integer(kind = kint), intent(in) :: num_int, ifilter_final
@@ -144,7 +146,7 @@
       type(table_mat_const), intent(in) :: MG_mat_fl_q
       type(table_mat_const), intent(in) :: MG_mat_full_cd_q
       type(gradient_model_data_type), intent(in) :: FEM_elens
-      type(SGS_terms_address), intent(in) :: ifld_diff
+      type(base_field_address), intent(in) :: iak_diff_base
       type(SGS_coefficients_type), intent(in) :: diff_coefs
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -157,7 +159,7 @@
       if (fl_prop%iflag_scheme .ge. id_Crank_nicolson) then
         call sel_int_diffuse3_crank_mat(mesh%ele, g_FEM, jac_3d,        &
      &      rhs_tbl, MG_mat_fl_q, FEM_elens, num_int,                   &
-     &      diff_coefs%num_field, ifld_diff%base%i_velo, diff_coefs%ak,      &
+     &      diff_coefs%num_field, iak_diff_base%i_velo, diff_coefs%ak,  &
      &      dt, fl_prop%coef_imp, ak_MHD%ak_d_velo, ifilter_final,      &
      &      fem_wk, mat_velo)
       end if
@@ -165,7 +167,7 @@
       if (cd_prop%iflag_Bevo_scheme .ge. id_Crank_nicolson) then
         call sel_int_diffuse3_crank_mat(mesh%ele, g_FEM, jac_3d,        &
      &      rhs_tbl, MG_mat_full_cd_q, FEM_elens, num_int,              &
-     &      diff_coefs%num_field, ifld_diff%base%i_magne, diff_coefs%ak, &
+     &      diff_coefs%num_field, iak_diff_base%i_magne, diff_coefs%ak, &
      &      dt, cd_prop%coef_imp, ak_MHD%ak_d_magne, ifilter_final,     &
      &      fem_wk, mat_magne)
       end if
@@ -173,7 +175,7 @@
       if (cd_prop%iflag_Aevo_scheme .ge. id_Crank_nicolson) then
         call sel_int_diffuse3_crank_mat(mesh%ele, g_FEM, jac_3d,        &
      &      rhs_tbl, MG_mat_q, FEM_elens, num_int,                      &
-     &      diff_coefs%num_field, ifld_diff%base%i_magne, diff_coefs%ak,     &
+     &      diff_coefs%num_field, iak_diff_base%i_magne, diff_coefs%ak, &
      &      dt, cd_prop%coef_imp, ak_MHD%ak_d_magne, ifilter_final,     &
      &      fem_wk, mat_magne)
       end if
@@ -181,7 +183,7 @@
       if (ht_prop%iflag_scheme .ge. id_Crank_nicolson) then
         call choose_int_diffuse1_crank_mat(mesh%ele, g_FEM, jac_3d,     &
      &      rhs_tbl, MG_mat_fl_q, FEM_elens, num_int,                   &
-     &      diff_coefs%num_field, ifld_diff%base%i_temp, diff_coefs%ak, &
+     &      diff_coefs%num_field, iak_diff_base%i_temp, diff_coefs%ak,  &
      &      dt, ht_prop%coef_imp, ak_MHD%ak_d_temp, ifilter_final,      &
      &      fem_wk, mat_temp)
       end if
@@ -189,7 +191,7 @@
       if (cp_prop%iflag_scheme .ge. id_Crank_nicolson) then
         call choose_int_diffuse1_crank_mat(mesh%ele, g_FEM, jac_3d,     &
      &      rhs_tbl, MG_mat_fl_q, FEM_elens, num_int,                   &
-     &      diff_coefs%num_field, ifld_diff%base%i_light, diff_coefs%ak,     &
+     &      diff_coefs%num_field, iak_diff_base%i_light, diff_coefs%ak, &
      &      dt, cp_prop%coef_imp, ak_MHD%ak_d_composit, ifilter_final,  &
      &      fem_wk, mat_light)
       end if

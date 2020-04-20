@@ -150,7 +150,7 @@
      &    SGS_param%ifilter_final, cmt_param%iflag_c_magne,             &
      &    mesh, fl_prop, cd_prop, jacs%g_FEM, jacs%jac_3d_l,            &
      &    rhs_tbl, MG_mat_linear, MG_mat_fl_l,                          &
-     &    FEM_elens, ifld_diff, diff_coefs, fem_wk,                     &
+     &    FEM_elens, ifld_diff%base, diff_coefs, fem_wk,                &
      &    mat_press, mat_magp)
 !
       if (iflag_scheme .eq. id_Crank_nicolson) then
@@ -165,7 +165,7 @@
      &      mesh, fl_prop, cd_prop, ht_prop, cp_prop, ak_MHD,           &
      &      jacs%g_FEM, jacs%jac_3d, rhs_tbl,                           &
      &      MG_mat_q, MG_mat_fl_q, MG_mat_full_cd_q,                    &
-     &      FEM_elens, ifld_diff, diff_coefs, fem_wk,                   &
+     &      FEM_elens, ifld_diff%base, diff_coefs, fem_wk,              &
      &      mat_velo, mat_magne, mat_temp, mat_light)
 !
       else if (iflag_scheme .eq. id_Crank_nicolson_cmass) then
@@ -177,7 +177,7 @@
      &     (FEM_prm%npoint_t_evo_int, dt, SGS_param%ifilter_final,      &
      &      mesh, fl_prop, cd_prop, ht_prop, cp_prop, ak_MHD,           &
      &      jacs%g_FEM, jacs%jac_3d, rhs_tbl, MG_mat_q, MG_mat_fl_q,    &
-     &      MG_mat_full_cd_q, FEM_elens, ifld_diff, diff_coefs,         &
+     &      MG_mat_full_cd_q, FEM_elens, ifld_diff%base, diff_coefs,    &
      &      fem_wk, mat_velo, mat_magne, mat_temp, mat_light)
       end if
 !

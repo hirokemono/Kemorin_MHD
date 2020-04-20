@@ -329,9 +329,8 @@
       if (iphys%div_SGS%i_SGS_m_flux .gt. 0) then
         if(iflag_debug.gt.0) write(*,*)                                 &
      &        'lead radial', trim(div_SGS_m_flux%name)
-        call cal_terms_4_momentum(iphys%div_SGS%i_SGS_m_flux,           &
-     &      Csims_FEM_MHD%ifld_diff%SGS_term%i_SGS_m_flux,                         &
-     &      Csims_FEM_MHD%ifld_diff%SGS_term%i_SGS_Lorentz, MHD_step%time_d%dt,      &
+        call cal_terms_4_momentum                                       &
+     &     (iphys%div_SGS%i_SGS_m_flux, MHD_step%time_d%dt,             &
      &      FEM_prm, SGS_par%model_p, SGS_par%commute_p,                &
      &      mesh%nod_comm, mesh%node, mesh%ele, mesh%surf,              &
      &      group%surf_grp, MHD_mesh%fluid,                             &
@@ -339,8 +338,8 @@
      &      sf_bcs%Vsf_bcs, sf_bcs%Bsf_bcs, iphys%base, iphys%forces,   &
      &      iphys%div_forces, iphys%diffusion,                          &
      &      iphys%filter_fld, iphys%force_by_filter, iphys%SGS_term,    &
-     &      iphys%div_SGS, iphys_ele%base, ak_MHD,                      &
-     &      fem_int, FEM_elens, Csims_FEM_MHD%diff_coefs,               &
+     &      iphys%div_SGS, iphys_ele%base, ak_MHD, fem_int, FEM_elens,  &
+     &      Csims_FEM_MHD%ifld_diff, Csims_FEM_MHD%diff_coefs,          &
      &      mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat, nod_fld, ele_fld)
       end if
 !

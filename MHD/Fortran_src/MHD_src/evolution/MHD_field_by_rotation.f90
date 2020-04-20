@@ -10,9 +10,9 @@
 !!      subroutine cal_field_by_rotation                                &
 !!     &         (dt, FEM_prm, SGS_param, cmt_param,                    &
 !!     &          mesh, group, fluid, conduct, cd_prop,                 &
-!!     &          nod_bcs, surf_bcs, iphys, iphys_ele, ele_fld, fem_int,&
-!!     &          FEM_elens, ifld_diff, diff_coefs, mk_MHD, mhd_fem_wk, &
-!!     &          rhs_mat, nod_fld)
+!!     &          nod_bcs, surf_bcs, iphys_base, iphys_ele, ele_fld,    &
+!!     &          fem_int, FEM_elens, iak_diff_base, diff_coefs, mk_MHD,&
+!!     &          mhd_fem_wk, rhs_mat, nod_fld)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(commutation_control_params), intent(in) :: cmt_param
@@ -22,12 +22,12 @@
 !!        type(conductive_property), intent(in) :: cd_prop
 !!        type(nodal_boundarty_conditions), intent(in) :: nod_bcs
 !!        type(surface_boundarty_conditions), intent(in) :: surf_bcs
-!!        type(phys_address), intent(in) :: iphys
+!!        type(base_field_address), intent(in) :: iphys_base
 !!        type(phys_address), intent(in) :: iphys_ele
 !!        type(phys_data), intent(in) :: ele_fld
 !!        type(finite_element_integration), intent(in) :: fem_int
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
-!!        type(SGS_terms_address), intent(in) :: ifld_diff
+!!        type(base_field_address), intent(in) :: iak_diff_base
 !!        type(SGS_coefficients_type), intent(in) :: diff_coefs
 !!        type(lumped_mass_mat_layerd), intent(in) :: mk_MHD
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
@@ -49,6 +49,7 @@
       use t_surface_data
       use t_phys_data
       use t_phys_address
+      use t_base_field_labels
       use t_table_FEM_const
       use t_jacobians
       use t_MHD_finite_element_mat
@@ -71,9 +72,9 @@
       subroutine cal_field_by_rotation                                  &
      &         (dt, FEM_prm, SGS_param, cmt_param,                      &
      &          mesh, group, fluid, conduct, cd_prop,                   &
-     &          nod_bcs, surf_bcs, iphys, iphys_ele, ele_fld, fem_int,  &
-     &          FEM_elens, ifld_diff, diff_coefs, mk_MHD, mhd_fem_wk,   &
-     &          rhs_mat, nod_fld)
+     &          nod_bcs, surf_bcs, iphys_base, iphys_ele, ele_fld,      &
+     &          fem_int, FEM_elens, iak_diff_base, diff_coefs, mk_MHD,  &
+     &          mhd_fem_wk, rhs_mat, nod_fld)
 !
       use cal_rotation_sgs
 !
@@ -88,12 +89,12 @@
       type(conductive_property), intent(in) :: cd_prop
       type(nodal_boundarty_conditions), intent(in) :: nod_bcs
       type(surface_boundarty_conditions), intent(in) :: surf_bcs
-      type(phys_address), intent(in) :: iphys
+      type(base_field_address), intent(in) :: iphys_base
       type(phys_address), intent(in) :: iphys_ele
       type(phys_data), intent(in) :: ele_fld
       type(finite_element_integration), intent(in) :: fem_int
       type(gradient_model_data_type), intent(in) :: FEM_elens
-      type(SGS_terms_address), intent(in) :: ifld_diff
+      type(base_field_address), intent(in) :: iak_diff_base
       type(SGS_coefficients_type), intent(in) :: diff_coefs
       type(lumped_mass_mat_layerd), intent(in) :: mk_MHD
 !
@@ -102,32 +103,33 @@
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-      if(iphys%base%i_vort .gt. izero)then
-        if(nod_fld%iflag_update(iphys%base%i_vort) .eq. izero) then
+      if(iphys_base%i_vort .gt. izero)then
+        if(nod_fld%iflag_update(iphys_base%i_vort) .eq. izero) then
           if (iflag_debug .ge. iflag_routine_msg)                       &
      &        write(*,*) 'cal_vorticity'
-          call choose_cal_rotation_sgs(cmt_param%iflag_c_velo,          &
-     &       FEM_prm%iflag_velo_supg, FEM_prm%npoint_t_evo_int, dt,     &
-     &       ifld_diff%base%i_velo, iphys%base%i_velo, iphys%base%i_vort,    &
-     &       fluid%istack_ele_fld_smp, mk_MHD%mlump_fl,                 &
-     &       SGS_param,  mesh%nod_comm, mesh%node,                      &
-     &       mesh%ele, mesh%surf, group%surf_grp,                       &
-     &       iphys_ele, ele_fld, fem_int%jcs, FEM_elens, diff_coefs,    &
-     &       nod_bcs%Vnod_bcs%nod_bc_w, surf_bcs%Vsf_bcs%sgs,           &
-     &       fem_int%rhs_tbl, rhs_mat%fem_wk, rhs_mat%surf_wk,          &
-     &       rhs_mat%f_nl, nod_fld)
+          call choose_cal_rotation_sgs                                  &
+     &       (cmt_param%iflag_c_velo, FEM_prm%iflag_velo_supg,          &
+     &        FEM_prm%npoint_t_evo_int, dt, iak_diff_base%i_velo,       &
+     &        iphys_base%i_velo, iphys_base%i_vort,                     &
+     &        fluid%istack_ele_fld_smp, mk_MHD%mlump_fl,                &
+     &        SGS_param,  mesh%nod_comm, mesh%node,                     &
+     &        mesh%ele, mesh%surf, group%surf_grp,                      &
+     &        iphys_ele, ele_fld, fem_int%jcs, FEM_elens, diff_coefs,   &
+     &        nod_bcs%Vnod_bcs%nod_bc_w, surf_bcs%Vsf_bcs%sgs,          &
+     &        fem_int%rhs_tbl, rhs_mat%fem_wk, rhs_mat%surf_wk,         &
+     &        rhs_mat%f_nl, nod_fld)
         end if
       end if
 !
-      if(iphys%base%i_current .gt. izero)then
-        if(nod_fld%iflag_update(iphys%base%i_current) .eq.0 ) then
+      if(iphys_base%i_current .gt. izero)then
+        if(nod_fld%iflag_update(iphys_base%i_current) .eq.0 ) then
           if(cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
             if (iflag_debug .ge. iflag_routine_msg)                     &
      &        write(*,*) 'cal_current_density'
               call choose_cal_rotation_sgs                              &
      &          (cmt_param%iflag_c_magne, FEM_prm%iflag_magne_supg,     &
-     &           FEM_prm%npoint_t_evo_int, dt, ifld_diff%base%i_magne,  &
-     &           iphys%base%i_magne, iphys%base%i_current,              &
+     &           FEM_prm%npoint_t_evo_int, dt, iak_diff_base%i_magne,   &
+     &           iphys_base%i_magne, iphys_base%i_current,              &
      &           mesh%ele%istack_ele_smp, fem_int%m_lump, SGS_param,    &
      &           mesh%nod_comm, mesh%node, mesh%ele, mesh%surf,         &
      &           group%surf_grp, iphys_ele, ele_fld, fem_int%jcs,       &
@@ -137,8 +139,8 @@
 !
 !             call choose_cal_rotation_sgs                              &
 !     &         (cmt_param%iflag_c_magne, FEM_prm%iflag_magne_supg,     &
-!     &          FEM_prm%npoint_t_evo_int, dt, ifld_diff%base%i_magne,  &
-!     &          iphys%base%i_magne, iphys%base%i_current,              &
+!     &          FEM_prm%npoint_t_evo_int, dt, iak_diff_base%i_magne,   &
+!     &          iphys_base%i_magne, iphys_base%i_current,              &
 !     &          conduct%istack_ele_fld_smp, mk_MHD%mlump_cd, SGS_param,&
 !     &          mesh%nod_comm, mesh%node, mesh%ele, mesh%surf,         &
 !     &          group%surf_grp, iphys_ele, ele_fld, fem_int%jcs,       &
@@ -147,17 +149,17 @@
 !     &          rhs_mat%fem_wk, rhs_mat%surf_wk, rhs_mat%f_nl, nod_fld)
 !             call int_current_diffuse                                  &
 !     &         (FEM_prm, mesh%nod_comm, mesh%node, mesh%ele,           &
-!     &          mesh%surf, group%surf_grp, surf_bcs%Asf_bcs, iphys,    &
-!     &          fem_int%jcs, fem_int%rhs_tbl, fem_int%m_lump,          &
-!     &          mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%surf_wk,           &
-!     &          rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
+!     &          mesh%surf, group%surf_grp, surf_bcs%Asf_bcs,           &
+!     &          iphys_base, fem_int%jcs, fem_int%rhs_tbl,              &
+!     &          fem_int%m_lump, mhd_fem_wk, rhs_mat%fem_wk,            &
+!     &          rhs_mat%surf_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
           else
             if (iflag_debug .ge. iflag_routine_msg)                     &
      &        write(*,*) 'cal_current_density'
             call choose_cal_rotation_sgs                                &
      &        (cmt_param%iflag_c_magne, FEM_prm%iflag_magne_supg,       &
-     &         FEM_prm%npoint_t_evo_int, dt, ifld_diff%base%i_magne,    &
-     &         iphys%base%i_magne, iphys%base%i_current,                &
+     &         FEM_prm%npoint_t_evo_int, dt, iak_diff_base%i_magne,     &
+     &         iphys_base%i_magne, iphys_base%i_current,                &
      &         mesh%ele%istack_ele_smp, fem_int%m_lump, SGS_param,      &
      &         mesh%nod_comm, mesh%node, mesh%ele, mesh%surf,           &
      &         group%surf_grp, iphys_ele, ele_fld, fem_int%jcs,         &
@@ -166,8 +168,8 @@
      &         rhs_mat%surf_wk, rhs_mat%f_nl, nod_fld)
 !           call choose_cal_rotation_sgs(cmt_param%iflag_c_magne,       &
 !     &         FEM_prm%iflag_magne_supg, FEM_prm%npoint_t_evo_int,     &
-!     &         dt, ifld_diff%base%i_magne,                             &
-!     &         iphys%base%i_magne, iphys%base%i_current,               &
+!     &         dt, iak_diff_base%i_magne,                              &
+!     &         iphys_base%i_magne, iphys_base%i_current,               &
 !     &         conduct%istack_ele_fld_smp, mk_MHD%mlump_cd, SGS_param, &
 !     &         mesh%nod_comm, mesh%node, mesh%ele, mesh%surf,          &
 !     &         group%surf_grp,iphys_ele, ele_fld, fem_int%jcs,         &
