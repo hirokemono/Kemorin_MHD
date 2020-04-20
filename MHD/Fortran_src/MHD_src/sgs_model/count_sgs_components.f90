@@ -272,8 +272,8 @@
 !
        if (cp_prop%iflag_scheme .gt. id_no_evolution) then
          if (SGS_param%iflag_SGS_c_flux .ne. id_SGS_none) then
-           icomp_sgs%i_comp_flux = i
-           ifld_sgs%i_comp_flux =  j
+           icomp_sgs%SGS_term%i_SGS_c_flux = i
+           ifld_sgs%SGS_term%i_SGS_c_flux =  j
            wk_sgs%name(j) = SGS_composit_flux%name
            sgs_coefs%num_comps(j) = 3
            i = i + sgs_coefs%num_comps(j)
@@ -408,11 +408,11 @@
      &               sgs_coefs%num_comps(ifld_sgs%SGS_term%i_SGS_induction),         &
      &               trim(wk_sgs%name(ifld_sgs%SGS_term%i_SGS_induction))
         end if
-        if(ifld_sgs%i_comp_flux .gt. 0) then
+        if(ifld_sgs%SGS_term%i_SGS_c_flux .gt. 0) then
           write(*,*) 'iak_sgs_cf',                                      &
-     &               ifld_sgs%i_comp_flux, icomp_sgs%i_comp_flux,       &
-     &               sgs_coefs%num_comps(ifld_sgs%i_comp_flux),         &
-     &               trim(wk_sgs%name(ifld_sgs%i_comp_flux))
+     &               ifld_sgs%SGS_term%i_SGS_c_flux, icomp_sgs%SGS_term%i_SGS_c_flux,       &
+     &               sgs_coefs%num_comps(ifld_sgs%SGS_term%i_SGS_c_flux),         &
+     &               trim(wk_sgs%name(ifld_sgs%SGS_term%i_SGS_c_flux))
         end if
       end if
 !

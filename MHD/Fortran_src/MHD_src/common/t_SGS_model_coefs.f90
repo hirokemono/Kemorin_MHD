@@ -47,8 +47,7 @@
         integer (kind=kint) :: i_filter_light = izero
 !
         integer (kind=kint) :: i_heat_flux =     izero
-        integer (kind=kint) :: i_comp_flux =     izero
-!SGS_term%i_SGS_m_flux
+!SGS_term%i_SGS_c_flux
         type(SGS_term_address) :: SGS_term
       end type SGS_terms_address
 !

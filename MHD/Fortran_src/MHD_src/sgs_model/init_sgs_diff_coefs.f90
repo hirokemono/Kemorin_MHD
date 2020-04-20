@@ -285,8 +285,8 @@
        if (cp_prop%iflag_scheme .gt. id_no_evolution) then
          if (SGS_param%iflag_SGS_c_flux .ne. id_SGS_none) then
            if(cmt_param%iflag_c_cf .eq. id_SGS_commute_ON) then
-             icomp_diff%i_comp_flux = id
-             ifld_diff%i_comp_flux =  jd
+             icomp_diff%SGS_term%i_SGS_c_flux = id
+             ifld_diff%SGS_term%i_SGS_c_flux =  jd
              wk_diff%name(jd) = SGS_composit_flux%name
              diff_coefs%num_comps(jd) = 3
              id = id + diff_coefs%num_comps(jd)

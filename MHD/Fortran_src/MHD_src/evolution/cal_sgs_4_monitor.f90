@@ -162,7 +162,7 @@
      &      iphys%SGS_wk%i_sgs_composit, iphys%filter_fld%i_light,      &
      &      iphys%base%i_velo, iphys%filter_fld%i_velo,                 &
      &      iphys%SGS_term%i_SGS_c_flux,                                &
-     &      icomp_sgs%i_comp_flux, iphys_elediff%i_velo,                &
+     &      icomp_sgs%SGS_term%i_SGS_c_flux, iphys_elediff%i_velo,                &
      &      SGS_param, filter_param, nod_comm, node, ele, fluid,        &
      &      iphys_ele, ele_fld, jacs, rhs_tbl, FEM_elens, filtering,    &
      &      sgs_coefs, sgs_coefs_nod, mk_MHD%mlump_fl, wk_filter,       &
@@ -286,7 +286,7 @@
      &        'lead ', trim(div_SGS_h_flux%name)
         call cal_terms_4_heat(iphys%div_SGS%i_SGS_c_flux,               &
      &      iphys%base%i_velo, iphys%base%i_light,                      &
-     &      iphys%SGS_term%i_SGS_c_flux, ifld_diff%i_comp_flux,         &
+     &      iphys%SGS_term%i_SGS_c_flux, ifld_diff%SGS_term%i_SGS_c_flux,         &
      &      FEM_prm%iflag_comp_supg, FEM_prm%npoint_t_evo_int,          &
      &      SGS_param%ifilter_final, SGS_param%iflag_SGS_c_flux,        &
      &      cmt_param%iflag_c_cf, cmt_param%iflag_c_light, dt,          &
