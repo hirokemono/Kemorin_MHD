@@ -311,7 +311,7 @@
      &   .or. SGS_param%iflag_SGS_c_flux .ne.   id_SGS_none             &
      &   .or. SGS_param%iflag_SGS_uxb .ne. id_SGS_none ) then
          iphys_elediff%i_velo = i
-         iphys_elediff%i_filter_velo = i + 9
+         iphys_elediff%filter_fld%i_velo = i + 9
          i = i + 18
         end if
 !

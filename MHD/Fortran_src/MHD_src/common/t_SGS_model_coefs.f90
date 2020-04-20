@@ -21,6 +21,7 @@
       use m_constants
       use m_machine_parameter
 !
+      use t_base_field_labels
       use t_SGS_term_labels
 !
       implicit  none
@@ -41,12 +42,15 @@
         integer (kind=kint) :: i_magne = izero
         integer (kind=kint) :: i_light = izero
 !
-        integer (kind=kint) :: i_filter_velo =  izero
+!        integer (kind=kint) :: i_filter_velo =  izero
         integer (kind=kint) :: i_filter_temp =  izero
         integer (kind=kint) :: i_filter_magne = izero
         integer (kind=kint) :: i_filter_light = izero
+!filter_fld%i_velo
 !
-!SGS_term%i_SGS_h_flux
+!>        Structure of filtered fields
+        type(base_field_address) :: filter_fld
+!>        Structure of SGS terms
         type(SGS_term_address) :: SGS_term
       end type SGS_terms_address
 !
