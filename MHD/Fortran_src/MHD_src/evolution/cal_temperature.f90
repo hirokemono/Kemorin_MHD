@@ -215,7 +215,7 @@
      &      i_field, iphys%filter_fld%i_temp,                           &
      &      iphys%base%i_velo, iphys%filter_fld%i_velo,                 &
      &      iphys%SGS_term%i_SGS_h_flux,                                &
-     &      icomp_sgs%i_heat_flux, iphys_elediff%i_velo, SGS_param,     &
+     &      icomp_sgs%SGS_term%i_SGS_h_flux, iphys_elediff%i_velo, SGS_param,     &
      &      filter_param, mesh%nod_comm, mesh%node, mesh%ele, fluid,    &
      &      iphys_ele, ele_fld, jacs, rhs_tbl, FEM_elens, filtering,    &
      &      sgs_coefs, sgs_coefs_nod, mlump_fl, wk_filter,              &
@@ -247,7 +247,7 @@
      &     (SGS_param%iflag_SGS_h_flux, cmt_param%iflag_c_hf,           &
      &      SGS_param%ifilter_final, FEM_prm%npoint_t_evo_int,          &
      &      dt, iphys%base%i_temp, iphys%base%i_velo,                   &
-     &      iphys%SGS_term%i_SGS_h_flux, ifld_diff%i_heat_flux,         &
+     &      iphys%SGS_term%i_SGS_h_flux, ifld_diff%SGS_term%i_SGS_h_flux,         &
      &      mesh%node, mesh%ele, fluid, property, nod_fld,              &
      &      jacs%g_FEM, jacs%jac_3d, rhs_tbl, FEM_elens, diff_coefs,    &
      &      ele_fld%ntot_phys, iphys_ele%base%i_velo, ele_fld%d_fld,    &
@@ -257,7 +257,7 @@
      &     (SGS_param%iflag_SGS_h_flux, cmt_param%iflag_c_hf,           &
      &      SGS_param%ifilter_final, FEM_prm%npoint_t_evo_int,          &
      &      iphys%base%i_temp, iphys%base%i_velo,                       &
-     &      iphys%SGS_term%i_SGS_h_flux, ifld_diff%i_heat_flux,         &
+     &      iphys%SGS_term%i_SGS_h_flux, ifld_diff%SGS_term%i_SGS_h_flux,         &
      &      mesh%node, mesh%ele, fluid, property, nod_fld,              &
      &      jacs%g_FEM, jacs%jac_3d, rhs_tbl, FEM_elens, diff_coefs,    &
      &      ele_fld%ntot_phys, iphys_ele%base%i_velo, ele_fld%d_fld,    &
@@ -280,7 +280,7 @@
      &      sf_bcs%sgs%ngrp_sf_dat, sf_bcs%sgs%id_grp_sf_dat,           &
      &      SGS_param%ifilter_final, iphys%SGS_term%i_SGS_h_flux,       &
      &      iphys%base%i_velo, iphys%base%i_temp,                       &
-     &      diff_coefs%num_field, ifld_diff%i_heat_flux,                &
+     &      diff_coefs%num_field, ifld_diff%SGS_term%i_SGS_h_flux,                &
      &      diff_coefs%ak, property%coef_advect, fem_wk, surf_wk, f_nl)
       end if
 !

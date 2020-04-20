@@ -131,7 +131,7 @@
      &        iphys%SGS_wk%i_sgs_temp, iphys%filter_fld%i_temp,         &
      &        iphys%base%i_velo, iphys%filter_fld%i_velo,               &
      &        iphys%SGS_term%i_SGS_h_flux,                              &
-     &        ifld_sgs%i_heat_flux, icomp_sgs%i_heat_flux,              &
+     &        ifld_sgs%SGS_term%i_SGS_h_flux, icomp_sgs%SGS_term%i_SGS_h_flux,    &
      &        iphys_elediff%i_velo, iphys_elediff%i_filter_velo,        &
      &        SGS_par, fem%mesh, iphys,                                 &
      &        SGS_MHD_wk%iphys_ele, SGS_MHD_wk%ele_fld,                 &
@@ -149,8 +149,8 @@
      &        iphys%SGS_wk%i_sgs_temp, iphys%filter_fld%i_temp,         &
      &        iphys%wide_filter_fld%i_temp, iphys%base%i_velo,          &
      &        iphys%filter_fld%i_velo, iphys%SGS_term%i_SGS_h_flux,     &
-     &        ifld_sgs%i_heat_flux, icomp_sgs%i_heat_flux, SGS_par,     &
-     &        fem%mesh, iphys, fem_int, FEM_filters,                    &
+     &        ifld_sgs%SGS_term%i_SGS_h_flux, icomp_sgs%SGS_term%i_SGS_h_flux,    &
+     &        SGS_par, fem%mesh, iphys, fem_int, FEM_filters,           &
      &        SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%rhs_mat, nod_fld,       &
      &        sgs_coefs, sgs_coefs_nod)
         end if
@@ -163,8 +163,8 @@
      &        time_d%dt, iphys%SGS_wk%i_sgs_temp,                       &
      &        iphys%filter_fld%i_temp, iphys%base%i_velo,               &
      &        iphys%filter_fld%i_velo, iphys%SGS_term%i_SGS_h_flux,     &
-     &        ifld_diff%i_heat_flux, icomp_sgs%i_heat_flux,             &
-     &        icomp_diff%i_heat_flux, iphys_elediff%i_filter_velo,      &
+     &        ifld_diff%SGS_term%i_SGS_h_flux, icomp_sgs%SGS_term%i_SGS_h_flux,   &
+     &        icomp_diff%SGS_term%i_SGS_h_flux, iphys_elediff%i_filter_velo,      &
      &        SGS_par, fem%mesh, fem%group,                             &
      &        nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs, iphys,                &
      &        SGS_MHD_wk%iphys_ele, SGS_MHD_wk%ele_fld, MHD_mesh%fluid, &

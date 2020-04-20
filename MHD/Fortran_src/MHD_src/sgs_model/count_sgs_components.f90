@@ -201,8 +201,8 @@
        jd = 1
        if (ht_prop%iflag_scheme .gt. id_no_evolution) then
          if (SGS_param%iflag_SGS_h_flux .ne. id_SGS_none) then
-           icomp_sgs%i_heat_flux = i
-           ifld_sgs%i_heat_flux =  j
+           icomp_sgs%SGS_term%i_SGS_h_flux = i
+           ifld_sgs%SGS_term%i_SGS_h_flux =  j
            wk_sgs%name(j) = SGS_heat_flux%name
            sgs_coefs%num_comps(j) = 3
            i = i + sgs_coefs%num_comps(j)
@@ -372,11 +372,11 @@
         write(*,*) 'num_sgs_kinds', sgs_coefs%num_field
         write(*,*) 'num_sgs_coefs', sgs_coefs%ntot_comp
 !
-        if(ifld_sgs%i_heat_flux .gt. 0) then
+        if(ifld_sgs%SGS_term%i_SGS_h_flux .gt. 0) then
           write(*,*) 'iak_sgs_hf',                                      &
-     &              ifld_sgs%i_heat_flux, icomp_sgs%i_heat_flux,        &
-     &              sgs_coefs%num_comps(ifld_sgs%i_heat_flux),          &
-     &              trim(wk_sgs%name(ifld_sgs%i_heat_flux))
+     &              ifld_sgs%SGS_term%i_SGS_h_flux, icomp_sgs%SGS_term%i_SGS_h_flux,        &
+     &              sgs_coefs%num_comps(ifld_sgs%SGS_term%i_SGS_h_flux),          &
+     &              trim(wk_sgs%name(ifld_sgs%SGS_term%i_SGS_h_flux))
         end if
         if(ifld_sgs%SGS_term%i_SGS_m_flux .gt. 0) then
           write(*,*) 'iak_sgs_mf',                                      &

@@ -101,9 +101,9 @@
         write(*,*) 'ifld_sgs%SGS_term%i_SGS_induction',                 &
      &        ifld_sgs%SGS_term%i_SGS_induction,                        &
      &        f_trns_Csim%i_SGS_vp_induct
-        write(*,*) 'ifld_sgs%i_heat_flux',                              &
-     &        ifld_sgs%i_heat_flux, f_trns_Csim%i_SGS_h_flux
-        write(*,*) 'ifld_sgs%SGS_term%i_SGS_c_flux',                              &
+        write(*,*) 'ifld_sgs%SGS_term%i_SGS_h_flux',                    &
+     &        ifld_sgs%SGS_term%i_SGS_h_flux, f_trns_Csim%i_SGS_h_flux
+        write(*,*) 'ifld_sgs%SGS_term%i_SGS_c_flux',                    &
      &        ifld_sgs%SGS_term%i_SGS_c_flux, f_trns_Csim%i_SGS_c_flux
         write(*,*) 'ifld_sgs%SGS_term%i_SGS_buoyancy',                  &
      &        ifld_sgs%SGS_term%i_SGS_buoyancy, f_trns_Csim%i_SGS_buoyancy
@@ -129,9 +129,9 @@
      &     wk_sgs, fwd_Csim)
       end if
 !
-      if(ifld_sgs%i_heat_flux .gt. 0) then
+      if(ifld_sgs%SGS_term%i_SGS_h_flux .gt. 0) then
         call set_model_coefs_sph_snap(sph_rtp, sph_d_grp,               &
-     &      f_trns_Csim%i_SGS_h_flux, ifld_sgs%i_heat_flux,             &
+     &      f_trns_Csim%i_SGS_h_flux, ifld_sgs%SGS_term%i_SGS_h_flux,   &
      &      wk_sgs, fwd_Csim)
       end if
 !

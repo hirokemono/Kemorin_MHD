@@ -83,7 +83,7 @@
      &      trns_f_SGS%ncomp, trns_f_SGS%fld_rtp)
       end if
 !
-      if(ifld_sgs%i_heat_flux .gt. 0) then
+      if(ifld_sgs%SGS_term%i_SGS_h_flux .gt. 0) then
         call product_fixed_model_coefs(SGS_param%SGS_hf_factor,         &
      &      sph_rtp, fg_trns_SGS%i_SGS_h_flux, n_vector,                &
      &      trns_f_SGS%ncomp, trns_f_SGS%fld_rtp)
@@ -137,12 +137,12 @@
      &      dynamic_SPH%wk_sgs, trns_f_SGS)
       end if
 !
-      if(dynamic_SPH%ifld_sgs%i_heat_flux .gt. 0) then
+      if(dynamic_SPH%ifld_sgs%SGS_term%i_SGS_h_flux .gt. 0) then
         if (iflag_debug.eq.1) write(*,*) 'sel_product_model_coefs HF'
         call sel_product_model_coefs                                    &
      &     (SGS_param%SGS_hf_factor, sph_rtp, dynamic_SPH%sph_d_grp,    &
-     &      n_vector, fg_trns_SGS%i_SGS_h_flux,                    &
-     &      dynamic_SPH%ifld_sgs%i_heat_flux,                           &
+     &      n_vector, fg_trns_SGS%i_SGS_h_flux,                         &
+     &      dynamic_SPH%ifld_sgs%SGS_term%i_SGS_h_flux,                 &
      &      dynamic_SPH%wk_sgs, trns_f_SGS)
       end if
 !
@@ -150,7 +150,7 @@
         if (iflag_debug.eq.1) write(*,*) 'sel_product_model_coefs CF'
         call sel_product_model_coefs                                    &
      &     (SGS_param%SGS_cf_factor, sph_rtp, dynamic_SPH%sph_d_grp,    &
-     &      n_vector, fg_trns_SGS%i_SGS_c_flux,                    &
+     &      n_vector, fg_trns_SGS%i_SGS_c_flux,                         &
      &      dynamic_SPH%ifld_sgs%SGS_term%i_SGS_c_flux,                 &
      &      dynamic_SPH%wk_sgs, trns_f_SGS)
       end if

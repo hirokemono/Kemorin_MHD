@@ -235,8 +235,8 @@
        if (ht_prop%iflag_scheme .gt. id_no_evolution) then
          if (SGS_param%iflag_SGS_h_flux .ne. id_SGS_none) then
            if (cmt_param%iflag_c_hf .eq. id_SGS_commute_ON) then
-             icomp_diff%i_heat_flux = id
-             ifld_diff%i_heat_flux =  jd
+             icomp_diff%SGS_term%i_SGS_h_flux = id
+             ifld_diff%SGS_term%i_SGS_h_flux =  jd
              wk_diff%name(jd) = SGS_heat_flux%name
              diff_coefs%num_comps(jd) = 3
              id = id + diff_coefs%num_comps(jd)
@@ -384,11 +384,11 @@
         write(*,*) 'wk_diff%ntot_comp', wk_diff%ntot_comp
         write(*,*) 'diff_coefs%num_field', diff_coefs%num_field
 !
-        if(ifld_diff%i_heat_flux .gt. 0) then
+        if(ifld_diff%SGS_term%i_SGS_h_flux .gt. 0) then
           write(*,*) 'iak_diff_hf',                                     &
-     &             ifld_diff%i_heat_flux, icomp_diff%i_heat_flux,       &
-     &             diff_coefs%num_comps(ifld_diff%i_heat_flux),         &
-     &             trim(wk_diff%name(ifld_diff%i_heat_flux))
+     &             ifld_diff%SGS_term%i_SGS_h_flux, icomp_diff%SGS_term%i_SGS_h_flux,       &
+     &             diff_coefs%num_comps(ifld_diff%SGS_term%i_SGS_h_flux),         &
+     &             trim(wk_diff%name(ifld_diff%SGS_term%i_SGS_h_flux))
         end if
         if(ifld_diff%SGS_term%i_SGS_m_flux .gt. 0) then
           write(*,*) 'iak_diff_mf',                                     &
