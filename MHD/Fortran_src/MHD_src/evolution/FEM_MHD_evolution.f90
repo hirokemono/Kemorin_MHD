@@ -295,7 +295,7 @@
         end if
 !
         call update_with_dummy_scalar                                   &
-     &     (ifld_diff%i_light, icomp_diff%i_light,                      &
+     &     (ifld_diff%base%i_light, icomp_diff%base%i_light,            &
      &      time_d%i_time_step, time_d%dt, FEM_prm, SGS_par,            &
      &      fem%mesh, fem%group, MHD_mesh%fluid,                        &
      &      surf_bcs%Csf_bcs, iphys, SGS_MHD_wk%iphys_ele,              &
@@ -391,7 +391,7 @@
 !
       if(iphys%base%i_light .ne. 0) then
         call update_with_dummy_scalar                                   &
-     &     (ifld_diff%i_light, icomp_diff%i_light, time_d%i_time_step,  &
+     &     (ifld_diff%base%i_light, icomp_diff%base%i_light, time_d%i_time_step,  &
      &      time_d%dt, FEM_prm, SGS_par, fem%mesh, fem%group,           &
      &      MHD_mesh%fluid, surf_bcs%Csf_bcs, iphys,                    &
      &      SGS_MHD_wk%iphys_ele, SGS_MHD_wk%ele_fld,                   &
@@ -569,7 +569,7 @@
         end if
 !
         call update_with_dummy_scalar                                   &
-     &    (ifld_diff%i_light, icomp_diff%i_light,                       &
+     &    (ifld_diff%base%i_light, icomp_diff%base%i_light,             &
      &     time_d%i_time_step, time_d%dt, FEM_prm, SGS_par,             &
      &     fem%mesh, fem%group, fluid, surf_bcs%Csf_bcs,                &
      &     iphys, SGS_MHD_wk%iphys_ele, SGS_MHD_wk%ele_fld,             &

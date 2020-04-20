@@ -248,7 +248,7 @@
         call int_vol_scalar_diffuse_ele(SGS_param%ifilter_final,        &
      &      fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,         &
      &      mesh%node, mesh%ele, nod_fld, jacs%g_FEM, jacs%jac_3d,      &
-     &      rhs_tbl, FEM_elens, diff_coefs, ifld_diff%i_light,          &
+     &      rhs_tbl, FEM_elens, diff_coefs, ifld_diff%base%i_light,     &
      &      property%coef_exp,  ak_diffuse, i_field, fem_wk, f_l)
       end if
 !
@@ -334,7 +334,7 @@
       else if(property%iflag_scheme .eq. id_Crank_nicolson) then
         call cal_temp_pre_lumped_crank(FEM_prm%iflag_comp_supg,         &
      &      cmt_param%iflag_c_light, SGS_param%ifilter_final,           &
-     &      i_field, iphys%exp_work%i_pre_composit, ifld_diff%i_light,  &
+     &      i_field, iphys%exp_work%i_pre_composit, ifld_diff%base%i_light,  &
      &      ak_diffuse, FEM_prm%eps_4_comp_crank, dt, FEM_prm,          &
      &      mesh%nod_comm, mesh%node, mesh%ele, fluid, property,        &
      &      nod_bcs, iphys_ele, ele_fld, jacs%g_FEM, jacs%jac_3d,       &
@@ -344,7 +344,7 @@
       else if(property%iflag_scheme .eq. id_Crank_nicolson_cmass) then
         call cal_temp_pre_consist_crank                                 &
      &     (cmt_param%iflag_c_light, SGS_param%ifilter_final,           &
-     &      i_field, iphys%exp_work%i_pre_composit, ifld_diff%i_light,  &
+     &      i_field, iphys%exp_work%i_pre_composit, ifld_diff%base%i_light,  &
      &      ak_diffuse, FEM_prm%eps_4_comp_crank, dt, FEM_prm,          &
      &      mesh%node, mesh%ele, fluid, property, nod_bcs, jacs%g_FEM,  &
      &      jacs%jac_3d, rhs_tbl, FEM_elens, diff_coefs, Smatrix,  &

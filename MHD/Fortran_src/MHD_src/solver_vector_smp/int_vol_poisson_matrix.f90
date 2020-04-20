@@ -189,7 +189,7 @@
       if (cp_prop%iflag_scheme .ge. id_Crank_nicolson) then
         call choose_int_diffuse1_crank_mat(mesh%ele, g_FEM, jac_3d,     &
      &      rhs_tbl, MG_mat_fl_q, FEM_elens, num_int,                   &
-     &      diff_coefs%num_field, ifld_diff%i_light, diff_coefs%ak,     &
+     &      diff_coefs%num_field, ifld_diff%base%i_light, diff_coefs%ak,     &
      &      dt, cp_prop%coef_imp, ak_MHD%ak_d_composit, ifilter_final,  &
      &      fem_wk, mat_light)
       end if
