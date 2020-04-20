@@ -215,27 +215,27 @@
       if(fl_prop%iflag_4_gravity .gt. id_turn_OFF) then
 !        call cal_Csim_buo_by_Reynolds_ratio(wk_sgs%nlayer, ifive,      &
 !     &      wk_sgs%num_kinds, wk_sgs%ntot_comp,                        &
-!     &      ifld_sgs%i_buoyancy, icomp_sgs%i_buoyancy, wk_lsq%slsq,    &
+!     &      ifld_sgs%SGS_term%i_SGS_buoyancy, icomp_sgs%SGS_term%i_SGS_buoyancy, wk_lsq%slsq,    &
 !     &      wk_sgs%comp_coef, wk_sgs%fld_coef)
         call single_Csim_buo_by_mf_ratio(wk_sgs%nlayer, ifive,          &
      &      wk_sgs%num_kinds, wk_sgs%ntot_comp,                         &
-     &      ifld_sgs%i_buoyancy, icomp_sgs%i_buoyancy, wk_lsq%slsq,     &
+     &      ifld_sgs%SGS_term%i_SGS_buoyancy, icomp_sgs%SGS_term%i_SGS_buoyancy, wk_lsq%slsq,     &
      &      wk_sgs%comp_coef, wk_sgs%fld_coef)
         call clippging_sgs_diff_coefs                                   &
-     &     (ncomp_sgs_buo, ifld_sgs%i_buoyancy, icomp_sgs%i_buoyancy,   &
+     &     (ncomp_sgs_buo, ifld_sgs%SGS_term%i_SGS_buoyancy, icomp_sgs%SGS_term%i_SGS_buoyancy,   &
      &      SGS_par, wk_sgs)
       end if
       if(fl_prop%iflag_4_composit_buo .gt. id_turn_OFF) then
 !        call cal_Csim_buo_by_Reynolds_ratio(wk_sgs%nlayer, isix,       &
 !     &      wk_sgs%num_kinds, wk_sgs%ntot_comp,                        &
-!     &      ifld_sgs%i_comp_buoyancy, icomp_sgs%i_comp_buoyancy,       &
+!     &      ifld_sgs%SGS_term%i_SGS_comp_buo, icomp_sgs%SGS_term%i_SGS_comp_buo,       &
 !     &      wk_lsq%slsq, wk_sgs%comp_coef, wk_sgs%fld_coef)
         call single_Csim_buo_by_mf_ratio(wk_sgs%nlayer, isix,           &
      &      wk_sgs%num_kinds, wk_sgs%ntot_comp,                         &
-     &      ifld_sgs%i_comp_buoyancy, icomp_sgs%i_comp_buoyancy,        &
+     &      ifld_sgs%SGS_term%i_SGS_comp_buo, icomp_sgs%SGS_term%i_SGS_comp_buo,        &
      &      wk_lsq%slsq, wk_sgs%comp_coef, wk_sgs%fld_coef)
         call clippging_sgs_diff_coefs                                   &
-     &     (ncomp_sgs_buo, ifld_sgs%i_buoyancy, icomp_sgs%i_buoyancy,   &
+     &     (ncomp_sgs_buo, ifld_sgs%SGS_term%i_SGS_buoyancy, icomp_sgs%SGS_term%i_SGS_buoyancy,   &
      &      SGS_par, wk_sgs)
       end if
 !
@@ -244,14 +244,14 @@
      &    ifld_sgs, icomp_sgs, wk_sgs, sgs_coefs)
 !
 !      if(iflag_debug .gt. 0) then
-!        write(*,*) 'sgs_f_coef, icomp_sgs_tbuo', ifld_sgs%i_buoyancy
+!        write(*,*) 'sgs_f_coef, icomp_sgs_tbuo', ifld_sgs%SGS_term%i_SGS_buoyancy
 !        do i = 1, wk_sgs%nlayer
 !          write(*,'(i16,1pe20.12)')                                    &
-!     &            i, wk_sgs%fld_coef(i,ifld_sgs%i_buoyancy)
+!     &            i, wk_sgs%fld_coef(i,ifld_sgs%SGS_term%i_SGS_buoyancy)
 !        end do
 !        write(*,*) 'sgs_c_coef, icomp_sgs_tbuo',                       &
-!     &            icomp_sgs%i_comp_buoyancy
-!        k = icomp_sgs%i_buoyancy
+!     &            icomp_sgs%SGS_term%i_SGS_comp_buo
+!        k = icomp_sgs%SGS_term%i_SGS_buoyancy
 !        do i = 1, wk_sgs%nlayer
 !          write(*,'(i16,1p6e20.12)') i, wk_sgs%comp_coef(i,k:k+5)
 !        end do

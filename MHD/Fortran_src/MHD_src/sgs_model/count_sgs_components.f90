@@ -231,16 +231,16 @@
 !
         if (SGS_param%iflag_SGS_gravity .ne. id_SGS_none) then
           if(fl_prop%iflag_4_gravity .gt. 0) then
-            icomp_sgs%i_buoyancy = i
-            ifld_sgs%i_buoyancy =  j
+            icomp_sgs%SGS_term%i_SGS_buoyancy = i
+            ifld_sgs%SGS_term%i_SGS_buoyancy =  j
             wk_sgs%name(j) = SGS_buoyancy%name
             sgs_coefs%num_comps(j) = 6
             i = i + sgs_coefs%num_comps(j)
             j = j + 1
           end if
           if(fl_prop%iflag_4_composit_buo .gt. id_turn_OFF) then
-            icomp_sgs%i_comp_buoyancy = i
-            ifld_sgs%i_comp_buoyancy =  j
+            icomp_sgs%SGS_term%i_SGS_comp_buo = i
+            ifld_sgs%SGS_term%i_SGS_comp_buo =  j
             wk_sgs%name(j) = SGS_composit_buoyancy%name
             sgs_coefs%num_comps(j) = 6
             i = i + sgs_coefs%num_comps(j)
@@ -390,17 +390,17 @@
      &              sgs_coefs%num_comps(ifld_sgs%i_lorentz),            &
      &              trim(wk_sgs%name(ifld_sgs%i_lorentz))
         end if
-        if(ifld_sgs%i_buoyancy .gt. 0) then
+        if(ifld_sgs%SGS_term%i_SGS_buoyancy .gt. 0) then
           write(*,*) 'iak_sgs_tbuo',                                    &
-     &              ifld_sgs%i_buoyancy, icomp_sgs%i_buoyancy,          &
-     &              sgs_coefs%num_comps(ifld_sgs%i_buoyancy),           &
-     &              trim(wk_sgs%name(ifld_sgs%i_buoyancy))
+     &              ifld_sgs%SGS_term%i_SGS_buoyancy, icomp_sgs%SGS_term%i_SGS_buoyancy,          &
+     &              sgs_coefs%num_comps(ifld_sgs%SGS_term%i_SGS_buoyancy),           &
+     &              trim(wk_sgs%name(ifld_sgs%SGS_term%i_SGS_buoyancy))
         end if
-        if(ifld_sgs%i_comp_buoyancy .gt. 0) then
+        if(ifld_sgs%SGS_term%i_SGS_comp_buo .gt. 0) then
           write(*,*) 'iak_sgs_cbuo',                                    &
-     &             ifld_sgs%i_comp_buoyancy, icomp_sgs%i_comp_buoyancy, &
-     &             sgs_coefs%num_comps(ifld_sgs%i_comp_buoyancy),       &
-     &             trim(wk_sgs%name(ifld_sgs%i_comp_buoyancy))
+     &             ifld_sgs%SGS_term%i_SGS_comp_buo, icomp_sgs%SGS_term%i_SGS_comp_buo, &
+     &             sgs_coefs%num_comps(ifld_sgs%SGS_term%i_SGS_comp_buo),       &
+     &             trim(wk_sgs%name(ifld_sgs%SGS_term%i_SGS_comp_buo))
         end if
         if(ifld_sgs%i_induction .gt. 0) then
           write(*,*) 'iak_sgs_uxb',                                     &

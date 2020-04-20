@@ -59,21 +59,21 @@
 !
 !
       if(iflag_debug .gt. 0) then
-        write(*,*) 'ifld_sgs%i_buoyancy',                               &
-     &        ifld_sgs%i_buoyancy, f_trns_Csim%i_SGS_buoyancy
-        write(*,*) 'ifld_sgs%i_comp_buoyancy',                          &
-     &        ifld_sgs%i_comp_buoyancy, f_trns_Csim%i_SGS_comp_buo
+        write(*,*) 'ifld_sgs%SGS_term%i_SGS_buoyancy',                  &
+     &        ifld_sgs%SGS_term%i_SGS_buoyancy, f_trns_Csim%i_SGS_buoyancy
+        write(*,*) 'ifld_sgs%SGS_term%i_SGS_comp_buo',                  &
+     &     ifld_sgs%SGS_term%i_SGS_comp_buo, f_trns_Csim%i_SGS_comp_buo
       end if
 !
-      if(ifld_sgs%i_buoyancy .gt. 0) then
+      if(ifld_sgs%SGS_term%i_SGS_buoyancy .gt. 0) then
         call set_model_coefs_sph_snap(sph_rtp, sph_d_grp,               &
-     &      f_trns_Csim%i_SGS_buoyancy, ifld_sgs%i_buoyancy,            &
+     &      f_trns_Csim%i_SGS_buoyancy, ifld_sgs%SGS_term%i_SGS_buoyancy,            &
      &      wk_sgs, fwd_Csim)
       end if
 !
-      if(ifld_sgs%i_comp_buoyancy .gt. 0) then
+      if(ifld_sgs%SGS_term%i_SGS_comp_buo .gt. 0) then
         call set_model_coefs_sph_snap(sph_rtp, sph_d_grp,               &
-     &      f_trns_Csim%i_SGS_comp_buo, ifld_sgs%i_comp_buoyancy,       &
+     &      f_trns_Csim%i_SGS_comp_buo, ifld_sgs%SGS_term%i_SGS_comp_buo,       &
      &      wk_sgs, fwd_Csim)
       end if
 !
@@ -104,10 +104,10 @@
      &        ifld_sgs%i_heat_flux, f_trns_Csim%i_SGS_h_flux
         write(*,*) 'ifld_sgs%i_comp_flux',                              &
      &        ifld_sgs%i_comp_flux, f_trns_Csim%i_SGS_c_flux
-        write(*,*) 'ifld_sgs%i_buoyancy',                               &
-     &        ifld_sgs%i_buoyancy, f_trns_Csim%i_SGS_buoyancy
-        write(*,*) 'ifld_sgs%i_comp_buoyancy',                          &
-     &        ifld_sgs%i_comp_buoyancy, f_trns_Csim%i_SGS_comp_buo
+        write(*,*) 'ifld_sgs%SGS_term%i_SGS_buoyancy',                  &
+     &        ifld_sgs%SGS_term%i_SGS_buoyancy, f_trns_Csim%i_SGS_buoyancy
+        write(*,*) 'ifld_sgs%SGS_term%i_SGS_comp_buo',                  &
+     &        ifld_sgs%SGS_term%i_SGS_comp_buo, f_trns_Csim%i_SGS_comp_buo
       end if
 !
       if(ifld_sgs%i_mom_flux .gt. 0) then
@@ -141,15 +141,15 @@
       end if
 !
 !
-      if(ifld_sgs%i_buoyancy .gt. 0) then
+      if(ifld_sgs%SGS_term%i_SGS_buoyancy .gt. 0) then
         call set_model_coefs_sph_snap(sph_rtp, sph_d_grp,               &
-     &      f_trns_Csim%i_SGS_buoyancy, ifld_sgs%i_buoyancy,            &
+     &      f_trns_Csim%i_SGS_buoyancy, ifld_sgs%SGS_term%i_SGS_buoyancy,            &
      &      wk_sgs, fwd_Csim)
       end if
 !
-      if(ifld_sgs%i_comp_buoyancy .gt. 0) then
+      if(ifld_sgs%SGS_term%i_SGS_comp_buo .gt. 0) then
         call set_model_coefs_sph_snap(sph_rtp, sph_d_grp,               &
-     &      f_trns_Csim%i_SGS_comp_buo, ifld_sgs%i_comp_buoyancy,       &
+     &      f_trns_Csim%i_SGS_comp_buo, ifld_sgs%SGS_term%i_SGS_comp_buo,       &
      &      wk_sgs, fwd_Csim)
       end if
 !

@@ -21,6 +21,8 @@
       use m_constants
       use m_machine_parameter
 !
+      use t_SGS_term_labels
+!
       implicit  none
 !
 !
@@ -49,8 +51,8 @@
         integer (kind=kint) :: i_comp_flux =     izero
         integer (kind=kint) :: i_lorentz =       izero
         integer (kind=kint) :: i_induction =     izero
-        integer (kind=kint) :: i_buoyancy =      izero
-        integer (kind=kint) :: i_comp_buoyancy = izero
+!SGS_term%i_SGS_buoyancy
+        type(SGS_term_address) :: SGS_term
       end type SGS_terms_address
 !
 ! -------------------------------------------------------------------

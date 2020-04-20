@@ -111,22 +111,23 @@
       type(address_each_sph_trans), intent(inout) :: trns_f_SGS
 !
 !
-      if     (ifld_sgs%i_buoyancy*ifld_sgs%i_comp_buoyancy .gt. 0) then
+      if     (ifld_sgs%SGS_term%i_SGS_buoyancy                                       &
+     &          * ifld_sgs%SGS_term%i_SGS_comp_buo .gt. 0) then
         call sel_product_double_buo_coefs                               &
      &     (sph_rtp, sph_d_grp, wk_sgs%num_kinds,                       &
-     &      ifld_sgs%i_buoyancy, ifld_sgs%i_comp_buoyancy,              &
+     &      ifld_sgs%SGS_term%i_SGS_buoyancy, ifld_sgs%SGS_term%i_SGS_comp_buo,      &
      &      wk_sgs%fld_coef, trns_f_SGS%ncomp,                          &
      &      fg_trns%SGS_term%i_SGS_inertia, trns_f_SGS%fld_rtp)
-      else if(ifld_sgs%i_buoyancy .gt. 0) then
+      else if(ifld_sgs%SGS_term%i_SGS_buoyancy .gt. 0) then
         call sel_product_single_buo_coefs                               &
      &     (sph_rtp, sph_d_grp, wk_sgs%num_kinds,                       &
-     &      ifld_sgs%i_buoyancy, wk_sgs%fld_coef,                       &
+     &      ifld_sgs%SGS_term%i_SGS_buoyancy, wk_sgs%fld_coef,                       &
      &      trns_f_SGS%ncomp, fg_trns%SGS_term%i_SGS_inertia,           &
      &      trns_f_SGS%fld_rtp)
-      else if(ifld_sgs%i_comp_buoyancy .gt. 0) then
+      else if(ifld_sgs%SGS_term%i_SGS_comp_buo .gt. 0) then
         call sel_product_single_buo_coefs                               &
      &     (sph_rtp, sph_d_grp, wk_sgs%num_kinds,                       &
-     &      ifld_sgs%i_comp_buoyancy, wk_sgs%fld_coef,                  &
+     &      ifld_sgs%SGS_term%i_SGS_comp_buo, wk_sgs%fld_coef,          &
      &      trns_f_SGS%ncomp, fg_trns%SGS_term%i_SGS_inertia,           &
      &      trns_f_SGS%fld_rtp)
       end if

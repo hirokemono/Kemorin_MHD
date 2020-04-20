@@ -178,22 +178,23 @@
       type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
 !
 !
-      if(dynamic_SPH%ifld_sgs%i_buoyancy .gt. 0) then
+      if(dynamic_SPH%ifld_sgs%SGS_term%i_SGS_buoyancy .gt. 0) then
         call cal_SGS_buo_coef_sph_MHD                                   &
      &     (sph_rtp, dynamic_SPH%sph_d_grp, stab_weight,                &
      &      trns_Csim_fwd%fld_rtp, trns_Csim_fwd%ncomp,                 &
      &      f_trns_sef%i_reynolds_wk, f_trns_sef%i_SGS_buo_wk,          &
-     &      dynamic_SPH%ifld_sgs%i_buoyancy,                            &
-     &      dynamic_SPH%icomp_sgs%i_buoyancy, dynamic_SPH%wk_sgs)
+     &      dynamic_SPH%ifld_sgs%SGS_term%i_SGS_buoyancy,               &
+     &      dynamic_SPH%icomp_sgs%SGS_term%i_SGS_buoyancy, dynamic_SPH%wk_sgs)
       end if
 !
-      if(dynamic_SPH%ifld_sgs%i_comp_buoyancy .gt. 0) then
+      if(dynamic_SPH%ifld_sgs%SGS_term%i_SGS_comp_buo .gt. 0) then
         call cal_SGS_buo_coef_sph_MHD                                   &
      &     (sph_rtp, dynamic_SPH%sph_d_grp, stab_weight,                &
      &      trns_Csim_fwd%fld_rtp, trns_Csim_fwd%ncomp,                 &
      &      f_trns_sef%i_reynolds_wk, f_trns_sef%i_SGS_comp_buo_wk,     &
-     &      dynamic_SPH%ifld_sgs%i_comp_buoyancy,                       &
-     &      dynamic_SPH%icomp_sgs%i_comp_buoyancy, dynamic_SPH%wk_sgs)
+     &      dynamic_SPH%ifld_sgs%SGS_term%i_SGS_comp_buo,               &
+     &      dynamic_SPH%icomp_sgs%SGS_term%i_SGS_comp_buo,              &
+     &      dynamic_SPH%wk_sgs)
       end if
 !
       end subroutine cal_SGS_buo_coefs_sph_MHD 
