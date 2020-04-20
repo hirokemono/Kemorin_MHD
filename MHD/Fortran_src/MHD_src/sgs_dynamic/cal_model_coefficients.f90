@@ -273,7 +273,7 @@
      &       write(*,*) 'cal_sgs_maxwell_t_dynamic'
           call cal_sgs_maxwell_t_dynamic                                &
      &      (ifld_sgs%SGS_term%i_SGS_Lorentz, icomp_sgs%SGS_term%i_SGS_Lorentz,      &
-     &       iphys_elediff%i_magne, iphys_elediff%i_filter_magne,       &
+     &       iphys_elediff%i_magne, iphys_elediff%filter_fld%i_magne,   &
      &       time_d%dt, FEM_prm, SGS_par, fem%mesh, iphys,              &
      &       SGS_MHD_wk%iphys_ele, SGS_MHD_wk%ele_fld, MHD_mesh%fluid,  &
      &       fem_int, FEM_filters, sgs_coefs_nod, SGS_MHD_wk%mk_MHD,    &
@@ -295,7 +295,7 @@
           if (iflag_debug.eq.1) write(*,*) 's_cal_diff_coef_sgs_mxwl'
           call s_cal_diff_coef_sgs_mxwl                                 &
      &     (ifld_diff%SGS_term%i_SGS_Lorentz, icomp_sgs%SGS_term%i_SGS_Lorentz,      &
-     &      icomp_diff%SGS_term%i_SGS_Lorentz, iphys_elediff%i_filter_magne,         &
+     &      icomp_diff%SGS_term%i_SGS_Lorentz, iphys_elediff%filter_fld%i_magne,         &
      &      time_d%dt, FEM_prm, SGS_par, fem%mesh, fem%group,           &
      &      MHD_mesh%fluid, nod_bcs%Vnod_bcs,                           &
      &      surf_bcs%Bsf_bcs, iphys, SGS_MHD_wk%iphys_ele,              &
@@ -315,7 +315,7 @@
           call cal_sgs_induct_t_dynamic                                 &
      &      (ifld_sgs%SGS_term%i_SGS_induction, icomp_sgs%SGS_term%i_SGS_induction,  &
      &       iphys_elediff%i_velo, iphys_elediff%i_magne,               &
-     &       iphys_elediff%filter_fld%i_velo, iphys_elediff%i_filter_magne, &
+     &       iphys_elediff%filter_fld%i_velo, iphys_elediff%filter_fld%i_magne, &
      &       time_d%dt, FEM_prm, SGS_par, fem%mesh, iphys,              &
      &       SGS_MHD_wk%iphys_ele, SGS_MHD_wk%ele_fld,                  &
      &       MHD_mesh%conduct, MHD_prop%cd_prop, fem_int, FEM_filters,  &
@@ -338,7 +338,7 @@
           call s_cal_diff_coef_sgs_induct                               &
      &      (ifld_diff%SGS_term%i_SGS_induction, icomp_sgs%SGS_term%i_SGS_induction, &
      &       icomp_diff%SGS_term%i_SGS_induction, iphys_elediff%filter_fld%i_velo,       &
-     &       iphys_elediff%i_filter_magne,                              &
+     &       iphys_elediff%filter_fld%i_magne,                          &
      &       time_d%dt, FEM_prm, SGS_par, fem%mesh, fem%group,          &
      &       MHD_mesh%fluid, MHD_mesh%conduct,                          &
      &       MHD_prop%cd_prop, surf_bcs%Bsf_bcs, iphys,                 &
