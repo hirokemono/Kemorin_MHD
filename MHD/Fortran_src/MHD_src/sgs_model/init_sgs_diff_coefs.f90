@@ -272,8 +272,8 @@
        if (cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
          if (SGS_param%iflag_SGS_uxb .ne. id_SGS_none) then
            if (cmt_param%iflag_c_uxb .eq. id_SGS_commute_ON) then
-             icomp_diff%i_induction = id
-             ifld_diff%i_induction =  jd
+             icomp_diff%SGS_term%i_SGS_induction = id
+             ifld_diff%SGS_term%i_SGS_induction =  jd
              wk_diff%name(jd) = SGS_induction%name
              diff_coefs%num_comps(jd) = 9
              id = id + diff_coefs%num_comps(jd)
@@ -402,11 +402,11 @@
      &             diff_coefs%num_comps(ifld_diff%i_lorentz),           &
      &             trim(wk_diff%name(ifld_diff%i_lorentz))
         end if
-        if(ifld_diff%i_induction .gt. 0) then
+        if(ifld_diff%SGS_term%i_SGS_induction .gt. 0) then
           write(*,*) 'iak_diff_uxb',                                    &
-     &             ifld_diff%i_induction, icomp_diff%i_induction,       &
-     &             diff_coefs%num_comps(ifld_diff%i_induction),         &
-     &             trim(wk_diff%name(ifld_diff%i_induction))
+     &             ifld_diff%SGS_term%i_SGS_induction, icomp_diff%SGS_term%i_SGS_induction,       &
+     &             diff_coefs%num_comps(ifld_diff%SGS_term%i_SGS_induction),         &
+     &             trim(wk_diff%name(ifld_diff%SGS_term%i_SGS_induction))
         end if
 !
         if(ifld_diff%i_temp .gt. 0) then

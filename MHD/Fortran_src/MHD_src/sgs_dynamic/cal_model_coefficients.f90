@@ -313,7 +313,7 @@
           if (iflag_debug.eq.1)                                         &
      &      write(*,*) 'cal_sgs_induct_t_dynamic'
           call cal_sgs_induct_t_dynamic                                 &
-     &      (ifld_sgs%i_induction, icomp_sgs%i_induction,               &
+     &      (ifld_sgs%SGS_term%i_SGS_induction, icomp_sgs%SGS_term%i_SGS_induction,  &
      &       iphys_elediff%i_velo, iphys_elediff%i_magne,               &
      &       iphys_elediff%i_filter_velo, iphys_elediff%i_filter_magne, &
      &       time_d%dt, FEM_prm, SGS_par, fem%mesh, iphys,              &
@@ -327,7 +327,7 @@
           if (iflag_debug.eq.1)                                         &
      &      write(*,*) 'cal_sgs_induct_t_dynamic_simi'
           call cal_sgs_induct_t_dynamic_simi                            &
-     &      (ifld_sgs%i_induction, icomp_sgs%i_induction,               &
+     &      (ifld_sgs%SGS_term%i_SGS_induction, icomp_sgs%SGS_term%i_SGS_induction,  &
      &       FEM_prm, SGS_par, fem%mesh, iphys, fem_int,                &
      &       FEM_filters, SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%rhs_mat,    &
      &       nod_fld, sgs_coefs, sgs_coefs_nod)
@@ -336,8 +336,8 @@
         if(SGS_par%commute_p%iflag_c_uxb .eq. id_SGS_commute_ON) then
           if(iflag_debug.eq.1)  write(*,*) 's_cal_diff_coef_sgs_induct'
           call s_cal_diff_coef_sgs_induct                               &
-     &      (ifld_diff%i_induction, icomp_sgs%i_induction,              &
-     &       icomp_diff%i_induction, iphys_elediff%i_filter_velo,       &
+     &      (ifld_diff%SGS_term%i_SGS_induction, icomp_sgs%SGS_term%i_SGS_induction, &
+     &       icomp_diff%SGS_term%i_SGS_induction, iphys_elediff%i_filter_velo,       &
      &       iphys_elediff%i_filter_magne,                              &
      &       time_d%dt, FEM_prm, SGS_par, fem%mesh, fem%group,          &
      &       MHD_mesh%fluid, MHD_mesh%conduct,                          &
@@ -354,7 +354,7 @@
         if(SGS_par%model_p%iflag_SGS_uxb .eq. id_SGS_NL_grad) then
           if (iflag_debug.eq.1)  write(*,*) 'cal_sgs_uxb_dynamic'
           call cal_sgs_uxb_dynamic                                      &
-     &       (ifld_sgs%i_induction, icomp_sgs%i_induction,              &
+     &       (ifld_sgs%SGS_term%i_SGS_induction, icomp_sgs%SGS_term%i_SGS_induction, &
      &        iphys_elediff%i_velo, iphys_elediff%i_filter_velo,        &
      &        time_d%dt, FEM_prm, SGS_par, fem%mesh, iphys,             &
      &        SGS_MHD_wk%iphys_ele, SGS_MHD_wk%ele_fld,                 &
@@ -367,7 +367,7 @@
           if (iflag_debug.eq.1)  write(*,*)                             &
      &                          's_cal_sgs_uxb_dynamic_simi'
           call s_cal_sgs_uxb_dynamic_simi                               &
-     &       (ifld_sgs%i_induction, icomp_sgs%i_induction,              &
+     &       (ifld_sgs%SGS_term%i_SGS_induction, icomp_sgs%SGS_term%i_SGS_induction, &
      &        FEM_prm, SGS_par, fem%mesh, iphys, fem_int,               &
      &        FEM_filters, SGS_MHD_wk%FEM_SGS_wk, nod_fld, sgs_coefs)
         end if

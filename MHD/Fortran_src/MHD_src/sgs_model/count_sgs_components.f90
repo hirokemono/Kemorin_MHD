@@ -251,8 +251,8 @@
 !
        if (cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
          if (SGS_param%iflag_SGS_uxb .ne. id_SGS_none) then
-           icomp_sgs%i_induction = i
-           ifld_sgs%i_induction =  j
+           icomp_sgs%SGS_term%i_SGS_induction = i
+           ifld_sgs%SGS_term%i_SGS_induction =  j
            wk_sgs%name(j) = SGS_induction%name
            sgs_coefs%num_comps(j) = 3
            i = i + sgs_coefs%num_comps(j)
@@ -261,8 +261,8 @@
        end if
        if (cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
          if (SGS_param%iflag_SGS_uxb .ne. id_SGS_none) then
-           icomp_sgs%i_induction = i
-           ifld_sgs%i_induction =  j
+           icomp_sgs%SGS_term%i_SGS_induction = i
+           ifld_sgs%SGS_term%i_SGS_induction =  j
            wk_sgs%name(j) = SGS_induction%name
            sgs_coefs%num_comps(j) = 3
            i = i + sgs_coefs%num_comps(j)
@@ -402,11 +402,11 @@
      &             sgs_coefs%num_comps(ifld_sgs%SGS_term%i_SGS_comp_buo),       &
      &             trim(wk_sgs%name(ifld_sgs%SGS_term%i_SGS_comp_buo))
         end if
-        if(ifld_sgs%i_induction .gt. 0) then
+        if(ifld_sgs%SGS_term%i_SGS_induction .gt. 0) then
           write(*,*) 'iak_sgs_uxb',                                     &
-     &               ifld_sgs%i_induction, icomp_sgs%i_induction,       &
-     &               sgs_coefs%num_comps(ifld_sgs%i_induction),         &
-     &               trim(wk_sgs%name(ifld_sgs%i_induction))
+     &               ifld_sgs%SGS_term%i_SGS_induction, icomp_sgs%SGS_term%i_SGS_induction,       &
+     &               sgs_coefs%num_comps(ifld_sgs%SGS_term%i_SGS_induction),         &
+     &               trim(wk_sgs%name(ifld_sgs%SGS_term%i_SGS_induction))
         end if
         if(ifld_sgs%i_comp_flux .gt. 0) then
           write(*,*) 'iak_sgs_cf',                                      &

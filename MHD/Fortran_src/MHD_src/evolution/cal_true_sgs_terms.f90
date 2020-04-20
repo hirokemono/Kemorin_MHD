@@ -193,7 +193,7 @@
            if(iflag_debug.gt.0) write(*,*)                              &
      &                         'lead  ', trim(nod_fld%phys_name(i) )
            call cal_div_sgs_induct_true_pre                             &
-     &       (ifld_diff%i_induction, dt, FEM_prm, SGS_par,              &
+     &       (ifld_diff%SGS_term%i_SGS_induction, dt, FEM_prm, SGS_par, &
      &        nod_comm, node, ele, surf, sf_grp, conduct, cd_prop,      &
      &        nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs, surf_bcs%Bsf_bcs,     &
      &        iphys%base, iphys%forces, iphys%div_forces,               &

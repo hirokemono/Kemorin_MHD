@@ -328,7 +328,7 @@
           if(iflag_debug .ge. iflag_routine_msg)                        &
      &             write(*,*) 'lead  ', trim(nod_fld%phys_name(i))
           call cal_terms_4_magnetic                                     &
-     &       (i_fld, ifld_diff%i_induction, ak_MHD%ak_d_magne, dt,      &
+     &       (i_fld, ifld_diff%SGS_term%i_SGS_induction, ak_MHD%ak_d_magne, dt,      &
      &        FEM_prm, SGS_par%model_p, SGS_par%commute_p,              &
      &        nod_comm, node, ele, surf, conduct, sf_grp, cd_prop,      &
      &        nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs, surf_bcs%Bsf_bcs,     &
@@ -400,7 +400,7 @@
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &             write(*,*) 'lead  ', trim(magnetic_diffusion%name)
         call cal_magnetic_diffusion(ifld_diff%i_magne,                  &
-     &      ifld_diff%i_induction, ak_MHD%ak_d_magne,                   &
+     &      ifld_diff%SGS_term%i_SGS_induction, ak_MHD%ak_d_magne,                   &
      &      FEM_prm, SGS_par%model_p, SGS_par%commute_p,                &
      &      nod_comm, node, ele, surf, conduct, sf_grp,                 &
      &      nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs, surf_bcs%Bsf_bcs,       &

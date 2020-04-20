@@ -195,7 +195,7 @@
       if (iphys%SGS_term%i_SGS_induct_t .gt. 0) then
         if(iflag_debug.gt.0) write(*,*)                                 &
      &         'lead ', trim(induction_tensor%name)
-        call cal_sgs_magne_induction(icomp_sgs%i_induction,             &
+        call cal_sgs_magne_induction(icomp_sgs%SGS_term%i_SGS_induction, &
      &      iphys_elediff%i_velo, iphys_elediff%i_magne, dt,            &
      &      FEM_prm, SGS_param, filter_param, nod_comm, node, ele,      &
      &      conduct, cd_prop, iphys, iphys_ele, ele_fld, jacs, rhs_tbl, &
@@ -208,7 +208,7 @@
         if(iflag_debug.gt.0) write(*,*)                                 &
      &        'lead ', trim(SGS_vecp_induction%name)
         call cal_sgs_uxb_2_monitor                                      &
-     &     (icomp_sgs%i_induction, iphys_elediff%i_velo, dt,            &
+     &     (icomp_sgs%SGS_term%i_SGS_induction, iphys_elediff%i_velo, dt, &
      &      FEM_prm, SGS_param, filter_param, nod_comm, node, ele,      &
      &      conduct, cd_prop, iphys, iphys_ele, ele_fld, jacs, rhs_tbl, &
      &      FEM_elens, filtering, sgs_coefs, mk_MHD%mlump_cd,           &
@@ -321,7 +321,7 @@
         if(iflag_debug.gt.0) write(*,*)                                 &
      &        'lead ', trim(SGS_induction%name)
         call cal_terms_4_magnetic(iphys%SGS_term%i_SGS_induction,       &
-     &     ifld_diff%i_induction, ak_MHD%ak_d_magne, dt,                &
+     &     ifld_diff%SGS_term%i_SGS_induction, ak_MHD%ak_d_magne, dt,                &
      &     FEM_prm, SGS_param, cmt_param, nod_comm, node, ele,          &
      &     surf, conduct, sf_grp, cd_prop,                              &
      &     nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs, surf_bcs%Bsf_bcs,        &
