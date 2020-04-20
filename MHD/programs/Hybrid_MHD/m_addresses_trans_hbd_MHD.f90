@@ -162,6 +162,7 @@
       subroutine check_add_trans_hbd_MHD(ipol)
 !
       type(phys_address), intent(in) :: ipol
+      type(phys_address), intent(in) :: ipol
 !
 !
       write(*,*) 'ncomp_rj_2_xyz  ', ncomp_rj_2_xyz

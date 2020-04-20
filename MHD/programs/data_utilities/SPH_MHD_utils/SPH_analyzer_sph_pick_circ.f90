@@ -100,7 +100,8 @@
 !   Allocate spectr field data
 !
       call set_sph_SGS_MHD_spectr_data                                  &
-     &   (SPH_SGS%SGS_par, SPH_model%MHD_prop, SPH_MHD)
+     &   (SPH_SGS%SGS_par, SPH_model%MHD_prop,                          &
+     &    SPH_MHD%sph, SPH_MHD%ipol, SPH_MHD%fld)
 !
       if (iflag_debug.gt.0 ) write(*,*) 'allocate_vector_for_solver'
       call allocate_vector_for_solver                                   &

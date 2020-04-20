@@ -138,10 +138,11 @@
       if(SGS_param%iflag_dynamic .eq. id_SGS_DYNAMIC_ON) then
         if (iflag_debug.eq.1) write(*,*) 'product_model_coefs_4_sph'
         call product_model_coefs_4_sph(SGS_param, sph%sph_rtp,          &
-     &      WK%trns_SGS%f_trns, WK%trns_SGS%forward, dynamic_SPH)
+     &      WK%trns_SGS%f_trns%SGS_term, WK%trns_SGS%forward,           &
+     &      dynamic_SPH)
       else
         call prod_fixed_sph_SGS_Csim(SGS_param, sph%sph_rtp,            &
-     &      dynamic_SPH%ifld_sgs, WK%trns_SGS%f_trns,                   &
+     &      dynamic_SPH%ifld_sgs, WK%trns_SGS%f_trns%SGS_term,          &
      &      WK%trns_SGS%forward)
       end if
 !

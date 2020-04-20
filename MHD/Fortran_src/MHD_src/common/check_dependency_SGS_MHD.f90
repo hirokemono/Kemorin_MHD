@@ -8,11 +8,13 @@
 !!
 !!@verbatim
 !!      subroutine set_sph_SGS_MHD_spectr_data                          &
-!!     &         (SGS_par, MHD_prop, SPH_MHD)
+!!     &         (SGS_par, MHD_prop, sph, ipol, rj_fld)
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(commutation_control_params), intent(in) :: cmt_param
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
-!!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
+!!        type(sph_grids), intent(in) :: sph
+!!        type(phys_address), intent(inout) :: ipol
+!!        type(phys_data), intent(inout) :: rj_fld
 !!@endverbatim
 !
       module check_dependency_SGS_MHD
@@ -26,10 +28,14 @@
 !
       use t_control_parameter
       use t_SGS_control_parameter
-      use t_SPH_mesh_field_data
       use t_physical_property
+      use t_spheric_parameter
+      use t_phys_address
+      use t_phys_data
+      use t_base_force_labels
 !
       use check_dependency_for_MHD
+      use t_SGS_term_labels
 !
       implicit none
 !
@@ -42,21 +48,22 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_sph_SGS_MHD_spectr_data                            &
-     &         (SGS_par, MHD_prop, SPH_MHD)
+     &         (SGS_par, MHD_prop, sph, ipol, rj_fld)
 !
       type(SGS_paremeters), intent(in) :: SGS_par
       type(MHD_evolution_param), intent(in) :: MHD_prop
+      type(sph_grids), intent(in) :: sph
 !
-      type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
+      type(phys_address), intent(inout) :: ipol
+      type(phys_data), intent(inout) :: rj_fld
 !
 !
-      call set_sph_MHD_sprctr_data(SPH_MHD%sph%sph_rj, MHD_prop,        &
-     &                             SPH_MHD%ipol, SPH_MHD%fld)
+      call set_sph_MHD_sprctr_data(sph%sph_rj, MHD_prop, ipol, rj_fld)
 !
       call check_dependence_4_SPH_SGS(SGS_par%model_p,                  &
      &    MHD_prop%fl_prop, MHD_prop%cd_prop,                           &
      &    MHD_prop%ht_prop, MHD_prop%cp_prop,                           &
-     &    SPH_MHD%ipol, SPH_MHD%fld)
+     &    ipol%filter_fld, ipol%SGS_term, rj_fld)
 !
       end subroutine set_sph_SGS_MHD_spectr_data
 !
@@ -64,14 +71,16 @@
 ! -----------------------------------------------------------------------
 !
       subroutine check_dependence_4_SPH_SGS(SGS_param,                  &
-                fl_prop, cd_prop, ht_prop, cp_prop, iphys, fld)
+     &          fl_prop, cd_prop, ht_prop, cp_prop,                     &
+     &          ipol_fil, ippol_SGS, rj_fld)
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(fluid_property), intent(in) :: fl_prop
       type(conductive_property), intent(in) :: cd_prop
       type(scalar_property), intent(in) :: ht_prop, cp_prop
-      type(phys_address), intent(in) :: iphys
-      type(phys_data), intent(in) :: fld
+      type(base_field_address), intent(in) :: ipol_fil
+      type(SGS_term_address), intent(in) :: ippol_SGS
+      type(phys_data), intent(in) :: rj_fld
 !
       character(len=kchara) :: msg
 !
@@ -80,13 +89,13 @@
         if ( SGS_param%iflag_SGS_m_flux .ne. id_SGS_none) then
           msg = 'solving SGS momentum flux needs'
           call check_missing_field_w_msg                                &
-     &       (fld, msg, iphys%SGS_term%i_SGS_inertia)
+     &       (rj_fld, msg, ippol_SGS%i_SGS_inertia)
         end if
 !
         if(SGS_param%iflag_SGS_lorentz .ne. id_SGS_none) then
           msg = 'solving SGS lorentz term needs'
           call check_missing_field_w_msg                                &
-     &       (fld, msg, iphys%SGS_term%i_SGS_Lorentz)
+     &       (rj_fld, msg, ippol_SGS%i_SGS_Lorentz)
         end if
       end if
 !
@@ -95,7 +104,7 @@
         if ( SGS_param%iflag_SGS_h_flux .ne. id_SGS_none) then
           msg = 'solving SGS heat flux needs'
           call check_missing_field_w_msg                                &
-     &       (fld, msg, iphys%SGS_term%i_SGS_h_flux)
+     &       (rj_fld, msg, ippol_SGS%i_SGS_h_flux)
         end if
       end if
 !
@@ -104,9 +113,9 @@
         if ( SGS_param%iflag_SGS_uxb .ne. id_SGS_none) then
           msg = 'solving SGS magnetic induction needs'
           call check_missing_field_w_msg                                &
-     &       (fld, msg, iphys%SGS_term%i_SGS_induction)
+     &       (rj_fld, msg, ippol_SGS%i_SGS_induction)
           call check_missing_field_w_msg                                &
-     &       (fld, msg, iphys%SGS_term%i_SGS_vp_induct)
+     &       (rj_fld, msg, ippol_SGS%i_SGS_vp_induct)
         end if
       end if
 !
@@ -115,7 +124,7 @@
         if (SGS_param%iflag_SGS_c_flux .ne. id_SGS_none) then
           msg = 'solving SGS compsition flux needs'
           call check_missing_field_w_msg                                &
-     &       (fld, msg, iphys%SGS_term%i_SGS_c_flux)
+     &       (rj_fld, msg, ippol_SGS%i_SGS_c_flux)
         end if
       end if
 !
@@ -125,14 +134,14 @@
      &   .and. SGS_param%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
           msg = 'SGS momentum flux needs'
           call check_missing_field_w_msg                                &
-     &       (fld, msg, iphys%filter_fld%i_velo)
+     &       (rj_fld, msg, ipol_fil%i_velo)
         end if
 !
         if    (SGS_param%iflag_SGS_lorentz .eq. id_SGS_similarity       &
      &   .and. SGS_param%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
           msg = 'SGS Lorentz term needs'
           call check_missing_field_w_msg                                &
-     &       (fld, msg, iphys%filter_fld%i_magne)
+     &       (rj_fld, msg, ipol_fil%i_magne)
         end if
       end if
 !
@@ -163,7 +172,7 @@
      &   .and. SGS_param%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
           msg = 'SGS heat flux needs'
           call check_missing_field_w_msg                                &
-     &       (fld, msg, iphys%filter_fld%i_temp)
+     &       (rj_fld, msg, ipol_fil%i_temp)
         end if
       end if
 !
@@ -173,9 +182,9 @@
      &   .and. SGS_param%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
           msg = 'SGS induction needs'
           call check_missing_field_w_msg                                &
-     &       (fld, msg, iphys%filter_fld%i_velo)
+     &       (rj_fld, msg, ipol_fil%i_velo)
           call check_missing_field_w_msg                                &
-     &       (fld, msg, iphys%filter_fld%i_magne)
+     &       (rj_fld, msg, ipol_fil%i_magne)
         end if
       end if
 !

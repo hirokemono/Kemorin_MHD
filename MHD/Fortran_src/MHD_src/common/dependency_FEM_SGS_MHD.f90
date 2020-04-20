@@ -32,6 +32,8 @@
       use t_SGS_control_parameter
       use t_phys_data
       use t_phys_address
+      use t_base_field_labels
+      use t_SGS_term_labels
       use t_physical_property
 !
       use check_dependency_for_MHD
@@ -69,7 +71,8 @@
 !
       call check_dependence_4_FEM_SGS (SGS_param, cmt_param,            &
      &    MHD_prop%fl_prop, MHD_prop%cd_prop,                           &
-     &    MHD_prop%ht_prop, MHD_prop%cp_prop, iphys, nod_fld)
+     &    MHD_prop%ht_prop, MHD_prop%cp_prop,                           &
+     &    iphys%filter_fld, iphys%SGS_term, nod_fld)
 !
       call alloc_phys_data_type(ele%numele, ele_fld)
       call set_element_field_address(ele_fld, iphys_ele)
@@ -80,14 +83,16 @@
 ! -----------------------------------------------------------------------
 !
       subroutine check_dependence_4_FEM_SGS(SGS_param, cmt_param,       &
-     &          fl_prop, cd_prop, ht_prop, cp_prop, iphys, fld)
+     &          fl_prop, cd_prop, ht_prop, cp_prop,                     &
+     &          iphys_fil, iphys_SGS, fld)
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(commutation_control_params), intent(in) :: cmt_param
       type(fluid_property), intent(in) :: fl_prop
       type(conductive_property), intent(in) :: cd_prop
       type(scalar_property), intent(in) :: ht_prop, cp_prop
-      type(phys_address), intent(in) :: iphys
+      type(base_field_address), intent(in) :: iphys_fil
+      type(SGS_term_address), intent(in) :: iphys_SGS
       type(phys_data), intent(in) :: fld
 !
 !
@@ -98,13 +103,13 @@
         if ( SGS_param%iflag_SGS_m_flux .ne. id_SGS_none) then
           msg = 'solving SGS momentum flux needs'
           call check_missing_field_w_msg                                &
-     &       (fld, msg, iphys%SGS_term%i_SGS_m_flux)
+     &       (fld, msg, iphys_SGS%i_SGS_m_flux)
         end if
 !
         if (SGS_param%iflag_SGS_lorentz .ne. id_SGS_none) then
           msg = 'solving SGS lorentz term needs'
           call check_missing_field_w_msg                                &
-     &       (fld, msg, iphys%SGS_term%i_SGS_maxwell)
+     &       (fld, msg, iphys_SGS%i_SGS_maxwell)
         end if
       end if
 !
@@ -113,7 +118,7 @@
         if ( SGS_param%iflag_SGS_h_flux .ne. id_SGS_none) then
           msg = 'solving SGS heat flux needs'
           call check_missing_field_w_msg                                &
-     &       (fld, msg, iphys%SGS_term%i_SGS_h_flux)
+     &       (fld, msg, iphys_SGS%i_SGS_h_flux)
         end if
       end if
 !
@@ -122,9 +127,9 @@
         if ( SGS_param%iflag_SGS_uxb .ne. id_SGS_none) then
           msg = 'solving SGS magnetic induction needs'
           call check_missing_field_w_msg                                &
-     &       (fld, msg, iphys%SGS_term%i_SGS_induct_t)
+     &       (fld, msg, iphys_SGS%i_SGS_induct_t)
           call check_missing_field_w_msg                                &
-     &       (fld, msg, iphys%SGS_term%i_SGS_vp_induct)
+     &       (fld, msg, iphys_SGS%i_SGS_vp_induct)
         end if
       end if
 !
@@ -133,7 +138,7 @@
         if ( SGS_param%iflag_SGS_uxb .ne. id_SGS_none) then
           msg = 'solving SGS induction needs'
           call check_missing_field_w_msg                                &
-     &       (fld, msg, iphys%SGS_term%i_SGS_vp_induct)
+     &       (fld, msg, iphys_SGS%i_SGS_vp_induct)
         end if
       end if
 !
@@ -142,7 +147,7 @@
         if (SGS_param%iflag_SGS_c_flux .ne. id_SGS_none) then
           msg = 'solving SGS compsition flux needs'
           call check_missing_field_w_msg                                &
-     &       (fld, msg, iphys%SGS_term%i_SGS_c_flux)
+     &       (fld, msg, iphys_SGS%i_SGS_c_flux)
         end if
       end if
 !
@@ -150,15 +155,13 @@
         if ( SGS_param%iflag_SGS_m_flux .eq. id_SGS_similarity          &
      &     .and. SGS_param%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
           msg = 'SGS momentum flux needs'
-          call check_missing_field_w_msg                                &
-     &       (fld, msg, iphys%filter_fld%i_velo)
+          call check_missing_field_w_msg(fld, msg, iphys_fil%i_velo)
         end if
 !
         if (     SGS_param%iflag_SGS_lorentz .eq. id_SGS_similarity     &
      &     .and. SGS_param%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
           msg = 'SGS Lorentz term needs'
-          call check_missing_field_w_msg                                &
-     &       (fld, msg, iphys%filter_fld%i_magne)
+          call check_missing_field_w_msg(fld, msg, iphys_fil%i_magne)
         end if
       end if
 !
@@ -188,8 +191,7 @@
         if    (SGS_param%iflag_SGS_h_flux .eq. id_SGS_similarity        &
      &   .and. SGS_param%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
           msg = 'SGS heat flux needs'
-          call check_missing_field_w_msg                                &
-     &       (fld, msg, iphys%filter_fld%i_temp)
+          call check_missing_field_w_msg(fld, msg, iphys_fil%i_temp)
         end if
       end if
 !
@@ -199,10 +201,8 @@
         if    (SGS_param%iflag_SGS_uxb .eq. id_SGS_similarity           &
      &   .and. SGS_param%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
           msg = 'SGS induction needs'
-          call check_missing_field_w_msg                                &
-     &       (fld, msg, iphys%filter_fld%i_velo)
-          call check_missing_field_w_msg                                &
-     &       (fld, msg, iphys%filter_fld%i_magne)
+          call check_missing_field_w_msg(fld, msg, iphys_fil%i_velo)
+          call check_missing_field_w_msg(fld, msg, iphys_fil%i_magne)
         end if
       end if
 !
@@ -211,8 +211,7 @@
         if (   cmt_param%iflag_commute .gt. id_SGS_commute_OFF          &
      &   .and. SGS_param%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
           msg = 'filterd A is required for dynamic model'
-          call check_missing_field_w_msg                                &
-     &       (fld, msg, iphys%filter_fld%i_vecp)
+          call check_missing_field_w_msg(fld, msg, iphys_fil%i_vecp)
         end if
       end if
 !
