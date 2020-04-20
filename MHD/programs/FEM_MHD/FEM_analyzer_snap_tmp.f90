@@ -331,7 +331,7 @@
      &        'lead radial', trim(div_SGS_m_flux%name)
         call cal_terms_4_momentum(iphys%div_SGS%i_SGS_m_flux,           &
      &      Csims_FEM_MHD%ifld_diff%i_mom_flux,                         &
-     &      Csims_FEM_MHD%ifld_diff%i_lorentz, MHD_step%time_d%dt,      &
+     &      Csims_FEM_MHD%ifld_diff%SGS_term%i_SGS_Lorentz, MHD_step%time_d%dt,      &
      &      FEM_prm, SGS_par%model_p, SGS_par%commute_p,                &
      &      mesh%nod_comm, mesh%node, mesh%ele, mesh%surf,              &
      &      group%surf_grp, MHD_mesh%fluid,                             &

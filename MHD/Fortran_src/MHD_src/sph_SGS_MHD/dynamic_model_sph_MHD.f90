@@ -88,11 +88,11 @@
      &      dynamic_SPH%wk_sgs)
       end if
 !
-      if(dynamic_SPH%ifld_sgs%i_lorentz .gt. 0) then
+      if(dynamic_SPH%ifld_sgs%SGS_term%i_SGS_Lorentz .gt. 0) then
         if (iflag_debug.eq.1) write(*,*) 'cal_dynamic_SGS_4_sph_MHD LZ'
         call cal_dynamic_SGS_4_sph_MHD                                  &
      &     (sph_rtp, dynamic_SPH%sph_d_grp, SGS_param%stab_weight,      &
-     &      n_vector, dynamic_SPH%ifld_sgs%i_lorentz,                   &
+     &      n_vector, dynamic_SPH%ifld_sgs%SGS_term%i_SGS_Lorentz,      &
      &      trns_f_SIMI%fld_rtp(1,fg_trns_SGS%i_SGS_Lorentz),           &
      &      trns_b_wide%fld_rtp(1,bw_trns_wSGS%i_SGS_Lorentz),          &
      &      trns_b_dble%fld_rtp(1,bd_trns_dSGS%i_SGS_Lorentz),          &

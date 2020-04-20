@@ -201,7 +201,7 @@
 !
       if(SGS_par%model_p%iflag_SGS_lorentz .ne. id_SGS_none) then
         call cal_sgs_maxwell                                            &
-     &     (icomp_sgs%i_lorentz, iphys_elediff%i_magne, dt,             &
+     &     (icomp_sgs%SGS_term%i_SGS_Lorentz, iphys_elediff%i_magne, dt,             &
      &      FEM_prm, SGS_par%model_p, SGS_par%filter_p,                 &
      &      nod_comm, node, ele, fluid, iphys, iphys_ele, ele_fld,      &
      &      fem_int%jcs, fem_int%rhs_tbl, FEM_elens, filtering,         &
@@ -243,7 +243,7 @@
      &      fl_prop, cd_prop, iphys%base, iphys%filter_fld,             &
      &      iphys%SGS_term, nod_fld, ak_MHD,                            &
      &      ele_fld%ntot_phys, iphys_ele%base%i_velo, ele_fld%d_fld,    &
-     &      iphys_ele%base, ifld_diff%i_mom_flux, ifld_diff%i_lorentz,  &
+     &      iphys_ele%base, ifld_diff%i_mom_flux, ifld_diff%SGS_term%i_SGS_Lorentz,  &
      &      fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,     &
      &      FEM_elens, diff_coefs,                                      &
      &      mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%f_nl)
@@ -254,7 +254,7 @@
      &      fl_prop, cd_prop, iphys%base, iphys%filter_fld,             &
      &      iphys%SGS_term, nod_fld, ak_MHD,                            &
      &      ele_fld%ntot_phys, iphys_ele%base%i_magne, ele_fld%d_fld,   &
-     &      iphys_ele%base, ifld_diff%i_mom_flux, ifld_diff%i_lorentz,  &
+     &      iphys_ele%base, ifld_diff%i_mom_flux, ifld_diff%SGS_term%i_SGS_Lorentz,  &
      &      fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,     &
      &      FEM_elens, diff_coefs,                                      &
      &      mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%f_nl)
@@ -265,7 +265,7 @@
      &      fl_prop, cd_prop, iphys%base, iphys%filter_fld,             &
      &      iphys%SGS_term, nod_fld, ak_MHD,                            &
      &      ele_fld%ntot_phys, ele_fld%d_fld, iphys_ele%base,           &
-     &      ifld_diff%i_mom_flux, ifld_diff%i_lorentz,                  &
+     &      ifld_diff%i_mom_flux, ifld_diff%SGS_term%i_SGS_Lorentz,     &
      &      fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,     &
      &      FEM_elens, diff_coefs,                                      &
      &      mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%f_nl)
@@ -274,7 +274,7 @@
 !    ---  lead surface boundaries
 !
       call int_surf_velo_pre_ele                                        &
-     &   (ifld_diff%i_mom_flux, ifld_diff%i_lorentz,                    &
+     &   (ifld_diff%i_mom_flux, ifld_diff%SGS_term%i_SGS_Lorentz,       &
      &    ak_MHD%ak_d_velo, FEM_prm%npoint_t_evo_int,                   &
      &    SGS_par%model_p, SGS_par%commute_p,                           &
      &    node, ele, surf, sf_grp, fl_prop,                             &

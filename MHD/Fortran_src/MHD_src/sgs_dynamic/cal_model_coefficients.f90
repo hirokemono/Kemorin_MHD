@@ -272,7 +272,7 @@
           if (iflag_debug.eq.1)                                         &
      &       write(*,*) 'cal_sgs_maxwell_t_dynamic'
           call cal_sgs_maxwell_t_dynamic                                &
-     &      (ifld_sgs%i_lorentz, icomp_sgs%i_lorentz,                   &
+     &      (ifld_sgs%SGS_term%i_SGS_Lorentz, icomp_sgs%SGS_term%i_SGS_Lorentz,      &
      &       iphys_elediff%i_magne, iphys_elediff%i_filter_magne,       &
      &       time_d%dt, FEM_prm, SGS_par, fem%mesh, iphys,              &
      &       SGS_MHD_wk%iphys_ele, SGS_MHD_wk%ele_fld, MHD_mesh%fluid,  &
@@ -284,7 +284,7 @@
           if (iflag_debug.eq.1)                                         &
      &       write(*,*) 'cal_sgs_maxwell_dynamic_simi'
           call cal_sgs_maxwell_dynamic_simi                             &
-     &      (ifld_sgs%i_lorentz, icomp_sgs%i_lorentz, FEM_prm, SGS_par, &
+     &      (ifld_sgs%SGS_term%i_SGS_Lorentz, icomp_sgs%SGS_term%i_SGS_Lorentz, FEM_prm, SGS_par, &
      &       fem%mesh, iphys, fem_int, FEM_filters,                     &
      &       SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%rhs_mat, nod_fld,        &
      &       sgs_coefs, sgs_coefs_nod)
@@ -294,8 +294,8 @@
      &   then
           if (iflag_debug.eq.1) write(*,*) 's_cal_diff_coef_sgs_mxwl'
           call s_cal_diff_coef_sgs_mxwl                                 &
-     &     (ifld_diff%i_lorentz, icomp_sgs%i_lorentz,                   &
-     &      icomp_diff%i_lorentz, iphys_elediff%i_filter_magne,         &
+     &     (ifld_diff%SGS_term%i_SGS_Lorentz, icomp_sgs%SGS_term%i_SGS_Lorentz,      &
+     &      icomp_diff%SGS_term%i_SGS_Lorentz, iphys_elediff%i_filter_magne,         &
      &      time_d%dt, FEM_prm, SGS_par, fem%mesh, fem%group,           &
      &      MHD_mesh%fluid, nod_bcs%Vnod_bcs,                           &
      &      surf_bcs%Bsf_bcs, iphys, SGS_MHD_wk%iphys_ele,              &

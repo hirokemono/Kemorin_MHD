@@ -172,7 +172,7 @@
 !   lead work of Reynolds stress
 !
       call cal_terms_4_momentum(iphys%div_SGS%i_SGS_m_flux,             &
-     &    ifld_diff%i_mom_flux, ifld_diff%i_lorentz, dt,                &
+     &    ifld_diff%i_mom_flux, ifld_diff%SGS_term%i_SGS_Lorentz, dt,   &
      &    FEM_prm, SGS_par%model_p, SGS_par%commute_p,                  &
      &    nod_comm, node, ele, surf, sf_grp, fluid, fl_prop, cd_prop,   &
      &    Vsf_bcs, Bsf_bcs, iphys%base, iphys%forces, iphys%div_forces, &

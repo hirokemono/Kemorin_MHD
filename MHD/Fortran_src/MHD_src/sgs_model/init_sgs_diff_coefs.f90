@@ -259,8 +259,8 @@
 !
          if (SGS_param%iflag_SGS_lorentz .ne. id_SGS_none) then
            if (cmt_param%iflag_c_lorentz .eq. id_SGS_commute_ON) then
-             icomp_diff%i_lorentz = id
-             ifld_diff%i_lorentz = jd
+             icomp_diff%SGS_term%i_SGS_Lorentz = id
+             ifld_diff%SGS_term%i_SGS_Lorentz = jd
              wk_diff%name(jd) = SGS_Lorentz%name
              diff_coefs%num_comps(jd) = 9
              id = id + diff_coefs%num_comps(jd)
@@ -396,11 +396,11 @@
      &             diff_coefs%num_comps(ifld_diff%i_mom_flux),          &
      &             trim(wk_diff%name(ifld_diff%i_mom_flux))
         end if
-        if(ifld_diff%i_lorentz .gt. 0) then
+        if(ifld_diff%SGS_term%i_SGS_Lorentz .gt. 0) then
           write(*,*) 'iak_diff_lor',                                    &
-     &             ifld_diff%i_lorentz, icomp_diff%i_lorentz,           &
-     &             diff_coefs%num_comps(ifld_diff%i_lorentz),           &
-     &             trim(wk_diff%name(ifld_diff%i_lorentz))
+     &             ifld_diff%SGS_term%i_SGS_Lorentz, icomp_diff%SGS_term%i_SGS_Lorentz,           &
+     &             diff_coefs%num_comps(ifld_diff%SGS_term%i_SGS_Lorentz),           &
+     &             trim(wk_diff%name(ifld_diff%SGS_term%i_SGS_Lorentz))
         end if
         if(ifld_diff%SGS_term%i_SGS_induction .gt. 0) then
           write(*,*) 'iak_diff_uxb',                                    &

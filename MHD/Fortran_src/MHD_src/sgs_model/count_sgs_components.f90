@@ -221,8 +221,8 @@
          end if
 !
          if (SGS_param%iflag_SGS_lorentz .ne. id_SGS_none) then
-           icomp_sgs%i_lorentz = i
-           ifld_sgs%i_lorentz =  j
+           icomp_sgs%SGS_term%i_SGS_Lorentz = i
+           ifld_sgs%SGS_term%i_SGS_Lorentz =  j
            wk_sgs%name(j) = SGS_maxwell_tensor%name
            sgs_coefs%num_comps(j) = 6
            i = i + sgs_coefs%num_comps(j)
@@ -384,11 +384,11 @@
      &              sgs_coefs%num_comps(ifld_sgs%i_mom_flux),           &
      &              trim(wk_sgs%name(ifld_sgs%i_mom_flux))
         end if
-        if(ifld_sgs%i_lorentz .gt. 0) then
+        if(ifld_sgs%SGS_term%i_SGS_Lorentz .gt. 0) then
           write(*,*) 'iak_sgs_lor',                                     &
-     &              ifld_sgs%i_lorentz, icomp_sgs%i_lorentz,            &
-     &              sgs_coefs%num_comps(ifld_sgs%i_lorentz),            &
-     &              trim(wk_sgs%name(ifld_sgs%i_lorentz))
+     &              ifld_sgs%SGS_term%i_SGS_Lorentz, icomp_sgs%SGS_term%i_SGS_Lorentz,            &
+     &              sgs_coefs%num_comps(ifld_sgs%SGS_term%i_SGS_Lorentz),            &
+     &              trim(wk_sgs%name(ifld_sgs%SGS_term%i_SGS_Lorentz))
         end if
         if(ifld_sgs%SGS_term%i_SGS_buoyancy .gt. 0) then
           write(*,*) 'iak_sgs_tbuo',                                    &

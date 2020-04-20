@@ -49,8 +49,7 @@
         integer (kind=kint) :: i_heat_flux =     izero
         integer (kind=kint) :: i_mom_flux =      izero
         integer (kind=kint) :: i_comp_flux =     izero
-        integer (kind=kint) :: i_lorentz =       izero
-!SGS_term%i_SGS_induction
+!SGS_term%i_SGS_Lorentz
         type(SGS_term_address) :: SGS_term
       end type SGS_terms_address
 !
