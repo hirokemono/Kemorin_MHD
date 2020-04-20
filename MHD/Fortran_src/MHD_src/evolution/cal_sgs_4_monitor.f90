@@ -173,7 +173,7 @@
         if(iflag_debug.gt.0) write(*,*)                                 &
      &      'lead ', trim(SGS_momentum_flux%name)
         call cal_sgs_momentum_flux                                      &
-     &     (icomp_sgs%i_mom_flux, iphys_elediff%i_velo, dt,             &
+     &     (icomp_sgs%SGS_term%i_SGS_m_flux, iphys_elediff%i_velo, dt,  &
      &      FEM_prm, SGS_param, filter_param, nod_comm, node, ele,      &
      &      fluid, iphys, iphys_ele, ele_fld, jacs, rhs_tbl, FEM_elens, &
      &      filtering, sgs_coefs, sgs_coefs_nod, mk_MHD%mlump_fl,       &
@@ -303,7 +303,7 @@
           if(iflag_debug .ge. iflag_routine_msg)                        &
      &             write(*,*) 'lead  ', trim(nod_fld%phys_name(i))
           call cal_terms_4_momentum                                     &
-     &       (i_fld, ifld_diff%i_mom_flux, ifld_diff%SGS_term%i_SGS_Lorentz, dt,     &
+     &       (i_fld, ifld_diff%SGS_term%i_SGS_m_flux, ifld_diff%SGS_term%i_SGS_Lorentz, dt,     &
      &        FEM_prm, SGS_param, cmt_param, nod_comm, node, ele, surf, &
      &        sf_grp, fluid, fl_prop, cd_prop,                          &
      &        surf_bcs%Vsf_bcs, surf_bcs%Bsf_bcs, iphys%base,           &

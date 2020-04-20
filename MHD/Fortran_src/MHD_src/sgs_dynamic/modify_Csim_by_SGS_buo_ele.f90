@@ -59,13 +59,13 @@
 !
 !
       call clear_model_coefs_2_ele(ele, n_sym_tensor,                   &
-     &    icomp_sgs%i_mom_flux, sgs_coefs%ntot_comp, sgs_coefs%ak)
+     &    icomp_sgs%SGS_term%i_SGS_m_flux, sgs_coefs%ntot_comp, sgs_coefs%ak)
 !
       if(fl_prop%iflag_4_gravity .gt. id_turn_OFF                       &
      &     .and. fl_prop%iflag_4_composit_buo .gt. id_turn_OFF) then
         if(SGS_param%itype_Csym_m_flux .eq. id_CSIM_COMPONENT) then
           call modify_cmpCsim_by_SGS_dbuo_ele(ifld_sgs%SGS_term%i_SGS_comp_buo, &
-     &        ifld_sgs%SGS_term%i_SGS_buoyancy, icomp_sgs%i_mom_flux,                &
+     &        ifld_sgs%SGS_term%i_SGS_buoyancy, icomp_sgs%SGS_term%i_SGS_m_flux,   &
      &        layer_egrp%num_grp, layer_egrp%num_item,                  &
      &        layer_egrp%istack_grp_smp, layer_egrp%item_grp,           &
      &        ele%numele, sgs_coefs%num_field, sgs_coefs%ntot_comp,     &
@@ -73,7 +73,7 @@
         else
           call modify_fldCsim_by_SGS_dbuo_ele                           &
      &       (ifld_sgs%SGS_term%i_SGS_comp_buo, ifld_sgs%SGS_term%i_SGS_buoyancy,            &
-     &        ifld_sgs%i_mom_flux, icomp_sgs%i_mom_flux,                &
+     &        ifld_sgs%SGS_term%i_SGS_m_flux, icomp_sgs%SGS_term%i_SGS_m_flux,                &
      &        layer_egrp%num_grp, layer_egrp%num_item,                  &
      &        layer_egrp%istack_grp_smp, layer_egrp%item_grp,           &
      &        ele%numele, sgs_coefs%num_field, sgs_coefs%ntot_comp,     &
@@ -82,14 +82,14 @@
       else if(fl_prop%iflag_4_gravity .gt. id_turn_OFF) then
         if(SGS_param%itype_Csym_m_flux .eq. id_CSIM_COMPONENT) then
           call modify_cmpCsim_by_SGS_buo_ele                            &
-     &       (ifld_sgs%SGS_term%i_SGS_buoyancy, icomp_sgs%i_mom_flux,                &
+     &       (ifld_sgs%SGS_term%i_SGS_buoyancy, icomp_sgs%SGS_term%i_SGS_m_flux,   &
      &        layer_egrp%num_grp, layer_egrp%num_item,                  &
      &        layer_egrp%istack_grp_smp, layer_egrp%item_grp,           &
      &        ele%numele, sgs_coefs%num_field, sgs_coefs%ntot_comp,     &
      &        wk_sgs%fld_coef, wk_sgs%comp_clip, sgs_coefs%ak)
         else
           call modify_fldCsim_by_SGS_buo_ele(ifld_sgs%SGS_term%i_SGS_buoyancy,       &
-     &        ifld_sgs%i_mom_flux, icomp_sgs%i_mom_flux,                &
+     &        ifld_sgs%SGS_term%i_SGS_m_flux, icomp_sgs%SGS_term%i_SGS_m_flux,     &
      &        layer_egrp%num_grp, layer_egrp%num_item,                  &
      &        layer_egrp%istack_grp_smp, layer_egrp%item_grp,           &
      &        ele%numele, sgs_coefs%num_field, sgs_coefs%ntot_comp,     &
@@ -98,14 +98,14 @@
       else if(fl_prop%iflag_4_composit_buo .gt. id_turn_OFF) then
         if(SGS_param%itype_Csym_m_flux .eq. id_CSIM_COMPONENT) then
           call modify_cmpCsim_by_SGS_buo_ele                            &
-     &       (ifld_sgs%SGS_term%i_SGS_comp_buo, icomp_sgs%i_mom_flux,           &
+     &       (ifld_sgs%SGS_term%i_SGS_comp_buo, icomp_sgs%SGS_term%i_SGS_m_flux,   &
      &        layer_egrp%num_grp, layer_egrp%num_item,                  &
      &        layer_egrp%istack_grp_smp, layer_egrp%item_grp,           &
      &        ele%numele, sgs_coefs%num_field, sgs_coefs%ntot_comp,     &
      &        wk_sgs%fld_coef, wk_sgs%comp_clip, sgs_coefs%ak)
         else
           call modify_fldCsim_by_SGS_buo_ele(ifld_sgs%SGS_term%i_SGS_comp_buo,  &
-     &       ifld_sgs%i_mom_flux, icomp_sgs%i_mom_flux,                 &
+     &       ifld_sgs%SGS_term%i_SGS_m_flux, icomp_sgs%SGS_term%i_SGS_m_flux,   &
      &        layer_egrp%num_grp, layer_egrp%num_item,                  &
      &        layer_egrp%istack_grp_smp, layer_egrp%item_grp,           &
      &        ele%numele, sgs_coefs%num_field, sgs_coefs%ntot_comp,     &

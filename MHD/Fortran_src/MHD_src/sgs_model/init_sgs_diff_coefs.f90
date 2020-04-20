@@ -248,8 +248,8 @@
        if (fl_prop%iflag_scheme .gt. id_no_evolution) then
          if (SGS_param%iflag_SGS_m_flux .ne. id_SGS_none) then
            if (cmt_param%iflag_c_mf .eq. id_SGS_commute_ON) then
-             icomp_diff%i_mom_flux = id
-             ifld_diff%i_mom_flux = jd
+             icomp_diff%SGS_term%i_SGS_m_flux = id
+             ifld_diff%SGS_term%i_SGS_m_flux = jd
              wk_diff%name(jd) = SGS_momentum_flux%name
              diff_coefs%num_comps(jd) = 9
              id = id + diff_coefs%num_comps(jd)
@@ -390,11 +390,11 @@
      &             diff_coefs%num_comps(ifld_diff%i_heat_flux),         &
      &             trim(wk_diff%name(ifld_diff%i_heat_flux))
         end if
-        if(ifld_diff%i_mom_flux .gt. 0) then
+        if(ifld_diff%SGS_term%i_SGS_m_flux .gt. 0) then
           write(*,*) 'iak_diff_mf',                                     &
-     &             ifld_diff%i_mom_flux, icomp_diff%i_mom_flux,         &
-     &             diff_coefs%num_comps(ifld_diff%i_mom_flux),          &
-     &             trim(wk_diff%name(ifld_diff%i_mom_flux))
+     &             ifld_diff%SGS_term%i_SGS_m_flux, icomp_diff%SGS_term%i_SGS_m_flux,         &
+     &             diff_coefs%num_comps(ifld_diff%SGS_term%i_SGS_m_flux),          &
+     &             trim(wk_diff%name(ifld_diff%SGS_term%i_SGS_m_flux))
         end if
         if(ifld_diff%SGS_term%i_SGS_Lorentz .gt. 0) then
           write(*,*) 'iak_diff_lor',                                    &

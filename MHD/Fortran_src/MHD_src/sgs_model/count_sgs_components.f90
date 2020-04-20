@@ -212,8 +212,8 @@
 !
        if (fl_prop%iflag_scheme .gt. id_no_evolution) then
          if (SGS_param%iflag_SGS_m_flux .ne. id_SGS_none) then
-           icomp_sgs%i_mom_flux = i
-           ifld_sgs%i_mom_flux =  j
+           icomp_sgs%SGS_term%i_SGS_m_flux = i
+           ifld_sgs%SGS_term%i_SGS_m_flux =  j
            wk_sgs%name(j) = SGS_momentum_flux%name
            sgs_coefs%num_comps(j) = 6
            i = i + sgs_coefs%num_comps(j)
@@ -378,11 +378,11 @@
      &              sgs_coefs%num_comps(ifld_sgs%i_heat_flux),          &
      &              trim(wk_sgs%name(ifld_sgs%i_heat_flux))
         end if
-        if(ifld_sgs%i_mom_flux .gt. 0) then
+        if(ifld_sgs%SGS_term%i_SGS_m_flux .gt. 0) then
           write(*,*) 'iak_sgs_mf',                                      &
-     &              ifld_sgs%i_mom_flux, icomp_sgs%i_mom_flux,          &
-     &              sgs_coefs%num_comps(ifld_sgs%i_mom_flux),           &
-     &              trim(wk_sgs%name(ifld_sgs%i_mom_flux))
+     &              ifld_sgs%SGS_term%i_SGS_m_flux, icomp_sgs%SGS_term%i_SGS_m_flux,          &
+     &              sgs_coefs%num_comps(ifld_sgs%SGS_term%i_SGS_m_flux),           &
+     &              trim(wk_sgs%name(ifld_sgs%SGS_term%i_SGS_m_flux))
         end if
         if(ifld_sgs%SGS_term%i_SGS_Lorentz .gt. 0) then
           write(*,*) 'iak_sgs_lor',                                     &

@@ -94,8 +94,8 @@
 !
 !
       if(iflag_debug .gt. 0) then
-        write(*,*) 'ifld_sgs%i_mom_flux',                               &
-     &        ifld_sgs%i_mom_flux, f_trns_Csim%i_SGS_m_flux
+        write(*,*) 'ifld_sgs%SGS_term%i_SGS_m_flux',                               &
+     &        ifld_sgs%SGS_term%i_SGS_m_flux, f_trns_Csim%i_SGS_m_flux
         write(*,*) 'ifld_sgs%SGS_term%i_SGS_Lorentz',                   &
      &        ifld_sgs%SGS_term%i_SGS_Lorentz, f_trns_Csim%i_SGS_Lorentz
         write(*,*) 'ifld_sgs%SGS_term%i_SGS_induction',                 &
@@ -111,9 +111,9 @@
      &        ifld_sgs%SGS_term%i_SGS_comp_buo, f_trns_Csim%i_SGS_comp_buo
       end if
 !
-      if(ifld_sgs%i_mom_flux .gt. 0) then
+      if(ifld_sgs%SGS_term%i_SGS_m_flux .gt. 0) then
         call set_model_coefs_sph_snap(sph_rtp, sph_d_grp,               &
-     &      f_trns_Csim%i_SGS_m_flux, ifld_sgs%i_mom_flux,              &
+     &      f_trns_Csim%i_SGS_m_flux, ifld_sgs%SGS_term%i_SGS_m_flux,   &
      &      wk_sgs, fwd_Csim)
       end if
 !

@@ -166,7 +166,7 @@
            if(iflag_debug.gt.0) write(*,*)                              &
      &                         'lead  ', trim(nod_fld%phys_name(i) )
            call cal_div_sgs_m_flux_true_pre                             &
-     &       (ifld_diff%i_mom_flux, ifld_diff%SGS_term%i_SGS_Lorentz, dt,            &
+     &       (ifld_diff%SGS_term%i_SGS_m_flux, ifld_diff%SGS_term%i_SGS_Lorentz, dt,            &
      &        FEM_prm, SGS_par, nod_comm, node, ele,                    &
      &        surf, sf_grp, fluid, fl_prop, cd_prop,                    &
      &        surf_bcs%Vsf_bcs, surf_bcs%Bsf_bcs,                       &
@@ -179,7 +179,7 @@
            if(iflag_debug.gt.0) write(*,*)                              &
      &                         'lead  ', trim(nod_fld%phys_name(i) )
            call cal_div_sgs_maxwell_true_pre                            &
-     &        (ifld_diff%i_mom_flux, ifld_diff%SGS_term%i_SGS_Lorentz, dt,           &
+     &        (ifld_diff%SGS_term%i_SGS_m_flux, ifld_diff%SGS_term%i_SGS_Lorentz, dt,           &
      &         FEM_prm, SGS_par, nod_comm, node, ele,                   &
      &         surf, sf_grp, fluid, fl_prop, cd_prop,                   &
      &         surf_bcs%Vsf_bcs, surf_bcs%Bsf_bcs, iphys%base,          &

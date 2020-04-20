@@ -233,7 +233,7 @@
         if (SGS_par%model_p%iflag_SGS_m_flux .eq. id_SGS_NL_grad) then
           if (iflag_debug.eq.1)  write(*,*) 'cal_sgs_m_flux_dynamic'
           call cal_sgs_m_flux_dynamic                                   &
-     &       (ifld_sgs%i_mom_flux, icomp_sgs%i_mom_flux,                &
+     &       (ifld_sgs%SGS_term%i_SGS_m_flux, icomp_sgs%SGS_term%i_SGS_m_flux,    &
      &        iphys_elediff%i_velo, iphys_elediff%i_filter_velo,        &
      &        time_d%dt, FEM_prm, SGS_par, fem%mesh, iphys,             &
      &        SGS_MHD_wk%iphys_ele, SGS_MHD_wk%ele_fld, MHD_mesh%fluid, &
@@ -245,7 +245,7 @@
           if (iflag_debug.eq.1)                                         &
      &      write(*,*) 's_cal_sgs_m_flux_dynamic_simi'
           call s_cal_sgs_m_flux_dynamic_simi                            &
-     &       (ifld_sgs%i_mom_flux, icomp_sgs%i_mom_flux,                &
+     &       (ifld_sgs%SGS_term%i_SGS_m_flux, icomp_sgs%SGS_term%i_SGS_m_flux,   &
      &        FEM_prm, SGS_par, fem%mesh, iphys, fem_int,               &
      &        FEM_filters, SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%rhs_mat,   &
      &        nod_fld, sgs_coefs, sgs_coefs_nod)
@@ -254,8 +254,8 @@
         if(SGS_par%commute_p%iflag_c_mf .eq. id_SGS_commute_ON) then
           if (iflag_debug.eq.1)  write(*,*) 's_cal_diff_coef_sgs_mf'
           call s_cal_diff_coef_sgs_mf                                   &
-     &     (ifld_diff%i_mom_flux, icomp_sgs%i_mom_flux,                 &
-     &      icomp_diff%i_mom_flux, iphys_elediff%i_filter_velo,         &
+     &     (ifld_diff%SGS_term%i_SGS_m_flux, icomp_sgs%SGS_term%i_SGS_m_flux,     &
+     &      icomp_diff%SGS_term%i_SGS_m_flux, iphys_elediff%i_filter_velo,         &
      &      time_d%dt, FEM_prm, SGS_par, fem%mesh, fem%group,           &
      &      nod_bcs%Vnod_bcs, surf_bcs%Vsf_bcs, iphys,                  &
      &      SGS_MHD_wk%iphys_ele, SGS_MHD_wk%ele_fld, MHD_mesh%fluid,   &

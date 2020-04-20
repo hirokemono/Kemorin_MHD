@@ -65,7 +65,7 @@
       type(address_each_sph_trans), intent(inout) :: trns_f_SGS
 !
 !
-      if(ifld_sgs%i_mom_flux .gt. 0) then
+      if(ifld_sgs%SGS_term%i_SGS_m_flux .gt. 0) then
         call product_fixed_model_coefs(SGS_param%SGS_mf_factor,         &
      &      sph_rtp, fg_trns_SGS%i_SGS_inertia, n_vector,               &
      &      trns_f_SGS%ncomp, trns_f_SGS%fld_rtp)
@@ -110,12 +110,12 @@
       type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
 !
 !
-      if(dynamic_SPH%ifld_sgs%i_mom_flux .gt. 0) then
+      if(dynamic_SPH%ifld_sgs%SGS_term%i_SGS_m_flux .gt. 0) then
         if (iflag_debug.eq.1) write(*,*) 'sel_product_model_coefs MF'
         call sel_product_model_coefs                                    &
      &     (SGS_param%SGS_mf_factor, sph_rtp, dynamic_SPH%sph_d_grp,    &
      &      n_vector, fg_trns_SGS%i_SGS_inertia,                   &
-     &      dynamic_SPH%ifld_sgs%i_mom_flux,                            &
+     &      dynamic_SPH%ifld_sgs%SGS_term%i_SGS_m_flux,                            &
      &      dynamic_SPH%wk_sgs, trns_f_SGS)
       end if
 !

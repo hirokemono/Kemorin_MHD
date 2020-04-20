@@ -151,18 +151,18 @@
 !   lead SGS momentum flux using original model coefficient
 !
       call clear_model_coefs_2_ele                                      &
-     &   (ele, n_sym_tensor, icomp_sgs%i_mom_flux, sgs_coefs%ntot_comp, &
+     &   (ele, n_sym_tensor, icomp_sgs%SGS_term%i_SGS_m_flux, sgs_coefs%ntot_comp, &
      &    sgs_coefs%ak)
       call set_model_coefs_2_ele                                        &
      &   (ele, SGS_par%model_p%itype_Csym_m_flux,                       &
-     &    n_sym_tensor, ifld_sgs%i_mom_flux, icomp_sgs%i_mom_flux,      &
+     &    n_sym_tensor, ifld_sgs%SGS_term%i_SGS_m_flux, icomp_sgs%SGS_term%i_SGS_m_flux,      &
      &    layer_tbl%e_grp%num_grp, layer_tbl%e_grp%num_item,            &
      &    layer_tbl%e_grp%istack_grp_smp, layer_tbl%e_grp%item_grp,     &
      &    sgs_coefs%num_field, sgs_coefs%ntot_comp,                     &
      &    wk_sgs%fld_clip, wk_sgs%comp_clip, sgs_coefs%ak)
 !
       call cal_sgs_momentum_flux                                        &
-     &   (icomp_sgs%i_mom_flux, iphys_elediff%i_velo, dt,               &
+     &   (icomp_sgs%SGS_term%i_SGS_m_flux, iphys_elediff%i_velo, dt,    &
      &    FEM_prm, SGS_par%model_p, SGS_par%filter_p,                   &
      &    nod_comm, node, ele, fluid, iphys, iphys_ele, ele_fld,        &
      &    fem_int%jcs, fem_int%rhs_tbl, FEM_elens, filtering,           &
@@ -172,7 +172,7 @@
 !   lead work of Reynolds stress
 !
       call cal_terms_4_momentum(iphys%div_SGS%i_SGS_m_flux,             &
-     &    ifld_diff%i_mom_flux, ifld_diff%SGS_term%i_SGS_Lorentz, dt,   &
+     &    ifld_diff%SGS_term%i_SGS_m_flux, ifld_diff%SGS_term%i_SGS_Lorentz, dt,   &
      &    FEM_prm, SGS_par%model_p, SGS_par%commute_p,                  &
      &    nod_comm, node, ele, surf, sf_grp, fluid, fl_prop, cd_prop,   &
      &    Vsf_bcs, Bsf_bcs, iphys%base, iphys%forces, iphys%div_forces, &
