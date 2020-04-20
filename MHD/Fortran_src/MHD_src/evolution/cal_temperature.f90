@@ -215,7 +215,7 @@
      &      i_field, iphys%filter_fld%i_temp,                           &
      &      iphys%base%i_velo, iphys%filter_fld%i_velo,                 &
      &      iphys%SGS_term%i_SGS_h_flux,                                &
-     &      icomp_sgs%SGS_term%i_SGS_h_flux, iphys_elediff%i_velo, SGS_param,     &
+     &      icomp_sgs%SGS_term%i_SGS_h_flux, iphys_elediff%base%i_velo, SGS_param,     &
      &      filter_param, mesh%nod_comm, mesh%node, mesh%ele, fluid,    &
      &      iphys_ele, ele_fld, jacs, rhs_tbl, FEM_elens, filtering,    &
      &      sgs_coefs, sgs_coefs_nod, mlump_fl, wk_filter,              &

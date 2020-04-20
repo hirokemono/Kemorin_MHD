@@ -37,19 +37,15 @@
       end type SGS_coefficients_type
 !
       type SGS_terms_address
-        integer (kind=kint) :: i_velo =  izero
+!        integer (kind=kint) :: i_velo =  izero
         integer (kind=kint) :: i_temp =  izero
         integer (kind=kint) :: i_magne = izero
         integer (kind=kint) :: i_light = izero
 !
-!        integer (kind=kint) :: i_filter_velo =  izero
-!        integer (kind=kint) :: i_filter_temp =  izero
-!        integer (kind=kint) :: i_filter_magne = izero
-!        integer (kind=kint) :: i_filter_light = izero
-!filter_fld%i_magne
+!base%i_velo
 !
 !>        Structure of base fields
-!        type(base_field_address) :: base
+        type(base_field_address) :: base
 !>        Structure of filtered fields
         type(base_field_address) :: filter_fld
 !>        Structure of SGS terms

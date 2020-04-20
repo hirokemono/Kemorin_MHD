@@ -178,7 +178,7 @@
 !     &    rhs_mat%fem_wk, fem_sq%msq, rel_correct)
 !
       do iloop = 0, FEM_prm%maxiter_stokes
-        call cal_mod_potential(ifld_diff%i_velo,                        &
+        call cal_mod_potential(ifld_diff%base%i_velo,                   &
      &      FEM_prm, SGS_par%model_p, SGS_par%commute_p,                &
      &      mesh%node, mesh%ele, mesh%surf, fluid,                      &
      &      group%surf_grp, Vnod_bcs, Vsf_bcs, Psf_bcs,                 &

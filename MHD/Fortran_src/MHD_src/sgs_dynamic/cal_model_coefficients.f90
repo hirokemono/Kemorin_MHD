@@ -132,7 +132,7 @@
      &        iphys%base%i_velo, iphys%filter_fld%i_velo,               &
      &        iphys%SGS_term%i_SGS_h_flux,                              &
      &        ifld_sgs%SGS_term%i_SGS_h_flux, icomp_sgs%SGS_term%i_SGS_h_flux,    &
-     &        iphys_elediff%i_velo, iphys_elediff%filter_fld%i_velo,        &
+     &        iphys_elediff%base%i_velo, iphys_elediff%filter_fld%i_velo,        &
      &        SGS_par, fem%mesh, iphys,                                 &
      &        SGS_MHD_wk%iphys_ele, SGS_MHD_wk%ele_fld,                 &
      &        MHD_mesh%fluid, fem_int, FEM_filters, sgs_coefs_nod,      &
@@ -186,7 +186,7 @@
      &        iphys%base%i_velo, iphys%filter_fld%i_velo,               &
      &        iphys%SGS_term%i_SGS_c_flux,                              &
      &        ifld_sgs%SGS_term%i_SGS_c_flux, icomp_sgs%SGS_term%i_SGS_c_flux,              &
-     &        iphys_elediff%i_velo, iphys_elediff%filter_fld%i_velo,        &
+     &        iphys_elediff%base%i_velo, iphys_elediff%filter_fld%i_velo,        &
      &        SGS_par, fem%mesh, iphys,                                 &
      &        SGS_MHD_wk%iphys_ele, SGS_MHD_wk%ele_fld,                 &
      &        MHD_mesh%fluid, fem_int, FEM_filters, sgs_coefs_nod,      &
@@ -234,7 +234,7 @@
           if (iflag_debug.eq.1)  write(*,*) 'cal_sgs_m_flux_dynamic'
           call cal_sgs_m_flux_dynamic                                   &
      &       (ifld_sgs%SGS_term%i_SGS_m_flux, icomp_sgs%SGS_term%i_SGS_m_flux,    &
-     &        iphys_elediff%i_velo, iphys_elediff%filter_fld%i_velo,        &
+     &        iphys_elediff%base%i_velo, iphys_elediff%filter_fld%i_velo,        &
      &        time_d%dt, FEM_prm, SGS_par, fem%mesh, iphys,             &
      &        SGS_MHD_wk%iphys_ele, SGS_MHD_wk%ele_fld, MHD_mesh%fluid, &
      &        fem_int, FEM_filters, sgs_coefs_nod, SGS_MHD_wk%mk_MHD,   &
@@ -314,7 +314,7 @@
      &      write(*,*) 'cal_sgs_induct_t_dynamic'
           call cal_sgs_induct_t_dynamic                                 &
      &      (ifld_sgs%SGS_term%i_SGS_induction, icomp_sgs%SGS_term%i_SGS_induction,  &
-     &       iphys_elediff%i_velo, iphys_elediff%i_magne,               &
+     &       iphys_elediff%base%i_velo, iphys_elediff%i_magne,               &
      &       iphys_elediff%filter_fld%i_velo, iphys_elediff%filter_fld%i_magne, &
      &       time_d%dt, FEM_prm, SGS_par, fem%mesh, iphys,              &
      &       SGS_MHD_wk%iphys_ele, SGS_MHD_wk%ele_fld,                  &
@@ -355,7 +355,7 @@
           if (iflag_debug.eq.1)  write(*,*) 'cal_sgs_uxb_dynamic'
           call cal_sgs_uxb_dynamic                                      &
      &       (ifld_sgs%SGS_term%i_SGS_induction, icomp_sgs%SGS_term%i_SGS_induction, &
-     &        iphys_elediff%i_velo, iphys_elediff%filter_fld%i_velo,        &
+     &        iphys_elediff%base%i_velo, iphys_elediff%filter_fld%i_velo,        &
      &        time_d%dt, FEM_prm, SGS_par, fem%mesh, iphys,             &
      &        SGS_MHD_wk%iphys_ele, SGS_MHD_wk%ele_fld,                 &
      &        MHD_mesh%conduct, MHD_prop%cd_prop, fem_int, FEM_filters, &

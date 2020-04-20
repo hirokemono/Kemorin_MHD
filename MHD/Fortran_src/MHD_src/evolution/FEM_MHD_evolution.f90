@@ -322,7 +322,7 @@
      &      SGS_MHD_wk%rhs_mat, nod_fld, SGS_MHD_wk%ele_fld,            &
      &      sgs_coefs, fem_sq)
         call update_with_velocity                                       &
-     &     (ifld_diff%i_velo, icomp_diff%i_velo, iphys_elediff%i_velo,  &
+     &     (ifld_diff%base%i_velo, icomp_diff%base%i_velo, iphys_elediff%base%i_velo,  &
      &      iphys_elediff%filter_fld%i_velo, time_d%i_time_step, time_d%dt, &
      &      FEM_prm, SGS_par, fem%mesh, fem%group, MHD_mesh%fluid,      &
      &      surf_bcs%Vsf_bcs, surf_bcs%Psf_bcs,                         &
@@ -368,7 +368,7 @@
 !
       if(iphys%base%i_velo .ne. 0) then
         call update_with_velocity                                       &
-     &     (ifld_diff%i_velo, icomp_diff%i_velo, iphys_elediff%i_velo,  &
+     &     (ifld_diff%base%i_velo, icomp_diff%base%i_velo, iphys_elediff%base%i_velo,  &
      &      iphys_elediff%filter_fld%i_velo, time_d%i_time_step, time_d%dt, &
      &      FEM_prm, SGS_par, fem%mesh, fem%group, MHD_mesh%fluid,      &
      &      surf_bcs%Vsf_bcs, surf_bcs%Psf_bcs,                         &
@@ -594,7 +594,7 @@
      &      SGS_MHD_wk%rhs_mat, nod_fld, SGS_MHD_wk%ele_fld,            &
      &      sgs_coefs, fem_sq)
         call update_with_velocity                                       &
-     &     (ifld_diff%i_velo, icomp_diff%i_velo, iphys_elediff%i_velo,  &
+     &     (ifld_diff%base%i_velo, icomp_diff%base%i_velo, iphys_elediff%base%i_velo,  &
      &      iphys_elediff%filter_fld%i_velo, time_d%i_time_step, time_d%dt, &
      &      FEM_prm, SGS_par, fem%mesh, fem%group,                      &
      &      fluid, surf_bcs%Vsf_bcs, surf_bcs%Psf_bcs,                  &

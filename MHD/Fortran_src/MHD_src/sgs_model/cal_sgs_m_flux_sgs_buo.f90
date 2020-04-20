@@ -162,7 +162,7 @@
      &    wk_sgs%fld_clip, wk_sgs%comp_clip, sgs_coefs%ak)
 !
       call cal_sgs_momentum_flux                                        &
-     &   (icomp_sgs%SGS_term%i_SGS_m_flux, iphys_elediff%i_velo, dt,    &
+     &   (icomp_sgs%SGS_term%i_SGS_m_flux, iphys_elediff%base%i_velo, dt,    &
      &    FEM_prm, SGS_par%model_p, SGS_par%filter_p,                   &
      &    nod_comm, node, ele, fluid, iphys, iphys_ele, ele_fld,        &
      &    fem_int%jcs, fem_int%rhs_tbl, FEM_elens, filtering,           &

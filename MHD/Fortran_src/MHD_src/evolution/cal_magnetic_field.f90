@@ -153,7 +153,7 @@
 !
       if (iflag_debug .gt. 0)  write(*,*) 'vector_p_pre'
       call cal_vector_p_pre(ifld_diff%i_magne, icomp_sgs%SGS_term%i_SGS_induction,   &
-     &    iphys_elediff%i_velo, ak_d_magne, dt, FEM_prm,                &
+     &    iphys_elediff%base%i_velo, ak_d_magne, dt, FEM_prm,           &
      &    SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,         &
      &    mesh%nod_comm, mesh%node, mesh%ele, mesh%surf, conduct,       &
      &    group%surf_grp, cd_prop, Bnod_bcs, Asf_bcs, iphys, iphys_ele, &
@@ -303,7 +303,7 @@
       if (iflag_debug.eq.1) write(*,*) 'cal_magnetic_field_pre'
       call cal_magnetic_field_pre                                       &
      &   (icomp_sgs%SGS_term%i_SGS_induction, ifld_diff%i_magne,        &
-     &    ifld_diff%SGS_term%i_SGS_induction, iphys_elediff%i_velo,                  &
+     &    ifld_diff%SGS_term%i_SGS_induction, iphys_elediff%base%i_velo, &
      &    iphys_elediff%i_magne, ak_d_magne, dt, FEM_prm,               &
      &    SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,         &
      &    mesh%nod_comm, mesh%node, mesh%ele, mesh%surf, conduct,       &

@@ -104,7 +104,7 @@
         call sel_int_poisson_mat                                        &
      &     (mesh%ele, g_FEM, jac_3d_l, rhs_tbl, MG_mat_fl_l,            &
      &      FEM_elens, iflag_commute_magne, num_int,                    &
-     &      diff_coefs%num_field, ifld_diff%i_velo, diff_coefs%ak,      &
+     &      diff_coefs%num_field, ifld_diff%base%i_velo, diff_coefs%ak,      &
      &      ifilter_final, fem_wk, mat_press)
       end if
 !
@@ -157,7 +157,7 @@
       if (fl_prop%iflag_scheme .ge. id_Crank_nicolson) then
         call sel_int_diffuse3_crank_mat(mesh%ele, g_FEM, jac_3d,        &
      &      rhs_tbl, MG_mat_fl_q, FEM_elens, num_int,                   &
-     &      diff_coefs%num_field, ifld_diff%i_velo, diff_coefs%ak,      &
+     &      diff_coefs%num_field, ifld_diff%base%i_velo, diff_coefs%ak,      &
      &      dt, fl_prop%coef_imp, ak_MHD%ak_d_velo, ifilter_final,      &
      &      fem_wk, mat_velo)
       end if

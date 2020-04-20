@@ -307,7 +307,7 @@
           if(iflag_debug .ge. iflag_routine_msg)                        &
      &             write(*,*) 'lead  ', trim(nod_fld%phys_name(i))
           call cal_terms_4_momentum                                     &
-     &       (i_fld, ifld_diff%i_velo, ifld_diff%SGS_term%i_SGS_Lorentz, dt,         &
+     &       (i_fld, ifld_diff%base%i_velo, ifld_diff%SGS_term%i_SGS_Lorentz, dt,         &
      &        FEM_prm, SGS_par%model_p, SGS_par%commute_p, nod_comm,    &
      &        node, ele, surf, sf_grp, fluid, fl_prop, cd_prop,         &
      &        surf_bcs%Vsf_bcs, surf_bcs%Bsf_bcs, iphys%base,           &
@@ -376,7 +376,7 @@
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &             write(*,*) 'lead  ', trim(viscous_diffusion%name)
         call cal_viscous_diffusion                                      &
-     &     (ifld_diff%i_velo, ifld_diff%i_velo, ifld_diff%SGS_term%i_SGS_Lorentz,    &
+     &     (ifld_diff%base%i_velo, ifld_diff%base%i_velo, ifld_diff%SGS_term%i_SGS_Lorentz,    &
      &      FEM_prm, SGS_par%model_p, SGS_par%commute_p,                &
      &      nod_comm, node, ele, surf, sf_grp, fluid, fl_prop,          &
      &      nod_bcs%Vnod_bcs, surf_bcs%Vsf_bcs, surf_bcs%Bsf_bcs,       &

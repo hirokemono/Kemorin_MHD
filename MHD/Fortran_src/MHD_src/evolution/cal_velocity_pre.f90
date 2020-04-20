@@ -191,7 +191,7 @@
 !
       if(SGS_par%model_p%iflag_SGS_m_flux .ne. id_SGS_none) then
         call cal_sgs_momentum_flux                                      &
-     &     (icomp_sgs%SGS_term%i_SGS_m_flux, iphys_elediff%i_velo, dt,  &
+     &     (icomp_sgs%SGS_term%i_SGS_m_flux, iphys_elediff%base%i_velo, dt,  &
      &      FEM_prm, SGS_par%model_p, SGS_par%filter_p,                 &
      &      nod_comm, node, ele, fluid, iphys, iphys_ele, ele_fld,      &
      &      fem_int%jcs, fem_int%rhs_tbl, FEM_elens, filtering,         &
@@ -221,7 +221,7 @@
      &     (SGS_par%model_p%ifilter_final, fluid%istack_ele_fld_smp,    &
      &      FEM_prm%npoint_t_evo_int, node, ele, nod_fld,               &
      &      fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,     &
-     &      FEM_elens, diff_coefs, ifld_diff%i_velo, fl_prop%coef_exp,  &
+     &      FEM_elens, diff_coefs, ifld_diff%base%i_velo, fl_prop%coef_exp,  &
      &      ak_MHD%ak_d_velo, iphys%base%i_velo, rhs_mat%fem_wk,        &
      &      rhs_mat%f_l)
       end if
@@ -299,7 +299,7 @@
       else if(fl_prop%iflag_scheme .eq. id_Crank_nicolson) then
         call cal_velo_pre_lumped_crank(SGS_par%commute_p%iflag_c_velo,  &
      &      SGS_par%model_p%ifilter_final,                              &
-     &      ifld_diff%i_velo, ak_MHD%ak_d_velo, dt, FEM_prm,            &
+     &      ifld_diff%base%i_velo, ak_MHD%ak_d_velo, dt, FEM_prm,       &
      &      nod_comm, node, ele, fluid, fl_prop,                        &
      &      Vnod_bcs, iphys, iphys_ele, ele_fld, fem_int%jcs%g_FEM,     &
      &      fem_int%jcs%jac_3d, fem_int%rhs_tbl, FEM_elens, diff_coefs, &
@@ -310,7 +310,7 @@
         call cal_velo_pre_consist_crank(SGS_par%commute_p%iflag_c_velo, &
      &      SGS_par%model_p%ifilter_final,                              &
      &      iphys%base%i_velo, iphys%exp_work%i_pre_mom,                &
-     &      ifld_diff%i_velo, ak_MHD%ak_d_velo, dt, FEM_prm,            &
+     &      ifld_diff%base%i_velo, ak_MHD%ak_d_velo, dt, FEM_prm,       &
      &      node, ele, fluid, fl_prop, Vnod_bcs,                        &
      &      fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,     &
      &      FEM_elens, diff_coefs, Vmatrix, MG_vector, mhd_fem_wk,      &
@@ -383,7 +383,7 @@
       if (iflag_debug.eq.1) write(*,*) 'int_vol_velo_co'
       call int_vol_solenoid_co(FEM_prm%npoint_poisson_int,              &
      &    SGS_par%model_p%ifilter_final, fluid%istack_ele_fld_smp,      &
-     &    iphys%exp_work%i_p_phi, ifld_diff%i_velo, node, ele, nod_fld, &
+     &    iphys%exp_work%i_p_phi, ifld_diff%base%i_velo, node, ele, nod_fld, &
      &    fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%jcs%jac_3d_l,  &
      &    fem_int%rhs_tbl, FEM_elens, diff_coefs,                       &
      &    rhs_mat%fem_wk, rhs_mat%f_nl)
@@ -399,7 +399,7 @@
      &      FEM_elens, FEM_prm%npoint_poisson_int,                      &
      &      Psf_bcs%sgs%ngrp_sf_dat, Psf_bcs%sgs%id_grp_sf_dat,         &
      &      SGS_par%model_p%ifilter_final, diff_coefs%num_field,        &
-     &      ifld_diff%i_velo, diff_coefs%ak, iphys%exp_work%i_p_phi,    &
+     &      ifld_diff%base%i_velo, diff_coefs%ak, iphys%exp_work%i_p_phi,    &
      &      rhs_mat%fem_wk, rhs_mat%surf_wk, rhs_mat%f_nl)
       end if
 !
@@ -408,7 +408,7 @@
      &  .or. FEM_prm%iflag_imp_correct .eq. id_Crank_nicolson_cmass)    &
      & then
         call cal_velocity_co_imp                                        &
-     &     (iphys%base%i_velo, ifld_diff%i_velo, ak_MHD%ak_d_velo, dt,  &
+     &     (iphys%base%i_velo, ifld_diff%base%i_velo, ak_MHD%ak_d_velo, dt,  &
      &      FEM_prm, SGS_par%model_p, SGS_par%commute_p,                &
      &      nod_comm, node, ele, fluid, fl_prop,                        &
      &      Vnod_bcs, iphys_ele, ele_fld, fem_int%jcs%g_FEM,            &

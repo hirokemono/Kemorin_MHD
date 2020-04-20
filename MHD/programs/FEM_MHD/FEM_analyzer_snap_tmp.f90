@@ -369,7 +369,7 @@
      &        'lead ', trim(SGS_vecp_induction%name)
         call cal_sgs_uxb_2_monitor                                      &
      &     (Csims_FEM_MHD%icomp_sgs%SGS_term%i_SGS_induction,           &
-     &      Csims_FEM_MHD%iphys_elediff%i_velo, MHD_step%time_d%dt,     &
+     &      Csims_FEM_MHD%iphys_elediff%base%i_velo, MHD_step%time_d%dt,     &
      &      FEM_prm, SGS_par%model_p, SGS_par%filter_p,                 &
      &      mesh%nod_comm, mesh%node, mesh%ele,                         &
      &      MHD_mesh%conduct, MHD_prop%cd_prop,                         &

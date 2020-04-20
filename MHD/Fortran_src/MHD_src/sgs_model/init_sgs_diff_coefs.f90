@@ -323,8 +323,8 @@
       if (fl_prop%iflag_scheme .gt. id_no_evolution) then
         if(SGS_param%iflag_SGS .ne. id_SGS_none                        &
      &      .and. cmt_param%iflag_c_velo .eq. id_SGS_commute_ON) then
-            icomp_diff%i_velo = id
-            ifld_diff%i_velo = jd
+            icomp_diff%base%i_velo = id
+            ifld_diff%base%i_velo = jd
             wk_diff%name(jd) = velocity%name
             diff_coefs%num_comps(jd) = 9
             id = id + diff_coefs%num_comps(jd)
@@ -415,10 +415,10 @@
      &             diff_coefs%num_comps(ifld_diff%i_temp),              &
      &             trim(wk_diff%name(ifld_diff%i_temp))
         end if
-        if(ifld_diff%i_velo .gt. 0) then
-          write(*,*) 'iak_diff_v', ifld_diff%i_velo, icomp_diff%i_velo, &
-     &             diff_coefs%num_comps(ifld_diff%i_velo),              &
-     &             trim(wk_diff%name(ifld_diff%i_velo))
+        if(ifld_diff%base%i_velo .gt. 0) then
+          write(*,*) 'iak_diff_v', ifld_diff%base%i_velo, icomp_diff%base%i_velo, &
+     &             diff_coefs%num_comps(ifld_diff%base%i_velo),              &
+     &             trim(wk_diff%name(ifld_diff%base%i_velo))
         end if
         if(ifld_diff%i_magne .gt. 0) then
           write(*,*) 'iak_diff_b',                                      &
