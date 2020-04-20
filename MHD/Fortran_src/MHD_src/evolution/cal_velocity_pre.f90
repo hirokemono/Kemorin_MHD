@@ -201,8 +201,8 @@
 !
       if(SGS_par%model_p%iflag_SGS_lorentz .ne. id_SGS_none) then
         call cal_sgs_maxwell                                            &
-     &     (icomp_sgs%SGS_term%i_SGS_Lorentz, iphys_elediff%i_magne, dt,             &
-     &      FEM_prm, SGS_par%model_p, SGS_par%filter_p,                 &
+     &     (icomp_sgs%SGS_term%i_SGS_Lorentz, iphys_elediff%base%i_magne,             &
+     &      dt, FEM_prm, SGS_par%model_p, SGS_par%filter_p,             &
      &      nod_comm, node, ele, fluid, iphys, iphys_ele, ele_fld,      &
      &      fem_int%jcs, fem_int%rhs_tbl, FEM_elens, filtering,         &
      &      sgs_coefs, sgs_coefs_nod, mlump_fl, wk_filter, mhd_fem_wk,  &

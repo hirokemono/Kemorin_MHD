@@ -152,7 +152,7 @@
 !     --------------------- 
 !
       if (iflag_debug .gt. 0)  write(*,*) 'vector_p_pre'
-      call cal_vector_p_pre(ifld_diff%i_magne, icomp_sgs%SGS_term%i_SGS_induction,   &
+      call cal_vector_p_pre(ifld_diff%base%i_magne, icomp_sgs%SGS_term%i_SGS_induction,   &
      &    iphys_elediff%base%i_velo, ak_d_magne, dt, FEM_prm,           &
      &    SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,         &
      &    mesh%nod_comm, mesh%node, mesh%ele, mesh%surf, conduct,       &
@@ -181,7 +181,7 @@
       do iloop = 0, FEM_prm%maxiter_coulomb
 !
         if (iflag_debug.gt.0) write(*,*) 'cal_electric_potential'
-        call cal_electric_potential(ifld_diff%i_magne,                  &
+        call cal_electric_potential(ifld_diff%base%i_magne,             &
      &      FEM_prm, SGS_par%model_p, SGS_par%commute_p,                &
      &      mesh%node, mesh%ele, mesh%surf, group%surf_grp, Bnod_bcs,   &
      &      Asf_bcs, Fsf_bcs, iphys, fem_int%jcs, fem_int%rhs_tbl,      &
@@ -196,7 +196,7 @@
      &      iphys%base%i_mag_p, nod_fld%d_fld)
 !
         if (iflag_debug.gt.0) write(*,*) 'vector_potential_correct'
-        call cal_vector_p_co(ifld_diff%i_magne, ak_d_magne, dt,         &
+        call cal_vector_p_co(ifld_diff%base%i_magne, ak_d_magne, dt,    &
      &      FEM_prm, SGS_par%model_p, SGS_par%commute_p,                &
      &      mesh%nod_comm, mesh%node, mesh%ele, mesh%surf, conduct,     &
      &      group%surf_grp, cd_prop, Bnod_bcs, Fsf_bcs, iphys,          &
@@ -302,9 +302,9 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_magnetic_field_pre'
       call cal_magnetic_field_pre                                       &
-     &   (icomp_sgs%SGS_term%i_SGS_induction, ifld_diff%i_magne,        &
+     &   (icomp_sgs%SGS_term%i_SGS_induction, ifld_diff%base%i_magne,   &
      &    ifld_diff%SGS_term%i_SGS_induction, iphys_elediff%base%i_velo, &
-     &    iphys_elediff%i_magne, ak_d_magne, dt, FEM_prm,               &
+     &    iphys_elediff%base%i_magne, ak_d_magne, dt, FEM_prm,          &
      &    SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,         &
      &    mesh%nod_comm, mesh%node, mesh%ele, mesh%surf, conduct,       &
      &    group%surf_grp, cd_prop, Bnod_bcs, Asf_bcs, Bsf_bcs,          &
@@ -324,7 +324,7 @@
 !
 !
       do iloop = 0, FEM_prm%maxiter_coulomb
-        call cal_mag_potential(ifld_diff%i_magne,                       &
+        call cal_mag_potential(ifld_diff%base%i_magne,                  &
      &      FEM_prm, SGS_par%model_p, SGS_par%commute_p,                &
      &      mesh%node, mesh%ele, mesh%surf, group%surf_grp, Bnod_bcs,   &
      &      Bsf_bcs, Fsf_bcs, iphys, fem_int%jcs, fem_int%rhs_tbl,      &
@@ -339,7 +339,7 @@
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'magnetic_correction'
-        call cal_magnetic_co(ifld_diff%i_magne, ak_d_magne, dt,         &
+        call cal_magnetic_co(ifld_diff%base%i_magne, ak_d_magne, dt,    &
      &      FEM_prm, SGS_par%model_p, SGS_par%commute_p,                &
      &      mesh%nod_comm, mesh%node, mesh%ele, mesh%surf, conduct,     &
      &      group%surf_grp, cd_prop, Bnod_bcs, Fsf_bcs, iphys,          &

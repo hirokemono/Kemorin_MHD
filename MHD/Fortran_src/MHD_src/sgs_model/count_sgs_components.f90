@@ -316,12 +316,12 @@
         end if
 !
         if ( SGS_param%iflag_SGS_lorentz .ne. id_SGS_none) then
-         iphys_elediff%i_magne = i
+         iphys_elediff%base%i_magne = i
          iphys_elediff%filter_fld%i_magne = i + 9
          i = i + 18
         else if (SGS_param%iflag_SGS_uxb .ne. id_SGS_none               &
      &     .and. cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
-         iphys_elediff%i_magne = i
+         iphys_elediff%base%i_magne = i
          iphys_elediff%filter_fld%i_magne = i + 9
          i = i + 18
         end if
@@ -337,11 +337,11 @@
         end if
 !
         if ( SGS_param%iflag_SGS_lorentz .ne. id_SGS_none) then
-         iphys_elediff%i_magne = i
+         iphys_elediff%base%i_magne = i
          i = i + 9
         else if (SGS_param%iflag_SGS_uxb .ne. id_SGS_none               &
      &     .and. cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
-         iphys_elediff%i_magne = i
+         iphys_elediff%base%i_magne = i
          i = i + 9
         end if
       end if

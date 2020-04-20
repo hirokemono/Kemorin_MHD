@@ -113,7 +113,7 @@
         call sel_int_poisson_mat                                        &
      &     (mesh%ele, g_FEM, jac_3d_l, rhs_tbl, MG_mat_linear,          &
      &      FEM_elens, iflag_commute_magne, num_int,                    &
-     &      diff_coefs%num_field, ifld_diff%i_magne, diff_coefs%ak,     &
+     &      diff_coefs%num_field, ifld_diff%base%i_magne, diff_coefs%ak, &
      &      ifilter_final, fem_wk, mat_magp)
       end if
 !
@@ -165,7 +165,7 @@
       if (cd_prop%iflag_Bevo_scheme .ge. id_Crank_nicolson) then
         call sel_int_diffuse3_crank_mat(mesh%ele, g_FEM, jac_3d,        &
      &      rhs_tbl, MG_mat_full_cd_q, FEM_elens, num_int,              &
-     &      diff_coefs%num_field, ifld_diff%i_magne, diff_coefs%ak,     &
+     &      diff_coefs%num_field, ifld_diff%base%i_magne, diff_coefs%ak, &
      &      dt, cd_prop%coef_imp, ak_MHD%ak_d_magne, ifilter_final,     &
      &      fem_wk, mat_magne)
       end if
@@ -173,7 +173,7 @@
       if (cd_prop%iflag_Aevo_scheme .ge. id_Crank_nicolson) then
         call sel_int_diffuse3_crank_mat(mesh%ele, g_FEM, jac_3d,        &
      &      rhs_tbl, MG_mat_q, FEM_elens, num_int,                      &
-     &      diff_coefs%num_field, ifld_diff%i_magne, diff_coefs%ak,     &
+     &      diff_coefs%num_field, ifld_diff%base%i_magne, diff_coefs%ak,     &
      &      dt, cd_prop%coef_imp, ak_MHD%ak_d_magne, ifilter_final,     &
      &      fem_wk, mat_magne)
       end if

@@ -160,8 +160,8 @@
         call calypso_mpi_barrier
         if (iflag_debug.eq.1) write(*,*) 'update_with_vector_potential'
         call update_with_vector_potential                               &
-     &    (ifld_diff%i_magne, icomp_diff%i_magne,                       &
-     &     iphys_elediff%i_magne, iphys_elediff%filter_fld%i_magne,         &
+     &    (ifld_diff%base%i_magne, icomp_diff%base%i_magne,             &
+     &     iphys_elediff%base%i_magne, iphys_elediff%filter_fld%i_magne,     &
      &     time_d%i_time_step, time_d%dt, FEM_prm, SGS_par,             &
      &     fem%mesh, fem%group, MHD_mesh%fluid, MHD_mesh%conduct,       &
      &     nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs, surf_bcs%Fsf_bcs,        &
@@ -188,8 +188,8 @@
      &     ak_MHD%ak_d_magne, MGCG_WK, SGS_MHD_wk%FEM_SGS_wk,           &
      &     SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat, fem_sq, nod_fld)
         call update_with_magnetic_field                                 &
-     &    (ifld_diff%i_magne, icomp_diff%i_magne,                       &
-     &     iphys_elediff%i_magne, iphys_elediff%filter_fld%i_magne,     &
+     &    (ifld_diff%base%i_magne, icomp_diff%base%i_magne,             &
+     &     iphys_elediff%base%i_magne, iphys_elediff%filter_fld%i_magne,     &
      &     time_d%i_time_step, time_d%dt, FEM_prm, SGS_par,             &
      &     fem%mesh, fem%group, MHD_mesh%fluid, MHD_mesh%conduct,       &
      &     surf_bcs%Bsf_bcs, surf_bcs%Fsf_bcs, iphys,                   &
@@ -402,8 +402,8 @@
 !
       if(iphys%base%i_vecp .ne. 0) then
         call update_with_vector_potential                               &
-     &    (ifld_diff%i_magne, icomp_diff%i_magne,                       &
-     &     iphys_elediff%i_magne, iphys_elediff%filter_fld%i_magne,     &
+     &    (ifld_diff%base%i_magne, icomp_diff%base%i_magne,             &
+     &     iphys_elediff%base%i_magne, iphys_elediff%filter_fld%i_magne,     &
      &     time_d%i_time_step, time_d%dt, FEM_prm, SGS_par,             &
      &     fem%mesh, fem%group, MHD_mesh%fluid, MHD_mesh%conduct,       &
      &     nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs, surf_bcs%Fsf_bcs,        &
@@ -413,8 +413,8 @@
      &     diff_coefs)
       else if(iphys%base%i_magne.ne.0) then
         call update_with_magnetic_field                                 &
-     &    (ifld_diff%i_magne, icomp_diff%i_magne,                       &
-     &     iphys_elediff%i_magne, iphys_elediff%filter_fld%i_magne,     &
+     &    (ifld_diff%base%i_magne, icomp_diff%base%i_magne,             &
+     &     iphys_elediff%base%i_magne, iphys_elediff%filter_fld%i_magne,     &
      &     time_d%i_time_step, time_d%dt, FEM_prm, SGS_par,             &
      &     fem%mesh, fem%group, MHD_mesh%fluid, MHD_mesh%conduct,       &
      &     surf_bcs%Bsf_bcs, surf_bcs%Fsf_bcs,                          &

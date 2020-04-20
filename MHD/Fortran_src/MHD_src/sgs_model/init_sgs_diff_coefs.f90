@@ -335,8 +335,8 @@
       if (cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
         if(SGS_param%iflag_SGS .ne. id_SGS_none                        &
      &      .and. cmt_param%iflag_c_magne .eq. id_SGS_commute_ON) then
-            icomp_diff%i_magne = id
-            ifld_diff%i_magne = jd
+            icomp_diff%base%i_magne = id
+            ifld_diff%base%i_magne = jd
             wk_diff%name(jd) = magnetic_field%name
             diff_coefs%num_comps(jd) = 9
             id = id + diff_coefs%num_comps(jd)
@@ -347,8 +347,8 @@
       if (cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
         if(SGS_param%iflag_SGS .ne. id_SGS_none                        &
      &      .and. cmt_param%iflag_c_magne .eq. id_SGS_commute_ON) then
-            icomp_diff%i_magne = id
-            ifld_diff%i_magne = jd
+            icomp_diff%base%i_magne = id
+            ifld_diff%base%i_magne = jd
             wk_diff%name(jd) = magnetic_field%name
             diff_coefs%num_comps(jd) = 9
             id = id + diff_coefs%num_comps(jd)
@@ -420,11 +420,11 @@
      &             diff_coefs%num_comps(ifld_diff%base%i_velo),              &
      &             trim(wk_diff%name(ifld_diff%base%i_velo))
         end if
-        if(ifld_diff%i_magne .gt. 0) then
+        if(ifld_diff%base%i_magne .gt. 0) then
           write(*,*) 'iak_diff_b',                                      &
-     &             ifld_diff%i_magne, icomp_diff%i_magne,               &
-     &             diff_coefs%num_comps(ifld_diff%i_magne),             &
-     &             trim(wk_diff%name(ifld_diff%i_magne))
+     &             ifld_diff%base%i_magne, icomp_diff%base%i_magne,     &
+     &             diff_coefs%num_comps(ifld_diff%base%i_magne),        &
+     &             trim(wk_diff%name(ifld_diff%base%i_magne))
         end if
         if(ifld_diff%i_light .gt. 0) then
           write(*,*) 'iak_diff_c',                                      &

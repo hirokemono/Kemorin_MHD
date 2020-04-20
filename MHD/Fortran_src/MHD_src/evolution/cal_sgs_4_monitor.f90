@@ -184,8 +184,8 @@
         if(iflag_debug.gt.0) write(*,*)                                 &
      &        'lead ', trim(SGS_maxwell_tensor%name)
         call cal_sgs_maxwell                                            &
-     &     (icomp_sgs%SGS_term%i_SGS_Lorentz, iphys_elediff%i_magne, dt,             &
-     &      FEM_prm, SGS_param, filter_param, nod_comm, node, ele,      &
+     &     (icomp_sgs%SGS_term%i_SGS_Lorentz, iphys_elediff%base%i_magne,             &
+     &      dt, FEM_prm, SGS_param, filter_param, nod_comm, node, ele,  &
      &      fluid, iphys, iphys_ele, ele_fld, jacs,                     &
      &      rhs_tbl, FEM_elens, filtering, sgs_coefs, sgs_coefs_nod,    &
      &      mk_MHD%mlump_fl, wk_filter, mhd_fem_wk, fem_wk,             &
@@ -196,7 +196,7 @@
         if(iflag_debug.gt.0) write(*,*)                                 &
      &         'lead ', trim(induction_tensor%name)
         call cal_sgs_magne_induction(icomp_sgs%SGS_term%i_SGS_induction, &
-     &      iphys_elediff%base%i_velo, iphys_elediff%i_magne, dt,       &
+     &      iphys_elediff%base%i_velo, iphys_elediff%base%i_magne, dt,  &
      &      FEM_prm, SGS_param, filter_param, nod_comm, node, ele,      &
      &      conduct, cd_prop, iphys, iphys_ele, ele_fld, jacs, rhs_tbl, &
      &      FEM_elens, filtering, sgs_coefs, sgs_coefs_nod,             &

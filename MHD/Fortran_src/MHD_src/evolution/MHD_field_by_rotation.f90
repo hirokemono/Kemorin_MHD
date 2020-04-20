@@ -126,7 +126,7 @@
      &        write(*,*) 'cal_current_density'
               call choose_cal_rotation_sgs                              &
      &          (cmt_param%iflag_c_magne, FEM_prm%iflag_magne_supg,     &
-     &           FEM_prm%npoint_t_evo_int, dt, ifld_diff%i_magne,       &
+     &           FEM_prm%npoint_t_evo_int, dt, ifld_diff%base%i_magne,  &
      &           iphys%base%i_magne, iphys%base%i_current,              &
      &           mesh%ele%istack_ele_smp, fem_int%m_lump, SGS_param,    &
      &           mesh%nod_comm, mesh%node, mesh%ele, mesh%surf,         &
@@ -137,7 +137,7 @@
 !
 !             call choose_cal_rotation_sgs                              &
 !     &         (cmt_param%iflag_c_magne, FEM_prm%iflag_magne_supg,     &
-!     &          FEM_prm%npoint_t_evo_int, dt, ifld_diff%i_magne,       &
+!     &          FEM_prm%npoint_t_evo_int, dt, ifld_diff%base%i_magne,  &
 !     &          iphys%base%i_magne, iphys%base%i_current,              &
 !     &          conduct%istack_ele_fld_smp, mk_MHD%mlump_cd, SGS_param,&
 !     &          mesh%nod_comm, mesh%node, mesh%ele, mesh%surf,         &
@@ -156,7 +156,7 @@
      &        write(*,*) 'cal_current_density'
             call choose_cal_rotation_sgs                                &
      &        (cmt_param%iflag_c_magne, FEM_prm%iflag_magne_supg,       &
-     &         FEM_prm%npoint_t_evo_int, dt, ifld_diff%i_magne,         &
+     &         FEM_prm%npoint_t_evo_int, dt, ifld_diff%base%i_magne,    &
      &         iphys%base%i_magne, iphys%base%i_current,                &
      &         mesh%ele%istack_ele_smp, fem_int%m_lump, SGS_param,      &
      &         mesh%nod_comm, mesh%node, mesh%ele, mesh%surf,           &
@@ -166,7 +166,7 @@
      &         rhs_mat%surf_wk, rhs_mat%f_nl, nod_fld)
 !           call choose_cal_rotation_sgs(cmt_param%iflag_c_magne,       &
 !     &         FEM_prm%iflag_magne_supg, FEM_prm%npoint_t_evo_int,     &
-!     &         dt, ifld_diff%i_magne,                                  &
+!     &         dt, ifld_diff%base%i_magne,                             &
 !     &         iphys%base%i_magne, iphys%base%i_current,               &
 !     &         conduct%istack_ele_fld_smp, mk_MHD%mlump_cd, SGS_param, &
 !     &         mesh%nod_comm, mesh%node, mesh%ele, mesh%surf,          &

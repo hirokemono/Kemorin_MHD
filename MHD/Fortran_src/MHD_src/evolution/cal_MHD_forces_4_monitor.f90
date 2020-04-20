@@ -388,7 +388,7 @@
       if (iphys%diffusion%i_vp_diffuse .gt. izero) then
         if(iflag_debug .ge. iflag_routine_msg) write(*,*) 'lead  ',     &
      &                     trim(vector_potential_diffusion%name)
-        call cal_vecp_diffusion(ifld_diff%i_magne, ak_MHD%ak_d_magne,   &
+        call cal_vecp_diffusion(ifld_diff%base%i_magne, ak_MHD%ak_d_magne,   &
      &      FEM_prm, SGS_par%model_p, nod_comm, node, ele, surf,        &
      &      sf_grp, nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs, iphys, fem_int, &
      &      FEM_elens, diff_coefs, mk_MHD%mlump_cd,                     &
@@ -399,8 +399,8 @@
      &      .and. cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &             write(*,*) 'lead  ', trim(magnetic_diffusion%name)
-        call cal_magnetic_diffusion(ifld_diff%i_magne,                  &
-     &      ifld_diff%SGS_term%i_SGS_induction, ak_MHD%ak_d_magne,                   &
+        call cal_magnetic_diffusion(ifld_diff%base%i_magne,             &
+     &      ifld_diff%SGS_term%i_SGS_induction, ak_MHD%ak_d_magne,      &
      &      FEM_prm, SGS_par%model_p, SGS_par%commute_p,                &
      &      nod_comm, node, ele, surf, conduct, sf_grp,                 &
      &      nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs, surf_bcs%Bsf_bcs,       &

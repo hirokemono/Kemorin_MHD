@@ -273,7 +273,7 @@
      &       write(*,*) 'cal_sgs_maxwell_t_dynamic'
           call cal_sgs_maxwell_t_dynamic                                &
      &      (ifld_sgs%SGS_term%i_SGS_Lorentz, icomp_sgs%SGS_term%i_SGS_Lorentz,      &
-     &       iphys_elediff%i_magne, iphys_elediff%filter_fld%i_magne,   &
+     &       iphys_elediff%base%i_magne, iphys_elediff%filter_fld%i_magne,   &
      &       time_d%dt, FEM_prm, SGS_par, fem%mesh, iphys,              &
      &       SGS_MHD_wk%iphys_ele, SGS_MHD_wk%ele_fld, MHD_mesh%fluid,  &
      &       fem_int, FEM_filters, sgs_coefs_nod, SGS_MHD_wk%mk_MHD,    &
@@ -314,7 +314,7 @@
      &      write(*,*) 'cal_sgs_induct_t_dynamic'
           call cal_sgs_induct_t_dynamic                                 &
      &      (ifld_sgs%SGS_term%i_SGS_induction, icomp_sgs%SGS_term%i_SGS_induction,  &
-     &       iphys_elediff%base%i_velo, iphys_elediff%i_magne,               &
+     &       iphys_elediff%base%i_velo, iphys_elediff%base%i_magne,     &
      &       iphys_elediff%filter_fld%i_velo, iphys_elediff%filter_fld%i_magne, &
      &       time_d%dt, FEM_prm, SGS_par, fem%mesh, iphys,              &
      &       SGS_MHD_wk%iphys_ele, SGS_MHD_wk%ele_fld,                  &
