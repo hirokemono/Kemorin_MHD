@@ -16,11 +16,12 @@
 !!        type(phys_address), intent(in) :: fg_trns
 !!        type(address_each_sph_trans), intent(inout) :: trns_f_SGS
 !!      subroutine prod_SGS_buoyancy_to_Reynolds(sph_rtp, sph_d_grp,    &
-!!     &          fg_trns, ifld_sgs, wk_sgs, nc_SGS_rtp_2_rj, fSGS_rtp)
+!!     &          fg_trns, iak_sgs_term, wk_sgs, trns_f_SGS)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(sph_dynamic_model_group), intent(in) :: sph_d_grp
 !!        type(phys_address), intent(in) :: fg_trns
 !!        type(SGS_terms_address), intent(in) :: ifld_sgs
+!!        type(SGS_term_address), intent(in) :: iak_sgs_term
 !!        type(dynamic_model_data), intent(in) :: wk_sgs
 !!
 !!      subroutine sel_prod_sgl_radial_buo_coefs                        &
@@ -44,6 +45,7 @@
       use t_SGS_control_parameter
       use t_spheric_rtp_data
       use t_phys_address
+      use t_SGS_term_labels
       use t_addresses_sph_transform
       use t_SGS_model_coefs
       use t_ele_info_4_dynamic
@@ -100,34 +102,34 @@
 ! ----------------------------------------------------------------------
 !
       subroutine prod_SGS_buoyancy_to_Reynolds(sph_rtp, sph_d_grp,      &
-     &          fg_trns, ifld_sgs, wk_sgs, trns_f_SGS)
+     &          fg_trns, iak_sgs_term, wk_sgs, trns_f_SGS)
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_dynamic_model_group), intent(in) :: sph_d_grp
       type(phys_address), intent(in) :: fg_trns
-      type(SGS_terms_address), intent(in) :: ifld_sgs
+      type(SGS_term_address), intent(in) :: iak_sgs_term
       type(dynamic_model_data), intent(in) :: wk_sgs
 !
       type(address_each_sph_trans), intent(inout) :: trns_f_SGS
 !
 !
-      if     (ifld_sgs%SGS_term%i_SGS_buoyancy                                       &
-     &          * ifld_sgs%SGS_term%i_SGS_comp_buo .gt. 0) then
+      if     (iak_sgs_term%i_SGS_buoyancy                               &
+     &          * iak_sgs_term%i_SGS_comp_buo .gt. 0) then
         call sel_product_double_buo_coefs                               &
      &     (sph_rtp, sph_d_grp, wk_sgs%num_kinds,                       &
-     &      ifld_sgs%SGS_term%i_SGS_buoyancy, ifld_sgs%SGS_term%i_SGS_comp_buo,      &
+     &      iak_sgs_term%i_SGS_buoyancy, iak_sgs_term%i_SGS_comp_buo,   &
      &      wk_sgs%fld_coef, trns_f_SGS%ncomp,                          &
      &      fg_trns%SGS_term%i_SGS_inertia, trns_f_SGS%fld_rtp)
-      else if(ifld_sgs%SGS_term%i_SGS_buoyancy .gt. 0) then
+      else if(iak_sgs_term%i_SGS_buoyancy .gt. 0) then
         call sel_product_single_buo_coefs                               &
      &     (sph_rtp, sph_d_grp, wk_sgs%num_kinds,                       &
-     &      ifld_sgs%SGS_term%i_SGS_buoyancy, wk_sgs%fld_coef,                       &
+     &      iak_sgs_term%i_SGS_buoyancy, wk_sgs%fld_coef,               &
      &      trns_f_SGS%ncomp, fg_trns%SGS_term%i_SGS_inertia,           &
      &      trns_f_SGS%fld_rtp)
-      else if(ifld_sgs%SGS_term%i_SGS_comp_buo .gt. 0) then
+      else if(iak_sgs_term%i_SGS_comp_buo .gt. 0) then
         call sel_product_single_buo_coefs                               &
      &     (sph_rtp, sph_d_grp, wk_sgs%num_kinds,                       &
-     &      ifld_sgs%SGS_term%i_SGS_comp_buo, wk_sgs%fld_coef,          &
+     &      iak_sgs_term%i_SGS_comp_buo, wk_sgs%fld_coef,               &
      &      trns_f_SGS%ncomp, fg_trns%SGS_term%i_SGS_inertia,           &
      &      trns_f_SGS%fld_rtp)
       end if

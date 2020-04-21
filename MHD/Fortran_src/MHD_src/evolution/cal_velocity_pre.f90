@@ -183,9 +183,9 @@
      &      nod_comm, node, ele, surf, fluid, layer_tbl, sf_grp,        &
      &      fl_prop, cd_prop, Vsf_bcs, Bsf_bcs, iphys, iphys_ele,       &
      &      ak_MHD, fem_int, FEM_elens, filtering,                      &
-     &      ifld_sgs, icomp_sgs, ifld_diff, iphys_elediff,              &
-     &      sgs_coefs_nod, diff_coefs, mlump_fl, wk_filter,             &
-     &      wk_lsq, wk_sgs, mhd_fem_wk, rhs_mat,                        &
+     &      ifld_sgs%SGS_term, icomp_sgs%SGS_term, ifld_diff%SGS_term,  &
+     &      iphys_elediff%base, sgs_coefs_nod, diff_coefs,              &
+     &      mlump_fl, wk_filter,  wk_lsq, wk_sgs, mhd_fem_wk, rhs_mat,  &
      &      nod_fld, ele_fld, sgs_coefs)
       end if
 !

@@ -202,9 +202,9 @@
       call set_sgs_addresses                                            &
      &   (SGS_par%model_p, MHD_prop%fl_prop, MHD_prop%cd_prop,          &
      &    MHD_prop%ht_prop, MHD_prop%cp_prop,                           &
-     &    ifld_sgs, icomp_sgs, wk_sgs, sgs_coefs)
+     &    ifld_sgs%SGS_term, icomp_sgs%SGS_term, wk_sgs, sgs_coefs)
       call check_sgs_addresses                                          &
-     &   (ifld_sgs, icomp_sgs, wk_sgs, sgs_coefs)
+     &   (ifld_sgs%SGS_term, icomp_sgs%SGS_term, wk_sgs, sgs_coefs)
 !
       end subroutine init_work_4_SGS_sph_mhd
 !

@@ -7,20 +7,23 @@
 !>@brief  Evaluate nonlinear terms in spherical coordinate grid
 !!
 !!@verbatim
-!!      subroutine prod_fixed_sph_SGS_Csim                              &
-!!     &         (SGS_param, sph_rtp, ifld_sgs, fg_trns_SGS, trns_f_SGS)
+!!      subroutine prod_fixed_sph_SGS_Csim(SGS_param, sph_rtp,          &
+!!     &          ak_sgs_term, fg_trns_SGS, trns_f_SGS)
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
-!!        type(SGS_terms_address), intent(in) :: ifld_sgs
+!!        type(SGS_term_address), intent(in) :: ak_sgs_term
 !!        type(SGS_term_address), intent(in) :: fg_trns_SGS
 !!        type(address_each_sph_trans), intent(inout) :: trns_f_SGS
-!!      subroutine product_model_coefs_4_sph(SGS_param, sph_rtp,        &
-!!     &          fg_trns_SGS, trns_f_SGS, dynamic_SPH)
+!!      subroutine product_model_coefs_4_sph                            &
+!!     &         (SGS_param, sph_rtp, sph_d_grp, ak_sgs_term,           &
+!!     &          fg_trns_SGS, trns_f_SGS, wk_sgs)
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
+!!        type(sph_dynamic_model_group), intent(in) :: sph_d_grp
+!!        type(SGS_term_address), intent(in) :: ak_sgs_term
 !!        type(SGS_term_address), intent(in) :: fg_trns_SGS
 !!        type(address_each_sph_trans), intent(inout) :: trns_f_SGS
-!!        type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
+!!        type(dynamic_model_data), intent(inout) :: wk_sgs
 !!@endverbatim
 !
       module product_model_coefs_sph
@@ -40,7 +43,6 @@
       use t_ele_info_4_dynamic
       use t_addresses_sph_transform
       use t_SGS_model_coefs
-      use t_sph_filtering
 !
       implicit none
 !
@@ -52,44 +54,44 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine prod_fixed_sph_SGS_Csim                                &
-     &         (SGS_param, sph_rtp, ifld_sgs, fg_trns_SGS, trns_f_SGS)
+      subroutine prod_fixed_sph_SGS_Csim(SGS_param, sph_rtp,            &
+     &          ak_sgs_term, fg_trns_SGS, trns_f_SGS)
 !
       use prod_SGS_model_coefs_sph
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(sph_rtp_grid), intent(in) :: sph_rtp
-      type(SGS_terms_address), intent(in) :: ifld_sgs
       type(SGS_term_address), intent(in) :: fg_trns_SGS
+      type(SGS_term_address), intent(in) :: ak_sgs_term
 !
       type(address_each_sph_trans), intent(inout) :: trns_f_SGS
 !
 !
-      if(ifld_sgs%SGS_term%i_SGS_m_flux .gt. 0) then
+      if(ak_sgs_term%i_SGS_m_flux .gt. 0) then
         call product_fixed_model_coefs(SGS_param%SGS_mf_factor,         &
      &      sph_rtp, fg_trns_SGS%i_SGS_inertia, n_vector,               &
      &      trns_f_SGS%ncomp, trns_f_SGS%fld_rtp)
       end if
 !
-      if(ifld_sgs%SGS_term%i_SGS_Lorentz .gt. 0) then
+      if(ak_sgs_term%i_SGS_Lorentz .gt. 0) then
         call product_fixed_model_coefs(SGS_param%SGS_mawell_factor,     &
      &      sph_rtp, fg_trns_SGS%i_SGS_Lorentz, n_vector,               &
      &      trns_f_SGS%ncomp, trns_f_SGS%fld_rtp)
       end if
 !
-      if(ifld_sgs%SGS_term%i_SGS_induction .gt. 0) then
+      if(ak_sgs_term%i_SGS_induction .gt. 0) then
         call product_fixed_model_coefs(SGS_param%SGS_uxb_factor,        &
      &      sph_rtp, fg_trns_SGS%i_SGS_vp_induct, n_vector,             &
      &      trns_f_SGS%ncomp, trns_f_SGS%fld_rtp)
       end if
 !
-      if(ifld_sgs%SGS_term%i_SGS_h_flux .gt. 0) then
+      if(ak_sgs_term%i_SGS_h_flux .gt. 0) then
         call product_fixed_model_coefs(SGS_param%SGS_hf_factor,         &
      &      sph_rtp, fg_trns_SGS%i_SGS_h_flux, n_vector,                &
      &      trns_f_SGS%ncomp, trns_f_SGS%fld_rtp)
       end if
 !
-      if(ifld_sgs%SGS_term%i_SGS_c_flux .gt. 0) then
+      if(ak_sgs_term%i_SGS_c_flux .gt. 0) then
         call product_fixed_model_coefs(SGS_param%SGS_cf_factor,         &
      &      sph_rtp, fg_trns_SGS%i_SGS_c_flux, n_vector,                &
      &      trns_f_SGS%ncomp, trns_f_SGS%fld_rtp)
@@ -99,60 +101,58 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine product_model_coefs_4_sph(SGS_param, sph_rtp,          &
-     &          fg_trns_SGS, trns_f_SGS, dynamic_SPH)
+      subroutine product_model_coefs_4_sph                              &
+     &         (SGS_param, sph_rtp, sph_d_grp, ak_sgs_term,             &
+     &          fg_trns_SGS, trns_f_SGS, wk_sgs)
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(sph_dynamic_model_group), intent(in) :: sph_d_grp
+      type(SGS_term_address), intent(in) :: ak_sgs_term
       type(SGS_term_address), intent(in) :: fg_trns_SGS
 !
+      type(dynamic_model_data), intent(inout) :: wk_sgs
       type(address_each_sph_trans), intent(inout) :: trns_f_SGS
-      type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
 !
 !
-      if(dynamic_SPH%ifld_sgs%SGS_term%i_SGS_m_flux .gt. 0) then
+      if(ak_sgs_term%i_SGS_m_flux .gt. 0) then
         if (iflag_debug.eq.1) write(*,*) 'sel_product_model_coefs MF'
         call sel_product_model_coefs                                    &
-     &     (SGS_param%SGS_mf_factor, sph_rtp, dynamic_SPH%sph_d_grp,    &
-     &      n_vector, fg_trns_SGS%i_SGS_inertia,                   &
-     &      dynamic_SPH%ifld_sgs%SGS_term%i_SGS_m_flux,                            &
-     &      dynamic_SPH%wk_sgs, trns_f_SGS)
+     &     (SGS_param%SGS_mf_factor, sph_rtp, sph_d_grp,                &
+     &      n_vector, fg_trns_SGS%i_SGS_inertia,                        &
+     &      ak_sgs_term%i_SGS_m_flux, wk_sgs, trns_f_SGS)
       end if
 !
-      if(dynamic_SPH%ifld_sgs%SGS_term%i_SGS_Lorentz .gt. 0) then
+      if(ak_sgs_term%i_SGS_Lorentz .gt. 0) then
         if (iflag_debug.eq.1) write(*,*) 'sel_product_model_coefs LZ'
         call sel_product_model_coefs                                    &
-     &    (SGS_param%SGS_mawell_factor, sph_rtp, dynamic_SPH%sph_d_grp, &
+     &    (SGS_param%SGS_mawell_factor, sph_rtp, sph_d_grp,             &
      &     n_vector, fg_trns_SGS%i_SGS_Lorentz,                         &
-     &     dynamic_SPH%ifld_sgs%SGS_term%i_SGS_Lorentz,                 &
-     &     dynamic_SPH%wk_sgs, trns_f_SGS)
+     &     ak_sgs_term%i_SGS_Lorentz, wk_sgs, trns_f_SGS)
       end if
 !
-      if(dynamic_SPH%ifld_sgs%SGS_term%i_SGS_induction .gt. 0) then
+      if(ak_sgs_term%i_SGS_induction .gt. 0) then
         if (iflag_debug.eq.1) write(*,*) 'sel_product_model_coefs ID'
         call sel_product_model_coefs                                    &
-     &     (SGS_param%SGS_uxb_factor, sph_rtp, dynamic_SPH%sph_d_grp,   &
+     &     (SGS_param%SGS_uxb_factor, sph_rtp, sph_d_grp,               &
      &      n_vector, fg_trns_SGS%i_SGS_vp_induct,                      &
-     &      dynamic_SPH%ifld_sgs%SGS_term%i_SGS_induction,              &
-     &      dynamic_SPH%wk_sgs, trns_f_SGS)
+     &      ak_sgs_term%i_SGS_induction, wk_sgs, trns_f_SGS)
       end if
 !
-      if(dynamic_SPH%ifld_sgs%SGS_term%i_SGS_h_flux .gt. 0) then
+      if(ak_sgs_term%i_SGS_h_flux .gt. 0) then
         if (iflag_debug.eq.1) write(*,*) 'sel_product_model_coefs HF'
         call sel_product_model_coefs                                    &
-     &     (SGS_param%SGS_hf_factor, sph_rtp, dynamic_SPH%sph_d_grp,    &
+     &     (SGS_param%SGS_hf_factor, sph_rtp, sph_d_grp,                &
      &      n_vector, fg_trns_SGS%i_SGS_h_flux,                         &
-     &      dynamic_SPH%ifld_sgs%SGS_term%i_SGS_h_flux,                 &
-     &      dynamic_SPH%wk_sgs, trns_f_SGS)
+     &      ak_sgs_term%i_SGS_h_flux, wk_sgs, trns_f_SGS)
       end if
 !
-      if(dynamic_SPH%ifld_sgs%SGS_term%i_SGS_c_flux .gt. 0) then
+      if(ak_sgs_term%i_SGS_c_flux .gt. 0) then
         if (iflag_debug.eq.1) write(*,*) 'sel_product_model_coefs CF'
         call sel_product_model_coefs                                    &
-     &     (SGS_param%SGS_cf_factor, sph_rtp, dynamic_SPH%sph_d_grp,    &
+     &     (SGS_param%SGS_cf_factor, sph_rtp, sph_d_grp,                &
      &      n_vector, fg_trns_SGS%i_SGS_c_flux,                         &
-     &      dynamic_SPH%ifld_sgs%SGS_term%i_SGS_c_flux,                 &
-     &      dynamic_SPH%wk_sgs, trns_f_SGS)
+     &      ak_sgs_term%i_SGS_c_flux, wk_sgs, trns_f_SGS)
       end if
 !
       end subroutine product_model_coefs_4_sph

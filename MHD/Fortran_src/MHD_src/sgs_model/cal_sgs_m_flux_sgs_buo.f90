@@ -7,10 +7,10 @@
 !!     &          nod_comm, node, ele, surf, fluid, layer_tbl, sf_grp,  &
 !!     &          fl_prop, cd_prop, Vsf_bcs, Bsf_bcs, iphys, iphys_ele, &
 !!     &          ak_MHD, fem_int, FEM_elens, filtering,                &
-!!     &          ifld_sgs, icomp_sgs, ifld_diff, iphys_elediff,        &
-!!     &          sgs_coefs_nod, diff_coefs, mlump_fl,                  &
-!!     &          wk_filter, wk_lsq, wk_sgs, mhd_fem_wk, rhs_mat,       &
-!!     &          nod_fld, ele_fld, sgs_coefs)
+!!     &          ak_sgs_term, icomp_sgs_term, ak_diff_sgs,             &
+!!     &          iphys_elediff_base, sgs_coefs_nod, diff_coefs,        &
+!!     &          mlump_fl, wk_filter, wk_lsq, wk_sgs, mhd_fem_wk,      &
+!!     &          rhs_mat, nod_fld, ele_fld, sgs_coefs)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(communication_table), intent(in) :: nod_comm
@@ -28,10 +28,10 @@
 !!        type(finite_element_integration), intent(in) :: fem_int
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
 !!        type(filtering_data_type), intent(in) :: filtering
-!!        type(SGS_terms_address), intent(in) :: ifld_sgs
-!!        type(SGS_terms_address), intent(in) :: icomp_sgs
-!!        type(SGS_terms_address), intent(in) :: ifld_diff
-!!        type(SGS_terms_address), intent(in) :: iphys_elediff
+!!        type(SGS_term_address), intent(in) :: ak_sgs_term
+!!        type(SGS_term_address), intent(in) :: icomp_sgs_term
+!!        type(SGS_term_address), intent(in) :: ak_diff_sgs
+!!        type(base_field_address), intent(in) :: iphys_elediff_base
 !!        type(SGS_coefficients_type), intent(in) :: sgs_coefs_nod
 !!        type(SGS_coefficients_type), intent(in) :: diff_coefs
 !!        type(lumped_mass_matrices), intent(in) :: mlump_fl
@@ -60,6 +60,8 @@
       use t_group_data
       use t_phys_data
       use t_phys_address
+      use t_base_field_labels
+      use t_SGS_term_labels
       use t_jacobians
       use t_table_FEM_const
       use t_finite_element_mat
@@ -91,10 +93,10 @@
      &          nod_comm, node, ele, surf, fluid, layer_tbl, sf_grp,    &
      &          fl_prop, cd_prop, Vsf_bcs, Bsf_bcs, iphys, iphys_ele,   &
      &          ak_MHD, fem_int, FEM_elens, filtering,                  &
-     &          ifld_sgs, icomp_sgs, ifld_diff, iphys_elediff,          &
-     &          sgs_coefs_nod, diff_coefs, mlump_fl,                    &
-     &          wk_filter, wk_lsq, wk_sgs, mhd_fem_wk, rhs_mat,         &
-     &          nod_fld, ele_fld, sgs_coefs)
+     &          ak_sgs_term, icomp_sgs_term, ak_diff_sgs,               &
+     &          iphys_elediff_base, sgs_coefs_nod, diff_coefs,          &
+     &          mlump_fl, wk_filter, wk_lsq, wk_sgs, mhd_fem_wk,        &
+     &          rhs_mat, nod_fld, ele_fld, sgs_coefs)
 !
       use m_phys_constants
 !
@@ -128,9 +130,12 @@
       type(finite_element_integration), intent(in) :: fem_int
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(filtering_data_type), intent(in) :: filtering
-      type(SGS_terms_address), intent(in) :: ifld_sgs, icomp_sgs
-      type(SGS_terms_address), intent(in) :: ifld_diff
-      type(SGS_terms_address), intent(in) :: iphys_elediff
+!
+      type(SGS_term_address), intent(in) :: ak_sgs_term
+      type(SGS_term_address), intent(in) :: icomp_sgs_term
+      type(SGS_term_address), intent(in) :: ak_diff_sgs
+      type(base_field_address), intent(in) :: iphys_elediff_base
+!
       type(SGS_coefficients_type), intent(in) :: sgs_coefs_nod
       type(SGS_coefficients_type), intent(in) :: diff_coefs
       type(lumped_mass_matrices), intent(in) :: mlump_fl
@@ -151,18 +156,18 @@
 !   lead SGS momentum flux using original model coefficient
 !
       call clear_model_coefs_2_ele                                      &
-     &   (ele, n_sym_tensor, icomp_sgs%SGS_term%i_SGS_m_flux, sgs_coefs%ntot_comp, &
-     &    sgs_coefs%ak)
+     &   (ele, n_sym_tensor, icomp_sgs_term%i_SGS_m_flux,               &
+     &    sgs_coefs%ntot_comp, sgs_coefs%ak)
       call set_model_coefs_2_ele                                        &
-     &   (ele, SGS_par%model_p%itype_Csym_m_flux,                       &
-     &    n_sym_tensor, ifld_sgs%SGS_term%i_SGS_m_flux, icomp_sgs%SGS_term%i_SGS_m_flux,      &
+     &   (ele, SGS_par%model_p%itype_Csym_m_flux, n_sym_tensor,         &
+     &    ak_sgs_term%i_SGS_m_flux, icomp_sgs_term%i_SGS_m_flux,        &
      &    layer_tbl%e_grp%num_grp, layer_tbl%e_grp%num_item,            &
      &    layer_tbl%e_grp%istack_grp_smp, layer_tbl%e_grp%item_grp,     &
      &    sgs_coefs%num_field, sgs_coefs%ntot_comp,                     &
      &    wk_sgs%fld_clip, wk_sgs%comp_clip, sgs_coefs%ak)
 !
       call cal_sgs_momentum_flux                                        &
-     &   (icomp_sgs%SGS_term%i_SGS_m_flux, iphys_elediff%base%i_velo, dt,    &
+     &   (icomp_sgs_term%i_SGS_m_flux, iphys_elediff_base%i_velo, dt,   &
      &    FEM_prm, SGS_par%model_p, SGS_par%filter_p,                   &
      &    nod_comm, node, ele, fluid, iphys, iphys_ele, ele_fld,        &
      &    fem_int%jcs, fem_int%rhs_tbl, FEM_elens, filtering,           &
@@ -177,7 +182,7 @@
      &    Vsf_bcs, Bsf_bcs, iphys%base, iphys%forces, iphys%div_forces, &
      &    iphys%diffusion, iphys%filter_fld, iphys%force_by_filter,     &
      &    iphys%SGS_term, iphys%div_SGS, iphys_ele%base, ak_MHD,        &
-     &    fem_int, FEM_elens, ifld_diff%SGS_term, diff_coefs, mlump_fl, &
+     &    fem_int, FEM_elens, ak_diff_sgs, diff_coefs, mlump_fl,        &
      &    mhd_fem_wk, rhs_mat, nod_fld, ele_fld)
 !
 !$omp parallel
@@ -214,43 +219,44 @@
       if(fl_prop%iflag_4_gravity .gt. id_turn_OFF) then
 !        call cal_Csim_buo_by_Reynolds_ratio(wk_sgs%nlayer, ifive,      &
 !     &      wk_sgs%num_kinds, wk_sgs%ntot_comp,                        &
-!     &      ifld_sgs%SGS_term%i_SGS_buoyancy, icomp_sgs%SGS_term%i_SGS_buoyancy, wk_lsq%slsq,    &
-!     &      wk_sgs%comp_coef, wk_sgs%fld_coef)
+!     &      ak_sgs_term%i_SGS_buoyancy, icomp_sgs_term%i_SGS_buoyancy, &
+!     &      wk_lsq%slsq, wk_sgs%comp_coef, wk_sgs%fld_coef)
         call single_Csim_buo_by_mf_ratio(wk_sgs%nlayer, ifive,          &
      &      wk_sgs%num_kinds, wk_sgs%ntot_comp,                         &
-     &      ifld_sgs%SGS_term%i_SGS_buoyancy, icomp_sgs%SGS_term%i_SGS_buoyancy, wk_lsq%slsq,     &
-     &      wk_sgs%comp_coef, wk_sgs%fld_coef)
-        call clippging_sgs_diff_coefs                                   &
-     &     (ncomp_sgs_buo, ifld_sgs%SGS_term%i_SGS_buoyancy, icomp_sgs%SGS_term%i_SGS_buoyancy,   &
+     &      ak_sgs_term%i_SGS_buoyancy, icomp_sgs_term%i_SGS_buoyancy,  &
+     &      wk_lsq%slsq, wk_sgs%comp_coef, wk_sgs%fld_coef)
+        call clippging_sgs_diff_coefs(ncomp_sgs_buo,                    &
+     &      ak_sgs_term%i_SGS_buoyancy, icomp_sgs_term%i_SGS_buoyancy,  &
      &      SGS_par, wk_sgs)
       end if
       if(fl_prop%iflag_4_composit_buo .gt. id_turn_OFF) then
 !        call cal_Csim_buo_by_Reynolds_ratio(wk_sgs%nlayer, isix,       &
 !     &      wk_sgs%num_kinds, wk_sgs%ntot_comp,                        &
-!     &      ifld_sgs%SGS_term%i_SGS_comp_buo, icomp_sgs%SGS_term%i_SGS_comp_buo,       &
+!     &      ak_sgs_term%i_SGS_comp_buo, icomp_sgs_term%i_SGS_comp_buo, &
 !     &      wk_lsq%slsq, wk_sgs%comp_coef, wk_sgs%fld_coef)
         call single_Csim_buo_by_mf_ratio(wk_sgs%nlayer, isix,           &
      &      wk_sgs%num_kinds, wk_sgs%ntot_comp,                         &
-     &      ifld_sgs%SGS_term%i_SGS_comp_buo, icomp_sgs%SGS_term%i_SGS_comp_buo,        &
+     &      ak_sgs_term%i_SGS_comp_buo, icomp_sgs_term%i_SGS_comp_buo,  &
      &      wk_lsq%slsq, wk_sgs%comp_coef, wk_sgs%fld_coef)
-        call clippging_sgs_diff_coefs                                   &
-     &     (ncomp_sgs_buo, ifld_sgs%SGS_term%i_SGS_buoyancy, icomp_sgs%SGS_term%i_SGS_buoyancy,   &
+        call clippging_sgs_diff_coefs(ncomp_sgs_buo,                    &
+     &      ak_sgs_term%i_SGS_buoyancy, icomp_sgs_term%i_SGS_buoyancy,  &
      &      SGS_par, wk_sgs)
       end if
 !
       call mod_Csim_by_SGS_buoyancy_ele                                 &
      &   (SGS_par%model_p, ele, layer_tbl%e_grp, fl_prop,               &
-     &    ifld_sgs, icomp_sgs, wk_sgs, sgs_coefs)
+     &    ak_sgs_term, icomp_sgs_term, wk_sgs, sgs_coefs)
 !
 !      if(iflag_debug .gt. 0) then
-!        write(*,*) 'sgs_f_coef, icomp_sgs_tbuo', ifld_sgs%SGS_term%i_SGS_buoyancy
+!        write(*,*) 'sgs_f_coef, icomp_sgs_tbuo',                       &
+!     &            ak_sgs_term%i_SGS_buoyancy
 !        do i = 1, wk_sgs%nlayer
 !          write(*,'(i16,1pe20.12)')                                    &
-!     &            i, wk_sgs%fld_coef(i,ifld_sgs%SGS_term%i_SGS_buoyancy)
+!     &            i, wk_sgs%fld_coef(i,ak_sgs_term%i_SGS_buoyancy)
 !        end do
 !        write(*,*) 'sgs_c_coef, icomp_sgs_tbuo',                       &
-!     &            icomp_sgs%SGS_term%i_SGS_comp_buo
-!        k = icomp_sgs%SGS_term%i_SGS_buoyancy
+!     &            icomp_sgs_term%i_SGS_comp_buo
+!        k = icomp_sgs_term%i_SGS_buoyancy
 !        do i = 1, wk_sgs%nlayer
 !          write(*,'(i16,1p6e20.12)') i, wk_sgs%comp_coef(i,k:k+5)
 !        end do
