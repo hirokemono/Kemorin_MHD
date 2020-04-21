@@ -161,10 +161,12 @@
      &    fluid, group%surf_grp, group%surf_nod_grp,                    &
      &    fl_prop, cd_prop, Vnod_bcs, Vsf_bcs, Bsf_bcs, iphys,          &
      &    iphys_ele, ak_MHD, fem_int, FEM_filters%FEM_elens,            &
-     &    ifld_sgs, icomp_sgs, ifld_diff, iphys_elediff, sgs_coefs_nod, &
-     &    diff_coefs, FEM_filters%filtering, FEM_filters%layer_tbl,     &
-     &    mk_MHD%mlump_fl, Vmatrix, MGCG_WK%MG_vector,                  &
-     &    FEM_SGS_wk%wk_lsq, FEM_SGS_wk%wk_sgs, FEM_SGS_wk%wk_filter,   &
+     &    ifld_sgs%SGS_term, icomp_sgs%SGS_term,                        &
+     &    ifld_diff%base, ifld_diff%SGS_term, iphys_elediff%base,       &
+     &    sgs_coefs_nod, diff_coefs, FEM_filters%filtering,             &
+     &    FEM_filters%layer_tbl, mk_MHD%mlump_fl,                       &
+     &    Vmatrix, MGCG_WK%MG_vector, FEM_SGS_wk%wk_lsq,                &
+     &    FEM_SGS_wk%wk_sgs, FEM_SGS_wk%wk_filter,                      &
      &    mhd_fem_wk, rhs_mat, nod_fld, ele_fld, sgs_coefs)
 !
 !     --------------------- 
@@ -195,9 +197,9 @@
      &      mesh%nod_comm, mesh%node, mesh%ele, mesh%surf,              &
      &      fluid, group%surf_grp, group%surf_nod_grp,                  &
      &      fl_prop, Vnod_bcs, Vsf_bcs, Psf_bcs, iphys, iphys_ele,      &
-     &      ele_fld, ak_MHD, fem_int, FEM_filters%FEM_elens, ifld_diff, &
-     &      diff_coefs, mk_MHD%mlump_fl, Vmatrix, MGCG_WK%MG_vector,    &
-     &      mhd_fem_wk, rhs_mat, nod_fld)
+     &      ele_fld, ak_MHD, fem_int, FEM_filters%FEM_elens,            &
+     &      ifld_diff%base, diff_coefs, mk_MHD%mlump_fl,                &
+     &      Vmatrix, MGCG_WK%MG_vector, mhd_fem_wk, rhs_mat, nod_fld)
 !
 !
         call cal_rms_scalar_potential                                   &

@@ -180,7 +180,8 @@
      &    mesh%nod_comm, mesh%node, mesh%ele,                           &
      &    MHD_mesh%fluid, MHD_mesh%conduct, MHD_prop%cd_prop, iphys,    &
      &    iphys_ele, ele_fld, fem_int%jcs, fem_int%rhs_tbl, FEM_elens,  &
-     &    Csims_FEM_MHD%icomp_sgs, Csims_FEM_MHD%iphys_elediff,         &
+     &    Csims_FEM_MHD%icomp_sgs%SGS_term,                             &
+     &    Csims_FEM_MHD%iphys_elediff%base,                             &
      &    Csims_FEM_MHD%sgs_coefs, Csims_FEM_MHD%sgs_coefs_nod,         &
      &    filtering, mk_MHD, FEM_SGS_wk%wk_filter, mhd_fem_wk,          &
      &    rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
@@ -207,8 +208,8 @@
      &    MHD_prop%fl_prop, MHD_prop%cd_prop,                           &
      &    MHD_prop%ht_prop, MHD_prop%cp_prop, nod_bcs, surf_bcs,        &
      &    iphys, iphys_ele, ak_MHD, fem_int, FEM_elens,                 &
-     &    Csims_FEM_MHD%ifld_diff, Csims_FEM_MHD%diff_coefs, mk_MHD,    &
-     &    mhd_fem_wk, rhs_mat, nod_fld, ele_fld)
+     &    Csims_FEM_MHD%ifld_diff%SGS_term, Csims_FEM_MHD%diff_coefs,   &
+     &    mk_MHD, mhd_fem_wk, rhs_mat, nod_fld, ele_fld)
 !
       call cal_true_sgs_terms_post                                      &
      &   (SGS_par%filter_p, mesh%nod_comm, mesh%node, iphys%div_forces, &

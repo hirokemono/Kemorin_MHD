@@ -50,6 +50,8 @@
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
 !!        type(filtering_data_type), intent(in) :: filtering
+!!        type(SGS_coefficients_type), intent(in) :: sgs_coefs
+!!        type(SGS_coefficients_type), intent(in) :: sgs_coefs_nod
 !!        type(lumped_mass_matrices), intent(in) :: mlump_fl
 !!        type(lumped_mass_matrices), intent(in) :: mlump_cd
 !!        type(filtering_work_type), intent(inout) :: wk_filter
