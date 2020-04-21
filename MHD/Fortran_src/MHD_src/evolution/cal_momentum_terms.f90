@@ -4,19 +4,20 @@
 !     Written by H. Matsui on June, 2005
 !
 !!      subroutine cal_terms_4_momentum                                 &
-!!     &       (i_field, dt, FEM_prm, SGS_param, cmt_param,             &
-!!     &        nod_comm, node, ele, surf, sf_grp, fluid,               &
-!!     &        fl_prop, cd_prop, Vsf_bcs, Bsf_bcs,                     &
-!!     &        iphys_base, iphys_frc, iphys_div_frc, iphys_dif,        &
-!!     &        iphys_fil, iphys_fil_frc, iphys_SGS, iphys_div_SGS,     &
-!!     &        iphys_ele_base, ak_MHD, fem_int, FEM_elens,             &
-!!     &        ifld_diff, diff_coefs, mlump_fl, mhd_fem_wk, rhs_mat,   &
-!!     &        nod_fld, ele_fld)
+!!     &         (i_field, dt, FEM_prm, SGS_param, cmt_param,           &
+!!     &          nod_comm, node, ele, surf, sf_grp, fluid,             &
+!!     &          fl_prop, cd_prop, Vsf_bcs, Bsf_bcs,                   &
+!!     &          iphys_base, iphys_frc, iphys_div_frc, iphys_dif,      &
+!!     &          iphys_fil, iphys_fil_frc, iphys_SGS, iphys_div_SGS,   &
+!!     &          iphys_ele_base, ak_MHD, fem_int, FEM_elens,           &
+!!     &          iak_diff_SGS, diff_coefs, mlump_fl, mhd_fem_wk, &
+!!     &          rhs_mat, nod_fld, ele_fld)
 !!      subroutine cal_viscous_diffusion(FEM_prm, SGS_param, cmt_param, &
 !!     &          nod_comm, node, ele, surf, sf_grp, fluid,             &
 !!     &          fl_prop, Vnod_bcs, Vsf_bcs, Bsf_bcs,                  &
 !!     &          iphys_base, iphys_dif, iphys_SGS, iphys_div_SGS,      &
-!!     &          ak_MHD, fem_int, FEM_elens, ifld_diff, diff_coefs,    &
+!!     &          ak_MHD, fem_int, FEM_elens,                           &
+!!     &          iak_diff_base, iak_diff_SGS, diff_coefs,              &
 !!     &          mlump_fl, rhs_mat, nod_fld)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
@@ -44,6 +45,8 @@
 !!        type(coefs_4_MHD_type), intent(in) :: ak_MHD
 !!        type(finite_element_integration), intent(in) :: fem_int
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
+!!        type(base_field_address), intent(in) :: iak_diff_base
+!!        type(SGS_term_address), intent(in) :: iak_diff_SGS
 !!        type(SGS_coefficients_type), intent(in) :: diff_coefs
 !!        type(lumped_mass_matrices), intent(in) :: mlump_fl
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
@@ -96,14 +99,14 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_terms_4_momentum                                   &
-     &       (i_field, dt, FEM_prm, SGS_param, cmt_param,               &
-     &        nod_comm, node, ele, surf, sf_grp, fluid,                 &
-     &        fl_prop, cd_prop, Vsf_bcs, Bsf_bcs,                       &
-     &        iphys_base, iphys_frc, iphys_div_frc, iphys_dif,          &
-     &        iphys_fil, iphys_fil_frc, iphys_SGS, iphys_div_SGS,       &
-     &        iphys_ele_base, ak_MHD, fem_int, FEM_elens,               &
-     &        ifld_diff, diff_coefs, mlump_fl, mhd_fem_wk, rhs_mat,     &
-     &        nod_fld, ele_fld)
+     &         (i_field, dt, FEM_prm, SGS_param, cmt_param,             &
+     &          nod_comm, node, ele, surf, sf_grp, fluid,               &
+     &          fl_prop, cd_prop, Vsf_bcs, Bsf_bcs,                     &
+     &          iphys_base, iphys_frc, iphys_div_frc, iphys_dif,        &
+     &          iphys_fil, iphys_fil_frc, iphys_SGS, iphys_div_SGS,     &
+     &          iphys_ele_base, ak_MHD, fem_int, FEM_elens,             &
+     &          iak_diff_SGS, diff_coefs, mlump_fl, mhd_fem_wk,         &
+     &          rhs_mat,  nod_fld, ele_fld)
 !
       use int_vol_velo_monitor
       use int_surf_velo_pre
@@ -138,7 +141,7 @@
       type(coefs_4_MHD_type), intent(in) :: ak_MHD
       type(finite_element_integration), intent(in) :: fem_int
       type(gradient_model_data_type), intent(in) :: FEM_elens
-      type(SGS_terms_address), intent(in) :: ifld_diff
+      type(SGS_term_address), intent(in) :: iak_diff_SGS
       type(SGS_coefficients_type), intent(in) :: diff_coefs
       type(lumped_mass_matrices), intent(in) :: mlump_fl
 !
@@ -158,7 +161,7 @@
      &      iphys_fil, iphys_fil_frc, iphys_SGS,                        &
      &      iphys_div_SGS, nod_fld, iphys_ele_base, ak_MHD,             &
      &      fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,     &
-     &      FEM_elens, ifld_diff%SGS_term, diff_coefs, mhd_fem_wk,      &
+     &      FEM_elens, iak_diff_SGS, diff_coefs, mhd_fem_wk,            &
      &      rhs_mat%fem_wk, rhs_mat%f_nl, ele_fld)
       else if (FEM_prm%iflag_velo_supg .eq. id_magnetic_SUPG) then
         call int_vol_velo_monitor_upwind                                &
@@ -168,7 +171,7 @@
      &      iphys_fil, iphys_fil_frc, iphys_SGS,                        &
      &      iphys_div_SGS, nod_fld, iphys_ele_base, ak_MHD,             &
      &      fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,     &
-     &      FEM_elens, ifld_diff%SGS_term, diff_coefs, mhd_fem_wk,      &
+     &      FEM_elens, iak_diff_SGS, diff_coefs, mhd_fem_wk,            &
      &      rhs_mat%fem_wk, rhs_mat%f_nl, ele_fld)
       else
        call int_vol_velo_monitor_pg                                     &
@@ -178,7 +181,7 @@
      &     iphys_fil, iphys_fil_frc, iphys_SGS,                         &
      &     iphys_div_SGS, nod_fld, iphys_ele_base, ak_MHD,              &
      &     fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,      &
-     &     FEM_elens, ifld_diff%SGS_term, diff_coefs, mhd_fem_wk,       &
+     &     FEM_elens, iak_diff_SGS, diff_coefs, mhd_fem_wk,             &
      &     rhs_mat%fem_wk, rhs_mat%f_nl, ele_fld)
       end if
 !
@@ -188,7 +191,7 @@
      &    Vsf_bcs, Bsf_bcs, iphys_base, iphys_dif,                      &
      &    iphys_SGS, iphys_div_SGS, nod_fld,                            &
      &    fem_int%jcs%g_FEM, fem_int%jcs%jac_sf_grp, fem_int%rhs_tbl,   &
-     &    FEM_elens, ifld_diff%SGS_term, diff_coefs,                    &
+     &    FEM_elens, iak_diff_SGS, diff_coefs,                          &
      &    rhs_mat%fem_wk, rhs_mat%surf_wk, rhs_mat%f_l, rhs_mat%f_nl)
 !
       call cal_t_evo_4_vector                                           &
@@ -214,7 +217,8 @@
      &          nod_comm, node, ele, surf, sf_grp, fluid,               &
      &          fl_prop, Vnod_bcs, Vsf_bcs, Bsf_bcs,                    &
      &          iphys_base, iphys_dif, iphys_SGS, iphys_div_SGS,        &
-     &          ak_MHD, fem_int, FEM_elens, ifld_diff, diff_coefs,      &
+     &          ak_MHD, fem_int, FEM_elens,                             &
+     &          iak_diff_base, iak_diff_SGS, diff_coefs,                &
      &          mlump_fl, rhs_mat, nod_fld)
 !
       use int_vol_diffusion_ele
@@ -242,7 +246,8 @@
       type(coefs_4_MHD_type), intent(in) :: ak_MHD
       type(finite_element_integration), intent(in) :: fem_int
       type(gradient_model_data_type), intent(in) :: FEM_elens
-      type(SGS_terms_address), intent(in) :: ifld_diff
+      type(base_field_address), intent(in) :: iak_diff_base
+      type(SGS_term_address), intent(in) :: iak_diff_SGS
       type(SGS_coefficients_type), intent(in) :: diff_coefs
       type(lumped_mass_matrices), intent(in) :: mlump_fl
 !
@@ -256,17 +261,18 @@
      &   (SGS_param%ifilter_final, fluid%istack_ele_fld_smp,            &
      &    FEM_prm%npoint_t_evo_int, node, ele, nod_fld,                 &
      &    fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,       &
-     &    FEM_elens, diff_coefs, ifld_diff%base%i_velo, one, ak_MHD%ak_d_velo,     &
-     &    iphys_base%i_velo, rhs_mat%fem_wk, rhs_mat%f_l)
+     &    FEM_elens, diff_coefs, iak_diff_base%i_velo,                  &
+     &    one, ak_MHD%ak_d_velo, iphys_base%i_velo, rhs_mat%fem_wk,     &
+     &    rhs_mat%f_l)
 !
       call int_surf_velo_monitor(iphys_dif%i_v_diffuse,                 &
-     &   ak_MHD%ak_d_velo, FEM_prm%npoint_t_evo_int,                    &
-     &   SGS_param, cmt_param, node, ele, surf, sf_grp, fl_prop,        &
-     &   Vsf_bcs, Bsf_bcs, iphys_base, iphys_dif,                       &
-     &   iphys_SGS, iphys_div_SGS, nod_fld,                             &
-     &   fem_int%jcs%g_FEM, fem_int%jcs%jac_sf_grp, fem_int%rhs_tbl,    &
-     &   FEM_elens, ifld_diff%SGS_term, diff_coefs,                     &
-     &   rhs_mat%fem_wk, rhs_mat%surf_wk, rhs_mat%f_l, rhs_mat%f_nl)
+     &    ak_MHD%ak_d_velo, FEM_prm%npoint_t_evo_int,                   &
+     &    SGS_param, cmt_param, node, ele, surf, sf_grp, fl_prop,       &
+     &    Vsf_bcs, Bsf_bcs, iphys_base, iphys_dif,                      &
+     &    iphys_SGS, iphys_div_SGS, nod_fld,                            &
+     &    fem_int%jcs%g_FEM, fem_int%jcs%jac_sf_grp, fem_int%rhs_tbl,   &
+     &    FEM_elens, iak_diff_SGS, diff_coefs,                          &
+     &    rhs_mat%fem_wk, rhs_mat%surf_wk, rhs_mat%f_l, rhs_mat%f_nl)
 !
       call set_ff_nl_smp_2_ff                                           &
      &   (n_vector, node, fem_int%rhs_tbl, rhs_mat%f_l, rhs_mat%f_nl)

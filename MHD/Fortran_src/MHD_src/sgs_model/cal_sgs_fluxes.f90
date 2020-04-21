@@ -143,7 +143,7 @@
      &   (iflag_supg, num_int, dt, itype_Csym_flux,                     &
      &    SGS_param%icoord_Csim, SGS_param%ifilter_final,               &
      &    icomp_sgs_flux, i_sgs, ifleld, ie_dvx,                        &
-     &    nod_comm, node, ele, fluid, iphys_ele, ele_fld, jacs,         &
+     &    nod_comm, node, ele, fluid, iphys_ele%base, ele_fld, jacs,    &
      &    rhs_tbl, FEM_elens, sgs_coefs, mlump_fl, mhd_fem_wk, fem_wk,  &
      &    f_l, nod_fld)
 !
@@ -159,7 +159,7 @@
         call choose_cal_gradient_w_const                                &
      &     (iflag_supg, num_int, dt, ifleld, i_sgs, dminus,             &
      &      fluid%istack_ele_fld_smp, mlump_fl,                         &
-     &      nod_comm, node, ele, iphys_ele, ele_fld,                    &
+     &      nod_comm, node, ele, iphys_ele%base, ele_fld,               &
      &      jacs%g_FEM, jacs%jac_3d, rhs_tbl, fem_wk,                   &
      &      f_l, f_nl, nod_fld)
       end if
@@ -213,7 +213,7 @@
      &     (SGS_param%ifilter_final, icomp_sgs_mf,                      &
      &      iphys%SGS_term%i_SGS_m_flux, iphys%base%i_velo,             &
      &      ie_dvx, dt, FEM_prm, SGS_param, nod_comm, node, ele, fluid, &
-     &      iphys_ele, ele_fld, jacs, FEM_elens, sgs_coefs,             &
+     &      iphys_ele%base, ele_fld, jacs, FEM_elens, sgs_coefs,        &
      &      rhs_tbl, mlump_fl, fem_wk, mhd_fem_wk, nod_fld)
 !
       else if (SGS_param%iflag_SGS_m_flux .eq. id_SGS_similarity) then
@@ -283,8 +283,8 @@
      &     (SGS_param%ifilter_final, icomp_sgs_lor,                     &
      &      iphys%SGS_term%i_SGS_maxwell, iphys%base%i_magne,           &
      &      ie_dbx, dt, FEM_prm, SGS_param, nod_comm, node, ele, fluid, &
-     &      iphys_ele, ele_fld, jacs, FEM_elens, sgs_coefs, rhs_tbl,    &
-     &      mlump_fl, fem_wk, mhd_fem_wk, nod_fld)
+     &      iphys_ele%base, ele_fld, jacs, FEM_elens, sgs_coefs,        &
+     &      rhs_tbl, mlump_fl, fem_wk, mhd_fem_wk, nod_fld)
 !
 !
       else if(SGS_param%iflag_SGS_lorentz .eq. id_SGS_similarity) then
@@ -474,18 +474,18 @@
       call choose_cal_gradient_w_const                                  &
      &   (FEM_prm%iflag_velo_supg, FEM_prm%npoint_t_evo_int, dt,        &
      &    i_vect, i_sgs, dminus, fluid%istack_ele_fld_smp,              &
-     &    mlump_fl, nod_comm, node, ele, iphys_ele, ele_fld,            &
+     &    mlump_fl, nod_comm, node, ele, iphys_ele%base, ele_fld,       &
      &    g_FEM, jac_3d, rhs_tbl, fem_wk, f_l, f_nl, nod_fld)
       call choose_cal_gradient_w_const                                  &
      &   (FEM_prm%iflag_velo_supg, FEM_prm%npoint_t_evo_int, dt,        &
      &    (i_vect+1),  i_sgs_diffuse, dminus, fluid%istack_ele_fld_smp, &
-     &    mlump_fl, nod_comm, node, ele, iphys_ele, ele_fld,            &
+     &    mlump_fl, nod_comm, node, ele, iphys_ele%base, ele_fld,       &
      &    g_FEM, jac_3d, rhs_tbl, fem_wk, f_l, f_nl, nod_fld)
       call choose_cal_gradient_w_const                                  &
      &   (FEM_prm%iflag_velo_supg, FEM_prm%npoint_t_evo_int, dt,        &
      &    (i_vect+2), (i_sgs_diffuse+3),                                &
      &    dminus, fluid%istack_ele_fld_smp,                             &
-     &    mlump_fl, nod_comm, node, ele, iphys_ele, ele_fld,            &
+     &    mlump_fl, nod_comm, node, ele, iphys_ele%base, ele_fld,       &
      &    g_FEM, jac_3d, rhs_tbl, fem_wk, f_l, f_nl, nod_fld)
 !
 !

@@ -6,19 +6,19 @@
 !!      subroutine cal_sgs_m_flux_grad_w_coef                           &
 !!     &         (i_filter, icm_sgs, i_sgs, i_field, ie_dvx, dt,        &
 !!     &          FEM_prm, SGS_param, nod_comm, node, ele, fluid,       &
-!!     &          iphys_ele, ele_fld, jacs, FEM_elens, sgs_coefs,       &
+!!     &          iphys_ele_base, ele_fld, jacs, FEM_elens, sgs_coefs,  &
 !!     &          rhs_tbl, mlump_fl, fem_wk, mhd_fem_wk, nod_fld)
 !!      subroutine cal_sgs_m_flux_grad_no_coef                          &
 !!     &         (i_filter, i_sgs, i_field, ie_dvx, dt,                 &
 !!     &          FEM_prm, nod_comm, node, ele, fluid,                  &
-!!     &          iphys_ele, ele_fld, jacs, FEM_elens,                  &
+!!     &          iphys_ele_base, ele_fld, jacs, FEM_elens,             &
 !!     &          rhs_tbl, mlump_fl, fem_wk, mhd_fem_wk, nod_fld)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
-!!        type(phys_address), intent(in) :: iphys_ele
+!!        type(base_field_address), intent(in) :: iphys_ele_base
 !!        type(phys_data), intent(in) :: ele_fld
 !!        type(field_geometry_data), intent(in) :: fluid
 !!        type(jacobians_type), intent(in) :: jacs
@@ -43,7 +43,7 @@
       use t_geometry_data_MHD
       use t_geometry_data
       use t_phys_data
-      use t_phys_address
+      use t_base_field_labels
       use t_jacobians
       use t_table_FEM_const
       use t_finite_element_mat
@@ -63,7 +63,7 @@
       subroutine cal_sgs_m_flux_grad_w_coef                             &
      &         (i_filter, icm_sgs, i_sgs, i_field, ie_dvx, dt,          &
      &          FEM_prm, SGS_param, nod_comm, node, ele, fluid,         &
-     &          iphys_ele, ele_fld, jacs, FEM_elens, sgs_coefs,         &
+     &          iphys_ele_base, ele_fld, jacs, FEM_elens, sgs_coefs,    &
      &          rhs_tbl, mlump_fl, fem_wk, mhd_fem_wk, nod_fld)
 !
       use cal_ff_smp_to_ffs
@@ -77,7 +77,7 @@
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
-      type(phys_address), intent(in) :: iphys_ele
+      type(base_field_address), intent(in) :: iphys_ele_base
       type(phys_data), intent(in) :: ele_fld
       type(field_geometry_data), intent(in) :: fluid
       type(jacobians_type), intent(in) :: jacs
@@ -102,7 +102,7 @@
       call sel_int_vol_sgs_flux                                         &
      &   (FEM_prm%iflag_velo_supg, FEM_prm%npoint_t_evo_int, dt,        &
      &    i_filter, n_sym_tensor, i_field, ie_dvx,                      &
-     &    node, ele, fluid, nod_fld, iphys_ele, ele_fld,                &
+     &    node, ele, fluid, nod_fld, iphys_ele_base, ele_fld,           &
      &    jacs%g_FEM, jacs%jac_3d, FEM_elens, fem_wk, mhd_fem_wk)
 !
 !     set elemental model coefficients
@@ -127,7 +127,7 @@
       subroutine cal_sgs_m_flux_grad_no_coef                            &
      &         (i_filter, i_sgs, i_field, ie_dvx, dt,                   &
      &          FEM_prm, nod_comm, node, ele, fluid,                    &
-     &          iphys_ele, ele_fld, jacs, FEM_elens,                    &
+     &          iphys_ele_base, ele_fld, jacs, FEM_elens,               &
      &          rhs_tbl, mlump_fl, fem_wk, mhd_fem_wk, nod_fld)
 !
       use cal_ff_smp_to_ffs
@@ -139,7 +139,7 @@
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
-      type(phys_address), intent(in) :: iphys_ele
+      type(base_field_address), intent(in) :: iphys_ele_base
       type(phys_data), intent(in) :: ele_fld
       type(field_geometry_data), intent(in) :: fluid
       type(jacobians_type), intent(in) :: jacs
@@ -163,7 +163,7 @@
       call sel_int_vol_sgs_flux                                         &
      &   (FEM_prm%iflag_velo_supg, FEM_prm%npoint_t_evo_int, dt,        &
      &    i_filter, n_sym_tensor, i_field, ie_dvx,                      &
-     &    node, ele, fluid, nod_fld, iphys_ele, ele_fld,                &
+     &    node, ele, fluid, nod_fld, iphys_ele_base, ele_fld,           &
      &    jacs%g_FEM, jacs%jac_3d, FEM_elens, fem_wk, mhd_fem_wk)
 !
       call add6_skv_to_ff_t_smp(node, ele, rhs_tbl,                     &

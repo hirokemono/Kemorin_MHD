@@ -168,7 +168,7 @@
       call choose_cal_gradient                                          &
      &   (FEM_prm%iflag_velo_supg, FEM_prm%npoint_t_evo_int, dt,        &
      &    i_sgs_grad_fp, i_sgs_simi_p, fluid%istack_ele_fld_smp,        &
-     &    mlump_fl, nod_comm, node, ele, iphys_ele, ele_fld,            &
+     &    mlump_fl, nod_comm, node, ele, iphys_ele%base, ele_fld,       &
      &    jacs%g_FEM, jacs%jac_3d, rhs_tbl, fem_wk, f_l, f_nl, nod_fld)
 !
 !   take rotation and gradient of velocity (to iphys%SGS_wk%i_nlg)
@@ -187,7 +187,7 @@
      &   (FEM_prm%iflag_velo_supg, FEM_prm%npoint_t_evo_int, dt,        &
      &    iphys%base%i_press, i_sgs_grad_p,                             &
      &    fluid%istack_ele_fld_smp, mlump_fl, nod_comm, node, ele,      &
-     &    iphys_ele, ele_fld, jacs%g_FEM, jacs%jac_3d, rhs_tbl,         &
+     &    iphys_ele%base, ele_fld, jacs%g_FEM, jacs%jac_3d, rhs_tbl,    &
      &    fem_wk, f_l, f_nl, nod_fld)
 !
 !    filtering (to iphys%SGS_wk%i_nlg)

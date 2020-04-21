@@ -99,7 +99,7 @@
      &    wk_sgs%rms_grad_w, wk_sgs%ratio_w, wk_cor)
 !
       call cal_correlate_sgs_dynamic                                    &
-     &   (layer_tbl, node, ele, iphys, nod_fld,                         &
+     &   (layer_tbl, node, ele, iphys%SGS_wk, nod_fld,                  &
      &    jacs%g_FEM, jacs%jac_3d, jacs%jac_3d_l,                       &
      &    n_tensor, icomp_f, n_int,                                     &
      &    wk_sgs%nlayer, wk_sgs%ntot_comp, wk_sgs%ave_simi,             &
@@ -288,7 +288,7 @@
      &    wk_diff%rms_grad_w, wk_diff%ratio_w, wk_cor)
 !
       call cal_correlate_sgs_dynamic                                    &
-     &   (layer_tbl, node, ele, iphys, nod_fld,                         &
+     &   (layer_tbl, node, ele, iphys%SGS_wk, nod_fld,                  &
      &    g_FEM, jac_3d_q, jac_3d_l, numdir, icomp_f, n_int,            &
      &    wk_diff%nlayer, wk_diff%ntot_comp, wk_diff%ave_simi,          &
      &    wk_diff%ave_grad, wk_diff%corrilate, wk_diff%covariant,       &
@@ -352,7 +352,7 @@
      &    wk_diff%rms_grad_w, wk_diff%ratio_w, wk_cor)
 !
       call cal_correlate_diff_area(layer_tbl, iele_fsmp_stack,          &
-     &    node, ele, iphys, nod_fld, g_FEM, jac_3d_q, jac_3d_l,         &
+     &    node, ele, iphys%SGS_wk, nod_fld, g_FEM, jac_3d_q, jac_3d_l,  &
      &    numdir, icomp_f, n_int, wk_diff%ntot_comp,                    &
      &    wk_diff%ave_simi_w, wk_diff%ave_grad_w,                       &
      &    wk_diff%corrilate_w, wk_diff%covariant_w, wk_cor)

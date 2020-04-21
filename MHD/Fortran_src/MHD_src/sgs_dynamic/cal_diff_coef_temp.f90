@@ -140,7 +140,7 @@
       call choose_cal_gradient                                          &
      &   (iflag_supg, num_int, dt, ifield_f, iphys%SGS_wk%i_simi,       &
      &    fluid%istack_ele_fld_smp, mlump_fl,                           &
-     &    nod_comm, node, ele, iphys_ele, ele_fld, jacs%g_FEM,          &
+     &    nod_comm, node, ele, iphys_ele%base, ele_fld, jacs%g_FEM,     &
      &    jacs%jac_3d,  rhs_tbl, fem_wk, f_l, f_nl, nod_fld)
 !
 !   take gradient of temperature (to iphys%SGS_wk%i_nlg)
@@ -150,7 +150,7 @@
       call choose_cal_gradient                                          &
      &   (iflag_supg, num_int, dt, ifield, iphys%SGS_wk%i_nlg,          &
      &    fluid%istack_ele_fld_smp, mlump_fl,                           &
-     &    nod_comm, node, ele, iphys_ele, ele_fld, jacs%g_FEM,          &
+     &    nod_comm, node, ele, iphys_ele%base, ele_fld, jacs%g_FEM,     &
      &    jacs%jac_3d, rhs_tbl, fem_wk, f_l, f_nl, nod_fld)
 !
 !    filtering (to iphys%SGS_wk%i_nlg)

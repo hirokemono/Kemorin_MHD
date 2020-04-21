@@ -5,17 +5,17 @@
 !
 !!      subroutine choose_cal_gradient(iflag_4_supg, num_int, dt,       &
 !!     &          i_scalar, i_grad, iele_fsmp_stack, m_lump,            &
-!!     &          nod_comm, node, ele, iphys_ele, ele_fld,              &
+!!     &          nod_comm, node, ele, iphys_ele_base, ele_fld,         &
 !!     &          g_FEM, jac_3d, rhs_tbl, fem_wk, f_l, f_nl, nod_fld)
 !!      subroutine choose_cal_gradient_w_const                          &
 !!     &         (iflag_4_supg, num_int, dt,                            &
 !!     &          i_scalar, i_grad, const, iele_fsmp_stack, m_lump,     &
-!!     &          nod_comm, node, ele, iphys_ele, ele_fld,              &
+!!     &          nod_comm, node, ele, iphys_ele_base, ele_fld,         &
 !!     &          g_FEM, jac_3d, rhs_tbl, fem_wk, f_l, f_nl, nod_fld)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
-!!        type(phys_address), intent(in) :: iphys_ele
+!!        type(base_field_address), intent(in) :: iphys_ele_base
 !!        type(phys_data), intent(in) :: ele_fld
 !!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
 !!        type(jacobians_3d), intent(in) :: jac_3d
@@ -38,7 +38,7 @@
       use t_comm_table
       use t_geometry_data
       use t_phys_data
-      use t_phys_address
+      use t_base_field_labels
       use t_fem_gauss_int_coefs
       use t_jacobian_3d
       use t_table_FEM_const
@@ -58,7 +58,7 @@
 !
       subroutine choose_cal_gradient(iflag_4_supg, num_int, dt,         &
      &          i_scalar, i_grad, iele_fsmp_stack, m_lump,              &
-     &          nod_comm, node, ele, iphys_ele, ele_fld,                &
+     &          nod_comm, node, ele, iphys_ele_base, ele_fld,           &
      &          g_FEM, jac_3d, rhs_tbl, fem_wk, f_l, f_nl, nod_fld)
 !
       use cal_ff_smp_to_ffs
@@ -68,7 +68,7 @@
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
-      type(phys_address), intent(in) :: iphys_ele
+      type(base_field_address), intent(in) :: iphys_ele_base
       type(phys_data), intent(in) :: ele_fld
       type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
@@ -89,7 +89,7 @@
 !
       call choose_int_vol_grads                                         &
      &   (iflag_4_supg, num_int, dt, iele_fsmp_stack, i_scalar,         &
-     &    node, ele, nod_fld, iphys_ele, ele_fld, g_FEM, jac_3d,        &
+     &    node, ele, nod_fld, iphys_ele_base, ele_fld, g_FEM, jac_3d,   &
      &    rhs_tbl, fem_wk, f_nl)
 !
       call set_ff_nl_smp_2_ff(n_vector, node, rhs_tbl, f_l, f_nl)
@@ -108,7 +108,7 @@
       subroutine choose_cal_gradient_w_const                            &
      &         (iflag_4_supg, num_int, dt,                              &
      &          i_scalar, i_grad, const, iele_fsmp_stack, m_lump,       &
-     &          nod_comm, node, ele, iphys_ele, ele_fld,                &
+     &          nod_comm, node, ele, iphys_ele_base, ele_fld,           &
      &          g_FEM, jac_3d, rhs_tbl, fem_wk, f_l, f_nl, nod_fld)
 !
       use cal_ff_smp_to_ffs
@@ -118,7 +118,7 @@
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
-      type(phys_address), intent(in) :: iphys_ele
+      type(base_field_address), intent(in) :: iphys_ele_base
       type(phys_data), intent(in) :: ele_fld
       type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
@@ -140,7 +140,7 @@
 !
       call choose_int_vol_grads_w_const                                 &
      &   (iflag_4_supg, num_int, iele_fsmp_stack, dt, const, i_scalar,  &
-     &    node, ele, nod_fld, iphys_ele, ele_fld, g_FEM, jac_3d,        &
+     &    node, ele, nod_fld, iphys_ele_base, ele_fld, g_FEM, jac_3d,   &
      &    rhs_tbl, fem_wk, f_nl)
 !
       call set_ff_nl_smp_2_ff(n_vector, node, rhs_tbl, f_l, f_nl)
@@ -159,7 +159,7 @@
 !
       subroutine choose_int_vol_grads                                   &
      &         (iflag_4_supg, num_int, dt, iele_fsmp_stack, i_scalar,   &
-     &          node, ele, nod_fld, iphys_ele, ele_fld,                 &
+     &          node, ele, nod_fld, iphys_ele_base, ele_fld,            &
      &          g_FEM, jac_3d, rhs_tbl, fem_wk, f_nl)
 !
       use int_vol_vect_differences
@@ -168,7 +168,7 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(phys_data), intent(in) :: nod_fld
-      type(phys_address), intent(in) :: iphys_ele
+      type(base_field_address), intent(in) :: iphys_ele_base
       type(phys_data), intent(in) :: ele_fld
       type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
@@ -187,13 +187,13 @@
         call int_vol_gradient_upw                                       &
      &     (node, ele, g_FEM, jac_3d, rhs_tbl, nod_fld,                 &
      &      iele_fsmp_stack, num_int, dt, i_scalar,                     &
-     &      ele_fld%ntot_phys, iphys_ele%base%i_magne, ele_fld%d_fld,   &
+     &      ele_fld%ntot_phys, iphys_ele_base%i_magne, ele_fld%d_fld,   &
      &      fem_wk, f_nl)
       else if ( iflag_4_supg .eq. id_turn_ON) then
         call int_vol_gradient_upw                                       &
      &     (node, ele, g_FEM, jac_3d, rhs_tbl, nod_fld,                 &
      &      iele_fsmp_stack, num_int, dt, i_scalar,                     &
-     &      ele_fld%ntot_phys, iphys_ele%base%i_velo, ele_fld%d_fld,    &
+     &      ele_fld%ntot_phys, iphys_ele_base%i_velo, ele_fld%d_fld,    &
      &      fem_wk, f_nl)
       else
         call int_vol_gradient                                           &
@@ -207,7 +207,7 @@
 !
       subroutine choose_int_vol_grads_w_const(iflag_4_supg, num_int,    &
      &          iele_fsmp_stack, dt, const, i_scalar,                   &
-     &          node, ele, nod_fld, iphys_ele, ele_fld,                 &
+     &          node, ele, nod_fld, iphys_ele_base, ele_fld,            &
      &          g_FEM, jac_3d, rhs_tbl, fem_wk, f_nl)
 !
       use int_vol_vect_cst_difference
@@ -217,7 +217,7 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(phys_data), intent(in) :: nod_fld
-      type(phys_address), intent(in) :: iphys_ele
+      type(base_field_address), intent(in) :: iphys_ele_base
       type(phys_data), intent(in) :: ele_fld
       type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
@@ -237,13 +237,13 @@
         call int_vol_grad_w_const_upw                                   &
      &     (node, ele, g_FEM, jac_3d, rhs_tbl, nod_fld,                 &
      &      iele_fsmp_stack, num_int, dt, i_scalar,                     &
-     &      ele_fld%ntot_phys, iphys_ele%base%i_magne, ele_fld%d_fld,   &
+     &      ele_fld%ntot_phys, iphys_ele_base%i_magne, ele_fld%d_fld,   &
      &      const, fem_wk, f_nl)
       else if ( iflag_4_supg .eq. id_turn_ON) then
         call int_vol_grad_w_const_upw                                   &
      &     (node, ele, g_FEM, jac_3d, rhs_tbl, nod_fld,                 &
      &      iele_fsmp_stack, num_int, dt, i_scalar,                     &
-     &      ele_fld%ntot_phys, iphys_ele%base%i_velo, ele_fld%d_fld,    &
+     &      ele_fld%ntot_phys, iphys_ele_base%i_velo, ele_fld%d_fld,    &
      &      const, fem_wk, f_nl)
       else
         call int_vol_grad_w_const                                       &

@@ -339,7 +339,7 @@
      &      iphys%div_forces, iphys%diffusion,                          &
      &      iphys%filter_fld, iphys%force_by_filter, iphys%SGS_term,    &
      &      iphys%div_SGS, iphys_ele%base, ak_MHD, fem_int, FEM_elens,  &
-     &      Csims_FEM_MHD%ifld_diff, Csims_FEM_MHD%diff_coefs,          &
+     &      Csims_FEM_MHD%ifld_diff%SGS_term, Csims_FEM_MHD%diff_coefs, &
      &      mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat, nod_fld, ele_fld)
       end if
 !

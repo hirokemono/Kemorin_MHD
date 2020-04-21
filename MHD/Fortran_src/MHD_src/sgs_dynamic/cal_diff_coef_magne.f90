@@ -165,7 +165,7 @@
       call choose_cal_gradient                                          &
      &   (FEM_prm%iflag_magne_supg, FEM_prm%npoint_t_evo_int, dt,       &
      &    i_sgs_grad_fp, i_sgs_simi_p, ele%istack_ele_smp, m_lump,      &
-     &    nod_comm, node, ele, iphys_ele, ele_fld, jacs%g_FEM,          &
+     &    nod_comm, node, ele, iphys_ele%base, ele_fld, jacs%g_FEM,     &
      &    jacs%jac_3d, rhs_tbl, fem_wk, f_l, f_nl, nod_fld)
 !
 !   take rotation and gradient of B (to iphys%SGS_wk%i_nlg)
@@ -182,7 +182,7 @@
       call choose_cal_gradient                                          &
      &   (FEM_prm%iflag_magne_supg, FEM_prm%npoint_t_evo_int, dt,       &
      &    iphys%base%i_mag_p, i_sgs_grad_p, ele%istack_ele_smp, m_lump, &
-     &    nod_comm, node, ele, iphys_ele, ele_fld, jacs%g_FEM,          &
+     &    nod_comm, node, ele, iphys_ele%base, ele_fld, jacs%g_FEM,     &
      &    jacs%jac_3d, rhs_tbl, fem_wk, f_l, f_nl, nod_fld)
 !
 !    filtering (to iphys%SGS_wk%i_nlg)

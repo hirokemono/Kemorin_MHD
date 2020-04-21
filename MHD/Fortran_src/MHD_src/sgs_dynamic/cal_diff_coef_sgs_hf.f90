@@ -127,7 +127,7 @@
      &    itype_Csym_flux, SGS_par%model_p%icoord_Csim, ifilter_4delta, &
      &    icomp_sgs_flux, iphys%SGS_wk%i_wd_nlg, ifield_f, ie_dfvx,     &
      &    mesh%nod_comm, mesh%node, mesh%ele, fluid,                    &
-     &    iphys_ele, ele_fld, fem_int%jcs, fem_int%rhs_tbl,             &
+     &    iphys_ele%base, ele_fld, fem_int%jcs, fem_int%rhs_tbl,        &
      &    FEM_filters%FEM_elens, sgs_coefs, mk_MHD%mlump_fl,            &
      &    mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%f_l, nod_fld)
 !

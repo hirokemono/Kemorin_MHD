@@ -176,8 +176,8 @@
      &    nod_comm, node, ele, surf, sf_grp, fluid, fl_prop, cd_prop,   &
      &    Vsf_bcs, Bsf_bcs, iphys%base, iphys%forces, iphys%div_forces, &
      &    iphys%diffusion, iphys%filter_fld, iphys%force_by_filter,     &
-     &    iphys%SGS_term, iphys%div_SGS, iphys_ele%base,                &
-     &    ak_MHD, fem_int, FEM_elens, ifld_diff, diff_coefs, mlump_fl,  &
+     &    iphys%SGS_term, iphys%div_SGS, iphys_ele%base, ak_MHD,        &
+     &    fem_int, FEM_elens, ifld_diff%SGS_term, diff_coefs, mlump_fl, &
      &    mhd_fem_wk, rhs_mat, nod_fld, ele_fld)
 !
 !$omp parallel

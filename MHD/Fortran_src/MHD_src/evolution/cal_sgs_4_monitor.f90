@@ -143,7 +143,7 @@
         call cal_sgs_heat_flux                                          &
      &     (FEM_prm%iflag_temp_supg, FEM_prm%npoint_t_evo_int, dt,      &
      &      SGS_param%iflag_SGS_h_flux, SGS_param%itype_Csym_h_flux,    &
-     &      iphys%SGS_wk%i_sgs_temp, iphys%filter_fld%i_temp,           &
+     &      iphys%base%i_temp, iphys%filter_fld%i_temp,                 &
      &      iphys%base%i_velo, iphys%filter_fld%i_velo,                 &
      &      iphys%SGS_term%i_SGS_h_flux,                                &
      &      icomp_sgs%SGS_term%i_SGS_h_flux, iphys_elediff%base%i_velo, &
@@ -159,7 +159,7 @@
         call cal_sgs_heat_flux                                          &
      &     (FEM_prm%iflag_comp_supg, FEM_prm%npoint_t_evo_int, dt,      &
      &      SGS_param%iflag_SGS_c_flux, SGS_param%itype_Csym_c_flux,    &
-     &      iphys%SGS_wk%i_sgs_composit, iphys%filter_fld%i_light,      &
+     &      iphys%base%i_light, iphys%filter_fld%i_light,               &
      &      iphys%base%i_velo, iphys%filter_fld%i_velo,                 &
      &      iphys%SGS_term%i_SGS_c_flux,                                &
      &      icomp_sgs%SGS_term%i_SGS_c_flux, iphys_elediff%base%i_velo, &
@@ -271,7 +271,8 @@
      &        'lead ', trim(div_SGS_h_flux%name)
         call cal_terms_4_heat(iphys%div_SGS%i_SGS_h_flux,               &
      &      iphys%base%i_velo, iphys%base%i_temp,                       &
-     &      iphys%SGS_term%i_SGS_h_flux, ifld_diff%SGS_term%i_SGS_h_flux,         &
+     &      iphys%SGS_term%i_SGS_h_flux,                                &
+     &      ifld_diff%SGS_term%i_SGS_h_flux,                            &
      &      FEM_prm%iflag_temp_supg, FEM_prm%npoint_t_evo_int,          &
      &      SGS_param%ifilter_final, SGS_param%iflag_SGS_h_flux,        &
      &      cmt_param%iflag_c_hf, cmt_param%iflag_c_temp, dt,           &
@@ -286,7 +287,8 @@
      &        'lead ', trim(div_SGS_h_flux%name)
         call cal_terms_4_heat(iphys%div_SGS%i_SGS_c_flux,               &
      &      iphys%base%i_velo, iphys%base%i_light,                      &
-     &      iphys%SGS_term%i_SGS_c_flux, ifld_diff%SGS_term%i_SGS_c_flux,         &
+     &      iphys%SGS_term%i_SGS_c_flux,                                &
+     &      ifld_diff%SGS_term%i_SGS_c_flux,                            &
      &      FEM_prm%iflag_comp_supg, FEM_prm%npoint_t_evo_int,          &
      &      SGS_param%ifilter_final, SGS_param%iflag_SGS_c_flux,        &
      &      cmt_param%iflag_c_cf, cmt_param%iflag_c_light, dt,          &
@@ -308,8 +310,8 @@
      &        fl_prop, cd_prop, surf_bcs%Vsf_bcs, surf_bcs%Bsf_bcs,     &
      &        iphys%base, iphys%forces, iphys%div_forces,               &
      &        iphys%diffusion, iphys%filter_fld, iphys%force_by_filter, &
-     &        iphys%SGS_term, iphys%div_SGS, iphys_ele%base,            &
-     &        ak_MHD, fem_int, FEM_elens, ifld_diff, diff_coefs,        &
+     &        iphys%SGS_term, iphys%div_SGS, iphys_ele%base, ak_MHD,    &
+     &        fem_int, FEM_elens, ifld_diff%SGS_term, diff_coefs,       &
      &        mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat,                     &
      &        nod_fld, ele_fld)
         end if
@@ -326,8 +328,8 @@
      &     nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs, surf_bcs%Bsf_bcs,        &
      &     iphys%base, iphys%forces, iphys%div_forces, iphys%diffusion, &
      &     iphys%SGS_term, iphys_ele%base, ele_fld,                     &
-     &     fem_int, FEM_elens, ifld_diff, diff_coefs, mk_MHD%mlump_cd,  &
-     &     mhd_fem_wk, rhs_mat, nod_fld)
+     &     fem_int, FEM_elens, ifld_diff%SGS_term, diff_coefs,          &
+     &     mk_MHD%mlump_cd, mhd_fem_wk, rhs_mat, nod_fld)
       end if
 !
       end subroutine cal_diff_of_sgs_terms

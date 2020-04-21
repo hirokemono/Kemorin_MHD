@@ -98,8 +98,8 @@
      &             write(*,*) 'lead  ', trim(nod_fld%phys_name(i))
           call choose_cal_gradient                                      &
      &       (FEM_prm%iflag_velo_supg, FEM_prm%npoint_t_evo_int, dt,    &
-     &        i_src, i_fld, fluid%istack_ele_fld_smp,                   &
-     &        mk_MHD%mlump_fl, nod_comm, node, ele, iphys_ele, ele_fld, &
+     &        i_src, i_fld, fluid%istack_ele_fld_smp, mk_MHD%mlump_fl,  &
+     &        nod_comm, node, ele, iphys_ele%base, ele_fld,             &
      &        fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,   &
      &        rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
         end if
@@ -119,8 +119,8 @@
      &             write(*,*) 'lead  ', trim(nod_fld%phys_name(i))
           call choose_cal_gradient                                      &
      &       (FEM_prm%iflag_velo_supg, FEM_prm%npoint_t_evo_int, dt,    &
-     &        i_src, i_fld, fluid%istack_ele_fld_smp,                   &
-     &        mk_MHD%mlump_fl, nod_comm, node, ele, iphys_ele, ele_fld, &
+     &        i_src, i_fld, fluid%istack_ele_fld_smp, mk_MHD%mlump_fl,  &
+     &        nod_comm, node, ele, iphys_ele%base, ele_fld,             &
      &        fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,   &
      &        rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
         end if
@@ -140,8 +140,8 @@
      &             write(*,*) 'lead  ', trim(nod_fld%phys_name(i))
           call choose_cal_gradient                                      &
      &       (FEM_prm%iflag_velo_supg, FEM_prm%npoint_t_evo_int, dt,    &
-     &        i_src, i_fld, fluid%istack_ele_fld_smp,                   &
-     &        mk_MHD%mlump_fl, nod_comm, node, ele, iphys_ele, ele_fld, &
+     &        i_src, i_fld, fluid%istack_ele_fld_smp, mk_MHD%mlump_fl,  &
+     &        nod_comm, node, ele, iphys_ele%base, ele_fld,             &
      &        fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,   &
      &        rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
         end if
@@ -161,8 +161,8 @@
      &             write(*,*) 'lead  ', trim(nod_fld%phys_name(i))
           call choose_cal_gradient                                      &
      &       (FEM_prm%iflag_velo_supg, FEM_prm%npoint_t_evo_int, dt,    &
-     &        i_src, i_fld, fluid%istack_ele_fld_smp,                   &
-     &        mk_MHD%mlump_fl, nod_comm, node, ele, iphys_ele, ele_fld, &
+     &        i_src, i_fld, fluid%istack_ele_fld_smp, mk_MHD%mlump_fl,  &
+     &        nod_comm, node, ele, iphys_ele%base, ele_fld,             &
      &        fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,   &
      &        rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
         end if
@@ -182,8 +182,8 @@
      &             write(*,*) 'lead  ', trim(nod_fld%phys_name(i))
           call choose_cal_gradient                                      &
      &       (FEM_prm%iflag_velo_supg, FEM_prm%npoint_t_evo_int, dt,    &
-     &        i_src, i_fld, fluid%istack_ele_fld_smp,                   &
-     &        mk_MHD%mlump_fl, nod_comm, node, ele, iphys_ele, ele_fld, &
+     &        i_src, i_fld, fluid%istack_ele_fld_smp, mk_MHD%mlump_fl,  &
+     &        nod_comm, node, ele, iphys_ele%base, ele_fld,             &
      &        fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,   &
      &        rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
         end if

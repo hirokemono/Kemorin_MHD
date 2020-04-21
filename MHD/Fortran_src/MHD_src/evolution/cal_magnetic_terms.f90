@@ -9,13 +9,14 @@
 !!     &          conduct, sf_grp, cd_prop, Bnod_bcs, Asf_bcs, Bsf_bcs, &
 !!     &          iphys_base, iphys_frc, iphys_div_frc, iphys_dif,      &
 !!     &          iphys_SGS, iphys_ele_base, ele_fld, fem_int,          &
-!!     &          FEM_elens, diff_coefs, mlump_cd, mhd_fem_wk,          &
-!!     &          rhs_mat, nod_fld)
+!!     &          FEM_elens, iak_diff_SGS, diff_coefs, mlump_cd,        &
+!!     &          mhd_fem_wk, rhs_mat, nod_fld)
 !!      subroutine cal_magnetic_diffusion(ak_d_magne,                   &
 !!     &          FEM_prm, SGS_param, cmt_param, nod_comm, node, ele,   &
 !!     &          surf, conduct, sf_grp, Bnod_bcs, Asf_bcs, Bsf_bcs,    &
 !!     &          iphys_base, iphys_dif, iphys_SGS, fem_int,            &
-!!     &          FEM_elens, ifld_diff, diff_coefs, rhs_mat, nod_fld)
+!!     &          FEM_elens, iak_diff_base, iak_diff_SGS, diff_coefs,   &
+!!     &          rhs_mat, nod_fld)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(commutation_control_params), intent(in) :: cmt_param
@@ -38,7 +39,8 @@
 !!        type(phys_data), intent(in) :: ele_fld
 !!        type(finite_element_integration), intent(in) :: fem_int
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
-!!        type(SGS_terms_address), intent(in) :: ifld_diff
+!!        type(base_field_address), intent(in) :: iak_diff_base
+!!        type(SGS_term_address), intent(in) :: iak_diff_SGS
 !!        type(SGS_coefficients_type), intent(in) :: diff_coefs
 !!        type(lumped_mass_matrices), intent(in) :: mlump_cd
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
@@ -96,7 +98,7 @@
      &          conduct, sf_grp, cd_prop, Bnod_bcs, Asf_bcs, Bsf_bcs,   &
      &          iphys_base, iphys_frc, iphys_div_frc, iphys_dif,        &
      &          iphys_SGS, iphys_ele_base, ele_fld, fem_int,            &
-     &          FEM_elens, ifld_diff, diff_coefs, mlump_cd,             &
+     &          FEM_elens, iak_diff_SGS, diff_coefs, mlump_cd,          &
      &          mhd_fem_wk, rhs_mat, nod_fld)
 !
       use int_vol_magne_monitor
@@ -126,7 +128,7 @@
       type(phys_data), intent(in) :: ele_fld
       type(finite_element_integration), intent(in) :: fem_int
       type(gradient_model_data_type), intent(in) :: FEM_elens
-      type(SGS_terms_address), intent(in) :: ifld_diff
+      type(SGS_term_address), intent(in) :: iak_diff_SGS
       type(SGS_coefficients_type), intent(in) :: diff_coefs
       type(lumped_mass_matrices), intent(in) :: mlump_cd
 !
@@ -148,7 +150,7 @@
      &      iphys_base, iphys_frc, iphys_div_frc, iphys_SGS,            &
      &      nod_fld, iphys_ele_base, ele_fld,                           &
      &      fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,     &
-     &      FEM_elens, ifld_diff%SGS_term, diff_coefs, mhd_fem_wk,      &
+     &      FEM_elens, iak_diff_SGS, diff_coefs, mhd_fem_wk,            &
      &      rhs_mat%fem_wk, rhs_mat%f_nl)
       else
         call int_vol_magne_monitor_pg                                   &
@@ -157,7 +159,7 @@
      &      iphys_base, iphys_frc, iphys_div_frc, iphys_SGS,            &
      &      nod_fld, iphys_ele_base, ele_fld,                           &
      &      fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,     &
-     &      FEM_elens, ifld_diff%SGS_term, diff_coefs, mhd_fem_wk,      &
+     &      FEM_elens, iak_diff_SGS, diff_coefs, mhd_fem_wk,            &
      &      rhs_mat%fem_wk, rhs_mat%f_nl)
       end if
 !
@@ -166,7 +168,7 @@
      &    node, ele, surf, sf_grp, Asf_bcs, Bsf_bcs,                    &
      &    iphys_base, iphys_dif, iphys_SGS, nod_fld,                    &
      &    fem_int%jcs%g_FEM, fem_int%jcs%jac_sf_grp, fem_int%rhs_tbl,   &
-     &    FEM_elens, ifld_diff%SGS_term, diff_coefs,                    &
+     &    FEM_elens, iak_diff_SGS, diff_coefs,                          &
      &    rhs_mat%fem_wk, rhs_mat%surf_wk, rhs_mat%f_l, rhs_mat%f_nl)
 !
       call cal_t_evo_4_vector_cd                                        &
@@ -192,7 +194,8 @@
      &          FEM_prm, SGS_param, cmt_param, nod_comm, node, ele,     &
      &          surf, conduct, sf_grp, Bnod_bcs, Asf_bcs, Bsf_bcs,      &
      &          iphys_base, iphys_dif, iphys_SGS, fem_int,              &
-     &          FEM_elens, ifld_diff, diff_coefs, rhs_mat, nod_fld)
+     &          FEM_elens, iak_diff_base, iak_diff_SGS, diff_coefs,     &
+     &          rhs_mat, nod_fld)
 !
       use int_vol_diffusion_ele
       use set_boundary_scalars
@@ -216,7 +219,8 @@
 !
       type(finite_element_integration), intent(in) :: fem_int
       type(gradient_model_data_type), intent(in) :: FEM_elens
-      type(SGS_terms_address), intent(in) :: ifld_diff
+      type(base_field_address), intent(in) :: iak_diff_base
+      type(SGS_term_address), intent(in) :: iak_diff_SGS
       type(SGS_coefficients_type), intent(in) :: diff_coefs
 !
       real(kind = kreal), intent(in) :: ak_d_magne(ele%numele)
@@ -231,7 +235,7 @@
      &   (SGS_param%ifilter_final, conduct%istack_ele_fld_smp,          &
      &    FEM_prm%npoint_t_evo_int, node, ele, nod_fld,                 &
      &    fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,       &
-     &    FEM_elens, diff_coefs, ifld_diff%base%i_magne,                &
+     &    FEM_elens, diff_coefs, iak_diff_base%i_magne,                 &
      &    one, ak_d_magne, iphys_base%i_magne,                          &
      &    rhs_mat%fem_wk, rhs_mat%f_l)
 !
@@ -240,7 +244,7 @@
      &   node, ele, surf, sf_grp, Asf_bcs, Bsf_bcs,                     &
      &   iphys_base, iphys_dif, iphys_SGS, nod_fld,                     &
      &   fem_int%jcs%g_FEM, fem_int%jcs%jac_sf_grp, fem_int%rhs_tbl,    &
-     &   FEM_elens, ifld_diff%SGS_term, diff_coefs,                     &
+     &   FEM_elens, iak_diff_SGS, diff_coefs,                           &
      &   rhs_mat%fem_wk, rhs_mat%surf_wk, rhs_mat%f_l, rhs_mat%f_nl)
 !
       call set_ff_nl_smp_2_ff(n_vector, node,                           &

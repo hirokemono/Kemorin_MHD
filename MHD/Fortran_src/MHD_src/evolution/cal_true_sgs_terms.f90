@@ -389,8 +389,8 @@
      &    nod_comm, node, ele, surf, sf_grp, fluid, fl_prop, cd_prop,   &
      &    Vsf_bcs, Bsf_bcs, iphys_base, iphys_frc, iphys_div_frc,       &
      &    iphys_dif, iphys_fil, iphys_fil_frc,                          &
-     &    iphys_SGS, iphys_div_SGS, iphys_ele_base,                     &
-     &    ak_MHD, fem_int, FEM_elens, ifld_diff, diff_coefs, mlump_fl,  &
+     &    iphys_SGS, iphys_div_SGS, iphys_ele_base, ak_MHD,             &
+     &    fem_int, FEM_elens, ifld_diff%SGS_term, diff_coefs, mlump_fl, &
      &    mhd_fem_wk, rhs_mat, nod_fld, ele_fld)
       call copy_vector_component(nod_fld,                               &
      &    iphys_div_frc%i_m_flux, iphys_tr_div_SGS%i_SGS_m_flux)
@@ -456,8 +456,8 @@
      &    nod_comm, node, ele, surf, sf_grp, fluid, fl_prop, cd_prop,   &
      &    Vsf_bcs, Bsf_bcs, iphys_base, iphys_frc, iphys_div_frc,       &
      &    iphys_dif, iphys_fil, iphys_fil_frc, iphys_SGS,               &
-     &    iphys_div_SGS, iphys_ele_base, ak_MHD, fem_int,               &
-     &    FEM_elens, ifld_diff, diff_coefs, mlump_fl, mhd_fem_wk,       &
+     &    iphys_div_SGS, iphys_ele_base, ak_MHD, fem_int, FEM_elens,    &
+     &    ifld_diff%SGS_term, diff_coefs, mlump_fl, mhd_fem_wk,         &
      &    rhs_mat, nod_fld, ele_fld)
       call copy_vector_component(nod_fld,                               &
      &   iphys_div_frc%i_maxwell, iphys_trSGS%i_SGS_Lorentz)
@@ -524,8 +524,8 @@
      &    Bnod_bcs, Asf_bcs, Bsf_bcs, iphys_base, iphys_frc,            &
      &    iphys_div_frc, iphys_dif, iphys_SGS,                          &
      &    iphys_ele_base, ele_fld, fem_int, FEM_elens,                  &
-     &    ifld_diff, diff_coefs, mlump_cd, mhd_fem_wk, rhs_mat,         &
-     &    nod_fld)
+     &    ifld_diff%SGS_term, diff_coefs, mlump_cd, mhd_fem_wk,         &
+     &    rhs_mat, nod_fld)
       call copy_vector_component(nod_fld, iphys_div_frc%i_induct_t,     &
      &    iphys_trSGS%i_SGS_induction)
 !
