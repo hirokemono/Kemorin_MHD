@@ -11,7 +11,6 @@
 !!        type(commutation_control_params), intent(in) :: cmt_param
 !!        type(layering_tbl), intent(in) :: layer_tbl
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
-!!        type(SGS_terms_address), intent(inout) :: ifld_sgs
 !!        type(SGS_terms_address), intent(inout) :: icomp_sgs
 !!        type(SGS_terms_address), intent(inout) :: ifld_diff
 !!        type(SGS_terms_address), intent(inout) :: icomp_diff

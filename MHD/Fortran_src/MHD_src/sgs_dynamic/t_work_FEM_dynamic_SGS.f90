@@ -74,7 +74,7 @@
 !
       call define_sgs_components                                        &
      &   (mesh%node%numnod, mesh%ele%numele,                            &
-     &    SGS_par%model_p, layer_tbl, MHD_prop, Csims_FEM_MHD%ifld_sgs, &
+     &    SGS_par%model_p, layer_tbl, MHD_prop, Csims_FEM_MHD%iak_sgs_term, &
      &    Csims_FEM_MHD%icomp_sgs, FEM_SGS_wk%wk_sgs,                   &
      &    Csims_FEM_MHD%sgs_coefs, Csims_FEM_MHD%sgs_coefs_nod)
       call define_sgs_diff_coefs(mesh%ele%numele,                       &

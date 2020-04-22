@@ -6,11 +6,11 @@
 !
 !!      subroutine define_sgs_components                                &
 !!     &         (numnod, numele, SGS_param, layer_tbl, MHD_prop,       &
-!!     &          ifld_sgs, icomp_sgs, wk_sgs, sgs_coefs, sgs_coefs_nod)
+!!     &          iak_sgs_term, icomp_sgs, wk_sgs, sgs_coefs, sgs_coefs_nod)
 !!
 !!      subroutine set_sgs_addresses                                    &
 !!     &          (SGS_param, fl_prop, cd_prop, ht_prop, cp_prop,       &
-!!     &           ifld_sgs, icomp_sgs, wk_sgs, sgs_coefs)
+!!     &           iak_sgs_term, icomp_sgs, wk_sgs, sgs_coefs)
 !!      subroutine s_count_sgs_components(SGS_param,                    &
 !!     &          fl_prop, cd_prop, ht_prop, cp_prop, sgs_coefs)
 !!      subroutine set_SGS_ele_fld_addresses(cd_prop, SGS_param,        &
@@ -20,7 +20,7 @@
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
 !!        type(layering_tbl), intent(in) :: layer_tbl
-!!        type(SGS_terms_address), intent(inout) :: ifld_sgs
+!!        type(SGS_term_address), intent(inout) :: iak_sgs_term
 !!        type(SGS_terms_address), intent(inout) :: icomp_sgs
 !!        type(SGS_term_address), intent(inout) :: iak_sgs_term
 !!        type(SGS_term_address), intent(inout) :: icomp_sgs_term
@@ -45,7 +45,7 @@
 !
       subroutine define_sgs_components                                  &
      &         (numnod, numele, SGS_param, layer_tbl, MHD_prop,         &
-     &          ifld_sgs, icomp_sgs, wk_sgs, sgs_coefs, sgs_coefs_nod)
+     &          iak_sgs_term, icomp_sgs, wk_sgs, sgs_coefs, sgs_coefs_nod)
 !
       use calypso_mpi
       use m_phys_labels
@@ -62,8 +62,9 @@
       type(MHD_evolution_param), intent(in) :: MHD_prop
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
-      type(SGS_terms_address), intent(inout) :: ifld_sgs, icomp_sgs
 !
+      type(SGS_term_address), intent(inout) :: iak_sgs_term
+      type(SGS_terms_address), intent(inout) :: icomp_sgs
       type(dynamic_model_data), intent(inout) :: wk_sgs
       type(SGS_coefficients_type), intent(inout) :: sgs_coefs
       type(SGS_coefficients_type), intent(inout) :: sgs_coefs_nod
@@ -84,9 +85,9 @@
       call set_sgs_addresses(SGS_param,                                 &
      &    MHD_prop%fl_prop, MHD_prop%cd_prop,                           &
      &    MHD_prop%ht_prop, MHD_prop%cp_prop,                           &
-     &    ifld_sgs%SGS_term, icomp_sgs%SGS_term, wk_sgs, sgs_coefs)
+     &    iak_sgs_term, icomp_sgs%SGS_term, wk_sgs, sgs_coefs)
       call check_sgs_addresses                                          &
-     &   (ifld_sgs%SGS_term, icomp_sgs%SGS_term, wk_sgs, sgs_coefs)
+     &   (iak_sgs_term, icomp_sgs%SGS_term, wk_sgs, sgs_coefs)
 !
       if(     SGS_param%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF           &
      &   .or. SGS_param%iflag_SGS.eq.id_SGS_similarity)  then

@@ -60,9 +60,9 @@
 !
 !
       if(iflag_debug .gt. 0) then
-        write(*,*) 'ifld_sgs%SGS_term%i_SGS_buoyancy',                  &
+        write(*,*) 'iak_sgs_term%i_SGS_buoyancy',                       &
      &        iak_sgs_term%i_SGS_buoyancy, f_trns_Csim%i_SGS_buoyancy
-        write(*,*) 'ifld_sgs%SGS_term%i_SGS_comp_buo',                  &
+        write(*,*) 'iak_sgs_term%i_SGS_comp_buo',                       &
      &     iak_sgs_term%i_SGS_comp_buo, f_trns_Csim%i_SGS_comp_buo
       end if
 !
@@ -95,19 +95,19 @@
 !
 !
       if(iflag_debug .gt. 0) then
-        write(*,*) 'ifld_sgs%SGS_term%i_SGS_m_flux',                    &
+        write(*,*) 'iak_sgs_term%i_SGS_m_flux',                         &
      &        iak_sgs_term%i_SGS_m_flux, f_trns_Csim%i_SGS_m_flux
-        write(*,*) 'ifld_sgs%SGS_term%i_SGS_Lorentz',                   &
+        write(*,*) 'iak_sgs_term%i_SGS_Lorentz',                        &
      &        iak_sgs_term%i_SGS_Lorentz, f_trns_Csim%i_SGS_Lorentz
-        write(*,*) 'ifld_sgs%SGS_term%i_SGS_induction',                 &
+        write(*,*) 'iak_sgs_term%i_SGS_induction',                      &
      &        iak_sgs_term%i_SGS_induction, f_trns_Csim%i_SGS_vp_induct
-        write(*,*) 'ifld_sgs%SGS_term%i_SGS_h_flux',                    &
+        write(*,*) 'iak_sgs_term%i_SGS_h_flux',                         &
      &        iak_sgs_term%i_SGS_h_flux, f_trns_Csim%i_SGS_h_flux
-        write(*,*) 'ifld_sgs%SGS_term%i_SGS_c_flux',                    &
+        write(*,*) 'iak_sgs_term%i_SGS_c_flux',                         &
      &        iak_sgs_term%i_SGS_c_flux, f_trns_Csim%i_SGS_c_flux
-        write(*,*) 'ifld_sgs%SGS_term%i_SGS_buoyancy',                  &
+        write(*,*) 'iak_sgs_term%i_SGS_buoyancy',                       &
      &        iak_sgs_term%i_SGS_buoyancy, f_trns_Csim%i_SGS_buoyancy
-        write(*,*) 'ifld_sgs%SGS_term%i_SGS_comp_buo',                  &
+        write(*,*) 'iak_sgs_term%i_SGS_comp_buo',                       &
      &        iak_sgs_term%i_SGS_comp_buo, f_trns_Csim%i_SGS_comp_buo
       end if
 !

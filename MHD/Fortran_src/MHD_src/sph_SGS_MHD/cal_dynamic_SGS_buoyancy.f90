@@ -69,7 +69,7 @@
 !        write(*,*) 'prod_SGS_buoyancy_to_Reynolds'
         call prod_SGS_buoyancy_to_Reynolds                              &
      &     (sph%sph_rtp, dynamic_SPH%sph_d_grp,                         &
-     &      trns_SGS%f_trns, dynamic_SPH%ifld_sgs%SGS_term,             &
+     &      trns_SGS%f_trns, dynamic_SPH%iak_sgs_term,                  &
      &      dynamic_SPH%wk_sgs, trns_SGS%forward)
 !
       else if(SGS_param%iflag_SGS_buo_usage .eq. id_use_sphere) then
@@ -83,7 +83,7 @@
 !        if(iflag_debug.eq.1) write(*,*)                                &
 !     &                    'magnify_sph_ave_SGS_buoyancy'
         call magnify_sph_ave_SGS_buoyancy(sph%sph_rtp,                  &
-     &      dynamic_SPH%ifld_sgs%SGS_term, dynamic_SPH%wk_sgs_buo,      &
+     &      dynamic_SPH%iak_sgs_term, dynamic_SPH%wk_sgs_buo,           &
      &      trns_SGS%f_trns, trns_SGS%forward)
 !
       else if(SGS_param%iflag_SGS_buo_usage .eq. id_use_volume) then
@@ -97,7 +97,7 @@
 !        if(iflag_debug.eq.1) write(*,*)                                &
 !     &                    'magnify_vol_ave_SGS_buoyancy'
         call magnify_vol_ave_SGS_buoyancy(sph%sph_rtp,                  &
-     &      dynamic_SPH%ifld_sgs%SGS_term, dynamic_SPH%wk_sgs_buo,      &
+     &      dynamic_SPH%iak_sgs_term, dynamic_SPH%wk_sgs_buo,           &
      &      trns_SGS%f_trns, trns_SGS%forward)
       end if
 !

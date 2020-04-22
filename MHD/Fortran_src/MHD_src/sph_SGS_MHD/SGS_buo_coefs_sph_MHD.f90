@@ -12,7 +12,6 @@
 !!     &          ncomp_snap_rtp_2_rj, if_trns_reynolds, if_trns_buo_wk,&
 !!     &          ifld_SGS_buo, icomp_SGS_buo, wk_sgs)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
-!!        type(SGS_terms_address), intent(in) :: ifld_sgs
 !!        type(phys_address), intent(in) :: fg_trns
 !!        type(address_each_sph_trans), intent(inout) :: trns_f_SGS
 !!      subroutine prod_SGS_buoyancy_to_Reynolds(sph_rtp, sph_d_grp,    &
@@ -20,7 +19,6 @@
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(sph_dynamic_model_group), intent(in) :: sph_d_grp
 !!        type(phys_address), intent(in) :: fg_trns
-!!        type(SGS_terms_address), intent(in) :: ifld_sgs
 !!        type(SGS_term_address), intent(in) :: iak_sgs_term
 !!        type(dynamic_model_data), intent(in) :: wk_sgs
 !!

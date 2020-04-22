@@ -18,10 +18,11 @@
 !!        type(legendre_4_sph_trans), intent(in) :: leg
 !!        type(sph_filters_type), intent(inout) :: sph_filters(1)
 !!      subroutine init_work_4_SGS_sph_mhd(SGS_par, sph_d_grp,          &
-!!     &          MHD_prop, ifld_sgs, icomp_sgs, sgs_coefs, wk_sgs)
+!!     &          MHD_prop, iak_sgs_term, icomp_sgs, sgs_coefs, wk_sgs)
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
-!!        type(SGS_terms_address), intent(inout) :: ifld_sgs, icomp_sgs
+!!        type(SGS_term_address), intent(inout) :: iak_sgs_term
+!!        type(SGS_terms_address), intent(inout) :: icomp_sgs
 !!        type(SGS_coefficients_type), intent(inout) :: sgs_coefs
 !!        type(dynamic_model_data), intent(inout) :: wk_sgs
 !!@endverbatim
@@ -51,7 +52,7 @@
 !>      Structure of work area for dyanmic SGS model for spectrum dynamo
       type dynamic_SGS_data_4_sph
 !>         Field adddress for dynamic SGS model
-        type(SGS_terms_address) :: ifld_sgs
+        type(SGS_term_address) :: iak_sgs_term
 !>         Component adddress for dynamic SGS model
         type(SGS_terms_address) :: icomp_sgs
 !>         Data array for dynamic SGS model
@@ -177,7 +178,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine init_work_4_SGS_sph_mhd(SGS_par, sph_d_grp,            &
-     &          MHD_prop, ifld_sgs, icomp_sgs, sgs_coefs, wk_sgs)
+     &          MHD_prop, iak_sgs_term, icomp_sgs, sgs_coefs, wk_sgs)
 !
       use t_physical_property
       use count_sgs_components
@@ -186,7 +187,8 @@
       type(sph_dynamic_model_group), intent(in) :: sph_d_grp
       type(MHD_evolution_param), intent(in) :: MHD_prop
 !
-      type(SGS_terms_address), intent(inout) :: ifld_sgs, icomp_sgs
+      type(SGS_term_address), intent(inout) :: iak_sgs_term
+      type(SGS_terms_address), intent(inout) :: icomp_sgs
       type(SGS_coefficients_type), intent(inout) :: sgs_coefs
       type(dynamic_model_data), intent(inout) :: wk_sgs
 !
@@ -202,9 +204,9 @@
       call set_sgs_addresses                                            &
      &   (SGS_par%model_p, MHD_prop%fl_prop, MHD_prop%cd_prop,          &
      &    MHD_prop%ht_prop, MHD_prop%cp_prop,                           &
-     &    ifld_sgs%SGS_term, icomp_sgs%SGS_term, wk_sgs, sgs_coefs)
+     &    iak_sgs_term, icomp_sgs%SGS_term, wk_sgs, sgs_coefs)
       call check_sgs_addresses                                          &
-     &   (ifld_sgs%SGS_term, icomp_sgs%SGS_term, wk_sgs, sgs_coefs)
+     &   (iak_sgs_term, icomp_sgs%SGS_term, wk_sgs, sgs_coefs)
 !
       end subroutine init_work_4_SGS_sph_mhd
 !

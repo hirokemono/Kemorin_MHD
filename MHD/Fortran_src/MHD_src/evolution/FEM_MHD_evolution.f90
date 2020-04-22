@@ -9,7 +9,7 @@
 !!@verbatim
 !!      subroutine fields_evolution(time_d, FEM_prm, SGS_par,           &
 !!     &          fem, MHD_mesh, MHD_prop, nod_bcs, surf_bcs, iphys,    &
-!!     &          ifld_sgs, icomp_sgs, ifld_diff, icomp_diff,           &
+!!     &          iak_sgs_term, icomp_sgs, ifld_diff, icomp_diff,       &
 !!     &          iphys_elediff, ak_MHD, FEM_filters,                   &
 !!     &          s_package, MGCG_WK, SGS_MHD_wk, nod_fld,              &
 !!     &          sgs_coefs, sgs_coefs_nod, diff_coefs, fem_sq)
@@ -21,7 +21,7 @@
 !!
 !!      subroutine fields_evo_for_FEM_SPH                               &
 !!     &       (time_d, FEM_prm, SGS_par, fem, fluid,                   &
-!!     &        MHD_prop, nod_bcs, surf_bcs, iphys, ifld_sgs, icomp_sgs,&
+!!     &        MHD_prop, nod_bcs, surf_bcs, iphys, iak_sgs_term, icomp_sgs,&
 !!     &        ifld_diff, icomp_diff, iphys_elediff, ak_MHD,           &
 !!     &        FEM_filters, s_package, MGCG_WK, SGS_MHD_wk,            &
 !!     &        nod_fld, sgs_coefs, sgs_coefs_nod, diff_coefs, fem_sq)
@@ -38,6 +38,12 @@
 !!        type(coefs_4_MHD_type), intent(in) :: ak_MHD
 !!        type(finite_element_integration), intent(in) :: fem_int
 !!        type(filters_on_FEM), intent(in) :: FEM_filters
+!!        type(SGS_term_address), intent(in) :: iak_sgs_term
+!!        type(SGS_terms_address), intent(in) :: icomp_sgs
+!!        type(SGS_terms_address), intent(in) :: ifld_diff
+!!        type(SGS_terms_address), intent(in) :: icomp_diff
+!!        type(base_field_address), intent(in) :: iphys_elediff_vec
+!!        type(base_field_address), intent(in) :: iphys_elediff_fil
 !!        type(MHD_matrices_pack), intent(in) :: s_package
 !!        type(MGCG_data), intent(inout) :: MGCG_WK
 !!        type(work_FEM_SGS_MHD), intent(inout) :: SGS_MHD_wk
@@ -94,7 +100,7 @@
 !
       subroutine fields_evolution(time_d, FEM_prm, SGS_par,             &
      &          fem, MHD_mesh, MHD_prop, nod_bcs, surf_bcs, iphys,      &
-     &          ifld_sgs, icomp_sgs, ifld_diff, icomp_diff,             &
+     &          iak_sgs_term, icomp_sgs, ifld_diff, icomp_diff,         &
      &          iphys_elediff_vec, iphys_elediff_fil, ak_MHD, FEM_filters,  &
      &          s_package, MGCG_WK, SGS_MHD_wk, nod_fld,                &
      &          sgs_coefs, sgs_coefs_nod, diff_coefs, fem_sq)
@@ -120,7 +126,7 @@
       type(nodal_boundarty_conditions), intent(in) :: nod_bcs
       type(surface_boundarty_conditions), intent(in) :: surf_bcs
       type(phys_address), intent(in) :: iphys
-      type(SGS_terms_address), intent(in) :: ifld_sgs
+      type(SGS_term_address), intent(in) :: iak_sgs_term
       type(SGS_terms_address), intent(in) :: icomp_sgs
       type(SGS_terms_address), intent(in) :: ifld_diff
       type(SGS_terms_address), intent(in) :: icomp_diff
@@ -313,7 +319,7 @@
      &      surf_bcs%Bsf_bcs, surf_bcs%Psf_bcs,                         &
      &      iphys, SGS_MHD_wk%iphys_ele, ak_MHD,                        &
      &      SGS_MHD_wk%fem_int, FEM_filters,                            &
-     &      ifld_sgs, icomp_sgs, ifld_diff, iphys_elediff_vec,          &
+     &      iak_sgs_term, icomp_sgs, ifld_diff, iphys_elediff_vec,      &
      &      sgs_coefs_nod, diff_coefs, SGS_MHD_wk%mk_MHD,               &
      &      s_package%Vmatrix, s_package%Pmatrix,                       &
      &      MGCG_WK, SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%mhd_fem_wk,      &
@@ -428,7 +434,7 @@
 !
       subroutine fields_evo_for_FEM_SPH                                 &
      &       (time_d, FEM_prm, SGS_par, fem, fluid,                     &
-     &        MHD_prop, nod_bcs, surf_bcs, iphys, ifld_sgs, icomp_sgs,  &
+     &        MHD_prop, nod_bcs, surf_bcs, iphys, iak_sgs_term, icomp_sgs,  &
      &        ifld_diff, icomp_diff, iphys_elediff_vec, iphys_elediff_fil, ak_MHD,         &
      &        FEM_filters, s_package, MGCG_WK, SGS_MHD_wk,              &
      &        nod_fld, sgs_coefs, sgs_coefs_nod, diff_coefs, fem_sq)
@@ -450,7 +456,7 @@
       type(nodal_boundarty_conditions), intent(in) :: nod_bcs
       type(surface_boundarty_conditions), intent(in) :: surf_bcs
       type(phys_address), intent(in) :: iphys
-      type(SGS_terms_address), intent(in) :: ifld_sgs
+      type(SGS_term_address), intent(in) :: iak_sgs_term
       type(SGS_terms_address), intent(in) :: icomp_sgs
       type(SGS_terms_address), intent(in) :: ifld_diff
       type(SGS_terms_address), intent(in) :: icomp_diff
@@ -585,7 +591,7 @@
      &      MHD_prop%fl_prop, MHD_prop%cd_prop, nod_bcs%Vnod_bcs,       &
      &      surf_bcs%Vsf_bcs, surf_bcs%Bsf_bcs, surf_bcs%Psf_bcs,       &
      &      iphys, SGS_MHD_wk%iphys_ele, ak_MHD, SGS_MHD_wk%fem_int,    &
-     &      FEM_filters, ifld_sgs, icomp_sgs,                           &
+     &      FEM_filters, iak_sgs_term, icomp_sgs,                       &
      &      ifld_diff, iphys_elediff_vec,                               &
      &      sgs_coefs_nod, diff_coefs, SGS_MHD_wk%mk_MHD,               &
      &      s_package%Vmatrix, s_package%Pmatrix, MGCG_WK,              &
