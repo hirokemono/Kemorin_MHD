@@ -96,8 +96,8 @@
       call count_int_vol_data                                           &
          (SGS_par%model_p, MHD_prop%cd_prop, mhd_fem_wk)
       call alloc_int_vol_dvx(mesh%ele%numele, mhd_fem_wk)
-      call set_SGS_ele_fld_addresses                                    &
-     &   (MHD_prop%cd_prop, SGS_par%model_p, iphys_elediff)
+      call set_SGS_ele_fld_addresses(MHD_prop%cd_prop, SGS_par%model_p, &
+     &    iphys_elediff%base, iphys_elediff%filter_fld)
 !
 !  allocation for field values
       if (iflag_debug.ge.1)  write(*,*) 'set_FEM_SGS_MHD_field_data'

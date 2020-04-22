@@ -133,12 +133,11 @@
      &        iphys%SGS_term%i_SGS_h_flux,                              &
      &        ifld_sgs%SGS_term%i_SGS_h_flux,                           &
      &        icomp_sgs%SGS_term%i_SGS_h_flux,                          &
-     &        iphys_elediff%base%i_velo,                                &
-     &        iphys_elediff%filter_fld%i_velo,                          &
      &        SGS_par, fem%mesh, iphys,                                 &
      &        SGS_MHD_wk%iphys_ele, SGS_MHD_wk%ele_fld,                 &
-     &        MHD_mesh%fluid, fem_int, FEM_filters, sgs_coefs_nod,      &
-     &        SGS_MHD_wk%mk_MHD, SGS_MHD_wk%FEM_SGS_wk,                 &
+     &        MHD_mesh%fluid, fem_int, FEM_filters,                     &
+     &        iphys_elediff%base, iphys_elediff%filter_fld,             &
+     &        sgs_coefs_nod, SGS_MHD_wk%mk_MHD, SGS_MHD_wk%FEM_SGS_wk,  &
      &        SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat, nod_fld,       &
      &        sgs_coefs)
 !
@@ -169,13 +168,13 @@
      &        ifld_diff%SGS_term%i_SGS_h_flux,                          &
      &        icomp_sgs%SGS_term%i_SGS_h_flux,                          &
      &        icomp_diff%SGS_term%i_SGS_h_flux,                         &
-     &        iphys_elediff%filter_fld%i_velo,                          &
      &        SGS_par, fem%mesh, fem%group,                             &
      &        nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs, iphys,                &
      &        SGS_MHD_wk%iphys_ele, SGS_MHD_wk%ele_fld, MHD_mesh%fluid, &
-     &        fem_int, FEM_filters, sgs_coefs, SGS_MHD_wk%mk_MHD,       &
-     &        SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%mhd_fem_wk,             &
-     &        SGS_MHD_wk%rhs_mat, nod_fld, diff_coefs)
+     &        fem_int, FEM_filters, iphys_elediff%filter_fld,           &
+     &        sgs_coefs, SGS_MHD_wk%mk_MHD, SGS_MHD_wk%FEM_SGS_wk,      &
+     &        SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat, nod_fld,       &
+     &        diff_coefs)
         end if
       end if
 !
@@ -192,12 +191,11 @@
      &        iphys%SGS_term%i_SGS_c_flux,                              &
      &        ifld_sgs%SGS_term%i_SGS_c_flux,                           &
      &        icomp_sgs%SGS_term%i_SGS_c_flux,                          &
-     &        iphys_elediff%base%i_velo,                                &
-     &        iphys_elediff%filter_fld%i_velo,                          &
      &        SGS_par, fem%mesh, iphys,                                 &
      &        SGS_MHD_wk%iphys_ele, SGS_MHD_wk%ele_fld,                 &
-     &        MHD_mesh%fluid, fem_int, FEM_filters, sgs_coefs_nod,      &
-     &        SGS_MHD_wk%mk_MHD, SGS_MHD_wk%FEM_SGS_wk,                 &
+     &        MHD_mesh%fluid, fem_int, FEM_filters,                     &
+     &        iphys_elediff%base, iphys_elediff%filter_fld,             &
+     &        sgs_coefs_nod, SGS_MHD_wk%mk_MHD, SGS_MHD_wk%FEM_SGS_wk,  &
      &        SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat, nod_fld,       &
      &        sgs_coefs)
 !
@@ -229,13 +227,13 @@
      &        ifld_diff%SGS_term%i_SGS_c_flux,                          &
      &        icomp_sgs%SGS_term%i_SGS_c_flux,                          &
      &        icomp_diff%SGS_term%i_SGS_c_flux,                         &
-     &        iphys_elediff%filter_fld%i_velo,                          &
      &        SGS_par, fem%mesh, fem%group,                             &
      &        nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs, iphys,                &
      &        SGS_MHD_wk%iphys_ele, SGS_MHD_wk%ele_fld, MHD_mesh%fluid, &
-     &        fem_int, FEM_filters, sgs_coefs, SGS_MHD_wk%mk_MHD,       &
-     &        SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%mhd_fem_wk,             &
-     &        SGS_MHD_wk%rhs_mat, nod_fld, diff_coefs)
+     &        fem_int, FEM_filters, iphys_elediff%filter_fld,           &
+     &        sgs_coefs, SGS_MHD_wk%mk_MHD, SGS_MHD_wk%FEM_SGS_wk,      &
+     &        SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat, nod_fld,       &
+     &        diff_coefs)
         end if
       end if
 !

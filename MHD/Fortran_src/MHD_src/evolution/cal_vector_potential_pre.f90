@@ -5,14 +5,15 @@
 !                                    on July 2000 (ver 1.1)
 !        modieied by H. Matsui on Sep., 2005
 !
-!!      subroutine cal_vector_p_pre                                     &
-!!     &         (iak_diff_base, icomp_sgs_term, ie_dvx, ak_d_magne, dt,&
+!!      subroutine cal_vector_p_pre(ak_d_magne, dt,                     &
 !!     &          FEM_prm, SGS_param, cmt_param, filter_param,          &
-!!     &          nod_comm, node, ele, surf, conduct, sf_grp,           &
-!!     &          cd_prop, Bnod_bcs, Asf_bcs, iphys, iphys_ele, ele_fld,&
-!!     &          jacs, rhs_tbl, FEM_elens, sgs_coefs, diff_coefs,      &
-!!     &          filtering, mlump_cd, Bmatrix, MG_vector,              &
-!!     &          wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+!!     &          nod_comm, node, ele, surf, conduct,                   &
+!!     &          sf_grp, cd_prop, Bnod_bcs, Asf_bcs,                   &
+!!     &          iphys, iphys_ele, ele_fld, jacs, rhs_tbl, FEM_elens,  &
+!!     &          iak_diff_base, icomp_sgs_term, iphys_elediff_base,    &
+!!     &          sgs_coefs, diff_coefs, filtering, mlump_cd,           &
+!!     &          Bmatrix, MG_vector, wk_filter, mhd_fem_wk, fem_wk,    &
+!!     &          f_l, f_nl, nod_fld)
 !!      subroutine cal_vector_p_co(iak_diff_base, ak_d_magne, dt,       &
 !!     &          FEM_prm, SGS_param, cmt_param,                        &
 !!     &          nod_comm, node, ele, surf, conduct, sf_grp, cd_prop,  &
@@ -41,6 +42,7 @@
 !!        type(phys_data), intent(in) :: ele_fld
 !!        type(base_field_address), intent(in) :: iak_diff_base
 !!        type(SGS_term_address), intent(in) :: icomp_sgs_term
+!!        type(base_field_address), intent(in) :: iphys_elediff_base
 !!        type(jacobians_type), intent(in) :: jacs
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(lumped_mass_matrices), intent(in) :: m_lump
@@ -103,14 +105,15 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_vector_p_pre                                       &
-     &         (iak_diff_base, icomp_sgs_term, ie_dvx, ak_d_magne, dt,  &
+      subroutine cal_vector_p_pre(ak_d_magne, dt,                       &
      &          FEM_prm, SGS_param, cmt_param, filter_param,            &
-     &          nod_comm, node, ele, surf, conduct, sf_grp,             &
-     &          cd_prop, Bnod_bcs, Asf_bcs, iphys, iphys_ele, ele_fld,  &
-     &          jacs, rhs_tbl, FEM_elens, sgs_coefs, diff_coefs,        &
-     &          filtering, mlump_cd, Bmatrix, MG_vector,                &
-     &          wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &          nod_comm, node, ele, surf, conduct,                     &
+     &          sf_grp, cd_prop, Bnod_bcs, Asf_bcs,                     &
+     &          iphys, iphys_ele, ele_fld, jacs, rhs_tbl, FEM_elens,    &
+     &          iak_diff_base, icomp_sgs_term, iphys_elediff_base,      &
+     &          sgs_coefs, diff_coefs, filtering, mlump_cd,             &
+     &          Bmatrix, MG_vector, wk_filter, mhd_fem_wk, fem_wk,      &
+     &          f_l, f_nl, nod_fld)
 !
       use calypso_mpi
 !
@@ -144,6 +147,7 @@
       type(phys_data), intent(in) :: ele_fld
       type(base_field_address), intent(in) :: iak_diff_base
       type(SGS_term_address), intent(in) :: icomp_sgs_term
+      type(base_field_address), intent(in) :: iphys_elediff_base
       type(jacobians_type), intent(in) :: jacs
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
@@ -153,7 +157,6 @@
       type(lumped_mass_matrices), intent(in) :: mlump_cd
       type(MHD_MG_matrix), intent(in) :: Bmatrix
 !
-      integer(kind = kint), intent(in) :: ie_dvx
       real(kind = kreal), intent(in) :: ak_d_magne(ele%numele)
       real(kind = kreal), intent(in) :: dt
 !
@@ -184,8 +187,8 @@
 !
       if ( SGS_param%iflag_SGS_uxb .ne. id_SGS_none) then
         call cal_sgs_uxb_2_evo                                          &
-     &     (icomp_sgs_term%i_SGS_induction, ie_dvx, dt,                 &
-     &      FEM_prm, SGS_param, filter_param, nod_comm, node, ele,      &
+     &     (icomp_sgs_term%i_SGS_induction, iphys_elediff_base%i_velo,  &
+     &      dt, FEM_prm, SGS_param, filter_param, nod_comm, node, ele,  &
      &      conduct, cd_prop, iphys, iphys_ele, ele_fld,                &
      &      jacs, rhs_tbl, FEM_elens, filtering, sgs_coefs,             &
      &      wk_filter, mhd_fem_wk, fem_wk, f_nl, nod_fld)

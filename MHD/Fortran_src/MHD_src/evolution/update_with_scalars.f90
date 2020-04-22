@@ -7,14 +7,16 @@
 !> @brief Evaluate field data for time integration for FEM dynamo model
 !!
 !!@verbatim
-!!      subroutine update_with_temperature(iak_diff_t, icomp_diff_t,    &
-!!     &        i_step, dt, FEM_prm, SGS_par, mesh, group, fluid,       &
-!!     &        sf_bcs, iphys, iphys_ele, ele_fld, fem_int, FEM_filters,&
-!!     &        mk_MHD, FEM_SGS_wk, rhs_mat, nod_fld, diff_coefs)
-!!      subroutine update_with_dummy_scalar(iak_diff_c, icomp_diff_c,   &
-!!     &        i_step, dt, FEM_prm, SGS_par, mesh, group, fluid,       &
-!!     &        sf_bcs, iphys, iphys_ele, ele_fld, fem_int, FEM_filters,&
-!!     &        mk_MHD, FEM_SGS_wk, rhs_mat, nod_fld, diff_coefs)
+!!      subroutine update_with_temperature                              &
+!!     &         (i_step, dt, FEM_prm, SGS_par, mesh, group, fluid,     &
+!!     &          sf_bcs, iphys, iphys_ele, ele_fld, fem_int,           &
+!!     &          FEM_filters, iak_diff_base, icomp_diff_base,          &
+!!     &          mk_MHD, FEM_SGS_wk, rhs_mat, nod_fld, diff_coefs)
+!!      subroutine update_with_dummy_scalar                             &
+!!     &         (i_step, dt, FEM_prm, SGS_par, mesh, group, fluid,     &
+!!     &          sf_bcs, iphys, iphys_ele, ele_fld, fem_int,           &
+!!     &          FEM_filters, iak_diff_base, icomp_diff_base,          &
+!!     &          mk_MHD, FEM_SGS_wk, rhs_mat, nod_fld, diff_coefs)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(mesh_geometry), intent(in) :: mesh
@@ -26,6 +28,8 @@
 !!        type(phys_data), intent(in) :: ele_fld
 !!        type(finite_element_integration), intent(in) :: fem_int
 !!        type(filters_on_FEM), intent(in) :: FEM_filters
+!!        type(base_field_address), intent(in) :: iak_diff_base
+!!        type(base_field_address), intent(in) :: icomp_diff_base
 !!        type(lumped_mass_mat_layerd), intent(in) :: mk_MHD
 !!        type(work_FEM_dynamic_SGS), intent(inout) :: FEM_SGS_wk
 !!        type(arrays_finite_element_mat), intent(inout) :: rhs_mat
@@ -46,6 +50,7 @@
       use t_surface_data
       use t_phys_data
       use t_phys_address
+      use t_base_field_labels
       use t_jacobians
       use t_table_FEM_const
       use t_MHD_mass_matrices
@@ -64,10 +69,11 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine update_with_temperature(iak_diff_t, icomp_diff_t,      &
-     &        i_step, dt, FEM_prm, SGS_par, mesh, group, fluid,         &
-     &        sf_bcs, iphys, iphys_ele, ele_fld, fem_int, FEM_filters,  &
-     &        mk_MHD, FEM_SGS_wk, rhs_mat, nod_fld, diff_coefs)
+      subroutine update_with_temperature                                &
+     &         (i_step, dt, FEM_prm, SGS_par, mesh, group, fluid,       &
+     &          sf_bcs, iphys, iphys_ele, ele_fld, fem_int,             &
+     &          FEM_filters, iak_diff_base, icomp_diff_base,            &
+     &          mk_MHD, FEM_SGS_wk, rhs_mat, nod_fld, diff_coefs)
 !
       use average_on_elements
       use cal_filtering_scalars
@@ -78,8 +84,6 @@
 !
       integer(kind=kint), intent(in) :: i_step
       real(kind=kreal), intent(in) :: dt
-!
-      integer(kind = kint), intent(in) :: iak_diff_t, icomp_diff_t
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_paremeters), intent(in) :: SGS_par
@@ -92,6 +96,8 @@
       type(phys_data), intent(in) :: ele_fld
       type(finite_element_integration), intent(in) :: fem_int
       type(filters_on_FEM), intent(in) :: FEM_filters
+      type(base_field_address), intent(in) :: iak_diff_base
+      type(base_field_address), intent(in) :: icomp_diff_base
       type(lumped_mass_mat_layerd), intent(in) :: mk_MHD
 !
       type(work_FEM_dynamic_SGS), intent(inout) :: FEM_SGS_wk
@@ -180,7 +186,7 @@
       if(SGS_par%model_p%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF          &
      &     .and. iflag_dmc .eq. 0) then
          if(SGS_par%commute_p%iflag_c_temp .eq. id_SGS_commute_ON) then
-           if ( diff_coefs%iflag_field(iak_diff_t) .eq. 0) then
+           if(diff_coefs%iflag_field(iak_diff_base%i_temp) .eq. 0) then
 !
              if(SGS_par%model_p%iflag_SGS_h_flux .eq. id_SGS_NL_grad)   &
      &        then
@@ -189,10 +195,10 @@
                call s_cal_diff_coef_scalar                              &
      &           (FEM_prm%iflag_temp_supg, FEM_prm%npoint_t_evo_int,    &
      &            dt, iphys%SGS_wk%i_sgs_temp, iphys%filter_fld%i_temp, &
-     &            iak_diff_t, icomp_diff_t, SGS_par,                    &
-     &            mesh%nod_comm, mesh%node, mesh%ele, mesh%surf,        &
-     &            group%surf_grp, sf_bcs, iphys, iphys_ele, ele_fld,    &
-     &            fluid, FEM_filters%layer_tbl,                         &
+     &            iak_diff_base%i_temp, icomp_diff_base%i_temp,         &
+     &            SGS_par, mesh%nod_comm, mesh%node, mesh%ele,          &
+     &            mesh%surf, group%surf_grp, sf_bcs, iphys, iphys_ele,  &
+     &            ele_fld, fluid, FEM_filters%layer_tbl,                &
      &            fem_int%jcs, fem_int%rhs_tbl,                         &
      &            FEM_filters%FEM_elens, FEM_filters%filtering,         &
      &            mk_MHD%mlump_fl, FEM_SGS_wk%wk_filter,                &
@@ -209,10 +215,11 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine update_with_dummy_scalar(iak_diff_c, icomp_diff_c,     &
-     &        i_step, dt, FEM_prm, SGS_par, mesh, group, fluid,         &
-     &        sf_bcs, iphys, iphys_ele, ele_fld, fem_int, FEM_filters,  &
-     &        mk_MHD, FEM_SGS_wk, rhs_mat, nod_fld, diff_coefs)
+      subroutine update_with_dummy_scalar                               &
+     &         (i_step, dt, FEM_prm, SGS_par, mesh, group, fluid,       &
+     &          sf_bcs, iphys, iphys_ele, ele_fld, fem_int,             &
+     &          FEM_filters, iak_diff_base, icomp_diff_base,            &
+     &          mk_MHD, FEM_SGS_wk, rhs_mat, nod_fld, diff_coefs)
 !
       use average_on_elements
       use cal_filtering_scalars
@@ -223,8 +230,6 @@
 !
       integer(kind=kint), intent(in) :: i_step
       real(kind=kreal), intent(in) :: dt
-!
-      integer(kind = kint), intent(in) :: iak_diff_c, icomp_diff_c
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_paremeters), intent(in) :: SGS_par
@@ -237,6 +242,8 @@
       type(phys_data), intent(in) :: ele_fld
       type(finite_element_integration), intent(in) :: fem_int
       type(filters_on_FEM), intent(in) :: FEM_filters
+      type(base_field_address), intent(in) :: iak_diff_base
+      type(base_field_address), intent(in) :: icomp_diff_base
       type(lumped_mass_mat_layerd), intent(in) :: mk_MHD
 !
       type(work_FEM_dynamic_SGS), intent(inout) :: FEM_SGS_wk
@@ -289,7 +296,7 @@
      &   .and. iflag_dmc .eq. 0) then
          if(SGS_par%commute_p%iflag_c_light .eq. id_SGS_commute_ON)     &
      &    then
-           if ( diff_coefs%iflag_field(iak_diff_c) .eq. 0) then
+           if(diff_coefs%iflag_field(iak_diff_base%i_light).eq. 0) then
 !
              if(SGS_par%model_p%iflag_SGS_c_flux .eq. id_SGS_NL_grad)   &
      &        then
@@ -299,10 +306,10 @@
      &             FEM_prm%npoint_t_evo_int, dt,                        &
      &             iphys%SGS_wk%i_sgs_composit,                         &
      &             iphys%filter_fld%i_light,                            &
-     &             iak_diff_c, icomp_diff_c, SGS_par,                   &
-     &             mesh%nod_comm, mesh%node, mesh%ele, mesh%surf,       &
-     &             group%surf_grp, sf_bcs, iphys, iphys_ele, ele_fld,   &
-     &             fluid, FEM_filters%layer_tbl,                        &
+     &             iak_diff_base%i_light, icomp_diff_base%i_light,      &
+     &             SGS_par, mesh%nod_comm, mesh%node, mesh%ele,         &
+     &             mesh%surf, group%surf_grp, sf_bcs, iphys,            &
+     &             iphys_ele, ele_fld, fluid, FEM_filters%layer_tbl,    &
      &             fem_int%jcs, fem_int%rhs_tbl,                        &
      &             FEM_filters%FEM_elens, FEM_filters%filtering,        &
      &             mk_MHD%mlump_fl, FEM_SGS_wk%wk_filter,               &

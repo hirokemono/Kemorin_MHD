@@ -6,11 +6,11 @@
 !!      subroutine s_cal_diff_coef_sgs_sf                               &
 !!     &         (itype_Csym_flux, iflag_supg, num_int, dt,             &
 !!     &          ifield, ifield_f, ivelo, ivelo_f, i_sgs,              &
-!!     &          iak_diff_flux, icomp_sgs_flux, icomp_diff_sf, ie_dfvx,&
+!!     &          iak_diff_flux, icomp_sgs_flux, icomp_diff_sf,         &
 !!     &          SGS_par, mesh, group, Snod_bcs, sf_bcs,               &
 !!     &          iphys, iphys_ele, ele_fld, fluid, fem_int,            &
-!!     &          FEM_filters, sgs_coefs, mk_MHD, FEM_SGS_wk,           &
-!!     &          mhd_fem_wk, rhs_mat, nod_fld, diff_coefs)
+!!     &          FEM_filters, iphys_elediff_fil, sgs_coefs, mk_MHD,    &
+!!     &          FEM_SGS_wk, mhd_fem_wk, rhs_mat, nod_fld, diff_coefs)
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) ::   group
@@ -23,6 +23,7 @@
 !!        type(jacobians_type), intent(in) :: jacs
 !!        type(finite_element_integration), intent(in) :: fem_int
 !!        type(filters_on_FEM), intent(in) :: FEM_filters
+!!        type(base_field_address), intent(in) :: iphys_elediff_fil
 !!        type(SGS_coefficients_type), intent(in) :: sgs_coefs
 !!        type(lumped_mass_mat_layerd), intent(in) :: mk_MHD
 !!        type(work_FEM_dynamic_SGS), intent(inout) :: FEM_SGS_wk
@@ -41,6 +42,7 @@
       use t_surface_data
       use t_phys_data
       use t_phys_address
+      use t_base_field_labels
       use t_jacobians
       use t_table_FEM_const
       use t_FEM_MHD_filter_data
@@ -63,11 +65,11 @@
       subroutine s_cal_diff_coef_sgs_sf                                 &
      &         (itype_Csym_flux, iflag_supg, num_int, dt,               &
      &          ifield, ifield_f, ivelo, ivelo_f, i_sgs,                &
-     &          iak_diff_flux, icomp_sgs_flux, icomp_diff_sf, ie_dfvx,  &
+     &          iak_diff_flux, icomp_sgs_flux, icomp_diff_sf,           &
      &          SGS_par, mesh, group, Snod_bcs, sf_bcs,                 &
      &          iphys, iphys_ele, ele_fld, fluid, fem_int,              &
-     &          FEM_filters, sgs_coefs, mk_MHD, FEM_SGS_wk,             &
-     &          mhd_fem_wk, rhs_mat, nod_fld, diff_coefs)
+     &          FEM_filters, iphys_elediff_fil, sgs_coefs, mk_MHD,      &
+     &          FEM_SGS_wk, mhd_fem_wk, rhs_mat, nod_fld, diff_coefs)
 !
       use m_machine_parameter
       use m_phys_constants
@@ -90,7 +92,6 @@
 !
       integer(kind = kint), intent(in) :: iak_diff_flux
       integer(kind = kint), intent(in) :: icomp_sgs_flux, icomp_diff_sf
-      integer(kind = kint), intent(in) :: ie_dfvx
       real(kind = kreal), intent(in) :: dt
 !
       type(SGS_paremeters), intent(in) :: SGS_par
@@ -104,6 +105,7 @@
       type(scaler_surf_bc_type), intent(in) :: sf_bcs
       type(finite_element_integration), intent(in) :: fem_int
       type(filters_on_FEM), intent(in) :: FEM_filters
+      type(base_field_address), intent(in) :: iphys_elediff_fil
       type(SGS_coefficients_type), intent(in) :: sgs_coefs
       type(lumped_mass_mat_layerd), intent(in) :: mk_MHD
 !
@@ -123,9 +125,10 @@
 !   gradient model by filtered field (to iphys%SGS_wk%i_wd_nlg)
 !
       if (iflag_debug.gt.0)  write(*,*) 'cal_sgs_filter_hf_grad'
-      call cal_sgs_s_flux_grad_w_coef(iflag_supg, num_int, dt,          &
-     &    itype_Csym_flux, SGS_par%model_p%icoord_Csim, ifilter_4delta, &
-     &    icomp_sgs_flux, iphys%SGS_wk%i_wd_nlg, ifield_f, ie_dfvx,     &
+      call cal_sgs_s_flux_grad_w_coef                                   &
+     &   (iflag_supg, num_int, dt, itype_Csym_flux,                     &
+     &    SGS_par%model_p%icoord_Csim, ifilter_4delta, icomp_sgs_flux,  &
+     &    iphys%SGS_wk%i_wd_nlg, ifield_f, iphys_elediff_fil%i_velo,    &
      &    mesh%nod_comm, mesh%node, mesh%ele, fluid,                    &
      &    iphys_ele%base, ele_fld, fem_int%jcs, fem_int%rhs_tbl,        &
      &    FEM_filters%FEM_elens, sgs_coefs, mk_MHD%mlump_fl,            &

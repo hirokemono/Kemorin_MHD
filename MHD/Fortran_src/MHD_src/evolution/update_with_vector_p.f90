@@ -8,11 +8,13 @@
 !!
 !!@verbatim
 !!      subroutine update_with_vector_potential                         &
-!!     &         (iak_diff_b, icomp_diff_b, ie_dbx, ie_dfbx, i_step, dt,&
-!!     &          FEM_prm, SGS_par, mesh, group, fluid, conduct,        &
-!!     &          Bnod_bcs, Asf_bcs, Fsf_bcs, iphys, iphys_ele,         &
-!!     &          fem_int, FEM_filters, FEM_SGS_wk, mhd_fem_wk, rhs_mat,&
-!!     &          nod_fld, ele_fld, diff_coefs)
+!!     &         (i_step, dt, FEM_prm, SGS_par, mesh, group,            &
+!!     &          fluid, conduct, Bnod_bcs, Asf_bcs, Fsf_bcs, iphys,    &
+!!     &          iphys_ele, fem_int, FEM_filters,                      &
+!!     &          iak_diff_base, icomp_diff_base,                       &
+!!     &          iphys_elediff_base, iphys_elediff_fil,                &
+!!     &          FEM_SGS_wk, mhd_fem_wk, rhs_mat, nod_fld, ele_fld,    &
+!!     &          diff_coefs)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(mesh_geometry), intent(in) :: mesh
@@ -25,6 +27,10 @@
 !!        type(phys_address), intent(in) :: iphys_ele
 !!        type(finite_element_integration), intent(in) :: fem_int
 !!        type(filters_on_FEM), intent(in) :: FEM_filters
+!!        type(base_field_address), intent(in) :: iak_diff_base
+!!        type(base_field_address), intent(in) :: icomp_diff_base
+!!        type(base_field_address), intent(in) :: iphys_elediff_base
+!!        type(base_field_address), intent(in) :: iphys_elediff_fil
 !!        type(layering_tbl), intent(in) :: layer_tbl
 !!        type(work_FEM_dynamic_SGS), intent(inout) :: FEM_SGS_wk
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
@@ -47,6 +53,7 @@
       use t_surface_data
       use t_phys_data
       use t_phys_address
+      use t_base_field_labels
       use t_table_FEM_const
       use t_jacobians
       use t_MHD_finite_element_mat
@@ -68,11 +75,13 @@
 !-----------------------------------------------------------------------
 !
       subroutine update_with_vector_potential                           &
-     &         (iak_diff_b, icomp_diff_b, ie_dbx, ie_dfbx, i_step, dt,  &
-     &          FEM_prm, SGS_par, mesh, group, fluid, conduct,          &
-     &          Bnod_bcs, Asf_bcs, Fsf_bcs, iphys, iphys_ele,           &
-     &          fem_int, FEM_filters, FEM_SGS_wk, mhd_fem_wk, rhs_mat,  &
-     &          nod_fld, ele_fld, diff_coefs)
+     &         (i_step, dt, FEM_prm, SGS_par, mesh, group,              &
+     &          fluid, conduct, Bnod_bcs, Asf_bcs, Fsf_bcs, iphys,      &
+     &          iphys_ele, fem_int, FEM_filters,                        &
+     &          iak_diff_base, icomp_diff_base,                         &
+     &          iphys_elediff_base, iphys_elediff_fil,                  &
+     &          FEM_SGS_wk, mhd_fem_wk, rhs_mat, nod_fld, ele_fld,      &
+     &          diff_coefs)
 !
       use average_on_elements
       use cal_rotation_sgs
@@ -83,9 +92,6 @@
 !
       integer(kind=kint), intent(in) :: i_step
       real(kind=kreal), intent(in) :: dt
-!
-      integer(kind = kint), intent(in) :: iak_diff_b, icomp_diff_b
-      integer(kind = kint), intent(in) :: ie_dbx, ie_dfbx
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_paremeters), intent(in) :: SGS_par
@@ -99,6 +105,10 @@
       type(phys_address), intent(in) :: iphys_ele
       type(finite_element_integration), intent(in) :: fem_int
       type(filters_on_FEM), intent(in) :: FEM_filters
+      type(base_field_address), intent(in) :: iak_diff_base
+      type(base_field_address), intent(in) :: icomp_diff_base
+      type(base_field_address), intent(in) :: iphys_elediff_base
+      type(base_field_address), intent(in) :: iphys_elediff_fil
 !
       type(work_FEM_dynamic_SGS), intent(inout) :: FEM_SGS_wk
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
@@ -144,15 +154,16 @@
         end if
 !
 !
-        if ( diff_coefs%iflag_field(iak_diff_b) .eq. 0) then
+        if(diff_coefs%iflag_field(iak_diff_base%i_magne) .eq. 0) then
           if(SGS_par%model_p%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF)     &
      &     then
             if    (SGS_par%model_p%iflag_SGS .eq. id_SGS_NL_grad        &
      &        .or. SGS_par%model_p%iflag_SGS .eq. id_SGS_similarity)    &
      &       then
               call s_cal_diff_coef_vector_p                             &
-     &           (iak_diff_b, icomp_diff_b, dt, FEM_prm, SGS_par,       &
-     &            mesh%nod_comm, mesh%node, mesh%ele, mesh%surf, fluid, &
+     &           (iak_diff_base%i_magne, icomp_diff_base%i_magne,       &
+     &            dt, FEM_prm, SGS_par, mesh%nod_comm,                  &
+     &            mesh%node, mesh%ele, mesh%surf, fluid,                &
      &            FEM_filters%layer_tbl, group%surf_grp,                &
      &            Asf_bcs, Fsf_bcs, iphys, iphys_ele, ele_fld,          &
      &            fem_int%jcs, fem_int%rhs_tbl, FEM_filters%FEM_elens,  &
@@ -171,9 +182,10 @@
 !
       if (iphys%base%i_magne .ne. 0) then
         if (iflag_debug.gt.0) write(*,*) 'cal_magnetic_f_by_vect_p'
-        call choose_cal_rotation_sgs(SGS_par%commute_p%iflag_c_magne,   &
-     &      FEM_prm%iflag_magne_supg, FEM_prm%npoint_t_evo_int, dt,     &
-     &      iak_diff_b, iphys%base%i_vecp, iphys%base%i_magne,          &
+        call choose_cal_rotation_sgs                                    &
+     &     (SGS_par%commute_p%iflag_c_magne, FEM_prm%iflag_magne_supg,  &
+     &      FEM_prm%npoint_t_evo_int, dt, iak_diff_base%i_magne,        &
+     &      iphys%base%i_vecp, iphys%base%i_magne,                      &
      &      mesh%ele%istack_ele_smp, fem_int%m_lump, SGS_par%model_p,   &
      &      mesh%nod_comm, mesh%node, mesh%ele, mesh%surf,              &
      &      group%surf_grp, iphys_ele, ele_fld, fem_int%jcs,            &
@@ -249,12 +261,12 @@
      &          iphys_ele%filter_fld%i_magne, ele_fld)
          end if
 !
-         if(iflag2.eq.2 .and. ie_dfbx.ne.0) then
+         if(iflag2.eq.2 .and. iphys_elediff_fil%i_magne.ne.0) then
            if (iflag_debug .ge. iflag_routine_msg) write(*,*)           &
      &                         'diff_filter_b_on_ele'
            call sel_int_diff_vector_on_ele                              &
      &        (FEM_prm%npoint_t_evo_int, mesh%ele%istack_ele_smp,       &
-     &         iphys%filter_fld%i_magne, ie_dfbx,                       &
+     &         iphys%filter_fld%i_magne, iphys_elediff_fil%i_magne,     &
      &         mesh%node, mesh%ele, nod_fld, fem_int%jcs, mhd_fem_wk)
          end if
 !
@@ -275,11 +287,12 @@
 !
        if (  SGS_par%model_p%iflag_SGS_lorentz .eq. id_SGS_NL_grad      &
      &  .or. SGS_par%model_p%iflag_SGS_uxb .eq. id_SGS_NL_grad) then
-         if ( ie_dbx.ne.0 ) then
+         if(iphys_elediff_base%i_magne .ne. 0) then
            if (iflag_debug.gt.0) write(*,*) 'diff_magne_on_ele'
-           call sel_int_diff_vector_on_ele(FEM_prm%npoint_t_evo_int,    &
-     &        mesh%ele%istack_ele_smp, iphys%base%i_magne, ie_dbx,      &
-     &        mesh%node, mesh%ele, nod_fld, fem_int%jcs, mhd_fem_wk)
+           call sel_int_diff_vector_on_ele                              &
+     &        (FEM_prm%npoint_t_evo_int, mesh%ele%istack_ele_smp,       &
+     &         iphys%base%i_magne, iphys_elediff_base%i_magne,          &
+     &         mesh%node, mesh%ele, nod_fld, fem_int%jcs, mhd_fem_wk)
         end if
        end if
 !

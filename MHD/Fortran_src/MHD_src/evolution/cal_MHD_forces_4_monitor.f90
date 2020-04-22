@@ -386,10 +386,10 @@
       if (iphys%diffusion%i_vp_diffuse .gt. izero) then
         if(iflag_debug .ge. iflag_routine_msg) write(*,*) 'lead  ',     &
      &                     trim(vector_potential_diffusion%name)
-        call cal_vecp_diffusion(ifld_diff%base%i_magne, ak_MHD%ak_d_magne,   &
+        call cal_vecp_diffusion(ak_MHD%ak_d_magne,                      &
      &      FEM_prm, SGS_par%model_p, nod_comm, node, ele, surf,        &
      &      sf_grp, nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs, iphys, fem_int, &
-     &      FEM_elens, diff_coefs, mk_MHD%mlump_cd,                     &
+     &      FEM_elens, ifld_diff%base, diff_coefs, mk_MHD%mlump_cd,     &
      &      rhs_mat, nod_fld)
       end if
 !

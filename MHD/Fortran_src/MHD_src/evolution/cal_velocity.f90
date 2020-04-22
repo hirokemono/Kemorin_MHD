@@ -180,13 +180,14 @@
 !     &    rhs_mat%fem_wk, fem_sq%msq, rel_correct)
 !
       do iloop = 0, FEM_prm%maxiter_stokes
-        call cal_mod_potential(ifld_diff%base%i_velo,                   &
-     &      FEM_prm, SGS_par%model_p, SGS_par%commute_p,                &
+        call cal_mod_potential                                          &
+     &     (FEM_prm, SGS_par%model_p, SGS_par%commute_p,                &
      &      mesh%node, mesh%ele, mesh%surf, fluid,                      &
      &      group%surf_grp, Vnod_bcs, Vsf_bcs, Psf_bcs,                 &
      &      iphys, fem_int%jcs, fem_int%rhs_tbl, FEM_filters%FEM_elens, &
-     &      diff_coefs, Pmatrix, MGCG_WK%MG_vector, rhs_mat%fem_wk,     &
-     &      rhs_mat%surf_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
+     &      ifld_diff%base, diff_coefs, Pmatrix, MGCG_WK%MG_vector,     &
+     &      rhs_mat%fem_wk, rhs_mat%surf_wk, rhs_mat%f_l, rhs_mat%f_nl, &
+     &      nod_fld)
 !
         call cal_sol_pressure                                           &
      &     (dt, mesh%node%numnod, mesh%node%istack_internal_smp,        &
