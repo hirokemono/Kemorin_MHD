@@ -6,12 +6,12 @@
 !        modieied by H. Matsui on Sep., 2005
 !
 !!      subroutine s_cal_light_element(i_field, dt, FEM_prm, SGS_par,   &
-!!     &          mesh, group, fluid, property, ref_param,              &
-!!     &          nod_bcs, sf_bcs, iphys, iphys_ele, ele_fld, fem_int,  &
-!!     &          FEM_elens, icomp_sgs_term, ifld_diff, iphys_elediff_vec,   &
-!!     &          sgs_coefs, sgs_coefs_nod, diff_coefs, filtering,      &
-!!     &          mk_MHD, Smatrix, ak_MHD, MGCG_WK, FEM_SGS_wk,         &
-!!     &          mhd_fem_wk, rhs_mat, nod_fld)
+!!     &          mesh, group, fluid, property, ref_param,  nod_bcs,    &
+!!     &          sf_bcs, iphys, iphys_ele, ele_fld, fem_int, FEM_elens,&
+!!     &          icomp_sgs_term, iak_diff_base, iak_diff_sgs,          &
+!!     &          iphys_elediff_vec, sgs_coefs, sgs_coefs_nod,          &
+!!     &          diff_coefs, filtering, mk_MHD, Smatrix, ak_MHD,       &
+!!     &          MGCG_WK, FEM_SGS_wk, mhd_fem_wk, rhs_mat, nod_fld)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(mesh_geometry), intent(in) :: mesh
@@ -23,14 +23,15 @@
 !!        type(scaler_surf_bc_type), intent(in) :: sf_bcs
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_address), intent(in) :: iphys_ele
-!!        type(SGS_term_address), intent(in) :: icomp_sgs_term
-!!        type(SGS_terms_address), intent(in) :: ifld_diff
-!!        type(base_field_address), intent(in) :: iphys_elediff_vec
 !!        type(phys_data), intent(in) :: ele_fld
 !!        type(coefs_4_MHD_type), intent(in) :: ak_MHD
 !!        type(finite_element_integration), intent(in) :: fem_int
 !!        type(filtering_data_type), intent(in) :: filtering
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
+!!        type(SGS_term_address), intent(in) :: icomp_sgs_term
+!!        type(base_field_address), intent(in) :: iak_diff_base
+!!        type(SGS_term_address), intent(in) :: iak_diff_sgs
+!!        type(base_field_address), intent(in) :: iphys_elediff_vec
 !!        type(SGS_coefficients_type), intent(in) :: sgs_coefs
 !!        type(SGS_coefficients_type), intent(in) :: sgs_coefs_nod
 !!        type(SGS_coefficients_type), intent(in) :: diff_coefs
@@ -86,12 +87,12 @@
 ! ----------------------------------------------------------------------
 !
       subroutine s_cal_light_element(i_field, dt, FEM_prm, SGS_par,     &
-     &          mesh, group, fluid, property, ref_param,                &
-     &          nod_bcs, sf_bcs, iphys, iphys_ele, ele_fld, fem_int,    &
-     &          FEM_elens, icomp_sgs_term, ifld_diff, iphys_elediff_vec, &
-     &          sgs_coefs, sgs_coefs_nod, diff_coefs, filtering,        &
-     &          mk_MHD, Smatrix, ak_MHD, MGCG_WK, FEM_SGS_wk,           &
-     &          mhd_fem_wk, rhs_mat, nod_fld)
+     &          mesh, group, fluid, property, ref_param,  nod_bcs,      &
+     &          sf_bcs, iphys, iphys_ele, ele_fld, fem_int, FEM_elens,  &
+     &          icomp_sgs_term, iak_diff_base, iak_diff_sgs,            &
+     &          iphys_elediff_vec, sgs_coefs, sgs_coefs_nod,            &
+     &          diff_coefs, filtering, mk_MHD, Smatrix, ak_MHD,         &
+     &          MGCG_WK, FEM_SGS_wk, mhd_fem_wk, rhs_mat, nod_fld)
 !
       use nod_phys_send_recv
       use set_boundary_scalars
@@ -121,14 +122,15 @@
       type(scaler_surf_bc_type), intent(in) :: sf_bcs
       type(phys_address), intent(in) :: iphys
       type(phys_address), intent(in) :: iphys_ele
-      type(SGS_term_address), intent(in) :: icomp_sgs_term
-      type(SGS_terms_address), intent(in) :: ifld_diff
-      type(base_field_address), intent(in) :: iphys_elediff_vec
       type(phys_data), intent(in) :: ele_fld
       type(coefs_4_MHD_type), intent(in) :: ak_MHD
       type(finite_element_integration), intent(in) :: fem_int
       type(filtering_data_type), intent(in) :: filtering
       type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(SGS_term_address), intent(in) :: icomp_sgs_term
+      type(base_field_address), intent(in) :: iak_diff_base
+      type(SGS_term_address), intent(in) :: iak_diff_sgs
+      type(base_field_address), intent(in) :: iphys_elediff_vec
       type(SGS_coefficients_type), intent(in) :: sgs_coefs
       type(SGS_coefficients_type), intent(in) :: sgs_coefs_nod
       type(SGS_coefficients_type), intent(in) :: diff_coefs
@@ -148,7 +150,7 @@
      &    iphys%base, iphys%grad_fld, iphys%filter_fld, iphys%SGS_term, &
      &    iphys%exp_work, iphys_ele, ele_fld, fem_int%jcs,              &
      &    fem_int%rhs_tbl, FEM_elens, icomp_sgs_term,                   &
-     &    ifld_diff%base, ifld_diff%SGS_term, iphys_elediff_vec,        &
+     &    iak_diff_base, iak_diff_sgs, iphys_elediff_vec,               &
      &    sgs_coefs, sgs_coefs_nod, diff_coefs, filtering,              &
      &    mk_MHD%mlump_fl, Smatrix, ak_MHD%ak_d_composit, MGCG_WK,      &
      &    FEM_SGS_wk%wk_filter, mhd_fem_wk, rhs_mat%fem_wk,             &

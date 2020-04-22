@@ -109,7 +109,7 @@
      &    FEM_MHD_BCs%nod_bcs, FEM_MHD_BCs%surf_bcs, iphys%base,        &
      &    SGS_MHD_wk%iphys_ele, SGS_MHD_wk%ele_fld,                     &
      &    SGS_MHD_wk%fem_int, FEM_filters%FEM_elens,                    &
-     &    Csims_FEM_MHD%ifld_diff%base, Csims_FEM_MHD%diff_coefs,       &
+     &    Csims_FEM_MHD%iak_diff_base, Csims_FEM_MHD%diff_coefs,        &
      &    SGS_MHD_wk%mk_MHD, SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat, &
      &    nod_fld)
 !
@@ -170,9 +170,9 @@
      &    mesh%nod_comm, mesh%node, mesh%ele, mesh%surf,                &
      &    group%surf_grp, MHD_mesh%fluid, MHD_mesh%conduct,             &
      &    MHD_prop%fl_prop, MHD_prop%cd_prop,                           &
-     &    MHD_prop%ht_prop, MHD_prop%cp_prop,                           &
-     &    nod_bcs, surf_bcs, iphys, iphys_ele, ak_MHD, fem_int,         &
-     &    FEM_elens, Csims_FEM_MHD%ifld_diff, Csims_FEM_MHD%diff_coefs, &
+     &    MHD_prop%ht_prop, MHD_prop%cp_prop, nod_bcs, surf_bcs,        &
+     &    iphys, iphys_ele, ak_MHD, fem_int, FEM_elens,                 &
+     &    Csims_FEM_MHD%iak_diff_sgs, Csims_FEM_MHD%diff_coefs,         &
      &    mk_MHD, mhd_fem_wk, rhs_mat, nod_fld, ele_fld)
 !
       call cal_sgs_terms_4_monitor                                      &
@@ -199,8 +199,9 @@
      &    MHD_prop%fl_prop, MHD_prop%cd_prop,                           &
      &    MHD_prop%ht_prop, MHD_prop%cp_prop, nod_bcs, surf_bcs,        &
      &    iphys, iphys_ele, ak_MHD, fem_int, FEM_elens,                 &
-     &    Csims_FEM_MHD%ifld_diff, Csims_FEM_MHD%diff_coefs, mk_MHD,    &
-     &    mhd_fem_wk, rhs_mat, nod_fld, ele_fld)
+     &    Csims_FEM_MHD%iak_diff_base, Csims_FEM_MHD%iak_diff_sgs,      &
+     &    Csims_FEM_MHD%diff_coefs, mk_MHD, mhd_fem_wk, rhs_mat,        &
+     &    nod_fld, ele_fld)
       call cal_diff_of_sgs_terms                                        &
      &   (dt, FEM_prm, SGS_par%model_p, SGS_par%commute_p,              &
      &    mesh%nod_comm, mesh%node, mesh%ele, mesh%surf,                &
@@ -208,7 +209,7 @@
      &    MHD_prop%fl_prop, MHD_prop%cd_prop,                           &
      &    MHD_prop%ht_prop, MHD_prop%cp_prop, nod_bcs, surf_bcs,        &
      &    iphys, iphys_ele, ak_MHD, fem_int, FEM_elens,                 &
-     &    Csims_FEM_MHD%ifld_diff%SGS_term, Csims_FEM_MHD%diff_coefs,   &
+     &    Csims_FEM_MHD%iak_diff_sgs, Csims_FEM_MHD%diff_coefs,         &
      &    mk_MHD, mhd_fem_wk, rhs_mat, nod_fld, ele_fld)
 !
       call cal_true_sgs_terms_post                                      &

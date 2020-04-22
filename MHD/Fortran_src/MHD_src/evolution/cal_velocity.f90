@@ -9,7 +9,8 @@
 !!     &          mesh, group, fluid, fl_prop, cd_prop,                 &
 !!     &          Vnod_bcs, Vsf_bcs, Bsf_bcs, Psf_bcs, iphys,           &
 !!     &          iphys_ele, ak_MHD, fem_int, FEM_filters,              &
-!!     &          iak_sgs_term, icomp_sgs_term, ifld_diff, iphys_elediff_vec,&
+!!     &          iak_sgs_term, icomp_sgs_term, iak_diff_base,          &
+!!     &          iak_diff_sgs, iphys_elediff_vec,                      &
 !!     &          sgs_coefs_nod, diff_coefs, mk_MHD,                    &
 !!     &          Vmatrix, Pmatrix, MGCG_WK, FEM_SGS_wk, mhd_fem_wk,    &
 !!     &          rhs_mat, nod_fld, ele_fld, sgs_coefs, fem_sq)
@@ -30,7 +31,8 @@
 !!        type(filters_on_FEM), intent(in) :: FEM_filters
 !!        type(SGS_term_address), intent(in) :: iak_sgs_term
 !!        type(SGS_term_address), intent(in) :: icomp_sgs_term
-!!        type(SGS_terms_address), intent(in) :: ifld_diff
+!!        type(base_field_address), intent(in) :: iak_diff_base
+!!        type(SGS_term_address), intent(in) :: iak_diff_sgs
 !!        type(base_field_address), intent(in) :: iphys_elediff_vec
 !!        type(SGS_coefficients_type), intent(in) :: sgs_coefs_nod
 !!        type(SGS_coefficients_type), intent(in) :: diff_coefs
@@ -97,7 +99,8 @@
      &          mesh, group, fluid, fl_prop, cd_prop,                   &
      &          Vnod_bcs, Vsf_bcs, Bsf_bcs, Psf_bcs, iphys,             &
      &          iphys_ele, ak_MHD, fem_int, FEM_filters,                &
-     &          iak_sgs_term, icomp_sgs_term, ifld_diff, iphys_elediff_vec,  &
+     &          iak_sgs_term, icomp_sgs_term, iak_diff_base,            &
+     &          iak_diff_sgs, iphys_elediff_vec,                        &
      &          sgs_coefs_nod, diff_coefs, mk_MHD,                      &
      &          Vmatrix, Pmatrix, MGCG_WK, FEM_SGS_wk, mhd_fem_wk,      &
      &          rhs_mat, nod_fld, ele_fld, sgs_coefs, fem_sq)
@@ -129,7 +132,8 @@
       type(filters_on_FEM), intent(in) :: FEM_filters
       type(SGS_term_address), intent(in) :: iak_sgs_term
       type(SGS_term_address), intent(in) :: icomp_sgs_term
-      type(SGS_terms_address), intent(in) :: ifld_diff
+      type(base_field_address), intent(in) :: iak_diff_base
+      type(SGS_term_address), intent(in) :: iak_diff_sgs
       type(base_field_address), intent(in) :: iphys_elediff_vec
       type(SGS_coefficients_type), intent(in) :: sgs_coefs_nod
       type(SGS_coefficients_type), intent(in) :: diff_coefs
@@ -161,12 +165,11 @@
      &    fluid, group%surf_grp, group%surf_nod_grp,                    &
      &    fl_prop, cd_prop, Vnod_bcs, Vsf_bcs, Bsf_bcs, iphys,          &
      &    iphys_ele, ak_MHD, fem_int, FEM_filters%FEM_elens,            &
-     &    iak_sgs_term, icomp_sgs_term,                                 &
-     &    ifld_diff%base, ifld_diff%SGS_term, iphys_elediff_vec,        &
-     &    sgs_coefs_nod, diff_coefs, FEM_filters%filtering,             &
-     &    FEM_filters%layer_tbl, mk_MHD%mlump_fl,                       &
-     &    Vmatrix, MGCG_WK%MG_vector, FEM_SGS_wk%wk_lsq,                &
-     &    FEM_SGS_wk%wk_sgs, FEM_SGS_wk%wk_filter,                      &
+     &    iak_sgs_term, icomp_sgs_term, iak_diff_base, iak_diff_sgs,    &
+     &    iphys_elediff_vec, sgs_coefs_nod, diff_coefs,                 &
+     &    FEM_filters%filtering, FEM_filters%layer_tbl,                 &
+     &    mk_MHD%mlump_fl, Vmatrix, MGCG_WK%MG_vector,                  &
+     &    FEM_SGS_wk%wk_lsq, FEM_SGS_wk%wk_sgs, FEM_SGS_wk%wk_filter,   &
      &    mhd_fem_wk, rhs_mat, nod_fld, ele_fld, sgs_coefs)
 !
 !     --------------------- 
@@ -185,7 +188,7 @@
      &      mesh%node, mesh%ele, mesh%surf, fluid,                      &
      &      group%surf_grp, Vnod_bcs, Vsf_bcs, Psf_bcs,                 &
      &      iphys, fem_int%jcs, fem_int%rhs_tbl, FEM_filters%FEM_elens, &
-     &      ifld_diff%base, diff_coefs, Pmatrix, MGCG_WK%MG_vector,     &
+     &      iak_diff_base, diff_coefs, Pmatrix, MGCG_WK%MG_vector,      &
      &      rhs_mat%fem_wk, rhs_mat%surf_wk, rhs_mat%f_l, rhs_mat%f_nl, &
      &      nod_fld)
 !
@@ -199,7 +202,7 @@
      &      fluid, group%surf_grp, group%surf_nod_grp,                  &
      &      fl_prop, Vnod_bcs, Vsf_bcs, Psf_bcs, iphys, iphys_ele,      &
      &      ele_fld, ak_MHD, fem_int, FEM_filters%FEM_elens,            &
-     &      ifld_diff%base, diff_coefs, mk_MHD%mlump_fl,                &
+     &      iak_diff_base, diff_coefs, mk_MHD%mlump_fl,                 &
      &      Vmatrix, MGCG_WK%MG_vector, mhd_fem_wk, rhs_mat, nod_fld)
 !
 !

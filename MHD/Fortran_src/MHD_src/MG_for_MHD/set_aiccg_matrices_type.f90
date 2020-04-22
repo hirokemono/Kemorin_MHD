@@ -11,7 +11,7 @@
 !!     &        (iflag_scheme, dt, FEM_prm, SGS_param, cmt_param,       &
 !!     &         mesh, group, MHD_mesh, nod_bcs, surf_bcs,              &
 !!     &         fl_prop, cd_prop, ht_prop, cp_prop, ak_MHD, jacs,      &
-!!     &         FEM_elens, ifld_diff, diff_coefs, rhs_tbl,             &
+!!     &         FEM_elens, iak_diff_base, diff_coefs, rhs_tbl,         &
 !!     &         djds_tbl, djds_tbl_fl, djds_tbl_l, djds_tbl_fl_l,      &
 !!     &         MG_mat_q, MG_mat_fl_q, MG_mat_full_cd_q, MG_mat_linear,&
 !!     &         MG_mat_fl_l, mlump_fl, mlump_cd, surf_wk, fem_wk,      &
@@ -31,6 +31,7 @@
 !!        type(coefs_4_MHD_type), intent(in) :: ak_MHD
 !!        type(jacobians_type), intent(in) :: jacs
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
+!!        type(base_field_address), intent(in) :: iak_diff_base
 !!        type(tables_4_FEM_assembles), intent(in) ::   rhs_tbl
 !!        type(table_mat_const), intent(in) :: MG_mat_q
 !!        type(table_mat_const), intent(in) :: MG_mat_fl_q
@@ -65,7 +66,7 @@
      &        (iflag_scheme, dt, FEM_prm, SGS_param, cmt_param,         &
      &         mesh, group, MHD_mesh, nod_bcs, surf_bcs,                &
      &         fl_prop, cd_prop, ht_prop, cp_prop, ak_MHD, jacs,        &
-     &         FEM_elens, ifld_diff, diff_coefs, rhs_tbl,               &
+     &         FEM_elens, iak_diff_base, diff_coefs, rhs_tbl,           &
      &         djds_tbl, djds_tbl_fl, djds_tbl_l, djds_tbl_fl_l,        &
      &         MG_mat_q, MG_mat_fl_q, MG_mat_full_cd_q, MG_mat_linear,  &
      &         MG_mat_fl_l, mlump_fl, mlump_cd, surf_wk, fem_wk,        &
@@ -113,7 +114,7 @@
       type(coefs_4_MHD_type), intent(in) :: ak_MHD
       type(jacobians_type), intent(in) :: jacs
       type(gradient_model_data_type), intent(in) :: FEM_elens
-      type(SGS_terms_address), intent(in) :: ifld_diff
+      type(base_field_address), intent(in) :: iak_diff_base
       type(SGS_coefficients_type), intent(in) :: diff_coefs
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(table_mat_const), intent(in) :: MG_mat_q
@@ -150,7 +151,7 @@
      &    SGS_param%ifilter_final, cmt_param%iflag_c_magne,             &
      &    mesh, fl_prop, cd_prop, jacs%g_FEM, jacs%jac_3d_l,            &
      &    rhs_tbl, MG_mat_linear, MG_mat_fl_l,                          &
-     &    FEM_elens, ifld_diff%base, diff_coefs, fem_wk,                &
+     &    FEM_elens, iak_diff_base, diff_coefs, fem_wk,                 &
      &    mat_press, mat_magp)
 !
       if (iflag_scheme .eq. id_Crank_nicolson) then
@@ -165,7 +166,7 @@
      &      mesh, fl_prop, cd_prop, ht_prop, cp_prop, ak_MHD,           &
      &      jacs%g_FEM, jacs%jac_3d, rhs_tbl,                           &
      &      MG_mat_q, MG_mat_fl_q, MG_mat_full_cd_q,                    &
-     &      FEM_elens, ifld_diff%base, diff_coefs, fem_wk,              &
+     &      FEM_elens, iak_diff_base, diff_coefs, fem_wk,               &
      &      mat_velo, mat_magne, mat_temp, mat_light)
 !
       else if (iflag_scheme .eq. id_Crank_nicolson_cmass) then
@@ -177,7 +178,7 @@
      &     (FEM_prm%npoint_t_evo_int, dt, SGS_param%ifilter_final,      &
      &      mesh, fl_prop, cd_prop, ht_prop, cp_prop, ak_MHD,           &
      &      jacs%g_FEM, jacs%jac_3d, rhs_tbl, MG_mat_q, MG_mat_fl_q,    &
-     &      MG_mat_full_cd_q, FEM_elens, ifld_diff%base, diff_coefs,    &
+     &      MG_mat_full_cd_q, FEM_elens, iak_diff_base, diff_coefs,     &
      &      fem_wk, mat_velo, mat_magne, mat_temp, mat_light)
       end if
 !

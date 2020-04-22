@@ -21,7 +21,6 @@
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
 !!        type(finite_element_integration), intent(in) :: fem_int
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
-!!        type(SGS_terms_address), intent(in) :: ifld_diff
 !!        type(SGS_coefficients_type), intent(in) :: diff_coefs
 !!        type(MGCG_data), intent(in) :: MGCG_WK
 !!        type(SGS_coefficients_data), intent(in) :: Csims_FEM_MHD
@@ -287,7 +286,7 @@
      &    fem%mesh, fem%group, MHD_mesh, nod_bcs, surf_bcs,             &
      &    MHD_prop%fl_prop, MHD_prop%cd_prop,                           &
      &    MHD_prop%ht_prop, MHD_prop%cp_prop,                           &
-     &    ak_MHD, fem_int%jcs, FEM_elens, Csims_FEM_MHD%ifld_diff,      &
+     &    ak_MHD, fem_int%jcs, FEM_elens, Csims_FEM_MHD%iak_diff_base,  &
      &    Csims_FEM_MHD%diff_coefs, fem_int%rhs_tbl,                    &
      &    MHD_mat%MG_DJDS_table(i_lev),  MHD_mat%MG_DJDS_fluid(i_lev),  &
      &    MHD_mat%MG_DJDS_linear(i_lev), MHD_mat%MG_DJDS_lin_fl(i_lev), &

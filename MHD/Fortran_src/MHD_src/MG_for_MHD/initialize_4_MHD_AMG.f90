@@ -4,7 +4,7 @@
 !        programmed H.Matsui on Dec., 2008
 !
 !!      subroutine s_initialize_4_MHD_AMG                               &
-!!     &         (dt, FEM_prm, mesh_1st, jacs_1st, ifld_diff,           &
+!!     &         (dt, FEM_prm, mesh_1st, jacs_1st,                      &
 !!     &          diff_coefs, MHD_prop, MHD_BC, DJDS_param, spfs,       &
 !!     &          MGCG_WK, MGCG_FEM, MGCG_MHD_FEM, MHD_mat)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
@@ -13,8 +13,6 @@
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(commutation_control_params), intent(in) :: cmt_param
-!!        type(SGS_terms_address), intent(in) :: ifld_diff
-!!        type(SGS_coefficients_data), intent(in) :: Csims_FEM_MHD
 !!        type(SGS_coefficients_type), intent(in) :: diff_coefs
 !!        type(DJDS_poarameter), intent(in) :: DJDS_param
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
@@ -53,7 +51,7 @@
 ! ---------------------------------------------------------------------
 !
       subroutine s_initialize_4_MHD_AMG                                 &
-     &         (dt, FEM_prm, mesh_1st, jacs_1st, ifld_diff,             &
+     &         (dt, FEM_prm, mesh_1st, jacs_1st,                        &
      &          diff_coefs, MHD_prop, MHD_BC, DJDS_param, spfs,         &
      &          MGCG_WK, MGCG_FEM, MGCG_MHD_FEM, MHD_mat)
 !
@@ -85,7 +83,6 @@
 !
       real(kind = kreal), intent(in) :: dt
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
-      type(SGS_terms_address), intent(in) :: ifld_diff
       type(SGS_coefficients_type), intent(in) :: diff_coefs
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(MHD_BC_lists), intent(in) :: MHD_BC

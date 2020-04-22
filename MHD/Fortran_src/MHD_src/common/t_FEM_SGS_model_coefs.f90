@@ -31,13 +31,15 @@
 !>        Commutation error model coefficeints
         type(SGS_coefficients_type) :: diff_coefs
 !
-!>         Field adddress for dynamic SGS model
+!>        Field adddress for dynamic SGS model
         type(SGS_term_address) :: iak_sgs_term
-!>        component list of SGS terms
+!>        Component list of SGS terms
         type(SGS_term_address) :: icomp_sgs_term
 !
-!>        field list of differencials
-        type(SGS_terms_address) :: ifld_diff
+!>        field list of commutaion error correction for base fields
+        type(base_field_address) :: iak_diff_base
+!>        field list of commutaion error correction for SGS terms
+        type(SGS_term_address) :: iak_diff_sgs
 !
 !>        component list of differencials
         type(SGS_terms_address) :: icomp_diff

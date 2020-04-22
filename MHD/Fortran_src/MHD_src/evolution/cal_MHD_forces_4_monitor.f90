@@ -9,8 +9,8 @@
 !!     &          nod_comm, node, ele, surf, fluid, conduct,            &
 !!     &          sf_grp, fl_prop, cd_prop, ht_prop, cp_prop,           &
 !!     &          nod_bcs, surf_bcs, iphys, iphys_ele, ak_MHD, fem_int, &
-!!     &          FEM_elens, ifld_diff, diff_coefs, mk_MHD, mhd_fem_wk, &
-!!     &          rhs_mat, nod_fld, ele_fld)
+!!     &          FEM_elens, iak_diff_base, iak_diff_sgs, diff_coefs,   &
+!!     &          mk_MHD, mhd_fem_wk, rhs_mat, nod_fld, ele_fld)
 !!      subroutine cal_work_4_forces                                    &
 !!     &         (FEM_prm, nod_comm, node, ele, fl_prop, cd_prop, iphys,&
 !!     &          jacs, rhs_tbl, mk_MHD, mhd_fem_wk, fem_wk,            &
@@ -34,7 +34,8 @@
 !!        type(jacobians_type), intent(in) :: jacs
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
-!!        type(SGS_terms_address), intent(in) :: ifld_diff
+!!        type(base_field_address), intent(in) :: iak_diff_base
+!!        type(SGS_term_address), intent(in) :: iak_diff_sgs
 !!        type(SGS_coefficients_type), intent(in) :: diff_coefs
 !!        type(lumped_mass_mat_layerd), intent(in) :: mk_MHD
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
@@ -162,8 +163,8 @@
      &          nod_comm, node, ele, surf, fluid, conduct,              &
      &          sf_grp, fl_prop, cd_prop, ht_prop, cp_prop,             &
      &          nod_bcs, surf_bcs, iphys, iphys_ele, ak_MHD, fem_int,   &
-     &          FEM_elens, ifld_diff, diff_coefs, mk_MHD, mhd_fem_wk,   &
-     &          rhs_mat, nod_fld, ele_fld)
+     &          FEM_elens, iak_diff_base, iak_diff_sgs, diff_coefs,     &
+     &          mk_MHD, mhd_fem_wk, rhs_mat, nod_fld, ele_fld)
 !
       use cal_terms_for_heat
       use cal_momentum_terms
@@ -190,7 +191,8 @@
       type(coefs_4_MHD_type), intent(in) :: ak_MHD
       type(finite_element_integration), intent(in) :: fem_int
       type(gradient_model_data_type), intent(in) :: FEM_elens
-      type(SGS_terms_address), intent(in) :: ifld_diff
+      type(base_field_address), intent(in) :: iak_diff_base
+      type(SGS_term_address), intent(in) :: iak_diff_sgs
       type(SGS_coefficients_type), intent(in) :: diff_coefs
       type(lumped_mass_mat_layerd), intent(in) :: mk_MHD
 !
@@ -313,7 +315,7 @@
      &        iphys%base, iphys%forces, iphys%div_forces,               &
      &        iphys%diffusion, iphys%filter_fld, iphys%force_by_filter, &
      &        iphys%SGS_term, iphys%div_SGS, iphys_ele%base, ak_MHD,    &
-     &        fem_int, FEM_elens, ifld_diff%SGS_term, diff_coefs,       &
+     &        fem_int, FEM_elens, iak_diff_sgs, diff_coefs,             &
      &        mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat, nod_fld, ele_fld)
         end if
       end do
@@ -332,7 +334,7 @@
      &        nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs, surf_bcs%Bsf_bcs,     &
      &        iphys%base, iphys%forces, iphys%div_forces,               &
      &        iphys%diffusion, iphys%SGS_term, iphys_ele%base, ele_fld, &
-     &        fem_int, FEM_elens, ifld_diff%SGS_term, diff_coefs,       &
+     &        fem_int, FEM_elens, iak_diff_sgs, diff_coefs,             &
      &        mk_MHD%mlump_cd, mhd_fem_wk, rhs_mat, nod_fld)
         end if
       end do
@@ -352,7 +354,7 @@
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &             write(*,*) 'lead  ', trim(thermal_diffusion%name)
         call cal_thermal_diffusion(iphys%diffusion%i_t_diffuse,         &
-     &      iphys%base%i_temp, ifld_diff%base%i_temp,                   &
+     &      iphys%base%i_temp, iak_diff_base%i_temp,                    &
      &      ak_MHD%ak_d_temp, FEM_prm%npoint_t_evo_int,                 &
      &      SGS_par%model_p, nod_comm, node, ele, surf, fluid, sf_grp,  &
      &      nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs, fem_int, FEM_elens,     &
@@ -363,7 +365,7 @@
         if(iflag_debug .ge. iflag_routine_msg) write(*,*) 'lead  ',     &
      &                     trim(composition_diffusion%name)
         call cal_thermal_diffusion(iphys%diffusion%i_c_diffuse,         &
-     &      iphys%base%i_light, ifld_diff%base%i_light,                 &
+     &      iphys%base%i_light, iak_diff_base%i_light,                  &
      &      ak_MHD%ak_d_composit, FEM_prm%npoint_t_evo_int,             &
      &      SGS_par%model_p, nod_comm, node, ele, surf, fluid, sf_grp,  &
      &      nod_bcs%Cnod_bcs, surf_bcs%Csf_bcs, fem_int, FEM_elens,     &
@@ -379,7 +381,7 @@
      &      nod_bcs%Vnod_bcs, surf_bcs%Vsf_bcs, surf_bcs%Bsf_bcs,       &
      &      iphys%base, iphys%diffusion, iphys%SGS_term, iphys%div_SGS, &
      &      ak_MHD, fem_int, FEM_elens,                                 &
-     &      ifld_diff%base, ifld_diff%SGS_term, diff_coefs,             &
+     &      iak_diff_base, iak_diff_sgs, diff_coefs,                    &
      &      mk_MHD%mlump_fl, rhs_mat, nod_fld)
       end if
 !
@@ -389,7 +391,7 @@
         call cal_vecp_diffusion(ak_MHD%ak_d_magne,                      &
      &      FEM_prm, SGS_par%model_p, nod_comm, node, ele, surf,        &
      &      sf_grp, nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs, iphys, fem_int, &
-     &      FEM_elens, ifld_diff%base, diff_coefs, mk_MHD%mlump_cd,     &
+     &      FEM_elens, iak_diff_base, diff_coefs, mk_MHD%mlump_cd,      &
      &      rhs_mat, nod_fld)
       end if
 !
@@ -402,7 +404,7 @@
      &      nod_comm, node, ele, surf, conduct, sf_grp,                 &
      &      nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs, surf_bcs%Bsf_bcs,       &
      &      iphys%base, iphys%diffusion, iphys%SGS_term, fem_int,       &
-     &      FEM_elens, ifld_diff%base, ifld_diff%SGS_term, diff_coefs,  &
+     &      FEM_elens, iak_diff_base, iak_diff_sgs, diff_coefs,         &
      &      rhs_mat, nod_fld)
       end if
 !
