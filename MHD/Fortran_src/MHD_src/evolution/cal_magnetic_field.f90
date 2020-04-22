@@ -8,14 +8,14 @@
 !!      subroutine cal_vector_potential(dt, FEM_prm, SGS_par,           &
 !!     &           mesh, group, conduct, cd_prop, Bnod_bcs,             &
 !!     &           Asf_bcs, Fsf_bcs, iphys, iphys_ele, ele_fld,         &
-!!     &           fem_int, icomp_sgs, ifld_diff, iphys_elediff_vec,    &
+!!     &           fem_int, icomp_sgs_term, ifld_diff, iphys_elediff_vec,    &
 !!     &           sgs_coefs, diff_coefs, FEM_filters, mk_MHD,          &
 !!     &           Bmatrix, Fmatrix, ak_d_magne, MGCG_WK, FEM_SGS_wk,   &
 !!     &           mhd_fem_wk, rhs_mat, fem_sq, nod_fld)
 !!      subroutine s_cal_magnetic_field(dt, FEM_prm, SGS_par,           &
 !!     &          mesh, group, conduct, cd_prop, Bnod_bcs,              &
 !!     &          Asf_bcs, Bsf_bcs, Fsf_bcs, iphys, iphys_ele, ele_fld, &
-!!     &          fem_int, icomp_sgs, ifld_diff, iphys_elediff_vec,     &
+!!     &          fem_int, icomp_sgs_term, ifld_diff, iphys_elediff_vec,     &
 !!     &          sgs_coefs, sgs_coefs_nod, diff_coefs, FEM_filters,    &
 !!     &          mk_MHD, Bmatrix, Fmatrix, ak_d_magne, MGCG_WK,        &
 !!     &          FEM_SGS_wk, mhd_fem_wk, rhs_mat, fem_sq, nod_fld)
@@ -33,7 +33,7 @@
 !!        type(phys_address), intent(in) :: iphys_ele
 !!        type(phys_data), intent(in) :: ele_fld
 !!        type(finite_element_integration), intent(in) :: fem_int
-!!        type(SGS_terms_address), intent(in) :: icomp_sgs
+!!        type(SGS_term_address), intent(in) :: icomp_sgs_term
 !!        type(SGS_terms_address), intent(in) :: ifld_diff
 !!        type(base_field_address), intent(in) :: iphys_elediff_vec
 !!        type(SGS_coefficients_type), intent(in) :: sgs_coefs
@@ -94,7 +94,7 @@
       subroutine cal_vector_potential(dt, FEM_prm, SGS_par,             &
      &           mesh, group, conduct, cd_prop, Bnod_bcs,               &
      &           Asf_bcs, Fsf_bcs, iphys, iphys_ele, ele_fld,           &
-     &           fem_int, icomp_sgs, ifld_diff, iphys_elediff_vec,      &
+     &           fem_int, icomp_sgs_term, ifld_diff, iphys_elediff_vec, &
      &           sgs_coefs, diff_coefs, FEM_filters, mk_MHD,            &
      &           Bmatrix, Fmatrix, ak_d_magne, MGCG_WK, FEM_SGS_wk,     &
      &           mhd_fem_wk, rhs_mat, fem_sq, nod_fld)
@@ -120,7 +120,7 @@
       type(phys_address), intent(in) :: iphys_ele
       type(phys_data), intent(in) :: ele_fld
       type(finite_element_integration), intent(in) :: fem_int
-      type(SGS_terms_address), intent(in) :: icomp_sgs
+      type(SGS_term_address), intent(in) :: icomp_sgs_term
       type(SGS_terms_address), intent(in) :: ifld_diff
       type(base_field_address), intent(in) :: iphys_elediff_vec
       type(SGS_coefficients_type), intent(in) :: sgs_coefs
@@ -157,7 +157,7 @@
      &    mesh%nod_comm, mesh%node, mesh%ele, mesh%surf, conduct,       &
      &    group%surf_grp, cd_prop, Bnod_bcs, Asf_bcs, iphys, iphys_ele, &
      &    ele_fld, fem_int%jcs, fem_int%rhs_tbl, FEM_filters%FEM_elens, &
-     &    ifld_diff%base, icomp_sgs%SGS_term, iphys_elediff_vec,        &
+     &    ifld_diff%base, icomp_sgs_term, iphys_elediff_vec,            &
      &    sgs_coefs, diff_coefs, FEM_filters%filtering,                 &
      &    mk_MHD%mlump_cd, Bmatrix, MGCG_WK%MG_vector,                  &
      &    FEM_SGS_wk%wk_filter, mhd_fem_wk, rhs_mat%fem_wk,             &
@@ -236,7 +236,7 @@
       subroutine s_cal_magnetic_field(dt, FEM_prm, SGS_par,             &
      &          mesh, group, conduct, cd_prop, Bnod_bcs,                &
      &          Asf_bcs, Bsf_bcs, Fsf_bcs, iphys, iphys_ele, ele_fld,   &
-     &          fem_int, icomp_sgs, ifld_diff, iphys_elediff_vec,       &
+     &          fem_int, icomp_sgs_term, ifld_diff, iphys_elediff_vec,  &
      &          sgs_coefs, sgs_coefs_nod, diff_coefs, FEM_filters,      &
      &          mk_MHD, Bmatrix, Fmatrix, ak_d_magne, MGCG_WK,          &
      &          FEM_SGS_wk, mhd_fem_wk, rhs_mat, fem_sq, nod_fld)
@@ -264,7 +264,7 @@
       type(phys_address), intent(in) :: iphys_ele
       type(phys_data), intent(in) :: ele_fld
       type(finite_element_integration), intent(in) :: fem_int
-      type(SGS_terms_address), intent(in) :: icomp_sgs
+      type(SGS_term_address), intent(in) :: icomp_sgs_term
       type(SGS_terms_address), intent(in) :: ifld_diff
       type(base_field_address), intent(in) :: iphys_elediff_vec
       type(SGS_coefficients_type), intent(in) :: sgs_coefs
@@ -308,7 +308,7 @@
      &    group%surf_grp, cd_prop, Bnod_bcs, Asf_bcs, Bsf_bcs,          &
      &    iphys, iphys_ele, ele_fld, fem_int%jcs, fem_int%rhs_tbl,      &
      &    FEM_filters%FEM_elens, sgs_coefs, sgs_coefs_nod,              &
-     &    icomp_sgs%SGS_term, ifld_diff%base, ifld_diff%SGS_term,       &
+     &    icomp_sgs_term, ifld_diff%base, ifld_diff%SGS_term,           &
      &    iphys_elediff_vec, diff_coefs, FEM_filters%filtering,         &
      &    mk_MHD%mlump_cd, Bmatrix, MGCG_WK%MG_vector,                  &
      &    FEM_SGS_wk%wk_filter, mhd_fem_wk,                             &

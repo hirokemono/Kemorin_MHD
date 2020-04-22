@@ -180,7 +180,7 @@
      &    mesh%nod_comm, mesh%node, mesh%ele,                           &
      &    MHD_mesh%fluid, MHD_mesh%conduct, MHD_prop%cd_prop, iphys,    &
      &    iphys_ele, ele_fld, fem_int%jcs, fem_int%rhs_tbl, FEM_elens,  &
-     &    Csims_FEM_MHD%icomp_sgs%SGS_term,                             &
+     &    Csims_FEM_MHD%icomp_sgs_term,                                 &
      &    Csims_FEM_MHD%iphys_elediff_vec,                              &
      &    Csims_FEM_MHD%sgs_coefs, Csims_FEM_MHD%sgs_coefs_nod,         &
      &    filtering, mk_MHD, FEM_SGS_wk%wk_filter, mhd_fem_wk,          &

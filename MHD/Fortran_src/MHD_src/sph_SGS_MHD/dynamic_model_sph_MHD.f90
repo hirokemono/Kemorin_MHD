@@ -165,7 +165,7 @@
       call cal_SGS_buo_coefs_sph_MHD                                    &
      &  (stab_weight, sph_rtp, dynamic_SPH%sph_d_grp,                   &
      &   trns_Csim%f_trns%SGS_ene_flux, trns_Csim%forward,              &
-     &   dynamic_SPH%iak_sgs_term, dynamic_SPH%icomp_sgs%SGS_term,      &
+     &   dynamic_SPH%iak_sgs_term, dynamic_SPH%icomp_sgs_term,          &
      &   dynamic_SPH%wk_sgs)
 !
       end subroutine const_dynamic_SGS_4_buo_sph 

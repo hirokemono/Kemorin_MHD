@@ -9,9 +9,6 @@
 !!     &          ifld_diff, icomp_diff, wk_diff, diff_coefs)
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(commutation_control_params), intent(in) :: cmt_param
-!!        type(layering_tbl), intent(in) :: layer_tbl
-!!        type(MHD_evolution_param), intent(in) :: MHD_prop
-!!        type(SGS_terms_address), intent(inout) :: icomp_sgs
 !!        type(SGS_terms_address), intent(inout) :: ifld_diff
 !!        type(SGS_terms_address), intent(inout) :: icomp_diff
 !!        type(dynamic_model_data), intent(inout) :: wk_sgs

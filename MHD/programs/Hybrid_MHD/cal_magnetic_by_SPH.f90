@@ -157,7 +157,7 @@
 !
 !
       call cal_sgs_uxb_2_monitor
-     &     (Csims_FEM_MHD%icomp_sgs%forces%i_induction,                 &
+     &     (Csims_FEM_MHD%icomp_sgs_term%i_SGS_induction,               &
      &      Csims_FEM_MHD%iphys_elediff_vec%i_velo,                     &
      &      MHD_step1%time_d%dt, FEM_prm,                               &
      &      SGS_par%model_p, SGS_par%filter_p,                          &

@@ -33,9 +33,8 @@
 !
 !>         Field adddress for dynamic SGS model
         type(SGS_term_address) :: iak_sgs_term
-!
 !>        component list of SGS terms
-        type(SGS_terms_address) :: icomp_sgs
+        type(SGS_term_address) :: icomp_sgs_term
 !
 !>        field list of differencials
         type(SGS_terms_address) :: ifld_diff

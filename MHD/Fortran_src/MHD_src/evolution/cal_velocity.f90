@@ -9,7 +9,7 @@
 !!     &          mesh, group, fluid, fl_prop, cd_prop,                 &
 !!     &          Vnod_bcs, Vsf_bcs, Bsf_bcs, Psf_bcs, iphys,           &
 !!     &          iphys_ele, ak_MHD, fem_int, FEM_filters,              &
-!!     &          iak_sgs_term, icomp_sgs, ifld_diff, iphys_elediff_vec,&
+!!     &          iak_sgs_term, icomp_sgs_term, ifld_diff, iphys_elediff_vec,&
 !!     &          sgs_coefs_nod, diff_coefs, mk_MHD,                    &
 !!     &          Vmatrix, Pmatrix, MGCG_WK, FEM_SGS_wk, mhd_fem_wk,    &
 !!     &          rhs_mat, nod_fld, ele_fld, sgs_coefs, fem_sq)
@@ -29,7 +29,7 @@
 !!        type(finite_element_integration), intent(in) :: fem_int
 !!        type(filters_on_FEM), intent(in) :: FEM_filters
 !!        type(SGS_term_address), intent(in) :: iak_sgs_term
-!!        type(SGS_terms_address), intent(in) :: icomp_sgs
+!!        type(SGS_term_address), intent(in) :: icomp_sgs_term
 !!        type(SGS_terms_address), intent(in) :: ifld_diff
 !!        type(base_field_address), intent(in) :: iphys_elediff_vec
 !!        type(SGS_coefficients_type), intent(in) :: sgs_coefs_nod
@@ -97,7 +97,7 @@
      &          mesh, group, fluid, fl_prop, cd_prop,                   &
      &          Vnod_bcs, Vsf_bcs, Bsf_bcs, Psf_bcs, iphys,             &
      &          iphys_ele, ak_MHD, fem_int, FEM_filters,                &
-     &          iak_sgs_term, icomp_sgs, ifld_diff, iphys_elediff_vec,  &
+     &          iak_sgs_term, icomp_sgs_term, ifld_diff, iphys_elediff_vec,  &
      &          sgs_coefs_nod, diff_coefs, mk_MHD,                      &
      &          Vmatrix, Pmatrix, MGCG_WK, FEM_SGS_wk, mhd_fem_wk,      &
      &          rhs_mat, nod_fld, ele_fld, sgs_coefs, fem_sq)
@@ -128,7 +128,7 @@
       type(finite_element_integration), intent(in) :: fem_int
       type(filters_on_FEM), intent(in) :: FEM_filters
       type(SGS_term_address), intent(in) :: iak_sgs_term
-      type(SGS_terms_address), intent(in) :: icomp_sgs
+      type(SGS_term_address), intent(in) :: icomp_sgs_term
       type(SGS_terms_address), intent(in) :: ifld_diff
       type(base_field_address), intent(in) :: iphys_elediff_vec
       type(SGS_coefficients_type), intent(in) :: sgs_coefs_nod
@@ -161,7 +161,7 @@
      &    fluid, group%surf_grp, group%surf_nod_grp,                    &
      &    fl_prop, cd_prop, Vnod_bcs, Vsf_bcs, Bsf_bcs, iphys,          &
      &    iphys_ele, ak_MHD, fem_int, FEM_filters%FEM_elens,            &
-     &    iak_sgs_term, icomp_sgs%SGS_term,                             &
+     &    iak_sgs_term, icomp_sgs_term,                                 &
      &    ifld_diff%base, ifld_diff%SGS_term, iphys_elediff_vec,        &
      &    sgs_coefs_nod, diff_coefs, FEM_filters%filtering,             &
      &    FEM_filters%layer_tbl, mk_MHD%mlump_fl,                       &
