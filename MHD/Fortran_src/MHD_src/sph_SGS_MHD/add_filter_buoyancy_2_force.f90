@@ -7,10 +7,12 @@
 !>@brief Evaluate nonlinear terms by pseudo spectram scheme
 !!
 !!@verbatim
-!!      subroutine add_filtered_buo_to_explicit(fl_prop, ipol, rj_fld)
+!!      subroutine add_filtered_buo_to_explicit                         &
+!!     &         (fl_prop, ipol_exp, ipol_rot_frc_by_filter, rj_fld)
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(fluid_property), intent(in) :: fl_prop
-!!        type(phys_address), intent(in) :: ipol
+!!        type(explicit_term_address), intent(in) :: ipol_exp
+!!        type(base_force_address), intent(in)  :: ipol_rot_frc_by_filter
 !!        type(phys_data), intent(inout) :: rj_fld
 !!@endverbatim
 !
@@ -24,7 +26,8 @@
       use calypso_mpi
 !
       use t_physical_property
-      use t_phys_address
+      use t_base_field_labels
+      use t_explicit_term_labels
       use t_phys_data
 !
       implicit none
@@ -35,11 +38,14 @@
 !*
 !*   ------------------------------------------------------------------
 !
-      subroutine add_filtered_buo_to_explicit(fl_prop, ipol, rj_fld)
+      subroutine add_filtered_buo_to_explicit                           &
+     &         (fl_prop, ipol_exp, ipol_rot_frc_by_filter, rj_fld)
 !
       use cal_vorticity_terms_adams
 !
       type(fluid_property), intent(in) :: fl_prop
+      type(explicit_term_address), intent(in) :: ipol_exp
+      type(base_force_address), intent(in)  :: ipol_rot_frc_by_filter
       type(phys_address), intent(in) :: ipol
       type(phys_data), intent(inout) :: rj_fld
 !
@@ -47,14 +53,14 @@
       if(fl_prop%iflag_4_filter_gravity .gt. id_turn_OFF) then
 !$omp parallel
         call add_buoyancy_to_vort_force                               &
-     &     (ipol%exp_work, ipol%rot_frc_by_filter%i_buoyancy,         &
+     &     (ipol_exp, ipol_rot_frc_by_filter%i_buoyancy,              &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !$omp end parallel
       end if
       if(fl_prop%iflag_4_filter_comp_buo .gt. id_turn_OFF) then
 !$omp parallel
         call add_buoyancy_to_vort_force                               &
-     &     (ipol%exp_work, ipol%rot_frc_by_filter%i_comp_buo,         &
+     &     (ipol_exp, ipol_rot_frc_by_filter%i_comp_buo,              &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !$omp end parallel
       end if

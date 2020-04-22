@@ -81,8 +81,9 @@
      &    dynamic_SPH%num_sph_filteres, dynamic_SPH%sph_filters)
 !
       if (iflag_debug.gt.0) write(*,*) 'init_work_4_SGS_sph_mhd'
-      call init_work_4_SGS_sph_mhd(SGS_par, dynamic_SPH%sph_d_grp,      &
-     &    MHD_prop, dynamic_SPH%iak_sgs_term, dynamic_SPH%icomp_sgs_term,    &
+      call init_work_4_SGS_sph_mhd                                      &
+     &   (SGS_par, dynamic_SPH%sph_d_grp, MHD_prop,                     &
+     &    dynamic_SPH%iak_sgs_term, dynamic_SPH%icomp_sgs_term,         &
      &    dynamic_SPH%sgs_coefs, dynamic_SPH%wk_sgs)
 !
       if (iflag_debug.gt.0) write(*,*) 'cal_volume_4_SGS_buoyancy'

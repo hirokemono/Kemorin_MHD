@@ -10,7 +10,8 @@
 !!      subroutine fields_evolution(time_d, FEM_prm, SGS_par,           &
 !!     &          fem, MHD_mesh, MHD_prop, nod_bcs, surf_bcs, iphys,    &
 !!     &          iak_sgs_term, icomp_sgs_term, iak_diff_base,          &
-!!     &          icomp_diff_base, iphys_elediff_vec, iphys_elediff_fil,     &
+!!     &          iak_diff_sgs, icomp_diff_base,                        &
+!!     &          iphys_elediff_vec, iphys_elediff_fil,                 &
 !!     &          ak_MHD, FEM_filters, s_package, MGCG_WK, SGS_MHD_wk,  &
 !!     &          nod_fld, sgs_coefs, sgs_coefs_nod, diff_coefs, fem_sq)
 !!      subroutine update_fields(time_d, FEM_prm, SGS_par,              &
@@ -22,8 +23,9 @@
 !!
 !!      subroutine fields_evo_for_FEM_SPH(time_d, FEM_prm, SGS_par,     &
 !!     &          fem, fluid, MHD_prop, nod_bcs, surf_bcs, iphys,       &
-!!     &          iak_sgs_term, icomp_sgs_term, iak_diff_base,          &
-!!     &          icomp_diff_base, iphys_elediff_vec, iphys_elediff_fil,     &
+!!     &          iak_sgs_term, icomp_sgs_term,                         &
+!!     &          iak_diff_base, iak_diff_sgs, icomp_diff_base,         &
+!!     &          iphys_elediff_vec, iphys_elediff_fil,                 &
 !!     &          ak_MHD, FEM_filters, s_package, MGCG_WK, SGS_MHD_wk,  &
 !!     &          nod_fld, sgs_coefs, sgs_coefs_nod, diff_coefs, fem_sq)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
@@ -102,8 +104,8 @@
       subroutine fields_evolution(time_d, FEM_prm, SGS_par,             &
      &          fem, MHD_mesh, MHD_prop, nod_bcs, surf_bcs, iphys,      &
      &          iak_sgs_term, icomp_sgs_term, iak_diff_base,            &
-     &          iak_diff_sgs, icomp_diff_base,               &
-     &          iphys_elediff_vec, iphys_elediff_fil,       &
+     &          iak_diff_sgs, icomp_diff_base,                          &
+     &          iphys_elediff_vec, iphys_elediff_fil,                   &
      &          ak_MHD, FEM_filters, s_package, MGCG_WK, SGS_MHD_wk,    &
      &          nod_fld, sgs_coefs, sgs_coefs_nod, diff_coefs, fem_sq)
 !
@@ -439,8 +441,9 @@
 !
       subroutine fields_evo_for_FEM_SPH(time_d, FEM_prm, SGS_par,       &
      &          fem, fluid, MHD_prop, nod_bcs, surf_bcs, iphys,         &
-     &          iak_sgs_term, icomp_sgs_term, iak_diff_base, iak_diff_sgs, &
-     &          icomp_diff_base, iphys_elediff_vec, iphys_elediff_fil,  &
+     &          iak_sgs_term, icomp_sgs_term,                           &
+     &          iak_diff_base, iak_diff_sgs, icomp_diff_base,           &
+     &          iphys_elediff_vec, iphys_elediff_fil,                   &
      &          ak_MHD, FEM_filters, s_package, MGCG_WK, SGS_MHD_wk,    &
      &          nod_fld, sgs_coefs, sgs_coefs_nod, diff_coefs, fem_sq)
 !

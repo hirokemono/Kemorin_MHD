@@ -18,7 +18,7 @@ solver_MGCG_MHD.o: $(MHD_AMG_DIR)/solver_MGCG_MHD.f90 m_precision.o m_machine_pa
 	$(F90) -c $(F90OPTFLAGS) $<
 t_FEM_MHD_solvers.o: $(MHD_AMG_DIR)/t_FEM_MHD_solvers.f90 m_precision.o t_control_parameter.o t_iccg_parameter.o t_FEM_control_parameter.o t_mesh_data.o t_sorted_node_MHD.o t_solver_djds.o t_vector_for_solver.o t_solver_djds_MHD.o t_MHD_matrices_pack.o t_physical_property.o t_material_property.o t_MGCG_data.o t_MGCG_data_4_MHD.o t_geometry_data_MHD.o set_djds_connectivity_type.o copy_mesh_structures.o set_djds_connect_type_MHD.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_MGCG_data_4_MHD.o: $(MHD_AMG_DIR)/t_MGCG_data_4_MHD.f90 m_precision.o t_MGCG_data.o t_geometry_data_MHD.o t_coefs_element_4_MHD.o t_finite_element_mat.o t_MHD_mass_matrices.o t_nodal_bc_data.o t_surface_bc_data_MHD.o t_filter_elength.o t_solver_djds.o t_crs_connect.o t_bc_data_MHD.o t_boundary_field_IO.o t_SGS_model_coefs.o
+t_MGCG_data_4_MHD.o: $(MHD_AMG_DIR)/t_MGCG_data_4_MHD.f90 m_precision.o t_MGCG_data.o t_geometry_data_MHD.o t_coefs_element_4_MHD.o t_finite_element_mat.o t_MHD_mass_matrices.o t_nodal_bc_data.o t_surface_bc_data_MHD.o t_filter_elength.o t_solver_djds.o t_crs_connect.o t_bc_data_MHD.o t_boundary_field_IO.o t_SGS_model_coefs.o t_base_field_labels.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_MHD_mass_matrices.o: $(MHD_AMG_DIR)/t_MHD_mass_matrices.f90 m_precision.o t_finite_element_mat.o
 	$(F90) -c $(F90OPTFLAGS) $<

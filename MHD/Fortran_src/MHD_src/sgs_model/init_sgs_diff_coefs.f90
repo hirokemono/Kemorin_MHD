@@ -4,21 +4,13 @@
 !      Written by H. Matsui on 2004
 !      Modified by H. Matsui on July, 2007
 !
-!!      subroutine define_sgs_diff_coefs                                &
-!!     &         (numele, SGS_param, cmt_param, layer_tbl, MHD_prop,    &
-!!     &          iak_diff_base, iak_diff_sgs, icomp_diff_base, icomp_diff_sgs, &
-!!     &          wk_diff, diff_coefs)
+!!      subroutine define_sgs_diff_coefs(numele, SGS_param, cmt_param,  &
+!!     &          layer_tbl, MHD_prop, wk_diff, Csims_FEM_MHD)
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(commutation_control_params), intent(in) :: cmt_param
-!!        type(base_field_address), intent(in) :: iak_diff_base
-!!        type(SGS_term_address), intent(in) :: iak_diff_sgs
-!!        type(base_field_address), intent(in) :: icomp_diff_base
-!!        type(SGS_term_address), intent(in) :: icomp_diff_sgs
 !!        type(dynamic_model_data), intent(inout) :: wk_sgs
 !!        type(dynamic_model_data), intent(inout) :: wk_diff
-!!        type(SGS_coefficients_type), intent(inout) :: sgs_coefs
-!!        type(SGS_coefficients_type), intent(inout) :: sgs_coefs_nod
-!!        type(SGS_coefficients_type), intent(inout) :: diff_coefs
+!!        type(SGS_coefficients_data), intent(inout) :: Csims_FEM_MHD
 !
       module init_sgs_diff_coefs
 !
@@ -41,10 +33,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine define_sgs_diff_coefs                                  &
-     &         (numele, SGS_param, cmt_param, layer_tbl, MHD_prop,      &
-     &          iak_diff_base, iak_diff_sgs, icomp_diff_base, icomp_diff_sgs, &
-     &          wk_diff, diff_coefs)
+      subroutine define_sgs_diff_coefs(numele, SGS_param, cmt_param,    &
+     &          layer_tbl, MHD_prop, wk_diff, Csims_FEM_MHD)
 !
       use calypso_mpi
 !
@@ -52,7 +42,7 @@
       use t_layering_ele_list
       use t_ele_info_4_dynamic
       use t_material_property
-      use t_SGS_model_coefs
+      use t_FEM_SGS_model_coefs
 !
       integer(kind = kint), intent(in) :: numele
       type(SGS_model_control_params), intent(in) :: SGS_param
@@ -60,13 +50,8 @@
       type(layering_tbl), intent(in) :: layer_tbl
       type(MHD_evolution_param), intent(in) :: MHD_prop
 !
-      type(base_field_address), intent(inout) :: iak_diff_base
-      type(SGS_term_address), intent(inout) :: iak_diff_sgs
-      type(base_field_address), intent(inout) :: icomp_diff_base
-      type(SGS_term_address), intent(inout) :: icomp_diff_sgs
-!
       type(dynamic_model_data), intent(inout) :: wk_diff
-      type(SGS_coefficients_type), intent(inout) :: diff_coefs
+      type(SGS_coefficients_data), intent(inout) :: Csims_FEM_MHD
 !
       integer(kind = kint) :: ntot_diff_comp
 !
@@ -74,24 +59,27 @@
       call count_sgs_diff_coefs(SGS_param, cmt_param,                   &
      &    MHD_prop%fl_prop, MHD_prop%cd_prop,                           &
      &    MHD_prop%ht_prop, MHD_prop%cp_prop,                           &
-     &    ntot_diff_comp, diff_coefs)
+     &    ntot_diff_comp, Csims_FEM_MHD%diff_coefs)
       call alloc_sgs_coefs_layer(layer_tbl%e_grp%num_grp,               &
-     &    diff_coefs%num_field, ntot_diff_comp, wk_diff)
+     &    Csims_FEM_MHD%diff_coefs%num_field, ntot_diff_comp, wk_diff)
 !
-      call alloc_SGS_num_coefs(diff_coefs)
-      call alloc_SGS_coefs(numele, diff_coefs)
+      call alloc_SGS_num_coefs(Csims_FEM_MHD%diff_coefs)
+      call alloc_SGS_coefs(numele, Csims_FEM_MHD%diff_coefs)
 !
       call set_sgs_diff_addresses(SGS_param, cmt_param,                 &
      &    MHD_prop%fl_prop, MHD_prop%cd_prop,                           &
      &    MHD_prop%ht_prop, MHD_prop%cp_prop,                           &
-     &    iak_diff_base, iak_diff_sgs,                                  &
-     &    icomp_diff_base, icomp_diff_sgs, wk_diff, diff_coefs)
-      diff_coefs%ntot_comp = diff_coefs%num_field
+     &    Csims_FEM_MHD%iak_diff_base, Csims_FEM_MHD%iak_diff_sgs,      &
+     &    Csims_FEM_MHD%icomp_diff_base, Csims_FEM_MHD%icomp_diff_sgs,  &
+     &    wk_diff, Csims_FEM_MHD%diff_coefs)
+      Csims_FEM_MHD%diff_coefs%ntot_comp                                &
+     &      = Csims_FEM_MHD%diff_coefs%num_field
 !
       if(iflag_debug .gt. 0) then
         call check_sgs_diff_addresses                                   &
-     &     (iak_diff_base, iak_diff_sgs,                                &
-     &      icomp_diff_base, icomp_diff_sgs, wk_diff, diff_coefs)
+     &    (Csims_FEM_MHD%iak_diff_base, Csims_FEM_MHD%iak_diff_sgs,     &
+     &     Csims_FEM_MHD%icomp_diff_base, Csims_FEM_MHD%icomp_diff_sgs, &
+     &     wk_diff, Csims_FEM_MHD%diff_coefs)
       end if
 !
 !

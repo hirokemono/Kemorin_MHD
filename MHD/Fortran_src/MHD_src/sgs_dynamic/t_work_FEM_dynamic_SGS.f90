@@ -72,16 +72,12 @@
       type(work_FEM_dynamic_SGS), intent(inout) :: FEM_SGS_wk
 !
 !
-      call define_sgs_components                                        &
-     &   (mesh%node%numnod, mesh%ele%numele,                            &
-     &    SGS_par%model_p, layer_tbl, MHD_prop, Csims_FEM_MHD%iak_sgs_term, &
-     &    Csims_FEM_MHD%icomp_sgs_term, FEM_SGS_wk%wk_sgs,                   &
-     &    Csims_FEM_MHD%sgs_coefs, Csims_FEM_MHD%sgs_coefs_nod)
+      call define_sgs_components(mesh%node%numnod, mesh%ele%numele,     &
+     &    SGS_par%model_p, layer_tbl, MHD_prop, FEM_SGS_wk%wk_sgs,      &
+     &    Csims_FEM_MHD)
       call define_sgs_diff_coefs(mesh%ele%numele,                       &
      &    SGS_par%model_p, SGS_par%commute_p, layer_tbl, MHD_prop,      &
-     &    Csims_FEM_MHD%iak_diff_base, Csims_FEM_MHD%iak_diff_sgs,      &
-     &    Csims_FEM_MHD%icomp_diff_base, Csims_FEM_MHD%icomp_diff_sgs,  &
-     &    FEM_SGS_wk%wk_diff, Csims_FEM_MHD%diff_coefs)
+     &    FEM_SGS_wk%wk_diff, Csims_FEM_MHD)
 !
       end subroutine def_sgs_commute_component
 !

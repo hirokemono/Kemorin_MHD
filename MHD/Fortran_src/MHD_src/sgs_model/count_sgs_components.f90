@@ -6,7 +6,7 @@
 !
 !!      subroutine define_sgs_components                                &
 !!     &         (numnod, numele, SGS_param, layer_tbl, MHD_prop,       &
-!!     &          iak_sgs_term, icomp_sgs_term, wk_sgs, sgs_coefs, sgs_coefs_nod)
+!!     &          wk_sgs, Csims_FEM_MHD)
 !!
 !!      subroutine set_sgs_addresses                                    &
 !!     &          (SGS_param, fl_prop, cd_prop, ht_prop, cp_prop,       &
@@ -26,6 +26,7 @@
 !!        type(SGS_coefficients_type), intent(inout) :: sgs_coefs_nod
 !!        type(base_field_address), intent(inout) :: iphys_elediff_base
 !!        type(base_field_address), intent(inout) :: iphys_elediff_fil
+!!        type(SGS_coefficients_data), intent(inout) :: Csims_FEM_MHD
 !
       module count_sgs_components
 !
@@ -42,7 +43,7 @@
 !
       subroutine define_sgs_components                                  &
      &         (numnod, numele, SGS_param, layer_tbl, MHD_prop,         &
-     &          iak_sgs_term, icomp_sgs_term, wk_sgs, sgs_coefs, sgs_coefs_nod)
+     &          wk_sgs, Csims_FEM_MHD)
 !
       use calypso_mpi
       use m_phys_labels
@@ -52,45 +53,44 @@
       use t_layering_ele_list
       use t_ele_info_4_dynamic
       use t_physical_property
-      use t_SGS_model_coefs
-      use t_SGS_term_labels
+      use t_FEM_SGS_model_coefs
 !
       integer(kind = kint), intent(in) :: numnod, numele
       type(layering_tbl), intent(in) :: layer_tbl
       type(MHD_evolution_param), intent(in) :: MHD_prop
-!
       type(SGS_model_control_params), intent(in) :: SGS_param
 !
-      type(SGS_term_address), intent(inout) :: iak_sgs_term
-      type(SGS_term_address), intent(inout) :: icomp_sgs_term
       type(dynamic_model_data), intent(inout) :: wk_sgs
-      type(SGS_coefficients_type), intent(inout) :: sgs_coefs
-      type(SGS_coefficients_type), intent(inout) :: sgs_coefs_nod
+      type(SGS_coefficients_data), intent(inout) :: Csims_FEM_MHD
 !
 !
       call s_count_sgs_components(SGS_param,                            &
      &    MHD_prop%fl_prop, MHD_prop%cd_prop,                           &
-     &    MHD_prop%ht_prop, MHD_prop%cp_prop, sgs_coefs)
+     &    MHD_prop%ht_prop, MHD_prop%cp_prop, Csims_FEM_MHD%sgs_coefs)
 !
 !   set index for model coefficients
 !
       call alloc_sgs_coefs_layer(layer_tbl%e_grp%num_grp,               &
-     &    sgs_coefs%num_field, sgs_coefs%ntot_comp, wk_sgs)
+     &    Csims_FEM_MHD%sgs_coefs%num_field,                            &
+     &    Csims_FEM_MHD%sgs_coefs%ntot_comp, wk_sgs)
 !
-      call alloc_SGS_num_coefs(sgs_coefs)
-      call alloc_SGS_coefs(numele, sgs_coefs)
+      call alloc_SGS_num_coefs(Csims_FEM_MHD%sgs_coefs)
+      call alloc_SGS_coefs(numele, Csims_FEM_MHD%sgs_coefs)
 !
       call set_sgs_addresses(SGS_param,                                 &
      &    MHD_prop%fl_prop, MHD_prop%cd_prop,                           &
      &    MHD_prop%ht_prop, MHD_prop%cp_prop,                           &
-     &    iak_sgs_term, icomp_sgs_term, wk_sgs, sgs_coefs)
+     &    Csims_FEM_MHD%iak_sgs_term, Csims_FEM_MHD%icomp_sgs_term,     &
+     &    wk_sgs, Csims_FEM_MHD%sgs_coefs)
       call check_sgs_addresses                                          &
-     &   (iak_sgs_term, icomp_sgs_term, wk_sgs, sgs_coefs)
+     &   (Csims_FEM_MHD%iak_sgs_term, Csims_FEM_MHD%icomp_sgs_term,     &
+     &    wk_sgs, Csims_FEM_MHD%sgs_coefs)
 !
       if(     SGS_param%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF           &
      &   .or. SGS_param%iflag_SGS.eq.id_SGS_similarity)  then
-        call copy_SGS_num_coefs(sgs_coefs, sgs_coefs_nod)
-        call alloc_SGS_coefs(numnod, sgs_coefs_nod)
+        call copy_SGS_num_coefs                                         &
+     &     (Csims_FEM_MHD%sgs_coefs, Csims_FEM_MHD%sgs_coefs_nod)
+        call alloc_SGS_coefs(numnod, Csims_FEM_MHD%sgs_coefs_nod)
       end if
 !
       end subroutine define_sgs_components
