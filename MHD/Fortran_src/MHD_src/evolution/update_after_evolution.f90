@@ -119,7 +119,7 @@
      &    MHD_prop, FEM_MHD_BCs%nod_bcs, FEM_MHD_BCs%surf_bcs, iphys,   &
      &    Csims_FEM_MHD%ifld_sgs, Csims_FEM_MHD%icomp_sgs,              &
      &    Csims_FEM_MHD%ifld_diff, Csims_FEM_MHD%icomp_diff,            &
-     &    Csims_FEM_MHD%iphys_elediff, ak_MHD, FEM_filters,             &
+     &    Csims_FEM_MHD%iphys_elediff_vec, Csims_FEM_MHD%iphys_elediff_fil, ak_MHD, FEM_filters,             &
      &    s_package, MGCG_WK, SGS_MHD_wk, nod_fld,                      &
      &    Csims_FEM_MHD%sgs_coefs, Csims_FEM_MHD%sgs_coefs_nod,         &
      &    Csims_FEM_MHD%diff_coefs, fem_sq)
@@ -151,7 +151,7 @@
       call update_fields(time_d, FEM_prm, SGS_par, femmesh,             &
      &    MHD_mesh, FEM_MHD_BCs%nod_bcs, FEM_MHD_BCs%surf_bcs, iphys,   &
      &    Csims_FEM_MHD%ifld_diff, Csims_FEM_MHD%icomp_diff,            &
-     &    Csims_FEM_MHD%iphys_elediff, FEM_filters, SGS_MHD_wk,         &
+     &    Csims_FEM_MHD%iphys_elediff_vec, Csims_FEM_MHD%iphys_elediff_fil, FEM_filters, SGS_MHD_wk,     &
      &    nod_fld, Csims_FEM_MHD%diff_coefs)
 !
       end subroutine update_FEM_fields
@@ -187,7 +187,7 @@
      &    MHD_prop, FEM_MHD_BCs%nod_bcs, FEM_MHD_BCs%surf_bcs, iphys,   &
      &    Csims_FEM_MHD%ifld_sgs, Csims_FEM_MHD%icomp_sgs,              &
      &    Csims_FEM_MHD%ifld_diff, Csims_FEM_MHD%icomp_diff,            &
-     &    Csims_FEM_MHD%iphys_elediff, SGS_MHD_wk%fem_int, FEM_filters, &
+     &    Csims_FEM_MHD%iphys_elediff_vec, Csims_FEM_MHD%iphys_elediff_fil, SGS_MHD_wk%fem_int, FEM_filters, &
      &    SGS_MHD_wk, nod_fld, Csims_FEM_MHD%sgs_coefs,                 &
      &    Csims_FEM_MHD%sgs_coefs_nod, Csims_FEM_MHD%diff_coefs)
 !
@@ -228,7 +228,7 @@
      &    FEM_MHD_BCs%nod_bcs, FEM_MHD_BCs%surf_bcs, iphys,             &
      &    Csims_FEM_MHD%ifld_sgs, Csims_FEM_MHD%icomp_sgs,              &
      &    Csims_FEM_MHD%ifld_diff, Csims_FEM_MHD%icomp_diff,            &
-     &    Csims_FEM_MHD%iphys_elediff, ak_MHD, FEM_filters, s_package,  &
+     &    Csims_FEM_MHD%iphys_elediff_vec, Csims_FEM_MHD%iphys_elediff_fil, ak_MHD, FEM_filters, s_package,  &
      &    MGCG_WK, SGS_MHD_wk, nod_fld, Csims_FEM_MHD%sgs_coefs,        &
      &    Csims_FEM_MHD%sgs_coefs_nod, Csims_FEM_MHD%diff_coefs,        &
      &    fem_sq)

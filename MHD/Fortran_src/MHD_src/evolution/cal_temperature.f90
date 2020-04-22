@@ -8,7 +8,7 @@
 !!      subroutine cal_temperature_field(i_field, dt, FEM_prm, SGS_par, &
 !!     &          mesh, group, fluid,  property, ref_param,             &
 !!     &          nod_bcs, sf_bcs, iphys, iphys_ele, ele_fld, fem_int,  &
-!!     &          FEM_elens, icomp_sgs, ifld_diff, iphys_elediff,       &
+!!     &          FEM_elens, icomp_sgs, ifld_diff, iphys_elediff_vec,   &
 !!     &          sgs_coefs, sgs_coefs_nod, diff_coefs, filtering,      &
 !!     &          mk_MHD, Smatrix, ak_MHD, MGCG_WK, FEM_SGS_wk,         &
 !!     &          mhd_fem_wk, rhs_mat, nod_fld)
@@ -25,7 +25,7 @@
 !!        type(phys_address), intent(in) :: iphys_ele
 !!        type(SGS_terms_address), intent(in) :: icomp_sgs
 !!        type(SGS_terms_address), intent(in) :: ifld_diff
-!!        type(SGS_terms_address), intent(in) :: iphys_elediff
+!!        type(base_field_address), intent(in) :: iphys_elediff_vec
 !!        type(phys_data), intent(in) :: ele_fld
 !!        type(coefs_4_MHD_type), intent(in) :: ak_MHD
 !!        type(finite_element_integration), intent(in) :: fem_int
@@ -92,7 +92,7 @@
       subroutine cal_temperature_field(i_field, dt, FEM_prm, SGS_par,   &
      &          mesh, group, fluid,  property, ref_param,               &
      &          nod_bcs, sf_bcs, iphys, iphys_ele, ele_fld, fem_int,    &
-     &          FEM_elens, icomp_sgs, ifld_diff, iphys_elediff,         &
+     &          FEM_elens, icomp_sgs, ifld_diff, iphys_elediff_vec,     &
      &          sgs_coefs, sgs_coefs_nod, diff_coefs, filtering,        &
      &          mk_MHD, Smatrix, ak_MHD, MGCG_WK, FEM_SGS_wk,           &
      &          mhd_fem_wk, rhs_mat, nod_fld)
@@ -113,7 +113,7 @@
       type(phys_address), intent(in) :: iphys_ele
       type(SGS_terms_address), intent(in) :: icomp_sgs
       type(SGS_terms_address), intent(in) :: ifld_diff
-      type(SGS_terms_address), intent(in) :: iphys_elediff
+      type(base_field_address), intent(in) :: iphys_elediff_vec
       type(phys_data), intent(in) :: ele_fld
       type(coefs_4_MHD_type), intent(in) :: ak_MHD
       type(finite_element_integration), intent(in) :: fem_int
@@ -139,7 +139,7 @@
      &    iphys%base, iphys%grad_fld, iphys%filter_fld, iphys%SGS_term, &
      &    iphys%exp_work, iphys_ele, ele_fld,                           &
      &    fem_int%jcs, fem_int%rhs_tbl, FEM_elens, icomp_sgs%SGS_term,  &
-     &    ifld_diff%base, ifld_diff%SGS_term, iphys_elediff%base,       &
+     &    ifld_diff%base, ifld_diff%SGS_term, iphys_elediff_vec,        &
      &    sgs_coefs, sgs_coefs_nod, diff_coefs, filtering,              &
      &    mk_MHD%mlump_fl, Smatrix, ak_MHD%ak_d_temp, MGCG_WK,          &
      &    FEM_SGS_wk%wk_filter, mhd_fem_wk, rhs_mat%fem_wk,             &

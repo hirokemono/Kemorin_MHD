@@ -95,7 +95,7 @@
       subroutine fields_evolution(time_d, FEM_prm, SGS_par,             &
      &          fem, MHD_mesh, MHD_prop, nod_bcs, surf_bcs, iphys,      &
      &          ifld_sgs, icomp_sgs, ifld_diff, icomp_diff,             &
-     &          iphys_elediff, ak_MHD, FEM_filters,                     &
+     &          iphys_elediff_vec, iphys_elediff_fil, ak_MHD, FEM_filters,  &
      &          s_package, MGCG_WK, SGS_MHD_wk, nod_fld,                &
      &          sgs_coefs, sgs_coefs_nod, diff_coefs, fem_sq)
 !
@@ -124,7 +124,8 @@
       type(SGS_terms_address), intent(in) :: icomp_sgs
       type(SGS_terms_address), intent(in) :: ifld_diff
       type(SGS_terms_address), intent(in) :: icomp_diff
-      type(SGS_terms_address), intent(in) :: iphys_elediff
+      type(base_field_address), intent(in) :: iphys_elediff_vec
+      type(base_field_address), intent(in) :: iphys_elediff_fil
       type(coefs_4_MHD_type), intent(in) :: ak_MHD
       type(filters_on_FEM), intent(in) :: FEM_filters
       type(MHD_matrices_pack), intent(in) :: s_package
@@ -151,7 +152,7 @@
      &     fem%mesh, fem%group, MHD_mesh%conduct, MHD_prop%cd_prop,     &
      &     nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs, surf_bcs%Fsf_bcs,        &
      &     iphys, SGS_MHD_wk%iphys_ele, SGS_MHD_wk%ele_fld,             &
-     &     SGS_MHD_wk%fem_int, icomp_sgs, ifld_diff, iphys_elediff,     &
+     &     SGS_MHD_wk%fem_int, icomp_sgs, ifld_diff, iphys_elediff_vec, &
      &     sgs_coefs, diff_coefs, FEM_filters, SGS_MHD_wk%mk_MHD,       &
      &     s_package%Bmatrix, s_package%Fmatrix, ak_MHD%ak_d_magne,     &
      &     MGCG_WK, SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%mhd_fem_wk,       &
@@ -163,7 +164,7 @@
      &     nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs, surf_bcs%Fsf_bcs,        &
      &     iphys, SGS_MHD_wk%iphys_ele, SGS_MHD_wk%fem_int,             &
      &     FEM_filters, ifld_diff%base, icomp_diff%base,                &
-     &     iphys_elediff%base, iphys_elediff%filter_fld,                &
+     &     iphys_elediff_vec, iphys_elediff_fil,                        &
      &     SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%mhd_fem_wk,                &
      &     SGS_MHD_wk%rhs_mat, nod_fld, SGS_MHD_wk%ele_fld, diff_coefs)
 !
@@ -179,7 +180,7 @@
      &     nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs,                          &
      &     surf_bcs%Bsf_bcs, surf_bcs%Fsf_bcs,                          &
      &     iphys, SGS_MHD_wk%iphys_ele, SGS_MHD_wk%ele_fld,             &
-     &     SGS_MHD_wk%fem_int, icomp_sgs, ifld_diff, iphys_elediff,     &
+     &     SGS_MHD_wk%fem_int, icomp_sgs, ifld_diff, iphys_elediff_vec, &
      &     sgs_coefs, sgs_coefs_nod, diff_coefs, FEM_filters,           &
      &     SGS_MHD_wk%mk_MHD, s_package%Bmatrix, s_package%Fmatrix,     &
      &     ak_MHD%ak_d_magne, MGCG_WK, SGS_MHD_wk%FEM_SGS_wk,           &
@@ -190,7 +191,7 @@
      &     surf_bcs%Bsf_bcs, surf_bcs%Fsf_bcs,                          &
      &     iphys, SGS_MHD_wk%iphys_ele, SGS_MHD_wk%fem_int,             &
      &     FEM_filters, ifld_diff%base, icomp_diff%base,                &
-     &     iphys_elediff%base, iphys_elediff%filter_fld,                &
+     &     iphys_elediff_vec, iphys_elediff_fil,                        &
      &     SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%mhd_fem_wk,                &
      &     SGS_MHD_wk%rhs_mat, nod_fld, SGS_MHD_wk%ele_fld, diff_coefs)
       end if
@@ -207,7 +208,7 @@
      &       nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs,                        &
      &       iphys, SGS_MHD_wk%iphys_ele, SGS_MHD_wk%ele_fld,           &
      &       SGS_MHD_wk%fem_int, FEM_filters%FEM_elens,                 &
-     &       icomp_sgs, ifld_diff, iphys_elediff,                       &
+     &       icomp_sgs, ifld_diff, iphys_elediff_vec,                   &
      &       sgs_coefs, sgs_coefs_nod, diff_coefs,                      &
      &       FEM_filters%filtering, SGS_MHD_wk%mk_MHD,                  &
      &       s_package%Tmatrix, ak_MHD, MGCG_WK,                        &
@@ -227,7 +228,7 @@
      &       nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs,                        &
      &       iphys, SGS_MHD_wk%iphys_ele, SGS_MHD_wk%ele_fld,           &
      &       SGS_MHD_wk%fem_int, FEM_filters%FEM_elens,                 &
-     &       icomp_sgs, ifld_diff, iphys_elediff,                       &
+     &       icomp_sgs, ifld_diff, iphys_elediff_vec,                   &
      &       sgs_coefs, sgs_coefs_nod, diff_coefs,                      &
      &       FEM_filters%filtering, SGS_MHD_wk%mk_MHD,                  &
      &       s_package%Tmatrix, ak_MHD, MGCG_WK,                        &
@@ -263,7 +264,7 @@
      &       nod_bcs%Cnod_bcs, surf_bcs%Csf_bcs,                        &
      &       iphys, SGS_MHD_wk%iphys_ele, SGS_MHD_wk%ele_fld,           &
      &       SGS_MHD_wk%fem_int, FEM_filters%FEM_elens,                 &
-     &       icomp_sgs, ifld_diff, iphys_elediff,                       &
+     &       icomp_sgs, ifld_diff, iphys_elediff_vec,                   &
      &       sgs_coefs, sgs_coefs_nod, diff_coefs,                      &
      &       FEM_filters%filtering, SGS_MHD_wk%mk_MHD,                  &
      &       s_package%Cmatrix, ak_MHD, MGCG_WK, SGS_MHD_wk%FEM_SGS_wk, &
@@ -279,7 +280,7 @@
      &       nod_bcs%Cnod_bcs, surf_bcs%Csf_bcs,                        &
      &       iphys, SGS_MHD_wk%iphys_ele, SGS_MHD_wk%ele_fld,           &
      &       SGS_MHD_wk%fem_int, FEM_filters%FEM_elens,                 &
-     &       icomp_sgs, ifld_diff, iphys_elediff,                       &
+     &       icomp_sgs, ifld_diff, iphys_elediff_vec,                   &
      &       sgs_coefs, sgs_coefs_nod, diff_coefs,                      &
      &       FEM_filters%filtering, SGS_MHD_wk%mk_MHD,                  &
      &       s_package%Cmatrix, ak_MHD, MGCG_WK, SGS_MHD_wk%FEM_SGS_wk, &
@@ -312,7 +313,7 @@
      &      surf_bcs%Bsf_bcs, surf_bcs%Psf_bcs,                         &
      &      iphys, SGS_MHD_wk%iphys_ele, ak_MHD,                        &
      &      SGS_MHD_wk%fem_int, FEM_filters,                            &
-     &      ifld_sgs, icomp_sgs, ifld_diff, iphys_elediff,              &
+     &      ifld_sgs, icomp_sgs, ifld_diff, iphys_elediff_vec,          &
      &      sgs_coefs_nod, diff_coefs, SGS_MHD_wk%mk_MHD,               &
      &      s_package%Vmatrix, s_package%Pmatrix,                       &
      &      MGCG_WK, SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%mhd_fem_wk,      &
@@ -323,7 +324,7 @@
      &      surf_bcs%Vsf_bcs, surf_bcs%Psf_bcs,                         &
      &      iphys, SGS_MHD_wk%iphys_ele, SGS_MHD_wk%fem_int,            &
      &      FEM_filters, ifld_diff%base, icomp_diff%base,               &
-     &      iphys_elediff%base, iphys_elediff%filter_fld,               &
+     &      iphys_elediff_vec, iphys_elediff_fil,                       &
      &      SGS_MHD_wk%mk_MHD, SGS_MHD_wk%FEM_SGS_wk,                   &
      &      SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat,                  &
      &      nod_fld, SGS_MHD_wk%ele_fld, diff_coefs)
@@ -335,7 +336,7 @@
 !
       subroutine update_fields(time_d, FEM_prm, SGS_par,                &
      &         fem, MHD_mesh, nod_bcs, surf_bcs, iphys,                 &
-     &         ifld_diff, icomp_diff, iphys_elediff,  FEM_filters,      &
+     &         ifld_diff, icomp_diff, iphys_elediff_vec, iphys_elediff_fil, FEM_filters,   &
      &         SGS_MHD_wk, nod_fld, diff_coefs)
 !
       use average_on_elements
@@ -354,7 +355,8 @@
       type(phys_address), intent(in) :: iphys
       type(SGS_terms_address), intent(in) :: ifld_diff
       type(SGS_terms_address), intent(in) :: icomp_diff
-      type(SGS_terms_address), intent(in) :: iphys_elediff
+      type(base_field_address), intent(in) :: iphys_elediff_vec
+      type(base_field_address), intent(in) :: iphys_elediff_fil
       type(filters_on_FEM), intent(in) :: FEM_filters
 !
       type(work_FEM_SGS_MHD), intent(inout) :: SGS_MHD_wk
@@ -369,7 +371,7 @@
      &      surf_bcs%Vsf_bcs, surf_bcs%Psf_bcs,                         &
      &      iphys, SGS_MHD_wk%iphys_ele, SGS_MHD_wk%fem_int,            &
      &      FEM_filters, ifld_diff%base, icomp_diff%base,               &
-     &      iphys_elediff%base, iphys_elediff%filter_fld,               &
+     &      iphys_elediff_vec, iphys_elediff_fil,                       &
      &      SGS_MHD_wk%mk_MHD, SGS_MHD_wk%FEM_SGS_wk,                   &
      &      SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat,                  &
      &      nod_fld, SGS_MHD_wk%ele_fld, diff_coefs)
@@ -404,7 +406,7 @@
      &     nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs, surf_bcs%Fsf_bcs,        &
      &     iphys, SGS_MHD_wk%iphys_ele, SGS_MHD_wk%fem_int,             &
      &     FEM_filters, ifld_diff%base, icomp_diff%base,                &
-     &     iphys_elediff%base, iphys_elediff%filter_fld,                &
+     &     iphys_elediff_vec, iphys_elediff_fil,                        &
      &     SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%mhd_fem_wk,                &
      &     SGS_MHD_wk%rhs_mat, nod_fld, SGS_MHD_wk%ele_fld, diff_coefs)
       else if(iphys%base%i_magne.ne.0) then
@@ -414,7 +416,7 @@
      &     surf_bcs%Bsf_bcs, surf_bcs%Fsf_bcs,                          &
      &     iphys, SGS_MHD_wk%iphys_ele, SGS_MHD_wk%fem_int,             &
      &     FEM_filters, ifld_diff%base, icomp_diff%base,                &
-     &     iphys_elediff%base, iphys_elediff%filter_fld,                &
+     &     iphys_elediff_vec, iphys_elediff_fil,                        &
      &     SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%mhd_fem_wk,                &
      &     SGS_MHD_wk%rhs_mat, nod_fld, SGS_MHD_wk%ele_fld, diff_coefs)
       end if
@@ -427,7 +429,7 @@
       subroutine fields_evo_for_FEM_SPH                                 &
      &       (time_d, FEM_prm, SGS_par, fem, fluid,                     &
      &        MHD_prop, nod_bcs, surf_bcs, iphys, ifld_sgs, icomp_sgs,  &
-     &        ifld_diff, icomp_diff, iphys_elediff, ak_MHD,             &
+     &        ifld_diff, icomp_diff, iphys_elediff_vec, iphys_elediff_fil, ak_MHD,         &
      &        FEM_filters, s_package, MGCG_WK, SGS_MHD_wk,              &
      &        nod_fld, sgs_coefs, sgs_coefs_nod, diff_coefs, fem_sq)
 !
@@ -452,7 +454,8 @@
       type(SGS_terms_address), intent(in) :: icomp_sgs
       type(SGS_terms_address), intent(in) :: ifld_diff
       type(SGS_terms_address), intent(in) :: icomp_diff
-      type(SGS_terms_address), intent(in) :: iphys_elediff
+      type(base_field_address), intent(in) :: iphys_elediff_vec
+      type(base_field_address), intent(in) :: iphys_elediff_fil
       type(coefs_4_MHD_type), intent(in) :: ak_MHD
       type(filters_on_FEM), intent(in) :: FEM_filters
       type(MHD_matrices_pack), intent(in) :: s_package
@@ -484,7 +487,7 @@
      &       nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs,                        &
      &       iphys, SGS_MHD_wk%iphys_ele, SGS_MHD_wk%ele_fld,           &
      &       SGS_MHD_wk%fem_int, FEM_filters%FEM_elens,                 &
-     &       icomp_sgs, ifld_diff, iphys_elediff, sgs_coefs,            &
+     &       icomp_sgs, ifld_diff, iphys_elediff_vec, sgs_coefs,        &
      &       sgs_coefs_nod, diff_coefs, FEM_filters%filtering,          &
      &       SGS_MHD_wk%mk_MHD, s_package%Tmatrix, ak_MHD, MGCG_WK,     &
      &       SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%mhd_fem_wk,              &
@@ -501,7 +504,7 @@
      &       nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs,                        &
      &       iphys, SGS_MHD_wk%iphys_ele, SGS_MHD_wk%ele_fld,           &
      &       SGS_MHD_wk%fem_int, FEM_filters%FEM_elens,                 &
-     &       icomp_sgs, ifld_diff, iphys_elediff,sgs_coefs,             &
+     &       icomp_sgs, ifld_diff, iphys_elediff_vec, sgs_coefs,        &
      &       sgs_coefs_nod, diff_coefs, FEM_filters%filtering,          &
      &       SGS_MHD_wk%mk_MHD, s_package%Tmatrix, ak_MHD, MGCG_WK,     &
      &       SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%mhd_fem_wk,              &
@@ -535,7 +538,7 @@
      &       nod_bcs%Cnod_bcs, surf_bcs%Csf_bcs,                        &
      &       iphys, SGS_MHD_wk%iphys_ele, SGS_MHD_wk%ele_fld,           &
      &       SGS_MHD_wk%fem_int, FEM_filters%FEM_elens,                 &
-     &       icomp_sgs, ifld_diff, iphys_elediff,                       &
+     &       icomp_sgs, ifld_diff, iphys_elediff_vec,                   &
      &       sgs_coefs, sgs_coefs_nod, diff_coefs,                      &
      &       FEM_filters%filtering, SGS_MHD_wk%mk_MHD,                  &
      &       s_package%Cmatrix, ak_MHD, MGCG_WK, SGS_MHD_wk%FEM_SGS_wk, &
@@ -551,7 +554,7 @@
      &       nod_bcs%Cnod_bcs, surf_bcs%Csf_bcs,                        &
      &       iphys, SGS_MHD_wk%iphys_ele, SGS_MHD_wk%ele_fld,           &
      &       SGS_MHD_wk%fem_int, FEM_filters%FEM_elens,                 &
-     &       icomp_sgs, ifld_diff, iphys_elediff,                       &
+     &       icomp_sgs, ifld_diff, iphys_elediff_vec,                   &
      &       sgs_coefs, sgs_coefs_nod, diff_coefs,                      &
      &       FEM_filters%filtering, SGS_MHD_wk%mk_MHD,                  &
      &       s_package%Cmatrix, ak_MHD, MGCG_WK, SGS_MHD_wk%FEM_SGS_wk, &
@@ -582,7 +585,8 @@
      &      MHD_prop%fl_prop, MHD_prop%cd_prop, nod_bcs%Vnod_bcs,       &
      &      surf_bcs%Vsf_bcs, surf_bcs%Bsf_bcs, surf_bcs%Psf_bcs,       &
      &      iphys, SGS_MHD_wk%iphys_ele, ak_MHD, SGS_MHD_wk%fem_int,    &
-     &      FEM_filters, ifld_sgs, icomp_sgs, ifld_diff, iphys_elediff, &
+     &      FEM_filters, ifld_sgs, icomp_sgs,                           &
+     &      ifld_diff, iphys_elediff_vec,                               &
      &      sgs_coefs_nod, diff_coefs, SGS_MHD_wk%mk_MHD,               &
      &      s_package%Vmatrix, s_package%Pmatrix, MGCG_WK,              &
      &      SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%mhd_fem_wk,               &
@@ -593,7 +597,7 @@
      &      surf_bcs%Vsf_bcs, surf_bcs%Psf_bcs,                         &
      &      iphys, SGS_MHD_wk%iphys_ele, SGS_MHD_wk%fem_int,            &
      &      FEM_filters, ifld_diff%base, icomp_diff%base,               &
-     &      iphys_elediff%base, iphys_elediff%filter_fld,               &
+     &      iphys_elediff_vec, iphys_elediff_fil,                       &
      &      SGS_MHD_wk%mk_MHD, SGS_MHD_wk%FEM_SGS_wk,                   &
      &      SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat,                  &
      &      nod_fld, SGS_MHD_wk%ele_fld, diff_coefs)

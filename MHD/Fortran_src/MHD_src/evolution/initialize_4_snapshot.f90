@@ -165,7 +165,7 @@
       if (iflag_debug.eq.1) write(*,*)' allocate_array'
       call allocate_array(SGS_par, mesh, MHD_prop,                      &
      &    iphys, nod_fld, SGS_MHD_wk%iphys_ele, SGS_MHD_wk%ele_fld,     &
-     &    Csims_FEM_MHD%iphys_elediff, SGS_MHD_wk%mk_MHD,               &
+     &    Csims_FEM_MHD%iphys_elediff_vec, Csims_FEM_MHD%iphys_elediff_fil, SGS_MHD_wk%mk_MHD,               &
      &    SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat,                    &
      &    SGS_MHD_wk%fem_int, fem_sq, label_sim)
 !

@@ -48,7 +48,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine allocate_array(SGS_par, mesh, MHD_prop,                &
-     &          iphys, nod_fld, iphys_ele, ele_fld, iphys_elediff,      &
+     &          iphys, nod_fld, iphys_ele, ele_fld, iphys_elediff_vec, iphys_elediff_fil,      &
      &          mk_MHD, mhd_fem_wk, rhs_mat, fem_int, fem_sq,           &
      &          label_sim)
 !
@@ -72,7 +72,8 @@
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(phys_address), intent(inout) :: iphys, iphys_ele
       type(phys_data), intent(inout) :: nod_fld, ele_fld
-      type(SGS_terms_address), intent(inout) :: iphys_elediff
+      type(base_field_address), intent(inout) :: iphys_elediff_vec
+      type(base_field_address), intent(inout) :: iphys_elediff_fil
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(finite_element_integration), intent(inout) :: fem_int
       type(lumped_mass_mat_layerd), intent(inout) :: mk_MHD
@@ -97,7 +98,7 @@
          (SGS_par%model_p, MHD_prop%cd_prop, mhd_fem_wk)
       call alloc_int_vol_dvx(mesh%ele%numele, mhd_fem_wk)
       call set_SGS_ele_fld_addresses(MHD_prop%cd_prop, SGS_par%model_p, &
-     &    iphys_elediff%base, iphys_elediff%filter_fld)
+     &    iphys_elediff_vec, iphys_elediff_fil)
 !
 !  allocation for field values
       if (iflag_debug.ge.1)  write(*,*) 'set_FEM_SGS_MHD_field_data'

@@ -15,6 +15,7 @@
 !
       use m_precision
       use t_SGS_model_coefs
+      use t_base_field_labels
 !
       implicit  none
 !
@@ -42,8 +43,10 @@
 !>        component list of differencials
         type(SGS_terms_address) :: icomp_diff
 !
-!>        field list of element differencials
-        type(SGS_terms_address) :: iphys_elediff
+!>        Address of differenciation of elemental field
+        type(base_field_address) :: iphys_elediff_vec
+!>        Address of differenciation of filtered elemental field
+        type(base_field_address) :: iphys_elediff_fil
       end type SGS_coefficients_data
 !
       end module t_FEM_SGS_model_coefs

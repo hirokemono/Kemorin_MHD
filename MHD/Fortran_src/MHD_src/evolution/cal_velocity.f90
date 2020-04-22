@@ -9,7 +9,7 @@
 !!     &          mesh, group, fluid, fl_prop, cd_prop,                 &
 !!     &          Vnod_bcs, Vsf_bcs, Bsf_bcs, Psf_bcs, iphys,           &
 !!     &          iphys_ele, ak_MHD, fem_int, FEM_filters,              &
-!!     &          ifld_sgs, icomp_sgs, ifld_diff, iphys_elediff,        &
+!!     &          ifld_sgs, icomp_sgs, ifld_diff, iphys_elediff_vec,    &
 !!     &          sgs_coefs_nod, diff_coefs, mk_MHD,                    &
 !!     &          Vmatrix, Pmatrix, MGCG_WK, FEM_SGS_wk, mhd_fem_wk,    &
 !!     &          rhs_mat, nod_fld, ele_fld, sgs_coefs, fem_sq)
@@ -31,7 +31,7 @@
 !!        type(SGS_terms_address), intent(in) :: ifld_sgs
 !!        type(SGS_terms_address), intent(in) :: icomp_sgs
 !!        type(SGS_terms_address), intent(in) :: ifld_diff
-!!        type(SGS_terms_address), intent(in) :: iphys_elediff
+!!        type(base_field_address), intent(in) :: iphys_elediff_vec
 !!        type(SGS_coefficients_type), intent(in) :: sgs_coefs_nod
 !!        type(SGS_coefficients_type), intent(in) :: diff_coefs
 !!        type(lumped_mass_mat_layerd), intent(in) :: mk_MHD
@@ -97,7 +97,7 @@
      &          mesh, group, fluid, fl_prop, cd_prop,                   &
      &          Vnod_bcs, Vsf_bcs, Bsf_bcs, Psf_bcs, iphys,             &
      &          iphys_ele, ak_MHD, fem_int, FEM_filters,                &
-     &          ifld_sgs, icomp_sgs, ifld_diff, iphys_elediff,          &
+     &          ifld_sgs, icomp_sgs, ifld_diff, iphys_elediff_vec,      &
      &          sgs_coefs_nod, diff_coefs, mk_MHD,                      &
      &          Vmatrix, Pmatrix, MGCG_WK, FEM_SGS_wk, mhd_fem_wk,      &
      &          rhs_mat, nod_fld, ele_fld, sgs_coefs, fem_sq)
@@ -130,7 +130,7 @@
       type(SGS_terms_address), intent(in) :: ifld_sgs
       type(SGS_terms_address), intent(in) :: icomp_sgs
       type(SGS_terms_address), intent(in) :: ifld_diff
-      type(SGS_terms_address), intent(in) :: iphys_elediff
+      type(base_field_address), intent(in) :: iphys_elediff_vec
       type(SGS_coefficients_type), intent(in) :: sgs_coefs_nod
       type(SGS_coefficients_type), intent(in) :: diff_coefs
       type(lumped_mass_mat_layerd), intent(in) :: mk_MHD
@@ -162,7 +162,7 @@
      &    fl_prop, cd_prop, Vnod_bcs, Vsf_bcs, Bsf_bcs, iphys,          &
      &    iphys_ele, ak_MHD, fem_int, FEM_filters%FEM_elens,            &
      &    ifld_sgs%SGS_term, icomp_sgs%SGS_term,                        &
-     &    ifld_diff%base, ifld_diff%SGS_term, iphys_elediff%base,       &
+     &    ifld_diff%base, ifld_diff%SGS_term, iphys_elediff_vec,        &
      &    sgs_coefs_nod, diff_coefs, FEM_filters%filtering,             &
      &    FEM_filters%layer_tbl, mk_MHD%mlump_fl,                       &
      &    Vmatrix, MGCG_WK%MG_vector, FEM_SGS_wk%wk_lsq,                &

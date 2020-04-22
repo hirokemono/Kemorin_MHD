@@ -5,17 +5,17 @@
 !                                    on July 2000 (ver 1.1)
 !        modified by H.Matsui on July, 2006
 !
-!!      subroutine cal_vector_potential                                 &
-!!     &         (dt, FEM_prm, SGS_par, mesh, group, conduct,           &
-!!     &          cd_prop, Bnod_bcs, Asf_bcs, Fsf_bcs, iphys, iphys_ele,&
-!!     &          ele_fld, fem_int, icomp_sgs, ifld_diff, iphys_elediff,&
-!!     &          sgs_coefs, diff_coefs, FEM_filters, mk_MHD,           &
-!!     &          Bmatrix, Fmatrix, ak_d_magne, MGCG_WK, FEM_SGS_wk,    &
-!!     &          mhd_fem_wk, rhs_mat, fem_sq, nod_fld)
+!!      subroutine cal_vector_potential(dt, FEM_prm, SGS_par,           &
+!!     &           mesh, group, conduct, cd_prop, Bnod_bcs,             &
+!!     &           Asf_bcs, Fsf_bcs, iphys, iphys_ele, ele_fld,         &
+!!     &           fem_int, icomp_sgs, ifld_diff, iphys_elediff_vec,    &
+!!     &           sgs_coefs, diff_coefs, FEM_filters, mk_MHD,          &
+!!     &           Bmatrix, Fmatrix, ak_d_magne, MGCG_WK, FEM_SGS_wk,   &
+!!     &           mhd_fem_wk, rhs_mat, fem_sq, nod_fld)
 !!      subroutine s_cal_magnetic_field(dt, FEM_prm, SGS_par,           &
 !!     &          mesh, group, conduct, cd_prop, Bnod_bcs,              &
 !!     &          Asf_bcs, Bsf_bcs, Fsf_bcs, iphys, iphys_ele, ele_fld, &
-!!     &          fem_int, icomp_sgs, ifld_diff, iphys_elediff,         &
+!!     &          fem_int, icomp_sgs, ifld_diff, iphys_elediff_vec,     &
 !!     &          sgs_coefs, sgs_coefs_nod, diff_coefs, FEM_filters,    &
 !!     &          mk_MHD, Bmatrix, Fmatrix, ak_d_magne, MGCG_WK,        &
 !!     &          FEM_SGS_wk, mhd_fem_wk, rhs_mat, fem_sq, nod_fld)
@@ -35,7 +35,7 @@
 !!        type(finite_element_integration), intent(in) :: fem_int
 !!        type(SGS_terms_address), intent(in) :: icomp_sgs
 !!        type(SGS_terms_address), intent(in) :: ifld_diff
-!!        type(SGS_terms_address), intent(in) :: iphys_elediff
+!!        type(base_field_address), intent(in) :: iphys_elediff_vec
 !!        type(SGS_coefficients_type), intent(in) :: sgs_coefs
 !!        type(SGS_coefficients_type), intent(in) :: sgs_coefs_nod
 !!        type(SGS_coefficients_type), intent(in) :: diff_coefs
@@ -91,13 +91,13 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_vector_potential                                   &
-     &         (dt, FEM_prm, SGS_par, mesh, group, conduct,             &
-     &          cd_prop, Bnod_bcs, Asf_bcs, Fsf_bcs, iphys, iphys_ele,  &
-     &          ele_fld, fem_int, icomp_sgs, ifld_diff, iphys_elediff,  &
-     &          sgs_coefs, diff_coefs, FEM_filters, mk_MHD,             &
-     &          Bmatrix, Fmatrix, ak_d_magne, MGCG_WK, FEM_SGS_wk,      &
-     &          mhd_fem_wk, rhs_mat, fem_sq, nod_fld)
+      subroutine cal_vector_potential(dt, FEM_prm, SGS_par,             &
+     &           mesh, group, conduct, cd_prop, Bnod_bcs,               &
+     &           Asf_bcs, Fsf_bcs, iphys, iphys_ele, ele_fld,           &
+     &           fem_int, icomp_sgs, ifld_diff, iphys_elediff_vec,      &
+     &           sgs_coefs, diff_coefs, FEM_filters, mk_MHD,            &
+     &           Bmatrix, Fmatrix, ak_d_magne, MGCG_WK, FEM_SGS_wk,     &
+     &           mhd_fem_wk, rhs_mat, fem_sq, nod_fld)
 !
       use cal_vector_potential_pre
       use cal_mod_vel_potential
@@ -122,7 +122,7 @@
       type(finite_element_integration), intent(in) :: fem_int
       type(SGS_terms_address), intent(in) :: icomp_sgs
       type(SGS_terms_address), intent(in) :: ifld_diff
-      type(SGS_terms_address), intent(in) :: iphys_elediff
+      type(base_field_address), intent(in) :: iphys_elediff_vec
       type(SGS_coefficients_type), intent(in) :: sgs_coefs
       type(SGS_coefficients_type), intent(in) :: diff_coefs
       type(filters_on_FEM), intent(in) :: FEM_filters
@@ -157,7 +157,7 @@
      &    mesh%nod_comm, mesh%node, mesh%ele, mesh%surf, conduct,       &
      &    group%surf_grp, cd_prop, Bnod_bcs, Asf_bcs, iphys, iphys_ele, &
      &    ele_fld, fem_int%jcs, fem_int%rhs_tbl, FEM_filters%FEM_elens, &
-     &    ifld_diff%base, icomp_sgs%SGS_term, iphys_elediff%base,       &
+     &    ifld_diff%base, icomp_sgs%SGS_term, iphys_elediff_vec,        &
      &    sgs_coefs, diff_coefs, FEM_filters%filtering,                 &
      &    mk_MHD%mlump_cd, Bmatrix, MGCG_WK%MG_vector,                  &
      &    FEM_SGS_wk%wk_filter, mhd_fem_wk, rhs_mat%fem_wk,             &
@@ -236,7 +236,7 @@
       subroutine s_cal_magnetic_field(dt, FEM_prm, SGS_par,             &
      &          mesh, group, conduct, cd_prop, Bnod_bcs,                &
      &          Asf_bcs, Bsf_bcs, Fsf_bcs, iphys, iphys_ele, ele_fld,   &
-     &          fem_int, icomp_sgs, ifld_diff, iphys_elediff,           &
+     &          fem_int, icomp_sgs, ifld_diff, iphys_elediff_vec,       &
      &          sgs_coefs, sgs_coefs_nod, diff_coefs, FEM_filters,      &
      &          mk_MHD, Bmatrix, Fmatrix, ak_d_magne, MGCG_WK,          &
      &          FEM_SGS_wk, mhd_fem_wk, rhs_mat, fem_sq, nod_fld)
@@ -266,7 +266,7 @@
       type(finite_element_integration), intent(in) :: fem_int
       type(SGS_terms_address), intent(in) :: icomp_sgs
       type(SGS_terms_address), intent(in) :: ifld_diff
-      type(SGS_terms_address), intent(in) :: iphys_elediff
+      type(base_field_address), intent(in) :: iphys_elediff_vec
       type(SGS_coefficients_type), intent(in) :: sgs_coefs
       type(SGS_coefficients_type), intent(in) :: sgs_coefs_nod
       type(SGS_coefficients_type), intent(in) :: diff_coefs
@@ -309,7 +309,7 @@
      &    iphys, iphys_ele, ele_fld, fem_int%jcs, fem_int%rhs_tbl,      &
      &    FEM_filters%FEM_elens, sgs_coefs, sgs_coefs_nod,              &
      &    icomp_sgs%SGS_term, ifld_diff%base, ifld_diff%SGS_term,       &
-     &    iphys_elediff%base,  diff_coefs, FEM_filters%filtering,       &
+     &    iphys_elediff_vec, diff_coefs, FEM_filters%filtering,         &
      &    mk_MHD%mlump_cd, Bmatrix, MGCG_WK%MG_vector,                  &
      &    FEM_SGS_wk%wk_filter, mhd_fem_wk,                             &
      &    rhs_mat%fem_wk, rhs_mat%surf_wk, rhs_mat%f_l, rhs_mat%f_nl,   &
