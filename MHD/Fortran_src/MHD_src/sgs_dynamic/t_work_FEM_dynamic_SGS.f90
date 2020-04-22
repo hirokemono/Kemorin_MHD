@@ -79,7 +79,8 @@
      &    Csims_FEM_MHD%sgs_coefs, Csims_FEM_MHD%sgs_coefs_nod)
       call define_sgs_diff_coefs(mesh%ele%numele,                       &
      &    SGS_par%model_p, SGS_par%commute_p, layer_tbl, MHD_prop,      &
-     &    Csims_FEM_MHD%iak_diff_base, Csims_FEM_MHD%iak_diff_sgs, Csims_FEM_MHD%icomp_diff,            &
+     &    Csims_FEM_MHD%iak_diff_base, Csims_FEM_MHD%iak_diff_sgs,      &
+     &    Csims_FEM_MHD%icomp_diff_base, Csims_FEM_MHD%icomp_diff_sgs,  &
      &    FEM_SGS_wk%wk_diff, Csims_FEM_MHD%diff_coefs)
 !
       end subroutine def_sgs_commute_component

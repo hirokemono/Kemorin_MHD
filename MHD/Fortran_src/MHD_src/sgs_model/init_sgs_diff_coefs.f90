@@ -6,13 +6,14 @@
 !
 !!      subroutine define_sgs_diff_coefs                                &
 !!     &         (numele, SGS_param, cmt_param, layer_tbl, MHD_prop,    &
-!!     &          iak_diff_base, iak_diff_sgs, icomp_diff,              &
+!!     &          iak_diff_base, iak_diff_sgs, icomp_diff_base, icomp_diff_sgs, &
 !!     &          wk_diff, diff_coefs)
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(commutation_control_params), intent(in) :: cmt_param
 !!        type(base_field_address), intent(in) :: iak_diff_base
 !!        type(SGS_term_address), intent(in) :: iak_diff_sgs
-!!        type(SGS_terms_address), intent(inout) :: icomp_diff
+!!        type(base_field_address), intent(in) :: icomp_diff_base
+!!        type(SGS_term_address), intent(in) :: icomp_diff_sgs
 !!        type(dynamic_model_data), intent(inout) :: wk_sgs
 !!        type(dynamic_model_data), intent(inout) :: wk_diff
 !!        type(SGS_coefficients_type), intent(inout) :: sgs_coefs
@@ -26,6 +27,8 @@
       use t_SGS_control_parameter
       use t_control_parameter
       use t_physical_property
+      use t_base_field_labels
+      use t_SGS_term_labels
 !
       implicit none
 !
@@ -40,7 +43,7 @@
 !
       subroutine define_sgs_diff_coefs                                  &
      &         (numele, SGS_param, cmt_param, layer_tbl, MHD_prop,      &
-     &          iak_diff_base, iak_diff_sgs, icomp_diff,                &
+     &          iak_diff_base, iak_diff_sgs, icomp_diff_base, icomp_diff_sgs, &
      &          wk_diff, diff_coefs)
 !
       use calypso_mpi
@@ -59,7 +62,8 @@
 !
       type(base_field_address), intent(inout) :: iak_diff_base
       type(SGS_term_address), intent(inout) :: iak_diff_sgs
-      type(SGS_terms_address), intent(inout) :: icomp_diff
+      type(base_field_address), intent(inout) :: icomp_diff_base
+      type(SGS_term_address), intent(inout) :: icomp_diff_sgs
 !
       type(dynamic_model_data), intent(inout) :: wk_diff
       type(SGS_coefficients_type), intent(inout) :: diff_coefs
@@ -81,13 +85,13 @@
      &    MHD_prop%fl_prop, MHD_prop%cd_prop,                           &
      &    MHD_prop%ht_prop, MHD_prop%cp_prop,                           &
      &    iak_diff_base, iak_diff_sgs,                                  &
-     &    icomp_diff%base, icomp_diff%SGS_term, wk_diff, diff_coefs)
+     &    icomp_diff_base, icomp_diff_sgs, wk_diff, diff_coefs)
       diff_coefs%ntot_comp = diff_coefs%num_field
 !
       if(iflag_debug .gt. 0) then
         call check_sgs_diff_addresses                                   &
      &     (iak_diff_base, iak_diff_sgs,                                &
-     &      icomp_diff%base, icomp_diff%SGS_term, wk_diff, diff_coefs)
+     &      icomp_diff_base, icomp_diff_sgs, wk_diff, diff_coefs)
       end if
 !
 !

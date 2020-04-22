@@ -53,6 +53,7 @@
       use t_ele_info_4_dynamic
       use t_physical_property
       use t_SGS_model_coefs
+      use t_SGS_term_labels
 !
       integer(kind = kint), intent(in) :: numnod, numele
       type(layering_tbl), intent(in) :: layer_tbl

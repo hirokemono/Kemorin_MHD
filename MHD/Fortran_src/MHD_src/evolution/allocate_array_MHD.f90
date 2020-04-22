@@ -15,7 +15,6 @@
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
 !!        type(phys_address), intent(inout) :: iphys, iphys_ele
 !!        type(phys_data), intent(inout) :: nod_fld, ele_fld
-!!        type(SGS_terms_address), intent(inout) :: iphys_elediff
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !!        type(finite_element_integration), intent(inout) :: fem_int
 !!        type(lumped_mass_mat_layerd), intent(inout) :: mk_MHD

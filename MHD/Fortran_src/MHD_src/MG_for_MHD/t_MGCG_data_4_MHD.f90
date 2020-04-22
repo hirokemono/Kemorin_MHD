@@ -25,6 +25,7 @@
       use t_bc_data_MHD
       use t_boundary_field_IO
       use t_SGS_model_coefs
+      use t_base_field_labels
 !
       implicit  none
 !
@@ -59,7 +60,7 @@
 !>        filter moments data (need read routines!!)
         type(gradient_model_data_type), allocatable :: MG_filter_MHD(:)
 !
-        type(SGS_terms_address), allocatable :: MG_ifld_diff(:)
+        type(base_field_address), allocatable :: MG_iak_diff_base(:)
         type(SGS_coefficients_type), allocatable :: MG_diff_coefs(:)
 !
         type(IO_boundary), allocatable :: IO_MG_bc(:)
@@ -85,7 +86,7 @@
       allocate(MGCG_MHD_FEM%MG_filter_MHD(MGCG_WK%num_MG_level))
 !
       allocate(MGCG_MHD_FEM%MG_filter_MHD(MGCG_WK%num_MG_level))
-      allocate(MGCG_MHD_FEM%MG_ifld_diff(MGCG_WK%num_MG_level))
+      allocate(MGCG_MHD_FEM%MG_iak_diff_base(MGCG_WK%num_MG_level))
       allocate(MGCG_MHD_FEM%MG_diff_coefs(MGCG_WK%num_MG_level))
       allocate(MGCG_MHD_FEM%MG_diff_coefs(MGCG_WK%num_MG_level))
 !
@@ -107,7 +108,8 @@
       deallocate(MGCG_MHD_FEM%IO_MG_bc)
       deallocate(MGCG_MHD_FEM%MG_filter_MHD)
 !
-      deallocate(MGCG_MHD_FEM%MG_filter_MHD, MGCG_MHD_FEM%MG_ifld_diff)
+      deallocate(MGCG_MHD_FEM%MG_filter_MHD)
+      deallocate(MGCG_MHD_FEM%MG_iak_diff_base)
       deallocate(MGCG_MHD_FEM%MG_diff_coefs)
       deallocate(MGCG_MHD_FEM%MG_diff_coefs)
       deallocate(MGCG_MHD_FEM%MG_mk_MHD, MGCG_MHD_FEM%MG_MHD_CRS_table)

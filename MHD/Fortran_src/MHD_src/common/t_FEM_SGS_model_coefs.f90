@@ -16,6 +16,7 @@
       use m_precision
       use t_SGS_model_coefs
       use t_base_field_labels
+      use t_SGS_term_labels
 !
       implicit  none
 !
@@ -41,8 +42,10 @@
 !>        field list of commutaion error correction for SGS terms
         type(SGS_term_address) :: iak_diff_sgs
 !
-!>        component list of differencials
-        type(SGS_terms_address) :: icomp_diff
+!>        component list of commutaion error correction for base fields
+        type(base_field_address) :: icomp_diff_base
+!>        component list of commutaion error correction for SGS terms
+        type(SGS_term_address) :: icomp_diff_sgs
 !
 !>        Address of differenciation of elemental field
         type(base_field_address) :: iphys_elediff_vec

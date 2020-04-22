@@ -18,9 +18,6 @@
       use m_constants
       use m_machine_parameter
 !
-      use t_base_field_labels
-      use t_SGS_term_labels
-!
       implicit  none
 !
 !
@@ -32,15 +29,6 @@
         integer(kind = kint), allocatable  :: istack_comps(:)
         real(kind = kreal), allocatable :: ak(:,:)
       end type SGS_coefficients_type
-!
-      type SGS_terms_address
-!>        Structure of base fields
-        type(base_field_address) :: base
-!>        Structure of filtered fields
-        type(base_field_address) :: filter_fld
-!>        Structure of SGS terms
-        type(SGS_term_address) :: SGS_term
-      end type SGS_terms_address
 !
 ! -------------------------------------------------------------------
 !
