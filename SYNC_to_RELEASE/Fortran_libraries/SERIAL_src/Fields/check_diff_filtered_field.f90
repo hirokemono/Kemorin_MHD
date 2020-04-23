@@ -1,1 +1,0 @@
-../../../../MHD/Fortran_src/CORE_src/Fields/check_diff_filtered_field.f90
