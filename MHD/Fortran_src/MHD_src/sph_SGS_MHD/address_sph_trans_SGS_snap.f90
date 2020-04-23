@@ -8,6 +8,12 @@
 !!       in MHD dynamo simulation
 !!
 !!@verbatim
+!!      subroutine set_addresses_SGS_snap_trans                         &
+!!     &         (SPH_MHD, iphys, trns_snap,                            &
+!!     &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
+!!        type(phys_address), intent(in) :: ipol, iphys
+!!        type(address_4_sph_trans), intent(inout) :: trns_snap
+!!
 !!      subroutine bwd_trans_address_SGS_snap                           &
 !!     &         (ipol, iphys, b_trns, trns_back)
 !!        type(phys_address), intent(in) :: ipol, iphys
@@ -26,10 +32,15 @@
       use m_machine_parameter
 !
       use t_phys_address
+      use t_SPH_mesh_field_data
       use t_addresses_sph_transform
+      use t_mesh_data
+      use t_spheric_parameter
+!
 !
       implicit none
 !
+      private :: bwd_trans_address_SGS_snap, fwd_trans_address_SGS_snap
       private :: add_SGS_vector_bwd_trns_snap
       private :: add_SGS_scalar_bwd_trns_snap
       private :: add_SGS_scalar_fwd_trns_snap
@@ -38,6 +49,49 @@
 !
       contains
 !
+!-----------------------------------------------------------------------
+!
+      subroutine set_addresses_SGS_snap_trans                           &
+     &         (SPH_MHD, iphys, trns_snap,                              &
+     &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
+!
+      type(SPH_mesh_field_data), intent(in) :: SPH_MHD
+      type(phys_address), intent(in) :: iphys
+      type(address_4_sph_trans), intent(inout) :: trns_snap
+      integer(kind = kint), intent(inout) :: ncomp_sph_trans
+      integer(kind = kint), intent(inout) :: nvector_sph_trans
+      integer(kind = kint), intent(inout) :: nscalar_sph_trans
+!
+!
+      if(iflag_debug .gt. 0) then
+        write(*,*)                                                      &
+     &       'Spherical transform field table for snapshot (trns_snap)'
+      end if
+!
+      call bwd_trans_address_SGS_snap                                   &
+     &   (SPH_MHD%ipol, iphys, trns_snap%b_trns, trns_snap%backward)
+!
+      call fwd_trans_address_SGS_snap                                  &
+     &   (SPH_MHD%ipol, iphys, trns_snap%f_trns, trns_snap%forward)
+!
+      call count_num_fields_each_trans(trns_snap%backward,              &
+     &   ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
+      call count_num_fields_each_trans(trns_snap%forward,               &
+     &   ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
+!
+!
+      if(iflag_debug .gt. 0) then
+        write(*,*) 'ncomp_sph_trans ', ncomp_sph_trans
+        write(*,*) 'nvector_rj_2_rtp ', trns_snap%backward%num_vector
+        write(*,*) 'nscalar_rj_2_rtp ', trns_snap%backward%num_scalar
+!
+        write(*,*) 'nvector_rtp_2_rj ', trns_snap%forward%num_vector
+        write(*,*) 'nscalar_rtp_2_rj ', trns_snap%forward%num_scalar
+      end if
+!
+      end subroutine set_addresses_SGS_snap_trans
+!
+!-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
       subroutine bwd_trans_address_SGS_snap                             &

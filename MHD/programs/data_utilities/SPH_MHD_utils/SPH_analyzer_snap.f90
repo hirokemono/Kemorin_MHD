@@ -140,6 +140,7 @@
       use input_control_sph_MHD
       use output_viz_file_control
       use sph_SGS_mhd_monitor_data_IO
+      use self_buoyancy_w_filter_sph
 !
       integer(kind = kint), intent(in) :: i_step
       type(MHD_file_IO_params), intent(in) :: MHD_files
@@ -174,6 +175,10 @@
       call set_sph_field_to_start(SPH_MHD%sph%sph_rj, SPH_WK%r_2nd,     &
      &    SPH_model%MHD_prop, SPH_model%sph_MHD_bc, SPH_WK%trans_p%leg, &
      &    SPH_MHD%ipol, SPH_MHD%fld)
+      if(iflag_debug .gt. 0) write(*,*) 'rot_self_filter_buoyancy_sph'
+      call rot_self_filter_buoyancy_sph                                 &
+     &   (SPH_MHD%sph%sph_rj, SPH_MHD%ipol, SPH_model%MHD_prop,         &
+     &    SPH_model%sph_MHD_bc%sph_bc_U, SPH_MHD%fld)
 !
 !*  ----------------lead nonlinear term ... ----------
 !*

@@ -177,7 +177,6 @@
       use cal_sph_field_by_rotation
       use const_radial_forces_on_bc
       use cal_div_of_forces
-      use cal_div_of_SGS_forces
       use const_sph_radial_grad
 !
       type(MHD_evolution_param), intent(in) :: MHD_prop
@@ -201,8 +200,6 @@
 !
       call sum_div_of_forces                                            &
      &    (MHD_prop%fl_prop, ipol%base, ipol%div_forces, rj_fld)
-      call add_div_of_filtered_buoyancies                               &
-     &   (MHD_prop%fl_prop, ipol%base, ipol%div_frc_by_filter, rj_fld)
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_sol_pressure_by_div_v'
       call cal_sol_pressure_by_div_v                                    &
@@ -263,8 +260,7 @@
 !
       use sph_transforms_snapshot
       use cal_energy_flux_rj
-      use cal_force_with_SGS_rj
-      use cal_energy_flux_w_SGS_rtp
+      use cal_energy_flux_rtp
 !
       integer(kind = kint), intent(in) :: ltr_crust
       type(sph_grids), intent(in) :: sph
@@ -285,16 +281,13 @@
       call s_cal_energy_flux_rj                                         &
      &   (ltr_crust, sph%sph_rj, r_2nd, sph_MHD_bc, ipol, rj_fld)
 !
-      call s_cal_force_with_SGS_rj                                      &
-     &   (ipol%forces, ipol%SGS_term, ipol%frc_w_SGS, rj_fld)
-!
       if (iflag_debug.eq.1) write(*,*) 'sph_back_trans_snapshot_MHD'
       call sph_back_trans_snapshot_MHD(sph, comms_sph, trans_p,         &
      &    rj_fld, trns_snap%backward, WK_sph)
 !
-!      Evaluate fields for output in grid space
-      if (iflag_debug.eq.1) write(*,*) 's_cal_energy_flux_w_SGS_rtp'
-      call s_cal_energy_flux_w_SGS_rtp                                  &
+!       Evaluate energy fluxes
+      if (iflag_debug.eq.1) write(*,*) 's_cal_energy_flux_rtp'
+      call s_cal_energy_flux_rtp                                        &
      &   (sph%sph_rtp, MHD_prop%fl_prop, MHD_prop%cd_prop,              &
      &    MHD_prop%ref_param_T, MHD_prop%ref_param_C, trans_p%leg,      &
      &    trns_MHD%f_trns, trns_snap%b_trns, trns_snap%f_trns,          &

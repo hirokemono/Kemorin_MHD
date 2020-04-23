@@ -120,6 +120,7 @@
       use const_sph_radial_grad
       use cal_sph_rotation_of_SGS
       use self_buoyancy_w_filter_sph
+      use self_buoyancy_w_fil_on_sph
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(MHD_evolution_param), intent(in) :: MHD_prop
@@ -140,6 +141,16 @@
       call cal_div_buoyancy_w_fil_sph_2                                 &
      &   (sph%sph_rj, r_2nd, MHD_prop, sph_MHD_bc%sph_bc_U,             &
      &   leg%g_sph_rj, ipol, rj_fld)
+!
+!
+      call r_buoyancy_on_sphere_w_filter                                &
+     &   (sph_MHD_bc%sph_bc_U%kr_in,  sph%sph_rj, ipol,                 &
+     &    MHD_prop%fl_prop, MHD_prop%ref_param_T, MHD_prop%ref_param_C, &
+     &    rj_fld)
+      call r_buoyancy_on_sphere_w_filter                                &
+     &   (sph_MHD_bc%sph_bc_U%kr_out, sph%sph_rj, ipol,                 &
+     &    MHD_prop%fl_prop, MHD_prop%ref_param_T, MHD_prop%ref_param_C, &
+     &    rj_fld)
 !
       call s_const_radial_forces_on_bc(sph%sph_rj, leg%g_sph_rj,        &
      &    MHD_prop%fl_prop, sph_MHD_bc%sph_bc_U, MHD_prop%ref_param_T,  &
@@ -183,6 +194,8 @@
       use lead_fields_4_sph_mhd
       use cal_SGS_terms_sph_MHD
       use cal_SGS_buo_flux_sph_MHD
+      use cal_energy_flux_w_SGS_rtp
+      use cal_force_with_SGS_rj
 !
       integer(kind = kint), intent(in) :: ltr_crust
       type(SGS_model_control_params), intent(in) :: SGS_param
@@ -203,7 +216,17 @@
 !
       call cal_sph_enegy_fluxes                                         &
      &   (ltr_crust, sph, comms_sph, r_2nd, MHD_prop, sph_MHD_bc,       &
-     &    trans_p, ipol, trns_MHD, trns_snap,  WK_sph, rj_fld)
+     &    trans_p, ipol, trns_MHD, trns_snap, WK_sph, rj_fld)
+!
+      if (iflag_debug.eq.1) write(*,*) 's_cal_force_with_SGS_rj'
+      call s_cal_force_with_SGS_rj                                      &
+     &   (ipol%forces, ipol%SGS_term, ipol%frc_w_SGS, rj_fld)
+!
+      if (iflag_debug.eq.1) write(*,*) 'cal_filterd_buo_flux_rtp'
+      call cal_filterd_buo_flux_rtp(sph%sph_rtp, MHD_prop%fl_prop,      &
+     &    trns_snap%b_trns%base, trns_snap%b_trns%filter_fld,           &
+     &    trns_snap%f_trns%eflux_by_filter,                             &
+     &    trns_snap%backward, trns_snap%forward)
 !
 !      Work of SGS terms
       if(SGS_param%iflag_SGS .gt. id_SGS_none) then

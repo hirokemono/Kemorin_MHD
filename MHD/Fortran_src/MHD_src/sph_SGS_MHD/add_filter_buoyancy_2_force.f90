@@ -46,7 +46,6 @@
       type(fluid_property), intent(in) :: fl_prop
       type(explicit_term_address), intent(in) :: ipol_exp
       type(base_force_address), intent(in)  :: ipol_rot_frc_by_filter
-      type(phys_address), intent(in) :: ipol
       type(phys_data), intent(inout) :: rj_fld
 !
 !

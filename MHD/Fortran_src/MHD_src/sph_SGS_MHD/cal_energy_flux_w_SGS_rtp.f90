@@ -8,31 +8,24 @@
 !> @brief Evaluate energy fluxes for MHD dynamo in physical space
 !!
 !!@verbatim
-!!      subroutine s_cal_energy_flux_w_SGS_rtp(sph_rtp,                 &
-!!     &          fl_prop, cd_prop, ref_param_T, ref_param_C, leg,      &
-!!     &          f_trns, bs_trns, fs_trns, trns_f_MHD, trns_b_snap,    &
-!!     &          trns_f_snap)
+!!      subroutine cal_filterd_buo_flux_rtp(sph_rtp, fl_prop,           &
+!!     &          b_trns_base, b_trns_fil, f_trns_fefx,                 &
+!!     &          trns_b_snap, trns_f_snap)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(fluid_property), intent(in) :: fl_prop
-!!        type(conductive_property), intent(in) :: cd_prop
-!!        type(reference_scalar_param), intent(in) :: ref_param_T
-!!        type(reference_scalar_param), intent(in) :: ref_param_C
-!!        type(legendre_4_sph_trans), intent(in) :: leg
-!!        type(phys_address), intent(in) :: f_trns
-!!        type(phys_address), intent(in) :: bs_trns, fs_trns
-!!        type(address_each_sph_trans), intent(in) :: trns_f_MHD
+!!        type(base_field_address), intent(in) :: b_trns_base
+!!        type(base_field_address), intent(in) :: b_trns_fil
+!!        type(energy_flux_address), intent(in) :: f_trns_fefx
 !!        type(address_each_sph_trans), intent(in) :: trns_b_snap
 !!        type(address_each_sph_trans), intent(inout) :: trns_f_snap
-!!      subroutine pole_energy_flux_w_SGS_rtp(sph_rtp, node,            &
-!!     &          fl_prop, cd_prop, ref_param_T, ref_param_C,           &
-!!     &         iphys, nod_fld)
+!!      subroutine pole_filterd_buo_flux_rtp(sph_rtp, node,             &
+!!     &          fl_prop, iphys_base, iphys_fil, iphys_fefx, nod_fld)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(node_data), intent(in) :: node
 !!        type(fluid_property), intent(in) :: fl_prop
-!!        type(reference_scalar_param), intent(in) :: ref_param_T
-!!        type(reference_scalar_param), intent(in) :: ref_param_C
-!!        type(conductive_property), intent(in) :: cd_prop
-!!        type(phys_address), intent(in) :: iphys
+!!        type(base_field_address), intent(in) :: iphys_base
+!!        type(base_field_address), intent(in) :: iphys_fil
+!!        type(energy_flux_address), intent(in) :: iphys_fefx
 !!        type(phys_data), intent(inout) :: nod_fld
 !!@endverbatim
 !
@@ -52,77 +45,12 @@
 !
       implicit  none
 !
-      private :: cal_filterd_buo_flux_rtp, pole_filterd_buo_flux_rtp
+      private :: pole_filterd_buo_flux_rtp
 !
 ! -----------------------------------------------------------------------
 !
       contains
 !
-! -----------------------------------------------------------------------
-!
-      subroutine s_cal_energy_flux_w_SGS_rtp(sph_rtp,                   &
-     &          fl_prop, cd_prop, ref_param_T, ref_param_C, leg,        &
-     &          f_trns, bs_trns, fs_trns, trns_f_MHD, trns_b_snap,      &
-     &          trns_f_snap)
-!
-      use cal_energy_flux_rtp
-!
-      type(sph_rtp_grid), intent(in) :: sph_rtp
-      type(fluid_property), intent(in) :: fl_prop
-      type(conductive_property), intent(in) :: cd_prop
-      type(reference_scalar_param), intent(in) :: ref_param_T
-      type(reference_scalar_param), intent(in) :: ref_param_C
-      type(legendre_4_sph_trans), intent(in) :: leg
-      type(phys_address), intent(in) :: f_trns
-      type(phys_address), intent(in) :: bs_trns, fs_trns
-      type(address_each_sph_trans), intent(in) :: trns_f_MHD
-      type(address_each_sph_trans), intent(in) :: trns_b_snap
-!
-      type(address_each_sph_trans), intent(inout) :: trns_f_snap
-!
-!
-      call s_cal_energy_flux_rtp(sph_rtp, fl_prop, cd_prop,             &
-     &    ref_param_T, ref_param_C, leg, f_trns,                        &
-     &    bs_trns, fs_trns, trns_f_MHD, trns_b_snap, trns_f_snap)
-!
-      call cal_filterd_buo_flux_rtp(sph_rtp, fl_prop,                   &
-     &    bs_trns%base, bs_trns%filter_fld, fs_trns%eflux_by_filter,    &
-     &    trns_b_snap, trns_f_snap)
-!
-      end subroutine s_cal_energy_flux_w_SGS_rtp
-!
-! -----------------------------------------------------------------------
-!
-      subroutine pole_energy_flux_w_SGS_rtp(sph_rtp, node,              &
-     &          fl_prop, cd_prop, ref_param_T, ref_param_C,             &
-     &         iphys, nod_fld)
-!
-      use m_machine_parameter
-      use t_reference_scalar_param
-!
-      use pole_energy_flux_sph
-!
-      type(sph_rtp_grid), intent(in) :: sph_rtp
-      type(node_data), intent(in) :: node
-      type(fluid_property), intent(in) :: fl_prop
-      type(reference_scalar_param), intent(in) :: ref_param_T
-      type(reference_scalar_param), intent(in) :: ref_param_C
-      type(conductive_property), intent(in) :: cd_prop
-      type(phys_address), intent(in) :: iphys
-      type(phys_data), intent(inout) :: nod_fld
-!
-!
-      call pole_energy_flux_rtp(sph_rtp, node,                          &
-     &    fl_prop, cd_prop, ref_param_T, ref_param_C,                   &
-     &    iphys, nod_fld)
-!
-      call pole_filterd_buo_flux_rtp(sph_rtp, node,                     &
-     &    fl_prop, iphys%base, iphys%filter_fld, iphys%eflux_by_filter, &
-     &    nod_fld)
-!
-      end subroutine pole_energy_flux_w_SGS_rtp
-!
-!-----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
       subroutine cal_filterd_buo_flux_rtp(sph_rtp, fl_prop,             &

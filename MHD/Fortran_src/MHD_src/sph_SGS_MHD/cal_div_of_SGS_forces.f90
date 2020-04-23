@@ -1,4 +1,4 @@
-!>@file   cal_div_of_forces.f90
+!>@file   cal_div_of_SGS_forces.f90
 !!@brief  module cal_div_of_SGS_forces
 !!
 !!@author H. Matsui

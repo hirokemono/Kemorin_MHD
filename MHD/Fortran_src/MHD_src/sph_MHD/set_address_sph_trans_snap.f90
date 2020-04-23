@@ -53,7 +53,7 @@
      &         (SPH_MHD, iphys, trns_snap,                              &
      &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
 !
-      use address_sph_trans_SGS_snap
+      use address_sph_trans_snap
 !
       type(SPH_mesh_field_data), intent(in) :: SPH_MHD
       type(phys_address), intent(in) :: iphys
@@ -68,10 +68,10 @@
      &       'Spherical transform field table for snapshot (trns_snap)'
       end if
 !
-      call bwd_trans_address_SGS_snap                                   &
+      call bwd_trans_address_snap                                       &
      &   (SPH_MHD%ipol, iphys, trns_snap%b_trns, trns_snap%backward)
 !
-      call fwd_trans_address_SGS_snap                                  &
+      call fwd_trans_address_snap                                       &
      &   (SPH_MHD%ipol, iphys, trns_snap%f_trns, trns_snap%forward)
 !
       call count_num_fields_each_trans(trns_snap%backward,              &

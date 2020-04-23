@@ -7,6 +7,14 @@
 !>@brief Evaluate rotation of buoyancy
 !!
 !!@verbatim
+!!      subroutine sel_rot_self_buoyancy_sph(sph_rj,                    &
+!!     &          ipol_base, ipol_rot_frc, fl_prop, sph_bc_U, rj_fld)
+!!        type(fluid_property), intent(in) :: fl_prop
+!!        type(sph_rj_grid), intent(in) ::  sph_rj
+!!        type(base_field_address), intent(in) :: ipol_base
+!!        type(base_force_address), intent(in) :: ipol_rot_frc
+!!        type(sph_boundary_type), intent(in) :: sph_bc_U
+!!        type(phys_data), intent(inout) :: rj_fld
 !!      subroutine cal_rot_radial_self_gravity                          &
 !!     &         (sph_rj, ipol, fl_prop, sph_bc_U, rj_fld)
 !!        type(fluid_property), intent(in) :: fl_prop
