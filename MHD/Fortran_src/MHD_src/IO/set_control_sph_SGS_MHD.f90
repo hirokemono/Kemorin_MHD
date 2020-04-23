@@ -205,6 +205,7 @@
       use add_sph_SGS_MHD_fld_2_ctl
       use add_sph_SGS_MHD_fld_2_ctl
       use set_control_field_data
+      use add_dependency_for_SGS
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(MHD_evolution_param), intent(in) :: MHD_prop

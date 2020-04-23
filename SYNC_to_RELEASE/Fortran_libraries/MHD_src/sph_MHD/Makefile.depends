@@ -176,7 +176,7 @@ self_buoyancy_on_sphere.o: $(MHD_SPH_DIR)/self_buoyancy_on_sphere.f90 m_precisio
 	$(F90) -c $(F90OPTFLAGS) $<
 set_address_sph_trans_MHD.o: $(MHD_SPH_DIR)/set_address_sph_trans_MHD.f90 m_precision.o t_sph_trans_comm_tbl.o t_spheric_rj_data.o t_phys_address.o t_phys_data.o t_SPH_mesh_field_data.o t_addresses_sph_transform.o t_control_parameter.o t_physical_property.o address_sph_trans_MHD.o copy_spectr_4_sph_trans.o
 	$(F90) -c $(F90OPTFLAGS) $<
-set_address_sph_trans_snap.o: $(MHD_SPH_DIR)/set_address_sph_trans_snap.f90 m_precision.o m_machine_parameter.o t_phys_address.o t_SPH_mesh_field_data.o t_addresses_sph_transform.o t_mesh_data.o t_spheric_parameter.o address_sph_trans_SGS_snap.o add_diff_vect_to_sph_trans.o copy_fields_from_sph_trans.o
+set_address_sph_trans_snap.o: $(MHD_SPH_DIR)/set_address_sph_trans_snap.f90 m_precision.o m_machine_parameter.o t_phys_address.o t_SPH_mesh_field_data.o t_addresses_sph_transform.o t_mesh_data.o t_spheric_parameter.o address_sph_trans_snap.o add_diff_vect_to_sph_trans.o copy_fields_from_sph_trans.o
 	$(F90) -c $(F90OPTFLAGS) $<
 set_bc_flag_sph_velo.o: $(MHD_SPH_DIR)/set_bc_flag_sph_velo.f90 m_precision.o m_constants.o m_machine_parameter.o m_boundary_condition_IDs.o m_phys_labels.o t_boundary_data_sph_MHD.o t_boundary_params_sph_MHD.o t_boundary_sph_spectr.o t_sph_boundary_input_data.o t_spheric_rj_data.o t_group_data.o t_bc_data_list.o set_bc_sph_scalars.o set_sph_bc_data_by_file.o
 	$(F90) -c $(F90OPTFLAGS) $<

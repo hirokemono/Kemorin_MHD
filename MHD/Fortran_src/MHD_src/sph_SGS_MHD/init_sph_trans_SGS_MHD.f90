@@ -56,6 +56,7 @@
       use set_address_sph_trans_MHD
       use set_address_sph_trans_SGS
       use set_address_sph_trans_ngSGS
+      use set_address_sph_trans_snap
       use address_sph_trans_SGS_snap
       use init_sphrical_transform_MHD
       use pole_sph_transform

@@ -42,6 +42,7 @@
       use t_control_array_character3
       use t_FEM_control_parameter
       use t_SGS_control_parameter
+      use add_dependency_for_SGS
 !
       use set_control_field_data
       use add_nodal_fields_4_MHD
