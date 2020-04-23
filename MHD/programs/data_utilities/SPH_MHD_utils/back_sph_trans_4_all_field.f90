@@ -8,11 +8,11 @@
 !!
 !!@verbatim
 !!      subroutine init_sph_back_transform                              &
-!!     &         (SPH_model, trans_p, WK, SPH_MHD)
+!!     &         (SPH_model, trans_p, WK, SPH_SGS)
 !!        type(SPH_MHD_model_data), intent(in) :: SPH_model
 !!        type(parameters_4_sph_trans), intent(inout) :: trans_p
 !!        type(works_4_sph_trans_MHD), intent(inout) :: WK
-!!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
+!!        type(SPH_SGS_structure), intent(inout) :: SPH_SGS
 !!      subroutine sph_all_back_transform(sph, comms_sph, trans_p,      &
 !!     &           rj_fld, trns_MHD, WK_sph)
 !!      subroutine sph_back_transform_dual(sph, comms_sph, trans_p,     &
@@ -34,7 +34,7 @@
       use m_work_time
       use m_elapsed_labels_4_MHD
       use t_SPH_MHD_model_data
-      use t_SPH_mesh_field_data
+      use t_SPH_SGS_structure
       use t_work_4_sph_trans
       use t_addresses_sph_transform
       use t_sph_transforms
@@ -48,7 +48,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine init_sph_back_transform                                &
-     &         (SPH_model, trans_p, WK, SPH_MHD)
+     &         (SPH_model, trans_p, WK, SPH_SGS)
 !
       use t_physical_property
       use t_poloidal_rotation
@@ -66,7 +66,7 @@
 !
       type(parameters_4_sph_trans), intent(inout) :: trans_p
       type(works_4_sph_trans_MHD), intent(inout) :: WK
-      type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
+      type(SPH_SGS_structure), intent(inout) :: SPH_SGS
 !
 !>      total number of components for spherical harmonics transform
       integer(kind = kint), save :: ncomp_max_trans
@@ -77,25 +77,25 @@
 !
       integer(kind = kint) :: i_fld
 !
-      call init_pole_transform(SPH_MHD%sph%sph_rtp)
+      call init_pole_transform(SPH_SGS%sph%sph_rtp)
 !
       if (iflag_debug .ge. iflag_routine_msg) write(*,*)                &
      &                     'set_all_spherical_transform'
-      call set_all_spherical_transform(SPH_MHD%fld, WK%trns_MHD,        &
+      call set_all_spherical_transform(SPH_SGS%fld, WK%trns_MHD,        &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
 !
-      call alloc_sph_trans_address(SPH_MHD%sph%sph_rtp, WK)
+      call alloc_sph_trans_address(SPH_SGS%sph%sph_rtp, WK)
 !
       call init_leg_fourier_trans_MHD                                   &
-     &   (SPH_model%sph_MHD_bc, SPH_MHD%sph, SPH_MHD%comms,             &
+     &   (SPH_model%sph_MHD_bc, SPH_SGS%sph, SPH_SGS%comms,             &
      &    ncomp_max_trans, trans_p, WK)
 !
       call sel_sph_transform_MHD                                        &
      &   (SPH_model%MHD_prop, SPH_model%sph_MHD_bc,                     &
-     &    SPH_MHD%sph, SPH_MHD%comms, SPH_model%omega_sph,              &
+     &    SPH_SGS%sph, SPH_SGS%comms, SPH_model%omega_sph,              &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans,        &
      &    WK%trns_MHD, WK%WK_sph, trans_p, WK%gt_cor, WK%cor_rlm,       &
-     &    SPH_MHD%fld)
+     &    SPH_SGS%fld)
 !
       end subroutine init_sph_back_transform
 !

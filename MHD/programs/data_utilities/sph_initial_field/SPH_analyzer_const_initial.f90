@@ -111,8 +111,11 @@
 !
 ! ---------------------------------
 !
-      if (iflag_debug.gt.0) write(*,*) 'init_r_infos_make_sph_initial'
-      call init_r_infos_make_sph_initial(SPH_model, SPH_MHD)
+      if (iflag_debug.gt.0) write(*,*) 'init_r_infos_sph_mhd'
+      call init_r_infos_sph_mhd(SPH_model%bc_IO,                        &
+     &    SPH_MHD%groups, SPH_model%MHD_BC, SPH_MHD%ipol, SPH_MHD%sph,  &
+     &    SPH_model%omega_sph, SPH_model%ref_temp, SPH_model%ref_comp,  &
+     &    SPH_MHD%fld, SPH_model%MHD_prop, SPH_model%sph_MHD_bc)
 !
 ! ---------------------------------
 !

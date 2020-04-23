@@ -57,6 +57,7 @@
       integer(kind = kint) :: ist, ied
 !
 !
+      if(SGS_param%iflag_SGS .eq. id_SGS_none) return
       ist = (sph_bc_U%kr_in-1)*sph_rj%nidx_rj(2) + 1
       ied =  sph_bc_U%kr_out * sph_rj%nidx_rj(2)
 !

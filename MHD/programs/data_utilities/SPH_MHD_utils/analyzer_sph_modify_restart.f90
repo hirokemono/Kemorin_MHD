@@ -24,6 +24,7 @@
       use t_MHD_file_parameter
       use t_SPH_mesh_field_data
       use t_field_data_IO
+      use t_sph_mhd_monitor_data_IO
 !
       implicit none
 !
@@ -149,8 +150,8 @@
      &                       MHD_step%rms_step)
       if(iflag .eq. 0) then
         if(iflag_debug .gt. 0)                                          &
-     &                write(*,*) 'output_rms_sph_SGS_mhd_control'
-        call output_rms_sph_SGS_mhd_control(MHD_step%time_d, SPH_MHD,   &
+     &                write(*,*) 'output_rms_sph_mhd_control'
+        call output_rms_sph_mhd_control(MHD_step%time_d, SPH_MHD,       &
      &      SPH_model%sph_MHD_bc, SPH_WK%trans_p%leg, SPH_WK%monitor)
       end if
       if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+7)

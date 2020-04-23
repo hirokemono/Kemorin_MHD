@@ -7,10 +7,10 @@
 !>@brief Evaluate nonlinear terms by pseudo spectram scheme
 !!
 !!@verbatim
-!!      subroutine SGS_by_pseudo_sph(i_step, i_step_sgs_coefs,          &
-!!     &          SGS_param, sph, comms_sph, r_2nd, MHD_prop,           &
+!!      subroutine SGS_by_pseudo_sph                                    &
+!!     &         (i_step, SGS_par, sph, comms_sph, r_2nd, MHD_prop,     &
 !!     &          sph_MHD_bc, trans_p, WK, dynamic_SPH, ipol, rj_fld)
-!!        type(SGS_model_control_params), intent(in) :: SGS_param
+!!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(sph_grids), intent(in) :: sph
 !!        type(sph_comm_tables), intent(in) :: comms_sph
 !!        type(fdm_matrices), intent(in) :: r_2nd
@@ -62,8 +62,8 @@
 !*
 !*   ------------------------------------------------------------------
 !
-      subroutine SGS_by_pseudo_sph(i_step, i_step_sgs_coefs,            &
-     &          SGS_param, sph, comms_sph, r_2nd, MHD_prop,             &
+      subroutine SGS_by_pseudo_sph                                      &
+     &         (i_step, SGS_par, sph, comms_sph, r_2nd, MHD_prop,       &
      &          sph_MHD_bc, trans_p, WK, dynamic_SPH, ipol, rj_fld)
 !
       use sph_transforms_4_SGS
@@ -75,8 +75,8 @@
       use dynamic_model_sph_MHD
       use copy_Csim_4_sph_MHD
 !
-      integer(kind = kint), intent(in) :: i_step, i_step_sgs_coefs
-      type(SGS_model_control_params), intent(in) :: SGS_param
+      integer(kind = kint), intent(in) :: i_step
+      type(SGS_paremeters), intent(in) :: SGS_par
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
       type(fdm_matrices), intent(in) :: r_2nd
@@ -92,28 +92,29 @@
       integer(kind = kint) :: istep_dynamic
 !
 !
-      istep_dynamic = mod(i_step, i_step_sgs_coefs)
+      if(SGS_par%model_p%iflag_SGS .eq. id_SGS_none) return
+      istep_dynamic = mod(i_step, SGS_par%i_step_sgs_coefs)
 !
-      if(SGS_param%iflag_SGS .eq. id_SGS_similarity) then
+      if(SGS_par%model_p%iflag_SGS .eq. id_SGS_similarity) then
         if(iflag_SGS_time) call start_elapsed_time(ist_elapsed_SGS+2)
         call cal_scale_similarity_sph_SGS                               &
      &     (sph, comms_sph, MHD_prop, trans_p, WK%WK_sph,               &
      &      dynamic_SPH, ipol, rj_fld, WK%trns_SGS)
         if(iflag_SGS_time) call end_elapsed_time(ist_elapsed_SGS+2)
 !
-        if(SGS_param%iflag_dynamic .eq. id_SGS_DYNAMIC_ON               &
+        if(SGS_par%model_p%iflag_dynamic .eq. id_SGS_DYNAMIC_ON         &
      &      .and. istep_dynamic .eq. 0) then
           if(iflag_debug .gt. 0) write(*,*)                             &
      &                     'Dynamic similarity model:',                 &
-     &                      i_step, i_step_sgs_coefs
+     &                      i_step, SGS_par%i_step_sgs_coefs
           if(iflag_SGS_time) call start_elapsed_time(ist_elapsed_SGS+3)
           call sph_dynamic_similarity                                   &
-     &       (SGS_param, sph, comms_sph, MHD_prop, trans_p,             &
+     &       (SGS_par%model_p, sph, comms_sph, MHD_prop, trans_p,       &
      &        WK%trns_SGS, WK%trns_DYNS, WK%WK_sph, dynamic_SPH,        &
      &        ipol, rj_fld)
           if(iflag_SGS_time) call end_elapsed_time(ist_elapsed_SGS+3)
         end if
-      else if(SGS_param%iflag_SGS .eq. id_SGS_NL_grad) then
+      else if(SGS_par%model_p%iflag_SGS .eq. id_SGS_NL_grad) then
         if (iflag_debug.eq.1) write(*,*)                                &
      &                'cal_nonlinear_gradient_sph_SGS'
         call cal_nonlinear_gradient_sph_SGS                             &
@@ -121,40 +122,40 @@
      &          dynamic_SPH, ipol, WK%trns_MHD, WK%WK_sph, rj_fld,      &
      &          WK%trns_ngTMP, WK%trns_SGS)
 !
-        if(SGS_param%iflag_dynamic .eq. id_SGS_DYNAMIC_ON               &
+        if(SGS_par%model_p%iflag_dynamic .eq. id_SGS_DYNAMIC_ON         &
      &     .and. istep_dynamic .eq. 0) then
           if(iflag_debug .gt. 0) write(*,*)                             &
      &                     'Dynamic nonlinear gradient model:',         &
-     &                      i_step, i_step_sgs_coefs
+     &                      i_step, SGS_par%i_step_sgs_coefs
           if(iflag_SGS_time) call start_elapsed_time(ist_elapsed_SGS+3)
-          call sph_dynamic_nl_gradient                                  &
-     &       (SGS_param, sph, comms_sph, r_2nd, MHD_prop, sph_MHD_bc,   &
-     &        trans_p, WK%trns_SGS, WK%trns_SIMI, WK%trns_DYNG,         &
+          call sph_dynamic_nl_gradient(SGS_par%model_p,                 &
+     &        sph, comms_sph, r_2nd, MHD_prop, sph_MHD_bc, trans_p,     &
+     &        WK%trns_SGS, WK%trns_SIMI, WK%trns_DYNG,                  &
      &        WK%trns_Csim, WK%WK_sph, dynamic_SPH, ipol, rj_fld)
           if(iflag_SGS_time) call end_elapsed_time(ist_elapsed_SGS+3)
         end if
       end if
 !
-      if(SGS_param%iflag_dynamic .eq. id_SGS_DYNAMIC_ON) then
+      if(SGS_par%model_p%iflag_dynamic .eq. id_SGS_DYNAMIC_ON) then
         if (iflag_debug.eq.1) write(*,*) 'product_model_coefs_4_sph'
-        call product_model_coefs_4_sph(SGS_param, sph%sph_rtp,          &
+        call product_model_coefs_4_sph(SGS_par%model_p, sph%sph_rtp,    &
      &      dynamic_SPH%sph_d_grp, dynamic_SPH%iak_sgs_term,            &
      &      WK%trns_SGS%f_trns%SGS_term, WK%trns_SGS%forward,           &
      &      dynamic_SPH%wk_sgs)
       else
-        call prod_fixed_sph_SGS_Csim(SGS_param, sph%sph_rtp,            &
+        call prod_fixed_sph_SGS_Csim(SGS_par%model_p, sph%sph_rtp,      &
      &      dynamic_SPH%iak_sgs_term, WK%trns_SGS%f_trns%SGS_term,      &
      &      WK%trns_SGS%forward)
       end if
 !
 !
-      if(SGS_param%iflag_dynamic .eq. id_SGS_DYNAMIC_ON                 &
+      if(SGS_par%model_p%iflag_dynamic .eq. id_SGS_DYNAMIC_ON           &
      &  .and. istep_dynamic .eq. 0) then
-        if(SGS_param%iflag_SGS_gravity .ne. id_SGS_none) then
+        if(SGS_par%model_p%iflag_SGS_gravity .ne. id_SGS_none) then
           if(iflag_debug.ge.1) write(*,*) 'dynamic_buo_SGS_by_pseudo_sph'
-          call const_dynamic_SGS_4_buo_sph                              &
-     &       (SGS_param%stab_weight, sph%sph_rtp, MHD_prop%fl_prop,     &
-     &        WK%trns_MHD, WK%trns_SGS, WK%trns_Csim, dynamic_SPH)
+          call const_dynamic_SGS_4_buo_sph(SGS_par%model_p%stab_weight, &
+     &        sph%sph_rtp, MHD_prop%fl_prop, WK%trns_MHD, WK%trns_SGS,  &
+     &        WK%trns_Csim, dynamic_SPH)
         end if
 !
         if(iflag_debug.ge.1) write(*,*) 'copy_model_coefs_4_sph_snap'
@@ -176,11 +177,11 @@
 !
 !
       if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+12)
-      if(SGS_param%iflag_SGS_gravity .ne. id_SGS_none) then
+      if(SGS_par%model_p%iflag_SGS_gravity .ne. id_SGS_none) then
         if(iflag_debug.ge.1) write(*,*) 'product_buo_model_coefs_4_sph'
         if(iflag_SGS_time) call start_elapsed_time(ist_elapsed_SGS+4)
         call product_buo_model_coefs_4_sph                              &
-     &     (istep_dynamic, SGS_param, sph, ipol,                        &
+     &     (istep_dynamic, SGS_par%model_p, sph, ipol,                  &
      &      WK%trns_SGS, dynamic_SPH, rj_fld)
         if(iflag_SGS_time) call end_elapsed_time(ist_elapsed_SGS+4)
       end if

@@ -8,15 +8,13 @@
 !!       in MHD dynamo simulation
 !!
 !!@verbatim
-!!      subroutine set_addresses_snapshot_trans                         &
-!!     &         (SPH_MHD, iphys, trns_snap,                            &
+!!      subroutine set_addresses_snapshot_trans(ipol, iphys, trns_snap, &
 !!     &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
 !!        type(phys_address), intent(in) :: ipol, iphys
 !!        type(address_4_sph_trans), intent(inout) :: trns_snap
-!!      subroutine set_addresses_temporal_trans                         &
-!!     &         (SPH_MHD, iphys, trns_tmp,                             &
+!!      subroutine set_addresses_temporal_trans(ipol, iphys, trns_tmp,  &
 !!     &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
-!!        type(phys_address), intent(in) :: ipol
+!!        type(phys_address), intent(in) :: ipol, iphys
 !!        type(address_4_sph_trans), intent(inout) :: trns_tmp
 !!
 !!      subroutine copy_field_from_transform                            &
@@ -36,7 +34,6 @@
       use m_machine_parameter
 !
       use t_phys_address
-      use t_SPH_mesh_field_data
       use t_addresses_sph_transform
       use t_mesh_data
       use t_spheric_parameter
@@ -49,14 +46,12 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_addresses_snapshot_trans                           &
-     &         (SPH_MHD, iphys, trns_snap,                              &
+      subroutine set_addresses_snapshot_trans(ipol, iphys, trns_snap,   &
      &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
 !
       use address_sph_trans_snap
 !
-      type(SPH_mesh_field_data), intent(in) :: SPH_MHD
-      type(phys_address), intent(in) :: iphys
+      type(phys_address), intent(in) :: ipol, iphys
       type(address_4_sph_trans), intent(inout) :: trns_snap
       integer(kind = kint), intent(inout) :: ncomp_sph_trans
       integer(kind = kint), intent(inout) :: nvector_sph_trans
@@ -69,10 +64,10 @@
       end if
 !
       call bwd_trans_address_snap                                       &
-     &   (SPH_MHD%ipol, iphys, trns_snap%b_trns, trns_snap%backward)
+     &   (ipol, iphys, trns_snap%b_trns, trns_snap%backward)
 !
       call fwd_trans_address_snap                                       &
-     &   (SPH_MHD%ipol, iphys, trns_snap%f_trns, trns_snap%forward)
+     &   (ipol, iphys, trns_snap%f_trns, trns_snap%forward)
 !
       call count_num_fields_each_trans(trns_snap%backward,              &
      &   ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
@@ -93,14 +88,12 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_addresses_temporal_trans                           &
-     &         (SPH_MHD, iphys, trns_tmp,                               &
+      subroutine set_addresses_temporal_trans(ipol, iphys, trns_tmp,    &
      &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
 !
       use add_diff_vect_to_sph_trans
 !
-      type(SPH_mesh_field_data), intent(in) :: SPH_MHD
-      type(phys_address), intent(in) :: iphys
+      type(phys_address), intent(in) :: ipol, iphys
       type(address_4_sph_trans), intent(inout) :: trns_tmp
       integer(kind = kint), intent(inout) :: ncomp_sph_trans
       integer(kind = kint), intent(inout) :: nvector_sph_trans
@@ -132,7 +125,7 @@
       trns_tmp%forward%num_vector = trns_tmp%forward%nfield
 !
       call add_diff_vect_scalar_trns_snap                               &
-     &   (SPH_MHD%ipol%diff_vector, iphys%diff_vector,                  &
+     &   (ipol%diff_vector, iphys%diff_vector,                          &
      &    trns_tmp%f_trns%diff_vector, trns_tmp%forward)
       trns_tmp%forward%num_tensor = 0
 !

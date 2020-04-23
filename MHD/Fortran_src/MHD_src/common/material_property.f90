@@ -9,7 +9,7 @@
 !!
 !!@verbatim
 !!      subroutine set_material_property                                &
-!!     &         (iphys, depth_top, depth_bottom, MHD_prop)
+!!     &         (depth_top, depth_bottom, iphys, MHD_prop)
 !!        type(phys_address), intent(in) :: iphys
 !!        type(MHD_evolution_param), intent(inout) :: MHD_prop
 !!@endverbatim
@@ -37,7 +37,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_material_property                                  &
-     &         (iphys, depth_top, depth_bottom, MHD_prop)
+     &         (depth_top, depth_bottom, iphys, MHD_prop)
 !
       use construct_MHD_coefficient
 !

@@ -195,8 +195,8 @@
 !
       if (iflag_debug.eq.1) write(*,*)' set_material_property'
       call set_material_property                                        &
-     &   (iphys, MHD_prop%ref_param_T%depth_top,                        &
-     &    MHD_prop%ref_param_T%depth_bottom, MHD_prop)
+     &   (MHD_prop%ref_param_T%depth_top,                               &
+     &    MHD_prop%ref_param_T%depth_bottom, iphys, MHD_prop)
       call s_init_ele_material_property                                 &
      &   (mesh%ele%numele, MHD_prop, MHD_CG%ak_MHD)
 !

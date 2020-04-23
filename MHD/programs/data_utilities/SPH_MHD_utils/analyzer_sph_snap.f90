@@ -68,10 +68,10 @@
       if (iflag_debug.eq.1) write(*,*) 'read_control_4_sph_SGS_MHD'
       call read_control_4_sph_SGS_MHD(snap_ctl_name, MHD_ctl1)
 !
-      if (iflag_debug.eq.1) write(*,*) 'input_control_SPH_dynamo'
-      call input_control_SPH_dynamo                                     &
-     &  (MHD_files1, MHD_ctl1, SPH_SGS1, MHD_step1, SPH_model1,         &
-     &   SPH_WK1%trns_WK, SPH_WK1%monitor, SPH_MHD1, FEM_d1)
+      if (iflag_debug.eq.1) write(*,*) 'input_control_SPH_SGS_dynamo'
+      call input_control_SPH_SGS_dynamo                                 &
+     &  (MHD_files1, MHD_ctl1, MHD_step1, SPH_model1,                   &
+     &   SPH_WK1%trns_WK, SPH_WK1%monitor, SPH_SGS1, FEM_d1)
       call copy_delta_t(MHD_step1%init_d, MHD_step1%time_d)
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)
 !
@@ -85,8 +85,8 @@
 !
 !        Initialize spherical transform dynamo
       if(iflag_debug .gt. 0) write(*,*) 'SPH_init_sph_snap'
-      call SPH_init_sph_snap(MHD_files1, FEM_d1%iphys,                  &
-     &    SPH_model1, SPH_SGS1, SPH_MHD1, SPH_WK1)
+      call SPH_init_sph_snap                                            &
+     &   (MHD_files1, FEM_d1%iphys, SPH_model1, SPH_SGS1, SPH_WK1)
 !        Initialize visualization
       if(iflag_debug .gt. 0) write(*,*) 'init_visualize'
       call init_visualize                                               &
@@ -130,8 +130,7 @@
 !*
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_snap'
         call SPH_analyze_snap(MHD_step1%time_d%i_time_step,             &
-     &      MHD_files1, SPH_model1, MHD_step1,                          &
-     &      SPH_SGS1, SPH_MHD1, SPH_WK1)
+     &      MHD_files1, SPH_model1, MHD_step1, SPH_SGS1, SPH_WK1)
 !*
 !*  -----------  output field data --------------
 !*
@@ -207,7 +206,6 @@
       use output_viz_file_control
 !
       integer(kind = kint) :: visval
-      integer(kind = kint) :: iflag
 !
       real(kind = kreal) :: total_max, total_time, total_prev
 !
@@ -229,8 +227,7 @@
       MHD_step1%time_d%i_time_step = MHD_step1%init_d%i_time_step
       if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_snap'
       call SPH_analyze_snap(MHD_step1%time_d%i_time_step,               &
-     &    MHD_files1, SPH_model1, MHD_step1,                            &
-     &    SPH_SGS1, SPH_MHD1, SPH_WK1)
+     &    MHD_files1, SPH_model1, MHD_step1, SPH_SGS1, SPH_WK1)
 !*
       if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+3)
       if(lead_field_data_flag(MHD_step1%time_d%i_time_step,MHD_step1)   &

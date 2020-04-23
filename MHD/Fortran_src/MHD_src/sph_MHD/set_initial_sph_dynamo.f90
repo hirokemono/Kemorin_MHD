@@ -11,8 +11,8 @@
 !!     &         (MHD_files, SPH_model, SPH_MHD, MHD_step, sph_fst_IO)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(sph_grids), intent(in) :: sph
-!!        type(SPH_MHD_model_data), intent(in) :: SPH_model
 !!        type(phys_address), intent(in) :: ipol
+!!        type(SPH_MHD_model_data), intent(in) :: SPH_model
 !!        type(MHD_step_param), intent(inout) :: MHD_step
 !!        type(phys_data), intent(inout) :: rj_fld
 !!        type(field_IO), intent(inout) :: sph_fst_IO
@@ -27,7 +27,6 @@
       use m_machine_parameter
 !
       use t_SPH_MHD_model_data
-      use t_SPH_mesh_field_data
       use t_MHD_file_parameter
       use t_IO_step_parameter
       use t_time_data
@@ -35,6 +34,8 @@
       use t_boundary_params_sph_MHD
       use t_radial_reference_temp
       use t_field_data_IO
+      use t_phys_address
+      use t_phys_data
 !
       implicit none
 !
@@ -48,8 +49,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine sph_initial_data_control                               &
-     &         (MHD_files, SPH_model, SPH_MHD, MHD_step, sph_fst_IO)
+      subroutine sph_initial_data_control(MHD_files, SPH_model,         &
+     &          sph, ipol, MHD_step, rj_fld, sph_fst_IO)
 !
       use m_machine_parameter
       use m_initial_field_control
@@ -65,17 +66,19 @@
       use calypso_mpi
 !
       type(MHD_file_IO_params), intent(in) :: MHD_files
-      type(SPH_MHD_model_data), intent(in) :: SPH_model
+      type(SPH_MHD_model_data), intent(in) :: SPH_model 
+      type(sph_grids), intent(in) :: sph
+      type(phys_address), intent(in) :: ipol
 !
       type(MHD_step_param), intent(inout) :: MHD_step
-      type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
+      type(phys_data), intent(inout) :: rj_fld
       type(field_IO), intent(inout) :: sph_fst_IO
 !
 !
       if (iflag_restart .eq. i_rst_by_file) then
         if(iflag_debug .gt. 0) write(*,*) 'read_alloc_sph_restart_data'
         call read_alloc_sph_restart_data                                &
-     &     (MHD_files%fst_file_IO, MHD_step%init_d, SPH_MHD%fld,        &
+     &     (MHD_files%fst_file_IO, MHD_step%init_d, rj_fld,             &
      &      MHD_step%rst_step, sph_fst_IO)
 !
 !   for dynamo benchmark
@@ -84,32 +87,31 @@
      &   .or. iflag_restart .eq. i_rst_dbench2                          &
      &   .or. iflag_restart .eq. i_rst_dbench_qcv) then
         call sph_initial_data_4_benchmarks                              &
-     &     (SPH_model%ref_temp, SPH_MHD%sph%sph_params,                 &
-     &      SPH_MHD%sph%sph_rj, SPH_model%MHD_prop,                     &
-     &      SPH_MHD%ipol, SPH_MHD%fld)
+     &     (SPH_model%ref_temp, sph%sph_params, sph%sph_rj,             &
+     &      SPH_model%MHD_prop, ipol, rj_fld)
 !
 !   set small seed magnetic field
       else if (iflag_restart .eq. i_rst_no_file) then
         call sph_initial_data_w_seed_B                                  &
      &     (SPH_model%ref_temp, SPH_model%ref_comp,                     &
-     &      SPH_MHD%sph%sph_params, SPH_MHD%sph%sph_rj,                 &
+     &      sph%sph_params, sph%sph_rj,                                 &
      &      SPH_model%MHD_prop, SPH_model%sph_MHD_bc,                   &
-     &      SPH_MHD%ipol, SPH_MHD%fld)
+     &      ipol, rj_fld)
       else if (iflag_restart .eq. i_rst_licv) then
         call sph_initial_field_4_licv(SPH_model%ref_temp,               &
-     &      SPH_MHD%sph%sph_params, SPH_MHD%sph%sph_rj,                 &
-     &      SPH_model%MHD_prop, SPH_MHD%ipol, SPH_MHD%fld)
+     &      sph%sph_params, sph%sph_rj,                                 &
+     &      SPH_model%MHD_prop, ipol, rj_fld)
       end if
 !
       if(iflag_debug .gt. 0) write(*,*) 'copy_time_step_data'
       call copy_time_step_data(MHD_step%init_d, MHD_step%time_d)
-      call set_sph_restart_num_to_IO(SPH_MHD%fld, sph_fst_IO)
+      call set_sph_restart_num_to_IO(rj_fld, sph_fst_IO)
 !
       if (iflag_restart.ne.i_rst_by_file                                &
      &     .and. MHD_step%init_d%i_time_step.eq.0) then
         if(iflag_debug .gt. 0) write(*,*) 'output_sph_restart_control'
         call output_sph_restart_control(MHD_step%init_d%i_time_step,    &
-     &      MHD_files%fst_file_IO, MHD_step%time_d, SPH_MHD%fld,        &
+     &      MHD_files%fst_file_IO, MHD_step%time_d, rj_fld,             &
      &      MHD_step%rst_step, sph_fst_IO)
       end if
 !

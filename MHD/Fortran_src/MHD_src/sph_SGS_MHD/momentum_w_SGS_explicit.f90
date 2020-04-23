@@ -8,12 +8,11 @@
 !!
 !!@verbatim
 !!      subroutine sel_explicit_sph_SGS_MHD                             &
-!!     &         (i_step, dt, SGS_param, MHD_prop, sph_MHD_bc, SPH_MHD)
+!!     &         (i_step, dt, MHD_prop, sph_MHD_bc, SPH_SGS)
 !!        type(fdm_matrices), intent(in) :: r_2nd
-!!        type(MHD_evolution_param), intent(in) :: MHD_prop
 !!        type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
 !!        type(legendre_4_sph_trans), intent(in) :: leg
-!!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
+!!        type(SPH_SGS_structure), intent(inout) :: SPH_SGS
 !!@endverbatim
 !!
 !!@param i_step  time step
@@ -25,7 +24,7 @@
       use t_SGS_control_parameter
       use t_control_parameter
       use t_physical_property
-      use t_SPH_mesh_field_data
+      use t_SPH_SGS_structure
       use t_fdm_coefs
       use t_schmidt_poly_on_rtm
       use t_boundary_data_sph_MHD
@@ -44,34 +43,33 @@
 ! ----------------------------------------------------------------------
 !
       subroutine sel_explicit_sph_SGS_MHD                               &
-     &         (i_step, dt, SGS_param, MHD_prop, sph_MHD_bc, SPH_MHD)
+     &         (i_step, dt, MHD_prop, sph_MHD_bc, SPH_SGS)
 !
       integer(kind = kint), intent(in) :: i_step
       real(kind = kreal), intent(in) :: dt
 !
-      type(SGS_model_control_params), intent(in) :: SGS_param
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
-      type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
+      type(SPH_SGS_structure), intent(inout) :: SPH_SGS
 !
 !
       if(MHD_prop%iflag_all_scheme .eq. id_explicit_euler) then
         call cal_explicit_sph_SGS_euler                                 &
-     &     (dt, SGS_param, SPH_MHD%sph%sph_rj, MHD_prop, sph_MHD_bc,    &
-     &      SPH_MHD%ipol, SPH_MHD%fld)
+     &     (dt, SPH_SGS%SGS_par, SPH_SGS%sph%sph_rj, MHD_prop,          &
+     &      sph_MHD_bc, SPH_SGS%ipol, SPH_SGS%fld)
       else if(i_step .eq. 1) then
         if(iflag_debug.gt.0) write(*,*) 'cal_explicit_sph_SGS_euler'
         call cal_explicit_sph_SGS_euler                                 &
-     &     (dt, SGS_param, SPH_MHD%sph%sph_rj, MHD_prop, sph_MHD_bc,    &
-     &      SPH_MHD%ipol, SPH_MHD%fld)
+     &     (dt, SPH_SGS%SGS_par, SPH_SGS%sph%sph_rj, MHD_prop,          &
+     &      sph_MHD_bc, SPH_SGS%ipol, SPH_SGS%fld)
         call cal_first_SGS_prev_step_adams                              &
-     &     (SGS_param, SPH_MHD%sph%sph_rj, MHD_prop, sph_MHD_bc,        &
-     &      SPH_MHD%ipol, SPH_MHD%fld)
+     &     (SPH_SGS%SGS_par, SPH_SGS%sph%sph_rj, MHD_prop, sph_MHD_bc,  &
+     &      SPH_SGS%ipol, SPH_SGS%fld)
       else
         if(iflag_debug.gt.0) write(*,*) 'cal_explicit_sph_SGS_adams'
         call cal_explicit_sph_SGS_adams                                 &
-     &     (dt, SGS_param, SPH_MHD%sph%sph_rj, MHD_prop, sph_MHD_bc,    &
-     &      SPH_MHD%ipol, SPH_MHD%fld)
+     &     (dt, SPH_SGS%SGS_par, SPH_SGS%sph%sph_rj, MHD_prop,          &
+     &      sph_MHD_bc, SPH_SGS%ipol, SPH_SGS%fld)
       end if
 !
       end subroutine sel_explicit_sph_SGS_MHD
@@ -79,7 +77,7 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_explicit_sph_SGS_adams(dt, SGS_param,              &
+      subroutine cal_explicit_sph_SGS_adams(dt, SGS_par,                &
      &          sph_rj, MHD_prop, sph_MHD_bc, ipol, rj_fld)
 !
       use cal_vorticity_terms_adams
@@ -89,7 +87,7 @@
 !
       real(kind = kreal), intent(in) :: dt
 !
-      type(SGS_model_control_params), intent(in) :: SGS_param
+      type(SGS_paremeters), intent(in) :: SGS_par
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
@@ -103,11 +101,11 @@
      &    dt, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
       call sel_diff_induction_MHD_adams                                 &
-     &   (SGS_param%iflag_SGS_uxb, dt, MHD_prop%cd_prop,                &
+     &   (SGS_par%model_p%iflag_SGS_uxb, dt, MHD_prop%cd_prop,          &
      &    ipol%base, ipol%exp_work, ipol%forces, ipol%diffusion,        &
      &    ipol%SGS_term, rj_fld)
 !
-      call explicit_scalars_sph_SGS_adams(dt, SGS_param,                &
+      call explicit_scalars_sph_SGS_adams(dt, SGS_par%model_p,          &
      &    sph_rj, MHD_prop%ht_prop, MHD_prop%cp_prop,                   &
      &    sph_MHD_bc%sph_bc_T, sph_MHD_bc%sph_bc_C,                     &
      &    ipol%base, ipol%exp_work, ipol%forces, ipol%diffusion,        &
@@ -117,7 +115,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_explicit_sph_SGS_euler(dt, SGS_param,              &
+      subroutine cal_explicit_sph_SGS_euler(dt, SGS_par,                &
      &          sph_rj, MHD_prop, sph_MHD_bc, ipol, rj_fld)
 !
       use cal_vorticity_terms_adams
@@ -126,7 +124,7 @@
 !
       real(kind = kreal), intent(in) :: dt
 !
-      type(SGS_model_control_params), intent(in) :: SGS_param
+      type(SGS_paremeters), intent(in) :: SGS_par
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
@@ -140,11 +138,11 @@
      &    dt, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
       call sel_diff_induction_MHD_euler                                 &
-     &   (SGS_param%iflag_SGS_uxb, dt, MHD_prop%cd_prop,                &
+     &   (SGS_par%model_p%iflag_SGS_uxb, dt, MHD_prop%cd_prop,          &
      &    ipol%base, ipol%forces, ipol%diffusion, ipol%SGS_term,        &
      &    rj_fld)
 !
-      call explicit_scalars_sph_SGS_euler(dt, SGS_param,                &
+      call explicit_scalars_sph_SGS_euler(dt, SGS_par%model_p,          &
      &    sph_rj, MHD_prop%ht_prop, MHD_prop%cp_prop,                   &
      &    sph_MHD_bc%sph_bc_T, sph_MHD_bc%sph_bc_C,                     &
      &    ipol%base, ipol%forces, ipol%diffusion, ipol%div_SGS, rj_fld)
@@ -153,15 +151,15 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_first_SGS_prev_step_adams(SGS_param,               &
-     &          sph_rj, MHD_prop, sph_MHD_bc, ipol, rj_fld)
+      subroutine cal_first_SGS_prev_step_adams                          &
+     &         (SGS_par, sph_rj, MHD_prop, sph_MHD_bc, ipol, rj_fld)
 !
       use cal_vorticity_terms_adams
       use select_diff_adv_source
       use explicit_scalars_sph_w_SGS
       use cal_explicit_SGS_induction
 !
-      type(SGS_model_control_params), intent(in) :: SGS_param
+      type(SGS_paremeters), intent(in) :: SGS_par
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
@@ -172,10 +170,10 @@
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
       call sel_ini_adams_mag_induct                                     &
-     &   (SGS_param%iflag_SGS_uxb, MHD_prop%cd_prop,                    &
+     &   (SGS_par%model_p%iflag_SGS_uxb, MHD_prop%cd_prop,              &
      &    ipol%exp_work, ipol%forces, ipol%SGS_term, rj_fld)
 !
-      call first_scalars_SGS_prev_adams(SGS_param,                      &
+      call first_scalars_SGS_prev_adams(SGS_par%model_p,                &
      &    sph_rj, MHD_prop%ht_prop, MHD_prop%cp_prop,                   &
      &    sph_MHD_bc%sph_bc_T, sph_MHD_bc%sph_bc_C,                     &
      &    ipol%base, ipol%exp_work, ipol%forces, ipol%div_SGS, rj_fld)

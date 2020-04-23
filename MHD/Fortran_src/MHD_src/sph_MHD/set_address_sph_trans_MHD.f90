@@ -9,11 +9,10 @@
 !!
 !!@verbatim
 !!      subroutine set_addresses_trans_sph_MHD                          &
-!!     &         (MHD_prop, SPH_MHD, iphys, trns_MHD,                   &
+!!     &         (MHD_prop, ipol, iphys, trns_MHD,                      &
 !!     &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
-!!        type(SPH_mesh_field_data), intent(in) :: SPH_MHD
-!!        type(phys_address), intent(in) :: iphys
+!!        type(phys_address), intent(in) :: ipol, iphys
 !!        type(address_4_sph_trans), intent(inout) :: trns_MHD
 !!
 !!      subroutine mhd_spectr_to_sendbuf                                &
@@ -42,7 +41,6 @@
       use t_spheric_rj_data
       use t_phys_address
       use t_phys_data
-      use t_SPH_mesh_field_data
       use t_addresses_sph_transform
       use t_control_parameter
       use t_physical_property
@@ -56,14 +54,13 @@
 !-----------------------------------------------------------------------
 !
       subroutine set_addresses_trans_sph_MHD                            &
-     &         (MHD_prop, SPH_MHD, iphys, trns_MHD,                     &
+     &         (MHD_prop, ipol, iphys, trns_MHD,                        &
      &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
 !
       use address_sph_trans_MHD
 !
       type(MHD_evolution_param), intent(in) :: MHD_prop
-      type(SPH_mesh_field_data), intent(in) :: SPH_MHD
-      type(phys_address), intent(in) :: iphys
+      type(phys_address), intent(in) :: ipol, iphys
       type(address_4_sph_trans), intent(inout) :: trns_MHD
       integer(kind = kint), intent(inout) :: ncomp_sph_trans
       integer(kind = kint), intent(inout) :: nvector_sph_trans
@@ -74,9 +71,9 @@
         write(*,*) 'Spherical transform field table for MHD'
       end if
 !
-      call bwd_trans_address_MHD(MHD_prop, SPH_MHD%ipol, iphys,         &
+      call bwd_trans_address_MHD(MHD_prop, ipol, iphys,                 &
      &    trns_MHD%b_trns, trns_MHD%backward)
-      call fwd_trans_address_MHD(MHD_prop, SPH_MHD%ipol, iphys,         &
+      call fwd_trans_address_MHD(MHD_prop, ipol, iphys,                 &
      &    trns_MHD%f_trns, trns_MHD%forward)
 !
       ncomp_sph_trans =   0

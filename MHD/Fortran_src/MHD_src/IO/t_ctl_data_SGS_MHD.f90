@@ -11,6 +11,7 @@
 !!@n        Modified by H. Matsui on Oct., 2012
 !!
 !!@verbatim
+!!      subroutine read_control_4_sph_SGS_MHD(file_name, MHD_ctl)
 !!      subroutine read_sph_mhd_control_data                            &
 !!     &         (id_control, hd_block, MHD_ctl, c_buf)
 !!      subroutine dealloc_sph_sgs_mhd_ctl_data(MHD_ctl)
