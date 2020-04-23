@@ -24,7 +24,6 @@
       use m_SPH_MHD_model_data
       use m_SPH_SGS_structure
       use t_mesh_data
-      use t_SPH_SGS_structure
       use t_step_parameter
       use t_MHD_file_parameter
       use t_work_SPH_MHD
@@ -51,6 +50,7 @@
       use FEM_analyzer_sph_MHD
       use SPH_analyzer_snap
       use output_viz_file_control
+      use SGS_MHD_zonal_mean_viz
 !
       integer(kind = kint) :: visval
       integer(kind = kint) :: iflag
@@ -98,8 +98,17 @@
         if(visval .eq. 0) then
           if (iflag_debug.eq.1) write(*,*) 'visualize_surface'
           if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+4)
-          call visualize_surface(MHD_step1%viz_step, MHD_step1%time_d,  &
-     &        FEM_d1%geofem, FEM_d1%field, viz_psfs1)
+          call visualize_all(MHD_step1%viz_step, MHD_step1%time_d,      &
+     &        FEM_d1%geofem, FEM_d1%field, next_tbl_VIZ1%neib_ele,      &
+     &        jacobians_VIZ1, vizs1)
+          if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+4)
+!*
+!*  ----------- Zonal means --------------
+!*
+          call SGS_MHD_zmean_sections                                   &
+     &       (MHD_step1%viz_step, MHD_step1%time_d, SPH_SGS1%SGS_par,   &
+     &        SPH_SGS1%sph, FEM_d1%geofem, SPH_WK1%trns_WK,             &
+     &        FEM_d1%field, zmeans1)
           if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+4)
         end if
 !

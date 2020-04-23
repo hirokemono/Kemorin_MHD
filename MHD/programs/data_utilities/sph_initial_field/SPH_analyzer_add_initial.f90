@@ -23,6 +23,7 @@
       use m_elapsed_labels_SEND_RECV
       use m_ctl_data_sph_MHD
       use m_SPH_MHD_model_data
+      use m_SPH_MHD_structure
       use m_MHD_step_parameter
       use t_MHD_file_parameter
       use t_SPH_mesh_field_data

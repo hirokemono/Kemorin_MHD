@@ -22,6 +22,7 @@
       use m_elapsed_labels_SEND_RECV
       use m_SPH_MHD_model_data
       use m_MHD_step_parameter
+      use m_SPH_MHD_structure
       use t_viz_sections
       use t_SPH_MHD_zonal_mean_viz
 !

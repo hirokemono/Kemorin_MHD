@@ -5,7 +5,7 @@
 !!@date Programmed in 2000
 !!@n modified in Feb., 2009
 !
-!> @brief control flags for MHD dynamo model
+!> @brief control flags for MHD dynamo model with SGS model
 !!
 !!@verbatim
 !!@endverbatim
