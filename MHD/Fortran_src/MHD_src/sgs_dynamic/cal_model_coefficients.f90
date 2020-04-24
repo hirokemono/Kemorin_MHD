@@ -171,7 +171,7 @@
      &        icomp_sgs_term%i_SGS_h_flux,                              &
      &        icomp_diff_sgs%i_SGS_h_flux,                              &
      &        SGS_par, fem%mesh, fem%group,                             &
-     &        nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs, iphys,                &
+     &        nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs, iphys%SGS_wk,         &
      &        SGS_MHD_wk%iphys_ele, SGS_MHD_wk%ele_fld, MHD_mesh%fluid, &
      &        fem_int, FEM_filters, iphys_elediff_fil,                  &
      &        sgs_coefs, SGS_MHD_wk%mk_MHD, SGS_MHD_wk%FEM_SGS_wk,      &
@@ -230,7 +230,7 @@
      &        icomp_sgs_term%i_SGS_c_flux,                              &
      &        icomp_diff_sgs%i_SGS_c_flux,                              &
      &        SGS_par, fem%mesh, fem%group,                             &
-     &        nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs, iphys,                &
+     &        nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs, iphys%SGS_wk,         &
      &        SGS_MHD_wk%iphys_ele, SGS_MHD_wk%ele_fld, MHD_mesh%fluid, &
      &        fem_int, FEM_filters, iphys_elediff_fil,                  &
      &        sgs_coefs, SGS_MHD_wk%mk_MHD, SGS_MHD_wk%FEM_SGS_wk,      &
@@ -349,8 +349,9 @@
      &       icomp_diff_sgs, iphys_elediff_fil,                         &
      &       time_d%dt, FEM_prm, SGS_par, fem%mesh, fem%group,          &
      &       MHD_mesh%fluid, MHD_mesh%conduct,                          &
-     &       MHD_prop%cd_prop, surf_bcs%Bsf_bcs, iphys,                 &
-     &       SGS_MHD_wk%iphys_ele, SGS_MHD_wk%ele_fld,                  &
+     &       MHD_prop%cd_prop, surf_bcs%Bsf_bcs,                        &
+     &       iphys%base, iphys%filter_fld, iphys%SGS_term,              &
+     &       iphys%SGS_wk, SGS_MHD_wk%iphys_ele, SGS_MHD_wk%ele_fld,    &
      &       fem_int, sgs_coefs, FEM_filters, SGS_MHD_wk%mk_MHD,        &
      &       SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%mhd_fem_wk,              &
      &       SGS_MHD_wk%rhs_mat, nod_fld, diff_coefs)

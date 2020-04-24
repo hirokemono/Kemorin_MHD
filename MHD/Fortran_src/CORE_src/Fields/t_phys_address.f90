@@ -87,14 +87,12 @@
 !>        Structure of gradient of filtered fields
         type(gradient_field_address) :: grad_fil_fld
 !>        Structure of difference of filtered vector
-        type(diff_vector_address) :: diff_fil_vect
+!        type(diff_vector_address) :: diff_fil_vect
 !
 !>        Structure of SGS terms
         type(SGS_term_address) :: SGS_term
 !>        Structure of divergence of SGS terms
         type(SGS_term_address) :: div_SGS
-!>        Structure of rotation of SGS terms
-!        type(SGS_term_address) :: rot_SGS
 !>        Structure of SGS energy fluxes
         type(SGS_ene_flux_address) :: SGS_ene_flux
 !>        Structure of model coefficients

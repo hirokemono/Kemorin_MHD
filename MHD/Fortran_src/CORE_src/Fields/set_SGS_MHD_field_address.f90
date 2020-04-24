@@ -250,7 +250,7 @@
      &   (i_fld, field_name, iphys%grad_fil_fld, flag)
       if(flag) return
       call set_diff_filter_vect_addresses                               &
-     &   (i_fld, field_name, iphys%diff_fil_vect, flag)
+     &   (i_fld, field_name, iphys_LES%diff_fil_vect, flag)
       if(flag) return
 !
       call set_dynamic_SGS_work_addresses                               &

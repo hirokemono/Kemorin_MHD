@@ -3,22 +3,24 @@
 !
 !     Written by H. Matsui on Aug., 2007
 !
-!!      subroutine cal_ave_rms_sgs_dynamic(layer_tbl,                   &
-!!     &         node, ele, iphys, nod_fld, g_FEM, jac_3d_q, jac_3d_l,  &
+!!      subroutine cal_ave_rms_sgs_dynamic                              &
+!!     &        (layer_tbl, node, ele, iphys_SGS_wk,                    &
+!!     &         nod_fld, g_FEM, jac_3d_q, jac_3d_l,                    &
 !!     &         numdir, icomp_f, n_int, nlayer_SGS, num_sgs_coefs,     &
 !!     &         ave_sgs_simi, ave_sgs_grad, rms_sgs_simi, rms_sgs_grad,&
 !!     &         ratio_sgs, ave_sgs_simi_w, ave_sgs_grad_w,             &
 !!     &         rms_sgs_simi_w, rms_sgs_grad_w, ratio_sgs_w, wk_cor)
 !!
-!!      subroutine cal_ave_rms_diff_area(iele_fsmp_stack,               &
-!!     &          node, ele, iphys, nod_fld, g_FEM, jac_3d_q, jac_3d_l, &
+!!      subroutine cal_ave_rms_diff_area                                &
+!!     &         (iele_fsmp_stack, node, ele, iphys_SGS_wk,             &
+!!     &          nod_fld, g_FEM, jac_3d_q, jac_3d_l,                   &
 !!     &          numdir, icomp_f, n_int, volume_d, num_diff_coefs,     &
 !!     &          ave_diff_simi_w, ave_diff_grad_w,                     &
 !!     &          rms_diff_simi_w, rms_diff_grad_w, ratio_diff_w, wk_cor)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(layering_tbl), intent(in) :: layer_tbl
-!!        type(phys_address), intent(in) :: iphys
+!!        type(dynamic_SGS_work_address), intent(in) :: iphys_SGS_wk
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
 !!        type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
@@ -32,7 +34,7 @@
       use m_machine_parameter
 !
       use t_geometry_data
-      use t_phys_address
+      use t_SGS_model_coef_labels
       use t_phys_data
       use t_layering_ele_list
       use t_fem_gauss_int_coefs
@@ -49,8 +51,9 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine cal_ave_rms_sgs_dynamic(layer_tbl,                     &
-     &         node, ele, iphys, nod_fld, g_FEM, jac_3d_q, jac_3d_l,    &
+      subroutine cal_ave_rms_sgs_dynamic                                &
+     &        (layer_tbl, node, ele, iphys_SGS_wk,                      &
+     &         nod_fld, g_FEM, jac_3d_q, jac_3d_l,                      &
      &         numdir, icomp_f, n_int, nlayer_SGS, num_sgs_coefs,       &
      &         ave_sgs_simi, ave_sgs_grad, rms_sgs_simi, rms_sgs_grad,  &
      &         ratio_sgs, ave_sgs_simi_w, ave_sgs_grad_w,               &
@@ -61,7 +64,7 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(layering_tbl), intent(in) :: layer_tbl
-      type(phys_address), intent(in) :: iphys
+      type(dynamic_SGS_work_address), intent(in) :: iphys_SGS_wk
       type(phys_data), intent(in) :: nod_fld
       type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
@@ -89,7 +92,7 @@
       type(dynamic_correlation_data), intent(inout) :: wk_cor
 !
 !
-      call int_vol_rms_ave_dynamic(layer_tbl, node, ele, iphys%SGS_wk,  &
+      call int_vol_rms_ave_dynamic(layer_tbl, node, ele, iphys_SGS_wk,  &
      &    nod_fld, g_FEM, jac_3d_q, jac_3d_l, numdir, n_int, wk_cor)
 !
       call sum_layerd_averages(layer_tbl%e_grp%num_grp, wk_cor)
@@ -113,8 +116,9 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine cal_ave_rms_diff_area(iele_fsmp_stack,                 &
-     &          node, ele, iphys, nod_fld, g_FEM, jac_3d_q, jac_3d_l,   &
+      subroutine cal_ave_rms_diff_area                                  &
+     &         (iele_fsmp_stack, node, ele, iphys_SGS_wk,               &
+     &          nod_fld, g_FEM, jac_3d_q, jac_3d_l,                     &
      &          numdir, icomp_f, n_int, volume_d, num_diff_coefs,       &
      &          ave_diff_simi_w, ave_diff_grad_w,                       &
      &          rms_diff_simi_w, rms_diff_grad_w, ratio_diff_w, wk_cor)
@@ -123,7 +127,7 @@
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
-      type(phys_address), intent(in) :: iphys
+      type(dynamic_SGS_work_address), intent(in) :: iphys_SGS_wk
       type(phys_data), intent(in) :: nod_fld
       type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
@@ -149,7 +153,7 @@
 !
 !
       call int_vol_rms_ave_diff(iele_fsmp_stack,                        &
-     &    node, ele, iphys%SGS_wk, nod_fld, g_FEM, jac_3d_q, jac_3d_l,  &
+     &    node, ele, iphys_SGS_wk, nod_fld, g_FEM, jac_3d_q, jac_3d_l,  &
      &    numdir, n_int, wk_cor)
 !
       call sum_whole_averages(wk_cor)

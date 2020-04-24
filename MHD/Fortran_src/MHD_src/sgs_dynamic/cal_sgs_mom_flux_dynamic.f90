@@ -108,7 +108,7 @@
       call reset_tensor_sgs_model_coefs                                 &
      &   (mesh%ele, FEM_filters%layer_tbl,                              &
      &    icomp_sgs_term%i_SGS_m_flux, sgs_coefs)
-      call clear_work_4_dynamic_model(iphys, nod_fld)
+      call clear_work_4_dynamic_model(iphys%SGS_wk, nod_fld)
 !
 !    SGS term by similarity model
 !
@@ -172,7 +172,7 @@
      &                     iak_sgs_term%i_SGS_m_flux,                   &
      &                     icomp_sgs_term%i_SGS_m_flux
       call cal_model_coefs(SGS_par, FEM_filters%layer_tbl,              &
-     &    mesh%node, mesh%ele, iphys, nod_fld, fem_int%jcs,             &
+     &    mesh%node, mesh%ele, iphys%SGS_wk, nod_fld, fem_int%jcs,      &
      &    SGS_par%model_p%itype_Csym_m_flux, n_sym_tensor,              &
      &    iak_sgs_term%i_SGS_m_flux, icomp_sgs_term%i_SGS_m_flux,       &
      &    FEM_prm%npoint_t_evo_int, FEM_SGS_wk%wk_cor,                  &

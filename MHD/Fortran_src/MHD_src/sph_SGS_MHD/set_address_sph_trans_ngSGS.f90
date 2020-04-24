@@ -208,8 +208,8 @@
       call alloc_sph_trns_field_name(trns_DYNG%backward)
 !
       call add_diff_fil_vec_sph_trns_pol                                &
-     &   (ipol%diff_fil_vect, iphys%diff_fil_vect,                      &
-     &    trns_DYNG%b_trns%diff_fil_vect, trns_DYNG%backward)
+     &   (ipol_LES%diff_fil_vect, iphys_LES%diff_fil_vect,              &
+     &    trns_DYNG%b_trns_LES%diff_fil_vect, trns_DYNG%backward)
       call add_grad_filter_fld_4_sph_trns                               &
      &   (ipol%grad_fil_fld, iphys%grad_fil_fld,                        &
      &    trns_DYNG%b_trns%grad_fil_fld, trns_DYNG%backward)
@@ -232,8 +232,8 @@
 !
       trns_DYNG%forward%num_vector = trns_DYNG%forward%nfield
       call add_diff_fil_vec_4_scalar_trns                               &
-     &   (ipol%diff_fil_vect, iphys%diff_fil_vect,                      &
-     &    trns_DYNG%f_trns%diff_fil_vect, trns_DYNG%forward)
+     &   (ipol_LES%diff_fil_vect, iphys_LES%diff_fil_vect,              &
+     &    trns_DYNG%f_trns_LES%diff_fil_vect, trns_DYNG%forward)
       trns_DYNG%forward%num_scalar = trns_DYNG%forward%nfield           &
      &                               - trns_DYNG%forward%num_vector
       trns_DYNG%forward%num_tensor = 0

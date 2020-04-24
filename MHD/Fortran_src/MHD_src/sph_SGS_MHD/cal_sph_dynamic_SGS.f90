@@ -324,7 +324,7 @@
       if (iflag_debug.eq.1) write(*,*) 'cal_sph_dble_filtering_forces'
       call cal_wide_nonlinear_grad_sph_SGS                              &
      &   (sph, comms_sph, r_2nd, MHD_prop, sph_MHD_bc, trans_p,         &
-     &    dynamic_SPH, ipol, trns_SIMI, WK_sph, rj_fld,                 &
+     &    dynamic_SPH, ipol, ipol_LES, trns_SIMI, WK_sph, rj_fld,       &
      &    trns_DYNG, trns_Csim)
 !
       if (iflag_debug.eq.1) write(*,*) 'SGS_param%stab_weight'

@@ -197,8 +197,8 @@
      &            dt, iphys%SGS_wk%i_sgs_temp, iphys%filter_fld%i_temp, &
      &            iak_diff_base%i_temp, icomp_diff_base%i_temp,         &
      &            SGS_par, mesh%nod_comm, mesh%node, mesh%ele,          &
-     &            mesh%surf, group%surf_grp, sf_bcs, iphys, iphys_ele,  &
-     &            ele_fld, fluid, FEM_filters%layer_tbl,                &
+     &            mesh%surf, group%surf_grp, sf_bcs, iphys%SGS_wk,      &
+     &            iphys_ele, ele_fld, fluid, FEM_filters%layer_tbl,     &
      &            fem_int%jcs, fem_int%rhs_tbl,                         &
      &            FEM_filters%FEM_elens, FEM_filters%filtering,         &
      &            mk_MHD%mlump_fl, FEM_SGS_wk%wk_filter,                &
@@ -308,7 +308,7 @@
      &             iphys%filter_fld%i_light,                            &
      &             iak_diff_base%i_light, icomp_diff_base%i_light,      &
      &             SGS_par, mesh%nod_comm, mesh%node, mesh%ele,         &
-     &             mesh%surf, group%surf_grp, sf_bcs, iphys,            &
+     &             mesh%surf, group%surf_grp, sf_bcs, iphys%SGS_wk,     &
      &             iphys_ele, ele_fld, fluid, FEM_filters%layer_tbl,    &
      &             fem_int%jcs, fem_int%rhs_tbl,                        &
      &             FEM_filters%FEM_elens, FEM_filters%filtering,        &

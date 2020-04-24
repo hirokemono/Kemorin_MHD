@@ -4,8 +4,8 @@
 !     Written by H. Matsui
 !     Modified by H. Matsui on July, 2007
 !
-!!      subroutine clear_work_4_dynamic_model(iphys, nod_fld)
-!!        type(phys_address), intent(in) :: iphys
+!!      subroutine clear_work_4_dynamic_model(iphys_SGS_wk, nod_fld)
+!!      type(dynamic_SGS_work_address), intent(in) :: iphys_SGS_wk
 !!        type(phys_data), intent(inout) :: nod_fld
 !!
 !!      subroutine reset_vector_sgs_model_coefs                         &
@@ -41,21 +41,21 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine clear_work_4_dynamic_model(iphys, nod_fld)
+      subroutine clear_work_4_dynamic_model(iphys_SGS_wk, nod_fld)
 !
       use m_phys_constants
-      use t_phys_address
+      use t_SGS_model_coef_labels
       use t_phys_data
       use copy_nodal_fields
 !
-      type(phys_address), intent(in) :: iphys
+      type(dynamic_SGS_work_address), intent(in) :: iphys_SGS_wk
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-      call clear_field_data(nod_fld, n_sym_tensor, iphys%SGS_wk%i_simi)
-      call clear_field_data(nod_fld, n_sym_tensor, iphys%SGS_wk%i_nlg)
+      call clear_field_data(nod_fld, n_sym_tensor, iphys_SGS_wk%i_simi)
+      call clear_field_data(nod_fld, n_sym_tensor, iphys_SGS_wk%i_nlg)
       call clear_field_data                                             &
-     &   (nod_fld, n_sym_tensor, iphys%SGS_wk%i_wd_nlg)
+     &   (nod_fld, n_sym_tensor, iphys_SGS_wk%i_wd_nlg)
 !
       end subroutine clear_work_4_dynamic_model
 !

@@ -142,7 +142,7 @@
 !
       call reset_diff_model_coefs(ele%numele, ele%istack_ele_smp,       &
      &    diff_coefs%num_field, iak_diff_v, diff_coefs%ak)
-      call clear_work_4_dynamic_model(iphys, nod_fld)
+      call clear_work_4_dynamic_model(iphys%SGS_wk, nod_fld)
 !
 !    get filtered pressure(to iphys%SGS_wk%i_wd_nlg)
 !
@@ -267,7 +267,7 @@
       if (iflag_debug.gt.0)  write(*,*)                                 &
      &   'cal_diff_coef_fluid', n_sym_tensor, iak_diff_v, icomp_diff_v
       call cal_diff_coef_fluid                                          &
-     &   (SGS_par, layer_tbl, node, ele, fluid, iphys, nod_fld,         &
+     &   (SGS_par, layer_tbl, node, ele, fluid, iphys%SGS_wk, nod_fld,  &
      &    jacs, n_sym_tensor, iak_diff_v, icomp_diff_v,                 &
      &    FEM_prm%npoint_t_evo_int, wk_cor, wk_lsq, wk_diff,            &
      &    diff_coefs)

@@ -8,9 +8,10 @@
 !!
 !!@verbatim
 !!      subroutine copy_filter_vecs_rtp_4_grad                          &
-!!     &         (sph, bs_trns, fd_trns, trns_b_SGS, trns_DYNG)
+!!     &         (sph, bs_trns_fil, fd_trns_dfv, trns_b_SGS, trns_DYNG)
 !!        type(sph_grids), intent(in) :: sph
-!!        type(phys_address), intent(in) :: bs_trns, fd_trns
+!!        type(base_field_address), intent(in) :: bs_trns_fil
+!!        type(diff_vector_address), intent(in) :: fd_trns_dfv
 !!        type(address_each_sph_trans), intent(in) :: trns_b_SGS
 !!        type(address_each_sph_trans), intent(inout) :: trns_DYNG
 !!@endverbatim
@@ -22,7 +23,8 @@
 !
       use t_spheric_parameter
       use t_spheric_rtp_data
-      use t_phys_address
+      use t_base_field_labels
+      use t_diff_vector_labels
       use t_addresses_sph_transform
 !
       implicit none
@@ -34,59 +36,50 @@
 ! ----------------------------------------------------------------------
 !
       subroutine copy_filter_vecs_rtp_4_grad                            &
-     &         (sph, bs_trns, fd_trns, trns_b_SGS, trns_DYNG)
+     &         (sph, bs_trns_fil, fd_trns_dfv, trns_b_SGS, trns_DYNG)
 !
       use sph_poynting_flux_smp
 !
       type(sph_grids), intent(in) :: sph
-      type(phys_address), intent(in) :: bs_trns, fd_trns
+      type(base_field_address), intent(in) :: bs_trns_fil
+      type(diff_vector_address), intent(in) :: fd_trns_dfv
 !
       type(address_each_sph_trans), intent(in) :: trns_b_SGS
       type(address_each_sph_trans), intent(inout) :: trns_DYNG
 !
 !
-      if(bs_trns%filter_fld%i_velo .gt. 0) then
+      if(bs_trns_fil%i_velo .gt. 0) then
         call copy_vect_to_grad_vect_rtp(sph%sph_rtp,                    &
-     &      bs_trns%filter_fld%i_velo,                                  &
-     &      fd_trns%diff_fil_vect%i_grad_vx,                            &
-     &      fd_trns%diff_fil_vect%i_grad_vy,                            &
-     &      fd_trns%diff_fil_vect%i_grad_vz,                            &
+     &      bs_trns_fil%i_velo, fd_trns_dfv%i_grad_vx,                  &
+     &      fd_trns_dfv%i_grad_vy, fd_trns_dfv%i_grad_vz,               &
      &      trns_b_SGS%ncomp, trns_DYNG%ncomp,                          &
      &      trns_b_SGS%fld_rtp, trns_DYNG%fld_rtp)
       end if
-      if(bs_trns%filter_fld%i_vort .gt. 0) then
+      if(bs_trns_fil%i_vort .gt. 0) then
         call copy_vect_to_grad_vect_rtp(sph%sph_rtp,                    &
-     &      bs_trns%filter_fld%i_vort,                                  &
-     &      fd_trns%diff_fil_vect%i_grad_wx,                            &
-     &      fd_trns%diff_fil_vect%i_grad_wy,                            &
-     &      fd_trns%diff_fil_vect%i_grad_wz,                            &
+     &      bs_trns_fil%i_vort, fd_trns_dfv%i_grad_wx,                  &
+     &      fd_trns_dfv%i_grad_wy, fd_trns_dfv%i_grad_wz,               &
      &      trns_b_SGS%ncomp, trns_DYNG%ncomp,                          &
      &      trns_b_SGS%fld_rtp, trns_DYNG%fld_rtp)
       end if
-      if(bs_trns%filter_fld%i_vecp .gt. 0) then
+      if(bs_trns_fil%i_vecp .gt. 0) then
         call copy_vect_to_grad_vect_rtp(sph%sph_rtp,                    &
-     &      bs_trns%filter_fld%i_vecp,                                  &
-     &      fd_trns%diff_fil_vect%i_grad_ax,                            &
-     &      fd_trns%diff_fil_vect%i_grad_ay,                            &
-     &      fd_trns%diff_fil_vect%i_grad_az,                            &
+     &      bs_trns_fil%i_vecp, fd_trns_dfv%i_grad_ax,                  &
+     &      fd_trns_dfv%i_grad_ay, fd_trns_dfv%i_grad_az,               &
      &      trns_b_SGS%ncomp, trns_DYNG%ncomp,                          &
      &      trns_b_SGS%fld_rtp, trns_DYNG%fld_rtp)
       end if
-      if(bs_trns%filter_fld%i_magne .gt. 0) then
+      if(bs_trns_fil%i_magne .gt. 0) then
         call copy_vect_to_grad_vect_rtp(sph%sph_rtp,                    &
-     &      bs_trns%filter_fld%i_magne,                                 &
-     &      fd_trns%diff_fil_vect%i_grad_bx,                            &
-     &      fd_trns%diff_fil_vect%i_grad_by,                            &
-     &      fd_trns%diff_fil_vect%i_grad_bz,                            &
+     &      bs_trns_fil%i_magne, fd_trns_dfv%i_grad_bx,                 &
+     &      fd_trns_dfv%i_grad_by, fd_trns_dfv%i_grad_bz,               &
      &      trns_b_SGS%ncomp, trns_DYNG%ncomp,                          &
      &      trns_b_SGS%fld_rtp, trns_DYNG%fld_rtp)
       end if
-      if(bs_trns%filter_fld%i_current .gt. 0) then
+      if(bs_trns_fil%i_current .gt. 0) then
         call copy_vect_to_grad_vect_rtp(sph%sph_rtp,                    &
-     &      bs_trns%filter_fld%i_current,                               &
-     &      fd_trns%diff_fil_vect%i_grad_jx,                            &
-     &      fd_trns%diff_fil_vect%i_grad_jy,                            &
-     &      fd_trns%diff_fil_vect%i_grad_jz,                            &
+     &      bs_trns_fil%i_current, fd_trns_dfv%i_grad_jx,               &
+     &      fd_trns_dfv%i_grad_jy, fd_trns_dfv%i_grad_jz,               &
      &      trns_b_SGS%ncomp, trns_DYNG%ncomp,                          &
      &      trns_b_SGS%fld_rtp, trns_DYNG%fld_rtp)
       end if

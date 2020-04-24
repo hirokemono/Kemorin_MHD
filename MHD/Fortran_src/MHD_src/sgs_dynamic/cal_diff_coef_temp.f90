@@ -5,8 +5,8 @@
 !
 !!      subroutine s_cal_diff_coef_scalar(iflag_supg, num_int, dt,      &
 !!     &          ifield, ifield_f, iak_diff_t, icomp_diff_t,           &
-!!     &          SGS_par, nod_comm, node, ele, surf, sf_grp,           &
-!!     &          Tsf_bcs, iphys, iphys_ele, ele_fld, fluid, layer_tbl, &
+!!     &          SGS_par, nod_comm, node, ele, surf, sf_grp, Tsf_bcs,  &
+!!     &          iphys_SGS_wk, iphys_ele, ele_fld, fluid, layer_tbl,   &
 !!     &          jacs, rhs_tbl, FEM_elens, filtering, mlump_fl,        &
 !!     &          wk_filter, wk_cor, wk_lsq, wk_diff, fem_wk, surf_wk,  &
 !!     &          f_l, f_nl, nod_fld, diff_coefs)
@@ -19,7 +19,7 @@
 !!        type(surface_data), intent(in) :: surf
 !!        type(surface_group_data), intent(in) :: sf_grp
 !!        type(scaler_surf_bc_type), intent(in) :: Tsf_bcs
-!!        type(phys_address), intent(in) :: iphys
+!!        type(dynamic_SGS_work_address), intent(in) :: iphys_SGS_wk
 !!        type(phys_address), intent(in) :: iphys_ele
 !!        type(phys_data), intent(in) :: ele_fld
 !!        type(field_geometry_data), intent(in) :: fluid
@@ -51,6 +51,7 @@
       use t_group_data
       use t_phys_data
       use t_phys_address
+      use t_SGS_model_coef_labels
       use t_jacobians
       use t_table_FEM_const
       use t_layering_ele_list
@@ -76,8 +77,8 @@
 !
       subroutine s_cal_diff_coef_scalar(iflag_supg, num_int, dt,        &
      &          ifield, ifield_f, iak_diff_t, icomp_diff_t,             &
-     &          SGS_par, nod_comm, node, ele, surf, sf_grp,             &
-     &          Tsf_bcs, iphys, iphys_ele, ele_fld, fluid, layer_tbl,   &
+     &          SGS_par, nod_comm, node, ele, surf, sf_grp, Tsf_bcs,    &
+     &          iphys_SGS_wk, iphys_ele, ele_fld, fluid, layer_tbl,     &
      &          jacs, rhs_tbl, FEM_elens, filtering, mlump_fl,          &
      &          wk_filter, wk_cor, wk_lsq, wk_diff, fem_wk, surf_wk,    &
      &          f_l, f_nl, nod_fld, diff_coefs)
@@ -106,7 +107,7 @@
       type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
       type(scaler_surf_bc_type), intent(in) :: Tsf_bcs
-      type(phys_address), intent(in) :: iphys
+      type(dynamic_SGS_work_address), intent(in) :: iphys_SGS_wk
       type(phys_address), intent(in) :: iphys_ele
       type(phys_data), intent(in) :: ele_fld
       type(field_geometry_data), intent(in) :: fluid
@@ -131,88 +132,88 @@
 !
       call reset_diff_model_coefs(ele%numele, ele%istack_ele_smp,       &
      &    diff_coefs%num_field, iak_diff_t, diff_coefs%ak)
-      call clear_work_4_dynamic_model(iphys, nod_fld)
+      call clear_work_4_dynamic_model(iphys_SGS_wk, nod_fld)
 !
-!   take gradient of filtered temperature (to iphys%SGS_wk%i_simi)
+!   take gradient of filtered temperature (to iphys_SGS_wk%i_simi)
 !
       if (iflag_debug.gt.0) write(*,*) 'cal_gradent_in_fluid',          &
-     &        iphys%SGS_wk%i_simi, ifield_f
+     &        iphys_SGS_wk%i_simi, ifield_f
       call choose_cal_gradient                                          &
-     &   (iflag_supg, num_int, dt, ifield_f, iphys%SGS_wk%i_simi,       &
+     &   (iflag_supg, num_int, dt, ifield_f, iphys_SGS_wk%i_simi,       &
      &    fluid%istack_ele_fld_smp, mlump_fl,                           &
      &    nod_comm, node, ele, iphys_ele%base, ele_fld, jacs%g_FEM,     &
      &    jacs%jac_3d,  rhs_tbl, fem_wk, f_l, f_nl, nod_fld)
 !
-!   take gradient of temperature (to iphys%SGS_wk%i_nlg)
+!   take gradient of temperature (to iphys_SGS_wk%i_nlg)
 !
       if (iflag_debug.gt.0) write(*,*) 'cal_gradent_in_fluid',          &
-     &                     iphys%SGS_wk%i_nlg, ifield
+     &                     iphys_SGS_wk%i_nlg, ifield
       call choose_cal_gradient                                          &
-     &   (iflag_supg, num_int, dt, ifield, iphys%SGS_wk%i_nlg,          &
+     &   (iflag_supg, num_int, dt, ifield, iphys_SGS_wk%i_nlg,          &
      &    fluid%istack_ele_fld_smp, mlump_fl,                           &
      &    nod_comm, node, ele, iphys_ele%base, ele_fld, jacs%g_FEM,     &
      &    jacs%jac_3d, rhs_tbl, fem_wk, f_l, f_nl, nod_fld)
 !
-!    filtering (to iphys%SGS_wk%i_nlg)
+!    filtering (to iphys_SGS_wk%i_nlg)
 !
       call cal_filtered_vector_whole                                    &
      &   (SGS_par%filter_p, nod_comm, node, filtering,                  &
-     &    iphys%SGS_wk%i_nlg, iphys%SGS_wk%i_nlg, wk_filter, nod_fld)
+     &    iphys_SGS_wk%i_nlg, iphys_SGS_wk%i_nlg, wk_filter, nod_fld)
 !
-!    take difference (to iphys%SGS_wk%i_simi)
+!    take difference (to iphys_SGS_wk%i_simi)
 !
       call subtract_2_nod_vectors(nod_fld,                              &
-     &    iphys%SGS_wk%i_nlg, iphys%SGS_wk%i_simi, iphys%SGS_wk%i_simi)
+     &    iphys_SGS_wk%i_nlg, iphys_SGS_wk%i_simi, iphys_SGS_wk%i_simi)
 !
 !      call check_nodal_data                                            &
-!     &   ((50+my_rank), nod_fld, n_vector, iphys%SGS_wk%i_simi)
+!     &   ((50+my_rank), nod_fld, n_vector, iphys_SGS_wk%i_simi)
 !
 !    modeled commutative error by second filter
-!                               (to iphys%SGS_wk%i_wd_nlg)
+!                               (to iphys_SGS_wk%i_wd_nlg)
 !
       if (iflag_debug.gt.0)                                             &
-     &   write(*,*) 'cal_commute_error_f_temp', iphys%SGS_wk%i_wd_nlg
+     &   write(*,*) 'cal_commute_error_f_temp', iphys_SGS_wk%i_wd_nlg
       call cal_grad_commute(num_int, fluid%istack_ele_fld_smp,          &
      &    mlump_fl, node, ele, surf, sf_grp,                            &
      &    jacs%g_FEM, jacs%jac_3d, jacs%jac_sf_grp, rhs_tbl,            &
      &    FEM_elens, Tsf_bcs%sgs, ifilter_4delta,                       &
-     &    iphys%SGS_wk%i_wd_nlg, ifield_f, fem_wk, surf_wk,             &
+     &    iphys_SGS_wk%i_wd_nlg, ifield_f, fem_wk, surf_wk,             &
      &    f_l, f_nl, nod_fld)
 !
       call vector_send_recv                                             &
-     &   (iphys%SGS_wk%i_wd_nlg, nod_comm, nod_fld)
+     &   (iphys_SGS_wk%i_wd_nlg, nod_comm, nod_fld)
 !
 !      call check_nodal_data                                            &
-!     &   ((50+my_rank), nod_fld, n_vector, iphys%SGS_wk%i_wd_nlg)
+!     &   ((50+my_rank), nod_fld, n_vector, iphys_SGS_wk%i_wd_nlg)
 !
-!    modeled commutative error by grid filter ( to iphys%SGS_wk%i_nlg)
+!    modeled commutative error by grid filter ( to iphys_SGS_wk%i_nlg)
 !
       if (iflag_debug.gt.0)                                             &
-     &     write(*,*) 'cal_commute_error_temp', iphys%SGS_wk%i_nlg
+     &     write(*,*) 'cal_commute_error_temp', iphys_SGS_wk%i_nlg
       call cal_grad_commute(num_int, fluid%istack_ele_fld_smp,          &
      &    mlump_fl, node, ele, surf, sf_grp,                            &
      &    jacs%g_FEM, jacs%jac_3d, jacs%jac_sf_grp, rhs_tbl,            &
-     &    FEM_elens, Tsf_bcs%sgs, ifilter_2delta, iphys%SGS_wk%i_nlg,   &
+     &    FEM_elens, Tsf_bcs%sgs, ifilter_2delta, iphys_SGS_wk%i_nlg,   &
      &    ifield, fem_wk, surf_wk, f_l, f_nl, nod_fld)
 !
       call vector_send_recv                                             &
-     &   (iphys%SGS_wk%i_nlg, nod_comm, nod_fld)
+     &   (iphys_SGS_wk%i_nlg, nod_comm, nod_fld)
 !
-!    filtering (to iphys%SGS_wk%i_nlg)
+!    filtering (to iphys_SGS_wk%i_nlg)
 !
       call cal_filtered_vector_whole                                    &
      &   (SGS_par%filter_p, nod_comm, node, filtering,                  &
-     &    iphys%SGS_wk%i_nlg, iphys%SGS_wk%i_nlg, wk_filter, nod_fld)
+     &    iphys_SGS_wk%i_nlg, iphys_SGS_wk%i_nlg, wk_filter, nod_fld)
 !
 !      call check_nodal_data                                            &
-!     &   ((50+my_rank), nod_fld, n_vector, iphys%SGS_wk%i_nlg)
+!     &   ((50+my_rank), nod_fld, n_vector, iphys_SGS_wk%i_nlg)
 !
 !     obtain model coefficient
 !
       if (iflag_debug.gt.0)  write(*,*)                                 &
      &   'cal_diff_coef_fluid', n_vector, iak_diff_t, icomp_diff_t
-      call cal_diff_coef_fluid                                          &
-     &   (SGS_par, layer_tbl, node, ele, fluid, iphys, nod_fld, jacs,   &
+      call cal_diff_coef_fluid(SGS_par, layer_tbl,                      &
+     &    node, ele, fluid, iphys_SGS_wk, nod_fld, jacs,                &
      &    n_vector, iak_diff_t, icomp_diff_t, num_int,                  &
      &    wk_cor, wk_lsq, wk_diff, diff_coefs)
 !

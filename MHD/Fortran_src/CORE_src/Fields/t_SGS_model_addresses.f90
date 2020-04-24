@@ -51,7 +51,7 @@
 !>        Structure of gradient of filtered fields
 !        type(gradient_field_address) :: grad_fil_fld
 !>        Structure of difference of filtered vector
-!        type(diff_vector_address) :: diff_fil_vect
+        type(diff_vector_address) :: diff_fil_vect
 !
 !>        Structure of SGS terms
 !        type(SGS_term_address) :: SGS_term

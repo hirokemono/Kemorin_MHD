@@ -118,15 +118,17 @@
 !
       call reset_diff_model_coefs                                       &
      &   (mesh%ele%numele, mesh%ele%istack_ele_smp,                     &
-     &    diff_coefs%num_field, iak_diff_sgs%i_SGS_Lorentz, diff_coefs%ak)
-      call clear_work_4_dynamic_model(iphys, nod_fld)
+     &    diff_coefs%num_field, iak_diff_sgs%i_SGS_Lorentz,             &
+     &    diff_coefs%ak)
+      call clear_work_4_dynamic_model(iphys%SGS_wk, nod_fld)
 !
 !   gradient model by filtered field (to iphys%SGS_wk%i_wd_nlg)
 !
       if (iflag_debug.gt.0) write(*,*) 'cal_sgs_filter_maxwell_grad'
       call cal_sgs_m_flux_grad_w_coef                                   &
-     &   (ifilter_4delta, icomp_sgs_term%i_SGS_Lorentz,                                &
-     &    iphys%SGS_wk%i_wd_nlg, iphys%filter_fld%i_magne, iphys_elediff_fil%i_magne, dt, &
+     &   (ifilter_4delta, icomp_sgs_term%i_SGS_Lorentz,                 &
+     &    iphys%SGS_wk%i_wd_nlg, iphys%filter_fld%i_magne,              &
+     &    iphys_elediff_fil%i_magne, dt,                                &
      &    FEM_prm, SGS_par%model_p, mesh%nod_comm, mesh%node, mesh%ele, &
      &    fluid, iphys_ele%base, ele_fld, fem_int%jcs,                  &
      &    FEM_filters%FEM_elens, sgs_coefs, fem_int%rhs_tbl,            &
@@ -221,10 +223,11 @@
      &                     iak_diff_sgs%i_SGS_Lorentz,                  &
      &                     icomp_diff_sgs%i_SGS_Lorentz
       call cal_diff_coef_fluid(SGS_par, FEM_filters%layer_tbl,          &
-     &    mesh%node, mesh%ele, fluid, iphys, nod_fld,                   &
-     &    fem_int%jcs, n_vector, iak_diff_sgs%i_SGS_Lorentz, icomp_diff_sgs%i_SGS_Lorentz,          &
-     &    FEM_prm%npoint_t_evo_int, FEM_SGS_wk%wk_cor,                  &
-     &     FEM_SGS_wk%wk_lsq, FEM_SGS_wk%wk_diff, diff_coefs)
+     &    mesh%node, mesh%ele, fluid, iphys%SGS_wk, nod_fld,            &
+     &    fem_int%jcs, n_vector, iak_diff_sgs%i_SGS_Lorentz,            &
+     &    icomp_diff_sgs%i_SGS_Lorentz, FEM_prm%npoint_t_evo_int,       &
+     &    FEM_SGS_wk%wk_cor, FEM_SGS_wk%wk_lsq, FEM_SGS_wk%wk_diff,     &
+     &    diff_coefs)
 !
       end subroutine s_cal_diff_coef_sgs_mxwl
 !
