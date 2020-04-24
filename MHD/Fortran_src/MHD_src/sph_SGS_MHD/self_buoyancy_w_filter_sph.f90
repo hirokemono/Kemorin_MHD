@@ -97,8 +97,8 @@
      &    MHD_prop%fl_prop, sph_bc_U, g_sph_rj,                         &
      &    ipol%force_by_filter, ipol%div_frc_by_filter, rj_fld)
 !
-!      call sel_div_self_filtered_buo_sph(sph_rj,                       &
-!     &    ipol%filter_fld, ipol%grad_fil_fld, ipol%div_frc_by_filter,  &
+!      call sel_div_self_filtered_buo_sph(sph_rj, ipol%filter_fld,      &
+!     &    ipol_LES%grad_fil_fld, ipol%div_frc_by_filter,               &
 !     &    MHD_prop%fl_prop, sph_bc_U, rj_fld)
 !
       end subroutine cal_div_buoyancy_w_fil_sph_2

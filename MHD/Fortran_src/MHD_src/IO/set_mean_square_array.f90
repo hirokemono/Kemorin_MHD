@@ -10,9 +10,10 @@
 !!
 !!@verbatim
 !!      subroutine set_mean_square_values                               &
-!!     &         (nod_fld, iphys, i_msq, msq_list)
+!!     &         (nod_fld, iphys, iphys_LES, i_msq, msq_list)
 !!        type(phys_data), intent(in) :: nod_fld
-!!        type(phys_data), intent(in) :: nod_fld
+!!        type(phys_address), intent(in) :: iphys
+!!        type(SGS_model_addresses), intent(in) :: iphys_LES
 !!        type(mean_square_address), intent(inout) :: i_msq
 !!        type(mean_square_list), intent(inout) :: msq_list
 !!@endverbatim
@@ -21,8 +22,9 @@
 !
       use m_precision
 !
-      use t_phys_address
       use t_phys_data
+      use t_phys_address
+      use t_SGS_model_addresses
       use t_mean_square_filed_list
       use t_mean_square_values
 !
@@ -66,6 +68,7 @@
 !
       type(phys_data), intent(in) :: nod_fld
       type(phys_address), intent(in) :: iphys
+      type(SGS_model_addresses), intent(in) :: iphys_LES
 !
       type(mean_square_address), intent(inout) :: i_msq
       type(mean_square_list), intent(inout) :: msq_list
@@ -265,8 +268,8 @@
      &         (e_hd_fil_div_b, n_scalar, iphys%filter_fld%i_magne,     &
      &          i_msq%imsq_div_fil_b, i_msq%jave_div_fil_b, msq_list)
           else if ( field_name .eq. filter_vector_potential%name ) then
-            call set_rms_address                                        &
-     &         (e_hd_fil_div_a, n_scalar, iphys%grad_fil_fld%i_div_a,   &
+            call set_rms_address(e_hd_fil_div_a,                        &
+     &          n_scalar, iphys_LES%grad_fil_fld%i_div_a,               &
      &          i_msq%imsq_div_fil_a, i_msq%jave_div_fil_a, msq_list)
           else if ( field_name .eq. magnetic_potential%name ) then
             call set_rms_address                                        &

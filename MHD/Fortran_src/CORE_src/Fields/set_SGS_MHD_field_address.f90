@@ -247,7 +247,7 @@
 !
 !
       call set_grad_filter_field_addresses                              &
-     &   (i_fld, field_name, iphys%grad_fil_fld, flag)
+     &   (i_fld, field_name, iphys_LES%grad_fil_fld, flag)
       if(flag) return
       call set_diff_filter_vect_addresses                               &
      &   (i_fld, field_name, iphys_LES%diff_fil_vect, flag)

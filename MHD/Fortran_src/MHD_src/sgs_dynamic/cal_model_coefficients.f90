@@ -267,7 +267,8 @@
      &     (iak_diff_sgs, icomp_diff_sgs,                               &
      &      icomp_sgs_term, iphys_elediff_fil,                          &
      &      time_d%dt, FEM_prm, SGS_par, fem%mesh, fem%group,           &
-     &      nod_bcs%Vnod_bcs, surf_bcs%Vsf_bcs, iphys,                  &
+     &      nod_bcs%Vnod_bcs, surf_bcs%Vsf_bcs, iphys%base,             &
+     &      iphys%filter_fld, iphys%SGS_term, iphys%SGS_wk,             &
      &      SGS_MHD_wk%iphys_ele, SGS_MHD_wk%ele_fld, MHD_mesh%fluid,   &
      &      fem_int, FEM_filters, sgs_coefs, SGS_MHD_wk%mk_MHD,         &
      &      SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%mhd_fem_wk,               &
@@ -304,15 +305,15 @@
      &   then
           if (iflag_debug.eq.1) write(*,*) 's_cal_diff_coef_sgs_mxwl'
           call s_cal_diff_coef_sgs_mxwl                                 &
-     &     (iak_diff_sgs, icomp_diff_sgs,                               &
-     &      icomp_sgs_term, iphys_elediff_fil,                          &
-     &      time_d%dt, FEM_prm, SGS_par, fem%mesh, fem%group,           &
-     &      MHD_mesh%fluid, nod_bcs%Vnod_bcs,                           &
-     &      surf_bcs%Bsf_bcs, iphys, SGS_MHD_wk%iphys_ele,              &
-     &      SGS_MHD_wk%ele_fld, fem_int, FEM_filters, sgs_coefs,        &
+     &     (time_d%dt, FEM_prm, SGS_par, fem%mesh, fem%group,           &
+     &      MHD_mesh%fluid, nod_bcs%Vnod_bcs, surf_bcs%Bsf_bcs,         &
+     &      iphys%base, iphys%filter_fld, iphys%SGS_term, iphys%SGS_wk, &
+     &      SGS_MHD_wk%iphys_ele, SGS_MHD_wk%ele_fld, fem_int,          &
+     &      FEM_filters, iak_diff_sgs, icomp_diff_sgs,                  &
+     &      icomp_sgs_term, iphys_elediff_fil, sgs_coefs,               &
      &      SGS_MHD_wk%mk_MHD, SGS_MHD_wk%FEM_SGS_wk,                   &
-     &      SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat,                  &
-     &      nod_fld, diff_coefs)
+     &      SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat, nod_fld,         &
+     &      diff_coefs)
         end if
       end if
 !

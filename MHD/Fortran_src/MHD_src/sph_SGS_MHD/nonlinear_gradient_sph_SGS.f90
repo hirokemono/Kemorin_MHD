@@ -172,7 +172,7 @@
       if (iflag_debug.eq.1) write(*,*) 'overwrt_grad_of_vectors_sph'
       call overwrt_grad_of_vectors_sph                                  &
      &   (sph, r_2nd,  sph_MHD_bc, trans_p%leg, ipol%filter_fld,        &
-     &    ipol_LES%diff_fil_vect, ipol%grad_fil_fld, rj_fld)
+     &    ipol_LES%diff_fil_vect, ipol_LES, %grad_fil_fld, rj_fld)
 !
       if (iflag_debug.eq.1)                                             &
      &         write(*,*) 'sph_back_trans_SGS_MHD trns_DYNG'
@@ -182,7 +182,8 @@
       if (iflag_debug.eq.1) write(*,*) 'wider_nl_grad_SGS_rtp'
       call wider_nl_grad_SGS_rtp                                        &
      &   (sph, dynamic_SPH%sph_filters(2), MHD_prop,                    &
-     &    trns_SIMI%b_trns%filter_fld, trns_DYNG%b_trns%grad_fil_fld,   &
+     &    trns_SIMI%b_trns%filter_fld,                                  &
+     &    trns_DYNG%b_trns_LES%grad_fil_fld,                            &
      &    trns_DYNG%b_trns_LES%diff_fil_vect,                           &
      &    trns_Csim%b_trns_LES%wide_SGS,                                &
      &    trns_SIMI%backward, trns_DYNG%backward, trns_Csim%backward)

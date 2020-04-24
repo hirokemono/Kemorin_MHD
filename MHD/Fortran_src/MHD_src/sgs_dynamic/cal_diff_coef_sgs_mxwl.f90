@@ -3,19 +3,23 @@
 !
 !     Written by H. Matsui
 !
-!!      subroutine s_cal_diff_coef_sgs_mxwl(iak_diff_sgs,               &
-!!     &          icomp_diff_sgs, icomp_sgs_term, iphys_elediff_fil,    &
-!!     &          dt, FEM_prm, SGS_par, mesh, group, fluid,             &
-!!     &          Vnod_bcs, Bsf_bcs, iphys, iphys_ele, ele_fld,         &
-!!     &          fem_int, FEM_filters, sgs_coefs, mk_MHD,              &
-!!     &          FEM_SGS_wk, mhd_fem_wk, rhs_mat, nod_fld, diff_coefs)
+!!      subroutine s_cal_diff_coef_sgs_mxwl(dt, FEM_prm, SGS_par,       &
+!!     &          mesh, group, fluid, Vnod_bcs, Bsf_bcs,                &
+!!     &          iphys_base, iphys_fil, iphys_SGS, iphys_SGS_wk,       &
+!!     &          iphys_ele, ele_fld, fem_int, FEM_filters,             &
+!!     &          iak_diff_sgs, icomp_diff_sgs, icomp_sgs_term,         &
+!!     &          iphys_elediff_fil, sgs_coefs, mk_MHD, FEM_SGS_wk,     &
+!!     &          mhd_fem_wk, rhs_mat, nod_fld, diff_coefs)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) ::   group
 !!        type(nodal_bcs_4_momentum_type), intent(in) :: Vnod_bcs
 !!        type(vector_surf_bc_type), intent(in) :: Bsf_bcs
-!!        type(phys_address), intent(in) :: iphys
+!!        type(base_field_address), intent(in) :: iphys_base
+!!        type(base_field_address), intent(in) :: iphys_fil
+!!        type(SGS_term_address), intent(in) :: iphys_SGS
+!!        type(dynamic_SGS_work_address), intent(in) :: iphys_SGS_wk
 !!        type(phys_address), intent(in) :: iphys_ele
 !!        type(phys_data), intent(in) :: ele_fld
 !!        type(field_geometry_data), intent(in) :: fluid
@@ -43,7 +47,8 @@
       use t_geometry_data_MHD
       use t_surface_data
       use t_phys_data
-      use t_phys_address
+      use t_base_field_labels
+      use t_SGS_term_labels
       use t_base_field_labels
       use t_SGS_term_labels
       use t_table_FEM_const
@@ -66,12 +71,13 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_cal_diff_coef_sgs_mxwl(iak_diff_sgs,                 &
-     &          icomp_diff_sgs, icomp_sgs_term, iphys_elediff_fil,      &
-     &          dt, FEM_prm, SGS_par, mesh, group, fluid,               &
-     &          Vnod_bcs, Bsf_bcs, iphys, iphys_ele, ele_fld,           &
-     &          fem_int, FEM_filters, sgs_coefs, mk_MHD,                &
-     &          FEM_SGS_wk, mhd_fem_wk, rhs_mat, nod_fld, diff_coefs)
+      subroutine s_cal_diff_coef_sgs_mxwl(dt, FEM_prm, SGS_par,         &
+     &          mesh, group, fluid, Vnod_bcs, Bsf_bcs,                  &
+     &          iphys_base, iphys_fil, iphys_SGS, iphys_SGS_wk,         &
+     &          iphys_ele, ele_fld, fem_int, FEM_filters,               &
+     &          iak_diff_sgs, icomp_diff_sgs, icomp_sgs_term,           &
+     &          iphys_elediff_fil, sgs_coefs, mk_MHD, FEM_SGS_wk,       &
+     &          mhd_fem_wk, rhs_mat, nod_fld, diff_coefs)
 !
       use m_machine_parameter
       use m_phys_constants
@@ -95,7 +101,10 @@
       type(mesh_groups), intent(in) ::   group
       type(nodal_bcs_4_momentum_type), intent(in) :: Vnod_bcs
       type(vector_surf_bc_type), intent(in) :: Bsf_bcs
-      type(phys_address), intent(in) :: iphys
+      type(base_field_address), intent(in) :: iphys_base
+      type(base_field_address), intent(in) :: iphys_fil
+      type(SGS_term_address), intent(in) :: iphys_SGS
+      type(dynamic_SGS_work_address), intent(in) :: iphys_SGS_wk
       type(phys_address), intent(in) :: iphys_ele
       type(phys_data), intent(in) :: ele_fld
       type(field_geometry_data), intent(in) :: fluid
@@ -120,101 +129,100 @@
      &   (mesh%ele%numele, mesh%ele%istack_ele_smp,                     &
      &    diff_coefs%num_field, iak_diff_sgs%i_SGS_Lorentz,             &
      &    diff_coefs%ak)
-      call clear_work_4_dynamic_model(iphys%SGS_wk, nod_fld)
+      call clear_work_4_dynamic_model(iphys_SGS_wk, nod_fld)
 !
-!   gradient model by filtered field (to iphys%SGS_wk%i_wd_nlg)
+!   gradient model by filtered field (to iphys_SGS_wk%i_wd_nlg)
 !
       if (iflag_debug.gt.0) write(*,*) 'cal_sgs_filter_maxwell_grad'
-      call cal_sgs_m_flux_grad_w_coef                                   &
-     &   (ifilter_4delta, icomp_sgs_term%i_SGS_Lorentz,                 &
-     &    iphys%SGS_wk%i_wd_nlg, iphys%filter_fld%i_magne,              &
-     &    iphys_elediff_fil%i_magne, dt,                                &
+      call cal_sgs_m_flux_grad_w_coef(ifilter_4delta,                   &
+     &    icomp_sgs_term%i_SGS_Lorentz, iphys_SGS_wk%i_wd_nlg,          &
+     &    iphys_fil%i_magne, iphys_elediff_fil%i_magne, dt,             &
      &    FEM_prm, SGS_par%model_p, mesh%nod_comm, mesh%node, mesh%ele, &
      &    fluid, iphys_ele%base, ele_fld, fem_int%jcs,                  &
      &    FEM_filters%FEM_elens, sgs_coefs, fem_int%rhs_tbl,            &
      &    mk_MHD%mlump_fl, rhs_mat%fem_wk, mhd_fem_wk, nod_fld)
 !
-!   take divergence of filtered heat flux (to iphys%SGS_wk%i_simi)
+!   take divergence of filtered heat flux (to iphys_SGS_wk%i_simi)
 !
       if (iflag_debug.gt.0) write(*,*) 'cal_div_sgs_filter_mxwl_simi'
-      call cal_div_sgs_mf_simi(iphys%SGS_wk%i_simi,                     &
-     &    iphys%SGS_wk%i_wd_nlg, iphys%filter_fld%i_magne, dt,          &
+      call cal_div_sgs_mf_simi(iphys_SGS_wk%i_simi,                     &
+     &    iphys_SGS_wk%i_wd_nlg, iphys_fil%i_magne, dt,                 &
      &    FEM_prm, mesh%nod_comm, mesh%node, mesh%ele, fluid,           &
      &    iphys_ele, ele_fld, fem_int%jcs, fem_int%rhs_tbl,             &
      &    rhs_mat%fem_wk, mk_MHD%mlump_fl, rhs_mat%f_l, rhs_mat%f_nl,   &
      &    nod_fld)
 !
-!   take divergence of heat flux (to iphys%SGS_wk%i_nlg)
+!   take divergence of heat flux (to iphys_SGS_wk%i_nlg)
 !
       if (iflag_debug.gt.0)  write(*,*) 'cal_div_sgs_maxwell_simi'
-      call cal_div_sgs_mf_simi(iphys%SGS_wk%i_nlg,                      &
-     &    iphys%SGS_term%i_SGS_maxwell, iphys%base%i_magne, dt,         &
+      call cal_div_sgs_mf_simi(iphys_SGS_wk%i_nlg,                      &
+     &    iphys_SGS%i_SGS_maxwell, iphys_base%i_magne, dt,              &
      &    FEM_prm, mesh%nod_comm, mesh%node, mesh%ele, fluid,           &
      &    iphys_ele, ele_fld, fem_int%jcs, fem_int%rhs_tbl,             &
      &    rhs_mat%fem_wk, mk_MHD%mlump_fl, rhs_mat%f_l, rhs_mat%f_nl,   &
      &    nod_fld)
 !
-!    filtering (to iphys%SGS_wk%i_nlg)
+!    filtering (to iphys_SGS_wk%i_nlg)
 !
       call cal_filtered_vector_whole(SGS_par%filter_p,                  &
      &   mesh%nod_comm, mesh%node, FEM_filters%filtering,               &
-     &    iphys%SGS_wk%i_nlg, iphys%SGS_wk%i_nlg, FEM_SGS_wk%wk_filter, &
+     &    iphys_SGS_wk%i_nlg, iphys_SGS_wk%i_nlg, FEM_SGS_wk%wk_filter, &
      &    nod_fld)
 !
-!    take difference (to iphys%SGS_wk%i_simi)
+!    take difference (to iphys_SGS_wk%i_simi)
 !
       call subtract_2_nod_vectors(nod_fld,                              &
-     &    iphys%SGS_wk%i_nlg, iphys%SGS_wk%i_simi, iphys%SGS_wk%i_simi)
+     &    iphys_SGS_wk%i_nlg, iphys_SGS_wk%i_simi, iphys_SGS_wk%i_simi)
       call delete_field_by_fixed_v_bc                                   &
-     &   (Vnod_bcs, iphys%SGS_wk%i_simi, nod_fld)
+     &   (Vnod_bcs, iphys_SGS_wk%i_simi, nod_fld)
 !
 !      call check_nodal_data                                            &
-!     &   ((50+my_rank), nod_fld, n_vector, iphys%SGS_wk%i_simi)
+!     &   ((50+my_rank), nod_fld, n_vector, iphys_SGS_wk%i_simi)
 !
-!    obtain modeled commutative error  ( to iphys%SGS_wk%i_wd_nlg)
+!    obtain modeled commutative error  ( to iphys_SGS_wk%i_wd_nlg)
 !
       call cal_commute_error_4_mf                                       &
      &   (FEM_prm%npoint_t_evo_int, fluid%istack_ele_fld_smp,           &
      &    mk_MHD%mlump_fl, mesh%node, mesh%ele, mesh%surf,              &
      &    group%surf_grp, fem_int%jcs, fem_int%rhs_tbl,                 &
      &    FEM_filters%FEM_elens, Bsf_bcs%sgs, ifilter_4delta,           &
-     &    iphys%SGS_wk%i_wd_nlg, iphys%SGS_wk%i_wd_nlg,                 &
-     &    iphys%filter_fld%i_magne, rhs_mat%fem_wk, rhs_mat%surf_wk,    &
+     &    iphys_SGS_wk%i_wd_nlg, iphys_SGS_wk%i_wd_nlg,                 &
+     &    iphys_fil%i_magne, rhs_mat%fem_wk, rhs_mat%surf_wk,           &
      &    rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
 !
       call vector_send_recv                                             &
-     &   (iphys%SGS_wk%i_wd_nlg, mesh%nod_comm, nod_fld)
+     &   (iphys_SGS_wk%i_wd_nlg, mesh%nod_comm, nod_fld)
       call delete_field_by_fixed_v_bc                                   &
-     &   (Vnod_bcs, iphys%SGS_wk%i_wd_nlg, nod_fld)
+     &   (Vnod_bcs, iphys_SGS_wk%i_wd_nlg, nod_fld)
 !
 !      call check_nodal_data                                            &
-!     &   ((50+my_rank), nod_fld, n_vector, iphys%SGS_wk%i_wd_nlg)
+!     &   ((50+my_rank), nod_fld, n_vector, iphys_SGS_wk%i_wd_nlg)
 !
-!    obtain modeled commutative error  ( to iphys%SGS_wk%i_nlg)
+!    obtain modeled commutative error  ( to iphys_SGS_wk%i_nlg)
 !
       call cal_commute_error_4_mf                                       &
      &   (FEM_prm%npoint_t_evo_int, fluid%istack_ele_fld_smp,           &
      &    mk_MHD%mlump_fl, mesh%node, mesh%ele, mesh%surf,              &
      &    group%surf_grp, fem_int%jcs, fem_int%rhs_tbl,                 &
      &    FEM_filters%FEM_elens, Bsf_bcs%sgs, ifilter_2delta,           &
-     &    iphys%SGS_wk%i_nlg, iphys%SGS_term%i_SGS_maxwell,             &
-     &    iphys%base%i_magne, rhs_mat%fem_wk, rhs_mat%surf_wk,          &
+     &    iphys_SGS_wk%i_nlg, iphys_SGS%i_SGS_maxwell,                  &
+     &    iphys_base%i_magne, rhs_mat%fem_wk, rhs_mat%surf_wk,          &
      &    rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
 !
       call vector_send_recv                                             &
-     &   (iphys%SGS_wk%i_nlg, mesh%nod_comm, nod_fld)
+     &   (iphys_SGS_wk%i_nlg, mesh%nod_comm, nod_fld)
 !
-!    filtering (to iphys%SGS_wk%i_nlg)
+!    filtering (to iphys_SGS_wk%i_nlg)
 !
       call cal_filtered_vector_whole(SGS_par%filter_p,                  &
      &     mesh%nod_comm, mesh%node, FEM_filters%filtering,             &
-     &    iphys%SGS_wk%i_nlg, iphys%SGS_wk%i_nlg, FEM_SGS_wk%wk_filter, &
+     &    iphys_SGS_wk%i_nlg, iphys_SGS_wk%i_nlg, FEM_SGS_wk%wk_filter, &
      &    nod_fld)
       call delete_field_by_fixed_v_bc                                   &
-     &   (Vnod_bcs, iphys%SGS_wk%i_nlg, nod_fld)
+     &   (Vnod_bcs, iphys_SGS_wk%i_nlg, nod_fld)
 !
 !      call check_nodal_data                                            &
-!     &   ((50+my_rank), nod_fld, n_vector, iphys%SGS_wk%i_nlg)
+!     &   ((50+my_rank), nod_fld, n_vector, iphys_SGS_wk%i_nlg)
 !
 !     obtain model coefficient
 !
@@ -223,7 +231,7 @@
      &                     iak_diff_sgs%i_SGS_Lorentz,                  &
      &                     icomp_diff_sgs%i_SGS_Lorentz
       call cal_diff_coef_fluid(SGS_par, FEM_filters%layer_tbl,          &
-     &    mesh%node, mesh%ele, fluid, iphys%SGS_wk, nod_fld,            &
+     &    mesh%node, mesh%ele, fluid, iphys_SGS_wk, nod_fld,            &
      &    fem_int%jcs, n_vector, iak_diff_sgs%i_SGS_Lorentz,            &
      &    icomp_diff_sgs%i_SGS_Lorentz, FEM_prm%npoint_t_evo_int,       &
      &    FEM_SGS_wk%wk_cor, FEM_SGS_wk%wk_lsq, FEM_SGS_wk%wk_diff,     &

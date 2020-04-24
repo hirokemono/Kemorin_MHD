@@ -9,7 +9,8 @@
 !> @brief addresses for volume integrated data
 !!
 !!@verbatim
-!!      subroutine init_FEM_MHD_mean_square(nod_fld)
+!!      subroutine init_FEM_MHD_mean_square                             &
+!!     &         (nod_fld, iphys, iphys_LES, fem_sq)
 !!      subroutine output_time_step_control(istep, rms_step,            &
 !!     &          FEM_prm, time_d, mesh, MHD_mesh, fMHD_prop,           &
 !!     &          iphys, nod_fld, iphys_ele, ele_fld, jacs,             &
@@ -36,7 +37,7 @@
       use m_precision
 !
       use t_phys_address
-!      use t_SGS_model_addresses
+      use t_SGS_model_addresses
       use t_phys_data
       use t_mean_square_values
       use t_mean_square_filed_list
@@ -73,19 +74,21 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine init_FEM_MHD_mean_square(nod_fld, iphys, fem_sq)
+      subroutine init_FEM_MHD_mean_square                               &
+     &         (nod_fld, iphys, iphys_LES, fem_sq)
 !
       use calypso_mpi
       use set_mean_square_array
 !
       type(phys_data), intent(in) :: nod_fld
       type(phys_address), intent(in) :: iphys
+      type(SGS_model_addresses), intent(in) :: iphys_LES
       type(FEM_MHD_mean_square), intent(inout) :: fem_sq
 !
 !      integer(kind = kint) :: i
 !
       call alloc_mean_square_name(fem_sq%msq_list)
-      call set_mean_square_values(nod_fld, iphys,                       &
+      call set_mean_square_values(nod_fld, iphys, iphys_LES,            &
      &    fem_sq%i_msq, fem_sq%msq_list)
 !
       fem_sq%msq%num_rms = fem_sq%msq_list%numrms

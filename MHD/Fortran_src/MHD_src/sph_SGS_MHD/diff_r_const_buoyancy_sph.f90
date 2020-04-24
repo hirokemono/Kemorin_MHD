@@ -10,10 +10,11 @@
 !!      subroutine cal_rot_r_const_buo_sph_SGS                          &
 !!     &         (sph_rj, ipol, MHD_prop,  sph_bc_U, rj_fld)
 !!      subroutine cal_div_r_const_buo_sph_SGS                          &
-!!     &         (sph_rj, ipol, MHD_prop,  sph_bc_U, rj_fld)
+!!     &         (sph_rj, ipol, ipol_LES, MHD_prop,  sph_bc_U, rj_fld)
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(phys_address), intent(in) :: ipol
+!!        type(SGS_model_addresses), intent(in) :: ipol_LES
 !!        type(sph_boundary_type), intent(in) :: sph_bc_U
 !!        type(phys_data), intent(inout) :: rj_fld
 !!@endverbatim
@@ -68,16 +69,18 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_div_r_const_buo_sph_SGS                            &
-     &         (sph_rj, ipol, MHD_prop,  sph_bc_U, rj_fld)
+     &         (sph_rj, ipol, ipol_LES, MHD_prop, sph_bc_U, rj_fld)
 !
       use t_control_parameter
       use t_phys_address
+      use t_SGS_model_addresses
       use t_boundary_params_sph_MHD
       use div_r_const_buoyancies_sph
 !
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(phys_address), intent(in) :: ipol
+      type(SGS_model_addresses), intent(in) :: ipol_LES
       type(sph_boundary_type), intent(in) :: sph_bc_U
       type(phys_data), intent(inout) :: rj_fld
 !
@@ -87,8 +90,8 @@
      &    MHD_prop%fl_prop, MHD_prop%ref_param_T, MHD_prop%ref_param_C, &
      &    sph_bc_U, rj_fld)
 !
-      call sel_div_r_const_fil_buo_sph(sph_rj,                          &
-     &    ipol%filter_fld, ipol%grad_fil_fld, ipol%div_frc_by_filter,   &
+      call sel_div_r_const_fil_buo_sph(sph_rj, ipol%filter_fld,         &
+     &    ipol_LES%grad_fil_fld, ipol%div_frc_by_filter,                &
      &    MHD_prop%fl_prop, sph_bc_U, rj_fld)
 !
       end subroutine cal_div_r_const_buo_sph_SGS

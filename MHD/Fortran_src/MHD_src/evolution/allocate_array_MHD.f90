@@ -113,8 +113,8 @@
      &    MHD_prop, nod_fld, iphys, iphys_LES, ele_fld, iphys_ele)
       if (iflag_debug.ge.1)  write(*,*) 'initialize_ele_field_data'
 !
-      if ( iflag_debug.ge.1 ) write(*,*) 'set_mean_square_values'
-      call init_FEM_MHD_mean_square(nod_fld, iphys, fem_sq)
+      if ( iflag_debug.ge.1 ) write(*,*) 'init_FEM_MHD_mean_square'
+      call init_FEM_MHD_mean_square(nod_fld, iphys, iphys_LES, fem_sq)
 !
       end subroutine allocate_array_FEM_MHD
 !

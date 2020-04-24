@@ -211,8 +211,8 @@
      &   (ipol_LES%diff_fil_vect, iphys_LES%diff_fil_vect,              &
      &    trns_DYNG%b_trns_LES%diff_fil_vect, trns_DYNG%backward)
       call add_grad_filter_fld_4_sph_trns                               &
-     &   (ipol%grad_fil_fld, iphys%grad_fil_fld,                        &
-     &    trns_DYNG%b_trns%grad_fil_fld, trns_DYNG%backward)
+     &   (ipol_LES%grad_fil_fld, iphys_LES%grad_fil_fld,                &
+     &    trns_DYNG%b_trns_LES%grad_fil_fld, trns_DYNG%backward)
       call add_double_SGS_term_4_sph_trns                               &
      &   (ipol_LES%dble_SGS, iphys_LES%dble_SGS,                        &
      &    trns_DYNG%b_trns_LES%dble_SGS, trns_DYNG%backward)
