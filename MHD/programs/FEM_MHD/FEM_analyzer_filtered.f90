@@ -4,12 +4,12 @@
 !      modified by H. Matsui on June, 2005 
 !
 !!      subroutine FEM_analyze_filtered(i_step, MHD_files,              &
-!!     &          fem, iphys_nod, FEM_model, ak_MHD,                    &
+!!     &          fem, iphys, FEM_model, ak_MHD,                        &
 !!     &          MHD_step, visval, FEM_SGS, SGS_MHD_wk,                &
 !!     &          nod_fld, fem_ucd, MHD_IO, fem_sq)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(mesh_data), intent(in) :: fem
-!!        type(phys_address), intent(in) :: iphys_nod
+!!        type(phys_address), intent(in) :: iphys
 !!        type(coefs_4_MHD_type), intent(in) :: ak_MHD
 !!        type(MHD_step_param), intent(inout) :: MHD_step
 !!        type(FEM_SGS_structure), intent(inout) :: FEM_SGS
@@ -51,7 +51,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine FEM_analyze_filtered(i_step, MHD_files,                &
-     &          fem, iphys_nod, FEM_model, ak_MHD,                      &
+     &          fem, iphys, FEM_model, ak_MHD,                          &
      &          MHD_step, visval, FEM_SGS, SGS_MHD_wk,                  &
      &          nod_fld, fem_ucd, MHD_IO, fem_sq)
 !
@@ -77,7 +77,7 @@
       integer(kind=kint ), intent(in) :: i_step
       type(MHD_file_IO_params), intent(in) :: MHD_files
       type(mesh_data), intent(in) :: fem
-      type(phys_address), intent(in) :: iphys_nod
+      type(phys_address), intent(in) :: iphys
       type(FEM_MHD_model_data), intent(in) :: FEM_model
       type(coefs_4_MHD_type), intent(in) :: ak_MHD
 !
@@ -121,7 +121,7 @@
 !     ---------------------
 !
       call set_perturbation_to_scalar                                   &
-     &   (FEM_model%MHD_prop, iphys_nod, nod_fld)
+     &   (FEM_model%MHD_prop, iphys, nod_fld)
 !
 !     ---------------------
 !
@@ -131,7 +131,7 @@
       if (iflag_debug.eq.1)  write(*,*) 'update_FEM_fields'
       call update_FEM_fields(MHD_step%time_d, FEM_model%FEM_prm,        &
      &    FEM_SGS%SGS_par, fem, FEM_model%MHD_mesh,                     &
-     &    FEM_model%FEM_MHD_BCs, iphys_nod, FEM_SGS%FEM_filters,        &
+     &    FEM_model%FEM_MHD_BCs, iphys, FEM_SGS%FEM_filters,            &
      &    SGS_MHD_wk, nod_fld, FEM_SGS%Csims)
 !
 !     ----- Evaluate model coefficients
@@ -139,7 +139,7 @@
       call cal_FEM_model_coefficients                                   &
      &   (MHD_step%time_d, FEM_model%FEM_prm, FEM_SGS%SGS_par,          &
      &    fem, FEM_model%MHD_mesh, FEM_model%MHD_prop,                  &
-     &    FEM_model%FEM_MHD_BCs,iphys_nod, FEM_SGS%FEM_filters,         &
+     &    FEM_model%FEM_MHD_BCs,iphys, FEM_SGS%FEM_filters,             &
      &    SGS_MHD_wk, nod_fld, FEM_SGS%Csims)
 !
 !     ========  Data output
@@ -147,8 +147,8 @@
       call lead_fields_by_FEM(MHD_step%flex_p%istep_max_dt, MHD_step,   &
      &    FEM_model%FEM_prm, FEM_SGS%SGS_par, fem, FEM_model%MHD_mesh,  &
      &    FEM_model%MHD_prop, FEM_model%FEM_MHD_BCs,                    &
-     &    iphys_nod, ak_MHD, FEM_SGS%FEM_filters, SGS_MHD_wk, nod_fld,  &
-     &    FEM_SGS%Csims)
+     &    iphys, FEM_SGS%iphys_LES, ak_MHD, FEM_SGS%FEM_filters,        &
+     &    SGS_MHD_wk, nod_fld, FEM_SGS%Csims)
 !
 !     ----Filtering
       if (iflag_debug.eq.1) write(*,*) 'filtering_all_fields'
@@ -163,7 +163,7 @@
      &   (MHD_step%flex_p%istep_max_dt, MHD_step%rms_step,              &
      &    FEM_model%FEM_prm, MHD_step%time_d, fem%mesh,                 &
      &    FEM_model%MHD_mesh, FEM_model%MHD_prop,                       &
-     &    iphys_nod, nod_fld, SGS_MHD_wk%iphys_ele,                     &
+     &    iphys, nod_fld, SGS_MHD_wk%iphys_ele,                         &
      &    SGS_MHD_wk%ele_fld, SGS_MHD_wk%fem_int%jcs,                   &
      &    SGS_MHD_wk%rhs_mat, SGS_MHD_wk%mhd_fem_wk, fem_sq)
 !

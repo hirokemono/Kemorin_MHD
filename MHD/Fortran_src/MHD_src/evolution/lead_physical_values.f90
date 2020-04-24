@@ -9,8 +9,8 @@
 !!@verbatim
 !!      subroutine lead_fields_by_FEM                                   &
 !!     &         (istep, MHD_step, FEM_prm, SGS_par, fem, MHD_mesh,     &
-!!     &          MHD_prop, FEM_MHD_BCs, iphys, ak_MHD, FEM_filters,    &
-!!     &          SGS_MHD_wk, nod_fld, Csims_FEM_MHD)
+!!     &          MHD_prop, FEM_MHD_BCs, iphys, iphys_LES, ak_MHD,      &
+!!     &          FEM_filters, SGS_MHD_wk, nod_fld, Csims_FEM_MHD)
 !!        type(MHD_step_param), intent(in) :: MHD_step
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
@@ -45,6 +45,7 @@
       use t_edge_data
       use t_phys_data
       use t_phys_address
+      use t_SGS_model_addresses
       use t_table_FEM_const
       use t_MHD_mass_matrices
       use t_FEM_MHD_filter_data
@@ -66,8 +67,8 @@
 !
       subroutine lead_fields_by_FEM                                     &
      &         (istep, MHD_step, FEM_prm, SGS_par, fem, MHD_mesh,       &
-     &          MHD_prop, FEM_MHD_BCs, iphys, ak_MHD, FEM_filters,      &
-     &          SGS_MHD_wk, nod_fld, Csims_FEM_MHD)
+     &          MHD_prop, FEM_MHD_BCs, iphys, iphys_LES, ak_MHD,        &
+     &          FEM_filters, SGS_MHD_wk, nod_fld, Csims_FEM_MHD)
 !
       use update_after_evolution
       use itp_potential_on_edge
@@ -84,6 +85,7 @@
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(FEM_MHD_BC_data), intent(in) :: FEM_MHD_BCs
       type(phys_address), intent(in) :: iphys
+      type(SGS_model_addresses), intent(in) :: iphys_LES
       type(coefs_4_MHD_type), intent(in) :: ak_MHD
       type(filters_on_FEM), intent(in) :: FEM_filters
 !
@@ -119,7 +121,7 @@
       if (iflag_debug.gt.0) write(*,*) 'cal_energy_fluxes'
       call cal_energy_fluxes(MHD_step%time_d%dt, FEM_prm, SGS_par,      &
      &    fem%mesh, fem%group, MHD_mesh, MHD_prop,                      &
-     &    FEM_MHD_BCs%nod_bcs, FEM_MHD_BCs%surf_bcs, iphys,             &
+     &    FEM_MHD_BCs%nod_bcs, FEM_MHD_BCs%surf_bcs, iphys, iphys_LES,  &
      &    SGS_MHD_wk%iphys_ele, ak_MHD, SGS_MHD_wk%fem_int,             &
      &    FEM_filters%FEM_elens, Csims_FEM_MHD, FEM_filters%filtering,  &
      &    SGS_MHD_wk%mk_MHD, SGS_MHD_wk%FEM_SGS_wk,                     &
@@ -131,8 +133,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_energy_fluxes                                      &
-     &        (dt, FEM_prm, SGS_par, mesh, group, MHD_mesh,             &
-     &         MHD_prop, nod_bcs, surf_bcs, iphys, iphys_ele, ak_MHD,   &
+     &        (dt, FEM_prm, SGS_par, mesh, group, MHD_mesh, MHD_prop,   &
+     &         nod_bcs, surf_bcs, iphys, iphys_LES, iphys_ele, ak_MHD,  &
      &         fem_int, FEM_elens, Csims_FEM_MHD, filtering, mk_MHD,    &
      &         FEM_SGS_wk, mhd_fem_wk, rhs_mat, nod_fld, ele_fld)
 !
@@ -151,6 +153,7 @@
       type(nodal_boundarty_conditions), intent(in) :: nod_bcs
       type(surface_boundarty_conditions), intent(in) :: surf_bcs
       type(phys_address), intent(in) :: iphys
+      type(SGS_model_addresses), intent(in) :: iphys_LES
       type(phys_address), intent(in) :: iphys_ele
       type(coefs_4_MHD_type), intent(in) :: ak_MHD
       type(finite_element_integration), intent(in) :: fem_int
@@ -224,7 +227,7 @@
 !
       call cal_work_4_sgs_terms(FEM_prm,                                &
      &   mesh%nod_comm, mesh%node, mesh%ele, MHD_mesh%conduct,          &
-     &   MHD_prop%fl_prop, MHD_prop%cd_prop, iphys,                     &
+     &   MHD_prop%fl_prop, MHD_prop%cd_prop, iphys, iphys_LES,          &
      &   fem_int%jcs, fem_int%rhs_tbl, mk_MHD, mhd_fem_wk,              &
      &   rhs_mat%fem_wk, rhs_mat%f_nl, nod_fld)
 ! 

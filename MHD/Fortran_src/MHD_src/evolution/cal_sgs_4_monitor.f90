@@ -17,10 +17,10 @@
 !!     &          iphys, iphys_ele, ak_MHD, fem_int, FEM_elens,         &
 !!     &          iak_diff_sgs, diff_coefs, mk_MHD,                     &
 !!     &          mhd_fem_wk, rhs_mat, nod_fld, ele_fld)
-!!      subroutine cal_work_4_sgs_terms                                 &
-!!     &         (FEM_prm, nod_comm, node, ele, conduct,                &
-!!     &          fl_prop, cd_prop, iphys, jacs, rhs_tbl, mk_MHD,       &
-!!     &          mhd_fem_wk, fem_wk, f_nl, nod_fld)
+!!      subroutine cal_work_4_sgs_terms                                   &
+!!     &         (FEM_prm, nod_comm, node, ele, conduct,                  &
+!!     &          fl_prop, cd_prop, iphys, iphys_LES, jacs, rhs_tbl,      &
+!!     &          mk_MHD, mhd_fem_wk, fem_wk, f_nl, nod_fld)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(SGS_filtering_params), intent(in) :: filter_param
@@ -35,6 +35,7 @@
 !!        type(nodal_boundarty_conditions), save :: nod_bcs
 !!        type(surface_boundarty_conditions), intent(in) :: surf_bcs
 !!        type(phys_address), intent(in) :: iphys
+!!        type(SGS_model_addresses), intent(in) :: iphys_LES
 !!        type(phys_address), intent(in) :: iphys_ele
 !!        type(coefs_4_MHD_type), intent(in) :: ak_MHD
 !!        type(jacobians_type), intent(in) :: jacs
@@ -73,6 +74,7 @@
       use t_group_data
       use t_phys_data
       use t_phys_address
+      use t_SGS_model_addresses
       use t_jacobians
       use t_table_FEM_const
       use t_finite_element_mat
@@ -336,8 +338,8 @@
 !
       subroutine cal_work_4_sgs_terms                                   &
      &         (FEM_prm, nod_comm, node, ele, conduct,                  &
-     &          fl_prop, cd_prop, iphys, jacs, rhs_tbl, mk_MHD,         &
-     &          mhd_fem_wk, fem_wk, f_nl, nod_fld)
+     &          fl_prop, cd_prop, iphys, iphys_LES, jacs, rhs_tbl,      &
+     &          mk_MHD, mhd_fem_wk, fem_wk, f_nl, nod_fld)
 !
       use products_nodal_fields_smp
       use int_sgs_induction
@@ -351,6 +353,7 @@
       type(fluid_property), intent(in) :: fl_prop
       type(conductive_property), intent(in) :: cd_prop
       type(phys_address), intent(in) :: iphys
+      type(SGS_model_addresses), intent(in) :: iphys_LES
       type(jacobians_type), intent(in) :: jacs
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(lumped_mass_mat_layerd), intent(in) :: mk_MHD
@@ -379,7 +382,7 @@
      &    iphys%SGS_ene_flux, nod_fld)
 !
       call work_of_SGS_terms(iphys%filter_fld, iphys%true_SGS,          &
-     &    iphys%true_div_SGS, iphys%true_SGS_eflux, nod_fld)
+     &    iphys%true_div_SGS, iphys_LES%true_SGS_eflux, nod_fld)
 !
       end subroutine cal_work_4_sgs_terms
 !

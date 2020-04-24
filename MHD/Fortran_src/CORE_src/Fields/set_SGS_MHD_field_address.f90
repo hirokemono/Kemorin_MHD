@@ -242,7 +242,7 @@
      &   (i_fld, field_name, iphys%true_div_SGS, flag)
       if(flag) return
       call set_true_SGS_ene_flux_addresses                              &
-     &   (i_fld, field_name, iphys%true_SGS_eflux, flag)
+     &   (i_fld, field_name, iphys_LES%true_SGS_eflux, flag)
       if(flag) return
 !
 !
