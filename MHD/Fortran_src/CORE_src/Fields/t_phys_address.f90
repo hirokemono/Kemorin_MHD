@@ -94,16 +94,13 @@
 !>        Structure of divergence of SGS terms
         type(SGS_term_address) :: div_SGS
 !>        Structure of rotation of SGS terms
-        type(SGS_term_address) :: rot_SGS
+!        type(SGS_term_address) :: rot_SGS
 !>        Structure of SGS energy fluxes
         type(SGS_ene_flux_address) :: SGS_ene_flux
 !>        Structure of model coefficients
         type(SGS_term_address) :: Csim
 !>        Structure of work area for dynamic model
         type(dynamic_SGS_work_address) :: SGS_wk
-!
-!>        Structure of forces with SGS terms
-!        type(SGS_term_address) :: frc_w_SGS
       end type phys_address
 !
 !

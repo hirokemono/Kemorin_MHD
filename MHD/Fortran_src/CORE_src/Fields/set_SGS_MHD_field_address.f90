@@ -213,7 +213,7 @@
      &   (i_fld, field_name, iphys%div_SGS, flag)
       if(flag) return
       call set_rot_SGS_term_addresses                                   &
-     &   (i_fld, field_name, iphys%rot_SGS, flag)
+     &   (i_fld, field_name, iphys_LES%rot_SGS, flag)
       if(flag) return
 !
       call set_wide_SGS_term_addresses                                  &

@@ -7,17 +7,13 @@
 !>@brief  Evaluate curl or divergence of forces
 !!
 !!@verbatim
-!!      subroutine rot_SGS_terms_exp_sph                                &
-!!     &         (sph_rj, r_2nd, sph_MHD_bc, leg, ipol, rj_fld)
-!!     &         (sph_rj, r_2nd, sph_MHD_bc, g_sph_rj,                  &
-!!     &          ipol_div_frc, ipol_SGS, ipol_div_SGS, rj_fld)
+!!      subroutine rot_SGS_terms_exp_sph(sph_rj, r_2nd, sph_MHD_bc, leg,&
+!!     &          ipol, ipol_LES, rj_fld)
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(fdm_matrices), intent(in) :: r_2nd
 !!        type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
 !!        type(phys_address), intent(in) :: ipol
-!!        type(base_force_address), intent(in) :: ipol_div_frc
-!!        type(SGS_term_address), intent(in) :: ipol_SGS
-!!        type(SGS_term_address), intent(in) :: ipol_div_SGS
+!!        type(SGS_model_addresses), intent(in) :: ipol_LES
 !!        type(phys_data), intent(inout) :: rj_fld
 !!@endverbatim
 !
@@ -33,6 +29,7 @@
       use t_base_force_labels
       use t_SGS_term_labels
       use t_phys_address
+      use t_SGS_model_addresses
       use t_phys_data
       use t_fdm_coefs
       use t_schmidt_poly_on_rtm
@@ -53,8 +50,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine rot_SGS_terms_exp_sph                                  &
-     &         (sph_rj, r_2nd, sph_MHD_bc, leg, ipol, rj_fld)
+      subroutine rot_SGS_terms_exp_sph(sph_rj, r_2nd, sph_MHD_bc, leg,  &
+     &          ipol, ipol_LES, rj_fld)
 !
       use calypso_mpi
 !
@@ -63,6 +60,7 @@
       type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
       type(legendre_4_sph_trans), intent(in) :: leg
       type(phys_address), intent(in) :: ipol
+      type(SGS_model_addresses), intent(in) :: ipol_LES
 !
       type(phys_data), intent(inout) :: rj_fld
 !
@@ -72,7 +70,7 @@
       call SGS_rot_of_SGS_forces_sph_2                                  &
      &   (sph_rj, r_2nd, leg%g_sph_rj, sph_MHD_bc%sph_bc_U,             &
      &    sph_MHD_bc%fdm2_free_ICB, sph_MHD_bc%fdm2_free_CMB,           &
-     &    ipol%SGS_term, ipol%rot_SGS, rj_fld)
+     &    ipol%SGS_term, ipol_LES%rot_SGS, rj_fld)
 !
       call cal_rot_of_SGS_induction_sph(sph_rj, r_2nd, leg%g_sph_rj,    &
      &    sph_MHD_bc%sph_bc_B, ipol%forces, ipol%SGS_term, rj_fld)

@@ -147,7 +147,7 @@
      &                'SGS_forces_to_explicit'
       call SGS_forces_to_explicit(SPH_SGS%SGS_par%model_p,              &
      &    SPH_MHD%sph%sph_rj, SPH_model%sph_MHD_bc%sph_bc_U,            &
-     &    SPH_MHD%ipol, SPH_MHD%fld)
+     &    SPH_MHD%ipol, SPH_SGS%ipol_LES, SPH_MHD%fld)
 !
       end subroutine nonlinear_with_SGS
 !*

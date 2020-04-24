@@ -176,7 +176,8 @@
      &    b_trns_LES%frc_w_SGS, trns_back)
 !
       call add_rot_SGS_4_sph_trns_snap                                  &
-     &   (ipol%rot_SGS, iphys%rot_SGS, b_trns%rot_SGS, trns_back)
+     &   (ipol_LES%rot_SGS, iphys_LES%rot_SGS,                          &
+     &    b_trns_LES%rot_SGS, trns_back)
 !
       call add_SGS_induction_sph_trns_pol                               &
      &   (ipol%SGS_term, iphys%SGS_term, b_trns%SGS_term, trns_back)
