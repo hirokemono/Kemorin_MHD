@@ -37,7 +37,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine set_mean_square_values                                 &
-     &         (nod_fld, iphys, i_msq, msq_list)
+     &         (nod_fld, iphys, iphys_LES, i_msq, msq_list)
 !
       use t_base_field_labels
       use t_energy_flux_labels
