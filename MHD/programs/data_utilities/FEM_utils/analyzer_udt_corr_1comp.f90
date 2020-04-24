@@ -94,9 +94,9 @@
 !
 !     --------------------- 
 !
-      if (iflag_debug.eq.1) write(*,*) 'init_field_data'
-      call init_field_data                                              &
-     &   (femmesh_p_FUT%mesh%node%numnod, field_FUTIL, iphys_FUTIL)
+      if (iflag_debug.eq.1) write(*,*) 'init_field_data_w_SGS'
+      call init_field_data_w_SGS(femmesh_p_FUT%mesh%node%numnod,        &
+     &    field_FUTIL, iphys_FUTIL, iphys_LES_FUTIL)
 !
 !     --------------------- 
 !

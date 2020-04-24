@@ -30,6 +30,8 @@
 !
 !>        address of spectr SGS term
         type(SGS_model_addresses) :: ipol_LES
+!>        address of nodal SGS term
+        type(SGS_model_addresses) :: iphys_LES
       end type SPH_SGS_structure
 !
       end module t_SPH_SGS_structure

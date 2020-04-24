@@ -4,9 +4,10 @@
 !      Written by H. Matsui
 !
 !!      subroutine SPH_initialize_back_trans                            &
-!!     &         (files_param, SPH_MHD, t_IO, fld_IO)
+!!     &         (files_param, SPH_MHD, ipol_LES, t_IO, fld_IO)
 !!        type(SPH_TRNS_file_IO_params), intent(in) :: files_param
 !!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
+!!        type(SGS_model_addresses), intent(inout) :: ipol_LES
 !!        type(field_IO), intent(inout) :: fld_IO
 !!        type(time_data), intent(inout) :: t_IO
 !
@@ -21,6 +22,7 @@
       use t_SPH_mesh_field_data
       use t_time_data
       use t_field_data_IO
+      use t_SPH_SGS_structure
       use t_phys_name_4_sph_trans
 !
       implicit none
@@ -32,7 +34,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine SPH_initialize_back_trans                              &
-     &         (files_param, SPH_MHD, t_IO, fld_IO)
+     &         (files_param, SPH_MHD, ipol_LES, t_IO, fld_IO)
 !
       use m_legendre_transform_list
       use r_interpolate_sph_data
@@ -45,6 +47,7 @@
 !
       type(SPH_TRNS_file_IO_params), intent(in) :: files_param
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
+      type(SGS_model_addresses), intent(inout) :: ipol_LES
       type(field_IO), intent(inout) :: fld_IO
       type(time_data), intent(inout) :: t_IO
 !
@@ -74,8 +77,8 @@
 !
 !  ---- allocate spectr data
 !
-      call init_field_data(SPH_MHD%sph%sph_rj%nnod_rj,      &
-     &    SPH_MHD%fld, SPH_MHD%ipol)
+      call init_field_data_w_SGS(SPH_MHD%sph%sph_rj%nnod_rj,            &
+     &    SPH_MHD%fld, SPH_MHD%ipol, ipol_LES)
 !
 !  ---- initialize spherical harmonics transform
 !

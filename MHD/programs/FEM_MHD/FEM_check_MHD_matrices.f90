@@ -4,11 +4,11 @@
 !      modified by H. Matsui on June, 2005 
 !
 !!      subroutine FEM_check_MHD_mat(MHD_files, flex_MHD, MHD_step,     &
-!!     &          fem, iphys_nod, nod_fld, FEM_model, MHD_CG,           &
+!!     &          fem, iphys, nod_fld, FEM_model, MHD_CG,               &
 !!     &          FEM_SGS, SGS_MHD_wk, MHD_IO, fem_sq, label_sim)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(mesh_data), intent(inout) :: fem
-!!        type(phys_address), intent(inout) :: iphys_nod
+!!        type(phys_address), intent(inout) :: iphys
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(FEM_MHD_model_data), intent(inout) :: FEM_model
 !!        type(FEM_MHD_solvers), intent(inout) :: MHD_CG
@@ -47,7 +47,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine FEM_check_MHD_mat(MHD_files, flex_MHD, MHD_step,       &
-     &          fem, iphys_nod, nod_fld, FEM_model, MHD_CG,             &
+     &          fem, iphys, nod_fld, FEM_model, MHD_CG,                 &
      &          FEM_SGS, SGS_MHD_wk, MHD_IO, fem_sq, label_sim)
 !
       use t_boundary_field_IO
@@ -60,7 +60,7 @@
       type(MHD_file_IO_params), intent(in) :: MHD_files
 !
       type(mesh_data), intent(inout) :: fem
-      type(phys_address), intent(inout) :: iphys_nod
+      type(phys_address), intent(inout) :: iphys
       type(phys_data), intent(inout) :: nod_fld
       type(FEM_MHD_model_data), intent(inout) :: FEM_model
       type(FEM_MHD_solvers), intent(inout) :: MHD_CG
@@ -82,8 +82,8 @@
      &    FEM_SGS%SGS_par, flex_MHD, MHD_step, fem%mesh, fem%group,     &
      &    FEM_model%MHD_mesh, FEM_SGS%FEM_filters,                      &
      &    FEM_model%MHD_prop, FEM_model%MHD_BC, FEM_model%FEM_MHD_BCs,  &
-     &    FEM_SGS%Csims, iphys_nod, nod_fld, MHD_CG, SGS_MHD_wk,        &
-     &    fem_sq, MHD_IO%rst_IO, label_sim)
+     &    FEM_SGS%Csims, iphys, FEM_SGS%iphys_LES, nod_fld, MHD_CG,     &
+     &    SGS_MHD_wk, fem_sq, MHD_IO%rst_IO, label_sim)
 !
 !   construct matrix for Poisson and diffusion terms
 !

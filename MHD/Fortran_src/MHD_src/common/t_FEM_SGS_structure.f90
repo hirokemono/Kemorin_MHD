@@ -16,6 +16,7 @@
       use t_SGS_control_parameter
       use t_FEM_SGS_model_coefs
       use t_FEM_MHD_filter_data
+      use t_SGS_model_addresses
 !
       implicit none
 !
@@ -30,6 +31,9 @@
 !
 !>        Structure of grouping of elements
         type(filters_on_FEM) :: FEM_filters
+!
+!>        address of nodal SGS term
+        type(SGS_model_addresses) :: iphys_LES
       end type FEM_SGS_structure
 !
       end module t_FEM_SGS_structure

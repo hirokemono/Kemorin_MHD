@@ -8,13 +8,14 @@
 !!
 !!@verbatim
 !!      subroutine set_sph_SGS_MHD_spectr_data                          &
-!!     &         (SGS_par, MHD_prop, sph, ipol, rj_fld)
+!!     &         (SGS_par, MHD_prop, sph, rj_fld, ipol, ipol_LES)
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(commutation_control_params), intent(in) :: cmt_param
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
 !!        type(sph_grids), intent(in) :: sph
 !!        type(phys_address), intent(inout) :: ipol
 !!        type(phys_data), intent(inout) :: rj_fld
+!!        type(SGS_model_addresses), intent(inout) :: ipol_LES
 !!@endverbatim
 !
       module check_dependency_SGS_MHD
@@ -29,9 +30,9 @@
       use t_control_parameter
       use t_SGS_control_parameter
       use t_physical_property
-      use t_spheric_parameter
       use t_phys_address
       use t_phys_data
+      use t_SGS_model_addresses
       use t_base_force_labels
 !
       use check_dependency_for_MHD
@@ -48,17 +49,29 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_sph_SGS_MHD_spectr_data                            &
-     &         (SGS_par, MHD_prop, sph, ipol, rj_fld)
+     &         (SGS_par, MHD_prop, sph, rj_fld, ipol, ipol_LES)
+!
+      use t_spheric_parameter
+      use set_control_field_data
+      use check_dependency_for_MHD
 !
       type(SGS_paremeters), intent(in) :: SGS_par
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(sph_grids), intent(in) :: sph
 !
-      type(phys_address), intent(inout) :: ipol
       type(phys_data), intent(inout) :: rj_fld
+      type(phys_address), intent(inout) :: ipol
+      type(SGS_model_addresses), intent(inout) :: ipol_LES
 !
 !
-      call set_sph_MHD_sprctr_data(sph%sph_rj, MHD_prop, ipol, rj_fld)
+      call init_field_data_w_SGS                                        &
+     &   (sph%sph_rj%nnod_rj, rj_fld, ipol, ipol_LES)
+!
+      call check_field_dependencies                                     &
+     &   (MHD_prop%fl_prop, MHD_prop%cd_prop,                           &
+     &    MHD_prop%ht_prop, MHD_prop%cp_prop,                           &
+     &    ipol%base, ipol%filter_fld, rj_fld)
+      call check_dependence_SPH_evo(MHD_prop%fl_prop, ipol, rj_fld)
 !
       call check_dependence_4_SPH_SGS(SGS_par%model_p,                  &
      &    MHD_prop%fl_prop, MHD_prop%cd_prop,                           &

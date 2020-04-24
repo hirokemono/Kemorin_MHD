@@ -22,6 +22,7 @@
       use m_work_time
       use calypso_mpi
 !
+      use t_SGS_control_parameter
       use t_VIZ_step_parameter
       use t_time_data
       use t_mesh_data

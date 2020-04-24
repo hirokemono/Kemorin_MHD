@@ -8,6 +8,18 @@
 !!       to FEM data for data visualization
 !!
 !!@verbatim
+!!      subroutine FEM_initialize_sph_SGS_MHD                           &
+!!     &        (MHD_files, MHD_step, geofem, nod_fld, iphys, iphys_LES,&
+!!     &         next_tbl, jacobians, MHD_IO)
+!!        type(MHD_file_IO_params), intent(in) :: MHD_files
+!!        type(MHD_step_param), intent(in) :: MHD_step
+!!        type(mesh_data), intent(inout) :: geofem
+!!        type(phys_address), intent(in) :: iphys
+!!        type(SGS_model_addresses), intent(inout) :: iphys_LES
+!!        type(phys_data), intent(inout) :: nod_fld
+!!        type(next_nod_ele_table), intent(inout) :: next_tbl
+!!        type(jacobians_type), intent(inout) :: jacobians
+!!        type(MHD_IO_data), intent(inout) :: MHD_IO
 !!      subroutine SPH_to_FEM_bridge_SGS_MHD                            &
 !!     &        (SGS_par, sph, WK, geofem, nod_fld)
 !!        type(SGS_paremeters), intent(in) :: SGS_par
@@ -30,12 +42,16 @@
       use m_work_time
 !
       use t_time_data
+      use t_mesh_data
+      use t_phys_data
       use t_MHD_step_parameter
-      use t_spheric_parameter
       use t_file_IO_parameter
-      use t_SGS_control_parameter
+!
+      use t_shape_functions
 !
       implicit none
+!
+      type(shape_finctions_at_points), save, private :: spfs_M
 !
 !-----------------------------------------------------------------------
 !
@@ -43,11 +59,94 @@
 !
 !-----------------------------------------------------------------------
 !
+      subroutine FEM_initialize_sph_SGS_MHD                             &
+     &        (MHD_files, MHD_step, geofem, nod_fld, iphys, iphys_LES,  &
+     &         next_tbl, jacobians, MHD_IO)
+!
+      use t_phys_address
+      use t_SGS_model_addresses
+      use t_next_node_ele_4_node
+      use t_jacobians
+      use t_VIZ_step_parameter
+      use t_MHD_file_parameter
+      use t_cal_max_indices
+      use t_MHD_IO_data
+!
+      use set_table_4_RHS_assemble
+      use FEM_analyzer_sph_MHD
+      use int_volume_of_domain
+      use set_normal_vectors
+      use parallel_FEM_mesh_init
+      use set_control_field_data
+      use node_monitor_IO
+!
+      type(MHD_file_IO_params), intent(in) :: MHD_files
+      type(MHD_step_param), intent(in) :: MHD_step
+      type(mesh_data), intent(inout) :: geofem
+      type(phys_address), intent(inout) :: iphys
+      type(SGS_model_addresses), intent(inout) :: iphys_LES
+      type(phys_data), intent(inout) :: nod_fld
+      type(next_nod_ele_table), intent(inout) :: next_tbl
+      type(jacobians_type), intent(inout) :: jacobians
+      type(MHD_IO_data), intent(inout) :: MHD_IO
+!
+      integer(kind = kint) :: iflag
+!
+      if (iflag_debug.gt.0) write(*,*) 'set_local_nod_4_monitor'
+      call set_local_nod_4_monitor(geofem%mesh, geofem%group)
+!
+!  -------------------------------
+!
+      if (iflag_debug.gt.0 ) write(*,*) 'FEM_mesh_initialization'
+      call FEM_mesh_initialization(geofem%mesh, geofem%group)
+!
+      call deallocate_surface_geom_type(geofem%mesh%surf)
+      call dealloc_edge_geometory(geofem%mesh%edge)
+!
+!  -------------------------------
+!
+      if (iflag_debug.gt.0) write(*,*) 'init_field_data_w_SGS'
+      call init_field_data_w_SGS                                        &
+     &   (geofem%mesh%node%numnod, nod_fld, iphys, iphys_LES)
+!
+!  connect grid data to volume output
+!
+      if(MHD_step%ucd_step%increment .gt. 0) then
+        call alloc_phys_range(nod_fld%ntot_phys_viz, MHD_IO%range)
+      end if
+!
+      if(iflag_debug .gt. 0) write(*,*) 'output_grd_file_4_snapshot'
+      call output_grd_file_4_snapshot(MHD_files%ucd_file_IO,            &
+     &    MHD_step%ucd_step, geofem%mesh, nod_fld, MHD_IO%fem_ucd)
+!
+!  -------------------------------
+!
+      if(MHD_step%viz_step%FLINE_t%increment .gt. 0) then
+        if (iflag_debug.gt.0) write(*,*) 'set_element_on_node_in_mesh'
+        call set_element_on_node_in_mesh                                &
+     &     (geofem%mesh, next_tbl%neib_ele)
+      end if
+!
+      iflag = MHD_step%viz_step%PVR_t%increment                         &
+     &       + MHD_step%viz_step%LIC_t%increment
+      if(iflag .le. 0) Return
+!
+!  -----  If there is no volume rendering... return
+!
+      if (iflag_debug.eq.1) write(*,*)  'set_max_integration_points'
+      allocate(jacobians%g_FEM)
+      call set_max_integration_points(ione, jacobians%g_FEM)
+      call const_jacobian_volume_normals(my_rank, nprocs,               &
+     &    geofem%mesh, geofem%group, spfs_M, jacobians)
+!
+      end subroutine FEM_initialize_sph_SGS_MHD
+!
+!-----------------------------------------------------------------------
+!
       subroutine SPH_to_FEM_bridge_SGS_MHD                              &
      &        (SGS_par, sph, WK, geofem, nod_fld)
 !
-      use t_mesh_data
-      use t_phys_data
+      use t_spheric_parameter
       use t_sph_trans_arrays_MHD
       use t_SGS_control_parameter
 !

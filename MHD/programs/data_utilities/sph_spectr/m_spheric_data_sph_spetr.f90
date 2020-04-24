@@ -17,6 +17,7 @@
       use t_schmidt_poly_on_rtm
       use t_rms_4_sph_spectr
       use t_sum_sph_rms_data
+      use t_SPH_SGS_structure
 !
       implicit none
 !
@@ -25,8 +26,10 @@
       type(spherical_spectr_data_util_ctl), save :: spu_ctl1
 !>      Structure of spetr grid and data
       type(SPH_mesh_field_data), save :: SPH_dat_ss
+!>        address of nodal SGS term
+      type(SGS_model_addresses), save :: ipol_LES_ss
 !
-!>  Structure for field data IO
+!>       Structure for field data IO
       type(time_data) :: spec_time_IO
       type(field_IO), save :: sph_spec_IO
 !

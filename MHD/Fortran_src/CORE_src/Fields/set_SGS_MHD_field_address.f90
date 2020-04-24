@@ -16,12 +16,12 @@
 !!        character(len = kchara), intent(in) :: phys_name_ctl
 !!
 !!      subroutine set_SGS_MHD_field_addresses                          &
-!!     &          (i_fld, field_name, iphys, flag)
+!!     &          (i_fld, field_name, iphys, iphys_LES, flag)
 !!      integer(kind = kint), intent(in) :: num_field
 !!      integer(kind = kint), intent(in) :: istack_component(0:num_field)
 !!      character(len = kchara), intent(in) :: field_name(num_field)
 !!      type(phys_address), intent(inout) :: iphys
-!!
+!!      type(SGS_model_addresses), intent(inout) :: iphys_LES
 !!@endverbatim
 !!
 !!@n @param num_field                 number of field
@@ -34,6 +34,7 @@
       use m_precision
 !
       use t_phys_address
+      use t_SPH_SGS_structure
       use t_phys_data
 !
       implicit none
@@ -177,12 +178,13 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_SGS_MHD_field_addresses                            &
-     &          (i_fld, field_name, iphys, flag)
+     &          (i_fld, field_name, iphys, iphys_LES, flag)
 !
       use t_SGS_term_labels
       use t_SGS_enegy_flux_labels
       use t_SGS_model_coef_labels
-
+      use t_SGS_model_addresses
+!
       use m_filtered_force_labels
       use m_filtered_ene_flux_labels
       use m_rot_filtered_force_labels
@@ -200,6 +202,7 @@
       character(len = kchara), intent(in) :: field_name
 !
       type(phys_address), intent(inout) :: iphys
+      type(SGS_model_addresses), intent(inout) :: iphys_LES
       logical, intent(inout) :: flag
 !
 !

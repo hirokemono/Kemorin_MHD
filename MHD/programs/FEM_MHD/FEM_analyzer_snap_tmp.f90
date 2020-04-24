@@ -4,7 +4,7 @@
 !      modified by H. Matsui on June, 2005 
 !
 !!      subroutine FEM_initialize_snap_tmp(MHD_files, MHD_step, femmesh,&
-!!     &          iphys_nod, nod_fld, FEM_model, ak_MHD, FEM_SGS,       &
+!!     &          iphys, nod_fld, FEM_model, ak_MHD, FEM_SGS,           &
 !!     &          SGS_MHD_wk, MHD_IO, fem_sq, label_sim)
 !!        type(MHD_file_IO_params), intent(inout) :: MHD_files
 !!        type(MHD_step_param), intent(inout) :: MHD_step
@@ -14,7 +14,7 @@
 !!        type(MHD_IO_data), intent(inout) :: MHD_IO
 !!        type(FEM_MHD_mean_square), intent(inout) :: fem_sq
 !!      subroutine FEM_analyze_snap_tmp(i_step, MHD_files, FEM_model,   &
-!!     &          femmesh, iphys_nod, ak_MHD, MHD_step, visval, FEM_SGS,&
+!!     &          femmesh, iphys, ak_MHD, MHD_step, visval, FEM_SGS,    &
 !!     &          SGS_MHD_wk, nod_fld, MHD_IO, fem_sq)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(VIZ_step_params), intent(inout) :: MHD_step
@@ -60,7 +60,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine FEM_initialize_snap_tmp(MHD_files, MHD_step, femmesh,  &
-     &          iphys_nod, nod_fld, FEM_model, ak_MHD, FEM_SGS,         &
+     &          iphys, nod_fld, FEM_model, ak_MHD, FEM_SGS,             &
      &          SGS_MHD_wk, MHD_IO, fem_sq, label_sim)
 !
       use t_boundary_field_IO
@@ -74,7 +74,7 @@
       type(MHD_file_IO_params), intent(inout) :: MHD_files
 !
       type(mesh_data), intent(inout) :: femmesh
-      type(phys_address), intent(inout) :: iphys_nod
+      type(phys_address), intent(inout) :: iphys
       type(phys_data), intent(inout) :: nod_fld
       type(FEM_MHD_model_data), intent(inout) :: FEM_model
       type(coefs_4_MHD_type), intent(inout) :: ak_MHD
@@ -94,9 +94,9 @@
      &   MHD_step, femmesh%mesh, femmesh%group,                         &
      &   FEM_model%MHD_mesh, FEM_SGS%FEM_filters, FEM_model%MHD_prop,   &
      &   ak_MHD, FEM_model%MHD_BC, FEM_model%FEM_MHD_BCs,               &
-     &   FEM_SGS%Csims, iphys_nod, nod_fld, SNAP_time_IO,               &
-     &   MHD_step%rst_step, SGS_MHD_wk, fem_sq, MHD_IO%rst_IO,          &
-     &   label_sim)
+     &   FEM_SGS%Csims, iphys, FEM_SGS%iphys_LES, nod_fld,              &
+     &   SNAP_time_IO, MHD_step%rst_step, SGS_MHD_wk, fem_sq,           &
+     &   MHD_IO%rst_IO, label_sim)
 !
       call output_grd_file_w_org_connect                                &
      &   (MHD_step%ucd_step, femmesh%mesh, FEM_model%MHD_mesh, nod_fld, &
@@ -109,7 +109,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine FEM_analyze_snap_tmp(i_step, MHD_files, FEM_model,     &
-     &          femmesh, iphys_nod, ak_MHD, MHD_step, visval, FEM_SGS,  &
+     &          femmesh, iphys, ak_MHD, MHD_step, visval, FEM_SGS,      &
      &          SGS_MHD_wk, nod_fld, MHD_IO, fem_sq)
 !
       use m_fem_mhd_restart
@@ -133,7 +133,7 @@
       integer(kind=kint ), intent(in) :: i_step
       type(MHD_file_IO_params), intent(in) :: MHD_files
       type(mesh_data), intent(in) :: femmesh
-      type(phys_address), intent(in) :: iphys_nod
+      type(phys_address), intent(in) :: iphys
       type(FEM_MHD_model_data), intent(in) :: FEM_model
       type(coefs_4_MHD_type), intent(in) :: ak_MHD
 !
@@ -175,7 +175,7 @@
 !     ---------------------
 !
       call set_perturbation_to_scalar                                   &
-     &   (FEM_model%MHD_prop, iphys_nod, nod_fld)
+     &   (FEM_model%MHD_prop, iphys, nod_fld)
 !
 !     ---------------------
 !
@@ -186,7 +186,7 @@
       call update_FEM_fields                                            &
      &   (MHD_step%time_d, FEM_model%FEM_prm, FEM_SGS%SGS_par,          &
      &    femmesh, FEM_model%MHD_mesh, FEM_model%FEM_MHD_BCs,           &
-     &    iphys_nod, FEM_SGS%FEM_filters, SGS_MHD_wk,                   &
+     &    iphys, FEM_SGS%FEM_filters, SGS_MHD_wk,                       &
      &    nod_fld, FEM_SGS%Csims)
 !
 !     ----- Evaluate model coefficients
@@ -194,7 +194,7 @@
       call cal_FEM_model_coefficients                                   &
      &   (MHD_step%time_d, FEM_model%FEM_prm, FEM_SGS%SGS_par,          &
      &    femmesh, FEM_model%MHD_mesh, FEM_model%MHD_prop,              &
-     &    FEM_model%FEM_MHD_BCs, iphys_nod, FEM_SGS%FEM_filters,        &
+     &    FEM_model%FEM_MHD_BCs, iphys, FEM_SGS%FEM_filters,            &
      &    SGS_MHD_wk, nod_fld, FEM_SGS%Csims)
 !
 !     ========  Data output
@@ -202,7 +202,7 @@
       call lead_fields_by_FEM(MHD_step%flex_p%istep_max_dt,             &
      &    MHD_step, FEM_model%FEM_prm, FEM_SGS%SGS_par,                 &
      &    femmesh, FEM_model%MHD_mesh, FEM_model%MHD_prop,              &
-     &    FEM_model%FEM_MHD_BCs, iphys_nod, ak_MHD,                     &
+     &    FEM_model%FEM_MHD_BCs, iphys, ak_MHD,                         &
      &    FEM_SGS%FEM_filters, SGS_MHD_wk, nod_fld, FEM_SGS%Csims)
 !
       if (iflag_debug.eq.1)  write(*,*) 'lead_specital_SGS'
@@ -210,7 +210,7 @@
      &  (MHD_step, FEM_model%FEM_prm, FEM_SGS%SGS_par,                  &
      &   femmesh%mesh, femmesh%group, FEM_model%MHD_mesh,               &
      &   FEM_model%MHD_prop, FEM_model%FEM_MHD_BCs%surf_bcs,            &
-     &   iphys_nod, SGS_MHD_wk%iphys_ele, ak_MHD, SGS_MHD_wk%fem_int,   &
+     &   iphys, SGS_MHD_wk%iphys_ele, ak_MHD, SGS_MHD_wk%fem_int,       &
      &   FEM_SGS%FEM_filters%FEM_elens, FEM_SGS%FEM_filters%filtering,  &
      &   FEM_SGS%Csims, SGS_MHD_wk%mk_MHD, SGS_MHD_wk%FEM_SGS_wk,       &
      &   SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat,                     &
@@ -222,7 +222,7 @@
      &   (MHD_step%flex_p%istep_max_dt, MHD_step%rms_step,              &
      &    FEM_model%FEM_prm, MHD_step%time_d,                           &
      &    femmesh%mesh, FEM_model%MHD_mesh, FEM_model%MHD_prop,         &
-     &    iphys_nod, nod_fld, SGS_MHD_wk%iphys_ele,                     &
+     &    iphys, nod_fld, SGS_MHD_wk%iphys_ele,                         &
      &    SGS_MHD_wk%ele_fld, SGS_MHD_wk%fem_int%jcs,                   &
      &    SGS_MHD_wk%rhs_mat, SGS_MHD_wk%mhd_fem_wk, fem_sq)
 !

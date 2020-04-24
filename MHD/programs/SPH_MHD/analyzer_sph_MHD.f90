@@ -29,6 +29,7 @@
       use t_SPH_MHD_zonal_mean_viz
 !
       use SPH_analyzer_SGS_MHD
+      use FEM_analyzer_sph_SGS_MHD
       use init_sph_MHD_elapsed_label
 !
       implicit none
@@ -44,7 +45,6 @@
       use t_ctl_data_SGS_MHD
       use m_ctl_data_sph_SGS_MHD
       use input_control_sph_SGS_MHD
-      use FEM_analyzer_sph_MHD_w_viz
 !
 !
       write(*,*) 'Simulation start: PE. ', my_rank
@@ -74,10 +74,10 @@
 !
 !        Initialize FEM mesh data for field data IO
 !
-      if(iflag_debug .gt. 0) write(*,*) 'FEM_initialize_w_viz'
-      call FEM_initialize_w_viz(MHD_files1, MHD_step1,                  &
-     &    FEM_d1%geofem, FEM_d1%iphys, FEM_d1%field,                    &
-     &    next_tbl_VIZ1, jacobians_VIZ1, MHD_IO1)
+      if(iflag_debug .gt. 0) write(*,*) 'FEM_initialize_sph_SGS_MHD'
+      call FEM_initialize_sph_SGS_MHD(MHD_files1, MHD_step1,            &
+     &   FEM_d1%geofem, FEM_d1%field, FEM_d1%iphys, SPH_SGS1%iphys_LES, &
+     &   next_tbl_VIZ1, jacobians_VIZ1, MHD_IO1)
 !
 !        Initialize spherical transform dynamo
 !
@@ -105,7 +105,6 @@
       subroutine evolution_sph_mhd
 !
       use FEM_analyzer_sph_MHD
-      use FEM_analyzer_sph_SGS_MHD
       use SGS_MHD_zonal_mean_viz
       use output_viz_file_control
 !

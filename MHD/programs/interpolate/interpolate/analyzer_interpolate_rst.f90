@@ -21,6 +21,7 @@
       use t_phys_data
       use t_phys_address
       use t_interpolate_table
+      use t_SGS_model_addresses
       use t_IO_step_parameter
       use t_ctl_data_gen_table
       use t_ctl_params_4_gen_table
@@ -37,8 +38,9 @@
 !
       type(interpolate_table), save :: itp_rst
 !
-      type(phys_address), save :: iphys_ITP
       type(phys_data), save :: nod_fld_ITP
+      type(phys_address), save :: iphys_ITP
+      type(SGS_model_addresses), save :: iphys_LES_ITP
 !
       type(phys_data), save :: new_phys
 !
@@ -103,9 +105,9 @@
 !
 !     --------------------- 
 !
-      if (iflag_debug.eq.1) write(*,*) 'init_field_data'
-      call init_field_data(org_femmesh%mesh%node%numnod,                &
-     &                     nod_fld_ITP, iphys_ITP)
+      if (iflag_debug.eq.1) write(*,*) 'init_field_data_w_SGS'
+      call init_field_data_w_SGS(org_femmesh%mesh%node%numnod,          &
+     &                     nod_fld_ITP, iphys_ITP, iphys_LES_ITP)
 !
       if (iflag_debug.eq.1) write(*,*) 'copy_field_name_type'
       call copy_field_name_type(nod_fld_ITP, new_phys)

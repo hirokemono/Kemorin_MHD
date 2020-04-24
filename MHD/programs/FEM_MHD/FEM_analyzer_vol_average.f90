@@ -4,10 +4,10 @@
 !      modified by H. Matsui on June, 2005 
 !
 !!      subroutine FEM_initialize_vol_average(MHD_files, MHD_step,      &
-!!     &          femmesh, iphys_nod, nod_fld, FEM_model, ak_MHD,       &
+!!     &          femmesh, iphys, nod_fld, FEM_model, ak_MHD,           &
 !!     &          FEM_SGS, SGS_MHD_wk, MHD_IO, fem_sq, label_sim)
 !!        type(mesh_data), intent(inout) :: femmesh
-!!        type(phys_address), intent(inout) :: iphys_nod
+!!        type(phys_address), intent(inout) :: iphys
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(FEM_MHD_model_data), intent(inout) :: FEM_model
 !!        type(coefs_4_MHD_type), intent(inout) :: ak_MHD
@@ -17,7 +17,7 @@
 !!        type(MHD_step_param), intent(inout) :: MHD_step
 !!        type(MHD_IO_data), intent(inout) :: MHD_IO
 !!      subroutine FEM_analyze_vol_average                              &
-!!     &         (i_step, MHD_files, femmesh, iphys_nod, FEM_model,     &
+!!     &         (i_step, MHD_files, femmesh, iphys, FEM_model,         &
 !!     &          MHD_step, SGS_MHD_wk, nod_fld, fem_sq)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(MHD_step_param), intent(inout) :: MHD_step
@@ -55,7 +55,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine FEM_initialize_vol_average(MHD_files, MHD_step,        &
-     &          femmesh, iphys_nod, nod_fld, FEM_model, ak_MHD,         &
+     &          femmesh, iphys, nod_fld, FEM_model, ak_MHD,             &
      &          FEM_SGS, SGS_MHD_wk, MHD_IO, fem_sq, label_sim)
 !
       use t_boundary_field_IO
@@ -68,7 +68,7 @@
       type(MHD_file_IO_params), intent(inout) :: MHD_files
 !
       type(mesh_data), intent(inout) :: femmesh
-      type(phys_address), intent(inout) :: iphys_nod
+      type(phys_address), intent(inout) :: iphys
       type(phys_data), intent(inout) :: nod_fld
       type(FEM_MHD_model_data), intent(inout) :: FEM_model
       type(coefs_4_MHD_type), intent(inout) :: ak_MHD
@@ -87,15 +87,16 @@
      &   femmesh%mesh, femmesh%group, FEM_model%MHD_mesh,               &
      &   FEM_SGS%FEM_filters, FEM_model%MHD_prop, ak_MHD,               &
      &   FEM_model%MHD_BC, FEM_model%FEM_MHD_BCs, FEM_SGS%Csims,        &
-     &   iphys_nod, nod_fld, SNAP_time_IO, MHD_step%rst_step,           &
-     &   SGS_MHD_wk, fem_sq, MHD_IO%rst_IO, label_sim)
+     &   iphys, FEM_SGS%iphys_LES, nod_fld, SNAP_time_IO,               &
+     &   MHD_step%rst_step, SGS_MHD_wk, fem_sq, MHD_IO%rst_IO,          &
+     &   label_sim)
 !
       end subroutine FEM_initialize_vol_average
 !
 ! ----------------------------------------------------------------------
 !
       subroutine FEM_analyze_vol_average                                &
-     &         (i_step, MHD_files, femmesh, iphys_nod, FEM_model,       &
+     &         (i_step, MHD_files, femmesh, iphys, FEM_model,           &
      &          MHD_step, SGS_MHD_wk, nod_fld, fem_sq)
 !
       use t_FEM_MHD_mean_square
@@ -110,7 +111,7 @@
       integer(kind = kint), intent(in) :: i_step
       type(MHD_file_IO_params), intent(in) :: MHD_files
       type(mesh_data), intent(in) :: femmesh
-      type(phys_address), intent(in) :: iphys_nod
+      type(phys_address), intent(in) :: iphys
       type(FEM_MHD_model_data), intent(in) :: FEM_model
 !
       type(phys_data), intent(inout) :: nod_fld
@@ -133,7 +134,7 @@
 !     ---------------------
 !
       call set_perturbation_to_scalar                                   &
-     &   (FEM_model%MHD_prop, iphys_nod, nod_fld)
+     &   (FEM_model%MHD_prop, iphys, nod_fld)
 !
 !     ---------------------
 !
@@ -146,7 +147,7 @@
      &   (MHD_step%flex_p%istep_max_dt, MHD_step%rms_step,              &
      &    FEM_model%FEM_prm, MHD_step%time_d, femmesh%mesh,             &
      &    FEM_model%MHD_mesh, FEM_model%MHD_prop,                       &
-     &    iphys_nod, nod_fld, SGS_MHD_wk%iphys_ele,                     &
+     &    iphys, nod_fld, SGS_MHD_wk%iphys_ele,                         &
      &    SGS_MHD_wk%ele_fld, SGS_MHD_wk%fem_int%jcs,                   &
      &    SGS_MHD_wk%rhs_mat, SGS_MHD_wk%mhd_fem_wk, fem_sq)
 !

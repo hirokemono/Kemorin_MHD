@@ -8,9 +8,10 @@
 !!
 !!@verbatim
 !!      subroutine SPH_init_sph_back_trans                              &
-!!     &         (MHD_files, SPH_model, SPH_MHD, SPH_WK)
+!!     &         (MHD_files, SPH_model, SPH_SGS, SPH_MHD, SPH_WK)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(SPH_MHD_model_data), intent(inout) :: SPH_model
+!!        type(SPH_SGS_structure)< intent(inout) ::  SPH_SGS
 !!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !!        type(work_SPH_MHD), intent(inout) :: SPH_WK
 !!      subroutine SPH_analyze_back_trans                               &
@@ -31,6 +32,7 @@
       use t_MHD_file_parameter
       use t_SPH_MHD_model_data
       use t_SPH_mesh_field_data
+      use t_SPH_SGS_structure
       use t_control_parameter
       use t_boundary_data_sph_MHD
       use t_work_SPH_MHD
@@ -44,7 +46,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine SPH_init_sph_back_trans                                &
-     &         (MHD_files, SPH_model, SPH_MHD, SPH_WK)
+     &         (MHD_files, SPH_model, SPH_SGS, SPH_MHD, SPH_WK)
 !
       use m_constants
       use calypso_mpi
@@ -73,14 +75,15 @@
       type(MHD_file_IO_params), intent(in) :: MHD_files
 !
       type(SPH_MHD_model_data), intent(inout) :: SPH_model
+      type(SPH_SGS_structure), intent(inout) ::  SPH_SGS
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
       type(work_SPH_MHD), intent(inout) :: SPH_WK
 !
 !
 !   Allocate spectr field data
 !
-      call init_field_data                                              &
-     &   (SPH_MHD%sph%sph_rj%nnod_rj, SPH_MHD%fld, SPH_MHD%ipol)
+      call init_field_data_w_SGS(SPH_MHD%sph%sph_rj%nnod_rj,            &
+     &    SPH_MHD%fld, SPH_MHD%ipol, SPH_SGS%ipol_LES)
 !
 ! ---------------------------------
 !

@@ -88,7 +88,7 @@
 !
       call set_sph_SGS_MHD_spectr_data                                  &
      &   (SPH_SGS%SGS_par, SPH_model%MHD_prop,                          &
-     &    SPH_MHD%sph, SPH_MHD%ipol, SPH_MHD%fld)
+     &    SPH_MHD%sph, SPH_MHD%fld, SPH_MHD%ipol, SPH_SGS%ipol_LES)
 !
 ! ---------------------------------
 !
@@ -152,8 +152,6 @@
       type(SPH_SGS_structure), intent(inout) :: SPH_SGS
       type(work_SPH_MHD), intent(inout) :: SPH_WK
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
-!
-      integer(kind = kint) :: iflag
 !
 !
       call read_alloc_sph_rst_SGS_snap                                  &

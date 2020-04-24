@@ -68,8 +68,8 @@
 !  -------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'SPH_initialize_back_trans'
-      call SPH_initialize_back_trans(files_STR, SPH_TRNS,               &
-     &    time_IO_TRNS, sph_trns_IO)
+      call SPH_initialize_back_trans(files_STR,                         &
+     &    SPH_TRNS, ipol_LES_TRNS, time_IO_TRNS, sph_trns_IO)
 !
 !  -------------------------------
 !

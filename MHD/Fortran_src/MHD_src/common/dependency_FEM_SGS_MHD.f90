@@ -9,13 +9,15 @@
 !!@verbatim
 !!      subroutine set_FEM_SGS_MHD_field_data                           &
 !!     &         (SGS_param, cmt_param, node, ele, MHD_prop,            &
-!!     &          iphys, nod_fld, iphys_ele, ele_fld)
+!!     &          nod_fld, iphys, iphys_LES, ele_fld, iphys_ele)
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(commutation_control_params), intent(in) :: cmt_param
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
-!!        type(phys_address), intent(inout) :: iphys, iphys_ele
+!!        type(phys_address), intent(inout) :: iphys
+!!        type(SGS_model_addresses), intent(inout) :: iphys_LES
+!!        type(phys_address), intent(inout) :: iphys_ele
 !!        type(phys_data), intent(inout) :: nod_fld, ele_fld
 !!@endverbatim
 !
@@ -32,6 +34,7 @@
       use t_SGS_control_parameter
       use t_phys_data
       use t_phys_address
+      use t_SGS_model_addresses
       use t_base_field_labels
       use t_SGS_term_labels
       use t_physical_property
@@ -40,6 +43,8 @@
 !
       implicit none
 !
+      private :: set_FEM_MHD_field_data
+      private :: check_dependence_FEM_evo
       private :: check_dependence_4_FEM_SGS
 !
 ! -----------------------------------------------------------------------
@@ -50,7 +55,7 @@
 !
       subroutine set_FEM_SGS_MHD_field_data                            &
      &         (SGS_param, cmt_param, node, ele, MHD_prop,             &
-     &          iphys, nod_fld, iphys_ele, ele_fld)
+     &          nod_fld, iphys, iphys_LES, ele_fld, iphys_ele)
 !
       use t_geometry_data
       use set_control_field_data
@@ -62,12 +67,14 @@
       type(element_data), intent(in) :: ele
       type(MHD_evolution_param), intent(in) :: MHD_prop
 !
-      type(phys_address), intent(inout) :: iphys, iphys_ele
+      type(phys_address), intent(inout) :: iphys
+      type(SGS_model_addresses), intent(inout) :: iphys_LES
+      type(phys_address), intent(inout) :: iphys_ele
       type(phys_data), intent(inout) :: nod_fld, ele_fld
 !
 !
       call set_FEM_MHD_field_data                                       &
-     &   (node, MHD_prop, iphys, nod_fld)
+     &   (node, MHD_prop, nod_fld, iphys, iphys_LES)
 !
       call check_dependence_4_FEM_SGS (SGS_param, cmt_param,            &
      &    MHD_prop%fl_prop, MHD_prop%cd_prop,                           &
@@ -80,6 +87,53 @@
       end subroutine set_FEM_SGS_MHD_field_data
 !
 ! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine set_FEM_MHD_field_data                                 &
+     &         (node, MHD_prop, nod_fld, iphys, iphys_LES)
+!
+      use t_geometry_data
+      use set_control_field_data
+!
+      type(node_data), intent(in) :: node
+      type(MHD_evolution_param), intent(in) :: MHD_prop
+!
+      type(phys_data), intent(inout) :: nod_fld
+      type(phys_address), intent(inout) :: iphys
+      type(SGS_model_addresses), intent(inout) :: iphys_LES
+!
+!
+      if (iflag_debug.ge.1)  write(*,*) 'init_field_data_w_SGS'
+      call init_field_data_w_SGS                                        &
+     &   (node%numnod, nod_fld, iphys, iphys_LES)
+!
+      call check_field_dependencies                                     &
+     &   (MHD_prop%fl_prop, MHD_prop%cd_prop,                           &
+     &    MHD_prop%ht_prop, MHD_prop%cp_prop,                           &
+     &    iphys%base, iphys%filter_fld, nod_fld)
+      call check_dependence_FEM_evo(MHD_prop%fl_prop, iphys, nod_fld)
+!
+      end subroutine set_FEM_MHD_field_data
+!
+! -----------------------------------------------------------------------
+!
+      subroutine check_dependence_FEM_evo(fl_prop, iphys, fld)
+!
+      type(fluid_property), intent(in) :: fl_prop
+      type(phys_address), intent(in) :: iphys
+      type(phys_data), intent(in) :: fld
+!
+      character(len=kchara) :: msg
+!
+!
+      if (fl_prop%iflag_scheme .gt. id_no_evolution) then
+        msg = 'time integration for velocity needs'
+        call check_missing_field_w_msg(fld, msg, iphys%base%i_velo)
+        call check_missing_field_w_msg(fld, msg, iphys%base%i_press)
+      end if
+!
+      end subroutine check_dependence_FEM_evo
+!
 ! -----------------------------------------------------------------------
 !
       subroutine check_dependence_4_FEM_SGS(SGS_param, cmt_param,       &

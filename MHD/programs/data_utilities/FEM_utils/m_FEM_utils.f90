@@ -20,6 +20,7 @@
       use t_mesh_data
       use t_phys_data
       use t_phys_address
+      use t_SGS_model_addresses
       use t_ucd_data
       use t_file_IO_parameter
       use t_shape_functions
@@ -40,8 +41,10 @@
       type(mesh_data), save :: femmesh_FUTIL
 !>       Structure for nodal field data
       type(phys_data), save :: field_FUTIL
-!>       address for nodal fields
+!>       address of nodal fields
       type(phys_address), save :: iphys_FUTIL
+!>       address of nodal fields for SGS model
+      type(SGS_model_addresses), save :: iphys_LES_FUTIL
 !
 !
 !>      Structure for field data IO paramters

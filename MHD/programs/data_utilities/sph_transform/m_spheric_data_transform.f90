@@ -13,6 +13,7 @@
       use t_ctl_data_4_sph_trans
       use t_SPH_mesh_field_data
       use t_field_data_IO
+      use t_SGS_model_addresses
 !
       implicit none
 !
@@ -20,6 +21,7 @@
 !
 !>  Structure of grid and spectr data for spherical spectr method
       type(SPH_mesh_field_data), save :: SPH_TRNS
+      type(SGS_model_addresses) :: ipol_LES_TRNS
 !
 !>  Structure for field data IO
      type(field_IO), save :: sph_trns_IO

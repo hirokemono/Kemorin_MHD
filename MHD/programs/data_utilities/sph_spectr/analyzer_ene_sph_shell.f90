@@ -63,8 +63,8 @@
 !
 !  -------------------------------
 !
-      call init_field_data(SPH_dat_ss%sph%sph_rj%nnod_rj,   &
-     &    SPH_dat_ss%fld, SPH_dat_ss%ipol)
+      call init_field_data_w_SGS(SPH_dat_ss%sph%sph_rj%nnod_rj,         &
+     &    SPH_dat_ss%fld, SPH_dat_ss%ipol, ipol_LES_ss)
 !
       call init_rms_4_sph_spectr                                        &
      &   (SPH_dat_ss%sph%sph_params, SPH_dat_ss%sph%sph_rj,             &

@@ -48,7 +48,7 @@
       use m_ctl_data_sph_SGS_MHD
 !
       use init_sph_MHD_elapsed_label
-      use FEM_analyzer_sph_MHD_w_viz
+      use FEM_analyzer_sph_SGS_MHD
       use input_control_sph_SGS_MHD
 !
       write(*,*) 'Simulation start: PE. ', my_rank
@@ -73,15 +73,15 @@
 !     --------------------- 
 !
       if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+1)
-      if(iflag_debug .gt. 0) write(*,*) 'FEM_initialize_w_viz'
-      call FEM_initialize_w_viz(MHD_files1, MHD_step1, FEM_d1%geofem,   &
-     &    FEM_d1%iphys, FEM_d1%field, next_tbl_VIZ1, jacobians_VIZ1,    &
-     &    MHD_IO1)
+      if(iflag_debug .gt. 0) write(*,*) 'FEM_initialize_sph_SGS_MHD'
+      call FEM_initialize_sph_SGS_MHD(MHD_files1, MHD_step1,            &
+     &   FEM_d1%geofem, FEM_d1%field, FEM_d1%iphys, SPH_SGS1%iphys_LES, &
+     &   next_tbl_VIZ1, jacobians_VIZ1, MHD_IO1)
 !
 !        Initialize spherical transform dynamo
       if(iflag_debug .gt. 0) write(*,*) 'SPH_init_sph_back_trans'
       call SPH_init_sph_back_trans                                      &
-     &   (MHD_files1, SPH_model1, SPH_MHD1, SPH_WK1)
+     &   (MHD_files1, SPH_model1, SPH_SGS1, SPH_MHD1, SPH_WK1)
 !        Initialize visualization
       if(iflag_debug .gt. 0) write(*,*) 'init_visualize'
       call init_visualize                                               &

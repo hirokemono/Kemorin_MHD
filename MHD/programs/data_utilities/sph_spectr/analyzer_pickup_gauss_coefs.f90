@@ -70,8 +70,8 @@
      &   (SPH_dat_ss%sph%sph_params, SPH_dat_ss%sph%sph_rj,             &
      &    SPH_dat_ss%fld, pwr_spec, WK_pwr_spec)
 !
-      call init_field_data(SPH_dat_ss%sph%sph_rj%nnod_rj,   &
-     &    SPH_dat_ss%fld, SPH_dat_ss%ipol)
+      call init_field_data_w_SGS(SPH_dat_ss%sph%sph_rj%nnod_rj,         &
+     &    SPH_dat_ss%fld, SPH_dat_ss%ipol, ipol_LES_ss)
 !
       end subroutine initialize_pick_gauss_coef
 !

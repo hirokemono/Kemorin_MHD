@@ -65,8 +65,8 @@
       call copy_time_data(spec_time_IO, t_SHR%init_d)
       call copy_rj_phys_name_from_IO(sph_fld_IN, SPH_dat_ss%fld)
 !
-      call init_field_data(SPH_dat_ss%sph%sph_rj%nnod_rj,   &
-     &    SPH_dat_ss%fld, SPH_dat_ss%ipol)
+      call init_field_data_w_SGS(SPH_dat_ss%sph%sph_rj%nnod_rj,         &
+     &    SPH_dat_ss%fld, SPH_dat_ss%ipol, ipol_LES_ss)
 !
 !  -------------------------------
 !

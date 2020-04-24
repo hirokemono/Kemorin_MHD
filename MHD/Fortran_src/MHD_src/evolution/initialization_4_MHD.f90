@@ -6,8 +6,8 @@
 !!      subroutine init_analyzer_fl                                     &
 !!     &        (MHD_files, IO_bc, FEM_prm, SGS_par, flex_MHD, MHD_step,&
 !!     &         mesh, group, MHD_mesh, FEM_filters, MHD_prop, MHD_BC,  &
-!!     &         FEM_MHD_BCs, Csims_FEM_MHD, iphys, nod_fld, MHD_CG,    &
-!!     &         SGS_MHD_wk, fem_sq, fem_fst_IO, label_sim)
+!!     &         FEM_MHD_BCs, Csims_FEM_MHD, iphys, iphys_LES, nod_fld, &
+!!     &         MHD_CG, SGS_MHD_wk, fem_sq, fem_fst_IO, label_sim)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(IO_boundary), intent(in) :: IO_bc
 !!        type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
@@ -23,6 +23,7 @@
 !!        type(FEM_MHD_BC_data), intent(inout) :: FEM_MHD_BCs
 !!        type(SGS_coefficients_data), intent(inout) :: Csims_FEM_MHD
 !!        type(phys_address), intent(inout) :: iphys
+!!        type(SGS_model_addresses), intent(inout) :: iphys_LES
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(FEM_MHD_mean_square), intent(inout) :: fem_sq
 !!        type(FEM_MHD_solvers), intent(inout) :: MHD_CG
@@ -41,6 +42,7 @@
       use t_MHD_step_parameter
       use t_phys_data
       use t_phys_address
+      use t_SGS_model_addresses
 !
       use t_mesh_data
       use t_geometry_data_MHD
@@ -71,8 +73,8 @@
       subroutine init_analyzer_fl                                       &
      &        (MHD_files, IO_bc, FEM_prm, SGS_par, flex_MHD, MHD_step,  &
      &         mesh, group, MHD_mesh, FEM_filters, MHD_prop, MHD_BC,    &
-     &         FEM_MHD_BCs, Csims_FEM_MHD, iphys, nod_fld, MHD_CG,      &
-     &         SGS_MHD_wk, fem_sq, fem_fst_IO, label_sim)
+     &         FEM_MHD_BCs, Csims_FEM_MHD, iphys, iphys_LES, nod_fld,   &
+     &         MHD_CG, SGS_MHD_wk, fem_sq, fem_fst_IO, label_sim)
 !
       use m_boundary_condition_IDs
       use m_flags_4_solvers
@@ -128,6 +130,7 @@
       type(FEM_MHD_BC_data), intent(inout) :: FEM_MHD_BCs
       type(SGS_coefficients_data), intent(inout) :: Csims_FEM_MHD
       type(phys_address), intent(inout) :: iphys
+      type(SGS_model_addresses), intent(inout) :: iphys_LES
       type(phys_data), intent(inout) :: nod_fld
       type(FEM_MHD_mean_square), intent(inout) :: fem_sq
       type(FEM_MHD_solvers), intent(inout) :: MHD_CG
@@ -172,10 +175,11 @@
 !
 !     ---------------------
 !
-      if (iflag_debug.eq.1) write(*,*)' allocate_array'
-      call allocate_array(SGS_par, mesh, MHD_prop,                      &
-     &    iphys, nod_fld, SGS_MHD_wk%iphys_ele, SGS_MHD_wk%ele_fld,     &
-     &    Csims_FEM_MHD%iphys_elediff_vec, Csims_FEM_MHD%iphys_elediff_fil, SGS_MHD_wk%mk_MHD,               &
+      if (iflag_debug.eq.1) write(*,*)' allocate_array_FEM_MHD'
+      call allocate_array_FEM_MHD                                       &
+     &   (SGS_par, mesh, MHD_prop, iphys, iphys_LES, nod_fld,           &
+     &    SGS_MHD_wk%iphys_ele, SGS_MHD_wk%ele_fld,                     &
+     &    Csims_FEM_MHD, SGS_MHD_wk%mk_MHD,                             &
      &    SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat,                    &
      &    SGS_MHD_wk%fem_int, fem_sq, label_sim)
 !

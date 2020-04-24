@@ -30,6 +30,7 @@
       use t_SPH_MHD_zonal_mean_viz
 !
       use SPH_analyzer_snap
+      use FEM_analyzer_sph_SGS_MHD
 !
       implicit none
 !
@@ -51,7 +52,6 @@
       use m_ctl_data_sph_SGS_MHD
 !
       use init_sph_MHD_elapsed_label
-      use FEM_analyzer_sph_MHD_w_viz
       use input_control_sph_SGS_MHD
 !
 !
@@ -78,10 +78,10 @@
 !     --------------------- 
 !
       if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+1)
-      if(iflag_debug .gt. 0) write(*,*) 'FEM_initialize_w_viz'
-      call FEM_initialize_w_viz(MHD_files1, MHD_step1, FEM_d1%geofem,   &
-     &    FEM_d1%iphys, FEM_d1%field, next_tbl_VIZ1, jacobians_VIZ1,    &
-     &    MHD_IO1)
+      if(iflag_debug .gt. 0) write(*,*) 'FEM_initialize_sph_SGS_MHD'
+      call FEM_initialize_sph_SGS_MHD(MHD_files1, MHD_step1,            &
+     &   FEM_d1%geofem, FEM_d1%field, FEM_d1%iphys, SPH_SGS1%iphys_LES, &
+     &   next_tbl_VIZ1, jacobians_VIZ1, MHD_IO1)
 !
 !        Initialize spherical transform dynamo
       if(iflag_debug .gt. 0) write(*,*) 'SPH_init_sph_snap'
@@ -105,7 +105,6 @@
       subroutine evolution_sph_snap
 !
       use FEM_analyzer_sph_MHD
-      use FEM_analyzer_sph_SGS_MHD
       use SGS_MHD_zonal_mean_viz
       use output_viz_file_control
 !
@@ -202,7 +201,6 @@
       use t_control_data_vizs
       use t_volume_rendering
       use FEM_analyzer_sph_MHD
-      use FEM_analyzer_sph_SGS_MHD
       use output_viz_file_control
 !
       integer(kind = kint) :: visval

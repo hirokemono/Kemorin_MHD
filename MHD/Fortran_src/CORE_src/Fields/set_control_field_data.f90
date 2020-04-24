@@ -14,8 +14,10 @@
 !!        type(phys_data), intent(inout) :: fld
 !!
 !!      subroutine init_field_data(n_point, fld, iphys)
+!!      subroutine init_field_data_w_SGS(n_point, fld, iphys, iphys_LES)
 !!        type(phys_data), intent(inout) :: fld
 !!        type(phys_address), intent(inout) :: iphys
+!!        type(SGS_model_addresses), intent(inout) :: iphys_LES
 !!
 !!      subroutine count_field_4_monitor                                &
 !!     &         (fld, num_field_monitor, ntot_comp_monitor)
@@ -130,9 +132,6 @@
         call set_MHD_field_addresses                                    &
      &     (i_fld, fld%phys_name(i), iphys, flag)
         if(flag) cycle
-        call set_SGS_MHD_field_addresses                                &
-     &     (i_fld, fld%phys_name(i), iphys, flag)
-        if(flag) cycle
 !
 !   Old field label... Should be deleted later!!
         call set_old_MHD_field_addresses                                &
@@ -140,6 +139,43 @@
       end do
 !
       end subroutine init_field_data
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine init_field_data_w_SGS(n_point, fld, iphys, iphys_LES)
+!
+      use set_MHD_field_address
+      use set_SGS_MHD_field_address
+!
+      integer(kind = kint), intent(in) :: n_point
+      type(phys_data), intent(inout) :: fld
+!
+      type(phys_address), intent(inout) :: iphys
+      type(SGS_model_addresses), intent(inout) :: iphys_LES
+!
+      integer(kind = kint) :: i, i_fld
+      logical :: flag
+!
+!
+      call alloc_phys_data_type(n_point, fld)
+!
+      do i = 1, fld%num_phys
+        i_fld = fld%istack_component(i-1) + 1
+!
+        call set_MHD_field_addresses                                    &
+     &     (i_fld, fld%phys_name(i), iphys, flag)
+        if(flag) cycle
+        call set_SGS_MHD_field_addresses                                &
+     &     (i_fld, fld%phys_name(i), iphys, iphys_LES, flag)
+        if(flag) cycle
+!
+!   Old field label... Should be deleted later!!
+        call set_old_MHD_field_addresses                                &
+     &     (i_fld, fld%phys_name(i), iphys, flag)
+      end do
+!
+      end subroutine init_field_data_w_SGS
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
