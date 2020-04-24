@@ -236,7 +236,7 @@
       if(flag) return
 !
       call set_true_SGS_term_addresses                                  &
-     &   (i_fld, field_name, iphys%true_SGS, flag)
+     &   (i_fld, field_name, iphys_LES%true_SGS, flag)
       if(flag) return
       call set_true_div_SGS_term_addresses                              &
      &   (i_fld, field_name, iphys_LES%true_div_SGS, flag)

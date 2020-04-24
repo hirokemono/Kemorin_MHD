@@ -105,9 +105,7 @@
 !>        Structure of forces with SGS terms
         type(SGS_term_address) :: frc_w_SGS
 !>        Structure of true SGS terms
-        type(SGS_term_address) :: true_SGS
-!>        Structure of divergence of true SGS terms
-!        type(SGS_term_address) :: true_div_SGS
+!        type(SGS_term_address) :: true_SGS
       end type phys_address
 !
 !

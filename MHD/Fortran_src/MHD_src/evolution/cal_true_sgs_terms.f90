@@ -186,7 +186,7 @@
      &         surf_bcs%Vsf_bcs, surf_bcs%Bsf_bcs, iphys%base,          &
      &         iphys%forces, iphys%div_forces, iphys%diffusion,         &
      &         iphys%filter_fld, iphys%force_by_filter,                 &
-     &         iphys%SGS_term, iphys%div_SGS, iphys%true_SGS,           &
+     &         iphys%SGS_term, iphys%div_SGS, iphys_LES%true_SGS,       &
      &         iphys_ele%base, ak_MHD, fem_int, FEM_elens,              &
      &         iak_diff_sgs, diff_coefs, mk_MHD%mlump_fl,               &
      &         mhd_fem_wk, rhs_mat, nod_fld, ele_fld)
@@ -199,9 +199,9 @@
      &        nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs, surf_bcs%Bsf_bcs,     &
      &        iphys%base, iphys%forces, iphys%div_forces,               &
      &        iphys%diffusion, iphys%filter_fld, iphys%SGS_term,        &
-     &        iphys%true_SGS, iphys_ele%base, ele_fld, ak_MHD, fem_int, &
-     &        FEM_elens, iak_diff_sgs, diff_coefs, mk_MHD%mlump_cd,     &
-     &        mhd_fem_wk, rhs_mat, nod_fld)
+     &        iphys_LES%true_SGS, iphys_ele%base, ele_fld, ak_MHD,      &
+     &        fem_int, FEM_elens, iak_diff_sgs, diff_coefs,             &
+     &        mk_MHD%mlump_cd, mhd_fem_wk, rhs_mat, nod_fld)
          end if
        end do
 !
