@@ -13,11 +13,11 @@
 !!        type(phys_address), intent(in) :: ipol
 !!        type(phys_address), intent(in) :: iphys
 !!        type(address_4_sph_trans), intent(inout) :: trns_SIMI
-!!      subroutine init_sph_trns_fld_dyn_simi(ipol, iphys, trns_DYNS,   &
-!!     &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
+!!      subroutine init_sph_trns_fld_dyn_simi                           &
+!!     &         (ipol, ipol_LES, iphys, iphys_LES, trns_DYNS,          &
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
-!!        type(phys_address), intent(in) :: ipol
-!!        type(phys_address), intent(in) :: iphys
+!!        type(phys_address), intent(in) :: ipol, iphys
+!!        type(SGS_model_addresses), intent(in) :: ipol_LES, iphys_LES
 !!        type(address_4_sph_trans), intent(inout) :: trns_DYNS
 !!      subroutine set_addresses_trans_sph_Csim                         &
 !!     &         (SGS_param, ipol, iphys, trns_Csim,                    &
@@ -31,6 +31,7 @@
       use m_precision
 !
       use t_phys_address
+      use t_SGS_model_addresses
       use t_addresses_sph_transform
 !
       implicit none
@@ -116,14 +117,15 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine init_sph_trns_fld_dyn_simi(ipol, iphys, trns_DYNS,     &
+      subroutine init_sph_trns_fld_dyn_simi                             &
+     &         (ipol, ipol_LES, iphys, iphys_LES, trns_DYNS,            &
      &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
 !
       use add_SGS_term_to_sph_trans
       use add_wide_f_fld_to_sph_trans
 !
-      type(phys_address), intent(in) :: ipol
-      type(phys_address), intent(in) :: iphys
+      type(phys_address), intent(in) :: ipol, iphys
+      type(SGS_model_addresses), intent(in) :: ipol_LES, iphys_LES
       type(address_4_sph_trans), intent(inout) :: trns_DYNS
       integer(kind = kint), intent(inout) :: ncomp_sph_trans
       integer(kind = kint), intent(inout) :: nvector_sph_trans
@@ -147,8 +149,8 @@
      &   (ipol%wide_SGS, iphys%wide_SGS,                                &
      &    trns_DYNS%b_trns%wide_SGS, trns_DYNS%backward)
       call add_double_SGS_term_4_sph_trns                               &
-     &   (ipol%dble_SGS, iphys%dble_SGS,                                &
-     &    trns_DYNS%b_trns%dble_SGS, trns_DYNS%backward)
+     &   (ipol_LES%dble_SGS, iphys_LES%dble_SGS,                        &
+     &    trns_DYNS%b_trns_LES%dble_SGS, trns_DYNS%backward)
       trns_DYNS%backward%num_vector = trns_DYNS%backward%nfield
 !
       call add_wide_fil_scalar_sph_trns                                 &

@@ -113,8 +113,6 @@
 !
 !>        Structure of wide filtered SGS terms
         type(SGS_term_address) :: wide_SGS
-!>        Structure of double filtered SGS terms
-        type(SGS_term_address) :: dble_SGS
       end type phys_address
 !
 !

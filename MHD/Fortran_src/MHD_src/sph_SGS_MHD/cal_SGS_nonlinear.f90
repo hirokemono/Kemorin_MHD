@@ -116,8 +116,8 @@
       if (iflag_debug.eq.1) write(*,*) 'SGS_by_pseudo_sph'
       call SGS_by_pseudo_sph                                            &
      &   (i_step, SPH_SGS%SGS_par, SPH_MHD%sph, SPH_MHD%comms,          &
-     &    r_2nd, SPH_model%MHD_prop, SPH_model%sph_MHD_bc, trans_p,     &
-     &    WK, SPH_SGS%dynamic, SPH_MHD%ipol, SPH_MHD%fld)
+     &    r_2nd, SPH_model%MHD_prop, SPH_model%sph_MHD_bc, trans_p, WK, &
+     &    SPH_SGS%dynamic, SPH_MHD%ipol, SPH_SGS%ipol_LES, SPH_MHD%fld)
 !
 !   ----  Lead advection of reference field
       call add_ref_advect_sph_MHD                                       &

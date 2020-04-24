@@ -9,7 +9,8 @@
 !!@verbatim
 !!      subroutine SGS_by_pseudo_sph                                    &
 !!     &         (i_step, SGS_par, sph, comms_sph, r_2nd, MHD_prop,     &
-!!     &          sph_MHD_bc, trans_p, WK, dynamic_SPH, ipol, rj_fld)
+!!     &          sph_MHD_bc, trans_p, WK, dynamic_SPH,                 &
+!!     &          ipol, ipol_LES, rj_fld)
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(sph_grids), intent(in) :: sph
 !!        type(sph_comm_tables), intent(in) :: comms_sph
@@ -18,6 +19,7 @@
 !!        type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
 !!        type(parameters_4_sph_trans), intent(in) :: trans_p
 !!        type(phys_address), intent(in) :: ipol
+!!        type(SGS_model_addresses), intent(in) :: ipol_LES
 !!        type(works_4_sph_trans_MHD), intent(inout) :: WK
 !!        type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
 !!        type(phys_data), intent(inout) :: rj_fld
@@ -50,6 +52,8 @@
       use t_coriolis_terms_rlm
       use t_gaunt_coriolis_rlm
       use t_sph_filtering
+      use t_phys_address
+      use t_SGS_model_addresses
 !
       implicit none
 !
@@ -64,7 +68,8 @@
 !
       subroutine SGS_by_pseudo_sph                                      &
      &         (i_step, SGS_par, sph, comms_sph, r_2nd, MHD_prop,       &
-     &          sph_MHD_bc, trans_p, WK, dynamic_SPH, ipol, rj_fld)
+     &          sph_MHD_bc, trans_p, WK, dynamic_SPH,                   &
+     &          ipol, ipol_LES, rj_fld)
 !
       use sph_transforms_4_SGS
       use cal_sph_rotation_of_SGS
@@ -84,6 +89,7 @@
       type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
       type(parameters_4_sph_trans), intent(in) :: trans_p
       type(phys_address), intent(in) :: ipol
+      type(SGS_model_addresses), intent(in) :: ipol_LES
 !
       type(works_4_sph_trans_MHD), intent(inout) :: WK
       type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
@@ -111,7 +117,7 @@
           call sph_dynamic_similarity                                   &
      &       (SGS_par%model_p, sph, comms_sph, MHD_prop, trans_p,       &
      &        WK%trns_SGS, WK%trns_DYNS, WK%WK_sph, dynamic_SPH,        &
-     &        ipol, rj_fld)
+     &        ipol, ipol_LES, rj_fld)
           if(iflag_SGS_time) call end_elapsed_time(ist_elapsed_SGS+3)
         end if
       else if(SGS_par%model_p%iflag_SGS .eq. id_SGS_NL_grad) then
@@ -131,7 +137,8 @@
           call sph_dynamic_nl_gradient(SGS_par%model_p,                 &
      &        sph, comms_sph, r_2nd, MHD_prop, sph_MHD_bc, trans_p,     &
      &        WK%trns_SGS, WK%trns_SIMI, WK%trns_DYNG,                  &
-     &        WK%trns_Csim, WK%WK_sph, dynamic_SPH, ipol, rj_fld)
+     &        WK%trns_Csim, WK%WK_sph, dynamic_SPH,                     &
+     &        ipol, ipol_LES, rj_fld)
           if(iflag_SGS_time) call end_elapsed_time(ist_elapsed_SGS+3)
         end if
       end if
@@ -204,7 +211,7 @@
 !
       subroutine sph_dynamic_similarity(SGS_param, sph, comms_sph,      &
      &          MHD_prop, trans_p, trns_SGS, trns_DYNS, WK_sph,         &
-     &          dynamic_SPH, ipol, rj_fld)
+     &          dynamic_SPH, ipol, ipol_LES, rj_fld)
 !
       use sph_transforms_4_SGS
       use cal_filtered_sph_fields
@@ -217,6 +224,7 @@
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(parameters_4_sph_trans), intent(in) :: trans_p
       type(phys_address), intent(in) :: ipol
+      type(SGS_model_addresses), intent(in) :: ipol_LES
 !
       type(address_4_sph_trans), intent(inout) :: trns_SGS, trns_DYNS
       type(spherical_trns_works), intent(inout) :: WK_sph
@@ -238,7 +246,7 @@
      &   (sph%sph_rj, ipol%forces, ipol%wide_SGS,                       &
      &    dynamic_SPH%sph_filters(2), rj_fld)
       call cal_sph_dble_filtering_forces                                &
-     &   (sph%sph_rj, ipol%SGS_term, ipol%dble_SGS,                     &
+     &   (sph%sph_rj, ipol%SGS_term, ipol_LES%dble_SGS,                 &
      &    dynamic_SPH%sph_filters(2), rj_fld)
 !
       if (iflag_debug.eq.1) write(*,*) 'sph_back_trans_SGS_MHD dyns'
@@ -255,7 +263,7 @@
       if (iflag_debug.eq.1) write(*,*) 'SGS_param%stab_weight'
       call const_model_coefs_4_sph(SGS_param, sph%sph_rtp,              &
      &    dynamic_SPH%sph_d_grp, trns_SGS%f_trns%SGS_term,              &
-     &    trns_DYNS%b_trns%wide_SGS, trns_DYNS%b_trns%dble_SGS,         &
+     &    trns_DYNS%b_trns%wide_SGS, trns_DYNS%b_trns_LES%dble_SGS,     &
      &    trns_SGS%forward, trns_DYNS%backward, trns_DYNS%backward,     &
      &    dynamic_SPH%iak_sgs_term, dynamic_SPH%wk_sgs)
 !
@@ -266,7 +274,7 @@
       subroutine sph_dynamic_nl_gradient                                &
      &         (SGS_param, sph, comms_sph, r_2nd, MHD_prop, sph_MHD_bc, &
      &          trans_p, trns_SGS, trns_SIMI, trns_DYNG, trns_Csim,     &
-     &          WK_sph, dynamic_SPH, ipol, rj_fld)
+     &          WK_sph, dynamic_SPH, ipol, ipol_LES, rj_fld)
 !
       use scale_similarity_sph_SGS
       use sph_transforms_4_SGS
@@ -282,6 +290,7 @@
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(parameters_4_sph_trans), intent(in) :: trans_p
       type(phys_address), intent(in) :: ipol
+      type(SGS_model_addresses), intent(in) :: ipol_LES
 !
       type(address_4_sph_trans), intent(inout) :: trns_SGS, trns_Csim
       type(address_4_sph_trans), intent(inout) :: trns_SIMI, trns_DYNG
@@ -309,7 +318,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_sph_dble_filtering_forces'
       call cal_sph_dble_filtering_forces                                &
-     &   (sph%sph_rj, ipol%SGS_term, ipol%dble_SGS,                     &
+     &   (sph%sph_rj, ipol%SGS_term, ipol_LES%dble_SGS,                 &
      &    dynamic_SPH%sph_filters(2), rj_fld)
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_sph_dble_filtering_forces'
@@ -321,7 +330,7 @@
       if (iflag_debug.eq.1) write(*,*) 'SGS_param%stab_weight'
       call const_model_coefs_4_sph(SGS_param, sph%sph_rtp,              &
      &    dynamic_SPH%sph_d_grp, trns_SIMI%f_trns%SGS_term,             &
-     &    trns_Csim%b_trns%wide_SGS, trns_DYNG%b_trns%dble_SGS,         &
+     &    trns_Csim%b_trns%wide_SGS, trns_DYNG%b_trns_LES%dble_SGS,     &
      &    trns_SIMI%forward, trns_Csim%backward, trns_DYNG%backward,    &
      &    dynamic_SPH%iak_sgs_term, dynamic_SPH%wk_sgs)
 !

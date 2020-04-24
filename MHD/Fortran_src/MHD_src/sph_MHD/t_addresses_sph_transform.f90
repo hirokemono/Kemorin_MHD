@@ -35,6 +35,7 @@
       use m_precision
 !
       use t_phys_address
+      use t_SGS_model_addresses
       use t_spheric_rtp_data
       use t_sph_multi_FFTW
 !
@@ -83,6 +84,10 @@
         type(phys_address) :: b_trns
 !>        addresses of forces for forward transform
         type(phys_address) :: f_trns
+!>        addresses of SGS models for backward transform
+        type(SGS_model_addresses) :: b_trns_LES
+!>        addresses of SGS models for forward transform
+        type(SGS_model_addresses) :: f_trns_LES
 !
 !>        zonal mean of field data in grid space
         real(kind = kreal), allocatable :: fld_zm(:,:)

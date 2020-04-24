@@ -220,7 +220,7 @@
      &   (i_fld, field_name, iphys%wide_SGS, flag)
       if(flag) return
       call set_double_SGS_term_addresses                                &
-     &   (i_fld, field_name, iphys%dble_SGS, flag)
+     &   (i_fld, field_name, iphys_LES%dble_SGS, flag)
       if(flag) return
 !
       call set_SGS_model_coef_addresses                                 &

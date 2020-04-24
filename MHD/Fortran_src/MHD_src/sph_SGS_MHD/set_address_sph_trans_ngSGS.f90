@@ -20,10 +20,10 @@
 !!        type(phys_address), intent(in) :: iphys
 !!        type(address_4_sph_trans), intent(inout) :: trns_SGS
 !!
-!!      subroutine init_sph_trns_fld_dyn_ngrad(ipol, iphys, trns_DYNG,  &
-!!     &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
-!!        type(phys_address), intent(in) :: ipol
-!!        type(phys_address), intent(in) :: iphys
+!!      subroutine init_sph_trns_fld_dyn_ngrad                          &
+!!     &         (ipol, ipol_LES, iphys, iphys_LES, trns_DYNG,          &
+!!        type(phys_address), intent(in) :: ipol, iphys
+!!        type(SGS_model_addresses), intent(in) :: ipol_LES, iphys_LES
 !!        type(address_4_sph_trans), intent(inout) :: trns_DYNG
 !!
 !!      subroutine set_addresses_trans_sph_ngCsim                       &
@@ -39,6 +39,7 @@
       use m_precision
 !
       use t_phys_address
+      use t_SGS_model_addresses
       use t_addresses_sph_transform
 !
       implicit none
@@ -181,14 +182,15 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine init_sph_trns_fld_dyn_ngrad(ipol, iphys, trns_DYNG,    &
+      subroutine init_sph_trns_fld_dyn_ngrad                            &
+     &         (ipol, ipol_LES, iphys, iphys_LES, trns_DYNG,            &
      &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
 !
       use add_diff_fil_vec_to_trans
       use add_SGS_term_to_sph_trans
 !
-      type(phys_address), intent(in) :: ipol
-      type(phys_address), intent(in) :: iphys
+      type(phys_address), intent(in) :: ipol, iphys
+      type(SGS_model_addresses), intent(in) :: ipol_LES, iphys_LES
       type(address_4_sph_trans), intent(inout) :: trns_DYNG
       integer(kind = kint), intent(inout) :: ncomp_sph_trans
       integer(kind = kint), intent(inout) :: nvector_sph_trans
@@ -212,8 +214,8 @@
      &   (ipol%grad_fil_fld, iphys%grad_fil_fld,                        &
      &    trns_DYNG%b_trns%grad_fil_fld, trns_DYNG%backward)
       call add_double_SGS_term_4_sph_trns                               &
-     &   (ipol%dble_SGS, iphys%dble_SGS,                                &
-     &    trns_DYNG%b_trns%dble_SGS, trns_DYNG%backward)
+     &   (ipol_LES%dble_SGS, iphys_LES%dble_SGS,                        &
+     &    trns_DYNG%b_trns_LES%dble_SGS, trns_DYNG%backward)
       trns_DYNG%backward%num_vector = trns_DYNG%backward%nfield
       trns_DYNG%backward%num_scalar = trns_DYNG%backward%nfield         &
      &                              - trns_DYNG%backward%num_vector
