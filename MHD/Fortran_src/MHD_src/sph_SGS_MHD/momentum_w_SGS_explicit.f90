@@ -8,11 +8,12 @@
 !!
 !!@verbatim
 !!      subroutine sel_explicit_sph_SGS_MHD                             &
-!!     &         (i_step, dt, MHD_prop, sph_MHD_bc, SPH_SGS)
+!!     &         (i_step, dt, MHD_prop, sph_MHD_bc, SPH_SGS, SPH_MHD)
 !!        type(fdm_matrices), intent(in) :: r_2nd
 !!        type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
 !!        type(legendre_4_sph_trans), intent(in) :: leg
-!!        type(SPH_SGS_structure), intent(inout) :: SPH_SGS
+!!        type(SPH_SGS_structure), intent(in) :: SPH_SGS
+!!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !!@endverbatim
 !!
 !!@param i_step  time step
@@ -25,6 +26,7 @@
       use t_control_parameter
       use t_physical_property
       use t_SPH_SGS_structure
+      use t_SPH_mesh_field_data
       use t_fdm_coefs
       use t_schmidt_poly_on_rtm
       use t_boundary_data_sph_MHD
@@ -43,33 +45,34 @@
 ! ----------------------------------------------------------------------
 !
       subroutine sel_explicit_sph_SGS_MHD                               &
-     &         (i_step, dt, MHD_prop, sph_MHD_bc, SPH_SGS)
+     &         (i_step, dt, MHD_prop, sph_MHD_bc, SPH_SGS, SPH_MHD)
 !
       integer(kind = kint), intent(in) :: i_step
       real(kind = kreal), intent(in) :: dt
 !
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
-      type(SPH_SGS_structure), intent(inout) :: SPH_SGS
+      type(SPH_SGS_structure), intent(in) :: SPH_SGS
+      type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !
 !
       if(MHD_prop%iflag_all_scheme .eq. id_explicit_euler) then
         call cal_explicit_sph_SGS_euler                                 &
-     &     (dt, SPH_SGS%SGS_par, SPH_SGS%sph%sph_rj, MHD_prop,          &
-     &      sph_MHD_bc, SPH_SGS%ipol, SPH_SGS%fld)
+     &     (dt, SPH_SGS%SGS_par, SPH_MHD%sph%sph_rj, MHD_prop,          &
+     &      sph_MHD_bc, SPH_MHD%ipol, SPH_MHD%fld)
       else if(i_step .eq. 1) then
         if(iflag_debug.gt.0) write(*,*) 'cal_explicit_sph_SGS_euler'
         call cal_explicit_sph_SGS_euler                                 &
-     &     (dt, SPH_SGS%SGS_par, SPH_SGS%sph%sph_rj, MHD_prop,          &
-     &      sph_MHD_bc, SPH_SGS%ipol, SPH_SGS%fld)
+     &     (dt, SPH_SGS%SGS_par, SPH_MHD%sph%sph_rj, MHD_prop,          &
+     &      sph_MHD_bc, SPH_MHD%ipol, SPH_MHD%fld)
         call cal_first_SGS_prev_step_adams                              &
-     &     (SPH_SGS%SGS_par, SPH_SGS%sph%sph_rj, MHD_prop, sph_MHD_bc,  &
-     &      SPH_SGS%ipol, SPH_SGS%fld)
+     &     (SPH_SGS%SGS_par, SPH_MHD%sph%sph_rj, MHD_prop, sph_MHD_bc,  &
+     &      SPH_MHD%ipol, SPH_MHD%fld)
       else
         if(iflag_debug.gt.0) write(*,*) 'cal_explicit_sph_SGS_adams'
         call cal_explicit_sph_SGS_adams                                 &
-     &     (dt, SPH_SGS%SGS_par, SPH_SGS%sph%sph_rj, MHD_prop,          &
-     &      sph_MHD_bc, SPH_SGS%ipol, SPH_SGS%fld)
+     &     (dt, SPH_SGS%SGS_par, SPH_MHD%sph%sph_rj, MHD_prop,          &
+     &      sph_MHD_bc, SPH_MHD%ipol, SPH_MHD%fld)
       end if
 !
       end subroutine sel_explicit_sph_SGS_MHD

@@ -81,8 +81,8 @@
      &    SPH_model1%MHD_BC, SPH_WK1%trns_WK%WK_sph, gen_sph_c)
       call set_control_SGS_SPH_MHD_field(MHD_ctl1%model_ctl,            &
      &    MHD_ctl1%psph_ctl, MHD_ctl1%smonitor_ctl, MHD_ctl1%zm_ctls,   &
-     &    SPH_SGS1%SGS_par, SPH_model1%MHD_prop, SPH_SGS1%sph,          &
-     &    SPH_SGS1%fld, nod_fld_c, SPH_WK1%monitor)
+     &    SPH_SGS1%SGS_par, SPH_model1%MHD_prop, SPH_MHD1%sph,          &
+     &    SPH_MHD1%fld, nod_fld_c, SPH_WK1%monitor)
 !
       call copy_delta_t(MHD_step1%init_d, MHD_step1%time_d)
 !
@@ -96,7 +96,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'load_para_sph_mesh'
       call load_para_sph_mesh(MHD_files1%sph_file_param,                &
-     &    SPH_SGS1%sph, SPH_SGS1%comms, SPH_SGS1%groups)
+     &    SPH_MHD1%sph, SPH_MHD1%comms, SPH_MHD1%groups)
 !
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)
 !
@@ -106,7 +106,7 @@
       if(iflag_debug .gt. 0) write(*,*) 'SPH_init_sph_pick_circle'
       call SPH_init_sph_pick_circle                                     &
      &   (MHD_files1, FEM_d1%geofem, FEM_d1%iphys,                      &
-     &    SPH_model1, SPH_SGS1, SPH_WK1, cdat1)
+     &    SPH_model1, SPH_SGS1, SPH_MHD1, SPH_WK1, cdat1)
 !
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+1)
       call calypso_MPI_barrier
@@ -138,7 +138,7 @@
 !*
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_pick_circle'
         call SPH_analyze_pick_circle(MHD_step1%time_d%i_time_step,      &
-     &      MHD_files1, SPH_model1, SPH_SGS1, SPH_WK1, cdat1)
+     &      MHD_files1, SPH_model1, SPH_SGS1, SPH_MHD1, SPH_WK1, cdat1)
 !*
 !*  -----------  exit loop --------------
 !*

@@ -9,20 +9,22 @@
 !!
 !!@verbatim
 !!      subroutine output_sph_SGS_MHD_rst_control(i_step, MHD_files,    &
-!!     &          time_d, rst_step, SPH_SGS, sph_fst_IO)
+!!     &          time_d, rst_step, SPH_SGS, SPH_MHD, sph_fst_IO)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(time_data), intent(in) :: time_d
 !!        type(phys_data), intent(in) :: rj_fld
 !!        type(IO_step_param), intent(in) :: rst_step
 !!        type(field_IO), intent(inout) :: sph_fst_IO
+!!        type(SPH_mesh_field_data), intent(in) :: SPH_MHD
 !!        type(SPH_SGS_structure), intent(inout) :: SPH_SGS
 !!
 !!      subroutine read_alloc_sph_rst_SGS_snap(i_step, rj_file_param,   &
-!!     &          MHD_files, rst_step, time_d, SPH_SGS)
+!!     &          MHD_files, rst_step, time_d, SPH_MHD, SPH_SGS)
 !!        type(field_IO_params), intent(in) :: rj_file_param
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(IO_step_param), intent(inout) :: rst_step
 !!        type(time_data), intent(inout) :: time_d
+!!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !!        type(SPH_SGS_structure), intent(inout) :: SPH_SGS
 !!
 !!      subroutine set_initial_Csim_control                             &
@@ -45,6 +47,7 @@
 !
       use t_time_data
       use t_IO_step_parameter
+      use t_SPH_SGS_structure
       use t_SPH_mesh_field_data
       use t_phys_address
       use t_phys_data
@@ -66,7 +69,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine output_sph_SGS_MHD_rst_control(i_step, MHD_files,      &
-     &          time_d, rst_step, SPH_SGS, sph_fst_IO)
+     &          time_d, rst_step, SPH_SGS, SPH_MHD, sph_fst_IO)
 !
       use t_SPH_SGS_structure
       use t_sph_filtering
@@ -77,13 +80,14 @@
       type(MHD_file_IO_params), intent(in) :: MHD_files
       type(time_data), intent(in) :: time_d
       type(IO_step_param), intent(in) :: rst_step
+      type(SPH_mesh_field_data), intent(in) :: SPH_MHD
 !
       type(field_IO), intent(inout) :: sph_fst_IO
       type(SPH_SGS_structure), intent(inout) :: SPH_SGS
 !
 !
       call output_sph_restart_control(i_step, MHD_files%fst_file_IO,    &
-     &    time_d, SPH_SGS%fld, rst_step, sph_fst_IO)
+     &    time_d, SPH_MHD%fld, rst_step, sph_fst_IO)
       call write_sph_rst_Csim(i_step, MHD_files,                        &
      &    rst_step, time_d, SPH_SGS%SGS_par, SPH_SGS%dynamic)
 !
@@ -92,7 +96,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine read_alloc_sph_rst_SGS_snap(i_step, rj_file_param,     &
-     &          MHD_files, rst_step, time_d, SPH_SGS)
+     &          MHD_files, rst_step, time_d, SPH_MHD, SPH_SGS)
 !
       use t_SGS_control_parameter
       use t_sph_filtering
@@ -107,12 +111,13 @@
 !
       type(IO_step_param), intent(inout) :: rst_step
       type(time_data), intent(inout) :: time_d
+      type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
       type(SPH_SGS_structure), intent(inout) :: SPH_SGS
 !
 !
       call read_alloc_sph_rst_4_snap                                    &
      &   (i_step, rj_file_param, MHD_files%fst_file_IO, rst_step,       &
-     &    SPH_SGS%sph, SPH_SGS%ipol, SPH_SGS%fld, time_d)
+     &    SPH_MHD%sph, SPH_MHD%ipol, SPH_MHD%fld, time_d)
 !
       call read_alloc_sph_rst_Csim_snap(i_step, MHD_files,              &
      &    rst_step, time_d, SPH_SGS%SGS_par, SPH_SGS%dynamic)

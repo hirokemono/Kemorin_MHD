@@ -25,6 +25,7 @@
       use m_SPH_SGS_structure
       use m_jacobians_VIZ
       use t_step_parameter
+      use t_SPH_mesh_field_data
       use t_visualizer
       use t_SPH_MHD_zonal_mean_viz
 !
@@ -65,7 +66,7 @@
       if (iflag_debug.eq.1) write(*,*) 'input_control_SPH_SGS_dynamo'
       call input_control_SPH_SGS_dynamo                                 &
      &   (MHD_files1, MHD_ctl1, MHD_step1, SPH_model1,                  &
-     &    SPH_WK1%trns_WK, SPH_WK1%monitor, SPH_SGS1, FEM_d1)
+     &    SPH_WK1%trns_WK, SPH_WK1%monitor, SPH_SGS1, SPH_MHD1, FEM_d1)
       call copy_delta_t(MHD_step1%init_d, MHD_step1%time_d)
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)
 !
@@ -80,7 +81,7 @@
 !        Initialize spherical transform dynamo
       if(iflag_debug .gt. 0) write(*,*) 'SPH_init_sph_back_trans'
       call SPH_init_sph_back_trans                                      &
-     &   (MHD_files1, SPH_model1, SPH_SGS1, SPH_WK1)
+     &   (MHD_files1, SPH_model1, SPH_MHD1, SPH_WK1)
 !        Initialize visualization
       if(iflag_debug .gt. 0) write(*,*) 'init_visualize'
       call init_visualize                                               &
@@ -122,7 +123,7 @@
 !*
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_back_trans'
         call SPH_analyze_back_trans(MHD_step1%time_d%i_time_step,       &
-     &      MHD_files1, MHD_step1, SPH_SGS1, SPH_WK1)
+     &      MHD_files1, MHD_step1, SPH_MHD1, SPH_WK1)
 !*
 !*  -----------  output field data --------------
 !*
@@ -130,7 +131,7 @@
 !
         if (iflag_debug.gt.0) write(*,*) 'copy_all_field_from_trans'
         call copy_all_field_from_trans                                  &
-     &     (SPH_SGS1%sph%sph_params%m_folding, SPH_SGS1%sph%sph_rtp,    &
+     &     (SPH_MHD1%sph%sph_params%m_folding, SPH_MHD1%sph%sph_rtp,    &
      &      SPH_WK1%trns_WK%trns_MHD%backward, FEM_d1%geofem%mesh,      &
      &      FEM_d1%field)
 !
@@ -153,7 +154,7 @@
 !*
           call SGS_MHD_zmean_sections                                   &
      &       (MHD_step1%viz_step, MHD_step1%time_d, SPH_SGS1%SGS_par,   &
-     &        SPH_SGS1%sph, FEM_d1%geofem, SPH_WK1%trns_WK,             &
+     &        SPH_MHD1%sph, FEM_d1%geofem, SPH_WK1%trns_WK,             &
      &        FEM_d1%field, zmeans1)
           if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+4)
         end if

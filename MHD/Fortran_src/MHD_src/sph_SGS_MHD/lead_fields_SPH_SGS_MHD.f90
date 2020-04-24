@@ -9,7 +9,7 @@
 !!@verbatim
 !!      subroutine lead_fields_4_SPH_SGS_MHD                            &
 !!     &         (monitor, r_2nd, MHD_prop, sph_MHD_bc,                 &
-!!     &          trans_p, sph_MHD_mat, WK, dynamic_SPH, SPH_SGS)
+!!     &          trans_p, sph_MHD_mat, WK, SPH_SGS, SPH_MHD)
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(fdm_matrices), intent(in) :: r_2nd
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
@@ -19,6 +19,7 @@
 !!        type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
 !!        type(MHD_radial_matrices), intent(inout) :: sph_MHD_mat
 !!        type(SPH_SGS_structure), intent(inout) :: SPH_SGS
+!!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !!@endverbatim
 !
       module lead_fields_SPH_SGS_MHD
@@ -29,6 +30,7 @@
       use t_control_parameter
       use t_SGS_control_parameter
       use t_SPH_SGS_structure
+      use t_SPH_mesh_field_data
       use t_fdm_coefs
       use t_addresses_sph_transform
       use t_sph_trans_arrays_MHD
@@ -53,7 +55,7 @@
 !
       subroutine lead_fields_4_SPH_SGS_MHD                              &
      &         (monitor, r_2nd, MHD_prop, sph_MHD_bc,                   &
-     &          trans_p, sph_MHD_mat, WK, dynamic_SPH, SPH_SGS)
+     &          trans_p, sph_MHD_mat, WK, SPH_SGS, SPH_MHD)
 !
       use t_sph_mhd_monitor_data_IO
       use sph_transforms_4_MHD
@@ -69,39 +71,39 @@
       type(parameters_4_sph_trans), intent(in) :: trans_p
 !
       type(works_4_sph_trans_MHD), intent(inout) :: WK
-      type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
       type(MHD_radial_matrices), intent(inout) :: sph_MHD_mat
       type(SPH_SGS_structure), intent(inout) :: SPH_SGS
+      type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !
 !
       call cal_self_buoyancy_sph_SGS_MHD                                &
-     &   (SPH_SGS%sph%sph_rj, trans_p%leg, SPH_SGS%ipol,                &
-     &    MHD_prop, sph_MHD_bc%sph_bc_U, SPH_SGS%fld)
+     &   (SPH_MHD%sph%sph_rj, trans_p%leg, SPH_MHD%ipol,                &
+     &    MHD_prop, sph_MHD_bc%sph_bc_U, SPH_MHD%fld)
 !
       if(MHD_prop%fl_prop%iflag_scheme .gt. id_no_evolution) then
         call pressure_SGS_SPH_MHD                                       &
-     &     (SPH_SGS%SGS_par%model_p, SPH_SGS%sph, MHD_prop, sph_MHD_bc, &
+     &     (SPH_SGS%SGS_par%model_p, SPH_MHD%sph, MHD_prop, sph_MHD_bc, &
      &      r_2nd, trans_p%leg, sph_MHD_mat%band_p_poisson,             &
-     &      SPH_SGS%ipol, SPH_SGS%fld)
+     &      SPH_MHD%ipol, SPH_MHD%fld)
       end if
 !
 !
-      call lead_fields_by_sph_trans(SPH_SGS%sph, SPH_SGS%comms,         &
-     &    MHD_prop, trans_p, WK, SPH_SGS%fld)
+      call lead_fields_by_sph_trans(SPH_MHD%sph, SPH_MHD%comms,         &
+     &    MHD_prop, trans_p, WK, SPH_MHD%fld)
 !
       call lead_SGS_terms_4_SPH                                         &
-     &   (SPH_SGS%SGS_par%model_p, SPH_SGS%sph, SPH_SGS%comms,          &
-     &    trans_p, WK, dynamic_SPH, SPH_SGS%fld)
+     &   (SPH_SGS%SGS_par%model_p, SPH_MHD%sph, SPH_MHD%comms,          &
+     &    trans_p, WK, SPH_SGS%dynamic, SPH_MHD%fld)
 !
       call gradients_of_vectors_sph                                     &
-     &   (SPH_SGS%sph, SPH_SGS%comms, r_2nd, sph_MHD_bc, trans_p,       &
-     &    SPH_SGS%ipol, WK%trns_MHD, WK%trns_tmp, WK%WK_sph,            &
-     &    SPH_SGS%fld)
+     &   (SPH_MHD%sph, SPH_MHD%comms, r_2nd, sph_MHD_bc, trans_p,       &
+     &    SPH_MHD%ipol, WK%trns_MHD, WK%trns_tmp, WK%WK_sph,            &
+     &    SPH_MHD%fld)
       call enegy_fluxes_SPH_SGS_MHD(monitor%ltr_crust,                  &
-     &    SPH_SGS%SGS_par%model_p, SPH_SGS%sph, SPH_SGS%comms,          &
-     &    r_2nd, MHD_prop, sph_MHD_bc, trans_p, SPH_SGS%ipol,           &
+     &    SPH_SGS%SGS_par%model_p, SPH_MHD%sph, SPH_MHD%comms,          &
+     &    r_2nd, MHD_prop, sph_MHD_bc, trans_p, SPH_MHD%ipol,           &
      &    WK%trns_MHD, WK%trns_SGS, WK%trns_snap, WK%WK_sph,            &
-     &    SPH_SGS%fld)
+     &    SPH_MHD%fld)
 !
       end subroutine lead_fields_4_SPH_SGS_MHD
 !

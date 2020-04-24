@@ -7,17 +7,17 @@
 !>@brief Evaluate nonlinear terms by pseudo spectram scheme
 !!
 !!@verbatim
-!!      subroutine nonlinear_SGS_first                                  &
-!!     &         (i_step, r_2nd, SPH_model, trans_p, WK, SGS_par,       &
-!!     &          dynamic_SPH, SPH_SGS)
-!!      subroutine nonlinear_with_SGS(i_step, SGS_par, r_2nd, SPH_model,&
-!!     &          trans_p, WK, dynamic_SPH, SPH_SGS)
+!!      subroutine nonlinear_SGS_first(i_step, r_2nd, SPH_model,        &
+!!     &          trans_p, WK, SPH_SGS, SPH_MHD)
+!!      subroutine nonlinear_with_SGS(i_step, r_2nd, SPH_model,         &
+!!     &          trans_p, WK, SPH_SGS, SPH_MHD)
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(fdm_matrices), intent(in) :: r_2nd
 !!        type(parameters_4_sph_trans), intent(in) :: trans_p
 !!        type(SPH_MHD_model_data), intent(in) :: SPH_model
 !!        type(works_4_sph_trans_MHD), intent(inout) :: WK
 !!        type(SPH_SGS_structure), intent(inout) :: SPH_SGS
+!!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !!@endverbatim
 !
 !
@@ -36,6 +36,7 @@
       use t_SGS_control_parameter
       use t_SPH_MHD_model_data
       use t_SPH_SGS_structure
+      use t_SPH_mesh_field_data
       use t_fdm_coefs
       use t_sph_trans_arrays_MHD
       use t_addresses_sph_transform
@@ -57,8 +58,8 @@
 !*
 !*   ------------------------------------------------------------------
 !*
-      subroutine nonlinear_SGS_first                                    &
-     &         (i_step, r_2nd, SPH_model, trans_p, WK, SPH_SGS)
+      subroutine nonlinear_SGS_first(i_step, r_2nd, SPH_model,          &
+     &          trans_p, WK, SPH_SGS, SPH_MHD)
 !
       integer(kind = kint), intent(in) :: i_step
       type(fdm_matrices), intent(in) :: r_2nd
@@ -67,21 +68,22 @@
 !
       type(works_4_sph_trans_MHD), intent(inout) :: WK
       type(SPH_SGS_structure), intent(inout) :: SPH_SGS
+      type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !
       real(kind = kreal), save :: tmp_stab_wt
 !
 !
       call init_stab_weight(tmp_stab_wt, SPH_SGS%SGS_par%model_p)
       call nonlinear_with_SGS                                           &
-     &   (i_step, r_2nd, SPH_model, trans_p, WK, SPH_SGS)
+     &   (i_step, r_2nd, SPH_model, trans_p, WK, SPH_SGS, SPH_MHD)
       call back_stab_weight(tmp_stab_wt, SPH_SGS%SGS_par%model_p)
 !
       end subroutine nonlinear_SGS_first
 !*
 !*   ------------------------------------------------------------------
 !*
-      subroutine nonlinear_with_SGS                                     &
-     &         (i_step, r_2nd, SPH_model, trans_p, WK, SPH_SGS)
+      subroutine nonlinear_with_SGS(i_step, r_2nd, SPH_model,           &
+     &          trans_p, WK, SPH_SGS, SPH_MHD)
 !
       use cal_inner_core_rotation
 !
@@ -99,52 +101,53 @@
 !
       type(works_4_sph_trans_MHD), intent(inout) :: WK
       type(SPH_SGS_structure), intent(inout) :: SPH_SGS
+      type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !
 !   ----  lead nonlinear terms by phesdo spectrum
 !
       if (iflag_debug.eq.1) write(*,*) 'nonlinear_by_pseudo_sph'
       call nonlinear_by_pseudo_sph                                      &
-     &   (SPH_SGS%sph, SPH_SGS%comms, SPH_model%omega_sph, r_2nd,       &
+     &   (SPH_MHD%sph, SPH_MHD%comms, SPH_model%omega_sph, r_2nd,       &
      &    SPH_model%MHD_prop, SPH_model%sph_MHD_bc, trans_p,            &
      &    WK%gt_cor, WK%trns_MHD, WK%WK_sph, WK%cor_rlm,                &
-     &    SPH_SGS%ipol, SPH_SGS%fld)
+     &    SPH_MHD%ipol, SPH_MHD%fld)
 !
 !   ----  Lead SGS terms
       if (iflag_debug.eq.1) write(*,*) 'SGS_by_pseudo_sph'
       call SGS_by_pseudo_sph                                            &
-     &   (i_step, SPH_SGS%SGS_par, SPH_SGS%sph, SPH_SGS%comms,          &
+     &   (i_step, SPH_SGS%SGS_par, SPH_MHD%sph, SPH_MHD%comms,          &
      &    r_2nd, SPH_model%MHD_prop, SPH_model%sph_MHD_bc, trans_p,     &
-     &    WK, SPH_SGS%dynamic, SPH_SGS%ipol, SPH_SGS%fld)
+     &    WK, SPH_SGS%dynamic, SPH_MHD%ipol, SPH_MHD%fld)
 !
 !   ----  Lead advection of reference field
       call add_ref_advect_sph_MHD                                       &
-     &   (SPH_SGS%sph%sph_rj, SPH_model%sph_MHD_bc, SPH_model%MHD_prop, &
+     &   (SPH_MHD%sph%sph_rj, SPH_model%sph_MHD_bc, SPH_model%MHD_prop, &
      &    trans_p%leg, SPH_model%ref_temp, SPH_model%ref_comp,          &
-     &    SPH_SGS%ipol, SPH_SGS%fld)
+     &    SPH_MHD%ipol, SPH_MHD%fld)
 !
 !*  ----  copy coriolis term for inner core rotation
 !*
       if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+8)
       call copy_icore_rot_to_tor_coriolis                               &
-     &   (SPH_model%sph_MHD_bc%sph_bc_U, SPH_SGS%sph%sph_rj,            &
-     &    SPH_SGS%ipol, SPH_SGS%fld)
+     &   (SPH_model%sph_MHD_bc%sph_bc_U, SPH_MHD%sph%sph_rj,            &
+     &    SPH_MHD%ipol, SPH_MHD%fld)
       if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+8)
 !
       if(iflag_debug .gt. 0) write(*,*) 'sum_forces_to_explicit'
       call sum_forces_to_explicit                                       &
-     &   (SPH_model%MHD_prop%fl_prop, SPH_SGS%ipol, SPH_SGS%fld)
+     &   (SPH_model%MHD_prop%fl_prop, SPH_MHD%ipol, SPH_MHD%fld)
 !
 !    ---- Add filtered rotation of forces
       if(iflag_debug .gt. 0) write(*,*) 'add_filtered_buo_to_explicit'
       call add_filtered_buo_to_explicit(SPH_model%MHD_prop%fl_prop,     &
-     &    SPH_SGS%ipol%exp_work, SPH_SGS%ipol%rot_frc_by_filter,        &
-     &    SPH_SGS%fld)
+     &    SPH_MHD%ipol%exp_work, SPH_MHD%ipol%rot_frc_by_filter,        &
+     &    SPH_MHD%fld)
 !
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &                'SGS_forces_to_explicit'
       call SGS_forces_to_explicit(SPH_SGS%SGS_par%model_p,              &
-     &    SPH_SGS%sph%sph_rj, SPH_model%sph_MHD_bc%sph_bc_U,            &
-     &    SPH_SGS%ipol, SPH_SGS%fld)
+     &    SPH_MHD%sph%sph_rj, SPH_model%sph_MHD_bc%sph_bc_U,            &
+     &    SPH_MHD%ipol, SPH_MHD%fld)
 !
       end subroutine nonlinear_with_SGS
 !*

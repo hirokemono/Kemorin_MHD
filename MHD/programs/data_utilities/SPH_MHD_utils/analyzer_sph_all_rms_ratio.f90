@@ -26,6 +26,7 @@
       use m_jacobians_VIZ
       use t_step_parameter
       use t_visualizer
+      use t_SPH_mesh_field_data
 !
       use SPH_analyzer_back_trans
 !
@@ -68,7 +69,7 @@
       if (iflag_debug.eq.1) write(*,*) 'input_control_SPH_SGS_dynamo'
       call input_control_SPH_SGS_dynamo                                 &
      &   (MHD_files1, MHD_ctl1, MHD_step1, SPH_model1,                  &
-     &    SPH_WK1%trns_WK, SPH_WK1%monitor, SPH_SGS1, FEM_d1)
+     &    SPH_WK1%trns_WK, SPH_WK1%monitor, SPH_SGS1, SPH_MHD1, FEM_d1)
       call set_ctl_4_second_spectr_data                                 &
      &   (MHD_ctl1%new_plt, sph_file_param2)
       call copy_delta_t(MHD_step1%init_d, MHD_step1%time_d)
@@ -85,7 +86,7 @@
 !        Initialize spherical transform dynamo
       if(iflag_debug .gt. 0) write(*,*) 'SPH_init_sph_back_trans'
       call SPH_init_sph_back_trans                                      &
-     &   (MHD_files1, SPH_model1, SPH_SGS1, SPH_WK1)
+     &   (MHD_files1, SPH_model1, SPH_MHD1, SPH_WK1)
 !        Initialize visualization
       if(iflag_debug .gt. 0) write(*,*) 'init_visualize'
       call init_visualize                                               &
@@ -126,7 +127,7 @@
 !*
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_rms_ratio_all'
         call SPH_analyze_rms_ratio_all                                  &
-     &     (MHD_step1%time_d, MHD_files1, MHD_step1, SPH_SGS1, SPH_WK1)
+     &     (MHD_step1%time_d, MHD_files1, MHD_step1, SPH_MHD1, SPH_WK1)
 !*
 !*  -----------  output field data --------------
 !*
@@ -134,7 +135,7 @@
 !
         if (iflag_debug.gt.0) write(*,*) 'copy_all_field_from_trans'
         call copy_all_field_from_trans                                  &
-     &     (SPH_SGS1%sph%sph_params%m_folding, SPH_SGS1%sph%sph_rtp,    &
+     &     (SPH_MHD1%sph%sph_params%m_folding, SPH_MHD1%sph%sph_rtp,    &
      &      SPH_WK1%trns_WK%trns_MHD%backward, FEM_d1%geofem%mesh,      &
      &      FEM_d1%field)
 !

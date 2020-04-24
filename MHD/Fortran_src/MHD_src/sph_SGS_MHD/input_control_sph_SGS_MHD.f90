@@ -9,13 +9,14 @@
 !!@verbatim
 !!      subroutine input_control_SPH_SGS_dynamo                         &
 !!     &         (MHD_files, MHD_ctl, MHD_step, SPH_model,              &
-!!     &          trns_WK, monitor, SPH_SGS, FEM_dat)
+!!     &          trns_WK, monitor, SPH_SGS, SPH_MHD, FEM_dat)
 !!        type(MHD_file_IO_params), intent(inout) :: MHD_files
 !!        type(sph_sgs_mhd_control), intent(inout) :: MHD_ctl
 !!        type(MHD_step_param), intent(inout) :: MHD_step
 !!        type(SPH_MHD_model_data), intent(inout) :: SPH_model
 !!        type(sph_mhd_monitor_data), intent(inout) :: monitor
 !!        type(SPH_SGS_structure), intent(inout) :: SPH_SGS
+!!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !!        type(FEM_mesh_field_data), intent(inout) :: FEM_dat
 !!@endverbatim
 !
@@ -59,7 +60,7 @@
 !
       subroutine input_control_SPH_SGS_dynamo                           &
      &         (MHD_files, MHD_ctl, MHD_step, SPH_model,                &
-     &          trns_WK, monitor, SPH_SGS, FEM_dat)
+     &          trns_WK, monitor, SPH_SGS, SPH_MHD, FEM_dat)
 !
       use m_error_IDs
 !
@@ -78,6 +79,7 @@
       type(sph_mhd_monitor_data), intent(inout) :: monitor
 !
       type(SPH_SGS_structure), intent(inout) :: SPH_SGS
+      type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
       type(FEM_mesh_field_data), intent(inout) :: FEM_dat
 !
       integer(kind = kint) :: ierr
@@ -93,13 +95,13 @@
 !
       call set_control_SGS_SPH_MHD_field(MHD_ctl%model_ctl,             &
      &    MHD_ctl%psph_ctl, MHD_ctl%smonitor_ctl, MHD_ctl%zm_ctls,      &
-     &    SPH_SGS%SGS_par, SPH_model%MHD_prop, SPH_SGS%sph,             &
-     &    SPH_SGS%fld, FEM_dat%field, monitor)
+     &    SPH_SGS%SGS_par, SPH_model%MHD_prop, SPH_MHD%sph,             &
+     &    SPH_MHD%fld, FEM_dat%field, monitor)
 !
 !
       call select_make_SPH_mesh_w_LIC                                   &
      &   (MHD_ctl%psph_ctl%iflag_sph_shell, MHD_files%sph_file_param,   &
-     &    SPH_SGS%sph, SPH_SGS%comms, SPH_SGS%groups, sph_maker2,       &
+     &    SPH_MHD%sph, SPH_MHD%comms, SPH_MHD%groups, sph_maker2,       &
      &    FEM_dat%geofem, MHD_files)
 !
       call dealloc_sph_sgs_mhd_ctl_data(MHD_ctl)
