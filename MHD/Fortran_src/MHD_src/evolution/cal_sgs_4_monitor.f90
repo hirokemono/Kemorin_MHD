@@ -382,7 +382,7 @@
      &    iphys%SGS_ene_flux, nod_fld)
 !
       call work_of_SGS_terms(iphys%filter_fld, iphys%true_SGS,          &
-     &    iphys%true_div_SGS, iphys_LES%true_SGS_eflux, nod_fld)
+     &    iphys_LES%true_div_SGS, iphys_LES%true_SGS_eflux, nod_fld)
 !
       end subroutine cal_work_4_sgs_terms
 !

@@ -6,9 +6,9 @@
 !!      subroutine cal_true_sgs_terms_pre(dt, FEM_prm, SGS_par,         &
 !!     &          nod_comm, node, ele, surf, sf_grp,                    &
 !!     &          fluid, conduct, fl_prop, cd_prop, ht_prop, cp_prop,   &
-!!     &          nod_bcs, surf_bcs, iphys, iphys_ele, ak_MHD,          &
-!!     &          fem_int, FEM_elens, iak_diff_sgs, diff_coefs, mk_MHD, &
-!!     &          mhd_fem_wk, rhs_mat, nod_fld, ele_fld)
+!!     &          nod_bcs, surf_bcs, iphys, iphys_LES, iphys_ele,       &
+!!     &          ak_MHD, fem_int, FEM_elens, iak_diff_sgs, diff_coefs, &
+!!     &          mk_MHD, mhd_fem_wk, rhs_mat, nod_fld, ele_fld)
 !!      subroutine cal_true_sgs_terms_post(filter_param, nod_comm, node,&
 !!     &          iphys_div_frc, iphys_trSGS, iphys_div_trSGS,          &
 !!     &          iphys_SGS_wk, filtering, wk_filter, nod_fld)
@@ -26,6 +26,7 @@
 !!        type(nodal_boundarty_conditions), intent(in) :: nod_bcs
 !!        type(surface_boundarty_conditions), intent(in) :: surf_bcs
 !!        type(phys_address), intent(in) :: iphys
+!!        type(SGS_model_addresses), intent(in) :: iphys_LES
 !!        type(base_force_address), intent(in) :: iphys_div_frc
 !!        type(SGS_term_address), intent(in) :: iphys_trSGS
 !!        type(SGS_term_address), intent(in) :: iphys_div_trSGS
@@ -60,6 +61,7 @@
       use t_group_data
       use t_phys_data
       use t_phys_address
+      use t_SGS_model_addresses
       use t_jacobians
       use t_table_FEM_const
       use t_finite_element_mat
@@ -99,9 +101,9 @@
       subroutine cal_true_sgs_terms_pre(dt, FEM_prm, SGS_par,           &
      &          nod_comm, node, ele, surf, sf_grp,                      &
      &          fluid, conduct, fl_prop, cd_prop, ht_prop, cp_prop,     &
-     &          nod_bcs, surf_bcs, iphys, iphys_ele, ak_MHD,            &
-     &          fem_int, FEM_elens, iak_diff_sgs, diff_coefs, mk_MHD,   &
-     &          mhd_fem_wk, rhs_mat, nod_fld, ele_fld)
+     &          nod_bcs, surf_bcs, iphys, iphys_LES, iphys_ele,         &
+     &          ak_MHD, fem_int, FEM_elens, iak_diff_sgs, diff_coefs,   &
+     &          mk_MHD, mhd_fem_wk, rhs_mat, nod_fld, ele_fld)
 !
       use calypso_mpi
       use m_phys_labels
@@ -123,6 +125,7 @@
       type(nodal_boundarty_conditions), intent(in) :: nod_bcs
       type(surface_boundarty_conditions), intent(in) :: surf_bcs
       type(phys_address), intent(in) :: iphys
+      type(SGS_model_addresses), intent(in) :: iphys_LES
       type(phys_address), intent(in) :: iphys_ele
       type(coefs_4_MHD_type), intent(in) :: ak_MHD
       type(finite_element_integration), intent(in) :: fem_int
@@ -144,7 +147,7 @@
      &                         'lead  ', trim(nod_fld%phys_name(i) )
            call cal_div_sgs_s_flux_true_pre                             &
      &        (FEM_prm%iflag_temp_supg, FEM_prm%npoint_t_evo_int, dt,   &
-     &         iphys%true_div_SGS%i_SGS_h_flux,                         &
+     &         iphys_LES%true_div_SGS%i_SGS_h_flux,                     &
      &         iphys%forces%i_h_flux, iphys%div_forces%i_h_flux,        &
      &         iphys%filter_fld%i_temp, iphys%filter_fld%i_velo,        &
      &         FEM_prm, nod_comm, node, ele, fluid, ht_prop,            &
@@ -155,7 +158,7 @@
      &                         'lead  ', trim(nod_fld%phys_name(i) )
            call cal_div_sgs_s_flux_true_pre                             &
      &        (FEM_prm%iflag_comp_supg, FEM_prm%npoint_t_evo_int, dt,   &
-     &         iphys%true_div_SGS%i_SGS_c_flux,                         &
+     &         iphys_LES%true_div_SGS%i_SGS_c_flux,                     &
      &         iphys%forces%i_c_flux, iphys%div_forces%i_c_flux,        &
      &         iphys%filter_fld%i_light, iphys%filter_fld%i_velo,       &
      &         FEM_prm, nod_comm, node, ele, fluid, cp_prop,            &
@@ -170,7 +173,7 @@
      &        fl_prop, cd_prop, surf_bcs%Vsf_bcs, surf_bcs%Bsf_bcs,     &
      &        iphys%base, iphys%forces, iphys%div_forces,               &
      &        iphys%diffusion, iphys%filter_fld, iphys%force_by_filter, &
-     &        iphys%SGS_term, iphys%div_SGS, iphys%true_div_SGS,        &
+     &        iphys%SGS_term, iphys%div_SGS, iphys_LES%true_div_SGS,    &
      &        iphys_ele%base, ak_MHD, fem_int, FEM_elens,               &
      &        iak_diff_sgs, diff_coefs, mk_MHD%mlump_fl,                &
      &        mhd_fem_wk, rhs_mat, nod_fld, ele_fld)
