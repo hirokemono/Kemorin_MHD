@@ -110,9 +110,6 @@
         type(SGS_term_address) :: true_div_SGS
 !>        Structure of true SGS energy fluxes
         type(SGS_ene_flux_address) :: true_SGS_eflux
-!
-!>        Structure of wide filtered SGS terms
-        type(SGS_term_address) :: wide_SGS
       end type phys_address
 !
 !

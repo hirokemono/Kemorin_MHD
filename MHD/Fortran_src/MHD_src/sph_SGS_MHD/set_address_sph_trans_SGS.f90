@@ -146,8 +146,8 @@
      &   (ipol%wide_filter_fld, iphys%wide_filter_fld,                  &
      &    trns_DYNS%b_trns%wide_filter_fld, trns_DYNS%backward)
       call add_wide_SGS_term_4_sph_trns                                 &
-     &   (ipol%wide_SGS, iphys%wide_SGS,                                &
-     &    trns_DYNS%b_trns%wide_SGS, trns_DYNS%backward)
+     &   (ipol_LES%wide_SGS, iphys_LES%wide_SGS,                        &
+     &    trns_DYNS%b_trns_LES%wide_SGS, trns_DYNS%backward)
       call add_double_SGS_term_4_sph_trns                               &
      &   (ipol_LES%dble_SGS, iphys_LES%dble_SGS,                        &
      &    trns_DYNS%b_trns_LES%dble_SGS, trns_DYNS%backward)

@@ -76,7 +76,7 @@
 !        type(SGS_ene_flux_address) :: true_SGS_eflux
 !
 !>        Structure of wide filtered SGS terms
-!        type(SGS_term_address) :: wide_SGS
+        type(SGS_term_address) :: wide_SGS
 !>        Structure of double filtered SGS terms
         type(SGS_term_address) :: dble_SGS
       end type SGS_model_addresses

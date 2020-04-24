@@ -243,7 +243,7 @@
      &   (sph%sph_rj, ipol%base, ipol%wide_filter_fld,                  &
      &    dynamic_SPH%sph_filters(2), rj_fld)
       call cal_sph_wide_filtering_forces                                &
-     &   (sph%sph_rj, ipol%forces, ipol%wide_SGS,                       &
+     &   (sph%sph_rj, ipol%forces, ipol_LES%wide_SGS,                   &
      &    dynamic_SPH%sph_filters(2), rj_fld)
       call cal_sph_dble_filtering_forces                                &
      &   (sph%sph_rj, ipol%SGS_term, ipol_LES%dble_SGS,                 &
@@ -257,13 +257,13 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'wider_similarity_SGS_rtp'
       call wider_similarity_SGS_rtp(sph%sph_rtp, MHD_prop,              &
-     &    trns_DYNS%b_trns%wide_filter_fld, trns_DYNS%b_trns%wide_SGS,  &
-     &    trns_DYNS%backward)
+     &    trns_DYNS%b_trns%wide_filter_fld,                             &
+     &    trns_DYNS%b_trns_LES%wide_SGS, trns_DYNS%backward)
 !
       if (iflag_debug.eq.1) write(*,*) 'SGS_param%stab_weight'
       call const_model_coefs_4_sph(SGS_param, sph%sph_rtp,              &
      &    dynamic_SPH%sph_d_grp, trns_SGS%f_trns%SGS_term,              &
-     &    trns_DYNS%b_trns%wide_SGS, trns_DYNS%b_trns_LES%dble_SGS,     &
+     &    trns_DYNS%b_trns_LES%wide_SGS, trns_DYNS%b_trns_LES%dble_SGS, &
      &    trns_SGS%forward, trns_DYNS%backward, trns_DYNS%backward,     &
      &    dynamic_SPH%iak_sgs_term, dynamic_SPH%wk_sgs)
 !
@@ -330,7 +330,7 @@
       if (iflag_debug.eq.1) write(*,*) 'SGS_param%stab_weight'
       call const_model_coefs_4_sph(SGS_param, sph%sph_rtp,              &
      &    dynamic_SPH%sph_d_grp, trns_SIMI%f_trns%SGS_term,             &
-     &    trns_Csim%b_trns%wide_SGS, trns_DYNG%b_trns_LES%dble_SGS,     &
+     &    trns_Csim%b_trns_LES%wide_SGS, trns_DYNG%b_trns_LES%dble_SGS, &
      &    trns_SIMI%forward, trns_Csim%backward, trns_DYNG%backward,    &
      &    dynamic_SPH%iak_sgs_term, dynamic_SPH%wk_sgs)
 !

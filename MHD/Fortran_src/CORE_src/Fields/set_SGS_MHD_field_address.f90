@@ -217,7 +217,7 @@
       if(flag) return
 !
       call set_wide_SGS_term_addresses                                  &
-     &   (i_fld, field_name, iphys%wide_SGS, flag)
+     &   (i_fld, field_name, iphys_LES%wide_SGS, flag)
       if(flag) return
       call set_double_SGS_term_addresses                                &
      &   (i_fld, field_name, iphys_LES%dble_SGS, flag)

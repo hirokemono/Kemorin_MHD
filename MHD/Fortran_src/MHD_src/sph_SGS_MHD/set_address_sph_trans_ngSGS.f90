@@ -27,10 +27,10 @@
 !!        type(address_4_sph_trans), intent(inout) :: trns_DYNG
 !!
 !!      subroutine set_addresses_trans_sph_ngCsim                       &
-!!     &         (SGS_param, ipol, iphys, trns_Csim,                    &
-!!     &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
-!!        type(phys_address), intent(in) :: ipol
-!!        type(phys_address), intent(in) :: iphys
+!!     &        (SGS_param, ipol, ipol_LES, iphys, iphys_LES, trns_Csim,&
+!!     &         ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
+!!        type(phys_address), intent(in) :: ipol, iphys
+!!        type(SGS_model_addresses), intent(in) :: ipol_LES, iphys_LES
 !!        type(address_4_sph_trans), intent(inout) :: trns_Csim
 !!@endverbatim
 !
@@ -257,8 +257,8 @@
 !-----------------------------------------------------------------------
 !
       subroutine set_addresses_trans_sph_ngCsim                         &
-     &         (SGS_param, ipol, iphys, trns_Csim,                      &
-     &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
+     &        (SGS_param, ipol, ipol_LES, iphys, iphys_LES, trns_Csim,  &
+     &         ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
 !
       use t_SGS_control_parameter
       use add_Csim_4_sph_trns
@@ -266,8 +266,8 @@
       use add_SGS_eflux_to_sph_trans
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
-      type(phys_address), intent(in) :: ipol
-      type(phys_address), intent(in) :: iphys
+      type(phys_address), intent(in) :: ipol, iphys
+      type(SGS_model_addresses), intent(in) :: ipol_LES, iphys_LES
       type(address_4_sph_trans), intent(inout) :: trns_Csim
       integer(kind = kint), intent(inout) :: ncomp_sph_trans
       integer(kind = kint), intent(inout) :: nvector_sph_trans
@@ -285,8 +285,8 @@
       call alloc_sph_trns_field_name(trns_Csim%backward)
 !
       call add_wide_SGS_term_4_sph_trns                                 &
-     &   (ipol%wide_SGS, iphys%wide_SGS,                                &
-     &    trns_Csim%b_trns%wide_SGS, trns_Csim%backward)
+     &   (ipol_LES%wide_SGS, iphys_LES%wide_SGS,                        &
+     &    trns_Csim%b_trns_LES%wide_SGS, trns_Csim%backward)
       trns_Csim%backward%num_vector = trns_Csim%backward%nfield
       trns_Csim%backward%num_scalar = trns_Csim%backward%nfield         &
      &                               - trns_Csim%backward%num_vector

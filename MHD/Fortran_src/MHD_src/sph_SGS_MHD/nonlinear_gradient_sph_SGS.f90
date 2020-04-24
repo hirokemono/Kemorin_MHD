@@ -177,7 +177,8 @@
       call wider_nl_grad_SGS_rtp                                        &
      &   (sph, dynamic_SPH%sph_filters(2), MHD_prop,                    &
      &    trns_SIMI%b_trns%filter_fld, trns_DYNG%b_trns%grad_fil_fld,   &
-     &    trns_DYNG%b_trns%diff_fil_vect, trns_Csim%b_trns%wide_SGS,    &
+     &    trns_DYNG%b_trns%diff_fil_vect,                               &
+     &    trns_Csim%b_trns_LES%wide_SGS,                                &
      &    trns_SIMI%backward, trns_DYNG%backward, trns_Csim%backward)
 !
       end subroutine cal_wide_nonlinear_grad_sph_SGS
