@@ -9,16 +9,12 @@
 !!
 !!@verbatim
 !!      subroutine set_addresses_SGS_snap_trans                         &
-!!     &         (ipol, iphys, trns_snap,                               &
+!!     &         (ipol, ipol_LES, iphys, iphys_LES, trns_snap,          &
 !!     &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
 !!        type(phys_address), intent(in) :: ipol, iphys
+!!        type(SGS_model_addresses), intent(in) :: ipol_LES, iphys_LES
 !!        type(address_4_sph_trans), intent(inout) :: trns_snap
 !!
-!!      subroutine bwd_trans_address_SGS_snap                           &
-!!     &         (ipol, iphys, b_trns, trns_back)
-!!        type(phys_address), intent(in) :: ipol, iphys
-!!        type(address_each_sph_trans), intent(inout) :: trns_back
-!!        type(phys_address), intent(inout) :: b_trns
 !!      subroutine fwd_trans_address_SGS_snap                           &
 !!     &         (ipol, iphys, f_trns, trns_fwd)
 !!        type(phys_address), intent(in) :: ipol, iphys
@@ -32,6 +28,7 @@
       use m_machine_parameter
 !
       use t_phys_address
+      use t_SGS_model_addresses
       use t_addresses_sph_transform
       use t_mesh_data
       use t_spheric_parameter
@@ -50,10 +47,12 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_addresses_SGS_snap_trans(ipol, iphys, trns_snap,   &
+      subroutine set_addresses_SGS_snap_trans                           &
+     &         (ipol, ipol_LES, iphys, iphys_LES, trns_snap,            &
      &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
 !
       type(phys_address), intent(in) :: ipol, iphys
+      type(SGS_model_addresses), intent(in) :: ipol_LES, iphys_LES
       type(address_4_sph_trans), intent(inout) :: trns_snap
       integer(kind = kint), intent(inout) :: ncomp_sph_trans
       integer(kind = kint), intent(inout) :: nvector_sph_trans
@@ -66,9 +65,10 @@
       end if
 !
       call bwd_trans_address_SGS_snap                                   &
-     &   (ipol, iphys, trns_snap%b_trns, trns_snap%backward)
+     &   (ipol, ipol_LES, iphys, iphys_LES,                             &
+     &    trns_snap%b_trns, trns_snap%b_trns_LES, trns_snap%backward)
 !
-      call fwd_trans_address_SGS_snap                                  &
+      call fwd_trans_address_SGS_snap                                   &
      &   (ipol, iphys, trns_snap%f_trns, trns_snap%forward)
 !
       call count_num_fields_each_trans(trns_snap%backward,              &
@@ -92,13 +92,16 @@
 !-----------------------------------------------------------------------
 !
       subroutine bwd_trans_address_SGS_snap                             &
-     &         (ipol, iphys, b_trns, trns_back)
+     &         (ipol, ipol_LES, iphys, iphys_LES,                       &
+     &          b_trns, b_trns_LES, trns_back)
 !
       use address_sph_trans_snap
 !
       type(phys_address), intent(in) :: ipol, iphys
-      type(address_each_sph_trans), intent(inout) :: trns_back
+      type(SGS_model_addresses), intent(in) :: ipol_LES, iphys_LES
       type(phys_address), intent(inout) :: b_trns
+      type(SGS_model_addresses), intent(inout) :: b_trns_LES
+      type(address_each_sph_trans), intent(inout) :: trns_back
 !
 !
       if(iflag_debug .gt. 0) then
@@ -110,7 +113,9 @@
       call alloc_sph_trns_field_name(trns_back)
 !
       call add_vector_4_bwd_trns_snap(ipol, iphys, b_trns, trns_back)
-      call add_SGS_vector_bwd_trns_snap(ipol, iphys, b_trns, trns_back)
+      call add_SGS_vector_bwd_trns_snap                                 &
+     &   (ipol, ipol_LES, iphys, iphys_LES,                             &
+     &    b_trns, b_trns_LES, trns_back)
       trns_back%num_vector = trns_back%nfield
 !
       call add_scalar_4_bwd_trns_snap(ipol, iphys, b_trns, trns_back)
@@ -154,17 +159,21 @@
 !-----------------------------------------------------------------------
 !
       subroutine add_SGS_vector_bwd_trns_snap                           &
-     &         (ipol, iphys, b_trns, trns_back)
+     &         (ipol, ipol_LES, iphys, iphys_LES,                       &
+     &          b_trns, b_trns_LES, trns_back)
 !
       use add_SGS_term_to_sph_trans
 !
       type(phys_address), intent(in) :: ipol, iphys
-      type(address_each_sph_trans), intent(inout) :: trns_back
+      type(SGS_model_addresses), intent(in) :: ipol_LES, iphys_LES
       type(phys_address), intent(inout) :: b_trns
+      type(SGS_model_addresses), intent(inout) :: b_trns_LES
+      type(address_each_sph_trans), intent(inout) :: trns_back
 !
 !
       call add_force_w_SGS_sph_trns_snap                                &
-     &   (ipol%frc_w_SGS, iphys%frc_w_SGS, b_trns%frc_w_SGS, trns_back)
+     &   (ipol_LES%frc_w_SGS, iphys_LES%frc_w_SGS,                      &
+     &    b_trns_LES%frc_w_SGS, trns_back)
 !
       call add_rot_SGS_4_sph_trns_snap                                  &
      &   (ipol%rot_SGS, iphys%rot_SGS, b_trns%rot_SGS, trns_back)

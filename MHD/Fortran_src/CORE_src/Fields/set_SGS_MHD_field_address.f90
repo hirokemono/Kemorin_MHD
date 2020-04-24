@@ -232,7 +232,7 @@
       if(flag) return
 !
       call set_force_w_SGS_addresses                                    &
-     &   (i_fld, field_name, iphys%frc_w_SGS, flag)
+     &   (i_fld, field_name, iphys_LES%frc_w_SGS, flag)
       if(flag) return
 !
       call set_true_SGS_term_addresses                                  &

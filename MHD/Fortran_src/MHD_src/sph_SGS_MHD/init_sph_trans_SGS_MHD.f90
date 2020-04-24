@@ -96,7 +96,8 @@
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
 !
       call set_addresses_SGS_snap_trans                                 &
-     &   (SPH_MHD%ipol, iphys, WK%trns_snap,                            &
+     &   (SPH_MHD%ipol, SPH_SGS%ipol_LES,                               &
+     &   iphys, SPH_SGS%iphys_LES, WK%trns_snap,                        &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
       call set_addresses_temporal_trans                                 &
      &   (SPH_MHD%ipol, iphys, WK%trns_tmp,                             &

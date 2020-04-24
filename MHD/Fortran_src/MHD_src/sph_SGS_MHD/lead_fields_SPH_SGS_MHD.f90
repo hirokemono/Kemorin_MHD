@@ -41,6 +41,8 @@
       use t_boundary_data_sph_MHD
       use t_radial_matrices_sph_MHD
       use t_sph_filtering
+      use t_phys_address
+      use t_SGS_model_addresses
 !
       implicit none
 !
@@ -101,9 +103,9 @@
      &    SPH_MHD%fld)
       call enegy_fluxes_SPH_SGS_MHD(monitor%ltr_crust,                  &
      &    SPH_SGS%SGS_par%model_p, SPH_MHD%sph, SPH_MHD%comms,          &
-     &    r_2nd, MHD_prop, sph_MHD_bc, trans_p, SPH_MHD%ipol,           &
-     &    WK%trns_MHD, WK%trns_SGS, WK%trns_snap, WK%WK_sph,            &
-     &    SPH_MHD%fld)
+     &    r_2nd, MHD_prop, sph_MHD_bc, trans_p,                         &
+     &    SPH_MHD%ipol, SPH_SGS%ipol_LES, WK%trns_MHD, WK%trns_SGS,     &
+     &    WK%trns_snap, WK%WK_sph, SPH_MHD%fld)
 !
       end subroutine lead_fields_4_SPH_SGS_MHD
 !
@@ -188,7 +190,7 @@
 !
       subroutine enegy_fluxes_SPH_SGS_MHD(ltr_crust, SGS_param,         &
      &          sph, comms_sph, r_2nd, MHD_prop, sph_MHD_bc,            &
-     &          trans_p, ipol, trns_MHD, trns_SGS, trns_snap,           &
+     &          trans_p, ipol, ipol_LES, trns_MHD, trns_SGS, trns_snap, &
      &          WK_sph, rj_fld)
 !
       use sph_transforms_snapshot
@@ -207,6 +209,7 @@
       type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
       type(parameters_4_sph_trans), intent(in) :: trans_p
       type(phys_address), intent(in) :: ipol
+      type(SGS_model_addresses), intent(in) :: ipol_LES
 !
       type(address_4_sph_trans), intent(in) :: trns_MHD
       type(address_4_sph_trans), intent(in) :: trns_SGS
@@ -221,7 +224,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 's_cal_force_with_SGS_rj'
       call s_cal_force_with_SGS_rj                                      &
-     &   (ipol%forces, ipol%SGS_term, ipol%frc_w_SGS, rj_fld)
+     &   (ipol%forces, ipol%SGS_term, ipol_LES%frc_w_SGS, rj_fld)
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_filterd_buo_flux_rtp'
       call cal_filterd_buo_flux_rtp(sph%sph_rtp, MHD_prop%fl_prop,      &

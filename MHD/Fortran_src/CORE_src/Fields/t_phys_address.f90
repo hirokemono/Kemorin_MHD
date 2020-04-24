@@ -103,9 +103,7 @@
         type(dynamic_SGS_work_address) :: SGS_wk
 !
 !>        Structure of forces with SGS terms
-        type(SGS_term_address) :: frc_w_SGS
-!>        Structure of true SGS terms
-!        type(SGS_term_address) :: true_SGS
+!        type(SGS_term_address) :: frc_w_SGS
       end type phys_address
 !
 !
