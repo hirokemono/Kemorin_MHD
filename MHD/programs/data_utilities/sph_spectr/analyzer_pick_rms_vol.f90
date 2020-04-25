@@ -124,7 +124,7 @@
         t_SHR%time_d%i_time_step =i_step
         call append_picked_sph_vol_msq_file(t_SHR%time_d,               &
      &     SPH_dat_ss%sph%sph_params, SPH_dat_ss%sph%sph_rj, leg_s,     &
-     &     SPH_dat_ss%ipol, SPH_dat_ss%fld, pick_rms1)
+     &     SPH_dat_ss%ipol, ipol_LES_ss, SPH_dat_ss%fld, pick_rms1)
       end do
 !
       end subroutine analyze_pick_rms_vol

@@ -268,10 +268,10 @@
       if(flag) return
 !
       call set_dble_fil_vector_addresses                                &
-     &   (i_fld, field_name, iphys%dbl_filter_fld, flag)
+     &   (i_fld, field_name, iphys_LES%dbl_filter_fld, flag)
       if(flag) return
       call set_dble_fil_scaler_addresses                                &
-     &   (i_fld, field_name, iphys%dbl_filter_fld, flag)
+     &   (i_fld, field_name, iphys_LES%dbl_filter_fld, flag)
       if(flag) return
       call set_dble_fil_grad_addresses                                  &
      &   (i_fld, field_name, iphys_LES%dbl_filter_grad, flag)

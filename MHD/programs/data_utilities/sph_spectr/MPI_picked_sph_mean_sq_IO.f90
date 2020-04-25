@@ -8,12 +8,14 @@
 !!
 !!@verbatim
 !!      subroutine append_picked_sph_mean_sq_file                       &
-!!     &         (time_d, sph_rj, leg, ipol, rj_fld, picked)
-!!      subroutine append_picked_sph_vol_msq_file                       &
-!!     &         (time_d, sph_params, sph_rj, leg, ipol, rj_fld, picked)
+!!     &         (time_d, sph_rj, leg, ipol, ipol_LES, rj_fld, picked)
+!!      subroutine append_picked_sph_vol_msq_file(time_d, sph_params,   &
+!!     &          sph_rj, leg, ipol, ipol_LES, rj_fld, picked)
 !!        type(time_data), intent(in) :: time_d
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(legendre_4_sph_trans), intent(in) :: leg
+!!        type(phys_address), intent(in) :: ipol
+!!        type(SGS_model_addresses), intent(in) :: ipol_LES
 !!        type(phys_data), intent(in) :: rj_fld
 !!        type(picked_spectrum_data), intent(in) :: picked
 !!@endverbatim
@@ -29,9 +31,10 @@
       use t_spheric_parameter
       use t_pickup_sph_spectr_data
       use t_schmidt_poly_on_rtm
-      use t_phys_address
-      use t_phys_data
       use t_time_data
+      use t_phys_data
+      use t_phys_address
+      use t_SGS_model_addresses
 !
       implicit  none
 !
@@ -47,7 +50,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine append_picked_sph_mean_sq_file                         &
-     &         (time_d, sph_rj, leg, ipol, rj_fld, picked)
+     &         (time_d, sph_rj, leg, ipol, ipol_LES, rj_fld, picked)
 !
       use set_parallel_file_name
       use MPI_ascii_data_IO
@@ -57,6 +60,7 @@
       type(sph_rj_grid), intent(in) :: sph_rj
       type(legendre_4_sph_trans), intent(in) :: leg
       type(phys_address), intent(in) :: ipol
+      type(SGS_model_addresses), intent(in) :: ipol_LES
       type(phys_data), intent(in) :: rj_fld
       type(picked_spectrum_data), intent(in) :: picked
 !
@@ -74,7 +78,7 @@
       end if
 !
       call write_picked_sph_mean_sq_mpi                                 &
-     &   (IO_param, time_d, sph_rj, leg, ipol, rj_fld,                  &
+     &   (IO_param, time_d, sph_rj, leg, ipol, ipol_LES, rj_fld,        &
      &    picked, picked%ntot_comp_rj)
 !
       call close_mpi_file(IO_param)
@@ -83,8 +87,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine append_picked_sph_vol_msq_file                         &
-     &         (time_d, sph_params, sph_rj, leg, ipol, rj_fld, picked)
+      subroutine append_picked_sph_vol_msq_file(time_d, sph_params,     &
+     &          sph_rj, leg, ipol, ipol_LES, rj_fld, picked)
 !
       use set_parallel_file_name
       use MPI_ascii_data_IO
@@ -95,6 +99,7 @@
       type(sph_rj_grid), intent(in) :: sph_rj
       type(legendre_4_sph_trans), intent(in) :: leg
       type(phys_address), intent(in) :: ipol
+      type(SGS_model_addresses), intent(in) :: ipol_LES
       type(phys_data), intent(in) :: rj_fld
       type(picked_spectrum_data), intent(in) :: picked
 !
@@ -110,8 +115,8 @@
       end if
 !
       call wrt_picked_sph_mean_vol_sq_mpi                               &
-     &   (IO_param, time_d, sph_params, sph_rj, leg, ipol, rj_fld,      &
-     &    picked, picked%ntot_comp_rj)
+     &   (IO_param, time_d, sph_params, sph_rj, leg, ipol, ipol_LES,    &
+     &    rj_fld, picked, picked%ntot_comp_rj)
 !
       call close_mpi_file(IO_param)
 !
@@ -120,8 +125,8 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine write_picked_sph_mean_sq_mpi(IO_param, time_d,         &
-     &          sph_rj, leg, ipol, rj_fld, picked, ntot_comp_rj)
+      subroutine write_picked_sph_mean_sq_mpi(IO_param, time_d, sph_rj, &
+     &          leg, ipol, ipol_LES, rj_fld, picked, ntot_comp_rj)
 !
       use pickup_sph_mean_square_data
       use MPI_picked_sph_spectr_IO
@@ -131,6 +136,7 @@
       type(sph_rj_grid), intent(in) :: sph_rj
       type(legendre_4_sph_trans), intent(in) :: leg
       type(phys_address), intent(in) :: ipol
+      type(SGS_model_addresses), intent(in) :: ipol_LES
       type(phys_data), intent(in) :: rj_fld
       type(picked_spectrum_data), intent(in) :: picked
       integer(kind = kint), intent(in) :: ntot_comp_rj
@@ -164,7 +170,7 @@
           call cal_rj_mean_sq_center_monitor(sph_rj, rj_fld, picked,    &
      &        ntot_comp_rj, d_rj_out)
           call convert_to_energy_sph__monitor                           &
-     &       (ipol, picked, ntot_comp_rj, d_rj_out)
+     &       (ipol, ipol_LES, picked, ntot_comp_rj, d_rj_out)
 !
           pickedbuf(icou)                                               &
      &         = picked_each_mode_to_text                               &
@@ -179,7 +185,7 @@
             call cal_rj_mean_sq_degree0_monitor                         &
      &         (knum, sph_rj, rj_fld, picked, ntot_comp_rj, d_rj_out)
             call convert_to_energy_sph__monitor                         &
-     &         (ipol, picked, ntot_comp_rj, d_rj_out)
+     &         (ipol, ipol_LES, picked, ntot_comp_rj, d_rj_out)
 !
             icou = icou + 1
             pickedbuf(icou)                                             &
@@ -199,7 +205,7 @@
      &         (inum, knum, sph_rj, leg, rj_fld, picked,                &
      &          ntot_comp_rj, d_rj_out)
             call convert_to_energy_sph__monitor                         &
-     &         (ipol, picked, ntot_comp_rj, d_rj_out)
+     &         (ipol, ipol_LES, picked, ntot_comp_rj, d_rj_out)
 !
              pickedbuf(icou)                                            &
      &         = picked_each_mode_to_text                               &
@@ -223,7 +229,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine wrt_picked_sph_mean_vol_sq_mpi(IO_param, time_d,       &
-     &          sph_params, sph_rj, leg, ipol, rj_fld,                  &
+     &          sph_params, sph_rj, leg, ipol, ipol_LES, rj_fld,        &
      &          picked, ntot_comp_rj)
 !
       use radial_int_for_sph_spec
@@ -236,6 +242,7 @@
       type(sph_rj_grid), intent(in) :: sph_rj
       type(legendre_4_sph_trans), intent(in) :: leg
       type(phys_address), intent(in) :: ipol
+      type(SGS_model_addresses), intent(in) :: ipol_LES
       type(phys_data), intent(in) :: rj_fld
       type(picked_spectrum_data), intent(in) :: picked
       integer(kind = kint), intent(in) :: ntot_comp_rj
@@ -286,7 +293,7 @@
      &        sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r,                 &
      &        ntot_comp_rj, d_layer, d_rj_out)
           call convert_to_energy_sph__monitor                           &
-     &       (ipol, picked, ntot_comp_rj, d_rj_out)
+     &       (ipol, ipol_LES, picked, ntot_comp_rj, d_rj_out)
            pickedbuf(icou)                                              &
      &         = picked_each_mode_to_text                               &
      &         (time_d%i_time_step, time_d%time,                        &
@@ -308,7 +315,7 @@
      &       (ione, nlayer, nlayer, sph_rj%radius_1d_rj_r(kst),         &
      &        ntot_comp_rj, d_layer(kst,1), d_rj_out)
           call convert_to_energy_sph__monitor                           &
-     &       (ipol, picked, ntot_comp_rj, d_rj_out)
+     &       (ipol, ipol_LES, picked, ntot_comp_rj, d_rj_out)
            pickedbuf(icou)                                              &
      &         = picked_each_mode_to_text                               &
      &         (time_d%i_time_step, time_d%time,                        &

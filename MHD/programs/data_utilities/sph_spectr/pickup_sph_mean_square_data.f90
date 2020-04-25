@@ -19,8 +19,9 @@
 !!        type(picked_spectrum_data), intent(in) :: picked
 !!
 !!      subroutine convert_to_energy_sph__monitor                       &
-!!     &         (ipol, picked, ntot_comp_monitor, rms_out)
+!!     &         (ipol, ipol_LES, picked, ntot_comp_monitor, rms_out)
 !!        type(phys_address), intent(in) :: ipol
+!!        type(SGS_model_addresses), intent(in) :: ipol_LES
 !!        type(picked_spectrum_data), intent(in) :: picked
 !!@endverbatim
 !!
@@ -38,8 +39,9 @@
       use t_spheric_parameter
       use t_pickup_sph_spectr_data
       use t_schmidt_poly_on_rtm
-      use t_phys_address
       use t_phys_data
+      use t_phys_address
+      use t_SGS_model_addresses
 !
       implicit  none
 !
@@ -176,11 +178,12 @@
 ! -----------------------------------------------------------------------
 !
       subroutine convert_to_energy_sph__monitor                         &
-     &         (ipol, picked, ntot_comp_monitor, rms_out)
+     &         (ipol, ipol_LES, picked, ntot_comp_monitor, rms_out)
 !
       use cal_rms_by_sph_spectr
 !
       type(phys_address), intent(in) :: ipol
+      type(SGS_model_addresses), intent(in) :: ipol_LES
       type(picked_spectrum_data), intent(in) :: picked
       integer(kind = kint), intent(in) :: ntot_comp_monitor
 !
@@ -200,7 +203,7 @@
         call cvt_mag_or_kin_ene_one_point                               &
      &     (ipol%wide_filter_fld, i_fld, rms_out(jcou))
         call cvt_mag_or_kin_ene_one_point                               &
-     &     (ipol%dbl_filter_fld, i_fld, rms_out(jcou))
+     &     (ipol_LES%dbl_filter_fld, i_fld, rms_out(jcou))
       end do
 !
       end subroutine convert_to_energy_sph__monitor

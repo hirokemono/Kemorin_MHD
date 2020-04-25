@@ -34,7 +34,7 @@
         type(gradient_field_address) :: wide_filter_grad
 !
 !>        Structure of double filtered field
-!        type(base_field_address) :: dbl_filter_fld
+        type(base_field_address) :: dbl_filter_fld
 !>        Structure of gradient of double filtered field
         type(gradient_field_address) :: dbl_filter_grad
 !
