@@ -172,8 +172,9 @@
      &        nod_comm, node, ele, surf, sf_grp, fluid,                 &
      &        fl_prop, cd_prop, surf_bcs%Vsf_bcs, surf_bcs%Bsf_bcs,     &
      &        iphys%base, iphys%forces, iphys%div_forces,               &
-     &        iphys%diffusion, iphys%filter_fld, iphys%force_by_filter, &
-     &        iphys%SGS_term, iphys%div_SGS, iphys_LES%true_div_SGS,    &
+     &        iphys%diffusion, iphys%filter_fld,                        &
+     &        iphys_LES%force_by_filter, iphys%SGS_term,                &
+     &        iphys%div_SGS, iphys_LES%true_div_SGS,                    &
      &        iphys_ele%base, ak_MHD, fem_int, FEM_elens,               &
      &        iak_diff_sgs, diff_coefs, mk_MHD%mlump_fl,                &
      &        mhd_fem_wk, rhs_mat, nod_fld, ele_fld)
@@ -185,7 +186,7 @@
      &         surf, sf_grp, fluid, fl_prop, cd_prop,                   &
      &         surf_bcs%Vsf_bcs, surf_bcs%Bsf_bcs, iphys%base,          &
      &         iphys%forces, iphys%div_forces, iphys%diffusion,         &
-     &         iphys%filter_fld, iphys%force_by_filter,                 &
+     &         iphys%filter_fld, iphys_LES%force_by_filter,             &
      &         iphys%SGS_term, iphys%div_SGS, iphys_LES%true_SGS,       &
      &         iphys_ele%base, ak_MHD, fem_int, FEM_elens,              &
      &         iak_diff_sgs, diff_coefs, mk_MHD%mlump_fl,               &

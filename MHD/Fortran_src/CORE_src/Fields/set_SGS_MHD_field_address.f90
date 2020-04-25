@@ -264,7 +264,7 @@
      &   (i_fld, field_name, iphys%wide_filter_fld, flag)
       if(flag) return
       call set_wide_fil_grad_addresses                                  &
-     &   (i_fld, field_name, iphys%wide_filter_grad, flag)
+     &   (i_fld, field_name, iphys_LES%wide_filter_grad, flag)
       if(flag) return
 !
       call set_dble_fil_vector_addresses                                &
@@ -274,11 +274,11 @@
      &   (i_fld, field_name, iphys%dbl_filter_fld, flag)
       if(flag) return
       call set_dble_fil_grad_addresses                                  &
-     &   (i_fld, field_name, iphys%dbl_filter_grad, flag)
+     &   (i_fld, field_name, iphys_LES%dbl_filter_grad, flag)
       if(flag) return
 !
       call set_filtered_force_addresses                                 &
-     &   (i_fld, field_name, iphys%force_by_filter, flag)
+     &   (i_fld, field_name, iphys_LES%force_by_filter, flag)
       if(flag) return
       call set_rot_fil_force_addresses                                  &
      &   (i_fld, field_name, iphys_LES%rot_frc_by_filter, flag)

@@ -5,8 +5,8 @@
 !
 !!      subroutine cal_sgs_mom_flux_with_sgs_buo(dt, FEM_prm, SGS_par,  &
 !!     &          nod_comm, node, ele, surf, fluid, layer_tbl, sf_grp,  &
-!!     &          fl_prop, cd_prop, Vsf_bcs, Bsf_bcs, iphys, iphys_ele, &
-!!     &          ak_MHD, fem_int, FEM_elens, filtering,                &
+!!     &          fl_prop, cd_prop, Vsf_bcs, Bsf_bcs, iphys, iphys_LES, &
+!!     &          iphys_ele, ak_MHD, fem_int, FEM_elens, filtering,     &
 !!     &          iak_sgs_term, icomp_sgs_term, iak_diff_sgs,           &
 !!     &          iphys_elediff_vec, sgs_coefs_nod, diff_coefs,         &
 !!     &          mlump_fl, wk_filter, wk_lsq, wk_sgs, mhd_fem_wk,      &
@@ -20,6 +20,7 @@
 !!        type(surface_group_data), intent(in) :: sf_grp
 !!        type(vector_surf_bc_type), intent(in) :: Bsf_bcs
 !!        type(phys_address), intent(in) :: iphys
+!!        type(SGS_model_addresses), intent(in) :: iphys_LES
 !!        type(phys_address), intent(in) :: iphys_ele
 !!        type(field_geometry_data), intent(in) :: fluid
 !!        type(fluid_property), intent(in) :: fl_prop
@@ -60,6 +61,7 @@
       use t_group_data
       use t_phys_data
       use t_phys_address
+      use t_SGS_model_addresses
       use t_base_field_labels
       use t_SGS_term_labels
       use t_jacobians
@@ -91,8 +93,8 @@
 !
       subroutine cal_sgs_mom_flux_with_sgs_buo(dt, FEM_prm, SGS_par,    &
      &          nod_comm, node, ele, surf, fluid, layer_tbl, sf_grp,    &
-     &          fl_prop, cd_prop, Vsf_bcs, Bsf_bcs, iphys, iphys_ele,   &
-     &          ak_MHD, fem_int, FEM_elens, filtering,                  &
+     &          fl_prop, cd_prop, Vsf_bcs, Bsf_bcs, iphys, iphys_LES,   &
+     &          iphys_ele, ak_MHD, fem_int, FEM_elens, filtering,       &
      &          iak_sgs_term, icomp_sgs_term, iak_diff_sgs,             &
      &          iphys_elediff_vec, sgs_coefs_nod, diff_coefs,           &
      &          mlump_fl, wk_filter, wk_lsq, wk_sgs, mhd_fem_wk,        &
@@ -121,6 +123,7 @@
       type(velocity_surf_bc_type), intent(in)  :: Vsf_bcs
       type(vector_surf_bc_type), intent(in) :: Bsf_bcs
       type(phys_address), intent(in) :: iphys
+      type(SGS_model_addresses), intent(in) :: iphys_LES
       type(phys_address), intent(in) :: iphys_ele
       type(field_geometry_data), intent(in) :: fluid
       type(fluid_property), intent(in) :: fl_prop
@@ -180,7 +183,7 @@
      &    dt, FEM_prm, SGS_par%model_p, SGS_par%commute_p,              &
      &    nod_comm, node, ele, surf, sf_grp, fluid, fl_prop, cd_prop,   &
      &    Vsf_bcs, Bsf_bcs, iphys%base, iphys%forces, iphys%div_forces, &
-     &    iphys%diffusion, iphys%filter_fld, iphys%force_by_filter,     &
+     &    iphys%diffusion, iphys%filter_fld, iphys_LES%force_by_filter, &
      &    iphys%SGS_term, iphys%div_SGS, iphys_ele%base, ak_MHD,        &
      &    fem_int, FEM_elens, iak_diff_sgs, diff_coefs, mlump_fl,       &
      &    mhd_fem_wk, rhs_mat, nod_fld, ele_fld)

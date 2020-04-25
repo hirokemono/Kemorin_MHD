@@ -7,7 +7,7 @@
 !
 !!      subroutine velocity_evolution(time, dt, FEM_prm, SGS_par,       &
 !!     &          mesh, group, fluid, fl_prop, cd_prop,                 &
-!!     &          Vnod_bcs, Vsf_bcs, Bsf_bcs, Psf_bcs, iphys,           &
+!!     &          Vnod_bcs, Vsf_bcs, Bsf_bcs, Psf_bcs, iphys, iphys_LES,&
 !!     &          iphys_ele, ak_MHD, fem_int, FEM_filters,              &
 !!     &          iak_sgs_term, icomp_sgs_term, iak_diff_base,          &
 !!     &          iak_diff_sgs, iphys_elediff_vec,                      &
@@ -25,6 +25,7 @@
 !!        type(velocity_surf_bc_type), intent(in) :: Vsf_bcs
 !!        type(vector_surf_bc_type), intent(in) :: Bsf_bcs
 !!        type(phys_address), intent(in) :: iphys
+!!        type(SGS_model_addresses), intent(in) :: iphys_LES
 !!        type(phys_address), intent(in) :: iphys_ele
 !!        type(coefs_4_MHD_type), intent(in) :: ak_MHD
 !!        type(finite_element_integration), intent(in) :: fem_int
@@ -61,6 +62,7 @@
       use t_surface_group_connect
       use t_phys_data
       use t_phys_address
+      use t_SGS_model_addresses
       use t_jacobians
       use t_table_FEM_const
       use t_FEM_MHD_filter_data
@@ -97,7 +99,7 @@
 !
       subroutine velocity_evolution(time, dt, FEM_prm, SGS_par,         &
      &          mesh, group, fluid, fl_prop, cd_prop,                   &
-     &          Vnod_bcs, Vsf_bcs, Bsf_bcs, Psf_bcs, iphys,             &
+     &          Vnod_bcs, Vsf_bcs, Bsf_bcs, Psf_bcs, iphys, iphys_LES,  &
      &          iphys_ele, ak_MHD, fem_int, FEM_filters,                &
      &          iak_sgs_term, icomp_sgs_term, iak_diff_base,            &
      &          iak_diff_sgs, iphys_elediff_vec,                        &
@@ -126,6 +128,7 @@
       type(vector_surf_bc_type), intent(in) :: Bsf_bcs
       type(potential_surf_bc_type), intent(in) :: Psf_bcs
       type(phys_address), intent(in) :: iphys
+      type(SGS_model_addresses), intent(in) :: iphys_LES
       type(phys_address), intent(in) :: iphys_ele
       type(coefs_4_MHD_type), intent(in) :: ak_MHD
       type(finite_element_integration), intent(in) :: fem_int
@@ -162,8 +165,8 @@
       if (iflag_debug.eq.1)  write(*,*) 's_cal_velocity_pre'
       call s_cal_velocity_pre(time, dt, FEM_prm, SGS_par,               &
      &    mesh%nod_comm, mesh%node, mesh%ele, mesh%surf,                &
-     &    fluid, group%surf_grp, group%surf_nod_grp,                    &
-     &    fl_prop, cd_prop, Vnod_bcs, Vsf_bcs, Bsf_bcs, iphys,          &
+     &    fluid, group%surf_grp, group%surf_nod_grp, fl_prop, cd_prop,  &
+     &    Vnod_bcs, Vsf_bcs, Bsf_bcs, iphys, iphys_LES,                 &
      &    iphys_ele, ak_MHD, fem_int, FEM_filters%FEM_elens,            &
      &    iak_sgs_term, icomp_sgs_term, iak_diff_base, iak_diff_sgs,    &
      &    iphys_elediff_vec, sgs_coefs_nod, diff_coefs,                 &

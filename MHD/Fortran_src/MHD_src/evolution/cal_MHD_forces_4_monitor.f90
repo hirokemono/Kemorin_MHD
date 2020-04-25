@@ -6,9 +6,9 @@
 !!      subroutine cal_fluxes_4_monitor                                 &
 !!     &         (node, fl_prop, cd_prop, iphys, nod_fld)
 !!      subroutine cal_forces_4_monitor(dt, FEM_prm, SGS_par,           &
-!!     &          nod_comm, node, ele, surf, fluid, conduct,            &
-!!     &          sf_grp, fl_prop, cd_prop, ht_prop, cp_prop,           &
-!!     &          nod_bcs, surf_bcs, iphys, iphys_ele, ak_MHD, fem_int, &
+!!     &          nod_comm, node, ele, surf, fluid, conduct, sf_grp,    &
+!!     &          fl_prop, cd_prop, ht_prop, cp_prop, nod_bcs, surf_bcs,&
+!!     &          iphys, iphys_LES, iphys_ele, ak_MHD, fem_int,         &
 !!     &          FEM_elens, iak_diff_base, iak_diff_sgs, diff_coefs,   &
 !!     &          mk_MHD, mhd_fem_wk, rhs_mat, nod_fld, ele_fld)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
@@ -23,6 +23,7 @@
 !!        type(nodal_boundarty_conditions), intent(in) :: nod_bcs
 !!        type(surface_boundarty_conditions), intent(in) :: surf_bcs
 !!        type(phys_address), intent(in) :: iphys
+!!        type(SGS_model_addresses), intent(in) :: iphys_LES
 !!        type(phys_address), intent(in) :: iphys_ele
 !!        type(phys_data), intent(in) :: ele_fld
 !!        type(coefs_4_MHD_type), intent(in) :: ak_MHD
@@ -57,6 +58,7 @@
       use t_group_data
       use t_phys_data
       use t_phys_address
+      use t_SGS_model_addresses
       use t_jacobians
       use t_table_FEM_const
       use t_finite_element_mat
@@ -156,9 +158,9 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_forces_4_monitor(dt, FEM_prm, SGS_par,             &
-     &          nod_comm, node, ele, surf, fluid, conduct,              &
-     &          sf_grp, fl_prop, cd_prop, ht_prop, cp_prop,             &
-     &          nod_bcs, surf_bcs, iphys, iphys_ele, ak_MHD, fem_int,   &
+     &          nod_comm, node, ele, surf, fluid, conduct, sf_grp,      &
+     &          fl_prop, cd_prop, ht_prop, cp_prop, nod_bcs, surf_bcs,  &
+     &          iphys, iphys_LES, iphys_ele, ak_MHD, fem_int,           &
      &          FEM_elens, iak_diff_base, iak_diff_sgs, diff_coefs,     &
      &          mk_MHD, mhd_fem_wk, rhs_mat, nod_fld, ele_fld)
 !
@@ -183,6 +185,7 @@
       type(nodal_boundarty_conditions), intent(in) :: nod_bcs
       type(surface_boundarty_conditions), intent(in) :: surf_bcs
       type(phys_address), intent(in) :: iphys
+      type(SGS_model_addresses), intent(in) :: iphys_LES
       type(phys_address), intent(in) :: iphys_ele
       type(coefs_4_MHD_type), intent(in) :: ak_MHD
       type(finite_element_integration), intent(in) :: fem_int
@@ -299,8 +302,8 @@
      &     .or. i_fld .eq. iphys%forces%i_lorentz                       &
      &     .or. i_fld .eq. iphys%forces%i_buoyancy                      &
      &     .or. i_fld .eq. iphys%forces%i_comp_buo                      &
-     &     .or. i_fld .eq. iphys%force_by_filter%i_buoyancy             &
-     &     .or. i_fld .eq. iphys%force_by_filter%i_comp_buo             &
+     &     .or. i_fld .eq. iphys_LES%force_by_filter%i_buoyancy         &
+     &     .or. i_fld .eq. iphys_LES%force_by_filter%i_comp_buo         &
      &     .or. i_fld .eq. iphys%forces%i_coriolis) then
           if(iflag_debug .ge. iflag_routine_msg)                        &
      &             write(*,*) 'lead  ', trim(nod_fld%phys_name(i))
@@ -309,8 +312,9 @@
      &        nod_comm, node, ele, surf, sf_grp, fluid,                 &
      &        fl_prop, cd_prop, surf_bcs%Vsf_bcs, surf_bcs%Bsf_bcs,     &
      &        iphys%base, iphys%forces, iphys%div_forces,               &
-     &        iphys%diffusion, iphys%filter_fld, iphys%force_by_filter, &
-     &        iphys%SGS_term, iphys%div_SGS, iphys_ele%base, ak_MHD,    &
+     &        iphys%diffusion, iphys%filter_fld,                        &
+     &        iphys_LES%force_by_filter, iphys%SGS_term,                &
+     &        iphys%div_SGS, iphys_ele%base, ak_MHD,                     &
      &        fem_int, FEM_elens, iak_diff_sgs, diff_coefs,             &
      &        mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat, nod_fld, ele_fld)
         end if

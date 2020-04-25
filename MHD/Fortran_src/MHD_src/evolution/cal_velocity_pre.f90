@@ -8,8 +8,8 @@
 !!      subroutine s_cal_velocity_pre(time, dt, FEM_prm, SGS_par,       &
 !!     &          nod_comm, node, ele, surf, fluid, sf_grp, sf_grp_nod, &
 !!     &          fl_prop, cd_prop, Vnod_bcs, Vsf_bcs, Bsf_bcs,         &
-!!     &          iphys, iphys_ele, ak_MHD, fem_int, FEM_elens,         &
-!!     &          iak_sgs_term, icomp_sgs_term,                         &
+!!     &          iphys, iphys_LES, iphys_ele, ak_MHD, fem_int,         &
+!!     &          FEM_elens, iak_sgs_term, icomp_sgs_term,              &
 !!     &          iak_diff_base, iak_diff_sgs, iphys_elediff_vec,       &
 !!     &          sgs_coefs_nod, diff_coefs, filtering, layer_tbl,      &
 !!     &          mlump_fl, Vmatrix, MG_vector, wk_lsq, wk_sgs,         &
@@ -37,6 +37,7 @@
 !!        type(potential_surf_bc_type), intent(in) :: Psf_bcs
 !!        type(field_geometry_data), intent(in) :: fluid
 !!        type(phys_address), intent(in) :: iphys
+!!        type(SGS_model_addresses), intent(in) :: iphys_LES
 !!        type(phys_address), intent(in) :: iphys_ele
 !!        type(coefs_4_MHD_type), intent(in) :: ak_MHD
 !!        type(finite_element_integration), intent(in) :: fem_int
@@ -78,6 +79,7 @@
       use t_surface_group_connect
       use t_phys_data
       use t_phys_address
+      use t_SGS_model_addresses
       use t_base_field_labels
       use t_SGS_term_labels
       use t_jacobians
@@ -114,8 +116,8 @@
       subroutine s_cal_velocity_pre(time, dt, FEM_prm, SGS_par,         &
      &          nod_comm, node, ele, surf, fluid, sf_grp, sf_grp_nod,   &
      &          fl_prop, cd_prop, Vnod_bcs, Vsf_bcs, Bsf_bcs,           &
-     &          iphys, iphys_ele, ak_MHD, fem_int, FEM_elens,           &
-     &          iak_sgs_term, icomp_sgs_term,                           &
+     &          iphys, iphys_LES, iphys_ele, ak_MHD, fem_int,           &
+     &          FEM_elens, iak_sgs_term, icomp_sgs_term,                &
      &          iak_diff_base, iak_diff_sgs, iphys_elediff_vec,         &
      &          sgs_coefs_nod, diff_coefs, filtering, layer_tbl,        &
      &          mlump_fl, Vmatrix, MG_vector, wk_lsq, wk_sgs,           &
@@ -153,6 +155,7 @@
       type(velocity_surf_bc_type), intent(in)  :: Vsf_bcs
       type(vector_surf_bc_type), intent(in) :: Bsf_bcs
       type(phys_address), intent(in) :: iphys
+      type(SGS_model_addresses), intent(in) :: iphys_LES
       type(phys_address), intent(in) :: iphys_ele
       type(coefs_4_MHD_type), intent(in) :: ak_MHD
       type(finite_element_integration), intent(in) :: fem_int
@@ -187,8 +190,8 @@
       if(SGS_par%model_p%iflag_SGS_gravity .ne. id_SGS_none) then
         call cal_sgs_mom_flux_with_sgs_buo(dt, FEM_prm, SGS_par,        &
      &      nod_comm, node, ele, surf, fluid, layer_tbl, sf_grp,        &
-     &      fl_prop, cd_prop, Vsf_bcs, Bsf_bcs, iphys, iphys_ele,       &
-     &      ak_MHD, fem_int, FEM_elens, filtering,                      &
+     &      fl_prop, cd_prop, Vsf_bcs, Bsf_bcs, iphys, iphys_LES,       &
+     &      iphys_ele, ak_MHD, fem_int, FEM_elens, filtering,           &
      &      iak_sgs_term, icomp_sgs_term, iak_diff_sgs,                 &
      &      iphys_elediff_vec, sgs_coefs_nod, diff_coefs,               &
      &      mlump_fl, wk_filter,  wk_lsq, wk_sgs, mhd_fem_wk, rhs_mat,  &

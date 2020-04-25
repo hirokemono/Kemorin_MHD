@@ -210,9 +210,10 @@
      &  (MHD_step, FEM_model%FEM_prm, FEM_SGS%SGS_par,                  &
      &   femmesh%mesh, femmesh%group, FEM_model%MHD_mesh,               &
      &   FEM_model%MHD_prop, FEM_model%FEM_MHD_BCs%surf_bcs,            &
-     &   iphys, SGS_MHD_wk%iphys_ele, ak_MHD, SGS_MHD_wk%fem_int,       &
-     &   FEM_SGS%FEM_filters%FEM_elens, FEM_SGS%FEM_filters%filtering,  &
-     &   FEM_SGS%Csims, SGS_MHD_wk%mk_MHD, SGS_MHD_wk%FEM_SGS_wk,       &
+     &   iphys, FEM_SGS%iphys_LES, SGS_MHD_wk%iphys_ele, ak_MHD,        &
+     &   SGS_MHD_wk%fem_int, FEM_SGS%FEM_filters%FEM_elens,             &
+     &   FEM_SGS%FEM_filters%filtering, FEM_SGS%Csims,                  &
+     &   SGS_MHD_wk%mk_MHD, SGS_MHD_wk%FEM_SGS_wk,                      &
      &   SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat,                     &
      &   nod_fld, SGS_MHD_wk%ele_fld)
 !
@@ -269,8 +270,8 @@
 !-----------------------------------------------------------------------
 !
       subroutine lead_specital_SGS                                      &
-     &       (MHD_step, FEM_prm, SGS_par, mesh, group,                  &
-     &        MHD_mesh, MHD_prop, sf_bcs, iphys, iphys_ele, ak_MHD,     &
+     &       (MHD_step, FEM_prm, SGS_par, mesh, group, MHD_mesh,        &
+     &        MHD_prop, sf_bcs, iphys, iphys_LES, iphys_ele, ak_MHD,    &
      &        fem_int, FEM_elens, filtering, Csims_FEM_MHD, mk_MHD,     &
      &        FEM_SGS_wk, mhd_fem_wk, rhs_mat, nod_fld, ele_fld)
 !
@@ -296,6 +297,7 @@
       type(mesh_data_MHD), intent(in) :: MHD_mesh
       type(surface_boundarty_conditions), intent(in) :: sf_bcs
       type(phys_address), intent(in) :: iphys
+      type(SGS_model_addresses), intent(in) :: iphys_LES
       type(phys_address), intent(in) :: iphys_ele
       type(coefs_4_MHD_type), intent(in) :: ak_MHD
       type(finite_element_integration), intent(in) :: fem_int
@@ -336,8 +338,8 @@
      &      group%surf_grp, MHD_mesh%fluid,                             &
      &      MHD_prop%fl_prop, MHD_prop%cd_prop,                         &
      &      sf_bcs%Vsf_bcs, sf_bcs%Bsf_bcs, iphys%base, iphys%forces,   &
-     &      iphys%div_forces, iphys%diffusion,                          &
-     &      iphys%filter_fld, iphys%force_by_filter, iphys%SGS_term,    &
+     &      iphys%div_forces, iphys%diffusion, iphys%filter_fld,        &
+     &      iphys_LES%force_by_filter, iphys%SGS_term,                  &
      &      iphys%div_SGS, iphys_ele%base, ak_MHD, fem_int, FEM_elens,  &
      &      Csims_FEM_MHD%iak_diff_sgs, Csims_FEM_MHD%diff_coefs,       &
      &      mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat, nod_fld, ele_fld)

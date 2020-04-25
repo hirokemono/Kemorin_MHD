@@ -329,7 +329,7 @@
      &      MHD_mesh%fluid,  MHD_prop%fl_prop, MHD_prop%cd_prop,        &
      &      nod_bcs%Vnod_bcs, surf_bcs%Vsf_bcs,                         &
      &      surf_bcs%Bsf_bcs, surf_bcs%Psf_bcs,                         &
-     &      iphys, SGS_MHD_wk%iphys_ele, ak_MHD,                        &
+     &      iphys, iphys_LES, SGS_MHD_wk%iphys_ele, ak_MHD,             &
      &      SGS_MHD_wk%fem_int, FEM_filters,                            &
      &      iak_sgs_term, icomp_sgs_term, iak_diff_base, iak_diff_sgs,  &
      &      iphys_elediff_vec, sgs_coefs_nod, diff_coefs,               &
@@ -609,12 +609,12 @@
      &      FEM_prm, SGS_par, geofem%mesh, geofem%group, fluid,         &
      &      MHD_prop%fl_prop, MHD_prop%cd_prop, nod_bcs%Vnod_bcs,       &
      &      surf_bcs%Vsf_bcs, surf_bcs%Bsf_bcs, surf_bcs%Psf_bcs,       &
-     &      iphys, SGS_MHD_wk%iphys_ele, ak_MHD, SGS_MHD_wk%fem_int,    &
-     &      FEM_filters, iak_sgs_term, icomp_sgs_term,                  &
-     &      iak_diff_base, iak_diff_sgs, iphys_elediff_vec,             &
-     &      sgs_coefs_nod, diff_coefs, SGS_MHD_wk%mk_MHD,               &
-     &      s_package%Vmatrix, s_package%Pmatrix, MGCG_WK,              &
-     &      SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%mhd_fem_wk,               &
+     &      iphys, iphys_LES, SGS_MHD_wk%iphys_ele, ak_MHD,             &
+     &      SGS_MHD_wk%fem_int, FEM_filters, iak_sgs_term,              &
+     &      icomp_sgs_term, iak_diff_base, iak_diff_sgs,                &
+     &      iphys_elediff_vec, sgs_coefs_nod, diff_coefs,               &
+     &      SGS_MHD_wk%mk_MHD, s_package%Vmatrix, s_package%Pmatrix,    &
+     &      MGCG_WK, SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%mhd_fem_wk,      &
      &      SGS_MHD_wk%rhs_mat, nod_fld, SGS_MHD_wk%ele_fld,            &
      &      sgs_coefs, fem_sq)
         call update_with_velocity(time_d%i_time_step, time_d%dt,        &

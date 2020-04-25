@@ -201,7 +201,7 @@
      &    MHD_mesh%fluid, MHD_mesh%conduct, group%surf_grp,             &
      &    MHD_prop%fl_prop, MHD_prop%cd_prop,                           &
      &    MHD_prop%ht_prop, MHD_prop%cp_prop, nod_bcs, surf_bcs,        &
-     &    iphys, iphys_ele, ak_MHD, fem_int, FEM_elens,                 &
+     &    iphys, iphys_LES, iphys_ele, ak_MHD, fem_int, FEM_elens,      &
      &    Csims_FEM_MHD%iak_diff_base, Csims_FEM_MHD%iak_diff_sgs,      &
      &    Csims_FEM_MHD%diff_coefs, mk_MHD, mhd_fem_wk, rhs_mat,        &
      &    nod_fld, ele_fld)
@@ -211,7 +211,7 @@
      &    group%surf_grp, MHD_mesh%fluid, MHD_mesh%conduct,             &
      &    MHD_prop%fl_prop, MHD_prop%cd_prop,                           &
      &    MHD_prop%ht_prop, MHD_prop%cp_prop, nod_bcs, surf_bcs,        &
-     &    iphys, iphys_ele, ak_MHD, fem_int, FEM_elens,                 &
+     &    iphys, iphys_LES, iphys_ele, ak_MHD, fem_int, FEM_elens,      &
      &    Csims_FEM_MHD%iak_diff_sgs, Csims_FEM_MHD%diff_coefs,         &
      &    mk_MHD, mhd_fem_wk, rhs_mat, nod_fld, ele_fld)
 !

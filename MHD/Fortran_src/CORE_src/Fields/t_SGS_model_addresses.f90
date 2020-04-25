@@ -31,15 +31,15 @@
 !>        Structure of wide filtered field
 !        type(base_field_address) :: wide_filter_fld
 !>        Structure of gradient of wide filtered field
-!        type(gradient_field_address) :: wide_filter_grad
+        type(gradient_field_address) :: wide_filter_grad
 !
 !>        Structure of double filtered field
 !        type(base_field_address) :: dbl_filter_fld
 !>        Structure of gradient of double filtered field
-!        type(gradient_field_address) :: dbl_filter_grad
+        type(gradient_field_address) :: dbl_filter_grad
 !
 !>        Structure of forces by filtered field
-!        type(base_force_address) :: force_by_filter
+        type(base_force_address) :: force_by_filter
 !>        Structure of rotation of forces by filtered field
         type(base_force_address) :: rot_frc_by_filter
 !>        Structure of divergence of forces by filtered field

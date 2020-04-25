@@ -79,8 +79,9 @@
 !
 !
       call cal_self_buoyancy_sph_SGS_MHD                                &
-     &   (SPH_MHD%sph%sph_rj, trans_p%leg, SPH_MHD%ipol,                &
-     &    MHD_prop, sph_MHD_bc%sph_bc_U, SPH_MHD%fld)
+     &   (SPH_MHD%sph%sph_rj, trans_p%leg,                              &
+     &    SPH_MHD%ipol, SPH_SGS%ipol_LES, MHD_prop,                     &
+     &    sph_MHD_bc%sph_bc_U, SPH_MHD%fld)
 !
       if(MHD_prop%fl_prop%iflag_scheme .gt. id_no_evolution) then
         call pressure_SGS_SPH_MHD                                       &
@@ -145,7 +146,7 @@
      &    leg%g_sph_rj, ipol, rj_fld)
       call cal_div_buoyancy_w_fil_sph_2                                 &
      &   (sph%sph_rj, r_2nd, MHD_prop, sph_MHD_bc%sph_bc_U,             &
-     &   leg%g_sph_rj, ipol, ipol_LES, rj_fld)
+     &   leg%g_sph_rj, ipol_LES, rj_fld)
 !
 !
       call r_buoyancy_on_sphere_w_filter                                &
