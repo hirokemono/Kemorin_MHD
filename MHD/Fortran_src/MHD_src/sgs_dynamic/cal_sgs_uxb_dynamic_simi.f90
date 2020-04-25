@@ -5,16 +5,21 @@
 !     Modified by H. Matsui on Aug., 2007
 !
 !!      subroutine s_cal_sgs_uxb_dynamic_simi                           &
-!!     &        (iak_sgs_term, icomp_sgs_term, FEM_prm, SGS_par,        &
-!!     &         mesh, iphys, fem_int, FEM_filters, FEM_SGS_wk,         &
-!!     &         nod_fld, sgs_coefs)
+!!     &        (iak_sgs_term, icomp_sgs_term, FEM_prm, SGS_par, mesh,  &
+!!     &         iphys_base, iphys_fil, iphys_wfl, iphys_SGS_wk,        &
+!!     &         fem_int, FEM_filters, FEM_SGS_wk, nod_fld, sgs_coefs)
 !!      subroutine cal_sgs_induct_t_dynamic_simi                        &
-!!     &        (iak_sgs_term, icomp_sgs_term, FEM_prm, SGS_par,        &
-!!     &         mesh, iphys, fem_int, FEM_filters, FEM_SGS_wk,         &
+!!     &        (iak_sgs_term, icomp_sgs_term, FEM_prm, SGS_par, mesh,  &
+!!     &         iphys_base, iphys_fil, iphys_wfl, iphys_SGS,           &
+!!     &         iphys_SGS_wk, fem_int, FEM_filters, FEM_SGS_wk,        &
 !!     &         rhs_mat, nod_fld, sgs_coefs, sgs_coefs_nod)
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(mesh_geometry), intent(in) :: mesh
-!!        type(phys_address), intent(in) :: iphys
+!!        type(base_field_address), intent(in) :: iphys_base
+!!        type(base_field_address), intent(in) :: iphys_fil
+!!        type(base_field_address), intent(in) :: iphys_wfl
+!!        type(SGS_term_address), intent(in) :: iphys_SGS
+!!        type(dynamic_SGS_work_address), intent(in) :: iphys_SGS_wk
 !!        type(finite_element_integration), intent(in) :: fem_int
 !!        type(filters_on_FEM), intent(in) :: FEM_filters
 !!        type(work_FEM_dynamic_SGS), intent(inout) :: FEM_SGS_wk
@@ -36,9 +41,9 @@
       use t_SGS_control_parameter
       use t_mesh_data
       use t_phys_data
-      use t_phys_address
       use t_base_field_labels
       use t_SGS_term_labels
+      use t_SGS_model_coef_labels
       use t_table_FEM_const
       use t_jacobians
       use t_MHD_finite_element_mat
@@ -57,9 +62,9 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_cal_sgs_uxb_dynamic_simi                             &
-     &        (iak_sgs_term, icomp_sgs_term, FEM_prm, SGS_par,          &
-     &         mesh, iphys, fem_int, FEM_filters, FEM_SGS_wk,           &
-     &         nod_fld, sgs_coefs)
+     &        (iak_sgs_term, icomp_sgs_term, FEM_prm, SGS_par, mesh,    &
+     &         iphys_base, iphys_fil, iphys_wfl, iphys_SGS_wk,          &
+     &         fem_int, FEM_filters, FEM_SGS_wk, nod_fld, sgs_coefs)
 !
       use reset_dynamic_model_coefs
       use cal_filtering_scalars
@@ -70,7 +75,10 @@
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_paremeters), intent(in) :: SGS_par
       type(mesh_geometry), intent(in) :: mesh
-      type(phys_address), intent(in) :: iphys
+      type(base_field_address), intent(in) :: iphys_base
+      type(base_field_address), intent(in) :: iphys_fil
+      type(base_field_address), intent(in) :: iphys_wfl
+      type(dynamic_SGS_work_address), intent(in) :: iphys_SGS_wk
       type(finite_element_integration), intent(in) :: fem_int
       type(filters_on_FEM), intent(in) :: FEM_filters
       type(SGS_term_address), intent(in) :: iak_sgs_term
@@ -85,27 +93,27 @@
       call reset_vector_sgs_model_coefs                                 &
      &   (mesh%ele, FEM_filters%layer_tbl,                              &
      &    icomp_sgs_term%i_SGS_induction, sgs_coefs)
-      call clear_work_4_dynamic_model(iphys%SGS_wk, nod_fld)
+      call clear_work_4_dynamic_model(iphys_SGS_wk, nod_fld)
 !
 !   similarity model with wider filter
 !
       if (iflag_debug.gt.0)                                             &
      &     write(*,*) 'cal_sgs_uxb_simi_wide wide_filter_fld%i_velo'
-      call cal_sgs_uxb_simi(iphys%SGS_wk%i_wd_nlg,                      &
-     &    iphys%filter_fld%i_velo, iphys%filter_fld%i_magne,            &
-     &    iphys%wide_filter_fld%i_velo, iphys%wide_filter_fld%i_magne,  &
+      call cal_sgs_uxb_simi(iphys_SGS_wk%i_wd_nlg,                      &
+     &    iphys_fil%i_velo, iphys_fil%i_magne,                          &
+     &    iphys_wfl%i_velo, iphys_wfl%i_magne,                          &
      &    SGS_par%filter_p, mesh%nod_comm, mesh%node,                   &
      &    FEM_filters%wide_filtering, FEM_SGS_wk%wk_filter, nod_fld)
 !      call check_nodal_data                                            &
-!     &   ((50+my_rank), nod_fld, n_vector, iphys%SGS_wk%i_simi)
+!     &   ((50+my_rank), nod_fld, n_vector, iphys_SGS_wk%i_simi)
 !
-!    SGS term by similarity model (to iphys%SGS_wk%i_simi)
+!    SGS term by similarity model (to iphys_SGS_wk%i_simi)
 !
       if (iflag_debug.gt.0)                                             &
      &     write(*,*) 'cal_sgs_uxb_simi'
-      call cal_sgs_uxb_simi(iphys%SGS_wk%i_simi,                        &
-     &    iphys%base%i_velo, iphys%base%i_magne,                        &
-     &    iphys%filter_fld%i_velo, iphys%filter_fld%i_magne,            &
+      call cal_sgs_uxb_simi(iphys_SGS_wk%i_simi,                        &
+     &    iphys_base%i_velo, iphys_base%i_magne,                        &
+     &    iphys_fil%i_velo, iphys_fil%i_magne,                          &
      &    SGS_par%filter_p, mesh%nod_comm, mesh%node,                   &
      &    FEM_filters%filtering, FEM_SGS_wk%wk_filter, nod_fld)
 !
@@ -113,13 +121,13 @@
 !
       call cal_filtered_vector_whole(SGS_par%filter_p,                  &
      &    mesh%nod_comm, mesh%node, FEM_filters%filtering,              &
-     &    iphys%SGS_wk%i_nlg, iphys%SGS_wk%i_simi,                      &
+     &    iphys_SGS_wk%i_nlg, iphys_SGS_wk%i_simi,                      &
      &    FEM_SGS_wk%wk_filter, nod_fld)
 !
 !   Change coordinate
 !
       call cvt_vector_dynamic_scheme_coord                              &
-     &   (SGS_par%model_p, mesh%node, iphys%SGS_wk, nod_fld)
+     &   (SGS_par%model_p, mesh%node, iphys_SGS_wk, nod_fld)
 !
 !     obtain model coefficient
 !
@@ -127,7 +135,7 @@
      &                      iak_sgs_term%i_SGS_induction,               &
      &                      icomp_sgs_term%i_SGS_induction
       call cal_model_coefs(SGS_par, FEM_filters%layer_tbl,              &
-     &    mesh%node, mesh%ele, iphys%SGS_wk, nod_fld, fem_int%jcs,      &
+     &    mesh%node, mesh%ele, iphys_SGS_wk, nod_fld, fem_int%jcs,      &
      &    SGS_par%model_p%itype_Csym_uxb, n_vector,                     &
      &    iak_sgs_term%i_SGS_induction, icomp_sgs_term%i_SGS_induction, &
      &    FEM_prm%npoint_t_evo_int, FEM_SGS_wk%wk_cor,                  &
@@ -138,8 +146,9 @@
 !  ---------------------------------------------------------------------
 !
       subroutine cal_sgs_induct_t_dynamic_simi                          &
-     &        (iak_sgs_term, icomp_sgs_term, FEM_prm, SGS_par,          &
-     &         mesh, iphys, fem_int, FEM_filters, FEM_SGS_wk,           &
+     &        (iak_sgs_term, icomp_sgs_term, FEM_prm, SGS_par, mesh,    &
+     &         iphys_base, iphys_fil, iphys_wfl, iphys_SGS,             &
+     &         iphys_SGS_wk, fem_int, FEM_filters, FEM_SGS_wk,          &
      &         rhs_mat, nod_fld, sgs_coefs, sgs_coefs_nod)
 !
       use reset_dynamic_model_coefs
@@ -154,7 +163,11 @@
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_paremeters), intent(in) :: SGS_par
       type(mesh_geometry), intent(in) :: mesh
-      type(phys_address), intent(in) :: iphys
+      type(base_field_address), intent(in) :: iphys_base
+      type(base_field_address), intent(in) :: iphys_fil
+      type(base_field_address), intent(in) :: iphys_wfl
+      type(SGS_term_address), intent(in) :: iphys_SGS
+      type(dynamic_SGS_work_address), intent(in) :: iphys_SGS_wk
       type(finite_element_integration), intent(in) :: fem_int
       type(filters_on_FEM), intent(in) :: FEM_filters
       type(SGS_term_address), intent(in) :: iak_sgs_term
@@ -175,28 +188,28 @@
      &   (mesh%node%numnod, mesh%node%istack_nod_smp,                   &
      &    sgs_coefs_nod%ntot_comp, icomp_sgs_term%i_SGS_induction,      &
      &    sgs_coefs_nod%ak)
-      call clear_work_4_dynamic_model(iphys%SGS_wk, nod_fld)
+      call clear_work_4_dynamic_model(iphys_SGS_wk, nod_fld)
 !
 !   similarity model with wider filter
 !
       if (iflag_debug.gt.0)                                             &
      &   write(*,*) 'cal_sgs_induct_t_simi_wide wide_filter_fld%i_velo'
-      call cal_sgs_induct_t_simi(iphys%SGS_wk%i_wd_nlg,                 &
-     &    iphys%filter_fld%i_velo, iphys%filter_fld%i_magne,            &
-     &    iphys%wide_filter_fld%i_velo, iphys%wide_filter_fld%i_magne,  &
+      call cal_sgs_induct_t_simi(iphys_SGS_wk%i_wd_nlg,                 &
+     &    iphys_fil%i_velo, iphys_fil%i_magne,                          &
+     &    iphys_wfl%i_velo, iphys_wfl%i_magne,                          &
      &    icomp_sgs_term%i_SGS_induction, SGS_par%filter_p,             &
      &    mesh%nod_comm, mesh%node, FEM_filters%wide_filtering,         &
      &    sgs_coefs_nod, FEM_SGS_wk%wk_filter, nod_fld)
 !      call check_nodal_data                                            &
-!     &   ((50+my_rank), nod_fld, n_vector, iphys%SGS_wk%i_wd_nlg)
+!     &   ((50+my_rank), nod_fld, n_vector, iphys_SGS_wk%i_wd_nlg)
 !
 !    SGS term by similarity model
 !
       if (iflag_debug.gt.0)                                             &
      &     write(*,*) 'cal_sgs_induct_t_simi'
-      call cal_sgs_induct_t_simi(iphys%SGS_term%i_SGS_induct_t,         &
-     &    iphys%base%i_velo, iphys%base%i_magne,                        &
-     &    iphys%filter_fld%i_velo, iphys%filter_fld%i_magne,            &
+      call cal_sgs_induct_t_simi(iphys_SGS%i_SGS_induct_t,              &
+     &    iphys_base%i_velo, iphys_base%i_magne,                        &
+     &    iphys_fil%i_velo, iphys_fil%i_magne,                          &
      &    icomp_sgs_term%i_SGS_induction, SGS_par%filter_p,             &
      &    mesh%nod_comm, mesh%node, FEM_filters%filtering,              &
      &    sgs_coefs_nod, FEM_SGS_wk%wk_filter, nod_fld)
@@ -204,19 +217,19 @@
 !    copy to work array
 !
        call copy_vector_component(nod_fld,                              &
-     &     iphys%SGS_term%i_SGS_induct_t, iphys%SGS_wk%i_simi)
+     &     iphys_SGS%i_SGS_induct_t, iphys_SGS_wk%i_simi)
 !
 !      filtering
 !
       call cal_filtered_vector_whole(SGS_par%filter_p,                  &
      &    mesh%nod_comm, mesh%node, FEM_filters%filtering,              &
-     &    iphys%SGS_wk%i_nlg, iphys%SGS_term%i_SGS_induct_t,            &
+     &    iphys_SGS_wk%i_nlg, iphys_SGS%i_SGS_induct_t,                 &
      &    FEM_SGS_wk%wk_filter, nod_fld)
 !
 !   Change coordinate
 !
       call cvt_vector_dynamic_scheme_coord                              &
-     &   (SGS_par%model_p, mesh%node, iphys%SGS_wk, nod_fld)
+     &   (SGS_par%model_p, mesh%node, iphys_SGS_wk, nod_fld)
 !
 !     obtain model coefficient
 !
@@ -225,7 +238,7 @@
      &                    iak_sgs_term%i_SGS_induction,                 &
      &                    icomp_sgs_term%i_SGS_induction
       call cal_model_coefs(SGS_par, FEM_filters%layer_tbl,              &
-     &    mesh%node, mesh%ele, iphys%SGS_wk, nod_fld, fem_int%jcs,      &
+     &    mesh%node, mesh%ele, iphys_SGS_wk, nod_fld, fem_int%jcs,      &
      &    SGS_par%model_p%itype_Csym_uxb, n_asym_tensor,                &
      &    iak_sgs_term%i_SGS_induction, icomp_sgs_term%i_SGS_induction, &
      &    FEM_prm%npoint_t_evo_int, FEM_SGS_wk%wk_cor,                  &

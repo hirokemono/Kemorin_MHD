@@ -156,19 +156,15 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      call cal_sgs_uxb_2_monitor
-     &     (Csims_FEM_MHD%icomp_sgs_term%i_SGS_induction,               &
-     &      Csims_FEM_MHD%iphys_elediff_vec%i_velo,                     &
-     &      MHD_step1%time_d%dt, FEM_prm,                               &
-     &      SGS_par%model_p, SGS_par%filter_p,                          &
-     &      mesh%nod_comm, mesh%node, mesh%ele,                         &
-     &      conduct, MHD_prop%cd_prop,                                  &
-     &      iphys, SGS_MHD_wk1%iphys_ele, SGS_MHD_wk1%ele_fld,          &
-     &      fem_int%jcs, fem_int%rhs_tbl, FEM1_elen, filtering1,        &
-     &      Csims_FEM_MHD%sgs_coefs, mhd1_fem_wk%mlump_cd,              &
-     &      SGS_MHD_wk1%FEM_SGS_wk%wk_filter, mhd_fem1_wk,              &
-     &      rhs_mat1%fem_wk, rhs_mat1%f_l, rhs_mat1%f_nl,               &
-     &      FEM_MHD1%field)
+      call cal_sgs_uxb_2_monitor(MHD_step1%time_d%dt, FEM_prm,          &
+     &   SGS_par%model_p, SGS_par%filter_p, mesh%nod_comm,              &
+     &   mesh%node, mesh%ele, conduct, MHD_prop%cd_prop, iphys,         &
+     &   SGS_MHD_wk1%iphys_ele, SGS_MHD_wk1%ele_fld,                    &
+     &   fem_int%jcs, fem_int%rhs_tbl, FEM1_elen, filtering1,           &
+     &   Csims_FEM_MHD%icomp_sgs_term, Csims_FEM_MHD%iphys_elediff_vec, &
+     &   Csims_FEM_MHD%sgs_coefs, mhd1_fem_wk%mlump_cd,                 &
+     &   SGS_MHD_wk1%FEM_SGS_wk%wk_filter, mhd_fem1_wk,                 &
+     &   rhs_mat1%fem_wk, rhs_mat1%f_l, rhs_mat1%f_nl, FEM_MHD1%field)
 !
       call interpolate_vector_type                                      &
      &   (iphys%forces%i_vp_induct,  iphys_sph%i_vp_induct,             &

@@ -10,7 +10,7 @@
 !!     &          nod_comm, node, ele, surf, conduct,                   &
 !!     &          sf_grp, cd_prop, Bnod_bcs, Asf_bcs,                   &
 !!     &          iphys, iphys_ele, ele_fld, jacs, rhs_tbl, FEM_elens,  &
-!!     &          iak_diff_base, icomp_sgs_term, iphys_elediff_base,    &
+!!     &          iak_diff_base, icomp_sgs_term, iphys_elediff_vec,     &
 !!     &          sgs_coefs, diff_coefs, filtering, mlump_cd,           &
 !!     &          Bmatrix, MG_vector, wk_filter, mhd_fem_wk, fem_wk,    &
 !!     &          f_l, f_nl, nod_fld)
@@ -42,7 +42,7 @@
 !!        type(phys_data), intent(in) :: ele_fld
 !!        type(base_field_address), intent(in) :: iak_diff_base
 !!        type(SGS_term_address), intent(in) :: icomp_sgs_term
-!!        type(base_field_address), intent(in) :: iphys_elediff_base
+!!        type(base_field_address), intent(in) :: iphys_elediff_vec
 !!        type(jacobians_type), intent(in) :: jacs
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(lumped_mass_matrices), intent(in) :: m_lump
@@ -110,7 +110,7 @@
      &          nod_comm, node, ele, surf, conduct,                     &
      &          sf_grp, cd_prop, Bnod_bcs, Asf_bcs,                     &
      &          iphys, iphys_ele, ele_fld, jacs, rhs_tbl, FEM_elens,    &
-     &          iak_diff_base, icomp_sgs_term, iphys_elediff_base,      &
+     &          iak_diff_base, icomp_sgs_term, iphys_elediff_vec,       &
      &          sgs_coefs, diff_coefs, filtering, mlump_cd,             &
      &          Bmatrix, MG_vector, wk_filter, mhd_fem_wk, fem_wk,      &
      &          f_l, f_nl, nod_fld)
@@ -147,7 +147,7 @@
       type(phys_data), intent(in) :: ele_fld
       type(base_field_address), intent(in) :: iak_diff_base
       type(SGS_term_address), intent(in) :: icomp_sgs_term
-      type(base_field_address), intent(in) :: iphys_elediff_base
+      type(base_field_address), intent(in) :: iphys_elediff_vec
       type(jacobians_type), intent(in) :: jacs
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
@@ -186,12 +186,12 @@
 !  lead induction terms
 !
       if ( SGS_param%iflag_SGS_uxb .ne. id_SGS_none) then
-        call cal_sgs_uxb_2_evo                                          &
-     &     (icomp_sgs_term%i_SGS_induction, iphys_elediff_base%i_velo,  &
-     &      dt, FEM_prm, SGS_param, filter_param, nod_comm, node, ele,  &
-     &      conduct, cd_prop, iphys, iphys_ele, ele_fld,                &
-     &      jacs, rhs_tbl, FEM_elens, filtering, sgs_coefs,             &
-     &      wk_filter, mhd_fem_wk, fem_wk, f_nl, nod_fld)
+        call cal_sgs_uxb_2_evo(dt, FEM_prm, SGS_param, filter_param,    &
+     &      nod_comm, node, ele, conduct, cd_prop,                      &
+     &      iphys%base, iphys%filter_fld, iphys%SGS_wk,                 &
+     &      iphys_ele, ele_fld, jacs, rhs_tbl, FEM_elens, filtering,    &
+     &      icomp_sgs_term, iphys_elediff_vec, sgs_coefs, wk_filter,    &
+     &      mhd_fem_wk, fem_wk, f_nl, nod_fld)
       end if
 !
       if (FEM_prm%iflag_magne_supg .gt. id_turn_OFF) then

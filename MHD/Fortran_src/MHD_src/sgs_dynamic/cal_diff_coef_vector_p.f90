@@ -3,13 +3,13 @@
 !
 !     Written by H. Matsui
 !
-!!      subroutine s_cal_diff_coef_vector_p                             &
-!!     &         (iak_diff_b, icomp_diff_b, dt, FEM_prm, SGS_par,       &
-!!     &          nod_comm, node, ele, surf, fluid, layer_tbl,          &
-!!     &          sf_grp, Asf_bcs, Fsf_bcs, iphys, iphys_ele, ele_fld,  &
-!!     &          jacs, rhs_tbl, FEM_elens, filtering, m_lump,          &
-!!     &          wk_filter, wk_cor, wk_lsq, wk_diff, fem_wk, surf_wk,  &
-!!     &          f_l, f_nl, nod_fld, diff_coefs)
+!!      subroutine s_cal_diff_coef_vector_p(iak_diff_b, icomp_diff_b,   &
+!!     &          dt, FEM_prm, SGS_par, nod_comm, node, ele, surf,      &
+!!     &          fluid, layer_tbl, sf_grp, Asf_bcs, Fsf_bcs,           &
+!!     &          iphys_base, iphys_fil, iphys_SGS_wk,                  &
+!!     &          iphys_ele, ele_fld, jacs, rhs_tbl, FEM_elens,         &
+!!     &          filtering, m_lump, wk_filter, wk_cor, wk_lsq, wk_diff,&
+!!     &          fem_wk, surf_wk, f_l, f_nl, nod_fld, diff_coefs)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(communication_table), intent(in) :: nod_comm
@@ -19,7 +19,9 @@
 !!        type(surface_group_data), intent(in) :: sf_grp
 !!        type(velocity_surf_bc_type), intent(in) :: Asf_bcs
 !!        type(potential_surf_bc_type), intent(in) :: Fsf_bcs
-!!        type(phys_address), intent(in) :: iphys
+!!        type(base_field_address), intent(in) :: iphys_base
+!!        type(base_field_address), intent(in) :: iphys_fil
+!!        type(dynamic_SGS_work_address), intent(in) :: iphys_SGS_wk
 !!        type(phys_address), intent(in) :: iphys_ele
 !!        type(phys_data), intent(in) :: ele_fld
 !!        type(layering_tbl), intent(in) :: layer_tbl
@@ -51,6 +53,8 @@
       use t_group_data
       use t_phys_data
       use t_phys_address
+      use t_base_field_labels
+      use t_SGS_model_coef_labels
       use t_jacobians
       use t_table_FEM_const
       use t_layering_ele_list
@@ -74,13 +78,13 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_cal_diff_coef_vector_p                               &
-     &         (iak_diff_b, icomp_diff_b, dt, FEM_prm, SGS_par,         &
-     &          nod_comm, node, ele, surf, fluid, layer_tbl,            &
-     &          sf_grp, Asf_bcs, Fsf_bcs, iphys, iphys_ele, ele_fld,    &
-     &          jacs, rhs_tbl, FEM_elens, filtering, m_lump,            &
-     &          wk_filter, wk_cor, wk_lsq, wk_diff, fem_wk, surf_wk,    &
-     &          f_l, f_nl, nod_fld, diff_coefs)
+      subroutine s_cal_diff_coef_vector_p(iak_diff_b, icomp_diff_b,     &
+     &          dt, FEM_prm, SGS_par, nod_comm, node, ele, surf,        &
+     &          fluid, layer_tbl, sf_grp, Asf_bcs, Fsf_bcs,             &
+     &          iphys_base, iphys_fil, iphys_SGS_wk,                    &
+     &          iphys_ele, ele_fld, jacs, rhs_tbl, FEM_elens,           &
+     &          filtering, m_lump, wk_filter, wk_cor, wk_lsq, wk_diff,  &
+     &          fem_wk, surf_wk, f_l, f_nl, nod_fld, diff_coefs)
 !
       use m_machine_parameter
       use m_phys_constants
@@ -108,7 +112,9 @@
       type(surface_group_data), intent(in) :: sf_grp
       type(velocity_surf_bc_type), intent(in) :: Asf_bcs
       type(potential_surf_bc_type), intent(in) :: Fsf_bcs
-      type(phys_address), intent(in) :: iphys
+      type(base_field_address), intent(in) :: iphys_base
+      type(base_field_address), intent(in) :: iphys_fil
+      type(dynamic_SGS_work_address), intent(in) :: iphys_SGS_wk
       type(phys_address), intent(in) :: iphys_ele
       type(phys_data), intent(in) :: ele_fld
       type(layering_tbl), intent(in) :: layer_tbl
@@ -131,31 +137,31 @@
       integer (kind=kint) :: i_sgs_grad_p, i_sgs_grad_fp, i_sgs_simi_p
 !
 !
-      i_sgs_grad_p =  iphys%SGS_wk%i_nlg +    3
-      i_sgs_grad_fp = iphys%SGS_wk%i_wd_nlg + 3
-      i_sgs_simi_p =  iphys%SGS_wk%i_simi +   3
+      i_sgs_grad_p =  iphys_SGS_wk%i_nlg +    3
+      i_sgs_grad_fp = iphys_SGS_wk%i_wd_nlg + 3
+      i_sgs_simi_p =  iphys_SGS_wk%i_simi +   3
 !
 !    reset model coefficients
 !
       call reset_diff_model_coefs(ele%numele, ele%istack_ele_smp,       &
      &    diff_coefs%num_field, iak_diff_b, diff_coefs%ak)
-      call clear_work_4_dynamic_model(iphys%SGS_wk, nod_fld)
+      call clear_work_4_dynamic_model(iphys_SGS_wk, nod_fld)
 !
-!    get filtered scalar potential(to iphys%SGS_wk%i_wd_nlg)
+!    get filtered scalar potential(to iphys_SGS_wk%i_wd_nlg)
 !
       call copy_vector_component(nod_fld,                               &
-     &    iphys%filter_fld%i_vecp, iphys%SGS_wk%i_wd_nlg)
+     &    iphys_fil%i_vecp, iphys_SGS_wk%i_wd_nlg)
       call cal_filtered_scalar_whole                                    &
      &   (SGS_par%filter_p, nod_comm, node, filtering,                  &
-     &    i_sgs_grad_fp, iphys%base%i_mag_p, wk_filter, nod_fld)
+     &    i_sgs_grad_fp, iphys_base%i_mag_p, wk_filter, nod_fld)
 !
-!   take rotation and gradient of filtered A (to iphys%SGS_wk%i_simi)
+!   take rotation and gradient of filtered A (to iphys_SGS_wk%i_simi)
 !
       if (iflag_debug.gt.0)  write(*,*) 'cal_rotation_whole',           &
-     &                     iphys%SGS_wk%i_simi, iphys%SGS_wk%i_wd_nlg
+     &                     iphys_SGS_wk%i_simi, iphys_SGS_wk%i_wd_nlg
       call choose_cal_rotation                                          &
      &   (FEM_prm%iflag_magne_supg, FEM_prm%npoint_t_evo_int, dt,       &
-     &    iphys%SGS_wk%i_wd_nlg, iphys%SGS_wk%i_simi,                   &
+     &    iphys_SGS_wk%i_wd_nlg, iphys_SGS_wk%i_simi,                   &
      &    ele%istack_ele_smp, m_lump, nod_comm, node, ele,              &
      &    iphys_ele, ele_fld, jacs%g_FEM, jacs%jac_3d, rhs_tbl,         &
      &    fem_wk, f_nl, nod_fld)
@@ -168,51 +174,51 @@
      &    jacs%jac_3d, rhs_tbl, fem_wk, f_l, f_nl, nod_fld)
 !
 !   take rotation and gradient of vector potential
-!                               (to iphys%SGS_wk%i_nlg)
+!                               (to iphys_SGS_wk%i_nlg)
 !
       if (iflag_debug.gt.0) write(*,*) 'cal_rotation_whole',            &
-     &                     iphys%SGS_wk%i_nlg, iphys%base%i_vecp
+     &                     iphys_SGS_wk%i_nlg, iphys_base%i_vecp
       call choose_cal_rotation                                          &
      &   (FEM_prm%iflag_magne_supg, FEM_prm%npoint_t_evo_int, dt,       &
-     &    iphys%base%i_vecp, iphys%SGS_wk%i_nlg, ele%istack_ele_smp,    &
+     &    iphys_base%i_vecp, iphys_SGS_wk%i_nlg, ele%istack_ele_smp,    &
      &    m_lump, nod_comm, node, ele, iphys_ele, ele_fld,              &
      &    jacs%g_FEM, jacs%jac_3d, rhs_tbl, fem_wk, f_nl, nod_fld)
       if (iflag_debug.gt.0) write(*,*) 'cal_gradent_in_fluid',          &
-     &                     i_sgs_grad_p, iphys%base%i_mag_p
+     &                     i_sgs_grad_p, iphys_base%i_mag_p
       call choose_cal_gradient                                          &
      &   (FEM_prm%iflag_magne_supg, FEM_prm%npoint_t_evo_int, dt,       &
-     &    iphys%base%i_mag_p, i_sgs_grad_p, ele%istack_ele_smp, m_lump, &
+     &    iphys_base%i_mag_p, i_sgs_grad_p, ele%istack_ele_smp, m_lump, &
      &    nod_comm, node, ele, iphys_ele%base, ele_fld, jacs%g_FEM,     &
      &    jacs%jac_3d, rhs_tbl, fem_wk, f_l, f_nl, nod_fld)
 !
-!    filtering (to iphys%SGS_wk%i_nlg)
+!    filtering (to iphys_SGS_wk%i_nlg)
 !
       call cal_filtered_sym_tensor_whole                                &
      &   (SGS_par%filter_p, nod_comm, node, filtering,                  &
-     &    iphys%SGS_wk%i_nlg, iphys%SGS_wk%i_nlg, wk_filter, nod_fld)
+     &    iphys_SGS_wk%i_nlg, iphys_SGS_wk%i_nlg, wk_filter, nod_fld)
 !      call cal_filtered_scalar_whole                                   &
 !     &   (SGS_par%filter_p, nod_comm, node, filtering,                 &
-!     &    iphys%SGS_wk%i_nlg+6, iphys%SGS_wk%i_nlg+6, wk_filter,       &
+!     &    iphys_SGS_wk%i_nlg+6, iphys_SGS_wk%i_nlg+6, wk_filter,       &
 !     &    nod_fld)
 !
-!    take difference (to iphys%SGS_wk%i_simi)
+!    take difference (to iphys_SGS_wk%i_simi)
 !
       call subtract_2_nod_tensors(nod_fld,                              &
-     &    iphys%SGS_wk%i_nlg, iphys%SGS_wk%i_simi, iphys%SGS_wk%i_simi)
-!      call subtract_2_nod_scalars(nod_fld, iphys%SGS_wk%i_nlg+6,       &
-!     &    iphys%SGS_wk%i_simi+6, iphys%SGS_wk%i_simi+6)
+     &    iphys_SGS_wk%i_nlg, iphys_SGS_wk%i_simi, iphys_SGS_wk%i_simi)
+!      call subtract_2_nod_scalars(nod_fld, iphys_SGS_wk%i_nlg+6,       &
+!     &    iphys_SGS_wk%i_simi+6, iphys_SGS_wk%i_simi+6)
 !
 !      call check_nodal_data                                            &
-!     &   ((50+my_rank), nod_fld, n_sym_tensor, iphys%SGS_wk%i_simi)
+!     &   ((50+my_rank), nod_fld, n_sym_tensor, iphys_SGS_wk%i_simi)
 !
-!    obtain modeled commutative error  ( to iphys%SGS_wk%i_wd_nlg)
+!    obtain modeled commutative error  ( to iphys_SGS_wk%i_wd_nlg)
 !
       call cal_rotation_commute                                         &
      &   (FEM_prm%npoint_t_evo_int, ele%istack_ele_smp,                 &
      &    m_lump, node, ele, surf, sf_grp,                              &
      &    jacs%g_FEM, jacs%jac_3d, jacs%jac_sf_grp,                     &
      &    rhs_tbl, FEM_elens, Asf_bcs%sgs, ifilter_4delta,              &
-     &    iphys%SGS_wk%i_wd_nlg, iphys%SGS_wk%i_wd_nlg,                 &
+     &    iphys_SGS_wk%i_wd_nlg, iphys_SGS_wk%i_wd_nlg,                 &
      &    fem_wk, surf_wk, f_l, f_nl, nod_fld)
       call cal_grad_commute                                             &
      &   (FEM_prm%npoint_t_evo_int, ele%istack_ele_smp,                 &
@@ -223,46 +229,46 @@
      &    f_l, f_nl, nod_fld)
 !
       call sym_tensor_send_recv                                         &
-     &   (iphys%SGS_wk%i_wd_nlg, nod_comm, nod_fld)
+     &   (iphys_SGS_wk%i_wd_nlg, nod_comm, nod_fld)
 !
 !      call check_nodal_data                                            &
-!     &   ((50+my_rank), nod_fld, n_sym_tensor, iphys%SGS_wk%i_wd_nlg)
+!     &   ((50+my_rank), nod_fld, n_sym_tensor, iphys_SGS_wk%i_wd_nlg)
 !
-!    obtain modeled commutative error  ( to iphys%SGS_wk%i_nlg)
+!    obtain modeled commutative error  ( to iphys_SGS_wk%i_nlg)
 !
       call cal_rotation_commute                                         &
      &   (FEM_prm%npoint_t_evo_int, ele%istack_ele_smp,                 &
      &    m_lump, node, ele, surf, sf_grp,                              &
      &    jacs%g_FEM, jacs%jac_3d, jacs%jac_sf_grp,                     &
      &    rhs_tbl, FEM_elens, Asf_bcs%sgs, ifilter_2delta,              &
-     &    iphys%SGS_wk%i_nlg, iphys%base%i_vecp,                        &
+     &    iphys_SGS_wk%i_nlg, iphys_base%i_vecp,                        &
      &    fem_wk, surf_wk, f_l, f_nl, nod_fld)
       call cal_grad_commute                                             &
      &   (FEM_prm%npoint_t_evo_int, ele%istack_ele_smp,                 &
      &    m_lump, node, ele, surf, sf_grp,                              &
      &    jacs%g_FEM, jacs%jac_3d, jacs%jac_sf_grp,                     &
      &    rhs_tbl, FEM_elens, Fsf_bcs%sgs, ifilter_2delta,              &
-     &    i_sgs_grad_p, iphys%base%i_mag_p, fem_wk, surf_wk,            &
+     &    i_sgs_grad_p, iphys_base%i_mag_p, fem_wk, surf_wk,            &
      &    f_l, f_nl, nod_fld)
 !
       call sym_tensor_send_recv                                         &
-     &   (iphys%SGS_wk%i_nlg, nod_comm, nod_fld)
+     &   (iphys_SGS_wk%i_nlg, nod_comm, nod_fld)
 !
-!    filtering (to iphys%SGS_wk%i_nlg)
+!    filtering (to iphys_SGS_wk%i_nlg)
 !
       call cal_filtered_sym_tensor_whole                                &
      &   (SGS_par%filter_p, nod_comm, node, filtering,                  &
-     &    iphys%SGS_wk%i_nlg, iphys%SGS_wk%i_nlg, wk_filter, nod_fld)
+     &    iphys_SGS_wk%i_nlg, iphys_SGS_wk%i_nlg, wk_filter, nod_fld)
 !
 !      call check_nodal_data                                            &
-!     &   ((50+my_rank), nod_fld, n_sym_tensor, iphys%SGS_wk%i_nlg)
+!     &   ((50+my_rank), nod_fld, n_sym_tensor, iphys_SGS_wk%i_nlg)
 !
 !     obtain model coefficient
 !
       if (iflag_debug.gt.0)  write(*,*)                                 &
      &   'cal_diff_coef_fluid', n_sym_tensor, iak_diff_b, icomp_diff_b
       call cal_diff_coef_fluid(SGS_par, layer_tbl,                      &
-     &    node, ele, fluid, iphys%SGS_wk, nod_fld, jacs,                &
+     &    node, ele, fluid, iphys_SGS_wk, nod_fld, jacs,                &
      &    n_sym_tensor, iak_diff_b, icomp_diff_b,                       &
      &    FEM_prm%npoint_t_evo_int, wk_cor, wk_lsq, wk_diff,            &
      &    diff_coefs)

@@ -12,7 +12,7 @@
 !!     &          fluid, conduct, Bnod_bcs, Asf_bcs, Fsf_bcs, iphys,    &
 !!     &          iphys_ele, fem_int, FEM_filters,                      &
 !!     &          iak_diff_base, icomp_diff_base,                       &
-!!     &          iphys_elediff_base, iphys_elediff_fil,                &
+!!     &          iphys_elediff_vec, iphys_elediff_fil,                 &
 !!     &          FEM_SGS_wk, mhd_fem_wk, rhs_mat, nod_fld, ele_fld,    &
 !!     &          diff_coefs)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
@@ -29,7 +29,7 @@
 !!        type(filters_on_FEM), intent(in) :: FEM_filters
 !!        type(base_field_address), intent(in) :: iak_diff_base
 !!        type(base_field_address), intent(in) :: icomp_diff_base
-!!        type(base_field_address), intent(in) :: iphys_elediff_base
+!!        type(base_field_address), intent(in) :: iphys_elediff_vec
 !!        type(base_field_address), intent(in) :: iphys_elediff_fil
 !!        type(layering_tbl), intent(in) :: layer_tbl
 !!        type(work_FEM_dynamic_SGS), intent(inout) :: FEM_SGS_wk
@@ -79,7 +79,7 @@
      &          fluid, conduct, Bnod_bcs, Asf_bcs, Fsf_bcs, iphys,      &
      &          iphys_ele, fem_int, FEM_filters,                        &
      &          iak_diff_base, icomp_diff_base,                         &
-     &          iphys_elediff_base, iphys_elediff_fil,                  &
+     &          iphys_elediff_vec, iphys_elediff_fil,                   &
      &          FEM_SGS_wk, mhd_fem_wk, rhs_mat, nod_fld, ele_fld,      &
      &          diff_coefs)
 !
@@ -107,7 +107,7 @@
       type(filters_on_FEM), intent(in) :: FEM_filters
       type(base_field_address), intent(in) :: iak_diff_base
       type(base_field_address), intent(in) :: icomp_diff_base
-      type(base_field_address), intent(in) :: iphys_elediff_base
+      type(base_field_address), intent(in) :: iphys_elediff_vec
       type(base_field_address), intent(in) :: iphys_elediff_fil
 !
       type(work_FEM_dynamic_SGS), intent(inout) :: FEM_SGS_wk
@@ -162,15 +162,15 @@
      &       then
               call s_cal_diff_coef_vector_p                             &
      &           (iak_diff_base%i_magne, icomp_diff_base%i_magne,       &
-     &            dt, FEM_prm, SGS_par, mesh%nod_comm,                  &
-     &            mesh%node, mesh%ele, mesh%surf, fluid,                &
-     &            FEM_filters%layer_tbl, group%surf_grp,                &
-     &            Asf_bcs, Fsf_bcs, iphys, iphys_ele, ele_fld,          &
-     &            fem_int%jcs, fem_int%rhs_tbl, FEM_filters%FEM_elens,  &
-     &            FEM_filters%filtering, fem_int%m_lump,                &
-     &            FEM_SGS_wk%wk_filter, FEM_SGS_wk%wk_cor,              &
-     &            FEM_SGS_wk%wk_lsq, FEM_SGS_wk%wk_diff,                &
-     &            rhs_mat%fem_wk, rhs_mat%surf_wk,                      &
+     &            dt, FEM_prm, SGS_par, mesh%nod_comm, mesh%node,       &
+     &            mesh%ele, mesh%surf, fluid, FEM_filters%layer_tbl,    &
+     &            group%surf_grp, Asf_bcs, Fsf_bcs,                     &
+     &            iphys%base, iphys%filter_fld, iphys%SGS_wk,           &
+     &            iphys_ele, ele_fld, fem_int%jcs, fem_int%rhs_tbl,     &
+     &            FEM_filters%FEM_elens, FEM_filters%filtering,         &
+     &            fem_int%m_lump, FEM_SGS_wk%wk_filter,                 &
+     &            FEM_SGS_wk%wk_cor, FEM_SGS_wk%wk_lsq,                 &
+     &            FEM_SGS_wk%wk_diff, rhs_mat%fem_wk, rhs_mat%surf_wk,  &
      &            rhs_mat%f_l, rhs_mat%f_nl, nod_fld, diff_coefs)
             end if
 !
@@ -287,11 +287,11 @@
 !
        if (  SGS_par%model_p%iflag_SGS_lorentz .eq. id_SGS_NL_grad      &
      &  .or. SGS_par%model_p%iflag_SGS_uxb .eq. id_SGS_NL_grad) then
-         if(iphys_elediff_base%i_magne .ne. 0) then
+         if(iphys_elediff_vec%i_magne .ne. 0) then
            if (iflag_debug.gt.0) write(*,*) 'diff_magne_on_ele'
            call sel_int_diff_vector_on_ele                              &
      &        (FEM_prm%npoint_t_evo_int, mesh%ele%istack_ele_smp,       &
-     &         iphys%base%i_magne, iphys_elediff_base%i_magne,          &
+     &         iphys%base%i_magne, iphys_elediff_vec%i_magne,           &
      &         mesh%node, mesh%ele, nod_fld, fem_int%jcs, mhd_fem_wk)
         end if
        end if

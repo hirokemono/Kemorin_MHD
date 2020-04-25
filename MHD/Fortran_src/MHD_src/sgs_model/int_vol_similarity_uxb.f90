@@ -9,15 +9,15 @@
 !!
 !!@verbatim
 !!      subroutine int_simi_vp_induct(num_int, icomp_sgs_uxb,           &
-!!     &          node, ele, conduct, iphys, nod_fld, g_FEM, jac_3d,    &
-!!     &          rhs_tbl, sgs_coefs, fem_wk, f_nl)
+!!     &          node, ele, conduct, iphys_SGS_wk, nod_fld,            &
+!!     &          g_FEM, jac_3d, rhs_tbl, sgs_coefs, fem_wk, f_nl)
 !!      subroutine int_simi_vp_induct_upm                               &
 !!     &         (num_int, dt, icomp_sgs_uxb, node, ele, conduct,       &
-!!     &          iphys, nod_fld, g_FEM, jac_3d, rhs_tbl,               &
+!!     &          iphys_SGS_wk, nod_fld, g_FEM, jac_3d, rhs_tbl,        &
 !!     &          sgs_coefs, ncomp_ele, iele_magne, d_ele, fem_wk, f_nl)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
-!!        type(phys_address), intent(in) :: iphys
+!!        type(dynamic_SGS_work_address), intent(in) :: iphys_SGS_wk
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(phys_address), intent(in) :: iphys_ele
 !!        type(phys_data), intent(in) :: ele_fld
@@ -41,6 +41,7 @@
       use t_geometry_data
       use t_phys_data
       use t_phys_address
+      use t_SGS_model_coef_labels
       use t_fem_gauss_int_coefs
       use t_jacobians
       use t_jacobian_3d
@@ -58,8 +59,8 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_simi_vp_induct(num_int, icomp_sgs_uxb,             &
-     &          node, ele, conduct, iphys, nod_fld, g_FEM, jac_3d,      &
-     &          rhs_tbl, sgs_coefs, fem_wk, f_nl)
+     &          node, ele, conduct, iphys_SGS_wk, nod_fld,              &
+     &          g_FEM, jac_3d, rhs_tbl, sgs_coefs, fem_wk, f_nl)
 !
       use nodal_fld_2_each_element
       use fem_skv_nodal_field
@@ -71,7 +72,7 @@
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
-      type(phys_address), intent(in) :: iphys
+      type(dynamic_SGS_work_address), intent(in) :: iphys_SGS_wk
       type(phys_data), intent(in) :: nod_fld
       type(field_geometry_data), intent(in) :: conduct
       type(FEM_gauss_int_coefs), intent(in) :: g_FEM
@@ -90,7 +91,7 @@
 ! -------- loop for shape function for the phsical values
       do k2 = 1, ele%nnod_4_ele
         call vector_phys_2_each_element(node, ele, nod_fld,             &
-     &      k2, iphys%SGS_wk%i_simi, fem_wk%vector_1)
+     &      k2, iphys_SGS_wk%i_simi, fem_wk%vector_1)
         call fem_skv_vector_field                                       &
      &     (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,                 &
      &      conduct%istack_ele_fld_smp,  &
@@ -111,7 +112,7 @@
 !
       subroutine int_simi_vp_induct_upm                                 &
      &         (num_int, dt, icomp_sgs_uxb, node, ele, conduct,         &
-     &          iphys, nod_fld, g_FEM, jac_3d, rhs_tbl,                 &
+     &          iphys_SGS_wk, nod_fld, g_FEM, jac_3d, rhs_tbl,          &
      &          sgs_coefs, ncomp_ele, iele_magne, d_ele, fem_wk, f_nl)
 !
       use nodal_fld_2_each_element
@@ -124,7 +125,7 @@
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
-      type(phys_address), intent(in) :: iphys
+      type(dynamic_SGS_work_address), intent(in) :: iphys_SGS_wk
       type(phys_data), intent(in) :: nod_fld
       type(field_geometry_data), intent(in) :: conduct
       type(FEM_gauss_int_coefs), intent(in) :: g_FEM
@@ -146,7 +147,7 @@
 !
       do k2 = 1, ele%nnod_4_ele
         call vector_phys_2_each_element(node, ele, nod_fld,             &
-     &      k2, iphys%SGS_wk%i_simi, fem_wk%vector_1)
+     &      k2, iphys_SGS_wk%i_simi, fem_wk%vector_1)
 !
         call fem_skv_vector_field_upwind(conduct%istack_ele_fld_smp,    &
      &      num_int, k2, dt, d_ele(1,iele_magne), ele, g_FEM, jac_3d,   &

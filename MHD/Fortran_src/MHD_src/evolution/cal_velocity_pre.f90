@@ -10,7 +10,7 @@
 !!     &          fl_prop, cd_prop, Vnod_bcs, Vsf_bcs, Bsf_bcs,         &
 !!     &          iphys, iphys_ele, ak_MHD, fem_int, FEM_elens,         &
 !!     &          iak_sgs_term, icomp_sgs_term,                         &
-!!     &          iak_diff_base, iak_diff_sgs, iphys_elediff_base,      &
+!!     &          iak_diff_base, iak_diff_sgs, iphys_elediff_vec,       &
 !!     &          sgs_coefs_nod, diff_coefs, filtering, layer_tbl,      &
 !!     &          mlump_fl, Vmatrix, MG_vector, wk_lsq, wk_sgs,         &
 !!     &          wk_filter, mhd_fem_wk, rhs_mat, nod_fld, ele_fld,     &
@@ -45,7 +45,7 @@
 !!        type(SGS_term_address), intent(in) :: icomp_sgs_term
 !!        type(base_field_address), intent(in) :: iak_diff_base
 !!        type(SGS_term_address), intent(in) :: iak_diff_sgs
-!!        type(base_field_address), intent(in) :: iphys_elediff_base
+!!        type(base_field_address), intent(in) :: iphys_elediff_vec
 !!        type(SGS_coefficients_type), intent(in) :: sgs_coefs_nod
 !!        type(SGS_coefficients_type), intent(in) :: diff_coefs
 !!        type(filtering_data_type), intent(in) :: filtering
@@ -116,7 +116,7 @@
      &          fl_prop, cd_prop, Vnod_bcs, Vsf_bcs, Bsf_bcs,           &
      &          iphys, iphys_ele, ak_MHD, fem_int, FEM_elens,           &
      &          iak_sgs_term, icomp_sgs_term,                           &
-     &          iak_diff_base, iak_diff_sgs, iphys_elediff_base,        &
+     &          iak_diff_base, iak_diff_sgs, iphys_elediff_vec,         &
      &          sgs_coefs_nod, diff_coefs, filtering, layer_tbl,        &
      &          mlump_fl, Vmatrix, MG_vector, wk_lsq, wk_sgs,           &
      &          wk_filter, mhd_fem_wk, rhs_mat, nod_fld, ele_fld,       &
@@ -161,7 +161,7 @@
       type(SGS_term_address), intent(in) :: icomp_sgs_term
       type(base_field_address), intent(in) :: iak_diff_base
       type(SGS_term_address), intent(in) :: iak_diff_sgs
-      type(base_field_address), intent(in) :: iphys_elediff_base
+      type(base_field_address), intent(in) :: iphys_elediff_vec
       type(SGS_coefficients_type), intent(in) :: sgs_coefs_nod
       type(SGS_coefficients_type), intent(in) :: diff_coefs
       type(filtering_data_type), intent(in) :: filtering
@@ -190,27 +190,27 @@
      &      fl_prop, cd_prop, Vsf_bcs, Bsf_bcs, iphys, iphys_ele,       &
      &      ak_MHD, fem_int, FEM_elens, filtering,                      &
      &      iak_sgs_term, icomp_sgs_term, iak_diff_sgs,                 &
-     &      iphys_elediff_base, sgs_coefs_nod, diff_coefs,              &
+     &      iphys_elediff_vec, sgs_coefs_nod, diff_coefs,               &
      &      mlump_fl, wk_filter,  wk_lsq, wk_sgs, mhd_fem_wk, rhs_mat,  &
      &      nod_fld, ele_fld, sgs_coefs)
       end if
 !
       if(SGS_par%model_p%iflag_SGS_m_flux .ne. id_SGS_none) then
-        call cal_sgs_momentum_flux                                      &
-     &     (icomp_sgs_term%i_SGS_m_flux, iphys_elediff_base%i_velo, dt, &
-     &      FEM_prm, SGS_par%model_p, SGS_par%filter_p,                 &
-     &      nod_comm, node, ele, fluid, iphys, iphys_ele, ele_fld,      &
-     &      fem_int%jcs, fem_int%rhs_tbl, FEM_elens, filtering,         &
+        call cal_sgs_momentum_flux(dt, FEM_prm, SGS_par%model_p,        &
+     &      SGS_par%filter_p, nod_comm, node, ele, fluid,               &
+     &      iphys%base, iphys%filter_fld, iphys%SGS_term, iphys%SGS_wk, &
+     &      iphys_ele, ele_fld, fem_int%jcs, fem_int%rhs_tbl,           &
+     &      FEM_elens, filtering, icomp_sgs_term, iphys_elediff_vec,    &
      &      sgs_coefs, sgs_coefs_nod, mlump_fl, wk_filter, mhd_fem_wk,  &
      &      rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
       end if
 !
       if(SGS_par%model_p%iflag_SGS_lorentz .ne. id_SGS_none) then
-        call cal_sgs_maxwell                                            &
-     &     (icomp_sgs_term%i_SGS_Lorentz, iphys_elediff_base%i_magne,   &
-     &      dt, FEM_prm, SGS_par%model_p, SGS_par%filter_p,             &
-     &      nod_comm, node, ele, fluid, iphys, iphys_ele, ele_fld,      &
-     &      fem_int%jcs, fem_int%rhs_tbl, FEM_elens, filtering,         &
+        call cal_sgs_maxwell(dt, FEM_prm, SGS_par%model_p,              &
+     &      SGS_par%filter_p, nod_comm, node, ele, fluid,               &
+     &      iphys%base, iphys%filter_fld, iphys%SGS_term, iphys%SGS_wk, &
+     &      iphys_ele, ele_fld, fem_int%jcs, fem_int%rhs_tbl,           &
+     &      FEM_elens, filtering, icomp_sgs_term, iphys_elediff_vec,    &
      &      sgs_coefs, sgs_coefs_nod, mlump_fl, wk_filter, mhd_fem_wk,  &
      &      rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
       end if

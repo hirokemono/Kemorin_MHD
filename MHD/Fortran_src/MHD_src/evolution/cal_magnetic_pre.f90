@@ -11,7 +11,7 @@
 !!     &          Bnod_bcs, Asf_bcs, Bsf_bcs, iphys, iphys_ele, ele_fld,&
 !!     &          jacs, rhs_tbl, FEM_elens, sgs_coefs, sgs_coefs_nod,   &
 !!     &          icomp_sgs_term, iak_diff_base, iak_diff_sgs,          &
-!!     &          iphys_elediff_base, diff_coefs, filtering, mlump_cd,  &
+!!     &          iphys_elediff_vec, diff_coefs, filtering, mlump_cd,   &
 !!     &          Bmatrix, MG_vector, wk_filter, mhd_fem_wk,            &
 !!     &          fem_wk, surf_wk, f_l, f_nl, nod_fld)
 !!      subroutine cal_magnetic_co                                      &
@@ -55,7 +55,7 @@
 !!        type(SGS_term_address), intent(in) :: icomp_sgs_term
 !!        type(base_field_address), intent(in) :: iak_diff_base
 !!        type(SGS_term_address), intent(in) :: iak_diff_sgs
-!!        type(base_field_address), intent(in) :: iphys_elediff_base
+!!        type(base_field_address), intent(in) :: iphys_elediff_vec
 !!        type(SGS_coefficients_type), intent(in) :: diff_coefs
 !!        type(lumped_mass_matrices), intent(in) :: mlump_cd
 !!        type(lumped_mass_matrices), intent(in) :: mlump_ins
@@ -120,7 +120,7 @@
      &          Bnod_bcs, Asf_bcs, Bsf_bcs, iphys, iphys_ele, ele_fld,  &
      &          jacs, rhs_tbl, FEM_elens, sgs_coefs, sgs_coefs_nod,     &
      &          icomp_sgs_term, iak_diff_base, iak_diff_sgs,            &
-     &          iphys_elediff_base, diff_coefs, filtering, mlump_cd,    &
+     &          iphys_elediff_vec, diff_coefs, filtering, mlump_cd,     &
      &          Bmatrix, MG_vector, wk_filter, mhd_fem_wk,              &
      &          fem_wk, surf_wk, f_l, f_nl, nod_fld)
 !
@@ -162,7 +162,7 @@
       type(SGS_term_address), intent(in) :: icomp_sgs_term
       type(base_field_address), intent(in) :: iak_diff_base
       type(SGS_term_address), intent(in) :: iak_diff_sgs
-      type(base_field_address), intent(in) :: iphys_elediff_base
+      type(base_field_address), intent(in) :: iphys_elediff_vec
       type(SGS_coefficients_type), intent(in) :: diff_coefs
       type(filtering_data_type), intent(in) :: filtering
       type(lumped_mass_matrices), intent(in) :: mlump_cd
@@ -182,11 +182,12 @@
 !
 !
       if ( SGS_param%iflag_SGS_uxb .ne. id_SGS_none) then
-        call cal_sgs_magne_induction(icomp_sgs_term%i_SGS_induction,    &
-     &      iphys_elediff_base%i_velo, iphys_elediff_base%i_magne,      &
-     &      dt, FEM_prm, SGS_param, filter_param, nod_comm, node, ele,  &
-     &      conduct, cd_prop, iphys, iphys_ele, ele_fld, jacs, rhs_tbl, &
-     &      FEM_elens, filtering, sgs_coefs, sgs_coefs_nod, mlump_cd,   &
+        call cal_sgs_magne_induction(dt, FEM_prm, SGS_param,            &
+     &      filter_param, nod_comm, node, ele, conduct, cd_prop,        &
+     &      iphys%base, iphys%filter_fld, iphys%SGS_term,               &
+     &      iphys_ele, ele_fld, jacs, rhs_tbl, FEM_elens, filtering,    &
+     &      icomp_sgs_term, iphys_elediff_vec,                          &
+     &      sgs_coefs, sgs_coefs_nod, mlump_cd,                         &
      &      wk_filter, mhd_fem_wk, fem_wk, f_l, nod_fld)
       end if
 !

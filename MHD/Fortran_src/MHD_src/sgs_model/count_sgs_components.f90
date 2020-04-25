@@ -14,7 +14,7 @@
 !!      subroutine s_count_sgs_components(SGS_param,                    &
 !!     &          fl_prop, cd_prop, ht_prop, cp_prop, sgs_coefs)
 !!      subroutine set_SGS_ele_fld_addresses(cd_prop, SGS_param,        &
-!!     &          iphys_elediff_base, iphys_elediff_fil)
+!!     &          iphys_elediff_vec, iphys_elediff_fil)
 !!      subroutine check_sgs_addresses                                  &
 !!     &         (iak_sgs_term, icomp_sgs_term, wk_sgs, sgs_coefs)
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
@@ -24,7 +24,7 @@
 !!        type(dynamic_model_data), intent(inout) :: wk_sgs
 !!        type(SGS_coefficients_type), intent(inout) :: sgs_coefs
 !!        type(SGS_coefficients_type), intent(inout) :: sgs_coefs_nod
-!!        type(base_field_address), intent(inout) :: iphys_elediff_base
+!!        type(base_field_address), intent(inout) :: iphys_elediff_vec
 !!        type(base_field_address), intent(inout) :: iphys_elediff_fil
 !!        type(SGS_coefficients_data), intent(inout) :: Csims_FEM_MHD
 !
@@ -299,7 +299,7 @@
 !  ------------------------------------------------------------------
 !
       subroutine set_SGS_ele_fld_addresses(cd_prop, SGS_param,          &
-     &          iphys_elediff_base, iphys_elediff_fil)
+     &          iphys_elediff_vec, iphys_elediff_fil)
 !
       use t_SGS_control_parameter
       use t_physical_property
@@ -308,7 +308,7 @@
       type(conductive_property), intent(in) :: cd_prop
       type(SGS_model_control_params), intent(in) :: SGS_param
 !
-      type(base_field_address), intent(inout) :: iphys_elediff_base
+      type(base_field_address), intent(inout) :: iphys_elediff_vec
       type(base_field_address), intent(inout) :: iphys_elediff_fil
 !
       integer(kind = kint) :: i
@@ -319,18 +319,18 @@
      &   .or. SGS_param%iflag_SGS_m_flux .ne.   id_SGS_none             &
      &   .or. SGS_param%iflag_SGS_c_flux .ne.   id_SGS_none             &
      &   .or. SGS_param%iflag_SGS_uxb .ne. id_SGS_none ) then
-         iphys_elediff_base%i_velo = i
+         iphys_elediff_vec%i_velo = i
          iphys_elediff_fil%i_velo = i + 9
          i = i + 18
         end if
 !
         if ( SGS_param%iflag_SGS_lorentz .ne. id_SGS_none) then
-         iphys_elediff_base%i_magne = i
+         iphys_elediff_vec%i_magne = i
          iphys_elediff_fil%i_magne = i + 9
          i = i + 18
         else if (SGS_param%iflag_SGS_uxb .ne. id_SGS_none               &
      &     .and. cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
-         iphys_elediff_base%i_magne = i
+         iphys_elediff_vec%i_magne = i
          iphys_elediff_fil%i_magne = i + 9
          i = i + 18
         end if
@@ -341,16 +341,16 @@
      &   .or. SGS_param%iflag_SGS_m_flux .ne. id_SGS_none               &
      &   .or. SGS_param%iflag_SGS_c_flux .ne. id_SGS_none               &
      &   .or. SGS_param%iflag_SGS_uxb .ne.    id_SGS_none) then
-         iphys_elediff_base%i_velo = i
+         iphys_elediff_vec%i_velo = i
          i = i + 9
         end if
 !
         if ( SGS_param%iflag_SGS_lorentz .ne. id_SGS_none) then
-         iphys_elediff_base%i_magne = i
+         iphys_elediff_vec%i_magne = i
          i = i + 9
         else if (SGS_param%iflag_SGS_uxb .ne. id_SGS_none               &
      &     .and. cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
-         iphys_elediff_base%i_magne = i
+         iphys_elediff_vec%i_magne = i
          i = i + 9
         end if
       end if

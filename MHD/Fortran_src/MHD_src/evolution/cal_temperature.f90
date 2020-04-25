@@ -157,7 +157,7 @@
      &         iphys_base, iphys_grd, iphys_fil, iphys_SGS, iphys_exp,  &
      &         iphys_ele, ele_fld, jacs, rhs_tbl, FEM_elens,            &
      &         icomp_sgs_term, iak_diff_base, iak_diff_SGS,             &
-     &         iphys_elediff_base, sgs_coefs, sgs_coefs_nod,            &
+     &         iphys_elediff_vec, sgs_coefs, sgs_coefs_nod,             &
      &         diff_coefs, filtering, mlump_fl, Smatrix, ak_diffuse,    &
      &         MGCG_WK, wk_filter, mhd_fem_wk, fem_wk, surf_wk,         &
      &         f_l, f_nl, nod_fld)
@@ -204,7 +204,7 @@
       type(SGS_term_address), intent(in) :: icomp_sgs_term
       type(base_field_address), intent(in) :: iak_diff_base
       type(SGS_term_address), intent(in) :: iak_diff_SGS
-      type(base_field_address), intent(in) :: iphys_elediff_base
+      type(base_field_address), intent(in) :: iphys_elediff_vec
       type(SGS_coefficients_type), intent(in) :: sgs_coefs
       type(SGS_coefficients_type), intent(in) :: sgs_coefs_nod
       type(SGS_coefficients_type), intent(in) :: diff_coefs
@@ -232,7 +232,7 @@
      &      i_field, iphys_fil%i_temp,                                  &
      &      iphys_base%i_velo, iphys_fil%i_velo,                        &
      &      iphys_SGS%i_SGS_h_flux, icomp_sgs_term%i_SGS_h_flux,        &
-     &      iphys_elediff_base%i_velo, SGS_param, filter_param,         &
+     &      iphys_elediff_vec%i_velo, SGS_param, filter_param,          &
      &      mesh%nod_comm, mesh%node, mesh%ele, fluid,                  &
      &      iphys_ele, ele_fld, jacs, rhs_tbl, FEM_elens, filtering,    &
      &      sgs_coefs, sgs_coefs_nod, mlump_fl, wk_filter,              &

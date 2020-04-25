@@ -4,8 +4,8 @@
 !      Written by H. Matsui
 !
 !!      subroutine cal_sgs_uxb_2_ff_grad(itype_Csym_uxb, icoord_Csim,   &
-!!     &          i_filter, icomp_sgs_uxb, ie_dvx, dt,                  &
-!!     &          FEM_prm, node, ele, conduct, cd_prop, iphys, nod_fld, &
+!!     &          i_filter, icomp_sgs_uxb, ie_dvx, dt, FEM_prm,         &
+!!     &          node, ele, conduct, cd_prop, iphys_base, nod_fld,     &
 !!     &          iphys_ele, ele_fld, jacs, rhs_tbl, FEM_elens,         &
 !!     &          sgs_coefs, mhd_fem_wk, fem_wk, f_nl)
 !!      subroutine cal_sgs_vp_induct_grad_no_coef                       &
@@ -16,7 +16,7 @@
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
-!!        type(phys_address), intent(in) :: iphys
+!!        type(base_field_address), intent(in) :: iphys_base
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(phys_address), intent(in) :: iphys_ele
 !!        type(phys_data), intent(in) :: ele_fld
@@ -44,6 +44,7 @@
       use t_geometry_data
       use t_phys_data
       use t_phys_address
+      use t_base_field_labels
       use t_jacobians
       use t_finite_element_mat
       use t_filter_elength
@@ -60,8 +61,8 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_sgs_uxb_2_ff_grad(itype_Csym_uxb, icoord_Csim,     &
-     &          i_filter, icomp_sgs_uxb, ie_dvx, dt,                    &
-     &          FEM_prm, node, ele, conduct, cd_prop, iphys, nod_fld,   &
+     &          i_filter, icomp_sgs_uxb, ie_dvx, dt, FEM_prm,           &
+     &          node, ele, conduct, cd_prop, iphys_base, nod_fld,       &
      &          iphys_ele, ele_fld, jacs, rhs_tbl, FEM_elens,           &
      &          sgs_coefs, mhd_fem_wk, fem_wk, f_nl)
 !
@@ -77,7 +78,7 @@
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
-      type(phys_address), intent(in) :: iphys
+      type(base_field_address), intent(in) :: iphys_base
       type(phys_data), intent(in) :: nod_fld
       type(phys_address), intent(in) :: iphys_ele
       type(phys_data), intent(in) :: ele_fld
@@ -96,7 +97,7 @@
       call reset_sk6(n_vector, ele, fem_wk%sk6)
 !
       call sel_int_vol_sgs_uxb                                          &
-     &   (i_filter, iphys%base%i_magne, ie_dvx, dt,                     &
+     &   (i_filter, iphys_base%i_magne, ie_dvx, dt,                     &
      &    FEM_prm, node, ele, conduct, nod_fld, iphys_ele, ele_fld,     &
      &    jacs%g_FEM, jacs%jac_3d, FEM_elens, fem_wk, mhd_fem_wk)
 !
