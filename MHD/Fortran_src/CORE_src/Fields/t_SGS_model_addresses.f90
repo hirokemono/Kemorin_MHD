@@ -41,7 +41,7 @@
 !>        Structure of forces by filtered field
 !        type(base_force_address) :: force_by_filter
 !>        Structure of rotation of forces by filtered field
-!        type(base_force_address) :: rot_frc_by_filter
+        type(base_force_address) :: rot_frc_by_filter
 !>        Structure of divergence of forces by filtered field
         type(base_force_address) :: div_frc_by_filter
 !

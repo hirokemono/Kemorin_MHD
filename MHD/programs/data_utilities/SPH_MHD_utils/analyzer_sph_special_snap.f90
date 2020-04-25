@@ -190,8 +190,9 @@
      &    SPH_MHD%ipol, SPH_MHD%fld)
       if(iflag_debug .gt. 0) write(*,*) 'rot_self_filter_buoyancy_sph'
       call rot_self_filter_buoyancy_sph                                 &
-     &   (SPH_MHD%sph%sph_rj, SPH_MHD%ipol, SPH_model%MHD_prop,         &
-     &    SPH_model%sph_MHD_bc%sph_bc_U, SPH_MHD%fld)
+     &   (SPH_MHD%sph%sph_rj, SPH_MHD%ipol, SPH_SGS%ipol_LES,           &
+     &    SPH_model%MHD_prop, SPH_model%sph_MHD_bc%sph_bc_U,            &
+     &    SPH_MHD%fld)
 !
 !*  ----------------Modify spectr data ... ----------
 !*
@@ -300,8 +301,6 @@
       type(MHD_radial_matrices), intent(inout) :: sph_MHD_mat
       type(SPH_SGS_structure), intent(inout) :: SPH_SGS
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
-!
-      integer(kind = kint) :: iflag
 !
 !
       if(lead_field_data_flag(i_step, MHD_step) .eq. 0) then

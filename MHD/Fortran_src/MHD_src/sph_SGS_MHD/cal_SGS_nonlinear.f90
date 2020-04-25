@@ -140,7 +140,7 @@
 !    ---- Add filtered rotation of forces
       if(iflag_debug .gt. 0) write(*,*) 'add_filtered_buo_to_explicit'
       call add_filtered_buo_to_explicit(SPH_model%MHD_prop%fl_prop,     &
-     &    SPH_MHD%ipol%exp_work, SPH_MHD%ipol%rot_frc_by_filter,        &
+     &    SPH_MHD%ipol%exp_work, SPH_SGS%ipol_LES%rot_frc_by_filter,    &
      &    SPH_MHD%fld)
 !
       if(iflag_debug .gt. 0) write(*,*)                                 &
