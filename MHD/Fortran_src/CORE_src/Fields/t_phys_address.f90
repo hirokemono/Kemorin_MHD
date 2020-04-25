@@ -79,10 +79,7 @@
 !>        Structure of rotation of forces by filtered field
         type(base_force_address) :: rot_frc_by_filter
 !>        Structure of divergence of forces by filtered field
-        type(base_force_address) :: div_frc_by_filter
-!
-!>        Structure of energy fluxes by filtered field
-!        type(energy_flux_address) :: eflux_by_filter
+!        type(base_force_address) :: div_frc_by_filter
 !
 !>        Structure of SGS terms
         type(SGS_term_address) :: SGS_term

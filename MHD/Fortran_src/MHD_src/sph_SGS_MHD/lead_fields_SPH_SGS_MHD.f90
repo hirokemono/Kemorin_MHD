@@ -86,7 +86,7 @@
         call pressure_SGS_SPH_MHD                                       &
      &     (SPH_SGS%SGS_par%model_p, SPH_MHD%sph, MHD_prop, sph_MHD_bc, &
      &      r_2nd, trans_p%leg, sph_MHD_mat%band_p_poisson,             &
-     &      SPH_MHD%ipol, SPH_MHD%fld)
+     &      SPH_MHD%ipol, SPH_SGS%ipol_LES, SPH_MHD%fld)
       end if
 !
 !
@@ -112,7 +112,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine pressure_SGS_SPH_MHD(SGS_param, sph, MHD_prop,         &
-     &          sph_MHD_bc, r_2nd, leg, band_p_poisson, ipol, rj_fld)
+     &          sph_MHD_bc, r_2nd, leg, band_p_poisson,                 &
+     &          ipol, ipol_LES, rj_fld)
 !
       use cal_sol_sph_fluid_crank
 !
@@ -133,6 +134,7 @@
       type(legendre_4_sph_trans), intent(in) :: leg
       type(band_matrices_type), intent(in) :: band_p_poisson
       type(phys_address), intent(in) :: ipol
+      type(SGS_model_addresses), intent(in) :: ipol_LES
 !
       type(phys_data), intent(inout) :: rj_fld
 !
@@ -143,15 +145,15 @@
      &    leg%g_sph_rj, ipol, rj_fld)
       call cal_div_buoyancy_w_fil_sph_2                                 &
      &   (sph%sph_rj, r_2nd, MHD_prop, sph_MHD_bc%sph_bc_U,             &
-     &   leg%g_sph_rj, ipol, rj_fld)
+     &   leg%g_sph_rj, ipol, ipol_LES, rj_fld)
 !
 !
       call r_buoyancy_on_sphere_w_filter                                &
-     &   (sph_MHD_bc%sph_bc_U%kr_in,  sph%sph_rj, ipol,                 &
+     &   (sph_MHD_bc%sph_bc_U%kr_in,  sph%sph_rj, ipol, ipol_LES,       &
      &    MHD_prop%fl_prop, MHD_prop%ref_param_T, MHD_prop%ref_param_C, &
      &    rj_fld)
       call r_buoyancy_on_sphere_w_filter                                &
-     &   (sph_MHD_bc%sph_bc_U%kr_out, sph%sph_rj, ipol,                 &
+     &   (sph_MHD_bc%sph_bc_U%kr_out, sph%sph_rj, ipol, ipol_LES,       &
      &    MHD_prop%fl_prop, MHD_prop%ref_param_T, MHD_prop%ref_param_C, &
      &    rj_fld)
 !
@@ -161,8 +163,8 @@
 !
       call sum_div_of_forces                                            &
      &   (MHD_prop%fl_prop, ipol%base, ipol%div_forces, rj_fld)
-      call add_div_of_filtered_buoyancies                               &
-     &   (MHD_prop%fl_prop, ipol%base, ipol%div_frc_by_filter, rj_fld)
+      call add_div_of_filtered_buoyancies(MHD_prop%fl_prop,             &
+     &    ipol%base, ipol_LES%div_frc_by_filter, rj_fld)
 !
 !   ----  Add divegence of SGS terms
       if(SGS_param%iflag_SGS .gt. id_SGS_none) then

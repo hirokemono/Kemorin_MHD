@@ -91,7 +91,7 @@
      &    sph_bc_U, rj_fld)
 !
       call sel_div_r_const_fil_buo_sph(sph_rj, ipol%filter_fld,         &
-     &    ipol_LES%grad_fil_fld, ipol%div_frc_by_filter,                &
+     &    ipol_LES%grad_fil_fld, ipol_LES%div_frc_by_filter,            &
      &    MHD_prop%fl_prop, sph_bc_U, rj_fld)
 !
       end subroutine cal_div_r_const_buo_sph_SGS

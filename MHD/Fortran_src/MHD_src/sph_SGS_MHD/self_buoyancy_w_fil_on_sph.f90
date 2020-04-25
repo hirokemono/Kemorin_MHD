@@ -7,13 +7,15 @@
 !>@brief Evaluate buoyancy at specific radius
 !!
 !!@verbatim
-!!      subroutine r_buoyancy_on_sphere_w_filter(kr, sph_rj, ipol,      &
-!!     &          fl_prop, ref_param_T, ref_param_C, rj_fld)
+!!      subroutine r_buoyancy_on_sphere_w_filter                        &
+!!     &         (kr, sph_rj, ipol, ipol_LES, fl_prop,                  &
+!!     &          ref_param_T, ref_param_C, rj_fld)
 !!        type(fluid_property), intent(in) :: fl_prop
 !!        type(reference_scalar_param), intent(in) :: ref_param_T
 !!        type(reference_scalar_param), intent(in) :: ref_param_C
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(phys_address), intent(in) :: ipol
+!!        type(SGS_model_addresses), intent(in) :: ipol_LES
 !!        type(phys_data), intent(inout) :: rj_fld
 !!@endverbatim
 !!
@@ -31,6 +33,7 @@
       use t_reference_scalar_param
       use t_spheric_rj_data
       use t_phys_address
+      use t_SGS_model_addresses
       use t_phys_data
 !
       implicit  none
@@ -43,8 +46,9 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine r_buoyancy_on_sphere_w_filter(kr, sph_rj, ipol,        &
-     &          fl_prop, ref_param_T, ref_param_C, rj_fld)
+      subroutine r_buoyancy_on_sphere_w_filter                          &
+     &         (kr, sph_rj, ipol, ipol_LES, fl_prop,                    &
+     &          ref_param_T, ref_param_C, rj_fld)
 !
       integer(kind= kint), intent(in) :: kr
       type(fluid_property), intent(in) :: fl_prop
@@ -52,11 +56,12 @@
       type(reference_scalar_param), intent(in) :: ref_param_C
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(phys_address), intent(in) :: ipol
+      type(SGS_model_addresses), intent(in) :: ipol_LES
       type(phys_data), intent(inout) :: rj_fld
 !
 !
       call filter_r_buoyancies_on_sphere                                &
-     &   (kr, sph_rj, ipol%filter_fld, ipol%div_frc_by_filter,          &
+     &   (kr, sph_rj, ipol%filter_fld, ipol_LES%div_frc_by_filter,      &
      &    fl_prop, ref_param_T, ref_param_C, rj_fld)
 !
       end subroutine r_buoyancy_on_sphere_w_filter
