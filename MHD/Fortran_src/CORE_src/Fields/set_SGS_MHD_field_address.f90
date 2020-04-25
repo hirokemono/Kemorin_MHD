@@ -287,7 +287,7 @@
      &   (i_fld, field_name, iphys%div_frc_by_filter, flag)
       if(flag) return
       call set_filter_ene_flux_addresses                                &
-     &   (i_fld, field_name, iphys%eflux_by_filter, flag)
+     &   (i_fld, field_name, iphys_LES%eflux_by_filter, flag)
       if(flag) return
 !
       end subroutine set_SGS_MHD_field_addresses

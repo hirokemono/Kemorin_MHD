@@ -6,9 +6,9 @@
 !!      subroutine vect_gradients_4_monitor(dt, FEM_prm,                &
 !!     &          nod_comm, node, ele, fluid, iphys, iphys_ele, fem_int,&
 !!     &          mk_MHD, rhs_mat, nod_fld, ele_fld)
-!!      subroutine cal_work_4_forces                                    &
-!!     &         (FEM_prm, nod_comm, node, ele, fl_prop, cd_prop, iphys,&
-!!     &          fem_int, mk_MHD, mhd_fem_wk, rhs_mat, nod_fld)
+!!      subroutine cal_work_4_forces(FEM_prm, nod_comm, node, ele,      &
+!!     &          fl_prop, cd_prop, iphys, iphys_LES, fem_int, mk_MHD,  &
+!!     &          mhd_fem_wk, rhs_mat, nod_fld)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
@@ -17,6 +17,7 @@
 !!        type(fluid_property),  intent(in) :: fl_prop
 !!        type(conductive_property), intent(in) :: cd_prop
 !!        type(phys_address), intent(in) :: iphys
+!!        type(SGS_model_addresses), intent(in) :: iphys_LES
 !!        type(phys_address), intent(in) :: iphys_ele
 !!        type(finite_element_integration), intent(in) :: fem_int
 !!        type(lumped_mass_mat_layerd), intent(in) :: mk_MHD
@@ -41,6 +42,7 @@
       use t_group_data
       use t_phys_data
       use t_phys_address
+      use t_SGS_model_addresses
       use t_jacobians
       use t_table_FEM_const
       use t_finite_element_mat
@@ -194,9 +196,9 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_work_4_forces                                      &
-     &         (FEM_prm, nod_comm, node, ele, fl_prop, cd_prop, iphys,  &
-     &          fem_int, mk_MHD, mhd_fem_wk, rhs_mat, nod_fld)
+      subroutine cal_work_4_forces(FEM_prm, nod_comm, node, ele,        &
+     &          fl_prop, cd_prop, iphys, iphys_LES, fem_int, mk_MHD,    &
+     &          mhd_fem_wk, rhs_mat, nod_fld)
 !
       use m_filtered_ene_flux_labels
       use cal_buoyancy_flux
@@ -213,6 +215,7 @@
       type(fluid_property), intent(in) :: fl_prop
       type(conductive_property), intent(in) :: cd_prop
       type(phys_address), intent(in) :: iphys
+      type(SGS_model_addresses), intent(in) :: iphys_LES
       type(finite_element_integration), intent(in) :: fem_int
       type(lumped_mass_mat_layerd), intent(in) :: mk_MHD
 !
@@ -293,23 +296,23 @@
      &      iphys%ene_flux%i_c_buo_gen, nod_fld)
       end if
 !
-      if (iphys%eflux_by_filter%i_buo_gen .gt. izero) then
+      if (iphys_LES%eflux_by_filter%i_buo_gen .gt. izero) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &      write(*,*) 'lead  ', trim(filtered_buoyancy_flux%name)
         call sel_buoyancy_flux(node,                                    &
      &      fl_prop%i_grav, fl_prop%coef_buo, fl_prop%grav,             &
      &      iphys%base%i_velo, iphys%filter_fld%i_temp,                 &
-     &      iphys%eflux_by_filter%i_buo_gen, nod_fld)
+     &      iphys_LES%eflux_by_filter%i_buo_gen, nod_fld)
       end if
 !
 !
-      if (iphys%eflux_by_filter%i_c_buo_gen .gt. izero) then
+      if (iphys_LES%eflux_by_filter%i_c_buo_gen .gt. izero) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &      write(*,*) 'lead  ', trim(filtered_comp_buoyancy_flux%name)
         call sel_buoyancy_flux(node,                                    &
      &      fl_prop%i_grav, fl_prop%coef_comp_buo, fl_prop%grav,        &
      &      iphys%base%i_velo, iphys%filter_fld%i_light,                &
-     &      iphys%eflux_by_filter%i_c_buo_gen, nod_fld)
+     &      iphys_LES%eflux_by_filter%i_c_buo_gen, nod_fld)
       end if
 !
 !$omp parallel

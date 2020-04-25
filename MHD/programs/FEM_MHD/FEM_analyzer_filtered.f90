@@ -131,8 +131,8 @@
       if (iflag_debug.eq.1)  write(*,*) 'update_FEM_fields'
       call update_FEM_fields(MHD_step%time_d, FEM_model%FEM_prm,        &
      &    FEM_SGS%SGS_par, fem, FEM_model%MHD_mesh,                     &
-     &    FEM_model%FEM_MHD_BCs, iphys, FEM_SGS%FEM_filters,            &
-     &    SGS_MHD_wk, nod_fld, FEM_SGS%Csims)
+     &    FEM_model%FEM_MHD_BCs, iphys, FEM_SGS%iphys_LES,              &
+     &    FEM_SGS%FEM_filters, SGS_MHD_wk, nod_fld, FEM_SGS%Csims)
 !
 !     ----- Evaluate model coefficients
 !

@@ -229,7 +229,7 @@
       if (iflag_debug.eq.1) write(*,*) 'cal_filterd_buo_flux_rtp'
       call cal_filterd_buo_flux_rtp(sph%sph_rtp, MHD_prop%fl_prop,      &
      &    trns_snap%b_trns%base, trns_snap%b_trns%filter_fld,           &
-     &    trns_snap%f_trns%eflux_by_filter,                             &
+     &    trns_snap%f_trns_LES%eflux_by_filter,                         &
      &    trns_snap%backward, trns_snap%forward)
 !
 !      Work of SGS terms

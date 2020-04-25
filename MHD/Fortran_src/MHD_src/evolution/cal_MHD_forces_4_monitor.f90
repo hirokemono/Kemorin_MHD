@@ -11,10 +11,6 @@
 !!     &          nod_bcs, surf_bcs, iphys, iphys_ele, ak_MHD, fem_int, &
 !!     &          FEM_elens, iak_diff_base, iak_diff_sgs, diff_coefs,   &
 !!     &          mk_MHD, mhd_fem_wk, rhs_mat, nod_fld, ele_fld)
-!!      subroutine cal_work_4_forces                                    &
-!!     &         (FEM_prm, nod_comm, node, ele, fl_prop, cd_prop, iphys,&
-!!     &          jacs, rhs_tbl, mk_MHD, mhd_fem_wk, fem_wk,            &
-!!     &          f_nl, nod_fld)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node

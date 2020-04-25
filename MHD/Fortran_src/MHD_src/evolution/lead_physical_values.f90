@@ -102,8 +102,8 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'update_FEM_fields'
       call update_FEM_fields(MHD_step%time_d, FEM_prm, SGS_par, fem,    &
-     &    MHD_mesh, FEM_MHD_BCs, iphys, FEM_filters, SGS_MHD_wk,        &
-     &    nod_fld, Csims_FEM_MHD)
+     &    MHD_mesh, FEM_MHD_BCs, iphys, iphys_LES, FEM_filters,         &
+     &    SGS_MHD_wk, nod_fld, Csims_FEM_MHD)
 !
       call cal_field_by_rotation(MHD_step%time_d%dt, FEM_prm,           &
      &    SGS_par%model_p, SGS_par%commute_p, fem%mesh, fem%group,      &
@@ -222,8 +222,8 @@
 !
       call cal_work_4_forces                                            &
      &  (FEM_prm, mesh%nod_comm, mesh%node, mesh%ele,                   &
-     &   MHD_prop%fl_prop, MHD_prop%cd_prop, iphys, fem_int,            &
-     &   mk_MHD, mhd_fem_wk, rhs_mat, nod_fld)
+     &   MHD_prop%fl_prop, MHD_prop%cd_prop, iphys, iphys_LES,          &
+     &   fem_int, mk_MHD, mhd_fem_wk, rhs_mat, nod_fld)
 !
       call cal_work_4_sgs_terms(FEM_prm,                                &
      &   mesh%nod_comm, mesh%node, mesh%ele, MHD_mesh%conduct,          &

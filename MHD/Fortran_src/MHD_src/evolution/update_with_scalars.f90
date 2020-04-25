@@ -9,7 +9,7 @@
 !!@verbatim
 !!      subroutine update_with_temperature                              &
 !!     &         (i_step, dt, FEM_prm, SGS_par, mesh, group, fluid,     &
-!!     &          sf_bcs, iphys, iphys_ele, ele_fld, fem_int,           &
+!!     &          sf_bcs, iphys, iphys_LES, iphys_ele, ele_fld, fem_int,&
 !!     &          FEM_filters, iak_diff_base, icomp_diff_base,          &
 !!     &          mk_MHD, FEM_SGS_wk, rhs_mat, nod_fld, diff_coefs)
 !!      subroutine update_with_dummy_scalar                             &
@@ -24,6 +24,7 @@
 !!        type(field_geometry_data), intent(in) :: fluid
 !!        type(scaler_surf_bc_type), intent(in) :: sf_bcs
 !!        type(phys_address), intent(in) :: iphys
+!!        type(SGS_model_addresses), intent(in) :: iphys_LES
 !!        type(phys_address), intent(in) :: iphys_ele
 !!        type(phys_data), intent(in) :: ele_fld
 !!        type(finite_element_integration), intent(in) :: fem_int
@@ -50,6 +51,7 @@
       use t_surface_data
       use t_phys_data
       use t_phys_address
+      use t_SGS_model_addresses
       use t_base_field_labels
       use t_jacobians
       use t_table_FEM_const
@@ -71,7 +73,7 @@
 !
       subroutine update_with_temperature                                &
      &         (i_step, dt, FEM_prm, SGS_par, mesh, group, fluid,       &
-     &          sf_bcs, iphys, iphys_ele, ele_fld, fem_int,             &
+     &          sf_bcs, iphys, iphys_LES, iphys_ele, ele_fld, fem_int,  &
      &          FEM_filters, iak_diff_base, icomp_diff_base,            &
      &          mk_MHD, FEM_SGS_wk, rhs_mat, nod_fld, diff_coefs)
 !
@@ -92,6 +94,7 @@
       type(field_geometry_data), intent(in) :: fluid
       type(scaler_surf_bc_type), intent(in) :: sf_bcs
       type(phys_address), intent(in) :: iphys
+      type(SGS_model_addresses), intent(in) :: iphys_LES
       type(phys_address), intent(in) :: iphys_ele
       type(phys_data), intent(in) :: ele_fld
       type(finite_element_integration), intent(in) :: fem_int
@@ -163,7 +166,7 @@
           end if
         end if
 !
-        if(iphys%eflux_by_filter%i_buo_gen .gt. 0) then
+        if(iphys_LES%eflux_by_filter%i_buo_gen .gt. 0) then
           if (iflag_debug.gt.0) write(*,*) 'filter temp for buoyancy'
           call cal_filtered_scalar_whole(SGS_par%filter_p,              &
      &        mesh%nod_comm, mesh%node, FEM_filters%filtering,          &
@@ -173,7 +176,7 @@
         end if
 !
         if((iphys%force_by_filter%i_comp_buo                            &
-     &     + iphys%eflux_by_filter%i_c_buo_gen) .gt. 0) then
+     &     + iphys_LES%eflux_by_filter%i_c_buo_gen) .gt. 0) then
           if (iflag_debug.gt.0) write(*,*) 'filter temp for buoyancy'
           call cal_filtered_scalar_whole(SGS_par%filter_p,              &
      &        mesh%nod_comm, mesh%node, FEM_filters%filtering,          &

@@ -46,7 +46,7 @@
 !        type(base_force_address) :: div_frc_by_filter
 !
 !>        Structure of energy fluxes by filtered field
-!        type(energy_flux_address) :: eflux_by_filter
+        type(energy_flux_address) :: eflux_by_filter
 !
 !>        Structure of gradient of filtered fields
         type(gradient_field_address) :: grad_fil_fld
