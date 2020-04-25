@@ -240,7 +240,7 @@
       if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+11)
 !
       call cal_sph_wide_filtering_fields                                &
-     &   (sph%sph_rj, ipol%base, ipol%wide_filter_fld,                  &
+     &   (sph%sph_rj, ipol%base, ipol_LES%wide_filter_fld,              &
      &    dynamic_SPH%sph_filters(2), rj_fld)
       call cal_sph_wide_filtering_forces                                &
      &   (sph%sph_rj, ipol%forces, ipol_LES%wide_SGS,                   &
@@ -257,7 +257,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'wider_similarity_SGS_rtp'
       call wider_similarity_SGS_rtp(sph%sph_rtp, MHD_prop,              &
-     &    trns_DYNS%b_trns%wide_filter_fld,                             &
+     &    trns_DYNS%b_trns_LES%wide_filter_fld,                         &
      &    trns_DYNS%b_trns_LES%wide_SGS, trns_DYNS%backward)
 !
       if (iflag_debug.eq.1) write(*,*) 'SGS_param%stab_weight'

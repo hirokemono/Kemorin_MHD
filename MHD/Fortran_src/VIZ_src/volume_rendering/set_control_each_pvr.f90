@@ -132,8 +132,6 @@
       type(pvr_colormap_parameter), intent(inout) :: color_param
       type(pvr_colorbar_parameter), intent(inout) :: cbar_param
 !
-      integer(kind = kint) :: id_section_method, ierr, i
-!
 !
       call set_control_pvr_render_area(pvr_ctl%render_area_c,           &
      &    ele_grp, surf_grp, pvr_area, field_pvr)

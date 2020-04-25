@@ -143,8 +143,8 @@
       call alloc_sph_trns_field_name(trns_DYNS%backward)
 !
       call add_wide_fil_vector_sph_trns                                 &
-     &   (ipol%wide_filter_fld, iphys%wide_filter_fld,                  &
-     &    trns_DYNS%b_trns%wide_filter_fld, trns_DYNS%backward)
+     &   (ipol_LES%wide_filter_fld, iphys_LES%wide_filter_fld,          &
+     &    trns_DYNS%b_trns_LES%wide_filter_fld, trns_DYNS%backward)
       call add_wide_SGS_term_4_sph_trns                                 &
      &   (ipol_LES%wide_SGS, iphys_LES%wide_SGS,                        &
      &    trns_DYNS%b_trns_LES%wide_SGS, trns_DYNS%backward)
@@ -154,8 +154,8 @@
       trns_DYNS%backward%num_vector = trns_DYNS%backward%nfield
 !
       call add_wide_fil_scalar_sph_trns                                 &
-     &   (ipol%wide_filter_fld, iphys%wide_filter_fld,                  &
-     &    trns_DYNS%b_trns%wide_filter_fld, trns_DYNS%backward)
+     &   (ipol_LES%wide_filter_fld, iphys_LES%wide_filter_fld,          &
+     &    trns_DYNS%b_trns_LES%wide_filter_fld, trns_DYNS%backward)
       trns_DYNS%backward%num_scalar = trns_DYNS%backward%nfield         &
      &                               - trns_DYNS%backward%num_vector
       trns_DYNS%backward%num_tensor = 0

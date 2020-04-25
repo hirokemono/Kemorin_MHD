@@ -258,10 +258,10 @@
       if(flag) return
 !
       call set_wide_fil_vector_addresses                                &
-     &   (i_fld, field_name, iphys%wide_filter_fld, flag)
+     &   (i_fld, field_name, iphys_LES%%wide_filter_fld, flag)
       if(flag) return
       call set_wide_fil_scaler_addresses                                &
-     &   (i_fld, field_name, iphys%wide_filter_fld, flag)
+     &   (i_fld, field_name, iphys_LES%wide_filter_fld, flag)
       if(flag) return
       call set_wide_fil_grad_addresses                                  &
      &   (i_fld, field_name, iphys_LES%wide_filter_grad, flag)

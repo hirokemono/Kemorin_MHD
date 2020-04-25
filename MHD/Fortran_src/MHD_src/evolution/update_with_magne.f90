@@ -9,8 +9,8 @@
 !!@verbatim
 !!      subroutine update_with_magnetic_field(i_step, dt,               &
 !!     &          FEM_prm, SGS_par, mesh, group, fluid, conduct,        &
-!!     &          Bsf_bcs, Fsf_bcs, iphys, iphys_ele, fem_int,          &
-!!     &          FEM_filters, iak_diff_base, icomp_diff_base,          &
+!!     &          Bsf_bcs, Fsf_bcs, iphys, iphys_LES, iphys_ele,        &
+!!     &          fem_int, FEM_filters, iak_diff_base, icomp_diff_base, &
 !!     &          iphys_elediff_vec, iphys_elediff_fil,                 &
 !!     &          FEM_SGS_wk, mhd_fem_wk, rhs_mat, nod_fld, ele_fld,    &
 !!     &          diff_coefs)
@@ -22,6 +22,7 @@
 !!        type(vector_surf_bc_type), intent(in) :: Bsf_bcs
 !!        type(potential_surf_bc_type), intent(in) :: Fsf_bcs
 !!        type(phys_address), intent(in) :: iphys
+!!        type(SGS_model_addresses), intent(in) :: iphys_LES
 !!        type(phys_address), intent(in) :: iphys_ele
 !!        type(finite_element_integration), intent(in) :: fem_int
 !!        type(filters_on_FEM), intent(in) :: FEM_filters
@@ -50,6 +51,7 @@
       use t_surface_data
       use t_phys_data
       use t_phys_address
+      use t_SGS_model_addresses
       use t_base_field_labels
       use t_table_FEM_const
       use t_jacobians
@@ -72,8 +74,8 @@
 !
       subroutine update_with_magnetic_field(i_step, dt,                 &
      &          FEM_prm, SGS_par, mesh, group, fluid, conduct,          &
-     &          Bsf_bcs, Fsf_bcs, iphys, iphys_ele, fem_int,            &
-     &          FEM_filters, iak_diff_base, icomp_diff_base,            &
+     &          Bsf_bcs, Fsf_bcs, iphys, iphys_LES, iphys_ele,          &
+     &          fem_int, FEM_filters, iak_diff_base, icomp_diff_base,   &
      &          iphys_elediff_vec, iphys_elediff_fil,                   &
      &          FEM_SGS_wk, mhd_fem_wk, rhs_mat, nod_fld, ele_fld,      &
      &          diff_coefs)
@@ -95,6 +97,7 @@
       type(vector_surf_bc_type), intent(in) :: Bsf_bcs
       type(potential_surf_bc_type), intent(in) :: Fsf_bcs
       type(phys_address), intent(in) :: iphys
+      type(SGS_model_addresses), intent(in) :: iphys_LES
       type(phys_address), intent(in) :: iphys_ele
       type(finite_element_integration), intent(in) :: fem_int
       type(filters_on_FEM), intent(in) :: FEM_filters
@@ -110,7 +113,7 @@
       type(phys_data), intent(inout) :: ele_fld
       type(SGS_coefficients_type), intent(inout) :: diff_coefs
 !
-      integer (kind = kint) :: iflag_dmc, iflag2
+      integer (kind = kint) :: iflag_dmc, iflag2, i
 !
 !
       if (iphys_ele%base%i_magne .ne. 0) then
@@ -174,14 +177,16 @@
      &        mesh%node, mesh%ele, nod_fld, fem_int%jcs, mhd_fem_wk)
         end if
 !
-        if (iflag2.eq.3 .and. iphys%wide_filter_fld%i_magne.ne.0) then
+        if (iflag2.eq.3                                                 &
+     &        .and. iphys_LES%%wide_filter_fld%i_magne.ne.0) then
           call cal_filtered_vector_whole(SGS_par%filter_p,              &
      &         mesh%nod_comm, mesh%node, FEM_filters%wide_filtering,    &
-     &         iphys%wide_filter_fld%i_magne, iphys%filter_fld%i_magne, &
-     &         FEM_SGS_wk%wk_filter, nod_fld)
-           nod_fld%iflag_update(iphys%wide_filter_fld%i_magne  ) = 1
-           nod_fld%iflag_update(iphys%wide_filter_fld%i_magne+1) = 1
-           nod_fld%iflag_update(iphys%wide_filter_fld%i_magne+2) = 1
+     &         iphys_LES%%wide_filter_fld%i_magne,                      &
+     &         iphys%filter_fld%i_magne, FEM_SGS_wk%wk_filter, nod_fld)
+           do i = iphys_LES%%wide_filter_fld%i_magne,                   &
+     &           iphys_LES%%wide_filter_fld%i_magne+2
+             nod_fld%iflag_update(i) = 1
+           end if
         end if
       end if
 !

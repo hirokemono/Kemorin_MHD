@@ -10,11 +10,12 @@
 !!      subroutine open_sph_vol_rms_file_SGS_mhd                        &
 !!     &         (sph, ipol, rj_fld, monitor)
 !!      subroutine output_rms_sph_SGS_mhd_control                       &
-!!     &         (time_d, SPH_MHD, sph_MHD_bc, leg, monitor)
+!!     &         (time_d, SPH_SGS, SPH_MHD, sph_MHD_bc, leg, monitor)
 !!      subroutine init_rms_4_sph_spectr_SGS_mhd(sph, rj_fld, monitor)
 !!        type(time_data), intent(in) :: time_d
 !!        type(sph_boundary_type), intent(in) :: sph_bc_U
 !!        type(legendre_4_sph_trans), intent(in) :: leg
+!!        type(SPH_SGS_structure), intent(in) :: SPH_SGS
 !!        type(SPH_mesh_field_data), intent(in) :: SPH_MHD
 !!        type(sph_mhd_monitor_data), intent(inout) :: monitor
 !!@endverbatim
@@ -26,6 +27,7 @@
       use calypso_mpi
       use m_machine_parameter
 !
+      use m_SPH_SGS_structure
       use t_SPH_mesh_field_data
       use t_schmidt_poly_on_rtm
       use t_pickup_sph_spectr_data
@@ -104,7 +106,7 @@
 !  --------------------------------------------------------------------
 !
       subroutine output_rms_sph_SGS_mhd_control                         &
-     &         (time_d, SPH_MHD, sph_MHD_bc, leg, monitor)
+     &         (time_d, SPH_SGS, SPH_MHD, sph_MHD_bc, leg, monitor)
 !
       use t_time_data
       use t_boundary_data_sph_MHD
@@ -116,6 +118,7 @@
       type(time_data), intent(in) :: time_d
       type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
       type(legendre_4_sph_trans), intent(in) :: leg
+      type(SPH_SGS_structure), intent(in) :: SPH_SGS
       type(SPH_mesh_field_data), intent(in) :: SPH_MHD
 !
       type(sph_mhd_monitor_data), intent(inout) :: monitor
@@ -123,8 +126,8 @@
 !
       call cal_SGS_sph_monitor_data                                     &
      &   (SPH_MHD%sph%sph_params, SPH_MHD%sph%sph_rj,                   &
-     &    sph_MHD_bc%sph_bc_U, leg, SPH_MHD%ipol, SPH_MHD%fld,          &
-     &    monitor%pwr, monitor%WK_pwr, monitor%Nusselt)
+     &    sph_MHD_bc%sph_bc_U, leg, SPH_MHD%ipol, SPH_SGS%ipol_LES,     &
+     &    SPH_MHD%fld, monitor%pwr, monitor%WK_pwr, monitor%Nusselt)
 !
       call output_sph_monitor_data(time_d, SPH_MHD%sph%sph_params,      &
      &    SPH_MHD%sph%sph_rj, SPH_MHD%ipol, SPH_MHD%fld,                &

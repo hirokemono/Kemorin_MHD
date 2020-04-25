@@ -297,7 +297,8 @@
       if(iflag .eq. 0) then
         if(iflag_debug .gt. 0)                                          &
      &                write(*,*) 'output_rms_sph_SGS_mhd_control'
-        call output_rms_sph_SGS_mhd_control(MHD_step%time_d, SPH_MHD,   &
+        call output_rms_sph_SGS_mhd_control                             &
+     &     (MHD_step%time_d, SPH_SGS, SPH_MHD,                          &
      &      SPH_model%sph_MHD_bc, SPH_WK%trans_p%leg, SPH_WK%monitor)
       end if
       if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+7)
