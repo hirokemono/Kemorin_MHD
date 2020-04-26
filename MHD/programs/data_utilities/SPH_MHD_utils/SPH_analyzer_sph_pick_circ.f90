@@ -180,8 +180,6 @@
       type(circle_fld_maker), intent(inout) :: cdat
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !
-      integer(kind = kint) :: iflag
-!
 !
       call read_alloc_sph_rst_4_snap(i_step,                            &
      &    MHD_files%org_rj_file_IO, MHD_files%fst_file_IO,              &

@@ -195,10 +195,10 @@
       type(phys_address), intent(in) :: ipol
       type(phys_data), intent(inout) :: rj_fld
 !
-      integer :: jj, k
-      integer ( kind = kint) :: inod
-!      real (kind = kreal) :: rr
-      real (kind = kreal) :: pi, xr, shell
+!      integer :: jj, k
+!      real(kind = kreal) :: rr
+      integer(kind = kint) :: inod
+      real(kind = kreal) :: pi, xr, shell
 !      real(kind = kreal), parameter :: A_light = 0.1d0
 !
 !

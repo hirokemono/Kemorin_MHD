@@ -56,7 +56,7 @@
 !>        Structure of SGS terms
 !        type(SGS_term_address) :: SGS_term
 !>        Structure of divergence of SGS terms
-!        type(SGS_term_address) :: div_SGS
+        type(SGS_term_address) :: div_SGS
 !>        Structure of rotation of SGS terms
         type(SGS_term_address) :: rot_SGS
 !>        Structure of SGS energy fluxes

@@ -75,7 +75,6 @@
 !>      total number of svalars for spherical harmonics transform
       integer(kind = kint), save :: nscalar_max_trans
 !
-      integer(kind = kint) :: i_fld
 !
       call init_pole_transform(SPH_MHD%sph%sph_rtp)
 !

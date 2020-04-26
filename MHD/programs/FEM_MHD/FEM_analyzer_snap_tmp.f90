@@ -328,11 +328,11 @@
      &    iphys%SGS_term%i_SGS_m_flux, n_sym_tensor, nod_fld%d_fld)
 !$omp end parallel
 !
-      if (iphys%div_SGS%i_SGS_m_flux .gt. 0) then
+      if (iphys_LES%div_SGS%i_SGS_m_flux .gt. 0) then
         if(iflag_debug.gt.0) write(*,*)                                 &
      &        'lead radial', trim(div_SGS_m_flux%name)
         call cal_terms_4_momentum                                       &
-     &     (iphys%div_SGS%i_SGS_m_flux, MHD_step%time_d%dt,             &
+     &     (iphys_LES%div_SGS%i_SGS_m_flux, MHD_step%time_d%dt,         &
      &      FEM_prm, SGS_par%model_p, SGS_par%commute_p,                &
      &      mesh%nod_comm, mesh%node, mesh%ele, mesh%surf,              &
      &      group%surf_grp, MHD_mesh%fluid,                             &
@@ -340,7 +340,8 @@
      &      sf_bcs%Vsf_bcs, sf_bcs%Bsf_bcs, iphys%base, iphys%forces,   &
      &      iphys%div_forces, iphys%diffusion, iphys%filter_fld,        &
      &      iphys_LES%force_by_filter, iphys%SGS_term,                  &
-     &      iphys%div_SGS, iphys_ele%base, ak_MHD, fem_int, FEM_elens,  &
+     &      iphys_LES%div_SGS, iphys_ele%base,                          &
+     &      ak_MHD, fem_int, FEM_elens,                                 &
      &      Csims_FEM_MHD%iak_diff_sgs, Csims_FEM_MHD%diff_coefs,       &
      &      mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat, nod_fld, ele_fld)
       end if
@@ -348,7 +349,7 @@
 !$omp parallel
       if (iphys_LES%SGS_ene_flux%i_reynolds_wk .gt. 0) then
         call cal_phys_dot_product                                       &
-     &     (iphys%base%i_velo, iphys%div_SGS%i_SGS_m_flux,              &
+     &     (iphys%base%i_velo, iphys_LES%div_SGS%i_SGS_m_flux,          &
      &      iphys_LES%SGS_ene_flux%i_reynolds_wk, nod_fld)
       end if
 !

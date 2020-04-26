@@ -32,8 +32,9 @@
 !
       private :: bwd_trans_address_SGS_snap, fwd_trans_address_SGS_snap
       private :: add_SGS_vector_bwd_trns_snap
-      private :: add_SGS_scalar_bwd_trns_snap
+      private :: add_fil_scalar_bwd_trns_snap
       private :: add_SGS_scalar_fwd_trns_snap
+      private :: add_div_SGS_bwd_trns_snap
 !
 !-----------------------------------------------------------------------
 !
@@ -114,7 +115,10 @@
       trns_back%num_vector = trns_back%nfield
 !
       call add_scalar_4_bwd_trns_snap(ipol, iphys, b_trns, trns_back)
-      call add_SGS_scalar_bwd_trns_snap(ipol, iphys, b_trns, trns_back)
+      call add_fil_scalar_bwd_trns_snap(ipol, iphys, b_trns, trns_back)
+      call add_div_SGS_bwd_trns_snap                                    &
+     &   (ipol_LES, iphys_LES, b_trns_LES, trns_back)
+
       trns_back%num_scalar = trns_back%nfield - trns_back%num_vector
       trns_back%num_tensor = 0
 !
@@ -186,7 +190,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine add_SGS_scalar_bwd_trns_snap                           &
+      subroutine add_fil_scalar_bwd_trns_snap                           &
      &         (ipol, iphys, b_trns, trns_back)
 !
       use add_filter_fld_to_sph_trans
@@ -201,10 +205,25 @@
      &   (ipol%filter_fld, iphys%filter_fld, b_trns%filter_fld,         &
      &    trns_back)
 !
-      call add_div_SGS_4_sph_trns_snap                                  &
-     &   (ipol%div_SGS, iphys%div_SGS, b_trns%div_SGS, trns_back)
+      end subroutine add_fil_scalar_bwd_trns_snap
 !
-      end subroutine add_SGS_scalar_bwd_trns_snap
+!-----------------------------------------------------------------------
+!
+      subroutine add_div_SGS_bwd_trns_snap                              &
+     &         (ipol_LES, iphys_LES, b_trns_LES, trns_back)
+!
+      use add_SGS_term_to_sph_trans
+!
+      type(SGS_model_addresses), intent(in) :: ipol_LES, iphys_LES
+      type(SGS_model_addresses), intent(inout) :: b_trns_LES
+      type(address_each_sph_trans), intent(inout) :: trns_back
+!
+!
+      call add_div_SGS_4_sph_trns_snap                                  &
+     &   (ipol_LES%div_SGS, iphys_LES%div_SGS, b_trns_LES%div_SGS,      &
+     &    trns_back)
+!
+      end subroutine add_div_SGS_bwd_trns_snap
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

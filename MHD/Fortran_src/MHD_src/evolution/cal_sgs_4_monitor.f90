@@ -270,10 +270,10 @@
       integer(kind = kint) :: i, i_fld
 !
 !
-      if (iphys%div_SGS%i_SGS_h_flux .gt. 0) then
+      if (iphys_LES%div_SGS%i_SGS_h_flux .gt. 0) then
         if(iflag_debug.gt.0) write(*,*)                                 &
      &        'lead ', trim(div_SGS_h_flux%name)
-        call cal_terms_4_heat(iphys%div_SGS%i_SGS_h_flux,               &
+        call cal_terms_4_heat(iphys_LES%div_SGS%i_SGS_h_flux,           &
      &      iphys%base%i_velo, iphys%base%i_temp,                       &
      &      iphys%SGS_term%i_SGS_h_flux, iak_diff_sgs%i_SGS_h_flux,     &
      &      FEM_prm%iflag_temp_supg, FEM_prm%npoint_t_evo_int,          &
@@ -285,10 +285,10 @@
      &      mhd_fem_wk, rhs_mat, nod_fld)
       end if
 !
-      if (iphys%div_SGS%i_SGS_c_flux .gt. 0) then
+      if (iphys_LES%div_SGS%i_SGS_c_flux .gt. 0) then
         if(iflag_debug.gt.0) write(*,*)                                 &
      &        'lead ', trim(div_SGS_h_flux%name)
-        call cal_terms_4_heat(iphys%div_SGS%i_SGS_c_flux,               &
+        call cal_terms_4_heat(iphys_LES%div_SGS%i_SGS_c_flux,           &
      &      iphys%base%i_velo, iphys%base%i_light,                      &
      &      iphys%SGS_term%i_SGS_c_flux, iak_diff_sgs%i_SGS_c_flux,     &
      &      FEM_prm%iflag_comp_supg, FEM_prm%npoint_t_evo_int,          &
@@ -302,7 +302,7 @@
 !
       do i = 1, nod_fld%num_phys
         i_fld = nod_fld%istack_component(i-1) + 1
-        if(     i_fld .eq. iphys%div_SGS%i_SGS_m_flux                   &
+        if(     i_fld .eq. iphys_LES%div_SGS%i_SGS_m_flux               &
      &     .or. i_fld .eq. iphys%SGS_term%i_SGS_Lorentz) then
           if(iflag_debug .ge. iflag_routine_msg)                        &
      &             write(*,*) 'lead  ', trim(nod_fld%phys_name(i))
@@ -313,7 +313,7 @@
      &        iphys%base, iphys%forces, iphys%div_forces,               &
      &        iphys%diffusion, iphys%filter_fld,                        &
      &        iphys_LES%force_by_filter, iphys%SGS_term,                &
-     &        iphys%div_SGS, iphys_ele%base, ak_MHD,                    &
+     &        iphys_LES%div_SGS, iphys_ele%base, ak_MHD,                &
      &        fem_int, FEM_elens, iak_diff_sgs, diff_coefs,             &
      &        mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat,                     &
      &        nod_fld, ele_fld)
@@ -381,7 +381,8 @@
       call cal_SGS_buoyancy_fluxes_FEM(node, fl_prop,                   &
      &    iphys%SGS_term, iphys_LES%SGS_ene_flux, nod_fld)
 !
-      call work_of_SGS_terms(iphys%base, iphys%SGS_term, iphys%div_SGS, &
+      call work_of_SGS_terms                                            &
+     &   (iphys%base, iphys%SGS_term, iphys_LES%div_SGS,                &
      &    iphys_LES%SGS_ene_flux, nod_fld)
 !
       call work_of_SGS_terms(iphys%filter_fld, iphys_LES%true_SGS,      &
