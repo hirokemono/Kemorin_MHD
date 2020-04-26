@@ -66,10 +66,8 @@
 !
 !>        Structure of SGS terms
         type(SGS_term_address) :: SGS_term
-!>        Structure of divergence of SGS terms
-!        type(SGS_term_address) :: div_SGS
 !>        Structure of model coefficients
-        type(SGS_term_address) :: Csim
+!        type(SGS_term_address) :: Csim
 !>        Structure of work area for dynamic model
         type(dynamic_SGS_work_address) :: SGS_wk
       end type phys_address

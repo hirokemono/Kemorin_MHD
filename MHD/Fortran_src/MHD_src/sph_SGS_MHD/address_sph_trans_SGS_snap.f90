@@ -152,8 +152,7 @@
 !
       call add_scalar_4_fwd_trns_snap(ipol, iphys, f_trns, trns_fwd)
       call add_SGS_scalar_fwd_trns_snap                                 &
-     &   (ipol, ipol_LES, iphys, iphys_LES, f_trns, f_trns_LES,         &
-     &    trns_fwd)
+     &   (ipol_LES, iphys_LES, f_trns_LES, trns_fwd)
       trns_fwd%num_scalar = trns_fwd%nfield - trns_fwd%num_vector
       trns_fwd%num_tensor = 0
 !
@@ -229,16 +228,13 @@
 !-----------------------------------------------------------------------
 !
       subroutine add_SGS_scalar_fwd_trns_snap                           &
-     &         (ipol, ipol_LES, iphys, iphys_LES,                       &
-     &          f_trns, f_trns_LES, trns_fwd)
+     &         (ipol_LES, iphys_LES, f_trns_LES, trns_fwd)
 !
       use add_energy_flux_4_sph_trns
       use add_SGS_eflux_to_sph_trans
       use add_Csim_4_sph_trns
 !
-      type(phys_address), intent(in) :: ipol, iphys
       type(SGS_model_addresses), intent(in) :: ipol_LES, iphys_LES
-      type(phys_address), intent(inout) :: f_trns
       type(SGS_model_addresses), intent(inout) :: f_trns_LES
       type(address_each_sph_trans), intent(inout) :: trns_fwd
 !
@@ -251,7 +247,7 @@
      &   (ipol_LES%SGS_ene_flux, iphys_LES%SGS_ene_flux,                &
      &    f_trns_LES%SGS_ene_flux, trns_fwd)
       call add_Csim_4_sph_trns_snap                                     &
-     &   (ipol%Csim, iphys%Csim, f_trns%Csim, trns_fwd)
+     &   (ipol_LES%Csim, iphys_LES%Csim, f_trns_LES%Csim, trns_fwd)
 !
       end subroutine add_SGS_scalar_fwd_trns_snap
 !

@@ -62,7 +62,7 @@
 !>        Structure of SGS energy fluxes
         type(SGS_ene_flux_address) :: SGS_ene_flux
 !>        Structure of model coefficients
-!        type(SGS_term_address) :: Csim
+        type(SGS_term_address) :: Csim
 !>        Structure of work area for dynamic model
 !        type(dynamic_SGS_work_address) :: SGS_wk
 !

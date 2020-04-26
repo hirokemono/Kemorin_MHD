@@ -17,13 +17,11 @@
 !!     &         (ipol_LES, iphys_LES, trns_DYNS,                       &
 !!     &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
-!!        type(phys_address), intent(in) :: ipol, iphys
 !!        type(SGS_model_addresses), intent(in) :: ipol_LES, iphys_LES
 !!        type(address_4_sph_trans), intent(inout) :: trns_DYNS
 !!      subroutine set_addresses_trans_sph_Csim                         &
-!!     &        (SGS_param, ipol, ipol_LES, iphys, iphys_LES, trns_Csim,&
+!!     &         (SGS_param, ipol_LES, iphys_LES, trns_Csim,            &
 !!     &         ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
-!!        type(phys_address), intent(in) :: ipol, iphys
 !!        type(SGS_model_addresses), intent(in) :: ipol_LES, iphys_LES
 !!        type(address_4_sph_trans), intent(inout) :: trns_Csim
 !!@endverbatim
@@ -193,7 +191,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine set_addresses_trans_sph_Csim                           &
-     &         (SGS_param, ipol, ipol_LES, iphys, iphys_LES, trns_Csim, &
+     &         (SGS_param, ipol_LES, iphys_LES, trns_Csim,              &
      &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
 !
       use t_SGS_control_parameter
@@ -202,7 +200,6 @@
       use add_SGS_eflux_to_sph_trans
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
-      type(phys_address), intent(in) :: ipol, iphys
       type(SGS_model_addresses), intent(in) :: ipol_LES, iphys_LES
       type(address_4_sph_trans), intent(inout) :: trns_Csim
       integer(kind = kint), intent(inout) :: ncomp_sph_trans
@@ -236,7 +233,7 @@
 !
       trns_Csim%forward%num_vector = 0
       call add_Csim_4_sph_trns_by_pol                                   &
-     &   (ipol%Csim, iphys%Csim, trns_Csim%f_trns%Csim,                 &
+     &   (ipol_LES%Csim, iphys_LES%Csim, trns_Csim%f_trns_LES%Csim,     &
      &    trns_Csim%forward)
       if(SGS_param%iflag_SGS_gravity .ne. id_SGS_none) then
         call add_SGS_eflux_sph_trns_by_pol                              &

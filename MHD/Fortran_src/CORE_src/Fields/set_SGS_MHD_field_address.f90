@@ -224,7 +224,7 @@
       if(flag) return
 !
       call set_SGS_model_coef_addresses                                 &
-     &   (i_fld, field_name, iphys%Csim, flag)
+     &   (i_fld, field_name, iphys_LES%Csim, flag)
       if(flag) return
 !
       call set_SGS_ene_flux_addresses                                   &

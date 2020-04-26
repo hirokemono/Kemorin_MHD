@@ -8,11 +8,12 @@
 !!
 !!@verbatim
 !!      subroutine product_buo_model_coefs_4_sph                        &
-!!     &         (istep_dynamic, SGS_param, sph, ipol,                  &
+!!     &         (istep_dynamic, SGS_param, sph, ipol, ipol_LES,        &
 !!     &          trns_SGS, dynamic_SPH, rj_fld)
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(sph_grids), intent(in) :: sph
 !!        type(phys_address), intent(in) :: ipol
+!!        type(SGS_model_addresses), intent(in) :: ipol_LES
 !!        type(address_4_sph_trans), intent(inout) :: trns_SGS
 !!        type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
 !!        type(phys_data), intent(inout) :: rj_fld
@@ -39,6 +40,9 @@
       use t_sph_filtering_data
       use t_sph_transforms
       use t_sph_filtering
+      use t_phys_data
+      use t_phys_address
+      use t_SGS_model_addresses
 !
       implicit none
 !
@@ -49,7 +53,7 @@
 !*   ------------------------------------------------------------------
 !
       subroutine product_buo_model_coefs_4_sph                          &
-     &         (istep_dynamic, SGS_param, sph, ipol,                    &
+     &         (istep_dynamic, SGS_param, sph, ipol, ipol_LES,          &
      &          trns_SGS, dynamic_SPH, rj_fld)
 !
       use t_SGS_buoyancy_sph
@@ -59,6 +63,7 @@
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(sph_grids), intent(in) :: sph
       type(phys_address), intent(in) :: ipol
+      type(SGS_model_addresses), intent(in) :: ipol_LES
 !
       type(address_4_sph_trans), intent(inout) :: trns_SGS
       type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
@@ -77,7 +82,7 @@
           if (iflag_debug.eq.1) write(*,*)                              &
      &                      'sphere_averaged_SGS_buoyancy'
           call sphere_averaged_SGS_buoyancy(sph%sph_rj, sph%sph_rtp,    &
-     &        ipol%Csim, rj_fld, dynamic_SPH%wk_sgs_buo)
+     &        ipol_LES%Csim, rj_fld, dynamic_SPH%wk_sgs_buo)
         end if
 !
 !        if(iflag_debug.eq.1) write(*,*)                                &
@@ -90,8 +95,8 @@
         if(istep_dynamic .eq. 0) then
           if (iflag_debug.eq.1) write(*,*)                              &
      &                     'volume_averaged_SGS_buoyancy'
-          call volume_averaged_SGS_buoyancy(sph%sph_params,             &
-     &        sph%sph_rj, ipol%Csim, rj_fld, dynamic_SPH%wk_sgs_buo)
+          call volume_averaged_SGS_buoyancy(sph%sph_params, sph%sph_rj, &
+     &        ipol_LES%Csim, rj_fld, dynamic_SPH%wk_sgs_buo)
         end if
 !
 !        if(iflag_debug.eq.1) write(*,*)                                &

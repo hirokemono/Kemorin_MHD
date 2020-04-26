@@ -153,7 +153,7 @@
      &       (ipol_LES, iphys_LES, WK%trns_DYNS,                        &
      &        ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
           call set_addresses_trans_sph_Csim                             &
-     &      (SGS_param, ipol, ipol_LES, iphys, iphys_LES, WK%trns_Csim, &
+     &      (SGS_param, ipol_LES, iphys_LES, WK%trns_Csim,              &
      &       ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
          end if
 !
@@ -170,10 +170,10 @@
           call init_sph_trns_fld_similarity(ipol, iphys, WK%trns_SIMI,  &
      &        ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
           call init_sph_trns_fld_dyn_ngrad                              &
-     &       (ipol, ipol_LES, iphys, iphys_LES, WK%trns_DYNG,           &
+     &       (ipol_LES, iphys_LES, WK%trns_DYNG,                        &
      &        ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
-          call set_addresses_trans_sph_ngCsim(SGS_param,                &
-     &        ipol, ipol_LES, iphys, iphys_LES, WK%trns_Csim,           &
+          call set_addresses_trans_sph_ngCsim                           &
+     &       (SGS_param, ipol_LES, iphys_LES, WK%trns_Csim,             &
      &        ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
          end if
       end if

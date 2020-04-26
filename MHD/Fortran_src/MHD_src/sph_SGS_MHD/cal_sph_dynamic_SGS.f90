@@ -168,7 +168,7 @@
         if(iflag_debug.ge.1) write(*,*) 'copy_model_coefs_4_sph_snap'
         call copy_model_coefs_4_sph_snap                                &
      &     (sph%sph_rtp, dynamic_SPH%sph_d_grp,                         &
-     &      dynamic_SPH%iak_sgs_term, WK%trns_Csim%f_trns%Csim,         &
+     &      dynamic_SPH%iak_sgs_term, WK%trns_Csim%f_trns_LES%Csim,     &
      &      dynamic_SPH%wk_sgs, WK%trns_Csim%forward)
 !
         if(iflag_SMHD_time)                                             &
@@ -188,7 +188,7 @@
         if(iflag_debug.ge.1) write(*,*) 'product_buo_model_coefs_4_sph'
         if(iflag_SGS_time) call start_elapsed_time(ist_elapsed_SGS+4)
         call product_buo_model_coefs_4_sph                              &
-     &     (istep_dynamic, SGS_par%model_p, sph, ipol,                  &
+     &     (istep_dynamic, SGS_par%model_p, sph, ipol, ipol_LES,        &
      &      WK%trns_SGS, dynamic_SPH, rj_fld)
         if(iflag_SGS_time) call end_elapsed_time(ist_elapsed_SGS+4)
       end if
