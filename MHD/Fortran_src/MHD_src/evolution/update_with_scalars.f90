@@ -7,24 +7,31 @@
 !> @brief Evaluate field data for time integration for FEM dynamo model
 !!
 !!@verbatim
-!!      subroutine update_with_temperature                              &
-!!     &         (i_step, dt, FEM_prm, SGS_par, mesh, group, fluid,     &
-!!     &          sf_bcs, iphys, iphys_LES, iphys_ele, ele_fld, fem_int,&
-!!     &          FEM_filters, iak_diff_base, icomp_diff_base,          &
-!!     &          mk_MHD, FEM_SGS_wk, rhs_mat, nod_fld, diff_coefs)
-!!      subroutine update_with_dummy_scalar                             &
-!!     &         (i_step, dt, FEM_prm, SGS_par, mesh, group, fluid,     &
-!!     &          sf_bcs, iphys, iphys_ele, ele_fld, fem_int,           &
-!!     &          FEM_filters, iak_diff_base, icomp_diff_base,          &
-!!     &          mk_MHD, FEM_SGS_wk, rhs_mat, nod_fld, diff_coefs)
+!!      subroutine update_with_temperature(i_step, dt,                  &
+!!     &          FEM_prm, SGS_par, mesh, group, fluid, sf_bcs,         &
+!!     &          iphys_base, iphys_fil, iphys_wfl,                     &
+!!     &          iphys_fil_frc, iphys_fefx, iphys_SGS_wk,              &
+!!     &          iphys_ele, ele_fld, fem_int, FEM_filters,             &
+!!     &          iak_diff_base, icomp_diff_base, mk_MHD, FEM_SGS_wk,   &
+!!     &          rhs_mat, nod_fld, diff_coefs)
+!!      subroutine update_with_dummy_scalar(i_step, dt,                 &
+!!     &          FEM_prm, SGS_par, mesh, group, fluid, sf_bcs,         &
+!!     &          iphys_base, iphys_fil, iphys_wfl, iphys_SGS_wk,       &
+!!     &          iphys_ele, ele_fld, fem_int, FEM_filters,             &
+!!     &          iak_diff_base, icomp_diff_base, mk_MHD, FEM_SGS_wk,   &
+!!     &          rhs_mat, nod_fld, diff_coefs)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) ::   group
 !!        type(field_geometry_data), intent(in) :: fluid
 !!        type(scaler_surf_bc_type), intent(in) :: sf_bcs
-!!        type(phys_address), intent(in) :: iphys
-!!        type(SGS_model_addresses), intent(in) :: iphys_LES
+!!        type(base_field_address), intent(in) :: iphys_base
+!!        type(base_field_address), intent(in) :: iphys_fil
+!!        type(base_field_address), intent(in) :: iphys_wfl
+!!        type(base_force_address), intent(in) :: iphys_fil_frc
+!!        type(energy_flux_address), intent(in) :: iphys_fefx
+!!        type(dynamic_SGS_work_address), intent(in) :: iphys_SGS_wk
 !!        type(phys_address), intent(in) :: iphys_ele
 !!        type(phys_data), intent(in) :: ele_fld
 !!        type(finite_element_integration), intent(in) :: fem_int
@@ -51,8 +58,10 @@
       use t_surface_data
       use t_phys_data
       use t_phys_address
-      use t_SGS_model_addresses
       use t_base_field_labels
+      use t_base_force_labels
+      use t_energy_flux_labels
+      use t_SGS_model_coef_labels
       use t_jacobians
       use t_table_FEM_const
       use t_MHD_mass_matrices
@@ -71,11 +80,13 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine update_with_temperature                                &
-     &         (i_step, dt, FEM_prm, SGS_par, mesh, group, fluid,       &
-     &          sf_bcs, iphys, iphys_LES, iphys_ele, ele_fld, fem_int,  &
-     &          FEM_filters, iak_diff_base, icomp_diff_base,            &
-     &          mk_MHD, FEM_SGS_wk, rhs_mat, nod_fld, diff_coefs)
+      subroutine update_with_temperature(i_step, dt,                    &
+     &          FEM_prm, SGS_par, mesh, group, fluid, sf_bcs,           &
+     &          iphys_base, iphys_fil, iphys_wfl,                       &
+     &          iphys_fil_frc, iphys_fefx, iphys_SGS_wk,                &
+     &          iphys_ele, ele_fld, fem_int, FEM_filters,               &
+     &          iak_diff_base, icomp_diff_base, mk_MHD, FEM_SGS_wk,     &
+     &          rhs_mat, nod_fld, diff_coefs)
 !
       use average_on_elements
       use cal_filtering_scalars
@@ -93,8 +104,14 @@
       type(mesh_groups), intent(in) ::   group
       type(field_geometry_data), intent(in) :: fluid
       type(scaler_surf_bc_type), intent(in) :: sf_bcs
-      type(phys_address), intent(in) :: iphys
-      type(SGS_model_addresses), intent(in) :: iphys_LES
+!
+      type(base_field_address), intent(in) :: iphys_base
+      type(base_field_address), intent(in) :: iphys_fil
+      type(base_field_address), intent(in) :: iphys_wfl
+      type(base_force_address), intent(in) :: iphys_fil_frc
+      type(energy_flux_address), intent(in) :: iphys_fefx
+      type(dynamic_SGS_work_address), intent(in) :: iphys_SGS_wk
+!
       type(phys_address), intent(in) :: iphys_ele
       type(phys_data), intent(in) :: ele_fld
       type(finite_element_integration), intent(in) :: fem_int
@@ -114,25 +131,25 @@
       iflag_dmc = dynamic_SGS_flag(i_step, SGS_par)
 !
 !
-      if (iphys%SGS_wk%i_sgs_temp .gt. 0) then
+      if (iphys_SGS_wk%i_sgs_temp .gt. 0) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &      write(*,*) 'iflag_SGS_parterbuation',                       &
      &                  SGS_par%model_p%iflag_parterbuation
         if(SGS_par%model_p%iflag_parterbuation .eq. id_SGS_REFERENCE)   &
      &   then
           call copy_scalar_component(nod_fld,                           &
-     &        iphys%base%i_per_temp, iphys%SGS_wk%i_sgs_temp)
+     &        iphys_base%i_per_temp, iphys_SGS_wk%i_sgs_temp)
         else
           call copy_scalar_component(nod_fld,                           &
-     &        iphys%base%i_temp, iphys%SGS_wk%i_sgs_temp)
+     &        iphys_base%i_temp, iphys_SGS_wk%i_sgs_temp)
         end if
       end if
 !
       if(iflag_debug .ge. iflag_routine_msg) write(*,*)                 &
-     &            'filter_fld%i_temp', iphys%filter_fld%i_temp
+     &            'filter_fld%i_temp', iphys_fil%i_temp
       if(iflag_debug .ge. iflag_routine_msg) write(*,*)                 &
                   'iflag_SGS_heat', SGS_par%model_p%iflag_SGS_h_flux
-      if (iphys%filter_fld%i_temp .gt. 0) then
+      if (iphys_fil%i_temp .gt. 0) then
         if(SGS_par%model_p%iflag_SGS_h_flux .ne. id_SGS_none) then
 !
           if(SGS_par%model_p%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF      &
@@ -150,39 +167,38 @@
             if (iflag_debug.gt.0) write(*,*) 'cal_filtered_temperature'
             call cal_filtered_scalar_whole(SGS_par%filter_p,            &
      &         mesh%nod_comm, mesh%node, FEM_filters%filtering,         &
-     &          iphys%filter_fld%i_temp, iphys%SGS_wk%i_sgs_temp,       &
+     &          iphys_fil%i_temp, iphys_SGS_wk%i_sgs_temp,              &
      &          FEM_SGS_wk%wk_filter, nod_fld)
-            nod_fld%iflag_update(iphys%filter_fld%i_temp) = 1
+            nod_fld%iflag_update(iphys_fil%i_temp) = 1
           end if
 !
-          if(iphys_LES%wide_filter_fld%i_temp .ne. 0                    &
-     &                    .and. iflag_dmc .eq. 0) then
+          if(iphys_wfl%i_temp.ne.0 .and. iflag_dmc.eq.0) then
             if (iflag_debug.gt.0) write(*,*) 'cal_w_filtered_scalar',   &
-     &                           iphys_LES%wide_filter_fld%i_temp
+     &                           iphys_wfl%i_temp
             call cal_filtered_scalar_whole(SGS_par%filter_p,            &
      &          mesh%nod_comm, mesh%node, FEM_filters%wide_filtering,   &
-     &          iphys_LES%wide_filter_fld%i_temp,                       &
-     &          iphys%filter_fld%i_temp, FEM_SGS_wk%wk_filter, nod_fld)
+     &          iphys_wfl%i_temp, iphys_fil%i_temp,                     &
+     &          FEM_SGS_wk%wk_filter, nod_fld)
           end if
         end if
 !
-        if(iphys_LES%eflux_by_filter%i_buo_gen .gt. 0) then
+        if(iphys_fefx%i_buo_gen .gt. 0) then
           if (iflag_debug.gt.0) write(*,*) 'filter temp for buoyancy'
           call cal_filtered_scalar_whole(SGS_par%filter_p,              &
      &        mesh%nod_comm, mesh%node, FEM_filters%filtering,          &
-     &        iphys%filter_fld%i_temp, iphys%base%i_temp,               &
+     &        iphys_fil%i_temp, iphys_base%i_temp,                      &
      &        FEM_SGS_wk%wk_filter, nod_fld)
-          nod_fld%iflag_update(iphys%filter_fld%i_temp) = 1
+          nod_fld%iflag_update(iphys_fil%i_temp) = 1
         end if
 !
-        if((iphys_LES%force_by_filter%i_comp_buo                        &
-     &     + iphys_LES%eflux_by_filter%i_c_buo_gen) .gt. 0) then
+        if((iphys_fil_frc%i_comp_buo + iphys_fefx%i_c_buo_gen)          &
+     &                                                    .gt. 0) then
           if (iflag_debug.gt.0) write(*,*) 'filter temp for buoyancy'
           call cal_filtered_scalar_whole(SGS_par%filter_p,              &
      &        mesh%nod_comm, mesh%node, FEM_filters%filtering,          &
-     &        iphys%filter_fld%i_light, iphys%base%i_light,             &
+     &        iphys_fil%i_light, iphys_base%i_light,                    &
      &        FEM_SGS_wk%wk_filter, nod_fld)
-          nod_fld%iflag_update(iphys%filter_fld%i_light) = 1
+          nod_fld%iflag_update(iphys_fil%i_light) = 1
         end if
       end if
 !
@@ -197,10 +213,10 @@
      &            write(*,*) 's_cal_diff_coef_scalar temp'
                call s_cal_diff_coef_scalar                              &
      &           (FEM_prm%iflag_temp_supg, FEM_prm%npoint_t_evo_int,    &
-     &            dt, iphys%SGS_wk%i_sgs_temp, iphys%filter_fld%i_temp, &
+     &            dt, iphys_SGS_wk%i_sgs_temp, iphys_fil%i_temp,        &
      &            iak_diff_base%i_temp, icomp_diff_base%i_temp,         &
      &            SGS_par, mesh%nod_comm, mesh%node, mesh%ele,          &
-     &            mesh%surf, group%surf_grp, sf_bcs, iphys%SGS_wk,      &
+     &            mesh%surf, group%surf_grp, sf_bcs, iphys_SGS_wk,      &
      &            iphys_ele, ele_fld, fluid, FEM_filters%layer_tbl,     &
      &            fem_int%jcs, fem_int%rhs_tbl,                         &
      &            FEM_filters%FEM_elens, FEM_filters%filtering,         &
@@ -218,11 +234,12 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine update_with_dummy_scalar                               &
-     &         (i_step, dt, FEM_prm, SGS_par, mesh, group, fluid,       &
-     &          sf_bcs, iphys, iphys_ele, ele_fld, fem_int,             &
-     &          FEM_filters, iak_diff_base, icomp_diff_base,            &
-     &          mk_MHD, FEM_SGS_wk, rhs_mat, nod_fld, diff_coefs)
+      subroutine update_with_dummy_scalar(i_step, dt,                   &
+     &          FEM_prm, SGS_par, mesh, group, fluid, sf_bcs,           &
+     &          iphys_base, iphys_fil, iphys_wfl, iphys_SGS_wk,         &
+     &          iphys_ele, ele_fld, fem_int, FEM_filters,               &
+     &          iak_diff_base, icomp_diff_base, mk_MHD, FEM_SGS_wk,     &
+     &          rhs_mat, nod_fld, diff_coefs)
 !
       use average_on_elements
       use cal_filtering_scalars
@@ -240,7 +257,12 @@
       type(mesh_groups), intent(in) ::   group
       type(scaler_surf_bc_type), intent(in) :: sf_bcs
       type(field_geometry_data), intent(in) :: fluid
-      type(phys_address), intent(in) :: iphys
+!
+      type(base_field_address), intent(in) :: iphys_base
+      type(base_field_address), intent(in) :: iphys_fil
+      type(base_field_address), intent(in) :: iphys_wfl
+      type(dynamic_SGS_work_address), intent(in) :: iphys_SGS_wk
+!
       type(phys_address), intent(in) :: iphys_ele
       type(phys_data), intent(in) :: ele_fld
       type(finite_element_integration), intent(in) :: fem_int
@@ -259,38 +281,37 @@
 !
       iflag_dmc = dynamic_SGS_flag(i_step, SGS_par)
 !
-      if (iphys%SGS_wk%i_sgs_composit .ne. 0) then
+      if (iphys_SGS_wk%i_sgs_composit .ne. 0) then
         if(SGS_par%model_p%iflag_parterbuation .eq. id_SGS_REFERENCE)   &
      &   then
           call copy_scalar_component(nod_fld,                           &
-     &        iphys%base%i_per_light, iphys%SGS_wk%i_sgs_composit)
+     &        iphys_base%i_per_light, iphys_SGS_wk%i_sgs_composit)
         else
           call copy_scalar_component(nod_fld,                           &
-     &        iphys%base%i_light, iphys%SGS_wk%i_sgs_composit)
+     &        iphys_base%i_light, iphys_SGS_wk%i_sgs_composit)
         end if
       end if
 !
       iflag2 = 0
 !
       if(SGS_par%model_p%iflag_SGS_c_flux .ne. id_SGS_none              &
-     &       .and. iphys%filter_fld%i_light .ne. 0) then
+     &       .and. iphys_fil%i_light .ne. 0) then
         if (iflag2.eq.1) then
           if (iflag_debug.gt.0)   write(*,*) 'cal_filtered_composition'
           call cal_filtered_scalar_whole(SGS_par%filter_p,              &
      &        mesh%nod_comm, mesh%node, FEM_filters%filtering,          &
-     &        iphys%filter_fld%i_light, iphys%SGS_wk%i_sgs_composit,    &
+     &        iphys_fil%i_light, iphys_SGS_wk%i_sgs_composit,           &
      &        FEM_SGS_wk%wk_filter, nod_fld)
-          nod_fld%iflag_update(iphys%filter_fld%i_light) = 1
+          nod_fld%iflag_update(iphys_fil%i_light) = 1
         end if
 !
-        if (iphys_LES%wide_filter_fld%i_light .ne. 0                    &
-     &                   .and. iflag_dmc .eq. 0) then
+        if (iphys_wfl%i_light.ne.0 .and. iflag_dmc.eq.0) then
           if (iflag_debug.gt.0) write(*,*) 'cal_w_filtered_scalar',     &
-     &                         iphys_LES%wide_filter_fld%i_temp
+     &                         iphys_wfl%i_temp
           call cal_filtered_scalar_whole (SGS_par%filter_p,             &
      &        mesh%nod_comm, mesh%node, FEM_filters%wide_filtering,     &
-     &        iphys_LES%wide_filter_fld%i_light,                        &
-     &        iphys%filter_fld%i_light, FEM_SGS_wk%wk_filter, nod_fld)
+     &        iphys_wfl%i_light, iphys_fil%i_light,                     &
+     &        FEM_SGS_wk%wk_filter, nod_fld)
         end if
       end if
 !
@@ -307,11 +328,10 @@
      &                        's_cal_diff_coef_scalar composition'
                call s_cal_diff_coef_scalar(FEM_prm%iflag_comp_supg,     &
      &             FEM_prm%npoint_t_evo_int, dt,                        &
-     &             iphys%SGS_wk%i_sgs_composit,                         &
-     &             iphys%filter_fld%i_light,                            &
+     &             iphys_SGS_wk%i_sgs_composit, iphys_fil%i_light,      &
      &             iak_diff_base%i_light, icomp_diff_base%i_light,      &
      &             SGS_par, mesh%nod_comm, mesh%node, mesh%ele,         &
-     &             mesh%surf, group%surf_grp, sf_bcs, iphys%SGS_wk,     &
+     &             mesh%surf, group%surf_grp, sf_bcs, iphys_SGS_wk,     &
      &             iphys_ele, ele_fld, fluid, FEM_filters%layer_tbl,    &
      &             fem_int%jcs, fem_int%rhs_tbl,                        &
      &             FEM_filters%FEM_elens, FEM_filters%filtering,        &

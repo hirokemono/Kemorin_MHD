@@ -9,7 +9,8 @@
 !!@verbatim
 !!      subroutine update_with_vector_potential                         &
 !!     &         (i_step, dt, FEM_prm, SGS_par, mesh, group,            &
-!!     &          fluid, conduct, Bnod_bcs, Asf_bcs, Fsf_bcs, iphys,    &
+!!     &          fluid, conduct, Bnod_bcs, Asf_bcs, Fsf_bcs,           &
+!!     &          iphys_base, iphys_fil, iphys_wfl, iphys_SGS_wk,       &
 !!     &          iphys_ele, fem_int, FEM_filters,                      &
 !!     &          iak_diff_base, icomp_diff_base,                       &
 !!     &          iphys_elediff_vec, iphys_elediff_fil,                 &
@@ -23,7 +24,10 @@
 !!        type(nodal_bcs_4_induction_type), intent(in) :: Bnod_bcs
 !!        type(velocity_surf_bc_type), intent(in) :: Asf_bcs
 !!        type(potential_surf_bc_type), intent(in) :: Fsf_bcs
-!!        type(phys_address), intent(in) :: iphys
+!!        type(base_field_address), intent(in) :: iphys_base
+!!        type(base_field_address), intent(in) :: iphys_fil
+!!        type(base_field_address), intent(in) :: iphys_wfl
+!!        type(dynamic_SGS_work_address), intent(in) :: iphys_SGS_wk
 !!        type(phys_address), intent(in) :: iphys_ele
 !!        type(finite_element_integration), intent(in) :: fem_int
 !!        type(filters_on_FEM), intent(in) :: FEM_filters
@@ -54,6 +58,7 @@
       use t_phys_data
       use t_phys_address
       use t_base_field_labels
+      use t_SGS_model_coef_labels
       use t_table_FEM_const
       use t_jacobians
       use t_MHD_finite_element_mat
@@ -76,7 +81,8 @@
 !
       subroutine update_with_vector_potential                           &
      &         (i_step, dt, FEM_prm, SGS_par, mesh, group,              &
-     &          fluid, conduct, Bnod_bcs, Asf_bcs, Fsf_bcs, iphys,      &
+     &          fluid, conduct, Bnod_bcs, Asf_bcs, Fsf_bcs,             &
+     &          iphys_base, iphys_fil, iphys_wfl, iphys_SGS_wk,         &
      &          iphys_ele, fem_int, FEM_filters,                        &
      &          iak_diff_base, icomp_diff_base,                         &
      &          iphys_elediff_vec, iphys_elediff_fil,                   &
@@ -101,7 +107,12 @@
       type(nodal_bcs_4_induction_type), intent(in) :: Bnod_bcs
       type(velocity_surf_bc_type), intent(in) :: Asf_bcs
       type(potential_surf_bc_type), intent(in) :: Fsf_bcs
-      type(phys_address), intent(in) :: iphys
+!
+      type(base_field_address), intent(in) :: iphys_base
+      type(base_field_address), intent(in) :: iphys_fil
+      type(base_field_address), intent(in) :: iphys_wfl
+      type(dynamic_SGS_work_address), intent(in) :: iphys_SGS_wk
+!
       type(phys_address), intent(in) :: iphys_ele
       type(finite_element_integration), intent(in) :: fem_int
       type(filters_on_FEM), intent(in) :: FEM_filters
@@ -125,32 +136,32 @@
 !
 !
       if (SGS_par%commute_p%iflag_c_magne .eq. id_SGS_commute_ON        &
-     &     .and. iphys%filter_fld%i_vecp .ne. 0                         &
+     &     .and. iphys_fil%i_vecp .ne. 0                                &
      &     .and. iflag_dmc .eq. 0) then
 !
         if(SGS_par%model_p%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
           if (iflag_debug.gt.0) write(*,*) 'cal_filtered_vector_p'
           call cal_filtered_vector_whole(SGS_par%filter_p,              &
      &        mesh%nod_comm, mesh%node, FEM_filters%filtering,          &
-     &        iphys%filter_fld%i_vecp, iphys%base%i_vecp,               &
+     &        iphys_fil%i_vecp, iphys_base%i_vecp,                      &
      &        FEM_SGS_wk%wk_filter, nod_fld)
-          nod_fld%iflag_update(iphys%filter_fld%i_vecp  ) = 1
-          nod_fld%iflag_update(iphys%filter_fld%i_vecp+1) = 1
-          nod_fld%iflag_update(iphys%filter_fld%i_vecp+2) = 1
+          nod_fld%iflag_update(iphys_fil%i_vecp  ) = 1
+          nod_fld%iflag_update(iphys_fil%i_vecp+1) = 1
+          nod_fld%iflag_update(iphys_fil%i_vecp+2) = 1
         end if
 !
         if     (SGS_par%model_p%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF   &
      &    .and. SGS_par%model_p%iflag_SGS.eq.id_SGS_similarity          &
-     &    .and. iphys_LES%wide_filter_fld%i_vecp.ne. 0) then
+     &    .and. iphys_wfl%i_vecp.ne. 0) then
           if (iflag_debug.gt.0)                                         &
      &        write(*,*) 'cal_filtered_vector_p wide_filter_fld%i_vecp'
           call cal_filtered_vector_whole(SGS_par%filter_p,              &
      &        mesh%nod_comm, mesh%node, FEM_filters%wide_filtering,     &
-     &        iphys_LES%wide_filter_fld%i_vecp,                         &
-     &        iphys%filter_fld%i_vecp, FEM_SGS_wk%wk_filter, nod_fld)
-          nod_fld%iflag_update(iphys%wide_filter_fld%i_vecp  ) = 1
-          nod_fld%iflag_update(iphys%wide_filter_fld%i_vecp+1) = 1
-          nod_fld%iflag_update(iphys%wide_filter_fld%i_vecp+2) = 1
+     &        iphys_wfl%i_vecp, iphys_fil%i_vecp, FEM_SGS_wk%wk_filter, &
+     &        nod_fld)
+          nod_fld%iflag_update(iphys_wfl%i_vecp  ) = 1
+          nod_fld%iflag_update(iphys_wfl%i_vecp+1) = 1
+          nod_fld%iflag_update(iphys_wfl%i_vecp+2) = 1
         end if
 !
 !
@@ -165,7 +176,7 @@
      &            dt, FEM_prm, SGS_par, mesh%nod_comm, mesh%node,       &
      &            mesh%ele, mesh%surf, fluid, FEM_filters%layer_tbl,    &
      &            group%surf_grp, Asf_bcs, Fsf_bcs,                     &
-     &            iphys%base, iphys%filter_fld, iphys%SGS_wk,           &
+     &            iphys_base, iphys_fil, iphys_SGS_wk,                  &
      &            iphys_ele, ele_fld, fem_int%jcs, fem_int%rhs_tbl,     &
      &            FEM_filters%FEM_elens, FEM_filters%filtering,         &
      &            fem_int%m_lump, FEM_SGS_wk%wk_filter,                 &
@@ -180,12 +191,12 @@
 !
 !   lead magnetic field
 !
-      if (iphys%base%i_magne .ne. 0) then
+      if (iphys_base%i_magne .ne. 0) then
         if (iflag_debug.gt.0) write(*,*) 'cal_magnetic_f_by_vect_p'
         call choose_cal_rotation_sgs                                    &
      &     (SGS_par%commute_p%iflag_c_magne, FEM_prm%iflag_magne_supg,  &
      &      FEM_prm%npoint_t_evo_int, dt, iak_diff_base%i_magne,        &
-     &      iphys%base%i_vecp, iphys%base%i_magne,                      &
+     &      iphys_base%i_vecp, iphys_base%i_magne,                      &
      &      mesh%ele%istack_ele_smp, fem_int%m_lump, SGS_par%model_p,   &
      &      mesh%nod_comm, mesh%node, mesh%ele, mesh%surf,              &
      &      group%surf_grp, iphys_ele, ele_fld, fem_int%jcs,            &
@@ -197,7 +208,7 @@
         if (iflag_debug.gt.0) write(*,*) 'rot_magne_on_element'
         call rotation_on_element_1st(mesh%node, mesh%ele, fem_int%jcs,  &
      &      mesh%ele%istack_ele_smp, FEM_prm%npoint_t_evo_int,          &
-     &      iphys%base%i_vecp, nod_fld, iphys_ele%base%i_magne,         &
+     &      iphys_base%i_vecp, nod_fld, iphys_ele%base%i_magne,         &
      &      ele_fld)
       end if
 !
@@ -206,7 +217,7 @@
         if (iflag_debug.gt.0) write(*,*) 'current_on_element'
         call rotation_on_element_1st(mesh%node, mesh%ele, fem_int%jcs,  &
      &      conduct%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,       &
-     &      iphys%base%i_magne, nod_fld, iphys_ele%base%i_current,      &
+     &      iphys_base%i_magne, nod_fld, iphys_ele%base%i_current,      &
      &      ele_fld)
       end if
 !
@@ -239,16 +250,16 @@
          'flag for magnetic field filtering', iflag2
 !
        if (iflag2.eq.1 .or. iflag2.eq.2 .or. iflag2.eq.3) then
-         if (iphys%filter_fld%i_magne .ne. 0) then
+         if (iphys_fil%i_magne .ne. 0) then
            if (iflag_debug.gt.0) write(*,*) 'cal_filtered_vector',      &
-     &                          iphys%filter_fld%i_magne
+     &                          iphys_fil%i_magne
            call cal_filtered_vector_whole(SGS_par%filter_p,             &
      &         mesh%nod_comm, mesh%node, FEM_filters%filtering,         &
-     &         iphys%filter_fld%i_magne, iphys%base%i_magne,            &
+     &         iphys_fil%i_magne, iphys_base%i_magne,                   &
      &         FEM_SGS_wk%wk_filter, nod_fld)
-           nod_fld%iflag_update(iphys%filter_fld%i_magne  ) = 1
-           nod_fld%iflag_update(iphys%filter_fld%i_magne+1) = 1
-           nod_fld%iflag_update(iphys%filter_fld%i_magne+2) = 1
+           nod_fld%iflag_update(iphys_fil%i_magne  ) = 1
+           nod_fld%iflag_update(iphys_fil%i_magne+1) = 1
+           nod_fld%iflag_update(iphys_fil%i_magne+2) = 1
          end if
 !
          if (iphys_ele%filter_fld%i_magne .ne. 0) then
@@ -257,7 +268,7 @@
             call vector_on_element_1st                                  &
      &         (mesh%node, mesh%ele, fem_int%jcs,                       &
      &          mesh%ele%istack_ele_smp, FEM_prm%npoint_t_evo_int,      &
-     &          iphys%filter_fld%i_magne, nod_fld,                      &
+     &          iphys_fil%i_magne, nod_fld,                             &
      &          iphys_ele%filter_fld%i_magne, ele_fld)
          end if
 !
@@ -266,18 +277,18 @@
      &                         'diff_filter_b_on_ele'
            call sel_int_diff_vector_on_ele                              &
      &        (FEM_prm%npoint_t_evo_int, mesh%ele%istack_ele_smp,       &
-     &         iphys%filter_fld%i_magne, iphys_elediff_fil%i_magne,     &
+     &         iphys_fil%i_magne, iphys_elediff_fil%i_magne,            &
      &         mesh%node, mesh%ele, nod_fld, fem_int%jcs, mhd_fem_wk)
          end if
 !
-         if(iflag2.eq.3 .and. iphys%wide_filter_fld%i_magne.ne.0) then
+         if(iflag2.eq.3 .and. iphys_wfl%i_magne.ne.0) then
            call cal_filtered_vector_whole(SGS_par%filter_p,             &
-     &          mesh%nod_comm, mesh%node, FEM_filters%wide_filtering,   &
-     &         iphys%wide_filter_fld%i_magne, iphys%filter_fld%i_magne, &
+     &         mesh%nod_comm, mesh%node, FEM_filters%wide_filtering,    &
+     &         iphys_wfl%i_magne, iphys_fil%i_magne,                    &
      &         FEM_SGS_wk%wk_filter, nod_fld)
-           nod_fld%iflag_update(iphys%wide_filter_fld%i_magne  ) = 1
-           nod_fld%iflag_update(iphys%wide_filter_fld%i_magne+1) = 1
-           nod_fld%iflag_update(iphys%wide_filter_fld%i_magne+2) = 1
+           nod_fld%iflag_update(iphys_wfl%i_magne  ) = 1
+           nod_fld%iflag_update(iphys_wfl%i_magne+1) = 1
+           nod_fld%iflag_update(iphys_wfl%i_magne+2) = 1
          end if
 !
        end if
@@ -291,7 +302,7 @@
            if (iflag_debug.gt.0) write(*,*) 'diff_magne_on_ele'
            call sel_int_diff_vector_on_ele                              &
      &        (FEM_prm%npoint_t_evo_int, mesh%ele%istack_ele_smp,       &
-     &         iphys%base%i_magne, iphys_elediff_vec%i_magne,           &
+     &         iphys_base%i_magne, iphys_elediff_vec%i_magne,           &
      &         mesh%node, mesh%ele, nod_fld, fem_int%jcs, mhd_fem_wk)
         end if
        end if

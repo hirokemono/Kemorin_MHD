@@ -4,15 +4,15 @@
 !     Written by H. Matsui on Oct. 2005
 !     Modified by H. Matsui on Aug., 2007
 !
-!!      subroutine s_cal_sgs_uxb_dynamic_simi                           &
-!!     &        (iak_sgs_term, icomp_sgs_term, FEM_prm, SGS_par, mesh,  &
-!!     &         iphys_base, iphys_fil, iphys_wfl, iphys_SGS_wk,        &
-!!     &         fem_int, FEM_filters, FEM_SGS_wk, nod_fld, sgs_coefs)
-!!      subroutine cal_sgs_induct_t_dynamic_simi                        &
-!!     &        (iak_sgs_term, icomp_sgs_term, FEM_prm, SGS_par, mesh,  &
-!!     &         iphys_base, iphys_fil, iphys_wfl, iphys_SGS,           &
-!!     &         iphys_SGS_wk, fem_int, FEM_filters, FEM_SGS_wk,        &
-!!     &         rhs_mat, nod_fld, sgs_coefs, sgs_coefs_nod)
+!!      subroutine s_cal_sgs_uxb_dynamic_simi(FEM_prm, SGS_par, mesh,   &
+!!     &          iphys_base, iphys_fil, iphys_wfl, iphys_SGS_wk,       &
+!!     &          fem_int, FEM_filters, iak_sgs_term, icomp_sgs_term,   &
+!!     &          FEM_SGS_wk, nod_fld, sgs_coefs)
+!!      subroutine cal_sgs_induct_t_dynamic_simi(FEM_prm, SGS_par, mesh,&
+!!     &          iphys_base, iphys_fil, iphys_wfl, iphys_SGS,          &
+!!     &          iphys_SGS_wk, fem_int, FEM_filters,                   &
+!!     &          iak_sgs_term, icomp_sgs_term, FEM_SGS_wk,             &
+!!     &          rhs_mat, nod_fld, sgs_coefs, sgs_coefs_nod)
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(base_field_address), intent(in) :: iphys_base
@@ -61,10 +61,10 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_cal_sgs_uxb_dynamic_simi                             &
-     &        (iak_sgs_term, icomp_sgs_term, FEM_prm, SGS_par, mesh,    &
-     &         iphys_base, iphys_fil, iphys_wfl, iphys_SGS_wk,          &
-     &         fem_int, FEM_filters, FEM_SGS_wk, nod_fld, sgs_coefs)
+      subroutine s_cal_sgs_uxb_dynamic_simi(FEM_prm, SGS_par, mesh,     &
+     &          iphys_base, iphys_fil, iphys_wfl, iphys_SGS_wk,         &
+     &          fem_int, FEM_filters, iak_sgs_term, icomp_sgs_term,     &
+     &          FEM_SGS_wk, nod_fld, sgs_coefs)
 !
       use reset_dynamic_model_coefs
       use cal_filtering_scalars
@@ -145,11 +145,11 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine cal_sgs_induct_t_dynamic_simi                          &
-     &        (iak_sgs_term, icomp_sgs_term, FEM_prm, SGS_par, mesh,    &
-     &         iphys_base, iphys_fil, iphys_wfl, iphys_SGS,             &
-     &         iphys_SGS_wk, fem_int, FEM_filters, FEM_SGS_wk,          &
-     &         rhs_mat, nod_fld, sgs_coefs, sgs_coefs_nod)
+      subroutine cal_sgs_induct_t_dynamic_simi(FEM_prm, SGS_par, mesh,  &
+     &          iphys_base, iphys_fil, iphys_wfl, iphys_SGS,            &
+     &          iphys_SGS_wk, fem_int, FEM_filters,                     &
+     &          iak_sgs_term, icomp_sgs_term, FEM_SGS_wk,               &
+     &          rhs_mat, nod_fld, sgs_coefs, sgs_coefs_nod)
 !
       use reset_dynamic_model_coefs
       use cal_filtering_scalars

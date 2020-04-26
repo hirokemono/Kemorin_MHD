@@ -20,10 +20,12 @@
 !!        type(sph_mean_squares), intent(inout) :: pwr
 !!        type(sph_mean_square_work), intent(inout) :: WK_pwr
 !!        type(nusselt_number_data), intent(inout) :: Nusselt
-!!      subroutine cal_mean_squre_w_SGS_in_shell(sph_params,            &
-!!     &          sph_rj, ipol, rj_fld, g_sph_rj, pwr, WK_pwr)
+!!      subroutine cal_mean_squre_w_SGS_in_shell(sph_params, sph_rj,    &
+!!     &          ipol, ipol_LES, rj_fld, g_sph_rj, pwr, WK_pwr)
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(phys_data), intent(in) :: rj_fld
+!!        type(phys_address), intent(in) :: ipol
+!!        type(SGS_model_addresses), intent(in) :: ipol_LES
 !!        type(sph_mean_squares), intent(inout) :: pwr
 !!        type(sph_mean_square_work), intent(inout) :: WK_pwr
 !!      subroutine cvt_filtered_ene_one_mode                            &
@@ -96,8 +98,8 @@
 !
 !  --------------------------------------------------------------------
 !
-      subroutine cal_mean_squre_w_SGS_in_shell(sph_params,              &
-     &          sph_rj, ipol, rj_fld, g_sph_rj, pwr, WK_pwr)
+      subroutine cal_mean_squre_w_SGS_in_shell(sph_params, sph_rj,      &
+     &          ipol, ipol_LES, rj_fld, g_sph_rj, pwr, WK_pwr)
 !
       use calypso_mpi
 !
@@ -110,6 +112,7 @@
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(phys_data), intent(in) :: rj_fld
       type(phys_address), intent(in) :: ipol
+      type(SGS_model_addresses), intent(in) :: ipol_LES
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
 !
       type(sph_mean_squares), intent(inout) :: pwr
@@ -256,12 +259,12 @@
 !
 !
       if(ncomp_rj .ne. n_scalar) return
-      call cvt_mag_or_kin_ene_spectr                                    &
-     &   (sph_rj, ipol%filter_fld, icomp_rj, rms_sph_rj(0,1,1))
-      call cvt_mag_or_kin_ene_spectr                                    &
-     &   (sph_rj, ipol%wide_filter_fld, icomp_rj, rms_sph_rj(0,1,1))
-      call cvt_mag_or_kin_ene_spectr                                    &
-     &   (sph_rj, ipol_LES%dbl_filter_fld, icomp_rj, rms_sph_rj(0,1,1))
+      call cvt_mag_or_kin_ene_spectr(sph_rj, ipol%filter_fld,           &
+     &    icomp_rj, rms_sph_rj(0,1,1))
+      call cvt_mag_or_kin_ene_spectr(sph_rj, ipol_LES%wide_filter_fld,  &
+     &    icomp_rj, rms_sph_rj(0,1,1))
+      call cvt_mag_or_kin_ene_spectr(sph_rj, ipol_LES%dbl_filter_fld,   &
+     &    icomp_rj, rms_sph_rj(0,1,1))
 !
       end subroutine cvt_filtered_ene_spectr
 !
@@ -285,7 +288,7 @@
       call cvt_mag_or_kin_ene_one_mode                                  &
      &   (sph_rj, ipol%filter_fld, icomp_rj, rms_sph_r(0,1))
       call cvt_mag_or_kin_ene_one_mode                                  &
-     &   (sph_rj, ipol%wide_filter_fld, icomp_rj, rms_sph_r(0,1))
+     &   (sph_rj, ipol_LES%wide_filter_fld, icomp_rj, rms_sph_r(0,1))
       call cvt_mag_or_kin_ene_one_mode                                  &
      &   (sph_rj, ipol_LES%dbl_filter_fld, icomp_rj, rms_sph_r(0,1))
 !

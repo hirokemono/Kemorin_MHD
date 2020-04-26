@@ -7,11 +7,12 @@
 !> @brief Evaluate model coefficients
 !!
 !!@verbatim
-!!      subroutine s_cal_model_coefficients                             &
-!!     &         (time_d, FEM_prm, SGS_par, fem, MHD_mesh, MHD_prop,    &
-!!     &          nod_bcs, surf_bcs, iphys, iak_sgs_term, icomp_sgs_term,    &
-!!     &          iak_diff_sgs, icomp_diff_sgs, iphys_elediff, fem_int,        &
-!!     &          FEM_filters, SGS_MHD_wk, nod_fld,                     &
+!!      subroutine s_cal_model_coefficients(time_d, FEM_prm, SGS_par,   &
+!!     &          geofem, MHD_mesh, MHD_prop, nod_bcs, surf_bcs,        &
+!!     &          iphys, iphys_LES, iak_sgs_term, icomp_sgs_term,       &
+!!     &          iak_diff_sgs, icomp_diff_sgs,                         &
+!!     &          iphys_elediff_vec, iphys_elediff_fil,                 &
+!!     &          fem_int, FEM_filters, SGS_MHD_wk, nod_fld,            &
 !!     &          sgs_coefs, sgs_coefs_nod, diff_coefs)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
@@ -21,6 +22,7 @@
 !!        type(nodal_boundarty_conditions), intent(in) :: nod_bcs
 !!        type(surface_boundarty_conditions), intent(in) :: surf_bcs
 !!        type(phys_address), intent(in) :: iphys
+!!        type(SGS_model_addresses), intent(in) :: iphys_LES
 !!        type(SGS_term_address), intent(in) :: iak_sgs_term
 !!        type(SGS_term_address), intent(in) :: icomp_sgs_term
 !!        type(SGS_term_address), intent(in) :: iak_diff_sgs
@@ -54,6 +56,7 @@
       use t_geometry_data_MHD
       use t_phys_data
       use t_phys_address
+      use t_SGS_model_addresses
       use t_table_FEM_const
       use t_FEM_MHD_filter_data
       use t_MHD_mass_matrices
@@ -73,11 +76,12 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_cal_model_coefficients                               &
-     &         (time_d, FEM_prm, SGS_par, fem, MHD_mesh, MHD_prop,      &
-     &          nod_bcs, surf_bcs, iphys, iak_sgs_term, icomp_sgs_term, &
-     &          iak_diff_sgs, icomp_diff_sgs, iphys_elediff_vec, iphys_elediff_fil, fem_int,          &
-     &          FEM_filters, SGS_MHD_wk, nod_fld,                       &
+      subroutine s_cal_model_coefficients(time_d, FEM_prm, SGS_par,     &
+     &          geofem, MHD_mesh, MHD_prop, nod_bcs, surf_bcs,          &
+     &          iphys, iphys_LES, iak_sgs_term, icomp_sgs_term,         &
+     &          iak_diff_sgs, icomp_diff_sgs,                           &
+     &          iphys_elediff_vec, iphys_elediff_fil,                   &
+     &          fem_int, FEM_filters, SGS_MHD_wk, nod_fld,              &
      &          sgs_coefs, sgs_coefs_nod, diff_coefs)
 !
       use cal_sgs_heat_flux_dynamic
@@ -95,11 +99,12 @@
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_paremeters), intent(in) :: SGS_par
       type(time_data), intent(in) :: time_d
-      type(mesh_data), intent(in) ::   fem
+      type(mesh_data), intent(in) ::   geofem
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(nodal_boundarty_conditions), intent(in) :: nod_bcs
       type(surface_boundarty_conditions), intent(in) :: surf_bcs
       type(phys_address), intent(in) :: iphys
+      type(SGS_model_addresses), intent(in) :: iphys_LES
       type(SGS_term_address), intent(in) :: iak_sgs_term
       type(SGS_term_address), intent(in) :: icomp_sgs_term
       type(SGS_term_address), intent(in) :: iak_diff_sgs
@@ -135,7 +140,7 @@
      &        iphys%SGS_term%i_SGS_h_flux,                              &
      &        iak_sgs_term%i_SGS_h_flux,                                &
      &        icomp_sgs_term%i_SGS_h_flux,                              &
-     &        SGS_par, fem%mesh, iphys%SGS_wk,                          &
+     &        SGS_par, geofem%mesh, iphys%SGS_wk,                       &
      &        SGS_MHD_wk%iphys_ele, SGS_MHD_wk%ele_fld,                 &
      &        MHD_mesh%fluid, fem_int, FEM_filters,                     &
      &        iphys_elediff_vec, iphys_elediff_fil,                     &
@@ -150,11 +155,11 @@
           call s_cal_sgs_s_flux_dynamic_simi(FEM_prm%npoint_t_evo_int,  &
      &        SGS_par%model_p%itype_Csym_h_flux,                        &
      &        iphys%SGS_wk%i_sgs_temp, iphys%filter_fld%i_temp,         &
-     &        iphys%wide_filter_fld%i_temp, iphys%base%i_velo,          &
+     &        iphys_LES%wide_filter_fld%i_temp, iphys%base%i_velo,      &
      &        iphys%filter_fld%i_velo, iphys%SGS_term%i_SGS_h_flux,     &
      &        iak_sgs_term%i_SGS_h_flux,                                &
      &        icomp_sgs_term%i_SGS_h_flux,                              &
-     &        SGS_par, fem%mesh, iphys%SGS_wk, fem_int, FEM_filters,    &
+     &        SGS_par, geofem%mesh, iphys%SGS_wk, fem_int, FEM_filters, &
      &        SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%rhs_mat, nod_fld,       &
      &        sgs_coefs, sgs_coefs_nod)
         end if
@@ -170,7 +175,7 @@
      &        iak_diff_sgs%i_SGS_h_flux,                                &
      &        icomp_sgs_term%i_SGS_h_flux,                              &
      &        icomp_diff_sgs%i_SGS_h_flux,                              &
-     &        SGS_par, fem%mesh, fem%group,                             &
+     &        SGS_par, geofem%mesh, geofem%group,                       &
      &        nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs, iphys%SGS_wk,         &
      &        SGS_MHD_wk%iphys_ele, SGS_MHD_wk%ele_fld, MHD_mesh%fluid, &
      &        fem_int, FEM_filters, iphys_elediff_fil,                  &
@@ -193,7 +198,7 @@
      &        iphys%SGS_term%i_SGS_c_flux,                              &
      &        iak_sgs_term%i_SGS_c_flux,                                &
      &        icomp_sgs_term%i_SGS_c_flux,                              &
-     &        SGS_par, fem%mesh, iphys%SGS_wk,                         &
+     &        SGS_par, geofem%mesh, iphys%SGS_wk,                       &
      &        SGS_MHD_wk%iphys_ele, SGS_MHD_wk%ele_fld,                 &
      &        MHD_mesh%fluid, fem_int, FEM_filters,                     &
      &        iphys_elediff_vec, iphys_elediff_fil,                     &
@@ -207,13 +212,12 @@
      &          write(*,*) 's_cal_sgs_s_flux_dynamic_simi comp'
           call s_cal_sgs_s_flux_dynamic_simi(FEM_prm%npoint_t_evo_int,  &
      &        SGS_par%model_p%itype_Csym_c_flux,                        &
-     &        iphys%SGS_wk%i_sgs_composit,                              &
-     &        iphys%filter_fld%i_light, iphys%wide_filter_fld%i_light,  &
-     &        iphys%base%i_velo, iphys%filter_fld%i_velo,               &
-     &        iphys%SGS_term%i_SGS_c_flux,                              &
+     &        iphys%SGS_wk%i_sgs_composit, iphys%filter_fld%i_light,    &
+     &        iphys_LES%wide_filter_fld%i_light, iphys%base%i_velo,     &
+     &        iphys%filter_fld%i_velo, iphys%SGS_term%i_SGS_c_flux,     &
      &        iak_sgs_term%i_SGS_c_flux,                                &
      &        icomp_sgs_term%i_SGS_c_flux,                              &
-     &        SGS_par, fem%mesh, iphys%SGS_wk, fem_int, FEM_filters,    &
+     &        SGS_par, geofem%mesh, iphys%SGS_wk, fem_int, FEM_filters, &
      &        SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%rhs_mat, nod_fld,       &
      &        sgs_coefs, sgs_coefs_nod)
         end if
@@ -229,7 +233,7 @@
      &        iak_diff_sgs%i_SGS_c_flux,                                &
      &        icomp_sgs_term%i_SGS_c_flux,                              &
      &        icomp_diff_sgs%i_SGS_c_flux,                              &
-     &        SGS_par, fem%mesh, fem%group,                             &
+     &        SGS_par, geofem%mesh, geofem%group,                       &
      &        nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs, iphys%SGS_wk,         &
      &        SGS_MHD_wk%iphys_ele, SGS_MHD_wk%ele_fld, MHD_mesh%fluid, &
      &        fem_int, FEM_filters, iphys_elediff_fil,                  &
@@ -243,7 +247,7 @@
         if (SGS_par%model_p%iflag_SGS_m_flux .eq. id_SGS_NL_grad) then
           if (iflag_debug.eq.1)  write(*,*) 'cal_sgs_m_flux_dynamic'
           call cal_sgs_m_flux_dynamic                                   &
-     &       (time_d%dt, FEM_prm, SGS_par, fem%mesh,                    &
+     &       (time_d%dt, FEM_prm, SGS_par, geofem%mesh,                 &
      &        iphys%base, iphys%filter_fld, iphys%SGS_term,             &
      &        iphys%SGS_wk, SGS_MHD_wk%iphys_ele, SGS_MHD_wk%ele_fld,   &
      &        MHD_mesh%fluid, fem_int, FEM_filters,                     &
@@ -257,11 +261,11 @@
           if (iflag_debug.eq.1)                                         &
      &      write(*,*) 's_cal_sgs_m_flux_dynamic_simi'
           call s_cal_sgs_m_flux_dynamic_simi                            &
-     &       (iak_sgs_term, icomp_sgs_term, FEM_prm, SGS_par, fem%mesh, &
-     &        iphys%base, iphys%filter_fld, iphys%wide_filter_fld,      &
+     &       (FEM_prm, SGS_par, geofem%mesh,                            &
+     &        iphys%base, iphys%filter_fld, iphys_LES%wide_filter_fld,  &
      &        iphys%SGS_term, iphys%SGS_wk, fem_int, FEM_filters,       &
-     &        SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%rhs_mat, nod_fld,       &
-     &        sgs_coefs, sgs_coefs_nod)
+     &        iak_sgs_term, icomp_sgs_term, SGS_MHD_wk%FEM_SGS_wk,      &
+     &        SGS_MHD_wk%rhs_mat, nod_fld, sgs_coefs, sgs_coefs_nod)
         end if
 !
         if(SGS_par%commute_p%iflag_c_mf .eq. id_SGS_commute_ON) then
@@ -269,7 +273,7 @@
           call s_cal_diff_coef_sgs_mf                                   &
      &     (iak_diff_sgs, icomp_diff_sgs,                               &
      &      icomp_sgs_term, iphys_elediff_fil,                          &
-     &      time_d%dt, FEM_prm, SGS_par, fem%mesh, fem%group,           &
+     &      time_d%dt, FEM_prm, SGS_par, geofem%mesh, geofem%group,     &
      &      nod_bcs%Vnod_bcs, surf_bcs%Vsf_bcs, iphys%base,             &
      &      iphys%filter_fld, iphys%SGS_term, iphys%SGS_wk,             &
      &      SGS_MHD_wk%iphys_ele, SGS_MHD_wk%ele_fld, MHD_mesh%fluid,   &
@@ -286,7 +290,7 @@
           if (iflag_debug.eq.1)                                         &
      &       write(*,*) 'cal_sgs_maxwell_t_dynamic'
           call cal_sgs_maxwell_t_dynamic                                &
-     &      (time_d%dt, FEM_prm, SGS_par, fem%mesh,                     &
+     &      (time_d%dt, FEM_prm, SGS_par, geofem%mesh,                  &
      &       iphys%base, iphys%filter_fld, iphys%SGS_term,              &
      &       iphys%SGS_wk, SGS_MHD_wk%iphys_ele, SGS_MHD_wk%ele_fld,    &
      &       MHD_mesh%fluid, fem_int, FEM_filters,                      &
@@ -300,18 +304,18 @@
           if (iflag_debug.eq.1)                                         &
      &       write(*,*) 'cal_sgs_maxwell_dynamic_simi'
           call cal_sgs_maxwell_dynamic_simi                             &
-     &      (iak_sgs_term, icomp_sgs_term, FEM_prm, SGS_par, fem%mesh,  &
-     &       iphys%base, iphys%filter_fld, iphys%wide_filter_fld,       &
+     &      (FEM_prm, SGS_par, geofem%mesh,                             &
+     &       iphys%base, iphys%filter_fld, iphys_LES%wide_filter_fld,   &
      &       iphys%SGS_term, iphys%SGS_wk, fem_int, FEM_filters,        &
-     &       SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%rhs_mat, nod_fld,        &
-     &       sgs_coefs, sgs_coefs_nod)
+     &       iak_sgs_term, icomp_sgs_term, SGS_MHD_wk%FEM_SGS_wk,       &
+     &       SGS_MHD_wk%rhs_mat, nod_fld, sgs_coefs, sgs_coefs_nod)
         end if
 !
         if(SGS_par%commute_p%iflag_c_lorentz .eq. id_SGS_commute_ON)    &
      &   then
           if (iflag_debug.eq.1) write(*,*) 's_cal_diff_coef_sgs_mxwl'
           call s_cal_diff_coef_sgs_mxwl                                 &
-     &     (time_d%dt, FEM_prm, SGS_par, fem%mesh, fem%group,           &
+     &     (time_d%dt, FEM_prm, SGS_par, geofem%mesh, geofem%group,     &
      &      MHD_mesh%fluid, nod_bcs%Vnod_bcs, surf_bcs%Bsf_bcs,         &
      &      iphys%base, iphys%filter_fld, iphys%SGS_term, iphys%SGS_wk, &
      &      SGS_MHD_wk%iphys_ele, SGS_MHD_wk%ele_fld, fem_int,          &
@@ -330,7 +334,7 @@
           if (iflag_debug.eq.1)                                         &
      &      write(*,*) 'cal_sgs_induct_t_dynamic'
           call cal_sgs_induct_t_dynamic                                 &
-     &      (time_d%dt, FEM_prm, SGS_par, fem%mesh,                     &
+     &      (time_d%dt, FEM_prm, SGS_par, geofem%mesh,                  &
      &       iphys%base, iphys%filter_fld, iphys%SGS_term,              &
      &       iphys%SGS_wk, SGS_MHD_wk%iphys_ele, SGS_MHD_wk%ele_fld,    &
      &       MHD_mesh%conduct, MHD_prop%cd_prop, fem_int, FEM_filters,  &
@@ -344,11 +348,11 @@
           if (iflag_debug.eq.1)                                         &
      &      write(*,*) 'cal_sgs_induct_t_dynamic_simi'
           call cal_sgs_induct_t_dynamic_simi                            &
-     &      (iak_sgs_term, icomp_sgs_term, FEM_prm, SGS_par, fem%mesh,  &
-     &       iphys%base, iphys%filter_fld, iphys%wide_filter_fld,       &
+     &      (FEM_prm, SGS_par, geofem%mesh,                             &
+     &       iphys%base, iphys%filter_fld, iphys_LES%wide_filter_fld,   &
      &       iphys%SGS_term, iphys%SGS_wk, fem_int, FEM_filters,        &
-     &       SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%rhs_mat,                 &
-     &       nod_fld, sgs_coefs, sgs_coefs_nod)
+     &       iak_sgs_term, icomp_sgs_term, SGS_MHD_wk%FEM_SGS_wk,       &
+     &       SGS_MHD_wk%rhs_mat, nod_fld, sgs_coefs, sgs_coefs_nod)
         end if
 !
         if(SGS_par%commute_p%iflag_c_uxb .eq. id_SGS_commute_ON) then
@@ -356,7 +360,7 @@
           call s_cal_diff_coef_sgs_induct                               &
      &      (iak_diff_sgs, icomp_sgs_term,                              &
      &       icomp_diff_sgs, iphys_elediff_fil,                         &
-     &       time_d%dt, FEM_prm, SGS_par, fem%mesh, fem%group,          &
+     &       time_d%dt, FEM_prm, SGS_par, geofem%mesh, geofem%group,    &
      &       MHD_mesh%fluid, MHD_mesh%conduct,                          &
      &       MHD_prop%cd_prop, surf_bcs%Bsf_bcs,                        &
      &       iphys%base, iphys%filter_fld, iphys%SGS_term,              &
@@ -372,7 +376,7 @@
         if(SGS_par%model_p%iflag_SGS_uxb .eq. id_SGS_NL_grad) then
           if (iflag_debug.eq.1)  write(*,*) 'cal_sgs_uxb_dynamic'
           call cal_sgs_uxb_dynamic                                      &
-     &       (time_d%dt, FEM_prm, SGS_par, fem%mesh,                    &
+     &       (time_d%dt, FEM_prm, SGS_par, geofem%mesh,                 &
      &        iphys%base, iphys%filter_fld, iphys%SGS_term,             &
      &        iphys%SGS_wk, SGS_MHD_wk%iphys_ele, SGS_MHD_wk%ele_fld,   &
      &        MHD_mesh%conduct, MHD_prop%cd_prop, fem_int, FEM_filters, &
@@ -385,10 +389,11 @@
           if (iflag_debug.eq.1)  write(*,*)                             &
      &                          's_cal_sgs_uxb_dynamic_simi'
           call s_cal_sgs_uxb_dynamic_simi                               &
-     &       (iak_sgs_term, icomp_sgs_term, FEM_prm, SGS_par, fem%mesh, &
-     &        iphys%base, iphys%filter_fld, iphys%wide_filter_fld,      &
+     &       (FEM_prm, SGS_par, geofem%mesh,                            &
+     &        iphys%base, iphys%filter_fld, iphys_LES%wide_filter_fld,  &
      &        iphys%SGS_wk, fem_int, FEM_filters,                       &
-     &        SGS_MHD_wk%FEM_SGS_wk, nod_fld, sgs_coefs)
+     &        iak_sgs_term, icomp_sgs_term, SGS_MHD_wk%FEM_SGS_wk,      &
+     &        nod_fld, sgs_coefs)
         end if
       end if
 !

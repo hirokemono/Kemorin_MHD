@@ -15,7 +15,9 @@
 !!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !!        type(work_SPH_MHD), intent(inout) :: SPH_WK
 !!      subroutine SPH_analyze_back_trans                               &
-!!     &         (i_step, MHD_files, MHD_step, SPH_MHD, SPH_WK)
+!!     &         (i_step, MHD_files, SPH_SGS, MHD_step, SPH_MHD, SPH_WK)
+!!        type(MHD_file_IO_params), intent(in) :: MHD_files
+!!        type(SPH_SGS_structure), intent(in) ::  SPH_SGS
 !!        type(MHD_step_param), intent(inout) :: MHD_step
 !!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !!        type(work_SPH_MHD), intent(inout) :: SPH_WK
@@ -28,6 +30,7 @@
       use m_work_time
       use m_elapsed_labels_4_MHD
       use t_phys_address
+      use t_SGS_model_addresses
       use t_MHD_step_parameter
       use t_MHD_file_parameter
       use t_SPH_MHD_model_data
@@ -38,6 +41,8 @@
       use t_work_SPH_MHD
 !
       implicit none
+!
+      private :: output_rms_sph_back_trans
 !
 ! ----------------------------------------------------------------------
 !
@@ -114,7 +119,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine SPH_analyze_back_trans                                 &
-     &         (i_step, MHD_files, MHD_step, SPH_MHD, SPH_WK)
+     &         (i_step, MHD_files, SPH_SGS, MHD_step, SPH_MHD, SPH_WK)
 !
       use t_sph_mhd_monitor_data_IO
 !
@@ -129,6 +134,7 @@
 !
       integer(kind = kint), intent(in) :: i_step
       type(MHD_file_IO_params), intent(in) :: MHD_files
+      type(SPH_SGS_structure), intent(in) ::  SPH_SGS
       type(MHD_step_param), intent(inout) :: MHD_step
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
       type(work_SPH_MHD), intent(inout) :: SPH_WK
@@ -155,8 +161,8 @@
       if(iflag_debug.gt.0)  write(*,*) 'output_rms_sph_back_trans'
       call output_rms_sph_back_trans                                    &
      &   (MHD_step, SPH_MHD%sph%sph_params, SPH_MHD%sph%sph_rj,         &
-     &    SPH_WK%trans_p%leg, SPH_MHD%ipol, SPH_MHD%fld,                &
-     &    SPH_WK%monitor)
+     &    SPH_WK%trans_p%leg, SPH_MHD%ipol, SPH_SGS%ipol_LES,           &
+     &    SPH_MHD%fld, SPH_WK%monitor)
       if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+7)
 !
       end subroutine SPH_analyze_back_trans
@@ -169,8 +175,9 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine output_rms_sph_back_trans(MHD_step,                    &
-     &          sph_params, sph_rj, leg, ipol, rj_fld, monitor)
+      subroutine output_rms_sph_back_trans                              &
+     &         (MHD_step, sph_params, sph_rj, leg, ipol, ipol_LES,      &
+     &          rj_fld, monitor)
 !
       use m_machine_parameter
       use t_MHD_step_parameter
@@ -186,6 +193,7 @@
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(legendre_4_sph_trans), intent(in) :: leg
       type(phys_address), intent(in) :: ipol
+      type(SGS_model_addresses), intent(in) :: ipol_LES
       type(phys_data), intent(in) :: rj_fld
 !
       type(sph_mhd_monitor_data), intent(inout) :: monitor
@@ -199,7 +207,7 @@
 !
       if(iflag_debug.gt.0)  write(*,*) 'cal_rms_sph_outer_core'
       call cal_mean_squre_w_SGS_in_shell                                &
-     &   (sph_params, sph_rj, ipol, rj_fld, leg%g_sph_rj,               &
+     &   (sph_params, sph_rj, ipol, ipol_LES, rj_fld, leg%g_sph_rj,     &
      &    monitor%pwr, monitor%WK_pwr)
 !
       call write_sph_vol_ave_file                                       &

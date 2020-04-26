@@ -201,7 +201,7 @@
         call cvt_mag_or_kin_ene_one_point                               &
      &     (ipol%filter_fld, i_fld, rms_out(jcou))
         call cvt_mag_or_kin_ene_one_point                               &
-     &     (ipol%wide_filter_fld, i_fld, rms_out(jcou))
+     &     (ipol_LES%wide_filter_fld, i_fld, rms_out(jcou))
         call cvt_mag_or_kin_ene_one_point                               &
      &     (ipol_LES%dbl_filter_fld, i_fld, rms_out(jcou))
       end do

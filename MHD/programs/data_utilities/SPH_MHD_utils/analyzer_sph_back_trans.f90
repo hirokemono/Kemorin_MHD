@@ -123,7 +123,7 @@
 !*
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_back_trans'
         call SPH_analyze_back_trans(MHD_step1%time_d%i_time_step,       &
-     &      MHD_files1, MHD_step1, SPH_MHD1, SPH_WK1)
+     &      MHD_files1, SPH_SGS1, MHD_step1, SPH_MHD1, SPH_WK1)
 !*
 !*  -----------  output field data --------------
 !*

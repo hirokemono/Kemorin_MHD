@@ -7,10 +7,11 @@
 !> @brief Evaluate field data for time integration for FEM dynamo model
 !!
 !!@verbatim
-!!      subroutine update_with_velocity                                 &
-!!     &         (i_step, dt, FEM_prm, SGS_par, mesh, group, fluid,     &
-!!     &          Vsf_bcs, Psf_bcs, iphys, iphys_ele, fem_int,          &
-!!     &          FEM_filters, iak_diff_base, icomp_diff_base,          &
+!!      subroutine update_with_velocity(i_step, dt, FEM_prm, SGS_par,   &
+!!     &          mesh, group, fluid, Vsf_bcs, Psf_bcs,                 &
+!!     &          iphys_base, iphys_fil, iphys_wfl, iphys_SGS_wk,       &
+!!     &          iphys_ele, fem_int, FEM_filters,                      &
+!!     &          iak_diff_base, icomp_diff_base,                       &
 !!     &          iphys_elediff_vec, iphys_elediff_fil,                 &
 !!     &          mk_MHD, FEM_SGS_wk, mhd_fem_wk, rhs_mat,              &
 !!     &          nod_fld, ele_fld, diff_coefs)
@@ -21,7 +22,10 @@
 !!        type(field_geometry_data), intent(in) :: fluid
 !!        type(velocity_surf_bc_type), intent(in) :: Vsf_bcs
 !!        type(potential_surf_bc_type), intent(in) :: Psf_bcs
-!!        type(phys_address), intent(in) :: iphys
+!!        type(base_field_address), intent(in) :: iphys_base
+!!        type(base_field_address), intent(in) :: iphys_fil
+!!        type(base_field_address), intent(in) :: iphys_wfl
+!!        type(dynamic_SGS_work_address), intent(in) :: iphys_SGS_wk
 !!        type(phys_address), intent(in) :: iphys_ele
 !!        type(finite_element_integration), intent(in) :: fem_int
 !!        type(filters_on_FEM), intent(in) :: FEM_filters
@@ -52,6 +56,7 @@
       use t_phys_data
       use t_phys_address
       use t_base_field_labels
+      use t_SGS_model_coef_labels
       use t_work_FEM_integration
       use t_jacobians
       use t_MHD_finite_element_mat
@@ -70,10 +75,11 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine update_with_velocity                                   &
-     &         (i_step, dt, FEM_prm, SGS_par, mesh, group, fluid,       &
-     &          Vsf_bcs, Psf_bcs, iphys, iphys_ele, fem_int,            &
-     &          FEM_filters, iak_diff_base, icomp_diff_base,            &
+      subroutine update_with_velocity(i_step, dt, FEM_prm, SGS_par,     &
+     &          mesh, group, fluid, Vsf_bcs, Psf_bcs,                   &
+     &          iphys_base, iphys_fil, iphys_wfl, iphys_SGS_wk,         &
+     &          iphys_ele, fem_int, FEM_filters,                        &
+     &          iak_diff_base, icomp_diff_base,                         &
      &          iphys_elediff_vec, iphys_elediff_fil,                   &
      &          mk_MHD, FEM_SGS_wk, mhd_fem_wk, rhs_mat,                &
      &          nod_fld, ele_fld, diff_coefs)
@@ -93,7 +99,12 @@
       type(field_geometry_data), intent(in) :: fluid
       type(velocity_surf_bc_type), intent(in) :: Vsf_bcs
       type(potential_surf_bc_type), intent(in) :: Psf_bcs
-      type(phys_address), intent(in) :: iphys
+!
+      type(base_field_address), intent(in) :: iphys_base
+      type(base_field_address), intent(in) :: iphys_fil
+      type(base_field_address), intent(in) :: iphys_wfl
+      type(dynamic_SGS_work_address), intent(in) :: iphys_SGS_wk
+!
       type(phys_address), intent(in) :: iphys_ele
       type(finite_element_integration), intent(in) :: fem_int
       type(filters_on_FEM), intent(in) :: FEM_filters
@@ -120,7 +131,7 @@
      &                 write(*,*) 'velocity_on_element'
         call vector_on_element_1st(mesh%node, mesh%ele, fem_int%jcs,    &
      &      fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,         &
-     &      iphys%base%i_velo, nod_fld, iphys_ele%base%i_velo, ele_fld)
+     &      iphys_base%i_velo, nod_fld, iphys_ele%base%i_velo, ele_fld)
       end if
 !
       if( FEM_prm%iflag_rotate_form .eq. id_turn_ON                     &
@@ -129,13 +140,12 @@
      &                 write(*,*) 'vorticity_on_element'
         call rotation_on_element_1st(mesh%node, mesh%ele, fem_int%jcs,  &
      &      fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,         &
-     &      iphys%base%i_velo, nod_fld, iphys_ele%base%i_vort, ele_fld)
+     &      iphys_base%i_velo, nod_fld, iphys_ele%base%i_vort, ele_fld)
       end if
 !
 !   required field for explicit filtering
 !
-      if (iphys%filter_fld%i_velo .ne. 0) then
-!
+      if (iphys_fil%i_velo .ne. 0) then
         if (SGS_par%model_p%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF       &
      &      .and. iflag_dmc.eq.0) then
           iflag2 = 1
@@ -147,28 +157,28 @@
 !
         if (iflag2 .eq. 1) then
           if(iflag_debug .ge. iflag_routine_msg)                        &
-     &      write(*,*) 'cal_filtered_vector', iphys%filter_fld%i_velo
+     &      write(*,*) 'cal_filtered_vector', iphys_fil%i_velo
           call cal_filtered_vector_whole(SGS_par%filter_p,              &
      &        mesh%nod_comm, mesh%node, FEM_filters%filtering,          &
-     &        iphys%filter_fld%i_velo, iphys%base%i_velo,               &
+     &        iphys_fil%i_velo, iphys_base%i_velo,                      &
      &        FEM_SGS_wk%wk_filter, nod_fld)
-          nod_fld%iflag_update(iphys%filter_fld%i_velo  ) = 1
-          nod_fld%iflag_update(iphys%filter_fld%i_velo+1) = 1
-          nod_fld%iflag_update(iphys%filter_fld%i_velo+2) = 1
+          nod_fld%iflag_update(iphys_fil%i_velo  ) = 1
+          nod_fld%iflag_update(iphys_fil%i_velo+1) = 1
+          nod_fld%iflag_update(iphys_fil%i_velo+2) = 1
         end if
       end if
 !
-      if (iphys%wide_filter_fld%i_velo.ne.0 .and. iflag_dmc.eq.0) then
-        if (SGS_par%model_p%iflag_SGS.eq.id_SGS_similarity              &
+      if(iphys_wfl%i_velo.ne.0 .and. iflag_dmc.eq.0) then
+        if(SGS_par%model_p%iflag_SGS.eq.id_SGS_similarity               &
      &    .and. SGS_par%model_p%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF)  &
      &   then
           call cal_filtered_vector_whole(SGS_par%filter_p,              &
      &        mesh%nod_comm, mesh%node, FEM_filters%wide_filtering,     &
-     &        iphys%wide_filter_fld%i_velo, iphys%filter_fld%i_velo,    &
+     &        iphys_wfl%i_velo, iphys_fil%i_velo,                       &
      &        FEM_SGS_wk%wk_filter, nod_fld)
-          nod_fld%iflag_update(iphys%wide_filter_fld%i_velo  ) = 1
-          nod_fld%iflag_update(iphys%wide_filter_fld%i_velo+1) = 1
-          nod_fld%iflag_update(iphys%wide_filter_fld%i_velo+2) = 1
+          nod_fld%iflag_update(iphys_wfl%i_velo  ) = 1
+          nod_fld%iflag_update(iphys_wfl%i_velo+1) = 1
+          nod_fld%iflag_update(iphys_wfl%i_velo+2) = 1
         end if
       end if
 !
@@ -183,7 +193,7 @@
      &                 write(*,*) 'diff_filter_v_on_ele'
            call sel_int_diff_vector_on_ele                              &
      &        (FEM_prm%npoint_t_evo_int, fluid%istack_ele_fld_smp,      &
-     &         iphys%filter_fld%i_velo, iphys_elediff_fil%i_velo,       &
+     &         iphys_fil%i_velo, iphys_elediff_fil%i_velo,              &
      &         mesh%node, mesh%ele, nod_fld, fem_int%jcs, mhd_fem_wk)
          end if
 !
@@ -195,7 +205,7 @@
      &       (iak_diff_base%i_velo, icomp_diff_base%i_velo,             &
      &        dt, FEM_prm, SGS_par,  mesh%nod_comm, mesh%node,          &
      &        mesh%ele, mesh%surf, group%surf_grp, Vsf_bcs, Psf_bcs,    &
-     &        iphys%base, iphys%filter_fld, iphys%SGS_wk,               &
+     &        iphys_base, iphys_fil, iphys_SGS_wk,                      &
      &        iphys_ele, ele_fld, fluid,                                &
      &        FEM_filters%layer_tbl, fem_int%jcs, fem_int%rhs_tbl,      &
      &        FEM_filters%FEM_elens, FEM_filters%filtering,             &
@@ -215,7 +225,7 @@
      &                 write(*,*) 'diff_velocity_on_ele'
            call sel_int_diff_vector_on_ele                              &
      &        (FEM_prm%npoint_t_evo_int, fluid%istack_ele_fld_smp,      &
-     &         iphys%base%i_velo, iphys_elediff_vec%i_velo,             &
+     &         iphys_base%i_velo, iphys_elediff_vec%i_velo,             &
      &         mesh%node, mesh%ele, nod_fld, fem_int%jcs, mhd_fem_wk)
          end if
        end if

@@ -14,7 +14,8 @@
 !!        type(phys_address), intent(in) :: iphys
 !!        type(address_4_sph_trans), intent(inout) :: trns_SIMI
 !!      subroutine init_sph_trns_fld_dyn_simi                           &
-!!     &         (ipol, ipol_LES, iphys, iphys_LES, trns_DYNS,          &
+!!     &         (ipol_LES, iphys_LES, trns_DYNS,                       &
+!!     &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(phys_address), intent(in) :: ipol, iphys
 !!        type(SGS_model_addresses), intent(in) :: ipol_LES, iphys_LES
@@ -118,13 +119,12 @@
 !-----------------------------------------------------------------------
 !
       subroutine init_sph_trns_fld_dyn_simi                             &
-     &         (ipol, ipol_LES, iphys, iphys_LES, trns_DYNS,            &
+     &         (ipol_LES, iphys_LES, trns_DYNS,                         &
      &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
 !
       use add_SGS_term_to_sph_trans
       use add_wide_f_fld_to_sph_trans
 !
-      type(phys_address), intent(in) :: ipol, iphys
       type(SGS_model_addresses), intent(in) :: ipol_LES, iphys_LES
       type(address_4_sph_trans), intent(inout) :: trns_DYNS
       integer(kind = kint), intent(inout) :: ncomp_sph_trans

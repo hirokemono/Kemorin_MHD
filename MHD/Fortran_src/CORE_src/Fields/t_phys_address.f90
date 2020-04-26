@@ -65,10 +65,7 @@
         type(base_field_address) :: filter_fld
 !
 !>        Structure of wide filtered field
-        type(base_field_address) :: wide_filter_fld
-!
-!>        Structure of double filtered field
-!        type(base_field_address) :: dbl_filter_fld
+!        type(base_field_address) :: wide_filter_fld
 !
 !>        Structure of SGS terms
         type(SGS_term_address) :: SGS_term

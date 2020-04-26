@@ -8,8 +8,9 @@
 !!
 !!@verbatim
 !!      subroutine SPH_analyze_rms_ratio_all                            &
-!!     &         (time_d, MHD_files, MHD_step, SPH_MHD, SPH_WK)
+!!     &         (time_d, MHD_files, SPH_SGS, MHD_step, SPH_MHD, SPH_WK)
 !!        type(time_data), intent(in) :: time_d
+!!        type(SPH_SGS_structure), intent(in) :: SPH_SGS
 !!        type(MHD_step_param), intent(inout) :: MHD_step
 !!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !!        type(work_SPH_MHD), intent(inout) :: SPH_WK
@@ -26,6 +27,7 @@
       use t_MHD_step_parameter
       use t_MHD_file_parameter
       use t_SPH_mesh_field_data
+      use t_SPH_SGS_structure
       use t_work_SPH_MHD
 !
       use SPH_analyzer_back_trans
@@ -42,7 +44,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine SPH_analyze_rms_ratio_all                              &
-     &         (time_d, MHD_files, MHD_step, SPH_MHD, SPH_WK)
+     &         (time_d, MHD_files, SPH_SGS, MHD_step, SPH_MHD, SPH_WK)
 !
       use m_work_time
 !
@@ -58,6 +60,7 @@
 !
       type(time_data), intent(in) :: time_d
       type(MHD_file_IO_params), intent(in) :: MHD_files
+      type(SPH_SGS_structure), intent(in) :: SPH_SGS
       type(MHD_step_param), intent(inout) :: MHD_step
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
       type(work_SPH_MHD), intent(inout) :: SPH_WK
@@ -86,8 +89,9 @@
      &    SPH_WK%trans_p, SPH_WK%trns_WK%trns_MHD,                      &
      &    SPH_WK%trns_WK%WK_sph)
       call cal_sph_rms_ratios                                           &
-     &   (SPH_MHD%sph, SPH_MHD%ipol, ref_rj_fld, SPH_MHD%fld,           &
-     &    SPH_WK%trans_p, SPH_WK%monitor%pwr, SPH_WK%monitor%WK_pwr)
+     &   (SPH_MHD%sph, SPH_MHD%ipol, SPH_SGS%ipol_LES,                  &
+     &    ref_rj_fld, SPH_MHD%fld, SPH_WK%trans_p, SPH_WK%monitor%pwr,  &
+     &    SPH_WK%monitor%WK_pwr)
 !
       call dealloc_phys_data_type(ref_rj_fld)
       call dealloc_phys_name_type(ref_rj_fld)

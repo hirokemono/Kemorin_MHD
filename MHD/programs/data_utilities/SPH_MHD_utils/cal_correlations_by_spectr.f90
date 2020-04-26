@@ -13,11 +13,18 @@
 !!      subroutine back_trans_4_rms_ratio                               &
 !!     &         (sph, comms_sph, ref_rj_fld, rj_fld, trans_p,          &
 !!     &          trns_MHD, WK_sph)
-!!      subroutine cal_sph_correlations                                 &
-!!     &         (sph, ipol, ref_rj_fld, rj_fld, trans_p, pwr, WK_pwr)
-!!      subroutine cal_sph_rms_ratios                                   &
-!!     &         (sph, ipol, ref_rj_fld, rj_fld, trans_p, pwr, WK_pwr)
+!!      subroutine cal_sph_correlations(sph, ipol, ipol_LES,            &
+!!     &          ref_rj_fld, rj_fld, trans_p, pwr, WK_pwr)
+!!      subroutine cal_sph_rms_ratios(sph, ipol, ipol_LES,              &
+!!     &          ref_rj_fld, rj_fld, trans_p, pwr, WK_pwr)
+!!        type(sph_grids), intent(in) :: sph
+!!        type(phys_address), intent(in) :: ipol
+!!        type(SGS_model_addresses), intent(in) :: ipol_LES
+!!        type(phys_data), intent(in) :: ref_rj_fld
+!!        type(phys_data), intent(in)  :: rj_fld
+!!        type(parameters_4_sph_trans), intent(in) :: trans_p
 !!        type(sph_mean_squares), intent(inout) :: pwr
+!!        type(sph_mean_square_work), intent(inout) :: WK_pwr
 !!@endverbatim
 !
       module cal_correlations_by_spectr
@@ -27,8 +34,9 @@
 !
       use t_spheric_parameter
       use t_sph_trans_comm_tbl
-      use t_phys_address
       use t_phys_data
+      use t_phys_address
+      use t_SGS_model_addresses
       use t_work_4_sph_trans
       use t_addresses_sph_transform
       use t_sph_transforms
@@ -134,14 +142,15 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_sph_correlations                                   &
-     &         (sph, ipol, ref_rj_fld, rj_fld, trans_p, pwr, WK_pwr)
+      subroutine cal_sph_correlations(sph, ipol, ipol_LES,              &
+     &          ref_rj_fld, rj_fld, trans_p, pwr, WK_pwr)
 !
       use cal_rms_fields_by_sph
       use cal_SGS_sph_rms_data
 !
       type(sph_grids), intent(in) :: sph
       type(phys_address), intent(in) :: ipol
+      type(SGS_model_addresses), intent(in) :: ipol_LES
       type(phys_data), intent(in) :: ref_rj_fld
       type(phys_data), intent(in)  :: rj_fld
       type(parameters_4_sph_trans), intent(in) :: trans_p
@@ -164,7 +173,7 @@
 !
       if(iflag_debug.gt.0)  write(*,*) 'cal_mean_squre_w_SGS_in_shell'
       call cal_mean_squre_w_SGS_in_shell                                &
-     &   (sph%sph_params, sph%sph_rj, ipol, ref_rj_fld,                 &
+     &   (sph%sph_params, sph%sph_rj, ipol, ipol_LES, ref_rj_fld,       &
      &    trans_p%leg%g_sph_rj, pwr, WK_pwr)
 !
       if(my_rank .eq. 0) then
@@ -182,7 +191,7 @@
 !
       if(iflag_debug.gt.0)  write(*,*) 'cal_mean_squre_w_SGS_in_shell'
       call cal_mean_squre_w_SGS_in_shell                                &
-     &   (sph%sph_params, sph%sph_rj, ipol, rj_fld,                     &
+     &   (sph%sph_params, sph%sph_rj, ipol, ipol_LES, rj_fld,           &
      &    trans_p%leg%g_sph_rj, pwr, WK_pwr)
 !
       if(my_rank .eq. 0) then
@@ -241,13 +250,14 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_sph_rms_ratios                                     &
-     &         (sph, ipol, ref_rj_fld, rj_fld, trans_p, pwr, WK_pwr)
+      subroutine cal_sph_rms_ratios(sph, ipol, ipol_LES,                &
+     &          ref_rj_fld, rj_fld, trans_p, pwr, WK_pwr)
 !
       use cal_SGS_sph_rms_data
 !
       type(sph_grids), intent(in) :: sph
       type(phys_address), intent(in) :: ipol
+      type(SGS_model_addresses), intent(in) :: ipol_LES
       type(phys_data), intent(in) :: ref_rj_fld
       type(phys_data), intent(in)  :: rj_fld
       type(parameters_4_sph_trans), intent(in) :: trans_p
@@ -267,7 +277,7 @@
 !
       if(iflag_debug.gt.0)  write(*,*) 'cal_mean_squre_w_SGS_in_shell'
       call cal_mean_squre_w_SGS_in_shell                                &
-     &   (sph%sph_params, sph%sph_rj, ipol, ref_rj_fld,                 &
+     &   (sph%sph_params, sph%sph_rj, ipol, ipol_LES, ref_rj_fld,       &
      &    trans_p%leg%g_sph_rj, pwr, WK_pwr)
 !
       if(my_rank .eq. 0) then
@@ -283,7 +293,7 @@
 !
       if(iflag_debug.gt.0)  write(*,*) 'cal_mean_squre_w_SGS_in_shell'
       call cal_mean_squre_w_SGS_in_shell                                &
-     &   (sph%sph_params, sph%sph_rj, ipol, rj_fld,                     &
+     &   (sph%sph_params, sph%sph_rj, ipol, ipol_LES, rj_fld,           &
      &    trans_p%leg%g_sph_rj, pwr, WK_pwr)
 !
       if(my_rank .eq. 0) then

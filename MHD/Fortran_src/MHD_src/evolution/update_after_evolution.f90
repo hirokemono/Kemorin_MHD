@@ -16,8 +16,9 @@
 !!     &          femmesh, MHD_mesh, FEM_MHD_BCs, iphys, iphys_LES,     &
 !!     &          FEM_filters, SGS_MHD_wk, nod_fld, Csims_FEM_MHD)
 !!
-!!      subroutine cal_FEM_model_coefficients(time_d, FEM_prm, SGS_par, &
-!!     &          femmesh, MHD_mesh, MHD_prop, FEM_MHD_BCs, iphys,      &
+!!      subroutine cal_FEM_model_coefficients                           &
+!!     &         (time_d, FEM_prm, SGS_par, femmesh,                    &
+!!     &          MHD_mesh, MHD_prop, FEM_MHD_BCs, iphys, iphys_LES,    &
 !!     &          FEM_filters, SGS_MHD_wk, nod_fld, Csims_FEM_MHD)
 !!
 !!      subroutine fields_evolution_4_FEM_SPH                           &
@@ -167,8 +168,9 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine cal_FEM_model_coefficients(time_d, FEM_prm, SGS_par,   &
-     &          femmesh, MHD_mesh, MHD_prop, FEM_MHD_BCs, iphys,        &
+      subroutine cal_FEM_model_coefficients                             &
+     &         (time_d, FEM_prm, SGS_par, femmesh,                      &
+     &          MHD_mesh, MHD_prop, FEM_MHD_BCs, iphys, iphys_LES,      &
      &          FEM_filters, SGS_MHD_wk, nod_fld, Csims_FEM_MHD)
 !
       use cal_model_coefficients
@@ -180,6 +182,7 @@
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(FEM_MHD_BC_data), intent(in) :: FEM_MHD_BCs
       type(phys_address), intent(in) :: iphys
+      type(SGS_model_addresses), intent(in) :: iphys_LES
       type(mesh_data_MHD), intent(in) :: MHD_mesh
       type(filters_on_FEM), intent(in) :: FEM_filters
 !
@@ -191,8 +194,8 @@
       if(SGS_par%model_p%iflag_dynamic .eq. id_SGS_DYNAMIC_OFF) return
       if(iflag_debug.eq.1) write(*,*) 's_cal_model_coefficients'
       call s_cal_model_coefficients                                     &
-     &   (time_d, FEM_prm, SGS_par, femmesh, MHD_mesh,                  &
-     &    MHD_prop, FEM_MHD_BCs%nod_bcs, FEM_MHD_BCs%surf_bcs, iphys,   &
+     &   (time_d, FEM_prm, SGS_par, femmesh, MHD_mesh, MHD_prop,        &
+     &    FEM_MHD_BCs%nod_bcs, FEM_MHD_BCs%surf_bcs, iphys, iphys_LES,  &
      &    Csims_FEM_MHD%iak_sgs_term, Csims_FEM_MHD%icomp_sgs_term,     &
      &    Csims_FEM_MHD%iak_diff_sgs, Csims_FEM_MHD%icomp_diff_sgs,     &
      &    Csims_FEM_MHD%iphys_elediff_vec,                              &
