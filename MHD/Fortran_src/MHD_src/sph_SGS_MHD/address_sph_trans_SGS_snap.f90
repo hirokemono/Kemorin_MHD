@@ -229,8 +229,8 @@
      &    f_trns_LES%eflux_by_filter, trns_fwd)
 !
       call add_SGS_eflux_sph_trns_snap                                  &
-     &   (ipol%SGS_ene_flux, iphys%SGS_ene_flux, f_trns%SGS_ene_flux,   &
-     &    trns_fwd)
+     &   (ipol_LES%SGS_ene_flux, iphys_LES%SGS_ene_flux,                &
+     &    f_trns_LES%SGS_ene_flux, trns_fwd)
       call add_Csim_4_sph_trns_snap                                     &
      &   (ipol%Csim, iphys%Csim, f_trns%Csim, trns_fwd)
 !

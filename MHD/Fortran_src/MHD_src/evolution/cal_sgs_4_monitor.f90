@@ -378,11 +378,11 @@
       end if
 !
 !
-      call cal_SGS_buoyancy_fluxes_FEM                                  &
-     &   (node, fl_prop, iphys%SGS_term, iphys%SGS_ene_flux, nod_fld)
+      call cal_SGS_buoyancy_fluxes_FEM(node, fl_prop,                   &
+     &    iphys%SGS_term, iphys_LES%SGS_ene_flux, nod_fld)
 !
       call work_of_SGS_terms(iphys%base, iphys%SGS_term, iphys%div_SGS, &
-     &    iphys%SGS_ene_flux, nod_fld)
+     &    iphys_LES%SGS_ene_flux, nod_fld)
 !
       call work_of_SGS_terms(iphys%filter_fld, iphys_LES%true_SGS,      &
      &    iphys_LES%true_div_SGS, iphys_LES%true_SGS_eflux, nod_fld)

@@ -228,7 +228,7 @@
       if(flag) return
 !
       call set_SGS_ene_flux_addresses                                   &
-     &   (i_fld, field_name, iphys%SGS_ene_flux, flag)
+     &   (i_fld, field_name, iphys_LES%SGS_ene_flux, flag)
       if(flag) return
 !
       call set_force_w_SGS_addresses                                    &

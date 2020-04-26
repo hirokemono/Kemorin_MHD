@@ -153,8 +153,8 @@
      &       (ipol_LES, iphys_LES, WK%trns_DYNS,                        &
      &        ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
           call set_addresses_trans_sph_Csim                             &
-     &       (SGS_param, ipol, iphys, WK%trns_Csim,                     &
-     &        ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
+     &      (SGS_param, ipol, ipol_LES, iphys, iphys_LES, WK%trns_Csim, &
+     &       ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
          end if
 !
       else if(SGS_param%iflag_SGS .eq. id_SGS_NL_grad) then

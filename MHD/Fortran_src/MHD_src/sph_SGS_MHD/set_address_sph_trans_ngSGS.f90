@@ -307,8 +307,8 @@
      &    trns_Csim%forward)
       if(SGS_param%iflag_SGS_gravity .ne. id_SGS_none) then
         call add_SGS_eflux_sph_trns_by_pol                              &
-     &     (ipol%SGS_ene_flux, iphys%SGS_ene_flux,                      &
-     &      trns_Csim%f_trns%SGS_ene_flux, trns_Csim%forward)
+     &     (ipol_LES%SGS_ene_flux, iphys_LES%SGS_ene_flux,              &
+     &      trns_Csim%f_trns_LES%SGS_ene_flux, trns_Csim%forward)
       end if
       trns_Csim%forward%num_scalar = trns_Csim%forward%nfield           &
      &                              - trns_Csim%forward%num_vector

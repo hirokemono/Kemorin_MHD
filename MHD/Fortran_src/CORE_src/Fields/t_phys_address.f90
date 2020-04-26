@@ -64,15 +64,12 @@
 !>        Structure of filtered fields
         type(base_field_address) :: filter_fld
 !
-!>        Structure of wide filtered field
-!        type(base_field_address) :: wide_filter_fld
-!
 !>        Structure of SGS terms
         type(SGS_term_address) :: SGS_term
 !>        Structure of divergence of SGS terms
         type(SGS_term_address) :: div_SGS
 !>        Structure of SGS energy fluxes
-        type(SGS_ene_flux_address) :: SGS_ene_flux
+!        type(SGS_ene_flux_address) :: SGS_ene_flux
 !>        Structure of model coefficients
         type(SGS_term_address) :: Csim
 !>        Structure of work area for dynamic model
