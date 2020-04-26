@@ -254,7 +254,7 @@
       if(flag) return
 !
       call set_dynamic_SGS_work_addresses                               &
-     &   (i_fld, field_name, iphys%SGS_wk, flag)
+     &   (i_fld, field_name, iphys_LES%SGS_wk, flag)
       if(flag) return
 !
       call set_wide_fil_vector_addresses                                &

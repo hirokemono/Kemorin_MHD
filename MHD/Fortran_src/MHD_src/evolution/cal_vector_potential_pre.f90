@@ -9,7 +9,8 @@
 !!     &          FEM_prm, SGS_param, cmt_param, filter_param,          &
 !!     &          nod_comm, node, ele, surf, conduct,                   &
 !!     &          sf_grp, cd_prop, Bnod_bcs, Asf_bcs,                   &
-!!     &          iphys, iphys_ele, ele_fld, jacs, rhs_tbl, FEM_elens,  &
+!!     &          iphys, iphys_LES, iphys_ele, ele_fld,                 &
+!!     &          jacs, rhs_tbl, FEM_elens,                             &
 !!     &          iak_diff_base, icomp_sgs_term, iphys_elediff_vec,     &
 !!     &          sgs_coefs, diff_coefs, filtering, mlump_cd,           &
 !!     &          Bmatrix, MG_vector, wk_filter, mhd_fem_wk, fem_wk,    &
@@ -38,6 +39,7 @@
 !!        type(base_field_address), intent(in) :: iphys_base
 !!        type(explicit_term_address), intent(in) :: iphys_exp
 !!        type(phys_address), intent(in) :: iphys
+!!        type(SGS_model_addresses), intent(in) :: iphys_LES
 !!        type(phys_address), intent(in) :: iphys_ele
 !!        type(phys_data), intent(in) :: ele_fld
 !!        type(base_field_address), intent(in) :: iak_diff_base
@@ -77,6 +79,7 @@
       use t_group_data
       use t_phys_data
       use t_phys_address
+      use t_SGS_model_addresses
       use t_base_field_labels
       use t_explicit_term_labels
       use t_jacobians
@@ -109,7 +112,8 @@
      &          FEM_prm, SGS_param, cmt_param, filter_param,            &
      &          nod_comm, node, ele, surf, conduct,                     &
      &          sf_grp, cd_prop, Bnod_bcs, Asf_bcs,                     &
-     &          iphys, iphys_ele, ele_fld, jacs, rhs_tbl, FEM_elens,    &
+     &          iphys, iphys_LES, iphys_ele, ele_fld,                   &
+     &          jacs, rhs_tbl, FEM_elens,                               &
      &          iak_diff_base, icomp_sgs_term, iphys_elediff_vec,       &
      &          sgs_coefs, diff_coefs, filtering, mlump_cd,             &
      &          Bmatrix, MG_vector, wk_filter, mhd_fem_wk, fem_wk,      &
@@ -143,6 +147,7 @@
       type(nodal_bcs_4_induction_type), intent(in) :: Bnod_bcs
       type(velocity_surf_bc_type), intent(in) :: Asf_bcs
       type(phys_address), intent(in) :: iphys
+      type(SGS_model_addresses), intent(in) :: iphys_LES
       type(phys_address), intent(in) :: iphys_ele
       type(phys_data), intent(in) :: ele_fld
       type(base_field_address), intent(in) :: iak_diff_base
@@ -188,7 +193,7 @@
       if ( SGS_param%iflag_SGS_uxb .ne. id_SGS_none) then
         call cal_sgs_uxb_2_evo(dt, FEM_prm, SGS_param, filter_param,    &
      &      nod_comm, node, ele, conduct, cd_prop,                      &
-     &      iphys%base, iphys%filter_fld, iphys%SGS_wk,                 &
+     &      iphys%base, iphys%filter_fld, iphys_LES%SGS_wk,             &
      &      iphys_ele, ele_fld, jacs, rhs_tbl, FEM_elens, filtering,    &
      &      icomp_sgs_term, iphys_elediff_vec, sgs_coefs, wk_filter,    &
      &      mhd_fem_wk, fem_wk, f_nl, nod_fld)

@@ -24,8 +24,6 @@
       use t_diff_vector_labels
 !
       use t_SGS_term_labels
-      use t_SGS_enegy_flux_labels
-      use t_SGS_model_coef_labels
 !
       implicit  none
 ! 
@@ -66,10 +64,8 @@
 !
 !>        Structure of SGS terms
         type(SGS_term_address) :: SGS_term
-!>        Structure of model coefficients
-!        type(SGS_term_address) :: Csim
 !>        Structure of work area for dynamic model
-        type(dynamic_SGS_work_address) :: SGS_wk
+!        type(dynamic_SGS_work_address) :: SGS_wk
       end type phys_address
 !
 !

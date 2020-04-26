@@ -8,11 +8,8 @@
 !!        type(parameters_4_sph_trans), intent(inout) :: trans_p
 !!        type(phys_data), intent(inout) :: rj_fld
 !!      subroutine nonlinear_incuction_wSGS_SPH(FEM_prm, SGS_par,       &
-!!     &          mesh, sph, comms_sph, trans_p, conduct, jacobians,    &
-!!     &          Csims_FEM_MHD, ipol, rj_fld)
-!!      subroutine nonlinear_incuction_wSGS_SPH(FEM_prm, SGS_par,       &
 !!     &          mesh, sph, comms_sph, trans_p, conduct, MHD_prop,     &
-!!     &          fem_int, Csims_FEM_MHD, ipol, rj_fld)
+!!     &          fem_int, Csims_FEM_MHD, iphys, iphys_LES, ipol, rj_fld)
 !!      subroutine cal_magneitc_field_by_SPH(SGS_param, cd_prop,        &
 !!     &          sph, comms_sph, trans_p, ipol, rj_fld)
 !
@@ -130,7 +127,7 @@
 !
       subroutine nonlinear_incuction_wSGS_SPH(FEM_prm, SGS_par,         &
      &          mesh, sph, comms_sph, trans_p, conduct, MHD_prop,       &
-     &          fem_int, Csims_FEM_MHD, ipol, rj_fld)
+     &          fem_int, Csims_FEM_MHD, iphys, iphys_LES, ipol, rj_fld)
 !
       use m_solver_SR
       use m_schmidt_poly_on_rtm
@@ -147,7 +144,8 @@
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
       type(parameters_4_sph_trans), intent(in) :: trans_p
-      type(phys_address), intent(in) :: ipol
+      type(phys_address), intent(in) :: iphys, ipol
+      type(SGS_model_addresses), intent(in) :: iphys_LES
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(finite_element_integration), intent(in) :: fem_int
       type(SGS_coefficients_data), intent(in) :: Csims_FEM_MHD
@@ -158,8 +156,8 @@
 !
       call cal_sgs_uxb_2_monitor(MHD_step1%time_d%dt, FEM_prm,          &
      &   SGS_par%model_p, SGS_par%filter_p, mesh%nod_comm,              &
-     &   mesh%node, mesh%ele, conduct, MHD_prop%cd_prop, iphys,         &
-     &   SGS_MHD_wk1%iphys_ele, SGS_MHD_wk1%ele_fld,                    &
+     &   mesh%node, mesh%ele, conduct, MHD_prop%cd_prop,                &
+     &   iphys, iphys_LES, SGS_MHD_wk1%iphys_ele, SGS_MHD_wk1%ele_fld,  &
      &   fem_int%jcs, fem_int%rhs_tbl, FEM1_elen, filtering1,           &
      &   Csims_FEM_MHD%icomp_sgs_term, Csims_FEM_MHD%iphys_elediff_vec, &
      &   Csims_FEM_MHD%sgs_coefs, mhd1_fem_wk%mlump_cd,                 &

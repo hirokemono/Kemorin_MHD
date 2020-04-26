@@ -181,8 +181,9 @@
       call cal_sgs_terms_4_monitor                                      &
      &   (dt, FEM_prm, SGS_par%model_p, SGS_par%filter_p,               &
      &    mesh%nod_comm, mesh%node, mesh%ele,                           &
-     &    MHD_mesh%fluid, MHD_mesh%conduct, MHD_prop%cd_prop, iphys,    &
-     &    iphys_ele, ele_fld, fem_int%jcs, fem_int%rhs_tbl, FEM_elens,  &
+     &    MHD_mesh%fluid, MHD_mesh%conduct, MHD_prop%cd_prop,           &
+     &    iphys, iphys_LES, iphys_ele, ele_fld,                         &
+     &    fem_int%jcs, fem_int%rhs_tbl, FEM_elens,                      &
      &    Csims_FEM_MHD%icomp_sgs_term,                                 &
      &    Csims_FEM_MHD%iphys_elediff_vec,                              &
      &    Csims_FEM_MHD%sgs_coefs, Csims_FEM_MHD%sgs_coefs_nod,         &
@@ -195,7 +196,7 @@
       call vect_gradients_4_monitor                                     &
      &   (dt, FEM_prm, mesh%nod_comm, mesh%node, mesh%ele,              &
      &    MHD_mesh%fluid, iphys, iphys_ele, fem_int, mk_MHD,            &
-     &     rhs_mat, nod_fld, ele_fld)
+     &    rhs_mat, nod_fld, ele_fld)
       call cal_forces_4_monitor(dt, FEM_prm, SGS_par,                   &
      &    mesh%nod_comm, mesh%node, mesh%ele, mesh%surf,                &
      &    MHD_mesh%fluid, MHD_mesh%conduct, group%surf_grp,             &
@@ -217,7 +218,7 @@
 !
       call cal_true_sgs_terms_post                                      &
      &   (SGS_par%filter_p, mesh%nod_comm, mesh%node, iphys%div_forces, &
-     &    iphys_LES%true_SGS, iphys_LES%true_div_SGS, iphys%SGS_wk,     &
+     &    iphys_LES%true_SGS, iphys_LES%true_div_SGS, iphys_LES%SGS_wk, &
      &    filtering, FEM_SGS_wk%wk_filter, nod_fld)
 !
       call cal_work_4_forces                                            &

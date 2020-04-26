@@ -6,7 +6,7 @@
 !!      subroutine cal_sgs_terms_4_monitor                              &
 !!     &         (dt, FEM_prm, SGS_param, filter_param,                 &
 !!     &          nod_comm, node, ele, fluid, conduct, cd_prop,         &
-!!     &          iphys, iphys_ele, ele_fld, jacs, rhs_tbl,             &
+!!     &          iphys, iphys_LES, iphys_ele, ele_fld, jacs, rhs_tbl,  &
 !!     &          FEM_elens, icomp_sgs_term, iphys_elediff_vec,         &
 !!     &          sgs_coefs, sgs_coefs_nod, filtering, mk_MHD,          &
 !!     &          wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
@@ -100,7 +100,7 @@
       subroutine cal_sgs_terms_4_monitor                                &
      &         (dt, FEM_prm, SGS_param, filter_param,                   &
      &          nod_comm, node, ele, fluid, conduct, cd_prop,           &
-     &          iphys, iphys_ele, ele_fld, jacs, rhs_tbl,               &
+     &          iphys, iphys_LES, iphys_ele, ele_fld, jacs, rhs_tbl,    &
      &          FEM_elens, icomp_sgs_term, iphys_elediff_vec,           &
      &          sgs_coefs, sgs_coefs_nod, filtering, mk_MHD,            &
      &          wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
@@ -120,6 +120,7 @@
       type(field_geometry_data), intent(in) :: fluid, conduct
       type(conductive_property), intent(in) :: cd_prop
       type(phys_address), intent(in) :: iphys
+      type(SGS_model_addresses), intent(in) :: iphys_LES
       type(phys_address), intent(in) :: iphys_ele
       type(phys_data), intent(in) :: ele_fld
       type(jacobians_type), intent(in) :: jacs
@@ -176,9 +177,9 @@
      &      'lead ', trim(SGS_momentum_flux%name)
         call cal_sgs_momentum_flux(dt, FEM_prm, SGS_param,              &
      &      filter_param, nod_comm, node, ele, fluid,                   &
-     &      iphys%base, iphys%filter_fld, iphys%SGS_term, iphys%SGS_wk, &
-     &      iphys_ele, ele_fld, jacs, rhs_tbl, FEM_elens, filtering,    &
-     &      icomp_sgs_term, iphys_elediff_vec,                          &
+     &      iphys%base, iphys%filter_fld, iphys%SGS_term,               &
+     &      iphys_LES%SGS_wk, iphys_ele, ele_fld, jacs, rhs_tbl,        &
+     &      FEM_elens, filtering, icomp_sgs_term, iphys_elediff_vec,    &
      &      sgs_coefs, sgs_coefs_nod, mk_MHD%mlump_fl,                  &
      &      wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
@@ -188,8 +189,8 @@
      &        'lead ', trim(SGS_maxwell_tensor%name)
         call cal_sgs_maxwell(dt, FEM_prm, SGS_param,                    &
      &      filter_param, nod_comm, node, ele, fluid,                   &
-     &      iphys%base, iphys%filter_fld, iphys%SGS_term, iphys%SGS_wk, &
-     &      iphys_ele, ele_fld, jacs, rhs_tbl,                          &
+     &      iphys%base, iphys%filter_fld, iphys%SGS_term,               &
+     &      iphys_LES%SGS_wk, iphys_ele, ele_fld, jacs, rhs_tbl,        &
      &      FEM_elens, filtering, icomp_sgs_term, iphys_elediff_vec,    &
      &      sgs_coefs, sgs_coefs_nod, mk_MHD%mlump_fl, wk_filter,       &
      &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
@@ -210,9 +211,9 @@
       if (iphys%SGS_term%i_SGS_vp_induct .gt. 0) then
         if(iflag_debug.gt.0) write(*,*)                                 &
      &        'lead ', trim(SGS_vecp_induction%name)
-        call cal_sgs_uxb_2_monitor                                      &
-     &     (dt, FEM_prm, SGS_param, filter_param, nod_comm, node, ele,  &
-     &      conduct, cd_prop, iphys, iphys_ele, ele_fld, jacs, rhs_tbl, &
+        call cal_sgs_uxb_2_monitor(dt, FEM_prm, SGS_param,              &
+     &      filter_param, nod_comm, node, ele, conduct, cd_prop,        &
+     &      iphys, iphys_LES, iphys_ele, ele_fld, jacs, rhs_tbl,        &
      &      FEM_elens, filtering, icomp_sgs_term, iphys_elediff_vec,    &
      &      sgs_coefs, mk_MHD%mlump_cd, wk_filter, mhd_fem_wk, fem_wk,  &
      &      f_l, f_nl, nod_fld)
