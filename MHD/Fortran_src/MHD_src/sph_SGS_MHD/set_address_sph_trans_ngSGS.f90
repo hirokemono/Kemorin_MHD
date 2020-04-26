@@ -14,10 +14,10 @@
 !!        type(phys_address), intent(in) :: iphys
 !!        type(address_4_sph_trans), intent(inout) :: trns_ngTMP
 !!
-!!      subroutine init_sph_trns_fld_ngrad_SGS(ipol, iphys, trns_SGS,   &
+!!      subroutine init_sph_trns_fld_ngrad_SGS                          &
+!!     &         (ipol_LES, iphys_LES, trns_SGS,                        &
 !!     &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
-!!        type(phys_address), intent(in) :: ipol
-!!        type(phys_address), intent(in) :: iphys
+!!        type(SGS_model_addresses), intent(in) :: ipol_LES, iphys_LES
 !!        type(address_4_sph_trans), intent(inout) :: trns_SGS
 !!
 !!      subroutine init_sph_trns_fld_dyn_ngrad                          &
@@ -118,13 +118,13 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine init_sph_trns_fld_ngrad_SGS(ipol, iphys, trns_SGS,     &
+      subroutine init_sph_trns_fld_ngrad_SGS                            &
+     &         (ipol_LES, iphys_LES, trns_SGS,                          &
      &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
 !
       use add_SGS_term_to_sph_trans
 !
-      type(phys_address), intent(in) :: ipol
-      type(phys_address), intent(in) :: iphys
+      type(SGS_model_addresses), intent(in) :: ipol_LES, iphys_LES
       type(address_4_sph_trans), intent(inout) :: trns_SGS
       integer(kind = kint), intent(inout) :: ncomp_sph_trans
       integer(kind = kint), intent(inout) :: nvector_sph_trans
@@ -156,8 +156,8 @@
       call alloc_sph_trns_field_name(trns_SGS%forward)
 !
       call add_SGS_term_4_sph_trns_by_pol                               &
-     &   (ipol%SGS_term, iphys%SGS_term,                                &
-     &    trns_SGS%f_trns%SGS_term, trns_SGS%forward)
+     &   (ipol_LES%SGS_term, iphys_LES%SGS_term,                        &
+     &    trns_SGS%f_trns_LES%SGS_term, trns_SGS%forward)
       trns_SGS%forward%num_vector = trns_SGS%forward%nfield
       trns_SGS%forward%num_scalar = trns_SGS%forward%nfield             &
      &                              - trns_SGS%forward%num_vector

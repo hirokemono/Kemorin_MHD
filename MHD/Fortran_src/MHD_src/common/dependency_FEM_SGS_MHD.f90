@@ -79,7 +79,7 @@
       call check_dependence_4_FEM_SGS (SGS_param, cmt_param,            &
      &    MHD_prop%fl_prop, MHD_prop%cd_prop,                           &
      &    MHD_prop%ht_prop, MHD_prop%cp_prop,                           &
-     &    iphys%filter_fld, iphys%SGS_term, nod_fld)
+     &    iphys%filter_fld, iphys_LES%SGS_term, nod_fld)
 !
       call alloc_phys_data_type(ele%numele, ele_fld)
       call set_element_field_address(ele_fld, iphys_ele)

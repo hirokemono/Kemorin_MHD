@@ -159,7 +159,8 @@
 !
       call SGS_fluxes_for_buo_coefs                                     &
      &   (sph_rtp, fl_prop, trns_MHD%b_trns%base,                       &
-     &    trns_SGS%f_trns%SGS_term, trns_Csim%f_trns_LES%SGS_ene_flux,  &
+     &    trns_SGS%f_trns_LES%SGS_term,                                 &
+     &    trns_Csim%f_trns_LES%SGS_ene_flux,                            &
      &    trns_MHD%backward, trns_SGS%forward, trns_Csim%forward)
 !
       call cal_SGS_buo_coefs_sph_MHD                                    &

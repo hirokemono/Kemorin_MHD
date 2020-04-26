@@ -9,10 +9,11 @@
 !!
 !!@verbatim
 !!      subroutine write_SGS_MHD_monitor_labels                         &
-!!     &         (id_ave, id_msq, iphys, msq_list)
+!!     &         (id_ave, id_msq, iphys, iphys_LES, msq_list)
 !!      subroutine write_MHD_monitor_labels                             &
 !!     &          (id_ave, id_msq, iphys, msq_list)
 !!        type(phys_address), intent(in) :: iphys
+!!        type(SGS_model_addresses), intent(in) :: iphys_LES
 !!        type(mean_square_list), intent(in) :: msq_list
 !!@endverbatim
 !
@@ -33,12 +34,11 @@
 ! ----------------------------------------------------------------------
 !
       subroutine write_SGS_MHD_monitor_labels                           &
-     &          (id_ave, id_msq, iphys, msq_list)
+     &          (id_ave, id_msq, iphys, iphys_LES, msq_list)
 !
       use t_phys_data
-      use t_base_field_labels
-      use t_base_force_labels
-      use t_SGS_term_labels
+      use t_phys_address
+      use t_SGS_model_addresses
       use t_mean_square_filed_list
 !
       use m_phys_constants
@@ -49,6 +49,7 @@
 !
       integer (kind=kint), intent(in) :: id_ave, id_msq
       type(phys_address), intent(in) :: iphys
+      type(SGS_model_addresses), intent(in) :: iphys_LES
       type(mean_square_list), intent(in) :: msq_list
 !
       integer (kind=kint) :: i
@@ -61,9 +62,9 @@
 !
       do i = 1, msq_list%nfield
         call write_SGS_MHD_monitor_label(id_ave, id_msq,                &
-     &      iphys%base, iphys%filter_fld, iphys%forces, iphys%SGS_term, &
-     &      msq_list%ifld_msq(i), msq_list%ncomp_msq(i),                &
-     &      msq_list%field_name(i))
+     &      iphys%base, iphys%filter_fld, iphys%forces,                 &
+     &      iphys_LES%SGS_term, msq_list%ifld_msq(i),                   &
+     &      msq_list%ncomp_msq(i), msq_list%field_name(i))
       end do
 !
       call write_one_label(id_msq, e_hd_volume)

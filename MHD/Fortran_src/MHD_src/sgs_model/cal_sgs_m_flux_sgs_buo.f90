@@ -172,7 +172,7 @@
 !
       call cal_sgs_momentum_flux(dt, FEM_prm, SGS_par%model_p,          &
      &    SGS_par%filter_p, nod_comm, node, ele, fluid, iphys%base,     &
-     &    iphys%filter_fld, iphys%SGS_term, iphys_LES%SGS_wk,           &
+     &    iphys%filter_fld, iphys_LES%SGS_term, iphys_LES%SGS_wk,       &
      &    iphys_ele, ele_fld, fem_int%jcs, fem_int%rhs_tbl,             &
      &    FEM_elens, filtering, icomp_sgs_term, iphys_elediff_vec,      &
      &    sgs_coefs, sgs_coefs_nod, mlump_fl, wk_filter, mhd_fem_wk,    &
@@ -185,9 +185,9 @@
      &    nod_comm, node, ele, surf, sf_grp, fluid, fl_prop, cd_prop,   &
      &    Vsf_bcs, Bsf_bcs, iphys%base, iphys%forces, iphys%div_forces, &
      &    iphys%diffusion, iphys%filter_fld, iphys_LES%force_by_filter, &
-     &    iphys%SGS_term, iphys_LES%div_SGS, iphys_ele%base, ak_MHD,    &
-     &    fem_int, FEM_elens, iak_diff_sgs, diff_coefs, mlump_fl,       &
-     &    mhd_fem_wk, rhs_mat, nod_fld, ele_fld)
+     &    iphys_LES%SGS_term, iphys_LES%div_SGS, iphys_ele%base,        &
+     &    ak_MHD, fem_int, FEM_elens, iak_diff_sgs, diff_coefs,         &
+     &    mlump_fl, mhd_fem_wk, rhs_mat, nod_fld, ele_fld)
 !
 !$omp parallel
       call cal_phys_dot_product                                         &
@@ -200,13 +200,13 @@
       if(fl_prop%iflag_4_gravity .gt. id_turn_OFF) then
         call cal_SGS_gravity_flux                                       &
      &     (node, fl_prop%i_grav, fl_prop%coef_buo, fl_prop%grav,       &
-     &      iphys%SGS_term%i_SGS_h_flux,                                &
+     &      iphys_LES%SGS_term%i_SGS_h_flux,                            &
      &      iphys_LES%SGS_ene_flux%i_SGS_buo_wk, nod_fld)
       end if
       if(fl_prop%iflag_4_composit_buo .gt. id_turn_OFF) then
         call cal_SGS_gravity_flux                                       &
      &     (node, fl_prop%i_grav, fl_prop%coef_comp_buo, fl_prop%grav,  &
-     &      iphys%SGS_term%i_SGS_c_flux,                                &
+     &      iphys_LES%SGS_term%i_SGS_c_flux,                            &
      &      iphys_LES%SGS_ene_flux%i_SGS_comp_buo_wk, nod_fld)
        end if
 !

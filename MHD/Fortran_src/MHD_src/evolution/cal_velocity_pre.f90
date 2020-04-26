@@ -201,7 +201,7 @@
       if(SGS_par%model_p%iflag_SGS_m_flux .ne. id_SGS_none) then
         call cal_sgs_momentum_flux(dt, FEM_prm, SGS_par%model_p,        &
      &      SGS_par%filter_p, nod_comm, node, ele, fluid,               &
-     &      iphys%base, iphys%filter_fld, iphys%SGS_term,               &
+     &      iphys%base, iphys%filter_fld, iphys_LES%SGS_term,           &
      &      iphys_LES%SGS_wk, iphys_ele, ele_fld,                       &
      &      fem_int%jcs, fem_int%rhs_tbl, FEM_elens, filtering,         &
      &      icomp_sgs_term, iphys_elediff_vec,                          &
@@ -212,7 +212,7 @@
       if(SGS_par%model_p%iflag_SGS_lorentz .ne. id_SGS_none) then
         call cal_sgs_maxwell(dt, FEM_prm, SGS_par%model_p,              &
      &      SGS_par%filter_p, nod_comm, node, ele, fluid,               &
-     &      iphys%base, iphys%filter_fld, iphys%SGS_term,               &
+     &      iphys%base, iphys%filter_fld, iphys_LES%SGS_term,           &
      &      iphys_LES%SGS_wk, iphys_ele, ele_fld,                       &
      &      fem_int%jcs, fem_int%rhs_tbl, FEM_elens, filtering,         &
      &      icomp_sgs_term, iphys_elediff_vec,                          &
@@ -252,7 +252,7 @@
      &     (FEM_prm%iflag_rotate_form, FEM_prm%npoint_t_evo_int, dt,    &
      &      SGS_par%model_p, SGS_par%commute_p, node, ele, fluid,       &
      &      fl_prop, cd_prop, iphys%base, iphys%filter_fld,             &
-     &      iphys%SGS_term, nod_fld, ak_MHD,                            &
+     &      iphys_LES%SGS_term, nod_fld, ak_MHD,                        &
      &      ele_fld%ntot_phys, iphys_ele%base%i_velo, ele_fld%d_fld,    &
      &      iphys_ele%base, iak_diff_sgs,                               &
      &      fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,     &
@@ -263,7 +263,7 @@
      &     (FEM_prm%iflag_rotate_form, FEM_prm%npoint_t_evo_int, dt,    &
      &      SGS_par%model_p, SGS_par%commute_p, node, ele, fluid,       &
      &      fl_prop, cd_prop, iphys%base, iphys%filter_fld,             &
-     &      iphys%SGS_term, nod_fld, ak_MHD,                            &
+     &      iphys_LES%SGS_term, nod_fld, ak_MHD,                        &
      &      ele_fld%ntot_phys, iphys_ele%base%i_magne, ele_fld%d_fld,   &
      &      iphys_ele%base, iak_diff_sgs,                               &
      &      fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,     &
@@ -274,7 +274,7 @@
      &     (FEM_prm%iflag_rotate_form, FEM_prm%npoint_t_evo_int,        &
      &      SGS_par%model_p, SGS_par%commute_p, node, ele, fluid,       &
      &      fl_prop, cd_prop, iphys%base, iphys%filter_fld,             &
-     &      iphys%SGS_term, nod_fld, ak_MHD, ele_fld%ntot_phys,         &
+     &      iphys_LES%SGS_term, nod_fld, ak_MHD, ele_fld%ntot_phys,     &
      &      ele_fld%d_fld, iphys_ele%base, iak_diff_sgs,                &
      &      fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,     &
      &      FEM_elens, diff_coefs,                                      &
@@ -286,7 +286,7 @@
       call int_surf_velo_pre_ele(ak_MHD%ak_d_velo,                      &
      &    FEM_prm%npoint_t_evo_int, SGS_par%model_p, SGS_par%commute_p, &
      &    node, ele, surf, sf_grp, fl_prop,                             &
-     &    Vsf_bcs, Bsf_bcs, iphys%base, iphys%SGS_term, nod_fld,        &
+     &    Vsf_bcs, Bsf_bcs, iphys%base, iphys_LES%SGS_term, nod_fld,    &
      &    fem_int%jcs%g_FEM, fem_int%jcs%jac_sf_grp, fem_int%rhs_tbl,   &
      &    FEM_elens, iak_diff_sgs, diff_coefs,                          &
      &    rhs_mat%fem_wk, rhs_mat%surf_wk, rhs_mat%f_l, rhs_mat%f_nl)

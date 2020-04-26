@@ -16,24 +16,22 @@
 !!        character(len = kchara), intent(in) :: phys_name_ctl
 !!
 !!      subroutine set_SGS_MHD_field_addresses                          &
-!!     &          (i_fld, field_name, iphys, iphys_LES, flag)
+!!     &          (i_fld, field_name, iphys_LES, flag)
 !!      integer(kind = kint), intent(in) :: num_field
 !!      integer(kind = kint), intent(in) :: istack_component(0:num_field)
 !!      character(len = kchara), intent(in) :: field_name(num_field)
-!!      type(phys_address), intent(inout) :: iphys
 !!      type(SGS_model_addresses), intent(inout) :: iphys_LES
 !!@endverbatim
 !!
 !!@n @param num_field                 number of field
 !!@n @param num_component(num_field)  number of components of field
 !!@n @param field_name(num_field)     list of field names
-!!@n @param iphys                     structure of field addresses
+!!@n @param iphys_LES                 structure of field addresses
 !
       module set_SGS_MHD_field_address
 !
       use m_precision
 !
-      use t_phys_address
       use t_SPH_SGS_structure
       use t_phys_data
 !
@@ -178,7 +176,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_SGS_MHD_field_addresses                            &
-     &          (i_fld, field_name, iphys, iphys_LES, flag)
+     &          (i_fld, field_name, iphys_LES, flag)
 !
       use t_SGS_term_labels
       use t_SGS_enegy_flux_labels
@@ -201,13 +199,12 @@
       integer(kind = kint), intent(in) :: i_fld
       character(len = kchara), intent(in) :: field_name
 !
-      type(phys_address), intent(inout) :: iphys
       type(SGS_model_addresses), intent(inout) :: iphys_LES
       logical, intent(inout) :: flag
 !
 !
       call set_SGS_term_addresses                                       &
-     &   (i_fld, field_name, iphys%SGS_term, flag)
+     &   (i_fld, field_name, iphys_LES%SGS_term, flag)
       if(flag) return
       call set_div_SGS_term_addresses                                   &
      &   (i_fld, field_name, iphys_LES%div_SGS, flag)

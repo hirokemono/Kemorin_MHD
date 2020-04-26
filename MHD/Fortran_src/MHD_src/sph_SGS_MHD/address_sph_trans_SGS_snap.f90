@@ -110,8 +110,7 @@
 !
       call add_vector_4_bwd_trns_snap(ipol, iphys, b_trns, trns_back)
       call add_SGS_vector_bwd_trns_snap                                 &
-     &   (ipol, ipol_LES, iphys, iphys_LES,                             &
-     &    b_trns, b_trns_LES, trns_back)
+     &   (ipol_LES, iphys_LES, b_trns_LES, trns_back)
       trns_back%num_vector = trns_back%nfield
 !
       call add_scalar_4_bwd_trns_snap(ipol, iphys, b_trns, trns_back)
@@ -162,14 +161,11 @@
 !-----------------------------------------------------------------------
 !
       subroutine add_SGS_vector_bwd_trns_snap                           &
-     &         (ipol, ipol_LES, iphys, iphys_LES,                       &
-     &          b_trns, b_trns_LES, trns_back)
+     &         (ipol_LES, iphys_LES, b_trns_LES, trns_back)
 !
       use add_SGS_term_to_sph_trans
 !
-      type(phys_address), intent(in) :: ipol, iphys
       type(SGS_model_addresses), intent(in) :: ipol_LES, iphys_LES
-      type(phys_address), intent(inout) :: b_trns
       type(SGS_model_addresses), intent(inout) :: b_trns_LES
       type(address_each_sph_trans), intent(inout) :: trns_back
 !
@@ -183,7 +179,8 @@
      &    b_trns_LES%rot_SGS, trns_back)
 !
       call add_SGS_induction_sph_trns_pol                               &
-     &   (ipol%SGS_term, iphys%SGS_term, b_trns%SGS_term, trns_back)
+     &   (ipol_LES%SGS_term, iphys_LES%SGS_term,                        &
+     &    b_trns_LES%SGS_term, trns_back)
 !
       end subroutine add_SGS_vector_bwd_trns_snap
 !

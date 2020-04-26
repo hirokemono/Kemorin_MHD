@@ -74,7 +74,7 @@
 !        write(*,*) 'prod_SGS_buoyancy_to_Reynolds'
         call prod_SGS_buoyancy_to_Reynolds                              &
      &     (sph%sph_rtp, dynamic_SPH%sph_d_grp,                         &
-     &      trns_SGS%f_trns, dynamic_SPH%iak_sgs_term,                  &
+     &      trns_SGS%f_trns_LES, dynamic_SPH%iak_sgs_term,              &
      &      dynamic_SPH%wk_sgs, trns_SGS%forward)
 !
       else if(SGS_param%iflag_SGS_buo_usage .eq. id_use_sphere) then
@@ -89,7 +89,7 @@
 !     &                    'magnify_sph_ave_SGS_buoyancy'
         call magnify_sph_ave_SGS_buoyancy(sph%sph_rtp,                  &
      &      dynamic_SPH%iak_sgs_term, dynamic_SPH%wk_sgs_buo,           &
-     &      trns_SGS%f_trns, trns_SGS%forward)
+     &      trns_SGS%f_trns_LES, trns_SGS%forward)
 !
       else if(SGS_param%iflag_SGS_buo_usage .eq. id_use_volume) then
         if(istep_dynamic .eq. 0) then
@@ -103,7 +103,7 @@
 !     &                    'magnify_vol_ave_SGS_buoyancy'
         call magnify_vol_ave_SGS_buoyancy(sph%sph_rtp,                  &
      &      dynamic_SPH%iak_sgs_term, dynamic_SPH%wk_sgs_buo,           &
-     &      trns_SGS%f_trns, trns_SGS%forward)
+     &      trns_SGS%f_trns_LES, trns_SGS%forward)
       end if
 !
       end subroutine product_buo_model_coefs_4_sph

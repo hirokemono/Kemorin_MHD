@@ -54,7 +54,7 @@
         type(diff_vector_address) :: diff_fil_vect
 !
 !>        Structure of SGS terms
-!        type(SGS_term_address) :: SGS_term
+        type(SGS_term_address) :: SGS_term
 !>        Structure of divergence of SGS terms
         type(SGS_term_address) :: div_SGS
 !>        Structure of rotation of SGS terms

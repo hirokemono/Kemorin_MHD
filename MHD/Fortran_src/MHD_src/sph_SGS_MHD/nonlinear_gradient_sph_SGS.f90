@@ -125,7 +125,7 @@
       call nl_gradient_SGS_terms_rtp                                    &
      &    (sph, dynamic_SPH%sph_filters(1), MHD_prop,                   &
      &    trns_MHD%b_trns%base, trns_ngTMP%b_trns%grad_fld,             &
-     &    trns_ngTMP%b_trns%diff_vector, trns_SGS%f_trns%SGS_term,      &
+     &    trns_ngTMP%b_trns%diff_vector, trns_SGS%f_trns_LES%SGS_term,  &
      &    trns_MHD%backward, trns_ngTMP%backward, trns_SGS%forward)
 !
       end subroutine cal_nonlinear_gradient_sph_SGS

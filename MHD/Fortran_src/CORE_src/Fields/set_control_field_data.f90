@@ -167,7 +167,7 @@
      &     (i_fld, fld%phys_name(i), iphys, flag)
         if(flag) cycle
         call set_SGS_MHD_field_addresses                                &
-     &     (i_fld, fld%phys_name(i), iphys, iphys_LES, flag)
+     &     (i_fld, fld%phys_name(i), iphys_LES, flag)
         if(flag) cycle
 !
 !   Old field label... Should be deleted later!!

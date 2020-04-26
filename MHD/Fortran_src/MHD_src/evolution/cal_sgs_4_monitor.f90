@@ -140,7 +140,7 @@
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-      if (iphys%SGS_term%i_SGS_h_flux .gt. 0) then
+      if(iphys_LES%SGS_term%i_SGS_h_flux .gt. 0) then
         if(iflag_debug.gt.0) write(*,*)                                 &
      &          'lead ', trim(SGS_heat_flux%name)
         call cal_sgs_heat_flux                                          &
@@ -148,7 +148,7 @@
      &      SGS_param%iflag_SGS_h_flux, SGS_param%itype_Csym_h_flux,    &
      &      iphys%base%i_temp, iphys%filter_fld%i_temp,                 &
      &      iphys%base%i_velo, iphys%filter_fld%i_velo,                 &
-     &      iphys%SGS_term%i_SGS_h_flux,                                &
+     &      iphys_LES%SGS_term%i_SGS_h_flux,                            &
      &      icomp_sgs_term%i_SGS_h_flux, iphys_elediff_vec%i_velo,      &
      &      SGS_param, filter_param, nod_comm, node, ele, fluid,        &
      &      iphys_ele, ele_fld, jacs, rhs_tbl, FEM_elens, filtering,    &
@@ -156,7 +156,7 @@
      &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
-      if (iphys%SGS_term%i_SGS_c_flux .gt. 0) then
+      if(iphys_LES%SGS_term%i_SGS_c_flux .gt. 0) then
         if(iflag_debug.gt.0) write(*,*)                                 &
      &          'lead ', trim(SGS_composit_flux%name)
         call cal_sgs_heat_flux                                          &
@@ -164,7 +164,7 @@
      &      SGS_param%iflag_SGS_c_flux, SGS_param%itype_Csym_c_flux,    &
      &      iphys%base%i_light, iphys%filter_fld%i_light,               &
      &      iphys%base%i_velo, iphys%filter_fld%i_velo,                 &
-     &      iphys%SGS_term%i_SGS_c_flux,                                &
+     &      iphys_LES%SGS_term%i_SGS_c_flux,                            &
      &      icomp_sgs_term%i_SGS_c_flux, iphys_elediff_vec%i_velo,      &
      &      SGS_param, filter_param, nod_comm, node, ele, fluid,        &
      &      iphys_ele, ele_fld, jacs, rhs_tbl, FEM_elens, filtering,    &
@@ -172,43 +172,43 @@
      &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
-      if (iphys%SGS_term%i_SGS_m_flux .gt. 0) then
+      if(iphys_LES%SGS_term%i_SGS_m_flux .gt. 0) then
         if(iflag_debug.gt.0) write(*,*)                                 &
      &      'lead ', trim(SGS_momentum_flux%name)
         call cal_sgs_momentum_flux(dt, FEM_prm, SGS_param,              &
      &      filter_param, nod_comm, node, ele, fluid,                   &
-     &      iphys%base, iphys%filter_fld, iphys%SGS_term,               &
+     &      iphys%base, iphys%filter_fld, iphys_LES%SGS_term,           &
      &      iphys_LES%SGS_wk, iphys_ele, ele_fld, jacs, rhs_tbl,        &
      &      FEM_elens, filtering, icomp_sgs_term, iphys_elediff_vec,    &
      &      sgs_coefs, sgs_coefs_nod, mk_MHD%mlump_fl,                  &
      &      wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
-      if (iphys%SGS_term%i_SGS_maxwell .gt. 0) then
+      if(iphys_LES%SGS_term%i_SGS_maxwell .gt. 0) then
         if(iflag_debug.gt.0) write(*,*)                                 &
      &        'lead ', trim(SGS_maxwell_tensor%name)
         call cal_sgs_maxwell(dt, FEM_prm, SGS_param,                    &
      &      filter_param, nod_comm, node, ele, fluid,                   &
-     &      iphys%base, iphys%filter_fld, iphys%SGS_term,               &
+     &      iphys%base, iphys%filter_fld, iphys_LES%SGS_term,           &
      &      iphys_LES%SGS_wk, iphys_ele, ele_fld, jacs, rhs_tbl,        &
      &      FEM_elens, filtering, icomp_sgs_term, iphys_elediff_vec,    &
      &      sgs_coefs, sgs_coefs_nod, mk_MHD%mlump_fl, wk_filter,       &
      &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
-      if (iphys%SGS_term%i_SGS_induct_t .gt. 0) then
+      if(iphys_LES%SGS_term%i_SGS_induct_t .gt. 0) then
         if(iflag_debug.gt.0) write(*,*)                                 &
      &         'lead ', trim(induction_tensor%name)
         call cal_sgs_magne_induction(dt, FEM_prm, SGS_param,            &
      &      filter_param, nod_comm, node, ele, conduct, cd_prop,        &
-     &      iphys%base, iphys%filter_fld, iphys%SGS_term,               &
+     &      iphys%base, iphys%filter_fld, iphys_LES%SGS_term,           &
      &      iphys_ele, ele_fld, jacs, rhs_tbl, FEM_elens, filtering,    &
      &      icomp_sgs_term, iphys_elediff_vec,                          &
      &      sgs_coefs, sgs_coefs_nod, mk_MHD%mlump_cd,                  &
      &      wk_filter, mhd_fem_wk, fem_wk, f_l, nod_fld)
       end if
 !
-      if (iphys%SGS_term%i_SGS_vp_induct .gt. 0) then
+      if(iphys_LES%SGS_term%i_SGS_vp_induct .gt. 0) then
         if(iflag_debug.gt.0) write(*,*)                                 &
      &        'lead ', trim(SGS_vecp_induction%name)
         call cal_sgs_uxb_2_monitor(dt, FEM_prm, SGS_param,              &
@@ -276,7 +276,7 @@
      &        'lead ', trim(div_SGS_h_flux%name)
         call cal_terms_4_heat(iphys_LES%div_SGS%i_SGS_h_flux,           &
      &      iphys%base%i_velo, iphys%base%i_temp,                       &
-     &      iphys%SGS_term%i_SGS_h_flux, iak_diff_sgs%i_SGS_h_flux,     &
+     &      iphys_LES%SGS_term%i_SGS_h_flux, iak_diff_sgs%i_SGS_h_flux, &
      &      FEM_prm%iflag_temp_supg, FEM_prm%npoint_t_evo_int,          &
      &      SGS_param%ifilter_final, SGS_param%iflag_SGS_h_flux,        &
      &      cmt_param%iflag_c_hf, cmt_param%iflag_c_temp, dt,           &
@@ -291,7 +291,7 @@
      &        'lead ', trim(div_SGS_h_flux%name)
         call cal_terms_4_heat(iphys_LES%div_SGS%i_SGS_c_flux,           &
      &      iphys%base%i_velo, iphys%base%i_light,                      &
-     &      iphys%SGS_term%i_SGS_c_flux, iak_diff_sgs%i_SGS_c_flux,     &
+     &      iphys_LES%SGS_term%i_SGS_c_flux, iak_diff_sgs%i_SGS_c_flux, &
      &      FEM_prm%iflag_comp_supg, FEM_prm%npoint_t_evo_int,          &
      &      SGS_param%ifilter_final, SGS_param%iflag_SGS_c_flux,        &
      &      cmt_param%iflag_c_cf, cmt_param%iflag_c_light, dt,          &
@@ -304,7 +304,7 @@
       do i = 1, nod_fld%num_phys
         i_fld = nod_fld%istack_component(i-1) + 1
         if(     i_fld .eq. iphys_LES%div_SGS%i_SGS_m_flux               &
-     &     .or. i_fld .eq. iphys%SGS_term%i_SGS_Lorentz) then
+     &     .or. i_fld .eq. iphys_LES%SGS_term%i_SGS_Lorentz) then
           if(iflag_debug .ge. iflag_routine_msg)                        &
      &             write(*,*) 'lead  ', trim(nod_fld%phys_name(i))
           call cal_terms_4_momentum                                     &
@@ -313,7 +313,7 @@
      &        fl_prop, cd_prop, surf_bcs%Vsf_bcs, surf_bcs%Bsf_bcs,     &
      &        iphys%base, iphys%forces, iphys%div_forces,               &
      &        iphys%diffusion, iphys%filter_fld,                        &
-     &        iphys_LES%force_by_filter, iphys%SGS_term,                &
+     &        iphys_LES%force_by_filter, iphys_LES%SGS_term,            &
      &        iphys_LES%div_SGS, iphys_ele%base, ak_MHD,                &
      &        fem_int, FEM_elens, iak_diff_sgs, diff_coefs,             &
      &        mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat,                     &
@@ -321,17 +321,17 @@
         end if
       end do
 !
-      if (      iphys%SGS_term%i_SGS_induction .gt. 0                   &
+      if(      iphys_LES%SGS_term%i_SGS_induction .gt. 0                &
      &   .and. cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
         if(iflag_debug.gt.0) write(*,*)                                 &
      &        'lead ', trim(SGS_induction%name)
         call cal_terms_4_magnetic                                       &
-     &    (iphys%SGS_term%i_SGS_induction, ak_MHD%ak_d_magne, dt,       &
+     &    (iphys_LES%SGS_term%i_SGS_induction, ak_MHD%ak_d_magne, dt,   &
      &     FEM_prm, SGS_param, cmt_param, nod_comm, node, ele,          &
      &     surf, conduct, sf_grp, cd_prop,                              &
      &     nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs, surf_bcs%Bsf_bcs,        &
      &     iphys%base, iphys%forces, iphys%div_forces, iphys%diffusion, &
-     &     iphys%SGS_term, iphys_ele%base, ele_fld,                     &
+     &     iphys_LES%SGS_term, iphys_ele%base, ele_fld,                 &
      &     fem_int, FEM_elens, iak_diff_sgs, diff_coefs,                &
      &     mk_MHD%mlump_cd, mhd_fem_wk, rhs_mat, nod_fld)
       end if
@@ -368,22 +368,22 @@
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-      if (     iphys%SGS_term%i_SGS_induction .gt. 0                    &
+      if (     iphys_LES%SGS_term%i_SGS_induction .gt. 0                &
      &   .and. cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
         if(iflag_debug.gt.0) write(*,*)                                 &
      &        'lead ', trim(SGS_induction%name)
         call int_vol_sgs_induction                                      &
-     &     (FEM_prm, nod_comm, node, ele, conduct, iphys,               &
+     &     (FEM_prm, nod_comm, node, ele, conduct, iphys, iphys_LES,    &
      &      jacs%g_FEM, jacs%jac_3d, rhs_tbl, mk_MHD%mlump_cd,          &
      &      mhd_fem_wk, fem_wk, f_nl, nod_fld)
       end if
 !
 !
       call cal_SGS_buoyancy_fluxes_FEM(node, fl_prop,                   &
-     &    iphys%SGS_term, iphys_LES%SGS_ene_flux, nod_fld)
+     &    iphys_LES%SGS_term, iphys_LES%SGS_ene_flux, nod_fld)
 !
       call work_of_SGS_terms                                            &
-     &   (iphys%base, iphys%SGS_term, iphys_LES%div_SGS,                &
+     &   (iphys%base, iphys_LES%SGS_term, iphys_LES%div_SGS,            &
      &    iphys_LES%SGS_ene_flux, nod_fld)
 !
       call work_of_SGS_terms(iphys%filter_fld, iphys_LES%true_SGS,      &

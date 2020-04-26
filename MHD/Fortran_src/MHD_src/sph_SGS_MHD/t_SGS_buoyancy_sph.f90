@@ -29,14 +29,15 @@
 !!        type(work_4_sph_SGS_buoyancy), intent(inout) :: wk_sgs_buo
 !!
 !!      subroutine magnify_sph_ave_SGS_buoyancy(sph_rtp, iak_sgs_term,  &
-!!     &          wk_sgs_buo, fg_trns, trns_f_SGS)
+!!     &          wk_sgs_buo, fg_trns_LES, trns_f_SGS)
 !!      subroutine magnify_vol_ave_SGS_buoyancy(sph_rtp, iak_sgs_term,  &
-!!     &          wk_sgs_buo, fg_trns, trns_f_SGS)
+!!     &          wk_sgs_buo, fg_trns_LES, trns_f_SGS)
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(SGS_term_address), intent(in) :: iak_sgs_term
 !!        type(work_4_sph_SGS_buoyancy), intent(in) :: wk_sgs_buo
 !!        type(phys_address), intent(in) :: fg_trns
+!!        type(SGS_model_addresses), intent(in) :: fg_trns_LES
 !!        type(address_4_sph_trans), intent(inout) :: trns_SGS
 !!        type(address_each_sph_trans), intent(inout) :: trns_f_SGS
 !!@endverbatim
@@ -252,8 +253,9 @@
 ! -----------------------------------------------------------------------
 !
       subroutine magnify_sph_ave_SGS_buoyancy(sph_rtp, iak_sgs_term,    &
-     &          wk_sgs_buo, fg_trns, trns_f_SGS)
+     &          wk_sgs_buo, fg_trns_LES, trns_f_SGS)
 !
+      use t_SGS_model_addresses
       use t_rms_4_sph_spectr
       use t_spheric_parameter
       use t_SGS_model_coefs
@@ -266,7 +268,7 @@
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(SGS_term_address), intent(in) :: iak_sgs_term
       type(work_4_sph_SGS_buoyancy), intent(in) :: wk_sgs_buo
-      type(phys_address), intent(in) :: fg_trns
+      type(SGS_model_addresses), intent(in) :: fg_trns_LES
 !
       type(address_each_sph_trans), intent(inout) :: trns_f_SGS
 !
@@ -274,13 +276,13 @@
       if     (iak_sgs_term%i_SGS_buoyancy                               &
      &         * iak_sgs_term%i_SGS_comp_buo .gt. 0) then
         call sel_prod_dbl_radial_buo_coefs(sph_rtp,                     &
-     &     wk_sgs_buo%Cbuo_ave_sph_rtp, fg_trns, trns_f_SGS)
+     &     wk_sgs_buo%Cbuo_ave_sph_rtp, fg_trns_LES, trns_f_SGS)
       else if(iak_sgs_term%i_SGS_buoyancy .gt. 0) then
         call sel_prod_sgl_radial_buo_coefs(sph_rtp,                     &
-     &     wk_sgs_buo%Cbuo_ave_sph_rtp(1,1), fg_trns, trns_f_SGS)
+     &     wk_sgs_buo%Cbuo_ave_sph_rtp(1,1), fg_trns_LES, trns_f_SGS)
       else if(iak_sgs_term%i_SGS_comp_buo .gt. 0) then
         call sel_prod_sgl_radial_buo_coefs(sph_rtp,                     &
-     &     wk_sgs_buo%Cbuo_ave_sph_rtp(1,2), fg_trns, trns_f_SGS)
+     &     wk_sgs_buo%Cbuo_ave_sph_rtp(1,2), fg_trns_LES, trns_f_SGS)
       end if
 !
       end subroutine magnify_sph_ave_SGS_buoyancy
@@ -288,8 +290,9 @@
 ! ----------------------------------------------------------------------
 !
       subroutine magnify_vol_ave_SGS_buoyancy(sph_rtp, iak_sgs_term,    &
-     &          wk_sgs_buo, fg_trns, trns_f_SGS)
+     &          wk_sgs_buo, fg_trns_LES, trns_f_SGS)
 !
+      use t_SGS_model_addresses
       use t_rms_4_sph_spectr
       use t_spheric_parameter
       use t_SGS_model_coefs
@@ -301,7 +304,7 @@
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(SGS_term_address), intent(in) :: iak_sgs_term
       type(work_4_sph_SGS_buoyancy), intent(in) :: wk_sgs_buo
-      type(phys_address), intent(in) :: fg_trns
+      type(SGS_model_addresses), intent(in) :: fg_trns_LES
 !
       type(address_each_sph_trans), intent(inout) :: trns_f_SGS
 !
@@ -309,19 +312,19 @@
       if     (iak_sgs_term%i_SGS_buoyancy                               &
      &         * iak_sgs_term%i_SGS_comp_buo .gt. 0) then
         call product_double_vol_buo_coefs                               &
-     &     (wk_sgs_buo%Cbuo_vol_gl, fg_trns%SGS_term%i_SGS_inertia,     &
+     &     (wk_sgs_buo%Cbuo_vol_gl, fg_trns_LES%SGS_term%i_SGS_inertia, &
      &      sph_rtp%nnod_rtp, trns_f_SGS%ncomp, trns_f_SGS%fld_rtp)
       else if(iak_sgs_term%i_SGS_buoyancy .gt. 0) then
         if(my_rank .eq. 0) write(*,*)                                   &
      &           'product_single_vol_buo_coefs thermal',                &
      &            wk_sgs_buo%Cbuo_vol_gl(1)
-        call product_single_vol_buo_coefs                               &
-     &     (wk_sgs_buo%Cbuo_vol_gl(1), fg_trns%SGS_term%i_SGS_inertia,  &
-     &      sph_rtp%nnod_rtp, trns_f_SGS%ncomp, trns_f_SGS%fld_rtp)
+        call product_single_vol_buo_coefs(wk_sgs_buo%Cbuo_vol_gl(1),    &
+     &      fg_trns_LES%SGS_term%i_SGS_inertia, sph_rtp%nnod_rtp,       &
+     &      trns_f_SGS%ncomp, trns_f_SGS%fld_rtp)
       else if(iak_sgs_term%i_SGS_comp_buo .gt. 0) then
-        call product_single_vol_buo_coefs                               &
-     &     (wk_sgs_buo%Cbuo_vol_gl(2), fg_trns%SGS_term%i_SGS_inertia,  &
-     &      sph_rtp%nnod_rtp, trns_f_SGS%ncomp, trns_f_SGS%fld_rtp)
+        call product_single_vol_buo_coefs(wk_sgs_buo%Cbuo_vol_gl(2),    &
+     &      fg_trns_LES%SGS_term%i_SGS_inertia, sph_rtp%nnod_rtp,       &
+     &      trns_f_SGS%ncomp, trns_f_SGS%fld_rtp)
       end if
 !
       end subroutine magnify_vol_ave_SGS_buoyancy

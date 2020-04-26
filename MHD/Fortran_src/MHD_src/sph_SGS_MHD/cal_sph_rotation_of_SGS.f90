@@ -70,17 +70,18 @@
       call SGS_rot_of_SGS_forces_sph_2                                  &
      &   (sph_rj, r_2nd, leg%g_sph_rj, sph_MHD_bc%sph_bc_U,             &
      &    sph_MHD_bc%fdm2_free_ICB, sph_MHD_bc%fdm2_free_CMB,           &
-     &    ipol%SGS_term, ipol_LES%rot_SGS, rj_fld)
+     &    ipol_LES%SGS_term, ipol_LES%rot_SGS, rj_fld)
 !
-      call cal_rot_of_SGS_induction_sph(sph_rj, r_2nd, leg%g_sph_rj,    &
-     &    sph_MHD_bc%sph_bc_B, ipol%forces, ipol%SGS_term, rj_fld)
+      call cal_rot_of_SGS_induction_sph                                 &
+     &   (sph_rj, r_2nd, leg%g_sph_rj, sph_MHD_bc%sph_bc_B,             &
+     &    ipol%forces, ipol_LES%SGS_term, rj_fld)
 !
       if (iflag_debug .ge. iflag_routine_msg)                           &
      &     write(*,*) 'cal_div_of_SGS_fluxes_sph'
       call cal_div_of_SGS_fluxes_sph(sph_rj, r_2nd, leg%g_sph_rj,       &
      &   sph_MHD_bc%sph_bc_T, sph_MHD_bc%bcs_T,                         &
      &   sph_MHD_bc%sph_bc_C, sph_MHD_bc%bcs_C, sph_MHD_bc%fdm2_center, &
-     &   ipol%forces, ipol%SGS_term, ipol_LES%div_SGS, rj_fld)
+     &   ipol%forces, ipol_LES%SGS_term, ipol_LES%div_SGS, rj_fld)
 !
       end subroutine rot_SGS_terms_exp_sph
 !

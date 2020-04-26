@@ -6,12 +6,12 @@
 !        modieied by H. Matsui on Sep., 2005
 !
 !!      subroutine s_cal_light_element(i_field, dt, FEM_prm, SGS_par,   &
-!!     &          mesh, group, fluid, property, ref_param,  nod_bcs,    &
-!!     &          sf_bcs, iphys, iphys_ele, ele_fld, fem_int, FEM_elens,&
-!!     &          icomp_sgs_term, iak_diff_base, iak_diff_sgs,          &
-!!     &          iphys_elediff_vec, sgs_coefs, sgs_coefs_nod,          &
-!!     &          diff_coefs, filtering, mk_MHD, Smatrix, ak_MHD,       &
-!!     &          MGCG_WK, FEM_SGS_wk, mhd_fem_wk, rhs_mat, nod_fld)
+!!     &         mesh, group, fluid, property, ref_param, nod_bcs,      &
+!!     &         sf_bcs, iphys, iphys_LES, iphys_ele, ele_fld, fem_int, &
+!!     &         FEM_elens, icomp_sgs_term, iak_diff_base, iak_diff_sgs,&
+!!     &         iphys_elediff_vec, sgs_coefs, sgs_coefs_nod,           &
+!!     &         diff_coefs, filtering, mk_MHD, Smatrix, ak_MHD,        &
+!!     &         MGCG_WK, FEM_SGS_wk, mhd_fem_wk, rhs_mat, nod_fld)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(mesh_geometry), intent(in) :: mesh
@@ -22,6 +22,7 @@
 !!        type(nodal_bcs_4_scalar_type), intent(in) :: nod_bcs
 !!        type(scaler_surf_bc_type), intent(in) :: sf_bcs
 !!        type(phys_address), intent(in) :: iphys
+!!        type(SGS_model_addresses), intent(in) :: iphys_LES
 !!        type(phys_address), intent(in) :: iphys_ele
 !!        type(phys_data), intent(in) :: ele_fld
 !!        type(coefs_4_MHD_type), intent(in) :: ak_MHD
@@ -60,6 +61,7 @@
       use t_surface_data
       use t_phys_data
       use t_phys_address
+      use t_SGS_model_addresses
       use t_jacobians
       use t_table_FEM_const
       use t_MHD_finite_element_mat
@@ -87,12 +89,12 @@
 ! ----------------------------------------------------------------------
 !
       subroutine s_cal_light_element(i_field, dt, FEM_prm, SGS_par,     &
-     &          mesh, group, fluid, property, ref_param,  nod_bcs,      &
-     &          sf_bcs, iphys, iphys_ele, ele_fld, fem_int, FEM_elens,  &
-     &          icomp_sgs_term, iak_diff_base, iak_diff_sgs,            &
-     &          iphys_elediff_vec, sgs_coefs, sgs_coefs_nod,            &
-     &          diff_coefs, filtering, mk_MHD, Smatrix, ak_MHD,         &
-     &          MGCG_WK, FEM_SGS_wk, mhd_fem_wk, rhs_mat, nod_fld)
+     &         mesh, group, fluid, property, ref_param, nod_bcs,        &
+     &         sf_bcs, iphys, iphys_LES, iphys_ele, ele_fld, fem_int,   &
+     &         FEM_elens, icomp_sgs_term, iak_diff_base, iak_diff_sgs,  &
+     &         iphys_elediff_vec, sgs_coefs, sgs_coefs_nod,             &
+     &         diff_coefs, filtering, mk_MHD, Smatrix, ak_MHD,          &
+     &         MGCG_WK, FEM_SGS_wk, mhd_fem_wk, rhs_mat, nod_fld)
 !
       use nod_phys_send_recv
       use set_boundary_scalars
@@ -121,6 +123,7 @@
       type(nodal_bcs_4_scalar_type), intent(in) :: nod_bcs
       type(scaler_surf_bc_type), intent(in) :: sf_bcs
       type(phys_address), intent(in) :: iphys
+      type(SGS_model_addresses), intent(in) :: iphys_LES
       type(phys_address), intent(in) :: iphys_ele
       type(phys_data), intent(in) :: ele_fld
       type(coefs_4_MHD_type), intent(in) :: ak_MHD
@@ -147,9 +150,9 @@
       call s_cal_light_element_pre(i_field, dt, FEM_prm,                &
      &    SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,         &
      &    mesh, group, fluid, property, ref_param, nod_bcs, sf_bcs,     &
-     &    iphys%base, iphys%grad_fld, iphys%filter_fld, iphys%SGS_term, &
-     &    iphys%exp_work, iphys_ele, ele_fld, fem_int%jcs,              &
-     &    fem_int%rhs_tbl, FEM_elens, icomp_sgs_term,                   &
+     &    iphys%base, iphys%grad_fld, iphys%filter_fld,                 &
+     &    iphys_LES%SGS_term, iphys%exp_work, iphys_ele, ele_fld,       &
+     &    fem_int%jcs, fem_int%rhs_tbl, FEM_elens, icomp_sgs_term,      &
      &    iak_diff_base, iak_diff_sgs, iphys_elediff_vec,               &
      &    sgs_coefs, sgs_coefs_nod, diff_coefs, filtering,              &
      &    mk_MHD%mlump_fl, Smatrix, ak_MHD%ak_d_composit, MGCG_WK,      &

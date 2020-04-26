@@ -145,7 +145,8 @@
           write(*,*) 'Spherical transform field table ',                &
      &               'for similarity SGS (trns_SGS)'
         end if
-        call init_sph_trns_fld_similarity(ipol, iphys, WK%trns_SGS,     &
+        call init_sph_trns_fld_similarity                               &
+     &     (ipol, ipol_LES, iphys, iphys_LES, WK%trns_SGS,              &
      &      ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
 !
         if(SGS_param%iflag_dynamic .eq. id_SGS_DYNAMIC_ON) then
@@ -158,7 +159,8 @@
          end if
 !
       else if(SGS_param%iflag_SGS .eq. id_SGS_NL_grad) then
-        call init_sph_trns_fld_ngrad_SGS(ipol, iphys, WK%trns_SGS,      &
+        call init_sph_trns_fld_ngrad_SGS                                &
+     &     (ipol_LES, iphys_LES, WK%trns_SGS,                           &
      &      ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
         call init_sph_trns_fld_ngrad_pre(ipol, iphys, WK%trns_ngTMP,    &
      &      ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
@@ -167,7 +169,8 @@
             write(*,*) 'Spherical transform field table ',              &
      &                 'for similarity SGS (trns_SIMI)'
           end if
-          call init_sph_trns_fld_similarity(ipol, iphys, WK%trns_SIMI,  &
+          call init_sph_trns_fld_similarity                             &
+     &       (ipol, ipol_LES, iphys, iphys_LES, WK%trns_SIMI,           &
      &        ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
           call init_sph_trns_fld_dyn_ngrad                              &
      &       (ipol_LES, iphys_LES, WK%trns_DYNG,                        &

@@ -15,19 +15,19 @@
 !!        type(phys_address), intent(in) :: fg_trns
 !!        type(address_each_sph_trans), intent(inout) :: trns_f_SGS
 !!      subroutine prod_SGS_buoyancy_to_Reynolds(sph_rtp, sph_d_grp,    &
-!!     &          fg_trns, iak_sgs_term, wk_sgs, trns_f_SGS)
+!!     &          fg_trns_LES, iak_sgs_term, wk_sgs, trns_f_SGS)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(sph_dynamic_model_group), intent(in) :: sph_d_grp
-!!        type(phys_address), intent(in) :: fg_trns
+!!        type(SGS_model_addresses), intent(in) :: fg_trns_LES
 !!        type(SGS_term_address), intent(in) :: iak_sgs_term
 !!        type(dynamic_model_data), intent(in) :: wk_sgs
 !!
 !!      subroutine sel_prod_sgl_radial_buo_coefs                        &
-!!     &         (sph_rtp, sgs_c, fg_trns, trns_f_SGS)
+!!     &         (sph_rtp, sgs_c, fg_trns_LES, trns_f_SGS)
 !!      subroutine sel_prod_dbl_radial_buo_coefs                        &
-!!     &         (sph_rtp, sgs_c, fg_trns, trns_f_SGS)
+!!     &         (sph_rtp, sgs_c, fg_trns_LES, trns_f_SGS)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
-!!        type(phys_address), intent(in) :: fg_trns
+!!        type(SGS_model_addresses), intent(in) :: fg_trns_LES
 !!        type(address_each_sph_trans), intent(inout) :: trns_f_SGS
 !!@endverbatim
 !
@@ -43,6 +43,7 @@
       use t_SGS_control_parameter
       use t_spheric_rtp_data
       use t_phys_address
+      use t_SGS_model_addresses
       use t_SGS_term_labels
       use t_addresses_sph_transform
       use t_SGS_model_coefs
@@ -100,11 +101,11 @@
 ! ----------------------------------------------------------------------
 !
       subroutine prod_SGS_buoyancy_to_Reynolds(sph_rtp, sph_d_grp,      &
-     &          fg_trns, iak_sgs_term, wk_sgs, trns_f_SGS)
+     &          fg_trns_LES, iak_sgs_term, wk_sgs, trns_f_SGS)
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_dynamic_model_group), intent(in) :: sph_d_grp
-      type(phys_address), intent(in) :: fg_trns
+      type(SGS_model_addresses), intent(in) :: fg_trns_LES
       type(SGS_term_address), intent(in) :: iak_sgs_term
       type(dynamic_model_data), intent(in) :: wk_sgs
 !
@@ -117,18 +118,18 @@
      &     (sph_rtp, sph_d_grp, wk_sgs%num_kinds,                       &
      &      iak_sgs_term%i_SGS_buoyancy, iak_sgs_term%i_SGS_comp_buo,   &
      &      wk_sgs%fld_coef, trns_f_SGS%ncomp,                          &
-     &      fg_trns%SGS_term%i_SGS_inertia, trns_f_SGS%fld_rtp)
+     &      fg_trns_LES%SGS_term%i_SGS_inertia, trns_f_SGS%fld_rtp)
       else if(iak_sgs_term%i_SGS_buoyancy .gt. 0) then
         call sel_product_single_buo_coefs                               &
      &     (sph_rtp, sph_d_grp, wk_sgs%num_kinds,                       &
      &      iak_sgs_term%i_SGS_buoyancy, wk_sgs%fld_coef,               &
-     &      trns_f_SGS%ncomp, fg_trns%SGS_term%i_SGS_inertia,           &
+     &      trns_f_SGS%ncomp, fg_trns_LES%SGS_term%i_SGS_inertia,       &
      &      trns_f_SGS%fld_rtp)
       else if(iak_sgs_term%i_SGS_comp_buo .gt. 0) then
         call sel_product_single_buo_coefs                               &
      &     (sph_rtp, sph_d_grp, wk_sgs%num_kinds,                       &
      &      iak_sgs_term%i_SGS_comp_buo, wk_sgs%fld_coef,               &
-     &      trns_f_SGS%ncomp, fg_trns%SGS_term%i_SGS_inertia,           &
+     &      trns_f_SGS%ncomp, fg_trns_LES%SGS_term%i_SGS_inertia,       &
      &      trns_f_SGS%fld_rtp)
       end if
 !
@@ -169,25 +170,25 @@
 ! ----------------------------------------------------------------------
 !
       subroutine sel_prod_sgl_radial_buo_coefs                          &
-     &         (sph_rtp, sgs_c, fg_trns, trns_f_SGS)
+     &         (sph_rtp, sgs_c, fg_trns_LES, trns_f_SGS)
 !
       use m_FFT_selector
       use prod_buo_model_coefs_sph
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
       real(kind = kreal), intent(in) :: sgs_c(sph_rtp%nidx_rtp(1))
-      type(phys_address), intent(in) :: fg_trns
+      type(SGS_model_addresses), intent(in) :: fg_trns_LES
 !
       type(address_each_sph_trans), intent(inout) :: trns_f_SGS
 !
 !
       if(iflag_FFT .eq. iflag_FFTW) then
         call prod_sgl_radial_buo_coefs_pin(sph_rtp%nidx_rtp, sgs_c,     &
-     &      fg_trns%SGS_term%i_SGS_inertia, sph_rtp%nnod_rtp,           &
+     &      fg_trns_LES%SGS_term%i_SGS_inertia, sph_rtp%nnod_rtp,       &
      &      trns_f_SGS%ncomp, trns_f_SGS%fld_rtp)
       else
         call prod_sgl_radial_buo_coefs_pout(sph_rtp%nidx_rtp, sgs_c,    &
-     &      fg_trns%SGS_term%i_SGS_inertia, sph_rtp%nnod_rtp,           &
+     &      fg_trns_LES%SGS_term%i_SGS_inertia, sph_rtp%nnod_rtp,       &
      &      trns_f_SGS%ncomp, trns_f_SGS%fld_rtp)
       end if
 !
@@ -196,25 +197,25 @@
 ! ----------------------------------------------------------------------
 !
       subroutine sel_prod_dbl_radial_buo_coefs                          &
-     &         (sph_rtp, sgs_c, fg_trns, trns_f_SGS)
+     &         (sph_rtp, sgs_c, fg_trns_LES, trns_f_SGS)
 !
       use m_FFT_selector
       use prod_buo_model_coefs_sph
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
       real(kind = kreal), intent(in) :: sgs_c(sph_rtp%nidx_rtp(1),2)
-      type(phys_address), intent(in) :: fg_trns
+      type(SGS_model_addresses), intent(in) :: fg_trns_LES
 !
       type(address_each_sph_trans), intent(inout) :: trns_f_SGS
 !
 !
       if(iflag_FFT .eq. iflag_FFTW) then
         call prod_dbl_radial_buo_coefs_pin(sph_rtp%nidx_rtp, sgs_c,     &
-     &      fg_trns%SGS_term%i_SGS_inertia, sph_rtp%nnod_rtp,           &
+     &      fg_trns_LES%SGS_term%i_SGS_inertia, sph_rtp%nnod_rtp,       &
      &      trns_f_SGS%ncomp, trns_f_SGS%fld_rtp)
       else
         call prod_dbl_radial_buo_coefs_pout(sph_rtp%nidx_rtp, sgs_c,    &
-     &      fg_trns%SGS_term%i_SGS_inertia, sph_rtp%nnod_rtp,           &
+     &      fg_trns_LES%SGS_term%i_SGS_inertia, sph_rtp%nnod_rtp,       &
      &      trns_f_SGS%ncomp, trns_f_SGS%fld_rtp)
       end if
 !

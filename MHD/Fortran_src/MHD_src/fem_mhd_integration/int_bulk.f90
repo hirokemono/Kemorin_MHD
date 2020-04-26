@@ -6,8 +6,8 @@
 !      Modified by H. Matsui on Aug, 2007
 !
 !!      subroutine s_int_mean_squares(npoint_integrate,                 &
-!!     &          mesh, fluid, conduct, iphys, nod_fld, jacs,           &
-!!     &          i_msq, msq_list, fem_wk, mhd_fem_wk, fem_msq)
+!!     &          mesh, fluid, conduct, iphys, iphys_LES, nod_fld,      &
+!!     &          jacs, i_msq, msq_list, fem_wk, mhd_fem_wk, fem_msq)
 !!      subroutine int_no_evo_mean_squares(i_step, dt, mesh,            &
 !!     &          fl_prop, cd_prop, iphys, nod_fld, iphys_ele, ele_fld, &
 !!     &          fluid, jacs, fem_wk, fem_msq)
@@ -16,6 +16,7 @@
 !!        type(fluid_property), intent(in) :: fl_prop
 !!        type(conductive_property), intent(in) :: cd_prop
 !!        type(phys_address), intent(in) :: iphys
+!!        type(SGS_model_addresses), intent(in) :: iphys_LES
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(phys_address), intent(in) :: iphys_ele
 !!        type(phys_data), intent(in) :: ele_fld
@@ -37,6 +38,7 @@
       use t_mesh_data
       use t_phys_data
       use t_phys_address
+      use t_SGS_model_addresses
       use t_jacobians
       use t_finite_element_mat
       use t_MHD_finite_element_mat
@@ -52,8 +54,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine s_int_mean_squares(npoint_integrate,                   &
-     &          mesh, fluid, conduct, iphys, nod_fld, jacs,             &
-     &          i_msq, msq_list, fem_wk, mhd_fem_wk, fem_msq)
+     &          mesh, fluid, conduct, iphys, iphys_LES, nod_fld,        &
+     &          jacs, i_msq, msq_list, fem_wk, mhd_fem_wk, fem_msq)
 !
       use m_constants
       use calypso_mpi
@@ -65,6 +67,7 @@
       type(mesh_geometry), intent(in) :: mesh
       type(field_geometry_data), intent(in) :: fluid, conduct
       type(phys_address), intent(in) :: iphys
+      type(SGS_model_addresses), intent(in) :: iphys_LES
       type(phys_data), intent(in) :: nod_fld
       type(jacobians_type), intent(in) :: jacs
       type(mean_square_address), intent(in) :: i_msq
@@ -150,7 +153,7 @@
 !
         else if(msq_list%ifld_msq(i) .eq. iphys%forces%i_induct_t       &
      &     .or. msq_list%ifld_msq(i)                                    &
-     &           .eq. iphys%SGS_term%i_SGS_induct_t) then
+     &           .eq. iphys_LES%SGS_term%i_SGS_induct_t) then
            call int_all_4_asym_tensor                                   &
      &        (conduct%istack_ele_fld_smp, npoint_integrate,            &
      &        msq_list%irms_msq(i), msq_list%jave_msq(i),               &

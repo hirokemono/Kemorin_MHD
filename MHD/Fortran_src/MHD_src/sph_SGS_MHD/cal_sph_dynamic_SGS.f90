@@ -105,7 +105,7 @@
         if(iflag_SGS_time) call start_elapsed_time(ist_elapsed_SGS+2)
         call cal_scale_similarity_sph_SGS                               &
      &     (sph, comms_sph, MHD_prop, trans_p, WK%WK_sph,               &
-     &      dynamic_SPH, ipol, rj_fld, WK%trns_SGS)
+     &      dynamic_SPH, ipol, ipol_LES, rj_fld, WK%trns_SGS)
         if(iflag_SGS_time) call end_elapsed_time(ist_elapsed_SGS+2)
 !
         if(SGS_par%model_p%iflag_dynamic .eq. id_SGS_DYNAMIC_ON         &
@@ -147,11 +147,11 @@
         if (iflag_debug.eq.1) write(*,*) 'product_model_coefs_4_sph'
         call product_model_coefs_4_sph(SGS_par%model_p, sph%sph_rtp,    &
      &      dynamic_SPH%sph_d_grp, dynamic_SPH%iak_sgs_term,            &
-     &      WK%trns_SGS%f_trns%SGS_term, WK%trns_SGS%forward,           &
+     &      WK%trns_SGS%f_trns_LES%SGS_term, WK%trns_SGS%forward,       &
      &      dynamic_SPH%wk_sgs)
       else
         call prod_fixed_sph_SGS_Csim(SGS_par%model_p, sph%sph_rtp,      &
-     &      dynamic_SPH%iak_sgs_term, WK%trns_SGS%f_trns%SGS_term,      &
+     &      dynamic_SPH%iak_sgs_term, WK%trns_SGS%f_trns_LES%SGS_term,  &
      &      WK%trns_SGS%forward)
       end if
 !
@@ -246,7 +246,7 @@
      &   (sph%sph_rj, ipol%forces, ipol_LES%wide_SGS,                   &
      &    dynamic_SPH%sph_filters(2), rj_fld)
       call cal_sph_dble_filtering_forces                                &
-     &   (sph%sph_rj, ipol%SGS_term, ipol_LES%dble_SGS,                 &
+     &   (sph%sph_rj, ipol_LES%SGS_term, ipol_LES%dble_SGS,             &
      &    dynamic_SPH%sph_filters(2), rj_fld)
 !
       if (iflag_debug.eq.1) write(*,*) 'sph_back_trans_SGS_MHD dyns'
@@ -262,7 +262,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'SGS_param%stab_weight'
       call const_model_coefs_4_sph(SGS_param, sph%sph_rtp,              &
-     &    dynamic_SPH%sph_d_grp, trns_SGS%f_trns%SGS_term,              &
+     &    dynamic_SPH%sph_d_grp, trns_SGS%f_trns_LES%SGS_term,          &
      &    trns_DYNS%b_trns_LES%wide_SGS, trns_DYNS%b_trns_LES%dble_SGS, &
      &    trns_SGS%forward, trns_DYNS%backward, trns_DYNS%backward,     &
      &    dynamic_SPH%iak_sgs_term, dynamic_SPH%wk_sgs)
@@ -305,7 +305,7 @@
       if(iflag_SGS_time) call start_elapsed_time(ist_elapsed_SGS+2)
       call cal_scale_similarity_sph_SGS                                 &
      &   (sph, comms_sph, MHD_prop, trans_p, WK_sph,                    &
-     &    dynamic_SPH, ipol, rj_fld, trns_SIMI)
+     &    dynamic_SPH, ipol, ipol_LES, rj_fld, trns_SIMI)
       if(iflag_SGS_time) call end_elapsed_time(ist_elapsed_SGS+2)
 !
 !       Bring SGS terms by nonlinear model to spectr data
@@ -318,7 +318,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_sph_dble_filtering_forces'
       call cal_sph_dble_filtering_forces                                &
-     &   (sph%sph_rj, ipol%SGS_term, ipol_LES%dble_SGS,                 &
+     &   (sph%sph_rj, ipol_LES%SGS_term, ipol_LES%dble_SGS,             &
      &    dynamic_SPH%sph_filters(2), rj_fld)
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_sph_dble_filtering_forces'
@@ -329,7 +329,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'SGS_param%stab_weight'
       call const_model_coefs_4_sph(SGS_param, sph%sph_rtp,              &
-     &    dynamic_SPH%sph_d_grp, trns_SIMI%f_trns%SGS_term,             &
+     &    dynamic_SPH%sph_d_grp, trns_SIMI%f_trns_LES%SGS_term,         &
      &    trns_Csim%b_trns_LES%wide_SGS, trns_DYNG%b_trns_LES%dble_SGS, &
      &    trns_SIMI%forward, trns_Csim%backward, trns_DYNG%backward,    &
      &    dynamic_SPH%iak_sgs_term, dynamic_SPH%wk_sgs)

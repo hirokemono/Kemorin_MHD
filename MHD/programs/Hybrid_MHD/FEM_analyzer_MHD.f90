@@ -16,6 +16,7 @@
 !!        type(FEM_MHD_time_stepping), intent(inout) :: flex_MHD
 !!        type(mesh_data), intent(in) :: fem
 !!        type(phys_address), intent(inout) :: iphys
+!!        type(SGS_model_addresses), intent(in) :: iphys_LES
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(FEM_MHD_solvers), intent(inout) :: MHD_CG
 !!        type(MHD_IO_data), intent(inout) :: MHD_IO
@@ -31,6 +32,7 @@
       use t_mesh_data
       use t_phys_data
       use t_phys_address
+      use t_SGS_model_addresses
       use t_material_property
       use t_MHD_step_parameter
       use t_MHD_file_parameter
@@ -191,6 +193,7 @@
       type(MHD_file_IO_params), intent(in) :: MHD_files
       type(mesh_data), intent(in) :: fem
       type(phys_address), intent(in) :: iphys
+      type(SGS_model_addresses), intent(in) :: iphys_LES
 !
       type(FEM_MHD_model_data), intent(in) :: FEM_model
 !
@@ -257,7 +260,7 @@
      &     (MHD_step%flex_p%istep_max_dt, MHD_step%rms_step,            &
      &      FEM_model%FEM_prm, MHD_step%time_d, fem%mesh,               &
      &      FEM_model%MHD_mesh, FEM_model%MHD_prop,                     &
-     &      iphys, nod_fld, SGS_MHD_wk%iphys_ele,                       &
+     &      iphys, iphys_LES, nod_fld, SGS_MHD_wk%iphys_ele,            &
      &      SGS_MHD_wk%ele_fld, SGS_MHD_wk%fem_int%jcs,                 &
      &      SGS_MHD_wk%rhs_mat, SGS_MHD_wk%mhd_fem_wk, fem_sq)
 !

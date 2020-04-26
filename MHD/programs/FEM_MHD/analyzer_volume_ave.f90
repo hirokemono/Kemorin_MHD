@@ -61,8 +61,8 @@
         if (iflag_debug.eq.1)  write(*,*) 'FEM_analyze_vol_average'
         call FEM_analyze_vol_average                                    &
      &     (i_step, MHD_files1, FEM_MHD1%geofem,                        &
-     &      FEM_MHD1%iphys, FEM_model1, MHD_step1, SGS_MHD_wk1,         &
-     &      FEM_MHD1%field, fem_sq1)
+     &      FEM_MHD1%iphys, FEM_SGS1%iphys_LES, FEM_model1,             &
+     &      MHD_step1, SGS_MHD_wk1, FEM_MHD1%field, fem_sq1)
       end do
 !
 !      call FEM_finalize_vol_average

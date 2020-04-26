@@ -197,7 +197,7 @@
      &     MHD_mesh%conduct, MHD_prop%cd_prop,                          &
      &     nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs,                          &
      &     surf_bcs%Bsf_bcs, surf_bcs%Fsf_bcs,                          &
-     &     iphys, SGS_MHD_wk%iphys_ele, SGS_MHD_wk%ele_fld,             &
+     &     iphys, iphys_LES, SGS_MHD_wk%iphys_ele, SGS_MHD_wk%ele_fld,  &
      &     SGS_MHD_wk%fem_int, icomp_sgs_term,                          &
      &     iak_diff_base, iak_diff_sgs, iphys_elediff_vec,              &
      &     sgs_coefs, sgs_coefs_nod, diff_coefs, FEM_filters,           &
@@ -225,8 +225,8 @@
           call cal_temperature_field(iphys%base%i_per_temp, time_d%dt,  &
      &       FEM_prm, SGS_par, geofem%mesh, geofem%group,               &
      &       MHD_mesh%fluid, MHD_prop%ht_prop, MHD_prop%ref_param_T,    &
-     &       nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs,                        &
-     &       iphys, SGS_MHD_wk%iphys_ele, SGS_MHD_wk%ele_fld,           &
+     &       nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs, iphys, iphys_LES,      &
+     &       SGS_MHD_wk%iphys_ele, SGS_MHD_wk%ele_fld,                  &
      &       SGS_MHD_wk%fem_int, FEM_filters%FEM_elens,                 &
      &       icomp_sgs_term, iak_diff_base, iak_diff_sgs,               &
      &       iphys_elediff_vec, sgs_coefs, sgs_coefs_nod, diff_coefs,   &
@@ -243,17 +243,17 @@
 !     &        my_rank, sf_grp, geofem%group%surf_nod_grp)
           if (iflag_debug.eq.1) write(*,*) 'cal_temperature_field T'
           call cal_temperature_field(iphys%base%i_temp, time_d%dt,      &
-     &       FEM_prm, SGS_par, geofem%mesh, geofem%group,               &
-     &       MHD_mesh%fluid, MHD_prop%ht_prop, MHD_prop%ref_param_T,    &
-     &       nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs,                        &
-     &       iphys, SGS_MHD_wk%iphys_ele, SGS_MHD_wk%ele_fld,           &
-     &       SGS_MHD_wk%fem_int, FEM_filters%FEM_elens,                 &
-     &       icomp_sgs_term, iak_diff_base, iak_diff_sgs,               &
-     &       iphys_elediff_vec, sgs_coefs, sgs_coefs_nod, diff_coefs,   &
-     &       FEM_filters%filtering, SGS_MHD_wk%mk_MHD,                  &
-     &       s_package%Tmatrix, ak_MHD, MGCG_WK,                        &
-     &       SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%mhd_fem_wk,              &
-     &       SGS_MHD_wk%rhs_mat, nod_fld)
+     &        FEM_prm, SGS_par, geofem%mesh, geofem%group,              &
+     &        MHD_mesh%fluid, MHD_prop%ht_prop, MHD_prop%ref_param_T,   &
+     &        nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs, iphys, iphys_LES,     &
+     &        SGS_MHD_wk%iphys_ele, SGS_MHD_wk%ele_fld,                 &
+     &        SGS_MHD_wk%fem_int, FEM_filters%FEM_elens,                &
+     &        icomp_sgs_term, iak_diff_base, iak_diff_sgs,              &
+     &        iphys_elediff_vec, sgs_coefs, sgs_coefs_nod, diff_coefs,  &
+     &        FEM_filters%filtering, SGS_MHD_wk%mk_MHD,                 &
+     &        s_package%Tmatrix, ak_MHD, MGCG_WK,                       &
+     &        SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%mhd_fem_wk,             &
+     &        SGS_MHD_wk%rhs_mat, nod_fld)
 !
         if (iphys%base%i_per_temp .gt. 0) then
           call subtract_2_nod_scalars(nod_fld,                          &
@@ -283,8 +283,8 @@
           call s_cal_light_element(iphys%base%i_per_light, time_d%dt,   &
      &       FEM_prm, SGS_par, geofem%mesh, geofem%group,               &
      &       MHD_mesh%fluid, MHD_prop%cp_prop, MHD_prop%ref_param_C,    &
-     &       nod_bcs%Cnod_bcs, surf_bcs%Csf_bcs,                        &
-     &       iphys, SGS_MHD_wk%iphys_ele, SGS_MHD_wk%ele_fld,           &
+     &       nod_bcs%Cnod_bcs, surf_bcs%Csf_bcs, iphys, iphys_LES,      &
+     &       SGS_MHD_wk%iphys_ele, SGS_MHD_wk%ele_fld,                  &
      &       SGS_MHD_wk%fem_int, FEM_filters%FEM_elens,                 &
      &       icomp_sgs_term, iak_diff_base, iak_diff_sgs,               &
      &       iphys_elediff_vec, sgs_coefs, sgs_coefs_nod, diff_coefs,   &
@@ -299,8 +299,8 @@
           call s_cal_light_element(iphys%base%i_light, time_d%dt,       &
      &       FEM_prm, SGS_par, geofem%mesh, geofem%group,               &
      &       MHD_mesh%fluid, MHD_prop%cp_prop, MHD_prop%ref_param_C,    &
-     &       nod_bcs%Cnod_bcs, surf_bcs%Csf_bcs,                        &
-     &       iphys, SGS_MHD_wk%iphys_ele, SGS_MHD_wk%ele_fld,           &
+     &       nod_bcs%Cnod_bcs, surf_bcs%Csf_bcs, iphys, iphys_LES,      &
+     &       SGS_MHD_wk%iphys_ele, SGS_MHD_wk%ele_fld,                  &
      &       SGS_MHD_wk%fem_int, FEM_filters%FEM_elens,                 &
      &       icomp_sgs_term, iak_diff_base, iak_diff_sgs,               &
      &       iphys_elediff_vec, sgs_coefs, sgs_coefs_nod, diff_coefs,   &
@@ -517,17 +517,17 @@
      &   then
           if (iflag_debug.eq.1) write(*,*) 'cal_temperature_field'
           call cal_temperature_field(iphys%base%i_per_temp, time_d%dt,  &
-     &       FEM_prm, SGS_par, geofem%mesh, geofem%group,               &
-     &       fluid, MHD_prop%ht_prop, MHD_prop%ref_param_T,             &
-     &       nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs,                        &
-     &       iphys, SGS_MHD_wk%iphys_ele, SGS_MHD_wk%ele_fld,           &
-     &       SGS_MHD_wk%fem_int, FEM_filters%FEM_elens,                 &
-     &       icomp_sgs_term, iak_diff_base, iak_diff_sgs,               &
-     &       iphys_elediff_vec, sgs_coefs,                              &
-     &       sgs_coefs_nod, diff_coefs, FEM_filters%filtering,          &
-     &       SGS_MHD_wk%mk_MHD, s_package%Tmatrix, ak_MHD, MGCG_WK,     &
-     &       SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%mhd_fem_wk,              &
-     &       SGS_MHD_wk%rhs_mat, nod_fld)
+     &        FEM_prm, SGS_par, geofem%mesh, geofem%group,              &
+     &        fluid, MHD_prop%ht_prop, MHD_prop%ref_param_T,            &
+     &        nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs, iphys, iphys_LES,     &
+     &        SGS_MHD_wk%iphys_ele, SGS_MHD_wk%ele_fld,                 &
+     &        SGS_MHD_wk%fem_int, FEM_filters%FEM_elens,                &
+     &        icomp_sgs_term, iak_diff_base, iak_diff_sgs,              &
+     &        iphys_elediff_vec, sgs_coefs,                             &
+     &        sgs_coefs_nod, diff_coefs, FEM_filters%filtering,         &
+     &        SGS_MHD_wk%mk_MHD, s_package%Tmatrix, ak_MHD, MGCG_WK,    &
+     &        SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%mhd_fem_wk,             &
+     &        SGS_MHD_wk%rhs_mat, nod_fld)
 !
           call add_2_nod_scalars(nod_fld,                               &
      &        iphys%base%i_ref_t, iphys%base%i_per_temp,                &
@@ -535,17 +535,17 @@
         else
           if (iflag_debug.eq.1) write(*,*) 'cal_temperature_field'
           call cal_temperature_field(iphys%base%i_temp, time_d%dt,      &
-     &       FEM_prm, SGS_par, geofem%mesh, geofem%group,               &
-     &       fluid, MHD_prop%ht_prop, MHD_prop%ref_param_T,             &
-     &       nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs,                        &
-     &       iphys, SGS_MHD_wk%iphys_ele, SGS_MHD_wk%ele_fld,           &
-     &       SGS_MHD_wk%fem_int, FEM_filters%FEM_elens,                 &
-     &       icomp_sgs_term, iak_diff_base, iak_diff_sgs,               &
-     &       iphys_elediff_vec, sgs_coefs,                              &
-     &       sgs_coefs_nod, diff_coefs, FEM_filters%filtering,          &
-     &       SGS_MHD_wk%mk_MHD, s_package%Tmatrix, ak_MHD, MGCG_WK,     &
-     &       SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%mhd_fem_wk,              &
-     &       SGS_MHD_wk%rhs_mat, nod_fld)
+     &        FEM_prm, SGS_par, geofem%mesh, geofem%group,              &
+     &        fluid, MHD_prop%ht_prop, MHD_prop%ref_param_T,            &
+     &        nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs, iphys, iphys_LES,     &
+     &        SGS_MHD_wk%iphys_ele, SGS_MHD_wk%ele_fld,                 &
+     &        SGS_MHD_wk%fem_int, FEM_filters%FEM_elens,                &
+     &        icomp_sgs_term, iak_diff_base, iak_diff_sgs,              &
+     &        iphys_elediff_vec, sgs_coefs,                             &
+     &        sgs_coefs_nod, diff_coefs, FEM_filters%filtering,         &
+     &        SGS_MHD_wk%mk_MHD, s_package%Tmatrix, ak_MHD, MGCG_WK,    &
+     &        SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%mhd_fem_wk,             &
+     &        SGS_MHD_wk%rhs_mat, nod_fld)
 !
           if (iphys%base%i_per_temp .gt. 0) then
             call subtract_2_nod_scalars(nod_fld, iphys%base%i_temp,     &
@@ -574,8 +574,8 @@
           call s_cal_light_element(iphys%base%i_per_light, time_d%dt,   &
      &       FEM_prm, SGS_par, geofem%mesh, geofem%group,               &
      &       fluid, MHD_prop%cp_prop, MHD_prop%ref_param_C,             &
-     &       nod_bcs%Cnod_bcs, surf_bcs%Csf_bcs,                        &
-     &       iphys, SGS_MHD_wk%iphys_ele, SGS_MHD_wk%ele_fld,           &
+     &       nod_bcs%Cnod_bcs, surf_bcs%Csf_bcs, iphys, iphys_LES,      &
+     &       SGS_MHD_wk%iphys_ele, SGS_MHD_wk%ele_fld,                  &
      &       SGS_MHD_wk%fem_int, FEM_filters%FEM_elens,                 &
      &       icomp_sgs_term, iak_diff_base, iak_diff_sgs,               &
      &       iphys_elediff_vec, sgs_coefs, sgs_coefs_nod, diff_coefs,   &
@@ -590,8 +590,8 @@
           call s_cal_light_element(iphys%base%i_light, time_d%dt,       &
      &       FEM_prm, SGS_par, geofem%mesh, geofem%group,               &
      &       fluid, MHD_prop%cp_prop, MHD_prop%ref_param_C,             &
-     &       nod_bcs%Cnod_bcs, surf_bcs%Csf_bcs,                        &
-     &       iphys, SGS_MHD_wk%iphys_ele, SGS_MHD_wk%ele_fld,           &
+     &       nod_bcs%Cnod_bcs, surf_bcs%Csf_bcs, iphys, iphys_LES,      &
+     &       SGS_MHD_wk%iphys_ele, SGS_MHD_wk%ele_fld,                  &
      &       SGS_MHD_wk%fem_int, FEM_filters%FEM_elens,                 &
      &       icomp_sgs_term, iak_diff_base, iak_diff_sgs,               &
      &       iphys_elediff_vec, sgs_coefs, sgs_coefs_nod, diff_coefs,   &

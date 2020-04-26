@@ -9,12 +9,13 @@
 !!@verbatim
 !!      subroutine cal_scale_similarity_sph_SGS                         &
 !!     &         (sph, comms_sph, MHD_prop, trans_p, WK_sph,            &
-!!     &          dynamic_SPH, ipol, rj_fld, trns_SIMI)
+!!     &          dynamic_SPH, ipol, ipol_LES, rj_fld, trns_SIMI)
 !!        type(sph_grids), intent(in) :: sph
 !!        type(sph_comm_tables), intent(in) :: comms_sph
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
 !!        type(parameters_4_sph_trans), intent(in) :: trans_p
 !!        type(phys_address), intent(in) :: ipol
+!!        type(SGS_model_addresses), intent(in) :: ipol_LES
 !!        type(address_4_sph_trans), intent(inout) :: trns_SIMI
 !!        type(spherical_trns_works), intent(inout) :: WK_sph
 !!        type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
@@ -43,6 +44,9 @@
       use t_sph_filtering_data
       use t_sph_transforms
       use t_sph_filtering
+      use t_phys_data
+      use t_phys_address
+      use t_SGS_model_addresses
 !
       implicit none
 !
@@ -54,7 +58,7 @@
 !
       subroutine cal_scale_similarity_sph_SGS                           &
      &         (sph, comms_sph, MHD_prop, trans_p, WK_sph,              &
-     &          dynamic_SPH, ipol, rj_fld, trns_SIMI)
+     &          dynamic_SPH, ipol, ipol_LES, rj_fld, trns_SIMI)
 !
       use m_elapsed_labels_4_MHD
       use sph_transforms_4_SGS
@@ -67,6 +71,7 @@
       type(parameters_4_sph_trans), intent(in) :: trans_p
       type(dynamic_SGS_data_4_sph), intent(in) :: dynamic_SPH
       type(phys_address), intent(in) :: ipol
+      type(SGS_model_addresses), intent(in) :: ipol_LES
 !
       type(address_4_sph_trans), intent(inout) :: trns_SIMI
       type(spherical_trns_works), intent(inout) :: WK_sph
@@ -83,7 +88,7 @@
 !
       if (iflag_debug.ge.1) write(*,*) 'cal_sph_base_filtering_forces'
       call cal_sph_base_filtering_forces                                &
-     &   (sph%sph_rj, ipol%forces, ipol%SGS_term,                       &
+     &   (sph%sph_rj, ipol%forces, ipol_LES%SGS_term,                   &
      &    dynamic_SPH%sph_filters(1), rj_fld)
       if(iflag_SGS_time) call end_elapsed_time(ist_elapsed_SGS+1)
 !
@@ -97,7 +102,7 @@
       if (iflag_debug.eq.1) write(*,*) 'similarity_SGS_terms_rtp'
       call similarity_SGS_terms_rtp                                     &
      &   (sph%sph_rtp, MHD_prop, trns_SIMI%b_trns%filter_fld,           &
-     &    trns_SIMI%b_trns%SGS_term, trns_SIMI%f_trns%SGS_term,         &
+     &    trns_SIMI%b_trns_LES%SGS_term, trns_SIMI%f_trns_LES%SGS_term, &
      &    trns_SIMI%backward, trns_SIMI%forward)
       if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+10)
 !

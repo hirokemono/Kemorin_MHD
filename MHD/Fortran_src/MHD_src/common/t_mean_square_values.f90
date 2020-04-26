@@ -14,7 +14,7 @@
 !!        type(mean_square_values), intent(inout) :: fem_msq
 !!
 !!      subroutine output_monitor_file(id_rank, i_step_MHD, time,       &
-!!     &          iphys, fem_msq, msq_list)
+!!     &          iphys, iphys_LES, fem_msq, msq_list)
 !!        real(kind = kreal), intent(in) :: time
 !!        type(phys_address), intent(in) :: iphys
 !!        type(SGS_model_addresses), intent(in) :: iphys_LES
@@ -30,7 +30,7 @@
 !
       use m_precision
       use t_phys_address
-!      use t_SGS_model_addresses
+      use t_SGS_model_addresses
       use t_mean_square_filed_list
 !
       implicit  none
@@ -202,7 +202,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine output_monitor_file(id_rank, i_step_MHD, time,         &
-     &          iphys, fem_msq, msq_list)
+     &          iphys, iphys_LES, fem_msq, msq_list)
 !
       use t_phys_data
 !
@@ -211,7 +211,7 @@
       real(kind = kreal), intent(in) :: time
 !
       type(phys_address), intent(in) :: iphys
-!      type(SGS_model_addresses), intent(in) :: iphys_LES
+      type(SGS_model_addresses), intent(in) :: iphys_LES
       type(mean_square_values), intent(in) :: fem_msq
       type(mean_square_list), intent(in) :: msq_list
 !
@@ -219,7 +219,7 @@
       if ( id_rank .gt. 0 ) return
 !
       call open_monitor_file                                            &
-     &   (id_rank, iphys, fem_msq, msq_list)
+     &   (id_rank, iphys, iphys_LES, fem_msq, msq_list)
 !
       write(time_step_data_code,'(i16,1p1000e20.11)')                   &
      &     i_step_MHD, time, fem_msq%ave_global(1:fem_msq%num_ave)
@@ -234,14 +234,14 @@
 ! ----------------------------------------------------------------------
 !
       subroutine open_monitor_file                                      &
-     &         (id_rank, iphys, fem_msq, msq_list)
+     &         (id_rank, iphys, iphys_LES, fem_msq, msq_list)
 !
       use t_phys_data
       use time_step_file_IO
 !
       integer, intent(in) :: id_rank
       type(phys_address), intent(in) :: iphys
-!      type(SGS_model_addresses), intent(in) :: iphys_LES
+      type(SGS_model_addresses), intent(in) :: iphys_LES
       type(mean_square_list), intent(in) :: msq_list
       type(mean_square_values), intent(in) :: fem_msq
 !
@@ -268,7 +268,7 @@
      &      status='replace')
 !
       call write_SGS_MHD_monitor_labels                                 &
-     &   (time_step_data_code, rms_data_code, iphys,                    &
+     &   (time_step_data_code, rms_data_code, iphys, iphys_LES,         &
      &    msq_list)
 !
       end subroutine open_monitor_file

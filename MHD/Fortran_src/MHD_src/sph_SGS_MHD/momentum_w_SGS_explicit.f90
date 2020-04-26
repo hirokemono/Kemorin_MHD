@@ -110,7 +110,7 @@
       call sel_diff_induction_MHD_adams                                 &
      &   (SGS_par%model_p%iflag_SGS_uxb, dt, MHD_prop%cd_prop,          &
      &    ipol%base, ipol%exp_work, ipol%forces, ipol%diffusion,        &
-     &    ipol%SGS_term, rj_fld)
+     &    ipol_LES%SGS_term, rj_fld)
 !
       call explicit_scalars_sph_SGS_adams(dt, SGS_par%model_p,          &
      &    sph_rj, MHD_prop%ht_prop, MHD_prop%cp_prop,                   &
@@ -148,7 +148,7 @@
 !
       call sel_diff_induction_MHD_euler                                 &
      &   (SGS_par%model_p%iflag_SGS_uxb, dt, MHD_prop%cd_prop,          &
-     &    ipol%base, ipol%forces, ipol%diffusion, ipol%SGS_term,        &
+     &    ipol%base, ipol%forces, ipol%diffusion, ipol_LES%SGS_term,    &
      &    rj_fld)
 !
       call explicit_scalars_sph_SGS_euler(dt, SGS_par%model_p,          &
@@ -183,7 +183,7 @@
 !
       call sel_ini_adams_mag_induct                                     &
      &   (SGS_par%model_p%iflag_SGS_uxb, MHD_prop%cd_prop,              &
-     &    ipol%exp_work, ipol%forces, ipol%SGS_term, rj_fld)
+     &    ipol%exp_work, ipol%forces, ipol_LES%SGS_term, rj_fld)
 !
       call first_scalars_SGS_prev_adams(SGS_par%model_p,                &
      &    sph_rj, MHD_prop%ht_prop, MHD_prop%cp_prop,                   &

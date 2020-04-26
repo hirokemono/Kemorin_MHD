@@ -171,7 +171,8 @@
       if(SGS_param%iflag_SGS .gt. id_SGS_none) then
         call cal_div_of_SGS_forces_sph_2                                &
      &     (sph%sph_rj, r_2nd, sph_MHD_bc, leg%g_sph_rj,                &
-     &      ipol%div_forces, ipol%SGS_term, ipol_LES%div_SGS, rj_fld)
+     &      ipol%div_forces, ipol_LES%SGS_term, ipol_LES%div_SGS,       &
+     &      rj_fld)
         call sum_div_of_SGS_forces(ipol%base, ipol_LES%div_SGS, rj_fld)
       end if
 !
@@ -227,7 +228,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 's_cal_force_with_SGS_rj'
       call s_cal_force_with_SGS_rj                                      &
-     &   (ipol%forces, ipol%SGS_term, ipol_LES%frc_w_SGS, rj_fld)
+     &   (ipol%forces, ipol_LES%SGS_term, ipol_LES%frc_w_SGS, rj_fld)
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_filterd_buo_flux_rtp'
       call cal_filterd_buo_flux_rtp(sph%sph_rtp, MHD_prop%fl_prop,      &
@@ -240,7 +241,8 @@
         if (iflag_debug.eq.1) write(*,*) 'SGS_fluxes_for_snapshot'
         call SGS_fluxes_for_snapshot                                    &
      &     (sph%sph_rtp, MHD_prop%fl_prop, trns_MHD%b_trns%base,        &
-     &      trns_SGS%f_trns%SGS_term, trns_snap%b_trns%SGS_term,        &
+     &      trns_SGS%f_trns_LES%SGS_term,                               &
+     &      trns_snap%b_trns_LES%SGS_term,                              &
      &      trns_snap%f_trns_LES%SGS_ene_flux,                          &
      &      trns_MHD%backward, trns_SGS%forward, trns_snap%backward,    &
      &      trns_snap%forward)

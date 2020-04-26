@@ -3,10 +3,9 @@
 !
 !      modified by H. Matsui on June, 2005 
 !
-!!      subroutine FEM_analyze_filtered(i_step, MHD_files,              &
-!!     &          fem, iphys, FEM_model, ak_MHD,                        &
-!!     &          MHD_step, visval, FEM_SGS, SGS_MHD_wk,                &
-!!     &          nod_fld, fem_ucd, MHD_IO, fem_sq)
+!!      subroutine FEM_analyze_filtered(i_step, MHD_files, fem, iphys,  &
+!!     &          FEM_model, ak_MHD, MHD_step, visval, FEM_SGS,         &
+!!     &          SGS_MHD_wk, nod_fld, fem_ucd, MHD_IO, fem_sq)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(mesh_data), intent(in) :: fem
 !!        type(phys_address), intent(in) :: iphys
@@ -26,7 +25,6 @@
       use t_time_data
       use t_mesh_data
       use t_phys_data
-      use t_phys_address
       use t_FEM_MHD_model_data
       use t_material_property
       use t_IO_step_parameter
@@ -50,10 +48,9 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine FEM_analyze_filtered(i_step, MHD_files,                &
-     &          fem, iphys, FEM_model, ak_MHD,                          &
-     &          MHD_step, visval, FEM_SGS, SGS_MHD_wk,                  &
-     &          nod_fld, fem_ucd, MHD_IO, fem_sq)
+      subroutine FEM_analyze_filtered(i_step, MHD_files, fem, iphys,    &
+     &          FEM_model, ak_MHD, MHD_step, visval, FEM_SGS,           &
+     &          SGS_MHD_wk, nod_fld, fem_ucd, MHD_IO, fem_sq)
 !
       use m_fem_mhd_restart
       use t_FEM_MHD_mean_square
@@ -163,7 +160,7 @@
      &   (MHD_step%flex_p%istep_max_dt, MHD_step%rms_step,              &
      &    FEM_model%FEM_prm, MHD_step%time_d, fem%mesh,                 &
      &    FEM_model%MHD_mesh, FEM_model%MHD_prop,                       &
-     &    iphys, nod_fld, SGS_MHD_wk%iphys_ele,                         &
+     &    iphys, FEM_SGS%iphys_LES, nod_fld, SGS_MHD_wk%iphys_ele,      &
      &    SGS_MHD_wk%ele_fld, SGS_MHD_wk%fem_int%jcs,                   &
      &    SGS_MHD_wk%rhs_mat, SGS_MHD_wk%mhd_fem_wk, fem_sq)
 !

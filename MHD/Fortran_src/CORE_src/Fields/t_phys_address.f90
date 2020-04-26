@@ -23,8 +23,6 @@
       use t_explicit_term_labels
       use t_diff_vector_labels
 !
-      use t_SGS_term_labels
-!
       implicit  none
 ! 
 !>       Structure for start address for fields
@@ -61,11 +59,6 @@
 !
 !>        Structure of filtered fields
         type(base_field_address) :: filter_fld
-!
-!>        Structure of SGS terms
-        type(SGS_term_address) :: SGS_term
-!>        Structure of work area for dynamic model
-!        type(dynamic_SGS_work_address) :: SGS_wk
       end type phys_address
 !
 !

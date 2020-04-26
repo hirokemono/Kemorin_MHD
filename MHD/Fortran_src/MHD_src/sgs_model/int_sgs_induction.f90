@@ -4,10 +4,9 @@
 !        programmed by H.Matsui on July, 2005
 !        modified by H.Matsui on AUg., 2007
 !
-!!      subroutine int_vol_sgs_induction                                &
-!!     &         (FEM_prm, nod_comm, node, ele, conduct, iphys,         &
-!!     &          g_FEM, jac_3d, rhs_tbl, mlump_cd, mhd_fem_wk, fem_wk, &
-!!     &          f_nl, nod_fld)
+!!      subroutine int_vol_sgs_induction(FEM_prm, nod_comm, node, ele,
+!!     &          conduct, iphys, iphys_LES, g_FEM, jac_3d, rhs_tbl,    &
+!!     &          mlump_cd, mhd_fem_wk, fem_wk, f_nl, nod_fld)
 !!      subroutine cal_sgs_uxb_2_monitor(dt, FEM_prm, SGS_param,        &
 !!     &         filter_param, nod_comm, node, ele, conduct, cd_prop,   &
 !!     &         iphys, iphys_LES, iphys_ele, ele_fld, jacs, rhs_tbl,   &
@@ -76,10 +75,9 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_vol_sgs_induction                                  &
-     &         (FEM_prm, nod_comm, node, ele, conduct, iphys,           &
-     &          g_FEM, jac_3d, rhs_tbl, mlump_cd, mhd_fem_wk, fem_wk,   &
-     &          f_nl, nod_fld)
+      subroutine int_vol_sgs_induction(FEM_prm, nod_comm, node, ele,    &
+     &          conduct, iphys, iphys_LES, g_FEM, jac_3d, rhs_tbl,      &
+     &          mlump_cd, mhd_fem_wk, fem_wk, f_nl, nod_fld)
 !
       use int_vol_vect_differences
       use cal_ff_smp_to_ffs
@@ -91,6 +89,7 @@
       type(element_data), intent(in) :: ele
       type(field_geometry_data), intent(in) :: conduct
       type(phys_address), intent(in) :: iphys
+      type(SGS_model_addresses), intent(in) :: iphys_LES
       type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
@@ -107,7 +106,7 @@
       call int_vol_rotation                                             &
      &   (node, ele, g_FEM, jac_3d, rhs_tbl, nod_fld,                   &
      &    conduct%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,         &
-     &    iphys%SGS_term%i_SGS_vp_induct, fem_wk, f_nl)
+     &    iphys_LES%SGS_term%i_SGS_vp_induct, fem_wk, f_nl)
 !
 !      call cal_multi_pass_4_vector_ff                                  &
 !     &   (ele%istack_ele_smp, FEM_prm, m1_lump, nod_comm, node, ele,   &
@@ -118,11 +117,11 @@
 !     &    nod_fld%d_fld)
        call cal_ff_smp_2_vector                                         &
      &    (node, rhs_tbl, f_nl%ff_smp, mlump_cd%ml,                     &
-     &     nod_fld%ntot_phys, iphys%SGS_term%i_SGS_induction,           &
+     &     nod_fld%ntot_phys, iphys_LES%SGS_term%i_SGS_induction,       &
      &     nod_fld%d_fld)
 !
        call vector_send_recv                                            &
-     &    (iphys%SGS_term%i_SGS_induction, nod_comm, nod_fld)
+     &    (iphys_LES%SGS_term%i_SGS_induction, nod_comm, nod_fld)
 !
       end subroutine int_vol_sgs_induction
 !
@@ -181,10 +180,10 @@
       call set_ff_nl_smp_2_ff(n_vector, node, rhs_tbl, f_l, f_nl)
       call cal_ff_2_vector                                              &
      &   (node%numnod, node%istack_nod_smp, f_nl%ff, mlump_cd%ml,       &
-     &    nod_fld%ntot_phys, iphys%SGS_term%i_SGS_vp_induct,            &
+     &    nod_fld%ntot_phys, iphys_LES%SGS_term%i_SGS_vp_induct,        &
      &    nod_fld%d_fld)
       call vector_send_recv                                             &
-     &   (iphys%SGS_term%i_SGS_vp_induct, nod_comm, nod_fld)
+     &   (iphys_LES%SGS_term%i_SGS_vp_induct, nod_comm, nod_fld)
 !
       end subroutine cal_sgs_uxb_2_monitor
 !

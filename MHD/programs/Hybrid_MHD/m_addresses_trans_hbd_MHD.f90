@@ -130,7 +130,7 @@
 !    SGS magnetic induction flag
       if(SGS_param%iflag_SGS_uxb .gt. id_SGS_none) then
         nvector_rj_2_xyz = nvector_rj_2_xyz + 1
-        b_hbd_trns%SGS_term%i_SGS_induction = 3*nvector_rj_2_xyz - 2
+        b_hbd_trns_LES%SGS_term%i_SGS_induction = 3*nvector_rj_2_xyz - 2
       end if
       ncomp_rj_2_xyz = 3*nvector_rj_2_xyz
 !
@@ -148,7 +148,7 @@
 !    SGS magnetic induction flag
       if(SGS_param%iflag_SGS_uxb .gt. id_SGS_none) then
         nvector_xyz_2_rj = nvector_xyz_2_rj + 1
-        f_hbd_trns%SGS_term%i_SGS_vp_induct =  3*nvector_xyz_2_rj - 2
+        f_hbd_trns_LES%SGS_term%i_SGS_vp_induct =  3*nvector_xyz_2_rj - 2
       end if
       ncomp_xyz_2_rj = 3*nvector_xyz_2_rj
 !
@@ -182,10 +182,10 @@
      &        'b_hbd_trns%forces%i_induction ',                         &
      &        b_hbd_trns%forces%i_induction,                            &
      &        ipol%forces%i_induction
-      if(b_hbd_trns%SGS_term%i_SGS_induction .gt. 0) write(*,*)         &
+      if(b_hbd_trns_LES%SGS_term%i_SGS_induction .gt. 0) write(*,*)     &
      &   'b_hbd_trns%i_SGS_vp_induct ',                                 &
-     &    b_hbd_trns%SGS_term%i_SGS_induction,                          &
-     &    ipol%SGS_term%i_SGS_induction
+     &    b_hbd_trns_LES%SGS_term%i_SGS_induction,                      &
+     &    ipol_LES%SGS_term%i_SGS_induction
       write(*,*)
 !
       write(*,*) 'nscalar_rj_2_xyz  ', nscalar_rj_2_xyz
@@ -195,10 +195,10 @@
       if(f_hbd_trns%forces%i_vp_induct .gt. 0) write(*,*)               &
      &       'f_hbd_trns%forces%i_vp_induct ',                          &
      &        f_hbd_trns%forces%i_vp_induct, ipol%forces%i_vp_induct
-      if(f_hbd_trns%SGS_term%i_SGS_vp_induct .gt. 0) write(*,*)         &
-     &       'f_hbd_trns%SGS_term%i_SGS_vp_induct',                     &
-     &        f_hbd_trns%SGS_term%i_SGS_vp_induct,                      &
-     &        ipol%SGS_term%i_SGS_vp_induct
+      if(f_hbd_trns_LES%SGS_term%i_SGS_vp_induct .gt. 0) write(*,*)     &
+     &       'f_hbd_trns_LES%SGS_term%i_SGS_vp_induct',                 &
+     &        f_hbd_trns_LES%SGS_term%i_SGS_vp_induct,                  &
+     &        ipol_LES%SGS_term%i_SGS_vp_induct
 !
       write(*,*) 'nscalar_xyz_2_rj  ', nscalar_xyz_2_rj
       write(*,*)

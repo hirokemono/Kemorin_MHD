@@ -32,6 +32,7 @@
       use t_mesh_data
       use t_phys_data
       use t_phys_address
+      use t_SGS_model_addresses
       use t_FEM_MHD_model_data
       use t_control_parameter
       use t_material_property
@@ -223,7 +224,7 @@
      &   (MHD_step%flex_p%istep_max_dt, MHD_step%rms_step,              &
      &    FEM_model%FEM_prm, MHD_step%time_d,                           &
      &    femmesh%mesh, FEM_model%MHD_mesh, FEM_model%MHD_prop,         &
-     &    iphys, nod_fld, SGS_MHD_wk%iphys_ele,                         &
+     &    iphys, FEM_SGS%iphys_LES, nod_fld, SGS_MHD_wk%iphys_ele,      &
      &    SGS_MHD_wk%ele_fld, SGS_MHD_wk%fem_int%jcs,                   &
      &    SGS_MHD_wk%rhs_mat, SGS_MHD_wk%mhd_fem_wk, fem_sq)
 !
@@ -316,16 +317,16 @@
 !$omp parallel
       call overwrite_nodal_xyz_2_sph_smp                                &
      &   (mesh%node, nod_fld%ntot_phys,                                 &
-     &    iphys%SGS_term%i_SGS_m_flux, n_sym_tensor, nod_fld%d_fld)
+     &    iphys_LES%SGS_term%i_SGS_m_flux, n_sym_tensor, nod_fld%d_fld)
 !$omp end parallel
 !
       call clear_field_data                                             &
-     &   (nod_fld, n_sym_tensor, iphys%SGS_term%i_SGS_m_flux)
+     &   (nod_fld, n_sym_tensor, iphys_LES%SGS_term%i_SGS_m_flux)
 !
 !$omp parallel
       call overwrite_nodal_sph_2_xyz_smp                                &
      &   (mesh%node, nod_fld%ntot_phys,                                 &
-     &    iphys%SGS_term%i_SGS_m_flux, n_sym_tensor, nod_fld%d_fld)
+     &    iphys_LES%SGS_term%i_SGS_m_flux, n_sym_tensor, nod_fld%d_fld)
 !$omp end parallel
 !
       if (iphys_LES%div_SGS%i_SGS_m_flux .gt. 0) then
@@ -339,7 +340,7 @@
      &      MHD_prop%fl_prop, MHD_prop%cd_prop,                         &
      &      sf_bcs%Vsf_bcs, sf_bcs%Bsf_bcs, iphys%base, iphys%forces,   &
      &      iphys%div_forces, iphys%diffusion, iphys%filter_fld,        &
-     &      iphys_LES%force_by_filter, iphys%SGS_term,                  &
+     &      iphys_LES%force_by_filter, iphys_LES%SGS_term,              &
      &      iphys_LES%div_SGS, iphys_ele%base,                          &
      &      ak_MHD, fem_int, FEM_elens,                                 &
      &      Csims_FEM_MHD%iak_diff_sgs, Csims_FEM_MHD%diff_coefs,       &
@@ -366,7 +367,7 @@
      &    iphys%base%i_velo, n_vector, nod_fld%d_fld)
 !$omp end parallel
 !
-      if (iphys%SGS_term%i_SGS_vp_induct .gt. 0) then
+      if (iphys_LES%SGS_term%i_SGS_vp_induct .gt. 0) then
         if(iflag_debug.gt.0) write(*,*)                                 &
      &        'lead ', trim(SGS_vecp_induction%name)
         call cal_sgs_uxb_2_monitor                                      &
@@ -381,11 +382,11 @@
 
       end if
 !
-      if (iphys%SGS_term%i_SGS_induction .gt. 0) then
+      if (iphys_LES%SGS_term%i_SGS_induction .gt. 0) then
         if(iflag_debug.gt.0) write(*,*)                                 &
      &        'lead ', trim(SGS_induction%name)
         call int_vol_sgs_induction(FEM_prm, mesh%nod_comm,              &
-     &      mesh%node, mesh%ele, MHD_mesh%conduct, iphys,               &
+     &      mesh%node, mesh%ele, MHD_mesh%conduct, iphys, iphys_LES,    &
      &      fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,     &
      &      mk_MHD%mlump_cd, mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%f_nl,  &
      &      nod_fld)
@@ -394,7 +395,7 @@
 !$omp parallel
       if (iphys_LES%SGS_ene_flux%i_SGS_me_gen .gt. 0) then
         call cal_phys_dot_product                                       &
-     &     (iphys%base%i_magne, iphys%SGS_term%i_SGS_induction,         &
+     &     (iphys%base%i_magne, iphys_LES%SGS_term%i_SGS_induction,     &
      &      iphys_LES%SGS_ene_flux%i_SGS_me_gen, nod_fld)
       end if
 !$omp end parallel

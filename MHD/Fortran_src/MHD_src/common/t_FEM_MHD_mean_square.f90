@@ -13,7 +13,7 @@
 !!     &         (nod_fld, iphys, iphys_LES, fem_sq)
 !!      subroutine output_time_step_control(istep, rms_step,            &
 !!     &          FEM_prm, time_d, mesh, MHD_mesh, fMHD_prop,           &
-!!     &          iphys, nod_fld, iphys_ele, ele_fld, jacs,             &
+!!     &          iphys, iphys_LES, nod_fld, iphys_ele, ele_fld, jacs,  &
 !!     &          ifld_msq, rhs_mat, mhd_fem_wk, fem_msq)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(mesh_geometry), intent(in) :: mesh
@@ -110,7 +110,7 @@
 !
       subroutine output_time_step_control(istep, rms_step,              &
      &          FEM_prm, time_d, mesh, MHD_mesh, MHD_prop,              &
-     &          iphys, nod_fld, iphys_ele, ele_fld, jacs,               &
+     &          iphys, iphys_LES, nod_fld, iphys_ele, ele_fld, jacs,    &
      &          rhs_mat, mhd_fem_wk, fem_sq)
 !
       use calypso_mpi
@@ -128,7 +128,7 @@
       type(mesh_data_MHD), intent(in) :: MHD_mesh
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(phys_address), intent(in) :: iphys
-!      type(SGS_model_addresses), intent(in) :: iphys_LES
+      type(SGS_model_addresses), intent(in) :: iphys_LES
       type(phys_data), intent(in) :: nod_fld
       type(phys_address), intent(in) :: iphys_ele
       type(phys_data), intent(in) :: ele_fld
@@ -145,10 +145,10 @@
       if(my_rank .eq. 0) write(*,'(a10,i16,a10,e15.8)')                 &
      &            'i_step=', time_d%i_time_step,'time=', time_d%time
 !
-      call s_int_mean_squares(FEM_prm%npoint_t_evo_int,                 &
-     &    mesh, MHD_mesh%fluid, MHD_mesh%conduct, iphys, nod_fld, jacs, &
-     &    fem_sq%i_msq, fem_sq%msq_list, rhs_mat%fem_wk, mhd_fem_wk,    &
-     &   fem_sq%msq)
+      call s_int_mean_squares(FEM_prm%npoint_t_evo_int, mesh,           &
+     &    MHD_mesh%fluid, MHD_mesh%conduct, iphys, iphys_LES, nod_fld,  &
+     &    jacs, fem_sq%i_msq, fem_sq%msq_list, rhs_mat%fem_wk,          &
+     &    mhd_fem_wk, fem_sq%msq)
       call int_no_evo_mean_squares(time_d%i_time_step, time_d%dt,       &
      &    mesh, MHD_prop%fl_prop, MHD_prop%cd_prop,                     &
      &    iphys, nod_fld, iphys_ele, ele_fld, MHD_mesh%fluid,           &
@@ -185,7 +185,7 @@
       end do
 !
       call output_monitor_file(my_rank, time_d%i_time_step,             &
-     &    time_d%time, iphys, fem_sq%msq, fem_sq%msq_list)
+     &    time_d%time, iphys, iphys_LES, fem_sq%msq, fem_sq%msq_list)
 !
       end subroutine output_time_step_control
 !

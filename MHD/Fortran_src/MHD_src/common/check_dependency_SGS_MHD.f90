@@ -76,7 +76,7 @@
       call check_dependence_4_SPH_SGS(SGS_par%model_p,                  &
      &    MHD_prop%fl_prop, MHD_prop%cd_prop,                           &
      &    MHD_prop%ht_prop, MHD_prop%cp_prop,                           &
-     &    ipol%filter_fld, ipol%SGS_term, rj_fld)
+     &    ipol%filter_fld, ipol_LES%SGS_term, rj_fld)
 !
       end subroutine set_sph_SGS_MHD_spectr_data
 !

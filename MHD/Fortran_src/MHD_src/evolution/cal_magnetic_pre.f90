@@ -8,12 +8,13 @@
 !!      subroutine cal_magnetic_field_pre(ak_d_magne, dt,               &
 !!     &          FEM_prm, SGS_param, cmt_param, filter_param,          &
 !!     &          nod_comm, node, ele, surf, conduct, sf_grp, cd_prop,  &
-!!     &          Bnod_bcs, Asf_bcs, Bsf_bcs, iphys, iphys_ele, ele_fld,&
-!!     &          jacs, rhs_tbl, FEM_elens, sgs_coefs, sgs_coefs_nod,   &
-!!     &          icomp_sgs_term, iak_diff_base, iak_diff_sgs,          &
-!!     &          iphys_elediff_vec, diff_coefs, filtering, mlump_cd,   &
-!!     &          Bmatrix, MG_vector, wk_filter, mhd_fem_wk,            &
-!!     &          fem_wk, surf_wk, f_l, f_nl, nod_fld)
+!!     &          Bnod_bcs, Asf_bcs, Bsf_bcs, iphys, iphys_LES,         &
+!!     &          iphys_ele, ele_fld, jacs, rhs_tbl, FEM_elens,         &
+!!     &          sgs_coefs, sgs_coefs_nod, icomp_sgs_term,             &
+!!     &          iak_diff_base, iak_diff_sgs, iphys_elediff_vec,       &
+!!     &          diff_coefs, filtering, mlump_cd, Bmatrix, MG_vector,  &
+!!     &          wk_filter, mhd_fem_wk, fem_wk, surf_wk,               &
+!!     &          f_l, f_nl, nod_fld)
 !!      subroutine cal_magnetic_co                                      &
 !!     &         (ak_d_magne, dt, FEM_prm, SGS_param, cmt_param,        &
 !!     &          nod_comm, node, ele, surf, conduct, sf_grp, cd_prop,  &
@@ -44,6 +45,7 @@
 !!        type(vector_surf_bc_type), intent(in) :: Bsf_bcs
 !!        type(potential_surf_bc_type), intent(in) :: Fsf_bcs
 !!        type(phys_address), intent(in) :: iphys
+!!        type(SGS_model_addresses), intent(in) :: iphys_LES
 !!        type(phys_address), intent(in) :: iphys_ele
 !!        type(phys_data), intent(in) :: ele_fld
 !!        type(jacobians_type), intent(in) :: jacs
@@ -87,6 +89,7 @@
       use t_group_data
       use t_phys_data
       use t_phys_address
+      use t_SGS_model_addresses
       use t_base_field_labels
       use t_SGS_term_labels
       use t_jacobians
@@ -117,12 +120,13 @@
       subroutine cal_magnetic_field_pre(ak_d_magne, dt,                 &
      &          FEM_prm, SGS_param, cmt_param, filter_param,            &
      &          nod_comm, node, ele, surf, conduct, sf_grp, cd_prop,    &
-     &          Bnod_bcs, Asf_bcs, Bsf_bcs, iphys, iphys_ele, ele_fld,  &
-     &          jacs, rhs_tbl, FEM_elens, sgs_coefs, sgs_coefs_nod,     &
-     &          icomp_sgs_term, iak_diff_base, iak_diff_sgs,            &
-     &          iphys_elediff_vec, diff_coefs, filtering, mlump_cd,     &
-     &          Bmatrix, MG_vector, wk_filter, mhd_fem_wk,              &
-     &          fem_wk, surf_wk, f_l, f_nl, nod_fld)
+     &          Bnod_bcs, Asf_bcs, Bsf_bcs, iphys, iphys_LES,           &
+     &          iphys_ele, ele_fld, jacs, rhs_tbl, FEM_elens,           &
+     &          sgs_coefs, sgs_coefs_nod, icomp_sgs_term,               &
+     &          iak_diff_base, iak_diff_sgs, iphys_elediff_vec,         &
+     &          diff_coefs, filtering, mlump_cd, Bmatrix, MG_vector,    &
+     &          wk_filter, mhd_fem_wk, fem_wk, surf_wk,                 &
+     &          f_l, f_nl, nod_fld)
 !
       use calypso_mpi
 !
@@ -152,6 +156,7 @@
       type(velocity_surf_bc_type), intent(in) :: Asf_bcs
       type(vector_surf_bc_type), intent(in) :: Bsf_bcs
       type(phys_address), intent(in) :: iphys
+      type(SGS_model_addresses), intent(in) :: iphys_LES
       type(phys_address), intent(in) :: iphys_ele
       type(phys_data), intent(in) :: ele_fld
       type(jacobians_type), intent(in) :: jacs
@@ -184,7 +189,7 @@
       if ( SGS_param%iflag_SGS_uxb .ne. id_SGS_none) then
         call cal_sgs_magne_induction(dt, FEM_prm, SGS_param,            &
      &      filter_param, nod_comm, node, ele, conduct, cd_prop,        &
-     &      iphys%base, iphys%filter_fld, iphys%SGS_term,               &
+     &      iphys%base, iphys%filter_fld, iphys_LES%SGS_term,           &
      &      iphys_ele, ele_fld, jacs, rhs_tbl, FEM_elens, filtering,    &
      &      icomp_sgs_term, iphys_elediff_vec,                          &
      &      sgs_coefs, sgs_coefs_nod, mlump_cd,                         &
@@ -211,14 +216,14 @@
       if (FEM_prm%iflag_magne_supg .gt. id_turn_OFF) then
        call int_vol_magne_pre_ele_upm(FEM_prm%npoint_t_evo_int, dt,     &
      &     SGS_param, cmt_param, node, ele, conduct, cd_prop,           &
-     &     iphys%base, iphys%SGS_term, nod_fld,                         &
+     &     iphys%base, iphys_LES%SGS_term, nod_fld,                     &
      &     ele_fld%ntot_phys, ele_fld%d_fld, iphys_ele%base,            &
      &     jacs%g_FEM, jacs%jac_3d, rhs_tbl, FEM_elens,                 &
      &     iak_diff_sgs, diff_coefs, mhd_fem_wk, fem_wk, f_nl)
       else
        call int_vol_magne_pre_ele(FEM_prm%npoint_t_evo_int,             &
      &     SGS_param, cmt_param, node, ele, conduct, cd_prop,           &
-     &     iphys%base, iphys%SGS_term, nod_fld,                         &
+     &     iphys%base, iphys_LES%SGS_term, nod_fld,                     &
      &     ele_fld%ntot_phys, ele_fld%d_fld, iphys_ele%base,            &
      &     jacs%g_FEM, jacs%jac_3d, rhs_tbl, FEM_elens,                 &
      &     iak_diff_sgs, diff_coefs, mhd_fem_wk, fem_wk, f_nl)
@@ -228,7 +233,7 @@
       call int_surf_magne_pre_ele                                       &
      &   (SGS_param, cmt_param, FEM_prm%npoint_t_evo_int, ak_d_magne,   &
      &    node, ele, surf, sf_grp, Asf_bcs, Bsf_bcs,                    &
-     &    iphys%base, iphys%SGS_term, nod_fld,                          &
+     &    iphys%base, iphys_LES%SGS_term, nod_fld,                      &
      &    jacs%g_FEM, jacs%jac_sf_grp, rhs_tbl, FEM_elens,              &
      &    iak_diff_sgs, diff_coefs, fem_wk, surf_wk, f_l, f_nl)
 !
