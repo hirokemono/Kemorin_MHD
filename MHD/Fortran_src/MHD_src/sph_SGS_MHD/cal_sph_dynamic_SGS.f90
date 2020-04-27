@@ -171,16 +171,16 @@
         if(iflag_debug.ge.1) write(*,*) 'copy_model_coefs_4_sph_snap'
         call copy_model_coefs_4_sph_snap                                &
      &     (sph%sph_rtp, dynamic_SPH%sph_d_grp,                         &
-     &      dynamic_SPH%iak_sgs_term, WK%trns_Csim%f_trns_LES%Csim,     &
-     &      dynamic_SPH%wk_sgs, WK%trns_Csim%forward)
+     &      dynamic_SPH%iak_sgs_term, WK_LES%trns_Csim%f_trns_LES%Csim, &
+     &      dynamic_SPH%wk_sgs, WK_LES%trns_Csim%forward)
 !
         if(iflag_SMHD_time)                                             &
      &         call start_elapsed_time(ist_elapsed_SMHD+11)
         if (iflag_debug.eq.1) write(*,*)                                &
      &                     'sph_forward_trans_SGS_MHD Csim'
         call sph_forward_trans_SGS_MHD                                  &
-     &     (sph, comms_sph, trans_p, WK%trns_Csim%forward,              &
-     &      WK%WK_sph, WK%trns_Csim%mul_FFTW, rj_fld)
+     &     (sph, comms_sph, trans_p, WK_LES%trns_Csim%forward,          &
+     &      WK%WK_sph, WK_LES%trns_Csim%mul_FFTW, rj_fld)
         if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+11)
       end if
 !
