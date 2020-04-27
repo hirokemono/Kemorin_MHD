@@ -18,7 +18,7 @@
 !!     &         (ipol_LES, iphys_LES, trns_SGS,                        &
 !!     &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
 !!        type(SGS_model_addresses), intent(in) :: ipol_LES, iphys_LES
-!!        type(address_4_sph_trans), intent(inout) :: trns_SGS
+!!        type(SGS_address_sph_trans), intent(inout) :: trns_SGS
 !!
 !!      subroutine init_sph_trns_fld_dyn_ngrad                          &
 !!     &         (ipol_LES, iphys_LES, trns_DYNG,                       &
@@ -40,6 +40,7 @@
       use t_phys_address
       use t_SGS_model_addresses
       use t_sph_trans_arrays_MHD
+      use t_sph_trans_arrays_SGS_MHD
 !
       implicit none
 !
@@ -125,7 +126,7 @@
       use add_SGS_term_to_sph_trans
 !
       type(SGS_model_addresses), intent(in) :: ipol_LES, iphys_LES
-      type(address_4_sph_trans), intent(inout) :: trns_SGS
+      type(SGS_address_sph_trans), intent(inout) :: trns_SGS
       integer(kind = kint), intent(inout) :: ncomp_sph_trans
       integer(kind = kint), intent(inout) :: nvector_sph_trans
       integer(kind = kint), intent(inout) :: nscalar_sph_trans

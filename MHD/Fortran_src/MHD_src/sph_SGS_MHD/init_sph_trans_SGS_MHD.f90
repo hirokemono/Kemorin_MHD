@@ -33,6 +33,7 @@
       use t_SGS_control_parameter
       use t_SPH_mesh_field_data
       use t_sph_trans_arrays_MHD
+      use t_sph_trans_arrays_SGS_MHD
       use t_schmidt_poly_on_rtm
       use t_work_4_sph_trans
       use t_sph_multi_FFTW
@@ -46,6 +47,7 @@
 !
       implicit  none
 !
+      private :: init_leg_fourier_trans_SGS_MHD
       private :: init_sph_transform_SGS_model
       private :: init_fourier_transform_SGS_MHD
 !
@@ -95,7 +97,7 @@
      &   (SPH_model%MHD_prop, SPH_MHD%ipol, iphys, WK%trns_MHD,         &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
       call init_sph_transform_SGS_model(SGS_par%model_p,                &
-     &    SPH_MHD%ipol, ipol_LES, iphys, iphys_LES, WK,                 &
+     &    SPH_MHD%ipol, ipol_LES, iphys, iphys_LES, WK, WK_LES,         &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
 !
       call set_addresses_snapshot_trans                                 &
@@ -116,7 +118,7 @@
 !
       call init_leg_fourier_trans_SGS_MHD(SGS_par%model_p,              &
      &    SPH_model%sph_MHD_bc, SPH_MHD%sph, SPH_MHD%comms,             &
-     &    ncomp_max_trans, trans_p, WK)
+     &    ncomp_max_trans, trans_p, WK, WK_LES)
 !
       call sel_sph_transform_MHD                                        &
      &   (SPH_model%MHD_prop, SPH_model%sph_MHD_bc,                     &
@@ -130,8 +132,8 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine init_sph_transform_SGS_model                           &
-     &         (SGS_param, ipol, ipol_LES, iphys, iphys_LES, WK,        &
+      subroutine init_sph_transform_SGS_model(SGS_param,                &
+     &          ipol, ipol_LES, iphys, iphys_LES, WK, WK_LES,           &
      &          ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
 !
       use set_address_sph_trans_SGS
@@ -144,6 +146,7 @@
       type(SGS_model_addresses), intent(in) :: ipol_LES, iphys_LES
 !
       type(works_4_sph_trans_MHD), intent(inout) :: WK
+      type(works_4_sph_trans_SGS_MHD), intent(inout) :: WK_LES
       integer(kind = kint), intent(inout) :: ncomp_max_trans
       integer(kind = kint), intent(inout) :: nvector_max_trans
       integer(kind = kint), intent(inout) :: nscalar_max_trans
@@ -169,7 +172,7 @@
 !
       else if(SGS_param%iflag_SGS .eq. id_SGS_NL_grad) then
         call init_sph_trns_fld_ngrad_SGS                                &
-     &     (ipol_LES, iphys_LES, WK%trns_SGS,                           &
+     &     (ipol_LES, iphys_LES, WK_LES%trns_SGS,                       &
      &      ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
         call init_sph_trns_fld_ngrad_pre(ipol, iphys, WK%trns_ngTMP,    &
      &      ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
@@ -196,7 +199,7 @@
 !
       subroutine init_leg_fourier_trans_SGS_MHD                         &
      &         (SGS_param, sph_MHD_bc, sph, comms_sph,                  &
-     &          ncomp_max_trans, trans_p, WK)
+     &          ncomp_max_trans, trans_p, WK, WK_LES)
 !
       use init_sph_trans
       use init_FFT_4_MHD
@@ -214,6 +217,7 @@
 !
       type(parameters_4_sph_trans), intent(inout) :: trans_p
       type(works_4_sph_trans_MHD), intent(inout) :: WK
+      type(works_4_sph_trans_SGS_MHD), intent(inout) :: WK_LES
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'initialize_legendre_trans'
@@ -221,7 +225,7 @@
      &    sph, comms_sph, trans_p%leg, trans_p%idx_trns)
       call init_fourier_transform_SGS_MHD                               &
      &   (SGS_param, ncomp_max_trans, sph%sph_rtp, comms_sph%comm_rtp,  &
-     &    WK%trns_MHD, WK%trns_SGS, WK%trns_DYNS, WK%trns_Csim,         &
+     &    WK%trns_MHD, WK_LES%trns_SGS, WK%trns_DYNS, WK%trns_Csim,     &
      &    WK%trns_ngTMP, WK%trns_SIMI, WK%trns_DYNG, WK%WK_sph)
 !
       if (iflag_debug.eq.1) write(*,*) 'alloc_sphere_ave_coriolis'
@@ -248,7 +252,8 @@
       type(sph_comm_tbl), intent(in) :: comm_rtp
       integer(kind = kint), intent(in) :: ncomp_tot
 !
-      type(address_4_sph_trans), intent(inout) :: trns_MHD,  trns_SGS
+      type(address_4_sph_trans), intent(inout) :: trns_MHD
+      type(SGS_address_sph_trans), intent(inout) :: trns_SGS
       type(address_4_sph_trans), intent(inout) :: trns_DYNS, trns_Csim
       type(address_4_sph_trans), intent(inout) :: trns_ngTMP
       type(address_4_sph_trans), intent(inout) :: trns_SIMI, trns_DYNG

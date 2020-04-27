@@ -103,13 +103,13 @@
 !
       call lead_SGS_terms_4_SPH                                         &
      &   (SGS_par%model_p, SPH_MHD%sph, SPH_MHD%comms, trans_p,         &
-     &    WK%trns_Csim, WK%trns_SGS, WK_LES%trns_SGS_snap,              &
+     &    WK%trns_Csim, WK_LES%trns_SGS, WK_LES%trns_SGS_snap,          &
      &    dynamic_SPH, SPH_MHD%fld)
 !
       call enegy_fluxes_SPH_SGS_MHD(monitor%ltr_crust,                  &
      &    SGS_par%model_p, SPH_MHD%sph, SPH_MHD%comms,                  &
      &    r_2nd, MHD_prop, sph_MHD_bc, trans_p,                         &
-     &    SPH_MHD%ipol, ipol_LES, WK%trns_MHD, WK%trns_SGS,             &
+     &    SPH_MHD%ipol, ipol_LES, WK%trns_MHD, WK_LES%trns_SGS,         &
      &    WK%trns_snap, WK_LES%trns_SGS_snap, WK%WK_sph, SPH_MHD%fld)
 !
       end subroutine lead_fields_4_SPH_SGS_MHD
@@ -219,7 +219,7 @@
       type(SGS_model_addresses), intent(in) :: ipol_LES
 !
       type(address_4_sph_trans), intent(in) :: trns_MHD
-      type(address_4_sph_trans), intent(in) :: trns_SGS
+      type(SGS_address_sph_trans), intent(in) :: trns_SGS
       type(address_4_sph_trans), intent(inout) :: trns_snap
       type(SGS_address_sph_trans), intent(inout) :: trns_SGS_snap
       type(spherical_trns_works), intent(inout) :: WK_sph
@@ -285,7 +285,7 @@
       type(parameters_4_sph_trans), intent(in) :: trans_p
       type(address_4_sph_trans), intent(in) :: trns_Csim
 !
-      type(address_4_sph_trans), intent(inout) :: trns_SGS
+      type(SGS_address_sph_trans), intent(inout) :: trns_SGS
       type(SGS_address_sph_trans), intent(inout) :: trns_SGS_snap
       type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
       type(phys_data), intent(inout) :: rj_fld

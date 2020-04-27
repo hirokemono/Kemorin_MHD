@@ -54,8 +54,6 @@
 !>        strucutres for spherical transform for MHD
         type(address_4_sph_trans) :: trns_MHD
 !
-!>        strucutres for spherical transform for SGS model
-        type(address_4_sph_trans) :: trns_SGS
 !>        strucutres for spherical transform for dynamic SGS model
         type(address_4_sph_trans) :: trns_DYNS
 !>        strucutres for spherical transform for model coefficients
@@ -106,11 +104,9 @@
       call alloc_nonlinear_pole(sph_rtp, WK%trns_snap)
 !
 !
-      call alloc_nonlinear_data(sph_rtp, wk%trns_SGS)
       call alloc_nonlinear_data(sph_rtp, wk%trns_DYNS)
       call alloc_nonlinear_data(sph_rtp, wk%trns_Csim)
 !
-      call alloc_nonlinear_pole(sph_rtp, WK%trns_SGS)
       call alloc_nonlinear_pole(sph_rtp, WK%trns_DYNS)
 !
 !
@@ -133,10 +129,8 @@
 !
       call dealloc_nonlinear_data(WK%trns_Csim)
       call dealloc_nonlinear_data(WK%trns_DYNS)
-      call dealloc_nonlinear_data(WK%trns_SGS)
 !
       call dealloc_nonlinear_pole(WK%trns_DYNS)
-      call dealloc_nonlinear_pole(WK%trns_SGS)
 !
 !
       call dealloc_nonlinear_pole(WK%trns_ngTMP)

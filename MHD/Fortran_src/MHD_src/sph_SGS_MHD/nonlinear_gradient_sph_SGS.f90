@@ -22,7 +22,7 @@
 !!        type(spherical_trns_works), intent(inout) :: WK_sph
 !!        type(phys_data), intent(inout) :: rj_fld
 !!        type(address_4_sph_trans), intent(inout) :: trns_ngTMP
-!!        type(address_4_sph_trans), intent(inout) :: trns_SGS
+!!        type(SGS_address_sph_trans), intent(inout) :: trns_SGS
 !!      subroutine cal_wide_nonlinear_grad_sph_SGS                      &
 !!     &         (sph, comms_sph, r_2nd, MHD_prop, sph_MHD_bc, trans_p, &
 !!     &          dynamic_SPH, ipol, ipol_LES, trns_SIMI, WK_sph,       &
@@ -53,9 +53,9 @@
       use t_phys_data
       use t_phys_address
       use t_SGS_model_addresses
-      use t_sph_trans_arrays_MHD
       use t_poloidal_rotation
       use t_sph_trans_arrays_MHD
+      use t_sph_trans_arrays_SGS_MHD
       use t_schmidt_poly_on_rtm
       use t_work_4_sph_trans
       use t_sph_multi_FFTW
@@ -98,7 +98,7 @@
       type(spherical_trns_works), intent(inout) :: WK_sph
       type(phys_data), intent(inout) :: rj_fld
       type(address_4_sph_trans), intent(inout) :: trns_ngTMP
-      type(address_4_sph_trans), intent(inout) :: trns_SGS
+      type(SGS_address_sph_trans), intent(inout) :: trns_SGS
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'copy_vectors_rtp_4_grad'

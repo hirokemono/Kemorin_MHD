@@ -32,8 +32,8 @@
 !!      subroutine sph_b_transform_SGS                                  &
 !!     &         (sph, comms_sph, trans_p, n_WS, n_WR, WS, WR,          &
 !!     &          trns_bwd, WK_sph, SGS_mul_FFTW)
-!!      subroutine sph_f_transform_SGS(ncomp_trans, nvector, nscalar,   &
-!!     &          sph, comms_sph, trans_p, trns_SGS,                    &
+!!      subroutine sph_f_transform_SGS                                  &
+!!     &         (sph, comms_sph, trans_p, trns_fwd,                    &
 !!     &          n_WS, n_WR, WS, WR, WK_sph, SGS_mul_FFTW)
 !!        type(sph_grids), intent(in) :: sph
 !!        type(sph_comm_tables), intent(in) :: comms_sph

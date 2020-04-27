@@ -170,7 +170,8 @@
      &    WK%trns_MHD%forward, geofem%mesh, nod_fld)
 !
       if(SGS_par%model_p%iflag_SGS .gt. 0) then
-        call copy_SGS_MHD_fld_from_trans(sph, WK, geofem%mesh, nod_fld)
+        call copy_SGS_MHD_fld_from_trans                                &
+     &     (sph, WK, WK_LES, geofem%mesh, nod_fld)
       end if
 !
 !

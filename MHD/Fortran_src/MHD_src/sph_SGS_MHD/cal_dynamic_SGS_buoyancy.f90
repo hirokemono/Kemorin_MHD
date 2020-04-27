@@ -14,7 +14,7 @@
 !!        type(sph_grids), intent(in) :: sph
 !!        type(phys_address), intent(in) :: ipol
 !!        type(SGS_model_addresses), intent(in) :: ipol_LES
-!!        type(address_4_sph_trans), intent(inout) :: trns_SGS
+!!        type(SGS_address_sph_trans), intent(inout) :: trns_SGS
 !!        type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
 !!        type(phys_data), intent(inout) :: rj_fld
 !!@endverbatim
@@ -34,7 +34,7 @@
       use t_SPH_MHD_model_data
       use t_SPH_mesh_field_data
       use t_sph_trans_arrays_MHD
-      use t_sph_trans_arrays_MHD
+      use t_sph_trans_arrays_SGS_MHD
       use t_schmidt_poly_on_rtm
       use t_work_4_sph_trans
       use t_sph_filtering_data
@@ -65,7 +65,7 @@
       type(phys_address), intent(in) :: ipol
       type(SGS_model_addresses), intent(in) :: ipol_LES
 !
-      type(address_4_sph_trans), intent(inout) :: trns_SGS
+      type(SGS_address_sph_trans), intent(inout) :: trns_SGS
       type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
       type(phys_data), intent(inout) :: rj_fld
 !

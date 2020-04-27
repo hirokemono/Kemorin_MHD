@@ -28,7 +28,7 @@
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(fluid_property), intent(in) :: fl_prop
 !!        type(address_4_sph_trans), intent(in) :: trns_MHD
-!!        type(address_4_sph_trans), intent(in) :: trns_SGS
+!!        type(SGS_address_sph_trans), intent(in) :: trns_SGS
 !!        type(address_4_sph_trans), intent(inout) :: trns_Csim
 !!        type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
 !!@endverbatim
@@ -49,6 +49,7 @@
       use t_SGS_enegy_flux_labels
       use t_phys_address
       use t_sph_trans_arrays_MHD
+      use t_sph_trans_arrays_SGS_MHD
       use t_ele_info_4_dynamic
       use t_addresses_sph_transform
       use t_SGS_model_coefs
@@ -151,7 +152,7 @@
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(fluid_property), intent(in) :: fl_prop
       type(address_4_sph_trans), intent(in) :: trns_MHD
-      type(address_4_sph_trans), intent(in) :: trns_SGS
+      type(SGS_address_sph_trans), intent(in) :: trns_SGS
 !
       type(address_4_sph_trans), intent(inout) :: trns_Csim
       type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
