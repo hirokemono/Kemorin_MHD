@@ -24,7 +24,7 @@
 !!     &         (ipol_LES, iphys_LES, trns_DYNG,                       &
 !!     &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
 !!        type(SGS_model_addresses), intent(in) :: ipol_LES, iphys_LES
-!!        type(address_4_sph_trans), intent(inout) :: trns_DYNG
+!!        type(SGS_address_sph_trans), intent(inout) :: trns_DYNG
 !!
 !!      subroutine set_addresses_trans_sph_ngCsim                       &
 !!     &        (SGS_param, ipol_LES, iphys_LES, trns_Csim,             &
@@ -190,7 +190,7 @@
       use add_SGS_term_to_sph_trans
 !
       type(SGS_model_addresses), intent(in) :: ipol_LES, iphys_LES
-      type(address_4_sph_trans), intent(inout) :: trns_DYNG
+      type(SGS_address_sph_trans), intent(inout) :: trns_DYNG
       integer(kind = kint), intent(inout) :: ncomp_sph_trans
       integer(kind = kint), intent(inout) :: nvector_sph_trans
       integer(kind = kint), intent(inout) :: nscalar_sph_trans

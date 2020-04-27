@@ -38,8 +38,8 @@
 !!        type(address_4_sph_trans), intent(in) :: trns_MHD
 !!        type(spherical_trns_works), intent(inout) :: WK_sph
 !!        type(phys_data), intent(inout) :: rj_fld
-!!        type(address_4_sph_trans), intent(inout) :: trns_ngSGS
 !!        type(SGS_address_sph_trans), intent(inout) :: trns_SIMI
+!!        type(SGS_address_sph_trans), intent(inout) :: trns_DYNG
 !!@endverbatim
 !
       module nonlinear_gradient_sph_SGS
@@ -155,7 +155,7 @@
 !
       type(spherical_trns_works), intent(inout) :: WK_sph
       type(phys_data), intent(inout) :: rj_fld
-      type(address_4_sph_trans), intent(inout) :: trns_DYNG
+      type(SGS_address_sph_trans), intent(inout) :: trns_DYNG
       type(address_4_sph_trans), intent(inout) :: trns_Csim
 !
       if (iflag_debug.eq.1) write(*,*) 'copy_filter_vecs_rtp_4_grad'

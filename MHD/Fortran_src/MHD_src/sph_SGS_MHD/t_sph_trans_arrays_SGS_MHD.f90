@@ -62,7 +62,7 @@
 !>        strucutres for spherical transform for scale similarity
         type(SGS_address_sph_trans) :: trns_SIMI
 !>        strucutres for spherical transform for dynamic SGS model
-!        type(SGS_address_sph_trans) :: trns_DYNG
+        type(SGS_address_sph_trans) :: trns_DYNG
 !
 !>        strucutres for spherical transform for snapshot output
         type(SGS_address_sph_trans) :: trns_SGS_snap
@@ -100,11 +100,11 @@
 !
       call alloc_nonlinear_w_SGS_data(sph_rtp, WK_LES%trns_ngTMP)
       call alloc_nonlinear_w_SGS_data(sph_rtp, WK_LES%trns_SIMI)
-!      call alloc_nonlinear_w_SGS_data(sph_rtp, WK_LES%trns_DYNG)
+      call alloc_nonlinear_w_SGS_data(sph_rtp, WK_LES%trns_DYNG)
 !
       call alloc_nonlinear_pole_w_SGS(sph_rtp, WK_LES%trns_ngTMP)
       call alloc_nonlinear_pole_w_SGS(sph_rtp, WK_LES%trns_SIMI)
-!      call alloc_nonlinear_pole_w_SGS(sph_rtp, WK_LES%trns_DYNG)
+      call alloc_nonlinear_pole_w_SGS(sph_rtp, WK_LES%trns_DYNG)
 !
       end subroutine alloc_SGS_sph_trans_address
 !
@@ -126,11 +126,11 @@
 !
       call dealloc_nonlinear_pole_w_SGS(WK_LES%trns_ngTMP)
       call dealloc_nonlinear_pole_w_SGS(WK_LES%trns_SIMI)
-!      call dealloc_nonlinear_pole_w_SGS(WK_LES%trns_DYNG)
+      call dealloc_nonlinear_pole_w_SGS(WK_LES%trns_DYNG)
 !
       call dealloc_nonlinear_w_SGS_data(WK_LES%trns_ngTMP)
       call dealloc_nonlinear_w_SGS_data(WK_LES%trns_SIMI)
-!      call dealloc_nonlinear_w_SGS_data(WK_LES%trns_DYNG)
+      call dealloc_nonlinear_w_SGS_data(WK_LES%trns_DYNG)
 !
       call dealloc_nonlinear_pole_w_SGS(WK_LES%trns_SGS_snap)
       call dealloc_nonlinear_w_SGS_data(WK_LES%trns_SGS_snap)

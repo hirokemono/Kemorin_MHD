@@ -186,7 +186,7 @@
      &       (ipol, ipol_LES, iphys, iphys_LES, WK_LES%trns_SIMI,       &
      &        ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
           call init_sph_trns_fld_dyn_ngrad                              &
-     &       (ipol_LES, iphys_LES, WK%trns_DYNG,                        &
+     &       (ipol_LES, iphys_LES, WK_LES%trns_DYNG,                    &
      &        ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
           call set_addresses_trans_sph_ngCsim                           &
      &       (SGS_param, ipol_LES, iphys_LES, WK%trns_Csim,             &
@@ -228,7 +228,7 @@
      &   (SGS_param, ncomp_max_trans, sph%sph_rtp, comms_sph%comm_rtp,  &
      &    WK%trns_MHD, WK_LES%trns_SGS, WK_LES%trns_DYNS,               &
      &    WK%trns_Csim, WK_LES%trns_ngTMP, WK_LES%trns_SIMI,            &
-     &    WK%trns_DYNG, WK%WK_sph)
+     &    WK_LES%trns_DYNG, WK%WK_sph)
 !
       if (iflag_debug.eq.1) write(*,*) 'alloc_sphere_ave_coriolis'
       call alloc_sphere_ave_coriolis(sph%sph_rj)
@@ -260,7 +260,7 @@
       type(address_4_sph_trans), intent(inout) :: trns_Csim
       type(SGS_address_sph_trans), intent(inout) :: trns_ngTMP
       type(SGS_address_sph_trans), intent(inout) :: trns_SIMI
-      type(address_4_sph_trans), intent(inout) :: trns_DYNG
+      type(SGS_address_sph_trans), intent(inout) :: trns_DYNG
       type(spherical_trns_works), intent(inout) :: WK_sph
 !
 !
