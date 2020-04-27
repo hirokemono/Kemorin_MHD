@@ -156,7 +156,7 @@
       type(spherical_trns_works), intent(inout) :: WK_sph
       type(phys_data), intent(inout) :: rj_fld
       type(SGS_address_sph_trans), intent(inout) :: trns_DYNG
-      type(address_4_sph_trans), intent(inout) :: trns_Csim
+      type(SGS_address_sph_trans), intent(inout) :: trns_Csim
 !
       if (iflag_debug.eq.1) write(*,*) 'copy_filter_vecs_rtp_4_grad'
       call copy_filter_vecs_rtp_4_grad(sph,                             &

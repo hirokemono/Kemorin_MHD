@@ -13,7 +13,7 @@
 !!     &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
 !!        type(phys_address), intent(in) :: ipol, iphys
 !!        type(SGS_model_addresses), intent(in) :: ipol_LES, iphys_LES
-!!        type(address_4_sph_trans), intent(inout) :: trns_SGS_snap
+!!        type(SGS_address_sph_trans), intent(inout) :: trns_SGS_snap
 !!@endverbatim
 !
       module address_sph_trans_SGS_snap
@@ -23,7 +23,6 @@
 !
       use t_phys_address
       use t_SGS_model_addresses
-      use t_sph_trans_arrays_MHD
       use t_sph_trans_arrays_SGS_MHD
       use t_mesh_data
       use t_spheric_parameter

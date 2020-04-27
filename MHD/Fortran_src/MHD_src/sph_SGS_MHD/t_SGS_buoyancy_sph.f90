@@ -25,7 +25,6 @@
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(SGS_term_address), intent(in) :: ipol_Csim
 !!        type(phys_data), intent(inout) :: rj_fld
-!!        type(address_4_sph_trans), intent(inout) :: trns_SGS
 !!        type(work_4_sph_SGS_buoyancy), intent(inout) :: wk_sgs_buo
 !!
 !!      subroutine magnify_sph_ave_SGS_buoyancy(sph_rtp, iak_sgs_term,  &
@@ -38,7 +37,6 @@
 !!        type(work_4_sph_SGS_buoyancy), intent(in) :: wk_sgs_buo
 !!        type(phys_address), intent(in) :: fg_trns
 !!        type(SGS_model_addresses), intent(in) :: fg_trns_LES
-!!        type(address_4_sph_trans), intent(inout) :: trns_SGS
 !!        type(spherical_transform_data), intent(inout) :: trns_f_SGS
 !!@endverbatim
 !
