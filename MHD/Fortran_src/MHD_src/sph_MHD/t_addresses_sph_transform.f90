@@ -31,6 +31,8 @@
 !
       use m_precision
 !
+      use t_spheric_rtp_data
+!
       implicit none
 !
 !>      strucutre of spherical transform data addresses

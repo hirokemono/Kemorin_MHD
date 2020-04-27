@@ -288,7 +288,7 @@ t_SPH_MHD_model_data.o: $(MHD_SPH_DIR)/t_SPH_MHD_model_data.f90 m_precision.o t_
 	$(F90) -c $(F90OPTFLAGS) $<
 t_SPH_MHD_zonal_mean_viz.o: $(MHD_SPH_DIR)/t_SPH_MHD_zonal_mean_viz.f90 m_precision.o m_machine_parameter.o m_work_time.o m_elapsed_labels_4_VIZ.o calypso_mpi.o t_VIZ_step_parameter.o t_time_data.o t_mesh_data.o t_phys_data.o t_spheric_parameter.o t_sph_trans_arrays_MHD.o t_cross_section.o t_control_data_dynamo_vizs.o FEM_analyzer_sph_MHD.o nod_phys_send_recv.o sph_rtp_zonal_rms_data.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_addresses_sph_transform.o: $(MHD_SPH_DIR)/t_addresses_sph_transform.f90 m_precision.o
+t_addresses_sph_transform.o: $(MHD_SPH_DIR)/t_addresses_sph_transform.f90 m_precision.o t_spheric_rtp_data.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_boundary_data_sph_MHD.o: $(MHD_SPH_DIR)/t_boundary_data_sph_MHD.f90 m_precision.o t_boundary_params_sph_MHD.o t_boundary_sph_spectr.o t_coef_fdm2_MHD_boundaries.o t_coef_fdm4_MHD_boundaries.o t_time_data.o t_spheric_parameter.o t_control_parameter.o set_evoluved_boundaries.o
 	$(F90) -c $(F90OPTFLAGS) $<
