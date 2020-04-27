@@ -8,13 +8,15 @@
 !!
 !!@verbatim
 !!      subroutine init_sph_transform_SGS_MHD                           &
-!!     &         (SPH_model, iphys, trans_p, WK, SPH_SGS, SPH_MHD)
-!!        type(SGS_model_control_params), intent(in) :: SGS_param
+!!     &         (SPH_model, SGS_par, ipol_LES, iphys_LES, iphys,       &
+!!     &          trans_p, WK, WK_LES, SPH_MHD)
+!!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(SPH_MHD_model_data), intent(in) :: SPH_model
 !!        type(phys_address), intent(in) :: iphys
+!!        type(SGS_model_addresses), intent(in) :: ipol_LES, iphys_LES
 !!        type(parameters_4_sph_trans), intent(inout) :: trans_p
 !!        type(works_4_sph_trans_MHD), intent(inout) :: WK
-!!        type(SPH_SGS_structure), intent(inout) :: SPH_SGS
+!!        type(works_4_sph_trans_SGS_MHD), intent(inout) :: WK_LES
 !!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !!@endverbatim
 !!
@@ -28,7 +30,6 @@
       use calypso_mpi
 !
       use t_SPH_MHD_model_data
-      use t_SPH_SGS_structure
       use t_SGS_control_parameter
       use t_SPH_mesh_field_data
       use t_sph_trans_arrays_MHD
@@ -55,7 +56,8 @@
 !-----------------------------------------------------------------------
 !
       subroutine init_sph_transform_SGS_MHD                             &
-     &         (SPH_model, iphys, trans_p, WK, SPH_SGS, SPH_MHD)
+     &         (SPH_model, SGS_par, ipol_LES, iphys_LES, iphys,         &
+     &          trans_p, WK, WK_LES, SPH_MHD)
 !
       use set_address_sph_trans_MHD
       use set_address_sph_trans_SGS
@@ -66,12 +68,14 @@
       use pole_sph_transform
       use MHD_FFT_selector
 !
-      type(phys_address), intent(in) :: iphys
+      type(SGS_paremeters), intent(in) :: SGS_par
       type(SPH_MHD_model_data), intent(in) :: SPH_model
+      type(phys_address), intent(in) :: iphys
+      type(SGS_model_addresses), intent(in) :: ipol_LES, iphys_LES
 !
       type(parameters_4_sph_trans), intent(inout) :: trans_p
       type(works_4_sph_trans_MHD), intent(inout) :: WK
-      type(SPH_SGS_structure), intent(inout) :: SPH_SGS
+      type(works_4_sph_trans_SGS_MHD), intent(inout) :: WK_LES
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !
 !
@@ -90,8 +94,8 @@
       call set_addresses_trans_sph_MHD                                  &
      &   (SPH_model%MHD_prop, SPH_MHD%ipol, iphys, WK%trns_MHD,         &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
-      call init_sph_transform_SGS_model(SPH_SGS%SGS_par%model_p,        &
-     &    SPH_MHD%ipol, SPH_SGS%ipol_LES, iphys, SPH_SGS%iphys_LES, WK, &
+      call init_sph_transform_SGS_model(SGS_par%model_p,                &
+     &    SPH_MHD%ipol, ipol_LES, iphys, iphys_LES, WK,                 &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
 !
       call set_addresses_snapshot_trans                                 &
@@ -102,14 +106,15 @@
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
 !
       call set_addresses_SGS_snap_trans                                 &
-     &   (SPH_MHD%ipol, SPH_SGS%ipol_LES,                               &
-     &    iphys, SPH_SGS%iphys_LES, WK%trns_SGS_snap,                   &
+     &   (SPH_MHD%ipol, ipol_LES,                                       &
+     &    iphys, iphys_LES, WK_LES%trns_SGS_snap,                       &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
 !
       call alloc_sph_trans_address(SPH_MHD%sph%sph_rtp, WK)
+      call alloc_SGS_sph_trans_address(SPH_MHD%sph%sph_rtp, WK_LES)
 !
 !
-      call init_leg_fourier_trans_SGS_MHD(SPH_SGS%SGS_par%model_p,      &
+      call init_leg_fourier_trans_SGS_MHD(SGS_par%model_p,              &
      &    SPH_model%sph_MHD_bc, SPH_MHD%sph, SPH_MHD%comms,             &
      &    ncomp_max_trans, trans_p, WK)
 !

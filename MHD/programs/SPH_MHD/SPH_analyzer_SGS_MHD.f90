@@ -110,8 +110,9 @@
 ! ---------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'init_sph_transform_SGS_MHD'
-      call init_sph_transform_SGS_MHD(SPH_model, iphys, SPH_WK%trans_p, &
-     &    SPH_WK%trns_WK, SPH_SGS, SPH_MHD)
+      call init_sph_transform_SGS_MHD(SPH_model, SPH_SGS%SGS_par,       &
+     &    SPH_SGS%ipol_LES, SPH_SGS%iphys_LES, iphys, SPH_WK%trans_p,   &
+     &    SPH_WK%trns_WK, SPH_SGS%trns_WK_LES, SPH_MHD)
 !
 !  -------------------------------
 !
@@ -254,9 +255,10 @@
       if(lead_field_data_flag(i_step, MHD_step) .eq. 0) then
         if(iflag_debug.gt.0) write(*,*) 'lead_fields_4_SPH_SGS_MHD'
         call lead_fields_4_SPH_SGS_MHD                                  &
-     &     (SPH_WK%monitor, SPH_WK%r_2nd, SPH_model%MHD_prop,           &
-     &      SPH_model%sph_MHD_bc, SPH_WK%trans_p, SPH_WK%MHD_mats,      &
-     &      SPH_WK%trns_WK, SPH_SGS, SPH_MHD)
+     &     (SPH_SGS%SGS_par, SPH_WK%monitor, SPH_WK%r_2nd,              &
+     &      SPH_model%MHD_prop, SPH_model%sph_MHD_bc, SPH_WK%trans_p,   &
+     &      SPH_SGS%ipol_LES, SPH_WK%MHD_mats, SPH_WK%trns_WK,          &
+     &      SPH_SGS%trns_WK_LES, SPH_SGS%dynamic, SPH_MHD)
       end if
       if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+5)
 !

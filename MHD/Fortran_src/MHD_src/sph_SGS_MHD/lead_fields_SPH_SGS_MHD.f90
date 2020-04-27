@@ -7,19 +7,20 @@
 !>@brief  Evaluate pressure and energy fluxes for snapshots
 !!
 !!@verbatim
-!!      subroutine lead_fields_4_SPH_SGS_MHD                            &
-!!     &         (monitor, r_2nd, MHD_prop, sph_MHD_bc,                 &
-!!     &          trans_p, sph_MHD_mat, WK, SPH_SGS, SPH_MHD)
+!!      subroutine lead_fields_4_SPH_SGS_MHD(SGS_par, monitor,          &
+!!     &          r_2nd, MHD_prop, sph_MHD_bc, trans_p, ipol_LES,       &
+!!     &          sph_MHD_mat, WK, WK_LES, dynamic_SPH, SPH_MHD)
+!!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(sph_mhd_monitor_data), intent(in) :: monitor
-!!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(fdm_matrices), intent(in) :: r_2nd
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
 !!        type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
 !!        type(parameters_4_sph_trans), intent(in) :: trans_p
+!!        type(SGS_model_addresses), intent(in) :: ipol_LES
 !!        type(works_4_sph_trans_MHD), intent(inout) :: WK
+!!        type(works_4_sph_trans_SGS_MHD), intent(inout) :: WK_LES
 !!        type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
 !!        type(MHD_radial_matrices), intent(inout) :: sph_MHD_mat
-!!        type(SPH_SGS_structure), intent(inout) :: SPH_SGS
 !!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !!@endverbatim
 !
@@ -30,10 +31,10 @@
 !
       use t_control_parameter
       use t_SGS_control_parameter
-      use t_SPH_SGS_structure
       use t_SPH_mesh_field_data
       use t_fdm_coefs
       use t_sph_trans_arrays_MHD
+      use t_sph_trans_arrays_SGS_MHD
       use t_sph_matrices
       use t_schmidt_poly_on_rtm
       use t_work_4_sph_trans
@@ -55,9 +56,9 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine lead_fields_4_SPH_SGS_MHD                              &
-     &         (monitor, r_2nd, MHD_prop, sph_MHD_bc, trans_p,          &
-     &          sph_MHD_mat, WK, SPH_SGS, SPH_MHD)
+      subroutine lead_fields_4_SPH_SGS_MHD(SGS_par, monitor,            &
+     &          r_2nd, MHD_prop, sph_MHD_bc, trans_p, ipol_LES,         &
+     &          sph_MHD_mat, WK, WK_LES, dynamic_SPH, SPH_MHD)
 !
       use t_sph_mhd_monitor_data_IO
       use sph_transforms_4_MHD
@@ -66,27 +67,30 @@
       use lead_fields_4_sph_mhd
       use self_buoyancy_w_filter_sph
 !
+      type(SGS_paremeters), intent(in) :: SGS_par
       type(sph_mhd_monitor_data), intent(in) :: monitor
       type(fdm_matrices), intent(in) :: r_2nd
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
       type(parameters_4_sph_trans), intent(in) :: trans_p
+      type(SGS_model_addresses), intent(in) :: ipol_LES
 !
       type(works_4_sph_trans_MHD), intent(inout) :: WK
+      type(works_4_sph_trans_SGS_MHD), intent(inout) :: WK_LES
       type(MHD_radial_matrices), intent(inout) :: sph_MHD_mat
-      type(SPH_SGS_structure), intent(inout) :: SPH_SGS
+      type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !
 !
       call cal_self_buoyancy_sph_SGS_MHD                                &
-     &   (SPH_MHD%sph, trans_p%leg, SPH_MHD%ipol, SPH_SGS%ipol_LES,     &
+     &   (SPH_MHD%sph, trans_p%leg, SPH_MHD%ipol, ipol_LES,             &
      &    MHD_prop, sph_MHD_bc%sph_bc_U, SPH_MHD%fld)
 !
       if(MHD_prop%fl_prop%iflag_scheme .gt. id_no_evolution) then
         call pressure_SGS_SPH_MHD                                       &
-     &     (SPH_SGS%SGS_par%model_p, SPH_MHD%sph, MHD_prop, sph_MHD_bc, &
+     &     (SGS_par%model_p, SPH_MHD%sph, MHD_prop, sph_MHD_bc,         &
      &      r_2nd, trans_p%leg, sph_MHD_mat%band_p_poisson,             &
-     &      SPH_MHD%ipol, SPH_SGS%ipol_LES, SPH_MHD%fld)
+     &      SPH_MHD%ipol, ipol_LES, SPH_MHD%fld)
       end if
 !
 !
@@ -98,15 +102,15 @@
      &    SPH_MHD%fld)
 !
       call lead_SGS_terms_4_SPH                                         &
-     &   (SPH_SGS%SGS_par%model_p, SPH_MHD%sph, SPH_MHD%comms, trans_p, &
-     &    WK%trns_Csim, WK%trns_SGS, WK%trns_SGS_snap,                  &
-     &    SPH_SGS%dynamic, SPH_MHD%fld)
+     &   (SGS_par%model_p, SPH_MHD%sph, SPH_MHD%comms, trans_p,         &
+     &    WK%trns_Csim, WK%trns_SGS, WK_LES%trns_SGS_snap,              &
+     &    dynamic_SPH, SPH_MHD%fld)
 !
       call enegy_fluxes_SPH_SGS_MHD(monitor%ltr_crust,                  &
-     &    SPH_SGS%SGS_par%model_p, SPH_MHD%sph, SPH_MHD%comms,          &
+     &    SGS_par%model_p, SPH_MHD%sph, SPH_MHD%comms,                  &
      &    r_2nd, MHD_prop, sph_MHD_bc, trans_p,                         &
-     &    SPH_MHD%ipol, SPH_SGS%ipol_LES, WK%trns_MHD, WK%trns_SGS,     &
-     &    WK%trns_snap, WK%trns_SGS_snap, WK%WK_sph, SPH_MHD%fld)
+     &    SPH_MHD%ipol, ipol_LES, WK%trns_MHD, WK%trns_SGS,             &
+     &    WK%trns_snap, WK_LES%trns_SGS_snap, WK%WK_sph, SPH_MHD%fld)
 !
       end subroutine lead_fields_4_SPH_SGS_MHD
 !
@@ -217,7 +221,7 @@
       type(address_4_sph_trans), intent(in) :: trns_MHD
       type(address_4_sph_trans), intent(in) :: trns_SGS
       type(address_4_sph_trans), intent(inout) :: trns_snap
-      type(address_4_sph_trans), intent(inout) :: trns_SGS_snap
+      type(SGS_address_sph_trans), intent(inout) :: trns_SGS_snap
       type(spherical_trns_works), intent(inout) :: WK_sph
       type(phys_data), intent(inout) :: rj_fld
 !
@@ -282,7 +286,7 @@
       type(address_4_sph_trans), intent(in) :: trns_Csim
 !
       type(address_4_sph_trans), intent(inout) :: trns_SGS
-      type(address_4_sph_trans), intent(inout) :: trns_SGS_snap
+      type(SGS_address_sph_trans), intent(inout) :: trns_SGS_snap
       type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
       type(phys_data), intent(inout) :: rj_fld
 !

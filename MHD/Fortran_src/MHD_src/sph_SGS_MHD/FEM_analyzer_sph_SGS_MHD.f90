@@ -21,10 +21,11 @@
 !!        type(jacobians_type), intent(inout) :: jacobians
 !!        type(MHD_IO_data), intent(inout) :: MHD_IO
 !!      subroutine SPH_to_FEM_bridge_SGS_MHD                            &
-!!     &        (SGS_par, sph, WK, geofem, nod_fld)
+!!     &        (SGS_par, sph, WK, WK_LES, geofem, nod_fld)
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(sph_grids), intent(in) :: sph
 !!        type(works_4_sph_trans_MHD), intent(in) :: WK
+!!        type(works_4_sph_trans_SGS_MHD), intent(in) :: WK_LES
 !!        type(mesh_data), intent(in) :: geofem
 !!        type(phys_data), intent(inout) :: nod_fld
 !!@endverbatim
@@ -144,7 +145,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine SPH_to_FEM_bridge_SGS_MHD                              &
-     &        (SGS_par, sph, WK, geofem, nod_fld)
+     &        (SGS_par, sph, WK, WK_LES, geofem, nod_fld)
 !
       use t_spheric_parameter
       use t_sph_trans_arrays_MHD
@@ -156,6 +157,7 @@
       type(SGS_paremeters), intent(in) :: SGS_par
       type(sph_grids), intent(in) :: sph
       type(works_4_sph_trans_MHD), intent(in) :: WK
+      type(works_4_sph_trans_SGS_MHD), intent(in) :: WK_LES
       type(mesh_data), intent(in) :: geofem
 !
       type(phys_data), intent(inout) :: nod_fld
@@ -181,11 +183,11 @@
       if (iflag_debug.gt.0) write(*,*)                                  &
      &                    'copy_field_from_transform SGS_SNAP'
       call copy_field_from_transform(sph%sph_params, sph%sph_rtp,       &
-     &    WK%trns_SGS_snap%backward, geofem%mesh, nod_fld)
+     &    WK_LES%trns_SGS_snap%backward, geofem%mesh, nod_fld)
       if (iflag_debug.gt.0) write(*,*)                                  &
      &                     'copy_force_from_transform SGS_SNAP'
       call copy_force_from_transform(sph%sph_params, sph%sph_rtp,       &
-     &    WK%trns_SGS_snap%forward, geofem%mesh, nod_fld)
+     &    WK_LES%trns_SGS_snap%forward, geofem%mesh, nod_fld)
 !
       end subroutine SPH_to_FEM_bridge_SGS_MHD
 !

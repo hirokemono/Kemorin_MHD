@@ -305,9 +305,10 @@
 !
 !
       if(lead_field_data_flag(i_step, MHD_step) .eq. 0) then
-        call lead_fields_4_SPH_SGS_MHD                                  &
-     &     (monitor, r_2nd, MHD_prop, sph_MHD_bc, trans_p,              &
-     &      sph_MHD_mat, trns_WK, SPH_SGS, SPH_MHD)
+        call lead_fields_4_SPH_SGS_MHD(SPH_SGS%SGS_par, monitor, r_2nd, &
+     &      MHD_prop, sph_MHD_bc, trans_p, SPH_SGS%ipol_LES,            &
+     &      sph_MHD_mat, trns_WK, SPH_SGS%trns_WK_LES, SPH_SGS%dynamic, &
+     &      SPH_MHD)
       end if
 !
       call sph_back_trans_4_MHD(SPH_MHD%sph, SPH_MHD%comms,             &
@@ -321,7 +322,8 @@
      &    trns_WK%trns_snap%forward,  trns_WK%WK_sph, SPH_MHD%fld)
       call sph_forward_trans_snapshot_MHD                               &
      &   (SPH_MHD%sph, SPH_MHD%comms, trans_p,                          &
-     &    trns_WK%trns_SGS_snap%forward,  trns_WK%WK_sph, SPH_MHD%fld)
+     &    SPH_SGS%trns_WK_LES%trns_SGS_snap%forward,                    &
+     &    trns_WK%WK_sph, SPH_MHD%fld)
 !
 ! ----  Take zonal mean
 !

@@ -68,8 +68,6 @@
         type(address_4_sph_trans) :: trns_SIMI
 !>        strucutres for spherical transform for dynamic SGS model
         type(address_4_sph_trans) :: trns_DYNG
-!>        strucutres for spherical transform for snapshot output
-        type(address_4_sph_trans) :: trns_SGS_snap
 !
 !>        strucutres for spherical transform for snapshot output
         type(address_4_sph_trans) :: trns_snap
@@ -103,11 +101,9 @@
       call alloc_nonlinear_data(sph_rtp, wk%trns_MHD)
       call alloc_nonlinear_data(sph_rtp, WK%trns_snap)
       call alloc_nonlinear_data(sph_rtp, wk%trns_tmp)
-      call alloc_nonlinear_data(sph_rtp, wk%trns_SGS_snap)
 !
       call alloc_nonlinear_pole(sph_rtp, WK%trns_MHD)
       call alloc_nonlinear_pole(sph_rtp, WK%trns_snap)
-      call alloc_nonlinear_pole(sph_rtp, WK%trns_SGS_snap)
 !
 !
       call alloc_nonlinear_data(sph_rtp, wk%trns_SGS)
@@ -146,12 +142,10 @@
       call dealloc_nonlinear_pole(WK%trns_ngTMP)
       call dealloc_nonlinear_pole(WK%trns_SIMI)
       call dealloc_nonlinear_pole(WK%trns_DYNG)
-      call dealloc_nonlinear_pole(WK%trns_SGS_snap)
 !
       call dealloc_nonlinear_data(WK%trns_ngTMP)
       call dealloc_nonlinear_data(WK%trns_SIMI)
       call dealloc_nonlinear_data(WK%trns_DYNG)
-      call dealloc_nonlinear_data(WK%trns_SGS_snap)
 !
 !
       call dealloc_nonlinear_pole(WK%trns_snap)
