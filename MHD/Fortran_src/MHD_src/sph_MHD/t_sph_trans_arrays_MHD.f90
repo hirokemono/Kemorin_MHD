@@ -57,9 +57,6 @@
 !!>        strucutres for spherical transform for model coefficients
         type(address_4_sph_trans) :: trns_Csim
 !
-!>        strucutres for spherical transform for intermediate
-!!        nonlinear radient model
-        type(address_4_sph_trans) :: trns_ngTMP
 !>        strucutres for spherical transform for dynamic SGS model
         type(address_4_sph_trans) :: trns_DYNG
 !
@@ -102,10 +99,7 @@
 !
       call alloc_nonlinear_data(sph_rtp, wk%trns_Csim)
 !
-      call alloc_nonlinear_data(sph_rtp, wk%trns_ngTMP)
       call alloc_nonlinear_data(sph_rtp, wk%trns_DYNG)
-!
-      call alloc_nonlinear_pole(sph_rtp, wk%trns_ngTMP)
       call alloc_nonlinear_pole(sph_rtp, wk%trns_DYNG)
 !
       end subroutine alloc_sph_trans_address
@@ -119,10 +113,7 @@
 !
       call dealloc_nonlinear_data(WK%trns_Csim)
 !
-      call dealloc_nonlinear_pole(WK%trns_ngTMP)
       call dealloc_nonlinear_pole(WK%trns_DYNG)
-!
-      call dealloc_nonlinear_data(WK%trns_ngTMP)
       call dealloc_nonlinear_data(WK%trns_DYNG)
 !
 !

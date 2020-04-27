@@ -12,7 +12,7 @@
 !!     &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
 !!        type(phys_address), intent(in) :: ipol
 !!        type(phys_address), intent(in) :: iphys
-!!        type(address_4_sph_trans), intent(inout) :: trns_ngTMP
+!!        type(SGS_address_sph_trans), intent(inout) :: trns_ngTMP
 !!
 !!      subroutine init_sph_trns_fld_ngrad_SGS                          &
 !!     &         (ipol_LES, iphys_LES, trns_SGS,                        &
@@ -57,7 +57,7 @@
 !
       type(phys_address), intent(in) :: ipol
       type(phys_address), intent(in) :: iphys
-      type(address_4_sph_trans), intent(inout) :: trns_ngTMP
+      type(SGS_address_sph_trans), intent(inout) :: trns_ngTMP
       integer(kind = kint), intent(inout) :: ncomp_sph_trans
       integer(kind = kint), intent(inout) :: nvector_sph_trans
       integer(kind = kint), intent(inout) :: nscalar_sph_trans

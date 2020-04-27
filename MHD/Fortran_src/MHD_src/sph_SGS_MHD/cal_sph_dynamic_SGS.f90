@@ -126,9 +126,9 @@
         if (iflag_debug.eq.1) write(*,*)                                &
      &                'cal_nonlinear_gradient_sph_SGS'
         call cal_nonlinear_gradient_sph_SGS                             &
-     &         (sph, comms_sph, r_2nd, MHD_prop, sph_MHD_bc, trans_p,   &
-     &          dynamic_SPH, ipol, WK%trns_MHD, WK%WK_sph, rj_fld,      &
-     &          WK%trns_ngTMP, WK_LES%trns_SGS)
+     &     (sph, comms_sph, r_2nd, MHD_prop, sph_MHD_bc, trans_p,       &
+     &      dynamic_SPH, ipol, WK%trns_MHD, WK%WK_sph, rj_fld,          &
+     &      WK_LES%trns_ngTMP, WK_LES%trns_SGS)
 !
         if(SGS_par%model_p%iflag_dynamic .eq. id_SGS_DYNAMIC_ON         &
      &     .and. istep_dynamic .eq. 0) then

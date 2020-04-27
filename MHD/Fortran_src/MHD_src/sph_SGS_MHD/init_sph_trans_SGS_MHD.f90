@@ -174,7 +174,8 @@
         call init_sph_trns_fld_ngrad_SGS                                &
      &     (ipol_LES, iphys_LES, WK_LES%trns_SGS,                       &
      &      ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
-        call init_sph_trns_fld_ngrad_pre(ipol, iphys, WK%trns_ngTMP,    &
+        call init_sph_trns_fld_ngrad_pre                                &
+     &     (ipol, iphys, WK_LES%trns_ngTMP,                             &
      &      ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
         if(SGS_param%iflag_dynamic .eq. id_SGS_DYNAMIC_ON) then
           if(iflag_debug .gt. 0) then
@@ -226,7 +227,7 @@
       call init_fourier_transform_SGS_MHD                               &
      &   (SGS_param, ncomp_max_trans, sph%sph_rtp, comms_sph%comm_rtp,  &
      &    WK%trns_MHD, WK_LES%trns_SGS, WK_LES%trns_DYNS,               &
-     &    WK%trns_Csim, WK%trns_ngTMP, WK_LES%trns_SIMI,                &
+     &    WK%trns_Csim, WK_LES%trns_ngTMP, WK_LES%trns_SIMI,            &
      &    WK%trns_DYNG, WK%WK_sph)
 !
       if (iflag_debug.eq.1) write(*,*) 'alloc_sphere_ave_coriolis'
@@ -257,7 +258,7 @@
       type(SGS_address_sph_trans), intent(inout) :: trns_SGS
       type(SGS_address_sph_trans), intent(inout) :: trns_DYNS
       type(address_4_sph_trans), intent(inout) :: trns_Csim
-      type(address_4_sph_trans), intent(inout) :: trns_ngTMP
+      type(SGS_address_sph_trans), intent(inout) :: trns_ngTMP
       type(SGS_address_sph_trans), intent(inout) :: trns_SIMI
       type(address_4_sph_trans), intent(inout) :: trns_DYNG
       type(spherical_trns_works), intent(inout) :: WK_sph
