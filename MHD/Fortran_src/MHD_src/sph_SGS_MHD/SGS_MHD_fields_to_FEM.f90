@@ -9,9 +9,8 @@
 !!
 !!@verbatim
 !!      subroutine copy_SGS_MHD_fld_from_trans                          &
-!!     &         (sph, WK, WK_LES, mesh, nod_fld)
+!!     &         (sph, WK_LES, mesh, nod_fld)
 !!        type(sph_grids), intent(in) :: sph
-!!        type(works_4_sph_trans_MHD), intent(in) :: WK
 !!        type(works_4_sph_trans_SGS_MHD), intent(in) :: WK_LES
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(phys_data), intent(inout) :: nod_fld
@@ -33,7 +32,6 @@
 !
       use t_mesh_data
       use t_phys_data
-      use t_sph_trans_arrays_MHD
       use t_sph_trans_arrays_SGS_MHD
 !
       implicit none
@@ -45,13 +43,12 @@
 !-----------------------------------------------------------------------
 !
       subroutine copy_SGS_MHD_fld_from_trans                            &
-     &         (sph, WK, WK_LES, mesh, nod_fld)
+     &         (sph, WK_LES, mesh, nod_fld)
 !
       use coordinate_convert_4_sph
       use set_address_sph_trans_snap
 !
       type(sph_grids), intent(in) :: sph
-      type(works_4_sph_trans_MHD), intent(in) :: WK
       type(works_4_sph_trans_SGS_MHD), intent(in) :: WK_LES
       type(mesh_geometry), intent(in) :: mesh
 !
@@ -63,13 +60,13 @@
      &    WK_LES%trns_SGS%backward, mesh, nod_fld)
       if (iflag_debug.gt.0) write(*,*) 'copy_field_from_transform DYCS'
       call copy_field_from_transform(sph%sph_params, sph%sph_rtp,       &
-     &    WK%trns_DYNS%backward, mesh, nod_fld)
+     &    WK_LES%trns_DYNS%backward, mesh, nod_fld)
       if (iflag_debug.gt.0) write(*,*) 'copy_force_from_transform SGS'
       call copy_force_from_transform(sph%sph_params, sph%sph_rtp,       &
      &    WK_LES%trns_SGS%forward, mesh, nod_fld)
       if (iflag_debug.gt.0) write(*,*) 'copy_force_from_transform DYCS'
       call copy_force_from_transform(sph%sph_params, sph%sph_rtp,       &
-     &    WK%trns_DYNS%forward, mesh, nod_fld)
+     &    WK_LES%trns_DYNS%forward, mesh, nod_fld)
 !
 !!!!!   These routines are for debugging. Be careful!
 !

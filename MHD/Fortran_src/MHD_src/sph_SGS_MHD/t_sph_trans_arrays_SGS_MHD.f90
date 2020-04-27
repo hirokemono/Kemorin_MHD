@@ -52,7 +52,7 @@
 !>        strucutres for spherical transform for SGS model
         type(SGS_address_sph_trans) :: trns_SGS
 !>        strucutres for spherical transform for dynamic SGS model
-!        type(SGS_address_sph_trans) :: trns_DYNS
+        type(SGS_address_sph_trans) :: trns_DYNS
 !>        strucutres for spherical transform for model coefficients
 !        type(SGS_address_sph_trans) :: trns_Csim
 !

@@ -118,8 +118,8 @@
           if(iflag_SGS_time) call start_elapsed_time(ist_elapsed_SGS+3)
           call sph_dynamic_similarity                                   &
      &       (SGS_par%model_p, sph, comms_sph, MHD_prop, trans_p,       &
-     &        WK_LES%trns_SGS, WK%trns_DYNS, WK%WK_sph, dynamic_SPH,    &
-     &        ipol, ipol_LES, rj_fld)
+     &        WK_LES%trns_SGS, WK_LES%trns_DYNS, WK%WK_sph,             &
+     &        dynamic_SPH, ipol, ipol_LES, rj_fld)
           if(iflag_SGS_time) call end_elapsed_time(ist_elapsed_SGS+3)
         end if
       else if(SGS_par%model_p%iflag_SGS .eq. id_SGS_NL_grad) then
@@ -231,7 +231,7 @@
       type(SGS_model_addresses), intent(in) :: ipol_LES
 !
       type(SGS_address_sph_trans), intent(inout) :: trns_SGS
-      type(address_4_sph_trans), intent(inout) :: trns_DYNS
+      type(SGS_address_sph_trans), intent(inout) :: trns_DYNS
       type(spherical_trns_works), intent(inout) :: WK_sph
       type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
       type(phys_data), intent(inout) :: rj_fld
