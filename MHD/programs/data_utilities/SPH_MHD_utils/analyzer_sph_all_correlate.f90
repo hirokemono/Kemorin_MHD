@@ -162,8 +162,8 @@
 !*  ----------- Zonal means --------------
 !*
           call SGS_MHD_zmean_sections                                   &
-     &       (MHD_step1%viz_step, MHD_step1%time_d, SPH_SGS1%SGS_par,   &
-     &        SPH_MHD1%sph, FEM_d1%geofem, SPH_WK1%trns_WK,             &
+     &       (MHD_step1%viz_step, MHD_step1%time_d,                     &
+     &        SPH_MHD1%sph, FEM_d1%geofem, SPH_WK1%trns_WK, SPH_SGS1,   &
      &        FEM_d1%field, zmeans1)
           if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+4)
         end if

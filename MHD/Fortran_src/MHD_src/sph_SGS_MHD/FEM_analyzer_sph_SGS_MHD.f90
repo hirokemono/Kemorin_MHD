@@ -149,6 +149,7 @@
 !
       use t_spheric_parameter
       use t_sph_trans_arrays_MHD
+      use t_sph_trans_arrays_SGS_MHD
       use t_SGS_control_parameter
 !
       use set_address_sph_trans_snap
