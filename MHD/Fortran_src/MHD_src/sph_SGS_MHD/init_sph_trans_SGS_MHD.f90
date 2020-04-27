@@ -182,7 +182,7 @@
      &                 'for similarity SGS (trns_SIMI)'
           end if
           call init_sph_trns_fld_similarity                             &
-     &       (ipol, ipol_LES, iphys, iphys_LES, WK%trns_SIMI,           &
+     &       (ipol, ipol_LES, iphys, iphys_LES, WK_LES%trns_SIMI,       &
      &        ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
           call init_sph_trns_fld_dyn_ngrad                              &
      &       (ipol_LES, iphys_LES, WK%trns_DYNG,                        &
@@ -226,7 +226,7 @@
       call init_fourier_transform_SGS_MHD                               &
      &   (SGS_param, ncomp_max_trans, sph%sph_rtp, comms_sph%comm_rtp,  &
      &    WK%trns_MHD, WK_LES%trns_SGS, WK%trns_DYNS, WK%trns_Csim,     &
-     &    WK%trns_ngTMP, WK%trns_SIMI, WK%trns_DYNG, WK%WK_sph)
+     &    WK%trns_ngTMP, WK_LES%trns_SIMI, WK%trns_DYNG, WK%WK_sph)
 !
       if (iflag_debug.eq.1) write(*,*) 'alloc_sphere_ave_coriolis'
       call alloc_sphere_ave_coriolis(sph%sph_rj)
@@ -256,7 +256,8 @@
       type(SGS_address_sph_trans), intent(inout) :: trns_SGS
       type(address_4_sph_trans), intent(inout) :: trns_DYNS, trns_Csim
       type(address_4_sph_trans), intent(inout) :: trns_ngTMP
-      type(address_4_sph_trans), intent(inout) :: trns_SIMI, trns_DYNG
+      type(SGS_address_sph_trans), intent(inout) :: trns_SIMI
+      type(address_4_sph_trans), intent(inout) :: trns_DYNG
       type(spherical_trns_works), intent(inout) :: WK_sph
 !
 !

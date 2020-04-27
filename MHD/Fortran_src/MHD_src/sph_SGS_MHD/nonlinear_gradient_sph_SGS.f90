@@ -39,7 +39,7 @@
 !!        type(spherical_trns_works), intent(inout) :: WK_sph
 !!        type(phys_data), intent(inout) :: rj_fld
 !!        type(address_4_sph_trans), intent(inout) :: trns_ngSGS
-!!        type(address_4_sph_trans), intent(inout) :: trns_SIMI
+!!        type(SGS_address_sph_trans), intent(inout) :: trns_SIMI
 !!@endverbatim
 !
       module nonlinear_gradient_sph_SGS
@@ -150,7 +150,7 @@
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(phys_address), intent(in) :: ipol
       type(SGS_model_addresses), intent(in) :: ipol_LES
-      type(address_4_sph_trans), intent(in) :: trns_SIMI
+      type(SGS_address_sph_trans), intent(in) :: trns_SIMI
       type(dynamic_SGS_data_4_sph), intent(in) :: dynamic_SPH
 !
       type(spherical_trns_works), intent(inout) :: WK_sph
