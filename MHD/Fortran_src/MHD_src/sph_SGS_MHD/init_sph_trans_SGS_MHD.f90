@@ -158,7 +158,7 @@
      &               'for similarity SGS (trns_SGS)'
         end if
         call init_sph_trns_fld_similarity                               &
-     &     (ipol, ipol_LES, iphys, iphys_LES, WK%trns_SGS,              &
+     &     (ipol, ipol_LES, iphys, iphys_LES, WK_LES%trns_SGS,          &
      &      ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
 !
         if(SGS_param%iflag_dynamic .eq. id_SGS_DYNAMIC_ON) then
