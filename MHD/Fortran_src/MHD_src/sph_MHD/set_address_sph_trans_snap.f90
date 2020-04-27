@@ -23,7 +23,7 @@
 !!     &         (sph_params, sph_rtp, forward, mesh, nod_fld)
 !!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
-!!        type(address_each_sph_trans), intent(in) :: forward
+!!        type(spherical_transform_data), intent(in) :: forward
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(phys_data), intent(inout) :: nod_fld
 !!@endverbatim
@@ -156,7 +156,7 @@
 !
       type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rtp_grid), intent(in) :: sph_rtp
-      type(address_each_sph_trans), intent(in) :: backward
+      type(spherical_transform_data), intent(in) :: backward
       type(mesh_geometry), intent(in) :: mesh
       type(phys_data), intent(inout) :: nod_fld
 !
@@ -187,7 +187,7 @@
 !
       type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rtp_grid), intent(in) :: sph_rtp
-      type(address_each_sph_trans), intent(in) :: forward
+      type(spherical_transform_data), intent(in) :: forward
       type(mesh_geometry), intent(in) :: mesh
       type(phys_data), intent(inout) :: nod_fld
 !

@@ -39,7 +39,7 @@
 !!        type(phys_address), intent(in) :: fg_trns
 !!        type(SGS_model_addresses), intent(in) :: fg_trns_LES
 !!        type(address_4_sph_trans), intent(inout) :: trns_SGS
-!!        type(address_each_sph_trans), intent(inout) :: trns_f_SGS
+!!        type(spherical_transform_data), intent(inout) :: trns_f_SGS
 !!@endverbatim
 !
       module t_SGS_buoyancy_sph
@@ -270,7 +270,7 @@
       type(work_4_sph_SGS_buoyancy), intent(in) :: wk_sgs_buo
       type(SGS_model_addresses), intent(in) :: fg_trns_LES
 !
-      type(address_each_sph_trans), intent(inout) :: trns_f_SGS
+      type(spherical_transform_data), intent(inout) :: trns_f_SGS
 !
 !
       if     (iak_sgs_term%i_SGS_buoyancy                               &
@@ -306,7 +306,7 @@
       type(work_4_sph_SGS_buoyancy), intent(in) :: wk_sgs_buo
       type(SGS_model_addresses), intent(in) :: fg_trns_LES
 !
-      type(address_each_sph_trans), intent(inout) :: trns_f_SGS
+      type(spherical_transform_data), intent(inout) :: trns_f_SGS
 !
 !
       if     (iak_sgs_term%i_SGS_buoyancy                               &

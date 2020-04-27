@@ -62,7 +62,7 @@
       subroutine set_addresses_all_transform(rj_fld, each_trns)
 !
       type(phys_data), intent(in) :: rj_fld
-      type(address_each_sph_trans), intent(inout) :: each_trns
+      type(spherical_transform_data), intent(inout) :: each_trns
 !
       integer(kind = kint) :: i, i_fld, i_trns
 !
@@ -116,7 +116,7 @@
       integer(kind = kint), intent(in) :: i_pol, irtp
 !
       integer(kind = kint), intent(inout) :: i_trns
-      type(address_each_sph_trans), intent(inout) :: each_trns
+      type(spherical_transform_data), intent(inout) :: each_trns
 !
       integer(kind = kint)  :: iflag_snap
 !

@@ -11,12 +11,12 @@
 !!      subroutine bwd_trans_address_snap                               &
 !!     &         (ipol, iphys, b_trns, trns_back)
 !!        type(phys_address), intent(in) :: ipol, iphys
-!!        type(address_each_sph_trans), intent(inout) :: trns_back
+!!        type(spherical_transform_data), intent(inout) :: trns_back
 !!        type(phys_address), intent(inout) :: b_trns
 !!      subroutine fwd_trans_address_snap                               &
 !!     &         (ipol, iphys, f_trns, trns_fwd)
 !!        type(phys_address), intent(in) :: ipol, iphys
-!!        type(address_each_sph_trans), intent(inout) :: trns_fwd
+!!        type(spherical_transform_data), intent(inout) :: trns_fwd
 !!        type(phys_address), intent(inout) :: f_trns
 !!
 !!      subroutine add_vector_4_bwd_trns_snap                           &
@@ -24,7 +24,7 @@
 !!      subroutine add_scalar_4_bwd_trns_snap                           &
 !!     &         (ipol, iphys, b_trns, trns_back)
 !!        type(phys_address), intent(in) :: ipol, iphys
-!!        type(address_each_sph_trans), intent(inout) :: trns_back
+!!        type(spherical_transform_data), intent(inout) :: trns_back
 !!        type(phys_address), intent(inout) :: b_trns
 !!
 !!      subroutine add_vector_4_fwd_trns_snap                           &
@@ -32,7 +32,7 @@
 !!      subroutine add_scalar_4_fwd_trns_snap                           &
 !!     &         (ipol, iphys, f_trns, trns_fwd)
 !!        type(phys_address), intent(in) :: ipol, iphys
-!!        type(address_each_sph_trans), intent(inout) :: trns_fwd
+!!        type(spherical_transform_data), intent(inout) :: trns_fwd
 !!        type(phys_address), intent(inout) :: f_trns
 !!@endverbatim
 !
@@ -55,7 +55,7 @@
      &         (ipol, iphys, b_trns, trns_back)
 !
       type(phys_address), intent(in) :: ipol, iphys
-      type(address_each_sph_trans), intent(inout) :: trns_back
+      type(spherical_transform_data), intent(inout) :: trns_back
       type(phys_address), intent(inout) :: b_trns
 !
 !
@@ -83,7 +83,7 @@
      &         (ipol, iphys, f_trns, trns_fwd)
 !
       type(phys_address), intent(in) :: ipol, iphys
-      type(address_each_sph_trans), intent(inout) :: trns_fwd
+      type(spherical_transform_data), intent(inout) :: trns_fwd
       type(phys_address), intent(inout) :: f_trns
 !
 !
@@ -118,7 +118,7 @@
       use add_field_to_sph_trans_list
 !
       type(phys_address), intent(in) :: ipol, iphys
-      type(address_each_sph_trans), intent(inout) :: trns_back
+      type(spherical_transform_data), intent(inout) :: trns_back
       type(phys_address), intent(inout) :: b_trns
 !
 !
@@ -157,7 +157,7 @@
       use add_diffusion_4_sph_trns
 !
       type(phys_address), intent(in) :: ipol, iphys
-      type(address_each_sph_trans), intent(inout) :: trns_back
+      type(spherical_transform_data), intent(inout) :: trns_back
       type(phys_address), intent(inout) :: b_trns
 !
 !
@@ -186,7 +186,7 @@
       use add_prod_field_4_sph_trns
 !
       type(phys_address), intent(in) :: ipol, iphys
-      type(address_each_sph_trans), intent(inout) :: trns_fwd
+      type(spherical_transform_data), intent(inout) :: trns_fwd
       type(phys_address), intent(inout) :: f_trns
 !
 !
@@ -206,7 +206,7 @@
       use add_prod_field_4_sph_trns
 !
       type(phys_address), intent(in) :: ipol, iphys
-      type(address_each_sph_trans), intent(inout) :: trns_fwd
+      type(spherical_transform_data), intent(inout) :: trns_fwd
       type(phys_address), intent(inout) :: f_trns
 !
 !

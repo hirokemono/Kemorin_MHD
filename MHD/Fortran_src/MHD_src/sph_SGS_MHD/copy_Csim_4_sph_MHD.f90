@@ -17,7 +17,7 @@
 !!        type(SGS_term_address), intent(in) :: f_trns_Csim
 !!        type(dynamic_model_data), intent(inout) :: wk_sgs
 !!        type(address_4_sph_trans), intent(inout) :: trns_snap
-!!        type(address_each_sph_trans), intent(inout) :: fwd_Csim
+!!        type(spherical_transform_data), intent(inout) :: fwd_Csim
 !!@endverbatim
 !
       module copy_Csim_4_sph_MHD
@@ -56,7 +56,7 @@
       type(SGS_term_address), intent(in) :: f_trns_Csim
 !
       type(dynamic_model_data), intent(inout) :: wk_sgs
-      type(address_each_sph_trans), intent(inout) :: fwd_Csim
+      type(spherical_transform_data), intent(inout) :: fwd_Csim
 !
 !
       if(iflag_debug .gt. 0) then
@@ -91,7 +91,7 @@
       type(SGS_term_address), intent(in) :: f_trns_Csim
 !
       type(dynamic_model_data), intent(inout) :: wk_sgs
-      type(address_each_sph_trans), intent(inout) :: fwd_Csim
+      type(spherical_transform_data), intent(inout) :: fwd_Csim
 !
 !
       if(iflag_debug .gt. 0) then
@@ -171,7 +171,7 @@
       integer(kind = kint), intent(in) :: ifld_sgs
 !
       type(dynamic_model_data), intent(inout) :: wk_sgs
-      type(address_each_sph_trans), intent(inout) :: trns_fwd
+      type(spherical_transform_data), intent(inout) :: trns_fwd
 !
 !
 !$omp parallel workshare

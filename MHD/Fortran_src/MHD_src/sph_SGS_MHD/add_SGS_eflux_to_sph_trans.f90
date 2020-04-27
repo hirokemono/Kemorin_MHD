@@ -14,7 +14,7 @@
 !!     &         (ipol_sef, iphys_sef, f_trns_sef, trns)
 !!        type(SGS_ene_flux_address), intent(in) :: ipol_sef, iphys_sef
 !!        type(SGS_ene_flux_address), intent(inout) :: f_trns_sef
-!!        type(address_each_sph_trans), intent(inout) :: trns
+!!        type(spherical_transform_data), intent(inout) :: trns
 !!@endverbatim
 !
       module add_SGS_eflux_to_sph_trans
@@ -39,7 +39,7 @@
 !
       type(SGS_ene_flux_address), intent(in) :: ipol_sef, iphys_sef
       type(SGS_ene_flux_address), intent(inout) :: f_trns_sef
-      type(address_each_sph_trans), intent(inout) :: trns
+      type(spherical_transform_data), intent(inout) :: trns
 !
 !
 !   work of Reynolds stress
@@ -66,7 +66,7 @@
 !
       type(SGS_ene_flux_address), intent(in) :: ipol_sef, iphys_sef
       type(SGS_ene_flux_address), intent(inout) :: f_trns_sef
-      type(address_each_sph_trans), intent(inout) :: trns
+      type(spherical_transform_data), intent(inout) :: trns
 !
 !
       call add_field_name_4_sph_trns_snap(Reynolds_work,                &

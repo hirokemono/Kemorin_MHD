@@ -14,7 +14,7 @@
 !!     &         (ipol_wfl, iphys_wfl, b_trns_wfl, trns)
 !!        type(base_field_address), intent(in) :: ipol_wfl, iphys_wfl
 !!        type(base_field_address), intent(inout) :: b_trns_wfl
-!!        type(address_each_sph_trans), intent(inout) :: trns
+!!        type(spherical_transform_data), intent(inout) :: trns
 !!@endverbatim
 !
       module add_wide_f_fld_to_sph_trans
@@ -40,7 +40,7 @@
 !
       type(base_field_address), intent(in) :: ipol_wfl, iphys_wfl
       type(base_field_address), intent(inout) :: b_trns_wfl
-      type(address_each_sph_trans), intent(inout) :: trns
+      type(spherical_transform_data), intent(inout) :: trns
 !
 !   wide filtered velocity
       call add_field_4_sph_trns_by_pol(wide_filter_velocity,            &
@@ -71,7 +71,7 @@
 !
       type(base_field_address), intent(in) :: ipol_wfl, iphys_wfl
       type(base_field_address), intent(inout) :: b_trns_wfl
-      type(address_each_sph_trans), intent(inout) :: trns
+      type(spherical_transform_data), intent(inout) :: trns
 !
 !
 !   wide filtered temperature

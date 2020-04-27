@@ -16,46 +16,46 @@
 !!        type(scalar_property), intent(in) :: ht_prop, cp_prop
 !!        type(base_force_address), intent(in) :: ipol_frc, iphys_frc
 !!        type(base_force_address), intent(inout) :: f_trns_frc
-!!        type(address_each_sph_trans), intent(inout) :: trns
+!!        type(spherical_transform_data), intent(inout) :: trns
 !!      subroutine add_rot_coriolis_MHD_sph_trns(fl_prop,               &
 !!     &          ipol_rot_frc, iphys_rot_frc, f_trns_rot_frc, trns)
 !!        type(fluid_property), intent(in) :: fl_prop
 !!        type(base_force_address), intent(in) :: ipol_rot_frc
 !!        type(base_force_address), intent(in) :: iphys_rot_frc
 !!        type(base_force_address), intent(inout) :: f_trns_rot_frc
-!!        type(address_each_sph_trans), intent(inout) :: trns
+!!        type(spherical_transform_data), intent(inout) :: trns
 !!      subroutine add_div_coriolis_MHD_sph_trns                        &
 !!     &         (ipol_div_frc, iphys_div_frc, f_trns_div_frc, trns)
 !!        type(base_force_address), intent(in) :: ipol_div_frc
 !!        type(base_force_address), intent(in) :: iphys_div_frc
 !!        type(base_force_address), intent(inout) :: f_trns_div_frc
-!!        type(address_each_sph_trans), intent(inout) :: trns
+!!        type(spherical_transform_data), intent(inout) :: trns
 !!
 !!      subroutine add_base_force_fwd_trns_snap                         &
 !!     &         (ipol_frc, iphys_frc, f_trns_frc, trns)
 !!        type(base_force_address), intent(in) :: ipol_frc, iphys_frc
 !!        type(base_force_address), intent(inout) :: f_trns_frc
-!!        type(address_each_sph_trans), intent(inout) :: trns
+!!        type(spherical_transform_data), intent(inout) :: trns
 !!      subroutine add_base_force_bwd_trns_snap                         &
 !!     &         (ipol_frc, iphys_frc, b_trns_frc, trns)
 !!      subroutine add_scalar_flux_bwd_trns_snap                        &
 !!     &         (ipol_frc, iphys_frc, b_trns_frc, trns)
 !!        type(base_force_address), intent(in) :: ipol_frc, iphys_frc
 !!        type(base_force_address), intent(inout) :: b_trns_frc
-!!        type(address_each_sph_trans), intent(inout) :: trns
+!!        type(spherical_transform_data), intent(inout) :: trns
 !!
 !!      subroutine add_rot_force_4_sph_trns_snap                        &
 !!     &         (ipol_rot_frc, iphys_rot_frc, b_trns_rot_frc, trns)
 !!        type(base_force_address), intent(in) :: ipol_rot_frc
 !!        type(base_force_address), intent(in) :: iphys_rot_frc
 !!        type(base_force_address), intent(inout) :: b_trns_rot_frc
-!!        type(address_each_sph_trans), intent(inout) :: trns
+!!        type(spherical_transform_data), intent(inout) :: trns
 !!      subroutine add_div_force_4_sph_trns_snap                        &
 !!     &         (ipol_div_frc, iphys_div_frc, b_trns_div_frc, trns)
 !!        type(base_force_address), intent(in) :: ipol_div_frc
 !!        type(base_force_address), intent(in) :: iphys_div_frc
 !!        type(base_force_address), intent(inout) :: b_trns_div_frc
-!!        type(address_each_sph_trans), intent(inout) :: trns
+!!        type(spherical_transform_data), intent(inout) :: trns
 !!@endverbatim
 !
       module add_base_force_4_sph_trns
@@ -87,7 +87,7 @@
       type(base_force_address), intent(in) :: ipol_frc, iphys_frc
 !
       type(base_force_address), intent(inout) :: f_trns_frc
-      type(address_each_sph_trans), intent(inout) :: trns
+      type(spherical_transform_data), intent(inout) :: trns
 !
 !   advection
       if(fl_prop%iflag_scheme .gt. id_no_evolution) then
@@ -144,7 +144,7 @@
       type(base_force_address), intent(in) :: iphys_rot_frc
 !
       type(base_force_address), intent(inout) :: f_trns_rot_frc
-      type(address_each_sph_trans), intent(inout) :: trns
+      type(spherical_transform_data), intent(inout) :: trns
 !
 !   rotation of Coriolis force
       if(fl_prop%iflag_scheme .gt. id_no_evolution) then
@@ -168,7 +168,7 @@
       type(base_force_address), intent(in) :: ipol_div_frc
       type(base_force_address), intent(in) :: iphys_div_frc
       type(base_force_address), intent(inout) :: f_trns_div_frc
-      type(address_each_sph_trans), intent(inout) :: trns
+      type(spherical_transform_data), intent(inout) :: trns
 !
 !   divergence of Coriolis force
       call add_field_4_sph_trns_by_pol(div_Coriolis_force,              &
@@ -188,7 +188,7 @@
       type(base_force_address), intent(in) :: ipol_frc, iphys_frc
 !
       type(base_force_address), intent(inout) :: f_trns_frc
-      type(address_each_sph_trans), intent(inout) :: trns
+      type(spherical_transform_data), intent(inout) :: trns
 !
 !
       call add_field_name_4_sph_trns_snap(Coriolis_force,               &
@@ -210,7 +210,7 @@
       type(base_force_address), intent(in) :: ipol_frc, iphys_frc
 !
       type(base_force_address), intent(inout) :: b_trns_frc
-      type(address_each_sph_trans), intent(inout) :: trns
+      type(spherical_transform_data), intent(inout) :: trns
 !
 !
       call add_field_name_4_sph_trns_snap(buoyancy,                     &
@@ -239,7 +239,7 @@
       type(base_force_address), intent(in) :: ipol_frc, iphys_frc
 !
       type(base_force_address), intent(inout) :: b_trns_frc
-      type(address_each_sph_trans), intent(inout) :: trns
+      type(spherical_transform_data), intent(inout) :: trns
 !
 !
       call add_field_name_4_sph_trns_snap(heat_advect,                  &
@@ -263,7 +263,7 @@
       type(base_force_address), intent(in) :: iphys_rot_frc
 !
       type(base_force_address), intent(inout) :: b_trns_rot_frc
-      type(address_each_sph_trans), intent(inout) :: trns
+      type(spherical_transform_data), intent(inout) :: trns
 !
 !
       call add_field_name_4_sph_trns_snap(rot_inertia,                  &
@@ -296,7 +296,7 @@
       type(base_force_address), intent(in) :: iphys_div_frc
 !
       type(base_force_address), intent(inout) :: b_trns_div_frc
-      type(address_each_sph_trans), intent(inout) :: trns
+      type(spherical_transform_data), intent(inout) :: trns
 !
 !
       call add_field_name_4_sph_trns_snap(div_Coriolis_force,           &

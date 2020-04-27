@@ -24,8 +24,8 @@
 !!        type(parameters_4_sph_trans), intent(in) :: trans_p
 !!        type(phys_address), intent(in) :: b_trns
 !!        type(phys_address), intent(in) :: f_trns
-!!        type(address_each_sph_trans), intent(inout) :: trns_bwd
-!!        type(address_each_sph_trans), intent(inout) :: trns_fwd
+!!        type(spherical_transform_data), intent(inout) :: trns_bwd
+!!        type(spherical_transform_data), intent(inout) :: trns_fwd
 !!        type(spherical_trns_works), intent(inout) :: WK_sph
 !!        type(work_for_sgl_FFTW), intent(inout) :: MHD_mul_FFTW
 !!
@@ -39,8 +39,8 @@
 !!        type(sph_comm_tables), intent(in) :: comms_sph
 !!        type(sph_rotation), intent(in) :: omega_sph
 !!        type(parameters_4_sph_trans), intent(in) :: trans_p
-!!        type(address_each_sph_trans), intent(inout) :: trns_bwd
-!!        type(address_each_sph_trans), intent(inout) :: trns_fwd
+!!        type(spherical_transform_data), intent(inout) :: trns_bwd
+!!        type(spherical_transform_data), intent(inout) :: trns_fwd
 !!        type(spherical_trns_works), intent(inout) :: WK_sph
 !!        type(work_for_sgl_FFTW), intent(inout) :: MHD_mul_FFTW
 !!
@@ -60,7 +60,7 @@
 !!        type(gaunt_coriolis_rlm), intent(in) :: gt_cor
 !!        type(phys_address), intent(in) :: b_trns
 !!        type(phys_address), intent(in) :: f_trns
-!!        type(address_each_sph_trans), intent(in) :: trns_bwd
+!!        type(spherical_transform_data), intent(in) :: trns_bwd
 !!        type(coriolis_rlm_data), intent(inout) :: cor_rlm
 !!
 !!   input /outpt arrays for single vector
@@ -134,7 +134,7 @@
 !
       integer(kind = kint), intent(in) :: n_WS, n_WR
       real(kind = kreal), intent(inout) :: WS(n_WS), WR(n_WR)
-      type(address_each_sph_trans), intent(inout) :: trns_bwd
+      type(spherical_transform_data), intent(inout) :: trns_bwd
       type(spherical_trns_works), intent(inout) :: WK_sph
       type(work_for_sgl_FFTW), intent(inout) :: MHD_mul_FFTW
       type(coriolis_rlm_data), intent(inout) :: cor_rlm
@@ -202,7 +202,7 @@
 !
       integer(kind = kint), intent(in) :: n_WS, n_WR
       real(kind = kreal), intent(inout) :: WS(n_WS), WR(n_WR)
-      type(address_each_sph_trans), intent(inout) :: trns_fwd
+      type(spherical_transform_data), intent(inout) :: trns_fwd
       type(spherical_trns_works), intent(inout) :: WK_sph
       type(work_for_sgl_FFTW), intent(inout) :: MHD_mul_FFTW
 !
@@ -258,7 +258,7 @@
 !
       integer(kind = kint), intent(in) :: n_WS, n_WR
       real(kind = kreal), intent(inout) :: WS(n_WS), WR(n_WR)
-      type(address_each_sph_trans), intent(inout) :: trns_bwd
+      type(spherical_transform_data), intent(inout) :: trns_bwd
       type(spherical_trns_works), intent(inout) :: WK_sph
       type(work_for_sgl_FFTW), intent(inout) :: SGS_mul_FFTW
 !
@@ -314,7 +314,7 @@
 !
       integer(kind = kint), intent(in) :: n_WS, n_WR
       real(kind = kreal), intent(inout) :: WS(n_WS), WR(n_WR)
-      type(address_each_sph_trans), intent(inout) :: trns_fwd
+      type(spherical_transform_data), intent(inout) :: trns_fwd
       type(spherical_trns_works), intent(inout) :: WK_sph
       type(work_for_sgl_FFTW), intent(inout) :: SGS_mul_FFTW
 !
@@ -364,7 +364,7 @@
       type(legendre_4_sph_trans), intent(in) :: leg
       type(gaunt_coriolis_rlm), intent(in) :: gt_cor
       type(phys_address), intent(in) :: b_trns
-      type(address_each_sph_trans), intent(in) :: trns_bwd
+      type(spherical_transform_data), intent(in) :: trns_bwd
 !
       integer(kind = kint), intent(in) :: n_WR
       real(kind = kreal), intent(inout) :: WR(n_WR)
@@ -397,7 +397,7 @@
       type(fluid_property), intent(in) :: fl_prop
       type(coriolis_rlm_data), intent(in) :: cor_rlm
       type(phys_address), intent(in) :: f_trns
-      type(address_each_sph_trans), intent(in) :: trns_fwd
+      type(spherical_transform_data), intent(in) :: trns_fwd
 !
       integer(kind = kint), intent(in) :: n_WS
       real(kind = kreal), intent(inout) :: WS(n_WS)

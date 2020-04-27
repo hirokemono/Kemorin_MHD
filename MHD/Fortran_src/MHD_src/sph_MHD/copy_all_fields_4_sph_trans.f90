@@ -11,7 +11,7 @@
 !!      subroutine copy_all_field_from_trans(m_folding, sph_rtp,       &
 !!     &          backward, mesh, nod_fld)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
-!!        type(address_each_sph_trans), intent(in) :: backward
+!!        type(spherical_transform_data), intent(in) :: backward
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(phys_data), intent(inout) :: nod_fld
 !!
@@ -20,7 +20,7 @@
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(phys_data), intent(in) :: nod_fld
-!!        type(address_each_sph_trans), intent(inout) :: forward
+!!        type(spherical_transform_data), intent(inout) :: forward
 !!@endverbatim
 !
       module copy_all_fields_4_sph_trans
@@ -50,7 +50,7 @@
 !
       integer(kind = kint), intent(in) :: m_folding
       type(sph_rtp_grid), intent(in) :: sph_rtp
-      type(address_each_sph_trans), intent(in) :: backward
+      type(spherical_transform_data), intent(in) :: backward
       type(mesh_geometry), intent(in) :: mesh
       type(phys_data), intent(inout) :: nod_fld
 !
@@ -121,7 +121,7 @@
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(mesh_geometry), intent(in) :: mesh
       type(phys_data), intent(in) :: nod_fld
-      type(address_each_sph_trans), intent(inout) :: forward
+      type(spherical_transform_data), intent(inout) :: forward
 !
       integer(kind = kint) :: j, j_fld, i_fld
       integer(kind = kint) :: icomp, jcomp

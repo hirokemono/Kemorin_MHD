@@ -13,14 +13,14 @@
 !!        type(gradient_field_address), intent(in) :: ipol_gfl
 !!        type(gradient_field_address), intent(in) :: iphys_gfl
 !!        type(gradient_field_address), intent(inout) :: b_trns_gfl
-!!        type(address_each_sph_trans), intent(inout) :: trns
+!!        type(spherical_transform_data), intent(inout) :: trns
 !!      subroutine add_diff_fil_vec_sph_trns_pol                        &
 !!     &         (ipol_dfv, iphys_dfv, b_trns_dfv, trns)
 !!      subroutine add_diff_fil_vec_4_scalar_trns                       &
 !!     &         (ipol_dfv, iphys_dfv, f_trns_dfv, trns)
 !!        type(diff_vector_address), intent(in) :: ipol_dfv, iphys_dfv
 !!        type(diff_vector_address), intent(inout) :: f_trns_dfv
-!!        type(address_each_sph_trans), intent(inout) :: trns
+!!        type(spherical_transform_data), intent(inout) :: trns
 !!@endverbatim
 !
       module add_diff_fil_vec_to_trans
@@ -49,7 +49,7 @@
       type(gradient_field_address), intent(in) :: ipol_gfl
       type(gradient_field_address), intent(in) :: iphys_gfl
       type(gradient_field_address), intent(inout) :: b_trns_gfl
-      type(address_each_sph_trans), intent(inout) :: trns
+      type(spherical_transform_data), intent(inout) :: trns
 !
 !
 !   Gradient of temperature
@@ -75,7 +75,7 @@
 !
       type(diff_vector_address), intent(in) :: ipol_dfv, iphys_dfv
       type(diff_vector_address), intent(inout) :: b_trns_dfv
-      type(address_each_sph_trans), intent(inout) :: trns
+      type(spherical_transform_data), intent(inout) :: trns
 !
 !
 !   Gradient of Radial velocity
@@ -142,7 +142,7 @@
 !
       type(diff_vector_address), intent(in) :: ipol_dfv, iphys_dfv
       type(diff_vector_address), intent(inout) :: f_trns_dfv
-      type(address_each_sph_trans), intent(inout) :: trns
+      type(spherical_transform_data), intent(inout) :: trns
 !
 !
 !   Radial velocity

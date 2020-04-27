@@ -12,12 +12,12 @@
 !!     &         (ipol_efx, iphys_efx, f_trns_efx, trns)
 !!        type(energy_flux_address), intent(in) :: ipol_efx, iphys_efx
 !!        type(energy_flux_address), intent(inout) :: f_trns_efx
-!!        type(address_each_sph_trans), intent(inout) :: trns
+!!        type(spherical_transform_data), intent(inout) :: trns
 !!      subroutine add_fil_e_flux_4_sph_trns_snap                       &
 !!     &         (ipol_fefx, iphys_fefx, f_trns_fefx, trns)
 !!        type(energy_flux_address), intent(in) :: ipol_fefx, iphys_fefx
 !!        type(energy_flux_address), intent(inout) :: f_trns_fefx
-!!        type(address_each_sph_trans), intent(inout) :: trns
+!!        type(spherical_transform_data), intent(inout) :: trns
 !!@endverbatim
 !
       module add_energy_flux_4_sph_trns
@@ -43,7 +43,7 @@
 !
       type(energy_flux_address), intent(in) :: ipol_efx, iphys_efx
       type(energy_flux_address), intent(inout) :: f_trns_efx
-      type(address_each_sph_trans), intent(inout) :: trns
+      type(spherical_transform_data), intent(inout) :: trns
 !
 !
       call add_field_name_4_sph_trns_snap(magnetic_ene_generation,      &
@@ -73,7 +73,7 @@
 !
       type(energy_flux_address), intent(in) :: ipol_fefx, iphys_fefx
       type(energy_flux_address), intent(inout) :: f_trns_fefx
-      type(address_each_sph_trans), intent(inout) :: trns
+      type(spherical_transform_data), intent(inout) :: trns
 !
 !
       call add_field_name_4_sph_trns_snap(filtered_buoyancy_flux,       &

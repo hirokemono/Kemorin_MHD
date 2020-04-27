@@ -24,9 +24,9 @@
 !!        type(legendre_4_sph_trans), intent(in) :: leg
 !!        type(phys_address), intent(in) :: f_trns
 !!        type(phys_address), intent(in) :: bs_trns, fs_trns
-!!        type(address_each_sph_trans), intent(in) :: trns_f_MHD
-!!        type(address_each_sph_trans), intent(in) :: trns_b_snap
-!!        type(address_each_sph_trans), intent(inout) :: trns_f_snap
+!!        type(spherical_transform_data), intent(in) :: trns_f_MHD
+!!        type(spherical_transform_data), intent(in) :: trns_b_snap
+!!        type(spherical_transform_data), intent(inout) :: trns_f_snap
 !!
 !!      subroutine cal_buoyancy_flux_rtp_smp(np_smp, nnod, nr,          &
 !!     &          inod_smp_stack, radius, coef, scalar, vr, prod)
@@ -67,9 +67,9 @@
       type(scalar_property), intent(in) :: ht_prop, cp_prop
       type(phys_address), intent(in) :: f_trns
       type(phys_address), intent(in) :: bs_trns
-      type(address_each_sph_trans), intent(in) :: trns_b_MHD
+      type(spherical_transform_data), intent(in) :: trns_b_MHD
 !
-      type(address_each_sph_trans), intent(inout) :: trns_f_MHD
+      type(spherical_transform_data), intent(inout) :: trns_f_MHD
 !
 !
 !$omp parallel
@@ -152,10 +152,10 @@
       type(legendre_4_sph_trans), intent(in) :: leg
       type(phys_address), intent(in) :: f_trns
       type(phys_address), intent(in) :: bs_trns, fs_trns
-      type(address_each_sph_trans), intent(in) :: trns_f_MHD
-      type(address_each_sph_trans), intent(in) :: trns_b_snap
+      type(spherical_transform_data), intent(in) :: trns_f_MHD
+      type(spherical_transform_data), intent(in) :: trns_b_snap
 !
-      type(address_each_sph_trans), intent(inout) :: trns_f_snap
+      type(spherical_transform_data), intent(inout) :: trns_f_snap
 !
 !
 !$omp parallel

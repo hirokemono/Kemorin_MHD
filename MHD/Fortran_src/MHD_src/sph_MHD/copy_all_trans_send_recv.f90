@@ -15,13 +15,13 @@
 !!        type(sph_comm_tbl), intent(in) :: comm_rj
 !!        type(phys_address), intent(in) :: ipol
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
-!!        type(address_each_sph_trans), intent(in) :: backward
+!!        type(spherical_transform_data), intent(in) :: backward
 !!        type(phys_data), intent(inout) :: rj_fld
 !!
 !!      subroutine copy_all_spectr_from_trns                            &
 !!     &         (ncomp_recv, comm_rj, forward, n_WR, WR, rj_fld)
 !!        type(sph_comm_tbl), intent(in) :: comm_rj
-!!        type(address_each_sph_trans), intent(in) :: forward
+!!        type(spherical_transform_data), intent(in) :: forward
 !!        type(phys_address), intent(in) :: ipol
 !!        type(phys_data), intent(inout) :: rj_fld
 !!@endverbatim
@@ -54,7 +54,7 @@
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(sph_comm_tbl), intent(in) :: comm_rj
       type(phys_data), intent(in) :: rj_fld
-      type(address_each_sph_trans), intent(in) :: backward
+      type(spherical_transform_data), intent(in) :: backward
       integer(kind = kint), intent(in) :: nnod_pole
       integer(kind = kint), intent(in) :: ncomp_send, n_WS
       real(kind = kreal), intent(inout) :: WS(n_WS)
@@ -125,7 +125,7 @@
      &         (ncomp_recv, comm_rj, forward, n_WR, WR, rj_fld)
 !
       type(sph_comm_tbl), intent(in) :: comm_rj
-      type(address_each_sph_trans), intent(in) :: forward
+      type(spherical_transform_data), intent(in) :: forward
       integer(kind = kint), intent(in) :: ncomp_recv, n_WR
       real(kind = kreal), intent(inout) :: WR(n_WR)
       type(phys_data), intent(inout) :: rj_fld

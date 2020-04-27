@@ -13,7 +13,7 @@
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(SGS_term_address), intent(in) :: iak_sgs_term
 !!        type(SGS_term_address), intent(in) :: fg_trns_SGS
-!!        type(address_each_sph_trans), intent(inout) :: trns_f_SGS
+!!        type(spherical_transform_data), intent(inout) :: trns_f_SGS
 !!      subroutine product_model_coefs_4_sph                            &
 !!     &         (SGS_param, sph_rtp, sph_d_grp, iak_sgs_term,          &
 !!     &          fg_trns_SGS, trns_f_SGS, wk_sgs)
@@ -22,7 +22,7 @@
 !!        type(sph_dynamic_model_group), intent(in) :: sph_d_grp
 !!        type(SGS_term_address), intent(in) :: iak_sgs_term
 !!        type(SGS_term_address), intent(in) :: fg_trns_SGS
-!!        type(address_each_sph_trans), intent(inout) :: trns_f_SGS
+!!        type(spherical_transform_data), intent(inout) :: trns_f_SGS
 !!        type(dynamic_model_data), intent(inout) :: wk_sgs
 !!@endverbatim
 !
@@ -64,7 +64,7 @@
       type(SGS_term_address), intent(in) :: fg_trns_SGS
       type(SGS_term_address), intent(in) :: iak_sgs_term
 !
-      type(address_each_sph_trans), intent(inout) :: trns_f_SGS
+      type(spherical_transform_data), intent(inout) :: trns_f_SGS
 !
 !
       if(iak_sgs_term%i_SGS_m_flux .gt. 0) then
@@ -112,7 +112,7 @@
       type(SGS_term_address), intent(in) :: fg_trns_SGS
 !
       type(dynamic_model_data), intent(inout) :: wk_sgs
-      type(address_each_sph_trans), intent(inout) :: trns_f_SGS
+      type(spherical_transform_data), intent(inout) :: trns_f_SGS
 !
 !
       if(iak_sgs_term%i_SGS_m_flux .gt. 0) then
@@ -175,7 +175,7 @@
       real(kind = kreal), intent(in) :: const_Csim
 !
       type(dynamic_model_data), intent(inout) :: wk_sgs
-      type(address_each_sph_trans), intent(inout) :: trns_f_SGS
+      type(spherical_transform_data), intent(inout) :: trns_f_SGS
 !
 !
       if(iflag_FFT .eq. iflag_FFTW) then

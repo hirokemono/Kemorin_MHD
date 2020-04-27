@@ -12,8 +12,8 @@
 !!        type(sph_grids), intent(in) :: sph
 !!        type(base_field_address), intent(in) :: bs_trns_fil
 !!        type(diff_vector_address), intent(in) :: fd_trns_dfv
-!!        type(address_each_sph_trans), intent(in) :: trns_b_SGS
-!!        type(address_each_sph_trans), intent(inout) :: trns_DYNG
+!!        type(spherical_transform_data), intent(in) :: trns_b_SGS
+!!        type(spherical_transform_data), intent(inout) :: trns_DYNG
 !!@endverbatim
 !
       module copy_rtp_vectors_4_grad
@@ -44,8 +44,8 @@
       type(base_field_address), intent(in) :: bs_trns_fil
       type(diff_vector_address), intent(in) :: fd_trns_dfv
 !
-      type(address_each_sph_trans), intent(in) :: trns_b_SGS
-      type(address_each_sph_trans), intent(inout) :: trns_DYNG
+      type(spherical_transform_data), intent(in) :: trns_b_SGS
+      type(spherical_transform_data), intent(inout) :: trns_DYNG
 !
 !
       if(bs_trns_fil%i_velo .gt. 0) then

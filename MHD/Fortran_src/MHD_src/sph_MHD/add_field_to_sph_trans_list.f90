@@ -11,24 +11,24 @@
 !!      subroutine add_field_4_sph_trns_by_pol                          &
 !!     &         (field, i_pol, irtp, i_trns, each_trns)
 !!        type(field_def), intent(in) :: field
-!!        type(address_each_sph_trans), intent(inout) :: each_trns
+!!        type(spherical_transform_data), intent(inout) :: each_trns
 !!      subroutine add_field_name_4_sph_trns_snap                       &
 !!     &         (field, i_pol, irtp, i_trns, each_trns)
 !!        type(field_def), intent(in) :: field
-!!        type(address_each_sph_trans), intent(inout) :: each_trns
+!!        type(spherical_transform_data), intent(inout) :: each_trns
 !!      subroutine add_scalar_4_sph_trns_by_pol                         &
 !!     &         (field, i_pol, irtp, i_trns, each_trns)
 !!        type(field_def), intent(in) :: field
-!!        type(address_each_sph_trans), intent(inout) :: each_trns
+!!        type(spherical_transform_data), intent(inout) :: each_trns
 !!      subroutine add_scalar_4_sph_trns_snap                           &
 !!     &         (field, i_pol, irtp, i_trns, each_trns)
 !!        type(field_def), intent(in) :: field
-!!        type(address_each_sph_trans), intent(inout) :: each_trns
+!!        type(spherical_transform_data), intent(inout) :: each_trns
 !!
 !!      subroutine add_field_name_4_sph_trns                            &
 !!     &         (iflag_add, field_name, num_component,                 &
 !!     &          i_pol, irtp, i_trns, each_trns)
-!!        type(address_each_sph_trans), intent(inout) :: each_trns
+!!        type(spherical_transform_data), intent(inout) :: each_trns
 !!@endverbatim
 !
       module add_field_to_sph_trans_list
@@ -53,7 +53,7 @@
       integer(kind = kint), intent(in) :: i_pol, irtp
 !
       integer(kind = kint), intent(inout) :: i_trns
-      type(address_each_sph_trans), intent(inout) :: each_trns
+      type(spherical_transform_data), intent(inout) :: each_trns
 !
 !
       call add_field_name_4_sph_trns(i_pol, field%name, field%n_comp,   &
@@ -70,7 +70,7 @@
       integer(kind = kint), intent(in) :: i_pol, irtp
 !
       integer(kind = kint), intent(inout) :: i_trns
-      type(address_each_sph_trans), intent(inout) :: each_trns
+      type(spherical_transform_data), intent(inout) :: each_trns
 !
       integer(kind = kint)  :: iflag_snap
 !
@@ -91,7 +91,7 @@
       integer(kind = kint), intent(in) :: i_pol, irtp
 !
       integer(kind = kint), intent(inout) :: i_trns
-      type(address_each_sph_trans), intent(inout) :: each_trns
+      type(spherical_transform_data), intent(inout) :: each_trns
 !
 !
       call add_field_name_4_sph_trns(i_pol, field%name, n_scalar,       &
@@ -108,7 +108,7 @@
       integer(kind = kint), intent(in) :: i_pol, irtp
 !
       integer(kind = kint), intent(inout) :: i_trns
-      type(address_each_sph_trans), intent(inout) :: each_trns
+      type(spherical_transform_data), intent(inout) :: each_trns
 !
       integer(kind = kint)  :: iflag_snap
 !
@@ -133,9 +133,9 @@
       integer(kind = kint), intent(in) :: i_pol, irtp
 !
       integer(kind = kint), intent(inout) :: i_trns
-      type(address_each_sph_trans), intent(inout) :: each_trns
+      type(spherical_transform_data), intent(inout) :: each_trns
 !
-      type(address_each_sph_trans) :: etrns_tmp
+      type(spherical_transform_data) :: etrns_tmp
 !
 !
       if(iflag_add .eq. 0) return

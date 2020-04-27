@@ -45,8 +45,8 @@
       type(sph_grids), intent(in) :: sph
       type(phys_address), intent(in) :: b_trns, fn_trns
 !
-      type(address_each_sph_trans), intent(in) :: trns_b_MHD
-      type(address_each_sph_trans), intent(inout) :: trns_f_ngSGS
+      type(spherical_transform_data), intent(in) :: trns_b_MHD
+      type(spherical_transform_data), intent(inout) :: trns_f_ngSGS
 !
 !
       if(b_trns%base%i_velo .gt. 0) then

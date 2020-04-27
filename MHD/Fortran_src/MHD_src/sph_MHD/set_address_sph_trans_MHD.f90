@@ -17,7 +17,7 @@
 !!
 !!      subroutine mhd_spectr_to_sendbuf                                &
 !!     &         (backward, comm_rj, rj_fld, n_WS, WS)
-!!        type(address_each_sph_trans), intent(in) :: backward
+!!        type(spherical_transform_data), intent(in) :: backward
 !!        type(sph_comm_tbl), intent(in) :: comm_rj
 !!        type(phys_data), intent(in) :: rj_fld
 !!      subroutine mhd_spectr_to_sendbuf_wpole(nnod_pole,               &
@@ -25,10 +25,10 @@
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(sph_comm_tbl), intent(in) :: comm_rj
 !!        type(phys_data), intent(in) :: rj_fld
-!!        type(address_each_sph_trans), intent(inout) :: backward
+!!        type(spherical_transform_data), intent(inout) :: backward
 !!      subroutine mhd_spectr_from_recvbuf                              &
 !!     &         (forward, comm_rj, n_WR, WR, rj_fld)
-!!        type(address_each_sph_trans), intent(in) :: forward
+!!        type(spherical_transform_data), intent(in) :: forward
 !!        type(sph_comm_tbl), intent(in) :: comm_rj
 !!        type(phys_data), intent(inout) :: rj_fld
 !!@endverbatim
@@ -103,7 +103,7 @@
 !
       use copy_spectr_4_sph_trans
 !
-      type(address_each_sph_trans), intent(in) :: backward
+      type(spherical_transform_data), intent(in) :: backward
       type(sph_comm_tbl), intent(in) :: comm_rj
       type(phys_data), intent(in) :: rj_fld
       integer(kind = kint), intent(in) :: n_WS
@@ -139,7 +139,7 @@
       type(phys_data), intent(in) :: rj_fld
       integer(kind = kint), intent(in) :: n_WS
       real(kind = kreal), intent(inout) :: WS(n_WS)
-      type(address_each_sph_trans), intent(inout) :: backward
+      type(spherical_transform_data), intent(inout) :: backward
 !
       integer(kind = kint) :: i, inum
 !
@@ -165,7 +165,7 @@
 !
       use copy_spectr_4_sph_trans
 !
-      type(address_each_sph_trans), intent(in) :: forward
+      type(spherical_transform_data), intent(in) :: forward
       type(sph_comm_tbl), intent(in) :: comm_rj
       integer(kind = kint), intent(in) :: n_WR
       real(kind = kreal), intent(inout) :: WR(n_WR)

@@ -16,8 +16,8 @@
 !!        type(base_field_address), intent(in) :: b_trns_base
 !!        type(base_field_address), intent(in) :: b_trns_fil
 !!        type(energy_flux_address), intent(in) :: f_trns_fefx
-!!        type(address_each_sph_trans), intent(in) :: trns_b_snap
-!!        type(address_each_sph_trans), intent(inout) :: trns_f_snap
+!!        type(spherical_transform_data), intent(in) :: trns_b_snap
+!!        type(spherical_transform_data), intent(inout) :: trns_f_snap
 !!      subroutine pole_filterd_buo_flux_rtp(sph_rtp, node,             &
 !!     &          fl_prop, iphys_base, iphys_fil, iphys_fefx, nod_fld)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
@@ -64,9 +64,9 @@
       type(base_field_address), intent(in) :: b_trns_base
       type(base_field_address), intent(in) :: b_trns_fil
       type(energy_flux_address), intent(in) :: f_trns_fefx
-      type(address_each_sph_trans), intent(in) :: trns_b_snap
+      type(spherical_transform_data), intent(in) :: trns_b_snap
 !
-      type(address_each_sph_trans), intent(inout) :: trns_f_snap
+      type(spherical_transform_data), intent(inout) :: trns_f_snap
 !
 !
 !$omp parallel

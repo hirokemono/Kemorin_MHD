@@ -14,7 +14,7 @@
 !!     &         (ipol_dif, iphys_dif, b_trns_dif, trns)
 !!        type(diffusion_address), intent(in) :: ipol_dif, iphys_dif
 !!        type(diffusion_address), intent(inout) :: b_trns_dif
-!!        type(address_each_sph_trans), intent(inout) :: trns
+!!        type(spherical_transform_data), intent(inout) :: trns
 !!@endverbatim
 !
       module add_diffusion_4_sph_trns
@@ -41,7 +41,7 @@
       type(diffusion_address), intent(in) :: ipol_dif, iphys_dif
 !
       type(diffusion_address), intent(inout) :: b_trns_dif
-      type(address_each_sph_trans), intent(inout) :: trns
+      type(spherical_transform_data), intent(inout) :: trns
 !
 !
       call add_field_name_4_sph_trns_snap(viscous_diffusion,            &
@@ -69,7 +69,7 @@
       type(diffusion_address), intent(in) :: ipol_dif, iphys_dif
 !
       type(diffusion_address), intent(inout) :: b_trns_dif
-      type(address_each_sph_trans), intent(inout) :: trns
+      type(spherical_transform_data), intent(inout) :: trns
 !
 !
       call add_field_name_4_sph_trns_snap(thermal_diffusion,            &

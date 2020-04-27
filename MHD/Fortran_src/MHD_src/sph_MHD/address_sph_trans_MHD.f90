@@ -12,13 +12,13 @@
 !!     &         (MHD_prop, ipol, iphys, b_trns, trns_back)
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
 !!        type(phys_address), intent(in) :: ipol, iphys
-!!        type(address_each_sph_trans), intent(inout) :: trns_back
+!!        type(spherical_transform_data), intent(inout) :: trns_back
 !!        type(phys_address), intent(inout) :: b_trns
 !!      subroutine fwd_trans_address_MHD                                &
 !!     &         (MHD_prop, ipol, iphys, f_trns, trns_fwd)
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
 !!        type(phys_address), intent(in) :: ipol, iphys
-!!        type(address_each_sph_trans), intent(inout) :: trns_fwd
+!!        type(spherical_transform_data), intent(inout) :: trns_fwd
 !!        type(phys_address), intent(inout) :: f_trns
 !!@endverbatim
 !
@@ -49,7 +49,7 @@
 !
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(phys_address), intent(in) :: ipol, iphys
-      type(address_each_sph_trans), intent(inout) :: trns_back
+      type(spherical_transform_data), intent(inout) :: trns_back
       type(phys_address), intent(inout) :: b_trns
 !
 !
@@ -86,7 +86,7 @@
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(phys_address), intent(in) :: ipol, iphys
 !
-      type(address_each_sph_trans), intent(inout) :: trns_fwd
+      type(spherical_transform_data), intent(inout) :: trns_fwd
       type(phys_address), intent(inout) :: f_trns
 !
 !

@@ -26,8 +26,8 @@
 !!        type(base_field_address), intent(in) :: bg_trns_fil
 !!        type(SGS_term_address), intent(in) :: bg_trns_SGS
 !!        type(SGS_term_address), intent(in) :: fg_trns_SGS
-!!        type(address_each_sph_trans), intent(inout) :: trns_b_SGS
-!!        type(address_each_sph_trans), intent(inout) :: trns_f_SGS
+!!        type(spherical_transform_data), intent(inout) :: trns_b_SGS
+!!        type(spherical_transform_data), intent(inout) :: trns_f_SGS
 !!
 !!      subroutine wider_similarity_SGS_rtp(sph_rtp, MHD_prop,          &
 !!     &          bg_trns_wfil, bg_trns_wSGS, trns_b_DYNS)
@@ -100,9 +100,9 @@
       type(base_field_address), intent(in) :: bg_trns_fil
       type(SGS_term_address), intent(in) :: bg_trns_SGS
       type(SGS_term_address), intent(in) :: fg_trns_SGS
-      type(address_each_sph_trans), intent(in) :: trns_b_SGS
+      type(spherical_transform_data), intent(in) :: trns_b_SGS
 !
-      type(address_each_sph_trans), intent(inout) :: trns_f_SGS
+      type(spherical_transform_data), intent(inout) :: trns_f_SGS
 !
 !$omp parallel
       if(fg_trns_SGS%i_SGS_inertia .gt. 0) then
@@ -179,7 +179,7 @@
       type(base_field_address), intent(in) :: bg_trns_wfil
       type(SGS_term_address), intent(in) :: bg_trns_wSGS
 !
-      type(address_each_sph_trans), intent(inout) :: trns_b_DYNS
+      type(spherical_transform_data), intent(inout) :: trns_b_DYNS
 !
 !
 !$omp parallel

@@ -13,7 +13,7 @@
 !!     &          ifld_SGS_buo, icomp_SGS_buo, wk_sgs)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(phys_address), intent(in) :: fg_trns
-!!        type(address_each_sph_trans), intent(inout) :: trns_f_SGS
+!!        type(spherical_transform_data), intent(inout) :: trns_f_SGS
 !!      subroutine prod_SGS_buoyancy_to_Reynolds(sph_rtp, sph_d_grp,    &
 !!     &          fg_trns_LES, iak_sgs_term, wk_sgs, trns_f_SGS)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
@@ -28,7 +28,7 @@
 !!     &         (sph_rtp, sgs_c, fg_trns_LES, trns_f_SGS)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(SGS_model_addresses), intent(in) :: fg_trns_LES
-!!        type(address_each_sph_trans), intent(inout) :: trns_f_SGS
+!!        type(spherical_transform_data), intent(inout) :: trns_f_SGS
 !!@endverbatim
 !
       module SGS_buo_coefs_sph_MHD
@@ -109,7 +109,7 @@
       type(SGS_term_address), intent(in) :: iak_sgs_term
       type(dynamic_model_data), intent(in) :: wk_sgs
 !
-      type(address_each_sph_trans), intent(inout) :: trns_f_SGS
+      type(spherical_transform_data), intent(inout) :: trns_f_SGS
 !
 !
       if     (iak_sgs_term%i_SGS_buoyancy                               &
@@ -179,7 +179,7 @@
       real(kind = kreal), intent(in) :: sgs_c(sph_rtp%nidx_rtp(1))
       type(SGS_model_addresses), intent(in) :: fg_trns_LES
 !
-      type(address_each_sph_trans), intent(inout) :: trns_f_SGS
+      type(spherical_transform_data), intent(inout) :: trns_f_SGS
 !
 !
       if(iflag_FFT .eq. iflag_FFTW) then
@@ -206,7 +206,7 @@
       real(kind = kreal), intent(in) :: sgs_c(sph_rtp%nidx_rtp(1),2)
       type(SGS_model_addresses), intent(in) :: fg_trns_LES
 !
-      type(address_each_sph_trans), intent(inout) :: trns_f_SGS
+      type(spherical_transform_data), intent(inout) :: trns_f_SGS
 !
 !
       if(iflag_FFT .eq. iflag_FFTW) then

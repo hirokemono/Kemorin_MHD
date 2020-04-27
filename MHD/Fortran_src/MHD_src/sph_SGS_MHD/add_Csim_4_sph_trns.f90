@@ -14,7 +14,7 @@
 !!     &         (ipol_Csim, iphys_Csim, f_trns_Csim, trns)
 !!        type(SGS_term_address), intent(in) :: ipol_Csim, iphys_Csim
 !!        type(SGS_term_address), intent(inout) :: f_trns_Csim
-!!        type(address_each_sph_trans), intent(inout) :: trns
+!!        type(spherical_transform_data), intent(inout) :: trns
 !!@endverbatim
 !
       module add_Csim_4_sph_trns
@@ -39,7 +39,7 @@
 !
       type(SGS_term_address), intent(in) :: ipol_Csim, iphys_Csim
       type(SGS_term_address), intent(inout) :: f_trns_Csim
-      type(address_each_sph_trans), intent(inout) :: trns
+      type(spherical_transform_data), intent(inout) :: trns
 !
 !
 !   SGS advection flag
@@ -83,7 +83,7 @@
 !
       type(SGS_term_address), intent(in) :: ipol_Csim, iphys_Csim
       type(SGS_term_address), intent(inout) :: f_trns_Csim
-      type(address_each_sph_trans), intent(inout) :: trns
+      type(spherical_transform_data), intent(inout) :: trns
 !
 !
 !   SGS advection flag

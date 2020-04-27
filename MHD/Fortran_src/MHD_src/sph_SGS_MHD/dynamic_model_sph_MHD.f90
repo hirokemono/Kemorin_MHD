@@ -17,9 +17,9 @@
 !!        type(SGS_term_address), intent(in) :: fg_trns_SGS
 !!        type(SGS_term_address), intent(in) :: bw_trns_wSGS
 !!        type(SGS_term_address), intent(in) :: bd_trns_dSGS
-!!        type(address_each_sph_trans), intent(in) :: trns_f_SIMI
-!!        type(address_each_sph_trans), intent(in) :: trns_b_wide
-!!        type(address_each_sph_trans), intent(in) :: trns_b_dble
+!!        type(spherical_transform_data), intent(in) :: trns_f_SIMI
+!!        type(spherical_transform_data), intent(in) :: trns_b_wide
+!!        type(spherical_transform_data), intent(in) :: trns_b_dble
 !!        type(SGS_term_address), intent(in) :: iak_sgs_term
 !!        type(dynamic_model_data), intent(inout) :: wk_sgs
 !!
@@ -75,9 +75,9 @@
       type(SGS_term_address), intent(in) :: fg_trns_SGS
       type(SGS_term_address), intent(in) :: bw_trns_wSGS
       type(SGS_term_address), intent(in) :: bd_trns_dSGS
-      type(address_each_sph_trans), intent(in) :: trns_f_SIMI
-      type(address_each_sph_trans), intent(in) :: trns_b_wide
-      type(address_each_sph_trans), intent(in) :: trns_b_dble
+      type(spherical_transform_data), intent(in) :: trns_f_SIMI
+      type(spherical_transform_data), intent(in) :: trns_b_wide
+      type(spherical_transform_data), intent(in) :: trns_b_dble
       type(SGS_term_address), intent(in) :: iak_sgs_term
 !
       type(dynamic_model_data), intent(inout) :: wk_sgs
@@ -186,7 +186,7 @@
       type(SGS_term_address), intent(in) :: iak_sgs_term
       type(SGS_term_address), intent(in) :: icmop_sgs_term
       type(SGS_ene_flux_address), intent(in) :: f_trns_sef
-      type(address_each_sph_trans), intent(in) :: trns_Csim_fwd
+      type(spherical_transform_data), intent(in) :: trns_Csim_fwd
 !
       type(dynamic_model_data), intent(inout) :: wk_sgs
 !

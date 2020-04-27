@@ -97,7 +97,7 @@
       type(SGS_model_addresses), intent(in) :: ipol_LES, iphys_LES
       type(phys_address), intent(inout) :: b_trns
       type(SGS_model_addresses), intent(inout) :: b_trns_LES
-      type(address_each_sph_trans), intent(inout) :: trns_back
+      type(spherical_transform_data), intent(inout) :: trns_back
 !
 !
       if(iflag_debug .gt. 0) then
@@ -135,7 +135,7 @@
       type(SGS_model_addresses), intent(in) :: ipol_LES, iphys_LES
       type(phys_address), intent(inout) :: f_trns
       type(SGS_model_addresses), intent(inout) :: f_trns_LES
-      type(address_each_sph_trans), intent(inout) :: trns_fwd
+      type(spherical_transform_data), intent(inout) :: trns_fwd
 !
 !
       if(iflag_debug .gt. 0) then
@@ -167,7 +167,7 @@
 !
       type(SGS_model_addresses), intent(in) :: ipol_LES, iphys_LES
       type(SGS_model_addresses), intent(inout) :: b_trns_LES
-      type(address_each_sph_trans), intent(inout) :: trns_back
+      type(spherical_transform_data), intent(inout) :: trns_back
 !
 !
       call add_force_w_SGS_sph_trns_snap                                &
@@ -193,7 +193,7 @@
       use add_SGS_term_to_sph_trans
 !
       type(phys_address), intent(in) :: ipol, iphys
-      type(address_each_sph_trans), intent(inout) :: trns_back
+      type(spherical_transform_data), intent(inout) :: trns_back
       type(phys_address), intent(inout) :: b_trns
 !
 !
@@ -212,7 +212,7 @@
 !
       type(SGS_model_addresses), intent(in) :: ipol_LES, iphys_LES
       type(SGS_model_addresses), intent(inout) :: b_trns_LES
-      type(address_each_sph_trans), intent(inout) :: trns_back
+      type(spherical_transform_data), intent(inout) :: trns_back
 !
 !
       call add_div_SGS_4_sph_trns_snap                                  &
@@ -233,7 +233,7 @@
 !
       type(SGS_model_addresses), intent(in) :: ipol_LES, iphys_LES
       type(SGS_model_addresses), intent(inout) :: f_trns_LES
-      type(address_each_sph_trans), intent(inout) :: trns_fwd
+      type(spherical_transform_data), intent(inout) :: trns_fwd
 !
 !
       call add_fil_e_flux_4_sph_trns_snap                               &

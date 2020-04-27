@@ -15,7 +15,7 @@
 !!        type(gradient_field_address), intent(in) :: ipol_grd
 !!        type(gradient_field_address), intent(in) :: iphys_grd
 !!        type(gradient_field_address), intent(inout) :: b_trns_grd
-!!        type(address_each_sph_trans), intent(inout) :: trns
+!!        type(spherical_transform_data), intent(inout) :: trns
 !!      subroutine add_diff_vect_sph_trns_by_pol                        &
 !!     &         (ipol_dv, iphys_dv, b_trns_dv, trns)
 !!      subroutine add_diff_vect_scalar_trns_bpol                       &
@@ -24,7 +24,7 @@
 !!     &         (ipol_dv, iphys_dv, f_trns_dv, trns)
 !!        type(diff_vector_address), intent(in) :: ipol_dv, iphys_dv
 !!        type(diff_vector_address), intent(inout) :: b_trns_dv
-!!        type(address_each_sph_trans), intent(inout) :: trns
+!!        type(spherical_transform_data), intent(inout) :: trns
 !!@endverbatim
 !
       module add_diff_vect_to_sph_trans
@@ -51,7 +51,7 @@
       type(gradient_field_address), intent(in) :: ipol_grd
       type(gradient_field_address), intent(in) :: iphys_grd
       type(gradient_field_address), intent(inout) :: b_trns_grd
-      type(address_each_sph_trans), intent(inout) :: trns
+      type(spherical_transform_data), intent(inout) :: trns
 !
 !
 !   Gradient of temperature
@@ -76,7 +76,7 @@
       type(gradient_field_address), intent(in) :: ipol_grd
       type(gradient_field_address), intent(in) :: iphys_grd
       type(gradient_field_address), intent(inout) :: b_trns_grd
-      type(address_each_sph_trans), intent(inout) :: trns
+      type(spherical_transform_data), intent(inout) :: trns
 !
 !
 !   Gradient of temperature
@@ -101,7 +101,7 @@
 !
       type(diff_vector_address), intent(in) :: ipol_dv, iphys_dv
       type(diff_vector_address), intent(inout) :: b_trns_dv
-      type(address_each_sph_trans), intent(inout) :: trns
+      type(spherical_transform_data), intent(inout) :: trns
 !
 !
 !   Gradient of Radial velocity
@@ -179,7 +179,7 @@
       use add_field_to_sph_trans_list
 !
       type(diff_vector_address), intent(in) :: ipol_dv, iphys_dv
-      type(address_each_sph_trans), intent(inout) :: trns
+      type(spherical_transform_data), intent(inout) :: trns
       type(diff_vector_address), intent(inout) :: f_trns_dv
 !
 !
@@ -233,7 +233,7 @@
       use add_field_to_sph_trans_list
 !
       type(diff_vector_address), intent(in) :: ipol_dv, iphys_dv
-      type(address_each_sph_trans), intent(inout) :: trns
+      type(spherical_transform_data), intent(inout) :: trns
       type(diff_vector_address), intent(inout) :: f_trns_dv
 !
 !

@@ -18,14 +18,14 @@
 !!        type(scalar_property), intent(in) :: ht_prop, cp_prop
 !!        type(phys_address), intent(in) :: ipol_base, iphys_base
 !!        type(phys_address), intent(inout) :: b_trns_base
-!!        type(address_each_sph_trans), intent(inout) :: trns
+!!        type(spherical_transform_data), intent(inout) :: trns
 !!      subroutine add_base_vector_sph_trns_snap                        &
 !!     &         (ipol_base, iphys_base, b_trns_base, trns)
 !!      subroutine add_base_scalar_sph_trns_snap                        &
 !!     &         (ipol_base, iphys_base, b_trns_base, trns)
 !!        type(phys_address), intent(in) :: ipol_base, iphys_base
 !!        type(phys_address), intent(inout) :: b_trns_base
-!!        type(address_each_sph_trans), intent(inout) :: trns
+!!        type(spherical_transform_data), intent(inout) :: trns
 !!@endverbatim
 !
       module add_base_field_4_sph_trns
@@ -55,7 +55,7 @@
       type(scalar_property), intent(in) :: ht_prop, cp_prop
       type(base_field_address), intent(in) :: ipol_base, iphys_base
       type(base_field_address), intent(inout) :: b_trns_base
-      type(address_each_sph_trans), intent(inout) :: trns
+      type(spherical_transform_data), intent(inout) :: trns
 !
 !
 !   velocity flag
@@ -99,7 +99,7 @@
       type(scalar_property), intent(in) :: ht_prop, cp_prop
       type(base_field_address), intent(in) :: ipol_base, iphys_base
       type(base_field_address), intent(inout) :: b_trns_base
-      type(address_each_sph_trans), intent(inout) :: trns
+      type(spherical_transform_data), intent(inout) :: trns
 !
 !
 !   temperature flag
@@ -127,7 +127,7 @@
 !
       type(base_field_address), intent(in) :: ipol_base, iphys_base
       type(base_field_address), intent(inout) :: b_trns_base
-      type(address_each_sph_trans), intent(inout) :: trns
+      type(spherical_transform_data), intent(inout) :: trns
 !
 !
 !      if(b_trns_base%i_velo .eq. 0) then
@@ -162,7 +162,7 @@
 !
       type(base_field_address), intent(in) :: ipol_base, iphys_base
       type(base_field_address), intent(inout) :: b_trns_base
-      type(address_each_sph_trans), intent(inout) :: trns
+      type(spherical_transform_data), intent(inout) :: trns
 !
 !
 !      if(b_trns_base%i_temp.eq.0 .or. ipol_base%i_per_temp.gt.0) then

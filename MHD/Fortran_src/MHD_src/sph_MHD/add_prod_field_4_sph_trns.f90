@@ -12,14 +12,14 @@
 !!     &         (ipol_prd, iphys_prd, b_trns_prd, trns)
 !!        type(phys_products_address), intent(in) :: ipol_prd, iphys_prd
 !!        type(phys_products_address), intent(inout) :: b_trns_prd
-!!        type(address_each_sph_trans), intent(inout) :: trns
+!!        type(spherical_transform_data), intent(inout) :: trns
 !!      subroutine add_prod_vector_sph_trns_snap                        &
 !!     &         (ipol_prd, iphys_prd, f_trns_prd, trns)
 !!      subroutine add_prod_scalar_sph_trns_snap                        &
 !!     &         (ipol_prd, iphys_prd, f_trns_prd, trns)
 !!        type(phys_products_address), intent(in) :: ipol_prd, iphys_prd
 !!        type(phys_products_address), intent(inout) :: f_trns_prd
-!!        type(address_each_sph_trans), intent(inout) :: trns
+!!        type(spherical_transform_data), intent(inout) :: trns
 !!@endverbatim
 !
       module add_prod_field_4_sph_trns
@@ -44,7 +44,7 @@
 !
       type(phys_products_address), intent(in) :: ipol_prd, iphys_prd
       type(phys_products_address), intent(inout) :: b_trns_prd
-      type(address_each_sph_trans), intent(inout) :: trns
+      type(spherical_transform_data), intent(inout) :: trns
 !
 !
       call add_field_name_4_sph_trns_snap(rest_of_geostrophic,          &
@@ -66,7 +66,7 @@
 !
       type(phys_products_address), intent(in) :: ipol_prd, iphys_prd
       type(phys_products_address), intent(inout) :: f_trns_prd
-      type(address_each_sph_trans), intent(inout) :: trns
+      type(spherical_transform_data), intent(inout) :: trns
 !
 !
       call add_field_name_4_sph_trns_snap(electric_field,               &
@@ -103,7 +103,7 @@
 !
       type(phys_products_address), intent(in) :: ipol_prd, iphys_prd
       type(phys_products_address), intent(inout) :: f_trns_prd
-      type(address_each_sph_trans), intent(inout) :: trns
+      type(spherical_transform_data), intent(inout) :: trns
 !
 !
       call add_field_name_4_sph_trns_snap(kinetic_helicity,             &

@@ -12,18 +12,18 @@
 !!     &         (ipol_fil, iphys_fil, b_trns_fil, trns)
 !!        type(base_field_address), intent(in) :: ipol_fil, iphys_fil
 !!        type(base_field_address), intent(inout) :: b_trns_fil
-!!        type(address_each_sph_trans), intent(inout) :: trns
+!!        type(spherical_transform_data), intent(inout) :: trns
 !!
 !!      subroutine add_fil_scalar_sph_trns_by_pol                       &
 !!     &         (ipol_fil, iphys_fil, b_trns_fil, trns)
 !!        type(base_field_address), intent(in) :: ipol_fil, iphys_fil
 !!        type(base_field_address), intent(inout) :: b_trns_fil
-!!        type(address_each_sph_trans), intent(inout) :: trns
+!!        type(spherical_transform_data), intent(inout) :: trns
 !!      subroutine add_fil_scalar_sph_trns_snap                         &
 !!     &         (ipol_fil, iphys_fil, b_trns_fil, trns)
 !!        type(base_field_address), intent(in) :: ipol_fil, iphys_fil
 !!        type(base_field_address), intent(inout) :: b_trns_fil
-!!        type(address_each_sph_trans), intent(inout) :: trns
+!!        type(spherical_transform_data), intent(inout) :: trns
 !!@endverbatim
 !
       module add_filter_fld_to_sph_trans
@@ -49,7 +49,7 @@
 !
       type(base_field_address), intent(in) :: ipol_fil, iphys_fil
       type(base_field_address), intent(inout) :: b_trns_fil
-      type(address_each_sph_trans), intent(inout) :: trns
+      type(spherical_transform_data), intent(inout) :: trns
 !
 !
 !   filtered velocity
@@ -79,7 +79,7 @@
 !
       type(base_field_address), intent(in) :: ipol_fil, iphys_fil
       type(base_field_address), intent(inout) :: b_trns_fil
-      type(address_each_sph_trans), intent(inout) :: trns
+      type(spherical_transform_data), intent(inout) :: trns
 !
 !
 !   filtered temperature
@@ -102,7 +102,7 @@
 !
       type(base_field_address), intent(in) :: ipol_fil, iphys_fil
       type(base_field_address), intent(inout) :: b_trns_fil
-      type(address_each_sph_trans), intent(inout) :: trns
+      type(spherical_transform_data), intent(inout) :: trns
 !
 !
 !   filtered temperature

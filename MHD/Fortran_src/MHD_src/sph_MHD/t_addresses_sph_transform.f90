@@ -9,7 +9,7 @@
 !!
 !!@verbatim
 !!      subroutine alloc_sph_trns_field_name(each_trns)
-!!        type(address_each_sph_trans), intent(inout) :: each_trns
+!!        type(spherical_transform_data), intent(inout) :: each_trns
 !!      subroutine alloc_nonlinear_data(sph_rtp, trns)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!      subroutine alloc_nonlinear_pole(sph_rtp, trns)
@@ -23,11 +23,11 @@
 !!
 !!      subroutine count_num_fields_each_trans(each_trns,               &
 !!     &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
-!!        type(address_each_sph_trans), intent(inout) :: each_trns
+!!        type(spherical_transform_data), intent(inout) :: each_trns
 !!      subroutine copy_field_name_4_sph_trns                           &
 !!     &         (num_copy, etrns_org, etrns_new)
-!!        type(address_each_sph_trans), intent(in) :: etrns_org
-!!        type(address_each_sph_trans), intent(inout) :: etrns_new
+!!        type(spherical_transform_data), intent(in) :: etrns_org
+!!        type(spherical_transform_data), intent(inout) :: etrns_new
 !!@endverbatim
 !
       module t_addresses_sph_transform
@@ -42,7 +42,7 @@
       implicit none
 !
 !>      strucutre of spherical transform data addresses
-      type address_each_sph_trans
+      type spherical_transform_data
 !>        number of fields for spherical harmonics transform
         integer(kind = kint) :: nfield = 0
 !>        number of components for spherical harmonics transform
@@ -70,15 +70,15 @@
         real(kind = kreal), allocatable :: fld_pole(:,:)
 !>        local field data at pole
         real(kind = kreal), allocatable :: flc_pole(:,:)
-      end type address_each_sph_trans
+      end type spherical_transform_data
 !
 !
 !>      strucutre of spherical transform data addresses
       type address_4_sph_trans
 !>        strucutre of backward spherical transform data addresses
-        type(address_each_sph_trans) :: backward
+        type(spherical_transform_data) :: backward
 !>        strucutre of forward spherical transform data addresses
-        type(address_each_sph_trans) :: forward
+        type(spherical_transform_data) :: forward
 !
 !>        addresses of fields for backward transform
         type(phys_address) :: b_trns
@@ -101,7 +101,7 @@
 !
       subroutine alloc_sph_trns_field_name(each_trns)
 !
-      type(address_each_sph_trans), intent(inout) :: each_trns
+      type(spherical_transform_data), intent(inout) :: each_trns
 !
 !
       allocate(each_trns%field_name(each_trns%nfield))
@@ -121,7 +121,7 @@
       subroutine alloc_sph_trns_field_data(sph_rtp, each_trns)
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
-      type(address_each_sph_trans), intent(inout) :: each_trns
+      type(spherical_transform_data), intent(inout) :: each_trns
 !
 !
       allocate(each_trns%fld_rtp(sph_rtp%nnod_rtp,each_trns%ncomp))
@@ -134,7 +134,7 @@
       subroutine alloc_sph_trns_pole_data(sph_rtp, each_trns)
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
-      type(address_each_sph_trans), intent(inout) :: each_trns
+      type(spherical_transform_data), intent(inout) :: each_trns
 !
 !
       allocate(each_trns%fld_pole(sph_rtp%nnod_pole,each_trns%ncomp))
@@ -151,7 +151,7 @@
 !
       subroutine dealloc_sph_trns_field_name(each_trns)
 !
-      type(address_each_sph_trans), intent(inout) :: each_trns
+      type(spherical_transform_data), intent(inout) :: each_trns
 !
 !
       deallocate(each_trns%field_name, each_trns%ifld_trns)
@@ -163,7 +163,7 @@
 !
       subroutine dealloc_sph_trns_field_dats(each_trns)
 !
-      type(address_each_sph_trans), intent(inout) :: each_trns
+      type(spherical_transform_data), intent(inout) :: each_trns
 !
 !
       deallocate(each_trns%fld_rtp)
@@ -174,7 +174,7 @@
 !
       subroutine dealloc_sph_trns_pole_data(each_trns)
 !
-      type(address_each_sph_trans), intent(inout) :: each_trns
+      type(spherical_transform_data), intent(inout) :: each_trns
 !
 !
       deallocate(each_trns%fld_pole, each_trns%flc_pole)
@@ -260,7 +260,7 @@
       subroutine count_num_fields_each_trans(each_trns,                 &
      &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
 !
-      type(address_each_sph_trans), intent(inout) :: each_trns
+      type(spherical_transform_data), intent(inout) :: each_trns
       integer(kind = kint), intent(inout) :: ncomp_sph_trans
       integer(kind = kint), intent(inout) :: nvector_sph_trans
       integer(kind = kint), intent(inout) :: nscalar_sph_trans
@@ -283,8 +283,8 @@
      &         (num_copy, etrns_org, etrns_new)
 !
       integer(kind = kint), intent(in) :: num_copy
-      type(address_each_sph_trans), intent(in) :: etrns_org
-      type(address_each_sph_trans), intent(inout) :: etrns_new
+      type(spherical_transform_data), intent(in) :: etrns_org
+      type(spherical_transform_data), intent(inout) :: etrns_new
 !
 !
       if(num_copy .le. 0) return

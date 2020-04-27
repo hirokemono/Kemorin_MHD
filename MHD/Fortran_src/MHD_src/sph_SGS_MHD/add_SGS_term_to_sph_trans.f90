@@ -12,12 +12,12 @@
 !!     &         (ipol_SGS, iphys_SGS, f_trns_SGS, trns)
 !!        type(SGS_term_address), intent(in) :: ipol_SGS, iphys_SGS
 !!        type(SGS_term_address), intent(inout) :: f_trns_SGS
-!!        type(address_each_sph_trans), intent(inout) :: trns
+!!        type(spherical_transform_data), intent(inout) :: trns
 !!      subroutine add_SGS_induction_sph_trns_pol                       &
 !!     &         (ipol_SGS, iphys_SGS, b_trns_SGS, trns)
 !!        type(SGS_term_address), intent(in) :: ipol_SGS, iphys_SGS
 !!        type(SGS_term_address), intent(inout) :: b_trns_SGS
-!!        type(address_each_sph_trans), intent(inout) :: trns
+!!        type(spherical_transform_data), intent(inout) :: trns
 !!      subroutine add_rot_SGS_4_sph_trns_snap                          &
 !!     &         (ipol_rot_SGS, iphys_rot_SGS, b_trns_rot_SGS, trns)
 !!      subroutine add_div_SGS_4_sph_trns_snap                          &
@@ -25,18 +25,18 @@
 !!        type(SGS_term_address), intent(in) :: ipol_div_SGS
 !!        type(SGS_term_address), intent(in) :: iphys_div_SGS
 !!        type(SGS_term_address), intent(inout) :: b_trns_div_SGS
-!!        type(address_each_sph_trans), intent(inout) :: trns
+!!        type(spherical_transform_data), intent(inout) :: trns
 !!
 !!      subroutine add_wide_SGS_term_4_sph_trns                         &
 !!     &         (ipol_wSGS, iphys_wSGS, b_trns_wSGS, trns)
 !!      type(SGS_term_address), intent(in) :: ipol_wSGS, iphys_wSGS
 !!      type(SGS_term_address), intent(inout) :: b_trns_wSGS
-!!      type(address_each_sph_trans), intent(inout) :: trns
+!!      type(spherical_transform_data), intent(inout) :: trns
 !!      subroutine add_double_SGS_term_4_sph_trns                       &
 !!     &         (ipol_dSGS, iphys_dSGS, b_trns_dSGS, trns)
 !!        type(SGS_term_address), intent(in) :: ipol_dSGS, iphys_dSGS
 !!        type(SGS_term_address), intent(inout) :: b_trns_dSGS
-!!        type(address_each_sph_trans), intent(inout) :: trns
+!!        type(spherical_transform_data), intent(inout) :: trns
 !!@endverbatim
 !
       module add_SGS_term_to_sph_trans
@@ -61,7 +61,7 @@
 !
       type(SGS_term_address), intent(in) :: ipol_SGS, iphys_SGS
       type(SGS_term_address), intent(inout) :: f_trns_SGS
-      type(address_each_sph_trans), intent(inout) :: trns
+      type(spherical_transform_data), intent(inout) :: trns
 !
 !
 !   SGS advection flag
@@ -96,7 +96,7 @@
 !
       type(SGS_term_address), intent(in) :: ipol_SGS, iphys_SGS
       type(SGS_term_address), intent(inout) :: b_trns_SGS
-      type(address_each_sph_trans), intent(inout) :: trns
+      type(spherical_transform_data), intent(inout) :: trns
 !
 !
 !   SGS magnetic induction flag
@@ -118,7 +118,7 @@
       type(SGS_term_address), intent(in) :: ipol_frc_SGS
       type(SGS_term_address), intent(in) :: iphys_frc_SGS
       type(SGS_term_address), intent(inout) :: b_trns_frc_SGS
-      type(address_each_sph_trans), intent(inout) :: trns
+      type(spherical_transform_data), intent(inout) :: trns
 !
 !
       call add_field_name_4_sph_trns_snap(heat_flux_w_SGS,              &
@@ -153,7 +153,7 @@
       type(SGS_term_address), intent(in) :: ipol_rot_SGS
       type(SGS_term_address), intent(in) :: iphys_rot_SGS
       type(SGS_term_address), intent(inout) :: b_trns_rot_SGS
-      type(address_each_sph_trans), intent(inout) :: trns
+      type(spherical_transform_data), intent(inout) :: trns
 !
 !
       call add_field_name_4_sph_trns_snap(rot_SGS_inertia,              &
@@ -176,7 +176,7 @@
       type(SGS_term_address), intent(in) :: ipol_div_SGS
       type(SGS_term_address), intent(in) :: iphys_div_SGS
       type(SGS_term_address), intent(inout) :: b_trns_div_SGS
-      type(address_each_sph_trans), intent(inout) :: trns
+      type(spherical_transform_data), intent(inout) :: trns
 !
 !
       call add_field_name_4_sph_trns_snap(div_SGS_inertia,              &
@@ -205,7 +205,7 @@
 !
       type(SGS_term_address), intent(in) :: ipol_wSGS, iphys_wSGS
       type(SGS_term_address), intent(inout) :: b_trns_wSGS
-      type(address_each_sph_trans), intent(inout) :: trns
+      type(spherical_transform_data), intent(inout) :: trns
 !
 !
 !   wide filtered Inertia
@@ -241,7 +241,7 @@
 !
       type(SGS_term_address), intent(in) :: ipol_dSGS, iphys_dSGS
       type(SGS_term_address), intent(inout) :: b_trns_dSGS
-      type(address_each_sph_trans), intent(inout) :: trns
+      type(spherical_transform_data), intent(inout) :: trns
 !
 !
 !   dual filtered Inertia

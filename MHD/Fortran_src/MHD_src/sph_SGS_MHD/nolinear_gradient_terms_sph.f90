@@ -18,9 +18,9 @@
 !!        type(gradient_field_address), intent(in) :: bn_trns_grd
 !!        type(diff_vector_address), intent(in) :: bn_trns_dv
 !!        type(SGS_term_address), intent(in) :: fg_trns_SGS
-!!        type(address_each_sph_trans), intent(in) :: trns_b_MHD
-!!        type(address_each_sph_trans), intent(in) :: trns_b_NLGD
-!!        type(address_each_sph_trans), intent(inout) :: trns_f_SGS
+!!        type(spherical_transform_data), intent(in) :: trns_b_MHD
+!!        type(spherical_transform_data), intent(in) :: trns_b_NLGD
+!!        type(spherical_transform_data), intent(inout) :: trns_f_SGS
 !!
 !!      subroutine wider_nl_grad_SGS_rtp(sph, wide_filters, MHD_prop,   &
 !!     &          bg_trns_fil, bd_trns_gfs, bd_trns_dfv, bd_trns_wSGS,  &
@@ -32,9 +32,9 @@
 !!        type(gradient_field_address), intent(in) :: bd_trns_gfs
 !!        type(diff_vector_address), intent(in) :: bd_trns_dfv
 !!        type(SGS_term_address), intent(in) :: bd_trns_wSGS
-!!        type(address_each_sph_trans), intent(in) :: trns_b_SGS
-!!        type(address_each_sph_trans), intent(in) :: trns_b_DYNG
-!!        type(address_each_sph_trans), intent(inout) :: trns_b_DYNS
+!!        type(spherical_transform_data), intent(in) :: trns_b_SGS
+!!        type(spherical_transform_data), intent(in) :: trns_b_DYNG
+!!        type(spherical_transform_data), intent(inout) :: trns_b_DYNS
 !!@endverbatim
 !
       module nolinear_gradient_terms_sph
@@ -86,10 +86,10 @@
       type(gradient_field_address), intent(in) :: bn_trns_grd
       type(diff_vector_address), intent(in) :: bn_trns_dv
       type(SGS_term_address), intent(in) :: fg_trns_SGS
-      type(address_each_sph_trans), intent(in) :: trns_b_MHD
-      type(address_each_sph_trans), intent(in) :: trns_b_NLGD
+      type(spherical_transform_data), intent(in) :: trns_b_MHD
+      type(spherical_transform_data), intent(in) :: trns_b_NLGD
 !
-      type(address_each_sph_trans), intent(inout) :: trns_f_SGS
+      type(spherical_transform_data), intent(inout) :: trns_f_SGS
 !
 !
       if(fg_trns_SGS%i_SGS_inertia .gt. 0) then
@@ -181,10 +181,10 @@
       type(gradient_field_address), intent(in) :: bd_trns_gfs
       type(diff_vector_address), intent(in) :: bd_trns_dfv
       type(SGS_term_address), intent(in) :: bd_trns_wSGS
-      type(address_each_sph_trans), intent(in) :: trns_b_SGS
-      type(address_each_sph_trans), intent(in) :: trns_b_DYNG
+      type(spherical_transform_data), intent(in) :: trns_b_SGS
+      type(spherical_transform_data), intent(in) :: trns_b_DYNG
 !
-      type(address_each_sph_trans), intent(inout) :: trns_b_DYNS
+      type(spherical_transform_data), intent(inout) :: trns_b_DYNS
 !
 !
       if(bd_trns_wSGS%i_SGS_inertia .gt. 0) then

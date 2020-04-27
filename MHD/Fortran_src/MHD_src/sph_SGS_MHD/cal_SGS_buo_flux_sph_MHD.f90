@@ -19,10 +19,10 @@
 !!        type(SGS_term_address), intent(in) :: fg_trns_SGS
 !!        type(SGS_term_address), intent(in) :: bs_trns_SGS
 !!        type(SGS_ene_flux_address), intent(in) :: fs_trns_sef
-!!        type(address_each_sph_trans), intent(in) :: trns_b_MHD
-!!        type(address_each_sph_trans), intent(in) :: trns_f_SGS
-!!        type(address_each_sph_trans), intent(in) :: trns_b_snap
-!!        type(address_each_sph_trans), intent(inout) :: trns_f_snap
+!!        type(spherical_transform_data), intent(in) :: trns_b_MHD
+!!        type(spherical_transform_data), intent(in) :: trns_f_SGS
+!!        type(spherical_transform_data), intent(in) :: trns_b_snap
+!!        type(spherical_transform_data), intent(inout) :: trns_f_snap
 !!@endverbatim
 !
       module cal_SGS_buo_flux_sph_MHD
@@ -62,10 +62,10 @@
       type(SGS_term_address), intent(in) :: fg_trns_SGS
       type(SGS_ene_flux_address), intent(in) :: fs_trns_sef
 !
-      type(address_each_sph_trans), intent(in) :: trns_b_MHD
-      type(address_each_sph_trans), intent(in) :: trns_f_SGS
+      type(spherical_transform_data), intent(in) :: trns_b_MHD
+      type(spherical_transform_data), intent(in) :: trns_f_SGS
 !
-      type(address_each_sph_trans), intent(inout) :: trns_f_DYNS
+      type(spherical_transform_data), intent(inout) :: trns_f_DYNS
 !
 !
 !$omp parallel
@@ -107,11 +107,11 @@
       type(SGS_term_address), intent(in) :: bs_trns_SGS
       type(SGS_ene_flux_address), intent(in) :: fs_trns_sef
 !
-      type(address_each_sph_trans), intent(in) :: trns_b_MHD
-      type(address_each_sph_trans), intent(in) :: trns_f_SGS
-      type(address_each_sph_trans), intent(in) :: trns_b_snap
+      type(spherical_transform_data), intent(in) :: trns_b_MHD
+      type(spherical_transform_data), intent(in) :: trns_f_SGS
+      type(spherical_transform_data), intent(in) :: trns_b_snap
 !
-      type(address_each_sph_trans), intent(inout) :: trns_f_snap
+      type(spherical_transform_data), intent(inout) :: trns_f_snap
 !
 !
 !$omp parallel

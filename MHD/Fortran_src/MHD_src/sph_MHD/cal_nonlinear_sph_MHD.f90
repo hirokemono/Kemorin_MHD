@@ -21,8 +21,8 @@
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
 !!        type(legendre_4_sph_trans), intent(in) :: leg
 !!        type(phys_address), intent(in) :: b_trns, f_trns
-!!        type(address_each_sph_trans), intent(in) :: trns_b_MHD
-!!        type(address_each_sph_trans), intent(inout) :: trns_f_MHD
+!!        type(spherical_transform_data), intent(in) :: trns_b_MHD
+!!        type(spherical_transform_data), intent(inout) :: trns_f_MHD
 !!      subroutine add_ref_advect_sph_MHD(sph_rj, sph_MHD_bc, MHD_prop, &
 !!     &          leg, ref_temp, ref_comp, ipol, rj_fld)
 !!       Input ::  rj_fld(1,is_fld)
@@ -84,8 +84,8 @@
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(legendre_4_sph_trans), intent(in) :: leg
       type(phys_address), intent(in) :: b_trns, f_trns
-      type(address_each_sph_trans), intent(in) :: trns_b_MHD
-      type(address_each_sph_trans), intent(inout) :: trns_f_MHD
+      type(spherical_transform_data), intent(in) :: trns_b_MHD
+      type(spherical_transform_data), intent(inout) :: trns_f_MHD
 !
 !
 !$omp parallel
