@@ -36,7 +36,7 @@
       use t_SPH_MHD_model_data
       use t_SPH_mesh_field_data
       use t_work_4_sph_trans
-      use t_addresses_sph_transform
+      use t_sph_trans_arrays_MHD
       use t_sph_transforms
 !
       implicit none

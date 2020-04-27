@@ -48,7 +48,7 @@
       use t_SGS_term_labels
       use t_SGS_enegy_flux_labels
       use t_phys_address
-      use t_addresses_sph_transform
+      use t_sph_trans_arrays_MHD
       use t_ele_info_4_dynamic
       use t_addresses_sph_transform
       use t_SGS_model_coefs

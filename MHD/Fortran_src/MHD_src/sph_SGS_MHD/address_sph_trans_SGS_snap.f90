@@ -23,7 +23,7 @@
 !
       use t_phys_address
       use t_SGS_model_addresses
-      use t_addresses_sph_transform
+      use t_sph_trans_arrays_MHD
       use t_mesh_data
       use t_spheric_parameter
 !

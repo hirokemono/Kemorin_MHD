@@ -44,7 +44,7 @@
       use t_spheric_parameter
       use t_fdm_coefs
       use t_sph_trans_arrays_MHD
-      use t_addresses_sph_transform
+      use t_sph_trans_arrays_MHD
       use t_schmidt_poly_on_rtm
       use t_work_4_sph_trans
       use t_sph_filtering_data

@@ -33,7 +33,6 @@
       use t_SPH_SGS_structure
       use t_SPH_mesh_field_data
       use t_fdm_coefs
-      use t_addresses_sph_transform
       use t_sph_trans_arrays_MHD
       use t_sph_matrices
       use t_schmidt_poly_on_rtm

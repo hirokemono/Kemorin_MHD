@@ -53,7 +53,7 @@
       use t_phys_data
       use t_phys_address
       use t_SGS_model_addresses
-      use t_addresses_sph_transform
+      use t_sph_trans_arrays_MHD
       use t_poloidal_rotation
       use t_sph_trans_arrays_MHD
       use t_schmidt_poly_on_rtm

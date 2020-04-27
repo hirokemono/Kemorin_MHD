@@ -72,7 +72,6 @@
       use t_sph_trans_comm_tbl
       use t_phys_address
       use t_phys_data
-      use t_addresses_sph_transform
       use t_poloidal_rotation
       use t_sph_trans_arrays_MHD
       use t_schmidt_poly_on_rtm

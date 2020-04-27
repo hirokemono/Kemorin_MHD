@@ -19,7 +19,7 @@
       use m_machine_parameter
 !
       use t_spheric_rtp_data
-      use t_addresses_sph_transform
+      use t_sph_trans_arrays_MHD
 !
       implicit  none
 ! 

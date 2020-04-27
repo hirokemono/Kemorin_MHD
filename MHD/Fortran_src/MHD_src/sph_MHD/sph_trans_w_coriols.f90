@@ -56,7 +56,6 @@
 !!        type(sph_boundary_type), intent(in) :: sph_bc_U
 !!        type(sph_rotation), intent(in) :: omega_sph
 !!        type(legendre_4_sph_trans), intent(in) :: leg
-!!        type(address_4_sph_trans), intent(in) :: trns_MHD
 !!        type(gaunt_coriolis_rlm), intent(in) :: gt_cor
 !!        type(phys_address), intent(in) :: b_trns
 !!        type(phys_address), intent(in) :: f_trns

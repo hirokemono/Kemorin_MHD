@@ -20,7 +20,7 @@
       use m_phys_constants
 !
       use t_phys_data
-      use t_addresses_sph_transform
+      use t_sph_trans_arrays_MHD
 !
       implicit none
 !

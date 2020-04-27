@@ -31,7 +31,6 @@
       use t_SPH_SGS_structure
       use t_SGS_control_parameter
       use t_SPH_mesh_field_data
-      use t_addresses_sph_transform
       use t_sph_trans_arrays_MHD
       use t_schmidt_poly_on_rtm
       use t_work_4_sph_trans

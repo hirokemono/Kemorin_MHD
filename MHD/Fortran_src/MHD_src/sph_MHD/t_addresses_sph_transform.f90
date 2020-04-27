@@ -9,17 +9,14 @@
 !!
 !!@verbatim
 !!      subroutine alloc_sph_trns_field_name(each_trns)
+!!      subroutine alloc_sph_trns_field_data(sph_rtp, each_trns)
+!!      subroutine alloc_sph_trns_pole_data(sph_rtp, each_trns)
 !!        type(spherical_transform_data), intent(inout) :: each_trns
-!!      subroutine alloc_nonlinear_data(sph_rtp, trns)
-!!        type(sph_rtp_grid), intent(in) :: sph_rtp
-!!      subroutine alloc_nonlinear_pole(sph_rtp, trns)
-!!        type(sph_rtp_grid), intent(in) :: sph_rtp
-!!      subroutine dealloc_bwd_trns_field_name(trns)
-!!      subroutine dealloc_fwd_trns_field_name(trns)
-!!      subroutine dealloc_nonlinear_data(trns)
-!!      subroutine dealloc_nonlinear_pole(trns)
-!!      subroutine dealloc_nonlinear_zmean(trns)
-!!        type(address_4_sph_trans), intent(inout) :: trns
+!!
+!!      subroutine dealloc_sph_trns_field_name(each_trns)
+!!      subroutine dealloc_sph_trns_field_dats(each_trns)
+!!      subroutine dealloc_sph_trns_pole_data(each_trns)
+!!        type(spherical_transform_data), intent(inout) :: each_trns
 !!
 !!      subroutine count_num_fields_each_trans(each_trns,               &
 !!     &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
@@ -71,27 +68,6 @@
 !>        local field data at pole
         real(kind = kreal), allocatable :: flc_pole(:,:)
       end type spherical_transform_data
-!
-!
-!>      strucutre of spherical transform data addresses
-      type address_4_sph_trans
-!>        strucutre of backward spherical transform data addresses
-        type(spherical_transform_data) :: backward
-!>        strucutre of forward spherical transform data addresses
-        type(spherical_transform_data) :: forward
-!
-!>        addresses of fields for backward transform
-        type(phys_address) :: b_trns
-!>        addresses of forces for forward transform
-        type(phys_address) :: f_trns
-!>        addresses of SGS models for backward transform
-        type(SGS_model_addresses) :: b_trns_LES
-!>        addresses of SGS models for forward transform
-        type(SGS_model_addresses) :: f_trns_LES
-!
-!>        Work area of Fourier transform for MHD
-        type(work_for_sgl_FFTW) :: mul_FFTW
-      end type address_4_sph_trans
 !
 !-----------------------------------------------------------------------
 !
@@ -180,79 +156,6 @@
       deallocate(each_trns%fld_pole, each_trns%flc_pole)
 !
       end subroutine dealloc_sph_trns_pole_data
-!
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!
-      subroutine alloc_nonlinear_data(sph_rtp, trns)
-!
-      type(sph_rtp_grid), intent(in) :: sph_rtp
-      type(address_4_sph_trans), intent(inout) :: trns
-!
-!
-      call alloc_sph_trns_field_data(sph_rtp, trns%backward)
-      call alloc_sph_trns_field_data(sph_rtp, trns%forward)
-!
-      end subroutine alloc_nonlinear_data
-!
-!-----------------------------------------------------------------------
-!
-      subroutine alloc_nonlinear_pole(sph_rtp, trns)
-!
-      type(sph_rtp_grid), intent(in) :: sph_rtp
-      type(address_4_sph_trans), intent(inout) :: trns
-!
-!
-      call alloc_sph_trns_pole_data(sph_rtp, trns%backward)
-      call alloc_sph_trns_pole_data(sph_rtp, trns%forward)
-!
-      end subroutine alloc_nonlinear_pole
-!
-!-----------------------------------------------------------------------
-!
-      subroutine dealloc_nonlinear_data(trns)
-!
-      type(address_4_sph_trans), intent(inout) :: trns
-!
-!
-      call dealloc_sph_trns_field_dats(trns%backward)
-      call dealloc_sph_trns_field_dats(trns%forward)
-!
-      end subroutine dealloc_nonlinear_data
-!
-!-----------------------------------------------------------------------
-!
-      subroutine dealloc_nonlinear_pole(trns)
-!
-      type(address_4_sph_trans), intent(inout) :: trns
-!
-!
-      call dealloc_sph_trns_pole_data(trns%backward)
-      call dealloc_sph_trns_pole_data(trns%forward)
-!
-      end subroutine dealloc_nonlinear_pole
-!
-!-----------------------------------------------------------------------
-!
-      subroutine dealloc_bwd_trns_field_name(trns)
-!
-      type(address_4_sph_trans), intent(inout) :: trns
-!
-!
-      call dealloc_sph_trns_field_name(trns%backward)
-!
-      end subroutine dealloc_bwd_trns_field_name
-!
-!-----------------------------------------------------------------------
-!
-      subroutine dealloc_fwd_trns_field_name(trns)
-!
-      type(address_4_sph_trans), intent(inout) :: trns
-!
-!
-      call dealloc_sph_trns_field_name(trns%forward)
-!
-      end subroutine dealloc_fwd_trns_field_name
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

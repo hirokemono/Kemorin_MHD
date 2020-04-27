@@ -41,7 +41,7 @@
       use t_spheric_rj_data
       use t_phys_address
       use t_phys_data
-      use t_addresses_sph_transform
+      use t_sph_trans_arrays_MHD
       use t_control_parameter
       use t_physical_property
 !
