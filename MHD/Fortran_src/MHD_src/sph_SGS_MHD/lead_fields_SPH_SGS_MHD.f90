@@ -293,7 +293,8 @@
 !
       if(SGS_param%iflag_SGS .eq. id_SGS_none) return
       if (iflag_debug.eq.1) write(*,*) 'swap_phi_from_MHD_trans'
-      call swap_phi_from_MHD_trans(sph%sph_rtp, trns_SGS)
+      call swap_phi_from_MHD_trans                                      &
+     &   (sph%sph_rtp, trns_SGS%backward, trns_SGS%forward)
 !
       if (iflag_debug.eq.1) write(*,*) 'sph_pole_trans_SGS_MHD'
       call sph_pole_trans_SGS_MHD                                       &
