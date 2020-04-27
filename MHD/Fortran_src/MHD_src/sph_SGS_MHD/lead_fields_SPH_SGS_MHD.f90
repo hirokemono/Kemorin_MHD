@@ -100,7 +100,7 @@
 !
       call lead_SGS_terms_4_SPH                                         &
      &   (SPH_SGS%SGS_par%model_p, SPH_MHD%sph, SPH_MHD%comms, trans_p, &
-     &    WK%trns_Csim,, WK%trns_SGS, WK%trns_SGS_snap,                 &
+     &    WK%trns_Csim, WK%trns_SGS, WK%trns_SGS_snap,                  &
      &    SPH_SGS%dynamic, SPH_MHD%fld)
 !
       call enegy_fluxes_SPH_SGS_MHD(monitor%ltr_crust,                  &
@@ -145,8 +145,8 @@
       call cal_div_of_forces_sph_2                                      &
      &   (sph%sph_rj, r_2nd, MHD_prop, sph_MHD_bc,                      &
      &    leg%g_sph_rj, ipol, rj_fld)
-      call cal_div_buoyancy_w_fil_sph_2(sph, r_2nd, MHD_prop,           &
-     &    sph_MHD_bc%sph_bc_U, leg%g_sph_rj, ipol_LES, rj_fld)
+      call cal_div_buoyancy_w_fil_sph_2(sph, r_2nd, leg, MHD_prop,      &
+     &    sph_MHD_bc%sph_bc_U, ipol_LES, rj_fld)
 !
 !
       call r_buoyancy_on_sphere_w_filter                                &

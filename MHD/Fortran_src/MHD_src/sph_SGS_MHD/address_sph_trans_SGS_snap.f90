@@ -66,8 +66,7 @@
      &    trns_SGS_snap%backward)
 !
       call fwd_trans_address_SGS_snap                                   &
-     &   (ipol, ipol_LES, iphys, iphys_LES,                             &
-     &    trns_SGS_snap%f_trns, trns_SGS_snap%f_trns_LES,               &
+     &   (ipol_LES, iphys_LES, trns_SGS_snap%f_trns_LES,                &
      &    trns_SGS_snap%forward)
 !
       call count_num_fields_each_trans(trns_SGS_snap%backward,          &
@@ -131,14 +130,11 @@
 !-----------------------------------------------------------------------
 !
       subroutine fwd_trans_address_SGS_snap                             &
-     &         (ipol, ipol_LES, iphys, iphys_LES, f_trns, f_trns_LES,   &
-     &          trns_fwd)
+     &         (ipol_LES, iphys_LES, f_trns_LES, trns_fwd)
 !
       use address_sph_trans_snap
 !
-      type(phys_address), intent(in) :: ipol, iphys
       type(SGS_model_addresses), intent(in) :: ipol_LES, iphys_LES
-      type(phys_address), intent(inout) :: f_trns
       type(SGS_model_addresses), intent(inout) :: f_trns_LES
       type(spherical_transform_data), intent(inout) :: trns_fwd
 !
