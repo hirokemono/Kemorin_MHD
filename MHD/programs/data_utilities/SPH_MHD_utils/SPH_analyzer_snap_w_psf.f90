@@ -135,8 +135,6 @@
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
       type(work_SPH_MHD), intent(inout) :: SPH_WK
 !
-      integer(kind = kint) :: iflag
-!
 !
       call read_alloc_sph_rst_4_snap(i_step,                            &
      &    MHD_files%org_rj_file_IO, MHD_files%fst_file_IO,              &

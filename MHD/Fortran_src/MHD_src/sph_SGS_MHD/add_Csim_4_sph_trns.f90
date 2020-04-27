@@ -22,6 +22,7 @@
       use m_precision
 !
       use t_SGS_term_labels
+      use t_SGS_model_coef_labels
       use t_addresses_sph_transform
 !
       implicit none

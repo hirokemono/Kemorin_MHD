@@ -39,6 +39,7 @@
       module address_sph_trans_snap
 !
       use m_precision
+      use m_machine_parameter
 !
       use t_phys_address
       use t_addresses_sph_transform

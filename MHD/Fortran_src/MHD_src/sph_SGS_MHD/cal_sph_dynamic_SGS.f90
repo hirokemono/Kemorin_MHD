@@ -191,7 +191,7 @@
         if(iflag_debug.ge.1) write(*,*) 'product_buo_model_coefs_4_sph'
         if(iflag_SGS_time) call start_elapsed_time(ist_elapsed_SGS+4)
         call product_buo_model_coefs_4_sph                              &
-     &     (istep_dynamic, SGS_par%model_p, sph, ipol, ipol_LES,        &
+     &     (istep_dynamic, SGS_par%model_p, sph, ipol_LES,              &
      &      WK_LES%trns_SGS, dynamic_SPH, rj_fld)
         if(iflag_SGS_time) call end_elapsed_time(ist_elapsed_SGS+4)
       end if

@@ -98,6 +98,7 @@
       use t_physical_property
       use t_spheric_parameter
       use t_sph_trans_comm_tbl
+      use t_phys_address
       use t_poloidal_rotation
       use t_addresses_sph_transform
       use t_schmidt_poly_on_rtm

@@ -156,8 +156,6 @@
       type(circle_fld_maker), intent(inout) :: cdat
       type(dynamobench_monitor), intent(inout) :: bench
 !
-      integer(kind = kint) :: iflag
-!
 !
       call read_alloc_sph_rst_4_snap(i_step,                            &
      &    MHD_files%org_rj_file_IO, MHD_files%fst_file_IO,              &

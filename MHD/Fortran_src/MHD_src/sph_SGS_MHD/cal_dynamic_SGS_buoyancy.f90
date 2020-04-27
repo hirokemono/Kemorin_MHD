@@ -8,11 +8,10 @@
 !!
 !!@verbatim
 !!      subroutine product_buo_model_coefs_4_sph                        &
-!!     &         (istep_dynamic, SGS_param, sph, ipol, ipol_LES,        &
+!!     &         (istep_dynamic, SGS_param, sph, ipol_LES,              &
 !!     &          trns_SGS, dynamic_SPH, rj_fld)
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(sph_grids), intent(in) :: sph
-!!        type(phys_address), intent(in) :: ipol
 !!        type(SGS_model_addresses), intent(in) :: ipol_LES
 !!        type(SGS_address_sph_trans), intent(inout) :: trns_SGS
 !!        type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
@@ -41,7 +40,6 @@
       use t_sph_transforms
       use t_sph_filtering
       use t_phys_data
-      use t_phys_address
       use t_SGS_model_addresses
 !
       implicit none
@@ -53,7 +51,7 @@
 !*   ------------------------------------------------------------------
 !
       subroutine product_buo_model_coefs_4_sph                          &
-     &         (istep_dynamic, SGS_param, sph, ipol, ipol_LES,          &
+     &         (istep_dynamic, SGS_param, sph, ipol_LES,                &
      &          trns_SGS, dynamic_SPH, rj_fld)
 !
       use t_SGS_buoyancy_sph
@@ -62,7 +60,6 @@
       integer(kind = kint), intent(in) :: istep_dynamic
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(sph_grids), intent(in) :: sph
-      type(phys_address), intent(in) :: ipol
       type(SGS_model_addresses), intent(in) :: ipol_LES
 !
       type(SGS_address_sph_trans), intent(inout) :: trns_SGS
