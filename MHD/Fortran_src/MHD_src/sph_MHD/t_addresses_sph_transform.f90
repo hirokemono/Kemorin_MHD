@@ -89,9 +89,6 @@
 !>        addresses of SGS models for forward transform
         type(SGS_model_addresses) :: f_trns_LES
 !
-!>        zonal mean of field data in grid space
-        real(kind = kreal), allocatable :: fld_zm(:,:)
-!
 !>        Work area of Fourier transform for MHD
         type(work_for_sgl_FFTW) :: mul_FFTW
       end type address_4_sph_trans
@@ -195,9 +192,6 @@
 !
       call alloc_sph_trns_field_data(sph_rtp, trns%backward)
       call alloc_sph_trns_field_data(sph_rtp, trns%forward)
-!
-      allocate(trns%fld_zm(sph_rtp%nnod_med,6))
-      trns%fld_zm = 0.0d0
 !
       end subroutine alloc_nonlinear_data
 !
