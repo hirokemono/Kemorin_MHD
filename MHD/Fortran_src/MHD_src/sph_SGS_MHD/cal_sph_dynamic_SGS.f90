@@ -200,7 +200,7 @@
       if (iflag_debug.eq.1) write(*,*)                                  &
      &            'sph_forward_trans_SGS_MHD SGS'
       call sph_forward_trans_SGS_MHD(sph, comms_sph, trans_p,           &
-     &    WK_LES%trns_SGS%forward, WK%WK_sph, WK%trns_SGS%mul_FFTW,     &
+     &    WK_LES%trns_SGS%forward, WK%WK_sph, WK_LES%trns_SGS%mul_FFTW, &
      &    rj_fld)
       if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+11)
 !
