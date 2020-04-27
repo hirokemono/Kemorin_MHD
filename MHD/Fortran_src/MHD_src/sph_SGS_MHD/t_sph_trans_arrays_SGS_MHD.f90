@@ -58,7 +58,7 @@
 !
 !>        strucutres for spherical transform for intermediate
 !!        nonlinear radient model
-!        type(SGS_address_sph_trans) :: trns_ngTMP
+        type(SGS_address_sph_trans) :: trns_ngTMP
 !>        strucutres for spherical transform for scale similarity
         type(SGS_address_sph_trans) :: trns_SIMI
 !>        strucutres for spherical transform for dynamic SGS model
@@ -90,18 +90,19 @@
 !
 !
       call alloc_nonlinear_w_SGS_data(sph_rtp, WK_LES%trns_SGS)
-!      call alloc_nonlinear_w_SGS_data(sph_rtp, WK_LES%trns_DYNS)
+      call alloc_nonlinear_w_SGS_data(sph_rtp, WK_LES%trns_DYNS)
 !      call alloc_nonlinear_w_SGS_data(sph_rtp, WK_LES%trns_Csim)
 !
       call alloc_nonlinear_pole_w_SGS(sph_rtp, WK_LES%trns_SGS)
-!      call alloc_nonlinear_pole_w_SGS(sph_rtp, WK_LES%trns_DYNS)
+      call alloc_nonlinear_pole_w_SGS(sph_rtp, WK_LES%trns_DYNS)
+!      call alloc_nonlinear_pole_w_SGS(sph_rtp, WK_LES%trns_Csim)
 !
 !
-!      call alloc_nonlinear_w_SGS_data(sph_rtp, WK_LES%trns_ngTMP)
+      call alloc_nonlinear_w_SGS_data(sph_rtp, WK_LES%trns_ngTMP)
       call alloc_nonlinear_w_SGS_data(sph_rtp, WK_LES%trns_SIMI)
 !      call alloc_nonlinear_w_SGS_data(sph_rtp, WK_LES%trns_DYNG)
 !
-!      call alloc_nonlinear_pole_w_SGS(sph_rtp, WK_LES%trns_ngTMP)
+      call alloc_nonlinear_pole_w_SGS(sph_rtp, WK_LES%trns_ngTMP)
       call alloc_nonlinear_pole_w_SGS(sph_rtp, WK_LES%trns_SIMI)
 !      call alloc_nonlinear_pole_w_SGS(sph_rtp, WK_LES%trns_DYNG)
 !
@@ -115,18 +116,19 @@
 !
 !
 !      call dealloc_nonlinear_w_SGS_data(WK_LES%trns_Csim)
-!      call dealloc_nonlinear_w_SGS_data(WK_LES%trns_DYNS)
+      call dealloc_nonlinear_w_SGS_data(WK_LES%trns_DYNS)
       call dealloc_nonlinear_w_SGS_data(WK_LES%trns_SGS)
 !
-!      call dealloc_nonlinear_pole_w_SGS(WK_LES%trns_DYNS)
+!      call dealloc_nonlinear_pole_w_SGS(WK_LES%trns_Csim)
+      call dealloc_nonlinear_pole_w_SGS(WK_LES%trns_DYNS)
       call dealloc_nonlinear_pole_w_SGS(WK_LES%trns_SGS)
 !
 !
-!      call dealloc_nonlinear_pole_w_SGS(WK_LES%trns_ngTMP)
+      call dealloc_nonlinear_pole_w_SGS(WK_LES%trns_ngTMP)
       call dealloc_nonlinear_pole_w_SGS(WK_LES%trns_SIMI)
 !      call dealloc_nonlinear_pole_w_SGS(WK_LES%trns_DYNG)
 !
-!      call dealloc_nonlinear_w_SGS_data(WK_LES%trns_ngTMP)
+      call dealloc_nonlinear_w_SGS_data(WK_LES%trns_ngTMP)
       call dealloc_nonlinear_w_SGS_data(WK_LES%trns_SIMI)
 !      call dealloc_nonlinear_w_SGS_data(WK_LES%trns_DYNG)
 !
