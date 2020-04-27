@@ -139,7 +139,7 @@
           call sph_dynamic_nl_gradient(SGS_par%model_p,                 &
      &        sph, comms_sph, r_2nd, MHD_prop, sph_MHD_bc, trans_p,     &
      &        WK_LES%trns_SGS, WK_LES%trns_SIMI, WK_LES%trns_DYNG,      &
-     &        WK%trns_Csim, WK%WK_sph, dynamic_SPH,                     &
+     &        WK_LES%trns_Csim, WK%WK_sph, dynamic_SPH,                 &
      &        ipol, ipol_LES, rj_fld)
           if(iflag_SGS_time) call end_elapsed_time(ist_elapsed_SGS+3)
         end if
@@ -165,7 +165,7 @@
           if(iflag_debug.ge.1) write(*,*) 'dynamic_buo_SGS_by_pseudo_sph'
           call const_dynamic_SGS_4_buo_sph(SGS_par%model_p%stab_weight, &
      &        sph%sph_rtp, MHD_prop%fl_prop, WK%trns_MHD,               &
-     &        WK_LES%trns_SGS, WK%trns_Csim, dynamic_SPH)
+     &        WK_LES%trns_SGS, WK_LES%trns_Csim, dynamic_SPH)
         end if
 !
         if(iflag_debug.ge.1) write(*,*) 'copy_model_coefs_4_sph_snap'
@@ -298,7 +298,7 @@
       type(SGS_model_addresses), intent(in) :: ipol_LES
 !
       type(SGS_address_sph_trans), intent(inout) :: trns_SGS
-      type(address_4_sph_trans), intent(inout) :: trns_Csim
+      type(SGS_address_sph_trans), intent(inout) :: trns_Csim
       type(SGS_address_sph_trans), intent(inout) :: trns_SIMI
       type(SGS_address_sph_trans), intent(inout) :: trns_DYNG
       type(spherical_trns_works), intent(inout) :: WK_sph

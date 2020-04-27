@@ -54,9 +54,6 @@
 !>        strucutres for spherical transform for MHD
         type(address_4_sph_trans) :: trns_MHD
 !
-!!>        strucutres for spherical transform for model coefficients
-        type(address_4_sph_trans) :: trns_Csim
-!
 !>        strucutres for spherical transform for snapshot output
         type(address_4_sph_trans) :: trns_snap
 !>        strucutres for spherical transform for intermediate snapshot
@@ -93,9 +90,6 @@
       call alloc_nonlinear_pole(sph_rtp, WK%trns_MHD)
       call alloc_nonlinear_pole(sph_rtp, WK%trns_snap)
 !
-!
-      call alloc_nonlinear_data(sph_rtp, wk%trns_Csim)
-!
       end subroutine alloc_sph_trans_address
 !
 !-----------------------------------------------------------------------
@@ -103,9 +97,6 @@
       subroutine dealloc_sph_trans_address(WK)
 !
       type(works_4_sph_trans_MHD), intent(inout) :: WK
-!
-!
-      call dealloc_nonlinear_data(WK%trns_Csim)
 !
 !
       call dealloc_nonlinear_pole(WK%trns_snap)

@@ -54,7 +54,7 @@
 !>        strucutres for spherical transform for dynamic SGS model
         type(SGS_address_sph_trans) :: trns_DYNS
 !>        strucutres for spherical transform for model coefficients
-!        type(SGS_address_sph_trans) :: trns_Csim
+        type(SGS_address_sph_trans) :: trns_Csim
 !
 !>        strucutres for spherical transform for intermediate
 !!        nonlinear radient model
@@ -91,11 +91,11 @@
 !
       call alloc_nonlinear_w_SGS_data(sph_rtp, WK_LES%trns_SGS)
       call alloc_nonlinear_w_SGS_data(sph_rtp, WK_LES%trns_DYNS)
-!      call alloc_nonlinear_w_SGS_data(sph_rtp, WK_LES%trns_Csim)
+      call alloc_nonlinear_w_SGS_data(sph_rtp, WK_LES%trns_Csim)
 !
       call alloc_nonlinear_pole_w_SGS(sph_rtp, WK_LES%trns_SGS)
       call alloc_nonlinear_pole_w_SGS(sph_rtp, WK_LES%trns_DYNS)
-!      call alloc_nonlinear_pole_w_SGS(sph_rtp, WK_LES%trns_Csim)
+      call alloc_nonlinear_pole_w_SGS(sph_rtp, WK_LES%trns_Csim)
 !
 !
       call alloc_nonlinear_w_SGS_data(sph_rtp, WK_LES%trns_ngTMP)
@@ -115,11 +115,11 @@
       type(works_4_sph_trans_SGS_MHD), intent(inout) :: WK_LES
 !
 !
-!      call dealloc_nonlinear_w_SGS_data(WK_LES%trns_Csim)
+      call dealloc_nonlinear_w_SGS_data(WK_LES%trns_Csim)
       call dealloc_nonlinear_w_SGS_data(WK_LES%trns_DYNS)
       call dealloc_nonlinear_w_SGS_data(WK_LES%trns_SGS)
 !
-!      call dealloc_nonlinear_pole_w_SGS(WK_LES%trns_Csim)
+      call dealloc_nonlinear_pole_w_SGS(WK_LES%trns_Csim)
       call dealloc_nonlinear_pole_w_SGS(WK_LES%trns_DYNS)
       call dealloc_nonlinear_pole_w_SGS(WK_LES%trns_SGS)
 !

@@ -103,7 +103,7 @@
 !
       call lead_SGS_terms_4_SPH                                         &
      &   (SGS_par%model_p, SPH_MHD%sph, SPH_MHD%comms, trans_p,         &
-     &    WK%trns_Csim, WK_LES%trns_SGS, WK_LES%trns_SGS_snap,          &
+     &    WK_LES%trns_Csim, WK_LES%trns_SGS, WK_LES%trns_SGS_snap,      &
      &    dynamic_SPH, SPH_MHD%fld)
 !
       call enegy_fluxes_SPH_SGS_MHD(monitor%ltr_crust,                  &
@@ -283,7 +283,7 @@
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
       type(parameters_4_sph_trans), intent(in) :: trans_p
-      type(address_4_sph_trans), intent(in) :: trns_Csim
+      type(SGS_address_sph_trans), intent(in) :: trns_Csim
 !
       type(SGS_address_sph_trans), intent(inout) :: trns_SGS
       type(SGS_address_sph_trans), intent(inout) :: trns_SGS_snap

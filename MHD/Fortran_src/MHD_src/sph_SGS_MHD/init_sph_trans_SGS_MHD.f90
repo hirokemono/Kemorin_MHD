@@ -97,7 +97,7 @@
      &   (SPH_model%MHD_prop, SPH_MHD%ipol, iphys, WK%trns_MHD,         &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
       call init_sph_transform_SGS_model(SGS_par%model_p,                &
-     &    SPH_MHD%ipol, ipol_LES, iphys, iphys_LES, WK, WK_LES,         &
+     &    SPH_MHD%ipol, ipol_LES, iphys, iphys_LES, WK_LES,             &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
 !
       call set_addresses_snapshot_trans                                 &
@@ -133,7 +133,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine init_sph_transform_SGS_model(SGS_param,                &
-     &          ipol, ipol_LES, iphys, iphys_LES, WK, WK_LES,           &
+     &          ipol, ipol_LES, iphys, iphys_LES, WK_LES,               &
      &          ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
 !
       use set_address_sph_trans_SGS
@@ -145,7 +145,6 @@
       type(phys_address), intent(in) :: ipol, iphys
       type(SGS_model_addresses), intent(in) :: ipol_LES, iphys_LES
 !
-      type(works_4_sph_trans_MHD), intent(inout) :: WK
       type(works_4_sph_trans_SGS_MHD), intent(inout) :: WK_LES
       integer(kind = kint), intent(inout) :: ncomp_max_trans
       integer(kind = kint), intent(inout) :: nvector_max_trans
@@ -166,7 +165,7 @@
      &       (ipol_LES, iphys_LES, WK_LES%trns_DYNS,                    &
      &        ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
           call set_addresses_trans_sph_Csim                             &
-     &      (SGS_param, ipol_LES, iphys_LES, WK%trns_Csim,              &
+     &      (SGS_param, ipol_LES, iphys_LES, WK_LES%trns_Csim,          &
      &       ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
          end if
 !
@@ -189,7 +188,7 @@
      &       (ipol_LES, iphys_LES, WK_LES%trns_DYNG,                    &
      &        ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
           call set_addresses_trans_sph_ngCsim                           &
-     &       (SGS_param, ipol_LES, iphys_LES, WK%trns_Csim,             &
+     &       (SGS_param, ipol_LES, iphys_LES, WK_LES%trns_Csim,         &
      &        ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
          end if
       end if
@@ -227,7 +226,7 @@
       call init_fourier_transform_SGS_MHD                               &
      &   (SGS_param, ncomp_max_trans, sph%sph_rtp, comms_sph%comm_rtp,  &
      &    WK%trns_MHD, WK_LES%trns_SGS, WK_LES%trns_DYNS,               &
-     &    WK%trns_Csim, WK_LES%trns_ngTMP, WK_LES%trns_SIMI,            &
+     &    WK_LES%trns_Csim, WK_LES%trns_ngTMP, WK_LES%trns_SIMI,        &
      &    WK_LES%trns_DYNG, WK%WK_sph)
 !
       if (iflag_debug.eq.1) write(*,*) 'alloc_sphere_ave_coriolis'
@@ -257,7 +256,7 @@
       type(address_4_sph_trans), intent(inout) :: trns_MHD
       type(SGS_address_sph_trans), intent(inout) :: trns_SGS
       type(SGS_address_sph_trans), intent(inout) :: trns_DYNS
-      type(address_4_sph_trans), intent(inout) :: trns_Csim
+      type(SGS_address_sph_trans), intent(inout) :: trns_Csim
       type(SGS_address_sph_trans), intent(inout) :: trns_ngTMP
       type(SGS_address_sph_trans), intent(inout) :: trns_SIMI
       type(SGS_address_sph_trans), intent(inout) :: trns_DYNG
