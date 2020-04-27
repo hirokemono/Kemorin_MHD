@@ -31,11 +31,6 @@
 !
       use m_precision
 !
-      use t_phys_address
-      use t_SGS_model_addresses
-      use t_spheric_rtp_data
-      use t_sph_multi_FFTW
-!
       implicit none
 !
 !>      strucutre of spherical transform data addresses

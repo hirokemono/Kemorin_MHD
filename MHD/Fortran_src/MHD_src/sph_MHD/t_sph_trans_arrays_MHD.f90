@@ -40,10 +40,6 @@
         type(phys_address) :: b_trns
 !>        addresses of forces for forward transform
         type(phys_address) :: f_trns
-!>        addresses of SGS models for backward transform
-        type(SGS_model_addresses) :: b_trns_LES
-!>        addresses of SGS models for forward transform
-        type(SGS_model_addresses) :: f_trns_LES
 !
 !>        Work area of Fourier transform for MHD
         type(work_for_sgl_FFTW) :: mul_FFTW
