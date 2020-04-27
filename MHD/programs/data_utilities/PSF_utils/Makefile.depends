@@ -24,7 +24,7 @@ m_psf_results.o: $(PSF_UTIL_MAINDIR)/m_psf_results.f90 m_precision.o m_field_fil
 	$(F90) -c $(F90OPTFLAGS) $<
 psf_dynamobench.o: $(PSF_UTIL_MAINDIR)/psf_dynamobench.f90 m_precision.o m_constants.o m_psf_results.o m_field_file_format.o set_parallel_file_name.o m_line_from_psf.o m_psf_edge_connect.o m_dynamobench_data_by_psf.o t_file_IO_parameter.o t_time_data.o t_ucd_data.o
 	$(F90) -c $(F90OPTFLAGS) $<
-psf_fix_reynods_work.o: $(PSF_UTIL_MAINDIR)/psf_fix_reynods_work.f90 m_precision.o m_constants.o m_psf_results.o m_field_file_format.o m_phys_labels.o t_file_IO_parameter.o t_time_data.o t_ucd_data.o set_parallel_file_name.o ucd_IO_select.o
+psf_fix_reynods_work.o: $(PSF_UTIL_MAINDIR)/psf_fix_reynods_work.f90 m_precision.o m_constants.o m_psf_results.o m_field_file_format.o m_phys_labels.o t_SGS_enegy_flux_labels.o t_file_IO_parameter.o t_time_data.o t_ucd_data.o set_parallel_file_name.o ucd_IO_select.o
 	$(F90) -c $(F90OPTFLAGS) $<
 psf_range_rms_aves.o: $(PSF_UTIL_MAINDIR)/psf_range_rms_aves.f90 m_precision.o m_constants.o m_psf_results.o m_field_file_format.o t_file_IO_parameter.o t_time_data.o t_ucd_data.o set_parallel_file_name.o ucd_IO_select.o cal_psf_rms_aves.o take_avarages_4_psf.o take_normals_4_psf.o
 	$(F90) -c $(F90OPTFLAGS) $<

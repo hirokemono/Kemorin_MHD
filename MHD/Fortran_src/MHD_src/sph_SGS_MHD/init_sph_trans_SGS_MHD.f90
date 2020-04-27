@@ -95,15 +95,20 @@
      &    SPH_MHD%ipol, SPH_SGS%ipol_LES, iphys, SPH_SGS%iphys_LES, WK, &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
 !
-      call set_addresses_SGS_snap_trans                                 &
-     &   (SPH_MHD%ipol, SPH_SGS%ipol_LES,                               &
-     &   iphys, SPH_SGS%iphys_LES, WK%trns_snap,                        &
+      call set_addresses_snapshot_trans                                 &
+     &   (SPH_MHD%ipol, iphys, WK%trns_snap,                            &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
       call set_addresses_temporal_trans                                 &
      &   (SPH_MHD%ipol, iphys, WK%trns_tmp,                             &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
 !
+      call set_addresses_SGS_snap_trans                                 &
+     &   (SPH_MHD%ipol, SPH_SGS%ipol_LES,                               &
+     &    iphys, SPH_SGS%iphys_LES, WK%trns_SGS_snap,                   &
+     &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
+!
       call alloc_sph_trans_address(SPH_MHD%sph%sph_rtp, WK)
+!
 !
       call init_leg_fourier_trans_SGS_MHD(SPH_SGS%SGS_par%model_p,      &
      &    SPH_model%sph_MHD_bc, SPH_MHD%sph, SPH_MHD%comms,             &

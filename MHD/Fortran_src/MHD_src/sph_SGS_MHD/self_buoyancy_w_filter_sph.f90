@@ -7,14 +7,14 @@
 !>@brief Evaluate divergence of buoyancy for pressure evaluation
 !!
 !!@verbatim
-!!      subroutine cal_self_buoyancy_sph_SGS_MHD(sph_rj, leg,           &
-!!     &          ipol, ipol_LES, MHD_prop, sph_bc_U, rj_fld)
-!!      subroutine cal_div_buoyancy_w_fil_sph_2(sph_rj, r_2nd,          &
+!!      subroutine cal_self_buoyancy_sph_SGS_MHD                        &
+!!     &         (sph, leg, ipol, ipol_LES, MHD_prop, sph_bc_U, rj_fld)
+!!      subroutine cal_div_buoyancy_w_fil_sph_2(sph, r_2nd,             &
 !!     &          MHD_prop, sph_bc_U, g_sph_rj, ipol_LES, rj_fld)
 !!      subroutine rot_self_filter_buoyancy_sph                         &
-!!     &         (sph_rj, ipol, ipol_LES, MHD_prop, sph_bc_U, rj_fld)
+!!     &         (sph, ipol, ipol_LES, MHD_prop, sph_bc_U, rj_fld)
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
-!!        type(sph_rj_grid), intent(in) ::  sph_rj
+!!        type(sph_grids), intent(in) ::  sph
 !!        type(legendre_4_sph_trans), intent(in) :: leg
 !!        type(phys_address), intent(in) :: ipol
 !!        type(SGS_model_addresses), intent(in) :: ipol_LES
@@ -31,6 +31,7 @@
       use m_machine_parameter
 !
       use t_control_parameter
+      use t_spheric_parameter
       use t_spheric_rj_data
       use t_phys_data
       use t_phys_address
@@ -56,39 +57,40 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_self_buoyancy_sph_SGS_MHD(sph_rj, leg,             &
-     &          ipol, ipol_LES, MHD_prop, sph_bc_U, rj_fld)
+      subroutine cal_self_buoyancy_sph_SGS_MHD                          &
+     &         (sph, leg, ipol, ipol_LES, MHD_prop, sph_bc_U, rj_fld)
 !
       use t_schmidt_poly_on_rtm
       use cal_self_buoyancies_sph
 !
       type(MHD_evolution_param), intent(in) :: MHD_prop
-      type(sph_rj_grid), intent(in) ::  sph_rj
+      type(sph_grids), intent(in) :: sph
       type(legendre_4_sph_trans), intent(in) :: leg
       type(phys_address), intent(in) :: ipol
       type(SGS_model_addresses), intent(in) :: ipol_LES
       type(sph_boundary_type), intent(in) :: sph_bc_U
       type(phys_data), intent(inout) :: rj_fld
 !
-      call sel_buoyancies_sph_MHD(sph_rj, leg, ipol%base, ipol%forces,  &
+      call sel_buoyancies_sph_MHD                                       &
+     &   (sph%sph_rj, leg, ipol%base, ipol%forces,                      &
      &    MHD_prop%fl_prop, MHD_prop%ref_param_T, MHD_prop%ref_param_C, &
      &    sph_bc_U, rj_fld)
 !
       call sel_self_filtered_buo_sph                                    &
-     &   (sph_rj, leg, ipol%filter_fld, ipol_LES%force_by_filter,       &
+     &   (sph%sph_rj, leg, ipol%filter_fld, ipol_LES%force_by_filter,   &
      &    MHD_prop%fl_prop, sph_bc_U, rj_fld)
 !
       end subroutine cal_self_buoyancy_sph_SGS_MHD
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_div_buoyancy_w_fil_sph_2(sph_rj, r_2nd,            &
+      subroutine cal_div_buoyancy_w_fil_sph_2(sph, r_2nd,               &
      &          MHD_prop, sph_bc_U, g_sph_rj, ipol_LES, rj_fld)
 !
       use t_fdm_coefs
 !
       type(MHD_evolution_param), intent(in) :: MHD_prop
-      type(sph_rj_grid), intent(in) ::  sph_rj
+      type(sph_grids), intent(in) ::  sph
       type(fdm_matrices), intent(in) :: r_2nd
 !      type(phys_address), intent(in) :: ipol
       type(SGS_model_addresses), intent(in) :: ipol_LES
@@ -97,11 +99,11 @@
 !
       type(phys_data), intent(inout) :: rj_fld
 !
-      call cal_div_of_filtered_buo_sph_2(sph_rj, r_2nd,                 &
+      call cal_div_of_filtered_buo_sph_2(sph%sph_rj, r_2nd,             &
      &    MHD_prop%fl_prop, sph_bc_U, g_sph_rj,                         &
      &    ipol_LES%force_by_filter, ipol_LES%div_frc_by_filter, rj_fld)
 !
-!      call sel_div_self_filtered_buo_sph(sph_rj, ipol%filter_fld,      &
+!      call sel_div_self_filtered_buo_sph(sph%sph_rj, ipol%filter_fld,  &
 !     &    ipol_LES%grad_fil_fld, ipol_LES%div_frc_by_filter,           &
 !     &    MHD_prop%fl_prop, sph_bc_U, rj_fld)
 !
@@ -110,10 +112,10 @@
 !-----------------------------------------------------------------------
 !
       subroutine rot_self_filter_buoyancy_sph                           &
-     &         (sph_rj, ipol, ipol_LES, MHD_prop, sph_bc_U, rj_fld)
+     &         (sph, ipol, ipol_LES, MHD_prop, sph_bc_U, rj_fld)
 !
       type(MHD_evolution_param), intent(in) :: MHD_prop
-      type(sph_rj_grid), intent(in) ::  sph_rj
+      type(sph_grids), intent(in) ::  sph
       type(phys_address), intent(in) :: ipol
       type(SGS_model_addresses), intent(in) :: ipol_LES
       type(sph_boundary_type), intent(in) :: sph_bc_U
@@ -121,7 +123,7 @@
 !
 !
       call sel_rot_self_filtered_buo_sph                                &
-     &   (sph_rj, ipol%filter_fld, ipol_LES%rot_frc_by_filter,          &
+     &   (sph%sph_rj, ipol%filter_fld, ipol_LES%rot_frc_by_filter,      &
      &    MHD_prop%fl_prop, sph_bc_U, rj_fld)
 !
       end subroutine rot_self_filter_buoyancy_sph

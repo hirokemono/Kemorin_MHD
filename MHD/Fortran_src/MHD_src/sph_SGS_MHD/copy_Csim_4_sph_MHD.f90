@@ -16,7 +16,6 @@
 !!        type(SGS_term_address), intent(in) :: iak_sgs_term
 !!        type(SGS_term_address), intent(in) :: f_trns_Csim
 !!        type(dynamic_model_data), intent(inout) :: wk_sgs
-!!        type(address_4_sph_trans), intent(inout) :: trns_snap
 !!        type(spherical_transform_data), intent(inout) :: fwd_Csim
 !!@endverbatim
 !

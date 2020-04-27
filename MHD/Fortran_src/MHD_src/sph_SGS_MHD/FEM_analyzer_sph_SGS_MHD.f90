@@ -178,6 +178,15 @@
       call copy_force_from_transform(sph%sph_params, sph%sph_rtp,       &
      &    WK%trns_snap%forward, geofem%mesh, nod_fld)
 !
+      if (iflag_debug.gt.0) write(*,*)                                  &
+     &                    'copy_field_from_transform SGS_SNAP'
+      call copy_field_from_transform(sph%sph_params, sph%sph_rtp,       &
+     &    WK%trns_SGS_snap%backward, geofem%mesh, nod_fld)
+      if (iflag_debug.gt.0) write(*,*)                                  &
+     &                     'copy_force_from_transform SGS_SNAP'
+      call copy_force_from_transform(sph%sph_params, sph%sph_rtp,       &
+     &    WK%trns_SGS_snap%forward, geofem%mesh, nod_fld)
+!
       end subroutine SPH_to_FEM_bridge_SGS_MHD
 !
 !-----------------------------------------------------------------------

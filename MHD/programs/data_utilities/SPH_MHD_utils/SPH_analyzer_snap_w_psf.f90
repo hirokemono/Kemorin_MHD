@@ -176,10 +176,9 @@
 !*
       if(lead_field_data_flag(i_step, MHD_step) .eq. 0) then
         if(iflag_debug.gt.0) write(*,*) 's_lead_fields_4_sph_mhd'
-        call s_lead_fields_4_sph_mhd                                    &
-     &     (SPH_MHD%sph, SPH_MHD%comms, SPH_WK%monitor, SPH_WK%r_2nd,   &
+        call s_lead_fields_4_sph_mhd(SPH_WK%monitor, SPH_WK%r_2nd,      &
      &      SPH_model%MHD_prop, SPH_model%sph_MHD_bc, SPH_WK%trans_p,   &
-     &      SPH_MHD%ipol, SPH_WK%MHD_mats, SPH_WK%trns_WK, SPH_MHD%fld)
+     &      SPH_WK%MHD_mats, SPH_WK%trns_WK, SPH_MHD)
       end if
       if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+5)
 !

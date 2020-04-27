@@ -68,7 +68,7 @@ int_all_ave_tensors.o: $(MHD_RHS_DIR)/int_all_ave_tensors.f90 m_precision.o m_ma
 	$(F90) -c $(F90OPTFLAGS) $<
 int_all_energy.o: $(MHD_RHS_DIR)/int_all_energy.f90 m_precision.o m_machine_parameter.o t_mesh_data.o t_phys_data.o t_jacobians.o t_finite_element_mat.o t_MHD_finite_element_mat.o t_mean_square_values.o m_geometry_constants.o nodal_fld_2_each_element.o fem_vol_average_energy.o
 	$(F90) -c $(F90OPTFLAGS) $<
-int_bulk.o: $(MHD_RHS_DIR)/int_bulk.f90 m_precision.o m_phys_constants.o t_physical_property.o t_geometry_data_MHD.o t_mesh_data.o t_phys_data.o t_phys_address.o t_jacobians.o t_finite_element_mat.o t_MHD_finite_element_mat.o t_mean_square_filed_list.o t_mean_square_values.o m_constants.o calypso_mpi.o m_phys_labels.o int_all_energy.o int_all_ave_tensors.o int_norm_div_MHD.o int_rms_div_MHD.o estimate_stabilities.o
+int_bulk.o: $(MHD_RHS_DIR)/int_bulk.f90 m_precision.o m_phys_constants.o t_physical_property.o t_geometry_data_MHD.o t_mesh_data.o t_phys_data.o t_phys_address.o t_SGS_model_addresses.o t_jacobians.o t_finite_element_mat.o t_MHD_finite_element_mat.o t_mean_square_filed_list.o t_mean_square_values.o m_constants.o calypso_mpi.o m_phys_labels.o int_all_energy.o int_all_ave_tensors.o int_norm_div_MHD.o int_rms_div_MHD.o estimate_stabilities.o
 	$(F90) -c $(F90OPTFLAGS) $<
 int_magne_diffusion.o: $(MHD_RHS_DIR)/int_magne_diffusion.f90 m_precision.o t_comm_table.o t_geometry_data_MHD.o t_geometry_data.o t_phys_data.o t_phys_address.o t_fem_gauss_int_coefs.o t_jacobian_3d.o t_table_FEM_const.o t_finite_element_mat.o t_MHD_finite_element_mat.o int_vol_vect_differences.o cal_ff_smp_to_ffs.o nod_phys_send_recv.o
 	$(F90) -c $(F90OPTFLAGS) $<

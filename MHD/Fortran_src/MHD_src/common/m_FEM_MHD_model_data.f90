@@ -38,10 +38,10 @@
 !>      Matrix structure for FEM_MHD
       type(FEM_MHD_solvers), save :: MHD_CG1
 !
-!> Structure of grouping of elements
+!>      Structure of grouping of elements
       type(FEM_SGS_structure), save :: FEM_SGS1
 !
-!> Structure of Work area for dynamics model
+!>      Structure of Work area for dynamics model
       type(work_FEM_SGS_MHD), save :: SGS_MHD_wk1
 !
 !>        Structures of visualization controls

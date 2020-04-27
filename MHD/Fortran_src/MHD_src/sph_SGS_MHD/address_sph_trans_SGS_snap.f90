@@ -9,11 +9,11 @@
 !!
 !!@verbatim
 !!      subroutine set_addresses_SGS_snap_trans                         &
-!!     &         (ipol, ipol_LES, iphys, iphys_LES, trns_snap,          &
+!!     &         (ipol, ipol_LES, iphys, iphys_LES, trns_SGS_snap,      &
 !!     &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
 !!        type(phys_address), intent(in) :: ipol, iphys
 !!        type(SGS_model_addresses), intent(in) :: ipol_LES, iphys_LES
-!!        type(address_4_sph_trans), intent(inout) :: trns_snap
+!!        type(address_4_sph_trans), intent(inout) :: trns_SGS_snap
 !!@endverbatim
 !
       module address_sph_trans_SGS_snap
@@ -43,12 +43,12 @@
 !-----------------------------------------------------------------------
 !
       subroutine set_addresses_SGS_snap_trans                           &
-     &         (ipol, ipol_LES, iphys, iphys_LES, trns_snap,            &
+     &         (ipol, ipol_LES, iphys, iphys_LES, trns_SGS_snap,        &
      &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
 !
       type(phys_address), intent(in) :: ipol, iphys
       type(SGS_model_addresses), intent(in) :: ipol_LES, iphys_LES
-      type(address_4_sph_trans), intent(inout) :: trns_snap
+      type(address_4_sph_trans), intent(inout) :: trns_SGS_snap
       integer(kind = kint), intent(inout) :: ncomp_sph_trans
       integer(kind = kint), intent(inout) :: nvector_sph_trans
       integer(kind = kint), intent(inout) :: nscalar_sph_trans
@@ -56,30 +56,37 @@
 !
       if(iflag_debug .gt. 0) then
         write(*,*)                                                      &
-     &       'Spherical transform field table for snapshot (trns_snap)'
+     &       'Spherical transform field table ',                        &
+     &       'for SGS terms in snapshot (trns_SGS_snap)'
       end if
 !
       call bwd_trans_address_SGS_snap                                   &
      &   (ipol, ipol_LES, iphys, iphys_LES,                             &
-     &    trns_snap%b_trns, trns_snap%b_trns_LES, trns_snap%backward)
+     &    trns_SGS_snap%b_trns, trns_SGS_snap%b_trns_LES,               &
+     &    trns_SGS_snap%backward)
 !
       call fwd_trans_address_SGS_snap                                   &
      &   (ipol, ipol_LES, iphys, iphys_LES,                             &
-     &    trns_snap%f_trns, trns_snap%f_trns_LES, trns_snap%forward)
+     &    trns_SGS_snap%f_trns, trns_SGS_snap%f_trns_LES,               &
+     &    trns_SGS_snap%forward)
 !
-      call count_num_fields_each_trans(trns_snap%backward,              &
-     &   ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
-      call count_num_fields_each_trans(trns_snap%forward,               &
-     &   ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
+      call count_num_fields_each_trans(trns_SGS_snap%backward,          &
+     &    ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
+      call count_num_fields_each_trans(trns_SGS_snap%forward,           &
+     &    ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
 !
 !
       if(iflag_debug .gt. 0) then
         write(*,*) 'ncomp_sph_trans ', ncomp_sph_trans
-        write(*,*) 'nvector_rj_2_rtp ', trns_snap%backward%num_vector
-        write(*,*) 'nscalar_rj_2_rtp ', trns_snap%backward%num_scalar
+        write(*,*) 'nvector_rj_2_rtp ',                                 &
+     &            trns_SGS_snap%backward%num_vector
+        write(*,*) 'nscalar_rj_2_rtp ',                                 &
+     &            trns_SGS_snap%backward%num_scalar
 !
-        write(*,*) 'nvector_rtp_2_rj ', trns_snap%forward%num_vector
-        write(*,*) 'nscalar_rtp_2_rj ', trns_snap%forward%num_scalar
+        write(*,*) 'nvector_rtp_2_rj ',                                 &
+     &            trns_SGS_snap%forward%num_vector
+        write(*,*) 'nscalar_rtp_2_rj ',                                 &
+     &            trns_SGS_snap%forward%num_scalar
       end if
 !
       end subroutine set_addresses_SGS_snap_trans
@@ -108,12 +115,10 @@
       trns_back%nfield = 0
       call alloc_sph_trns_field_name(trns_back)
 !
-      call add_vector_4_bwd_trns_snap(ipol, iphys, b_trns, trns_back)
       call add_SGS_vector_bwd_trns_snap                                 &
      &   (ipol_LES, iphys_LES, b_trns_LES, trns_back)
       trns_back%num_vector = trns_back%nfield
 !
-      call add_scalar_4_bwd_trns_snap(ipol, iphys, b_trns, trns_back)
       call add_fil_scalar_bwd_trns_snap(ipol, iphys, b_trns, trns_back)
       call add_div_SGS_bwd_trns_snap                                    &
      &   (ipol_LES, iphys_LES, b_trns_LES, trns_back)
@@ -146,10 +151,9 @@
       trns_fwd%nfield = 0
       call alloc_sph_trns_field_name(trns_fwd)
 !
-      call add_vector_4_fwd_trns_snap(ipol, iphys, f_trns, trns_fwd)
+!      call add_vector_4_fwd_trns_snap(ipol, iphys, f_trns, trns_fwd)
       trns_fwd%num_vector = trns_fwd%nfield
 !
-      call add_scalar_4_fwd_trns_snap(ipol, iphys, f_trns, trns_fwd)
       call add_SGS_scalar_fwd_trns_snap                                 &
      &   (ipol_LES, iphys_LES, f_trns_LES, trns_fwd)
       trns_fwd%num_scalar = trns_fwd%nfield - trns_fwd%num_vector

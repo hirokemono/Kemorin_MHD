@@ -16,6 +16,7 @@
       use t_SGS_control_parameter
       use t_sph_filtering
       use t_SGS_model_addresses
+      use t_sph_trans_arrays_SGS_MHD
 !
       implicit none
 !
@@ -32,6 +33,9 @@
         type(SGS_model_addresses) :: ipol_LES
 !>        address of nodal SGS term
         type(SGS_model_addresses) :: iphys_LES
+!
+!>        strucutres for spherical transform for MHD dynamo with SGS
+        type(works_4_sph_trans_SGS_MHD) :: trns_WK_LES
       end type SPH_SGS_structure
 !
       end module t_SPH_SGS_structure
