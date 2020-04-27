@@ -149,8 +149,8 @@
         if (iflag_debug.eq.1) write(*,*) 'product_model_coefs_4_sph'
         call product_model_coefs_4_sph(SGS_par%model_p, sph%sph_rtp,    &
      &      dynamic_SPH%sph_d_grp, dynamic_SPH%iak_sgs_term,            &
-     &      WK_LES%trns_SGS%f_trns_LES%SGS_term, WK%trns_SGS%forward,   &
-     &      dynamic_SPH%wk_sgs)
+     &      WK_LES%trns_SGS%f_trns_LES%SGS_term,                        &
+     &      WK_LES%trns_SGS%forward, dynamic_SPH%wk_sgs)
       else
         call prod_fixed_sph_SGS_Csim                                    &
      &     (SGS_par%model_p, sph%sph_rtp, dynamic_SPH%iak_sgs_term,     &
