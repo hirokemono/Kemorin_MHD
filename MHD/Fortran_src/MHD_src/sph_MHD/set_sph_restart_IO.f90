@@ -29,7 +29,6 @@
 !
       use t_phys_data
       use t_field_data_IO
-      use t_SGS_model_coef_labels
 !
       implicit none
 !
@@ -82,7 +81,6 @@
        do i_fld = 1, rj_fld%num_phys
          if(    check_vector_4_restart(rj_fld%phys_name(i_fld))         &
      &     .or. check_scalar_4_restart(rj_fld%phys_name(i_fld))         &
-     &     .or. check_SGS_moedel_coefs(rj_fld%phys_name(i_fld))         &
      &     ) then
            fld_IO%num_field_IO = fld_IO%num_field_IO + 1
          end if
@@ -112,7 +110,6 @@
           fld_IO%istack_comp_IO(icou) = fld_IO%istack_comp_IO(icou-1)   &
      &                                 + fld_IO%num_comp_IO(icou)
         else if(check_scalar_4_restart(rj_fld%phys_name(i_fld))         &
-     &     .or. check_SGS_moedel_coefs(rj_fld%phys_name(i_fld))         &
      &         ) then
           icou = icou + 1
           fld_IO%fld_name(icou) = rj_fld%phys_name(i_fld)
@@ -147,7 +144,6 @@
      &           (rj_fld, fld_IO, i_fld, j_IO)
 !
             else if(check_scalar_4_restart(rj_fld%phys_name(i_fld))     &
-     &        .or. check_SGS_moedel_coefs(rj_fld%phys_name(i_fld))      &
      &            ) then
               call copy_each_sph_field_to_IO                            &
      &           (rj_fld, fld_IO, i_fld, j_IO)
@@ -185,7 +181,6 @@
      &           (fld_IO, rj_fld, i_fld, j_IO)
 !
             else if(check_scalar_4_restart(rj_fld%phys_name(i_fld))     &
-     &         .or. check_SGS_moedel_coefs(rj_fld%phys_name(i_fld))     &
      &             ) then
               call copy_each_sph_field_from_IO                          &
      &           (fld_IO, rj_fld, i_fld, j_IO)

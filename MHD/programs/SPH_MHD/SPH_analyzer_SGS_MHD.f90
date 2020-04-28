@@ -128,8 +128,10 @@
       call sph_initial_data_control                                     &
      &   (MHD_files, SPH_model, SPH_MHD%sph, SPH_MHD%ipol, MHD_step,    &
      &    SPH_MHD%fld, sph_fst_IO)
-      call set_initial_Csim_control                                     &
-     &   (MHD_files, MHD_step, SPH_SGS%SGS_par, SPH_SGS%dynamic)
+      call set_initial_Csim_control(MHD_files, MHD_step,                &
+     &    SPH_MHD%sph, SPH_MHD%comms, SPH_WK%trans_p, SPH_SGS%SGS_par,  &
+     &    SPH_WK%trns_WK, SPH_SGS%trns_WK_LES, SPH_SGS%dynamic,         &
+     &    SPH_MHD%fld)
       MHD_step%iflag_initial_step = 0
 !
       if(iflag_debug.gt.0) write(*,*)' sync_temp_by_per_temp_sph'

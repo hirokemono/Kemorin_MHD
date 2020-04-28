@@ -125,7 +125,8 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_initial_Csim_control                               &
-     &         (MHD_files, MHD_step, SGS_par, dynamic_SPH)
+     &         (MHD_files, MHD_step, sph, comms_sph, trans_p,           &
+     &          SGS_par, WK, WK_LES, dynamic_SPH, rj_fld)
 !
       use m_machine_parameter
       use m_initial_field_control
@@ -134,15 +135,27 @@
       use t_spheric_parameter
       use t_SGS_control_parameter
       use t_sph_filtering
+      use t_sph_trans_arrays_MHD
+      use t_sph_trans_arrays_SGS_MHD
+      use t_work_4_sph_trans
 !
       use sph_mhd_rst_IO_control
       use SPH_SGS_ini_model_coefs_IO
+      use copy_Csim_4_sph_MHD
+      use sph_transforms_4_SGS
 !
       type(MHD_file_IO_params), intent(in) :: MHD_files
       type(MHD_step_param), intent(in) :: MHD_step
+      type(sph_grids), intent(in) :: sph
+      type(sph_comm_tables), intent(in) :: comms_sph
+      type(parameters_4_sph_trans), intent(in) :: trans_p
 !
       type(SGS_paremeters), intent(inout) :: SGS_par
+      type(works_4_sph_trans_MHD), intent(inout) :: WK
+      type(works_4_sph_trans_SGS_MHD), intent(inout) :: WK_LES
       type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
+      type(phys_data), intent(inout) :: rj_fld
+!
 !
 !
       if(SGS_par%model_p%iflag_dynamic .eq. 0) return
@@ -150,6 +163,16 @@
         call read_alloc_SPH_Csim_file(MHD_step%init_d%i_time_step,      &
      &      MHD_files%Csim_file_IO, MHD_step%init_d, MHD_step%rst_step, &
      &      SGS_par%i_step_sgs_coefs, SGS_par%model_p, dynamic_SPH)
+!
+        call copy_model_coefs_4_sph_snap                                &
+     &     (sph%sph_rtp, dynamic_SPH%sph_d_grp,                         &
+     &      dynamic_SPH%iak_sgs_term, WK_LES%trns_Csim%f_trns_LES%Csim, &
+     &      dynamic_SPH%wk_sgs, WK_LES%trns_Csim%forward)
+        if (iflag_debug .gt.0 ) write(*,*)                              &
+     &                   'sph_forward_trans_SGS_MHD Csim for initial'
+        call sph_forward_trans_SGS_MHD                                  &
+     &     (sph, comms_sph, trans_p, WK_LES%trns_Csim%forward,          &
+     &      WK%WK_sph, WK_LES%trns_Csim%mul_FFTW, rj_fld)
       else
         SGS_par%model_p%iflag_rst_sgs_coef_code = 0
         call write_SPH_Csim_file(MHD_step%init_d%i_time_step,           &
@@ -158,6 +181,7 @@
       end if
       if(iflag_debug .gt. 0) write(*,*) 'iflag_rst_sgs_coef_code',      &
      &                        SGS_par%model_p%iflag_rst_sgs_coef_code
+!
 !
       call init_SPH_Csim_file(dynamic_SPH)
 !
