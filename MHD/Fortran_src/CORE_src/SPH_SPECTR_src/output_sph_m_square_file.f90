@@ -250,8 +250,9 @@
      &        sph_params%nlayer_ICB, sph_params%nlayer_CMB,             &
      &        pwr%v_spectr(i)%kr_inside, pwr%v_spectr(i)%kr_outside,    &
      &        pwr%v_spectr(i)%r_inside,  pwr%v_spectr(i)%r_outside,     &
-     &        sph_rj%nidx_rj(1), pwr%num_fld_sq, pwr%ntot_comp_sq,      &
-     &        pwr%num_comp_sq, pwr%pwr_name, pwr%v_spectr(i)%v_l)
+     &        sph_rj%nidx_rj(1), pwr%v_spectr(i)%num_fld_sq,            &
+     &        pwr%v_spectr(i)%ntot_comp_sq, pwr%v_spectr(i)%num_comp_sq, &
+     &        pwr%v_spectr(i)%pwr_name, pwr%v_spectr(i)%v_l)
         end if
 !
         if(id_rank .eq. pwr%v_spectr(i)%irank_lm) then
@@ -264,8 +265,9 @@
      &        sph_params%nlayer_ICB, sph_params%nlayer_CMB,             &
      &        pwr%v_spectr(i)%kr_inside, pwr%v_spectr(i)%kr_outside,    &
      &        pwr%v_spectr(i)%r_inside,  pwr%v_spectr(i)%r_outside,     &
-     &        sph_rj%nidx_rj(1), pwr%num_fld_sq, pwr%ntot_comp_sq,      &
-     &        pwr%num_comp_sq, pwr%pwr_name, pwr%v_spectr(i)%v_lm)
+     &        sph_rj%nidx_rj(1), pwr%v_spectr(i)%num_fld_sq,            &
+     &        pwr%v_spectr(i)%ntot_comp_sq, pwr%v_spectr(i)%num_comp_sq, &
+     &        pwr%v_spectr(i)%pwr_name, pwr%v_spectr(i)%v_lm)
         end if
 !
         if(id_rank .eq. pwr%v_spectr(i)%irank_m) then
@@ -278,8 +280,9 @@
      &        sph_params%nlayer_ICB, sph_params%nlayer_CMB,             &
      &        pwr%v_spectr(i)%kr_inside, pwr%v_spectr(i)%kr_outside,    &
      &        pwr%v_spectr(i)%r_inside,  pwr%v_spectr(i)%r_outside,     &
-     &        sph_rj%nidx_rj(1), pwr%num_fld_sq, pwr%ntot_comp_sq,      &
-     &        pwr%num_comp_sq, pwr%pwr_name, pwr%v_spectr(i)%v_m)
+     &        sph_rj%nidx_rj(1), pwr%v_spectr(i)%num_fld_sq,            &
+     &        pwr%v_spectr(i)%ntot_comp_sq, pwr%v_spectr(i)%num_comp_sq, &
+     &        pwr%v_spectr(i)%pwr_name, pwr%v_spectr(i)%v_m)
 !
           write(fname_rms, '(a,a7)')                                    &
      &       trim(pwr%v_spectr(i)%fhead_rms_v), '_m0.dat'
@@ -408,6 +411,7 @@
 !
       use sph_mean_spectr_IO
 !
+      character(len=kchara), intent(in) :: fname_rms, mode_label
       integer(kind = kint), intent(in) :: istep
       real(kind = kreal), intent(in) :: time
       integer(kind = kint), intent(in) :: l_truncation
@@ -420,7 +424,6 @@
       character (len=kchara), intent(in) :: pwr_name(num_fld_sq)
       real(kind = kreal), intent(in)                                    &
      &      :: rms_sph_x(0:l_truncation, ntot_comp_sq)
-      character(len=kchara), intent(in) :: fname_rms, mode_label
 !
 !
       call open_sph_vol_mean_sq_file                                    &

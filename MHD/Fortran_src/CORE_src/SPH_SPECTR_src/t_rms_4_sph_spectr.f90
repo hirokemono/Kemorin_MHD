@@ -16,7 +16,7 @@
 !!      subroutine alloc_ave_4_sph_spectr                               &
 !!     &         (idx_rj_degree_zero, nri_rj, pwr)
 !!
-!!      subroutine dealloc_rms_4_sph_spectr(id_rank, pwr)
+!!      subroutine dealloc_rms_4_sph_spectr(pwr)
 !!      subroutine dealloc_ave_4_sph_spectr(idx_rj_degree_zero, pwr)
 !!@endverbatim
 !!
@@ -57,8 +57,15 @@
 !
 !>        Number of radial points for mean square
         integer(kind=kint) :: ltr
+!
+!>        Number of field for mean square
+        integer (kind=kint) :: num_fld_sq
 !>        Number of component for mean square
         integer (kind=kint) :: ntot_comp_sq
+!>        Number of each component for mean square
+        integer (kind=kint), pointer :: num_comp_sq(:)
+!>        Field name for mean square
+        character (len=kchara), pointer :: pwr_name(:)
 !
 !>        Radius for inner boundary
         real(kind=kreal) :: r_inside
@@ -103,11 +110,11 @@
 !>        Field ID for mean square
         integer (kind=kint), allocatable :: id_field(:)
 !>        Number of each component for mean square
-        integer (kind=kint), allocatable :: num_comp_sq(:)
+        integer (kind=kint), pointer :: num_comp_sq(:)
 !>        End ID of each field for mean square
         integer (kind=kint), allocatable :: istack_comp_sq(:)
 !>        Field name for mean square
-        character (len=kchara), allocatable :: pwr_name(:)
+        character (len=kchara), pointer :: pwr_name(:)
 !
 !
 !>        File prefix for layered mean square file
@@ -163,6 +170,8 @@
         integer(kind = kint) :: num_vol_spectr = 1
         type(sph_vol_mean_squares), allocatable :: v_spectr(:)
       end type sph_mean_squares
+!
+      private :: alloc_sph_vol_mean_square, dealloc_sph_vol_mean_square
 !
 ! -----------------------------------------------------------------------
 !
@@ -267,8 +276,11 @@
       pwr%ntot_comp_sq = pwr%istack_comp_sq(pwr%num_fld_sq)
 !
       do i = 1, pwr%num_vol_spectr
-        call alloc_sph_vol_mean_square                                  &
-     &     (id_rank, ltr, pwr%ntot_comp_sq, pwr%v_spectr(i))
+        call alloc_sph_vol_mean_square(id_rank, ltr,                    &
+     &      pwr%num_fld_sq, pwr%ntot_comp_sq, pwr%v_spectr(i))
+!
+        pwr%v_spectr(i)%num_comp_sq =>    pwr%num_comp_sq
+        pwr%v_spectr(i)%pwr_name =>       pwr%pwr_name
       end do
 !
       if(id_rank .eq. pwr%irank_l) then
@@ -335,15 +347,17 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine dealloc_rms_4_sph_spectr(id_rank, pwr)
+      subroutine dealloc_rms_4_sph_spectr(pwr)
 !
-      integer, intent(in) :: id_rank
       type(sph_mean_squares), intent(inout) :: pwr
 !
       integer(kind = kint) :: i
 !
       do i = 1, pwr%num_vol_spectr
-        call dealloc_sph_vol_mean_square(id_rank, pwr%v_spectr(i))
+        nullify(pwr%v_spectr(i)%num_comp_sq)
+        nullify(pwr%v_spectr(i)%pwr_name)
+!
+        call dealloc_sph_vol_mean_square(pwr%v_spectr(i))
       end do
 !
       deallocate(pwr%r_4_rms, pwr%kr_4_rms)
@@ -381,14 +395,15 @@
 ! -----------------------------------------------------------------------
 !
       subroutine alloc_sph_vol_mean_square                              &
-     &         (id_rank, ltr, ntot_comp_sq, v_pwr)
+     &         (id_rank, ltr, num_fld_sq, ntot_comp_sq, v_pwr)
 !
       integer, intent(in) :: id_rank
-      integer(kind = kint), intent(in) :: ltr, ntot_comp_sq
+      integer(kind = kint), intent(in) :: ltr, num_fld_sq, ntot_comp_sq
       type(sph_vol_mean_squares), intent(inout) :: v_pwr
 !
 !
       v_pwr%ltr = ltr
+      v_pwr%num_fld_sq = num_fld_sq
       v_pwr%ntot_comp_sq = ntot_comp_sq
 !
       if(id_rank .eq. v_pwr%irank_l) then
@@ -449,7 +464,7 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine dealloc_sph_vol_mean_square(id_rank, v_pwr)
+      subroutine dealloc_sph_vol_mean_square(v_pwr)
 !
       integer, intent(in) :: id_rank
       type(sph_vol_mean_squares), intent(inout) :: v_pwr
