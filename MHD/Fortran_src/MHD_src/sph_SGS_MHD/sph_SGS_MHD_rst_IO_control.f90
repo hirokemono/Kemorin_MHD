@@ -73,7 +73,6 @@
 !
       use t_SPH_SGS_structure
       use t_sph_filtering
-      use set_sph_restart_IO
       use SPH_SGS_ini_model_coefs_IO
 !
       integer(kind=kint), intent(in) :: i_step
@@ -102,7 +101,6 @@
       use t_sph_filtering
       use t_SPH_SGS_structure
       use SPH_SGS_ini_model_coefs_IO
-      use set_sph_restart_IO
       use r_interpolate_sph_data
 !
       integer(kind = kint), intent(in) :: i_step
@@ -137,7 +135,6 @@
       use t_SGS_control_parameter
       use t_sph_filtering
 !
-      use set_sph_restart_IO
       use sph_mhd_rst_IO_control
       use SPH_SGS_ini_model_coefs_IO
 !

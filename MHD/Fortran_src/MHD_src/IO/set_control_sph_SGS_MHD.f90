@@ -211,7 +211,7 @@
       use add_nodal_fields_4_MHD
       use add_sph_MHD_fields_2_ctl
       use add_sph_SGS_MHD_fld_2_ctl
-      use add_sph_SGS_MHD_fld_2_ctl
+      use add_sph_filter_force_2_ctl
       use set_field_data_w_SGS
       use add_dependency_for_SGS
 !
@@ -239,6 +239,8 @@
         call add_field_name_4_sph_mhd                                   &
      &     (MHD_prop%fl_prop, MHD_prop%cd_prop,                         &
      &      MHD_prop%ht_prop, MHD_prop%cp_prop, field_ctl)
+        call add_filter_force_4_sph_mhd(MHD_prop%fl_prop, field_ctl)
+!
         call add_field_name_4_SGS(SGS_param, field_ctl)
         call add_field_name_dynamic_SGS                                 &
      &     (SGS_param, MHD_prop%fl_prop, field_ctl)

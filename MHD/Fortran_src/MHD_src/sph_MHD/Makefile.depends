@@ -18,7 +18,7 @@ add_filter_fld_to_sph_trans.o: $(MHD_SPH_DIR)/add_filter_fld_to_sph_trans.f90 m_
 	$(F90) -c $(F90OPTFLAGS) $<
 add_prod_field_4_sph_trns.o: $(MHD_SPH_DIR)/add_prod_field_4_sph_trns.f90 m_precision.o t_field_product_labels.o t_addresses_sph_transform.o add_field_to_sph_trans_list.o
 	$(F90) -c $(F90OPTFLAGS) $<
-add_sph_MHD_fields_2_ctl.o: $(MHD_SPH_DIR)/add_sph_MHD_fields_2_ctl.f90 m_precision.o m_phys_labels.o t_control_array_character3.o t_physical_property.o add_nodal_fields_ctl.o m_rot_force_labels.o m_div_force_labels.o m_filtered_force_labels.o m_rot_filtered_force_labels.o m_div_filtered_force_labels.o
+add_sph_MHD_fields_2_ctl.o: $(MHD_SPH_DIR)/add_sph_MHD_fields_2_ctl.f90 m_precision.o m_phys_labels.o t_control_array_character3.o t_physical_property.o add_nodal_fields_ctl.o m_rot_force_labels.o m_div_force_labels.o
 	$(F90) -c $(F90OPTFLAGS) $<
 address_sph_trans_MHD.o: $(MHD_SPH_DIR)/address_sph_trans_MHD.f90 m_precision.o m_machine_parameter.o m_phys_labels.o m_phys_constants.o t_phys_address.o t_addresses_sph_transform.o t_control_parameter.o t_physical_property.o add_base_field_4_sph_trns.o add_base_force_4_sph_trns.o
 	$(F90) -c $(F90OPTFLAGS) $<

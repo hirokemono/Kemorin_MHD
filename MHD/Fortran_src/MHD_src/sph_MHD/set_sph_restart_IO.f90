@@ -15,6 +15,9 @@
 !!      subroutine set_sph_restart_from_IO(fld_IO)
 !!        type(field_IO), intent(in) :: fld_IO
 !!        type(phys_data), intent(inout) :: rj_fld
+!!
+!!      logical function check_vector_4_restart(field_name)
+!!      logical function check_scalar_4_restart(field_name)
 !!@endverbatim
 !
       module set_sph_restart_IO
