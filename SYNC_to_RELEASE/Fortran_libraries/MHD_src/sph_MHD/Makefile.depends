@@ -10,7 +10,7 @@ add_diff_vect_to_sph_trans.o: $(MHD_SPH_DIR)/add_diff_vect_to_sph_trans.f90 m_pr
 	$(F90) -c $(F90OPTFLAGS) $<
 add_diffusion_4_sph_trns.o: $(MHD_SPH_DIR)/add_diffusion_4_sph_trns.f90 m_precision.o m_constants.o t_diffusion_term_labels.o t_addresses_sph_transform.o add_field_to_sph_trans_list.o
 	$(F90) -c $(F90OPTFLAGS) $<
-add_energy_flux_4_sph_trns.o: $(MHD_SPH_DIR)/add_energy_flux_4_sph_trns.f90 m_precision.o m_constants.o t_energy_flux_labels.o t_addresses_sph_transform.o add_field_to_sph_trans_list.o m_filtered_ene_flux_labels.o
+add_energy_flux_4_sph_trns.o: $(MHD_SPH_DIR)/add_energy_flux_4_sph_trns.f90 m_precision.o m_constants.o t_energy_flux_labels.o t_addresses_sph_transform.o add_field_to_sph_trans_list.o
 	$(F90) -c $(F90OPTFLAGS) $<
 add_field_to_sph_trans_list.o: $(MHD_SPH_DIR)/add_field_to_sph_trans_list.f90 m_precision.o t_field_labels.o t_addresses_sph_transform.o m_machine_parameter.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -224,7 +224,7 @@ set_sph_exp_rigid_ICB.o: $(MHD_SPH_DIR)/set_sph_exp_rigid_ICB.f90 m_precision.o 
 	$(F90) -c $(F90OPTFLAGS) $<
 set_sph_magne_mat_bc.o: $(MHD_SPH_DIR)/set_sph_magne_mat_bc.f90 m_precision.o m_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
-set_sph_restart_IO.o: $(MHD_SPH_DIR)/set_sph_restart_IO.f90 m_precision.o m_constants.o m_phys_constants.o t_phys_data.o t_field_data_IO.o t_SGS_model_coef_labels.o calypso_mpi.o const_global_element_ids.o m_phys_labels.o copy_rj_phys_data_4_IO.o
+set_sph_restart_IO.o: $(MHD_SPH_DIR)/set_sph_restart_IO.f90 m_precision.o m_constants.o m_phys_constants.o t_phys_data.o t_field_data_IO.o calypso_mpi.o const_global_element_ids.o m_phys_labels.o copy_rj_phys_data_4_IO.o
 	$(F90) -c $(F90OPTFLAGS) $<
 set_sph_scalar_mat_bc.o: $(MHD_SPH_DIR)/set_sph_scalar_mat_bc.f90 m_precision.o m_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
