@@ -45,7 +45,6 @@
       use m_array_for_send_recv
       use m_2nd_pallalel_vector
 !
-      use set_control_field_data
       use copy_mesh_structures
       use input_control_udt_diff
       use mpi_load_mesh_data
@@ -57,6 +56,7 @@
       use correlation_all_layerd_data
       use const_jacobians_3d
       use const_element_comm_tables
+      use set_field_data_w_SGS
 !
 !
       if (my_rank.eq.0) then

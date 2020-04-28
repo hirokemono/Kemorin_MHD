@@ -40,7 +40,7 @@
       use r_interpolate_sph_data
       use count_num_sph_smp
       use field_IO_select
-      use set_control_field_data
+      use set_field_data_w_SGS
       use init_sph_trans
       use pole_sph_transform
       use sph_transfer_all_field

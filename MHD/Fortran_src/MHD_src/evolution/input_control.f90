@@ -92,7 +92,8 @@
       use mpi_load_mesh_data
       use skip_comment_f
       use node_monitor_IO
-      use set_control_field_data
+      use set_field_data_w_SGS
+      use set_nodal_field_name
 !
       type(MHD_file_IO_params), intent(inout) :: MHD_files
       type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
@@ -148,7 +149,8 @@
       use set_control_FEM_MHD
       use mpi_load_mesh_data
       use node_monitor_IO
-      use set_control_field_data
+      use set_field_data_w_SGS
+      use set_nodal_field_name
 !
       type(MHD_file_IO_params), intent(inout) :: MHD_files
 !

@@ -29,7 +29,7 @@
 !!        type(phys_data), intent(in) :: fld
 !!
 !!      subroutine check_all_field_data(id_rank, fld)
-!!      subroutine check_nodal_field_name_type(id_output, fld)
+!!      subroutine check_nodal_field_name(id_output, fld)
 !!      subroutine check_nodal_data(id_output, fld, numdir, i_field)
 !!        integer, intent(in) :: id_rank
 !!        integer(kind = kint), intent(in) :: numdir, i_field
@@ -371,14 +371,14 @@
       id = 50 + id_rank
 !
 
-      call check_nodal_field_name_type(id, fld)
+      call check_nodal_field_name(id, fld)
       call check_nodal_data(id, fld, fld%ntot_phys, ione)
 !
       end subroutine check_all_field_data
 !
 !  --------------------------------------------------------------------
 !
-      subroutine check_nodal_field_name_type(id_output, fld)
+      subroutine check_nodal_field_name(id_output, fld)
 !
       integer(kind = kint), intent(in) :: id_output
       type(phys_data), intent(in) :: fld
@@ -395,7 +395,7 @@
      &         fld%istack_component(i), '  ', trim(fld%phys_name(i))
       end do
 !
-      end subroutine check_nodal_field_name_type
+      end subroutine check_nodal_field_name
 !
 !   ---------------------------------------------------------------------
 !

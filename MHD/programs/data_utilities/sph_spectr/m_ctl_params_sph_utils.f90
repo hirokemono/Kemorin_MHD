@@ -97,7 +97,7 @@
       use m_machine_parameter
       use m_file_format_switch
 !
-      use set_control_field_data
+      use set_field_data_w_SGS
       use set_control_platform_data
       use set_control_4_pickup_sph
 !
@@ -189,9 +189,9 @@
 !
 !   set physical values
 !
-      call s_set_control_field_data                                     &
+      call set_SGS_field_ctl_by_viz                                     &
      &   (spu_ctl%fld_ctl%field_ctl, rj_fld, ierr)
-      call s_set_control_field_data                                     &
+      call set_SGS_field_ctl_by_viz                                     &
      &   (spu_ctl%fld_ctl%field_ctl, nod_fld, ierr)
 !
       if(spu_ctl%buoyancy_ratio_ctl%iflag .gt. 0) then

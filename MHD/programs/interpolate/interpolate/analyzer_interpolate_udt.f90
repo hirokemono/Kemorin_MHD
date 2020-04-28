@@ -56,7 +56,7 @@
 !
       subroutine initialize_itp_udt
 !
-      use set_control_field_data
+      use set_field_data_w_SGS
       use input_control_interpolate
       use const_mesh_information
       use set_size_4_smp_types

@@ -58,7 +58,6 @@
      &          nod_fld, iphys, iphys_LES, ele_fld, iphys_ele)
 !
       use t_geometry_data
-      use set_control_field_data
       use initialize_element_field
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
@@ -76,7 +75,7 @@
       call set_FEM_MHD_field_data                                       &
      &   (node, MHD_prop, nod_fld, iphys, iphys_LES)
 !
-      call check_dependence_4_FEM_SGS (SGS_param, cmt_param,            &
+      call check_dependence_4_FEM_SGS(SGS_param, cmt_param,             &
      &    MHD_prop%fl_prop, MHD_prop%cd_prop,                           &
      &    MHD_prop%ht_prop, MHD_prop%cp_prop,                           &
      &    iphys%filter_fld, iphys_LES%SGS_term, nod_fld)
@@ -93,7 +92,7 @@
      &         (node, MHD_prop, nod_fld, iphys, iphys_LES)
 !
       use t_geometry_data
-      use set_control_field_data
+      use set_field_data_w_SGS
 !
       type(node_data), intent(in) :: node
       type(MHD_evolution_param), intent(in) :: MHD_prop

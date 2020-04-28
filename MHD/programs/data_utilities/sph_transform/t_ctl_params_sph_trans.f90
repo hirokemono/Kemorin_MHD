@@ -90,7 +90,7 @@
       use m_FFT_selector
       use m_legendre_transform_list
 !
-      use set_control_field_data
+      use set_field_data_w_SGS
       use set_control_platform_data
       use ucd_IO_select
 !
@@ -151,9 +151,9 @@
 !
 !   set physical values
 !
-      call s_set_control_field_data                                     &
+      call set_SGS_field_ctl_by_viz                                     &
      &   (spt_ctl%fld_ctl%field_ctl, rj_fld, ierr)
-      call s_set_control_field_data                                     &
+      call set_SGS_field_ctl_by_viz                                     &
      &   (spt_ctl%fld_ctl%field_ctl, fem_fld, ierr)
 !
       files_param%cmb_radial_grp =  'CMB'
@@ -186,7 +186,7 @@
       use m_FFT_selector
       use m_legendre_transform_list
 !
-      use set_control_field_data
+      use set_field_data_w_SGS
       use set_control_platform_data
 !
       use m_default_file_prefix
@@ -276,9 +276,9 @@
 !
 !   set physical values
 !
-      call s_set_control_field_data                                     &
+      call set_SGS_field_ctl_by_viz                                     &
      &   (spt_ctl%fld_ctl%field_ctl, rj_fld, ierr)
-      call s_set_control_field_data                                     &
+      call set_SGS_field_ctl_by_viz                                     &
      &   (spt_ctl%fld_ctl%field_ctl, fem_fld, ierr)
 !
       files_param%cmb_radial_grp =  'CMB'

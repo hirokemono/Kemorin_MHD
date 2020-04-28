@@ -1,6 +1,6 @@
 cal_buoyancy_flux.o: $(MHD_COMMON_DIR)/cal_buoyancy_flux.f90 m_precision.o m_machine_parameter.o t_geometry_data.o t_phys_data.o t_physical_property.o
 	$(F90) -c $(F90OPTFLAGS) $<
-check_dependency_SGS_MHD.o: $(MHD_COMMON_DIR)/check_dependency_SGS_MHD.f90 m_precision.o m_error_IDs.o m_machine_parameter.o calypso_mpi.o m_phys_labels.o t_control_parameter.o t_SGS_control_parameter.o t_physical_property.o t_phys_address.o t_phys_data.o t_SGS_model_addresses.o t_base_force_labels.o check_dependency_for_MHD.o t_SGS_term_labels.o t_spheric_parameter.o set_control_field_data.o
+check_dependency_SGS_MHD.o: $(MHD_COMMON_DIR)/check_dependency_SGS_MHD.f90 m_precision.o m_error_IDs.o m_machine_parameter.o calypso_mpi.o m_phys_labels.o t_control_parameter.o t_SGS_control_parameter.o t_physical_property.o t_phys_address.o t_phys_data.o t_SGS_model_addresses.o t_base_force_labels.o check_dependency_for_MHD.o t_SGS_term_labels.o t_spheric_parameter.o set_field_data_w_SGS.o
 	$(F90) -c $(F90OPTFLAGS) $<
 check_dependency_for_MHD.o: $(MHD_COMMON_DIR)/check_dependency_for_MHD.f90 m_precision.o m_error_IDs.o m_machine_parameter.o calypso_mpi.o m_phys_labels.o t_control_parameter.o t_phys_data.o t_phys_address.o t_base_field_labels.o t_physical_property.o t_spheric_parameter.o set_control_field_data.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -10,7 +10,7 @@ const_layering_table.o: $(MHD_COMMON_DIR)/const_layering_table.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<
 construct_MHD_coefficient.o: $(MHD_COMMON_DIR)/construct_MHD_coefficient.f90 m_precision.o m_constants.o m_machine_parameter.o calypso_mpi.o m_error_IDs.o t_normalize_parameter.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
-dependency_FEM_SGS_MHD.o: $(MHD_COMMON_DIR)/dependency_FEM_SGS_MHD.f90 m_precision.o m_error_IDs.o m_machine_parameter.o calypso_mpi.o m_phys_labels.o t_control_parameter.o t_SGS_control_parameter.o t_phys_data.o t_phys_address.o t_SGS_model_addresses.o t_base_field_labels.o t_SGS_term_labels.o t_physical_property.o check_dependency_for_MHD.o t_geometry_data.o set_control_field_data.o initialize_element_field.o
+dependency_FEM_SGS_MHD.o: $(MHD_COMMON_DIR)/dependency_FEM_SGS_MHD.f90 m_precision.o m_error_IDs.o m_machine_parameter.o calypso_mpi.o m_phys_labels.o t_control_parameter.o t_SGS_control_parameter.o t_phys_data.o t_phys_address.o t_SGS_model_addresses.o t_base_field_labels.o t_SGS_term_labels.o t_physical_property.o check_dependency_for_MHD.o t_geometry_data.o initialize_element_field.o set_field_data_w_SGS.o
 	$(F90) -c $(F90OPTFLAGS) $<
 estimate_stabilities.o: $(MHD_COMMON_DIR)/estimate_stabilities.f90 m_precision.o calypso_mpi.o t_control_parameter.o t_geometry_data.o t_geometry_data_MHD.o
 	$(F90) -c $(F90OPTFLAGS) $<

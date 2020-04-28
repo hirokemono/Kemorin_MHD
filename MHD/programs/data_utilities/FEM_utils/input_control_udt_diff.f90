@@ -72,7 +72,7 @@
       use m_ctl_params_4_diff_udt
 !
       use set_ctl_diff_udt
-      use set_control_field_data
+      use set_field_data_w_SGS
 !
       type(field_IO_params), intent(inout) ::  mesh_file
       type(field_IO_params), intent(inout) :: udt_org_param
@@ -90,8 +90,8 @@
      &    diff_udt_c1%org_d_plt, diff_udt_c1%diff_ctl,                  &
      &    mesh_file, udt_org_param)
 !
-      if (iflag_debug.eq.1) write(*,*) 's_set_control_field_data'
-      call s_set_control_field_data                                     &
+      if (iflag_debug.eq.1) write(*,*) 'set_SGS_field_ctl_by_viz'
+      call set_SGS_field_ctl_by_viz                                     &
      &   (diff_udt_c1%diff_ctl%fld_d_ctl%field_ctl, nod_fld, ierr)
       if (ierr .ne. 0) call calypso_MPI_abort(ierr, e_message)
 !
@@ -110,7 +110,7 @@
       use m_ctl_params_4_diff_udt
 !
       use set_ctl_diff_udt
-      use set_control_field_data
+      use set_field_data_w_SGS
 !
       type(field_IO_params), intent(inout) ::  mesh_file
       type(field_IO_params), intent(inout)  :: udt_org_param
@@ -129,8 +129,8 @@
      &    diff_udt_c1%org_d_plt, diff_udt_c1%diff_ctl,                  &
      &    mesh_file, udt_org_param)
 !
-      if (iflag_debug.eq.1) write(*,*) 's_set_control_field_data'
-      call s_set_control_field_data                                     &
+      if (iflag_debug.eq.1) write(*,*) 'set_SGS_field_ctl_by_viz'
+      call set_SGS_field_ctl_by_viz                                     &
      &   (diff_udt_c1%diff_ctl%fld_d_ctl%field_ctl, nod_fld, ierr)
       if (ierr .ne. 0) call calypso_MPI_abort(ierr, e_message)
 !

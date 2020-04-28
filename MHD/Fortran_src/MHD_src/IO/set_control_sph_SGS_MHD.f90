@@ -33,6 +33,13 @@
 !!        type(spherical_trns_works), intent(inout) :: WK_sph
 !!        type(construct_spherical_grid), intent(inout) :: gen_sph
 !!        type(sph_mhd_monitor_data), intent(inout) :: monitor
+!!
+!!      subroutine set_ctl_params_pick_circle                           &
+!!     &         (field_ctl, meq_ctl, circle, d_circle)
+!!        type(ctl_array_c3), intent(in) :: field_ctl
+!!        type(mid_equator_control), intent(in) :: meq_ctl
+!!        type(fields_on_circle), intent(inout) :: circle
+!!        type(phys_data), intent(inout) :: d_circle
 !!@endverbatim
 !
       module set_control_sph_SGS_MHD
@@ -78,9 +85,10 @@
       use t_sph_mhd_monitor_data_IO
 !
       use set_control_sph_data_MHD
-      use set_control_field_data
       use set_control_sph_mhd
       use set_controls_4_sph_shell
+      use set_field_data_w_SGS
+      use set_nodal_field_name
       use node_monitor_IO
 !
       type(MHD_evolution_param), intent(in) :: MHD_prop
@@ -98,8 +106,8 @@
 !
 !
 !       set nodal field list
-      if (iflag_debug.gt.0) write(*,*) 's_set_control_field_data'
-      call s_set_control_field_data                                     &
+      if (iflag_debug.gt.0) write(*,*) 'set_SGS_field_ctl_by_viz'
+      call set_SGS_field_ctl_by_viz                                     &
      &   (model_ctl%fld_ctl%field_ctl, nod_fld, ierr)
 !
 !       set spectr field list
@@ -139,9 +147,9 @@
       use set_control_4_SGS
       use set_control_SGS_commute
       use set_control_sph_data_MHD
-      use set_control_field_data
       use set_control_sph_mhd
       use set_control_sph_filter
+      use set_field_data_w_SGS
 !
       type(platform_data_control), intent(in) :: plt
       type(platform_data_control), intent(in) :: org_plt
@@ -204,7 +212,7 @@
       use add_sph_MHD_fields_2_ctl
       use add_sph_SGS_MHD_fld_2_ctl
       use add_sph_SGS_MHD_fld_2_ctl
-      use set_control_field_data
+      use set_field_data_w_SGS
       use add_dependency_for_SGS
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
@@ -243,8 +251,8 @@
 !
 !    set nodal data
 !
-        if (iflag_debug.gt.0) write(*,*) 's_set_control_field_data'
-        call s_set_control_field_data(field_ctl, rj_fld, ierr)
+        if (iflag_debug.gt.0) write(*,*) 'set_SGS_field_ctl_by_viz'
+        call set_SGS_field_ctl_by_viz(field_ctl, rj_fld, ierr)
       end if
 !
       end subroutine set_control_sph_sgs_mhd_fields
@@ -361,5 +369,59 @@
       end subroutine set_control_SGS_SPH_MHD
 !
 ! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine set_ctl_params_pick_circle                             &
+     &         (field_ctl, meq_ctl, circle, d_circle)
+!
+      use t_ctl_data_sph_vol_spectr
+      use t_mid_equator_control
+      use t_control_array_character3
+      use t_circle_transform
+      use t_phys_data
+      use set_field_data_w_SGS
+      use skip_comment_f
+!
+      type(ctl_array_c3), intent(in) :: field_ctl
+      type(mid_equator_control), intent(in) :: meq_ctl
+      type(fields_on_circle), intent(inout) :: circle
+      type(phys_data), intent(inout) :: d_circle
+!
+      character(len = kchara) :: tmpchara
+      integer(kind = kint) :: ierr = 0
+!
+!
+      circle%iflag_circle_coord = iflag_circle_sph
+      if (meq_ctl%pick_circle_coord_ctl%iflag .ne. 0) then
+        tmpchara = meq_ctl%pick_circle_coord_ctl%charavalue
+        if(    cmp_no_case(tmpchara,'spherical')                        &
+     &    .or. cmp_no_case(tmpchara,'rtp')) then
+          circle%iflag_circle_coord = iflag_circle_sph
+        else if(cmp_no_case(tmpchara,'cyrindrical')                     &
+      &    .or. cmp_no_case(tmpchara,'spz')) then
+          circle%iflag_circle_coord = iflag_circle_cyl
+        end if
+      end if
+!
+      circle%mphi_circle = -1
+      if(meq_ctl%nphi_mid_eq_ctl%iflag .gt. 0) then
+        circle%mphi_circle = meq_ctl%nphi_mid_eq_ctl%intvalue
+      end if
+!
+      circle%s_circle = 7.0d0/13.0d0 + 0.5d0
+      if(meq_ctl%pick_s_ctl%iflag .gt. 0) then
+        circle%s_circle = meq_ctl%pick_s_ctl%realvalue
+      end if
+!
+      circle%z_circle = 0.0d0
+      if(meq_ctl%pick_z_ctl%iflag .gt. 0) then
+        circle%z_circle = meq_ctl%pick_z_ctl%realvalue
+      end if
+!
+      call set_SGS_field_ctl_by_viz(field_ctl, d_circle, ierr)
+!
+      end subroutine set_ctl_params_pick_circle
+!
+! -----------------------------------------------------------------------
 !
       end module set_control_sph_SGS_MHD

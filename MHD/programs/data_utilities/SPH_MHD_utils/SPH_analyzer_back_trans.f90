@@ -60,7 +60,7 @@
       use t_sph_boundary_input_data
 !
       use set_control_sph_mhd
-      use set_control_field_data
+      use set_field_data_w_SGS
       use const_fdm_coefs
       use adjust_reference_fields
       use set_bc_sph_mhd

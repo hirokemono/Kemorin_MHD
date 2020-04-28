@@ -52,7 +52,7 @@
      &         (SGS_par, MHD_prop, sph, rj_fld, ipol, ipol_LES)
 !
       use t_spheric_parameter
-      use set_control_field_data
+      use set_field_data_w_SGS
       use check_dependency_for_MHD
 !
       type(SGS_paremeters), intent(in) :: SGS_par

@@ -1,5 +1,5 @@
-!>@file   set_nodal_field_name.f90
-!!@brief  module set_nodal_field_name
+!>@file   set_field_name_w_SGS.f90
+!!@brief  module set_field_name_w_SGS
 !!
 !!@author H. Matsui
 !!@date Programmed in Jan., 2008
@@ -9,23 +9,13 @@
 !>@brief  Set field names from control data
 !!
 !!@verbatim
-!!      subroutine ordering_field_by_viz(field_ctl, fld)
-!!      subroutine ordering_field_by_comp_viz(field_ctl, fld)
+!!      subroutine ordering_fld_w_SGS_by_viz(field_ctl, fld)
+!!      subroutine ordering_fld_w_SGS_by_comp_viz(field_ctl, fld)
 !!        type(ctl_array_c3), intent(in) :: field_ctl
 !!        type(phys_data), intent(inout) :: fld
-!!      subroutine count_field_4_monitor                                &
-!!     &         (fld, num_field_monitor, ntot_comp_monitor)
-!!        type(phys_data), intent(in) :: fld
-!!
-!!      logical function check_vis_control_flag(visualize_ctl)
-!!      logical function check_monitor_control_flag(monitor_ctl)
-!!
-!!      subroutine set_vis_control_flag(iflag_viz, visualize_ctl)
-!!      subroutine set_monitor_control_flag                             &
-!!     &         (iflag_fld_monitor, monitor_ctl)
 !!@endverbatim
 !
-      module set_nodal_field_name
+      module set_field_name_w_SGS
 !
       use m_precision
       use m_phys_labels
@@ -34,16 +24,9 @@
 !
       implicit  none
 !
-      character(len = kchara), parameter :: cflag_viz_on =  'Viz_On'
-      character(len = kchara), parameter :: cflag_viz_off = 'Viz_Off'
-!
-      character(len = kchara), parameter                                &
-     &                        :: cflag_monitor_on =  'Monitor_On'
-      character(len = kchara), parameter                                &
-     &                        :: cflag_monitor_off = 'Monitor_Off'
-!
-      private :: set_vector_field_name, set_scalar_field_name
-      private :: set_tensor_field_name
+      private :: set_vector_field_name_w_SGS
+      private :: set_scalar_field_name_w_SGS
+      private :: set_tensor_field_name_w_SGS
 !
 ! -----------------------------------------------------------------------
 !
@@ -51,7 +34,9 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine ordering_field_by_viz(field_ctl, fld)
+      subroutine ordering_fld_w_SGS_by_viz(field_ctl, fld)
+!
+      use set_nodal_field_name
 !
       type(ctl_array_c3), intent(in) :: field_ctl
       type(phys_data), intent(inout) :: fld
@@ -66,24 +51,26 @@
       do i = 1, field_ctl%icou
         flag = .FALSE.
         if(flag) cycle
-        call set_vector_field_name(field_ctl%c1_tbl(i),                 &
+        call set_vector_field_name_w_SGS(field_ctl%c1_tbl(i),           &
      &      check_vis_control_flag(field_ctl%c2_tbl(i)),                &
      &      check_monitor_control_flag(field_ctl%c3_tbl(i)), fld, flag)
         if(flag) cycle
-        call set_scalar_field_name(field_ctl%c1_tbl(i),                 &
+        call set_scalar_field_name_w_SGS(field_ctl%c1_tbl(i),           &
      &      check_vis_control_flag(field_ctl%c2_tbl(i)),                &
      &      check_monitor_control_flag(field_ctl%c3_tbl(i)), fld, flag)
         if(flag) cycle
-        call set_tensor_field_name(field_ctl%c1_tbl(i),                 &
+        call set_tensor_field_name_w_SGS(field_ctl%c1_tbl(i),           &
      &      check_vis_control_flag(field_ctl%c2_tbl(i)),                &
      &      check_monitor_control_flag(field_ctl%c3_tbl(i)), fld, flag)
       end do
 !
-      end subroutine ordering_field_by_viz
+      end subroutine ordering_fld_w_SGS_by_viz
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine ordering_field_by_comp_viz(field_ctl, fld)
+      subroutine ordering_fld_w_SGS_by_comp_viz(field_ctl, fld)
+!
+      use set_nodal_field_name
 !
       type(ctl_array_c3), intent(in) :: field_ctl
       type(phys_data), intent(inout) :: fld
@@ -97,56 +84,31 @@
 !
       do i = 1, field_ctl%icou
         if(flag) cycle
-        call set_vector_field_name(field_ctl%c1_tbl(i),                 &
+        call set_vector_field_name_w_SGS(field_ctl%c1_tbl(i),           &
      &      check_vis_control_flag(field_ctl%c2_tbl(i)),                &
      &      check_monitor_control_flag(field_ctl%c3_tbl(i)), fld, flag)
       end do
 !
       do i = 1, field_ctl%icou
         if(flag) cycle
-        call set_scalar_field_name(field_ctl%c1_tbl(i),                 &
+        call set_scalar_field_name_w_SGS(field_ctl%c1_tbl(i),           &
      &      check_vis_control_flag(field_ctl%c2_tbl(i)),                &
      &      check_monitor_control_flag(field_ctl%c3_tbl(i)), fld, flag)
       end do
 !
       do i = 1, field_ctl%icou
         if(flag) cycle
-        call set_tensor_field_name(field_ctl%c1_tbl(i),                 &
+        call set_tensor_field_name_w_SGS(field_ctl%c1_tbl(i),           &
      &      check_vis_control_flag(field_ctl%c2_tbl(i)),                &
      &      check_monitor_control_flag(field_ctl%c3_tbl(i)), fld, flag)
       end do
 !
-      end subroutine ordering_field_by_comp_viz
-!
-! -----------------------------------------------------------------------
-!
-      subroutine count_field_4_monitor                                  &
-     &         (fld, num_field_monitor, ntot_comp_monitor)
-!
-      type(phys_data), intent(in) :: fld
-!
-      integer(kind = kint), intent(inout) :: num_field_monitor
-      integer(kind = kint), intent(inout) :: ntot_comp_monitor
-!
-      integer(kind = kint) :: i
-!
-!    count number of components for monitoring
-!
-      num_field_monitor = 0
-      ntot_comp_monitor = 0
-      do i = 1, fld%num_phys
-        if(fld%flag_monitor(i)) then
-          num_field_monitor = num_field_monitor + 1
-          ntot_comp_monitor = ntot_comp_monitor + fld%num_component(i)
-        end if
-      end do
-!
-      end subroutine count_field_4_monitor
+      end subroutine ordering_fld_w_SGS_by_comp_viz
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine set_vector_field_name                                  &
+      subroutine set_vector_field_name_w_SGS                            &
      &         (phys_name_ctl, flag_viz, flag_monitor, fld, flag)
 !
       use set_MHD_field_address
@@ -173,11 +135,11 @@
         return
       end if
 !
-      end subroutine set_vector_field_name
+      end subroutine set_vector_field_name_w_SGS
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_scalar_field_name                                  &
+      subroutine set_scalar_field_name_w_SGS                            &
      &         (phys_name_ctl, flag_viz, flag_monitor, fld, flag)
 !
       use set_MHD_field_address
@@ -205,11 +167,11 @@
         return
       end if
 !
-      end subroutine set_scalar_field_name
+      end subroutine set_scalar_field_name_w_SGS
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_tensor_field_name                                  &
+      subroutine set_tensor_field_name_w_SGS                            &
      &         (phys_name_ctl, flag_viz, flag_monitor, fld, flag)
 !
       use set_MHD_field_address
@@ -237,66 +199,8 @@
         return
       end if
 !
-      end subroutine set_tensor_field_name
-!
-! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-      logical function check_vis_control_flag(visualize_ctl)
-!
-      use skip_comment_f
-!
-      character(len = kchara), intent(in) :: visualize_ctl
-!
-      check_vis_control_flag = cmp_no_case(visualize_ctl, cflag_viz_on)
-!
-      end function check_vis_control_flag
+      end subroutine set_tensor_field_name_w_SGS
 !
 ! -----------------------------------------------------------------------
 !
-      logical function check_monitor_control_flag(monitor_ctl)
-!
-      use skip_comment_f
-!
-      character(len = kchara), intent(in) :: monitor_ctl
-!
-      check_monitor_control_flag                                        &
-     &      = cmp_no_case(monitor_ctl, cflag_monitor_on)
-!
-      end function check_monitor_control_flag
-!
-! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-      subroutine set_vis_control_flag(iflag_viz, visualize_ctl)
-!
-      integer (kind = kint), intent(in) :: iflag_viz
-      character(len = kchara), intent(inout) :: visualize_ctl
-!
-      if(iflag_viz .gt. 0) then
-        visualize_ctl = cflag_viz_on
-      else
-        visualize_ctl = cflag_viz_off
-      end if
-!
-      end subroutine set_vis_control_flag
-!
-! -----------------------------------------------------------------------
-!
-      subroutine set_monitor_control_flag                               &
-     &         (iflag_fld_monitor, monitor_ctl)
-!
-      integer (kind = kint), intent(in) :: iflag_fld_monitor
-      character(len = kchara), intent(inout) :: monitor_ctl
-!
-      if(iflag_fld_monitor .gt. 0) then
-        monitor_ctl = cflag_monitor_on
-      else
-        monitor_ctl = cflag_monitor_off
-      end if
-!
-      end subroutine set_monitor_control_flag
-!
-! -----------------------------------------------------------------------
-!
-      end module set_nodal_field_name
+      end module set_field_name_w_SGS

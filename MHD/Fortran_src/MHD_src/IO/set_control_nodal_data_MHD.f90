@@ -44,7 +44,7 @@
       use t_SGS_control_parameter
       use add_dependency_for_SGS
 !
-      use set_control_field_data
+      use set_field_data_w_SGS
       use add_nodal_fields_4_MHD
       use add_nodal_fields_4_SGS
       use initialize_element_field
@@ -90,7 +90,7 @@
 !
 !    set nodal data
 !
-        call s_set_control_field_data(field_ctl, nod_fld, ierr)
+        call set_SGS_field_ctl_by_viz(field_ctl, nod_fld, ierr)
       end if
 !
       call set_ele_field_names_MHD                                      &

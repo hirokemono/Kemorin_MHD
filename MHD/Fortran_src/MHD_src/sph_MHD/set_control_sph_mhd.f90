@@ -88,6 +88,7 @@
       use set_control_sph_data_MHD
       use set_control_field_data
       use set_controls_4_sph_shell
+      use set_nodal_field_name
       use node_monitor_IO
 !
       type(MHD_evolution_param), intent(in) :: MHD_prop

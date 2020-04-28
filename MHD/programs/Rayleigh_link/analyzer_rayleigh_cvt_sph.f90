@@ -122,7 +122,7 @@
       call share_new_spectr_field_names(sph_asbl_s%np_sph_new,          &
      &    sph_asbl_s%new_sph_mesh, sph_asbl_s%new_sph_phys(1))
 !
-!      call check_nodal_field_name_type                                 &
+!      call check_nodal_field_name                                      &
 !     &   (50+my_rank, sph_asbl_s%new_sph_phys(1))
 !
       end subroutine init_cvt_rayleigh_sph

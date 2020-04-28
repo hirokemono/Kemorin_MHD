@@ -103,8 +103,8 @@
 !
       integer(kind = kint), parameter :: id_six = 6
 !
-      write(*,*) 'check_nodal_field_name_type for sph_phys%rj_fld'
-      call check_nodal_field_name_type(id_six, sph_phys%rj_fld)
+      write(*,*) 'check_nodal_field_name for sph_phys%rj_fld'
+      call check_nodal_field_name(id_six, sph_phys%rj_fld)
 !
       end subroutine check_rj_spectr_name_t
 !
@@ -118,9 +118,9 @@
       integer(kind = kint) :: i_fld, id
 !
 !
-      write(*,*) 'check_nodal_field_name_type for sph_phys%rj_fld'
+      write(*,*) 'check_nodal_field_name for sph_phys%rj_fld'
       id = 50+id_rank
-      call check_nodal_field_name_type(id,sph_phys%rj_fld)
+      call check_nodal_field_name(id,sph_phys%rj_fld)
 !
       write(id,*) 'sph_phys%rj_fld'
       do i_fld = 1, sph_phys%rj_fld%num_phys

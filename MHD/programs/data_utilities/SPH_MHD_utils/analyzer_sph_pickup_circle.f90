@@ -52,7 +52,6 @@
       use m_ctl_data_sph_SGS_MHD
       use sph_mhd_rst_IO_control
       use set_control_sph_SGS_MHD
-      use set_control_sph_data_MHD
       use init_sph_MHD_elapsed_label
       use parallel_load_data_4_sph
       use input_control_sph_MHD

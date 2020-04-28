@@ -78,7 +78,7 @@
       use int_volume_of_domain
       use set_normal_vectors
       use parallel_FEM_mesh_init
-      use set_control_field_data
+      use set_field_data_w_SGS
       use node_monitor_IO
 !
       type(MHD_file_IO_params), intent(in) :: MHD_files
