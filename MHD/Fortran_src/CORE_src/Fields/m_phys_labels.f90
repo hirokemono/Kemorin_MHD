@@ -143,25 +143,10 @@
       use t_explicit_term_labels
       use t_field_product_labels
       use t_diff_vector_labels
-!      use t_SGS_term_labels
-!      use t_SGS_enegy_flux_labels
-!      use t_SGS_model_coef_labels
 !
       use m_rot_force_labels
       use m_div_force_labels
       use m_filtered_field_labels
-!      use m_filtered_force_labels
-!      use m_filtered_ene_flux_labels
-!      use m_diff_filter_vect_labels
-!      use m_rot_filtered_force_labels
-!      use m_div_filtered_force_labels
-!      use m_wide_filter_field_labels
-!      use m_dble_filter_field_labels
-!      use m_grad_filter_field_labels
-!      use m_diff_SGS_term_labels
-!      use m_force_w_SGS_labels
-!      use m_true_SGS_term_labels
-!      use m_wide_SGS_term_labels
 !
       implicit none
 !

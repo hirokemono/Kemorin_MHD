@@ -108,7 +108,6 @@
       subroutine init_field_data(n_point, fld, iphys)
 !
       use set_MHD_field_address
-      use set_SGS_MHD_field_address
 !
       integer(kind = kint), intent(in) :: n_point
       type(phys_data), intent(inout) :: fld
