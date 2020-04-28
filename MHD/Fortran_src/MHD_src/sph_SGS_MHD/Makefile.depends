@@ -10,7 +10,7 @@ SGS_diff_adv_src_explicit.o: $(SGS_MHD_SPH_DIR)/SGS_diff_adv_src_explicit.f90 m_
 	$(F90) -c $(F90OPTFLAGS) $<
 add_Csim_4_sph_trns.o: $(SGS_MHD_SPH_DIR)/add_Csim_4_sph_trns.f90 m_precision.o t_SGS_term_labels.o t_SGS_model_coef_labels.o t_addresses_sph_transform.o add_field_to_sph_trans_list.o
 	$(F90) -c $(F90OPTFLAGS) $<
-add_SGS_eflux_to_sph_trans.o: $(SGS_MHD_SPH_DIR)/add_SGS_eflux_to_sph_trans.f90 m_precision.o t_SGS_enegy_flux_labels.o t_addresses_sph_transform.o add_field_to_sph_trans_list.o
+add_SGS_eflux_to_sph_trans.o: $(SGS_MHD_SPH_DIR)/add_SGS_eflux_to_sph_trans.f90 m_precision.o t_addresses_sph_transform.o t_SGS_enegy_flux_labels.o add_field_to_sph_trans_list.o t_energy_flux_labels.o m_filtered_ene_flux_labels.o
 	$(F90) -c $(F90OPTFLAGS) $<
 add_SGS_term_to_sph_trans.o: $(SGS_MHD_SPH_DIR)/add_SGS_term_to_sph_trans.f90 m_precision.o t_SGS_term_labels.o t_addresses_sph_transform.o add_field_to_sph_trans_list.o m_force_w_SGS_labels.o m_diff_SGS_term_labels.o m_wide_SGS_term_labels.o
 	$(F90) -c $(F90OPTFLAGS) $<

@@ -73,6 +73,9 @@
 !     add terms for MHD
 !
         call add_field_name_4_mhd(MHD_prop, field_ctl)
+        call add_filtered_buoyancy_4_FEM_MHD                            &
+     &     (MHD_prop%fl_prop, field_ctl)
+!
         call add_ctl_4_ref_temp                                         &
      &     (MHD_prop%ref_param_T, MHD_prop%ref_param_C, field_ctl)
 !

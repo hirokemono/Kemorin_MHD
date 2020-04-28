@@ -3,6 +3,9 @@
 !
 !        programmed by H.Matsui on Sep., 2006
 !
+!!      subroutine add_filtered_buoyancy_4_FEM_MHD(fl_prop, field_ctl)
+!!        type(fluid_property), intent(in) :: fl_prop
+!!        type(ctl_array_c3), intent(inout) :: field_ctl
 !!      subroutine add_work_area_4_sgs_model                            &
 !!     &         (SGS_param, fl_prop, field_ctl)
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
@@ -25,6 +28,23 @@
 ! -----------------------------------------------------------------------
 !
       contains
+!
+! -----------------------------------------------------------------------
+!
+      subroutine add_filtered_buoyancy_4_FEM_MHD(fl_prop, field_ctl)
+!
+      use m_filtered_force_labels
+!
+      type(fluid_property), intent(in) :: fl_prop
+      type(ctl_array_c3), intent(inout) :: field_ctl
+!
+!
+      if (fl_prop%iflag_4_filter_gravity .eq. id_FORCE_at_node)         &
+     &  call add_phys_name_ctl(filtered_buoyancy%name, field_ctl)
+      if (fl_prop%iflag_4_filter_comp_buo .eq. id_FORCE_at_node)        &
+     &  call add_phys_name_ctl(filtered_comp_buoyancy%name, field_ctl)
+!
+      end subroutine add_filtered_buoyancy_4_FEM_MHD
 !
 ! -----------------------------------------------------------------------
 !
