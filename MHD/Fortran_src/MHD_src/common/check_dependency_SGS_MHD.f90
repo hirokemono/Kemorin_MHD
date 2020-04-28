@@ -16,6 +16,11 @@
 !!        type(phys_address), intent(inout) :: ipol
 !!        type(phys_data), intent(inout) :: rj_fld
 !!        type(SGS_model_addresses), intent(inout) :: ipol_LES
+!!      subroutine check_filter_force_dependency                        &
+!!     &         (fl_prop, iphys_fil, fld)
+!!        type(fluid_property), intent(in) :: fl_prop
+!!        type(base_field_address), intent(in) :: iphys_fil
+!!        type(phys_data), intent(in) :: fld
 !!@endverbatim
 !
       module check_dependency_SGS_MHD
@@ -69,8 +74,9 @@
 !
       call check_field_dependencies                                     &
      &   (MHD_prop%fl_prop, MHD_prop%cd_prop,                           &
-     &    MHD_prop%ht_prop, MHD_prop%cp_prop,                           &
-     &    ipol%base, ipol%filter_fld, rj_fld)
+     &    MHD_prop%ht_prop, MHD_prop%cp_prop, ipol%base, rj_fld)
+      call check_filter_force_dependency                                &
+     &   (MHD_prop%fl_prop, ipol%filter_fld, rj_fld)
       call check_dependence_SPH_evo(MHD_prop%fl_prop, ipol, rj_fld)
 !
       call check_dependence_4_SPH_SGS(SGS_par%model_p,                  &
@@ -81,6 +87,33 @@
       end subroutine set_sph_SGS_MHD_spectr_data
 !
 ! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine check_filter_force_dependency                          &
+     &         (fl_prop, iphys_fil, fld)
+!
+      type(fluid_property), intent(in) :: fl_prop
+      type(base_field_address), intent(in) :: iphys_fil
+      type(phys_data), intent(in) :: fld
+!
+      character(len=kchara) :: msg
+!
+!
+!   check dependencies for time evolution
+      if ( fl_prop%iflag_scheme .gt. id_no_evolution) then
+        if (fl_prop%iflag_4_filter_gravity .gt. id_turn_OFF) then
+          msg = 'Filtered thermal buoyancy needs'
+          call check_missing_field_w_msg(fld, msg, iphys_fil%i_temp)
+        end if
+!
+        if (fl_prop%iflag_4_filter_comp_buo .gt. id_turn_OFF) then
+          msg = 'Filtered compositional buoyancy needs'
+          call check_missing_field_w_msg(fld, msg, iphys_fil%i_light)
+        end if
+      end if
+!
+      end subroutine check_filter_force_dependency
+!
 ! -----------------------------------------------------------------------
 !
       subroutine check_dependence_4_SPH_SGS(SGS_param,                  &

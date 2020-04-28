@@ -65,8 +65,7 @@
 !
       call check_field_dependencies                                     &
      &   (MHD_prop%fl_prop, MHD_prop%cd_prop,                           &
-     &    MHD_prop%ht_prop, MHD_prop%cp_prop,                           &
-     &    ipol%base, ipol%filter_fld, rj_fld)
+     &    MHD_prop%ht_prop, MHD_prop%cp_prop, ipol%base, rj_fld)
       call check_dependence_SPH_evo(MHD_prop%fl_prop, ipol, rj_fld)
 !
       end subroutine set_sph_MHD_sprctr_data
@@ -75,14 +74,12 @@
 ! -----------------------------------------------------------------------
 !
       subroutine check_field_dependencies                               &
-     &         (fl_prop, cd_prop, ht_prop, cp_prop,                     &
-     &          iphys_base, iphys_fil, fld)
+     &         (fl_prop, cd_prop, ht_prop, cp_prop, iphys_base, fld)
 !
       type(fluid_property), intent(in) :: fl_prop
       type(conductive_property), intent(in) :: cd_prop
       type(scalar_property), intent(in) :: ht_prop, cp_prop
       type(base_field_address), intent(in) :: iphys_base
-      type(base_field_address), intent(in) :: iphys_fil
       type(phys_data), intent(in) :: fld
 !
       character(len=kchara) :: msg
@@ -142,16 +139,6 @@
         if (fl_prop%iflag_4_composit_buo .gt. id_turn_OFF) then
           msg = 'Compositional buoyancy needs'
           call check_missing_field_w_msg(fld, msg, iphys_base%i_light)
-        end if
-!
-        if (fl_prop%iflag_4_filter_gravity .gt. id_turn_OFF) then
-          msg = 'Filtered thermal buoyancy needs'
-          call check_missing_field_w_msg(fld, msg, iphys_fil%i_temp)
-        end if
-!
-        if (fl_prop%iflag_4_filter_comp_buo .gt. id_turn_OFF) then
-          msg = 'Filtered compositional buoyancy needs'
-          call check_missing_field_w_msg(fld, msg, iphys_fil%i_light)
         end if
 !
         if (fl_prop%iflag_4_lorentz .gt. id_turn_OFF) then

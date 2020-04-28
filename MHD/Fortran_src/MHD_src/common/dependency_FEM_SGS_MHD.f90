@@ -93,6 +93,7 @@
 !
       use t_geometry_data
       use set_field_data_w_SGS
+      use check_dependency_SGS_MHD
 !
       type(node_data), intent(in) :: node
       type(MHD_evolution_param), intent(in) :: MHD_prop
@@ -108,8 +109,9 @@
 !
       call check_field_dependencies                                     &
      &   (MHD_prop%fl_prop, MHD_prop%cd_prop,                           &
-     &    MHD_prop%ht_prop, MHD_prop%cp_prop,                           &
-     &    iphys%base, iphys%filter_fld, nod_fld)
+     &    MHD_prop%ht_prop, MHD_prop%cp_prop, iphys%base, nod_fld)
+      call check_filter_force_dependency                                &
+     &   (MHD_prop%fl_prop, iphys%filter_fld, nod_fld)
       call check_dependence_FEM_evo(MHD_prop%fl_prop, iphys, nod_fld)
 !
       end subroutine set_FEM_MHD_field_data
