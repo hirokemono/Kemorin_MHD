@@ -143,7 +143,7 @@
      &   (i_field, dt, FEM_prm, SGS_par%model_p, SGS_par%commute_p,     &
      &    SGS_par%filter_p, mesh, group, fluid,                         &
      &    property, ref_param, nod_bcs, sf_bcs,                         &
-     &    iphys%base, iphys%grad_fld, iphys%filter_fld,                 &
+     &    iphys%base, iphys%grad_fld, iphys_LES%filter_fld,             &
      &    iphys_LES%SGS_term, iphys%exp_work, iphys_ele_base, ele_fld,  &
      &    fem_int%jcs, fem_int%rhs_tbl, FEM_elens, icomp_sgs_term,      &
      &    iak_diff_base, iak_diff_sgs, iphys_elediff_vec,               &

@@ -8,8 +8,8 @@
 !!      subroutine s_int_mean_squares(npoint_integrate,                 &
 !!     &          mesh, fluid, conduct, iphys, iphys_LES, nod_fld,      &
 !!     &          jacs, i_msq, msq_list, fem_wk, mhd_fem_wk, fem_msq)
-!!      subroutine int_no_evo_mean_squares                              &
-!!     &         (i_step, dt, mesh, fl_prop, cd_prop, iphys, nod_fld,   &
+!!      subroutine int_no_evo_mean_squares(i_step, dt, mesh,            &
+!!     &          fl_prop, cd_prop, iphys, iphys_LES, nod_fld,          &
 !!     &          iphys_ele_base, ele_fld, fluid, jacs, i_msq,          &
 !!     &          fem_wk, fem_msq)
 !!        type(mesh_geometry), intent(in) :: mesh
@@ -129,7 +129,8 @@
      &        msq_list%ifld_msq(i), mesh, nod_fld, jacs,                &
      &        fem_wk, fem_msq)
 !
-        else if(msq_list%ifld_msq(i) .eq. iphys%filter_fld%i_velo) then
+        else if(msq_list%ifld_msq(i)                                    &
+     &             .eq. iphys_LES%filter_fld%i_velo) then
           call int_all_4_vector                                         &
      &       (fluid%istack_ele_fld_smp, npoint_integrate,               &
      &        msq_list%irms_msq(i), msq_list%jave_msq(i),               &
@@ -137,11 +138,11 @@
      &        fem_wk, fem_msq)
           call int_all_angular_mom                                      &
      &       (fluid%istack_ele_fld_smp, npoint_integrate,               &
-     &        i_msq%jr_amom_f, iphys%filter_fld%i_velo,                 &
+     &        i_msq%jr_amom_f, iphys_LES%filter_fld%i_velo,             &
      &        mesh, nod_fld, jacs, mhd_fem_wk, fem_wk, fem_msq)
 !
         else if(msq_list%ifld_msq(i)                                    &
-     &           .eq. iphys%filter_fld%i_magne) then
+     &           .eq. iphys_LES%filter_fld%i_magne) then
           call int_all_4_vector                                         &
      &       (fluid%istack_ele_fld_smp, npoint_integrate,               &
      &        msq_list%irms_msq(i), msq_list%jave_msq(i),               &
@@ -150,7 +151,7 @@
           call int_all_4_vector                                         &
      &       (conduct%istack_ele_fld_smp, npoint_integrate,             &
      &        i_msq%ir_me_f_ic, i_msq%ja_mag_f_ic,                      &
-     &        iphys%filter_fld%i_magne,                                 &
+     &        iphys_LES%filter_fld%i_magne,                             &
      &        mesh, nod_fld, jacs, fem_wk, fem_msq)
 !
         else if(msq_list%ifld_msq(i) .eq. iphys%forces%i_induct_t       &
@@ -214,8 +215,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine int_no_evo_mean_squares                                &
-     &         (i_step, dt, mesh, fl_prop, cd_prop, iphys, nod_fld,     &
+      subroutine int_no_evo_mean_squares(i_step, dt, mesh,              &
+     &          fl_prop, cd_prop, iphys, iphys_LES, nod_fld,            &
      &          iphys_ele_base, ele_fld, fluid, jacs, i_msq,            &
      &          fem_wk, fem_msq)
 !
@@ -230,6 +231,7 @@
       type(fluid_property), intent(in) :: fl_prop
       type(conductive_property), intent(in) :: cd_prop
       type(phys_address), intent(in) :: iphys
+      type(SGS_model_addresses), intent(in) :: iphys_LES
       type(phys_data), intent(in) :: nod_fld
       type(base_field_address), intent(in) :: iphys_ele_base
       type(phys_data), intent(in) :: ele_fld
@@ -277,35 +279,35 @@
      &     fem_wk, fem_msq%rms_local(i_msq%imsq_div_b))
       end if
 !
-      if(iphys%filter_fld%i_velo .gt. 0) then
+      if(iphys_LES%filter_fld%i_velo .gt. 0) then
         call int_norm_divergence                                        &
-     &    (fluid%istack_ele_fld_smp, iphys%filter_fld%i_velo,           &
+     &    (fluid%istack_ele_fld_smp, iphys_LES%filter_fld%i_velo,       &
      &     mesh%node, mesh%ele, nod_fld, jacs%g_FEM, jacs%jac_3d,       &
      &     fem_wk, fem_msq%ave_local(i_msq%jave_div_fil_v))
         call int_rms_divergence                                         &
-     &    (fluid%istack_ele_fld_smp, iphys%filter_fld%i_velo,           &
+     &    (fluid%istack_ele_fld_smp, iphys_LES%filter_fld%i_velo,       &
      &     mesh%node, mesh%ele, nod_fld, jacs%g_FEM, jacs%jac_3d,       &
      &     fem_wk, fem_msq%rms_local(i_msq%imsq_div_fil_v))
       end if
 !
-      if(iphys%filter_fld%i_magne .gt. 0) then
+      if(iphys_LES%filter_fld%i_magne .gt. 0) then
         call int_norm_divergence                                        &
-     &    (fluid%istack_ele_fld_smp, iphys%filter_fld%i_magne,          &
+     &    (fluid%istack_ele_fld_smp, iphys_LES%filter_fld%i_magne,      &
      &     mesh%node, mesh%ele, nod_fld, jacs%g_FEM, jacs%jac_3d,       &
      &     fem_wk, fem_msq%ave_local(i_msq%jave_div_fil_b))
         call int_rms_divergence                                         &
-     &    (fluid%istack_ele_fld_smp, iphys%filter_fld%i_magne,          &
+     &    (fluid%istack_ele_fld_smp, iphys_LES%filter_fld%i_magne,      &
      &     mesh%node, mesh%ele, nod_fld, jacs%g_FEM, jacs%jac_3d,       &
      &     fem_wk, fem_msq%rms_local(i_msq%imsq_div_fil_b))
       end if
 !
-      if(iphys%filter_fld%i_vecp .gt. 0) then
+      if(iphys_LES%filter_fld%i_vecp .gt. 0) then
         call int_norm_divergence                                        &
-     &    (fluid%istack_ele_fld_smp, iphys%filter_fld%i_vecp,           &
+     &    (fluid%istack_ele_fld_smp, iphys_LES%filter_fld%i_vecp,       &
      &     mesh%node, mesh%ele, nod_fld, jacs%g_FEM, jacs%jac_3d,       &
      &     fem_wk, fem_msq%ave_local(i_msq%jave_div_fil_a))
         call int_rms_divergence                                         &
-     &    (fluid%istack_ele_fld_smp, iphys%filter_fld%i_vecp,           &
+     &    (fluid%istack_ele_fld_smp, iphys_LES%filter_fld%i_vecp,       &
      &     mesh%node, mesh%ele, nod_fld, jacs%g_FEM, jacs%jac_3d,       &
      &     fem_wk, fem_msq%rms_local(i_msq%imsq_div_fil_a))
       end if

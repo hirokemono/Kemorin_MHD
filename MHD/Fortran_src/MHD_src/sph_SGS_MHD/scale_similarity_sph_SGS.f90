@@ -83,7 +83,7 @@
       if (iflag_debug.ge.1) write(*,*)                                  &
      &                    'cal_sph_base_filtering_fields'
       call cal_sph_base_filtering_fields                                &
-     &   (sph%sph_rj, ipol%base, ipol%filter_fld,                       &
+     &   (sph%sph_rj, ipol%base, ipol_LES%filter_fld,                   &
      &    dynamic_SPH%sph_filters(1), rj_fld)
 !
       if (iflag_debug.ge.1) write(*,*) 'cal_sph_base_filtering_forces'
@@ -101,7 +101,7 @@
       if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+10)
       if (iflag_debug.eq.1) write(*,*) 'similarity_SGS_terms_rtp'
       call similarity_SGS_terms_rtp                                     &
-     &   (sph%sph_rtp, MHD_prop, trns_SIMI%b_trns%filter_fld,           &
+     &   (sph%sph_rtp, MHD_prop, trns_SIMI%b_trns_LES%filter_fld,       &
      &    trns_SIMI%b_trns_LES%SGS_term, trns_SIMI%f_trns_LES%SGS_term, &
      &    trns_SIMI%backward, trns_SIMI%forward)
       if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+10)

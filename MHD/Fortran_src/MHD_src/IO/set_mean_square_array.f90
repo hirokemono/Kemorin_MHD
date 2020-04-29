@@ -84,7 +84,7 @@
           if(check_filter_vector(field_name)) then
             if(field_name .eq. filter_velocity%name) then
               call set_rms_address                                      &
-     &           (field_name, num_comps, iphys%filter_fld%i_velo,       &
+     &           (field_name, num_comps, iphys_LES%filter_fld%i_velo,   &
      &            i_msq%imsq_fil_velo, j_ave_tmp, msq_list)
 !
               i_msq%imsq_div_fil_v = msq_list%numrms + 1
@@ -96,7 +96,7 @@
               msq_list%numave = msq_list%numave + 4
             else if(field_name .eq. filter_vector_potential%name) then
               call set_rms_address                                      &
-     &           (field_name, n_scalar, iphys%filter_fld%i_vecp,        &
+     &           (field_name, n_scalar, iphys_LES%filter_fld%i_vecp,    &
      &            i_rms_tmp, j_ave_tmp, msq_list)
 !
               i_msq%imsq_div_fil_a = msq_list%numrms + 1
@@ -107,7 +107,7 @@
             else if(field_name .eq. filter_magne%name) then
               num_comps = num_comps + n_vector + n_scalar
               call set_rms_address                                      &
-     &           (field_name, num_comps, iphys%filter_fld%i_magne,      &
+     &           (field_name, num_comps, iphys_LES%filter_fld%i_magne,  &
      &            i_msq%imsq_fil_magne, j_ave_tmp, msq_list)
 !
               i_msq%ir_me_f_ic =  msq_list%numrms + 1
@@ -204,11 +204,11 @@
 !
           if ( field_name .eq. filter_temperature%name ) then
             call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%filter_fld%i_temp,         &
+     &         (field_name, num_comps, iphys_LES%filter_fld%i_temp,     &
      &          i_rms_tmp, j_ave_tmp, msq_list)
           else if ( field_name .eq. filter_composition%name ) then
             call set_rms_address                                        &
-     &         (field_name, num_comps, iphys%filter_fld%i_light,        &
+     &         (field_name, num_comps, iphys_LES%filter_fld%i_light,    &
      &          i_rms_tmp, j_ave_tmp, msq_list)
           end if
 !
@@ -261,11 +261,11 @@
      &          i_msq%imsq_div_a, i_msq%jave_div_a, msq_list)
           else if ( field_name .eq. filter_velocity%name ) then
             call set_rms_address                                        &
-     &         (e_hd_fil_div_v, n_scalar, iphys%filter_fld%i_velo,      &
+     &         (e_hd_fil_div_v, n_scalar, iphys_LES%filter_fld%i_velo,  &
      &          i_msq%imsq_div_fil_v, i_msq%jave_div_fil_v, msq_list)
           else if ( field_name .eq. filter_magne%name ) then
             call set_rms_address                                        &
-     &         (e_hd_fil_div_b, n_scalar, iphys%filter_fld%i_magne,     &
+     &         (e_hd_fil_div_b, n_scalar, iphys_LES%filter_fld%i_magne, &
      &          i_msq%imsq_div_fil_b, i_msq%jave_div_fil_b, msq_list)
           else if ( field_name .eq. filter_vector_potential%name ) then
             call set_rms_address(e_hd_fil_div_a,                        &

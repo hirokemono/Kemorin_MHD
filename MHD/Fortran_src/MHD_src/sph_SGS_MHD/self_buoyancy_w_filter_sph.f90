@@ -12,7 +12,7 @@
 !!      subroutine cal_div_buoyancy_w_fil_sph_2(sph, r_2nd, leg,        &
 !!     &          MHD_prop, sph_bc_U, ipol_LES, rj_fld)
 !!      subroutine rot_self_filter_buoyancy_sph                         &
-!!     &         (sph, ipol, ipol_LES, MHD_prop, sph_bc_U, rj_fld)
+!!     &         (sph, ipol_LES, MHD_prop, sph_bc_U, rj_fld)
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
 !!        type(sph_grids), intent(in) ::  sph
 !!        type(legendre_4_sph_trans), intent(in) :: leg
@@ -76,8 +76,8 @@
      &    MHD_prop%fl_prop, MHD_prop%ref_param_T, MHD_prop%ref_param_C, &
      &    sph_bc_U, rj_fld)
 !
-      call sel_self_filtered_buo_sph                                    &
-     &   (sph%sph_rj, leg, ipol%filter_fld, ipol_LES%force_by_filter,   &
+      call sel_self_filtered_buo_sph(sph%sph_rj, leg,                   &
+     &    ipol_LES%filter_fld, ipol_LES%force_by_filter,                &
      &    MHD_prop%fl_prop, sph_bc_U, rj_fld)
 !
       end subroutine cal_self_buoyancy_sph_SGS_MHD
@@ -103,27 +103,27 @@
      &    MHD_prop%fl_prop, sph_bc_U, leg%g_sph_rj,                     &
      &    ipol_LES%force_by_filter, ipol_LES%div_frc_by_filter, rj_fld)
 !
-!      call sel_div_self_filtered_buo_sph(sph%sph_rj, ipol%filter_fld,  &
-!     &    ipol_LES%grad_fil_fld, ipol_LES%div_frc_by_filter,           &
-!     &    MHD_prop%fl_prop, sph_bc_U, rj_fld)
+!      call sel_div_self_filtered_buo_sph                               &
+!     &   (sph%sph_rj, ipol_LES%filter_fld, ipol_LES%grad_fil_fld,      &
+!     &    ipol_LES%div_frc_by_filter, MHD_prop%fl_prop, sph_bc_U,      &
+!     &    rj_fld)
 !
       end subroutine cal_div_buoyancy_w_fil_sph_2
 !
 !-----------------------------------------------------------------------
 !
       subroutine rot_self_filter_buoyancy_sph                           &
-     &         (sph, ipol, ipol_LES, MHD_prop, sph_bc_U, rj_fld)
+     &         (sph, ipol_LES, MHD_prop, sph_bc_U, rj_fld)
 !
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(sph_grids), intent(in) ::  sph
-      type(phys_address), intent(in) :: ipol
       type(SGS_model_addresses), intent(in) :: ipol_LES
       type(sph_boundary_type), intent(in) :: sph_bc_U
       type(phys_data), intent(inout) :: rj_fld
 !
 !
       call sel_rot_self_filtered_buo_sph                                &
-     &   (sph%sph_rj, ipol%filter_fld, ipol_LES%rot_frc_by_filter,      &
+     &   (sph%sph_rj, ipol_LES%filter_fld, ipol_LES%rot_frc_by_filter,  &
      &    MHD_prop%fl_prop, sph_bc_U, rj_fld)
 !
       end subroutine rot_self_filter_buoyancy_sph

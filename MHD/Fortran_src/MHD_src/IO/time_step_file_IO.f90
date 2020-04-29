@@ -11,7 +11,7 @@
 !!      subroutine write_SGS_MHD_monitor_labels                         &
 !!     &         (id_ave, id_msq, iphys, iphys_LES, msq_list)
 !!      subroutine write_MHD_monitor_labels                             &
-!!     &          (id_ave, id_msq, iphys, msq_list)
+!!     &          (id_ave, id_msq, iphys, iphys_LES, msq_list)
 !!        type(phys_address), intent(in) :: iphys
 !!        type(SGS_model_addresses), intent(in) :: iphys_LES
 !!        type(mean_square_list), intent(in) :: msq_list
@@ -62,7 +62,7 @@
 !
       do i = 1, msq_list%nfield
         call write_SGS_MHD_monitor_label(id_ave, id_msq,                &
-     &      iphys%base, iphys%filter_fld, iphys%forces,                 &
+     &      iphys%base, iphys_LES%filter_fld, iphys%forces,             &
      &      iphys_LES%SGS_term, msq_list%ifld_msq(i),                   &
      &      msq_list%ncomp_msq(i), msq_list%field_name(i))
       end do
@@ -77,13 +77,14 @@
 ! ----------------------------------------------------------------------
 !
       subroutine write_MHD_monitor_labels                               &
-     &          (id_ave, id_msq, iphys, msq_list)
+     &          (id_ave, id_msq, iphys, iphys_LES, msq_list)
 !
       use t_phys_data
       use t_base_field_labels
       use t_base_force_labels
       use t_SGS_term_labels
       use t_mean_square_filed_list
+      use t_SGS_model_addresses
 !
       use m_phys_constants
       use m_phys_labels
@@ -93,6 +94,7 @@
 !
       integer (kind=kint), intent(in) :: id_ave, id_msq
       type(phys_address), intent(in) :: iphys
+      type(SGS_model_addresses), intent(in) :: iphys_LES
       type(mean_square_list), intent(in) :: msq_list
 !
       integer (kind=kint) :: i
@@ -105,7 +107,7 @@
 !
       do i = 1, msq_list%nfield
         call write_MHD_monitor_label(id_ave, id_msq,                    &
-     &      iphys%base, iphys%filter_fld, iphys%forces,                 &
+     &      iphys%base, iphys_LES%filter_fld, iphys%forces,             &
      &      msq_list%ifld_msq(i), msq_list%ncomp_msq(i),                &
      &      msq_list%field_name(i))
       end do

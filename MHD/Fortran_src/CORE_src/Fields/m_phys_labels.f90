@@ -146,7 +146,6 @@
 !
       use m_rot_force_labels
       use m_div_force_labels
-      use m_filtered_field_labels
 !
       implicit none
 !

@@ -5,8 +5,9 @@
 !                                    on July 2000 (ver 1.1)
 !        modieied by H. Matsui on Sep., 2005
 !
-!!      subroutine cal_velo_pre_adams(dt, FEM_prm, nod_comm, node, ele, &
-!!     &          fluid, fl_prop, iphys, iphys_ele_base, ele_fld,       &
+!!      subroutine cal_velo_pre_adams                                   &
+!!     &         (dt, FEM_prm, nod_comm, node, ele, fluid, fl_prop,     &
+!!     &          iphys, iphys_LES, iphys_ele_base, ele_fld,            &
 !!     &          g_FEM, jac_3d, rhs_tbl, mlump_fl, mhd_fem_wk, fem_wk, &
 !!     &          f_l, f_nl, nod_fld)
 !!      subroutine cal_magne_pre_adams(i_field, i_previous, dt,         &
@@ -24,6 +25,7 @@
 !!        type(element_data), intent(in) :: ele
 !!        type(field_geometry_data), intent(in) :: fluid
 !!        type(phys_address), intent(in) :: iphys
+!!        type(SGS_model_addresses), intent(in) :: iphys_LES
 !!        type(base_field_address), intent(in) :: iphys_ele_base
 !!        type(phys_data), intent(in) :: ele_fld
 !!        type(jacobians_3d), intent(in) :: jac_3d
@@ -51,6 +53,7 @@
       use t_group_data
       use t_phys_data
       use t_phys_address
+      use t_SGS_model_addresses
       use t_base_field_labels
       use t_fem_gauss_int_coefs
       use t_jacobian_3d
@@ -66,8 +69,9 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_velo_pre_adams(dt, FEM_prm, nod_comm, node, ele,   &
-     &          fluid, fl_prop, iphys, iphys_ele_base, ele_fld,         &
+      subroutine cal_velo_pre_adams                                     &
+     &         (dt, FEM_prm, nod_comm, node, ele, fluid, fl_prop,       &
+     &          iphys, iphys_LES, iphys_ele_base, ele_fld,              &
      &          g_FEM, jac_3d, rhs_tbl, mlump_fl, mhd_fem_wk, fem_wk,   &
      &          f_l, f_nl, nod_fld)
 !
@@ -84,6 +88,7 @@
       type(field_geometry_data), intent(in) :: fluid
       type(fluid_property), intent(in) :: fl_prop
       type(phys_address), intent(in) :: iphys
+      type(SGS_model_addresses), intent(in) :: iphys_LES
       type(base_field_address), intent(in) :: iphys_ele_base
       type(phys_data), intent(in) :: ele_fld
       type(FEM_gauss_int_coefs), intent(in) :: g_FEM
@@ -108,7 +113,7 @@
      &    iphys%base%i_velo, nod_fld, f_l, f_nl)
       if (iflag_debug.eq.1)  write(*,*) 'int_buoyancy_nod_exp'
       call int_buoyancy_nod_exp                                         &
-     &   (node, fl_prop, mlump_fl, iphys, nod_fld, f_nl)
+     &   (node, fl_prop, mlump_fl, iphys, iphys_LES, nod_fld, f_nl)
 !
       call cal_sol_vect_pre_fluid_adams                                 &
      &   (dt, node%numnod, node%istack_internal_smp, mlump_fl%ml,       &

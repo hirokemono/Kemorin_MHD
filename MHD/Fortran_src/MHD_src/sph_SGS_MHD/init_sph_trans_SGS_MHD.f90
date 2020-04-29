@@ -108,8 +108,7 @@
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
 !
       call set_addresses_SGS_snap_trans                                 &
-     &   (SPH_MHD%ipol, ipol_LES,                                       &
-     &    iphys, iphys_LES, WK_LES%trns_SGS_snap,                       &
+     &   (ipol_LES, iphys_LES, WK_LES%trns_SGS_snap,                    &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
 !
       call alloc_sph_trans_address(SPH_MHD%sph%sph_rtp, WK)
@@ -157,7 +156,7 @@
      &               'for similarity SGS (trns_SGS)'
         end if
         call init_sph_trns_fld_similarity                               &
-     &     (ipol, ipol_LES, iphys, iphys_LES, WK_LES%trns_SGS,          &
+     &     (ipol_LES, iphys_LES, WK_LES%trns_SGS,                       &
      &      ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
 !
         if(SGS_param%iflag_dynamic .eq. id_SGS_DYNAMIC_ON) then
@@ -182,7 +181,7 @@
      &                 'for similarity SGS (trns_SIMI)'
           end if
           call init_sph_trns_fld_similarity                             &
-     &       (ipol, ipol_LES, iphys, iphys_LES, WK_LES%trns_SIMI,       &
+     &       (ipol_LES, iphys_LES, WK_LES%trns_SIMI,                    &
      &        ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
           call init_sph_trns_fld_dyn_ngrad                              &
      &       (ipol_LES, iphys_LES, WK_LES%trns_DYNG,                    &

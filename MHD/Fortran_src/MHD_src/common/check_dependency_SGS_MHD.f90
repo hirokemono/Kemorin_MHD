@@ -76,13 +76,13 @@
      &   (MHD_prop%fl_prop, MHD_prop%cd_prop,                           &
      &    MHD_prop%ht_prop, MHD_prop%cp_prop, ipol%base, rj_fld)
       call check_filter_force_dependency                                &
-     &   (MHD_prop%fl_prop, ipol%filter_fld, rj_fld)
+     &   (MHD_prop%fl_prop, ipol_LES%filter_fld, rj_fld)
       call check_dependence_SPH_evo(MHD_prop%fl_prop, ipol, rj_fld)
 !
       call check_dependence_4_SPH_SGS(SGS_par%model_p,                  &
      &    MHD_prop%fl_prop, MHD_prop%cd_prop,                           &
      &    MHD_prop%ht_prop, MHD_prop%cp_prop,                           &
-     &    ipol%filter_fld, ipol_LES%SGS_term, rj_fld)
+     &    ipol_LES%filter_fld, ipol_LES%SGS_term, rj_fld)
 !
       end subroutine set_sph_SGS_MHD_spectr_data
 !

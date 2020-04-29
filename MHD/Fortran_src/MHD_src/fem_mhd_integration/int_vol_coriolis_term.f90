@@ -26,12 +26,13 @@
 !!        type(finite_ele_mat_node), intent(inout) :: f_l
 !!
 !!      subroutine int_buoyancy_nod_exp(node, fl_prop, mlump_fl,        &
-!!     &          iphys, nod_fld, f_nl)
+!!     &          iphys, iphys_LES, nod_fld, f_nl)
 !!      subroutine set_boussinesq_density_at_node                       &
 !!     &         (node, fl_prop, iphys, nod_fld)
 !!        type(node_data), intent(in) :: node
 !!        type(fluid_property), intent(in) :: fl_prop
 !!        type(phys_address), intent(in) :: iphys
+!!        type(SGS_model_addresses), intent(in) :: iphys_LES
 !!        type(phys_data), intent(inout) :: nod_fld
 !!@endverbatim
 !
@@ -44,8 +45,9 @@
 !
       use t_physical_property
       use t_geometry_data
-      use t_phys_address
       use t_phys_data
+      use t_phys_address
+      use t_SGS_model_addresses
       use t_finite_element_mat
       use t_jacobians
 !
@@ -133,11 +135,12 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_buoyancy_nod_exp(node, fl_prop, mlump_fl,          &
-     &          iphys, nod_fld, f_nl)
+     &          iphys, iphys_LES, nod_fld, f_nl)
 !
       use set_buoyancy_at_node
 !
       type(phys_address), intent(in) :: iphys
+      type(SGS_model_addresses), intent(in) :: iphys_LES
       type(node_data), intent(in) :: node
       type(fluid_property), intent(in) :: fl_prop
       type (lumped_mass_matrices), intent(in) :: mlump_fl
@@ -162,7 +165,7 @@
       else if(fl_prop%iflag_4_filter_comp_buo .eq. id_FORCE_at_node     &
      & .and. fl_prop%iflag_4_filter_gravity .eq. id_FORCE_at_node) then
         call set_double_gravity_2_each_node                             &
-     &     (iphys%filter_fld%i_temp, iphys%filter_fld%i_light,          &
+     &     (iphys_LES%filter_fld%i_temp, iphys_LES%filter_fld%i_light,  &
      &      iphys%forces%i_buoyancy, fl_prop%i_grav,                    &
      &      fl_prop%coef_buo, fl_prop%coef_comp_buo, fl_prop%grav,      &
      &      node, nod_fld)
@@ -170,7 +173,7 @@
       else if(fl_prop%iflag_4_filter_comp_buo .eq. id_FORCE_at_node     &
      & .and. fl_prop%iflag_4_gravity .eq. id_FORCE_at_node) then
         call set_double_gravity_2_each_node                             &
-     &     (iphys%base%i_temp, iphys%filter_fld%i_light,                &
+     &     (iphys%base%i_temp, iphys_LES%filter_fld%i_light,            &
      &      iphys%forces%i_buoyancy, fl_prop%i_grav,                    &
      &      fl_prop%coef_buo, fl_prop%coef_comp_buo, fl_prop%grav,      &
      &      node, nod_fld)
@@ -178,7 +181,7 @@
       else if(fl_prop%iflag_4_composit_buo .eq. id_FORCE_at_node        &
      & .and. fl_prop%iflag_4_filter_gravity .eq. id_FORCE_at_node) then
         call set_double_gravity_2_each_node                             &
-     &     (iphys%filter_fld%i_temp, iphys%base%i_light,                &
+     &     (iphys_LES%filter_fld%i_temp, iphys%base%i_light,            &
      &      iphys%forces%i_buoyancy, fl_prop%i_grav,                    &
      &      fl_prop%coef_buo, fl_prop%coef_comp_buo, fl_prop%grav,      &
      &      node, nod_fld)
@@ -199,13 +202,13 @@
       else if(fl_prop%iflag_4_filter_gravity .eq. id_FORCE_at_node)     &
      &    then
         call set_gravity_2_each_node                                    &
-     &     (iphys%filter_fld%i_temp, iphys%forces%i_buoyancy,           &
+     &     (iphys_LES%filter_fld%i_temp, iphys%forces%i_buoyancy,       &
      &      fl_prop%i_grav, fl_prop%coef_buo, fl_prop%grav,             &
      &      node, nod_fld)
       else if(fl_prop%iflag_4_filter_comp_buo .eq. id_FORCE_at_node)    &
      &    then
         call set_gravity_2_each_node                                    &
-     &     (iphys%filter_fld%i_light, iphys%forces%i_buoyancy,          &
+     &     (iphys_LES%filter_fld%i_light, iphys%forces%i_buoyancy,      &
      &      fl_prop%i_grav, fl_prop%coef_comp_buo, fl_prop%grav,        &
      &      node, nod_fld)
       end if

@@ -313,7 +313,7 @@
      &        nod_comm, node, ele, surf, sf_grp, fluid,                 &
      &        fl_prop, cd_prop, surf_bcs%Vsf_bcs, surf_bcs%Bsf_bcs,     &
      &        iphys%base, iphys%forces, iphys%div_forces,               &
-     &        iphys%diffusion, iphys%filter_fld,                        &
+     &        iphys%diffusion, iphys_LES%filter_fld,                    &
      &        iphys_LES%force_by_filter, iphys_LES%SGS_term,            &
      &        iphys_LES%div_SGS, iphys_ele_base, ak_MHD,                &
      &        fem_int, FEM_elens, iak_diff_sgs, diff_coefs,             &

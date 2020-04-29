@@ -147,8 +147,8 @@
         call cal_sgs_heat_flux                                          &
      &     (FEM_prm%iflag_temp_supg, FEM_prm%npoint_t_evo_int, dt,      &
      &      SGS_param%iflag_SGS_h_flux, SGS_param%itype_Csym_h_flux,    &
-     &      iphys%base%i_temp, iphys%filter_fld%i_temp,                 &
-     &      iphys%base%i_velo, iphys%filter_fld%i_velo,                 &
+     &      iphys%base%i_temp, iphys_LES%filter_fld%i_temp,             &
+     &      iphys%base%i_velo, iphys_LES%filter_fld%i_velo,             &
      &      iphys_LES%SGS_term%i_SGS_h_flux,                            &
      &      icomp_sgs_term%i_SGS_h_flux, iphys_elediff_vec%i_velo,      &
      &      SGS_param, filter_param, nod_comm, node, ele, fluid,        &
@@ -163,8 +163,8 @@
         call cal_sgs_heat_flux                                          &
      &     (FEM_prm%iflag_comp_supg, FEM_prm%npoint_t_evo_int, dt,      &
      &      SGS_param%iflag_SGS_c_flux, SGS_param%itype_Csym_c_flux,    &
-     &      iphys%base%i_light, iphys%filter_fld%i_light,               &
-     &      iphys%base%i_velo, iphys%filter_fld%i_velo,                 &
+     &      iphys%base%i_light, iphys_LES%filter_fld%i_light,           &
+     &      iphys%base%i_velo,  iphys_LES%filter_fld%i_velo,            &
      &      iphys_LES%SGS_term%i_SGS_c_flux,                            &
      &      icomp_sgs_term%i_SGS_c_flux, iphys_elediff_vec%i_velo,      &
      &      SGS_param, filter_param, nod_comm, node, ele, fluid,        &
@@ -178,7 +178,7 @@
      &      'lead ', trim(SGS_momentum_flux%name)
         call cal_sgs_momentum_flux(dt, FEM_prm, SGS_param,              &
      &      filter_param, nod_comm, node, ele, fluid,                   &
-     &      iphys%base, iphys%filter_fld, iphys_LES%SGS_term,           &
+     &      iphys%base, iphys_LES%filter_fld, iphys_LES%SGS_term,       &
      &      iphys_LES%SGS_wk, iphys_ele_base, ele_fld, jacs, rhs_tbl,   &
      &      FEM_elens, filtering, icomp_sgs_term, iphys_elediff_vec,    &
      &      sgs_coefs, sgs_coefs_nod, mk_MHD%mlump_fl,                  &
@@ -190,7 +190,7 @@
      &        'lead ', trim(SGS_maxwell_tensor%name)
         call cal_sgs_maxwell(dt, FEM_prm, SGS_param,                    &
      &      filter_param, nod_comm, node, ele, fluid,                   &
-     &      iphys%base, iphys%filter_fld, iphys_LES%SGS_term,           &
+     &      iphys%base, iphys_LES%filter_fld, iphys_LES%SGS_term,       &
      &      iphys_LES%SGS_wk, iphys_ele_base, ele_fld, jacs, rhs_tbl,   &
      &      FEM_elens, filtering, icomp_sgs_term, iphys_elediff_vec,    &
      &      sgs_coefs, sgs_coefs_nod, mk_MHD%mlump_fl, wk_filter,       &
@@ -202,7 +202,7 @@
      &         'lead ', trim(induction_tensor%name)
         call cal_sgs_magne_induction(dt, FEM_prm, SGS_param,            &
      &      filter_param, nod_comm, node, ele, conduct, cd_prop,        &
-     &      iphys%base, iphys%filter_fld, iphys_LES%SGS_term,           &
+     &      iphys%base, iphys_LES%filter_fld, iphys_LES%SGS_term,       &
      &      iphys_ele_base, ele_fld, jacs, rhs_tbl, FEM_elens,          &
      &      filtering, icomp_sgs_term, iphys_elediff_vec,               &
      &      sgs_coefs, sgs_coefs_nod, mk_MHD%mlump_cd,                  &
@@ -313,7 +313,7 @@
      &        nod_comm, node, ele, surf, sf_grp, fluid,                 &
      &        fl_prop, cd_prop, surf_bcs%Vsf_bcs, surf_bcs%Bsf_bcs,     &
      &        iphys%base, iphys%forces, iphys%div_forces,               &
-     &        iphys%diffusion, iphys%filter_fld,                        &
+     &        iphys%diffusion, iphys_LES%filter_fld,                    &
      &        iphys_LES%force_by_filter, iphys_LES%SGS_term,            &
      &        iphys_LES%div_SGS, iphys_ele_base, ak_MHD,                &
      &        fem_int, FEM_elens, iak_diff_sgs, diff_coefs,             &
@@ -387,7 +387,7 @@
      &   (iphys%base, iphys_LES%SGS_term, iphys_LES%div_SGS,            &
      &    iphys_LES%SGS_ene_flux, nod_fld)
 !
-      call work_of_SGS_terms(iphys%filter_fld, iphys_LES%true_SGS,      &
+      call work_of_SGS_terms(iphys_LES%filter_fld, iphys_LES%true_SGS,  &
      &    iphys_LES%true_div_SGS, iphys_LES%true_SGS_eflux, nod_fld)
 !
       end subroutine cal_work_4_sgs_terms

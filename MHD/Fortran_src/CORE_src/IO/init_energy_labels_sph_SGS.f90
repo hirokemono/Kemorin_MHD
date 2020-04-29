@@ -16,6 +16,7 @@
       use m_precision
 !
       use t_energy_label_parameters
+      use m_filtered_field_labels
 !
       implicit none
 !

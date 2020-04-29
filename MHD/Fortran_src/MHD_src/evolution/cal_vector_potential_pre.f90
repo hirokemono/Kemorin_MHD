@@ -193,7 +193,7 @@
       if ( SGS_param%iflag_SGS_uxb .ne. id_SGS_none) then
         call cal_sgs_uxb_2_evo(dt, FEM_prm, SGS_param, filter_param,    &
      &      nod_comm, node, ele, conduct, cd_prop,                      &
-     &      iphys%base, iphys%filter_fld, iphys_LES%SGS_wk,             &
+     &      iphys%base, iphys_LES%filter_fld, iphys_LES%SGS_wk,         &
      &      iphys_ele_base, ele_fld, jacs, rhs_tbl, FEM_elens,          &
      &      filtering, icomp_sgs_term, iphys_elediff_vec,               &
      &      sgs_coefs, wk_filter, mhd_fem_wk, fem_wk, f_nl, nod_fld)

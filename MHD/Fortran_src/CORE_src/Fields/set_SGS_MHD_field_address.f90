@@ -72,6 +72,7 @@
      &   .or. check_force_w_SGS(phys_name_ctl)                          &
      &   .or. check_true_SGS_vector_terms(phys_name_ctl)                &
      &   .or. check_true_div_SGS_flux_tensor(phys_name_ctl)             &
+     &   .or. check_filter_vector(phys_name_ctl)                        &
      &   .or. check_filtered_force(phys_name_ctl)                       &
      &   .or. check_rot_fil_force(phys_name_ctl)                        &
      &   .or. check_wide_filter_vector(phys_name_ctl)                   &
@@ -116,6 +117,7 @@
      &   .or. check_SGS_moedel_coefs(phys_name_ctl)                     &
      &   .or. check_true_div_SGS_flux_vector(phys_name_ctl)             &
      &   .or. check_true_SGS_ene_fluxes(phys_name_ctl)                  &
+     &   .or. check_filter_scalar(phys_name_ctl)                        &
      &   .or. check_filtered_scalar_flux(phys_name_ctl)                 &
      &   .or. check_div_fil_force(phys_name_ctl)                        &
      &   .or. check_filter_enegy_fluxes(phys_name_ctl)                  &
@@ -183,6 +185,7 @@
       use t_SGS_model_coef_labels
       use t_SGS_model_addresses
 !
+      use m_filtered_field_labels
       use m_filtered_force_labels
       use m_filtered_ene_flux_labels
       use m_rot_filtered_force_labels
@@ -242,6 +245,10 @@
      &   (i_fld, field_name, iphys_LES%true_SGS_eflux, flag)
       if(flag) return
 !
+!
+      call set_filter_field_addresses                                   &
+     &   (i_fld, field_name, iphys_LES%filter_fld, flag)
+      if(flag) return
 !
       call set_grad_filter_field_addresses                              &
      &   (i_fld, field_name, iphys_LES%grad_fil_fld, flag)

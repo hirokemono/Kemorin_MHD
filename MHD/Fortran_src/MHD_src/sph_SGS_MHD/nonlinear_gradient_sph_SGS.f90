@@ -25,14 +25,13 @@
 !!        type(SGS_address_sph_trans), intent(inout) :: trns_SGS
 !!      subroutine cal_wide_nonlinear_grad_sph_SGS                      &
 !!     &         (sph, comms_sph, r_2nd, MHD_prop, sph_MHD_bc, trans_p, &
-!!     &          dynamic_SPH, ipol, ipol_LES, trns_SIMI, WK_sph,       &
+!!     &          dynamic_SPH, ipol_LES, trns_SIMI, WK_sph,             &
 !!     &          rj_fld, trns_DYNG, trns_Csim)
 !!        type(sph_grids), intent(in) :: sph
 !!        type(sph_comm_tables), intent(in) :: comms_sph
 !!        type(fdm_matrices), intent(in) :: r_2nd
 !!        type(parameters_4_sph_trans), intent(in) :: trans_p
 !!        type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
-!!        type(phys_address), intent(in) :: ipol
 !!        type(SGS_model_addresses), intent(in) :: ipol_LES
 !!        type(dynamic_SGS_data_4_sph), intent(in) :: dynamic_SPH
 !!        type(address_4_sph_trans), intent(in) :: trns_MHD
@@ -134,7 +133,7 @@
 !
       subroutine cal_wide_nonlinear_grad_sph_SGS                        &
      &         (sph, comms_sph, r_2nd, MHD_prop, sph_MHD_bc, trans_p,   &
-     &          dynamic_SPH, ipol, ipol_LES, trns_SIMI, WK_sph,         &
+     &          dynamic_SPH, ipol_LES, trns_SIMI, WK_sph,               &
      &          rj_fld, trns_DYNG, trns_Csim)
 !
       use copy_rtp_vectors_4_grad
@@ -148,7 +147,6 @@
       type(parameters_4_sph_trans), intent(in) :: trans_p
       type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
       type(MHD_evolution_param), intent(in) :: MHD_prop
-      type(phys_address), intent(in) :: ipol
       type(SGS_model_addresses), intent(in) :: ipol_LES
       type(SGS_address_sph_trans), intent(in) :: trns_SIMI
       type(dynamic_SGS_data_4_sph), intent(in) :: dynamic_SPH
@@ -160,7 +158,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'copy_filter_vecs_rtp_4_grad'
       call copy_filter_vecs_rtp_4_grad(sph,                             &
-     &    trns_SIMI%b_trns%filter_fld,                                  &
+     &    trns_SIMI%b_trns_LES%filter_fld,                              &
      &    trns_DYNG%f_trns_LES%diff_fil_vect,                           &
      &    trns_SIMI%backward, trns_DYNG%forward)
 !
@@ -171,7 +169,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'overwrt_grad_of_vectors_sph'
       call overwrt_grad_of_vectors_sph                                  &
-     &   (sph, r_2nd,  sph_MHD_bc, trans_p%leg, ipol%filter_fld,        &
+     &   (sph, r_2nd,  sph_MHD_bc, trans_p%leg, ipol_LES%filter_fld,    &
      &    ipol_LES%diff_fil_vect, ipol_LES%grad_fil_fld, rj_fld)
 !
       if (iflag_debug.eq.1)                                             &
@@ -182,7 +180,7 @@
       if (iflag_debug.eq.1) write(*,*) 'wider_nl_grad_SGS_rtp'
       call wider_nl_grad_SGS_rtp                                        &
      &   (sph, dynamic_SPH%sph_filters(2), MHD_prop,                    &
-     &    trns_SIMI%b_trns%filter_fld,                                  &
+     &    trns_SIMI%b_trns_LES%filter_fld,                              &
      &    trns_DYNG%b_trns_LES%grad_fil_fld,                            &
      &    trns_DYNG%b_trns_LES%diff_fil_vect,                           &
      &    trns_Csim%b_trns_LES%wide_SGS,                                &

@@ -9,9 +9,8 @@
 !!
 !!@verbatim
 !!      subroutine init_sph_trns_fld_similarity                         &
-!!     &         (ipol, ipol_LES, iphys, iphys_LES, trns_SIMI,          &
+!!     &         (ipol_LES, iphys_LES, trns_SIMI,                       &
 !!     &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
-!!        type(phys_address), intent(in) :: ipol, iphys
 !!        type(SGS_model_addresses), intent(in) :: ipol_LES, iphys_LES
 !!        type(SGS_address_sph_trans), intent(inout) :: trns_SIMI
 !!      subroutine init_sph_trns_fld_dyn_simi                           &
@@ -31,7 +30,6 @@
 !
       use m_precision
 !
-      use t_phys_address
       use t_SGS_model_addresses
       use t_sph_trans_arrays_SGS_MHD
 !
@@ -44,13 +42,12 @@
 !-----------------------------------------------------------------------
 !
       subroutine init_sph_trns_fld_similarity                           &
-     &         (ipol, ipol_LES, iphys, iphys_LES, trns_SIMI,            &
+     &         (ipol_LES, iphys_LES, trns_SIMI,                         &
      &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
 !
       use add_SGS_term_to_sph_trans
       use add_filter_fld_to_sph_trans
 !
-      type(phys_address), intent(in) :: ipol, iphys
       type(SGS_model_addresses), intent(in) :: ipol_LES, iphys_LES
       type(SGS_address_sph_trans), intent(inout) :: trns_SIMI
       integer(kind = kint), intent(inout) :: ncomp_sph_trans
@@ -68,8 +65,8 @@
 !
 !   filtered vector
       call add_fil_vector_sph_trns_by_pol                               &
-     &   (ipol%filter_fld, iphys%filter_fld,                            &
-     &    trns_SIMI%b_trns%filter_fld, trns_SIMI%backward)
+     &   (ipol_LES%filter_fld, iphys_LES%filter_fld,                    &
+     &    trns_SIMI%b_trns_LES%filter_fld, trns_SIMI%backward)
 !   filtered nonlinear terms
       call add_SGS_term_4_sph_trns_by_pol                               &
      &   (ipol_LES%SGS_term, iphys_LES%SGS_term,                        &
@@ -78,8 +75,8 @@
 !
 !   filtered scalar
       call add_fil_scalar_sph_trns_by_pol                               &
-     &   (ipol%filter_fld, iphys%filter_fld,                            &
-     &    trns_SIMI%b_trns%filter_fld, trns_SIMI%backward)
+     &   (ipol_LES%filter_fld, iphys_LES%filter_fld,                    &
+     &    trns_SIMI%b_trns_LES%filter_fld, trns_SIMI%backward)
       trns_SIMI%backward%num_scalar = trns_SIMI%backward%nfield         &
      &                              - trns_SIMI%backward%num_vector
       trns_SIMI%backward%num_tensor = 0

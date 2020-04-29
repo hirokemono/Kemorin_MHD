@@ -339,7 +339,7 @@
      &      group%surf_grp, MHD_mesh%fluid,                             &
      &      MHD_prop%fl_prop, MHD_prop%cd_prop,                         &
      &      sf_bcs%Vsf_bcs, sf_bcs%Bsf_bcs, iphys%base, iphys%forces,   &
-     &      iphys%div_forces, iphys%diffusion, iphys%filter_fld,        &
+     &      iphys%div_forces, iphys%diffusion, iphys_LES%filter_fld,    &
      &      iphys_LES%force_by_filter, iphys_LES%SGS_term,              &
      &      iphys_LES%div_SGS, iphys_ele_base,                          &
      &      ak_MHD, fem_int, FEM_elens,                                 &

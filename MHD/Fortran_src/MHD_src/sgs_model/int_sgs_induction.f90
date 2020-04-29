@@ -174,7 +174,7 @@
       call reset_ff_smps(node%max_nod_smp, f_l, f_nl)
       call cal_sgs_uxb_2_evo(dt, FEM_prm, SGS_param, filter_param,      &
      &    nod_comm, node, ele, conduct, cd_prop,                        &
-     &    iphys%base, iphys%filter_fld, iphys_LES%SGS_wk,               &
+     &    iphys%base, iphys_LES%filter_fld, iphys_LES%SGS_wk,           &
      &    iphys_ele_base, ele_fld, jacs, rhs_tbl, FEM_elen, filtering,  &
      &    icomp_sgs_term, iphys_elediff_vec, sgs_coefs, wk_filter,      &
      &    mhd_fem_wk, fem_wk, f_nl, nod_fld)

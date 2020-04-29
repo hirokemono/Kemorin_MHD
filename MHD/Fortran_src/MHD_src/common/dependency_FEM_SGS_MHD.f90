@@ -80,7 +80,7 @@
       call check_dependence_4_FEM_SGS(SGS_param, cmt_param,             &
      &    MHD_prop%fl_prop, MHD_prop%cd_prop,                           &
      &    MHD_prop%ht_prop, MHD_prop%cp_prop,                           &
-     &    iphys%filter_fld, iphys_LES%SGS_term, nod_fld)
+     &    iphys_LES%filter_fld, iphys_LES%SGS_term, nod_fld)
 !
       call alloc_phys_data_type(ele%numele, ele_fld)
       call set_element_field_address                                    &
@@ -114,7 +114,7 @@
      &   (MHD_prop%fl_prop, MHD_prop%cd_prop,                           &
      &    MHD_prop%ht_prop, MHD_prop%cp_prop, iphys%base, nod_fld)
       call check_filter_force_dependency                                &
-     &   (MHD_prop%fl_prop, iphys%filter_fld, nod_fld)
+     &   (MHD_prop%fl_prop, iphys_LES%filter_fld, nod_fld)
       call check_dependence_FEM_evo(MHD_prop%fl_prop, iphys, nod_fld)
 !
       end subroutine set_FEM_MHD_field_data

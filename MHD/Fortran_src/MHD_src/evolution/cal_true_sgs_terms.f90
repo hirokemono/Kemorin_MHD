@@ -147,24 +147,24 @@
            if(iflag_debug.gt.0) write(*,*)                              &
      &                         'lead  ', trim(nod_fld%phys_name(i) )
            call cal_div_sgs_s_flux_true_pre                             &
-     &        (FEM_prm%iflag_temp_supg, FEM_prm%npoint_t_evo_int, dt,   &
-     &         iphys_LES%true_div_SGS%i_SGS_h_flux,                     &
-     &         iphys%forces%i_h_flux, iphys%div_forces%i_h_flux,        &
-     &         iphys%filter_fld%i_temp, iphys%filter_fld%i_velo,        &
-     &         FEM_prm, nod_comm, node, ele, fluid, ht_prop,            &
-     &         nod_bcs%Tnod_bcs, iphys_ele_base, ele_fld, fem_int,      &
-     &         mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat, nod_fld)
+     &       (FEM_prm%iflag_temp_supg, FEM_prm%npoint_t_evo_int, dt,    &
+     &        iphys_LES%true_div_SGS%i_SGS_h_flux,                      &
+     &        iphys%forces%i_h_flux, iphys%div_forces%i_h_flux,         &
+     &        iphys_LES%filter_fld%i_temp, iphys_LES%filter_fld%i_velo, &
+     &        FEM_prm, nod_comm, node, ele, fluid, ht_prop,             &
+     &        nod_bcs%Tnod_bcs, iphys_ele_base, ele_fld, fem_int,       &
+     &        mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat, nod_fld)
          else if(nod_fld%phys_name(i).eq.SGS_div_c_flux_true%name) then
            if(iflag_debug.gt.0) write(*,*)                              &
      &                         'lead  ', trim(nod_fld%phys_name(i) )
            call cal_div_sgs_s_flux_true_pre                             &
-     &        (FEM_prm%iflag_comp_supg, FEM_prm%npoint_t_evo_int, dt,   &
-     &         iphys_LES%true_div_SGS%i_SGS_c_flux,                     &
-     &         iphys%forces%i_c_flux, iphys%div_forces%i_c_flux,        &
-     &         iphys%filter_fld%i_light, iphys%filter_fld%i_velo,       &
-     &         FEM_prm, nod_comm, node, ele, fluid, cp_prop,            &
-     &         nod_bcs%Cnod_bcs, iphys_ele_base, ele_fld, fem_int,      &
-     &         mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat, nod_fld)
+     &      (FEM_prm%iflag_comp_supg, FEM_prm%npoint_t_evo_int, dt,     &
+     &       iphys_LES%true_div_SGS%i_SGS_c_flux,                       &
+     &       iphys%forces%i_c_flux, iphys%div_forces%i_c_flux,          &
+     &       iphys_LES%filter_fld%i_light, iphys_LES%filter_fld%i_velo, &
+     &       FEM_prm, nod_comm, node, ele, fluid, cp_prop,              &
+     &       nod_bcs%Cnod_bcs, iphys_ele_base, ele_fld, fem_int,        &
+     &       mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat, nod_fld)
          else if ( nod_fld%phys_name(i).eq.SGS_div_m_flux_true%name)    &
      &          then
            if(iflag_debug.gt.0) write(*,*)                              &
@@ -173,7 +173,7 @@
      &        nod_comm, node, ele, surf, sf_grp, fluid,                 &
      &        fl_prop, cd_prop, surf_bcs%Vsf_bcs, surf_bcs%Bsf_bcs,     &
      &        iphys%base, iphys%forces, iphys%div_forces,               &
-     &        iphys%diffusion, iphys%filter_fld,                        &
+     &        iphys%diffusion, iphys_LES%filter_fld,                    &
      &        iphys_LES%force_by_filter, iphys_LES%SGS_term,            &
      &        iphys_LES%div_SGS, iphys_LES%true_div_SGS,                &
      &        iphys_ele_base, ak_MHD, fem_int, FEM_elens,               &
@@ -187,7 +187,7 @@
      &         surf, sf_grp, fluid, fl_prop, cd_prop,                   &
      &         surf_bcs%Vsf_bcs, surf_bcs%Bsf_bcs,                      &
      &         iphys%base, iphys%forces, iphys%div_forces,              &
-     &         iphys%diffusion, iphys%filter_fld,                       &
+     &         iphys%diffusion, iphys_LES%filter_fld,                   &
      &         iphys_LES%force_by_filter, iphys_LES%SGS_term,           &
      &         iphys_LES%div_SGS, iphys_LES%true_SGS,                   &
      &         iphys_ele_base, ak_MHD, fem_int, FEM_elens,              &
@@ -201,8 +201,9 @@
      &        nod_comm, node, ele, surf, sf_grp, conduct, cd_prop,      &
      &        nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs, surf_bcs%Bsf_bcs,     &
      &        iphys%base, iphys%forces, iphys%div_forces,               &
-     &        iphys%diffusion, iphys%filter_fld, iphys_LES%SGS_term,    &
-     &        iphys_LES%true_SGS, iphys_ele_base, ele_fld, ak_MHD,      &
+     &        iphys%diffusion, iphys_LES%filter_fld,                    &
+     &        iphys_LES%SGS_term, iphys_LES%true_SGS,                   &
+     &        iphys_ele_base, ele_fld, ak_MHD,                          &
      &        fem_int, FEM_elens, iak_diff_sgs, diff_coefs,             &
      &        mk_MHD%mlump_cd, mhd_fem_wk, rhs_mat, nod_fld)
          end if

@@ -153,11 +153,11 @@
 !
 !
       call r_buoyancy_on_sphere_w_filter                                &
-     &   (sph_MHD_bc%sph_bc_U%kr_in,  sph%sph_rj, ipol, ipol_LES,       &
+     &   (sph_MHD_bc%sph_bc_U%kr_in,  sph%sph_rj, ipol_LES,             &
      &    MHD_prop%fl_prop, MHD_prop%ref_param_T, MHD_prop%ref_param_C, &
      &    rj_fld)
       call r_buoyancy_on_sphere_w_filter                                &
-     &   (sph_MHD_bc%sph_bc_U%kr_out, sph%sph_rj, ipol, ipol_LES,       &
+     &   (sph_MHD_bc%sph_bc_U%kr_out, sph%sph_rj, ipol_LES,             &
      &    MHD_prop%fl_prop, MHD_prop%ref_param_T, MHD_prop%ref_param_C, &
      &    rj_fld)
 !
@@ -241,7 +241,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_filterd_buo_flux_rtp'
       call cal_filterd_buo_flux_rtp(sph%sph_rtp, MHD_prop%fl_prop,      &
-     &    trns_snap%b_trns%base, trns_SGS_snap%b_trns%filter_fld,       &
+     &    trns_snap%b_trns%base, trns_SGS_snap%b_trns_LES%filter_fld,   &
      &    trns_SGS_snap%f_trns_LES%eflux_by_filter,                     &
      &    trns_SGS_snap%backward, trns_SGS_snap%forward)
 !

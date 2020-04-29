@@ -8,9 +8,9 @@
 !!      subroutine cal_velo_pre_lumped_crank(iflag_commute_velo,        &
 !!     &          ifilter_final, iak_diff_v, ak_d_velo, dt, FEM_prm,    &
 !!     &          nod_comm, node, ele, fluid, fl_prop, Vnod_bcs,        &
-!!     &          iphys, iphys_ele_base, ele_fld, g_FEM, jac_3d,        &
-!!     &          rhs_tbl, FEM_elens, diff_coefs, mlump_fl,             &
-!!     &          Vmatrix, MG_vector, mhd_fem_wk, fem_wk,               &
+!!     &          iphys, iphys_LES, iphys_ele_base, ele_fld,            &
+!!     &          g_FEM, jac_3d, rhs_tbl, FEM_elens, diff_coefs,        &
+!!     &          mlump_fl, Vmatrix, MG_vector, mhd_fem_wk, fem_wk,     &
 !!     &          f_l, f_nl, nod_fld)
 !!      subroutine cal_vect_p_pre_lumped_crank                          &
 !!     &         (iflag_commute_magne, ifilter_final,                   &
@@ -18,7 +18,7 @@
 !!     &          dt, FEM_prm, nod_comm, node, ele, conduct, cd_prop,   &
 !!     &          iphys_ele_base, ele_fld, g_FEM, jac_3d, rhs_tbl,      &
 !!     &          FEM_elens, diff_coefs, mlump_cd, Bmatrix, MG_vector,  &
-!!     &          mhd_fem_wk, fem_wk,  f_l, f_nl, nod_fld)
+!!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!      subroutine cal_magne_pre_lumped_crank                           &
 !!     &         (iflag_commute_magne, ifilter_final,                   &
 !!     &          i_magne, i_pre_uxb, iak_diff_b, ak_d_magne, nod_bc_b, &
@@ -46,6 +46,8 @@
 !!        type(scalar_property), intent(in) :: property
 !!        type(nodal_bcs_4_momentum_type), intent(in) :: Vnod_bcs
 !!        type(nodal_bcs_4_scalar_type), intent(in) :: Tnod_bcs
+!!        type(phys_address), intent(in) :: iphys
+!!        type(SGS_model_addresses), intent(in) :: iphys_LES
 !!        type(base_field_address), intent(in) :: iphys_ele_base
 !!        type(phys_data), intent(in) :: ele_fld
 !!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
@@ -84,6 +86,7 @@
       use t_geometry_data
       use t_phys_data
       use t_phys_address
+      use t_SGS_model_addresses
       use t_base_field_labels
       use t_fem_gauss_int_coefs
       use t_jacobian_3d
@@ -109,9 +112,9 @@
       subroutine cal_velo_pre_lumped_crank(iflag_commute_velo,          &
      &          ifilter_final, iak_diff_v, ak_d_velo, dt, FEM_prm,      &
      &          nod_comm, node, ele, fluid, fl_prop, Vnod_bcs,          &
-     &          iphys, iphys_ele_base, ele_fld, g_FEM, jac_3d,          &
-     &          rhs_tbl, FEM_elens, diff_coefs, mlump_fl,               &
-     &          Vmatrix, MG_vector, mhd_fem_wk, fem_wk,                 &
+     &          iphys, iphys_LES, iphys_ele_base, ele_fld,              &
+     &          g_FEM, jac_3d, rhs_tbl, FEM_elens, diff_coefs,          &
+     &          mlump_fl, Vmatrix, MG_vector, mhd_fem_wk, fem_wk,       &
      &          f_l, f_nl, nod_fld)
 !
       use m_array_for_send_recv
@@ -137,6 +140,7 @@
       type(fluid_property), intent(in) :: fl_prop
       type(nodal_bcs_4_momentum_type), intent(in) :: Vnod_bcs
       type(phys_address), intent(in) :: iphys
+      type(SGS_model_addresses), intent(in) :: iphys_LES
       type(base_field_address), intent(in) :: iphys_ele_base
       type(phys_data), intent(in) :: ele_fld
       type(FEM_gauss_int_coefs), intent(in) :: g_FEM
@@ -179,7 +183,7 @@
 !
       if (iflag_debug.eq.1)  write(*,*) 'int_buoyancy_nod_exp'
       call int_buoyancy_nod_exp                                         &
-     &   (node, fl_prop, mlump_fl, iphys, nod_fld, f_nl)
+     &   (node, fl_prop, mlump_fl, iphys, iphys_LES, nod_fld, f_nl)
 !
       call set_boundary_velo_4_rhs(node, Vnod_bcs, f_l, f_nl)
 !

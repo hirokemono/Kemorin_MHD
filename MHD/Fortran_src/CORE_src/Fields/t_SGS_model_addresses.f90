@@ -28,15 +28,8 @@
 !
 !>       Structure of start addresses for SGS model
       type SGS_model_addresses
-!>        Structure of wide filtered field
-        type(base_field_address) :: wide_filter_fld
-!>        Structure of gradient of wide filtered field
-        type(gradient_field_address) :: wide_filter_grad
-!
-!>        Structure of double filtered field
-        type(base_field_address) :: dbl_filter_fld
-!>        Structure of gradient of double filtered field
-        type(gradient_field_address) :: dbl_filter_grad
+!>        Structure of filtered fields
+        type(base_field_address) :: filter_fld
 !
 !>        Structure of forces by filtered field
         type(base_force_address) :: force_by_filter
@@ -52,6 +45,16 @@
         type(gradient_field_address) :: grad_fil_fld
 !>        Structure of difference of filtered vector
         type(diff_vector_address) :: diff_fil_vect
+!
+!>        Structure of wide filtered field
+        type(base_field_address) :: wide_filter_fld
+!>        Structure of gradient of wide filtered field
+        type(gradient_field_address) :: wide_filter_grad
+!
+!>        Structure of double filtered field
+        type(base_field_address) :: dbl_filter_fld
+!>        Structure of gradient of double filtered field
+        type(gradient_field_address) :: dbl_filter_grad
 !
 !>        Structure of SGS terms
         type(SGS_term_address) :: SGS_term

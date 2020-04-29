@@ -54,7 +54,6 @@
 !
       use m_rot_force_labels
       use m_div_force_labels
-      use m_filtered_field_labels
 !
       character(len = kchara), intent(in) :: phys_name_ctl
       logical :: flag
@@ -68,8 +67,7 @@
      &   .or. check_difference_vectors(phys_name_ctl)                   &
      &   .or. check_field_product_vectors(phys_name_ctl)                &
      &   .or. check_vector_work_field(phys_name_ctl)                    &
-     &   .or. check_vector_check_field(phys_name_ctl)                   &
-     &   .or. check_filter_vector(phys_name_ctl)
+     &   .or. check_vector_check_field(phys_name_ctl)
 !
       check_vector_fields = flag
 !
@@ -86,7 +84,6 @@
       use t_field_product_labels
       use t_grad_field_labels
       use t_explicit_term_labels
-      use m_filtered_field_labels
 !
       use m_div_force_labels
 !
@@ -103,8 +100,7 @@
      &   .or. check_field_product_scalars(phys_name_ctl)                &
      &   .or. check_scalar_work_field(phys_name_ctl)                    &
      &   .or. check_scalar_check_field(phys_name_ctl)                   &
-     &   .or. check_work_4_poisson(phys_name_ctl)                       &
-     &   .or. check_filter_scalar(phys_name_ctl)
+     &   .or. check_work_4_poisson(phys_name_ctl)
 !
       check_scalar_fields = flag
 !
@@ -149,7 +145,6 @@
 
       use m_rot_force_labels
       use m_div_force_labels
-      use m_filtered_field_labels
 !
       integer(kind = kint), intent(in) :: i_fld
       character(len = kchara), intent(in) :: field_name
@@ -197,10 +192,6 @@
       if(flag) return
       call set_check_field_addresses                                    &
      &   (i_fld, field_name, iphys%check_fld1, iphys%check_fld2, flag)
-      if(flag) return
-!
-      call set_filter_field_addresses                                   &
-     &   (i_fld, field_name, iphys%filter_fld, flag)
       if(flag) return
 !
       end subroutine set_MHD_field_addresses
