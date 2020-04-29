@@ -14,7 +14,6 @@
       use m_constants
 !
       use t_phys_data
-      use t_phys_address
       use t_base_field_labels
       use t_MHD_finite_element_mat
       use t_MHD_mass_matrices
@@ -28,9 +27,9 @@
 !>       Structure for field data on element
         type(phys_data) :: ele_fld
 !>       Address of element fields
-        type(phys_address) :: iphys_ele
+        type(base_field_address) :: iphys_ele_base
 !>       Address of filtered element fields
-        type(base_field_address) :: iphys_fil_ele
+        type(base_field_address) :: iphys_ele_fil
 !
 !>       Structure of mass matrices for FEM_MHD
         type(lumped_mass_mat_layerd) :: mk_MHD

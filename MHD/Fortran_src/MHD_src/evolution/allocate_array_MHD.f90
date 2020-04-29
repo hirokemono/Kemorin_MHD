@@ -103,7 +103,7 @@
       call set_FEM_SGS_MHD_field_data                                   &
      &   (SGS_par%model_p, SGS_par%commute_p, mesh%node, mesh%ele,      &
      &    MHD_prop, nod_fld, iphys, iphys_LES, SGS_MHD_wk%ele_fld,      &
-     &    SGS_MHD_wk%iphys_ele%base, SGS_MHD_wk%iphys_fil_ele)
+     &    SGS_MHD_wk%iphys_ele_base, SGS_MHD_wk%iphys_ele_fil)
       if (iflag_debug.ge.1)  write(*,*) 'initialize_ele_field_data'
 !
       if ( iflag_debug.ge.1 ) write(*,*) 'init_FEM_MHD_mean_square'

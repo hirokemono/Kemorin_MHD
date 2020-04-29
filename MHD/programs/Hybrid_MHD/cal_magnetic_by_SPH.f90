@@ -158,7 +158,7 @@
      &  (MHD_step1%time_d%dt, FEM_prm, SGS_par%model_p,                 &
      &   SGS_par%filter_p, mesh%nod_comm, mesh%node, mesh%ele, conduct, &
      &   MHD_prop%cd_prop, iphys, iphys_LES,                            &
-     &   SGS_MHD_wk1%iphys_ele%base, SGS_MHD_wk1%ele_fld,               &
+     &   SGS_MHD_wk1%iphys_ele_base, SGS_MHD_wk1%ele_fld,               &
      &   fem_int%jcs, fem_int%rhs_tbl, FEM1_elen, filtering1,           &
      &   Csims_FEM_MHD%icomp_sgs_term, Csims_FEM_MHD%iphys_elediff_vec, &
      &   Csims_FEM_MHD%sgs_coefs, mhd1_fem_wk%mlump_cd,                 &

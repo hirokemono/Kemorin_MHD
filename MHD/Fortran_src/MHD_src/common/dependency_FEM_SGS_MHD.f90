@@ -9,7 +9,7 @@
 !!@verbatim
 !!      subroutine set_FEM_SGS_MHD_field_data(SGS_param, cmt_param,     &
 !!     &          node, ele, MHD_prop, nod_fld, iphys, iphys_LES,       &
-!!     &          ele_fld, iphys_ele_base, iphys_fil_ele)
+!!     &          ele_fld, iphys_ele_base, iphys_ele_fil)
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(commutation_control_params), intent(in) :: cmt_param
 !!        type(node_data), intent(in) :: node
@@ -18,7 +18,7 @@
 !!        type(phys_address), intent(inout) :: iphys
 !!        type(SGS_model_addresses), intent(inout) :: iphys_LES
 !!        type(base_field_address), intent(inout) :: iphys_ele_base
-!!        type(base_field_address), intent(inout) :: iphys_fil_ele
+!!        type(base_field_address), intent(inout) :: iphys_ele_fil
 !!        type(phys_data), intent(inout) :: nod_fld, ele_fld
 !!@endverbatim
 !
@@ -56,7 +56,7 @@
 !
       subroutine set_FEM_SGS_MHD_field_data(SGS_param, cmt_param,       &
      &          node, ele, MHD_prop, nod_fld, iphys, iphys_LES,         &
-     &          ele_fld, iphys_ele_base, iphys_fil_ele)
+     &          ele_fld, iphys_ele_base, iphys_ele_fil)
 !
       use t_geometry_data
       use initialize_element_field
@@ -70,7 +70,7 @@
       type(phys_address), intent(inout) :: iphys
       type(SGS_model_addresses), intent(inout) :: iphys_LES
       type(base_field_address), intent(inout) :: iphys_ele_base
-      type(base_field_address), intent(inout) :: iphys_fil_ele
+      type(base_field_address), intent(inout) :: iphys_ele_fil
       type(phys_data), intent(inout) :: nod_fld, ele_fld
 !
 !
@@ -84,7 +84,7 @@
 !
       call alloc_phys_data_type(ele%numele, ele_fld)
       call set_element_field_address                                    &
-     &   (ele_fld, iphys_ele_base, iphys_fil_ele)
+     &   (ele_fld, iphys_ele_base, iphys_ele_fil)
 !
       end subroutine set_FEM_SGS_MHD_field_data
 !

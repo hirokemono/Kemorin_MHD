@@ -110,7 +110,7 @@
      &    SGS_par%model_p, SGS_par%commute_p, fem%mesh, fem%group,      &
      &    MHD_mesh%fluid, MHD_mesh%conduct, MHD_prop%cd_prop,           &
      &    FEM_MHD_BCs%nod_bcs, FEM_MHD_BCs%surf_bcs, iphys%base,        &
-     &    SGS_MHD_wk%iphys_ele%base, SGS_MHD_wk%ele_fld,                &
+     &    SGS_MHD_wk%iphys_ele_base, SGS_MHD_wk%ele_fld,                &
      &    SGS_MHD_wk%fem_int, FEM_filters%FEM_elens,                    &
      &    Csims_FEM_MHD%iak_diff_base, Csims_FEM_MHD%diff_coefs,        &
      &    SGS_MHD_wk%mk_MHD, SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat, &
@@ -123,7 +123,7 @@
       call cal_energy_fluxes(MHD_step%time_d%dt, FEM_prm, SGS_par,      &
      &    fem%mesh, fem%group, MHD_mesh, MHD_prop,                      &
      &    FEM_MHD_BCs%nod_bcs, FEM_MHD_BCs%surf_bcs, iphys, iphys_LES,  &
-     &    SGS_MHD_wk%iphys_ele%base, ak_MHD, SGS_MHD_wk%fem_int,        &
+     &    SGS_MHD_wk%iphys_ele_base, ak_MHD, SGS_MHD_wk%fem_int,        &
      &    FEM_filters%FEM_elens, Csims_FEM_MHD, FEM_filters%filtering,  &
      &    SGS_MHD_wk%mk_MHD, SGS_MHD_wk%FEM_SGS_wk,                     &
      &    SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat,                    &

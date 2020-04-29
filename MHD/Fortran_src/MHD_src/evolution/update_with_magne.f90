@@ -11,7 +11,7 @@
 !!     &         (i_step, dt, FEM_prm, SGS_par, mesh, group,            &
 !!     &          fluid, conduct, Bsf_bcs, Fsf_bcs,                     &
 !!     &          iphys_base, iphys_fil, iphys_wfl, iphys_SGS_wk,       &
-!!     &          iphys_ele_base, iphys_fil_ele, fem_int, FEM_filters,  &
+!!     &          iphys_ele_base, iphys_ele_fil, fem_int, FEM_filters,  &
 !!     &          iak_diff_base, icomp_diff_base,                       &
 !!     &          iphys_elediff_vec, iphys_elediff_fil, FEM_SGS_wk,     &
 !!     &          mhd_fem_wk, rhs_mat, nod_fld, ele_fld, diff_coefs)
@@ -27,7 +27,7 @@
 !!        type(base_field_address), intent(in) :: iphys_wfl
 !!        type(dynamic_SGS_work_address), intent(in) :: iphys_SGS_wk
 !!        type(base_field_address), intent(in) :: iphys_ele_base
-!!        type(base_field_address), intent(in) :: iphys_fil_ele
+!!        type(base_field_address), intent(in) :: iphys_ele_fil
 !!        type(finite_element_integration), intent(in) :: fem_int
 !!        type(filters_on_FEM), intent(in) :: FEM_filters
 !!        type(base_field_address), intent(in) :: iak_diff_base
@@ -80,7 +80,7 @@
      &         (i_step, dt, FEM_prm, SGS_par, mesh, group,              &
      &          fluid, conduct, Bsf_bcs, Fsf_bcs,                       &
      &          iphys_base, iphys_fil, iphys_wfl, iphys_SGS_wk,         &
-     &          iphys_ele_base, iphys_fil_ele, fem_int, FEM_filters,    &
+     &          iphys_ele_base, iphys_ele_fil, fem_int, FEM_filters,    &
      &          iak_diff_base, icomp_diff_base,                         &
      &          iphys_elediff_vec, iphys_elediff_fil, FEM_SGS_wk,       &
      &          mhd_fem_wk, rhs_mat, nod_fld, ele_fld, diff_coefs)
@@ -108,7 +108,7 @@
       type(dynamic_SGS_work_address), intent(in) :: iphys_SGS_wk
 !
       type(base_field_address), intent(in) :: iphys_ele_base
-      type(base_field_address), intent(in) :: iphys_fil_ele
+      type(base_field_address), intent(in) :: iphys_ele_fil
       type(finite_element_integration), intent(in) :: fem_int
       type(filters_on_FEM), intent(in) :: FEM_filters
       type(base_field_address), intent(in) :: iak_diff_base
@@ -171,11 +171,11 @@
           nod_fld%iflag_update(iphys_fil%i_magne+2) = 1
         end if
 !
-        if (iflag2.eq.2 .and. iphys_fil_ele%i_magne.ne.0) then
+        if (iflag2.eq.2 .and. iphys_ele_fil%i_magne.ne.0) then
           if (iflag_debug.gt.0) write(*,*) 'filtered_magne_on_ele'
           call vector_on_element_1st(mesh%node, mesh%ele, fem_int%jcs,  &
      &        mesh%ele%istack_ele_smp, FEM_prm%npoint_t_evo_int,        &
-     &        iphys_fil%i_magne, nod_fld, iphys_fil_ele%i_magne,        &
+     &        iphys_fil%i_magne, nod_fld, iphys_ele_fil%i_magne,        &
      &        ele_fld)
         end if
 !
@@ -241,7 +241,7 @@
 !
 !      call rotation_on_element_1st(mesh%node, mesh%ele, fem_int%jcs,   &
 !     &    mesh%ele%istack_ele_smp, FEM_prm%npoint_t_evo_int,           &
-!     &    iphys_fil%i_vecp, nod_fld, iphys_fil_ele%i_magne,            &
+!     &    iphys_fil%i_vecp, nod_fld, iphys_ele_fil%i_magne,            &
 !     &    ele_fld)
 !
        end subroutine update_with_magnetic_field

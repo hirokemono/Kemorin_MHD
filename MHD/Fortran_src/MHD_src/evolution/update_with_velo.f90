@@ -10,7 +10,7 @@
 !!      subroutine update_with_velocity(i_step, dt, FEM_prm, SGS_par,   &
 !!     &          mesh, group, fluid, Vsf_bcs, Psf_bcs,                 &
 !!     &          iphys_base, iphys_fil, iphys_wfl, iphys_SGS_wk,       &
-!!     &          iphys_ele_base, iphys_fil_ele, fem_int, FEM_filters,  &
+!!     &          iphys_ele_base, iphys_ele_fil, fem_int, FEM_filters,  &
 !!     &          iak_diff_base, icomp_diff_base,                       &
 !!     &          iphys_elediff_vec, iphys_elediff_fil,                 &
 !!     &          mk_MHD, FEM_SGS_wk, mhd_fem_wk, rhs_mat,              &
@@ -27,7 +27,7 @@
 !!        type(base_field_address), intent(in) :: iphys_wfl
 !!        type(dynamic_SGS_work_address), intent(in) :: iphys_SGS_wk
 !!        type(base_field_address), intent(in) :: iphys_ele_base
-!!        type(base_field_address), intent(in) :: iphys_fil_ele
+!!        type(base_field_address), intent(in) :: iphys_ele_fil
 !!        type(finite_element_integration), intent(in) :: fem_int
 !!        type(filters_on_FEM), intent(in) :: FEM_filters
 !!        type(base_field_address), intent(in) :: iak_diff_base
@@ -78,7 +78,7 @@
       subroutine update_with_velocity(i_step, dt, FEM_prm, SGS_par,     &
      &          mesh, group, fluid, Vsf_bcs, Psf_bcs,                   &
      &          iphys_base, iphys_fil, iphys_wfl, iphys_SGS_wk,         &
-     &          iphys_ele_base, iphys_fil_ele, fem_int, FEM_filters,    &
+     &          iphys_ele_base, iphys_ele_fil, fem_int, FEM_filters,    &
      &          iak_diff_base, icomp_diff_base,                         &
      &          iphys_elediff_vec, iphys_elediff_fil,                   &
      &          mk_MHD, FEM_SGS_wk, mhd_fem_wk, rhs_mat,                &
@@ -106,7 +106,7 @@
       type(dynamic_SGS_work_address), intent(in) :: iphys_SGS_wk
 !
       type(base_field_address), intent(in) :: iphys_ele_base
-      type(base_field_address), intent(in) :: iphys_fil_ele
+      type(base_field_address), intent(in) :: iphys_ele_fil
       type(finite_element_integration), intent(in) :: fem_int
       type(filters_on_FEM), intent(in) :: FEM_filters
       type(base_field_address), intent(in) :: iak_diff_base
@@ -189,7 +189,7 @@
      &    .and. SGS_par%model_p%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF   &
      &    .and. iflag_dmc.eq.0) then
 !
-         if (iphys_fil_ele%i_velo.ne.0) then
+         if (iphys_ele_fil%i_velo.ne.0) then
            if(iflag_debug .ge. iflag_routine_msg)                       &
      &                 write(*,*) 'diff_filter_v_on_ele'
            call sel_int_diff_vector_on_ele                              &

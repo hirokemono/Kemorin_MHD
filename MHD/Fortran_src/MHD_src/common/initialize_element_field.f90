@@ -7,10 +7,10 @@
 !> @brief Field data in element for FEM
 !
 !!      subroutine set_element_field_address                            &
-!!     &         (ele_fld, iphys_ele_base, iphys_fil_ele)
+!!     &         (ele_fld, iphys_ele_base, iphys_ele_fil)
 !!        type(phys_data), intent(in) :: ele_fld
 !!        type(base_field_address), intent(inout) :: iphys_ele_base
-!!        type(base_field_address), intent(inout) :: iphys_fil_ele
+!!        type(base_field_address), intent(inout) :: iphys_ele_fil
 !!      subroutine set_ele_field_names_MHD                              &
 !!     &         (FEM_prm, SGS_param, nod_fld, ele_fld)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
@@ -36,13 +36,13 @@
 !
 !>   set address of elemental values
       subroutine set_element_field_address                              &
-     &         (ele_fld, iphys_ele_base, iphys_fil_ele)
+     &         (ele_fld, iphys_ele_base, iphys_ele_fil)
 !
       use m_filtered_field_labels
 !
       type(phys_data), intent(in) :: ele_fld
       type(base_field_address), intent(inout) :: iphys_ele_base
-      type(base_field_address), intent(inout) :: iphys_fil_ele
+      type(base_field_address), intent(inout) :: iphys_ele_fil
 !
       integer(kind = kint) :: i, i0
 !
@@ -55,24 +55,24 @@
         else if(ele_fld%phys_name(i) .eq. vorticity%name) then
           iphys_ele_base%i_vort = i0
         else if(ele_fld%phys_name(i) .eq. filter_velocity%name) then
-          iphys_fil_ele%i_velo = i0
+          iphys_ele_fil%i_velo = i0
 !
         else if(ele_fld%phys_name(i) .eq. magnetic_field%name) then
           iphys_ele_base%i_magne = i0
         else if(ele_fld%phys_name(i) .eq. current_density%name) then
           iphys_ele_base%i_current = i0
         else if(ele_fld%phys_name(i) .eq. filter_magne%name) then
-          iphys_fil_ele%i_magne = i0
+          iphys_ele_fil%i_magne = i0
 !
         else if(ele_fld%phys_name(i) .eq. temperature%name) then
           iphys_ele_base%i_temp = i0
         else if(ele_fld%phys_name(i) .eq. filter_temperature%name) then
-          iphys_fil_ele%i_temp = i0
+          iphys_ele_fil%i_temp = i0
 !
         else if(ele_fld%phys_name(i) .eq. composition%name) then
           iphys_ele_base%i_light = i0
         else if(ele_fld%phys_name(i) .eq. filter_composition%name) then
-          iphys_fil_ele%i_light = i0
+          iphys_ele_fil%i_light = i0
         end if
 !
         i0 = i0 + ele_fld%num_component(i)

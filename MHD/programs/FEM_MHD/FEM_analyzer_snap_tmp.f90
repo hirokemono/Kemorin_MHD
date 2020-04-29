@@ -211,7 +211,7 @@
      &  (MHD_step, FEM_model%FEM_prm, FEM_SGS%SGS_par,                  &
      &   femmesh%mesh, femmesh%group, FEM_model%MHD_mesh,               &
      &   FEM_model%MHD_prop, FEM_model%FEM_MHD_BCs%surf_bcs,            &
-     &   iphys, FEM_SGS%iphys_LES, SGS_MHD_wk%iphys_ele%base, ak_MHD,   &
+     &   iphys, FEM_SGS%iphys_LES, SGS_MHD_wk%iphys_ele_base, ak_MHD,   &
      &   SGS_MHD_wk%fem_int, FEM_SGS%FEM_filters%FEM_elens,             &
      &   FEM_SGS%FEM_filters%filtering, FEM_SGS%Csims,                  &
      &   SGS_MHD_wk%mk_MHD, SGS_MHD_wk%FEM_SGS_wk,                      &
@@ -224,7 +224,7 @@
      &   (MHD_step%flex_p%istep_max_dt, MHD_step%rms_step,              &
      &    FEM_model%FEM_prm, MHD_step%time_d,                           &
      &    femmesh%mesh, FEM_model%MHD_mesh, FEM_model%MHD_prop,         &
-     &    iphys, FEM_SGS%iphys_LES, nod_fld, SGS_MHD_wk%iphys_ele%base, &
+     &    iphys, FEM_SGS%iphys_LES, nod_fld, SGS_MHD_wk%iphys_ele_base, &
      &    SGS_MHD_wk%ele_fld, SGS_MHD_wk%fem_int%jcs,                   &
      &    SGS_MHD_wk%rhs_mat, SGS_MHD_wk%mhd_fem_wk, fem_sq)
 !
