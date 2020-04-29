@@ -67,14 +67,13 @@
       integer(kind = kint) :: iflag
 !
 !
-      if ( iflag_debug.gt.0 ) write(*,*) 'init_rms_4_sph_spectr'
-      call init_rms_4_sph_spectr                                        &
-     &   (sph%sph_params, sph%sph_rj, rj_fld,                           &
-     &    monitor%pwr, monitor%WK_pwr)
+      if(iflag_debug .gt. 0) write(*,*) 'init_rms_4_sph_spectr_SGS_mhd'
+      call init_rms_4_sph_spectr_SGS_mhd(sph, rj_fld, monitor)
 !
-      if ( iflag_debug.gt.0 ) write(*,*) 'check_sph_vol_ms_file'
-      iflag = check_sph_vol_ms_file(my_rank, sph%sph_params,            &
-     &                              sph%sph_rj, monitor%pwr)
+      if(iflag_debug .gt. 0) write(*,*) 'check_sph_vol_ms_file'
+      iflag = check_sph_vol_ms_file(my_rank, monitor%ene_labels,        &
+     &                              sph%sph_params, sph%sph_rj,         &
+     &                              monitor%pwr)
       call MPI_Bcast(iflag, 1, CALYPSO_INTEGER, 0,                      &
      &               CALYPSO_COMM, ierr_MPI)
       if(iflag .gt. 0) then
@@ -129,7 +128,8 @@
      &    sph_MHD_bc%sph_bc_U, leg, SPH_MHD%ipol, SPH_SGS%ipol_LES,     &
      &    SPH_MHD%fld, monitor%pwr, monitor%WK_pwr, monitor%Nusselt)
 !
-      call output_sph_monitor_data(time_d, SPH_MHD%sph%sph_params,      &
+      call output_sph_monitor_data                                      &
+     &   (monitor%ene_labels, time_d, SPH_MHD%sph%sph_params,           &
      &    SPH_MHD%sph%sph_rj, SPH_MHD%ipol, SPH_MHD%fld,                &
      &    monitor%pwr, monitor%pick_coef, monitor%gauss_coef,           &
      &    monitor%Nusselt)
@@ -142,6 +142,7 @@
       subroutine init_rms_4_sph_spectr_SGS_mhd(sph, rj_fld, monitor)
 !
       use cal_rms_fields_by_sph
+      use init_energy_labels_sph_SGS
 !
       type(sph_grids), intent(in) :: sph
 !
@@ -149,7 +150,8 @@
       type(sph_mhd_monitor_data), intent(inout) :: monitor
 !
 !
-      if(iflag_debug .gt. 0) write(*,*) 'init_rms_4_sph_spectr'
+      if(iflag_debug .gt. 0) write(*,*) 'init_energy_labels_w_filter'
+      call init_energy_labels_w_filter(monitor%ene_labels)
       call init_rms_4_sph_spectr                                        &
      &   (sph%sph_params, sph%sph_rj, rj_fld,                           &
      &    monitor%pwr, monitor%WK_pwr)

@@ -57,8 +57,6 @@
       type(pickup_mode_list), save :: pick_list_u
 !>        Structure for pickup list
       type(picked_spectrum_data), save :: pick_sph_u
-!>        Structure for pickup list
-      type(picked_spectrum_data), save :: pick_rms1
 !
 !>      Structure for pickup list for gauss coefficients
       type(pickup_mode_list), save :: gauss_list_u

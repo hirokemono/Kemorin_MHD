@@ -26,7 +26,7 @@
 !!     &         (l_truncation, ntot_rms_rj, WK_pwr,                    &
 !!     &          num_vol_spectr, v_pwr)
 !!        type(sph_mean_square_work), intent(in) :: WK_pwr
-!!      type(sph_vol_mean_squares), intent(inout)                       &
+!!        type(sph_vol_mean_squares), intent(inout)                     &
 !!     &                         :: v_pwr(num_vol_spectr)
 !!
 !!      subroutine sum_mean_square_on_sphere(sph_params, sph_rj, pwr)
@@ -51,6 +51,7 @@
       use t_phys_address
       use t_sum_sph_rms_data
       use t_rms_4_sph_spectr
+      use t_sph_volume_mean_square
 !
       implicit none
 !

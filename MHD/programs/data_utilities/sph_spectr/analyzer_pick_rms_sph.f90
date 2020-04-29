@@ -17,7 +17,6 @@
 !
       use t_time_data
       use field_IO_select
-      use pickup_sph_rms_spectr 
 !
       implicit none
 !
@@ -44,7 +43,7 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'set_ctl_data_4_sph_utils'
       call set_ctl_data_4_sph_utils                                     &
-     &   (spu_ctl1, t_SHR, SPH_dat_ss%fld, pwr_spec)
+     &   (spu_ctl1, t_SHR, SPH_dat_ss%fld, monitor_ss%pwr)
 !
 !       set spectr grids
 !
@@ -64,13 +63,8 @@
       call init_field_data_w_SGS(SPH_dat_ss%sph%sph_rj%nnod_rj,         &
      &    SPH_dat_ss%fld, SPH_dat_ss%ipol, ipol_LES_ss)
 !
-      call init_rms_4_sph_spectr                                        &
-     &   (SPH_dat_ss%sph%sph_params, SPH_dat_ss%sph%sph_rj,             &
-     &    SPH_dat_ss%fld, pwr_spec, WK_pwr_spec)
-!
-      call allocate_work_pick_rms_sph                                   &
-     &   (SPH_dat_ss%sph%sph_rj%nidx_rj(1),                             &
-     &    SPH_dat_ss%sph%sph_rj%nidx_rj(2))
+      call init_rms_4_sph_spectr_util                                   &
+     &   (SPH_dat_ss%sph, SPH_dat_ss%fld, monitor_ss)
 !
       call alloc_schmidt_normalize                                      &
      &   (SPH_dat_ss%sph%sph_rlm%nidx_rlm(2),                           &
@@ -92,11 +86,9 @@
       integer(kind = kint) :: i_step
 !
 !
-      pick_rms1%file_prefix = pick_sph_u%file_prefix
       if (iflag_debug.gt.0) write(*,*) 'init_sph_rms_4_monitor'
       call init_sph_rms_4_monitor                                       &
-     &   (SPH_dat_ss%sph%sph_params, SPH_dat_ss%sph%sph_rj,             &
-      &   pwr_spec, pick_list_u, pick_rms1)
+     &   (SPH_dat_ss%sph, pick_list_u, monitor_ss)
 !
       do i_step = t_SHR%init_d%i_time_step, t_SHR%finish_d%i_end_step,  &
      &           t_SHR%ucd_step%increment
@@ -115,8 +107,8 @@
      &        write(*,*) 'append_picked_sph_mean_sq_file'
         t_SHR%time_d%i_time_step = i_step
         call append_picked_sph_mean_sq_file                             &
-     &     (t_SHR%time_d, SPH_dat_ss%sph%sph_rj, leg_s,                 &
-     &      SPH_dat_ss%ipol, ipol_LES_ss, SPH_dat_ss%fld, pick_rms1)
+     &    (t_SHR%time_d, SPH_dat_ss%sph%sph_rj, leg_s, SPH_dat_ss%ipol, &
+     &     ipol_LES_ss, SPH_dat_ss%fld, monitor_ss%pick_rms)
       end do
 !
       end subroutine analyze_pick_rms_sph

@@ -140,7 +140,7 @@
 !
       use t_spheric_rj_data
       use t_phys_data
-      use t_rms_4_sph_spectr
+      use t_sph_volume_mean_square
       use t_sum_sph_rms_data
 !
       use cal_rms_by_sph_spectr
@@ -236,7 +236,7 @@
 !
       use t_spheric_rj_data
       use t_phys_data
-      use t_rms_4_sph_spectr
+      use t_sph_volume_mean_square
       use t_sum_sph_rms_data
 !
       use correlation_by_sph_spectr

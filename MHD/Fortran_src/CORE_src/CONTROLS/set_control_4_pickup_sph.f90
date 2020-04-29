@@ -49,7 +49,6 @@
       use t_ctl_data_4_sph_monitor
       use t_pickup_sph_spectr_data
       use t_rms_4_sph_spectr
-      use output_sph_m_square_file
       use skip_comment_f
 !
       type(sph_monitor_control), intent(in) :: smonitor_ctl

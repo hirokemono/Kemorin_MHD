@@ -50,6 +50,7 @@
       use t_SGS_model_addresses
       use t_boundary_params_sph_MHD
       use t_rms_4_sph_spectr
+      use t_sph_volume_mean_square
       use t_sum_sph_rms_data
       use t_no_heat_Nusselt
 !

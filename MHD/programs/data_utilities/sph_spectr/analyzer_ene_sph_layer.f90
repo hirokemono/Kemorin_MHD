@@ -44,7 +44,7 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'set_ctl_data_4_sph_utils'
       call set_ctl_data_4_sph_utils                                     &
-     &   (spu_ctl1, t_SHR, SPH_dat_ss%fld, pwr_spec)
+     &   (spu_ctl1, t_SHR, SPH_dat_ss%fld, monitor_ss%pwr)
 !
 !       set spectr grids
 !
@@ -64,9 +64,8 @@
       call init_field_data_w_SGS(SPH_dat_ss%sph%sph_rj%nnod_rj,         &
      &    SPH_dat_ss%fld, SPH_dat_ss%ipol, ipol_LES_ss)
 !
-      call init_rms_4_sph_spectr                                        &
-     &   (SPH_dat_ss%sph%sph_params, SPH_dat_ss%sph%sph_rj,             &
-     &    SPH_dat_ss%fld, pwr_spec, WK_pwr_spec)
+      call init_rms_4_sph_spectr_util                                   &
+     &   (SPH_dat_ss%sph, SPH_dat_ss%fld, monitor_ss)
 !
 !
       call alloc_schmidt_normalize                                      &
@@ -108,12 +107,12 @@
         call cal_mean_squre_in_shell                                    &
      &     (SPH_dat_ss%sph%sph_params, SPH_dat_ss%sph%sph_rj,           &
      &      SPH_dat_ss%ipol, SPH_dat_ss%fld, leg_s%g_sph_rj,            &
-     &      pwr_spec, WK_pwr_spec)
+     &      monitor_ss%pwr, monitor_ss%WK_pwr)
 !
         if (iflag_debug.gt.0)                                           &
      &      write(*,*) 'write_sph_1layer_ms_spec_file'
-        call write_sph_layer_ms_file(my_rank, t_SHR%time_d,             &
-     &      SPH_dat_ss%sph%sph_params, pwr_spec)
+        call write_sph_layer_ms_file(my_rank, monitor_ss%ene_labels,    &
+     &      t_SHR%time_d, SPH_dat_ss%sph%sph_params, monitor_ss%pwr)
       end do
 !
       end subroutine analyze_ene_sph_layer

@@ -13,7 +13,7 @@
       use m_precision
 !
       use calypso_mpi
-      use analyzer_sph_snap
+      use analyzer_sph_snap_w_psf
       use analyzer_sph_modify_restart
 !
       implicit none
@@ -21,7 +21,7 @@
 !
       call calypso_MPI_init
 !
-      call initialize_sph_snap
+      call initialize_sph_snap_w_psf
 !
       call evolution_sph_mod_restart
 !

@@ -185,7 +185,7 @@
       use t_sph_mhd_monitor_data_IO
 !
       use volume_average_4_sph
-      use output_sph_m_square_file
+      use cal_write_sph_monitor_data
       use cal_SGS_sph_rms_data
 !
       type(MHD_step_param), intent(in) :: MHD_step
@@ -210,16 +210,8 @@
      &   (sph_params, sph_rj, ipol, ipol_LES, rj_fld, leg%g_sph_rj,     &
      &    monitor%pwr, monitor%WK_pwr)
 !
-      call write_sph_vol_ave_file                                       &
-     &   (MHD_step%time_d, sph_params, sph_rj, monitor%pwr)
-      call write_sph_vol_ms_file                                        &
-     &   (my_rank, MHD_step%time_d, sph_params, sph_rj, monitor%pwr)
-      call write_sph_vol_ms_spectr_file                                 &
-     &   (my_rank, MHD_step%time_d, sph_params, sph_rj, monitor%pwr)
-      call write_sph_layer_ms_file                                      &
-     &   (my_rank, MHD_step%time_d, sph_params, monitor%pwr)
-      call write_sph_layer_spectr_file                                  &
-     &   (my_rank, MHD_step%time_d, sph_params, monitor%pwr)
+      call output_sph_mean_square_files(monitor%ene_labels,             &
+     &    MHD_step%time_d,, sph_params, sph_rj, monitor%pwr)
 !
       end subroutine output_rms_sph_back_trans
 !

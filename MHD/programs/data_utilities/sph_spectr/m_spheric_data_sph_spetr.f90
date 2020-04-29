@@ -37,8 +37,6 @@
 !
 !
 !>      Structure of mean square data
-      type(sph_mean_squares), save :: pwr_spec
-!>      Work structure of mean square data
-      type(sph_mean_square_work), save :: WK_pwr_spec
+      type(sph_mean_squares), save :: monitor_ss
 !
       end module m_spheric_data_sph_spetr

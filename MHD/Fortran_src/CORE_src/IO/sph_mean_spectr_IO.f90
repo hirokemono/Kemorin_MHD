@@ -9,11 +9,12 @@
 !!@verbatim
 !!      integer(kind = kint) function check_sph_vol_mean_sq_file        &
 !!     &                   (id_file, fname_rms, mode_label,             &
-!!     &                    sph_params, sph_rj, v_pwr)
+!!     &                    ene_labels, sph_params, sph_rj, v_pwr)
 !!      subroutine open_sph_vol_mean_sq_file(id_file, fname_rms,        &
-!!     &          mode_label, sph_params, sph_rj, v_pwr)
+!!     &          mode_label, ene_labels, sph_params, sph_rj, v_pwr)
 !!      subroutine open_sph_mean_sq_file(id_file, fname_rms, mode_label,&
-!!     &          ltr, nlayer_ICB, nlayer_CMB, pwr)
+!!     &          ltr, nlayer_ICB, nlayer_CMB, ene_labels, pwr)
+!!        type(energy_label_param), intent(in) :: ene_labels
 !!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(sph_vol_mean_squares), intent(in) :: v_pwr
@@ -39,7 +40,10 @@
 !
       use m_precision
       use t_time_data
+      use t_spheric_parameter
       use t_rms_4_sph_spectr
+      use t_sph_volume_mean_square
+      use t_energy_label_parameters
 !
       implicit none
 !
@@ -51,15 +55,15 @@
 !
       integer(kind = kint) function check_sph_vol_mean_sq_file          &
      &                   (id_file, fname_rms, mode_label,               &
-     &                    sph_params, sph_rj, v_pwr)
+     &                    ene_labels, sph_params, sph_rj, v_pwr)
 !
-      use t_spheric_parameter
       use sph_mean_spectr_header_IO
 !
       integer(kind = kint), intent(in) :: id_file
       character(len = kchara), intent(in) :: fname_rms, mode_label
-      type(sph_rj_grid), intent(in) ::  sph_rj
+      type(energy_label_param), intent(in) :: ene_labels
       type(sph_shell_parameters), intent(in) :: sph_params
+      type(sph_rj_grid), intent(in) ::  sph_rj
       type(sph_vol_mean_squares), intent(in) :: v_pwr
 !
 !
@@ -67,12 +71,8 @@
      &    status='old', err = 99)
 !
       check_sph_vol_mean_sq_file                                        &
-     &         = check_sph_vol_mean_sq_header                           &
-     &         (id_file, mode_label, sph_params%l_truncation,           &
-     &          v_pwr%num_fld_sq, v_pwr%ntot_comp_sq,                   &
-     &          v_pwr%num_comp_sq, v_pwr%pwr_name, sph_rj%nidx_rj(1),   &
-     &          sph_params%nlayer_ICB, sph_params%nlayer_CMB,           &
-     &          v_pwr%kr_inside, v_pwr%kr_outside)
+     &         = check_sph_vol_mean_sq_header(id_file, mode_label,      &
+     &          ene_labels, sph_params, sph_rj, v_pwr)
       close(id_file)
 !      write(*,*) 'Checked ', trim(fname_rms),                          &
 !     &     check_sph_vol_mean_sq_file
@@ -88,13 +88,13 @@
 !  --------------------------------------------------------------------
 !
       subroutine open_sph_vol_mean_sq_file(id_file, fname_rms,          &
-     &          mode_label, sph_params, sph_rj, v_pwr)
+     &          mode_label, ene_labels, sph_params, sph_rj, v_pwr)
 !
-      use t_spheric_parameter
       use sph_mean_spectr_header_IO
 !
       integer(kind = kint), intent(in) :: id_file
       character(len = kchara), intent(in) :: fname_rms, mode_label
+      type(energy_label_param), intent(in) :: ene_labels
       type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(sph_vol_mean_squares), intent(in) :: v_pwr
@@ -108,19 +108,14 @@
       open(id_file, file=fname_rms, form='formatted',                   &
      &    status='replace')
       call write_sph_vol_mean_sq_header                                 &
-     &   (id_file, mode_label, sph_params%l_truncation,                 &
-     &    v_pwr%num_fld_sq, v_pwr%ntot_comp_sq, v_pwr%num_comp_sq,      &
-     &    v_pwr%pwr_name, sph_rj%nidx_rj(1),                            &
-     &    sph_params%nlayer_ICB, sph_params%nlayer_CMB,                 &
-     &    v_pwr%kr_inside, v_pwr%kr_outside,                            &
-     &    v_pwr%r_inside,  v_pwr%r_outside)
+     &   (id_file, mode_label, ene_labels, sph_params, sph_rj, v_pwr)
 !
       end subroutine open_sph_vol_mean_sq_file
 !
 !  --------------------------------------------------------------------
 !
       subroutine open_sph_mean_sq_file(id_file, fname_rms, mode_label,  &
-     &          ltr, nlayer_ICB, nlayer_CMB, pwr)
+     &          ltr, nlayer_ICB, nlayer_CMB, ene_labels, pwr)
 !
       use sph_mean_spectr_header_IO
 !
@@ -128,6 +123,7 @@
       character(len = kchara), intent(in) :: fname_rms, mode_label
       integer(kind = kint), intent(in) :: ltr
       integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
+      type(energy_label_param), intent(in) :: ene_labels
       type(sph_mean_squares), intent(in) :: pwr
 !
 !
@@ -138,9 +134,8 @@
    99 continue
       open(id_file, file=fname_rms, form='formatted',                   &
      &    status='replace')
-      call write_sph_mean_sq_header(id_file, mode_label, ltr,           &
-     &    pwr%num_fld_sq, pwr%ntot_comp_sq, pwr%num_comp_sq,            &
-     &    pwr%pwr_name, pwr%nri_rms, nlayer_ICB, nlayer_CMB)
+      call write_sph_mean_sq_header(id_file, mode_label,                &
+     &    ltr, nlayer_ICB, nlayer_CMB, ene_labels, pwr)
 !
       end subroutine open_sph_mean_sq_file
 !
