@@ -211,7 +211,7 @@
      &    monitor%pwr, monitor%WK_pwr)
 !
       call output_sph_mean_square_files(monitor%ene_labels,             &
-     &    MHD_step%time_d,, sph_params, sph_rj, monitor%pwr)
+     &    MHD_step%time_d, sph_params, sph_rj, monitor%pwr)
 !
       end subroutine output_rms_sph_back_trans
 !
