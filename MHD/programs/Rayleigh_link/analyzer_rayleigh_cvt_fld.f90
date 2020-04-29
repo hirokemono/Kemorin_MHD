@@ -82,8 +82,6 @@
       type(construct_spherical_grid), save :: gen_sph_G
 !
 !
-      integer(kind = kint) :: ierr
-!
       type(field_IO_params) ::  rayleigh_mesh_file
       type(field_IO_params) ::  mesh_file
 !
@@ -181,7 +179,7 @@
       use const_element_comm_tables
       use share_field_data
 !
-      integer(kind = kint) :: istep, icou
+      integer(kind = kint) :: istep
 !
       type(field_IO), allocatable :: org_fIO(:)
 !

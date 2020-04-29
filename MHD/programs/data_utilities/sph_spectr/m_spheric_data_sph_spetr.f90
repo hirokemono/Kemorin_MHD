@@ -15,8 +15,7 @@
       use t_time_data
       use t_field_data_IO
       use t_schmidt_poly_on_rtm
-      use t_rms_4_sph_spectr
-      use t_sum_sph_rms_data
+      use t_spheric_data_sph_spetr
       use t_SPH_SGS_structure
 !
       implicit none
@@ -37,6 +36,6 @@
 !
 !
 !>      Structure of mean square data
-      type(sph_mean_squares), save :: monitor_ss
+      type(sph_spectr_monitor_data), save :: monitor_ss
 !
       end module m_spheric_data_sph_spetr

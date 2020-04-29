@@ -95,11 +95,11 @@
       call dealloc_phys_data_type(ref_rj_fld)
       call dealloc_phys_name_type(ref_rj_fld)
 !
-      call write_sph_vol_ms_file                                        &
-     &   (my_rank, ene_labels, time_d, SPH_MHD%sph%sph_params,          &
-     &    SPH_MHD%sph%sph_rj, SPH_WK%monitor%pwr)
-      call write_sph_layer_ms_file(my_rank, ene_labels, time_d,         &
-     &   SPH_MHD%sph%sph_params, SPH_WK%monitor%pwr)
+      call write_sph_vol_ms_file(my_rank, SPH_WK%monitor%ene_labels,    &
+     &    time_d, SPH_MHD%sph%sph_params, SPH_MHD%sph%sph_rj,           &
+     &    SPH_WK%monitor%pwr)
+      call write_sph_layer_ms_file(my_rank, SPH_WK%monitor%ene_labels,  &
+     &    time_d, SPH_MHD%sph%sph_params, SPH_WK%monitor%pwr)
 !
       end subroutine SPH_analyze_correlate_all
 !

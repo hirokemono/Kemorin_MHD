@@ -27,30 +27,25 @@
 !
       use m_precision
 !
-!
-      use t_ctl_data_4_sph_utils
-      use t_SPH_mesh_field_data
-      use t_time_data
-      use t_field_data_IO
-      use t_schmidt_poly_on_rtm
       use t_rms_4_sph_spectr
       use t_sum_sph_rms_data
-      use t_SPH_SGS_structure
+      use t_pickup_sph_spectr_data
+      use t_energy_label_parameters
 !
       implicit none
 !
 !
       type sph_spectr_monitor_data
 !>        Structure of energy label
-        type(energy_label_param), save :: ene_labels
+        type(energy_label_param) :: ene_labels
 !
 !>        Structure for pickup list
-        type(picked_spectrum_data), save :: pick_rms
+        type(picked_spectrum_data) :: pick_rms
 !
 !>        Structure of mean square data
-        type(sph_mean_squares), save :: pwr
+        type(sph_mean_squares) :: pwr
 !>        Work structure of mean square data
-        type(sph_mean_square_work), save :: WK_pwr
+        type(sph_mean_square_work) :: WK_pwr
       end type sph_spectr_monitor_data
 !
 ! -----------------------------------------------------------------------
@@ -86,7 +81,6 @@
       use sph_mean_spectr_header_IO
 !
       type(sph_grids), intent(in) :: sph
-      type(sph_mean_squares), intent(in) :: pwr
 !
       type(pickup_mode_list), intent(inout) :: pick_list
       type(sph_spectr_monitor_data), intent(inout) :: monitor_s
