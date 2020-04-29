@@ -5,12 +5,13 @@
 !
 !!      subroutine cal_velo_co_lumped_crank(i_velo, dt,                 &
 !!     &          FEM_prm, nod_comm, node, ele, fluid, fl_prop,         &
-!!     &          Vnod_bcs, nod_fld, iphys_ele, fld_ele, g_FEM, jac_3d, &
-!!     &          rhs_tbl, mlump_fl, mhd_fem_wk, fem_wk, f_l, f_nl)
+!!     &          Vnod_bcs, nod_fld, iphys_ele_base, fld_ele, g_FEM,    &
+!!     &          jac_3d, rhs_tbl, mlump_fl, mhd_fem_wk, fem_wk,        &
+!!     &          f_l, f_nl)
 !!      subroutine cal_magne_co_lumped_crank(i_magne, dt,               &
 !!     &          FEM_prm, nod_comm, node, ele, nod_fld,                &
-!!     &          iphys_ele, fld_ele, nod_bc_b, g_FEM, jac_3d, rhs_tbl, &
-!!     &          m_lump, mhd_fem_wk, fem_wk, f_l, f_nl)
+!!     &          iphys_ele_base, fld_ele, nod_bc_b, g_FEM, jac_3d,     &
+!!     &          rhs_tbl, m_lump, mhd_fem_wk, fem_wk, f_l, f_nl)
 !!
 !!      subroutine cal_velo_co_consist_crank(i_velo, coef_velo, dt,     &
 !!     &          FEM_prm, node, ele, fluid, Vnod_bcs, nod_fld,         &
@@ -25,6 +26,8 @@
 !!        type(field_geometry_data), intent(in) :: conduct
 !!        type(nodal_bcs_4_momentum_type), intent(in) :: Vnod_bcs
 !!        type(phys_data), intent(in) :: nod_fld
+!!        type(base_field_address), intent(in) :: iphys_ele_base
+!!        type(phys_data), intent(in) :: fld_ele
 !!        type(jacobians_3d), intent(in) :: jac_3d
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(vect_fixed_nod_bc_type), intent(in) :: nod_bc_b
@@ -44,7 +47,7 @@
       use t_geometry_data_MHD
       use t_geometry_data
       use t_phys_data
-      use t_phys_address
+      use t_base_field_labels
       use t_fem_gauss_int_coefs
       use t_jacobian_3d
       use t_table_FEM_const
@@ -62,8 +65,9 @@
 !
       subroutine cal_velo_co_lumped_crank(i_velo, dt,                   &
      &          FEM_prm, nod_comm, node, ele, fluid, fl_prop,           &
-     &          Vnod_bcs, nod_fld, iphys_ele, fld_ele, g_FEM, jac_3d,   &
-     &          rhs_tbl, mlump_fl, mhd_fem_wk, fem_wk, f_l, f_nl)
+     &          Vnod_bcs, nod_fld, iphys_ele_base, fld_ele, g_FEM,      &
+     &          jac_3d, rhs_tbl, mlump_fl, mhd_fem_wk, fem_wk,          &
+     &          f_l, f_nl)
 !
       use int_vol_coriolis_term
       use cal_multi_pass
@@ -81,7 +85,7 @@
       type(fluid_property), intent(in) :: fl_prop
       type(nodal_bcs_4_momentum_type), intent(in) :: Vnod_bcs
       type(phys_data), intent(in) :: nod_fld
-      type(phys_address), intent(in) :: iphys_ele
+      type(base_field_address), intent(in) :: iphys_ele_base
       type(phys_data), intent(in) :: fld_ele
       type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
@@ -97,7 +101,7 @@
       call cal_t_evo_4_vector                                           &
      &   (FEM_prm%iflag_velo_supg, fluid%istack_ele_fld_smp, dt,        &
      &    FEM_prm, mlump_fl, nod_comm, node, ele,                       &
-     &    iphys_ele%base, fld_ele, g_FEM, jac_3d, rhs_tbl,              &
+     &    iphys_ele_base, fld_ele, g_FEM, jac_3d, rhs_tbl,              &
      &    mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)
 !
       if (iflag_debug.eq.1) write(*,*) 'int_coriolis_nod_exp'
@@ -118,8 +122,8 @@
 !
       subroutine cal_magne_co_lumped_crank(i_magne, dt,                 &
      &          FEM_prm, nod_comm, node, ele, nod_fld,                  &
-     &          iphys_ele, fld_ele, nod_bc_b, g_FEM, jac_3d, rhs_tbl,   &
-     &          m_lump, mhd_fem_wk, fem_wk, f_l, f_nl)
+     &          iphys_ele_base, fld_ele, nod_bc_b, g_FEM, jac_3d,       &
+     &          rhs_tbl, m_lump, mhd_fem_wk, fem_wk, f_l, f_nl)
 !
       use cal_multi_pass
       use cal_sol_vector_correct
@@ -133,7 +137,7 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(phys_data), intent(in) :: nod_fld
-      type(phys_address), intent(in) :: iphys_ele
+      type(base_field_address), intent(in) :: iphys_ele_base
       type(phys_data), intent(in) :: fld_ele
       type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
@@ -149,7 +153,7 @@
       if (iflag_debug.eq.1)  write(*,*) 'cal_t_evo_4_vector'
       call cal_t_evo_4_vector(FEM_prm%iflag_magne_supg,                 &
      &    ele%istack_ele_smp, dt, FEM_prm, m_lump,                      &
-     &    nod_comm, node, ele, iphys_ele%base, fld_ele,                 &
+     &    nod_comm, node, ele, iphys_ele_base, fld_ele,                 &
      &    g_FEM, jac_3d, rhs_tbl, mhd_fem_wk%ff_m_smp,                  &
      &    fem_wk, f_l, f_nl)
 !

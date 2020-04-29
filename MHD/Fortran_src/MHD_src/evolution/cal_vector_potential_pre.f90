@@ -9,7 +9,7 @@
 !!     &          FEM_prm, SGS_param, cmt_param, filter_param,          &
 !!     &          nod_comm, node, ele, surf, conduct,                   &
 !!     &          sf_grp, cd_prop, Bnod_bcs, Asf_bcs,                   &
-!!     &          iphys, iphys_LES, iphys_ele, ele_fld,                 &
+!!     &          iphys, iphys_LES, iphys_ele_base, ele_fld,            &
 !!     &          jacs, rhs_tbl, FEM_elens,                             &
 !!     &          iak_diff_base, icomp_sgs_term, iphys_elediff_vec,     &
 !!     &          sgs_coefs, diff_coefs, filtering, mlump_cd,           &
@@ -19,7 +19,7 @@
 !!     &          FEM_prm, SGS_param, cmt_param,                        &
 !!     &          nod_comm, node, ele, surf, conduct, sf_grp, cd_prop,  &
 !!     &          Bnod_bcs, Fsf_bcs, iphys_base, iphys_exp,             &
-!!     &          iphys_ele, ele_fld, jacs, rhs_tbl, FEM_elens,         &
+!!     &          iphys_ele_base, ele_fld, jacs, rhs_tbl, FEM_elens,    &
 !!     &          diff_coefs, m_lump, Bmatrix, MG_vector, mhd_fem_wk,   &
 !!     &          fem_wk, surf_wk, f_l, f_nl, nod_fld)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
@@ -40,7 +40,7 @@
 !!        type(explicit_term_address), intent(in) :: iphys_exp
 !!        type(phys_address), intent(in) :: iphys
 !!        type(SGS_model_addresses), intent(in) :: iphys_LES
-!!        type(phys_address), intent(in) :: iphys_ele
+!!        type(base_field_address), intent(in) :: iphys_ele_base
 !!        type(phys_data), intent(in) :: ele_fld
 !!        type(base_field_address), intent(in) :: iak_diff_base
 !!        type(SGS_term_address), intent(in) :: icomp_sgs_term
@@ -112,7 +112,7 @@
      &          FEM_prm, SGS_param, cmt_param, filter_param,            &
      &          nod_comm, node, ele, surf, conduct,                     &
      &          sf_grp, cd_prop, Bnod_bcs, Asf_bcs,                     &
-     &          iphys, iphys_LES, iphys_ele, ele_fld,                   &
+     &          iphys, iphys_LES, iphys_ele_base, ele_fld,              &
      &          jacs, rhs_tbl, FEM_elens,                               &
      &          iak_diff_base, icomp_sgs_term, iphys_elediff_vec,       &
      &          sgs_coefs, diff_coefs, filtering, mlump_cd,             &
@@ -148,7 +148,7 @@
       type(velocity_surf_bc_type), intent(in) :: Asf_bcs
       type(phys_address), intent(in) :: iphys
       type(SGS_model_addresses), intent(in) :: iphys_LES
-      type(phys_address), intent(in) :: iphys_ele
+      type(base_field_address), intent(in) :: iphys_ele_base
       type(phys_data), intent(in) :: ele_fld
       type(base_field_address), intent(in) :: iak_diff_base
       type(SGS_term_address), intent(in) :: icomp_sgs_term
@@ -194,7 +194,7 @@
         call cal_sgs_uxb_2_evo(dt, FEM_prm, SGS_param, filter_param,    &
      &      nod_comm, node, ele, conduct, cd_prop,                      &
      &      iphys%base, iphys%filter_fld, iphys_LES%SGS_wk,             &
-     &      iphys_ele%base, ele_fld, jacs, rhs_tbl, FEM_elens,          &
+     &      iphys_ele_base, ele_fld, jacs, rhs_tbl, FEM_elens,          &
      &      filtering, icomp_sgs_term, iphys_elediff_vec,               &
      &      sgs_coefs, wk_filter, mhd_fem_wk, fem_wk, f_nl, nod_fld)
       end if
@@ -202,13 +202,13 @@
       if (FEM_prm%iflag_magne_supg .gt. id_turn_OFF) then
         call int_vol_vect_p_pre_ele_upm(FEM_prm%npoint_t_evo_int, dt,   &
      &      node, ele, conduct, cd_prop, iphys%base, nod_fld,           &
-     &      ele_fld%ntot_phys, iphys_ele%base, ele_fld%d_fld,           &
+     &      ele_fld%ntot_phys, iphys_ele_base, ele_fld%d_fld,           &
      &      jacs%g_FEM, jacs%jac_3d, rhs_tbl, mhd_fem_wk,               &
      &      fem_wk, f_nl)
       else
         call int_vol_vect_p_pre_ele(FEM_prm%npoint_t_evo_int,           &
      &      node, ele, conduct, cd_prop, iphys%base, nod_fld,           &
-     &      ele_fld%ntot_phys, iphys_ele%base, ele_fld%d_fld,           &
+     &      ele_fld%ntot_phys, iphys_ele_base, ele_fld%d_fld,           &
      &      jacs%g_FEM, jacs%jac_3d, rhs_tbl, mhd_fem_wk,               &
      &      fem_wk, f_nl)
       end if
@@ -221,7 +221,7 @@
 !      call check_nodal_data                                            &
 !     &   ((50+my_rank), nod_fld, n_vector, iphys%base%i_velo)
 !      call check_nodal_data                                            &
-!     &   ((50+my_rank), ele_fld, n_vector, iphys_ele%base%i_magne)
+!     &   ((50+my_rank), ele_fld, n_vector, iphys_ele_base%i_magne)
 !      call check_ff_smp(my_rank, n_vector, node%max_nod_smp, f_l)
 !      call check_ff_smp(my_rank, n_vector, node%max_nod_smp, f_nl)
 !
@@ -230,7 +230,7 @@
 !  -----for explicit euler
       if (cd_prop%iflag_Aevo_scheme .eq. id_explicit_euler) then
         call cal_magne_pre_euler(iphys%base%i_vecp, dt, FEM_prm,        &
-     &      nod_comm, node, ele, conduct, iphys_ele%base, ele_fld,      &
+     &      nod_comm, node, ele, conduct, iphys_ele_base, ele_fld,      &
      &      jacs%g_FEM, jacs%jac_3d, rhs_tbl, mlump_cd, mhd_fem_wk,     &
      &      fem_wk,  f_l, f_nl, nod_fld)
 !
@@ -238,7 +238,7 @@
       else if (cd_prop%iflag_Aevo_scheme .eq. id_explicit_adams2) then
         call cal_magne_pre_adams                                        &
      &     (iphys%base%i_vecp, iphys%exp_work%i_pre_uxb, dt, FEM_prm,   &
-     &      nod_comm, node, ele, conduct, iphys_ele%base, ele_fld,      &
+     &      nod_comm, node, ele, conduct, iphys_ele_base, ele_fld,      &
      &      jacs%g_FEM, jacs%jac_3d, rhs_tbl, mlump_cd,                 &
      &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
@@ -249,7 +249,7 @@
      &      iphys%base%i_vecp, iphys%exp_work%i_pre_uxb,                &
      &      iak_diff_base%i_magne, ak_d_magne, Bnod_bcs%nod_bc_a, dt,   &
      &      FEM_prm, nod_comm, node, ele, conduct,                      &
-     &      cd_prop, iphys_ele%base, ele_fld, jacs%g_FEM, jacs%jac_3d,  &
+     &      cd_prop, iphys_ele_base, ele_fld, jacs%g_FEM, jacs%jac_3d,  &
      &      rhs_tbl, FEM_elens, diff_coefs, mlump_cd,                   &
      &      Bmatrix, MG_vector, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       else if(cd_prop%iflag_Aevo_scheme .eq. id_Crank_nicolson_cmass)   &
@@ -281,7 +281,7 @@
      &          FEM_prm, SGS_param, cmt_param,                          &
      &          nod_comm, node, ele, surf, conduct, sf_grp, cd_prop,    &
      &          Bnod_bcs, Fsf_bcs, iphys_base, iphys_exp,               &
-     &          iphys_ele, ele_fld, jacs, rhs_tbl, FEM_elens,           &
+     &          iphys_ele_base, ele_fld, jacs, rhs_tbl, FEM_elens,      &
      &          diff_coefs, m_lump, Bmatrix, MG_vector, mhd_fem_wk,     &
      &          fem_wk, surf_wk, f_l, f_nl, nod_fld)
 !
@@ -310,7 +310,7 @@
       type(base_field_address), intent(in) :: iphys_base
       type(explicit_term_address), intent(in) :: iphys_exp
 !
-      type(phys_address), intent(in) :: iphys_ele
+      type(base_field_address), intent(in) :: iphys_ele_base
       type(phys_data), intent(in) :: ele_fld
       type(base_field_address), intent(in) :: iak_diff_base
       type(jacobians_type), intent(in) :: jacs
@@ -362,9 +362,10 @@
         call cal_vector_p_co_imp                                        &
      &     (iphys_base%i_vecp, iak_diff_base%i_magne, ak_d_magne, dt,   &
      &      FEM_prm, SGS_param, cmt_param, nod_comm, node, ele,         &
-     &      conduct, cd_prop, Bnod_bcs, iphys_ele, ele_fld, jacs%g_FEM, &
-     &      jacs%jac_3d, rhs_tbl, FEM_elens, diff_coefs, m_lump,        &
-     &      Bmatrix, MG_vector, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &      conduct, cd_prop, Bnod_bcs, iphys_ele_base, ele_fld,        &
+     &      jacs%g_FEM, jacs%jac_3d, rhs_tbl, FEM_elens, diff_coefs,    &
+     &      m_lump, Bmatrix, MG_vector, mhd_fem_wk, fem_wk,             &
+     &      f_l, f_nl, nod_fld)
         call clear_field_data                                           &
      &     (nod_fld, n_scalar, iphys_exp%i_m_phi)
       else

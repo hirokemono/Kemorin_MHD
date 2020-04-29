@@ -8,7 +8,7 @@
 !!      subroutine cal_vector_potential                                 &
 !!     &          (dt, FEM_prm, SGS_par, mesh, group, conduct,          &
 !!     &           cd_prop, Bnod_bcs, Asf_bcs, Fsf_bcs,                 &
-!!     &           iphys, iphys_LES, iphys_ele, ele_fld, fem_int,       &
+!!     &           iphys, iphys_LES, iphys_ele_base, ele_fld, fem_int,  &
 !!     &           icomp_sgs_term, iak_diff_base, iphys_elediff_vec,    &
 !!     &           sgs_coefs, diff_coefs, FEM_filters, mk_MHD,          &
 !!     &           Bmatrix, Fmatrix, ak_d_magne, MGCG_WK, FEM_SGS_wk,   &
@@ -16,7 +16,7 @@
 !!      subroutine s_cal_magnetic_field                                 &
 !!     &         (dt, FEM_prm, SGS_par, mesh, group, conduct,           &
 !!     &          cd_prop, Bnod_bcs, Asf_bcs, Bsf_bcs, Fsf_bcs,         &
-!!     &          iphys, iphys_LES, iphys_ele, ele_fld,                 &
+!!     &          iphys, iphys_LES, iphys_ele_base, ele_fld,            &
 !!     &          fem_int, icomp_sgs_term, iak_diff_base, iak_diff_sgs, &
 !!     &          iphys_elediff_vec, sgs_coefs, sgs_coefs_nod,          &
 !!     &          diff_coefs, FEM_filters, mk_MHD, Bmatrix, Fmatrix,    &
@@ -34,7 +34,7 @@
 !!        type(potential_surf_bc_type), intent(in) :: Fsf_bcs
 !!        type(phys_address), intent(in) :: iphys
 !!        type(SGS_model_addresses), intent(in) :: iphys_LES
-!!        type(phys_address), intent(in) :: iphys_ele
+!!        type(base_field_address), intent(in) :: iphys_ele_base
 !!        type(phys_data), intent(in) :: ele_fld
 !!        type(finite_element_integration), intent(in) :: fem_int
 !!        type(SGS_term_address), intent(in) :: icomp_sgs_term
@@ -68,6 +68,7 @@
       use t_surface_data
       use t_phys_data
       use t_phys_address
+      use t_base_field_labels
       use t_SGS_model_addresses
       use t_table_FEM_const
       use t_jacobians
@@ -100,7 +101,7 @@
       subroutine cal_vector_potential                                   &
      &          (dt, FEM_prm, SGS_par, mesh, group, conduct,            &
      &           cd_prop, Bnod_bcs, Asf_bcs, Fsf_bcs,                   &
-     &           iphys, iphys_LES, iphys_ele, ele_fld, fem_int,         &
+     &           iphys, iphys_LES, iphys_ele_base, ele_fld, fem_int,    &
      &           icomp_sgs_term, iak_diff_base, iphys_elediff_vec,      &
      &           sgs_coefs, diff_coefs, FEM_filters, mk_MHD,            &
      &           Bmatrix, Fmatrix, ak_d_magne, MGCG_WK, FEM_SGS_wk,     &
@@ -125,7 +126,7 @@
       type(potential_surf_bc_type), intent(in) :: Fsf_bcs
       type(phys_address), intent(in) :: iphys
       type(SGS_model_addresses), intent(in) :: iphys_LES
-      type(phys_address), intent(in) :: iphys_ele
+      type(base_field_address), intent(in) :: iphys_ele_base
       type(phys_data), intent(in) :: ele_fld
       type(finite_element_integration), intent(in) :: fem_int
       type(SGS_term_address), intent(in) :: icomp_sgs_term
@@ -164,7 +165,7 @@
      &    SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,         &
      &    mesh%nod_comm, mesh%node, mesh%ele, mesh%surf, conduct,       &
      &    group%surf_grp, cd_prop, Bnod_bcs, Asf_bcs,                   &
-     &    iphys, iphys_LES, iphys_ele, ele_fld,                         &
+     &    iphys, iphys_LES, iphys_ele_base, ele_fld,                    &
      &    fem_int%jcs, fem_int%rhs_tbl, FEM_filters%FEM_elens,          &
      &    iak_diff_base, icomp_sgs_term, iphys_elediff_vec,             &
      &    sgs_coefs, diff_coefs, FEM_filters%filtering,                 &
@@ -210,7 +211,7 @@
      &      mesh%nod_comm, mesh%node, mesh%ele, mesh%surf, conduct,     &
      &      group%surf_grp, cd_prop, Bnod_bcs, Fsf_bcs,                 &
      &      iphys%base, iphys%exp_work,                                 &
-     &      iphys_ele, ele_fld, fem_int%jcs, fem_int%rhs_tbl,           &
+     &      iphys_ele_base, ele_fld, fem_int%jcs, fem_int%rhs_tbl,      &
      &      FEM_filters%FEM_elens, diff_coefs, fem_int%m_lump, Bmatrix, &
      &      MGCG_WK%MG_vector, mhd_fem_wk, rhs_mat%fem_wk,              &
      &      rhs_mat%surf_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld) 
@@ -245,7 +246,7 @@
       subroutine s_cal_magnetic_field                                   &
      &         (dt, FEM_prm, SGS_par, mesh, group, conduct,             &
      &          cd_prop, Bnod_bcs, Asf_bcs, Bsf_bcs, Fsf_bcs,           &
-     &          iphys, iphys_LES, iphys_ele, ele_fld,                   &
+     &          iphys, iphys_LES, iphys_ele_base, ele_fld,              &
      &          fem_int, icomp_sgs_term, iak_diff_base, iak_diff_sgs,   &
      &          iphys_elediff_vec, sgs_coefs, sgs_coefs_nod,            &
      &          diff_coefs, FEM_filters, mk_MHD, Bmatrix, Fmatrix,      &
@@ -273,7 +274,7 @@
       type(potential_surf_bc_type), intent(in) :: Fsf_bcs
       type(phys_address), intent(in) :: iphys
       type(SGS_model_addresses), intent(in) :: iphys_LES
-      type(phys_address), intent(in) :: iphys_ele
+      type(base_field_address), intent(in) :: iphys_ele_base
       type(phys_data), intent(in) :: ele_fld
       type(finite_element_integration), intent(in) :: fem_int
       type(SGS_term_address), intent(in) :: icomp_sgs_term
@@ -319,7 +320,7 @@
      &    SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,         &
      &    mesh%nod_comm, mesh%node, mesh%ele, mesh%surf, conduct,       &
      &    group%surf_grp, cd_prop, Bnod_bcs, Asf_bcs, Bsf_bcs,          &
-     &    iphys, iphys_LES, iphys_ele, ele_fld,                         &
+     &    iphys, iphys_LES, iphys_ele_base, ele_fld,                    &
      &    fem_int%jcs, fem_int%rhs_tbl, FEM_filters%FEM_elens,          &
      &    sgs_coefs, sgs_coefs_nod,                                     &
      &    icomp_sgs_term, iak_diff_base, iak_diff_sgs,                  &
@@ -357,7 +358,7 @@
      &      SGS_par%model_p, SGS_par%commute_p,                         &
      &      mesh%nod_comm, mesh%node, mesh%ele, mesh%surf, conduct,     &
      &      group%surf_grp, cd_prop, Bnod_bcs, Fsf_bcs, iphys,          &
-     &      iphys_ele, ele_fld, fem_int%jcs, fem_int%rhs_tbl,           &
+     &      iphys_ele_base, ele_fld, fem_int%jcs, fem_int%rhs_tbl,      &
      &      FEM_filters%FEM_elens, iak_diff_base, diff_coefs,           &
      &      fem_int%m_lump, Bmatrix, MGCG_WK%MG_vector, mhd_fem_wk,     &
      &      rhs_mat%fem_wk, rhs_mat%surf_wk, rhs_mat%f_l, rhs_mat%f_nl, &

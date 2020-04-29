@@ -8,7 +8,7 @@
 !!      subroutine velocity_evolution(time, dt, FEM_prm, SGS_par,       &
 !!     &          mesh, group, fluid, fl_prop, cd_prop,                 &
 !!     &          Vnod_bcs, Vsf_bcs, Bsf_bcs, Psf_bcs, iphys, iphys_LES,&
-!!     &          iphys_ele, ak_MHD, fem_int, FEM_filters,              &
+!!     &          iphys_ele_base, ak_MHD, fem_int, FEM_filters,         &
 !!     &          iak_sgs_term, icomp_sgs_term, iak_diff_base,          &
 !!     &          iak_diff_sgs, iphys_elediff_vec,                      &
 !!     &          sgs_coefs_nod, diff_coefs, mk_MHD,                    &
@@ -26,7 +26,7 @@
 !!        type(vector_surf_bc_type), intent(in) :: Bsf_bcs
 !!        type(phys_address), intent(in) :: iphys
 !!        type(SGS_model_addresses), intent(in) :: iphys_LES
-!!        type(phys_address), intent(in) :: iphys_ele
+!!        type(base_field_address), intent(in) :: iphys_ele_base
 !!        type(coefs_4_MHD_type), intent(in) :: ak_MHD
 !!        type(finite_element_integration), intent(in) :: fem_int
 !!        type(filters_on_FEM), intent(in) :: FEM_filters
@@ -62,6 +62,7 @@
       use t_surface_group_connect
       use t_phys_data
       use t_phys_address
+      use t_base_field_labels
       use t_SGS_model_addresses
       use t_jacobians
       use t_table_FEM_const
@@ -100,7 +101,7 @@
       subroutine velocity_evolution(time, dt, FEM_prm, SGS_par,         &
      &          mesh, group, fluid, fl_prop, cd_prop,                   &
      &          Vnod_bcs, Vsf_bcs, Bsf_bcs, Psf_bcs, iphys, iphys_LES,  &
-     &          iphys_ele, ak_MHD, fem_int, FEM_filters,                &
+     &          iphys_ele_base, ak_MHD, fem_int, FEM_filters,           &
      &          iak_sgs_term, icomp_sgs_term, iak_diff_base,            &
      &          iak_diff_sgs, iphys_elediff_vec,                        &
      &          sgs_coefs_nod, diff_coefs, mk_MHD,                      &
@@ -129,7 +130,7 @@
       type(potential_surf_bc_type), intent(in) :: Psf_bcs
       type(phys_address), intent(in) :: iphys
       type(SGS_model_addresses), intent(in) :: iphys_LES
-      type(phys_address), intent(in) :: iphys_ele
+      type(base_field_address), intent(in) :: iphys_ele_base
       type(coefs_4_MHD_type), intent(in) :: ak_MHD
       type(finite_element_integration), intent(in) :: fem_int
       type(filters_on_FEM), intent(in) :: FEM_filters
@@ -167,7 +168,7 @@
      &    mesh%nod_comm, mesh%node, mesh%ele, mesh%surf,                &
      &    fluid, group%surf_grp, group%surf_nod_grp, fl_prop, cd_prop,  &
      &    Vnod_bcs, Vsf_bcs, Bsf_bcs, iphys, iphys_LES,                 &
-     &    iphys_ele, ak_MHD, fem_int, FEM_filters%FEM_elens,            &
+     &    iphys_ele_base, ak_MHD, fem_int, FEM_filters%FEM_elens,       &
      &    iak_sgs_term, icomp_sgs_term, iak_diff_base, iak_diff_sgs,    &
      &    iphys_elediff_vec, sgs_coefs_nod, diff_coefs,                 &
      &    FEM_filters%filtering, FEM_filters%layer_tbl,                 &
@@ -203,7 +204,7 @@
         call cal_velocity_co(time, dt, FEM_prm, SGS_par,                &
      &      mesh%nod_comm, mesh%node, mesh%ele, mesh%surf,              &
      &      fluid, group%surf_grp, group%surf_nod_grp,                  &
-     &      fl_prop, Vnod_bcs, Vsf_bcs, Psf_bcs, iphys, iphys_ele,      &
+     &      fl_prop, Vnod_bcs, Vsf_bcs, Psf_bcs, iphys, iphys_ele_base, &
      &      ele_fld, ak_MHD, fem_int, FEM_filters%FEM_elens,            &
      &      iak_diff_base, diff_coefs, mk_MHD%mlump_fl,                 &
      &      Vmatrix, MGCG_WK%MG_vector, mhd_fem_wk, rhs_mat, nod_fld)

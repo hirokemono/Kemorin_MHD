@@ -20,20 +20,20 @@
 !!      subroutine cal_velocity_co_imp(i_velo, iak_diff_v, ak_d_velo,   &
 !!     &          dt, FEM_prm, SGS_param, cmt_param,                    &
 !!     &          nod_comm, node, ele, fluid, fl_prop, Vnod_bcs,        &
-!!     &          iphys_ele, ele_fld, g_FEM, jac_3d, rhs_tbl, FEM_elens,&
-!!     &          diff_coefs, mlump_fl, Vmatrix, MG_vector,             &
+!!     &          iphys_ele_base, ele_fld, g_FEM, jac_3d, rhs_tbl,      &
+!!     &          FEM_elens, diff_coefs, mlump_fl, Vmatrix, MG_vector,  &
 !!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!      subroutine cal_vector_p_co_imp(i_vecp, iak_diff_b, ak_d_magne,  &
 !!     &          dt, FEM_prm, SGS_param, cmt_param,                    &
 !!     &          nod_comm, node, ele, conduct, cd_prop, Bnod_bcs,      &
-!!     &          iphys_ele, ele_fld, g_FEM, jac_3d, rhs_tbl, FEM_elens,&
-!!     &          diff_coefs, m_lump, Bmatrix, MG_vector,               &
+!!     &          iphys_ele_base, ele_fld, g_FEM, jac_3d, rhs_tbl,      &
+!!     &          FEM_elens, diff_coefs, m_lump, Bmatrix, MG_vector,    &
 !!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!      subroutine cal_magnetic_co_imp(i_magne, iak_diff_b, ak_d_magne, &
 !!     &          dt, FEM_prm, SGS_param, cmt_param,                    &
 !!     &          nod_comm, node, ele, conduct, cd_prop, Bnod_bcs,      &
-!!     &          iphys_ele, ele_fld, g_FEM, jac_3d, rhs_tbl, FEM_elens,&
-!!     &          diff_coefs,m_lump,  Bmatrix, MG_vector,               &
+!!     &          iphys_ele_base, ele_fld, g_FEM, jac_3d, rhs_tbl,      &
+!!     &          FEM_elens, diff_coefs,m_lump,  Bmatrix, MG_vector,    &
 !!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
@@ -47,7 +47,7 @@
 !!        type(conductive_property), intent(in) :: cd_prop
 !!        type(nodal_bcs_4_momentum_type), intent(in) :: Vnod_bcs
 !!        type(nodal_bcs_4_induction_type), intent(in) :: Bnod_bcs
-!!        type(phys_address), intent(in) :: iphys_ele
+!!        type(base_field_address), intent(in) :: iphys_ele_base
 !!        type(phys_data), intent(in) :: ele_fld
 !!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
 !!        type(jacobians_3d), intent(in) :: jac_3d
@@ -222,8 +222,8 @@
       subroutine cal_velocity_co_imp(i_velo, iak_diff_v, ak_d_velo,     &
      &          dt, FEM_prm, SGS_param, cmt_param,                      &
      &          nod_comm, node, ele, fluid, fl_prop, Vnod_bcs,          &
-     &          iphys_ele, ele_fld, g_FEM, jac_3d, rhs_tbl, FEM_elens,  &
-     &          diff_coefs, mlump_fl, Vmatrix, MG_vector,               &
+     &          iphys_ele_base, ele_fld, g_FEM, jac_3d, rhs_tbl,        &
+     &          FEM_elens, diff_coefs, mlump_fl, Vmatrix, MG_vector,    &
      &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       use m_array_for_send_recv
@@ -246,7 +246,7 @@
       type(field_geometry_data), intent(in) :: fluid
       type(fluid_property), intent(in) :: fl_prop
       type(nodal_bcs_4_momentum_type), intent(in) :: Vnod_bcs
-      type(phys_address), intent(in) :: iphys_ele
+      type(base_field_address), intent(in) :: iphys_ele_base
       type(phys_data), intent(in) :: ele_fld
       type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
@@ -299,7 +299,7 @@
       if (     FEM_prm%iflag_imp_correct .eq. id_Crank_nicolson) then
         call cal_velo_co_lumped_crank                                   &
      &     (i_velo, dt, FEM_prm, nod_comm, node, ele, fluid, fl_prop,   &
-     &      Vnod_bcs, nod_fld, iphys_ele, ele_fld, g_FEM, jac_3d,       &
+     &      Vnod_bcs, nod_fld, iphys_ele_base, ele_fld, g_FEM, jac_3d,  &
      &      rhs_tbl, mlump_fl, mhd_fem_wk, fem_wk, f_l, f_nl)
       else if(FEM_prm%iflag_imp_correct .eq. id_Crank_nicolson_cmass)   &
      & then
@@ -325,8 +325,8 @@
       subroutine cal_vector_p_co_imp(i_vecp, iak_diff_b, ak_d_magne,    &
      &          dt, FEM_prm, SGS_param, cmt_param,                      &
      &          nod_comm, node, ele, conduct, cd_prop, Bnod_bcs,        &
-     &          iphys_ele, ele_fld, g_FEM, jac_3d, rhs_tbl, FEM_elens,  &
-     &          diff_coefs, m_lump, Bmatrix, MG_vector,                 &
+     &          iphys_ele_base, ele_fld, g_FEM, jac_3d, rhs_tbl,        &
+     &          FEM_elens, diff_coefs, m_lump, Bmatrix, MG_vector,      &
      &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       use m_array_for_send_recv
@@ -349,7 +349,7 @@
       type(field_geometry_data), intent(in) :: conduct
       type(nodal_bcs_4_induction_type), intent(in) :: Bnod_bcs
       type(conductive_property), intent(in) :: cd_prop
-      type(phys_address), intent(in) :: iphys_ele
+      type(base_field_address), intent(in) :: iphys_ele_base
       type(phys_data), intent(in) :: ele_fld
       type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
@@ -393,7 +393,7 @@
       if (     FEM_prm%iflag_imp_correct .eq. id_Crank_nicolson) then
         call cal_magne_co_lumped_crank                                  &
      &     (i_vecp, dt, FEM_prm, nod_comm, node, ele, nod_fld,          &
-     &      iphys_ele, ele_fld, Bnod_bcs%nod_bc_a, g_FEM, jac_3d,       &
+     &      iphys_ele_base, ele_fld, Bnod_bcs%nod_bc_a, g_FEM, jac_3d,  &
      &      rhs_tbl, m_lump, mhd_fem_wk, fem_wk, f_l, f_nl)
       else if(FEM_prm%iflag_imp_correct .eq. id_Crank_nicolson_cmass)   &
      & then
@@ -418,8 +418,8 @@
       subroutine cal_magnetic_co_imp(i_magne, iak_diff_b, ak_d_magne,   &
      &          dt, FEM_prm, SGS_param, cmt_param,                      &
      &          nod_comm, node, ele, conduct, cd_prop, Bnod_bcs,        &
-     &          iphys_ele, ele_fld, g_FEM, jac_3d, rhs_tbl, FEM_elens,  &
-     &          diff_coefs,m_lump,  Bmatrix, MG_vector,                 &
+     &          iphys_ele_base, ele_fld, g_FEM, jac_3d, rhs_tbl,        &
+     &          FEM_elens, diff_coefs,m_lump,  Bmatrix, MG_vector,      &
      &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       use m_array_for_send_recv
@@ -441,7 +441,7 @@
       type(field_geometry_data), intent(in) :: conduct
       type(conductive_property), intent(in) :: cd_prop
       type(nodal_bcs_4_induction_type), intent(in) :: Bnod_bcs
-      type(phys_address), intent(in) :: iphys_ele
+      type(base_field_address), intent(in) :: iphys_ele_base
       type(phys_data), intent(in) :: ele_fld
       type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
@@ -485,7 +485,7 @@
       if     (FEM_prm%iflag_imp_correct .eq. id_Crank_nicolson) then
         call cal_magne_co_lumped_crank                                  &
      &     (i_magne, dt, FEM_prm, nod_comm, node, ele, nod_fld,         &
-     &      iphys_ele, ele_fld, Bnod_bcs%nod_bc_b, g_FEM, jac_3d,       &
+     &      iphys_ele_base, ele_fld, Bnod_bcs%nod_bc_b, g_FEM, jac_3d,  &
      &      rhs_tbl, m_lump, mhd_fem_wk, fem_wk, f_l, f_nl)
       else if(FEM_prm%iflag_imp_correct .eq. id_Crank_nicolson_cmass)   &
      & then

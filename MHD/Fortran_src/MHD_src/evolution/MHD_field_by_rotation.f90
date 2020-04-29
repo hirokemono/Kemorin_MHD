@@ -8,10 +8,10 @@
 !!
 !!@verbatim
 !!      subroutine cal_field_by_rotation                                &
-!!     &         (dt, FEM_prm, SGS_param, cmt_param,                    &
-!!     &          mesh, group, fluid, conduct, cd_prop,                 &
-!!     &          nod_bcs, surf_bcs, iphys_base, iphys_ele, ele_fld,    &
-!!     &          fem_int, FEM_elens, iak_diff_base, diff_coefs, mk_MHD,&
+!!     &         (dt, FEM_prm, SGS_param, cmt_param, mesh, group,       &
+!!     &          fluid, conduct, cd_prop, nod_bcs, surf_bcs,           &
+!!     &          iphys_base, iphys_ele_base, ele_fld, fem_int,         &
+!!     &          FEM_elens, iak_diff_base, diff_coefs, mk_MHD,         &
 !!     &          mhd_fem_wk, rhs_mat, nod_fld)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
@@ -23,7 +23,7 @@
 !!        type(nodal_boundarty_conditions), intent(in) :: nod_bcs
 !!        type(surface_boundarty_conditions), intent(in) :: surf_bcs
 !!        type(base_field_address), intent(in) :: iphys_base
-!!        type(phys_address), intent(in) :: iphys_ele
+!!        type(base_field_address), intent(in) :: iphys_ele_base
 !!        type(phys_data), intent(in) :: ele_fld
 !!        type(finite_element_integration), intent(in) :: fem_int
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
@@ -48,7 +48,6 @@
       use t_geometry_data_MHD
       use t_surface_data
       use t_phys_data
-      use t_phys_address
       use t_base_field_labels
       use t_table_FEM_const
       use t_jacobians
@@ -70,10 +69,10 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_field_by_rotation                                  &
-     &         (dt, FEM_prm, SGS_param, cmt_param,                      &
-     &          mesh, group, fluid, conduct, cd_prop,                   &
-     &          nod_bcs, surf_bcs, iphys_base, iphys_ele, ele_fld,      &
-     &          fem_int, FEM_elens, iak_diff_base, diff_coefs, mk_MHD,  &
+     &         (dt, FEM_prm, SGS_param, cmt_param, mesh, group,         &
+     &          fluid, conduct, cd_prop, nod_bcs, surf_bcs,             &
+     &          iphys_base, iphys_ele_base, ele_fld, fem_int,           &
+     &          FEM_elens, iak_diff_base, diff_coefs, mk_MHD,           &
      &          mhd_fem_wk, rhs_mat, nod_fld)
 !
       use cal_rotation_sgs
@@ -90,7 +89,7 @@
       type(nodal_boundarty_conditions), intent(in) :: nod_bcs
       type(surface_boundarty_conditions), intent(in) :: surf_bcs
       type(base_field_address), intent(in) :: iphys_base
-      type(phys_address), intent(in) :: iphys_ele
+      type(base_field_address), intent(in) :: iphys_ele_base
       type(phys_data), intent(in) :: ele_fld
       type(finite_element_integration), intent(in) :: fem_int
       type(gradient_model_data_type), intent(in) :: FEM_elens
@@ -112,9 +111,9 @@
      &        FEM_prm%npoint_t_evo_int, dt, iak_diff_base%i_velo,       &
      &        iphys_base%i_velo, iphys_base%i_vort,                     &
      &        fluid%istack_ele_fld_smp, mk_MHD%mlump_fl,                &
-     &        SGS_param,  mesh%nod_comm, mesh%node,                     &
-     &        mesh%ele, mesh%surf, group%surf_grp,                      &
-     &        iphys_ele, ele_fld, fem_int%jcs, FEM_elens, diff_coefs,   &
+     &        SGS_param, mesh%nod_comm, mesh%node, mesh%ele, mesh%surf, &
+     &        group%surf_grp, iphys_ele_base, ele_fld,                  &
+     &        fem_int%jcs, FEM_elens, diff_coefs,                       &
      &        nod_bcs%Vnod_bcs%nod_bc_w, surf_bcs%Vsf_bcs%sgs,          &
      &        fem_int%rhs_tbl, rhs_mat%fem_wk, rhs_mat%surf_wk,         &
      &        rhs_mat%f_nl, nod_fld)
@@ -132,7 +131,7 @@
      &           iphys_base%i_magne, iphys_base%i_current,              &
      &           mesh%ele%istack_ele_smp, fem_int%m_lump, SGS_param,    &
      &           mesh%nod_comm, mesh%node, mesh%ele, mesh%surf,         &
-     &           group%surf_grp, iphys_ele, ele_fld, fem_int%jcs,       &
+     &           group%surf_grp, iphys_ele_base, ele_fld, fem_int%jcs,  &
      &           FEM_elens, diff_coefs, nod_bcs%Bnod_bcs%nod_bc_j,      &
      &           surf_bcs%Bsf_bcs%sgs, fem_int%rhs_tbl, rhs_mat%fem_wk, &
      &           rhs_mat%surf_wk, rhs_mat%f_nl, nod_fld)
@@ -143,7 +142,7 @@
 !     &          iphys_base%i_magne, iphys_base%i_current,              &
 !     &          conduct%istack_ele_fld_smp, mk_MHD%mlump_cd, SGS_param,&
 !     &          mesh%nod_comm, mesh%node, mesh%ele, mesh%surf,         &
-!     &          group%surf_grp, iphys_ele, ele_fld, fem_int%jcs,       &
+!     &          group%surf_grp, iphys_ele_base, ele_fld, fem_int%jcs,  &
 !     &          FEM_elens, diff_coefs, nod_bcs%Bnod_bcs%nod_bc_j,      &
 !     &          surf_bcs%Bsf_bcs%sgs, fem_int%rhs_tbl,                 &
 !     &          rhs_mat%fem_wk, rhs_mat%surf_wk, rhs_mat%f_nl, nod_fld)
@@ -162,7 +161,7 @@
      &         iphys_base%i_magne, iphys_base%i_current,                &
      &         mesh%ele%istack_ele_smp, fem_int%m_lump, SGS_param,      &
      &         mesh%nod_comm, mesh%node, mesh%ele, mesh%surf,           &
-     &         group%surf_grp, iphys_ele, ele_fld, fem_int%jcs,         &
+     &         group%surf_grp, iphys_ele_base, ele_fld, fem_int%jcs,    &
      &         FEM_elens, diff_coefs,  nod_bcs%Bnod_bcs%nod_bc_j,       &
      &         surf_bcs%Bsf_bcs%sgs, fem_int%rhs_tbl, rhs_mat%fem_wk,   &
      &         rhs_mat%surf_wk, rhs_mat%f_nl, nod_fld)
@@ -172,7 +171,7 @@
 !     &         iphys_base%i_magne, iphys_base%i_current,               &
 !     &         conduct%istack_ele_fld_smp, mk_MHD%mlump_cd, SGS_param, &
 !     &         mesh%nod_comm, mesh%node, mesh%ele, mesh%surf,          &
-!     &         group%surf_grp,iphys_ele, ele_fld, fem_int%jcs,         &
+!     &         group%surf_grp, iphys_ele_base, ele_fld, fem_int%jcs,   &
 !     &         FEM_elens, diff_coefs, nod_bcs%Bnod_bcs%nod_bc_j,       &
 !     &         surf_bcs%Bsf_bcs%sgs, fem_int%rhs_tbl,                  &
 !     &         rhs_mat%fem_wk, rhs_mat%surf_wk, rhs_mat%f_nl, nod_fld)

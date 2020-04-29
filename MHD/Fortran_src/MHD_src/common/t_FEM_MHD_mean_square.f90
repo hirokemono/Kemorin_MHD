@@ -13,8 +13,8 @@
 !!     &         (nod_fld, iphys, iphys_LES, fem_sq)
 !!      subroutine output_time_step_control(istep, rms_step,            &
 !!     &          FEM_prm, time_d, mesh, MHD_mesh, fMHD_prop,           &
-!!     &          iphys, iphys_LES, nod_fld, iphys_ele, ele_fld, jacs,  &
-!!     &          ifld_msq, rhs_mat, mhd_fem_wk, fem_msq)
+!!     &          iphys, iphys_LES, nod_fld, iphys_ele_base, ele_fld,   &
+!!     &          jacs, rhs_mat, mhd_fem_wk, fem_sq)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_data_MHD), intent(in) :: MHD_mesh
@@ -22,7 +22,7 @@
 !!        type(phys_address), intent(in) :: iphys
 !!        type(SGS_model_addresses), intent(in) :: iphys_LES
 !!        type(phys_data), intent(in) :: nod_fld
-!!        type(phys_address), intent(in) :: iphys_ele
+!!        type(base_field_address), intent(in) :: iphys_ele_base
 !!        type(phys_data), intent(in) :: ele_fld
 !!        type(jacobians_type), intent(in) :: jacs
 !!        type(mean_square_address), intent(in) :: ifld_msq
@@ -110,8 +110,8 @@
 !
       subroutine output_time_step_control(istep, rms_step,              &
      &          FEM_prm, time_d, mesh, MHD_mesh, MHD_prop,              &
-     &          iphys, iphys_LES, nod_fld, iphys_ele, ele_fld, jacs,    &
-     &          rhs_mat, mhd_fem_wk, fem_sq)
+     &          iphys, iphys_LES, nod_fld, iphys_ele_base, ele_fld,     &
+     &          jacs, rhs_mat, mhd_fem_wk, fem_sq)
 !
       use calypso_mpi
       use t_mean_square_values
@@ -130,7 +130,7 @@
       type(phys_address), intent(in) :: iphys
       type(SGS_model_addresses), intent(in) :: iphys_LES
       type(phys_data), intent(in) :: nod_fld
-      type(phys_address), intent(in) :: iphys_ele
+      type(base_field_address), intent(in) :: iphys_ele_base
       type(phys_data), intent(in) :: ele_fld
       type(jacobians_type), intent(in) :: jacs
 !
@@ -151,7 +151,7 @@
      &    mhd_fem_wk, fem_sq%msq)
       call int_no_evo_mean_squares(time_d%i_time_step, time_d%dt,       &
      &    mesh, MHD_prop%fl_prop, MHD_prop%cd_prop,                     &
-     &    iphys, nod_fld, iphys_ele%base, ele_fld, MHD_mesh%fluid,      &
+     &    iphys, nod_fld, iphys_ele_base, ele_fld, MHD_mesh%fluid,      &
      &    jacs, fem_sq%i_msq, rhs_mat%fem_wk, fem_sq%msq)
 !
       call calypso_mpi_allreduce_real                                   &

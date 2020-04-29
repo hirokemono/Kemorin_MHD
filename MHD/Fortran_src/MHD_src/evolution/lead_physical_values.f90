@@ -45,6 +45,7 @@
       use t_edge_data
       use t_phys_data
       use t_phys_address
+      use t_base_field_labels
       use t_SGS_model_addresses
       use t_table_FEM_const
       use t_MHD_mass_matrices
@@ -109,7 +110,7 @@
      &    SGS_par%model_p, SGS_par%commute_p, fem%mesh, fem%group,      &
      &    MHD_mesh%fluid, MHD_mesh%conduct, MHD_prop%cd_prop,           &
      &    FEM_MHD_BCs%nod_bcs, FEM_MHD_BCs%surf_bcs, iphys%base,        &
-     &    SGS_MHD_wk%iphys_ele, SGS_MHD_wk%ele_fld,                     &
+     &    SGS_MHD_wk%iphys_ele%base, SGS_MHD_wk%ele_fld,                &
      &    SGS_MHD_wk%fem_int, FEM_filters%FEM_elens,                    &
      &    Csims_FEM_MHD%iak_diff_base, Csims_FEM_MHD%diff_coefs,        &
      &    SGS_MHD_wk%mk_MHD, SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat, &
@@ -122,7 +123,7 @@
       call cal_energy_fluxes(MHD_step%time_d%dt, FEM_prm, SGS_par,      &
      &    fem%mesh, fem%group, MHD_mesh, MHD_prop,                      &
      &    FEM_MHD_BCs%nod_bcs, FEM_MHD_BCs%surf_bcs, iphys, iphys_LES,  &
-     &    SGS_MHD_wk%iphys_ele, ak_MHD, SGS_MHD_wk%fem_int,             &
+     &    SGS_MHD_wk%iphys_ele%base, ak_MHD, SGS_MHD_wk%fem_int,        &
      &    FEM_filters%FEM_elens, Csims_FEM_MHD, FEM_filters%filtering,  &
      &    SGS_MHD_wk%mk_MHD, SGS_MHD_wk%FEM_SGS_wk,                     &
      &    SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat,                    &
@@ -134,9 +135,10 @@
 !
       subroutine cal_energy_fluxes                                      &
      &        (dt, FEM_prm, SGS_par, mesh, group, MHD_mesh, MHD_prop,   &
-     &         nod_bcs, surf_bcs, iphys, iphys_LES, iphys_ele, ak_MHD,  &
-     &         fem_int, FEM_elens, Csims_FEM_MHD, filtering, mk_MHD,    &
-     &         FEM_SGS_wk, mhd_fem_wk, rhs_mat, nod_fld, ele_fld)
+     &         nod_bcs, surf_bcs, iphys, iphys_LES, iphys_ele_base,     &
+     &         ak_MHD, fem_int, FEM_elens, Csims_FEM_MHD, filtering,    &
+     &         mk_MHD, FEM_SGS_wk, mhd_fem_wk, rhs_mat,                 &
+     &         nod_fld, ele_fld)
 !
       use cal_MHD_forces_4_monitor
       use cal_sgs_4_monitor
@@ -154,7 +156,7 @@
       type(surface_boundarty_conditions), intent(in) :: surf_bcs
       type(phys_address), intent(in) :: iphys
       type(SGS_model_addresses), intent(in) :: iphys_LES
-      type(phys_address), intent(in) :: iphys_ele
+      type(base_field_address), intent(in) :: iphys_ele_base
       type(coefs_4_MHD_type), intent(in) :: ak_MHD
       type(finite_element_integration), intent(in) :: fem_int
       type(gradient_model_data_type), intent(in) :: FEM_elens
@@ -174,7 +176,7 @@
      &    group%surf_grp, MHD_mesh%fluid, MHD_mesh%conduct,             &
      &    MHD_prop%fl_prop, MHD_prop%cd_prop,                           &
      &    MHD_prop%ht_prop, MHD_prop%cp_prop, nod_bcs, surf_bcs,        &
-     &    iphys, iphys_LES, iphys_ele, ak_MHD, fem_int, FEM_elens,      &
+     &    iphys, iphys_LES, iphys_ele_base, ak_MHD, fem_int, FEM_elens, &
      &    Csims_FEM_MHD%iak_diff_sgs, Csims_FEM_MHD%diff_coefs,         &
      &    mk_MHD, mhd_fem_wk, rhs_mat, nod_fld, ele_fld)
 !
@@ -182,7 +184,7 @@
      &   (dt, FEM_prm, SGS_par%model_p, SGS_par%filter_p,               &
      &    mesh%nod_comm, mesh%node, mesh%ele,                           &
      &    MHD_mesh%fluid, MHD_mesh%conduct, MHD_prop%cd_prop,           &
-     &    iphys, iphys_LES, iphys_ele, ele_fld,                         &
+     &    iphys, iphys_LES, iphys_ele_base, ele_fld,                    &
      &    fem_int%jcs, fem_int%rhs_tbl, FEM_elens,                      &
      &    Csims_FEM_MHD%icomp_sgs_term,                                 &
      &    Csims_FEM_MHD%iphys_elediff_vec,                              &
@@ -195,14 +197,14 @@
 !
       call vect_gradients_4_monitor                                     &
      &   (dt, FEM_prm, mesh%nod_comm, mesh%node, mesh%ele,              &
-     &    MHD_mesh%fluid, iphys, iphys_ele%base, fem_int, mk_MHD,       &
+     &    MHD_mesh%fluid, iphys, iphys_ele_base, fem_int, mk_MHD,       &
      &    rhs_mat, nod_fld, ele_fld)
       call cal_forces_4_monitor(dt, FEM_prm, SGS_par,                   &
      &    mesh%nod_comm, mesh%node, mesh%ele, mesh%surf,                &
      &    MHD_mesh%fluid, MHD_mesh%conduct, group%surf_grp,             &
      &    MHD_prop%fl_prop, MHD_prop%cd_prop,                           &
      &    MHD_prop%ht_prop, MHD_prop%cp_prop, nod_bcs, surf_bcs,        &
-     &    iphys, iphys_LES, iphys_ele, ak_MHD, fem_int, FEM_elens,      &
+     &    iphys, iphys_LES, iphys_ele_base, ak_MHD, fem_int, FEM_elens, &
      &    Csims_FEM_MHD%iak_diff_base, Csims_FEM_MHD%iak_diff_sgs,      &
      &    Csims_FEM_MHD%diff_coefs, mk_MHD, mhd_fem_wk, rhs_mat,        &
      &    nod_fld, ele_fld)
@@ -212,7 +214,7 @@
      &    group%surf_grp, MHD_mesh%fluid, MHD_mesh%conduct,             &
      &    MHD_prop%fl_prop, MHD_prop%cd_prop,                           &
      &    MHD_prop%ht_prop, MHD_prop%cp_prop, nod_bcs, surf_bcs,        &
-     &    iphys, iphys_LES, iphys_ele, ak_MHD, fem_int, FEM_elens,      &
+     &    iphys, iphys_LES, iphys_ele_base, ak_MHD, fem_int, FEM_elens, &
      &    Csims_FEM_MHD%iak_diff_sgs, Csims_FEM_MHD%diff_coefs,         &
      &    mk_MHD, mhd_fem_wk, rhs_mat, nod_fld, ele_fld)
 !

@@ -30,7 +30,7 @@
 !!        type(surface_group_data), intent(in) :: sf_grp
 !!        type(nodal_bcs_4_scalar_type), intent(in) :: Snod_bcs
 !!        type(scaler_surf_bc_type), intent(in) :: Ssf_bcs
-!!        type(base_field_address), intent(in) :: iphys_ele
+!!        type(base_field_address), intent(in) :: iphys_ele_base
 !!        type(phys_data), intent(in) :: ele_fld
 !!        type(field_geometry_data), intent(in) :: fluid
 !!        type(finite_element_integration), intent(in) :: fem_int
