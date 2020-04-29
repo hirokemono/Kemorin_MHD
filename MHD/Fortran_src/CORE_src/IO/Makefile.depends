@@ -118,7 +118,7 @@ sph_file_IO_select.o: $(IO_DIR)/sph_file_IO_select.F90 m_precision.o m_file_form
 	$(F90) -c $(F90FLAGS) $<
 sph_global_1d_idx_IO.o: $(IO_DIR)/sph_global_1d_idx_IO.f90 m_precision.o t_node_id_spherical_IO.o skip_comment_f.o m_sph_modes_grid_labels.o
 	$(F90) -c $(F90OPTFLAGS) $<
-sph_mean_spectr_IO.o: $(IO_DIR)/sph_mean_spectr_IO.f90 m_precision.o sph_mean_spectr_header_IO.o
+sph_mean_spectr_IO.o: $(IO_DIR)/sph_mean_spectr_IO.f90 m_precision.o t_time_data.o t_rms_4_sph_spectr.o sph_mean_spectr_header_IO.o t_spheric_parameter.o
 	$(F90) -c $(F90OPTFLAGS) $<
 sph_mean_spectr_header_IO.o: $(IO_DIR)/sph_mean_spectr_header_IO.f90 m_precision.o m_phys_labels.o write_field_labels.o skip_comment_f.o add_direction_labels.o t_base_field_labels.o m_filtered_field_labels.o
 	$(F90) -c $(F90OPTFLAGS) $<

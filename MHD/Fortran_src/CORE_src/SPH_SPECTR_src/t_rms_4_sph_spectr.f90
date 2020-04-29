@@ -363,10 +363,10 @@
       deallocate(pwr%r_4_rms, pwr%kr_4_rms)
 !
 !
-        deallocate(pwr%shl_l)
-        deallocate(pwr%shl_lm)
-        deallocate(pwr%shl_m, pwr%shl_m0, pwr%ratio_shl_m0)
-        deallocate(pwr%shl_sq)
+      deallocate(pwr%shl_l)
+      deallocate(pwr%shl_lm)
+      deallocate(pwr%shl_m, pwr%shl_m0, pwr%ratio_shl_m0)
+      deallocate(pwr%shl_sq)
 !
       deallocate(pwr%num_comp_sq, pwr%istack_comp_sq)
       deallocate(pwr%pwr_name, pwr%id_field)
@@ -466,7 +466,6 @@
 !
       subroutine dealloc_sph_vol_mean_square(v_pwr)
 !
-      integer, intent(in) :: id_rank
       type(sph_vol_mean_squares), intent(inout) :: v_pwr
 !
 !
