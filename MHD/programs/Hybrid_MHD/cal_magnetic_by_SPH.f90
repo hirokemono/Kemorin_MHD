@@ -154,10 +154,11 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      call cal_sgs_uxb_2_monitor(MHD_step1%time_d%dt, FEM_prm,          &
-     &   SGS_par%model_p, SGS_par%filter_p, mesh%nod_comm,              &
-     &   mesh%node, mesh%ele, conduct, MHD_prop%cd_prop,                &
-     &   iphys, iphys_LES, SGS_MHD_wk1%iphys_ele, SGS_MHD_wk1%ele_fld,  &
+      call cal_sgs_uxb_2_monitor                                        &
+     &  (MHD_step1%time_d%dt, FEM_prm, SGS_par%model_p,                 &
+     &   SGS_par%filter_p, mesh%nod_comm, mesh%node, mesh%ele, conduct, &
+     &   MHD_prop%cd_prop, iphys, iphys_LES,                            &
+     &   SGS_MHD_wk1%iphys_ele%base, SGS_MHD_wk1%ele_fld,               &
      &   fem_int%jcs, fem_int%rhs_tbl, FEM1_elen, filtering1,           &
      &   Csims_FEM_MHD%icomp_sgs_term, Csims_FEM_MHD%iphys_elediff_vec, &
      &   Csims_FEM_MHD%sgs_coefs, mhd1_fem_wk%mlump_cd,                 &
@@ -210,7 +211,7 @@
 !*   ------------------------------------------------------------------
 !
       subroutine nonlinear_incuction_SPH(sph, comms_sph, trans_p,       &
-     &          iphys_ele, ele_fld, ipol, rj_fld)
+     &          iphys_ele_base, ele_fld, ipol, rj_fld)
 !
       use m_solver_SR
       use spherical_SRs_N
@@ -220,7 +221,7 @@
       type(sph_comm_tables), intent(in) :: comms_sph
       type(parameters_4_sph_trans), intent(in) :: trans_p
       type(phys_address), intent(in) :: ipol
-      type(phys_address), intent(in) :: iphys_ele
+      type(base_field_address), intent(in) :: iphys_ele_base
       type(phys_data), intent(in) :: ele_fld
 !
       type(phys_data), intent(inout) :: rj_fld
@@ -228,7 +229,7 @@
 !
       call cal_vecp_induction
      &   (dt, FEM_prm, nod_comm, node, ele, conduct, cd_prop,           &
-     &    nod_bcs%Bnod_bcs, iphys, iphys_ele, ele_fld, fem_int,         &
+     &    nod_bcs%Bnod_bcs, iphys, iphys_ele_base, ele_fld, fem_int,    &
      &    mhd_fem_wk%mlump_cd, mhd_fem_wk, rhs_mat, nod_fld)
 !
       call interpolate_vector_type                                      &

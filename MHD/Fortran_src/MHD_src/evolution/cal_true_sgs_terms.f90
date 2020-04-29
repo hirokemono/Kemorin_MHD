@@ -328,7 +328,7 @@
       call cal_div_of_scalar_flux                                       &
      &   (i_div_flux, i_flux, iflag_supg, num_int, dt,                  &
      &    FEM_prm, nod_comm, node, ele, fluid, property, Snod_bcs,      &
-     &    iphys_ele, ele_fld, fem_int, mlump_fl,                        &
+     &    iphys_ele%base, ele_fld, fem_int, mlump_fl,                   &
      &    mhd_fem_wk, rhs_mat, nod_fld)
       call copy_scalar_component(nod_fld,                               &
      &    i_div_flux, i_div_flux_true)

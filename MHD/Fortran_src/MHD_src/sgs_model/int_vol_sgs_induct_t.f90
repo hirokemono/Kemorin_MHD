@@ -7,13 +7,13 @@
 !
 !!      subroutine sel_int_vol_sgs_induct_t                             &
 !!     &         (i_filter, ie_dvx, ie_dbx, ifield_v, ifield_b, dt,     &
-!!     &          FEM_prm, node, ele, conduct, nod_fld, iphys_ele,      &
+!!     &          FEM_prm, node, ele, conduct, nod_fld, iphys_ele_base, &
 !!     &          ele_fld, g_FEM, jac_3d, FEM_elens, fem_wk, mhd_fem_wk)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(phys_data), intent(in) :: nod_fld
-!!        type(phys_address), intent(in) :: iphys_ele
+!!        type(base_field_address), intent(in) :: iphys_ele_base
 !!        type(phys_data), intent(in) :: ele_fld
 !!        type(field_geometry_data), intent(in) :: conduct
 !!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
@@ -31,7 +31,7 @@
       use t_geometry_data_MHD
       use t_geometry_data
       use t_phys_data
-      use t_phys_address
+      use t_base_field_labels
       use t_fem_gauss_int_coefs
       use t_jacobian_3d
       use t_table_FEM_const
@@ -52,14 +52,14 @@
 !
       subroutine sel_int_vol_sgs_induct_t                               &
      &         (i_filter, ie_dvx, ie_dbx, ifield_v, ifield_b, dt,       &
-     &          FEM_prm, node, ele, conduct, nod_fld, iphys_ele,        &
+     &          FEM_prm, node, ele, conduct, nod_fld, iphys_ele_base,   &
      &          ele_fld, g_FEM, jac_3d, FEM_elens, fem_wk, mhd_fem_wk)
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(phys_data), intent(in) :: nod_fld
-      type(phys_address), intent(in) :: iphys_ele
+      type(base_field_address), intent(in) :: iphys_ele_base
       type(phys_data), intent(in) :: ele_fld
       type(field_geometry_data), intent(in) :: conduct
       type(FEM_gauss_int_coefs), intent(in) :: g_FEM
@@ -80,7 +80,7 @@
      &     (i_filter, ifield_v, ifield_b, FEM_prm%npoint_t_evo_int, dt, &
      &      node, ele, conduct, nod_fld, g_FEM, jac_3d, FEM_elens,      &
      &      mhd_fem_wk%n_dvx, ie_dvx, ie_dbx, mhd_fem_wk%dvx,           &
-     &      ele_fld%ntot_phys, iphys_ele%base%i_magne,                  &
+     &      ele_fld%ntot_phys, iphys_ele_base%i_magne,                  &
      &      ele_fld%d_fld, fem_wk)
       else
         call int_vol_sgs_induct_t_pg                                    &

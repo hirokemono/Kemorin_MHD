@@ -10,7 +10,7 @@
 !!      subroutine update_with_velocity(i_step, dt, FEM_prm, SGS_par,   &
 !!     &          mesh, group, fluid, Vsf_bcs, Psf_bcs,                 &
 !!     &          iphys_base, iphys_fil, iphys_wfl, iphys_SGS_wk,       &
-!!     &          iphys_ele, iphys_fil_ele, fem_int, FEM_filters,       &
+!!     &          iphys_ele_base, iphys_fil_ele, fem_int, FEM_filters,  &
 !!     &          iak_diff_base, icomp_diff_base,                       &
 !!     &          iphys_elediff_vec, iphys_elediff_fil,                 &
 !!     &          mk_MHD, FEM_SGS_wk, mhd_fem_wk, rhs_mat,              &
@@ -26,7 +26,7 @@
 !!        type(base_field_address), intent(in) :: iphys_fil
 !!        type(base_field_address), intent(in) :: iphys_wfl
 !!        type(dynamic_SGS_work_address), intent(in) :: iphys_SGS_wk
-!!        type(phys_address), intent(in) :: iphys_ele
+!!        type(base_field_address), intent(in) :: iphys_ele_base
 !!        type(base_field_address), intent(in) :: iphys_fil_ele
 !!        type(finite_element_integration), intent(in) :: fem_int
 !!        type(filters_on_FEM), intent(in) :: FEM_filters
@@ -55,7 +55,6 @@
       use t_geometry_data_MHD
       use t_surface_data
       use t_phys_data
-      use t_phys_address
       use t_base_field_labels
       use t_SGS_model_coef_labels
       use t_work_FEM_integration
@@ -79,7 +78,7 @@
       subroutine update_with_velocity(i_step, dt, FEM_prm, SGS_par,     &
      &          mesh, group, fluid, Vsf_bcs, Psf_bcs,                   &
      &          iphys_base, iphys_fil, iphys_wfl, iphys_SGS_wk,         &
-     &          iphys_ele, iphys_fil_ele, fem_int, FEM_filters,         &
+     &          iphys_ele_base, iphys_fil_ele, fem_int, FEM_filters,    &
      &          iak_diff_base, icomp_diff_base,                         &
      &          iphys_elediff_vec, iphys_elediff_fil,                   &
      &          mk_MHD, FEM_SGS_wk, mhd_fem_wk, rhs_mat,                &
@@ -106,7 +105,7 @@
       type(base_field_address), intent(in) :: iphys_wfl
       type(dynamic_SGS_work_address), intent(in) :: iphys_SGS_wk
 !
-      type(phys_address), intent(in) :: iphys_ele
+      type(base_field_address), intent(in) :: iphys_ele_base
       type(base_field_address), intent(in) :: iphys_fil_ele
       type(finite_element_integration), intent(in) :: fem_int
       type(filters_on_FEM), intent(in) :: FEM_filters
@@ -128,21 +127,21 @@
 !
       iflag_dmc = dynamic_SGS_flag(i_step, SGS_par)
 !
-      if (iphys_ele%base%i_velo .ne. 0) then
+      if (iphys_ele_base%i_velo .ne. 0) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &                 write(*,*) 'velocity_on_element'
         call vector_on_element_1st(mesh%node, mesh%ele, fem_int%jcs,    &
      &      fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,         &
-     &      iphys_base%i_velo, nod_fld, iphys_ele%base%i_velo, ele_fld)
+     &      iphys_base%i_velo, nod_fld, iphys_ele_base%i_velo, ele_fld)
       end if
 !
       if( FEM_prm%iflag_rotate_form .eq. id_turn_ON                     &
-     &      .and. iphys_ele%base%i_vort .ne. 0) then
+     &      .and. iphys_ele_base%i_vort .ne. 0) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &                 write(*,*) 'vorticity_on_element'
         call rotation_on_element_1st(mesh%node, mesh%ele, fem_int%jcs,  &
      &      fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,         &
-     &      iphys_base%i_velo, nod_fld, iphys_ele%base%i_vort, ele_fld)
+     &      iphys_base%i_velo, nod_fld, iphys_ele_base%i_vort, ele_fld)
       end if
 !
 !   required field for explicit filtering
@@ -208,7 +207,7 @@
      &        dt, FEM_prm, SGS_par,  mesh%nod_comm, mesh%node,          &
      &        mesh%ele, mesh%surf, group%surf_grp, Vsf_bcs, Psf_bcs,    &
      &        iphys_base, iphys_fil, iphys_SGS_wk,                      &
-     &        iphys_ele%base, ele_fld, fluid,                           &
+     &        iphys_ele_base, ele_fld, fluid,                           &
      &        FEM_filters%layer_tbl, fem_int%jcs, fem_int%rhs_tbl,      &
      &        FEM_filters%FEM_elens, FEM_filters%filtering,             &
      &        FEM_SGS_wk%wk_filter, FEM_SGS_wk%wk_cor,                  &

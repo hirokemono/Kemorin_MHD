@@ -6,17 +6,17 @@
 !!        modieied by H. Matsui on Sep., 2005
 !!
 !!      subroutine cal_velo_pre_euler(dt, FEM_prm, nod_comm, node, ele, &
-!!     &          fluid, fl_prop, iphys, iphys_ele, ele_fld,            &
+!!     &          fluid, fl_prop, iphys, iphys_ele_base, ele_fld,       &
 !!     &          g_FEM, jac_3d, rhs_tbl, mlump_fl, mhd_fem_wk, fem_wk, &
 !!     &          f_l, f_nl, nod_fld)
 !!      subroutine cal_magne_pre_euler(i_field, dt,                     &
 !!     &          FEM_prm, nod_comm, node, ele, conduct,                &
-!!     &          iphys_ele, ele_fld, g_FEM, jac_3d, rhs_tbl, mlump_cd, &
-!!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+!!     &          iphys_ele_base, ele_fld, g_FEM, jac_3d, rhs_tbl,      &
+!!     &          mlump_cd, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!      subroutine cal_scalar_pre_euler(iflag_supg, i_field, dt,        &
 !!     &          FEM_prm, nod_comm, node, ele, fluid,                  &
-!!     &          iphys_ele, ele_fld, g_FEM, jac_3d, rhs_tbl, mlump_fl, &
-!!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+!!     &          iphys_ele_base, ele_fld, g_FEM, jac_3d, rhs_tbl,      &
+!!     &          mlump_fl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
@@ -24,7 +24,7 @@
 !!        type(field_geometry_data), intent(in) :: fluid
 !!        type(fluid_property), intent(in) :: fl_prop
 !!        type(phys_address), intent(in) :: iphys
-!!        type(phys_address), intent(in) :: iphys_ele
+!!        type(base_field_address), intent(in) :: iphys_ele_base
 !!        type(phys_data), intent(in) :: ele_fld
 !!        type(jacobians_3d), intent(in) :: jac_3d
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
@@ -51,6 +51,7 @@
       use t_group_data
       use t_phys_data
       use t_phys_address
+      use t_base_field_labels
       use t_jacobian_3d
       use t_table_FEM_const
       use t_finite_element_mat
@@ -65,7 +66,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_velo_pre_euler(dt, FEM_prm, nod_comm, node, ele,   &
-     &          fluid, fl_prop, iphys, iphys_ele, ele_fld,              &
+     &          fluid, fl_prop, iphys, iphys_ele_base, ele_fld,         &
      &          g_FEM, jac_3d, rhs_tbl, mlump_fl, mhd_fem_wk, fem_wk,   &
      &          f_l, f_nl, nod_fld)
 !
@@ -82,7 +83,7 @@
       type(field_geometry_data), intent(in) :: fluid
       type(fluid_property), intent(in) :: fl_prop
       type(phys_address), intent(in) :: iphys
-      type(phys_address), intent(in) :: iphys_ele
+      type(base_field_address), intent(in) :: iphys_ele_base
       type(phys_data), intent(in) :: ele_fld
       type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
@@ -98,7 +99,7 @@
       call cal_t_evo_4_vector                                           &
      &   (FEM_prm%iflag_velo_supg, fluid%istack_ele_fld_smp, dt,        &
      &    FEM_prm, mlump_fl, nod_comm, node, ele,                       &
-     &    iphys_ele%base, ele_fld, g_FEM, jac_3d, rhs_tbl,              &
+     &    iphys_ele_base, ele_fld, g_FEM, jac_3d, rhs_tbl,              &
      &    mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)
 !
       if (iflag_debug.eq.1)  write(*,*) 'int_coriolis_nod_exp'
@@ -119,8 +120,8 @@
 !
       subroutine cal_magne_pre_euler(i_field, dt,                       &
      &          FEM_prm, nod_comm, node, ele, conduct,                  &
-     &          iphys_ele, ele_fld, g_FEM, jac_3d, rhs_tbl, mlump_cd,   &
-     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &          iphys_ele_base, ele_fld, g_FEM, jac_3d, rhs_tbl,        &
+     &          mlump_cd, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       use cal_sol_field_explicit
       use cal_multi_pass
@@ -133,7 +134,7 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(field_geometry_data), intent(in) :: conduct
-      type(phys_address), intent(in) :: iphys_ele
+      type(base_field_address), intent(in) :: iphys_ele_base
       type(phys_data), intent(in) :: ele_fld
       type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
@@ -149,7 +150,7 @@
       call cal_t_evo_4_vector_cd                                        &
      &   (FEM_prm%iflag_magne_supg, conduct%istack_ele_fld_smp, dt,     &
      &    FEM_prm, mlump_cd, nod_comm, node, ele,                       &
-     &    iphys_ele%base, ele_fld, g_FEM, jac_3d, rhs_tbl,              &
+     &    iphys_ele_base, ele_fld, g_FEM, jac_3d, rhs_tbl,              &
      &    mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)
       call cal_sol_vect_pre_conduct_euler                               &
      &   (dt, node%numnod, conduct%istack_inter_fld_smp,                &
@@ -164,8 +165,8 @@
 !
       subroutine cal_scalar_pre_euler(iflag_supg, i_field, dt,          &
      &          FEM_prm, nod_comm, node, ele, fluid,                    &
-     &          iphys_ele, ele_fld, g_FEM, jac_3d, rhs_tbl, mlump_fl,   &
-     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &          iphys_ele_base, ele_fld, g_FEM, jac_3d, rhs_tbl,        &
+     &          mlump_fl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       use cal_multi_pass
       use cal_sol_field_explicit
@@ -178,7 +179,7 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(field_geometry_data), intent(in) :: fluid
-      type(phys_address), intent(in) :: iphys_ele
+      type(base_field_address), intent(in) :: iphys_ele_base
       type(phys_data), intent(in) :: ele_fld
       type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
@@ -193,7 +194,7 @@
 !
       call cal_t_evo_4_scalar                                           &
      &   (iflag_supg, fluid%istack_ele_fld_smp, dt, FEM_prm,            &
-     &    mlump_fl, nod_comm, node, ele, iphys_ele%base, ele_fld,       &
+     &    mlump_fl, nod_comm, node, ele, iphys_ele_base, ele_fld,       &
      &    g_FEM, jac_3d, rhs_tbl, mhd_fem_wk%ff_m_smp,                  &
      &    fem_wk, f_l, f_nl)
       call cal_sol_vect_pre_fluid_euler                                 &

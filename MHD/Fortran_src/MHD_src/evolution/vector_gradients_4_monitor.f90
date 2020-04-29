@@ -4,8 +4,8 @@
 !     Written by H. Matsui
 !
 !!      subroutine vect_gradients_4_monitor(dt, FEM_prm,                &
-!!     &          nod_comm, node, ele, fluid, iphys, iphys_ele, fem_int,&
-!!     &          mk_MHD, rhs_mat, nod_fld, ele_fld)
+!!     &          nod_comm, node, ele, fluid, iphys, iphys_ele_base,    &
+!!     &          fem_int, mk_MHD, rhs_mat, nod_fld, ele_fld)
 !!      subroutine cal_work_4_forces(FEM_prm, nod_comm, node, ele,      &
 !!     &          fl_prop, cd_prop, iphys, iphys_LES, fem_int, mk_MHD,  &
 !!     &          mhd_fem_wk, rhs_mat, nod_fld)
@@ -18,7 +18,7 @@
 !!        type(conductive_property), intent(in) :: cd_prop
 !!        type(phys_address), intent(in) :: iphys
 !!        type(SGS_model_addresses), intent(in) :: iphys_LES
-!!        type(phys_address), intent(in) :: iphys_ele
+!!        type(base_field_address), intent(in) :: iphys_ele_base
 !!        type(finite_element_integration), intent(in) :: fem_int
 !!        type(lumped_mass_mat_layerd), intent(in) :: mk_MHD
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
@@ -42,6 +42,7 @@
       use t_group_data
       use t_phys_data
       use t_phys_address
+      use t_base_field_labels
       use t_SGS_model_addresses
       use t_jacobians
       use t_table_FEM_const
@@ -60,8 +61,8 @@
 !-----------------------------------------------------------------------
 !
       subroutine vect_gradients_4_monitor(dt, FEM_prm,                  &
-     &          nod_comm, node, ele, fluid, iphys, iphys_ele, fem_int,  &
-     &          mk_MHD, rhs_mat, nod_fld, ele_fld)
+     &          nod_comm, node, ele, fluid, iphys, iphys_ele_base,      &
+     &          fem_int, mk_MHD, rhs_mat, nod_fld, ele_fld)
 !
       use cal_gradient
 !
@@ -72,7 +73,7 @@
       type(element_data), intent(in) :: ele
       type(field_geometry_data), intent(in) :: fluid
       type(phys_address), intent(in) :: iphys
-      type(phys_address), intent(in) :: iphys_ele
+      type(base_field_address), intent(in) :: iphys_ele_base
       type(finite_element_integration), intent(in) :: fem_int
       type(lumped_mass_mat_layerd), intent(in) :: mk_MHD
 !
@@ -101,7 +102,7 @@
           call choose_cal_gradient                                      &
      &       (FEM_prm%iflag_velo_supg, FEM_prm%npoint_t_evo_int, dt,    &
      &        i_src, i_fld, fluid%istack_ele_fld_smp, mk_MHD%mlump_fl,  &
-     &        nod_comm, node, ele, iphys_ele%base, ele_fld,             &
+     &        nod_comm, node, ele, iphys_ele_base, ele_fld,             &
      &        fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,   &
      &        rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
         end if
@@ -122,7 +123,7 @@
           call choose_cal_gradient                                      &
      &       (FEM_prm%iflag_velo_supg, FEM_prm%npoint_t_evo_int, dt,    &
      &        i_src, i_fld, fluid%istack_ele_fld_smp, mk_MHD%mlump_fl,  &
-     &        nod_comm, node, ele, iphys_ele%base, ele_fld,             &
+     &        nod_comm, node, ele, iphys_ele_base, ele_fld,             &
      &        fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,   &
      &        rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
         end if
@@ -143,7 +144,7 @@
           call choose_cal_gradient                                      &
      &       (FEM_prm%iflag_velo_supg, FEM_prm%npoint_t_evo_int, dt,    &
      &        i_src, i_fld, fluid%istack_ele_fld_smp, mk_MHD%mlump_fl,  &
-     &        nod_comm, node, ele, iphys_ele%base, ele_fld,             &
+     &        nod_comm, node, ele, iphys_ele_base, ele_fld,             &
      &        fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,   &
      &        rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
         end if
@@ -164,7 +165,7 @@
           call choose_cal_gradient                                      &
      &       (FEM_prm%iflag_velo_supg, FEM_prm%npoint_t_evo_int, dt,    &
      &        i_src, i_fld, fluid%istack_ele_fld_smp, mk_MHD%mlump_fl,  &
-     &        nod_comm, node, ele, iphys_ele%base, ele_fld,             &
+     &        nod_comm, node, ele, iphys_ele_base, ele_fld,             &
      &        fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,   &
      &        rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
         end if
@@ -185,7 +186,7 @@
           call choose_cal_gradient                                      &
      &       (FEM_prm%iflag_velo_supg, FEM_prm%npoint_t_evo_int, dt,    &
      &        i_src, i_fld, fluid%istack_ele_fld_smp, mk_MHD%mlump_fl,  &
-     &        nod_comm, node, ele, iphys_ele%base, ele_fld,             &
+     &        nod_comm, node, ele, iphys_ele_base, ele_fld,             &
      &        fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,   &
      &        rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
         end if

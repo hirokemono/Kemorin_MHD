@@ -8,9 +8,10 @@
 !!      subroutine s_int_mean_squares(npoint_integrate,                 &
 !!     &          mesh, fluid, conduct, iphys, iphys_LES, nod_fld,      &
 !!     &          jacs, i_msq, msq_list, fem_wk, mhd_fem_wk, fem_msq)
-!!      subroutine int_no_evo_mean_squares(i_step, dt, mesh,            &
-!!     &          fl_prop, cd_prop, iphys, nod_fld, iphys_ele, ele_fld, &
-!!     &          fluid, jacs, fem_wk, fem_msq)
+!!      subroutine int_no_evo_mean_squares                              &
+!!     &         (i_step, dt, mesh, fl_prop, cd_prop, iphys, nod_fld,   &
+!!     &          iphys_ele_base, ele_fld, fluid, jacs, i_msq,          &
+!!     &          fem_wk, fem_msq)
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(field_geometry_data), intent(in) :: fluid, conduct
 !!        type(fluid_property), intent(in) :: fl_prop
@@ -18,7 +19,7 @@
 !!        type(phys_address), intent(in) :: iphys
 !!        type(SGS_model_addresses), intent(in) :: iphys_LES
 !!        type(phys_data), intent(in) :: nod_fld
-!!        type(phys_address), intent(in) :: iphys_ele
+!!        type(base_field_address), intent(in) :: iphys_ele_base
 !!        type(phys_data), intent(in) :: ele_fld
 !!        type(jacobians_type), intent(in) :: jacs
 !!        type(mean_square_list), intent(in) :: msq_list
@@ -38,6 +39,7 @@
       use t_mesh_data
       use t_phys_data
       use t_phys_address
+      use t_base_field_labels
       use t_SGS_model_addresses
       use t_jacobians
       use t_finite_element_mat
@@ -212,9 +214,10 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine int_no_evo_mean_squares(i_step, dt, mesh,              &
-     &          fl_prop, cd_prop, iphys, nod_fld, iphys_ele, ele_fld,   &
-     &          fluid, jacs, i_msq, fem_wk, fem_msq)
+      subroutine int_no_evo_mean_squares                                &
+     &         (i_step, dt, mesh, fl_prop, cd_prop, iphys, nod_fld,     &
+     &          iphys_ele_base, ele_fld, fluid, jacs, i_msq,            &
+     &          fem_wk, fem_msq)
 !
       use int_norm_div_MHD
       use int_rms_div_MHD
@@ -228,7 +231,7 @@
       type(conductive_property), intent(in) :: cd_prop
       type(phys_address), intent(in) :: iphys
       type(phys_data), intent(in) :: nod_fld
-      type(phys_address), intent(in) :: iphys_ele
+      type(base_field_address), intent(in) :: iphys_ele_base
       type(phys_data), intent(in) :: ele_fld
       type(jacobians_type), intent(in) :: jacs
       type(field_geometry_data), intent(in) :: fluid
@@ -248,7 +251,7 @@
      &      mesh%node, mesh%ele, nod_fld, jacs%g_FEM, jacs%jac_3d,      &
      &      fem_wk, fem_msq%rms_local(i_msq%imsq_div_v))
         call cal_stability_4_advect(i_step, dt, mesh%ele, fluid,        &
-     &      ele_fld%ntot_phys, iphys_ele%base%i_velo, ele_fld%d_fld)
+     &      ele_fld%ntot_phys, iphys_ele_base%i_velo, ele_fld%d_fld)
       end if
 !
       if  (cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then

@@ -151,7 +151,7 @@
      &    mhd_fem_wk, fem_sq%msq)
       call int_no_evo_mean_squares(time_d%i_time_step, time_d%dt,       &
      &    mesh, MHD_prop%fl_prop, MHD_prop%cd_prop,                     &
-     &    iphys, nod_fld, iphys_ele, ele_fld, MHD_mesh%fluid,           &
+     &    iphys, nod_fld, iphys_ele%base, ele_fld, MHD_mesh%fluid,      &
      &    jacs, fem_sq%i_msq, rhs_mat%fem_wk, fem_sq%msq)
 !
       call calypso_mpi_allreduce_real                                   &

@@ -5,7 +5,7 @@
 !
 !!      subroutine cal_vecp_induction                                   &
 !!     &         (dt, FEM_prm, nod_comm, node, ele, conduct, cd_prop,   &
-!!     &          Bnod_bcs, iphys, iphys_ele, ele_fld, fem_int,         &
+!!     &          Bnod_bcs, iphys, iphys_ele_base, ele_fld, fem_int,    &
 !!     &          mlump_cd, mhd_fem_wk, rhs_mat, nod_fld)
 !!      subroutine cal_vecp_diffusion(ak_d_magne,                       &
 !!     &          FEM_prm, SGS_param, nod_comm, node, ele, surf, sf_grp,&
@@ -23,7 +23,7 @@
 !!        type(nodal_bcs_4_induction_type), intent(in) :: Bnod_bcs
 !!        type(velocity_surf_bc_type), intent(in) :: Asf_bcs
 !!        type(phys_address), intent(in) :: iphys
-!!        type(phys_address), intent(in) :: iphys_ele
+!!        type(base_field_address), intent(in) :: iphys_ele_base
 !!        type(phys_data), intent(in) :: ele_fld
 !!        type(finite_element_integration), intent(in) :: fem_int
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
@@ -74,7 +74,7 @@
 !
       subroutine cal_vecp_induction                                     &
      &         (dt, FEM_prm, nod_comm, node, ele, conduct, cd_prop,     &
-     &          Bnod_bcs, iphys, iphys_ele, ele_fld, fem_int,           &
+     &          Bnod_bcs, iphys, iphys_ele_base, ele_fld, fem_int,      &
      &          mlump_cd, mhd_fem_wk, rhs_mat, nod_fld)
 !
 !
@@ -91,7 +91,7 @@
       type(conductive_property), intent(in) :: cd_prop
       type(nodal_bcs_4_induction_type), intent(in) :: Bnod_bcs
       type(phys_address), intent(in) :: iphys
-      type(phys_address), intent(in) :: iphys_ele
+      type(base_field_address), intent(in) :: iphys_ele_base
       type(phys_data), intent(in) :: ele_fld
       type(finite_element_integration), intent(in) :: fem_int
       type(lumped_mass_matrices), intent(in) :: mlump_cd
@@ -106,20 +106,20 @@
       if (FEM_prm%iflag_magne_supg .gt. id_turn_OFF) then
         call int_vol_vect_p_pre_ele_upm(FEM_prm%npoint_t_evo_int, dt,   &
      &      node, ele, conduct, cd_prop, iphys%base, nod_fld,           &
-     &      ele_fld%ntot_phys, iphys_ele%base, ele_fld%d_fld,           &
+     &      ele_fld%ntot_phys, iphys_ele_base, ele_fld%d_fld,           &
      &      fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,     &
      &       mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%f_nl)
       else
         call int_vol_vect_p_pre_ele(FEM_prm%npoint_t_evo_int,           &
      &      node, ele, conduct, cd_prop, iphys%base, nod_fld,           &
-     &      ele_fld%ntot_phys, iphys_ele%base, ele_fld%d_fld,           &
+     &      ele_fld%ntot_phys, iphys_ele_base, ele_fld%d_fld,           &
      &      fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,     &
      &      mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%f_nl)
       end if
 !
       call cal_t_evo_4_vector_cd(FEM_prm%iflag_magne_supg,              &
      &    conduct%istack_ele_fld_smp, dt, FEM_prm,                      &
-     &    mlump_cd, nod_comm, node, ele, iphys_ele%base, ele_fld,       &
+     &    mlump_cd, nod_comm, node, ele, iphys_ele_base, ele_fld,       &
      &    fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,       &
      &    mhd_fem_wk%ff_m_smp, rhs_mat%fem_wk,                          &
      &    rhs_mat%f_l, rhs_mat%f_nl)

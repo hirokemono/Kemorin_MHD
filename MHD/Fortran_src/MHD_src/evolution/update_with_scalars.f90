@@ -11,13 +11,13 @@
 !!     &          FEM_prm, SGS_par, mesh, group, fluid, sf_bcs,         &
 !!     &          iphys_base, iphys_fil, iphys_wfl,                     &
 !!     &          iphys_fil_frc, iphys_fefx, iphys_SGS_wk,              &
-!!     &          iphys_ele, ele_fld, fem_int, FEM_filters,             &
+!!     &          iphys_ele_base, ele_fld, fem_int, FEM_filters,        &
 !!     &          iak_diff_base, icomp_diff_base, mk_MHD, FEM_SGS_wk,   &
 !!     &          rhs_mat, nod_fld, diff_coefs)
 !!      subroutine update_with_dummy_scalar(i_step, dt,                 &
 !!     &          FEM_prm, SGS_par, mesh, group, fluid, sf_bcs,         &
 !!     &          iphys_base, iphys_fil, iphys_wfl, iphys_SGS_wk,       &
-!!     &          iphys_ele, ele_fld, fem_int, FEM_filters,             &
+!!     &          iphys_ele_base, ele_fld, fem_int, FEM_filters,        &
 !!     &          iak_diff_base, icomp_diff_base, mk_MHD, FEM_SGS_wk,   &
 !!     &          rhs_mat, nod_fld, diff_coefs)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
@@ -32,7 +32,7 @@
 !!        type(base_force_address), intent(in) :: iphys_fil_frc
 !!        type(energy_flux_address), intent(in) :: iphys_fefx
 !!        type(dynamic_SGS_work_address), intent(in) :: iphys_SGS_wk
-!!        type(phys_address), intent(in) :: iphys_ele
+!!        type(base_field_address), intent(in) :: iphys_ele_base
 !!        type(phys_data), intent(in) :: ele_fld
 !!        type(finite_element_integration), intent(in) :: fem_int
 !!        type(filters_on_FEM), intent(in) :: FEM_filters
@@ -57,7 +57,6 @@
       use t_geometry_data_MHD
       use t_surface_data
       use t_phys_data
-      use t_phys_address
       use t_base_field_labels
       use t_base_force_labels
       use t_energy_flux_labels
@@ -84,7 +83,7 @@
      &          FEM_prm, SGS_par, mesh, group, fluid, sf_bcs,           &
      &          iphys_base, iphys_fil, iphys_wfl,                       &
      &          iphys_fil_frc, iphys_fefx, iphys_SGS_wk,                &
-     &          iphys_ele, ele_fld, fem_int, FEM_filters,               &
+     &          iphys_ele_base, ele_fld, fem_int, FEM_filters,          &
      &          iak_diff_base, icomp_diff_base, mk_MHD, FEM_SGS_wk,     &
      &          rhs_mat, nod_fld, diff_coefs)
 !
@@ -112,7 +111,7 @@
       type(energy_flux_address), intent(in) :: iphys_fefx
       type(dynamic_SGS_work_address), intent(in) :: iphys_SGS_wk
 !
-      type(phys_address), intent(in) :: iphys_ele
+      type(base_field_address), intent(in) :: iphys_ele_base
       type(phys_data), intent(in) :: ele_fld
       type(finite_element_integration), intent(in) :: fem_int
       type(filters_on_FEM), intent(in) :: FEM_filters
@@ -217,7 +216,7 @@
      &            iak_diff_base%i_temp, icomp_diff_base%i_temp,         &
      &            SGS_par, mesh%nod_comm, mesh%node, mesh%ele,          &
      &            mesh%surf, group%surf_grp, sf_bcs, iphys_SGS_wk,      &
-     &            iphys_ele%base, ele_fld, fluid,                       &
+     &            iphys_ele_base, ele_fld, fluid,                       &
      &            FEM_filters%layer_tbl, fem_int%jcs, fem_int%rhs_tbl,  &
      &            FEM_filters%FEM_elens, FEM_filters%filtering,         &
      &            mk_MHD%mlump_fl, FEM_SGS_wk%wk_filter,                &
@@ -237,7 +236,7 @@
       subroutine update_with_dummy_scalar(i_step, dt,                   &
      &          FEM_prm, SGS_par, mesh, group, fluid, sf_bcs,           &
      &          iphys_base, iphys_fil, iphys_wfl, iphys_SGS_wk,         &
-     &          iphys_ele, ele_fld, fem_int, FEM_filters,               &
+     &          iphys_ele_base, ele_fld, fem_int, FEM_filters,          &
      &          iak_diff_base, icomp_diff_base, mk_MHD, FEM_SGS_wk,     &
      &          rhs_mat, nod_fld, diff_coefs)
 !
@@ -263,7 +262,7 @@
       type(base_field_address), intent(in) :: iphys_wfl
       type(dynamic_SGS_work_address), intent(in) :: iphys_SGS_wk
 !
-      type(phys_address), intent(in) :: iphys_ele
+      type(base_field_address), intent(in) :: iphys_ele_base
       type(phys_data), intent(in) :: ele_fld
       type(finite_element_integration), intent(in) :: fem_int
       type(filters_on_FEM), intent(in) :: FEM_filters
@@ -332,7 +331,7 @@
      &             iak_diff_base%i_light, icomp_diff_base%i_light,      &
      &             SGS_par, mesh%nod_comm, mesh%node, mesh%ele,         &
      &             mesh%surf, group%surf_grp, sf_bcs, iphys_SGS_wk,     &
-     &             iphys_ele%base, ele_fld, fluid,                      &
+     &             iphys_ele_base, ele_fld, fluid,                      &
      &             FEM_filters%layer_tbl, fem_int%jcs, fem_int%rhs_tbl, &
      &             FEM_filters%FEM_elens, FEM_filters%filtering,        &
      &             mk_MHD%mlump_fl, FEM_SGS_wk%wk_filter,               &

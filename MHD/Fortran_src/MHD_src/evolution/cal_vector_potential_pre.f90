@@ -194,9 +194,9 @@
         call cal_sgs_uxb_2_evo(dt, FEM_prm, SGS_param, filter_param,    &
      &      nod_comm, node, ele, conduct, cd_prop,                      &
      &      iphys%base, iphys%filter_fld, iphys_LES%SGS_wk,             &
-     &      iphys_ele, ele_fld, jacs, rhs_tbl, FEM_elens, filtering,    &
-     &      icomp_sgs_term, iphys_elediff_vec, sgs_coefs, wk_filter,    &
-     &      mhd_fem_wk, fem_wk, f_nl, nod_fld)
+     &      iphys_ele%base, ele_fld, jacs, rhs_tbl, FEM_elens,          &
+     &      filtering, icomp_sgs_term, iphys_elediff_vec,               &
+     &      sgs_coefs, wk_filter, mhd_fem_wk, fem_wk, f_nl, nod_fld)
       end if
 !
       if (FEM_prm%iflag_magne_supg .gt. id_turn_OFF) then
@@ -229,16 +229,16 @@
 !
 !  -----for explicit euler
       if (cd_prop%iflag_Aevo_scheme .eq. id_explicit_euler) then
-        call cal_magne_pre_euler(iphys%base%i_vecp, dt,                 &
-     &      FEM_prm, nod_comm, node, ele, conduct, iphys_ele, ele_fld,  &
+        call cal_magne_pre_euler(iphys%base%i_vecp, dt, FEM_prm,        &
+     &      nod_comm, node, ele, conduct, iphys_ele%base, ele_fld,      &
      &      jacs%g_FEM, jacs%jac_3d, rhs_tbl, mlump_cd, mhd_fem_wk,     &
      &      fem_wk,  f_l, f_nl, nod_fld)
 !
 !  -----for Adams_Bashforth
       else if (cd_prop%iflag_Aevo_scheme .eq. id_explicit_adams2) then
         call cal_magne_pre_adams                                        &
-     &     (iphys%base%i_vecp, iphys%exp_work%i_pre_uxb, dt,            &
-     &      FEM_prm, nod_comm, node, ele, conduct, iphys_ele, ele_fld,  &
+     &     (iphys%base%i_vecp, iphys%exp_work%i_pre_uxb, dt, FEM_prm,   &
+     &      nod_comm, node, ele, conduct, iphys_ele%base, ele_fld,      &
      &      jacs%g_FEM, jacs%jac_3d, rhs_tbl, mlump_cd,                 &
      &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !

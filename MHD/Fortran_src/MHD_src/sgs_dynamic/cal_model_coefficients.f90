@@ -245,7 +245,7 @@
           call cal_sgs_m_flux_dynamic                                   &
      &       (time_d%dt, FEM_prm, SGS_par, geofem%mesh,                 &
      &        iphys%base, iphys%filter_fld, iphys_LES%SGS_term,         &
-     &        iphys_LES%SGS_wk, SGS_MHD_wk%iphys_ele,                   &
+     &        iphys_LES%SGS_wk, SGS_MHD_wk%iphys_ele%base,              &
      &        SGS_MHD_wk%ele_fld, MHD_mesh%fluid, fem_int, FEM_filters, &
      &        iak_sgs_term, icomp_sgs_term,                             &
      &        iphys_elediff_vec, iphys_elediff_fil,                     &
@@ -336,7 +336,7 @@
           call cal_sgs_induct_t_dynamic                                 &
      &      (time_d%dt, FEM_prm, SGS_par, geofem%mesh,                  &
      &       iphys%base, iphys%filter_fld, iphys_LES%SGS_term,          &
-     &       iphys_LES%SGS_wk, SGS_MHD_wk%iphys_ele,                    &
+     &       iphys_LES%SGS_wk, SGS_MHD_wk%iphys_ele%base,               &
      &       SGS_MHD_wk%ele_fld, MHD_mesh%conduct, MHD_prop%cd_prop,    &
      &       fem_int, FEM_filters, iak_sgs_term, icomp_sgs_term,        &
      &       iphys_elediff_vec, iphys_elediff_fil,                      &
@@ -365,7 +365,7 @@
      &       MHD_mesh%fluid, MHD_mesh%conduct,                          &
      &       MHD_prop%cd_prop, surf_bcs%Bsf_bcs, iphys%base,            &
      &       iphys%filter_fld, iphys_LES%SGS_term, iphys_LES%SGS_wk,    &
-     &       SGS_MHD_wk%iphys_ele, SGS_MHD_wk%ele_fld,                  &
+     &       SGS_MHD_wk%iphys_ele%base, SGS_MHD_wk%ele_fld,             &
      &       fem_int, sgs_coefs, FEM_filters, SGS_MHD_wk%mk_MHD,        &
      &       SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%mhd_fem_wk,              &
      &       SGS_MHD_wk%rhs_mat, nod_fld, diff_coefs)
@@ -379,7 +379,7 @@
           call cal_sgs_uxb_dynamic                                      &
      &       (time_d%dt, FEM_prm, SGS_par, geofem%mesh, iphys%base,     &
      &        iphys%filter_fld, iphys_LES%SGS_term, iphys_LES%SGS_wk,   &
-     &        SGS_MHD_wk%iphys_ele, SGS_MHD_wk%ele_fld,                 &
+     &        SGS_MHD_wk%iphys_ele%base, SGS_MHD_wk%ele_fld,            &
      &        MHD_mesh%conduct, MHD_prop%cd_prop, fem_int, FEM_filters, &
      &        iak_sgs_term, icomp_sgs_term, iphys_elediff_vec,          &
      &        iphys_elediff_fil, SGS_MHD_wk%mk_MHD,                     &

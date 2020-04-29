@@ -151,9 +151,9 @@
      &      iphys_LES%SGS_term%i_SGS_h_flux,                            &
      &      icomp_sgs_term%i_SGS_h_flux, iphys_elediff_vec%i_velo,      &
      &      SGS_param, filter_param, nod_comm, node, ele, fluid,        &
-     &      iphys_ele, ele_fld, jacs, rhs_tbl, FEM_elens, filtering,    &
-     &      sgs_coefs, sgs_coefs_nod, mk_MHD%mlump_fl, wk_filter,       &
-     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &      iphys_ele%base, ele_fld, jacs, rhs_tbl, FEM_elens,          &
+     &      filtering, sgs_coefs, sgs_coefs_nod, mk_MHD%mlump_fl,       &
+     &      wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
       if(iphys_LES%SGS_term%i_SGS_c_flux .gt. 0) then
@@ -167,9 +167,9 @@
      &      iphys_LES%SGS_term%i_SGS_c_flux,                            &
      &      icomp_sgs_term%i_SGS_c_flux, iphys_elediff_vec%i_velo,      &
      &      SGS_param, filter_param, nod_comm, node, ele, fluid,        &
-     &      iphys_ele, ele_fld, jacs, rhs_tbl, FEM_elens, filtering,    &
-     &      sgs_coefs, sgs_coefs_nod, mk_MHD%mlump_fl, wk_filter,       &
-     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &      iphys_ele%base, ele_fld, jacs, rhs_tbl, FEM_elens,          &
+     &      filtering, sgs_coefs, sgs_coefs_nod, mk_MHD%mlump_fl,       &
+     &      wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
       if(iphys_LES%SGS_term%i_SGS_m_flux .gt. 0) then
@@ -178,7 +178,7 @@
         call cal_sgs_momentum_flux(dt, FEM_prm, SGS_param,              &
      &      filter_param, nod_comm, node, ele, fluid,                   &
      &      iphys%base, iphys%filter_fld, iphys_LES%SGS_term,           &
-     &      iphys_LES%SGS_wk, iphys_ele, ele_fld, jacs, rhs_tbl,        &
+     &      iphys_LES%SGS_wk, iphys_ele%base, ele_fld, jacs, rhs_tbl,   &
      &      FEM_elens, filtering, icomp_sgs_term, iphys_elediff_vec,    &
      &      sgs_coefs, sgs_coefs_nod, mk_MHD%mlump_fl,                  &
      &      wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
@@ -190,7 +190,7 @@
         call cal_sgs_maxwell(dt, FEM_prm, SGS_param,                    &
      &      filter_param, nod_comm, node, ele, fluid,                   &
      &      iphys%base, iphys%filter_fld, iphys_LES%SGS_term,           &
-     &      iphys_LES%SGS_wk, iphys_ele, ele_fld, jacs, rhs_tbl,        &
+     &      iphys_LES%SGS_wk, iphys_ele%base, ele_fld, jacs, rhs_tbl,   &
      &      FEM_elens, filtering, icomp_sgs_term, iphys_elediff_vec,    &
      &      sgs_coefs, sgs_coefs_nod, mk_MHD%mlump_fl, wk_filter,       &
      &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
@@ -202,8 +202,8 @@
         call cal_sgs_magne_induction(dt, FEM_prm, SGS_param,            &
      &      filter_param, nod_comm, node, ele, conduct, cd_prop,        &
      &      iphys%base, iphys%filter_fld, iphys_LES%SGS_term,           &
-     &      iphys_ele, ele_fld, jacs, rhs_tbl, FEM_elens, filtering,    &
-     &      icomp_sgs_term, iphys_elediff_vec,                          &
+     &      iphys_ele%base, ele_fld, jacs, rhs_tbl, FEM_elens,          &
+     &      filtering, icomp_sgs_term, iphys_elediff_vec,               &
      &      sgs_coefs, sgs_coefs_nod, mk_MHD%mlump_cd,                  &
      &      wk_filter, mhd_fem_wk, fem_wk, f_l, nod_fld)
       end if
@@ -213,7 +213,7 @@
      &        'lead ', trim(SGS_vecp_induction%name)
         call cal_sgs_uxb_2_monitor(dt, FEM_prm, SGS_param,              &
      &      filter_param, nod_comm, node, ele, conduct, cd_prop,        &
-     &      iphys, iphys_LES, iphys_ele, ele_fld, jacs, rhs_tbl,        &
+     &      iphys, iphys_LES, iphys_ele%base, ele_fld, jacs, rhs_tbl,   &
      &      FEM_elens, filtering, icomp_sgs_term, iphys_elediff_vec,    &
      &      sgs_coefs, mk_MHD%mlump_cd, wk_filter, mhd_fem_wk, fem_wk,  &
      &      f_l, f_nl, nod_fld)
@@ -281,9 +281,9 @@
      &      SGS_param%ifilter_final, SGS_param%iflag_SGS_h_flux,        &
      &      cmt_param%iflag_c_hf, cmt_param%iflag_c_temp, dt,           &
      &      FEM_prm, nod_comm, node, ele, surf, fluid, sf_grp, ht_prop, &
-     &      nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs, iphys_ele, ele_fld,     &
-     &      fem_int, FEM_elens, diff_coefs, mk_MHD%mlump_fl,            &
-     &      mhd_fem_wk, rhs_mat, nod_fld)
+     &      nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs,                         &
+     &      iphys_ele%base, ele_fld, fem_int, FEM_elens, diff_coefs,    &
+     &      mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat, nod_fld)
       end if
 !
       if (iphys_LES%div_SGS%i_SGS_c_flux .gt. 0) then
@@ -296,9 +296,9 @@
      &      SGS_param%ifilter_final, SGS_param%iflag_SGS_c_flux,        &
      &      cmt_param%iflag_c_cf, cmt_param%iflag_c_light, dt,          &
      &      FEM_prm, nod_comm, node, ele, surf, fluid, sf_grp, cp_prop, &
-     &      nod_bcs%Cnod_bcs, surf_bcs%Csf_bcs, iphys_ele, ele_fld,     &
-     &      fem_int, FEM_elens, diff_coefs, mk_MHD%mlump_fl,            &
-     &      mhd_fem_wk, rhs_mat, nod_fld)
+     &      nod_bcs%Cnod_bcs, surf_bcs%Csf_bcs,                         &
+     &      iphys_ele%base, ele_fld, fem_int, FEM_elens, diff_coefs,     &
+     &      mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat, nod_fld)
       end if
 !
       do i = 1, nod_fld%num_phys

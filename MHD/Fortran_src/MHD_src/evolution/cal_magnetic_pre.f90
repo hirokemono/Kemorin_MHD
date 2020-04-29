@@ -190,8 +190,8 @@
         call cal_sgs_magne_induction(dt, FEM_prm, SGS_param,            &
      &      filter_param, nod_comm, node, ele, conduct, cd_prop,        &
      &      iphys%base, iphys%filter_fld, iphys_LES%SGS_term,           &
-     &      iphys_ele, ele_fld, jacs, rhs_tbl, FEM_elens, filtering,    &
-     &      icomp_sgs_term, iphys_elediff_vec,                          &
+     &      iphys_ele%base, ele_fld, jacs, rhs_tbl, FEM_elens,          &
+     &      filtering, icomp_sgs_term, iphys_elediff_vec,               &
      &      sgs_coefs, sgs_coefs_nod, mlump_cd,                         &
      &      wk_filter, mhd_fem_wk, fem_wk, f_l, nod_fld)
       end if
@@ -238,14 +238,14 @@
      &    iak_diff_sgs, diff_coefs, fem_wk, surf_wk, f_l, f_nl)
 !
       if(cd_prop%iflag_Bevo_scheme .eq. id_explicit_euler) then
-        call cal_magne_pre_euler(iphys%base%i_magne, dt,                &
-     &      FEM_prm, nod_comm, node, ele, conduct, iphys_ele, ele_fld,  &
+        call cal_magne_pre_euler(iphys%base%i_magne, dt, FEM_prm,       &
+     &      nod_comm, node, ele, conduct, iphys_ele%base, ele_fld,      &
      &      jacs%g_FEM, jacs%jac_3d, rhs_tbl, mlump_cd, mhd_fem_wk,     &
      &      fem_wk, f_l, f_nl, nod_fld)
       else if(cd_prop%iflag_Bevo_scheme .eq. id_explicit_adams2) then
         call cal_magne_pre_adams                                        &
-     &     (iphys%base%i_magne, iphys%exp_work%i_pre_uxb, dt,           &
-     &      FEM_prm, nod_comm, node, ele, conduct, iphys_ele, ele_fld,  &
+     &     (iphys%base%i_magne, iphys%exp_work%i_pre_uxb, dt, FEM_prm,  &
+     &      nod_comm, node, ele, conduct, iphys_ele%base, ele_fld,      &
      &      jacs%g_FEM, jacs%jac_3d, rhs_tbl, mlump_cd,                 &
      &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       else if(cd_prop%iflag_Bevo_scheme .eq. id_Crank_nicolson) then

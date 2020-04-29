@@ -210,7 +210,7 @@
      &     (iphys%forces%i_h_advect, iphys%base%i_temp,                 &
      &      FEM_prm%iflag_temp_supg, FEM_prm%npoint_t_evo_int, dt,      &
      &      FEM_prm, nod_comm, node, ele, fluid, ht_prop,               &
-     &      nod_bcs%Tnod_bcs, iphys_ele, ele_fld, fem_int,              &
+     &      nod_bcs%Tnod_bcs, iphys_ele%base, ele_fld, fem_int,         &
      &      mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat, nod_fld)
       end if
 !
@@ -221,7 +221,7 @@
      &     (iphys%forces%i_ph_advect, iphys%base%i_per_temp,            &
      &      FEM_prm%iflag_temp_supg, FEM_prm%npoint_t_evo_int, dt,      &
      &      FEM_prm, nod_comm, node, ele, fluid, ht_prop,               &
-     &      nod_bcs%Tnod_bcs, iphys_ele, ele_fld, fem_int,              &
+     &      nod_bcs%Tnod_bcs, iphys_ele%base, ele_fld, fem_int,         &
      &      mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat, nod_fld)
       end if
 !
@@ -232,7 +232,7 @@
      &     (iphys%div_forces%i_h_flux, iphys%forces%i_h_flux,           &
      &      FEM_prm%iflag_temp_supg, FEM_prm%npoint_t_evo_int, dt,      &
      &      FEM_prm, nod_comm, node, ele, fluid, ht_prop,               &
-     &      nod_bcs%Tnod_bcs, iphys_ele, ele_fld, fem_int,              &
+     &      nod_bcs%Tnod_bcs, iphys_ele%base, ele_fld, fem_int,         &
      &      mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat, nod_fld)
       end if
 !
@@ -243,7 +243,7 @@
      &     (iphys%div_forces%i_ph_flux, iphys%forces%i_ph_flux,         &
      &      FEM_prm%iflag_temp_supg, FEM_prm%npoint_t_evo_int, dt,      &
      &      FEM_prm, nod_comm, node, ele, fluid, ht_prop,               &
-     &      nod_bcs%Tnod_bcs, iphys_ele, ele_fld, fem_int,              &
+     &      nod_bcs%Tnod_bcs, iphys_ele%base, ele_fld, fem_int,         &
      &      mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat, nod_fld)
       end if
 !
@@ -255,7 +255,7 @@
      &     (iphys%forces%i_c_advect, iphys%base%i_light,                &
      &      FEM_prm%iflag_comp_supg, FEM_prm%npoint_t_evo_int, dt,      &
      &      FEM_prm, nod_comm, node, ele, fluid, cp_prop,               &
-     &      nod_bcs%Tnod_bcs, iphys_ele, ele_fld, fem_int,              &
+     &      nod_bcs%Tnod_bcs, iphys_ele%base, ele_fld, fem_int,         &
      &      mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat, nod_fld)
       end if
 !
@@ -266,7 +266,7 @@
      &     (iphys%forces%i_pc_advect, iphys%base%i_per_light,           &
      &      FEM_prm%iflag_comp_supg, FEM_prm%npoint_t_evo_int, dt,      &
      &      FEM_prm, nod_comm, node, ele, fluid, cp_prop,               &
-     &      nod_bcs%Tnod_bcs, iphys_ele, ele_fld, fem_int,              &
+     &      nod_bcs%Tnod_bcs, iphys_ele%base, ele_fld, fem_int,         &
      &      mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat, nod_fld)
       end if
 !
@@ -277,7 +277,7 @@
      &     (iphys%div_forces%i_c_flux, iphys%forces%i_c_flux,           &
      &      FEM_prm%iflag_comp_supg, FEM_prm%npoint_t_evo_int, dt,      &
      &      FEM_prm, nod_comm, node, ele, fluid, cp_prop,               &
-     &      nod_bcs%Tnod_bcs, iphys_ele, ele_fld, fem_int,              &
+     &      nod_bcs%Tnod_bcs, iphys_ele%base, ele_fld, fem_int,         &
      &      mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat, nod_fld)
       end if
 !
@@ -288,7 +288,7 @@
      &     (iphys%div_forces%i_pc_flux, iphys%forces%i_pc_flux,         &
      &      FEM_prm%iflag_comp_supg, FEM_prm%npoint_t_evo_int, dt,      &
      &      FEM_prm, nod_comm, node, ele, fluid, cp_prop,               &
-     &      nod_bcs%Tnod_bcs, iphys_ele, ele_fld, fem_int,              &
+     &      nod_bcs%Tnod_bcs, iphys_ele%base, ele_fld, fem_int,         &
      &      mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat, nod_fld)
       end if
 !
@@ -346,7 +346,7 @@
      &             write(*,*) 'lead  ', trim(vecp_induction%name)
         call cal_vecp_induction                                         &
      &     (dt, FEM_prm, nod_comm, node, ele, conduct, cd_prop,         &
-     &      nod_bcs%Bnod_bcs, iphys, iphys_ele, ele_fld, fem_int,       &
+     &      nod_bcs%Bnod_bcs, iphys, iphys_ele%base, ele_fld, fem_int,  &
      &      mk_MHD%mlump_cd, mhd_fem_wk, rhs_mat, nod_fld)
       end if
 !

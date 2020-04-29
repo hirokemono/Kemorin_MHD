@@ -6,13 +6,13 @@
 !
 !!      subroutine cal_sgs_uxb_dynamic(dt, FEM_prm, SGS_par, mesh,      &
 !!     &          iphys_base, iphys_fil, iphys_SGS, iphys_SGS_wk,       &
-!!     &          iphys_ele, ele_fld, conduct, cd_prop, fem_int,        &
+!!     &          iphys_ele_base, ele_fld, conduct, cd_prop, fem_int,   &
 !!     &          FEM_filters, iak_sgs_term, icomp_sgs_term,            &
 !!     &          iphys_elediff_vec, iphys_elediff_fil, mk_MHD,         &
 !!     &          FEM_SGS_wk, mhd_fem_wk, rhs_mat, nod_fld, sgs_coefs)
 !!      subroutine cal_sgs_induct_t_dynamic(dt, FEM_prm, SGS_par, mesh, &
 !!     &          iphys_base, iphys_fil, iphys_SGS, iphys_SGS_wk,       &
-!!     &          iphys_ele, ele_fld, conduct, cd_prop, fem_int,        &
+!!     &          iphys_ele_base, ele_fld, conduct, cd_prop, fem_int,   &
 !!     &          FEM_filters, iak_sgs_term, icomp_sgs_term,            &
 !!     &          iphys_elediff_vec, iphys_elediff_fil, sgs_coefs_nod,  &
 !!     &          mk_MHD, FEM_SGS_wk, mhd_fem_wk, rhs_mat,              &
@@ -24,7 +24,7 @@
 !!        type(base_field_address), intent(in) :: iphys_fil
 !!        type(SGS_term_address), intent(in) :: iphys_SGS
 !!        type(dynamic_SGS_work_address), intent(in) :: iphys_SGS_wk
-!!        type(phys_address), intent(in) :: iphys_ele
+!!        type(base_field_address), intent(in) :: iphys_ele_base
 !!        type(phys_data), intent(in) :: ele_fld
 !!        type(field_geometry_data), intent(in) :: conduct
 !!        type(conductive_property), intent(in) :: cd_prop
@@ -56,7 +56,6 @@
       use t_mesh_data
       use t_geometry_data_MHD
       use t_phys_data
-      use t_phys_address
       use t_base_field_labels
       use t_SGS_term_labels
       use t_SGS_model_coef_labels
@@ -81,7 +80,7 @@
 !
       subroutine cal_sgs_uxb_dynamic(dt, FEM_prm, SGS_par, mesh,        &
      &          iphys_base, iphys_fil, iphys_SGS, iphys_SGS_wk,         &
-     &          iphys_ele, ele_fld, conduct, cd_prop, fem_int,          &
+     &          iphys_ele_base, ele_fld, conduct, cd_prop, fem_int,     &
      &          FEM_filters, iak_sgs_term, icomp_sgs_term,              &
      &          iphys_elediff_vec, iphys_elediff_fil, mk_MHD,           &
      &          FEM_SGS_wk, mhd_fem_wk, rhs_mat, nod_fld, sgs_coefs)
@@ -108,7 +107,7 @@
       type(base_field_address), intent(in) :: iphys_fil
       type(SGS_term_address), intent(in) :: iphys_SGS
       type(dynamic_SGS_work_address), intent(in) :: iphys_SGS_wk
-      type(phys_address), intent(in) :: iphys_ele
+      type(base_field_address), intent(in) :: iphys_ele_base
       type(phys_data), intent(in) :: ele_fld
       type(field_geometry_data), intent(in) :: conduct
       type(conductive_property), intent(in) :: cd_prop
@@ -146,7 +145,7 @@
      &    iphys_SGS_wk%i_wd_nlg, iphys_fil%i_magne,                     &
      &    iphys_elediff_fil%i_velo, dt, FEM_prm,                        &
      &    mesh%nod_comm, mesh%node, mesh%ele, conduct, cd_prop,         &
-     &    iphys_ele%base, ele_fld, fem_int%jcs, fem_int%rhs_tbl,        &
+     &    iphys_ele_base, ele_fld, fem_int%jcs, fem_int%rhs_tbl,        &
      &    FEM_filters%FEM_elens, mk_MHD%mlump_cd, mhd_fem_wk,           &
      &    rhs_mat%fem_wk, rhs_mat%f_l, nod_fld)
 !
@@ -157,7 +156,7 @@
      &    iphys_SGS%i_SGS_vp_induct, iphys_base%i_magne,                &
      &    iphys_elediff_vec%i_velo, dt, FEM_prm,                        &
      &    mesh%nod_comm, mesh%node, mesh%ele,                           &
-     &    conduct, cd_prop, iphys_ele%base, ele_fld,                    &
+     &    conduct, cd_prop, iphys_ele_base, ele_fld,                    &
      &    fem_int%jcs, fem_int%rhs_tbl, FEM_filters%FEM_elens,          &
      &    mk_MHD%mlump_cd, mhd_fem_wk, rhs_mat%fem_wk,                  &
      &    rhs_mat%f_l, nod_fld)
@@ -193,7 +192,7 @@
 !
       subroutine cal_sgs_induct_t_dynamic(dt, FEM_prm, SGS_par, mesh,   &
      &          iphys_base, iphys_fil, iphys_SGS, iphys_SGS_wk,         &
-     &          iphys_ele, ele_fld, conduct, cd_prop, fem_int,          &
+     &          iphys_ele_base, ele_fld, conduct, cd_prop, fem_int,     &
      &          FEM_filters, iak_sgs_term, icomp_sgs_term,              &
      &          iphys_elediff_vec, iphys_elediff_fil, sgs_coefs_nod,    &
      &          mk_MHD, FEM_SGS_wk, mhd_fem_wk, rhs_mat,                &
@@ -221,7 +220,7 @@
       type(base_field_address), intent(in) :: iphys_fil
       type(SGS_term_address), intent(in) :: iphys_SGS
       type(dynamic_SGS_work_address), intent(in) :: iphys_SGS_wk
-      type(phys_address), intent(in) :: iphys_ele
+      type(base_field_address), intent(in) :: iphys_ele_base
       type(phys_data), intent(in) :: ele_fld
       type(field_geometry_data), intent(in) :: conduct
       type(conductive_property), intent(in) :: cd_prop
@@ -264,10 +263,10 @@
       if (iflag_debug.gt.0) write(*,*) 'cal_sgs_filter_idt_grad_4_dyn'
       call cal_sgs_induct_t_grad_no_coef                                &
      &   (ifilter_4delta, iphys_SGS_wk%i_wd_nlg,                        &
-     &    iphys_fil%i_velo, iphys_fil%i_magne,            &
+     &    iphys_fil%i_velo, iphys_fil%i_magne,                          &
      &    iphys_elediff_fil%i_velo, iphys_elediff_fil%i_magne,          &
      &    dt, FEM_prm, mesh%nod_comm, mesh%node, mesh%ele, conduct,     &
-     &    cd_prop, iphys_ele, ele_fld, fem_int%jcs,                     &
+     &    cd_prop, iphys_ele_base, ele_fld, fem_int%jcs,                &
      &    fem_int%rhs_tbl, FEM_filters%FEM_elens, mk_MHD%mlump_cd,      &
      &    rhs_mat%fem_wk, mhd_fem_wk, rhs_mat%f_l, nod_fld)
 !
@@ -279,7 +278,7 @@
      &    iphys_base%i_velo, iphys_base%i_magne,                        &
      &    iphys_elediff_vec%i_velo, iphys_elediff_vec%i_magne,          &
      &    dt, FEM_prm, mesh%nod_comm, mesh%node, mesh%ele, conduct,     &
-     &    cd_prop, iphys_ele, ele_fld, fem_int%jcs,                     &
+     &    cd_prop, iphys_ele_base, ele_fld, fem_int%jcs,                &
      &    fem_int%rhs_tbl, FEM_filters%FEM_elens, mk_MHD%mlump_cd,      &
      &    rhs_mat%fem_wk, mhd_fem_wk, rhs_mat%f_l, nod_fld)
 !

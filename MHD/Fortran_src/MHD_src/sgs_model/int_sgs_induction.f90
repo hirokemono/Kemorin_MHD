@@ -8,11 +8,12 @@
 !!     &          conduct, iphys, iphys_LES, g_FEM, jac_3d, rhs_tbl,    &
 !!     &          mlump_cd, mhd_fem_wk, fem_wk, f_nl, nod_fld)
 !!      subroutine cal_sgs_uxb_2_monitor(dt, FEM_prm, SGS_param,        &
-!!     &         filter_param, nod_comm, node, ele, conduct, cd_prop,   &
-!!     &         iphys, iphys_LES, iphys_ele, ele_fld, jacs, rhs_tbl,   &
-!!     &         FEM_elen, filtering, icomp_sgs_term, iphys_elediff_vec,&
-!!     &         sgs_coefs, mlump_cd, wk_filter, mhd_fem_wk, fem_wk,    &
-!!     &         f_l, f_nl, nod_fld)
+!!     &          filter_param, nod_comm, node, ele, conduct, cd_prop,  &
+!!     &          iphys, iphys_LES, iphys_ele_base, ele_fld,            &
+!!     &          jacs, rhs_tbl, FEM_elen, filtering,                   &
+!!     &          icomp_sgs_term, iphys_elediff_vec, sgs_coefs,         &
+!!     &          mlump_cd, wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl,   &
+!!     &          nod_fld)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(SGS_filtering_params), intent(in) :: filter_param
@@ -23,7 +24,7 @@
 !!        type(conductive_property), intent(in) :: cd_prop
 !!        type(phys_address), intent(in) :: iphys
 !!        type(SGS_model_addresses), intent(in) :: iphys_LES
-!!        type(phys_address), intent(in) :: iphys_ele
+!!        type(base_field_address), intent(in) :: iphys_ele_base
 !!        type(phys_data), intent(in) :: ele_fld
 !!        type(jacobians_type), intent(in) :: jacs
 !!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
@@ -128,11 +129,12 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_sgs_uxb_2_monitor(dt, FEM_prm, SGS_param,          &
-     &         filter_param, nod_comm, node, ele, conduct, cd_prop,     &
-     &         iphys, iphys_LES, iphys_ele, ele_fld, jacs, rhs_tbl,     &
-     &         FEM_elen, filtering, icomp_sgs_term, iphys_elediff_vec,  &
-     &         sgs_coefs, mlump_cd, wk_filter, mhd_fem_wk, fem_wk,      &
-     &         f_l, f_nl, nod_fld)
+     &          filter_param, nod_comm, node, ele, conduct, cd_prop,    &
+     &          iphys, iphys_LES, iphys_ele_base, ele_fld,              &
+     &          jacs, rhs_tbl, FEM_elen, filtering,                     &
+     &          icomp_sgs_term, iphys_elediff_vec, sgs_coefs,           &
+     &          mlump_cd, wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl,     &
+     &          nod_fld)
 !
       use cal_sgs_fluxes
       use cal_ff_smp_to_ffs
@@ -151,7 +153,7 @@
       type(conductive_property), intent(in) :: cd_prop
       type(phys_address), intent(in) :: iphys
       type(SGS_model_addresses), intent(in) :: iphys_LES
-      type(phys_address), intent(in) :: iphys_ele
+      type(base_field_address), intent(in) :: iphys_ele_base
       type(phys_data), intent(in) :: ele_fld
       type(jacobians_type), intent(in) :: jacs
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
@@ -173,7 +175,7 @@
       call cal_sgs_uxb_2_evo(dt, FEM_prm, SGS_param, filter_param,      &
      &    nod_comm, node, ele, conduct, cd_prop,                        &
      &    iphys%base, iphys%filter_fld, iphys_LES%SGS_wk,               &
-     &    iphys_ele, ele_fld, jacs, rhs_tbl, FEM_elen, filtering,       &
+     &    iphys_ele_base, ele_fld, jacs, rhs_tbl, FEM_elen, filtering,  &
      &    icomp_sgs_term, iphys_elediff_vec, sgs_coefs, wk_filter,      &
      &    mhd_fem_wk, fem_wk, f_nl, nod_fld)
 !

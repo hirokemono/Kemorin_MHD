@@ -13,7 +13,7 @@
 !!     &          iflag_supg, num_int, ifilter_final, iflag_SGS_flux,   &
 !!     &          iflag_commute_flux, iflag_commute_field, dt,          &
 !!     &          FEM_prm, nod_comm, node, ele, surf, fluid, sf_grp,    &
-!!     &          property, Snod_bcs, Ssf_bcs, iphys_ele, ele_fld,      &
+!!     &          property, Snod_bcs, Ssf_bcs, iphys_ele_base, ele_fld, &
 !!     &          fem_int, FEM_elens, diff_coefs, mlump_fl, mhd_fem_wk, &
 !!     &          rhs_mat, nod_fld)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
@@ -25,7 +25,7 @@
 !!        type(scalar_property), intent(in) :: property
 !!        type(nodal_bcs_4_scalar_type), intent(in) :: Snod_bcs
 !!        type(scaler_surf_bc_type), intent(in) :: Ssf_bcs
-!!        type(phys_address), intent(in) :: iphys_ele
+!!        type(phys_address), intent(in) :: iphys_ele_base
 !!        type(phys_data), intent(in) :: ele_fld
 !!        type(field_geometry_data), intent(in) :: fluid
 !!        type(finite_element_integration), intent(in) :: fem_int
@@ -54,7 +54,7 @@
       use t_surface_data
       use t_group_data
       use t_phys_data
-      use t_phys_address
+      use t_base_field_labels
       use t_fem_gauss_int_coefs
       use t_jacobians
       use t_table_FEM_const
@@ -79,12 +79,12 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_terms_4_heat (i_SGS_div_flux,                      &
+      subroutine cal_terms_4_heat(i_SGS_div_flux,                       &
      &          i_velo, i_field, i_SGS_flux, iak_diff_flux,             &
      &          iflag_supg, num_int, ifilter_final, iflag_SGS_flux,     &
      &          iflag_commute_flux, iflag_commute_field, dt,            &
      &          FEM_prm, nod_comm, node, ele, surf, fluid, sf_grp,      &
-     &          property, Snod_bcs, Ssf_bcs, iphys_ele, ele_fld,        &
+     &          property, Snod_bcs, Ssf_bcs, iphys_ele_base, ele_fld,   &
      &          fem_int, FEM_elens, diff_coefs, mlump_fl, mhd_fem_wk,   &
      &          rhs_mat, nod_fld)
 !
@@ -114,7 +114,7 @@
       type(scalar_property), intent(in) :: property
       type(nodal_bcs_4_scalar_type), intent(in) :: Snod_bcs
       type(scaler_surf_bc_type), intent(in) :: Ssf_bcs
-      type(phys_address), intent(in) :: iphys_ele
+      type(base_field_address), intent(in) :: iphys_ele_base
       type(phys_data), intent(in) :: ele_fld
       type(field_geometry_data), intent(in) :: fluid
       type(finite_element_integration), intent(in) :: fem_int
@@ -131,8 +131,8 @@
 !
       call sel_int_vol_div_sgs_flux                                     &
      &    (iflag_supg, num_int, ifilter_final, iflag_commute_flux,      &
-     &     i_velo, i_field, i_SGS_flux, iak_diff_flux, dt,              &
-     &     node, ele, fluid, property, nod_fld, iphys_ele, ele_fld,     &
+     &     i_velo, i_field, i_SGS_flux, iak_diff_flux, dt, node, ele,   &
+     &     fluid, property, nod_fld, iphys_ele_base, ele_fld,           &
      &     fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,      &
      &     FEM_elens, diff_coefs, mhd_fem_wk, rhs_mat%fem_wk,           &
      &     rhs_mat%f_nl)
@@ -152,7 +152,7 @@
 !
       call cal_t_evo_4_scalar                                           &
      &   (iflag_supg, fluid%istack_ele_fld_smp, dt, FEM_prm,            &
-     &    mlump_fl, nod_comm, node, ele, iphys_ele%base, ele_fld,       &
+     &    mlump_fl, nod_comm, node, ele, iphys_ele_base, ele_fld,       &
      &    fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,       &
      &    mhd_fem_wk%ff_m_smp, rhs_mat%fem_wk,                          &
      &    rhs_mat%f_l, rhs_mat%f_nl)
@@ -179,8 +179,8 @@
      &         (iflag_supg, num_int, ifilter_final, iflag_commute_flux, &
      &          i_velo, i_field, i_SGS_flux, iak_diff_flux, dt,         &
      &          node, ele, fluid, property, nod_fld,                    &
-     &          iphys_ele, ele_fld, g_FEM, jac_3d, rhs_tbl, FEM_elens,  &
-     &          diff_coefs, mhd_fem_wk, fem_wk, f_nl)
+     &          iphys_ele_base, ele_fld, g_FEM, jac_3d, rhs_tbl,        &
+     &          FEM_elens, diff_coefs, mhd_fem_wk, fem_wk, f_nl)
 !
       use int_vol_SGS_div_flux
       use int_vol_vect_cst_difference
@@ -196,7 +196,7 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(phys_data), intent(in) :: nod_fld
-      type(phys_address), intent(in) :: iphys_ele
+      type(base_field_address), intent(in) :: iphys_ele_base
       type(phys_data), intent(in) :: ele_fld
       type(field_geometry_data), intent(in) :: fluid
       type(scalar_property), intent(in) :: property
@@ -217,7 +217,7 @@
      &       g_FEM, jac_3d, rhs_tbl, FEM_elens, diff_coefs,             &
      &       fluid%istack_ele_fld_smp, num_int, dt,                     &
      &       i_velo, i_field, i_SGS_flux, ifilter_final, iak_diff_flux, &
-     &       ele_fld%ntot_phys, iphys_ele%base%i_velo, ele_fld%d_fld,   &
+     &       ele_fld%ntot_phys, iphys_ele_base%i_velo, ele_fld%d_fld,   &
      &       property%coef_nega_adv, fem_wk, mhd_fem_wk, f_nl)
         else
           call int_vol_div_SGS_vec_flux(node, ele, nod_fld,             &
@@ -231,7 +231,7 @@
           call int_vol_div_w_const_upw                                  &
      &       (node, ele, g_FEM, jac_3d, rhs_tbl, nod_fld,               &
               fluid%istack_ele_fld_smp, num_int, dt,                    &
-     &        i_SGS_flux, ele_fld%ntot_phys, iphys_ele%base%i_velo,     &
+     &        i_SGS_flux, ele_fld%ntot_phys, iphys_ele_base%i_velo,     &
      &        ele_fld%d_fld, property%coef_nega_adv, fem_wk, f_nl)
         else
           call int_vol_div_w_const                                      &

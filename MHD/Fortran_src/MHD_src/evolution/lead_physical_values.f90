@@ -195,7 +195,7 @@
 !
       call vect_gradients_4_monitor                                     &
      &   (dt, FEM_prm, mesh%nod_comm, mesh%node, mesh%ele,              &
-     &    MHD_mesh%fluid, iphys, iphys_ele, fem_int, mk_MHD,            &
+     &    MHD_mesh%fluid, iphys, iphys_ele%base, fem_int, mk_MHD,       &
      &    rhs_mat, nod_fld, ele_fld)
       call cal_forces_4_monitor(dt, FEM_prm, SGS_par,                   &
      &    mesh%nod_comm, mesh%node, mesh%ele, mesh%surf,                &
