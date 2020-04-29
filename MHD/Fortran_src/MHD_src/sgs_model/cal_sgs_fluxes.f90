@@ -450,7 +450,7 @@
      &      SGS_param%icoord_Csim, SGS_param%ifilter_final,             &
      &      icomp_sgs_term%i_SGS_induction, iphys_elediff_vec%i_velo,   &
      &      dt, FEM_prm, node, ele, conduct, cd_prop,                   &
-     &      iphys_base, nod_fld, iphys_ele, ele_fld, jacs,              &
+     &      iphys_base, nod_fld, iphys_ele%base, ele_fld, jacs,         &
      &      rhs_tbl, FEM_elens, sgs_coefs, mhd_fem_wk, fem_wk, f_nl)
 !
       else if(SGS_param%iflag_SGS_uxb .eq. id_SGS_similarity) then
@@ -459,7 +459,7 @@
         call cal_sgs_uxb_2_ff_simi(icomp_sgs_term%i_SGS_induction, dt,  &
      &      FEM_prm, filter_param, nod_comm, node, ele, conduct,        &
      &      iphys_base, iphys_fil, iphys_SGS_wk,                        &
-     &      iphys_ele, ele_fld, jacs%g_FEM, jacs%jac_3d, rhs_tbl,       &
+     &      iphys_ele%base, ele_fld, jacs%g_FEM, jacs%jac_3d, rhs_tbl,  &
      &      filtering, sgs_coefs, wk_filter, fem_wk, f_nl, nod_fld)
 !
       else if(SGS_param%iflag_SGS_uxb .eq. id_SGS_diffusion) then
@@ -468,7 +468,7 @@
          call choose_int_vol_rotations                                  &
      &      (FEM_prm%iflag_magne_supg, FEM_prm%npoint_t_evo_int, dt,    &
      &       conduct%istack_ele_fld_smp, iphys_base%i_magne,            &
-     &       node, ele, nod_fld, iphys_ele, ele_fld,                    &
+     &       node, ele, nod_fld, iphys_ele%base, ele_fld,               &
      &       jacs%g_FEM, jacs%jac_3d, rhs_tbl, fem_wk, f_nl)
       end if
 !

@@ -6,19 +6,19 @@
 !!      subroutine cal_sgs_uxb_2_ff_grad(itype_Csym_uxb, icoord_Csim,   &
 !!     &          i_filter, icomp_sgs_uxb, ie_dvx, dt, FEM_prm,         &
 !!     &          node, ele, conduct, cd_prop, iphys_base, nod_fld,     &
-!!     &          iphys_ele, ele_fld, jacs, rhs_tbl, FEM_elens,         &
+!!     &          iphys_ele_base, ele_fld, jacs, rhs_tbl, FEM_elens,    &
 !!     &          sgs_coefs, mhd_fem_wk, fem_wk, f_nl)
 !!      subroutine cal_sgs_vp_induct_grad_no_coef                       &
 !!     &         (i_filter,  i_sgs, i_field, id_dx, dt,                 &
-!!     &          FEM_prm, nod_comm, node, ele, conduct,                &
-!!     &          cd_prop, iphys_ele, ele_fld, jacs rhs_tbl, FEM_elens, &
+!!     &          FEM_prm, nod_comm, node, ele, conduct, cd_prop,       &
+!!     &          iphys_ele_base, ele_fld, jacs rhs_tbl, FEM_elens,     &
 !!     &          mlump_cd, mhd_fem_wk, fem_wk, f_l, nod_fld)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(base_field_address), intent(in) :: iphys_base
 !!        type(phys_data), intent(in) :: nod_fld
-!!        type(phys_address), intent(in) :: iphys_ele
+!!        type(base_field_address), intent(in) :: iphys_ele_base
 !!        type(phys_data), intent(in) :: ele_fld
 !!        type(field_geometry_data), intent(in) :: conduct
 !!        type(conductive_property), intent(in) :: cd_prop
@@ -43,7 +43,6 @@
       use t_comm_table
       use t_geometry_data
       use t_phys_data
-      use t_phys_address
       use t_base_field_labels
       use t_jacobians
       use t_finite_element_mat
@@ -63,7 +62,7 @@
       subroutine cal_sgs_uxb_2_ff_grad(itype_Csym_uxb, icoord_Csim,     &
      &          i_filter, icomp_sgs_uxb, ie_dvx, dt, FEM_prm,           &
      &          node, ele, conduct, cd_prop, iphys_base, nod_fld,       &
-     &          iphys_ele, ele_fld, jacs, rhs_tbl, FEM_elens,           &
+     &          iphys_ele_base, ele_fld, jacs, rhs_tbl, FEM_elens,      &
      &          sgs_coefs, mhd_fem_wk, fem_wk, f_nl)
 !
       use int_vol_sgs_uxb
@@ -80,7 +79,7 @@
       type(element_data), intent(in) :: ele
       type(base_field_address), intent(in) :: iphys_base
       type(phys_data), intent(in) :: nod_fld
-      type(phys_address), intent(in) :: iphys_ele
+      type(base_field_address), intent(in) :: iphys_ele_base
       type(phys_data), intent(in) :: ele_fld
       type(field_geometry_data), intent(in) :: conduct
       type(conductive_property), intent(in) :: cd_prop
@@ -97,8 +96,8 @@
       call reset_sk6(n_vector, ele, fem_wk%sk6)
 !
       call sel_int_vol_sgs_uxb                                          &
-     &   (i_filter, iphys_base%i_magne, ie_dvx, dt,                     &
-     &    FEM_prm, node, ele, conduct, nod_fld, iphys_ele, ele_fld,     &
+     &   (i_filter, iphys_base%i_magne, ie_dvx, dt, FEM_prm,            &
+     &    node, ele, conduct, nod_fld, iphys_ele_base, ele_fld,         &
      &    jacs%g_FEM, jacs%jac_3d, FEM_elens, fem_wk, mhd_fem_wk)
 !
 !     set elemental model coefficients
@@ -115,8 +114,8 @@
 !
       subroutine cal_sgs_vp_induct_grad_no_coef                         &
      &         (i_filter,  i_sgs, i_field, id_dx, dt,                   &
-     &          FEM_prm, nod_comm, node, ele, conduct,                  &
-     &          cd_prop, iphys_ele, ele_fld, jacs, rhs_tbl, FEM_elens,  &
+     &          FEM_prm, nod_comm, node, ele, conduct, cd_prop,         &
+     &          iphys_ele_base, ele_fld, jacs, rhs_tbl, FEM_elens,      &
      &          mlump_cd, mhd_fem_wk, fem_wk, f_l, nod_fld)
 !
       use cal_ff_smp_to_ffs
@@ -129,7 +128,7 @@
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
-      type(phys_address), intent(in) :: iphys_ele
+      type(base_field_address), intent(in) :: iphys_ele_base
       type(phys_data), intent(in) :: ele_fld
       type(field_geometry_data), intent(in) :: conduct
       type(conductive_property), intent(in) :: cd_prop
@@ -153,8 +152,8 @@
       call reset_sk6(n_vector, ele, fem_wk%sk6)
       call reset_ff_smp(node%max_nod_smp, f_l)
 !
-      call sel_int_vol_sgs_uxb(i_filter, i_field, id_dx, dt,            &
-     &    FEM_prm, node, ele, conduct, nod_fld, iphys_ele, ele_fld,     &
+      call sel_int_vol_sgs_uxb(i_filter, i_field, id_dx, dt, FEM_prm,   &
+     &    node, ele, conduct, nod_fld, iphys_ele_base, ele_fld,         &
      &    jacs%g_FEM, jacs%jac_3d, FEM_elens, fem_wk, mhd_fem_wk)
 !
       call add3_skv_coef_to_ff_v_smp(node, ele, rhs_tbl,                &

@@ -21,7 +21,7 @@
 !!      subroutine cal_sgs_uxb_2_ff_simi(icomp_sgs_uxb, dt,             &
 !!     &         FEM_prm, filter_param, nod_comm, node, ele, conduct,   &
 !!     &         iphys_base, iphys_fil, iphys_SGS_wk,                   &
-!!     &         iphys_ele, ele_fld, g_FEM, jac_3d, rhs_tbl,            &
+!!     &         iphys_ele_base, ele_fld, g_FEM, jac_3d, rhs_tbl,       &
 !!     &         filtering, sgs_coefs, wk_filter, fem_wk, f_nl, nod_fld)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_filtering_params), intent(in) :: filter_param
@@ -31,7 +31,7 @@
 !!        type(base_field_address), intent(in) :: iphys_base
 !!        type(base_field_address), intent(in) :: iphys_fil
 !!        type(dynamic_SGS_work_address), intent(in) :: iphys_SGS_wk
-!!        type(phys_address), intent(in) :: iphys_ele
+!!        type(base_field_address), intent(in) :: iphys_ele_base
 !!        type(phys_data), intent(in) :: ele_fld
 !!        type(field_geometry_data), intent(in) :: conduct
 !!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
@@ -53,7 +53,6 @@
       use t_geometry_data_MHD
       use t_geometry_data
       use t_phys_data
-      use t_phys_address
       use t_base_field_labels
       use t_SGS_model_coef_labels
       use t_fem_gauss_int_coefs
@@ -229,7 +228,7 @@
       subroutine cal_sgs_uxb_2_ff_simi(icomp_sgs_uxb, dt,               &
      &         FEM_prm, filter_param, nod_comm, node, ele, conduct,     &
      &         iphys_base, iphys_fil, iphys_SGS_wk,                     &
-     &         iphys_ele, ele_fld, g_FEM, jac_3d, rhs_tbl,              &
+     &         iphys_ele_base, ele_fld, g_FEM, jac_3d, rhs_tbl,         &
      &         filtering, sgs_coefs, wk_filter, fem_wk, f_nl, nod_fld)
 !
       use int_vol_similarity_uxb
@@ -245,7 +244,7 @@
       type(base_field_address), intent(in) :: iphys_base
       type(base_field_address), intent(in) :: iphys_fil
       type(dynamic_SGS_work_address), intent(in) :: iphys_SGS_wk
-      type(phys_address), intent(in) :: iphys_ele
+      type(base_field_address), intent(in) :: iphys_ele_base
       type(phys_data), intent(in) :: ele_fld
       type(field_geometry_data), intent(in) :: conduct
       type(FEM_gauss_int_coefs), intent(in) :: g_FEM
@@ -271,7 +270,7 @@
      &     (FEM_prm%npoint_t_evo_int, dt, icomp_sgs_uxb,                &
      &      node, ele, conduct, iphys_SGS_wk, nod_fld,                  &
      &      g_FEM, jac_3d, rhs_tbl, sgs_coefs,                          &
-     &      ele_fld%ntot_phys, iphys_ele%base%i_magne, ele_fld%d_fld,   &
+     &      ele_fld%ntot_phys, iphys_ele_base%i_magne, ele_fld%d_fld,   &
      &      fem_wk, f_nl)
       else
         call int_simi_vp_induct                                         &

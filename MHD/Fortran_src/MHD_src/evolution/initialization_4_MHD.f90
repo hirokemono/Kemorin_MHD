@@ -178,10 +178,7 @@
       if (iflag_debug.eq.1) write(*,*)' allocate_array_FEM_MHD'
       call allocate_array_FEM_MHD                                       &
      &   (SGS_par, mesh, MHD_prop, iphys, iphys_LES, nod_fld,           &
-     &    SGS_MHD_wk%iphys_ele, SGS_MHD_wk%ele_fld,                     &
-     &    Csims_FEM_MHD, SGS_MHD_wk%mk_MHD,                             &
-     &    SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat,                    &
-     &    SGS_MHD_wk%fem_int, fem_sq, label_sim)
+     &    Csims_FEM_MHD, SGS_MHD_wk, fem_sq, label_sim)
 !
       if ( iflag_debug.ge.1 ) write(*,*) 'init_check_delta_t_data'
       call s_init_check_delta_t_data                                    &

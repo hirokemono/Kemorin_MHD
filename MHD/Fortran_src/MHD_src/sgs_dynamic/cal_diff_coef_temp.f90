@@ -4,12 +4,12 @@
 !     Written by H. Matsui
 !
 !!      subroutine s_cal_diff_coef_scalar(iflag_supg, num_int, dt,      &
-!!     &          ifield, ifield_f, iak_diff_t, icomp_diff_t,           &
-!!     &          SGS_par, nod_comm, node, ele, surf, sf_grp, Tsf_bcs,  &
-!!     &          iphys_SGS_wk, iphys_ele, ele_fld, fluid, layer_tbl,   &
-!!     &          jacs, rhs_tbl, FEM_elens, filtering, mlump_fl,        &
-!!     &          wk_filter, wk_cor, wk_lsq, wk_diff, fem_wk, surf_wk,  &
-!!     &          f_l, f_nl, nod_fld, diff_coefs)
+!!     &        ifield, ifield_f, iak_diff_t, icomp_diff_t,             &
+!!     &        SGS_par, nod_comm, node, ele, surf, sf_grp, Tsf_bcs,    &
+!!     &        iphys_SGS_wk, iphys_ele_base, ele_fld, fluid, layer_tbl,&
+!!     &        jacs, rhs_tbl, FEM_elens, filtering, mlump_fl,          &
+!!     &        wk_filter, wk_cor, wk_lsq, wk_diff, fem_wk, surf_wk,    &
+!!     &        f_l, f_nl, nod_fld, diff_coefs)
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(commutation_control_params), intent(in) :: cmt_param
@@ -20,7 +20,7 @@
 !!        type(surface_group_data), intent(in) :: sf_grp
 !!        type(scaler_surf_bc_type), intent(in) :: Tsf_bcs
 !!        type(dynamic_SGS_work_address), intent(in) :: iphys_SGS_wk
-!!        type(phys_address), intent(in) :: iphys_ele
+!!        type(base_field_address), intent(in) :: iphys_ele_base
 !!        type(phys_data), intent(in) :: ele_fld
 !!        type(field_geometry_data), intent(in) :: fluid
 !!        type(layering_tbl), intent(in) :: layer_tbl
@@ -50,7 +50,7 @@
       use t_surface_data
       use t_group_data
       use t_phys_data
-      use t_phys_address
+      use t_base_field_labels
       use t_SGS_model_coef_labels
       use t_jacobians
       use t_table_FEM_const
@@ -76,12 +76,12 @@
 !-----------------------------------------------------------------------
 !
       subroutine s_cal_diff_coef_scalar(iflag_supg, num_int, dt,        &
-     &          ifield, ifield_f, iak_diff_t, icomp_diff_t,             &
-     &          SGS_par, nod_comm, node, ele, surf, sf_grp, Tsf_bcs,    &
-     &          iphys_SGS_wk, iphys_ele, ele_fld, fluid, layer_tbl,     &
-     &          jacs, rhs_tbl, FEM_elens, filtering, mlump_fl,          &
-     &          wk_filter, wk_cor, wk_lsq, wk_diff, fem_wk, surf_wk,    &
-     &          f_l, f_nl, nod_fld, diff_coefs)
+     &         ifield, ifield_f, iak_diff_t, icomp_diff_t,              &
+     &         SGS_par, nod_comm, node, ele, surf, sf_grp, Tsf_bcs,     &
+     &         iphys_SGS_wk, iphys_ele_base, ele_fld, fluid, layer_tbl, &
+     &         jacs, rhs_tbl, FEM_elens, filtering, mlump_fl,           &
+     &         wk_filter, wk_cor, wk_lsq, wk_diff, fem_wk, surf_wk,     &
+     &         f_l, f_nl, nod_fld, diff_coefs)
 !
       use m_machine_parameter
       use m_phys_constants
@@ -108,7 +108,7 @@
       type(surface_group_data), intent(in) :: sf_grp
       type(scaler_surf_bc_type), intent(in) :: Tsf_bcs
       type(dynamic_SGS_work_address), intent(in) :: iphys_SGS_wk
-      type(phys_address), intent(in) :: iphys_ele
+      type(base_field_address), intent(in) :: iphys_ele_base
       type(phys_data), intent(in) :: ele_fld
       type(field_geometry_data), intent(in) :: fluid
       type(layering_tbl), intent(in) :: layer_tbl
@@ -141,7 +141,7 @@
       call choose_cal_gradient                                          &
      &   (iflag_supg, num_int, dt, ifield_f, iphys_SGS_wk%i_simi,       &
      &    fluid%istack_ele_fld_smp, mlump_fl,                           &
-     &    nod_comm, node, ele, iphys_ele%base, ele_fld, jacs%g_FEM,     &
+     &    nod_comm, node, ele, iphys_ele_base, ele_fld, jacs%g_FEM,     &
      &    jacs%jac_3d,  rhs_tbl, fem_wk, f_l, f_nl, nod_fld)
 !
 !   take gradient of temperature (to iphys_SGS_wk%i_nlg)
@@ -151,7 +151,7 @@
       call choose_cal_gradient                                          &
      &   (iflag_supg, num_int, dt, ifield, iphys_SGS_wk%i_nlg,          &
      &    fluid%istack_ele_fld_smp, mlump_fl,                           &
-     &    nod_comm, node, ele, iphys_ele%base, ele_fld, jacs%g_FEM,     &
+     &    nod_comm, node, ele, iphys_ele_base, ele_fld, jacs%g_FEM,     &
      &    jacs%jac_3d, rhs_tbl, fem_wk, f_l, f_nl, nod_fld)
 !
 !    filtering (to iphys_SGS_wk%i_nlg)

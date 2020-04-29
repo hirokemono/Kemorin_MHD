@@ -308,8 +308,8 @@
         call cal_velo_pre_lumped_crank(SGS_par%commute_p%iflag_c_velo,  &
      &      SGS_par%model_p%ifilter_final,                              &
      &      iak_diff_base%i_velo, ak_MHD%ak_d_velo, dt, FEM_prm,        &
-     &      nod_comm, node, ele, fluid, fl_prop,                        &
-     &      Vnod_bcs, iphys, iphys_ele, ele_fld, fem_int%jcs%g_FEM,     &
+     &      nod_comm, node, ele, fluid, fl_prop, Vnod_bcs,              &
+     &      iphys, iphys_ele%base, ele_fld, fem_int%jcs%g_FEM,          &
      &      fem_int%jcs%jac_3d, fem_int%rhs_tbl, FEM_elens, diff_coefs, &
      &      mlump_fl, Vmatrix, MG_vector, mhd_fem_wk, rhs_mat%fem_wk,   &
      &      rhs_mat%f_l, rhs_mat%f_nl, nod_fld)

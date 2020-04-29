@@ -150,7 +150,7 @@
      &   (iphys_SGS_wk%i_simi, iphys_SGS_wk%i_wd_nlg,                   &
      &    iphys_fil%i_velo, iphys_fil%i_magne,                          &
      &    dt, FEM_prm, mesh%nod_comm, mesh%node, mesh%ele, conduct,     &
-     &    iphys_ele, ele_fld, fem_int%jcs, fem_int%rhs_tbl,             &
+     &    iphys_ele%base, ele_fld, fem_int%jcs, fem_int%rhs_tbl,        &
      &    rhs_mat%fem_wk, mk_MHD%mlump_cd, rhs_mat%f_l, rhs_mat%f_nl,   &
      &    nod_fld)
 !
@@ -161,7 +161,7 @@
      &   (iphys_SGS_wk%i_nlg, iphys_SGS%i_SGS_induct_t,                 &
      &    iphys_base%i_velo, iphys_base%i_magne,                        &
      &    dt, FEM_prm, mesh%nod_comm, mesh%node, mesh%ele, conduct,     &
-     &    iphys_ele, ele_fld, fem_int%jcs, fem_int%rhs_tbl,             &
+     &    iphys_ele%base, ele_fld, fem_int%jcs, fem_int%rhs_tbl,        &
      &    rhs_mat%fem_wk, mk_MHD%mlump_cd, rhs_mat%f_l, rhs_mat%f_nl,   &
      &    nod_fld)
 !

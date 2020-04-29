@@ -7,7 +7,7 @@
 !!     &          dt, FEM_prm, SGS_par, nod_comm, node, ele, surf,      &
 !!     &          fluid, layer_tbl, sf_grp, Asf_bcs, Fsf_bcs,           &
 !!     &          iphys_base, iphys_fil, iphys_SGS_wk,                  &
-!!     &          iphys_ele, ele_fld, jacs, rhs_tbl, FEM_elens,         &
+!!     &          iphys_ele_base, ele_fld, jacs, rhs_tbl, FEM_elens,    &
 !!     &          filtering, m_lump, wk_filter, wk_cor, wk_lsq, wk_diff,&
 !!     &          fem_wk, surf_wk, f_l, f_nl, nod_fld, diff_coefs)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
@@ -22,7 +22,7 @@
 !!        type(base_field_address), intent(in) :: iphys_base
 !!        type(base_field_address), intent(in) :: iphys_fil
 !!        type(dynamic_SGS_work_address), intent(in) :: iphys_SGS_wk
-!!        type(phys_address), intent(in) :: iphys_ele
+!!        type(base_field_address), intent(in) :: iphys_ele_base
 !!        type(phys_data), intent(in) :: ele_fld
 !!        type(layering_tbl), intent(in) :: layer_tbl
 !!        type(jacobians_type), intent(in) :: jacs
@@ -52,7 +52,6 @@
       use t_surface_data
       use t_group_data
       use t_phys_data
-      use t_phys_address
       use t_base_field_labels
       use t_SGS_model_coef_labels
       use t_jacobians
@@ -82,7 +81,7 @@
      &          dt, FEM_prm, SGS_par, nod_comm, node, ele, surf,        &
      &          fluid, layer_tbl, sf_grp, Asf_bcs, Fsf_bcs,             &
      &          iphys_base, iphys_fil, iphys_SGS_wk,                    &
-     &          iphys_ele, ele_fld, jacs, rhs_tbl, FEM_elens,           &
+     &          iphys_ele_base, ele_fld, jacs, rhs_tbl, FEM_elens,      &
      &          filtering, m_lump, wk_filter, wk_cor, wk_lsq, wk_diff,  &
      &          fem_wk, surf_wk, f_l, f_nl, nod_fld, diff_coefs)
 !
@@ -115,7 +114,7 @@
       type(base_field_address), intent(in) :: iphys_base
       type(base_field_address), intent(in) :: iphys_fil
       type(dynamic_SGS_work_address), intent(in) :: iphys_SGS_wk
-      type(phys_address), intent(in) :: iphys_ele
+      type(base_field_address), intent(in) :: iphys_ele_base
       type(phys_data), intent(in) :: ele_fld
       type(layering_tbl), intent(in) :: layer_tbl
       type(jacobians_type), intent(in) :: jacs
@@ -163,14 +162,14 @@
      &   (FEM_prm%iflag_magne_supg, FEM_prm%npoint_t_evo_int, dt,       &
      &    iphys_SGS_wk%i_wd_nlg, iphys_SGS_wk%i_simi,                   &
      &    ele%istack_ele_smp, m_lump, nod_comm, node, ele,              &
-     &    iphys_ele, ele_fld, jacs%g_FEM, jacs%jac_3d, rhs_tbl,         &
+     &    iphys_ele_base, ele_fld, jacs%g_FEM, jacs%jac_3d, rhs_tbl,    &
      &    fem_wk, f_nl, nod_fld)
       if (iflag_debug.gt.0)                                             &
      &   write(*,*) 'cal_gradent_whole', i_sgs_simi_p, i_sgs_grad_fp
       call choose_cal_gradient                                          &
      &   (FEM_prm%iflag_magne_supg, FEM_prm%npoint_t_evo_int, dt,       &
      &    i_sgs_grad_fp, i_sgs_simi_p, ele%istack_ele_smp, m_lump,      &
-     &    nod_comm, node, ele, iphys_ele%base, ele_fld, jacs%g_FEM,     &
+     &    nod_comm, node, ele, iphys_ele_base, ele_fld, jacs%g_FEM,     &
      &    jacs%jac_3d, rhs_tbl, fem_wk, f_l, f_nl, nod_fld)
 !
 !   take rotation and gradient of vector potential
@@ -181,14 +180,14 @@
       call choose_cal_rotation                                          &
      &   (FEM_prm%iflag_magne_supg, FEM_prm%npoint_t_evo_int, dt,       &
      &    iphys_base%i_vecp, iphys_SGS_wk%i_nlg, ele%istack_ele_smp,    &
-     &    m_lump, nod_comm, node, ele, iphys_ele, ele_fld,              &
+     &    m_lump, nod_comm, node, ele, iphys_ele_base, ele_fld,         &
      &    jacs%g_FEM, jacs%jac_3d, rhs_tbl, fem_wk, f_nl, nod_fld)
       if (iflag_debug.gt.0) write(*,*) 'cal_gradent_in_fluid',          &
      &                     i_sgs_grad_p, iphys_base%i_mag_p
       call choose_cal_gradient                                          &
      &   (FEM_prm%iflag_magne_supg, FEM_prm%npoint_t_evo_int, dt,       &
      &    iphys_base%i_mag_p, i_sgs_grad_p, ele%istack_ele_smp, m_lump, &
-     &    nod_comm, node, ele, iphys_ele%base, ele_fld, jacs%g_FEM,     &
+     &    nod_comm, node, ele, iphys_ele_base, ele_fld, jacs%g_FEM,     &
      &    jacs%jac_3d, rhs_tbl, fem_wk, f_l, f_nl, nod_fld)
 !
 !    filtering (to iphys_SGS_wk%i_nlg)

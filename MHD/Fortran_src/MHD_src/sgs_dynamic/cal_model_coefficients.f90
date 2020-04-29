@@ -140,7 +140,7 @@
      &        iphys_LES%SGS_term%i_SGS_h_flux,                          &
      &        iak_sgs_term%i_SGS_h_flux, icomp_sgs_term%i_SGS_h_flux,   &
      &        SGS_par, geofem%mesh, iphys_LES%SGS_wk,                   &
-     &        SGS_MHD_wk%iphys_ele, SGS_MHD_wk%ele_fld,                 &
+     &        SGS_MHD_wk%iphys_ele%base, SGS_MHD_wk%ele_fld,            &
      &        MHD_mesh%fluid, fem_int, FEM_filters,                     &
      &        iphys_elediff_vec, iphys_elediff_fil,                     &
      &        sgs_coefs_nod, SGS_MHD_wk%mk_MHD, SGS_MHD_wk%FEM_SGS_wk,  &
@@ -174,8 +174,8 @@
      &        icomp_diff_sgs%i_SGS_h_flux,                              &
      &        SGS_par, geofem%mesh, geofem%group,                       &
      &        nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs, iphys_LES%SGS_wk,     &
-     &        SGS_MHD_wk%iphys_ele, SGS_MHD_wk%ele_fld, MHD_mesh%fluid, &
-     &        fem_int, FEM_filters, iphys_elediff_fil,                  &
+     &        SGS_MHD_wk%iphys_ele%base, SGS_MHD_wk%ele_fld,            &
+     &        MHD_mesh%fluid, fem_int, FEM_filters, iphys_elediff_fil,  &
      &        sgs_coefs, SGS_MHD_wk%mk_MHD, SGS_MHD_wk%FEM_SGS_wk,      &
      &        SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat, nod_fld,       &
      &        diff_coefs)
@@ -196,7 +196,7 @@
      &        iphys_LES%SGS_term%i_SGS_c_flux,                          &
      &        iak_sgs_term%i_SGS_c_flux, icomp_sgs_term%i_SGS_c_flux,   &
      &        SGS_par, geofem%mesh, iphys_LES%SGS_wk,                   &
-     &        SGS_MHD_wk%iphys_ele, SGS_MHD_wk%ele_fld,                 &
+     &        SGS_MHD_wk%iphys_ele%base, SGS_MHD_wk%ele_fld,            &
      &        MHD_mesh%fluid, fem_int, FEM_filters,                     &
      &        iphys_elediff_vec, iphys_elediff_fil,                     &
      &        sgs_coefs_nod, SGS_MHD_wk%mk_MHD, SGS_MHD_wk%FEM_SGS_wk,  &
@@ -231,8 +231,8 @@
      &        icomp_sgs_term%i_SGS_c_flux, icomp_diff_sgs%i_SGS_c_flux, &
      &        SGS_par, geofem%mesh, geofem%group,                       &
      &        nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs, iphys_LES%SGS_wk,     &
-     &        SGS_MHD_wk%iphys_ele, SGS_MHD_wk%ele_fld, MHD_mesh%fluid, &
-     &        fem_int, FEM_filters, iphys_elediff_fil,                  &
+     &        SGS_MHD_wk%iphys_ele%base, SGS_MHD_wk%ele_fld,            &
+     &        MHD_mesh%fluid, fem_int, FEM_filters, iphys_elediff_fil,  &
      &        sgs_coefs, SGS_MHD_wk%mk_MHD, SGS_MHD_wk%FEM_SGS_wk,      &
      &        SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat, nod_fld,       &
      &        diff_coefs)
@@ -273,10 +273,11 @@
      &      time_d%dt, FEM_prm, SGS_par, geofem%mesh, geofem%group,     &
      &      nod_bcs%Vnod_bcs, surf_bcs%Vsf_bcs, iphys%base,             &
      &      iphys%filter_fld, iphys_LES%SGS_term, iphys_LES%SGS_wk,     &
-     &      SGS_MHD_wk%iphys_ele, SGS_MHD_wk%ele_fld, MHD_mesh%fluid,   &
-     &      fem_int, FEM_filters, sgs_coefs, SGS_MHD_wk%mk_MHD,         &
-     &      SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%mhd_fem_wk,               &
-     &      SGS_MHD_wk%rhs_mat, nod_fld, diff_coefs)
+     &      SGS_MHD_wk%iphys_ele%base, SGS_MHD_wk%ele_fld,              &
+     &      MHD_mesh%fluid, fem_int, FEM_filters, sgs_coefs,            &
+     &      SGS_MHD_wk%mk_MHD, SGS_MHD_wk%FEM_SGS_wk,                   &
+     &      SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat,                  &
+     &      nod_fld, diff_coefs)
         end if
       end if
 !
@@ -289,7 +290,7 @@
           call cal_sgs_maxwell_t_dynamic                                &
      &      (time_d%dt, FEM_prm, SGS_par, geofem%mesh,                  &
      &       iphys%base, iphys%filter_fld, iphys_LES%SGS_term,          &
-     &       iphys_LES%SGS_wk, SGS_MHD_wk%iphys_ele,                    &
+     &       iphys_LES%SGS_wk, SGS_MHD_wk%iphys_ele%base,               &
      &       SGS_MHD_wk%ele_fld, MHD_mesh%fluid, fem_int, FEM_filters,  &
      &       iak_sgs_term, icomp_sgs_term,                              &
      &       iphys_elediff_vec, iphys_elediff_fil,                      &
@@ -316,8 +317,9 @@
      &     (time_d%dt, FEM_prm, SGS_par, geofem%mesh, geofem%group,     &
      &      MHD_mesh%fluid, nod_bcs%Vnod_bcs, surf_bcs%Bsf_bcs,         &
      &      iphys%base, iphys%filter_fld, iphys_LES%SGS_term,           &
-     &      iphys_LES%SGS_wk, SGS_MHD_wk%iphys_ele, SGS_MHD_wk%ele_fld, &
-     &      fem_int, FEM_filters, iak_diff_sgs, icomp_diff_sgs,         &
+     &      iphys_LES%SGS_wk, SGS_MHD_wk%iphys_ele%base,                &
+     &      SGS_MHD_wk%ele_fld, fem_int, FEM_filters,                   &
+     &      iak_diff_sgs, icomp_diff_sgs,                               &
      &      icomp_sgs_term, iphys_elediff_fil, sgs_coefs,               &
      &      SGS_MHD_wk%mk_MHD, SGS_MHD_wk%FEM_SGS_wk,                   &
      &      SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat, nod_fld,         &

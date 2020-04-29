@@ -146,7 +146,7 @@
      &    iphys_SGS_wk%i_wd_nlg, iphys_fil%i_magne,                     &
      &    iphys_elediff_fil%i_velo, dt, FEM_prm,                        &
      &    mesh%nod_comm, mesh%node, mesh%ele, conduct, cd_prop,         &
-     &    iphys_ele, ele_fld, fem_int%jcs, fem_int%rhs_tbl,             &
+     &    iphys_ele%base, ele_fld, fem_int%jcs, fem_int%rhs_tbl,        &
      &    FEM_filters%FEM_elens, mk_MHD%mlump_cd, mhd_fem_wk,           &
      &    rhs_mat%fem_wk, rhs_mat%f_l, nod_fld)
 !
@@ -157,7 +157,7 @@
      &    iphys_SGS%i_SGS_vp_induct, iphys_base%i_magne,                &
      &    iphys_elediff_vec%i_velo, dt, FEM_prm,                        &
      &    mesh%nod_comm, mesh%node, mesh%ele,                           &
-     &    conduct, cd_prop, iphys_ele, ele_fld,                         &
+     &    conduct, cd_prop, iphys_ele%base, ele_fld,                    &
      &    fem_int%jcs, fem_int%rhs_tbl, FEM_filters%FEM_elens,          &
      &    mk_MHD%mlump_cd, mhd_fem_wk, rhs_mat%fem_wk,                  &
      &    rhs_mat%f_l, nod_fld)

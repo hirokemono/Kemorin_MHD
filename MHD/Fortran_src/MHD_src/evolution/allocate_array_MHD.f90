@@ -6,21 +6,17 @@
 !        Modified by H. Matsui on July, 2006
 !        Modified by H. Matsui on May, 2007
 !
-!!      subroutine allocate_array_FEM_MHD(SGS_par, mesh, MHD_prop,      &
-!!     &          iphys, iphys_LES, nod_fld, iphys_ele, ele_fld,        &
-!!     &          Csims_FEM_MHD, mk_MHD, mhd_fem_wk, rhs_mat,           &
-!!     &          fem_int, fem_sq, label_sim)
+!!      subroutine allocate_array_FEM_MHD                               &
+!!     &         (SGS_par, mesh, MHD_prop, iphys, iphys_LES, nod_fld,   &
+!!     &          Csims_FEM_MHD, SGS_MHD_wk, fem_sq, label_sim)
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
 !!        type(phys_address), intent(inout) :: iphys
 !!        type(SGS_model_addresses), intent(inout) :: iphys_LES
-!!        type(phys_address), intent(inout) :: iphys_ele
-!!        type(phys_data), intent(inout) :: nod_fld, ele_fld
-!!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
+!!        type(phys_data), intent(inout) :: nod_fld
 !!        type(SGS_coefficients_data), intent(inout) :: Csims_FEM_MHD
-!!        type(finite_element_integration), intent(inout) :: fem_int
-!!        type(lumped_mass_mat_layerd), intent(inout) :: mk_MHD
+!!        type(work_FEM_SGS_MHD), intent(inout) :: SGS_MHD_wk
 !!        type(arrays_finite_element_mat), intent(inout) :: rhs_mat
 !!        type(FEM_MHD_mean_square), intent(inout) :: fem_sq
 !
@@ -39,6 +35,7 @@
       use t_physical_property
       use t_MHD_finite_element_mat
       use t_MHD_mass_matrices
+      use t_work_FEM_SGS_MHD
 !
       implicit none
 !
@@ -50,10 +47,9 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine allocate_array_FEM_MHD(SGS_par, mesh, MHD_prop,        &
-     &          iphys, iphys_LES, nod_fld, iphys_ele, ele_fld,          &
-     &          Csims_FEM_MHD, mk_MHD, mhd_fem_wk, rhs_mat,             &
-     &          fem_int, fem_sq, label_sim)
+      subroutine allocate_array_FEM_MHD                                 &
+     &         (SGS_par, mesh, MHD_prop, iphys, iphys_LES, nod_fld,     &
+     &          Csims_FEM_MHD, SGS_MHD_wk, fem_sq, label_sim)
 !
       use m_phys_constants
 !
@@ -76,13 +72,9 @@
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(phys_address), intent(inout) :: iphys
       type(SGS_model_addresses), intent(inout) :: iphys_LES
-      type(phys_address), intent(inout) :: iphys_ele
-      type(phys_data), intent(inout) :: nod_fld, ele_fld
+      type(phys_data), intent(inout) :: nod_fld
       type(SGS_coefficients_data), intent(inout) :: Csims_FEM_MHD
-      type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
-      type(finite_element_integration), intent(inout) :: fem_int
-      type(lumped_mass_mat_layerd), intent(inout) :: mk_MHD
-      type(arrays_finite_element_mat), intent(inout) :: rhs_mat
+      type(work_FEM_SGS_MHD), intent(inout) :: SGS_MHD_wk
       type(FEM_MHD_mean_square), intent(inout) :: fem_sq
 !
       character(len=kchara), intent(inout) :: label_sim
@@ -91,17 +83,17 @@
       label_sim = 'GeoFEM_MHD'
 !
       if (iflag_debug.ge.1) write(*,*) 'alloc_finite_elem_mat'
-      call alloc_finite_elem_mat(mesh, rhs_mat)
-      call alloc_fem_int_base_type(mesh, fem_int)
-      call alloc_mass_mat_fluid(mesh%node%numnod, mk_MHD)
-      call alloc_mass_mat_conduct(mesh%node%numnod, mk_MHD)
+      call alloc_finite_elem_mat(mesh, SGS_MHD_wk%rhs_mat)
+      call alloc_fem_int_base_type(mesh, SGS_MHD_wk%fem_int)
+      call alloc_mass_mat_fluid(mesh%node%numnod, SGS_MHD_wk%mk_MHD)
+      call alloc_mass_mat_conduct(mesh%node%numnod, SGS_MHD_wk%mk_MHD)
 !
       if (iflag_debug.ge.1) write(*,*) 'allocate_int_vol_data'
       call alloc_int_vol_data(mesh%ele%numele, mesh%node%max_nod_smp,   &
-     &   SGS_par%model_p, nod_fld, mhd_fem_wk)
+     &   SGS_par%model_p, nod_fld, SGS_MHD_wk%mhd_fem_wk)
       call count_int_vol_data                                           &
-         (SGS_par%model_p, MHD_prop%cd_prop, mhd_fem_wk)
-      call alloc_int_vol_dvx(mesh%ele%numele, mhd_fem_wk)
+         (SGS_par%model_p, MHD_prop%cd_prop, SGS_MHD_wk%mhd_fem_wk)
+      call alloc_int_vol_dvx(mesh%ele%numele, SGS_MHD_wk%mhd_fem_wk)
       call set_SGS_ele_fld_addresses(MHD_prop%cd_prop, SGS_par%model_p, &
      &    Csims_FEM_MHD%iphys_elediff_vec,                              &
      &    Csims_FEM_MHD%iphys_elediff_fil)
@@ -110,7 +102,8 @@
       if (iflag_debug.ge.1)  write(*,*) 'set_FEM_SGS_MHD_field_data'
       call set_FEM_SGS_MHD_field_data                                   &
      &   (SGS_par%model_p, SGS_par%commute_p, mesh%node, mesh%ele,      &
-     &    MHD_prop, nod_fld, iphys, iphys_LES, ele_fld, iphys_ele)
+     &    MHD_prop, nod_fld, iphys, iphys_LES, SGS_MHD_wk%ele_fld,      &
+     &    SGS_MHD_wk%iphys_ele, SGS_MHD_wk%iphys_fil_ele)
       if (iflag_debug.ge.1)  write(*,*) 'initialize_ele_field_data'
 !
       if ( iflag_debug.ge.1 ) write(*,*) 'init_FEM_MHD_mean_square'

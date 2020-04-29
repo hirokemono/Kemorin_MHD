@@ -120,7 +120,7 @@
       else
         call choose_int_vol_rotations                                   &
      &     (iflag_4_supg, num_int, dt, iele_fsmp_stack,                 &
-     &      i_vector, node, ele, nod_fld, iphys_ele, ele_fld,           &
+     &      i_vector, node, ele, nod_fld, iphys_ele%base, ele_fld,      &
      &      jacs%g_FEM, jacs%jac_3d, rhs_tbl, fem_wk, f_nl)
       end if
 !

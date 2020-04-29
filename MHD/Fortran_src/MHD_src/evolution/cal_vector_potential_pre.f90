@@ -249,7 +249,7 @@
      &      iphys%base%i_vecp, iphys%exp_work%i_pre_uxb,                &
      &      iak_diff_base%i_magne, ak_d_magne, Bnod_bcs%nod_bc_a, dt,   &
      &      FEM_prm, nod_comm, node, ele, conduct,                      &
-     &      cd_prop, iphys_ele, ele_fld, jacs%g_FEM, jacs%jac_3d,       &
+     &      cd_prop, iphys_ele%base, ele_fld, jacs%g_FEM, jacs%jac_3d,  &
      &      rhs_tbl, FEM_elens, diff_coefs, mlump_cd,                   &
      &      Bmatrix, MG_vector, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       else if(cd_prop%iflag_Aevo_scheme .eq. id_Crank_nicolson_cmass)   &

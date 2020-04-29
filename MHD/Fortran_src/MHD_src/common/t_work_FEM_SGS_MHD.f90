@@ -15,6 +15,7 @@
 !
       use t_phys_data
       use t_phys_address
+      use t_base_field_labels
       use t_MHD_finite_element_mat
       use t_MHD_mass_matrices
       use t_work_FEM_integration
@@ -26,8 +27,10 @@
       type work_FEM_SGS_MHD
 !>       Structure for field data on element
         type(phys_data) :: ele_fld
-!>       Address for element fields
+!>       Address of element fields
         type(phys_address) :: iphys_ele
+!>       Address of filtered element fields
+        type(base_field_address) :: iphys_fil_ele
 !
 !>       Structure of mass matrices for FEM_MHD
         type(lumped_mass_mat_layerd) :: mk_MHD

@@ -8,14 +8,14 @@
 !!     &          itype_Csym_flux, SGS_flux_factor,                     &
 !!     &          ifield, ifield_f, ivelo, ivelo_f, i_sgs,              &
 !!     &          iak_sgs_hlux, icomp_sgs_flux, SGS_par, mesh,          &
-!!     &          iphys_SGS_wk, iphys_ele, ele_fld, fluid, fem_int,     &
+!!     &          iphys_SGS_wk, iphys_ele_base, ele_fld, fluid, fem_int,&
 !!     &          FEM_filters, iphys_elediff_vec, iphys_elediff_fil,    &
 !!     &          sgs_coefs_nod, mk_MHD, FEM_SGS_wk, mhd_fem_wk,        &
 !!     &          rhs_mat, nod_fld, sgs_coefs)
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(dynamic_SGS_work_address), intent(in) :: iphys_SGS_wk
-!!        type(phys_address), intent(in) :: iphys_ele
+!!        type(base_field_address), intent(in) :: iphys_ele_base
 !!        type(phys_data), intent(in) :: ele_fld
 !!        type(field_geometry_data), intent(in) :: fluid
 !!        type(finite_element_integration), intent(in) :: fem_int
@@ -41,7 +41,6 @@
       use t_mesh_data
       use t_geometry_data_MHD
       use t_phys_data
-      use t_phys_address
       use t_base_field_labels
       use t_SGS_model_coef_labels
       use t_table_FEM_const
@@ -66,7 +65,7 @@
      &          itype_Csym_flux, SGS_flux_factor,                       &
      &          ifield, ifield_f, ivelo, ivelo_f, i_sgs,                &
      &          iak_sgs_hlux, icomp_sgs_flux, SGS_par, mesh,            &
-     &          iphys_SGS_wk, iphys_ele, ele_fld, fluid, fem_int,       &
+     &          iphys_SGS_wk, iphys_ele_base, ele_fld, fluid, fem_int,  &
      &          FEM_filters, iphys_elediff_vec, iphys_elediff_fil,      &
      &          sgs_coefs_nod, mk_MHD, FEM_SGS_wk, mhd_fem_wk,          &
      &          rhs_mat, nod_fld, sgs_coefs)
@@ -93,7 +92,7 @@
       type(SGS_paremeters), intent(in) :: SGS_par
       type(mesh_geometry), intent(in) :: mesh
       type(dynamic_SGS_work_address), intent(in) :: iphys_SGS_wk
-      type(phys_address), intent(in) :: iphys_ele
+      type(base_field_address), intent(in) :: iphys_ele_base
       type(phys_data), intent(in) :: ele_fld
       type(field_geometry_data), intent(in) :: fluid
       type(finite_element_integration), intent(in) :: fem_int
@@ -134,7 +133,7 @@
       call cal_sgs_s_flux_grad_no_coef                                  &
      &   (iflag_supg, num_int, dt, ifilter_4delta,                      &
      &    iphys_SGS_wk%i_wd_nlg, ifield_f, iphys_elediff_fil%i_velo,    &
-     &    mesh%nod_comm, mesh%node, mesh%ele, fluid, iphys_ele%base,    &
+     &    mesh%nod_comm, mesh%node, mesh%ele, fluid, iphys_ele_base,    &
      &    ele_fld, fem_int%jcs, fem_int%rhs_tbl, FEM_filters%FEM_elens, &
      &    mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%f_l,     &
      &    nod_fld)
@@ -144,7 +143,7 @@
       if (iflag_debug.gt.0)  write(*,*) 'cal_sgs_h_flux_grad_4_dyn'
       call cal_sgs_s_flux_grad_no_coef(iflag_supg, num_int, dt,         &
      &    ifilter_2delta, i_sgs, ifield, iphys_elediff_vec%i_velo,      &
-     &    mesh%nod_comm, mesh%node, mesh%ele, fluid, iphys_ele%base,    &
+     &    mesh%nod_comm, mesh%node, mesh%ele, fluid, iphys_ele_base,    &
      &    ele_fld, fem_int%jcs, fem_int%rhs_tbl, FEM_filters%FEM_elens, &
      &    mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%f_l,     &
      &    nod_fld)
