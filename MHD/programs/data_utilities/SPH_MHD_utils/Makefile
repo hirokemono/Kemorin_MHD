@@ -96,8 +96,8 @@ m_tave_field_on_circle.o
 MOD_MODIFY_SPH_INI = \
 main_sph_modify_restart.o \
 analyzer_sph_modify_restart.o \
-analyzer_sph_snap.o \
-SPH_analyzer_snap.o
+analyzer_sph_snap_w_psf.o \
+SPH_analyzer_snap_w_psf.o
 
 MOD_SPH_FORWARD_TRANS = \
 main_sph_forward_transform.o \
