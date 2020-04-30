@@ -58,6 +58,8 @@
         integer :: iflag_swap = 0
 !
 !>        truncation degree
+        integer(kind = kint) :: i_version_from_file
+!>        truncation degree
         integer(kind = kint) :: ltr_org
 !
 !>        Radial grid type
@@ -78,6 +80,8 @@
         real(kind = kreal) :: dt_new
 !>        new original delta t
         real(kind = kreal) :: new_dt_org
+!>        time step
+        integer(kind = kint) :: i_step_org
       end type rayleigh_restart
 !
 !-----------------------------------------------------------------------
@@ -116,6 +120,7 @@
 !
 !
       write(id_file,*) 'iflag_swap', ra_rst%iflag_swap
+      write(id_file,*) 'version ID', ra_rst%i_version_from_file
       write(id_file,*) 'ltr_org',  ra_rst%ltr_org
 !
       write(id_file,*) 'iflag_rtype',  ra_rst%iflag_rtype
@@ -165,6 +170,9 @@
       ra_rst%iflag_swap = bbuf_rgh%iflag_swap
 !
       call rawread_int4_f(1, int_tmp, bbuf_rgh)
+      ra_rst%i_version_from_file = int(int_tmp(1),KIND(ra_rst%nri_org))
+!
+      call rawread_int4_f(1, int_tmp, bbuf_rgh)
       ra_rst%nri_org = int(int_tmp(1),KIND(ra_rst%nri_org))
 !
       call rawread_int4_f(1, int_tmp, bbuf_rgh)
@@ -194,6 +202,10 @@
       call rawread_real_f(1, rtmp, bbuf_rgh)
       ra_rst%time_org = rtmp(1)
       write(*,*) 'ra_rst%time_org', ra_rst%time_org
+!
+      call rawread_int4_f(1, int_tmp, bbuf_rgh)
+      ra_rst%i_step_org = int(int_tmp(1),KIND(ra_rst%nri_org))
+      write(*,*) 'ra_rst%i_step', ra_rst%i_step_org
 !
       call close_binary_file
 !
