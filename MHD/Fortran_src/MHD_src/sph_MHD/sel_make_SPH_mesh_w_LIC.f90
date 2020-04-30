@@ -7,9 +7,9 @@
 !>@brief  Load mesh and filtering data for MHD simulation
 !!
 !!@verbatim
-!!      subroutine select_make_SPH_mesh_w_LIC                           &
-!!     &         (iflag_make_SPH, sph_file_param,                       &
-!!     &         sph, comms_sph, sph_grps, sph_maker, geofem, MHD_files)
+!!      subroutine load_para_SPH_and_FEM_w_LIC                          &
+!!     &         (FEM_mesh_flags, sph_file_param,                       &
+!!     &          sph, comms_sph, sph_grps, geofem, mesh_file, gen_sph)
 !!        type(field_IO_params), intent(in) :: sph_file_param
 !!        type(sph_grids), intent(inout) :: sph
 !!        type(sph_comm_tables), intent(inout) :: comms_sph
@@ -38,11 +38,10 @@
       use t_rms_4_sph_spectr
       use t_file_IO_parameter
       use t_sph_trans_arrays_MHD
-      use t_select_make_SPH_mesh
+      use t_check_and_make_SPH_mesh
 !
       implicit none
 !
-      private :: load_para_SPH_and_FEM_w_LIC
       private :: load_FEM_mesh_4_SPH_w_LIC
       private :: const_FEM_mesh_4_sph_MHD_w_LIC
 !
@@ -52,66 +51,9 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine select_make_SPH_mesh_w_LIC                             &
-     &         (iflag_make_SPH, sph_file_param,                         &
-     &          sph, comms_sph, sph_grps, sph_maker, geofem, MHD_files)
-!
-      use m_error_IDs
-      use parallel_load_data_4_sph
-      use parallel_gen_sph_grids
-      use mesh_file_name_by_param
-!
-      integer(kind = kint), intent(in) :: iflag_make_SPH
-      type(field_IO_params), intent(in) :: sph_file_param
-      type(sph_grids), intent(inout) :: sph
-      type(sph_comm_tables), intent(inout) :: comms_sph
-      type(sph_group_data), intent(inout) ::  sph_grps
-!
-      type(mesh_data), intent(inout) ::   geofem
-      type(MHD_file_IO_params), intent(inout) ::  MHD_files
-      type(sph_grid_maker_in_sim), intent(inout) :: sph_maker
-!
-      integer(kind = kint) :: iflag_lc
-!
-!
-!
-      if(my_rank .eq. izero) then
-        iflag_lc = 0
-        if     (check_exsist_rtp_file(my_rank, sph_file_param) .ne. 0   &
-     &     .or. check_exsist_rtm_file(my_rank, sph_file_param) .ne. 0   &
-     &     .or. check_exsist_rlm_file(my_rank, sph_file_param) .ne. 0   &
-     &     .or. check_exsist_rj_file(my_rank, sph_file_param) .ne.  0)  &
-     &   iflag_lc = 1
-      end if
-      call MPI_BCAST(iflag_lc, 1, CALYPSO_INTEGER, 0,                   &
-     &    CALYPSO_COMM, ierr_MPI)
-!
-      if(iflag_lc .eq. 0) then
-        if(my_rank.eq.0) write(*,*) 'spherical harmonics table exists'
-      else if(iflag_make_SPH .eq. 0) then
-        call calypso_mpi_abort(ierr_file,                               &
-     &     'Set parameters for spherical shell')
-      else
-        if (my_rank.eq.0) write(*,*) 'Make spherical harmonics table'
-        call para_gen_sph_grids                                         &
-     &     (sph_file_param, sph_maker%sph_tmp, sph_maker%gen_sph)
-        call dealloc_gen_mesh_params(sph_maker%gen_sph)
-      end if
-!
-      if (iflag_debug.eq.1) write(*,*) 'load_para_SPH_and_FEM_w_LIC'
-      call load_para_SPH_and_FEM_w_LIC                                  &
-     &   (MHD_files%FEM_mesh_flags, sph_file_param,                     &
-     &    sph, comms_sph, sph_grps, geofem,                             &
-     &    MHD_files%mesh_file_IO, sph_maker%gen_sph)
-      call dealloc_gen_sph_fem_mesh_param(sph_maker%gen_sph)
-!
-      end subroutine select_make_SPH_mesh_w_LIC
-!
-! ----------------------------------------------------------------------
-!
       subroutine load_para_SPH_and_FEM_w_LIC                            &
      &         (FEM_mesh_flags, sph_file_param,                         &
-     &          sph, comms_sph, sph_grps, fem, mesh_file, gen_sph)
+     &          sph, comms_sph, sph_grps, geofem, mesh_file, gen_sph)
 !
       use calypso_mpi
       use t_mesh_data
@@ -127,7 +69,7 @@
       type(sph_comm_tables), intent(inout) :: comms_sph
       type(sph_group_data), intent(inout) ::  sph_grps
 !
-      type(mesh_data), intent(inout) :: fem
+      type(mesh_data), intent(inout) :: geofem
       type(field_IO_params), intent(inout) ::  mesh_file
 !
       type(construct_spherical_grid), intent(inout) :: gen_sph
@@ -142,17 +84,17 @@
       call copy_group_data                                              &
      &   (sph_grps%radial_rj_grp, gen_sph%radial_rj_grp_lc)
 !
-!  --  load FEM mesh data
+!  --  load geofem mesh data
       if(check_exist_mesh(mesh_file, my_rank) .eq. 0) then
         if (iflag_debug.gt.0) write(*,*) 'mpi_input_mesh'
-        call mpi_input_mesh(mesh_file, nprocs, fem)
-        call set_fem_center_mode_4_SPH                                  &
-     &     (fem%mesh%node%internal_node, sph%sph_rtp, sph%sph_params)
+        call mpi_input_mesh(mesh_file, nprocs, geofem)
+        call set_fem_center_mode_4_SPH(geofem%mesh%node%internal_node,  &
+     &      sph%sph_rtp, sph%sph_params)
       else
 !  --  Construct FEM mesh
         mesh_file%file_prefix = sph_file_param%file_prefix
         call load_FEM_mesh_4_SPH_w_LIC(FEM_mesh_flags, mesh_file,       &
-     &      sph%sph_params, sph%sph_rtp, sph%sph_rj, fem, gen_sph)
+     &      sph%sph_params, sph%sph_rtp, sph%sph_rj, geofem, gen_sph)
       end if
 !
       end subroutine load_para_SPH_and_FEM_w_LIC

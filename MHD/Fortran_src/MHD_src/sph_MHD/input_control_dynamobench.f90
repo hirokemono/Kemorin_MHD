@@ -49,7 +49,7 @@
       use t_sph_trans_arrays_MHD
       use t_sph_boundary_input_data
       use t_bc_data_list
-      use t_select_make_SPH_mesh
+      use t_check_and_make_SPH_mesh
       use t_flex_delta_t_data
       use t_field_4_dynamobench
       use t_sph_mhd_monitor_data_IO
@@ -101,8 +101,8 @@
       call set_control_4_SPH_MHD                                        &
      &   (DMHD_ctl%plt, DMHD_ctl%org_plt, DMHD_ctl%model_ctl,           &
      &    DMHD_ctl%smctl_ctl, DMHD_ctl%nmtr_ctl, DMHD_ctl%psph_ctl,     &
-     &    sph_maker2%sph_tmp, MHD_files, bc_IO, MHD_step, MHD_prop,     &
-     &    MHD_BC, WK%WK_sph, sph_maker2%gen_sph)
+     &    MHD_files, bc_IO, MHD_step, MHD_prop, MHD_BC, WK%WK_sph,      &
+     &    sph_maker2)
 !
       call set_control_SPH_MHD_w_viz(DMHD_ctl%model_ctl,                &
      &    DMHD_ctl%psph_ctl, DMHD_ctl%smonitor_ctl, DMHD_ctl%zm_ctls,   &

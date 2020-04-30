@@ -26,6 +26,7 @@
       use t_field_on_circle
       use t_spheric_parameter
       use t_file_IO_parameter
+      use t_check_and_make_SPH_mesh
       use t_step_parameter
 !
       use SPH_analyzer_sph_pick_circ
@@ -35,8 +36,7 @@
       character(len=kchara), parameter, private                         &
      &                      :: snap_ctl_name = 'control_snapshot'
 !
-      type(sph_grids), save, private :: sph_gen
-!
+      type(sph_grid_maker_in_sim), save, private :: sph_maker1
       type(circle_fld_maker), save, private :: cdat1
 !
 ! ----------------------------------------------------------------------
@@ -56,7 +56,6 @@
       use parallel_load_data_4_sph
       use input_control_sph_MHD
 !
-      type(construct_spherical_grid), save :: gen_sph_c
       type(phys_data), save :: nod_fld_c
 !
 !
@@ -75,9 +74,9 @@
       call set_control_4_SPH_SGS_MHD                                    &
      &   (MHD_ctl1%plt, MHD_ctl1%org_plt, MHD_ctl1%model_ctl,           &
      &    MHD_ctl1%smctl_ctl, MHD_ctl1%nmtr_ctl, MHD_ctl1%psph_ctl,     &
-     &    sph_gen, MHD_files1, SPH_model1%bc_IO, SPH_SGS1%SGS_par,      &
+     &    MHD_files1, SPH_model1%bc_IO, SPH_SGS1%SGS_par,               &
      &    SPH_SGS1%dynamic, MHD_step1, SPH_model1%MHD_prop,             &
-     &    SPH_model1%MHD_BC, SPH_WK1%trns_WK%WK_sph, gen_sph_c)
+     &    SPH_model1%MHD_BC, SPH_WK1%trns_WK%WK_sph, sph_maker1)
       call set_control_SGS_SPH_MHD_field(MHD_ctl1%model_ctl,            &
      &    MHD_ctl1%psph_ctl, MHD_ctl1%smonitor_ctl, MHD_ctl1%zm_ctls,   &
      &    SPH_SGS1%SGS_par, SPH_model1%MHD_prop, SPH_MHD1%sph,          &
