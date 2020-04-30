@@ -15,6 +15,7 @@ analyzer_rayleigh_cvt_sph.o \
 \
 t_convert_from_rayleigh.o \
 t_rayleigh_restart_IO.o \
+sel_read_rayleigh_restart.o \
 rayleigh_restart_IO.o \
 convert_from_rayleigh_rst.o
 

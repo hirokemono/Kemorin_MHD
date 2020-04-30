@@ -57,6 +57,8 @@
       subroutine convert_fields_from_rayleigh(istep, org_fld_file,      &
      &          new_sph_mesh, r_itp, ra_rst, new_sph_phys)
 !
+      use sel_read_rayleigh_restart
+!
       integer(kind = kint), intent(in) :: istep
       type(field_IO_params), intent(in) :: org_fld_file
       type(sph_mesh_data), intent(in) :: new_sph_mesh
@@ -80,8 +82,8 @@
       do i_fld = 1, new_sph_phys%num_phys
         if(my_rank .eq. 0) write(*,*) 'set_rayleigh_rst_file_name', i_fld
 !
-        call set_rayleigh_rst_file_name                                 &
-     &     (org_fld_file%file_prefix, istep,                            &
+        call set_rayleigh_rst_file_name(ra_rst%i_version,               &
+     &      org_fld_file%file_prefix, istep,                            &
      &      new_sph_phys%phys_name(i_fld), iflag_ncomp, file_name(1))
 !
         do nd = 1, iflag_ncomp

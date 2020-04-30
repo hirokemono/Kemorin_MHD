@@ -4,20 +4,22 @@
 !!@author H. Matsui
 !!@date   Programmed  H. Matsui in 2004
 !
-!>@brief  Set file extension
+!>@brief  Structure of Rayleigh paramters
 !!
 !!@verbatim
 !!      subroutine alloc_rayleigh_radial_grid(ra_rst)
 !!      subroutine dealloc_rayleigh_radial_grid(ra_rst)
-!!      subroutine read_rayleigh_restart_params                         &
-!!     &         (dir, i_step, ra_rst)
 !!        type(rayleigh_restart), intent(inout) :: ra_rst
 !!
 !!      subroutine check_rayleigh_rst_params(id_file, ra_rst)
 !!        type(rayleigh_restart), intent(in) :: ra_rst
 !!
-!!      subroutine set_rayleigh_rst_file_name(dir, i_step, field_name,  &
-!!     &          iflag_ncomp, file_name)
+!!      subroutine read_rayleigh_restart_params(dir, i_step, ra_rst)
+!!        type(rayleigh_restart), intent(inout) :: ra_rst
+!!
+!!      character(len = kchara) function set_rayleigh_file_name         &
+!!     &                               (dir, int_id, postfix)
+!!          Version 1.x:  "[dir]/[int_id]/[field_flag]"
 !!@endverbatim
 !
       module t_rayleigh_restart_IO
@@ -50,6 +52,8 @@
 !
 !>      Structure for Rayleigh restart data
       type rayleigh_restart
+!>        Version ID
+        integer :: i_version = 0
 !>        Endian swap flag
         integer :: iflag_swap = 0
 !
@@ -103,87 +107,6 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine read_rayleigh_restart_params                           &
-     &         (dir, i_step, ra_rst)
-!
-      use binary_IO
-      use t_binary_IO_buffer
-      use binary_file_access
-!
-      integer(kind = kint), intent(in) :: i_step
-      character(len = kchara), intent(in) :: dir
-!
-      type(rayleigh_restart), intent(inout) :: ra_rst
-!
-      type(binary_IO_buffer) :: bbuf_rgh
-      character(len = kchara) :: file_name
-      integer(kind = kint) :: ilength
-      integer :: int_tmp(1)
-      real(kind = kreal) :: rtmp(1)
-!
-!
-      write(*,*) 'i_step', i_step
-      file_name =  set_rayleigh_file_name(dir, i_step, paramchar)
-      file_name =  add_null_character(file_name)
-      write(*,*) 'read Rayleigh checkpoint paramter file: ',            &
-     &          trim(file_name)
-      call open_rd_rawfile_f(file_name, bbuf_rgh)
-!
-      bbuf_rgh%iflag_swap = iendian_KEEP
-      call rawread_int4_f(1, int_tmp, bbuf_rgh)
-      if(int_tmp(1) .ne. 4) bbuf_rgh%iflag_swap = iendian_FLIP
-      ra_rst%iflag_swap = bbuf_rgh%iflag_swap
-!
-      call rawread_int4_f(1, int_tmp, bbuf_rgh)
-      ra_rst%nri_org = int(int_tmp(1),KIND(ra_rst%nri_org))
-      call rawread_int4_f(kint, int_tmp, bbuf_rgh)
-!
-      call rawread_int4_f(1, int_tmp, bbuf_rgh)
-      call rawread_int4_f(1, int_tmp, bbuf_rgh)
-      ra_rst%iflag_rtype = int(int_tmp(1),KIND(ra_rst%nri_org))
-      call rawread_int4_f(1, int_tmp, bbuf_rgh)
-!
-      call rawread_int4_f(1, int_tmp, bbuf_rgh)
-      call rawread_int4_f(1, int_tmp, bbuf_rgh)
-      ra_rst%ltr_org = int(int_tmp(1),KIND(ra_rst%nri_org))
-      call rawread_int4_f(1, int_tmp, bbuf_rgh)
-!
-      call rawread_int4_f(1, int_tmp, bbuf_rgh)
-      call rawread_real_f(1, rtmp, bbuf_rgh)
-      ra_rst%dt_org = rtmp(1)
-      write(*,*) 'ra_rst%dt_org', ra_rst%dt_org
-      call rawread_int4_f(1, int_tmp, bbuf_rgh)
-!
-      call rawread_int4_f(1, int_tmp, bbuf_rgh)
-      call rawread_real_f(1, rtmp, bbuf_rgh)
-      ra_rst%dt_new = rtmp(1)
-      write(*,*) 'ra_rst%dt_new', ra_rst%dt_new
-      call rawread_int4_f(1, int_tmp, bbuf_rgh)
-!
-!      call rawread_int4_f(1, int_tmp, bbuf_rgh)
-!      call rawread_real_f(1, rtmp, bbuf_rgh)
-!      ra_rst%new_dt_org = rtmp(1)
-!      call rawread_int4_f(1, int_tmp, bbuf_rgh)
-!
-      call alloc_rayleigh_radial_grid(ra_rst)
-!
-      ilength =  int(ra_rst%nri_org)
-      call rawread_int4_f(1, int_tmp, bbuf_rgh)
-      call rawread_real_f(ilength, ra_rst%r_org(1), bbuf_rgh)
-      call rawread_int4_f(1, int_tmp, bbuf_rgh)
-!
-      call rawread_int4_f(1, int_tmp, bbuf_rgh)
-      call rawread_real_f(1, rtmp, bbuf_rgh)
-      ra_rst%time_org = rtmp(1)
-      write(*,*) 'ra_rst%time_org', ra_rst%time_org
-      call rawread_int4_f(1, int_tmp, bbuf_rgh)
-!
-      call close_binary_file
-!
-      end subroutine read_rayleigh_restart_params
-!
-!-----------------------------------------------------------------------
-!
       subroutine check_rayleigh_rst_params(id_file, ra_rst)
 !
       integer, intent(in) :: id_file
@@ -210,50 +133,87 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine set_rayleigh_rst_file_name(dir, i_step, field_name,    &
-     &          iflag_ncomp, file_name)
+      subroutine read_rayleigh_restart_params(dir, i_step, ra_rst)
 !
-      use m_phys_labels
+      use binary_IO
+      use t_binary_IO_buffer
+      use binary_file_access
 !
       integer(kind = kint), intent(in) :: i_step
       character(len = kchara), intent(in) :: dir
-      character(len = kchara), intent(in) :: field_name
 !
-      integer(kind = kint), intent(inout) :: iflag_ncomp
-      character(len = kchara), intent(inout) :: file_name(2)
+      type(rayleigh_restart), intent(inout) :: ra_rst
 !
-      if(field_name .eq. velocity%name) then
-        iflag_ncomp = 2
-        file_name(1) =  set_rayleigh_file_name(dir, i_step, wchar)
-        file_name(2) =  set_rayleigh_file_name(dir, i_step, zchar)
-      else if(field_name .eq. pressure%name) then
-        iflag_ncomp = 1
-        file_name(1) =  set_rayleigh_file_name(dir, i_step, pchar)
-      else if(field_name .eq. temperature%name) then
-        iflag_ncomp = 1
-        file_name(1) =  set_rayleigh_file_name(dir, i_step, tchar)
-      else if(field_name .eq. magnetic_field%name) then
-        iflag_ncomp = 2
-        file_name(1) =  set_rayleigh_file_name(dir, i_step, cchar)
-        file_name(2) =  set_rayleigh_file_name(dir, i_step, achar)
+      type(binary_IO_buffer) :: bbuf_rgh
+      character(len = kchara) :: file_name
+      integer(kind = kint) :: ilength
+      integer :: int_tmp(1)
+      real(kind = kreal) :: rtmp(1)
 !
-      else if(field_name .eq. previous_momentum%name) then
-        iflag_ncomp = 2
-        file_name(1) =  set_rayleigh_file_name(dir, i_step, wabchar)
-        file_name(2) =  set_rayleigh_file_name(dir, i_step, zabchar)
-!      else if(field_name .eq. previous_pressure%name) then
-!        iflag_ncomp = 1
-!        file_name(1) =  set_rayleigh_file_name(dir, i_step, cchar)
-      else if(field_name .eq. previous_heat%name) then
-        iflag_ncomp = 1
-        file_name(1) =  set_rayleigh_file_name(dir, i_step, tabchar)
-      else if(field_name .eq. previous_induction%name) then
-        iflag_ncomp = 2
-        file_name(1) =  set_rayleigh_file_name(dir, i_step, cabchar)
-        file_name(2) =  set_rayleigh_file_name(dir, i_step, aabchar)
-      end if
+      integer, parameter :: iflag_pi = 314
 !
-      end subroutine set_rayleigh_rst_file_name
+      write(*,*) 'i_step', i_step
+      file_name =  set_rayleigh_file_name(dir, i_step, paramchar)
+      file_name =  add_null_character(file_name)
+      write(*,*) 'read Rayleigh checkpoint paramter file: ',            &
+     &          trim(file_name)
+      call open_rd_rawfile_f(file_name, bbuf_rgh)
+!
+      bbuf_rgh%iflag_swap = iendian_KEEP
+      call rawread_int4_f(1, int_tmp, bbuf_rgh)
+      if(int_tmp(1) .ne. iflag_pi) bbuf_rgh%iflag_swap = iendian_FLIP
+      ra_rst%iflag_swap = bbuf_rgh%iflag_swap
+!
+      call rawread_int4_f(1, int_tmp, bbuf_rgh)
+      ra_rst%nri_org = int(int_tmp(1),KIND(ra_rst%nri_org))
+!
+      call rawread_int4_f(1, int_tmp, bbuf_rgh)
+      ra_rst%iflag_rtype = int(int_tmp(1),KIND(ra_rst%nri_org))
+!
+      call rawread_int4_f(1, int_tmp, bbuf_rgh)
+      ra_rst%ltr_org = int(int_tmp(1),KIND(ra_rst%nri_org))
+!
+      call rawread_real_f(1, rtmp, bbuf_rgh)
+      ra_rst%dt_org = rtmp(1)
+      write(*,*) 'ra_rst%dt_org', ra_rst%dt_org
+!
+      call rawread_real_f(1, rtmp, bbuf_rgh)
+      ra_rst%dt_new = rtmp(1)
+      write(*,*) 'ra_rst%dt_new', ra_rst%dt_new
+!
+!      call rawread_int4_f(1, int_tmp, bbuf_rgh)
+!      call rawread_real_f(1, rtmp, bbuf_rgh)
+!      ra_rst%new_dt_org = rtmp(1)
+!      call rawread_int4_f(1, int_tmp, bbuf_rgh)
+!
+      call alloc_rayleigh_radial_grid(ra_rst)
+!
+      ilength =  int(ra_rst%nri_org)
+      call rawread_real_f(ilength, ra_rst%r_org(1), bbuf_rgh)
+!
+      call rawread_real_f(1, rtmp, bbuf_rgh)
+      ra_rst%time_org = rtmp(1)
+      write(*,*) 'ra_rst%time_org', ra_rst%time_org
+!
+      call close_binary_file
+!
+      end subroutine read_rayleigh_restart_params
+!
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      character(len = kchara) function set_rayleigh_file_name           &
+     &                               (dir, int_id, postfix)
+!
+      integer(kind = kint), intent(in) :: int_id
+      character(len=kchara), intent(in) :: dir, postfix
+!
+!
+      write(set_rayleigh_file_name,1000)                                &
+     &                        trim(dir), int_id, trim(postfix)
+ 1000 format(a, '/', i8.8, '/', a)
+!
+      end function set_rayleigh_file_name
 !
 !-----------------------------------------------------------------------
 !

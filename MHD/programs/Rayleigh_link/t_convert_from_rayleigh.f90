@@ -153,6 +153,8 @@
       subroutine init_rayleigh_restart_params                           &
      &         (istep_start, org_fld_file, ra_rst)
 !
+      use sel_read_rayleigh_restart
+!
       integer(kind = kint), intent(in) :: istep_start
       type(field_IO_params), intent(in) :: org_fld_file
 !
@@ -160,7 +162,7 @@
 !
 !
       if(my_rank .eq. 0) then
-        call read_rayleigh_restart_params                               &
+        call sel_read_rayleigh_rst_params                               &
      &     (org_fld_file%file_prefix, istep_start, ra_rst)
       end if
       call calypso_mpi_barrier

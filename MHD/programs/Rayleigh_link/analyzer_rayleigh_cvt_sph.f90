@@ -81,13 +81,9 @@
       sph_asbl_s%np_sph_org = 1
       call alloc_spectr_data_4_assemble(sph_asbl_s)
 !
-!  Check and construct spherical shell grid data
+!  set original Rayleigh spectr data
 !
-      call check_and_make_SPH_mesh(mgd_ctl_s%psph_ctl%iflag_sph_shell,  &
-     &    asbl_param_s%new_mesh_file, sph_maker_s)
-!
-!  set original spectr data
-!
+      ra_rst_s%i_version = asbl_param_s%org_mesh_file%iflag_format
       call init_rayleigh_restart_params(asbl_param_s%istep_start,       &
      &    asbl_param_s%org_fld_file, ra_rst_s)
         if(my_rank .eq. 0) call check_rayleigh_rst_params(6, ra_rst_s)
@@ -95,6 +91,10 @@
       call copy_rayleigh_radial_data                                    &
      &   (ra_rst_s, sph_asbl_s%org_sph_mesh(1))
 !
+!  Check and construct spherical shell grid data
+!
+      call check_and_make_SPH_mesh(mgd_ctl_s%psph_ctl%iflag_sph_shell,  &
+     &    asbl_param_s%new_mesh_file, sph_maker_s)
 !  set new spectr data
 !
       call set_local_rj_mesh_4_merge(asbl_param_s%new_mesh_file,        &
@@ -118,9 +118,9 @@
 !
 !      Construct field list from spectr file
 !
-      call init_rayleigh_restart_input                                  &
-     &     (asbl_param_s%org_fld_file%file_prefix,                      &
-     &      asbl_param_s%istep_start, fld_IO_r)
+      call init_rayleigh_restart_input(ra_rst_s%i_version,              &
+     &    asbl_param_s%org_fld_file%file_prefix,                        &
+     &    asbl_param_s%istep_start, fld_IO_r)
 !
 !      call check_field_name_4_IO(50+my_rank, fld_IO_r)
 !
