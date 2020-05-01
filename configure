@@ -795,10 +795,10 @@ enable_option_checking
 enable_silent_rules
 enable_cocoa
 enable_fftw3
-enable_libpng
 enable_gl
-enable_gtk
-enable_glfw
+with_libpng
+with_gtk
+with_glfw
 enable_dependency_tracking
 with_hdf5
 with_blas
@@ -1463,10 +1463,7 @@ Optional Features:
   --disable-silent-rules  verbose build output (undo: "make V=0")
   --enable-cocoa          Use Cocoa framework
   --enable-fftw3          Use fftw3 library
-  --enable-libpng         Use libpng library
   --enable-gl             Use OpenGL for viewer
-  --enable-gtk            Use gtk+ GUI framework
-  --enable-glfw           Use GLFW GUI framework
   --enable-dependency-tracking
                           do not reject slow dependency extractors
   --disable-dependency-tracking
@@ -1475,6 +1472,9 @@ Optional Features:
 Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
   --without-PACKAGE       do not use PACKAGE (same as --with-PACKAGE=no)
+  --with-libpng           Use libpng library
+  --with-gtk              Use gtk+ GUI framework
+  --with-glfw             Use GLFW GUI framework
   --with-hdf5=yes/no/PATH full path of h5pcc for parallel HDF5 configuration
   --with-blas=<lib>       use BLAS library <lib>
   --with-zlib=DIR root directory path of zlib installation defaults to
@@ -3964,14 +3964,6 @@ else
 fi
 
 
-# Check whether --enable-libpng was given.
-if test "${enable_libpng+set}" = set; then :
-  enableval=$enable_libpng; USE_libpng='yes'
-else
-  USE_libpng='no'
-fi
-
-
 # Check whether --enable-gl was given.
 if test "${enable_gl+set}" = set; then :
   enableval=$enable_gl; USE_gl='yes'
@@ -3980,21 +3972,32 @@ else
 fi
 
 
-# Check whether --enable-gtk was given.
-if test "${enable_gtk+set}" = set; then :
-  enableval=$enable_gtk; USE_gtk='yes'
+
+
+# Check whether --with-libpng was given.
+if test "${with_libpng+set}" = set; then :
+  withval=$with_libpng; USE_libpng='yes'
+else
+  USE_libpng='no'
+fi
+
+
+
+# Check whether --with-gtk was given.
+if test "${with_gtk+set}" = set; then :
+  withval=$with_gtk; USE_gtk='yes'
 else
   USE_gtk='no'
 fi
 
 
-# Check whether --enable-glfw was given.
-if test "${enable_glfw+set}" = set; then :
-  enableval=$enable_glfw; USE_glfw='yes'
+
+# Check whether --with-glfw was given.
+if test "${with_glfw+set}" = set; then :
+  withval=$with_glfw; USE_glfw='yes'
 else
   USE_glfw='no'
 fi
-
 
 
 
