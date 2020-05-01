@@ -56,7 +56,7 @@ make_element_comm_table_SR.o: $(COMMDIR)/make_element_comm_table_SR.f90 m_precis
 	$(F90) -c $(F90OPTFLAGS) $<
 nod_phys_send_recv.o: $(COMMDIR)/nod_phys_send_recv.f90 m_precision.o calypso_mpi.o t_mesh_data.o t_phys_data.o m_machine_parameter.o m_phys_constants.o m_solver_SR.o m_array_for_send_recv.o m_work_time.o solver_SR_type.o
 	$(F90) -c $(F90OPTFLAGS) $<
-parallel_FEM_mesh_init.o: $(COMMDIR)/parallel_FEM_mesh_init.f90 m_precision.o m_constants.o m_machine_parameter.o m_phys_constants.o calypso_mpi.o t_mesh_data.o t_file_IO_parameter.o t_read_mesh_data.o m_array_for_send_recv.o nod_phys_send_recv.o node_monitor_IO.o const_mesh_information.o const_element_comm_tables.o mesh_file_name_by_param.o t_geometry_data.o
+parallel_FEM_mesh_init.o: $(COMMDIR)/parallel_FEM_mesh_init.f90 m_precision.o m_constants.o m_machine_parameter.o m_phys_constants.o calypso_mpi.o t_mesh_data.o t_file_IO_parameter.o t_read_mesh_data.o m_array_for_send_recv.o nod_phys_send_recv.o const_mesh_information.o const_element_comm_tables.o mesh_file_name_by_param.o t_geometry_data.o
 	$(F90) -c $(F90OPTFLAGS) $<
 select_calypso_SR.o: $(COMMDIR)/select_calypso_SR.f90 m_precision.o m_constants.o m_solver_SR.o select_copy_from_recv.o calypso_SR_N.o calypso_SR_rev_N.o calypso_mpi.o calypso_SR_core.o
 	$(F90) -c $(F90OPTFLAGS) $<

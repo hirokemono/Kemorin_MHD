@@ -8,11 +8,15 @@ lic_noise_generator.o: $(LIC_DIR)/lic_noise_generator.f90 m_precision.o m_consta
 	$(F90) -c $(F90OPTFLAGS) $<
 lic_rgba_4_each_pixel.o: $(LIC_DIR)/lic_rgba_4_each_pixel.f90 m_precision.o m_constants.o t_control_params_4_pvr.o set_color_4_pvr.o set_rgba_4_each_pixel.o
 	$(F90) -c $(F90OPTFLAGS) $<
+m_consts_for_FastNoise.o: $(LIC_DIR)/m_consts_for_FastNoise.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
 ray_trace_LIC_image.o: $(LIC_DIR)/ray_trace_LIC_image.f90 m_precision.o m_constants.o m_geometry_constants.o calypso_mpi.o lic_rgba_4_each_pixel.o t_control_params_4_pvr.o t_control_param_LIC.o m_machine_parameter.o cal_lic_on_surf_viz.o lic_kernel_generator.o lic_noise_generator.o t_geometry_data.o t_surface_data.o t_geometries_in_pvr_screen.o t_noise_node_data.o cal_field_on_surf_viz.o cal_fline_in_cube.o set_coefs_of_sections.o set_rgba_4_each_pixel.o
 	$(F90) -c $(F90OPTFLAGS) $<
 rendering_LIC_image.o: $(LIC_DIR)/rendering_LIC_image.f90 m_precision.o m_machine_parameter.o m_constants.o m_work_time.o calypso_mpi.o t_mesh_data.o t_geometry_data.o t_surface_data.o t_group_data.o t_control_params_4_pvr.o t_control_param_LIC.o t_geometries_in_pvr_screen.o t_surf_grp_4_pvr_domain.o t_pvr_ray_startpoints.o t_pvr_image_array.o t_rendering_vr_image.o generate_vr_image.o write_LIC_image.o cal_pvr_modelview_mat.o t_pvr_stencil_buffer.o
 	$(F90) -c $(F90OPTFLAGS) $<
 rendering_streo_LIC_image.o: $(LIC_DIR)/rendering_streo_LIC_image.f90 m_precision.o m_machine_parameter.o m_constants.o m_work_time.o calypso_mpi.o t_mesh_data.o t_geometry_data.o t_surface_data.o t_group_data.o t_rendering_vr_image.o t_control_params_4_pvr.o t_control_param_LIC.o t_geometries_in_pvr_screen.o t_surf_grp_4_pvr_domain.o t_pvr_ray_startpoints.o t_pvr_image_array.o generate_vr_image.o m_elapsed_labels_4_VIZ.o cal_pvr_modelview_mat.o rendering_LIC_image.o write_LIC_image.o write_PVR_image.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_FastNoise.o: $(LIC_DIR)/t_FastNoise.f90 m_precision.o m_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_LIC_kernel_image.o: $(LIC_DIR)/t_LIC_kernel_image.f90 m_precision.o m_constants.o m_machine_parameter.o calypso_mpi.o t_png_file_access.o
 	$(F90) -c $(F90OPTFLAGS) $<

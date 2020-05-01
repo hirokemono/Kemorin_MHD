@@ -8,7 +8,7 @@ SPH_SGS_ini_model_coefs_IO.o: $(MHD_IO_DIR)/SPH_SGS_ini_model_coefs_IO.f90 m_pre
 	$(F90) -c $(F90OPTFLAGS) $<
 add_dependency_for_SGS.o: $(MHD_IO_DIR)/add_dependency_for_SGS.f90 m_precision.o m_machine_parameter.o m_phys_labels.o t_control_parameter.o t_physical_property.o add_nodal_fields_ctl.o calypso_mpi.o t_SGS_control_parameter.o check_wide_SGS_terms.o check_SGS_terms.o check_filtered_field.o check_filtered_forces.o check_diff_filtered_field.o check_double_filter_field.o
 	$(F90) -c $(F90OPTFLAGS) $<
-add_nodal_fields_4_MHD.o: $(MHD_IO_DIR)/add_nodal_fields_4_MHD.f90 m_precision.o m_machine_parameter.o m_phys_labels.o t_control_parameter.o t_physical_property.o add_nodal_fields_ctl.o calypso_mpi.o check_base_forces.o check_base_field.o check_workarea_4_explicit.o t_control_array_character3.o t_reference_scalar_param.o
+add_nodal_fields_4_MHD.o: $(MHD_IO_DIR)/add_nodal_fields_4_MHD.f90 m_precision.o m_machine_parameter.o m_phys_labels.o t_control_parameter.o t_physical_property.o add_nodal_fields_ctl.o calypso_mpi.o check_base_forces.o check_base_field.o check_workarea_4_explicit.o t_control_array_character3.o t_reference_scalar_param.o t_explicit_term_labels.o t_base_field_labels.o
 	$(F90) -c $(F90OPTFLAGS) $<
 bcast_ctl_data_SGS_model.o: $(MHD_IO_DIR)/bcast_ctl_data_SGS_model.f90 m_precision.o calypso_mpi.o t_ctl_data_SGS_model.o t_ctl_data_SGS_filter.o bcast_4_filter_files_ctl.o bcast_control_arrays.o
 	$(F90) -c $(F90OPTFLAGS) $<
