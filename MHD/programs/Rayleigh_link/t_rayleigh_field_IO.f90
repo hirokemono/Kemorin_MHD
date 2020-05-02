@@ -15,6 +15,7 @@
 !!        type(rayleigh_field), intent(inout) :: rayleigh_rtp
 !!
 !!      subroutine read_rayleigh_field_param(file_name, rayleigh_rtp)
+!!      subroutine bcast_rayleigh_field_param(rayleigh_rtp)
 !!      subroutine read_each_rayleigh_component                         &
 !!     &         (file_name, numnod, d_scalar, rayleigh_rtp)
 !!        type(sphere_domain_control), intent(in) :: sdctl
@@ -152,45 +153,81 @@
       character(len = kchara), intent(in) :: file_name
       type(rayleigh_field), intent(inout) :: rayleigh_rtp
 !
-      integer :: b_flag
+      integer, parameter :: id_file = 15
+      integer, parameter :: iflag_pi = 314
+      integer :: i4_tmp
 !
-      type(calypso_MPI_IO_params), save :: IO_param
-!
-      integer(kind = kint_gl) :: num64
+      integer(kind = kint_gl) :: l8_byte
       integer(kind = kint) :: i
 !
 !
-      if(my_rank .eq. 0) write(*,*) 'Read parameter file: ',            &
-     &                             trim(file_name)
-      call open_read_mpi_file                                           &
-     &   (file_name, nprocs, my_rank, IO_param)
+      if(my_rank .eq. 0) then
+        write(*,*) 'Read parameter file: ', trim(file_name)
+        open(id_file, FILE=file_name, STATUS='OLD',                     &
+     &       FORM='UNFORMATTED', ACCESS='STREAM')
 !
-      rayleigh_rtp%iflag_swap  = iendian_KEEP
-      call mpi_read_int4head_b(IO_param, b_flag)
-      if(b_flag .ne. 314) rayleigh_rtp%iflag_swap = iendian_FLIP
+        rayleigh_rtp%iflag_swap  = iendian_KEEP
+        read(id_file) i4_tmp
+        if(i4_tmp .ne. iflag_pi) rayleigh_rtp%iflag_swap = iendian_FLIP
 !
-      call mpi_read_int4head_b(IO_param, rayleigh_rtp%nri_gl)
-      call mpi_read_int4head_b(IO_param, rayleigh_rtp%nth_gl)
-      call mpi_read_int4head_b(IO_param, rayleigh_rtp%nphi_gl)
+        read(id_file) rayleigh_rtp%nri_gl
+        read(id_file) rayleigh_rtp%nth_gl
+        read(id_file) rayleigh_rtp%nphi_gl
 !
-      call alloc_resolution_4_rayleigh(rayleigh_rtp)
+        if(rayleigh_rtp%iflag_swap .eq. iendian_FLIP) then
+          l8_byte = kint_4b
+          call byte_swap_32bit_f(l8_byte, rayleigh_rtp%nri_gl)
+          call byte_swap_32bit_f(l8_byte, rayleigh_rtp%nth_gl)
+          call byte_swap_32bit_f(l8_byte, rayleigh_rtp%nphi_gl)
+        end if
 !
-      num64 = rayleigh_rtp%nri_gl
-      call mpi_read_mul_realhead_b                                      &
-     &   (IO_param, num64, rayleigh_rtp%radius_gl)
-      num64 = rayleigh_rtp%nth_gl
-      call mpi_read_mul_realhead_b                                      &
-     &   (IO_param, num64, rayleigh_rtp%theta_gl)
+        call alloc_resolution_4_rayleigh(rayleigh_rtp)
 !
-      call close_mpi_file(IO_param)
+        read(id_file) rayleigh_rtp%radius_gl(1:rayleigh_rtp%nri_gl)
+        read(id_file) rayleigh_rtp%theta_gl(1:rayleigh_rtp%nth_gl)
+        close(id_file)
 !
+        if(rayleigh_rtp%iflag_swap .eq. iendian_FLIP) then
+          l8_byte = rayleigh_rtp%nri_gl * kreal
+          call byte_swap_64bit_f(l8_byte, rayleigh_rtp%radius_gl)
+          l8_byte = rayleigh_rtp%nth_gl * kreal
+          call byte_swap_64bit_f(l8_byte, rayleigh_rtp%theta_gl)
+        end if
+
 !$omp parallel do private(i)
-      do i = 1, rayleigh_rtp%nth_gl
-        rayleigh_rtp%cos_theta(i) = cos(rayleigh_rtp%theta_gl(i))
-      end do
+        do i = 1, rayleigh_rtp%nth_gl
+          rayleigh_rtp%cos_theta(i) = cos(rayleigh_rtp%theta_gl(i))
+        end do
 !$omp end parallel do
+      end if
 !
       end subroutine read_rayleigh_field_param
+!
+! ----------------------------------------------------------------------
+!
+      subroutine bcast_rayleigh_field_param(rayleigh_rtp)
+!
+      type(rayleigh_field), intent(inout) :: rayleigh_rtp
+!
+!
+      call MPI_BCAST(rayleigh_rtp%iflag_swap, 1,                        &
+     &               CALYPSO_FOUR_INT, 0, CALYPSO_COMM, ierr_MPI)
+      call MPI_BCAST(rayleigh_rtp%nri_gl, 1,                            &
+     &               CALYPSO_FOUR_INT, 0, CALYPSO_COMM, ierr_MPI)
+      call MPI_BCAST(rayleigh_rtp%nth_gl, 1,                            &
+     &               CALYPSO_FOUR_INT, 0, CALYPSO_COMM, ierr_MPI)
+      call MPI_BCAST(rayleigh_rtp%nphi_gl, 1,                           &
+     &               CALYPSO_FOUR_INT, 0, CALYPSO_COMM, ierr_MPI)
+!
+      if(my_rank .ne. 0) call alloc_resolution_4_rayleigh(rayleigh_rtp)
+      call MPI_BCAST(rayleigh_rtp%radius_gl, rayleigh_rtp%nri_gl,       &
+     &               CALYPSO_REAL, 0, CALYPSO_COMM, ierr_MPI)
+      call MPI_BCAST(rayleigh_rtp%theta_gl, rayleigh_rtp%nth_gl,        &
+     &               CALYPSO_REAL, 0, CALYPSO_COMM, ierr_MPI)
+      call MPI_BCAST(rayleigh_rtp%cos_theta, rayleigh_rtp%nth_gl,       &
+     &               CALYPSO_REAL, 0, CALYPSO_COMM, ierr_MPI)
+!
+      end subroutine bcast_rayleigh_field_param
 !
 ! ----------------------------------------------------------------------
 !
@@ -209,19 +246,19 @@
 !
       type(rayleigh_field), intent(inout) :: rayleigh_rtp
 !
-      type(calypso_MPI_IO_params), save :: IO_param
+      integer ::  id_mpi_file
+      integer(kind = MPI_OFFSET_KIND) :: ioffset
 !
 !
       if(my_rank .eq. 0) write(*,*) 'Read Rayleigh field data: ',       &
      &                              trim(file_name)
-      call open_read_mpi_file                                           &
-     &   (file_name, nprocs, my_rank, IO_param)
+      call calypso_mpi_read_file_open(file_name, id_mpi_file)
 !
-      IO_param%ioff_gl = kreal * rayleigh_rtp%istart_rayleigh_in
+      ioffset = kreal * rayleigh_rtp%istart_rayleigh_in
       call calypso_mpi_seek_read_real                                   &
-     &   (IO_param%id_file, rayleigh_rtp%iflag_swap, IO_param%ioff_gl,  &
+     &   (id_mpi_file, rayleigh_rtp%iflag_swap, ioffset,                &
      &    rayleigh_rtp%nnod_rayleigh_in, rayleigh_rtp%field_rtp(1))
-      call close_mpi_file(IO_param)
+      call calypso_close_mpi_file(id_mpi_file)
 !
 !$omp parallel workshare
       d_scalar(1:numnod)  = rayleigh_rtp%field_rtp(1:numnod)
@@ -303,6 +340,6 @@
 !
       end subroutine set_rayleigh_parallel_param
 !
-! ----------------------------------------------------------------------
+!  ---------------------------------------------------------------------
 !
       end module t_rayleigh_field_IO

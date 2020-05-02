@@ -85,6 +85,7 @@
      &                     trim(rayleigh_ftbl1%field_dir), '/',         &
      &                     i_step, '_grid'
       call read_rayleigh_field_param(file_name, rayleigh_rtp_V)
+      call bcast_rayleigh_field_param(rayleigh_rtp_V)
       call set_rayleigh_parallel_param(rayleigh_rtp_V)
 !
       call fem_nodes_4_rayleigh_file                                    &

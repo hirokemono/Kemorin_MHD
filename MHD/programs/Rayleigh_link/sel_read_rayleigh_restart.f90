@@ -137,7 +137,6 @@
 !
       subroutine read_rayleigh99_restart_params(dir, i_step, ra_rst)
 !
-      use binary_IO
       use t_binary_IO_buffer
       use binary_file_access
       use set_parallel_file_name
@@ -147,70 +146,57 @@
 !
       type(rayleigh_restart), intent(inout) :: ra_rst
 !
-      type(binary_IO_buffer) :: bbuf_rgh
+      integer, parameter :: id_file = 15
       character(len = kchara) :: file_name
-      integer(kind = kint) :: ilength
-      integer :: int_tmp(1)
-      real(kind = kreal) :: rtmp(1)
+      integer :: i4_tmp
+      integer(kind = kint_gl) :: l8_byte
 !
 !
       write(*,*) 'i_step', i_step
       file_name =  set_rayleigh99_file_name(dir, i_step, paramchar)
-      file_name =  add_null_character(file_name)
       write(*,*) 'read Rayleigh checkpoint paramter file: ',            &
      &          trim(file_name)
-      call open_rd_rawfile_f(file_name, bbuf_rgh)
+        open(id_file, FILE=file_name, STATUS='OLD',                     &
+     &       FORM='UNFORMATTED', ACCESS='STREAM')
 !
-      bbuf_rgh%iflag_swap = iendian_KEEP
-      call rawread_int4_f(1, int_tmp, bbuf_rgh)
-      if(int_tmp(1) .ne. 4) bbuf_rgh%iflag_swap = iendian_FLIP
-      ra_rst%iflag_swap = bbuf_rgh%iflag_swap
+      ra_rst%iflag_swap = iendian_KEEP
+      read(id_file) i4_tmp
+      if(i4_tmp .ne. 4) ra_rst%iflag_swap = iendian_FLIP
 !
-      call rawread_int4_f(1, int_tmp, bbuf_rgh)
-      ra_rst%nri_org = int(int_tmp(1),KIND(ra_rst%nri_org))
-      call rawread_int4_f(kint, int_tmp, bbuf_rgh)
+      read(id_file) ra_rst%nri_org, i4_tmp
+      read(id_file) i4_tmp, ra_rst%iflag_rtype, i4_tmp
+      read(id_file) i4_tmp, ra_rst%ltr_org, i4_tmp
 !
-      call rawread_int4_f(1, int_tmp, bbuf_rgh)
-      call rawread_int4_f(1, int_tmp, bbuf_rgh)
-      ra_rst%iflag_rtype = int(int_tmp(1),KIND(ra_rst%nri_org))
-      call rawread_int4_f(1, int_tmp, bbuf_rgh)
+      read(id_file) i4_tmp, ra_rst%dt_org, i4_tmp
+      read(id_file) i4_tmp, ra_rst%dt_new, i4_tmp
+!      read(id_file) i4_tmp, ra_rst%new_dt_org, i4_tmp
 !
-      call rawread_int4_f(1, int_tmp, bbuf_rgh)
-      call rawread_int4_f(1, int_tmp, bbuf_rgh)
-      ra_rst%ltr_org = int(int_tmp(1),KIND(ra_rst%nri_org))
-      call rawread_int4_f(1, int_tmp, bbuf_rgh)
-!
-      call rawread_int4_f(1, int_tmp, bbuf_rgh)
-      call rawread_real_f(1, rtmp, bbuf_rgh)
-      ra_rst%dt_org = rtmp(1)
-      write(*,*) 'ra_rst%dt_org', ra_rst%dt_org
-      call rawread_int4_f(1, int_tmp, bbuf_rgh)
-!
-      call rawread_int4_f(1, int_tmp, bbuf_rgh)
-      call rawread_real_f(1, rtmp, bbuf_rgh)
-      ra_rst%dt_new = rtmp(1)
-      write(*,*) 'ra_rst%dt_new', ra_rst%dt_new
-      call rawread_int4_f(1, int_tmp, bbuf_rgh)
-!
-!      call rawread_int4_f(1, int_tmp, bbuf_rgh)
-!      call rawread_real_f(1, rtmp, bbuf_rgh)
-!      ra_rst%new_dt_org = rtmp(1)
-!      call rawread_int4_f(1, int_tmp, bbuf_rgh)
+      if(ra_rst%iflag_swap .eq. iendian_FLIP) then
+        l8_byte = kint_4b
+        call byte_swap_32bit_f                                          &
+     &     (l8_byte, ra_rst%i_version_from_file)
+        call byte_swap_32bit_f(l8_byte, ra_rst%nri_org)
+        call byte_swap_32bit_f(l8_byte, ra_rst%iflag_rtype)
+        call byte_swap_32bit_f(l8_byte, ra_rst%ltr_org)
+        l8_byte = kreal
+        call byte_swap_64bit_f(l8_byte, ra_rst%dt_org)
+        call byte_swap_64bit_f(l8_byte, ra_rst%dt_new)
+ !       call byte_swap_64bit_f(l8_byte, ra_rst%new_dt_org)
+      end if
 !
       call alloc_rayleigh_radial_grid(ra_rst)
 !
-      ilength =  int(ra_rst%nri_org)
-      call rawread_int4_f(1, int_tmp, bbuf_rgh)
-      call rawread_real_f(ilength, ra_rst%r_org(1), bbuf_rgh)
-      call rawread_int4_f(1, int_tmp, bbuf_rgh)
+      read(id_file) i4_tmp, ra_rst%r_org(1:ra_rst%nri_org), i4_tmp
+      read(id_file) i4_tmp, ra_rst%time_org, i4_tmp
 !
-      call rawread_int4_f(1, int_tmp, bbuf_rgh)
-      call rawread_real_f(1, rtmp, bbuf_rgh)
-      ra_rst%time_org = rtmp(1)
-      write(*,*) 'ra_rst%time_org', ra_rst%time_org
-      call rawread_int4_f(1, int_tmp, bbuf_rgh)
+      close(id_file)
 !
-      call close_binary_file
+      if(ra_rst%iflag_swap .eq. iendian_FLIP) then
+        l8_byte = ra_rst%nri_org * kreal
+        call byte_swap_64bit_f(l8_byte, ra_rst%r_org)
+        l8_byte = kreal
+        call byte_swap_64bit_f(l8_byte, ra_rst%time_org)
+      end if
 !
       end subroutine read_rayleigh99_restart_params
 !

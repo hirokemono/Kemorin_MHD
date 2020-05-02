@@ -69,7 +69,7 @@
       character(len=1) :: tmp1, tmp2
 !
 !
-!$omp parallel do private(i4,tmp1,tmp2,tmp3,tmp4)
+!$omp parallel do private(i4,tmp1,tmp2)
       do i4 = 4, l8_byte, 4
         tmp1 = array(i4-3)
         tmp2 = array(i4-2)

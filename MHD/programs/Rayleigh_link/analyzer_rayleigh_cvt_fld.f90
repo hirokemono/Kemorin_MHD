@@ -94,6 +94,7 @@
       rayleigh_mesh_file%iflag_format = id_ascii_file_fmt
       file_name = 'Spherical_3D/00007000_grid'
       call read_rayleigh_field_param(file_name, rayleigh_rtp_A)
+      call bcast_rayleigh_field_param(rayleigh_rtp_A)
       call set_rayleigh_parallel_param(rayleigh_rtp_A)
 !
 !
