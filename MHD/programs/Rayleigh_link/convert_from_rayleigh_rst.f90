@@ -23,25 +23,10 @@
       use calypso_mpi
 !
       use m_machine_parameter
-      use m_file_format_switch
 !
       use r_interpolate_marged_sph
-      use t_SPH_mesh_field_data
-      use t_time_data
-      use t_field_data_IO
-      use t_control_data_4_merge
-      use t_control_param_assemble
-      use t_spectr_data_4_assemble
       use t_rayleigh_restart_IO
       use t_convert_from_rayleigh
-!
-      use new_SPH_restart
-      use parallel_assemble_sph
-      use copy_rj_phys_data_4_IO
-      use assemble_sph_fields
-      use set_control_newsph
-      use rayleigh_restart_IO
-      use field_IO_select
 !
       implicit none
 !
@@ -110,10 +95,8 @@
      &          (file_name, i_fld, i_comp, new_sph_mesh, r_itp, ra_rst, &
      &           fcheby_WK, rayleigh_WK, new_sph_phys)
 !
-      use m_phys_labels
       use calypso_mpi
       use m_calypso_mpi_IO
-      use t_calypso_mpi_IO_param
       use MPI_ascii_data_IO
 !
       integer(kind = kint), intent(in) :: i_fld, i_comp
@@ -126,14 +109,13 @@
       type(work_rayleigh_checkpoint), intent(inout) :: rayleigh_WK
       type(phys_data), intent(inout) :: new_sph_phys
 !
-      type(calypso_MPI_IO_params), save :: IO_param
+      integer ::  id_mpi_file
       integer(kind = kint) :: k, j, l, m, ierr
       integer(kind = MPI_OFFSET_KIND) :: ioffset1, ioffset2
       integer(kind = kint_gl), parameter :: ione64 = 1
 !
 !
-      call open_read_mpi_file                                           &
-     &   (file_name, nprocs, my_rank, IO_param)
+      call calypso_mpi_read_file_open(file_name, id_mpi_file)
 !      write(50+my_rank,*) 'k, kr, l, m, ra_rst%iflag_swap',            &
 !       &     new_sph_mesh%sph%sph_rj%nidx_rj(1:2), ra_rst%iflag_swap
       do j = 1, new_sph_mesh%sph%sph_rj%nidx_rj(2)
@@ -146,10 +128,10 @@
      &        k, l, abs(m), ioffset1, ioffset2)
 !
           call calypso_mpi_seek_read_real                               &
-     &       (IO_param%id_file, ra_rst%iflag_swap,                      &
+     &       (id_mpi_file, ra_rst%iflag_swap,                           &
      &        ioffset1, ione64, rayleigh_WK%rayleigh_in(k,1))
           call calypso_mpi_seek_read_real                               &
-     &       (IO_param%id_file, ra_rst%iflag_swap,                      &
+     &       (id_mpi_file, ra_rst%iflag_swap,                           &
      &        ioffset2, ione64, rayleigh_WK%rayleigh_in(k,2))
         end do
 !
@@ -194,7 +176,7 @@
 !     &      rayleigh_WK%rayleigh_tg, new_sph_phys)
       end do
 !
-      call close_mpi_file(IO_param)
+      call calypso_close_mpi_file(id_mpi_file)
 !
       end subroutine cvt_each_field_from_rayleigh
 !
@@ -263,14 +245,13 @@
 !
       use calypso_mpi
       use m_calypso_mpi_IO
-      use t_calypso_mpi_IO_param
       use MPI_ascii_data_IO
 !
       type(rayleigh_restart), intent(in) :: ra_rst
       character(len = kchara), intent(in) :: file_name
       integer(kind = kint), intent(in) :: i_comp
 !
-      type(calypso_MPI_IO_params), save :: IO_param
+      integer ::  id_mpi_file
       integer(kind = MPI_OFFSET_KIND) :: ioffset1, ioffset2
       integer(kind = kint) :: j
       character(len = kchara) :: fn_out
@@ -279,8 +260,7 @@
       integer(kind = kint_gl), parameter :: ione64 = 1
 !
 !
-      call open_read_mpi_file                                           &
-     &   (file_name, nprocs, my_rank, IO_param)
+      call calypso_mpi_read_file_open(file_name, id_mpi_file)
       if(my_rank .eq. 0) then
         write(fn_out,'(a,i1)') 'rayleigh_test.', i_comp
         open(99,file=fn_out)
@@ -290,10 +270,10 @@
           ioffset1 = (j-1) * kreal
           ioffset2 = ioffset1 + kreal*ra_rst%nri_org*jmax_h
           call calypso_mpi_seek_read_real                               &
-     &       (IO_param%id_file, ra_rst%iflag_swap,                      &
+     &       (id_mpi_file, ra_rst%iflag_swap,                           &
      &        ioffset1, ione64, read_fld(1))
           call calypso_mpi_seek_read_real                               &
-     &       (IO_param%id_file, ra_rst%iflag_swap,                      &
+     &       (id_mpi_file, ra_rst%iflag_swap,                           &
      &        ioffset2, ione64, read_fld(2))
 !
           write(99,*) j, read_fld(1:2)
@@ -301,7 +281,7 @@
 !
         close(99)
       end if
-      call close_mpi_file(IO_param)
+      call calypso_close_mpi_file(id_mpi_file)
 !
       end subroutine check_rayleigh_restart_reading
 !

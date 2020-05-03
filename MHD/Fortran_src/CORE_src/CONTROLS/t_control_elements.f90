@@ -272,15 +272,19 @@
 !
       subroutine read_real_ctl_type(c_buf, label, real_item)
 !
-      use read_control_elements
-!
       type(buffer_for_control), intent(in)  :: c_buf
       character(len=kchara), intent(in) :: label
       type(read_real_item), intent(inout) :: real_item
 !
+      character(len=kchara) :: tmpchara
 !
-      call read_real_ctl_item(c_buf, label, real_item%iflag,            &
-     &    real_item%realvalue)
+!
+      if(real_item%iflag.gt.0 .or. c_buf%header_chara.ne.label) return
+!
+      read(c_buf%ctl_buffer,*) tmpchara, real_item%realvalue
+      if (iflag_debug .gt. 0)  write(*,*) trim(c_buf%header_chara),     &
+     &                       real_item%realvalue
+      real_item%iflag = 1
 !
       end subroutine read_real_ctl_type
 !
@@ -288,15 +292,19 @@
 !
       subroutine read_integer_ctl_type(c_buf, label, int_item)
 !
-      use read_control_elements
-!
       type(buffer_for_control), intent(in)  :: c_buf
       character(len=kchara), intent(in) :: label
       type(read_integer_item), intent(inout) :: int_item
 !
+      character(len=kchara) :: tmpchara
 !
-      call read_integer_ctl_item(c_buf, label, int_item%iflag,          &
-     &    int_item%intvalue)
+!
+      if(int_item%iflag.gt.0 .or. c_buf%header_chara.ne.label) return
+!
+      read(c_buf%ctl_buffer,*) tmpchara, int_item%intvalue
+      if (iflag_debug .gt. 0)  write(*,*) trim(c_buf%header_chara),     &
+     &                        int_item%intvalue
+      int_item%iflag = 1
 !
        end subroutine read_integer_ctl_type
 !
@@ -304,15 +312,19 @@
 !
       subroutine read_chara_ctl_type(c_buf, label, chara_item)
 !
-      use read_control_elements
-!
       type(buffer_for_control), intent(in)  :: c_buf
       character(len=kchara), intent(in) :: label
       type(read_character_item), intent(inout) :: chara_item
 !
+      character(len=kchara) :: tmpchara
 !
-      call read_character_ctl_item(c_buf, label, chara_item%iflag,      &
-     &    chara_item%charavalue)
+!
+      if(chara_item%iflag.gt.0 .or. c_buf%header_chara.ne.label) return
+!
+      read(c_buf%ctl_buffer,*) tmpchara, chara_item%charavalue
+      if (iflag_debug .gt. 0)  write(*,*) trim(c_buf%header_chara),     &
+     &                       ': ', trim(chara_item%charavalue)
+      chara_item%iflag = 1
 !
        end subroutine read_chara_ctl_type
 !
@@ -321,15 +333,20 @@
 !
       subroutine read_real2_ctl_type(c_buf, label, real2_item)
 !
-      use read_control_elements
-!
       type(buffer_for_control), intent(in)  :: c_buf
       character(len=kchara), intent(in) :: label
       type(read_real2_item), intent(inout) :: real2_item
 !
 !
-      call read_real2_ctl_item(c_buf, label, real2_item%iflag,          &
-     &    real2_item%realvalue(1), real2_item%realvalue(2))
+       character(len=kchara) :: tmpchara
+!
+!
+      if(real2_item%iflag.gt.0 .or. c_buf%header_chara.ne.label) return
+!
+      read(c_buf%ctl_buffer,*) tmpchara, real2_item%realvalue(1:2)
+      if (iflag_debug .gt. 0)  write(*,'(a,a2,1p3e16.7)')               &
+     &        trim(c_buf%header_chara), ': ', real2_item%realvalue(1:2)
+      real2_item%iflag = 1
 !
        end subroutine read_real2_ctl_type
 !
@@ -337,16 +354,19 @@
 !
       subroutine read_real3_ctl_type(c_buf, label, real3_item)
 !
-      use read_control_elements
-!
       type(buffer_for_control), intent(in)  :: c_buf
       character(len=kchara), intent(in) :: label
       type(read_real3_item), intent(inout) :: real3_item
 !
+       character(len=kchara) :: tmpchara
 !
-      call read_real3_ctl_item(c_buf, label, real3_item%iflag,          &
-     &    real3_item%realvalue(1), real3_item%realvalue(2),             &
-     &    real3_item%realvalue(3))
+!
+      if(real3_item%iflag.gt.0 .or. c_buf%header_chara.ne.label) return
+!
+      read(c_buf%ctl_buffer,*) tmpchara, real3_item%realvalue(1:3)
+      if (iflag_debug .gt. 0)  write(*,'(a,a2,1p3e16.7)')               &
+     &        trim(c_buf%header_chara), ': ', real3_item%realvalue(1:3)
+      real3_item%iflag = 1
 !
        end subroutine read_real3_ctl_type
 !
@@ -354,14 +374,19 @@
 !
       subroutine read_integer2_ctl_type(c_buf, label, int2_item)
 !
-      use read_control_elements
-!
       type(buffer_for_control), intent(in)  :: c_buf
       character(len=kchara), intent(in) :: label
       type(read_int2_item), intent(inout) :: int2_item
 !
-      call read_integer2_ctl_item(c_buf, label, int2_item%iflag,        &
-     &    int2_item%intvalue(1), int2_item%intvalue(2))
+      character(len=kchara) :: tmpchara
+!
+!
+      if(int2_item%iflag.gt.0 .or. c_buf%header_chara.ne.label) return
+!
+      read(c_buf%ctl_buffer,*) tmpchara, int2_item%intvalue(1:2)
+      if (iflag_debug .gt. 0)  write(*,'(a,a2,2i6)')                    &
+     &          trim(c_buf%header_chara), ': ', int2_item%intvalue(1:2)
+      int2_item%iflag = 1
 !
       end subroutine read_integer2_ctl_type
 !
@@ -369,15 +394,19 @@
 !
       subroutine read_integer3_ctl_type(c_buf, label, int3_item)
 !
-      use read_control_elements
-!
       type(buffer_for_control), intent(in)  :: c_buf
       character(len=kchara), intent(in) :: label
       type(read_int3_item), intent(inout) :: int3_item
 !
-      call read_integer3_ctl_item(c_buf, label, int3_item%iflag,        &
-     &    int3_item%intvalue(1), int3_item%intvalue(2),                 &
-     &    int3_item%intvalue(3))
+       character(len=kchara) :: tmpchara
+!
+!
+      if(int3_item%iflag.gt.0 .or. c_buf%header_chara.ne.label) return
+!
+      read(c_buf%ctl_buffer,*) tmpchara, int3_item%intvalue(1:3)
+      if (iflag_debug .gt. 0)  write(*,'(a,a2,3i6)')                    &
+     &          trim(c_buf%header_chara), ': ', int3_item%intvalue(1:3)
+      int3_item%iflag = 1
 !
       end subroutine read_integer3_ctl_type
 !
@@ -385,183 +414,261 @@
 !
       subroutine read_character2_ctl_type(c_buf, label, chara2_item)
 !
-      use read_control_elements
-!
       type(buffer_for_control), intent(in)  :: c_buf
       character(len=kchara), intent(in) :: label
       type(read_chara2_item), intent(inout) :: chara2_item
 !
+       character(len=kchara) :: tmpchara
 !
-      call read_character2_ctl_item(c_buf, label, chara2_item%iflag,    &
-     &    chara2_item%charavalue(1), chara2_item%charavalue(2))
 !
-       end subroutine read_character2_ctl_type
+      if(chara2_item%iflag.gt.0 .or. c_buf%header_chara.ne.label) return
+!
+      read(c_buf%ctl_buffer,*) tmpchara, chara2_item%charavalue(1:2)
+      if (iflag_debug .gt. 0)  write(*,'(a,a4,a)')                      &
+     &      trim(c_buf%header_chara), ' 1: ', chara2_item%charavalue(1)
+      if (iflag_debug .gt. 0)  write(*,'(a,a4,a)')                      &
+     &      trim(c_buf%header_chara), ' 2: ', chara2_item%charavalue(2)
+      chara2_item%iflag = 1
+!
+      end subroutine read_character2_ctl_type
 !
 !   --------------------------------------------------------------------
 !
       subroutine read_character3_ctl_type(c_buf, label, chara3_item)
 !
-      use read_control_elements
-!
       type(buffer_for_control), intent(in)  :: c_buf
       character(len=kchara), intent(in) :: label
       type(read_chara3_item), intent(inout) :: chara3_item
 !
+       character(len=kchara) :: tmpchara
 !
-      call read_character3_ctl_item(c_buf, label, chara3_item%iflag,    &
-     &    chara3_item%charavalue(1), chara3_item%charavalue(2),         &
-     &    chara3_item%charavalue(3))
 !
-       end subroutine read_character3_ctl_type
+      if(chara3_item%iflag.gt.0                                         &
+     &      .or. c_buf%header_chara.ne.label) return
+!
+      read(c_buf%ctl_buffer,*) tmpchara, chara3_item%charavalue(1:3)
+      if (iflag_debug .gt. 0)  write(*,'(a,a4,a)')                      &
+     &      trim(c_buf%header_chara), ' 1: ', chara3_item%charavalue(1)
+      if (iflag_debug .gt. 0)  write(*,'(a,a4,a)')                      &
+     &      trim(c_buf%header_chara), ' 2: ', chara3_item%charavalue(2)
+      if (iflag_debug .gt. 0)  write(*,'(a,a4,a)')                      &
+     &      trim(c_buf%header_chara), ' 3: ', chara3_item%charavalue(3)
+      chara3_item%iflag = 1
+!
+      end subroutine read_character3_ctl_type
 !
 !   --------------------------------------------------------------------
 !
       subroutine read_charreal2_ctl_type(c_buf, label, cr2_item)
 !
-      use read_control_elements
-!
       type(buffer_for_control), intent(in)  :: c_buf
       character(len=kchara), intent(in) :: label
       type(read_chara_real2_item), intent(inout) :: cr2_item
 !
+       character(len=kchara) :: tmpchara
 !
-      call read_charreal2_ctl_item                                      &
-     &   (c_buf, label, cr2_item%iflag, cr2_item%charavalue,            &
-     &    cr2_item%realvalue(1), cr2_item%realvalue(2))
 !
-       end subroutine read_charreal2_ctl_type
+      if(cr2_item%iflag.gt.0 .or. c_buf%header_chara.ne.label) return
+!
+      read(c_buf%ctl_buffer,*) tmpchara, cr2_item%charavalue,           &
+     &                        cr2_item%realvalue(1:2)
+      if (iflag_debug .gt. 0)  write(*,'(a,a4,a)')                      &
+     &            trim(c_buf%header_chara), ' cr2_item%charavalue: ',   &
+     &            cr2_item%charavalue
+      if (iflag_debug .gt. 0)  write(*,'(a,a7,1p2e23.15)')              &
+     &     trim(c_buf%header_chara), ' real: ', cr2_item%realvalue(1:2)
+      cr2_item%iflag = 1
+!
+      end subroutine read_charreal2_ctl_type
 !
 !   --------------------------------------------------------------------
 !
       subroutine read_char2real_ctl_type(c_buf, label, c2r_item)
 !
-      use read_control_elements
-!
       type(buffer_for_control), intent(in)  :: c_buf
       character(len=kchara), intent(in) :: label
       type(read_chara2_real_item), intent(inout) :: c2r_item
 !
+       character(len=kchara) :: tmpchara
 !
-      call read_char2real_ctl_item(c_buf, label, c2r_item%iflag,        &
-     &    c2r_item%charavalue(1), c2r_item%charavalue(2),               &
-     &    c2r_item%realvalue)
 !
-       end subroutine read_char2real_ctl_type
+      if(c2r_item%iflag.gt.0 .or. c_buf%header_chara.ne.label) return
+!
+      read(c_buf%ctl_buffer,*) tmpchara, c2r_item%charavalue(1:2),      &
+     &                         c2r_item%realvalue
+      if (iflag_debug .gt. 0)  write(*,'(a,a4,a)')                      &
+     &         trim(c_buf%header_chara), ' 1: ', c2r_item%charavalue(1)
+      if (iflag_debug .gt. 0)  write(*,'(a,a4,a)')                      &
+     &         trim(c_buf%header_chara), ' 2: ', c2r_item%charavalue(2)
+      if (iflag_debug .gt. 0)  write(*,'(a,a7,1pe23.15)')               &
+     &         trim(c_buf%header_chara), ' real: ', c2r_item%realvalue
+      c2r_item%iflag = 1
+!
+      end subroutine read_char2real_ctl_type
 !
 !   --------------------------------------------------------------------
 !
       subroutine read_charareal_ctl_type(c_buf, label, cr_item)
 !
-      use read_control_elements
-!
       type(buffer_for_control), intent(in)  :: c_buf
       character(len=kchara), intent(in) :: label
       type(read_chara_real_item), intent(inout) :: cr_item
 !
+       character(len=kchara) :: tmpchara
 !
-      call read_charareal_ctl_item(c_buf, label, cr_item%iflag,         &
-     &    cr_item%charavalue, cr_item%realvalue)
 !
-       end subroutine read_charareal_ctl_type
+      if(cr_item%iflag.gt.0 .or. c_buf%header_chara.ne.label) return
+!
+      read(c_buf%ctl_buffer,*) tmpchara, cr_item%charavalue,            &
+     &                         cr_item%realvalue
+      if (iflag_debug .gt. 0)  write(*,'(a,a7,a)')                      &
+     &         trim(c_buf%header_chara), ' char: ', cr_item%charavalue
+      if (iflag_debug .gt. 0)  write(*,'(a,a4,1pe23.15)')               &
+     &         trim(c_buf%header_chara), ' vect: ', cr_item%realvalue
+      cr_item%iflag = 1
+!
+      end subroutine read_charareal_ctl_type
 !
 !   --------------------------------------------------------------------
 !
       subroutine read_charaint_ctl_type(c_buf, label, ci_item)
 !
-      use read_control_elements
-!
       type(buffer_for_control), intent(in)  :: c_buf
       character(len=kchara), intent(in) :: label
       type(read_chara_int_item), intent(inout) :: ci_item
 !
+       character(len=kchara) :: tmpchara
 !
-      call read_charaint_ctl_item(c_buf, label, ci_item%iflag,          &
-     &    ci_item%charavalue, ci_item%intvalue)
 !
-       end subroutine read_charaint_ctl_type
+      if(ci_item%iflag.gt.0 .or. c_buf%header_chara.ne.label) return
+!
+      read(c_buf%ctl_buffer,*) tmpchara, ci_item%charavalue,            &
+     &                        ci_item%intvalue
+      if (iflag_debug .gt. 0)  write(*,'(a,a7,a)')                      &
+     &          trim(c_buf%header_chara), ' char: ', ci_item%charavalue
+      if (iflag_debug .gt. 0)  write(*,'(a,a7,i16)')                    &
+     &          trim(c_buf%header_chara), ' int:  ', ci_item%intvalue
+      ci_item%iflag = 1
+!
+      end subroutine read_charaint_ctl_type
 !
 !   --------------------------------------------------------------------
 !
       subroutine read_intchrreal_ctl_type(c_buf, label, icr_item)
 !
-      use read_control_elements
-!
       type(buffer_for_control), intent(in)  :: c_buf
       character(len=kchara), intent(in) :: label
       type(read_int_chara_real_item), intent(inout) :: icr_item
 !
+       character(len=kchara) :: tmpchara
 !
-      call read_intchrreal_ctl_item(c_buf, label, icr_item%iflag,       &
-     &    icr_item%intvalue, icr_item%charavalue, icr_item%realvalue)
 !
-       end subroutine read_intchrreal_ctl_type
+      if(icr_item%iflag.gt.0 .or. c_buf%header_chara.ne.label) return
+!
+      read(c_buf%ctl_buffer,*) tmpchara, icr_item%intvalue,             &
+     &                         icr_item%charavalue, icr_item%realvalue
+      if (iflag_debug .gt. 0)  write(*,'(a,a7,i16)')                    &
+     &         trim(c_buf%header_chara), ' int:  ', icr_item%intvalue
+      if (iflag_debug .gt. 0)  write(*,'(a,a7,a)')                      &
+     &         trim(c_buf%header_chara), ' char: ', icr_item%charavalue
+      if (iflag_debug .gt. 0)  write(*,'(a,a7,1pe23.15)')               &
+     &         trim(c_buf%header_chara), ' real: ', icr_item%realvalue
+      icr_item%iflag = 1
+!
+      end subroutine read_intchrreal_ctl_type
 !
 !   --------------------------------------------------------------------
 !
       subroutine read_intreal_ctl_type(c_buf, label, ir_item)
 !
-      use read_control_elements
-!
       type(buffer_for_control), intent(in)  :: c_buf
       character(len=kchara), intent(in) :: label
       type(read_int_real_item), intent(inout) :: ir_item
 !
+      character(len=kchara) :: tmpchara
 !
-      call read_intreal_ctl_item(c_buf, label, ir_item%iflag,           &
-     &    ir_item%intvalue, ir_item%realvalue)
 !
-       end subroutine read_intreal_ctl_type
+      if(ir_item%iflag.gt.0 .or. c_buf%header_chara.ne.label) return
+!
+      read(c_buf%ctl_buffer,*) tmpchara, ir_item%intvalue,              &
+     &                         ir_item%realvalue
+      if (iflag_debug .gt. 0)  write(*,'(a,a7,i16)')                    &
+     &         trim(c_buf%header_chara), ' int:  ', ir_item%intvalue
+      if (iflag_debug .gt. 0)  write(*,'(a,a7,1pe23.15)')               &
+     &         trim(c_buf%header_chara), ' real: ', ir_item%realvalue
+      ir_item%iflag = 1
+!
+      end subroutine read_intreal_ctl_type
 !
 !   --------------------------------------------------------------------
 !
       subroutine read_int2real_ctl_type(c_buf, label, i2r_item)
 !
-      use read_control_elements
-!
       type(buffer_for_control), intent(in)  :: c_buf
       character(len=kchara), intent(in) :: label
       type(read_int2_real_item), intent(inout) :: i2r_item
 !
+       character(len=kchara) :: tmpchara
 !
-      call read_int2real_ctl_item(c_buf, label, i2r_item%iflag,         &
-     &    i2r_item%intvalue(1), i2r_item%intvalue(2),                   &
-     &    i2r_item%realvalue)
 !
-       end subroutine read_int2real_ctl_type
+      if(i2r_item%iflag.gt.0 .or. c_buf%header_chara.ne.label) return
+!
+      read(c_buf%ctl_buffer,*) tmpchara, i2r_item%intvalue(1:2),        &
+     &                         i2r_item%realvalue
+      if (iflag_debug .gt. 0)  write(*,'(a,a7,2i16)')                   &
+     &      trim(c_buf%header_chara), ' int:  ', i2r_item%intvalue(1:2)
+      if (iflag_debug .gt. 0)  write(*,'(a,a7,1pe23.15)')               &
+     &      trim(c_buf%header_chara), ' real: ', i2r_item%realvalue
+      i2r_item%iflag = 1
+!
+      end subroutine read_int2real_ctl_type
 !
 !   --------------------------------------------------------------------
 !
       subroutine read_int2real2_ctl_type(c_buf, label, i2r2_item)
 !
-      use read_control_elements
-!
       type(buffer_for_control), intent(in)  :: c_buf
       character(len=kchara), intent(in) :: label
       type(read_int2_real2_item), intent(inout) :: i2r2_item
 !
+       character(len=kchara) :: tmpchara
 !
-      call read_int2real2_ctl_item(c_buf, label, i2r2_item%iflag,       &
-     &    i2r2_item%intvalue(1), i2r2_item%intvalue(2),                 &
-     &    i2r2_item%realvalue(1), i2r2_item%realvalue(2))
 !
-       end subroutine read_int2real2_ctl_type
+      if(i2r2_item%iflag.gt.0 .or. c_buf%header_chara.ne.label) return
+!
+      read(c_buf%ctl_buffer,*) tmpchara, i2r2_item%intvalue(1:2),       &
+     &                         i2r2_item%realvalue(1:2)
+      if (iflag_debug .gt. 0)  write(*,'(a,a7,2i16)')                   &
+     &    trim(c_buf%header_chara), ' int:  ', i2r2_item%intvalue(1:2)
+      if (iflag_debug .gt. 0)  write(*,'(a,a7,1p2e23.15)')              &
+     &    trim(c_buf%header_chara), ' real: ', i2r2_item%realvalue(1:2)
+      i2r2_item%iflag = 1
+!
+      end subroutine read_int2real2_ctl_type
 !
 !   --------------------------------------------------------------------
 !
       subroutine read_charaint3_ctl_type(c_buf, label, ci3_item)
 !
-      use read_control_elements
-!
       type(buffer_for_control), intent(in)  :: c_buf
       character(len=kchara), intent(in) :: label
       type(read_chara_int3_item), intent(inout) :: ci3_item
 !
+       character(len=kchara) :: tmpchara
 !
-      call read_charaine3_ctl_item(c_buf, label, ci3_item%iflag,        &
-     &    ci3_item%charavalue, ci3_item%intvalue(1),                    &
-     &    ci3_item%intvalue(2), ci3_item%intvalue(3))
 !
-       end subroutine read_charaint3_ctl_type
+      if(ci3_item%iflag.gt.0 .or. c_buf%header_chara.ne.label) return
+!
+      read(c_buf%ctl_buffer,*) tmpchara, ci3_item%charavalue,           &
+     &                         ci3_item%intvalue(1:3)
+      if (iflag_debug .gt. 0)  write(*,'(a,a7,2i16)')                   &
+     &       trim(c_buf%header_chara), ' ci3_item%charavalue:  ',       &
+     &       trim(ci3_item%charavalue)
+      if (iflag_debug .gt. 0)  write(*,'(a,a7,1p2e23.15)')              &
+     &       trim(c_buf%header_chara), ' int: ', ci3_item%intvalue(1:3)
+      ci3_item%iflag = 1
+!
+      end subroutine read_charaint3_ctl_type
 !
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------

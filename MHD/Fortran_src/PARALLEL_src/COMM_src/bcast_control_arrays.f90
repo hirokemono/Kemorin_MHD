@@ -17,6 +17,8 @@
 !!        type(read_real2_item), intent(inout) :: real2_item
 !!      subroutine bcast_ctl_type_r3(real3_item)
 !!        type(read_real3_item), intent(inout) :: real3_item
+!!      subroutine bcast_ctl_type_i2(int2_item)
+!!        type(read_int2_item), intent(inout) :: int2_item
 !!      subroutine bcast_ctl_type_i3(int3_item)
 !!        type(read_int3_item), intent(inout) :: int3_item
 !!      subroutine bcast_ctl_type_c3(chara3_item)
@@ -171,6 +173,22 @@
      &               CALYPSO_REAL, 0, CALYPSO_COMM, ierr_MPI)
 !
       end subroutine bcast_ctl_type_r3
+!
+!   --------------------------------------------------------------------
+!
+      subroutine bcast_ctl_type_i2(int2_item)
+!
+      type(read_int2_item), intent(inout) :: int2_item
+!
+!
+      if(nprocs .eq. 1) return
+!
+      call MPI_BCAST(int2_item%iflag, 1,                                &
+     &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+      call MPI_BCAST(int2_item%intvalue, 2,                             &
+     &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+!
+      end subroutine bcast_ctl_type_i2
 !
 !   --------------------------------------------------------------------
 !

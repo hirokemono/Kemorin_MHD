@@ -21,9 +21,6 @@
       module sel_read_rayleigh_restart
 !
       use m_precision
-      use m_machine_parameter
-      use m_constants
-      use m_file_format_switch
       use t_rayleigh_restart_IO
 !
       implicit  none
@@ -38,6 +35,8 @@
 !-----------------------------------------------------------------------
 !
       subroutine sel_read_rayleigh_rst_params(dir, i_step, ra_rst)
+!
+      use m_file_format_switch
 !
       integer(kind = kint), intent(in) :: i_step
       character(len = kchara), intent(in) :: dir
@@ -58,6 +57,8 @@
       character(len = kchara) function sel_rayleigh_file_name           &
      &                               (i_version, dir, int_id, postfix)
 !
+      use m_file_format_switch
+!
       integer(kind = kint), intent(in) :: i_version, int_id
       character(len=kchara), intent(in) :: dir, postfix
 !
@@ -77,8 +78,8 @@
       subroutine set_rayleigh_rst_file_name(i_version, dir, i_step,     &
      &          field_name, iflag_ncomp, file_name)
 !
-      use m_phys_labels
-      use t_field_data_IO
+      use t_base_field_labels
+      use t_explicit_term_labels
 !
       integer(kind = kint), intent(in) :: i_version, i_step
       character(len = kchara), intent(in) :: dir
@@ -136,10 +137,6 @@
 !-----------------------------------------------------------------------
 !
       subroutine read_rayleigh99_restart_params(dir, i_step, ra_rst)
-!
-      use t_binary_IO_buffer
-      use binary_file_access
-      use set_parallel_file_name
 !
       integer(kind = kint), intent(in) :: i_step
       character(len = kchara), intent(in) :: dir

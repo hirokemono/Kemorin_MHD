@@ -141,7 +141,7 @@
 !
       do
         call load_one_line_from_control(control_file_code, c_buf1)
-        call read_merge_control_data(control_file_code, hd_assemble,  &
+        call read_merge_control_data(control_file_code, hd_assemble,    &
      &      mgd_ctl, c_buf1)
         if(mgd_ctl%i_assemble .gt. 0) exit
       end do

@@ -27,8 +27,6 @@
       use m_precision
       use m_machine_parameter
       use m_constants
-      use t_field_data_IO
-      use set_parallel_file_name
 !
       implicit  none
 !
@@ -139,9 +137,6 @@
 !-----------------------------------------------------------------------
 !
       subroutine read_rayleigh_restart_params(dir, i_step, ra_rst)
-!
-      use t_binary_IO_buffer
-      use binary_file_access
 !
       integer(kind = kint), intent(in) :: i_step
       character(len = kchara), intent(in) :: dir
