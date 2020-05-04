@@ -36,15 +36,13 @@
 !
       subroutine sel_read_rayleigh_rst_params(dir, i_step, ra_rst)
 !
-      use m_file_format_switch
-!
       integer(kind = kint), intent(in) :: i_step
       character(len = kchara), intent(in) :: dir
 !
       type(rayleigh_restart), intent(inout) :: ra_rst
 !
 !
-      if(ra_rst%i_version .eq. id_Rayleigh99) then
+      if(ra_rst%i_version .lt. 1) then
         call read_rayleigh99_restart_params(dir, i_step, ra_rst)
       else
         call read_rayleigh_restart_params(dir, i_step, ra_rst)
@@ -57,13 +55,11 @@
       character(len = kchara) function sel_rayleigh_file_name           &
      &                               (i_version, dir, int_id, postfix)
 !
-      use m_file_format_switch
-!
       integer(kind = kint), intent(in) :: i_version, int_id
       character(len=kchara), intent(in) :: dir, postfix
 !
 !
-      if(i_version .eq. id_Rayleigh99) then
+      if(i_version .lt. 1) then
         sel_rayleigh_file_name                                          &
      &      = set_rayleigh99_file_name(dir, int_id, postfix)
       else

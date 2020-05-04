@@ -261,25 +261,5 @@
       end subroutine add_vector_field_4_raylegh
 !
 !-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!
-      subroutine find_rayleigh_restart_address                          &
-     &          (nri, ltr, kr, l, m, ioffset1, ioffset2)
-!
-      integer(kind = kint), intent(in) :: nri, ltr, kr, l, m
-      integer(kind = kint_gl), intent(inout) :: ioffset1, ioffset2
-!
-      integer(kind = kint_gl) :: jmax_h, ioffset
-!
-      jmax_h = 1 + ltr*(ltr+3) / 2
-      ioffset = (l - m + 1) + m * (2*ltr +3 - m) / 2
-      ioffset1 = ioffset + (kr - 1) * jmax_h
-      ioffset2 = ioffset1 + jmax_h * nri
-      ioffset1 = (ioffset1 - 1) * kreal
-      ioffset2 = (ioffset2 - 1) * kreal
-!
-      end subroutine find_rayleigh_restart_address
-!
-!-----------------------------------------------------------------------
 !
       end module rayleigh_restart_IO

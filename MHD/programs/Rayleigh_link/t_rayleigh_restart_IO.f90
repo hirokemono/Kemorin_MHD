@@ -52,6 +52,8 @@
       type rayleigh_restart
 !>        Version ID
         integer :: i_version = 0
+!>        Minor version ID
+        integer :: i_minor = 0
 !>        Endian swap flag
         integer :: iflag_swap = 0
 !

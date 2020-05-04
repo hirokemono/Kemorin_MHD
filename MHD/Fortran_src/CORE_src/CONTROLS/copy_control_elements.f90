@@ -25,9 +25,6 @@
 !!      subroutine copy_integer2_ctl(org_i2, new_i2)
 !!        type(read_int2_item), intent(in) :: org_i2
 !!        type(read_int2_item), intent(inout) :: new_i2
-!!      subroutine copy_integer3_ctl(org_i3, new_i3)
-!!        type(read_int3_item), intent(in) :: org_i3
-!!        type(read_int3_item), intent(inout) :: new_i3
 !!      subroutine copy_character2_ctl(org_c2, new_c2)
 !!        type(read_chara2_item), intent(in) :: org_c2
 !!        type(read_chara2_item), intent(inout) :: new_c2
@@ -149,18 +146,6 @@
       new_i2%intvalue(1:2) = org_i2%intvalue(1:2)
 !
       end subroutine copy_integer2_ctl
-!
-!   --------------------------------------------------------------------
-!
-      subroutine copy_integer3_ctl(org_i3, new_i3)
-!
-      type(read_int3_item), intent(in) :: org_i3
-      type(read_int3_item), intent(inout) :: new_i3
-!
-      new_i3%iflag =         org_i3%iflag
-      new_i3%intvalue(1:3) = org_i3%intvalue(1:3)
-!
-      end subroutine copy_integer3_ctl
 !
 !   --------------------------------------------------------------------
 !

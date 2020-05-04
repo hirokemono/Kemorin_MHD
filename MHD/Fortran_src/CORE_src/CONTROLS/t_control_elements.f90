@@ -25,9 +25,6 @@
 !!      subroutine read_integer2_ctl_type(c_buf, label, int2_item)
 !!        type(buffer_for_control), intent(in)  :: c_buf
 !!        type(read_int2_item), intent(inout) :: int2_item
-!!      subroutine read_integer3_ctl_type(c_buf, label, int3_item)
-!!        type(buffer_for_control), intent(in)  :: c_buf
-!!        type(read_int3_item), intent(inout) :: int3_item
 !!      subroutine read_character2_ctl_type(c_buf, label, chara2_item)
 !!        type(buffer_for_control), intent(in)  :: c_buf
 !!        type(read_chara2_item), intent(inout) :: chara2_item
@@ -77,9 +74,6 @@
 !!      subroutine write_real3_ctl_type                                 &
 !!     &         (id_file, level, label, real3_item)
 !!        type(read_real3_item), intent(in) :: real3_item
-!!      subroutine write_integer3_ctl_type                              &
-!!     &         (id_file, level, label, int3_item)
-!!        type(read_int3_item), intent(in) :: int3_item
 !!      subroutine write_character3_ctl_type                            &
 !!     &         (id_file, level, label, chara3_item)
 !!        type(read_chara3_item), intent(in) :: chara3_item
@@ -139,14 +133,6 @@
 !>        array for read integer item
         integer(kind = kint) ::  intvalue(2)
       end type read_int2_item
-!
-!>        structure of control item with three integers
-      type read_int3_item
-!>        read flag (If item is read iflag = 1)
-        integer(kind = kint) ::  iflag = 0
-!>        array for read integer items
-        integer(kind = kint) ::  intvalue(3)
-      end type read_int3_item
 !
 !>        structure of control character item
       type read_character_item
@@ -389,26 +375,6 @@
       int2_item%iflag = 1
 !
       end subroutine read_integer2_ctl_type
-!
-!   --------------------------------------------------------------------
-!
-      subroutine read_integer3_ctl_type(c_buf, label, int3_item)
-!
-      type(buffer_for_control), intent(in)  :: c_buf
-      character(len=kchara), intent(in) :: label
-      type(read_int3_item), intent(inout) :: int3_item
-!
-       character(len=kchara) :: tmpchara
-!
-!
-      if(int3_item%iflag.gt.0 .or. c_buf%header_chara.ne.label) return
-!
-      read(c_buf%ctl_buffer,*) tmpchara, int3_item%intvalue(1:3)
-      if (iflag_debug .gt. 0)  write(*,'(a,a2,3i6)')                    &
-     &          trim(c_buf%header_chara), ': ', int3_item%intvalue(1:3)
-      int3_item%iflag = 1
-!
-      end subroutine read_integer3_ctl_type
 !
 !   --------------------------------------------------------------------
 !
@@ -765,24 +731,6 @@
      &    real3_item%realvalue(3))
 !
        end subroutine write_real3_ctl_type
-!
-!   --------------------------------------------------------------------
-!
-      subroutine write_integer3_ctl_type                                &
-     &         (id_file, level, label, int3_item)
-!
-      use write_control_elements
-!
-      integer(kind = kint), intent(in) :: id_file, level
-      character(len=kchara), intent(in) :: label
-      type(read_int3_item), intent(in) :: int3_item
-!
-      if(int3_item%iflag .eq. 0) return
-      call write_integer3_ctl_item(id_file, level, label,               &
-     &    int3_item%intvalue(1), int3_item%intvalue(2),                 &
-     &    int3_item%intvalue(3))
-!
-      end subroutine write_integer3_ctl_type
 !
 !   --------------------------------------------------------------------
 !

@@ -31,7 +31,7 @@
       implicit none
 !
       private :: cvt_each_field_from_rayleigh
-      private :: check_chebyshev_trans, check_rayleigh_restart_reading
+      private :: check_chebyshev_trans
 !
 ! ----------------------------------------------------------------------
 !
@@ -43,6 +43,7 @@
      &          new_sph_mesh, r_itp, ra_rst, new_sph_phys)
 !
       use sel_read_rayleigh_restart
+!      use MPI_read_rayleigh_restart
 !
       integer(kind = kint), intent(in) :: istep
       type(field_IO_params), intent(in) :: org_fld_file
@@ -97,7 +98,7 @@
 !
       use calypso_mpi
       use m_calypso_mpi_IO
-      use MPI_ascii_data_IO
+      use MPI_read_rayleigh_restart
 !
       integer(kind = kint), intent(in) :: i_fld, i_comp
       character(len = kchara), intent(in) :: file_name
@@ -110,9 +111,7 @@
       type(phys_data), intent(inout) :: new_sph_phys
 !
       integer ::  id_mpi_file
-      integer(kind = kint) :: k, j, l, m, ierr
-      integer(kind = MPI_OFFSET_KIND) :: ioffset1, ioffset2
-      integer(kind = kint_gl), parameter :: ione64 = 1
+      integer(kind = kint) :: j, l, m, ierr
 !
 !
       call calypso_mpi_read_file_open(file_name, id_mpi_file)
@@ -122,18 +121,8 @@
         l = new_sph_mesh%sph%sph_rj%idx_gl_1d_rj_j(j,2)
         m = new_sph_mesh%sph%sph_rj%idx_gl_1d_rj_j(j,3)
         if(l .gt. ra_rst%ltr_org) cycle
-        do k = 1, ra_rst%nri_org
-          call find_rayleigh_restart_address                            &
-     &       (ra_rst%nri_org, ra_rst%ltr_org,                           &
-     &        k, l, abs(m), ioffset1, ioffset2)
-!
-          call calypso_mpi_seek_read_real                               &
-     &       (id_mpi_file, ra_rst%iflag_swap,                           &
-     &        ioffset1, ione64, rayleigh_WK%rayleigh_in(k,1))
-          call calypso_mpi_seek_read_real                               &
-     &       (id_mpi_file, ra_rst%iflag_swap,                           &
-     &        ioffset2, ione64, rayleigh_WK%rayleigh_in(k,2))
-        end do
+        call read_each_mode_from_rayleigh                               &
+     &     (id_mpi_file, l, m, ra_rst, rayleigh_WK%rayleigh_in)
 !
         call rescaling_from_rayleigh                                    &
      &     (l, m, ra_rst%nri_org, rayleigh_WK%rayleigh_in)
@@ -237,53 +226,6 @@
       end do
 !
       end subroutine check_chebyshev_trans
-!
-! -----------------------------------------------------------------------
-!
-      subroutine check_rayleigh_restart_reading                         &
-     &         (file_name, i_comp, ra_rst)
-!
-      use calypso_mpi
-      use m_calypso_mpi_IO
-      use MPI_ascii_data_IO
-!
-      type(rayleigh_restart), intent(in) :: ra_rst
-      character(len = kchara), intent(in) :: file_name
-      integer(kind = kint), intent(in) :: i_comp
-!
-      integer ::  id_mpi_file
-      integer(kind = MPI_OFFSET_KIND) :: ioffset1, ioffset2
-      integer(kind = kint) :: j
-      character(len = kchara) :: fn_out
-      integer(kind = kint_gl) :: jmax_h
-      real(kind = kreal) :: read_fld(2)
-      integer(kind = kint_gl), parameter :: ione64 = 1
-!
-!
-      call calypso_mpi_read_file_open(file_name, id_mpi_file)
-      if(my_rank .eq. 0) then
-        write(fn_out,'(a,i1)') 'rayleigh_test.', i_comp
-        open(99,file=fn_out)
-!
-        jmax_h = 1 + ra_rst%ltr_org*(ra_rst%ltr_org+3) / 2
-        do j = 1, int(ra_rst%nri_org * jmax_h)
-          ioffset1 = (j-1) * kreal
-          ioffset2 = ioffset1 + kreal*ra_rst%nri_org*jmax_h
-          call calypso_mpi_seek_read_real                               &
-     &       (id_mpi_file, ra_rst%iflag_swap,                           &
-     &        ioffset1, ione64, read_fld(1))
-          call calypso_mpi_seek_read_real                               &
-     &       (id_mpi_file, ra_rst%iflag_swap,                           &
-     &        ioffset2, ione64, read_fld(2))
-!
-          write(99,*) j, read_fld(1:2)
-        end do
-!
-        close(99)
-      end if
-      call calypso_close_mpi_file(id_mpi_file)
-!
-      end subroutine check_rayleigh_restart_reading
 !
 ! -----------------------------------------------------------------------
 !
