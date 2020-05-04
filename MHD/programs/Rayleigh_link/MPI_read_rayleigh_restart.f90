@@ -113,7 +113,6 @@
       subroutine read_each_mode_from_rayleigh                           &
      &         (id_mpi_file, l, m, ra_rst, rayleigh_in)
 !
-      use calypso_mpi
       use m_calypso_mpi_IO
 !
       integer, intent(in) ::  id_mpi_file
@@ -149,7 +148,6 @@
       subroutine check_rayleigh_restart_reading                         &
      &         (file_name, i_comp, ra_rst)
 !
-      use calypso_mpi
       use m_calypso_mpi_IO
 !
       type(rayleigh_restart), intent(in) :: ra_rst
