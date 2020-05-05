@@ -148,6 +148,8 @@
 !
       subroutine bcast_ctl_type_r2(real2_item)
 !
+      use t_control_array_real2
+!
       type(read_real2_item), intent(inout) :: real2_item
 !
 !
@@ -164,6 +166,8 @@
 !
       subroutine bcast_ctl_type_r3(real3_item)
 !
+      use t_control_array_real3
+!
       type(read_real3_item), intent(inout) :: real3_item
 !
 !
@@ -179,6 +183,8 @@
 !   --------------------------------------------------------------------
 !
       subroutine bcast_ctl_type_i2(int2_item)
+!
+      use t_control_array_integer2
 !
       type(read_int2_item), intent(inout) :: int2_item
 !

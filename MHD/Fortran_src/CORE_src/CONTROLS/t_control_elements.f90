@@ -16,18 +16,6 @@
 !!      subroutine read_chara_ctl_type(c_buf, label, chara_item)
 !!        type(buffer_for_control), intent(in)  :: c_buf
 !!        type(read_character_item), intent(inout) :: chara_item
-!!      subroutine read_real2_ctl_type(c_buf, label, real2_item)
-!!        type(buffer_for_control), intent(in)  :: c_buf
-!!        type(read_real2_item), intent(inout) :: real2_item
-!!      subroutine read_real3_ctl_type(c_buf, label, real3_item)
-!!        type(buffer_for_control), intent(in)  :: c_buf
-!!        type(read_real3_item), intent(inout) :: real3_item
-!!      subroutine read_integer2_ctl_type(c_buf, label, int2_item)
-!!        type(buffer_for_control), intent(in)  :: c_buf
-!!        type(read_int2_item), intent(inout) :: int2_item
-!!      subroutine read_character2_ctl_type(c_buf, label, chara2_item)
-!!        type(buffer_for_control), intent(in)  :: c_buf
-!!        type(read_chara2_item), intent(inout) :: chara2_item
 !!
 !!      subroutine write_real_ctl_type                                  &
 !!     &         (id_file, level, maxlen, label, real_item)
@@ -38,12 +26,6 @@
 !!      subroutine write_chara_ctl_type                                 &
 !!     &         (id_file, level, maxlen, label, chara_item)
 !!        type(read_character_item), intent(in) :: chara_item
-!!      subroutine write_real2_ctl_type                                 &
-!!     &         (id_file, level, label, real2_item)
-!!        type(read_real2_item), intent(in) :: real2_item
-!!      subroutine write_real3_ctl_type                                 &
-!!     &         (id_file, level, label, real3_item)
-!!        type(read_real3_item), intent(in) :: real3_item
 !!@endverbatim
 !!
 !!@n @param  label   Read label for control items
@@ -73,30 +55,6 @@
         integer(kind = kint) ::  intvalue
       end type read_integer_item
 !
-!>        structure of control item with two reals
-      type read_real2_item
-!>        read flag (If item is read iflag = 1)
-        integer(kind = kint) ::  iflag = 0
-!>        array for read real items
-        real(kind = kreal) ::    realvalue(2)
-      end type read_real2_item
-!
-!
-!>        structure of control item with three reals
-      type read_real3_item
-!>        read flag (If item is read iflag = 1)
-        integer(kind = kint) ::  iflag = 0
-!>        array for read real items
-        real(kind = kreal) ::    realvalue(3)
-      end type read_real3_item
-!
-!>        structure of control integer item
-      type read_int2_item
-!>        read flag (If item is read iflag = 1)
-        integer(kind = kint) ::  iflag = 0
-!>        array for read integer item
-        integer(kind = kint) ::  intvalue(2)
-      end type read_int2_item
 !
 !>        structure of control character item
       type read_character_item
@@ -105,14 +63,6 @@
 !>        array for read character item
         character(len=kchara) :: charavalue
       end type read_character_item
-!
-!>        structure of control item with three characters
-      type read_chara2_item
-!>        read flag (If item is read iflag = 1)
-        integer(kind = kint) ::  iflag = 0
-!>        array for read character items
-        character(len=kchara) ::  charavalue(2)
-      end type read_chara2_item
 !
 !   --------------------------------------------------------------------
 !
@@ -181,90 +131,6 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine read_real2_ctl_type(c_buf, label, real2_item)
-!
-      type(buffer_for_control), intent(in)  :: c_buf
-      character(len=kchara), intent(in) :: label
-      type(read_real2_item), intent(inout) :: real2_item
-!
-!
-       character(len=kchara) :: tmpchara
-!
-!
-      if(real2_item%iflag.gt.0 .or. c_buf%header_chara.ne.label) return
-!
-      read(c_buf%ctl_buffer,*) tmpchara, real2_item%realvalue(1:2)
-      if (iflag_debug .gt. 0)  write(*,'(a,a2,1p3e16.7)')               &
-     &        trim(c_buf%header_chara), ': ', real2_item%realvalue(1:2)
-      real2_item%iflag = 1
-!
-       end subroutine read_real2_ctl_type
-!
-!   --------------------------------------------------------------------
-!
-      subroutine read_real3_ctl_type(c_buf, label, real3_item)
-!
-      type(buffer_for_control), intent(in)  :: c_buf
-      character(len=kchara), intent(in) :: label
-      type(read_real3_item), intent(inout) :: real3_item
-!
-       character(len=kchara) :: tmpchara
-!
-!
-      if(real3_item%iflag.gt.0 .or. c_buf%header_chara.ne.label) return
-!
-      read(c_buf%ctl_buffer,*) tmpchara, real3_item%realvalue(1:3)
-      if (iflag_debug .gt. 0)  write(*,'(a,a2,1p3e16.7)')               &
-     &        trim(c_buf%header_chara), ': ', real3_item%realvalue(1:3)
-      real3_item%iflag = 1
-!
-       end subroutine read_real3_ctl_type
-!
-!   --------------------------------------------------------------------
-!
-      subroutine read_integer2_ctl_type(c_buf, label, int2_item)
-!
-      type(buffer_for_control), intent(in)  :: c_buf
-      character(len=kchara), intent(in) :: label
-      type(read_int2_item), intent(inout) :: int2_item
-!
-      character(len=kchara) :: tmpchara
-!
-!
-      if(int2_item%iflag.gt.0 .or. c_buf%header_chara.ne.label) return
-!
-      read(c_buf%ctl_buffer,*) tmpchara, int2_item%intvalue(1:2)
-      if (iflag_debug .gt. 0)  write(*,'(a,a2,2i6)')                    &
-     &          trim(c_buf%header_chara), ': ', int2_item%intvalue(1:2)
-      int2_item%iflag = 1
-!
-      end subroutine read_integer2_ctl_type
-!
-!   --------------------------------------------------------------------
-!
-      subroutine read_character2_ctl_type(c_buf, label, chara2_item)
-!
-      type(buffer_for_control), intent(in)  :: c_buf
-      character(len=kchara), intent(in) :: label
-      type(read_chara2_item), intent(inout) :: chara2_item
-!
-       character(len=kchara) :: tmpchara
-!
-!
-      if(chara2_item%iflag.gt.0 .or. c_buf%header_chara.ne.label) return
-!
-      read(c_buf%ctl_buffer,*) tmpchara, chara2_item%charavalue(1:2)
-      if (iflag_debug .gt. 0)  write(*,'(a,a4,a)')                      &
-     &      trim(c_buf%header_chara), ' 1: ', chara2_item%charavalue(1)
-      if (iflag_debug .gt. 0)  write(*,'(a,a4,a)')                      &
-     &      trim(c_buf%header_chara), ' 2: ', chara2_item%charavalue(2)
-      chara2_item%iflag = 1
-!
-      end subroutine read_character2_ctl_type
-!
-!   --------------------------------------------------------------------
-!   --------------------------------------------------------------------
-!
       subroutine write_real_ctl_type                                    &
      &         (id_file, level, maxlen, label, real_item)
 !
@@ -319,44 +185,6 @@
      &   (id_file, level, maxlen, label, chara_item%charavalue)
 !
        end subroutine write_chara_ctl_type
-!
-!   --------------------------------------------------------------------
-!   --------------------------------------------------------------------
-!
-      subroutine write_real2_ctl_type                                   &
-     &         (id_file, level, label, real2_item)
-!
-      use write_control_elements
-!
-      integer(kind = kint), intent(in) :: id_file, level
-      character(len=kchara), intent(in) :: label
-      type(read_real2_item), intent(in) :: real2_item
-!
-!
-      if(real2_item%iflag .eq. 0) return
-      call write_real2_ctl_item(id_file, level, label,                  &
-     &    real2_item%realvalue(1), real2_item%realvalue(2))
-!
-       end subroutine write_real2_ctl_type
-!
-!   --------------------------------------------------------------------
-!
-      subroutine write_real3_ctl_type                                   &
-     &         (id_file, level, label, real3_item)
-!
-      use write_control_elements
-!
-      integer(kind = kint), intent(in) :: id_file, level
-      character(len=kchara), intent(in) :: label
-      type(read_real3_item), intent(in) :: real3_item
-!
-!
-      if(real3_item%iflag .eq. 0) return
-      call write_real3_ctl_item(id_file, level, label,                  &
-     &    real3_item%realvalue(1), real3_item%realvalue(2),             &
-     &    real3_item%realvalue(3))
-!
-       end subroutine write_real3_ctl_type
 !
 !   --------------------------------------------------------------------
 !
