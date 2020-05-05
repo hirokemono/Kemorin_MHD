@@ -7,9 +7,6 @@
 !>@brief  Subroutines to copy control items
 !!
 !!@verbatim
-!!      subroutine copy_real_ctl(org_r1, new_r1)
-!!        type(read_real_item), intent(in) :: org_r1
-!!        type(read_real_item), intent(inout) :: new_r1
 !!      subroutine copy_integer_ctl(org_i1, new_i1)
 !!        type(read_integer_item), intent(in) :: org_i1
 !!        type(read_integer_item), intent(inout) :: new_i1
@@ -29,19 +26,6 @@
 !   --------------------------------------------------------------------
 !
       contains
-!
-!   --------------------------------------------------------------------
-!
-      subroutine copy_real_ctl(org_r1, new_r1)
-!
-      type(read_real_item), intent(in) :: org_r1
-      type(read_real_item), intent(inout) :: new_r1
-!
-!
-      new_r1%iflag =     org_r1%iflag
-      new_r1%realvalue = org_r1%realvalue
-!
-      end subroutine copy_real_ctl
 !
 !   --------------------------------------------------------------------
 !

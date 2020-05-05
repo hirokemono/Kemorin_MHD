@@ -17,6 +17,7 @@
       use t_ctl_data_4_time_steps
       use t_ctl_data_4_sph_monitor
       use t_control_elements
+      use t_control_array_real
       use skip_comment_f
 !
       implicit  none

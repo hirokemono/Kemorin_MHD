@@ -221,6 +221,8 @@
       subroutine read_view_transfer_ctl                                 &
      &         (id_control, hd_block, mat, c_buf)
 !
+      use t_control_array_real
+!
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
 !
@@ -272,6 +274,8 @@
 !
       subroutine read_projection_mat_ctl                                &
      &         (id_control, hd_block, mat, c_buf)
+!
+      use t_control_array_real
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
@@ -328,6 +332,8 @@
 !  ---------------------------------------------------------------------
 !
       subroutine read_stereo_view_ctl(id_control, hd_block, mat, c_buf)
+!
+      use t_control_array_real
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block

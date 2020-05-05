@@ -45,6 +45,7 @@
       use m_machine_parameter
       use t_read_control_elements
       use t_control_elements
+      use t_control_array_real
       use t_control_array_real3
       use skip_comment_f
 !

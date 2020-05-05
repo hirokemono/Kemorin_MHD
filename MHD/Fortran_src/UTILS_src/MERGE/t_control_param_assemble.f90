@@ -247,7 +247,7 @@
       subroutine set_magnetic_ratio_4_assemble                          &
      &         (magnetic_ratio_ctl, asbl_param)
 !
-      use t_control_elements
+      use t_control_array_real
 !
       type(read_real_item), intent(in)  :: magnetic_ratio_ctl
       type(control_param_assemble), intent(inout) :: asbl_param

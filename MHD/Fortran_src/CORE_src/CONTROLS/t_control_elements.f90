@@ -7,9 +7,6 @@
 !>@brief  Structure for reading control items
 !!
 !!@verbatim
-!!      subroutine read_real_ctl_type(c_buf, label, real_item)
-!!        type(buffer_for_control), intent(in)  :: c_buf
-!!        type(read_real_item), intent(inout) :: real_item
 !!      subroutine read_integer_ctl_type(c_buf, label, int_item)
 !!        type(buffer_for_control), intent(in)  :: c_buf
 !!        type(read_integer_item), intent(inout) :: int_item
@@ -17,9 +14,6 @@
 !!        type(buffer_for_control), intent(in)  :: c_buf
 !!        type(read_character_item), intent(inout) :: chara_item
 !!
-!!      subroutine write_real_ctl_type                                  &
-!!     &         (id_file, level, maxlen, label, real_item)
-!!        type(read_real_item), intent(in) :: real_item
 !!      subroutine write_integer_ctl_type                               &
 !!     &         (id_file, level, maxlen, label, int_item)
 !!        type(read_integer_item), intent(in) :: int_item
@@ -38,14 +32,6 @@
 !
       implicit none
 !
-!
-!>        structure of control real item
-      type read_real_item
-!>        read flag (If item is read iflag = 1)
-        integer(kind = kint) ::  iflag = 0
-!>        array for read real item
-        real(kind = kreal) ::    realvalue
-      end type read_real_item
 !
 !>        structure of control integer item
       type read_integer_item
@@ -67,26 +53,6 @@
 !   --------------------------------------------------------------------
 !
       contains
-!
-!   --------------------------------------------------------------------
-!
-      subroutine read_real_ctl_type(c_buf, label, real_item)
-!
-      type(buffer_for_control), intent(in)  :: c_buf
-      character(len=kchara), intent(in) :: label
-      type(read_real_item), intent(inout) :: real_item
-!
-      character(len=kchara) :: tmpchara
-!
-!
-      if(real_item%iflag.gt.0 .or. c_buf%header_chara.ne.label) return
-!
-      read(c_buf%ctl_buffer,*) tmpchara, real_item%realvalue
-      if (iflag_debug .gt. 0)  write(*,*) trim(c_buf%header_chara),     &
-     &                       real_item%realvalue
-      real_item%iflag = 1
-!
-      end subroutine read_real_ctl_type
 !
 !   --------------------------------------------------------------------
 !
@@ -129,25 +95,6 @@
        end subroutine read_chara_ctl_type
 !
 !   --------------------------------------------------------------------
-!   --------------------------------------------------------------------
-!
-      subroutine write_real_ctl_type                                    &
-     &         (id_file, level, maxlen, label, real_item)
-!
-      use write_control_elements
-!
-      integer(kind = kint), intent(in) :: id_file, level
-      integer(kind = kint), intent(in) :: maxlen
-      character(len=kchara), intent(in) :: label
-      type(read_real_item), intent(in) :: real_item
-!
-!
-      if(real_item%iflag .eq. 0) return
-      call write_real_ctl_item                                          &
-     &   (id_file, level, maxlen, label, real_item%realvalue)
-!
-      end subroutine write_real_ctl_type
-!
 !   --------------------------------------------------------------------
 !
       subroutine write_integer_ctl_type                                 &

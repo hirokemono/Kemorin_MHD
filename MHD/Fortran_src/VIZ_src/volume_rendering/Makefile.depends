@@ -78,11 +78,11 @@ t_control_data_4_pvr.o: $(PVR_DIR)/t_control_data_4_pvr.f90 m_precision.o calyps
 	$(F90) -c $(F90OPTFLAGS) $<
 t_control_data_pvr_area.o: $(PVR_DIR)/t_control_data_pvr_area.f90 m_precision.o calypso_mpi.o m_machine_parameter.o t_read_control_elements.o t_control_elements.o t_control_array_character.o t_control_array_chara2real.o skip_comment_f.o copy_control_elements.o bcast_control_arrays.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_control_data_pvr_isosurfs.o: $(PVR_DIR)/t_control_data_pvr_isosurfs.f90 m_precision.o calypso_mpi.o m_machine_parameter.o t_read_control_elements.o t_control_elements.o skip_comment_f.o bcast_control_arrays.o copy_control_elements.o
+t_control_data_pvr_isosurfs.o: $(PVR_DIR)/t_control_data_pvr_isosurfs.f90 m_precision.o calypso_mpi.o m_machine_parameter.o t_read_control_elements.o t_control_elements.o t_control_array_real.o skip_comment_f.o bcast_control_arrays.o copy_control_elements.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_control_data_pvr_movie.o: $(PVR_DIR)/t_control_data_pvr_movie.f90 m_precision.o calypso_mpi.o m_machine_parameter.o t_read_control_elements.o t_control_data_4_psf.o t_control_elements.o skip_comment_f.o copy_control_elements.o bcast_control_arrays.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_control_data_pvr_sections.o: $(PVR_DIR)/t_control_data_pvr_sections.f90 m_precision.o calypso_mpi.o m_machine_parameter.o t_read_control_elements.o t_control_data_4_psf.o t_control_elements.o t_control_array_character.o t_control_array_chara2real.o skip_comment_f.o bcast_control_arrays.o copy_control_elements.o
+t_control_data_pvr_sections.o: $(PVR_DIR)/t_control_data_pvr_sections.f90 m_precision.o calypso_mpi.o m_machine_parameter.o t_read_control_elements.o t_control_data_4_psf.o t_control_elements.o t_control_array_real.o t_control_array_character.o t_control_array_chara2real.o skip_comment_f.o bcast_control_arrays.o copy_control_elements.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_control_data_pvrs.o: $(PVR_DIR)/t_control_data_pvrs.f90 m_precision.o m_machine_parameter.o calypso_mpi.o t_control_data_4_pvr.o t_read_control_elements.o skip_comment_f.o set_pvr_control.o bcast_control_data_4_pvr.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -90,15 +90,15 @@ t_control_data_vizs.o: $(PVR_DIR)/t_control_data_vizs.f90 m_precision.o m_machin
 	$(F90) -c $(F90OPTFLAGS) $<
 t_control_params_4_pvr.o: $(PVR_DIR)/t_control_params_4_pvr.f90 m_precision.o m_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_ctl_data_4_view_transfer.o: $(PVR_DIR)/t_ctl_data_4_view_transfer.f90 m_precision.o m_constants.o m_machine_parameter.o t_read_control_elements.o t_control_elements.o t_control_array_charareal.o t_control_array_chara2real.o skip_comment_f.o
+t_ctl_data_4_view_transfer.o: $(PVR_DIR)/t_ctl_data_4_view_transfer.f90 m_precision.o m_constants.o m_machine_parameter.o t_read_control_elements.o t_control_elements.o t_control_array_real.o t_control_array_charareal.o t_control_array_chara2real.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_ctl_data_pvr_colorbar.o: $(PVR_DIR)/t_ctl_data_pvr_colorbar.f90 m_precision.o calypso_mpi.o m_machine_parameter.o t_read_control_elements.o t_ctl_data_4_view_transfer.o t_control_elements.o t_control_array_real2.o skip_comment_f.o bcast_control_arrays.o copy_control_elements.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_ctl_data_pvr_colormap.o: $(PVR_DIR)/t_ctl_data_pvr_colormap.f90 m_precision.o calypso_mpi.o m_machine_parameter.o t_read_control_elements.o t_ctl_data_4_view_transfer.o t_control_elements.o t_control_array_real2.o t_control_array_real3.o skip_comment_f.o bcast_control_arrays.o copy_control_elements.o
+t_ctl_data_pvr_colormap.o: $(PVR_DIR)/t_ctl_data_pvr_colormap.f90 m_precision.o calypso_mpi.o m_machine_parameter.o t_read_control_elements.o t_ctl_data_4_view_transfer.o t_control_elements.o t_control_array_real.o t_control_array_real2.o t_control_array_real3.o skip_comment_f.o bcast_control_arrays.o copy_control_elements.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_ctl_data_pvr_colormap_bar.o: $(PVR_DIR)/t_ctl_data_pvr_colormap_bar.f90 m_precision.o calypso_mpi.o m_machine_parameter.o t_read_control_elements.o t_ctl_data_pvr_colormap.o t_ctl_data_pvr_colorbar.o skip_comment_f.o bcast_control_arrays.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_ctl_data_pvr_light.o: $(PVR_DIR)/t_ctl_data_pvr_light.f90 m_precision.o calypso_mpi.o m_machine_parameter.o t_read_control_elements.o t_control_elements.o t_control_array_real3.o skip_comment_f.o bcast_control_arrays.o copy_control_elements.o
+t_ctl_data_pvr_light.o: $(PVR_DIR)/t_ctl_data_pvr_light.f90 m_precision.o calypso_mpi.o m_machine_parameter.o t_read_control_elements.o t_control_elements.o t_control_array_real.o t_control_array_real3.o skip_comment_f.o bcast_control_arrays.o copy_control_elements.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_geometries_in_pvr_screen.o: $(PVR_DIR)/t_geometries_in_pvr_screen.f90 m_precision.o m_constants.o t_geometry_data.o t_surface_data.o
 	$(F90) -c $(F90OPTFLAGS) $<

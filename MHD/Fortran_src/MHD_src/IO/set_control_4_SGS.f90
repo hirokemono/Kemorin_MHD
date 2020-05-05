@@ -261,7 +261,7 @@
       real(kind = kreal) function set_fixed_Csim                        &
      &                          (default, csim_fact_ctl)
 !
-      use t_control_elements
+      use t_control_array_real
 !
       real(kind = kreal), intent(in) :: default
       type(read_real_item), intent(in) :: csim_fact_ctl

@@ -56,7 +56,7 @@ set_org_ele_4_each_bin.o: $(ITP_SRCDIR)/set_org_ele_4_each_bin.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<
 subroutines_4_search_table.o: $(ITP_SRCDIR)/subroutines_4_search_table.f90 m_precision.o m_constants.o t_geometry_data.o m_connect_hexa_2_tetra.o t_ctl_params_4_gen_table.o t_interpolate_coefs_dest.o set_parallel_file_name.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_ctl_data_gen_table.o: $(ITP_SRCDIR)/t_ctl_data_gen_table.f90 m_precision.o m_machine_parameter.o t_read_control_elements.o t_ctl_data_4_platforms.o t_ctl_data_4_fields.o t_ctl_data_4_time_steps.o t_control_elements.o t_control_array_intreal.o skip_comment_f.o
+t_ctl_data_gen_table.o: $(ITP_SRCDIR)/t_ctl_data_gen_table.f90 m_precision.o m_machine_parameter.o t_read_control_elements.o t_ctl_data_4_platforms.o t_ctl_data_4_fields.o t_ctl_data_4_time_steps.o t_control_elements.o t_control_array_real.o t_control_array_intreal.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_ctl_params_4_gen_table.o: $(ITP_SRCDIR)/t_ctl_params_4_gen_table.f90 m_precision.o m_field_file_format.o t_file_IO_parameter.o calypso_mpi.o m_error_IDs.o m_machine_parameter.o m_2nd_pallalel_vector.o m_file_format_switch.o m_default_file_prefix.o t_ctl_data_gen_table.o t_search_block_4_itp.o itp_table_IO_select_4_zlib.o set_control_platform_data.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<

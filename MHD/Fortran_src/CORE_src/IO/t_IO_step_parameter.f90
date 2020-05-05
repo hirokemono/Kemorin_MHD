@@ -111,6 +111,7 @@
      &          istep_ctl, delta_t_ctl, IO_step)
 !
       use t_control_elements
+      use t_control_array_real
 !
       integer(kind = kint), intent(in) :: istep_def
       real(kind = kreal), intent(in) :: dt
@@ -139,6 +140,7 @@
      &          istep_ctl, delta_t_ctl, IO_step)
 !
       use t_control_elements
+      use t_control_array_real
 !
       integer(kind = kint), intent(in) :: istep_def
       real(kind = kreal), intent(in) :: dt_max

@@ -73,6 +73,7 @@
       use t_read_control_elements
       use t_ctl_data_4_view_transfer
       use t_control_elements
+      use t_control_array_real
       use t_control_array_real2
       use t_control_array_real3
       use skip_comment_f

@@ -41,6 +41,7 @@
       use t_control_array_character
       use t_ctl_data_filter_files
       use t_control_elements
+      use t_control_array_real
       use skip_comment_f
 !
       implicit  none

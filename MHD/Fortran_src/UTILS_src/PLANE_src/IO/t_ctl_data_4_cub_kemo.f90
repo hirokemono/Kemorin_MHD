@@ -49,6 +49,7 @@
       use t_ctl_data_filter_files
       use t_ctl_data_4_plane_model
       use t_control_elements
+      use t_control_array_real
 !
       implicit  none
 !
