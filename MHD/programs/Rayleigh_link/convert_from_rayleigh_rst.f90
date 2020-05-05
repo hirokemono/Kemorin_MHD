@@ -76,8 +76,6 @@
         do nd = 1, iflag_ncomp
           i_comp = 2*nd - 1 + new_sph_phys%istack_component(i_fld-1)
 !
-!          call check_rayleigh_restart_reading(file_name(nd), i_comp,   &
-!     &        ra_rst, rayleigh_WK%rayleigh_in)
           call cvt_each_field_from_rayleigh(file_name(nd),              &
      &        i_fld, i_comp, new_sph_mesh,                              &
      &        r_itp, ra_rst, fcheby_WK, rayleigh_WK, new_sph_phys)
@@ -121,8 +119,8 @@
         l = new_sph_mesh%sph%sph_rj%idx_gl_1d_rj_j(j,2)
         m = new_sph_mesh%sph%sph_rj%idx_gl_1d_rj_j(j,3)
         if(l .gt. ra_rst%ltr_org) cycle
-        call read_each_mode_from_rayleigh                               &
-     &     (id_mpi_file, l, m, ra_rst, rayleigh_WK%rayleigh_in)
+        call read_each_mode_from_rayleigh(id_mpi_file, ra_rst, l, m,    &
+     &      rayleigh_WK%rayleigh_in(1,1), rayleigh_WK%rayleigh_in(1,2))
 !
         call rescaling_from_rayleigh                                    &
      &     (l, m, ra_rst%nri_org, rayleigh_WK%rayleigh_in)
