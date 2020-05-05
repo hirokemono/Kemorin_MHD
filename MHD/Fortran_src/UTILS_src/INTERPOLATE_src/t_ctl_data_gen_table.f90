@@ -27,6 +27,7 @@
       use t_ctl_data_4_time_steps
       use t_control_elements
       use t_control_array_real
+      use t_control_array_integer
       use t_control_array_intreal
       use skip_comment_f
 !

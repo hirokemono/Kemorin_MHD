@@ -18,6 +18,7 @@
       use t_ctl_data_4_fields
       use t_ctl_data_4_time_steps
       use t_control_data_vizs
+      use t_control_array_integer
       use t_control_elements
       use skip_comment_f
 !

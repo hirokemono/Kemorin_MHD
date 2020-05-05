@@ -90,6 +90,7 @@
       use t_read_control_elements
       use t_ctl_data_4_view_transfer
       use t_control_elements
+      use t_control_array_integer
       use t_control_array_character
       use t_control_array_chara2real
       use t_ctl_data_pvr_colormap_bar

@@ -17,6 +17,7 @@
       use m_machine_parameter
       use t_read_control_elements
       use t_ctl_data_4_solvers
+      use t_control_array_integer
       use t_control_elements
 !
       implicit  none

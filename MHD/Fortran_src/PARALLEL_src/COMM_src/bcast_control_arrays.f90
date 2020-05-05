@@ -118,6 +118,8 @@
 !
       subroutine bcast_ctl_type_i1(int_item)
 !
+      use t_control_array_integer
+!
       type(read_integer_item), intent(inout) :: int_item
 !
 !

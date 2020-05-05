@@ -50,6 +50,7 @@
       use t_ctl_data_4_plane_model
       use t_control_elements
       use t_control_array_real
+      use t_control_array_integer
 !
       implicit  none
 !

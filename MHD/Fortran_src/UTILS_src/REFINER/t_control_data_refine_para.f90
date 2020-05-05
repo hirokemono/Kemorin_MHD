@@ -11,6 +11,7 @@
       use m_precision
 !
       use t_control_elements
+      use t_control_array_integer
       use t_ctl_data_4_platforms
       use t_control_data_4_refine
       use t_read_control_elements

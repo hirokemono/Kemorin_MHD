@@ -38,6 +38,7 @@
 !
       use m_precision
       use t_control_elements
+      use t_control_array_integer
 !
       implicit  none
 !

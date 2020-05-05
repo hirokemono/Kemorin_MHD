@@ -223,6 +223,7 @@
 !
       use t_ctl_data_4_FEM_mesh
       use t_control_elements
+      use t_control_array_integer
       use t_partitioner_comm_table
       use m_default_file_prefix
 !
