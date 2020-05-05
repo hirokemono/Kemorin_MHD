@@ -64,9 +64,8 @@
 !
 !
       istep_rst = set_IO_step(i_step, rst_step)
-      ierr = check_step_FEM_field_file(my_rank,                         &
-     &                                 istep_rst, Csim_file_IO)
-      if(ierr .gt. 0) then
+      if(check_step_FEM_field_file(my_rank, istep_rst, Csim_file_IO))   &
+     & then
         SGS_param%iflag_rst_sgs_coef_code = 0
         return
       end if

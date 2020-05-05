@@ -7,6 +7,16 @@
 !>@brief  Subroutines to read char-real control arrays
 !!
 !!@verbatim
+!!      subroutine read_charareal_ctl_type(c_buf, label, cr_item)
+!!        type(buffer_for_control), intent(in)  :: c_buf
+!!        type(read_chara_real_item), intent(inout) :: cr_item
+!!      subroutine write_charareal_ctl_type                             &
+!!     &         (id_file, level, label, cr_item)
+!!        type(read_chara_real_item), intent(in) :: cr_item
+!!      subroutine copy_charareal_ctl(org_cr, new_cr)
+!!        type(read_chara_real_item), intent(in) :: org_cr
+!!        type(read_chara_real_item), intent(inout) :: new_cr
+!!
 !!      subroutine alloc_control_array_c_r(array_cr)
 !!      subroutine dealloc_control_array_c_r(array_cr)
 !!      subroutine read_control_array_c_r                               &
@@ -36,6 +46,16 @@
 !
       implicit none
 !
+!>        structure of control item with three characters
+      type read_chara_real_item
+!>        read flag (If item is read iflag = 1)
+        integer(kind = kint) ::  iflag = 0
+!>        array for read character items
+        character(len=kchara) ::  charavalue
+!>        array for read real item
+        real(kind = kreal) ::    realvalue
+      end type read_chara_real_item
+!
 !>  Structure for charactor and real control array 
       type ctl_array_cr
 !>     number of array items
@@ -52,6 +72,65 @@
 !
       contains
 !
+!   --------------------------------------------------------------------
+!
+      subroutine read_charareal_ctl_type(c_buf, label, cr_item)
+!
+      use t_read_control_elements
+!
+      type(buffer_for_control), intent(in)  :: c_buf
+      character(len=kchara), intent(in) :: label
+      type(read_chara_real_item), intent(inout) :: cr_item
+!
+       character(len=kchara) :: tmpchara
+!
+!
+      if(cr_item%iflag.gt.0 .or. c_buf%header_chara.ne.label) return
+!
+      read(c_buf%ctl_buffer,*) tmpchara, cr_item%charavalue,            &
+     &                         cr_item%realvalue
+      if (iflag_debug .gt. 0)  write(*,'(a,a7,a)')                      &
+     &         trim(c_buf%header_chara), ' char: ', cr_item%charavalue
+      if (iflag_debug .gt. 0)  write(*,'(a,a4,1pe23.15)')               &
+     &         trim(c_buf%header_chara), ' vect: ', cr_item%realvalue
+      cr_item%iflag = 1
+!
+      end subroutine read_charareal_ctl_type
+!
+!   --------------------------------------------------------------------
+!
+      subroutine write_charareal_ctl_type                               &
+     &         (id_file, level, label, cr_item)
+!
+      use write_control_elements
+!
+      integer(kind = kint), intent(in) :: id_file, level
+      character(len=kchara), intent(in) :: label
+      type(read_chara_real_item), intent(in) :: cr_item
+!
+!
+      if(cr_item%iflag .eq. 0) return
+!
+      call write_chara_real_ctl_item(id_file, level, label,             &
+     &    cr_item%charavalue, cr_item%realvalue)
+!
+       end subroutine write_charareal_ctl_type
+!
+!   --------------------------------------------------------------------
+!
+      subroutine copy_charareal_ctl(org_cr, new_cr)
+!
+      type(read_chara_real_item), intent(in) :: org_cr
+      type(read_chara_real_item), intent(inout) :: new_cr
+!
+!
+      new_cr%iflag =       org_cr%iflag
+      new_cr%charavalue =  org_cr%charavalue
+      new_cr%realvalue =   org_cr%realvalue
+!
+       end subroutine copy_charareal_ctl
+!
+!   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
       subroutine alloc_control_array_c_r(array_cr)

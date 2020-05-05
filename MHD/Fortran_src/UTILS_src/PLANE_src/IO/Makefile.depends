@@ -26,6 +26,6 @@ set_spectr_file_name.o: $(PLANE_IO_DIR)/set_spectr_file_name.f90 m_precision.o s
 	$(F90) -c $(F90OPTFLAGS) $<
 t_ctl_data_4_cub_kemo.o: $(PLANE_IO_DIR)/t_ctl_data_4_cub_kemo.f90 m_precision.o m_machine_parameter.o t_read_control_elements.o t_ctl_data_4_platforms.o t_ctl_data_filter_files.o t_ctl_data_4_plane_model.o t_control_elements.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_ctl_data_4_plane_model.o: $(PLANE_IO_DIR)/t_ctl_data_4_plane_model.f90 m_precision.o m_machine_parameter.o t_control_elements.o t_control_array_integer3.o t_read_control_elements.o skip_comment_f.o
+t_ctl_data_4_plane_model.o: $(PLANE_IO_DIR)/t_ctl_data_4_plane_model.f90 m_precision.o m_machine_parameter.o t_control_elements.o t_control_array_integer3.o t_control_array_character3.o t_read_control_elements.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
 

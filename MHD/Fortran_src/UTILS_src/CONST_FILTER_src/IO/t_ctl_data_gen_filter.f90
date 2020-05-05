@@ -18,7 +18,7 @@
       use t_read_control_elements
       use t_control_elements
       use t_control_array_charareal
-      use t_control_array_intchrreal
+      use t_control_array_intcharreal
       use t_ctl_data_4_solvers
 !
       implicit  none

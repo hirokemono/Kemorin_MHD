@@ -91,9 +91,8 @@
 !
       if(SGS_param%iflag_dynamic .eq. id_SGS_DYNAMIC_OFF) return
 !
-      ierr                                                              &
-     &   = check_step_FEM_field_file(my_rank, istep_rst, Csim_file_IO)
-      if(ierr .gt. 0) then
+      if(check_step_FEM_field_file(my_rank, istep_rst, Csim_file_IO))   &
+     & then
         SGS_param%iflag_rst_sgs_coef_code = 0
         return
       end if
@@ -108,9 +107,8 @@
       call dealloc_phys_name_IO(Csim_F_IO)
 !
       if (cmt_param%iflag_commute .gt. id_SGS_commute_OFF) then
-        ierr = check_step_FEM_field_file(my_rank, istep_rst,            &
-     &                                   Cdiff_file_IO)
-        if(ierr .gt. 0) then
+        if(check_step_FEM_field_file(my_rank, istep_rst,                &
+     &                               Cdiff_file_IO)) then
           cmt_param%iflag_rst_sgs_comm_code = 0
           return
         end if

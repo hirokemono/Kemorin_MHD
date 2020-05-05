@@ -188,12 +188,11 @@
       type(phys_data), intent(inout) :: nod_fld
       type(flexible_stepping_parameter), intent(inout) :: flex_p
 !
-      integer(kind = kint) :: ierr
       type(field_IO) :: fem_fst_IO
 !
 !
-      ierr = check_step_FEM_field_file(my_rank, istep_rst, fst_file_IO)
-      if(ierr .gt. 0) call calypso_MPI_abort(ierr,'No restart file.')
+      if(check_step_FEM_field_file(my_rank, istep_rst, fst_file_IO))    &
+     &      call calypso_MPI_abort(ierr_file,'No restart file.')
 !
       call sel_read_alloc_step_FEM_file(nprocs, my_rank,                &
      &    istep_rst, fst_file_IO, fem_time_IO, fem_fst_IO)

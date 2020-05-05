@@ -214,6 +214,8 @@
 !
       subroutine bcast_ctl_type_c3(chara3_item)
 !
+      use t_control_array_character3
+!
       type(read_chara3_item), intent(inout) :: chara3_item
 !
 !
@@ -229,6 +231,8 @@
 !   --------------------------------------------------------------------
 !
       subroutine bcast_ctl_type_c_i3(ci3_item)
+!
+      use t_control_array_charaint3
 !
       type(read_chara_int3_item), intent(inout) :: ci3_item
 !
@@ -591,7 +595,7 @@
 !
       subroutine bcast_ctl_array_icr(array_icr)
 !
-      use t_control_array_intchrreal
+      use t_control_array_intcharreal
       use transfer_to_long_integers
 !
       type(ctl_array_icr), intent(inout) :: array_icr

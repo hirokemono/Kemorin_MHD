@@ -8,27 +8,27 @@ set_control_platform_data.o: $(CTL_DIR)/set_control_platform_data.F90 m_precisio
 	$(F90) -c $(F90FLAGS) $<
 set_orders_of_field.o: $(CTL_DIR)/set_orders_of_field.f90 m_precision.o m_geometry_constants.o t_ctl_data_4_fields.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_control_array_chara2real.o: $(CTL_DIR)/t_control_array_chara2real.f90 m_precision.o t_control_elements.o t_read_control_elements.o skip_comment_f.o write_control_elements.o
+t_control_array_chara2real.o: $(CTL_DIR)/t_control_array_chara2real.f90 m_precision.o t_control_elements.o t_read_control_elements.o write_control_elements.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_control_array_character.o: $(CTL_DIR)/t_control_array_character.f90 m_precision.o t_control_elements.o t_read_control_elements.o skip_comment_f.o write_control_elements.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_control_array_character2.o: $(CTL_DIR)/t_control_array_character2.f90 m_precision.o t_control_elements.o t_read_control_elements.o skip_comment_f.o write_control_elements.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_control_array_character3.o: $(CTL_DIR)/t_control_array_character3.f90 m_precision.o t_control_elements.o t_read_control_elements.o skip_comment_f.o write_control_elements.o
+t_control_array_character3.o: $(CTL_DIR)/t_control_array_character3.f90 m_precision.o t_control_elements.o t_read_control_elements.o write_control_elements.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_control_array_charaint.o: $(CTL_DIR)/t_control_array_charaint.f90 m_precision.o t_control_elements.o t_read_control_elements.o skip_comment_f.o write_control_elements.o
+t_control_array_charaint.o: $(CTL_DIR)/t_control_array_charaint.f90 m_precision.o t_control_elements.o t_read_control_elements.o write_control_elements.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_control_array_charaint3.o: $(CTL_DIR)/t_control_array_charaint3.f90 m_precision.o t_control_elements.o t_read_control_elements.o skip_comment_f.o write_control_elements.o
+t_control_array_charaint3.o: $(CTL_DIR)/t_control_array_charaint3.f90 m_precision.o t_control_elements.o t_read_control_elements.o write_control_elements.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_control_array_charareal.o: $(CTL_DIR)/t_control_array_charareal.f90 m_precision.o t_control_elements.o t_read_control_elements.o skip_comment_f.o write_control_elements.o
+t_control_array_charareal.o: $(CTL_DIR)/t_control_array_charareal.f90 m_precision.o t_control_elements.o t_read_control_elements.o write_control_elements.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_control_array_charareal2.o: $(CTL_DIR)/t_control_array_charareal2.f90 m_precision.o t_control_elements.o t_read_control_elements.o skip_comment_f.o write_control_elements.o
+t_control_array_charareal2.o: $(CTL_DIR)/t_control_array_charareal2.f90 m_precision.o t_control_elements.o t_read_control_elements.o write_control_elements.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_control_array_int2real.o: $(CTL_DIR)/t_control_array_int2real.f90 m_precision.o t_control_elements.o t_read_control_elements.o skip_comment_f.o write_control_elements.o
+t_control_array_int2real.o: $(CTL_DIR)/t_control_array_int2real.f90 m_precision.o t_control_elements.o t_read_control_elements.o write_control_elements.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_control_array_int2real2.o: $(CTL_DIR)/t_control_array_int2real2.f90 m_precision.o t_control_elements.o t_read_control_elements.o skip_comment_f.o write_control_elements.o
+t_control_array_int2real2.o: $(CTL_DIR)/t_control_array_int2real2.f90 m_precision.o t_control_elements.o t_read_control_elements.o write_control_elements.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_control_array_intchrreal.o: $(CTL_DIR)/t_control_array_intchrreal.f90 m_precision.o t_control_elements.o t_read_control_elements.o skip_comment_f.o write_control_elements.o
+t_control_array_intcharreal.o: $(CTL_DIR)/t_control_array_intcharreal.f90 m_precision.o t_control_elements.o t_read_control_elements.o write_control_elements.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_control_array_integer.o: $(CTL_DIR)/t_control_array_integer.f90 m_precision.o t_control_elements.o t_read_control_elements.o skip_comment_f.o write_control_elements.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -36,7 +36,7 @@ t_control_array_integer2.o: $(CTL_DIR)/t_control_array_integer2.f90 m_precision.
 	$(F90) -c $(F90OPTFLAGS) $<
 t_control_array_integer3.o: $(CTL_DIR)/t_control_array_integer3.f90 m_precision.o m_machine_parameter.o t_read_control_elements.o write_control_elements.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_control_array_intreal.o: $(CTL_DIR)/t_control_array_intreal.f90 m_precision.o t_control_elements.o t_read_control_elements.o skip_comment_f.o write_control_elements.o
+t_control_array_intreal.o: $(CTL_DIR)/t_control_array_intreal.f90 m_precision.o t_control_elements.o t_read_control_elements.o write_control_elements.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_control_array_real.o: $(CTL_DIR)/t_control_array_real.f90 m_precision.o t_control_elements.o t_read_control_elements.o skip_comment_f.o write_control_elements.o
 	$(F90) -c $(F90OPTFLAGS) $<

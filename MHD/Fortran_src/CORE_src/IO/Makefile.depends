@@ -8,7 +8,7 @@ comm_table_IO.o: $(IO_DIR)/comm_table_IO.f90 m_precision.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
 data_IO_to_textline.o: $(IO_DIR)/data_IO_to_textline.f90 m_precision.o m_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
-delete_data_files.o: $(IO_DIR)/delete_data_files.F90 m_precision.o m_file_format_switch.o set_parallel_file_name.o m_error_IDs.o
+delete_data_files.o: $(IO_DIR)/delete_data_files.F90 m_precision.o m_file_format_switch.o set_parallel_file_name.o
 	$(F90) -c $(F90FLAGS) $<
 domain_data_IO.o: $(IO_DIR)/domain_data_IO.f90 m_precision.o m_constants.o t_comm_table.o field_data_IO.o comm_table_IO.o m_error_IDs.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -140,7 +140,7 @@ t_element_refinement_IO.o: $(IO_DIR)/t_element_refinement_IO.f90 m_precision.o t
 	$(F90) -c $(F90OPTFLAGS) $<
 t_energy_label_parameters.o: $(IO_DIR)/t_energy_label_parameters.f90 m_precision.o m_phys_labels.o t_spheric_parameter.o t_rms_4_sph_spectr.o t_sph_volume_mean_square.o t_base_field_labels.o add_direction_labels.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_field_data_IO.o: $(IO_DIR)/t_field_data_IO.f90 m_precision.o m_constants.o cal_minmax_and_stacks.o
+t_field_data_IO.o: $(IO_DIR)/t_field_data_IO.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_file_IO_parameter.o: $(IO_DIR)/t_file_IO_parameter.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<
