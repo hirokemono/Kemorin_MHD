@@ -206,7 +206,7 @@
       integer(kind = kint) function set_Csim_type(i_default,            &
      &                                            csim_type_ctl)
 !
-      use t_control_elements
+      use t_control_array_character
       use t_SGS_control_parameter
       use skip_comment_f
 !

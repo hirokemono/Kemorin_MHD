@@ -15,7 +15,7 @@
       use t_ctl_data_4_fields
       use t_ctl_data_4_time_steps
       use t_ctl_data_4_plane_model
-      use t_control_elements
+      use t_control_array_character
       use skip_comment_f
 !
       implicit    none

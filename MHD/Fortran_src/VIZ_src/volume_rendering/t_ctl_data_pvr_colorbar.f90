@@ -42,7 +42,7 @@
       use m_machine_parameter
       use t_read_control_elements
       use t_ctl_data_4_view_transfer
-      use t_control_elements
+      use t_control_array_character
       use t_control_array_integer
       use t_control_array_real2
       use skip_comment_f
@@ -173,8 +173,6 @@
 !  ---------------------------------------------------------------------
 !
       subroutine copy_pvr_colorbar_ctl(org_cbar_c, new_cbar_c)
-!
-      use copy_control_elements
 !
       type(pvr_colorbar_ctl), intent(in) :: org_cbar_c
       type(pvr_colorbar_ctl), intent(inout) :: new_cbar_c

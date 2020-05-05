@@ -25,7 +25,7 @@
       use t_ctl_data_4_platforms
       use t_ctl_data_4_fields
       use t_ctl_data_4_time_steps
-      use t_control_elements
+      use t_control_array_character
       use t_control_array_real
       use t_control_array_integer
       use t_control_array_intreal

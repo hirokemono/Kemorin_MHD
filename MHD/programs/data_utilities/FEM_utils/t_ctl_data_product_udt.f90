@@ -16,7 +16,7 @@
       use t_read_control_elements
       use t_ctl_data_4_platforms
       use t_ctl_data_4_time_steps
-      use t_control_elements
+      use t_control_array_character
       use skip_comment_f
 !
 !

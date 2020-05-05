@@ -22,7 +22,6 @@
       use t_ctl_data_4_platforms
       use t_ctl_data_4_fields
       use t_ctl_data_4_time_steps
-      use t_control_elements
       use t_control_array_real
       use t_ctl_data_gen_sph_shell
       use skip_comment_f

@@ -56,7 +56,6 @@
       use m_machine_parameter
       use t_read_control_elements
       use t_control_data_4_psf
-      use t_control_elements
       use t_control_array_real
       use t_control_array_character
       use t_control_array_chara2real
@@ -327,8 +326,6 @@
 !  ---------------------------------------------------------------------
 !
       subroutine dup_pvr_section_ctl(org_pvr_sect_c, new_pvr_sect_c)
-!
-      use copy_control_elements
 !
       type(pvr_section_ctl), intent(in) :: org_pvr_sect_c
       type(pvr_section_ctl), intent(inout) :: new_pvr_sect_c

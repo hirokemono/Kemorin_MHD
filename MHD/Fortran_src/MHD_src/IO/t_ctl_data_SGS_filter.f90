@@ -86,7 +86,7 @@
       use m_machine_parameter
       use skip_comment_f
       use t_read_control_elements
-      use t_control_elements
+      use t_control_array_character
       use t_control_array_real
       use t_control_array_integer
       use t_control_array_character
@@ -175,8 +175,6 @@
 !   --------------------------------------------------------------------
 !
       subroutine copy_control_4_SGS_filter(org_sphf_c, new_sphf_c)
-!
-      use copy_control_elements
 !
       type(sph_filter_ctl_type), intent(in) :: org_sphf_c
       type(sph_filter_ctl_type), intent(inout) :: new_sphf_c

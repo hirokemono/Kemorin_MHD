@@ -72,7 +72,7 @@
       use m_machine_parameter
       use t_read_control_elements
       use t_ctl_data_4_view_transfer
-      use t_control_elements
+      use t_control_array_character
       use t_control_array_real
       use t_control_array_real2
       use t_control_array_real3
@@ -284,8 +284,6 @@
 !  ---------------------------------------------------------------------
 !
       subroutine dup_pvr_colordef_ctl(org_color, new_color)
-!
-      use copy_control_elements
 !
       type(pvr_colormap_ctl), intent(in) :: org_color
       type(pvr_colormap_ctl), intent(inout) :: new_color

@@ -88,7 +88,6 @@
       use m_precision
       use m_constants
       use calypso_mpi
-      use t_control_elements
 !
       implicit none
 !
@@ -135,6 +134,8 @@
 !   --------------------------------------------------------------------
 !
       subroutine bcast_ctl_type_c1(chara_item)
+!
+      use t_control_array_character
 !
       type(read_character_item), intent(inout) :: chara_item
 !

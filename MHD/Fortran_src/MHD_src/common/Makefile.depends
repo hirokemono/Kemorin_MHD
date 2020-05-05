@@ -84,7 +84,7 @@ t_normalize_parameter.o: $(MHD_COMMON_DIR)/t_normalize_parameter.f90 m_precision
 	$(F90) -c $(F90OPTFLAGS) $<
 t_physical_property.o: $(MHD_COMMON_DIR)/t_physical_property.f90 m_precision.o m_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_reference_scalar_param.o: $(MHD_COMMON_DIR)/t_reference_scalar_param.f90 m_precision.o m_error_IDs.o m_machine_parameter.o calypso_mpi.o t_ctl_data_temp_model.o t_control_elements.o
+t_reference_scalar_param.o: $(MHD_COMMON_DIR)/t_reference_scalar_param.f90 m_precision.o m_error_IDs.o m_machine_parameter.o calypso_mpi.o t_ctl_data_temp_model.o t_control_array_character.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_work_4_MHD_layering.o: $(MHD_COMMON_DIR)/t_work_4_MHD_layering.f90 m_precision.o m_machine_parameter.o
 	$(F90) -c $(F90OPTFLAGS) $<

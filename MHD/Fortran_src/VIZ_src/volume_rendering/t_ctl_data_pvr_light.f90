@@ -44,7 +44,6 @@
 !
       use m_machine_parameter
       use t_read_control_elements
-      use t_control_elements
       use t_control_array_real
       use t_control_array_real3
       use skip_comment_f
@@ -161,8 +160,6 @@
 !  ---------------------------------------------------------------------
 !
       subroutine dup_lighting_ctl(org_light, new_light)
-!
-      use copy_control_elements
 !
       type(pvr_light_ctl), intent(in) :: org_light
       type(pvr_light_ctl), intent(inout) :: new_light

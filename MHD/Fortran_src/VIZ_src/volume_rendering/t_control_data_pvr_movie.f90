@@ -36,7 +36,7 @@
       use m_machine_parameter
       use t_read_control_elements
       use t_control_data_4_psf
-      use t_control_elements
+      use t_control_array_character
       use t_control_array_integer
       use skip_comment_f
 !
@@ -93,8 +93,6 @@
 !  ---------------------------------------------------------------------
 !
       subroutine dup_pvr_movie_control_flags(org_movie, new_movie)
-!
-      use copy_control_elements
 !
       type(pvr_movie_ctl), intent(in) :: org_movie
       type(pvr_movie_ctl), intent(inout) :: new_movie

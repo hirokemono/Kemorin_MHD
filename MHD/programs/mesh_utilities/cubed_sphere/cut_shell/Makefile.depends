@@ -18,6 +18,6 @@ set_cutshell_node_grp.o: $(CUTSHELL_DIR)/set_cutshell_node_grp.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<
 set_cutshell_surf_grp.o: $(CUTSHELL_DIR)/set_cutshell_surf_grp.f90 m_precision.o m_cutshell_nod_ele_flag.o t_mesh_data.o t_group_data.o m_geometry_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_control_data_4_cutshell.o: $(CUTSHELL_DIR)/t_control_data_4_cutshell.f90 m_precision.o t_control_elements.o t_read_control_elements.o skip_comment_f.o
+t_control_data_4_cutshell.o: $(CUTSHELL_DIR)/t_control_data_4_cutshell.f90 m_precision.o t_control_array_character.o t_read_control_elements.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
 

@@ -49,6 +49,7 @@
       use t_SGS_control_parameter
       use t_ctl_data_SGS_filter
       use t_ctl_data_filter_files
+      use t_control_array_character
       use SPH_SGS_ini_model_coefs_IO
       use set_control_ele_layering
       use skip_comment_f
@@ -226,7 +227,7 @@
 !
       function filter_area_4_each_field(each_filter_ctl)
 !
-      use t_control_elements
+      use t_control_array_character
       use skip_comment_f
 !
       type(read_character_item), intent(in) :: each_filter_ctl

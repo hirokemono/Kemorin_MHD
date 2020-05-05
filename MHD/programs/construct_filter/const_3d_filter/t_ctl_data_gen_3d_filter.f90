@@ -19,7 +19,6 @@
       use t_ctl_data_gen_filter
       use t_ctl_data_4_platforms
       use t_ctl_data_filter_files
-      use t_control_elements
       use skip_comment_f
 !
       implicit  none

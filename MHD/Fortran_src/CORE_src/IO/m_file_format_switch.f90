@@ -252,7 +252,7 @@
 !
       integer(kind= kint) function choose_file_format(file_fmt)
 !
-      use t_control_elements
+      use t_control_array_character
 !
       type(read_character_item), intent(in) :: file_fmt
 !
@@ -266,7 +266,7 @@
 !
       integer(kind= kint) function choose_para_file_format(file_fmt)
 !
-      use t_control_elements
+      use t_control_array_character
 !
       type(read_character_item), intent(in) :: file_fmt
 !

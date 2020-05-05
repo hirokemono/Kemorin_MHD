@@ -77,7 +77,7 @@
       use m_constants
       use m_machine_parameter
       use skip_comment_f
-      use t_control_elements
+      use t_control_array_character
       use t_control_array_real
       use t_control_array_integer
       use t_control_array_character

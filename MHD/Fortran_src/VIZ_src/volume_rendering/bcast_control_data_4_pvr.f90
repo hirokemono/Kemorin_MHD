@@ -102,7 +102,6 @@
 !
       subroutine dup_pvr_ctl(org_pvr, new_pvr)
 !
-      use copy_control_elements
       use bcast_dup_view_transfer_ctl
 !
       type(pvr_parameter_ctl), intent(in) :: org_pvr
@@ -148,8 +147,6 @@
 !  ---------------------------------------------------------------------
 !
       subroutine copy_pvr_update_flag(org_pvr, new_pvr)
-!
-      use copy_control_elements
 !
       type(pvr_parameter_ctl), intent(in) :: org_pvr
       type(pvr_parameter_ctl), intent(inout) :: new_pvr

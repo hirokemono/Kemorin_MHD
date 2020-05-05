@@ -226,7 +226,6 @@
       subroutine set_delete_flag_4_assemble(assemble_plt, asbl_param)
 !
       use t_ctl_data_4_platforms
-      use t_control_elements
       use skip_comment_f
 !
       type(platform_data_control), intent(in) :: assemble_plt

@@ -94,7 +94,7 @@
 !
       use m_precision
       use m_machine_parameter
-      use t_control_elements
+      use t_control_array_character
       use t_control_array_integer
 !
       implicit  none

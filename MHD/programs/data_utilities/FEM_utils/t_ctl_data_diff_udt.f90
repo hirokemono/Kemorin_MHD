@@ -19,7 +19,7 @@
       use t_ctl_data_4_time_steps
       use t_ctl_data_ele_layering
       use t_ctl_data_4_fem_int_pts
-      use t_control_elements
+      use t_control_array_character
       use calypso_mpi
       use skip_comment_f
 !

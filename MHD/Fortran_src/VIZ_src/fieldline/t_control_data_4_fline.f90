@@ -71,7 +71,6 @@
       use t_control_array_character
       use t_control_array_integer2
       use t_control_array_real3
-      use t_control_elements
       use skip_comment_f
       use calypso_mpi
 !
@@ -296,8 +295,6 @@
 !  ---------------------------------------------------------------------
 !
       subroutine dup_control_4_fline(org_fln, new_fln)
-!
-      use copy_control_elements
 !
       type(fline_ctl), intent(in) :: org_fln
       type(fline_ctl), intent(inout) :: new_fln

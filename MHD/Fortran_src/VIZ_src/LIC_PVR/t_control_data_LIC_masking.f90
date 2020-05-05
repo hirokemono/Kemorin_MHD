@@ -46,7 +46,7 @@
 !
       use m_machine_parameter
       use t_read_control_elements
-      use t_control_elements
+      use t_control_array_character
       use t_control_array_real2
       use skip_comment_f
 !
@@ -174,10 +174,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-!
       subroutine dup_lic_masking_ctl_data(org_mask_c, new_mask_c)
-!
-      use copy_control_elements
 !
       type(lic_masking_ctl), intent(in) :: org_mask_c
       type(lic_masking_ctl), intent(inout) :: new_mask_c

@@ -31,6 +31,7 @@
      &          cor_ucd_param, ref_ucd_param, ist, ied, iint)
 !
       use m_default_file_prefix
+      use t_control_array_character
       use t_ctl_data_plane_correlate
       use t_file_IO_parameter
       use set_control_platform_data

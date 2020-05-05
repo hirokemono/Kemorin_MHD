@@ -83,7 +83,7 @@
 !
       use m_machine_parameter
       use t_read_control_elements
-      use t_control_elements
+      use t_control_array_character
       use t_control_array_real
       use t_control_array_integer
       use t_control_data_LIC_masking
@@ -390,8 +390,6 @@
 !  ---------------------------------------------------------------------
 !
       subroutine dup_lic_control_data(org_lic_c, new_lic_c)
-!
-      use copy_control_elements
 !
       type(lic_parameter_ctl), intent(in) :: org_lic_c
       type(lic_parameter_ctl), intent(inout) :: new_lic_c

@@ -48,7 +48,7 @@
       use t_ctl_data_4_platforms
       use t_ctl_data_filter_files
       use t_ctl_data_4_plane_model
-      use t_control_elements
+      use t_control_array_character
       use t_control_array_real
       use t_control_array_integer
 !

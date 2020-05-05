@@ -42,7 +42,7 @@
       module t_control_array_real
 !
       use m_precision
-      use t_control_elements
+      use m_machine_parameter
 !
       implicit none
 !

@@ -45,7 +45,7 @@
       module t_control_array_integer2
 !
       use m_precision
-      use t_control_elements
+      use m_machine_parameter
 !
       implicit none
 !

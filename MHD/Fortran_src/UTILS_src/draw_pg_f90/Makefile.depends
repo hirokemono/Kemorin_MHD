@@ -36,6 +36,6 @@ set_zplane_sph_vect_pg.o: $(KEMO_PGDIR)/set_zplane_sph_vect_pg.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<
 set_zplane_xyz_vect_pg.o: $(KEMO_PGDIR)/set_zplane_xyz_vect_pg.f90 m_precision.o m_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_ctl_data_plot_pg.o: $(KEMO_PGDIR)/t_ctl_data_plot_pg.f90 m_precision.o m_machine_parameter.o t_read_control_elements.o t_ctl_data_4_time_steps.o t_control_elements.o t_control_array_integer.o t_control_array_real.o t_control_array_real2.o t_control_array_character3.o t_control_array_int2real.o t_control_array_int2real2.o skip_comment_f.o
+t_ctl_data_plot_pg.o: $(KEMO_PGDIR)/t_ctl_data_plot_pg.f90 m_precision.o m_machine_parameter.o t_read_control_elements.o t_ctl_data_4_time_steps.o t_control_array_character.o t_control_array_integer.o t_control_array_real.o t_control_array_real2.o t_control_array_character3.o t_control_array_int2real.o t_control_array_int2real2.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
 

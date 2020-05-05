@@ -150,7 +150,6 @@
       subroutine dup_view_matrix_ctl(org_mat, new_mat)
 !
       use t_control_array_real
-      use copy_control_elements
 !
       type(modeview_ctl), intent(in) :: org_mat
       type(modeview_ctl), intent(inout) :: new_mat
@@ -187,7 +186,6 @@
       subroutine copy_projection_mat_ctl(org_mat, new_mat)
 !
       use t_control_array_real
-      use copy_control_elements
 !
       type(modeview_ctl), intent(in) :: org_mat
       type(modeview_ctl), intent(inout) :: new_mat
@@ -210,8 +208,6 @@
 !
       subroutine copy_image_size_ctl(org_mat, new_mat)
 !
-      use copy_control_elements
-!
       type(modeview_ctl), intent(in) :: org_mat
       type(modeview_ctl), intent(inout) :: new_mat
 !
@@ -230,7 +226,6 @@
       subroutine copy_stereo_view_ctl(org_mat, new_mat)
 !
       use t_control_array_real
-      use copy_control_elements
 !
       type(modeview_ctl), intent(in) :: org_mat
       type(modeview_ctl), intent(inout) :: new_mat

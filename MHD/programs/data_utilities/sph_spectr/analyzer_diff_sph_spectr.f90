@@ -39,7 +39,6 @@
       use m_precision
       use calypso_mpi
 !
-      use t_control_elements
       use t_field_data_IO
       use t_ctl_data_sph_data_utils
       use t_ctl_param_sph_data_utils

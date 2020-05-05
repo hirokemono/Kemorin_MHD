@@ -22,6 +22,7 @@
 !!      subroutine read_control_array_c_i                               &
 !!     &         (id_control, label, array_ci, c_buf)
 !!        type(ctl_array_ci), intent(inout) :: array_ci
+!!        type(buffer_for_control), intent(in)  :: c_buf
 !!      subroutine write_control_array_c_i                              &
 !!     &         (id_control, level, label, array_ci)
 !!        type(ctl_array_ci), intent(in) :: array_ci
@@ -41,7 +42,7 @@
       module t_control_array_charaint
 !
       use m_precision
-      use t_control_elements
+      use m_machine_parameter
 !
       implicit none
 !

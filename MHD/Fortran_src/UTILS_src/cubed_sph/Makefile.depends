@@ -80,7 +80,7 @@ set_surface_rods_sphere.o: $(CUBED_SPH_DIR)/set_surface_rods_sphere.f90 m_precis
 	$(F90) -c $(F90OPTFLAGS) $<
 square_circ_center_connect.o: $(CUBED_SPH_DIR)/square_circ_center_connect.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_control_data_cubed_sph.o: $(CUBED_SPH_DIR)/t_control_data_cubed_sph.f90 m_precision.o skip_comment_f.o t_read_control_elements.o t_control_elements.o t_control_array_integer.o t_control_array_charaint.o t_control_array_integer2.o t_control_array_intreal.o
+t_control_data_cubed_sph.o: $(CUBED_SPH_DIR)/t_control_data_cubed_sph.f90 m_precision.o skip_comment_f.o t_read_control_elements.o t_control_array_character.o t_control_array_integer.o t_control_array_charaint.o t_control_array_integer2.o t_control_array_intreal.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_cubed_sph_grp_param.o: $(CUBED_SPH_DIR)/t_cubed_sph_grp_param.f90 m_precision.o t_group_data.o t_control_data_cubed_sph.o t_control_array_integer.o t_control_array_charaint.o set_cubed_sph_nod_group_ctl.o set_cubed_sph_ele_group_ctl.o set_cubed_sph_sf_group_ctl.o
 	$(F90) -c $(F90OPTFLAGS) $<

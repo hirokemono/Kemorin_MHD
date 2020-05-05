@@ -211,7 +211,6 @@
       subroutine set_implicit_coefs                                     &
      &         (coef_imp_ctl, iflag_scheme, coef_imp, coef_exp)
 !
-      use t_control_elements
       use t_control_array_real
 !
       type(read_real_item), intent(in) :: coef_imp_ctl

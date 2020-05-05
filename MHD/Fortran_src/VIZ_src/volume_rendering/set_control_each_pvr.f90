@@ -82,6 +82,7 @@
       subroutine set_control_field_4_pvr(field_ctl, comp_ctl,           &
      &          num_nod_phys, phys_nod_name, fld_param, icheck_ncomp)
 !
+      use t_control_array_character
       use t_control_params_4_pvr
 !
       integer(kind = kint), intent(in) :: num_nod_phys

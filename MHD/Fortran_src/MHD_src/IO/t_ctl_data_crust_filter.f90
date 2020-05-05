@@ -29,7 +29,6 @@
 !
       use m_machine_parameter
       use calypso_mpi
-      use t_control_elements
       use t_control_array_integer
       use t_control_data_sections
 !

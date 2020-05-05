@@ -42,7 +42,6 @@
 !
       use m_machine_parameter
       use t_read_control_elements
-      use t_control_elements
       use t_control_array_character
       use t_control_array_chara2real
       use skip_comment_f
@@ -99,8 +98,6 @@
 !  ---------------------------------------------------------------------
 !
       subroutine dup_pvr_render_area_ctl(org_rarea_c, new_rarea_c)
-!
-      use copy_control_elements
 !
       type(pvr_render_area_ctl), intent(in) :: org_rarea_c
       type(pvr_render_area_ctl), intent(inout) :: new_rarea_c

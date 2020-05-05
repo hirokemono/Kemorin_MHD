@@ -41,7 +41,7 @@
 !
       use m_machine_parameter
       use t_read_control_elements
-      use t_control_elements
+      use t_control_array_character
       use t_control_array_real
       use skip_comment_f
 !
@@ -324,8 +324,6 @@
 !  ---------------------------------------------------------------------
 !
       subroutine dup_pvr_isosurface_ctl(org_pvr_iso_c, new_pvr_iso_c)
-!
-      use copy_control_elements
 !
       type(pvr_isosurf_ctl), intent(in) :: org_pvr_iso_c
       type(pvr_isosurf_ctl), intent(inout) :: new_pvr_iso_c

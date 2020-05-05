@@ -22,6 +22,7 @@
 !!      subroutine read_control_array_r3                                &
 !!     &         (id_control, label, array_r3, c_buf)
 !!        type(ctl_array_r3), intent(inout) :: array_r3
+!!        type(buffer_for_control), intent(in)  :: c_buf
 !!      subroutine write_control_array_r3                               &
 !!     &         (id_control, level, label, array_r3)
 !!        type(ctl_array_r3), intent(in) :: array_r3
@@ -44,7 +45,7 @@
       module t_control_array_real3
 !
       use m_precision
-      use t_control_elements
+      use m_machine_parameter
 !
       implicit none
 !

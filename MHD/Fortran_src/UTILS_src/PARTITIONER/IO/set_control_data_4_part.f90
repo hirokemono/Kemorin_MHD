@@ -222,7 +222,7 @@
      &          comm_part, part_p)
 !
       use t_ctl_data_4_FEM_mesh
-      use t_control_elements
+      use t_control_array_character
       use t_control_array_integer
       use t_partitioner_comm_table
       use m_default_file_prefix
@@ -279,7 +279,7 @@
       subroutine set_partition_method(part_method_ctl,                  &
      &          new_part_method_ctl, selective_ghost_ctl, part_p)
 !
-      use t_control_elements
+      use t_control_array_character
       use skip_comment_f
 !
       type(read_character_item), intent(in) :: part_method_ctl
@@ -526,7 +526,6 @@
 !
       use t_control_array_character
       use t_control_array_charaint
-      use t_control_elements
       use skip_comment_f
 !
       type(ctl_array_ci), intent(in) :: ndomain_section_ctl
