@@ -8,6 +8,7 @@ TARGET_FEM_MESH_RAYLEIGH =  make_rayleigh_mesh
 TARGET_CVT_RAYLEIGH_SPH =   convert_rayleigh_sph
 TARGET_CVT_RAYLEIGH_FLD =   convert_rayleigh_field
 TARGET_RAYLEIGH_VIZ =       viz_rayleigh
+TARGET_PICK_RAYLEIGH_SPH =  pickup_rayleigh_spectr
 
 LIB_FILES_RAYLEIGH_LINK = \
 '$$(LIB_VIZ_FILE)'    \
@@ -47,8 +48,8 @@ analyzer_rayleigh_cvt_sph.o \
 \
 t_convert_from_rayleigh.o \
 t_rayleigh_restart_IO.o \
-sel_read_rayleigh_restart.o \
 rayleigh_restart_IO.o \
+rayleigh99_rst_param_IO.o \
 MPI_read_rayleigh_restart.o \
 convert_from_rayleigh_rst.o
 
@@ -73,7 +74,17 @@ main_visualize_rayleigh.o \
 analyzer_viz_rayleigh.o \
 FEM_analyzer_viz_rayleigh.o
 
-
+MOD_PICK_RAYLEIGH_SPH = \
+main_pickup_rayleigh_spectr.o \
+\
+t_ctl_pick_rayleigh_spectr.o \
+t_picked_rayleigh_parameter.o \
+t_picked_rayleigh_spectr.o \
+\
+t_rayleigh_restart_IO.o \
+rayleigh_restart_IO.o \
+rayleigh99_rst_param_IO.o \
+MPI_read_rayleigh_restart.o
 
 #
 #  -------------------------------------------------------------------------
@@ -88,12 +99,14 @@ target_list:
 	@echo 'TARGET_CVT_RAYLEIGH_SPH = $$(BUILDDIR)/$(TARGET_CVT_RAYLEIGH_SPH)' >> $(MAKENAME)
 	@echo 'TARGET_CVT_RAYLEIGH_FLD = $$(BUILDDIR)/$(TARGET_CVT_RAYLEIGH_FLD)' >> $(MAKENAME)
 	@echo 'TARGET_RAYLEIGH_VIZ = $$(BUILDDIR)/$(TARGET_RAYLEIGH_VIZ)' >> $(MAKENAME)
+	@echo 'TARGET_PICK_RAYLEIGH_SPH = $$(BUILDDIR)/$(TARGET_PICK_RAYLEIGH_SPH)' >> $(MAKENAME)
 	@echo >> $(MAKENAME)
 
 target_task:
 	@echo rayleigh_link: \
 	'$$(TARGET_CVT_RAYLEIGH_SPH) $$(TARGET_CVT_RAYLEIGH_FLD)' \
 	'$$(TARGET_FEM_MESH_RAYLEIGH)  $$(TARGET_RAYLEIGH_VIZ)' \
+	'$$(TARGET_PICK_RAYLEIGH_SPH)' \
 	>> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_FEM_MESH_RAYLEIGH)': '$$(MOD_FEM_MESH_RAYLEIGH)' \
@@ -125,6 +138,13 @@ target_task:
 	'-L. $$(LIBS_RAYLEIGH_LINK)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
+	@echo '$$(TARGET_PICK_RAYLEIGH_SPH)': '$$(MOD_PICK_RAYLEIGH_SPH)' \
+	'$$(LIB_FILES_RAYLEIGH_LINK)' \
+	>> $(MAKENAME)
+	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_PICK_RAYLEIGH_SPH)' '$$(MOD_PICK_RAYLEIGH_SPH)' \
+	'-L. $$(LIBS_RAYLEIGH_LINK)' \
+	'$$(F90LIBS)' >> $(MAKENAME)
+	@echo '' >> $(MAKENAME)
 
 
 
@@ -144,6 +164,8 @@ mod_list:
 	@echo  $(MOD_CVT_RAYLEIGH_FLD)   >> $(MAKENAME)
 	@echo  MOD_RAYLEIGH_VIZ=  \\ >> $(MAKENAME)
 	@echo  $(MOD_RAYLEIGH_VIZ)   >> $(MAKENAME)
+	@echo  MOD_PICK_RAYLEIGH_SPH=  \\ >> $(MAKENAME)
+	@echo  $(MOD_PICK_RAYLEIGH_SPH)   >> $(MAKENAME)
 	@echo  '#' >> $(MAKENAME)
 
 

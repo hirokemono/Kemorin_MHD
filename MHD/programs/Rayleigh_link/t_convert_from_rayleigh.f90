@@ -153,7 +153,7 @@
       subroutine init_rayleigh_restart_params                           &
      &         (istep_start, org_fld_file, ra_rst)
 !
-      use sel_read_rayleigh_restart
+      use rayleigh_restart_IO
       use MPI_read_rayleigh_restart
 !
       integer(kind = kint), intent(in) :: istep_start

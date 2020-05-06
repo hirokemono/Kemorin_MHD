@@ -197,6 +197,8 @@ MOD_T_AVE_NUSSELT = \
 t_average_nusselt.o
 
 MOD_SPH_ENE_CHECK = \
+m_precision.o \
+skip_comment_f.o \
 compare_sph_mean_square.o
 
 #

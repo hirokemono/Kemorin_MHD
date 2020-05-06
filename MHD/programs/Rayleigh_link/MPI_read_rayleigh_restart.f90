@@ -156,9 +156,8 @@
      &  :: read_fld(ra_rst%nri_org,0:ra_rst%ltr_org*(ra_rst%ltr_org+2))
 !
       integer ::  id_mpi_file
-      integer(kind = MPI_OFFSET_KIND) :: ioffset1, ioffset2
 !
-      integer(kind = kint) :: k, l, m, j1, j2
+      integer(kind = kint) :: l, m, j1, j2
       integer(kind = kint_gl), parameter :: ione64 = 1
       real(kind = kreal) :: field_im(ra_rst%nri_org)
 !

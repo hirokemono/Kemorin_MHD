@@ -7,19 +7,30 @@
 !>@brief  Set file extension
 !!
 !!@verbatim
+!!      character(len = kchara) function sel_rayleigh_file_name         &
+!!     &                               (i_version, dir, int_id, postfix)
+!!      subroutine sel_read_rayleigh_rst_params(dir, i_step, ra_rst)
+!!        type(rayleigh_restart), intent(inout) :: ra_rst
+!!          Version 0.99: "[dir]/[int_id]_[field_flag]"
+!!          Version 1.x:  "[dir]/[int_id]/[field_flag]"
+!!
 !!      subroutine init_rayleigh_restart_input                          &
 !!     &         (i_version, dir, i_step, fld_IO)
 !!        type(field_IO), intent(inout) :: fld_IO
-!!      subroutine find_rayleigh_restart_address                        &
-!!     &          (nri, ltr, kr, l, m, ioffset1, ioffset2)
+!!      subroutine set_rayleigh_rst_file_name(i_version, dir, i_step,   &
+!!     &          field_name, iflag_ncomp, file_name)
 !!@endverbatim
 !
       module rayleigh_restart_IO
 !
       use m_precision
       use m_constants
+!
       use t_field_data_IO
       use t_rayleigh_restart_IO
+      use t_base_field_labels
+      use t_explicit_term_labels
+!
       use set_parallel_file_name
 !
       implicit  none
@@ -31,6 +42,48 @@
 !
       contains
 !
+!-----------------------------------------------------------------------
+!
+      character(len = kchara) function sel_rayleigh_file_name           &
+     &                               (i_version, dir, int_id, postfix)
+!
+      use rayleigh99_rst_param_IO
+!
+      integer(kind = kint), intent(in) :: i_version, int_id
+      character(len=kchara), intent(in) :: dir, postfix
+!
+!
+      if(i_version .lt. 1) then
+        sel_rayleigh_file_name                                          &
+     &      = set_rayleigh99_file_name(dir, int_id, postfix)
+      else
+        sel_rayleigh_file_name                                          &
+     &      = set_rayleigh_file_name(dir, int_id, postfix)
+      end if
+!
+      end function sel_rayleigh_file_name
+!
+!-----------------------------------------------------------------------
+!
+      subroutine sel_read_rayleigh_rst_params(dir, i_step, ra_rst)
+!
+      use rayleigh99_rst_param_IO
+!
+      integer(kind = kint), intent(in) :: i_step
+      character(len = kchara), intent(in) :: dir
+!
+      type(rayleigh_restart), intent(inout) :: ra_rst
+!
+!
+      if(ra_rst%i_version .lt. 1) then
+        call read_rayleigh99_restart_params(dir, i_step, ra_rst)
+      else
+        call read_rayleigh_restart_params(dir, i_step, ra_rst)
+      end if
+!
+      end subroutine sel_read_rayleigh_rst_params
+!
+!-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
       subroutine init_rayleigh_restart_input                            &
@@ -69,11 +122,28 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
+      logical function check_raylegh_rst_field                          &
+     &                (i_version, dir, i_step, sclchar)
+!
+      use delete_data_files
+!
+      integer(kind = kint), intent(in) :: i_version, i_step
+      character(len = kchara), intent(in) :: dir
+      character(len = kchara), intent(in) :: sclchar
+!
+      character(len = kchara) :: file1
+!
+!
+      file1 = sel_rayleigh_file_name(i_version, dir, i_step, sclchar)
+      check_raylegh_rst_field = check_file_exist(file1)
+!
+      end function check_raylegh_rst_field
+!
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
       subroutine set_rayleigh_restart_field                             &
      &         (i_version, dir, i_step, fld_IO)
-!
-      use t_base_field_labels
-      use t_explicit_term_labels
 !
       integer(kind = kint), intent(in) :: i_version, i_step
       character(len = kchara), intent(in) :: dir
@@ -114,25 +184,61 @@
       end subroutine set_rayleigh_restart_field
 !
 !-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
 !
-      logical function check_raylegh_rst_field                          &
-     &                (i_version, dir, i_step, sclchar)
-!
-      use delete_data_files
-      use sel_read_rayleigh_restart
+      subroutine set_rayleigh_rst_file_name(i_version, dir, i_step,     &
+     &          field_name, iflag_ncomp, file_name)
 !
       integer(kind = kint), intent(in) :: i_version, i_step
       character(len = kchara), intent(in) :: dir
-      character(len = kchara), intent(in) :: sclchar
+      character(len = kchara), intent(in) :: field_name
 !
-      character(len = kchara) :: file1
+      integer(kind = kint), intent(inout) :: iflag_ncomp
+      character(len = kchara), intent(inout) :: file_name(2)
 !
+      if(field_name .eq. velocity%name) then
+        iflag_ncomp = 2
+        file_name(1) =  sel_rayleigh_file_name(i_version, dir, i_step,  &
+     &                                         wchar)
+        file_name(2) =  sel_rayleigh_file_name(i_version, dir, i_step,  &
+     &                                         zchar)
+      else if(field_name .eq. pressure%name) then
+        iflag_ncomp = 1
+        file_name(1) =  sel_rayleigh_file_name(i_version, dir, i_step,  &
+     &                                         pchar)
+      else if(field_name .eq. temperature%name) then
+        iflag_ncomp = 1
+        file_name(1) =  sel_rayleigh_file_name(i_version, dir, i_step,  &
+     &                                         tchar)
+      else if(field_name .eq. magnetic_field%name) then
+        iflag_ncomp = 2
+        file_name(1) =  sel_rayleigh_file_name(i_version, dir, i_step,  &
+     &                                         cchar)
+        file_name(2) =  sel_rayleigh_file_name(i_version, dir, i_step,  &
+     &                                         achar)
 !
-      file1 = sel_rayleigh_file_name(i_version, dir, i_step, sclchar)
-      check_raylegh_rst_field = check_file_exist(file1)
+      else if(field_name .eq. previous_momentum%name) then
+        iflag_ncomp = 2
+        file_name(1) =  sel_rayleigh_file_name(i_version, dir, i_step,  &
+     &                                         wabchar)
+        file_name(2) =  sel_rayleigh_file_name(i_version, dir, i_step,  &
+     &                                         zabchar)
+!      else if(field_name .eq. previous_pressure%name) then
+!        iflag_ncomp = 1
+!        file_name(1) =  sel_rayleigh_file_name(i_version, dir, i_step, &
+!     &                                         cchar)
+      else if(field_name .eq. previous_heat%name) then
+        iflag_ncomp = 1
+        file_name(1) =  sel_rayleigh_file_name(i_version, dir, i_step,  &
+     &                                         tabchar)
+      else if(field_name .eq. previous_induction%name) then
+        iflag_ncomp = 2
+        file_name(1) =  sel_rayleigh_file_name(i_version, dir, i_step,  &
+     &                                         cabchar)
+        file_name(2) =  sel_rayleigh_file_name(i_version, dir, i_step,  &
+     &                                         aabchar)
+      end if
 !
-      end function check_raylegh_rst_field
+      end subroutine set_rayleigh_rst_file_name
 !
 !-----------------------------------------------------------------------
 !

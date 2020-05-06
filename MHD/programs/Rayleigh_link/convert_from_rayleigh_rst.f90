@@ -42,7 +42,7 @@
       subroutine convert_fields_from_rayleigh(istep, org_fld_file,      &
      &          new_sph_mesh, r_itp, ra_rst, new_sph_phys)
 !
-      use sel_read_rayleigh_restart
+      use rayleigh_restart_IO
 !      use MPI_read_rayleigh_restart
 !
       integer(kind = kint), intent(in) :: istep

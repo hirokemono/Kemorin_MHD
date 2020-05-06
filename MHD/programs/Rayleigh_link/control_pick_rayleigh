@@ -1,0 +1,12 @@
+begin pickup_spectr_ctl
+  Rayleigh_checkpoint_dir      'Checkpoints'
+  time_step_ctl                 200
+  Rayleigh_version             1   0
+!
+  picked_data_file_name           'picked_spectr'
+  array pick_sph_spectr_ctl
+    pick_sph_spectr_ctl   1   0
+    pick_sph_spectr_ctl   0   0
+    pick_sph_spectr_ctl   5   4
+  end array pick_sph_spectr_ctl
+end pickup_spectr_ctl

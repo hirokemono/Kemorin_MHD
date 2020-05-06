@@ -64,6 +64,7 @@
       use field_IO_select
       use share_spectr_index_data
       use count_nnod_4_asseble_sph
+      use rayleigh_restart_IO
 !
       use share_field_data
 !
