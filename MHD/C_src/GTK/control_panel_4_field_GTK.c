@@ -87,10 +87,10 @@ static void transfer_model_data(int iflag_if_add, struct all_field_ctl_z **all_f
 		/* Update control data */
 		if(iflag_if_add == 1){
 			printf("Add field list \n");
-			add_field_wqflag_to_ctl(all_fld_tbl[index_field], fld_ctl);
+			add_field_wqflag_to_ctl_z(all_fld_tbl[index_field], fld_ctl);
 		} else {
 			printf("Delete field list \n");
-			delete_field_wqflag_in_ctl(all_fld_tbl[index_field], fld_ctl);
+			delete_field_wqflag_in_ctl_z(all_fld_tbl[index_field], fld_ctl);
 		};
 		
 	}
@@ -109,7 +109,7 @@ static void remove_field_to_use(GtkButton *button, gpointer user_data)
 				GTK_TREE_VIEW(fields_vws->used_tree_view), 
 				GTK_TREE_VIEW(fields_vws->unused_field_tree_view));
     /*
-    check_field_ctl_list(fields_vws->fld_ctl_gtk);
+    check_field_ctl_list_z(fields_vws->fld_ctl_gtk);
      */
 }
 
@@ -121,7 +121,7 @@ static void add_field_to_use(GtkButton *button, gpointer user_data)
 				GTK_TREE_VIEW(fields_vws->unused_field_tree_view),
 				GTK_TREE_VIEW(fields_vws->used_tree_view));
     /*
-    check_field_ctl_list(fields_vws->fld_ctl_gtk);
+    check_field_ctl_list_z(fields_vws->fld_ctl_gtk);
      */
 }
 

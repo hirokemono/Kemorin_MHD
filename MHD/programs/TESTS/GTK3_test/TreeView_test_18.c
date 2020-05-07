@@ -190,10 +190,10 @@ static void transfer_model_data(int iflag_if_add,
 		/* Update control data */
 		if(iflag_if_add == 1){
 			printf("Add field list \n");
-			add_field_to_ctl(all_fld_list[index_field], &mhd_ctl->model_ctl->fld_ctl->field_list);
+			add_field_to_ctl_z(all_fld_list[index_field], &mhd_ctl->model_ctl->fld_ctl->field_list);
 		} else {
 			printf("Delete field list \n");
-			delete_field_in_ctl(all_fld_list[index_field], &mhd_ctl->model_ctl->fld_ctl->field_list);
+			delete_field_in_ctl_z(all_fld_list[index_field], &mhd_ctl->model_ctl->fld_ctl->field_list);
 		};
 		
 	}
@@ -203,7 +203,7 @@ static void transfer_model_data(int iflag_if_add,
 	unblock_changed_signal(G_OBJECT(child_model_to_del));
 	unblock_changed_signal(G_OBJECT(child_model_to_add));
     /*
-    check_field_ctl_list(&mhd_ctl->model_ctl->fld_ctl->field_list);
+    check_field_ctl_list_z(&mhd_ctl->model_ctl->fld_ctl->field_list);
      */
 }
 
@@ -213,7 +213,7 @@ static void remove_field_to_use(GtkButton *button, gpointer user_data)
 	
 	transfer_model_data(0, fields_vws->used_tree_view, fields_vws->unused_field_tree_view);
     /*
-    check_field_ctl_list(&mhd_ctl->model_ctl->fld_ctl->field_list);
+    check_field_ctl_list_z(&mhd_ctl->model_ctl->fld_ctl->field_list);
      */
 }
 
@@ -223,7 +223,7 @@ static void add_field_to_use(GtkButton *button, gpointer user_data)
 	
 	transfer_model_data(1, fields_vws->unused_field_tree_view, fields_vws->used_tree_view);
     /*
-    check_field_ctl_list(&mhd_ctl->model_ctl->fld_ctl->field_list);
+    check_field_ctl_list_z(&mhd_ctl->model_ctl->fld_ctl->field_list);
      */
 }
 
@@ -752,7 +752,7 @@ int main(int argc, char **argv)
 	srand((unsigned)time(NULL));
 
     all_fld_list = (struct all_field_ctl_z **) malloc(NUM_FIELD * sizeof(struct all_field_ctl_z *));
-    alloc_all_field_ctl_c(all_fld_list);
+    alloc_all_field_ctl_z(all_fld_list);
 	
     mhd_ctl = alloc_SGS_MHD_control_c();
 	read_SGS_MHD_control_file_c(file_name, buf, mhd_ctl);

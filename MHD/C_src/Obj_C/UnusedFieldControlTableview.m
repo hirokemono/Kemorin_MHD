@@ -195,7 +195,7 @@
         all_fld_tbl[index]->iflag_viz =     0;
         all_fld_tbl[index]->iflag_monitor = 0;
         all_fld_tbl[index]->iflag_quad =    0;
-        add_field_wqflag_to_ctl(all_fld_tbl[index], mhd_ctl_m->model_ctl->fld_ctl);
+        add_field_wqflag_to_ctl_z(all_fld_tbl[index], mhd_ctl_m->model_ctl->fld_ctl);
         
         [self.FieldControlArray removeObjectAtIndex:isel];
          */
@@ -303,7 +303,7 @@
     index =  [selectedID intValue];
     
     [[self.FieldControlArray objectAtIndex:pRowIndex] setObject:pObject forKey:selectedKey];
-    update_field_flag_wqflag_in_ctl(all_fld_tbl[index], mhd_ctl_m->model_ctl->fld_ctl);
+    update_field_flag_wqflag_in_ctl_z(all_fld_tbl[index], mhd_ctl_m->model_ctl->fld_ctl);
     
     /*
      NSString *editedtext = [self.FieldControlArray objectAtIndex:pRowIndex];

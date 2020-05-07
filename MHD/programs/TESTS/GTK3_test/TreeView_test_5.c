@@ -373,7 +373,7 @@ int main(int argc, char **argv)
 	srand((unsigned)time(NULL));
 
     all_fld_list = (struct all_field_ctl_z **) malloc(NUM_FIELD * sizeof(struct all_field_ctl_z *));
-    alloc_all_field_ctl_c(all_fld_list);
+    alloc_all_field_ctl_z(all_fld_list);
 	
     mhd_ctl = alloc_SGS_MHD_control_c();
 	read_SGS_MHD_control_file_c(file_name, buf, mhd_ctl);

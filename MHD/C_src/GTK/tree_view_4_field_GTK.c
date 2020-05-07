@@ -11,13 +11,13 @@ struct field_views * init_field_views_GTK(struct field_ctl_c *fld_ctl_ref){
     struct field_views *fields_vws = (struct field_views *) malloc(sizeof(struct field_views));
     fields_vws->fld_ctl_gtk = fld_ctl_ref;
     fields_vws->all_fld_tbl = (struct all_field_ctl_z **) malloc(NUM_FIELD * sizeof(struct all_field_ctl_z *));
-    alloc_all_field_ctl_c(fields_vws->all_fld_tbl);
-    load_field_w_qflag_from_ctl(fields_vws->fld_ctl_gtk, fields_vws->all_fld_tbl);
+    alloc_all_field_ctl_z(fields_vws->all_fld_tbl);
+    load_field_w_qflag_from_ctl_z(fields_vws->fld_ctl_gtk, fields_vws->all_fld_tbl);
     return fields_vws;
 }
 
 void dealloc_field_views_GTK(struct field_views *fields_vws){
-    dealloc_all_field_ctl_c(fields_vws->all_fld_tbl);
+    dealloc_all_field_ctl_z(fields_vws->all_fld_tbl);
     free(fields_vws->all_fld_tbl);
     free(fields_vws);
     return;
@@ -70,7 +70,7 @@ static void toggle_viz_switch(GtkTreeViewColumn *renderer,
     gtk_tree_path_free(path);  
     
     fields_vws->all_fld_tbl[index_field]->iflag_viz = index_for_toggle;
-	update_field_flag_wqflag_in_ctl(fields_vws->all_fld_tbl[index_field],
+	update_field_flag_wqflag_in_ctl_z(fields_vws->all_fld_tbl[index_field],
 				fields_vws->fld_ctl_gtk);
 }
 
@@ -100,7 +100,7 @@ static void toggle_monitor_switch(GtkTreeViewColumn *renderer, gchar *path_str, 
     gtk_tree_path_free(path);  
     
     fields_vws->all_fld_tbl[index_field]->iflag_monitor = index_for_toggle;
-	update_field_flag_wqflag_in_ctl(fields_vws->all_fld_tbl[index_field],
+	update_field_flag_wqflag_in_ctl_z(fields_vws->all_fld_tbl[index_field],
 				fields_vws->fld_ctl_gtk);
 }
 

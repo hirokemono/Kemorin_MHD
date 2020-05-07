@@ -32,6 +32,7 @@ control_panel_4_coefs_GTK.o: \
  $(C_SRCDIR)/CONTROLS/t_control_chara3_IO.h \
  $(C_SRCDIR)/CONTROLS/t_control_chara_int2_IO.h \
  $(C_SRCDIR)/CONTROLS/all_field_names_c.h \
+ $(C_SRCDIR)/CONTROLS/m_field_name_from_f.h \
  $(C_SRCDIR)/GTK/tree_view_4_each_term_GTK.h \
  $(C_SRCDIR)/CONTROLS/t_ctl_data_SGS_MHD_model_c.h \
  $(C_SRCDIR)/CONTROLS/t_ctl_data_SGS_model_c.h \
@@ -69,6 +70,7 @@ control_panel_4_dimless_GTK.o: \
  $(C_SRCDIR)/CONTROLS/t_control_chara3_IO.h \
  $(C_SRCDIR)/CONTROLS/t_control_chara_int2_IO.h \
  $(C_SRCDIR)/CONTROLS/all_field_names_c.h \
+ $(C_SRCDIR)/CONTROLS/m_field_name_from_f.h \
  $(C_SRCDIR)/GTK/tree_view_4_force_GTK.h \
  $(C_SRCDIR)/CONTROLS/t_control_chara_real_IO.h \
  $(C_SRCDIR)/GTK/tree_view_chara_real_GTK.h
@@ -100,6 +102,7 @@ control_panel_4_field_GTK.o: \
  $(C_SRCDIR)/CONTROLS/t_control_chara3_IO.h \
  $(C_SRCDIR)/CONTROLS/t_control_chara_int2_IO.h \
  $(C_SRCDIR)/CONTROLS/all_field_names_c.h \
+ $(C_SRCDIR)/CONTROLS/m_field_name_from_f.h \
  $(C_SRCDIR)/CONTROLS/t_ctl_data_4_time_steps_c.h \
  $(C_SRCDIR)/CONTROLS/t_ctl_data_mhd_evo_scheme_c.h \
  $(C_SRCDIR)/CONTROLS/t_control_data_sph_grid_c.h \
@@ -163,6 +166,7 @@ ctl_panel_SPH_MHD_model_GTK.o: \
  $(C_SRCDIR)/CONTROLS/t_control_chara3_IO.h \
  $(C_SRCDIR)/CONTROLS/t_control_chara_int2_IO.h \
  $(C_SRCDIR)/CONTROLS/all_field_names_c.h \
+ $(C_SRCDIR)/CONTROLS/m_field_name_from_f.h \
  $(C_SRCDIR)/CONTROLS/t_ctl_data_4_time_steps_c.h \
  $(C_SRCDIR)/CONTROLS/t_ctl_data_mhd_evo_scheme_c.h \
  $(C_SRCDIR)/CONTROLS/t_ctl_data_4_fields_c.h \
@@ -364,6 +368,7 @@ tree_view_4_each_term_GTK.o: \
  $(C_SRCDIR)/CONTROLS/t_control_chara3_IO.h \
  $(C_SRCDIR)/CONTROLS/t_control_chara_int2_IO.h \
  $(C_SRCDIR)/CONTROLS/all_field_names_c.h \
+ $(C_SRCDIR)/CONTROLS/m_field_name_from_f.h \
  $(C_SRCDIR)/CONTROLS/t_ctl_data_4_time_steps_c.h \
  $(C_SRCDIR)/CONTROLS/t_ctl_data_mhd_evo_scheme_c.h \
  $(C_SRCDIR)/GTK/tree_views_4_fixed_lists_GTK.h \
@@ -385,6 +390,7 @@ tree_view_4_field_GTK.o: \
  $(C_SRCDIR)/CONTROLS/t_control_chara3_IO.h \
  $(C_SRCDIR)/CONTROLS/t_control_chara_int2_IO.h \
  $(C_SRCDIR)/CONTROLS/all_field_names_c.h \
+ $(C_SRCDIR)/CONTROLS/m_field_name_from_f.h \
  $(C_SRCDIR)/GTK/tree_views_4_fixed_lists_GTK.h \
  $(C_SRCDIR)/CONTROLS/m_direction_labels_c.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $(GTK3_CFLAGS) $<

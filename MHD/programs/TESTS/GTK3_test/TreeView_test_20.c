@@ -190,10 +190,10 @@ static void transfer_model_data(int iflag_if_add,
 		/* Update control data */
 		if(iflag_if_add == 1){
 			printf("Add field list \n");
-			add_field_wqflag_to_ctl(all_fld_list[index_field], mhd_ctl->model_ctl->fld_ctl);
+			add_field_wqflag_to_ctl_z(all_fld_list[index_field], mhd_ctl->model_ctl->fld_ctl);
 		} else {
 			printf("Delete field list \n");
-			delete_field_wqflag_in_ctl(all_fld_list[index_field], mhd_ctl->model_ctl->fld_ctl);
+			delete_field_wqflag_in_ctl_z(all_fld_list[index_field], mhd_ctl->model_ctl->fld_ctl);
 		};
 		
 	}
@@ -203,7 +203,7 @@ static void transfer_model_data(int iflag_if_add,
 	unblock_changed_signal(G_OBJECT(child_model_to_del));
 	unblock_changed_signal(G_OBJECT(child_model_to_add));
     /*
-    check_field_ctl_list(mhd_ctl->model_ctl->fld_ctl);
+    check_field_ctl_list_z(mhd_ctl->model_ctl->fld_ctl);
      */
 }
 
@@ -213,7 +213,7 @@ static void remove_field_to_use(GtkButton *button, gpointer user_data)
 	
 	transfer_model_data(0, fields_vws->used_tree_view, fields_vws->unused_field_tree_view);
     /*
-    check_field_ctl_list(mhd_ctl->model_ctl->fld_ctl);
+    check_field_ctl_list_z(mhd_ctl->model_ctl->fld_ctl);
      */
 }
 
@@ -223,7 +223,7 @@ static void add_field_to_use(GtkButton *button, gpointer user_data)
 	
 	transfer_model_data(1, fields_vws->unused_field_tree_view, fields_vws->used_tree_view);
     /*
-    check_field_ctl_list(mhd_ctl->model_ctl->fld_ctl);
+    check_field_ctl_list_z(mhd_ctl->model_ctl->fld_ctl);
      */
 }
 
@@ -459,7 +459,7 @@ static void toggle_viz_switch(GtkTreeViewColumn *renderer,
     gtk_tree_path_free(path);  
     
     all_fld_list[index_field]->iflag_viz = index_for_toggle;
-    update_field_flag_wqflag_in_ctl(all_fld_list[index_field], mhd_ctl->model_ctl->fld_ctl);
+    update_field_flag_wqflag_in_ctl_z(all_fld_list[index_field], mhd_ctl->model_ctl->fld_ctl);
 }
 static void toggle_monitor_switch(GtkTreeViewColumn *renderer, gchar *path_str, gpointer user_data){
 	struct field_views *fields_vws = (struct field_views *) user_data;
@@ -487,7 +487,7 @@ static void toggle_monitor_switch(GtkTreeViewColumn *renderer, gchar *path_str, 
     gtk_tree_path_free(path);  
     
     all_fld_list[index_field]->iflag_monitor = index_for_toggle;
-    update_field_flag_wqflag_in_ctl(all_fld_list[index_field], mhd_ctl->model_ctl->fld_ctl);
+    update_field_flag_wqflag_in_ctl_z(all_fld_list[index_field], mhd_ctl->model_ctl->fld_ctl);
 }
 
 static void create_field_tree_view(struct all_field_ctl_z **all_fld_ctl, struct field_views *fields_vws)
@@ -709,11 +709,11 @@ int main(int argc, char **argv)
 	srand((unsigned)time(NULL));
 
     all_fld_list = (struct all_field_ctl_z **) malloc(NUM_FIELD * sizeof(struct all_field_ctl_z *));
-    alloc_all_field_ctl_c(all_fld_list);
+    alloc_all_field_ctl_z(all_fld_list);
 	
     mhd_ctl = alloc_SGS_MHD_control_c();
 	read_SGS_MHD_control_file_c(file_name, buf, mhd_ctl);
-    load_field_w_qflag_from_ctl(mhd_ctl->model_ctl->fld_ctl, all_fld_list);
+    load_field_w_qflag_from_ctl_z(mhd_ctl->model_ctl->fld_ctl, all_fld_list);
 	
 	
 	gtk_init(&argc, &argv);

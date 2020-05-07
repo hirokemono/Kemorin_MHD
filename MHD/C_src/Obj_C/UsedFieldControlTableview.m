@@ -147,7 +147,7 @@
         all_fld_tbl[index]->iflag_viz =     0;
         all_fld_tbl[index]->iflag_monitor = 0;
         all_fld_tbl[index]->iflag_quad =    0;
-        delete_field_wqflag_in_ctl(all_fld_tbl[index], mhd_ctl_m->model_ctl->fld_ctl);
+        delete_field_wqflag_in_ctl_z(all_fld_tbl[index], mhd_ctl_m->model_ctl->fld_ctl);
         
         [self.FieldControlArray removeObjectAtIndex:isel];
         isel = [selectedRows indexLessThanIndex:isel];
@@ -208,7 +208,7 @@
     if([selectedKey isEqualToString:self.key3]){
         all_fld_tbl[index]->iflag_monitor = [pObject intValue];
     }
-    update_field_flag_wqflag_in_ctl(all_fld_tbl[index], mhd_ctl_m->model_ctl->fld_ctl);
+    update_field_flag_wqflag_in_ctl_z(all_fld_tbl[index], mhd_ctl_m->model_ctl->fld_ctl);
     
     //    NSLog(@"Mutablearray again  %@",[self.FieldControlArray objectAtIndex:pRowIndex]);
 };
