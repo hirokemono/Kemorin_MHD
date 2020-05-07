@@ -416,7 +416,7 @@ int main(int argc, char **argv)
 	
     mhd_ctl = alloc_SGS_MHD_control_c();
 	read_SGS_MHD_control_file_c(file_name, buf, mhd_ctl);
-    load_field_from_ctl(&mhd_ctl->model_ctl->fld_ctl->field_list, all_fld_list);
+    load_field_from_ctl_z(&mhd_ctl->model_ctl->fld_ctl->field_list, all_fld_list);
 	
 	
 	gtk_init(&argc, &argv);

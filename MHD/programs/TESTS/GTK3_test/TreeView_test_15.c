@@ -417,7 +417,7 @@ static void toggle_viz_switch(GtkTreeViewColumn *renderer,
     gtk_tree_path_free(path);  
     
     all_fld_list[index_field]->iflag_viz = index_for_toggle;
-    update_field_flag_in_ctl(all_fld_list[index_field], &mhd_ctl->model_ctl->fld_ctl->field_list);
+    update_field_flag_in_ctl_z(all_fld_list[index_field], &mhd_ctl->model_ctl->fld_ctl->field_list);
 }
 static void toggle_monitor_switch(GtkTreeViewColumn *renderer, gchar *path_str, gpointer user_data){
     gchar *row_string;
@@ -445,7 +445,7 @@ static void toggle_monitor_switch(GtkTreeViewColumn *renderer, gchar *path_str, 
     gtk_tree_path_free(path);  
     
     all_fld_list[index_field]->iflag_monitor = index_for_toggle;
-    update_field_flag_in_ctl(all_fld_list[index_field], &mhd_ctl->model_ctl->fld_ctl->field_list);
+    update_field_flag_in_ctl_z(all_fld_list[index_field], &mhd_ctl->model_ctl->fld_ctl->field_list);
 }
 
 static void create_field_tree_view(GtkWidget *tree_view)
@@ -685,7 +685,7 @@ int main(int argc, char **argv)
 	
     mhd_ctl = alloc_SGS_MHD_control_c();
 	read_SGS_MHD_control_file_c(file_name, buf, mhd_ctl);
-    load_field_from_ctl(&mhd_ctl->model_ctl->fld_ctl->field_list, all_fld_list);
+    load_field_from_ctl_z(&mhd_ctl->model_ctl->fld_ctl->field_list, all_fld_list);
 	
 	
 	gtk_init(&argc, &argv);

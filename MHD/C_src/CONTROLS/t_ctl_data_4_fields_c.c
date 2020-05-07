@@ -282,7 +282,7 @@ static void delete_field_in_ctl_z(struct all_field_ctl_z *all_fld_tbl,
 	return;
 }
 
-static void update_field_flag_in_ctl(struct all_field_ctl_z *all_fld_tbl, 
+static void update_field_flag_in_ctl_z(struct all_field_ctl_z *all_fld_tbl, 
 			struct chara_int2_ctl_list *field_list_head){
 	field_list_head = find_ci2_ctl_list_item_by_c_tbl(all_fld_tbl->field_name, field_list_head);
 	
@@ -292,7 +292,7 @@ static void update_field_flag_in_ctl(struct all_field_ctl_z *all_fld_tbl,
 }
 
 
-static void load_field_from_ctl(struct chara_int2_ctl_list *field_list_head, 
+static void load_field_from_ctl_z(struct chara_int2_ctl_list *field_list_head, 
 			struct all_field_ctl_z **all_fld_tbl){
 	int i, j;
 	int jst = 0;
@@ -404,7 +404,7 @@ void delete_field_wqflag_in_ctl_z(struct all_field_ctl_z *all_fld_tbl,
 void update_field_flag_wqflag_in_ctl_z(struct all_field_ctl_z *all_fld_tbl, 
 			struct field_ctl_c *fld_ctl){
 	
-    update_field_flag_in_ctl(all_fld_tbl, &fld_ctl->field_list);
+    update_field_flag_in_ctl_z(all_fld_tbl, &fld_ctl->field_list);
 	
 	if(all_fld_tbl->iflag_quad == 0){
 		del_chara_ctl_list_by_c_tbl(all_fld_tbl->field_name, &fld_ctl->quad_phys_list);
@@ -418,7 +418,7 @@ void update_field_flag_wqflag_in_ctl_z(struct all_field_ctl_z *all_fld_tbl,
 
 void load_field_w_qflag_from_ctl_z(struct field_ctl_c *fld_ctl, 
 			struct all_field_ctl_z **all_fld_tbl){
-	load_field_from_ctl(&fld_ctl->field_list, all_fld_tbl);
+	load_field_from_ctl_z(&fld_ctl->field_list, all_fld_tbl);
 	set_quadrature_flag_from_ctl(&fld_ctl->quad_phys_list, all_fld_tbl);
 	return;
 };
