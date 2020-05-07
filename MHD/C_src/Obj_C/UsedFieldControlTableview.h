@@ -24,7 +24,7 @@
     NSString *key0;
     
     struct SGS_MHD_control_c * mhd_ctl_m;
-    struct all_field_ctl_c **all_fld_tbl;
+    struct all_field_ctl_z **all_fld_tbl;
 }
 @property(strong) NSMutableDictionary * FieldControlDictionary;
 @property(strong) NSMutableArray * FieldControlArray;
@@ -36,7 +36,7 @@
 @property(strong) NSString * key4;
 @property(strong) NSString * key0;
 
--(void)linkToFieldclist:(struct all_field_ctl_c **) ref_all_fld_table;
+-(void)linkToFieldclist:(struct all_field_ctl_z **) ref_all_fld_table;
 -(void)initMutablearray;
 -(void)createMutablearray;
 -(void)createFieldView:(NSView *)usedFieldTableViewOutlet;

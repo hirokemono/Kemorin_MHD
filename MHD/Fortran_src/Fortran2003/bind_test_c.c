@@ -3,99 +3,42 @@
 #include <stdio.h>
 
 #include "m_field_name_from_f.h"
+#include "m_force_name_from_f.h"
 
 int main(int argc, char **argv)
 {
 	int i;
-	struct field_names_f *fnames = init_field_name_f();
+	struct field_names_f *fld_names = init_field_name_f();
 	
-	printf("nword %d %d \n", fnames->len_f, fnames->ntot_fields);
-	for(i=0;i<fnames->ntot_fields;i++){
-		printf("name: %d: %d: %s: %s\n", i, fnames->num_comp[i],
-			   fnames->field_name[i], fnames->field_math[i]);
+	printf("nword %d %d \n", fld_names->len_f, fld_names->ntot_fields);
+	for(i=0;i<fld_names->ntot_fields;i++){
+		printf("name: %d: %d: %s: %s\n", i, fld_names->num_comp[i],
+			   fld_names->field_name[i], fld_names->field_math[i]);
 	}
 	printf("\n");
+	dealloc_field_name_f(fld_names);
 	
-	dealloc_field_name_f(fnames);
 	
-	/*
-	nword = num_advection_controls_f();
+	struct force_names_f *frc_names = init_force_name_f();
 	
-	ncomp = (int *)calloc(nword, sizeof(int));
-	name1 = (char *)calloc(len_f*nword, sizeof(char));
-	math1 = (char *)calloc(len_f*nword, sizeof(char));
-	
-	if ((names = (char **) malloc(nword*sizeof(char *))) == NULL) {
-		printf("malloc error for names\n");
-		exit(0);
-	}
-	if ((maths = (char **) malloc(nword*sizeof(char *))) == NULL) {
-		printf("malloc error for maths\n");
-		exit(0);
-	}
-	set_advection_control_labels_f(&ncomp[0], 
-						   &name1[len_f*0],
-						   &math1[len_f*0]);
-	
-	printf("nword %d %d \n", len_f, nword);
-	for(i=0;i<nword;i++){
-		names[i] = (char *)calloc(strlen(&name1[len_f*i])+1, sizeof(char));
-		maths[i] = (char *)calloc(strlen(&math1[len_f*i])+1, sizeof(char));
-		strcpy(names[i], &name1[len_f*i]);
-		strcpy(maths[i], &math1[len_f*i]);
-		printf("Advection name: %d: %d: %s: %s\n", i, ncomp[i], names[i], maths[i]);
+	printf("nword %d %d \n", frc_names->len_f, frc_names->ntot_forcrs);
+	for(i=0;i<frc_names->ntot_forcrs;i++){
+		printf("name: %d: %d: %s: %s\n", i, frc_names->num_comp[i],
+			   frc_names->force_name[i], frc_names->forth_math[i]);
 	}
 	printf("\n");
+	dealloc_force_name_f(frc_names);
 	
-	for(i=0;i<nword;i++){
-		free(names[i]);
-		free(maths[i]);
-	}
-	free(names);
-	free(maths);
-	free(ncomp);
-	free(name1);
-	free(math1);
 	
-	*/
-	/*
-	nword = num_force_controls_f();
+	struct advection_names_f *adv_names = init_advection_name_f();
 	
-	ncomp = (int *)calloc(nword, sizeof(int));
-	name1 = (char *)calloc(len_f*nword, sizeof(char));
-	math1 = (char *)calloc(len_f*nword, sizeof(char));
-	
-	if ((names = (char **) malloc(nword*sizeof(char *))) == NULL) {
-		printf("malloc error for names\n");
-		exit(0);
-	}
-	if ((maths = (char **) malloc(nword*sizeof(char *))) == NULL) {
-		printf("malloc error for maths\n");
-		exit(0);
-	}
-	set_force_control_labels_f(&ncomp[0], 
-						   &name1[len_f*0],
-						   &math1[len_f*0]);
-	
-	printf("nword %d %d \n", len_f, nword);
-	for(i=0;i<nword;i++){
-		names[i] = (char *)calloc(strlen(&name1[len_f*i])+1, sizeof(char));
-		maths[i] = (char *)calloc(strlen(&math1[len_f*i])+1, sizeof(char));
-		strcpy(names[i], &name1[len_f*i]);
-		strcpy(maths[i], &math1[len_f*i]);
-		printf("Force name: %d: %d: %s: %s\n", i, ncomp[i], names[i], maths[i]);
+	printf("nword %d %d \n", adv_names->len_f, adv_names->ntot_advection);
+	for(i=0;i<adv_names->ntot_advection;i++){
+		printf("name: %d: %d: %s: %s\n", i, adv_names->num_comp[i],
+			   adv_names->term_name[i], adv_names->term_math[i]);
 	}
 	printf("\n");
+	dealloc_advection_name_f(adv_names);
 	
-	for(i=0;i<nword;i++){
-		free(names[i]);
-		free(maths[i]);
-	}
-	free(names);
-	free(maths);
-	free(ncomp);
-	free(name1);
-	free(math1);
-	*/
 	return 0;
 };

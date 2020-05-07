@@ -92,73 +92,128 @@ struct field_names_f * init_field_name_f(){
 	fnames->len_f = lengthchara_f();
 	
 	fnames->istack_base_fields[0] = 0;
-	fnames->istack_base_forces[0] = fnames->istack_base_fields[0]
-			+ num_base_fields_f();
-	fnames->istack_rot_forces[0] = fnames->istack_base_forces[0]
-			+ num_base_forces_f();
-	fnames->istack_div_forces[0] = fnames->istack_rot_forces[0]
-			+ num_rot_forces_f();
-	fnames->istack_energy_fluxes[0] = fnames->istack_div_forces[0]
-			+ num_div_forces_f();
-	fnames->istack_divergence_fields[0] = fnames->istack_energy_fluxes[0]
-			+ num_energy_fluxes_f();
-	fnames->istack_gradient_fields[0] = fnames->istack_divergence_fields[0]
+	fnames->istack_base_fields[1] = fnames->istack_base_fields[0] + num_base_fields_f();
+	
+	fnames->istack_base_forces[0] = fnames->istack_base_fields[1];
+	fnames->istack_base_forces[1] = fnames->istack_base_forces[0] + num_base_forces_f();
+	
+	fnames->istack_rot_forces[0] = fnames->istack_base_forces[1];
+	fnames->istack_rot_forces[1] = fnames->istack_rot_forces[0] + num_rot_forces_f();
+	
+	fnames->istack_div_forces[0] = fnames->istack_rot_forces[1];
+	fnames->istack_div_forces[1] = fnames->istack_div_forces[0] + num_div_forces_f();
+	
+	fnames->istack_energy_fluxes[0] = fnames->istack_div_forces[1];
+	fnames->istack_energy_fluxes[1] = fnames->istack_energy_fluxes[0] + num_energy_fluxes_f();
+	
+	fnames->istack_divergence_fields[0] = fnames->istack_energy_fluxes[1];
+	fnames->istack_divergence_fields[1] = fnames->istack_divergence_fields[0]
 			+ num_divergence_fields_f();
-	fnames->istack_base_diffusions[0] = fnames->istack_gradient_fields[0]
+	
+	fnames->istack_gradient_fields[0] = fnames->istack_divergence_fields[1];
+	fnames->istack_gradient_fields[1] = fnames->istack_gradient_fields[0]
 			+ num_gradient_fields_f();
-	fnames->istack_base_diffusivities[0] = fnames->istack_base_diffusions[0]
+	
+	fnames->istack_base_diffusions[0] = fnames->istack_gradient_fields[1];
+	fnames->istack_base_diffusions[1] = fnames->istack_base_diffusions[0]
 			+ num_base_diffusions_f();
-	fnames->istack_field_products[0] = fnames->istack_base_diffusivities[0]
+	
+	fnames->istack_base_diffusivities[0] = fnames->istack_base_diffusions[1];
+	fnames->istack_base_diffusivities[1] = fnames->istack_base_diffusivities[0]
 			+ num_base_diffusivities_f();
-	fnames->istack_work_4_explicit[0] = fnames->istack_field_products[0]
+	
+	fnames->istack_field_products[0] = fnames->istack_base_diffusivities[1];
+	fnames->istack_field_products[1] = fnames->istack_field_products[0]
 			+ num_field_products_f();
-	fnames->istack_check_fields[0] = fnames->istack_work_4_explicit[0]
+	
+	fnames->istack_work_4_explicit[0] = fnames->istack_field_products[1];
+	fnames->istack_work_4_explicit[1] = fnames->istack_work_4_explicit[0]
 			+ num_work_4_explicit_f();
-	fnames->istack_filtered_forces[0] = fnames->istack_check_fields[0]
+	
+	fnames->istack_check_fields[0] = fnames->istack_work_4_explicit[1];
+	fnames->istack_check_fields[1] = fnames->istack_check_fields[0]
 			+ num_check_fields_f();
 	
-	fnames->istack_rot_filtered_forces[0] = fnames->istack_filtered_forces[0]
+	
+	fnames->istack_filtered_forces[0] = fnames->istack_check_fields[1];
+	fnames->istack_filtered_forces[1] = fnames->istack_filtered_forces[0]
 			+ num_filtered_forces_f();
-	fnames->istack_div_filtered_forces[0] = fnames->istack_rot_filtered_forces[0]
+	
+	fnames->istack_rot_filtered_forces[0] = fnames->istack_filtered_forces[1];
+	fnames->istack_rot_filtered_forces[1] = fnames->istack_rot_filtered_forces[0]
 			+ num_rot_filtered_forces_f();
-	fnames->istack_filtered_ene_fluxes[0] = fnames->istack_div_filtered_forces[0]
+	
+	fnames->istack_div_filtered_forces[0] = fnames->istack_rot_filtered_forces[1];
+	fnames->istack_div_filtered_forces[1] = fnames->istack_div_filtered_forces[0]
 			+ num_div_filtered_forces_f();
-	fnames->istack_SGS_terms[0] = fnames->istack_filtered_ene_fluxes[0]
+	
+	fnames->istack_filtered_ene_fluxes[0] = fnames->istack_div_filtered_forces[1];
+	fnames->istack_filtered_ene_fluxes[1] = fnames->istack_filtered_ene_fluxes[0]
 			+ num_filtered_ene_fluxes_f();
 	
-	fnames->istack_diff_SGS_terms[0] = fnames->istack_SGS_terms[0]
+	
+	fnames->istack_SGS_terms[0] = fnames->istack_filtered_ene_fluxes[1];
+	fnames->istack_SGS_terms[1] = fnames->istack_SGS_terms[0]
 			+ num_SGS_terms_f();
-	fnames->istack_SGS_energy_fluxes[0] = fnames->istack_diff_SGS_terms[0]
+	
+	fnames->istack_diff_SGS_terms[0] = fnames->istack_SGS_terms[1];
+	fnames->istack_diff_SGS_terms[1] = fnames->istack_diff_SGS_terms[0]
 			+ num_diff_SGS_terms_f();
-	fnames->istack_SGS_model_coefs[0] = fnames->istack_SGS_energy_fluxes[0]
+	
+	fnames->istack_SGS_energy_fluxes[0] = fnames->istack_diff_SGS_terms[1];
+	fnames->istack_SGS_energy_fluxes[1] = fnames->istack_SGS_energy_fluxes[0]
 			+ num_SGS_energy_fluxes_f();
-	fnames->istack_filter_fields[0] = fnames->istack_SGS_model_coefs[0]
+	
+	fnames->istack_SGS_model_coefs[0] = fnames->istack_SGS_energy_fluxes[1];
+	fnames->istack_SGS_model_coefs[1] = fnames->istack_SGS_model_coefs[0]
 			+ num_SGS_model_coefs_f();
 	
-	fnames->istack_div_filter_fields[0] = fnames->istack_filter_fields[0]
+	fnames->istack_filter_fields[0] = fnames->istack_SGS_model_coefs[1];
+	fnames->istack_filter_fields[1] = fnames->istack_filter_fields[0]
 			+ num_filter_fields_f();
-	fnames->istack_grad_filter_fields[0] = fnames->istack_div_filter_fields[0]
+	
+	fnames->istack_div_filter_fields[0] = fnames->istack_filter_fields[1];
+	fnames->istack_div_filter_fields[1] = fnames->istack_div_filter_fields[0]
 			+ num_div_filter_fields_f();
-	fnames->istack_wide_filter_fields[0] = fnames->istack_grad_filter_fields[0]
+	
+	fnames->istack_grad_filter_fields[0] = fnames->istack_div_filter_fields[1];
+	fnames->istack_grad_filter_fields[1] = fnames->istack_grad_filter_fields[0]
 			+ num_grad_filter_fields_f();
 	
-	fnames->istack_double_filter_fields[0] = fnames->istack_wide_filter_fields[0]
+	
+	fnames->istack_wide_filter_fields[0] = fnames->istack_grad_filter_fields[1];
+	fnames->istack_wide_filter_fields[1] = fnames->istack_wide_filter_fields[0]
 			+ num_wide_filter_fields_f();
-	fnames->istack_difference_vector[0] = fnames->istack_double_filter_fields[0]
+	
+	fnames->istack_double_filter_fields[0] = fnames->istack_wide_filter_fields[1];
+	fnames->istack_double_filter_fields[1] = fnames->istack_double_filter_fields[0]
 			+ num_double_filter_fields_f();
-	fnames->istack_diff_filter_vector[0] = fnames->istack_difference_vector[0]
+	
+	fnames->istack_difference_vector[0] = fnames->istack_double_filter_fields[1];
+	fnames->istack_difference_vector[1] = fnames->istack_difference_vector[0]
 			+ num_difference_vector_f();
-	fnames->istack_wide_SGS_terms[0] = fnames->istack_diff_filter_vector[0]
+	
+	fnames->istack_diff_filter_vector[0] = fnames->istack_difference_vector[1];
+	fnames->istack_diff_filter_vector[1] = fnames->istack_diff_filter_vector[0]
 			+ num_diff_filter_vector_f();
-	fnames->istack_dynamic_SGS_work[0] = fnames->istack_wide_SGS_terms[0]
+	
+	fnames->istack_wide_SGS_terms[0] = fnames->istack_diff_filter_vector[1];
+	fnames->istack_wide_SGS_terms[1] = fnames->istack_wide_SGS_terms[0]
 			+ num_wide_SGS_terms_f();
-	fnames->istack_force_w_SGS[0] = fnames->istack_dynamic_SGS_work[0]
+	
+	fnames->istack_dynamic_SGS_work[0] = fnames->istack_wide_SGS_terms[1];
+	fnames->istack_dynamic_SGS_work[1] = fnames->istack_dynamic_SGS_work[0]
 			+ num_dynamic_SGS_work_f();
-	fnames->istack_true_SGS_terms[0] = fnames->istack_force_w_SGS[0]
+	
+	fnames->istack_force_w_SGS[0] = fnames->istack_dynamic_SGS_work[1];
+	fnames->istack_force_w_SGS[1] = fnames->istack_force_w_SGS[0]
 			+ num_force_w_SGS_f();
 	
-	fnames->ntot_fields = fnames->istack_true_SGS_terms[0]
+	fnames->istack_true_SGS_terms[0] = fnames->istack_force_w_SGS[1];
+	fnames->istack_true_SGS_terms[1] = fnames->istack_true_SGS_terms[0]
 			+ num_true_SGS_terms_f();
+	
+	fnames->ntot_fields = fnames->istack_true_SGS_terms[1];
 	
 	if((fnames->num_comp = (int *)calloc(fnames->ntot_fields, sizeof(int))) == NULL) {
 		printf("malloc error for num_comp\n");

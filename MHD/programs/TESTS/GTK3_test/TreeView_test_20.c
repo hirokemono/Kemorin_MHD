@@ -4,7 +4,7 @@
 #include "t_ctl_data_4_fields_c.h"
 #include "t_SGS_MHD_control_c.h"
 
-struct all_field_ctl_c **all_fld_list;
+struct all_field_ctl_z **all_fld_list;
 struct SGS_MHD_control_c *mhd_ctl;
 char file_name[LENGTHBUF] = "/Users/matsui/work/C_test/control_MHD";
 char buf[LENGTHBUF];      /* character buffer for reading line */
@@ -63,7 +63,7 @@ static void cb_close_window(GtkButton *button, gpointer user_data){
 
 
 /* Append new data at the end of list */
-static void append_model_data(int index_field, struct all_field_ctl_c **all_fld_ctl, GtkTreeModel *child_model)
+static void append_model_data(int index_field, struct all_field_ctl_z **all_fld_ctl, GtkTreeModel *child_model)
 {
 	GtkTreeIter iter;
 
@@ -490,7 +490,7 @@ static void toggle_monitor_switch(GtkTreeViewColumn *renderer, gchar *path_str, 
     update_field_flag_wqflag_in_ctl(all_fld_list[index_field], mhd_ctl->model_ctl->fld_ctl);
 }
 
-static void create_field_tree_view(struct all_field_ctl_c **all_fld_ctl, struct field_views *fields_vws)
+static void create_field_tree_view(struct all_field_ctl_z **all_fld_ctl, struct field_views *fields_vws)
 {
 /*	GtkTreeModel *child_model = GTK_TREE_MODEL(user_data);*/
 	GtkTreeModel *model;
@@ -598,7 +598,7 @@ static void create_field_tree_view(struct all_field_ctl_c **all_fld_ctl, struct 
 	
 }
 
-static void create_unused_field_tree_view(struct all_field_ctl_c **all_fld_ctl, struct field_views *fields_vws)
+static void create_unused_field_tree_view(struct all_field_ctl_z **all_fld_ctl, struct field_views *fields_vws)
 {
 /*	GtkTreeModel *child_model = GTK_TREE_MODEL(user_data);*/
 	GtkTreeModel *model;
@@ -708,7 +708,7 @@ int main(int argc, char **argv)
 
 	srand((unsigned)time(NULL));
 
-    all_fld_list = (struct all_field_ctl_c **) malloc(NUM_FIELD * sizeof(struct all_field_ctl_c *));
+    all_fld_list = (struct all_field_ctl_z **) malloc(NUM_FIELD * sizeof(struct all_field_ctl_z *));
     alloc_all_field_ctl_c(all_fld_list);
 	
     mhd_ctl = alloc_SGS_MHD_control_c();

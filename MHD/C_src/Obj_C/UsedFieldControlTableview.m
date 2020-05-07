@@ -21,7 +21,7 @@
 @synthesize key4;
 @synthesize key0;
 
--(void)linkToFieldclist:(struct all_field_ctl_c **) ref_all_fld_table
+-(void)linkToFieldclist:(struct all_field_ctl_z **) ref_all_fld_table
 { 
     mhd_ctl_m = link_to_mhd_ctl();
     all_fld_tbl = ref_all_fld_table;

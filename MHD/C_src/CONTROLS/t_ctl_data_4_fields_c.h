@@ -32,7 +32,7 @@ struct field_ctl_c{
 	struct chara_ctl_list quad_phys_list;
 };
 
-struct all_field_ctl_c{
+struct all_field_ctl_z{
 	
 	char field_name[NCHARA_FIELD];
 	char field_math[KCHARA_C];
@@ -53,21 +53,21 @@ void read_field_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 int write_field_ctl_c(FILE *fp, int level, const char *label, struct field_ctl_c *fld_ctl);
 
 
-void alloc_all_field_ctl_c(struct all_field_ctl_c **all_fld_tbl);
-void dealloc_all_field_ctl_c(struct all_field_ctl_c **all_fld_tbl);
+void alloc_all_field_ctl_c(struct all_field_ctl_z **all_fld_tbl);
+void dealloc_all_field_ctl_c(struct all_field_ctl_z **all_fld_tbl);
 
-void add_field_wqflag_to_ctl(struct all_field_ctl_c *all_fld_tbl, 
+void add_field_wqflag_to_ctl(struct all_field_ctl_z *all_fld_tbl, 
 			struct field_ctl_c *fld_ctl);
-void delete_field_wqflag_in_ctl(struct all_field_ctl_c *all_fld_tbl,
+void delete_field_wqflag_in_ctl(struct all_field_ctl_z *all_fld_tbl,
 			struct field_ctl_c *fld_ctl);
-void update_field_flag_wqflag_in_ctl(struct all_field_ctl_c *all_fld_tbl, 
+void update_field_flag_wqflag_in_ctl(struct all_field_ctl_z *all_fld_tbl, 
 			struct field_ctl_c *fld_ctl);
 
 void load_field_w_qflag_from_ctl(struct field_ctl_c *fld_ctl, 
-			struct all_field_ctl_c **all_fld_tbl);
-void load_field_w_qflag_to_ctl(struct all_field_ctl_c **all_fld_tbl, 
+			struct all_field_ctl_z **all_fld_tbl);
+void load_field_w_qflag_to_ctl(struct all_field_ctl_z **all_fld_tbl, 
 			struct field_ctl_c *fld_ctl);
-void reflesh_field_ctl_list(struct all_field_ctl_c **all_fld_tbl, 
+void reflesh_field_ctl_list(struct all_field_ctl_z **all_fld_tbl, 
 			struct field_ctl_c *fld_ctl);
 
 void check_field_ctl_list(struct field_ctl_c *fld_ctl);

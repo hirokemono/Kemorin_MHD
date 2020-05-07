@@ -20,6 +20,8 @@ sgs_model \
 sgs_dynamic \
 MG_for_MHD   \
 \
+Fortran2003 \
+\
 sph_MHD \
 sph_SGS_MHD
 
@@ -74,6 +76,7 @@ mod_list:
 	@echo '$$(MOD_SGS)'         \\  >> $(MAKENAME)
 	@echo '$$(MOD_SGS_DYNAMIC)' \\  >> $(MAKENAME)
 	@echo '$$(MOD_SGS_BC)'      \\  >> $(MAKENAME)
+	@echo '$$(MOD_MHD_F2003)'   \\  >> $(MAKENAME)
 	@echo '$$(MOD_EVOLVE)'      \\  >> $(MAKENAME)
 	@echo '$$(MOD_MHD_SOLVE)'   \\  >> $(MAKENAME)
 	@echo '$$(MOD_MG_4_MHD)'    \\  >> $(MAKENAME)

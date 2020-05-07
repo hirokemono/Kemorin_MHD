@@ -22,7 +22,7 @@
     IBOutlet NSView *unUsedFieldTableViewOutlet;
     
     struct SGS_MHD_control_c * mhd_ctl_m;
-    struct all_field_ctl_c **all_fld_tbl;
+    struct all_field_ctl_z **all_fld_tbl;
 }
 
 -(void)linkToFieldclist;

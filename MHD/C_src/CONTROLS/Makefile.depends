@@ -90,6 +90,10 @@ m_field_name_from_f.o: \
  $(C_SRCDIR)/CONTROLS/m_field_name_from_f.c \
  $(C_SRCDIR)/CONTROLS/m_field_name_from_f.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
+m_force_name_from_f.o: \
+ $(C_SRCDIR)/CONTROLS/m_force_name_from_f.c \
+ $(C_SRCDIR)/CONTROLS/m_force_name_from_f.h
+	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
 set_rgba_table_c.o: \
  $(C_SRCDIR)/CONTROLS/set_rgba_table_c.c \
  $(C_SRCDIR)/CONTROLS/set_rgba_table_c.h \

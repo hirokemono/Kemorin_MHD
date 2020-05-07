@@ -8,7 +8,7 @@
 #include "control_panel_4_field_GTK.h"
 
 
-static void transfer_model_data(int iflag_if_add, struct all_field_ctl_c **all_fld_tbl,
+static void transfer_model_data(int iflag_if_add, struct all_field_ctl_z **all_fld_tbl,
 			struct field_ctl_c *fld_ctl, GtkTreeView *tree_view_to_del, GtkTreeView *tree_view_to_add)
 {
 	GtkTreeModel *model_to_del;

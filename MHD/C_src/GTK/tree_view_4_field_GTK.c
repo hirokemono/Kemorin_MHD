@@ -10,7 +10,7 @@
 struct field_views * init_field_views_GTK(struct field_ctl_c *fld_ctl_ref){
     struct field_views *fields_vws = (struct field_views *) malloc(sizeof(struct field_views));
     fields_vws->fld_ctl_gtk = fld_ctl_ref;
-    fields_vws->all_fld_tbl = (struct all_field_ctl_c **) malloc(NUM_FIELD * sizeof(struct all_field_ctl_c *));
+    fields_vws->all_fld_tbl = (struct all_field_ctl_z **) malloc(NUM_FIELD * sizeof(struct all_field_ctl_z *));
     alloc_all_field_ctl_c(fields_vws->all_fld_tbl);
     load_field_w_qflag_from_ctl(fields_vws->fld_ctl_gtk, fields_vws->all_fld_tbl);
     return fields_vws;
@@ -25,7 +25,7 @@ void dealloc_field_views_GTK(struct field_views *fields_vws){
 
 
 /* Append new data at the end of list */
-void append_field_model_data(int index_field, struct all_field_ctl_c *all_fld_tbl, 
+void append_field_model_data(int index_field, struct all_field_ctl_z *all_fld_tbl, 
 			GtkListStore *child_model)
 {
     GtkTreeIter iter;

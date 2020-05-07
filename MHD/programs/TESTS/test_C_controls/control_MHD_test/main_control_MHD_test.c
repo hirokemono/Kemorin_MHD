@@ -1,32 +1,31 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include "all_field_names_c.h"
 #include "control_elements_IO_c.h"
 #include "t_SGS_MHD_control_c.h"
+#include "m_field_name_from_f.h"
 
-struct all_field_ctl_c **all_fld_list;
+struct all_field_ctl_z **all_fld_list;
 
 
 int main(int argc,char *argv[])
 {
 	struct SGS_MHD_control_c *mhd_ctl;
+    struct field_names_f *fld_l = init_field_name_f();
+
 	char buf[LENGTHBUF];      /* character buffer for reading line */
 	char file_name[LENGTHBUF] = "/Users/matsui/work/C_test/control_MHD";
 	char file_name_2[LENGTHBUF];
-    char fld_name[NCHARA_FIELD];
-    char fld_math[KCHARA_C];
 	int i;
     
     int num_comps;
 	
-    all_fld_list = (struct all_field_ctl_c **) malloc(NUM_FIELD * sizeof(struct all_field_ctl_c *));
+    all_fld_list = (struct all_field_ctl_z **) malloc(fld_l->ntot_fields * sizeof(struct all_field_ctl_z *));
     alloc_all_field_ctl_c(all_fld_list);
 		
-    printf("baka %d\n", NUM_FIELD);
-	for(i=0;i<NUM_FIELD;i++){
-        num_comps = get_field_properties(i, fld_name, fld_math);
-		printf("field_name %d: %s %d %s\n", i, fld_name, num_comps, fld_math);
+    printf("baka %d\n", fld_l->ntot_fields);
+	for(i=0;i<fld_l->ntot_fields;i++){
+		printf("field_name %d: %s %d %s\n", i, fld_l->field_name[i], fld_l->num_comp[i], fld_l->field_math[i]);
 	}
 	
 	/*
@@ -56,7 +55,7 @@ int main(int argc,char *argv[])
 
     dealloc_SGS_MHD_control_c(mhd_ctl);
     
-    for(i=0;i<NUM_FIELD;i++){
+    for(i=0;i<fld_l->ntot_fields;i++){
         printf("%d:, %s: %s: %d %d %d\n", i, all_fld_list[i]->field_name,
                all_fld_list[i]->field_math, all_fld_list[i]->iflag_use,
                all_fld_list[i]->iflag_viz, all_fld_list[i]->iflag_monitor);
