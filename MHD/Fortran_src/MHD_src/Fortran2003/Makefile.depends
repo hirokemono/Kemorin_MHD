@@ -1,0 +1,3 @@
+force_names_to_c.o: $(MHD_F2003_DIR)/force_names_to_c.f90 m_precision.o t_base_field_labels.o m_force_control_labels.o
+	$(F90) -c $(F90OPTFLAGS) $<
+
