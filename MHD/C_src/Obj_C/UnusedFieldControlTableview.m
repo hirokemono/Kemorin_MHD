@@ -37,10 +37,10 @@
 @synthesize secondParent;
 @synthesize list;
 
--(void)linkToFieldclist:(struct all_field_ctl_z **) ref_all_fld_table
+-(void)linkToFieldclist:(struct all_field_ctl_c *) ref_all_fld_list
 {
     mhd_ctl_m = link_to_mhd_ctl();
-    all_fld_tbl = ref_all_fld_table;
+    all_fld_list = ref_all_fld_list;
 }
 
 -(void)initMutablearray
@@ -67,9 +67,9 @@
     
     /*
      for(i=0;i<NUM_FIELD;i++){
-     printf("%d %s %d %d %d %d \n", i, all_fld_tbl[i]->field_name, 
-     all_fld_tbl[i]->iflag_use, all_fld_tbl[i]->iflag_viz,
-     all_fld_tbl[i]->iflag_monitor, all_fld_tbl[i]->iflag_quad);
+     printf("%d %s %d %d %d %d \n", i, all_fld_list->fld_list->field_name[i], 
+     all_fld_list->iflag_use[i], all_fld_list->iflag_viz[i],
+     all_fld_list->iflag_monitor[i], all_fld_list->iflag_quad[i]);
      }
      */
     
@@ -77,8 +77,8 @@
     [self.baseFieldArray removeAllObjects];
     c1_out = (char *)calloc(KCHARA_C, sizeof(char));
     for(i=2;i<50;i++){
-        if(all_fld_tbl[i]->iflag_use == 0){
-            NSString *data1 = [NSString stringWithCString:all_fld_tbl[i]->field_name encoding:NSUTF8StringEncoding];
+        if(all_fld_list->iflag_use[i] == 0){
+            NSString *data1 = [NSString stringWithCString:all_fld_list->fld_list->field_name[i] encoding:NSUTF8StringEncoding];
             NSNumber *num0 = [[NSNumber alloc] initWithInt:i];
             self.baseFieldDictionary = [NSMutableDictionary dictionaryWithObjectsAndKeys:@"Base",self.key2, num0,self.key0, data1,self.key1, nil];
             [self.baseFieldArray addObject:data1];
@@ -89,8 +89,8 @@
     
     [self.forceFieldArray removeAllObjects];
     for(i=50;i<100;i++){
-        if(all_fld_tbl[i]->iflag_use == 0){
-            NSString *data1 = [NSString stringWithCString:all_fld_tbl[i]->field_name encoding:NSUTF8StringEncoding];
+        if(all_fld_list->iflag_use[i] == 0){
+            NSString *data1 = [NSString stringWithCString:all_fld_list->fld_list->field_name[i] encoding:NSUTF8StringEncoding];
             NSNumber *num0 = [[NSNumber alloc] initWithInt:i];
             self.forceFieldDictionary = [NSMutableDictionary dictionaryWithObjectsAndKeys:@"Force",self.key2, num0,self.key0, data1,self.key1, nil];
             [self.forceFieldArray addObject:data1];
@@ -101,8 +101,8 @@
 
     [self.energyFieldArray removeAllObjects];
     for(i=100;i<170;i++){
-        if(all_fld_tbl[i]->iflag_use == 0){
-            NSString *data1 = [NSString stringWithCString:all_fld_tbl[i]->field_name encoding:NSUTF8StringEncoding];
+        if(all_fld_list->iflag_use[i] == 0){
+            NSString *data1 = [NSString stringWithCString:all_fld_list->fld_list->field_name[i] encoding:NSUTF8StringEncoding];
             NSNumber *num0 = [[NSNumber alloc] initWithInt:i];
             self.energyFieldDictionary = [NSMutableDictionary dictionaryWithObjectsAndKeys:@"Energy",self.key2, num0,self.key0, data1,self.key1, nil];
             [self.energyFieldArray addObject:data1];
@@ -113,8 +113,8 @@
 
     [self.sgsFieldArray removeAllObjects];
     for(i=170;i<NUM_FIELD;i++){
-        if(all_fld_tbl[i]->iflag_use == 0){
-            NSString *data1 = [NSString stringWithCString:all_fld_tbl[i]->field_name encoding:NSUTF8StringEncoding];
+        if(all_fld_list->iflag_use[i] == 0){
+            NSString *data1 = [NSString stringWithCString:all_fld_list->fld_list->field_name[i] encoding:NSUTF8StringEncoding];
             NSNumber *num0 = [[NSNumber alloc] initWithInt:i];
             self.sgsFieldDictionary = [NSMutableDictionary dictionaryWithObjectsAndKeys:@"SGS",self.key2, num0,self.key0, data1,self.key1, nil];
             [self.sgsFieldArray addObject:data1];
@@ -191,11 +191,11 @@
         NSString *selectedID = [[self.FieldControlArray objectAtIndex:isel] objectForKey:self.key0];
         index =  [selectedID intValue];
         [field_Indices addIndex:index];
-        all_fld_tbl[index]->iflag_use =     1;
-        all_fld_tbl[index]->iflag_viz =     0;
-        all_fld_tbl[index]->iflag_monitor = 0;
-        all_fld_tbl[index]->iflag_quad =    0;
-        add_field_wqflag_to_ctl_z(all_fld_tbl[index], mhd_ctl_m->model_ctl->fld_ctl);
+        all_fld_list->iflag_use[index] =     1;
+        all_fld_list->iflag_viz[index] =     0;
+        all_fld_list->iflag_monitor[index] = 0;
+        all_fld_list->iflag_quad[index] =    0;
+        add_field_wqflag_to_ctl(index, all_fld_list, mhd_ctl_m->model_ctl->fld_ctl);
         
         [self.FieldControlArray removeObjectAtIndex:isel];
          */
@@ -303,7 +303,7 @@
     index =  [selectedID intValue];
     
     [[self.FieldControlArray objectAtIndex:pRowIndex] setObject:pObject forKey:selectedKey];
-    update_field_flag_wqflag_in_ctl_z(all_fld_tbl[index], mhd_ctl_m->model_ctl->fld_ctl);
+    update_field_flag_wqflag_in_ctl(index, all_fld_list, mhd_ctl_m->model_ctl->fld_ctl);
     
     /*
      NSString *editedtext = [self.FieldControlArray objectAtIndex:pRowIndex];

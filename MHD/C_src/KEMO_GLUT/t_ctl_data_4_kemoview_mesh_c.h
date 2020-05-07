@@ -37,6 +37,6 @@ void read_field_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct field_ctl_c *fld_ctl);
 int write_field_ctl_c(FILE *fp, int level, const char *label, struct field_ctl_c *fld_ctl);
 
-void check_field_ctl_list_z(struct field_ctl_c *fld_ctl);
+void check_field_ctl_list(struct field_ctl_c *fld_ctl);
 
 #endif /* t_ctl_data_4_kemoview_mesh_c */

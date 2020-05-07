@@ -10,22 +10,20 @@
 struct field_views * init_field_views_GTK(struct field_ctl_c *fld_ctl_ref){
     struct field_views *fields_vws = (struct field_views *) malloc(sizeof(struct field_views));
     fields_vws->fld_ctl_gtk = fld_ctl_ref;
-    fields_vws->all_fld_tbl = (struct all_field_ctl_z **) malloc(NUM_FIELD * sizeof(struct all_field_ctl_z *));
-    alloc_all_field_ctl_z(fields_vws->all_fld_tbl);
-    load_field_w_qflag_from_ctl_z(fields_vws->fld_ctl_gtk, fields_vws->all_fld_tbl);
+    fields_vws->all_fld_list = init_all_field_ctl_c();
+    load_field_w_qflag_from_ctl(fields_vws->fld_ctl_gtk, fields_vws->all_fld_list);
     return fields_vws;
 }
 
 void dealloc_field_views_GTK(struct field_views *fields_vws){
-    dealloc_all_field_ctl_z(fields_vws->all_fld_tbl);
-    free(fields_vws->all_fld_tbl);
+    dealloc_all_field_ctl_c(fields_vws->all_fld_list);
     free(fields_vws);
     return;
 }
 
 
 /* Append new data at the end of list */
-void append_field_model_data(int index_field, struct all_field_ctl_z *all_fld_tbl, 
+void append_field_model_data(int index_field, struct all_field_ctl_c *all_fld_list, 
 			GtkListStore *child_model)
 {
     GtkTreeIter iter;
@@ -33,12 +31,12 @@ void append_field_model_data(int index_field, struct all_field_ctl_z *all_fld_tb
     gtk_list_store_append(child_model, &iter);
     gtk_list_store_set(child_model, &iter,
                        COLUMN_FIELD_INDEX, index_field,
-                       COLUMN_FIELD_NAME, all_fld_tbl->field_name,
-                       COLUMN_FIELD_MATH, all_fld_tbl->field_math,
-                       COLUMN_FORTH, (gboolean) all_fld_tbl->iflag_viz,
-                       COLUMN_FIFTH, (gboolean) all_fld_tbl->iflag_monitor,
-                       COLUMN_NUM_COMP, all_fld_tbl->num_comp,
-                       COLUMN_QUADRATURE, all_fld_tbl->iflag_quad,
+                       COLUMN_FIELD_NAME, all_fld_list->fld_list->field_name[index_field],
+                       COLUMN_FIELD_MATH, all_fld_list->fld_list->field_math[index_field],
+                       COLUMN_FORTH, (gboolean) all_fld_list->iflag_viz[index_field],
+                       COLUMN_FIFTH, (gboolean) all_fld_list->iflag_monitor[index_field],
+                       COLUMN_NUM_COMP, all_fld_list->fld_list->num_comp[index_field],
+                       COLUMN_QUADRATURE, all_fld_list->iflag_quad[index_field],
                        -1);
 }
 
@@ -61,7 +59,7 @@ static void toggle_viz_switch(GtkTreeViewColumn *renderer,
     
    
     printf("toggle_viz_switch %d, %s: %s\n", index_field, row_string,
-            fields_vws->all_fld_tbl[index_field]->field_name);
+            fields_vws->all_fld_list->fld_list->field_name[index_field]);
     
     index_for_toggle = (index_for_toggle+ 1) % 2;
     gtk_list_store_set(GTK_LIST_STORE(child_model), &iter,
@@ -69,8 +67,8 @@ static void toggle_viz_switch(GtkTreeViewColumn *renderer,
     gtk_tree_path_free(child_path);  
     gtk_tree_path_free(path);  
     
-    fields_vws->all_fld_tbl[index_field]->iflag_viz = index_for_toggle;
-	update_field_flag_wqflag_in_ctl_z(fields_vws->all_fld_tbl[index_field],
+    fields_vws->all_fld_list->iflag_viz[index_field] = index_for_toggle;
+	update_field_flag_wqflag_in_ctl(index_field, fields_vws->all_fld_list,
 				fields_vws->fld_ctl_gtk);
 }
 
@@ -91,7 +89,7 @@ static void toggle_monitor_switch(GtkTreeViewColumn *renderer, gchar *path_str, 
 	gtk_tree_model_get(child_model, &iter, COLUMN_FIFTH, &index_for_toggle, -1);
     
     printf("toggle_monitor_switch %d, %s: %s\n", index_field, row_string,
-           fields_vws->all_fld_tbl[index_field]->field_name);
+           fields_vws->all_fld_list->fld_list->field_name[index_field]);
 	
     index_for_toggle = (index_for_toggle+ 1) % 2;
     gtk_list_store_set(GTK_LIST_STORE(child_model), &iter,
@@ -99,8 +97,8 @@ static void toggle_monitor_switch(GtkTreeViewColumn *renderer, gchar *path_str, 
     gtk_tree_path_free(child_path);  
     gtk_tree_path_free(path);  
     
-    fields_vws->all_fld_tbl[index_field]->iflag_monitor = index_for_toggle;
-	update_field_flag_wqflag_in_ctl_z(fields_vws->all_fld_tbl[index_field],
+    fields_vws->all_fld_list->iflag_monitor[index_field] = index_for_toggle;
+	update_field_flag_wqflag_in_ctl(index_field, fields_vws->all_fld_list,
 				fields_vws->fld_ctl_gtk);
 }
 
@@ -179,8 +177,8 @@ void create_field_tree_view(struct field_views *fields_vws)
     gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(model), COLUMN_FIELD_INDEX, GTK_SORT_ASCENDING);
     
     for(i=0;i<NUM_FIELD;i++){
-		if(fields_vws->all_fld_tbl[i]->iflag_use > 0) {
-			append_field_model_data(i, fields_vws->all_fld_tbl[i], child_model);
+		if(fields_vws->all_fld_list->iflag_use[i] > 0) {
+			append_field_model_data(i, fields_vws->all_fld_list, child_model);
 		};
     }
     
@@ -232,8 +230,8 @@ void create_unused_field_tree_view(struct field_views *fields_vws)
     gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(model), COLUMN_FIELD_INDEX, GTK_SORT_ASCENDING);
     
     for(i=0;i<NUM_FIELD;i++){
-		if(fields_vws->all_fld_tbl[i]->iflag_use == 0) {
-			append_field_model_data(i, fields_vws->all_fld_tbl[i], child_model);
+		if(fields_vws->all_fld_list->iflag_use[i] == 0) {
+			append_field_model_data(i, fields_vws->all_fld_list, child_model);
 		};
     }
     

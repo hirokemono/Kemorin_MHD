@@ -25,7 +25,7 @@ struct field_views{
     GtkWidget *surface_eq_view;
 	
 	struct field_ctl_c *fld_ctl_gtk;
-    struct all_field_ctl_z **all_fld_tbl;
+    struct all_field_ctl_c *all_fld_list;
 };
 
 /* prototypes */
@@ -33,7 +33,7 @@ struct field_views{
 struct field_views *  init_field_views_GTK(struct field_ctl_c *fld_ctl_ref);
 void dealloc_field_views_GTK(struct field_views *fields_vws);
 
-void append_field_model_data(int index_field, struct all_field_ctl_z *all_fld_tbl,
+void append_field_model_data(int index_field, struct all_field_ctl_c *all_fld_list,
 			GtkListStore *child_model);
 
 void create_field_tree_view(struct field_views *fields_vws);

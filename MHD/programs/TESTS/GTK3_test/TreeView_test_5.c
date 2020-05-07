@@ -4,7 +4,7 @@
 #include "t_ctl_data_4_fields_c.h"
 #include "t_SGS_MHD_control_c.h"
 
-struct all_field_ctl_z **all_fld_list;
+struct all_field_ctl_c *all_fld_list;
 struct SGS_MHD_control_c *mhd_ctl;
 char file_name[LENGTHBUF] = "/Users/matsui/work/C_test/control_MHD";
 char buf[LENGTHBUF];      /* character buffer for reading line */
@@ -91,9 +91,9 @@ static void append_model_data(GtkButton *button, gpointer user_data){
 	
 	gtk_list_store_append(GTK_LIST_STORE(child_model), &iter);
 /*	gtk_list_store_set(GTK_LIST_STORE(child_model), &iter,
-					   FIELD_NAME_COLUMN, (gchar) all_fld_list[index]->field_name,
-					   VIZ_SWITCH_COLUMN, (gboolean) all_fld_list[index]->iflag_use,
-					   MONITOR_SW_COLUMN, (gboolean) all_fld_list[index]->iflag_viz,
+					   FIELD_NAME_COLUMN, (gchar) all_fld_list->fld_list->field_name[index],
+					   VIZ_SWITCH_COLUMN, (gboolean) all_fld_list->iflag_use[index],
+					   MONITOR_SW_COLUMN, (gboolean) all_fld_list->iflag_viz[index],
 					   -1);
 */
     
@@ -372,12 +372,11 @@ int main(int argc, char **argv)
 
 	srand((unsigned)time(NULL));
 
-    all_fld_list = (struct all_field_ctl_z **) malloc(NUM_FIELD * sizeof(struct all_field_ctl_z *));
-    alloc_all_field_ctl_z(all_fld_list);
+    all_fld_list = init_all_field_ctl_c();
 	
     mhd_ctl = alloc_SGS_MHD_control_c();
 	read_SGS_MHD_control_file_c(file_name, buf, mhd_ctl);
-    load_field_from_ctl_z(&mhd_ctl->model_ctl->fld_ctl->field_list, all_fld_list);
+    load_field_from_ctl(&mhd_ctl->model_ctl->fld_ctl->field_list, all_fld_list);
 	
 	
 	gtk_init(&argc, &argv);

@@ -4,7 +4,7 @@
 #include "t_ctl_data_4_fields_c.h"
 #include "t_SGS_MHD_control_c.h"
 
-struct all_field_ctl_z **all_fld_list;
+struct all_field_ctl_c *all_fld_list;
 struct SGS_MHD_control_c *mhd_ctl;
 char file_name[LENGTHBUF] = "/Users/matsui/work/C_test/control_MHD";
 char buf[LENGTHBUF];      /* character buffer for reading line */
@@ -64,16 +64,16 @@ static void init_model_data(GtkTreeView *tree_view)
 	model = gtk_tree_view_get_model(tree_view);
 	child_model = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model));
 	
-	for(i=0;i<NUM_FIELD;i++){
-		if(all_fld_list[i]->iflag_use > 0){
+	for(i=0;i<all_fld_list->fld_list->ntot_fields;i++){
+		if(all_fld_list->iflag_use[i] > 0){
 			
 			gtk_list_store_append(GTK_LIST_STORE(child_model), &iter);
 			gtk_list_store_set(GTK_LIST_STORE(child_model), &iter,
 					   COLUMN_FIELD_INDEX, i,
-					   COLUMN_FIELD_NAME, all_fld_list[i]->field_name,
-					   COLUMN_VIZ_FLAG, all_fld_list[i]->iflag_viz,
-					   COLUMN_MONITOR_FLAG, all_fld_list[i]->iflag_monitor,
-					   COLUMN_NUM_COMP, all_fld_list[i]->num_comp,
+					   COLUMN_FIELD_NAME, all_fld_list->fld_list->field_name[i],
+					   COLUMN_VIZ_FLAG, all_fld_list->iflag_viz[i],
+					   COLUMN_MONITOR_FLAG, all_fld_list->iflag_monitor[i],
+					   COLUMN_NUM_COMP, all_fld_list->fld_list->num_comp[i],
 						-1);
 			
 		};
@@ -94,7 +94,7 @@ static void append_model_data(GtkButton *button, gpointer user_data)
 	gtk_list_store_append(GTK_LIST_STORE(child_model), &iter);
 	gtk_list_store_set(GTK_LIST_STORE(child_model), &iter,
 					   COLUMN_FIELD_INDEX, ++serial_num,
-					   COLUMN_FIELD_NAME, all_fld_list[serial_num]->field_name,
+					   COLUMN_FIELD_NAME, all_fld_list->fld_list->field_name[serial_num],
 					   COLUMN_VIZ_FLAG, rand() & 0x0000FFFF,
 					   -1);
 }
@@ -400,12 +400,11 @@ int main(int argc, char **argv)
 
 	srand((unsigned)time(NULL));
 
-    all_fld_list = (struct all_field_ctl_z **) malloc(NUM_FIELD * sizeof(struct all_field_ctl_z *));
-    alloc_all_field_ctl_z(all_fld_list);
+    all_fld_list = init_all_field_ctl_c();
 	
     mhd_ctl = alloc_SGS_MHD_control_c();
 	read_SGS_MHD_control_file_c(file_name, buf, mhd_ctl);
-    load_field_from_ctl_z(&mhd_ctl->model_ctl->fld_ctl->field_list, all_fld_list);
+    load_field_from_ctl(&mhd_ctl->model_ctl->fld_ctl->field_list, all_fld_list);
 	
 	
 	gtk_init(&argc, &argv);

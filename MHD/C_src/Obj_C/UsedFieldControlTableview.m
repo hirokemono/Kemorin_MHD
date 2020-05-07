@@ -21,10 +21,10 @@
 @synthesize key4;
 @synthesize key0;
 
--(void)linkToFieldclist:(struct all_field_ctl_z **) ref_all_fld_table
+-(void)linkToFieldclist:(struct all_field_ctl_c *) ref_all_fld_list
 { 
     mhd_ctl_m = link_to_mhd_ctl();
-    all_fld_tbl = ref_all_fld_table;
+    all_fld_list = ref_all_fld_list;
 }
 
 -(void)initMutablearray
@@ -47,20 +47,20 @@
     
     /*
      for(i=0;i<NUM_FIELD;i++){
-     printf("%d %s %d %d %d %d \n", i, all_fld_tbl[i]->field_name, 
-     all_fld_tbl[i]->iflag_use, all_fld_tbl[i]->iflag_viz,
-     all_fld_tbl[i]->iflag_monitor, all_fld_tbl[i]->iflag_quad);
+     printf("%d %s %d %d %d %d \n", i, all_fld_list->fld_list->field_name[i], 
+     all_fld_list->iflag_use[i], all_fld_list->iflag_viz[i],
+     all_fld_list->iflag_monitor[i], all_fld_list->iflag_quad[i]);
      }
      */
     
     [self.FieldControlArray removeAllObjects];
     c1_out = (char *)calloc(KCHARA_C, sizeof(char));
     for(i=0;i<NUM_FIELD;i++){
-        if(all_fld_tbl[i]->iflag_use > 0){
-            NSString *data1 = [NSString stringWithCString:all_fld_tbl[i]->field_name encoding:NSUTF8StringEncoding];
-            NSNumber *num2 = [[NSNumber alloc] initWithInt:all_fld_tbl[i]->iflag_viz];
-            NSNumber *num3 = [[NSNumber alloc] initWithInt:all_fld_tbl[i]->iflag_monitor];
-            NSNumber *num4 = [[NSNumber alloc] initWithInt:all_fld_tbl[i]->iflag_quad];
+        if(all_fld_list->iflag_use[i] > 0){
+            NSString *data1 = [NSString stringWithCString:all_fld_list->fld_list->field_name[i] encoding:NSUTF8StringEncoding];
+            NSNumber *num2 = [[NSNumber alloc] initWithInt:all_fld_list->iflag_viz[i]];
+            NSNumber *num3 = [[NSNumber alloc] initWithInt:all_fld_list->iflag_monitor[i]];
+            NSNumber *num4 = [[NSNumber alloc] initWithInt:all_fld_list->iflag_quad[i]];
             NSNumber *num0 = [[NSNumber alloc] initWithInt:i];
             self.FieldControlDictionary = [NSMutableDictionary dictionaryWithObjectsAndKeys:num0,self.key0, data1,self.key1, num2,self.key2, num3,self.key3, num4,self.key4, nil];
             [self.FieldControlArray addObject:self.FieldControlDictionary];
@@ -143,11 +143,11 @@
         NSString *selectedID = [[self.FieldControlArray objectAtIndex:isel] objectForKey:self.key0];
         index =  [selectedID intValue];
         [field_Indices addIndex:index];
-        all_fld_tbl[index]->iflag_use =     0;
-        all_fld_tbl[index]->iflag_viz =     0;
-        all_fld_tbl[index]->iflag_monitor = 0;
-        all_fld_tbl[index]->iflag_quad =    0;
-        delete_field_wqflag_in_ctl_z(all_fld_tbl[index], mhd_ctl_m->model_ctl->fld_ctl);
+        all_fld_list->iflag_use[i] =     0;
+        all_fld_list->iflag_viz[i] =     0;
+        all_fld_list->iflag_monitor[i] = 0;
+        all_fld_list->iflag_quad[i] =    0;
+        delete_field_wqflag_in_ctl(index, all_fld_list, mhd_ctl_m->model_ctl->fld_ctl);
         
         [self.FieldControlArray removeObjectAtIndex:isel];
         isel = [selectedRows indexLessThanIndex:isel];
@@ -203,12 +203,12 @@
     [[self.FieldControlArray objectAtIndex:pRowIndex] setObject:pObject forKey:selectedKey];
     
     if([selectedKey isEqualToString:self.key2]){
-        all_fld_tbl[index]->iflag_viz = [pObject intValue];
+        all_fld_list->iflag_viz[index] = [pObject intValue];
     }
     if([selectedKey isEqualToString:self.key3]){
-        all_fld_tbl[index]->iflag_monitor = [pObject intValue];
+        all_fld_list->iflag_monitor[index] = [pObject intValue];
     }
-    update_field_flag_wqflag_in_ctl_z(all_fld_tbl[index], mhd_ctl_m->model_ctl->fld_ctl);
+    update_field_flag_wqflag_in_ctl(index, all_fld_list, mhd_ctl_m->model_ctl->fld_ctl);
     
     //    NSLog(@"Mutablearray again  %@",[self.FieldControlArray objectAtIndex:pRowIndex]);
 };

@@ -8,7 +8,7 @@
 #include "control_panel_4_field_GTK.h"
 
 
-static void transfer_model_data(int iflag_if_add, struct all_field_ctl_z **all_fld_tbl,
+static void transfer_model_data(int iflag_if_add, struct all_field_ctl_c *all_fld_list,
 			struct field_ctl_c *fld_ctl, GtkTreeView *tree_view_to_del, GtkTreeView *tree_view_to_add)
 {
 	GtkTreeModel *model_to_del;
@@ -54,11 +54,11 @@ static void transfer_model_data(int iflag_if_add, struct all_field_ctl_z **all_f
 	}
 	g_list_free(list);
 
-	/* GtkTreeSelectionのchangedシグナルを一時的にブロックする */
+	/* Temporaly block changed signal from GtkTreeSelection */
 	block_changed_signal(G_OBJECT(child_model_to_del));
 	block_changed_signal(G_OBJECT(child_model_to_add));
 
-	/* リファレンスをパスに戻して削除 */
+	/* Back the reference to path and delete */
 	for (cur = g_list_first(reference_list); cur != NULL; cur = g_list_next(cur)) {
 		GtkTreePath *tree_path;
 		GtkTreeIter iter;
@@ -73,12 +73,12 @@ static void transfer_model_data(int iflag_if_add, struct all_field_ctl_z **all_f
         gtk_tree_model_get(child_model_to_del, &iter, COLUMN_QUADRATURE, &iflag_quad, -1);
         
         printf("To be moved: %d, %s: %s\n", index_field, field_name,
-               all_fld_tbl[index_field]->field_name);
+               all_fld_list->fld_list->field_name[index_field]);
 		/* Delete */
 		gtk_list_store_remove(GTK_LIST_STORE(child_model_to_del), &iter);
 		
 		/* Add */
-		append_field_model_data(index_field, all_fld_tbl[index_field], 
+		append_field_model_data(index_field, all_fld_list, 
 								GTK_LIST_STORE(child_model_to_add));
 		
 		gtk_tree_path_free(tree_path);
@@ -87,10 +87,10 @@ static void transfer_model_data(int iflag_if_add, struct all_field_ctl_z **all_f
 		/* Update control data */
 		if(iflag_if_add == 1){
 			printf("Add field list \n");
-			add_field_wqflag_to_ctl_z(all_fld_tbl[index_field], fld_ctl);
+			add_field_wqflag_to_ctl(index_field, all_fld_list, fld_ctl);
 		} else {
 			printf("Delete field list \n");
-			delete_field_wqflag_in_ctl_z(all_fld_tbl[index_field], fld_ctl);
+			delete_field_wqflag_in_ctl(index_field, all_fld_list, fld_ctl);
 		};
 		
 	}
@@ -105,11 +105,11 @@ static void remove_field_to_use(GtkButton *button, gpointer user_data)
 {
 	struct field_views *fields_vws = (struct field_views *) user_data;
 	
-	transfer_model_data(0, fields_vws->all_fld_tbl, fields_vws->fld_ctl_gtk,
+	transfer_model_data(0, fields_vws->all_fld_list, fields_vws->fld_ctl_gtk,
 				GTK_TREE_VIEW(fields_vws->used_tree_view), 
 				GTK_TREE_VIEW(fields_vws->unused_field_tree_view));
     /*
-    check_field_ctl_list_z(fields_vws->fld_ctl_gtk);
+    check_field_ctl_list(fields_vws->fld_ctl_gtk);
      */
 }
 
@@ -117,11 +117,11 @@ static void add_field_to_use(GtkButton *button, gpointer user_data)
 {
 	struct field_views *fields_vws = (struct field_views *) user_data;
 	
-	transfer_model_data(1, fields_vws->all_fld_tbl, fields_vws->fld_ctl_gtk,
+	transfer_model_data(1, fields_vws->all_fld_list, fields_vws->fld_ctl_gtk,
 				GTK_TREE_VIEW(fields_vws->unused_field_tree_view),
 				GTK_TREE_VIEW(fields_vws->used_tree_view));
     /*
-    check_field_ctl_list_z(fields_vws->fld_ctl_gtk);
+    check_field_ctl_list(fields_vws->fld_ctl_gtk);
      */
 }
 

@@ -15,10 +15,9 @@
     load_MHD_control_c();
     mhd_ctl_m = link_to_mhd_ctl();
     
-    all_fld_tbl = (struct all_field_ctl_z **) malloc(NUM_FIELD * sizeof(struct all_field_ctl_z *));
-    alloc_all_field_ctl_z(all_fld_tbl);
+    all_fld_list = init_all_field_ctl_c();
 
-    load_field_w_qflag_from_ctl_z(mhd_ctl_m->model_ctl->fld_ctl, all_fld_tbl);
+    load_field_w_qflag_from_ctl(mhd_ctl_m->model_ctl->fld_ctl, all_fld_list);
 }
 
 // TableView Datasource method implementation
@@ -26,13 +25,13 @@
     [self linkToFieldclist];
     
     usedFieldCtlTableview = [[UsedFieldControlTableview alloc] init];
-    [usedFieldCtlTableview linkToFieldclist:all_fld_tbl];
+    [usedFieldCtlTableview linkToFieldclist:all_fld_list];
     [usedFieldCtlTableview initMutablearray];    
     [usedFieldCtlTableview createMutablearray];
     [usedFieldCtlTableview createFieldView:usedFieldTableViewOutlet];
     
     unusedFieldCtlTableview = [[UnusedFieldControlTableview alloc] init];
-    [unusedFieldCtlTableview linkToFieldclist:all_fld_tbl];
+    [unusedFieldCtlTableview linkToFieldclist:all_fld_list];
     [unusedFieldCtlTableview initMutablearray];    
     [unusedFieldCtlTableview createMutablearray];
     [unusedFieldCtlTableview createFieldView:unUsedFieldTableViewOutlet];

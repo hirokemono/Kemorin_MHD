@@ -4,7 +4,7 @@
 #include "t_ctl_data_4_fields_c.h"
 #include "t_SGS_MHD_control_c.h"
 
-struct all_field_ctl_z **all_fld_list;
+struct all_field_ctl_c *all_fld_list;
 struct SGS_MHD_control_c *mhd_ctl;
 char file_name[LENGTHBUF] = "/Users/matsui/work/C_test/control_MHD";
 char buf[LENGTHBUF];      /* character buffer for reading line */
@@ -37,16 +37,16 @@ static void init_model_data(GtkTreeView *tree_view)
 	model = gtk_tree_view_get_model(tree_view);
 	child_model = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model));
 	
-	for(i=0;i<NUM_FIELD;i++){
-		if(all_fld_list[i]->iflag_use > 0){
+	for(i=0;i<all_fld_list->fld_list->ntot_fields;i++){
+		if(all_fld_list->iflag_use[i] > 0){
 			
 			gtk_list_store_append(GTK_LIST_STORE(child_model), &iter);
 			gtk_list_store_set(GTK_LIST_STORE(child_model), &iter,
 					   COLUMN_FIELD_INDEX, i,
-					   COLUMN_FIELD_NAME, all_fld_list[i]->field_name,
-					   COLUMN_VIZ_FLAG, (gboolean) all_fld_list[i]->iflag_viz,
-					   COLUMN_MONITOR_FLAG, (gboolean) all_fld_list[i]->iflag_monitor,
-					   COLUMN_NUM_COMP, all_fld_list[i]->num_comp,
+					   COLUMN_FIELD_NAME, all_fld_list->fld_list->field_name[i],
+					   COLUMN_VIZ_FLAG, all_fld_list->iflag_viz[i],
+					   COLUMN_MONITOR_FLAG, all_fld_list->iflag_monitor[i],
+					   COLUMN_NUM_COMP, all_fld_list->fld_list->num_comp[i],
 						-1);
 			
 		};
@@ -146,11 +146,12 @@ static void remove_model_data(GtkButton *button, gpointer user_data)
         gtk_tree_model_get(child_model, &iter, COLUMN_FIELD_NAME, &row_string, -1);
         /*
         printf("To be deleted: %d, %s: %s\n", index_field, row_string,
-               all_fld_list[index_field]->field_name);
+               all_fld_list->fld_list->field_name[index_field]);
 */
 		/* DElete */
 		gtk_list_store_remove(GTK_LIST_STORE(child_model), &iter);
-        delete_field_in_ctl_z(all_fld_list[index_field], &mhd_ctl->model_ctl->fld_ctl->field_list);
+		delete_field_in_ctl(index_field, all_fld_list, 
+							&mhd_ctl->model_ctl->fld_ctl->field_list);
 
 		gtk_tree_path_free(tree_path);
 		gtk_tree_row_reference_free((GtkTreeRowReference *)cur->data);
@@ -160,7 +161,7 @@ static void remove_model_data(GtkButton *button, gpointer user_data)
 	/* changedシグナルのブロックを解除する */
 	unblock_changed_signal(G_OBJECT(child_model));
     /*
-    check_field_ctl_list_z(&mhd_ctl->model_ctl->fld_ctl->field_list);
+    check_field_ctl_list(&mhd_ctl->model_ctl->fld_ctl->field_list);
      */
 }
 
@@ -182,14 +183,15 @@ static GtkWidget *create_box_in_bottuns(GtkWidget *tree_view, GtkWidget *window)
 	g_signal_connect(G_OBJECT(menubutton), "activate", G_CALLBACK(append_model_data), NULL);
 	
 	menumodel = g_menu_new();
-	for(j=0; j<NUM_FIELD/10;j++){
+	for(j=0; j<all_fld_list->fld_list->ntot_fields/10;j++){
 		submenu[j] = g_menu_new ();
 		sprintf(f_label, "Field_list_%d-", j*10);
 		g_menu_append_submenu (menumodel, f_label, G_MENU_MODEL(submenu[j]));
 		for(k=0; k<10;k++){
 			i = k + j*10;
-			if(all_fld_list[i]->iflag_use == 0){
-				g_menu_append (submenu[j], all_fld_list[i]->field_name, all_fld_list[i]->field_name);
+			if(all_fld_list->iflag_use[i] == 0){
+				g_menu_append (submenu[j], all_fld_list->fld_list->field_name[i],
+							   all_fld_list->fld_list->field_name[i]);
 			};
 		};
 	};
@@ -420,12 +422,11 @@ int main(int argc, char **argv)
 
 	srand((unsigned)time(NULL));
 
-    all_fld_list = (struct all_field_ctl_z **) malloc(NUM_FIELD * sizeof(struct all_field_ctl_z *));
-    alloc_all_field_ctl_z(all_fld_list);
+    all_fld_list = init_all_field_ctl_c();
 	
     mhd_ctl = alloc_SGS_MHD_control_c();
 	read_SGS_MHD_control_file_c(file_name, buf, mhd_ctl);
-    load_field_from_ctl_z(&mhd_ctl->model_ctl->fld_ctl->field_list, all_fld_list);
+    load_field_from_ctl(&mhd_ctl->model_ctl->fld_ctl->field_list, all_fld_list);
 	
 	
 	gtk_init(&argc, &argv);

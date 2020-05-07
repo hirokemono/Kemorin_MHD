@@ -5,7 +5,7 @@
 #include "t_SGS_MHD_control_c.h"
 #include "m_field_name_from_f.h"
 
-struct all_field_ctl_z **all_fld_list;
+struct all_field_ctl_c *all_fld_list;
 
 
 int main(int argc,char *argv[])
@@ -20,8 +20,7 @@ int main(int argc,char *argv[])
     
     int num_comps;
 	
-    all_fld_list = (struct all_field_ctl_z **) malloc(fld_l->ntot_fields * sizeof(struct all_field_ctl_z *));
-    alloc_all_field_ctl_z(all_fld_list);
+    all_fld_list = init_all_field_ctl_c();
 		
     printf("baka %d\n", fld_l->ntot_fields);
 	for(i=0;i<fld_l->ntot_fields;i++){
@@ -46,7 +45,7 @@ int main(int argc,char *argv[])
 	
 	read_SGS_MHD_control_file_c(file_name, buf, mhd_ctl);
 
-    load_field_w_qflag_from_ctl_z(mhd_ctl->model_ctl->fld_ctl, all_fld_list);
+    load_field_w_qflag_from_ctl(mhd_ctl->model_ctl->fld_ctl, all_fld_list);
     
     write_SGS_MHD_control_file_c(file_name_2, mhd_ctl);
 
@@ -56,11 +55,11 @@ int main(int argc,char *argv[])
     dealloc_SGS_MHD_control_c(mhd_ctl);
     
     for(i=0;i<fld_l->ntot_fields;i++){
-        printf("%d:, %s: %s: %d %d %d\n", i, all_fld_list[i]->field_name,
-               all_fld_list[i]->field_math, all_fld_list[i]->iflag_use,
-               all_fld_list[i]->iflag_viz, all_fld_list[i]->iflag_monitor);
+        printf("%d:, %s: %s: %d %d %d\n", i, all_fld_list->fld_list->field_name[i],
+               all_fld_list->fld_list->field_math[i], all_fld_list->iflag_use[i],
+               all_fld_list->iflag_viz[i], all_fld_list->iflag_monitor[i]);
     };
-    dealloc_all_field_ctl_z(all_fld_list);
+    dealloc_all_field_ctl_c(all_fld_list);
     
 	free(mhd_ctl);
 	
