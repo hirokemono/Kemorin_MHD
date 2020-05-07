@@ -19,7 +19,6 @@
 #include "t_control_chara3_IO.h"
 #include "t_control_chara_int2_IO.h"
 
-#include "all_field_names_c.h"
 #include "m_field_name_from_f.h"
 
 struct field_ctl_c{

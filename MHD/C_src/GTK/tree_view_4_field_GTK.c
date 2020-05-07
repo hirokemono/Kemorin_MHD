@@ -176,7 +176,7 @@ void create_field_tree_view(struct field_views *fields_vws)
     gtk_tree_view_column_set_sort_indicator(column, TRUE);
     gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(model), COLUMN_FIELD_INDEX, GTK_SORT_ASCENDING);
     
-    for(i=0;i<NUM_FIELD;i++){
+    for(i=0;i<fields_vws->all_fld_list->fld_list->ntot_fields;i++){
 		if(fields_vws->all_fld_list->iflag_use[i] > 0) {
 			append_field_model_data(i, fields_vws->all_fld_list, child_model);
 		};
@@ -229,7 +229,7 @@ void create_unused_field_tree_view(struct field_views *fields_vws)
     gtk_tree_view_column_set_sort_indicator(column, TRUE);
     gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(model), COLUMN_FIELD_INDEX, GTK_SORT_ASCENDING);
     
-    for(i=0;i<NUM_FIELD;i++){
+    for(i=0;i<fields_vws->all_fld_list->fld_list->ntot_fields;i++){
 		if(fields_vws->all_fld_list->iflag_use[i] == 0) {
 			append_field_model_data(i, fields_vws->all_fld_list, child_model);
 		};

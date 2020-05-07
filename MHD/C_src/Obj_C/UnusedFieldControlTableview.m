@@ -66,7 +66,7 @@
     char *c1_out;
     
     /*
-     for(i=0;i<NUM_FIELD;i++){
+     for(i=0;i<all_fld_list->fld_list->ntot_fields;i++){
      printf("%d %s %d %d %d %d \n", i, all_fld_list->fld_list->field_name[i], 
      all_fld_list->iflag_use[i], all_fld_list->iflag_viz[i],
      all_fld_list->iflag_monitor[i], all_fld_list->iflag_quad[i]);
@@ -112,7 +112,7 @@
     [self.FieldControlArray addObject:self.energyParentsDictionary];
 
     [self.sgsFieldArray removeAllObjects];
-    for(i=170;i<NUM_FIELD;i++){
+    for(i=170;i<all_fld_list->fld_list->ntot_fields;i++){
         if(all_fld_list->iflag_use[i] == 0){
             NSString *data1 = [NSString stringWithCString:all_fld_list->fld_list->field_name[i] encoding:NSUTF8StringEncoding];
             NSNumber *num0 = [[NSNumber alloc] initWithInt:i];
