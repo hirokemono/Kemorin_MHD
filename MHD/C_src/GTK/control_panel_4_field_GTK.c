@@ -105,11 +105,11 @@ static void remove_field_to_use(GtkButton *button, gpointer user_data)
 {
 	struct field_views *fields_vws = (struct field_views *) user_data;
 	
-	transfer_model_data(0, fields_vws->all_fld_list, fields_vws->fld_ctl_gtk,
+	transfer_model_data(0, fields_vws->fld_gtk_data->all_fld_list, fields_vws->fld_gtk_data->fld_ctl_gtk,
 				GTK_TREE_VIEW(fields_vws->used_tree_view), 
 				GTK_TREE_VIEW(fields_vws->unused_field_tree_view));
     /*
-    check_field_ctl_list(fields_vws->fld_ctl_gtk);
+    check_field_ctl_list(fields_vws->fld_gtk_data->fld_ctl_gtk);
      */
 }
 
@@ -117,11 +117,11 @@ static void add_field_to_use(GtkButton *button, gpointer user_data)
 {
 	struct field_views *fields_vws = (struct field_views *) user_data;
 	
-	transfer_model_data(1, fields_vws->all_fld_list, fields_vws->fld_ctl_gtk,
+	transfer_model_data(1, fields_vws->fld_gtk_data->all_fld_list, fields_vws->fld_gtk_data->fld_ctl_gtk,
 				GTK_TREE_VIEW(fields_vws->unused_field_tree_view),
 				GTK_TREE_VIEW(fields_vws->used_tree_view));
     /*
-    check_field_ctl_list(fields_vws->fld_ctl_gtk);
+    check_field_ctl_list(fields_vws->fld_gtk_data->fld_ctl_gtk);
      */
 }
 
