@@ -166,7 +166,7 @@ static void create_field_tree_columns(GtkWidget *used_tree_view)
 				G_CALLBACK(toggle_monitor_switch), (gpointer) used_tree_view);
 };
 
-void create_field_tree_view(struct field_views *fields_vws)
+void create_field_tree_view(struct field_views *fields_vws, struct field_gtk_data *fld_gtk_data)
 {
     int i;
     GtkTreeModel *model;
@@ -180,7 +180,7 @@ void create_field_tree_view(struct field_views *fields_vws)
     
     /* Construct model for sorting and set to tree view */
     fields_vws->used_tree_view = gtk_tree_view_new();
-	g_object_set_data(G_OBJECT(fields_vws->used_tree_view), "field_gtk", fields_vws->fld_gtk_data);
+	g_object_set_data(G_OBJECT(fields_vws->used_tree_view), "field_gtk", fld_gtk_data);
 	
     model = gtk_tree_model_sort_new_with_model(GTK_TREE_MODEL(child_model));
     gtk_tree_view_set_model(GTK_TREE_VIEW(fields_vws->used_tree_view), model);
@@ -197,9 +197,9 @@ void create_field_tree_view(struct field_views *fields_vws)
     gtk_tree_view_column_set_sort_indicator(column, TRUE);
     gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(model), COLUMN_FIELD_INDEX, GTK_SORT_ASCENDING);
     
-    for(i=0;i<fields_vws->fld_gtk_data->all_fld_list->fld_list->ntot_fields;i++){
-		if(fields_vws->fld_gtk_data->all_fld_list->iflag_use[i] > 0) {
-			append_field_model_data(i, fields_vws->fld_gtk_data->all_fld_list, child_model);
+    for(i=0;i<fld_gtk_data->all_fld_list->fld_list->ntot_fields;i++){
+		if(fld_gtk_data->all_fld_list->iflag_use[i] > 0) {
+			append_field_model_data(i, fld_gtk_data->all_fld_list, child_model);
 		};
     }
     

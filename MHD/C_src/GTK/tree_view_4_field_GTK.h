@@ -43,7 +43,7 @@ void dealloc_field_views_GTK(struct field_views *fields_vws);
 void append_field_model_data(int index_field, struct all_field_ctl_c *all_fld_list,
 			GtkListStore *child_model);
 
-void create_field_tree_view(struct field_views *fields_vws);
+void create_field_tree_view(struct field_views *fields_vws, struct field_gtk_data *fld_gtk_data);
 
 void create_unused_field_tree_view(struct field_views *fields_vws);
 void create_direction_tree_views(struct field_views *fields_vws);
