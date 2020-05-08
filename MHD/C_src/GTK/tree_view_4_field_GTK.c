@@ -127,7 +127,7 @@ static void toggle_monitor_switch(GtkTreeViewColumn *renderer, gchar *path_str, 
 }
 
 
-static void create_field_tree_columns(GtkWidget *used_tree_view, struct field_gtk_data *fld_gtk_data)
+static void create_field_tree_columns(GtkWidget *used_tree_view)
 {
     GtkCellRenderer *textRenderer1;
     GtkCellRenderer *textRenderer2;
@@ -140,8 +140,6 @@ static void create_field_tree_columns(GtkWidget *used_tree_view, struct field_gt
     GtkTreeViewColumn *column_3rd;
     GtkTreeViewColumn *column_4th;
     GtkTreeViewColumn *column_5th;
-	
-	g_object_set_data(G_OBJECT(used_tree_view), "field_gtk", fld_gtk_data);
 	
 	/* First raw */
 	column_1st = create_each_field_column(used_tree_view, "Index", COLUMN_FIELD_INDEX);
@@ -182,10 +180,12 @@ void create_field_tree_view(struct field_views *fields_vws)
     
     /* Construct model for sorting and set to tree view */
     fields_vws->used_tree_view = gtk_tree_view_new();
+	g_object_set_data(G_OBJECT(fields_vws->used_tree_view), "field_gtk", fields_vws->fld_gtk_data);
+	
     model = gtk_tree_model_sort_new_with_model(GTK_TREE_MODEL(child_model));
     gtk_tree_view_set_model(GTK_TREE_VIEW(fields_vws->used_tree_view), model);
 	
-	create_field_tree_columns(fields_vws->used_tree_view, fields_vws->fld_gtk_data);
+	create_field_tree_columns(fields_vws->used_tree_view);
     
     /* 選択モード */
     selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(fields_vws->used_tree_view));
