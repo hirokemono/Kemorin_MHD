@@ -8,11 +8,11 @@
 !> @brief Labels and addresses for basic fields
 !!
 !!@verbatim
-!!      subroutine count_MHD_field_groups_f(num_group_c)                &
+!!      integer(c_int) function count_MHD_field_groups_f()              &
 !!     &          bind(C, name = 'count_MHD_field_groups_f')
-!!      subroutine count_MHD_sym_field_groups_f(num_group_c)            &
+!!      integer(c_int) function count_MHD_sym_field_groups_f()          &
 !!     &           bind(C, name = 'count_MHD_sym_field_groups_f')
-!!      subroutine count_SGS_MHD_field_groups_f(num_group_c)            &
+!!      integer(c_int) function count_SGS_MHD_field_groups_f()          &
 !!     &           bind(C, name = 'count_SGS_MHD_field_groups_f')
 !!
 !!      subroutine MHD_field_groups_f(nfld_group_c, field_group_c)      &
@@ -122,42 +122,39 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine count_MHD_field_groups_f(num_group_c)                  &
+      integer(c_int) function count_MHD_field_groups_f()                &
      &          bind(C, name = 'count_MHD_field_groups_f')
 !
       use t_grad_field_labels
 !
-      integer(c_int), intent(inout) :: num_group_c
 !
-      num_group_c = ngrp_MHD_fields
+      count_MHD_field_groups_f = ngrp_MHD_fields
 !
-      end subroutine count_MHD_field_groups_f
+      end function count_MHD_field_groups_f
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine count_MHD_sym_field_groups_f(num_group_c)              &
+      integer(c_int) function count_MHD_sym_field_groups_f()            &
      &           bind(C, name = 'count_MHD_sym_field_groups_f')
 !
       use t_grad_field_labels
 !
-      integer(c_int), intent(inout) :: num_group_c
 !
-      num_group_c = ngrp_MHD_sym_fields
+      count_MHD_sym_field_groups_f = ngrp_MHD_sym_fields
 !
-      end subroutine count_MHD_sym_field_groups_f
+      end function count_MHD_sym_field_groups_f
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine count_SGS_MHD_field_groups_f(num_group_c)              &
+      integer(c_int) function count_SGS_MHD_field_groups_f()            &
      &           bind(C, name = 'count_SGS_MHD_field_groups_f')
 !
       use t_grad_field_labels
 !
-      integer(c_int), intent(inout) :: num_group_c
 !
-      num_group_c = ngrp_SGS_MHD_fields
+      count_SGS_MHD_field_groups_f = ngrp_SGS_MHD_fields
 !
-      end subroutine count_SGS_MHD_field_groups_f
+      end function count_SGS_MHD_field_groups_f
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
@@ -170,13 +167,10 @@
       integer(c_int), intent(inout) :: nfld_group_c(*)
       character(C_CHAR), intent(inout) :: field_group_c(*)
 !
-      integer(kind = kint) :: i
 !
+      call copy_filxed_lengh_chara                                      &
+     &   (ngrp_MHD_fields, MHD_field_group, field_group_c)
 !
-      do i = 1, ngrp_MHD_fields
-        write(field_group_c(i),'(a,a1)')                                &
-     &                         trim(MHD_field_group(i)) // char(0)
-      end do
 !
       nfld_group_c( 1) = num_base_fields()
       nfld_group_c( 2) = num_base_forces()
@@ -203,12 +197,9 @@
       integer(c_int), intent(inout) :: nfld_group_c(*)
       character(C_CHAR), intent(inout) :: field_group_c(*)
 !
-      integer(kind = kint) :: i
 !
-      do i = 1, ngrp_MHD_sym_fields
-        write(field_group_c(i),'(a,a1)')                                &
-     &                         trim(MHD_sym_field_group(i)) // char(0)
-      end do
+      call copy_filxed_lengh_chara                                      &
+     &   (ngrp_MHD_sym_fields, MHD_sym_field_group, field_group_c)
 !
       nfld_group_c( 1) = num_fields_w_symmetry()
       nfld_group_c( 2) = num_forces_w_symmetry()
@@ -226,12 +217,9 @@
       integer(c_int), intent(inout) :: nfld_group_c(*)
       character(C_CHAR), intent(inout) :: field_group_c(*)
 !
-      integer(kind = kint) :: i
 !
-      do i = 1, ngrp_SGS_MHD_fields
-        write(field_group_c(i),'(a,a1)')                                &
-     &                         trim(SGS_MHD_field_group(i)) // char(0)
-      end do
+      call copy_filxed_lengh_chara                                      &
+     &   (ngrp_SGS_MHD_fields, SGS_MHD_field_group, field_group_c)
 !
       nfld_group_c( 1) = num_SGS_terms()
       nfld_group_c( 2) = num_SGS_energy_fluxes()
@@ -254,6 +242,23 @@
       nfld_group_c(19) = num_dynamic_SGS_work()
 !
       end subroutine SGS_MHD_field_groups_f
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine copy_filxed_lengh_chara(num, field_in, field_out)
+!
+      integer(kind = kint), intent(in) :: num
+      character(len = kchara), intent(in) :: field_in(num)
+      character(len = kchara), intent(inout) :: field_out(num)
+!
+      integer(kind = kint) :: i
+!
+      do i = 1, num
+        write(field_out(i), '(a,a1)') trim(field_in(i)) // char(0)
+      end do
+!
+      end subroutine copy_filxed_lengh_chara
 !
 ! ----------------------------------------------------------------------
 !
