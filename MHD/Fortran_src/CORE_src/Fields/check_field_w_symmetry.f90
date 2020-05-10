@@ -42,57 +42,57 @@
       type(ctl_array_c3), intent(inout) :: field_ctl
 !
 !
-      if(      (field_name .eq. fhd_sym_velo)                           &
-     &    .or. (field_name .eq. fhd_asym_velo)) then 
+      if(      (field_name .eq. sym_velocity%name)                      &
+     &    .or. (field_name .eq. asym_velocity%name)) then
         call add_phys_name_ctl(velocity%name, field_ctl)
-      else if( (field_name .eq. fhd_sym_vort)                           &
-     &    .or. (field_name .eq. fhd_asym_vort)) then 
+      else if( (field_name .eq. sym_vorticity%name)                     &
+     &    .or. (field_name .eq. asym_vorticity%name)) then
         call add_phys_name_ctl(vorticity%name, field_ctl)
-      else if( (field_name .eq. fhd_sym_magne)                          &
-     &    .or. (field_name .eq. fhd_asym_magne)) then 
+      else if( (field_name .eq. sym_magnetic_field%name)                &
+     &    .or. (field_name .eq. asym_magnetic_field%name)) then
         call add_phys_name_ctl(magnetic_field%name, field_ctl)
-      else if( (field_name .eq. fhd_sym_vecp)                           &
-     &    .or. (field_name .eq. fhd_asym_vecp)) then 
+      else if( (field_name .eq. sym_vector_potential%name)              &
+     &    .or. (field_name .eq. asym_vector_potential%name)) then
         call add_phys_name_ctl(vector_potential%name, field_ctl)
-      else if( (field_name .eq. fhd_sym_current)                        &
-     &    .or. (field_name .eq. fhd_asym_current)) then 
+      else if( (field_name .eq. sym_current_density%name)               &
+     &    .or. (field_name .eq. asym_current_density%name)) then
         call add_phys_name_ctl(current_density%name, field_ctl)
 !
-      else if( (field_name .eq. fhd_sym_press)                          &
-     &    .or. (field_name .eq. fhd_asym_press)) then 
+      else if( (field_name .eq. sym_pressure%name)                      &
+     &    .or. (field_name .eq. asym_pressure%name)) then
         call add_phys_name_ctl(pressure%name, field_ctl)
-      else if( (field_name .eq. fhd_sym_mag_potential)                  &
-     &    .or. (field_name .eq. fhd_asym_mag_potential)) then 
+      else if( (field_name .eq. sym_magnetic_potential%name)            &
+     &    .or. (field_name .eq. asym_magnetic_potential%name)) then
         call add_phys_name_ctl(magnetic_potential%name, field_ctl)
-      else if( (field_name .eq. fhd_sym_scalar_potential)               &
-     &    .or. (field_name .eq. fhd_asym_scalar_potential)) then 
+      else if( (field_name .eq. sym_scalar_potential%name)              &
+     &    .or. (field_name .eq. asym_scalar_potential%name)) then
         call add_phys_name_ctl(scalar_potential%name, field_ctl)
 !
-      else if( (field_name .eq. fhd_sym_temp)                           &
-     &    .or. (field_name .eq. fhd_asym_temp)) then 
+      else if( (field_name .eq. sym_temperature%name)                   &
+     &    .or. (field_name .eq. asym_temperature%name)) then
         call add_phys_name_ctl(temperature%name, field_ctl)
-      else if( (field_name .eq. fhd_sym_light)                          &
-     &    .or. (field_name .eq. fhd_asym_light)) then 
+      else if( (field_name .eq. sym_composition%name)                   &
+     &    .or. (field_name .eq. asym_composition%name)) then
         call add_phys_name_ctl(composition%name, field_ctl)
-      else if( (field_name .eq. fhd_sym_density)                        &
-     &    .or. (field_name .eq. fhd_asym_density)) then 
+      else if( (field_name .eq. sym_density%name)                       &
+     &    .or. (field_name .eq. asym_density%name)) then
         call add_phys_name_ctl(density%name, field_ctl)
-      else if( (field_name .eq. fhd_sym_entropy)                        &
-     &    .or. (field_name .eq. fhd_asym_entropy)) then 
+      else if( (field_name .eq. sym_entropy%name)                       &
+     &    .or. (field_name .eq. asym_entropy%name)) then
         call add_phys_name_ctl(entropy%name, field_ctl)
 !
-      else if( (field_name .eq. fhd_sym_per_temp)                       &
-     &    .or. (field_name .eq. fhd_asym_per_temp)) then 
+      else if( (field_name .eq. sym_perturbation_temp%name)             &
+     &    .or. (field_name .eq. asym_perturbation_temp%name)) then
         call add_phys_name_ctl(perturbation_temp%name, field_ctl)
-      else if( (field_name .eq. fhd_sym_per_light)                      &
-     &    .or. (field_name .eq. fhd_asym_per_light)) then 
+      else if( (field_name .eq. sym_perturbation_composition%name)      &
+     &  .or. (field_name .eq. asym_perturbation_composition%name)) then
         call add_phys_name_ctl(perturbation_composition%name,           &
      &      field_ctl)
-      else if( (field_name .eq. fhd_sym_per_density)                    &
-     &    .or. (field_name .eq. fhd_asym_per_density)) then 
+      else if( (field_name .eq. sym_perturbation_density%name)          &
+     &    .or. (field_name .eq. asym_perturbation_density%name)) then
         call add_phys_name_ctl(perturbation_density%name, field_ctl)
-      else if( (field_name .eq. fhd_sym_per_entropy)                    &
-     &    .or. (field_name .eq. fhd_asym_per_entropy)) then 
+      else if( (field_name .eq. sym_perturbation_entropy%name)          &
+     &    .or. (field_name .eq. asym_perturbation_entropy%name)) then
         call add_phys_name_ctl(perturbation_entropy%name, field_ctl)
       end if
 !

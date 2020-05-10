@@ -22,7 +22,8 @@ struct field_gtk_data{
 struct field_views{
     GtkWidget *used_tree_view;
     GtkWidget *unused_field_tree_view;
-    
+	
+	
     GtkWidget *scalar_label_view;
     GtkWidget *vector_label_view;
     GtkWidget *sym_tensor_label_view;
@@ -43,9 +44,9 @@ void dealloc_field_views_GTK(struct field_views *fields_vws);
 void append_field_model_data(int index_field, struct all_field_ctl_c *all_fld_list,
 			GtkListStore *child_model);
 
-void create_field_tree_view(struct field_views *fields_vws, struct field_gtk_data *fld_gtk_data);
+GtkWidget * create_field_tree_view(struct field_gtk_data *fld_gtk_data);
+GtkWidget * create_unused_field_tree_view(int ist, int ied, struct field_gtk_data *fld_gtk_data);
 
-void create_unused_field_tree_view(struct field_views *fields_vws);
 void create_direction_tree_views(struct field_views *fields_vws);
 
 #endif /* tree_view_4_field_GTK_h_ */

@@ -8,8 +8,11 @@
 !> @brief Labels and addresses of basic forces
 !!
 !!@verbatim
+!!      logical function check_scalar_advection_w_sym(field_name)
 !!      logical function check_forces_w_sym(field_name)
 !!      logical function check_flux_tensors_w_sym(field_name)
+!!      logical function check_flux_asym_tensors_w_sym(field_name)
+!!
 !!      subroutine set_force_w_sym_addresses(i_phys, field_name,        &
 !!     &          force_sym1_sym2, force_asym1_asym2,                   &
 !!     &          force_sym1_asym2, force_asym1_sym2, flag)
@@ -21,29 +24,8 @@
 !!        type(base_force_address), intent(inout) :: force_sym1_asym2
 !!        type(base_force_address), intent(inout) :: force_asym1_sym2
 !!
-!!      subroutine force_w_sym_monitor_address                          &
-!!     &         (field_name, i_field, numrms, numave,                  &
-!!     &          rms_force_sym1_sym2, rms_force_asym1_asym2,           &
-!!     &          rms_force_sym1_asym2, rms_force_asym1_sym2,           &
-!!     &          ave_force_sym1_sym2, ave_force_asym1_asym2,           &
-!!     &          ave_force_sym1_asym2, ave_force_asym1_sym2, flag)
-!!      subroutine flux_tsr_w_sym_monitor_address                       &
-!!     &         (field_name, i_field, numrms, numave,                  &
-!!     &          rms_force_sym1_sym2, rms_force_asym1_asym2,           &
-!!     &          rms_force_sym1_asym2,                                 &
-!!     &          ave_force_sym1_sym2, ave_force_asym1_asym2,           &
-!!     &          ave_force_sym1_asym2, flag)
-!!        type(base_force_address), intent(inout) :: rms_force_sym1_sym2
-!!        type(base_force_address), intent(inout)::rms_force_asym1_asym2
-!!        type(base_force_address), intent(inout) :: rms_force_sym1_asym2
-!!        type(base_force_address), intent(inout) :: rms_force_asym1_sym2
-!!        type(base_force_address), intent(inout) :: ave_force_sym1_sym2
-!!        type(base_force_address), intent(inout):: ave_force_asym1_asym2
-!!        type(base_force_address), intent(inout) :: ave_force_sym1_asym2
-!!        type(base_force_address), intent(inout) :: ave_force_asym1_sym2
-!!
 !!      integer(kind = kint) function num_forces_w_symmetry()
-!!      subroutine set_force_w_symmetry_names(field_names)
+!!      subroutine set_force_w_symmetry_names(n_comps, names, maths)
 !!
 !! !!!!!  Base field names  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!
@@ -109,317 +91,496 @@
       module m_force_w_sym_labels
 !
       use m_precision
-      use m_constants
-      use t_base_field_labels
+      use m_phys_constants
+      use t_field_labels
       use t_base_force_labels
-      use m_field_w_symmetry_labels
 !
       implicit  none
 ! 
-      integer(kind = kint), parameter, private :: nforce_w_sym = 69
+      integer(kind = kint), parameter, private :: nforce_w_sym = 70
 !
 !>        Field label of advection of momentum
 !!         @f$ u_{symj} \partial_{j} u_{symi} @f$
 !!         or @f$ \omega_{sym} \times u_{sym} @f$
-      character(len=kchara), parameter                                  &
-     &                      :: fhd_wsym_x_usym = 'wsym_x_usym'
+      type(field_def), parameter :: wsym_x_usym                         &
+     &    = field_def(n_comp = n_vector,                                &
+     &                  name = 'wsym_x_usym',                           &
+     &                  math = '$ u_{symj} \partial_{j} u_{symi} $, '   &
+     &                      //' $ \omega_{sym} \times u_{sym} $')
 !>        Field label of advection of momentum
 !!         @f$ u_{asymj} \partial_{j} u_{asymi} @f$
 !!         or @f$ \omega_{asym} \times u_{asym} @f$
-      character(len=kchara), parameter                                  &
-     &                      :: fhd_wasym_x_uasym = 'wasym_x_uasym'
+      type(field_def), parameter :: wasym_x_uasym                       &
+     &    = field_def(n_comp = n_vector,                                &
+     &                  name = 'wasym_x_uasym',                         &
+     &                  math = '$ u_{asymj} \partial_{j} u_{asymi} $, ' &
+     &                      //' $ \omega_{asym} \times u_{asym} $')
 !>        Field label of advection of momentum
 !!         @f$ u_{symj} \partial_{j} u_{asymi} @f$
 !!         or @f$ \omega_{sym} \times u_{asym} @f$
-      character(len=kchara), parameter                                  &
-     &                      :: fhd_wsym_x_uasym = 'wsym_x_uasym'
+      type(field_def), parameter :: wsym_x_uasym                        &
+     &    = field_def(n_comp = n_vector,                                &
+     &                  name = 'wsym_x_uasym',                          &
+     &                  math = '$ u_{symj} \partial_{j} u_{asymi} $, '  &
+     &                      //' $ \omega_{sym} \times u_{asym} $')
 !>        Field label of advection of momentum
 !!         @f$ u_{asymj} \partial_{j} u_{symi} @f$
 !!         or @f$ \omega_{asym} \times u_{sym} @f$
-      character(len=kchara), parameter                                  &
-     &                      :: fhd_wasym_x_uaym = 'wasym_x_usym'
+      type(field_def), parameter :: wasym_x_usym                        &
+     &    = field_def(n_comp = n_vector,                                &
+     &                  name = 'wasym_x_usym',                          &
+     &                  math = '$ u_{asymj} \partial_{j} u_{symi} $, '  &
+     &                      //' $ \omega_{asym} \times u_{sym} $')
 !
 !>        Field label of momentum flux
 !!         @f$ u_{symi} u_{symj} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_m_flux_sym_sym = 'm_flux_sym_sym'
+      type(field_def), parameter :: m_flux_sym_sym                      &
+     &    = field_def(n_comp = n_sym_tensor,                            &
+     &                  name = 'm_flux_sym_sym',                        &
+     &                  math = '$ u_{symi} u_{symj} $')
 !>        Field label of momentum flux
 !!         @f$ u_{asymi} u_{asymj} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_m_flux_asym_asym = 'm_flux_asym_asym'
+      type(field_def), parameter :: m_flux_asym_asym                    &
+     &    = field_def(n_comp = n_sym_tensor,                            &
+     &                  name = 'm_flux_asym_asym',                      &
+     &                  math = '$ u_{asymi} u_{asymj} $')
 !>        Field label of momentum flux
 !!         @f$ u_{symi} u_{asymj} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_m_flux_sym_asym = 'm_flux_sym_asym'
+      type(field_def), parameter :: m_flux_sym_asym                     &
+     &    = field_def(n_comp = n_sym_tensor,                            &
+     &                  name = 'm_flux_sym_asym',                       &
+     &                  math = '$ u_{symi} u_{asymj} $')
 !
 !>        Field label of Lorentz force
 !!         @f$ J_{sym} \times B_{sym} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_Jsym_x_Bsym =        'Jsym_x_Bsym'
+      type(field_def), parameter :: Jsym_x_Bsym                         &
+     &    = field_def(n_comp = n_vector,                                &
+     &                  name = 'Jsym_x_Bsym',                           &
+     &                  math = '$ J_{sym} \times B_{sym} $')
 !>        Field label of Lorentz force
 !!         @f$ J_{asym} \times B_{asym} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_Jasym_x_Basym =      'Jasym_x_Basym'
+      type(field_def), parameter :: Jasym_x_Basym                       &
+     &    = field_def(n_comp = n_vector,                                &
+     &                  name = 'Jasym_x_Basym',                         &
+     &                  math = '$ J_{asym} \times B_{asym} $')
 !>        Field label of Lorentz force
 !!         @f$ J_{sym} \times B_{asym} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_Jsym_x_Basym =       'Jsym_x_Basym'
+      type(field_def), parameter :: Jsym_x_Basym                        &
+     &    = field_def(n_comp = n_vector,                                &
+     &                  name = 'Jsym_x_Basym',                          &
+     &                  math = '$ J_{sym} \times B_{asym} $')
 !>        Field label of Lorentz force
 !!         @f$ J_{asym} \times B_{sym} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_Jasym_x_Bsym =       'Jasym_x_Bsym'
+      type(field_def), parameter :: Jasym_x_Bsym                        &
+     &    = field_def(n_comp = n_vector,                                &
+     &                  name = 'Jasym_x_Bsym',                          &
+     &                  math = '$ J_{asym} \times B_{sym} $')
 !
 !>        start address of magnetic tension
 !!         @f$ (B_{sym} \cdot \nabla) B_{sym} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_Bsym_nabla_Bsym = 'Bsym_nabla_Bsym'
+      type(field_def), parameter :: Bsym_nabla_Bsym                     &
+     &    = field_def(n_comp = n_vector,                                &
+     &                  name = 'Bsym_nabla_Bsym',                       &
+     &                  math = '$ (B_{sym} \cdot \nabla) B_{sym} $')
 !>        start address of magnetic tension
-!!         @f$ (B_{sym} \cdot \nabla) B_{sym} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_Basym_nabla_Basym = 'Basym_nabla_Basym'
+!!         @f$ (B_{asym} \cdot \nabla) B_{asym} @f$
+      type(field_def), parameter :: Basym_nabla_Basym                   &
+     &    = field_def(n_comp = n_vector,                                &
+     &                  name = 'Basym_nabla_Basym',                     &
+     &                  math = '$ (B_{asym} \cdot \nabla) B_{asym} $')
 !>        start address of magnetic tension
-!!         @f$ (B_{sym} \cdot \nabla) B_{sym} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_Bsym_nabla_Basym = 'Bsym_nabla_Basym'
+!!         @f$ (B_{sym} \cdot \nabla) B_{asym} @f$
+      type(field_def), parameter :: Bsym_nabla_Basym                    &
+     &    = field_def(n_comp = n_vector,                                &
+     &                  name = 'Bsym_nabla_Basym',                      &
+     &                  math = '$ (B_{sym} \cdot \nabla) B_{asym} $')
 !>        start address of magnetic tension
-!!         @f$ (B_{sym} \cdot \nabla) B_{sym} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_Basym_nabla_Bsym = 'Basym_nabla_Bsym'
+!!         @f$ (B_{asym} \cdot \nabla) B_{sym} @f$
+      type(field_def), parameter :: Basym_nabla_Bsym                    &
+     &    = field_def(n_comp = n_vector,                                &
+     &                  name = 'Basym_nabla_Bsym',                      &
+     &                  math = '$ (B_{asym} \cdot \nabla) B_{sym} $')
 !
 !>        Field label of Maxwell tensor
 !!         @f$ B_{sym} B_{sym} @f$
-      character(len=kchara), parameter                                  &
-     &            :: fhd_maxwell_sym_sym =   'maxwell_tensor_sym_sym'
+      type(field_def), parameter :: maxwell_tensor_sym_sym              &
+     &    = field_def(n_comp = n_sym_tensor,                            &
+     &                  name = 'maxwell_tensor_sym_sym',                &
+     &                  math = '$ B_{sym} B_{sym} $')
 !>        Field label ofof Maxwell tensor
 !!         @f$ B_{asym} B_{asym} @f$
-      character(len=kchara), parameter                                  &
-     &            :: fhd_maxwell_asym_asym = 'maxwell_tensor_asym_asym'
+      type(field_def), parameter :: maxwell_tensor_asym_asym            &
+     &    = field_def(n_comp = n_sym_tensor,                            &
+     &                  name = 'maxwell_tensor_asym_asym',              &
+     &                  math = '$ B_{asym} B_{asym} $')
 !>        Field label of Maxwell tensor
 !!         @f$ B_{sym} B_{asym} @f$
-      character(len=kchara), parameter                                  &
-     &            :: fhd_maxwell_sym_asym =  'maxwell_tensor_sym_asym'
+      type(field_def), parameter :: maxwell_tensor_sym_asym             &
+     &    = field_def(n_comp = n_sym_tensor,                            &
+     &                  name = 'maxwell_tensor_sym_asym',               &
+     &                  math = '$ B_{sym} B_{asym} $')
 !
 !>        Field label of buoyancy
 !!         @f$ -\alpha_{T} g_{i} T_{sym} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_sym_buoyancy =    'sym_termal_buoyancy'
+      type(field_def), parameter :: sym_termal_buoyancy                 &
+     &    = field_def(n_comp = n_vector,                                &
+     &                  name = 'sym_termal_buoyancy',                   &
+     &                  math = '$ -\alpha_{T} g_{i} T_{sym} $')
 !>        Field label of buoyancy
 !!         @f$ -\alpha_{T} g_{i} T_{asym} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_asym_buoyancy =   'asym_termal_buoyancy'
+      type(field_def), parameter :: asym_termal_buoyancy                &
+     &    = field_def(n_comp = n_vector,                                &
+     &                  name = 'asym_termal_buoyancy',                  &
+     &                  math = '$ -\alpha_{T} g_{i} T_{asym} $')
 !
 !>        Field label of compositional buoyancy
 !!         @f$ -\alpha_{C} g_{i} C_{sym} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_sym_comp_buo =   'sym_composite_buoyancy'
+      type(field_def), parameter :: sym_composite_buoyancy              &
+     &    = field_def(n_comp = n_vector,                                &
+     &                  name = 'sym_composite_buoyancy',                &
+     &                  math = '$ -\alpha_{C} g_{i} C_{sym} $')
 !>        Field label of compositional buoyancy
 !!         @f$ -\alpha_{C} g_{i} C_{asym} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_asym_comp_buo =  'asym_composite_buoyancy'
+      type(field_def), parameter :: asym_composite_buoyancy             &
+     &    = field_def(n_comp = n_vector,                                &
+     &                  name = 'asym_composite_buoyancy',               &
+     &                  math = '$ -\alpha_{C} g_{i} C_{asym} $')
 !!
 !>        Field label of induction of vector potential
 !!         @f$ u_{sym} \times B_{sym} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_usym_x_Bsym =     'usym_x_Bsym'
+      type(field_def), parameter :: usym_x_Bsym                         &
+     &    = field_def(n_comp = n_vector,                                &
+     &                  name = 'usym_x_Bsym',                           &
+     &                  math = '$ u_{sym} \times B_{sym} $')
 !>        Field label of induction of vector potential
 !!         @f$ u_{asym} \times B_{asym} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_uasym_x_Basym =     'uasym_x_Basym'
+      type(field_def), parameter :: uasym_x_Basym                       &
+     &    = field_def(n_comp = n_vector,                                &
+     &                  name = 'uasym_x_Basym',                         &
+     &                  math = '$ u_{asym} \times B_{asym} $')
 !>        Field label of induction of vector potential
 !!         @f$ u_{sym} \times B_{asym} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_usym_x_Basym =     'usym_x_Basym'
+      type(field_def), parameter :: usym_x_Basym                        &
+     &    = field_def(n_comp = n_vector,                                &
+     &                  name = 'usym_x_Basym',                          &
+     &                  math = '$ u_{sym} \times B_{asym} $')
 !>        Field label of induction of vector potential
 !!         @f$ u_{asym} \times B_{sym} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_uasym_x_Bsym =     'uasym_x_Bsym'
+      type(field_def), parameter :: uasym_x_Bsym                        &
+     &    = field_def(n_comp = n_vector,                                &
+     &                  name = 'uasym_x_Bsym',                          &
+     &                  math = '$ u_{asym} \times B_{asym} $')
 !
 !>        Field label of magnetic induction
 !!         @f$ \nabla \times (u_{sym} \times B_{sym}) @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_rot_usym_x_Bsym =     'rot_usym_x_Bsym'
+      type(field_def), parameter :: rot_usym_x_Bsym                     &
+     &    = field_def(n_comp = n_vector,                                &
+     &           name = 'rot_usym_x_Bsym',                              &
+     &           math = '$ \nabla \times (u_{sym} \times B_{sym}) $')
 !>        Field label of magnetic induction
 !!         @f$ \nabla \times (u_{asym} \times B_{asym}) @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_rot_uasym_x_Basym =     'rot_uasym_x_Basym'
+      type(field_def), parameter :: rot_uasym_x_Basym                   &
+     &    = field_def(n_comp = n_vector,                                &
+     &           name = 'rot_uasym_x_Basym',                            &
+     &           math = '$ \nabla \times (u_{asym} \times B_{asym}) $')
 !>        Field label of magnetic induction
 !!         @f$ \nabla \times (u_{sym} \times B_{asym}) @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_rot_usym_x_Basym =     'rot_usym_x_Basym'
+      type(field_def), parameter :: rot_usym_x_Basym                    &
+     &    = field_def(n_comp = n_vector,                                &
+     &           name = 'rot_usym_x_Basym',                             &
+     &           math = '$ \nabla \times (u_{sym} \times B_{asym}) $')
 !>        Field label of magnetic induction
 !!         @f$ \nabla \times (u_{asym} \times B_{sym}) @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_rot_uasym_x_Bsym =     'rot_uasym_x_Bsym'
+      type(field_def), parameter :: rot_uasym_x_Bsym                    &
+     &    = field_def(n_comp = n_vector,                                &
+     &           name = 'rot_uasym_x_Bsym',                             &
+     &           math = '$ \nabla \times (u_{asym} \times B_{sym}) $')
 !
 !>        Field label of magnetic stretch term
 !!         @f$ \left(B_{sym} \nabla) u_{sym} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_Bsym_nabla_usym =   'Bsym_nabla_usym'
+      type(field_def), parameter :: Bsym_nabla_usym                     &
+     &    = field_def(n_comp = n_vector,                                &
+     &                  name = 'Bsym_nabla_usym',                       &
+     &                  math = '$ \left(B_{sym} \nabla) u_{sym} $')
 !>        Field label of magnetic stretch term
-!!         @f$ \left(B_{a} \nabla) u_{asym} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_Basym_nabla_uasym = 'Basym_nabla_uasym'
+!!         @f$ \left(B_{asym} \nabla) u_{asym} @f$
+      type(field_def), parameter :: Basym_nabla_uasym                   &
+     &    = field_def(n_comp = n_vector,                                &
+     &                  name = 'Basym_nabla_uasym',                     &
+     &                  math = '$ \left(B_{asym} \nabla) u_{asym} $')
 !>        Field label of magnetic stretch term
 !!         @f$ \left(B_{sym} \nabla) u_{asym} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_Bsym_nabla_uasym =  'Bsym_nabla_uasym'
+      type(field_def), parameter :: Bsym_nabla_uasym                    &
+     &    = field_def(n_comp = n_vector,                                &
+     &                  name = 'Bsym_nabla_uasym',                      &
+     &                  math = '$ \left(B_{sym} \nabla) u_{asym} $')
 !>        Field label of magnetic stretch term
 !!         @f$ \left(B_{asym} \nabla) u_{sym} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_Basym_nabla_usym =  'Basym_nabla_usym'
+      type(field_def), parameter :: Basym_nabla_usym                    &
+     &    = field_def(n_comp = n_vector,                                &
+     &                  name = 'Basym_nabla_usym',                      &
+     &                  math = '$ \left(B_{asym} \nabla) u_{sym} $')
 !
 !>        Field label of Tensor of magnetic induction
 !!         @f$ u_{sym} B_{sym}  - B_{sym} u_{sym} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_usym_Bsym =      'usym_Bsym'
+      type(field_def), parameter :: usym_Bsym                           &
+     &    = field_def(n_comp = n_vector,                                &
+     &           name = 'usym_Bsym',                                    &
+     &           math = '$ u_{sym} B_{sym}  - B_{sym} u_{sym} $')
 !>        Field label of Tensor of magnetic induction
 !!         @f$ u_{asym} B_{asym}  - B_{asym} u_{asym} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_uasym_Basym =     'uasym_Basym'
+      type(field_def), parameter :: uasym_Basym                         &
+     &    = field_def(n_comp = n_vector,                                &
+     &           name = 'uasym_Basym',                                  &
+     &           math = '$ u_{asym} B_{asym}  - B_{asym} u_{asym} $')
 !>        Field label of Tensor of magnetic induction
 !!         @f$ u_{sym} B_{asym}  - B_{asym} u_{sym} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_uasym_Bsym =      'usym_Basym'
+      type(field_def), parameter :: usym_Basym                          &
+     &    = field_def(n_comp = n_vector,                                &
+     &           name = 'usym_Basym',                                   &
+     &           math = '$ u_{sym} B_{asym}  - B_{asym} u_{sym} $')
+!>        Field label of Tensor of magnetic induction
+!!         @f$ u_{asym} B_{sym}  - B_{sym} u_{asym} @f$
+      type(field_def), parameter :: uasym_Bsym                          &
+     &    = field_def(n_comp = n_vector,                                &
+     &           name = 'uasym_Bsym',                                   &
+     &           math = '$ u_{asym} B_{asym}  - B_{asym} u_{asym} $')
 !
 !>        Field label of advection of temperature
 !!         @f$ u_{sim} \nabla T_{sym} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_usym_nabla_Tsym =       'usym_nabla_Tsym'
+      type(field_def), parameter :: usym_nabla_Tsym                     &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                  name = 'usym_nabla_Tsym',                       &
+     &                  math = '$ u_{sim} \nabla T_{sim} $')
 !>        Field label of advection of temperature
 !!         @f$ u_{asym} \nabla T_{asym} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_uasym_nabla_Tasym =     'uasym_nabla_Tasym'
+      type(field_def), parameter :: uasym_nabla_Tasym                   &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                  name = 'uasym_nabla_Tasym',                     &
+     &                  math = '$ u_{asym} \nabla T_{asym} $')
 !>        Field label of advection of temperature
 !!         @f$ u_{sym} \nabla T_{asym} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_usym_nabla_Tasym =      'usym_nabla_Tasym'
+      type(field_def), parameter :: usym_nabla_Tasym                    &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                  name = 'usym_nabla_Tasym',                      &
+     &                  math = '$ u_{sim} \nabla T_{asym} $')
 !>        Field label of advection of temperature
 !!         @f$ u_{asym} \nabla T_{sym} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_uasym_nabla_Tsym =      'uasym_nabla_Tsym'
+      type(field_def), parameter :: uasym_nabla_Tsym                    &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                  name = 'uasym_nabla_Tsym',                      &
+     &                  math = '$ u_{asym} \nabla T_{sym} $')
 !
 !>        Field label of advection of perturbation of temperature
 !!         @f$ u_{sym} \partial_{i} \Theta_{sym} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_usym_nabla_pTsym =     'usym_nabla_pTsym'
+      type(field_def), parameter :: usym_nabla_pTsym                    &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                  name = 'usym_nabla_pTsym',                      &
+     &                  math = '$ u_{sym} \nabla \Theta__{sym} $')
 !>        Field label of advection of perturbation of temperature
 !!         @f$ u_{asym} \partial_{i} \Theta_{asym} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_uasym_nabla_pTasym =   'uasym_nabla_pTasym'
+      type(field_def), parameter :: uasym_nabla_pTasym                  &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                  name = 'uasym_nabla_pTasym',                    &
+     &                  math = '$ u_{asym} \nabla \Theta__{asym} $')
 !>        Field label of advection of perturbation of temperature
 !!         @f$ u_{sym} \partial_{i} \Theta_{asym} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_usym_nabla_pTasym =    'usym_nabla_pTasym'
+      type(field_def), parameter :: usym_nabla_pTasym                   &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                  name = 'usym_nabla_pTasym',                     &
+     &                  math = '$ u_{sym} \nabla \Theta__{asym} $')
 !>        Field label of advection of perturbation of temperature
 !!         @f$ u_{asym} \partial_{i} \Theta_{sym} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_uasym_nabla_pTsym =    'uasym_nabla_pTsym'
+      type(field_def), parameter :: uasym_nabla_pTsym                   &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                  name = 'uasym_nabla_pTsym',                     &
+     &                  math = '$ u_{asym} \nabla \Theta__{sym} $')
 !
 !>        Field label of heat flux
 !!         @f$ u_{sym} T_{sym} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_h_flux_sym_sym =   'heat_flux_sym_sym'
+      type(field_def), parameter :: heat_flux_sym_sym                   &
+     &    = field_def(n_comp = n_vector,                                &
+     &                  name = 'heat_flux_sym_sym',                     &
+     &                  math = '$ u_{sym} T_{sym} $')
 !>        Field label of heat flux
 !!         @f$ u_{asym} T_{asym} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_h_flux_asym_asym = 'heat_flux_asym_asym'
+      type(field_def), parameter :: heat_flux_asym_asym                 &
+     &    = field_def(n_comp = n_vector,                                &
+     &                  name = 'heat_flux_asym_asym',                   &
+     &                  math = '$ u_{asym} T_{asym} $')
 !>        Field label of heat flux
 !!         @f$ u_{sym} T_{asym} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_h_flux_sym_asym =  'heat_flux_sym_asym'
+      type(field_def), parameter :: heat_flux_sym_asym                  &
+     &    = field_def(n_comp = n_vector,                                &
+     &                  name = 'heat_flux_sym_asym',                    &
+     &                  math = '$ u_{sym} T_{asym} $')
 !>        Field label of heat flux
 !!         @f$ u_{asym} T_{sym} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_h_flux_asym_sym =  'heat_flux_asym_sym'
+      type(field_def), parameter :: heat_flux_asym_sym                  &
+     &    = field_def(n_comp = n_vector,                                &
+     &                  name = 'heat_flux_asym_sym',                    &
+     &                  math = '$ u_{asym} T_{sym} $')
 !
 !>        Field label of perturbation of heat flux
 !!         @f$ u_{sym} \Theta_{sym} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_ph_flux_sym_sym =   'part_h_flux_sym_sym'
+      type(field_def), parameter :: part_h_flux_sym_sym                 &
+     &    = field_def(n_comp = n_vector,                                &
+     &                  name = 'part_h_flux_sym_sym',                   &
+     &                  math = '$ u_{sym} \Theta_{sym} $')
 !>        Field label of perturbation of heat flux
 !!         @f$ u_{asym} \Theta_{asym} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_ph_flux_asym_asym = 'part_h_flux_asym_asym'
+      type(field_def), parameter :: part_h_flux_asym_asym               &
+     &    = field_def(n_comp = n_vector,                                &
+     &                  name = 'part_h_flux_asym_asym',                 &
+     &                  math = '$ u_{asym} \Theta_{asym} $')
+!>        Field label of heat flux
 !>        Field label of perturbation of heat flux
 !!         @f$ u_{sym} \Theta_{asym} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_ph_flux_sym_asym =  'part_h_flux_sym_asym'
+      type(field_def), parameter :: part_h_flux_sym_asym                &
+     &    = field_def(n_comp = n_vector,                                &
+     &                  name = 'part_h_flux_sym_asym',                  &
+     &                  math = '$ u_{sym} \Theta_{asym} $')
 !>        Field label of perturbation of heat flux
 !!         @f$ u_{asym} \Theta_{sym} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_ph_flux_asym_sym =  'part_h_flux_asym_sym'
+      type(field_def), parameter :: part_h_flux_asym_sym                &
+     &    = field_def(n_comp = n_vector,                                &
+     &                  name = 'part_h_flux_asym_sym',                  &
+     &                  math = '$ u_{asym} \Theta_{sym} $')
 !
 !>        Field label of advection of composition
 !!         @f$ u_{sim} \nabla C_{sym} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_usym_nabla_Csym =       'usym_nabla_Csym'
+      type(field_def), parameter :: usym_nabla_Csym                     &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                  name = 'usym_nabla_Csym',                       &
+     &                  math = '$ u_{sim} \nabla C_{sim} $')
 !>        Field label of advection of composition
 !!         @f$ u_{asym} \nabla C_{asym} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_uasym_nabla_Casym =     'uasym_nabla_Casym'
+      type(field_def), parameter :: uasym_nabla_Casym                   &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                  name = 'uasym_nabla_Casym',                     &
+     &                  math = '$ u_{asym} \nabla C_{asym} $')
 !>        Field label of advection of composition
 !!         @f$ u_{sym} \nabla C_{asym} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_usym_nabla_Casym =      'usym_nabla_Casym'
+      type(field_def), parameter :: usym_nabla_Casym                    &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                  name = 'usym_nabla_Casym',                      &
+     &                  math = '$ u_{sym} \nabla C_{asym} $')
 !>        Field label of advection of composition
 !!         @f$ u_{asym} \nabla C_{sym} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_uasym_nabla_Csym =      'uasym_nabla_Csym'
+      type(field_def), parameter :: uasym_nabla_Csym                    &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                  name = 'uasym_nabla_Csym',                      &
+     &                  math = '$ u_{asym} \nabla C_{sym} $')
 !
 !>        Field label of advection of perturbation of composition
-!!         @f$ u_{sym} \partial_{i} (C_{sym} - C0) @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_usym_nabla_pCsym =     'usym_nabla_pCsym'
+!!         @f$ u_{sym} \nabla (C_{sym} - C0) @f$
+      type(field_def), parameter :: usym_nabla_pCsym                    &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                  name = 'usym_nabla_pCsym',                      &
+     &                  math = '$ u_{sym} \nabla (C_{sym} - C0) $')
 !>        Field label of advection of perturbation of composition
-!!         @f$ u_{asym} \partial_{i} (C_{asym} - C0) @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_uasym_nabla_pCasym =   'uasym_nabla_pCasym'
+!!         @f$ u_{asym} \nabla (C_{asym} - C0) @f$
+      type(field_def), parameter :: uasym_nabla_pCasym                  &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                  name = 'uasym_nabla_pCasym',                    &
+     &                  math = '$ u_{asym} \nabla (C_{asym} - C0) $')
 !>        Field label of advection of perturbation of composition
-!!         @f$ u_{sym} \partial_{i} (C_{asym} - C0) @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_usym_nabla_pCasym =    'usym_nabla_pCasym'
+!!         @f$ u_{sym} \nabla (C_{asym} - C0) @f$
+      type(field_def), parameter :: usym_nabla_pCasym                   &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                  name = 'usym_nabla_pCasym',                     &
+     &                  math = '$ u_{sym} \nabla (C_{asym} - C0) $')
 !>        Field label of advection of perturbation of composition
-!!         @f$ u_{asym} \partial_{i} (C_{sym} - C0) @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_uasym_nabla_pCsym =    'uasym_nabla_pCsym'
+!!         @f$ u_{asym} \nabla (C_{sym} - C0) @f$
+      type(field_def), parameter :: uasym_nabla_pCsym                   &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                  name = 'uasym_nabla_pCsym',                     &
+     &                  math = '$ u_{asym} \nabla (C_{sym} - C0) $')
 !
 !>        Field label of composition flux
 !!         @f$ u_{sym} C_{sym} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_c_flux_sym_sym =   'composite_flux_sym_sym'
+      type(field_def), parameter :: composite_flux_sym_sym              &
+     &    = field_def(n_comp = n_vector,                                &
+     &                  name = 'composite_flux_sym_sym',                &
+     &                  math = '$ u_{sym} C_{sym} $')
 !>        Field label of composition flux
 !!         @f$ u_{asym} C_{asym} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_c_flux_asym_asym = 'composite_flux_asym_asym'
+      type(field_def), parameter :: composite_flux_asym_asym            &
+     &    = field_def(n_comp = n_vector,                                &
+     &                  name = 'composite_flux_asym_asym',              &
+     &                  math = '$ u_{asym} C_{asym} $')
 !>        Field label of composition flux
 !!         @f$ u_{sym} C_{asym} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_c_flux_sym_asym =  'composite_flux_sym_asym'
+      type(field_def), parameter :: composite_flux_sym_asym             &
+     &    = field_def(n_comp = n_vector,                                &
+     &                  name = 'composite_flux_sym_asym',               &
+     &                  math = '$ u_{sym} C_{asym} $')
 !>        Field label of composition flux
 !!         @f$ u_{asym} C_{sym} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_c_flux_asym_sym =  'composite_flux_asym_sym'
+      type(field_def), parameter :: composite_flux_asym_sym             &
+     &    = field_def(n_comp = n_vector,                                &
+     &                  name = 'composite_flux_asym_sym',               &
+     &                  math = '$ u_{asym} C_{sym} $')
 !
 !>        Field label of perturbation of composition flux
 !!         @f$ u_{sym} (C_{sym} - C0) @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_pc_flux_sym_sym =   'part_c_flux_sym_sym'
+      type(field_def), parameter :: part_c_flux_sym_sym                 &
+     &    = field_def(n_comp = n_vector,                                &
+     &                  name = 'part_c_flux_sym_sym',                   &
+     &                  math = '$ u_{sym} (C_{sym} - C0) $')
 !>        Field label of perturbation of composition flux
 !!         @f$ u_{asym} (C_{asym} - C0) @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_pc_flux_asym_asym = 'part_c_flux_asym_asym'
+      type(field_def), parameter :: part_c_flux_asym_asym               &
+     &    = field_def(n_comp = n_vector,                                &
+     &                  name = 'part_c_flux_asym_asym',                 &
+     &                  math = '$ u_{asym} (C_{asym} - C0) $')
 !>        Field label of perturbation of composition flux
 !!         @f$ u_{sym} (C_{asym} - C0) @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_pc_flux_sym_asym =  'part_c_flux_sym_asym'
+      type(field_def), parameter :: part_c_flux_sym_asym                &
+     &    = field_def(n_comp = n_vector,                                &
+     &                  name = 'part_c_flux_sym_asym',                  &
+     &                  math = '$ u_{sym} (C_{asym} - C0) $')
 !>        Field label of perturbation of composition flux
 !!         @f$ u_{asym} (C_{sym} - C0) @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_pc_flux_asym_sym =  'part_c_flux_asym_sym'
+      type(field_def), parameter :: part_c_flux_asym_sym                &
+     &    = field_def(n_comp = n_vector,                                &
+     &                  name = 'part_c_flux_asym_sym',                  &
+     &                  math = '$ u_{asym} (C_{sym} - C0) $')
 !
 ! ----------------------------------------------------------------------
 !
       contains
+!
+! ----------------------------------------------------------------------
+!
+      logical function check_scalar_advection_w_sym(field_name)
+!
+      character(len = kchara), intent(in) :: field_name
+!
+!
+      check_scalar_advection_w_sym = .FALSE.
+      if (    (field_name .eq. usym_nabla_Tsym%name)                    &
+     &   .or. (field_name .eq. uasym_nabla_Tasym%name)                  &
+     &   .or. (field_name .eq. usym_nabla_Tasym%name)                   &
+     &   .or. (field_name .eq. uasym_nabla_Tsym%name)                   &
+!
+     &   .or. (field_name .eq. usym_nabla_pTsym%name)                   &
+     &   .or. (field_name .eq. uasym_nabla_pTasym%name)                 &
+     &   .or. (field_name .eq. usym_nabla_pTasym%name)                  &
+     &   .or. (field_name .eq. uasym_nabla_pTsym%name)                  &
+!
+     &   .or. (field_name .eq. usym_nabla_Csym%name)                    &
+     &   .or. (field_name .eq. uasym_nabla_Casym%name)                  &
+     &   .or. (field_name .eq. usym_nabla_Casym%name)                   &
+     &   .or. (field_name .eq. uasym_nabla_Csym%name)                   &
+!
+     &   .or. (field_name .eq. usym_nabla_pCsym%name)                   &
+     &   .or. (field_name .eq. uasym_nabla_pCasym%name)                 &
+     &   .or. (field_name .eq. usym_nabla_pCasym%name)                  &
+     &   .or. (field_name .eq. uasym_nabla_pCsym%name)                  &
+     &      )   check_scalar_advection_w_sym = .TRUE.
+!
+      end function check_scalar_advection_w_sym
 !
 ! ----------------------------------------------------------------------
 !
@@ -429,84 +590,61 @@
 !
 !
       check_forces_w_sym = .FALSE.
-      if (    (field_name .eq. fhd_wsym_x_usym)                         &
-     &   .or. (field_name .eq. fhd_wasym_x_uasym)                       &
-     &   .or. (field_name .eq. fhd_wsym_x_uasym)                        &
-     &   .or. (field_name .eq. fhd_wasym_x_uaym)                        &
+      if (    (field_name .eq. wsym_x_usym%name)                        &
+     &   .or. (field_name .eq. wasym_x_uasym%name)                      &
+     &   .or. (field_name .eq. wsym_x_uasym%name)                       &
+     &   .or. (field_name .eq. wasym_x_usym%name)                       &
 !
-     &   .or. (field_name .eq. fhd_Jsym_x_Bsym)                         &
-     &   .or. (field_name .eq. fhd_Jasym_x_Basym)                       &
-     &   .or. (field_name .eq. fhd_Jsym_x_Basym)                        &
-     &   .or. (field_name .eq. fhd_Jasym_x_Bsym)                        &
+     &   .or. (field_name .eq. Jsym_x_Bsym%name)                        &
+     &   .or. (field_name .eq. Jasym_x_Basym%name)                      &
+     &   .or. (field_name .eq. Jsym_x_Basym%name)                       &
+     &   .or. (field_name .eq. Jasym_x_Bsym%name)                       &
 !
-     &   .or. (field_name .eq. fhd_Bsym_nabla_Bsym)                     &
-     &   .or. (field_name .eq. fhd_Basym_nabla_Basym)                   &
-     &   .or. (field_name .eq. fhd_Bsym_nabla_Basym)                    &
-     &   .or. (field_name .eq. fhd_Basym_nabla_Bsym)                    &
+     &   .or. (field_name .eq. Bsym_nabla_Bsym%name)                    &
+     &   .or. (field_name .eq. Basym_nabla_Basym%name)                  &
+     &   .or. (field_name .eq. Bsym_nabla_Basym%name)                   &
+     &   .or. (field_name .eq. Basym_nabla_Bsym%name)                   &
 !
-     &   .or. (field_name .eq. fhd_sym_buoyancy)                        &
-     &   .or. (field_name .eq. fhd_asym_buoyancy)                       &
-     &   .or. (field_name .eq. fhd_sym_comp_buo)                        &
-     &   .or. (field_name .eq. fhd_asym_comp_buo)                       &
+     &   .or. (field_name .eq. sym_termal_buoyancy%name)                &
+     &   .or. (field_name .eq. asym_termal_buoyancy%name)               &
 !
-     &   .or. (field_name .eq. fhd_usym_x_Bsym)                         &
-     &   .or. (field_name .eq. fhd_uasym_x_Basym)                       &
-     &   .or. (field_name .eq. fhd_usym_x_Basym)                        &
-     &   .or. (field_name .eq. fhd_uasym_x_Bsym)                        &
+     &   .or. (field_name .eq. sym_composite_buoyancy%name)             &
+     &   .or. (field_name .eq. asym_composite_buoyancy%name)            &
 !
-     &   .or. (field_name .eq. fhd_rot_usym_x_Bsym)                     &
-     &   .or. (field_name .eq. fhd_rot_uasym_x_Basym)                   &
-     &   .or. (field_name .eq. fhd_rot_usym_x_Basym)                    &
-     &   .or. (field_name .eq. fhd_rot_uasym_x_Bsym)                    &
+     &   .or. (field_name .eq. usym_x_Bsym%name)                        &
+     &   .or. (field_name .eq. uasym_x_Basym%name)                      &
+     &   .or. (field_name .eq. usym_x_Basym%name)                       &
+     &   .or. (field_name .eq. uasym_x_Bsym%name)                       &
 !
-     &   .or. (field_name .eq. fhd_Bsym_nabla_usym)                     &
-     &   .or. (field_name .eq. fhd_Basym_nabla_uasym)                   &
-     &   .or. (field_name .eq. fhd_Bsym_nabla_uasym)                    &
-     &   .or. (field_name .eq. fhd_Basym_nabla_usym)                    &
+     &   .or. (field_name .eq. rot_usym_x_Bsym%name)                    &
+     &   .or. (field_name .eq. rot_uasym_x_Basym%name)                  &
+     &   .or. (field_name .eq. rot_usym_x_Basym%name)                   &
+     &   .or. (field_name .eq. rot_uasym_x_Bsym%name)                   &
 !
-     &   .or. (field_name .eq. fhd_usym_Bsym)                           &
-     &   .or. (field_name .eq. fhd_uasym_Basym)                         &
-     &   .or. (field_name .eq. fhd_uasym_Bsym)                          &
+     &   .or. (field_name .eq. Bsym_nabla_usym%name)                    &
+     &   .or. (field_name .eq. Basym_nabla_uasym%name)                  &
+     &   .or. (field_name .eq. Bsym_nabla_uasym%name)                   &
+     &   .or. (field_name .eq. Basym_nabla_usym%name)                   &
 !
-     &   .or. (field_name .eq. fhd_usym_nabla_Tsym)                     &
-     &   .or. (field_name .eq. fhd_uasym_nabla_Tasym)                   &
-     &   .or. (field_name .eq. fhd_usym_nabla_Tasym)                    &
-     &   .or. (field_name .eq. fhd_uasym_nabla_Tsym)                    &
+     &   .or. (field_name .eq. heat_flux_sym_sym%name)                  &
+     &   .or. (field_name .eq. heat_flux_asym_asym%name)                &
+     &   .or. (field_name .eq. heat_flux_sym_asym%name)                 &
+     &   .or. (field_name .eq. heat_flux_asym_sym%name)                 &
 !
-     &   .or. (field_name .eq. fhd_usym_nabla_pTsym)                    &
-     &   .or. (field_name .eq. fhd_uasym_nabla_pTasym)                  &
-     &   .or. (field_name .eq. fhd_usym_nabla_pTasym)                   &
-     &   .or. (field_name .eq. fhd_uasym_nabla_pTsym)                   &
+     &   .or. (field_name .eq. part_h_flux_sym_sym%name)                &
+     &   .or. (field_name .eq. part_h_flux_asym_asym%name)              &
+     &   .or. (field_name .eq. part_h_flux_sym_asym%name)               &
+     &   .or. (field_name .eq. part_h_flux_asym_sym%name)               &
 !
-     &   .or. (field_name .eq. fhd_h_flux_sym_sym)                      &
-     &   .or. (field_name .eq. fhd_h_flux_asym_asym)                    &
-     &   .or. (field_name .eq. fhd_h_flux_sym_asym)                     &
-     &   .or. (field_name .eq. fhd_h_flux_asym_sym)                     &
+     &   .or. (field_name .eq. composite_flux_sym_sym%name)             &
+     &   .or. (field_name .eq. composite_flux_asym_asym%name)           &
+     &   .or. (field_name .eq. composite_flux_sym_asym%name)            &
+     &   .or. (field_name .eq. composite_flux_asym_sym%name)            &
 !
-     &   .or. (field_name .eq. fhd_ph_flux_sym_sym)                     &
-     &   .or. (field_name .eq. fhd_ph_flux_asym_asym)                   &
-     &   .or. (field_name .eq. fhd_ph_flux_sym_asym)                    &
-     &   .or. (field_name .eq. fhd_ph_flux_asym_sym)                    &
-!
-     &   .or. (field_name .eq. fhd_usym_nabla_Csym)                     &
-     &   .or. (field_name .eq. fhd_uasym_nabla_Casym)                   &
-     &   .or. (field_name .eq. fhd_usym_nabla_Casym)                    &
-     &   .or. (field_name .eq. fhd_uasym_nabla_Csym)                    &
-!
-     &   .or. (field_name .eq. fhd_usym_nabla_pCsym)                    &
-     &   .or. (field_name .eq. fhd_uasym_nabla_pCasym)                  &
-     &   .or. (field_name .eq. fhd_usym_nabla_pCasym)                   &
-     &   .or. (field_name .eq. fhd_uasym_nabla_pCsym)                   &
-!
-     &   .or. (field_name .eq. fhd_c_flux_sym_sym)                      &
-     &   .or. (field_name .eq. fhd_c_flux_asym_asym)                    &
-     &   .or. (field_name .eq. fhd_c_flux_sym_asym)                     &
-     &   .or. (field_name .eq. fhd_c_flux_asym_sym)                     &
-!
-     &   .or. (field_name .eq. fhd_pc_flux_sym_sym)                     &
-     &   .or. (field_name .eq. fhd_pc_flux_asym_asym)                   &
-     &   .or. (field_name .eq. fhd_pc_flux_sym_asym)                    &
-     &   .or. (field_name .eq. fhd_pc_flux_asym_sym)                    &
+     &   .or. (field_name .eq. part_c_flux_sym_sym%name)                &
+     &   .or. (field_name .eq. part_c_flux_asym_asym%name)              &
+     &   .or. (field_name .eq. part_c_flux_sym_asym%name)               &
+     &   .or. (field_name .eq. part_c_flux_asym_sym%name)               &
      &      )   check_forces_w_sym = .TRUE.
 !
       end function check_forces_w_sym
@@ -519,17 +657,32 @@
 !
 !
       check_flux_tensors_w_sym = .FALSE.
-      if (    (field_name .eq. fhd_m_flux_sym_sym)                      &
-     &   .or. (field_name .eq. fhd_m_flux_asym_asym)                    &
-     &   .or. (field_name .eq. fhd_m_flux_sym_asym)                     &
+      if (    (field_name .eq. m_flux_sym_sym%name)                     &
+     &   .or. (field_name .eq. m_flux_asym_asym%name)                   &
+     &   .or. (field_name .eq. m_flux_sym_asym%name)                    &
 !
-     &   .or. (field_name .eq. fhd_maxwell_sym_sym)                     &
-     &   .or. (field_name .eq. fhd_maxwell_asym_asym)                   &
-     &   .or. (field_name .eq. fhd_maxwell_sym_asym)                    &
-!
+     &   .or. (field_name .eq. maxwell_tensor_sym_sym%name)             &
+     &   .or. (field_name .eq. maxwell_tensor_asym_asym%name)           &
+     &   .or. (field_name .eq. maxwell_tensor_sym_asym%name)            &
      &      )   check_flux_tensors_w_sym = .TRUE.
 !
       end function check_flux_tensors_w_sym
+!
+! ----------------------------------------------------------------------
+!
+      logical function check_flux_asym_tensors_w_sym(field_name)
+!
+      character(len = kchara), intent(in) :: field_name
+!
+!
+      check_flux_asym_tensors_w_sym = .FALSE.
+      if (    (field_name .eq. usym_Bsym%name)                          &
+     &   .or. (field_name .eq. uasym_Basym%name)                        &
+     &   .or. (field_name .eq. usym_Basym%name)                         &
+     &   .or. (field_name .eq. uasym_Bsym%name)                         &
+     &      )   check_flux_asym_tensors_w_sym = .TRUE.
+!
+      end function check_flux_asym_tensors_w_sym
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
@@ -550,148 +703,150 @@
 !
       flag = check_forces_w_sym(field_name)
       if(flag) then
-        if      (field_name .eq. fhd_wsym_x_usym) then
+        if      (field_name .eq. wsym_x_usym%name) then
           force_sym1_sym2%i_m_advect =   i_phys
-        else if (field_name .eq. fhd_wasym_x_uasym) then
+        else if (field_name .eq. wasym_x_uasym%name) then
           force_asym1_asym2%i_m_advect =   i_phys
-        else if (field_name .eq. fhd_wsym_x_uasym) then
+        else if (field_name .eq. wsym_x_uasym%name) then
           force_sym1_asym2%i_m_advect =   i_phys
-        else if (field_name .eq. fhd_wasym_x_uaym) then
+        else if (field_name .eq. wasym_x_usym%name) then
           force_asym1_sym2%i_m_advect =   i_phys
 !
-        else if (field_name .eq. fhd_Jsym_x_Bsym) then
+        else if (field_name .eq. Jsym_x_Bsym%name) then
           force_sym1_sym2%i_lorentz =    i_phys
-        else if (field_name .eq. fhd_Jasym_x_Basym) then
+        else if (field_name .eq. Jasym_x_Basym%name) then
           force_asym1_asym2%i_lorentz =    i_phys
-        else if (field_name .eq. fhd_Jsym_x_Basym) then
+        else if (field_name .eq. Jsym_x_Basym%name) then
           force_sym1_asym2%i_lorentz =    i_phys
-        else if (field_name .eq. fhd_Jasym_x_Bsym) then
+        else if (field_name .eq. Jasym_x_Bsym%name) then
           force_asym1_sym2%i_lorentz =    i_phys
 !
-        else if (field_name .eq. fhd_Bsym_nabla_Bsym) then
+        else if (field_name .eq. Bsym_nabla_Bsym%name) then
           force_sym1_sym2%i_m_tension =  i_phys
-        else if (field_name .eq. fhd_Basym_nabla_Basym) then
+        else if (field_name .eq. Basym_nabla_Basym%name) then
           force_asym1_asym2%i_m_tension =  i_phys
-        else if (field_name .eq. fhd_Bsym_nabla_Basym) then
+        else if (field_name .eq. Bsym_nabla_Basym%name) then
           force_sym1_asym2%i_m_tension =  i_phys
-        else if (field_name .eq. fhd_Basym_nabla_Bsym) then
+        else if (field_name .eq. Basym_nabla_Bsym%name) then
           force_asym1_sym2%i_m_tension =  i_phys
 !
-        else if (field_name .eq. fhd_sym_buoyancy) then
+        else if (field_name .eq. sym_termal_buoyancy%name) then
           force_sym1_sym2%i_buoyancy =   i_phys
-        else if (field_name .eq. fhd_asym_buoyancy) then
+        else if (field_name .eq. asym_termal_buoyancy%name) then
           force_asym1_asym2%i_buoyancy =   i_phys
 !
-        else if (field_name .eq. fhd_sym_comp_buo) then
+        else if (field_name .eq. sym_composite_buoyancy%name) then
           force_sym1_sym2%i_comp_buo =   i_phys
-        else if (field_name .eq. fhd_asym_comp_buo) then
+        else if (field_name .eq. asym_composite_buoyancy%name) then
           force_asym1_asym2%i_comp_buo =   i_phys
 !
-        else if (field_name .eq. fhd_usym_x_Bsym) then
+        else if (field_name .eq. usym_x_Bsym%name) then
           force_sym1_sym2%i_vp_induct =    i_phys
-        else if (field_name .eq. fhd_uasym_x_Basym) then
+        else if (field_name .eq. uasym_x_Basym%name) then
           force_asym1_asym2%i_vp_induct =  i_phys
-        else if (field_name .eq. fhd_usym_x_Basym) then
+        else if (field_name .eq. usym_x_Basym%name) then
           force_sym1_asym2%i_vp_induct =   i_phys
-        else if (field_name .eq. fhd_uasym_x_Bsym) then
+        else if (field_name .eq. uasym_x_Bsym%name) then
           force_asym1_sym2%i_vp_induct =   i_phys
 !
-        else if (field_name .eq. fhd_rot_usym_x_Bsym) then
+        else if (field_name .eq. rot_usym_x_Bsym%name) then
           force_sym1_sym2%i_induction =    i_phys
-        else if (field_name .eq. fhd_rot_uasym_x_Basym) then
+        else if (field_name .eq. rot_uasym_x_Basym%name) then
           force_asym1_asym2%i_induction =  i_phys
-        else if (field_name .eq. fhd_rot_usym_x_Basym) then
+        else if (field_name .eq. rot_usym_x_Basym%name) then
           force_sym1_asym2%i_induction =   i_phys
-        else if (field_name .eq. fhd_rot_uasym_x_Bsym) then
+        else if (field_name .eq. rot_uasym_x_Bsym%name) then
           force_asym1_sym2%i_induction =   i_phys
 !
-        else if (field_name .eq. fhd_Bsym_nabla_usym) then
+        else if (field_name .eq. Bsym_nabla_usym%name) then
           force_sym1_sym2%i_mag_stretch =   i_phys
-        else if (field_name .eq. fhd_Basym_nabla_uasym) then
+        else if (field_name .eq. Basym_nabla_uasym%name) then
           force_asym1_asym2%i_mag_stretch = i_phys
-        else if (field_name .eq. fhd_Bsym_nabla_uasym) then
+        else if (field_name .eq. Bsym_nabla_uasym%name) then
           force_sym1_asym2%i_mag_stretch =  i_phys
-        else if (field_name .eq. fhd_Basym_nabla_usym) then
+        else if (field_name .eq. Basym_nabla_usym%name) then
           force_asym1_sym2%i_mag_stretch =  i_phys
 !
-        else if (field_name .eq. fhd_usym_Bsym) then
-          force_sym1_sym2%i_induct_t =     i_phys
-        else if (field_name .eq. fhd_uasym_Basym) then
-          force_asym1_asym2%i_induct_t =   i_phys
-        else if (field_name .eq. fhd_uasym_Bsym) then
-          force_sym1_asym2%i_induct_t =    i_phys
-!
-        else if (field_name .eq. fhd_usym_nabla_Tsym) then
+        else if (field_name .eq. usym_nabla_Tsym%name) then
           force_sym1_sym2%i_h_advect =  i_phys
-        else if (field_name .eq. fhd_uasym_nabla_Tasym) then
+        else if (field_name .eq. uasym_nabla_Tasym%name) then
           force_asym1_asym2%i_h_advect =  i_phys
-        else if (field_name .eq. fhd_usym_nabla_Tasym) then
+        else if (field_name .eq. usym_nabla_Tasym%name) then
           force_sym1_asym2%i_h_advect =  i_phys
-        else if (field_name .eq. fhd_uasym_nabla_Tsym) then
+        else if (field_name .eq. uasym_nabla_Tsym%name) then
           force_asym1_sym2%i_h_advect =  i_phys
 !
-        else if (field_name .eq. fhd_usym_nabla_pTsym) then
+        else if (field_name .eq. usym_nabla_pTsym%name) then
           force_sym1_sym2%i_ph_advect = i_phys
-        else if (field_name .eq. fhd_uasym_nabla_pTasym) then
+        else if (field_name .eq. uasym_nabla_pTasym%name) then
           force_asym1_asym2%i_ph_advect = i_phys
-        else if (field_name .eq. fhd_usym_nabla_pTasym) then
+        else if (field_name .eq. usym_nabla_pTasym%name) then
           force_sym1_asym2%i_ph_advect = i_phys
-        else if (field_name .eq. fhd_uasym_nabla_pTsym) then
+        else if (field_name .eq. uasym_nabla_pTsym%name) then
           force_asym1_sym2%i_ph_advect = i_phys
 !
-        else if (field_name .eq. fhd_h_flux_sym_sym) then
+        else if (field_name .eq. heat_flux_sym_sym%name) then
           force_sym1_sym2%i_h_flux =    i_phys
-        else if (field_name .eq. fhd_h_flux_asym_asym) then
+        else if (field_name .eq. heat_flux_asym_asym%name) then
           force_asym1_asym2%i_h_flux =  i_phys
-        else if (field_name .eq. fhd_h_flux_sym_asym) then
+        else if (field_name .eq. heat_flux_sym_asym%name) then
           force_sym1_asym2%i_h_flux =   i_phys
-        else if (field_name .eq. fhd_h_flux_asym_sym) then
+        else if (field_name .eq. heat_flux_asym_sym%name) then
           force_asym1_sym2%i_h_flux =   i_phys
 !
-        else if (field_name .eq. fhd_ph_flux_sym_sym) then
+        else if (field_name .eq. part_h_flux_sym_sym%name) then
           force_sym1_sym2%i_ph_flux =   i_phys
-        else if (field_name .eq. fhd_ph_flux_asym_asym) then
+        else if (field_name .eq. part_h_flux_asym_asym%name) then
           force_asym1_asym2%i_ph_flux =   i_phys
-        else if (field_name .eq. fhd_ph_flux_sym_asym) then
+        else if (field_name .eq. part_h_flux_sym_asym%name) then
           force_sym1_asym2%i_ph_flux =   i_phys
-        else if (field_name .eq. fhd_ph_flux_asym_sym) then
+        else if (field_name .eq. part_h_flux_asym_sym%name) then
           force_asym1_sym2%i_ph_flux =   i_phys
 !
-        else if (field_name .eq. fhd_usym_nabla_Csym) then
+        else if (field_name .eq. usym_nabla_Csym%name) then
           force_sym1_sym2%i_c_advect =    i_phys
-        else if (field_name .eq. fhd_uasym_nabla_Casym) then
+        else if (field_name .eq. uasym_nabla_Casym%name) then
           force_asym1_asym2%i_c_advect =  i_phys
-        else if (field_name .eq. fhd_usym_nabla_Casym) then
+        else if (field_name .eq. usym_nabla_Casym%name) then
           force_sym1_asym2%i_c_advect =   i_phys
-        else if (field_name .eq. fhd_uasym_nabla_Csym) then
+        else if (field_name .eq. uasym_nabla_Csym%name) then
           force_asym1_sym2%i_c_advect =   i_phys
 !
-        else if (field_name .eq. fhd_usym_nabla_pCsym) then
+        else if (field_name .eq. usym_nabla_pCsym%name) then
           force_sym1_sym2%i_pc_advect =   i_phys
-        else if (field_name .eq. fhd_uasym_nabla_pCasym) then
+        else if (field_name .eq. uasym_nabla_pCasym%name) then
           force_asym1_asym2%i_pc_advect = i_phys
-        else if (field_name .eq. fhd_usym_nabla_pCasym) then
+        else if (field_name .eq. usym_nabla_pCasym%name) then
           force_sym1_asym2%i_pc_advect =  i_phys
-        else if (field_name .eq. fhd_uasym_nabla_pCsym) then
+        else if (field_name .eq. uasym_nabla_pCsym%name) then
           force_asym1_sym2%i_pc_advect =  i_phys
 !
-        else if (field_name .eq. fhd_c_flux_sym_sym) then
+        else if (field_name .eq. composite_flux_sym_sym%name) then
           force_sym1_sym2%i_c_flux =    i_phys
-        else if (field_name .eq. fhd_c_flux_asym_asym) then
+        else if (field_name .eq. composite_flux_asym_asym%name) then
           force_asym1_asym2%i_c_flux =  i_phys
-        else if (field_name .eq. fhd_c_flux_sym_asym) then
+        else if (field_name .eq. composite_flux_sym_asym%name) then
           force_sym1_asym2%i_c_flux =   i_phys
-        else if (field_name .eq. fhd_c_flux_asym_sym) then
+        else if (field_name .eq. composite_flux_asym_sym%name) then
           force_asym1_sym2%i_c_flux =   i_phys
 !
-        else if (field_name .eq. fhd_pc_flux_sym_sym) then
+        else if (field_name .eq. part_c_flux_sym_sym%name) then
           force_sym1_sym2%i_pc_flux =   i_phys
-        else if (field_name .eq. fhd_pc_flux_asym_asym) then
+        else if (field_name .eq. part_c_flux_asym_asym%name) then
           force_asym1_asym2%i_pc_flux = i_phys
-        else if (field_name .eq. fhd_pc_flux_sym_asym) then
+        else if (field_name .eq. part_c_flux_sym_asym%name) then
           force_sym1_asym2%i_pc_flux =  i_phys
-        else if (field_name .eq. fhd_pc_flux_asym_sym) then
+        else if (field_name .eq. part_c_flux_asym_sym%name) then
           force_asym1_sym2%i_pc_flux =  i_phys
+!
+        else if (field_name .eq. usym_Bsym%name) then
+          force_sym1_sym2%i_induct_t =     i_phys
+        else if (field_name .eq. uasym_Basym%name) then
+          force_asym1_asym2%i_induct_t =   i_phys
+        else if (field_name .eq. usym_Basym%name) then
+          force_sym1_asym2%i_induct_t =    i_phys
+        else if (field_name .eq. uasym_Bsym%name) then
+          force_asym1_sym2%i_induct_t =    i_phys
         end if
       end if
 !
@@ -714,100 +869,23 @@
 !
       flag = check_flux_tensors_w_sym(field_name)
       if(flag) then
-        if      (field_name .eq. fhd_m_flux_sym_sym ) then
+        if      (field_name .eq. m_flux_sym_sym%name) then
           force_sym1_sym2%i_m_flux =     i_phys
-        else if (field_name .eq. fhd_m_flux_asym_asym ) then
+        else if (field_name .eq. m_flux_asym_asym%name) then
           force_asym1_asym2%i_m_flux =     i_phys
-        else if (field_name .eq. fhd_m_flux_sym_asym ) then
+        else if (field_name .eq. m_flux_sym_asym%name) then
           force_sym1_asym2%i_m_flux =     i_phys
 !
-        else if (field_name .eq. fhd_maxwell_sym_sym) then
+        else if (field_name .eq. maxwell_tensor_sym_sym%name) then
           force_sym1_sym2%i_maxwell =    i_phys
-        else if (field_name .eq. fhd_maxwell_asym_asym) then
+        else if (field_name .eq. maxwell_tensor_asym_asym%name) then
           force_asym1_asym2%i_maxwell =    i_phys
-        else if (field_name .eq. fhd_maxwell_sym_asym) then
+        else if (field_name .eq. maxwell_tensor_sym_asym%name) then
           force_sym1_asym2%i_maxwell =    i_phys
         end if
       end if
 !
       end subroutine set_flux_tensor_w_sym_addresses
-!
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      subroutine force_w_sym_monitor_address                            &
-     &         (field_name, i_field, numrms, numave,                    &
-     &          rms_force_sym1_sym2, rms_force_asym1_asym2,             &
-     &          rms_force_sym1_asym2, rms_force_asym1_sym2,             &
-     &          ave_force_sym1_sym2, ave_force_asym1_asym2,             &
-     &          ave_force_sym1_asym2, ave_force_asym1_sym2, flag)
-!
-      character(len = kchara), intent(in):: field_name
-      integer(kind = kint), intent(in) :: i_field
-      integer(kind = kint), intent(in) :: numrms, numave
-!
-      type(base_force_address), intent(inout) :: rms_force_sym1_sym2
-      type(base_force_address), intent(inout) :: rms_force_asym1_asym2
-      type(base_force_address), intent(inout) :: rms_force_sym1_asym2
-      type(base_force_address), intent(inout) :: rms_force_asym1_sym2
-      type(base_force_address), intent(inout) :: ave_force_sym1_sym2
-      type(base_force_address), intent(inout) :: ave_force_asym1_asym2
-      type(base_force_address), intent(inout) :: ave_force_sym1_asym2
-      type(base_force_address), intent(inout) :: ave_force_asym1_sym2
-      logical, intent(inout) :: flag
-!
-      logical :: flag_a, flag_r
-!
-!
-      flag = .FALSE.
-!
-      if(i_field .eq. 0) return
-      call set_force_w_sym_addresses((numrms+1), field_name,            &
-     &    rms_force_sym1_sym2, rms_force_asym1_asym2,                   &
-     &    rms_force_sym1_asym2, rms_force_asym1_sym2, flag_r)
-      call set_force_w_sym_addresses((numave+1), field_name,            &
-     &    ave_force_sym1_sym2, ave_force_asym1_asym2,                   &
-     &    ave_force_sym1_asym2, ave_force_asym1_sym2, flag_a)
-      flag = (flag_r .and. flag_a)
-!
-      end subroutine force_w_sym_monitor_address
-!
-! ----------------------------------------------------------------------
-!
-      subroutine flux_tsr_w_sym_monitor_address                         &
-     &         (field_name, i_field, numrms, numave,                    &
-     &          rms_force_sym1_sym2, rms_force_asym1_asym2,             &
-     &          rms_force_sym1_asym2,                                   &
-     &          ave_force_sym1_sym2, ave_force_asym1_asym2,             &
-     &          ave_force_sym1_asym2, flag)
-!
-      character(len = kchara), intent(in):: field_name
-      integer(kind = kint), intent(in) :: i_field
-      integer(kind = kint), intent(in) :: numrms, numave
-!
-      type(base_force_address), intent(inout) :: rms_force_sym1_sym2
-      type(base_force_address), intent(inout) :: rms_force_asym1_asym2
-      type(base_force_address), intent(inout) :: rms_force_sym1_asym2
-      type(base_force_address), intent(inout) :: ave_force_sym1_sym2
-      type(base_force_address), intent(inout) :: ave_force_asym1_asym2
-      type(base_force_address), intent(inout) :: ave_force_sym1_asym2
-      logical, intent(inout) :: flag
-!
-      logical :: flag_a, flag_r
-!
-!
-      flag = .FALSE.
-!
-      if(i_field .eq. 0) return
-      call set_flux_tensor_w_sym_addresses((numrms+1), field_name,      &
-     &    rms_force_sym1_sym2, rms_force_asym1_asym2,                   &
-     &    rms_force_sym1_asym2, flag_r)
-      call set_flux_tensor_w_sym_addresses((numave+1), field_name,      &
-     &    ave_force_sym1_sym2, ave_force_asym1_asym2,                   &
-     &    ave_force_sym1_asym2, flag_a)
-      flag = (flag_r .and. flag_a)
-!
-      end subroutine flux_tsr_w_sym_monitor_address
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
@@ -819,147 +897,172 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_force_w_symmetry_names(field_names)
+      subroutine set_force_w_symmetry_names(n_comps, names, maths)
 !
-      character(len = kchara), intent(inout)                            &
-     &                        :: field_names(nforce_w_sym)
+      integer(kind = kint), intent(inout) :: n_comps(nforce_w_sym)
+      character(len = kchara), intent(inout) :: names(nforce_w_sym)
+      character(len = kchara), intent(inout) :: maths(nforce_w_sym)
 !
 !
-      write(field_names( 1),'(a,a1)') trim(fhd_wsym_x_usym), CHAR(0)
-      write(field_names( 2),'(a,a1)') trim(fhd_wasym_x_uasym), CHAR(0)
-      write(field_names( 3),'(a,a1)') trim(fhd_wsym_x_uasym), CHAR(0)
-      write(field_names( 4),'(a,a1)') trim(fhd_wasym_x_uaym), CHAR(0)
 !
-      write(field_names( 5),'(a,a1)') trim(fhd_Jsym_x_Bsym), CHAR(0)
-      write(field_names( 6),'(a,a1)') trim(fhd_Jasym_x_Basym), CHAR(0)
-      write(field_names( 7),'(a,a1)') trim(fhd_Jsym_x_Basym), CHAR(0)
-      write(field_names( 8),'(a,a1)') trim(fhd_Jasym_x_Bsym), CHAR(0)
+      call set_field_labels(wsym_x_usym,                                &
+     &    n_comps( 1), names( 1), maths( 1))
+      call set_field_labels(wasym_x_uasym,                              &
+     &    n_comps( 2), names( 2), maths( 2))
+      call set_field_labels(wsym_x_uasym,                               &
+     &    n_comps( 3), names( 3), maths( 3))
+      call set_field_labels(wasym_x_usym,                               &
+     &    n_comps( 4), names( 4), maths( 4))
 !
-      write(field_names( 9),'(a,a1)')                                   &
-     &                  trim(fhd_Bsym_nabla_Bsym), CHAR(0)
-      write(field_names(10),'(a,a1)')                                   &
-     &                  trim(fhd_Basym_nabla_Basym), CHAR(0)
-      write(field_names(11),'(a,a1)')                                   &
-     &                  trim(fhd_Bsym_nabla_Basym), CHAR(0)
-      write(field_names(12),'(a,a1)')                                   &
-     &                  trim(fhd_Basym_nabla_Bsym), CHAR(0)
+      call set_field_labels(Jsym_x_Bsym,                                &
+     &    n_comps( 5), names( 5), maths( 5))
+      call set_field_labels(Jasym_x_Basym,                              &
+     &    n_comps( 6), names( 6), maths( 6))
+      call set_field_labels(Jsym_x_Basym,                               &
+     &    n_comps( 7), names( 7), maths( 7))
+      call set_field_labels(Jasym_x_Bsym,                               &
+     &    n_comps( 8), names( 8), maths( 8))
 !
-      write(field_names(13),'(a,a1)') trim(fhd_sym_buoyancy), CHAR(0)
-      write(field_names(14),'(a,a1)') trim(fhd_asym_buoyancy), CHAR(0)
-      write(field_names(15),'(a,a1)') trim(fhd_sym_comp_buo), CHAR(0)
-      write(field_names(16),'(a,a1)') trim(fhd_asym_comp_buo), CHAR(0)
+      call set_field_labels(Bsym_nabla_Bsym,                            &
+     &    n_comps( 9), names( 9), maths( 9))
+      call set_field_labels(Basym_nabla_Basym,                          &
+     &    n_comps(10), names(10), maths(10))
+      call set_field_labels(Bsym_nabla_Basym,                           &
+     &    n_comps(11), names(11), maths(11))
+      call set_field_labels(Basym_nabla_Bsym,                           &
+     &    n_comps(12), names(12), maths(12))
 !
-      write(field_names(17),'(a,a1)') trim(fhd_usym_x_Bsym), CHAR(0)
-      write(field_names(18),'(a,a1)') trim(fhd_uasym_x_Basym), CHAR(0)
-      write(field_names(19),'(a,a1)') trim(fhd_usym_x_Basym), CHAR(0)
-      write(field_names(20),'(a,a1)') trim(fhd_uasym_x_Bsym), CHAR(0)
+      call set_field_labels(sym_termal_buoyancy,                        &
+     &    n_comps(13), names(13), maths(13))
+      call set_field_labels(asym_termal_buoyancy,                       &
+     &    n_comps(14), names(14), maths(14))
 !
-      write(field_names(21),'(a,a1)')                                   &
-     &                  trim(fhd_rot_usym_x_Bsym), CHAR(0)
-      write(field_names(22),'(a,a1)')                                   &
-     &                  trim(fhd_rot_uasym_x_Basym), CHAR(0)
-      write(field_names(23),'(a,a1)')                                   &
-     &                  trim(fhd_rot_usym_x_Basym), CHAR(0)
-      write(field_names(24),'(a,a1)')                                   &
-     &                  trim(fhd_rot_uasym_x_Bsym), CHAR(0)
+      call set_field_labels(sym_composite_buoyancy,                     &
+     &    n_comps(15), names(15), maths(15))
+      call set_field_labels(asym_composite_buoyancy,                    &
+     &    n_comps(16), names(16), maths(16))
 !
-      write(field_names(25),'(a,a1)')                                   &
-     &                  trim(fhd_Bsym_nabla_usym), CHAR(0)
-      write(field_names(26),'(a,a1)')                                   &
-     &                  trim(fhd_Basym_nabla_uasym), CHAR(0)
-      write(field_names(27),'(a,a1)')                                   &
-     &                  trim(fhd_Bsym_nabla_uasym), CHAR(0)
-      write(field_names(28),'(a,a1)')                                   &
-     &                  trim(fhd_Basym_nabla_usym), CHAR(0)
+      call set_field_labels(usym_x_Bsym,                                &
+     &    n_comps(17), names(17), maths(17))
+      call set_field_labels(uasym_x_Basym,                              &
+     &    n_comps(18), names(18), maths(18))
+      call set_field_labels(usym_x_Basym,                               &
+     &    n_comps(19), names(19), maths(19))
+      call set_field_labels(uasym_x_Bsym,                               &
+     &    n_comps(20), names(20), maths(20))
 !
-      write(field_names(29),'(a,a1)')                                   &
-     &                  trim(fhd_usym_nabla_Tsym), CHAR(0)
-      write(field_names(30),'(a,a1)')                                   &
-     &                  trim(fhd_uasym_nabla_Tasym), CHAR(0)
-      write(field_names(31),'(a,a1)')                                   &
-     &                  trim(fhd_usym_nabla_Tasym), CHAR(0)
-      write(field_names(32),'(a,a1)')                                   &
-     &                  trim(fhd_uasym_nabla_Tsym), CHAR(0)
+      call set_field_labels(rot_usym_x_Bsym,                            &
+     &    n_comps(21), names(21), maths(21))
+      call set_field_labels(rot_uasym_x_Basym,                          &
+     &    n_comps(22), names(22), maths(22))
+      call set_field_labels(rot_usym_x_Basym,                           &
+     &    n_comps(23), names(23), maths(23))
+      call set_field_labels(rot_uasym_x_Bsym,                           &
+     &    n_comps(24), names(24), maths(24))
 !
-      write(field_names(33),'(a,a1)')                                   &
-     &                  trim(fhd_usym_nabla_pTsym), CHAR(0)
-      write(field_names(34),'(a,a1)')                                   &
-     &                  trim(fhd_uasym_nabla_pTasym), CHAR(0)
-      write(field_names(35),'(a,a1)')                                   &
-     &                  trim(fhd_usym_nabla_pTasym), CHAR(0)
-      write(field_names(36),'(a,a1)')                                   &
-     &                  trim(fhd_uasym_nabla_pTsym), CHAR(0)
+      call set_field_labels(Bsym_nabla_usym,                            &
+     &    n_comps(25), names(25), maths(25))
+      call set_field_labels(Basym_nabla_uasym,                          &
+     &    n_comps(26), names(26), maths(26))
+      call set_field_labels(Bsym_nabla_uasym,                           &
+     &    n_comps(27), names(27), maths(27))
+      call set_field_labels(Basym_nabla_usym,                           &
+     &    n_comps(28), names(28), maths(28))
 !
-      write(field_names(37),'(a,a1)') trim(fhd_h_flux_sym_sym), CHAR(0)
-      write(field_names(38),'(a,a1)')                                   &
-     &                  trim(fhd_h_flux_asym_asym), CHAR(0)
-      write(field_names(39),'(a,a1)')                                   &
-     &                  trim(fhd_h_flux_sym_asym), CHAR(0)
-      write(field_names(40),'(a,a1)')                                   &
-     &                  trim(fhd_h_flux_asym_sym), CHAR(0)
+      call set_field_labels(usym_nabla_Tsym,                            &
+     &    n_comps(29), names(29), maths(29))
+      call set_field_labels(uasym_nabla_Tasym,                          &
+     &    n_comps(30), names(30), maths(30))
+      call set_field_labels(usym_nabla_Tasym,                           &
+     &    n_comps(31), names(31), maths(31))
+      call set_field_labels(uasym_nabla_Tsym,                           &
+     &    n_comps(32), names(32), maths(32))
 !
-      write(field_names(41),'(a,a1)')                                   &
-     &                  trim(fhd_ph_flux_sym_sym), CHAR(0)
-      write(field_names(42),'(a,a1)')                                   &
-     &                  trim(fhd_ph_flux_asym_asym), CHAR(0)
-      write(field_names(43),'(a,a1)')                                   &
-     &                  trim(fhd_ph_flux_sym_asym), CHAR(0)
-      write(field_names(44),'(a,a1)')                                   &
-     &                  trim(fhd_ph_flux_asym_sym), CHAR(0)
+      call set_field_labels(usym_nabla_pTsym,                           &
+     &    n_comps(33), names(33), maths(33))
+      call set_field_labels(uasym_nabla_pTasym,                         &
+     &    n_comps(34), names(34), maths(34))
+      call set_field_labels(usym_nabla_pTasym,                          &
+     &    n_comps(35), names(35), maths(35))
+      call set_field_labels(uasym_nabla_pTsym,                          &
+     &    n_comps(36), names(36), maths(36))
 !
-      write(field_names(45),'(a,a1)')                                   &
-     &                  trim(fhd_usym_nabla_Csym), CHAR(0)
-      write(field_names(46),'(a,a1)')                                   &
-     &                  trim(fhd_uasym_nabla_Casym), CHAR(0)
-      write(field_names(47),'(a,a1)')                                   &
-     &                  trim(fhd_usym_nabla_Casym), CHAR(0)
-      write(field_names(48),'(a,a1)')                                   &
-     &                  trim(fhd_uasym_nabla_Csym), CHAR(0)
+      call set_field_labels(usym_nabla_Csym,                            &
+     &    n_comps(37), names(37), maths(37))
+      call set_field_labels(uasym_nabla_Casym,                          &
+     &    n_comps(38), names(38), maths(38))
+      call set_field_labels(usym_nabla_Casym,                           &
+     &    n_comps(39), names(39), maths(39))
+      call set_field_labels(uasym_nabla_Csym,                           &
+     &    n_comps(40), names(40), maths(40))
 !
-      write(field_names(49),'(a,a1)')                                   &
-     &                  trim(fhd_usym_nabla_pCsym), CHAR(0)
-      write(field_names(50),'(a,a1)')                                   &
-     &                  trim(fhd_uasym_nabla_pCasym), CHAR(0)
-      write(field_names(51),'(a,a1)')                                   &
-     &                  trim(fhd_usym_nabla_pCasym), CHAR(0)
-      write(field_names(52),'(a,a1)')                                   &
-     &                  trim(fhd_uasym_nabla_pCsym), CHAR(0)
+      call set_field_labels(usym_nabla_pCsym,                           &
+     &    n_comps(41), names(41), maths(41))
+      call set_field_labels(uasym_nabla_pCasym,                         &
+     &    n_comps(42), names(42), maths(42))
+      call set_field_labels(usym_nabla_pCasym,                          &
+     &    n_comps(43), names(43), maths(43))
+      call set_field_labels(uasym_nabla_pCsym,                          &
+     &    n_comps(44), names(44), maths(44))
 !
-      write(field_names(53),'(a,a1)')                                   &
-     &                  trim(fhd_c_flux_sym_sym), CHAR(0)
-      write(field_names(54),'(a,a1)')                                   &
-     &                  trim(fhd_c_flux_asym_asym), CHAR(0)
-      write(field_names(55),'(a,a1)')                                   &
-     &                  trim(fhd_c_flux_sym_asym), CHAR(0)
-      write(field_names(56),'(a,a1)')                                   &
-     &                  trim(fhd_c_flux_asym_sym), CHAR(0)
+      call set_field_labels(heat_flux_sym_sym,                          &
+     &    n_comps(45), names(45), maths(45))
+      call set_field_labels(heat_flux_asym_asym,                        &
+     &    n_comps(46), names(46), maths(46))
+      call set_field_labels(heat_flux_sym_asym,                         &
+     &    n_comps(47), names(47), maths(47))
+      call set_field_labels(heat_flux_asym_sym,                         &
+     &    n_comps(48), names(48), maths(48))
 !
-      write(field_names(57),'(a,a1)')                                   &
-     &                  trim(fhd_pc_flux_sym_sym), CHAR(0)
-      write(field_names(58),'(a,a1)')                                   &
-     &                  trim(fhd_pc_flux_asym_asym), CHAR(0)
-      write(field_names(59),'(a,a1)')                                   &
-     &                  trim(fhd_pc_flux_sym_asym), CHAR(0)
-      write(field_names(60),'(a,a1)')                                   &
-     &                  trim(fhd_pc_flux_asym_sym), CHAR(0)
+      call set_field_labels(part_h_flux_sym_sym,                        &
+     &    n_comps(49), names(49), maths(49))
+      call set_field_labels(part_h_flux_asym_asym,                      &
+     &    n_comps(50), names(50), maths(50))
+      call set_field_labels(part_h_flux_sym_asym,                       &
+     &    n_comps(51), names(51), maths(51))
+      call set_field_labels(part_h_flux_asym_sym,                       &
+     &    n_comps(52), names(52), maths(52))
 !
-      write(field_names(61),'(a,a1)')                                   &
-     &                  trim(fhd_m_flux_sym_sym), CHAR(0)
-      write(field_names(62),'(a,a1)')                                   &
-     &                  trim(fhd_m_flux_asym_asym), CHAR(0)
-      write(field_names(63),'(a,a1)')                                   &
-     &                  trim(fhd_m_flux_sym_asym), CHAR(0)
+      call set_field_labels(composite_flux_sym_sym,                     &
+     &    n_comps(53), names(53), maths(53))
+      call set_field_labels(composite_flux_asym_asym,                   &
+     &    n_comps(54), names(54), maths(54))
+      call set_field_labels(composite_flux_sym_asym,                    &
+     &    n_comps(55), names(55), maths(55))
+      call set_field_labels(composite_flux_asym_sym,                    &
+     &    n_comps(56), names(56), maths(56))
 !
-      write(field_names(64),'(a,a1)')                                   &
-     &                  trim(fhd_maxwell_sym_sym), CHAR(0)
-      write(field_names(65),'(a,a1)')                                   &
-     &                  trim(fhd_maxwell_asym_asym), CHAR(0)
-      write(field_names(66),'(a,a1)')                                   &
-     &                  trim(fhd_maxwell_sym_asym), CHAR(0)
+      call set_field_labels(part_c_flux_sym_sym,                        &
+     &    n_comps(57), names(57), maths(57))
+      call set_field_labels(part_c_flux_asym_asym,                      &
+     &    n_comps(58), names(58), maths(58))
+      call set_field_labels(part_c_flux_sym_asym,                       &
+     &    n_comps(59), names(59), maths(59))
+      call set_field_labels(part_c_flux_asym_sym,                       &
+     &    n_comps(60), names(60), maths(60))
 !
-      write(field_names(67),'(a,a1)') trim(fhd_usym_Bsym), CHAR(0)
-      write(field_names(68),'(a,a1)') trim(fhd_uasym_Basym), CHAR(0)
-      write(field_names(69),'(a,a1)') trim(fhd_uasym_Bsym), CHAR(0)
+      call set_field_labels(m_flux_sym_sym,                             &
+     &    n_comps(61), names(61), maths(61))
+      call set_field_labels(m_flux_asym_asym,                           &
+     &    n_comps(62), names(62), maths(62))
+      call set_field_labels(m_flux_sym_asym,                            &
+     &    n_comps(63), names(63), maths(63))
+!
+      call set_field_labels(maxwell_tensor_sym_sym,                     &
+     &    n_comps(64), names(64), maths(64))
+      call set_field_labels(maxwell_tensor_asym_asym,                   &
+     &    n_comps(65), names(65), maths(65))
+      call set_field_labels(maxwell_tensor_sym_asym,                    &
+     &    n_comps(66), names(66), maths(66))
+!
+      call set_field_labels(usym_Bsym,                                  &
+     &    n_comps(67), names(67), maths(67))
+      call set_field_labels(uasym_Basym,                                &
+     &    n_comps(68), names(68), maths(68))
+      call set_field_labels(usym_Basym,                                 &
+     &    n_comps(69), names(69), maths(69))
+      call set_field_labels(uasym_Bsym,                                 &
+     &    n_comps(70), names(70), maths(70))
 !
       end subroutine set_force_w_symmetry_names
 !

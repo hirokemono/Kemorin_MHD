@@ -188,43 +188,13 @@ static void cb_set_component_name(GtkComboBox *combobox_comp, gpointer user_data
 	return;
 }
 
-void add_field_selection_box(struct field_views *fields_vws, GtkWidget *vbox)
+void add_unused_field_box(struct field_views *fields_vws, GtkWidget *vbox)
 {
-	GtkWidget *hbox;
-	GtkWidget *button;
-	GtkWidget *scrolled_window;
-	
-	GtkWidget *expander;
 	GtkWidget *hbox_1, *vbox_1, *Frame_1;
 	GtkWidget *button_1;
 	GtkWidget *scrolled_window_1;
 	
-	char *c_label = (char *)calloc(KCHARA_C, sizeof(char));
-	
-	
-	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
-	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
-
-	/* Delete data bottun */
-	button = gtk_button_new_with_label("Remove");
-    g_signal_connect(G_OBJECT(button), "clicked", 
-                     G_CALLBACK(remove_field_to_use), (gpointer) fields_vws);
-	gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 0);
-
-	scrolled_window = gtk_scrolled_window_new(NULL, NULL);
-	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_window),
-				GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-	gtk_widget_set_size_request(scrolled_window, 400, 300);
-	gtk_container_add(GTK_CONTAINER(scrolled_window), fields_vws->used_tree_view);
-	gtk_box_pack_start(GTK_BOX(vbox), scrolled_window, TRUE, TRUE, 0);
-	
-	/* Set signals for sorting */
-	add_sorting_signal_w_label(GTK_TREE_VIEW(fields_vws->used_tree_view), hbox);
-	
-	get_label_MHD_control_head(c_label);
-	
-	
-	/* Construct field panel */
+	/* Construct unused field panel */
 	
 	scrolled_window_1 = gtk_scrolled_window_new(NULL, NULL);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_window_1),
@@ -249,13 +219,50 @@ void add_field_selection_box(struct field_views *fields_vws, GtkWidget *vbox)
 	gtk_box_pack_start(GTK_BOX(hbox_1), gtk_label_new("  "), FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_1), Frame_1, TRUE, TRUE, 0);
 	
-	expander = gtk_expander_new_with_mnemonic("Field to add");
-	gtk_container_add(GTK_CONTAINER(expander), hbox_1);
-	gtk_box_pack_start(GTK_BOX(vbox), expander, TRUE, TRUE, 0);
+	wrap_into_expanded_frame_gtk("Base Field", 250, 200, hbox_1, vbox);
+};
+
+void add_unused_field_boxes(struct field_views *fields_vws, GtkWidget *vbox)
+{
+	GtkWidget *vbox_1;
 	
-	/* Set signals for sorting */
-	add_sorting_signal_w_label(GTK_TREE_VIEW(fields_vws->unused_field_tree_view), hbox);
+	/* Construct unused field panel */
+	vbox_1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+	add_unused_field_box(fields_vws, vbox_1);
 	
+	wrap_into_expanded_frame_gtk("Field to add", 260, 200, vbox_1, vbox);
+};
+
+void add_field_selection_box(struct field_views *fields_vws, GtkWidget *vbox)
+{
+	GtkWidget *hbox;
+	GtkWidget *button;
+	GtkWidget *scrolled_window;
+	
+	char *c_label = (char *)calloc(KCHARA_C, sizeof(char));
+	get_label_MHD_control_head(c_label);
+	
+	/* Delete data bottun */
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
+	button = gtk_button_new_with_label("Remove");
+    g_signal_connect(G_OBJECT(button), "clicked", 
+                     G_CALLBACK(remove_field_to_use), (gpointer) fields_vws);
+	gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 0);
+
+	scrolled_window = gtk_scrolled_window_new(NULL, NULL);
+	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_window),
+				GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+	gtk_widget_set_size_request(scrolled_window, 400, 300);
+	gtk_container_add(GTK_CONTAINER(scrolled_window), fields_vws->used_tree_view);
+	gtk_box_pack_start(GTK_BOX(vbox), scrolled_window, TRUE, TRUE, 0);
+	
+	/* Set signals for sorting
+	add_sorting_signal_w_label(GTK_TREE_VIEW(fields_vws->used_tree_view), hbox);
+	*/
+	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
+	
+	/* Construct unused field panel */
+	add_unused_field_boxes(fields_vws, vbox);
 };
 
 void add_field_combobox_vbox(struct field_views *fields_vws, GtkWidget *vbox)

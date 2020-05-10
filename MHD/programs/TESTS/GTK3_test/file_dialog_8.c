@@ -218,8 +218,9 @@ GtkWidget *make_control_hbox(){
     expander_Top = gtk_expander_new_with_mnemonic(c_label);
 	
     struct field_views *fields_vws = init_field_views_GTK(mhd_ctl->model_ctl->fld_ctl);
-    create_field_tree_view(fields_vws, fields_vws->fld_gtk_data);
-    create_unused_field_tree_view(fields_vws);
+    fields_vws->used_tree_view =         create_field_tree_view(fields_vws->fld_gtk_data);
+    fields_vws->unused_field_tree_view = create_unused_field_tree_view(0, fields_vws->fld_gtk_data->all_fld_list->fld_list->ntot_fields, 
+                                                                       fields_vws->fld_gtk_data);
     create_direction_tree_views(fields_vws);
     
 	vbox_1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);

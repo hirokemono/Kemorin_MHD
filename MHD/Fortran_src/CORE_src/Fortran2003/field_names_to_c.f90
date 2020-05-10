@@ -58,6 +58,20 @@
 !!      subroutine set_check_fields_labels_f                            &
 !!     &         (n_comps_c, field_name_c, field_math_c) bind(c)
 !!
+!!
+!!      integer(c_int) function num_fieldss_w_symmetry_f() bind(c)
+!!      subroutine set_fields_w_sym_labels_f                            &
+!!     &         (n_comps_c, field_name_c, field_math_c) bind(c)
+!!
+!!      integer(c_int) function num_forces_w_symmetry_f() bind(c)
+!!      subroutine set_forces_w_sym_labels_f                            &
+!!     &         (n_comps_c, field_name_c, field_math_c) bind(c)
+!!
+!!      integer(c_int) function num_energy_fluxes_w_symmetry_f() bind(c)
+!!      subroutine set_ene_flux_w_sym_labels_f                          &
+!!     &         (n_comps_c, field_name_c, field_math_c) bind(c)
+!!
+!!
 !!      integer(c_int) function num_SGS_terms_f()                       &
 !!     &              bind(c, name="num_SGS_terms_f")
 !!      subroutine set_SGS_term_labels_f                                &
@@ -494,6 +508,87 @@
      &   (n_comps_c(1), field_name_c(1), field_math_c(1))
 !
       end subroutine set_check_fields_labels_f
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      integer(c_int) function num_fieldss_w_symmetry_f() bind(c)
+!
+      use m_field_w_symmetry_labels
+!
+      num_fieldss_w_symmetry_f = num_fields_w_symmetry()
+      return
+      end function num_fieldss_w_symmetry_f
+!
+! ----------------------------------------------------------------------
+!
+      subroutine set_fields_w_sym_labels_f                              &
+     &         (n_comps_c, field_name_c, field_math_c) bind(c)
+!
+      use m_field_w_symmetry_labels
+!
+      integer(c_int), intent(inout) :: n_comps_c(*)
+      character(C_CHAR), intent(inout) :: field_name_c(*)
+      character(C_CHAR), intent(inout) :: field_math_c(*)
+!
+      call set_field_w_symmetry_labels                                  &
+     &   (n_comps_c(1), field_name_c(1), field_math_c(1))
+!
+      end subroutine set_fields_w_sym_labels_f
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      integer(c_int) function num_forces_w_symmetry_f() bind(c)
+!
+      use m_force_w_sym_labels
+!
+      num_forces_w_symmetry_f = num_forces_w_symmetry()
+      return
+      end function num_forces_w_symmetry_f
+!
+! ----------------------------------------------------------------------
+!
+      subroutine set_forces_w_sym_labels_f                              &
+     &         (n_comps_c, field_name_c, field_math_c) bind(c)
+!
+      use m_force_w_sym_labels
+!
+      integer(c_int), intent(inout) :: n_comps_c(*)
+      character(C_CHAR), intent(inout) :: field_name_c(*)
+      character(C_CHAR), intent(inout) :: field_math_c(*)
+!
+      call set_force_w_symmetry_names                                   &
+     &   (n_comps_c(1), field_name_c(1), field_math_c(1))
+!
+      end subroutine set_forces_w_sym_labels_f
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      integer(c_int) function num_energy_fluxes_w_symmetry_f() bind(c)
+!
+      use m_energy_flux_w_sym_labels
+!
+      num_energy_fluxes_w_symmetry_f = num_ene_fluxes_w_symmetry()
+      return
+      end function num_energy_fluxes_w_symmetry_f
+!
+! ----------------------------------------------------------------------
+!
+      subroutine set_ene_flux_w_sym_labels_f                            &
+     &         (n_comps_c, field_name_c, field_math_c) bind(c)
+!
+      use m_energy_flux_w_sym_labels
+!
+      integer(c_int), intent(inout) :: n_comps_c(*)
+      character(C_CHAR), intent(inout) :: field_name_c(*)
+      character(C_CHAR), intent(inout) :: field_math_c(*)
+!
+      call set_ene_flux_w_symmetry_names                                &
+     &   (n_comps_c(1), field_name_c(1), field_math_c(1))
+!
+      end subroutine set_ene_flux_w_sym_labels_f
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------

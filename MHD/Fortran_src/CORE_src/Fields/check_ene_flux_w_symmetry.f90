@@ -34,50 +34,51 @@
       subroutine add_ene_flux_by_sym_sym_ctl(field_name, field_ctl)
 !
       use t_control_array_character3
+      use m_force_w_sym_labels
       use add_nodal_fields_ctl
 !
       character(len = kchara), intent(in) :: field_name
       type(ctl_array_c3), intent(inout) :: field_ctl
 !
-      if(      (field_name .eq. fhd_u_dot_wsym_x_usym)) then
+      if(      (field_name .eq. u_dot_wsym_x_usym%name)) then
         call add_phys_name_ctl(velocity%name, field_ctl)
-        call add_phys_name_ctl(fhd_wsym_x_usym, field_ctl)
-      else if( (field_name .eq. fhd_urev_Jsym_x_Bsym)                   &
-     &    .or. (field_name .eq. fhd_u_dot_Jsym_x_Bsym)) then
+        call add_phys_name_ctl(wsym_x_usym%name, field_ctl)
+      else if( (field_name .eq. rev_u_dot_Jsym_x_Bsym%name)             &
+     &    .or. (field_name .eq. u_dot_Jsym_x_Bsym%name)) then
         call add_phys_name_ctl(velocity%name, field_ctl)
-        call add_phys_name_ctl(fhd_Jsym_x_Bsym, field_ctl)
-      else if( (field_name .eq. fhd_u_dot_Bsym_nabla_Bsym)) then
+        call add_phys_name_ctl(Jsym_x_Bsym%name, field_ctl)
+      else if( (field_name .eq. u_dot_Bsym_nabla_Bsym%name)) then
         call add_phys_name_ctl(velocity%name, field_ctl)
-        call add_phys_name_ctl(fhd_Bsym_nabla_Bsym, field_ctl)
+        call add_phys_name_ctl(Bsym_nabla_Bsym%name, field_ctl)
 !
-      else if( (field_name .eq. fhd_sym_buo_flux)) then
+      else if( (field_name .eq. sym_termal_buo_flux%name)) then
         call add_phys_name_ctl(velocity%name, field_ctl)
-        call add_phys_name_ctl(fhd_sym_buoyancy, field_ctl)
-      else if( (field_name .eq. fhd_sym_comp_buo_flux)) then
+        call add_phys_name_ctl(sym_termal_buoyancy%name, field_ctl)
+      else if( (field_name .eq. sym_composite_buo_flux%name)) then
         call add_phys_name_ctl(velocity%name, field_ctl)
-        call add_phys_name_ctl(fhd_sym_comp_buo, field_ctl)
+        call add_phys_name_ctl(sym_composite_buoyancy%name, field_ctl)
 !
-      else if((field_name .eq. fhd_B_rot_Bsym_x_usym)) then
+      else if((field_name .eq. B_rot_Bsym_x_usym%name)) then
         call add_phys_name_ctl(magnetic_field%name, field_ctl)
-        call add_phys_name_ctl(fhd_rot_usym_x_Bsym, field_ctl)
-      else if((field_name .eq. fhd_Bdot_Bsym_nabla_usym)) then
+        call add_phys_name_ctl(rot_usym_x_Bsym%name, field_ctl)
+      else if((field_name .eq. B_dot_Bsym_nabla_usym%name)) then
         call add_phys_name_ctl(magnetic_field%name, field_ctl)
-        call add_phys_name_ctl(fhd_Bsym_nabla_usym, field_ctl)
+        call add_phys_name_ctl(Bsym_nabla_usym%name, field_ctl)
 !
-      else if( (field_name .eq. fhd_T_usym_nabla_Tsym)) then
+      else if( (field_name .eq. T_usym_nabla_Tsym%name)) then
         call add_phys_name_ctl(temperature%name, field_ctl)
-        call add_phys_name_ctl(fhd_usym_nabla_Tsym, field_ctl)
-      else if( (field_name .eq. fhd_pT_usym_nabla_pTsym)) then
+        call add_phys_name_ctl(usym_nabla_Tsym%name, field_ctl)
+      else if( (field_name .eq. pT_usym_nabla_pTsym%name)) then
         call add_phys_name_ctl(perturbation_temp%name, field_ctl)
-        call add_phys_name_ctl(fhd_usym_nabla_pTsym, field_ctl)
+        call add_phys_name_ctl(usym_nabla_pTsym%name, field_ctl)
 !
-      else if( (field_name .eq. fhd_C_usym_nabla_Csym)) then
+      else if( (field_name .eq. C_usym_nabla_Csym%name)) then
         call add_phys_name_ctl(composition%name, field_ctl)
-        call add_phys_name_ctl(fhd_usym_nabla_Csym, field_ctl)
-      else if( (field_name .eq. fhd_pC_usym_nabla_pCsym)) then
+        call add_phys_name_ctl(usym_nabla_Csym%name, field_ctl)
+      else if( (field_name .eq. pC_usym_nabla_pCsym%name)) then
         call add_phys_name_ctl(perturbation_composition%name,           &
      &                         field_ctl)
-        call add_phys_name_ctl(fhd_usym_nabla_pCsym, field_ctl)
+        call add_phys_name_ctl(usym_nabla_pCsym%name, field_ctl)
       end if
 !
       end subroutine add_ene_flux_by_sym_sym_ctl
@@ -87,52 +88,52 @@
       subroutine add_ene_flux_by_asym_asym_ctl(field_name, field_ctl)
 !
       use t_control_array_character3
+      use m_force_w_sym_labels
       use add_nodal_fields_ctl
 !
       character(len = kchara), intent(in) :: field_name
       type(ctl_array_c3), intent(inout) :: field_ctl
 !
 !
-      if(      (field_name .eq. fhd_u_dot_wasym_x_uasym)) then
+      if(      (field_name .eq. u_dot_wasym_x_uasym%name)) then
         call add_phys_name_ctl(velocity%name, field_ctl)
-        call add_phys_name_ctl(fhd_wasym_x_uasym, field_ctl)
-      else if( (field_name .eq. fhd_urev_Jasym_x_Basym)                 &
-     &    .or. (field_name .eq. fhd_u_dot_Jasym_x_Basym)) then
+        call add_phys_name_ctl(wasym_x_uasym%name, field_ctl)
+      else if( (field_name .eq. rev_u_dot_Jasym_x_Basym%name)           &
+     &    .or. (field_name .eq. u_dot_Jasym_x_Basym%name)) then
         call add_phys_name_ctl(velocity%name, field_ctl)
-        call add_phys_name_ctl(fhd_Jasym_x_Basym, field_ctl)
-      else if((field_name .eq. fhd_u_dot_Basym_nabla_Basym)) then
+        call add_phys_name_ctl(Jasym_x_Basym%name, field_ctl)
+      else if((field_name .eq. u_dot_Basym_nabla_Basym%name)) then
         call add_phys_name_ctl(velocity%name, field_ctl)
-        call add_phys_name_ctl(fhd_Basym_nabla_Basym,field_ctl)
+        call add_phys_name_ctl(Basym_nabla_Basym%name, field_ctl)
 !
-      else if( (field_name .eq. fhd_asym_buo_flux)) then
+      else if( (field_name .eq. asym_termal_buo_flux%name)) then
         call add_phys_name_ctl(velocity%name, field_ctl)
-        call add_phys_name_ctl(fhd_asym_buoyancy, field_ctl)
-      else if( (field_name .eq. fhd_asym_comp_buo_flux)) then
+        call add_phys_name_ctl(asym_termal_buoyancy%name, field_ctl)
+      else if( (field_name .eq. asym_composite_buo_flux%name)) then
         call add_phys_name_ctl(velocity%name, field_ctl)
-        call add_phys_name_ctl(fhd_asym_comp_buo, field_ctl)
+        call add_phys_name_ctl(asym_composite_buoyancy%name, field_ctl)
 !
-      else if( (field_name .eq. fhd_B_rot_Basym_x_uasym)) then
+      else if( (field_name .eq. B_rot_Basym_x_uasym%name)) then
         call add_phys_name_ctl(magnetic_field%name, field_ctl)
-        call add_phys_name_ctl(fhd_rot_uasym_x_Basym,field_ctl)
-      else if( (field_name .eq. fhd_Bdot_Basym_nabla_uasym))            &
-     &    then
+        call add_phys_name_ctl(rot_uasym_x_Basym%name, field_ctl)
+      else if( (field_name .eq. B_dot_Basym_nabla_uasym%name)) then
         call add_phys_name_ctl(magnetic_field%name, field_ctl)
-        call add_phys_name_ctl(fhd_Basym_nabla_uasym,field_ctl)
+        call add_phys_name_ctl(Basym_nabla_uasym%name, field_ctl)
 !
-      else if( (field_name .eq. fhd_T_uasym_nabla_Tasym)) then
+      else if( (field_name .eq. T_uasym_nabla_Tasym%name)) then
         call add_phys_name_ctl(temperature%name, field_ctl)
-        call add_phys_name_ctl(fhd_uasym_nabla_Tasym,field_ctl)
-      else if( (field_name .eq. fhd_pT_uasym_nabla_pTasym)) then
+        call add_phys_name_ctl(uasym_nabla_Tasym%name, field_ctl)
+      else if( (field_name .eq. pT_uasym_nabla_pTasym%name)) then
         call add_phys_name_ctl(perturbation_temp%name, field_ctl)
-        call add_phys_name_ctl(fhd_uasym_nabla_pTasym,field_ctl)
+        call add_phys_name_ctl(uasym_nabla_pTasym%name, field_ctl)
 !
-      else if( (field_name .eq. fhd_C_uasym_nabla_Casym)) then
+      else if( (field_name .eq. C_uasym_nabla_Casym%name)) then
         call add_phys_name_ctl(composition%name, field_ctl)
-        call add_phys_name_ctl(fhd_uasym_nabla_Casym,field_ctl)
-      else if( (field_name .eq. fhd_pC_uasym_nabla_pCasym)) then
+        call add_phys_name_ctl(uasym_nabla_Casym%name, field_ctl)
+      else if( (field_name .eq. pC_uasym_nabla_pCasym%name)) then
         call add_phys_name_ctl(perturbation_composition%name,           &
      &                         field_ctl)
-        call add_phys_name_ctl(fhd_uasym_nabla_pCasym,field_ctl)
+        call add_phys_name_ctl(uasym_nabla_pCasym%name, field_ctl)
       end if
 !
       end subroutine add_ene_flux_by_asym_asym_ctl
@@ -142,79 +143,80 @@
       subroutine add_ene_flux_by_sym_asym_ctl(field_name, field_ctl)
 !
       use t_control_array_character3
+      use m_force_w_sym_labels
       use add_nodal_fields_ctl
 !
       character(len = kchara), intent(in) :: field_name
       type(ctl_array_c3), intent(inout) :: field_ctl
 !
 !
-      if(      (field_name .eq. fhd_u_dot_wsym_x_uasym)) then
+      if(      (field_name .eq. u_dot_wsym_x_uasym%name)) then
         call add_phys_name_ctl(velocity%name, field_ctl)
-        call add_phys_name_ctl(fhd_wsym_x_uasym, field_ctl)
-      else if( (field_name .eq. fhd_urev_Jsym_x_Basym)                  &
-     &    .or. (field_name .eq. fhd_u_dot_Jsym_x_Basym)  ) then
+        call add_phys_name_ctl(wsym_x_uasym%name, field_ctl)
+      else if( (field_name .eq. rev_u_dot_Jsym_x_Basym%name)            &
+     &    .or. (field_name .eq. u_dot_Jsym_x_Basym%name)  ) then
         call add_phys_name_ctl(velocity%name, field_ctl)
-        call add_phys_name_ctl(fhd_Jsym_x_Basym, field_ctl)
-      else if( (field_name .eq. fhd_u_dot_Bsym_nabla_Basym)) then
+        call add_phys_name_ctl(Jsym_x_Basym%name, field_ctl)
+      else if( (field_name .eq. u_dot_Bsym_nabla_Basym%name)) then
         call add_phys_name_ctl(velocity%name, field_ctl)
-        call add_phys_name_ctl(fhd_Bsym_nabla_Basym, field_ctl)
+        call add_phys_name_ctl(Bsym_nabla_Basym%name, field_ctl)
 !
-      else if( (field_name .eq. fhd_B_rot_Bsym_x_uasym)) then
+      else if( (field_name .eq. B_rot_Bsym_x_uasym%name)) then
         call add_phys_name_ctl(magnetic_field%name, field_ctl)
-        call add_phys_name_ctl(fhd_rot_usym_x_Basym, field_ctl)
-      else if( (field_name .eq. fhd_Bdot_Bsym_nabla_uasym)) then
+        call add_phys_name_ctl(rot_usym_x_Basym%name, field_ctl)
+      else if( (field_name .eq. B_dot_Bsym_nabla_uasym%name)) then
         call add_phys_name_ctl(magnetic_field%name, field_ctl)
-        call add_phys_name_ctl(fhd_Bsym_nabla_uasym, field_ctl)
+        call add_phys_name_ctl(Bsym_nabla_uasym%name, field_ctl)
 !
-      else if( (field_name .eq. fhd_T_usym_nabla_Tasym)) then
+      else if( (field_name .eq. T_usym_nabla_Tasym%name)) then
         call add_phys_name_ctl(temperature%name, field_ctl)
-        call add_phys_name_ctl(fhd_usym_nabla_Tasym, field_ctl)
-      else if( (field_name .eq. fhd_pT_usym_nabla_pTasym)) then
+        call add_phys_name_ctl(usym_nabla_Tasym%name, field_ctl)
+      else if( (field_name .eq. pT_usym_nabla_pTasym%name)) then
         call add_phys_name_ctl(perturbation_temp%name, field_ctl)
-        call add_phys_name_ctl(fhd_usym_nabla_pTasym,field_ctl)
+        call add_phys_name_ctl(usym_nabla_pTasym%name, field_ctl)
 !
-      else if( (field_name .eq. fhd_C_usym_nabla_Casym)) then
+      else if( (field_name .eq. C_usym_nabla_Casym%name)) then
         call add_phys_name_ctl(composition%name, field_ctl)
-        call add_phys_name_ctl(fhd_usym_nabla_Casym, field_ctl)
-      else if( (field_name .eq. fhd_pC_usym_nabla_pCasym)) then
+        call add_phys_name_ctl(usym_nabla_Casym%name, field_ctl)
+      else if( (field_name .eq. pC_usym_nabla_pCasym%name)) then
         call add_phys_name_ctl(perturbation_composition%name,           &
      &                         field_ctl)
-        call add_phys_name_ctl(fhd_usym_nabla_pCasym,field_ctl)
+        call add_phys_name_ctl(usym_nabla_pCasym%name, field_ctl)
 !
 !
-      else if( (field_name .eq. fhd_u_dot_wasym_x_usym)) then
+      else if( (field_name .eq. u_dot_wasym_x_usym%name)) then
         call add_phys_name_ctl(velocity%name, field_ctl)
-        call add_phys_name_ctl(fhd_wasym_x_uaym, field_ctl)
+        call add_phys_name_ctl(wasym_x_usym%name, field_ctl)
 !
-      else if( (field_name .eq. fhd_urev_Jasym_x_Bsym)                  &
-     &    .or. (field_name .eq. fhd_u_dot_Jasym_x_Bsym) ) then
+      else if( (field_name .eq. rev_u_dot_Jasym_x_Bsym%name)            &
+     &    .or. (field_name .eq. u_dot_Jasym_x_Bsym%name) ) then
         call add_phys_name_ctl(velocity%name, field_ctl)
-        call add_phys_name_ctl(fhd_Jasym_x_Bsym, field_ctl)
-      else if( (field_name .eq. fhd_u_dot_Basym_nabla_Bsym)) then
+        call add_phys_name_ctl(Jasym_x_Bsym%name, field_ctl)
+      else if( (field_name .eq. u_dot_Basym_nabla_Bsym%name)) then
         call add_phys_name_ctl(velocity%name, field_ctl)
-        call add_phys_name_ctl(fhd_Basym_nabla_Bsym, field_ctl)
+        call add_phys_name_ctl(Basym_nabla_Bsym%name, field_ctl)
 !
-      else if( (field_name .eq. fhd_B_rot_Basym_x_usym)) then
+      else if( (field_name .eq. B_rot_Basym_x_usym%name)) then
         call add_phys_name_ctl(magnetic_field%name, field_ctl)
-        call add_phys_name_ctl(fhd_rot_uasym_x_Bsym, field_ctl)
-      else if( (field_name .eq. fhd_Bdot_Basym_nabla_usym)) then
+        call add_phys_name_ctl(rot_uasym_x_Bsym%name, field_ctl)
+      else if( (field_name .eq. B_dot_Basym_nabla_usym%name)) then
         call add_phys_name_ctl(magnetic_field%name, field_ctl)
-        call add_phys_name_ctl(fhd_Basym_nabla_usym, field_ctl)
+        call add_phys_name_ctl(Basym_nabla_usym%name, field_ctl)
 !
-      else if( (field_name .eq. fhd_T_uasym_nabla_Tsym)) then
+      else if( (field_name .eq. T_uasym_nabla_Tsym%name)) then
         call add_phys_name_ctl(temperature%name, field_ctl)
-        call add_phys_name_ctl(fhd_usym_nabla_Tasym, field_ctl)
-      else if( (field_name .eq. fhd_pT_uasym_nabla_pTsym)) then
+        call add_phys_name_ctl(uasym_nabla_Tsym%name, field_ctl)
+      else if( (field_name .eq. pT_uasym_nabla_pTsym%name)) then
         call add_phys_name_ctl(perturbation_temp%name, field_ctl)
-        call add_phys_name_ctl(fhd_uasym_nabla_pTsym,field_ctl)
+        call add_phys_name_ctl(uasym_nabla_pTsym%name, field_ctl)
 !
-      else if( (field_name .eq. fhd_C_uasym_nabla_Csym)) then
+      else if( (field_name .eq. C_uasym_nabla_Csym%name)) then
         call add_phys_name_ctl(composition%name, field_ctl)
-        call add_phys_name_ctl(fhd_uasym_nabla_Csym, field_ctl)
-      else if( (field_name .eq. fhd_pC_uasym_nabla_pCsym)) then
+        call add_phys_name_ctl(uasym_nabla_Csym%name, field_ctl)
+      else if( (field_name .eq. pC_uasym_nabla_pCsym%name)) then
         call add_phys_name_ctl(perturbation_composition%name,           &
      &                         field_ctl)
-        call add_phys_name_ctl(fhd_uasym_nabla_pCsym,field_ctl)
+        call add_phys_name_ctl(uasym_nabla_pCsym%name, field_ctl)
       end if
 !
       end subroutine add_ene_flux_by_sym_asym_ctl

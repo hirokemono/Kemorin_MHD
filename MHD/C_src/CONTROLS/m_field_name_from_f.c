@@ -27,7 +27,6 @@ int num_diff_SGS_terms_f();
 int num_SGS_energy_fluxes_f();
 int num_SGS_model_coefs_f();
 int num_dynamic_SGS_work_f();
-int num_dynamic_SGS_work_f();
 
 int num_filter_fields_f();
 int num_div_filter_fields_f();

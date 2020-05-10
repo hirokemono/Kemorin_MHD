@@ -17,21 +17,8 @@
 !!        type(base_field_address), intent(inout) :: sym_base_fld
 !!        type(base_field_address), intent(inout) :: asym_base_fld
 !!
-!!      subroutine base_vec_w_sym_monitor_address                       &
-!!     &         (field_name, i_field, numrms, numave,                  &
-!!     &          rms_sym_base, ave_sym_base,                           &
-!!     &          rms_asym_base, ave_asym_base, flag)
-!!      subroutine base_scl_w_sym_monitor_address                       &
-!!     &         (field_name, i_field, numrms, numave,                  &
-!!     &          rms_sym_base, ave_sym_base,                           &
-!!     &          rms_asym_base, ave_asym_base, flag)
-!!        type(base_field_address), intent(inout) :: rms_sym_base
-!!        type(base_field_address), intent(inout) :: ave_sym_base
-!!        type(base_field_address), intent(inout) :: rms_asym_base
-!!        type(base_field_address), intent(inout) :: ave_asym_base
-!!
 !!      integer(kind = kint) function num_fields_w_symmetry()
-!!      subroutine set_field_w_symmetry_names(field_names)
+!!      subroutine set_field_w_symmetry_labels(n_comps, names, maths)
 !!
 !! !!!!!  Base field names  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!
@@ -64,123 +51,197 @@
       integer(kind = kint), parameter, private :: nfld_w_sym = 2 * 16
 !
 !>        Field label for symmetric velocity @f$ u_{sym} @f$
-      character(len=kchara), parameter                                  &
-     &         :: fhd_sym_velo = 'sym_velocity'
+      type(field_def), parameter :: sym_velocity                        &
+     &    = field_def(n_comp = n_vector,                                &
+     &                  name = 'sym_velocity',                          &
+     &                  math = '$ u_{sym} $')
+!>        Field label for asymmetric velocity @f$ u_{asym} @f$
+      type(field_def), parameter :: asym_velocity                       &
+     &    = field_def(n_comp = n_vector,                                &
+     &                  name = 'asym_velocity',                         &
+     &                  math = '$ u_{asym} $')
+!
 !>        Field label for symmetric vorticity
 !!         @f$ \omega_{sym} = e_{ijk} \partial_{j} u_{asym} @f$
-      character(len=kchara), parameter                                  &
-     &         :: fhd_sym_vort = 'sym_vorticity'
-!>        Field label for symmetric pressure @f$ p @f$
-      character(len=kchara), parameter                                  &
-     &         :: fhd_sym_press = 'sym_pressure'
-!!
-!>        Field label for symmetric magnetic field @f$ B_{sym} @f$
-      character(len=kchara), parameter                                  &
-     &         :: fhd_sym_magne = 'sym_magnetic_field'
-!>        Field label for symmetric  magnetic vector potential
-!!         @f$ B_{asym} = e_{ijk} \partial_{j} A_{sym} @f$
-      character(len=kchara), parameter                                  &
-     &         ::  fhd_sym_vecp = 'sym_vector_potential'
-!>        Field label for symmetric current density
-!!         @f$ J_{sym} = e_{ijk} \partial_{j} B_{k} @f$
-      character(len=kchara), parameter                                  &
-     &         :: fhd_sym_current = 'sym_current_density'
-!>        Field label for symmetric  magnetic potential @f$ W @f$
-      character(len=kchara), parameter                                  &
-     &           :: fhd_sym_mag_potential = 'sym_magnetic_potential'
-!>        Field label for symmetric  electric potential @f$ \varphi @f$
-      character(len=kchara), parameter                                  &
-     &         :: fhd_sym_scalar_potential = 'sym_scalar_potential'
-!!
-!>        Field label for symmetric density @f$ \rho @f$
-      character(len=kchara), parameter                                  &
-     &         :: fhd_sym_density =  'sym_density'
-!>        Field label for symmetric temperature @f$ T @f$
-      character(len=kchara), parameter                                  &
-     &         :: fhd_sym_temp =  'sym_temperature'
-!>        Field label for symmetric  compostiion variation @f$ C @f$
-      character(len=kchara), parameter                                  &
-     &           :: fhd_sym_light = 'sym_composition'
-!>        Field label for symmetric entropy @f$ S @f$
-      character(len=kchara), parameter                                  &
-     &           :: fhd_sym_entropy =  'sym_entropy'
-!
-!>        Field label for symmetric perturbation of density
-!!         @f$  \rho - \rho_{0} @f$
-      character(len=kchara), parameter                                  &
-     &        :: fhd_sym_per_density = 'sym_perturbation_density'
-!>        Field label for symmetric perturbation of temperature
-!!         @f$ \Theta = T - T_{0} @f$
-      character(len=kchara), parameter                                  &
-     &          :: fhd_sym_per_temp = 'sym_perturbation_temp'
-!>        Field label for symmetric perturbation of composition
-!!         @f$  C - C_{0} @f$
-      character(len=kchara), parameter                                  &
-     &        :: fhd_sym_per_light = 'sym_perturbation_composition'
-!>        Field label for symmetric perturbation of entropy
-!!         @f$  S - S_{0} @f$
-      character(len=kchara), parameter                                  &
-     &        :: fhd_sym_per_entropy = 'sym_perturbation_entropy'
-!
-!!
-!>        Field label for asymmetric velocity @f$ u_{asym} @f$
-      character(len=kchara), parameter                                  &
-     &        :: fhd_asym_velo = 'asym_velocity'
+      type(field_def), parameter :: sym_vorticity                       &
+     &    = field_def(n_comp = n_vector,                                &
+     &                  name = 'sym_vorticity',                         &
+     &                  math = '$ \omega_{sym} $')
 !>        Field label for asymmetric vorticity
 !!         @f$ \omega_{asym} = e_{ijk} \partial_{j} u_{sym} @f$
-      character(len=kchara), parameter                                  &
-     &        :: fhd_asym_vort = 'asym_vorticity'
-!>        Field label for asymmetric pressure @f$ p @f$
-      character(len=kchara), parameter                                  &
-     &        :: fhd_asym_press = 'asym_pressure'
-!!
+      type(field_def), parameter :: asym_vorticity                      &
+     &    = field_def(n_comp = n_vector,                                &
+     &                  name = 'asym_vorticity',                        &
+     &                  math = '$ \omega_{asym} $')
+!
+!>        Field label for symmetric pressure @f$ p_{sym} @f$
+      type(field_def), parameter :: sym_pressure                        &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                  name = 'sym_pressure',                          &
+     &                  math = '$ p_{sym} $')
+!>        Field label for asymmetric pressure @f$ p_{asym} @f$
+      type(field_def), parameter :: asym_pressure                       &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                  name = 'asym_pressure',                         &
+     &                  math = '$ p_{asym} $')
+!
+!>        Field label for symmetric magnetic field @f$ B_{sym} @f$
+      type(field_def), parameter :: sym_magnetic_field                  &
+     &    = field_def(n_comp = n_vector,                                &
+     &                  name = 'sym_magnetic_field',                    &
+     &                  math = '$ B_{sym} $')
 !>        Field label for asymmetric magnetic field @f$ B_{asym} @f$
-      character(len=kchara), parameter                                  &
-     &        :: fhd_asym_magne = 'asym_magnetic_field'
+      type(field_def), parameter :: asym_magnetic_field                 &
+     &    = field_def(n_comp = n_vector,                                &
+     &                  name = 'asym_magnetic_field',                   &
+     &                  math = '$ B_{asym} $')
+!
+!>        Field label for symmetric  magnetic vector potential
+!!         @f$ B_{asym} = e_{ijk} \partial_{j} A_{sym} @f$
+      type(field_def), parameter :: sym_vector_potential                &
+     &    = field_def(n_comp = n_vector,                                &
+     &                  name = 'sym_vector_potential',                  &
+     &                  math = '$ A_{sym} $')
 !>        Field label for asymmetric magnetic vector potential
 !!         @f$ B_{sym} = e_{ijk} \partial_{j} A_{asym} @f$
-      character(len=kchara), parameter                                  &
-     &        ::  fhd_asym_vecp = 'asym_vector_potential'
+      type(field_def), parameter :: asym_vector_potential               &
+     &    = field_def(n_comp = n_vector,                                &
+     &                  name = 'asym_vector_potential',                 &
+     &                  math = '$ A_{asym} $')
+!
+!>        Field label for symmetric current density
+!!         @f$ J_{sym} = e_{ijk} \partial_{j} B_{k} @f$
+      type(field_def), parameter :: sym_current_density                 &
+     &    = field_def(n_comp = n_vector,                                &
+     &                  name = 'sym_current_density',                   &
+     &                  math = '$ J_{sym} $')
 !>        Field label for asymmetric current density
 !!         @f$ J_{asym} = e_{ijk} \partial_{j} B_{k} @f$
-      character(len=kchara), parameter                                  &
-     &        :: fhd_asym_current = 'asym_current_density'
-!>        Field label for asymmetric magnetic potential @f$ W @f$
-      character(len=kchara), parameter                                  &
-     &        :: fhd_asym_mag_potential = 'asym_magnetic_potential'
-!>        Field label for asymmetric electric potential @f$ \varphi @f$
-      character(len=kchara), parameter                                  &
-     &        :: fhd_asym_scalar_potential = 'asym_scalar_potential'
-!!
-!>        Field label for asymmetric density @f$ \rho @f$
-      character(len=kchara), parameter                                  &
-     &        :: fhd_asym_density =  'asym_density'
-!>        Field label for asymmetric temperature @f$ T @f$
-      character(len=kchara), parameter                                  &
-     &        :: fhd_asym_temp =  'asym_temperature'
-!>        Field label for asymmetric compostiion variation @f$ C @f$
-      character(len=kchara), parameter                                  &
-     &        :: fhd_asym_light = 'asym_composition'
-!>        Field label for asymmetric entropy @f$ S @f$
-      character(len=kchara), parameter                                  &
-     &        :: fhd_asym_entropy =  'asym_entropy'
+      type(field_def), parameter :: asym_current_density                &
+     &    = field_def(n_comp = n_vector,                                &
+     &                  name = 'asym_current_density',                  &
+     &                  math = '$ J_{asym} $')
 !
+!>        Field label for symmetric  magnetic potential @f$ W_{sym} @f$
+      type(field_def), parameter :: sym_magnetic_potential              &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                  name = 'sym_magnetic_potential',                &
+     &                  math = '$ W_{sym} $')
+!>        Field label for asymmetric magnetic potential @f$ W_{asym} @f$
+      type(field_def), parameter :: asym_magnetic_potential             &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                  name = 'asym_magnetic_potential',               &
+     &                  math = '$ W_{asym} $')
+!
+!>        Field label for symmetric  electric potential @f$ \varphi @f$
+      type(field_def), parameter :: sym_scalar_potential                &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                  name = 'sym_scalar_potential',                  &
+     &                  math = '$ \varphi_{sym} $')
+!>        Field label for asymmetric electric potential @f$ \varphi @f$
+      type(field_def), parameter :: asym_scalar_potential               &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                  name = 'asym_scalar_potential',                 &
+     &                  math = '$ \varphi_{asym} $')
+!
+!
+!>        Field label for symmetric density @f$ \rho_{sym} @f$
+      type(field_def), parameter :: sym_density                         &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                  name = 'sym_density',                           &
+     &                  math = '$ \rho_{sym} $')
+!>        Field label for asymmetric density @f$ \rho_{asym} @f$
+      type(field_def), parameter :: asym_density                        &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                  name = 'asym_density',                          &
+     &                  math = '$ \rho_{asym} $')
+!
+!>        Field label for symmetric temperature @f$ T_{sym} @f$
+      type(field_def), parameter :: sym_temperature                     &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                  name = 'sym_temperature',                       &
+     &                  math = '$ T_{sym} $')
+!>        Field label for asymmetric temperature @f$ T_{asym} @f$
+      type(field_def), parameter :: asym_temperature                    &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                  name = 'asym_temperature',                      &
+     &                  math = '$ T_{asym} $')
+!
+!>        Field label for symmetric compostiion variation               &
+!!        @f$ C_{sym} @f$
+      type(field_def), parameter :: sym_composition                     &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                  name = 'sym_composition',                       &
+     &                  math = '$ C_{sym} $')
+!>        Field label for asymmetric compostiion variation              &
+!!        @f$ C_{asym} @f$
+      type(field_def), parameter :: asym_composition                    &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                  name = 'asym_composition',                      &
+     &                  math = '$ C_{asym} $')
+!
+!>        Field label for symmetric entropy @f$ S_{sym} @f$
+      type(field_def), parameter :: sym_entropy                         &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                  name = 'sym_entropy',                           &
+     &                  math = '$ S_{sym} $')
+!>        Field label for asymmetric entropy @f$ S_{asym} @f$
+      type(field_def), parameter :: asym_entropy                        &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                  name = 'asym_entropy',                          &
+     &                  math = '$ S_{asym} $')
+!
+!>        Field label for symmetric perturbation of density
+!!         @f$  \rho_{sym} - \rho_{0} @f$
+      type(field_def), parameter :: sym_perturbation_density            &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                  name = 'sym_perturbation_density',              &
+     &                  math = '$ \rho_{sym} - \rho_{0} $')
 !>        Field label for asymmetric perturbation of density
-!!         @f$  \rho - \rho_{0} @f$
-      character(len=kchara), parameter                                  &
-     &       :: fhd_asym_per_density = 'asym_perturbation_density'
+!!         @f$  \rho_{asym} - \rho_{0} @f$
+      type(field_def), parameter :: asym_perturbation_density           &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                  name = 'asym_perturbation_density',             &
+     &                  math = '$ \rho_{asym} - \rho_{0} $')
+!
+!>        Field label for symmetric perturbation of temperature
+!!         @f$ \Theta_{ssym} = T_{sym} - T_{0} @f$
+      type(field_def), parameter :: sym_perturbation_temp               &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                  name = 'sym_perturbation_temp',                 &
+     &                  math = '$ \Theta_{sym} $')
 !>        Field label for asymmetric perturbation of temperature
-!!         @f$ \Theta = T - T_{0} @f$
-      character(len=kchara), parameter                                  &
-     &       :: fhd_asym_per_temp = 'asym_perturbation_temp'
+!!         @f$ \Theta_{asym} = T_{asym} - T_{0} @f$
+      type(field_def), parameter :: asym_perturbation_temp              &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                  name = 'asym_perturbation_temp',                &
+     &                  math = '$ \Theta_{asym} $')
+!
+!>        Field label for symmetric perturbation of composition
+!!         @f$  C_{sym} - C_{0} @f$
+      type(field_def), parameter :: sym_perturbation_composition        &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                  name = 'sym_perturbation_composition',          &
+     &                  math = '$ C_{sym} - C_{0} $')
 !>        Field label for asymmetric perturbation of composition
-!!         @f$  C - C_{0} @f$
-      character(len=kchara), parameter                                  &
-     &       :: fhd_asym_per_light = 'asym_perturbation_composition'
+!!         @f$  C_{asym} - C_{0} @f$
+      type(field_def), parameter :: asym_perturbation_composition       &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                  name = 'asym_perturbation_composition',         &
+     &                  math = '$ C_{asym} - C_{0} $')
+!
+!>        Field label for symmetric perturbation of entropy
+!!         @f$  S_{sym} - S_{0} @f$
+      type(field_def), parameter :: sym_perturbation_entropy            &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                  name = 'sym_perturbation_entropy',              &
+     &                  math = '$ S_{sym} - S_{0} $')
 !>        Field label for asymmetric perturbation of entropy
-!!         @f$  S - S_{0} @f$
-      character(len=kchara), parameter                                  &
-     &       :: fhd_asym_per_entropy = 'asym_perturbation_entropy'
+!!         @f$  S_{asym} - S_{0} @f$
+      type(field_def), parameter :: asym_perturbation_entropy           &
+     &    = field_def(n_comp = n_scalar,                                &
+     &                  name = 'asym_perturbation_entropy',             &
+     &                  math = '$ S_{asym} - S_{0} $')
 !
 ! ----------------------------------------------------------------------
 !
@@ -194,16 +255,16 @@
 !
 !
       check_base_vector_symmetry = .FALSE.
-      if (    (field_name .eq. fhd_sym_velo)                            &
-     &   .or. (field_name .eq. fhd_sym_vort)                            &
-     &   .or. (field_name .eq. fhd_sym_magne)                           &
-     &   .or. (field_name .eq. fhd_sym_vecp)                            &
-     &   .or. (field_name .eq. fhd_sym_current)                         &
-     &   .or. (field_name .eq. fhd_asym_velo)                           &
-     &   .or. (field_name .eq. fhd_asym_vort)                           &
-     &   .or. (field_name .eq. fhd_asym_magne)                          &
-     &   .or. (field_name .eq. fhd_asym_vecp)                           &
-     &   .or. (field_name .eq. fhd_asym_current)                        &
+      if (    (field_name .eq. sym_velocity%name)                       &
+     &   .or. (field_name .eq. sym_vorticity%name)                      &
+     &   .or. (field_name .eq. sym_magnetic_field%name)                 &
+     &   .or. (field_name .eq. sym_vector_potential%name)               &
+     &   .or. (field_name .eq. sym_current_density%name)                &
+     &   .or. (field_name .eq. asym_velocity%name)                      &
+     &   .or. (field_name .eq. asym_vorticity%name)                     &
+     &   .or. (field_name .eq. asym_magnetic_field%name)                &
+     &   .or. (field_name .eq. asym_vector_potential%name)              &
+     &   .or. (field_name .eq. asym_current_density%name)               &
      &       )   check_base_vector_symmetry = .TRUE.
 !
       end function check_base_vector_symmetry
@@ -216,28 +277,28 @@
 !
 !
       check_base_scalar_w_symmetry = .FALSE.
-      if (    (field_name .eq. fhd_sym_press)                           &
-     &   .or. (field_name .eq. fhd_sym_mag_potential)                   &
-     &   .or. (field_name .eq. fhd_sym_scalar_potential)                &
-     &   .or. (field_name .eq. fhd_sym_density)                         &
-     &   .or. (field_name .eq. fhd_sym_temp)                            &
-     &   .or. (field_name .eq. fhd_sym_light)                           &
-     &   .or. (field_name .eq. fhd_sym_entropy)                         &
-     &   .or. (field_name .eq. fhd_sym_per_density)                     &
-     &   .or. (field_name .eq. fhd_sym_per_temp)                        &
-     &   .or. (field_name .eq. fhd_sym_per_light)                       &
-     &   .or. (field_name .eq. fhd_sym_per_entropy)                     &
-     &   .or. (field_name .eq. fhd_asym_press)                          &
-     &   .or. (field_name .eq. fhd_asym_mag_potential)                  &
-     &   .or. (field_name .eq. fhd_asym_scalar_potential)               &
-     &   .or. (field_name .eq. fhd_asym_density)                        &
-     &   .or. (field_name .eq. fhd_asym_temp)                           &
-     &   .or. (field_name .eq. fhd_asym_light)                          &
-     &   .or. (field_name .eq. fhd_asym_entropy)                        &
-     &   .or. (field_name .eq. fhd_asym_per_density)                    &
-     &   .or. (field_name .eq. fhd_asym_per_temp)                       &
-     &   .or. (field_name .eq. fhd_asym_per_light)                      &
-     &   .or. (field_name .eq. fhd_asym_per_entropy)                    &
+      if (    (field_name .eq. sym_pressure%name)                       &
+     &   .or. (field_name .eq. sym_magnetic_potential%name)             &
+     &   .or. (field_name .eq. sym_scalar_potential%name)               &
+     &   .or. (field_name .eq. sym_density%name)                        &
+     &   .or. (field_name .eq. sym_temperature%name)                    &
+     &   .or. (field_name .eq. sym_composition%name)                    &
+     &   .or. (field_name .eq. sym_entropy%name)                        &
+     &   .or. (field_name .eq. sym_perturbation_density%name)           &
+     &   .or. (field_name .eq. sym_perturbation_temp%name)              &
+     &   .or. (field_name .eq. sym_perturbation_composition%name)       &
+     &   .or. (field_name .eq. sym_perturbation_entropy%name)           &
+     &   .or. (field_name .eq. asym_pressure%name)                      &
+     &   .or. (field_name .eq. asym_magnetic_potential%name)            &
+     &   .or. (field_name .eq. asym_scalar_potential%name)              &
+     &   .or. (field_name .eq. asym_density%name)                       &
+     &   .or. (field_name .eq. asym_temperature%name)                   &
+     &   .or. (field_name .eq. asym_composition%name)                   &
+     &   .or. (field_name .eq. asym_entropy%name)                       &
+     &   .or. (field_name .eq. asym_perturbation_density%name)          &
+     &   .or. (field_name .eq. asym_perturbation_temp%name)             &
+     &   .or. (field_name .eq. asym_perturbation_composition%name)      &
+     &   .or. (field_name .eq. asym_perturbation_entropy%name)          &
      &      )   check_base_scalar_w_symmetry = .TRUE.
 !
       end function check_base_scalar_w_symmetry
@@ -257,28 +318,28 @@
 !
       flag = check_base_vector_symmetry(field_name)
       if(flag) then
-        if (field_name .eq. fhd_sym_velo) then
+        if (field_name .eq. sym_velocity%name) then
           sym_base_fld%i_velo = i_phys
-        else if (field_name .eq. fhd_sym_vort) then
+        else if (field_name .eq. sym_vorticity%name) then
           sym_base_fld%i_vort = i_phys
 !
-        else if (field_name .eq. fhd_sym_magne) then
+        else if (field_name .eq. sym_magnetic_field%name) then
           sym_base_fld%i_magne =    i_phys
-        else if (field_name .eq. fhd_sym_vecp) then
+        else if (field_name .eq. sym_vector_potential%name) then
           sym_base_fld%i_vecp =     i_phys
-        else if (field_name .eq. fhd_sym_current) then
+        else if (field_name .eq. sym_current_density%name) then
           sym_base_fld%i_current =  i_phys
 !
-        else if (field_name .eq. fhd_asym_velo) then
+        else if (field_name .eq. asym_velocity%name) then
           asym_base_fld%i_velo = i_phys
-        else if (field_name .eq. fhd_asym_vort) then
+        else if (field_name .eq. asym_vorticity%name) then
           asym_base_fld%i_vort = i_phys
 !
-        else if (field_name .eq. fhd_asym_magne) then
+        else if (field_name .eq. asym_magnetic_field%name) then
           asym_base_fld%i_magne =    i_phys
-        else if (field_name .eq. fhd_asym_vecp) then
+        else if (field_name .eq. asym_vector_potential%name) then
           asym_base_fld%i_vecp =     i_phys
-        else if (field_name .eq. fhd_asym_current) then
+        else if (field_name .eq. asym_current_density%name) then
           asym_base_fld%i_current =  i_phys
         end if
       end if
@@ -300,122 +361,61 @@
 !
       flag = check_base_scalar_w_symmetry(field_name)
       if(flag) then
-        if (field_name .eq. fhd_sym_press) then
+        if (field_name .eq. sym_pressure%name) then
           sym_base_fld%i_press = i_phys
-        else if (field_name .eq. fhd_sym_mag_potential) then
+        else if (field_name .eq. sym_magnetic_potential%name) then
           sym_base_fld%i_mag_p =    i_phys
-        else if (field_name .eq. fhd_sym_scalar_potential) then
+        else if (field_name .eq. sym_scalar_potential%name) then
           sym_base_fld%i_scalar_p = i_phys
 !
-        else if (field_name .eq. fhd_sym_temp) then
+        else if (field_name .eq. sym_temperature%name) then
           sym_base_fld%i_temp =           i_phys
-        else if (field_name .eq. fhd_sym_light) then
+        else if (field_name .eq. sym_composition%name) then
           sym_base_fld%i_light =          i_phys
-        else if (field_name .eq. fhd_sym_density) then
+        else if (field_name .eq. sym_density%name) then
           sym_base_fld%i_density =        i_phys
-        else if (field_name .eq. fhd_sym_entropy) then
+        else if (field_name .eq. sym_entropy%name) then
           sym_base_fld%i_entropy =        i_phys
 !
-        else if (field_name .eq. fhd_sym_per_temp) then
+        else if (field_name .eq. sym_perturbation_temp%name) then
           sym_base_fld%i_per_temp =           i_phys
-        else if (field_name .eq. fhd_sym_per_light) then
+        else if (field_name                                             &
+     &             .eq. sym_perturbation_composition%name) then
           sym_base_fld%i_per_light =          i_phys
-        else if (field_name .eq. fhd_sym_per_density) then
+        else if (field_name .eq. sym_perturbation_density%name) then
           sym_base_fld%i_per_density =        i_phys
-        else if (field_name .eq. fhd_sym_per_entropy) then
+        else if (field_name .eq. sym_perturbation_entropy%name) then
           sym_base_fld%i_per_entropy =        i_phys
 !
-        else if (field_name .eq. fhd_asym_press) then
+        else if (field_name .eq. asym_pressure%name) then
           asym_base_fld%i_press = i_phys
-        else if (field_name .eq. fhd_asym_mag_potential) then
+        else if (field_name .eq. asym_magnetic_potential%name) then
           asym_base_fld%i_mag_p =    i_phys
-        else if (field_name .eq. fhd_asym_scalar_potential) then
+        else if (field_name .eq. asym_scalar_potential%name) then
           asym_base_fld%i_scalar_p = i_phys
 !
-        else if (field_name .eq. fhd_asym_temp) then
+        else if (field_name .eq. asym_temperature%name) then
           asym_base_fld%i_temp =           i_phys
-        else if (field_name .eq. fhd_asym_light) then
+        else if (field_name .eq. asym_composition%name) then
           asym_base_fld%i_light =          i_phys
-        else if (field_name .eq. fhd_asym_density) then
+        else if (field_name .eq. asym_density%name) then
           asym_base_fld%i_density =        i_phys
-        else if (field_name .eq. fhd_asym_entropy) then
+        else if (field_name .eq. asym_entropy%name) then
           asym_base_fld%i_entropy =        i_phys
 !
-        else if (field_name .eq. fhd_asym_per_temp) then
+        else if (field_name .eq. asym_perturbation_temp%name) then
           asym_base_fld%i_per_temp =           i_phys
-        else if (field_name .eq. fhd_asym_per_light) then
+        else if (field_name                                             &
+     &            .eq. asym_perturbation_composition%name) then
           asym_base_fld%i_per_light =          i_phys
-        else if (field_name .eq. fhd_asym_per_density) then
+        else if (field_name .eq. asym_perturbation_density%name) then
           asym_base_fld%i_per_density =        i_phys
-        else if (field_name .eq. fhd_asym_per_entropy) then
+        else if (field_name .eq. asym_perturbation_entropy%name) then
           asym_base_fld%i_per_entropy =        i_phys
         end if
       end if  
 !
       end subroutine base_scalar_w_sym_addresses
-!
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      subroutine base_vec_w_sym_monitor_address                         &
-     &         (field_name, i_field, numrms, numave,                    &
-     &          rms_sym_base, ave_sym_base,                             &
-     &          rms_asym_base, ave_asym_base, flag)
-!
-      character(len = kchara), intent(in):: field_name
-      integer(kind = kint), intent(in) :: i_field
-      integer(kind = kint), intent(in) :: numrms, numave
-!
-      type(base_field_address), intent(inout) :: rms_sym_base
-      type(base_field_address), intent(inout) :: ave_sym_base
-      type(base_field_address), intent(inout) :: rms_asym_base
-      type(base_field_address), intent(inout) :: ave_asym_base
-      logical, intent(inout) :: flag
-!
-      logical :: flag_a, flag_r
-!
-!
-      flag = .FALSE.
-!
-      if(i_field .eq. 0) return
-      call base_vector_w_sym_addresses                                  &
-     &   ((numrms+1), field_name, rms_sym_base, rms_asym_base, flag_r)
-      call base_vector_w_sym_addresses                                  &
-     &   ((numave+1), field_name, ave_sym_base, ave_asym_base, flag_a)
-      flag = (flag_r .and. flag_a)
-!
-      end subroutine base_vec_w_sym_monitor_address
-!
-! ----------------------------------------------------------------------
-!
-      subroutine base_scl_w_sym_monitor_address                         &
-     &         (field_name, i_field, numrms, numave,                    &
-     &          rms_sym_base, ave_sym_base,                             &
-     &          rms_asym_base, ave_asym_base, flag)
-!
-      character(len = kchara), intent(in):: field_name
-      integer(kind = kint), intent(in) :: i_field
-      integer(kind = kint), intent(in) :: numrms, numave
-!
-      type(base_field_address), intent(inout) :: rms_sym_base
-      type(base_field_address), intent(inout) :: ave_sym_base
-      type(base_field_address), intent(inout) :: rms_asym_base
-      type(base_field_address), intent(inout) :: ave_asym_base
-      logical, intent(inout) :: flag
-!
-      logical :: flag_a, flag_r
-!
-!
-      flag = .FALSE.
-!
-      if(i_field .eq. 0) return
-      call base_scalar_w_sym_addresses                                  &
-     &   ((numrms+1), field_name, rms_sym_base, rms_asym_base, flag_r)
-      call base_scalar_w_sym_addresses                                  &
-     &   ((numave+1), field_name, ave_sym_base, ave_asym_base, flag_a)
-      flag = (flag_r .and. flag_a)
-!
-      end subroutine base_scl_w_sym_monitor_address
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
@@ -427,58 +427,84 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_field_w_symmetry_names(field_names)
+      subroutine set_field_w_symmetry_labels(n_comps, names, maths)
 !
-      character(len = kchara), intent(inout) :: field_names(nfld_w_sym)
+      integer(kind = kint), intent(inout) :: n_comps(nfld_w_sym)
+      character(len = kchara), intent(inout) :: names(nfld_w_sym)
+      character(len = kchara), intent(inout) :: maths(nfld_w_sym)
 !
 !
-      write(field_names( 1),'(a,a1)') trim(fhd_sym_velo), CHAR(0)
-      write(field_names( 2),'(a,a1)') trim(fhd_asym_velo), CHAR(0)
-      write(field_names( 3),'(a,a1)') trim(fhd_sym_vort), CHAR(0)
-      write(field_names( 4),'(a,a1)') trim(fhd_asym_vort), CHAR(0)
-      write(field_names( 5),'(a,a1)') trim(fhd_sym_press), CHAR(0)
-      write(field_names( 6),'(a,a1)') trim(fhd_asym_press), CHAR(0)
+      call set_field_labels(sym_velocity,                               &
+     &    n_comps( 1), names( 1), maths( 1))
+      call set_field_labels(asym_velocity,                              &
+     &    n_comps( 2), names( 2), maths( 2))
+      call set_field_labels(sym_vorticity,                              &
+     &    n_comps( 3), names( 3), maths( 3))
+      call set_field_labels(asym_vorticity,                             &
+     &    n_comps( 4), names( 4), maths( 4))
+      call set_field_labels(sym_pressure,                               &
+     &    n_comps( 5), names( 5), maths( 5))
+      call set_field_labels(asym_pressure,                              &
+     &    n_comps( 6), names( 6), maths( 6))
 !
-      write(field_names( 7),'(a,a1)') trim(fhd_sym_magne), CHAR(0)
-      write(field_names( 8),'(a,a1)') trim(fhd_asym_magne), CHAR(0)
-      write(field_names( 9),'(a,a1)') trim(fhd_sym_vecp), CHAR(0)
-      write(field_names(10),'(a,a1)') trim(fhd_asym_vecp), CHAR(0)
-      write(field_names(11),'(a,a1)') trim(fhd_sym_current), CHAR(0)
-      write(field_names(12),'(a,a1)') trim(fhd_asym_current), CHAR(0)
-      write(field_names(13),'(a,a1)')                                   &
-     &                      trim(fhd_sym_mag_potential), CHAR(0)
-      write(field_names(14),'(a,a1)')                                   &
-     &                      trim(fhd_asym_mag_potential), CHAR(0)
-      write(field_names(15),'(a,a1)')                                   &
-     &                      trim(fhd_sym_scalar_potential), CHAR(0)
-      write(field_names(16),'(a,a1)')                                   &
-     &                      trim(fhd_asym_scalar_potential), CHAR(0)
+      call set_field_labels(sym_magnetic_field,                         &
+     &    n_comps( 7), names( 7), maths( 7))
+      call set_field_labels(asym_magnetic_field,                        &
+     &    n_comps( 8), names( 8), maths( 8))
 !
-      write(field_names(17),'(a,a1)') trim(fhd_sym_temp), CHAR(0)
-      write(field_names(18),'(a,a1)') trim(fhd_asym_temp), CHAR(0)
-      write(field_names(19),'(a,a1)') trim(fhd_sym_light), CHAR(0)
-      write(field_names(20),'(a,a1)') trim(fhd_asym_light), CHAR(0)
-      write(field_names(21),'(a,a1)') trim(fhd_sym_density), CHAR(0)
-      write(field_names(22),'(a,a1)') trim(fhd_asym_density), CHAR(0)
-      write(field_names(23),'(a,a1)') trim(fhd_sym_entropy), CHAR(0)
-      write(field_names(24),'(a,a1)') trim(fhd_asym_entropy), CHAR(0)
+      call set_field_labels(sym_vector_potential,                       &
+     &    n_comps( 9), names( 9), maths( 9))
+      call set_field_labels(asym_vector_potential,                      &
+     &    n_comps(10), names(10), maths(10))
+      call set_field_labels(sym_current_density,                        &
+     &    n_comps(11), names(11), maths(11))
+      call set_field_labels(asym_current_density,                       &
+     &    n_comps(12), names(12), maths(12))
 !
-      write(field_names(25),'(a,a1)') trim(fhd_sym_per_temp), CHAR(0)
-      write(field_names(26),'(a,a1)') trim(fhd_asym_per_temp), CHAR(0)
-      write(field_names(27),'(a,a1)') trim(fhd_sym_per_light), CHAR(0)
-      write(field_names(28),'(a,a1)')                                   &
-     &                      trim(fhd_asym_per_light), CHAR(0)
+      call set_field_labels(sym_magnetic_potential,                     &
+     &    n_comps(13), names(13), maths(13))
+      call set_field_labels(asym_magnetic_potential,                    &
+     &    n_comps(14), names(14), maths(14))
+      call set_field_labels(sym_scalar_potential,                       &
+     &    n_comps(15), names(15), maths(15))
+      call set_field_labels(asym_scalar_potential,                      &
+     &    n_comps(16), names(16), maths(16))
 !
-      write(field_names(29),'(a,a1)')                                   &
-     &                      trim(fhd_sym_per_density), CHAR(0)
-      write(field_names(30),'(a,a1)')                                   &
-     &                      trim(fhd_asym_per_density), CHAR(0)
-      write(field_names(31),'(a,a1)')                                   &
-     &                      trim(fhd_sym_per_entropy), CHAR(0)
-      write(field_names(32),'(a,a1)')                                   &
-     &                      trim(fhd_asym_per_entropy), CHAR(0)
+      call set_field_labels(sym_density,                                &
+     &    n_comps(17), names(17), maths(17))
+      call set_field_labels(asym_density,                               &
+     &    n_comps(18), names(18), maths(18))
+      call set_field_labels(sym_temperature,                            &
+     &    n_comps(19), names(19), maths(19))
+      call set_field_labels(asym_temperature,                           &
+     &    n_comps(20), names(20), maths(20))
+      call set_field_labels(sym_composition,                            &
+     &    n_comps(21), names(21), maths(21))
+      call set_field_labels(asym_composition,                           &
+     &    n_comps(22), names(22), maths(22))
+      call set_field_labels(sym_entropy,                                &
+     &    n_comps(23), names(23), maths(23))
+      call set_field_labels(asym_entropy,                               &
+     &    n_comps(24), names(24), maths(24))
 !
-      end subroutine set_field_w_symmetry_names
+      call set_field_labels(sym_perturbation_density,                   &
+     &    n_comps(25), names(25), maths(25))
+      call set_field_labels(asym_perturbation_density,                  &
+     &    n_comps(26), names(26), maths(26))
+      call set_field_labels(sym_perturbation_temp,                      &
+     &    n_comps(27), names(27), maths(27))
+      call set_field_labels(asym_perturbation_temp,                     &
+     &    n_comps(28), names(28), maths(28))
+      call set_field_labels(sym_perturbation_composition,               &
+     &    n_comps(29), names(29), maths(29))
+      call set_field_labels(asym_perturbation_composition,              &
+     &    n_comps(30), names(30), maths(30))
+      call set_field_labels(sym_perturbation_entropy,                   &
+     &    n_comps(31), names(31), maths(31))
+      call set_field_labels(asym_perturbation_entropy,                  &
+     &    n_comps(32), names(32), maths(32))
+!
+      end subroutine set_field_w_symmetry_labels
 !
 ! ----------------------------------------------------------------------
 !
