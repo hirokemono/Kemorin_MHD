@@ -22,14 +22,11 @@
 !
 !
       integer(kind = kint), parameter :: n_fil_ene = 4
-      character(len=kchara), parameter :: fld_lebel_w_fil(4)            &
-     &                    = (/velocity%name, magnetic_field%name,       &
-     &                        filter_velocity%name, filter_magne%name/)
       character(len=kchara), parameter :: ene_lebel_w_fil(4)            &
      &                    = (/'K_ene     ', 'M_ene     ',               &
      &                        'filter_KE ', 'filter_ME '/)
 !
-      private :: n_fil_ene, fld_lebel_w_fil, ene_lebel_w_fil
+      private :: n_fil_ene, ene_lebel_w_fil
 !
 ! -----------------------------------------------------------------------
 !
@@ -49,8 +46,11 @@
       ene_labels%n_fld_4_ene = n_fil_ene
       call alloc_energy_labels(ene_labels)
 !
+      ene_labels%field_name(1) = trim(velocity%name)
+      ene_labels%field_name(2) = trim(magnetic_field%name)
+      ene_labels%field_name(3) = trim(filter_velocity%name)
+      ene_labels%field_name(4) = trim(filter_magne%name)
       do i = 1, n_fil_ene
-        ene_labels%field_name(i) = trim(fld_lebel_w_fil(i))
         call add_vector_power_sph_label(ene_lebel_w_fil(i),             &
      &      ene_labels%label(1,i), ene_labels%label(2,i),               &
      &      ene_labels%label(3,i))
