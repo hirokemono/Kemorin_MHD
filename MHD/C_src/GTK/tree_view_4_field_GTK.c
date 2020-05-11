@@ -206,7 +206,7 @@ GtkWidget * create_field_tree_view(struct field_gtk_data *fld_gtk_data)
 	return used_tree_view;
 }
 
-GtkWidget * create_unused_field_tree_view(int ist, int ied, struct field_gtk_data *fld_gtk_data)
+static GtkWidget * create_unused_field_tree_view(int ist, int ied, struct all_field_ctl_c *all_fld_list)
 {
 	GtkWidget *unused_field_tree_view = gtk_tree_view_new();
 	
@@ -253,12 +253,30 @@ GtkWidget * create_unused_field_tree_view(int ist, int ied, struct field_gtk_dat
     gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(model), COLUMN_FIELD_INDEX, GTK_SORT_ASCENDING);
     
     for(i=ist;i<ied;i++){
-		if(fld_gtk_data->all_fld_list->iflag_use[i] == 0) {
-			append_field_model_data(i, fld_gtk_data->all_fld_list, child_model);
+		if(all_fld_list->iflag_use[i] == 0) {
+			append_field_model_data(i, all_fld_list, child_model);
 		};
     }
 	return unused_field_tree_view;
 }
+
+GtkWidget ** create_unused_field_tree_views(struct field_gtk_data *fld_gtk_data)
+{
+	int i, ist, ied;
+	int num_group = fld_gtk_data->all_fld_list->fld_list->ntot_field_groups;
+	GtkWidget **unused_field_tree_view;
+	if ((unused_field_tree_view = (GtkWidget **) malloc(num_group*sizeof(GtkWidget *))) == NULL) {
+		printf("malloc error for unused_field_tree_view\n");
+		exit(0);
+	}
+	for(i=0;i<num_group;i++){
+		ist = fld_gtk_data->all_fld_list->fld_list->istack_fields[i];
+		ied = fld_gtk_data->all_fld_list->fld_list->istack_fields[i+1];
+		unused_field_tree_view[i] = create_unused_field_tree_view(ist, ied, fld_gtk_data->all_fld_list);
+	}
+	
+	return unused_field_tree_view;
+};
 
 void create_direction_tree_views(struct field_views *fields_vws)
 {

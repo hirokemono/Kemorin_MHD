@@ -252,6 +252,33 @@ void strip_cautation_marks(char *string){
 	return;
 }
 
+char * duplicate_underscore(const char *string){
+	char *tmpchara;
+	int i = 0;
+	int icou = 1;
+	int len = strlen(string);
+	for(i=0;i<len;i++){
+		if(string[i] == '_') icou = icou + 1;
+	}
+	if((tmpchara = (char *)calloc(len+icou, sizeof(char))) == NULL){
+		printf("malloc error for tmpchara\n");
+		exit(0);
+	};
+	icou = 0;
+	for(i=0;i<len;i++){
+		if(string[i] == '_'){
+			tmpchara[icou] = '_';
+			tmpchara[icou+1] = '_';
+			icou = icou + 2;
+		}else {
+			tmpchara[icou] = string[i];
+			icou = icou + 1;
+		}
+	}
+	tmpchara[icou] = '\0';
+	return tmpchara;
+}
+
 int get_index_from_file_head(const char *file_head, char *stripped_fhead){
 	int int_stripped;
 	int len_fhead, len_fhead_stripped;
