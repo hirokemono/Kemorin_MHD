@@ -30,22 +30,20 @@
       integer(kind=kint ), pointer         :: STACK_EXPORT(:)
       integer(kind=kint ), pointer         :: NOD_EXPORT  (:)
 
-      integer :: ERROR
+      integer(kind=kint ) :: ERROR
 
       character(len=kchara)                :: PRECOND, METHOD
-      character(len=80)                    :: LINE
-
-      integer(kind=kint ), dimension(:), allocatable :: IW1 
-      integer(kind=kint ), dimension(:), allocatable :: IW2 
 
       character*80 MATfile(8)
 
       real*8,  dimension(10) :: REALARRAY
-      integer, dimension(10) ::  INTARRAY
-      integer                ::  PRESET
-
-      real*4 time, t1,t2,t3,t4,t5, t6
-
+      integer(kind=kint ), dimension(10) ::  INTARRAY
+      integer(kind=kint ) ::  PRESET
+      integer(kind=kint ) :: ITERactual
+      real*8 RTIME, STARTTIME, ENDTIME
+!
+      integer(kind=kint ) ::  i, j1, im1, k, NPSI, NPSE
+!
 !C
 !C-- init. MPI
 
@@ -160,9 +158,8 @@
 
 !C
 !C-- ICCG computation
-
       call MPI_BARRIER  (CALYPSO_COMM,ierr_MPI)
-      STARTTIME= MPI_WTIME()
+      STARTTIME = MPI_WTIME()
       im1= -1000000
  
       PRESET= 2
@@ -193,7 +190,7 @@
       call MPI_BARRIER  (CALYPSO_COMM,ierr_MPI)
 
       if (my_rank.eq.0) then
-        RTIME= ENDTIME-STARTTIME
+        RTIME= ENDTIME - STARTTIME
         write (*, '("*** ELAPCE TIME", 1pe16.6, " sec.")') RTIME
       endif
 
