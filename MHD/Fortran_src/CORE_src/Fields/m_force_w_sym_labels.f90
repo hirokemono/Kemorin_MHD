@@ -899,7 +899,7 @@
 !
       subroutine set_force_w_symmetry_names(n_comps, names, maths)
 !
-      integer(kind = kint), intent(inout) :: n_comps(nforce_w_sym)
+      integer(kind = kint_4b), intent(inout) :: n_comps(nforce_w_sym)
       character(len = kchara), intent(inout) :: names(nforce_w_sym)
       character(len = kchara), intent(inout) :: maths(nforce_w_sym)
 !

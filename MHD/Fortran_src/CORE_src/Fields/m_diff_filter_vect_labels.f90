@@ -245,7 +245,7 @@
 !
       subroutine set_diff_filter_vect_labels(n_comps, names, maths)
 !
-      integer(kind = kint), intent(inout) :: n_comps(ngrad_fil_vect)
+      integer(kind = kint_4b), intent(inout) :: n_comps(ngrad_fil_vect)
       character(len = kchara), intent(inout) :: names(ngrad_fil_vect)
       character(len = kchara), intent(inout) :: maths(ngrad_fil_vect)
 !

@@ -247,7 +247,7 @@
 !
       subroutine set_filter_field_labels(n_comps, names, maths)
 !
-      integer(kind = kint), intent(inout) :: n_comps(nfld_filter)
+      integer(kind = kint_4b), intent(inout) :: n_comps(nfld_filter)
       character(len = kchara), intent(inout) :: names(nfld_filter)
       character(len = kchara), intent(inout) :: maths(nfld_filter)
 !

@@ -310,7 +310,7 @@
 !
       subroutine set_filtered_force_labels(n_comps, names, maths)
 !
-      integer(kind = kint), intent(inout) :: n_comps(nforce_filter)
+      integer(kind = kint_4b), intent(inout) :: n_comps(nforce_filter)
       character(len = kchara), intent(inout) :: names(nforce_filter)
       character(len = kchara), intent(inout) :: maths(nforce_filter)
 !

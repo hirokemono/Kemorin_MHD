@@ -162,7 +162,7 @@
 !
       subroutine set_advection_control_labels(n_comps, names, maths)
 !
-      integer(kind = kint), intent(inout) :: n_comps(nadvect_label)
+      integer(kind = kint_4b), intent(inout) :: n_comps(nadvect_label)
       character(len = kchara), intent(inout) :: names(nadvect_label)
       character(len = kchara), intent(inout) :: maths(nadvect_label)
 !
@@ -183,7 +183,7 @@
 !
       subroutine set_force_control_labels(n_comps, names, maths)
 !
-      integer(kind = kint), intent(inout) :: n_comps(nforce_label)
+      integer(kind = kint_4b), intent(inout) :: n_comps(nforce_label)
       character(len = kchara), intent(inout) :: names(nforce_label)
       character(len = kchara), intent(inout) :: maths(nforce_label)
 !

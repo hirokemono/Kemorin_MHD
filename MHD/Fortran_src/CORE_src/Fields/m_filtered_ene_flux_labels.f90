@@ -227,7 +227,8 @@
 !
       subroutine set_filtered_ene_flax_labels(n_comps, names, maths)
 !
-      integer(kind = kint), intent(inout) :: n_comps(neflux_by_filter)
+      integer(kind = kint_4b), intent(inout)                            &
+     &                        :: n_comps(neflux_by_filter)
       character(len = kchara), intent(inout) :: names(neflux_by_filter)
       character(len = kchara), intent(inout) :: maths(neflux_by_filter)
 !

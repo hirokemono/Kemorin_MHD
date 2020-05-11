@@ -254,7 +254,7 @@
 !
       subroutine set_div_filtered_force_labels(n_comps, names, maths)
 !
-      integer(kind = kint), intent(inout)                               &
+      integer(kind = kint_4b), intent(inout)                            &
      &                        :: n_comps(ndiv_filter_force)
       character(len = kchara), intent(inout)                            &
      &                        :: names(ndiv_filter_force)

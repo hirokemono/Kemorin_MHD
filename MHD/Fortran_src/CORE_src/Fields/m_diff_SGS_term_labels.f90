@@ -228,7 +228,7 @@
 !
       subroutine set_diff_SGS_term_labels(n_comps, names, maths)
 !
-      integer(kind = kint), intent(inout) :: n_comps(ndiff_SGS)
+      integer(kind = kint_4b), intent(inout) :: n_comps(ndiff_SGS)
       character(len = kchara), intent(inout) :: names(ndiff_SGS)
       character(len = kchara), intent(inout) :: maths(ndiff_SGS)
 !

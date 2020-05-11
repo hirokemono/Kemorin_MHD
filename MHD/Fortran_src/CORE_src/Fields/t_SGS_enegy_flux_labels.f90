@@ -219,7 +219,7 @@
 !
       subroutine set_SGS_energy_flux_labels(n_comps, names, maths)
 !
-      integer(kind = kint), intent(inout) :: n_comps(nSGS_e_flux)
+      integer(kind = kint_4b), intent(inout) :: n_comps(nSGS_e_flux)
       character(len = kchara), intent(inout) :: names(nSGS_e_flux)
       character(len = kchara), intent(inout) :: maths(nSGS_e_flux)
 !

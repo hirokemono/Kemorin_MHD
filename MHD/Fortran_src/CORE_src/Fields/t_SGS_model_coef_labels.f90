@@ -311,7 +311,7 @@
 !
       subroutine set_SGS_model_coefs_labels(n_comps, names, maths)
 !
-      integer(kind = kint), intent(inout) :: n_comps(num_SGS_Csim)
+      integer(kind = kint_4b), intent(inout) :: n_comps(num_SGS_Csim)
       character(len = kchara), intent(inout) :: names(num_SGS_Csim)
       character(len = kchara), intent(inout) :: maths(num_SGS_Csim)
 !
@@ -338,7 +338,7 @@
 !
       subroutine set_dynamic_SGS_work_labels(n_comps, names, maths)
 !
-      integer(kind = kint), intent(inout) :: n_comps(num_SGS_work)
+      integer(kind = kint_4b), intent(inout) :: n_comps(num_SGS_work)
       character(len = kchara), intent(inout) :: names(num_SGS_work)
       character(len = kchara), intent(inout) :: maths(num_SGS_work)
 !

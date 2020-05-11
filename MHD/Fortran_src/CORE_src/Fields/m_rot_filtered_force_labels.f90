@@ -147,7 +147,7 @@
 !
       subroutine set_rot_filtered_force_labels(n_comps, names, maths)
 !
-      integer(kind = kint), intent(inout)                               &
+      integer(kind = kint_4b), intent(inout)                            &
      &                        :: n_comps(nrot_filter_force)
       character(len = kchara), intent(inout)                            &
      &                        :: names(nrot_filter_force)

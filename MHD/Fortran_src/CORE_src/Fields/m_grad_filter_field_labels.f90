@@ -230,7 +230,7 @@
 !
       subroutine set_div_filter_field_labels(n_comps, names, maths)
 !
-      integer(kind = kint), intent(inout) :: n_comps(ndiv_fil_vect)
+      integer(kind = kint_4b), intent(inout) :: n_comps(ndiv_fil_vect)
       character(len = kchara), intent(inout) :: names(ndiv_fil_vect)
       character(len = kchara), intent(inout) :: maths(ndiv_fil_vect)
 !
@@ -248,7 +248,7 @@
 !
       subroutine set_grad_filter_field_labels(n_comps, names, maths)
 !
-      integer(kind = kint), intent(inout) :: n_comps(ngrad_fil_scl)
+      integer(kind = kint_4b), intent(inout) :: n_comps(ngrad_fil_scl)
       character(len = kchara), intent(inout) :: names(ngrad_fil_scl)
       character(len = kchara), intent(inout) :: maths(ngrad_fil_scl)
 !

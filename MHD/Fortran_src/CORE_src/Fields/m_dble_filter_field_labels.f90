@@ -326,7 +326,7 @@
 !
       subroutine set_double_filter_field_labels(n_comps, names, maths)
 !
-      integer(kind = kint), intent(inout) :: n_comps(nfld_d_filter)
+      integer(kind = kint_4b), intent(inout) :: n_comps(nfld_d_filter)
       character(len = kchara), intent(inout) :: names(nfld_d_filter)
       character(len = kchara), intent(inout) :: maths(nfld_d_filter)
 !

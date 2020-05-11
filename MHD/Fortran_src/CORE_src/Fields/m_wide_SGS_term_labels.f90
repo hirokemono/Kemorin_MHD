@@ -252,7 +252,8 @@
 !
       subroutine set_wide_SGS_term_labels(n_comps, names, maths)
 !
-      integer(kind = kint), intent(inout) :: n_comps(nterms_wide_SGS)
+      integer(kind = kint_4b), intent(inout)                            &
+     &                        :: n_comps(nterms_wide_SGS)
       character(len = kchara), intent(inout) :: names(nterms_wide_SGS)
       character(len = kchara), intent(inout) :: maths(nterms_wide_SGS)
 !

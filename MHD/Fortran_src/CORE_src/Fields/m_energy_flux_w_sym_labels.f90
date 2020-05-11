@@ -576,7 +576,7 @@
 !
       subroutine set_ene_flux_w_symmetry_names(n_comps, names, maths)
 !
-      integer(kind = kint), intent(inout) :: n_comps(neflux_w_sym)
+      integer(kind = kint_4b), intent(inout) :: n_comps(neflux_w_sym)
       character(len = kchara), intent(inout) :: names(neflux_w_sym)
       character(len = kchara), intent(inout) :: maths(neflux_w_sym)
 !

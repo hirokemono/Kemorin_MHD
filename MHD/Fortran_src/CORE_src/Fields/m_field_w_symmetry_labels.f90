@@ -429,7 +429,7 @@
 !
       subroutine set_field_w_symmetry_labels(n_comps, names, maths)
 !
-      integer(kind = kint), intent(inout) :: n_comps(nfld_w_sym)
+      integer(kind = kint_4b), intent(inout) :: n_comps(nfld_w_sym)
       character(len = kchara), intent(inout) :: names(nfld_w_sym)
       character(len = kchara), intent(inout) :: maths(nfld_w_sym)
 !

@@ -239,7 +239,7 @@
 !
       subroutine set_force_with_SGS_labels(n_comps, names, maths)
 !
-      integer(kind = kint), intent(inout) :: n_comps(nforce_w_SGS)
+      integer(kind = kint_4b), intent(inout) :: n_comps(nforce_w_SGS)
       character(len = kchara), intent(inout) :: names(nforce_w_SGS)
       character(len = kchara), intent(inout) :: maths(nforce_w_SGS)
 !
