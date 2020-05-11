@@ -20,8 +20,8 @@ GtkWidget *make_mhd_model_ctl_hbox(const char *label_hd,
     char *c_label = (char *)calloc(KCHARA_C, sizeof(char));
 	struct field_views *fields_vws = init_field_views_GTK(model_ctl->fld_ctl);
     
-    fields_vws->used_tree_view =         create_field_tree_view(fields_vws->fld_gtk_data);
-    fields_vws->unused_field_tree_view = create_unused_field_tree_views(fields_vws->fld_gtk_data);
+    fields_vws->used_tree_view = create_field_tree_view(fields_vws->all_fld_list, fields_vws->fld_ctl_gtk);
+    fields_vws->unused_field_tree_view = create_unused_field_tree_views(fields_vws->all_fld_list);
     create_direction_tree_views(fields_vws);
     
     vbox_3 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);

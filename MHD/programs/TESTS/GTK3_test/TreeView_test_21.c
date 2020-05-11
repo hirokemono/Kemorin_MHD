@@ -25,8 +25,8 @@ static void create_tree_view_window(GtkButton *button, gpointer user_data)
 	gchar *title;
 	
 	
-	fields_vws->used_tree_view =         create_field_tree_view(fields_vws->fld_gtk_data);
-    fields_vws->unused_field_tree_view = create_unused_field_tree_views(fields_vws->fld_gtk_data);
+	fields_vws->used_tree_view = create_field_tree_view(fields_vws->all_fld_list, fields_vws->fld_ctl_gtk);
+    fields_vws->unused_field_tree_view = create_unused_field_tree_views(fields_vws->all_fld_list);
     create_direction_tree_views(fields_vws);
 	
 	
