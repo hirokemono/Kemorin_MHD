@@ -37,7 +37,7 @@ static void transfer_to_used_tree(struct all_field_ctl_c *all_fld_list,
 	list = gtk_tree_selection_get_selected_rows(selection, NULL);
 
 	/* Make reference from path */
-	/* After deliting data, obtained path would not be valied */
+	/* After deleting data, obtained path would not be valied */
 	reference_list = NULL;
 	for (cur = g_list_first(list); cur != NULL; cur = g_list_next(cur)) {
 		GtkTreePath *child_path;
@@ -139,12 +139,12 @@ static void transfer_to_unused_tree(struct all_field_ctl_c *all_fld_list,
 	};
 
 	/* Make reference from path */
-	/* データの削除を行なうと取得済みのパスが(大抵の場合)無効になる */
+	/* After deleting data, obtained path would not be valied */
 	reference_list = NULL;
 	for (cur = g_list_first(list); cur != NULL; cur = g_list_next(cur)) {
 		GtkTreePath *child_path;
 		GtkTreeRowReference *child_reference;
-		/* ツリーモデルソートのパスをツリーモデルのパスに変換する */
+		/* Convert tree model sort path into tree model path */
 		child_path = gtk_tree_model_sort_convert_path_to_child_path(GTK_TREE_MODEL_SORT(model_for_used), 
 					(GtkTreePath *)cur->data);
 
@@ -198,7 +198,7 @@ static void transfer_to_unused_tree(struct all_field_ctl_c *all_fld_list,
 	g_list_free(reference_list);
 	
 	
-	/* changedシグナルのブロックを解除する */
+	/* Release bloking of changed signal */
 	unblock_changed_signal(G_OBJECT(child_model_for_used));
 	for(i=0;i<num_group;i++){
 		unblock_changed_signal(G_OBJECT(child_model_for_unused[i]));
