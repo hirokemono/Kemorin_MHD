@@ -52,13 +52,16 @@
       character(len=1) :: noise_char(1)
       integer(kind = kint_gl), parameter :: ione64 = 1
       integer(kind = kint_gl), parameter :: ithree64 = 3
+      integer(kind = kint_4b) :: isize3d_tmp(3)
 !
 !
       file_name = add_null_character(filename)
       call open_rd_rawfile_f(file_name, bbuf_nze)
       if(bbuf_nze%ierr_bin .ne. 0) go to 99
 ! first line read 3 integer size data, byte 4
-      call read_mul_int_from_32bit(bbuf_nze, ithree64, n_data_size)
+      call read_mul_int_from_32bit(bbuf_nze, ithree64, isize3d_tmp)
+      n_data_size(1:3) = int(isize3d_tmp(1:3), KIND(n_data_size(1)))
+!
       if(bbuf_nze%ierr_bin .ne. 0) go to 99
       d_size = n_data_size(1)*n_data_size(2)*n_data_size(3)
 !      write(*,*) d_size
@@ -98,6 +101,7 @@
       character(len=1) :: one_chara(1)
       integer(kind = kint_gl), parameter :: ione64 = 1
       integer(kind = kint_gl), parameter :: ithree64 = 3
+      integer(kind = kint_4b) :: isize3d_tmp(3)
 !
 !
       if(my_rank .eq. 0) then
@@ -107,7 +111,8 @@
         if(bbuf_nze%ierr_bin .ne. 0) go to 99
 ! first line read 3 integer size data, byte 4
         bbuf_nze%iflag_swap = iendian_KEEP
-        call read_mul_int_from_32bit(bbuf_nze, ithree64, n_data_size)
+        call read_mul_int_from_32bit(bbuf_nze, ithree64, isize3d_tmp)
+        n_data_size(1:3) = int(isize3d_tmp(1:3), KIND(n_data_size(1)))
         if(bbuf_nze%ierr_bin .ne. 0) go to 99
 !
         d_size = n_data_size(1)*n_data_size(2)*n_data_size(3)
@@ -130,7 +135,8 @@
         call open_rd_rawfile_f(file_name, bbuf_nze)
         if(bbuf_nze%ierr_bin .eq. 0) go to 98
 ! first line read 3 integer size data, byte 4
-        call read_mul_int_from_32bit(bbuf_nze, ithree64, n_data_size)
+        call read_mul_int_from_32bit(bbuf_nze, ithree64, isize3d_tmp)
+        n_data_size(1:3) = int(isize3d_tmp(1:3), KIND(n_data_size(1)))
 !
         d_size = n_data_size(1)*n_data_size(2)*n_data_size(3)
         if(iflag_debug .gt. 0) write(*,*) 'd_size again',               &
@@ -343,7 +349,8 @@
       character(len=1), intent(in) :: noise_data(noise_size)
       real(kind = kreal), intent(in) :: xx_org(3), xyz_min(3), xyz_max(3)
       real(kind = kreal), intent(inout) :: noise_value
-      integer(kind = kint) :: idx000,idx001,idx010,idx011,idx100,idx101,idx110,idx111
+      integer(kind = kint) :: idx000, idx001, idx010, idx011
+      integer(kind = kint) :: idx100, idx101, idx110, idx111
       real(kind = kreal) :: xyz(3), xyz_d(3), c00, c01, c10, c11, c0, c1
       integer(kind = kint) :: xyz_i(3)
       !
