@@ -286,8 +286,7 @@
       end if
 !
 !
-      if (MHD_prop%fl_prop%iflag_4_lorentz .ne. id_turn_OFF) then
-!
+      if(MHD_prop%fl_prop%iflag_4_lorentz) then
         if(SGS_par%model_p%iflag_SGS_lorentz .eq. id_SGS_NL_grad) then
           if (iflag_debug.eq.1)                                         &
      &       write(*,*) 'cal_sgs_maxwell_t_dynamic'

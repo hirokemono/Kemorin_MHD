@@ -64,10 +64,10 @@
       character(len=kchara), parameter :: coriolis_i1 = 'Coriolis_imp'
 !
 !>       Lorentz force label
-      character(len=kchara), parameter :: lorentz_e1 = 'Lorentz'
-      character(len=kchara), parameter :: lorentz_f1 = 'Lorentz_full'
+      character(len=kchara), parameter :: lorentz_label = 'Lorentz'
 !
 !>       Thermal buoyancy label
+!
       character(len=kchara), parameter :: gravity_e1 =  'gravity'
       character(len=kchara), parameter :: gravity_e2 = 'Gravity_ele'
       character(len=kchara), parameter                                  &

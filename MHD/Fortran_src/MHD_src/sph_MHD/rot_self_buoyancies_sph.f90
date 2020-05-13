@@ -74,8 +74,8 @@
       integer(kind = kint) :: it_rot_buo
 !
 !
-      if ((fl_prop%iflag_4_gravity * fl_prop%iflag_4_composit_buo)      &
-     &     .gt. id_turn_OFF) then
+      if(fl_prop%iflag_4_gravity .gt. id_turn_OFF                       &
+     &     .and. fl_prop%iflag_4_composit_buo) then
 !
         if (iflag_debug.eq.1)                                           &
      &    write(*,*)'cal_rot_double_buoyancy_sph_MHD', ipol_base%i_temp
@@ -98,7 +98,7 @@
      &      sph_rj%nidx_rj, sph_rj%radius_1d_rj_r,                      &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
-      else if (fl_prop%iflag_4_composit_buo .gt. id_turn_OFF) then
+      else if (fl_prop%iflag_4_composit_buo) then
         if (iflag_debug.eq.1) write(*,*)                                &
      &      'cal_rot_buoyancy_sph_MHD', ipol_base%i_light
         it_rot_buo = ipol_rot_frc%i_comp_buo + 2

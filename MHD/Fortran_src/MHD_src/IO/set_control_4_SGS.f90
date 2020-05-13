@@ -156,7 +156,7 @@
             else if(cmp_no_case(tmpchara, inertia%name)) then
               SGS_param%iflag_SGS_m_flux =  SGS_param%iflag_SGS
             else if(cmp_no_case(tmpchara, Lorentz_force%name)           &
-     &         .or. cmp_no_case(tmpchara, lorentz_e1)) then
+     &         .or. cmp_no_case(tmpchara, lorentz_label)) then
               SGS_param%iflag_SGS_lorentz = SGS_param%iflag_SGS
             else if(cmp_no_case(tmpchara, magnetic_induction%name)      &
      &         .or. cmp_no_case(tmpchara, induction_1)) then

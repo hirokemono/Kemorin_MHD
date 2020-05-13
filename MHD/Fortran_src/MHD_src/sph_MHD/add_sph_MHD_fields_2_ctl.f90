@@ -56,7 +56,7 @@
       end if
 !   magnetic field flag
       if(cd_prop%iflag_Bevo_scheme .gt. id_no_evolution                 &
-     &     .or. fl_prop%iflag_4_lorentz .gt. id_turn_OFF) then
+     &     .or. fl_prop%iflag_4_lorentz) then
         call add_phys_name_ctl(magnetic_field%name, field_ctl)
         call add_phys_name_ctl(current_density%name, field_ctl)
       end if
@@ -95,7 +95,7 @@
           call add_phys_name_ctl(div_Coriolis_force%name, field_ctl)
         end if
 !   Lorentz flag
-        if(fl_prop%iflag_4_lorentz .gt. id_turn_OFF) then
+        if(fl_prop%iflag_4_lorentz) then
           call add_phys_name_ctl(Lorentz_force%name, field_ctl)
           call add_phys_name_ctl(rot_Lorentz_force%name, field_ctl)
           call add_phys_name_ctl(div_Lorentz_force%name, field_ctl)
@@ -107,7 +107,7 @@
           call add_phys_name_ctl(div_buoyancy%name, field_ctl)
         end if
 !   compositional buoyancy flag
-        if(fl_prop%iflag_4_composit_buo .gt. id_turn_OFF) then
+        if(fl_prop%iflag_4_composit_buo) then
           call add_phys_name_ctl(composite_buoyancy%name, field_ctl)
           call add_phys_name_ctl                                        &
      &       (div_composite_buoyancy%name, field_ctl)

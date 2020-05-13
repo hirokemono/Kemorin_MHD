@@ -75,13 +75,13 @@
       end if
 !   magnetic field flag
       if(       cd_prop%iflag_Bevo_scheme .gt. id_no_evolution          &
-     &     .or. fl_prop%iflag_4_lorentz .gt.     id_turn_OFF) then
+     &     .or. fl_prop%iflag_4_lorentz) then
         call add_field_4_sph_trns_by_pol(magnetic_field,                &
      &      ipol_base%i_magne, iphys_base%i_magne, b_trns_base%i_magne, &
      &      trns)
       end if
 !   current density flag
-      if(fl_prop%iflag_4_lorentz .gt. id_turn_OFF) then
+      if(fl_prop%iflag_4_lorentz) then
         call add_field_4_sph_trns_by_pol(current_density,               &
      &      ipol_base%i_current, iphys_base%i_current,                  &
      &      b_trns_base%i_current, trns)

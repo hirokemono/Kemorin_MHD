@@ -136,12 +136,12 @@
           call check_missing_field_w_msg(fld, msg, iphys_base%i_temp)
         end if
 !
-        if (fl_prop%iflag_4_composit_buo .gt. id_turn_OFF) then
+        if(fl_prop%iflag_4_composit_buo) then
           msg = 'Compositional buoyancy needs'
           call check_missing_field_w_msg(fld, msg, iphys_base%i_light)
         end if
 !
-        if (fl_prop%iflag_4_lorentz .gt. id_turn_OFF) then
+        if(fl_prop%iflag_4_lorentz) then
           msg = 'Lorentz force needs'
           call check_missing_field_w_msg(fld, msg, iphys_base%i_magne)
         end if

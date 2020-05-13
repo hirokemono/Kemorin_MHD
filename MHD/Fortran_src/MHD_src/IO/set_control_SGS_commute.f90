@@ -101,7 +101,7 @@
           else if(cmp_no_case(tmpchara, inertia%name)) then
             cmt_param%iflag_c_mf =   id_SGS_commute_ON
           else if(cmp_no_case(tmpchara, Lorentz_force%name)             &
-     &       .or. cmp_no_case(tmpchara, lorentz_e1)) then
+     &       .or. cmp_no_case(tmpchara, lorentz_label)) then
             cmt_param%iflag_c_lorentz = id_SGS_commute_ON
           else if(cmp_no_case(tmpchara, magnetic_induction%name)        &
      &       .or. cmp_no_case(tmpchara, induction_1)) then

@@ -138,7 +138,7 @@ t_boundary_field_IO.o: $(IO_DIR)/t_boundary_field_IO.f90 m_precision.o t_group_d
 	$(F90) -c $(F90OPTFLAGS) $<
 t_element_refinement_IO.o: $(IO_DIR)/t_element_refinement_IO.f90 m_precision.o t_binary_IO_buffer.o skip_comment_f.o binary_IO.o transfer_to_long_integers.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_energy_label_parameters.o: $(IO_DIR)/t_energy_label_parameters.f90 m_precision.o m_phys_labels.o t_spheric_parameter.o t_rms_4_sph_spectr.o t_sph_volume_mean_square.o t_base_field_labels.o add_direction_labels.o
+t_energy_label_parameters.o: $(IO_DIR)/t_energy_label_parameters.f90 m_precision.o t_spheric_parameter.o t_rms_4_sph_spectr.o t_sph_volume_mean_square.o t_base_field_labels.o add_direction_labels.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_field_data_IO.o: $(IO_DIR)/t_field_data_IO.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<

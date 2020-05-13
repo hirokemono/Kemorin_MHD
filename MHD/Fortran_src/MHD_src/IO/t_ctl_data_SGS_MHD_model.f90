@@ -101,6 +101,9 @@
      &      :: hd_gravity_ctl =  'gravity_define'
       character(len=kchara), parameter                                  &
      &      :: hd_coriolis_ctl = 'Coriolis_define'
+!
+      character(len=kchara), parameter                                  &
+     &      :: hd_induction_ctl =  'magnetic_induciton_ctl'
       character(len=kchara), parameter                                  &
      &      :: hd_magneto_ctl =  'Magneto_convection_def'
 !
@@ -117,7 +120,7 @@
       private :: hd_phys_values, hd_time_evo, hd_layers_ctl
       private :: hd_bc_4_node, hd_boundary_condition, hd_bc_4_surf
       private :: hd_dimless_ctl, hd_coef_term_ctl
-      private :: hd_forces_ctl
+      private :: hd_forces_ctl, hd_induction_ctl
       private :: hd_gravity_ctl, hd_coriolis_ctl, hd_magneto_ctl
 !
       private :: hd_temp_def, hd_comp_def
@@ -183,6 +186,9 @@
 !
         call read_sgs_ctl                                               &
      &     (id_control, hd_sgs_ctl, model_ctl%sgs_ctl, c_buf)
+!
+        call read_magneto_ctl                                           &
+     &     (id_control, hd_induction_ctl, model_ctl%mcv_ctl, c_buf)
       end do
       model_ctl%i_model = 1
 !

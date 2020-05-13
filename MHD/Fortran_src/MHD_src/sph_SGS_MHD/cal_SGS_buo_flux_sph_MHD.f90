@@ -82,7 +82,7 @@
      &     trns_f_SGS%fld_rtp(1,fg_trns_SGS%i_SGS_h_flux),              &
      &     trns_f_DYNS%fld_rtp(1,fs_trns_sef%i_SGS_buo_wk))
       end if
-      if(fl_prop%iflag_4_composit_buo .gt. id_turn_OFF) then
+      if(fl_prop%iflag_4_composit_buo) then
         call sel_SGS_buoyancy_flux_rtp                                  &
      &   (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                           &
      &   sph_rtp%radius_1d_rtp_r, fl_prop%coef_comp_buo,                &

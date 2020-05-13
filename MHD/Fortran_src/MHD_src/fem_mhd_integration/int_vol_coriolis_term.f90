@@ -148,14 +148,11 @@
       type(finite_ele_mat_node), intent(inout) :: f_nl
 !
 !
-      if     (fl_prop%iflag_4_filter_comp_buo .ne. id_FORCE_at_node     &
-     &  .and. fl_prop%iflag_4_filter_gravity .ne.  id_FORCE_at_node     &
-     &  .and. fl_prop%iflag_4_composit_buo .ne. id_FORCE_at_node        &
-     &  .and. fl_prop%iflag_4_gravity .ne. id_FORCE_at_node) return
+      if(fl_prop%iflag_FEM_gravity .ne. id_FORCE_at_node) return
 !
 ! ---------  set buoyancy at each node
 !
-      if(fl_prop%iflag_4_composit_buo .eq. id_FORCE_at_node             &
+      if(fl_prop%iflag_4_composit_buo                                   &
      &   .and. fl_prop%iflag_4_gravity .eq. id_FORCE_at_node) then
         call set_double_gravity_2_each_node(iphys%base%i_temp,          &
      &      iphys%base%i_light, iphys%forces%i_buoyancy,                &
@@ -178,7 +175,7 @@
      &      fl_prop%coef_buo, fl_prop%coef_comp_buo, fl_prop%grav,      &
      &      node, nod_fld)
 !
-      else if(fl_prop%iflag_4_composit_buo .eq. id_FORCE_at_node        &
+      else if(fl_prop%iflag_4_composit_buo                              &
      & .and. fl_prop%iflag_4_filter_gravity .eq. id_FORCE_at_node) then
         call set_double_gravity_2_each_node                             &
      &     (iphys_LES%filter_fld%i_temp, iphys%base%i_light,            &
@@ -193,7 +190,7 @@
      &      fl_prop%i_grav, fl_prop%coef_buo, fl_prop%grav,             &
      &      node, nod_fld)
 !
-      else if (fl_prop%iflag_4_composit_buo .eq. id_FORCE_at_node) then
+      else if (fl_prop%iflag_4_composit_buo) then
         call set_gravity_2_each_node                                    &
      &     (iphys%base%i_light, iphys%forces%i_buoyancy,                &
      &      fl_prop%i_grav, fl_prop%coef_comp_buo, fl_prop%grav,        &

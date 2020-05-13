@@ -234,7 +234,7 @@
         end if
       end if
 !
-      if (fl_prop%iflag_4_composit_buo .eq. id_turn_OFF                 &
+      if (fl_prop%iflag_4_composit_buo .eqv. .FALSE.                    &
      &     .and. fl_prop%iflag_4_filter_comp_buo .eq. id_turn_OFF) then
         MHD_coef_list%coefs_comp_buo%num = 0
       else
@@ -259,7 +259,7 @@
         end if
       end if
 !
-      if (fl_prop%iflag_4_lorentz .eq. id_turn_OFF) then
+      if (fl_prop%iflag_4_lorentz .eqv. .FALSE.) then
         MHD_coef_list%coefs_Lorentz%num = 0
       else
         if(mom_ctl%coef_4_Lorentz%icou .eq. 0) then

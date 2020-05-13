@@ -176,7 +176,7 @@
         if(fl_prop%iflag_4_gravity .gt. id_turn_OFF) then
           call add_phys_name_ctl(Csim_SGS_buoyancy%name, field_ctl)
         end if
-        if(fl_prop%iflag_4_composit_buo .gt. id_turn_OFF) then
+        if(fl_prop%iflag_4_composit_buo) then
           call add_phys_name_ctl(Csim_SGS_composit_buo%name, field_ctl)
         end if
       end if
@@ -286,7 +286,7 @@
           call add_phys_name_ctl(SGS_buoyancy_flux%name, field_ctl)
         end if
 !
-        if(fl_prop%iflag_4_composit_buo .gt. id_turn_OFF) then
+        if(fl_prop%iflag_4_composit_buo) then
           call add_phys_name_ctl                                        &
      &       (SGS_comp_buoyancy_flux%name, field_ctl)
         end if

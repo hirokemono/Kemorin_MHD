@@ -82,8 +82,8 @@
      &      trns_f_MHD%fld_pole(1,f_trns%forces%i_m_advect) )
       end if
 !
-      if( (f_trns%forces%i_lorentz * fl_prop%iflag_4_lorentz)           &
-     &                                                 .gt. 0) then
+      if(f_trns%forces%i_lorentz .gt. 0                                 &
+     &      .and. fl_prop%iflag_4_lorentz) then
         call cal_cross_prod_w_coef_smp                                  &
      &     (sph_rtp%nnod_pole, fl_prop%coef_lor,                        &
      &      trns_b_MHD%fld_pole(1,bs_trns%base%i_current),              &

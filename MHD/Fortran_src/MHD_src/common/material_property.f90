@@ -115,7 +115,7 @@
      &      depth_top, depth_bottom)
         end if
 !
-        if     (fl_prop%iflag_4_composit_buo .gt. id_turn_OFF           &
+        if     (fl_prop%iflag_4_composit_buo                            &
      &     .or. fl_prop%iflag_4_filter_comp_buo .gt. id_turn_OFF) then
           call construct_coefficient(fl_prop%coef_comp_buo,             &
      &       MHD_coef_list%dimless_list, MHD_coef_list%coefs_comp_buo,  &
@@ -128,7 +128,7 @@
      &       depth_top, depth_bottom)
         end if
 !
-        if (fl_prop%iflag_4_lorentz .gt. id_turn_OFF) then
+        if(fl_prop%iflag_4_lorentz) then
           call construct_coefficient(fl_prop%coef_lor,                  &
      &       MHD_coef_list%dimless_list, MHD_coef_list%coefs_Lorentz,   &
      &       depth_top, depth_bottom)
@@ -146,16 +146,16 @@
      &              fl_prop%coef_press
           write(*,*) 'coefficient for viscous diffusion:   ',           &
      &              fl_prop%coef_diffuse
-        if (fl_prop%iflag_4_gravity .gt. id_turn_OFF) write(*,*)        &
+        if(fl_prop%iflag_4_gravity .gt. id_turn_OFF) write(*,*)         &
      &         'coefficient for buoyancy:            ',                 &
      &              fl_prop%coef_buo
-        if (fl_prop%iflag_4_composit_buo .gt. id_turn_OFF)  write(*,*)  &
+        if(fl_prop%iflag_4_composit_buo)  write(*,*)                    &
      &         'coefficient for composit buoyancy:   ',                 &
      &              fl_prop%coef_comp_buo
-        if (fl_prop%iflag_4_coriolis .gt. id_turn_OFF) write(*,*)       &
+        if(fl_prop%iflag_4_coriolis .gt. id_turn_OFF) write(*,*)        &
      &         'coefficient for coriolis force:      ',                 &
      &              fl_prop%coef_cor
-        if (fl_prop%iflag_4_lorentz .gt. id_turn_OFF) write(*,*)        &
+        if(fl_prop%iflag_4_lorentz) write(*,*)                          &
      &         'coefficient for Lorentz force:       ',                 &
      &              fl_prop%coef_lor
         end if

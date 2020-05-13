@@ -87,7 +87,7 @@
      &      sph_rj%nidx_rj, sph_rj%ar_1d_rj, g_sph_rj,                  &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
-      if(fl_prop%iflag_4_lorentz .gt. id_turn_OFF) then
+      if(fl_prop%iflag_4_lorentz) then
         call cal_radial_force_on_sph(sph_bc_U%kr_in,                    &
      &      ipol%forces%i_lorentz, ipol%div_forces%i_m_flux,            &
      &      sph_rj%nidx_rj, sph_rj%ar_1d_rj, g_sph_rj,                  &

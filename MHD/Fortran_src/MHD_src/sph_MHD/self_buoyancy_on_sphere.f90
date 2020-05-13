@@ -78,8 +78,8 @@
         ipol_comp =  ipol_base%i_light
       end if
 !
-      if ((fl_prop%iflag_4_gravity * fl_prop%iflag_4_composit_buo)      &
-     &       .gt. id_turn_OFF) then
+      if(fl_prop%iflag_4_gravity  .gt. id_turn_OFF                      &
+     &     .and. fl_prop%iflag_4_composit_buo) then
         if (iflag_debug.eq.1)                                           &
      &      write(*,*)'cal_r_double_buo_on_sphere', ipol_temp
         call cal_r_double_buo_on_sphere                                 &
@@ -95,7 +95,7 @@
      &      sph_rj%nidx_rj, sph_rj%radius_1d_rj_r,                      &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
-      else if (fl_prop%iflag_4_composit_buo .gt. id_turn_OFF) then
+      else if (fl_prop%iflag_4_composit_buo) then
         if (iflag_debug.eq.1) write(*,*) 'cal_r_buoyancy_on_sphere'
         call cal_r_buoyancy_on_sphere(kr, fl_prop%coef_comp_buo,        &
      &      ipol_comp, ipol_div_frc%i_comp_buo,                         &

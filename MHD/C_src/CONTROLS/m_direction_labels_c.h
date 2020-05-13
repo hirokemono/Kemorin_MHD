@@ -18,7 +18,7 @@
 #define NUM_XYZ_FLAG      3
 #define NTERM_PLANE       10
 
-#define NUM_TOTAL_FORCE 10
+#define NUM_TOTAL_FORCE  9
 #define NUM_BASIC_FORCE  4
 #define NUM_DEFAULT_COEF_DEF  6
 #define NUM_GRAVITY_DEF  3

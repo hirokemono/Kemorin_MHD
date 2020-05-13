@@ -101,7 +101,7 @@
      &        f_trns_frc%i_coriolis, trns)
         end if
 !   Lorentz force
-        if(fl_prop%iflag_4_lorentz .gt. id_turn_OFF) then
+        if(fl_prop%iflag_4_lorentz) then
           call add_field_4_sph_trns_by_pol(Lorentz_force,               &
      &        ipol_frc%i_lorentz, iphys_frc%i_lorentz,                  &
      &        f_trns_frc%i_lorentz, trns)

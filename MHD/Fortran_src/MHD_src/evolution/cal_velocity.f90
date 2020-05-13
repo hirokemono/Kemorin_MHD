@@ -259,7 +259,7 @@
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-      if (fl_prop%iflag_4_lorentz .eq. id_turn_ON) then
+      if(fl_prop%iflag_4_lorentz) then
         if (FEM_prm%iflag_rotate_form .eq. id_turn_OFF) then
           call cal_sol_pressure_w_mag_ene                               &
      &      (dt, node%numnod, node%istack_internal_smp,                 &

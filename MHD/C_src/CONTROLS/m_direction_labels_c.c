@@ -89,8 +89,6 @@ const struct direction_flag_def force_flag_def[NUM_TOTAL_FORCE] = {
 			{"Coriolis_node", "$$  (- \\Omega \\times \bvec{u})  $$"},
 			{"Coriolis_imp", "$$  (- \\Omega \\times \bvec{u})  $$"},
 			{"Coriolis_node_imp", "$$  (- \\Omega \\times \bvec{u})  $$"},
-			
-			{"Lorentz_full", "$$  \\bvec{J} \\times \\bvec{B}  $$"}
 };
 
 const struct constant_flag_def default_coefs_def[NUM_DEFAULT_COEF_DEF] = {

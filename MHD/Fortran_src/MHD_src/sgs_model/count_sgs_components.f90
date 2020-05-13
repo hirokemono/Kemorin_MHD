@@ -143,7 +143,7 @@
             sgs_coefs%num_field = sgs_coefs%num_field + 1
             sgs_coefs%ntot_comp = sgs_coefs%ntot_comp + 6
           end if
-          if(fl_prop%iflag_4_composit_buo .gt. id_turn_OFF) then
+          if(fl_prop%iflag_4_composit_buo) then
             sgs_coefs%num_field = sgs_coefs%num_field + 1
             sgs_coefs%ntot_comp = sgs_coefs%ntot_comp + 6
           end if
@@ -244,7 +244,7 @@
             i_cmp = i_cmp + sgs_coefs%num_comps(i_fld)
             i_fld = i_fld + 1
           end if
-          if(fl_prop%iflag_4_composit_buo .gt. id_turn_OFF) then
+          if(fl_prop%iflag_4_composit_buo) then
             icomp_sgs_term%i_SGS_comp_buo = i_cmp
             iak_sgs_term%i_SGS_comp_buo =  i_fld
             wk_sgs%name(i_fld) = SGS_composit_buoyancy%name
