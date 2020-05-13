@@ -86,7 +86,7 @@
 !>        Force flag for Lorentz force
         logical :: iflag_4_lorentz = .FALSE.
 !>        Force flag for thermal buoyancy
-        integer (kind=kint) :: iflag_4_gravity = id_turn_OFF
+        logical :: iflag_4_gravity = .FALSE.
 !>        Force flag for compositional buoyancy
         logical :: iflag_4_composit_buo = .FALSE.
 !

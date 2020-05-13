@@ -184,7 +184,7 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      if(MHD_prop%fl_prop%iflag_4_gravity .gt. id_turn_OFF) then
+      if(MHD_prop%fl_prop%iflag_4_gravity) then
         call const_sph_div_force                                        &
      &     (sph_rj, r_2nd, sph_MHD_bc%sph_bc_U, g_sph_rj,               &
      &      ipol%forces%i_buoyancy, ipol%div_forces%i_buoyancy, rj_fld)

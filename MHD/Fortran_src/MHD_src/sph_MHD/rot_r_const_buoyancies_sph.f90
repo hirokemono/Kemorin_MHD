@@ -82,7 +82,7 @@
       end if
 !
 !
-      if(fl_prop%iflag_4_gravity .gt. id_turn_OFF                       &
+      if(fl_prop%iflag_4_gravity                                        &
      &     .and. fl_prop%iflag_4_composit_buo) then
         if (iflag_debug.eq.1)                                           &
      &    write(*,*)'cal_rot_double_cst_buo_sph', ipol_temp, ipol_comp
@@ -92,7 +92,7 @@
      &        ipol_rot_frc%i_buoyancy, sph_rj%nidx_rj,                  &
      &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
-      else if (fl_prop%iflag_4_gravity .gt. id_turn_OFF) then
+      else if (fl_prop%iflag_4_gravity) then
         if (iflag_debug.eq.1) write(*,*) 'cal_rot_cst_buo_sph'
         call cal_rot_cst_buo_sph(sph_bc_U%kr_in, sph_bc_U%kr_out,       &
      &      fl_prop%coef_buo, ipol_temp,                                &

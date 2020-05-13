@@ -78,7 +78,7 @@
         call add_phys_name_ctl(div_SGS_m_flux%name, field_ctl)
         call add_phys_name_ctl(Reynolds_work%name, field_ctl)
 !
-        if(fl_prop%iflag_4_gravity .gt. id_turn_OFF) then
+        if(fl_prop%iflag_4_gravity) then
           call add_phys_name_ctl(SGS_heat_flux%name, field_ctl)
           call add_phys_name_ctl(SGS_buoyancy_flux%name, field_ctl)
         end if

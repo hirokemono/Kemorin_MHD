@@ -130,8 +130,8 @@
       end if
 !
 !
-      if ( fl_prop%iflag_scheme .gt. id_no_evolution) then
-        if (fl_prop%iflag_4_gravity .gt. id_turn_OFF) then
+      if(fl_prop%iflag_scheme .gt. id_no_evolution) then
+        if(fl_prop%iflag_4_gravity) then
           msg = 'Buoyancy needs'
           call check_missing_field_w_msg(fld, msg, iphys_base%i_temp)
         end if

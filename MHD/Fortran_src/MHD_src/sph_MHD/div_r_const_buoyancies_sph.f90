@@ -92,7 +92,7 @@
         igrad_comp = ipol_grd%i_grad_composit
       end if
 !
-      if(fl_prop%iflag_4_gravity .gt. 0                                 &
+      if(fl_prop%iflag_4_gravity                                        &
      &   .and. fl_prop%iflag_4_composit_buo) then
         if (iflag_debug.eq.1)                                           &
      &      write(*,*)'cal_div_double_cst_buo_sph', ipol_temp
@@ -103,7 +103,7 @@
      &      sph_rj%nidx_rj, sph_rj%a_r_1d_rj_r,                         &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
-      else if (fl_prop%iflag_4_gravity .gt. id_turn_OFF) then
+      else if (fl_prop%iflag_4_gravity) then
         if (iflag_debug.eq.1) write(*,*) 'cal_div_cst_buo_sph'
         call cal_div_cst_buo_sph                                        &
      &     (sph_bc_U%kr_in, sph_bc_U%kr_out, fl_prop%coef_buo,          &

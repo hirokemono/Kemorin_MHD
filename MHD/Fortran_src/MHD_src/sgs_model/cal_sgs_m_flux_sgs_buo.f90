@@ -198,7 +198,7 @@
 !
 !   lead SGS buoyancy flux
 !
-      if(fl_prop%iflag_4_gravity .gt. id_turn_OFF) then
+      if(fl_prop%iflag_4_gravity) then
         call cal_SGS_gravity_flux                                       &
      &     (node, fl_prop%i_grav, fl_prop%coef_buo, fl_prop%grav,       &
      &      iphys_LES%SGS_term%i_SGS_h_flux,                            &
@@ -222,7 +222,7 @@
 !
 !   Parameterize model coeffisient including SGS Buoyancy
 !
-      if(fl_prop%iflag_4_gravity .gt. id_turn_OFF) then
+      if(fl_prop%iflag_4_gravity) then
 !        call cal_Csim_buo_by_Reynolds_ratio(wk_sgs%nlayer, ifive,      &
 !     &      wk_sgs%num_kinds, wk_sgs%ntot_comp,                        &
 !     &      iak_sgs_term%i_SGS_buoyancy, icomp_sgs_term%i_SGS_buoyancy,&
@@ -295,7 +295,7 @@
 !
 !
 !   take RMS of SGS buoyancy flux and work of Reynolds stress
-      if(fl_prop%iflag_4_gravity .gt. id_turn_OFF) then
+      if(fl_prop%iflag_4_gravity) then
         call int_vol_2rms_ave_ele_grps(node, ele, layer_tbl%e_grp,      &
      &      g_FEM, jac_3d_q, jac_3d_l, num_int,                         &
      &      nod_fld%ntot_phys, iphys_sef%i_reynolds_wk,                 &

@@ -186,7 +186,7 @@
      &  call add_phys_name_ctl(Coriolis_force%name, field_ctl)
 !
       if(fl_prop%iflag_FEM_gravity .eq. id_FORCE_at_node) then
-        if(fl_prop%iflag_4_gravity .eq. id_FORCE_at_node)               &
+        if(fl_prop%iflag_4_gravity)                                     &
      &    call add_phys_name_ctl(buoyancy%name, field_ctl)
         if(fl_prop%iflag_4_composit_buo)                                &
      &    call add_phys_name_ctl(composite_buoyancy%name, field_ctl)

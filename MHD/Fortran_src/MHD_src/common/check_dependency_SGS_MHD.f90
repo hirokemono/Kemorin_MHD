@@ -192,12 +192,12 @@
       end if
 !
       if(SGS_param%iflag_SGS_gravity .gt. id_SGS_none) then
-        if(fl_prop%iflag_4_gravity .eq. id_turn_OFF                     &
+        if(fl_prop%iflag_4_gravity                                      &
      &     .and. fl_prop%iflag_4_composit_buo .eqv. .FALSE.) then
           call calypso_MPI_abort(ierr_fld,                              &
      &       'set one of buoyancy sources')
         end if
-        if(fl_prop%iflag_4_gravity .gt. id_turn_OFF) then
+        if(fl_prop%iflag_4_gravity) then
           if(SGS_param%iflag_SGS_m_flux.eq.id_SGS_none                  &
      &       .or. SGS_param%iflag_SGS_h_flux.eq.id_SGS_none) then
             call calypso_MPI_abort(ierr_fld,                            &

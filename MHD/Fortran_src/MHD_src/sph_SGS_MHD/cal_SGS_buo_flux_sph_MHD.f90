@@ -75,7 +75,7 @@
      &    trns_f_DYNS%fld_rtp(1,fs_trns_sef%i_reynolds_wk))
 !$omp end parallel
 !
-      if(fl_prop%iflag_4_gravity .gt. id_turn_OFF) then
+      if(fl_prop%iflag_4_gravity) then
         call sel_SGS_buoyancy_flux_rtp                                  &
      &    (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                          &
      &     sph_rtp%radius_1d_rtp_r, fl_prop%coef_buo,                   &

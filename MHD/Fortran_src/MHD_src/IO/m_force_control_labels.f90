@@ -67,69 +67,25 @@
       character(len=kchara), parameter :: lorentz_label = 'Lorentz'
 !
 !>       Thermal buoyancy label
+      character(len=kchara), parameter                                  &
+     &             :: gravity_label = 'Thermal_buoyancy'
 !
       character(len=kchara), parameter :: gravity_e1 =  'gravity'
-      character(len=kchara), parameter :: gravity_e2 = 'Gravity_ele'
+      character(len=kchara), parameter :: gravity_e2 =  'buoyancy'
       character(len=kchara), parameter                                  &
-     &             :: gravity_e3 = 'Gravity_element'
-      character(len=kchara), parameter :: gravity_e4 = 'Buoyancy_ele'
-      character(len=kchara), parameter                                  &
-     &             :: gravity_e5 = 'Buoyancy_element'
-      character(len=kchara), parameter                                  &
-     &             :: gravity_e6 = 'Thermal_buoyancy'
-      character(len=kchara), parameter                                  &
-     &             :: gravity_e7 = 'Thermal_buoyancy_ele'
-      character(len=kchara), parameter                                  &
-     &             :: gravity_e8 = 'Thermal_buoyancy_element'
-      character(len=kchara), parameter                                  &
-     &             :: gravity_e9 = 'Thermal_gravity'
-      character(len=kchara), parameter                                  &
-     &             :: gravity_e10 = 'Thermal_gravity_ele'
-      character(len=kchara), parameter                                  &
-     &             :: gravity_e11 = 'Thermal_gravity_element'
-!
-      character(len=kchara), parameter :: gravity_n1 = 'Gravity_nod'
-      character(len=kchara), parameter :: gravity_n2 = 'Buoyancy_nod'
-      character(len=kchara), parameter                                  &
-     &             :: gravity_n3 = 'Thermal_buoyancy_nod'
-      character(len=kchara), parameter                                  &
-     &             :: gravity_n4 = 'Thermal_gravity_nod'
-      character(len=kchara), parameter :: gravity_n5 = 'Gravity_node'
-      character(len=kchara), parameter :: gravity_n6 = 'Buoyancy_node'
-      character(len=kchara), parameter                                  &
-     &             :: gravity_n7 = 'Thermal_buoyancy_node'
-      character(len=kchara), parameter                                  &
-     &             :: gravity_n8 = 'Thermal_gravity_node'
+     &             :: gravity_e5 = 'Thermal_gravity'
 !
 !
 !>       Compositional buoyancy label
       character(len=kchara), parameter                                  &
-     &             :: comp_gravity_e1 = 'compositional_gravity'
-      character(len=kchara), parameter                                  &
-     &             :: comp_gravity_e2 = 'Compositional_buoyancy'
-      character(len=kchara), parameter                                  &
-     &             :: comp_gravity_e3 = 'Composite_buoyancy_ele'
-      character(len=kchara), parameter                                  &
-     &             :: comp_gravity_e4 = 'Composite_buoyancy_element'
-      character(len=kchara), parameter                                  &
-     &             :: comp_gravity_e5 = 'composite_gravity'
-      character(len=kchara), parameter                                  &
-     &             :: comp_gravity_e6 = 'Composite_gravity_ele'
-      character(len=kchara), parameter                                  &
-     &             :: comp_gravity_e7 = 'Composite_gravity_element'
+     &             :: comp_gravity_label = 'Compositional_buoyancy'
 !
       character(len=kchara), parameter                                  &
-     &             :: comp_gravity_n1 = 'Compositional_buoyancy_nod'
+     &             :: comp_gravity_e1 = 'Compositional_gravity'
       character(len=kchara), parameter                                  &
-     &             :: comp_gravity_n2 = 'Compositional_gravity_nod'
+     &             :: comp_gravity_e5 = 'Composite_gravity'
       character(len=kchara), parameter                                  &
-     &             :: comp_gravity_n3 = 'Composite_buoyancy_nod'
-      character(len=kchara), parameter                                  &
-     &             :: comp_gravity_n4 = 'Composite_gravity_nod'
-      character(len=kchara), parameter                                  &
-     &             :: comp_gravity_n5 = 'Composite_buoyancy_node'
-      character(len=kchara), parameter                                  &
-     &             :: comp_gravity_n6 = 'Composite_gravity_node'
+     &             :: comp_gravity_e6 = 'Composite_buoyancy'
 !
 !>       Filtered thermal buoyancy label
       character(len=kchara), parameter                                  &

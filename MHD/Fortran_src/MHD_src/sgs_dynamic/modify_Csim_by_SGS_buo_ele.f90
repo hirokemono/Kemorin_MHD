@@ -64,7 +64,7 @@
      &   (ele, n_sym_tensor, icomp_sgs_term%i_SGS_m_flux,               &
      &    sgs_coefs%ntot_comp, sgs_coefs%ak)
 !
-      if(fl_prop%iflag_4_gravity .gt. id_turn_OFF                       &
+      if(fl_prop%iflag_4_gravity                                        &
      &     .and. fl_prop%iflag_4_composit_buo) then
         if(SGS_param%itype_Csym_m_flux .eq. id_CSIM_COMPONENT) then
           call modify_cmpCsim_by_SGS_dbuo_ele                           &
@@ -83,7 +83,7 @@
      &        ele%numele, sgs_coefs%num_field, sgs_coefs%ntot_comp,     &
      &        wk_sgs%fld_coef, wk_sgs%fld_clip, sgs_coefs%ak)
         end if
-      else if(fl_prop%iflag_4_gravity .gt. id_turn_OFF) then
+      else if(fl_prop%iflag_4_gravity) then
         if(SGS_param%itype_Csym_m_flux .eq. id_CSIM_COMPONENT) then
           call modify_cmpCsim_by_SGS_buo_ele                            &
      &       (iak_sgs_term%i_SGS_buoyancy, icomp_sgs_term%i_SGS_m_flux, &

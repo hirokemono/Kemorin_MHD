@@ -53,7 +53,7 @@
       character(len=kchara) :: tmpchara
 !
 !
-      fl_prop%iflag_4_gravity =         id_turn_OFF
+      fl_prop%iflag_4_gravity =         .FALSE.
       fl_prop%iflag_4_coriolis =        id_turn_OFF
       fl_prop%iflag_4_lorentz =         .FALSE.
       fl_prop%iflag_4_composit_buo =    .FALSE.
@@ -80,37 +80,15 @@
 !
         do i = 1, fl_prop%num_force
           tmpchara = fl_prop%name_force(i)
-          if(    cmp_no_case(tmpchara, gravity_e1)                      &
-     &      .or. cmp_no_case(tmpchara, gravity_e2)                      &
-     &      .or. cmp_no_case(tmpchara, gravity_e3)                      &
-     &      .or. cmp_no_case(tmpchara, 'Buoyancy')                      &
-     &      .or. cmp_no_case(tmpchara, gravity_e4)                      &
-     &      .or. cmp_no_case(tmpchara, gravity_e5)                      &
-     &      .or. cmp_no_case(tmpchara, gravity_e6)                      &
-     &      .or. cmp_no_case(tmpchara, gravity_e7)                      &
-     &      .or. cmp_no_case(tmpchara, gravity_e8)                      &
-     &      .or. cmp_no_case(tmpchara, gravity_e9)                      &
-     &      .or. cmp_no_case(tmpchara, gravity_e10)                     &
-     &      .or. cmp_no_case(tmpchara, gravity_e11)                     &
-     &      ) fl_prop%iflag_4_gravity =  id_FORCE_ele_int
+          if(    cmp_no_case(tmpchara, gravity_label)                   &
+     &      .or. cmp_no_case(tmpchara, comp_gravity_e1)                 &
+     &      .or. cmp_no_case(tmpchara, comp_gravity_e5)                 &
+     &      .or. cmp_no_case(tmpchara, comp_gravity_e6)                 &
+     &      ) fl_prop%iflag_4_gravity =  .TRUE.
 !
-          if(     cmp_no_case(tmpchara, gravity_n1)                     &
-     &       .or. cmp_no_case(tmpchara, gravity_n2)                     &
-     &       .or. cmp_no_case(tmpchara, gravity_n3)                     &
-     &       .or. cmp_no_case(tmpchara, gravity_n4)                     &
-     &       .or. cmp_no_case(tmpchara, gravity_n5)                     &
-     &       .or. cmp_no_case(tmpchara, gravity_n6)                     &
-     &       .or. cmp_no_case(tmpchara, gravity_n7)                     &
-     &       .or. cmp_no_case(tmpchara, gravity_n8)                     &
-     &      ) then
-            if(fl_prop%iflag_scheme .eq. id_Crank_nicolson_cmass) then
-              fl_prop%iflag_4_gravity = id_FORCE_ele_int
-            else
-              fl_prop%iflag_4_gravity = id_FORCE_at_node
-            end if
-          end if
-!
-          if(     cmp_no_case(tmpchara, 'Composite_buoyancy')           &
+          if(     cmp_no_case(tmpchara, comp_gravity_label)             &
+     &       .or. cmp_no_case(tmpchara, 'Composite_gravity')            &
+     &       .or. cmp_no_case(tmpchara, 'Composite_gravity')            &
      &       .or. cmp_no_case(tmpchara, 'Composite_gravity')            &
      &       ) fl_prop%iflag_4_composit_buo =  .TRUE.
 !
@@ -175,8 +153,8 @@
       fl_prop%i_grav = iflag_no_gravity
       iflag = 0
       if(fl_prop%iflag_4_composit_buo) iflag = 1
-      iflag = fl_prop%iflag_4_gravity                                   &
-     &       + fl_prop%iflag_4_filter_gravity                           &
+      if(fl_prop%iflag_4_gravity)      iflag = 1
+      iflag =  fl_prop%iflag_4_filter_gravity                           &
      &       + fl_prop%iflag_4_filter_comp_buo
       if (iflag .gt. 0) then
         if(g_ctl%FEM_gravity_model%iflag .gt. 0                         &

@@ -101,7 +101,7 @@
           call add_phys_name_ctl(div_Lorentz_force%name, field_ctl)
         end if
 !   thermal buoyancy flag
-        if(fl_prop%iflag_4_gravity .gt. id_turn_OFF) then
+        if(fl_prop%iflag_4_gravity) then
           call add_phys_name_ctl(buoyancy%name, field_ctl)
           call add_phys_name_ctl(rot_buoyancy%name, field_ctl)
           call add_phys_name_ctl(div_buoyancy%name, field_ctl)
