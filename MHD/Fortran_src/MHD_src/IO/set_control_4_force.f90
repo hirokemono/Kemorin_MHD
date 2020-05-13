@@ -81,15 +81,15 @@
         do i = 1, fl_prop%num_force
           tmpchara = fl_prop%name_force(i)
           if(    cmp_no_case(tmpchara, gravity_label)                   &
-     &      .or. cmp_no_case(tmpchara, comp_gravity_e1)                 &
-     &      .or. cmp_no_case(tmpchara, comp_gravity_e5)                 &
-     &      .or. cmp_no_case(tmpchara, comp_gravity_e6)                 &
+     &      .or. cmp_no_case(tmpchara, gravity_e1)                      &
+     &      .or. cmp_no_case(tmpchara, gravity_e2)                      &
+     &      .or. cmp_no_case(tmpchara, gravity_e5)                      &
      &      ) fl_prop%iflag_4_gravity =  .TRUE.
 !
           if(     cmp_no_case(tmpchara, comp_gravity_label)             &
-     &       .or. cmp_no_case(tmpchara, 'Composite_gravity')            &
-     &       .or. cmp_no_case(tmpchara, 'Composite_gravity')            &
-     &       .or. cmp_no_case(tmpchara, 'Composite_gravity')            &
+     &      .or. cmp_no_case(tmpchara, comp_gravity_e1)                 &
+     &      .or. cmp_no_case(tmpchara, comp_gravity_e5)                 &
+     &      .or. cmp_no_case(tmpchara, comp_gravity_e6)                 &
      &       ) fl_prop%iflag_4_composit_buo =  .TRUE.
 !
           if(     cmp_no_case(tmpchara, 'Filtered_gravity')             &
