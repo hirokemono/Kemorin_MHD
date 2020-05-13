@@ -58,7 +58,8 @@
 !! !!!! direction of rotation vector for Coriolis force !!!!!!!!!!!!!
 !!
 !!    begin Coriolis_define
-!!      FEM_Coriolis_model_ctl    element
+!!      FEM_Coriolis_model_ctl       element
+!!      FEM_Coriolis_implicit_ctl    On
 !!
 !!      array rotation_vec   3
 !!        rotation_vec  x   0.000    end
@@ -136,6 +137,9 @@
 !!@n        element: Coriolis force in element
 !!@n        node:    Coriolis force at node
         type(read_character_item) :: FEM_coriolis_model
+!>        Use implicit scheme for Coliolis force modeling in FEM
+!!@n        On: Coriolis force is solved implicitly
+        type(read_character_item) :: FEM_coriolis_implicit
 !>        Structure for rotation of system
 !!@n        system_rotation%c_tbl:  Direction of rotation vector
 !!@n        system_rotation%vect:   Amplitude of rotation vector
@@ -178,6 +182,8 @@
       character(len=kchara), parameter                                  &
      &        :: hd_FEM_Coriolis_model = 'FEM_Coriolis_model_ctl'
       character(len=kchara), parameter                                  &
+     &        :: hd_FEM_Coriolis_imp =   'FEM_Coriolis_implicit_ctl'
+      character(len=kchara), parameter                                  &
      &        :: hd_rotation_vec =        'rotation_vec'
 !
 !   4th level for external magnetic field
@@ -193,6 +199,7 @@
       private :: hd_num_forces
       private :: hd_gravity_type, hd_gravity_vect
       private :: hd_FEM_gravity_mode, hd_FEM_Coriolis_model
+      private :: hd_FEM_Coriolis_imp
       private :: hd_magneto_cv, hd_magne_vect
       private :: hd_filetered_induction
 !
@@ -273,6 +280,9 @@
 !
         call read_chara_ctl_type(c_buf, hd_FEM_Coriolis_model,          &
      &      cor_ctl%FEM_coriolis_model)
+        call read_chara_ctl_type(c_buf, hd_FEM_Coriolis_imp,            &
+     &      cor_ctl%FEM_coriolis_implicit)
+!
         call read_control_array_c_r(id_control, hd_rotation_vec,        &
      &      cor_ctl%system_rotation, c_buf)
       end do

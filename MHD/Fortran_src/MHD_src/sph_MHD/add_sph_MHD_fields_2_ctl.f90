@@ -89,7 +89,7 @@
         call add_phys_name_ctl(div_inertia%name, field_ctl)
 !
 !   Coriolis flag
-        if(fl_prop%iflag_4_coriolis .gt. id_turn_OFF) then
+        if(fl_prop%iflag_4_coriolis) then
           call add_phys_name_ctl(Coriolis_force%name, field_ctl)
           call add_phys_name_ctl(rot_Coriolis_force%name, field_ctl)
           call add_phys_name_ctl(div_Coriolis_force%name, field_ctl)

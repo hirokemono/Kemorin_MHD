@@ -138,7 +138,7 @@
       type(phys_data), intent(inout) :: d_rad
 !
 !
-      if(fl_prop%iflag_4_coriolis .eq. id_turn_ON)                      &
+      if(fl_prop%iflag_4_coriolis)                                      &
      &       d_rad%num_phys = d_rad%num_phys + 1
       if(cd_prop%iflag_magneto_cv .eq. id_turn_ON)                      &
      &       d_rad%num_phys = d_rad%num_phys + 1
@@ -201,7 +201,7 @@
       integer(kind = kint), intent(inout) :: icou
 !
 !
-      if(fl_prop%iflag_4_coriolis .eq. id_turn_ON) then
+      if(fl_prop%iflag_4_coriolis) then
         icou = icou + 1
         d_rad%phys_name(icou) = system_Rotation%name
         d_rad%num_component(icou) = n_vector

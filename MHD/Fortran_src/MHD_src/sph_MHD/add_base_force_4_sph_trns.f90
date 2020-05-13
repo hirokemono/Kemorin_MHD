@@ -95,7 +95,7 @@
      &      ipol_frc%i_m_advect, iphys_frc%i_m_advect,                  &
      &      f_trns_frc%i_m_advect, trns)
 !   Coriolis force
-        if(fl_prop%iflag_4_coriolis .gt. id_turn_OFF) then
+        if(fl_prop%iflag_4_coriolis) then
           call add_field_4_sph_trns_by_pol(Coriolis_force,              &
      &        ipol_frc%i_coriolis, iphys_frc%i_coriolis,                &
      &        f_trns_frc%i_coriolis, trns)
@@ -147,12 +147,11 @@
       type(spherical_transform_data), intent(inout) :: trns
 !
 !   rotation of Coriolis force
-      if(fl_prop%iflag_scheme .gt. id_no_evolution) then
-        if(fl_prop%iflag_4_coriolis .gt. id_turn_OFF) then
-          call add_field_4_sph_trns_by_pol(rot_Coriolis_force,          &
-     &        ipol_rot_frc%i_Coriolis, iphys_rot_frc%i_Coriolis,        &
-     &        f_trns_rot_frc%i_Coriolis, trns)
-        end if
+      if(fl_prop%iflag_scheme .gt. id_no_evolution                      &
+     &      .and. fl_prop%iflag_4_coriolis) then
+        call add_field_4_sph_trns_by_pol(rot_Coriolis_force,            &
+     &      ipol_rot_frc%i_Coriolis, iphys_rot_frc%i_Coriolis,          &
+     &      f_trns_rot_frc%i_Coriolis, trns)
       end if
 !
       end subroutine add_rot_coriolis_MHD_sph_trns

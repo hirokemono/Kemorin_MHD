@@ -45,27 +45,27 @@
 !
 !
       if(      fl_prop%iflag_4_gravity                                  &
-     &   .and. fl_prop%iflag_4_coriolis .ne. id_turn_OFF                &
+     &   .and. fl_prop%iflag_4_coriolis                                 &
      &   .and. fl_prop%iflag_4_lorentz) then
         call set_MHD_terms_to_force                                     &
      &     (ipol%exp_work, ipol%rot_forces, ipol%rot_forces%i_buoyancy, &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       else if( fl_prop%iflag_4_gravity  .eqv.   .FALSE.                 &
      &   .and. fl_prop%iflag_4_composit_buo                             &
-     &   .and. fl_prop%iflag_4_coriolis .ne.     id_turn_OFF            &
+     &   .and. fl_prop%iflag_4_coriolis                                 &
      &   .and. fl_prop%iflag_4_lorentz) then
         call set_MHD_terms_to_force                                     &
      &     (ipol%exp_work, ipol%rot_forces, ipol%rot_forces%i_comp_buo, &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       else if( fl_prop%iflag_4_gravity                                  &
-     &   .and. fl_prop%iflag_4_coriolis .ne. id_turn_OFF                &
+     &   .and. fl_prop%iflag_4_coriolis                                 &
      &   .and. fl_prop%iflag_4_lorentz  .eqv. .FALSE.) then
         call set_rot_cv_terms_to_force                                  &
      &     (ipol%exp_work, ipol%rot_forces, ipol%rot_forces%i_buoyancy, &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       else if( fl_prop%iflag_4_gravity  .eqv.  .FALSE.                  &
      &   .and. fl_prop%iflag_4_composit_buo                             &
-     &   .and. fl_prop%iflag_4_coriolis .ne.     id_turn_OFF            &
+     &   .and. fl_prop%iflag_4_coriolis                                 &
      &   .and. fl_prop%iflag_4_lorentz  .eqv.  .FALSE.) then
         call set_rot_cv_terms_to_force                                  &
      &     (ipol%exp_work, ipol%rot_forces, ipol%rot_forces%i_comp_buo, &
@@ -77,7 +77,7 @@
      &     (ipol%exp_work, ipol%rot_forces,                             &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         end if
-        if(fl_prop%iflag_4_coriolis .gt. id_turn_OFF) then
+        if(fl_prop%iflag_4_coriolis) then
           call add_coriolis_to_vort_force                               &
      &       (ipol%exp_work, ipol%rot_forces,                           &
      &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
@@ -119,7 +119,7 @@
 !
 !
 !$omp parallel
-      if(fl_prop%iflag_4_coriolis .ne. id_turn_OFF) then
+      if(fl_prop%iflag_4_coriolis) then
         call add_coriolis_to_vort_force                                 &
      &     (ipol%exp_work, ipol%rot_forces,                             &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)

@@ -48,7 +48,7 @@ set_control_4_current.o: $(MHD_IO_DIR)/set_control_4_current.f90 m_precision.o c
 	$(F90) -c $(F90OPTFLAGS) $<
 set_control_4_filtering.o: $(MHD_IO_DIR)/set_control_4_filtering.f90 m_precision.o calypso_mpi.o m_constants.o m_error_IDs.o m_machine_parameter.o m_file_format_switch.o m_phys_labels.o m_filter_file_names.o t_physical_property.o t_SGS_control_parameter.o t_ctl_data_SGS_filter.o t_ctl_data_filter_files.o t_control_array_character.o SPH_SGS_ini_model_coefs_IO.o set_control_ele_layering.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
-set_control_4_force.o: $(MHD_IO_DIR)/set_control_4_force.f90 m_precision.o m_constants.o calypso_mpi.o m_error_IDs.o m_machine_parameter.o m_force_control_labels.o t_physical_property.o t_ctl_data_mhd_forces.o skip_comment_f.o
+set_control_4_force.o: $(MHD_IO_DIR)/set_control_4_force.f90 m_precision.o m_constants.o m_error_IDs.o m_machine_parameter.o m_force_control_labels.o t_control_parameter.o t_ctl_data_mhd_forces.o skip_comment_f.o t_physical_property.o
 	$(F90) -c $(F90OPTFLAGS) $<
 set_control_4_infty.o: $(MHD_IO_DIR)/set_control_4_infty.f90 m_precision.o calypso_mpi.o t_control_array_chara2real.o const_bc_infinity_surf.o set_surface_group_types.o
 	$(F90) -c $(F90OPTFLAGS) $<

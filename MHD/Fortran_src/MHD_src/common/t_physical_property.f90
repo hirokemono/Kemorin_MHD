@@ -51,11 +51,6 @@
 !>      Turn ON and evaluate at node flag
       integer (kind=kint), parameter :: id_FORCE_at_node =  2
 !
-!>      Turn ON and evaluate implicitly over elements flag
-      integer (kind=kint), parameter :: id_Coriolis_ele_imp = 11
-!>      Turn ON and evaluate implicitly at node flag
-      integer (kind=kint), parameter :: id_Coriolis_nod_imp = 12
-!
 !   Coefficients
 !
 !>      Structure for fluid property
@@ -82,7 +77,7 @@
 !>        Force flag for Filtered inertia term
         logical :: iflag_4_inertia = .TRUE.
 !>        Force flag for Coriolis force
-        integer (kind=kint) :: iflag_4_coriolis = id_turn_OFF
+        logical :: iflag_4_coriolis = .FALSE.
 !>        Force flag for Lorentz force
         logical :: iflag_4_lorentz = .FALSE.
 !>        Force flag for thermal buoyancy
@@ -117,6 +112,10 @@
 !
 !>        Buoyancy model for FEM
         integer(kind = kint) :: iflag_FEM_gravity = id_FORCE_ele_int
+!>        Coriolis force model for FEM
+        integer(kind = kint) :: iflag_FEM_coriolis = id_FORCE_ele_int
+!>        Coriolis force model for FEM
+        logical :: iflag_coriolis_implicit = .FALSE.
 !
 !>        Number of forces
         integer(kind = kint) :: num_force

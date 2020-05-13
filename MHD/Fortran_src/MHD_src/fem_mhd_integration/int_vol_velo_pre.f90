@@ -297,7 +297,8 @@
 !
 !  --------  set coriolis force
 !
-        if (fl_prop%iflag_4_coriolis .eq. id_FORCE_ele_int ) then
+        if(fl_prop%iflag_4_coriolis                                     &
+     &     .and. fl_prop%iflag_FEM_coriolis .eq. id_FORCE_ele_int) then
           call vector_cst_phys_2_each_ele(node, ele, nod_fld, k2,       &
      &        iphys_base%i_velo, fl_prop%coef_cor, mhd_fem_wk%velo_1)
           call fem_skv_coriolis                                         &
@@ -603,7 +604,8 @@
 !
 !  --------  set coriolis force
 !
-        if (fl_prop%iflag_4_coriolis .eq. id_FORCE_ele_int ) then
+        if(fl_prop%iflag_4_coriolis                                     &
+     &     .and. fl_prop%iflag_FEM_coriolis .eq. id_FORCE_ele_int) then
           call vector_cst_phys_2_each_ele(node, ele, nod_fld, k2,       &
      &        iphys_base%i_velo, fl_prop%coef_cor, mhd_fem_wk%velo_1)
           call fem_skv_coriolis_upwind(fluid%istack_ele_fld_smp,        &

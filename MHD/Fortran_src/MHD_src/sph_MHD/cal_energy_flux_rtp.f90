@@ -119,8 +119,8 @@
      &      trns_f_MHD%fld_pole(1,f_trns%forces%i_c_flux) )
       end if
 !
-!      if( (f_trns%forces%i_coriolis * fl_prop%iflag_4_coriolis)        &
-!     &                                                   .gt. 0) then
+!      if(f_trns%forces%i_coriolis .gt. 0                               &
+!     &       .and. fl_prop%iflag_4_coriolis) then
 !        call cal_wz_coriolis_rtp                                       &
 !     &     (sph_rtp%nnod_pole, sph_rtp%nidx_rtp, fl_prop%coef_cor,     &
 !     &      trns_b_MHD%fld_pole(1,bs_trns%base%i_velo),                &
