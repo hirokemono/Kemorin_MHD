@@ -59,7 +59,7 @@
       fl_prop%iflag_4_composit_buo =    .FALSE.
 !
       fl_prop%iflag_4_filter_gravity =  .FALSE.
-      fl_prop%iflag_4_filter_comp_buo = id_turn_OFF
+      fl_prop%iflag_4_filter_comp_buo = .FALSE.
       fl_prop%iflag_4_filter_lorentz =  .FALSE.
 !
       if (fl_prop%iflag_scheme .eq. id_no_evolution) then
@@ -98,7 +98,7 @@
 !
           if(   cmp_no_case(tmpchara, Filtered_comp_gravity_label)      &
      &     .or. cmp_no_case(tmpchara, Filtered_comp_gravity_e1)         &
-     &       ) fl_prop%iflag_4_filter_comp_buo = id_FORCE_ele_int
+     &       ) fl_prop%iflag_4_filter_comp_buo = .TRUE.
 !
           if (cmp_no_case(tmpchara, 'Coriolis')                         &
      &        )  fl_prop%iflag_4_coriolis = id_FORCE_ele_int
@@ -154,7 +154,7 @@
       if(     fl_prop%iflag_4_gravity                                   &
      &   .or. fl_prop%iflag_4_composit_buo                              &
      &   .or. fl_prop%iflag_4_filter_gravity                            &
-     &   .or. fl_prop%iflag_4_filter_comp_buo.gt.0) then
+     &   .or. fl_prop%iflag_4_filter_comp_buo) then
         if(g_ctl%FEM_gravity_model%iflag .gt. 0                         &
      &    .and. cmp_no_case(g_ctl%FEM_gravity_model%charavalue,'node')  &
      &    .and. fl_prop%iflag_scheme .ne. id_Crank_nicolson_cmass) then

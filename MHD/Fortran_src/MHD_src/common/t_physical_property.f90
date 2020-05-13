@@ -97,7 +97,7 @@
 !>        Force flag for filtered thermal buoyancy
         logical :: iflag_4_filter_gravity =  .FALSE.
 !>        Force flag for filtered compositional buoyancy
-        integer (kind=kint) :: iflag_4_filter_comp_buo = id_turn_OFF
+        logical :: iflag_4_filter_comp_buo = .FALSE.
 !
 !>       coefficient for Coriolis force
         real  (kind=kreal) :: coef_cor = zero
@@ -116,10 +116,10 @@
         real (kind=kreal) :: sys_rot(3) = (/zero, zero, one/)
 !
 !>        Buoyancy model for FEM
-        integer (kind=kint) :: iflag_FEM_gravity = id_FORCE_ele_int
+        integer(kind = kint) :: iflag_FEM_gravity = id_FORCE_ele_int
 !
 !>        Number of forces
-        integer(kind=kint) :: num_force
+        integer(kind = kint) :: num_force
 !>        Name of forces
         character(len=kchara), allocatable :: name_force(:)
       end type fluid_property

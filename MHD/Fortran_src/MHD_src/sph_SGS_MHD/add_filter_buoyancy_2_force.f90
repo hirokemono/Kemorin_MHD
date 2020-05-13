@@ -56,7 +56,7 @@
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !$omp end parallel
       end if
-      if(fl_prop%iflag_4_filter_comp_buo .gt. id_turn_OFF) then
+      if(fl_prop%iflag_4_filter_comp_buo) then
 !$omp parallel
         call add_buoyancy_to_vort_force                               &
      &     (ipol_exp, ipol_rot_frc_by_filter%i_comp_buo,              &

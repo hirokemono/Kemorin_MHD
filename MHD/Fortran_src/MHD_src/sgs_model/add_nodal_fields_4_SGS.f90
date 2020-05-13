@@ -42,8 +42,9 @@
       if(fl_prop%iflag_FEM_gravity .eq. id_FORCE_at_node) then
         if(fl_prop%iflag_4_filter_gravity)                              &
      &    call add_phys_name_ctl(filtered_buoyancy%name, field_ctl)
-        if (fl_prop%iflag_4_filter_comp_buo .eq. id_FORCE_at_node)      &
-     &    call add_phys_name_ctl(filtered_comp_buoyancy%name, field_ctl)
+        if(fl_prop%iflag_4_filter_comp_buo)                             &
+     &    call add_phys_name_ctl(filtered_comp_buoyancy%name,           &
+     &                           field_ctl)
       end if
 !
       end subroutine add_filtered_buoyancy_4_FEM_MHD

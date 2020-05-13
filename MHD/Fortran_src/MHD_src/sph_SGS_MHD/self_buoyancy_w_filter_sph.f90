@@ -202,7 +202,7 @@
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !
-      if(fl_prop%iflag_4_filter_comp_buo .gt. id_turn_OFF) then
+      if(fl_prop%iflag_4_filter_comp_buo) then
         if (iflag_debug.eq.1) write(*,*)                                &
      &      'cal_rot_buoyancy_sph_MHD by filtrered composition'
         it_rot_buo = ipol_rot_fil_frc%i_comp_buo + 2
@@ -242,7 +242,7 @@
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !
-      if(fl_prop%iflag_4_filter_comp_buo .gt. id_turn_OFF) then
+      if(fl_prop%iflag_4_filter_comp_buo) then
         if (iflag_debug.ge.1)  write(*,*)                               &
      &      'cal_div_buoyancy_sph_MHD by filtrered composition'
         call cal_div_buoyancy_sph_MHD                                   &
@@ -281,7 +281,7 @@
      &      rj_fld)
       end if
 !
-      if(fl_prop%iflag_4_filter_comp_buo .gt. id_turn_OFF) then
+      if(fl_prop%iflag_4_filter_comp_buo) then
         call const_sph_div_force(sph_rj, r_2nd, sph_bc_U, g_sph_rj,     &
      &      ipol_fil_frc%i_comp_buo, ipol_div_fil_frc%i_comp_buo,       &
      &      rj_fld)

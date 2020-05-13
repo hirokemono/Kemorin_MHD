@@ -116,7 +116,7 @@
         end if
 !
         if     (fl_prop%iflag_4_composit_buo                            &
-     &     .or. fl_prop%iflag_4_filter_comp_buo .gt. id_turn_OFF) then
+     &     .or. fl_prop%iflag_4_filter_comp_buo) then
           call construct_coefficient(fl_prop%coef_comp_buo,             &
      &       MHD_coef_list%dimless_list, MHD_coef_list%coefs_comp_buo,  &
      &       depth_top, depth_bottom)

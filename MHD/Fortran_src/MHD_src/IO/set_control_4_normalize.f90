@@ -235,7 +235,7 @@
       end if
 !
       if (fl_prop%iflag_4_composit_buo .eqv. .FALSE.                    &
-     &     .and. fl_prop%iflag_4_filter_comp_buo .eq. id_turn_OFF) then
+     &     .and. fl_prop%iflag_4_filter_comp_buo .eqv. .FALSE.) then
         MHD_coef_list%coefs_comp_buo%num = 0
       else
         if(mom_ctl%coef_4_comp_buo%icou .eq. 0) then
