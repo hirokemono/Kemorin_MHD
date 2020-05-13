@@ -119,7 +119,7 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      if (fl_prop%iflag_4_filter_gravity .gt. id_turn_OFF) then
+      if (fl_prop%iflag_4_filter_gravity) then
         if (iflag_debug.eq.1) write(*,*) 'cal_rot_cst_buo_sph'
         call cal_rot_cst_buo_sph(sph_bc_U%kr_in, sph_bc_U%kr_out,       &
      &      fl_prop%coef_buo, ipol_fil%i_temp,                          &
@@ -160,7 +160,7 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      if(fl_prop%iflag_4_filter_gravity .gt. id_turn_OFF) then
+      if(fl_prop%iflag_4_filter_gravity) then
         if (iflag_debug.eq.1) write(*,*) 'cal_div_cst_buo_sph'
         call cal_div_cst_buo_sph                                        &
      &     (sph_bc_U%kr_in, sph_bc_U%kr_out, fl_prop%coef_buo,          &

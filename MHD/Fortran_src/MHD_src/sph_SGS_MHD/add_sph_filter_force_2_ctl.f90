@@ -42,7 +42,7 @@
 !   advection flag
       if(fl_prop%iflag_scheme .gt. id_no_evolution) then
 !   filtered thermal buoyancy flag
-        if(fl_prop%iflag_4_filter_gravity .gt. id_turn_OFF) then
+        if(fl_prop%iflag_4_filter_gravity) then
           call add_phys_name_ctl(filtered_buoyancy%name, field_ctl)
           call add_phys_name_ctl(div_filtered_buoyancy%name, field_ctl)
           call add_phys_name_ctl(rot_filtered_buoyancy%name, field_ctl)

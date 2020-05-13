@@ -52,7 +52,7 @@
 !
 !
 !$omp parallel
-      if(fl_prop%iflag_4_filter_gravity .ne. id_turn_OFF) then
+      if(fl_prop%iflag_4_filter_gravity) then
         call add_term_to_div_force                                      &
      &     (ipol_base%i_press, ipol_div_fil_frc%i_buoyancy,             &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)

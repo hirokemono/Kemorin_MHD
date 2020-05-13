@@ -222,7 +222,7 @@
       end if
 !
       if(fl_prop%iflag_4_gravity .eqv. .FALSE.                          &
-     &     .and. fl_prop%iflag_4_filter_gravity .eq. id_turn_OFF) then
+     &     .and. fl_prop%iflag_4_filter_gravity .eqv. .FALSE.) then
         MHD_coef_list%coefs_buoyancy%num = 0
       else
         if (mom_ctl%coef_4_termal_buo%icou .eq. 0) then

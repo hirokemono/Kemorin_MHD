@@ -49,7 +49,7 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      if(fl_prop%iflag_4_filter_gravity .gt. id_turn_OFF) then
+      if(fl_prop%iflag_4_filter_gravity) then
 !$omp parallel
         call add_buoyancy_to_vort_force                               &
      &     (ipol_exp, ipol_rot_frc_by_filter%i_buoyancy,              &

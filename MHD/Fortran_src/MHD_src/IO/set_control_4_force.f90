@@ -49,7 +49,7 @@
       type(fluid_property), intent(inout) :: fl_prop
       type(conductive_property), intent(inout) :: cd_prop
 !
-      integer (kind = kint) :: i, iflag
+      integer (kind = kint) :: i
       character(len=kchara) :: tmpchara
 !
 !
@@ -58,7 +58,7 @@
       fl_prop%iflag_4_lorentz =         .FALSE.
       fl_prop%iflag_4_composit_buo =    .FALSE.
 !
-      fl_prop%iflag_4_filter_gravity =  id_turn_OFF
+      fl_prop%iflag_4_filter_gravity =  .FALSE.
       fl_prop%iflag_4_filter_comp_buo = id_turn_OFF
       fl_prop%iflag_4_filter_lorentz =  .FALSE.
 !
@@ -92,12 +92,12 @@
      &      .or. cmp_no_case(tmpchara, comp_gravity_e6)                 &
      &       ) fl_prop%iflag_4_composit_buo =  .TRUE.
 !
-          if(     cmp_no_case(tmpchara, 'Filtered_gravity')             &
-     &       .or. cmp_no_case(tmpchara, 'Filtered_buoyancy')            &
-     &       ) fl_prop%iflag_4_filter_gravity =  id_FORCE_ele_int
+          if(     cmp_no_case(tmpchara, Filtered_gravity_label)         &
+     &       .or. cmp_no_case(tmpchara, Filtered_gravity_e1)            &
+     &       ) fl_prop%iflag_4_filter_gravity =  .TRUE.
 !
-          if(   cmp_no_case(tmpchara, 'Filtered_compositional_gravity') &
-     &     .or. cmp_no_case(tmpchara,'Filtered_compositional_buoyancy') &
+          if(   cmp_no_case(tmpchara, Filtered_comp_gravity_label)      &
+     &     .or. cmp_no_case(tmpchara, Filtered_comp_gravity_e1)         &
      &       ) fl_prop%iflag_4_filter_comp_buo = id_FORCE_ele_int
 !
           if (cmp_no_case(tmpchara, 'Coriolis')                         &
@@ -151,12 +151,10 @@
 !  direction of gravity
 !
       fl_prop%i_grav = iflag_no_gravity
-      iflag = 0
-      if(fl_prop%iflag_4_composit_buo) iflag = 1
-      if(fl_prop%iflag_4_gravity)      iflag = 1
-      iflag =  fl_prop%iflag_4_filter_gravity                           &
-     &       + fl_prop%iflag_4_filter_comp_buo
-      if (iflag .gt. 0) then
+      if(     fl_prop%iflag_4_gravity                                   &
+     &   .or. fl_prop%iflag_4_composit_buo                              &
+     &   .or. fl_prop%iflag_4_filter_gravity                            &
+     &   .or. fl_prop%iflag_4_filter_comp_buo.gt.0) then
         if(g_ctl%FEM_gravity_model%iflag .gt. 0                         &
      &    .and. cmp_no_case(g_ctl%FEM_gravity_model%charavalue,'node')  &
      &    .and. fl_prop%iflag_scheme .ne. id_Crank_nicolson_cmass) then

@@ -100,7 +100,7 @@
         ak_MHD%ak_d_velo(1:numele) = fl_prop%coef_diffuse
 !
         if     (fl_prop%iflag_4_gravity                                 &
-     &     .or. fl_prop%iflag_4_filter_gravity .gt. id_turn_OFF) then
+     &     .or. fl_prop%iflag_4_filter_gravity) then
           call alloc_buoyancy_coef_ele(numele, ak_MHD)
           ak_MHD%ak_buo(1:numele) = fl_prop%coef_buo
         end if

@@ -80,7 +80,7 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      if (fl_prop%iflag_4_filter_gravity .gt. id_turn_OFF) then
+      if (fl_prop%iflag_4_filter_gravity) then
         if (iflag_debug.eq.1) write(*,*) 'cal_r_buoyancy_on_sphere'
         call cal_r_buoyancy_on_sphere(kr, fl_prop%coef_buo,             &
      &      ipol_fil%i_temp, ipol_div_fil_frc%i_buoyancy,               &

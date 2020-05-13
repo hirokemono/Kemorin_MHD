@@ -89,9 +89,16 @@
 !
 !>       Filtered thermal buoyancy label
       character(len=kchara), parameter                                  &
+     &             :: Filtered_gravity_label = 'Filtered_buoyancy'
+!
+      character(len=kchara), parameter                                  &
      &             :: Filtered_gravity_e1 = 'Filtered_gravity'
 !
 !>       Filtered compositional buoyancy label
+      character(len=kchara), parameter                                  &
+     &             :: Filtered_comp_gravity_label                       &
+     &                        = 'Filtered_compositional_buoyancy'
+!
       character(len=kchara), parameter                                  &
      &             :: Filtered_comp_gravity_e1                          &
      &                        = 'Filtered_compositional_gravity'
