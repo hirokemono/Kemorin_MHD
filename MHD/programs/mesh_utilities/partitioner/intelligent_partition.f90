@@ -372,7 +372,7 @@
         integer(kind = kint), intent(inout) :: eleidx
 !
         do while(is_ele_in_group(eles_idx(eleidx), eles, nod_d_grp)     &
-     &   .eqv. .false.)
+     &           .eqv. .false.)
           eleidx = eleidx + 1
           if(eleidx .ge. eles%numele) then
             exit

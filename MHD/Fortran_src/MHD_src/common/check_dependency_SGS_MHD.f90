@@ -193,7 +193,7 @@
 !
       if(SGS_param%iflag_SGS_gravity .gt. id_SGS_none) then
         if(fl_prop%iflag_4_gravity                                      &
-     &     .and. fl_prop%iflag_4_composit_buo .eqv. .FALSE.) then
+     &     .and. (fl_prop%iflag_4_composit_buo .eqv. .FALSE.)) then
           call calypso_MPI_abort(ierr_fld,                              &
      &       'set one of buoyancy sources')
         end if
