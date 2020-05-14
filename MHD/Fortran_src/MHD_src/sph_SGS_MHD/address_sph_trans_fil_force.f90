@@ -8,18 +8,13 @@
 !!       in MHD dynamo simulation
 !!
 !!@verbatim
-!!      subroutine bwd_trans_address_MHD                                &
-!!     &         (MHD_prop, ipol, iphys, b_trns, trns_back)
+!!      subroutine init_sph_trns_filter_MHD                             &
+!!     &         (MHD_prop, ipol_LES, iphys_LES, trns_fil_MHD,          &
+!!     &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
+!!
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
-!!        type(phys_address), intent(in) :: ipol, iphys
-!!        type(spherical_transform_data), intent(inout) :: trns_back
-!!        type(phys_address), intent(inout) :: b_trns
-!!      subroutine fwd_trans_address_MHD                                &
-!!     &         (MHD_prop, ipol, iphys, f_trns, trns_fwd)
-!!        type(MHD_evolution_param), intent(in) :: MHD_prop
-!!        type(phys_address), intent(in) :: ipol, iphys
-!!        type(spherical_transform_data), intent(inout) :: trns_fwd
-!!        type(phys_address), intent(inout) :: f_trns
+!!        type(phys_address), intent(in) :: ipol_LES, iphys_LES
+!!        type(SGS_address_sph_trans), intent(inout) :: trns_fil_MHD
 !!@endverbatim
 !
       module address_sph_trans_fil_force
@@ -27,11 +22,13 @@
       use m_precision
       use m_machine_parameter
 !
-      use m_phys_labels
+      use t_SGS_model_addresses
       use m_phys_constants
       use t_phys_address
+      use t_sph_trans_arrays_SGS_MHD
       use t_addresses_sph_transform
       use t_control_parameter
+      use t_SGS_control_parameter
       use t_physical_property
 !
       implicit none
@@ -42,15 +39,62 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine bwd_trans_address_MHD                                  &
-     &         (MHD_prop, ipol, iphys, b_trns, trns_back)
-!
-      use add_base_field_4_sph_trns
+      subroutine init_sph_trns_filter_MHD                               &
+     &         (MHD_prop, ipol_LES, iphys_LES, trns_fil_MHD,            &
+     &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
 !
       type(MHD_evolution_param), intent(in) :: MHD_prop
-      type(phys_address), intent(in) :: ipol, iphys
+      type(SGS_model_addresses), intent(in) :: ipol_LES, iphys_LES
+      type(SGS_address_sph_trans), intent(inout) :: trns_fil_MHD
+      integer(kind = kint), intent(inout) :: ncomp_sph_trans
+      integer(kind = kint), intent(inout) :: nvector_sph_trans
+      integer(kind = kint), intent(inout) :: nscalar_sph_trans
+!
+!
+      if(iflag_debug .gt. 0) then
+        write(*,*) 'Spherical transform field table for MHD'
+      end if
+!
+      call bwd_trans_address_filter_MHD(MHD_prop, ipol_LES, iphys_LES,  &
+     &    trns_fil_MHD%b_trns_LES, trns_fil_MHD%backward)
+      call fwd_trans_address_filter_MHD(MHD_prop, ipol_LES, iphys_LES,  &
+     &    trns_fil_MHD%f_trns_LES, trns_fil_MHD%forward)
+!
+      ncomp_sph_trans =   0
+      nvector_sph_trans = 0
+      nscalar_sph_trans = 0
+      call count_num_fields_each_trans(trns_fil_MHD%backward,           &
+     &   ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
+      call count_num_fields_each_trans(trns_fil_MHD%forward,            &
+     &   ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
+!
+      if(iflag_debug .gt. 0) then
+        write(*,*) 'ncomp_sph_trans ', ncomp_sph_trans
+        write(*,*) 'nvector_rj_2_rtp ',                                 &
+     &            trns_fil_MHD%backward%num_vector
+        write(*,*) 'nscalar_rj_2_rtp ',                                 &
+     &            trns_fil_MHD%backward%num_scalar
+!
+        write(*,*) 'nvector_rtp_2_rj ',                                 &
+     &            trns_fil_MHD%forward%num_vector
+        write(*,*) 'nscalar_rtp_2_rj ',                                 &
+     &            trns_fil_MHD%forward%num_scalar
+      end if
+!
+      end subroutine init_sph_trns_filter_MHD
+!
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      subroutine bwd_trans_address_filter_MHD                           &
+     &         (MHD_prop, ipol_LES, iphys_LES, b_trns_LES, trns_back)
+!
+      use add_filter_field_4_sph_trns
+!
+      type(MHD_evolution_param), intent(in) :: MHD_prop
+      type(SGS_model_addresses), intent(in) :: ipol_LES, iphys_LES
+      type(SGS_model_addresses), intent(inout) :: b_trns_LES
       type(spherical_transform_data), intent(inout) :: trns_back
-      type(phys_address), intent(inout) :: b_trns
 !
 !
       if(iflag_debug .gt. 0) then
@@ -62,32 +106,34 @@
       call alloc_sph_trns_field_name(trns_back)
 !
 !      Vectors
-      call add_base_vector_4_MHD_sph_trns(MHD_prop%fl_prop,             &
+      call add_filter_MHD_vec_sph_trns(MHD_prop%fl_prop,                &
      &    MHD_prop%cd_prop, MHD_prop%ht_prop, MHD_prop%cp_prop,         &
-     &    ipol%base, iphys%base, b_trns%base, trns_back)
+     &    ipol_LES%filter_fld, iphys_LES%filter_fld,                    &
+     &    b_trns_LES%filter_fld, trns_back)
       trns_back%num_vector = trns_back%nfield
 !
 !      Scalars
-      call add_base_scalar_4_MHD_sph_trns                               &
+      call add_filter_MHD_scl_sph_trns                                  &
      &   (MHD_prop%ht_prop, MHD_prop%cp_prop,                           &
-     &    ipol%base, iphys%base, b_trns%base, trns_back)
+     &    ipol_LES%filter_fld, iphys_LES%filter_fld,                    &
+     &    b_trns_LES%filter_fld, trns_back)
       trns_back%num_scalar = trns_back%nfield - trns_back%num_vector
       trns_back%num_tensor = 0
 !
-      end subroutine bwd_trans_address_MHD
+      end subroutine bwd_trans_address_filter_MHD
 !
 !-----------------------------------------------------------------------
 !
-      subroutine fwd_trans_address_MHD                                  &
-     &         (MHD_prop, ipol, iphys, f_trns, trns_fwd)
+      subroutine fwd_trans_address_filter_MHD                           &
+     &         (MHD_prop, ipol_LES, iphys_LES, f_trns_LES, trns_fwd)
 !
-      use add_base_force_4_sph_trns
+      use add_filter_force_4_sph_trns
 !
       type(MHD_evolution_param), intent(in) :: MHD_prop
-      type(phys_address), intent(in) :: ipol, iphys
+      type(SGS_model_addresses), intent(in) :: ipol_LES, iphys_LES
 !
+      type(SGS_model_addresses), intent(inout) :: f_trns_LES
       type(spherical_transform_data), intent(inout) :: trns_fwd
-      type(phys_address), intent(inout) :: f_trns
 !
 !
       if(iflag_debug .gt. 0) then
@@ -98,24 +144,17 @@
       trns_fwd%nfield = 0
       call alloc_sph_trns_field_name(trns_fwd)
 !
-!   rotation of Coriolis force
-      call add_rot_coriolis_MHD_sph_trns(MHD_prop%fl_prop,              &
-     &    ipol%rot_forces, iphys%rot_forces, f_trns%rot_forces,         &
-     &    trns_fwd)
 !   forces
-      call add_base_force_4_MHD_sph_trns(MHD_prop%fl_prop,              &
+      call add_filter_force_MHD_sph_trns(MHD_prop%fl_prop,              &
      &    MHD_prop%cd_prop, MHD_prop%ht_prop, MHD_prop%cp_prop,         &
-     &    ipol%forces, iphys%forces, f_trns%forces, trns_fwd)
+     &    ipol_LES%force_by_filter, iphys_LES%force_by_filter,          &
+     &    f_trns_LES%force_by_filter, trns_fwd)
       trns_fwd%num_vector = trns_fwd%nfield
 !
-!   divergence of Coriolis force
-      call add_div_coriolis_MHD_sph_trns                                &
-     &   (ipol%div_forces, iphys%div_forces, f_trns%div_forces,         &
-     &    trns_fwd)
-      trns_fwd%num_scalar = trns_fwd%nfield - trns_fwd%num_vector
+      trns_fwd%num_scalar = 0
       trns_fwd%num_tensor = 0
 !
-      end subroutine fwd_trans_address_MHD
+      end subroutine fwd_trans_address_filter_MHD
 !
 !-----------------------------------------------------------------------
 !

@@ -96,7 +96,8 @@
       call set_addresses_trans_sph_MHD                                  &
      &   (SPH_model%MHD_prop, SPH_MHD%ipol, iphys, WK%trns_MHD,         &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
-      call init_sph_transform_SGS_model(SGS_par%model_p,                &
+      call init_sph_transform_SGS_model                                 &
+     &   (SPH_model%MHD_prop, SGS_par%model_p,                          &
      &    SPH_MHD%ipol, ipol_LES, iphys, iphys_LES, WK_LES,             &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
 !
@@ -131,7 +132,7 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine init_sph_transform_SGS_model(SGS_param,                &
+      subroutine init_sph_transform_SGS_model(MHD_prop, SGS_param,      &
      &          ipol, ipol_LES, iphys, iphys_LES, WK_LES,               &
      &          ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
 !
@@ -139,7 +140,9 @@
       use set_address_sph_trans_ngSGS
       use set_address_sph_trans_snap
       use address_sph_trans_SGS_snap
+      use address_sph_trans_fil_force
 !
+      type(MHD_evolution_param), intent(in) :: MHD_prop
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(phys_address), intent(in) :: ipol, iphys
       type(SGS_model_addresses), intent(in) :: ipol_LES, iphys_LES
@@ -150,29 +153,33 @@
       integer(kind = kint), intent(inout) :: nscalar_max_trans
 !
 !
+      call init_sph_trns_filter_MHD                                     &
+     &   (MHD_prop, ipol_LES, iphys_LES, WK_LES%trns_fil_MHD,           &
+     &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
+!
       if(SGS_param%iflag_SGS .eq. id_SGS_similarity) then
         if(iflag_debug .gt. 0) then
           write(*,*) 'Spherical transform field table ',                &
      &               'for similarity SGS (trns_SGS)'
         end if
-        call init_sph_trns_fld_similarity                               &
+        call set_sph_trns_address_fld_simi                              &
      &     (ipol_LES, iphys_LES, WK_LES%trns_SGS,                       &
      &      ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
 !
         if(SGS_param%iflag_dynamic .eq. id_SGS_DYNAMIC_ON) then
-          call init_sph_trns_fld_dyn_simi                               &
+          call set_sph_trns_address_dyn_simi                            &
      &       (ipol_LES, iphys_LES, WK_LES%trns_DYNS,                    &
      &        ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
-          call set_addresses_trans_sph_Csim                             &
+          call set_sph_trns_address_Csim                                &
      &      (SGS_param, ipol_LES, iphys_LES, WK_LES%trns_Csim,          &
      &       ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
          end if
 !
       else if(SGS_param%iflag_SGS .eq. id_SGS_NL_grad) then
-        call init_sph_trns_fld_ngrad_SGS                                &
+        call set_sph_trns_address_ngrad_SGS                             &
      &     (ipol_LES, iphys_LES, WK_LES%trns_SGS,                       &
      &      ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
-        call init_sph_trns_fld_ngrad_pre                                &
+        call set_sph_trns_address_ngrad_pre                             &
      &     (ipol, iphys, WK_LES%trns_ngTMP,                             &
      &      ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
         if(SGS_param%iflag_dynamic .eq. id_SGS_DYNAMIC_ON) then
@@ -180,10 +187,10 @@
             write(*,*) 'Spherical transform field table ',              &
      &                 'for similarity SGS (trns_SIMI)'
           end if
-          call init_sph_trns_fld_similarity                             &
+          call set_sph_trns_address_fld_simi                            &
      &       (ipol_LES, iphys_LES, WK_LES%trns_SIMI,                    &
      &        ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
-          call init_sph_trns_fld_dyn_ngrad                              &
+          call set_sph_trns_address_dyn_ngrad                           &
      &       (ipol_LES, iphys_LES, WK_LES%trns_DYNG,                    &
      &        ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
           call set_addresses_trans_sph_ngCsim                           &
@@ -226,7 +233,7 @@
      &   (SGS_param, ncomp_max_trans, sph%sph_rtp, comms_sph%comm_rtp,  &
      &    WK%trns_MHD, WK_LES%trns_SGS, WK_LES%trns_DYNS,               &
      &    WK_LES%trns_Csim, WK_LES%trns_ngTMP, WK_LES%trns_SIMI,        &
-     &    WK_LES%trns_DYNG, WK%WK_sph)
+     &    WK_LES%trns_DYNG, WK_LES%trns_fil_MHD, WK%WK_sph)
 !
       if (iflag_debug.eq.1) write(*,*) 'alloc_sphere_ave_coriolis'
       call alloc_sphere_ave_coriolis(sph%sph_rj)
@@ -242,7 +249,7 @@
       subroutine init_fourier_transform_SGS_MHD                         &
      &       (SGS_param, ncomp_tot, sph_rtp, comm_rtp,                  &
      &        trns_MHD, trns_SGS, trns_DYNS, trns_Csim,                 &
-     &        trns_ngTMP, trns_SIMI, trns_DYNG, WK_sph)
+     &        trns_ngTMP, trns_SIMI, trns_DYNG, trns_fil_MHD, WK_sph)
 !
       use m_solver_SR
       use init_FFT_4_MHD
@@ -259,11 +266,16 @@
       type(SGS_address_sph_trans), intent(inout) :: trns_ngTMP
       type(SGS_address_sph_trans), intent(inout) :: trns_SIMI
       type(SGS_address_sph_trans), intent(inout) :: trns_DYNG
+      type(SGS_address_sph_trans), intent(inout) :: trns_fil_MHD
       type(spherical_trns_works), intent(inout) :: WK_sph
 !
 !
       call init_fourier_transform_4_MHD(ncomp_tot,                      &
      &    sph_rtp, comm_rtp, trns_MHD, WK_sph, trns_MHD%mul_FFTW)
+!
+      call init_MHD_FFT_select(my_rank, sph_rtp, ncomp_tot,             &
+     &    trns_fil_MHD%forward%ncomp, trns_fil_MHD%backward%ncomp,      &
+     &    trns_fil_MHD%mul_FFTW)
 !
       if(SGS_param%iflag_SGS .eq. id_SGS_similarity) then
         call init_MHD_FFT_select(my_rank, sph_rtp, ncomp_tot,           &

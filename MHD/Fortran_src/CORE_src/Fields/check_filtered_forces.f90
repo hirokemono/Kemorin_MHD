@@ -39,6 +39,13 @@
       type(ctl_array_c3), intent(inout) :: field_ctl
 !
 !
+!
+      if(check_field_list_ctl(magnetic_induction_by_filtered%name,      &
+     &        field_ctl))                                               &
+     &   call add_phys_name_ctl                                         &
+     &      (vecp_induction_by_filtered%name, field_ctl)
+!
+!
       if(check_field_list_ctl(inertia_by_filtered%name,                 &
      &                        field_ctl)) then
          call add_phys_name_ctl(filter_velocity%name, field_ctl)
@@ -131,11 +138,6 @@
       if(check_field_list_ctl(rot_filtered_comp_buoyancy%name,          &
      &        field_ctl))                                               &
      &   call add_phys_name_ctl(filtered_comp_buoyancy%name, field_ctl)
-!
-      if(check_field_list_ctl(magnetic_induction_by_filtered%name,      &
-     &        field_ctl))                                               &
-     &   call add_phys_name_ctl                                         &
-     &      (vecp_induction_by_filtered%name, field_ctl)
 !
       end subroutine add_field_ctl_4_rot_fil_forces
 !

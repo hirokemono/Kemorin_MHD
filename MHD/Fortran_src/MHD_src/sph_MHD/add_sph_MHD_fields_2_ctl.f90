@@ -9,7 +9,6 @@
 !!@verbatim
 !!      subroutine add_field_name_4_sph_mhd                             &
 !!     &         (fl_prop, cd_prop, ht_prop, cp_prop, field_ctl)
-!!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(fluid_property), intent(in) :: fl_prop
 !!        type(conductive_property), intent(in) :: cd_prop
 !!        type(scalar_property), intent(in) :: ht_prop, cp_prop

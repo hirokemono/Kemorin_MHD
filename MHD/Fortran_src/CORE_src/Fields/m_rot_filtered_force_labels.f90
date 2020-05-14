@@ -23,7 +23,6 @@
 !!   rot_Lorentz_force_by_filtered     [rot_frc_by_filter%i_lorentz]
 !!   rot_filtered_buoyancy             [rot_frc_by_filter%i_buoyancy]
 !!   rot_filtered_comp_buoyancy        [rot_frc_by_filter%i_comp_buo]
-!!   magnetic_induction_by_filtered    [rot_frc_by_filter%i_induction]
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!@endverbatim
@@ -37,7 +36,7 @@
 !
 !>      Number of field labels
       integer(kind = kint), parameter, private                          &
-     &                     :: nrot_filter_force = 5
+     &                     :: nrot_filter_force = 4
 !
 !  rotation of momentum equations
 !>        Field label for curl of advection
@@ -72,15 +71,6 @@
      &                math = '$-e_{ijk} \partial_{j} \alpha_{C}'        &
      &                    // ' \tilde{C} g_{k}$')
 !
-!>        Field label for magnetic induction
-!!        @f$ e_{ijk} \partial_{j}
-!!            (e_{klm} \tilde{u}_{l} \tilde{B}_{m}) @f$
-      type(field_def), parameter :: magnetic_induction_by_filtered      &
-     &    = field_def(n_comp = n_vector,                                &
-     &                name = 'magnetic_induction_by_filtered',          &
-     &                math = '$ e_{ijk} \partial_{j} '                  &
-     &                    // '(e_{klm} \tilde{u}_{l} \tilde{B}_{m}) $')
-!
 ! ----------------------------------------------------------------------
 !
       contains
@@ -96,8 +86,7 @@
      &   =    (field_name .eq. rot_inertia_by_filtered%name)            &
      &   .or. (field_name .eq. rot_Lorentz_force_by_filtered%name)      &
      &   .or. (field_name .eq. rot_filtered_buoyancy%name)              &
-     &   .or. (field_name .eq. rot_filtered_comp_buoyancy%name)         &
-     &   .or. (field_name .eq. magnetic_induction_by_filtered%name)
+     &   .or. (field_name .eq. rot_filtered_comp_buoyancy%name)
 !
       end function check_rot_fil_force
 !
@@ -126,10 +115,6 @@
           rot_frc_by_filter%i_buoyancy =   i_phys
         else if (field_name .eq. rot_filtered_comp_buoyancy%name) then
           rot_frc_by_filter%i_comp_buo =   i_phys
-!
-        else if(field_name .eq. magnetic_induction_by_filtered%name)    &
-     &   then
-          rot_frc_by_filter%i_induction =  i_phys
         end if
       end if
 !
@@ -163,9 +148,6 @@
      &    n_comps( 3), names( 3), maths( 3))
       call set_field_labels(rot_filtered_comp_buoyancy,                 &
      &    n_comps( 4), names( 4), maths( 4))
-!
-      call set_field_labels(magnetic_induction_by_filtered,             &
-     &    n_comps( 5), names( 5), maths( 5))
 !
       end subroutine set_rot_filtered_force_labels
 !

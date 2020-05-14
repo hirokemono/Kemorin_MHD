@@ -66,6 +66,9 @@
 !
 !>        strucutres for spherical transform for snapshot output
         type(SGS_address_sph_trans) :: trns_SGS_snap
+!
+!>        strucutres for spherical transform for filtered forces
+        type(SGS_address_sph_trans) :: trns_fil_MHD
       end type works_4_sph_trans_SGS_MHD
 !
       private :: alloc_nonlinear_w_SGS_data
@@ -106,6 +109,9 @@
       call alloc_nonlinear_pole_w_SGS(sph_rtp, WK_LES%trns_SIMI)
       call alloc_nonlinear_pole_w_SGS(sph_rtp, WK_LES%trns_DYNG)
 !
+      call alloc_nonlinear_w_SGS_data(sph_rtp, WK_LES%trns_fil_MHD)
+      call alloc_nonlinear_pole_w_SGS(sph_rtp, WK_LES%trns_fil_MHD)
+!
       end subroutine alloc_SGS_sph_trans_address
 !
 !-----------------------------------------------------------------------
@@ -134,6 +140,9 @@
 !
       call dealloc_nonlinear_pole_w_SGS(WK_LES%trns_SGS_snap)
       call dealloc_nonlinear_w_SGS_data(WK_LES%trns_SGS_snap)
+!
+      call dealloc_nonlinear_pole_w_SGS(WK_LES%trns_fil_MHD)
+      call dealloc_nonlinear_w_SGS_data(WK_LES%trns_fil_MHD)
 !
       end subroutine dealloc_SGS_sph_trans_address
 !

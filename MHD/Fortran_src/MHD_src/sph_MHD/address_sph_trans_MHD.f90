@@ -12,14 +12,14 @@
 !!     &         (MHD_prop, ipol, iphys, b_trns, trns_back)
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
 !!        type(phys_address), intent(in) :: ipol, iphys
-!!        type(spherical_transform_data), intent(inout) :: trns_back
 !!        type(phys_address), intent(inout) :: b_trns
+!!        type(spherical_transform_data), intent(inout) :: trns_back
 !!      subroutine fwd_trans_address_MHD                                &
 !!     &         (MHD_prop, ipol, iphys, f_trns, trns_fwd)
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
 !!        type(phys_address), intent(in) :: ipol, iphys
-!!        type(spherical_transform_data), intent(inout) :: trns_fwd
 !!        type(phys_address), intent(inout) :: f_trns
+!!        type(spherical_transform_data), intent(inout) :: trns_fwd
 !!@endverbatim
 !
       module address_sph_trans_MHD
@@ -49,8 +49,8 @@
 !
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(phys_address), intent(in) :: ipol, iphys
-      type(spherical_transform_data), intent(inout) :: trns_back
       type(phys_address), intent(inout) :: b_trns
+      type(spherical_transform_data), intent(inout) :: trns_back
 !
 !
       if(iflag_debug .gt. 0) then
@@ -86,8 +86,8 @@
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(phys_address), intent(in) :: ipol, iphys
 !
-      type(spherical_transform_data), intent(inout) :: trns_fwd
       type(phys_address), intent(inout) :: f_trns
+      type(spherical_transform_data), intent(inout) :: trns_fwd
 !
 !
       if(iflag_debug .gt. 0) then

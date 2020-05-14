@@ -237,7 +237,9 @@
         call add_field_name_4_sph_mhd                                   &
      &     (MHD_prop%fl_prop, MHD_prop%cd_prop,                         &
      &      MHD_prop%ht_prop, MHD_prop%cp_prop, field_ctl)
-        call add_filter_force_4_sph_mhd(MHD_prop%fl_prop, field_ctl)
+        call add_filter_force_4_sph_mhd                                 &
+     &     (MHD_prop%fl_prop, MHD_prop%cd_prop,                         &
+     &      MHD_prop%ht_prop, MHD_prop%cp_prop, field_ctl)
 !
         call add_field_name_4_SGS(SGS_param, field_ctl)
         call add_field_name_dynamic_SGS                                 &

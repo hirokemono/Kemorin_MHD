@@ -8,19 +8,20 @@
 !!       in MHD dynamo simulation
 !!
 !!@verbatim
-!!      subroutine init_sph_trns_fld_ngrad_pre(ipol, iphys, trns_ngTMP, &
+!!      subroutine set_sph_trns_address_ngrad_pre                       &
+!!     &         (ipol, iphys, trns_ngTMP,                              &
 !!     &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
 !!        type(phys_address), intent(in) :: ipol
 !!        type(phys_address), intent(in) :: iphys
 !!        type(SGS_address_sph_trans), intent(inout) :: trns_ngTMP
 !!
-!!      subroutine init_sph_trns_fld_ngrad_SGS                          &
+!!      subroutine set_sph_trns_address_ngrad_SGS                       &
 !!     &         (ipol_LES, iphys_LES, trns_SGS,                        &
 !!     &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
 !!        type(SGS_model_addresses), intent(in) :: ipol_LES, iphys_LES
 !!        type(SGS_address_sph_trans), intent(inout) :: trns_SGS
 !!
-!!      subroutine init_sph_trns_fld_dyn_ngrad                          &
+!!      subroutine set_sph_trns_address_dyn_ngrad                       &
 !!     &         (ipol_LES, iphys_LES, trns_DYNG,                       &
 !!     &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
 !!        type(SGS_model_addresses), intent(in) :: ipol_LES, iphys_LES
@@ -49,10 +50,12 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine init_sph_trns_fld_ngrad_pre(ipol, iphys, trns_ngTMP,   &
+      subroutine set_sph_trns_address_ngrad_pre                         &
+     &         (ipol, iphys, trns_ngTMP,                                &
      &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
 !
-      use add_diff_vect_to_sph_trans
+      use t_addresses_sph_transform
+      use address_sph_trans_ngSGS
 !
       type(phys_address), intent(in) :: ipol
       type(phys_address), intent(in) :: iphys
@@ -65,40 +68,12 @@
       if(iflag_debug .gt. 0) then
         write(*,*) 'Spherical transform field table ',                  &
      &              'for nonlinear Gradient SGS (trns_ngTMP)'
-        write(*,*) 'Address for backward transform: ',                  &
-     &             'transform, poloidal, troidal, grid data'
       end if
 !
-      trns_ngTMP%backward%nfield = 0
-      call alloc_sph_trns_field_name(trns_ngTMP%backward)
-!
-      call add_diff_vect_sph_trns_by_pol                                &
-     &   (ipol%diff_vector, iphys%diff_vector,                          &
-     &    trns_ngTMP%b_trns%diff_vector, trns_ngTMP%backward)
-      call add_grad_4_sph_trns_by_pol                                   &
-     &   (ipol%grad_fld, iphys%grad_fld,                                &
-     &    trns_ngTMP%b_trns%grad_fld, trns_ngTMP%backward)
-      trns_ngTMP%backward%num_vector = trns_ngTMP%backward%nfield
-      trns_ngTMP%backward%num_scalar = trns_ngTMP%backward%nfield       &
-     &                              - trns_ngTMP%backward%num_vector
-      trns_ngTMP%backward%num_tensor = 0
-!
-      if(iflag_debug .gt. 0) then
-        write(*,*) 'Address for forward transform: ',                   &
-     &             'transform, poloidal, troidal, grid data'
-      end if
-!
-!
-      trns_ngTMP%forward%nfield = 0
-      call alloc_sph_trns_field_name(trns_ngTMP%forward)
-!
-      trns_ngTMP%forward%num_vector = trns_ngTMP%forward%nfield
-      call add_diff_vect_scalar_trns_bpol                               &
-     &   (ipol%diff_vector, iphys%diff_vector,                          &
-     &    trns_ngTMP%f_trns%diff_vector, trns_ngTMP%forward)
-      trns_ngTMP%forward%num_scalar = trns_ngTMP%forward%nfield         &
-     &                               - trns_ngTMP%forward%num_vector
-      trns_ngTMP%forward%num_tensor = 0
+      call bwd_trns_address_fld_ngrad_pre                               &
+     &   (ipol, iphys, trns_ngTMP%b_trns, trns_ngTMP%backward)
+      call fwd_trns_address_fld_ngrad_pre                               &
+     &   (ipol, iphys, trns_ngTMP%f_trns, trns_ngTMP%forward)
 !
       call count_num_fields_each_trans(trns_ngTMP%backward,             &
      &   ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
@@ -114,15 +89,17 @@
         write(*,*) 'nscalar_rtp_2_rj ', trns_ngTMP%forward%num_scalar
       end if
 !
-      end subroutine init_sph_trns_fld_ngrad_pre
+      end subroutine set_sph_trns_address_ngrad_pre
 !
 !-----------------------------------------------------------------------
 !
-      subroutine init_sph_trns_fld_ngrad_SGS                            &
+      subroutine set_sph_trns_address_ngrad_SGS                         &
      &         (ipol_LES, iphys_LES, trns_SGS,                          &
      &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
 !
-      use add_SGS_term_to_sph_trans
+      use t_addresses_sph_transform
+      use address_sph_trans_ngSGS
+      use address_sph_trans_dyn_simi
 !
       type(SGS_model_addresses), intent(in) :: ipol_LES, iphys_LES
       type(SGS_address_sph_trans), intent(inout) :: trns_SGS
@@ -134,34 +111,11 @@
       if(iflag_debug .gt. 0) then
         write(*,*) 'Spherical transform field table ',                  &
      &             'for similarity SGS (trns_SGS)'
-        write(*,*) 'Address for backward transform: ',                  &
-     &             'transform, poloidal, toroidal, grid data'
       end if
 !
-      trns_SGS%backward%nfield = 0
-      call alloc_sph_trns_field_name(trns_SGS%backward)
-!
-      trns_SGS%backward%num_vector = trns_SGS%backward%nfield
-      trns_SGS%backward%num_scalar = trns_SGS%backward%nfield           &
-     &                              - trns_SGS%backward%num_vector
-      trns_SGS%backward%num_tensor = 0
-!
-!
-      if(iflag_debug .gt. 0) then
-        write(*,*) 'Address for forward transform: ',                   &
-     &             'transform, poloidal, toroidal, grid data'
-      end if
-!
-      trns_SGS%forward%nfield = 0
-      call alloc_sph_trns_field_name(trns_SGS%forward)
-!
-      call add_SGS_term_4_sph_trns_by_pol                               &
-     &   (ipol_LES%SGS_term, iphys_LES%SGS_term,                        &
-     &    trns_SGS%f_trns_LES%SGS_term, trns_SGS%forward)
-      trns_SGS%forward%num_vector = trns_SGS%forward%nfield
-      trns_SGS%forward%num_scalar = trns_SGS%forward%nfield             &
-     &                              - trns_SGS%forward%num_vector
-      trns_SGS%forward%num_tensor = 0
+      call empty_trans_address(trns_SGS%backward)
+      call fwd_trns_address_fld_ngrad_SGS(ipol_LES, iphys_LES,          &
+     &    trns_SGS%f_trns_LES, trns_SGS%forward)
 !
       call count_num_fields_each_trans(trns_SGS%backward,               &
      &   ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
@@ -177,16 +131,16 @@
         write(*,*) 'nscalar_rtp_2_rj ', trns_SGS%forward%num_scalar
       end if
 !
-      end subroutine init_sph_trns_fld_ngrad_SGS
+      end subroutine set_sph_trns_address_ngrad_SGS
 !
 !-----------------------------------------------------------------------
 !
-      subroutine init_sph_trns_fld_dyn_ngrad                            &
+      subroutine set_sph_trns_address_dyn_ngrad                         &
      &         (ipol_LES, iphys_LES, trns_DYNG,                         &
      &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
 !
-      use add_diff_fil_vec_to_trans
-      use add_SGS_term_to_sph_trans
+      use t_addresses_sph_transform
+      use address_sph_trans_ngSGS
 !
       type(SGS_model_addresses), intent(in) :: ipol_LES, iphys_LES
       type(SGS_address_sph_trans), intent(inout) :: trns_DYNG
@@ -198,43 +152,12 @@
       if(iflag_debug .gt. 0) then
         write(*,*) 'Spherical transform field table ',                  &
      &              'for dynamic nonlinear Gradient SGS (trns_DYNG)'
-        write(*,*) 'Address for backward transform: ',                  &
-     &             'transform, poloidal, troidal, grid data'
       end if
 !
-      trns_DYNG%backward%nfield = 0
-      call alloc_sph_trns_field_name(trns_DYNG%backward)
-!
-      call add_diff_fil_vec_sph_trns_pol                                &
-     &   (ipol_LES%diff_fil_vect, iphys_LES%diff_fil_vect,              &
-     &    trns_DYNG%b_trns_LES%diff_fil_vect, trns_DYNG%backward)
-      call add_grad_filter_fld_4_sph_trns                               &
-     &   (ipol_LES%grad_fil_fld, iphys_LES%grad_fil_fld,                &
-     &    trns_DYNG%b_trns_LES%grad_fil_fld, trns_DYNG%backward)
-      call add_double_SGS_term_4_sph_trns                               &
-     &   (ipol_LES%dble_SGS, iphys_LES%dble_SGS,                        &
-     &    trns_DYNG%b_trns_LES%dble_SGS, trns_DYNG%backward)
-      trns_DYNG%backward%num_vector = trns_DYNG%backward%nfield
-      trns_DYNG%backward%num_scalar = trns_DYNG%backward%nfield         &
-     &                              - trns_DYNG%backward%num_vector
-      trns_DYNG%backward%num_tensor = 0
-!
-      if(iflag_debug .gt. 0) then
-        write(*,*) 'Address for forward transform: ',                   &
-     &             'transform, poloidal, troidal, grid data'
-      end if
-!
-!
-      trns_DYNG%forward%nfield = 0
-      call alloc_sph_trns_field_name(trns_DYNG%forward)
-!
-      trns_DYNG%forward%num_vector = trns_DYNG%forward%nfield
-      call add_diff_fil_vec_4_scalar_trns                               &
-     &   (ipol_LES%diff_fil_vect, iphys_LES%diff_fil_vect,              &
-     &    trns_DYNG%f_trns_LES%diff_fil_vect, trns_DYNG%forward)
-      trns_DYNG%forward%num_scalar = trns_DYNG%forward%nfield           &
-     &                               - trns_DYNG%forward%num_vector
-      trns_DYNG%forward%num_tensor = 0
+      call bwd_trns_address_fld_dyn_ngrad(ipol_LES, iphys_LES,          &
+     &    trns_DYNG%b_trns_LES, trns_DYNG%backward)
+      call fwd_trns_address_fld_dyn_ngrad(ipol_LES, iphys_LES,          &
+     &    trns_DYNG%f_trns_LES, trns_DYNG%forward)
 !
       call count_num_fields_each_trans(trns_DYNG%backward,              &
      &   ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
@@ -250,7 +173,7 @@
         write(*,*) 'nscalar_rtp_2_rj ', trns_DYNG%forward%num_scalar
       end if
 !
-      end subroutine init_sph_trns_fld_dyn_ngrad
+      end subroutine set_sph_trns_address_dyn_ngrad
 !
 !-----------------------------------------------------------------------
 !
@@ -259,9 +182,8 @@
      &         ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
 !
       use t_SGS_control_parameter
-      use add_Csim_4_sph_trns
-      use add_SGS_term_to_sph_trans
-      use add_SGS_eflux_to_sph_trans
+      use t_addresses_sph_transform
+      use address_sph_trans_ngSGS
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(SGS_model_addresses), intent(in) :: ipol_LES, iphys_LES
@@ -274,43 +196,12 @@
       if(iflag_debug .gt. 0) then
         write(*,*) 'Field table for the second SGS terms ',             &
      &             'by n. gradient model (trns_Csim)'
-        write(*,*) 'Address for backward transform: ',                  &
-     &             'transform, poloidal, toroidal, grid data'
       end if
 !
-      trns_Csim%backward%nfield = 0
-      call alloc_sph_trns_field_name(trns_Csim%backward)
-!
-      call add_wide_SGS_term_4_sph_trns                                 &
-     &   (ipol_LES%wide_SGS, iphys_LES%wide_SGS,                        &
-     &    trns_Csim%b_trns_LES%wide_SGS, trns_Csim%backward)
-      trns_Csim%backward%num_vector = trns_Csim%backward%nfield
-      trns_Csim%backward%num_scalar = trns_Csim%backward%nfield         &
-     &                               - trns_Csim%backward%num_vector
-      trns_Csim%backward%num_tensor = 0
-!
-!
-     if(iflag_debug .gt. 0) then
-        write(*,*) 'Address for forward transform: ',                   &
-     &             'transform, poloidal, toroidal, grid data'
-      end if
-!
-      trns_Csim%forward%nfield = 0
-      call alloc_sph_trns_field_name(trns_Csim%forward)
-!
-      trns_Csim%forward%num_vector = 0
-      call add_Csim_4_sph_trns_by_pol                                   &
-     &   (ipol_LES%Csim, iphys_LES%Csim, trns_Csim%f_trns_LES%Csim,     &
-     &    trns_Csim%forward)
-      if(SGS_param%iflag_SGS_gravity .ne. id_SGS_none) then
-        call add_SGS_eflux_sph_trns_by_pol                              &
-     &     (ipol_LES%SGS_ene_flux, iphys_LES%SGS_ene_flux,              &
-     &      trns_Csim%f_trns_LES%SGS_ene_flux, trns_Csim%forward)
-      end if
-      trns_Csim%forward%num_scalar = trns_Csim%forward%nfield           &
-     &                              - trns_Csim%forward%num_vector
-      trns_Csim%forward%num_tensor = 0
-!
+      call bwd_trans_address_sph_ngCsim(ipol_LES, iphys_LES,            &
+     &    trns_Csim%b_trns_LES, trns_Csim%backward)
+      call fwd_trans_address_sph_ngCsim(SGS_param, ipol_LES, iphys_LES, &
+     &    trns_Csim%f_trns_LES, trns_Csim%forward)
 !
       call count_num_fields_each_trans(trns_Csim%backward,              &
      &   ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
