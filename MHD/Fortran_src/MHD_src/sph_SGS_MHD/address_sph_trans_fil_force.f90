@@ -60,9 +60,6 @@
       call fwd_trans_address_filter_MHD(MHD_prop, ipol_LES, iphys_LES,  &
      &    trns_fil_MHD%f_trns_LES, trns_fil_MHD%forward)
 !
-      ncomp_sph_trans =   0
-      nvector_sph_trans = 0
-      nscalar_sph_trans = 0
       call count_num_fields_each_trans(trns_fil_MHD%backward,           &
      &   ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
       call count_num_fields_each_trans(trns_fil_MHD%forward,            &

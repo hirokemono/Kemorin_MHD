@@ -153,9 +153,9 @@
       integer(kind = kint), intent(inout) :: nscalar_max_trans
 !
 !
-!      call init_sph_trns_filter_MHD                                    &
-!     &   (MHD_prop, ipol_LES, iphys_LES, WK_LES%trns_fil_MHD,          &
-!     &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
+      call init_sph_trns_filter_MHD                                     &
+     &   (MHD_prop, ipol_LES, iphys_LES, WK_LES%trns_fil_MHD,           &
+     &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
 !
       if(SGS_param%iflag_SGS .eq. id_SGS_similarity) then
         if(iflag_debug .gt. 0) then
