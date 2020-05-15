@@ -153,9 +153,9 @@
       integer(kind = kint), intent(inout) :: nscalar_max_trans
 !
 !
-      call init_sph_trns_filter_MHD                                     &
-     &   (MHD_prop, ipol_LES, iphys_LES, WK_LES%trns_fil_MHD,           &
-     &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
+!      call init_sph_trns_filter_MHD                                    &
+!     &   (MHD_prop, ipol_LES, iphys_LES, WK_LES%trns_fil_MHD,          &
+!     &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
 !
       if(SGS_param%iflag_SGS .eq. id_SGS_similarity) then
         if(iflag_debug .gt. 0) then
@@ -273,9 +273,9 @@
       call init_fourier_transform_4_MHD(ncomp_tot,                      &
      &    sph_rtp, comm_rtp, trns_MHD, WK_sph, trns_MHD%mul_FFTW)
 !
-      call init_MHD_FFT_select(my_rank, sph_rtp, ncomp_tot,             &
-     &    trns_fil_MHD%forward%ncomp, trns_fil_MHD%backward%ncomp,      &
-     &    trns_fil_MHD%mul_FFTW)
+!      call init_MHD_FFT_select(my_rank, sph_rtp, ncomp_tot,             &
+!     &    trns_fil_MHD%forward%ncomp, trns_fil_MHD%backward%ncomp,      &
+!     &    trns_fil_MHD%mul_FFTW)
 !
       if(SGS_param%iflag_SGS .eq. id_SGS_similarity) then
         call init_MHD_FFT_select(my_rank, sph_rtp, ncomp_tot,           &
