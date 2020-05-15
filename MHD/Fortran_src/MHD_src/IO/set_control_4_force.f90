@@ -325,6 +325,9 @@
       end if
 !
       if (iflag_debug .ge. iflag_routine_msg) then
+        write(*,*) 'Induction mode', cd_prop%iflag_4_induction
+        write(*,*) 'Filtered Induction mode',                           &
+     &            cd_prop%iflag_4_filter_induction
         write(*,*) 'magneto_cv ', cd_prop%iflag_magneto_cv
         write(*,'(a,1p3E25.15e3)') 'ex_magne ',cd_prop%ex_magne
       end if

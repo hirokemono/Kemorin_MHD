@@ -52,7 +52,8 @@
 !
 !
       if(iflag_debug .gt. 0) then
-        write(*,*) 'Spherical transform table for filtered nonlinear'
+        write(*,*) 'Spherical transform table for filtered nonlinear ', &
+     &             ' (trns_fil_MHD)'
       end if
 !
       call bwd_trans_address_filter_MHD(MHD_prop, ipol_LES, iphys_LES,  &
