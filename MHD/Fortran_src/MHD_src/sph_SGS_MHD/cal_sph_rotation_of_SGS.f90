@@ -129,7 +129,7 @@
 !
       subroutine cal_div_of_SGS_forces_sph_2                            &
      &         (sph_rj, r_2nd, sph_MHD_bc, g_sph_rj,                    &
-     &          ipol_div_frc, ipol_SGS, ipol_div_SGS, rj_fld)
+     &          ipol_SGS, ipol_div_SGS, rj_fld)
 !
       use const_sph_divergence
 !
@@ -137,7 +137,6 @@
       type(fdm_matrices), intent(in) :: r_2nd
       type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
 !
-      type(base_force_address), intent(in) :: ipol_div_frc
       type(SGS_term_address), intent(in) :: ipol_SGS
       type(SGS_term_address), intent(in) :: ipol_div_SGS
 !
@@ -146,13 +145,13 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      if(ipol_div_frc%i_m_flux .gt. 0) then
+      if(ipol_div_SGS%i_SGS_inertia .gt. 0) then
         call const_sph_div_force                                        &
      &     (sph_rj, r_2nd, sph_MHD_bc%sph_bc_U, g_sph_rj,               &
      &      ipol_SGS%i_SGS_inertia, ipol_div_SGS%i_SGS_inertia, rj_fld)
       end if
 !
-      if(ipol_div_frc%i_lorentz .gt. 0) then
+      if(ipol_div_SGS%i_SGS_Lorentz .gt. 0) then
         call const_sph_div_force                                        &
      &     (sph_rj, r_2nd, sph_MHD_bc%sph_bc_U, g_sph_rj,               &
      &      ipol_SGS%i_SGS_Lorentz, ipol_div_SGS%i_SGS_Lorentz, rj_fld)

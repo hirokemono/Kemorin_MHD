@@ -137,7 +137,7 @@
 !
 !$omp do private (inod)
       do inod = 1, nnod_rj
-        d_rj(inod,is_press) = -  d_rj(inod,ipol_div_frc%i_m_flux)       &
+        d_rj(inod,is_press) = -  d_rj(inod,ipol_div_frc%i_m_advect)     &
      &                         + d_rj(inod,ipol_div_frc%i_Coriolis)     &
      &                         + d_rj(inod,ipol_div_frc%i_lorentz)      &
      &                         + d_rj(inod,ipol_div_frc%i_buoyancy)     &
@@ -163,7 +163,7 @@
 !
 !$omp do private (inod)
       do inod = 1, nnod_rj
-        d_rj(inod,is_press) = -  d_rj(inod,ipol_div_frc%i_m_flux)       &
+        d_rj(inod,is_press) = -  d_rj(inod,ipol_div_frc%i_m_advect)     &
      &                         + d_rj(inod,ipol_div_frc%i_Coriolis)     &
      &                         + d_rj(inod,ipol_div_frc%i_lorentz)      &
      &                         + d_rj(inod,is_div_buo)
@@ -187,7 +187,7 @@
 !
 !$omp do private (inod)
       do inod = 1, nnod_rj
-        d_rj(inod,is_press) = -  d_rj(inod,ipol_div_frc%i_m_flux)       &
+        d_rj(inod,is_press) = -  d_rj(inod,ipol_div_frc%i_m_advect)     &
      &                         + d_rj(inod,ipol_div_frc%i_Coriolis)     &
      &                         + d_rj(inod,ipol_div_frc%i_buoyancy)     &
      &                         + d_rj(inod,ipol_div_frc%i_comp_buo)
@@ -212,7 +212,7 @@
 !
 !$omp do private (inod)
       do inod = 1, nnod_rj
-        d_rj(inod,is_press) = -  d_rj(inod,ipol_div_frc%i_m_flux)       &
+        d_rj(inod,is_press) = -  d_rj(inod,ipol_div_frc%i_m_advect)     &
      &                         + d_rj(inod,ipol_div_frc%i_Coriolis)     &
      &                         + d_rj(inod,is_div_buo)
       end do
@@ -236,7 +236,7 @@
 !
 !$omp do private (inod)
       do inod = 1, nnod_rj
-!        d_rj(inod,is_press) = - d_rj(inod,ipol%div_forces%i_m_flux)
+!        d_rj(inod,is_press) = - d_rj(inod,ipol%div_forces%i_m_advect)
         d_rj(inod,is_press) = zero
       end do
 !$omp end do nowait
