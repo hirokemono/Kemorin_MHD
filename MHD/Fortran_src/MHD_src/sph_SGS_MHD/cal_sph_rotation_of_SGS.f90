@@ -129,7 +129,7 @@
 !
       subroutine cal_div_of_SGS_forces_sph_2                            &
      &         (sph_rj, r_2nd, sph_MHD_bc, g_sph_rj,                    &
-     &          ipol_div_frc, ipol_SGS, ipol_div_SGS, rj_fld)
+     &          ipol_SGS, ipol_div_SGS, rj_fld)
 !
       use const_sph_divergence
 !
@@ -137,7 +137,6 @@
       type(fdm_matrices), intent(in) :: r_2nd
       type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
 !
-      type(base_force_address), intent(in) :: ipol_div_frc
       type(SGS_term_address), intent(in) :: ipol_SGS
       type(SGS_term_address), intent(in) :: ipol_div_SGS
 !
