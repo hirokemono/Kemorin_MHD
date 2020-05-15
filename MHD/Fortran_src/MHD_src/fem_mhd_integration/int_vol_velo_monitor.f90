@@ -159,7 +159,6 @@
      &     (node, ele, g_FEM, jac_3d, rhs_tbl, nod_fld,                 &
      &      fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,         &
      &      iphys_frc%i_m_flux, fl_prop%coef_nega_v, fem_wk, f_nl)
-!
       end if
 !
       if(i_field .eq. iphys_frc%i_coriolis) then

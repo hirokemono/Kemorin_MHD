@@ -174,8 +174,7 @@
       if(SGS_param%iflag_SGS .gt. id_SGS_none) then
         call cal_div_of_SGS_forces_sph_2                                &
      &     (sph%sph_rj, r_2nd, sph_MHD_bc, leg%g_sph_rj,                &
-     &      ipol%div_forces, ipol_LES%SGS_term, ipol_LES%div_SGS,       &
-     &      rj_fld)
+     &      ipol_LES%SGS_term, ipol_LES%div_SGS, rj_fld)
         call sum_div_of_SGS_forces(ipol%base, ipol_LES%div_SGS, rj_fld)
       end if
 !
