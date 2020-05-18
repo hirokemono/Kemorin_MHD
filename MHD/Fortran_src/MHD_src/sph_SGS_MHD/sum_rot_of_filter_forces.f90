@@ -25,7 +25,8 @@
       use calypso_mpi
 !
       use t_physical_property
-      use t_base_field_labels
+      use t_SGS_model_addresses
+      use t_phys_address
       use t_explicit_term_labels
       use t_phys_data
 !
