@@ -227,14 +227,14 @@
       integer(kind = kint) :: inod
 !
 !
-!$omp do private (inod)
+!$omp parallel do private (inod)
       do inod = 1, nnod_rj
         d_rj(inod,ipol_exp%i_forces  )                                  &
      &        = - d_rj(inod,ipol_rot_frc%i_m_advect  )
         d_rj(inod,ipol_exp%i_forces+2)                                  &
      &        = - d_rj(inod,ipol_rot_frc%i_m_advect+2)
       end do
-!$omp end do nowait
+!$omp end parallel do
 !
       end subroutine set_rot_advection_to_force
 !
