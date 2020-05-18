@@ -93,6 +93,7 @@
       use cal_nonlinear
       use cal_sph_dynamic_SGS
       use add_filter_buoyancy_2_force
+      use rot_self_buoyancies_sph
       use self_buoyancy_w_filter_sph
 !
       integer(kind = kint), intent(in) :: i_step
@@ -104,11 +105,21 @@
       type(SPH_SGS_structure), intent(inout) :: SPH_SGS
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !
+!   ----   lead rotation of buoyancies
+      if(SPH_model%MHD_prop%fl_prop%iflag_scheme                        &
+     &                         .gt. id_no_evolution) then
+        if(iflag_debug.gt.0) write(*,*) 'sel_rot_self_buoyancy_sph'
+        call sel_rot_self_buoyancy_sph(SPH_MHD%sph%sph_rj,              &
+     &      SPH_MHD%ipol%base, SPH_MHD%ipol%rot_forces,                 &
+     &      SPH_model%MHD_prop%fl_prop, SPH_model%sph_MHD_bc%sph_bc_U,  &
+     &      SPH_MHD%fld)
+!
 !   ----   lead rotation of filtered buoyancies
-      if(iflag_debug .gt. 0) write(*,*) 'rot_self_filter_buoyancy_sph'
-      call rot_self_filter_buoyancy_sph                                 &
-     &   (SPH_MHD%sph, SPH_SGS%ipol_LES, SPH_model%MHD_prop,            &
-     &    SPH_model%sph_MHD_bc%sph_bc_U, SPH_MHD%fld)
+        if(iflag_debug.gt.0) write(*,*) 'rot_self_filter_buoyancy_sph'
+        call rot_self_filter_buoyancy_sph                               &
+     &     (SPH_MHD%sph, SPH_SGS%ipol_LES, SPH_model%MHD_prop,          &
+     &      SPH_model%sph_MHD_bc%sph_bc_U, SPH_MHD%fld)
+      end if
 !
 !   ----  lead nonlinear terms by phesdo spectrum
       if (iflag_debug.eq.1) write(*,*) 'nonlinear_by_pseudo_sph'

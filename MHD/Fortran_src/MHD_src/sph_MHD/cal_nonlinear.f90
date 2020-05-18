@@ -83,6 +83,7 @@
 !
       use cal_nonlinear_sph_MHD
       use sum_rotation_of_forces
+      use rot_self_buoyancies_sph
 !
       use m_work_time
       use m_elapsed_labels_4_MHD
@@ -95,8 +96,17 @@
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !
 !
-!   ----  lead nonlinear terms by phesdo spectrum
+!   ----  lead rottion of buoyancies
+      if(SPH_model%MHD_prop%fl_prop%iflag_scheme                        &
+     &                         .gt. id_no_evolution) then
+      if(iflag_debug.gt.0) write(*,*) 'sel_rot_self_buoyancy_sph'
+        call sel_rot_self_buoyancy_sph(SPH_MHD%sph%sph_rj,              &
+     &      SPH_MHD%ipol%base, SPH_MHD%ipol%rot_forces,                 &
+     &      SPH_model%MHD_prop%fl_prop, SPH_model%sph_MHD_bc%sph_bc_U,  &
+     &      SPH_MHD%fld)
+      end if
 !
+!   ----  lead nonlinear terms by phesdo spectrum
       if (iflag_debug.eq.1) write(*,*) 'nonlinear_by_pseudo_sph'
       call nonlinear_by_pseudo_sph                                      &
      &   (SPH_MHD%sph, SPH_MHD%comms, SPH_model%omega_sph,              &
@@ -193,6 +203,7 @@
      &          sph, comms_sph, omega_sph, trans_p, ipol, WK, rj_fld)
 !
       use m_phys_constants
+      use rot_self_buoyancies_sph
       use sph_transforms_4_MHD
       use copy_nodal_fields
       use cal_nonlinear_sph_MHD
@@ -210,8 +221,15 @@
       type(works_4_sph_trans_MHD), intent(inout) :: WK
       type(phys_data), intent(inout) :: rj_fld
 !
-!*  ----  copy velocity for coriolis term ------------------
+!   ----  lead rottion of buoyancies
+      if(MHD_prop%fl_prop%iflag_scheme .gt. id_no_evolution) then
+        if(iflag_debug.gt.0) write(*,*) 'sel_rot_self_buoyancy_sph'
+        call sel_rot_self_buoyancy_sph                                  &
+     &     (sph%sph_rj, ipol%base, ipol%rot_forces,                     &
+     &      MHD_prop%fl_prop, sph_MHD_bc%sph_bc_U, rj_fld)
+      end if
 !*
+!*  ----  copy velocity for coriolis term ------------------
       if(iflag_debug.eq.1) write(*,*) 'sph_transform_4_licv'
       if(MHD_prop%fl_prop%iflag_4_coriolis) then
         call sph_transform_4_licv                                       &

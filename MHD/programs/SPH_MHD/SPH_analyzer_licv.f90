@@ -199,9 +199,14 @@
      &    SPH_model%MHD_prop, SPH_model%sph_MHD_bc, SPH_WK%trans_p%leg, &
      &    SPH_MHD%ipol, SPH_WK%MHD_mats, SPH_MHD%fld)
 !*
+!*  ----------------lead nonlinear term ... ----------
+        call licv_exp(SPH_model%ref_temp, SPH_model%ref_comp,           &
+     &     SPH_model%MHD_prop, SPH_model%sph_MHD_bc,                    &
+     &     SPH_MHD%sph, SPH_MHD%comms, SPH_model%omega_sph,             &
+     &     SPH_WK%trans_p, SPH_MHD%ipol, SPH_WK%trns_WK, SPH_MHD%fld)
+!
 !* ----  Update fields after time evolution ------------------------
 !*
-!
       if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+5)
       if(iflag_debug.gt.0) write(*,*) 'trans_per_temp_to_temp_sph'
       call trans_per_temp_to_temp_sph(SPH_model,                        &
@@ -214,13 +219,6 @@
      &      SPH_WK%MHD_mats, SPH_WK%trns_WK, SPH_MHD)
       end if
       if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+5)
-!
-!*  ----------------lead nonlinear term ... ----------
-!*
-        call licv_exp(SPH_model%ref_temp, SPH_model%ref_comp,           &
-     &     SPH_model%MHD_prop, SPH_model%sph_MHD_bc,                    &
-     &     SPH_MHD%sph, SPH_MHD%comms, SPH_model%omega_sph,             &
-     &     SPH_WK%trans_p, SPH_MHD%ipol, SPH_WK%trns_WK, SPH_MHD%fld)
 !
 !*  -----------  output restart data --------------
 !*
