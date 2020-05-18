@@ -177,7 +177,7 @@
       if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+10)
       if (iflag_debug.ge.1) write(*,*) 'nonlinear_terms_in_rtp'
       call nonlinear_terms_in_rtp(sph%sph_rtp, MHD_prop, trans_p%leg,   &
-     &    trns_MHD%b_trns%base, trns_MHD%f_trns%force,                  &
+     &    trns_MHD%b_trns%base, trns_MHD%f_trns%forces,                 &
      &    trns_MHD%backward, trns_MHD%forward)
       if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+10)
 !
