@@ -4,7 +4,7 @@
 !! @author  H. Matsui
 !! @date Programmed in Oct. 2009
 !
-!> @brief SElection of time evolution of induction terms
+!> @brief Selection of time evolution of induction terms
 !!
 !!@verbatim
 !!      subroutine sel_diff_induction_MHD_adams                         &
