@@ -31,17 +31,17 @@
 !!     &         (ist, ied, ipol_advect, ipol_SGS_advect, ipol_source,  &
 !!     &          ipol_pre, coef_src, n_point, ntot_phys_rj, d_rj)
 !!
-!!      subroutine SGS_ctr_scl_diff_adv_src_adams(inod_rj_center,       &
-!!     &           ipol_diffuse, ipol_advect, ipol_SGS_advect,          &
-!!     &           ipol_source, ipol_scalar, ipol_pre, dt,              &
-!!     &           coef_exp, coef_src, n_point, ntot_phys_rj, d_rj)
-!!      subroutine SGS_ctr_scl_diff_adv_src_euler(inod_rj_center,       &
-!!     &          ipol_diffuse, ipol_advect, ipol_SGS_advect,           &
-!!     &          ipol_source, ipol_scalar, dt, coef_exp, coef_src,     &
-!!     &          n_point, ntot_phys_rj, d_rj)
-!!      subroutine SGS_center_ini_adams_scl_w_src(inod_rj_center,       &
-!!     &          ipol_advect, ipol_SGS_advect, ipol_source, ipol_pre,  &
-!!     &          coef_src, n_point, ntot_phys_rj, d_rj)
+!!      subroutine SGS_ctr_scl_diff_adv_src_adams                       &
+!!     &         (dt, coef_exp, coef_src,                               &
+!!     &          d_ctr_source, d_ctr_diffuse, d_ctr_advect,            &
+!!     &          d_ctr_SGS_advect, d_ctr_scalar, d_ctr_previous)
+!!      subroutine SGS_ctr_scl_diff_adv_src_euler                       &
+!!     &         (dt, coef_exp, coef_src,                               &
+!!     &          d_ctr_source, d_ctr_diffuse, d_ctr_advect,            &
+!!     &          d_ctr_SGS_advect, d_ctr_scalar)
+!!      subroutine SGS_center_ini_adams_scl_w_src(coef_src,             &
+!!     &          d_ctr_source, d_ctr_advect, d_ctr_SGS_advect,         &
+!!     &          d_ctr_previous)
 !!@endverbatim
 !!
 !!@param kr_st         Radial address for inner boundary
@@ -260,85 +260,74 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine SGS_ctr_scl_diff_adv_src_adams(inod_rj_center,         &
-     &           ipol_diffuse, ipol_advect, ipol_SGS_advect,            &
-     &           ipol_source, ipol_scalar, ipol_pre, dt,                &
-     &           coef_exp, coef_src, n_point, ntot_phys_rj, d_rj)
+      subroutine SGS_ctr_scl_diff_adv_src_adams                         &
+     &         (dt, coef_exp, coef_src,                                 &
+     &          d_ctr_source, d_ctr_diffuse, d_ctr_advect,              &
+     &          d_ctr_SGS_advect, d_ctr_scalar, d_ctr_previous)
 !
-      integer(kind = kint), intent(in) :: inod_rj_center
-      integer(kind = kint), intent(in) :: ipol_diffuse, ipol_advect
-      integer(kind = kint), intent(in) :: ipol_SGS_advect
-      integer(kind = kint), intent(in) :: ipol_source
-      integer(kind = kint), intent(in) :: ipol_scalar, ipol_pre
-      integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
       real(kind = kreal), intent(in) :: coef_exp, coef_src
       real(kind = kreal), intent(in) :: dt
 !
-      real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
+      real(kind = kreal), intent(in) :: d_ctr_source
+      real(kind = kreal), intent(in) :: d_ctr_diffuse
+      real(kind = kreal), intent(in) :: d_ctr_advect
+      real(kind = kreal), intent(in) :: d_ctr_SGS_advect
+!
+      real(kind = kreal), intent(inout) :: d_ctr_scalar
+      real(kind = kreal), intent(inout) :: d_ctr_previous
 !
 !
-      d_rj(inod_rj_center,ipol_scalar)                                  &
-     &        = d_rj(inod_rj_center,ipol_scalar)                        &
-     &          + dt * (coef_exp * d_rj(inod_rj_center,ipol_diffuse)    &
-     &              + adam_0 * ( -d_rj(inod_rj_center,ipol_advect)      &
-     &                          - d_rj(inod_rj_center,ipol_SGS_advect)  &
-     &                 + coef_src * d_rj(inod_rj_center,ipol_source) )  &
-     &              + adam_1 * d_rj(inod_rj_center,ipol_pre) )
+      d_ctr_scalar = d_ctr_scalar                                       &
+     &            + dt * (coef_exp * d_ctr_diffuse                      &
+     &                  + adam_0 * (-d_ctr_advect - d_ctr_SGS_advect    &
+     &                              + coef_src * d_ctr_source)          &
+     &                  + adam_1 * d_ctr_previous)
 !
-       d_rj(inod_rj_center,ipol_pre)                                    &
-     &         = - d_rj(inod_rj_center,ipol_advect)                     &
-     &           - d_rj(inod_rj_center,ipol_SGS_advect)                 &
-     &               + coef_src * d_rj(inod_rj_center,ipol_source)
+       d_ctr_previous = - d_ctr_advect - d_ctr_SGS_advect               &
+     &                 + coef_src * d_ctr_source
 !
       end subroutine SGS_ctr_scl_diff_adv_src_adams
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SGS_ctr_scl_diff_adv_src_euler(inod_rj_center,         &
-     &          ipol_diffuse, ipol_advect, ipol_SGS_advect,             &
-     &          ipol_source, ipol_scalar, dt, coef_exp, coef_src,       &
-     &          n_point, ntot_phys_rj, d_rj)
+      subroutine SGS_ctr_scl_diff_adv_src_euler                         &
+     &         (dt, coef_exp, coef_src,                                 &
+     &          d_ctr_source, d_ctr_diffuse, d_ctr_advect,              &
+     &          d_ctr_SGS_advect, d_ctr_scalar)
 !
-      integer(kind = kint), intent(in) :: inod_rj_center
-      integer(kind = kint), intent(in) :: ipol_diffuse, ipol_advect
-      integer(kind = kint), intent(in) :: ipol_SGS_advect
-      integer(kind = kint), intent(in) :: ipol_source
-      integer(kind = kint), intent(in) :: ipol_scalar
-      integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
       real(kind = kreal), intent(in) :: coef_exp, coef_src
       real(kind = kreal), intent(in) :: dt
+      real(kind = kreal), intent(in) :: d_ctr_source
+      real(kind = kreal), intent(in) :: d_ctr_diffuse
+      real(kind = kreal), intent(in) :: d_ctr_advect
+      real(kind = kreal), intent(in) :: d_ctr_SGS_advect
 !
-      real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
+      real(kind = kreal), intent(inout) :: d_ctr_scalar
 !
 !
-      d_rj(inod_rj_center,ipol_scalar)                                  &
-     &        = d_rj(inod_rj_center,ipol_scalar)                        &
-     &         + dt * (coef_exp*d_rj(inod_rj_center,ipol_diffuse)       &
-     &             - d_rj(inod_rj_center,ipol_advect)                   &
-     &             - d_rj(inod_rj_center,ipol_SGS_advect)               &
-     &              + coef_src * d_rj(inod_rj_center,ipol_source) )
+      d_ctr_scalar = d_ctr_scalar                                       &
+     &         + dt * (coef_exp * d_ctr_diffuse                         &
+     &               - d_ctr_advect - d_ctr_SGS_advect                  &
+     &               + coef_src * d_ctr_source )
 !
       end subroutine SGS_ctr_scl_diff_adv_src_euler
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SGS_center_ini_adams_scl_w_src(inod_rj_center,         &
-     &          ipol_advect, ipol_SGS_advect, ipol_source, ipol_pre,    &
-     &          coef_src, n_point, ntot_phys_rj, d_rj)
+      subroutine SGS_center_ini_adams_scl_w_src(coef_src,               &
+     &          d_ctr_source, d_ctr_advect, d_ctr_SGS_advect,           &
+     &          d_ctr_previous)
 !
-      integer(kind = kint), intent(in) :: inod_rj_center
-      integer(kind = kint), intent(in) :: ipol_advect, ipol_source
-      integer(kind = kint), intent(in) :: ipol_SGS_advect
-      integer(kind = kint), intent(in) :: ipol_pre
-      integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
       real(kind = kreal), intent(in) :: coef_src
+      real(kind = kreal), intent(in) :: d_ctr_source
+      real(kind = kreal), intent(in) :: d_ctr_advect
+      real(kind = kreal), intent(in) :: d_ctr_SGS_advect
 !
-      real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
+      real(kind = kreal), intent(inout) :: d_ctr_previous
 !
 !
-      d_rj(inod_rj_center,ipol_pre) = -d_rj(inod_rj_center,ipol_advect) &
-     &                    - d_rj(inod_rj_center,ipol_SGS_advect)        &
-     &                    + coef_src * d_rj(inod_rj_center,ipol_source)
+      d_ctr_previous = -d_ctr_advect - d_ctr_SGS_advect                 &
+     &                 + coef_src * d_ctr_source
 !
       end subroutine SGS_center_ini_adams_scl_w_src
 !
