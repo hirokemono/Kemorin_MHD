@@ -16,10 +16,6 @@
 !!      subroutine sel_ini_adams_scalar_w_src                           &
 !!     &         (kr_st, kr_ed, ipol_advect, ipol_source, ipol_pre,     &
 !!     &          coef_src, sph_rj, rj_fld)
-!!
-!!      subroutine sel_ctr_scl_diff_adv_src_adams                       &
-!!     &         (ipol_diffuse, ipol_advect, ipol_source, ipol_scalar,  &
-!!     &          ipol_pre, dt, coef_exp, coef_src, sph_rj, rj_fld)
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(phys_data), intent(inout) :: rj_fld
 !!@endverbatim
@@ -81,6 +77,13 @@
      &     (ist, ied, ipol_diffuse, ipol_advect, ipol_source,           &
      &      ipol_scalar, ipol_pre, dt, coef_exp, coef_src,              &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+!
+        if(sph_rj%inod_rj_center .gt. 0) then
+          call center_scl_diff_adv_src_adams(sph_rj%inod_rj_center,     &
+     &        ipol_diffuse, ipol_advect, ipol_source,                   &
+     &        ipol_scalar, ipol_pre, dt, coef_exp, coef_src,            &
+     &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+        end if
       end if
 !
       end subroutine sel_scalar_diff_adv_src_adams
@@ -185,31 +188,6 @@
       end if
 !
       end subroutine sel_ini_adams_scalar_w_src
-!
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      subroutine sel_ctr_scl_diff_adv_src_adams                         &
-     &         (ipol_diffuse, ipol_advect, ipol_source, ipol_scalar,    &
-     &          ipol_pre, dt, coef_exp, coef_src, sph_rj, rj_fld)
-!
-      type(sph_rj_grid), intent(in) :: sph_rj
-      integer(kind = kint), intent(in) :: ipol_diffuse, ipol_advect
-      integer(kind = kint), intent(in) :: ipol_source
-      integer(kind = kint), intent(in) :: ipol_scalar, ipol_pre
-      real(kind = kreal), intent(in) :: coef_exp, coef_src
-      real(kind = kreal), intent(in) :: dt
-!
-      type(phys_data), intent(inout) :: rj_fld
-!
-!
-      if(ipol_source .eq. izero) return
-      call center_scl_diff_adv_src_adams(sph_rj%inod_rj_center,         &
-     &    ipol_diffuse, ipol_advect, ipol_source,                       &
-     &    ipol_scalar, ipol_pre, dt, coef_exp, coef_src,                &
-     &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
-!
-      end subroutine sel_ctr_scl_diff_adv_src_adams
 !
 ! ----------------------------------------------------------------------
 !

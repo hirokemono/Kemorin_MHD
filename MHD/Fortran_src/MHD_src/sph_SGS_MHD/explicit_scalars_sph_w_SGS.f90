@@ -97,30 +97,6 @@
      &     cp_prop%coef_exp, cp_prop%coef_source, sph_rj, rj_fld)
       end if
 !
-!  Center evolution
-!
-      if(sph_rj%inod_rj_center .eq. 0) return
-      if(ht_prop%iflag_scheme .gt.     id_no_evolution) then
-        if(iflag_debug .gt. 0) write(*,*)                               &
-     &                'sel_ctr_scl_SGS_dadv_src_adms temperature'
-        call sel_ctr_scl_SGS_dadv_src_adms                              &
-     &     (SGS_param%iflag_SGS_h_flux, ipol_dif%i_t_diffuse,           &
-     &      ipol_frc%i_h_advect, ipol_div_SGS%i_SGS_h_flux,             &
-     &      ipol_base%i_heat_source, ipol_base%i_temp,                  &
-     &      ipol_exp%i_pre_heat, dt, ht_prop%coef_exp,                  &
-     &      ht_prop%coef_source, sph_rj, rj_fld)
-      end if
-!
-      if(cp_prop%iflag_scheme .gt. id_no_evolution) then
-          if(iflag_debug .gt. 0) write(*,*)                             &
-     &                'sel_ctr_scl_SGS_dadv_src_adms composition'
-        call sel_ctr_scl_SGS_dadv_src_adms(SGS_param%iflag_SGS_c_flux,  &
-     &      ipol_dif%i_c_diffuse, ipol_frc%i_c_advect,                  &
-     &      ipol_div_SGS%i_SGS_c_flux, ipol_base%i_light_source,        &
-     &      ipol_base%i_light, ipol_exp%i_pre_composit,                 &
-     &      dt, cp_prop%coef_exp, cp_prop%coef_source, sph_rj, rj_fld)
-      end if
-!
       end subroutine explicit_scalars_sph_SGS_adams
 !
 ! ----------------------------------------------------------------------
