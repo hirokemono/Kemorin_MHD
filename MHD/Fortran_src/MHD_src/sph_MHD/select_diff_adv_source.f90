@@ -163,9 +163,12 @@
         call set_ini_adams_scalar_w_src                                 &
      &     (ist, ied, ipol_advect, ipol_source, ipol_pre,               &
      &      coef_src, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
-        call center_ini_adams_scalar_w_src(sph_rj%inod_rj_center,       &
-     &      ipol_advect, ipol_source, ipol_pre,                         &
-     &      coef_src, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+!
+        if(sph_rj%inod_rj_center .gt. 0) then
+          call center_ini_adams_scalar_w_src(sph_rj%inod_rj_center,     &
+     &        ipol_advect, ipol_source, ipol_pre,                       &
+     &        coef_src, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+        end if
       end if
 !
       end subroutine sel_ini_adams_scalar_w_src

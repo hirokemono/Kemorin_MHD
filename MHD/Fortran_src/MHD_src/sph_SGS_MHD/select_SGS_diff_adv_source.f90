@@ -27,9 +27,6 @@
 !!     &         (iflag_SGS, ipol_diffuse, ipol_advect,                 &
 !!     &          ipol_SGS_advect, ipol_source, ipol_scalar,            &
 !!     &          dt, coef_exp, coef_adv, coef_src, sph_rj, rj_fld)
-!!      subroutine sel_ctr_ini_adams_scl_w_src(iflag_SGS,               &
-!!     &          ipol_advect, ipol_SGS_advect, ipol_source, ipol_pre,  &
-!!     &          coef_src, sph_rj, rj_fld)
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(phys_data), intent(inout) :: rj_fld
 !!@endverbatim
@@ -188,6 +185,13 @@
           call SGS_center_ini_adams_scl_w_src(sph_rj%inod_rj_center,    &
      &        ipol_advect, ipol_SGS_advect, ipol_source, ipol_pre,      &
      &        coef_src, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+!
+          if(sph_rj%inod_rj_center .gt. 0) then
+            call SGS_center_ini_adams_scl_w_src(sph_rj%inod_rj_center,  &
+     &          ipol_advect, ipol_SGS_advect, ipol_source, ipol_pre,    &
+     &          coef_src, rj_fld%n_point, rj_fld%ntot_phys,             &
+     &          rj_fld%d_fld)
+          end if
         end if
       else
         call sel_ini_adams_scalar_w_src                                 &
@@ -264,37 +268,6 @@
       end if
 !
       end subroutine sel_ctr_scl_SGS_dadv_src_elr
-!
-! ----------------------------------------------------------------------
-!
-      subroutine sel_ctr_ini_adams_scl_w_src(iflag_SGS,                 &
-     &          ipol_advect, ipol_SGS_advect, ipol_source, ipol_pre,    &
-     &          coef_src, sph_rj, rj_fld)
-!
-      type(sph_rj_grid), intent(in) :: sph_rj
-      integer(kind = kint), intent(in) :: iflag_SGS
-      integer(kind = kint), intent(in) :: ipol_advect, ipol_source
-      integer(kind = kint), intent(in) :: ipol_SGS_advect
-      integer(kind = kint), intent(in) :: ipol_pre
-      real(kind = kreal), intent(in) :: coef_src
-!
-      type(phys_data), intent(inout) :: rj_fld
-!
-!
-      if(ipol_source .eq. izero) return
-      if(sph_rj%inod_rj_center .eq. 0) return
-!
-      if(iflag_SGS .gt. id_SGS_none) then
-          call SGS_center_ini_adams_scl_w_src(sph_rj%inod_rj_center,    &
-     &        ipol_advect, ipol_SGS_advect, ipol_source, ipol_pre,      &
-     &        coef_src, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
-      else
-          call center_ini_adams_scalar_w_src(sph_rj%inod_rj_center,     &
-     &        ipol_advect, ipol_source, ipol_pre,                       &
-     &        coef_src, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
-      end if
-!
-      end subroutine sel_ctr_ini_adams_scl_w_src
 !
 ! ----------------------------------------------------------------------
 !

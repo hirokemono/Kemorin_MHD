@@ -209,27 +209,6 @@
      &      cp_prop%coef_source, sph_rj, rj_fld)
       end if
 !
-!   Center evolution
-!
-      if(sph_rj%inod_rj_center .eq. 0) return
-      if(ht_prop%iflag_scheme .gt.     id_no_evolution                  &
-      &  .and. ipol_base%i_heat_source .gt. izero) then
-        call center_ini_adams_scalar_w_src                              &
-     &     (sph_rj%inod_rj_center, ipol_frc%i_h_advect,                 &
-     &      ipol_base%i_heat_source, ipol_exp%i_pre_heat,               &
-     &      ht_prop%coef_source, rj_fld%n_point, rj_fld%ntot_phys,      &
-     &      rj_fld%d_fld)
-      end if
-!
-      if(cp_prop%iflag_scheme .gt. id_no_evolution                      &
-     &  .and. ipol_base%i_light_source .gt. izero) then
-        call center_ini_adams_scalar_w_src                              &
-     &     (sph_rj%inod_rj_center, ipol_frc%i_c_advect,                 &
-     &      ipol_base%i_light_source, ipol_exp%i_pre_composit,          &
-     &      cp_prop%coef_source, rj_fld%n_point, rj_fld%ntot_phys,      &
-     &      rj_fld%d_fld)
-      end if
-!
       end subroutine first_scalars_prev_step_adams
 !
 ! ----------------------------------------------------------------------

@@ -227,23 +227,6 @@
      &      sph_rj, rj_fld)
       end if
 !
-!   Center evolution
-!
-      if(ht_prop%iflag_scheme .gt.     id_no_evolution) then
-        call sel_ctr_ini_adams_scl_w_src                                &
-     &     (SGS_param%iflag_SGS_h_flux, ipol_frc%i_h_advect,            &
-     &      ipol_div_SGS%i_SGS_h_flux, ipol_base%i_heat_source,         &
-     &      ipol_exp%i_pre_heat, ht_prop%coef_source, sph_rj, rj_fld)
-      end if
-!
-      if(cp_prop%iflag_scheme .gt. id_no_evolution) then
-        call sel_ctr_ini_adams_scl_w_src                                &
-     &     (SGS_param%iflag_SGS_c_flux, ipol_frc%i_c_advect,            &
-     &      ipol_div_SGS%i_SGS_c_flux, ipol_base%i_light_source,        &
-     &      ipol_exp%i_pre_composit, cp_prop%coef_source,               &
-     &      sph_rj, rj_fld)
-      end if
-!
       end subroutine first_scalars_SGS_prev_adams
 !
 ! ----------------------------------------------------------------------
