@@ -93,6 +93,7 @@
       use cal_nonlinear
       use cal_sph_dynamic_SGS
       use add_filter_buoyancy_2_force
+      use self_buoyancy_w_filter_sph
 !
       integer(kind = kint), intent(in) :: i_step
       type(fdm_matrices), intent(in) :: r_2nd
@@ -103,8 +104,13 @@
       type(SPH_SGS_structure), intent(inout) :: SPH_SGS
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !
-!   ----  lead nonlinear terms by phesdo spectrum
+!   ----   lead rotation of filtered buoyancies
+      if(iflag_debug .gt. 0) write(*,*) 'rot_self_filter_buoyancy_sph'
+      call rot_self_filter_buoyancy_sph                                 &
+     &   (SPH_MHD%sph, SPH_SGS%ipol_LES, SPH_model%MHD_prop,            &
+     &    SPH_model%sph_MHD_bc%sph_bc_U, SPH_MHD%fld)
 !
+!   ----  lead nonlinear terms by phesdo spectrum
       if (iflag_debug.eq.1) write(*,*) 'nonlinear_by_pseudo_sph'
       call nonlinear_by_pseudo_sph                                      &
      &   (SPH_MHD%sph, SPH_MHD%comms, SPH_model%omega_sph, r_2nd,       &

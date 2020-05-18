@@ -80,7 +80,6 @@
       use check_dependency_SGS_MHD
       use input_control_sph_MHD
       use sph_SGS_mhd_monitor_data_IO
-      use self_buoyancy_w_filter_sph
 !
       type(MHD_file_IO_params), intent(in) :: MHD_files
       type(phys_address), intent(in) :: iphys
@@ -157,10 +156,6 @@
      &   (SPH_MHD%sph%sph_rj, SPH_WK%r_2nd, SPH_model%MHD_prop,         &
      &    SPH_model%sph_MHD_bc, SPH_WK%trans_p%leg,                     &
      &    SPH_MHD%ipol, SPH_MHD%fld)
-      if(iflag_debug .gt. 0) write(*,*) 'rot_self_filter_buoyancy_sph'
-      call rot_self_filter_buoyancy_sph                                 &
-     &   (SPH_MHD%sph, SPH_SGS%ipol_LES, SPH_model%MHD_prop,            &
-     &    SPH_model%sph_MHD_bc%sph_bc_U, SPH_MHD%fld)
 !
 !* obtain nonlinear terms for starting
 !*
@@ -195,7 +190,6 @@
       use sph_SGS_MHD_rst_IO_control
       use output_viz_file_control
       use sph_SGS_mhd_monitor_data_IO
-      use self_buoyancy_w_filter_sph
 !
       integer(kind = kint), intent(in) :: i_step
       type(MHD_file_IO_params), intent(in) :: MHD_files
@@ -230,12 +224,6 @@
      &   (MHD_step%time_d%dt, SPH_MHD%sph%sph_rj, SPH_WK%r_2nd,         &
      &    SPH_model%MHD_prop, SPH_model%sph_MHD_bc, SPH_WK%trans_p%leg, &
      &    SPH_MHD%ipol, SPH_WK%MHD_mats, SPH_MHD%fld)
-      if(iflag_debug .gt. 0) write(*,*) 'rot_self_filter_buoyancy_sph'
-      call rot_self_filter_buoyancy_sph                                 &
-     &   (SPH_MHD%sph, SPH_SGS%ipol_LES, SPH_model%MHD_prop,            &
-     &    SPH_model%sph_MHD_bc%sph_bc_U, SPH_MHD%fld)
-      if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+3)
-      if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+2)
 !*
 !*  ----------------lead nonlinear term ... ----------
 !*
