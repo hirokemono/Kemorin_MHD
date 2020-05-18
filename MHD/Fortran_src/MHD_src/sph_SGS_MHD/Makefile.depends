@@ -50,7 +50,7 @@ cal_dynamic_SGS_buoyancy.o: $(SGS_MHD_SPH_DIR)/cal_dynamic_SGS_buoyancy.f90 m_pr
 	$(F90) -c $(F90OPTFLAGS) $<
 cal_energy_flux_w_SGS_rtp.o: $(SGS_MHD_SPH_DIR)/cal_energy_flux_w_SGS_rtp.f90 m_precision.o m_constants.o m_machine_parameter.o calypso_mpi.o t_phys_address.o t_spheric_rtp_data.o t_physical_property.o t_reference_scalar_param.o t_addresses_sph_transform.o t_schmidt_poly_on_rtm.o cal_energy_flux_rtp.o pole_energy_flux_sph.o
 	$(F90) -c $(F90OPTFLAGS) $<
-cal_explicit_SGS_induction.o: $(SGS_MHD_SPH_DIR)/cal_explicit_SGS_induction.f90 m_precision.o m_t_step_parameter.o t_base_field_labels.o t_base_force_labels.o t_diffusion_term_labels.o t_explicit_term_labels.o t_SGS_control_parameter.o t_SGS_term_labels.o t_physical_property.o t_phys_data.o cal_explicit_terms.o
+cal_explicit_SGS_induction.o: $(SGS_MHD_SPH_DIR)/cal_explicit_SGS_induction.f90 m_precision.o m_t_step_parameter.o t_base_field_labels.o t_base_force_labels.o t_diffusion_term_labels.o t_explicit_term_labels.o t_SGS_control_parameter.o t_SGS_term_labels.o t_physical_property.o t_phys_data.o
 	$(F90) -c $(F90OPTFLAGS) $<
 cal_filtered_sph_fields.o: $(SGS_MHD_SPH_DIR)/cal_filtered_sph_fields.f90 m_precision.o m_constants.o t_SGS_control_parameter.o t_spheric_rj_data.o t_phys_data.o t_sph_filtering_data.o t_sph_filtering.o t_SGS_term_labels.o t_base_force_labels.o t_base_field_labels.o sph_filtering.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -84,7 +84,7 @@ m_SPH_SGS_structure.o: $(SGS_MHD_SPH_DIR)/m_SPH_SGS_structure.f90 m_precision.o 
 	$(F90) -c $(F90OPTFLAGS) $<
 m_ctl_data_sph_SGS_MHD.o: $(SGS_MHD_SPH_DIR)/m_ctl_data_sph_SGS_MHD.f90 m_precision.o t_ctl_data_SGS_MHD.o
 	$(F90) -c $(F90OPTFLAGS) $<
-momentum_w_SGS_explicit.o: $(SGS_MHD_SPH_DIR)/momentum_w_SGS_explicit.f90 m_precision.o t_SGS_control_parameter.o t_control_parameter.o t_physical_property.o t_SPH_SGS_structure.o t_SPH_mesh_field_data.o t_fdm_coefs.o t_schmidt_poly_on_rtm.o t_boundary_data_sph_MHD.o t_boundary_params_sph_MHD.o t_phys_address.o t_SGS_model_addresses.o cal_vorticity_terms_adams.o cal_nonlinear_sph_MHD.o explicit_scalars_sph_w_SGS.o cal_explicit_SGS_induction.o select_diff_adv_source.o
+momentum_w_SGS_explicit.o: $(SGS_MHD_SPH_DIR)/momentum_w_SGS_explicit.f90 m_precision.o t_SGS_control_parameter.o t_control_parameter.o t_physical_property.o t_SPH_SGS_structure.o t_SPH_mesh_field_data.o t_fdm_coefs.o t_schmidt_poly_on_rtm.o t_boundary_data_sph_MHD.o t_boundary_params_sph_MHD.o t_phys_address.o t_SGS_model_addresses.o cal_vorticity_terms_adams.o cal_nonlinear_sph_MHD.o explicit_scalars_sph_w_SGS.o sel_diff_induction_MHD.o select_diff_adv_source.o
 	$(F90) -c $(F90OPTFLAGS) $<
 nolinear_gradient_terms_sph.o: $(SGS_MHD_SPH_DIR)/nolinear_gradient_terms_sph.f90 m_precision.o m_constants.o m_machine_parameter.o t_control_parameter.o t_spheric_parameter.o t_spheric_rtp_data.o t_base_field_labels.o t_grad_field_labels.o t_diff_vector_labels.o t_SGS_term_labels.o t_addresses_sph_transform.o t_sph_filtering_data.o sel_sph_SGS_nl_gradient.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -97,6 +97,8 @@ prod_buo_model_coefs_sph.o: $(SGS_MHD_SPH_DIR)/prod_buo_model_coefs_sph.f90 m_pr
 product_model_coefs_sph.o: $(SGS_MHD_SPH_DIR)/product_model_coefs_sph.f90 m_precision.o calypso_mpi.o m_constants.o m_machine_parameter.o m_phys_constants.o t_SGS_control_parameter.o t_spheric_rtp_data.o t_groups_sph_dynamic.o t_SGS_term_labels.o t_addresses_sph_transform.o t_ele_info_4_dynamic.o t_SGS_model_coefs.o prod_SGS_model_coefs_sph.o m_FFT_selector.o
 	$(F90) -c $(F90OPTFLAGS) $<
 scale_similarity_sph_SGS.o: $(SGS_MHD_SPH_DIR)/scale_similarity_sph_SGS.f90 m_precision.o m_constants.o m_machine_parameter.o m_work_time.o calypso_mpi.o t_physical_property.o t_SGS_control_parameter.o t_SPH_MHD_model_data.o t_SPH_mesh_field_data.o t_sph_trans_arrays_MHD.o t_sph_trans_arrays_SGS_MHD.o t_schmidt_poly_on_rtm.o t_work_4_sph_trans.o t_sph_filtering_data.o t_sph_transforms.o t_sph_filtering.o t_phys_data.o t_phys_address.o t_SGS_model_addresses.o m_elapsed_labels_4_MHD.o sph_transforms_4_SGS.o cal_SGS_terms_sph_MHD.o cal_filtered_sph_fields.o
+	$(F90) -c $(F90OPTFLAGS) $<
+sel_diff_induction_MHD.o: $(SGS_MHD_SPH_DIR)/sel_diff_induction_MHD.f90 m_precision.o t_base_field_labels.o t_base_force_labels.o t_diffusion_term_labels.o t_explicit_term_labels.o t_SGS_control_parameter.o t_SGS_term_labels.o t_phys_address.o t_SGS_model_addresses.o t_physical_property.o t_phys_data.o cal_explicit_terms.o cal_explicit_SGS_induction.o
 	$(F90) -c $(F90OPTFLAGS) $<
 sel_sph_SGS_nl_gradient.o: $(SGS_MHD_SPH_DIR)/sel_sph_SGS_nl_gradient.f90 m_precision.o t_spheric_rtp_data.o t_sph_filtering_data.o t_boundary_params_sph_MHD.o calypso_mpi.o m_FFT_selector.o sph_SGS_nl_gradient_pin.o sph_SGS_nl_gradient_pout.o
 	$(F90) -c $(F90OPTFLAGS) $<

@@ -88,7 +88,7 @@
       use cal_vorticity_terms_adams
       use cal_nonlinear_sph_MHD
       use explicit_scalars_sph_w_SGS
-      use cal_explicit_SGS_induction
+      use sel_diff_induction_MHD
 !
       real(kind = kreal), intent(in) :: dt
 !
@@ -107,10 +107,8 @@
      &    ipol%base, ipol%exp_work, ipol%diffusion,                     &
      &    dt, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
-      call sel_diff_induction_MHD_adams                                 &
-     &   (SGS_par%model_p%iflag_SGS_uxb, dt, MHD_prop%cd_prop,          &
-     &    ipol%base, ipol%exp_work, ipol%forces, ipol%diffusion,        &
-     &    ipol_LES%SGS_term, rj_fld)
+      call sel_diff_induction_MHD_adams(SGS_par%model_p, dt,            &
+     &    MHD_prop%cd_prop, ipol, ipol_LES, rj_fld)
 !
       call explicit_scalars_sph_SGS_adams(dt, SGS_par%model_p,          &
      &    sph_rj, MHD_prop%ht_prop, MHD_prop%cp_prop,                   &
@@ -127,7 +125,7 @@
 !
       use cal_vorticity_terms_adams
       use explicit_scalars_sph_w_SGS
-      use cal_explicit_SGS_induction
+      use sel_diff_induction_MHD
 !
       real(kind = kreal), intent(in) :: dt
 !
@@ -146,10 +144,8 @@
      &    ipol%base, ipol%exp_work, ipol%diffusion,                     &
      &    dt, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
-      call sel_diff_induction_MHD_euler                                 &
-     &   (SGS_par%model_p%iflag_SGS_uxb, dt, MHD_prop%cd_prop,          &
-     &    ipol%base, ipol%forces, ipol%diffusion, ipol_LES%SGS_term,    &
-     &    rj_fld)
+      call sel_diff_induction_MHD_euler(SGS_par%model_p, dt,            &
+     &    MHD_prop%cd_prop, ipol, ipol_LES, rj_fld)
 !
       call explicit_scalars_sph_SGS_euler(dt, SGS_par%model_p,          &
      &    sph_rj, MHD_prop%ht_prop, MHD_prop%cp_prop,                   &
@@ -167,7 +163,7 @@
       use cal_vorticity_terms_adams
       use select_diff_adv_source
       use explicit_scalars_sph_w_SGS
-      use cal_explicit_SGS_induction
+      use sel_diff_induction_MHD
 !
       type(SGS_paremeters), intent(in) :: SGS_par
       type(sph_rj_grid), intent(in) ::  sph_rj
@@ -181,9 +177,8 @@
       call set_ini_adams_inertia(MHD_prop%fl_prop, ipol%exp_work,       &
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
-      call sel_ini_adams_mag_induct                                     &
-     &   (SGS_par%model_p%iflag_SGS_uxb, MHD_prop%cd_prop,              &
-     &    ipol%exp_work, ipol%forces, ipol_LES%SGS_term, rj_fld)
+      call sel_ini_adams_mag_induct(SGS_par%model_p, MHD_prop%cd_prop,  &
+     &    ipol, ipol_LES, rj_fld)
 !
       call first_scalars_SGS_prev_adams(SGS_par%model_p,                &
      &    sph_rj, MHD_prop%ht_prop, MHD_prop%cp_prop,                   &
