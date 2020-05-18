@@ -91,6 +91,7 @@
       use sum_rotation_of_SGS
       use sum_rotation_of_forces
       use cal_nonlinear
+      use cal_filtered_nonlinear
       use cal_sph_dynamic_SGS
       use sum_rot_of_filter_forces
       use rot_self_buoyancies_sph
@@ -128,6 +129,14 @@
      &    SPH_model%MHD_prop, SPH_model%sph_MHD_bc, trans_p,            &
      &    WK%gt_cor, WK%trns_MHD, WK%WK_sph, WK%cor_rlm,                &
      &    SPH_MHD%ipol, SPH_MHD%fld)
+!
+!   ----  lead nonlinear terms by filtered field
+      if (iflag_debug.eq.1) write(*,*) 'nonlinear_by_pseudo_sph'
+      call filter_nonlinear_by_pseudo_sph                               &
+     &   (SPH_MHD%sph, SPH_MHD%comms, r_2nd, SPH_model%MHD_prop,        &
+     &    SPH_model%sph_MHD_bc, trans_p, WK%WK_sph, SPH_SGS%dynamic,    &
+     &    SPH_MHD%ipol, SPH_SGS%ipol_LES, SPH_MHD%fld,                  &
+     &    SPH_SGS%trns_WK_LES%trns_fil_MHD)
 !
 !   ----  Lead SGS terms
       if (iflag_debug.eq.1) write(*,*) 'SGS_by_pseudo_sph'
