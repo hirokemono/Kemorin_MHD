@@ -198,8 +198,10 @@
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_div_of_forces_sph_2'
-      call cal_div_of_forces_sph_2(sph%sph_rj, r_2nd, MHD_prop,         &
-     &    sph_MHD_bc, leg%g_sph_rj, ipol, rj_fld)
+      call cal_div_of_forces_sph_2                                      &
+     &   (sph%sph_rj, r_2nd, MHD_prop, sph_MHD_bc, leg%g_sph_rj,        &
+     &    ipol%forces, ipol%div_forces, rj_fld)
+!     &   ipol%base, ipol%grad_fld, ipol%forces, ipol%div_forces, rj_fld)
 !
       call s_const_radial_forces_on_bc(sph%sph_rj, leg%g_sph_rj,        &
      &    MHD_prop%fl_prop, sph_MHD_bc%sph_bc_U,                        &

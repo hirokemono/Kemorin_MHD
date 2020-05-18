@@ -9,8 +9,9 @@
 !!@verbatim
 !!      subroutine rot_momentum_eq_exp_sph(sph_rj, r_2nd, sph_MHD_bc,   &
 !!     &          leg, ipol_frc, ipol_rot_frc, rj_fld)
-!!      subroutine cal_div_of_forces_sph_2(sph_rj, r_2nd,               &
-!!     &          MHD_prop, sph_MHD_bc, g_sph_rj, ipol, rj_fld)
+!!      subroutine cal_div_of_forces_sph_2                              &
+!!     &         (sph_rj, r_2nd, MHD_prop, sph_MHD_bc, g_sph_rj,        &
+!!     &          ipol_frc, ipol_div_frc, rj_fld)
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(fdm_matrices), intent(in) :: r_2nd
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
@@ -18,6 +19,7 @@
 !!        type(phys_address), intent(in) :: ipol
 !!        type(base_force_address), intent(in) :: ipol_frc
 !!        type(base_force_address), intent(in) :: ipol_rot_frc
+!!        type(base_force_address), intent(in) :: ipol_div_frc
 !!        type(phys_data), intent(inout) :: rj_fld
 !!@endverbatim
 !
@@ -29,7 +31,9 @@
       use m_machine_parameter
 !
       use t_spheric_rj_data
-      use t_phys_address
+      use t_base_force_labels
+!      use t_base_field_labels
+!      use t_grad_field_labels
       use t_phys_data
       use t_fdm_coefs
       use t_schmidt_poly_on_rtm
@@ -41,6 +45,7 @@
 !
       private :: cal_rot_of_forces_sph_2
       private :: cal_rot_of_induction_sph, cal_div_of_fluxes_sph
+      private :: cal_div_of_buoyancies_sph_2
 !
 ! ----------------------------------------------------------------------
 !
@@ -128,8 +133,10 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_div_of_forces_sph_2(sph_rj, r_2nd,                 &
-     &          MHD_prop, sph_MHD_bc, g_sph_rj, ipol, rj_fld)
+      subroutine cal_div_of_forces_sph_2                                &
+     &         (sph_rj, r_2nd, MHD_prop, sph_MHD_bc, g_sph_rj,          &
+     &          ipol_frc, ipol_div_frc, rj_fld)
+!     &          ipol_base, ipol_grad, ipol_frc, ipol_div_frc, rj_fld)
 !
       use t_control_parameter
       use const_sph_divergence
@@ -139,7 +146,10 @@
       type(fdm_matrices), intent(in) :: r_2nd
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
-      type(phys_address), intent(in) :: ipol
+!      type(base_field_address), intent(in) :: ipol_base
+!      type(gradient_field_address), intent(in) :: ipol_grad
+      type(base_force_address), intent(in) :: ipol_frc
+      type(base_force_address), intent(in) :: ipol_div_frc
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
 !
       type(phys_data), intent(inout) :: rj_fld
@@ -147,25 +157,25 @@
 !
       call const_sph_div_force                                          &
      &   (sph_rj, r_2nd, sph_MHD_bc%sph_bc_U, g_sph_rj,                 &
-     &    ipol%forces%i_m_advect, ipol%div_forces%i_m_advect, rj_fld)
+     &    ipol_frc%i_m_advect, ipol_div_frc%i_m_advect, rj_fld)
 !
       if(MHD_prop%fl_prop%iflag_4_lorentz) then
         call const_sph_div_force                                        &
      &     (sph_rj, r_2nd, sph_MHD_bc%sph_bc_U, g_sph_rj,               &
-     &      ipol%forces%i_lorentz, ipol%div_forces%i_lorentz, rj_fld)
+     &      ipol_frc%i_lorentz, ipol_div_frc%i_lorentz, rj_fld)
       end if
 !
       if(MHD_prop%fl_prop%iflag_4_coriolis) then
         call const_sph_div_force                                        &
      &     (sph_rj, r_2nd, sph_MHD_bc%sph_bc_U, g_sph_rj,               &
-     &      ipol%forces%i_coriolis, ipol%div_forces%i_Coriolis, rj_fld)
+     &      ipol_frc%i_coriolis, ipol_div_frc%i_Coriolis, rj_fld)
       end if
 !
-      call cal_div_of_buoyancies_sph_2(sph_rj, r_2nd,                   &
-     &    MHD_prop, sph_MHD_bc, g_sph_rj, ipol, rj_fld)
+      call cal_div_of_buoyancies_sph_2(sph_rj, r_2nd, MHD_prop,         &
+     &    sph_MHD_bc, g_sph_rj, ipol_frc, ipol_div_frc, rj_fld)
 !
 !      call sel_div_buoyancies_sph_MHD                                  &
-!     &   (sph_rj, ipol%base, ipol%grad_fld, ipol%div_forces,           &
+!     &   (sph_rj, ipol_base, ipol_grad, ipol_div_frc,                  &
 !     &    MHD_prop%fl_prop, MHD_prop%ref_param_T, MHD_prop%ref_param_C,&
 !     &    sph_MHD_bc%sph_bc_U, rj_fld)
 !
@@ -173,8 +183,9 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_div_of_buoyancies_sph_2(sph_rj, r_2nd,             &
-     &          MHD_prop, sph_MHD_bc, g_sph_rj, ipol, rj_fld)
+      subroutine cal_div_of_buoyancies_sph_2                            &
+     &         (sph_rj, r_2nd, MHD_prop, sph_MHD_bc, g_sph_rj,          &
+     &          ipol_frc, ipol_div_frc, rj_fld)
 !
       use t_control_parameter
       use const_sph_divergence
@@ -183,7 +194,8 @@
       type(fdm_matrices), intent(in) :: r_2nd
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
-      type(phys_address), intent(in) :: ipol
+      type(base_force_address), intent(in) :: ipol_frc
+      type(base_force_address), intent(in) :: ipol_div_frc
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
 !
       type(phys_data), intent(inout) :: rj_fld
@@ -192,13 +204,13 @@
       if(MHD_prop%fl_prop%iflag_4_gravity) then
         call const_sph_div_force                                        &
      &     (sph_rj, r_2nd, sph_MHD_bc%sph_bc_U, g_sph_rj,               &
-     &      ipol%forces%i_buoyancy, ipol%div_forces%i_buoyancy, rj_fld)
+     &      ipol_frc%i_buoyancy, ipol_div_frc%i_buoyancy, rj_fld)
       end if
 !
       if(MHD_prop%fl_prop%iflag_4_composit_buo) then
         call const_sph_div_force                                        &
      &     (sph_rj, r_2nd, sph_MHD_bc%sph_bc_U, g_sph_rj,               &
-     &      ipol%forces%i_comp_buo, ipol%div_forces%i_comp_buo, rj_fld)
+     &      ipol_frc%i_comp_buo, ipol_div_frc%i_comp_buo, rj_fld)
       end if
 !
       end subroutine cal_div_of_buoyancies_sph_2

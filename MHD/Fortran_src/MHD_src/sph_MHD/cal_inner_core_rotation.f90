@@ -8,9 +8,9 @@
 !!
 !!@verbatim
 !!      subroutine set_inner_core_rotation                              &
-!!     &         (kr_in, sph_rj, ipol, rj_fld)
+!!     &         (kr_in, sph_rj, ipol_base, rj_fld)
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
-!!        type(phys_address), intent(in) :: ipol
+!!        type(base_field_address), intent(in) :: ipol_base
 !!        type(phys_data), intent(inout) :: rj_fld
 !!      subroutine set_icore_viscous_matrix(kr_in, fdm1_fix_fld_ICB,    &
 !!     &          dt, sph_rj, fl_prop, band_vt_evo)
@@ -18,17 +18,20 @@
 !!     &         (kr_in, fdm1_fix_fld_ICB, sph_rj, coef_d,              &
 !!     &          it_velo, it_viscous, rj_fld)
 !!      subroutine copy_icore_rot_to_tor_coriolis                       &
-!!     &         (sph_bc_U, sph_rj, ipol, rj_fld)
+!!     &         (sph_bc_U, sph_rj, ipol_frc, ipol_rot_frc, rj_fld)
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
-!!        type(phys_address), intent(in) :: ipol
+!!        type(base_force_address), intent(in) :: ipol_frc
+!!        type(base_force_address), intent(in) :: ipol_rot_frc
 !!        type(sph_boundary_type), intent(in) :: sph_bc_U
 !!        type(phys_data), intent(inout) :: rj_fld
 !!      subroutine inner_core_coriolis_rj                               &
 !!     &         (kr_in, idx_rj_degree_one,  nri, jmax, radius_1d_rj_r, &
-!!     &          omega_rj, coef_cor, ipol, n_point, ntot_phys_rj, d_rj)
+!!     &          omega_rj, coef_cor, ipol_base, ipol_rot_frc,          &
+!!     &          n_point, ntot_phys_rj, d_rj)
 !!      subroutine int_icore_toroidal_lorentz                           &
 !!     &         (kr_in, sph_rj, ipol_frc, ipol_rot_frc, rj_fld)
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
+!!        type(base_field_address), intent(in) :: ipol_base
 !!        type(base_force_address), intent(in) :: ipol_frc
 !!        type(base_force_address), intent(in) :: ipol_rot_frc
 !!        type(fluid_property), intent(in) :: fl_prop
@@ -46,7 +49,8 @@
       use m_constants
 !
       use t_spheric_rj_data
-      use t_phys_address
+      use t_base_field_labels
+      use t_base_force_labels
       use t_phys_data
       use t_boundary_params_sph_MHD
 !
@@ -62,26 +66,26 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_inner_core_rotation                                &
-     &         (kr_in, sph_rj, ipol, rj_fld)
+     &         (kr_in, sph_rj, ipol_base, rj_fld)
 !
       integer(kind = kint), intent(in) :: kr_in
       type(sph_rj_grid), intent(in) ::  sph_rj
-      type(phys_address), intent(in) :: ipol
+      type(base_field_address), intent(in) :: ipol_base
       type(phys_data), intent(inout) :: rj_fld
 !
 !
       call set_inner_core_rot_l1                                        &
-     &   (ipol, sph_rj%idx_rj_degree_one(-1),                           &
+     &   (ipol_base, sph_rj%idx_rj_degree_one(-1),                      &
      &    kr_in, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                  &
      &    sph_rj%radius_1d_rj_r, sph_rj%ar_1d_rj,                       &
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       call set_inner_core_rot_l1                                        &
-     &   (ipol, sph_rj%idx_rj_degree_one( 0),                           &
+     &   (ipol_base, sph_rj%idx_rj_degree_one( 0),                      &
      &    kr_in, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                  &
      &    sph_rj%radius_1d_rj_r, sph_rj%ar_1d_rj,                       &
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       call set_inner_core_rot_l1                                        &
-     &   (ipol, sph_rj%idx_rj_degree_one( 1),                           &
+     &   (ipol_base, sph_rj%idx_rj_degree_one( 1),                      &
      &    kr_in, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                  &
      &    sph_rj%radius_1d_rj_r, sph_rj%ar_1d_rj,                       &
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
@@ -156,10 +160,11 @@
 ! ----------------------------------------------------------------------
 !
       subroutine copy_icore_rot_to_tor_coriolis                         &
-     &         (sph_bc_U, sph_rj, ipol, rj_fld)
+     &         (sph_bc_U, sph_rj, ipol_frc, ipol_rot_frc, rj_fld)
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
-      type(phys_address), intent(in) :: ipol
+      type(base_force_address), intent(in) :: ipol_frc
+      type(base_force_address), intent(in) :: ipol_rot_frc
       type(sph_boundary_type), intent(in) :: sph_bc_U
 !
       type(phys_data), intent(inout) :: rj_fld
@@ -173,8 +178,8 @@
         if(sph_rj%idx_rj_degree_one(m) .gt. 0) then
           i1 = sph_rj%idx_rj_degree_one(m)                              &
      &        + (sph_bc_U%kr_in-1)*sph_rj%nidx_rj(2)
-          rj_fld%d_fld(i1,ipol%forces%i_coriolis+2)                     &
-     &           = rj_fld%d_fld(i1,ipol%rot_forces%i_Coriolis)
+          rj_fld%d_fld(i1,ipol_frc%i_coriolis+2)                        &
+     &           = rj_fld%d_fld(i1,ipol_rot_frc%i_Coriolis)
         end if
       end do
 !
@@ -184,9 +189,11 @@
 !
       subroutine inner_core_coriolis_rj                                 &
      &         (kr_in, idx_rj_degree_one,  nri, jmax, radius_1d_rj_r,   &
-     &          omega_rj, coef_cor, ipol, n_point, ntot_phys_rj, d_rj)
+     &          omega_rj, coef_cor, ipol_base, ipol_rot_frc,            &
+     &          n_point, ntot_phys_rj, d_rj)
 !
-      type(phys_address), intent(in) :: ipol
+      type(base_field_address), intent(in) :: ipol_base
+      type(base_force_address), intent(in) :: ipol_rot_frc
       integer(kind = kint), intent(in) :: idx_rj_degree_one(-1:1)
       integer(kind = kint), intent(in) :: n_point, nri, jmax
       integer(kind = kint), intent(in) :: kr_in
@@ -207,25 +214,25 @@
       i10c = idx_rj_degree_one( 0) + (kr_in-1)*jmax
       i11c = idx_rj_degree_one( 1) + (kr_in-1)*jmax
 !
-      d_rj(i11s,ipol%rot_forces%i_Coriolis)                             &
-     &       =  omega_rj(kr_in,0,2)*d_rj(i11c,ipol%base%i_vort)         &
-     &        - omega_rj(kr_in,0,3)*d_rj(i10c,ipol%base%i_vort)
-      d_rj(i11c,ipol%rot_forces%i_Coriolis)                             &
-     &       =  omega_rj(kr_in,0,1)*d_rj(i10c,ipol%base%i_vort)         &
-     &        - omega_rj(kr_in,0,2)*d_rj(i11s,ipol%base%i_vort)
-      d_rj(i10c,ipol%rot_forces%i_Coriolis)                             &
-     &       =  omega_rj(kr_in,0,3)*d_rj(i11s,ipol%base%i_vort)         &
-     &        - omega_rj(kr_in,0,1)*d_rj(i11c,ipol%base%i_vort)
+      d_rj(i11s,ipol_rot_frc%i_Coriolis)                                &
+     &       =  omega_rj(kr_in,0,2)*d_rj(i11c,ipol_base%i_vort)         &
+     &        - omega_rj(kr_in,0,3)*d_rj(i10c,ipol_base%i_vort)
+      d_rj(i11c,ipol_rot_frc%i_Coriolis)                                &
+     &       =  omega_rj(kr_in,0,1)*d_rj(i10c,ipol_base%i_vort)         &
+     &        - omega_rj(kr_in,0,2)*d_rj(i11s,ipol_base%i_vort)
+      d_rj(i10c,ipol_rot_frc%i_Coriolis)                                &
+     &       =  omega_rj(kr_in,0,3)*d_rj(i11s,ipol_base%i_vort)         &
+     &        - omega_rj(kr_in,0,1)*d_rj(i11c,ipol_base%i_vort)
 !
-      d_rj(i11s,ipol%rot_forces%i_Coriolis)                             &
+      d_rj(i11s,ipol_rot_frc%i_Coriolis)                                &
      &       = -two*coef_cor*radius_1d_rj_r(kr_in)                      &
-     &        * d_rj(i11s,ipol%rot_forces%i_Coriolis)
-      d_rj(i11c,ipol%rot_forces%i_Coriolis)                             &
+     &        * d_rj(i11s,ipol_rot_frc%i_Coriolis)
+      d_rj(i11c,ipol_rot_frc%i_Coriolis)                                &
      &       = -two*coef_cor*radius_1d_rj_r(kr_in)                      &
-     &        * d_rj(i11c,ipol%rot_forces%i_Coriolis)
-      d_rj(i10c,ipol%rot_forces%i_Coriolis)                             &
+     &        * d_rj(i11c,ipol_rot_frc%i_Coriolis)
+      d_rj(i10c,ipol_rot_frc%i_Coriolis)                                &
      &       = -two*coef_cor*radius_1d_rj_r(kr_in)                      &
-     &        * d_rj(i10c,ipol%rot_forces%i_Coriolis)
+     &        * d_rj(i10c,ipol_rot_frc%i_Coriolis)
 !
       end subroutine inner_core_coriolis_rj
 !
@@ -291,11 +298,11 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_inner_core_rot_l1(ipol, idx_rj_l0, kr_in,          &
+      subroutine set_inner_core_rot_l1(ipol_base, idx_rj_l0, kr_in,     &
      &          nri, jmax, radius_1d_rj_r, ar_1d_rj,                    &
      &          nnod_rj, ntot_phys_rj, d_rj)
 !
-      type(phys_address), intent(in) :: ipol
+      type(base_field_address), intent(in) :: ipol_base
       integer(kind = kint), intent(in) :: nri, jmax
       integer(kind = kint), intent(in) :: kr_in, idx_rj_l0
       integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
@@ -318,19 +325,19 @@
 !
         ratio = radius_1d_rj_r(k)*radius_1d_rj_r(k) * ar_1d_rj(kr_in,2)
 !
-        d_rj(i10c,ipol%base%i_velo+2)                                   &
-     &           = ratio * d_rj(i10c_ri,ipol%base%i_velo+2)
-        d_rj(i10c,ipol%base%i_vort)                                     &
-     &           = ratio * d_rj(i10c_ri,ipol%base%i_vort)
-        d_rj(i10c,ipol%base%i_vort+1)                                   &
-     &           = two *   d_rj(i10c_ri,ipol%base%i_vort)               &
+        d_rj(i10c,ipol_base%i_velo+2)                                   &
+     &           = ratio * d_rj(i10c_ri,ipol_base%i_velo+2)
+        d_rj(i10c,ipol_base%i_vort)                                     &
+     &           = ratio * d_rj(i10c_ri,ipol_base%i_vort)
+        d_rj(i10c,ipol_base%i_vort+1)                                   &
+     &           = two *   d_rj(i10c_ri,ipol_base%i_vort)               &
      &                  * radius_1d_rj_r(k)*ar_1d_rj(kr_in,2)
       end do
 !$omp end parallel do
 !
       i10c = idx_rj_l0 + (kr_in-1)*jmax
-      d_rj(i10c,ipol%base%i_vort+1)                                     &
-     &     = two * d_rj(i10c_ri,ipol%base%i_vort) * ar_1d_rj(kr_in,1)
+      d_rj(i10c,ipol_base%i_vort+1)                                     &
+     &     = two * d_rj(i10c_ri,ipol_base%i_vort) * ar_1d_rj(kr_in,1)
 !
       end subroutine set_inner_core_rot_l1
 !

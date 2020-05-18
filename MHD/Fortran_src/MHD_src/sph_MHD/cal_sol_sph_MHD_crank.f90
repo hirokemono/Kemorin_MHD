@@ -241,7 +241,7 @@
 !
       if(sph_bc_U%iflag_icb .eq. iflag_rotatable_ic) then
         call set_inner_core_rotation                                    &
-     &     (sph_bc_U%kr_in, sph_rj, ipol, rj_fld)
+     &     (sph_bc_U%kr_in, sph_rj, ipol%base, rj_fld)
       end if
 !
 !       Input: ipol%base%i_vort, ipol%base%i_vort+2
