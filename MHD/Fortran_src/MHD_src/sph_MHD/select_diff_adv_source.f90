@@ -79,10 +79,12 @@
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
         if(sph_rj%inod_rj_center .gt. 0) then
-          call center_scl_diff_adv_src_adams(sph_rj%inod_rj_center,     &
-     &        ipol_diffuse, ipol_advect, ipol_source,                   &
-     &        ipol_scalar, ipol_pre, dt, coef_exp, coef_src,            &
-     &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+          call center_scl_diff_adv_src_adams(dt, coef_exp, coef_src,    &
+     &        rj_fld%d_fld(sph_rj%inod_rj_center,ipol_source),          &
+     &        rj_fld%d_fld(sph_rj%inod_rj_center,ipol_diffuse),         &
+     &        rj_fld%d_fld(sph_rj%inod_rj_center,ipol_advect),          &
+     &        rj_fld%d_fld(sph_rj%inod_rj_center,ipol_scalar),          &
+     &        rj_fld%d_fld(sph_rj%inod_rj_center,ipol_pre))
         end if
       end if
 !
@@ -142,10 +144,11 @@
      &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
           if(sph_rj%inod_rj_center .eq. 0) return
-            call center_scl_diff_adv_src_euler(sph_rj%inod_rj_center,   &
-     &          ipol_diffuse, ipol_advect, ipol_source,                 &
-     &          ipol_scalar, dt, coef_exp, coef_src,                    &
-     &          rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+            call center_scl_diff_adv_src_euler(dt, coef_exp, coef_src,  &
+     &          rj_fld%d_fld(sph_rj%inod_rj_center,ipol_source),        &
+     &          rj_fld%d_fld(sph_rj%inod_rj_center,ipol_diffuse),       &
+     &          rj_fld%d_fld(sph_rj%inod_rj_center,ipol_advect),        &
+     &          rj_fld%d_fld(sph_rj%inod_rj_center,ipol_scalar))
           end if
         end if
       end if
@@ -181,9 +184,10 @@
      &      coef_src, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
         if(sph_rj%inod_rj_center .gt. 0) then
-          call center_ini_adams_scalar_w_src(sph_rj%inod_rj_center,     &
-     &        ipol_advect, ipol_source, ipol_pre,                       &
-     &        coef_src, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+          call center_ini_adams_scalar_w_src(coef_src,                  &
+     &        rj_fld%d_fld(sph_rj%inod_rj_center,ipol_source),          &
+     &        rj_fld%d_fld(sph_rj%inod_rj_center,ipol_advect),          &
+     &        rj_fld%d_fld(sph_rj%inod_rj_center,ipol_pre))
         end if
       end if
 !
