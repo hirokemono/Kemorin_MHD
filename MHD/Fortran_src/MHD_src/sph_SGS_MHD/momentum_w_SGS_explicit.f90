@@ -115,8 +115,8 @@
       call explicit_scalars_sph_SGS_adams(dt, SGS_par%model_p,          &
      &    sph_rj, MHD_prop%ht_prop, MHD_prop%cp_prop,                   &
      &    sph_MHD_bc%sph_bc_T, sph_MHD_bc%sph_bc_C,                     &
-     &    ipol%base, ipol%exp_work, ipol%forces, ipol%diffusion,        &
-     &    ipol_LES%div_SGS, rj_fld)
+     &    ipol%base, ipol%exp_work, ipol%diffusion, ipol%forces,        &
+     &    ipol_LES%force_by_filter, ipol_LES%div_SGS, rj_fld)
 !
       end subroutine cal_explicit_sph_SGS_adams
 !
@@ -154,8 +154,8 @@
       call explicit_scalars_sph_SGS_euler(dt, SGS_par%model_p,          &
      &    sph_rj, MHD_prop%ht_prop, MHD_prop%cp_prop,                   &
      &    sph_MHD_bc%sph_bc_T, sph_MHD_bc%sph_bc_C,                     &
-     &    ipol%base, ipol%forces, ipol%diffusion, ipol_LES%div_SGS,     &
-     &    rj_fld)
+     &    ipol%base, ipol%diffusion, ipol%forces,                       &
+     &    ipol_LES%force_by_filter, ipol_LES%div_SGS, rj_fld)
 !
       end subroutine cal_explicit_sph_SGS_euler
 !
@@ -188,8 +188,8 @@
       call first_scalars_SGS_prev_adams(SGS_par%model_p,                &
      &    sph_rj, MHD_prop%ht_prop, MHD_prop%cp_prop,                   &
      &    sph_MHD_bc%sph_bc_T, sph_MHD_bc%sph_bc_C,                     &
-     &    ipol%base, ipol%exp_work, ipol%forces, ipol_LES%div_SGS,      &
-     &    rj_fld)
+     &    ipol%base, ipol%exp_work, ipol%forces,                        &
+     &    ipol_LES%force_by_filter, ipol_LES%div_SGS, rj_fld)
 !
       end subroutine cal_first_SGS_prev_step_adams
 !
