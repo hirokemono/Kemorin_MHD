@@ -177,8 +177,8 @@
       if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+10)
       if (iflag_debug.ge.1) write(*,*) 'nonlinear_terms_in_rtp'
       call nonlinear_terms_in_rtp(sph%sph_rtp, MHD_prop, trans_p%leg,   &
-     &    trns_MHD%b_trns, trns_MHD%f_trns, trns_MHD%backward,          &
-     &    trns_MHD%forward)
+     &    trns_MHD%b_trns%base, trns_MHD%f_trns%force,                  &
+     &    trns_MHD%backward, trns_MHD%forward)
       if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+10)
 !
       if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+11)
@@ -191,7 +191,7 @@
       if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+12)
       if (iflag_debug.ge.1) write(*,*) 'rot_momentum_eq_exp_sph'
       call rot_momentum_eq_exp_sph(sph%sph_rj, r_2nd, sph_MHD_bc,       &
-     &    trans_p%leg, ipol, rj_fld)
+     &    trans_p%leg, ipol%forces, ipol%rot_forces, rj_fld)
       if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+12)
 !
       end subroutine nonlinear_by_pseudo_sph

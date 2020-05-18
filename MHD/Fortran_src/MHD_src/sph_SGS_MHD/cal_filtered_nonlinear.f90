@@ -22,12 +22,6 @@
 !!        type(SGS_address_sph_trans), intent(inout) :: trns_fil_MHD
 !!        type(spherical_trns_works), intent(inout) :: WK_sph
 !!        type(phys_data), intent(inout) :: rj_fld
-!!      subroutine sum_filter_forces_to_explicit                        &
-!!     &         (fl_prop, ipol, ipol_LES, rj_fld)
-!!        type(fluid_property), intent(in) :: fl_prop
-!!        type(phys_address), intent(in) :: ipol
-!!        type(SGS_model_addresses), intent(in) :: ipol_LES
-!!        type(phys_data), intent(inout) :: rj_fld
 !!@endverbatim
 !
 !
@@ -84,20 +78,6 @@
       type(phys_data), intent(inout) :: rj_fld
 !
       logical :: flag
-!
-!
-      flag =   MHD_prop%fl_prop%iflag_4_filter_inertia                  &
-     &    .or. MHD_prop%fl_prop%iflag_4_filter_lorentz                  &
-     &    .or. MHD_prop%fl_prop%iflag_4_filter_gravity                  &
-     &    .or. MHD_prop%fl_prop%iflag_4_filter_comp_buo                 &
-     &    .or. MHD_prop%cd_prop%iflag_4_filter_induction                &
-     &    .or. MHD_prop%ht_prop%iflag_4_filter_advection                &
-     &    .or. MHD_prop%cp_prop%iflag_4_filter_advection
-      if(flag .eqv. .FALSE.) return
-!
-      if(iflag_debug .gt. 0) write(*,*) 'rot_self_filter_buoyancy_sph'
-      call rot_self_filter_buoyancy_sph                                 &
-     &   (sph%sph_rj, ipol_LES, MHD_prop, sph_MHD_bc%sph_bc_U, rj_fld)
 !
 !
       flag =   MHD_prop%fl_prop%iflag_4_filter_inertia                  &

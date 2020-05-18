@@ -27,9 +27,10 @@
 !!     &         (kr_in, idx_rj_degree_one,  nri, jmax, radius_1d_rj_r, &
 !!     &          omega_rj, coef_cor, ipol, n_point, ntot_phys_rj, d_rj)
 !!      subroutine int_icore_toroidal_lorentz                           &
-!!     &         (kr_in, sph_rj, ipol, rj_fld)
+!!     &         (kr_in, sph_rj, ipol_frc, ipol_rot_frc, rj_fld)
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
-!!        type(phys_address), intent(in) :: ipol
+!!        type(base_force_address), intent(in) :: ipol_frc
+!!        type(base_force_address), intent(in) :: ipol_rot_frc
 !!        type(fluid_property), intent(in) :: fl_prop
 !!        type(phys_data), intent(inout) :: rj_fld
 !!        type(band_matrices_type), intent(inout) :: band_vt_evo
@@ -231,26 +232,27 @@
 ! ----------------------------------------------------------------------
 !
       subroutine int_icore_toroidal_lorentz                             &
-     &         (kr_in, sph_rj, ipol, rj_fld)
+     &         (kr_in, sph_rj, ipol_frc, ipol_rot_frc, rj_fld)
 !
       integer(kind = kint), intent(in) :: kr_in
-      type(phys_address), intent(in) :: ipol
+      type(base_force_address), intent(in) :: ipol_frc
+      type(base_force_address), intent(in) :: ipol_rot_frc
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(phys_data), intent(inout) :: rj_fld
 !
 !
       call int_icore_tor_lorentz_l1                                     &
-     &   (ipol, sph_rj%idx_rj_degree_one(-1),                           &
+     &   (ipol_frc, ipol_rot_frc, sph_rj%idx_rj_degree_one(-1),         &
      &    kr_in, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                  &
      &    sph_rj%radius_1d_rj_r, sph_rj%ar_1d_rj,                       &
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       call int_icore_tor_lorentz_l1                                     &
-     &   (ipol, sph_rj%idx_rj_degree_one( 0),                           &
+     &   (ipol_frc, ipol_rot_frc, sph_rj%idx_rj_degree_one( 0),         &
      &    kr_in, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                  &
      &    sph_rj%radius_1d_rj_r, sph_rj%ar_1d_rj,                       &
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       call int_icore_tor_lorentz_l1                                     &
-     &   (ipol, sph_rj%idx_rj_degree_one( 1),                           &
+     &   (ipol_frc, ipol_rot_frc, sph_rj%idx_rj_degree_one( 1),         &
      &    kr_in, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                  &
      &    sph_rj%radius_1d_rj_r, sph_rj%ar_1d_rj,                       &
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
@@ -369,11 +371,12 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine int_icore_tor_lorentz_l1(ipol, idx_rj_l0, kr_in,       &
-     &          nri, jmax, radius_1d_rj_r, ar_1d_rj,                    &
+      subroutine int_icore_tor_lorentz_l1(ipol_frc, ipol_rot_frc,       &
+     &          idx_rj_l0, kr_in, nri, jmax, radius_1d_rj_r, ar_1d_rj,  &
      &          nnod_rj, ntot_phys_rj, d_rj)
 !
-      type(phys_address), intent(in) :: ipol
+      type(base_force_address), intent(in) :: ipol_frc
+      type(base_force_address), intent(in) :: ipol_rot_frc
       integer(kind = kint), intent(in) :: nri, jmax
       integer(kind = kint), intent(in) :: kr_in, idx_rj_l0
       integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
@@ -390,7 +393,7 @@
 !
       if(idx_rj_l0 .le. 0) return
 !
-      it_lorentz = ipol%forces%i_lorentz + 2
+      it_lorentz = ipol_frc%i_lorentz + 2
       i10c_o = idx_rj_l0
       sk_10c = d_rj(i10c_o,it_lorentz) * radius_1d_rj_r(1)**3
 !
@@ -409,7 +412,7 @@
       i10c_o = idx_rj_l0 + (kr_in-1)*jmax
       d_rj(i10c_o,it_lorentz)                                           &
      &      = half * five * sk_10c * ar_1d_rj(kr_in,1)**3
-      d_rj(i10c_o,ipol%rot_forces%i_lorentz)                            &
+      d_rj(i10c_o,ipol_rot_frc%i_lorentz)                               &
      &      = d_rj(i10c_o,it_lorentz)
 !
       end subroutine int_icore_tor_lorentz_l1
