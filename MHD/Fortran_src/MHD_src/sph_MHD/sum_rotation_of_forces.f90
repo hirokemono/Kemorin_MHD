@@ -37,6 +37,7 @@
 !
       subroutine sum_forces_to_explicit(fl_prop, ipol, rj_fld)
 !
+      use copy_nodal_fields
       use cal_vorticity_terms_adams
 !
       type(fluid_property), intent(in) :: fl_prop
@@ -118,7 +119,6 @@
       subroutine licv_forces_to_explicit(fl_prop, ipol, rj_fld)
 !
       use m_phys_constants
-      use copy_nodal_fields
       use cal_vorticity_terms_adams
 !
       type(fluid_property), intent(in) :: fl_prop
