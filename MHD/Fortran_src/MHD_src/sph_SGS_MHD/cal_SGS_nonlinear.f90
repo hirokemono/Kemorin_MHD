@@ -92,7 +92,7 @@
       use sum_rotation_of_forces
       use cal_nonlinear
       use cal_sph_dynamic_SGS
-      use add_filter_buoyancy_2_force
+      use sum_rot_of_filter_forces
       use rot_self_buoyancies_sph
       use self_buoyancy_w_filter_sph
 !
@@ -151,15 +151,16 @@
      &    SPH_MHD%ipol, SPH_MHD%fld)
       if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+8)
 !
+!
+!   ----  Sum all explicit forces
       if(iflag_debug .gt. 0) write(*,*) 'sum_forces_to_explicit'
       call sum_forces_to_explicit                                       &
      &   (SPH_model%MHD_prop%fl_prop, SPH_MHD%ipol, SPH_MHD%fld)
 !
 !    ---- Add filtered rotation of forces
-      if(iflag_debug .gt. 0) write(*,*) 'add_filtered_buo_to_explicit'
-      call add_filtered_buo_to_explicit(SPH_model%MHD_prop%fl_prop,     &
-     &    SPH_MHD%ipol%exp_work, SPH_SGS%ipol_LES%rot_frc_by_filter,    &
-     &    SPH_MHD%fld)
+      if(iflag_debug .gt. 0) write(*,*) 'sum_filter_forces_to_explicit'
+      call sum_filter_forces_to_explicit(SPH_model%MHD_prop%fl_prop,    &
+     &    SPH_MHD%ipol, SPH_SGS%ipol_LES, SPH_MHD%fld)
 !
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &                'SGS_forces_to_explicit'

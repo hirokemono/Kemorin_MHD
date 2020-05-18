@@ -29,7 +29,7 @@
 !!        type(explicit_term_address), intent(in) :: ipol_exp
 !!        type(base_force_address), intent(in) :: ipol_rot_frc
 !!
-!!      subroutine set_rot_advection_to_force                           &
+!!      subroutine add_rot_advection_to_force                           &
 !!     &         (ipol_exp, ipol_rot_frc, nnod_rj, ntot_phys_rj, d_rj)
 !!      subroutine add_coriolis_to_vort_force                           &
 !!     &         (ipol_exp, ipol_rot_frc, nnod_rj, ntot_phys_rj, d_rj)
@@ -216,7 +216,7 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine set_rot_advection_to_force                             &
+      subroutine add_rot_advection_to_force                             &
      &         (ipol_exp, ipol_rot_frc, nnod_rj, ntot_phys_rj, d_rj)
 !
       type(explicit_term_address), intent(in) :: ipol_exp
@@ -227,16 +227,16 @@
       integer(kind = kint) :: inod
 !
 !
-!$omp parallel do private (inod)
+!$omp do private (inod)
       do inod = 1, nnod_rj
-        d_rj(inod,ipol_exp%i_forces  )                                  &
-     &        = - d_rj(inod,ipol_rot_frc%i_m_advect  )
-        d_rj(inod,ipol_exp%i_forces+2)                                  &
-     &        = - d_rj(inod,ipol_rot_frc%i_m_advect+2)
+        d_rj(inod,ipol_exp%i_forces  ) = d_rj(inod,ipol_exp%i_forces  ) &
+     &         - d_rj(inod,ipol_rot_frc%i_m_advect  )
+        d_rj(inod,ipol_exp%i_forces+2) = d_rj(inod,ipol_exp%i_forces+2) &
+     &         - d_rj(inod,ipol_rot_frc%i_m_advect+2)
       end do
-!$omp end parallel do
+!$omp end do nowait
 !
-      end subroutine set_rot_advection_to_force
+      end subroutine add_rot_advection_to_force
 !
 ! ----------------------------------------------------------------------
 !
@@ -253,11 +253,9 @@
 !
 !$omp do private (inod)
       do inod = 1, nnod_rj
-        d_rj(inod,ipol_exp%i_forces  )                                  &
-     &        =  d_rj(inod,ipol_exp%i_forces  )                         &
+        d_rj(inod,ipol_exp%i_forces  ) = d_rj(inod,ipol_exp%i_forces  ) &
      &         + d_rj(inod,ipol_rot_frc%i_Coriolis  )
-        d_rj(inod,ipol_exp%i_forces+2)                                  &
-     &        =  d_rj(inod,ipol_exp%i_forces+2)                         &
+        d_rj(inod,ipol_exp%i_forces+2) = d_rj(inod,ipol_exp%i_forces+2) &
      &         + d_rj(inod,ipol_rot_frc%i_Coriolis+2)
       end do
 !$omp end do nowait
@@ -279,8 +277,7 @@
 !
 !$omp do private (inod)
       do inod = 1, nnod_rj
-        d_rj(inod,ipol_exp%i_forces+2)                                  &
-     &        =  d_rj(inod,ipol_exp%i_forces+2)                         &
+        d_rj(inod,ipol_exp%i_forces+2) = d_rj(inod,ipol_exp%i_forces+2) &
      &         + d_rj(inod,is_rot_buo+2)
        end do
 !$omp end do nowait
@@ -302,11 +299,9 @@
 !
 !$omp do private (inod)
       do inod = 1, nnod_rj
-        d_rj(inod,ipol_exp%i_forces  )                                  &
-     &        =  d_rj(inod,ipol_exp%i_forces  )                         &
+        d_rj(inod,ipol_exp%i_forces  ) = d_rj(inod,ipol_exp%i_forces  ) &
      &         + d_rj(inod,ipol_rot_frc%i_lorentz  )
-        d_rj(inod,ipol_exp%i_forces+2)                                  &
-     &        =  d_rj(inod,ipol_exp%i_forces+2)                         &
+        d_rj(inod,ipol_exp%i_forces+2) = d_rj(inod,ipol_exp%i_forces+2) &
      &         + d_rj(inod,ipol_rot_frc%i_lorentz+2)
        end do
 !$omp end do nowait

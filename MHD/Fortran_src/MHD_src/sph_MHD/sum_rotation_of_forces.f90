@@ -76,17 +76,16 @@
      &     (ipol%exp_work, ipol%rot_forces, ipol%rot_forces%i_comp_buo, &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       else
-!
-        if(fl_prop%iflag_4_filter_inertia .eqv. .FALSE.) then
-          call set_rot_advection_to_force                               &
-     &     (ipol%exp_work, ipol%rot_forces,                             &
-     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
-        else
-          call clear_field_data                                         &
-     &       (rj_fld, n_vector, ipol%exp_work%i_forces)
-        end if
+        call clear_field_data                                           &
+     &     (rj_fld, n_vector, ipol%exp_work%i_forces)
 !
 !$omp parallel
+        if(fl_prop%iflag_4_filter_inertia .eqv. .FALSE.) then
+          call add_rot_advection_to_force                               &
+     &     (ipol%exp_work, ipol%rot_forces,                             &
+     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+        end if
+!
         if(fl_prop%iflag_4_coriolis) then
           call add_coriolis_to_vort_force                               &
      &       (ipol%exp_work, ipol%rot_forces,                           &
