@@ -21,12 +21,11 @@
 !! ------------------------------------------------------------------
 !!
 !!      subroutine fwd_MHD_FFT_sel_to_send(sph_rtp, comm_rtp,           &
-!!     &          ncomp_fwd, n_WS, trns_fwd, WS, WK_FFTs, MHD_mul_FFTW)
+!!     &          ncomp_fwd, n_WS, fld_rtp, WS, WK_FFTs, MHD_mul_FFTW)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(sph_comm_tbl), intent(in)  :: comm_rtp
 !!        type(work_for_FFTs), intent(inout) :: WK_FFTs
 !!        type(work_for_sgl_FFTW), intent(inout) :: MHD_mul_FFTW
-!!        type(spherical_transform_data), intent(inout) :: trns_fwd
 !! ------------------------------------------------------------------
 !!
 !!   wrapper subroutine for FFT in ISPACK
@@ -173,17 +172,19 @@
 ! ------------------------------------------------------------------
 !
       subroutine fwd_MHD_FFT_sel_to_send(sph_rtp, comm_rtp,             &
-     &          ncomp_fwd, n_WS, trns_fwd, WS, WK_FFTs, MHD_mul_FFTW)
+     &          ncomp_fwd, n_WS, fld_rtp, WS, WK_FFTs, MHD_mul_FFTW)
 !
       use t_spheric_rtp_data
       use t_sph_trans_comm_tbl
+      use swap_phi_4_sph_trans
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_comm_tbl), intent(in)  :: comm_rtp
 !
       integer(kind = kint), intent(in) :: ncomp_fwd, n_WS
       real (kind=kreal), intent(inout) :: WS(n_WS)
-      type(spherical_transform_data), intent(inout) :: trns_fwd
+      real(kind=kreal), intent(inout)                                   &
+     &                 :: fld_rtp(sph_rtp%nnod_rtp,ncomp_fwd)
       type(work_for_FFTs), intent(inout) :: WK_FFTs
       type(work_for_sgl_FFTW), intent(inout) :: MHD_mul_FFTW
 !
@@ -191,33 +192,30 @@
       if(iflag_FFT .eq. iflag_ISPACK) then
         call sph_FTTRUF_to_send(sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,     &
      &      sph_rtp%istack_rtp_rt_smp, ncomp_fwd, n_WS,                 &
-     &      comm_rtp%irev_sr, trns_fwd%fld_rtp, WS(1),                  &
-     &      WK_FFTs%sph_ispack)
+     &      comm_rtp%irev_sr, fld_rtp, WS(1), WK_FFTs%sph_ispack)
 #ifdef FFTW3
       else if(iflag_FFT .eq. iflag_FFTW) then
+!        call swap_phi_order_to_trans(ncomp_fwd,                         &
+!     &      sph_rtp%nnod_rtp, sph_rtp%nidx_rtp, fld_rtp)
         call MHD_multi_fwd_FFTW_to_send(ncomp_fwd, sph_rtp%nnod_rtp,    &
      &      sph_rtp%nidx_rtp, sph_rtp%istack_rtp_rt_smp,                &
-     &      n_WS, comm_rtp%irev_sr, trns_fwd%fld_rtp, WS(1),            &
-     &      MHD_mul_FFTW)
+     &      n_WS, comm_rtp%irev_sr, fld_rtp, WS(1),  MHD_mul_FFTW)
       else if(iflag_FFT .eq. iflag_FFTW_FIELD) then
         call sph_field_fwd_FFTW_to_send                                 &
      &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
      &      sph_rtp%istack_rtp_rt_smp, ncomp_fwd, n_WS,                 &
-     &      comm_rtp%irev_sr, trns_fwd%fld_rtp, WS(1),                  &
-     &      WK_FFTs%sph_fld_FFTW)
+     &      comm_rtp%irev_sr, fld_rtp, WS(1), WK_FFTs%sph_fld_FFTW)
       else if(iflag_FFT .eq. iflag_FFTW_SINGLE) then
         call sph_single_fwd_FFTW_to_send                                &
      &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
      &      sph_rtp%istack_rtp_rt_smp, ncomp_fwd, n_WS,                 &
-     &      comm_rtp%irev_sr, trns_fwd%fld_rtp, WS(1),                  &
-     &      WK_FFTs%sph_sgl_FFTW)
+     &      comm_rtp%irev_sr, fld_rtp, WS(1), WK_FFTs%sph_sgl_FFTW)
 #endif
       else
         call sph_RFFTMF_to_send                                         &
      &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
      &      sph_rtp%istack_rtp_rt_smp, ncomp_fwd, n_WS,                 &
-     &      comm_rtp%irev_sr, trns_fwd%fld_rtp, WS(1),                  &
-     &      WK_FFTs%sph_FFTPACK)
+     &      comm_rtp%irev_sr, fld_rtp, WS(1), WK_FFTs%sph_FFTPACK)
       end if
 !
       end subroutine fwd_MHD_FFT_sel_to_send
@@ -229,6 +227,7 @@
 !
       use t_spheric_rtp_data
       use t_sph_trans_comm_tbl
+      use swap_phi_4_sph_trans
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_comm_tbl), intent(in)  :: comm_rtp
@@ -251,6 +250,8 @@
         call MHD_multi_back_FFTW_from_recv(ncomp_bwd, sph_rtp%nnod_rtp, &
      &      sph_rtp%nidx_rtp, sph_rtp%istack_rtp_rt_smp,                &
      &      n_WR, comm_rtp%irev_sr, WR(1), fld_rtp, MHD_mul_FFTW)
+!        call swap_phi_order_to_trans(ncomp_bwd,                         &
+!     &      sph_rtp%nnod_rtp, sph_rtp%nidx_rtp, fld_rtp)
       else if(iflag_FFT .eq. iflag_FFTW_FIELD) then
         call sph_field_back_FFTW_from_recv                              &
      &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &

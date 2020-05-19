@@ -210,7 +210,7 @@
       if(iflag_SPH_time) call start_elapsed_time(ist_elapsed_SPH+7)
       call fwd_MHD_FFT_sel_to_send                                      &
      &   (sph%sph_rtp, comms_sph%comm_rtp, trns_fwd%ncomp,              &
-     &    n_WS, trns_fwd, WS, WK_sph%WK_FFTs, MHD_mul_FFTW)
+     &    n_WS, trns_fwd%fld_rtp, WS, WK_sph%WK_FFTs, MHD_mul_FFTW)
       if(iflag_SPH_time) call end_elapsed_time(ist_elapsed_SPH+7)
 !
       if(iflag_SPH_time) call start_elapsed_time(ist_elapsed_SPH+3)
@@ -322,7 +322,7 @@
       if(iflag_SPH_time) call start_elapsed_time(ist_elapsed_SPH+7)
       call fwd_MHD_FFT_sel_to_send                                      &
      &   (sph%sph_rtp, comms_sph%comm_rtp, trns_fwd%ncomp,              &
-     &    n_WS, trns_fwd, WS, WK_sph%WK_FFTs, SGS_mul_FFTW)
+     &    n_WS, trns_fwd%fld_rtp, WS, WK_sph%WK_FFTs, SGS_mul_FFTW)
       if(iflag_SPH_time) call end_elapsed_time(ist_elapsed_SPH+7)
 !
       if(iflag_SPH_time) call start_elapsed_time(ist_elapsed_SPH+3)
