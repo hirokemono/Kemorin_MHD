@@ -122,7 +122,7 @@ sph_SGS_nl_gradient_pin.o: $(SGS_MHD_SPH_DIR)/sph_SGS_nl_gradient_pin.f90 m_prec
 	$(F90) -c $(F90OPTFLAGS) $<
 sph_SGS_nl_gradient_pout.o: $(SGS_MHD_SPH_DIR)/sph_SGS_nl_gradient_pout.f90 m_precision.o m_constants.o calypso_mpi.o
 	$(F90) -c $(F90OPTFLAGS) $<
-sph_transforms_4_SGS.o: $(SGS_MHD_SPH_DIR)/sph_transforms_4_SGS.f90 m_precision.o m_constants.o m_machine_parameter.o m_work_time.o calypso_mpi.o t_spheric_parameter.o t_sph_trans_comm_tbl.o t_phys_address.o t_phys_data.o t_poloidal_rotation.o t_sph_trans_arrays_MHD.o t_schmidt_poly_on_rtm.o t_work_4_sph_trans.o t_sph_multi_FFTW.o t_sph_transforms.o m_legendre_transform_list.o m_solver_SR.o sph_trans_w_coriols.o set_address_sph_trans_MHD.o spherical_SRs_N.o sph_transforms_4_MHD.o
+sph_transforms_4_SGS.o: $(SGS_MHD_SPH_DIR)/sph_transforms_4_SGS.f90 m_precision.o m_constants.o m_machine_parameter.o m_work_time.o calypso_mpi.o t_spheric_parameter.o t_sph_trans_comm_tbl.o t_phys_address.o t_phys_data.o t_poloidal_rotation.o t_sph_trans_arrays_MHD.o t_schmidt_poly_on_rtm.o t_work_4_sph_trans.o t_sph_multi_FFTW.o t_sph_transforms.o m_legendre_transform_list.o m_solver_SR.o set_address_sph_trans_MHD.o spherical_SRs_N.o sph_transforms_4_MHD.o
 	$(F90) -c $(F90OPTFLAGS) $<
 sum_rot_of_filter_forces.o: $(SGS_MHD_SPH_DIR)/sum_rot_of_filter_forces.f90 m_precision.o m_constants.o m_machine_parameter.o calypso_mpi.o t_physical_property.o t_base_force_labels.o t_explicit_term_labels.o t_phys_data.o cal_vorticity_terms_adams.o cal_div_of_forces.o
 	$(F90) -c $(F90OPTFLAGS) $<
