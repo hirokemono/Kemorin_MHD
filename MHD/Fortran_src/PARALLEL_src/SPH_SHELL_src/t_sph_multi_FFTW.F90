@@ -100,8 +100,7 @@
       integer, parameter :: istride = 1
 !
 !
-      allocate(FFTW_t%v_tmp(nnod_rtp))
-      FFTW_t%v_tmp = 0.0d0
+      call alloc_tmp_ordering_FFTW(nnod_rtp, FFTW_t)
 !
       Nfft4 = int(nidx_rtp(3))
       idist_r = int(nidx_rtp(3))
@@ -150,7 +149,7 @@
       end do
 !
       call dealloc_FFTW_plan(FFTW_t)
-      deallocate(FFTW_t%v_tmp)
+      call dealloc_tmp_ordering_FFTW(FFTW_t)
 !
       end subroutine finalize_MHD_multi_FFTW
 !
