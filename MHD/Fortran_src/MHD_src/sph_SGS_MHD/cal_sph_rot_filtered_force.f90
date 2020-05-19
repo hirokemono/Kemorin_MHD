@@ -7,10 +7,12 @@
 !>@brief  Evaluate curl or divergence of forces
 !!
 !!@verbatim
-!!      subroutine rot_filtered_mom_eq_exp_sph(sph_rj, r_2nd,           &
-!!     &          sph_MHD_bc, leg, ipol_frc, ipol_rot_frc, rj_fld)
+!!      subroutine rot_filtered_mom_eq_exp_sph                          &
+!!     &         (sph_rj, r_2nd, MHD_prop, sph_MHD_bc, leg,             &
+!!     &          ipol_frc, ipol_rot_frc, rj_fld)
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(fdm_matrices), intent(in) :: r_2nd
+!!        type(MHD_evolution_param), intent(in) :: MHD_prop
 !!        type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
 !!        type(legendre_4_sph_trans), intent(in) :: leg
 !!        type(base_force_address), intent(in) :: ipol_frc
@@ -55,13 +57,15 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine rot_filtered_mom_eq_exp_sph(sph_rj, r_2nd,             &
-     &          sph_MHD_bc, leg, ipol_frc, ipol_rot_frc, rj_fld)
+      subroutine rot_filtered_mom_eq_exp_sph                            &
+     &         (sph_rj, r_2nd, MHD_prop, sph_MHD_bc, leg,               &
+     &          ipol_frc, ipol_rot_frc, rj_fld)
 !
       use cal_sph_field_by_rotation
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
+      type(MHD_evolution_param), intent(in) :: MHD_prop
       type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
       type(legendre_4_sph_trans), intent(in) :: leg
       type(base_force_address), intent(in) :: ipol_frc
@@ -82,7 +86,10 @@
 !
       if (iflag_debug .ge. iflag_routine_msg)                           &
      &     write(*,*) 'cal_div_of_fluxes_sph'
-      call cal_div_of_fluxes_sph(sph_rj, r_2nd, leg%g_sph_rj,           &
+      call cal_div_of_fluxes_sph                                        &
+     &   (MHD_prop%ht_prop%iflag_4_filter_advection,                    &
+     &    MHD_prop%cp_prop%iflag_4_filter_advection,                    &
+     &    sph_rj, r_2nd, leg%g_sph_rj,                                  &
      &    sph_MHD_bc%sph_bc_T, sph_MHD_bc%bcs_T,                        &
      &    sph_MHD_bc%sph_bc_C, sph_MHD_bc%bcs_C,                        &
      &    sph_MHD_bc%fdm2_center, ipol_frc, rj_fld)
@@ -96,14 +103,12 @@
      &          ipol_frc, ipol_div_frc, rj_fld)
 !     &          ipol_base, ipol_grad, ipol_frc, ipol_div_frc, rj_fld)
 !
-      use t_control_parameter
       use const_sph_divergence
       use cal_sph_divergence_of_force
 !      use div_self_buoyancies_sph
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
-      type(MHD_evolution_param), intent(in) :: MHD_prop
       type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
 !      type(base_field_address), intent(in) :: ipol_base
 !      type(gradient_field_address), intent(in) :: ipol_grad
@@ -122,12 +127,6 @@
         call const_sph_div_force                                        &
      &     (sph_rj, r_2nd, sph_MHD_bc%sph_bc_U, g_sph_rj,               &
      &      ipol_frc%i_lorentz, ipol_div_frc%i_lorentz, rj_fld)
-      end if
-!
-      if(MHD_prop%fl_prop%iflag_4_coriolis) then
-        call const_sph_div_force                                        &
-     &     (sph_rj, r_2nd, sph_MHD_bc%sph_bc_U, g_sph_rj,               &
-     &      ipol_frc%i_coriolis, ipol_div_frc%i_Coriolis, rj_fld)
       end if
 !
       call cal_div_of_buoyancies_sph_2(sph_rj, r_2nd, MHD_prop,         &

@@ -80,6 +80,7 @@
       character(len=kchara) :: tmpchara
 !
 !
+      fl_prop%iflag_4_inertia =         .TRUE.
       fl_prop%iflag_4_gravity =         .FALSE.
       fl_prop%iflag_4_coriolis =        .FALSE.
       fl_prop%iflag_4_lorentz =         .FALSE.
@@ -91,6 +92,7 @@
 !
       if (fl_prop%iflag_scheme .eq. id_no_evolution) then
         fl_prop%num_force = 0
+        fl_prop%iflag_4_inertia = .FALSE.
       else
         if (frc_ctl%force_names%icou .gt. 0) then
           fl_prop%num_force = frc_ctl%force_names%num
@@ -130,7 +132,6 @@
           if (cmp_no_case(tmpchara, 'Coriolis')                         &
      &       ) fl_prop%iflag_4_coriolis = .TRUE.
 !
-          fl_prop%iflag_4_inertia = .TRUE.
           if(cmp_no_case(tmpchara, 'filtered_inertia')) then
             fl_prop%iflag_4_filter_inertia = .TRUE.
             fl_prop%iflag_4_inertia = .FALSE.
@@ -291,7 +292,7 @@
 !
       type(conductive_property), intent(inout) :: cd_prop
 !
-      integer (kind = kint) :: i
+      integer(kind = kint) :: i
 !
 !  setting for external mangnetic field
 !
@@ -324,7 +325,7 @@
         end if
       end if
 !
-      if (iflag_debug .ge. iflag_routine_msg) then
+      if(iflag_debug .ge. iflag_routine_msg) then
         write(*,*) 'Induction mode', cd_prop%iflag_4_induction
         write(*,*) 'Filtered Induction mode',                           &
      &            cd_prop%iflag_4_filter_induction

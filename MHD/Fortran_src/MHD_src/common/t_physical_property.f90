@@ -152,7 +152,7 @@
         real (kind=kreal) :: ex_magne(3) = (/zero, zero, zero/)
 !
 !>        Force flag for induction
-        logical :: iflag_4_induction = .TRUE.
+        logical :: iflag_4_induction = .FALSE.
 !>        Force flag for Filtered induction
         logical :: iflag_4_filter_induction = .FALSE.
       end type conductive_property
@@ -177,7 +177,7 @@
         real  (kind=kreal) :: coef_source = zero
 !
 !>        Force flag for advection
-        logical :: iflag_4_advection = .TRUE.
+        logical :: iflag_4_advection = .FALSE.
 !>        Force flag for Filtered advection
         logical :: iflag_4_filter_advection = .FALSE.
       end type scalar_property
@@ -220,7 +220,9 @@
       type(scalar_property), intent(inout) :: scl_prop
 !
 !
+      if(scl_prop%iflag_scheme .eq. id_no_evolution) return
       scl_prop%iflag_4_advection = .TRUE.
+!
       if(filterd_advect_ctl%iflag .gt. 0                                &
      &   .and. yes_flag(filterd_advect_ctl%charavalue)) then
         scl_prop%iflag_4_advection = .FALSE.
@@ -241,7 +243,10 @@
       type(conductive_property), intent(inout) :: cd_prop
 !
 !
+      if((cd_prop%iflag_Bevo_scheme .eq. id_no_evolution)               &
+     &   .and. (cd_prop%iflag_Aevo_scheme .eq. id_no_evolution)) return
       cd_prop%iflag_4_induction = .TRUE.
+!
       if(filterd_induction_ctl%iflag .gt. 0                             &
      &   .and. yes_flag(filterd_induction_ctl%charavalue)) then
         cd_prop%iflag_4_induction = .FALSE.

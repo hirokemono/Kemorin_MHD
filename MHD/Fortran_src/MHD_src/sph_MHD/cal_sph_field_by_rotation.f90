@@ -7,8 +7,9 @@
 !>@brief  Evaluate curl or divergence of forces
 !!
 !!@verbatim
-!!      subroutine rot_momentum_eq_exp_sph(sph_rj, r_2nd, sph_MHD_bc,   &
-!!     &          leg, ipol_frc, ipol_rot_frc, rj_fld)
+!!      subroutine rot_momentum_eq_exp_sph                              &
+!!     &         (sph_rj, r_2nd, MHD_prop, sph_MHD_bc, leg,             &
+!!     &          ipol_frc, ipol_rot_frc, rj_fld)
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(fdm_matrices), intent(in) :: r_2nd
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
@@ -56,6 +57,7 @@
       use m_constants
       use m_machine_parameter
 !
+      use t_control_parameter
       use t_spheric_rj_data
       use t_base_force_labels
 !      use t_base_field_labels
@@ -75,11 +77,13 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine rot_momentum_eq_exp_sph(sph_rj, r_2nd, sph_MHD_bc,     &
-     &          leg, ipol_frc, ipol_rot_frc, rj_fld)
+      subroutine rot_momentum_eq_exp_sph                                &
+     &         (sph_rj, r_2nd, MHD_prop, sph_MHD_bc, leg,               &
+     &          ipol_frc, ipol_rot_frc, rj_fld)
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
+      type(MHD_evolution_param), intent(in) :: MHD_prop
       type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
       type(legendre_4_sph_trans), intent(in) :: leg
       type(base_force_address), intent(in) :: ipol_frc
@@ -100,7 +104,10 @@
 !
       if (iflag_debug .ge. iflag_routine_msg)                           &
      &     write(*,*) 'cal_div_of_fluxes_sph'
-      call cal_div_of_fluxes_sph(sph_rj, r_2nd, leg%g_sph_rj,           &
+      call cal_div_of_fluxes_sph                                        &
+     &   (MHD_prop%ht_prop%iflag_4_advection,                           &
+     &    MHD_prop%cp_prop%iflag_4_advection,                           &
+     &    sph_rj, r_2nd, leg%g_sph_rj,                                  &
      &    sph_MHD_bc%sph_bc_T, sph_MHD_bc%bcs_T,                        &
      &    sph_MHD_bc%sph_bc_C, sph_MHD_bc%bcs_C,                        &
      &    sph_MHD_bc%fdm2_center, ipol_frc, rj_fld)
@@ -114,7 +121,6 @@
      &          sph_bc_U, fdm2_free_ICB, fdm2_free_CMB,                 &
      &          ipol_frc, ipol_rot_frc, rj_fld)
 !
-      use calypso_mpi
       use const_sph_radial_grad
       use const_sph_rotation
       use cal_inner_core_rotation
@@ -181,13 +187,16 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_div_of_fluxes_sph(sph_rj, r_2nd, g_sph_rj,         &
-     &          sph_bc_T, bcs_T, sph_bc_C, bcs_C,                       &
-     &          fdm2_center, ipol_frc, rj_fld)
+      subroutine cal_div_of_fluxes_sph                                  &
+     &         (iflag_t_advection, iflag_c_advection,                   &
+     &          sph_rj, r_2nd, g_sph_rj,                                &
+     &          sph_bc_T, bcs_T, sph_bc_C, bcs_C, fdm2_center,          &
+     &          ipol_frc, rj_fld)
 !
       use calypso_mpi
       use const_sph_divergence
 !
+      logical, intent(in) :: iflag_t_advection, iflag_c_advection
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
       type(base_force_address), intent(in) :: ipol_frc
@@ -200,14 +209,14 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      if(ipol_frc%i_h_advect .gt. 0) then
+      if(iflag_t_advection) then
         if (iflag_debug .gt. 0) write(*,*) 'take div of heat flux'
         call const_sph_scalar_advect                                    &
      &     (sph_rj, r_2nd, sph_bc_T, bcs_T, fdm2_center, g_sph_rj,      &
      &      ipol_frc%i_h_flux, ipol_frc%i_h_advect, rj_fld)
       end if
 !
-      if(ipol_frc%i_c_advect .gt. 0) then
+      if(iflag_c_advection) then
         if (iflag_debug .gt. 0) write(*,*) 'take div  of composit flux'
         call const_sph_scalar_advect                                    &
      &     (sph_rj, r_2nd, sph_bc_C, bcs_C, fdm2_center, g_sph_rj,      &
