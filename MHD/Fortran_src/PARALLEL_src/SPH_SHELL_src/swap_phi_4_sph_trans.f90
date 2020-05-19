@@ -27,7 +27,7 @@
 ! -------------------------------------------------------------------
 !
       subroutine swap_phi_order_from_trans                              &
-     &         (numdir, nnod_rtp, nidx_rtp, d_sph)
+     &         (numdir, nnod_rtp, nidx_rtp, v_tmp, d_sph)
 !
       integer(kind = kint), intent(in) :: numdir, nnod_rtp
       integer(kind = kint), intent(in) :: nidx_rtp(3)
@@ -60,7 +60,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine swap_phi_order_to_trans                                &
-     &         (numdir, nnod_rtp, nidx_rtp, v_prt)
+     &         (numdir, nnod_rtp, nidx_rtp, v_tmp, v_prt)
 !
       integer(kind = kint), intent(in) :: numdir, nnod_rtp
       integer(kind = kint), intent(in) :: nidx_rtp(3)
