@@ -73,7 +73,7 @@
 !
 !
 !$omp parallel
-      if(iflag_4_filter_inertia) then
+      if(fl_prop%iflag_4_filter_inertia) then
         call cal_cross_prod_w_coef_smp                                  &
      &     (sph_rtp%nnod_pole, fl_prop%coef_velo,                       &
      &      trns_b_MHD%fld_pole(1,bs_trns%base%i_vort),                 &
