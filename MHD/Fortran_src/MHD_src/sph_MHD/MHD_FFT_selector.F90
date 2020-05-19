@@ -118,7 +118,8 @@
       if(iflag_FFT .eq. iflag_FFTW) then
         if(id_rank .eq. 0) write(*,*) 'Use FFTW with prefixed recipi'
         call init_MHD_multi_FFTW(ncomp, ncomp_fwd, ncomp_bwd,           &
-     &      sph_rtp%nidx_rtp, sph_rtp%istack_rtp_rt_smp, MHD_mul_FFTW)
+     &      sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
+     &      sph_rtp%istack_rtp_rt_smp, MHD_mul_FFTW)
       end if
 #endif
       return
@@ -196,12 +197,14 @@
 #ifdef FFTW3
       else if(iflag_FFT .eq. iflag_FFTW) then
         call swap_phi_order_to_trans(ncomp_fwd,                         &
-     &      sph_rtp%nnod_rtp, sph_rtp%nidx_rtp, fld_rtp)
+     &      sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
+     &      MHD_mul_FFTW%v_tmp, fld_rtp)
         call MHD_multi_fwd_FFTW_to_send(ncomp_fwd, sph_rtp%nnod_rtp,    &
      &      sph_rtp%nidx_rtp, sph_rtp%istack_rtp_rt_smp,                &
      &      n_WS, comm_rtp%irev_sr, fld_rtp, WS(1),  MHD_mul_FFTW)
         call swap_phi_order_from_trans(ncomp_fwd,                       &
-     &      sph_rtp%nnod_rtp, sph_rtp%nidx_rtp, fld_rtp)
+     &      sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
+     &      MHD_mul_FFTW%v_tmp, fld_rtp)
       else if(iflag_FFT .eq. iflag_FFTW_FIELD) then
         call sph_field_fwd_FFTW_to_send                                 &
      &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
@@ -253,7 +256,8 @@
      &      sph_rtp%nidx_rtp, sph_rtp%istack_rtp_rt_smp,                &
      &      n_WR, comm_rtp%irev_sr, WR(1), fld_rtp, MHD_mul_FFTW)
         call swap_phi_order_from_trans(ncomp_bwd,                       &
-     &      sph_rtp%nnod_rtp, sph_rtp%nidx_rtp, fld_rtp)
+     &      sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
+     &      MHD_mul_FFTW%v_tmp, fld_rtp)
       else if(iflag_FFT .eq. iflag_FFTW_FIELD) then
         call sph_field_back_FFTW_from_recv                              &
      &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &

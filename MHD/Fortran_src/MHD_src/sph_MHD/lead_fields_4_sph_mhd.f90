@@ -96,7 +96,6 @@
 !
       use sph_transforms_4_MHD
       use cal_energy_flux_rtp
-      use swap_phi_order_4_sph_trans
       use cal_self_buoyancies_sph
 !
       type(sph_mhd_monitor_data), intent(in) :: monitor
@@ -143,7 +142,6 @@
 !
       use sph_transforms_4_MHD
       use cal_energy_flux_rtp
-      use swap_phi_order_4_sph_trans
 !
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
@@ -153,9 +151,6 @@
       type(address_4_sph_trans), intent(inout) :: trns_MHD
       type(phys_data), intent(inout) :: rj_fld
 !
-!
-!      call swap_phi_from_MHD_trans                                      &
-!     &   (sph%sph_rtp, trns_MHD%backward, trns_MHD%forward)
 !
       if    (sph%sph_params%iflag_shell_mode .eq. iflag_MESH_w_pole     &
      &  .or. sph%sph_params%iflag_shell_mode .eq. iflag_MESH_w_center)  &

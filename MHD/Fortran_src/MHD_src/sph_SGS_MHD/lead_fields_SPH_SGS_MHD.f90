@@ -63,7 +63,6 @@
       use t_sph_mhd_monitor_data_IO
       use sph_transforms_4_MHD
       use cal_energy_flux_rtp
-      use swap_phi_order_4_sph_trans
       use lead_fields_4_sph_mhd
       use self_buoyancy_w_filter_sph
 !
@@ -276,7 +275,6 @@
      &          dynamic_SPH, rj_fld)
 !
       use sph_transforms_4_SGS
-      use swap_phi_order_4_sph_trans
       use copy_Csim_4_sph_MHD
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
@@ -292,10 +290,6 @@
 !
 !
       if(SGS_param%iflag_SGS .eq. id_SGS_none) return
-!      if (iflag_debug.eq.1) write(*,*) 'swap_phi_from_MHD_trans'
-!      call swap_phi_from_MHD_trans                                      &
-!     &   (sph%sph_rtp, trns_SGS%backward, trns_SGS%forward)
-!
       if (iflag_debug.eq.1) write(*,*) 'sph_pole_trans_SGS_MHD'
       call sph_pole_trans_SGS_MHD                                       &
      &   (sph, comms_sph, trans_p, rj_fld, trns_SGS%backward)
