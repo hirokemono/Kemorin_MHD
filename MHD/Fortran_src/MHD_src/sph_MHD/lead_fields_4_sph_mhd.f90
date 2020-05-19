@@ -205,7 +205,9 @@
 !
       call s_const_radial_forces_on_bc(sph%sph_rj, leg%g_sph_rj,        &
      &    MHD_prop%fl_prop, sph_MHD_bc%sph_bc_U,                        &
-     &    MHD_prop%ref_param_T, MHD_prop%ref_param_C, ipol, rj_fld)
+     &    MHD_prop%ref_param_T, MHD_prop%ref_param_C,                   &
+     &    ipol%base, ipol%diffusion, ipol%forces, ipol%div_forces,      &
+     &    rj_fld)
 !
       call sum_div_of_forces                                            &
      &    (MHD_prop%fl_prop, ipol%base, ipol%div_forces, rj_fld)

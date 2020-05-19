@@ -129,7 +129,6 @@
       use const_sph_radial_grad
       use cal_sph_rotation_of_SGS
       use cal_sph_rot_filtered_force
-      use self_buoyancy_w_fil_on_sph
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(MHD_evolution_param), intent(in) :: MHD_prop
@@ -155,19 +154,16 @@
 !     &   ipol_LES%filter_fld, ipol_LES%grad_fil_fld,                   &
 !     &    ipol_LES%force_by_filter, ipol_LES%div_frc_by_filter, rj_fld)
 !
-!
-      call r_buoyancy_on_sphere_w_filter                                &
-     &   (sph_MHD_bc%sph_bc_U%kr_in,  sph%sph_rj, ipol_LES,             &
-     &    MHD_prop%fl_prop, MHD_prop%ref_param_T, MHD_prop%ref_param_C, &
-     &    rj_fld)
-      call r_buoyancy_on_sphere_w_filter                                &
-     &   (sph_MHD_bc%sph_bc_U%kr_out, sph%sph_rj, ipol_LES,             &
-     &    MHD_prop%fl_prop, MHD_prop%ref_param_T, MHD_prop%ref_param_C, &
-     &    rj_fld)
-!
       call s_const_radial_forces_on_bc(sph%sph_rj, leg%g_sph_rj,        &
-     &    MHD_prop%fl_prop, sph_MHD_bc%sph_bc_U, MHD_prop%ref_param_T,  &
-     &    MHD_prop%ref_param_C, ipol, rj_fld)
+     &    MHD_prop%fl_prop, sph_MHD_bc%sph_bc_U,                        &
+     &    MHD_prop%ref_param_T, MHD_prop%ref_param_C,                   &
+     &    ipol%base, ipol%diffusion, ipol%forces, ipol%div_forces,      &
+     &    rj_fld)
+      call const_radial_fil_forces_on_bc(sph%sph_rj, leg%g_sph_rj,      &
+     &    MHD_prop%fl_prop, sph_MHD_bc%sph_bc_U,                        &
+     &    MHD_prop%ref_param_T, MHD_prop%ref_param_C,                   &
+     &    ipol_LES%filter_fld, ipol_LES%force_by_filter,                &
+     &    ipol_LES%div_frc_by_filter, rj_fld)
 !
       call sum_div_of_forces                                            &
      &   (MHD_prop%fl_prop, ipol%base, ipol%div_forces, rj_fld)

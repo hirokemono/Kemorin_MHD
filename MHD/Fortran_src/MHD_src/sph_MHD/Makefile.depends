@@ -194,7 +194,7 @@ select_exp_velocity_CMB.o: $(MHD_SPH_DIR)/select_exp_velocity_CMB.f90 m_precisio
 	$(F90) -c $(F90OPTFLAGS) $<
 select_exp_velocity_ICB.o: $(MHD_SPH_DIR)/select_exp_velocity_ICB.f90 m_precision.o m_constants.o t_spheric_rj_data.o t_phys_data.o t_fdm_coefs.o t_boundary_data_sph_MHD.o t_boundary_sph_spectr.o t_boundary_params_sph_MHD.o t_coef_fdm2_MHD_boundaries.o set_sph_exp_fix_vector_ICB.o set_sph_exp_rigid_ICB.o set_sph_exp_free_ICB.o set_sph_exp_nod_center.o cal_sph_exp_fixed_scalar.o cal_inner_core_rotation.o set_sph_exp_fix_vector_CMB.o
 	$(F90) -c $(F90OPTFLAGS) $<
-self_buoyancy_on_sphere.o: $(MHD_SPH_DIR)/self_buoyancy_on_sphere.f90 m_precision.o m_constants.o m_machine_parameter.o t_physical_property.o t_reference_scalar_param.o t_spheric_rj_data.o t_base_field_labels.o t_base_force_labels.o t_phys_data.o
+self_buoyancy_on_sphere.o: $(MHD_SPH_DIR)/self_buoyancy_on_sphere.f90 m_precision.o m_constants.o m_machine_parameter.o t_reference_scalar_param.o t_spheric_rj_data.o t_base_field_labels.o t_base_force_labels.o t_phys_data.o
 	$(F90) -c $(F90OPTFLAGS) $<
 set_address_all_sph_trans.o: $(MHD_SPH_DIR)/set_address_all_sph_trans.f90 m_precision.o m_phys_constants.o t_phys_data.o t_sph_trans_arrays_MHD.o add_field_to_sph_trans_list.o
 	$(F90) -c $(F90OPTFLAGS) $<

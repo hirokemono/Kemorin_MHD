@@ -28,6 +28,19 @@
 !!        type(base_force_address), intent(in) :: ipol_fil_frc
 !!        type(base_force_address), intent(in) :: ipol_div_fil_frc
 !!        type(phys_data), intent(inout) :: rj_fld
+!!
+!!      subroutine const_radial_fil_forces_on_bc(sph_rj, g_sph_rj,      &
+!!     &          fl_prop, sph_bc_U, ref_param_T, ref_param_C,          &
+!!     &          ipol_fil, ipol_fil_frc, ipol_div_fil_frc, rj_fld)
+!!        type(fluid_property), intent(in) :: fl_prop
+!!        type(sph_boundary_type), intent(in) :: sph_bc_U
+!!        type(reference_scalar_param), intent(in) :: ref_param_T
+!!        type(reference_scalar_param), intent(in) :: ref_param_C
+!!        type(sph_rj_grid), intent(in) ::  sph_rj
+!!        type(base_field_address), intent(in) :: ipol_fil
+!!        type(base_force_address), intent(in) :: ipol_fil_frc
+!!        type(base_force_address), intent(in) :: ipol_div_fil_frc
+!!        type(phys_data), intent(inout) :: rj_fld
 !!@endverbatim
 !
       module cal_sph_rot_filtered_force
@@ -153,6 +166,71 @@
 !     &    sph_MHD_bc%sph_bc_U, rj_fld)
 !
       end subroutine cal_div_of_filter_forces_sph_2
+!
+! -----------------------------------------------------------------------
+!
+      subroutine const_radial_fil_forces_on_bc(sph_rj, g_sph_rj,        &
+     &          fl_prop, sph_bc_U, ref_param_T, ref_param_C,            &
+     &          ipol_fil, ipol_fil_frc, ipol_div_fil_frc, rj_fld)
+!
+      use t_physical_property
+      use t_reference_scalar_param
+!
+      use self_buoyancy_on_sphere
+!
+      type(fluid_property), intent(in) :: fl_prop
+      type(sph_boundary_type), intent(in) :: sph_bc_U
+      type(reference_scalar_param), intent(in) :: ref_param_T
+      type(reference_scalar_param), intent(in) :: ref_param_C
+!
+      type(sph_rj_grid), intent(in) ::  sph_rj
+      real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
+!
+      type(base_field_address), intent(in) :: ipol_fil
+      type(base_force_address), intent(in) :: ipol_fil_frc
+      type(base_force_address), intent(in) :: ipol_div_fil_frc
+!
+      type(phys_data), intent(inout) :: rj_fld
+!
+!
+      call r_buoyancy_on_sphere                                         &
+     &   (fl_prop%iflag_4_filter_gravity,                               &
+     &    fl_prop%iflag_4_filter_comp_buo,                              &
+     &    sph_bc_U%kr_in, sph_rj, ipol_fil, ipol_div_fil_frc,           &
+     &    fl_prop%coef_buo, fl_prop%coef_comp_buo,                      &
+     &    ref_param_T, ref_param_C, rj_fld)
+      call r_buoyancy_on_sphere                                         &
+     &   (fl_prop%iflag_4_filter_gravity,                               &
+     &    fl_prop%iflag_4_filter_comp_buo,                              &
+     &    sph_bc_U%kr_out, sph_rj, ipol_fil, ipol_div_fil_frc,          &
+     &    fl_prop%coef_buo, fl_prop%coef_comp_buo,                      &
+     &    ref_param_T, ref_param_C, rj_fld)
+!
+!$omp parallel
+      if(fl_prop%iflag_4_filter_inertia) then
+        call cal_radial_force_on_sph(sph_bc_U%kr_in,                    &
+     &      ipol_fil_frc%i_m_advect, ipol_div_fil_frc%i_m_advect,       &
+     &      sph_rj%nidx_rj, sph_rj%ar_1d_rj, g_sph_rj,                  &
+     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+        call cal_radial_force_on_sph(sph_bc_U%kr_out,                   &
+     &      ipol_fil_frc%i_m_advect, ipol_div_fil_frc%i_m_advect,       &
+     &      sph_rj%nidx_rj, sph_rj%ar_1d_rj, g_sph_rj,                  &
+     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+      end if
+!
+      if(fl_prop%iflag_4_filter_lorentz) then
+        call cal_radial_force_on_sph(sph_bc_U%kr_in,                    &
+     &      ipol_fil_frc%i_lorentz, ipol_div_fil_frc%i_lorentz,         &
+     &      sph_rj%nidx_rj, sph_rj%ar_1d_rj, g_sph_rj,                  &
+     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+        call cal_radial_force_on_sph(sph_bc_U%kr_out,                   &
+     &      ipol_fil_frc%i_lorentz, ipol_div_fil_frc%i_lorentz,         &
+     &      sph_rj%nidx_rj, sph_rj%ar_1d_rj, g_sph_rj,                  &
+     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+      end if
+!$omp end parallel
+!
+      end subroutine const_radial_fil_forces_on_bc
 !
 ! -----------------------------------------------------------------------
 !
