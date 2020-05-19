@@ -109,6 +109,7 @@
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
+      type(MHD_evolution_param), intent(in) :: MHD_prop
       type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
 !      type(base_field_address), intent(in) :: ipol_base
 !      type(gradient_field_address), intent(in) :: ipol_grad
