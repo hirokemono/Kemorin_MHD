@@ -178,10 +178,8 @@
      &   (SGS_par%model_p, model_ctl%sgs_ctl, SGS_par%commute_p,        &
      &    MHD_files%Cdiff_file_IO)
 !
-      if(SGS_par%model_p%iflag_SGS .ne. id_SGS_none) then
-        call set_control_SPH_SGS_filters                                &
-     &     (model_ctl%sgs_ctl, SGS_par%model_p, dynamic_SPH)
-      end if
+      call set_control_SPH_SGS_filters                                  &
+     &   (model_ctl%sgs_ctl, SGS_par%model_p, dynamic_SPH)
 !
 !   set parameters for data files
 !

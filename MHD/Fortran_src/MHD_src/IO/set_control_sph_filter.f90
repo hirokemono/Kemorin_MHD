@@ -52,7 +52,8 @@
       integer(kind = kint) :: i
 !
 !
-      if(sgs_ctl%num_sph_filter_ctl .le. 0) then
+      if(SGS_param%iflag_SGS .ne. id_SGS_none                           &
+     &     .and. sgs_ctl%num_sph_filter_ctl .le. 0) then
         call calypso_mpi_abort(ierr_SGS, 'Set filter configrations')
       else if(SGS_param%iflag_dynamic .eq. id_SGS_DYNAMIC_ON            &
      &    .and. sgs_ctl%num_sph_filter_ctl .eq. 1) then
