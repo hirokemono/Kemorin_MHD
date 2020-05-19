@@ -102,7 +102,7 @@
 !
       if(iflag_debug .gt. 0) then
         write(*,*) 'Spherical transform field table ',                  &
-     &             'for intermediate of snapshot'
+     &             'for intermediate of snapshot (trns_tmp)'
         write(*,*) 'Address for backward transform: ',                  &
      &             'transform, poloidal, toroidal, grid data'
       end if
