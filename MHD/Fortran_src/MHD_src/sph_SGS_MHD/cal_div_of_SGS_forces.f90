@@ -8,12 +8,6 @@
 !!       for pressure evaluation
 !!
 !!@verbatim
-!!      subroutine add_div_of_filtered_buoyancies                       &
-!!     &         (fl_prop, ipol_base, ipol_div_fil_frc, rj_fld)
-!!        type(fluid_property), intent(in) :: fl_prop
-!!        type(base_field_address), intent(in) :: ipol_base
-!!        type(base_force_address), intent(in) :: ipol_div_fil_frc
-!!        type(phys_data), intent(inout) :: rj_fld
 !!      subroutine sum_div_of_SGS_forces                                &
 !!     &         (ipol_base, ipol_div_SGS, rj_fld)
 !!        type(base_field_address), intent(in) :: ipol_base
@@ -35,36 +29,6 @@
 ! ----------------------------------------------------------------------
 !
       contains
-!
-! ----------------------------------------------------------------------
-!
-      subroutine add_div_of_filtered_buoyancies                         &
-     &         (fl_prop, ipol_base, ipol_div_fil_frc, rj_fld)
-!
-      use t_physical_property
-      use t_phys_data
-      use cal_div_of_forces
-!
-      type(fluid_property), intent(in) :: fl_prop
-      type(base_field_address), intent(in) :: ipol_base
-      type(base_force_address), intent(in) :: ipol_div_fil_frc
-      type(phys_data), intent(inout) :: rj_fld
-!
-!
-!$omp parallel
-      if(fl_prop%iflag_4_filter_gravity) then
-        call add_term_to_div_force                                      &
-     &     (ipol_base%i_press, ipol_div_fil_frc%i_buoyancy,             &
-     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
-      end if
-      if(fl_prop%iflag_4_filter_comp_buo) then
-        call add_term_to_div_force                                      &
-     &     (ipol_base%i_press, ipol_div_fil_frc%i_comp_buo,             &
-     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
-      end if
-!$omp end parallel
-!
-      end subroutine add_div_of_filtered_buoyancies
 !
 ! ----------------------------------------------------------------------
 !

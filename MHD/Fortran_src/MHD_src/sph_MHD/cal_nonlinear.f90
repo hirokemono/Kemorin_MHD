@@ -129,8 +129,8 @@
       if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+8)
 !
       if(iflag_debug .gt. 0) write(*,*) 'sum_forces_to_explicit'
-      call sum_forces_to_explicit                                       &
-     &   (SPH_model%MHD_prop%fl_prop, SPH_MHD%ipol, SPH_MHD%fld)
+      call sum_forces_to_explicit(SPH_model%MHD_prop%fl_prop,           &
+     &    SPH_MHD%ipol%exp_work, SPH_MHD%ipol%rot_forces, SPH_MHD%fld)
 !
       end subroutine nonlinear
 !*
@@ -257,7 +257,8 @@
      &   (sph%sph_rj, sph_MHD_bc, MHD_prop,                             &
      &    trans_p%leg, ref_temp, ref_comp, ipol, rj_fld)
 !
-      call licv_forces_to_explicit(MHD_prop%fl_prop, ipol, rj_fld)
+      call licv_forces_to_explicit(MHD_prop%fl_prop,                    &
+     &    ipol%exp_work, ipol%rot_forces, rj_fld)
 !
 !
       end subroutine licv_exp

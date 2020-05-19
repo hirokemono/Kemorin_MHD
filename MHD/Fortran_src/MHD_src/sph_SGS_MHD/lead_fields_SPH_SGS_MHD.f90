@@ -129,6 +129,7 @@
       use const_sph_radial_grad
       use cal_sph_rotation_of_SGS
       use cal_sph_rot_filtered_force
+      use sum_rot_of_filter_forces
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(MHD_evolution_param), intent(in) :: MHD_prop
@@ -167,7 +168,7 @@
 !
       call sum_div_of_forces                                            &
      &   (MHD_prop%fl_prop, ipol%base, ipol%div_forces, rj_fld)
-      call add_div_of_filtered_buoyancies(MHD_prop%fl_prop,             &
+      call sum_div_of_filtered_forces(MHD_prop%fl_prop,                 &
      &    ipol%base, ipol_LES%div_frc_by_filter, rj_fld)
 !
 !   ----  Add divegence of SGS terms

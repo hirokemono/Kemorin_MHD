@@ -163,13 +163,14 @@
 !
 !   ----  Sum all explicit forces
       if(iflag_debug .gt. 0) write(*,*) 'sum_forces_to_explicit'
-      call sum_forces_to_explicit                                       &
-     &   (SPH_model%MHD_prop%fl_prop, SPH_MHD%ipol, SPH_MHD%fld)
+      call sum_forces_to_explicit(SPH_model%MHD_prop%fl_prop,           &
+     &    SPH_MHD%ipol%exp_work, SPH_MHD%ipol%rot_forces, SPH_MHD%fld)
 !
 !    ---- Add filtered rotation of forces
       if(iflag_debug .gt. 0) write(*,*) 'sum_filter_forces_to_explicit'
       call sum_filter_forces_to_explicit(SPH_model%MHD_prop%fl_prop,    &
-     &    SPH_MHD%ipol, SPH_SGS%ipol_LES, SPH_MHD%fld)
+     &    SPH_MHD%ipol%exp_work, SPH_SGS%ipol_LES%rot_frc_by_filter,    &
+     &    SPH_MHD%fld)
 !
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &                'SGS_forces_to_explicit'
