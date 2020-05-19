@@ -8,7 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine swap_phi_order_from_trans                            &
-!!     &         (numdir, nnod_rtp, nidx_rtp, d_trns, d_rtp)
+!!     &         (numdir, nnod_rtp, nidx_rtp, d_sph)
 !!      subroutine swap_phi_order_to_trans                              &
 !!     &         (numdir, nnod_rtp, nidx_rtp, v_prt)
 !!@endverbatim
@@ -29,27 +29,35 @@
 ! -------------------------------------------------------------------
 !
       subroutine swap_phi_order_from_trans                              &
-     &         (numdir, nnod_rtp, nidx_rtp, d_trns, d_rtp)
+     &         (numdir, nnod_rtp, nidx_rtp, d_sph)
 !
       integer(kind = kint), intent(in) :: numdir, nnod_rtp
       integer(kind = kint), intent(in) :: nidx_rtp(3)
-      real(kind = kreal), intent(in) :: d_trns(nnod_rtp,numdir)
 !
-      real(kind = kreal), intent(inout) :: d_rtp(nnod_rtp,numdir)
+      real(kind = kreal), intent(inout) :: d_sph(nnod_rtp,numdir)
 !
       integer(kind = kint) :: i_mkl, i_klm, kr_lt, mphi, nd
 !
+!
+      allocate(v_tmp(nnod_rtp))
+!
+      do nd = 1, numdir
+!$omp parallel workshare
+        v_tmp(1:nnod_rtp) = d_sph(1:nnod_rtp,nd)
+!$omp end parallel workshare
 !
 !$omp parallel do private(i_mkl,i_klm,mphi,kr_lt)
         do mphi = 1, nidx_rtp(3)
           do kr_lt = 1, nidx_rtp(1)*nidx_rtp(2)
             i_klm = kr_lt + (mphi-1)*nidx_rtp(1)*nidx_rtp(2)
             i_mkl = mphi + (kr_lt-1)*nidx_rtp(3)
-            d_rtp(i_klm,nd) = d_trns(i_mkl)
+            d_sph(i_klm,nd) = v_tmp(i_mkl)
           end do
         end do
 !$omp end parallel do
       end do
+!
+      deallocate(v_tmp)
 !
       end subroutine swap_phi_order_from_trans
 !
@@ -57,11 +65,10 @@
 !-----------------------------------------------------------------------
 !
       subroutine swap_phi_order_to_trans                                &
-     &         (numdir, nnod_rtp, nidx_rtp, d_rtp, d_rtp)
+     &         (numdir, nnod_rtp, nidx_rtp, v_prt)
 !
       integer(kind = kint), intent(in) :: numdir, nnod_rtp
       integer(kind = kint), intent(in) :: nidx_rtp(3)
-      real(kind = kreal), intent(in) :: d_rtp(nnod_rtp,numdir)
 !
       real(kind = kreal), intent(inout) :: v_prt(nnod_rtp,numdir)
 !
@@ -80,7 +87,7 @@
           do mphi = 1, nidx_rtp(3)
             i_klm = kr_lt + (mphi-1)*nidx_rtp(1)*nidx_rtp(2)
             i_mkl = mphi + (kr_lt-1)*nidx_rtp(3)
-            v_prt(i_mkl,nd) = d_rtp(i_klm)
+            v_prt(i_mkl,nd) = v_tmp(i_klm)
           end do
         end do
 !$omp end parallel do
