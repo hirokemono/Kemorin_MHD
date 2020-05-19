@@ -73,8 +73,7 @@
 !
 !
 !$omp parallel
-      if( (f_trns%forces%i_m_advect * fl_prop%iflag_scheme)             &
-     &                                               .gt. 0) then
+      if(iflag_4_filter_inertia) then
         call cal_cross_prod_w_coef_smp                                  &
      &     (sph_rtp%nnod_pole, fl_prop%coef_velo,                       &
      &      trns_b_MHD%fld_pole(1,bs_trns%base%i_vort),                 &
@@ -82,8 +81,7 @@
      &      trns_f_MHD%fld_pole(1,f_trns%forces%i_m_advect) )
       end if
 !
-      if(f_trns%forces%i_lorentz .gt. 0                                 &
-     &      .and. fl_prop%iflag_4_lorentz) then
+      if(fl_prop%iflag_4_lorentz) then
         call cal_cross_prod_w_coef_smp                                  &
      &     (sph_rtp%nnod_pole, fl_prop%coef_lor,                        &
      &      trns_b_MHD%fld_pole(1,bs_trns%base%i_current),              &
@@ -91,10 +89,7 @@
      &      trns_f_MHD%fld_pole(1,f_trns%forces%i_lorentz) )
       end if
 !
-!
-!
-      if((f_trns%forces%i_vp_induct * cd_prop%iflag_Bevo_scheme)        &
-     &                                                    .gt. 0) then
+      if(cd_prop%iflag_4_induction) then
         call cal_cross_prod_w_coef_smp                                  &
      &     (sph_rtp%nnod_pole, cd_prop%coef_induct,                     &
      &      trns_b_MHD%fld_pole(1,bs_trns%base%i_velo),                 &
@@ -103,7 +98,7 @@
       end if
 !
 !
-      if( (f_trns%forces%i_h_flux * ht_prop%iflag_scheme) .gt. 0) then
+      if(ht_prop%iflag_4_advection) then
         call cal_vec_scalar_prod_w_coef_smp                             &
      &     (sph_rtp%nnod_pole, ht_prop%coef_advect,                     &
      &      trns_b_MHD%fld_pole(1,bs_trns%base%i_velo),                 &
@@ -111,7 +106,7 @@
      &      trns_f_MHD%fld_pole(1,f_trns%forces%i_h_flux) )
       end if
 !
-      if( (f_trns%forces%i_c_flux * cp_prop%iflag_scheme) .gt. 0) then
+      if(cp_prop%iflag_4_advection) then
         call cal_vec_scalar_prod_w_coef_smp                             &
      &     (sph_rtp%nnod_pole, cp_prop%coef_advect,                     &
      &      trns_b_MHD%fld_pole(1,bs_trns%base%i_velo),                 &
@@ -119,8 +114,7 @@
      &      trns_f_MHD%fld_pole(1,f_trns%forces%i_c_flux) )
       end if
 !
-!      if(f_trns%forces%i_coriolis .gt. 0                               &
-!     &       .and. fl_prop%iflag_4_coriolis) then
+!      if(fl_prop%iflag_4_coriolis) then
 !        call cal_wz_coriolis_rtp                                       &
 !     &     (sph_rtp%nnod_pole, sph_rtp%nidx_rtp, fl_prop%coef_cor,     &
 !     &      trns_b_MHD%fld_pole(1,bs_trns%base%i_velo),                &
