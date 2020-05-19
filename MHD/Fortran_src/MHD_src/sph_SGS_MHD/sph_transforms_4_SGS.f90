@@ -8,9 +8,9 @@
 !!
 !!@verbatim
 !!      subroutine sph_back_trans_SGS_MHD(sph, comms_sph, trans_p,      &
-!!     &          rj_fld, trns_bwd, WK_sph, SGS_mul_FFTW)
+!!     &          rj_fld, trns_bwd, WK_sph)
 !!      subroutine sph_forward_trans_SGS_MHD(sph, comms_sph, trans_p,   &
-!!     &          trns_fwd, WK_sph, SGS_mul_FFTW, rj_fld)
+!!     &          trns_fwd, WK_sph, rj_fld)
 !!      subroutine sph_pole_trans_SGS_MHD                               &
 !!     &         (sph, comms_sph, trans_p, rj_fld, trns_bwd)
 !!        type(sph_grids), intent(in) :: sph
@@ -20,7 +20,6 @@
 !!        type(address_4_sph_trans), intent(inout) :: trns_bwd
 !!        type(spherical_transform_data), intent(inout) :: trns_fwd
 !!        type(spherical_trns_works), intent(inout) :: WK_sph
-!!        type(work_for_sgl_FFTW), intent(inout) :: SGS_mul_FFTW
 !!@endverbatim
 !!
       module sph_transforms_4_SGS
@@ -54,7 +53,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine sph_back_trans_SGS_MHD(sph, comms_sph, trans_p,        &
-     &          rj_fld, trns_bwd, WK_sph, SGS_mul_FFTW)
+     &          rj_fld, trns_bwd, WK_sph)
 !
       use m_solver_SR
       use sph_trans_w_coriols
@@ -68,7 +67,6 @@
 !
       type(spherical_transform_data), intent(inout) :: trns_bwd
       type(spherical_trns_works), intent(inout) :: WK_sph
-      type(work_for_sgl_FFTW), intent(inout) :: SGS_mul_FFTW
 !
 !
       if(trns_bwd%ncomp .le. 0) return
@@ -83,14 +81,14 @@
 !
       call sph_b_transform_SGS                                          &
      &   (sph, comms_sph, trans_p, n_WS, n_WR, WS(1), WR(1),            &
-     &    trns_bwd, WK_sph, SGS_mul_FFTW)
+     &    trns_bwd, WK_sph)
 !
       end subroutine sph_back_trans_SGS_MHD
 !
 !-----------------------------------------------------------------------
 !
       subroutine sph_forward_trans_SGS_MHD(sph, comms_sph, trans_p,     &
-     &          trns_fwd, WK_sph, SGS_mul_FFTW, rj_fld)
+     &          trns_fwd, WK_sph, rj_fld)
 !
       use m_solver_SR
       use sph_trans_w_coriols
@@ -103,7 +101,6 @@
 !
       type(spherical_transform_data), intent(inout) :: trns_fwd
       type(spherical_trns_works), intent(inout) :: WK_sph
-      type(work_for_sgl_FFTW), intent(inout) :: SGS_mul_FFTW
       type(phys_data), intent(inout) :: rj_fld
 !
 !
@@ -116,7 +113,7 @@
 !
 !   transform for vectors and scalars
       call sph_f_transform_SGS(sph, comms_sph, trans_p, trns_fwd,       &
-     &    n_WS, n_WR, WS(1), WR(1), WK_sph, SGS_mul_FFTW)
+     &    n_WS, n_WR, WS(1), WR(1), WK_sph)
 !
       call mhd_spectr_from_recvbuf                                      &
      &   (trns_fwd, comms_sph%comm_rj, n_WR, WR(1), rj_fld)

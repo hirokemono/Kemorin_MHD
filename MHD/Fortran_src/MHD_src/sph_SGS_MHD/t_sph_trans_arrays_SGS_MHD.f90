@@ -42,9 +42,6 @@
         type(SGS_model_addresses) :: b_trns_LES
 !>        addresses of SGS models for forward transform
         type(SGS_model_addresses) :: f_trns_LES
-!
-!>        Work area of Fourier transform for MHD
-        type(work_for_sgl_FFTW) :: mul_FFTW
       end type SGS_address_sph_trans
 !
 !>      strucutres for spherical transform for MHD dynamo with SGS

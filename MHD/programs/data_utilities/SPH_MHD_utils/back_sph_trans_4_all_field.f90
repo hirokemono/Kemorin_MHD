@@ -58,7 +58,6 @@
 !
       use set_address_sph_trans_MHD
       use pole_sph_transform
-      use MHD_FFT_selector
       use init_sphrical_transform_MHD
       use set_address_all_sph_trans
 !

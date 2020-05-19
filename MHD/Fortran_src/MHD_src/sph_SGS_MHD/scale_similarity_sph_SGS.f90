@@ -95,7 +95,7 @@
       if (iflag_debug.eq.1) write(*,*) 'sph_back_trans_SGS_MHD SGS'
       if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+9)
       call sph_back_trans_SGS_MHD(sph, comms_sph, trans_p,              &
-     &    rj_fld, trns_SIMI%backward, WK_sph, trns_SIMI%mul_FFTW)
+     &    rj_fld, trns_SIMI%backward, WK_sph)
       if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+9)
 !
       if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+10)

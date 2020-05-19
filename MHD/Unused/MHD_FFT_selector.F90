@@ -12,8 +12,6 @@
 !!      subroutine verify_MHD_FFT_select(id_rank, sph_rtp,              &
 !!     &          ncomp, ncomp_fwd, ncomp_bwd, MHD_mul_FFTW)
 !!      subroutine finalize_MHD_FFT_select(MHD_mul_FFTW)
-!!      subroutine verify_MHD_FFT_select                                &
-!!     &         (sph_rtp, ncomp, ncomp_fwd, ncomp_bwd, MHD_mul_FFTW)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(work_for_sgl_FFTW), intent(inout) :: MHD_mul_FFTW
 !! ------------------------------------------------------------------

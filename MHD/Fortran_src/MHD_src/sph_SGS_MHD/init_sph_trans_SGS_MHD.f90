@@ -49,7 +49,6 @@
 !
       private :: init_leg_fourier_trans_SGS_MHD
       private :: init_sph_transform_SGS_model
-      private :: init_fourier_transform_SGS_MHD
 !
 !-----------------------------------------------------------------------
 !
@@ -68,7 +67,6 @@
       use address_sph_trans_SGS_snap
       use init_sphrical_transform_MHD
       use pole_sph_transform
-      use MHD_FFT_selector
 !
       type(SGS_paremeters), intent(in) :: SGS_par
       type(SPH_MHD_model_data), intent(in) :: SPH_model
@@ -229,11 +227,8 @@
       if (iflag_debug.eq.1) write(*,*) 'initialize_legendre_trans'
       call initialize_legendre_trans(ncomp_max_trans,                   &
      &    sph, comms_sph, trans_p%leg, trans_p%idx_trns)
-      call init_fourier_transform_SGS_MHD                               &
-     &   (SGS_param, ncomp_max_trans, sph%sph_rtp, comms_sph%comm_rtp,  &
-     &    WK%trns_MHD, WK_LES%trns_SGS, WK_LES%trns_DYNS,               &
-     &    WK_LES%trns_Csim, WK_LES%trns_ngTMP, WK_LES%trns_SIMI,        &
-     &    WK_LES%trns_DYNG, WK_LES%trns_fil_MHD, WK%WK_sph)
+      call init_fourier_transform_4_MHD(ncomp_max_trans,                &
+     &    sph%sph_rtp, comms_sph%comm_rtp, WK%trns_MHD, WK%WK_sph)
 !
       if (iflag_debug.eq.1) write(*,*) 'alloc_sphere_ave_coriolis'
       call alloc_sphere_ave_coriolis(sph%sph_rj)
@@ -245,71 +240,5 @@
       end subroutine init_leg_fourier_trans_SGS_MHD
 !
 !-----------------------------------------------------------------------
-!
-      subroutine init_fourier_transform_SGS_MHD                         &
-     &       (SGS_param, ncomp_tot, sph_rtp, comm_rtp,                  &
-     &        trns_MHD, trns_SGS, trns_DYNS, trns_Csim,                 &
-     &        trns_ngTMP, trns_SIMI, trns_DYNG, trns_fil_MHD, WK_sph)
-!
-      use m_solver_SR
-      use init_FFT_4_MHD
-!
-      type(SGS_model_control_params), intent(in) :: SGS_param
-      type(sph_rtp_grid), intent(in) :: sph_rtp
-      type(sph_comm_tbl), intent(in) :: comm_rtp
-      integer(kind = kint), intent(in) :: ncomp_tot
-!
-      type(address_4_sph_trans), intent(inout) :: trns_MHD
-      type(SGS_address_sph_trans), intent(inout) :: trns_SGS
-      type(SGS_address_sph_trans), intent(inout) :: trns_DYNS
-      type(SGS_address_sph_trans), intent(inout) :: trns_Csim
-      type(SGS_address_sph_trans), intent(inout) :: trns_ngTMP
-      type(SGS_address_sph_trans), intent(inout) :: trns_SIMI
-      type(SGS_address_sph_trans), intent(inout) :: trns_DYNG
-      type(SGS_address_sph_trans), intent(inout) :: trns_fil_MHD
-      type(spherical_trns_works), intent(inout) :: WK_sph
-!
-!
-      call init_fourier_transform_4_MHD(ncomp_tot,                      &
-     &    sph_rtp, comm_rtp, trns_MHD, WK_sph, trns_MHD%mul_FFTW)
-!
-      call init_MHD_FFT_select(my_rank, sph_rtp, ncomp_tot,             &
-     &    trns_fil_MHD%forward%ncomp, trns_fil_MHD%backward%ncomp,      &
-     &    trns_fil_MHD%mul_FFTW)
-!
-      if(SGS_param%iflag_SGS .eq. id_SGS_similarity) then
-        call init_MHD_FFT_select(my_rank, sph_rtp, ncomp_tot,           &
-     &      trns_SGS%forward%ncomp, trns_SGS%backward%ncomp,            &
-     &      trns_SGS%mul_FFTW)
-!
-        if(SGS_param%iflag_dynamic .eq. id_SGS_DYNAMIC_ON) then
-          call init_MHD_FFT_select(my_rank, sph_rtp, ncomp_tot,         &
-     &        trns_DYNS%forward%ncomp, trns_DYNS%backward%ncomp,        &
-     &        trns_DYNS%mul_FFTW)
-          call init_MHD_FFT_select(my_rank, sph_rtp, ncomp_tot,         &
-     &        trns_Csim%forward%ncomp, trns_Csim%backward%ncomp,        &
-     &        trns_Csim%mul_FFTW)
-        end if
-      else if(SGS_param%iflag_SGS .eq. id_SGS_NL_grad) then
-        call init_MHD_FFT_select(my_rank, sph_rtp, ncomp_tot,           &
-     &      trns_SGS%forward%ncomp, trns_SGS%backward%ncomp,            &
-     &      trns_SGS%mul_FFTW)
-        call init_MHD_FFT_select(my_rank, sph_rtp, ncomp_tot,           &
-     &      trns_ngTMP%forward%ncomp, trns_ngTMP%backward%ncomp,        &
-     &      trns_ngTMP%mul_FFTW)
-!
-        if(SGS_param%iflag_dynamic .eq. id_SGS_DYNAMIC_ON) then
-        call init_MHD_FFT_select(my_rank, sph_rtp, ncomp_tot,           &
-     &      trns_SIMI%forward%ncomp, trns_SIMI%backward%ncomp,          &
-     &      trns_SIMI%mul_FFTW)
-        call init_MHD_FFT_select(my_rank, sph_rtp, ncomp_tot,           &
-     &      trns_DYNG%forward%ncomp, trns_DYNG%backward%ncomp,          &
-     &      trns_DYNG%mul_FFTW)
-        end if
-      end if
-!
-      end subroutine init_fourier_transform_SGS_MHD
-!
-! -----------------------------------------------------------------------
 !
       end module init_sph_trans_SGS_MHD

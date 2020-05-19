@@ -180,7 +180,7 @@
      &                     'sph_forward_trans_SGS_MHD Csim'
         call sph_forward_trans_SGS_MHD                                  &
      &     (sph, comms_sph, trans_p, WK_LES%trns_Csim%forward,          &
-     &      WK%WK_sph, WK_LES%trns_Csim%mul_FFTW, rj_fld)
+     &      WK%WK_sph, rj_fld)
         if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+11)
       end if
 !
@@ -200,8 +200,7 @@
       if (iflag_debug.eq.1) write(*,*)                                  &
      &            'sph_forward_trans_SGS_MHD SGS'
       call sph_forward_trans_SGS_MHD(sph, comms_sph, trans_p,           &
-     &    WK_LES%trns_SGS%forward, WK%WK_sph, WK_LES%trns_SGS%mul_FFTW, &
-     &    rj_fld)
+     &    WK_LES%trns_SGS%forward, WK%WK_sph, rj_fld)
       if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+11)
 !
       if (iflag_debug.ge.1) write(*,*) 'rot_SGS_terms_exp_sph'
@@ -241,7 +240,7 @@
       if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+11)
       if (iflag_debug.eq.1) write(*,*) 'sph_forward_trans_SGS_MHD SGS'
       call sph_forward_trans_SGS_MHD(sph, comms_sph, trans_p,           &
-     &    trns_SGS%forward, WK_sph, trns_SGS%mul_FFTW, rj_fld)
+     &    trns_SGS%forward, WK_sph, rj_fld)
       if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+11)
 !
       call cal_sph_wide_filtering_fields                                &
@@ -257,7 +256,7 @@
       if (iflag_debug.eq.1) write(*,*) 'sph_back_trans_SGS_MHD dyns'
       if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+9)
       call sph_back_trans_SGS_MHD(sph, comms_sph, trans_p,              &
-     &    rj_fld, trns_DYNS%backward, WK_sph, trns_DYNS%mul_FFTW)
+     &    rj_fld, trns_DYNS%backward, WK_sph)
       if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+9)
 !
       if (iflag_debug.eq.1) write(*,*) 'wider_similarity_SGS_rtp'
@@ -320,7 +319,7 @@
       if (iflag_debug.eq.1) write(*,*)                                  &
      &            'sph_forward_trans_SGS_MHD SGS for dynamic nl. grad'
       call sph_forward_trans_SGS_MHD(sph, comms_sph, trans_p,           &
-     &    trns_SGS%forward, WK_sph, trns_SGS%mul_FFTW, rj_fld)
+     &    trns_SGS%forward, WK_sph, rj_fld)
       if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+11)
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_sph_dble_filtering_forces'

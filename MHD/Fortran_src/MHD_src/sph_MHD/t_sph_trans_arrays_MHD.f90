@@ -40,9 +40,6 @@
         type(phys_address) :: b_trns
 !>        addresses of forces for forward transform
         type(phys_address) :: f_trns
-!
-!>        Work area of Fourier transform for MHD
-        type(work_for_sgl_FFTW) :: mul_FFTW
       end type address_4_sph_trans
 !
 !>      strucutres for spherical transform for MHD dynamo

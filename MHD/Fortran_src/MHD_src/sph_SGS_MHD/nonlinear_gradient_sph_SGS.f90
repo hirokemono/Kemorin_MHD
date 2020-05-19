@@ -108,7 +108,7 @@
       if (iflag_debug.eq.1) write(*,*)                                  &
      &        'sph_forward_trans_SGS_MHD trns_ngTMP'
       call sph_forward_trans_SGS_MHD(sph, comms_sph, trans_p,           &
-     &    trns_ngTMP%forward, WK_sph, trns_ngTMP%mul_FFTW, rj_fld)
+     &    trns_ngTMP%forward, WK_sph, rj_fld)
 !
       if (iflag_debug.eq.1) write(*,*) 'overwrt_grad_of_vectors_sph'
       call overwrt_grad_of_vectors_sph                                  &
@@ -118,7 +118,7 @@
       if (iflag_debug.eq.1) write(*,*)                                  &
      &       'sph_back_trans_SGS_MHD trns_ngTMP'
       call sph_back_trans_SGS_MHD(sph, comms_sph, trans_p,              &
-     &    rj_fld, trns_ngTMP%backward, WK_sph, trns_ngTMP%mul_FFTW)
+     &    rj_fld, trns_ngTMP%backward, WK_sph)
 !
       if (iflag_debug.eq.1) write(*,*) 'nl_gradient_SGS_terms_rtp'
       call nl_gradient_SGS_terms_rtp                                    &
@@ -165,7 +165,7 @@
       if (iflag_debug.eq.1)                                             &
      &         write(*,*) 'sph_forward_trans_SGS_MHD trns_DYNG'
       call sph_forward_trans_SGS_MHD(sph, comms_sph, trans_p,           &
-     &    trns_DYNG%forward, WK_sph, trns_DYNG%mul_FFTW, rj_fld)
+     &    trns_DYNG%forward, WK_sph, rj_fld)
 !
       if (iflag_debug.eq.1) write(*,*) 'overwrt_grad_of_vectors_sph'
       call overwrt_grad_of_vectors_sph                                  &
@@ -175,7 +175,7 @@
       if (iflag_debug.eq.1)                                             &
      &         write(*,*) 'sph_back_trans_SGS_MHD trns_DYNG'
       call sph_back_trans_SGS_MHD(sph, comms_sph, trans_p,              &
-     &    rj_fld, trns_DYNG%backward, WK_sph, trns_DYNG%mul_FFTW)
+     &    rj_fld, trns_DYNG%backward, WK_sph)
 !
       if (iflag_debug.eq.1) write(*,*) 'wider_nl_grad_SGS_rtp'
       call wider_nl_grad_SGS_rtp                                        &
