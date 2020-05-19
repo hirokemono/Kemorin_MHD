@@ -177,6 +177,7 @@
       use t_reference_scalar_param
 !
       use self_buoyancy_on_sphere
+      use const_radial_forces_on_bc
 !
       type(fluid_property), intent(in) :: fl_prop
       type(sph_boundary_type), intent(in) :: sph_bc_U

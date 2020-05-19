@@ -17,6 +17,10 @@
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(phys_address), intent(in) :: ipol
 !!        type(phys_data), intent(inout) :: rj_fld
+!!
+!!      subroutine cal_radial_force_on_sph                              &
+!!     &         (kr, is_fld, is_fr, nidx_rj, ar_1d_rj, g_sph_rj,       &
+!!     &          n_point, ntot_phys_rj, d_rj)
 !!@endverbatim
 !
       module const_radial_forces_on_bc
@@ -27,8 +31,6 @@
       use m_constants
 !
       implicit none
-!
-      private :: cal_radial_force_on_sph
 !
 !   ------------------------------------------------------------------
 !
