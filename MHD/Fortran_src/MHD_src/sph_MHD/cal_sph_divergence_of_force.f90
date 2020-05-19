@@ -21,11 +21,11 @@
 !!        type(phys_data), intent(inout) :: rj_fld
 !!
 !!      subroutine cal_div_of_buoyancies_sph_2                          &
-!!     &         (sph_rj, r_2nd, MHD_prop, sph_MHD_bc, g_sph_rj,        &
+!!     &         (iflag_4_gravity, iflag_4_composit_buo,                &
+!!     &          sph_rj, r_2nd, sph_MHD_bc, g_sph_rj,                  &
 !!     &          ipol_frc, ipol_div_frc, rj_fld)
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(fdm_matrices), intent(in) :: r_2nd
-!!        type(MHD_evolution_param), intent(in) :: MHD_prop
 !!        type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
 !!        type(base_force_address), intent(in) :: ipol_frc
 !!        type(base_force_address), intent(in) :: ipol_div_frc
@@ -80,9 +80,11 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      call const_sph_div_force                                          &
-     &   (sph_rj, r_2nd, sph_MHD_bc%sph_bc_U, g_sph_rj,                 &
-     &    ipol_frc%i_m_advect, ipol_div_frc%i_m_advect, rj_fld)
+      if(MHD_prop%fl_prop%iflag_4_inertia) then
+        call const_sph_div_force                                        &
+     &     (sph_rj, r_2nd, sph_MHD_bc%sph_bc_U, g_sph_rj,               &
+     &      ipol_frc%i_m_advect, ipol_div_frc%i_m_advect, rj_fld)
+      end if
 !
       if(MHD_prop%fl_prop%iflag_4_lorentz) then
         call const_sph_div_force                                        &
@@ -96,12 +98,18 @@
      &      ipol_frc%i_coriolis, ipol_div_frc%i_Coriolis, rj_fld)
       end if
 !
-      call cal_div_of_buoyancies_sph_2(sph_rj, r_2nd, MHD_prop,         &
-     &    sph_MHD_bc, g_sph_rj, ipol_frc, ipol_div_frc, rj_fld)
+      call cal_div_of_buoyancies_sph_2                                  &
+     &   (MHD_prop%fl_prop%iflag_4_gravity,                             &
+     &    MHD_prop%fl_prop%iflag_4_composit_buo,                        &
+     &    sph_rj, r_2nd, sph_MHD_bc, g_sph_rj,                          &
+     &    ipol_frc, ipol_div_frc, rj_fld)
 !
 !      call sel_div_buoyancies_sph_MHD                                  &
-!     &   (sph_rj, ipol_base, ipol_grad, ipol_div_frc,                  &
-!     &    MHD_prop%fl_prop, MHD_prop%ref_param_T, MHD_prop%ref_param_C,&
+!     &   (MHD_prop%fl_prop%iflag_4_gravity,                            &
+!     &    MHD_prop%fl_prop%iflag_4_composit_buo,                       &
+!     &    sph_rj, ipol_base, ipol_grad, ipol_div_frc,                  &
+!     &    MHD_prop%fl_prop%coef_buo,  MHD_prop%fl_prop%coef_comp_buo,  &
+!     &    MHD_prop%ref_param_T, MHD_prop%ref_param_C,                  &
 !     &    sph_MHD_bc%sph_bc_U, rj_fld)
 !
       end subroutine cal_div_of_forces_sph_2
@@ -109,15 +117,16 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_div_of_buoyancies_sph_2                            &
-     &         (sph_rj, r_2nd, MHD_prop, sph_MHD_bc, g_sph_rj,          &
+     &         (iflag_4_gravity, iflag_4_composit_buo,                  &
+     &          sph_rj, r_2nd, sph_MHD_bc, g_sph_rj,                    &
      &          ipol_frc, ipol_div_frc, rj_fld)
 !
       use t_control_parameter
       use const_sph_divergence
 !
+      logical, intent(in) :: iflag_4_gravity, iflag_4_composit_buo
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
-      type(MHD_evolution_param), intent(in) :: MHD_prop
       type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
       type(base_force_address), intent(in) :: ipol_frc
       type(base_force_address), intent(in) :: ipol_div_frc
@@ -126,13 +135,13 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      if(MHD_prop%fl_prop%iflag_4_gravity) then
+      if(iflag_4_gravity) then
         call const_sph_div_force                                        &
      &     (sph_rj, r_2nd, sph_MHD_bc%sph_bc_U, g_sph_rj,               &
      &      ipol_frc%i_buoyancy, ipol_div_frc%i_buoyancy, rj_fld)
       end if
 !
-      if(MHD_prop%fl_prop%iflag_4_composit_buo) then
+      if(iflag_4_composit_buo) then
         call const_sph_div_force                                        &
      &     (sph_rj, r_2nd, sph_MHD_bc%sph_bc_U, g_sph_rj,               &
      &      ipol_frc%i_comp_buo, ipol_div_frc%i_comp_buo, rj_fld)

@@ -39,9 +39,11 @@
 !!        type(base_force_address), intent(in) :: ipol_frc
 !!        type(sph_boundary_type), intent(in) :: sph_bc_B
 !!        type(phys_data), intent(inout) :: rj_fld
-!!      subroutine cal_div_of_fluxes_sph(sph_rj, r_2nd, g_sph_rj,       &
-!!     &          sph_bc_T, bcs_T, sph_bc_C, bcs_C,                     &
-!!     &          fdm2_center, ipol_frc, rj_fld)
+!!      subroutine cal_div_of_fluxes_sph                                &
+!!     &         (iflag_t_advection, iflag_c_advection,                 &
+!!     &          sph_rj, r_2nd, g_sph_rj,                              &
+!!     &          sph_bc_T, bcs_T, sph_bc_C, bcs_C, fdm2_center,        &
+!!     &          ipol_frc, rj_fld)
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(fdm_matrices), intent(in) :: r_2nd
 !!        type(base_force_address), intent(in) :: ipol_frc
