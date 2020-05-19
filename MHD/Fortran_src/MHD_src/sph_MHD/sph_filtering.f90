@@ -67,18 +67,16 @@
       type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
 !
 !
-      if(SGS_par%model_p%iflag_SGS .eq. 0) return
+      if (iflag_debug.gt.0) write(*,*) 'init_filter_4_SPH_MHD'
+      call init_filter_4_SPH_MHD(sph, sph_grps, trans_p%leg,            &
+     &    dynamic_SPH%num_sph_filteres, dynamic_SPH%sph_filters)
 !
+      if(SGS_par%model_p%iflag_SGS .eq. 0) return
       if(SGS_par%model_p%iflag_dynamic .eq. id_SGS_DYNAMIC_ON) then
         if (iflag_debug.gt.0) write(*,*) 'find_grouping_4_dynamic_model'
         call find_grouping_4_dynamic_model(SGS_par%model_p,             &
      &      sph%sph_params, sph%sph_rtp, dynamic_SPH%sph_d_grp)
       end if
-
-!
-      if (iflag_debug.gt.0) write(*,*) 'init_filter_4_SPH_MHD'
-      call init_filter_4_SPH_MHD(sph, sph_grps, trans_p%leg,            &
-     &    dynamic_SPH%num_sph_filteres, dynamic_SPH%sph_filters)
 !
       if (iflag_debug.gt.0) write(*,*) 'init_work_4_SGS_sph_mhd'
       call init_work_4_SGS_sph_mhd                                      &
