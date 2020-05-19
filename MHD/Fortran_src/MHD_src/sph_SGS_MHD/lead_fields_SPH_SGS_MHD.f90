@@ -122,7 +122,7 @@
 !
       use cal_sol_sph_fluid_crank
 !
-      use cal_sph_field_by_rotation
+      use cal_sph_divergence_of_force
       use const_radial_forces_on_bc
       use cal_div_of_forces
       use cal_div_of_SGS_forces
