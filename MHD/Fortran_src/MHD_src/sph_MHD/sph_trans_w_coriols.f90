@@ -28,20 +28,6 @@
 !!        type(spherical_transform_data), intent(inout) :: trns_fwd
 !!        type(spherical_trns_works), intent(inout) :: WK_sph
 !!
-!!      subroutine sph_b_transform_SGS                                  &
-!!     &         (sph, comms_sph, trans_p, n_WS, n_WR, WS, WR,          &
-!!     &          trns_bwd, WK_sph)
-!!      subroutine sph_f_transform_SGS                                  &
-!!     &         (sph, comms_sph, trans_p, trns_fwd,                    &
-!!     &          n_WS, n_WR, WS, WR, WK_sph)
-!!        type(sph_grids), intent(in) :: sph
-!!        type(sph_comm_tables), intent(in) :: comms_sph
-!!        type(sph_rotation), intent(in) :: omega_sph
-!!        type(parameters_4_sph_trans), intent(in) :: trans_p
-!!        type(spherical_transform_data), intent(inout) :: trns_bwd
-!!        type(spherical_transform_data), intent(inout) :: trns_fwd
-!!        type(spherical_trns_works), intent(inout) :: WK_sph
-!!
 !!      subroutine sph_b_trans_licv(sph_rlm, comm_rlm, comm_rj,         &
 !!     &          fl_prop, sph_bc_U, omega_sph, leg, gt_cor,            &
 !!     &          b_trns, trns_bwd, n_WR, WR, cor_rlm)
@@ -242,56 +228,6 @@
       if(iflag_SPH_time) call end_elapsed_time(ist_elapsed_SPH+4)
 !
       end subroutine sph_f_trans_w_coriolis
-!
-! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-      subroutine sph_b_transform_SGS                                    &
-     &         (sph, comms_sph, trans_p, n_WS, n_WR, WS, WR,            &
-     &          trns_bwd, WK_sph)
-!
-      use t_sph_transforms
-!
-      type(sph_grids), intent(in) :: sph
-      type(sph_comm_tables), intent(in) :: comms_sph
-      type(parameters_4_sph_trans), intent(in) :: trans_p
-!
-      integer(kind = kint), intent(in) :: n_WS, n_WR
-      real(kind = kreal), intent(inout) :: WS(n_WS), WR(n_WR)
-      type(spherical_transform_data), intent(inout) :: trns_bwd
-      type(spherical_trns_works), intent(inout) :: WK_sph
-!
-      call sph_backward_transforms                                      &
-     &   (trns_bwd%ncomp, trns_bwd%num_vector, trns_bwd%num_scalar,     &
-     &    sph, comms_sph, trans_p, n_WS, n_WR, WS, WR,                  &
-     &    trns_bwd%fld_rtp, WK_sph)
-!
-      end subroutine sph_b_transform_SGS
-!
-! -----------------------------------------------------------------------
-!
-      subroutine sph_f_transform_SGS                                    &
-     &         (sph, comms_sph, trans_p, trns_fwd,                      &
-     &          n_WS, n_WR, WS, WR, WK_sph)
-!
-      use t_sph_transforms
-!
-      type(sph_grids), intent(in) :: sph
-      type(sph_comm_tables), intent(in) :: comms_sph
-      type(parameters_4_sph_trans), intent(in) :: trans_p
-!
-      integer(kind = kint), intent(in) :: n_WS, n_WR
-      real(kind = kreal), intent(inout) :: WS(n_WS), WR(n_WR)
-      type(spherical_transform_data), intent(inout) :: trns_fwd
-      type(spherical_trns_works), intent(inout) :: WK_sph
-!
-!
-      call sph_forward_transforms                                       &
-     &   (trns_fwd%ncomp, trns_fwd%num_vector, trns_fwd%num_scalar,     &
-     &    sph, comms_sph, trans_p, trns_fwd%fld_rtp,                    &
-     &    n_WS, n_WR, WS, WR, WK_sph)
-!
-      end subroutine sph_f_transform_SGS
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------

@@ -56,7 +56,6 @@
      &          rj_fld, trns_bwd, WK_sph)
 !
       use m_solver_SR
-      use sph_trans_w_coriols
       use set_address_sph_trans_MHD
       use spherical_SRs_N
 !
@@ -79,9 +78,11 @@
       call mhd_spectr_to_sendbuf                                        &
      &   (trns_bwd, comms_sph%comm_rj, rj_fld, n_WS, WS(1))
 !
-      call sph_b_transform_SGS                                          &
-     &   (sph, comms_sph, trans_p, n_WS, n_WR, WS(1), WR(1),            &
-     &    trns_bwd, WK_sph)
+      call sph_backward_transforms                                      &
+     &   (trns_bwd%ncomp, trns_bwd%num_vector, trns_bwd%num_scalar,     &
+     &    sph, comms_sph, trans_p, n_WS, n_WR, WS(1), WR(1),            &
+     &    trns_bwd%fld_rtp, WK_sph)
+!
 !
       end subroutine sph_back_trans_SGS_MHD
 !
@@ -91,7 +92,6 @@
      &          trns_fwd, WK_sph, rj_fld)
 !
       use m_solver_SR
-      use sph_trans_w_coriols
       use set_address_sph_trans_MHD
       use spherical_SRs_N
 !
@@ -112,7 +112,9 @@
      &    comms_sph%comm_rlm, comms_sph%comm_rj)
 !
 !   transform for vectors and scalars
-      call sph_f_transform_SGS(sph, comms_sph, trans_p, trns_fwd,       &
+      call sph_forward_transforms                                       &
+     &   (trns_fwd%ncomp, trns_fwd%num_vector, trns_fwd%num_scalar,     &
+     &    sph, comms_sph, trans_p, trns_fwd%fld_rtp,                    &
      &    n_WS, n_WR, WS(1), WR(1), WK_sph)
 !
       call mhd_spectr_from_recvbuf                                      &
