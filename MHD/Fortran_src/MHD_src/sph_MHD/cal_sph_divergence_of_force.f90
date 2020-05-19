@@ -19,6 +19,17 @@
 !!        type(base_force_address), intent(in) :: ipol_rot_frc
 !!        type(base_force_address), intent(in) :: ipol_div_frc
 !!        type(phys_data), intent(inout) :: rj_fld
+!!
+!!      subroutine cal_div_of_buoyancies_sph_2                          &
+!!     &         (sph_rj, r_2nd, MHD_prop, sph_MHD_bc, g_sph_rj,        &
+!!     &          ipol_frc, ipol_div_frc, rj_fld)
+!!        type(sph_rj_grid), intent(in) ::  sph_rj
+!!        type(fdm_matrices), intent(in) :: r_2nd
+!!        type(MHD_evolution_param), intent(in) :: MHD_prop
+!!        type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
+!!        type(base_force_address), intent(in) :: ipol_frc
+!!        type(base_force_address), intent(in) :: ipol_div_frc
+!!        type(phys_data), intent(inout) :: rj_fld
 !!@endverbatim
 !
       module cal_sph_divergence_of_force
@@ -40,8 +51,6 @@
       use t_coef_fdm2_MHD_boundaries
 !
       implicit none
-!
-      private :: cal_div_of_buoyancies_sph_2
 !
 ! ----------------------------------------------------------------------
 !

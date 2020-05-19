@@ -18,6 +18,35 @@
 !!        type(base_force_address), intent(in) :: ipol_rot_frc
 !!        type(base_force_address), intent(in) :: ipol_div_frc
 !!        type(phys_data), intent(inout) :: rj_fld
+!!
+!!      subroutine cal_rot_of_forces_sph_2(sph_rj, r_2nd, g_sph_rj,     &
+!!     &          sph_bc_U, fdm2_free_ICB, fdm2_free_CMB,               &
+!!     &          ipol_frc, ipol_rot_frc, rj_fld)
+!!        type(sph_rj_grid), intent(in) ::  sph_rj
+!!        type(fdm_matrices), intent(in) :: r_2nd
+!!        type(base_force_address), intent(in) :: ipol_frc
+!!        type(base_force_address), intent(in) :: ipol_rot_frc
+!!        type(sph_boundary_type), intent(in)  :: sph_bc_U
+!!        type(fdm2_free_slip), intent(in) :: fdm2_free_ICB
+!!        type(fdm2_free_slip), intent(in) :: fdm2_free_CMB
+!!        type(phys_data), intent(inout) :: rj_fld
+!!      subroutine cal_rot_of_induction_sph                             &
+!!     &         (sph_rj, r_2nd, g_sph_rj, sph_bc_B, ipol_frc, rj_fld)
+!!        type(sph_rj_grid), intent(in) ::  sph_rj
+!!        type(fdm_matrices), intent(in) :: r_2nd
+!!        type(base_force_address), intent(in) :: ipol_frc
+!!        type(sph_boundary_type), intent(in) :: sph_bc_B
+!!        type(phys_data), intent(inout) :: rj_fld
+!!      subroutine cal_div_of_fluxes_sph(sph_rj, r_2nd, g_sph_rj,       &
+!!     &          sph_bc_T, bcs_T, sph_bc_C, bcs_C,                     &
+!!     &          fdm2_center, ipol_frc, rj_fld)
+!!        type(sph_rj_grid), intent(in) ::  sph_rj
+!!        type(fdm_matrices), intent(in) :: r_2nd
+!!        type(base_force_address), intent(in) :: ipol_frc
+!!        type(sph_boundary_type), intent(in) :: sph_bc_T, sph_bc_C
+!!        type(sph_scalar_boundary_data), intent(in) :: bcs_T, bcs_C
+!!        type(fdm2_center_mat), intent(in) :: fdm2_center
+!!        type(phys_data), intent(inout) :: rj_fld
 !!@endverbatim
 !
       module cal_sph_field_by_rotation
@@ -40,9 +69,6 @@
 !
       implicit none
 !
-      private :: cal_rot_of_forces_sph_2
-      private :: cal_rot_of_induction_sph, cal_div_of_fluxes_sph
-!
 ! ----------------------------------------------------------------------
 !
       contains
@@ -51,8 +77,6 @@
 !
       subroutine rot_momentum_eq_exp_sph(sph_rj, r_2nd, sph_MHD_bc,     &
      &          leg, ipol_frc, ipol_rot_frc, rj_fld)
-!
-      use calypso_mpi
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
@@ -100,7 +124,8 @@
       type(base_force_address), intent(in) :: ipol_frc
       type(base_force_address), intent(in) :: ipol_rot_frc
       type(sph_boundary_type), intent(in)  :: sph_bc_U
-      type(fdm2_free_slip), intent(in) :: fdm2_free_ICB, fdm2_free_CMB
+      type(fdm2_free_slip), intent(in) :: fdm2_free_ICB
+      type(fdm2_free_slip), intent(in) :: fdm2_free_CMB
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
 !
       type(phys_data), intent(inout) :: rj_fld
