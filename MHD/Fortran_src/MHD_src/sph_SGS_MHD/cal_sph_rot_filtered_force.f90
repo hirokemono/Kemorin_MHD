@@ -77,12 +77,16 @@
       if (iflag_debug .ge. iflag_routine_msg)                           &
      &     write(*,*) 'cal_rot_of_forces_sph_2'
       call cal_rot_of_forces_sph_2                                      &
-     &   (sph_rj, r_2nd, leg%g_sph_rj, sph_MHD_bc%sph_bc_U,             &
+     &   (MHD_prop%fl_prop%iflag_4_filter_inertia,                      &
+     &    MHD_prop%fl_prop%iflag_4_filter_lorentz,                      &
+     &    sph_rj, r_2nd, leg%g_sph_rj, sph_MHD_bc%sph_bc_U,             &
      &    sph_MHD_bc%fdm2_free_ICB, sph_MHD_bc%fdm2_free_CMB,           &
      &    ipol_frc, ipol_rot_frc, rj_fld)
 !
-      call cal_rot_of_induction_sph(sph_rj, r_2nd, leg%g_sph_rj,        &
-     &    sph_MHD_bc%sph_bc_B, ipol_frc, rj_fld)
+      call cal_rot_of_induction_sph                                     &
+     &   (MHD_prop%cd_prop%iflag_4_filter_induction,                    &
+     &    sph_rj, r_2nd, leg%g_sph_rj, sph_MHD_bc%sph_bc_B,             &
+     &    ipol_frc, rj_fld)
 !
       if (iflag_debug .ge. iflag_routine_msg)                           &
      &     write(*,*) 'cal_div_of_fluxes_sph'
