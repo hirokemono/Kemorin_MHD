@@ -128,7 +128,7 @@
       use cal_div_of_SGS_forces
       use const_sph_radial_grad
       use cal_sph_rotation_of_SGS
-      use self_buoyancy_w_filter_sph
+      use cal_sph_rot_filtered_force
       use self_buoyancy_w_fil_on_sph
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
@@ -149,8 +149,11 @@
      &   (sph%sph_rj, r_2nd, MHD_prop, sph_MHD_bc, leg%g_sph_rj,        &
      &    ipol%forces, ipol%div_forces, rj_fld)
 !     &   ipol%base, ipol%grad_fld, ipol%forces, ipol%div_forces, rj_fld)
-      call cal_div_buoyancy_w_fil_sph_2(sph, r_2nd, leg, MHD_prop,      &
-     &    sph_MHD_bc%sph_bc_U, ipol_LES, rj_fld)
+      call cal_div_of_filter_forces_sph_2                               &
+     &   (sph%sph_rj, r_2nd, MHD_prop, sph_MHD_bc, leg%g_sph_rj,        &
+     &    ipol_LES%force_by_filter, ipol_LES%div_frc_by_filter, rj_fld)
+!     &   ipol_LES%filter_fld, ipol_LES%grad_fil_fld,                   &
+!     &    ipol_LES%force_by_filter, ipol_LES%div_frc_by_filter, rj_fld)
 !
 !
       call r_buoyancy_on_sphere_w_filter                                &
