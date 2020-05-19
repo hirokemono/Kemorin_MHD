@@ -114,9 +114,9 @@
       call alloc_SGS_sph_trans_address(SPH_MHD%sph%sph_rtp, WK_LES)
 !
 !
-      call init_leg_fourier_trans_SGS_MHD(SGS_par%model_p,              &
-     &    SPH_model%sph_MHD_bc, SPH_MHD%sph, SPH_MHD%comms,             &
-     &    ncomp_max_trans, trans_p, WK, WK_LES)
+      call init_leg_fourier_trans_SGS_MHD                               &
+     &   (SPH_model%sph_MHD_bc, SPH_MHD%sph, SPH_MHD%comms,             &
+     &    ncomp_max_trans, trans_p, WK)
 !
       call sel_sph_transform_MHD                                        &
      &   (SPH_model%MHD_prop, SPH_model%sph_MHD_bc,                     &
@@ -201,9 +201,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine init_leg_fourier_trans_SGS_MHD                         &
-     &         (SGS_param, sph_MHD_bc, sph, comms_sph,                  &
-     &          ncomp_max_trans, trans_p, WK, WK_LES)
+      subroutine init_leg_fourier_trans_SGS_MHD(sph_MHD_bc,             &
+     &          sph, comms_sph, ncomp_max_trans, trans_p, WK)
 !
       use init_sph_trans
       use init_FFT_4_MHD
@@ -211,7 +210,6 @@
       use pole_sph_transform
       use skip_comment_f
 !
-      type(SGS_model_control_params), intent(in) :: SGS_param
       type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
 !
       type(sph_grids), intent(inout) :: sph
@@ -221,7 +219,6 @@
 !
       type(parameters_4_sph_trans), intent(inout) :: trans_p
       type(works_4_sph_trans_MHD), intent(inout) :: WK
-      type(works_4_sph_trans_SGS_MHD), intent(inout) :: WK_LES
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'initialize_legendre_trans'
