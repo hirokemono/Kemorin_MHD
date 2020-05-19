@@ -195,8 +195,8 @@
      &      comm_rtp%irev_sr, fld_rtp, WS(1), WK_FFTs%sph_ispack)
 #ifdef FFTW3
       else if(iflag_FFT .eq. iflag_FFTW) then
-!        call swap_phi_order_to_trans(ncomp_fwd,                         &
-!     &      sph_rtp%nnod_rtp, sph_rtp%nidx_rtp, fld_rtp)
+        call swap_phi_order_to_trans(ncomp_fwd,                         &
+     &      sph_rtp%nnod_rtp, sph_rtp%nidx_rtp, fld_rtp)
         call MHD_multi_fwd_FFTW_to_send(ncomp_fwd, sph_rtp%nnod_rtp,    &
      &      sph_rtp%nidx_rtp, sph_rtp%istack_rtp_rt_smp,                &
      &      n_WS, comm_rtp%irev_sr, fld_rtp, WS(1),  MHD_mul_FFTW)
@@ -250,8 +250,8 @@
         call MHD_multi_back_FFTW_from_recv(ncomp_bwd, sph_rtp%nnod_rtp, &
      &      sph_rtp%nidx_rtp, sph_rtp%istack_rtp_rt_smp,                &
      &      n_WR, comm_rtp%irev_sr, WR(1), fld_rtp, MHD_mul_FFTW)
-!        call swap_phi_order_from_trans(ncomp_bwd,                       &
-!     &      sph_rtp%nnod_rtp, sph_rtp%nidx_rtp, fld_rtp)
+        call swap_phi_order_from_trans(ncomp_bwd,                       &
+     &      sph_rtp%nnod_rtp, sph_rtp%nidx_rtp, fld_rtp)
       else if(iflag_FFT .eq. iflag_FFTW_FIELD) then
         call sph_field_back_FFTW_from_recv                              &
      &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &

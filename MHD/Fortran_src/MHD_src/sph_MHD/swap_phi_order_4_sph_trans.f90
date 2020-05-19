@@ -45,8 +45,8 @@
 !
 !
       if(iflag_FFT .ne. iflag_FFTW) return
-      call swap_phi_order_from_trans(trns_b_MHD%ncomp,                  &
-     &    sph_rtp%nnod_rtp, sph_rtp%nidx_rtp, trns_b_MHD%fld_rtp)
+!      call swap_phi_order_from_trans(trns_b_MHD%ncomp,                  &
+!     &    sph_rtp%nnod_rtp, sph_rtp%nidx_rtp, trns_b_MHD%fld_rtp)
       call swap_phi_order_from_trans(trns_f_MHD%ncomp,                  &
      &    sph_rtp%nnod_rtp, sph_rtp%nidx_rtp, trns_f_MHD%fld_rtp)
 !
