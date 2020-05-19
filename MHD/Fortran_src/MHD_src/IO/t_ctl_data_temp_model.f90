@@ -258,6 +258,7 @@
       call bcast_ref_value_ctl(refs_ctl%high_ctl)
       call bcast_takepiro_ctl(refs_ctl%takepiro_ctl)
 !
+      call bcast_ctl_type_c1(refs_ctl%filterd_advect_ctl)
       call bcast_ctl_type_c1(refs_ctl%reference_ctl)
       call bcast_ctl_type_c1(refs_ctl%stratified_ctl)
 !

@@ -373,6 +373,7 @@
 !
       call bcast_ctl_array_cr(mcv_ctl%ext_magne)
       call bcast_ctl_type_c1(mcv_ctl%magneto_cv)
+      call bcast_ctl_type_c1(mcv_ctl%filterd_induction_ctl)
 !
       call MPI_BCAST(mcv_ctl%i_magneto_ctl, 1,                          &
      &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
@@ -425,8 +426,9 @@
 !
 !
       call dealloc_control_array_c_r(mcv_ctl%ext_magne)
-      mcv_ctl%magneto_cv%iflag = 0
-      mcv_ctl%i_magneto_ctl = 0
+      mcv_ctl%filterd_induction_ctl%iflag = 0
+      mcv_ctl%magneto_cv%iflag =            0
+      mcv_ctl%i_magneto_ctl =               0
 !
       end subroutine dealloc_magneto_ctl
 !
