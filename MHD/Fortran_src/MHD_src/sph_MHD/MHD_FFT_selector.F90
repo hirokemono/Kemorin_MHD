@@ -200,6 +200,8 @@
         call MHD_multi_fwd_FFTW_to_send(ncomp_fwd, sph_rtp%nnod_rtp,    &
      &      sph_rtp%nidx_rtp, sph_rtp%istack_rtp_rt_smp,                &
      &      n_WS, comm_rtp%irev_sr, fld_rtp, WS(1),  MHD_mul_FFTW)
+        call swap_phi_order_from_trans(ncomp_fwd,                       &
+     &      sph_rtp%nnod_rtp, sph_rtp%nidx_rtp, fld_rtp)
       else if(iflag_FFT .eq. iflag_FFTW_FIELD) then
         call sph_field_fwd_FFTW_to_send                                 &
      &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &

@@ -154,8 +154,8 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      call swap_phi_from_MHD_trans                                      &
-     &   (sph%sph_rtp, trns_MHD%backward, trns_MHD%forward)
+!      call swap_phi_from_MHD_trans                                      &
+!     &   (sph%sph_rtp, trns_MHD%backward, trns_MHD%forward)
 !
       if    (sph%sph_params%iflag_shell_mode .eq. iflag_MESH_w_pole     &
      &  .or. sph%sph_params%iflag_shell_mode .eq. iflag_MESH_w_center)  &
