@@ -163,6 +163,9 @@
       subroutine fwd_trans_address_ene_flux                             &
      &         (ipol, iphys, f_trns, trns_fwd)
 !
+      use add_base_force_4_sph_trns
+      use add_prod_field_4_sph_trns
+!
       type(phys_address), intent(in) :: ipol, iphys
       type(spherical_transform_data), intent(inout) :: trns_fwd
       type(phys_address), intent(inout) :: f_trns
