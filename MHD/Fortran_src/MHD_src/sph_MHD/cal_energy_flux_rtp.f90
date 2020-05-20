@@ -52,6 +52,7 @@
       implicit  none
 !
       private :: cal_wz_coriolis_pole
+      private :: cal_square_vector_on_node, cal_lengh_scale_rtp
 !
 ! -----------------------------------------------------------------------
 !
@@ -176,25 +177,6 @@
      &      trns_f_snap%fld_rtp(1,fs_trns%ene_flux%i_nega_ujb))
       end if
 !
-      if(fs_trns%prod_fld%i_k_heli .gt. 0) then
-        call cal_dot_prod_no_coef_smp(sph_rtp%nnod_rtp,                 &
-     &      trns_b_snap%fld_rtp(1,bs_trns%base%i_velo),                 &
-     &      trns_b_snap%fld_rtp(1,bs_trns%base%i_magne),                &
-     &      trns_f_snap%fld_rtp(1,fs_trns%prod_fld%i_k_heli))
-      end if
-      if(fs_trns%prod_fld%i_c_heli .gt. 0) then
-        call cal_dot_prod_no_coef_smp(sph_rtp%nnod_rtp,                 &
-     &      trns_b_snap%fld_rtp(1,bs_trns%base%i_magne),                &
-     &      trns_b_snap%fld_rtp(1,bs_trns%base%i_current),              &
-     &      trns_f_snap%fld_rtp(1,fs_trns%prod_fld%i_c_heli))
-      end if
-      if(fs_trns%prod_fld%i_x_heli .gt. 0) then
-        call cal_dot_prod_no_coef_smp(sph_rtp%nnod_rtp,                 &
-     &      trns_b_snap%fld_rtp(1,bs_trns%base%i_velo),                 &
-     &      trns_b_snap%fld_rtp(1,bs_trns%base%i_magne),                &
-     &      trns_f_snap%fld_rtp(1,fs_trns%prod_fld%i_x_heli))
-      end if
-!
       if(fs_trns%ene_flux%i_me_gen .gt. 0) then
         call cal_dot_prod_no_coef_smp(sph_rtp%nnod_rtp,                 &
      &      trns_b_eflux%fld_rtp(1,be_trns%forces%i_induction),         &
@@ -255,80 +237,6 @@
      &        trns_f_snap%fld_rtp(1,fs_trns%ene_flux%i_c_buo_gen) )
         end if
       end if
-!
-      if(fs_trns%prod_fld%i_velo_scale .gt. 0) then
-        call cal_len_scale_by_rot_smp                                   &
-     &      (np_smp, sph_rtp%nnod_rtp, sph_rtp%istack_inod_rtp_smp,     &
-     &      trns_b_snap%fld_rtp(1,bs_trns%base%i_velo),                 &
-     &      trns_b_snap%fld_rtp(1,bs_trns%base%i_vort),                 &
-     &      trns_f_snap%fld_rtp(1,fs_trns%prod_fld%i_velo_scale))
-      end if
-      if(fs_trns%prod_fld%i_magne_scale .gt. 0) then
-        call cal_len_scale_by_rot_smp                                   &
-     &     (np_smp, sph_rtp%nnod_rtp, sph_rtp%istack_inod_rtp_smp,      &
-     &      trns_b_snap%fld_rtp(1,bs_trns%base%i_magne),                &
-     &      trns_b_snap%fld_rtp(1,bs_trns%base%i_current),              &
-     &      trns_f_snap%fld_rtp(1,fs_trns%prod_fld%i_magne_scale))
-      end if
-      if(fs_trns%prod_fld%i_temp_scale .gt. 0) then
-        call cal_len_scale_by_diffuse_smp                               &
-     &     (np_smp, sph_rtp%nnod_rtp, sph_rtp%istack_inod_rtp_smp,      &
-     &      trns_b_snap%fld_rtp(1,bs_trns%base%i_temp),                 &
-     &      trns_b_eflux%fld_rtp(1,be_trns%diffusion%i_t_diffuse),      &
-     &      trns_f_snap%fld_rtp(1,fs_trns%prod_fld%i_temp_scale))
-      end if
-      if(fs_trns%prod_fld%i_comp_scale .gt. 0) then
-        call cal_len_scale_by_diffuse_smp                               &
-     &     (np_smp, sph_rtp%nnod_rtp, sph_rtp%istack_inod_rtp_smp,      &
-     &      trns_b_snap%fld_rtp(1,bs_trns%base%i_light),                &
-     &      trns_b_eflux%fld_rtp(1,be_trns%diffusion%i_c_diffuse),      &
-     &      trns_f_snap%fld_rtp(1,fs_trns%prod_fld%i_comp_scale))
-      end if
-!$omp end parallel
-!
-!$omp parallel
-      if(fs_trns%prod_fld%i_square_v .gt. 0) then
-        call vector_vector_prod_smp(sph_rtp%nnod_rtp,                   &
-     &      trns_b_snap%fld_rtp(1,bs_trns%base%i_velo),                 &
-     &      trns_b_snap%fld_rtp(1,bs_trns%base%i_velo),                 &
-     &      trns_f_snap%fld_rtp(1,fs_trns%prod_fld%i_square_v))
-      end if
-      if(fs_trns%prod_fld%i_square_w .gt. 0) then
-        call vector_vector_prod_smp(sph_rtp%nnod_rtp,                   &
-     &      trns_b_snap%fld_rtp(1,bs_trns%base%i_vort),                 &
-     &      trns_b_snap%fld_rtp(1,bs_trns%base%i_vort),                 &
-     &      trns_f_snap%fld_rtp(1,fs_trns%prod_fld%i_square_w))
-      end if
-      if(fs_trns%prod_fld%i_square_b .gt. 0) then
-        call vector_vector_prod_smp(sph_rtp%nnod_rtp,                   &
-     &      trns_b_snap%fld_rtp(1,bs_trns%base%i_magne),                &
-     &      trns_b_snap%fld_rtp(1,bs_trns%base%i_magne),                &
-     &      trns_f_snap%fld_rtp(1,fs_trns%prod_fld%i_square_b))
-      end if
-      if(fs_trns%prod_fld%i_square_a .gt. 0) then
-        call vector_vector_prod_smp(sph_rtp%nnod_rtp,                   &
-     &      trns_b_snap%fld_rtp(1,bs_trns%base%i_vecp),                 &
-     &      trns_b_snap%fld_rtp(1,bs_trns%base%i_vecp),                 &
-     &      trns_f_snap%fld_rtp(1,fs_trns%prod_fld%i_square_a))
-      end if
-      if(fs_trns%prod_fld%i_square_j .gt. 0) then
-        call vector_vector_prod_smp(sph_rtp%nnod_rtp,                   &
-     &      trns_b_snap%fld_rtp(1,bs_trns%base%i_current),              &
-     &      trns_b_snap%fld_rtp(1,bs_trns%base%i_current),              &
-     &      trns_f_snap%fld_rtp(1,fs_trns%prod_fld%i_square_j))
-      end if
-      if(fs_trns%prod_fld%i_square_t .gt. 0) then
-        call cal_scalar_prod_no_coef_smp(sph_rtp%nnod_rtp,              &
-     &      trns_b_snap%fld_rtp(1,bs_trns%base%i_temp),                 &
-     &      trns_b_snap%fld_rtp(1,bs_trns%base%i_temp),                 &
-     &      trns_f_snap%fld_rtp(1,fs_trns%prod_fld%i_square_t))
-      end if
-      if(fs_trns%prod_fld%i_square_c .gt. 0) then
-        call cal_scalar_prod_no_coef_smp(sph_rtp%nnod_rtp,              &
-     &      trns_b_snap%fld_rtp(1,bs_trns%base%i_light),                &
-     &      trns_b_snap%fld_rtp(1,bs_trns%base%i_light),                &
-     &      trns_f_snap%fld_rtp(1,fs_trns%prod_fld%i_square_c))
-      end if
 !$omp end parallel
 !
       if(fs_trns%forces%i_mag_stretch .gt. 0) then
@@ -346,6 +254,30 @@
      &      trns_f_snap%fld_rtp(1,fs_trns%forces%i_mag_stretch))
 !$omp end parallel
       end if
+!
+      call cal_helicity_on_node                                         &
+     &   (bs_trns%base, fs_trns%prod_fld, sph_rtp%nnod_rtp,             &
+     &    trns_b_snap%ncomp, trns_b_snap%fld_rtp,                       &
+     &    trns_f_snap%ncomp, trns_f_snap%fld_rtp)
+      call cal_helicity_on_node                                         &
+     &   (bs_trns%base, fs_trns%prod_fld, sph_rtp%nnod_pole,            &
+     &    trns_b_snap%ncomp, trns_b_snap%fld_pole,                      &
+     &    trns_f_snap%ncomp, trns_f_snap%fld_pole)
+!
+!       get amplitude
+      call cal_square_vector_on_node                                    &
+     &   (bs_trns%base, fs_trns%prod_fld, sph_rtp%nnod_rtp,             &
+     &    trns_b_snap%ncomp, trns_b_snap%fld_rtp,                       &
+     &    trns_f_snap%ncomp, trns_f_snap%fld_rtp)
+      call cal_square_vector_on_node                                    &
+     &   (bs_trns%base, fs_trns%prod_fld, sph_rtp%nnod_pole,            &
+     &    trns_b_snap%ncomp, trns_b_snap%fld_pole,                      &
+     &    trns_f_snap%ncomp, trns_f_snap%fld_pole)
+!
+!       get lengh scale
+      call cal_lengh_scale_rtp                                          &
+     &   (sph_rtp, bs_trns%base, be_trns%diffusion, fs_trns%prod_fld,   &
+     &    trns_b_snap, trns_b_eflux, trns_f_snap)
 !
       end subroutine s_cal_energy_flux_rtp
 !
@@ -381,5 +313,164 @@
       end subroutine cal_buoyancy_flux_rtp_smp
 !
 ! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine cal_helicity_on_node                                   &
+     &         (bs_trns_base, fs_trns_prod, nnod,                       &
+     &          ntot_comp_fld, fld_rtp, ntot_comp_hls, fhls_rtp)
+!
+      use cal_products_smp
+!
+      type(base_field_address), intent(in) :: bs_trns_base
+      type(phys_products_address), intent(in) :: fs_trns_prod
+!
+      integer(kind = kint), intent(in) :: nnod
+      integer(kind = kint), intent(in) :: ntot_comp_fld, ntot_comp_hls
+      real(kind = kreal), intent(in) :: fld_rtp(nnod,ntot_comp_fld)
+!
+      real(kind = kreal), intent(inout) :: fhls_rtp(nnod,ntot_comp_hls)
+!
+!
+!$omp parallel
+      if(fs_trns_prod%i_k_heli .gt. 0) then
+        call cal_dot_prod_no_coef_smp(nnod,                             &
+     &      fld_rtp(1,bs_trns_base%i_velo),                             &
+     &      fld_rtp(1,bs_trns_base%i_magne),                            &
+     &      fhls_rtp(1,fs_trns_prod%i_k_heli))
+      end if
+      if(fs_trns_prod%i_c_heli .gt. 0) then
+        call cal_dot_prod_no_coef_smp(nnod,                             &
+     &      fld_rtp(1,bs_trns_base%i_magne),                            &
+     &      fld_rtp(1,bs_trns_base%i_current),                          &
+     &      fhls_rtp(1,fs_trns_prod%i_c_heli))
+      end if
+      if(fs_trns_prod%i_x_heli .gt. 0) then
+        call cal_dot_prod_no_coef_smp(nnod,                             &
+     &      fld_rtp(1,bs_trns_base%i_velo),                             &
+     &      fld_rtp(1,bs_trns_base%i_magne),                            &
+     &      fhls_rtp(1,fs_trns_prod%i_x_heli))
+      end if
+!$omp end parallel
+!
+      end subroutine cal_helicity_on_node
+!
+!-----------------------------------------------------------------------
+!
+      subroutine cal_square_vector_on_node                              &
+     &         (bs_trns_base, fs_trns_prod, nnod,                       &
+     &          ntot_comp_fld, fld_rtp, ntot_comp_fmg, fmag_rtp)
+!
+      use cal_products_smp
+!
+      type(base_field_address), intent(in) :: bs_trns_base
+      type(phys_products_address), intent(in) :: fs_trns_prod
+!
+      integer(kind = kint), intent(in) :: nnod
+      integer(kind = kint), intent(in) :: ntot_comp_fld, ntot_comp_fmg
+      real(kind = kreal), intent(in) :: fld_rtp(nnod,ntot_comp_fld)
+!
+      real(kind = kreal), intent(inout) :: fmag_rtp(nnod,ntot_comp_fmg)
+!
+!
+!$omp parallel
+      if(fs_trns_prod%i_square_v .gt. 0) then
+        call vector_vector_prod_smp(nnod,                               &
+     &      fld_rtp(1,bs_trns_base%i_velo),                             &
+     &      fld_rtp(1,bs_trns_base%i_velo),                             &
+     &      fmag_rtp(1,fs_trns_prod%i_square_v))
+      end if
+      if(fs_trns_prod%i_square_w .gt. 0) then
+        call vector_vector_prod_smp(nnod,                               &
+     &      fld_rtp(1,bs_trns_base%i_vort),                             &
+     &      fld_rtp(1,bs_trns_base%i_vort),                             &
+     &      fmag_rtp(1,fs_trns_prod%i_square_w))
+      end if
+      if(fs_trns_prod%i_square_b .gt. 0) then
+        call vector_vector_prod_smp(nnod,                               &
+     &      fld_rtp(1,bs_trns_base%i_magne),                            &
+     &      fld_rtp(1,bs_trns_base%i_magne),                            &
+     &      fmag_rtp(1,fs_trns_prod%i_square_b))
+      end if
+      if(fs_trns_prod%i_square_a .gt. 0) then
+        call vector_vector_prod_smp(nnod,                               &
+     &      fld_rtp(1,bs_trns_base%i_vecp),                             &
+     &      fld_rtp(1,bs_trns_base%i_vecp),                             &
+     &      fmag_rtp(1,fs_trns_prod%i_square_a))
+      end if
+      if(fs_trns_prod%i_square_j .gt. 0) then
+        call vector_vector_prod_smp(nnod,                               &
+     &      fld_rtp(1,bs_trns_base%i_current),                          &
+     &      fld_rtp(1,bs_trns_base%i_current),                          &
+     &      fmag_rtp(1,fs_trns_prod%i_square_j))
+      end if
+      if(fs_trns_prod%i_square_t .gt. 0) then
+        call cal_scalar_prod_no_coef_smp(nnod,                          &
+     &      fld_rtp(1,bs_trns_base%i_temp),                             &
+     &      fld_rtp(1,bs_trns_base%i_temp),                             &
+     &      fmag_rtp(1,fs_trns_prod%i_square_t))
+      end if
+      if(fs_trns_prod%i_square_c .gt. 0) then
+        call cal_scalar_prod_no_coef_smp(nnod,                          &
+     &      fld_rtp(1,bs_trns_base%i_light),                            &
+     &      fld_rtp(1,bs_trns_base%i_light),                            &
+     &      fmag_rtp(1,fs_trns_prod%i_square_c))
+      end if
+!$omp end parallel
+!
+      end subroutine cal_square_vector_on_node
+!
+!-----------------------------------------------------------------------
+!
+      subroutine cal_lengh_scale_rtp                                    &
+     &         (sph_rtp, bs_trns_base, bs_trns_dif, fs_trns_prod,       &
+     &          trns_b_snap, trns_b_eflux, trns_f_eflux)
+!
+      use mag_of_field_smp
+!
+      type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(base_field_address), intent(in) :: bs_trns_base
+      type(diffusion_address), intent(in) :: bs_trns_dif
+      type(phys_products_address), intent(in) :: fs_trns_prod
+!
+      type(spherical_transform_data), intent(in) :: trns_b_snap
+      type(spherical_transform_data), intent(in) :: trns_b_eflux
+!
+      type(spherical_transform_data), intent(inout) :: trns_f_eflux
+!
+!
+!$omp parallel
+      if(fs_trns_prod%i_velo_scale .gt. 0) then
+        call cal_len_scale_by_rot_smp                                   &
+     &      (np_smp, sph_rtp%nnod_rtp, sph_rtp%istack_inod_rtp_smp,     &
+     &      trns_b_snap%fld_rtp(1,bs_trns_base%i_velo),                 &
+     &      trns_b_snap%fld_rtp(1,bs_trns_base%i_vort),                 &
+     &      trns_f_eflux%fld_rtp(1,fs_trns_prod%i_velo_scale))
+      end if
+      if(fs_trns_prod%i_magne_scale .gt. 0) then
+        call cal_len_scale_by_rot_smp                                   &
+     &     (np_smp, sph_rtp%nnod_rtp, sph_rtp%istack_inod_rtp_smp,      &
+     &      trns_b_snap%fld_rtp(1,bs_trns_base%i_magne),                &
+     &      trns_b_snap%fld_rtp(1,bs_trns_base%i_current),              &
+     &      trns_f_eflux%fld_rtp(1,fs_trns_prod%i_magne_scale))
+      end if
+      if(fs_trns_prod%i_temp_scale .gt. 0) then
+        call cal_len_scale_by_diffuse_smp                               &
+     &     (np_smp, sph_rtp%nnod_rtp, sph_rtp%istack_inod_rtp_smp,      &
+     &      trns_b_snap%fld_rtp(1,bs_trns_base%i_temp),                 &
+     &      trns_b_eflux%fld_rtp(1,bs_trns_dif%i_t_diffuse),            &
+     &      trns_f_eflux%fld_rtp(1,fs_trns_prod%i_temp_scale))
+      end if
+      if(fs_trns_prod%i_comp_scale .gt. 0) then
+        call cal_len_scale_by_diffuse_smp                               &
+     &     (np_smp, sph_rtp%nnod_rtp, sph_rtp%istack_inod_rtp_smp,      &
+     &      trns_b_snap%fld_rtp(1,bs_trns_base%i_light),                &
+     &      trns_b_eflux%fld_rtp(1,bs_trns_dif%i_c_diffuse),            &
+     &      trns_f_eflux%fld_rtp(1,fs_trns_prod%i_comp_scale))
+      end if
+!$omp end parallel
+!
+      end subroutine cal_lengh_scale_rtp
+!
+!-----------------------------------------------------------------------
 !
       end module cal_energy_flux_rtp
