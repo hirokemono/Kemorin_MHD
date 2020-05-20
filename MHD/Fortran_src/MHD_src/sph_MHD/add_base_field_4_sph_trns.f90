@@ -59,23 +59,21 @@
 !
 !
 !   velocity flag
-      if(       fl_prop%iflag_scheme .gt. id_no_evolution               &
-     &     .or. cd_prop%iflag_Bevo_scheme .gt. id_no_evolution          &
-     &     .or. ht_prop%iflag_scheme .gt. id_no_evolution               &
-     &     .or. cp_prop%iflag_scheme .gt. id_no_evolution) then
+      if(       fl_prop%iflag_4_inertia .or. cd_prop%iflag_4_induction  &
+     &     .or. ht_prop%iflag_4_advection                               &
+     &     .or. cp_prop%iflag_4_advection) then
         call add_field_4_sph_trns_by_pol(velocity,                      &
      &      ipol_base%i_velo, iphys_base%i_velo, b_trns_base%i_velo,    &
      &      trns)
       end if
 !   vorticity flag
-      if(       fl_prop%iflag_scheme .gt. id_no_evolution) then
+      if(fl_prop%iflag_4_inertia) then
         call add_field_4_sph_trns_by_pol(vorticity,                     &
      &      ipol_base%i_vort, iphys_base%i_vort, b_trns_base%i_vort,    &
      &      trns)
       end if
 !   magnetic field flag
-      if(       cd_prop%iflag_Bevo_scheme .gt. id_no_evolution          &
-     &     .or. fl_prop%iflag_4_lorentz) then
+      if(cd_prop%iflag_4_induction .or. fl_prop%iflag_4_lorentz) then
         call add_field_4_sph_trns_by_pol(magnetic_field,                &
      &      ipol_base%i_magne, iphys_base%i_magne, b_trns_base%i_magne, &
      &      trns)
@@ -103,13 +101,13 @@
 !
 !
 !   temperature flag
-      if(ht_prop%iflag_scheme .gt. id_no_evolution) then
+      if(ht_prop%iflag_4_advection) then
         call add_field_4_sph_trns_by_pol(temperature,                   &
      &      ipol_base%i_temp, iphys_base%i_temp, b_trns_base%i_temp,    &
      &      trns)
       end if
 !   composition flag
-      if(cp_prop%iflag_scheme .gt. id_no_evolution) then
+      if(cp_prop%iflag_4_advection) then
         call add_field_4_sph_trns_by_pol(composition,                   &
      &      ipol_base%i_light, iphys_base%i_light, b_trns_base%i_light, &
      &      trns)
@@ -130,26 +128,18 @@
       type(spherical_transform_data), intent(inout) :: trns
 !
 !
-!      if(b_trns_base%i_velo .eq. 0) then
       call add_field_name_4_sph_trns_snap(velocity,                     &
      &    ipol_base%i_velo, iphys_base%i_velo, b_trns_base%i_velo,      &
      &    trns)
-!      end if
-!      if(b_trns_base%i_vort .eq. 0) then
       call add_field_name_4_sph_trns_snap(vorticity,                    &
      &    ipol_base%i_vort, iphys_base%i_vort, b_trns_base%i_vort,      &
      &    trns)
-!      end if
-!      if(b_trns_base%i_magne .eq. 0) then
       call add_field_name_4_sph_trns_snap(magnetic_field,               &
      &    ipol_base%i_magne, iphys_base%i_magne, b_trns_base%i_magne,   &
      &    trns)
-!      end if
-!      if(b_trns_base%i_current .eq. 0) then
       call add_field_name_4_sph_trns_snap(current_density,              &
      &    ipol_base%i_current, iphys_base%i_current,                    &
      &    b_trns_base%i_current, trns)
-!      end if
 !
       end subroutine add_base_vector_sph_trns_snap
 !
@@ -165,16 +155,12 @@
       type(spherical_transform_data), intent(inout) :: trns
 !
 !
-!      if(b_trns_base%i_temp.eq.0 .or. ipol_base%i_per_temp.gt.0) then
       call add_field_name_4_sph_trns_snap(temperature,                  &
      &    ipol_base%i_temp, iphys_base%i_temp, b_trns_base%i_temp,      &
      &    trns)
-!      end if
-!      if(b_trns_base%i_light .eq. 0) then
       call add_field_name_4_sph_trns_snap(composition,                  &
      &    ipol_base%i_light, iphys_base%i_light, b_trns_base%i_light,   &
      &    trns)
-!      end if
 !
       call add_field_name_4_sph_trns_snap(pressure,                     &
      &    ipol_base%i_press, iphys_base%i_press, b_trns_base%i_press,   &

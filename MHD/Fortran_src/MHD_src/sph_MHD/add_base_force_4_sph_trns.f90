@@ -91,9 +91,11 @@
 !
 !   advection
       if(fl_prop%iflag_scheme .gt. id_no_evolution) then
-        call add_field_4_sph_trns_by_pol(inertia,                       &
-     &      ipol_frc%i_m_advect, iphys_frc%i_m_advect,                  &
-     &      f_trns_frc%i_m_advect, trns)
+        if(fl_prop%iflag_4_inertia) then
+          call add_field_4_sph_trns_by_pol(inertia,                     &
+     &        ipol_frc%i_m_advect, iphys_frc%i_m_advect,                &
+     &        f_trns_frc%i_m_advect, trns)
+        end if
 !   Coriolis force
         if(fl_prop%iflag_4_coriolis) then
           call add_field_4_sph_trns_by_pol(Coriolis_force,              &
@@ -109,21 +111,24 @@
       end if
 !
 !   induction
-      if(cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
+      if((cd_prop%iflag_Bevo_scheme .gt. id_no_evolution)               &
+     &    .and. cd_prop%iflag_4_induction) then
         call add_field_4_sph_trns_by_pol(vecp_induction,                &
      &      ipol_frc%i_vp_induct, iphys_frc%i_vp_induct,                &
      &      f_trns_frc%i_vp_induct, trns)
       end if
 !
 !   heat flux
-      if(ht_prop%iflag_scheme .gt. id_no_evolution) then
+      if((ht_prop%iflag_scheme .gt. id_no_evolution)                    &
+     &     .and. ht_prop%iflag_4_advection) then
         call add_field_4_sph_trns_by_pol(heat_flux,                     &
      &      ipol_frc%i_h_flux, iphys_frc%i_h_flux, f_trns_frc%i_h_flux, &
      &      trns)
       end if
 !
 !   composition flux
-      if(cp_prop%iflag_scheme .gt. id_no_evolution) then
+      if((cp_prop%iflag_scheme .gt. id_no_evolution)                    &
+     &     .and. cp_prop%iflag_4_advection) then
         call add_field_4_sph_trns_by_pol(composite_flux,                &
      &      ipol_frc%i_c_flux, iphys_frc%i_c_flux, f_trns_frc%i_c_flux, &
      &      trns)
