@@ -70,6 +70,8 @@
       trns_back%nfield = 0
       call alloc_sph_trns_field_name(trns_back)
 !
+      call add_base_vector_sph_trns_snap                                &
+     &   (ipol%base, iphys%base, b_trns%base, trns_back)
       trns_back%num_vector = trns_back%nfield
 !
 !      Scalars
