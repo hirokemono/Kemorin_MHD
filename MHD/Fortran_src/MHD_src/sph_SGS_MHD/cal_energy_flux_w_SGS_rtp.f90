@@ -8,17 +8,20 @@
 !> @brief Evaluate energy fluxes for MHD dynamo in physical space
 !!
 !!@verbatim
-!!      subroutine cal_filterd_buo_flux_rtp(sph_rtp, fl_prop,           &
+!!      subroutine cal_filterd_buo_flux_rtp                             &
+!!     &         (sph_rtp, fl_prop, ref_param_T, ref_param_C,           &
 !!     &          b_trns_base, b_trns_fil, f_trns_fefx,                 &
-!!     &          trns_b_snap, trns_bs_SGS, trns_f_snap)
+!!     &          trns_b_snap, trns_bs_SGS, trns_f_eflux)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(fluid_property), intent(in) :: fl_prop
+!!        type(reference_scalar_param), intent(in) :: ref_param_T
+!!        type(reference_scalar_param), intent(in) :: ref_param_C
 !!        type(base_field_address), intent(in) :: b_trns_base
 !!        type(base_field_address), intent(in) :: b_trns_fil
 !!        type(energy_flux_address), intent(in) :: f_trns_fefx
 !!        type(spherical_transform_data), intent(in) :: trns_b_snap
 !!        type(spherical_transform_data), intent(in) :: trns_bs_SGS
-!!        type(spherical_transform_data), intent(inout) :: trns_f_snap
+!!        type(spherical_transform_data), intent(inout) :: trns_f_eflux
 !!@endverbatim
 !
       module cal_energy_flux_w_SGS_rtp
@@ -43,30 +46,33 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_filterd_buo_flux_rtp(sph_rtp, fl_prop,             &
+      subroutine cal_filterd_buo_flux_rtp                               &
+     &         (sph_rtp, fl_prop, ref_param_T, ref_param_C,             &
      &          b_trns_base, b_trns_fil, f_trns_fefx,                   &
-     &          trns_b_snap, trns_bs_SGS, trns_f_snap)
+     &          trns_b_snap, trns_bs_SGS, trns_f_eflux)
 !
       use cal_buoyancy_flux_sph
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(fluid_property), intent(in) :: fl_prop
+      type(reference_scalar_param), intent(in) :: ref_param_T
+      type(reference_scalar_param), intent(in) :: ref_param_C
       type(base_field_address), intent(in) :: b_trns_base
       type(base_field_address), intent(in) :: b_trns_fil
       type(energy_flux_address), intent(in) :: f_trns_fefx
       type(spherical_transform_data), intent(in) :: trns_b_snap
       type(spherical_transform_data), intent(in) :: trns_bs_SGS
 !
-      type(spherical_transform_data), intent(inout) :: trns_f_snap
+      type(spherical_transform_data), intent(inout) :: trns_f_eflux
 !
 !
       call cal_buoyancy_flux_rtp                                        &
      &   (sph_rtp, fl_prop, ref_param_T, ref_param_C,                   &
-     &    b_trns_base, b_trns_fil, fs_trns_eflux,                       &
+     &    b_trns_base, b_trns_fil, f_trns_fefx,                         &
      &    trns_b_snap, trns_bs_SGS, trns_f_eflux)
       call pole_buoyancy_flux_rtp                                       &
      &   (sph_rtp, fl_prop, ref_param_T, ref_param_C,                   &
-     &    b_trns_base, b_trns_fil, fs_trns_eflux,                       &
+     &    b_trns_base, b_trns_fil, f_trns_fefx,                         &
      &    trns_b_snap, trns_bs_SGS, trns_f_eflux)
 !
       end subroutine cal_filterd_buo_flux_rtp

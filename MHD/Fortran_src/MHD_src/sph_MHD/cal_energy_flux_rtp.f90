@@ -12,9 +12,9 @@
 !!     &          f_trns, bs_trns, trns_b_MHD, trns_f_MHD)
 !!      subroutine s_cal_energy_flux_rtp(sph_rtp,                       &
 !!     &          fl_prop, cd_prop, ref_param_T, ref_param_C, leg,      &
-!!     &          f_trns, bs_trns, be_trns, fs_trns, bs_trns_diff_v,    &
+!!     &          f_trns, bs_trns, be_trns, fe_trns, bs_trns_diff_v,    &
 !!     &          trns_f_MHD, trns_b_snap, trns_b_eflux, trns_b_difv,   &
-!!     &          trns_f_snap)
+!!     &          trns_f_eflux)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
 !!        type(fluid_property), intent(in) :: fl_prop
@@ -24,12 +24,12 @@
 !!        type(scalar_property), intent(in) :: ht_prop, cp_prop
 !!        type(legendre_4_sph_trans), intent(in) :: leg
 !!        type(phys_address), intent(in) :: f_trns
-!!        type(phys_address), intent(in) :: bs_trns, fs_trns
-!!        type(phys_address), intent(in) :: be_trns
+!!        type(phys_address), intent(in) :: bs_trns
+!!        type(phys_address), intent(in) :: be_trns, fe_trns
 !!        type(spherical_transform_data), intent(in) :: trns_f_MHD
 !!        type(spherical_transform_data), intent(in) :: trns_b_snap
 !!        type(spherical_transform_data), intent(in) :: trns_b_eflux
-!!        type(spherical_transform_data), intent(inout) :: trns_f_snap
+!!        type(spherical_transform_data), intent(inout) :: trns_f_eflux
 !!@endverbatim
 !
       module cal_energy_flux_rtp
@@ -124,9 +124,9 @@
 !
       subroutine s_cal_energy_flux_rtp(sph_rtp,                         &
      &          fl_prop, cd_prop, ref_param_T, ref_param_C, leg,        &
-     &          f_trns, bs_trns, be_trns, fs_trns, bs_trns_diff_v,      &
+     &          f_trns, bs_trns, be_trns, fe_trns, bs_trns_diff_v,      &
      &          trns_f_MHD, trns_b_snap, trns_b_eflux, trns_b_difv,     &
-     &          trns_f_snap)
+     &          trns_f_eflux)
 !
       use poynting_flux_smp
       use sph_transforms_4_MHD
@@ -142,44 +142,44 @@
       type(reference_scalar_param), intent(in) :: ref_param_C
       type(legendre_4_sph_trans), intent(in) :: leg
       type(phys_address), intent(in) :: f_trns
-      type(phys_address), intent(in) :: bs_trns, fs_trns
-      type(phys_address), intent(in) :: be_trns
+      type(phys_address), intent(in) :: bs_trns
+      type(phys_address), intent(in) :: be_trns, fe_trns
       type(diff_vector_address), intent(in) :: bs_trns_diff_v
       type(spherical_transform_data), intent(in) :: trns_f_MHD
       type(spherical_transform_data), intent(in) :: trns_b_snap
       type(spherical_transform_data), intent(in) :: trns_b_eflux
       type(spherical_transform_data), intent(in) :: trns_b_difv
 !
-      type(spherical_transform_data), intent(inout) :: trns_f_snap
+      type(spherical_transform_data), intent(inout) :: trns_f_eflux
 !
 !
-      if(fs_trns%forces%i_coriolis .gt. 0) then
+      if(fe_trns%forces%i_coriolis .gt. 0) then
         call cal_wz_coriolis_rtp(sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,    &
      &      leg%g_colat_rtp, fl_prop%coef_cor,                          &
      &      trns_b_snap%fld_rtp(1,bs_trns%base%i_velo),                 &
-     &      trns_f_snap%fld_rtp(1,fs_trns%forces%i_coriolis))
+     &      trns_f_eflux%fld_rtp(1,fe_trns%forces%i_coriolis))
       end if
 !
 !$omp parallel
-      if(fs_trns%prod_fld%i_electric .gt. 0) then
+      if(fe_trns%prod_fld%i_electric .gt. 0) then
         call cal_electric_field_smp(np_smp, sph_rtp%nnod_rtp,           &
      &      sph_rtp%istack_inod_rtp_smp, cd_prop%coef_diffuse,          &
      &      trns_b_snap%fld_rtp(1,bs_trns%base%i_current),              &
      &      trns_f_MHD%fld_rtp(1,f_trns%forces%i_vp_induct),            &
-     &      trns_f_snap%fld_rtp(1,fs_trns%prod_fld%i_electric))
+     &      trns_f_eflux%fld_rtp(1,fe_trns%prod_fld%i_electric))
       end if
 !
-      if(fs_trns%prod_fld%i_poynting .gt. 0) then
+      if(fe_trns%prod_fld%i_poynting .gt. 0) then
         call cal_poynting_flux_smp(np_smp, sph_rtp%nnod_rtp,            &
      &      sph_rtp%istack_inod_rtp_smp, cd_prop%coef_diffuse,          &
      &      trns_b_snap%fld_rtp(1,bs_trns%base%i_current),              &
      &      trns_f_MHD%fld_rtp(1,f_trns%forces%i_vp_induct),            &
      &      trns_b_snap%fld_rtp(1,bs_trns%base%i_magne),                &
-     &      trns_f_snap%fld_rtp(1,fs_trns%prod_fld%i_poynting))
+     &      trns_f_eflux%fld_rtp(1,fe_trns%prod_fld%i_poynting))
       end if
 !$omp end parallel
 !
-      if(fs_trns%forces%i_mag_stretch .gt. 0) then
+      if(fe_trns%forces%i_mag_stretch .gt. 0) then
         if (iflag_debug.eq.1) write(*,*) 'cal_rtp_magnetic_streach'
 !$omp parallel
         call cal_rtp_magnetic_streach                                   &
@@ -191,57 +191,57 @@
      &      trns_b_difv%fld_rtp(1,bs_trns_diff_v%i_grad_vx),            &
      &      trns_b_difv%fld_rtp(1,bs_trns_diff_v%i_grad_vy),            &
      &      trns_b_difv%fld_rtp(1,bs_trns_diff_v%i_grad_vz),            &
-     &      trns_f_snap%fld_rtp(1,fs_trns%forces%i_mag_stretch))
+     &      trns_f_eflux%fld_rtp(1,fe_trns%forces%i_mag_stretch))
 !$omp end parallel
       end if
 !
       call cal_energy_fluxes_on_node                                    &
      &   (f_trns%forces, bs_trns%base, be_trns%forces,                  &
-     &    fs_trns%ene_flux, sph_rtp%nnod_rtp,                           &
+     &    fe_trns%ene_flux, sph_rtp%nnod_rtp,                           &
      &    trns_f_MHD%ncomp, trns_f_MHD%fld_rtp,                         &
      &    trns_b_snap%ncomp, trns_b_snap%fld_rtp,                       &
      &    trns_b_eflux%ncomp, trns_b_eflux%fld_rtp,                     &
-     &    trns_f_snap%ncomp, trns_f_snap%fld_rtp)
+     &    trns_f_eflux%ncomp, trns_f_eflux%fld_rtp)
       call cal_energy_fluxes_on_node                                    &
      &   (f_trns%forces, bs_trns%base, be_trns%forces,                  &
-     &    fs_trns%ene_flux, sph_rtp%nnod_pole,                          &
+     &    fe_trns%ene_flux, sph_rtp%nnod_pole,                          &
      &    trns_f_MHD%ncomp, trns_f_MHD%fld_pole,                        &
      &    trns_b_snap%ncomp, trns_b_snap%fld_pole,                      &
      &    trns_b_eflux%ncomp, trns_b_eflux%fld_pole,                    &
-     &    trns_f_snap%ncomp, trns_f_snap%fld_pole)
+     &    trns_f_eflux%ncomp, trns_f_eflux%fld_pole)
 !
       call cal_buoyancy_flux_rtp                                        &
      &   (sph_rtp, fl_prop, ref_param_T, ref_param_C,                   &
-     &    bs_trns%base, bs_trns%base, fs_trns%ene_flux,                 &
-     &    trns_b_snap, trns_b_snap, trns_f_snap)
+     &    bs_trns%base, bs_trns%base, fe_trns%ene_flux,                 &
+     &    trns_b_snap, trns_b_snap, trns_f_eflux)
       call pole_buoyancy_flux_rtp                                       &
      &   (sph_rtp, fl_prop, ref_param_T, ref_param_C,                   &
-     &    bs_trns%base, bs_trns%base, fs_trns%ene_flux,                 &
-     &    trns_b_snap, trns_b_snap, trns_f_snap)
+     &    bs_trns%base, bs_trns%base, fe_trns%ene_flux,                 &
+     &    trns_b_snap, trns_b_snap, trns_f_eflux)
 !
       call cal_helicity_on_node                                         &
-     &   (bs_trns%base, fs_trns%prod_fld, sph_rtp%nnod_rtp,             &
+     &   (bs_trns%base, fe_trns%prod_fld, sph_rtp%nnod_rtp,             &
      &    trns_b_snap%ncomp, trns_b_snap%fld_rtp,                       &
-     &    trns_f_snap%ncomp, trns_f_snap%fld_rtp)
+     &    trns_f_eflux%ncomp, trns_f_eflux%fld_rtp)
       call cal_helicity_on_node                                         &
-     &   (bs_trns%base, fs_trns%prod_fld, sph_rtp%nnod_pole,            &
+     &   (bs_trns%base, fe_trns%prod_fld, sph_rtp%nnod_pole,            &
      &    trns_b_snap%ncomp, trns_b_snap%fld_pole,                      &
-     &    trns_f_snap%ncomp, trns_f_snap%fld_pole)
+     &    trns_f_eflux%ncomp, trns_f_eflux%fld_pole)
 !
 !       get amplitude
       call cal_square_vector_on_node                                    &
-     &   (bs_trns%base, fs_trns%prod_fld, sph_rtp%nnod_rtp,             &
+     &   (bs_trns%base, fe_trns%prod_fld, sph_rtp%nnod_rtp,             &
      &    trns_b_snap%ncomp, trns_b_snap%fld_rtp,                       &
-     &    trns_f_snap%ncomp, trns_f_snap%fld_rtp)
+     &    trns_f_eflux%ncomp, trns_f_eflux%fld_rtp)
       call cal_square_vector_on_node                                    &
-     &   (bs_trns%base, fs_trns%prod_fld, sph_rtp%nnod_pole,            &
+     &   (bs_trns%base, fe_trns%prod_fld, sph_rtp%nnod_pole,            &
      &    trns_b_snap%ncomp, trns_b_snap%fld_pole,                      &
-     &    trns_f_snap%ncomp, trns_f_snap%fld_pole)
+     &    trns_f_eflux%ncomp, trns_f_eflux%fld_pole)
 !
 !       get lengh scale
       call cal_lengh_scale_rtp                                          &
-     &   (sph_rtp, bs_trns%base, be_trns%diffusion, fs_trns%prod_fld,   &
-     &    trns_b_snap, trns_b_eflux, trns_f_snap)
+     &   (sph_rtp, bs_trns%base, be_trns%diffusion, fe_trns%prod_fld,   &
+     &    trns_b_snap, trns_b_eflux, trns_f_eflux)
 !
       end subroutine s_cal_energy_flux_rtp
 !
