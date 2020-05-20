@@ -136,7 +136,7 @@
       subroutine set_addresses_diff_vect_trans(ipol, iphys, trns_difv,  &
      &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
 !
-      use add_diff_vect_to_sph_trans
+      use address_sph_trans_snap
 !
       type(phys_address), intent(in) :: ipol, iphys
       type(address_4_sph_trans), intent(inout) :: trns_difv
@@ -148,31 +148,13 @@
       if(iflag_debug .gt. 0) then
         write(*,*) 'Spherical transform field table ',                  &
      &             'for intermediate of snapshot (trns_difv)'
-        write(*,*) 'Address for backward transform: ',                  &
-     &             'transform, poloidal, toroidal, grid data'
       end if
 !
-      trns_difv%backward%nfield = 0
-      call alloc_sph_trns_field_name(trns_difv%backward)
-      trns_difv%backward%num_vector = trns_difv%backward%nfield
+      call bwd_trans_address_diff_vect                                  &
+     &   (ipol, iphys, trns_difv%b_trns, trns_difv%backward)
+      call fwd_trans_address_diff_vect                                  &
+     &   (ipol, iphys, trns_difv%f_trns, trns_difv%forward)
 !
-      trns_difv%backward%num_scalar                                     &
-     &     = trns_difv%backward%nfield - trns_difv%backward%num_vector
-      trns_difv%backward%num_tensor = 0
-!
-     if(iflag_debug .gt. 0) then
-        write(*,*) 'Address for forward transform: ',                   &
-     &             'transform, poloidal, toroidal, grid data'
-      end if
-!
-      trns_difv%forward%nfield = 0
-      call alloc_sph_trns_field_name(trns_difv%forward)
-      trns_difv%forward%num_vector = trns_difv%forward%nfield
-!
-      call add_diff_vect_scalar_trns_bpol                               &
-     &   (ipol%diff_vector, iphys%diff_vector,                          &
-     &    trns_difv%f_trns%diff_vector, trns_difv%forward)
-      trns_difv%forward%num_tensor = 0
 !
       call count_num_fields_each_trans(trns_difv%backward,              &
      &   ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
