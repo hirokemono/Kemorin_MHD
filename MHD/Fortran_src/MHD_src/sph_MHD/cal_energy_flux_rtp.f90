@@ -10,9 +10,10 @@
 !!@verbatim
 !!      subroutine cal_nonlinear_pole_MHD(sph_rtp, MHD_prop,            &
 !!     &          f_trns, bs_trns, trns_b_MHD, trns_f_MHD)
-!!      subroutine s_cal_energy_flux_rtp(sph_rtp, fl_prop, cd_prop,     &
-!!     &          ref_param_T, ref_param_C, leg, f_trns,                &
-!!     &          bs_trns, fs_trns, trns_f_MHD, trns_b_snap,            &
+!!      subroutine s_cal_energy_flux_rtp(sph_rtp,                       &
+!!     &          fl_prop, cd_prop, ref_param_T, ref_param_C, leg,      &
+!!     &          f_trns, bs_trns, be_trns, fs_trns, bs_trns_diff_v,    &
+!!     &          trns_f_MHD, trns_b_snap, trns_b_eflux, trns_b_difv,   &
 !!     &          trns_f_snap)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
@@ -24,8 +25,10 @@
 !!        type(legendre_4_sph_trans), intent(in) :: leg
 !!        type(phys_address), intent(in) :: f_trns
 !!        type(phys_address), intent(in) :: bs_trns, fs_trns
+!!        type(phys_address), intent(in) :: be_trns
 !!        type(spherical_transform_data), intent(in) :: trns_f_MHD
 !!        type(spherical_transform_data), intent(in) :: trns_b_snap
+!!        type(spherical_transform_data), intent(in) :: trns_b_eflux
 !!        type(spherical_transform_data), intent(inout) :: trns_f_snap
 !!
 !!      subroutine cal_buoyancy_flux_rtp_smp(np_smp, nnod, nr,          &
@@ -123,8 +126,9 @@
 !
       subroutine s_cal_energy_flux_rtp(sph_rtp,                         &
      &          fl_prop, cd_prop, ref_param_T, ref_param_C, leg,        &
-     &          f_trns, bs_trns, fs_trns, bs_trns_diff_v,               &
-     &          trns_f_MHD, trns_b_snap, trns_b_difv, trns_f_snap)
+     &          f_trns, bs_trns, be_trns, fs_trns, bs_trns_diff_v,      &
+     &          trns_f_MHD, trns_b_snap, trns_b_eflux, trns_b_difv,     &
+     &          trns_f_snap)
 !
       use poynting_flux_smp
       use sph_transforms_4_MHD
@@ -140,9 +144,11 @@
       type(legendre_4_sph_trans), intent(in) :: leg
       type(phys_address), intent(in) :: f_trns
       type(phys_address), intent(in) :: bs_trns, fs_trns
+      type(phys_address), intent(in) :: be_trns
       type(diff_vector_address), intent(in) :: bs_trns_diff_v
       type(spherical_transform_data), intent(in) :: trns_f_MHD
       type(spherical_transform_data), intent(in) :: trns_b_snap
+      type(spherical_transform_data), intent(in) :: trns_b_eflux
       type(spherical_transform_data), intent(in) :: trns_b_difv
 !
       type(spherical_transform_data), intent(inout) :: trns_f_snap
@@ -191,7 +197,7 @@
 !
       if(fs_trns%ene_flux%i_me_gen .gt. 0) then
         call cal_dot_prod_no_coef_smp(sph_rtp%nnod_rtp,                 &
-     &      trns_b_snap%fld_rtp(1,bs_trns%forces%i_induction),          &
+     &      trns_b_eflux%fld_rtp(1,be_trns%forces%i_induction),         &
      &      trns_b_snap%fld_rtp(1,bs_trns%base%i_magne),                &
      &      trns_f_snap%fld_rtp(1,fs_trns%ene_flux%i_me_gen))
       end if
@@ -268,14 +274,14 @@
         call cal_len_scale_by_diffuse_smp                               &
      &     (np_smp, sph_rtp%nnod_rtp, sph_rtp%istack_inod_rtp_smp,      &
      &      trns_b_snap%fld_rtp(1,bs_trns%base%i_temp),                 &
-     &      trns_b_snap%fld_rtp(1,bs_trns%diffusion%i_t_diffuse),       &
+     &      trns_b_eflux%fld_rtp(1,be_trns%diffusion%i_t_diffuse),      &
      &      trns_f_snap%fld_rtp(1,fs_trns%prod_fld%i_temp_scale))
       end if
       if(fs_trns%prod_fld%i_comp_scale .gt. 0) then
         call cal_len_scale_by_diffuse_smp                               &
      &     (np_smp, sph_rtp%nnod_rtp, sph_rtp%istack_inod_rtp_smp,      &
      &      trns_b_snap%fld_rtp(1,bs_trns%base%i_light),                &
-     &      trns_b_snap%fld_rtp(1,bs_trns%diffusion%i_c_diffuse),       &
+     &      trns_b_eflux%fld_rtp(1,be_trns%diffusion%i_c_diffuse),      &
      &      trns_f_snap%fld_rtp(1,fs_trns%prod_fld%i_comp_scale))
       end if
 !$omp end parallel

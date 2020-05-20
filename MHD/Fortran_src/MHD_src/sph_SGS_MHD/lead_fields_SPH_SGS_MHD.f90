@@ -110,8 +110,8 @@
      &    SGS_par%model_p, SPH_MHD%sph, SPH_MHD%comms,                  &
      &    r_2nd, MHD_prop, sph_MHD_bc, trans_p,                         &
      &    SPH_MHD%ipol, ipol_LES, WK%trns_MHD, WK_LES%trns_SGS,         &
-     &    WK%trns_difv, WK%trns_eflux, WK_LES%trns_SGS_snap, WK%WK_sph, &
-     &    SPH_MHD%fld)
+     &    WK%trns_snap, WK%trns_difv, WK%trns_eflux,                    &
+     &    WK_LES%trns_SGS_snap, WK%WK_sph, SPH_MHD%fld)
 !
       end subroutine lead_fields_4_SPH_SGS_MHD
 !
@@ -199,7 +199,8 @@
       subroutine enegy_fluxes_SPH_SGS_MHD(ltr_crust, SGS_param,         &
      &          sph, comms_sph, r_2nd, MHD_prop, sph_MHD_bc,            &
      &          trans_p, ipol, ipol_LES, trns_MHD, trns_SGS,            &
-     &          trns_difv, trns_eflux, trns_SGS_snap, WK_sph, rj_fld)
+     &          trns_snap, trns_difv, trns_eflux, trns_SGS_snap,        &
+     &          WK_sph, rj_fld)
 !
       use sph_transforms_snapshot
       use lead_fields_4_sph_mhd
@@ -221,6 +222,7 @@
 !
       type(address_4_sph_trans), intent(in) :: trns_MHD
       type(SGS_address_sph_trans), intent(in) :: trns_SGS
+      type(address_4_sph_trans), intent(in) :: trns_snap
       type(address_4_sph_trans), intent(in) :: trns_difv
       type(address_4_sph_trans), intent(inout) :: trns_eflux
       type(SGS_address_sph_trans), intent(inout) :: trns_SGS_snap
@@ -230,7 +232,7 @@
 !
       call cal_sph_enegy_fluxes                                         &
      &   (ltr_crust, sph, comms_sph, r_2nd, MHD_prop, sph_MHD_bc,       &
-     &    trans_p, ipol, trns_MHD, trns_difv, trns_eflux,               &
+     &    trans_p, ipol, trns_MHD, trns_snap, trns_difv, trns_eflux,    &
      &    WK_sph, rj_fld)
 !
       if (iflag_debug.eq.1) write(*,*) 's_cal_force_with_SGS_rj'
