@@ -154,25 +154,25 @@
       type(spherical_transform_data), intent(inout) :: trns
 !
 !
-      call add_field_name_4_sph_trns_snap(inertia,                     &
-     &    ipol_frc%i_m_advect, iphys_frc%i_m_advect,                   &
+      call add_field_4_sph_trns_by_pol(inertia,                         &
+     &    ipol_frc%i_m_advect, iphys_frc%i_m_advect,                    &
      &    f_trns_frc%i_m_advect, trns)
-      call add_field_name_4_sph_trns_snap(Coriolis_force,              &
-     &    ipol_frc%i_coriolis, iphys_frc%i_coriolis,                   &
+      call add_field_4_sph_trns_by_pol(Coriolis_force,                  &
+     &    ipol_frc%i_coriolis, iphys_frc%i_coriolis,                    &
      &    f_trns_frc%i_coriolis, trns)
-      call add_field_name_4_sph_trns_snap(Lorentz_force,               &
-     &    ipol_frc%i_lorentz, iphys_frc%i_lorentz,                     &
+      call add_field_4_sph_trns_by_pol(Lorentz_force,                   &
+     &    ipol_frc%i_lorentz, iphys_frc%i_lorentz,                      &
      &    f_trns_frc%i_lorentz, trns)
 !
-      call add_field_name_4_sph_trns_snap(vecp_induction,               &
+      call add_field_4_sph_trns_by_pol(vecp_induction,                  &
      &    ipol_frc%i_vp_induct, iphys_frc%i_vp_induct,                  &
      &    f_trns_frc%i_vp_induct, trns)
 !
-      call add_field_name_4_sph_trns_snap(heat_flux,                    &
+      call add_field_4_sph_trns_by_pol(heat_flux,                       &
      &    ipol_frc%i_h_flux, iphys_frc%i_h_flux, f_trns_frc%i_h_flux,   &
      &    trns)
 !
-      call add_field_name_4_sph_trns_snap(composite_flux,               &
+      call add_field_4_sph_trns_by_pol(composite_flux,                  &
      &    ipol_frc%i_c_flux, iphys_frc%i_c_flux, f_trns_frc%i_c_flux,   &
      &    trns)
 !

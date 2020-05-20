@@ -128,16 +128,16 @@
       type(spherical_transform_data), intent(inout) :: trns
 !
 !
-      call add_field_name_4_sph_trns_snap(velocity,                     &
+      call add_field_4_sph_trns_by_pol(velocity,                        &
      &    ipol_base%i_velo, iphys_base%i_velo, b_trns_base%i_velo,      &
      &    trns)
-      call add_field_name_4_sph_trns_snap(vorticity,                    &
+      call add_field_4_sph_trns_by_pol(vorticity,                       &
      &    ipol_base%i_vort, iphys_base%i_vort, b_trns_base%i_vort,      &
      &    trns)
-      call add_field_name_4_sph_trns_snap(magnetic_field,               &
+      call add_field_4_sph_trns_by_pol(magnetic_field,                  &
      &    ipol_base%i_magne, iphys_base%i_magne, b_trns_base%i_magne,   &
      &    trns)
-      call add_field_name_4_sph_trns_snap(current_density,              &
+      call add_field_4_sph_trns_by_pol(current_density,                 &
      &    ipol_base%i_current, iphys_base%i_current,                    &
      &    b_trns_base%i_current, trns)
 !
@@ -155,14 +155,14 @@
       type(spherical_transform_data), intent(inout) :: trns
 !
 !
-      call add_field_name_4_sph_trns_snap(temperature,                  &
+      call add_field_4_sph_trns_by_pol(temperature,                     &
      &    ipol_base%i_temp, iphys_base%i_temp, b_trns_base%i_temp,      &
      &    trns)
-      call add_field_name_4_sph_trns_snap(composition,                  &
+      call add_field_4_sph_trns_by_pol(composition,                     &
      &    ipol_base%i_light, iphys_base%i_light, b_trns_base%i_light,   &
      &    trns)
 !
-      call add_field_name_4_sph_trns_snap(pressure,                     &
+      call add_field_4_sph_trns_by_pol(pressure,                        &
      &    ipol_base%i_press, iphys_base%i_press, b_trns_base%i_press,   &
      &    trns)
 !
