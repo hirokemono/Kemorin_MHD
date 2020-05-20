@@ -30,9 +30,6 @@
 !!        type(spherical_transform_data), intent(in) :: trns_b_snap
 !!        type(spherical_transform_data), intent(in) :: trns_b_eflux
 !!        type(spherical_transform_data), intent(inout) :: trns_f_snap
-!!
-!!      subroutine cal_buoyancy_flux_rtp_smp(np_smp, nnod, nr,          &
-!!     &          inod_smp_stack, radius, coef, scalar, vr, prod)
 !!@endverbatim
 !
       module cal_energy_flux_rtp
@@ -136,6 +133,7 @@
       use mag_of_field_smp
       use const_wz_coriolis_rtp
       use cal_products_smp
+      use cal_buoyancy_flux_sph
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(fluid_property), intent(in) :: fl_prop
@@ -163,26 +161,6 @@
       end if
 !
 !$omp parallel
-      if(fs_trns%ene_flux%i_ujb .gt. 0) then
-        call cal_dot_prod_no_coef_smp(sph_rtp%nnod_rtp,                 &
-     &      trns_f_MHD%fld_rtp(1,f_trns%forces%i_lorentz),              &
-     &      trns_b_snap%fld_rtp(1,bs_trns%base%i_velo),                 &
-     &      trns_f_snap%fld_rtp(1,fs_trns%ene_flux%i_ujb) )
-      end if
-!
-      if(fs_trns%ene_flux%i_nega_ujb .gt. 0) then
-        call cal_dot_prod_w_coef_smp(sph_rtp%nnod_rtp, dminus,          &
-     &      trns_f_MHD%fld_rtp(1,f_trns%forces%i_lorentz),              &
-     &      trns_b_snap%fld_rtp(1,bs_trns%base%i_velo),                 &
-     &      trns_f_snap%fld_rtp(1,fs_trns%ene_flux%i_nega_ujb))
-      end if
-!
-      if(fs_trns%ene_flux%i_me_gen .gt. 0) then
-        call cal_dot_prod_no_coef_smp(sph_rtp%nnod_rtp,                 &
-     &      trns_b_eflux%fld_rtp(1,be_trns%forces%i_induction),         &
-     &      trns_b_snap%fld_rtp(1,bs_trns%base%i_magne),                &
-     &      trns_f_snap%fld_rtp(1,fs_trns%ene_flux%i_me_gen))
-      end if
       if(fs_trns%prod_fld%i_electric .gt. 0) then
         call cal_electric_field_smp(np_smp, sph_rtp%nnod_rtp,           &
      &      sph_rtp%istack_inod_rtp_smp, cd_prop%coef_diffuse,          &
@@ -198,44 +176,6 @@
      &      trns_f_MHD%fld_rtp(1,f_trns%forces%i_vp_induct),            &
      &      trns_b_snap%fld_rtp(1,bs_trns%base%i_magne),                &
      &      trns_f_snap%fld_rtp(1,fs_trns%prod_fld%i_poynting))
-      end if
-!
-      if(fs_trns%ene_flux%i_buo_gen .gt. 0) then
-        if    (ref_param_T%iflag_reference .eq. id_sphere_ref_temp      &
-     &    .or. ref_param_T%iflag_reference .eq. id_takepiro_temp) then
-          call cal_buoyancy_flux_rtp_smp(np_smp, sph_rtp%nnod_rtp,      &
-     &       sph_rtp%nidx_rtp(1), sph_rtp%istack_inod_rtp_smp,          &
-     &        sph_rtp%radius_1d_rtp_r, fl_prop%coef_buo,                &
-     &        trns_b_snap%fld_rtp(1,bs_trns%base%i_per_temp),           &
-     &        trns_b_snap%fld_rtp(1,bs_trns%base%i_velo),               &
-     &        trns_f_snap%fld_rtp(1,fs_trns%ene_flux%i_buo_gen))
-        else
-          call cal_buoyancy_flux_rtp_smp(np_smp, sph_rtp%nnod_rtp,      &
-     &        sph_rtp%nidx_rtp(1), sph_rtp%istack_inod_rtp_smp,         &
-     &        sph_rtp%radius_1d_rtp_r,  fl_prop%coef_buo,               &
-     &        trns_b_snap%fld_rtp(1,bs_trns%base%i_temp),               &
-     &        trns_b_snap%fld_rtp(1,bs_trns%base%i_velo),               &
-     &        trns_f_snap%fld_rtp(1,fs_trns%ene_flux%i_buo_gen))
-        end if
-      end if
-!
-      if(fs_trns%ene_flux%i_c_buo_gen .gt. 0) then
-        if    (ref_param_C%iflag_reference .eq. id_sphere_ref_temp      &
-     &    .or. ref_param_C%iflag_reference .eq. id_takepiro_temp) then
-          call cal_buoyancy_flux_rtp_smp(np_smp, sph_rtp%nnod_rtp,      &
-     &        sph_rtp%nidx_rtp(1), sph_rtp%istack_inod_rtp_smp,         &
-     &        sph_rtp%radius_1d_rtp_r, fl_prop%coef_comp_buo,           &
-     &        trns_b_snap%fld_rtp(1,bs_trns%base%i_per_light),          &
-     &        trns_b_snap%fld_rtp(1,bs_trns%base%i_velo),               &
-     &        trns_f_snap%fld_rtp(1,fs_trns%ene_flux%i_c_buo_gen))
-        else
-          call cal_buoyancy_flux_rtp_smp(np_smp, sph_rtp%nnod_rtp,      &
-     &        sph_rtp%nidx_rtp(1), sph_rtp%istack_inod_rtp_smp,         &
-     &        sph_rtp%radius_1d_rtp_r, fl_prop%coef_comp_buo,           &
-     &        trns_b_snap%fld_rtp(1,bs_trns%base%i_light),              &
-     &        trns_b_snap%fld_rtp(1,bs_trns%base%i_velo),               &
-     &        trns_f_snap%fld_rtp(1,fs_trns%ene_flux%i_c_buo_gen) )
-        end if
       end if
 !$omp end parallel
 !
@@ -254,6 +194,30 @@
      &      trns_f_snap%fld_rtp(1,fs_trns%forces%i_mag_stretch))
 !$omp end parallel
       end if
+!
+      call cal_energy_fluxes_on_node                                    &
+     &   (f_trns%forces, bs_trns%base, be_trns%forces,                  &
+     &    fs_trns%ene_flux, sph_rtp%nnod_rtp,                           &
+     &    trns_f_MHD%ncomp, trns_f_MHD%fld_rtp,                         &
+     &    trns_b_snap%ncomp, trns_b_snap%fld_rtp,                       &
+     &    trns_b_eflux%ncomp, trns_b_eflux%fld_rtp,                     &
+     &    trns_f_snap%ncomp, trns_f_snap%fld_rtp)
+      call cal_energy_fluxes_on_node                                    &
+     &   (f_trns%forces, bs_trns%base, be_trns%forces,                  &
+     &    fs_trns%ene_flux, sph_rtp%nnod_pole,                          &
+     &    trns_f_MHD%ncomp, trns_f_MHD%fld_pole,                        &
+     &    trns_b_snap%ncomp, trns_b_snap%fld_pole,                      &
+     &    trns_b_eflux%ncomp, trns_b_eflux%fld_pole,                    &
+     &    trns_f_snap%ncomp, trns_f_snap%fld_pole)
+!
+      call cal_buoyancy_flux_rtp                                        &
+     &   (sph_rtp, fl_prop, ref_param_T, ref_param_C,                   &
+     &    bs_trns%base, bs_trns%base, fs_trns%ene_flux,                 &
+     &    trns_b_snap, trns_b_snap, trns_f_snap)
+      call pole_buoyancy_flux_rtp                                       &
+     &   (sph_rtp, fl_prop, ref_param_T, ref_param_C,                   &
+     &    bs_trns%base, bs_trns%base, fs_trns%ene_flux,                 &
+     &    trns_b_snap, trns_b_snap, trns_f_snap)
 !
       call cal_helicity_on_node                                         &
      &   (bs_trns%base, fs_trns%prod_fld, sph_rtp%nnod_rtp,             &
@@ -282,38 +246,55 @@
       end subroutine s_cal_energy_flux_rtp
 !
 !-----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine cal_energy_fluxes_on_node                              &
+     &         (f_trns_frc, bs_trns_base, be_trns_frc, fs_trns_eflux,   &
+     &          nnod, ntot_comp_frc, frc_rtp, ntot_comp_fld, fld_rtp,   &
+     &          ntot_comp_uxb, fub_rtp, ntot_comp_flx, flx_rtp)
+!
+      use cal_products_smp
+!
+      type(base_force_address), intent(in) :: f_trns_frc
+      type(base_field_address), intent(in) :: bs_trns_base
+      type(base_force_address), intent(in) :: be_trns_frc
+      type(energy_flux_address), intent(in) :: fs_trns_eflux
+!
+      integer(kind = kint), intent(in) :: nnod
+      integer(kind = kint), intent(in) :: ntot_comp_frc, ntot_comp_fld
+      integer(kind = kint), intent(in) :: ntot_comp_uxb, ntot_comp_flx
+      real(kind = kreal), intent(in) :: frc_rtp(nnod,ntot_comp_frc)
+      real(kind = kreal), intent(in) :: fld_rtp(nnod,ntot_comp_fld)
+      real(kind = kreal), intent(in) :: fub_rtp(nnod,ntot_comp_uxb)
+!
+      real(kind = kreal), intent(inout) :: flx_rtp(nnod,ntot_comp_flx)
+!
+!$omp parallel
+      if(fs_trns_eflux%i_ujb .gt. 0) then
+        call cal_dot_prod_no_coef_smp(nnod,                             &
+     &      frc_rtp(1,f_trns_frc%i_lorentz),                            &
+     &      fld_rtp(1,bs_trns_base%i_velo),                             &
+     &      flx_rtp(1,fs_trns_eflux%i_ujb) )
+      end if
+!
+      if(fs_trns_eflux%i_nega_ujb .gt. 0) then
+        call cal_dot_prod_w_coef_smp(nnod, dminus,                      &
+     &      frc_rtp(1,f_trns_frc%i_lorentz),                            &
+     &      fld_rtp(1,bs_trns_base%i_velo),                             &
+     &      flx_rtp(1,fs_trns_eflux%i_nega_ujb))
+      end if
+!
+      if(fs_trns_eflux%i_me_gen .gt. 0) then
+        call cal_dot_prod_no_coef_smp(nnod,                             &
+     &      fub_rtp(1,be_trns_frc%i_induction),                         &
+     &      fld_rtp(1,bs_trns_base%i_magne),                            &
+     &      flx_rtp(1,fs_trns_eflux%i_me_gen))
+      end if
+!$omp end parallel
+!
+      end subroutine cal_energy_fluxes_on_node
+!
 !-----------------------------------------------------------------------
-!
-      subroutine cal_buoyancy_flux_rtp_smp(np_smp, nnod, nr,            &
-     &          inod_smp_stack, radius, coef, scalar, vr, prod)
-!
-      integer (kind=kint), intent(in) :: np_smp, nnod, nr
-      integer (kind=kint), intent(in) :: inod_smp_stack(0:np_smp)
-      real (kind=kreal), intent(in) :: coef, scalar(nnod), vr(nnod)
-      real (kind=kreal), intent(in) :: radius(nr)
-!
-      real (kind=kreal), intent(inout) :: prod(nnod)
-!
-      integer (kind=kint) :: iproc, inod, ist, ied, k
-!
-!
-!$omp do private(inod,ist,ied,k)
-      do iproc = 1, np_smp
-        ist = inod_smp_stack(iproc-1)+1
-        ied = inod_smp_stack(iproc)
-!
-!cdir nodep
-        do inod = ist, ied
-          k = mod( (inod-1),nr) + 1
-          prod(inod) =  coef*scalar(inod)*vr(inod)*radius(k)
-        end do
-      end do
-!$omp end do nowait
-!
-      end subroutine cal_buoyancy_flux_rtp_smp
-!
-! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
 !
       subroutine cal_helicity_on_node                                   &
      &         (bs_trns_base, fs_trns_prod, nnod,                       &
