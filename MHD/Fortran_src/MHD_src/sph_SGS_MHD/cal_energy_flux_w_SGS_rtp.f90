@@ -10,13 +10,14 @@
 !!@verbatim
 !!      subroutine cal_filterd_buo_flux_rtp(sph_rtp, fl_prop,           &
 !!     &          b_trns_base, b_trns_fil, f_trns_fefx,                 &
-!!     &          trns_b_snap, trns_f_snap)
+!!     &          trns_b_snap, trns_bs_SGS, trns_f_snap)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(fluid_property), intent(in) :: fl_prop
 !!        type(base_field_address), intent(in) :: b_trns_base
 !!        type(base_field_address), intent(in) :: b_trns_fil
 !!        type(energy_flux_address), intent(in) :: f_trns_fefx
 !!        type(spherical_transform_data), intent(in) :: trns_b_snap
+!!        type(spherical_transform_data), intent(in) :: trns_bs_SGS
 !!        type(spherical_transform_data), intent(inout) :: trns_f_snap
 !!      subroutine pole_filterd_buo_flux_rtp(sph_rtp, node,             &
 !!     &          fl_prop, iphys_base, iphys_fil, iphys_fefx, nod_fld)
@@ -55,7 +56,7 @@
 !
       subroutine cal_filterd_buo_flux_rtp(sph_rtp, fl_prop,             &
      &          b_trns_base, b_trns_fil, f_trns_fefx,                   &
-     &          trns_b_snap, trns_f_snap)
+     &          trns_b_snap, trns_bs_SGS, trns_f_snap)
 !
       use cal_energy_flux_rtp
 !
@@ -65,6 +66,7 @@
       type(base_field_address), intent(in) :: b_trns_fil
       type(energy_flux_address), intent(in) :: f_trns_fefx
       type(spherical_transform_data), intent(in) :: trns_b_snap
+      type(spherical_transform_data), intent(in) :: trns_bs_SGS
 !
       type(spherical_transform_data), intent(inout) :: trns_f_snap
 !
@@ -74,7 +76,7 @@
         call cal_buoyancy_flux_rtp_smp(np_smp, sph_rtp%nnod_rtp,        &
      &      sph_rtp%nidx_rtp(1),  sph_rtp%istack_inod_rtp_smp,          &
      &      sph_rtp%radius_1d_rtp_r, fl_prop%coef_buo,                  &
-     &      trns_b_snap%fld_rtp(1,b_trns_fil%i_temp),                   &
+     &      trns_bs_SGS%fld_rtp(1,b_trns_fil%i_temp),                   &
      &      trns_b_snap%fld_rtp(1,b_trns_base%i_velo),                  &
      &      trns_f_snap%fld_rtp(1,f_trns_fefx%i_buo_gen))
       end if
@@ -83,7 +85,7 @@
         call cal_buoyancy_flux_rtp_smp(np_smp, sph_rtp%nnod_rtp,        &
      &      sph_rtp%nidx_rtp(1),  sph_rtp%istack_inod_rtp_smp,          &
      &      sph_rtp%radius_1d_rtp_r, fl_prop%coef_comp_buo,             &
-     &      trns_b_snap%fld_rtp(1,b_trns_fil%i_light),                  &
+     &      trns_bs_SGS%fld_rtp(1,b_trns_fil%i_light),                  &
      &      trns_b_snap%fld_rtp(1,b_trns_base%i_velo),                  &
      &      trns_f_snap%fld_rtp(1,f_trns_fefx%i_c_buo_gen))
       end if

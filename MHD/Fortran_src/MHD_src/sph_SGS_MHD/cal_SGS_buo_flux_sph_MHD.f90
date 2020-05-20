@@ -12,7 +12,7 @@
 !!     &          trns_b_MHD, trns_f_SGS, trns_f_DYNS)
 !!      subroutine SGS_fluxes_for_snapshot(sph_rtp, fl_prop,            &
 !!     &          b_trns_base, fg_trns_SGS, bs_trns_SGS, fs_trns_sef,   &
-!!     &          trns_b_MHD, trns_f_SGS, trns_b_snap, trns_f_snap)
+!!     &          trns_b_snap, trns_f_SGS, trns_bs_SGS, trns_f_snap)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(fluid_property), intent(in) :: fl_prop
 !!        type(base_field_address), intent(in) :: b_trns_base
@@ -20,8 +20,9 @@
 !!        type(SGS_term_address), intent(in) :: bs_trns_SGS
 !!        type(SGS_ene_flux_address), intent(in) :: fs_trns_sef
 !!        type(spherical_transform_data), intent(in) :: trns_b_MHD
-!!        type(spherical_transform_data), intent(in) :: trns_f_SGS
 !!        type(spherical_transform_data), intent(in) :: trns_b_snap
+!!        type(spherical_transform_data), intent(in) :: trns_f_SGS
+!!        type(spherical_transform_data), intent(in) :: trns_bs_SGS
 !!        type(spherical_transform_data), intent(inout) :: trns_f_snap
 !!@endverbatim
 !
@@ -96,7 +97,7 @@
 !
       subroutine SGS_fluxes_for_snapshot(sph_rtp, fl_prop,              &
      &          b_trns_base, fg_trns_SGS, bs_trns_SGS, fs_trns_sef,     &
-     &          trns_b_MHD, trns_f_SGS, trns_b_snap, trns_f_snap)
+     &          trns_b_snap, trns_f_SGS, trns_bs_SGS, trns_f_snap)
 !
       use cal_products_smp
 !
@@ -107,9 +108,9 @@
       type(SGS_term_address), intent(in) :: bs_trns_SGS
       type(SGS_ene_flux_address), intent(in) :: fs_trns_sef
 !
-      type(spherical_transform_data), intent(in) :: trns_b_MHD
-      type(spherical_transform_data), intent(in) :: trns_f_SGS
       type(spherical_transform_data), intent(in) :: trns_b_snap
+      type(spherical_transform_data), intent(in) :: trns_f_SGS
+      type(spherical_transform_data), intent(in) :: trns_bs_SGS
 !
       type(spherical_transform_data), intent(inout) :: trns_f_snap
 !
@@ -118,21 +119,21 @@
       if(fs_trns_sef%i_reynolds_wk .gt. 0) then
         call cal_dot_prod_w_coef_smp(sph_rtp%nnod_rtp, dminus,          &
      &      trns_f_SGS%fld_rtp(1,fg_trns_SGS%i_SGS_inertia),            &
-     &      trns_b_MHD%fld_rtp(1,b_trns_base%i_velo),                   &
+     &      trns_b_snap%fld_rtp(1,b_trns_base%i_velo),                  &
      &      trns_f_snap%fld_rtp(1,fs_trns_sef%i_reynolds_wk))
       end if
 !
       if(fs_trns_sef%i_SGS_Lor_wk .gt. 0) then
         call cal_dot_prod_no_coef_smp(sph_rtp%nnod_rtp,                 &
      &      trns_f_SGS%fld_rtp(1,fg_trns_SGS%i_SGS_Lorentz),            &
-     &      trns_b_MHD%fld_rtp(1,b_trns_base%i_velo),                   &
+     &      trns_b_snap%fld_rtp(1,b_trns_base%i_velo),                  &
      &      trns_f_snap%fld_rtp(1,fs_trns_sef%i_SGS_Lor_wk))
       end if
 !
       if(fs_trns_sef%i_SGS_me_gen .gt. 0) then
         call cal_dot_prod_no_coef_smp(sph_rtp%nnod_rtp,                 &
-     &      trns_b_snap%fld_rtp(1,bs_trns_SGS%i_SGS_induction),         &
-     &      trns_b_MHD%fld_rtp(1,b_trns_base%i_magne),                  &
+     &      trns_bs_SGS%fld_rtp(1,bs_trns_SGS%i_SGS_induction),         &
+     &      trns_b_snap%fld_rtp(1,b_trns_base%i_magne),                 &
      &      trns_f_snap%fld_rtp(1,fs_trns_sef%i_SGS_me_gen))
       end if
 !$omp end parallel
