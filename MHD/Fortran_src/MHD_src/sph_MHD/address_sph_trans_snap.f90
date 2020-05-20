@@ -70,9 +70,6 @@
       trns_back%nfield = 0
       call alloc_sph_trns_field_name(trns_back)
 !
-!      Vectors
-      call add_base_vector_sph_trns_snap                                &
-     &   (ipol%base, iphys%base, b_trns%base, trns_back)
       trns_back%num_vector = trns_back%nfield
 !
 !      Scalars
@@ -103,10 +100,6 @@
       trns_fwd%nfield = 0
       call alloc_sph_trns_field_name(trns_fwd)
 !
-!   rotation of Coriolis force
-      call add_rot_coriolis_sph_trns_snap                               &
-     &   (ipol%rot_forces, iphys%rot_forces, f_trns%rot_forces,         &
-     &    trns_fwd)
 !   forces
       call add_base_force_sph_trns_snap                                 &
      &   (ipol%forces, iphys%forces, f_trns%forces, trns_fwd)

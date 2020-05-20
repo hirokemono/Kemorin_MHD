@@ -92,7 +92,7 @@
       if (iflag_debug .ge. iflag_routine_msg) write(*,*)                &
      &                     'set_addresses_trans_sph_MHD'
       call set_addresses_trans_sph_MHD                                  &
-     &   (SPH_model%MHD_prop, SPH_MHD%ipol, iphys, WK%trns_MHD,         &
+     &   (SPH_MHD%ipol, iphys, WK%trns_MHD,                             &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
       call init_sph_transform_SGS_model                                 &
      &   (SPH_model%MHD_prop, SGS_par%model_p,                          &
