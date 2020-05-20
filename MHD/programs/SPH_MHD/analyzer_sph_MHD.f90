@@ -27,6 +27,7 @@
       use t_SPH_mesh_field_data
       use t_visualizer
       use t_SPH_MHD_zonal_mean_viz
+      use t_sph_trans_arrays_MHD
 !
       use SPH_analyzer_SGS_MHD
       use FEM_analyzer_sph_SGS_MHD
@@ -126,6 +127,12 @@
 !
 !*  ----------  time evolution by spectral methood -----------------
 !*
+        if(lead_field_data_flag(MHD_step1%time_d%i_time_step,MHD_step1) &
+     &      .eq. 0) then
+          call alloc_sph_trans_area_snap                                &
+     &       (SPH_MHD1%sph%sph_rtp, SPH_WK1%trns_WK)
+        end if
+!
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_SGS_MHD'
         call SPH_analyze_SGS_MHD(MHD_step1%time_d%i_time_step,          &
      &      MHD_files1, iflag_finish, SPH_model1,                       &
@@ -166,6 +173,11 @@
           if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+4)
         end if
 !
+!
+        if(lead_field_data_flag(MHD_step1%time_d%i_time_step,MHD_step1) &
+     &      .eq. 0) then
+          call dealloc_sph_trans_area_snap(SPH_WK1%trns_WK)
+        end if
 !*  -----------  exit loop --------------
 !*
         if(iflag_finish .gt. 0) exit

@@ -28,6 +28,7 @@
       use t_step_parameter
       use t_visualizer
       use t_SPH_MHD_zonal_mean_viz
+      use t_sph_trans_arrays_MHD
 !
       use SPH_analyzer_snap
       use FEM_analyzer_sph_SGS_MHD
@@ -222,6 +223,12 @@
 !
 !*  ----------- Read spectr data and get field data --------------
 !*
+      if(lead_field_data_flag(MHD_step1%time_d%i_time_step,MHD_step1)   &
+     &      .eq. 0) then
+        call alloc_sph_trans_area_snap                                  &
+     &     (SPH_MHD1%sph%sph_rtp, SPH_WK1%trns_WK)
+      end if
+!
       MHD_step1%time_d%i_time_step = MHD_step1%init_d%i_time_step
       if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_snap'
       call SPH_analyze_snap(MHD_step1%time_d%i_time_step, MHD_files1,   &
@@ -234,6 +241,7 @@
         call SPH_to_FEM_bridge_SGS_MHD                                  &
      &     (SPH_SGS1%SGS_par, SPH_MHD1%sph, SPH_WK1%trns_WK,            &
      &      SPH_SGS1%trns_WK_LES, FEM_d1%geofem, FEM_d1%field)
+        call dealloc_sph_trans_area_snap(SPH_WK1%trns_WK)
       end if
 !
       if (iflag_debug.eq.1) write(*,*) 'FEM_analyze_sph_MHD'

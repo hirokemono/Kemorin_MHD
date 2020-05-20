@@ -25,6 +25,7 @@
       use m_SPH_MHD_structure
       use m_MHD_step_parameter
 !
+      use t_sph_trans_arrays_MHD
       use FEM_analyzer_sph_MHD
       use SPH_analyzer_MHD
       use init_sph_MHD_elapsed_label
@@ -107,6 +108,12 @@
 !
 !*  ----------  time evolution by spectral methood -----------------
 !*
+        if(lead_field_data_flag(MHD_step1%time_d%i_time_step,MHD_step1) &
+     &      .eq. 0) then
+          call alloc_sph_trans_area_snap                                &
+     &       (SPH_MHD1%sph%sph_rtp, SPH_WK1%trns_WK)
+        end if
+!
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_MHD'
         call SPH_analyze_MHD(MHD_step1%time_d%i_time_step,              &
      &      MHD_files1, iflag_finish, SPH_model1,                       &
@@ -120,6 +127,7 @@
           if (iflag_debug.eq.1) write(*,*) 'SPH_to_FEM_bridge_MHD'
           call SPH_to_FEM_bridge_MHD(SPH_MHD1%sph, SPH_WK1%trns_WK,     &
      &        FEM_d1%geofem%mesh, FEM_d1%field)
+          call dealloc_sph_trans_area_snap(SPH_WK1%trns_WK)
         end if
 !
         if (iflag_debug.eq.1) write(*,*) 'FEM_analyze_sph_MHD'

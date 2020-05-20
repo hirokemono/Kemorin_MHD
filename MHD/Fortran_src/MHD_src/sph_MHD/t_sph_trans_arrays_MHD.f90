@@ -7,6 +7,8 @@
 !!@verbatim
 !!      subroutine alloc_sph_trans_address(sph_rtp, WK)
 !!      subroutine dealloc_sph_trans_address(WK)
+!!      subroutine alloc_sph_trans_area_snap(sph_rtp, WK)
+!!      subroutine dealloc_sph_trans_area_snap(WK)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(works_4_sph_trans_MHD), intent(inout) :: WK
 !!@endverbatim
@@ -79,13 +81,12 @@
 !
 !
       call alloc_nonlinear_data(sph_rtp, wk%trns_MHD)
-      call alloc_nonlinear_data(sph_rtp, WK%trns_snap)
       call alloc_nonlinear_data(sph_rtp, WK%trns_eflux)
       call alloc_nonlinear_data(sph_rtp, wk%trns_tmp)
 !
       call alloc_nonlinear_pole(sph_rtp, WK%trns_MHD)
-      call alloc_nonlinear_pole(sph_rtp, WK%trns_snap)
       call alloc_nonlinear_pole(sph_rtp, WK%trns_eflux)
+      call alloc_nonlinear_pole(sph_rtp, wk%trns_tmp)
 !
       end subroutine alloc_sph_trans_address
 !
@@ -98,15 +99,38 @@
 !
       call dealloc_nonlinear_pole(WK%trns_tmp)
       call dealloc_nonlinear_pole(WK%trns_eflux)
-      call dealloc_nonlinear_pole(WK%trns_snap)
       call dealloc_nonlinear_pole(WK%trns_MHD)
 !
       call dealloc_nonlinear_data(WK%trns_tmp)
       call dealloc_nonlinear_data(WK%trns_eflux)
-      call dealloc_nonlinear_pole(WK%trns_snap)
       call dealloc_nonlinear_data(WK%trns_MHD)
 !
       end subroutine dealloc_sph_trans_address
+!
+!-----------------------------------------------------------------------
+!
+      subroutine alloc_sph_trans_area_snap(sph_rtp, WK)
+!
+      type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(works_4_sph_trans_MHD), intent(inout) :: WK
+!
+!
+      call alloc_nonlinear_data(sph_rtp, WK%trns_snap)
+      call alloc_nonlinear_pole(sph_rtp, WK%trns_snap)
+!
+      end subroutine alloc_sph_trans_area_snap
+!
+!-----------------------------------------------------------------------
+!
+      subroutine dealloc_sph_trans_area_snap(WK)
+!
+      type(works_4_sph_trans_MHD), intent(inout) :: WK
+!
+!
+      call dealloc_nonlinear_pole(WK%trns_snap)
+      call dealloc_nonlinear_data(WK%trns_snap)
+!
+      end subroutine dealloc_sph_trans_area_snap
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
