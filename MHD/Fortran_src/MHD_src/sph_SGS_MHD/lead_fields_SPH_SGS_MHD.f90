@@ -246,6 +246,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_filterd_buo_flux_rtp'
       call cal_filterd_buo_flux_rtp(sph%sph_rtp, MHD_prop%fl_prop,      &
+     &    MHD_prop%ref_param_T, MHD_prop%ref_param_C,                   &
      &    trns_snap%b_trns%base, trns_SGS_snap%b_trns_LES%filter_fld,   &
      &    trns_SGS_snap%f_trns_LES%eflux_by_filter, trns_snap%backward, &
      &    trns_SGS_snap%backward, trns_SGS_snap%forward)
