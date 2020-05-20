@@ -312,7 +312,7 @@
 !
       call sph_forward_trans_snapshot_MHD                               &
      &   (SPH_MHD%sph, SPH_MHD%comms, trans_p,                          &
-     &    trns_WK%trns_snap%forward,  trns_WK%WK_sph, SPH_MHD%fld)
+     &    trns_WK%trns_eflux%forward,  trns_WK%WK_sph, SPH_MHD%fld)
       call sph_forward_trans_snapshot_MHD                               &
      &   (SPH_MHD%sph, SPH_MHD%comms, trans_p,                          &
      &    SPH_SGS%trns_WK_LES%trns_SGS_snap%forward,                    &

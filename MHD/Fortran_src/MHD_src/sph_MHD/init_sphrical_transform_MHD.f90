@@ -100,7 +100,7 @@
      &   (SPH_model%MHD_prop, SPH_MHD%ipol, iphys, WK%trns_MHD,         &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
       call set_addresses_snapshot_trans                                 &
-     &   (SPH_MHD%ipol, iphys, WK%trns_snap,                            &
+     &   (SPH_MHD%ipol, iphys, WK%trns_eflux,                           &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
       call set_addresses_temporal_trans                                 &
      &   (SPH_MHD%ipol, iphys, WK%trns_tmp,                             &

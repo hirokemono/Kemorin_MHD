@@ -30,7 +30,7 @@
 !!
 !!      subroutine cal_sph_enegy_fluxes                                 &
 !!     &         (ltr_crust, sph, comms_sph, r_2nd, MHD_prop,           &
-!!     &          sph_MHD_bc trans_p, ipol, trns_MHD, trns_snap,        &
+!!     &          sph_MHD_bc trans_p, ipol, trns_MHD, trns_eflux,       &
 !!     &          WK_sph, rj_fld)
 !!        type(sph_grids), intent(in) :: sph
 !!        type(sph_comm_tables), intent(in) :: comms_sph
@@ -40,7 +40,7 @@
 !!        type(parameters_4_sph_trans), intent(in) :: trans_p
 !!        type(phys_address), intent(in) :: ipol
 !!        type(address_4_sph_trans), intent(in) :: trns_MHD
-!!        type(address_4_sph_trans), intent(inout) :: trns_snap
+!!        type(address_4_sph_trans), intent(inout) :: trns_eflux
 !!        type(spherical_trns_works), intent(inout) :: WK_sph
 !!        type(phys_data), intent(inout) :: rj_fld
 !!      subroutine gradients_of_vectors_sph                             &
@@ -130,7 +130,7 @@
 !
       call enegy_fluxes_4_sph_mhd(monitor%ltr_crust, SPH_MHD%sph,       &
      &    SPH_MHD%comms, r_2nd, MHD_prop, sph_MHD_bc, trans_p,          &
-     &    SPH_MHD%ipol, WK%trns_MHD, WK%trns_snap, WK%WK_sph,           &
+     &    SPH_MHD%ipol, WK%trns_MHD, WK%trns_eflux, WK%WK_sph,          &
      &    SPH_MHD%fld)
 !
       end subroutine s_lead_fields_4_sph_mhd
@@ -225,7 +225,7 @@
 !
       subroutine enegy_fluxes_4_sph_mhd(ltr_crust, sph, comms_sph,      &
      &          r_2nd, MHD_prop, sph_MHD_bc, trans_p,                   &
-     &          ipol, trns_MHD, trns_snap, WK_sph, rj_fld)
+     &          ipol, trns_MHD, trns_eflux, WK_sph, rj_fld)
 !
       use sph_transforms_snapshot
       use cal_energy_flux_rtp
@@ -241,19 +241,19 @@
       type(phys_address), intent(in) :: ipol
 !
       type(address_4_sph_trans), intent(in) :: trns_MHD
-      type(address_4_sph_trans), intent(inout) :: trns_snap
+      type(address_4_sph_trans), intent(inout) :: trns_eflux
       type(spherical_trns_works), intent(inout) :: WK_sph
       type(phys_data), intent(inout) :: rj_fld
 !
 !
       call cal_sph_enegy_fluxes                                         &
      &   (ltr_crust, sph, comms_sph, r_2nd, MHD_prop, sph_MHD_bc,       &
-     &    trans_p, ipol, trns_MHD, trns_snap,  WK_sph, rj_fld)
+     &    trans_p, ipol, trns_MHD, trns_eflux,  WK_sph, rj_fld)
 !
       if (iflag_debug.eq.1) write(*,*)                                  &
      &                          'sph_forward_trans_snapshot_MHD'
       call sph_forward_trans_snapshot_MHD                               &
-     &   (sph, comms_sph, trans_p, trns_snap%forward, WK_sph, rj_fld)
+     &   (sph, comms_sph, trans_p, trns_eflux%forward, WK_sph, rj_fld)
 !
       end subroutine enegy_fluxes_4_sph_mhd
 !
@@ -262,7 +262,7 @@
 !
       subroutine cal_sph_enegy_fluxes(ltr_crust, sph, comms_sph,        &
      &          r_2nd, MHD_prop, sph_MHD_bc, trans_p,                   &
-     &          ipol, trns_MHD, trns_snap,  WK_sph, rj_fld)
+     &          ipol, trns_MHD, trns_eflux,  WK_sph, rj_fld)
 !
       use sph_transforms_snapshot
       use cal_energy_flux_rj
@@ -278,7 +278,7 @@
       type(phys_address), intent(in) :: ipol
 !
       type(address_4_sph_trans), intent(in) :: trns_MHD
-      type(address_4_sph_trans), intent(inout) :: trns_snap
+      type(address_4_sph_trans), intent(inout) :: trns_eflux
       type(spherical_trns_works), intent(inout) :: WK_sph
       type(phys_data), intent(inout) :: rj_fld
 !
@@ -289,15 +289,15 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'sph_back_trans_snapshot_MHD'
       call sph_back_trans_snapshot_MHD(sph, comms_sph, trans_p,         &
-     &    rj_fld, trns_snap%backward, WK_sph)
+     &    rj_fld, trns_eflux%backward, WK_sph)
 !
 !       Evaluate energy fluxes
       if (iflag_debug.eq.1) write(*,*) 's_cal_energy_flux_rtp'
       call s_cal_energy_flux_rtp                                        &
      &   (sph%sph_rtp, MHD_prop%fl_prop, MHD_prop%cd_prop,              &
      &    MHD_prop%ref_param_T, MHD_prop%ref_param_C, trans_p%leg,      &
-     &    trns_MHD%f_trns, trns_snap%b_trns, trns_snap%f_trns,          &
-     &    trns_MHD%forward, trns_snap%backward, trns_snap%forward)
+     &    trns_MHD%f_trns, trns_eflux%b_trns, trns_eflux%f_trns,        &
+     &    trns_MHD%forward, trns_eflux%backward, trns_eflux%forward)
 !
       end subroutine cal_sph_enegy_fluxes
 !
