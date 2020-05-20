@@ -105,11 +105,12 @@
 !
 !
 !       set nodal field list
-      if (iflag_debug.gt.0) write(*,*) 'set_SGS_field_ctl_by_viz'
+      if(iflag_debug.gt.0) write(*,*) 'set_SGS_field_ctl_by_viz'
       call set_SGS_field_ctl_by_viz                                     &
      &   (model_ctl%fld_ctl%field_ctl, nod_fld, ierr)
 !
 !       set spectr field list
+      if(iflag_debug.gt.0) write(*,*) 'set_control_sph_sgs_mhd_fields'
       call set_control_sph_sgs_mhd_fields(SGS_par%model_p, MHD_prop,    &
      &    model_ctl%fld_ctl%field_ctl, rj_fld)
 !
