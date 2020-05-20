@@ -171,10 +171,16 @@
       call add_field_4_sph_trns_by_pol(heat_flux,                       &
      &    ipol_frc%i_h_flux, iphys_frc%i_h_flux, f_trns_frc%i_h_flux,   &
      &    trns)
-!
       call add_field_4_sph_trns_by_pol(composite_flux,                  &
      &    ipol_frc%i_c_flux, iphys_frc%i_c_flux, f_trns_frc%i_c_flux,   &
      &    trns)
+!
+      call add_field_4_sph_trns_by_pol(pert_heat_flux,                  &
+     &    ipol_frc%i_ph_flux, iphys_frc%i_ph_flux,                      &
+     &    f_trns_frc%i_ph_flux, trns)
+      call add_field_4_sph_trns_by_pol(pert_comp_flux,                  &
+     &    ipol_frc%i_pc_flux, iphys_frc%i_pc_flux,                      &
+     &    f_trns_frc%i_pc_flux, trns)
 !
       end subroutine add_base_force_sph_trns_snap
 !
