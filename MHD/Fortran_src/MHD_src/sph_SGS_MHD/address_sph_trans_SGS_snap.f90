@@ -138,7 +138,6 @@
       trns_fwd%nfield = 0
       call alloc_sph_trns_field_name(trns_fwd)
 !
-!      call add_vector_4_fwd_trns_snap(ipol, iphys, f_trns, trns_fwd)
       trns_fwd%num_vector = trns_fwd%nfield
 !
       call add_SGS_scalar_fwd_trns_snap                                 &

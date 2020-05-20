@@ -54,7 +54,7 @@
 !>        strucutres for spherical transform for energy flux output
         type(address_4_sph_trans) :: trns_eflux
 !>        strucutres for spherical transform for intermediate snapshot
-        type(address_4_sph_trans) :: trns_tmp
+        type(address_4_sph_trans) :: trns_difv
 !
 !>        Work structures for various spherical harmonics trasform
         type(spherical_trns_works) :: WK_sph
@@ -82,11 +82,9 @@
 !
       call alloc_nonlinear_data(sph_rtp, wk%trns_MHD)
       call alloc_nonlinear_data(sph_rtp, WK%trns_eflux)
-      call alloc_nonlinear_data(sph_rtp, wk%trns_tmp)
 !
       call alloc_nonlinear_pole(sph_rtp, WK%trns_MHD)
       call alloc_nonlinear_pole(sph_rtp, WK%trns_eflux)
-      call alloc_nonlinear_pole(sph_rtp, wk%trns_tmp)
 !
       end subroutine alloc_sph_trans_address
 !
@@ -97,11 +95,9 @@
       type(works_4_sph_trans_MHD), intent(inout) :: WK
 !
 !
-      call dealloc_nonlinear_pole(WK%trns_tmp)
       call dealloc_nonlinear_pole(WK%trns_eflux)
       call dealloc_nonlinear_pole(WK%trns_MHD)
 !
-      call dealloc_nonlinear_data(WK%trns_tmp)
       call dealloc_nonlinear_data(WK%trns_eflux)
       call dealloc_nonlinear_data(WK%trns_MHD)
 !
@@ -118,6 +114,9 @@
       call alloc_nonlinear_data(sph_rtp, WK%trns_snap)
       call alloc_nonlinear_pole(sph_rtp, WK%trns_snap)
 !
+      call alloc_nonlinear_data(sph_rtp, wk%trns_difv)
+      call alloc_nonlinear_pole(sph_rtp, wk%trns_difv)
+!
       end subroutine alloc_sph_trans_area_snap
 !
 !-----------------------------------------------------------------------
@@ -126,6 +125,9 @@
 !
       type(works_4_sph_trans_MHD), intent(inout) :: WK
 !
+!
+      call dealloc_nonlinear_pole(WK%trns_difv)
+      call dealloc_nonlinear_data(WK%trns_difv)
 !
       call dealloc_nonlinear_pole(WK%trns_snap)
       call dealloc_nonlinear_data(WK%trns_snap)

@@ -176,6 +176,10 @@
       call copy_force_from_transform(sph%sph_params, sph%sph_rtp,       &
      &    WK%trns_MHD%forward, mesh, nod_fld)
 !
+      if (iflag_debug.gt.0) write(*,*)                                  &
+     &                'copy_field_from_transform diff_vector'
+      call copy_field_from_transform(sph%sph_params, sph%sph_rtp,       &
+     &    WK%trns_difv%backward, mesh, nod_fld)
       if (iflag_debug.gt.0) write(*,*) 'copy_field_from_transform SNAP'
       call copy_field_from_transform(sph%sph_params, sph%sph_rtp,       &
      &    WK%trns_eflux%backward, mesh, nod_fld)

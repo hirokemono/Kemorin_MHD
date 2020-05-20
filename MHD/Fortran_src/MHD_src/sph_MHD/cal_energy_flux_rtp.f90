@@ -57,7 +57,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_nonlinear_pole_MHD(sph_rtp, MHD_prop,              &
-     &          f_trns, b_trns, trns_b_MHD, trns_f_MHD)
+     &          b_trns, f_trns, trns_b_MHD, trns_f_MHD)
 !
       use cal_nonlinear_sph_MHD
       use const_wz_coriolis_rtp
@@ -121,10 +121,10 @@
 ! -----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine s_cal_energy_flux_rtp(sph_rtp, fl_prop, cd_prop,       &
-     &          ref_param_T, ref_param_C, leg, f_trns,                  &
-     &          bs_trns, fs_trns, trns_f_MHD, trns_b_snap,              &
-     &          trns_f_snap)
+      subroutine s_cal_energy_flux_rtp(sph_rtp,                         &
+     &          fl_prop, cd_prop, ref_param_T, ref_param_C, leg,        &
+     &          f_trns, bs_trns, fs_trns, bs_trns_diff_v,               &
+     &          trns_f_MHD, trns_b_snap, trns_b_difv, trns_f_snap)
 !
       use poynting_flux_smp
       use sph_transforms_4_MHD
@@ -140,8 +140,10 @@
       type(legendre_4_sph_trans), intent(in) :: leg
       type(phys_address), intent(in) :: f_trns
       type(phys_address), intent(in) :: bs_trns, fs_trns
+      type(diff_vector_address), intent(in) :: bs_trns_diff_v
       type(spherical_transform_data), intent(in) :: trns_f_MHD
       type(spherical_transform_data), intent(in) :: trns_b_snap
+      type(spherical_transform_data), intent(in) :: trns_b_difv
 !
       type(spherical_transform_data), intent(inout) :: trns_f_snap
 !
@@ -332,9 +334,9 @@
      &      sph_rtp%a_r_1d_rtp_r, sph_rtp%cot_theta_1d_rtp,             &
      &      trns_b_snap%fld_rtp(1,bs_trns%base%i_magne),                &
      &      trns_b_snap%fld_rtp(1,bs_trns%base%i_velo),                 &
-     &      trns_b_snap%fld_rtp(1,bs_trns%diff_vector%i_grad_vx),       &
-     &      trns_b_snap%fld_rtp(1,bs_trns%diff_vector%i_grad_vy),       &
-     &      trns_b_snap%fld_rtp(1,bs_trns%diff_vector%i_grad_vz),       &
+     &      trns_b_difv%fld_rtp(1,bs_trns_diff_v%i_grad_vx),            &
+     &      trns_b_difv%fld_rtp(1,bs_trns_diff_v%i_grad_vy),            &
+     &      trns_b_difv%fld_rtp(1,bs_trns_diff_v%i_grad_vz),            &
      &      trns_f_snap%fld_rtp(1,fs_trns%forces%i_mag_stretch))
 !$omp end parallel
       end if

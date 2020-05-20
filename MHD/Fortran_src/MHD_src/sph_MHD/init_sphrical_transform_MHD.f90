@@ -106,8 +106,8 @@
       call set_addresses_ene_flux_trans                                 &
      &   (SPH_MHD%ipol, iphys, WK%trns_eflux,                           &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
-      call set_addresses_temporal_trans                                 &
-     &   (SPH_MHD%ipol, iphys, WK%trns_tmp,                             &
+      call set_addresses_diff_vect_trans                                &
+     &   (SPH_MHD%ipol, iphys, WK%trns_difv,                            &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
 !
       call alloc_sph_trans_address(SPH_MHD%sph%sph_rtp, WK)
