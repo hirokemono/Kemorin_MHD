@@ -103,11 +103,18 @@
       trns_fwd%nfield = 0
       call alloc_sph_trns_field_name(trns_fwd)
 !
-      call add_base_force_sph_trns_snap                           &
+!   rotation of Coriolis force
+      call add_rot_coriolis_sph_trns_snap                               &
+     &   (ipol%rot_forces, iphys%rot_forces, f_trns%rot_forces,         &
+     &    trns_fwd)
+!   forces
+      call add_base_force_sph_trns_snap                                 &
      &   (ipol%forces, iphys%forces, f_trns%forces, trns_fwd)
       trns_fwd%num_vector = trns_fwd%nfield
 !
-!      call add_scalar_4_fwd_trns_snap(ipol, iphys, f_trns, trns_fwd)
+      call add_div_coriolis_MHD_sph_trns                                &
+     &   (ipol%div_forces, iphys%div_forces, f_trns%div_forces,         &
+     &    trns_fwd)
       trns_fwd%num_scalar = trns_fwd%nfield - trns_fwd%num_vector
       trns_fwd%num_tensor = 0
 !

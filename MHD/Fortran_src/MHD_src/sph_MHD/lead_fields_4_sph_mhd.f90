@@ -152,6 +152,13 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !
+!      if(iflag_debug.eq.1) write(*,*)                                  &
+!     &        'nonlinear_by_pseudo_sph for snapshot'
+!      call nonlinear_by_pseudo_sph                                     &
+!     &   (sph, comms_sph, omega_sph, r_2nd, MHD_prop,                  &
+!     &    sph_MHD_bc, trans_p, gt_cor, trns_snap, WK_sph,              &
+!     &    cor_rlm, ipol, rj_fld)
+!
       if    (sph%sph_params%iflag_shell_mode .eq. iflag_MESH_w_pole     &
      &  .or. sph%sph_params%iflag_shell_mode .eq. iflag_MESH_w_center)  &
      &      then

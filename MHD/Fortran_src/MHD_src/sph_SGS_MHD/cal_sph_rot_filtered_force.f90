@@ -8,7 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine rot_filtered_mom_eq_exp_sph                          &
-!!     &         (sph_rj, r_2nd, MHD_prop, sph_MHD_bc, leg,             &
+!!     &         (sph_rj, r_2nd, sph_MHD_bc, leg,                       &
 !!     &          ipol_fil_frc, ipol_rot_fil_frc, rj_fld)
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(fdm_matrices), intent(in) :: r_2nd
@@ -71,14 +71,13 @@
 ! ----------------------------------------------------------------------
 !
       subroutine rot_filtered_mom_eq_exp_sph                            &
-     &         (sph_rj, r_2nd, MHD_prop, sph_MHD_bc, leg,               &
+     &         (sph_rj, r_2nd, sph_MHD_bc, leg,                         &
      &          ipol_fil_frc, ipol_rot_fil_frc, rj_fld)
 !
       use cal_sph_field_by_rotation
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
-      type(MHD_evolution_param), intent(in) :: MHD_prop
       type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
       type(legendre_4_sph_trans), intent(in) :: leg
       type(base_force_address), intent(in) :: ipol_fil_frc
@@ -90,23 +89,17 @@
       if (iflag_debug .ge. iflag_routine_msg)                           &
      &     write(*,*) 'cal_rot_of_forces_sph_2'
       call cal_rot_of_forces_sph_2                                      &
-     &   (MHD_prop%fl_prop%iflag_4_filter_inertia,                      &
-     &    MHD_prop%fl_prop%iflag_4_filter_lorentz,                      &
-     &    sph_rj, r_2nd, leg%g_sph_rj, sph_MHD_bc%sph_bc_U,             &
+     &   (sph_rj, r_2nd, leg%g_sph_rj, sph_MHD_bc%sph_bc_U,             &
      &    sph_MHD_bc%fdm2_free_ICB, sph_MHD_bc%fdm2_free_CMB,           &
      &    ipol_fil_frc, ipol_rot_fil_frc, rj_fld)
 !
       call cal_rot_of_induction_sph                                     &
-     &   (MHD_prop%cd_prop%iflag_4_filter_induction,                    &
-     &    sph_rj, r_2nd, leg%g_sph_rj, sph_MHD_bc%sph_bc_B,             &
+     &   (sph_rj, r_2nd, leg%g_sph_rj, sph_MHD_bc%sph_bc_B,             &
      &    ipol_fil_frc, rj_fld)
 !
       if (iflag_debug .ge. iflag_routine_msg)                           &
      &     write(*,*) 'cal_div_of_fluxes_sph'
-      call cal_div_of_fluxes_sph                                        &
-     &   (MHD_prop%ht_prop%iflag_4_filter_advection,                    &
-     &    MHD_prop%cp_prop%iflag_4_filter_advection,                    &
-     &    sph_rj, r_2nd, leg%g_sph_rj,                                  &
+      call cal_div_of_fluxes_sph(sph_rj, r_2nd, leg%g_sph_rj,           &
      &    sph_MHD_bc%sph_bc_T, sph_MHD_bc%bcs_T,                        &
      &    sph_MHD_bc%sph_bc_C, sph_MHD_bc%bcs_C,                        &
      &    sph_MHD_bc%fdm2_center, ipol_fil_frc, rj_fld)

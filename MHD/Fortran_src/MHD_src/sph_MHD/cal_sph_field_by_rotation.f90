@@ -8,7 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine rot_momentum_eq_exp_sph                              &
-!!     &         (sph_rj, r_2nd, MHD_prop, sph_MHD_bc, leg,             &
+!!     &         (sph_rj, r_2nd, sph_MHD_bc, leg,                       &
 !!     &          ipol_frc, ipol_rot_frc, rj_fld)
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(fdm_matrices), intent(in) :: r_2nd
@@ -20,8 +20,7 @@
 !!        type(base_force_address), intent(in) :: ipol_div_frc
 !!        type(phys_data), intent(inout) :: rj_fld
 !!
-!!      subroutine cal_rot_of_forces_sph_2                              &
-!!     &         (iflag_4_inertia, iflag_4_lorentz, sph_rj, r_2nd,      &
+!!      subroutine cal_rot_of_forces_sph_2(sph_rj, r_2nd,               &
 !!     &          g_sph_rj, sph_bc_U, fdm2_free_ICB, fdm2_free_CMB,     &
 !!     &          ipol_frc, ipol_rot_frc, rj_fld)
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
@@ -32,16 +31,14 @@
 !!        type(fdm2_free_slip), intent(in) :: fdm2_free_ICB
 !!        type(fdm2_free_slip), intent(in) :: fdm2_free_CMB
 !!        type(phys_data), intent(inout) :: rj_fld
-!!      subroutine cal_rot_of_induction_sph(iflag_4_induction,          &
-!!     &          sph_rj, r_2nd, g_sph_rj, sph_bc_B, ipol_frc, rj_fld)
+!!      subroutine cal_rot_of_induction_sph                             &
+!!     &         (sph_rj, r_2nd, g_sph_rj, sph_bc_B, ipol_frc, rj_fld)
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(fdm_matrices), intent(in) :: r_2nd
 !!        type(base_force_address), intent(in) :: ipol_frc
 !!        type(sph_boundary_type), intent(in) :: sph_bc_B
 !!        type(phys_data), intent(inout) :: rj_fld
-!!      subroutine cal_div_of_fluxes_sph                                &
-!!     &         (iflag_t_advection, iflag_c_advection,                 &
-!!     &          sph_rj, r_2nd, g_sph_rj,                              &
+!!      subroutine cal_div_of_fluxes_sph(sph_rj, r_2nd, g_sph_rj,       &
 !!     &          sph_bc_T, bcs_T, sph_bc_C, bcs_C, fdm2_center,        &
 !!     &          ipol_frc, rj_fld)
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
@@ -60,7 +57,6 @@
       use m_constants
       use m_machine_parameter
 !
-      use t_control_parameter
       use t_spheric_rj_data
       use t_base_force_labels
 !      use t_base_field_labels
@@ -81,12 +77,11 @@
 ! ----------------------------------------------------------------------
 !
       subroutine rot_momentum_eq_exp_sph                                &
-     &         (sph_rj, r_2nd, MHD_prop, sph_MHD_bc, leg,               &
+     &         (sph_rj, r_2nd, sph_MHD_bc, leg,                         &
      &          ipol_frc, ipol_rot_frc, rj_fld)
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
-      type(MHD_evolution_param), intent(in) :: MHD_prop
       type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
       type(legendre_4_sph_trans), intent(in) :: leg
       type(base_force_address), intent(in) :: ipol_frc
@@ -98,23 +93,17 @@
       if (iflag_debug .ge. iflag_routine_msg)                           &
      &     write(*,*) 'cal_rot_of_forces_sph_2'
       call cal_rot_of_forces_sph_2                                      &
-     &   (MHD_prop%fl_prop%iflag_4_inertia,                             &
-     &    MHD_prop%fl_prop%iflag_4_lorentz,                             &
-     &    sph_rj, r_2nd, leg%g_sph_rj, sph_MHD_bc%sph_bc_U,             &
+     &   (sph_rj, r_2nd, leg%g_sph_rj, sph_MHD_bc%sph_bc_U,             &
      &    sph_MHD_bc%fdm2_free_ICB, sph_MHD_bc%fdm2_free_CMB,           &
      &    ipol_frc, ipol_rot_frc, rj_fld)
 !
       call cal_rot_of_induction_sph                                     &
-     &   (MHD_prop%cd_prop%iflag_4_induction,                           &
-     &    sph_rj, r_2nd, leg%g_sph_rj, sph_MHD_bc%sph_bc_B,             &
+     &   (sph_rj, r_2nd, leg%g_sph_rj, sph_MHD_bc%sph_bc_B,             &
      &    ipol_frc, rj_fld)
 !
       if (iflag_debug .ge. iflag_routine_msg)                           &
      &     write(*,*) 'cal_div_of_fluxes_sph'
-      call cal_div_of_fluxes_sph                                        &
-     &   (MHD_prop%ht_prop%iflag_4_advection,                           &
-     &    MHD_prop%cp_prop%iflag_4_advection,                           &
-     &    sph_rj, r_2nd, leg%g_sph_rj,                                  &
+      call cal_div_of_fluxes_sph(sph_rj, r_2nd, leg%g_sph_rj,           &
      &    sph_MHD_bc%sph_bc_T, sph_MHD_bc%bcs_T,                        &
      &    sph_MHD_bc%sph_bc_C, sph_MHD_bc%bcs_C,                        &
      &    sph_MHD_bc%fdm2_center, ipol_frc, rj_fld)
@@ -124,8 +113,7 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_rot_of_forces_sph_2                                &
-     &         (iflag_4_inertia, iflag_4_lorentz, sph_rj, r_2nd,        &
+      subroutine cal_rot_of_forces_sph_2(sph_rj, r_2nd,                 &
      &          g_sph_rj, sph_bc_U, fdm2_free_ICB, fdm2_free_CMB,       &
      &          ipol_frc, ipol_rot_frc, rj_fld)
 !
@@ -133,7 +121,6 @@
       use const_sph_rotation
       use cal_inner_core_rotation
 !
-      logical, intent(in) :: iflag_4_inertia, iflag_4_lorentz
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
       type(base_force_address), intent(in) :: ipol_frc
@@ -146,14 +133,14 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      if(iflag_4_inertia) then
+      if(ipol_rot_frc%i_m_advect .gt. 0) then
         if (iflag_debug .gt. 0) write(*,*) 'take rotation of advection'
         call const_sph_force_rot2(sph_rj, r_2nd,                        &
      &      sph_bc_U, fdm2_free_ICB, fdm2_free_CMB, g_sph_rj,           &
      &      ipol_frc%i_m_advect, ipol_rot_frc%i_m_advect, rj_fld)
       end if
 !
-      if(iflag_4_lorentz) then
+      if(ipol_rot_frc%i_lorentz .gt. 0) then
         if (iflag_debug .gt. 0) write(*,*) 'take rotation of Lorentz'
         call const_sph_force_rot2(sph_rj, r_2nd,                        &
      &      sph_bc_U, fdm2_free_ICB, fdm2_free_CMB, g_sph_rj,           &
@@ -170,13 +157,12 @@
 ! ----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_rot_of_induction_sph(iflag_4_induction,            &
-     &          sph_rj, r_2nd, g_sph_rj, sph_bc_B, ipol_frc, rj_fld)
+      subroutine cal_rot_of_induction_sph                               &
+     &         (sph_rj, r_2nd, g_sph_rj, sph_bc_B, ipol_frc, rj_fld)
 !
       use const_sph_radial_grad
       use const_sph_rotation
 !
-      logical, intent(in) :: iflag_4_induction
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
       type(base_force_address), intent(in) :: ipol_frc
@@ -186,7 +172,7 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      if(iflag_4_induction) then
+      if(ipol_frc%i_induction .gt. 0) then
         if (iflag_debug .gt. 0) write(*,*) 'obtain magnetic induction'
         call const_sph_rotation_uxb(sph_rj, r_2nd, sph_bc_B, g_sph_rj,  &
      &      ipol_frc%i_vp_induct, ipol_frc%i_induction, rj_fld)
@@ -196,16 +182,13 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_div_of_fluxes_sph                                  &
-     &         (iflag_t_advection, iflag_c_advection,                   &
-     &          sph_rj, r_2nd, g_sph_rj,                                &
+      subroutine cal_div_of_fluxes_sph(sph_rj, r_2nd, g_sph_rj,         &
      &          sph_bc_T, bcs_T, sph_bc_C, bcs_C, fdm2_center,          &
      &          ipol_frc, rj_fld)
 !
       use calypso_mpi
       use const_sph_divergence
 !
-      logical, intent(in) :: iflag_t_advection, iflag_c_advection
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
       type(base_force_address), intent(in) :: ipol_frc
@@ -218,14 +201,14 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      if(iflag_t_advection) then
+      if(ipol_frc%i_h_advect .gt. 0) then
         if (iflag_debug .gt. 0) write(*,*) 'take div of heat flux'
         call const_sph_scalar_advect                                    &
      &     (sph_rj, r_2nd, sph_bc_T, bcs_T, fdm2_center, g_sph_rj,      &
      &      ipol_frc%i_h_flux, ipol_frc%i_h_advect, rj_fld)
       end if
 !
-      if(iflag_c_advection) then
+      if(ipol_frc%i_c_advect .gt. 0) then
         if (iflag_debug .gt. 0) write(*,*) 'take div  of composit flux'
         call const_sph_scalar_advect                                    &
      &     (sph_rj, r_2nd, sph_bc_C, bcs_C, fdm2_center, g_sph_rj,      &

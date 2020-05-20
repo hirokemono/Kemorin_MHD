@@ -191,7 +191,7 @@
       if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+12)
       if (iflag_debug.ge.1) write(*,*) 'rot_momentum_eq_exp_sph'
       call rot_momentum_eq_exp_sph                                      &
-     &   (sph%sph_rj, r_2nd, MHD_prop, sph_MHD_bc, trans_p%leg,         &
+     &   (sph%sph_rj, r_2nd, sph_MHD_bc, trans_p%leg,                   &
      &    ipol%forces, ipol%rot_forces, rj_fld)
       if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+12)
 !

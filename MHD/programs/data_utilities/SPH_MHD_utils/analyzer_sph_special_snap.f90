@@ -154,6 +154,8 @@
       use sph_SGS_MHD_rst_IO_control
       use input_control_sph_MHD
       use sph_SGS_mhd_monitor_data_IO
+      use lead_fields_SPH_SGS_MHD
+      use output_viz_file_control
 !
       integer(kind = kint), intent(in) :: i_step
       type(MHD_file_IO_params), intent(in) :: MHD_files
@@ -207,12 +209,19 @@
       call trans_per_temp_to_temp_sph(SPH_model,                        &
      &    SPH_MHD%sph%sph_rj, SPH_MHD%ipol, SPH_MHD%fld)
 !*
+      if(lead_field_data_flag(i_step, MHD_step) .eq. 0) then
+        call lead_fields_4_SPH_SGS_MHD                                  &
+     &     (SPH_SGS%SGS_par, SPH_WK%monitor, SPH_WK%r_2nd,              &
+     &      SPH_model%MHD_prop, SPH_model%sph_MHD_bc, SPH_WK%trans_p,   &
+     &      SPH_SGS%ipol_LES, SPH_WK%MHD_mats, SPH_WK%trns_WK,          &
+     &      SPH_SGS%trns_WK_LES, SPH_SGS%dynamic, SPH_MHD)
+      end if
+!
       if(iflag_debug.gt.0) write(*,*) 'lead_special_fields_4_sph_mhd'
       call lead_special_fields_4_sph_mhd                                &
-     &   (i_step, SPH_model%omega_sph, SPH_WK%monitor,                  &
-     &    SPH_WK%r_2nd, SPH_model%MHD_prop, SPH_model%sph_MHD_bc,       &
-     &    SPH_WK%trans_p, SPH_WK%trns_WK, SPH_WK%MHD_mats,              &
-     &    MHD_step, SPH_SGS, SPH_MHD)
+     &   (SPH_model%omega_sph, SPH_model%MHD_prop,                      &
+     &    SPH_model%sph_MHD_bc, SPH_WK%trans_p, SPH_WK%trns_WK,         &
+     &    SPH_SGS, SPH_MHD)
       if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+5)
 !
 !*  -----------  lead energy data --------------
@@ -263,9 +272,8 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine lead_special_fields_4_sph_mhd(i_step, omega_sph,       &
-     &          monitor, r_2nd, MHD_prop, sph_MHD_bc, trans_p,          &
-     &          trns_WK, sph_MHD_mat, MHD_step, SPH_SGS, SPH_MHD)
+      subroutine lead_special_fields_4_sph_mhd(omega_sph, MHD_prop,     &
+     &          sph_MHD_bc, trans_p, trns_WK, SPH_SGS, SPH_MHD)
 !
       use t_MHD_step_parameter
       use t_spheric_parameter
@@ -273,37 +281,22 @@
       use t_phys_address
       use t_phys_data
       use t_fdm_coefs
-      use t_sph_trans_arrays_MHD
       use t_sph_transforms
       use t_radial_matrices_sph_MHD
-      use output_viz_file_control
-      use lead_fields_SPH_SGS_MHD
 !
       use cal_zonal_mean_sph_spectr
       use sph_transforms_4_MHD
       use sph_transforms_snapshot
       use output_viz_file_control
 !
-      integer(kind = kint), intent(in) :: i_step
       type(sph_rotation), intent(in) :: omega_sph
-      type(sph_mhd_monitor_data), intent(in) :: monitor
-      type(fdm_matrices), intent(in) :: r_2nd
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
       type(parameters_4_sph_trans), intent(in) :: trans_p
       type(works_4_sph_trans_MHD), intent(inout) :: trns_WK
-      type(MHD_step_param), intent(inout) :: MHD_step
-      type(MHD_radial_matrices), intent(inout) :: sph_MHD_mat
       type(SPH_SGS_structure), intent(inout) :: SPH_SGS
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !
-!
-      if(lead_field_data_flag(i_step, MHD_step) .eq. 0) then
-        call lead_fields_4_SPH_SGS_MHD(SPH_SGS%SGS_par, monitor, r_2nd, &
-     &      MHD_prop, sph_MHD_bc, trans_p, SPH_SGS%ipol_LES,            &
-     &      sph_MHD_mat, trns_WK, SPH_SGS%trns_WK_LES, SPH_SGS%dynamic, &
-     &      SPH_MHD)
-      end if
 !
       call sph_back_trans_4_MHD(SPH_MHD%sph, SPH_MHD%comms,             &
      &    MHD_prop%fl_prop, sph_MHD_bc%sph_bc_U, omega_sph, trans_p,    &

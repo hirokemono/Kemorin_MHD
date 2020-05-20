@@ -11,19 +11,18 @@
 !!      subroutine add_base_force_4_MHD_sph_trns                        &
 !!     &         (fl_prop, cd_prop, ht_prop, cp_prop,                   &
 !!     &          ipol_frc, iphys_frc, f_trns_frc, trns)
+!!      subroutine add_base_force_sph_trns_snap                         &
+!!     &         (ipol_frc, iphys_frc, f_trns_frc, trns)
 !!        type(fluid_property), intent(in) :: fl_prop
 !!        type(conductive_property), intent(in) :: cd_prop
 !!        type(scalar_property), intent(in) :: ht_prop, cp_prop
 !!        type(base_force_address), intent(in) :: ipol_frc, iphys_frc
 !!        type(base_force_address), intent(inout) :: f_trns_frc
 !!        type(spherical_transform_data), intent(inout) :: trns
-!!      subroutine add_base_force_sph_trns_snap                         &
-!!     &         (ipol_frc, iphys_frc, f_trns_frc, trns)
-!!        type(base_force_address), intent(in) :: ipol_frc, iphys_frc
-!!        type(base_force_address), intent(inout) :: f_trns_frc
-!!        type(spherical_transform_data), intent(inout) :: trns
 !!      subroutine add_rot_coriolis_MHD_sph_trns(fl_prop,               &
 !!     &          ipol_rot_frc, iphys_rot_frc, f_trns_rot_frc, trns)
+!!      subroutine add_rot_coriolis_sph_trns_snap                       &
+!!     &         (ipol_rot_frc, iphys_rot_frc, f_trns_rot_frc, trns)
 !!        type(fluid_property), intent(in) :: fl_prop
 !!        type(base_force_address), intent(in) :: ipol_rot_frc
 !!        type(base_force_address), intent(in) :: iphys_rot_frc
@@ -208,6 +207,27 @@
       end if
 !
       end subroutine add_rot_coriolis_MHD_sph_trns
+!
+!-----------------------------------------------------------------------
+!
+      subroutine add_rot_coriolis_sph_trns_snap                         &
+     &         (ipol_rot_frc, iphys_rot_frc, f_trns_rot_frc, trns)
+!
+      use m_rot_force_labels
+      use add_field_to_sph_trans_list
+!
+      type(base_force_address), intent(in) :: ipol_rot_frc
+      type(base_force_address), intent(in) :: iphys_rot_frc
+!
+      type(base_force_address), intent(inout) :: f_trns_rot_frc
+      type(spherical_transform_data), intent(inout) :: trns
+!
+!   rotation of Coriolis force
+      call add_field_4_sph_trns_by_pol(rot_Coriolis_force,              &
+     &    ipol_rot_frc%i_Coriolis, iphys_rot_frc%i_Coriolis,            &
+     &    f_trns_rot_frc%i_Coriolis, trns)
+!
+      end subroutine add_rot_coriolis_sph_trns_snap
 !
 !-----------------------------------------------------------------------
 !
