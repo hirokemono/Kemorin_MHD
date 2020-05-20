@@ -145,6 +145,13 @@
       type(spherical_transform_data), intent(inout) :: trns
 !
 !
+      call add_field_4_sph_trns_by_pol(temperature,                     &
+     &    ipol_base%i_temp, iphys_base%i_temp, b_trns_base%i_temp,      &
+     &    trns)
+      call add_field_4_sph_trns_by_pol(composition,                     &
+     &    ipol_base%i_light, iphys_base%i_light, b_trns_base%i_light,   &
+     &    trns)
+!
       call add_field_4_sph_trns_by_pol(pressure,                        &
      &    ipol_base%i_press, iphys_base%i_press, b_trns_base%i_press,   &
      &    trns)
