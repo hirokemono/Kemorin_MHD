@@ -24,6 +24,12 @@
 !!        type(base_force_address), intent(in) :: f_trns_frc
 !!        type(spherical_transform_data), intent(in) :: trns_b_MHD
 !!        type(spherical_transform_data), intent(inout) :: trns_f_MHD
+!!      subroutine nonlinear_terms_on_node                              &
+!!     &         (MHD_prop, b_trns_base, f_trns_frc,                    &
+!!     &          nnod, ntot_comp_fld, fld_rtp, ntot_comp_frc, frc_rtp)
+!!        type(MHD_evolution_param), intent(in) :: MHD_prop
+!!        type(base_field_address), intent(in) :: b_trns_base
+!!        type(base_force_address), intent(in) :: f_trns_frc
 !!      subroutine add_ref_advect_sph_MHD(sph_rj, sph_MHD_bc, MHD_prop, &
 !!     &          leg, ref_temp, ref_comp, ipol, rj_fld)
 !!       Input ::  rj_fld(1,is_fld)
@@ -92,49 +98,10 @@
       type(spherical_transform_data), intent(inout) :: trns_f_MHD
 !
 !
-!$omp parallel
-      if(f_trns_frc%i_m_advect .gt. 0) then
-        call cal_cross_prod_w_coef_smp                                  &
-     &     (sph_rtp%nnod_rtp, MHD_prop%fl_prop%coef_velo,               &
-     &      trns_b_MHD%fld_rtp(1,b_trns_base%i_vort),                   &
-     &      trns_b_MHD%fld_rtp(1,b_trns_base%i_velo),                   &
-     &      trns_f_MHD%fld_rtp(1,f_trns_frc%i_m_advect) )
-      end if
-!
-      if(f_trns_frc%i_lorentz .gt. 0) then
-        call cal_cross_prod_w_coef_smp                                  &
-     &     (sph_rtp%nnod_rtp, MHD_prop%fl_prop%coef_lor,                &
-     &      trns_b_MHD%fld_rtp(1,b_trns_base%i_current),                &
-     &      trns_b_MHD%fld_rtp(1,b_trns_base%i_magne),                  &
-     &      trns_f_MHD%fld_rtp(1,f_trns_frc%i_lorentz) )
-      end if
-!
-!
-!
-      if(f_trns_frc%i_vp_induct .gt. 0) then
-        call cal_cross_prod_w_coef_smp                                  &
-     &     (sph_rtp%nnod_rtp, MHD_prop%cd_prop%coef_induct,             &
-     &      trns_b_MHD%fld_rtp(1,b_trns_base%i_velo),                   &
-     &      trns_b_MHD%fld_rtp(1,b_trns_base%i_magne),                  &
-     &      trns_f_MHD%fld_rtp(1,f_trns_frc%i_vp_induct) )
-      end if
-!
-!
-      if(f_trns_frc%i_h_flux .gt. 0) then
-        call cal_vec_scalar_prod_w_coef_smp                             &
-     &     (sph_rtp%nnod_rtp, MHD_prop%ht_prop%coef_advect,             &
-     &      trns_b_MHD%fld_rtp(1,b_trns_base%i_velo),                   &
-     &      trns_b_MHD%fld_rtp(1,b_trns_base%i_temp),                   &
-     &      trns_f_MHD%fld_rtp(1,f_trns_frc%i_h_flux) )
-      end if
-!
-      if(f_trns_frc%i_c_flux .gt. 0) then
-        call cal_vec_scalar_prod_w_coef_smp                             &
-     &     (sph_rtp%nnod_rtp, MHD_prop%cp_prop%coef_advect,             &
-     &      trns_b_MHD%fld_rtp(1,b_trns_base%i_velo),                   &
-     &      trns_b_MHD%fld_rtp(1,b_trns_base%i_light),                  &
-     &      trns_f_MHD%fld_rtp(1,f_trns_frc%i_c_flux) )
-      end if
+      call nonlinear_terms_on_node                                      &
+     &   (MHD_prop, b_trns_base, f_trns_frc, sph_rtp%nnod_rtp,          &
+     &    trns_b_MHD%ncomp, trns_b_MHD%fld_rtp,                         &
+     &    trns_f_MHD%ncomp, trns_f_MHD%fld_rtp)
 !
       if(f_trns_frc%i_coriolis .gt. 0) then
         call cal_wz_coriolis_rtp(sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,    &
@@ -142,10 +109,73 @@
      &      trns_b_MHD%fld_rtp(1,b_trns_base%i_velo),                   &
      &      trns_f_MHD%fld_rtp(1,f_trns_frc%i_coriolis))
       end if
-!$omp end parallel
 !
       end subroutine nonlinear_terms_in_rtp
 !
+!-----------------------------------------------------------------------
+!
+      subroutine nonlinear_terms_on_node                                &
+     &         (MHD_prop, b_trns_base, f_trns_frc,                      &
+     &          nnod, ntot_comp_fld, fld_rtp, ntot_comp_frc, frc_rtp)
+!
+      use cal_products_smp
+!
+      type(MHD_evolution_param), intent(in) :: MHD_prop
+      type(base_field_address), intent(in) :: b_trns_base
+      type(base_force_address), intent(in) :: f_trns_frc
+      integer(kind = kint), intent(in) :: nnod
+      integer(kind = kint), intent(in) :: ntot_comp_fld, ntot_comp_frc
+      real(kind = kreal), intent(in) :: fld_rtp(nnod,ntot_comp_fld)
+!
+      real(kind = kreal), intent(inout) :: frc_rtp(nnod,ntot_comp_frc)
+!
+!$omp parallel
+      if(f_trns_frc%i_m_advect .gt. 0) then
+        call cal_cross_prod_w_coef_smp                                  &
+     &     (nnod, MHD_prop%fl_prop%coef_velo,                           &
+     &      fld_rtp(1,b_trns_base%i_vort),                              &
+     &      fld_rtp(1,b_trns_base%i_velo),                              &
+     &      frc_rtp(1,f_trns_frc%i_m_advect) )
+      end if
+!
+      if(f_trns_frc%i_lorentz .gt. 0) then
+        call cal_cross_prod_w_coef_smp                                  &
+     &     (nnod, MHD_prop%fl_prop%coef_lor,                            &
+     &      fld_rtp(1,b_trns_base%i_current),                           &
+     &      fld_rtp(1,b_trns_base%i_magne),                             &
+     &      frc_rtp(1,f_trns_frc%i_lorentz) )
+      end if
+!
+!
+      if(f_trns_frc%i_vp_induct .gt. 0) then
+        call cal_cross_prod_w_coef_smp                                  &
+     &     (nnod, MHD_prop%cd_prop%coef_induct,                         &
+     &      fld_rtp(1,b_trns_base%i_velo),                              &
+     &      fld_rtp(1,b_trns_base%i_magne),                             &
+     &      frc_rtp(1,f_trns_frc%i_vp_induct) )
+      end if
+!
+!
+      if(f_trns_frc%i_h_flux .gt. 0) then
+        call cal_vec_scalar_prod_w_coef_smp                             &
+     &     (nnod, MHD_prop%ht_prop%coef_advect,                         &
+     &      fld_rtp(1,b_trns_base%i_velo),                              &
+     &      fld_rtp(1,b_trns_base%i_temp),                              &
+     &      frc_rtp(1,f_trns_frc%i_h_flux) )
+      end if
+!
+      if(f_trns_frc%i_c_flux .gt. 0) then
+        call cal_vec_scalar_prod_w_coef_smp                             &
+     &     (nnod, MHD_prop%cp_prop%coef_advect,                         &
+     &      fld_rtp(1,b_trns_base%i_velo),                              &
+     &      fld_rtp(1,b_trns_base%i_light),                             &
+     &      frc_rtp(1,f_trns_frc%i_c_flux) )
+      end if
+!$omp end parallel
+!
+      end subroutine nonlinear_terms_on_node
+!
+!-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
       subroutine add_ref_advect_sph_MHD(sph_rj, sph_MHD_bc, MHD_prop,   &

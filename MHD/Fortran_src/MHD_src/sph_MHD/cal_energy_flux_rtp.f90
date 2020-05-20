@@ -8,14 +8,14 @@
 !> @brief Evaluate energy fluxes for MHD dynamo in physical space
 !!
 !!@verbatim
-!!      subroutine cal_nonlinear_pole_MHD                               &
-!!     &         (sph_rtp, fl_prop, cd_prop, ht_prop, cp_prop,          &
+!!      subroutine cal_nonlinear_pole_MHD(sph_rtp, MHD_prop,            &
 !!     &          f_trns, bs_trns, trns_b_MHD, trns_f_MHD)
 !!      subroutine s_cal_energy_flux_rtp(sph_rtp, fl_prop, cd_prop,     &
 !!     &          ref_param_T, ref_param_C, leg, f_trns,                &
 !!     &          bs_trns, fs_trns, trns_f_MHD, trns_b_snap,            &
 !!     &          trns_f_snap)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
+!!        type(MHD_evolution_param), intent(in) :: MHD_prop
 !!        type(fluid_property), intent(in) :: fl_prop
 !!        type(conductive_property), intent(in) :: cd_prop
 !!        type(reference_scalar_param), intent(in) :: ref_param_T
@@ -48,83 +48,77 @@
 !
       implicit  none
 !
+      private :: cal_wz_coriolis_pole
+!
 ! -----------------------------------------------------------------------
 !
       contains
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_nonlinear_pole_MHD                                 &
-     &         (sph_rtp, fl_prop, cd_prop, ht_prop, cp_prop,            &
-     &          f_trns, bs_trns, trns_b_MHD, trns_f_MHD)
+      subroutine cal_nonlinear_pole_MHD(sph_rtp, MHD_prop,              &
+     &          f_trns, b_trns, trns_b_MHD, trns_f_MHD)
 !
+      use cal_nonlinear_sph_MHD
       use const_wz_coriolis_rtp
       use cal_products_smp
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
-      type(fluid_property), intent(in) :: fl_prop
-      type(conductive_property), intent(in) :: cd_prop
-      type(scalar_property), intent(in) :: ht_prop, cp_prop
+      type(MHD_evolution_param), intent(in) :: MHD_prop
       type(phys_address), intent(in) :: f_trns
-      type(phys_address), intent(in) :: bs_trns
+      type(phys_address), intent(in) :: b_trns
       type(spherical_transform_data), intent(in) :: trns_b_MHD
 !
       type(spherical_transform_data), intent(inout) :: trns_f_MHD
 !
 !
-!$omp parallel
-      if(fl_prop%iflag_4_filter_inertia) then
-        call cal_cross_prod_w_coef_smp                                  &
-     &     (sph_rtp%nnod_pole, fl_prop%coef_velo,                       &
-     &      trns_b_MHD%fld_pole(1,bs_trns%base%i_vort),                 &
-     &      trns_b_MHD%fld_pole(1,bs_trns%base%i_velo),                 &
-     &      trns_f_MHD%fld_pole(1,f_trns%forces%i_m_advect) )
+      call nonlinear_terms_on_node(MHD_prop,                            &
+     &    b_trns%base, f_trns%forces, sph_rtp%nnod_pole,                &
+     &    trns_b_MHD%ncomp, trns_b_MHD%fld_pole,                        &
+     &    trns_f_MHD%ncomp, trns_f_MHD%fld_pole)
+!
+      if(MHD_prop%fl_prop%iflag_4_coriolis) then
+        call cal_wz_coriolis_pole                                       &
+     &     (sph_rtp%nnod_pole, MHD_prop%fl_prop%coef_cor,               &
+     &      trns_b_MHD%fld_pole(1,b_trns%base%i_velo),                  &
+     &      trns_f_MHD%fld_pole(1,f_trns%forces%i_coriolis))
       end if
-!
-      if(fl_prop%iflag_4_lorentz) then
-        call cal_cross_prod_w_coef_smp                                  &
-     &     (sph_rtp%nnod_pole, fl_prop%coef_lor,                        &
-     &      trns_b_MHD%fld_pole(1,bs_trns%base%i_current),              &
-     &      trns_b_MHD%fld_pole(1,bs_trns%base%i_magne),                &
-     &      trns_f_MHD%fld_pole(1,f_trns%forces%i_lorentz) )
-      end if
-!
-      if(cd_prop%iflag_4_induction) then
-        call cal_cross_prod_w_coef_smp                                  &
-     &     (sph_rtp%nnod_pole, cd_prop%coef_induct,                     &
-     &      trns_b_MHD%fld_pole(1,bs_trns%base%i_velo),                 &
-     &      trns_b_MHD%fld_pole(1,bs_trns%base%i_magne),                &
-     &      trns_f_MHD%fld_pole(1,f_trns%forces%i_vp_induct) )
-      end if
-!
-!
-      if(ht_prop%iflag_4_advection) then
-        call cal_vec_scalar_prod_w_coef_smp                             &
-     &     (sph_rtp%nnod_pole, ht_prop%coef_advect,                     &
-     &      trns_b_MHD%fld_pole(1,bs_trns%base%i_velo),                 &
-     &      trns_b_MHD%fld_pole(1,bs_trns%base%i_temp),                 &
-     &      trns_f_MHD%fld_pole(1,f_trns%forces%i_h_flux) )
-      end if
-!
-      if(cp_prop%iflag_4_advection) then
-        call cal_vec_scalar_prod_w_coef_smp                             &
-     &     (sph_rtp%nnod_pole, cp_prop%coef_advect,                     &
-     &      trns_b_MHD%fld_pole(1,bs_trns%base%i_velo),                 &
-            trns_b_MHD%fld_pole(1,bs_trns%base%i_light),                &
-     &      trns_f_MHD%fld_pole(1,f_trns%forces%i_c_flux) )
-      end if
-!
-!      if(fl_prop%iflag_4_coriolis) then
-!        call cal_wz_coriolis_rtp                                       &
-!     &     (sph_rtp%nnod_pole, sph_rtp%nidx_rtp, fl_prop%coef_cor,     &
-!     &      trns_b_MHD%fld_pole(1,bs_trns%base%i_velo),                &
-!     &      trns_f_MHD%fld_pole(1,f_trns%forces%i_coriolis))
-!      end if
-!$omp end parallel
 !
       end subroutine cal_nonlinear_pole_MHD
 !
 !-----------------------------------------------------------------------
+!
+      subroutine cal_wz_coriolis_pole                                   &
+     &         (nnod_pole,  coef_cor, velo_pole, coriolis_pole)
+!
+      integer(kind = kint), intent(in) :: nnod_pole
+      real(kind = kreal), intent(in) :: coef_cor
+      real(kind = kreal), intent(in) :: velo_pole(nnod_pole,3)
+!
+      real(kind = kreal), intent(inout) :: coriolis_pole(nnod_pole,3)
+!
+      integer(kind = kint) :: inod
+      real(kind = kreal), parameter :: omega(3) = (/zero, zero, one/)
+!
+!
+!$omp parallel do private(inod)
+      do inod = 1, nnod_pole
+            coriolis_pole(inod,1) = - coef_cor                          &
+!     &                         * ( omega(2)*velo_pole(inod,3)          &
+     &                         * ( -omega(3)*velo_pole(inod,2) )
+            coriolis_pole(inod,2) = - coef_cor                          &
+     &                         * ( omega(3)*velo_pole(inod,1) )
+!     &                           - omega(1)*velo_pole(inod,3) )
+            coriolis_pole(inod,3) = zero
+!            coriolis_pole(inod,3) = - coef_cor                         &
+!     &                         * ( omega(1)*velo_pole(inod,2)          &
+!     &                           - omega(2)*velo_pole(inod,1) )
+      end do
+!$omp end parallel do
+!
+      end subroutine cal_wz_coriolis_pole
+!
+! -----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
       subroutine s_cal_energy_flux_rtp(sph_rtp, fl_prop, cd_prop,       &
@@ -152,7 +146,6 @@
       type(spherical_transform_data), intent(inout) :: trns_f_snap
 !
 !
-!$omp parallel
       if(fs_trns%forces%i_coriolis .gt. 0) then
         call cal_wz_coriolis_rtp(sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,    &
      &      leg%g_colat_rtp, fl_prop%coef_cor,                          &
@@ -160,6 +153,7 @@
      &      trns_f_snap%fld_rtp(1,fs_trns%forces%i_coriolis))
       end if
 !
+!$omp parallel
       if(fs_trns%ene_flux%i_ujb .gt. 0) then
         call cal_dot_prod_no_coef_smp(sph_rtp%nnod_rtp,                 &
      &      trns_f_MHD%fld_rtp(1,f_trns%forces%i_lorentz),              &

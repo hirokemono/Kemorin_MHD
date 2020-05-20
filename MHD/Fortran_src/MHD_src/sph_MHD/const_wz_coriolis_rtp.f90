@@ -97,7 +97,7 @@
       real(kind = kreal) :: omega(3)
 !
 !
-!$omp do private(mphi,l_rtp,kr,inod,omega)
+!$omp parallel do private(mphi,l_rtp,kr,inod,omega)
       do mphi = 1, nidx_rtp(3)
         do l_rtp = 1, nidx_rtp(2)
           do kr = 1, nidx_rtp(1)
@@ -120,7 +120,7 @@
           end do
         end do
       end do
-!$omp end do nowait
+!$omp end parallel do
 !
       end subroutine cal_wz_coriolis_rtp
 !

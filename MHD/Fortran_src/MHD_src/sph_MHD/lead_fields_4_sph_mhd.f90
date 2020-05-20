@@ -167,9 +167,7 @@
      &     (sph, comms_sph, trans_p, rj_fld, trns_MHD%backward)
 !
         if (iflag_debug.eq.1) write(*,*) 'cal_nonlinear_pole_MHD'
-        call cal_nonlinear_pole_MHD                                     &
-     &     (sph%sph_rtp, MHD_prop%fl_prop, MHD_prop%cd_prop,            &
-     &      MHD_prop%ht_prop, MHD_prop%cp_prop,                         &
+        call cal_nonlinear_pole_MHD(sph%sph_rtp, MHD_prop,              &
      &      trns_MHD%f_trns, trns_MHD%b_trns,                           &
      &      trns_MHD%backward, trns_MHD%forward)
       end if
