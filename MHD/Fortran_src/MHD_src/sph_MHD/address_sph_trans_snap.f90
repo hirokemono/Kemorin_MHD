@@ -116,7 +116,7 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine fwd_trans_address_ene_flux                             &
+      subroutine bwd_trans_address_ene_flux                             &
      &         (ipol, iphys, b_trns, trns_back)
 !
       type(phys_address), intent(in) :: ipol, iphys
@@ -140,7 +140,7 @@
       trns_back%num_scalar = trns_back%nfield - trns_back%num_vector
       trns_back%num_tensor = 0
 !
-      end subroutine fwd_trans_address_ene_flux
+      end subroutine bwd_trans_address_ene_flux
 !
 !-----------------------------------------------------------------------
 !
