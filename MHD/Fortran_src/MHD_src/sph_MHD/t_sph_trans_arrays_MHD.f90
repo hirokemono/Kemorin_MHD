@@ -48,6 +48,8 @@
         type(address_4_sph_trans) :: trns_MHD
 !
 !>        strucutres for spherical transform for snapshot output
+        type(address_4_sph_trans) :: trns_snap
+!>        strucutres for spherical transform for energy flux output
         type(address_4_sph_trans) :: trns_eflux
 !>        strucutres for spherical transform for intermediate snapshot
         type(address_4_sph_trans) :: trns_tmp
@@ -77,10 +79,12 @@
 !
 !
       call alloc_nonlinear_data(sph_rtp, wk%trns_MHD)
+      call alloc_nonlinear_data(sph_rtp, WK%trns_snap)
       call alloc_nonlinear_data(sph_rtp, WK%trns_eflux)
       call alloc_nonlinear_data(sph_rtp, wk%trns_tmp)
 !
       call alloc_nonlinear_pole(sph_rtp, WK%trns_MHD)
+      call alloc_nonlinear_pole(sph_rtp, WK%trns_snap)
       call alloc_nonlinear_pole(sph_rtp, WK%trns_eflux)
 !
       end subroutine alloc_sph_trans_address
@@ -92,11 +96,14 @@
       type(works_4_sph_trans_MHD), intent(inout) :: WK
 !
 !
+      call dealloc_nonlinear_pole(WK%trns_tmp)
       call dealloc_nonlinear_pole(WK%trns_eflux)
+      call dealloc_nonlinear_pole(WK%trns_snap)
       call dealloc_nonlinear_pole(WK%trns_MHD)
 !
       call dealloc_nonlinear_data(WK%trns_tmp)
       call dealloc_nonlinear_data(WK%trns_eflux)
+      call dealloc_nonlinear_pole(WK%trns_snap)
       call dealloc_nonlinear_data(WK%trns_MHD)
 !
       end subroutine dealloc_sph_trans_address

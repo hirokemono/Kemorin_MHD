@@ -17,6 +17,11 @@
 !!        type(base_force_address), intent(in) :: ipol_frc, iphys_frc
 !!        type(base_force_address), intent(inout) :: f_trns_frc
 !!        type(spherical_transform_data), intent(inout) :: trns
+!!      subroutine add_base_force_sph_trns_snap                         &
+!!     &         (ipol_frc, iphys_frc, f_trns_frc, trns)
+!!        type(base_force_address), intent(in) :: ipol_frc, iphys_frc
+!!        type(base_force_address), intent(inout) :: f_trns_frc
+!!        type(spherical_transform_data), intent(inout) :: trns
 !!      subroutine add_rot_coriolis_MHD_sph_trns(fl_prop,               &
 !!     &          ipol_rot_frc, iphys_rot_frc, f_trns_rot_frc, trns)
 !!        type(fluid_property), intent(in) :: fl_prop
@@ -135,6 +140,43 @@
       end if
 !
       end subroutine add_base_force_4_MHD_sph_trns
+!
+!-----------------------------------------------------------------------
+!
+      subroutine add_base_force_sph_trns_snap                           &
+     &         (ipol_frc, iphys_frc, f_trns_frc, trns)
+!
+      use add_field_to_sph_trans_list
+!
+      type(base_force_address), intent(in) :: ipol_frc, iphys_frc
+!
+      type(base_force_address), intent(inout) :: f_trns_frc
+      type(spherical_transform_data), intent(inout) :: trns
+!
+!
+      call add_field_name_4_sph_trns_snap(inertia,                     &
+     &    ipol_frc%i_m_advect, iphys_frc%i_m_advect,                   &
+     &    f_trns_frc%i_m_advect, trns)
+      call add_field_name_4_sph_trns_snap(Coriolis_force,              &
+     &    ipol_frc%i_coriolis, iphys_frc%i_coriolis,                   &
+     &    f_trns_frc%i_coriolis, trns)
+      call add_field_name_4_sph_trns_snap(Lorentz_force,               &
+     &    ipol_frc%i_lorentz, iphys_frc%i_lorentz,                     &
+     &    f_trns_frc%i_lorentz, trns)
+!
+      call add_field_name_4_sph_trns_snap(vecp_induction,               &
+     &    ipol_frc%i_vp_induct, iphys_frc%i_vp_induct,                  &
+     &    f_trns_frc%i_vp_induct, trns)
+!
+      call add_field_name_4_sph_trns_snap(heat_flux,                    &
+     &    ipol_frc%i_h_flux, iphys_frc%i_h_flux, f_trns_frc%i_h_flux,   &
+     &    trns)
+!
+      call add_field_name_4_sph_trns_snap(composite_flux,               &
+     &    ipol_frc%i_c_flux, iphys_frc%i_c_flux, f_trns_frc%i_c_flux,   &
+     &    trns)
+!
+      end subroutine add_base_force_sph_trns_snap
 !
 !-----------------------------------------------------------------------
 !

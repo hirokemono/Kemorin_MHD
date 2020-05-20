@@ -8,12 +8,12 @@
 !!       in MHD dynamo simulation
 !!
 !!@verbatim
-!!      subroutine bwd_trans_address_snap                               &
+!!      subroutine fwd_trans_address_ene_flux                           &
 !!     &         (ipol, iphys, b_trns, trns_back)
 !!        type(phys_address), intent(in) :: ipol, iphys
 !!        type(spherical_transform_data), intent(inout) :: trns_back
 !!        type(phys_address), intent(inout) :: b_trns
-!!      subroutine fwd_trans_address_snap                               &
+!!      subroutine fwd_trans_address_ene_flux                           &
 !!     &         (ipol, iphys, f_trns, trns_fwd)
 !!        type(phys_address), intent(in) :: ipol, iphys
 !!        type(spherical_transform_data), intent(inout) :: trns_fwd
@@ -55,6 +55,70 @@
       subroutine bwd_trans_address_snap                                 &
      &         (ipol, iphys, b_trns, trns_back)
 !
+      use add_base_field_4_sph_trns
+!
+      type(phys_address), intent(in) :: ipol, iphys
+      type(phys_address), intent(inout) :: b_trns
+      type(spherical_transform_data), intent(inout) :: trns_back
+!
+!
+      if(iflag_debug .gt. 0) then
+        write(*,*) 'Address for backward transform: ',                  &
+     &             'transform, poloidal, toroidal, grid data'
+      end if
+!
+      trns_back%nfield = 0
+      call alloc_sph_trns_field_name(trns_back)
+!
+!      Vectors
+      call add_base_vector_sph_trns_snap                                &
+     &   (ipol%base, iphys%base, b_trns%base, trns_back)
+      trns_back%num_vector = trns_back%nfield
+!
+!      Scalars
+      call add_base_scalar_sph_trns_snap                                &
+     &   (ipol%base, iphys%base, b_trns%base, trns_back)
+      trns_back%num_scalar = trns_back%nfield - trns_back%num_vector
+      trns_back%num_tensor = 0
+!
+      end subroutine bwd_trans_address_snap
+!
+!-----------------------------------------------------------------------
+!
+      subroutine fwd_trans_address_snap                                 &
+     &         (ipol, iphys, f_trns, trns_fwd)
+!
+      use add_base_force_4_sph_trns
+!
+      type(phys_address), intent(in) :: ipol, iphys
+      type(spherical_transform_data), intent(inout) :: trns_fwd
+      type(phys_address), intent(inout) :: f_trns
+!
+!
+      if(iflag_debug .gt. 0) then
+        write(*,*) 'Address for forward transform: ',                   &
+     &             'transform, poloidal, toroidal, grid data'
+      end if
+!
+      trns_fwd%nfield = 0
+      call alloc_sph_trns_field_name(trns_fwd)
+!
+      call add_base_force_sph_trns_snap                           &
+     &   (ipol%forces, iphys%forces, f_trns%forces, trns_fwd)
+      trns_fwd%num_vector = trns_fwd%nfield
+!
+!      call add_scalar_4_fwd_trns_snap(ipol, iphys, f_trns, trns_fwd)
+      trns_fwd%num_scalar = trns_fwd%nfield - trns_fwd%num_vector
+      trns_fwd%num_tensor = 0
+!
+      end subroutine fwd_trans_address_snap
+!
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      subroutine fwd_trans_address_ene_flux                             &
+     &         (ipol, iphys, b_trns, trns_back)
+!
       type(phys_address), intent(in) :: ipol, iphys
       type(spherical_transform_data), intent(inout) :: trns_back
       type(phys_address), intent(inout) :: b_trns
@@ -76,11 +140,11 @@
       trns_back%num_scalar = trns_back%nfield - trns_back%num_vector
       trns_back%num_tensor = 0
 !
-      end subroutine bwd_trans_address_snap
+      end subroutine fwd_trans_address_ene_flux
 !
 !-----------------------------------------------------------------------
 !
-      subroutine fwd_trans_address_snap                                 &
+      subroutine fwd_trans_address_ene_flux                             &
      &         (ipol, iphys, f_trns, trns_fwd)
 !
       type(phys_address), intent(in) :: ipol, iphys
@@ -103,7 +167,7 @@
       trns_fwd%num_scalar = trns_fwd%nfield - trns_fwd%num_vector
       trns_fwd%num_tensor = 0
 !
-      end subroutine fwd_trans_address_snap
+      end subroutine fwd_trans_address_ene_flux
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

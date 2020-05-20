@@ -8,7 +8,11 @@
 !!       in MHD dynamo simulation
 !!
 !!@verbatim
-!!      subroutine set_addresses_snapshot_trans(ipol, iphys, trns_eflux,&
+!!      subroutine set_addresses_snapshot_trans(ipol, iphys, trns_snap, &
+!!     &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
+!!        type(phys_address), intent(in) :: ipol, iphys
+!!        type(address_4_sph_trans), intent(inout) :: trns_snap
+!!      subroutine set_addresses_ene_flux_trans(ipol, iphys, trns_eflux,&
 !!     &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
 !!        type(phys_address), intent(in) :: ipol, iphys
 !!        type(address_4_sph_trans), intent(inout) :: trns_eflux
@@ -46,7 +50,49 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_addresses_snapshot_trans(ipol, iphys, trns_eflux,  &
+      subroutine set_addresses_snapshot_trans(ipol, iphys, trns_snap,   &
+     &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
+!
+      use address_sph_trans_snap
+!
+      type(phys_address), intent(in) :: ipol, iphys
+      type(address_4_sph_trans), intent(inout) :: trns_snap
+      integer(kind = kint), intent(inout) :: ncomp_sph_trans
+      integer(kind = kint), intent(inout) :: nvector_sph_trans
+      integer(kind = kint), intent(inout) :: nscalar_sph_trans
+!
+!
+      if(iflag_debug .gt. 0) then
+        write(*,*)  'Spherical transform field table ',                 &
+     &              'for snapshot (trns_snap)'
+      end if
+!
+      call bwd_trans_address_snap                                       &
+     &   (ipol, iphys, trns_snap%b_trns, trns_snap%backward)
+!
+      call fwd_trans_address_snap                                       &
+     &   (ipol, iphys, trns_snap%f_trns, trns_snap%forward)
+!
+      call count_num_fields_each_trans(trns_snap%backward,              &
+     &   ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
+      call count_num_fields_each_trans(trns_snap%forward,               &
+     &   ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
+!
+!
+      if(iflag_debug .gt. 0) then
+        write(*,*) 'ncomp_sph_trans ', ncomp_sph_trans
+        write(*,*) 'nvector_rj_2_rtp ', trns_snap%backward%num_vector
+        write(*,*) 'nscalar_rj_2_rtp ', trns_snap%backward%num_scalar
+!
+        write(*,*) 'nvector_rtp_2_rj ', trns_snap%forward%num_vector
+        write(*,*) 'nscalar_rtp_2_rj ', trns_snap%forward%num_scalar
+      end if
+!
+      end subroutine set_addresses_snapshot_trans
+!
+!-----------------------------------------------------------------------
+!
+      subroutine set_addresses_ene_flux_trans(ipol, iphys, trns_eflux,  &
      &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
 !
       use address_sph_trans_snap
@@ -59,14 +105,14 @@
 !
 !
       if(iflag_debug .gt. 0) then
-        write(*,*)                                                      &
-     &      'Spherical transform field table for snapshot (trns_eflux)'
+        write(*,*)  'Spherical transform field table ',                 &
+     &              'for energy flux (trns_eflux)'
       end if
 !
-      call bwd_trans_address_snap                                       &
+      call bwd_trans_address_ene_flux                                   &
      &   (ipol, iphys, trns_eflux%b_trns, trns_eflux%backward)
 !
-      call fwd_trans_address_snap                                       &
+      call fwd_trans_address_ene_flux                                   &
      &   (ipol, iphys, trns_eflux%f_trns, trns_eflux%forward)
 !
       call count_num_fields_each_trans(trns_eflux%backward,             &
@@ -84,7 +130,7 @@
         write(*,*) 'nscalar_rtp_2_rj ', trns_eflux%forward%num_scalar
       end if
 !
-      end subroutine set_addresses_snapshot_trans
+      end subroutine set_addresses_ene_flux_trans
 !
 !-----------------------------------------------------------------------
 !
