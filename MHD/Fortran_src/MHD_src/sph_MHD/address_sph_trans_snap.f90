@@ -165,6 +165,7 @@
 !
       use add_base_force_4_sph_trns
       use add_prod_field_4_sph_trns
+      use add_energy_flux_4_sph_trns
 !
       type(phys_address), intent(in) :: ipol, iphys
       type(spherical_transform_data), intent(inout) :: trns_fwd
