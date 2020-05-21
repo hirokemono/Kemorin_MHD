@@ -9,7 +9,7 @@
 !!
 !!@verbatim
 !!      subroutine cal_nonlinear_pole_MHD(sph_rtp, MHD_prop,            &
-!!     &          f_trns, bs_trns, trns_b_MHD, trns_f_MHD)
+!!     &          bs_trns, f_trns, trns_b_snap, trns_f_MHD)
 !!      subroutine s_cal_energy_flux_rtp(sph_rtp,                       &
 !!     &          fl_prop, cd_prop, ref_param_T, ref_param_C, leg,      &
 !!     &          f_trns, bs_trns, be_trns, fe_trns, bs_trns_diff_v,    &
@@ -58,7 +58,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_nonlinear_pole_MHD(sph_rtp, MHD_prop,              &
-     &          b_trns, f_trns, trns_b_MHD, trns_f_MHD)
+     &          bs_trns, f_trns, trns_b_snap, trns_f_MHD)
 !
       use cal_nonlinear_sph_MHD
       use const_wz_coriolis_rtp
@@ -67,21 +67,21 @@
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(phys_address), intent(in) :: f_trns
-      type(phys_address), intent(in) :: b_trns
-      type(spherical_transform_data), intent(in) :: trns_b_MHD
+      type(phys_address), intent(in) :: bs_trns
+      type(spherical_transform_data), intent(in) :: trns_b_snap
 !
       type(spherical_transform_data), intent(inout) :: trns_f_MHD
 !
 !
       call nonlinear_terms_on_node(MHD_prop,                            &
-     &    b_trns%base, f_trns%forces, sph_rtp%nnod_pole,                &
-     &    trns_b_MHD%ncomp, trns_b_MHD%fld_pole,                        &
+     &    bs_trns%base, f_trns%forces, sph_rtp%nnod_pole,               &
+     &    trns_b_snap%ncomp, trns_b_snap%fld_pole,                      &
      &    trns_f_MHD%ncomp, trns_f_MHD%fld_pole)
 !
       if(MHD_prop%fl_prop%iflag_4_coriolis) then
         call cal_wz_coriolis_pole                                       &
      &     (sph_rtp%nnod_pole, MHD_prop%fl_prop%coef_cor,               &
-     &      trns_b_MHD%fld_pole(1,b_trns%base%i_velo),                  &
+     &      trns_b_snap%fld_pole(1,bs_trns%base%i_velo),                &
      &      trns_f_MHD%fld_pole(1,f_trns%forces%i_coriolis))
       end if
 !
