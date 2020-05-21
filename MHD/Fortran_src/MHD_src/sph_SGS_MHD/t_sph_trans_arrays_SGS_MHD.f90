@@ -66,9 +66,6 @@
 !>        strucutres for spherical transform for dynamic SGS model
         type(SGS_address_sph_trans) :: trns_DYNG
 !
-!>        strucutres for spherical transform for snapshot output
-        type(SGS_address_sph_trans) :: trns_SGS_snap
-!
 !>        strucutres for spherical transform for filtered forces
         type(SGS_address_sph_trans) :: trns_fil_MHD
 !
@@ -76,6 +73,9 @@
         type(SGS_address_sph_trans) :: trns_fil_snap
 !>        strucutres for spherical transform for filtered diff of field
         type(SGS_address_sph_trans) :: trns_fil_difv
+!
+!>        strucutres for spherical transform for snapshot output
+        type(SGS_address_sph_trans) :: trns_SGS_snap
       end type works_4_sph_trans_SGS_MHD
 !
       private :: alloc_nonlinear_w_SGS_data
@@ -93,10 +93,6 @@
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(works_4_sph_trans_SGS_MHD), intent(inout) :: WK_LES
-!
-!
-      call alloc_nonlinear_w_SGS_data(sph_rtp, WK_LES%trns_SGS_snap)
-      call alloc_nonlinear_pole_w_SGS(sph_rtp, WK_LES%trns_SGS_snap)
 !
 !
       call alloc_nonlinear_w_SGS_data(sph_rtp, WK_LES%trns_SGS)
@@ -145,9 +141,6 @@
       call dealloc_nonlinear_w_SGS_data(WK_LES%trns_SIMI)
       call dealloc_nonlinear_w_SGS_data(WK_LES%trns_DYNG)
 !
-      call dealloc_nonlinear_pole_w_SGS(WK_LES%trns_SGS_snap)
-      call dealloc_nonlinear_w_SGS_data(WK_LES%trns_SGS_snap)
-!
       call dealloc_nonlinear_pole_w_SGS(WK_LES%trns_fil_MHD)
       call dealloc_nonlinear_w_SGS_data(WK_LES%trns_fil_MHD)
 !
@@ -168,6 +161,9 @@
       call alloc_nonlinear_w_SGS_data(sph_rtp, WK_LES%trns_fil_difv)
       call alloc_nonlinear_pole_w_SGS(sph_rtp, WK_LES%trns_fil_difv)
 !
+      call alloc_nonlinear_w_SGS_data(sph_rtp, WK_LES%trns_SGS_snap)
+      call alloc_nonlinear_pole_w_SGS(sph_rtp, WK_LES%trns_SGS_snap)
+!
       end subroutine alloc_SGS_sph_trns_area_snap
 !
 !-----------------------------------------------------------------------
@@ -182,6 +178,9 @@
 !
       call dealloc_nonlinear_pole_w_SGS(WK_LES%trns_fil_difv)
       call dealloc_nonlinear_w_SGS_data(WK_LES%trns_fil_difv)
+!
+      call dealloc_nonlinear_pole_w_SGS(WK_LES%trns_SGS_snap)
+      call dealloc_nonlinear_w_SGS_data(WK_LES%trns_SGS_snap)
 !
       end subroutine dealloc_SGS_sph_trns_area_snap
 !
