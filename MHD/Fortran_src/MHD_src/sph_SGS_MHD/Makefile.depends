@@ -26,7 +26,7 @@ add_sph_filter_force_2_ctl.o: $(SGS_MHD_SPH_DIR)/add_sph_filter_force_2_ctl.f90 
 	$(F90) -c $(F90OPTFLAGS) $<
 add_wide_f_fld_to_sph_trans.o: $(SGS_MHD_SPH_DIR)/add_wide_f_fld_to_sph_trans.f90 m_precision.o t_base_field_labels.o t_addresses_sph_transform.o m_wide_filter_field_labels.o add_field_to_sph_trans_list.o
 	$(F90) -c $(F90OPTFLAGS) $<
-address_sph_trans_SGS_snap.o: $(SGS_MHD_SPH_DIR)/address_sph_trans_SGS_snap.f90 m_precision.o m_machine_parameter.o t_SGS_model_addresses.o t_sph_trans_arrays_SGS_MHD.o t_mesh_data.o t_spheric_parameter.o address_sph_trans_snap.o add_base_force_4_sph_trns.o add_SGS_term_to_sph_trans.o
+address_sph_trans_SGS_snap.o: $(SGS_MHD_SPH_DIR)/address_sph_trans_SGS_snap.f90 m_precision.o m_machine_parameter.o t_SGS_model_addresses.o t_sph_trans_arrays_SGS_MHD.o t_mesh_data.o t_spheric_parameter.o address_sph_trans_snap.o add_base_force_4_sph_trns.o add_SGS_term_to_sph_trans.o add_filter_fld_to_sph_trans.o add_filter_force_4_sph_trns.o add_Csim_4_sph_trns.o add_SGS_eflux_to_sph_trans.o
 	$(F90) -c $(F90OPTFLAGS) $<
 address_sph_trans_dyn_simi.o: $(SGS_MHD_SPH_DIR)/address_sph_trans_dyn_simi.f90 m_precision.o t_SGS_model_addresses.o t_sph_trans_arrays_SGS_MHD.o add_SGS_term_to_sph_trans.o add_filter_fld_to_sph_trans.o add_wide_f_fld_to_sph_trans.o t_SGS_control_parameter.o add_Csim_4_sph_trns.o add_SGS_eflux_to_sph_trans.o
 	$(F90) -c $(F90OPTFLAGS) $<
