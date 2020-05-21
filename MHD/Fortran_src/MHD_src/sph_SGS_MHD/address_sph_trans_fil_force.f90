@@ -294,7 +294,6 @@
      &         (ipol_LES, iphys_LES, f_trns_LES, trns_fwd)
 !
       use add_filter_force_4_sph_trns
-      use add_diff_fil_vec_to_trans
 !
       type(SGS_model_addresses), intent(in) :: ipol_LES, iphys_LES
 !
@@ -311,7 +310,7 @@
       call alloc_sph_trns_field_name(trns_fwd)
 !
 !   forces
-      call add_diff_fil_vec_sph_trns_pol                                &
+      call add_filter_force_fwd_trns_snap                               &
      &   (ipol_LES%force_by_filter, iphys_LES%force_by_filter,          &
      &    f_trns_LES%force_by_filter, trns_fwd)
       trns_fwd%num_vector = trns_fwd%nfield
