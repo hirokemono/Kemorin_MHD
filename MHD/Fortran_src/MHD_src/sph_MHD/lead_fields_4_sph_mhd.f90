@@ -319,6 +319,7 @@
      &          ipol, trns_snap, trns_difv, WK_sph, rj_fld)
 !
       use sph_transforms_snapshot
+      use copy_rtp_vectors_4_grad
       use cal_grad_of_sph_vectors
 !
       type(sph_grids), intent(in) :: sph
