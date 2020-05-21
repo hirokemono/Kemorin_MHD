@@ -166,6 +166,7 @@
      &       (id_file, sph_filters(i)%sph_filter)
         end if
         if(i_debug .gt. 0) then
+          id_file = 50+my_rank
           write(id_file,*) 'check_sph_2nd_moments for no. ',            &
      &         i, my_rank
           call check_sph_2nd_moments                                    &
