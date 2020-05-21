@@ -205,7 +205,7 @@
      &          trns_fil_MHD, trns_fil_snap, WK_sph, rj_fld)
 !
       use sph_transforms_snapshot
-      use cal_energy_flux_rtp
+      use cal_nonlinear_sph_MHD
 !
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
