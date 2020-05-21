@@ -70,6 +70,7 @@
      &          trns_f_eflux)
 !
       use const_wz_coriolis_rtp
+      use cal_buoyancy_flux_sph
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(fluid_property), intent(in) :: fl_prop

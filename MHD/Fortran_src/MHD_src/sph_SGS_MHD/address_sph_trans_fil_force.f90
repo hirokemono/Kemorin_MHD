@@ -294,6 +294,7 @@
      &         (ipol_LES, iphys_LES, f_trns_LES, trns_fwd)
 !
       use add_filter_force_4_sph_trns
+      use add_diff_fil_vec_to_trans
 !
       type(SGS_model_addresses), intent(in) :: ipol_LES, iphys_LES
 !

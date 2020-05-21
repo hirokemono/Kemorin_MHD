@@ -91,6 +91,8 @@
       use address_sph_trans_snap
       use add_base_force_4_sph_trns
       use add_SGS_term_to_sph_trans
+      use add_filter_fld_to_sph_trans
+      use add_filter_force_4_sph_trns
 !
       type(SGS_model_addresses), intent(in) :: ipol_LES, iphys_LES
       type(SGS_model_addresses), intent(inout) :: b_trns_LES
@@ -142,6 +144,8 @@
      &         (ipol_LES, iphys_LES, f_trns_LES, trns_fwd)
 !
       use address_sph_trans_snap
+      use add_Csim_4_sph_trns
+      use add_SGS_eflux_to_sph_trans
 !
       type(SGS_model_addresses), intent(in) :: ipol_LES, iphys_LES
       type(SGS_model_addresses), intent(inout) :: f_trns_LES
