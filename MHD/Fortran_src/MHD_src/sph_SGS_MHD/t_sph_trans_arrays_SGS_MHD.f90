@@ -9,6 +9,11 @@
 !!      subroutine dealloc_SGS_sph_trans_address(WK_LES)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(works_4_sph_trans_SGS_MHD), intent(inout) :: WK_LES
+!!
+!!      subroutine alloc_SGS_sph_trns_area_snap(sph_rtp, WK_LES)
+!!      subroutine dealloc_SGS_sph_trns_area_snap(WK_LES)
+!!        type(sph_rtp_grid), intent(in) :: sph_rtp
+!!        type(works_4_sph_trans_SGS_MHD), intent(inout) :: WK_LES
 !!@endverbatim
 !
 !>@brief Field addresses for spherical harmonics transform
@@ -66,6 +71,9 @@
 !
 !>        strucutres for spherical transform for filtered forces
         type(SGS_address_sph_trans) :: trns_fil_MHD
+!
+!>        strucutres for spherical transform for filtered snapshot
+        type(SGS_address_sph_trans) :: trns_fil_snap
       end type works_4_sph_trans_SGS_MHD
 !
       private :: alloc_nonlinear_w_SGS_data
@@ -142,6 +150,32 @@
       call dealloc_nonlinear_w_SGS_data(WK_LES%trns_fil_MHD)
 !
       end subroutine dealloc_SGS_sph_trans_address
+!
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      subroutine alloc_SGS_sph_trns_area_snap(sph_rtp, WK_LES)
+!
+      type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(works_4_sph_trans_SGS_MHD), intent(inout) :: WK_LES
+!
+!
+      call alloc_nonlinear_w_SGS_data(sph_rtp, WK_LES%trns_fil_snap)
+      call alloc_nonlinear_pole_w_SGS(sph_rtp, WK_LES%trns_fil_snap)
+!
+      end subroutine alloc_SGS_sph_trns_area_snap
+!
+!-----------------------------------------------------------------------
+!
+      subroutine dealloc_SGS_sph_trns_area_snap(WK_LES)
+!
+      type(works_4_sph_trans_SGS_MHD), intent(inout) :: WK_LES
+!
+!
+      call dealloc_nonlinear_pole_w_SGS(WK_LES%trns_fil_snap)
+      call dealloc_nonlinear_w_SGS_data(WK_LES%trns_fil_snap)
+!
+      end subroutine dealloc_SGS_sph_trns_area_snap
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

@@ -32,7 +32,7 @@ cal_div_of_forces.o: $(MHD_SPH_DIR)/cal_div_of_forces.f90 m_precision.o t_base_f
 	$(F90) -c $(F90OPTFLAGS) $<
 cal_energy_flux_rj.o: $(MHD_SPH_DIR)/cal_energy_flux_rj.f90 m_precision.o m_constants.o t_spheric_rj_data.o t_phys_address.o t_phys_data.o t_fdm_coefs.o t_boundary_data_sph_MHD.o const_sph_radial_grad.o copy_nodal_fields.o
 	$(F90) -c $(F90OPTFLAGS) $<
-cal_energy_flux_rtp.o: $(MHD_SPH_DIR)/cal_energy_flux_rtp.f90 m_precision.o m_constants.o m_machine_parameter.o calypso_mpi.o t_phys_address.o t_spheric_rtp_data.o t_physical_property.o t_reference_scalar_param.o t_addresses_sph_transform.o t_schmidt_poly_on_rtm.o cal_nonlinear_sph_MHD.o const_wz_coriolis_rtp.o cal_products_smp.o poynting_flux_smp.o sph_transforms_4_MHD.o mag_of_field_smp.o
+cal_energy_flux_rtp.o: $(MHD_SPH_DIR)/cal_energy_flux_rtp.f90 m_precision.o m_constants.o m_machine_parameter.o calypso_mpi.o t_phys_address.o t_spheric_rtp_data.o t_physical_property.o t_reference_scalar_param.o t_addresses_sph_transform.o t_schmidt_poly_on_rtm.o cal_nonlinear_sph_MHD.o const_wz_coriolis_rtp.o cal_products_smp.o poynting_flux_smp.o sph_transforms_4_MHD.o mag_of_field_smp.o cal_buoyancy_flux_sph.o
 	$(F90) -c $(F90OPTFLAGS) $<
 cal_explicit_terms.o: $(MHD_SPH_DIR)/cal_explicit_terms.f90 m_precision.o m_t_step_parameter.o t_physical_property.o t_base_field_labels.o t_base_force_labels.o t_diffusion_term_labels.o t_explicit_term_labels.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -170,7 +170,7 @@ m_SPH_MHD_structure.o: $(MHD_SPH_DIR)/m_SPH_MHD_structure.f90 m_precision.o t_SP
 	$(F90) -c $(F90OPTFLAGS) $<
 m_jacobians_VIZ.o: $(MHD_SPH_DIR)/m_jacobians_VIZ.f90 m_constants.o m_precision.o t_jacobians.o t_next_node_ele_4_node.o
 	$(F90) -c $(F90OPTFLAGS) $<
-pole_energy_flux_sph.o: $(MHD_SPH_DIR)/pole_energy_flux_sph.f90 m_precision.o m_constants.o t_physical_property.o t_spheric_rtp_data.o t_geometry_data.o t_phys_address.o t_phys_data.o m_machine_parameter.o products_at_poles.o t_reference_scalar_param.o pole_poynting_flux_smp.o
+pole_energy_flux_sph.o: $(MHD_SPH_DIR)/pole_energy_flux_sph.f90 m_precision.o m_constants.o t_physical_property.o t_spheric_rtp_data.o t_geometry_data.o t_phys_address.o t_phys_data.o m_machine_parameter.o t_reference_scalar_param.o products_at_poles.o pole_poynting_flux_smp.o
 	$(F90) -c $(F90OPTFLAGS) $<
 pole_poynting_flux_smp.o: $(MHD_SPH_DIR)/pole_poynting_flux_smp.f90 m_precision.o m_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<

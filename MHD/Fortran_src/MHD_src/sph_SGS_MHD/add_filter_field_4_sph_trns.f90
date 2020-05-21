@@ -9,10 +9,9 @@
 !!
 !!@verbatim
 !!      subroutine add_filter_MHD_vec_sph_trns                          &
-!!     &         (fl_prop, cd_prop, ht_prop, cp_prop,                   &
-!!     &          ipol_fil, iphys_fil, b_trns_fil, trns)
-!!      subroutine add_filter_MHD_scl_sph_trns(ht_prop, cp_prop,        &
-!!     &          ipol_fil, iphys_fil, b_trns_fil, trns)
+!!     &         (ipol_fil, iphys_fil, b_trns_fil, trns)
+!!      subroutine add_filter_MHD_scl_sph_trns                          &
+!!     &         (ipol_fil, iphys_fil, b_trns_fil, trns)
 !!        type(fluid_property), intent(in) :: fl_prop
 !!        type(conductive_property), intent(in)  :: cd_prop
 !!        type(scalar_property), intent(in) :: ht_prop, cp_prop
@@ -46,75 +45,76 @@
 !-----------------------------------------------------------------------
 !
       subroutine add_filter_MHD_vec_sph_trns                            &
-     &         (fl_prop, cd_prop, ht_prop, cp_prop,                     &
-     &          ipol_fil, iphys_fil, b_trns_fil, trns)
+!     &         (fl_prop, cd_prop, ht_prop, cp_prop,                    &
+     &         (ipol_fil, iphys_fil, b_trns_fil, trns)
 !
       use add_field_to_sph_trans_list
 !
-      type(fluid_property), intent(in) :: fl_prop
-      type(conductive_property), intent(in)  :: cd_prop
-      type(scalar_property), intent(in) :: ht_prop, cp_prop
+!      type(fluid_property), intent(in) :: fl_prop
+!      type(conductive_property), intent(in)  :: cd_prop
+!      type(scalar_property), intent(in) :: ht_prop, cp_prop
       type(base_field_address), intent(in) :: ipol_fil, iphys_fil
       type(base_field_address), intent(inout) :: b_trns_fil
       type(spherical_transform_data), intent(inout) :: trns
 !
 !
 !   filtered velocity flag
-      if(       fl_prop%iflag_4_filter_inertia                          &
-     &     .or. cd_prop%iflag_4_filter_induction                        &
-     &     .or. ht_prop%iflag_4_filter_advection                        &
-     &     .or. cp_prop%iflag_4_filter_advection) then
+!      if(       fl_prop%iflag_4_filter_inertia                         &
+!     &     .or. cd_prop%iflag_4_filter_induction                       &
+!     &     .or. ht_prop%iflag_4_filter_advection                       &
+!     &     .or. cp_prop%iflag_4_filter_advection) then
         call add_field_4_sph_trns_by_pol(filter_velocity,               &
      &      ipol_fil%i_velo, iphys_fil%i_velo, b_trns_fil%i_velo,       &
      &      trns)
-      end if
+!      end if
 !   filtered vorticity flag
-      if(fl_prop%iflag_4_filter_inertia) then
-        call add_field_4_sph_trns_by_pol(filter_vorticity,              &
-     &      ipol_fil%i_vort, iphys_fil%i_vort, b_trns_fil%i_vort,       &
+!      if(fl_prop%iflag_4_filter_inertia) then
+        call add_field_4_sph_trns_by_pol(filter_vorticity,             &
+     &      ipol_fil%i_vort, iphys_fil%i_vort, b_trns_fil%i_vort,      &
      &      trns)
-      end if
+!      end if
 !   filtered magnetic field flag
-      if(       cd_prop%iflag_4_filter_induction                        &
-     &     .or. fl_prop%iflag_4_filter_lorentz) then
+!      if(       cd_prop%iflag_4_filter_induction                       &
+!     &     .or. fl_prop%iflag_4_filter_lorentz) then
         call add_field_4_sph_trns_by_pol(filter_magne,                  &
      &      ipol_fil%i_magne, iphys_fil%i_magne, b_trns_fil%i_magne,    &
      &      trns)
-      end if
+!      end if
 !   filtered current density flag
-      if(fl_prop%iflag_4_filter_lorentz) then
+!      if(fl_prop%iflag_4_filter_lorentz) then
         call add_field_4_sph_trns_by_pol(filter_current,                &
      &      ipol_fil%i_current, iphys_fil%i_current,                    &
      &      b_trns_fil%i_current, trns)
-      end if
+!      end if
 !
       end subroutine add_filter_MHD_vec_sph_trns
 !
 !-----------------------------------------------------------------------
 !
-      subroutine add_filter_MHD_scl_sph_trns(ht_prop, cp_prop,          &
-     &          ipol_fil, iphys_fil, b_trns_fil, trns)
+!      subroutine add_filter_MHD_scl_sph_trns(ht_prop, cp_prop,         &
+      subroutine add_filter_MHD_scl_sph_trns                            &
+     &         (ipol_fil, iphys_fil, b_trns_fil, trns)
 !
       use add_field_to_sph_trans_list
 !
-      type(scalar_property), intent(in) :: ht_prop, cp_prop
+!      type(scalar_property), intent(in) :: ht_prop, cp_prop
       type(base_field_address), intent(in) :: ipol_fil, iphys_fil
       type(base_field_address), intent(inout) :: b_trns_fil
       type(spherical_transform_data), intent(inout) :: trns
 !
 !
 !   temperature flag
-      if(ht_prop%iflag_4_filter_advection) then
+!      if(ht_prop%iflag_4_filter_advection) then
         call add_field_4_sph_trns_by_pol(filter_temperature,            &
      &      ipol_fil%i_temp, iphys_fil%i_temp, b_trns_fil%i_temp,       &
      &      trns)
-      end if
+!      end if
 !   composition flag
-      if(cp_prop%iflag_4_filter_advection) then
+!      if(cp_prop%iflag_4_filter_advection) then
         call add_field_4_sph_trns_by_pol(filter_composition,            &
      &      ipol_fil%i_light, iphys_fil%i_light, b_trns_fil%i_light,    &
      &      trns)
-      end if
+!      end if
 !
       end subroutine add_filter_MHD_scl_sph_trns
 !
@@ -124,25 +124,13 @@
       subroutine add_filter_vec_sph_trns_snap                           &
      &         (ipol_fil, iphys_fil, b_trns_fil, trns)
 !
-      use add_field_to_sph_trans_list
-!
       type(base_field_address), intent(in) :: ipol_fil, iphys_fil
       type(base_field_address), intent(inout) :: b_trns_fil
       type(spherical_transform_data), intent(inout) :: trns
 !
 !
-      call add_field_name_4_sph_trns_snap(filter_velocity,              &
-     &    ipol_fil%i_velo, iphys_fil%i_velo, b_trns_fil%i_velo,         &
-     &    trns)
-      call add_field_name_4_sph_trns_snap(filter_vorticity,             &
-     &    ipol_fil%i_vort, iphys_fil%i_vort, b_trns_fil%i_vort,         &
-     &    trns)
-      call add_field_name_4_sph_trns_snap(filter_magne,                 &
-     &    ipol_fil%i_magne, iphys_fil%i_magne, b_trns_fil%i_magne,      &
-     &    trns)
-      call add_field_name_4_sph_trns_snap(filter_current,               &
-     &    ipol_fil%i_current, iphys_fil%i_current,                      &
-     &    b_trns_fil%i_current, trns)
+      call add_filter_MHD_vec_sph_trns                                  &
+     &   (ipol_fil, iphys_fil, b_trns_fil, trns)
 !
       end subroutine add_filter_vec_sph_trns_snap
 !
@@ -158,10 +146,10 @@
       type(spherical_transform_data), intent(inout) :: trns
 !
 !
-      call add_field_name_4_sph_trns_snap(filter_temperature,           &
+      call add_field_4_sph_trns_by_pol(filter_temperature,              &
      &    ipol_fil%i_temp, iphys_fil%i_temp, b_trns_fil%i_temp,         &
      &    trns)
-      call add_field_name_4_sph_trns_snap(filter_composition,           &
+      call add_field_4_sph_trns_by_pol(filter_composition,              &
      &    ipol_fil%i_light, iphys_fil%i_light, b_trns_fil%i_light,      &
      &    trns)
 !

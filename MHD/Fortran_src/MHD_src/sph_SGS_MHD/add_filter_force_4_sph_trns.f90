@@ -9,8 +9,7 @@
 !!
 !!@verbatim
 !!      subroutine add_filter_force_MHD_sph_trns                        &
-!!     &         (fl_prop, cd_prop, ht_prop, cp_prop,                   &
-!!     &          ipol_fil_frc, iphys_fil_frc, f_trns_fil_frc, trns)
+!!     &         (ipol_fil_frc, iphys_fil_frc, f_trns_fil_frc, trns)
 !!        type(fluid_property), intent(in) :: fl_prop
 !!        type(conductive_property), intent(in) :: cd_prop
 !!        type(scalar_property), intent(in) :: ht_prop, cp_prop
@@ -61,15 +60,15 @@
 !-----------------------------------------------------------------------
 !
       subroutine add_filter_force_MHD_sph_trns                          &
-     &         (fl_prop, cd_prop, ht_prop, cp_prop,                     &
-     &          ipol_fil_frc, iphys_fil_frc, f_trns_fil_frc, trns)
+!     &         (fl_prop, cd_prop, ht_prop, cp_prop,                    &
+     &         (ipol_fil_frc, iphys_fil_frc, f_trns_fil_frc, trns)
 !
       use m_filtered_force_labels
       use add_field_to_sph_trans_list
 !
-      type(fluid_property), intent(in) :: fl_prop
-      type(conductive_property), intent(in) :: cd_prop
-      type(scalar_property), intent(in) :: ht_prop, cp_prop
+!      type(fluid_property), intent(in) :: fl_prop
+!      type(conductive_property), intent(in) :: cd_prop
+!      type(scalar_property), intent(in) :: ht_prop, cp_prop
       type(base_force_address), intent(in) :: ipol_fil_frc
       type(base_force_address), intent(in) :: iphys_fil_frc
 !
@@ -77,45 +76,69 @@
       type(spherical_transform_data), intent(inout) :: trns
 !
 !   advection
-      if(fl_prop%iflag_scheme .gt. id_no_evolution) then
-        if(fl_prop%iflag_4_filter_inertia) then
+!      if(fl_prop%iflag_scheme .gt. id_no_evolution) then
+!        if(fl_prop%iflag_4_filter_inertia) then
           call add_field_4_sph_trns_by_pol(inertia_by_filtered,         &
      &      ipol_fil_frc%i_m_advect, iphys_fil_frc%i_m_advect,          &
      &      f_trns_fil_frc%i_m_advect, trns)
-        end if
+!        end if
 !   Lorentz force
-        if(fl_prop%iflag_4_filter_lorentz) then
+!        if(fl_prop%iflag_4_filter_lorentz) then
           call add_field_4_sph_trns_by_pol(Lorentz_force_by_filtered,   &
      &        ipol_fil_frc%i_lorentz, iphys_fil_frc%i_lorentz,          &
      &        f_trns_fil_frc%i_lorentz, trns)
-        end if
-      end if
+!        end if
+!      end if
 !
 !   induction
-      if(cd_prop%iflag_Bevo_scheme .gt. id_no_evolution                 &
-     &   .and. cd_prop%iflag_4_filter_induction) then
+!      if(cd_prop%iflag_Bevo_scheme .gt. id_no_evolution                &
+!     &   .and. cd_prop%iflag_4_filter_induction) then
           call add_field_4_sph_trns_by_pol(vecp_induction_by_filtered,  &
      &        ipol_fil_frc%i_vp_induct, iphys_fil_frc%i_vp_induct,      &
      &        f_trns_fil_frc%i_vp_induct, trns)
-      end if
+!      end if
 !
 !   heat flux
-      if(ht_prop%iflag_scheme .gt. id_no_evolution                      &
-     &   .and. ht_prop%iflag_4_filter_advection) then
+!      if(ht_prop%iflag_scheme .gt. id_no_evolution                     &
+!     &   .and. ht_prop%iflag_4_filter_advection) then
         call add_field_4_sph_trns_by_pol(heat_flux_by_filtered,         &
      &      ipol_fil_frc%i_h_flux, iphys_fil_frc%i_h_flux,              &
      &      f_trns_fil_frc%i_h_flux, trns)
-      end if
+!      end if
 !
 !   composition flux
-      if(cp_prop%iflag_scheme .gt. id_no_evolution                      &
-     &   .and. cp_prop%iflag_4_filter_advection) then
+!      if(cp_prop%iflag_scheme .gt. id_no_evolution                     &
+!     &   .and. cp_prop%iflag_4_filter_advection) then
         call add_field_4_sph_trns_by_pol(composite_flux_by_filtered,    &
      &      ipol_fil_frc%i_c_flux, iphys_fil_frc%i_c_flux,              &
      &      f_trns_fil_frc%i_c_flux, trns)
-      end if
+!      end if
 !
       end subroutine add_filter_force_MHD_sph_trns
+!
+!-----------------------------------------------------------------------
+!
+      subroutine add_filter_force_snap_sph_trns                         &
+     &         (ipol_fil_frc, iphys_fil_frc, f_trns_fil_frc, trns)
+!
+      use m_filtered_force_labels
+      use add_field_to_sph_trans_list
+!
+      type(base_force_address), intent(in) :: ipol_fil_frc
+      type(base_force_address), intent(in) :: iphys_fil_frc
+!
+      type(base_force_address), intent(inout) :: f_trns_fil_frc
+      type(spherical_transform_data), intent(inout) :: trns
+!
+!
+      call add_field_4_sph_trns_by_pol(pert_h_flux_by_filtered,         &
+     &    ipol_fil_frc%i_ph_flux, iphys_fil_frc%i_ph_flux,              &
+     &    f_trns_fil_frc%i_ph_flux, trns)
+      call add_field_4_sph_trns_by_pol(pert_c_flux_by_filtered,         &
+     &    ipol_fil_frc%i_pc_flux, iphys_fil_frc%i_pc_flux,              &
+     &    f_trns_fil_frc%i_pc_flux, trns)
+!
+      end subroutine add_filter_force_snap_sph_trns
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

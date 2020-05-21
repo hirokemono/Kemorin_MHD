@@ -94,8 +94,7 @@
       call set_addresses_trans_sph_MHD                                  &
      &   (SPH_MHD%ipol, iphys, WK%trns_MHD,                             &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
-      call init_sph_transform_SGS_model                                 &
-     &   (SPH_model%MHD_prop, SGS_par%model_p,                          &
+      call init_sph_transform_SGS_model(SGS_par%model_p,                &
      &    SPH_MHD%ipol, ipol_LES, iphys, iphys_LES, WK_LES,             &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
 !
@@ -133,8 +132,8 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine init_sph_transform_SGS_model(MHD_prop, SGS_param,      &
-     &          ipol, ipol_LES, iphys, iphys_LES, WK_LES,               &
+      subroutine init_sph_transform_SGS_model                           &
+     &          (SGS_param, ipol, ipol_LES, iphys, iphys_LES, WK_LES,   &
      &          ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
 !
       use set_address_sph_trans_SGS
@@ -143,7 +142,6 @@
       use address_sph_trans_SGS_snap
       use address_sph_trans_fil_force
 !
-      type(MHD_evolution_param), intent(in) :: MHD_prop
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(phys_address), intent(in) :: ipol, iphys
       type(SGS_model_addresses), intent(in) :: ipol_LES, iphys_LES
@@ -155,7 +153,11 @@
 !
 !
       call init_sph_trns_filter_MHD                                     &
-     &   (MHD_prop, ipol_LES, iphys_LES, WK_LES%trns_fil_MHD,           &
+     &   (ipol_LES, iphys_LES, WK_LES%trns_fil_MHD,                     &
+     &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
+!
+      call init_sph_trns_filter_snap                                    &
+     &   (ipol_LES, iphys_LES, WK_LES%trns_fil_snap,                    &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
 !
       if(SGS_param%iflag_SGS .eq. id_SGS_similarity) then

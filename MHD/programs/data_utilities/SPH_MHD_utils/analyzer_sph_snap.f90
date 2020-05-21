@@ -108,6 +108,7 @@
       use FEM_analyzer_sph_MHD
       use SGS_MHD_zonal_mean_viz
       use output_viz_file_control
+      use t_sph_trans_arrays_SGS_MHD
 !
       integer(kind = kint) :: visval
       integer(kind = kint) :: iflag
@@ -128,6 +129,14 @@
 !
 !*  ----------  time evolution by spectral methood -----------------
 !*
+        if(lead_field_data_flag(MHD_step1%time_d%i_time_step,MHD_step1) &
+     &      .eq. 0) then
+          call alloc_sph_trans_area_snap                                &
+     &       (SPH_MHD1%sph%sph_rtp, SPH_WK1%trns_WK)
+          call alloc_SGS_sph_trns_area_snap                             &
+     &       (SPH_MHD1%sph%sph_rtp, SPH_SGS1%trns_WK_LES)
+        end if
+!
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_snap'
         call SPH_analyze_snap(MHD_step1%time_d%i_time_step, MHD_files1, &
      &      SPH_model1, MHD_step1, SPH_SGS1, SPH_MHD1, SPH_WK1)
@@ -169,6 +178,12 @@
           if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+4)
         end if
 !
+        if(lead_field_data_flag(MHD_step1%time_d%i_time_step,MHD_step1) &
+     &    .eq. 0) then
+           call dealloc_sph_trans_area_snap(SPH_WK1%trns_WK)
+           call dealloc_SGS_sph_trns_area_snap(SPH_SGS1%trns_WK_LES)
+        end if
+!
 !*  -----------  exit loop --------------
 !*
         if(MHD_step1%time_d%i_time_step                                 &
@@ -201,6 +216,7 @@
       use m_ctl_data_sph_SGS_MHD
       use t_control_data_vizs
       use t_volume_rendering
+      use t_sph_trans_arrays_SGS_MHD
       use FEM_analyzer_sph_MHD
       use output_viz_file_control
 !
@@ -227,6 +243,8 @@
      &      .eq. 0) then
         call alloc_sph_trans_area_snap                                  &
      &     (SPH_MHD1%sph%sph_rtp, SPH_WK1%trns_WK)
+        call alloc_SGS_sph_trns_area_snap                               &
+     &     (SPH_MHD1%sph%sph_rtp, SPH_SGS1%trns_WK_LES)
       end if
 !
       MHD_step1%time_d%i_time_step = MHD_step1%init_d%i_time_step
@@ -242,6 +260,7 @@
      &     (SPH_SGS1%SGS_par, SPH_MHD1%sph, SPH_WK1%trns_WK,            &
      &      SPH_SGS1%trns_WK_LES, FEM_d1%geofem, FEM_d1%field)
         call dealloc_sph_trans_area_snap(SPH_WK1%trns_WK)
+        call dealloc_SGS_sph_trns_area_snap(SPH_SGS1%trns_WK_LES)
       end if
 !
       if (iflag_debug.eq.1) write(*,*) 'FEM_analyze_sph_MHD'

@@ -108,6 +108,7 @@
       use FEM_analyzer_sph_MHD
       use SGS_MHD_zonal_mean_viz
       use output_viz_file_control
+      use t_sph_trans_arrays_SGS_MHD
 !
       integer(kind = kint) :: visval, iflag_finish
 !
@@ -131,6 +132,8 @@
      &      .eq. 0) then
           call alloc_sph_trans_area_snap                                &
      &       (SPH_MHD1%sph%sph_rtp, SPH_WK1%trns_WK)
+          call alloc_SGS_sph_trns_area_snap                             &
+     &       (SPH_MHD1%sph%sph_rtp, SPH_SGS1%trns_WK_LES)
         end if
 !
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_SGS_MHD'
@@ -173,10 +176,10 @@
           if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+4)
         end if
 !
-!
         if(lead_field_data_flag(MHD_step1%time_d%i_time_step,MHD_step1) &
      &      .eq. 0) then
           call dealloc_sph_trans_area_snap(SPH_WK1%trns_WK)
+          call dealloc_SGS_sph_trns_area_snap(SPH_SGS1%trns_WK_LES)
         end if
 !*  -----------  exit loop --------------
 !*
