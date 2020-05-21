@@ -170,10 +170,6 @@ m_SPH_MHD_structure.o: $(MHD_SPH_DIR)/m_SPH_MHD_structure.f90 m_precision.o t_SP
 	$(F90) -c $(F90OPTFLAGS) $<
 m_jacobians_VIZ.o: $(MHD_SPH_DIR)/m_jacobians_VIZ.f90 m_constants.o m_precision.o t_jacobians.o t_next_node_ele_4_node.o
 	$(F90) -c $(F90OPTFLAGS) $<
-pole_energy_flux_sph.o: $(MHD_SPH_DIR)/pole_energy_flux_sph.f90 m_precision.o m_constants.o t_physical_property.o t_spheric_rtp_data.o t_geometry_data.o t_phys_address.o t_phys_data.o m_machine_parameter.o t_reference_scalar_param.o products_at_poles.o pole_poynting_flux_smp.o
-	$(F90) -c $(F90OPTFLAGS) $<
-pole_poynting_flux_smp.o: $(MHD_SPH_DIR)/pole_poynting_flux_smp.f90 m_precision.o m_constants.o
-	$(F90) -c $(F90OPTFLAGS) $<
 rot_r_const_buoyancies_sph.o: $(MHD_SPH_DIR)/rot_r_const_buoyancies_sph.f90 m_precision.o m_machine_parameter.o m_constants.o t_physical_property.o t_reference_scalar_param.o t_spheric_rj_data.o t_base_field_labels.o t_base_force_labels.o t_phys_data.o t_boundary_params_sph_MHD.o
 	$(F90) -c $(F90OPTFLAGS) $<
 rot_self_buoyancies_sph.o: $(MHD_SPH_DIR)/rot_self_buoyancies_sph.f90 m_precision.o m_machine_parameter.o m_constants.o t_physical_property.o t_spheric_rj_data.o t_base_field_labels.o t_base_force_labels.o t_phys_data.o t_boundary_params_sph_MHD.o t_phys_address.o

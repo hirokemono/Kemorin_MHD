@@ -40,10 +40,8 @@
       real (kind=kreal), intent(inout) :: d_nod(node%numnod,nomp_nod)
 !
 !
-      call cal_electric_field_smp                                       &
-     &   (np_smp, node%numnod, node%istack_nod_smp,                     &
-     &    coef_d_magne, d_nod(1,i_current), d_nod(1,i_vp_induct),       &
-     &    d_nod(1,i_electric))
+      call cal_electric_field_smp(node%numnod, coef_d_magne,            &
+     &   d_nod(1,i_current), d_nod(1,i_vp_induct), d_nod(1,i_electric))
 !
       end subroutine cal_nod_electric_field_smp
 !
@@ -62,9 +60,8 @@
       real (kind=kreal), intent(inout) :: d_nod(node%numnod,nomp_nod)
 !
 !
-      call cal_poynting_flux_smp                                        &
-     &    (np_smp, node%numnod, node%istack_nod_smp,                    &
-     &     coef_d_magne, d_nod(1,i_current), d_nod(1,i_vp_induct),      &
+      call cal_poynting_flux_smp(node%numnod, coef_d_magne,             &
+     &     d_nod(1,i_current), d_nod(1,i_vp_induct),                    &
      &     d_nod(1,i_magne), d_nod(1,i_poynting))
 !
       end subroutine cal_nod_poynting_flux_smp

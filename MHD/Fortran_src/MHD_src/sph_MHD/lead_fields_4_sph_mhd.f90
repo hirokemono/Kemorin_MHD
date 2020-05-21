@@ -306,7 +306,7 @@
      &   (sph%sph_rtp, MHD_prop%fl_prop, MHD_prop%cd_prop,              &
      &    MHD_prop%ref_param_T, MHD_prop%ref_param_C, trans_p%leg,      &
      &    trns_MHD%f_trns, trns_snap%b_trns, trns_eflux%b_trns,         &
-     &    trns_eflux%f_trns, trns_difv%b_trns%diff_vector,              &
+     &    trns_difv%b_trns, trns_eflux%f_trns,                          &
      &    trns_MHD%forward, trns_snap%backward, trns_eflux%backward,    &
      &    trns_difv%backward, trns_eflux%forward)
 !
