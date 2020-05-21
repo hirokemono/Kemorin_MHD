@@ -10,7 +10,7 @@
 !!@verbatim
 !!      subroutine s_cal_energy_flux_rtp(sph_rtp,                       &
 !!     &          fl_prop, cd_prop, ref_param_T, ref_param_C, leg,      &
-!!     &          f_trns, bs_trns, be_trns, fe_trns, bs_trns_diff_v,    &
+!!     &          f_trns, bs_trns, be_trns, bs_difv, fe_trns,           &
 !!     &          trns_f_MHD, trns_b_snap, trns_b_eflux, trns_b_difv,   &
 !!     &          trns_f_eflux)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
@@ -22,12 +22,21 @@
 !!        type(scalar_property), intent(in) :: ht_prop, cp_prop
 !!        type(legendre_4_sph_trans), intent(in) :: leg
 !!        type(phys_address), intent(in) :: f_trns
-!!        type(phys_address), intent(in) :: bs_trns
+!!        type(phys_address), intent(in) :: bs_trns, bs_difv
 !!        type(phys_address), intent(in) :: be_trns, fe_trns
 !!        type(spherical_transform_data), intent(in) :: trns_f_MHD
 !!        type(spherical_transform_data), intent(in) :: trns_b_snap
 !!        type(spherical_transform_data), intent(in) :: trns_b_eflux
 !!        type(spherical_transform_data), intent(inout) :: trns_f_eflux
+!!
+!!      subroutine cal_energy_fluxes_on_node                            &
+!!     &         (bs_trns_base, f_trns_frc, be_trns_frc, fs_trns_eflux, &
+!!     &          nnod, ntot_comp_fld, fld_rtp, ntot_comp_frc, frc_rtp, &
+!!     &          ntot_comp_uxb, fub_rtp, ntot_comp_flx, flx_rtp)
+!!        type(base_field_address), intent(in) :: bs_trns_base
+!!        type(base_force_address), intent(in) :: f_trns_frc
+!!        type(base_force_address), intent(in) :: be_trns_frc
+!!        type(energy_flux_address), intent(in) :: fs_trns_eflux
 !!@endverbatim
 !
       module cal_energy_flux_rtp
@@ -56,7 +65,7 @@
 !
       subroutine s_cal_energy_flux_rtp(sph_rtp,                         &
      &          fl_prop, cd_prop, ref_param_T, ref_param_C, leg,        &
-     &          f_trns, bs_trns, be_trns, bs_difv, fe_trns,      &
+     &          f_trns, bs_trns, be_trns, bs_difv, fe_trns,             &
      &          trns_f_MHD, trns_b_snap, trns_b_eflux, trns_b_difv,     &
      &          trns_f_eflux)
 !
@@ -96,17 +105,17 @@
      &    trns_f_MHD, trns_b_snap, trns_b_difv, trns_f_eflux)
 !
       call cal_energy_fluxes_on_node                                    &
-     &   (f_trns%forces, bs_trns%base, be_trns%forces,                  &
+     &   (bs_trns%base, f_trns%forces, be_trns%forces,                  &
      &    fe_trns%ene_flux, sph_rtp%nnod_rtp,                           &
-     &    trns_f_MHD%ncomp, trns_f_MHD%fld_rtp,                         &
      &    trns_b_snap%ncomp, trns_b_snap%fld_rtp,                       &
+     &    trns_f_MHD%ncomp, trns_f_MHD%fld_rtp,                         &
      &    trns_b_eflux%ncomp, trns_b_eflux%fld_rtp,                     &
      &    trns_f_eflux%ncomp, trns_f_eflux%fld_rtp)
       call cal_energy_fluxes_on_node                                    &
-     &   (f_trns%forces, bs_trns%base, be_trns%forces,                  &
+     &   (bs_trns%base, f_trns%forces, be_trns%forces,                  &
      &    fe_trns%ene_flux, sph_rtp%nnod_pole,                          &
-     &    trns_f_MHD%ncomp, trns_f_MHD%fld_pole,                        &
      &    trns_b_snap%ncomp, trns_b_snap%fld_pole,                      &
+     &    trns_f_MHD%ncomp, trns_f_MHD%fld_pole,                        &
      &    trns_b_eflux%ncomp, trns_b_eflux%fld_pole,                    &
      &    trns_f_eflux%ncomp, trns_f_eflux%fld_pole)
 !
@@ -149,22 +158,22 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_energy_fluxes_on_node                              &
-     &         (f_trns_frc, bs_trns_base, be_trns_frc, fs_trns_eflux,   &
-     &          nnod, ntot_comp_frc, frc_rtp, ntot_comp_fld, fld_rtp,   &
+     &         (bs_trns_base, f_trns_frc, be_trns_frc, fs_trns_eflux,   &
+     &          nnod, ntot_comp_fld, fld_rtp, ntot_comp_frc, frc_rtp,   &
      &          ntot_comp_uxb, fub_rtp, ntot_comp_flx, flx_rtp)
 !
       use cal_products_smp
 !
-      type(base_force_address), intent(in) :: f_trns_frc
       type(base_field_address), intent(in) :: bs_trns_base
+      type(base_force_address), intent(in) :: f_trns_frc
       type(base_force_address), intent(in) :: be_trns_frc
       type(energy_flux_address), intent(in) :: fs_trns_eflux
 !
       integer(kind = kint), intent(in) :: nnod
-      integer(kind = kint), intent(in) :: ntot_comp_frc, ntot_comp_fld
+      integer(kind = kint), intent(in) :: ntot_comp_fld, ntot_comp_frc
       integer(kind = kint), intent(in) :: ntot_comp_uxb, ntot_comp_flx
-      real(kind = kreal), intent(in) :: frc_rtp(nnod,ntot_comp_frc)
       real(kind = kreal), intent(in) :: fld_rtp(nnod,ntot_comp_fld)
+      real(kind = kreal), intent(in) :: frc_rtp(nnod,ntot_comp_frc)
       real(kind = kreal), intent(in) :: fub_rtp(nnod,ntot_comp_uxb)
 !
       real(kind = kreal), intent(inout) :: flx_rtp(nnod,ntot_comp_flx)

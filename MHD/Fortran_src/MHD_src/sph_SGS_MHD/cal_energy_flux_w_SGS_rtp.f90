@@ -8,20 +8,25 @@
 !> @brief Evaluate energy fluxes for MHD dynamo in physical space
 !!
 !!@verbatim
-!!      subroutine cal_filterd_buo_flux_rtp                             &
-!!     &         (sph_rtp, fl_prop, ref_param_T, ref_param_C,           &
-!!     &          b_trns_base, b_trns_fil, f_trns_fefx,                 &
-!!     &          trns_b_snap, trns_bs_SGS, trns_f_eflux)
+!!      subroutine cal_filtered_energy_flux_rtp                         &
+!!     &         (sph_rtp, fl_prop, ref_param_T, ref_param_C, bs_trns,  &
+!!     &          f_trns_LES, bs_trns_LES, be_trns_LES, fe_trns_LES,    &
+!!     &          trns_b_snap, trns_f_fil_MHD, trns_b_fil_snap,         &
+!!     &          trns_b_fil_eflux, trns_f_fil_eflux)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(fluid_property), intent(in) :: fl_prop
 !!        type(reference_scalar_param), intent(in) :: ref_param_T
 !!        type(reference_scalar_param), intent(in) :: ref_param_C
-!!        type(base_field_address), intent(in) :: b_trns_base
-!!        type(base_field_address), intent(in) :: b_trns_fil
-!!        type(energy_flux_address), intent(in) :: f_trns_fefx
+!!        type(phys_address), intent(in) :: bs_trns
+!!        type(SGS_model_addresses), intent(in) :: f_trns_LES
+!!        type(SGS_model_addresses), intent(in) :: bs_trns_LES
+!!        type(SGS_model_addresses), intent(in) :: be_trns_LES
+!!        type(SGS_model_addresses), intent(in) :: fe_trns_LES
 !!        type(spherical_transform_data), intent(in) :: trns_b_snap
-!!        type(spherical_transform_data), intent(in) :: trns_bs_SGS
-!!        type(spherical_transform_data), intent(inout) :: trns_f_eflux
+!!        type(spherical_transform_data), intent(in) :: trns_f_fil_MHD
+!!        type(spherical_transform_data), intent(in) :: trns_b_fil_snap
+!!        type(spherical_transform_data), intent(in) :: trns_b_fil_eflux
+!!        type(spherical_transform_data), intent(inout)                 &
 !!@endverbatim
 !
       module cal_energy_flux_w_SGS_rtp
@@ -32,6 +37,7 @@
       use calypso_mpi
 !
       use t_phys_address
+      use t_SGS_model_addresses
       use t_spheric_rtp_data
       use t_physical_property
       use t_reference_scalar_param
@@ -46,63 +52,61 @@
 !
 ! -----------------------------------------------------------------------
 !
-!      call cal_filter_nonlinear_pole_MHD(sph_rtp, MHD_prop,             &
-!     &    trns_fil_snap%f_trns_LES, trns_fil_MHD%f_trns_LES, trns_b_snap, trns_f_MHD)
-!      subroutine cal_filter_nonlinear_pole_MHD(sph_rtp, MHD_prop,       &
-!     &          bs_trns, f_trns, trns_b_snap, trns_f_MHD)
+      subroutine cal_filtered_energy_flux_rtp                           &
+     &         (sph_rtp, fl_prop, ref_param_T, ref_param_C, bs_trns,    &
+     &          f_trns_LES, bs_trns_LES, be_trns_LES, fe_trns_LES,      &
+     &          trns_b_snap, trns_f_fil_MHD, trns_b_fil_snap,           &
+     &          trns_b_fil_eflux, trns_f_fil_eflux)
 !
-!      use cal_nonlinear_sph_MHD
-!      use const_wz_coriolis_rtp
-!      use cal_products_smp
-!
-!      type(sph_rtp_grid), intent(in) :: sph_rtp
-!      type(MHD_evolution_param), intent(in) :: MHD_prop
-!      type(SGS_model_addresses), intent(in) :: bs_trns_LES
-!      type(SGS_model_addresses), intent(in) :: f_trns_LES
-!      type(spherical_transform_data), intent(in) :: trns_b_snap
-!
-!      type(spherical_transform_data), intent(inout) :: trns_f_MHD
-!
-!
-!      call nonlinear_terms_on_node(MHD_prop,                            &
-!     &    bs_trns_LES%filter_fld, f_trns_LES%force_by_filter, sph_rtp%nnod_pole,               &
-!     &    trns_b_snap%ncomp, trns_b_snap%fld_pole,                      &
-!     &    trns_f_MHD%ncomp, trns_f_MHD%fld_pole)
-!
-!      end subroutine cal_filter_nonlinear_pole_MHD
-!
-!-----------------------------------------------------------------------
-!
-      subroutine cal_filterd_buo_flux_rtp                               &
-     &         (sph_rtp, fl_prop, ref_param_T, ref_param_C,             &
-     &          b_trns_base, b_trns_fil, f_trns_fefx,                   &
-     &          trns_b_snap, trns_bs_SGS, trns_f_eflux)
-!
+      use cal_energy_flux_rtp
       use cal_buoyancy_flux_sph
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(fluid_property), intent(in) :: fl_prop
       type(reference_scalar_param), intent(in) :: ref_param_T
       type(reference_scalar_param), intent(in) :: ref_param_C
-      type(base_field_address), intent(in) :: b_trns_base
-      type(base_field_address), intent(in) :: b_trns_fil
-      type(energy_flux_address), intent(in) :: f_trns_fefx
+!
+      type(phys_address), intent(in) :: bs_trns
+      type(SGS_model_addresses), intent(in) :: f_trns_LES
+      type(SGS_model_addresses), intent(in) :: bs_trns_LES
+      type(SGS_model_addresses), intent(in) :: be_trns_LES
+      type(SGS_model_addresses), intent(in) :: fe_trns_LES
+!
       type(spherical_transform_data), intent(in) :: trns_b_snap
-      type(spherical_transform_data), intent(in) :: trns_bs_SGS
+      type(spherical_transform_data), intent(in) :: trns_f_fil_MHD
+      type(spherical_transform_data), intent(in) :: trns_b_fil_snap
+      type(spherical_transform_data), intent(in) :: trns_b_fil_eflux
 !
-      type(spherical_transform_data), intent(inout) :: trns_f_eflux
+      type(spherical_transform_data), intent(inout) :: trns_f_fil_eflux
 !
+!
+      call cal_energy_fluxes_on_node(bs_trns%base,                      &
+     &    f_trns_LES%force_by_filter, be_trns_LES%force_by_filter,      &
+     &    fe_trns_LES%eflux_by_filter, sph_rtp%nnod_rtp,                &
+     &    trns_b_snap%ncomp, trns_b_snap%fld_rtp,                       &
+     &    trns_f_fil_MHD%ncomp, trns_f_fil_MHD%fld_rtp,                 &
+     &    trns_b_fil_eflux%ncomp, trns_b_fil_eflux%fld_rtp,             &
+     &    trns_f_fil_eflux%ncomp, trns_f_fil_eflux%fld_rtp)
+      call cal_energy_fluxes_on_node(bs_trns%base,                      &
+     &    f_trns_LES%force_by_filter, be_trns_LES%force_by_filter,      &
+     &    fe_trns_LES%eflux_by_filter, sph_rtp%nnod_pole,               &
+     &    trns_b_snap%ncomp, trns_b_snap%fld_pole,                      &
+     &    trns_f_fil_MHD%ncomp, trns_f_fil_MHD%fld_pole,                &
+     &    trns_b_fil_eflux%ncomp, trns_b_fil_eflux%fld_pole,            &
+     &    trns_f_fil_eflux%ncomp, trns_f_fil_eflux%fld_pole)
 !
       call cal_buoyancy_flux_rtp                                        &
      &   (sph_rtp, fl_prop, ref_param_T, ref_param_C,                   &
-     &    b_trns_base, b_trns_fil, f_trns_fefx,                         &
-     &    trns_b_snap, trns_bs_SGS, trns_f_eflux)
+     &    bs_trns%base, bs_trns_LES%filter_fld,                         &
+     &    fe_trns_LES%eflux_by_filter,                                  &
+     &    trns_b_snap, trns_b_fil_snap, trns_f_fil_eflux)
       call pole_buoyancy_flux_rtp                                       &
      &   (sph_rtp, fl_prop, ref_param_T, ref_param_C,                   &
-     &    b_trns_base, b_trns_fil, f_trns_fefx,                         &
-     &    trns_b_snap, trns_bs_SGS, trns_f_eflux)
+     &    bs_trns%base, bs_trns_LES%filter_fld,                         &
+     &    fe_trns_LES%eflux_by_filter,                                  &
+     &    trns_b_snap, trns_b_fil_snap, trns_f_fil_eflux)
 !
-      end subroutine cal_filterd_buo_flux_rtp
+      end subroutine cal_filtered_energy_flux_rtp
 !
 !-----------------------------------------------------------------------
 !

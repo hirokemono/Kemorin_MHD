@@ -118,6 +118,7 @@
      &    SGS_par%model_p, SPH_MHD%sph, SPH_MHD%comms,                  &
      &    r_2nd, MHD_prop, sph_MHD_bc, trans_p,                         &
      &    SPH_MHD%ipol, ipol_LES, WK%trns_MHD, WK_LES%trns_SGS,         &
+     &    WK_LES%trns_fil_MHD, WK_LES%trns_fil_snap,                    &
      &    WK%trns_snap, WK%trns_difv, WK%trns_eflux,                    &
      &    WK_LES%trns_SGS_snap, WK%WK_sph, SPH_MHD%fld)
 !
@@ -288,8 +289,8 @@
       subroutine enegy_fluxes_SPH_SGS_MHD(ltr_crust, SGS_param,         &
      &          sph, comms_sph, r_2nd, MHD_prop, sph_MHD_bc,            &
      &          trans_p, ipol, ipol_LES, trns_MHD, trns_SGS,            &
-     &          trns_snap, trns_difv, trns_eflux, trns_SGS_snap,        &
-     &          WK_sph, rj_fld)
+     &          trns_fil_MHD, trns_fil_snap, trns_snap, trns_difv,      &
+     &          trns_eflux, trns_SGS_snap, WK_sph, rj_fld)
 !
       use sph_transforms_snapshot
       use lead_fields_4_sph_mhd
@@ -310,6 +311,8 @@
       type(SGS_model_addresses), intent(in) :: ipol_LES
 !
       type(address_4_sph_trans), intent(in) :: trns_MHD
+      type(SGS_address_sph_trans), intent(in) :: trns_fil_MHD
+      type(SGS_address_sph_trans), intent(in) :: trns_fil_snap
       type(SGS_address_sph_trans), intent(in) :: trns_SGS
       type(address_4_sph_trans), intent(in) :: trns_snap
       type(address_4_sph_trans), intent(in) :: trns_difv
@@ -333,12 +336,14 @@
       call sph_back_trans_snapshot_MHD(sph, comms_sph, trans_p,         &
      &    rj_fld, trns_SGS_snap%backward, WK_sph)
 !
-      if (iflag_debug.eq.1) write(*,*) 'cal_filterd_buo_flux_rtp'
-      call cal_filterd_buo_flux_rtp(sph%sph_rtp, MHD_prop%fl_prop,      &
-     &    MHD_prop%ref_param_T, MHD_prop%ref_param_C,                   &
-     &    trns_snap%b_trns%base, trns_SGS_snap%b_trns_LES%filter_fld,   &
-     &    trns_SGS_snap%f_trns_LES%eflux_by_filter, trns_snap%backward, &
-     &    trns_SGS_snap%backward, trns_SGS_snap%forward)
+      if (iflag_debug.eq.1) write(*,*) 'cal_filtered_energy_flux_rtp'
+      call cal_filtered_energy_flux_rtp(sph%sph_rtp, MHD_prop%fl_prop,  &
+     &    MHD_prop%ref_param_T, MHD_prop%ref_param_C, trns_snap%b_trns, &
+     &    trns_fil_MHD%f_trns_LES, trns_fil_snap%b_trns_LES,            &
+     &    trns_SGS_snap%b_trns_LES, trns_SGS_snap%f_trns_LES,           &
+     &    trns_snap%backward, trns_fil_MHD%forward,                     &
+     &    trns_fil_snap%backward, trns_SGS_snap%backward,               &
+     &    trns_SGS_snap%forward)
 !
 !      Work of SGS terms
       if(SGS_param%iflag_SGS .gt. id_SGS_none) then

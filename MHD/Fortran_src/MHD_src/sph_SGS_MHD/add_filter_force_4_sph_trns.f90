@@ -24,7 +24,7 @@
 !!        type(base_force_address), intent(in) :: iphys_fil_frc
 !!        type(base_force_address), intent(inout) :: f_trns_fil_frc
 !!        type(spherical_transform_data), intent(inout) :: trns
-!!      subroutine add_filter_force_bwd_trns_snap                       &
+!!      subroutine add_filter_force_4_bwd_trns                            &
 !!     &         (ipol_fil_frc, iphys_fil_frc, b_trns_fil_frc, trns)
 !!      subroutine add_fil_scl_flux_bwd_trns_snap                       &
 !!     &         (ipol_fil_frc, iphys_fil_frc, b_trns_fil_frc, trns)
@@ -164,7 +164,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine add_filter_force_bwd_trns_snap                         &
+      subroutine add_filter_force_4_bwd_trns                            &
      &         (ipol_fil_frc, iphys_fil_frc, b_trns_fil_frc, trns)
 !
       use m_filtered_force_labels
@@ -177,19 +177,19 @@
       type(spherical_transform_data), intent(inout) :: trns
 !
 !
-      call add_field_name_4_sph_trns_snap(filtered_buoyancy,            &
+      call add_field_4_sph_trns_by_pol(filtered_buoyancy,               &
      &    ipol_fil_frc%i_buoyancy, iphys_fil_frc%i_buoyancy,            &
      &    b_trns_fil_frc%i_buoyancy, trns)
-      call add_field_name_4_sph_trns_snap(filtered_comp_buoyancy,       &
+      call add_field_4_sph_trns_by_pol(filtered_comp_buoyancy,          &
      &    ipol_fil_frc%i_comp_buo, iphys_fil_frc%i_comp_buo,            &
      &    b_trns_fil_frc%i_comp_buo, trns)
 !
-      call add_field_name_4_sph_trns_snap                               &
+      call add_field_4_sph_trns_by_pol                                  &
      &   (magnetic_induction_by_filtered,                               &
      &    ipol_fil_frc%i_induction, iphys_fil_frc%i_induction,          &
      &    b_trns_fil_frc%i_induction, trns)
 !
-      end subroutine add_filter_force_bwd_trns_snap
+      end subroutine add_filter_force_4_bwd_trns
 !
 !-----------------------------------------------------------------------
 !

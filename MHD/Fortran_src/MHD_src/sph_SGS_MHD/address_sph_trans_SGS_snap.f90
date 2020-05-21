@@ -29,9 +29,6 @@
       implicit none
 !
       private :: bwd_trans_address_SGS_snap, fwd_trans_address_SGS_snap
-      private :: add_SGS_vector_bwd_trns_snap
-      private :: add_SGS_scalar_fwd_trns_snap
-      private :: add_div_SGS_bwd_trns_snap
 !
 !-----------------------------------------------------------------------
 !
@@ -92,6 +89,8 @@
      &         (ipol_LES, iphys_LES, b_trns_LES, trns_back)
 !
       use address_sph_trans_snap
+      use add_base_force_4_sph_trns
+      use add_SGS_term_to_sph_trans
 !
       type(SGS_model_addresses), intent(in) :: ipol_LES, iphys_LES
       type(SGS_model_addresses), intent(inout) :: b_trns_LES
@@ -106,13 +105,32 @@
       trns_back%nfield = 0
       call alloc_sph_trns_field_name(trns_back)
 !
-      call add_SGS_vector_bwd_trns_snap                                 &
-     &   (ipol_LES, iphys_LES, b_trns_LES, trns_back)
+!   Vectors
+      call add_filter_force_4_bwd_trns                                  &
+     &   (ipol_LES%force_by_filter, iphys_LES%force_by_filter,          &
+     &    b_trns_LES%force_by_filter, trns_back)
+      call add_rot_force_4_sph_trns_snap                                &
+     &   (ipol_LES%rot_frc_by_filter, iphys_LES%rot_frc_by_filter,      &
+     &    b_trns_LES%rot_frc_by_filter, trns_back)
+!
+      call add_force_w_SGS_sph_trns_snap                                &
+     &   (ipol_LES%frc_w_SGS, iphys_LES%frc_w_SGS,                      &
+     &    b_trns_LES%frc_w_SGS, trns_back)
+      call add_rot_SGS_4_sph_trns_snap                                  &
+     &   (ipol_LES%rot_SGS, iphys_LES%rot_SGS,                          &
+     &    b_trns_LES%rot_SGS, trns_back)
+      call add_SGS_induction_sph_trns_pol                               &
+     &   (ipol_LES%SGS_term, iphys_LES%SGS_term,                        &
+     &    b_trns_LES%SGS_term, trns_back)
       trns_back%num_vector = trns_back%nfield
 !
-      call add_div_SGS_bwd_trns_snap                                    &
-     &   (ipol_LES, iphys_LES, b_trns_LES, trns_back)
-
+!   Scalars
+      call add_fil_scalar_sph_trns_snap                                 &
+     &   (ipol_LES%filter_fld, iphys_LES%filter_fld,                    &
+     &    b_trns_LES%filter_fld, trns_back)
+      call add_div_SGS_4_sph_trns_snap                                  &
+     &   (ipol_LES%div_SGS, iphys_LES%div_SGS,                          &
+     &    b_trns_LES%div_SGS, trns_back)
       trns_back%num_scalar = trns_back%nfield - trns_back%num_vector
       trns_back%num_tensor = 0
 !
@@ -140,88 +158,19 @@
 !
       trns_fwd%num_vector = trns_fwd%nfield
 !
-      call add_SGS_scalar_fwd_trns_snap                                 &
-     &   (ipol_LES, iphys_LES, f_trns_LES, trns_fwd)
-      trns_fwd%num_scalar = trns_fwd%nfield - trns_fwd%num_vector
-      trns_fwd%num_tensor = 0
-!
-      end subroutine fwd_trans_address_SGS_snap
-!
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!
-      subroutine add_SGS_vector_bwd_trns_snap                           &
-     &         (ipol_LES, iphys_LES, b_trns_LES, trns_back)
-!
-      use add_SGS_term_to_sph_trans
-!
-      type(SGS_model_addresses), intent(in) :: ipol_LES, iphys_LES
-      type(SGS_model_addresses), intent(inout) :: b_trns_LES
-      type(spherical_transform_data), intent(inout) :: trns_back
-!
-!
-      call add_force_w_SGS_sph_trns_snap                                &
-     &   (ipol_LES%frc_w_SGS, iphys_LES%frc_w_SGS,                      &
-     &    b_trns_LES%frc_w_SGS, trns_back)
-!
-      call add_rot_SGS_4_sph_trns_snap                                  &
-     &   (ipol_LES%rot_SGS, iphys_LES%rot_SGS,                          &
-     &    b_trns_LES%rot_SGS, trns_back)
-!
-      call add_SGS_induction_sph_trns_pol                               &
-     &   (ipol_LES%SGS_term, iphys_LES%SGS_term,                        &
-     &    b_trns_LES%SGS_term, trns_back)
-!
-      end subroutine add_SGS_vector_bwd_trns_snap
-!
-!-----------------------------------------------------------------------
-!
-      subroutine add_div_SGS_bwd_trns_snap                              &
-     &         (ipol_LES, iphys_LES, b_trns_LES, trns_back)
-!
-      use add_filter_fld_to_sph_trans
-      use add_SGS_term_to_sph_trans
-!
-      type(SGS_model_addresses), intent(in) :: ipol_LES, iphys_LES
-      type(SGS_model_addresses), intent(inout) :: b_trns_LES
-      type(spherical_transform_data), intent(inout) :: trns_back
-!
-!
-      call add_fil_scalar_sph_trns_snap                                 &
-     &   (ipol_LES%filter_fld, iphys_LES%filter_fld,                    &
-     &    b_trns_LES%filter_fld, trns_back)
-      call add_div_SGS_4_sph_trns_snap                                  &
-     &   (ipol_LES%div_SGS, iphys_LES%div_SGS,                          &
-     &    b_trns_LES%div_SGS, trns_back)
-!
-      end subroutine add_div_SGS_bwd_trns_snap
-!
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!
-      subroutine add_SGS_scalar_fwd_trns_snap                           &
-     &         (ipol_LES, iphys_LES, f_trns_LES, trns_fwd)
-!
-      use add_energy_flux_4_sph_trns
-      use add_SGS_eflux_to_sph_trans
-      use add_Csim_4_sph_trns
-!
-      type(SGS_model_addresses), intent(in) :: ipol_LES, iphys_LES
-      type(SGS_model_addresses), intent(inout) :: f_trns_LES
-      type(spherical_transform_data), intent(inout) :: trns_fwd
-!
-!
+!   Scalars
       call add_fil_e_flux_4_sph_trns_snap                               &
      &   (ipol_LES%eflux_by_filter, iphys_LES%eflux_by_filter,          &
      &    f_trns_LES%eflux_by_filter, trns_fwd)
-!
       call add_SGS_eflux_sph_trns_snap                                  &
      &   (ipol_LES%SGS_ene_flux, iphys_LES%SGS_ene_flux,                &
      &    f_trns_LES%SGS_ene_flux, trns_fwd)
       call add_Csim_4_sph_trns_snap                                     &
      &   (ipol_LES%Csim, iphys_LES%Csim, f_trns_LES%Csim, trns_fwd)
+      trns_fwd%num_scalar = trns_fwd%nfield - trns_fwd%num_vector
+      trns_fwd%num_tensor = 0
 !
-      end subroutine add_SGS_scalar_fwd_trns_snap
+      end subroutine fwd_trans_address_SGS_snap
 !
 !-----------------------------------------------------------------------
 !
