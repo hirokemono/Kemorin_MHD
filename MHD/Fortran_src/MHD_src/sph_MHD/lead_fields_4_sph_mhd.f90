@@ -143,7 +143,7 @@
      &          trans_p, trns_MHD, trns_snap, WK_sph, rj_fld)
 !
       use sph_transforms_snapshot
-      use cal_energy_flux_rtp
+      use cal_nonlinear_sph_MHD
 !
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
@@ -165,7 +165,7 @@
      &      then
         if (iflag_debug.gt.0) write(*,*) 'cal_nonlinear_pole_MHD'
         call cal_nonlinear_pole_MHD(sph%sph_rtp, MHD_prop,              &
-     &      trns_snap%b_trns, trns_MHD%f_trns,                          &
+     &      trns_snap%b_trns%base, trns_MHD%f_trns%forces,              &
      &      trns_snap%backward, trns_MHD%forward)
       end if
 !

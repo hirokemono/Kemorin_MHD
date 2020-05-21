@@ -24,6 +24,14 @@
 !!        type(base_force_address), intent(in) :: f_trns_frc
 !!        type(spherical_transform_data), intent(in) :: trns_b_MHD
 !!        type(spherical_transform_data), intent(inout) :: trns_f_MHD
+!!      subroutine cal_nonlinear_pole_MHD(sph_rtp, MHD_prop,            &
+!!     &          b_trns_base, f_trns_frc, trns_b_snap, trns_f_MHD)
+!!        type(sph_rtp_grid), intent(in) :: sph_rtp
+!!        type(MHD_evolution_param), intent(in) :: MHD_prop
+!!        type(base_field_address), intent(in) :: b_trns_base
+!!        type(base_force_address), intent(in) :: f_trns_frc
+!!        type(spherical_transform_data), intent(in) :: trns_b_snap
+!!        type(spherical_transform_data), intent(inout) :: trns_f_MHD
 !!      subroutine nonlinear_terms_on_node                              &
 !!     &         (MHD_prop, b_trns_base, f_trns_frc,                    &
 !!     &          nnod, ntot_comp_fld, fld_rtp, ntot_comp_frc, frc_rtp)
@@ -112,6 +120,38 @@
 !
       end subroutine nonlinear_terms_in_rtp
 !
+!-----------------------------------------------------------------------
+!
+      subroutine cal_nonlinear_pole_MHD(sph_rtp, MHD_prop,              &
+     &          b_trns_base, f_trns_frc, trns_b_snap, trns_f_MHD)
+!
+      use const_wz_coriolis_rtp
+      use cal_products_smp
+!
+      type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(MHD_evolution_param), intent(in) :: MHD_prop
+      type(base_field_address), intent(in) :: b_trns_base
+      type(base_force_address), intent(in) :: f_trns_frc
+      type(spherical_transform_data), intent(in) :: trns_b_snap
+!
+      type(spherical_transform_data), intent(inout) :: trns_f_MHD
+!
+!
+      call nonlinear_terms_on_node(MHD_prop,                            &
+     &    b_trns_base, f_trns_frc, sph_rtp%nnod_pole,                   &
+     &    trns_b_snap%ncomp, trns_b_snap%fld_pole,                      &
+     &    trns_f_MHD%ncomp, trns_f_MHD%fld_pole)
+!
+      if(MHD_prop%fl_prop%iflag_4_coriolis) then
+        call cal_wz_coriolis_pole                                       &
+     &     (sph_rtp%nnod_pole, MHD_prop%fl_prop%coef_cor,               &
+     &      trns_b_snap%fld_pole(1,b_trns_base%i_velo),                 &
+     &      trns_f_MHD%fld_pole(1,f_trns_frc%i_coriolis))
+      end if
+!
+      end subroutine cal_nonlinear_pole_MHD
+!
+!-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
       subroutine nonlinear_terms_on_node                                &

@@ -96,7 +96,7 @@
       call lead_fields_by_sph_trans(SPH_MHD%sph, SPH_MHD%comms,         &
      &    MHD_prop, trans_p, WK%trns_MHD, WK%trns_snap,                 &
      &    WK%WK_sph, SPH_MHD%fld)
-      call lead_fields_by_sph_trans(SPH_MHD%sph, SPH_MHD%comms,         &
+      call lead_filter_flds_by_sph_trans(SPH_MHD%sph, SPH_MHD%comms,    &
      &    MHD_prop, trans_p, WK_LES%trns_fil_MHD, WK_LES%trns_fil_snap, &
      &    WK%WK_sph, SPH_MHD%fld)
 !
@@ -197,6 +197,42 @@
       end if
 !
       end subroutine pressure_SGS_SPH_MHD
+!
+! ----------------------------------------------------------------------
+!
+      subroutine lead_filter_flds_by_sph_trans                          &
+     &         (sph, comms_sph, MHD_prop, trans_p,                      &
+     &          trns_fil_MHD, trns_fil_snap, WK_sph, rj_fld)
+!
+      use sph_transforms_snapshot
+      use cal_energy_flux_rtp
+!
+      type(sph_grids), intent(in) :: sph
+      type(sph_comm_tables), intent(in) :: comms_sph
+      type(MHD_evolution_param), intent(in) :: MHD_prop
+      type(parameters_4_sph_trans), intent(in) :: trans_p
+!
+      type(SGS_address_sph_trans), intent(inout) :: trns_fil_MHD
+      type(SGS_address_sph_trans), intent(inout) :: trns_fil_snap
+      type(spherical_trns_works), intent(inout) :: WK_sph
+      type(phys_data), intent(inout) :: rj_fld
+!
+!
+      if(iflag_debug.gt.0) write(*,*) 'sph_back_trans_snapshot_MHD'
+      call sph_back_trans_snapshot_MHD(sph, comms_sph, trans_p,         &
+     &    rj_fld, trns_fil_snap%backward, WK_sph)
+!
+      if    (sph%sph_params%iflag_shell_mode .eq. iflag_MESH_w_pole     &
+     &  .or. sph%sph_params%iflag_shell_mode .eq. iflag_MESH_w_center)  &
+     &      then
+        if (iflag_debug.gt.0) write(*,*) 'cal_nonlinear_pole_MHD'
+        call cal_nonlinear_pole_MHD(sph%sph_rtp, MHD_prop,              &
+     &      trns_fil_snap%b_trns_LES%filter_fld,                        &
+     &      trns_fil_MHD%f_trns_LES%force_by_filter,                    &
+     &      trns_fil_snap%backward, trns_fil_MHD%forward)
+      end if
+!
+      end subroutine lead_filter_flds_by_sph_trans
 !
 ! ----------------------------------------------------------------------
 !

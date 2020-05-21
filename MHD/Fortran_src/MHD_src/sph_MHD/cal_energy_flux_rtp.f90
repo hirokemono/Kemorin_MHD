@@ -8,8 +8,6 @@
 !> @brief Evaluate energy fluxes for MHD dynamo in physical space
 !!
 !!@verbatim
-!!      subroutine cal_nonlinear_pole_MHD(sph_rtp, MHD_prop,            &
-!!     &          bs_trns, f_trns, trns_b_snap, trns_f_MHD)
 !!      subroutine s_cal_energy_flux_rtp(sph_rtp,                       &
 !!     &          fl_prop, cd_prop, ref_param_T, ref_param_C, leg,      &
 !!     &          f_trns, bs_trns, be_trns, fe_trns, bs_trns_diff_v,    &
@@ -48,78 +46,12 @@
 !
       implicit  none
 !
-      private :: cal_wz_coriolis_pole
       private :: cal_square_vector_on_node, cal_lengh_scale_rtp
 !
 ! -----------------------------------------------------------------------
 !
       contains
 !
-! -----------------------------------------------------------------------
-!
-      subroutine cal_nonlinear_pole_MHD(sph_rtp, MHD_prop,              &
-     &          bs_trns, f_trns, trns_b_snap, trns_f_MHD)
-!
-      use cal_nonlinear_sph_MHD
-      use const_wz_coriolis_rtp
-      use cal_products_smp
-!
-      type(sph_rtp_grid), intent(in) :: sph_rtp
-      type(MHD_evolution_param), intent(in) :: MHD_prop
-      type(phys_address), intent(in) :: f_trns
-      type(phys_address), intent(in) :: bs_trns
-      type(spherical_transform_data), intent(in) :: trns_b_snap
-!
-      type(spherical_transform_data), intent(inout) :: trns_f_MHD
-!
-!
-      call nonlinear_terms_on_node(MHD_prop,                            &
-     &    bs_trns%base, f_trns%forces, sph_rtp%nnod_pole,               &
-     &    trns_b_snap%ncomp, trns_b_snap%fld_pole,                      &
-     &    trns_f_MHD%ncomp, trns_f_MHD%fld_pole)
-!
-      if(MHD_prop%fl_prop%iflag_4_coriolis) then
-        call cal_wz_coriolis_pole                                       &
-     &     (sph_rtp%nnod_pole, MHD_prop%fl_prop%coef_cor,               &
-     &      trns_b_snap%fld_pole(1,bs_trns%base%i_velo),                &
-     &      trns_f_MHD%fld_pole(1,f_trns%forces%i_coriolis))
-      end if
-!
-      end subroutine cal_nonlinear_pole_MHD
-!
-!-----------------------------------------------------------------------
-!
-      subroutine cal_wz_coriolis_pole                                   &
-     &         (nnod_pole,  coef_cor, velo_pole, coriolis_pole)
-!
-      integer(kind = kint), intent(in) :: nnod_pole
-      real(kind = kreal), intent(in) :: coef_cor
-      real(kind = kreal), intent(in) :: velo_pole(nnod_pole,3)
-!
-      real(kind = kreal), intent(inout) :: coriolis_pole(nnod_pole,3)
-!
-      integer(kind = kint) :: inod
-      real(kind = kreal), parameter :: omega(3) = (/zero, zero, one/)
-!
-!
-!$omp parallel do private(inod)
-      do inod = 1, nnod_pole
-            coriolis_pole(inod,1) = - coef_cor                          &
-!     &                         * ( omega(2)*velo_pole(inod,3)          &
-     &                         * ( -omega(3)*velo_pole(inod,2) )
-            coriolis_pole(inod,2) = - coef_cor                          &
-     &                         * ( omega(3)*velo_pole(inod,1) )
-!     &                           - omega(1)*velo_pole(inod,3) )
-            coriolis_pole(inod,3) = zero
-!            coriolis_pole(inod,3) = - coef_cor                         &
-!     &                         * ( omega(1)*velo_pole(inod,2)          &
-!     &                           - omega(2)*velo_pole(inod,1) )
-      end do
-!$omp end parallel do
-!
-      end subroutine cal_wz_coriolis_pole
-!
-! -----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
       subroutine s_cal_energy_flux_rtp(sph_rtp,                         &
