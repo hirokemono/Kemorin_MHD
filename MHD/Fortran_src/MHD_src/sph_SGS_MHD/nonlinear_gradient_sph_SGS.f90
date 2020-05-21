@@ -102,7 +102,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'copy_vectors_rtp_4_grad'
       call copy_vectors_rtp_4_grad                                      &
-     &   (sph, trns_MHD%b_trns, trns_ngTMP%f_trns,                      &
+     &   (sph, trns_MHD%b_trns%base, trns_ngTMP%f_trns%diff_vector,     &
      &    trns_MHD%backward, trns_ngTMP%forward)
 !
       if (iflag_debug.eq.1) write(*,*)                                  &

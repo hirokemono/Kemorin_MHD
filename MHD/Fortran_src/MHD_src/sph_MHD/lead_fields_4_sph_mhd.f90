@@ -336,22 +336,23 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'copy_vectors_rtp_4_grad'
       call copy_vectors_rtp_4_grad                                      &
-     &   (sph, trns_snap%b_trns, trns_difv%f_trns,                      &
+     &   (sph, trns_snap%b_trns%base, trns_difv%f_trns%diff_vector,     &
      &    trns_snap%backward, trns_difv%forward)
 !
       if (iflag_debug.gt.0) write(*,*)                                  &
      &      'sph_forward_trans_snapshot_MHD for diff of vector'
-      call sph_forward_trans_snapshot_MHD                               &
-     &   (sph, comms_sph, trans_p, trns_difv%forward, WK_sph, rj_fld)
+      call sph_forward_trans_snapshot_MHD(sph, comms_sph, trans_p,      &
+     &    trns_difv%forward, WK_sph, rj_fld)
 !
       if (iflag_debug.gt.0) write(*,*) 'cal_grad_of_velocities_sph'
       call cal_grad_of_velocities_sph(sph%sph_rj, r_2nd,                &
-     &    sph_MHD_bc%sph_bc_U, trans_p%leg%g_sph_rj, ipol, rj_fld)
+     &    sph_MHD_bc%sph_bc_U, trans_p%leg%g_sph_rj,                    &
+     &    ipol%forces, ipol%diff_vector, rj_fld)
 !
       if (iflag_debug.gt.0) write(*,*)                                  &
      &      'sph_back_trans_snapshot_MHD for diff of vector'
-      call sph_back_trans_snapshot_MHD                                  &
-     &   (sph, comms_sph, trans_p, rj_fld, trns_difv%backward, WK_sph)
+      call sph_back_trans_snapshot_MHD(sph, comms_sph, trans_p,         &
+     &    rj_fld, trns_difv%backward, WK_sph)
 !
       end subroutine gradients_of_vectors_sph
 !

@@ -14,6 +14,16 @@
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
 !!        type(phys_address), intent(in) :: ipol_LES, iphys_LES
 !!        type(SGS_address_sph_trans), intent(inout) :: trns_fil_MHD
+!!      subroutine init_sph_trns_filter_snap                            &
+!!     &         (ipol_LES, iphys_LES, trns_fil_snap,                   &
+!!     &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
+!!        type(SGS_model_addresses), intent(in) :: ipol_LES, iphys_LES
+!!        type(SGS_address_sph_trans), intent(inout) :: trns_fil_snap
+!!      subroutine init_sph_trns_filter_diff_vect                       &
+!!     &         (ipol_LES, iphys_LES, trns_fil_difv,                   &
+!!     &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
+!!        type(SGS_model_addresses), intent(in) :: ipol_LES, iphys_LES
+!!        type(SGS_address_sph_trans), intent(inout) :: trns_fil_difv
 !!@endverbatim
 !
       module address_sph_trans_fil_force
@@ -124,6 +134,49 @@
       end subroutine init_sph_trns_filter_snap
 !
 !-----------------------------------------------------------------------
+!
+      subroutine init_sph_trns_filter_diff_vect                         &
+     &         (ipol_LES, iphys_LES, trns_fil_difv,                     &
+     &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
+!
+      type(SGS_model_addresses), intent(in) :: ipol_LES, iphys_LES
+      type(SGS_address_sph_trans), intent(inout) :: trns_fil_difv
+      integer(kind = kint), intent(inout) :: ncomp_sph_trans
+      integer(kind = kint), intent(inout) :: nvector_sph_trans
+      integer(kind = kint), intent(inout) :: nscalar_sph_trans
+!
+!
+      if(iflag_debug .gt. 0) then
+        write(*,*) 'Spherical transform table for filtered ',           &
+     &             'vector differenciate in snapshot (trns_fil_difv)'
+      end if
+!
+      call bwd_trans_address_filter_dvec(ipol_LES, iphys_LES,           &
+     &    trns_fil_difv%b_trns_LES, trns_fil_difv%backward)
+      call fwd_trans_address_filter_dvec(ipol_LES, iphys_LES,           &
+     &    trns_fil_difv%f_trns_LES, trns_fil_difv%forward)
+!
+      call count_num_fields_each_trans(trns_fil_difv%backward,          &
+     &   ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
+      call count_num_fields_each_trans(trns_fil_difv%forward,           &
+     &   ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
+!
+      if(iflag_debug .gt. 0) then
+        write(*,*) 'ncomp_sph_trans ', ncomp_sph_trans
+        write(*,*) 'nvector_rj_2_rtp ',                                 &
+     &            trns_fil_difv%backward%num_vector
+        write(*,*) 'nscalar_rj_2_rtp ',                                 &
+     &            trns_fil_difv%backward%num_scalar
+!
+        write(*,*) 'nvector_rtp_2_rj ',                                 &
+     &            trns_fil_difv%forward%num_vector
+        write(*,*) 'nscalar_rtp_2_rj ',                                 &
+     &            trns_fil_difv%forward%num_scalar
+      end if
+!
+      end subroutine init_sph_trns_filter_diff_vect
+!
+!-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
       subroutine bwd_trans_address_filter_MHD                           &
@@ -194,12 +247,12 @@
      &   (ipol_LES%force_by_filter, iphys_LES%force_by_filter,          &
      &    f_trns_LES%force_by_filter, trns_fwd)
       trns_fwd%num_vector = trns_fwd%nfield
-!
-      trns_fwd%num_scalar = 0
+      trns_fwd%num_scalar = trns_fwd%nfield - trns_fwd%num_vector
       trns_fwd%num_tensor = 0
 !
       end subroutine fwd_trans_address_filter_MHD
 !
+!-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
       subroutine bwd_trans_address_filter_snap                          &
@@ -257,15 +310,75 @@
       call alloc_sph_trns_field_name(trns_fwd)
 !
 !   forces
-      call add_filter_force_snap_sph_trns                               &
+      call add_diff_fil_vec_sph_trns_pol                                &
      &   (ipol_LES%force_by_filter, iphys_LES%force_by_filter,          &
      &    f_trns_LES%force_by_filter, trns_fwd)
       trns_fwd%num_vector = trns_fwd%nfield
-!
-      trns_fwd%num_scalar = 0
+      trns_fwd%num_scalar = trns_fwd%nfield - trns_fwd%num_vector
       trns_fwd%num_tensor = 0
 !
       end subroutine fwd_trans_address_filter_snap
+!
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      subroutine bwd_trans_address_filter_dvec                          &
+     &         (ipol_LES, iphys_LES, b_trns_LES, trns_back)
+!
+      use add_diff_fil_vec_to_trans
+!
+      type(SGS_model_addresses), intent(in) :: ipol_LES, iphys_LES
+      type(SGS_model_addresses), intent(inout) :: b_trns_LES
+      type(spherical_transform_data), intent(inout) :: trns_back
+!
+!
+      if(iflag_debug .gt. 0) then
+        write(*,*) 'Address for backward transform: ',                  &
+     &             'transform, poloidal, toroidal, grid data'
+      end if
+!
+      trns_back%nfield = 0
+      call alloc_sph_trns_field_name(trns_back)
+!
+!      Vectors
+      call add_diff_fil_vec_sph_trns_pol                                &
+     &   (ipol_LES%diff_fil_vect, iphys_LES%diff_fil_vect,              &
+     &    b_trns_LES%diff_fil_vect, trns_back)
+      trns_back%num_vector = trns_back%nfield
+      trns_back%num_scalar = trns_back%nfield - trns_back%num_vector
+      trns_back%num_tensor = 0
+!
+      end subroutine bwd_trans_address_filter_dvec
+!
+!-----------------------------------------------------------------------
+!
+      subroutine fwd_trans_address_filter_dvec                          &
+     &         (ipol_LES, iphys_LES, f_trns_LES, trns_fwd)
+!
+      use add_diff_fil_vec_to_trans
+!
+      type(SGS_model_addresses), intent(in) :: ipol_LES, iphys_LES
+!
+      type(SGS_model_addresses), intent(inout) :: f_trns_LES
+      type(spherical_transform_data), intent(inout) :: trns_fwd
+!
+!
+      if(iflag_debug .gt. 0) then
+        write(*,*) 'Address for forward transform: ',                   &
+     &             'transform, poloidal, toroidal, grid data'
+      end if
+!
+      trns_fwd%nfield = 0
+      call alloc_sph_trns_field_name(trns_fwd)
+      trns_fwd%num_vector = trns_fwd%nfield
+!
+      call add_diff_fil_vec_4_scalar_trns                               &
+     &   (ipol_LES%diff_fil_vect, iphys_LES%diff_fil_vect,              &
+     &    f_trns_LES%diff_fil_vect, trns_fwd)
+      trns_fwd%num_scalar = trns_fwd%nfield - trns_fwd%num_vector
+      trns_fwd%num_tensor = 0
+!
+      end subroutine fwd_trans_address_filter_dvec
 !
 !-----------------------------------------------------------------------
 !

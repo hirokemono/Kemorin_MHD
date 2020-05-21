@@ -74,6 +74,8 @@
 !
 !>        strucutres for spherical transform for filtered snapshot
         type(SGS_address_sph_trans) :: trns_fil_snap
+!>        strucutres for spherical transform for filtered diff of field
+        type(SGS_address_sph_trans) :: trns_fil_difv
       end type works_4_sph_trans_SGS_MHD
 !
       private :: alloc_nonlinear_w_SGS_data
@@ -163,6 +165,9 @@
       call alloc_nonlinear_w_SGS_data(sph_rtp, WK_LES%trns_fil_snap)
       call alloc_nonlinear_pole_w_SGS(sph_rtp, WK_LES%trns_fil_snap)
 !
+      call alloc_nonlinear_w_SGS_data(sph_rtp, WK_LES%trns_fil_difv)
+      call alloc_nonlinear_pole_w_SGS(sph_rtp, WK_LES%trns_fil_difv)
+!
       end subroutine alloc_SGS_sph_trns_area_snap
 !
 !-----------------------------------------------------------------------
@@ -174,6 +179,9 @@
 !
       call dealloc_nonlinear_pole_w_SGS(WK_LES%trns_fil_snap)
       call dealloc_nonlinear_w_SGS_data(WK_LES%trns_fil_snap)
+!
+      call dealloc_nonlinear_pole_w_SGS(WK_LES%trns_fil_difv)
+      call dealloc_nonlinear_w_SGS_data(WK_LES%trns_fil_difv)
 !
       end subroutine dealloc_SGS_sph_trns_area_snap
 !

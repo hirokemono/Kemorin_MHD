@@ -102,8 +102,12 @@
 !
       call gradients_of_vectors_sph                                     &
      &   (SPH_MHD%sph, SPH_MHD%comms, r_2nd, sph_MHD_bc, trans_p,       &
-     &    SPH_MHD%ipol, WK%trns_snap, WK%trns_difv, WK%WK_sph,          &
-     &    SPH_MHD%fld)
+     &    SPH_MHD%ipol, WK%trns_snap, WK%trns_difv,                     &
+     &    WK%WK_sph, SPH_MHD%fld)
+      call grad_of_filter_vectors_sph                                   &
+     &   (SPH_MHD%sph, SPH_MHD%comms, r_2nd, sph_MHD_bc, trans_p,       &
+     &    ipol_LES, WK_LES%trns_fil_snap, WK_LES%trns_fil_difv,         &
+     &    WK%WK_sph, SPH_MHD%fld)
 !
       call lead_SGS_terms_4_SPH                                         &
      &   (SGS_par%model_p, SPH_MHD%sph, SPH_MHD%comms, trans_p,         &
@@ -233,6 +237,51 @@
       end if
 !
       end subroutine lead_filter_flds_by_sph_trans
+!
+! ----------------------------------------------------------------------
+!
+      subroutine grad_of_filter_vectors_sph                             &
+     &         (sph, comms_sph, r_2nd, sph_MHD_bc, trans_p,             &
+     &          ipol_LES, trns_fil_snap, trns_fil_difv, WK_sph, rj_fld)
+!
+      use sph_transforms_snapshot
+      use sph_poynting_flux_smp
+!
+      type(sph_grids), intent(in) :: sph
+      type(sph_comm_tables), intent(in) :: comms_sph
+      type(fdm_matrices), intent(in) :: r_2nd
+      type(parameters_4_sph_trans), intent(in) :: trans_p
+      type(SGS_address_sph_trans), intent(in) :: trns_fil_snap
+      type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
+      type(SGS_model_addresses), intent(in) :: ipol_LES
+!
+      type(SGS_address_sph_trans), intent(inout) :: trns_fil_difv
+      type(spherical_trns_works), intent(inout) :: WK_sph
+      type(phys_data), intent(inout) :: rj_fld
+!
+!
+      if (iflag_debug.gt.0) write(*,*) 'copy_vectors_rtp_4_grad'
+      call copy_vectors_rtp_4_grad                                      &
+     &   (sph, trns_fil_snap%b_trns_LES%filter_fld,                     &
+     &    trns_fil_difv%f_trns_LES%diff_fil_vect,                       &
+     &    trns_fil_snap%backward, trns_fil_difv%forward)
+!
+      if (iflag_debug.gt.0) write(*,*)                                  &
+     &      'sph_forward_trans_snapshot_MHD for diff of vector'
+      call sph_forward_trans_snapshot_MHD(sph, comms_sph, trans_p,      &
+     &    trns_fil_difv%forward, WK_sph, rj_fld)
+!
+      if (iflag_debug.gt.0) write(*,*) 'cal_grad_of_velocities_sph'
+      call cal_grad_of_velocities_sph(sph%sph_rj, r_2nd,                &
+     &    sph_MHD_bc%sph_bc_U, trans_p%leg%g_sph_rj,                    &
+     &    ipol_LES%force_by_filter, ipol_LES%diff_fil_vect, rj_fld)
+!
+      if (iflag_debug.gt.0) write(*,*)                                  &
+     &      'sph_back_trans_snapshot_MHD for diff of vector'
+      call sph_back_trans_snapshot_MHD(sph, comms_sph, trans_p,         &
+     &    rj_fld, trns_fil_difv%backward, WK_sph)
+!
+      end subroutine grad_of_filter_vectors_sph
 !
 ! ----------------------------------------------------------------------
 !
