@@ -245,7 +245,8 @@
      &          ipol_LES, trns_fil_snap, trns_fil_difv, WK_sph, rj_fld)
 !
       use sph_transforms_snapshot
-      use sph_poynting_flux_smp
+      use copy_rtp_vectors_4_grad
+      use cal_grad_of_sph_vectors
 !
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
@@ -271,10 +272,9 @@
       call sph_forward_trans_snapshot_MHD(sph, comms_sph, trans_p,      &
      &    trns_fil_difv%forward, WK_sph, rj_fld)
 !
-      if (iflag_debug.gt.0) write(*,*) 'cal_grad_of_velocities_sph'
-      call cal_grad_of_velocities_sph(sph%sph_rj, r_2nd,                &
-     &    sph_MHD_bc%sph_bc_U, trans_p%leg%g_sph_rj,                    &
-     &    ipol_LES%force_by_filter, ipol_LES%diff_fil_vect, rj_fld)
+      if (iflag_debug.gt.0) write(*,*) 'overwrt_grad_of_vectors_sph'
+      call overwrt_grad_of_vectors_sph(sph%sph_rj, r_2nd, sph_MHD_bc,   &
+     &    trans_p%leg, ipol_LES%diff_fil_vect, rj_fld)
 !
       if (iflag_debug.gt.0) write(*,*)                                  &
      &      'sph_back_trans_snapshot_MHD for diff of vector'

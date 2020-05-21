@@ -1,1 +1,0 @@
-../../../../MHD/Fortran_src/MHD_src/sph_MHD/sph_poynting_flux_smp.f90

@@ -82,7 +82,6 @@
       use sph_transforms_4_SGS
       use cal_grad_of_sph_vectors
       use nolinear_gradient_terms_sph
-      use sph_poynting_flux_smp
 !
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
@@ -111,9 +110,10 @@
      &    trns_ngTMP%forward, WK_sph, rj_fld)
 !
       if (iflag_debug.eq.1) write(*,*) 'overwrt_grad_of_vectors_sph'
-      call overwrt_grad_of_vectors_sph                                  &
-     &   (sph, r_2nd, sph_MHD_bc, trans_p%leg, ipol%base,               &
-     &    ipol%diff_vector, ipol%grad_fld, rj_fld)
+      call overwrt_grad_of_vectors_sph(sph, r_2nd, sph_MHD_bc,          &
+     &    trans_p%leg, ipol%diff_vector, rj_fld)
+      call cal_grad_of_scalars_sph(sph, r_2nd, sph_MHD_bc, trans_p%leg, &
+     &    ipol%base, ipol%grad_fld, rj_fld)
 !
       if (iflag_debug.eq.1) write(*,*)                                  &
      &       'sph_back_trans_SGS_MHD trns_ngTMP'
@@ -156,8 +156,8 @@
       type(SGS_address_sph_trans), intent(inout) :: trns_DYNG
       type(SGS_address_sph_trans), intent(inout) :: trns_Csim
 !
-      if (iflag_debug.eq.1) write(*,*) 'copy_filter_vecs_rtp_4_grad'
-      call copy_filter_vecs_rtp_4_grad(sph,                             &
+      if (iflag_debug.eq.1) write(*,*) 'copy_vectors_rtp_4_grad'
+      call copy_vectors_rtp_4_grad(sph,                                 &
      &    trns_SIMI%b_trns_LES%filter_fld,                              &
      &    trns_DYNG%f_trns_LES%diff_fil_vect,                           &
      &    trns_SIMI%backward, trns_DYNG%forward)
@@ -168,9 +168,10 @@
      &    trns_DYNG%forward, WK_sph, rj_fld)
 !
       if (iflag_debug.eq.1) write(*,*) 'overwrt_grad_of_vectors_sph'
-      call overwrt_grad_of_vectors_sph                                  &
-     &   (sph, r_2nd,  sph_MHD_bc, trans_p%leg, ipol_LES%filter_fld,    &
-     &    ipol_LES%diff_fil_vect, ipol_LES%grad_fil_fld, rj_fld)
+      call overwrt_grad_of_vectors_sph(sph, r_2nd, sph_MHD_bc,          &
+     &    trans_p%leg, ipol_LES%diff_fil_vect, rj_fld)
+      call cal_grad_of_scalars_sph(sph, r_2nd, sph_MHD_bc, trans_p%leg, &
+     &    ipol_LES%filter_fld, ipol_LES%grad_fil_fld, rj_fld)
 !
       if (iflag_debug.eq.1)                                             &
      &         write(*,*) 'sph_back_trans_SGS_MHD trns_DYNG'
