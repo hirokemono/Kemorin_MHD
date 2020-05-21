@@ -273,7 +273,7 @@
      &    trns_fil_difv%forward, WK_sph, rj_fld)
 !
       if (iflag_debug.gt.0) write(*,*) 'overwrt_grad_of_vectors_sph'
-      call overwrt_grad_of_vectors_sph(sph%sph_rj, r_2nd, sph_MHD_bc,   &
+      call overwrt_grad_of_vectors_sph(sph, r_2nd, sph_MHD_bc,          &
      &    trans_p%leg, ipol_LES%diff_fil_vect, rj_fld)
 !
       if (iflag_debug.gt.0) write(*,*)                                  &
