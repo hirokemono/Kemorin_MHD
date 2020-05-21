@@ -204,7 +204,7 @@
       if (iflag_debug.gt.0) write(*,*)                                  &
      &                'copy_field_from_transform filtered_diff_vector'
       call copy_field_from_transform(sph%sph_params, sph%sph_rtp,       &
-     &    WK%trns_fil_difv%backward, geofem%mesh, nod_fld)
+     &    WK_LES%trns_fil_difv%backward, geofem%mesh, nod_fld)
 !
       if (iflag_debug.gt.0) write(*,*)                                  &
      &                    'copy_field_from_transform SGS_SNAP'
