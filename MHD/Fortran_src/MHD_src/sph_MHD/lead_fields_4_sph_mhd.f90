@@ -160,7 +160,6 @@
       call sph_back_trans_snapshot_MHD(sph, comms_sph, trans_p,         &
      &    rj_fld, trns_snap%backward, WK_sph)
 !
-!
       if    (sph%sph_params%iflag_shell_mode .eq. iflag_MESH_w_pole     &
      &  .or. sph%sph_params%iflag_shell_mode .eq. iflag_MESH_w_center)  &
      &      then
@@ -309,7 +308,7 @@
      &    trns_MHD%f_trns, trns_snap%b_trns, trns_eflux%b_trns,         &
      &    trns_eflux%f_trns, trns_difv%b_trns%diff_vector,              &
      &    trns_MHD%forward, trns_snap%backward, trns_eflux%backward,    &
-     &    trns_difv%forward, trns_eflux%forward)
+     &    trns_difv%backward, trns_eflux%forward)
 !
       end subroutine cal_sph_enegy_fluxes
 !
