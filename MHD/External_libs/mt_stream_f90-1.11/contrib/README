@@ -1,0 +1,19 @@
+
+This directory contains contribution by Michael Briggs. 
+He kindly wrote test codes in Fortran which compare the results from the 
+original C version Mersenne Twister of Takuji Nishimura and Makoto Matsumoto (2002/1/26), 
+[http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/MT2002/CODES/mt19937ar.c]
+and those from the Multiple-Stream Mersenne Twister Fortran module. The tests will be
+carried out in integer and real(8) cases.
+
+HOW-TO COMPILE and TEST:
+step 1.
+  This directory does not contain the original C version code.
+  You must first download the original code from the above URL and put it 
+  in this directory.
+
+step 2.
+  Edit Makefile, and then type make command. Compilation and testing will start.
+
+Ken-Ichi Ishikawa
+2010/07/29

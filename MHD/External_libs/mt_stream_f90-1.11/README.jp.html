@@ -1,0 +1,384 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html lang="ja">
+<head>
+  <meta http-equiv="Content-Language" content="ja">
+  <meta http-equiv="Content-Type" content="text/html; charset=EUC-JP">
+  <title>
+    Multiple stream Mersenne Twister PRNG
+  </title>
+  <LINK rel="INDEX" href="../index.html">
+</head>
+
+<body bgcolor="#e0f0ff" text="#000000">
+
+<hr>
+
+<div align="center">
+  <h3> 
+    <font color="#0085a0">
+    Multiple stream Mersenne Twister PRNG
+    </font>
+  </h3>
+</div>
+
+<hr>
+<a href="README.html">[English]</a>
+<hr>
+
+<p>
+<b>プログラム</b><br>
+
+プログラム<a href="mt_stream_f90.tar.gz">[mt_stream_f90.tar.gz]</a> 最新へのリンク [2011/03/31]
+<ul>
+<li>
+<a href="mt_stream_f90-1.11.tar.gz">[mt_stream_f90-1.11.tar.gz]</a> 最新 [2011/03/31]: <br>
+</li>
+mt_stream.F90 の 628 行目にある関数名と関数引数括弧の間の余計な空白を削除。
+(Tridib Sadhu さんからのバグレポート)
+<li>
+<a href="mt_stream_f90-1.10.tar.gz">[mt_stream_f90-1.10.tar.gz]</a> [2010/07/29]: <br>
+Michael Briggs さんによって、コード中のジャンプの距離に関するコメントの修正と使われていない変数の削除された。
+また、Fortran から C 言語でかかれたルーチンの呼出規約を Fortran 2003 で定義された ISO C Binding 
+のルールで呼び出すように修正された。
+ISO C Binding のルールは Fortran 90/95 では定義されていないが、既に多くの Fortran コンパイラ
+では対応している。<br>
+また、この Fortran モジュールの乱数と、
+松本眞-西村拓士両氏のオリジナルのコード(初期化改良版)(2002/1/26)
+[http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/MT2002/CODES/mt19937ar.c] の出す乱数を
+比較チェックする Fortran プログラムを提供してくれた。テストプログラムを`contrib' に置いた。
+<br>
+さらに、mt_stream_f90-1.00.tar.gz で導入した Fortran 版の GF(2)[x] モジュールにバグがあることを指摘してくれた。
+これを修正した。
+</li>
+<li>
+<Del>[mt_stream_f90-1.00.tar.gz] [2010/03/08]:  
+C/C++NTL/GF2X が利用できないときのために、Fortran で GF(2)[x] が扱えるような遅いライブラリーを書いて含めた。</Del>
+</li>
+<li>
+<a href="mt_stream_f90-0.95.tar.gz">[mt_stream_f90-0.95.tar.gz]</a> [2010/02/18]:  
+README.jp.html と README.html を含めた。プログラム中のコメントが間違っていたので修正した。
+</li>
+<li>
+<a href="mt_stream_f90-0.9.tar.gz">[mt_stream_f90-0.9.tar.gz]</a>[2010/02/16]
+</li>
+</ul>
+</p>
+
+<hr>
+<p>
+<a href="http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/mt.html">Mersenne Twister</a> 
+1系列を複数に分割して並列に(Stream)使えるようにしたものです。
+MPI並列などで数千から数万の並列の乱数が必要になるのでそのために作りました。
+</p>
+
+
+<p>
+本体部分は Fortran90/95 言語で書かれています。またデフォールトの設定では
+一部外部ライブラリ(C/C++言語)を使用しています。<br>
+C/C++を使わず Fortran だけでも GF(2)[x]が扱えるようにしました[2010/03/08](要設定Makefile)。<br>
+Version 1.00 からは、NTL/GFX/C++ ライブラリとのリンクを取るために Fortran2003 で定義された
+ISO C Binding モジュールを使っています。このモジュールの使えるコンパイラーは私の知る限り
+<ul>
+ <li>Intel Compiler version 11.0 以降</li>
+ <li>gfortran 2.3.0 以降</li>
+ があります。
+</ul>
+</p>
+
+<p>
+Mersenne Twister のパラメータは、松本眞-西村拓士両氏のオリジナルのコード(初期化改良版)
+<a href="http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/MT2002/mt19937ar.html">
+[http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/MT2002/mt19937ar.html]</a>
+のパラメータ(MT19937)が埋め込まれています。分割した部分の長さは 2^256 に
+設定してあります。
+</p>
+
+<p>
+分割の方法は、MT の漸化式に対応する多項式と Cayley-Hamilton の公式を使った
+方法です。ただし、sliding-window 法は使わず、 Horner法で飛んだ先の状態ベクトル
+を計算しています。<br>
+[参考:
+  H. Haramoto, M. Matsumoto, T. Nishimura, F. Panneton, and P. L'Ecuyer, 
+  ``Efficient Jump Ahead for F_2-Linear Random Number Generators'', 
+  GERAD Report G-2006-62. INFORMS Journal on Computing, 20, 3 (2008), 385-390.]
+</p>
+
+<p>
+状態ベクトルを 2^256 だけ進めるための多項式の係数を求めるためにデフォールトでは、外部の
+ライブラリ、
+<ul>
+<li>
+Fast arithmetic in GF(2)[x], 
+<a href="http://wwwmaths.anu.edu.au/~brent/software.html">[http://wwwmaths.anu.edu.au/~brent/software.html]</a>
+</li>
+<br>
+<li>
+NTL : A Library for doing Number Theory, 
+<a href="http://www.shoup.net/ntl/index.html">[http://www.shoup.net/ntl/index.html]</a>
+</li>
+</ul>
+を使用しています。これらをインストールしておく必要があります。これらのコンパイル
+には C,C++ 言語が必要です。<br>
+もし、C/C++/NTL/GF2X が利用できない場合は、 Fortran だけで動くように設定できます(2010/03/08)。
+</p>
+
+<p>
+乱数初期化ルーチンは松本眞-西村拓士両氏のオリジナルのコード(初期化改良版MT19937)と
+同じようにしており、最初の 1000 個の乱数(整数)がオリジナルのコードと同
+じであることは確認しました。
+</p>
+
+<p>
+並列に分割した部分(Stream)が正しくジャンプしているかは、分割部分の長さを
+2^15 に設定し、元の Stream を空回しで動かした場合と、ジャンプしたものが
+同じ乱数を生成することで確認しました。Stream数は 1024 個までは確認しました。
+</p>
+
+<p>
+分割された stream 間の相関についてはまだ、私自身未検証です。
+</p>
+
+<p>
+生成される乱数は、以下の通り。
+<ul>
+<li>
+32bit 符号付整数(Fortran integer(4))
+</li><li>
+53bit 倍精度実数(Fortran real(8)),[0,1],(0,1],[0,1)区間
+</li><li>
+52bit 倍精度実数(Fortran real(8)),(0,1)区間
+</li>
+</ul>
+</p>
+
+<hr>
+<p>
+このプログラムは無保証です。ライセンスは<a href="LICENSE">New BSD License</a>に従います。
+</p>
+
+<hr>
+<p>
+コンパイル方法<br>
+ Linux, gcc/g++/gfortran or Intel compiler で開発を行った。
+</p>
+<p>
+<ol>
+  <li> デフォールト(C/C++/NTL/GF2Xが使える状況)では、
+    以下のライブラリをコンパイルしてインストールしておいてください。
+  <ul>
+  <li>
+   Fast arithmetic in GF(2)[x], 
+   <a href="http://wwwmaths.anu.edu.au/~brent/software.html">[http://wwwmaths.anu.edu.au/~brent/software.html]</a></li>
+  <li>
+    NTL : A Library for doing Number Theory, 
+    <a href="http://www.shoup.net/ntl/index.html">[http://www.shoup.net/ntl/index.html]</a></li>
+  </li>
+  </ul>
+  <br>
+   C/C++/NTL/GF2Xが使えない状況、または、Fortran だけで行いたいときは次に進んでください。
+  <br>
+  <br>
+  <li>
+  プログラム(最新へのリンク)<a href="mt_stream_f90.tar.gz">[mt_stream_f90.tar.gz]</a>を展開する。<br>
+  コンパイラーやコンパイラーオプションに関する記述を Makefile に設定する。<br>
+  さらに Makefile に上記のライブラリへの include path, library path を設定する。<br>
+  C/C++/NTL/GF2Xが使えない状況では、Makefile に USE_NTL = no を設定する。
+  </li>
+  <br>
+  <li>
+   make する。
+   いくつか無矛盾性のチェックが行われると思います。
+  </li>
+  <br>
+  <li>
+   mt_stream.o と mt_stream.mod がこの module program の生成物です。さらに以下の生成物があります。<br>
+  NTL/GF2X を使用した場合、
+  <ul>
+   <li>jump_ahead_coeff/get_coeff.o</li>
+  </ul>
+  が追加生成物です。<br>
+  Fortran だけで NTL/GF2X を使用しなかった場合、
+  <ul>
+    <li>  f_jump_ahead_coeff/f_get_coeff.o   </li>
+    <li>  f_jump_ahead_coeff/gf2xe.o </li>
+  </ul>  
+  が追加生成物です。<br>
+  Fortran90/95 の自分のプログラムからこの module に含まれる関数/サブルーチン
+  を呼び出すプログラムを書いたら、コンパイル時には mt_stream.mod がコンパイラ
+  から見えるように、リンク時には mt_stream.o と 上記の追加生成物が結合されるようにしてください。
+  </li>
+</ol>
+</p>
+<hr>
+<p>
+このモジュールで使用できる関数/サブルーチンのリスト
+</p>
+
+<ul>
+<li>
+この module を引用<br><br>
+<b>  use mt_stream</b>
+</li>
+<br>
+<li>
+MT 状態構造体<br><br>
+<b>
+  type(mt_state) :: mts
+</b>
+</li>
+<br>
+<li>
+MT19937 のパラメータを module に設定。<br><br>
+<b>
+  call set_mt19937
+</b>
+</li>
+<br>
+<li>
+MT 状態構造体を初期化（状態ベクトルを確保）種は空のまま。<br><br>
+<b>
+  call new(mts)<br>
+  type(mt_state) :: mts<br>
+</b>
+</li>
+<br>
+<li>
+MT 状態構造体に初期状態を種から生成し設定。<br><br>
+<b>
+  call init(mts,iseed)<br>
+  type(mt_state) :: mts<br>
+  integer :: iseed</b>
+&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;
+      ! スカラー値による設定<br>
+  or<br>
+<b>
+  integer :: iseed(:)</b>
+&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;
+   ! 複数のスカラー値(array)による設定<br><br>
+最初に種が設定された MT 状態構造体(mts)は stream 番号 0 となる。
+</li>
+<br>
+<li>
+ stream 番号 0 のMT状態から、(id*2^256) ステップ離れた
+別の stream (番号=id) を生成。<br><br>
+<b>
+  call create_stream(mts,mts_new,id)<br>
+  type(mt_state) :: mts</b>
+&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;
+      ! stream 番号 0  の MT stream(入出力)<br>
+<b>
+  type(mt_state) :: mts_new</b>
+&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;
+  ! stream 番号 id の MT stream(出力)<br>
+<b>
+  integer :: id</b>
+&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;
+              ! mts_new に与える stream 番号 (1以上)<br><br>
+mts は初期化され、状態を持っていないといけない。
+mts の状態が区切りの良いところに無いときは、区切りの良いところまで
+乱数を捨て、そこから (id*2^256) ステップ離れた状態として、
+mts_new に状態を設定する。
+create_stream 呼出し後は mts はきりの良い状態に進むことに注意。
+</li>
+<br>
+<li>
+MT 状態構造体から32ビット符号つき整数乱数を得る。<br><br>
+<b>
+  integer :: k<br>
+  type(mt_state) :: mts<br>
+  k = genrand_int32(mts)<br>
+</b><br>
+mts は当然初期化され種が設定されているか、create_stream で生成されて
+いないといけない。k のビットパターンは 松本-西村オリジナルCコードの符
+号無し整数のビットパターンと同じになっている。10進数でオリジナルの数字と比較したい場合は
+64 bit 整数に代入して、負の値の時は 2_8^32 を足せば良い。
+genrand_int32 呼出し後は mts の状態は 32bit 分だけ進む。
+</li>
+<br>
+<li>
+MT 状態構造体の状態をファイルに保存する。<br><br>
+<b>
+  call save(mts,unit)<br>
+  type(mt_state) :: mts<br>
+  integer :: unit</b>
+&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;
+     ! Fortran のファイル装置番号<br><br>
+ファイル装置番号(unit)で指定されるファイルにMT 状態構造体(mts)の状態
+を保存する。ファイルは form='unformatted' であらかじめ開いておくこと。
+save 呼出し後 mts の状態は変化しない。
+</li>
+<br>
+<li>
+MT 状態構造体の状態をファイルから呼出し保存じの状態に復帰する。<br><br>
+<b>
+  call read(mts,unit)<br>
+  type(mt_state) :: mts<br>
+  integer :: unit</b>
+&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;
+     ! Fortran のファイル装置番号<br><br>
+ファイル装置番号(unit)で指定されるファイルから MT 状態構造体(mts)の状態
+を読み込み mts へ設定する。ファイルは form='unformatted' であらかじめ
+開いておくこと。当然ファイルには save ルーチンで保存した情報が入って
+いないといけない。
+</li>
+<br>
+<li>
+MT 状態構造体のメモリを解放（状態ベクトルを消去）する。<br><br>
+<b>
+  call delete(mts)<br>
+  type(mt_state) :: mts<br>
+</b>
+</li>
+<br>
+<li>
+MT 状態構造体から53/52ビット精度の倍精度実数を得る。<br><br>
+<b>
+  real(8) :: r<br>
+  type(mt_state) :: mts<br>
+  r = genrand_double1(mts)</b>
+&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;
+   ! [0,1] 区間の倍精度乱数<br>
+<b>
+  r = genrand_double2(mts)</b>
+&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;
+   ! [0,1) 区間の倍精度乱数<br>
+<b>
+  r = genrand_double3(mts)</b>
+&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;
+   ! (0,1) 区間の倍精度乱数<br>
+<b>
+  r = genrand_double4(mts)</b>
+&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;
+   ! (0,1] 区間の倍精度乱数<br>
+<br>
+開区間生成用の genrand_double3 のビット精度は52ビット。それ以外は 53ビット。<br>
+これらの関数呼出し後は mts の状態は 64bit 分だけ進む。<br>
+32ビット分解能の倍精度乱数は実装していない。
+</li>
+</ul>
+
+<hr>
+<b>欠点、注意点</b></br>
+ストリームの管理はユーザーが行なうこと。
+同じ id を持つストリームを複数作ることが出来るので注意して下さい。
+<hr>
+<p>
+<b>謝辞</b><br>
+  Mersenne Twister のプログラムとか公開してある松本氏の Web site には
+大変お世話になり、とても参考になりました。<br>
+また、ここに全ての名前を列挙できないのですが、松本氏の Web site へ
+寄与した多くの方々の様々な言語による実装もとても参考になりました。
+ここに感謝いたします。<br>
+プログラムを改良してくれた Michael Briggs さんに感謝します。<br>
+Tridib Sadhu さんからのバグレポートに感謝します。
+</p>
+<hr>
+<p>
+<b>コメントや改良点がありましたら、</b><br>
+石川健一<br>
+  ishikawa[at]theo.phys.sci.hiroshima-u.ac.jp<br>
+まで。
+</p>
+
+</body>
+</html>

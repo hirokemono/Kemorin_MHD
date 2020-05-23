@@ -1,0 +1,378 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html lang="ja">
+<head>
+  <meta http-equiv="Content-Language" content="ja">
+  <meta http-equiv="Content-Type" content="text/html; charset=EUC-JP">
+  <title>
+    Multiple stream Mersenne Twister PRNG
+  </title>
+  <LINK rel="INDEX" href="../index.html">
+</head>
+
+<body bgcolor="#e0f0ff" text="#000000">
+
+<hr>
+
+<div align="center">
+  <h3> 
+    <font color="#0085a0">
+    Multiple stream Mersenne Twister PRNG
+    </font>
+  </h3>
+</div>
+
+<hr>
+ <a href="README.jp.html">[Japanese]</a>
+<hr>
+
+<p>
+<b> Program </b><br>
+Program (Link to Latest)<a href="mt_stream_f90.tar.gz">[mt_stream_f90.tar.gz]</a>
+[2011/03/31]<br>
+<ul>
+<li>
+<a href="mt_stream_f90-1.11.tar.gz">[mt_stream_f90-1.11.tar.gz]</a>[2011/03/31] (Latest)<br>
+A minor bug is corrected. An extra ``space" in the line 628 of program mt_stream.F90 is removed.
+(Reported by Tridib Sadhu)
+</li>
+<li>
+<a href="mt_stream_f90-1.10.tar.gz">[mt_stream_f90-1.10.tar.gz]</a>[2010/07/29]<br>
+Michael Briggs kindly corrected the comments on the jump length in the source codes 
+and improved the interoperability to the NTL/C++ code using the ISO C Binding feature of Fortran 2003.
+Although the ISO C Binding feature is not the standard of Fortran 90/95, it is already supported by many compilers.
+<br>
+He also provided test programs to check the consistency between this Fortran module and
+the original (non-multi-stream) Mersenne Twister C version
+mt19937ar.c of Takuji Nishimura and Makoto Matsumoto (2002/1/26)
+[http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/MT2002/CODES/mt19937ar.c].
+I put them in the `contrib' directory.
+<br>
+Michael Briggs pointed out a bug in the GF(2)[x] Fortran module of [mt_stream_f90-1.00.tar.gz], and this is fixed.
+</li>
+<li>
+<Del>[mt_stream_f90-1.00.tar.gz]
+[2010/03/08] A slow library to compute GF(2)[x], written in Fortran, is included.</Del><br>
+</li>
+<li>
+<a href="mt_stream_f90-0.95.tar.gz">[mt_stream_f90-0.95.tar.gz]</a>
+[2010/02/18] README.html, README.jp.html are included. Comment typos in the source file are corrected.<br>
+</li>
+<li>
+<a href="mt_stream_f90-0.9.tar.gz">[mt_stream_f90-0.9.tar.gz]</a>
+[2010/02/16]
+</li>
+</ul>
+</p>
+
+<hr>
+<p>
+This program module splits single long period random number series from
+<a href="http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/emt.html">Mersenne Twister</a> (MT) into 
+multiple (almost) independent streams.
+This enables us the use of parallel Mersenne Twister in a large scale parallel simulation with MPI or OpenMP.
+This module provides several routines to manipulate multiple stream state and to generate random numbers.
+</p>
+
+<p>
+The main part of the program is written in Fortran90/95. 
+A part of the program uses some external libraries written in C/C++ language.<br>
+ISO C binding feature of Fortran 2003 is used to link with NTL/GF2X C++ libraries (version 1.10).
+The list of the compilers which support the feature, to my knowledge, is;
+<ul>
+ <li> Intel Fortran version 11.0 and higher.</li>
+ <li> gfortran 4.3 and the version higher. </li>
+</ul> 
+</p>
+
+<p>
+The parameter included in this program is taken from the original code (MT19937) by
+Makoto Matsumoto and Takuji Nishimura
+<a href="http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/MT2002/emt19937ar.html">
+[http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/MT2002/emt19937ar.html]</a>.
+The stream length picked out from the long period is fixed to 2^256.
+</p>
+
+<p>
+The method to divide the main stream into several streams is based on the manipulation on 
+the polynomial representation of transition matrix with Cayley-Hamilton theorem for 
+the characteristic polynomial of MT.
+I only use Horner's method to jump long ahead from the initial state to the next stream initial state.
+For the details on this method see the following original paper:<br>
+[Ref.:
+  H. Haramoto, M. Matsumoto, T. Nishimura, F. Panneton, and P. L'Ecuyer, 
+  ``Efficient Jump Ahead for F_2-Linear Random Number Generators'', 
+  GERAD Report G-2006-62. INFORMS Journal on Computing, 20, 3 (2008), 385-390.]
+</p>
+In the paper they also describe more efficient method to realize the long jump: the sliding window method.
+I, however, coded simple/less efficient Horner's method only.
+
+<p>
+In order to obtain the polynomial coefficients to make the MT state to jump by 2^256 steps, 
+we employ the following external libraries in default setting:
+<ul>
+<li>
+Fast arithmetic in GF(2)[x], <a href="http://wwwmaths.anu.edu.au/~brent/software.html">
+[http://wwwmaths.anu.edu.au/~brent/software.html]</a>
+</li>
+<br>
+<li>
+NTL : A Library for doing Number Theory, 
+<a href="http://www.shoup.net/ntl/index.html">
+[http://www.shoup.net/ntl/index.html]</a>
+</li>
+</ul>
+Install these libraries before compiling MT Stream. These libraries use C/C++.<br>
+
+If C/C++/NTL/GF2X are not available, I included a slow GF2X library written in Fortran90.
+To use the fully Fortran version, define `NTL_USE=no' in Makefile (`NTL_USE=yes' is default)(2010/03/08).
+</p>
+
+<p>
+The MT state initialization routine used in this program is the same as that of 
+the original MT19931 with improved initialization by Matusmoto-Nishimura (see also their original web page).
+I have checked that my generator produces the same first 1000 integer numbers 
+as those of the original MT19931.
+</p>
+
+<p>
+To check whether the state jump ahead routine works correctly or not, 
+I have tested the following points.
+By setting the stream length to 2^15, make a branch form the master stream with the jump ahead routine.
+I have checked that the branch stream produces the same numbers as those from the master stream, 
+where the master stream simply drops 2^15 random numbers to catch up the branch stream.
+I also checked this simple test for 1024 multiple streams separated by 2^15 steps each.
+</p>
+
+<p>
+Note that I have not completely checked/understood the autocorrelation among multiple disjoint streams
+picked out from the long period stream. 
+</p>
+
+<p>
+This MT stream module library can yield the following types of random numbers:
+<ul>
+<li>
+32bit integer: Fortran integer(4).
+</li><li>
+53bit double precision: Fortran real(8), in [0,1],(0,1],[0,1).
+</li><li>
+52bit double precision: Fortran real(8), in (0,1).
+</li>
+</ul>
+</p>
+
+<hr>
+<p>
+This program is NO WARRANTY. License follows <a href="./LICENSE">the New BSD License</a>.
+</p>
+
+<hr>
+<p>
+Compile: This program has been developed on Linux with gcc/g++/gfortran and Intel compilers.
+</p>
+<p>
+<ol>
+  <li>
+    If C/C++/NTL/GF2X are available, compile and Install the following external libraries:
+  <ul>
+   <br>
+  <li>
+   Fast arithmetic in GF(2)[x], <a href="http://wwwmaths.anu.edu.au/~brent/software.html">[http://wwwmaths.anu.edu.au/~brent/software.html]</a>
+  </li>
+  <li>
+    NTL : A Library for doing Number Theory, <a href="http://www.shoup.net/ntl/index.html">[http://www.shoup.net/ntl/index.html]</a>
+  </li>
+  </ul>
+  <br>
+  If C/C++/NTL/GF2X are not available skip step 1 go next.
+  <br>
+  <br>
+  <li>
+    Untar program tarball (Latest) <a href="mt_stream_f90.tar.gz">[mt_stream_f90.tar.gz]</a>.<br>
+    Check and Edit the compiler settings in the Makefile.<br>
+    Set the include and library paths to the above external libraries in the Makefile.<br>
+    If C/C++/NTL/NG2X are not available, edit Makefile to define USE_NTL = no.
+  </li>
+  <br>
+  <li>
+   Type make. You will see some auto consistency checks during compilation.
+  </li>
+  <br>
+  <li>
+   mt_stream.o and mt_stream.mod are the main product of this MT Stream library.
+  <br>
+  If you choose to use NTL/GF2X libraries, the following object file is generated.
+  <ul>
+    <li> jump_ahead_coeff/get_coeff.o </li>
+  </ul>
+  If you do not use NTL/GF2X libraries, the following object files are generated.
+  <ul>
+    <li> f_jump_ahead_coeff/gf2xe.o</li>
+    <li> f_jump_ahead_coeff/f_get_coeff.o </li>
+  </ul>
+  You can write programs using the routines from the MT Stream library.
+  To compile your program you need to put 'use mt_stream' statement and
+  to link to mt_stream.o and the above jump ahead object files.
+  Compiler will require mt_stream.mod in the include search path.
+  </li>
+</ol>
+</p>
+<hr>
+<p>
+The subroutine/function list contained in this MT Stream module.
+</p>
+
+<ul>
+<li>
+Use this module.<br><br>
+  <b> use mt_stream</b>
+</li>
+<br>
+<li>
+MT State type<br><br>
+  <b>type(mt_state) :: mts</b>
+</li>
+<br>
+<li>
+Set MT19937 parameters to this module.<br><br>
+  <b>call set_mt19937</b>
+</li>
+<br>
+<li>
+Initialize MT state type (allocate state vector in the type element). 
+The state is still empty by this initialization.<br><br>
+  <b>call new(mts)<br>
+  type(mt_state) :: mts<br></b>
+</li>
+<br>
+<li>
+Set seed into MT state type and initialize state.<br><br>
+<b>
+  call init(mts,iseed)<br>
+  type(mt_state) :: mts<br>
+  integer :: iseed</b>
+&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;
+! initialization by scalar number<br>
+or<br>
+<b>
+  integer :: iseed(:)</b>
+&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;
+! initialization by scalar array numbers<br><br>
+The first MT state initialized has the stream id equals to zero.
+</li>
+<br>
+<li>
+Create a new stream (mts_new) from the stream (mts). 
+The (mts_new) state is far from (id*2^256) steps from the (mts) state.
+The (mts_new) has stream id equals to id.<br><br>
+<b>  call create_stream(mts,mts_new,id)<br>
+     type(mt_state) :: mts</b>      
+&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;
+! MT stream (id = 0 is required)(input/output)<br>
+<b>  type(mt_state) :: mts_new</b>  
+&ensp;&ensp;&ensp;&ensp;
+! MT stream with id (output).  (id*2^256) steps ahead from mts<br>
+<b>  integer :: id </b> 
+&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;
+! stream id for mt_new (id > 0 is required)<br><br>
+mts should be initialized and have state. 
+When the mts state is not aligned at proper step, the mts drops several random numbers to reach aligned step.
+Then mts_new is created from the aligned mts state. 
+The mts_new points at (id*2^256) steps beyond the mts aligned point.
+After calling create_stream mts state points aligned point by dropping several random numbers.
+</li>
+<br>
+<li>
+Obtain one 32bit signed integer(integer(4)) random number.<br><br>
+<b>
+  integer :: k<br>
+  type(mt_state) :: mts<br>
+  k = genrand_int32(mts)<br><br>
+</b>
+"mts" should be initialized and seeded or created with create_stream.
+The bit pattern of "k" is the same as that of original C code by Matsumoto-Nishimura.
+If you want to compare "k" and original one as decimal numbers, convert integer(4) 
+to 64bit integer(8) and add 2_8^32 when k<0.
+After calling genrand_int32, the state of "mts" proceeds by 32bit.
+</li>
+<br>
+<li>
+Save MT state into a file.<br><br>
+<b>
+  call save(mts,unit)<br>
+  type(mt_state) :: mts<br>
+  integer :: unit</b>
+&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;
+! Fortran file unit number<br><br>
+Save the mt state into a file described by the Fortran file unit number(unit).
+The file should be opened with form='unformatted' before calling this routine.
+The state mts does not changed after calling save.
+</li>
+<br>
+<li>
+Restore MT state from a file.<br><br>
+<b>
+  call read(mts,unit)<br>
+  type(mt_state) :: mts<br>
+  integer :: unit</b>
+&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;
+! Fortran file unit number<br><br>
+Read the mts status information from a file described by the Fortran file unit number(unit)
+and the status information is restored into mts.
+The file should be opened with form='unformatted' before calling this routine.
+The file should contain the proper information which stored by the save routine.
+</li>
+<br>
+<li>
+Free and clear the memory in MT state type.<br><br>
+<b>
+  call delete(mts)<br>
+  type(mt_state) :: mts<br>
+</b>
+</li>
+<br>
+<li>
+Obtain one 53/52 bit resolution double precision real uniform random 
+number (Fortran real(8)) from mts.<br><br>
+<b>real(8) :: r<br>
+   type(mt_state) :: mts<br>
+   r = genrand_double1(mts)</b>
+&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;
+   ! r in [0,1] <br>
+<b>  r = genrand_double2(mts)</b>
+&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;
+   ! r in [0,1) <br>
+<b>  r = genrand_double3(mts)</b>
+&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;
+   ! r in (0,1) <br>
+<b>  r = genrand_double4(mts)</b>
+&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;
+   ! r in (0,1] <br>
+<br>
+The random number generator from (0,1) has 52bit resolution.
+The random number generators from [0,1],[0,1),(0,1] have 53bit resolution.<br>
+After calling these routines, mts state proceeds by 64bits.<br>
+I have not coded the versions with 32bit resolution.
+</li>
+</ul>
+
+<hr>
+<p>
+<b>Acknowledgment</b><br>
+I would like to greatly thank to The Mersenne Twister web page by Makoto Matsumoto, 
+at which I could find the original papers and related documents on MT/RNG and very useful links 
+to samples and related programs. 
+Without this page I could not develop this program and understand the philosophy on MT and better PRNG.<br>
+I also express my gratitude to the authors of various implementations in C/C++/Fortran etc. on his web page.<br>
+I thank Michael Briggs for his kind comments and contributions on the code.<br>
+I thank Tridib Sadhu for his bug report.
+</p>
+<hr>
+<p>
+<b>Comments, Improvements, Contact:</b><br>
+Ken-Ichi Ishikawa<br>
+  ishikawa[at]theo.phys.sci.hiroshima-u.ac.jp<br>
+</p>
+
+</body>
+</html>
