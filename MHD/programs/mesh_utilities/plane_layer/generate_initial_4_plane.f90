@@ -90,7 +90,7 @@
 !
 !    read mesh file
 !
-        call copy_mesh_format_and_prefix(cube_p1%mesh_file_prefix,      &
+        call copy_mesh_format_and_prefix(cube_p1%mesh_file%file_prefix, &
      &      id_ascii_file_fmt, cube_mesh_file)
         call sel_read_geometry_size                                     &
      &     (cube_mesh_file, id_rank, mesh_IO_p, ierr)

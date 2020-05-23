@@ -1,5 +1,4 @@
 !
-      program  cubmesh311
 ! \beginPROGRAM
 !    create cubic mesh data (multi-domain type)
 !          programmed by k.garatani (rist) on feb. 1998 (ver 1.0)
@@ -90,35 +89,17 @@
 !
 ! ----------------------------------------------------------------------
 !
+      program  cubmesh311
+!
       use m_precision
 !
-      use t_mesh_data
-      use t_size_of_cube
-      use t_filter_elength
-      use t_neib_range_cube
-      use t_cube_position
-      use t_local_node_id_cube
       use t_ctl_data_4_cub_kemo
       use t_control_param_plane_mesh
-      use t_filter_work_cubmesh
-      use t_filter_data_4_plane
-      use t_ctl_data_plane_fft
-!
-      use cube_mesh_fiile_IO
-!
-      use set_cube_node
-      use set_cube_ele_connect
-      use set_import_cube
-      use write_nod_grp_cube
-      use write_ele_grp_cube
-      use write_surf_grp_cube
-      use neib_nod_cube
-      use merge_periodic_comm_table
-      use mesh_data_IO
-      use m_fem_mesh_labels
+      use t_size_of_cube
+      use cubmesh_311
 !
       implicit  none
-
+!
 ! ----------------------------------------------------------------------
 !  * parameters
 ! ......................................................................
@@ -132,180 +113,21 @@
       integer(kind=kint), parameter  ::   elm_type = 331
 ! ----------------------------------------------------------------------
 !  * variables
-
+!
       type(ctl_data_4_cub_kemo), save :: cubmesh_c1
       type(ctl_param_plane_mesh), save :: cube_p1
       type(size_of_cube), save :: c_size1
-      type(size_of_each_cube), save :: c_each1
-      type(vertical_position_cube), save :: c_vert1
-      type(neib_range_cube), save :: nb_rng1
-      type(local_node_id_cube), save :: loc_id1
-      type(gradient_model_data_type), save :: FEM_elen_c
-      type(filterings_4_cubmesh), save :: c_fils
-      type(filter_data_4_plane), save :: cube_fil1
 !
-!>     Structure of group
-      type(mesh_geometry), save :: mesh
-      type(mesh_groups), save :: cube_groups
-      type(communication_table), save :: comm
-!
-      integer(kind=kint)  ::  ipe    , jpe    , kpe    , pe_id
-      integer :: id_rank
-      integer(kind=kint ), parameter  ::  l_out = 10
-
       character(len= 8 )   ::  date
       character(len=10 )   ::  time
 !
-!
-! ----------------------------------------------------------------------
-!
 ! ***** set time
-!
       call  date_and_time ( date, time )
-!
-! ***** read nodal and subdomain division count
-!
-!
-!     open ( 20,file='inp.dat',form='formatted')
-!     read ( 20  , * ) c_size1%nx_all, c_size1%ny_all, c_size1%nz_all,  &
-!    &                 c_size1%ndx   , c_size1%ndy,    c_size1%ndz
-!      write(*,*) ' input range of x-direction ( xmin, xmax) '
-!      read (  *  , * )   c_size1%xmin, c_size1%xmax
-!
-!      write(*,*) ' input range of y-direction ( ymin, ymax) '
-!      read (  *  , * )   c_size1%ymin, c_size1%ymax
-!
-!      write(*,*) ' input range of z-direction ( zmin, zmax) '
-!      read (  *  , * )   c_size1%zmin, c_size1%zmax
 !
       call read_control_data_plane_mesh(cubmesh_c1)
       call s_set_ctl_data_plane_mesh(cubmesh_c1, cube_p1, c_size1)
 !
-      call set_plane_range_w_sleeve(elm_type, c_size1)
-      call set_plane_resolution(c_size1)
-!
-! ***** allocate position of node at z-component
-!
-      call set_position_4_vartical                                      &
-     &   (elm_type, cube_p1%iflag_ztype, c_size1, c_vert1)
-!
-! ***** allocate nodal id table
-!
-      call alloc_node_informations(c_size1, loc_id1)
-!
-!    allocate work array
-!
-      call alloc_work_4_filter_nod(c_size1, c_fils%c_fil_nod)
-!
-!     set one-dimensional moments
-!
-!      if(cube_p1%iflag_filter .ge.0) then
-         FEM_elen_c%filter_conf%nf_type = cube_p1%iflag_filter
-         call alloc_filter_4_plane(c_size1%ndepth, c_size1%nz_all,      &
-     &       FEM_elen_c%filter_conf%nf_type, cube_fil1)
-         call read_z_filter_info(cube_p1, c_size1,                      &
-     &       FEM_elen_c%filter_conf%nf_type, cube_fil1)
-!      end if
-!
-! **********   domain loop for each pe   **********
-!
-      pe_id = 1
-
-      do kpe = 1, c_size1%ndz
-        do jpe = 1, c_size1%ndy
-          do ipe = 1, c_size1%ndx
-!
-! ***** open output file
-!
-             id_rank = int(pe_id - 1)
-!
-! ***** set and write basic local model parameters
-!                                       .. pe nod per 1 line
-
-            call set_each_cube_resolution                               &
-     &         (elm_type, kpe, c_size1, c_each1)
-            call set_range_4_neighbour(ipe, jpe, kpe, c_size1, nb_rng1)
-!
-!
-! .....  1.parallel information (pe_id start from 0, not 1)
-!                                       .. set neighbor pe
-            call set_neigbouring_plane                                  &
-     &         (c_size1, nb_rng1, pe_id, ipe, jpe, comm)
-!
-            call sort_neighboring_pes(comm, mesh%nod_comm)
-!
-! .....  2.mesh information (nodes and elements in partition)
-!
-            call set_range_4_nodeloop(c_size1, kpe, nb_rng1)
-!
-! ***** set coordinate off set (starting corner for pe node)
-! ***** set nodal position off set (i,j,k starting position -1)
-            call init_node_para_4_each_pe                               &
-     &         (c_size1, ipe, jpe, kpe, nb_rng1)
-            call set_offset_of_domain(c_size1, ipe, jpe, kpe, nb_rng1)
-            call set_node(c_size1, c_each1, c_vert1, nb_rng1,           &
-     &          ipe, jpe, loc_id1, mesh%node)
-!
-! .....  2.2 element (connection)
-!
-            call set_ele_connect(c_size1, c_each1, nb_rng1, loc_id1,    &
-     &          elm_type, ipe, jpe, mesh%ele)
-!
-! .....  3.import / export information
-! ***** set and write import nodes
-            call set_import_data                                        &
-     &         (c_size1, nb_rng1, loc_id1, ipe, jpe, comm)
-!
-! ***** set and write export nodes
-            call set_export_data                                        &
-     &         (c_size1, nb_rng1, loc_id1, ipe, jpe, comm)
-!
-            call sort_communication_table(comm, mesh%nod_comm)
-!
-! .....  4.group information
-            call const_node_group(c_size1, c_each1, loc_id1,            &
-     &          ipe, jpe, kpe, cube_groups%nod_grp)
-            call const_element_group                                    &
-     &         (c_size1, c_each1, nb_rng1, kpe, cube_groups%ele_grp)
-            call const_surface_group                                    &
-     &         (c_size1, c_each1, kpe, cube_groups%surf_grp)
-!
-!       Mesh file output
-            call open_mesh_file(cube_p1%mesh_file_prefix,               &
-     &          l_out, id_rank, c_size1)
-            call write_geometry_data(l_out, pe_id-1, mesh)
-            call write_mesh_groups(l_out, cube_groups)
-            close(l_out)
-!
-            call dealloc_mesh_geometry_base(mesh)
-            call dealloc_groups_data(cube_groups)
-!
-!   construct filtering information
-!
-            if(cube_p1%iflag_filter .gt. 0) then
-              call alloc_work_4_filter_ele                              &
-     &           (c_size1, c_each1, c_fils%c_fil_ele)
-!
-              write(*,*) 'neighboring_node'
-              call neighboring_node                                     &
-     &           (pe_id, cube_p1, c_size1, c_each1, nb_rng1, loc_id1,   &
-     &            cube_fil1, FEM_elen_c, c_fils%c_fil_nod)
-!
-              write(*,*) 'deallocate_work_4_filter_ele'
-              call dealloc_work_4_filter_nod(c_fils%c_fil_ele)
-            end if
-!                                       ... to next pe 
-            write(*,*) 'change domain'
-            pe_id = pe_id + 1
-!
-            call reset_node_info(loc_id1)
-            call reset_work_4_filter_nod(c_fils%c_fil_nod)
-!
-          enddo
-        enddo
-      enddo
-!
-      call dealloc_filter_4_plane(cube_fil1)
+      call cubmesh311_w_filter(elm_type, cube_p1, c_size1)
 
       stop ' //// program normally finished //// '
 !

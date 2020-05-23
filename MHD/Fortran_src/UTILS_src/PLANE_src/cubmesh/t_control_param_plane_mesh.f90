@@ -12,11 +12,13 @@
 !
       use m_precision
       use m_constants
+      use t_file_IO_parameter
+      use m_file_format_switch
 !
       implicit  none
 !
       type ctl_param_plane_mesh
-        character(len=kchara) :: mesh_file_prefix
+        type(field_IO_params) ::  mesh_file
         character(len=kchara) :: filter_file_prefix
         character(len=kchara) :: z_filter_prefix
 
@@ -52,11 +54,12 @@
       pi = four * atan(one)
 !
       if (cubmesh_c%cubmesh_plt%mesh_file_prefix%iflag .gt. 0) then
-        cube_p%mesh_file_prefix                                         &
+        cube_p%mesh_file%file_prefix                                    &
      &     = cubmesh_c%cubmesh_plt%mesh_file_prefix%charavalue
       else
-        cube_p%mesh_file_prefix = 'mesh/in'
+        cube_p%mesh_file%file_prefix = 'mesh/in'
       end if
+      cube_p%mesh_file%iflag_format = id_ascii_file_fmt
 !
       if (cubmesh_c%ffile_cub_ctl%filter_head_ctl%iflag .eq. 1) then
         cube_p%filter_file_prefix                                       &
@@ -101,7 +104,8 @@
       end if
 !
 !
-      write(*,*) 'mesh_file_prefix:   ', trim(cube_p%mesh_file_prefix)
+      write(*,*) 'mesh_file%file_prefix:   ',                           &
+     &          trim(cube_p%mesh_file%file_prefix)
       write(*,*) 'filter_file_prefix: ',                                &
      &          trim(cube_p%filter_file_prefix)
       write(*,*) 'z_filter_prefix:    ', trim(cube_p%z_filter_prefix)

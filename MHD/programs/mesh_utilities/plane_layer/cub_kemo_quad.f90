@@ -274,7 +274,7 @@
 
 !
 !       Mesh file output
-            call open_mesh_file(cube_p1%mesh_file_prefix,               &
+            call open_mesh_file(cube_p1%mesh_file%file_prefix,          &
      &          l_out, id_rank, c_size1)
             call write_geometry_data(l_out, pe_id-1, mesh)
             call write_mesh_groups(l_out, cube_groups)
