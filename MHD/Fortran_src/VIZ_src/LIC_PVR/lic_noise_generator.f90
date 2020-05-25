@@ -7,13 +7,14 @@
 !!      subroutine import_noise_nd_ary                                  &
 !!     &         (filename, n_node_data, n_data_size, ierr)
 !!      subroutine import_noise_ary(filename, n_raw_data, n_data_size)
+!!      subroutine import_noise_grad_ary                                &
+!!     &         (filename, n_grad_data, n_data_size, ierr)
 !!
-!!      subroutine noise_sampling(noise_size, f_noise, noise_data,      &
-!!     &          xx_org, xyz_min, xyz_max, noise_value)
-!!      subroutine noise_grad_sampling(noise_size, f_noise,             &
-!!     &          noise_grad, xx_org, xyz_min, xyz_max, grad_value)
 !!      subroutine noise_nd_sampling(noise_size, f_noise, n_node,       &
 !!     &          xx_org, xyz_min, xyz_max, noise_value)
+!!      subroutine noise_and_grad_sampling                              &
+!!     &         (n_cube, f_noise, noise_data, noise_grad,              &
+!!     &          xx_org, xyz_min, xyz_max, noise_value, grad_value)
 !
       module lic_noise_generator
 !
@@ -29,6 +30,9 @@
 !
 !>      Integer flag of endian swap
       type(binary_IO_buffer), private :: bbuf_nze
+!
+!
+      private :: noise_sampling, noise_grad_sampling
 !
 !  ---------------------------------------------------------------------
 !
@@ -90,7 +94,7 @@
       use set_parallel_file_name
       use binary_file_access
 
-      ! parameter for read noise data
+! parameter for read noise data
       character(len = kchara), intent(in) :: filename
       integer(kind = kint), intent(inout) :: n_data_size(3)
       character(len=1), allocatable, intent(inout) :: n_raw_data(:)
@@ -133,7 +137,7 @@
         ierr = bbuf_nze%ierr_bin
 !
         call open_rd_rawfile_f(file_name, bbuf_nze)
-        if(bbuf_nze%ierr_bin .eq. 0) go to 98
+        if(bbuf_nze%ierr_bin .ne. 0) go to 98
 ! first line read 3 integer size data, byte 4
         call read_mul_int_from_32bit(bbuf_nze, ithree64, isize3d_tmp)
         n_data_size(1:3) = int(isize3d_tmp(1:3), KIND(n_data_size(1)))
@@ -181,6 +185,7 @@
 !
       use set_parallel_file_name
       use binary_file_access
+      use delete_data_files
 !
 ! parameter for read noise data
       character(len = kchara), intent(in) :: filename
@@ -193,16 +198,21 @@
 !
       if(my_rank .eq. 0) then
         file_name = add_null_character(filename)
-        call open_rd_rawfile_f(file_name, bbuf_nze)
-        if(bbuf_nze%ierr_bin .eq. 0) go to 99
-!
         d_size = n_data_size(1)*n_data_size(2)*n_data_size(3)*3
-        allocate( n_grad_data(d_size)) 
-        call read_mul_one_character_b(bbuf_nze, d_size, n_grad_data)
+        if(check_file_exist(file_name)) then
+          call open_rd_rawfile_f(file_name, bbuf_nze)
+          if(bbuf_nze%ierr_bin .ne. 0) go to 99
 !
-  99    continue
-        call close_rawfile_f()
-        ierr = bbuf_nze%ierr_bin
+          allocate( n_grad_data(d_size)) 
+          call read_mul_one_character_b(bbuf_nze, d_size, n_grad_data)
+!
+  99      continue
+          call close_rawfile_f()
+          ierr = bbuf_nze%ierr_bin
+        else
+          allocate(n_grad_data(d_size))
+          n_grad_data(1:d_size) = char(0)
+        end if
       end if
 !
       call MPI_BCAST(ierr, 1,                                           &
@@ -393,14 +403,14 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine noise_grad_sampling(noise_size, f_noise,               &
+      subroutine noise_grad_sampling(n_cube, f_noise,               &
      &          noise_grad, xx_org, xyz_min, xyz_max, grad_value)
 !
       use set_parallel_file_name
 !
-      integer(kind = kint), intent(in) :: noise_size
+      integer(kind = kint), intent(in) :: n_cube
       real(kind = kreal), intent(in) :: f_noise
-      character(len=1), intent(in) :: noise_grad(noise_size*3)
+      character(len=1), intent(in) :: noise_grad(n_cube*3)
       real(kind = kreal), intent(in) :: xx_org(3), xyz_min(3), xyz_max(3)
       real(kind = kreal), intent(inout) :: grad_value(3)
       integer(kind = kint) :: idx000,idx001,idx010,idx011,idx100,idx101,idx110,idx111
@@ -414,7 +424,7 @@
       xyz_norm = (xx_org - xyz_min) / (xyz_max - xyz_min)
       xyz_norm = xyz_norm * f_noise
       xyz_norm = xyz_norm - int(xyz_norm)
-      dim = int(noise_size**(1./3.))
+      dim = int(n_cube**(1./3.))
       xyz = xyz_norm * dim
       xyz_i = int(xyz_norm * dim + 0.5)
       xyz_d = xyz + 0.5 - xyz_i
@@ -426,14 +436,14 @@
       idx101 = get_offset_vol(xyz_i(1)+1, xyz_i(2), xyz_i(3)+1, dim)
       idx110 = get_offset_vol(xyz_i(1)+1, xyz_i(2)+1, xyz_i(3), dim)
       idx111 = get_offset_vol(xyz_i(1)+1, xyz_i(2)+1, xyz_i(3)+1, dim)
-      c00 = get_noise_grad_value(noise_size, noise_grad, idx000) * (1 - xyz_d(1))  &
-      &   + get_noise_grad_value(noise_size, noise_grad, idx100) * xyz_d(1)
-      c01 = get_noise_grad_value(noise_size, noise_grad, idx001) * (1 - xyz_d(1))  &
-      &   + get_noise_grad_value(noise_size, noise_grad, idx101) * xyz_d(1)
-      c10 = get_noise_grad_value(noise_size, noise_grad, idx010) * (1 - xyz_d(1))  &
-      &   + get_noise_grad_value(noise_size, noise_grad, idx110) * xyz_d(1)
-      c11 = get_noise_grad_value(noise_size, noise_grad, idx011) * (1 - xyz_d(1))  &
-      &   + get_noise_grad_value(noise_size, noise_grad, idx111) * xyz_d(1)
+      c00 = get_noise_grad_value(n_cube, noise_grad, idx000) * (1 - xyz_d(1))  &
+      &   + get_noise_grad_value(n_cube, noise_grad, idx100) * xyz_d(1)
+      c01 = get_noise_grad_value(n_cube, noise_grad, idx001) * (1 - xyz_d(1))  &
+      &   + get_noise_grad_value(n_cube, noise_grad, idx101) * xyz_d(1)
+      c10 = get_noise_grad_value(n_cube, noise_grad, idx010) * (1 - xyz_d(1))  &
+      &   + get_noise_grad_value(n_cube, noise_grad, idx110) * xyz_d(1)
+      c11 = get_noise_grad_value(n_cube, noise_grad, idx011) * (1 - xyz_d(1))  &
+      &   + get_noise_grad_value(n_cube, noise_grad, idx111) * xyz_d(1)
 
       c0 = c00 * (1 - xyz_d(2)) + c10 * xyz_d(2)
       c1 = c01 * (1 - xyz_d(2)) + c11 * xyz_d(2)
@@ -477,5 +487,28 @@
 !
 !  ---------------------------------------------------------------------
 !
-
+      subroutine noise_and_grad_sampling                                &
+     &         (n_cube, f_noise, noise_data, noise_grad,                &
+     &          xx_org, xyz_min, xyz_max, noise_value, grad_value)
+!
+      integer(kind = kint), intent(in) :: n_cube
+      real(kind = kreal), intent(in) :: f_noise
+      character(len=1), intent(in) :: noise_data(n_cube)
+      character(len=1), intent(in) :: noise_grad(n_cube*3)
+      real(kind = kreal), intent(in) :: xx_org(3)
+      real(kind = kreal), intent(in) :: xyz_min(3), xyz_max(3)
+!
+      real(kind = kreal), intent(inout) :: noise_value
+      real(kind = kreal), intent(inout) :: grad_value(3)
+!
+!
+      call noise_sampling(n_cube, f_noise, noise_data,                  &
+     &    xx_org, xyz_min, xyz_max, noise_value)
+      call noise_grad_sampling(n_cube, f_noise, noise_grad,             &
+     &    xx_org, xyz_min, xyz_max, grad_value)
+!
+      end subroutine noise_and_grad_sampling
+!
+!  ---------------------------------------------------------------------
+!
       end module lic_noise_generator

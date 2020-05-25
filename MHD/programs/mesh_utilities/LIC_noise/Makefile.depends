@@ -1,0 +1,7 @@
+noise_on_cube.o: $(LIC_NOISE_DIR)/noise_on_cube.f90 m_precision.o m_constants.o t_3d_noise.o t_control_data_LIC_noise.o
+	$(F90) -c $(F90OPTFLAGS) $<
+noise_to_VTK.o: $(LIC_NOISE_DIR)/noise_to_VTK.f90 m_precision.o m_constants.o m_machine_parameter.o calypso_mpi.o t_3d_noise.o t_control_data_LIC_noise.o t_control_param_plane_mesh.o t_size_of_cube.o t_mesh_data.o t_phys_data.o t_ucd_data.o t_file_IO_parameter.o m_array_for_send_recv.o m_file_format_switch.o m_spheric_constants.o cubmesh_311.o load_mesh_data.o set_mesh_extensions.o set_ucd_extensions.o set_ucd_data_to_type.o write_ucd_to_vtk_file.o nod_phys_send_recv.o
+	$(F90) -c $(F90OPTFLAGS) $<
+test_old_noise.o: $(LIC_NOISE_DIR)/test_old_noise.f90 m_precision.o m_constants.o m_machine_parameter.o calypso_mpi.o t_control_param_LIC.o t_control_param_plane_mesh.o t_size_of_cube.o t_mesh_data.o t_phys_data.o t_ucd_data.o t_file_IO_parameter.o m_array_for_send_recv.o m_file_format_switch.o m_spheric_constants.o cubmesh_311.o load_mesh_data.o set_mesh_extensions.o set_ucd_extensions.o set_ucd_data_to_type.o write_ucd_to_vtk_file.o nod_phys_send_recv.o
+	$(F90) -c $(F90OPTFLAGS) $<
+

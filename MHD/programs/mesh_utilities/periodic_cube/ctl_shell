@@ -9,7 +9,7 @@ begin   make_shell
     numele_4_vertical      8
     nend_adjust_ctl        3
 !
-    array r_layer       17
+    array r_layer
       r_layer    1  0.2884615384615
       r_layer    2  0.3584615384615
       r_layer    3  0.4134615384615     bc_adjust
@@ -27,15 +27,14 @@ begin   make_shell
       r_layer   15  1.788461538462
       r_layer   16  2.50000000000000
       r_layer   17  4.00000000000000     inf
-    end array
+    end array r_layer
 !
-    array edge_latitude_ctl       3
+    array edge_latitude_ctl
       edge_latitude_ctl    5     45.0e0     ICB
       edge_latitude_ctl    13    67.0e0     ICB
       edge_latitude_ctl    17    45.0e0     ICB
     end array edge_latitude_ctl
-!
-  begin cubed_sphere_def
+  end cubed_sphere_def
 !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !
@@ -66,14 +65,14 @@ begin   make_shell
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !
     begin  node_group_ctl
-      array nod_grp_name_ctl    1
+      array nod_grp_name_ctl
         nod_grp_name_ctl     infinity_1    2
-      end array
-      array nod_layer_id_ctl  2
+      end array nod_grp_name_ctl
+      array nod_layer_id_ctl
         nod_layer_id_ctl    16
         nod_layer_id_ctl   -16
-      end array
-    end
+      end array nod_layer_id_ctl
+    end node_group_ctl
 !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !   default element groups:
@@ -86,13 +85,13 @@ begin   make_shell
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !
     begin element_group_ctl
-      array ele_grp_name_ctl    3
+      array ele_grp_name_ctl
         ele_grp_name_ctl     inner_core     5
         ele_grp_name_ctl     outer_core    13
         ele_grp_name_ctl     external      17
-      end array
+      end array ele_grp_name_ctl
 !
-      array ele_layer_id_ctl  17
+      array ele_layer_id_ctl
         ele_layer_id_ctl    0
         ele_layer_id_ctl    1
         ele_layer_id_ctl    2
@@ -110,31 +109,30 @@ begin   make_shell
         ele_layer_id_ctl   14
         ele_layer_id_ctl   15
         ele_layer_id_ctl   16
-      end array
+      end array ele_layer_id_ctl
     end element_group_ctl
 !
     begin surface_group_ctl
-      array surf_grp_name_ctl    3
+      array surf_grp_name_ctl
         surf_grp_name_ctl     ICB_surf       1
         surf_grp_name_ctl     CMB_surf       2
         surf_grp_name_ctl     infinity_surf  3
       end array surf_grp_name_ctl
 !
-      array surf_layer_id_ctl  3
+      array surf_layer_id_ctl
         surf_layer_id_ctl    IN     5
         surf_layer_id_ctl    OUT    12
         surf_layer_id_ctl    OUT    16
       end array surf_layer_id_ctl
-    end
-!
-  end
+    end surface_group_ctl
+  end boundaries_ctl
 !
   begin  coarse_shell_ctl
-    array sp_r_coarse_ratio     3
+    array sp_r_coarse_ratio 
       sp_r_coarse_ratio    2   2
       sp_r_coarse_ratio    2   1
       sp_r_coarse_ratio    1   2
 	end array sp_r_coarse_ratio
   end coarse_shell_ctl
 !
-end
+end  make_shell

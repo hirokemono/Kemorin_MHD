@@ -12,37 +12,45 @@ periodic_cube \
 \
 partitioner \
 pickup_surface \
-refiner
-
-LIBS_MESH_UTIL = \
-'$$(LIB_UTILS)'  \
-'$$(LIB_VIZ)'    \
-'$$(LIB_PARA)'   \
-'$$(LIB_SOLVER)' \
-'$$(LIB_MESH)'
+refiner \
+\
+LIC_noise
 
 LIBS_MESH_CHECK = \
 '$$(LIB_PARA)'   \
 '$$(LIB_SOLVER)' \
 '$$(LIB_MESH)'
 
-LIB_FILES_MESH_UTIL = \
-'$$(LIB_UTILS_FILE)'  \
-'$$(LIB_VIZ_FILE)'    \
-'$$(LIB_PARA_FILE)'   \
-'$$(LIB_SOLVER_FILE)' \
-'$$(LIB_MESH_FILE)'
+LIBS_MESH_UTIL = \
+'$$(LIB_UTILS)'  \
+'$$(LIB_VIZ)'    \
+'$$(LIBS_MESH_CHECK)'
+
+LIBS_CUBE_NOISE = \
+'$$(LIBS_MESH_UTIL)'  \
+'$$(LIB_MT_STREAM)'
 
 LIB_FILES_MESH_CHECK = \
 '$$(LIB_PARA_FILE)'   \
 '$$(LIB_SOLVER_FILE)' \
 '$$(LIB_MESH_FILE)'
 
+LIB_FILES_MESH_UTIL = \
+'$$(LIB_UTILS_FILE)'  \
+'$$(LIB_VIZ_FILE)'    \
+'$$(LIB_FILES_MESH_CHECK)'
+
+LIB_FILES_CUBE_NOISE = \
+'$$(LIB_FILES_MESH_UTIL)'  \
+'$$(LIB_MT_STREAM_FILE)'
+
 ifdef FORTRAN_C_CONNECT
   LIBS_MESH_UTIL+=        '$$(LIB_KEMO_C)'
   LIBS_MESH_CHECK+=       '$$(LIB_KEMO_C)'
+  LIBS_CUBE_NOISE+=       '$$(LIB_KEMO_C)'
   LIB_FILES_MESH_UTIL+=   '$$(LIB_KEMO_C_FILE)'
   LIB_FILES_MESH_CHECK+=  '$$(LIB_KEMO_C_FILE)'
+  LIB_FILES_CUBE_NOISE+=  '$$(LIB_KEMO_C_FILE)'
 endif
 
 #
@@ -78,7 +86,8 @@ target_list:
 
 target_task:
 	@echo mesh_utils: \
-	'cubed_sph_utils sph_utils plane_mesh partitioners refineres pickup_sf' \
+	'noise_utils cubed_sph_utils sph_utils plane_mesh ' \
+	'partitioners refineres pickup_sf' \
 	'$$(TARGET_PERI_CUBE)' \
 	>> $(MAKENAME)
 	@for dir in $(SUBDIRS); do \
@@ -92,14 +101,20 @@ target_task:
 
 
 lib_name:
-	@echo  LIBS_MESH_UTIL=  \\          >> $(MAKENAME)
-	@echo  $(LIBS_MESH_UTIL)            >> $(MAKENAME)
 	@echo  LIBS_MESH_CHECK=  \\         >> $(MAKENAME)
 	@echo  $(LIBS_MESH_CHECK)           >> $(MAKENAME)
-	@echo  LIB_FILES_MESH_UTIL=  \\     >> $(MAKENAME)
-	@echo  $(LIB_FILES_MESH_UTIL)       >> $(MAKENAME)
 	@echo  LIB_FILES_MESH_CHECK=  \\    >> $(MAKENAME)
 	@echo  $(LIB_FILES_MESH_CHECK)      >> $(MAKENAME)
+	@echo  '#' >> $(MAKENAME)
+	@echo  LIBS_MESH_UTIL=  \\          >> $(MAKENAME)
+	@echo  $(LIBS_MESH_UTIL)            >> $(MAKENAME)
+	@echo  LIB_FILES_MESH_UTIL=  \\     >> $(MAKENAME)
+	@echo  $(LIB_FILES_MESH_UTIL)       >> $(MAKENAME)
+	@echo  '#' >> $(MAKENAME)
+	@echo  LIBS_CUBE_NOISE=  \\         >> $(MAKENAME)
+	@echo  $(LIBS_CUBE_NOISE)           >> $(MAKENAME)
+	@echo  LIB_FILES_CUBE_NOISE=  \\    >> $(MAKENAME)
+	@echo  $(LIB_FILES_CUBE_NOISE)      >> $(MAKENAME)
 	@echo  '#' >> $(MAKENAME)
 
 

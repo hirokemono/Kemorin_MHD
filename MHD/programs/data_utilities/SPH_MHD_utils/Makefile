@@ -30,6 +30,7 @@ LIBS_SPH_UTILS = \
 '$$(LIB_PARA)'    \
 '$$(LIB_SOLVER)'  \
 '$$(LIB_MESH)'    \
+'$$(LIB_MT_STREAM)' \
 '$$(LIB_FFTPACK)' \
 '$$(LIB_ISPACK)'
 
@@ -40,6 +41,7 @@ LIB_FILES_SPH_UTILS = \
 '$$(LIB_PARA_FILE)'   \
 '$$(LIB_SOLVER_FILE)' \
 '$$(LIB_MESH_FILE)'   \
+'$$(LIB_MT_STREAM_FILE)' \
 '$$(LIB_FFTPACK_FILE)' \
 '$$(LIB_ISPACK_FILE)'
 

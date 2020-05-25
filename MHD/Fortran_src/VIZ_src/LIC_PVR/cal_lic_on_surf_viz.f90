@@ -119,12 +119,10 @@
           end if
         end do
         if(mask_flag(lic_p, r_org)) then
-          call noise_sampling                                           &
-     &       (lic_p%noise_size, lic_p%freq_noise, lic_p%noise_data,     &
-     &       xx_org, xyz_min, xyz_max, n_v)
-          call noise_grad_sampling                                      &
-     &      (lic_p%noise_size, lic_p%freq_noise, lic_p%noise_grad_data, &
-     &       xx_org, xyz_min, xyz_max, n_grad)
+          call noise_and_grad_sampling                                  &
+     &       (lic_p%noise_size, lic_p%freq_noise,                       &
+     &        lic_p%noise_data, lic_p%noise_grad_data,                  &
+     &        xx_org, xyz_min, xyz_max, n_v, n_grad)
         end if
         o_tgt = o_tgt + n_v * kernal_node(kernal_size/2.0)
         n_grad = n_grad + n_grad * kernal_node(kernal_size/2.0)
@@ -378,10 +376,10 @@
           end if
         end do
         if(mask_flag(lic_p, ref_value)) then
-          call noise_sampling(lic_p%noise_size, lic_p%freq_noise, lic_p%noise_data,               &
-          &     x_tgt, xyz_min, xyz_max, n_v)
-          call noise_grad_sampling(lic_p%noise_size, lic_p%freq_noise, lic_p%noise_grad_data,     &
-          &     x_tgt, xyz_min, xyz_max, g_v)
+          call noise_and_grad_sampling                                  &
+     &       (lic_p%noise_size, lic_p%freq_noise,                       &
+     &        lic_p%noise_data, lic_p%noise_grad_data,                  &
+     &        x_tgt, xyz_min, xyz_max, n_v, g_v)
         end if
         nv_sum = nv_sum + n_v
         len_sum = len_sum + step_len
@@ -455,10 +453,10 @@
             end if
           end do
           if(mask_flag(lic_p, ref_value)) then
-            call noise_sampling(lic_p%noise_size, lic_p%freq_noise, lic_p%noise_data,               &
-            &     x_tgt, xyz_min, xyz_max, n_v)
-            call noise_grad_sampling(lic_p%noise_size, lic_p%freq_noise, lic_p%noise_grad_data,     &
-            &     x_tgt, xyz_min, xyz_max, g_v)
+            call noise_and_grad_sampling                                &
+     &         (lic_p%noise_size, lic_p%freq_noise,                     &
+     &          lic_p%noise_data, lic_p%noise_grad_data,                &
+     &          x_tgt, xyz_min, xyz_max, n_v, g_v)
           end if
           !call noise_nd_sampling(n_size, n_node, x_tgt, xyz_min, xyz_max, n_v)
           if(iflag_dir .eq. iflag_forward_line) then

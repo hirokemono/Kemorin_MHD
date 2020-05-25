@@ -4,7 +4,7 @@
 
 MT_STREAM_DIR = $$(EXT_DIR)/mt_stream_f90-1.11
 
-LIB_MT_STREAM =       -lmtstream-1.11
+LIB_MT_STREAM =       -lmtstream_f-1.11
 LIB_MT_STREAM_FILE = libmtstream_f-1.11.a
 
 MTSTREAMFLAG = '-fno-range-check $$(F90OPTFLAGS)'
