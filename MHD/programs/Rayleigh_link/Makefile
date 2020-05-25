@@ -10,15 +10,6 @@ TARGET_CVT_RAYLEIGH_FLD =   convert_rayleigh_field
 TARGET_RAYLEIGH_VIZ =       viz_rayleigh
 TARGET_PICK_RAYLEIGH_SPH =  pickup_rayleigh_spectr
 
-LIB_FILES_RAYLEIGH_LINK = \
-'$$(LIB_VIZ_FILE)'    \
-'$$(LIB_UTILS_FILE)' \
-'$$(LIB_PARA_FILE)'     \
-'$$(LIB_SOLVER_FILE)'   \
-'$$(LIB_MESH_FILE)'     \
-'$$(LIB_MT_STREAM)'     \
-'$$(LIB_FFTPACK_FILE)'
-
 
 LIBS_RAYLEIGH_LINK = \
 '$$(LIB_VIZ)'    \
@@ -26,8 +17,17 @@ LIBS_RAYLEIGH_LINK = \
 '$$(LIB_PARA)'      \
 '$$(LIB_SOLVER)'    \
 '$$(LIB_MESH)'      \
-'$$(LIB_MT_STREAM_FILE)' \
+'$$(LIB_MT_STREAM)' \
 '$$(LIB_FFTPACK)'
+
+LIB_FILES_RAYLEIGH_LINK = \
+'$$(LIB_VIZ_FILE)'    \
+'$$(LIB_UTILS_FILE)' \
+'$$(LIB_PARA_FILE)'     \
+'$$(LIB_SOLVER_FILE)'   \
+'$$(LIB_MESH_FILE)'     \
+'$$(LIB_MT_STREAM_FILE)'     \
+'$$(LIB_FFTPACK_FILE)'
 
 ifdef FORTRAN_C_CONNECT
   LIBS_RAYLEIGH_LINK+=        '$$(LIB_KEMO_C)'
