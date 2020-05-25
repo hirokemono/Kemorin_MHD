@@ -119,8 +119,8 @@
           end if
         end do
         if(mask_flag(lic_p, r_org)) then
-          call noise_and_grad_sampling                                  &
-     &       (lic_p%noise_size, lic_p%freq_noise,                       &
+          call noise_and_grad_sampling(lic_p%noise_t,                   &
+     &        lic_p%noise_size, lic_p%freq_noise,                       &
      &        lic_p%noise_data, lic_p%noise_grad_data,                  &
      &        xx_org, xyz_min, xyz_max, n_v, n_grad)
         end if
@@ -376,8 +376,8 @@
           end if
         end do
         if(mask_flag(lic_p, ref_value)) then
-          call noise_and_grad_sampling                                  &
-     &       (lic_p%noise_size, lic_p%freq_noise,                       &
+          call noise_and_grad_sampling(lic_p%noise_t,                   &
+     &        lic_p%noise_size, lic_p%freq_noise,                       &
      &        lic_p%noise_data, lic_p%noise_grad_data,                  &
      &        x_tgt, xyz_min, xyz_max, n_v, g_v)
         end if
@@ -453,8 +453,8 @@
             end if
           end do
           if(mask_flag(lic_p, ref_value)) then
-            call noise_and_grad_sampling                                &
-     &         (lic_p%noise_size, lic_p%freq_noise,                     &
+            call noise_and_grad_sampling(lic_p%noise_t,                 &
+     &          lic_p%noise_size, lic_p%freq_noise,                     &
      &          lic_p%noise_data, lic_p%noise_grad_data,                &
      &          x_tgt, xyz_min, xyz_max, n_v, g_v)
           end if

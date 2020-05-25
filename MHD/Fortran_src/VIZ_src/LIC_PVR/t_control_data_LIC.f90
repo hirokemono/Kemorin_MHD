@@ -49,7 +49,11 @@
 !!        end array masking_range
 !!      end masking_control
 !!      ...
-!!   end array masking_control
+!!    end array masking_control
+!!
+!!    begin cube_noise_ctl
+!!      ...
+!!    end cube_noise_ctl
 !!
 !!    noise_type             'external_file'
 !!    noise_file_prefix      'noise/noise_64'
@@ -87,6 +91,7 @@
       use t_control_array_real
       use t_control_array_integer
       use t_control_data_LIC_masking
+      use t_control_data_LIC_noise
       use skip_comment_f
 !
       implicit  none
@@ -102,6 +107,8 @@
 !
         integer(kind = kint) :: num_masking_ctl = 0
         type(lic_masking_ctl), allocatable :: mask_ctl(:)
+!
+        type(cube_noise_ctl) :: noise_ctl
 !
         type(read_character_item) :: noise_type_ctl
         type(read_character_item) :: noise_file_prefix_ctl
@@ -139,6 +146,7 @@
      &                        = 'opacity_component'
 !
       character(len=kchara) :: hd_masking_ctl = 'masking_control'
+      character(len=kchara) :: hd_cube_noise =  'cube_noise_ctl'
 !
       character(len=kchara) :: hd_noise_type =      'noise_type'
       character(len=kchara) :: hd_noise_file_head = 'noise_file_prefix'
@@ -170,7 +178,7 @@
 !
       private :: hd_LIC_field, hd_color_field, hd_color_component
       private :: hd_opacity_field, hd_opacity_component
-      private :: hd_masking_ctl
+      private :: hd_masking_ctl, hd_cube_noise
       private :: hd_noise_type, hd_noise_file_head, hd_noise_grid_size
       private :: hd_kernel_function_type, hd_kernal_file_name
       private :: hd_vr_sample_mode
@@ -252,6 +260,9 @@
         call read_real_ctl_type(c_buf, hd_referection_parameter,        &
      &      lic_ctl%reflection_parameter_ctl)
 !
+        call read_cube_noise_control_data                               &
+     &     (id_control, hd_cube_noise, lic_ctl%noise_ctl, c_buf)
+!
         if(check_array_flag(c_buf, hd_masking_ctl)) then
           call read_lic_masking_ctl_array                               &
      &       (id_control, hd_masking_ctl, lic_ctl, c_buf)
@@ -325,6 +336,7 @@
       lic_ctl%reflection_ref_type_ctl%iflag =  0
       lic_ctl%reflection_parameter_ctl%iflag = 0
 !
+      call reset_cube_noise_control_data(lic_ctl%noise_ctl)
 !
       if(lic_ctl%num_masking_ctl .gt. 0) then
         call dealloc_lic_masking_ctls                                   &
@@ -379,6 +391,8 @@
 !
       call MPI_BCAST(lic_ctl%num_masking_ctl,  1,                       &
      &    CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+!
+      call bcast_cube_noise_control_data(lic_ctl%noise_ctl)
 !
       if(my_rank .ne. 0) call alloc_lic_masking_ctl(lic_ctl)
       do i = 1, lic_ctl%num_masking_ctl
@@ -441,6 +455,9 @@
      &                    new_lic_c%reflection_ref_type_ctl)
       call copy_real_ctl(org_lic_c%reflection_parameter_ctl,            &
      &                    new_lic_c%reflection_parameter_ctl)
+!
+      call copy_cube_noise_control_data(org_lic_c%noise_ctl,            &
+     &    new_lic_c%noise_ctl)
 !
       new_lic_c%num_masking_ctl = org_lic_c%num_masking_ctl
       if(new_lic_c%num_masking_ctl .gt. 0) then

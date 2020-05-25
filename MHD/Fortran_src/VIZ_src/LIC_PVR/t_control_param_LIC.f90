@@ -29,6 +29,7 @@
       use t_control_param_LIC_masking
       use t_noise_node_data
       use t_LIC_kernel_image
+      use t_3d_noise
       use lic_noise_generator
 !
       implicit  none
@@ -49,6 +50,10 @@
         integer(kind = kint) :: num_masking =   0
 !>        Structure of masking parameter
         type(lic_masking_parameter), allocatable :: masking(:)
+!
+!
+!>        Structure of noise on cube
+        type(noise_cube) :: noise_t
 !
 !>        integer flag for LIC kernel function
 !>          cflag_from_file: Read noise data file
@@ -277,6 +282,12 @@
       lic_p%reflection_file_name                                        &
      &       = add_grd_extension(lic_p%noise_file_name)
 !
+!
+      if(my_rank .eq. 0) then
+        call set_control_3d_cube_noise(lic_ctl%noise_ctl, lic_p%noise_t)
+        call sel_const_3d_cube_noise(lic_p%noise_t)
+      end if
+      call bcast_3d_cube_noise(lic_p%noise_t)
 !
       lic_p%freq_noise = one
       if(lic_ctl%noise_resolution_ctl%iflag .gt. 0) then

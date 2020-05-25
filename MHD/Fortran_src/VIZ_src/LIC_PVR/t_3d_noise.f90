@@ -10,10 +10,10 @@
 !!      subroutine set_control_3d_cube_noise(noise_ctl, nze)
 !!        type(cube_noise_ctl), intent(in) :: noise_ctl
 !!        type(noise_cube), intent(inout) :: nze
-!!      subroutine sel_const_3d_cube_noise(my_rank, nze)
-!!        integer, intent(in) :: my_rank
-!!        type(noise_cube), intent(inout) :: nze
+!!      subroutine sel_const_3d_cube_noise(nze)
 !!      subroutine dealloc_3d_cube_noise(nze)
+!!      subroutine bcast_3d_cube_noise(nze)
+!!        type(noise_cube), intent(inout) :: nze
 !!        type(noise_cube), intent(inout) :: nze
 !!@endverbatim
 !
@@ -21,6 +21,7 @@
 !
       use m_precision
       use m_constants
+      use calypso_mpi
 !
       implicit none
 !
@@ -43,7 +44,6 @@
       private :: alloc_3d_cube_noise, alloc_3d_cube_noise_IO
       private :: dealloc_3d_cube_noise_IO, set_3d_cube_resolution
       private :: write_3d_charanoise, read_alloc_3d_charanoise
-      private :: cvt_rnoise_to_chara, cvt_cnoise_to_real
 !
 !  ---------------------------------------------------------------------
 !
@@ -87,12 +87,11 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine sel_const_3d_cube_noise(my_rank, nze)
+      subroutine sel_const_3d_cube_noise(nze)
 !
       use delete_data_files
       use cal_3d_noise
 !
-      integer, intent(in) :: my_rank
       type(noise_cube), intent(inout) :: nze
 !
 !
@@ -126,6 +125,36 @@
       deallocate(nze%rnoise, nze%rnoise_grad)
 !
       end subroutine dealloc_3d_cube_noise
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine bcast_3d_cube_noise(nze)
+!
+      use transfer_to_long_integers
+!
+      type(noise_cube), intent(inout) :: nze
+!
+      integer(kind = kint_gl) :: n3_cube
+!
+!
+      call calypso_mpi_bcast_character                                  &
+     &   (nze%noise_file_name, cast_long(kchara), 0)
+!
+      call calypso_mpi_bcast_real(nze%size_cube, cast_long(ithree), 0)
+      call calypso_mpi_bcast_real(nze%asize_cube, cast_long(ithree), 0)
+!
+      call calypso_mpi_bcast_int(nze%nidx_xyz, cast_long(ithree), 0)
+      call MPI_BCAST(nze%i_stepsize, 1, CALYPSO_INTEGER,                &
+     &               0, CALYPSO_COMM, ierr_MPI)
+      call MPI_BCAST(nze%n_cube, 1, CALYPSO_GLOBAL_INT,                 &
+     &               0, CALYPSO_COMM, ierr_MPI)
+!
+      if(my_rank .ne. 0) call alloc_3d_cube_noise(nze)
+      n3_cube = 3 * nze%n_cube
+      call calypso_mpi_bcast_real(nze%rnoise(1), nze%n_cube, 0)
+      call calypso_mpi_bcast_real(nze%rnoise_grad(1,1), n3_cube, 0)
+!
+      end subroutine bcast_3d_cube_noise
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
@@ -253,46 +282,6 @@
       call close_binary_file
 !
       end subroutine read_alloc_3d_charanoise
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      subroutine cvt_rnoise_to_chara(nnod_gl, rnoise, cnoise)
-!
-      integer(kind = kint_gl), intent(in) :: nnod_gl
-      real(kind = kreal), intent(in) :: rnoise(nnod_gl)
-      character(len = 1), intent(inout) :: cnoise(nnod_gl)
-!
-      integer(kind = kint_gl) :: inod_gl, inoise
-!
-!$omp parallel do private(inod_gl, inoise)
-      do inod_gl = 1, nnod_gl
-        inoise = int((rnoise(inod_gl) * 256),KIND(inoise))
-        cnoise(inod_gl) = char(inoise)
-      end do
-!$omp end parallel do
-!
-      end subroutine cvt_rnoise_to_chara
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine cvt_cnoise_to_real(nnod_gl, cnoise, rnoise)
-!
-      integer(kind = kint_gl), intent(in) :: nnod_gl
-      character(len = 1), intent(in) :: cnoise(nnod_gl)
-      real(kind = kreal), intent(inout) :: rnoise(nnod_gl)
-!
-      real(kind = kreal) :: pol
-      integer(kind = kint_gl) :: inod_gl
-!
-      pol = 1.0d0 / 256.0
-!$omp parallel do private(inod_gl)
-      do inod_gl = 1, nnod_gl
-        rnoise(inod_gl) = dble( ichar(cnoise(inod_gl)) ) * pol
-      end do
-!$omp end parallel do
-!
-      end subroutine cvt_cnoise_to_real
 !
 !  ---------------------------------------------------------------------
 !

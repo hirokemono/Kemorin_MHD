@@ -19,6 +19,15 @@
 !!        real(kind = kreal), intent(in) :: asize_cube(3)
 !!        real(kind = kreal), intent(in) :: rnoise(nnod_gl)
 !!        real(kind = kreal), intent(inout) :: rnoise_grad(nnod_gl,3)
+!!
+!!      subroutine cvt_rnoise_to_chara(nnod_gl, rnoise, cnoise)
+!!        integer(kind = kint_gl), intent(in) :: nnod_gl
+!!        real(kind = kreal), intent(in) :: rnoise(nnod_gl)
+!!        character(len = 1), intent(inout) :: cnoise(nnod_gl)
+!!      subroutine cvt_cnoise_to_real(nnod_gl, cnoise, rnoise)
+!!        integer(kind = kint_gl), intent(in) :: nnod_gl
+!!        character(len = 1), intent(in) :: cnoise(nnod_gl)
+!!        real(kind = kreal), intent(inout) :: rnoise(nnod_gl)
 !!@endverbatim
 !
       module cal_3d_noise
@@ -203,6 +212,46 @@
       halton_sequence = res
 !
       end function halton_sequence
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine cvt_rnoise_to_chara(nnod_gl, rnoise, cnoise)
+!
+      integer(kind = kint_gl), intent(in) :: nnod_gl
+      real(kind = kreal), intent(in) :: rnoise(nnod_gl)
+      character(len = 1), intent(inout) :: cnoise(nnod_gl)
+!
+      integer(kind = kint_gl) :: inod_gl, inoise
+!
+!$omp parallel do private(inod_gl, inoise)
+      do inod_gl = 1, nnod_gl
+        inoise = int((rnoise(inod_gl) * 256),KIND(inoise))
+        cnoise(inod_gl) = char(inoise)
+      end do
+!$omp end parallel do
+!
+      end subroutine cvt_rnoise_to_chara
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine cvt_cnoise_to_real(nnod_gl, cnoise, rnoise)
+!
+      integer(kind = kint_gl), intent(in) :: nnod_gl
+      character(len = 1), intent(in) :: cnoise(nnod_gl)
+      real(kind = kreal), intent(inout) :: rnoise(nnod_gl)
+!
+      real(kind = kreal) :: pol
+      integer(kind = kint_gl) :: inod_gl
+!
+      pol = 1.0d0 / 256.0
+!$omp parallel do private(inod_gl)
+      do inod_gl = 1, nnod_gl
+        rnoise(inod_gl) = dble( ichar(cnoise(inod_gl)) ) * pol
+      end do
+!$omp end parallel do
+!
+      end subroutine cvt_cnoise_to_real
 !
 !  ---------------------------------------------------------------------
 !

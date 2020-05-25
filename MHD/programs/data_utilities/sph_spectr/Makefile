@@ -35,16 +35,20 @@ LIBS_SPH_UTIL = \
 '$$(LIB_PARA)'   \
 '$$(LIB_SOLVER)' \
 '$$(LIB_MESH)'    \
-'$$(LIB_FFTPACK)' \
+'$$(LIB_MT_STREAM)' \
+'$$(LIB_FFTPACK)'   \
 '$$(LIB_ISPACK)'
+
 
 LIB_FILES_SPH_UTIL = \
 '$$(LIB_VIZ_FILE)'    \
 '$$(LIB_PARA_FILE)'   \
 '$$(LIB_SOLVER_FILE)' \
 '$$(LIB_MESH_FILE)'   \
-'$$(LIB_FFTPACK_FILE)' \
+'$$(LIB_MT_STREAM_FILE)' \
+'$$(LIB_FFTPACK_FILE)'   \
 '$$(LIB_ISPACK_FILE)'
+
 
 ifdef FORTRAN_C_CONNECT
   LIBS_SPH_UTIL+=        '$$(LIB_KEMO_C)'

@@ -16,7 +16,7 @@
 !!        type(cube_noise_ctl), intent(inout) :: noise_ctl
 !!        type(buffer_for_control), intent(inout)  :: c_buf
 !!      subroutine reset_cube_noise_control_data(noise_ctl)
-!!      subroutine dup_cube_noise_control_data(org_lic_c, new_lic_c)
+!!      subroutine copy_cube_noise_control_data(org_lic_c, new_lic_c)
 !!        type(cube_noise_ctl), intent(in) :: org_lic_c
 !!        type(cube_noise_ctl), intent(inout) :: new_lic_c
 !!      subroutine bcast_cube_noise_control_data(noise_ctl)
@@ -195,7 +195,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine dup_cube_noise_control_data(org_lic_c, new_lic_c)
+      subroutine copy_cube_noise_control_data(org_lic_c, new_lic_c)
 !
       type(cube_noise_ctl), intent(in) :: org_lic_c
       type(cube_noise_ctl), intent(inout) :: new_lic_c
@@ -214,7 +214,7 @@
       call copy_real_ctl(org_lic_c%noise_cube_size_ctl,                 &
      &                   new_lic_c%noise_cube_size_ctl)
 !
-      end subroutine dup_cube_noise_control_data
+      end subroutine copy_cube_noise_control_data
 !
 !  ---------------------------------------------------------------------
 !

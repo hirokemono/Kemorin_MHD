@@ -18,14 +18,17 @@ LIBS_MHD = \
 '$$(LIB_VIZ)'    \
 '$$(LIB_PARA)'   \
 '$$(LIB_SOLVER)' \
-'$$(LIB_MESH)'
+'$$(LIB_MESH)'   \
+'$$(LIB_MT_STREAM)'
+
 
 LIB_FILES_MHD = \
 '$$(LIB_MHD_FILE)'    \
 '$$(LIB_VIZ_FILE)'    \
 '$$(LIB_PARA_FILE)'   \
 '$$(LIB_SOLVER_FILE)' \
-'$$(LIB_MESH_FILE)'
+'$$(LIB_MESH_FILE)'   \
+'$$(LIB_MT_STREAM_FILE)'
 
 ifdef FORTRAN_C_CONNECT
   LIBS_MHD+=        '$$(LIB_KEMO_C)'

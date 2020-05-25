@@ -16,6 +16,7 @@ LIB_FILES_RAYLEIGH_LINK = \
 '$$(LIB_PARA_FILE)'     \
 '$$(LIB_SOLVER_FILE)'   \
 '$$(LIB_MESH_FILE)'     \
+'$$(LIB_MT_STREAM)'     \
 '$$(LIB_FFTPACK_FILE)'
 
 
@@ -25,6 +26,7 @@ LIBS_RAYLEIGH_LINK = \
 '$$(LIB_PARA)'      \
 '$$(LIB_SOLVER)'    \
 '$$(LIB_MESH)'      \
+'$$(LIB_MT_STREAM_FILE)' \
 '$$(LIB_FFTPACK)'
 
 ifdef FORTRAN_C_CONNECT

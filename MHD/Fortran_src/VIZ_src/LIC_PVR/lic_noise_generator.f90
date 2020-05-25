@@ -12,8 +12,8 @@
 !!
 !!      subroutine noise_nd_sampling(noise_size, f_noise, n_node,       &
 !!     &          xx_org, xyz_min, xyz_max, noise_value)
-!!      subroutine noise_and_grad_sampling                              &
-!!     &         (n_cube, f_noise, noise_data, noise_grad,              &
+!!      subroutine noise_and_grad_sampling(noise_t,                     &
+!!     &          n_cube, f_noise, noise_data, noise_grad,              &
 !!     &          xx_org, xyz_min, xyz_max, noise_value, grad_value)
 !
       module lic_noise_generator
@@ -487,9 +487,12 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine noise_and_grad_sampling                                &
-     &         (n_cube, f_noise, noise_data, noise_grad,                &
-     &          xx_org, xyz_min, xyz_max, noise_value, grad_value)
+      subroutine noise_and_grad_sampling(noise_t,                       &
+     &          n_cube, f_noise, noise_data, noise_grad, xx_org,        &
+     &          xyz_min, xyz_max, noise_value, grad_value)
+!
+      use t_3d_noise
+      use cal_noise_value
 !
       integer(kind = kint), intent(in) :: n_cube
       real(kind = kreal), intent(in) :: f_noise
@@ -497,10 +500,14 @@
       character(len=1), intent(in) :: noise_grad(n_cube*3)
       real(kind = kreal), intent(in) :: xx_org(3)
       real(kind = kreal), intent(in) :: xyz_min(3), xyz_max(3)
+      type(noise_cube), intent(in) :: noise_t
 !
       real(kind = kreal), intent(inout) :: noise_value
       real(kind = kreal), intent(inout) :: grad_value(3)
 !
+!
+!      call interpolate_noise_at_node                                   &
+!     &   (xx_org, noise_t, noise_value, grad_value)
 !
       call noise_sampling(n_cube, f_noise, noise_data,                  &
      &    xx_org, xyz_min, xyz_max, noise_value)
