@@ -30,6 +30,7 @@
 !!  begin cube_noise_ctl
 !!    noise_type             'external_file'
 !!    noise_file_prefix      'noise/noise_64'
+!!    hd_noise_file_fmt      'gzip'
 !!
 !!    noise_resolution          256
 !!    noise_step_size            20
@@ -60,6 +61,9 @@
         type(read_character_item) :: noise_type_ctl
 !>         prefix of noise file
         type(read_character_item) :: noise_file_name_ctl
+!>         prefix of noise file
+        type(read_character_item) :: noise_file_format_ctl
+!
 !>         number of grid of noise cube (each direction)
         type(read_integer_item) ::   noise_resolution_ctl
 !>         number of stepping for noide density
@@ -78,12 +82,15 @@
 !     3rd level for noise control
       character(len=kchara) :: hd_noise_type =      'noise_type'
       character(len=kchara) :: hd_noise_file_head = 'noise_file_prefix'
+      character(len=kchara) :: hd_noise_file_fmt =  'noise_file_format'
+!
       character(len=kchara) :: hd_noise_grid_size = 'noise_resolution'
       character(len=kchara) :: hd_noise_stepping =  'noise_step_size'
 !
       character(len=kchara) :: hd_noise_cube_size = 'noise_cube_size'
 !
-      private :: hd_noise_type, hd_noise_file_head, hd_noise_grid_size
+      private :: hd_noise_type, hd_noise_file_head, hd_noise_file_fmt
+      private :: hd_noise_grid_size
       private :: hd_noise_stepping, hd_noise_cube_size
 !
 !  ---------------------------------------------------------------------
@@ -141,6 +148,9 @@
      &     (c_buf, hd_noise_type, noise_ctl%noise_type_ctl)
         call read_chara_ctl_type                                        &
      &     (c_buf, hd_noise_file_head, noise_ctl%noise_file_name_ctl)
+        call read_chara_ctl_type                                        &
+     &     (c_buf, hd_noise_file_fmt, noise_ctl%noise_file_format_ctl)
+!
         call read_integer_ctl_type                                      &
      &     (c_buf, hd_noise_grid_size, noise_ctl%noise_resolution_ctl)
         call read_integer_ctl_type                                      &
@@ -163,6 +173,7 @@
 !
       noise_ctl%noise_type_ctl%iflag =        0
       noise_ctl%noise_file_name_ctl%iflag =   0
+      noise_ctl%noise_file_format_ctl%iflag = 0
       noise_ctl%noise_resolution_ctl%iflag =  0
       noise_ctl%noise_stepping_ctl%iflag =    0
       noise_ctl%noise_cube_size_ctl%iflag =   0
@@ -186,6 +197,8 @@
 !
       call bcast_ctl_type_c1(noise_ctl%noise_type_ctl)
       call bcast_ctl_type_c1(noise_ctl%noise_file_name_ctl)
+      call bcast_ctl_type_c1(noise_ctl%noise_file_format_ctl)
+!
       call bcast_ctl_type_i1(noise_ctl%noise_resolution_ctl)
       call bcast_ctl_type_i1(noise_ctl%noise_stepping_ctl)
 !
@@ -207,6 +220,8 @@
      &                    new_lic_c%noise_type_ctl)
       call copy_chara_ctl(org_lic_c%noise_file_name_ctl,                &
      &                    new_lic_c%noise_file_name_ctl)
+      call copy_chara_ctl(org_lic_c%noise_file_format_ctl,              &
+     &                    new_lic_c%noise_file_format_ctl)
       call copy_integer_ctl(org_lic_c%noise_resolution_ctl,             &
      &                      new_lic_c%noise_resolution_ctl)
       call copy_integer_ctl(org_lic_c%noise_stepping_ctl,               &

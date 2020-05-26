@@ -46,9 +46,9 @@
 !!   ...
 !!  end lighting_ctl
 !!
-!!  begin pvr_color_ctl
+!!  begin colormap_ctl
 !!   ...
-!!  end   pvr_color_ctl
+!!  end   colormap_ctl
 !!!
 !!  begin colorbar_ctl
 !!   ...
