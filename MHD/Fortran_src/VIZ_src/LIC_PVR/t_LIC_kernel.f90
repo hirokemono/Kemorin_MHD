@@ -42,7 +42,7 @@
         real(kind = kreal) :: x_peak
         real(kind = kreal) :: sigma
 !
-        integer(kind = kint) :: n_half = 256
+        integer(kind = kint) :: n_knl = 256
         real(kind = kreal), allocatable :: x_ary(:)
         real(kind = kreal), allocatable :: k_ary(:)
       end type LIC_kernel
@@ -87,16 +87,17 @@
         knl%x_peak = kernel_ctl%kernel_peak_ctl%realvalue
       end if
 !
-      knl%n_half = 256
+      knl%n_knl = 256
       if(kernel_ctl%half_kernel_resolution_ctl%iflag .gt. 0) then
-        knl%n_half = kernel_ctl%half_kernel_resolution_ctl%intvalue
+        knl%n_knl = kernel_ctl%half_kernel_resolution_ctl%intvalue
+        knl%n_knl = knl%n_knl + 1 - mod(knl%n_knl,2)
       end if
 !
       if(iflag_debug .gt. 0) then
         write(*,*) 'knl%iflag_kernel_type', knl%iflag_kernel_type
         write(*,*) 'knl%x_peak', knl%x_peak
         write(*,*) 'knl%sigma', knl%sigma
-        write(*,*) 'knl%n_half', knl%n_half
+        write(*,*) 'knl%n_knl', knl%n_knl
       end if
 !
       end subroutine set_control_LIC_kernel
@@ -112,10 +113,10 @@
 !
       if(knl%iflag_kernel_type .eq. iflag_triangle) then
         call cal_triangle_kernel                                        &
-     &     (knl%x_peak, knl%n_half, knl%x_ary, knl%k_ary)
+     &     (knl%x_peak, knl%n_knl, knl%x_ary, knl%k_ary)
       else
         call cal_gaussian_kernel                                        &
-     &     (knl%x_peak, knl%sigma, knl%n_half, knl%x_ary, knl%k_ary)
+     &     (knl%x_peak, knl%sigma, knl%n_knl, knl%x_ary, knl%k_ary)
       end if
 !
       if(iflag_debug .gt. 0) call check_LIC_kernel(knl)
@@ -140,7 +141,6 @@
 !
       type(LIC_kernel), intent(inout) :: knl
 !
-      integer(kind = kint_gl) :: num64
 !
       call MPI_BCAST(knl%iflag_kernel_type, 1, CALYPSO_INTEGER,         &
      &               0, CALYPSO_COMM, ierr_MPI)
@@ -152,12 +152,11 @@
       call MPI_BCAST(knl%sigma, 1, CALYPSO_REAL,                        &
      &               0, CALYPSO_COMM, ierr_MPI)
 !
-      call MPI_BCAST(knl%n_half, 1, CALYPSO_INTEGER,                    &
+      call MPI_BCAST(knl%n_knl, 1, CALYPSO_INTEGER,                     &
      &               0, CALYPSO_COMM, ierr_MPI)
 !
       if(my_rank .gt. 0) call alloc_LIC_kernel(knl)
-      num64 = cast_long(2*knl%n_half+1)
-      call calypso_mpi_bcast_real(knl%k_ary(-knl%n_half), num64, 0)
+      call calypso_mpi_bcast_real(knl%k_ary, cast_long(knl%n_knl), 0)
 !
       end subroutine bcast_LIC_kernel
 !
@@ -169,7 +168,7 @@
 !
       integer(kind = kint) :: i
 !
-      do i = -knl%n_half, knl%n_half
+      do i = 1, knl%n_knl
         write(*,*) i, knl%x_ary(i), knl%k_ary(i)
       end do
 !
@@ -183,12 +182,12 @@
       type(LIC_kernel), intent(inout) :: knl
 !
 !
-      allocate(knl%x_ary(-knl%n_half:knl%n_half))
-      allocate(knl%k_ary(-knl%n_half:knl%n_half))
+      allocate(knl%x_ary(knl%n_knl))
+      allocate(knl%k_ary(knl%n_knl))
 !
 !$omp parallel workshare
-      knl%x_ary(-knl%n_half:knl%n_half) = 0.0d0
-      knl%k_ary(-knl%n_half:knl%n_half) = 0.0d0
+      knl%x_ary(1:knl%n_knl) = 0.0d0
+      knl%k_ary(1:knl%n_knl) = 0.0d0
 !$omp end parallel workshare
 !
       end subroutine alloc_LIC_kernel
@@ -197,12 +196,12 @@
 !  ---------------------------------------------------------------------
 !
       subroutine cal_gaussian_kernel                                    &
-     &         (x_peak, sigma, n_half, x_ary, k_ary)
+     &         (x_peak, sigma, n_knl, x_ary, k_ary)
 !
       real(kind = kreal), intent(in) :: x_peak, sigma
-      integer(kind = kint), intent(in) :: n_half
-      real(kind = kreal), intent(inout) :: x_ary(-n_half:n_half)
-      real(kind = kreal), intent(inout) :: k_ary(-n_half:n_half)
+      integer(kind = kint), intent(in) :: n_knl
+      real(kind = kreal), intent(inout) :: x_ary(n_knl)
+      real(kind = kreal), intent(inout) :: k_ary(n_knl)
 
       real(kind = kreal) :: pi, dnorm, e_func
       integer(kind = kint) :: i
@@ -212,22 +211,22 @@
       dnorm = one / (sigma * sqrt(two * pi))
 !
 !$omp parallel do private(i)
-      do i = -n_half, n_half
-        x_ary(i) = dble(i) / dble(n_half)
+      do i = 1, n_knl
+        x_ary(i) = - one + two * dble(i-1) / dble(n_knl-1)
         k_ary(i) = dnorm * exp(-half * ((x_ary(i)-x_peak) / sigma)**2)
       end do
 !$omp end parallel do
 !
-      dnorm = one / dble(3 * n_half)
+      dnorm = one / dble(3 * n_knl)
       e_func = 0.0d0
-      do i = -n_half, n_half-2, 2
+      do i = 1, n_knl-2, 2
         e_func = e_func                                                 &
      &          + dnorm * (k_ary(i) + four * k_ary(i+1) + k_ary(i+2))
       end do
       dnorm = one / e_func
 !
 !$omp parallel do private(i)
-      do i = -n_half, n_half
+      do i = 1, n_knl
         k_ary(i) = dnorm * k_ary(i)
       end do
 !$omp end parallel do
@@ -236,32 +235,32 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine cal_triangle_kernel(x_peak, n_half, x_ary, k_ary)
+      subroutine cal_triangle_kernel(x_peak, n_knl, x_ary, k_ary)
 !
       real(kind = kreal), intent(in) :: x_peak
-      integer(kind = kint), intent(in) :: n_half
-      real(kind = kreal), intent(inout) :: x_ary(-n_half:n_half)
-      real(kind = kreal), intent(inout) :: k_ary(-n_half:n_half)
+      integer(kind = kint), intent(in) :: n_knl
+      real(kind = kreal), intent(inout) :: x_ary(n_knl)
+      real(kind = kreal), intent(inout) :: k_ary(n_knl)
 
       real(kind = kreal) :: dnorm
       integer(kind = kint) :: i, i_peak
 !
 !
-      i_peak = int(x_peak * dble(x_peak))
-      if(x_peak .lt. 0) i_peak = i_peak - 1
+      i_peak = int(half * dble(n_knl-1) * (one + x_peak)) + 1
+      i_peak = min(i_peak, n_knl)
 !
       dnorm = one / (one + x_peak)
 !$omp parallel do private(i)
-      do i = -n_half, i_peak
-        x_ary(i) = dble(i) / dble(n_half)
+      do i = 1, i_peak
+        x_ary(i) = - one + two * dble(i-1) / dble(n_knl-1)
         k_ary(i) = dnorm * (one + x_ary(i))
       end do
 !$omp end parallel do
 !
       dnorm = one / (one - x_peak)
 !$omp parallel do private(i)
-      do i = i_peak+1, n_half
-        x_ary(i) = dble(i) / dble(n_half)
+      do i = i_peak+1, n_knl
+        x_ary(i) = - one + two * dble(i-1) / dble(n_knl-1)
         k_ary(i) = dnorm * (one - x_ary(i))
       end do
 !$omp end parallel do

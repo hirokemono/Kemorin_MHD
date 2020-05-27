@@ -4,6 +4,8 @@
 !
 !      Written by H. Matsui in May, 2020
 !
+!!      subroutine interpolate_kernel(x, knl, asize, value)
+!!        type(LIC_kernel), intent(in) :: knl
 !!      subroutine interpolate_noise_at_node                            &
 !!     &         (xyz, nze, point_noise, point_grad_noise)
 !!      subroutine pick_noise_at_node                                   &
@@ -20,16 +22,41 @@
       use m_constants
       use m_machine_parameter
 !
+      use t_LIC_kernel
       use t_3d_noise
 !
       implicit  none
 !
+      private :: cal_1d_local_id_and_position
       private :: cal_data_noise_interpolation
       private :: interpolate_noise, pick_noise_at_point
 !
 !  ---------------------------------------------------------------------
 !
       contains
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine interpolate_kernel(x, knl, asize, value)
+!
+      real(kind = kreal), intent(in) :: x
+      real(kind = kreal), intent(in) :: asize
+      type(LIC_kernel), intent(in) :: knl
+!
+      real(kind = kreal), intent(inout) :: value
+!
+      real(kind = kreal) :: x_local
+      integer(kind = kint) :: ijk_n, ijk_p
+!
+!
+      call cal_1d_local_id_and_position                                 &
+     &   (x, asize, knl%n_knl, x_local, ijk_n)
+!
+      ijk_p = min(ijk_n+1, knl%n_knl-1)
+      value =  knl%k_ary(ijk_n+1) * (one - x_local)                     &
+     &       + knl%k_ary(ijk_p+1) * x_local
+!
+      end subroutine interpolate_kernel
 !
 !  ---------------------------------------------------------------------
 !
@@ -101,8 +128,7 @@
       integer(kind = kint_gl), intent(inout) :: ie_cube(8)
       real(kind = kreal), intent(inout) :: an(8)
 !
-      real(kind = kreal) :: xyz_n(3), xyz_f(3), xyz_c(3)
-      real(kind = kreal) :: xyz_s(3), xyz_t(3)
+      real(kind = kreal) :: xyz_n(3)
       integer(kind = kint) :: ijk_n(3), ijk_p(3)
       integer(kind = kint_gl) :: inod_nn, inod_pn, inod_pp, inod_np
       integer(kind = kint_gl) :: inod_zn, inod_zp
@@ -111,12 +137,8 @@
 !
 !
       do nd = 1, 3
-        xyz_s(nd) = xyz(nd) * asize_cube(nd)
-        xyz_t(nd) = xyz_s(nd) - dble(int(xyz_s(nd)))
-        xyz_f(nd) = xyz_t(nd) - sign(half, xyz_t(nd)) + half
-        xyz_c(nd) = mod(xyz_f(nd),1.0d0) * dble(nidx_xyz(nd))
-        xyz_n(nd) = xyz_c(nd) - dble(int(xyz_c(nd)))
-        ijk_n(nd) = int(xyz_c(nd))
+        call cal_1d_local_id_and_position                               &
+     &    (xyz(nd), asize_cube(nd), nidx_xyz(nd), xyz_n(nd), ijk_n(nd))
         ijk_p(nd) = mod(ijk_n(nd)+1, nidx_xyz(nd))
       end do
 !
@@ -146,6 +168,30 @@
       an(8) = (one-xyz_n(1)) * (    xyz_n(2)) * (    xyz_n(3))
 !
       end subroutine cal_data_noise_interpolation
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine cal_1d_local_id_and_position                           &
+     &         (x, asize, nidx, x_local, ijk_n)
+!
+      real(kind = kreal), intent(in) :: x
+      real(kind = kreal), intent(in) :: asize
+      integer(kind = kint), intent(in) :: nidx
+!
+      integer(kind = kint), intent(inout) :: ijk_n
+      real(kind = kreal), intent(inout) :: x_local
+!
+      real(kind = kreal) :: xyz_f, xyz_c, xyz_s, xyz_t
+!
+!
+      xyz_s = x * asize
+      xyz_t = xyz_s - dble(int(xyz_s))
+      xyz_f = xyz_t - sign(half, xyz_t) + half
+      xyz_c = mod(xyz_f,1.0d0) * dble(nidx)
+      x_local = xyz_c - dble(int(xyz_c))
+      ijk_n = int(xyz_c)
+!
+      end subroutine cal_1d_local_id_and_position
 !
 !  ---------------------------------------------------------------------
 !

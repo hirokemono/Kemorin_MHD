@@ -28,7 +28,7 @@
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!  begin kernel_ctl
-!!    kernel_type            'external_file'
+!!    kernel_type            'Gaussian'
 !!
 !!    half_kernel_resolution          256
 !!    peak_position_ctl          0.4

@@ -2,7 +2,7 @@ cal_3d_noise.o: $(LIC_DIR)/cal_3d_noise.f90 m_precision.o m_constants.o mt_strea
 	$(F90) -c $(F90OPTFLAGS) $<
 cal_lic_on_surf_viz.o: $(LIC_DIR)/cal_lic_on_surf_viz.f90 m_precision.o m_constants.o t_control_param_LIC.o lic_kernel_generator.o cal_field_on_surf_viz.o cal_fline_in_cube.o m_geometry_constants.o calypso_mpi.o t_noise_node_data.o cal_noise_value.o
 	$(F90) -c $(F90OPTFLAGS) $<
-cal_noise_value.o: $(LIC_DIR)/cal_noise_value.f90 m_precision.o m_constants.o m_machine_parameter.o t_3d_noise.o
+cal_noise_value.o: $(LIC_DIR)/cal_noise_value.f90 m_precision.o m_constants.o m_machine_parameter.o t_LIC_kernel.o t_3d_noise.o
 	$(F90) -c $(F90OPTFLAGS) $<
 each_LIC_rendering.o: $(LIC_DIR)/each_LIC_rendering.f90 m_precision.o calypso_mpi.o m_constants.o m_machine_parameter.o m_geometry_constants.o t_mesh_data.o t_phys_data.o t_jacobians.o t_rendering_vr_image.o t_control_params_4_pvr.o t_control_param_LIC_PVR.o t_surf_grp_4_pvr_domain.o t_pvr_ray_startpoints.o t_pvr_image_array.o t_geometries_in_pvr_screen.o set_default_pvr_params.o set_position_pvr_screen.o mesh_outline_4_pvr.o generate_vr_image.o cal_pvr_modelview_mat.o field_data_4_LIC.o rendering_LIC_image.o rendering_streo_LIC_image.o set_pvr_control.o field_data_4_pvr.o
 	$(F90) -c $(F90OPTFLAGS) $<

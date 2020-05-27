@@ -383,7 +383,10 @@
           k_pos =  0.5 - 0.5 * len_sum/(lic_p%trace_length)
         end if
         k_value = 0.0
-        call kernal_sampling(k_size, k_node, k_pos, k_value)
+!        call kernal_sampling(k_size, k_node, k_pos, k_value)
+          call interpolate_kernel                                       &
+     &       (k_pos, lic_p%kernel_t, two, k_value)
+!
         if(i_debug .eq. 1) write(50 + my_rank, *) "--step: ",i_iter, step_len, len_sum, "k_pos:", k_pos, "k_v: ", k_value
         !lic_v = lic_v + n_v * k_node(i_k)
         lic_v = lic_v + n_v * k_value
@@ -455,7 +458,9 @@
             k_pos =  0.5 - 0.5 * len_sum/(lic_p%trace_length)
           end if
           k_value = 0.0
-          call kernal_sampling(k_size, k_node, k_pos, k_value)
+!          call kernal_sampling(k_size, k_node, k_pos, k_value)
+          call interpolate_kernel                                       &
+     &       (k_pos, lic_p%kernel_t, two, k_value)
           if(i_debug .eq. 1) write(50 + my_rank, *) "--step: ",i_iter, step_len, len_sum, "k_pos:", k_pos, "k_v: ", k_value
           lic_v = lic_v + n_v*k_value
           grad_v = grad_v + g_v * k_value
