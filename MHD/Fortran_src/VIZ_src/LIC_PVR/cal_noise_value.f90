@@ -4,7 +4,7 @@
 !
 !      Written by H. Matsui in May, 2020
 !
-!!      subroutine interpolate_kernel(x, knl, asize, value)
+!!      subroutine interpolate_kernel(iflag_dir, x, knl, value)
 !!        type(LIC_kernel), intent(in) :: knl
 !!      subroutine interpolate_noise_at_node                            &
 !!     &         (xyz, nze, point_noise, point_grad_noise)
@@ -37,20 +37,22 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine interpolate_kernel(x, knl, asize, value)
+      subroutine interpolate_kernel(iflag_dir, x, knl, value)
 !
+      integer(kind = kint), intent(in) :: iflag_dir
       real(kind = kreal), intent(in) :: x
-      real(kind = kreal), intent(in) :: asize
       type(LIC_kernel), intent(in) :: knl
 !
       real(kind = kreal), intent(inout) :: value
 !
-      real(kind = kreal) :: x_local
+      real(kind = kreal) :: x_local, x_pos
       integer(kind = kint) :: ijk_n, ijk_p
 !
 !
+      x_pos = knl%half_lengh + dble(iflag_dir) * min(x, knl%half_lengh)
+!
       call cal_1d_local_id_and_position                                 &
-     &   (x, asize, knl%n_knl, x_local, ijk_n)
+     &   (x_pos, knl%alength, knl%n_knl, x_local, ijk_n)
 !
       ijk_p = min(ijk_n+1, knl%n_knl-1)
       value =  knl%k_ary(ijk_n+1) * (one - x_local)                     &

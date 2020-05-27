@@ -9,7 +9,6 @@
 !!     &          iele_4_surf, interior_surf, xx,                       &
 !!     &          isurf_orgs, ie_surf, xi, lic_p,                       &
 !!     &          r_org, vec_org, ref_nod,                              &
-!!     &          kernal_size, kernal_node,                             &
 !!     &          v_nod, xx_org, isurf, xyz_min, xyz_max, iflag_comm,   &
 !!     &          o_tgt, n_grad)
 !
@@ -25,11 +24,12 @@
       use m_precision
       use m_constants
       use t_control_param_LIC
-      use lic_kernel_generator
       use cal_field_on_surf_viz
       use cal_fline_in_cube
 !
       implicit  none
+!
+      private :: s_cal_lic_from_point
 !
 !  ---------------------------------------------------------------------
 !
@@ -45,7 +45,6 @@
      &          iele_4_surf, interior_surf, xx,                         &
      &          isurf_orgs, ie_surf, xi, lic_p,                         &
      &          r_org, vec_org, ref_nod,                                &
-     &          kernal_size, kernal_node,                               &
      &          v_nod, xx_org, isurf, xyz_min, xyz_max, iflag_comm,     &
      &          o_tgt, n_grad)
 
@@ -71,8 +70,6 @@
         real(kind = kreal), intent(in) :: xx_org(3), vec_org(3)
         real(kind = kreal), intent(inout) :: o_tgt, n_grad(3), r_org(:)
         integer(kind = kint), intent(inout) :: iflag_comm
-        integer(kind = kint), intent(in) :: kernal_size
-        real(kind = kreal), intent(in) :: kernal_node(kernal_size)
         !type(noise_mask), intent(inout) :: n_mask
 
         real(kind = kreal), intent(in) :: xyz_min(3)
@@ -80,7 +77,7 @@
 
         real(kind = kreal) :: step_vec(3), new_pos(3)
         integer(kind = kint) :: ilic_suf_org(3), icur_sf
-        integer(kind = kint) :: i, isf_tgt
+        integer(kind = kint) :: i, isf_tgt, k_mid
         real(kind = kreal) :: lic_v, n_v, k_area
         integer(kind = kint) :: iflag_found_sf, iele, isf_org
 
@@ -119,8 +116,9 @@
           call interpolate_noise_at_node                                &
      &       (xx_org, lic_p%noise_t, n_v, n_grad)
         end if
-        o_tgt = o_tgt + n_v * kernal_node(kernal_size/2.0)
-        n_grad = n_grad + n_grad * kernal_node(kernal_size/2.0)
+        k_mid = (lic_p%kernel_t%n_knl + 1) / 2
+        o_tgt = o_tgt + n_v * lic_p%kernel_t%k_ary(k_mid)
+        n_grad = n_grad + n_grad * lic_p%kernel_t%k_ary(k_mid)
 
         if(i_debug .eq. 1) write(50+my_rank,*)                          &
      &     "--------------------Forward iter begin----------------"
@@ -166,8 +164,7 @@
      &        nnod_4_surf, xx, ie_surf, isf_4_ele,                      &
      &        iele_4_surf, interior_surf, lic_p,                        &
      &        iflag_forward_line, xyz_min, xyz_max,                     &
-     &        v_nod, ilic_suf_org, new_pos, step_vec,                   &
-     &        kernal_size, kernal_node, ref_nod,                        &
+     &        v_nod, ilic_suf_org, new_pos, step_vec, ref_nod,          &
      &        lic_v, n_grad, k_area, iflag_comm)
           o_tgt = o_tgt + lic_v
         end if
@@ -203,8 +200,7 @@
           &          nnod_4_surf, xx, ie_surf, isf_4_ele,               &
           &          iele_4_surf, interior_surf, lic_p,                 &
           &          iflag_backward_line, xyz_min, xyz_max,             &
-          &          v_nod, ilic_suf_org, new_pos, step_vec,            &
-          &          kernal_size, kernal_node, ref_nod,                 &
+          &          v_nod, ilic_suf_org, new_pos, step_vec, ref_nod,   &
           &          lic_v, n_grad, k_area, iflag_comm)
           o_tgt = o_tgt + lic_v
         end if
@@ -222,13 +218,12 @@
 !
 !  ---------------------------------------------------------------------
 !
-    subroutine s_cal_lic_from_point(numnod, numele, numsurf,           &
-    &          nnod_4_surf, xx, ie_surf, isf_4_ele,                    &
-    &          iele_4_surf, interior_surf, lic_p,                      &
-    &          iflag_dir, xyz_min, xyz_max,                            &
-    &          vect_nod, isurf_org, x_start, v_start,                  &
-    &          k_size, k_node, ref_nod,                                &
-    &          lic_v, grad_v, k_area, iflag_comm)
+      subroutine s_cal_lic_from_point(numnod, numele, numsurf,          &
+     &          nnod_4_surf, xx, ie_surf, isf_4_ele,                    &
+     &          iele_4_surf, interior_surf, lic_p,                      &
+     &          iflag_dir, xyz_min, xyz_max,                            &
+     &          vect_nod, isurf_org, x_start, v_start, ref_nod,         &
+     &          lic_v, grad_v, k_area, iflag_comm)
 
       use t_noise_node_data
       use cal_noise_value
@@ -250,8 +245,6 @@
       integer(kind = kint), intent(inout) :: iflag_comm
       real(kind = kreal), intent(inout) ::   v_start(3), x_start(3)
     !
-      integer(kind = kint), intent(in) :: k_size
-      real(kind = kreal), intent(in) :: k_node(k_size)
     !type(noise_node), intent(in) :: n_node(n_size)
     !type(noise_mask), intent(inout) :: n_mask
     !
@@ -262,14 +255,13 @@
     !
       integer(kind = kint) :: isf_tgt, isurf_end, isurf_start, iele, isf_org
       real(kind = kreal) :: x_org(3), x_tgt(3), v_tgt(3), xi(2)
-      integer(kind = kint) :: i_iter, i_k, i_n, i
-      real(kind = kreal) :: n_v, nv_sum, step_len, len_sum, k_value, k_pos, avg_stepsize
+      integer(kind = kint) :: i_iter, i_n, i
+      real(kind = kreal) :: n_v, nv_sum, step_len, len_sum, k_value, avg_stepsize
       real(kind = kreal) :: g_v(3), ref_value(lic_p%num_masking)
     !
     !
     !init local variables
       i_iter = 0
-      i_k = int(dble(k_size) / 2.0) ! index of kernel value
       i_n = 0 ! index of noise value
       n_v = 0.0 ! noise value
       g_v(1:3) = 0.0
@@ -375,20 +367,10 @@
         end if
         nv_sum = nv_sum + n_v
         len_sum = len_sum + step_len
-        len_sum = min(len_sum, lic_p%trace_length)
-        k_pos = 0.0
-        if(iflag_dir .eq. iflag_forward_line) then
-          k_pos =  0.5 + 0.5 * len_sum/(lic_p%trace_length)
-        else
-          k_pos =  0.5 - 0.5 * len_sum/(lic_p%trace_length)
-        end if
-        k_value = 0.0
-!        call kernal_sampling(k_size, k_node, k_pos, k_value)
-          call interpolate_kernel                                       &
-     &       (k_pos, lic_p%kernel_t, two, k_value)
+        call interpolate_kernel                                         &
+     &     (iflag_dir, len_sum, lic_p%kernel_t, k_value)
 !
-        if(i_debug .eq. 1) write(50 + my_rank, *) "--step: ",i_iter, step_len, len_sum, "k_pos:", k_pos, "k_v: ", k_value
-        !lic_v = lic_v + n_v * k_node(i_k)
+        if(i_debug .eq. 1) write(50 + my_rank, *) "--step: ",i_iter, step_len, len_sum, "k_v: ", k_value
         lic_v = lic_v + n_v * k_value
         grad_v = grad_v + g_v * k_value
         k_area = k_area + k_value
@@ -404,7 +386,7 @@
 !       will use exterior surface(surface in ghost layer ) to cal lic
         isurf_start = isurf_end
 
-        if(flag_lic_end(lic_p, len_sum, i_iter) .eq. ione) then
+        if(flag_lic_end(lic_p%kernel_t, len_sum, i_iter)) then
 !        if(len_sum .ge.max_line_len) then
           iflag_comm = 1
           exit
@@ -415,9 +397,10 @@
           return
         end if
       end do
-
-!      if(flag_lic_end(lic_p, len_sum, i_iter) .eq. izero) then
-      if(flag_lic_end(lic_p, len_sum, i_iter) .eq. 2) then ! never enter this loop
+!
+      return
+!      if(flag_lic_end(lic_p%kernel_t, len_sum, i_iter) .eq. izero) then
+!      if(flag_lic_end(lic_p%kernel_t, len_sum, i_iter) .eq. 2) then ! never enter this loop
         avg_stepsize = len_sum / i_iter
         if (avg_stepsize .lt. 0.005) then
           avg_stepsize = 0.005
@@ -431,8 +414,7 @@
           end if
           i_iter = i_iter + 1
           len_sum = len_sum + avg_stepsize
-          len_sum = min(len_sum, lic_p%trace_length)
-          k_pos = 0.0
+          len_sum = min(len_sum, lic_p%kernel_t%half_lengh)
           x_tgt = x_start + avg_stepsize * v_start                      &
      &                     / sqrt(v_start(1)*v_start(1)                 &
      &                          + v_start(2)*v_start(2)                 &
@@ -452,27 +434,20 @@
      &         (x_tgt, lic_p%noise_t, n_v, g_v)
           end if
 !
-          if(iflag_dir .eq. iflag_forward_line) then
-            k_pos =  0.5 + 0.5 * len_sum/(lic_p%trace_length)
-          else
-            k_pos =  0.5 - 0.5 * len_sum/(lic_p%trace_length)
-          end if
-          k_value = 0.0
-!          call kernal_sampling(k_size, k_node, k_pos, k_value)
           call interpolate_kernel                                       &
-     &       (k_pos, lic_p%kernel_t, two, k_value)
-          if(i_debug .eq. 1) write(50 + my_rank, *) "--step: ",i_iter, step_len, len_sum, "k_pos:", k_pos, "k_v: ", k_value
+     &       (iflag_dir, len_sum, lic_p%kernel_t, k_value)
+          if(i_debug .eq. 1) write(50 + my_rank, *) "--step: ",i_iter, step_len, len_sum, "k_v: ", k_value
           lic_v = lic_v + n_v*k_value
           grad_v = grad_v + g_v * k_value
           k_area = k_area + k_value
           x_start = x_tgt
           if(i_debug .eq. 1) write(50 + my_rank, *) "nv: ", n_v, "nv sum:", nv_sum, "kernel area: ", k_area, "lic_v: ", lic_v
-          if(flag_lic_end(lic_p, len_sum, i_iter) .eq. ione) then
+          if(flag_lic_end(lic_p%kernel_t, len_sum, i_iter)) then
             iflag_comm = 1
             exit
           end if
         end do
-      end if
+!      end if
 
       if(i_debug .eq. 1) write(50 + my_rank, *) "---------","lic_v: ", lic_v
       if(i_debug .eq. 1) write(50 + my_rank, *) "len_sum", len_sum
@@ -481,25 +456,17 @@
 !
 !  ---------------------------------------------------------------------
 !
-
-    integer(kind = kint) function flag_lic_end(lic_p, cur_len, cur_cnt)
+    logical function flag_lic_end(knl, cur_len, cur_cnt)
 !
-    type(lic_parameters), intent(in) :: lic_p
+    type(LIC_kernel), intent(in) :: knl
     integer(kind = kint), intent(in) :: cur_cnt
     real(kind = kreal), intent(in) :: cur_len
 !
-    if(lic_p%iflag_trace_length_type .eq. iflag_by_lengh) then
-      if(cur_len .ge. lic_p%trace_length) then
-        flag_lic_end = ione
-      else
-        flag_lic_end = izero
-      end if
+    flag_lic_end = .FALSE.
+    if(knl%iflag_trace_type .eq. iflag_by_lengh) then
+      if(cur_len .ge. knl%half_lengh) flag_lic_end = .TRUE.
     else
-      if(cur_cnt .gt. lic_p%trace_count) then
-        flag_lic_end = ione
-      else
-        flag_lic_end = izero
-      end if
+      if(cur_cnt .gt. knl%max_trace_count) flag_lic_end = .TRUE.
     end if
 
     end function flag_lic_end

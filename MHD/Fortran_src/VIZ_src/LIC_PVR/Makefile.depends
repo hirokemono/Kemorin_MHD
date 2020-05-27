@@ -1,18 +1,16 @@
 cal_3d_noise.o: $(LIC_DIR)/cal_3d_noise.f90 m_precision.o m_constants.o mt_stream.o
 	$(F90) -c $(F90OPTFLAGS) $<
-cal_lic_on_surf_viz.o: $(LIC_DIR)/cal_lic_on_surf_viz.f90 m_precision.o m_constants.o t_control_param_LIC.o lic_kernel_generator.o cal_field_on_surf_viz.o cal_fline_in_cube.o m_geometry_constants.o calypso_mpi.o t_noise_node_data.o cal_noise_value.o
+cal_lic_on_surf_viz.o: $(LIC_DIR)/cal_lic_on_surf_viz.f90 m_precision.o m_constants.o t_control_param_LIC.o cal_field_on_surf_viz.o cal_fline_in_cube.o m_geometry_constants.o calypso_mpi.o t_noise_node_data.o cal_noise_value.o
 	$(F90) -c $(F90OPTFLAGS) $<
 cal_noise_value.o: $(LIC_DIR)/cal_noise_value.f90 m_precision.o m_constants.o m_machine_parameter.o t_LIC_kernel.o t_3d_noise.o
 	$(F90) -c $(F90OPTFLAGS) $<
 each_LIC_rendering.o: $(LIC_DIR)/each_LIC_rendering.f90 m_precision.o calypso_mpi.o m_constants.o m_machine_parameter.o m_geometry_constants.o t_mesh_data.o t_phys_data.o t_jacobians.o t_rendering_vr_image.o t_control_params_4_pvr.o t_control_param_LIC_PVR.o t_surf_grp_4_pvr_domain.o t_pvr_ray_startpoints.o t_pvr_image_array.o t_geometries_in_pvr_screen.o set_default_pvr_params.o set_position_pvr_screen.o mesh_outline_4_pvr.o generate_vr_image.o cal_pvr_modelview_mat.o field_data_4_LIC.o rendering_LIC_image.o rendering_streo_LIC_image.o set_pvr_control.o field_data_4_pvr.o
 	$(F90) -c $(F90OPTFLAGS) $<
-lic_kernel_generator.o: $(LIC_DIR)/lic_kernel_generator.f90 m_precision.o m_constants.o
-	$(F90) -c $(F90OPTFLAGS) $<
 lic_rgba_4_each_pixel.o: $(LIC_DIR)/lic_rgba_4_each_pixel.f90 m_precision.o m_constants.o t_control_params_4_pvr.o set_color_4_pvr.o set_rgba_4_each_pixel.o
 	$(F90) -c $(F90OPTFLAGS) $<
 m_consts_for_FastNoise.o: $(LIC_DIR)/m_consts_for_FastNoise.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<
-ray_trace_LIC_image.o: $(LIC_DIR)/ray_trace_LIC_image.f90 m_precision.o m_constants.o m_geometry_constants.o calypso_mpi.o lic_rgba_4_each_pixel.o t_control_params_4_pvr.o t_control_param_LIC.o m_machine_parameter.o cal_lic_on_surf_viz.o lic_kernel_generator.o t_geometry_data.o t_surface_data.o t_geometries_in_pvr_screen.o t_noise_node_data.o cal_field_on_surf_viz.o cal_fline_in_cube.o set_coefs_of_sections.o set_rgba_4_each_pixel.o
+ray_trace_LIC_image.o: $(LIC_DIR)/ray_trace_LIC_image.f90 m_precision.o m_constants.o m_geometry_constants.o calypso_mpi.o lic_rgba_4_each_pixel.o t_control_params_4_pvr.o t_control_param_LIC.o m_machine_parameter.o cal_lic_on_surf_viz.o t_geometry_data.o t_surface_data.o t_geometries_in_pvr_screen.o t_noise_node_data.o cal_field_on_surf_viz.o cal_fline_in_cube.o set_coefs_of_sections.o set_rgba_4_each_pixel.o
 	$(F90) -c $(F90OPTFLAGS) $<
 rendering_LIC_image.o: $(LIC_DIR)/rendering_LIC_image.f90 m_precision.o m_machine_parameter.o m_constants.o m_work_time.o calypso_mpi.o t_mesh_data.o t_geometry_data.o t_surface_data.o t_group_data.o t_control_params_4_pvr.o t_control_param_LIC.o t_geometries_in_pvr_screen.o t_surf_grp_4_pvr_domain.o t_pvr_ray_startpoints.o t_pvr_image_array.o t_rendering_vr_image.o generate_vr_image.o write_LIC_image.o cal_pvr_modelview_mat.o t_pvr_stencil_buffer.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -23,8 +21,6 @@ t_3d_noise.o: $(LIC_DIR)/t_3d_noise.f90 m_precision.o m_constants.o m_machine_pa
 t_FastNoise.o: $(LIC_DIR)/t_FastNoise.f90 m_precision.o m_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_LIC_kernel.o: $(LIC_DIR)/t_LIC_kernel.f90 m_precision.o m_constants.o m_machine_parameter.o calypso_mpi.o t_control_data_LIC_kernel.o skip_comment_f.o transfer_to_long_integers.o
-	$(F90) -c $(F90OPTFLAGS) $<
-t_LIC_kernel_image.o: $(LIC_DIR)/t_LIC_kernel_image.f90 m_precision.o m_constants.o m_machine_parameter.o calypso_mpi.o t_png_file_access.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_control_data_LIC.o: $(LIC_DIR)/t_control_data_LIC.f90 m_precision.o calypso_mpi.o m_machine_parameter.o t_read_control_elements.o t_control_array_character.o t_control_array_real.o t_control_array_integer.o t_control_data_LIC_masking.o t_control_data_LIC_noise.o t_control_data_LIC_kernel.o skip_comment_f.o bcast_control_arrays.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -38,9 +34,9 @@ t_control_data_LIC_pvrs.o: $(LIC_DIR)/t_control_data_LIC_pvrs.f90 m_precision.o 
 	$(F90) -c $(F90OPTFLAGS) $<
 t_control_data_lic_pvr.o: $(LIC_DIR)/t_control_data_lic_pvr.f90 m_precision.o calypso_mpi.o m_machine_parameter.o t_read_control_elements.o t_control_data_4_pvr.o t_control_data_LIC.o skip_comment_f.o t_control_data_pvr_isosurfs.o t_control_data_pvr_movie.o t_control_data_pvr_area.o read_control_pvr_modelview.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_control_param_LIC.o: $(LIC_DIR)/t_control_param_LIC.f90 m_precision.o calypso_mpi.o m_constants.o m_error_IDs.o skip_comment_f.o t_control_params_4_pvr.o t_control_param_LIC_masking.o t_noise_node_data.o t_LIC_kernel_image.o t_3d_noise.o t_LIC_kernel.o t_control_data_LIC.o set_field_comp_for_viz.o set_components_flags.o set_parallel_file_name.o set_ucd_extensions.o
+t_control_param_LIC.o: $(LIC_DIR)/t_control_param_LIC.f90 m_precision.o calypso_mpi.o m_constants.o m_error_IDs.o skip_comment_f.o t_control_params_4_pvr.o t_control_param_LIC_masking.o t_noise_node_data.o t_3d_noise.o t_LIC_kernel.o t_control_data_LIC.o set_field_comp_for_viz.o set_components_flags.o set_parallel_file_name.o set_ucd_extensions.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_control_param_LIC_PVR.o: $(LIC_DIR)/t_control_param_LIC_PVR.f90 m_precision.o m_machine_parameter.o m_constants.o calypso_mpi.o t_control_param_LIC.o t_control_data_LIC.o t_control_data_lic_pvr.o bcast_control_data_4_pvr.o set_pvr_control.o m_error_IDs.o t_phys_data.o t_group_data.o t_rendering_vr_image.o t_geometries_in_pvr_screen.o t_control_data_pvr_sections.o t_LIC_kernel_image.o set_control_each_pvr.o set_field_comp_for_viz.o set_pvr_modelview_matrix.o
+t_control_param_LIC_PVR.o: $(LIC_DIR)/t_control_param_LIC_PVR.f90 m_precision.o m_machine_parameter.o m_constants.o calypso_mpi.o t_control_param_LIC.o t_control_data_LIC.o t_control_data_lic_pvr.o bcast_control_data_4_pvr.o set_pvr_control.o m_error_IDs.o t_phys_data.o t_group_data.o t_rendering_vr_image.o t_geometries_in_pvr_screen.o t_control_data_pvr_sections.o set_control_each_pvr.o set_field_comp_for_viz.o set_pvr_modelview_matrix.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_control_param_LIC_masking.o: $(LIC_DIR)/t_control_param_LIC_masking.f90 m_precision.o calypso_mpi.o m_constants.o m_error_IDs.o skip_comment_f.o t_control_params_4_pvr.o t_control_data_LIC_masking.o set_field_comp_for_viz.o set_components_flags.o
 	$(F90) -c $(F90OPTFLAGS) $<

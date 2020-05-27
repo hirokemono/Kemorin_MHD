@@ -35,6 +35,14 @@
       integer(kind = kint), parameter :: iflag_gaussian =    0
       integer(kind = kint), parameter :: iflag_triangle =    1
 !
+      character(len = kchara), parameter                                &
+     &                        :: cflag_by_lengh =   'length'
+      character(len = kchara), parameter                                &
+     &                        :: cflag_by_e_count = 'element_count'
+!
+      integer(kind = kint), parameter :: iflag_by_lengh =   0
+      integer(kind = kint), parameter :: iflag_by_e_count = 1
+!
       type LIC_kernel
         character(len=kchara) :: kernel_type_name
         integer(kind = kint) :: iflag_kernel_type
@@ -42,9 +50,15 @@
         real(kind = kreal) :: x_peak
         real(kind = kreal) :: sigma
 !
-        integer(kind = kint) :: n_knl = 256
+        real(kind = kreal) :: half_lengh = 0.5d0
+        real(kind = kreal) :: alength
+!
+        integer(kind = kint) :: n_knl = 257
         real(kind = kreal), allocatable :: x_ary(:)
         real(kind = kreal), allocatable :: k_ary(:)
+!
+        integer(kind = kint) :: iflag_trace_type
+        integer(kind = kint) :: max_trace_count
       end type LIC_kernel
 !
       private :: alloc_LIC_kernel, check_LIC_kernel
@@ -88,9 +102,27 @@
       end if
 !
       knl%n_knl = 256
-      if(kernel_ctl%half_kernel_resolution_ctl%iflag .gt. 0) then
-        knl%n_knl = kernel_ctl%half_kernel_resolution_ctl%intvalue
-        knl%n_knl = knl%n_knl + 1 - mod(knl%n_knl,2)
+      if(kernel_ctl%kernel_resolution_ctl%iflag .gt. 0) then
+        knl%n_knl = kernel_ctl%kernel_resolution_ctl%intvalue
+      end if
+!
+      knl%half_lengh = half
+      if(kernel_ctl%half_length_ctl%iflag .gt. 0) then
+        knl%half_lengh = kernel_ctl%half_length_ctl%realvalue
+      end if
+      knl%alength = one / (two * knl%half_lengh)
+!
+      knl%iflag_trace_type = iflag_by_lengh
+      if(kernel_ctl%trace_length_mode_ctl%iflag .gt. 0) then
+        tmpchara = kernel_ctl%trace_length_mode_ctl%charavalue
+        if(cmp_no_case(tmpchara, cflag_by_e_count)) then
+          knl%iflag_trace_type = iflag_by_e_count
+        end if
+      end if
+!
+      knl%max_trace_count =  20
+      if(kernel_ctl%max_trace_count_ctl%iflag .gt. 0) then
+        knl%max_trace_count = kernel_ctl%max_trace_count_ctl%intvalue
       end if
 !
       if(iflag_debug .gt. 0) then
@@ -98,6 +130,10 @@
         write(*,*) 'knl%x_peak', knl%x_peak
         write(*,*) 'knl%sigma', knl%sigma
         write(*,*) 'knl%n_knl', knl%n_knl
+        write(*,*) 'knl%half_lengh', knl%half_lengh
+!
+        write(*,*) 'knl%iflag_trace_type', knl%iflag_trace_type
+        write(*,*) 'knl%max_trace_count', knl%max_trace_count
       end if
 !
       end subroutine set_control_LIC_kernel
@@ -112,11 +148,11 @@
       call alloc_LIC_kernel(knl)
 !
       if(knl%iflag_kernel_type .eq. iflag_triangle) then
-        call cal_triangle_kernel                                        &
-     &     (knl%x_peak, knl%n_knl, knl%x_ary, knl%k_ary)
+        call cal_triangle_kernel(knl%half_lengh, knl%x_peak,            &
+     &      knl%n_knl, knl%x_ary, knl%k_ary)
       else
-        call cal_gaussian_kernel                                        &
-     &     (knl%x_peak, knl%sigma, knl%n_knl, knl%x_ary, knl%k_ary)
+        call cal_gaussian_kernel(knl%half_lengh, knl%x_peak, knl%sigma, &
+     &      knl%n_knl, knl%x_ary, knl%k_ary)
       end if
 !
       if(iflag_debug .gt. 0) call check_LIC_kernel(knl)
@@ -196,9 +232,9 @@
 !  ---------------------------------------------------------------------
 !
       subroutine cal_gaussian_kernel                                    &
-     &         (x_peak, sigma, n_knl, x_ary, k_ary)
+     &         (half_len, x_peak, sigma, n_knl, x_ary, k_ary)
 !
-      real(kind = kreal), intent(in) :: x_peak, sigma
+      real(kind = kreal), intent(in) :: half_len, x_peak, sigma
       integer(kind = kint), intent(in) :: n_knl
       real(kind = kreal), intent(inout) :: x_ary(n_knl)
       real(kind = kreal), intent(inout) :: k_ary(n_knl)
@@ -212,7 +248,7 @@
 !
 !$omp parallel do private(i)
       do i = 1, n_knl
-        x_ary(i) = - one + two * dble(i-1) / dble(n_knl-1)
+        x_ary(i) = half_len * (two * dble(i-1) / dble(n_knl-1) - one)
         k_ary(i) = dnorm * exp(-half * ((x_ary(i)-x_peak) / sigma)**2)
       end do
 !$omp end parallel do
@@ -235,9 +271,10 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine cal_triangle_kernel(x_peak, n_knl, x_ary, k_ary)
+      subroutine cal_triangle_kernel                                    &
+     &         (half_len, x_peak, n_knl, x_ary, k_ary)
 !
-      real(kind = kreal), intent(in) :: x_peak
+      real(kind = kreal), intent(in) :: half_len, x_peak
       integer(kind = kint), intent(in) :: n_knl
       real(kind = kreal), intent(inout) :: x_ary(n_knl)
       real(kind = kreal), intent(inout) :: k_ary(n_knl)
@@ -246,13 +283,13 @@
       integer(kind = kint) :: i, i_peak
 !
 !
-      i_peak = int(half * dble(n_knl-1) * (one + x_peak)) + 1
-      i_peak = min(i_peak, n_knl)
+      i_peak = int(half * (x_peak / half_len + one) * dble(n_knl-1))
+      i_peak = min(i_peak+1, n_knl)
 !
       dnorm = one / (one + x_peak)
 !$omp parallel do private(i)
       do i = 1, i_peak
-        x_ary(i) = - one + two * dble(i-1) / dble(n_knl-1)
+        x_ary(i) = two * dble(i-1) / dble(n_knl-1) - one
         k_ary(i) = dnorm * (one + x_ary(i))
       end do
 !$omp end parallel do
@@ -260,8 +297,15 @@
       dnorm = one / (one - x_peak)
 !$omp parallel do private(i)
       do i = i_peak+1, n_knl
-        x_ary(i) = - one + two * dble(i-1) / dble(n_knl-1)
+        x_ary(i) = two * dble(i-1) / dble(n_knl-1) - one
         k_ary(i) = dnorm * (one - x_ary(i))
+      end do
+!$omp end parallel do
+!
+!$omp parallel do private(i)
+      do i = 1, n_knl
+        x_ary(i) = x_ary(i) * half_len
+        k_ary(i) = k_ary(i) / half_len
       end do
 !$omp end parallel do
 !

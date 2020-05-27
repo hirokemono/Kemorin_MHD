@@ -27,7 +27,6 @@
       use t_control_params_4_pvr
       use t_control_param_LIC_masking
       use t_noise_node_data
-      use t_LIC_kernel_image
       use t_3d_noise
       use t_LIC_kernel
 !
@@ -56,26 +55,11 @@
 !>        Structure of LIC kernel
         type(LIC_kernel) :: kernel_t
 !
-!>        integer flag for LIC kernel function
-!>          iflag_linear:    Use symmetric linear kernel
-!>          iflag_from_file: Use kernel image file
-        integer(kind = kint) :: iflag_kernel_type = 0
-!>        file name of kernel function data
-        character(len = kchara) :: kernel_image_prefix
-!>        Structure of LIC kernel image
-        type(LIC_kernel_image) :: kernel_image
 !
 !>        mode of unstructured volume rendering for lic
 !>        sample by fixed step size or sample each cell's center once
         integer(kind = kint) :: iflag_vr_sample_mode = izero
         real(kind = kreal) :: step_size = 0.005
-!
-!>        Element counts of LIC field line tracing
-        integer(kind = kint) :: iflag_trace_length_type = izero
-!>        Lengh of LIC field line tracing
-        real(kind = kreal) :: trace_length = one
-!>        Element counts of LIC field line tracing
-        integer(kind = kint) :: trace_count =  ieight
 !
 !>        integer flag for LIC normalization mode
 !>          iflag_from_control: Set from control file
@@ -87,20 +71,10 @@
 !
       character(len = kchara), parameter :: cflag_LIC = 'LIC'
 !
-      character(len = kchara), parameter, private                       &
-     &                        :: cflag_from_file = 'file'
-      character(len = kchara), parameter                                &
-     &                        :: cflag_linear = 'linear'
-!
       character(len = kchara), parameter                                &
      &                        :: cflag_fixed_size =   'fixed_size'
       character(len = kchara), parameter                                &
      &                        :: cflag_by_element = 'ele_size'
-!
-      character(len = kchara), parameter                                &
-     &                        :: cflag_by_lengh =   'length'
-      character(len = kchara), parameter                                &
-     &                        :: cflag_by_e_count = 'element_count'
 !
       character(len = kchara), parameter                                &
      &                        :: cflag_by_range = 'set_by_range'
@@ -112,20 +86,14 @@
       character(len = kchara), parameter                                &
      &                        :: cflag_from_color = 'color_field'
 !
-      integer(kind = kint), parameter :: iflag_linear =       1
-!
       integer(kind = kint), parameter :: iflag_from_lic =     0
       integer(kind = kint), parameter :: iflag_from_control = 1
 !
       integer(kind = kint), parameter :: iflag_fixed_size = 0
       integer(kind = kint), parameter :: iflag_by_element = 1
 !
-      integer(kind = kint), parameter :: iflag_by_lengh =   0
-      integer(kind = kint), parameter :: iflag_by_e_count = 1
-!
       integer(kind = kint), parameter :: iflag_from_color =   2
 !
-      private :: cflag_linear
       private :: cflag_by_range, cflag_by_ctl
 !
 !  ---------------------------------------------------------------------
@@ -245,26 +213,6 @@
       end if
       call bcast_LIC_kernel(lic_p%kernel_t)
 !
-      lic_p%iflag_kernel_type = iflag_linear
-      if(lic_ctl%kernel_function_type_ctl%iflag .gt. 0) then
-        tmpchara = lic_ctl%kernel_function_type_ctl%charavalue
-        if(cmp_no_case(tmpchara, cflag_from_file)) then
-          lic_p%iflag_kernel_type = iflag_from_file
-        else if(cmp_no_case(tmpchara, cflag_linear)) then
-          lic_p%iflag_kernel_type = iflag_linear
-        end if
-      end if
-!
-      if(lic_p%iflag_kernel_type .eq. iflag_from_file) then
-        if(lic_ctl%kernal_file_prefix_ctl%iflag .gt. 0) then
-          lic_p%kernel_image_prefix                                     &
-     &       = lic_ctl%kernal_file_prefix_ctl%charavalue
-        else
-          e_message = 'Set LIC kernel file prefix'
-          call calypso_mpi_abort(ierr_VIZ, e_message)
-        end if
-      end if
-!
       lic_p%iflag_vr_sample_mode = iflag_fixed_size
       if(lic_ctl%vr_sample_mode_ctl%iflag .gt. 0) then
         tmpchara = lic_ctl%vr_sample_mode_ctl%charavalue
@@ -282,29 +230,6 @@
         end if
       end if
 !
-      lic_p%iflag_trace_length_type = iflag_by_lengh
-      if(lic_ctl%LIC_trace_length_def_ctl%iflag .gt. 0) then
-        tmpchara = lic_ctl%LIC_trace_length_def_ctl%charavalue
-        if(cmp_no_case(tmpchara, cflag_by_lengh)) then
-          lic_p%iflag_trace_length_type = iflag_by_lengh
-        else if(cmp_no_case(tmpchara, cflag_by_e_count)) then
-          lic_p%iflag_trace_length_type = iflag_by_e_count
-        end if
-      end if
-!
-      if(lic_p%iflag_trace_length_type .eq. iflag_by_lengh) then
-        lic_p%trace_length = one
-        if(lic_ctl%LIC_trace_length_ctl%iflag .gt. 0) then
-          lic_p%trace_length = lic_ctl%LIC_trace_length_ctl%realvalue
-        end if
-      else if(lic_p%iflag_trace_length_type .eq. iflag_by_e_count) then
-        lic_p%trace_count =  ieight
-        if(lic_ctl%LIC_trace_count_ctl%iflag .gt. 0) then
-          lic_p%trace_count = lic_ctl%LIC_trace_count_ctl%intvalue
-        end if
-      end if
-!
-!
       lic_p%iflag_normalization = iflag_from_control
       if(lic_ctl%normalization_type_ctl%iflag .gt. 0) then
         tmpchara = lic_ctl%normalization_type_ctl%charavalue
@@ -321,18 +246,8 @@
       end if
 !
       if(iflag_debug .gt. 0) then
-        write(*,*) 'iflag_kernel_type: ', lic_p%iflag_kernel_type
-        if(lic_p%iflag_kernel_type .eq. iflag_from_file) then
-          write(*,*) 'kernel_image_prefix: ', lic_p%kernel_image_prefix
-        end if
-!
         write(*,*) 'iflag_vr_sample_mode: ', lic_p%iflag_vr_sample_mode
         write(*,*) 'step_size: ', lic_p%step_size
-!
-        write(*,*) 'iflag_trace_length_type: ',                         &
-     &             lic_p%iflag_trace_length_type
-        write(*,*) 'trace_length: ', lic_p%trace_length
-        write(*,*) 'trace_count: ',  lic_p%trace_count
 !
         write(*,*) 'iflag_normalization: ', lic_p%iflag_normalization
         write(*,*) 'factor_normal: ',       lic_p%factor_normal

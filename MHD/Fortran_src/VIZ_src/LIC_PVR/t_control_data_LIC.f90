@@ -23,9 +23,6 @@
 !!      List of flags
 !!
 !!    vr_sample_mode:         'fixed_size' or 'element_count'
-!!    noise_type:             'external_file' or 'randum'
-!!    kernel_function_type:   'external_file' or 'linear'
-!!    LIC_trace_length_mode:  'length'  or  'element_count'
 !!    normalization_type:     'set_by_control' or 'set_by_range'
 !!    reflection_reference:   'noise_file''color_field'
 !!
@@ -59,15 +56,8 @@
 !!      ...
 !!    end kernel_ctl
 !!
-!!    kernel_function_type   'external_file'
-!!    kernal_image_prefix       'kernel'
-!!
 !!    vr_sample_mode         'fixed_size'
 !!    step_size              0.005
-!!
-!!    LIC_trace_length_mode   'length'
-!!    LIC_trace_length        0.5
-!!    LIC_trace_count         8
 !!
 !!    normalization_type     'set_by_control'
 !!    normalization_value     20.0
@@ -110,15 +100,8 @@
 !>        structure of kernel control
         type(lic_kernel_ctl) :: kernel_ctl
 !
-        type(read_character_item) :: kernel_function_type_ctl
-        type(read_character_item) :: kernal_file_prefix_ctl
-!
         type(read_character_item) :: vr_sample_mode_ctl
         type(read_real_item) :: step_size_ctl
-!
-        type(read_character_item) :: LIC_trace_length_def_ctl
-        type(read_real_item) ::      LIC_trace_length_ctl
-        type(read_integer_item) ::   LIC_trace_count_ctl
 !
         type(read_character_item) :: normalization_type_ctl
         type(read_real_item) ::      normalization_value_ctl
@@ -142,19 +125,9 @@
       character(len=kchara) :: hd_cube_noise =  'cube_noise_ctl'
       character(len=kchara) :: hd_kernel =      'kernel_ctl'
 !
-      character(len=kchara) :: hd_kernel_function_type                  &
-     &                        = 'kernel_function_type'
-      character(len=kchara) :: hd_kernal_file_name                      &
-     &                        = 'kernel_image_prefix'
-!
       character(len=kchara) :: hd_vr_sample_mode                        &
      &                        = 'vr_sample_mode'
       character(len=kchara) :: hd_step_size = 'step_size'
-!
-      character(len=kchara) :: hd_LIC_trace_type                        &
-     &                        = 'LIC_trace_length_mode'
-      character(len=kchara) :: hd_LIC_trace_length = 'LIC_trace_length'
-      character(len=kchara) :: hd_LIC_trace_count = 'LIC_trace_count'
 !
       character(len=kchara) :: hd_normalization_type                    &
      &                        = 'normalization_type'
@@ -164,11 +137,7 @@
       private :: hd_LIC_field, hd_color_field, hd_color_component
       private :: hd_opacity_field, hd_opacity_component
       private :: hd_masking_ctl, hd_cube_noise, hd_kernel
-      private :: hd_kernel_function_type, hd_kernal_file_name
-      private :: hd_vr_sample_mode
-      private :: hd_step_size
-      private :: hd_LIC_trace_type
-      private :: hd_LIC_trace_length, hd_LIC_trace_count
+      private :: hd_vr_sample_mode, hd_step_size
       private :: hd_normalization_type, hd_normalization_value
 !
       private :: read_lic_masking_ctl_array
@@ -209,22 +178,10 @@
         call read_chara_ctl_type(c_buf, hd_opacity_component,           &
      &      lic_ctl%opacity_component_ctl)
 !
-        call read_chara_ctl_type(c_buf, hd_kernel_function_type,        &
-     &      lic_ctl%kernel_function_type_ctl)
-        call read_chara_ctl_type(c_buf, hd_kernal_file_name,            &
-     &      lic_ctl%kernal_file_prefix_ctl)
-!
         call read_chara_ctl_type                                        &
      &     (c_buf, hd_vr_sample_mode, lic_ctl%vr_sample_mode_ctl)
         call read_real_ctl_type                                         &
      &     (c_buf, hd_step_size, lic_ctl%step_size_ctl)
-!
-        call read_chara_ctl_type(c_buf, hd_LIC_trace_type,              &
-     &      lic_ctl%LIC_trace_length_def_ctl)
-        call read_real_ctl_type                                         &
-     &     (c_buf, hd_LIC_trace_length, lic_ctl%LIC_trace_length_ctl)
-        call read_integer_ctl_type                                      &
-     &     (c_buf, hd_LIC_trace_count, lic_ctl%LIC_trace_count_ctl)
 !
         call read_chara_ctl_type(c_buf, hd_normalization_type,          &
      &      lic_ctl%normalization_type_ctl)
@@ -289,15 +246,8 @@
       lic_ctl%opacity_field_ctl%iflag =     0
       lic_ctl%opacity_component_ctl%iflag = 0
 !
-      lic_ctl%kernel_function_type_ctl%iflag = 0
-      lic_ctl%kernal_file_prefix_ctl%iflag =   0
-!
       lic_ctl%vr_sample_mode_ctl%iflag = 0
       lic_ctl%step_size_ctl%iflag = 0
-!
-      lic_ctl%LIC_trace_length_def_ctl%iflag = 0
-      lic_ctl%LIC_trace_length_ctl%iflag =     0
-      lic_ctl%LIC_trace_count_ctl%iflag =      0
 !
       lic_ctl%normalization_type_ctl%iflag =   0
       lic_ctl%normalization_value_ctl%iflag =  0
@@ -336,15 +286,8 @@
       call bcast_ctl_type_c1(lic_ctl%opacity_field_ctl)
       call bcast_ctl_type_c1(lic_ctl%opacity_component_ctl)
 !
-      call bcast_ctl_type_c1(lic_ctl%kernel_function_type_ctl)
-      call bcast_ctl_type_c1(lic_ctl%kernal_file_prefix_ctl)
-!
       call bcast_ctl_type_c1(lic_ctl%vr_sample_mode_ctl)
       call bcast_ctl_type_r1(lic_ctl%step_size_ctl)
-!
-      call bcast_ctl_type_c1(lic_ctl%LIC_trace_length_def_ctl)
-      call bcast_ctl_type_r1(lic_ctl%LIC_trace_length_ctl)
-      call bcast_ctl_type_i1(lic_ctl%LIC_trace_count_ctl)
 !
       call bcast_ctl_type_c1(lic_ctl%normalization_type_ctl)
       call bcast_ctl_type_r1(lic_ctl%normalization_value_ctl)
@@ -383,22 +326,10 @@
       call copy_chara_ctl(org_lic_c%opacity_component_ctl,              &
      &                    new_lic_c%opacity_component_ctl)
 !
-      call copy_chara_ctl(org_lic_c%kernel_function_type_ctl,           &
-     &                    new_lic_c%kernel_function_type_ctl)
-      call copy_chara_ctl(org_lic_c%kernal_file_prefix_ctl,             &
-     &                    new_lic_c%kernal_file_prefix_ctl)
-!
       call copy_chara_ctl(org_lic_c%vr_sample_mode_ctl,                 &
      &                    new_lic_c%vr_sample_mode_ctl)
       call copy_real_ctl(org_lic_c%step_size_ctl,                       &
      &                   new_lic_c%step_size_ctl)
-!
-      call copy_chara_ctl(org_lic_c%LIC_trace_length_def_ctl,           &
-     &                    new_lic_c%LIC_trace_length_def_ctl)
-      call copy_real_ctl(org_lic_c%LIC_trace_length_ctl,                &
-     &                   new_lic_c%LIC_trace_length_ctl)
-      call copy_integer_ctl(org_lic_c%LIC_trace_count_ctl,              &
-     &                      new_lic_c%LIC_trace_count_ctl)
 !
       call copy_chara_ctl(org_lic_c%normalization_type_ctl,             &
      &                    new_lic_c%normalization_type_ctl)

@@ -92,7 +92,6 @@
       use t_rendering_vr_image
       use t_geometries_in_pvr_screen
       use t_control_data_pvr_sections
-      use t_LIC_kernel_image
       use set_control_each_pvr
       use set_field_comp_for_viz
       use set_pvr_modelview_matrix
@@ -119,13 +118,6 @@
         call set_control_lic_parameter                                  &
      &     (nod_fld%num_phys, nod_fld%phys_name,                        &
      &      lic_ctl_type(i_lic), lic_fld(i_lic)%lic_param)
-!
-        if(lic_fld(i_lic)%lic_param%iflag_kernel_type                   &
-     &      .eq. iflag_from_file) then
-          call load_kernel_data_from_file                               &
-     &       (lic_fld(i_lic)%lic_param%kernel_image_prefix,             &
-     &        lic_fld(i_lic)%lic_param%kernel_image)
-        end if
 !
         if(iflag_debug .gt. 0) write(*,*) 'set_control_pvr'
         call set_control_pvr                                            &
@@ -156,7 +148,6 @@
       call dealloc_3d_cube_noise(lic_fld%lic_param%noise_t)
       call dealloc_lic_masking_ranges(lic_fld%lic_param)
       call dealloc_lic_kernel(lic_fld%lic_param%kernel_t)
-      call dealloc_lic_kernel_image(lic_fld%lic_param%kernel_image)
 !
       end subroutine flush_each_lic_control
 !

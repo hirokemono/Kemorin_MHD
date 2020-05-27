@@ -34,7 +34,6 @@
       use t_control_param_LIC
       use m_machine_parameter
       use cal_lic_on_surf_viz
-      use lic_kernel_generator
 !
       implicit  none
 !
@@ -86,15 +85,10 @@
       real(kind = kreal) :: rgba_tmp(4)
 !
       !type(noise_mask), allocatable :: n_mask
-      integer(kind = kint) :: k_size, sample_cnt
-      real(kind = kreal), allocatable :: k_ary(:)
+      integer(kind = kint) :: sample_cnt
       real(kind = kreal) :: range_max, range_min
 
       iflag_debug = 0
-!
-      k_size = 128
-      allocate(k_ary(k_size))
-      call generate_kernal_ary(k_size, k_ary)
 !
       sample_cnt = 0
 
@@ -119,8 +113,7 @@
      &      id_pixel_check(inum), isf_pvr_ray_start(1,inum),            &
      &      xx_pvr_ray_start(1,inum), xx_pvr_start(1,inum),             &
      &      xi_pvr_start(1,inum), rgba_tmp(1), icount_pvr_trace(inum),  &
-     &      k_size, k_ary, node%xyz_min_gl, node%xyz_max_gl,            &
-     &      iflag_comm)
+     &      node%xyz_min_gl, node%xyz_max_gl, iflag_comm)
         rgba_ray(1:4,inum) = rgba_tmp(1:4)
         sample_cnt = sample_cnt + icount_pvr_trace(inum)
       end do
@@ -137,7 +130,7 @@
      &        interior_surf, arccos_sf, x_nod_model, viewpoint_vec,     &
      &        lic_p, field_pvr, color_param, ray_vec, iflag_check,      &
      &        isurf_org, screen_st, xx_st, xi, rgba_ray, icount_line,   &
-     &        k_size, k_ary, xyz_min_gl, xyz_max_gl, iflag_comm)
+     &        xyz_min_gl, xyz_max_gl, iflag_comm)
 !
       use t_geometries_in_pvr_screen
       use cal_field_on_surf_viz
@@ -175,9 +168,7 @@
       real(kind = kreal), intent(inout) :: xx_st(3), xi(2)
       real(kind = kreal), intent(inout) :: rgba_ray(4)
 !
-      !type(noise_mask), intent(inout) :: n_mask
-      integer(kind = kint), intent(in) :: k_size
-      real(kind = kreal), intent(in) :: k_ary(k_size)
+!      type(noise_mask), intent(inout) :: n_mask
 !
       integer(kind = kint) :: iflag_notrace
       integer(kind = kint) :: isf_tgt, isurf_end, iele, isf_org
@@ -344,7 +335,7 @@
      &            isf_4_ele, iele_4_surf, interior_surf, xx,            &
      &            isurf_orgs, ie_surf, xi, lic_p,                       &
      &            r_mid, vec_mid, field_pvr%s_lic,                      &
-     &            k_size, k_ary, field_pvr%v_lic, xx_lic, isurf_end,    &
+     &            field_pvr%v_lic, xx_lic, isurf_end,                   &
      &            xyz_min_gl, xyz_max_gl, iflag_lic,                    &
      &            lic_tgt(1), grad_tgt)
 !
@@ -398,7 +389,7 @@
      &          isf_4_ele, iele_4_surf, interior_surf, xx,              &
      &          isurf_orgs, ie_surf, xi, lic_p,                         &
      &          r_mid, vec_mid, field_pvr%s_lic,                        &
-     &          k_size, k_ary, field_pvr%v_lic, xx_lic, isurf_end,      &
+     &          field_pvr%v_lic, xx_lic, isurf_end,                     &
      &          xyz_min_gl, xyz_max_gl, iflag_lic,                      &
      &          lic_tgt(1), grad_tgt)
 !

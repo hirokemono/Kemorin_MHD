@@ -25,14 +25,19 @@
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!      List of flags  (Not used currently)
 !!    kernel_type:             'gaussian' or 'triangle'
+!!    trace_length_mode:       'length'  or  'element_count'
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!  begin kernel_ctl
 !!    kernel_type            'Gaussian'
 !!
-!!    half_kernel_resolution          256
+!!    kernel_resolution          256
 !!    peak_position_ctl          0.4
 !!    gaussian_width_ctl         0.25
+!!
+!!    trace_length_mode   'length'
+!!    half_length_ctl           0.3
+!!    max_trace_count             8
 !!  end kernel_ctl
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -58,14 +63,21 @@
         type(read_character_item) :: kernel_type_ctl
 !
 !>         number of grid of half kernel
-        type(read_integer_item) :: half_kernel_resolution_ctl
+        type(read_integer_item) :: kernel_resolution_ctl
 !
 !>         peak position of kernel
         type(read_real_item) :: kernel_peak_ctl
 !>         width of Gaussian
         type(read_real_item) :: kernel_sigma_ctl
 !
-!          loaded flag for kernel_ctl
+!>         Kernel type name
+        type(read_character_item) :: trace_length_mode_ctl
+!>         half length of line integration
+        type(read_real_item) :: half_length_ctl
+!>         number of grid of half kernel
+        type(read_integer_item) :: max_trace_count_ctl
+!
+!>          loaded flag for kernel_ctl
         integer (kind=kint) :: i_kernel_control = 0
       end type lic_kernel_ctl
 !
@@ -75,14 +87,19 @@
 !     3rd level for noise control
       character(len=kchara) :: hd_kernel_type =      'kernel_type'
 !
-      character(len=kchara) :: hd_half_kernel_grid_size                 &
-     &                        = 'half_kernel_resolution'
+      character(len=kchara) :: hd_kernel_grid_size                      &
+     &                        = 'kernel_resolution'
 !
       character(len=kchara) :: hd_kernel_sigma = 'gaussian_width_ctl'
       character(len=kchara) :: hd_kernel_peak = 'peak_position_ctl'
 !
+      character(len=kchara) :: hd_LIC_trace_type                        &
+     &                        = 'trace_length_mode'
+      character(len=kchara) :: hd_half_length =     'half_length_ctl'
+      character(len=kchara) :: hd_LIC_trace_count = 'max_trace_count'
+!
       private :: hd_kernel_type
-      private :: hd_half_kernel_grid_size
+      private :: hd_kernel_grid_size
       private :: hd_kernel_sigma, hd_kernel_peak
 !
 !  ---------------------------------------------------------------------
@@ -138,14 +155,20 @@
 !
         call read_chara_ctl_type                                        &
      &     (c_buf, hd_kernel_type, kernel_ctl%kernel_type_ctl)
+        call read_chara_ctl_type(c_buf, hd_LIC_trace_type,              &
+     &      kernel_ctl%trace_length_mode_ctl)
 !
-        call read_integer_ctl_type(c_buf, hd_half_kernel_grid_size,     &
-     &      kernel_ctl%half_kernel_resolution_ctl)
+        call read_integer_ctl_type(c_buf, hd_kernel_grid_size,          &
+     &      kernel_ctl%kernel_resolution_ctl)
+        call read_integer_ctl_type(c_buf, hd_LIC_trace_count,           &
+     &      kernel_ctl%max_trace_count_ctl)
 !
         call read_real_ctl_type                                         &
      &     (c_buf, hd_kernel_sigma, kernel_ctl%kernel_sigma_ctl)
         call read_real_ctl_type                                         &
      &     (c_buf, hd_kernel_peak, kernel_ctl%kernel_peak_ctl)
+        call read_real_ctl_type                                         &
+     &     (c_buf, hd_half_length, kernel_ctl%half_length_ctl)
       end do
       kernel_ctl%i_kernel_control = 1
 !
@@ -160,9 +183,12 @@
 !
 !
       kernel_ctl%kernel_type_ctl%iflag =       0
-      kernel_ctl%half_kernel_resolution_ctl%iflag =  0
+      kernel_ctl%kernel_resolution_ctl%iflag =  0
       kernel_ctl%kernel_sigma_ctl%iflag =  0
       kernel_ctl%kernel_peak_ctl%iflag =   0
+      kernel_ctl%half_length_ctl%iflag =   0
+      kernel_ctl%trace_length_mode_ctl%iflag = 0
+      kernel_ctl%max_trace_count_ctl%iflag =       0
 !
       kernel_ctl%i_kernel_control = 0
 !
@@ -182,11 +208,14 @@
      &    CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
 !
       call bcast_ctl_type_c1(kernel_ctl%kernel_type_ctl)
+      call bcast_ctl_type_c1(kernel_ctl%trace_length_mode_ctl)
 !
-      call bcast_ctl_type_i1(kernel_ctl%half_kernel_resolution_ctl)
+      call bcast_ctl_type_i1(kernel_ctl%kernel_resolution_ctl)
+      call bcast_ctl_type_i1(kernel_ctl%max_trace_count_ctl)
 !
       call bcast_ctl_type_r1(kernel_ctl%kernel_sigma_ctl)
       call bcast_ctl_type_r1(kernel_ctl%kernel_peak_ctl)
+      call bcast_ctl_type_r1(kernel_ctl%half_length_ctl)
 !
       end subroutine bcast_kernel_control_data
 !
@@ -202,12 +231,20 @@
 !
       call copy_chara_ctl(org_kernel_c%kernel_type_ctl,                 &
      &                    new_kernel_c%kernel_type_ctl)
-      call copy_integer_ctl(org_kernel_c%half_kernel_resolution_ctl,    &
-     &                      new_kernel_c%half_kernel_resolution_ctl)
+      call copy_chara_ctl(org_kernel_c%trace_length_mode_ctl,           &
+     &                    new_kernel_c%trace_length_mode_ctl)
+!
+      call copy_integer_ctl(org_kernel_c%kernel_resolution_ctl,         &
+     &                      new_kernel_c%kernel_resolution_ctl)
+      call copy_integer_ctl(org_kernel_c%max_trace_count_ctl,           &
+     &                      new_kernel_c%max_trace_count_ctl)
+!
       call copy_real_ctl(org_kernel_c%kernel_sigma_ctl,                 &
      &                   new_kernel_c%kernel_sigma_ctl)
       call copy_real_ctl(org_kernel_c%kernel_peak_ctl,                  &
      &                   new_kernel_c%kernel_peak_ctl)
+      call copy_real_ctl(org_kernel_c%half_length_ctl,                  &
+     &                   new_kernel_c%half_length_ctl)
 !
       end subroutine copy_kernel_control_data
 !
