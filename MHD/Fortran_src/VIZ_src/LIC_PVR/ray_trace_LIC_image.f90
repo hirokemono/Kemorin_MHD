@@ -35,7 +35,6 @@
       use m_machine_parameter
       use cal_lic_on_surf_viz
       use lic_kernel_generator
-      use lic_noise_generator
 !
       implicit  none
 !

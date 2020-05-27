@@ -120,15 +120,6 @@
      &     (nod_fld%num_phys, nod_fld%phys_name,                        &
      &      lic_ctl_type(i_lic), lic_fld(i_lic)%lic_param)
 !
-        if(lic_fld(i_lic)%lic_param%iflag_noise_type                    &
-     &      .eq. iflag_from_file) then
-          call load_noise_data(lic_fld(i_lic)%lic_param)
-        else
-          write(e_message,*)                                            &
-            'Currently, noise data is only loaded from file'
-          call calypso_mpi_abort(ierr_LIC, e_message)
-        end if
-!
         if(lic_fld(i_lic)%lic_param%iflag_kernel_type                   &
      &      .eq. iflag_from_file) then
           call load_kernel_data_from_file                               &
@@ -162,7 +153,7 @@
       type(LIC_field_params), intent(inout) :: lic_fld
 !
 !
-      call dealloc_lic_noise_data(lic_fld%lic_param)
+      call dealloc_3d_cube_noise(lic_fld%lic_param%noise_t)
       call dealloc_lic_masking_ranges(lic_fld%lic_param)
       call dealloc_lic_kernel(lic_fld%lic_param)
 !

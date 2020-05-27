@@ -17,6 +17,7 @@ MOD_MAKE_NOISE_2_VTK = \
 noise_to_VTK.o
 
 MOD_TEST_OLD_NOISE = \
+t_lic_noise_generator.o \
 test_old_noise.o
 
 #

@@ -30,7 +30,6 @@
       use t_noise_node_data
       use t_LIC_kernel_image
       use t_3d_noise
-      use lic_noise_generator
 !
       implicit  none
 !
@@ -54,24 +53,6 @@
 !
 !>        Structure of noise on cube
         type(noise_cube) :: noise_t
-!
-!>        integer flag for LIC kernel function
-!>          cflag_from_file: Read noise data file
-!>          iflag_randum:    generate fram randum number
-        integer(kind = kint) :: iflag_noise_type = 0
-!>        file name of kernel function data
-        character(len = kchara) :: noise_file_name
-!>        normalization factor for LIC value
-        real(kind = kreal) :: freq_noise = one
-!>        1-D grid size of LIC noise, resolution = size * frequency
-        integer(kind = kint) :: noise_resolution
-!>        input noise texture size
-        integer(kind = kint) :: noise_dim(3)
-        integer(kind = kint) :: noise_size
-!>        noise texture, 1 BYTE for each noise value
-        character, allocatable:: noise_data(:)
-!>        Precomputed noise gradient for lighting
-        character, allocatable:: noise_grad_data(:)
 !
 !>        integer flag for LIC kernel function
 !>          iflag_linear:    Use symmetric linear kernel
@@ -100,23 +81,12 @@
         integer(kind = kint) :: iflag_normalization = 0
 !>        normalization factor for LIC value
         real(kind = kreal) :: factor_normal = one
-!
-!>        integer flag for reflection reference
-!>          iflag_from_file:   Use noise gradient file
-!>          iflag_from_color:  Use gradient of color data
-        integer(kind = kint) :: iflag_reflection_ref = 0
-!>        file name of reflection file
-        character(len = kchara) :: reflection_file_name
-!>        reflection parameter
-        real(kind = kreal) :: reflection_parameter
       end type lic_parameters
 !
       character(len = kchara), parameter :: cflag_LIC = 'LIC'
 !
-      character(len = kchara), parameter                                &
+      character(len = kchara), parameter, private                       &
      &                        :: cflag_from_file = 'file'
-      character(len = kchara), parameter                                &
-     &                        :: cflag_randum = 'randum'
       character(len = kchara), parameter                                &
      &                        :: cflag_linear = 'linear'
 !
@@ -140,8 +110,6 @@
       character(len = kchara), parameter                                &
      &                        :: cflag_from_color = 'color_field'
 !
-      integer(kind = kint), parameter :: iflag_from_file =    0
-      integer(kind = kint), parameter :: iflag_randum =       1
       integer(kind = kint), parameter :: iflag_linear =       1
 !
       integer(kind = kint), parameter :: iflag_from_lic =     0
@@ -155,7 +123,7 @@
 !
       integer(kind = kint), parameter :: iflag_from_color =   2
 !
-      private :: cflag_from_file, cflag_randum, cflag_linear
+      private :: cflag_linear
       private :: cflag_by_range, cflag_by_ctl
 !
 !  ---------------------------------------------------------------------
@@ -262,40 +230,11 @@
       end if
 !
 !
-      lic_p%iflag_noise_type = iflag_from_file
-      if(lic_ctl%noise_type_ctl%iflag .gt. 0) then
-        tmpchara = lic_ctl%noise_type_ctl%charavalue
-        if(cmp_no_case(tmpchara, cflag_from_file)) then
-          lic_p%iflag_noise_type = iflag_from_file
-        else if(cmp_no_case(tmpchara, cflag_randum)) then
-          lic_p%iflag_noise_type = iflag_randum
-        end if
-      end if
-!
-      if(lic_p%iflag_noise_type .eq. iflag_from_file) then
-        if(lic_ctl%noise_file_prefix_ctl%iflag .gt. 0) then
-          lic_p%noise_file_name                                         &
-     &       = lic_ctl%noise_file_prefix_ctl%charavalue
-        else
-          e_message = 'Set LIC noise file name'
-          call calypso_mpi_abort(ierr_VIZ, e_message)
-        end if
-      end if
-!
-      lic_p%reflection_file_name                                        &
-     &       = add_grd_extension(lic_p%noise_file_name)
-!
-!
       if(my_rank .eq. 0) then
         call set_control_3d_cube_noise(lic_ctl%noise_ctl, lic_p%noise_t)
         call sel_const_3d_cube_noise(lic_p%noise_t)
       end if
       call bcast_3d_cube_noise(lic_p%noise_t)
-!
-      lic_p%freq_noise = one
-      if(lic_ctl%noise_resolution_ctl%iflag .gt. 0) then
-        lic_p%noise_resolution = lic_ctl%noise_resolution_ctl%intvalue
-      end if
 !
       lic_p%iflag_kernel_type = iflag_linear
       if(lic_ctl%kernel_function_type_ctl%iflag .gt. 0) then
@@ -372,30 +311,7 @@
         lic_p%factor_normal = lic_ctl%normalization_value_ctl%realvalue
       end if
 !
-      lic_p%iflag_reflection_ref = iflag_from_color
-      if(lic_ctl%reflection_ref_type_ctl%iflag .gt. 0) then
-        tmpchara = lic_ctl%reflection_ref_type_ctl%charavalue
-        if(cmp_no_case(tmpchara, cflag_noise_file)) then
-          lic_p%iflag_reflection_ref = iflag_from_file
-        else if(cmp_no_case(tmpchara, cflag_from_color)) then
-          lic_p%iflag_reflection_ref = iflag_from_color
-        end if
-      end if
-!
-      lic_p%reflection_parameter = one
-      if(lic_ctl%reflection_parameter_ctl%iflag .gt. 0) then
-          lic_p%reflection_parameter                                    &
-     &          = lic_ctl%reflection_parameter_ctl%realvalue
-      end if
-!
       if(iflag_debug .gt. 0) then
-        write(*,*) 'iflag_noise_type: ', lic_p%iflag_noise_type
-        write(*,*) 'noise_file_name: ', trim(lic_p%noise_file_name)
-        write(*,*) 'reflection_file_name: ',                            &
-     &            trim(lic_p%reflection_file_name)
-        write(*,*) 'noise_resolution: ', lic_p%noise_resolution
-        write(*,*) 'freq_noise: ', lic_p%freq_noise
-!
         write(*,*) 'iflag_kernel_type: ', lic_p%iflag_kernel_type
         if(lic_p%iflag_kernel_type .eq. iflag_from_file) then
           write(*,*) 'kernel_image_prefix: ', lic_p%kernel_image_prefix
@@ -411,9 +327,6 @@
 !
         write(*,*) 'iflag_normalization: ', lic_p%iflag_normalization
         write(*,*) 'factor_normal: ',       lic_p%factor_normal
-!
-        write(*,*) 'iflag_reflection_ref: ', lic_p%iflag_reflection_ref
-        write(*,*) 'reflection_parameter: ', lic_p%reflection_parameter
       end if
 !
       end subroutine set_control_lic_parameter
@@ -471,50 +384,6 @@
       end subroutine get_geometry_reference
 !
 !-----------------------------------------------------------------------
-!
-      subroutine load_noise_data(lic_p)
-!
-      use t_control_data_LIC
-!
-      integer(kind = kint) :: read_err
-      type(lic_parameters), intent(inout) :: lic_p
-!
-      if(my_rank .eq. 0) write(*,*) 'loading noise texture from: ',     &
-     &                             trim(lic_p%noise_file_name)
-      call import_noise_ary(lic_p%noise_file_name,                      &
-     &    lic_p%noise_data, lic_p%noise_dim, read_err)
-      if(read_err .eq. 0) then
-        if(iflag_debug .gt. 0) then
-          write(*,*) 'loading noise successfuly, ',                     &
-     &         'loading gradient from: ', lic_p%reflection_file_name
-        end if
-        call import_noise_grad_ary(lic_p%reflection_file_name,          &
-     &      lic_p%noise_grad_data, lic_p%noise_dim, read_err)
-      end if
-!
-      lic_p%noise_size = lic_p%noise_dim(1) * lic_p%noise_dim(2)        &
-     &                  * lic_p%noise_dim(3)
-      lic_p%freq_noise = lic_p%noise_resolution / lic_p%noise_dim(1)
-!
-      if(iflag_debug .gt. 0) then
-        write(*,*) 'load noise texture from: ', lic_p%noise_file_name
-        write(*,*) 'noise size: ', lic_p%noise_size
-      end if
-      end subroutine load_noise_data
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine dealloc_lic_noise_data(lic_p)
-!
-      type(lic_parameters), intent(inout) :: lic_p
-!
-      if(lic_p%noise_size .gt. 0) then
-        deallocate(lic_p%noise_data)
-        deallocate(lic_p%noise_grad_data)
-      end if
-      end subroutine dealloc_lic_noise_data
-!
-!  ---------------------------------------------------------------------
 !
       subroutine dealloc_lic_masking_ranges(lic_p)
 !

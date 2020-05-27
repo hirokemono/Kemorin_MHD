@@ -25,19 +25,41 @@
 !
       implicit none
 !
+      character(len = kchara), parameter, private                       &
+     &                        :: cflag_from_file = 'file'
+      character(len = kchara), parameter, private                       &
+     &                        :: cflag_randum = 'randum'
+!
+      integer(kind = kint), parameter :: iflag_from_file =    0
+      integer(kind = kint), parameter :: iflag_randum =       1
+!
       type noise_cube
+!>        integer flag for LIC kernel function
+!>          cflag_from_file: Read noise data file
+!>          iflag_randum:    generate fram randum number
+        integer(kind = kint) :: iflag_noise_type = 0
+!
+!>         Noise file name to read/write
         character(len=kchara) :: noise_file_name
 !
+!>         size of noise cube in physical space
         real(kind = kreal) :: size_cube(3)
+!>         1 / asize_cube
         real(kind = kreal) :: asize_cube(3)
 !
+!>         step size of noise
         integer(kind = kint) :: i_stepsize
+!>         resolution of noise cube
         integer(kind = kint) :: nidx_xyz(3)
+!>         nobe of nodes of noise cube
         integer(kind = kint_gl) :: n_cube
 !
+!>         noise data
         real(kind = kreal), allocatable :: rnoise(:)
+!>         gradient of noise
         real(kind = kreal), allocatable :: rnoise_grad(:,:)
 !
+!>         noise for data IO
         character(len = 1), allocatable :: cnoise(:)
       end type noise_cube
 !
@@ -54,10 +76,12 @@
       subroutine set_control_3d_cube_noise(noise_ctl, nze)
 !
       use t_control_data_LIC_noise
+      use skip_comment_f
 !
       type(cube_noise_ctl), intent(in) :: noise_ctl
       type(noise_cube), intent(inout) :: nze
 !
+      character(len = kchara) :: tmpchara
       integer(kind = kint)  :: num_1d(3)
       real(kind = kreal)  :: c_size(3)
 !
@@ -66,6 +90,16 @@
       nze%i_stepsize = ione
       num_1d(1:3) = 256
       c_size(1:3) = one
+!
+      nze%iflag_noise_type = iflag_from_file
+      if(noise_ctl%noise_type_ctl%iflag .gt. 0) then
+        tmpchara = noise_ctl%noise_type_ctl%charavalue
+        if(cmp_no_case(tmpchara, cflag_from_file)) then
+          nze%iflag_noise_type = iflag_from_file
+        else if(cmp_no_case(tmpchara, cflag_randum)) then
+          nze%iflag_noise_type = iflag_randum
+        end if
+      end if
 !
       if(noise_ctl%noise_file_name_ctl%iflag .gt. 0) then
         nze%noise_file_name = noise_ctl%noise_file_name_ctl%charavalue
@@ -137,6 +171,8 @@
       integer(kind = kint_gl) :: n3_cube
 !
 !
+      call MPI_BCAST(nze%iflag_noise_type, 1, CALYPSO_INTEGER,          &
+     &               0, CALYPSO_COMM, ierr_MPI)
       call calypso_mpi_bcast_character                                  &
      &   (nze%noise_file_name, cast_long(kchara), 0)
 !

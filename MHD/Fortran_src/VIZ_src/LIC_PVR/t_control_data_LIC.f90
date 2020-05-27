@@ -55,10 +55,6 @@
 !!      ...
 !!    end cube_noise_ctl
 !!
-!!    noise_type             'external_file'
-!!    noise_file_prefix      'noise/noise_64'
-!!    noise_resolution         2048
-!!
 !!    kernel_function_type   'external_file'
 !!    kernal_image_prefix       'kernel'
 !!
@@ -71,10 +67,6 @@
 !!
 !!    normalization_type     'set_by_control'
 !!    normalization_value     20.0
-!!
-!!    reflection_reference   'noise_file'
-!!
-!!    referection_parameter    2.0
 !!  end LIC_ctl
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -112,7 +104,6 @@
 !
         type(read_character_item) :: noise_type_ctl
         type(read_character_item) :: noise_file_prefix_ctl
-        type(read_integer_item) ::   noise_resolution_ctl
 !
         type(read_character_item) :: kernel_function_type_ctl
         type(read_character_item) :: kernal_file_prefix_ctl
@@ -126,9 +117,6 @@
 !
         type(read_character_item) :: normalization_type_ctl
         type(read_real_item) ::      normalization_value_ctl
-!
-        type(read_character_item) :: reflection_ref_type_ctl
-        type(read_real_item) ::      reflection_parameter_ctl
 !
 !     2nd level for volume rendering
         integer (kind=kint) :: i_lic_control = 0
@@ -150,7 +138,6 @@
 !
       character(len=kchara) :: hd_noise_type =      'noise_type'
       character(len=kchara) :: hd_noise_file_head = 'noise_file_prefix'
-      character(len=kchara) :: hd_noise_grid_size = 'noise_resolution'
 !
       character(len=kchara) :: hd_kernel_function_type                  &
      &                        = 'kernel_function_type'
@@ -171,22 +158,16 @@
       character(len=kchara) :: hd_normalization_value                   &
      &                        = 'normalization_value'
 !
-      character(len=kchara) :: hd_reflection_ref_type                   &
-     &                        = 'reflection_reference'
-      character(len=kchara) :: hd_referection_parameter                 &
-     &                        = 'referection_parameter'
-!
       private :: hd_LIC_field, hd_color_field, hd_color_component
       private :: hd_opacity_field, hd_opacity_component
       private :: hd_masking_ctl, hd_cube_noise
-      private :: hd_noise_type, hd_noise_file_head, hd_noise_grid_size
+      private :: hd_noise_type, hd_noise_file_head
       private :: hd_kernel_function_type, hd_kernal_file_name
       private :: hd_vr_sample_mode
       private :: hd_step_size
       private :: hd_LIC_trace_type
       private :: hd_LIC_trace_length, hd_LIC_trace_count
       private :: hd_normalization_type, hd_normalization_value
-      private :: hd_reflection_ref_type, hd_referection_parameter
 !
       private :: read_lic_masking_ctl_array
       private :: alloc_lic_masking_ctl, dealloc_lic_masking_ctl
@@ -230,8 +211,6 @@
      &     (c_buf, hd_noise_type, lic_ctl%noise_type_ctl)
         call read_chara_ctl_type                                        &
      &     (c_buf, hd_noise_file_head, lic_ctl%noise_file_prefix_ctl)
-        call read_integer_ctl_type                                      &
-     &     (c_buf, hd_noise_grid_size, lic_ctl%noise_resolution_ctl)
 !
         call read_chara_ctl_type(c_buf, hd_kernel_function_type,        &
      &      lic_ctl%kernel_function_type_ctl)
@@ -254,11 +233,6 @@
      &      lic_ctl%normalization_type_ctl)
         call read_real_ctl_type(c_buf, hd_normalization_value,          &
      &      lic_ctl%normalization_value_ctl)
-!
-        call read_chara_ctl_type(c_buf, hd_reflection_ref_type,         &
-     &      lic_ctl%reflection_ref_type_ctl)
-        call read_real_ctl_type(c_buf, hd_referection_parameter,        &
-     &      lic_ctl%reflection_parameter_ctl)
 !
         call read_cube_noise_control_data                               &
      &     (id_control, hd_cube_noise, lic_ctl%noise_ctl, c_buf)
@@ -316,10 +290,6 @@
       lic_ctl%opacity_field_ctl%iflag =     0
       lic_ctl%opacity_component_ctl%iflag = 0
 !
-      lic_ctl%noise_type_ctl%iflag =      0
-      lic_ctl%noise_file_prefix_ctl%iflag = 0
-      lic_ctl%noise_resolution_ctl%iflag = 0
-!
       lic_ctl%kernel_function_type_ctl%iflag = 0
       lic_ctl%kernal_file_prefix_ctl%iflag =   0
 !
@@ -332,9 +302,6 @@
 !
       lic_ctl%normalization_type_ctl%iflag =   0
       lic_ctl%normalization_value_ctl%iflag =  0
-!
-      lic_ctl%reflection_ref_type_ctl%iflag =  0
-      lic_ctl%reflection_parameter_ctl%iflag = 0
 !
       call reset_cube_noise_control_data(lic_ctl%noise_ctl)
 !
@@ -369,10 +336,6 @@
       call bcast_ctl_type_c1(lic_ctl%opacity_field_ctl)
       call bcast_ctl_type_c1(lic_ctl%opacity_component_ctl)
 !
-      call bcast_ctl_type_c1(lic_ctl%noise_type_ctl)
-      call bcast_ctl_type_c1(lic_ctl%noise_file_prefix_ctl)
-      call bcast_ctl_type_i1(lic_ctl%noise_resolution_ctl)
-!
       call bcast_ctl_type_c1(lic_ctl%kernel_function_type_ctl)
       call bcast_ctl_type_c1(lic_ctl%kernal_file_prefix_ctl)
 !
@@ -385,9 +348,6 @@
 !
       call bcast_ctl_type_c1(lic_ctl%normalization_type_ctl)
       call bcast_ctl_type_r1(lic_ctl%normalization_value_ctl)
-!
-      call bcast_ctl_type_c1(lic_ctl%reflection_ref_type_ctl)
-      call bcast_ctl_type_r1(lic_ctl%reflection_parameter_ctl)
 !
       call MPI_BCAST(lic_ctl%num_masking_ctl,  1,                       &
      &    CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
@@ -422,13 +382,6 @@
       call copy_chara_ctl(org_lic_c%opacity_component_ctl,              &
      &                    new_lic_c%opacity_component_ctl)
 !
-      call copy_chara_ctl(org_lic_c%noise_type_ctl,                     &
-     &                    new_lic_c%noise_type_ctl)
-      call copy_chara_ctl(org_lic_c%noise_file_prefix_ctl,              &
-     &                    new_lic_c%noise_file_prefix_ctl)
-      call copy_integer_ctl(org_lic_c%noise_resolution_ctl,             &
-     &                      new_lic_c%noise_resolution_ctl)
-!
       call copy_chara_ctl(org_lic_c%kernel_function_type_ctl,           &
      &                    new_lic_c%kernel_function_type_ctl)
       call copy_chara_ctl(org_lic_c%kernal_file_prefix_ctl,             &
@@ -450,11 +403,6 @@
      &                    new_lic_c%normalization_type_ctl)
       call copy_real_ctl(org_lic_c%normalization_value_ctl,             &
      &                    new_lic_c%normalization_value_ctl)
-!
-      call copy_chara_ctl(org_lic_c%reflection_ref_type_ctl,            &
-     &                    new_lic_c%reflection_ref_type_ctl)
-      call copy_real_ctl(org_lic_c%reflection_parameter_ctl,            &
-     &                    new_lic_c%reflection_parameter_ctl)
 !
       call copy_cube_noise_control_data(org_lic_c%noise_ctl,            &
      &    new_lic_c%noise_ctl)
