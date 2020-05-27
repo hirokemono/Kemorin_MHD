@@ -61,24 +61,25 @@
 !
 !  ---------------------------------------------------------------------
 !
-subroutine kernal_sampling(k_size, k_ary, pos, k_value)
+      subroutine kernal_sampling(k_size, k_ary, pos, k_value)
 
-integer(kind = kint), intent(in) :: k_size
-real(kind = kreal), intent(in) :: k_ary(k_size), pos
-real(kind = kreal), intent(out) :: k_value
-real(kind = kreal) :: k_pos, offset, v_ceil, v_floor
-integer(kind = kint) :: k_ceil, k_floor
+      integer(kind = kint), intent(in) :: k_size
+      real(kind = kreal), intent(in) :: k_ary(k_size), pos
+      real(kind = kreal), intent(out) :: k_value
+      real(kind = kreal) :: k_pos, offset, v_ceil, v_floor
+      integer(kind = kint) :: k_ceil, k_floor
 
-k_value = 0.0
-k_pos = pos * k_size
-k_ceil = ceiling(k_pos + 0.5)
-k_floor = floor(k_pos + 0.5)
-offset = k_pos + 0.5 - k_floor
-k_ceil = min(k_ceil, k_size)
-k_floor = max(k_floor, 1)
-k_value = k_ary(k_floor) * (1.0 - offset) + k_ary(k_ceil) * (offset)
+      k_value = 0.0
+      k_pos = pos * k_size
+      k_ceil = ceiling(k_pos + 0.5)
+      k_floor = floor(k_pos + 0.5)
+      offset = k_pos + 0.5 - k_floor
+      k_ceil = min(k_ceil, k_size)
+      k_floor = max(k_floor, 1)
+      k_value = k_ary(k_floor) * (1.0 - offset)                         &
+     &         + k_ary(k_ceil) * (offset)
 
-end subroutine kernal_sampling
+      end subroutine kernal_sampling
 !
 !  ---------------------------------------------------------------------
 !

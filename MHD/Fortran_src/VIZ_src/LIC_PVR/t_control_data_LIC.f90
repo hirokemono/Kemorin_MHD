@@ -55,6 +55,10 @@
 !!      ...
 !!    end cube_noise_ctl
 !!
+!!    begin kernel_ctl
+!!      ...
+!!    end kernel_ctl
+!!
 !!    kernel_function_type   'external_file'
 !!    kernal_image_prefix       'kernel'
 !!
@@ -84,6 +88,7 @@
       use t_control_array_integer
       use t_control_data_LIC_masking
       use t_control_data_LIC_noise
+      use t_control_data_LIC_kernel
       use skip_comment_f
 !
       implicit  none
@@ -100,10 +105,10 @@
         integer(kind = kint) :: num_masking_ctl = 0
         type(lic_masking_ctl), allocatable :: mask_ctl(:)
 !
+!>        structure of noise control
         type(cube_noise_ctl) :: noise_ctl
-!
-        type(read_character_item) :: noise_type_ctl
-        type(read_character_item) :: noise_file_prefix_ctl
+!>        structure of kernel control
+        type(lic_kernel_ctl) :: kernel_ctl
 !
         type(read_character_item) :: kernel_function_type_ctl
         type(read_character_item) :: kernal_file_prefix_ctl
@@ -135,9 +140,7 @@
 !
       character(len=kchara) :: hd_masking_ctl = 'masking_control'
       character(len=kchara) :: hd_cube_noise =  'cube_noise_ctl'
-!
-      character(len=kchara) :: hd_noise_type =      'noise_type'
-      character(len=kchara) :: hd_noise_file_head = 'noise_file_prefix'
+      character(len=kchara) :: hd_kernel =      'kernel_ctl'
 !
       character(len=kchara) :: hd_kernel_function_type                  &
      &                        = 'kernel_function_type'
@@ -160,8 +163,7 @@
 !
       private :: hd_LIC_field, hd_color_field, hd_color_component
       private :: hd_opacity_field, hd_opacity_component
-      private :: hd_masking_ctl, hd_cube_noise
-      private :: hd_noise_type, hd_noise_file_head
+      private :: hd_masking_ctl, hd_cube_noise, hd_kernel
       private :: hd_kernel_function_type, hd_kernal_file_name
       private :: hd_vr_sample_mode
       private :: hd_step_size
@@ -207,11 +209,6 @@
         call read_chara_ctl_type(c_buf, hd_opacity_component,           &
      &      lic_ctl%opacity_component_ctl)
 !
-        call read_chara_ctl_type                                        &
-     &     (c_buf, hd_noise_type, lic_ctl%noise_type_ctl)
-        call read_chara_ctl_type                                        &
-     &     (c_buf, hd_noise_file_head, lic_ctl%noise_file_prefix_ctl)
-!
         call read_chara_ctl_type(c_buf, hd_kernel_function_type,        &
      &      lic_ctl%kernel_function_type_ctl)
         call read_chara_ctl_type(c_buf, hd_kernal_file_name,            &
@@ -236,6 +233,8 @@
 !
         call read_cube_noise_control_data                               &
      &     (id_control, hd_cube_noise, lic_ctl%noise_ctl, c_buf)
+        call read_kernel_control_data                                   &
+     &     (id_control, hd_kernel, lic_ctl%kernel_ctl, c_buf)
 !
         if(check_array_flag(c_buf, hd_masking_ctl)) then
           call read_lic_masking_ctl_array                               &
@@ -304,6 +303,7 @@
       lic_ctl%normalization_value_ctl%iflag =  0
 !
       call reset_cube_noise_control_data(lic_ctl%noise_ctl)
+      call reset_kernel_control_data(lic_ctl%kernel_ctl)
 !
       if(lic_ctl%num_masking_ctl .gt. 0) then
         call dealloc_lic_masking_ctls                                   &
@@ -353,6 +353,7 @@
      &    CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
 !
       call bcast_cube_noise_control_data(lic_ctl%noise_ctl)
+      call bcast_kernel_control_data(lic_ctl%kernel_ctl)
 !
       if(my_rank .ne. 0) call alloc_lic_masking_ctl(lic_ctl)
       do i = 1, lic_ctl%num_masking_ctl
@@ -406,6 +407,8 @@
 !
       call copy_cube_noise_control_data(org_lic_c%noise_ctl,            &
      &    new_lic_c%noise_ctl)
+      call copy_kernel_control_data(org_lic_c%kernel_ctl,               &
+     &    new_lic_c%kernel_ctl)
 !
       new_lic_c%num_masking_ctl = org_lic_c%num_masking_ctl
       if(new_lic_c%num_masking_ctl .gt. 0) then

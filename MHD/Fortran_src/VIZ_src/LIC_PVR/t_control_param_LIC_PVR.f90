@@ -155,7 +155,8 @@
 !
       call dealloc_3d_cube_noise(lic_fld%lic_param%noise_t)
       call dealloc_lic_masking_ranges(lic_fld%lic_param)
-      call dealloc_lic_kernel(lic_fld%lic_param)
+      call dealloc_lic_kernel(lic_fld%lic_param%kernel_t)
+      call dealloc_lic_kernel_image(lic_fld%lic_param%kernel_image)
 !
       end subroutine flush_each_lic_control
 !

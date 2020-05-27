@@ -16,9 +16,9 @@
 !!        type(cube_noise_ctl), intent(inout) :: noise_ctl
 !!        type(buffer_for_control), intent(inout)  :: c_buf
 !!      subroutine reset_cube_noise_control_data(noise_ctl)
-!!      subroutine copy_cube_noise_control_data(org_lic_c, new_lic_c)
-!!        type(cube_noise_ctl), intent(in) :: org_lic_c
-!!        type(cube_noise_ctl), intent(inout) :: new_lic_c
+!!      subroutine copy_cube_noise_control_data(org_noise_c, new_noise_c)
+!!        type(cube_noise_ctl), intent(in) :: org_noise_c
+!!        type(cube_noise_ctl), intent(inout) :: new_noise_c
 !!      subroutine bcast_cube_noise_control_data(noise_ctl)
 !!        type(cube_noise_ctl), intent(inout) :: noise_ctl
 !!
@@ -208,26 +208,27 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine copy_cube_noise_control_data(org_lic_c, new_lic_c)
+      subroutine copy_cube_noise_control_data(org_noise_c, new_noise_c)
 !
-      type(cube_noise_ctl), intent(in) :: org_lic_c
-      type(cube_noise_ctl), intent(inout) :: new_lic_c
+      type(cube_noise_ctl), intent(in) :: org_noise_c
+      type(cube_noise_ctl), intent(inout) :: new_noise_c
 !
 !
-      new_lic_c%i_cube_noise_control = org_lic_c%i_cube_noise_control
+      new_noise_c%i_cube_noise_control                                  &
+     &     = org_noise_c%i_cube_noise_control
 !
-      call copy_chara_ctl(org_lic_c%noise_type_ctl,                     &
-     &                    new_lic_c%noise_type_ctl)
-      call copy_chara_ctl(org_lic_c%noise_file_name_ctl,                &
-     &                    new_lic_c%noise_file_name_ctl)
-      call copy_chara_ctl(org_lic_c%noise_file_format_ctl,              &
-     &                    new_lic_c%noise_file_format_ctl)
-      call copy_integer_ctl(org_lic_c%noise_resolution_ctl,             &
-     &                      new_lic_c%noise_resolution_ctl)
-      call copy_integer_ctl(org_lic_c%noise_stepping_ctl,               &
-     &                      new_lic_c%noise_stepping_ctl)
-      call copy_real_ctl(org_lic_c%noise_cube_size_ctl,                 &
-     &                   new_lic_c%noise_cube_size_ctl)
+      call copy_chara_ctl(org_noise_c%noise_type_ctl,                   &
+     &                    new_noise_c%noise_type_ctl)
+      call copy_chara_ctl(org_noise_c%noise_file_name_ctl,              &
+     &                    new_noise_c%noise_file_name_ctl)
+      call copy_chara_ctl(org_noise_c%noise_file_format_ctl,            &
+     &                    new_noise_c%noise_file_format_ctl)
+      call copy_integer_ctl(org_noise_c%noise_resolution_ctl,           &
+     &                      new_noise_c%noise_resolution_ctl)
+      call copy_integer_ctl(org_noise_c%noise_stepping_ctl,             &
+     &                      new_noise_c%noise_stepping_ctl)
+      call copy_real_ctl(org_noise_c%noise_cube_size_ctl,               &
+     &                   new_noise_c%noise_cube_size_ctl)
 !
       end subroutine copy_cube_noise_control_data
 !

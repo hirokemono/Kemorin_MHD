@@ -13,7 +13,6 @@
 !!        type(lic_parameter_ctl), intent(inout) :: lic_p
 !!      subroutine dealloc_lic_noise_data(lic_p)
 !!      subroutine dealloc_lic_masking_ranges(lic_p)
-!!      subroutine dealloc_lic_kernel(lic_p)
 !!        type(lic_parameter_ctl), intent(inout) :: lic_p
 !!@endverbatim
 !
@@ -30,6 +29,7 @@
       use t_noise_node_data
       use t_LIC_kernel_image
       use t_3d_noise
+      use t_LIC_kernel
 !
       implicit  none
 !
@@ -53,6 +53,8 @@
 !
 !>        Structure of noise on cube
         type(noise_cube) :: noise_t
+!>        Structure of LIC kernel
+        type(LIC_kernel) :: kernel_t
 !
 !>        integer flag for LIC kernel function
 !>          iflag_linear:    Use symmetric linear kernel
@@ -231,10 +233,17 @@
 !
 !
       if(my_rank .eq. 0) then
-        call set_control_3d_cube_noise(lic_ctl%noise_ctl, lic_p%noise_t)
+        call set_control_3d_cube_noise                                  &
+     &     (lic_ctl%noise_ctl, lic_p%noise_t)
         call sel_const_3d_cube_noise(lic_p%noise_t)
       end if
       call bcast_3d_cube_noise(lic_p%noise_t)
+!
+      if(my_rank .eq. 0) then
+        call set_control_LIC_kernel(lic_ctl%kernel_ctl, lic_p%kernel_t)
+        call sel_const_LIC_kernel(lic_p%kernel_t)
+      end if
+      call bcast_LIC_kernel(lic_p%kernel_t)
 !
       lic_p%iflag_kernel_type = iflag_linear
       if(lic_ctl%kernel_function_type_ctl%iflag .gt. 0) then
@@ -361,7 +370,9 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine get_geometry_reference(lic_p, mask_idx, geo_coord, ref_value)
+      subroutine get_geometry_reference                                 &
+     &         (lic_p, mask_idx, geo_coord, ref_value)
+!
       type(lic_parameters), intent(in) :: lic_p
       integer(kind=kint), intent(in):: mask_idx
       real(kind=kreal), intent(in) :: geo_coord(:)
@@ -398,16 +409,6 @@
         deallocate(lic_p%masking)
 !
       end subroutine dealloc_lic_masking_ranges
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine dealloc_lic_kernel(lic_p)
-!
-      type(lic_parameters), intent(inout) :: lic_p
-!
-      call dealloc_lic_kernel_image(lic_p%kernel_image)
-!
-      end subroutine dealloc_lic_kernel
 !
 !  ---------------------------------------------------------------------
 !

@@ -1,8 +1,9 @@
 !>@file   t_3d_noise.f90
 !!@brief  module t_3d_noise
 !!
-!!@author H. Matsui
-!!@date Programmed in Apr. 2018
+!!@author Y. Liao and H. Matsui
+!!@date Programmed by Y. Liao in Apr. 2018
+!!      Modified by H. Matsui in Apr. 2020
 !
 !> @brief Construct 3D noise data for LIC
 !!
@@ -21,6 +22,7 @@
 !
       use m_precision
       use m_constants
+      use m_machine_parameter
       use calypso_mpi
 !
       implicit none
@@ -116,6 +118,15 @@
 !
       call set_3d_cube_resolution(num_1d(1), num_1d(2), num_1d(3), nze)
       call set_3d_cube_size(c_size(1), c_size(2), c_size(3), nze)
+!
+      if(iflag_debug .gt. 0) then
+        write(*,*) 'nze%iflag_noise_type', nze%iflag_noise_type
+        write(*,*) 'nze%noise_file_name: ', trim(nze%noise_file_name)
+        write(*,*) 'nze%nidx_xyz', nze%nidx_xyz
+        write(*,*) 'nze%n_cube', nze%n_cube
+        write(*,*) 'nze%i_stepsize', nze%i_stepsize
+        write(*,*) 'nze%size_cube', nze%size_cube
+      end if
 !
       end subroutine set_control_3d_cube_noise
 !
