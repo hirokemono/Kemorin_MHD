@@ -106,6 +106,7 @@
       integer(kind = kint_gl), parameter :: ione64 = 1
       integer(kind = kint_gl), parameter :: ithree64 = 3
       integer(kind = kint_4b) :: isize3d_tmp(3)
+      real(kind = kreal) :: ave_noise
 !
 !
       if(my_rank .eq. 0) then
@@ -160,6 +161,14 @@
           end do
           close(111)
         end if
+!
+        ave_noise = 0.0d0
+        do i = 1, d_size
+          ave_noise = ave_noise + ichar(n_raw_data(i)) / 256.0
+        end do
+        ave_noise = ave_noise / dble(d_size)
+        write(*,*) 'Average of noise:', ave_noise
+!
       end if
 !
       call MPI_BCAST(ierr, 1,                                           &
@@ -505,14 +514,20 @@
       real(kind = kreal), intent(inout) :: noise_value
       real(kind = kreal), intent(inout) :: grad_value(3)
 !
+      real(kind = kreal) :: neo_noise, neo_grad(3)
 !
-!      call interpolate_noise_at_node                                   &
-!     &   (xx_org, noise_t, noise_value, grad_value)
+      integer(kind = kint_gl) :: i
+!
+
+      call interpolate_noise_at_node                                    &
+     &   (xx_org, noise_t, noise_value, grad_value)
+      return
 !
       call noise_sampling(n_cube, f_noise, noise_data,                  &
      &    xx_org, xyz_min, xyz_max, noise_value)
       call noise_grad_sampling(n_cube, f_noise, noise_grad,             &
      &    xx_org, xyz_min, xyz_max, grad_value)
+      if(neo_noise .gt. 0) write(*,*) 'noise_value', neo_noise, noise_value
 !
       end subroutine noise_and_grad_sampling
 !

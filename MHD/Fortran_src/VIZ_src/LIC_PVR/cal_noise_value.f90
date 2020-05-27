@@ -101,7 +101,8 @@
       integer(kind = kint_gl), intent(inout) :: ie_cube(8)
       real(kind = kreal), intent(inout) :: an(8)
 !
-      real(kind = kreal) :: xyz_n(3), xyz_f(3), xyz_d(3)
+      real(kind = kreal) :: xyz_n(3), xyz_f(3), xyz_c(3)
+      real(kind = kreal) :: xyz_s(3), xyz_t(3)
       integer(kind = kint) :: ijk_n(3), ijk_p(3)
       integer(kind = kint_gl) :: inod_nn, inod_pn, inod_pp, inod_np
       integer(kind = kint_gl) :: inod_zn, inod_zp
@@ -110,11 +111,13 @@
 !
 !
       do nd = 1, 3
-        xyz_d(nd) = xyz(nd) * dble(nidx_xyz(nd)) * asize_cube(nd)
-        xyz_f(nd) = xyz_d(nd) - int(xyz_d(nd))
-        xyz_n(nd) = xyz_f(nd) - sign(half, xyz_f(nd)) + half
-        ijk_n(nd) = mod(int(xyz_d(nd)),   nidx_xyz(nd)) + 1
-        ijk_p(nd) = mod(int(xyz_d(nd))+1, nidx_xyz(nd)) + 1
+        xyz_s(nd) = xyz(nd) * asize_cube(nd)
+        xyz_t(nd) = xyz_s(nd) - dble(int(xyz_s(nd)))
+        xyz_f(nd) = xyz_t(nd) - sign(half, xyz_t(nd)) + half
+        xyz_c(nd) = mod(xyz_f(nd),1.0d0) * dble(nidx_xyz(nd))
+        xyz_n(nd) = xyz_c(nd) - dble(int(xyz_c(nd)))
+        ijk_n(nd) = int(xyz_c(nd))
+        ijk_p(nd) = mod(ijk_n(nd)+1, nidx_xyz(nd))
       end do
 !
       inod_nn = int((ijk_n(1) + nidx_xyz(1)*ijk_n(2)), KIND(inod_nn))
@@ -124,14 +127,14 @@
       inod_zn = ijk_n(3) * int((nidx_xyz(1)*nidx_xyz(2)),KIND(inod_zn))
       inod_zp = ijk_n(3) * int((nidx_xyz(1)*nidx_xyz(2)),KIND(inod_zp))
 !
-      ie_cube(1) = inod_nn + inod_zn
-      ie_cube(2) = inod_pn + inod_zn
-      ie_cube(3) = inod_pp + inod_zn
-      ie_cube(4) = inod_np + inod_zn
-      ie_cube(5) = inod_nn + inod_zp
-      ie_cube(6) = inod_pn + inod_zp
-      ie_cube(7) = inod_pp + inod_zp
-      ie_cube(8) = inod_np + inod_zp
+      ie_cube(1) = 1 + inod_nn + inod_zn
+      ie_cube(2) = 1 + inod_pn + inod_zn
+      ie_cube(3) = 1 + inod_pp + inod_zn
+      ie_cube(4) = 1 + inod_np + inod_zn
+      ie_cube(5) = 1 + inod_nn + inod_zp
+      ie_cube(6) = 1 + inod_pn + inod_zp
+      ie_cube(7) = 1 + inod_pp + inod_zp
+      ie_cube(8) = 1 + inod_np + inod_zp
 !
       an(1) = (one-xyz_n(1)) * (one-xyz_n(2)) * (one-xyz_n(3))
       an(2) = (    xyz_n(1)) * (one-xyz_n(2)) * (one-xyz_n(3))
