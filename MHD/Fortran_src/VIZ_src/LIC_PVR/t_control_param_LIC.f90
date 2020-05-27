@@ -225,6 +225,9 @@
         lic_p%color_field%id_component =      icomp_tmp(1)
         lic_p%color_field%num_original_comp = ncomp_tmp(1)
         lic_p%color_field%field_name =        fldname_tmp(1)
+      else
+        lic_p%color_field%id_field =      1
+        lic_p%color_field%id_component =  1
       end if
 !
 !
