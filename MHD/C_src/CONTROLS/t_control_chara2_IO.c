@@ -8,17 +8,22 @@
 #include "t_control_chara2_IO.h"
 
 
-void alloc_chara2_ctl_item_c(struct chara2_ctl_item *c2_item){
+struct chara2_ctl_item * init_chara2_ctl_item_c(){
+    struct chara2_ctl_item *c2_item;
+    if ((c2_item = (struct chara2_ctl_item *) malloc(sizeof(struct chara2_ctl_item))) == NULL) {
+        printf("malloc error for c2_item\n");
+        exit(0);
+    }
 	c2_item->c1_tbl = (char *)calloc(KCHARA_C, sizeof(char));
 	c2_item->c2_tbl = (char *)calloc(KCHARA_C, sizeof(char));
 	c2_item->iflag = 0;
-    return;
+    return c2_item;
 };
 
 void dealloc_chara2_ctl_item_c(struct chara2_ctl_item *c2_item){
     free(c2_item->c1_tbl);
     free(c2_item->c2_tbl);
-	c2_item->iflag = 0;
+    free(c2_item);
     return;
 };
 
@@ -82,11 +87,7 @@ static struct chara2_ctl_list *add_chara2_ctl_list_before(struct chara2_ctl_list
         printf("malloc error for chara2_ctl_list\n");
         exit(0);
     }
-    if ((added->c2_item = (struct chara2_ctl_item *) malloc(sizeof(struct chara2_ctl_item))) == NULL) {
-        printf("malloc error for c2_item\n");
-        exit(0);
-    }
-	alloc_chara2_ctl_item_c(added->c2_item);
+	added->c2_item = init_chara2_ctl_item_c();
 	
 	/* replace from  prev -> current to prev -> new -> current */
 	old_prev = current->_prev;
@@ -106,11 +107,7 @@ static struct chara2_ctl_list *add_chara2_ctl_list_after(struct chara2_ctl_list 
         printf("malloc error\n");
         exit(0);
     }
-    if ((added->c2_item = (struct chara2_ctl_item *) malloc(sizeof(struct chara2_ctl_item))) == NULL) {
-        printf("malloc error for c2_item\n");
-        exit(0);
-    }
-	alloc_chara2_ctl_item_c(added->c2_item);
+	added->c2_item = init_chara2_ctl_item_c();
     /* replace from  current -> next to current -> new -> next */
     old_next= current->_next;
     current->_next = added;
@@ -126,7 +123,6 @@ static void delete_chara2_ctl_list(struct chara2_ctl_list *current){
     struct chara2_ctl_list *old_next = current->_next;
     
     dealloc_chara2_ctl_item_c(current->c2_item);
-    free(current->c2_item);
     free(current);
     
     old_prev->_next = old_next;

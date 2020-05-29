@@ -8,19 +8,25 @@
 #include "t_control_chara3_IO.h"
 
 
-void alloc_chara3_ctl_item_c(struct chara3_ctl_item *c3_item){
-	c3_item->c1_tbl = (char *)calloc(KCHARA_C, sizeof(char));
+struct chara3_ctl_item * init_chara3_ctl_item_c(){
+    struct chara3_ctl_item *c3_item;
+    if ((c3_item = (struct chara3_ctl_item *) malloc(sizeof(struct chara3_ctl_item))) == NULL) {
+        printf("malloc error for c3_item\n");
+        exit(0);
+    }
+
+    c3_item->c1_tbl = (char *)calloc(KCHARA_C, sizeof(char));
 	c3_item->c2_tbl = (char *)calloc(KCHARA_C, sizeof(char));
 	c3_item->c3_tbl = (char *)calloc(KCHARA_C, sizeof(char));
 	c3_item->iflag = 0;
-    return;
+    return c3_item;
 };
 
 void dealloc_chara3_ctl_item_c(struct chara3_ctl_item *c3_item){
     free(c3_item->c1_tbl);
     free(c3_item->c2_tbl);
     free(c3_item->c3_tbl);
-	c3_item->iflag = 0;
+    free(c3_item);
     return;
 };
 
@@ -86,11 +92,7 @@ static struct chara3_ctl_list *add_chara3_ctl_list_before(struct chara3_ctl_list
         printf("malloc error\n");
         exit(0);
     }
-    if ((added->c3_item = (struct chara3_ctl_item *) malloc(sizeof(struct chara3_ctl_item))) == NULL) {
-        printf("malloc error for c3_item\n");
-        exit(0);
-    }
-	alloc_chara3_ctl_item_c(added->c3_item);
+	added->c3_item = init_chara3_ctl_item_c();
     
 	/* replace from  prev -> current to prev -> new -> current */
 	old_prev = current->_prev;
@@ -110,11 +112,7 @@ static struct chara3_ctl_list *add_chara3_ctl_list_after(struct chara3_ctl_list 
         printf("malloc error\n");
         exit(0);
     }
-    if ((added->c3_item = (struct chara3_ctl_item *) malloc(sizeof(struct chara3_ctl_item))) == NULL) {
-        printf("malloc error for c3_item\n");
-        exit(0);
-    }
-	alloc_chara3_ctl_item_c(added->c3_item);
+	added->c3_item = init_chara3_ctl_item_c();
     
     /* replace from  current -> next to current -> new -> next */
     old_next= current->_next;
@@ -131,7 +129,6 @@ static void delete_chara3_ctl_list(struct chara3_ctl_list *current){
     struct chara3_ctl_list *old_next = current->_next;
     
     dealloc_chara3_ctl_item_c(current->c3_item);
-    free(current->c3_item);
     free(current);
     
     old_prev->_next = old_next;

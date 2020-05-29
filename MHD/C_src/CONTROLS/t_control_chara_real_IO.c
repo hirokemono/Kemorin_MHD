@@ -8,17 +8,21 @@
 #include "t_control_chara_real_IO.h"
 
 
-void alloc_chara_real_ctl_item_c(struct chara_real_ctl_item *cr_item){
+struct chara_real_ctl_item * init_chara_real_ctl_item_c(){
+    struct chara_real_ctl_item *cr_item;
+    if((cr_item = (struct chara_real_ctl_item *) malloc(sizeof(struct chara_real_ctl_item))) == NULL) {
+        printf("malloc error for cr_item\n");
+        exit(0);
+    }
 	cr_item->c_tbl = (char *)calloc(KCHARA_C, sizeof(char));
 	cr_item->r_data = 0.0;
 	cr_item->iflag = 0;
-    return;
+    return cr_item;
 };
 
 void dealloc_chara_real_ctl_item_c(struct chara_real_ctl_item *cr_item){
     free(cr_item->c_tbl);
-	cr_item->r_data = 0.0;
-	cr_item->iflag = 0;
+    free(cr_item);
     return;
 };
 
@@ -81,11 +85,7 @@ static struct chara_real_ctl_list *add_chara_real_ctl_list_before(struct chara_r
         printf("malloc error\n");
         exit(0);
     }
-    if ((added->cr_item = (struct chara_real_ctl_item *) malloc(sizeof(struct chara_real_ctl_item))) == NULL) {
-        printf("malloc error for cr_item\n");
-        exit(0);
-    }
-	alloc_chara_real_ctl_item_c(added->cr_item);
+	added->cr_item = init_chara_real_ctl_item_c();
     
 	/* replace from  prev -> current to prev -> new -> current */
 	old_prev = current->_prev;
@@ -105,11 +105,7 @@ static struct chara_real_ctl_list *add_chara_real_ctl_list_after(struct chara_re
         printf("malloc error\n");
         exit(0);
     }
-    if ((added->cr_item = (struct chara_real_ctl_item *) malloc(sizeof(struct chara_real_ctl_item))) == NULL) {
-        printf("malloc error for cr_item\n");
-        exit(0);
-    }
-	alloc_chara_real_ctl_item_c(added->cr_item);
+	added->cr_item = init_chara_real_ctl_item_c();
     
     /* replace from  current -> next to current -> new -> next */
     old_next= current->_next;
@@ -126,7 +122,6 @@ static void delete_chara_real_ctl_list(struct chara_real_ctl_list *current){
     struct chara_real_ctl_list *old_next = current->_next;
     
     dealloc_chara_real_ctl_item_c(current->cr_item);
-    free(current->cr_item);
     free(current);
     
     old_prev->_next = old_next;

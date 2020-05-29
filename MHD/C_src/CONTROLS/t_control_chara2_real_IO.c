@@ -8,18 +8,23 @@
 #include "t_control_chara2_real_IO.h"
 
 
-void alloc_c2r_ctl_item_c(struct chara2_real_ctl_item *c2r_item){
+struct chara2_real_ctl_item * init_c2r_ctl_item_c(){
+    struct chara2_real_ctl_item *c2r_item;
+    if((c2r_item = (struct chara2_real_ctl_item *) malloc(sizeof(struct chara2_real_ctl_item))) == NULL) {
+        printf("malloc error for c2r_item\n");
+        exit(0);
+    }
 	c2r_item->c1_tbl = (char *)calloc(KCHARA_C, sizeof(char));
 	c2r_item->c2_tbl = (char *)calloc(KCHARA_C, sizeof(char));
 	c2r_item->r_data = 0.0;
 	c2r_item->iflag = 0;
-    return;
+    return c2r_item;
 };
 
 void dealloc_c2r_ctl_item_c(struct chara2_real_ctl_item *c2r_item){
     free(c2r_item->c1_tbl);
     free(c2r_item->c2_tbl);
-	c2r_item->iflag = 0;
+    free(c2r_item);
     return;
 };
 
@@ -86,11 +91,7 @@ static struct chara2_real_ctl_list *add_c2r_ctl_list_before(struct chara2_real_c
         printf("malloc error\n");
         exit(0);
     }
-    if ((added->c2r_item = (struct chara2_real_ctl_item *) malloc(sizeof(struct chara2_real_ctl_item))) == NULL) {
-        printf("malloc error for c2r_item\n");
-        exit(0);
-    }
-	alloc_c2r_ctl_item_c(added->c2r_item);
+	added->c2r_item = init_c2r_ctl_item_c();
     
 	/* replace from  prev -> current to prev -> new -> current */
 	old_prev = current->_prev;
@@ -110,11 +111,7 @@ static struct chara2_real_ctl_list *add_c2r_ctl_list_after(struct chara2_real_ct
         printf("malloc error\n");
         exit(0);
     }
-    if ((added->c2r_item = (struct chara2_real_ctl_item *) malloc(sizeof(struct chara2_real_ctl_item))) == NULL) {
-        printf("malloc error for c2r_item\n");
-        exit(0);
-    }
-	alloc_c2r_ctl_item_c(added->c2r_item);
+	added->c2r_item = init_c2r_ctl_item_c();
     
     /* replace from  current -> next to current -> new -> next */
     old_next= current->_next;
@@ -131,7 +128,6 @@ static void delete_c2r_ctl_list(struct chara2_real_ctl_list *current){
     struct chara2_real_ctl_list *old_next = current->_next;
     
     dealloc_c2r_ctl_item_c(current->c2r_item);
-    free(current->c2r_item);
     free(current);
     
     old_prev->_next = old_next;

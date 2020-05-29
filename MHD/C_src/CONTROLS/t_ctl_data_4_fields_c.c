@@ -31,12 +31,7 @@ void alloc_field_ctl_c(struct field_ctl_c *fld_ctl){
 		};
 	};
 	
-	if ((fld_ctl->tmp_fld_item
-					= (struct chara3_ctl_item *) malloc(sizeof(struct chara3_ctl_item))) == NULL) {
-        printf("malloc error for fld_ctl->tmp_fld_item\n");
-        exit(0);
-    }
-	alloc_chara3_ctl_item_c(fld_ctl->tmp_fld_item);
+	fld_ctl->tmp_fld_item = init_chara3_ctl_item_c();
 	
 	init_chara_int2_ctl_list(&fld_ctl->field_list);
 	init_chara_ctl_list(&fld_ctl->quad_phys_list);

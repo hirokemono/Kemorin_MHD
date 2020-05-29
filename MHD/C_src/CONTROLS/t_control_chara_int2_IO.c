@@ -8,19 +8,22 @@
 #include "t_control_chara_int2_IO.h"
 
 
-void alloc_chara_int2_ctl_item_c(struct chara_int2_ctl_item *ci2_item){
+struct chara_int2_ctl_item * init_chara_int2_ctl_item_c(){
+    struct chara_int2_ctl_item *ci2_item;
+    if((ci2_item = (struct chara_int2_ctl_item *) malloc(sizeof(struct chara_int2_ctl_item))) == NULL){
+        printf("malloc error for chara_int2_ctl_item\n");
+        exit(0);
+    }
 	ci2_item->c_tbl = (char *)calloc(KCHARA_C, sizeof(char));
 	ci2_item->i_data[0] = 0;
 	ci2_item->i_data[1] = 0;
 	ci2_item->iflag = 0;
-    return;
+    return ci2_item;
 };
 
 void dealloc_chara_int2_ctl_item_c(struct chara_int2_ctl_item *ci2_item){
     free(ci2_item->c_tbl);
-	ci2_item->i_data[0] = 0;
-	ci2_item->i_data[1] = 0;
-	ci2_item->iflag = 0;
+    free(ci2_item);
     return;
 };
 
@@ -83,11 +86,7 @@ struct chara_int2_ctl_list *add_chara_int2_ctl_list_before(struct chara_int2_ctl
         printf("malloc error\n");
         exit(0);
     }
-    if ((added->ci2_item = (struct chara_int2_ctl_item *) malloc(sizeof(struct chara_int2_ctl_item))) == NULL) {
-        printf("malloc error for ci2_item\n");
-        exit(0);
-    }
-	alloc_chara_int2_ctl_item_c(added->ci2_item);
+	added->ci2_item = init_chara_int2_ctl_item_c();
     
 	/* replace from  prev -> current to prev -> new -> current */
 	old_prev = current->_prev;
@@ -107,11 +106,7 @@ struct chara_int2_ctl_list *add_chara_int2_ctl_list_after(struct chara_int2_ctl_
         printf("malloc error\n");
         exit(0);
     }
-    if ((added->ci2_item = (struct chara_int2_ctl_item *) malloc(sizeof(struct chara_int2_ctl_item))) == NULL) {
-        printf("malloc error for ci2_item\n");
-        exit(0);
-    }
-	alloc_chara_int2_ctl_item_c(added->ci2_item);
+	added->ci2_item = init_chara_int2_ctl_item_c();
     
     /* replace from  current -> next to current -> new -> next */
     old_next= current->_next;
@@ -128,7 +123,6 @@ void delete_chara_int2_ctl_list(struct chara_int2_ctl_list *current){
     struct chara_int2_ctl_list *old_next = current->_next;
     
     dealloc_chara_int2_ctl_item_c(current->ci2_item);
-    free(current->ci2_item);
     free(current);
     
     old_prev->_next = old_next;
