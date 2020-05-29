@@ -147,8 +147,7 @@ struct pvr_movie_ctl_c * init_pvr_movie_ctl_c(){
 	};
 	
 	movie_c->rotation_axis_ctl = init_chara_ctl_item_c();
-	movie_c->num_frames_ctl = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
-	init_int_ctl_item_c(movie_c->num_frames_ctl);
+    movie_c->num_frames_ctl =    init_int_ctl_item_c();
 	
 	return movie_c;
 };
@@ -217,8 +216,7 @@ struct pvr_ctl_c * init_pvr_ctl_c(){
 	pvr_c->pvr_field_ctl = init_chara_ctl_item_c();
 	pvr_c->pvr_comp_ctl = init_chara_ctl_item_c();
 	
-    pvr_c->maxpe_composit_ctl = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
-    init_int_ctl_item_c(pvr_c->maxpe_composit_ctl);
+    pvr_c->maxpe_composit_ctl = init_int_ctl_item_c();
 
 	pvr_c->area_c = init_pvr_plot_area_ctl_c();
 	

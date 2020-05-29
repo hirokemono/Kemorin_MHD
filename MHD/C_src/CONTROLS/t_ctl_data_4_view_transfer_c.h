@@ -72,7 +72,7 @@ void get_label_streo_view_ctl(int index, char *label);
 void get_label_projection_mat_ctl(int index, char *label);
 void get_label_modeview_ctl(int index, char *label);
 
-void alloc_image_size_ctl_c(struct image_size_ctl_c *img_size_c);
+struct image_size_ctl_c * init_image_size_ctl_c();
 void dealloc_image_size_ctl_c(struct image_size_ctl_c *img_size_c);
 void read_image_size_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct image_size_ctl_c *img_size_c);

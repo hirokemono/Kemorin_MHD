@@ -68,8 +68,13 @@ void get_label_modeview_ctl(int index, char *label){
 };
 
 
-void alloc_image_size_ctl_c(struct image_size_ctl_c *img_size_c){
+struct image_size_ctl_c * init_image_size_ctl_c(){
 	int i;
+    struct image_size_ctl_c *img_size_c;
+    if((img_size_c = (struct image_size_ctl_c *) malloc(sizeof(struct image_size_ctl_c))) == NULL) {
+        printf("malloc error for image_size_ctl_c \n");
+        exit(0);
+    }
 	
     img_size_c->iflag_use = 0;
 	img_size_c->maxlen = 0;
@@ -79,12 +84,10 @@ void alloc_image_size_ctl_c(struct image_size_ctl_c *img_size_c){
 		};
 	};
 	
-	img_size_c->num_xpixel_ctl = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
-	img_size_c->num_ypixel_ctl = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
-	init_int_ctl_item_c(img_size_c->num_xpixel_ctl);
-	init_int_ctl_item_c(img_size_c->num_ypixel_ctl);
+    img_size_c->num_xpixel_ctl = init_int_ctl_item_c();
+    img_size_c->num_ypixel_ctl = init_int_ctl_item_c();
 	
-	return;
+	return img_size_c;
 };
 
 void dealloc_image_size_ctl_c(struct image_size_ctl_c *img_size_c){
@@ -92,7 +95,7 @@ void dealloc_image_size_ctl_c(struct image_size_ctl_c *img_size_c){
 	free(img_size_c->num_xpixel_ctl);
 	free(img_size_c->num_ypixel_ctl);
 	
-    img_size_c->iflag_use = 0;
+    free(img_size_c);
 	return;
 };
 
@@ -295,8 +298,7 @@ void alloc_modeview_ctl_c(struct modeview_ctl_c *mat_c){
     sprintf(mat_c->scale_vector_list->c1_name, "Direction");
     sprintf(mat_c->viewpt_in_viewer_list->r1_name, "Value");
 	
-	mat_c->img_size_c = (struct image_size_ctl_c *) malloc(sizeof(struct image_size_ctl_c));
-	alloc_image_size_ctl_c(mat_c->img_size_c);
+	mat_c->img_size_c = init_image_size_ctl_c();
 	
 	mat_c->streo_view_c = (struct streo_view_ctl_c *) malloc(sizeof(struct streo_view_ctl_c));
 	alloc_streo_view_ctl_c(mat_c->streo_view_c);
@@ -332,7 +334,6 @@ void dealloc_modeview_ctl_c(struct modeview_ctl_c *mat_c){
 	dealloc_image_size_ctl_c(mat_c->img_size_c);
 	dealloc_streo_view_ctl_c(mat_c->streo_view_c);
 	dealloc_projection_mat_ctl_c(mat_c->projection_c);
-	free(mat_c->img_size_c);
 	free(mat_c->streo_view_c);
 	free(mat_c->projection_c);
 		

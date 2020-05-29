@@ -33,8 +33,7 @@ struct lic_kernel_ctl_c * alloc_lic_kernel_ctl_c(){
 	lic_knl_c->label_lic_kernel = init_ctl_label_LIC_kernel_f();
 	lic_knl_c->kernel_function_type_ctl = init_chara_ctl_item_c();
 	
-	lic_knl_c->kernel_resolution_ctl_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
-	init_int_ctl_item_c(lic_knl_c->kernel_resolution_ctl_c);
+	lic_knl_c->kernel_resolution_ctl_c = init_int_ctl_item_c();
 	
 	lic_knl_c->kernel_sigma_ctl_c = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
 	init_real_ctl_item_c(lic_knl_c->kernel_sigma_ctl_c);
@@ -44,8 +43,7 @@ struct lic_kernel_ctl_c * alloc_lic_kernel_ctl_c(){
 	init_real_ctl_item_c(lic_knl_c->kernel_half_lengh_c);
 	
 	lic_knl_c->LIC_trace_length_def_ctl = init_chara_ctl_item_c();
-	lic_knl_c->LIC_trace_count_ctl = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
-	init_int_ctl_item_c(lic_knl_c->LIC_trace_count_ctl);
+	lic_knl_c->LIC_trace_count_ctl = init_int_ctl_item_c();
 	
 	return lic_knl_c;
 };

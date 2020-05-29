@@ -68,11 +68,9 @@ struct fline_ctl_c * init_fline_ctl_c(){
 	fline_c->selection_type_ctl = init_chara_ctl_item_c();
 	fline_c->line_direction_ctl = init_chara_ctl_item_c();
 	
-	fline_c->start_surf_grp_ctl = init_chara_ctl_item_c();
-	fline_c->num_fieldline_ctl = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
-	fline_c->max_line_stepping_ctl = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
-	init_int_ctl_item_c(fline_c->num_fieldline_ctl);
-	init_int_ctl_item_c(fline_c->max_line_stepping_ctl);
+	fline_c->start_surf_grp_ctl =    init_chara_ctl_item_c();
+    fline_c->num_fieldline_ctl =     init_int_ctl_item_c();
+    fline_c->max_line_stepping_ctl = init_int_ctl_item_c();
 	
     fline_c->seed_point_list = (struct real3_clist *) malloc(sizeof(struct real3_clist));
 	init_real3_clist(fline_c->seed_point_list);

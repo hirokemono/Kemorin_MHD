@@ -17,8 +17,14 @@ void get_label_crustal_filter_ctl(int index, char *label){
     return;
 };
 
-void alloc_crustal_filter_ctl_c(struct crustal_filter_ctl_c *crust_f_ctl){
+struct crustal_filter_ctl_c * init_crustal_filter_ctl_c(){
     int i;
+    struct crustal_filter_ctl_c *crust_f_ctl;
+    if((crust_f_ctl = (struct crustal_filter_ctl_c *) malloc(sizeof(struct crustal_filter_ctl_c))) == NULL) {
+        printf("malloc error for crustal_filter_ctl_c \n");
+        exit(0);
+    }
+    
     crust_f_ctl->iflag_use = 0;
     crust_f_ctl->maxlen = 0;
     for (i=0;i<NLBL_CRUSTAL_FILTER_CTL;i++){
@@ -27,15 +33,13 @@ void alloc_crustal_filter_ctl_c(struct crustal_filter_ctl_c *crust_f_ctl){
         };
     };
     
-    crust_f_ctl->crustal_truncation_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
-    init_int_ctl_item_c(crust_f_ctl->crustal_truncation_c);
-    
-    return;
+    crust_f_ctl->crustal_truncation_c = init_int_ctl_item_c();
+    return crust_f_ctl;
 };
 
 void dealloc_crustal_filter_ctl_c(struct crustal_filter_ctl_c *crust_f_ctl){
     free(crust_f_ctl->crustal_truncation_c);
-    crust_f_ctl->iflag_use = 0;
+    free(crust_f_ctl);
     return;
 };
 

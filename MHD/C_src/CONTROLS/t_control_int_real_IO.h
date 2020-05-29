@@ -41,7 +41,7 @@ struct int_real_clist{
 
 /* prototypes */
 
-void init_int_real_ctl_item_c(struct int_real_ctl_item *ir_item);
+struct int_real_ctl_item * init_int_real_ctl_item_c();
 int read_int_real_ctl_item_c(char buf[LENGTHBUF], const char *label, 
                           struct int_real_ctl_item *ir_item);
 int write_int_real_ctl_item_c(FILE *fp, int level, int maxlen, 

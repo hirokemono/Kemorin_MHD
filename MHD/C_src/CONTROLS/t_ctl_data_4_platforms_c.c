@@ -59,10 +59,8 @@ struct platform_data_control_c * init_platform_data_control_c(){
     
     files->debug_flag_c = init_chara_ctl_item_c();
     
-    files->ndomain_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
-    init_int_ctl_item_c(files->ndomain_c);
-    files->num_smp_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
-    init_int_ctl_item_c(files->num_smp_c);
+    files->ndomain_c = init_int_ctl_item_c();
+    files->num_smp_c = init_int_ctl_item_c();
 
     files->sph_file_prefix_c = init_chara_ctl_item_c();
     files->mesh_file_prefix_c = init_chara_ctl_item_c();

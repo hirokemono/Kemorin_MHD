@@ -136,10 +136,8 @@ struct mhd_evo_scheme_control_c * init_mhd_evo_scheme_control_c(){
 	mevo_ctl->iflag_supg_b_c = init_chara_ctl_item_c();
 	mevo_ctl->iflag_supg_c_c = init_chara_ctl_item_c();
 	
-	mevo_ctl->num_multi_pass_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
-	init_int_ctl_item_c(mevo_ctl->num_multi_pass_c);
-	mevo_ctl->maxiter_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
-	init_int_ctl_item_c(mevo_ctl->maxiter_c);
+	mevo_ctl->num_multi_pass_c = init_int_ctl_item_c();
+	mevo_ctl->maxiter_c = init_int_ctl_item_c();
 	
 	mevo_ctl->eps_4_velo_c = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
 	init_real_ctl_item_c(mevo_ctl->eps_4_velo_c);
@@ -162,8 +160,7 @@ struct mhd_evo_scheme_control_c * init_mhd_evo_scheme_control_c(){
 	mevo_ctl->import_mode_c = init_chara_ctl_item_c();
 	mevo_ctl->SR_routine_c =  init_chara_ctl_item_c();
 	
-	mevo_ctl->leg_vector_len_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
-	init_int_ctl_item_c(mevo_ctl->leg_vector_len_c);
+	mevo_ctl->leg_vector_len_c = init_int_ctl_item_c();
 	return mevo_ctl;
 }
 

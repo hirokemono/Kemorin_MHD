@@ -29,7 +29,7 @@ struct crustal_filter_ctl_c{
 /* prototypes */
 void get_label_crustal_filter_ctl(int index, char *label);
 
-void alloc_crustal_filter_ctl_c(struct crustal_filter_ctl_c *crust_f_ctl);
+struct crustal_filter_ctl_c * init_crustal_filter_ctl_c();
 void dealloc_crustal_filter_ctl_c(struct crustal_filter_ctl_c *crust_f_ctl);
 
 void read_crustal_filter_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label, 

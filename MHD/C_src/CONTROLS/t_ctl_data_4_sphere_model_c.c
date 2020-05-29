@@ -95,10 +95,8 @@ struct sphere_domain_ctl_c * init_sphere_domain_ctl_c(){
 	
 	sdctl_c->inner_decomp_c = init_chara_ctl_item_c();
 	
-	sdctl_c->num_radial_domain_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
-	sdctl_c->num_horiz_domain_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
-	init_int_ctl_item_c(sdctl_c->num_radial_domain_c);
-	init_int_ctl_item_c(sdctl_c->num_horiz_domain_c);
+    sdctl_c->num_radial_domain_c = init_int_ctl_item_c();
+    sdctl_c->num_horiz_domain_c =  init_int_ctl_item_c();
 	
     sdctl_c->ndomain_sph_grid_list = init_ndomain_list_c();
     sdctl_c->ndomain_legendre_list = init_ndomain_list_c();
@@ -178,18 +176,14 @@ struct sphere_data_ctl_c * init_sphere_data_ctl_c(){
 		};
 	};
 	
-	spctl_c->ltr_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
-	spctl_c->phi_symmetry_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
-	init_int_ctl_item_c(spctl_c->ltr_c);
-	init_int_ctl_item_c(spctl_c->phi_symmetry_c);
+    spctl_c->ltr_c =          init_int_ctl_item_c();
+    spctl_c->phi_symmetry_c = init_int_ctl_item_c();
 	
 	spctl_c->sph_grid_type_c = init_chara_ctl_item_c();
 	spctl_c->sph_coef_type_c = init_chara_ctl_item_c();
 	
-	spctl_c->ngrid_elevation_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
-	spctl_c->ngrid_azimuth_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
-	init_int_ctl_item_c(spctl_c->ngrid_elevation_c);
-	init_int_ctl_item_c(spctl_c->ngrid_azimuth_c);
+    spctl_c->ngrid_elevation_c = init_int_ctl_item_c();
+    spctl_c->ngrid_azimuth_c =   init_int_ctl_item_c();
 	
     spctl_c->radius_list = (struct int_real_clist *) malloc(sizeof(struct int_real_clist));
 	init_int_real_clist(spctl_c->radius_list);
@@ -202,8 +196,7 @@ struct sphere_data_ctl_c * init_sphere_data_ctl_c(){
     sprintf(spctl_c->radial_grp_list->i1_name, "Index");
 	
 	spctl_c->radial_grid_type_c = init_chara_ctl_item_c();
-	spctl_c->num_fluid_grid_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
-	init_int_ctl_item_c(spctl_c->num_fluid_grid_c);
+	spctl_c->num_fluid_grid_c = init_int_ctl_item_c();
 	
 	spctl_c->Min_radius_c = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
 	spctl_c->ICB_radius_c = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
@@ -218,10 +211,8 @@ struct sphere_data_ctl_c * init_sphere_data_ctl_c(){
 	init_real_ctl_item_c(spctl_c->fluid_core_size_c);
 	init_real_ctl_item_c(spctl_c->ICB_to_CMB_ratio_c);
 	
-	spctl_c->num_radial_layer_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
-	spctl_c->num_med_layer_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
-	init_int_ctl_item_c(spctl_c->num_radial_layer_c);
-	init_int_ctl_item_c(spctl_c->num_med_layer_c);
+    spctl_c->num_radial_layer_c = init_int_ctl_item_c();
+    spctl_c->num_med_layer_c =    init_int_ctl_item_c();
 	
     spctl_c->radial_layer_list = (struct int2_clist *) malloc(sizeof(struct int2_clist));
     spctl_c->med_layer_list = (struct int2_clist *) malloc(sizeof(struct int2_clist));

@@ -8,11 +8,17 @@
 #include "t_control_int2_IO.h"
 
 
-void init_int2_ctl_item_c(struct int2_ctl_item *i2_item){
+struct int2_ctl_item * init_int2_ctl_item_c(){
+    struct int2_ctl_item *i2_item;
+    if((i2_item = (struct int2_ctl_item *) malloc(sizeof(struct int2_ctl_item))) == NULL) {
+        printf("malloc error for int2_ctl_item \n");
+        exit(0);
+    }
+    
 	i2_item->i_data[0] = 0;
 	i2_item->i_data[1] = 0;
 	i2_item->iflag = 0;
-    return;
+    return i2_item;
 };
 
 int read_int2_ctl_item_c(char buf[LENGTHBUF], const char *label, 
@@ -72,11 +78,7 @@ static struct int2_ctl_list *add_int2_ctl_list_before(struct int2_ctl_list *curr
         printf("malloc error\n");
         exit(0);
     }
-    if ((added->i2_item = (struct int2_ctl_item *) malloc(sizeof(struct int2_ctl_item))) == NULL) {
-        printf("malloc error for i2_item\n");
-        exit(0);
-    }
-	init_int2_ctl_item_c(added->i2_item);
+	added->i2_item = init_int2_ctl_item_c();
     
 	/* replace from  prev -> current to prev -> new -> current */
 	old_prev = current->_prev;
@@ -96,11 +98,7 @@ static struct int2_ctl_list *add_int2_ctl_list_after(struct int2_ctl_list *curre
         printf("malloc error\n");
         exit(0);
     }
-    if ((added->i2_item = (struct int2_ctl_item *) malloc(sizeof(struct int2_ctl_item))) == NULL) {
-        printf("malloc error for i2_item\n");
-        exit(0);
-    }
-	init_int2_ctl_item_c(added->i2_item);
+	added->i2_item =init_int2_ctl_item_c();
     
     /* replace from  current -> next to current -> new -> next */
     old_next= current->_next;
@@ -116,7 +114,6 @@ static void delete_int2_ctl_list(struct int2_ctl_list *current){
     struct int2_ctl_list *old_prev = current->_prev;
     struct int2_ctl_list *old_next = current->_next;
     
-    init_int2_ctl_item_c(current->i2_item);
     free(current->i2_item);
     free(current);
     

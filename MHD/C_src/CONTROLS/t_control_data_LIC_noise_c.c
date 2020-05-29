@@ -38,10 +38,8 @@ struct lic_noise_ctl_c * init_lic_noise_ctl_c(){
 	lic_nze_c->noise_file_name_ctl_c = init_chara_ctl_item_c();
 	lic_nze_c->noise_file_format_ctl_c = init_chara_ctl_item_c();
 	
-	lic_nze_c->noise_resolution_ctl_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
-	lic_nze_c->noise_stepping_ctl_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
-	init_int_ctl_item_c(lic_nze_c->noise_resolution_ctl_c);
-	init_int_ctl_item_c(lic_nze_c->noise_stepping_ctl_c);
+	lic_nze_c->noise_resolution_ctl_c = init_int_ctl_item_c();
+	lic_nze_c->noise_stepping_ctl_c =   init_int_ctl_item_c();
 	
 	lic_nze_c->noise_cube_size_ctl_c = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
 	init_real_ctl_item_c(lic_nze_c->noise_cube_size_ctl_c);

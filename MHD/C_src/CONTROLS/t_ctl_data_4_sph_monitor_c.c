@@ -368,8 +368,7 @@ struct mid_equator_control_c * init_mid_equator_control_c(){
 	
 	meq_ctl->pick_circle_coord_c = init_chara_ctl_item_c();
 	
-	meq_ctl->nphi_mid_eq_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
-	init_int_ctl_item_c(meq_ctl->nphi_mid_eq_c);
+	meq_ctl->nphi_mid_eq_c = init_int_ctl_item_c();
 	meq_ctl->pick_s_c = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
 	init_real_ctl_item_c(meq_ctl->pick_s_c);
 	meq_ctl->pick_z_c = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
@@ -377,6 +376,7 @@ struct mid_equator_control_c * init_mid_equator_control_c(){
 	
 	return meq_ctl;
 };
+
 void dealloc_mid_equator_control_c(struct mid_equator_control_c *meq_ctl){
 	
     dealloc_chara_ctl_item_c(meq_ctl->pick_circle_coord_c);

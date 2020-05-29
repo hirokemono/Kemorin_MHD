@@ -41,8 +41,7 @@ void alloc_sph_zonal_means_controls_c(struct sph_zonal_means_ctl_c *zm_ctls){
 	zm_ctls->zrms_psf_file_name = (char *)calloc(KCHARA_C, sizeof(char));
 	zm_ctls->zrms_psf_c = init_psf_ctl_c();
 	
-	zm_ctls->crust_filter_c = (struct crustal_filter_ctl_c *) malloc(sizeof(struct crustal_filter_ctl_c));
-	alloc_crustal_filter_ctl_c(zm_ctls->crust_filter_c);
+	zm_ctls->crust_filter_c = init_crustal_filter_ctl_c();
 	return;
 }
 

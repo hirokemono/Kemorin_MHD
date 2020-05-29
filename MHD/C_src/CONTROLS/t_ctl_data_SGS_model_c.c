@@ -246,19 +246,15 @@ struct layering_ctl_c * init_layering_ctl_c(){
 	elayer_c->start_layering_grp_name_c = init_chara_ctl_item_c();
 	elayer_c->start_fl_layer_grp_name_c = init_chara_ctl_item_c();
 	
-	elayer_c->num_layering_grp_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
-	elayer_c->num_fl_layer_grp_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
-	elayer_c->ngrp_SGS_on_sphere_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
+    elayer_c->num_layering_grp_c =   init_int_ctl_item_c();
+    elayer_c->num_fl_layer_grp_c =   init_int_ctl_item_c();
+    elayer_c->ngrp_SGS_on_sphere_c = init_int_ctl_item_c();
 	
     elayer_c->layer_grp_name_list = (struct chara_clist *) malloc(sizeof(struct chara_clist));
 	init_chara_clist(elayer_c->layer_grp_name_list);
     elayer_c->igrp_stack_layer_list = (struct int_clist *) malloc(sizeof(struct int_clist));
 	init_int_clist(elayer_c->igrp_stack_layer_list);
     sprintf(elayer_c->igrp_stack_layer_list->i1_name, "Group_stack");
-	
-	init_int_ctl_item_c(elayer_c->num_layering_grp_c);
-	init_int_ctl_item_c(elayer_c->num_fl_layer_grp_c);
-	init_int_ctl_item_c(elayer_c->ngrp_SGS_on_sphere_c);
 	
 	return elayer_c;
 };
@@ -455,17 +451,11 @@ struct SGS_model_control_c * init_SGS_model_ctl_c(){
 	SGS_ctl_c->SGS_model_coef_coord_c = init_chara_ctl_item_c();
 	SGS_ctl_c->SGS_buo_Csim_usage_c =   init_chara_ctl_item_c();
 	
-	SGS_ctl_c->istep_dynamic_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
-	SGS_ctl_c->min_step_dynamic_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
-	SGS_ctl_c->max_step_dynamic_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
-	SGS_ctl_c->ngrp_radial_ave_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
-	SGS_ctl_c->ngrp_med_ave_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
-	
-	init_int_ctl_item_c(SGS_ctl_c->istep_dynamic_c);
-	init_int_ctl_item_c(SGS_ctl_c->min_step_dynamic_c);
-	init_int_ctl_item_c(SGS_ctl_c->max_step_dynamic_c);
-	init_int_ctl_item_c(SGS_ctl_c->ngrp_radial_ave_c);
-	init_int_ctl_item_c(SGS_ctl_c->ngrp_med_ave_c);
+    SGS_ctl_c->istep_dynamic_c =    init_int_ctl_item_c();
+    SGS_ctl_c->min_step_dynamic_c = init_int_ctl_item_c();
+    SGS_ctl_c->max_step_dynamic_c = init_int_ctl_item_c();
+    SGS_ctl_c->ngrp_radial_ave_c =  init_int_ctl_item_c();
+    SGS_ctl_c->ngrp_med_ave_c =     init_int_ctl_item_c();
 	
 	SGS_ctl_c->stabilize_weight_c = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
 	SGS_ctl_c->delta_to_shrink_dynamic_c = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
