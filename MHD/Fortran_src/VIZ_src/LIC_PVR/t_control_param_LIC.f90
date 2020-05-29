@@ -81,11 +81,6 @@
       character(len = kchara), parameter                                &
      &                        :: cflag_by_ctl =   'set_by_control'
 !
-      character(len = kchara), parameter                                &
-     &                        :: cflag_noise_file = 'noise_file'
-      character(len = kchara), parameter                                &
-     &                        :: cflag_from_color = 'color_field'
-!
       integer(kind = kint), parameter :: iflag_from_lic =     0
       integer(kind = kint), parameter :: iflag_from_control = 1
 !

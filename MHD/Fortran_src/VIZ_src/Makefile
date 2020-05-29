@@ -9,7 +9,9 @@ SUBDIRS = \
 surfacing       \
 fieldline        \
 volume_rendering \
-LIC_PVR
+LIC_PVR          \
+\
+Fortran2003
 
 #
 #  -------------------------------------------------------------------------
@@ -59,6 +61,7 @@ mod_list:
 	@echo '$$(MOD_FIELDLINE)'  \\ >> $(MAKENAME)
 	@echo '$$(MOD_PVR)'        \\ >> $(MAKENAME)
 	@echo '$$(MOD_LIC)'        \\ >> $(MAKENAME)
+	@echo '$$(MOD_VIZ_F2003)'  \\ >> $(MAKENAME)
 	@echo >> $(MAKENAME)
 	
 	@for dir in $(SUBDIRS); do \

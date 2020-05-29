@@ -131,6 +131,8 @@ control_panel_4_field_GTK.o: \
  $(C_SRCDIR)/CONTROLS/t_control_data_LIC_pvr_c.h \
  $(C_SRCDIR)/CONTROLS/t_control_data_LIC_c.h \
  $(C_SRCDIR)/CONTROLS/t_control_data_lic_masking_list.h \
+ $(C_SRCDIR)/CONTROLS/t_control_data_LIC_noise_c.h \
+ $(C_SRCDIR)/CONTROLS/t_control_data_LIC_kernel_c.h \
  $(C_SRCDIR)/CONTROLS/t_ctl_data_4_sph_monitor_c.h \
  $(C_SRCDIR)/CONTROLS/t_ctl_data_4_volume_spectr_list.h \
  $(C_SRCDIR)/CONTROLS/t_ctl_data_node_monitor_c.h \
@@ -207,6 +209,8 @@ ctl_panel_SPH_MHD_model_GTK.o: \
  $(C_SRCDIR)/CONTROLS/t_control_data_LIC_pvr_c.h \
  $(C_SRCDIR)/CONTROLS/t_control_data_LIC_c.h \
  $(C_SRCDIR)/CONTROLS/t_control_data_lic_masking_list.h \
+ $(C_SRCDIR)/CONTROLS/t_control_data_LIC_noise_c.h \
+ $(C_SRCDIR)/CONTROLS/t_control_data_LIC_kernel_c.h \
  $(C_SRCDIR)/CONTROLS/t_ctl_data_4_sph_monitor_c.h \
  $(C_SRCDIR)/CONTROLS/t_ctl_data_4_volume_spectr_list.h \
  $(C_SRCDIR)/CONTROLS/t_ctl_data_node_monitor_c.h \

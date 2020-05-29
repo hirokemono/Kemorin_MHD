@@ -22,6 +22,8 @@
 !!      subroutine bcast_cube_noise_control_data(noise_ctl)
 !!        type(cube_noise_ctl), intent(inout) :: noise_ctl
 !!
+!!      integer(kind = kint) function num_ctl_label_LIC_noise()
+!!      subroutine set_ctl_label_LIC_noise(names)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!      List of flags  (Not used currently)
 !!    noise_type:             'external_file' or 'randum'
@@ -89,8 +91,10 @@
 !
       character(len=kchara) :: hd_noise_cube_size = 'noise_cube_size'
 !
+      integer(kind = kint), parameter :: n_label_LIC_noise = 6
+!
       private :: hd_noise_type, hd_noise_file_head, hd_noise_file_fmt
-      private :: hd_noise_grid_size
+      private :: hd_noise_grid_size, n_label_LIC_noise
       private :: hd_noise_stepping, hd_noise_cube_size
 !
 !  ---------------------------------------------------------------------
@@ -231,6 +235,31 @@
      &                   new_noise_c%noise_cube_size_ctl)
 !
       end subroutine copy_cube_noise_control_data
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      integer(kind = kint) function num_ctl_label_LIC_noise()
+      num_ctl_label_LIC_noise = n_label_LIC_noise
+      return
+      end function num_ctl_label_LIC_noise
+!
+! ----------------------------------------------------------------------
+!
+      subroutine set_ctl_label_LIC_noise(names)
+!
+      character(len = kchara), intent(inout)                            &
+     &                         :: names(n_label_LIC_noise)
+!
+!
+      call set_control_labels(hd_noise_type,      names( 1))
+      call set_control_labels(hd_noise_file_head, names( 2))
+      call set_control_labels(hd_noise_file_fmt,  names( 3))
+      call set_control_labels(hd_noise_grid_size, names( 4))
+      call set_control_labels(hd_noise_stepping,  names( 5))
+      call set_control_labels(hd_noise_cube_size, names( 6))
+!
+      end subroutine set_ctl_label_LIC_noise
 !
 !  ---------------------------------------------------------------------
 !

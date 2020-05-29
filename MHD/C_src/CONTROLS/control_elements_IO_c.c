@@ -199,3 +199,43 @@ void set_direction_from_ctl(int i, char *c_tbl){
 	return;
 };
 
+struct label_list_f * alloc_ctl_label(){
+	struct label_list_f *label_list;
+	if((label_list = (struct label_list_f *) malloc(sizeof(struct label_list_f))) == NULL){
+		printf("malloc error for label_list_f\n");
+		exit(0);
+	};
+	return label_list;
+};
+
+void dealloc_ctl_label(struct label_list_f *label_list){
+	int i;
+	for(i=0;i<label_list->num_labels;i++){free(label_list->label[i]);};
+	free(label_list->label);
+	free(label_list);
+	return;
+}
+
+void set_labels_from_packed(int len_fix, char *packed_name, struct label_list_f *label_list){
+	int i, len;
+	if ((label_list->label = (char **) malloc(label_list->num_labels*sizeof(char *))) == NULL) {
+		printf("malloc error for field_name\n");
+		exit(0);
+	}
+	
+	label_list->maxlen = 0;
+	for(i=0;i<label_list->num_labels;i++){
+		len = strlen(&packed_name[len_fix * i])+1;
+		if(len > label_list->maxlen){
+			label_list->maxlen = len;
+		};
+		if((label_list->label[i] = (char *)calloc(len, sizeof(char))) == NULL){
+			printf("malloc error for field_name[%d]\n", i);
+			exit(0);
+		};
+		strcpy(label_list->label[i], &packed_name[len_fix * i]);
+	}
+	return;
+};
+
+

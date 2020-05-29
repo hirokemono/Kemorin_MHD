@@ -18,6 +18,12 @@ struct maxlen_3{
     int mlen[3];
 };
 
+struct label_list_f{
+	int maxlen;
+	int num_labels;
+	char **label;
+};
+
 /* Prototypes */ 
 
 void write_spaces_c(FILE *fp, int num_space);
@@ -47,5 +53,10 @@ int count_max_length_of_label(int num, const char *label[KCHARA_C]);
 
 int find_direction_from_ctl(const char *c_tbl);
 void set_direction_from_ctl(int i, char *c_tbl);
+
+struct label_list_f * alloc_ctl_label();
+void dealloc_ctl_label(struct label_list_f *label_list);
+void set_labels_from_packed(int len_fix, char *packed_name, struct label_list_f *label_list);
+int lengthchara_f();
 
 #endif

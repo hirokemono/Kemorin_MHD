@@ -20,8 +20,7 @@
 !!        type(base_field_address), intent(inout) :: base_fld
 !!
 !!      integer(kind = kint) function num_base_fields()
-!!      subroutine set_base_scalar_addresses                            &
-!!     &         (i_phys, field_name, base_fld, flag)
+!!      subroutine set_base_field_names(n_comps, names, maths)
 !!
 !! !!!!!  Base field names  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!

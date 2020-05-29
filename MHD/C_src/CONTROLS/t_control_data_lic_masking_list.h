@@ -17,8 +17,9 @@
 #include "t_control_real2_IO.h"
 
 struct lic_masking_ctl_c{
-	int maxlen;
+	struct label_list_f *label_lic_masking;
 	
+	struct chara_ctl_item *masking_type_ctl;
 	struct chara_ctl_item *field_name_ctl;
 	struct chara_ctl_item *component_ctl;
 	
@@ -33,8 +34,6 @@ struct lic_masking_ctl_list{
 };
 
 /* prototypes */
-
-void get_label_lic_masking_ctl(int index, char *label);
 
 void alloc_lic_masking_ctl_c(struct lic_masking_ctl_c *mask_ctl);
 void dealloc_lic_masking_ctl_c(struct lic_masking_ctl_c *mask_ctl);

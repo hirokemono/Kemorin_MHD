@@ -17,10 +17,11 @@
 #include "t_control_real_IO.h"
 #include "t_control_chara_IO.h"
 #include "t_control_data_lic_masking_list.h"
-
+#include "t_control_data_LIC_noise_c.h"
+#include "t_control_data_LIC_kernel_c.h"
 
 struct lic_ctl_c{
-	int maxlen;
+	struct label_list_f *label_lic_ctl;
 	
 	struct chara_ctl_item *LIC_field_ctl;
 	
@@ -29,29 +30,18 @@ struct lic_ctl_c{
 	struct chara_ctl_item *opacity_field_ctl;
 	struct chara_ctl_item *opacity_component_ctl;
 	
-	struct chara_ctl_item *noise_type_ctl;
-	struct chara_ctl_item *noise_file_prefix_ctl;
-	struct int_ctl_item *noise_resolution_ctl;
+	struct chara_ctl_item *vr_sample_mode_ctl_c;
+	struct real_ctl_item *step_size_ctl_c;
 	
-	struct chara_ctl_item *kernel_function_type_ctl;
-	struct chara_ctl_item *kernal_file_prefix_ctl;
-	
-	struct chara_ctl_item *LIC_trace_length_def_ctl;
-	struct real_ctl_item *LIC_trace_length_ctl;
-	struct int_ctl_item *LIC_trace_count_ctl;
-	
-	struct chara_ctl_item *normalization_type_ctl;
-	struct real_ctl_item *normalization_value_ctl;
-	
-	struct chara_ctl_item *reflection_ref_type_ctl;
-	struct real_ctl_item *reflection_parameter_ctl;
+	struct chara_ctl_item *normalization_type_ctl_c;
+	struct real_ctl_item *normalization_value_ctl_c;
 	
 	struct lic_masking_ctl_list lic_mask_list;
+	struct lic_noise_ctl_c  *lic_nze_c;
+	struct lic_kernel_ctl_c *lic_knl_c;
 };
 
 /* prototypes */
-void get_label_lic_ctl_c(int index, char *label);
-
 void alloc_lic_ctl_c(struct lic_ctl_c *lic_c);
 void dealloc_lic_ctl_c(struct lic_ctl_c *lic_c);
 int read_lic_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,

@@ -19,6 +19,8 @@
 !!      subroutine bcast_lic_control_data(lic_ctl)
 !!        type(lic_parameter_ctl), intent(inout) :: lic_ctl
 !!
+!!      integer(kind = kint) function num_ctl_label_LIC()
+!!      subroutine set_ctl_label_LIC(names)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!      List of flags
 !!
@@ -134,10 +136,12 @@
       character(len=kchara) :: hd_normalization_value                   &
      &                        = 'normalization_value'
 !
+      integer(kind = kint), parameter :: n_label_LIC = 12
+!
       private :: hd_LIC_field, hd_color_field, hd_color_component
       private :: hd_opacity_field, hd_opacity_component
       private :: hd_masking_ctl, hd_cube_noise, hd_kernel
-      private :: hd_vr_sample_mode, hd_step_size
+      private :: hd_vr_sample_mode, hd_step_size, n_label_LIC
       private :: hd_normalization_type, hd_normalization_value
 !
       private :: read_lic_masking_ctl_array
@@ -407,5 +411,39 @@
       end subroutine dealloc_lic_masking_ctl
 !
 !  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      integer(kind = kint) function num_ctl_label_LIC()
+      num_ctl_label_LIC = n_label_LIC
+      return
+      end function num_ctl_label_LIC
+!
+! ----------------------------------------------------------------------
+!
+      subroutine set_ctl_label_LIC(names)
+!
+      character(len = kchara), intent(inout) :: names(n_label_LIC)
+!
+!
+      call set_control_labels(hd_LIC_field,       names( 1))
+!
+      call set_control_labels(hd_color_field,     names( 2))
+      call set_control_labels(hd_color_component, names( 3))
+!
+      call set_control_labels(hd_opacity_field,     names( 4))
+      call set_control_labels(hd_opacity_component, names( 5))
+!
+      call set_control_labels(hd_masking_ctl, names( 6))
+      call set_control_labels(hd_cube_noise,  names( 7))
+      call set_control_labels(hd_kernel,      names( 8))
+!
+      call set_control_labels(hd_vr_sample_mode,      names( 9))
+      call set_control_labels(hd_step_size,           names(10))
+      call set_control_labels(hd_normalization_type,  names(11))
+      call set_control_labels(hd_normalization_value, names(12))
+!
+      end subroutine set_ctl_label_LIC
+!
+! ----------------------------------------------------------------------
 !
       end module t_control_data_LIC

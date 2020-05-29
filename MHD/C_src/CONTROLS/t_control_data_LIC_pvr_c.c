@@ -7,29 +7,29 @@
 
 #include "t_control_data_LIC_pvr_c.h"
 
-#define NLBL_LIC_PVR_CTL            3
-
 FILE *FP_LIC;
 
 
-const char label_LIC_pvr_ctl[NLBL_LIC_PVR_CTL][KCHARA_C] = {
-	/*[ 0]*/	{"LIC_ctl"},
-    
-    /*[ 1]*/    {"lic_file_prefix"},
-    /*[ 2]*/    {"lic_image_format"}
-};
 const char label_LIC_pvr_head[KCHARA_C] = "LIC_rendering";
 
+int num_ctl_label_LIC_pvr_f();
+void set_ctl_label_LIC_pvr_f(char *label_1d);
 
-void get_label_LIC_pvr_ctl(int index, char *label){
-    if(index < NLBL_LIC_PVR_CTL) strngcopy(label, label_LIC_pvr_ctl[index]);
-    return;
+struct label_list_f * init_ctl_label_LIC_pvr_f(){
+	int len_fix = lengthchara_f();
+	struct label_list_f *label_list = alloc_ctl_label();
+	label_list->num_labels = num_ctl_label_LIC_pvr_f();
+	
+    char *packed_name = alloc_string((long) (len_fix*label_list->num_labels));
+	set_ctl_label_LIC_pvr_f(packed_name);
+	set_labels_from_packed(len_fix, packed_name, label_list);
+	free(packed_name);
+	return label_list;
 };
+
 
 
 void alloc_LIC_pvr_ctl_c(struct LIC_pvr_ctl_c *lic_pvr_c){
-	int i;
-	
 	lic_pvr_c->pvr_c = (struct pvr_ctl_c *) malloc(sizeof(struct pvr_ctl_c));
 	alloc_pvr_ctl_c(lic_pvr_c->pvr_c);
 	
@@ -37,13 +37,10 @@ void alloc_LIC_pvr_ctl_c(struct LIC_pvr_ctl_c *lic_pvr_c){
 	lic_pvr_c->lic_c = (struct lic_ctl_c *) malloc(sizeof(struct lic_ctl_c));
 	alloc_lic_ctl_c(lic_pvr_c->lic_c);
 	
-	lic_pvr_c->maxlen = lic_pvr_c->lic_c->maxlen;
-	for (i=0;i<NLBL_LIC_PVR_CTL;i++){
-		if(strlen(label_LIC_pvr_ctl[i]) > lic_pvr_c->maxlen){
-			lic_pvr_c->maxlen = (int) strlen(label_LIC_pvr_ctl[i]);
-		};
+	lic_pvr_c->label_lic_pvr = init_ctl_label_LIC_pvr_f();
+	if(lic_pvr_c->lic_c->label_lic_ctl->maxlen > lic_pvr_c->label_lic_pvr->maxlen){
+		lic_pvr_c->label_lic_pvr->maxlen = lic_pvr_c->lic_c->label_lic_ctl->maxlen;
 	};
-	lic_pvr_c->lic_c->maxlen = lic_pvr_c->maxlen;
 	
 	return;
 };
@@ -55,6 +52,9 @@ void dealloc_LIC_pvr_ctl_c(struct LIC_pvr_ctl_c *lic_pvr_c){
 	
 	dealloc_lic_ctl_c(lic_pvr_c->lic_c);
 	free(lic_pvr_c->lic_c);
+	
+	dealloc_ctl_label(lic_pvr_c->label_lic_pvr);
+	
 	lic_pvr_c->iflag_lic_ctl = 0;
 	return;
 };
@@ -66,16 +66,16 @@ int read_LIC_pvr_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 	while(find_control_end_flag_c(buf, label) == 0){
 		skip_comment_read_line(fp, buf);
 		
-        read_chara_ctl_item_c(buf, label_LIC_pvr_ctl[ 1],
+        read_chara_ctl_item_c(buf, lic_pvr_c->label_lic_pvr->label[ 1],
                                   lic_pvr_c->pvr_c->file_head_ctl);
-        read_chara_ctl_item_c(buf, label_LIC_pvr_ctl[ 2],
+        read_chara_ctl_item_c(buf, lic_pvr_c->label_lic_pvr->label[ 2],
                                   lic_pvr_c->pvr_c->file_fmt_ctl);
         
 		read_pvr_ctl_items(fp, buf, lic_pvr_c->pvr_c);
 		
-		if(right_begin_flag_c(buf, label_LIC_pvr_ctl[ 0]) > 0){
+		if(right_begin_flag_c(buf, lic_pvr_c->label_lic_pvr->label[ 7]) > 0){
 			lic_pvr_c->iflag_lic_ctl = read_lic_ctl_c(fp, buf, 
-						label_LIC_pvr_ctl[ 0], lic_pvr_c->lic_c);
+						lic_pvr_c->label_lic_pvr->label[ 7], lic_pvr_c->lic_c);
 		};
 	};
 	return 1;
@@ -85,14 +85,16 @@ int write_LIC_pvr_ctl_c(FILE *fp, int level, const char *label,
 			struct LIC_pvr_ctl_c *lic_pvr_c){
 	level = write_begin_flag_for_ctl_c(fp, level, label);
 
-    write_chara_ctl_item_c(fp, level, lic_pvr_c->pvr_c->maxlen, label_LIC_pvr_ctl[ 1], 
-                               lic_pvr_c->pvr_c->file_head_ctl);
-    write_chara_ctl_item_c(fp, level, lic_pvr_c->pvr_c->maxlen, label_LIC_pvr_ctl[ 2], 
-                               lic_pvr_c->pvr_c->file_fmt_ctl);
+    write_chara_ctl_item_c(fp, level, lic_pvr_c->pvr_c->maxlen, 
+                           lic_pvr_c->label_lic_pvr->label[ 1], 
+                           lic_pvr_c->pvr_c->file_head_ctl);
+    write_chara_ctl_item_c(fp, level, lic_pvr_c->pvr_c->maxlen, 
+                           lic_pvr_c->label_lic_pvr->label[ 2], 
+                           lic_pvr_c->pvr_c->file_fmt_ctl);
     
     if(lic_pvr_c->iflag_lic_ctl > 0){
         fprintf(fp, "!\n");
-        write_lic_ctl_c(fp, level, label_LIC_pvr_ctl[ 0], lic_pvr_c->lic_c);
+        write_lic_ctl_c(fp, level, lic_pvr_c->label_lic_pvr->label[ 7], lic_pvr_c->lic_c);
     };
     
 	write_pvr_ctl_items(fp, level, lic_pvr_c->pvr_c);

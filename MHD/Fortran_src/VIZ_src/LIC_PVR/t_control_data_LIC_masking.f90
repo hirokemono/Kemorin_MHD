@@ -25,6 +25,8 @@
 !!        type(lic_masking_ctl), intent(in) :: org_mask_c
 !!        type(lic_masking_ctl), intent(inout) :: new_mask_c
 !!
+!!      integer(kind = kint) function num_ctl_label_LIC_masking()
+!!      subroutine set_ctl_label_LIC_masking(names)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!      begin masking_control
 !!        masking_type         field or geometry
@@ -68,7 +70,10 @@
 !
       character(len=kchara) :: hd_masking_range = 'masking_range'
 !
+      integer(kind = kint), parameter :: n_label_LIC_masking = 4
+!
       private :: hd_masking_field, hd_masking_comp, hd_masking_range
+      private :: hd_masking_type, n_label_LIC_masking
 !
 !  ---------------------------------------------------------------------
 !
@@ -192,5 +197,28 @@
       end subroutine dup_lic_masking_ctl_data
 !
 !  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      integer(kind = kint) function num_ctl_label_LIC_masking()
+      num_ctl_label_LIC_masking = n_label_LIC_masking
+      return
+      end function num_ctl_label_LIC_masking
+!
+! ----------------------------------------------------------------------
+!
+      subroutine set_ctl_label_LIC_masking(names)
+!
+      character(len = kchara), intent(inout)                            &
+     &                         :: names(n_label_LIC_masking)
+!
+!
+      call set_control_labels(hd_masking_type,  names( 1))
+      call set_control_labels(hd_masking_field, names( 2))
+      call set_control_labels(hd_masking_comp,  names( 3))
+      call set_control_labels(hd_masking_range, names( 4))
+!
+      end subroutine set_ctl_label_LIC_masking
+!
+! ----------------------------------------------------------------------
 !
       end module t_control_data_LIC_masking

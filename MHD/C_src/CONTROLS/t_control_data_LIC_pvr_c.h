@@ -20,8 +20,7 @@
 #include "t_control_data_LIC_c.h"
 
 struct LIC_pvr_ctl_c{
-	int maxlen;
-	
+	struct label_list_f *label_lic_pvr;
 	struct pvr_ctl_c *pvr_c;
 	
 	int iflag_lic_ctl;
@@ -29,8 +28,6 @@ struct LIC_pvr_ctl_c{
 };
 
 /* prototypes */
-void get_label_LIC_pvr_ctl(int index, char *label);
-
 void alloc_LIC_pvr_ctl_c(struct LIC_pvr_ctl_c *lic_pvr_c);
 void dealloc_LIC_pvr_ctl_c(struct LIC_pvr_ctl_c *lic_pvr_c);
 int read_LIC_pvr_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
