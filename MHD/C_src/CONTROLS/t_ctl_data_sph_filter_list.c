@@ -25,8 +25,13 @@ void get_label_sph_filter_ctl(int index, char *label){
 };
 
 
-void alloc_sph_filter_ctl_c(struct sph_filter_ctl_c *sph_filter_c){
+struct sph_filter_ctl_c * init_sph_filter_ctl_c(){
 	int i;
+    struct sph_filter_ctl_c *sph_filter_c;
+    if((sph_filter_c = (struct sph_filter_ctl_c *) malloc(sizeof(struct sph_filter_ctl_c))) == NULL) {
+        printf("malloc error for sph_filter_ctl_c \n");
+        exit(0);
+    }
 	
 	sph_filter_c->maxlen = 0;
 	for (i=0;i<NLBL_SPH_FILTER_CTL;i++){
@@ -35,11 +40,8 @@ void alloc_sph_filter_ctl_c(struct sph_filter_ctl_c *sph_filter_c){
 		};
 	};
 	
-	sph_filter_c->sph_filter_type_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	sph_filter_c->radial_filter_type_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	
-	alloc_chara_ctl_item_c(sph_filter_c->sph_filter_type_c);
-	alloc_chara_ctl_item_c(sph_filter_c->radial_filter_type_c);
+	sph_filter_c->sph_filter_type_c =    init_chara_ctl_item_c();
+	sph_filter_c->radial_filter_type_c = init_chara_ctl_item_c();
 	
 	sph_filter_c->maximum_moments_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
 	sph_filter_c->first_reference_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
@@ -55,16 +57,13 @@ void alloc_sph_filter_ctl_c(struct sph_filter_ctl_c *sph_filter_c){
 	init_real_ctl_item_c(sph_filter_c->sphere_filter_width_c);
 	init_real_ctl_item_c(sph_filter_c->radial_filter_width_c);
 	
-	return;
+	return sph_filter_c;
 };
 
 void dealloc_sph_filter_ctl_c(struct sph_filter_ctl_c *sph_filter_c){
 	
 	dealloc_chara_ctl_item_c(sph_filter_c->sph_filter_type_c);
 	dealloc_chara_ctl_item_c(sph_filter_c->radial_filter_type_c);
-	
-	free(sph_filter_c->sph_filter_type_c);
-	free(sph_filter_c->radial_filter_type_c);
 	
 	free(sph_filter_c->maximum_moments_c);
 	free(sph_filter_c->first_reference_c);
@@ -73,6 +72,7 @@ void dealloc_sph_filter_ctl_c(struct sph_filter_ctl_c *sph_filter_c){
 	free(sph_filter_c->sphere_filter_width_c);
 	free(sph_filter_c->radial_filter_width_c);
 	
+    free(sph_filter_c);
 	return;
 };
 
@@ -129,11 +129,7 @@ struct sph_filter_ctl_list *add_sph_filter_ctl_list_after(struct sph_filter_ctl_
 	printf("malloc error\n");
 	exit(0);
 	}
-    if ((added->sph_filter_c = (struct sph_filter_ctl_c *) malloc(sizeof(struct sph_filter_ctl_c))) == NULL) {
-        printf("malloc error for sph_filter_c\n");
-        exit(0);
-    }
-	alloc_sph_filter_ctl_c(added->sph_filter_c);
+	added->sph_filter_c = init_sph_filter_ctl_c();
 	
 	/* replace from  current -> next to current -> new -> next */
 	old_next= current->_next;
@@ -150,7 +146,6 @@ void delete_sph_filter_ctl_list(struct sph_filter_ctl_list *current){
 	struct sph_filter_ctl_list *old_next = current->_next;
 	
 	dealloc_sph_filter_ctl_c(current->sph_filter_c);
-    free(current->sph_filter_c);
 	free(current);
 	
     old_prev->_next = old_next;

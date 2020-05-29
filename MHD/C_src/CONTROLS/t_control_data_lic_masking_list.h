@@ -35,7 +35,7 @@ struct lic_masking_ctl_list{
 
 /* prototypes */
 
-void alloc_lic_masking_ctl_c(struct lic_masking_ctl_c *mask_ctl);
+struct lic_masking_ctl_c * init_lic_masking_ctl_c();
 void dealloc_lic_masking_ctl_c(struct lic_masking_ctl_c *mask_ctl);
 int read_lic_masking_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct lic_masking_ctl_c *mask_ctl);

@@ -11,15 +11,13 @@
 void alloc_isosurface_ctl_c(struct isosurface_ctl_c *isosurfs_c){
 	isosurfs_c->iflag_iso_ctl = 0;
 	isosurfs_c->fname_iso_ctl = (char *)calloc(KCHARA_C, sizeof(char));
-	isosurfs_c->iso_c = (struct iso_ctl_c *) malloc(sizeof(struct iso_ctl_c));
-	alloc_iso_ctl_c(isosurfs_c->iso_c);
+	isosurfs_c->iso_c = init_iso_ctl_c();
 	return;
 
 };
 
 void dealloc_isosurface_ctl_c(struct isosurface_ctl_c *isosurfs_c){
 	dealloc_iso_ctl_c(isosurfs_c->iso_c);
-	free(isosurfs_c->iso_c);
 	free(isosurfs_c->fname_iso_ctl);
 	isosurfs_c->iflag_iso_ctl = 0;
 	return;

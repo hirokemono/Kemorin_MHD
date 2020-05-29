@@ -55,7 +55,7 @@ void get_label_iso_define_ctl(int index, char *label);
 void get_label_iso_field_ctl(int index, char *label);
 void get_label_iso_ctl(int index, char *label);
 
-void alloc_iso_define_ctl_c(struct iso_define_ctl_c *iso_def_c);
+struct iso_define_ctl_c * init_iso_define_ctl_c();
 void dealloc_iso_define_ctl_c(struct iso_define_ctl_c *iso_def_c);
 int read_iso_area_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
                         struct iso_define_ctl_c *iso_def_c);
@@ -64,14 +64,14 @@ int read_iso_define_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 int write_iso_define_ctl_c(FILE *fp, int level, const char *label, 
 			struct iso_define_ctl_c *iso_def_c);
 
-void alloc_iso_field_ctl_c(struct iso_field_ctl_c *iso_fld_c);
+struct iso_field_ctl_c * init_iso_field_ctl_c();
 void dealloc_iso_field_ctl_c(struct iso_field_ctl_c *iso_fld_c);
 int read_iso_field_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct iso_field_ctl_c *iso_fld_c);
 int write_iso_field_ctl_c(FILE *fp, int level, const char *label, 
 			struct iso_field_ctl_c *iso_fld_c);
 
-void alloc_iso_ctl_c(struct iso_ctl_c *iso_c);
+struct iso_ctl_c * init_iso_ctl_c();
 void dealloc_iso_ctl_c(struct iso_ctl_c *iso_c);
 int read_iso_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct iso_ctl_c *iso_c);

@@ -86,8 +86,14 @@ void get_label_mid_equator_ctl(int index, char *label){
     return;
 };
 
-void alloc_pick_spectr_control_c(struct pick_spectr_control_c *pspec_ctl_c){
+struct pick_spectr_control_c * init_pick_spectr_control_c(){
     int i;
+    struct pick_spectr_control_c *pspec_ctl_c;
+    if((pspec_ctl_c = (struct pick_spectr_control_c *) malloc(sizeof(struct pick_spectr_control_c))) == NULL) {
+        printf("malloc error for pick_spectr_control_c \n");
+        exit(0);
+    }
+    
     
     pspec_ctl_c->iflag_use = 0;
     pspec_ctl_c->maxlen = 0;
@@ -97,8 +103,7 @@ void alloc_pick_spectr_control_c(struct pick_spectr_control_c *pspec_ctl_c){
         };
 	};
 	
-	pspec_ctl_c->picked_mode_head_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-    alloc_chara_ctl_item_c(pspec_ctl_c->picked_mode_head_c);
+	pspec_ctl_c->picked_mode_head_c = init_chara_ctl_item_c();
 		
     pspec_ctl_c->idx_pick_layer_list = (struct int_clist *) malloc(sizeof(struct int_clist));
     init_int_clist(pspec_ctl_c->idx_pick_layer_list);
@@ -115,8 +120,9 @@ void alloc_pick_spectr_control_c(struct pick_spectr_control_c *pspec_ctl_c){
     sprintf(pspec_ctl_c->idx_pick_sph_l_list->i1_name, "Degree");
     sprintf(pspec_ctl_c->idx_pick_sph_m_list->i1_name, "Order");
 	
-	return;
+	return pspec_ctl_c;
 };
+
 void dealloc_pick_spectr_control_c(struct pick_spectr_control_c *pspec_ctl_c){
     clear_int2_clist(pspec_ctl_c->idx_pick_sph_list);
     free(pspec_ctl_c->idx_pick_sph_list);
@@ -129,9 +135,7 @@ void dealloc_pick_spectr_control_c(struct pick_spectr_control_c *pspec_ctl_c){
     free(pspec_ctl_c->idx_pick_layer_list);
 	
     dealloc_chara_ctl_item_c(pspec_ctl_c->picked_mode_head_c);
-    free(pspec_ctl_c->picked_mode_head_c);
-	
-    pspec_ctl_c->iflag_use = 0;
+    free(pspec_ctl_c);
 	return;
 };
 
@@ -173,8 +177,13 @@ int write_pick_spectr_control_c(FILE *fp, int level, const char *label,
 	return level;
 };
 
-void alloc_gauss_spectr_control_c(struct gauss_spectr_control_c *g_pwr){
+struct gauss_spectr_control_c * init_gauss_spectr_control_c(){
 	int i;
+    struct gauss_spectr_control_c *g_pwr;
+    if((g_pwr = (struct gauss_spectr_control_c *) malloc(sizeof(struct gauss_spectr_control_c))) == NULL) {
+        printf("malloc error for gauss_spectr_control_c \n");
+        exit(0);
+    }
     
     g_pwr->iflag_use = 0;
 	g_pwr->maxlen = 0;
@@ -184,8 +193,7 @@ void alloc_gauss_spectr_control_c(struct gauss_spectr_control_c *g_pwr){
 		};
 	};
 	
-	g_pwr->gauss_coefs_prefix_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	alloc_chara_ctl_item_c(g_pwr->gauss_coefs_prefix_c);
+	g_pwr->gauss_coefs_prefix_c = init_chara_ctl_item_c();
 	g_pwr->gauss_coefs_radius_c = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
 	init_real_ctl_item_c(g_pwr->gauss_coefs_radius_c);
 	
@@ -201,8 +209,9 @@ void alloc_gauss_spectr_control_c(struct gauss_spectr_control_c *g_pwr){
     sprintf(g_pwr->idx_gauss_l_list->i1_name, "Degree");
     sprintf(g_pwr->idx_gauss_m_list->i1_name, "Order");
 	
-	return;
+	return g_pwr;
 };
+
 void dealloc_gauss_spectr_control_c(struct gauss_spectr_control_c *g_pwr){
 	clear_int2_clist(g_pwr->idx_gauss_list);
     free(g_pwr->idx_gauss_list);
@@ -213,9 +222,7 @@ void dealloc_gauss_spectr_control_c(struct gauss_spectr_control_c *g_pwr){
     free(g_pwr->idx_gauss_m_list);
 	
 	dealloc_chara_ctl_item_c(g_pwr->gauss_coefs_prefix_c);
-	free(g_pwr->gauss_coefs_prefix_c);
-	
-    g_pwr->iflag_use = 0;
+    free(g_pwr);
 	return;
 };
 
@@ -256,8 +263,13 @@ int write_gauss_spectr_control_c(FILE *fp, int level, const char *label,
 	return level;
 }
 
-void alloc_layerd_spectr_control_c(struct layerd_spectr_control_c *lp_ctl){
+struct layerd_spectr_control_c * init_layerd_spectr_control_c(){
     int i;
+    struct layerd_spectr_control_c *lp_ctl;
+    if((lp_ctl = (struct layerd_spectr_control_c *) malloc(sizeof(struct layerd_spectr_control_c))) == NULL) {
+        printf("malloc error for layerd_spectr_control_c \n");
+        exit(0);
+    }
     
     lp_ctl->iflag_use = 0;
     lp_ctl->maxlen = 0;
@@ -267,22 +279,17 @@ void alloc_layerd_spectr_control_c(struct layerd_spectr_control_c *lp_ctl){
         };
 	};
 	
-	lp_ctl->layered_pwr_spectr_prefix_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-    alloc_chara_ctl_item_c(lp_ctl->layered_pwr_spectr_prefix_c);
+	lp_ctl->layered_pwr_spectr_prefix_c = init_chara_ctl_item_c();
 	
-	lp_ctl->degree_spectr_switch_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-    alloc_chara_ctl_item_c(lp_ctl->degree_spectr_switch_c);
-	lp_ctl->order_spectr_switch_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-    alloc_chara_ctl_item_c(lp_ctl->order_spectr_switch_c);
-	lp_ctl->diff_lm_spectr_switch_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-    alloc_chara_ctl_item_c(lp_ctl->diff_lm_spectr_switch_c);
-	lp_ctl->axis_spectr_switch_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-    alloc_chara_ctl_item_c(lp_ctl->axis_spectr_switch_c);
+	lp_ctl->degree_spectr_switch_c = init_chara_ctl_item_c();
+	lp_ctl->order_spectr_switch_c = init_chara_ctl_item_c();
+	lp_ctl->diff_lm_spectr_switch_c = init_chara_ctl_item_c();
+	lp_ctl->axis_spectr_switch_c = init_chara_ctl_item_c();
 	
     lp_ctl->idx_spec_layer_list = (struct int_clist *) malloc(sizeof(struct int_clist));
     init_int_clist(lp_ctl->idx_spec_layer_list);
     sprintf(lp_ctl->idx_spec_layer_list->i1_name, "Radial_ID");
-	return;
+	return lp_ctl;
 };
 
 void dealloc_layerd_spectr_control_c(struct layerd_spectr_control_c *lp_ctl){
@@ -290,18 +297,12 @@ void dealloc_layerd_spectr_control_c(struct layerd_spectr_control_c *lp_ctl){
     free(lp_ctl->idx_spec_layer_list);
 	
     dealloc_chara_ctl_item_c(lp_ctl->degree_spectr_switch_c);
-    free(lp_ctl->degree_spectr_switch_c);
     dealloc_chara_ctl_item_c(lp_ctl->order_spectr_switch_c);
-    free(lp_ctl->order_spectr_switch_c);
     dealloc_chara_ctl_item_c(lp_ctl->diff_lm_spectr_switch_c);
-    free(lp_ctl->diff_lm_spectr_switch_c);
     dealloc_chara_ctl_item_c(lp_ctl->axis_spectr_switch_c);
-    free(lp_ctl->axis_spectr_switch_c);
 	
 	dealloc_chara_ctl_item_c(lp_ctl->layered_pwr_spectr_prefix_c);
-    free(lp_ctl->layered_pwr_spectr_prefix_c);
-	
-    lp_ctl->iflag_use = 0;
+    free(lp_ctl);
 	return;
 };
 
@@ -349,8 +350,13 @@ int write_layerd_spectr_control_c(FILE *fp, int level, const char *label,
 }
 
 
-void alloc_mid_equator_control_c(struct mid_equator_control_c *meq_ctl){
+struct mid_equator_control_c * init_mid_equator_control_c(){
     int i;
+    struct mid_equator_control_c *meq_ctl;
+    if((meq_ctl = (struct mid_equator_control_c *) malloc(sizeof(struct mid_equator_control_c))) == NULL) {
+        printf("malloc error for mid_equator_control_c \n");
+        exit(0);
+    }
     
     meq_ctl->iflag_use = 0;
     meq_ctl->maxlen = 0;
@@ -360,8 +366,7 @@ void alloc_mid_equator_control_c(struct mid_equator_control_c *meq_ctl){
         };
 	};
 	
-	meq_ctl->pick_circle_coord_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-    alloc_chara_ctl_item_c(meq_ctl->pick_circle_coord_c);
+	meq_ctl->pick_circle_coord_c = init_chara_ctl_item_c();
 	
 	meq_ctl->nphi_mid_eq_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
 	init_int_ctl_item_c(meq_ctl->nphi_mid_eq_c);
@@ -370,17 +375,17 @@ void alloc_mid_equator_control_c(struct mid_equator_control_c *meq_ctl){
 	meq_ctl->pick_z_c = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
 	init_real_ctl_item_c(meq_ctl->pick_z_c);
 	
-	return;
+	return meq_ctl;
 };
 void dealloc_mid_equator_control_c(struct mid_equator_control_c *meq_ctl){
 	
     dealloc_chara_ctl_item_c(meq_ctl->pick_circle_coord_c);
-	free(meq_ctl->pick_circle_coord_c);
 	
 	free(meq_ctl->nphi_mid_eq_c);
 	free(meq_ctl->pick_s_c);
 	free(meq_ctl->pick_z_c);
 	
+    free(meq_ctl);
 	return;
 };
 void read_mid_equator_control_c(FILE *fp, char buf[LENGTHBUF], 
@@ -419,8 +424,14 @@ int write_mid_equator_control_c(FILE *fp, int level, const char *label,
 };
 
 
-void alloc_sph_monitor_ctl_c(struct sph_monitor_control_c *monitor_ctl){
+struct sph_monitor_control_c * init_sph_monitor_ctl_c(){
     int i;
+    struct sph_monitor_control_c *monitor_ctl;
+    if((monitor_ctl = (struct sph_monitor_control_c *) malloc(sizeof(struct sph_monitor_control_c))) == NULL) {
+        printf("malloc error for sph_monitor_control_c \n");
+        exit(0);
+    }
+    
     
     monitor_ctl->iflag_use = 0;
     monitor_ctl->maxlen = 0;
@@ -429,45 +440,31 @@ void alloc_sph_monitor_ctl_c(struct sph_monitor_control_c *monitor_ctl){
             monitor_ctl->maxlen = (int) strlen(label_sph_monitor_ctl[i]);
         };
 	};
-    monitor_ctl->pspec_ctl_c = (struct pick_spectr_control_c *) malloc(sizeof(struct pick_spectr_control_c));
-	alloc_pick_spectr_control_c(monitor_ctl->pspec_ctl_c);
-    monitor_ctl->g_pwr = (struct gauss_spectr_control_c *) malloc(sizeof(struct gauss_spectr_control_c));
-	alloc_gauss_spectr_control_c(monitor_ctl->g_pwr);
-    monitor_ctl->lp_ctl = (struct layerd_spectr_control_c *) malloc(sizeof(struct layerd_spectr_control_c));
-	alloc_layerd_spectr_control_c(monitor_ctl->lp_ctl);
-    monitor_ctl->meq_ctl = (struct mid_equator_control_c *) malloc(sizeof(struct mid_equator_control_c));
-	alloc_mid_equator_control_c(monitor_ctl->meq_ctl);
+    monitor_ctl->pspec_ctl_c = init_pick_spectr_control_c();
+    monitor_ctl->g_pwr = init_gauss_spectr_control_c();
+    monitor_ctl->lp_ctl = init_layerd_spectr_control_c();
+    monitor_ctl->meq_ctl = init_mid_equator_control_c();
     
-    monitor_ctl->volume_average_prefix_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-    alloc_chara_ctl_item_c(monitor_ctl->volume_average_prefix_c);
-    monitor_ctl->volume_pwr_spectr_prefix_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-    alloc_chara_ctl_item_c(monitor_ctl->volume_pwr_spectr_prefix_c);
-    monitor_ctl->Nusselt_file_prefix_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	alloc_chara_ctl_item_c(monitor_ctl->Nusselt_file_prefix_c);
+    monitor_ctl->volume_average_prefix_c = init_chara_ctl_item_c();
+    monitor_ctl->volume_pwr_spectr_prefix_c = init_chara_ctl_item_c();
+    monitor_ctl->Nusselt_file_prefix_c = init_chara_ctl_item_c();
 	
 	init_sph_vol_spectr_list(&monitor_ctl->v_pwr_list);
-	return;
+	return monitor_ctl;
 };
 
 void dealloc_sph_monitor_ctl_c(struct sph_monitor_control_c *monitor_ctl){
     dealloc_chara_ctl_item_c(monitor_ctl->volume_average_prefix_c);
-    free(monitor_ctl->volume_average_prefix_c);
     dealloc_chara_ctl_item_c(monitor_ctl->volume_pwr_spectr_prefix_c);
-    free(monitor_ctl->volume_pwr_spectr_prefix_c);
     dealloc_chara_ctl_item_c(monitor_ctl->Nusselt_file_prefix_c);
-	free(monitor_ctl->Nusselt_file_prefix_c);
 	
 	dealloc_mid_equator_control_c(monitor_ctl->meq_ctl);
-	free(monitor_ctl->meq_ctl);
 	dealloc_pick_spectr_control_c(monitor_ctl->pspec_ctl_c);
-	free(monitor_ctl->pspec_ctl_c);
 	dealloc_gauss_spectr_control_c(monitor_ctl->g_pwr);
-	free(monitor_ctl->g_pwr);
 	dealloc_layerd_spectr_control_c(monitor_ctl->lp_ctl);
-	free(monitor_ctl->lp_ctl);
 	
 	clear_sph_vol_spectr_ctl_list(&monitor_ctl->v_pwr_list);
-    monitor_ctl->iflag_use = 0;
+    free(monitor_ctl);
 
 	return;
 };

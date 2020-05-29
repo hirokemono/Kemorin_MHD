@@ -87,21 +87,21 @@ void get_label_colormap_ctl(int index, char *label);
 void get_label_lighting_ctl(int index, char *label);
 void get_label_colorbar_ctl(int index, char *label);
 
-void alloc_colormap_ctl_c(struct colormap_ctl_c *cmap_c);
+struct colormap_ctl_c * init_colormap_ctl_c();
 void dealloc_colormap_ctl_c(struct colormap_ctl_c *cmap_c);
 void read_colormap_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct colormap_ctl_c *cmap_c);
 int write_colormap_ctl_c(FILE *fp, int level, const char *label, 
 			struct colormap_ctl_c *cmap_c);
 
-void alloc_lighting_ctl_c(struct lighting_ctl_c *light_c);
+struct lighting_ctl_c * init_lighting_ctl_c();
 void dealloc_lighting_ctl_c(struct lighting_ctl_c *light_c);
 void read_lighting_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct lighting_ctl_c *light_c);
 int write_lighting_ctl_c(FILE *fp, int level, const char *label, 
 			struct lighting_ctl_c *light_c);
 
-void alloc_colorbar_ctl_c(struct pvr_colorbar_ctl_c *cbar_c);
+struct pvr_colorbar_ctl_c * init_colorbar_ctl_c();
 void dealloc_colorbar_ctl_c(struct pvr_colorbar_ctl_c *cbar_c);
 void read_colorbar_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct pvr_colorbar_ctl_c *cbar_c);
@@ -109,7 +109,7 @@ int write_colorbar_ctl_c(FILE *fp, int level, const char *label,
 			struct pvr_colorbar_ctl_c *cbar_c);
 
 
-void alloc_colormap_colorbar_ctl_c(struct pvr_colormap_bar_ctl_c *cmap_cbar_c);
+struct pvr_colormap_bar_ctl_c * init_colormap_colorbar_ctl_c();
 void dealloc_colormap_colorbar_ctl_c(struct pvr_colormap_bar_ctl_c *cmap_cbar_c);
 void read_colormap_colorbar_ctl_c(FILE *fp, char buf[LENGTHBUF],
 			const char *label, struct pvr_colormap_bar_ctl_c *cmap_cbar_c);

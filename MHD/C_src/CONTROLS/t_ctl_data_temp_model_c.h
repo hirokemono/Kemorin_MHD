@@ -50,7 +50,7 @@ void get_label_reference_point_ctl(int index, char *label);
 void get_label_takepiro_model_ctl(int index, char *label);
 void get_label_ref_temperature_ctl(int index, char *label);
 
-void alloc_reference_point_ctl_c(struct reference_point_ctl_c *ref_c);
+struct reference_point_ctl_c * init_reference_point_ctl_c();
 void dealloc_reference_point_ctl_c(struct reference_point_ctl_c *ref_c);
 void read_reftemp_point_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct reference_point_ctl_c *ref_c);
@@ -61,14 +61,14 @@ int write_reftemp_point_ctl_c(FILE *fp, int level, const char *label,
 int write_refcomp_point_ctl_c(FILE *fp, int level, const char *label, 
                               struct reference_point_ctl_c *ref_c);
 
-void alloc_takepiro_model_ctl_c(struct takepiro_model_ctl_c *takepiro_c);
+struct takepiro_model_ctl_c * init_takepiro_model_ctl_c();
 void dealloc_takepiro_model_ctl_c(struct takepiro_model_ctl_c *takepiro_c);
 void read_rtakepiro_model_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct takepiro_model_ctl_c *takepiro_c);
 int write_takepiro_model_ctl_c(FILE *fp, int level, const char *label, 
                                struct takepiro_model_ctl_c *takepiro_c);
 
-void alloc_ref_temperature_ctl_c(struct reference_temperature_c *reft_ctl);
+struct reference_temperature_c * init_ref_temperature_ctl_c();
 void dealloc_ref_temperature_ctl_c(struct reference_temperature_c *reft_ctl);
 void read_ref_temperature_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct reference_temperature_c *reft_ctl);

@@ -52,8 +52,13 @@ void get_label_ref_temperature_ctl(int index, char *label){
 };
 
 
-void alloc_reference_point_ctl_c(struct reference_point_ctl_c *ref_c){
+struct reference_point_ctl_c * init_reference_point_ctl_c(){
 	int i;
+    struct reference_point_ctl_c *ref_c;
+    if((ref_c = (struct reference_point_ctl_c *) malloc(sizeof(struct reference_point_ctl_c))) == NULL) {
+        printf("malloc error for reference_point_ctl_c \n");
+        exit(0);
+    }
 	
     ref_c->iflag_use = 0;
 	ref_c->maxlen = 0;
@@ -69,15 +74,15 @@ void alloc_reference_point_ctl_c(struct reference_point_ctl_c *ref_c){
 	init_real_ctl_item_c(ref_c->depth_c);
 	init_real_ctl_item_c(ref_c->value_c);
 	
-	return;
+	return ref_c;
 };
 
 void dealloc_reference_point_ctl_c(struct reference_point_ctl_c *ref_c){
 	
 	free(ref_c->depth_c);
 	free(ref_c->value_c);
-    ref_c->iflag_use = 0;
-	
+
+    free(ref_c);
 	return;
 };
 
@@ -136,8 +141,13 @@ int write_refcomp_point_ctl_c(FILE *fp, int level, const char *label,
 };
 
 
-void alloc_takepiro_model_ctl_c(struct takepiro_model_ctl_c *takepiro_c){
+struct takepiro_model_ctl_c * init_takepiro_model_ctl_c(){
 	int i;
+    struct takepiro_model_ctl_c *takepiro_c;
+    if((takepiro_c = (struct takepiro_model_ctl_c *) malloc(sizeof(struct takepiro_model_ctl_c))) == NULL) {
+        printf("malloc error for takepiro_model_ctl_c \n");
+        exit(0);
+    }
 	
     takepiro_c->iflag_use = 0;
 	takepiro_c->maxlen = 0;
@@ -155,7 +165,7 @@ void alloc_takepiro_model_ctl_c(struct takepiro_model_ctl_c *takepiro_c){
 	init_real_ctl_item_c(takepiro_c->stratified_width_c);
 	init_real_ctl_item_c(takepiro_c->stratified_outer_r_c);
 	
-	return;
+	return takepiro_c;
 };
 
 void dealloc_takepiro_model_ctl_c(struct takepiro_model_ctl_c *takepiro_c){
@@ -163,8 +173,9 @@ void dealloc_takepiro_model_ctl_c(struct takepiro_model_ctl_c *takepiro_c){
 	free(takepiro_c->stratified_sigma_c);
 	free(takepiro_c->stratified_width_c);
 	free(takepiro_c->stratified_outer_r_c);
-    takepiro_c->iflag_use = 0;
-	
+
+    free(takepiro_c);
+
 	return;
 };
 
@@ -197,8 +208,13 @@ int write_takepiro_model_ctl_c(FILE *fp, int level,	const char *label, struct ta
 };
 
 
-void alloc_ref_temperature_ctl_c(struct reference_temperature_c *reft_ctl){
+struct reference_temperature_c * init_ref_temperature_ctl_c(){
 	int i;
+    struct reference_temperature_c *reft_ctl;
+    if((reft_ctl = (struct reference_temperature_c *) malloc(sizeof(struct reference_temperature_c))) == NULL) {
+        printf("malloc error for reference_temperature_c \n");
+        exit(0);
+    }
 	
     reft_ctl->iflag_use = 0;
 	reft_ctl->maxlen = 0;
@@ -208,41 +224,27 @@ void alloc_ref_temperature_ctl_c(struct reference_temperature_c *reft_ctl){
 		};
 	};
 	
-	reft_ctl->low_c = (struct reference_point_ctl_c *) malloc(sizeof(struct reference_point_ctl_c));
-	alloc_reference_point_ctl_c(reft_ctl->low_c);
+	reft_ctl->low_c = init_reference_point_ctl_c();
+	reft_ctl->high_c = init_reference_point_ctl_c();
 	
-	reft_ctl->high_c = (struct reference_point_ctl_c *) malloc(sizeof(struct reference_point_ctl_c));
-	alloc_reference_point_ctl_c(reft_ctl->high_c);
+	reft_ctl->takepiro_c = init_takepiro_model_ctl_c();
+	reft_ctl->reference_c =  init_chara_ctl_item_c();
+	reft_ctl->stratified_c = init_chara_ctl_item_c();
 	
-	reft_ctl->takepiro_c = (struct takepiro_model_ctl_c *) malloc(sizeof(struct takepiro_model_ctl_c));
-	alloc_takepiro_model_ctl_c(reft_ctl->takepiro_c);
-	
-	reft_ctl->reference_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	reft_ctl->stratified_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	
-	alloc_chara_ctl_item_c(reft_ctl->reference_c);
-	alloc_chara_ctl_item_c(reft_ctl->stratified_c);
-	
-	return;
+	return reft_ctl;
 };
 
 void dealloc_ref_temperature_ctl_c(struct reference_temperature_c *reft_ctl){
 	
 	dealloc_reference_point_ctl_c(reft_ctl->low_c);
-	free(reft_ctl->low_c);
-	
 	dealloc_reference_point_ctl_c(reft_ctl->high_c);
-	free(reft_ctl->high_c);
-	
+    
 	dealloc_takepiro_model_ctl_c(reft_ctl->takepiro_c);
-	free(reft_ctl->takepiro_c);
-	
+    
 	dealloc_chara_ctl_item_c(reft_ctl->reference_c);
 	dealloc_chara_ctl_item_c(reft_ctl->stratified_c);
 	
-	free(reft_ctl->reference_c);
-	free(reft_ctl->stratified_c);
-    reft_ctl->iflag_use = 0;
+    free(reft_ctl);
 	
 	return;
 };

@@ -142,8 +142,7 @@ GtkWidget *make_ndomain_hbox(int iflag_decomp, const char *label_hd,
 	
 	if(count_chara_int_clist(ndomain_list) != num){
 		dealloc_ndomain_list_c(ndomain_list);
-        ndomain_list = (struct chara_int_clist *) malloc(sizeof(struct chara_int_clist));
-        alloc_ndomain_list_c(ndomain_list);
+        ndomain_list = init_ndomain_list_c();
 		if(iflag_decomp == 3){
 			append_chara_int_clist(label_radial, 0, ndomain_list);
 			append_chara_int_clist(label_meridional, 0, ndomain_list);

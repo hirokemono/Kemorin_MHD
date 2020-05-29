@@ -56,12 +56,18 @@ void get_label_sphere_data_ctl(int index, char *label){
     return;
 };
 
-void alloc_ndomain_list_c(struct chara_int_clist *ndomain_list){
+struct chara_int_clist * init_ndomain_list_c(){
+    struct chara_int_clist *ndomain_list;
+    if((ndomain_list = (struct chara_int_clist *) malloc(sizeof(struct chara_int_clist))) == NULL) {
+        printf("malloc error for chara_int_clist \n");
+        exit(0);
+    }
+    
 	init_chara_int_clist(ndomain_list);
     sprintf(ndomain_list->c1_name, "Direction");
     sprintf(ndomain_list->i1_name, "Value");
 	
-	return;
+	return ndomain_list;
 };
 
 void dealloc_ndomain_list_c(struct chara_int_clist *ndomain_list){
@@ -71,8 +77,14 @@ void dealloc_ndomain_list_c(struct chara_int_clist *ndomain_list){
 	return;
 };
 
-void alloc_sphere_domain_ctl_c(struct sphere_domain_ctl_c *sdctl_c){
+struct sphere_domain_ctl_c * init_sphere_domain_ctl_c(){
 	int i;
+    struct sphere_domain_ctl_c *sdctl_c;
+    if((sdctl_c = (struct sphere_domain_ctl_c *) malloc(sizeof(struct sphere_domain_ctl_c))) == NULL) {
+        printf("malloc error for sphere_domain_ctl_c \n");
+        exit(0);
+    }
+
     sdctl_c->iflag_use = 0;
 	sdctl_c->maxlen = 0;
 	for (i=0;i<NLBL_SPHERE_DOMAIN_CTL;i++){
@@ -81,28 +93,23 @@ void alloc_sphere_domain_ctl_c(struct sphere_domain_ctl_c *sdctl_c){
 		};
 	};
 	
-	sdctl_c->inner_decomp_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	alloc_chara_ctl_item_c(sdctl_c->inner_decomp_c);
+	sdctl_c->inner_decomp_c = init_chara_ctl_item_c();
 	
 	sdctl_c->num_radial_domain_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
 	sdctl_c->num_horiz_domain_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
 	init_int_ctl_item_c(sdctl_c->num_radial_domain_c);
 	init_int_ctl_item_c(sdctl_c->num_horiz_domain_c);
 	
-    sdctl_c->ndomain_sph_grid_list = (struct chara_int_clist *) malloc(sizeof(struct chara_int_clist));
-    alloc_ndomain_list_c(sdctl_c->ndomain_sph_grid_list);
-    sdctl_c->ndomain_legendre_list = (struct chara_int_clist *) malloc(sizeof(struct chara_int_clist));
-    alloc_ndomain_list_c(sdctl_c->ndomain_legendre_list);
-    sdctl_c->ndomain_spectr_list = (struct chara_int_clist *) malloc(sizeof(struct chara_int_clist));
-    alloc_ndomain_list_c(sdctl_c->ndomain_spectr_list);
+    sdctl_c->ndomain_sph_grid_list = init_ndomain_list_c();
+    sdctl_c->ndomain_legendre_list = init_ndomain_list_c();
+    sdctl_c->ndomain_spectr_list = init_ndomain_list_c();
 	
-	return;
+	return sdctl_c;
 };
 
 void dealloc_sphere_domain_ctl_c(struct sphere_domain_ctl_c *sdctl_c){
 	
 	dealloc_chara_ctl_item_c(sdctl_c->inner_decomp_c);
-	free(sdctl_c->inner_decomp_c);
 	
 	free(sdctl_c->num_radial_domain_c);
 	free(sdctl_c->num_horiz_domain_c);
@@ -111,7 +118,7 @@ void dealloc_sphere_domain_ctl_c(struct sphere_domain_ctl_c *sdctl_c){
 	dealloc_ndomain_list_c(sdctl_c->ndomain_legendre_list);
 	dealloc_ndomain_list_c(sdctl_c->ndomain_spectr_list);
 	
-    sdctl_c->iflag_use = 0;
+    free(sdctl_c);
 	return;
 };
 
@@ -155,9 +162,14 @@ int write_sphere_domain_ctl_c(FILE *fp, int level,
 };
 
 
-void alloc_sphere_data_ctl_c(struct sphere_data_ctl_c *spctl_c){
+struct sphere_data_ctl_c * init_sphere_data_ctl_c(){
 	int i;
-	
+    struct sphere_data_ctl_c *spctl_c;
+    if((spctl_c = (struct sphere_data_ctl_c *) malloc(sizeof(struct sphere_data_ctl_c))) == NULL) {
+        printf("malloc error for sphere_data_ctl_c \n");
+        exit(0);
+    }
+    	
     spctl_c->iflag_use = 0;
 	spctl_c->maxlen = 0;
 	for (i=0;i<NLBL_SPHERE_DATA_CTL;i++){
@@ -171,10 +183,8 @@ void alloc_sphere_data_ctl_c(struct sphere_data_ctl_c *spctl_c){
 	init_int_ctl_item_c(spctl_c->ltr_c);
 	init_int_ctl_item_c(spctl_c->phi_symmetry_c);
 	
-	spctl_c->sph_grid_type_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	spctl_c->sph_coef_type_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	alloc_chara_ctl_item_c(spctl_c->sph_grid_type_c);
-	alloc_chara_ctl_item_c(spctl_c->sph_coef_type_c);
+	spctl_c->sph_grid_type_c = init_chara_ctl_item_c();
+	spctl_c->sph_coef_type_c = init_chara_ctl_item_c();
 	
 	spctl_c->ngrid_elevation_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
 	spctl_c->ngrid_azimuth_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
@@ -191,9 +201,8 @@ void alloc_sphere_data_ctl_c(struct sphere_data_ctl_c *spctl_c){
     sprintf(spctl_c->radial_grp_list->c1_name, "Name");
     sprintf(spctl_c->radial_grp_list->i1_name, "Index");
 	
-	spctl_c->radial_grid_type_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
+	spctl_c->radial_grid_type_c = init_chara_ctl_item_c();
 	spctl_c->num_fluid_grid_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
-	alloc_chara_ctl_item_c(spctl_c->radial_grid_type_c);
 	init_int_ctl_item_c(spctl_c->num_fluid_grid_c);
 	
 	spctl_c->Min_radius_c = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
@@ -223,7 +232,7 @@ void alloc_sphere_data_ctl_c(struct sphere_data_ctl_c *spctl_c){
     sprintf(spctl_c->med_layer_list->i1_name, "Start_ID");
     sprintf(spctl_c->med_layer_list->i2_name, "End_ID");
 	
-	return;
+	return spctl_c;
 };
 
 void dealloc_sphere_data_ctl_c(struct sphere_data_ctl_c *spctl_c){
@@ -233,8 +242,6 @@ void dealloc_sphere_data_ctl_c(struct sphere_data_ctl_c *spctl_c){
 	
 	dealloc_chara_ctl_item_c(spctl_c->sph_grid_type_c);
 	dealloc_chara_ctl_item_c(spctl_c->sph_coef_type_c);
-	free(spctl_c->sph_grid_type_c);
-	free(spctl_c->sph_coef_type_c);
 	
 	free(spctl_c->ngrid_elevation_c);
 	free(spctl_c->ngrid_azimuth_c);
@@ -245,7 +252,6 @@ void dealloc_sphere_data_ctl_c(struct sphere_data_ctl_c *spctl_c){
     free(spctl_c->radial_grp_list);
 	
 	dealloc_chara_ctl_item_c(spctl_c->radial_grid_type_c);
-	free(spctl_c->radial_grid_type_c);
 	free(spctl_c->num_fluid_grid_c);
 	
 	free(spctl_c->Min_radius_c);
@@ -262,7 +268,8 @@ void dealloc_sphere_data_ctl_c(struct sphere_data_ctl_c *spctl_c){
 	clear_int2_clist(spctl_c->med_layer_list);
     free(spctl_c->radial_layer_list);
     free(spctl_c->med_layer_list);
-    spctl_c->iflag_use = 0;
+    
+    free(spctl_c);
 	
 	return;
 };

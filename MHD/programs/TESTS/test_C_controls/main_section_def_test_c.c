@@ -32,12 +32,10 @@ int main(int argc,char *argv[])
 	printf("Input file name: %s\n", file_name);
 	printf("Copied file name: %s\n", file_name_2);
 	
-	psf_def_c0 = (struct psf_define_ctl_c *) malloc(sizeof(struct psf_define_ctl_c));
-	alloc_psf_define_ctl_c(psf_def_c0);
+	psf_def_c0 = init_psf_define_ctl_c();
 	
 	iflag = read_psf_define_file_c(file_name, buf, psf_def_c0);
 	iflag = write_psf_define_file_c(file_name_2, psf_def_c0);
     dealloc_psf_define_ctl_c(psf_def_c0);
-	free(psf_def_c0);
 	return 0;
 }

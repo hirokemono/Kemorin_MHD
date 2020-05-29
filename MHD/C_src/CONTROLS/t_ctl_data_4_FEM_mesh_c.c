@@ -22,8 +22,13 @@ void get_label_FEM_mesh_ctl(int index, char *label){
     return;
 };
 
-void alloc_FEM_mesh_control_c(struct FEM_mesh_control_c *Fmesh){
+struct FEM_mesh_control_c * init_FEM_mesh_control_c(){
     int i;
+    struct FEM_mesh_control_c *Fmesh;
+    if((Fmesh = (struct FEM_mesh_control_c *) malloc(sizeof(struct FEM_mesh_control_c))) == NULL) {
+        printf("malloc error for FEM_mesh_control_c \n");
+        exit(0);
+    }
     
     Fmesh->iflag_use = 0;
     Fmesh->maxlen = 0;
@@ -33,21 +38,16 @@ void alloc_FEM_mesh_control_c(struct FEM_mesh_control_c *Fmesh){
         };
     };
     
-    Fmesh->memory_conservation_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-    alloc_chara_ctl_item_c(Fmesh->memory_conservation_c);
-    Fmesh->FEM_mesh_output_switch_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-    alloc_chara_ctl_item_c(Fmesh->FEM_mesh_output_switch_c);
-    Fmesh->FEM_surface_output_switch_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-    alloc_chara_ctl_item_c(Fmesh->FEM_surface_output_switch_c);
-    Fmesh->FEM_viewer_output_switch_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-    alloc_chara_ctl_item_c(Fmesh->FEM_viewer_output_switch_c);
+    Fmesh->memory_conservation_c = init_chara_ctl_item_c();
+    Fmesh->FEM_mesh_output_switch_c = init_chara_ctl_item_c();
+    Fmesh->FEM_surface_output_switch_c = init_chara_ctl_item_c();
+    Fmesh->FEM_viewer_output_switch_c = init_chara_ctl_item_c();
     
     Fmesh->FEM_sleeve_level_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
     init_int_ctl_item_c(Fmesh->FEM_sleeve_level_c);
-    Fmesh->FEM_element_overlap_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-    alloc_chara_ctl_item_c(Fmesh->FEM_element_overlap_c);
+    Fmesh->FEM_element_overlap_c = init_chara_ctl_item_c();
     
-    return;
+    return Fmesh;
 };
 
 void dealloc_FEM_mesh_control_c(struct FEM_mesh_control_c *Fmesh){
@@ -59,7 +59,7 @@ void dealloc_FEM_mesh_control_c(struct FEM_mesh_control_c *Fmesh){
     dealloc_chara_ctl_item_c(Fmesh->FEM_viewer_output_switch_c);
 
     dealloc_chara_ctl_item_c(Fmesh->FEM_element_overlap_c);
-    Fmesh->iflag_use = 0;
+    free(Fmesh);
     return;
 };
 

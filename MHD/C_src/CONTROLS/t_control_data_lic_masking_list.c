@@ -23,20 +23,23 @@ struct label_list_f * init_ctl_label_LIC_masking_f(){
 };
 
 
-void alloc_lic_masking_ctl_c(struct lic_masking_ctl_c *mask_ctl){
+struct lic_masking_ctl_c * init_lic_masking_ctl_c(){
+    struct lic_masking_ctl_c *mask_ctl;
+    if((mask_ctl = (struct lic_masking_ctl_c *) malloc(sizeof(struct lic_masking_ctl_c))) == NULL) {
+        printf("malloc error for lic_masking_ctl_c \n");
+        exit(0);
+    }
+    
 	mask_ctl->label_lic_masking = init_ctl_label_LIC_masking_f();
-	mask_ctl->masking_type_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	mask_ctl->field_name_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	mask_ctl->component_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	alloc_chara_ctl_item_c(mask_ctl->masking_type_ctl);
-	alloc_chara_ctl_item_c(mask_ctl->field_name_ctl);
-	alloc_chara_ctl_item_c(mask_ctl->component_ctl);
+	mask_ctl->masking_type_ctl = init_chara_ctl_item_c();
+	mask_ctl->field_name_ctl = init_chara_ctl_item_c();
+	mask_ctl->component_ctl = init_chara_ctl_item_c();
 	
 	mask_ctl->mask_range_list = init_real2_clist();
     sprintf(mask_ctl->mask_range_list->r1_name, "data");
     sprintf(mask_ctl->mask_range_list->r2_name, "mask_value");
 	
-	return;
+	return mask_ctl;
 };
 
 void dealloc_lic_masking_ctl_c(struct lic_masking_ctl_c *mask_ctl){
@@ -44,11 +47,9 @@ void dealloc_lic_masking_ctl_c(struct lic_masking_ctl_c *mask_ctl){
 	dealloc_chara_ctl_item_c(mask_ctl->masking_type_ctl);
 	dealloc_chara_ctl_item_c(mask_ctl->field_name_ctl);
 	dealloc_chara_ctl_item_c(mask_ctl->component_ctl);
-	free(mask_ctl->masking_type_ctl);
-	free(mask_ctl->field_name_ctl);
-	free(mask_ctl->component_ctl);
 	
 	dealloc_real2_clist(mask_ctl->mask_range_list);
+    free(mask_ctl);
 	return;
 };
 
@@ -110,11 +111,7 @@ struct lic_masking_ctl_list *add_lic_masking_ctl_list_after(struct lic_masking_c
 	printf("malloc error\n");
 	exit(0);
 	}
-    if ((added->lic_mask_c = (struct lic_masking_ctl_c *) malloc(sizeof(struct lic_masking_ctl_c))) == NULL) {
-        printf("malloc error for lic_mask_c\n");
-        exit(0);
-    }
-	alloc_lic_masking_ctl_c(added->lic_mask_c);
+	added->lic_mask_c = init_lic_masking_ctl_c();
 	
 	/* replace from  current -> next to current -> new -> next */
 	old_next= current->_next;
@@ -131,7 +128,6 @@ void delete_lic_masking_ctl_list(struct lic_masking_ctl_list *current){
 	struct lic_masking_ctl_list *old_next = current->_next;
 	
 	dealloc_lic_masking_ctl_c(current->lic_mask_c);
-    free(current->lic_mask_c);
 	free(current);
 	
     old_prev->_next = old_next;

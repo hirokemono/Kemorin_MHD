@@ -11,15 +11,13 @@
 void alloc_sectioning_ctl_c(struct sectioning_ctl_c *sections_c){
 	sections_c->iflag_psf_ctl = 0;
 	sections_c->fname_psf_ctl = (char *)calloc(KCHARA_C, sizeof(char));
-	sections_c->psf_c = (struct psf_ctl_c *) malloc(sizeof(struct psf_ctl_c));
-	alloc_psf_ctl_c(sections_c->psf_c);
+	sections_c->psf_c = init_psf_ctl_c();
 	return;
 
 };
 
 void dealloc_sectioning_ctl_c(struct sectioning_ctl_c *sections_c){
 	dealloc_psf_ctl_c(sections_c->psf_c);
-	free(sections_c->psf_c);
 	free(sections_c->fname_psf_ctl);
 	sections_c->iflag_psf_ctl = 0;
 	return;

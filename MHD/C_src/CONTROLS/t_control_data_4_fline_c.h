@@ -46,7 +46,7 @@ struct fline_ctl_c{
 
 void get_label_fline_ctl(int index, char *label);
 
-void alloc_fline_ctl_c(struct fline_ctl_c *fline_c);
+struct fline_ctl_c * init_fline_ctl_c();
 void dealloc_fline_ctl_c(struct fline_ctl_c *fline_c);
 int read_fline_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct fline_ctl_c *fline_c);

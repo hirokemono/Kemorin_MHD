@@ -23,10 +23,15 @@ struct label_list_f * init_ctl_label_LIC_kernel_f(){
 	return label_list;
 };
 
-void alloc_lic_kernel_ctl_c(struct lic_kernel_ctl_c *lic_knl_c){
+struct lic_kernel_ctl_c * alloc_lic_kernel_ctl_c(){
+    struct lic_kernel_ctl_c *lic_knl_c;
+    if((lic_knl_c = (struct lic_kernel_ctl_c *) malloc(sizeof(struct lic_kernel_ctl_c))) == NULL) {
+        printf("malloc error for lic_kernel_ctl_c \n");
+        exit(0);
+    }
+    
 	lic_knl_c->label_lic_kernel = init_ctl_label_LIC_kernel_f();
-	lic_knl_c->kernel_function_type_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	alloc_chara_ctl_item_c(lic_knl_c->kernel_function_type_ctl);
+	lic_knl_c->kernel_function_type_ctl = init_chara_ctl_item_c();
 	
 	lic_knl_c->kernel_resolution_ctl_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
 	init_int_ctl_item_c(lic_knl_c->kernel_resolution_ctl_c);
@@ -38,28 +43,24 @@ void alloc_lic_kernel_ctl_c(struct lic_kernel_ctl_c *lic_knl_c){
 	lic_knl_c->kernel_half_lengh_c = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
 	init_real_ctl_item_c(lic_knl_c->kernel_half_lengh_c);
 	
-	lic_knl_c->LIC_trace_length_def_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	alloc_chara_ctl_item_c(lic_knl_c->LIC_trace_length_def_ctl);
+	lic_knl_c->LIC_trace_length_def_ctl = init_chara_ctl_item_c();
 	lic_knl_c->LIC_trace_count_ctl = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
 	init_int_ctl_item_c(lic_knl_c->LIC_trace_count_ctl);
 	
-	return;
+	return lic_knl_c;
 };
 
 
 void dealloc_lic_kernel_ctl_c(struct lic_kernel_ctl_c *lic_knl_c){
 	dealloc_ctl_label(lic_knl_c->label_lic_kernel);
 	dealloc_chara_ctl_item_c(lic_knl_c->kernel_function_type_ctl);
-	free(lic_knl_c->kernel_function_type_ctl);
 	free(lic_knl_c->kernel_resolution_ctl_c);
 	free(lic_knl_c->kernel_sigma_ctl_c);
 	free(lic_knl_c->kernel_peak_ctl_c);
 	free(lic_knl_c->kernel_half_lengh_c);
 	
 	dealloc_chara_ctl_item_c(lic_knl_c->LIC_trace_length_def_ctl);
-	free(lic_knl_c->LIC_trace_length_def_ctl);
-	free(lic_knl_c->LIC_trace_count_ctl);
-	
+    free(lic_knl_c);
 	return;
 };
 

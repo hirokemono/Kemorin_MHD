@@ -56,8 +56,13 @@ void get_label_iso_ctl(int index, char *label){
     return;
 };
 
-void alloc_iso_define_ctl_c(struct iso_define_ctl_c *iso_def_c){
+struct iso_define_ctl_c * init_iso_define_ctl_c(){
 	int i;
+    struct iso_define_ctl_c *iso_def_c;
+    if((iso_def_c = (struct iso_define_ctl_c *) malloc(sizeof(struct iso_define_ctl_c))) == NULL) {
+        printf("malloc error for iso_define_ctl_c \n");
+        exit(0);
+    }
 	
 	iso_def_c->maxlen = 0;
 	for (i=0;i<NLBL_ISO_DEFINE_CTL;i++){
@@ -66,10 +71,8 @@ void alloc_iso_define_ctl_c(struct iso_define_ctl_c *iso_def_c){
 		};
 	};
 	
-	iso_def_c->isosurf_data_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	iso_def_c->isosurf_comp_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	alloc_chara_ctl_item_c(iso_def_c->isosurf_data_ctl);
-	alloc_chara_ctl_item_c(iso_def_c->isosurf_comp_ctl);
+	iso_def_c->isosurf_data_ctl = init_chara_ctl_item_c();
+	iso_def_c->isosurf_comp_ctl = init_chara_ctl_item_c();
 	
 	iso_def_c->isosurf_value_ctl = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
 	init_real_ctl_item_c(iso_def_c->isosurf_value_ctl);
@@ -77,20 +80,19 @@ void alloc_iso_define_ctl_c(struct iso_define_ctl_c *iso_def_c){
     iso_def_c->iso_area_list = (struct chara_clist *) malloc(sizeof(struct chara_clist));
 	init_chara_clist(iso_def_c->iso_area_list);
 	
-	return;
+	return iso_def_c;
 };
 
 void dealloc_iso_define_ctl_c(struct iso_define_ctl_c *iso_def_c){
 	
 	dealloc_chara_ctl_item_c(iso_def_c->isosurf_data_ctl);
 	dealloc_chara_ctl_item_c(iso_def_c->isosurf_comp_ctl);
-	free(iso_def_c->isosurf_data_ctl);
-	free(iso_def_c->isosurf_comp_ctl);
 	
 	free(iso_def_c->isosurf_value_ctl);
 	
 	clear_chara_clist(iso_def_c->iso_area_list);
     free(iso_def_c->iso_area_list);
+    free(iso_def_c);
 	return;
 };
 
@@ -143,8 +145,14 @@ int write_iso_define_ctl_c(FILE *fp, int level, const char *label,
 };
 
 
-void alloc_iso_field_ctl_c(struct iso_field_ctl_c *iso_fld_c){
+struct iso_field_ctl_c * init_iso_field_ctl_c(){
 	int i;
+    struct iso_field_ctl_c *iso_fld_c;
+    if((iso_fld_c = (struct iso_field_ctl_c *) malloc(sizeof(struct iso_field_ctl_c))) == NULL) {
+        printf("malloc error for iso_field_ctl_c \n");
+        exit(0);
+    }
+    
 	
 	iso_fld_c->maxlen = 0;
 	for (i=0;i<NLBL_ISO_FIELD_CTL;i++){
@@ -153,24 +161,23 @@ void alloc_iso_field_ctl_c(struct iso_field_ctl_c *iso_fld_c){
 		};
 	};
 	
-	iso_fld_c->iso_result_type_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	alloc_chara_ctl_item_c(iso_fld_c->iso_result_type_ctl);
+	iso_fld_c->iso_result_type_ctl = init_chara_ctl_item_c();
 	
 	iso_fld_c->result_value_iso_ctl = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
     iso_fld_c->iso_out_field_list = (struct chara2_clist *) malloc(sizeof(struct chara2_clist));
 	init_chara2_clist(iso_fld_c->iso_out_field_list);
 	
-	return;
+	return iso_fld_c;
 };
 
 void dealloc_iso_field_ctl_c(struct iso_field_ctl_c *iso_fld_c){
 	
 	dealloc_chara_ctl_item_c(iso_fld_c->iso_result_type_ctl);
-	free(iso_fld_c->iso_result_type_ctl);
 	free(iso_fld_c->result_value_iso_ctl);
 	
 	clear_chara2_clist(iso_fld_c->iso_out_field_list);
     free(iso_fld_c->iso_out_field_list);
+    free(iso_fld_c);
 	
 	return;
 };
@@ -202,8 +209,13 @@ int write_iso_field_ctl_c(FILE *fp, int level, const char *label,
 };
 
 
-void alloc_iso_ctl_c(struct iso_ctl_c *iso_c){
+struct iso_ctl_c * init_iso_ctl_c(){
 	int i;
+    struct iso_ctl_c *iso_c;
+    if((iso_c = (struct iso_ctl_c *) malloc(sizeof(struct iso_ctl_c))) == NULL) {
+        printf("malloc error for iso_ctl_c \n");
+        exit(0);
+    }
 	
 	iso_c->maxlen = 0;
 	for (i=0;i<NLBL_ISO_CTL;i++){
@@ -215,33 +227,25 @@ void alloc_iso_ctl_c(struct iso_ctl_c *iso_c){
 	iso_c->iflag_isosurf_define = 0;
 	iso_c->iflag_iso_output_field = 0;
 	
-	iso_c->iso_def_c = (struct iso_define_ctl_c *) malloc(sizeof(struct iso_define_ctl_c));
-	alloc_iso_define_ctl_c(iso_c->iso_def_c);
-	iso_c->iso_fld_c = (struct iso_field_ctl_c *) malloc(sizeof(struct iso_field_ctl_c));
-	alloc_iso_field_ctl_c(iso_c->iso_fld_c);
+	iso_c->iso_def_c = init_iso_define_ctl_c();
+	iso_c->iso_fld_c = init_iso_field_ctl_c();
 	
-	iso_c->iso_file_head_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	iso_c->iso_output_type_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	alloc_chara_ctl_item_c(iso_c->iso_file_head_ctl);
-	alloc_chara_ctl_item_c(iso_c->iso_output_type_ctl);
-	
-	return;
+	iso_c->iso_file_head_ctl = init_chara_ctl_item_c();
+	iso_c->iso_output_type_ctl = init_chara_ctl_item_c();
+	return iso_c;
 };
 
 void dealloc_iso_ctl_c(struct iso_ctl_c *iso_c){
 	dealloc_iso_define_ctl_c(iso_c->iso_def_c);
-	free(iso_c->iso_def_c);
 	dealloc_iso_field_ctl_c(iso_c->iso_fld_c);
-	free(iso_c->iso_fld_c);
 	
 	dealloc_chara_ctl_item_c(iso_c->iso_file_head_ctl);
 	dealloc_chara_ctl_item_c(iso_c->iso_output_type_ctl);
-	free(iso_c->iso_file_head_ctl);
-	free(iso_c->iso_output_type_ctl);
 	
 	iso_c->iflag_isosurf_define = 0;
 	iso_c->iflag_iso_output_field = 0;
 	
+    free(iso_c);
 	return;
 };
 

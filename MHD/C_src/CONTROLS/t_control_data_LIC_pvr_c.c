@@ -30,12 +30,10 @@ struct label_list_f * init_ctl_label_LIC_pvr_f(){
 
 
 void alloc_LIC_pvr_ctl_c(struct LIC_pvr_ctl_c *lic_pvr_c){
-	lic_pvr_c->pvr_c = (struct pvr_ctl_c *) malloc(sizeof(struct pvr_ctl_c));
-	alloc_pvr_ctl_c(lic_pvr_c->pvr_c);
+	lic_pvr_c->pvr_c = init_pvr_ctl_c();
 	
 	lic_pvr_c->iflag_lic_ctl = 0;
-	lic_pvr_c->lic_c = (struct lic_ctl_c *) malloc(sizeof(struct lic_ctl_c));
-	alloc_lic_ctl_c(lic_pvr_c->lic_c);
+	lic_pvr_c->lic_c = init_lic_ctl_c();
 	
 	lic_pvr_c->label_lic_pvr = init_ctl_label_LIC_pvr_f();
 	if(lic_pvr_c->lic_c->label_lic_ctl->maxlen > lic_pvr_c->label_lic_pvr->maxlen){
@@ -48,10 +46,7 @@ void alloc_LIC_pvr_ctl_c(struct LIC_pvr_ctl_c *lic_pvr_c){
 void dealloc_LIC_pvr_ctl_c(struct LIC_pvr_ctl_c *lic_pvr_c){
 	
 	dealloc_pvr_ctl_c(lic_pvr_c->pvr_c);
-	free(lic_pvr_c->pvr_c);
-	
 	dealloc_lic_ctl_c(lic_pvr_c->lic_c);
-	free(lic_pvr_c->lic_c);
 	
 	dealloc_ctl_label(lic_pvr_c->label_lic_pvr);
 	

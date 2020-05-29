@@ -516,8 +516,7 @@ int main(int argc, char** argv)
 	gtk_box_pack_start(GTK_BOX(vbox_0), scroll_window, TRUE, TRUE, 0);
 	*/
 	
-			ptem_test = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-			alloc_chara_ctl_item_c(ptem_test);
+			ptem_test = init_chara_ctl_item_c();
 			ptem_test->iflag = 111;
 			ptem_test->c_tbl = "gggg";
 	

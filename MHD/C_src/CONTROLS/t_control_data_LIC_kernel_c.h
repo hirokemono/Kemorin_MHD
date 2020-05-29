@@ -32,7 +32,7 @@ struct lic_kernel_ctl_c{
 };
 
 /* prototypes */
-void alloc_lic_kernel_ctl_c(struct lic_kernel_ctl_c *lic_knl_c);
+struct lic_kernel_ctl_c * alloc_lic_kernel_ctl_c();
 void dealloc_lic_kernel_ctl_c(struct lic_kernel_ctl_c *lic_knl_c);
 int read_lic_kernel_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct lic_kernel_ctl_c *lic_knl_c);

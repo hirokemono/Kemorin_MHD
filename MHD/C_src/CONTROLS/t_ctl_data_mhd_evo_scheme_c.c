@@ -60,8 +60,13 @@ void get_label_mhd_evo_scheme_control(int index, char *label){
 };
 
 
-void alloc_mhd_restart_control_c(struct mhd_restart_control_c *mrst_ctl){
+struct mhd_restart_control_c * init_mhd_restart_control_c(){
     int i;
+    struct mhd_restart_control_c *mrst_ctl;
+    if((mrst_ctl = (struct mhd_restart_control_c *) malloc(sizeof(struct mhd_restart_control_c))) == NULL) {
+        printf("malloc error for mhd_restart_control_c \n");
+        exit(0);
+    }
     
     mrst_ctl->iflag_use = 0;
     mrst_ctl->maxlen = 0;
@@ -70,17 +75,14 @@ void alloc_mhd_restart_control_c(struct mhd_restart_control_c *mrst_ctl){
             mrst_ctl->maxlen = (int) strlen(label_mhd_restart_control[i]);
         };
 	};
+	mrst_ctl->restart_flag_c = init_chara_ctl_item_c();
 	
-	mrst_ctl->restart_flag_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	alloc_chara_ctl_item_c(mrst_ctl->restart_flag_c);
-	
-	return;
+	return mrst_ctl;
 }
 void dealloc_mhd_restart_control_c(struct mhd_restart_control_c *mrst_ctl){
 	
     dealloc_chara_ctl_item_c(mrst_ctl->restart_flag_c);
-	free(mrst_ctl->restart_flag_c);
-    mrst_ctl->iflag_use = 0;
+    free(mrst_ctl);
 	
 	return;
 }
@@ -107,8 +109,13 @@ int write_mhd_restart_control_c(FILE *fp, int level, const char *label,
 	return level;
 };
 
-void alloc_mhd_evo_scheme_control_c(struct mhd_evo_scheme_control_c *mevo_ctl){
+struct mhd_evo_scheme_control_c * init_mhd_evo_scheme_control_c(){
     int i;
+    struct mhd_evo_scheme_control_c *mevo_ctl;
+    if((mevo_ctl = (struct mhd_evo_scheme_control_c *) malloc(sizeof(struct mhd_evo_scheme_control_c))) == NULL) {
+        printf("malloc error for mhd_evo_scheme_control_c \n");
+        exit(0);
+    }
     
     mevo_ctl->iflag_use = 0;
     mevo_ctl->maxlen = 0;
@@ -118,25 +125,16 @@ void alloc_mhd_evo_scheme_control_c(struct mhd_evo_scheme_control_c *mevo_ctl){
         };
 	};
 	
-	mevo_ctl->coef_imp_v_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	alloc_chara_ctl_item_c(mevo_ctl->coef_imp_v_c);
-	mevo_ctl->coef_imp_t_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	alloc_chara_ctl_item_c(mevo_ctl->coef_imp_t_c);
-	mevo_ctl->coef_imp_b_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	alloc_chara_ctl_item_c(mevo_ctl->coef_imp_b_c);
-	mevo_ctl->coef_imp_c_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	alloc_chara_ctl_item_c(mevo_ctl->coef_imp_c_c);
+	mevo_ctl->coef_imp_v_c = init_chara_ctl_item_c();
+	mevo_ctl->coef_imp_t_c = init_chara_ctl_item_c();
+	mevo_ctl->coef_imp_b_c = init_chara_ctl_item_c();
+	mevo_ctl->coef_imp_c_c = init_chara_ctl_item_c();
 	
-	mevo_ctl->iflag_supg_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	alloc_chara_ctl_item_c(mevo_ctl->iflag_supg_c);
-	mevo_ctl->iflag_supg_v_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	alloc_chara_ctl_item_c(mevo_ctl->iflag_supg_v_c);
-	mevo_ctl->iflag_supg_t_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	alloc_chara_ctl_item_c(mevo_ctl->iflag_supg_t_c);
-	mevo_ctl->iflag_supg_b_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	alloc_chara_ctl_item_c(mevo_ctl->iflag_supg_b_c);
-	mevo_ctl->iflag_supg_c_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	alloc_chara_ctl_item_c(mevo_ctl->iflag_supg_c_c);
+	mevo_ctl->iflag_supg_c =   init_chara_ctl_item_c();
+	mevo_ctl->iflag_supg_v_c = init_chara_ctl_item_c();
+	mevo_ctl->iflag_supg_t_c = init_chara_ctl_item_c();
+	mevo_ctl->iflag_supg_b_c = init_chara_ctl_item_c();
+	mevo_ctl->iflag_supg_c_c = init_chara_ctl_item_c();
 	
 	mevo_ctl->num_multi_pass_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
 	init_int_ctl_item_c(mevo_ctl->num_multi_pass_c);
@@ -153,50 +151,34 @@ void alloc_mhd_evo_scheme_control_c(struct mhd_evo_scheme_control_c *mevo_ctl){
 	mevo_ctl->eps_B_crank_c = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
 	init_real_ctl_item_c(mevo_ctl->eps_B_crank_c);
 	
-	mevo_ctl->scheme_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	alloc_chara_ctl_item_c(mevo_ctl->scheme_c);
-	mevo_ctl->diffuse_correct_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	alloc_chara_ctl_item_c(mevo_ctl->diffuse_correct_c);
+	mevo_ctl->scheme_c = init_chara_ctl_item_c();
+	mevo_ctl->diffuse_correct_c = init_chara_ctl_item_c();
 	
-	mevo_ctl->method_4_CN_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	alloc_chara_ctl_item_c(mevo_ctl->method_4_CN_c);
-	mevo_ctl->precond_4_CN_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	alloc_chara_ctl_item_c(mevo_ctl->precond_4_CN_c);
+	mevo_ctl->method_4_CN_c =  init_chara_ctl_item_c();
+	mevo_ctl->precond_4_CN_c = init_chara_ctl_item_c();
 	
-	mevo_ctl->Legendre_trans_type_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	alloc_chara_ctl_item_c(mevo_ctl->Legendre_trans_type_c);
-	mevo_ctl->FFT_library_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	alloc_chara_ctl_item_c(mevo_ctl->FFT_library_c);
-	mevo_ctl->import_mode_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	alloc_chara_ctl_item_c(mevo_ctl->import_mode_c);
-	mevo_ctl->SR_routine_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	alloc_chara_ctl_item_c(mevo_ctl->SR_routine_c);
+	mevo_ctl->Legendre_trans_type_c = init_chara_ctl_item_c();
+	mevo_ctl->FFT_library_c = init_chara_ctl_item_c();
+	mevo_ctl->import_mode_c = init_chara_ctl_item_c();
+	mevo_ctl->SR_routine_c =  init_chara_ctl_item_c();
 	
 	mevo_ctl->leg_vector_len_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
 	init_int_ctl_item_c(mevo_ctl->leg_vector_len_c);
-	return;
+	return mevo_ctl;
 }
+
 void dealloc_mhd_evo_scheme_control_c(struct mhd_evo_scheme_control_c *mevo_ctl){
 	
     dealloc_chara_ctl_item_c(mevo_ctl->coef_imp_v_c);
-	free(mevo_ctl->coef_imp_v_c);
     dealloc_chara_ctl_item_c(mevo_ctl->coef_imp_t_c);
-	free(mevo_ctl->coef_imp_t_c);
     dealloc_chara_ctl_item_c(mevo_ctl->coef_imp_b_c);
-	free(mevo_ctl->coef_imp_b_c);
     dealloc_chara_ctl_item_c(mevo_ctl->coef_imp_c_c);
-	free(mevo_ctl->coef_imp_c_c);
 	
     dealloc_chara_ctl_item_c(mevo_ctl->iflag_supg_c);
-	free(mevo_ctl->iflag_supg_c);
     dealloc_chara_ctl_item_c(mevo_ctl->iflag_supg_v_c);
-	free(mevo_ctl->iflag_supg_v_c);
     dealloc_chara_ctl_item_c(mevo_ctl->iflag_supg_t_c);
-	free(mevo_ctl->iflag_supg_t_c);
     dealloc_chara_ctl_item_c(mevo_ctl->iflag_supg_b_c);
-	free(mevo_ctl->iflag_supg_b_c);
     dealloc_chara_ctl_item_c(mevo_ctl->iflag_supg_c_c);
-	free(mevo_ctl->iflag_supg_c_c);
 	
 	free(mevo_ctl->num_multi_pass_c);
 	free(mevo_ctl->maxiter_c);
@@ -228,7 +210,7 @@ void dealloc_mhd_evo_scheme_control_c(struct mhd_evo_scheme_control_c *mevo_ctl)
 	
 	free(mevo_ctl->leg_vector_len_c);
 
-    mevo_ctl->iflag_use = 0;
+    free(mevo_ctl);
     return;
 }
 void read_mhd_evo_scheme_control_c(FILE *fp, char buf[LENGTHBUF], 

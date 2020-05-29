@@ -32,12 +32,10 @@ int main(int argc,char *argv[])
 	printf("Input file name: %s\n", file_name);
 	printf("Copied file name: %s\n", file_name_2);
 	
-	cmap_cbar_c0 = (struct pvr_colormap_bar_ctl_c *) malloc(sizeof(struct pvr_colormap_bar_ctl_c));
-	alloc_colormap_colorbar_ctl_c(cmap_cbar_c0);
+	cmap_cbar_c0 = init_colormap_colorbar_ctl_c();
 	
 	iflag = read_colormap_colorbar_ctl_c(file_name, buf, cmap_cbar_c0);
 	iflag = write_colormap_colorbar_ctl_c(file_name_2, cmap_cbar_c0);
     dealloc_colormap_colorbar_ctl_c(cmap_cbar_c0);
-	free(cmap_cbar_c0);
 	return 0;
 }

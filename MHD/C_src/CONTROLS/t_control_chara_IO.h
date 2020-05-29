@@ -39,7 +39,7 @@ struct chara_clist{
 
 /* prototypes */
 
-void alloc_chara_ctl_item_c(struct chara_ctl_item *c_item);
+struct chara_ctl_item * init_chara_ctl_item_c();
 void dealloc_chara_ctl_item_c(struct chara_ctl_item *c_item);
 int read_chara_ctl_item_c(char buf[LENGTHBUF], const char *label, 
                           struct chara_ctl_item *c_item);

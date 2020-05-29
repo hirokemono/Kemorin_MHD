@@ -33,8 +33,7 @@ void alloc_gen_sph_shell_ctl_c(struct gen_sph_grid_ctl_c *gen_sph_c){
 		};
 	};
 
-	gen_sph_c->files = (struct platform_data_control_c *) malloc(sizeof(struct platform_data_control_c));
-	alloc_platform_data_control_c(gen_sph_c->files);
+	gen_sph_c->files = init_platform_data_control_c();
 	gen_sph_c->shell_ctl = (struct parallel_sph_shell_control_c *) malloc(sizeof(struct parallel_sph_shell_control_c));
 	alloc_parallel_sph_shell_control_c(gen_sph_c->shell_ctl);
 	return;
@@ -43,7 +42,6 @@ void alloc_gen_sph_shell_ctl_c(struct gen_sph_grid_ctl_c *gen_sph_c){
 void dealloc_gen_sph_shell_ctl_c(struct gen_sph_grid_ctl_c *gen_sph_c){
 	dealloc_platform_data_control_c(gen_sph_c->files);
 	dealloc_parallel_sph_shell_control_c(gen_sph_c->shell_ctl);
-	free(gen_sph_c->files);
 	free(gen_sph_c->shell_ctl);
     return;
 };

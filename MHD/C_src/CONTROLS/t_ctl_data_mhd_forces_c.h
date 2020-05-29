@@ -66,21 +66,21 @@ void read_forces_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 int write_forces_ctl_c(FILE *fp, int level,	const char *label,
                        struct forces_ctl_c *frc_ctl);
 
-void alloc_gravity_ctl_c(struct gravity_ctl_c *g_ctl);
+struct gravity_ctl_c * init_gravity_ctl_c();
 void dealloc_gravity_ctl_c(struct gravity_ctl_c *g_ctl);
 void read_gravity_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct gravity_ctl_c *g_ctl);
 int write_gravity_ctl_c(FILE *fp, int level, const char *label, 
                         struct gravity_ctl_c *g_ctl);
 
-void alloc_coriolis_ctl_c(struct coriolis_ctl_c *cor_ctl);
+struct coriolis_ctl_c * init_coriolis_ctl_c();
 void dealloc_coriolis_ctl_c(struct coriolis_ctl_c *cor_ctl);
 void read_coriolis_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct coriolis_ctl_c *cor_ctl);
 int write_coriolis_ctl_c(FILE *fp, int level, const char *label,
                          struct coriolis_ctl_c *cor_ctl);
 
-void alloc_magneto_cv_ctl_c(struct magneto_cv_ctl_c *mcv_ctl);
+struct magneto_cv_ctl_c * init_magneto_cv_ctl_c();
 void dealloc_magneto_cv_ctl_c(struct magneto_cv_ctl_c *mcv_ctl);
 void read_magneto_cv_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct magneto_cv_ctl_c *mcv_ctl);

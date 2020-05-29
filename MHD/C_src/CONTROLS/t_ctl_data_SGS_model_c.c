@@ -113,8 +113,13 @@ void get_label_SGS_model_ctl(int index, char *label){
 };
 
 
-void alloc_filter_file_ctl_c(struct filter_file_ctl_c *ffile_c){
+struct filter_file_ctl_c * init_filter_file_ctl_c(){
 	int i;
+    struct filter_file_ctl_c *ffile_c;
+    if((ffile_c = (struct filter_file_ctl_c *) malloc(sizeof(struct filter_file_ctl_c))) == NULL) {
+        printf("malloc error for filter_file_ctl_c \n");
+        exit(0);
+    }
 	
     ffile_c->iflag_use = 0;
 	ffile_c->maxlen = 0;
@@ -125,39 +130,23 @@ void alloc_filter_file_ctl_c(struct filter_file_ctl_c *ffile_c){
 	};
 	
 	
-	ffile_c->filter_head_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	ffile_c->filter_coef_head_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	ffile_c->filter_elen_head_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	ffile_c->filter_moms_head_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
+	ffile_c->filter_head_c =      init_chara_ctl_item_c();
+	ffile_c->filter_coef_head_c = init_chara_ctl_item_c();
+	ffile_c->filter_elen_head_c = init_chara_ctl_item_c();
+	ffile_c->filter_moms_head_c = init_chara_ctl_item_c();
 	
-	ffile_c->filter_wide_head_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	ffile_c->model_coef_ini_head_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	ffile_c->commute_coef_ini_head_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
+	ffile_c->filter_wide_head_c =      init_chara_ctl_item_c();
+	ffile_c->model_coef_ini_head_c =   init_chara_ctl_item_c();
+	ffile_c->commute_coef_ini_head_c = init_chara_ctl_item_c();
 	
-	ffile_c->filter_elen_format_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	ffile_c->filter_3d_format_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	ffile_c->filter_wide_format_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
+	ffile_c->filter_elen_format_c = init_chara_ctl_item_c();
+	ffile_c->filter_3d_format_c =   init_chara_ctl_item_c();
+	ffile_c->filter_wide_format_c = init_chara_ctl_item_c();
 	
-	ffile_c->model_coef_rst_format_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	ffile_c->commute_coef_rst_format_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
+	ffile_c->model_coef_rst_format_c =   init_chara_ctl_item_c();
+	ffile_c->commute_coef_rst_format_c = init_chara_ctl_item_c();
 	
-	alloc_chara_ctl_item_c(ffile_c->filter_head_c);
-	alloc_chara_ctl_item_c(ffile_c->filter_coef_head_c);
-	alloc_chara_ctl_item_c(ffile_c->filter_elen_head_c);
-	alloc_chara_ctl_item_c(ffile_c->filter_moms_head_c);
-	
-	alloc_chara_ctl_item_c(ffile_c->filter_wide_head_c);
-	alloc_chara_ctl_item_c(ffile_c->model_coef_ini_head_c);
-	alloc_chara_ctl_item_c(ffile_c->commute_coef_ini_head_c);
-	
-	alloc_chara_ctl_item_c(ffile_c->filter_elen_format_c);
-	alloc_chara_ctl_item_c(ffile_c->filter_3d_format_c);
-	alloc_chara_ctl_item_c(ffile_c->filter_wide_format_c);
-	
-	alloc_chara_ctl_item_c(ffile_c->model_coef_rst_format_c);
-	alloc_chara_ctl_item_c(ffile_c->commute_coef_rst_format_c);
-	
-	return;
+	return ffile_c;
 };
 
 void dealloc_filter_file_ctl_c(struct filter_file_ctl_c *ffile_c){
@@ -177,24 +166,9 @@ void dealloc_filter_file_ctl_c(struct filter_file_ctl_c *ffile_c){
 	
 	dealloc_chara_ctl_item_c(ffile_c->model_coef_rst_format_c);
 	dealloc_chara_ctl_item_c(ffile_c->commute_coef_rst_format_c);
-	
-	free(ffile_c->filter_head_c);
-	free(ffile_c->filter_coef_head_c);
-	free(ffile_c->filter_elen_head_c);
-	free(ffile_c->filter_moms_head_c);
-	
-	free(ffile_c->filter_wide_head_c);
-	free(ffile_c->model_coef_ini_head_c);
-	free(ffile_c->commute_coef_ini_head_c);
-	
-	free(ffile_c->filter_elen_format_c);
-	free(ffile_c->filter_3d_format_c);
-	free(ffile_c->filter_wide_format_c);
-	
-	free(ffile_c->model_coef_rst_format_c);
-	free(ffile_c->commute_coef_rst_format_c);
-    ffile_c->iflag_use = 0;
-	
+    	
+    free(ffile_c);
+    
 	return;
 };
 
@@ -252,9 +226,14 @@ int write_filter_file_ctl_c(FILE *fp, int level, const char *label,
 };
 
 
-void alloc_layering_ctl_c(struct layering_ctl_c *elayer_c){
+struct layering_ctl_c * init_layering_ctl_c(){
 	int i;
-	
+    struct layering_ctl_c *elayer_c;
+    if((elayer_c = (struct layering_ctl_c *) malloc(sizeof(struct layering_ctl_c))) == NULL) {
+        printf("malloc error for layering_ctl_c \n");
+        exit(0);
+    }
+    	
     elayer_c->iflag_use = 0;
 	elayer_c->maxlen = 0;
 	for (i=0;i<NLBL_LAYERING_CTL;i++){
@@ -263,13 +242,9 @@ void alloc_layering_ctl_c(struct layering_ctl_c *elayer_c){
 		};
 	};
 	
-	elayer_c->layering_grp_type_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	elayer_c->start_layering_grp_name_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	elayer_c->start_fl_layer_grp_name_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	
-	alloc_chara_ctl_item_c(elayer_c->layering_grp_type_c);
-	alloc_chara_ctl_item_c(elayer_c->start_layering_grp_name_c);
-	alloc_chara_ctl_item_c(elayer_c->start_fl_layer_grp_name_c);
+	elayer_c->layering_grp_type_c =       init_chara_ctl_item_c();
+	elayer_c->start_layering_grp_name_c = init_chara_ctl_item_c();
+	elayer_c->start_fl_layer_grp_name_c = init_chara_ctl_item_c();
 	
 	elayer_c->num_layering_grp_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
 	elayer_c->num_fl_layer_grp_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
@@ -285,7 +260,7 @@ void alloc_layering_ctl_c(struct layering_ctl_c *elayer_c){
 	init_int_ctl_item_c(elayer_c->num_fl_layer_grp_c);
 	init_int_ctl_item_c(elayer_c->ngrp_SGS_on_sphere_c);
 	
-	return;
+	return elayer_c;
 };
 
 void dealloc_layering_ctl_c(struct layering_ctl_c *elayer_c){
@@ -299,15 +274,12 @@ void dealloc_layering_ctl_c(struct layering_ctl_c *elayer_c){
 	
 	clear_int_clist(elayer_c->igrp_stack_layer_list);
     free(elayer_c->igrp_stack_layer_list);
-	
-	free(elayer_c->layering_grp_type_c);
-	free(elayer_c->start_layering_grp_name_c);
-	free(elayer_c->start_fl_layer_grp_name_c);
-	
+		
 	free(elayer_c->num_layering_grp_c);
 	free(elayer_c->num_fl_layer_grp_c);
 	free(elayer_c->ngrp_SGS_on_sphere_c);
-    elayer_c->iflag_use = 0;
+    
+    free(elayer_c);
 	
 	return;
 };
@@ -358,9 +330,14 @@ int write_layering_ctl_c(FILE *fp, int level, const char *label, struct layering
 };
 
 
-void alloc_SGS_3d_filter_ctl_c(struct SGS_3d_filter_ctl_c *s3df_c){
+struct SGS_3d_filter_ctl_c * init_SGS_3d_filter_ctl_c(){
 	int i;
-	
+    struct SGS_3d_filter_ctl_c *s3df_c;
+    if((s3df_c = (struct SGS_3d_filter_ctl_c *) malloc(sizeof(struct SGS_3d_filter_ctl_c))) == NULL) {
+        printf("malloc error for SGS_3d_filter_ctl_c \n");
+        exit(0);
+    }
+    	
     s3df_c->iflag_use = 0;
 	s3df_c->maxlen = 0;
 	for (i=0;i<NLBL_SGS_3D_FILTER_CTL;i++){
@@ -374,16 +351,12 @@ void alloc_SGS_3d_filter_ctl_c(struct SGS_3d_filter_ctl_c *s3df_c){
 	init_chara_clist(s3df_c->whole_filter_grp_list);
 	init_chara_clist(s3df_c->fluid_filter_grp_item);
 	
-	s3df_c->momentum_filter_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	s3df_c->heat_filter_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	s3df_c->induction_filter_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	s3df_c->compostion_filter_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	alloc_chara_ctl_item_c(s3df_c->momentum_filter_ctl);
-	alloc_chara_ctl_item_c(s3df_c->heat_filter_ctl);
-	alloc_chara_ctl_item_c(s3df_c->induction_filter_ctl);
-	alloc_chara_ctl_item_c(s3df_c->compostion_filter_ctl);
+	s3df_c->momentum_filter_ctl =   init_chara_ctl_item_c();
+	s3df_c->heat_filter_ctl =       init_chara_ctl_item_c();
+	s3df_c->induction_filter_ctl =  init_chara_ctl_item_c();
+	s3df_c->compostion_filter_ctl = init_chara_ctl_item_c();
 	
-	return;
+	return s3df_c;
 };
 
 void dealloc_SGS_3d_filter_ctl_c(struct SGS_3d_filter_ctl_c *s3df_c){
@@ -397,12 +370,8 @@ void dealloc_SGS_3d_filter_ctl_c(struct SGS_3d_filter_ctl_c *s3df_c){
 	dealloc_chara_ctl_item_c(s3df_c->heat_filter_ctl);
 	dealloc_chara_ctl_item_c(s3df_c->induction_filter_ctl);
 	dealloc_chara_ctl_item_c(s3df_c->compostion_filter_ctl);
-	
-	free(s3df_c->momentum_filter_ctl);
-	free(s3df_c->heat_filter_ctl);
-	free(s3df_c->induction_filter_ctl);
-	free(s3df_c->compostion_filter_ctl);
-    s3df_c->iflag_use = 0;
+
+    free(s3df_c);
 	
 	return;
 };
@@ -445,8 +414,14 @@ int write_SGS_3d_filter_ctl_c(FILE *fp, int level, const char *label,
 };
 
 
-void alloc_SGS_model_ctl_c(struct SGS_model_control_c *SGS_ctl_c){
+struct SGS_model_control_c * init_SGS_model_ctl_c(){
 	int i;
+    struct SGS_model_control_c *SGS_ctl_c;
+    if((SGS_ctl_c = (struct SGS_model_control_c *) malloc(sizeof(struct SGS_model_control_c))) == NULL) {
+        printf("malloc error for SGS_model_control_c \n");
+        exit(0);
+    }
+    
 	
     SGS_ctl_c->iflag_use = 0;
 	SGS_ctl_c->maxlen = 0;
@@ -456,49 +431,29 @@ void alloc_SGS_model_ctl_c(struct SGS_model_control_c *SGS_ctl_c){
 		};
 	};
 	
-	SGS_ctl_c->ffile_c = (struct filter_file_ctl_c *) malloc(sizeof(struct filter_file_ctl_c));
-	alloc_filter_file_ctl_c(SGS_ctl_c->ffile_c);
-	
-	SGS_ctl_c->elayer_c = (struct layering_ctl_c *) malloc(sizeof(struct layering_ctl_c));
-	alloc_layering_ctl_c(SGS_ctl_c->elayer_c);
-	
-	SGS_ctl_c->s3df_c = (struct SGS_3d_filter_ctl_c *) malloc(sizeof(struct SGS_3d_filter_ctl_c));
-	alloc_SGS_3d_filter_ctl_c(SGS_ctl_c->s3df_c);
+	SGS_ctl_c->ffile_c = init_filter_file_ctl_c();
+	SGS_ctl_c->elayer_c = init_layering_ctl_c();
+	SGS_ctl_c->s3df_c = init_SGS_3d_filter_ctl_c();
 	
     SGS_ctl_c->SGS_terms_list = (struct chara_clist *) malloc(sizeof(struct chara_clist));
     SGS_ctl_c->commutate_fld_list = (struct chara_clist *) malloc(sizeof(struct chara_clist));
 	init_chara_clist(SGS_ctl_c->SGS_terms_list);
 	init_chara_clist(SGS_ctl_c->commutate_fld_list);
 	
-	SGS_ctl_c->SGS_model_name_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	SGS_ctl_c->SGS_filter_name_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	SGS_ctl_c->DIFF_model_coef_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	SGS_ctl_c->SGS_negative_clip_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	SGS_ctl_c->SGS_marging_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	SGS_ctl_c->SGS_perturbation_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	SGS_ctl_c->SGS_model_coef_type_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	SGS_ctl_c->heat_flux_csim_type_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	SGS_ctl_c->comp_flux_csim_type_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	SGS_ctl_c->mom_flux_csim_type_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	SGS_ctl_c->maxwell_csim_type_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	SGS_ctl_c->uxb_csim_type_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	SGS_ctl_c->SGS_model_coef_coord_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	SGS_ctl_c->SGS_buo_Csim_usage_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	
-	alloc_chara_ctl_item_c(SGS_ctl_c->SGS_model_name_c);
-	alloc_chara_ctl_item_c(SGS_ctl_c->SGS_filter_name_c);
-	alloc_chara_ctl_item_c(SGS_ctl_c->DIFF_model_coef_c);
-	alloc_chara_ctl_item_c(SGS_ctl_c->SGS_negative_clip_c);
-	alloc_chara_ctl_item_c(SGS_ctl_c->SGS_marging_c);
-	alloc_chara_ctl_item_c(SGS_ctl_c->SGS_perturbation_c);
-	alloc_chara_ctl_item_c(SGS_ctl_c->SGS_model_coef_type_c);
-	alloc_chara_ctl_item_c(SGS_ctl_c->heat_flux_csim_type_c);
-	alloc_chara_ctl_item_c(SGS_ctl_c->comp_flux_csim_type_c);
-	alloc_chara_ctl_item_c(SGS_ctl_c->mom_flux_csim_type_c);
-	alloc_chara_ctl_item_c(SGS_ctl_c->maxwell_csim_type_c);
-	alloc_chara_ctl_item_c(SGS_ctl_c->uxb_csim_type_c);
-	alloc_chara_ctl_item_c(SGS_ctl_c->SGS_model_coef_coord_c);
-	alloc_chara_ctl_item_c(SGS_ctl_c->SGS_buo_Csim_usage_c);
+	SGS_ctl_c->SGS_model_name_c =       init_chara_ctl_item_c();
+	SGS_ctl_c->SGS_filter_name_c =      init_chara_ctl_item_c();
+	SGS_ctl_c->DIFF_model_coef_c =      init_chara_ctl_item_c();
+	SGS_ctl_c->SGS_negative_clip_c =    init_chara_ctl_item_c();
+	SGS_ctl_c->SGS_marging_c =          init_chara_ctl_item_c();
+	SGS_ctl_c->SGS_perturbation_c =     init_chara_ctl_item_c();
+	SGS_ctl_c->SGS_model_coef_type_c =  init_chara_ctl_item_c();
+	SGS_ctl_c->heat_flux_csim_type_c =  init_chara_ctl_item_c();
+	SGS_ctl_c->comp_flux_csim_type_c =  init_chara_ctl_item_c();
+	SGS_ctl_c->mom_flux_csim_type_c =   init_chara_ctl_item_c();
+	SGS_ctl_c->maxwell_csim_type_c =    init_chara_ctl_item_c();
+	SGS_ctl_c->uxb_csim_type_c =        init_chara_ctl_item_c();
+	SGS_ctl_c->SGS_model_coef_coord_c = init_chara_ctl_item_c();
+	SGS_ctl_c->SGS_buo_Csim_usage_c =   init_chara_ctl_item_c();
 	
 	SGS_ctl_c->istep_dynamic_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
 	SGS_ctl_c->min_step_dynamic_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
@@ -533,7 +488,7 @@ void alloc_SGS_model_ctl_c(struct SGS_model_control_c *SGS_ctl_c){
 	init_real_ctl_item_c(SGS_ctl_c->SGS_uxb_factor_c);
 	
 	init_sph_filter_ctl_list(&SGS_ctl_c->sph_filter_list);
-	return;
+	return SGS_ctl_c;
 }
 
 void dealloc_SGS_model_ctl_c(struct SGS_model_control_c *SGS_ctl_c){
@@ -543,9 +498,6 @@ void dealloc_SGS_model_ctl_c(struct SGS_model_control_c *SGS_ctl_c){
 	dealloc_filter_file_ctl_c(SGS_ctl_c->ffile_c);
 	dealloc_layering_ctl_c(SGS_ctl_c->elayer_c);
 	dealloc_SGS_3d_filter_ctl_c(SGS_ctl_c->s3df_c);
-	free(SGS_ctl_c->ffile_c);
-	free(SGS_ctl_c->elayer_c);
-	free(SGS_ctl_c->s3df_c);
 	
 	clear_chara_clist(SGS_ctl_c->SGS_terms_list);
 	clear_chara_clist(SGS_ctl_c->commutate_fld_list);
@@ -567,21 +519,6 @@ void dealloc_SGS_model_ctl_c(struct SGS_model_control_c *SGS_ctl_c){
 	dealloc_chara_ctl_item_c(SGS_ctl_c->SGS_model_coef_coord_c);
 	dealloc_chara_ctl_item_c(SGS_ctl_c->SGS_buo_Csim_usage_c);
 	
-	free(SGS_ctl_c->SGS_model_name_c);
-	free(SGS_ctl_c->SGS_filter_name_c);
-	free(SGS_ctl_c->DIFF_model_coef_c);
-	free(SGS_ctl_c->SGS_negative_clip_c);
-	free(SGS_ctl_c->SGS_marging_c);
-	free(SGS_ctl_c->SGS_perturbation_c);
-	free(SGS_ctl_c->SGS_model_coef_type_c);
-	free(SGS_ctl_c->heat_flux_csim_type_c);
-	free(SGS_ctl_c->comp_flux_csim_type_c);
-	free(SGS_ctl_c->mom_flux_csim_type_c);
-	free(SGS_ctl_c->maxwell_csim_type_c);
-	free(SGS_ctl_c->uxb_csim_type_c);
-	free(SGS_ctl_c->SGS_model_coef_coord_c);
-	free(SGS_ctl_c->SGS_buo_Csim_usage_c);
-	
 	free(SGS_ctl_c->stabilize_weight_c);
 	free(SGS_ctl_c->delta_to_shrink_dynamic_c);
 	free(SGS_ctl_c->delta_to_extend_dynamic_c);
@@ -591,8 +528,9 @@ void dealloc_SGS_model_ctl_c(struct SGS_model_control_c *SGS_ctl_c){
 	free(SGS_ctl_c->SGS_mf_factor_c);
 	free(SGS_ctl_c->SGS_mxwl_factor_c);
 	free(SGS_ctl_c->SGS_uxb_factor_c);
-    SGS_ctl_c->iflag_use = 0;
-	
+
+    free(SGS_ctl_c);
+
 	return;
 }
 

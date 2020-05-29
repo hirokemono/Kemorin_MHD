@@ -36,24 +36,18 @@ void alloc_parallel_sph_shell_control_c(struct parallel_sph_shell_control_c *she
 	};
 	
 	
-	shell_ctl->Fmesh_ctl = (struct FEM_mesh_control_c *) malloc(sizeof(struct FEM_mesh_control_c));
-	alloc_FEM_mesh_control_c(shell_ctl->Fmesh_ctl);
+	shell_ctl->Fmesh_ctl = init_FEM_mesh_control_c();
 	
-	shell_ctl->sdctl_c = (struct sphere_domain_ctl_c *) malloc(sizeof(struct sphere_domain_ctl_c));
-	alloc_sphere_domain_ctl_c(shell_ctl->sdctl_c);
-	shell_ctl->spctl_c = (struct sphere_data_ctl_c *) malloc(sizeof(struct sphere_data_ctl_c));
-	alloc_sphere_data_ctl_c(shell_ctl->spctl_c);
+	shell_ctl->sdctl_c = init_sphere_domain_ctl_c();
+	shell_ctl->spctl_c = init_sphere_data_ctl_c();
 	
 	return;
 }
 
 void dealloc_parallel_sph_shell_control_c(struct parallel_sph_shell_control_c *shell_ctl){
 	dealloc_FEM_mesh_control_c(shell_ctl->Fmesh_ctl);
-	free(shell_ctl->Fmesh_ctl);
 	dealloc_sphere_domain_ctl_c(shell_ctl->sdctl_c);
-	free(shell_ctl->sdctl_c);
 	dealloc_sphere_data_ctl_c(shell_ctl->spctl_c);
-	free(shell_ctl->spctl_c);
     shell_ctl->iflag_use_file = 0;
 	return;
 }

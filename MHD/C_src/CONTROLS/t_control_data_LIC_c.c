@@ -24,37 +24,34 @@ struct label_list_f * init_ctl_label_LIC_f(){
 };
 
 
-void alloc_lic_ctl_c(struct lic_ctl_c *lic_c){
+struct lic_ctl_c * init_lic_ctl_c(){
+    struct lic_ctl_c *lic_c;
+    if((lic_c = (struct lic_ctl_c *) malloc(sizeof(struct lic_ctl_c))) == NULL) {
+        printf("malloc error for lic_ctl_c \n");
+        exit(0);
+    }
+    
 	lic_c->label_lic_ctl = init_ctl_label_LIC_f();
-	lic_c->LIC_field_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	alloc_chara_ctl_item_c(lic_c->LIC_field_ctl);
+	lic_c->LIC_field_ctl = init_chara_ctl_item_c();
 	
-	lic_c->color_field_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	lic_c->color_component_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	lic_c->opacity_field_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	lic_c->opacity_component_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	alloc_chara_ctl_item_c(lic_c->color_field_ctl);
-	alloc_chara_ctl_item_c(lic_c->color_component_ctl);
-	alloc_chara_ctl_item_c(lic_c->opacity_field_ctl);
-	alloc_chara_ctl_item_c(lic_c->opacity_component_ctl);
+	lic_c->color_field_ctl = init_chara_ctl_item_c();
+	lic_c->color_component_ctl = init_chara_ctl_item_c();
+	lic_c->opacity_field_ctl = init_chara_ctl_item_c();
+	lic_c->opacity_component_ctl = init_chara_ctl_item_c();
 	
-	lic_c->vr_sample_mode_ctl_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
+	lic_c->vr_sample_mode_ctl_c = init_chara_ctl_item_c();
 	lic_c->step_size_ctl_c = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
-	alloc_chara_ctl_item_c(lic_c->vr_sample_mode_ctl_c);
 	init_real_ctl_item_c(lic_c->step_size_ctl_c);
 	
-	lic_c->normalization_type_ctl_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
+	lic_c->normalization_type_ctl_c = init_chara_ctl_item_c();
 	lic_c->normalization_value_ctl_c = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
-	alloc_chara_ctl_item_c(lic_c->normalization_type_ctl_c);
 	init_real_ctl_item_c(lic_c->normalization_value_ctl_c);
 	
 	init_lic_masking_ctl_list(&lic_c->lic_mask_list);
 	
-	lic_c->lic_nze_c = (struct lic_noise_ctl_c *) malloc(sizeof(struct lic_noise_ctl_c));
-	alloc_lic_noise_ctl_c(lic_c->lic_nze_c);
-	lic_c->lic_knl_c = (struct lic_kernel_ctl_c *) malloc(sizeof(struct lic_kernel_ctl_c));
-	alloc_lic_kernel_ctl_c(lic_c->lic_knl_c);
-	return;
+	lic_c->lic_nze_c = init_lic_noise_ctl_c();
+	lic_c->lic_knl_c = alloc_lic_kernel_ctl_c();
+	return lic_c;
 };
 
 
@@ -62,28 +59,23 @@ void dealloc_lic_ctl_c(struct lic_ctl_c *lic_c){
 	dealloc_ctl_label(lic_c->label_lic_ctl);
 	
 	dealloc_chara_ctl_item_c(lic_c->LIC_field_ctl);
-	free(lic_c->LIC_field_ctl);
 	
 	dealloc_chara_ctl_item_c(lic_c->color_field_ctl);
 	dealloc_chara_ctl_item_c(lic_c->color_component_ctl);
 	dealloc_chara_ctl_item_c(lic_c->opacity_field_ctl);
 	dealloc_chara_ctl_item_c(lic_c->opacity_component_ctl);
-	free(lic_c->color_field_ctl);
-	free(lic_c->color_component_ctl);
-	free(lic_c->opacity_field_ctl);
-	free(lic_c->opacity_component_ctl);
 	
 	dealloc_chara_ctl_item_c(lic_c->vr_sample_mode_ctl_c);
-	free(lic_c->vr_sample_mode_ctl_c);
 	free(lic_c->step_size_ctl_c);
 	
 	dealloc_chara_ctl_item_c(lic_c->normalization_type_ctl_c);
-	free(lic_c->normalization_type_ctl_c);
 	free(lic_c->normalization_value_ctl_c);
 	
 	clear_lic_masking_ctl_list(&lic_c->lic_mask_list);
 	dealloc_lic_noise_ctl_c(lic_c->lic_nze_c);
 	dealloc_lic_kernel_ctl_c(lic_c->lic_knl_c);
+    
+    free(lic_c);
 	return;
 };
 

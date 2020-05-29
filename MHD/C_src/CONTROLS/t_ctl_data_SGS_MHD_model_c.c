@@ -75,20 +75,14 @@ void alloc_mhd_model_control_c(struct mhd_model_control_c *model_ctl){
 	model_ctl->eqs_ctl = (struct equations_ctl_c *) malloc(sizeof(struct equations_ctl_c));
 	alloc_equations_ctl_c(model_ctl->eqs_ctl);
 	
-	model_ctl->g_ctl = (struct gravity_ctl_c *) malloc(sizeof(struct gravity_ctl_c));
-	alloc_gravity_ctl_c(model_ctl->g_ctl);
-	model_ctl->cor_ctl = (struct coriolis_ctl_c *) malloc(sizeof(struct coriolis_ctl_c));
-	alloc_coriolis_ctl_c(model_ctl->cor_ctl);
-	model_ctl->mcv_ctl = (struct magneto_cv_ctl_c *) malloc(sizeof(struct magneto_cv_ctl_c));
-	alloc_magneto_cv_ctl_c(model_ctl->mcv_ctl);
+	model_ctl->g_ctl = init_gravity_ctl_c();
+	model_ctl->cor_ctl = init_coriolis_ctl_c();
+	model_ctl->mcv_ctl = init_magneto_cv_ctl_c();
 	
-	model_ctl->reft_ctl = (struct reference_temperature_c *) malloc(sizeof(struct reference_temperature_c));
-	alloc_ref_temperature_ctl_c(model_ctl->reft_ctl);
-	model_ctl->refc_ctl = (struct reference_temperature_c *) malloc(sizeof(struct reference_temperature_c));
-	alloc_ref_temperature_ctl_c(model_ctl->refc_ctl);
+	model_ctl->reft_ctl = init_ref_temperature_ctl_c();
+	model_ctl->refc_ctl = init_ref_temperature_ctl_c();
 	
-	model_ctl->sgs_ctl = (struct SGS_model_control_c *) malloc(sizeof(struct SGS_model_control_c));
-	alloc_SGS_model_ctl_c(model_ctl->sgs_ctl);
+	model_ctl->sgs_ctl = init_SGS_model_ctl_c();
 	
 	return;
 }
@@ -115,19 +109,13 @@ void dealloc_mhd_model_control_c(struct mhd_model_control_c *model_ctl){
 	free(model_ctl->eqs_ctl);
 	
 	dealloc_gravity_ctl_c(model_ctl->g_ctl);
-	free(model_ctl->g_ctl);
 	dealloc_coriolis_ctl_c(model_ctl->cor_ctl);
-	free(model_ctl->cor_ctl);
 	dealloc_magneto_cv_ctl_c(model_ctl->mcv_ctl);
-	free(model_ctl->mcv_ctl);
 	
 	dealloc_ref_temperature_ctl_c(model_ctl->reft_ctl);
-	free(model_ctl->reft_ctl);
 	dealloc_ref_temperature_ctl_c(model_ctl->refc_ctl);
-	free(model_ctl->refc_ctl);
 	
 	dealloc_SGS_model_ctl_c(model_ctl->sgs_ctl);
-	free(model_ctl->sgs_ctl);
     
     model_ctl->iflag_use = 0;
 	return;
@@ -226,22 +214,16 @@ void alloc_sph_mhd_control_control_c(struct sph_mhd_control_control_c *control_c
         };
 	};
 	
-	control_ctl->tctl = (struct time_data_control_c *) malloc(sizeof(struct time_data_control_c));
-	alloc_time_data_control_c(control_ctl->tctl);
-	control_ctl->mrst_ctl = (struct mhd_restart_control_c *) malloc(sizeof(struct mhd_restart_control_c));
-	alloc_mhd_restart_control_c(control_ctl->mrst_ctl);
-	control_ctl->mevo_ctl = (struct mhd_evo_scheme_control_c *) malloc(sizeof(struct mhd_evo_scheme_control_c));
-	alloc_mhd_evo_scheme_control_c(control_ctl->mevo_ctl);
+	control_ctl->tctl = init_time_data_control_c();
+	control_ctl->mrst_ctl = init_mhd_restart_control_c();
+	control_ctl->mevo_ctl = init_mhd_evo_scheme_control_c();
 	return;
 }
 
 void dealloc_sph_mhd_control_control_c(struct sph_mhd_control_control_c *control_ctl){
 	dealloc_time_data_control_c(control_ctl->tctl);
-	free(control_ctl->tctl);
 	dealloc_mhd_restart_control_c(control_ctl->mrst_ctl);
-	free(control_ctl->mrst_ctl);
 	dealloc_mhd_evo_scheme_control_c(control_ctl->mevo_ctl);
-	free(control_ctl->mevo_ctl);
     
     control_ctl->iflag_use = 0;
 	return;

@@ -32,12 +32,10 @@ int main(int argc,char *argv[])
 	printf("Input file name: %s\n", file_name);
 	printf("Copied file name: %s\n", file_name_2);
 	
-	fline_c0 = (struct fline_ctl_c *) malloc(sizeof(struct fline_ctl_c));
-	alloc_fline_ctl_c(fline_c0);
+	fline_c0 = init_fline_ctl_c();
 	
 	iflag = read_fline_ctl_file_c(file_name, buf, fline_c0);
 	iflag = write_fline_ctl_file_c(file_name_2, fline_c0);
     dealloc_fline_ctl_c(fline_c0);
-	free(fline_c0);
 	return 0;
 }

@@ -24,8 +24,13 @@ void get_label_volume_spectr_ctl(int index, char *label){
 };
 
 
-void alloc_volume_spectr_control_c(struct volume_spectr_control_c *v_pwr_c){
+struct volume_spectr_control_c * init_volume_spectr_control_c(){
     int i;
+    struct volume_spectr_control_c *v_pwr_c;
+    if((v_pwr_c = (struct volume_spectr_control_c *) malloc(sizeof(struct volume_spectr_control_c))) == NULL) {
+        printf("malloc error for volume_spectr_control_c \n");
+        exit(0);
+    }    
     
     v_pwr_c->maxlen = 0;
     for (i=0;i<NLBL_VOLUME_SPECTR;i++){
@@ -34,28 +39,26 @@ void alloc_volume_spectr_control_c(struct volume_spectr_control_c *v_pwr_c){
         };
 	};
 	
-	v_pwr_c->volume_spec_file_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-    alloc_chara_ctl_item_c(v_pwr_c->volume_spec_file_c);
-	v_pwr_c->volume_ave_file_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-    alloc_chara_ctl_item_c(v_pwr_c->volume_ave_file_c);
+	v_pwr_c->volume_spec_file_c = init_chara_ctl_item_c();
+	v_pwr_c->volume_ave_file_c = init_chara_ctl_item_c();
 	
 	v_pwr_c->inner_radius_c = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
 	init_real_ctl_item_c(v_pwr_c->inner_radius_c);
 	v_pwr_c->outer_radius_c = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
 	init_real_ctl_item_c(v_pwr_c->outer_radius_c);
 	
-	return;
+	return v_pwr_c;
 };
 
 void dealloc_volume_spectr_control_c(struct volume_spectr_control_c *v_pwr_c){
 	
     dealloc_chara_ctl_item_c(v_pwr_c->volume_spec_file_c);
-	free(v_pwr_c->volume_spec_file_c);
 	dealloc_chara_ctl_item_c(v_pwr_c->volume_ave_file_c);
-	free(v_pwr_c->volume_ave_file_c);
 	
 	free(v_pwr_c->inner_radius_c);
 	free(v_pwr_c->outer_radius_c);
+    
+    free(v_pwr_c);
 	return;
 };
 
@@ -109,11 +112,7 @@ struct volume_spectr_ctl_list *add_sph_vol_spectr_ctl_list_after(struct volume_s
 	printf("malloc error\n");
 	exit(0);
 	}
-    if ((added->v_pwr_c = (struct volume_spectr_control_c *) malloc(sizeof(struct volume_spectr_control_c))) == NULL) {
-        printf("malloc error for v_pwr_c\n");
-        exit(0);
-    }
-	alloc_volume_spectr_control_c(added->v_pwr_c);
+	added->v_pwr_c = init_volume_spectr_control_c();
 	
 	/* replace from  current -> next to current -> new -> next */
 	old_next= current->_next;
@@ -130,7 +129,6 @@ void delete_vol_spectr_ctl_list(struct volume_spectr_ctl_list *current){
 	struct volume_spectr_ctl_list *old_next = current->_next;
 	
 	dealloc_volume_spectr_control_c(current->v_pwr_c);
-    free(current->v_pwr_c);
 	free(current);
 	
     old_prev->_next = old_next;

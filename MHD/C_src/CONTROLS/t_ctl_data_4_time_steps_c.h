@@ -67,7 +67,7 @@ struct time_data_control_c{
 /* prototype */
 void get_label_time_data_ctl(int index, char *label);
 
-void alloc_time_data_control_c(struct time_data_control_c *tctl);
+struct time_data_control_c * init_time_data_control_c();
 void dealloc_time_data_control_c(struct time_data_control_c *tctl);
 
 void read_time_data_control_c(FILE *fp, char buf[LENGTHBUF], const char *label,

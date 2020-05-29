@@ -8,15 +8,21 @@
 #include "t_control_chara_IO.h"
 
 
-void alloc_chara_ctl_item_c(struct chara_ctl_item *c_item){
+struct chara_ctl_item * init_chara_ctl_item_c(){
+    struct chara_ctl_item *c_item;
+    if(c_item = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item)) == NULL) {
+        printf("malloc error for chara_ctl_item\n");
+        exit(0);
+    }
+
 	c_item->c_tbl = (char *)calloc(KCHARA_C, sizeof(char));
 	c_item->iflag = 0;
-    return;
+    return c_item;
 };
 
 void dealloc_chara_ctl_item_c(struct chara_ctl_item *c_item){
     free(c_item->c_tbl);
-	c_item->iflag = 0;
+    free(c_item);
     return;
 };
 
@@ -103,11 +109,7 @@ struct chara_ctl_list *add_chara_ctl_list_before(struct chara_ctl_list *current)
         printf("malloc error\n");
         exit(0);
     }
-    if ((added->c_item = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item))) == NULL) {
-        printf("malloc error for c_item\n");
-        exit(0);
-    }
-	alloc_chara_ctl_item_c(added->c_item);
+	added->c_item = init_chara_ctl_item_c();
     
 	/* replace from  prev -> current to prev -> new -> current */
 	old_prev = current->_prev;
@@ -127,11 +129,7 @@ struct chara_ctl_list *add_chara_ctl_list_after(struct chara_ctl_list *current){
         printf("malloc error\n");
         exit(0);
     }
-    if ((added->c_item = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item))) == NULL) {
-        printf("malloc error for c_item\n");
-        exit(0);
-    }
-	alloc_chara_ctl_item_c(added->c_item);
+	added->c_item = init_chara_ctl_item_c();
     
     /* replace from  current -> next to current -> new -> next */
     old_next= current->_next;
@@ -148,7 +146,6 @@ void delete_chara_ctl_list(struct chara_ctl_list *current){
     struct chara_ctl_list *old_next = current->_next;
     
     dealloc_chara_ctl_item_c(current->c_item);
-    free(current->c_item);
     free(current);
     
     old_prev->_next = old_next;

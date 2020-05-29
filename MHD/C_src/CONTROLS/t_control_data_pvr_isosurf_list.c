@@ -20,8 +20,13 @@ void get_label_pvr_isosurf_ctl(int index, char *label){
     return;
 };
 
-void alloc_pvr_isosurf_ctl_c(struct pvr_isosurf_ctl_c *pvr_iso_c){
+struct pvr_isosurf_ctl_c * init_pvr_isosurf_ctl_c(){
 	int i;
+    struct pvr_isosurf_ctl_c *pvr_iso_c;
+    if((pvr_iso_c = (struct pvr_isosurf_ctl_c *) malloc(sizeof(struct pvr_isosurf_ctl_c))) == NULL) {
+        printf("malloc error for pvr_isosurf_ctl_c \n");
+        exit(0);
+    }
 	
 	pvr_iso_c->maxlen = 0;
 	for (i=0;i<NLBL_PVR_ISOSURF_CTL;i++){
@@ -35,10 +40,9 @@ void alloc_pvr_isosurf_ctl_c(struct pvr_isosurf_ctl_c *pvr_iso_c){
 	init_real_ctl_item_c(pvr_iso_c->isosurf_value_ctl);
 	init_real_ctl_item_c(pvr_iso_c->opacity_ctl);
 	
-	pvr_iso_c->isosurf_type_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	alloc_chara_ctl_item_c(pvr_iso_c->isosurf_type_ctl);
+	pvr_iso_c->isosurf_type_ctl = init_chara_ctl_item_c();
 	
-	return;
+	return pvr_iso_c;
 };
 
 void dealloc_pvr_isosurf_ctl_c(struct pvr_isosurf_ctl_c *pvr_iso_c){
@@ -47,8 +51,7 @@ void dealloc_pvr_isosurf_ctl_c(struct pvr_isosurf_ctl_c *pvr_iso_c){
 	free(pvr_iso_c->opacity_ctl);
 	
 	dealloc_chara_ctl_item_c(pvr_iso_c->isosurf_type_ctl);
-	free(pvr_iso_c->isosurf_type_ctl);
-	
+    free(pvr_iso_c);
 	return;
 };
 
@@ -93,14 +96,10 @@ struct pvr_iso_ctl_list *add_pvr_iso_ctl_list_after(struct pvr_iso_ctl_list *cur
 	struct pvr_iso_ctl_list *old_next;
 	
 	if ((added = (struct pvr_iso_ctl_list *) malloc(sizeof(struct pvr_iso_ctl_list))) == NULL) {
-	printf("malloc error\n");
-	exit(0);
+		printf("malloc error\n");
+		exit(0);
 	}
-    if ((added->pvr_iso_c = (struct pvr_isosurf_ctl_c *) malloc(sizeof(struct pvr_isosurf_ctl_c))) == NULL) {
-        printf("malloc error for pvr_iso_c\n");
-        exit(0);
-    }
-	alloc_pvr_isosurf_ctl_c(added->pvr_iso_c);
+	added->pvr_iso_c = init_pvr_isosurf_ctl_c();
 	
 	/* replace from  current -> next to current -> new -> next */
 	old_next= current->_next;
@@ -117,7 +116,6 @@ void delete_pvr_iso_ctl_list(struct pvr_iso_ctl_list *current){
 	struct pvr_iso_ctl_list *old_next = current->_next;
 	
 	dealloc_pvr_isosurf_ctl_c(current->pvr_iso_c);
-    free(current->pvr_iso_c);
 	free(current);
 	
     old_prev->_next = old_next;

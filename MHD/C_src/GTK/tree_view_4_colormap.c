@@ -21,8 +21,7 @@ void init_colormap_views_4_ctl(struct colormap_ctl_c *cmap_c,
 void init_colormap_views_4_viewer(struct colormap_view *color_vws){
 	color_vws->cmap_param = (struct colormap_params *) kemoview_link_active_colormap_param();
 	
-	color_vws->colormap_mode_gtk = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	alloc_chara_ctl_item_c(color_vws->colormap_mode_gtk);
+	color_vws->colormap_mode_gtk = init_chara_ctl_item_c();
 	
 	color_vws->cmap_vws = (struct r2_clist_view *) malloc(sizeof(struct r2_clist_view));
 	color_vws->opacity_vws = (struct r2_clist_view *) malloc(sizeof(struct r2_clist_view));

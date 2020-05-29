@@ -11,15 +11,13 @@
 void alloc_fieldline_ctl_c(struct fieldline_ctl_c *fldlines_c){
 	fldlines_c->iflag_fline_ctl = 0;
 	fldlines_c->fname_fline_ctl = (char *)calloc(KCHARA_C, sizeof(char));
-	fldlines_c->fline_c = (struct fline_ctl_c *) malloc(sizeof(struct fline_ctl_c));
-	alloc_fline_ctl_c(fldlines_c->fline_c);
+	fldlines_c->fline_c = init_fline_ctl_c();
 	return;
 
 };
 
 void dealloc_fieldline_ctl_c(struct fieldline_ctl_c *fldlines_c){
 	dealloc_fline_ctl_c(fldlines_c->fline_c);
-	free(fldlines_c->fline_c);
 	free(fldlines_c->fname_fline_ctl);
 	fldlines_c->iflag_fline_ctl = 0;
 	return;

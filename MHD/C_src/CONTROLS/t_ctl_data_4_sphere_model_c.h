@@ -74,10 +74,10 @@ struct sphere_data_ctl_c{
 void get_label_sphere_domain_ctl(int index, char *label);
 void get_label_sphere_data_ctl(int index, char *label);
 
-void alloc_ndomain_list_c(struct chara_int_clist *ndomain_list);
+struct chara_int_clist * init_ndomain_list_c();
 void dealloc_ndomain_list_c(struct chara_int_clist *ndomain_list);
 
-void alloc_sphere_domain_ctl_c(struct sphere_domain_ctl_c *sdctl_c);
+struct sphere_domain_ctl_c * init_sphere_domain_ctl_c();
 void dealloc_sphere_domain_ctl_c(struct sphere_domain_ctl_c *sdctl_c);
 
 void read_sphere_domain_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
@@ -85,7 +85,7 @@ void read_sphere_domain_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 int write_sphere_domain_ctl_c(FILE *fp, int level,
 			const char *label, struct sphere_domain_ctl_c *sdctl_c);
 
-void alloc_sphere_data_ctl_c(struct sphere_data_ctl_c *spctl_c);
+struct sphere_data_ctl_c * init_sphere_data_ctl_c();
 void dealloc_sphere_data_ctl_c(struct sphere_data_ctl_c *spctl_c);
 void read_sphere_data_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct sphere_data_ctl_c *spctl_c);

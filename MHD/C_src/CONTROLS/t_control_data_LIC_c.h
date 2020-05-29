@@ -42,7 +42,7 @@ struct lic_ctl_c{
 };
 
 /* prototypes */
-void alloc_lic_ctl_c(struct lic_ctl_c *lic_c);
+struct lic_ctl_c * init_lic_ctl_c();
 void dealloc_lic_ctl_c(struct lic_ctl_c *lic_c);
 int read_lic_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct lic_ctl_c *lic_c);

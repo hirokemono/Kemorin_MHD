@@ -47,14 +47,9 @@ struct SGS_MHD_control_c *alloc_SGS_MHD_control_c(void){
 		};
 	};
 	
-	mhd_ctl->files = (struct platform_data_control_c *) malloc(sizeof(struct platform_data_control_c));
-	alloc_platform_data_control_c(mhd_ctl->files);
-	
-	mhd_ctl->org_files = (struct platform_data_control_c *) malloc(sizeof(struct platform_data_control_c));
-	alloc_platform_data_control_c(mhd_ctl->org_files);
-	
-	mhd_ctl->new_files = (struct platform_data_control_c *) malloc(sizeof(struct platform_data_control_c));
-	alloc_platform_data_control_c(mhd_ctl->new_files);
+	mhd_ctl->files =     init_platform_data_control_c();
+	mhd_ctl->org_files = init_platform_data_control_c();
+	mhd_ctl->new_files = init_platform_data_control_c();
 	
 	mhd_ctl->shell_ctl_file_name = (char *)calloc(KCHARA_C, sizeof(char));
 	mhd_ctl->shell_ctl = (struct parallel_sph_shell_control_c *) malloc(sizeof(struct parallel_sph_shell_control_c));
@@ -65,8 +60,7 @@ struct SGS_MHD_control_c *alloc_SGS_MHD_control_c(void){
 	mhd_ctl->control_ctl = (struct sph_mhd_control_control_c *) malloc(sizeof(struct sph_mhd_control_control_c));
 	alloc_sph_mhd_control_control_c(mhd_ctl->control_ctl);
 	
-	mhd_ctl->smtr_ctl = (struct sph_monitor_control_c *) malloc(sizeof(struct sph_monitor_control_c));
-	alloc_sph_monitor_ctl_c(mhd_ctl->smtr_ctl);
+	mhd_ctl->smtr_ctl = init_sph_monitor_ctl_c();
 	mhd_ctl->nmtr_ctl = (struct node_monitor_ctl_c *) malloc(sizeof(struct node_monitor_ctl_c));
 	alloc_node_monitor_ctl_c(mhd_ctl->nmtr_ctl);
 	
@@ -83,7 +77,6 @@ void dealloc_SGS_MHD_control_c(struct SGS_MHD_control_c *mhd_ctl){
 	dealloc_vizs_ctl_c(mhd_ctl->viz_c);
 	free(mhd_ctl->viz_c);
 	dealloc_sph_monitor_ctl_c(mhd_ctl->smtr_ctl);
-	free(mhd_ctl->smtr_ctl);
 	dealloc_node_monitor_ctl_c(mhd_ctl->nmtr_ctl);
 	free(mhd_ctl->nmtr_ctl);
 	dealloc_sph_mhd_control_control_c(mhd_ctl->control_ctl);
@@ -94,11 +87,8 @@ void dealloc_SGS_MHD_control_c(struct SGS_MHD_control_c *mhd_ctl){
 	free(mhd_ctl->shell_ctl);
 	free(mhd_ctl->shell_ctl_file_name);
 	dealloc_platform_data_control_c(mhd_ctl->new_files);
-	free(mhd_ctl->new_files);
 	dealloc_platform_data_control_c(mhd_ctl->org_files);
-	free(mhd_ctl->org_files);
 	dealloc_platform_data_control_c(mhd_ctl->files);
-	free(mhd_ctl->files);
 	return;
 }
 

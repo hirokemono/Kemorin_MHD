@@ -41,8 +41,14 @@ void get_label_platform_ctl(int index, char *label){
     return;
 };
 
-void alloc_platform_data_control_c(struct platform_data_control_c *files){
+struct platform_data_control_c * init_platform_data_control_c(){
     int i;
+    struct platform_data_control_c *files;
+    if((files = (struct platform_data_control_c *) malloc(sizeof(struct platform_data_control_c))) == NULL) {
+        printf("malloc error for platform_data_control_c \n");
+        exit(0);
+    }
+
     files->iflag_use = 0;
     files->maxlen = 0;
     for (i=0;i<NLBL_PLATFORM_CTL;i++){
@@ -51,53 +57,35 @@ void alloc_platform_data_control_c(struct platform_data_control_c *files){
         };
     };
     
-    files->debug_flag_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-    alloc_chara_ctl_item_c(files->debug_flag_c);
+    files->debug_flag_c = init_chara_ctl_item_c();
     
     files->ndomain_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
     init_int_ctl_item_c(files->ndomain_c);
     files->num_smp_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
     init_int_ctl_item_c(files->num_smp_c);
 
-    files->sph_file_prefix_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-    alloc_chara_ctl_item_c(files->sph_file_prefix_c);
-    files->mesh_file_prefix_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-    alloc_chara_ctl_item_c(files->mesh_file_prefix_c);
-    files->field_file_prefix_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-    alloc_chara_ctl_item_c(files->field_file_prefix_c);
-    files->restart_file_prefix_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-    alloc_chara_ctl_item_c(files->restart_file_prefix_c);
-    files->spectr_field_file_prefix_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-    alloc_chara_ctl_item_c(files->spectr_field_file_prefix_c);
+    files->sph_file_prefix_c = init_chara_ctl_item_c();
+    files->mesh_file_prefix_c = init_chara_ctl_item_c();
+    files->field_file_prefix_c = init_chara_ctl_item_c();
+    files->restart_file_prefix_c = init_chara_ctl_item_c();
+    files->spectr_field_file_prefix_c = init_chara_ctl_item_c();
 
-    files->coriolis_int_file_name_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-    alloc_chara_ctl_item_c(files->coriolis_int_file_name_c);
-    files->bc_data_file_name_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-    alloc_chara_ctl_item_c(files->bc_data_file_name_c);
-    files->interpolate_sph_to_fem_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-    alloc_chara_ctl_item_c(files->interpolate_sph_to_fem_c);
-    files->interpolate_fem_to_sph_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-    alloc_chara_ctl_item_c(files->interpolate_fem_to_sph_c);
+    files->coriolis_int_file_name_c = init_chara_ctl_item_c();
+    files->bc_data_file_name_c = init_chara_ctl_item_c();
+    files->interpolate_sph_to_fem_c = init_chara_ctl_item_c();
+    files->interpolate_fem_to_sph_c = init_chara_ctl_item_c();
 
-    files->sph_file_fmt_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-    alloc_chara_ctl_item_c(files->sph_file_fmt_c);
-    files->mesh_file_fmt_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-    alloc_chara_ctl_item_c(files->mesh_file_fmt_c);
-    files->restart_file_fmt_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-    alloc_chara_ctl_item_c(files->restart_file_fmt_c);
-    files->field_file_fmt_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-    alloc_chara_ctl_item_c(files->field_file_fmt_c);
-    files->itp_file_fmt_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-    alloc_chara_ctl_item_c(files->itp_file_fmt_c);
-    files->spectr_field_fmt_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-    alloc_chara_ctl_item_c(files->spectr_field_fmt_c);
-    files->coriolis_file_fmt_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-    alloc_chara_ctl_item_c(files->coriolis_file_fmt_c);
+    files->sph_file_fmt_c = init_chara_ctl_item_c();
+    files->mesh_file_fmt_c = init_chara_ctl_item_c();
+    files->restart_file_fmt_c = init_chara_ctl_item_c();
+    files->field_file_fmt_c = init_chara_ctl_item_c();
+    files->itp_file_fmt_c = init_chara_ctl_item_c();
+    files->spectr_field_fmt_c = init_chara_ctl_item_c();
+    files->coriolis_file_fmt_c = init_chara_ctl_item_c();
 
-    files->del_org_data_ctl_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-    alloc_chara_ctl_item_c(files->del_org_data_ctl_c);
+    files->del_org_data_ctl_c = init_chara_ctl_item_c();
     
-    return;
+    return files;
 };
 
 void dealloc_platform_data_control_c(struct platform_data_control_c *files){
@@ -127,7 +115,7 @@ void dealloc_platform_data_control_c(struct platform_data_control_c *files){
 
     dealloc_chara_ctl_item_c(files->del_org_data_ctl_c);
     
-    files->iflag_use = 0;
+    free(files);
     return;
 };
 

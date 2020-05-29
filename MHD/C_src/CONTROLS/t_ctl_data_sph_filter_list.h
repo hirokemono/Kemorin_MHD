@@ -41,7 +41,7 @@ struct sph_filter_ctl_list{
 /* prototypes */
 void get_label_sph_filter_ctl(int index, char *label);
 
-void alloc_sph_filter_ctl_c(struct sph_filter_ctl_c *sph_filter_c);
+struct sph_filter_ctl_c * init_sph_filter_ctl_c();
 void dealloc_sph_filter_ctl_c(struct sph_filter_ctl_c *sph_filter_c);
 int read_sph_filter_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct sph_filter_ctl_c *sph_filter_c);

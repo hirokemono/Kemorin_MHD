@@ -34,7 +34,7 @@ struct pvr_iso_ctl_list{
 /* prototypes */
 void get_label_pvr_isosurf_ctl(int index, char *label);
 
-void alloc_pvr_isosurf_ctl_c(struct pvr_isosurf_ctl_c *pvr_iso_c);
+struct pvr_isosurf_ctl_c * init_pvr_isosurf_ctl_c();
 void dealloc_pvr_isosurf_ctl_c(struct pvr_isosurf_ctl_c *pvr_iso_c);
 int read_pvr_isosurf_ctl_c(FILE *fp, char buf[LENGTHBUF], 
 			const char *label, struct pvr_isosurf_ctl_c *isosurfs_c);

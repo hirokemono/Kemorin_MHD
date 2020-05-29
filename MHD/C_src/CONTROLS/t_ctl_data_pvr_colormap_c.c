@@ -70,8 +70,13 @@ void get_label_colorbar_ctl(int index, char *label){
 };
 
 
-void alloc_colormap_ctl_c(struct colormap_ctl_c *cmap_c){
+struct colormap_ctl_c * init_colormap_ctl_c(){
 	int i;
+    struct colormap_ctl_c *cmap_c;
+    if((cmap_c = (struct colormap_ctl_c *) malloc(sizeof(struct colormap_ctl_c))) == NULL) {
+        printf("malloc error for colormap_ctl_c \n");
+        exit(0);
+    }
 	
     cmap_c->iflag_use = 0;
 	cmap_c->maxlen = 0;
@@ -81,27 +86,20 @@ void alloc_colormap_ctl_c(struct colormap_ctl_c *cmap_c){
 		};
 	};
 	
-	cmap_c->colormap_mode_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	alloc_chara_ctl_item_c(cmap_c->colormap_mode_ctl);
+	cmap_c->colormap_mode_ctl = init_chara_ctl_item_c();
 	
-	cmap_c->lic_color_fld_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	cmap_c->lic_color_comp_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	cmap_c->lic_opacity_fld_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	cmap_c->lic_opacity_comp_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	alloc_chara_ctl_item_c(cmap_c->lic_color_fld_ctl);
-	alloc_chara_ctl_item_c(cmap_c->lic_color_comp_ctl);
-	alloc_chara_ctl_item_c(cmap_c->lic_opacity_fld_ctl);
-	alloc_chara_ctl_item_c(cmap_c->lic_opacity_comp_ctl);
+	cmap_c->lic_color_fld_ctl =    init_chara_ctl_item_c();
+	cmap_c->lic_color_comp_ctl =   init_chara_ctl_item_c();
+	cmap_c->lic_opacity_fld_ctl =  init_chara_ctl_item_c();
+	cmap_c->lic_opacity_comp_ctl = init_chara_ctl_item_c();
 	
-	cmap_c->data_mapping_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	alloc_chara_ctl_item_c(cmap_c->data_mapping_ctl);
+	cmap_c->data_mapping_ctl = init_chara_ctl_item_c();
 	
 	cmap_c->colortbl_list = init_real2_clist();
     sprintf(cmap_c->colortbl_list->r1_name, "data");
     sprintf(cmap_c->colortbl_list->r2_name, "color");
 	
-	cmap_c->opacity_style_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	alloc_chara_ctl_item_c(cmap_c->opacity_style_ctl);
+	cmap_c->opacity_style_ctl = init_chara_ctl_item_c();
 	
 	cmap_c->fix_opacity_ctl = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
 	init_real_ctl_item_c(cmap_c->fix_opacity_ctl);
@@ -121,30 +119,23 @@ void alloc_colormap_ctl_c(struct colormap_ctl_c *cmap_c){
 	init_real_ctl_item_c(cmap_c->range_min_ctl);
 	init_real_ctl_item_c(cmap_c->range_max_ctl);
 	
-	return;
+	return cmap_c;
 };
 
 void dealloc_colormap_ctl_c(struct colormap_ctl_c *cmap_c){
 	
 	dealloc_chara_ctl_item_c(cmap_c->colormap_mode_ctl);
-	free(cmap_c->colormap_mode_ctl);
 	
 	dealloc_chara_ctl_item_c(cmap_c->lic_color_fld_ctl);
 	dealloc_chara_ctl_item_c(cmap_c->lic_color_comp_ctl);
 	dealloc_chara_ctl_item_c(cmap_c->lic_opacity_fld_ctl);
 	dealloc_chara_ctl_item_c(cmap_c->lic_opacity_comp_ctl);
-	free(cmap_c->lic_color_fld_ctl);
-	free(cmap_c->lic_color_comp_ctl);
-	free(cmap_c->lic_opacity_fld_ctl);
-	free(cmap_c->lic_opacity_comp_ctl);
 	
 	dealloc_chara_ctl_item_c(cmap_c->data_mapping_ctl);
-	free(cmap_c->data_mapping_ctl);
 	
 	dealloc_real2_clist(cmap_c->colortbl_list);
 	
 	dealloc_chara_ctl_item_c(cmap_c->opacity_style_ctl);
-	free(cmap_c->opacity_style_ctl);
 	free(cmap_c->fix_opacity_ctl);
 	
 	dealloc_real2_clist(cmap_c->linear_opacity_list);
@@ -154,7 +145,7 @@ void dealloc_colormap_ctl_c(struct colormap_ctl_c *cmap_c){
 	free(cmap_c->range_min_ctl);
 	free(cmap_c->range_max_ctl);
 	
-    cmap_c->iflag_use = 0;
+    free(cmap_c);
 	return;
 };
 
@@ -223,9 +214,14 @@ int write_colormap_ctl_c(FILE *fp, int level, const char *label,
 };
 
 
-void alloc_lighting_ctl_c(struct lighting_ctl_c *light_c){
+struct lighting_ctl_c * init_lighting_ctl_c(){
 	int i;
-	
+    struct lighting_ctl_c *light_c;
+    if((light_c = (struct lighting_ctl_c *) malloc(sizeof(struct lighting_ctl_c))) == NULL) {
+        printf("malloc error for lighting_ctl_c \n");
+        exit(0);
+    }
+    
     light_c->iflag_use = 0;
 	light_c->maxlen = 0;
 	for (i=0;i<NLBL_LIGHTING_CTL;i++){
@@ -247,11 +243,10 @@ void alloc_lighting_ctl_c(struct lighting_ctl_c *light_c){
     sprintf(light_c->light_position_list->r2_name, "y");
     sprintf(light_c->light_position_list->r3_name, "z");
 	
-	return;
+	return light_c;
 };
 
 void dealloc_lighting_ctl_c(struct lighting_ctl_c *light_c){
-	
 	free(light_c->ambient_coef_ctl);
 	free(light_c->diffuse_coef_ctl);
 	free(light_c->specular_coef_ctl);
@@ -259,7 +254,7 @@ void dealloc_lighting_ctl_c(struct lighting_ctl_c *light_c){
 	clear_real3_clist(light_c->light_position_list);	
     free(light_c->light_position_list);    
 
-    light_c->iflag_use = 0;
+    free(light_c);
     return;
 };
 
@@ -296,8 +291,13 @@ int write_lighting_ctl_c(FILE *fp, int level, const char *label,
 };
 
 
-void alloc_colorbar_ctl_c(struct pvr_colorbar_ctl_c *cbar_c){
+struct pvr_colorbar_ctl_c * init_colorbar_ctl_c(){
 	int i;
+    struct pvr_colorbar_ctl_c *cbar_c;
+    if((cbar_c = (struct pvr_colorbar_ctl_c *) malloc(sizeof(struct pvr_colorbar_ctl_c))) == NULL) {
+        printf("malloc error for pvr_colorbar_ctl_c \n");
+        exit(0);
+    }
 	
     cbar_c->iflag_use = 0;
 	cbar_c->maxlen = 0;
@@ -307,12 +307,9 @@ void alloc_colorbar_ctl_c(struct pvr_colorbar_ctl_c *cbar_c){
 		};
 	};
 	
-	cbar_c->colorbar_switch_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	cbar_c->colorbar_scale_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	cbar_c->zeromarker_flag_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	alloc_chara_ctl_item_c(cbar_c->colorbar_switch_ctl);
-	alloc_chara_ctl_item_c(cbar_c->colorbar_scale_ctl);
-	alloc_chara_ctl_item_c(cbar_c->zeromarker_flag_ctl);
+	cbar_c->colorbar_switch_ctl = init_chara_ctl_item_c();
+	cbar_c->colorbar_scale_ctl =  init_chara_ctl_item_c();
+	cbar_c->zeromarker_flag_ctl = init_chara_ctl_item_c();
 	
 	cbar_c->font_size_ctl = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
 	cbar_c->ngrid_cbar_ctl = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
@@ -322,10 +319,9 @@ void alloc_colorbar_ctl_c(struct pvr_colorbar_ctl_c *cbar_c){
 	cbar_c->cbar_range_ctl = (struct real2_ctl_item *) malloc(sizeof(struct real2_ctl_item));
 	init_real2_ctl_item_c(cbar_c->cbar_range_ctl);
 	
-	cbar_c->axis_switch_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	alloc_chara_ctl_item_c(cbar_c->axis_switch_ctl);
+	cbar_c->axis_switch_ctl = init_chara_ctl_item_c();
 	
-	return;
+	return cbar_c;
 };
 
 void dealloc_colorbar_ctl_c(struct pvr_colorbar_ctl_c *cbar_c){
@@ -333,9 +329,6 @@ void dealloc_colorbar_ctl_c(struct pvr_colorbar_ctl_c *cbar_c){
 	dealloc_chara_ctl_item_c(cbar_c->colorbar_switch_ctl);
 	dealloc_chara_ctl_item_c(cbar_c->colorbar_scale_ctl);
 	dealloc_chara_ctl_item_c(cbar_c->zeromarker_flag_ctl);
-	free(cbar_c->colorbar_switch_ctl);
-	free(cbar_c->colorbar_scale_ctl);
-	free(cbar_c->zeromarker_flag_ctl);
 	
 	free(cbar_c->font_size_ctl);
 	free(cbar_c->ngrid_cbar_ctl);
@@ -343,9 +336,8 @@ void dealloc_colorbar_ctl_c(struct pvr_colorbar_ctl_c *cbar_c){
 	free(cbar_c->cbar_range_ctl);
 	
 	dealloc_chara_ctl_item_c(cbar_c->axis_switch_ctl);
-	free(cbar_c->axis_switch_ctl);
 	
-    cbar_c->iflag_use = 0;
+    free(cbar_c);
 	return;
 };
 
@@ -395,9 +387,14 @@ int write_colorbar_ctl_c(FILE *fp, int level, const char *label,
 };
 
 
-void alloc_colormap_colorbar_ctl_c(struct pvr_colormap_bar_ctl_c *cmap_cbar_c){
+struct pvr_colormap_bar_ctl_c * init_colormap_colorbar_ctl_c(){
 	int i;
-	
+    struct pvr_colormap_bar_ctl_c *cmap_cbar_c;
+    if((cmap_cbar_c = (struct pvr_colormap_bar_ctl_c *) malloc(sizeof(struct pvr_colormap_bar_ctl_c))) == NULL) {
+        printf("malloc error for pvr_colormap_bar_ctl_c \n");
+        exit(0);
+    }
+    	
     cmap_cbar_c->iflag_use = 0;
 	cmap_cbar_c->maxlen = 0;
 	for (i=0;i<NLBL_CMAP_CBAR_CTL;i++){
@@ -406,22 +403,16 @@ void alloc_colormap_colorbar_ctl_c(struct pvr_colormap_bar_ctl_c *cmap_cbar_c){
 		};
 	};
 		
-	cmap_cbar_c->cmap_c = (struct colormap_ctl_c *) malloc(sizeof(struct colormap_ctl_c));
-	alloc_colormap_ctl_c(cmap_cbar_c->cmap_c);
-	
-	cmap_cbar_c->cbar_c = (struct pvr_colorbar_ctl_c *) malloc(sizeof(struct pvr_colorbar_ctl_c));
-	alloc_colorbar_ctl_c(cmap_cbar_c->cbar_c);
-	
-	return;
+	cmap_cbar_c->cmap_c = init_colormap_ctl_c();
+	cmap_cbar_c->cbar_c = init_colorbar_ctl_c();	
+	return cmap_cbar_c;
 };
 
 void dealloc_colormap_colorbar_ctl_c(struct pvr_colormap_bar_ctl_c *cmap_cbar_c){
 	dealloc_colormap_ctl_c(cmap_cbar_c->cmap_c);
-	free(cmap_cbar_c->cmap_c);
 	dealloc_colorbar_ctl_c(cmap_cbar_c->cbar_c);
-	free(cmap_cbar_c->cbar_c);
 	
-    cmap_cbar_c->iflag_use = 0;
+    free(cmap_cbar_c);
 	return;
 };
 

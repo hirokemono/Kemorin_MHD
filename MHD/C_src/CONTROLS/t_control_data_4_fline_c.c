@@ -39,8 +39,13 @@ void get_label_fline_ctl(int index, char *label){
     return;
 };
 
-void alloc_fline_ctl_c(struct fline_ctl_c *fline_c){
+struct fline_ctl_c * init_fline_ctl_c(){
 	int i;
+    struct fline_ctl_c *fline_c;
+    if((fline_c = (struct fline_ctl_c *) malloc(sizeof(struct fline_ctl_c))) == NULL) {
+        printf("malloc error for fline_ctl_c \n");
+        exit(0);
+    }
 	
 	fline_c->maxlen = 0;
 	for (i=0;i<NLBL_FLINE_CTL;i++){
@@ -49,32 +54,23 @@ void alloc_fline_ctl_c(struct fline_ctl_c *fline_c){
 		};
 	};
 	
-	fline_c->fline_file_head_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	fline_c->fline_output_type_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	alloc_chara_ctl_item_c(fline_c->fline_file_head_ctl);
-	alloc_chara_ctl_item_c(fline_c->fline_output_type_ctl);
+	fline_c->fline_file_head_ctl = init_chara_ctl_item_c();
+	fline_c->fline_output_type_ctl = init_chara_ctl_item_c();
 	
-	fline_c->fline_field_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	fline_c->fline_color_field_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	fline_c->fline_color_comp_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	alloc_chara_ctl_item_c(fline_c->fline_field_ctl);
-	alloc_chara_ctl_item_c(fline_c->fline_color_field_ctl);
-	alloc_chara_ctl_item_c(fline_c->fline_color_comp_ctl);
+    fline_c->fline_field_ctl = init_chara_ctl_item_c();
+	fline_c->fline_color_field_ctl = init_chara_ctl_item_c();
+	fline_c->fline_color_comp_ctl = init_chara_ctl_item_c();
 	
     fline_c->fline_area_grp_list = (struct chara_clist *) malloc(sizeof(struct chara_clist));
 	init_chara_clist(fline_c->fline_area_grp_list);
 	
-	fline_c->starting_type_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	fline_c->selection_type_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	fline_c->line_direction_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	alloc_chara_ctl_item_c(fline_c->starting_type_ctl);
-	alloc_chara_ctl_item_c(fline_c->selection_type_ctl);
-	alloc_chara_ctl_item_c(fline_c->line_direction_ctl);
+	fline_c->starting_type_ctl = init_chara_ctl_item_c();
+	fline_c->selection_type_ctl = init_chara_ctl_item_c();
+	fline_c->line_direction_ctl = init_chara_ctl_item_c();
 	
-	fline_c->start_surf_grp_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
+	fline_c->start_surf_grp_ctl = init_chara_ctl_item_c();
 	fline_c->num_fieldline_ctl = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
 	fline_c->max_line_stepping_ctl = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
-	alloc_chara_ctl_item_c(fline_c->start_surf_grp_ctl);
 	init_int_ctl_item_c(fline_c->num_fieldline_ctl);
 	init_int_ctl_item_c(fline_c->max_line_stepping_ctl);
 	
@@ -89,22 +85,17 @@ void alloc_fline_ctl_c(struct fline_ctl_c *fline_c){
     sprintf(fline_c->seed_surface_list->i1_name, "Element_ID");
     sprintf(fline_c->seed_surface_list->i2_name, "Surface_ID");
 	
-	return;
+	return fline_c;
 };
 
 void dealloc_fline_ctl_c(struct fline_ctl_c *fline_c){
 	
 	dealloc_chara_ctl_item_c(fline_c->fline_file_head_ctl);
 	dealloc_chara_ctl_item_c(fline_c->fline_output_type_ctl);
-	free(fline_c->fline_file_head_ctl);
-	free(fline_c->fline_output_type_ctl);
 	
 	dealloc_chara_ctl_item_c(fline_c->fline_field_ctl);
 	dealloc_chara_ctl_item_c(fline_c->fline_color_field_ctl);
 	dealloc_chara_ctl_item_c(fline_c->fline_color_comp_ctl);
-	free(fline_c->fline_field_ctl);
-	free(fline_c->fline_color_field_ctl);
-	free(fline_c->fline_color_comp_ctl);
 	
 	clear_chara_clist(fline_c->fline_area_grp_list);
     free(fline_c->fline_area_grp_list);
@@ -112,12 +103,8 @@ void dealloc_fline_ctl_c(struct fline_ctl_c *fline_c){
 	dealloc_chara_ctl_item_c(fline_c->starting_type_ctl);
 	dealloc_chara_ctl_item_c(fline_c->selection_type_ctl);
 	dealloc_chara_ctl_item_c(fline_c->line_direction_ctl);
-	free(fline_c->starting_type_ctl);
-	free(fline_c->selection_type_ctl);
-	free(fline_c->line_direction_ctl);
 	
 	dealloc_chara_ctl_item_c(fline_c->start_surf_grp_ctl);
-	free(fline_c->start_surf_grp_ctl);
 	free(fline_c->num_fieldline_ctl);
 	free(fline_c->max_line_stepping_ctl);
 	
@@ -126,6 +113,7 @@ void dealloc_fline_ctl_c(struct fline_ctl_c *fline_c){
 	clear_int2_clist(fline_c->seed_surface_list);
     free(fline_c->seed_surface_list);
 	
+	free(fline_c);
 	return;
 };
 

@@ -36,13 +36,10 @@ void alloc_sph_zonal_means_controls_c(struct sph_zonal_means_ctl_c *zm_ctls){
 	zm_ctls->iflag_zrms_section_controls = 0;
 	
 	zm_ctls->zmean_psf_file_name = (char *)calloc(KCHARA_C, sizeof(char));
-	zm_ctls->zmean_psf_c = (struct psf_ctl_c *) malloc(sizeof(struct psf_ctl_c));
+	zm_ctls->zmean_psf_c = init_psf_ctl_c();
 	
 	zm_ctls->zrms_psf_file_name = (char *)calloc(KCHARA_C, sizeof(char));
-	zm_ctls->zrms_psf_c = (struct psf_ctl_c *) malloc(sizeof(struct psf_ctl_c));
-	
-	alloc_psf_ctl_c(zm_ctls->zmean_psf_c);
-	alloc_psf_ctl_c(zm_ctls->zrms_psf_c);
+	zm_ctls->zrms_psf_c = init_psf_ctl_c();
 	
 	zm_ctls->crust_filter_c = (struct crustal_filter_ctl_c *) malloc(sizeof(struct crustal_filter_ctl_c));
 	alloc_crustal_filter_ctl_c(zm_ctls->crust_filter_c);
@@ -58,9 +55,7 @@ void dealloc_sph_zonal_means_controls_c(struct sph_zonal_means_ctl_c *zm_ctls){
 	dealloc_crustal_filter_ctl_c(zm_ctls->crust_filter_c);
 	
 	free(zm_ctls->zmean_psf_file_name);
-	free(zm_ctls->zmean_psf_c);
 	free(zm_ctls->zrms_psf_file_name);
-	free(zm_ctls->zrms_psf_c);
     
     zm_ctls->iflag_use = 0;
 	return;

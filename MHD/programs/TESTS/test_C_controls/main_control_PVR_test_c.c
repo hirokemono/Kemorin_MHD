@@ -32,14 +32,12 @@ int main(int argc,char *argv[])
     printf("read PSF control file name: %s\n", file_name);
     printf("Write PSF control file name: %s\n", file_name_2);
 
-    pvr_c0 = (struct pvr_ctl_c *) malloc(sizeof(struct pvr_ctl_c));
-	alloc_pvr_ctl_c(pvr_c0);
+    pvr_c0 = init_pvr_ctl_c();
     
 	iflag = read_pvr_ctl_file_c(file_name, buf, pvr_c0);
     rename_pvr_ctl_subfiles(pvr_c0);
 	iflag = write_pvr_ctl_file_c(file_name_2, pvr_c0);
 
     dealloc_pvr_ctl_c(pvr_c0);
-	free(pvr_c0);
 	return 0;
 }

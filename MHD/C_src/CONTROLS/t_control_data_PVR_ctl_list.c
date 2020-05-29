@@ -10,15 +10,13 @@
 
 void alloc_volume_rendering_ctl_c(struct volume_rendering_ctl_c *v_render_c){
 	v_render_c->fname_pvr_ctl = (char *)calloc(KCHARA_C, sizeof(char));
-	v_render_c->pvr_c = (struct pvr_ctl_c *) malloc(sizeof(struct pvr_ctl_c));
-	alloc_pvr_ctl_c(v_render_c->pvr_c);
+	v_render_c->pvr_c = init_pvr_ctl_c();
 	return;
 
 };
 
 void dealloc_volume_rendering_ctl_c(struct volume_rendering_ctl_c *v_render_c){
 	dealloc_pvr_ctl_c(v_render_c->pvr_c);
-	free(v_render_c->pvr_c);
 	free(v_render_c->fname_pvr_ctl);
 	return;
 };

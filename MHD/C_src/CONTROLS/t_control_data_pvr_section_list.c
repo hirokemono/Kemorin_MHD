@@ -33,8 +33,7 @@ void alloc_pvr_section_ctl_c(struct pvr_section_ctl_c *pvr_sect_c){
 	pvr_sect_c->iflag_psf_define_ctl = 0;
 	pvr_sect_c->fname_sect_ctl = (char *)calloc(KCHARA_C, sizeof(char));
 	
-	pvr_sect_c->psf_def_c = (struct psf_define_ctl_c *) malloc(sizeof(struct psf_define_ctl_c));
-	alloc_psf_define_ctl_c(pvr_sect_c->psf_def_c);
+	pvr_sect_c->psf_def_c = init_psf_define_ctl_c();
 	
 	pvr_sect_c->opacity_ctl = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
 	init_real_ctl_item_c(pvr_sect_c->opacity_ctl);
@@ -44,7 +43,6 @@ void alloc_pvr_section_ctl_c(struct pvr_section_ctl_c *pvr_sect_c){
 
 void dealloc_pvr_section_ctl_c(struct pvr_section_ctl_c *pvr_sect_c){
 	dealloc_psf_define_ctl_c(pvr_sect_c->psf_def_c);
-	free(pvr_sect_c->psf_def_c);
 	free(pvr_sect_c->opacity_ctl);
 	free(pvr_sect_c->fname_sect_ctl);
 	pvr_sect_c->iflag_psf_define_ctl = 0;

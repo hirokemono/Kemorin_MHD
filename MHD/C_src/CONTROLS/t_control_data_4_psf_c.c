@@ -58,9 +58,14 @@ void get_label_psf_ctl(int index, char *label){
     return;
 };
 
-void alloc_psf_define_ctl_c(struct psf_define_ctl_c *psf_def_c){
+struct psf_define_ctl_c * init_psf_define_ctl_c(){
 	int i;
-	
+    struct psf_define_ctl_c *psf_def_c;
+    if((psf_def_c = (struct psf_define_ctl_c *) malloc(sizeof(struct psf_define_ctl_c))) == NULL) {
+        printf("malloc error for psf_define_ctl_c \n");
+        exit(0);
+    }
+    	
 	psf_def_c->maxlen = 0;
 	for (i=0;i<NLBL_PSF_DEFINE_CTL;i++){
 		if(strlen(label_psf_define_ctl[i]) > psf_def_c->maxlen){
@@ -68,8 +73,7 @@ void alloc_psf_define_ctl_c(struct psf_define_ctl_c *psf_def_c){
 		};
 	};
 	
-	psf_def_c->section_method_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	alloc_chara_ctl_item_c(psf_def_c->section_method_ctl);
+	psf_def_c->section_method_ctl = init_chara_ctl_item_c();
 	
     psf_def_c->psf_coefs_list = (struct chara_real_clist *) malloc(sizeof(struct chara_real_clist));
     psf_def_c->psf_normal_list = (struct chara_real_clist *) malloc(sizeof(struct chara_real_clist));
@@ -89,20 +93,18 @@ void alloc_psf_define_ctl_c(struct psf_define_ctl_c *psf_def_c){
     sprintf(psf_def_c->psf_axis_list->r1_name, "Value");
 	
 	psf_def_c->radius_psf_ctl = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
-	psf_def_c->psf_group_name_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
+	psf_def_c->psf_group_name_ctl = init_chara_ctl_item_c();
 	init_real_ctl_item_c(psf_def_c->radius_psf_ctl);
-	alloc_chara_ctl_item_c(psf_def_c->psf_group_name_ctl);
 	
     psf_def_c->psf_area_list = (struct chara_clist *) malloc(sizeof(struct chara_clist));
 	init_chara_clist(psf_def_c->psf_area_list);
 	
-	return;
+	return psf_def_c;
 };
 
 void dealloc_psf_define_ctl_c(struct psf_define_ctl_c *psf_def_c){
 	
 	dealloc_chara_ctl_item_c(psf_def_c->section_method_ctl);
-	free(psf_def_c->section_method_ctl);
 	
 	clear_chara_real_clist(psf_def_c->psf_coefs_list);
 	clear_chara_real_clist(psf_def_c->psf_normal_list);
@@ -115,10 +117,10 @@ void dealloc_psf_define_ctl_c(struct psf_define_ctl_c *psf_def_c){
 	
 	free(psf_def_c->radius_psf_ctl);
 	dealloc_chara_ctl_item_c(psf_def_c->psf_group_name_ctl);
-	free(psf_def_c->psf_group_name_ctl);
 	
 	clear_chara_clist(psf_def_c->psf_area_list);	
     free(psf_def_c->psf_area_list);    
+    free(psf_def_c);    
 	return;
 };
 
@@ -182,8 +184,13 @@ int write_psf_define_ctl_c(FILE *fp, int level, const char *label,
 };
 
 
-void alloc_psf_field_ctl_c(struct psf_field_ctl_c *psf_fld_c){
+struct psf_field_ctl_c * init_psf_field_ctl_c(){
 	int i;
+    struct psf_field_ctl_c *psf_fld_c;
+    if((psf_fld_c = (struct psf_field_ctl_c *) malloc(sizeof(struct psf_field_ctl_c))) == NULL){
+        printf("malloc error for psf_field_ctl_c \n");
+        exit(0);
+    }
 	
 	psf_fld_c->maxlen = 0;
 	for (i=0;i<NLBL_PSF_FIELD_CTL;i++){
@@ -195,13 +202,14 @@ void alloc_psf_field_ctl_c(struct psf_field_ctl_c *psf_fld_c){
     psf_fld_c->psf_out_field_list = (struct chara2_clist *) malloc(sizeof(struct chara2_clist));
 	init_chara2_clist(psf_fld_c->psf_out_field_list);
 	
-	return;
+	return psf_fld_c;
 };
 
 void dealloc_psf_field_ctl_c(struct psf_field_ctl_c *psf_fld_c){
 	
 	clear_chara2_clist(psf_fld_c->psf_out_field_list);
     free(psf_fld_c->psf_out_field_list);
+    free(psf_fld_c);
 	
 	return;
 };
@@ -227,9 +235,14 @@ int write_psf_field_ctl_c(FILE *fp, int level, const char *label,
 };
 
 
-void alloc_psf_ctl_c(struct psf_ctl_c *psf_c){
+struct psf_ctl_c * init_psf_ctl_c(){
 	int i;
-	
+    struct psf_ctl_c *psf_c;
+    if((psf_c = (struct psf_ctl_c *) malloc(sizeof(struct psf_ctl_c))) == NULL) {
+        printf("malloc error for psf_ctl_c \n");
+        exit(0);
+    }
+    
 	psf_c->maxlen = 0;
 	for (i=0;i<NLBL_PSF_CTL;i++){
 		if(strlen(label_psf_ctl[i]) > psf_c->maxlen){
@@ -240,36 +253,27 @@ void alloc_psf_ctl_c(struct psf_ctl_c *psf_c){
 	psf_c->iflag_surface_define = 0;
 	psf_c->iflag_output_field = 0;
 	
-	psf_c->psf_def_c = (struct psf_define_ctl_c *) malloc(sizeof(struct psf_define_ctl_c));
-	alloc_psf_define_ctl_c(psf_c->psf_def_c);
+	psf_c->psf_def_c = init_psf_define_ctl_c();
     psf_c->psf_def_file_name = (char *)calloc(KCHARA_C, sizeof(char));
     
-	psf_c->psf_fld_c = (struct psf_field_ctl_c *) malloc(sizeof(struct psf_field_ctl_c));
-	alloc_psf_field_ctl_c(psf_c->psf_fld_c);
+	psf_c->psf_fld_c = init_psf_field_ctl_c();
 	
-	psf_c->psf_file_head_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	psf_c->psf_output_type_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	alloc_chara_ctl_item_c(psf_c->psf_file_head_ctl);
-	alloc_chara_ctl_item_c(psf_c->psf_output_type_ctl);
-	
-	return;
+	psf_c->psf_file_head_ctl = init_chara_ctl_item_c();
+	psf_c->psf_output_type_ctl = init_chara_ctl_item_c();
+	return psf_c;
 };
 
 void dealloc_psf_ctl_c(struct psf_ctl_c *psf_c){
 	dealloc_psf_define_ctl_c(psf_c->psf_def_c);
-	free(psf_c->psf_def_c);
     free(psf_c->psf_def_file_name);
 	dealloc_psf_field_ctl_c(psf_c->psf_fld_c);
-	free(psf_c->psf_fld_c);
 	
 	dealloc_chara_ctl_item_c(psf_c->psf_file_head_ctl);
 	dealloc_chara_ctl_item_c(psf_c->psf_output_type_ctl);
-	free(psf_c->psf_file_head_ctl);
-	free(psf_c->psf_output_type_ctl);
 	
 	psf_c->iflag_surface_define = 0;
 	psf_c->iflag_output_field = 0;
-	
+    free(psf_c);
 	return;
 };
 

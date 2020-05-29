@@ -35,7 +35,7 @@ struct FEM_mesh_control_c{
 /* prototypes */
 void get_label_FEM_mesh_ctl(int index, char *label);
 
-void alloc_FEM_mesh_control_c(struct FEM_mesh_control_c *Fmesh);
+struct FEM_mesh_control_c * init_FEM_mesh_control_c();
 void dealloc_FEM_mesh_control_c(struct FEM_mesh_control_c *Fmesh);
 
 void read_FEM_mesh_control_c(FILE *fp, char buf[LENGTHBUF], const char *label, 

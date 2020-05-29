@@ -65,8 +65,13 @@ void get_label_pvr_ctl(int index, char *label){
 };
 
 
-void alloc_pvr_plot_area_ctl_c(struct pvr_plot_area_ctl_c *area_c){
+struct pvr_plot_area_ctl_c * init_pvr_plot_area_ctl_c(){
 	int i;
+    struct pvr_plot_area_ctl_c *area_c;
+    if((area_c = (struct pvr_plot_area_ctl_c *) malloc(sizeof(struct pvr_plot_area_ctl_c))) == NULL) {
+        printf("malloc error for pvr_plot_area_ctl_c \n");
+        exit(0);
+    }
 	
     area_c->iflag_use = 0;
 	area_c->maxlen = 0;
@@ -84,7 +89,7 @@ void alloc_pvr_plot_area_ctl_c(struct pvr_plot_area_ctl_c *area_c){
     sprintf(area_c->surf_enhanse_ctl->c2_name, "Direction");
     sprintf(area_c->surf_enhanse_ctl->r1_name, "Opacity");
 	
-	return;
+	return area_c;
 };
 
 void dealloc_pvr_plot_area_ctl_c(struct pvr_plot_area_ctl_c *area_c){
@@ -93,8 +98,7 @@ void dealloc_pvr_plot_area_ctl_c(struct pvr_plot_area_ctl_c *area_c){
     free(area_c->pvr_area_list);
 	clear_chara2_real_clist(area_c->surf_enhanse_ctl);
     free(area_c->surf_enhanse_ctl);
-	
-    area_c->iflag_use = 0;
+    free(area_c);
 	return;
 };
 
@@ -126,8 +130,13 @@ int write_pvr_plot_area_ctl_c(FILE *fp, int level, const char *label,
 };
 
 
-void alloc_pvr_movie_ctl_c(struct pvr_movie_ctl_c *movie_c){
+struct pvr_movie_ctl_c * init_pvr_movie_ctl_c(){
 	int i;
+    struct pvr_movie_ctl_c *movie_c;
+    if((movie_c = (struct pvr_movie_ctl_c *) malloc(sizeof(struct pvr_movie_ctl_c))) == NULL) {
+        printf("malloc error for pvr_movie_ctl_c \n");
+        exit(0);
+    }
 	
     movie_c->iflag_use = 0;
 	movie_c->maxlen = 0;
@@ -137,21 +146,17 @@ void alloc_pvr_movie_ctl_c(struct pvr_movie_ctl_c *movie_c){
 		};
 	};
 	
-	movie_c->rotation_axis_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
+	movie_c->rotation_axis_ctl = init_chara_ctl_item_c();
 	movie_c->num_frames_ctl = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
-	alloc_chara_ctl_item_c(movie_c->rotation_axis_ctl);
 	init_int_ctl_item_c(movie_c->num_frames_ctl);
 	
-	return;
+	return movie_c;
 };
 
 void dealloc_pvr_movie_ctl_c(struct pvr_movie_ctl_c *movie_c){
 	
 	dealloc_chara_ctl_item_c(movie_c->rotation_axis_ctl);
-	free(movie_c->rotation_axis_ctl);
-	free(movie_c->num_frames_ctl);
-	
-    movie_c->iflag_use = 0;
+    free(movie_c);
 	return;
 };
 
@@ -183,8 +188,13 @@ int write_pvr_movie_ctl_c(FILE *fp, int level, const char *label,
 };
 
 
-void alloc_pvr_ctl_c(struct pvr_ctl_c *pvr_c){
+struct pvr_ctl_c * init_pvr_ctl_c(){
 	int i;
+    struct pvr_ctl_c *pvr_c;
+    if((pvr_c = (struct pvr_ctl_c *) malloc(sizeof(struct pvr_ctl_c))) == NULL) {
+        printf("malloc error for pvr_ctl_c \n");
+        exit(0);
+    }
 	
     pvr_c->iflag_use = 0;
 	pvr_c->maxlen = 0;
@@ -194,100 +204,74 @@ void alloc_pvr_ctl_c(struct pvr_ctl_c *pvr_c){
 		};
 	};
 	
-	pvr_c->updated_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	alloc_chara_ctl_item_c(pvr_c->updated_ctl);
+	pvr_c->updated_ctl = init_chara_ctl_item_c();
 	
-	pvr_c->file_head_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	pvr_c->file_fmt_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	pvr_c->monitoring_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	pvr_c->transparent_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	alloc_chara_ctl_item_c(pvr_c->file_head_ctl);
-	alloc_chara_ctl_item_c(pvr_c->file_fmt_ctl);
-	alloc_chara_ctl_item_c(pvr_c->monitoring_ctl);
-	alloc_chara_ctl_item_c(pvr_c->transparent_ctl);
+	pvr_c->file_head_ctl = init_chara_ctl_item_c();
+	pvr_c->file_fmt_ctl = init_chara_ctl_item_c();
+	pvr_c->monitoring_ctl = init_chara_ctl_item_c();
+	pvr_c->transparent_ctl = init_chara_ctl_item_c();
 	
-	pvr_c->streo_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	pvr_c->anaglyph_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	alloc_chara_ctl_item_c(pvr_c->streo_ctl);
-	alloc_chara_ctl_item_c(pvr_c->anaglyph_ctl);
+	pvr_c->streo_ctl = init_chara_ctl_item_c();
+	pvr_c->anaglyph_ctl = init_chara_ctl_item_c();
 	
-	pvr_c->pvr_field_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	pvr_c->pvr_comp_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	alloc_chara_ctl_item_c(pvr_c->pvr_field_ctl);
-	alloc_chara_ctl_item_c(pvr_c->pvr_comp_ctl);
+	pvr_c->pvr_field_ctl = init_chara_ctl_item_c();
+	pvr_c->pvr_comp_ctl = init_chara_ctl_item_c();
 	
     pvr_c->maxpe_composit_ctl = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
     init_int_ctl_item_c(pvr_c->maxpe_composit_ctl);
 
-	pvr_c->area_c = (struct pvr_plot_area_ctl_c *) malloc(sizeof(struct pvr_plot_area_ctl_c));
-	alloc_pvr_plot_area_ctl_c(pvr_c->area_c);
+	pvr_c->area_c = init_pvr_plot_area_ctl_c();
 	
     pvr_c->pvr_modelview_file_name = (char *)calloc(KCHARA_C, sizeof(char));
 	pvr_c->mat_c = (struct modeview_ctl_c *) malloc(sizeof(struct modeview_ctl_c));
 	alloc_modeview_ctl_c(pvr_c->mat_c);
 	
-	pvr_c->light_c = (struct lighting_ctl_c *) malloc(sizeof(struct lighting_ctl_c));
-	alloc_lighting_ctl_c(pvr_c->light_c);
+	pvr_c->light_c = init_lighting_ctl_c();
 	
     pvr_c->pvr_colormap_file_name = (char *)calloc(KCHARA_C, sizeof(char));
-	pvr_c->cmap_cbar_c = (struct pvr_colormap_bar_ctl_c *) malloc(sizeof(struct pvr_colormap_bar_ctl_c));
-	alloc_colormap_colorbar_ctl_c(pvr_c->cmap_cbar_c);
+	pvr_c->cmap_cbar_c = init_colormap_colorbar_ctl_c();
 	
-	pvr_c->movie_c = (struct pvr_movie_ctl_c *) malloc(sizeof(struct pvr_movie_ctl_c));
-	alloc_pvr_movie_ctl_c(pvr_c->movie_c);
+	pvr_c->movie_c = init_pvr_movie_ctl_c();
 	
 	init_pvr_section_ctl_list(&pvr_c->pvr_sect_c_list);
 	init_pvr_iso_ctl_list(&pvr_c->pvr_iso_c_list);
 	
-	return;
+	return pvr_c;
 };
 
 void dealloc_pvr_ctl_c(struct pvr_ctl_c *pvr_c){
     dealloc_chara_ctl_item_c(pvr_c->updated_ctl);
-	free(pvr_c->updated_ctl);
 	
 	dealloc_chara_ctl_item_c(pvr_c->file_head_ctl);
 	dealloc_chara_ctl_item_c(pvr_c->file_fmt_ctl);
 	dealloc_chara_ctl_item_c(pvr_c->monitoring_ctl);
 	dealloc_chara_ctl_item_c(pvr_c->transparent_ctl);
-	free(pvr_c->file_head_ctl);
-	free(pvr_c->file_fmt_ctl);
-	free(pvr_c->monitoring_ctl);
-	free(pvr_c->transparent_ctl);
 	
 	dealloc_chara_ctl_item_c(pvr_c->streo_ctl);
 	dealloc_chara_ctl_item_c(pvr_c->anaglyph_ctl);
-	free(pvr_c->streo_ctl);
-	free(pvr_c->anaglyph_ctl);
 	
 	dealloc_chara_ctl_item_c(pvr_c->pvr_field_ctl);
 	dealloc_chara_ctl_item_c(pvr_c->pvr_comp_ctl);
-	free(pvr_c->pvr_field_ctl);
-	free(pvr_c->pvr_comp_ctl);
     free(pvr_c->maxpe_composit_ctl);
 	
     
 	dealloc_pvr_plot_area_ctl_c(pvr_c->area_c);
-	free(pvr_c->area_c);
 	
 	dealloc_modeview_ctl_c(pvr_c->mat_c);
 	free(pvr_c->mat_c);
     free(pvr_c->pvr_modelview_file_name);
 	
 	dealloc_lighting_ctl_c(pvr_c->light_c);
-	free(pvr_c->light_c);
 	
 	dealloc_colormap_colorbar_ctl_c(pvr_c->cmap_cbar_c);
-	free(pvr_c->cmap_cbar_c);
     free(pvr_c->pvr_colormap_file_name);
 	
 	dealloc_pvr_movie_ctl_c(pvr_c->movie_c);
-	free(pvr_c->movie_c);
 	
 	clear_pvr_section_ctl_list(&pvr_c->pvr_sect_c_list);
 	clear_pvr_iso_ctl_list(&pvr_c->pvr_iso_c_list);
 		
-    pvr_c->iflag_use = 0;
+    free(pvr_c);
 	return;
 };
 

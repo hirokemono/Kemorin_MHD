@@ -94,8 +94,13 @@ int write_forces_ctl_c(FILE *fp, int level,	const char *label,
 };
 
 
-void alloc_gravity_ctl_c(struct gravity_ctl_c *g_ctl){
+struct gravity_ctl_c * init_gravity_ctl_c(){
 	int i;
+    struct gravity_ctl_c *g_ctl;
+    if((g_ctl = (struct gravity_ctl_c *) malloc(sizeof(struct gravity_ctl_c))) == NULL) {
+        printf("malloc error for gravity_ctl_c \n");
+        exit(0);
+    }
 	
     g_ctl->iflag_use = 0;
 	g_ctl->maxlen = 0;
@@ -110,10 +115,9 @@ void alloc_gravity_ctl_c(struct gravity_ctl_c *g_ctl){
     sprintf(g_ctl->gravity_vec_list->c1_name, "Direction");
     sprintf(g_ctl->gravity_vec_list->r1_name, "Value");
 	
-	g_ctl->gravity_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	alloc_chara_ctl_item_c(g_ctl->gravity_c);
+	g_ctl->gravity_c = init_chara_ctl_item_c();
 	
-	return;
+	return g_ctl;
 };
 
 void dealloc_gravity_ctl_c(struct gravity_ctl_c *g_ctl){
@@ -122,9 +126,7 @@ void dealloc_gravity_ctl_c(struct gravity_ctl_c *g_ctl){
     free(g_ctl->gravity_vec_list);
 	
 	dealloc_chara_ctl_item_c(g_ctl->gravity_c);
-	free(g_ctl->gravity_c);
-    g_ctl->iflag_use = 0;
-	
+    free(g_ctl);
 	return;
 };
 
@@ -156,8 +158,13 @@ int write_gravity_ctl_c(FILE *fp, int level, const char *label,
 };
 
 
-void alloc_coriolis_ctl_c(struct coriolis_ctl_c *cor_ctl){
+struct coriolis_ctl_c * init_coriolis_ctl_c(){
 	int i;
+    struct coriolis_ctl_c *cor_ctl;
+    if((cor_ctl = (struct coriolis_ctl_c *) malloc(sizeof(struct coriolis_ctl_c))) == NULL) {
+        printf("malloc error for coriolis_ctl_c \n");
+        exit(0);
+    }    
 	
     cor_ctl->iflag_use = 0;
 	cor_ctl->maxlen = 0;
@@ -172,15 +179,14 @@ void alloc_coriolis_ctl_c(struct coriolis_ctl_c *cor_ctl){
     sprintf(cor_ctl->system_rotation_list->c1_name, "Direction");
     sprintf(cor_ctl->system_rotation_list->r1_name, "Value");
 	
-	return;
+	return cor_ctl;
 };
 
 void dealloc_coriolis_ctl_c(struct coriolis_ctl_c *cor_ctl){
 	
 	clear_chara_real_clist(cor_ctl->system_rotation_list);
     free(cor_ctl->system_rotation_list);
-    cor_ctl->iflag_use = 0;
-	
+    free(cor_ctl);
 	return;
 };
 
@@ -209,8 +215,13 @@ int write_coriolis_ctl_c(FILE *fp, int level, const char *label,
 };
 
 
-void alloc_magneto_cv_ctl_c(struct magneto_cv_ctl_c *mcv_ctl){
+struct magneto_cv_ctl_c * init_magneto_cv_ctl_c(){
 	int i;
+    struct magneto_cv_ctl_c *mcv_ctl;
+    if((mcv_ctl = (struct magneto_cv_ctl_c *) malloc(sizeof(struct magneto_cv_ctl_c))) == NULL) {
+        printf("malloc error for magneto_cv_ctl_c \n");
+        exit(0);
+    }    
 	
     mcv_ctl->iflag_use = 0;
     mcv_ctl->maxlen = 0;
@@ -225,10 +236,9 @@ void alloc_magneto_cv_ctl_c(struct magneto_cv_ctl_c *mcv_ctl){
     sprintf(mcv_ctl->ext_magne_list->c1_name, "Direction");
     sprintf(mcv_ctl->ext_magne_list->r1_name, "Value");
 	
-	mcv_ctl->magneto_cv_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	alloc_chara_ctl_item_c(mcv_ctl->magneto_cv_c);
+	mcv_ctl->magneto_cv_c = init_chara_ctl_item_c();
 	
-	return;
+	return mcv_ctl;
 };
 
 void dealloc_magneto_cv_ctl_c(struct magneto_cv_ctl_c *mcv_ctl){
@@ -237,9 +247,7 @@ void dealloc_magneto_cv_ctl_c(struct magneto_cv_ctl_c *mcv_ctl){
     free(mcv_ctl->ext_magne_list);
 	
 	dealloc_chara_ctl_item_c(mcv_ctl->magneto_cv_c);
-	free(mcv_ctl->magneto_cv_c);
-    mcv_ctl->iflag_use = 0;
-	
+    free(mcv_ctl);
 	return;
 };
 

@@ -32,13 +32,11 @@ int main(int argc,char *argv[])
     printf("read isosurface control file name: %s\n", file_name);
     printf("Write isosurface control file name: %s\n", file_name_2);
 
-    iso_c0 = (struct iso_ctl_c *) malloc(sizeof(struct iso_ctl_c));
-	alloc_iso_ctl_c(iso_c0);
+    iso_c0 = init_iso_ctl_c();
 	
 	iflag = read_iso_ctl_file_c(file_name, buf, iso_c0);
 	iflag = write_iso_ctl_file_c(file_name_2, iso_c0);
     
     dealloc_iso_ctl_c(iso_c0);
-	free(iso_c0);
 	return 0;
 }

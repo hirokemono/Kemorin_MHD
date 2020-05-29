@@ -36,7 +36,7 @@ struct volume_spectr_ctl_list{
 /* prototypes */
 void get_label_volume_spectr_ctl(int index, char *label);
 
-void alloc_volume_spectr_control_c(struct volume_spectr_control_c *v_pwr_c);
+struct volume_spectr_control_c * init_volume_spectr_control_c();
 void dealloc_volume_spectr_control_c(struct volume_spectr_control_c *v_pwr_c);
 int read_volume_spectr_control_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct volume_spectr_control_c *v_pwr_c);

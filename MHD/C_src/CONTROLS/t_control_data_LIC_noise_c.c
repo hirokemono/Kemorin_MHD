@@ -26,17 +26,17 @@ struct label_list_f * init_ctl_label_LIC_noise_f(){
 };
 
 
-void alloc_lic_noise_ctl_c(struct lic_noise_ctl_c *lic_nze_c){
-	int i;
+struct lic_noise_ctl_c * init_lic_noise_ctl_c(){
+    struct lic_noise_ctl_c *lic_nze_c;
+    if((lic_nze_c = (struct lic_noise_ctl_c *) malloc(sizeof(struct lic_noise_ctl_c))) == NULL) {
+        printf("malloc error for lic_noise_ctl_c \n");
+        exit(0);
+    }
 	lic_nze_c->label_lic_noise = init_ctl_label_LIC_noise_f();
 	
-	lic_nze_c->noise_type_ctl_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	lic_nze_c->noise_file_name_ctl_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	lic_nze_c->noise_file_format_ctl_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	
-	alloc_chara_ctl_item_c(lic_nze_c->noise_type_ctl_c);
-	alloc_chara_ctl_item_c(lic_nze_c->noise_file_name_ctl_c);
-	alloc_chara_ctl_item_c(lic_nze_c->noise_file_format_ctl_c);
+	lic_nze_c->noise_type_ctl_c = init_chara_ctl_item_c();
+	lic_nze_c->noise_file_name_ctl_c = init_chara_ctl_item_c();
+	lic_nze_c->noise_file_format_ctl_c = init_chara_ctl_item_c();
 	
 	lic_nze_c->noise_resolution_ctl_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
 	lic_nze_c->noise_stepping_ctl_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
@@ -46,7 +46,7 @@ void alloc_lic_noise_ctl_c(struct lic_noise_ctl_c *lic_nze_c){
 	lic_nze_c->noise_cube_size_ctl_c = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
 	init_real_ctl_item_c(lic_nze_c->noise_cube_size_ctl_c);
 	
-	return;
+	return lic_nze_c;
 };
 
 
@@ -55,14 +55,12 @@ void dealloc_lic_noise_ctl_c(struct lic_noise_ctl_c *lic_nze_c){
 	dealloc_chara_ctl_item_c(lic_nze_c->noise_type_ctl_c);
 	dealloc_chara_ctl_item_c(lic_nze_c->noise_file_name_ctl_c);
 	dealloc_chara_ctl_item_c(lic_nze_c->noise_file_format_ctl_c);
-	free(lic_nze_c->noise_type_ctl_c);
-	free(lic_nze_c->noise_file_name_ctl_c);
-	free(lic_nze_c->noise_file_format_ctl_c);
 	
 	free(lic_nze_c->noise_resolution_ctl_c);
 	free(lic_nze_c->noise_stepping_ctl_c);
 	
 	free(lic_nze_c->noise_cube_size_ctl_c);
+    free(lic_nze_c);
 	return;
 };
 

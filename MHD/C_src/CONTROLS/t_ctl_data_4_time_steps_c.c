@@ -63,8 +63,13 @@ void get_label_time_data_ctl(int index, char *label){
     return;
 };
 
-void alloc_time_data_control_c(struct time_data_control_c *tctl){
+struct time_data_control_c * init_time_data_control_c(){
     int i;
+    struct time_data_control_c *tctl;
+    if((tctl = (struct time_data_control_c *) malloc(sizeof(struct time_data_control_c))) == NULL) {
+        printf("malloc error for time_data_control_c \n");
+        exit(0);
+    }
     
     tctl->iflag_use = 0;
     tctl->maxlen = 0;
@@ -74,8 +79,7 @@ void alloc_time_data_control_c(struct time_data_control_c *tctl){
         };
     };
     
-    tctl->flexible_step_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-    alloc_chara_ctl_item_c(tctl->flexible_step_c);
+    tctl->flexible_step_c = init_chara_ctl_item_c();
     
     tctl->i_step_init_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
     init_int_ctl_item_c(tctl->i_step_init_c);
@@ -151,12 +155,11 @@ void alloc_time_data_control_c(struct time_data_control_c *tctl){
     tctl->delta_t_boundary_c = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
     init_real_ctl_item_c(tctl->delta_t_boundary_c);
     
-    return;
+    return tctl;
 };
 
 void dealloc_time_data_control_c(struct time_data_control_c *tctl){
     dealloc_chara_ctl_item_c(tctl->flexible_step_c);
-    free(tctl->flexible_step_c);
     
     free(tctl->i_step_init_c);
     free(tctl->i_step_number_c);
@@ -198,7 +201,7 @@ void dealloc_time_data_control_c(struct time_data_control_c *tctl){
     free(tctl->delta_t_sgs_coefs_c);
     free(tctl->delta_t_boundary_c);
     
-    tctl->iflag_use = 0;
+    free(tctl);
     return;
 };
 

@@ -31,7 +31,7 @@ struct lic_noise_ctl_c{
 };
 
 /* prototypes */
-void alloc_lic_noise_ctl_c(struct lic_noise_ctl_c *lic_nze_c);
+struct lic_noise_ctl_c * init_lic_noise_ctl_c();
 void dealloc_lic_noise_ctl_c(struct lic_noise_ctl_c *lic_nze_c);
 int read_lic_noise_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct lic_noise_ctl_c *lic_nze_c);
