@@ -308,8 +308,7 @@ struct pvr_colorbar_ctl_c * init_colorbar_ctl_c(){
     cbar_c->font_size_ctl =  init_int_ctl_item_c();
     cbar_c->ngrid_cbar_ctl = init_int_ctl_item_c();
 	
-	cbar_c->cbar_range_ctl = (struct real2_ctl_item *) malloc(sizeof(struct real2_ctl_item));
-	init_real2_ctl_item_c(cbar_c->cbar_range_ctl);
+	cbar_c->cbar_range_ctl = init_real2_ctl_item_c();
 	
 	cbar_c->axis_switch_ctl = init_chara_ctl_item_c();
 	

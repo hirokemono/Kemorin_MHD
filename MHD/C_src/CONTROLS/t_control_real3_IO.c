@@ -8,11 +8,17 @@
 #include "t_control_real3_IO.h"
 
 
-void init_real3_ctl_item_c(struct real3_ctl_item *r3_item){
+struct real3_ctl_item * init_real3_ctl_item_c(){
 	int i;
+    struct real3_ctl_item *r3_item;
+    if((r3_item = (struct real3_ctl_item *) malloc(sizeof(struct real3_ctl_item))) == NULL) {
+        printf("malloc error for real3_ctl_item \n");
+        exit(0);
+    }
+
     for (i=0; i<3; i++) {r3_item->r_data[i] = 0.0;};
 	r3_item->iflag = 0;
-    return;
+    return r3_item;
 };
 
 int read_real3_ctl_item_c(char buf[LENGTHBUF], const char *label, 
@@ -74,11 +80,7 @@ static struct real3_ctl_list *add_real3_ctl_list_before(struct real3_ctl_list *c
         printf("malloc error\n");
         exit(0);
     }
-    if ((added->r3_item = (struct real3_ctl_item *) malloc(sizeof(struct real3_ctl_item))) == NULL) {
-        printf("malloc error for r3_item\n");
-        exit(0);
-    }
-	init_real3_ctl_item_c(added->r3_item);
+	added->r3_item = init_real3_ctl_item_c();
     
 	/* replace from  prev -> current to prev -> new -> current */
 	old_prev = current->_prev;
@@ -98,11 +100,7 @@ static struct real3_ctl_list *add_real3_ctl_list_after(struct real3_ctl_list *cu
         printf("malloc error\n");
         exit(0);
     }
-    if ((added->r3_item = (struct real3_ctl_item *) malloc(sizeof(struct real3_ctl_item))) == NULL) {
-        printf("malloc error for r3_item\n");
-        exit(0);
-    }
-	init_real3_ctl_item_c(added->r3_item);
+	added->r3_item = init_real3_ctl_item_c();
     
     /* replace from  current -> next to current -> new -> next */
     old_next= current->_next;

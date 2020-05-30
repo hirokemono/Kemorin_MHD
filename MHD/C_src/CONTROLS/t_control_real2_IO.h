@@ -40,7 +40,7 @@ struct real2_clist{
 
 /* prototypes */
 
-void init_real2_ctl_item_c(struct real2_ctl_item *r2_item);
+struct real2_ctl_item * init_real2_ctl_item_c();
 int read_real2_ctl_item_c(char buf[LENGTHBUF], const char *label, 
                           struct real2_ctl_item *r2_item);
 int write_real2_ctl_item_c(FILE *fp, int level, int maxlen, 
