@@ -8,10 +8,16 @@
 #include "t_control_real_IO.h"
 
 
-void init_real_ctl_item_c(struct real_ctl_item *r_item){
+struct real_ctl_item * init_real_ctl_item_c(){
+    struct real_ctl_item *r_item;
+    if((r_item = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item))) == NULL) {
+        printf("malloc error for real_ctl_item \n");
+        exit(0);
+    }
+    
 	r_item->r_data = 0.0;
 	r_item->iflag = 0;
-    return;
+    return r_item;
 };
 
 int read_real_ctl_item_c(char buf[LENGTHBUF], const char *label, 
@@ -66,11 +72,7 @@ static struct real_ctl_list *add_real_ctl_list_before(struct real_ctl_list *curr
         printf("malloc error\n");
         exit(0);
     }
-    if ((added->r_item = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item))) == NULL) {
-        printf("malloc error for r_item\n");
-        exit(0);
-    }
-	init_real_ctl_item_c(added->r_item);
+	added->r_item = init_real_ctl_item_c();
     
 	/* replace from  prev -> current to prev -> new -> current */
 	old_prev = current->_prev;
@@ -90,11 +92,7 @@ static struct real_ctl_list *add_real_ctl_list_after(struct real_ctl_list *curre
         printf("malloc error\n");
         exit(0);
     }
-    if ((added->r_item = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item))) == NULL) {
-        printf("malloc error for r_item\n");
-        exit(0);
-    }
-	init_real_ctl_item_c(added->r_item);
+	added->r_item = init_real_ctl_item_c();
     
     /* replace from  current -> next to current -> new -> next */
     old_next= current->_next;
@@ -110,7 +108,6 @@ static void delete_real_ctl_list(struct real_ctl_list *current){
     struct real_ctl_list *old_prev = current->_prev;
     struct real_ctl_list *old_next = current->_next;
     
-    init_real_ctl_item_c(current->r_item);
     free(current->r_item);
     free(current);
     

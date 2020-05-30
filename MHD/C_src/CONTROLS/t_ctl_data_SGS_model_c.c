@@ -457,25 +457,15 @@ struct SGS_model_control_c * init_SGS_model_ctl_c(){
     SGS_ctl_c->ngrp_radial_ave_c =  init_int_ctl_item_c();
     SGS_ctl_c->ngrp_med_ave_c =     init_int_ctl_item_c();
 	
-	SGS_ctl_c->stabilize_weight_c = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
-	SGS_ctl_c->delta_to_shrink_dynamic_c = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
-	SGS_ctl_c->delta_to_extend_dynamic_c = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
-	SGS_ctl_c->clipping_limit_c = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
-	SGS_ctl_c->SGS_hf_factor_c = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
-	SGS_ctl_c->SGS_cf_factor_c = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
-	SGS_ctl_c->SGS_mf_factor_c = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
-	SGS_ctl_c->SGS_mxwl_factor_c = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
-	SGS_ctl_c->SGS_uxb_factor_c = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
-	
-	init_real_ctl_item_c(SGS_ctl_c->stabilize_weight_c);
-	init_real_ctl_item_c(SGS_ctl_c->delta_to_shrink_dynamic_c);
-	init_real_ctl_item_c(SGS_ctl_c->delta_to_extend_dynamic_c);
-	init_real_ctl_item_c(SGS_ctl_c->clipping_limit_c);
-	init_real_ctl_item_c(SGS_ctl_c->SGS_hf_factor_c);
-	init_real_ctl_item_c(SGS_ctl_c->SGS_cf_factor_c);
-	init_real_ctl_item_c(SGS_ctl_c->SGS_mf_factor_c);
-	init_real_ctl_item_c(SGS_ctl_c->SGS_mxwl_factor_c);
-	init_real_ctl_item_c(SGS_ctl_c->SGS_uxb_factor_c);
+    SGS_ctl_c->stabilize_weight_c =        init_real_ctl_item_c();
+    SGS_ctl_c->delta_to_shrink_dynamic_c = init_real_ctl_item_c();
+    SGS_ctl_c->delta_to_extend_dynamic_c = init_real_ctl_item_c();
+    SGS_ctl_c->clipping_limit_c =          init_real_ctl_item_c();
+    SGS_ctl_c->SGS_hf_factor_c =           init_real_ctl_item_c();
+    SGS_ctl_c->SGS_cf_factor_c =           init_real_ctl_item_c();
+    SGS_ctl_c->SGS_mf_factor_c =           init_real_ctl_item_c();
+    SGS_ctl_c->SGS_mxwl_factor_c =         init_real_ctl_item_c();
+    SGS_ctl_c->SGS_uxb_factor_c =          init_real_ctl_item_c();
 	
 	init_sph_filter_ctl_list(&SGS_ctl_c->sph_filter_list);
 	return SGS_ctl_c;

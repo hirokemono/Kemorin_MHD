@@ -139,17 +139,13 @@ struct mhd_evo_scheme_control_c * init_mhd_evo_scheme_control_c(){
 	mevo_ctl->num_multi_pass_c = init_int_ctl_item_c();
 	mevo_ctl->maxiter_c = init_int_ctl_item_c();
 	
-	mevo_ctl->eps_4_velo_c = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
-	init_real_ctl_item_c(mevo_ctl->eps_4_velo_c);
-	mevo_ctl->eps_4_magne_c = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
-	init_real_ctl_item_c(mevo_ctl->eps_4_magne_c);
+    mevo_ctl->eps_4_velo_c =  init_real_ctl_item_c();
+    mevo_ctl->eps_4_magne_c = init_real_ctl_item_c();
 	
-	mevo_ctl->eps_crank_c = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
-	init_real_ctl_item_c(mevo_ctl->eps_crank_c);
-	mevo_ctl->eps_B_crank_c = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
-	init_real_ctl_item_c(mevo_ctl->eps_B_crank_c);
+    mevo_ctl->eps_crank_c =   init_real_ctl_item_c();
+    mevo_ctl->eps_B_crank_c = init_real_ctl_item_c();
 	
-	mevo_ctl->scheme_c = init_chara_ctl_item_c();
+	mevo_ctl->scheme_c =          init_chara_ctl_item_c();
 	mevo_ctl->diffuse_correct_c = init_chara_ctl_item_c();
 	
 	mevo_ctl->method_4_CN_c =  init_chara_ctl_item_c();

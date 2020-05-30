@@ -92,9 +92,8 @@ struct psf_define_ctl_c * init_psf_define_ctl_c(){
     sprintf(psf_def_c->psf_center_list->r1_name, "Value");
     sprintf(psf_def_c->psf_axis_list->r1_name, "Value");
 	
-	psf_def_c->radius_psf_ctl = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
+	psf_def_c->radius_psf_ctl = init_real_ctl_item_c();
 	psf_def_c->psf_group_name_ctl = init_chara_ctl_item_c();
-	init_real_ctl_item_c(psf_def_c->radius_psf_ctl);
 	
     psf_def_c->psf_area_list = (struct chara_clist *) malloc(sizeof(struct chara_clist));
 	init_chara_clist(psf_def_c->psf_area_list);

@@ -68,11 +68,8 @@ struct reference_point_ctl_c * init_reference_point_ctl_c(){
 		};
 	};
 	
-	ref_c->depth_c = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
-	ref_c->value_c = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
-	
-	init_real_ctl_item_c(ref_c->depth_c);
-	init_real_ctl_item_c(ref_c->value_c);
+    ref_c->depth_c = init_real_ctl_item_c();
+    ref_c->value_c = init_real_ctl_item_c();
 	
 	return ref_c;
 };
@@ -157,15 +154,10 @@ struct takepiro_model_ctl_c * init_takepiro_model_ctl_c(){
 		};
 	};
 	
-	takepiro_c->stratified_sigma_c = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
-	takepiro_c->stratified_width_c = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
-	takepiro_c->stratified_outer_r_c = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
-	
-	init_real_ctl_item_c(takepiro_c->stratified_sigma_c);
-	init_real_ctl_item_c(takepiro_c->stratified_width_c);
-	init_real_ctl_item_c(takepiro_c->stratified_outer_r_c);
-	
-	return takepiro_c;
+    takepiro_c->stratified_sigma_c =   init_real_ctl_item_c();
+    takepiro_c->stratified_width_c =   init_real_ctl_item_c();
+    takepiro_c->stratified_outer_r_c = init_real_ctl_item_c();
+    return takepiro_c;
 };
 
 void dealloc_takepiro_model_ctl_c(struct takepiro_model_ctl_c *takepiro_c){

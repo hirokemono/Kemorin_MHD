@@ -40,12 +40,10 @@ struct lic_ctl_c * init_lic_ctl_c(){
 	lic_c->opacity_component_ctl = init_chara_ctl_item_c();
 	
 	lic_c->vr_sample_mode_ctl_c = init_chara_ctl_item_c();
-	lic_c->step_size_ctl_c = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
-	init_real_ctl_item_c(lic_c->step_size_ctl_c);
+	lic_c->step_size_ctl_c = init_real_ctl_item_c();
 	
 	lic_c->normalization_type_ctl_c = init_chara_ctl_item_c();
-	lic_c->normalization_value_ctl_c = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
-	init_real_ctl_item_c(lic_c->normalization_value_ctl_c);
+	lic_c->normalization_value_ctl_c = init_real_ctl_item_c();
 	
 	init_lic_masking_ctl_list(&lic_c->lic_mask_list);
 	

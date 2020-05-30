@@ -74,8 +74,7 @@ struct iso_define_ctl_c * init_iso_define_ctl_c(){
 	iso_def_c->isosurf_data_ctl = init_chara_ctl_item_c();
 	iso_def_c->isosurf_comp_ctl = init_chara_ctl_item_c();
 	
-	iso_def_c->isosurf_value_ctl = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
-	init_real_ctl_item_c(iso_def_c->isosurf_value_ctl);
+	iso_def_c->isosurf_value_ctl = init_real_ctl_item_c();
 	
     iso_def_c->iso_area_list = (struct chara_clist *) malloc(sizeof(struct chara_clist));
 	init_chara_clist(iso_def_c->iso_area_list);

@@ -35,12 +35,9 @@ struct lic_kernel_ctl_c * alloc_lic_kernel_ctl_c(){
 	
 	lic_knl_c->kernel_resolution_ctl_c = init_int_ctl_item_c();
 	
-	lic_knl_c->kernel_sigma_ctl_c = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
-	init_real_ctl_item_c(lic_knl_c->kernel_sigma_ctl_c);
-	lic_knl_c->kernel_peak_ctl_c = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
-	init_real_ctl_item_c(lic_knl_c->kernel_peak_ctl_c);
-	lic_knl_c->kernel_half_lengh_c = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
-	init_real_ctl_item_c(lic_knl_c->kernel_half_lengh_c);
+    lic_knl_c->kernel_sigma_ctl_c =  init_real_ctl_item_c();
+    lic_knl_c->kernel_peak_ctl_c =   init_real_ctl_item_c();
+    lic_knl_c->kernel_half_lengh_c = init_real_ctl_item_c();
 	
 	lic_knl_c->LIC_trace_length_def_ctl = init_chara_ctl_item_c();
 	lic_knl_c->LIC_trace_count_ctl = init_int_ctl_item_c();

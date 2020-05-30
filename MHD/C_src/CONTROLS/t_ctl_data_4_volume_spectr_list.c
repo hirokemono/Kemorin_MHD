@@ -42,10 +42,8 @@ struct volume_spectr_control_c * init_volume_spectr_control_c(){
 	v_pwr_c->volume_spec_file_c = init_chara_ctl_item_c();
 	v_pwr_c->volume_ave_file_c = init_chara_ctl_item_c();
 	
-	v_pwr_c->inner_radius_c = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
-	init_real_ctl_item_c(v_pwr_c->inner_radius_c);
-	v_pwr_c->outer_radius_c = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
-	init_real_ctl_item_c(v_pwr_c->outer_radius_c);
+    v_pwr_c->inner_radius_c = init_real_ctl_item_c();
+    v_pwr_c->outer_radius_c = init_real_ctl_item_c();
 	
 	return v_pwr_c;
 };

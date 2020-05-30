@@ -38,7 +38,7 @@ struct real_clist{
 
 /* prototypes */
 
-void init_real_ctl_item_c(struct real_ctl_item *r_item);
+struct real_ctl_item * init_real_ctl_item_c();
 int read_real_ctl_item_c(char buf[LENGTHBUF], const char *label, 
                           struct real_ctl_item *r_item);
 int write_real_ctl_item_c(FILE *fp, int level, int maxlen, 
